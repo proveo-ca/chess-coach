@@ -1,0 +1,225 @@
+import { resolveMode } from "~/services/runtimeMode";
+import { setLlmProgress } from "~/store/coachStore";
+// SPEC: _spec/apps/ui/components.puml
+import type { Difficulty } from "~/types/settings";
+
+const RUNTIME_MODE = resolveMode();
+const API_URL = RUNTIME_MODE.kind === "desktop" ? RUNTIME_MODE.apiUrl : window.location.origin;
+const DEBUG = import.meta.env.VITE_DEBUG === "true";
+
+/** fen is the position AFTER the human move has been applied client-side. */
+export type MoveRequest = { humanMoveSan: string; fenAfterHuman: string; difficulty?: Difficulty };
+export type MoveResponse = { fen: string; move: string; advice?: string };
+
+export type AdviceRequest = { humanMove: string; aiMove: string; fen: string };
+export type ExplainRequest = {
+  fenBefore: string;
+  fenAfter: string;
+  isBlunder: boolean;
+  moveSan: string;
+};
+
+export type HelloResponse = {
+  model: string;
+  greeting: string;
+  thinking: string[];
+  bestMove: string[];
+};
+
+export type NewGameResponse = { fen: string };
+
+export interface CoachService {
+  postNewGame(): Promise<NewGameResponse>;
+  fetchHello(): Promise<HelloResponse>;
+  postMove(request: MoveRequest): Promise<MoveResponse>;
+  postAdviceStream(
+    request: AdviceRequest,
+    onChunk: (chunk: string) => void,
+    options?: { signal?: AbortSignal },
+  ): Promise<void>;
+  postExplainStream(
+    request: ExplainRequest,
+    onChunk: (chunk: string) => void,
+    options?: { signal?: AbortSignal },
+  ): Promise<void>;
+}
+
+class HttpCoachService implements CoachService {
+  async postNewGame(): Promise<NewGameResponse> {
+    const response = await fetch(`${API_URL}/new`, { method: "POST" });
+    if (!response.ok) throw new Error("new game request failed");
+    return response.json();
+  }
+
+  async fetchHello(): Promise<HelloResponse> {
+    const response = await fetch(`${API_URL}/hello`);
+    if (!response.ok) throw new Error("hello request failed");
+    return response.json();
+  }
+
+  async postMove(request: MoveRequest): Promise<MoveResponse> {
+    const moveResponse = await fetch(`${API_URL}/move`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(request),
+    });
+    if (!moveResponse.ok) throw new Error("move request failed");
+    return moveResponse.json();
+  }
+
+  async postAdviceStream(
+    request: AdviceRequest,
+    onChunk: (chunk: string) => void,
+    options?: { signal?: AbortSignal },
+  ): Promise<void> {
+    const response = await fetch(`${API_URL}/advice`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(request),
+      signal: options?.signal,
+    });
+    if (!response.ok || !response.body) throw new Error("advice request failed");
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    while (true) {
+      const { value, done } = await reader.read();
+      if (value) onChunk(decoder.decode(value, { stream: true }));
+      if (done) break;
+    }
+  }
+
+  async postExplainStream(
+    request: ExplainRequest,
+    onChunk: (chunk: string) => void,
+    options?: { signal?: AbortSignal },
+  ): Promise<void> {
+    const response = await fetch(`${API_URL}/explain`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(request),
+      signal: options?.signal,
+    });
+    if (!response.ok || !response.body) throw new Error("explain request failed");
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    while (true) {
+      const { value, done } = await reader.read();
+      if (value) onChunk(decoder.decode(value, { stream: true }));
+      if (done) break;
+    }
+  }
+}
+
+class WebWorkerCoachService implements CoachService {
+  private workerPromise: Promise<Worker>;
+  private msgId = 0;
+  private pending = new Map<number, { resolve: Function; reject: Function; onChunk?: Function }>();
+
+  constructor() {
+    this.workerPromise = this.initWorker();
+  }
+
+  private async initWorker(): Promise<Worker> {
+    const WorkerConstructor = (await import("../engine/orchestrator.worker.ts?worker")).default;
+    const worker = new WorkerConstructor();
+
+    worker.onmessage = (e) => {
+      const { id, type, result, error, chunk, done, progress, text } = e.data;
+
+      if (type === "LLM_PROGRESS") {
+        setLlmProgress(progress, text);
+        return;
+      }
+
+      if (type === "LLM_DEBUG") {
+        if (DEBUG) {
+          console.warn("[Worker LLM Debug]", e.data.debug);
+        }
+        return;
+      }
+
+      const p = this.pending.get(id);
+      if (!p) return;
+
+      if (error) {
+        p.reject(new Error(error));
+        this.pending.delete(id);
+      } else if (chunk !== undefined) {
+        if (p.onChunk) p.onChunk(chunk);
+      } else if (done) {
+        p.resolve();
+        this.pending.delete(id);
+      } else if (result !== undefined) {
+        p.resolve(result);
+        this.pending.delete(id);
+      }
+    };
+    return worker;
+  }
+
+  private async send<T>(type: string, payload?: any, onChunk?: Function): Promise<T> {
+    const worker = await this.workerPromise;
+    return new Promise((resolve, reject) => {
+      const id = ++this.msgId;
+      this.pending.set(id, { resolve, reject, onChunk });
+      worker.postMessage({ id, type, payload });
+    });
+  }
+
+  async postNewGame(): Promise<NewGameResponse> {
+    return this.send("NEW_GAME");
+  }
+  async fetchHello(): Promise<HelloResponse> {
+    return this.send("HELLO");
+  }
+  async postMove(request: MoveRequest): Promise<MoveResponse> {
+    return this.send("MOVE", request);
+  }
+  async postAdviceStream(
+    request: AdviceRequest,
+    onChunk: (chunk: string) => void,
+    _options?: { signal?: AbortSignal },
+  ): Promise<void> {
+    return this.send("ADVICE_STREAM", request, onChunk);
+  }
+  async postExplainStream(
+    request: ExplainRequest,
+    onChunk: (chunk: string) => void,
+    _options?: { signal?: AbortSignal },
+  ): Promise<void> {
+    return this.send("EXPLAIN_STREAM", request, onChunk);
+  }
+}
+
+// Mode branching: "desktop" uses the Kotlin backend via HTTP; every other
+// mode (web-full, web-no-llm) runs the in-browser Web Worker engine.
+const activeService: CoachService =
+  RUNTIME_MODE.kind === "desktop" ? new HttpCoachService() : new WebWorkerCoachService();
+
+// LLM-driven endpoints become no-ops in `web-no-llm` so call sites can
+// invoke them uniformly. Whether to substitute different visible text
+// (e.g. the hint's "Try moving X.") is still a UI decision and lives in
+// the relevant hook — this gate just suppresses the worker round-trip.
+const HAS_COMMENTARY = RUNTIME_MODE.kind !== "web-no-llm";
+
+export const postNewGame = () => activeService.postNewGame();
+export const fetchHello = () => activeService.fetchHello();
+export const postMove = (req: MoveRequest) => activeService.postMove(req);
+export const postAdviceStream = (
+  req: AdviceRequest,
+  onChunk: (chunk: string) => void,
+  opts?: { signal?: AbortSignal },
+): Promise<void> => {
+  if (!HAS_COMMENTARY) return Promise.resolve();
+  return activeService.postAdviceStream(req, onChunk, opts);
+};
+export const postExplainStream = (
+  req: ExplainRequest,
+  onChunk: (chunk: string) => void,
+  opts?: { signal?: AbortSignal },
+): Promise<void> => {
+  if (!HAS_COMMENTARY) return Promise.resolve();
+  return activeService.postExplainStream(req, onChunk, opts);
+};

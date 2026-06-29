@@ -1,0 +1,77 @@
+@startuml chess-coach-engine-core-entities
+' SPEC: _spec/packages/engine-core/entities.puml
+!includeurl https://raw.githubusercontent.com/proveo-ca/identity/refs/heads/main/proveo.iuml
+
+allowmixing
+skinparam defaultTextAlignment left
+skinparam arrowColor #446688
+
+title Chess Coach · @chess-coach/engine-core\n(shared prompt / classification / commentary logic)
+
+' ══════════════════════════════════════════════════════════════
+' The behaviour-defining core shared VERBATIM by both backends:
+'   · apps/server  (Bun, native engines + Ollama)
+'   · apps/ui/src/engine  (browser workers + WebLLM)
+' Behavior is pinned by _spec/apps/server/behavior.md §5; the
+' consumer mapping lives in ui-engine-parity.md (same directory).
+' ══════════════════════════════════════════════════════════════
+
+package "@chess-coach/engine-core [packages/engine-core/src/]" {
+
+  class llmPromptFormat {
+    .. Constants ..
+    SYSTEM_PROMPT: string
+    MATE_SCORE_FOR_PROMPT = 9999
+    DEFAULT_EVAL_DEPTH = 15
+    PROMPT_FIELD_ORDER: readonly string[]
+    .. Prompt assembly ..
+    buildStructuredPrompt(fields: PromptFields): string
+    buildExplanationInstruction(tag: PromptTag): string
+    buildPromptFromAnalysis(type: PromptType, analysis: MoveAnalysis,\n  defaults: {language, langCode}): string
+    .. Analysis / classification ..
+    createMoveAnalysis(params): MoveAnalysis
+    classifyMoveTag(cpBefore, cpAfter, actor): PromptTag
+    formatCpTransition(beforeScore, afterScore): string
+    scoreForPrompt(evalResult: EvalLike, mateScore): number
+    sideToMoveFromFen(fen: string): PromptSide
+    .. Output post-processing ..
+    extractCommentary(raw: string): string
+    .. Types ..
+    PromptType: "standard" | "explanation"
+    PromptSide: "White" | "Black"
+    PromptActor: "human" | "bot"
+    PromptTag · PromptFields · EvalLike · MoveAnalysis
+  }
+
+  note bottom of llmPromptFormat
+    **Contract highlights** (full detail: _spec/apps/server/behavior.md §5)
+    · buildStructuredPrompt emits fields in PROMPT_FIELD_ORDER;
+      `Name` is omitted when blank; missing required fields throw.
+    · classifyMoveTag thresholds (asymmetric by design):
+      Δ < 20 → Best · Δ > 200 → Mistake · Δ > 100 → Inaccuracy · else Good
+    · extractCommentary strips reasoning/markup down to the
+      final commentary sentence(s).
+    · index.ts re-exports everything (`export * from "./llmPromptFormat"`).
+  end note
+}
+
+package "Consumers" {
+  component "apps/server\nOrchestrator.ts" as SRV
+  component "apps/ui/src/engine\nOrchestrator.ts · config.ts" as WEB
+}
+
+SRV --> llmPromptFormat : imports (workspace dep)
+WEB --> llmPromptFormat : imports (vite alias →\npackages/engine-core/src)
+
+note bottom of SRV
+  Wired via workspace tsconfig paths; the Dockerfile
+  copies packages/engine-core into the image.
+end note
+
+note bottom of WEB
+  Web-only additions (bestAltMatchesMove via uciMatchesSan,
+  text sanitizing, fallback commentary) stay in apps/ui —
+  see ui-engine-parity.md.
+end note
+
+@enduml

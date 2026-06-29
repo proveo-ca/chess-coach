@@ -1,0 +1,40 @@
+.splash-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--bg-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  color: var(--text-color);
+}
+
+.splash-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  margin: 0 auto;
+}
+
+/* Wider column for content-heavy splashes (e.g. LanScreen's lobby checklist).
+   Tracks the checklist's own min(30rem, 92vw) sizing so it never overflows. */
+.splash-content--wide {
+  width: min(92vw, 33rem);
+  max-width: 33rem;
+}
+
+.splash-avatar-wrapper {
+  margin: 1.5rem auto;
+}
+
+.splash-title {
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+}

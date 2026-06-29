@@ -1,0 +1,93 @@
+# ==========================================
+# Secrets / environment
+# ==========================================
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# ==========================================
+# Node / JS / TS
+# ==========================================
+node_modules/
+dist/
+dist-ssr/
+build/
+out/
+*.tsbuildinfo
+.vite/
+.wrangler/
+*.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Test / coverage output
+coverage/
+test-results/
+playwright-report/
+.playwright/
+
+# ==========================================
+# Bun
+# ==========================================
+.bun/
+
+# ==========================================
+# Engine weights / large model assets
+# (downloaded at build time — see Dockerfile)
+# ==========================================
+weights/
+syzygy/
+*.pb.gz
+*.bin
+public/models/**/resolve/main/*
+
+# ==========================================
+# Android / Kotlin / Gradle
+# ==========================================
+.gradle/
+**/build/
+local.properties
+*.iml
+.cxx/
+captures/
+*.apk
+*.aab
+*.keystore
+# Go build output (apps/android/gomobile)
+*.aar
+*.so
+
+# ==========================================
+# OS
+# ==========================================
+.DS_Store
+Thumbs.db
+
+# ==========================================
+# Editors / IDEs
+# ==========================================
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ==========================================
+# AI / harness tooling
+# ==========================================
+.aider*
+.cecli*
+.claude
+.cursor/rules/nx-rules.mdc

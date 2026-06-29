@@ -1,0 +1,60 @@
+/* Board layout for LAN multiplayer. Mirrors the Coach board's layout; the
+   eval bar appears only for spectators (game-over overlay is on the screen). */
+.board-layout-wrapper {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  justify-content: center;
+  align-items: stretch;
+  width: 100%;
+}
+
+/* Spectator eval bar uses EvalBar's default (left:-2rem) on desktop, where the
+   gutter is wide. On a phone there's no room there, so tuck the slim bar into
+   the left gutter flush against the board and compact its value pill. The
+   compound selector outranks EvalBar's own `.eval-bar` rule. */
+@media (max-width: 719px) {
+  .board-layout-wrapper .eval-bar {
+    left: -0.75rem;
+    width: 0.9rem;
+  }
+
+  /* The numeric readout can't fit the slim phone bar; the fill conveys it. */
+  .board-layout-wrapper .eval-bar > :last-child {
+    display: none;
+  }
+}
+
+.chessboard-container {
+  display: flex;
+  justify-content: center;
+}
+
+.chessboard {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  width: var(--board-size);
+  height: var(--board-size);
+  border: 4px solid var(--board-border);
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(var(--shadow-rgb), 0.3);
+  position: relative;
+  touch-action: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  overflow: hidden; /* clip pieces sliding outside the board edge */
+}
+
+/* Floating ghost that follows the finger during touch-drag. */
+.touch-ghost {
+  position: fixed;
+  width: var(--square-size);
+  height: var(--square-size);
+  pointer-events: none;
+  z-index: 100;
+  opacity: 0.85;
+  transform: translate(-50%, -50%);
+}

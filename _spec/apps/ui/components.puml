@@ -1,0 +1,692 @@
+@startuml chess-coach-ui
+' SPEC: _spec/apps/ui/components.puml
+!includeurl https://raw.githubusercontent.com/proveo-ca/identity/refs/heads/main/proveo.iuml
+
+skinparam defaultTextAlignment left
+skinparam arrowColor #446688
+
+title Chess Coach UI · Components\n(see entities.puml for API details)
+
+' ══════════════════════════════════════════════════════════════
+' CAPABILITIES
+' ══════════════════════════════════════════════════════════════
+
+package "Capabilities  [capabilitiesStore.ts]" {
+  [ScreenCapabilities]
+  note right of ScreenCapabilities
+    COACH · ANALYSIS · REVIEW ·
+    LAN_PLAYER · LAN_OBSERVER presets
+    see entities.puml for flag definitions
+  end note
+}
+
+' ══════════════════════════════════════════════════════════════
+' SCREENS
+' ══════════════════════════════════════════════════════════════
+
+package "Screens  [src/screens/]" {
+
+  rectangle "CoachScreen" as CoachScreen
+  note right of CoachScreen
+    mounts COACH_CAPABILITIES on init
+    calls useGameRecorder() · useLivePreAnalysis() · restoreGame()
+    composition: CoachAvatar · ChessBoard ·
+      CapturedPieces · CoachPanel · Sidebar ·
+      MobileDrawer · DualNavButton
+    overlays: HistoryOverlay · LightSpeedOverlay ·
+      Modal (browser support check)
+  end note
+
+  rectangle "AnalysisScreen" as AnalysisScreen
+  note right of AnalysisScreen
+    mounts ANALYSIS_CAPABILITIES on init
+    no coach avatar · no replay/travel overlays
+    composition: FenLoader · ChessBoard ·
+      CapturedPieces · Sidebar · MobileDrawer
+  end note
+
+  rectangle "ReviewScreen" as ReviewScreen
+  note right of ReviewScreen
+    mounts REVIEW_CAPABILITIES on init
+    route param: id (Polyglot-Zobrist hash)
+    loads GameRecord → gameStore.loadGame()
+    composition: GameHistoryList · ChessBoard ·
+      MoveList · CapturedPieces
+  end note
+
+  rectangle "MenuScreen" as MenuScreen
+  note right of MenuScreen
+    identity selector (Human | Cat | Dog | Rat)
+    routes to: /selena · /analysis · /review · /lan
+    composition: CoachAvatar · MenuButton ×5
+  end note
+
+  rectangle "LanScreen" as LanScreen
+  note right of LanScreen
+    serverless P2P multiplayer (Tailscale + WebRTC)
+    mounts LAN_PLAYER / LAN_OBSERVER capabilities
+    calls useMultiplayerGame() · useLanGameRecorder() ·
+      useLivePreAnalysis()  (recorded + analyzed → reviewable
+      at /review/:id, like a Coach game)
+    lobby: create / join · QR + link signaling · players
+      pick/swap colors (SelectCard) · guest Play/Spectate
+      (SelectCard) · observers ≤4 · Start Game
+    host browser = room authority (relays all moves)
+    layout: lobby = SplashScreen (no board, like MenuScreen) —
+      Tailscale onboarding + room setup. Once started, the
+      board-centric Screen grid: matchup header + board. Controls
+      (connectivity · history nav · Draw · Resign) in the right
+      sidebar on desktop; on mobile the shared MobileSidebar bar above
+      the board (centre blank — no coach), under the names + clocks.
+    draw offers: one "Draw" control (sidebar button + 🤝 bubble) ·
+      no offer → propose · pending → Modal ("Accept Draw?" for the
+      recipient · "Draw requested"/Cancel for the offerer waiting).
+      Accept ends as a draw; the 🤝/⚔️ board bubbles render in
+      MultiplayerBoard (DrawBubbles). See multiplayer.puml.
+    time control: Select dropdown at room creation (default from the
+      last Selena difficulty), shown again to the joiner from the offer
+      link; in-game each side's Clock atom shows in the matchup header.
+      Flag-fall → "Time Out" end screen. ?clock=<sec> deep-link override.
+    history nav: DualNavButton bound straight to gameStore
+      (engine-free); MultiplayerBoard replays past plies and locks
+      input while replaying. HistoryOverlay vignette + Screen
+      highlight while reviewing.
+    mobile review chrome: a *player* reviewing collapses the bar + header
+      to just their own clock (top-left) + history nav (top-right); a
+      *spectator* keeps both clocks + a live EvalBar (screen-computed) at
+      all times — the only engine use here, player boards stay engine-free.
+    end screen: shared GameOverBanner (Resignation / Checkmate /
+      Stalemate / Draw / Opponent Left), hidden during replay
+      → Review Game · Back to Menu
+    renders MultiplayerBoard (coach/engine-free) — NOT ChessBoard
+    composition: SplashScreen · Screen · MultiplayerBoard ·
+      CapturedPieces · SelectCard · TailscaleChecklist · QR
+      encode/scan · ConnIndicator (SignalIcon) · DualNavButton ·
+      HistoryOverlay · GameOverBanner · Modal (draw offer)
+  end note
+}
+
+CoachScreen    ..> ScreenCapabilities : setCapabilities (COACH)
+AnalysisScreen ..> ScreenCapabilities : setCapabilities (ANALYSIS)
+ReviewScreen   ..> ScreenCapabilities : setCapabilities (REVIEW)
+LanScreen      ..> ScreenCapabilities : setCapabilities (LAN_PLAYER | LAN_OBSERVER)
+
+' ══════════════════════════════════════════════════════════════
+' STORES
+' ══════════════════════════════════════════════════════════════
+
+package "Stores  [src/store/]" {
+  [gameStore]        as GameStore
+  [coachStore]       as CoachStore
+  [settingsStore]    as SettingsStore
+  [gameHistoryStore] as HistoryStore
+  [travelStore]      as TravelStore
+  [evalStore]        as EvalStore
+  note right of EvalStore
+    shared signals for the current best-move analysis
+    (green/blue arrows): baseEvalScore (cp | mate) +
+    baseEvalDepth. Written by useChessBoard; read by
+    EngineDepth + ResignConfirm.
+  end note
+  [roomStore]        as RoomStore
+  note right of RoomStore
+    multiplayer room state (LanScreen): role, seats +
+    chosen colors, identities, started, connectionStatus,
+    gameOver, draw (pending/declined/agreed offer — drives the
+    🤝/⚔️ bubbles), timeControl (per-player seconds) +
+    clocks (remaining ms per colour). All mirrored to peers
+    in the snapshot. Host-authoritative · ephemeral.
+  end note
+}
+
+' ══════════════════════════════════════════════════════════════
+' HOOKS
+' ══════════════════════════════════════════════════════════════
+
+package "Hooks  [src/hooks/]" {
+
+  package "Board Hooks" {
+    [useChessBoard]      as UseChessBoard
+    [useHoverEvaluator]  as UseHoverEvaluator
+  }
+
+  package "Coach Hooks" {
+    [useMoveExecutor]  as UseMoveExecutor
+    [useCoachBehavior] as UseCoachBehavior
+  }
+
+  package "Multiplayer Hooks" {
+    [useMultiplayerGame] as UseMultiplayerGame
+    [useMultiplayerBoard] as UseMultiplayerBoard
+    note right of UseMultiplayerGame
+      reacts to roomStore.lastLocalMove (set by useMultiplayerBoard):
+        host → addMoveSan + broadcast · guest → send(Move)
+      applies inbound moves via addMoveSan / loadFen
+      owns seat/color claim + swap · observer cap · start gate
+      (color change resets ready votes) · setActivePlayerColor
+      resign + draw offers (offer/accept/decline/cancel),
+        host-authoritative: accept → gameOver(draw); a pending
+        offer persists across moves, a declined one clears on the
+        next move
+      time control: init clocks at start, deduct the mover's elapsed
+        each move (clocks ride MoveApplied), 250ms watch flags the
+        game → opponent wins on time
+      no engine / coach / CoachService / postMove
+    end note
+    note right of UseMultiplayerBoard
+      coach- & engine-free board interaction (select / move /
+      promote / drag). Applies the local move via addMove and
+      announces it through setLastLocalMove for relay.
+      Deliberately NOT useChessBoard — no Stockfish, advice,
+      emotions, hints, or blunder analysis.
+      Renders the viewed position during history nav (isReplaying)
+      and locks input while replaying.
+    end note
+    [useLanGameRecorder] as UseLanGameRecorder
+    note right of UseLanGameRecorder
+      records the LAN game into gameHistoryStore (start on
+      `started`, append plies as the position grows, finalize on
+      roomStore.gameOver — mapped to the player's win/loss/draw).
+      The coach-signal-driven useGameRecorder doesn't fit the
+      engine-free board, so this drives off room + game stores.
+      Players only (observers don't record).
+    end note
+  }
+
+  package "Game Control Hooks" {
+    [useGameControls]    as UseGameControls
+    [useHint]            as UseHint
+    [useGlobalShortcuts] as UseGlobalShortcuts
+  }
+
+  package "Analysis & Review Hooks" {
+    [useGameAnalysis]       as UseGameAnalysis
+    [useLivePreAnalysis]    as UseLivePreAnalysis
+    [useBlunderArrow]       as UseBlunderArrow
+    [useMoveListPagination] as UseMoveListPagination
+    [useGameHistoryFilters] as UseGameHistoryFilters
+  }
+
+  package "Recording & Travel Hooks" {
+    [useGameRecorder]     as UseGameRecorder
+    [useTravelMode]       as UseTravelMode
+    [useSharedGameImport] as UseSharedGameImport
+    [useShareGame]        as UseShareGame
+  }
+
+  package "UX Hooks" {
+    [useHintSparkle] as UseHintSparkle
+    [usePresence] as UsePresence
+    note right of UsePresence
+      mount/unmount with an exit grace period so a node can
+      animate out before leaving the DOM. Keeps presentational
+      primitives (ChatBubble) side-effect-free.
+    end note
+  }
+}
+
+' ══════════════════════════════════════════════════════════════
+' UI COMPONENTS
+' ══════════════════════════════════════════════════════════════
+
+package "Components  [src/components/]" {
+
+  ' Features = compose atoms/primitives + coordinate hooks/stores into a working unit.
+  package "Features  [components/features/]" {
+    rectangle "ChessBoard"   as ChessBoard
+    note bottom of ChessBoard
+      Coach / Analysis / Review board (engine-backed).
+      8×8 grid · drag+drop · touch-drag
+      piece animation · last-move highlight
+      best-move arrow (green) · advice arrow (blue)
+      EvalBar overlay · GameOverBanner · PromotionModal
+      board flips on activePlayerColor change
+      composes ChessSquare + ChessBoardArrow (atoms)
+    end note
+    rectangle "MultiplayerBoard" as MultiplayerBoard
+    note bottom of MultiplayerBoard
+      LAN board (coach/engine-free twin of ChessBoard).
+      8×8 grid · drag+drop · touch-drag · piece animation
+      last-move highlight · PromotionModal · flips on color.
+      NO arrows / advice. Optional spectator EvalBar (showEval +
+      evalScore props, score computed by LanScreen) — players
+      stay engine-free. (GameOverBanner is rendered by LanScreen
+      over the board, not here.)
+      composes ChessSquare + DrawBubbles (draw 🤝/⚔️ overlay);
+      drives useMultiplayerBoard.
+    end note
+    rectangle "DrawBubbles" as DrawBubbles
+    note bottom of DrawBubbles
+      Draw-status overlay on the board grid: reads roomStore.draw
+      and floats a ChatBubble beside each king — 🤝 on the offerer
+      (tap = same action as the Draw button), ⚔️ on the refuser.
+      Cell % from the king square + activePlayerColor orientation;
+      presence/exit via usePresence.
+    end note
+    rectangle "TailscaleChecklist" as TailscaleChecklist
+    note bottom of TailscaleChecklist
+      LAN lobby onboarding gate (3-step Collapsible):
+      verify tailnet → install help → room setup.
+      Backed by services/platform + services/tailscale.
+      See multiplayer.puml.
+    end note
+    rectangle "GameOverBanner" as GameOverBanner
+    note bottom of GameOverBanner
+      Shared end-of-game banner over the board (Modal,
+      board-absolute, non-dismissible). Caller passes the
+      headline, optional detail, and action buttons.
+      Used by ChessBoard (Coach) and LanScreen (LAN).
+    end note
+    rectangle "CoachPanel" as CoachPanel
+    note right of CoachPanel
+      parses SAN notation · interactive spans
+      hover/click → board arrow highlight
+      "Why?" button if hoverBlunder=true
+    end note
+    rectangle "Sidebar" as Sidebar
+    note right of Sidebar
+      hint · resign · new game · flip board
+      (gated by capabilities flags)
+    end note
+    rectangle "MobileDrawer" as MobileDrawer
+    note right of MobileDrawer
+      mobile hamburger (fixed top-left) → Modal with the FULL
+      desktop-Sidebar option set: history nav, hint, resign,
+      new game, flip, credits, SettingsPanel + route shortcuts
+      (Coach/Analysis/Review). Quick actions live in MobileSidebar.
+    end note
+    rectangle "MobileSidebar" as MobileSidebar
+    note right of MobileSidebar
+      mobile-only horizontal control bar above the board, shared by
+      every board screen. Compound: <Main> (centred per-screen slot)
+      + up to 4 <Item> quick actions; CSS (nth-of-type, no JS) stacks
+      the single-button items on the LEFT of centre and drops any 5th.
+      The nav <Item> (double-wide history arrows) owns the RIGHT alone —
+      balancing the left buttons so <Main> stays truly centred, whatever
+      is gated out. Centre is per-screen: CoachAvatar (Coach), EngineDepth
+      (Analysis/Review), ConnIndicator (LAN). No settings/credits/routes.
+      timeline prop (replay/travel): the bar collapses (board rises),
+      <Main> + non-nav items hide, and the lone nav <Item nav> floats
+      fixed to the top-right corner (mirrors the top-left hamburger).
+    end note
+    rectangle "BoardControls" as BoardControls
+    note right of BoardControls
+      the MobileSidebar quick actions for the engine-backed boards
+      (Coach/Analysis/Review): hint · nav · flip · new game,
+      capability-gated. Renders bare MobileSidebar.Items. Passes
+      timeline=inTimelineMode() and FLIP-animates the nav <Item>
+      between its in-bar dock and the top-right corner.
+    end note
+    rectangle "MoveList" as MoveList
+    note right of MoveList
+      2-column layout · CP delta · annotation badges
+      best | blunder | inaccuracy | hint | forced
+      ROWS_PER_PAGE=8 · swipe on mobile
+    end note
+    rectangle "Controls"       as Controls
+    rectangle "NewGamePanel"   as NewGamePanel
+    rectangle "Settings"       as Settings
+    rectangle "PlayerNameField" as PlayerNameField
+    note right of PlayerNameField
+      player display-name input + 🎲 re-roll
+      (unique-names-generator → "Sneaky Otter").
+      Bound to settingsStore.playerName; shared by
+      MenuScreen · NewGamePanel · SettingsPanel.
+    end note
+    rectangle "LoadingOverlay" as LoadingOverlay
+    note right of LoadingOverlay
+      full-screen loading splash — reads coachStore
+      (progress) + composes CoachAvatar (atom).
+    end note
+  }
+
+  ' Atoms = single responsibility wired to state (store/hook/effect), minimal JSX.
+  package "Atoms  [components/atoms/]" {
+    rectangle "ChessSquare"     as ChessSquare
+    rectangle "ChessBoardArrow" as ChessBoardArrow
+    rectangle "CapturedPieces"  as CapturedPieces
+    rectangle "SelectCard"      as SelectCard
+    note right of SelectCard
+      Bordered selectable card (LAN lobby): White/Black
+      seats + the guest's Play/Spectate choice. With onClick
+      the whole card is a button; otherwise it hosts its own
+      Take/Swap buttons. `selected` highlights the border.
+    end note
+    rectangle "CoachAvatar"     as CoachAvatar
+    note right of CoachAvatar
+      animated SVG cat · reads coachEmotion()
+      `sleeping` prop forces the loading pose
+    end note
+    rectangle "TurnLabel"       as TurnLabel
+    rectangle "Clock"           as Clock
+    note right of Clock
+      one player's chess clock (LAN). Reads roomStore.clocks +
+      timeControl; ticks the side-to-move down locally between
+      host updates. Renders nothing in an untimed room.
+    end note
+    rectangle "EngineDepth"     as EngineDepth
+    note right of EngineDepth
+      MobileSidebar centre for Analysis/Review: a circle showing the
+      live Stockfish search depth (evalStore.baseEvalDepth) behind the
+      green best-move + blue advice arrows, with a green→blue ring.
+    end note
+    rectangle "GameHistoryList" as GameHistoryList
+    rectangle "Credits"         as Credits
+    rectangle "DebugControls"   as DebugControls
+    rectangle "FenLoader"       as FenLoader
+    rectangle "ResignConfirm"   as ResignConfirm
+    rectangle "Modal"           as Modal
+    note right of Modal
+      reusable dialog — owns a focus-trap createEffect,
+      so it lives in atoms/ (not a pure primitive).
+    end note
+    rectangle "MatrixOverlay"     as MatrixOverlay
+    rectangle "LightSpeedOverlay" as LightSpeedOverlay
+  }
+
+  ' Primitives = presentational, props-driven shared kit (was components/common/).
+  package "Primitives  [components/primitives/]" {
+    rectangle "Button / IconButton / MenuButton" as Buttons
+    rectangle "Select / Toggle / Label / Input"  as Inputs
+    rectangle "Divider / ProgressBar"            as Utility
+    rectangle "Collapsible (accordion step)"     as Collapsible
+    rectangle "QrCode (qrcode → data URL)"       as QrCode
+    rectangle "icons.tsx (40+ SVG icons)"        as Icons
+    rectangle "ColorSelector"      as ColorSelector
+    rectangle "EvalBar"            as EvalBar
+    rectangle "CoachEmotionIcon"   as CoachEmotionIcon
+    rectangle "PromotionModal"     as PromotionModal
+    rectangle "GameHistoryFilters" as GameHistoryFilters
+    rectangle "DualNavButton"      as DualNavButton
+    rectangle "SplashScreen"       as SplashScreen
+    note right of SplashScreen
+      shared splash shell: centered content + avatar
+      slot + title (optional `wide` column). Composed by
+      MenuScreen, LanScreen lobby and LoadingOverlay.
+    end note
+    rectangle "Screen"             as Screen
+    note right of Screen
+      gameplay layout shell — owns the app-container
+      grid + compound regions (Header · SidebarInset ·
+      BoardArea · BoardColumn · Footer). Composed by
+      CoachScreen · AnalysisScreen · ReviewScreen
+      (replaced the shared App.module.css).
+    end note
+    rectangle "HistoryOverlay (presentational overlay)" as Overlays
+    rectangle "ChatBubble" as ChatBubble
+    note right of ChatBubble
+      presentational floating speech bubble (pops in; animates
+      out when `exiting`). Position/size from the caller, mount/
+      exit timing from usePresence — so it stays a pure primitive.
+      Used by DrawBubbles (🤝/⚔️).
+    end note
+  }
+}
+
+' ══════════════════════════════════════════════════════════════
+' SERVICES
+' ══════════════════════════════════════════════════════════════
+
+package "Services  [src/services/]" {
+  [CoachService] as CoachServiceIF
+  note right of CoachServiceIF
+    interface: postNewGame · fetchHello
+    postMove · postAdviceStream · postExplainStream
+    --
+    api.ts facade: postAdviceStream and
+    postExplainStream short-circuit to a
+    resolved Promise in web-no-llm — call
+    sites stay uniform across modes.
+  end note
+  [HttpCoachService]      as HttpCoachService
+  [WebWorkerCoachService] as WebWorkerCoachService
+  [runtimeMode]           as RuntimeMode
+  note right of RuntimeMode
+    desktop → HttpCoachService
+    web-full | web-no-llm → WebWorkerCoachService
+  end note
+  [gameShare] as GameShare
+  note right of GameShare
+    encode/decode a GameRecord ↔ URL-hash
+    payload (lz-string), for "share a game by
+    link". decode is hostile-input-hardened
+    (size caps, field validation, id re-derive).
+    Analysis cache is NOT shared (recomputed).
+  end note
+
+  [PeerTransport] as PeerTransportIF
+  note right of PeerTransportIF
+    interface: createOffer · acceptOffer→answer ·
+    acceptAnswer · send · broadcast · onMessage ·
+    onStateChange · close
+    --
+    Vendor-agnostic transport seam (mirrors CoachService).
+    WebRTC RTCDataChannel · iceServers:[] · non-trickle ICE.
+    No backend — Tailscale supplies the 100.x network path.
+  end note
+  [HostHubTransport]   as HostHubTransport
+  [GuestLinkTransport] as GuestLinkTransport
+  [platform]           as Platform
+  [tailscale]          as Tailscale
+  note right of Tailscale
+    LAN onboarding backing services (TailscaleChecklist):
+    platform.detectPlatform() — UA → OS + install/download
+    links · tailscale.probeTailnet() — 100.64/10 host ICE
+    candidate, best-effort.
+  end note
+  [signaling]          as Signaling
+  note right of Signaling
+    SDP ⇄ base64url codec · #o= / #a= deep links ·
+    QR encode/scan. Manual, out-of-band signaling —
+    one offer/answer exchange per joiner, no server.
+    The offer payload also carries `tc` (time control sec)
+    so a joiner sees the clock before connecting.
+  end note
+}
+
+HttpCoachService      ..|> CoachServiceIF
+WebWorkerCoachService ..|> CoachServiceIF
+HostHubTransport      ..|> PeerTransportIF
+GuestLinkTransport    ..|> PeerTransportIF
+
+UseSharedGameImport --> GameShare    : decodeGame
+UseSharedGameImport --> HistoryStore : importGameRecord
+UseShareGame        --> GameShare    : buildShareUrl
+
+' ══════════════════════════════════════════════════════════════
+' WEB ENGINE
+' ══════════════════════════════════════════════════════════════
+
+package "WebEngine  [src/engine/]" {
+  [EnginePool] as EnginePool
+  note right of EnginePool
+    Main-thread Stockfish SCHEDULER (singleton).
+    Bounded warm worker pool + priority queue
+    (interactive > normal > background) with
+    preemption and per-task identity. All main-
+    thread SF consumers route through it: hint,
+    hover eval, best-move-arrow base analysis,
+    batch review, live pre-analysis. Replaced the
+    old stockfishService + ad-hoc per-hook workers.
+  end note
+  [orchestrator.worker.ts] as OrchestratorWorker
+  note right of OrchestratorWorker
+    Picks LlmClient at module init via the
+    `__HAS_LLM__` Vite define:
+      true  → await import("./WebLlmClient")
+      false → NoopLlmClient (sync)
+    web-no-llm/desktop builds dead-eliminate
+    the dynamic import — @mlc-ai/web-llm
+    never enters the bundle.
+  end note
+  [Orchestrator]           as Orchestrator
+  [EngineBridge]           as EngBridge
+  note right of EngBridge
+    StockfishEngine (analysis) · MaiaEngine
+      (AI moves) — both lazy-spawned on
+      first use to avoid eagerly competing
+      with main-thread engines for the
+      per-origin SharedArrayBuffer budget.
+    StockfishEngine picks the worker file
+      at build time (`__STOCKFISH_VARIANT__`):
+      web → single-threaded, desktop →
+      threaded. See entities.puml.
+  end note
+  [UciDriver] as UciDriver
+  note right of UciDriver
+    UCI transport over a Worker
+    (send · readLine w/ timeout).
+    Shared by StockfishEngine
+    and MaiaEngine.
+  end note
+  [maia.worker.ts] as MaiaWorker
+  note right of MaiaWorker
+    hosts the lc0 WASM engine (Maia
+    weights); spawned by MaiaEngine,
+    driven over UCI via UciDriver.
+  end note
+  [LlmClient + NoopLlmClient] as LlmClientIF
+  note right of LlmClientIF
+    Interface + Noop in LlmClient.ts.
+    Always present in the worker bundle.
+  end note
+  [WebLlmClient]    as WebLlmClient
+  note right of WebLlmClient
+    Separate module — lazy chunk loaded
+    only when __HAS_LLM__ is true
+    (web-full builds).
+  end note
+  [llm.worker.ts] as LlmWorker
+  note right of LlmWorker
+    hosts WebWorkerMLCEngineHandler
+    (@mlc-ai/web-llm) — WebGPU
+    inference off the orchestrator
+    worker's thread.
+  end note
+  [polyglotZobrist] as PolyglotZobrist
+  note right of PolyglotZobrist
+    Polyglot Zobrist game hash →
+    GameRecord ids (gameHistoryStore ·
+    gameShare · /review/:id route param).
+  end note
+  [moveAnnotations] as MoveAnnot
+  note right of MoveAnnot
+    AnnotationTag: best | blunder |
+    inaccuracy | hint | forced
+  end note
+}
+
+' ══════════════════════════════════════════════════════════════
+' RELATIONSHIPS
+' ══════════════════════════════════════════════════════════════
+
+' ── Board hook wiring ──
+UseChessBoard --> UseMoveExecutor   : uses
+UseChessBoard --> UseCoachBehavior  : uses
+UseChessBoard --> UseHoverEvaluator : uses
+UseChessBoard --> EnginePool        : base (normal) + hover (interactive) eval
+
+' ── Engine pool consumers ──
+UseHint            --> EnginePool : evaluate (interactive)
+UseGameAnalysis    --> EnginePool : evaluate (background)
+UseLivePreAnalysis ..> UseGameAnalysis : analyzeGameToCache
+UseLivePreAnalysis --> EnginePool : evaluate (background)
+
+' ── Signal flow (module-level reactive) ──
+UseMoveExecutor ..> UseCoachBehavior : lastHumanMoveInfo\nlastAIMoveInfo · lastAIError
+
+' ── Store writes ──
+UseCoachBehavior  --> CoachStore   : setAdvice · dispatchCoachEvent
+UseHoverEvaluator --> CoachStore   : setHoverBlunder · setPendingTravel
+UseGameRecorder   --> HistoryStore : pushMove · finalizeGame
+UseMoveExecutor   --> GameStore    : addMove · addMoveSan
+UseChessBoard     --> EvalStore    : setBaseEvalScore · setBaseEvalDepth
+EngineDepth       ..> EvalStore    : baseEvalDepth
+ResignConfirm     ..> EvalStore    : baseEvalScore
+
+' ── Review history filters ──
+ReviewScreen          ..> UseGameHistoryFilters : calls
+UseGameHistoryFilters ..> HistoryStore          : gameHistory (color · first-move · page filters)
+
+' ── Controls ──
+UseGameControls --> UseHint : uses
+UseGameControls --> TravelStore : navigation
+
+' ── Coach panel ──
+UseGlobalShortcuts --> UseTravelMode : Space key
+UseTravelMode --> TravelStore : startTravel()
+
+' ── API routing ──
+UseMoveExecutor  --> CoachServiceIF : postMove()
+UseCoachBehavior --> CoachServiceIF : postAdviceStream()
+UseGameControls  --> CoachServiceIF : postExplainStream()
+UseTravelMode    --> CoachServiceIF : postExplainStream()
+
+RuntimeMode --> HttpCoachService      : desktop
+RuntimeMode --> WebWorkerCoachService : web-full | web-no-llm
+
+' ── Multiplayer wiring (LanScreen, serverless P2P — engine only for review) ──
+LanScreen           ..> UseMultiplayerGame  : calls
+LanScreen           ..> UseLanGameRecorder  : calls
+LanScreen           ..> UseLivePreAnalysis  : calls (warms review cache)
+LanScreen           --> MultiplayerBoard    : renders (started)
+LanScreen           --> GameOverBanner      : renders (gameOver && !replaying)
+LanScreen           --> DualNavButton       : history nav → gameStore goBack/goForward/setViewIndex
+MultiplayerBoard    ..> UseMultiplayerBoard : uses
+LanScreen           --> Clock               : renders (matchup header, per side)
+CoachScreen         --> MobileSidebar        : bar above board (centre = CoachAvatar)
+AnalysisScreen      --> MobileSidebar        : bar above board (centre = EngineDepth)
+ReviewScreen        --> MobileSidebar        : bar above board (centre = EngineDepth)
+LanScreen           --> MobileSidebar        : bar above board (centre blank)
+MobileSidebar       --> BoardControls        : quick-action Items (coach screens)
+CoachScreen         --> MobileDrawer         : hamburger (full menu)
+Clock               ..> RoomStore           : clocks · timeControl
+LanScreen           ..> SettingsStore        : difficulty → default time control
+MultiplayerBoard    --> DrawBubbles         : renders (draw overlay)
+DrawBubbles         --> ChatBubble          : floats 🤝/⚔️ beside kings
+DrawBubbles         ..> UsePresence         : enter/exit animation
+DrawBubbles         ..> RoomStore           : draw (offerer/refuser color)
+DrawBubbles         ..> GameStore           : game (king squares)
+UseMultiplayerBoard --> GameStore           : addMove (local move) · currentFen (replay)
+UseMultiplayerBoard ..> RoomStore           : setLastLocalMove
+UseMultiplayerBoard ..> UseMultiplayerGame  : roomStore.lastLocalMove → relay
+UseMultiplayerGame  --> GameStore           : addMoveSan · loadFen · setViewIndex (snap-to-live)
+UseMultiplayerGame  --> RoomStore           : seats · colors · started · connectionStatus · gameOver · draw
+UseMultiplayerGame  --> SettingsStore       : setActivePlayerColor(myColor)
+UseMultiplayerGame  --> PeerTransportIF     : send · broadcast · onMessage
+UseLanGameRecorder  --> HistoryStore        : startNewRecord · pushMove · finalizeGame
+UseLanGameRecorder  ..> RoomStore           : started · gameOver · myColor (record trigger)
+LanScreen           --> TailscaleChecklist  : renders (lobby onboarding gate)
+TailscaleChecklist  ..> Platform            : detectPlatform()
+TailscaleChecklist  ..> Tailscale           : probeTailnet()
+Signaling          ..> PeerTransportIF    : encodes offer/answer (QR/link)
+HostHubTransport   <..> GuestLinkTransport : RTCDataChannel\n(direct over Tailscale 100.x)
+
+WebWorkerCoachService --> OrchestratorWorker : postMessage
+OrchestratorWorker    --> Orchestrator       : hosts
+OrchestratorWorker    ..> WebLlmClient       : dynamic import\n(when __HAS_LLM__)
+Orchestrator --> EngBridge   : getEvaluation · getAiMove
+Orchestrator --> LlmClientIF : prompt / promptStream
+WebLlmClient ..|> LlmClientIF
+EngBridge    --> UciDriver  : StockfishEngine · MaiaEngine\n(UCI over Worker)
+UciDriver    --> MaiaWorker : postMessage (UCI lines)
+WebLlmClient --> LlmWorker  : CreateWebWorkerMLCEngine
+
+UseGameAnalysis ..> MoveAnnot : resolveAnnotations
+HistoryStore ..> PolyglotZobrist : polyglotHashFromPgn → GameRecord id
+GameShare    ..> PolyglotZobrist : id re-derive on decode
+
+' ══════════════════════════════════════════════════════════════
+' LAYOUT
+' ══════════════════════════════════════════════════════════════
+"Features  [components/features/]" -[hidden]down- "Atoms  [components/atoms/]"
+"Atoms  [components/atoms/]" -[hidden]down- "Primitives  [components/primitives/]"
+
+"Screens  [src/screens/]" -[hidden] "Capabilities  [capabilitiesStore.ts]"
+"Capabilities  [capabilitiesStore.ts]" -[hidden]down-- "Components  [src/components/]"
+"Components  [src/components/]" -[hidden]down-------- "Hooks  [src/hooks/]"
+"Hooks  [src/hooks/]" -[hidden]down--- "Stores  [src/store/]"
+"Stores  [src/store/]" -[hidden]down-- "Services  [src/services/]"
+"Services  [src/services/]" -[hidden]down--- "WebEngine  [src/engine/]"
+
+@enduml

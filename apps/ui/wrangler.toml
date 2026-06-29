@@ -1,0 +1,16 @@
+name = "chess"
+compatibility_date = "2026-03-13"
+main = "worker.js"
+
+[assets]
+directory = "dist"
+binding = "ASSETS"
+run_worker_first = true
+
+[[routes]]
+pattern = "proveo.ca/chess"
+zone_name = "proveo.ca"
+
+[[routes]]
+pattern = "proveo.ca/chess/*"
+zone_name = "proveo.ca"

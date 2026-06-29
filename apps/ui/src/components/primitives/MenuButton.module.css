@@ -1,0 +1,11 @@
+.menu-btn {
+  height: auto;
+  padding: 0.7em 1.2em;
+  font-size: 0.95rem;
+  text-align: left;
+  border-color: var(--border-color);
+}
+
+.menu-btn:disabled {
+  opacity: 0.4;
+}

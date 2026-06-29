@@ -1,0 +1,80 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/proveo-ca/identity/refs/heads/main/proveo.iuml
+skinparam componentStyle rectangle
+
+actor User
+actor "Player B / Observers" as MpUser2
+
+package "Distribution 1: Cloudflare (Web Mode)" {
+    package "Browser Environment" {
+        [SolidJS UI] as WebUI
+        
+        package "Web Workers" {
+            [Stockfish Worker\n(Hints & Hover)] as WebSFHint
+            [Orchestrator Worker\n(Game Loop)] as WebOrch
+            [Stockfish Worker\n(AI Moves & Eval)] as WebSFAi
+            [WebLLM Worker\n(WebGPU Inference)] as WebLLM
+        }
+    }
+}
+
+package "Distribution 2: Docker / Native (Server Mode)" {
+    package "Browser Environment " {
+        [SolidJS UI] as DockerUI
+        [Stockfish Worker\n(Hints & Hover)] as DockerSFHint
+    }
+
+    package "Docker Container" {
+        [Bun Server\n(apps/server: API + in-process orchestrator)] as Bun
+
+        package "Native Binaries" {
+            [Stockfish] as NativeSF
+            [Maia / lc0] as NativeMaia
+        }
+    }
+
+    [Ollama Server] as Ollama
+}
+
+package "Distribution 3: Serverless P2P Multiplayer (Tailscale + WebRTC)" {
+    package "Host Browser (room authority)" {
+        [SolidJS UI\n(LanScreen)] as MpHostUI
+        [HostHubTransport] as MpHostHub
+    }
+
+    package "Guest Browser (player / observer)" {
+        [SolidJS UI\n(LanScreen) ] as MpGuestUI
+        [GuestLinkTransport] as MpGuestLink
+    }
+}
+
+' Web Mode Connections
+User --> WebUI
+WebUI <-> WebSFHint : Local UCI
+WebUI <-> WebOrch : postMessage (Move/Advice)
+WebOrch <-> WebSFAi : UCI
+WebOrch <-> WebLLM : Prompt/Stream
+
+' Docker Mode Connections
+User --> DockerUI
+DockerUI <-> DockerSFHint : Local UCI
+DockerUI <-> Bun : HTTP REST
+Bun <-> NativeSF : UCI (Bun.spawn)
+Bun <-> NativeMaia : UCI (Bun.spawn)
+Bun <-> Ollama : HTTP POST
+
+' Serverless Multiplayer Connections (no server)
+User --> MpHostUI : Create room (host)
+MpUser2 --> MpGuestUI : Join (player / spectate)
+MpHostUI <-> MpHostHub
+MpGuestUI <-> MpGuestLink
+MpGuestLink <-> MpHostHub : WebRTC DataChannel\n(direct over Tailscale 100.x,\nno STUN / TURN / relay)
+
+note bottom of MpHostHub
+  No backend. Signaling is manual (QR/link) per joiner.
+  Host = room authority; relays moves to the other player
+  + ≤4 optional observers. Colors are picked/swapped in the
+  lobby. Pure human-vs-human (no AI/LLM).
+end note
+
+@enduml
