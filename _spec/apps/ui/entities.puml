@@ -188,7 +188,6 @@ package "Stores  [src/store/]" {
     startNewRecord(id, fen, color, diff,
       playerRace?, opponentRace?, playerName?)
     pushMove(moveRecord)
-    patchMoveAt(index, patch)
     finalizeGame(result, pgn)
     importGameRecord(record): string  (from share link; re-derives id, dedupes)
     discardInProgress()
@@ -252,8 +251,8 @@ package "Stores  [src/store/]" {
     setStarted(v) / setGameOver(info)
     reset()
     .. Types ..
-    ConnStatus: idle | offering | awaitingAnswer |
-      connecting | connected | disconnected
+    ConnStatus: idle | offering | connecting |
+      connected | disconnected | full
     PlayerInfo: {peerId, identity:{name,pieceSet?},
       color: "w"|"b"|null, ready: boolean}
     MemberInfo: {peerId, identity}
@@ -383,7 +382,7 @@ package "Hooks  [src/hooks/]" {
       .. Input ..
       transport: PeerTransport
       .. Reactive subscriptions (createEffect) ..
-      on lastHumanMoveInfo (own move):
+      on lastLocalMove (own move):
         host  → addMoveSan locally + broadcast(MoveApplied)
         guest → transport.send(Move{san})
       .. Inbound message handlers ..
@@ -777,8 +776,7 @@ package "Services  [src/services/]" {
     Resign:       {}    // host derives color from peerId
     DrawOffer / DrawAccept /
       DrawDecline / DrawCancel: {}
-    RoomFull:     {}
-    Bye:          {peerId}    // declared, unused
+    RoomFull:     {}   // 7th joiner → conn status "full" ("Room full")
     .. Types ..
     RoomSnapshot: {players[], observers[], started,
       gameOver, fen, draw, timeControl, clocks}

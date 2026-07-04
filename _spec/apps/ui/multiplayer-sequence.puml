@@ -12,7 +12,7 @@ participant "Observer browser\n(×0–4, optional)" as Obs
 W -> Host: Create room + identity
 Host -> Host: new RTCPeerConnection · createOffer\ngather ICE (non-trickle, iceServers:[])
 Host -> W: render QR + link  (…/chess/lan#o=<sdp>)
-note over Host: connection: Offering (stays until the answer connects;\nawaitingAnswer is declared but never set)\nroom: Lobby (host seated, no color yet)
+note over Host: connection: Offering (stays until the answer connects)\nroom: Lobby (host seated, no color yet)
 
 == Join (manual, out-of-band signaling) ==
 note over W, B: share the offer QR/link out-of-band (show screen / message)

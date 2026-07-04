@@ -368,7 +368,9 @@ export function useMultiplayerGame(
         break;
       }
       case "roomFull":
-        setConnectionStatus("disconnected");
+        // Seats (2) + observer slots (4) all taken: surface a clear error to
+        // the 7th joiner instead of a generic "Disconnected".
+        setConnectionStatus("full");
         break;
     }
   }

@@ -14,10 +14,10 @@ export type Role = "host" | "guest";
 export type ConnStatus =
   | "idle"
   | "offering"
-  | "awaitingAnswer"
   | "connecting"
   | "connected"
-  | "disconnected";
+  | "disconnected"
+  | "full";
 
 export type Identity = { name: string; pieceSet?: PieceSet };
 
@@ -77,8 +77,7 @@ export type PeerMessage =
   | { t: "drawAccept" }
   | { t: "drawDecline" }
   | { t: "drawCancel" }
-  | { t: "roomFull" }
-  | { t: "bye"; peerId: string };
+  | { t: "roomFull" };
 
 // ── Transport (implemented in services/peer.ts) ──────────────────────────
 

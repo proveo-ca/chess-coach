@@ -70,11 +70,6 @@ export const pushMove = (move: MoveRecord) => {
   setState("inProgress", "moves", (prev) => [...prev, move]);
 };
 
-export const patchMoveAt = (index: number, patch: Partial<MoveRecord>) => {
-  if (!state.inProgress) return;
-  if (index < 0 || index >= state.inProgress.moves.length) return;
-  setState("inProgress", "moves", index, (prev) => ({ ...prev, ...patch }));
-};
 
 function annotatePgn(pgn: string, moves: MoveRecord[]): string {
   // Preserve PGN headers before the first blank line; only annotate the move body.

@@ -4,13 +4,19 @@ import type { Component } from "solid-js";
 import styles from "~/components/atoms/EngineDepth.module.css";
 import { baseEvalDepth } from "~/store/evalStore";
 
+const THREADING = __STOCKFISH_VARIANT__.endsWith("-single") ? "single-thread" : "multi-thread";
+
 /**
- * Centre slot for the Analysis / Review mobile sidebar: a circle showing the
- * live Stockfish search depth behind the on-board best-move (green) and advice
- * (blue) arrows. The ring is split green→blue to tie it to those arrows.
+ * Live Stockfish search depth behind the on-board best-move (green) and advice
+ * (blue) arrows: the centre slot of the Analysis / Review mobile sidebar, and
+ * the same slot in the desktop Sidebar. The ring is split green→blue to tie it
+ * to those arrows.
  */
 export const EngineDepth: Component = () => (
-  <span class={styles.depth} title="Stockfish search depth (analysis arrows)">
+  <span
+    class={styles.depth}
+    title={`Stockfish (WASM, ${THREADING}) analysis depth: ${baseEvalDepth() || "–"}`}
+  >
     <span class={styles.num}>{baseEvalDepth() || "–"}</span>
     <span class={styles.label}>depth</span>
   </span>

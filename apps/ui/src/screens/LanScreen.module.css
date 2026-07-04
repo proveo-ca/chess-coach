@@ -38,12 +38,12 @@
 }
 
 .conn[data-status="connecting"],
-.conn[data-status="offering"],
-.conn[data-status="awaitingAnswer"] {
+.conn[data-status="offering"] {
   color: var(--result-draw);
 }
 
-.conn[data-status="disconnected"] {
+.conn[data-status="disconnected"],
+.conn[data-status="full"] {
   color: var(--result-loss);
 }
 

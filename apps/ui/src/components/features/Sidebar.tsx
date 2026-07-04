@@ -3,7 +3,7 @@ import { useLocation } from "@solidjs/router";
 import { Show, createSignal } from "solid-js";
 import type { Component } from "solid-js";
 
-import { Credits } from "~/components/atoms/Credits";
+import { EngineDepth } from "~/components/atoms/EngineDepth";
 import { Modal } from "~/components/atoms/Modal";
 import { ResignConfirm } from "~/components/atoms/ResignConfirm";
 import { NewGamePanel } from "~/components/features/NewGamePanel";
@@ -21,19 +21,11 @@ import {
   HintIcon,
   PlusCircleIcon,
   SearchIcon,
-  StarIcon,
 } from "~/components/primitives/icons";
 import { useGameControls } from "~/hooks/useGameControls";
 import { useHintSparkle } from "~/hooks/useHintSparkle";
 import { capabilities } from "~/store/capabilitiesStore";
-import {
-  setShowCredits,
-  setShowNewGame,
-  setShowSettings,
-  showCredits,
-  showNewGame,
-  showSettings,
-} from "~/store/coachStore";
+import { setShowNewGame, setShowSettings, showNewGame, showSettings } from "~/store/coachStore";
 import { resetGame, reviewAnalysisMode } from "~/store/gameStore";
 import { activePlayerColor, setActivePlayerColor } from "~/store/settingsStore";
 import { isTravelling, travelFenHistory, travelIndex } from "~/store/travelStore.ts";
@@ -118,6 +110,10 @@ export const Sidebar: Component = () => {
         </IconButton>
       </Show>
 
+      <Show when={capabilities().continuousAnalysis}>
+        <EngineDepth />
+      </Show>
+
       <Show when={!capabilities().aiOpponent && !capabilities().readOnly}>
         <IconButton label="New Game" onClick={() => resetGame()} aria-label="New game">
           <PlusCircleIcon />
@@ -133,15 +129,6 @@ export const Sidebar: Component = () => {
           <FlipBoardIcon />
         </IconButton>
       </Show>
-
-      <IconButton
-        label="Credits"
-        onClick={() => setShowCredits(true)}
-        disabled={isReplaying() || isTravelling()}
-        aria-label="Credits"
-      >
-        <StarIcon />
-      </IconButton>
 
       <IconButton
         label="Settings"
@@ -199,7 +186,6 @@ export const Sidebar: Component = () => {
         onConfirm={confirmResign}
       />
 
-      <Credits open={showCredits()} onClose={() => setShowCredits(false)} />
       <Settings open={showSettings()} onClose={() => setShowSettings(false)} />
     </div>
   );

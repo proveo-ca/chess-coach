@@ -56,6 +56,19 @@ ollama pull hf.co/NAKSTStudio/chess-gemma-commentary:Q8_0 # the default model (~
   `gemma4:latest`), `LLM_API_KEY`. Works with any OpenAI-compatible host (llama.cpp
   `--api`, LM Studio).
 
+### 4. Local network path (LAN multiplayer specs)
+
+`lan-multiplayer.spec.ts` opens a loopback WebRTC DataChannel between two browser
+contexts with host ICE candidates only. Chromium publishes those as mDNS `.local`
+names, which only resolve while the machine has an **active multicast-capable
+network path** — in practice: Tailscale up, or Wi-Fi/Ethernet connected. If the
+Tailscale service is stopped and there's no other path, every LAN spec would time
+out at the first handshake gate.
+
+- `global-setup.ts` preflights this (a minimal host↔guest DataChannel probe) and
+  **skips the LAN spec with guidance** when loopback WebRTC is unavailable, so the
+  rest of the suite still runs.
+
 ## Run
 
 ```sh

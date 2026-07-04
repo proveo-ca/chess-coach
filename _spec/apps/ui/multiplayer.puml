@@ -89,7 +89,8 @@ note bottom of HostRoom
   **Colors are NOT assigned by default** — each player picks White
   or Black in the lobby and may select the opposite seat to swap.
   Any color change resets both ready votes. Both players must agree
-  on colors and press **Start Game**. Overflow joiners get ROOM_FULL.
+  on colors and press **Start Game**. Overflow joiners get ROOM_FULL
+  (their connection indicator shows "Room full").
   **Recoverable drop:** RTC "disconnected"/"failed" is held (seat kept,
   status = reconnecting) for a 15s grace window — ICE may re-validate
   the path on its own (restartIce() nudged on foreground) — before the

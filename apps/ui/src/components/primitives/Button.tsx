@@ -41,7 +41,3 @@ export function Button(props: ButtonProps) {
   );
 }
 
-/**
- * @deprecated Use `<Button href="...">` instead.
- */
-export const ButtonLink = Button;

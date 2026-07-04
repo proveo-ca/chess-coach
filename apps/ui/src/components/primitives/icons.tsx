@@ -265,26 +265,6 @@ export const FlipBoardIcon: Component<IconProps> = (props) => {
   );
 };
 
-export const ArrowRightIcon: Component<IconProps> = (props) => {
-  const s = () => props.size ?? 20;
-  return (
-    <svg
-      width={s()}
-      height={s()}
-      viewBox="0 0 20 20"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    >
-      <line x1="4" y1="10" x2="16" y2="10" />
-      <polyline points="11,5 16,10 11,15" />
-    </svg>
-  );
-};
-
-/** Wi-Fi / signal arcs — used for the LAN peer connectivity indicator. */
 export const SignalIcon: Component<IconProps> = (props) => {
   const s = () => props.size ?? 20;
   return (

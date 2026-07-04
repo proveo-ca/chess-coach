@@ -15,7 +15,7 @@
     "preview:vite": "VITE_TARGET=web-no-llm vite build && vite preview",
     "typecheck": "tsgo -b",
     "deploy": "npm run build:web-no-llm && wrangler deploy",
-    "test:int": "vitest tests/",
+    "test:int": "vitest run",
     "lint": "oxlint -c oxlint.config.ts",
     "lint:fix": "oxlint -c oxlint.config.ts --fix --fix-suggestions --fix-dangerously",
     "format": "oxfmt"

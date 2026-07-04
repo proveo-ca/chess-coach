@@ -18,6 +18,15 @@ const FIREFOX_LOOPBACK_SKIP =
   "play uses routable Tailscale 100.x candidates (see public/lan-spike.html).";
 
 test.describe("LAN multiplayer (serverless WebRTC)", () => {
+  // Set by the global-setup WebRTC loopback preflight: when the machine has no
+  // active local network path (e.g. Tailscale service stopped), Chromium's mDNS
+  // .local candidates can't resolve and every handshake below would time out.
+  test.skip(
+    process.env.E2E_RTC_LOOPBACK === "broken",
+    "Loopback WebRTC unavailable: mDNS .local candidates don't resolve here. " +
+      "Start Tailscale (or connect Wi-Fi/Ethernet) and re-run — see global-setup.ts.",
+  );
+
   // The Tailscale checklist gates the room setup (step 3). Its in-browser probe
   // only auto-detects the tailnet when the OS actually has Tailscale up AND the
   // browser exposes the 100.x host candidate — Safari/Firefox hide host

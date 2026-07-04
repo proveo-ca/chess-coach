@@ -121,10 +121,10 @@ const formatTimeControl = (sec: number): string =>
 const CONN_LABEL: Record<ConnStatus, string> = {
   idle: "Offline",
   offering: "Waiting…",
-  awaitingAnswer: "Waiting…",
   connecting: "Connecting…",
   connected: "Connected",
   disconnected: "Disconnected",
+  full: "Room full",
 };
 
 /** Live WebRTC peer connectivity readout (icon + label, colored by state). */

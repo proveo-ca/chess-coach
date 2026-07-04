@@ -285,14 +285,16 @@ package "Components  [src/components/]" {
     end note
     rectangle "Sidebar" as Sidebar
     note right of Sidebar
-      hint · resign · new game · flip board
-      (gated by capabilities flags)
+      hint · resign · new game · flip board · settings
+      (gated by capabilities flags); shows EngineDepth on
+      continuousAnalysis screens (Analysis/Review). No credits
+      (mobile drawer / menu only).
     end note
     rectangle "MobileDrawer" as MobileDrawer
     note right of MobileDrawer
-      mobile hamburger (fixed top-left) → Modal with the FULL
-      desktop-Sidebar option set: history nav, hint, resign,
-      new game, flip, credits, SettingsPanel + route shortcuts
+      mobile hamburger (fixed top-left) → Modal with the
+      desktop-Sidebar option set plus credits: history nav, hint,
+      resign, new game, flip, credits, SettingsPanel + route shortcuts
       (Coach/Analysis/Review). Quick actions live in MobileSidebar.
     end note
     rectangle "MobileSidebar" as MobileSidebar
@@ -323,7 +325,6 @@ package "Components  [src/components/]" {
       best | blunder | inaccuracy | hint | forced
       ROWS_PER_PAGE=8 · swipe on mobile
     end note
-    rectangle "Controls"       as Controls
     rectangle "NewGamePanel"   as NewGamePanel
     rectangle "Settings"       as Settings
     rectangle "PlayerNameField" as PlayerNameField
@@ -366,9 +367,11 @@ package "Components  [src/components/]" {
     end note
     rectangle "EngineDepth"     as EngineDepth
     note right of EngineDepth
-      MobileSidebar centre for Analysis/Review: a circle showing the
-      live Stockfish search depth (evalStore.baseEvalDepth) behind the
-      green best-move + blue advice arrows, with a green→blue ring.
+      circle showing the live Stockfish search depth
+      (evalStore.baseEvalDepth) behind the green best-move + blue
+      advice arrows, with a green→blue ring. MobileSidebar centre for
+      Analysis/Review + same slot in the desktop Sidebar. Tooltip
+      names the WASM variant (single/multi-thread) + current depth.
     end note
     rectangle "GameHistoryList" as GameHistoryList
     rectangle "Credits"         as Credits
@@ -602,6 +605,7 @@ UseGameRecorder   --> HistoryStore : pushMove · finalizeGame
 UseMoveExecutor   --> GameStore    : addMove · addMoveSan
 UseChessBoard     --> EvalStore    : setBaseEvalScore · setBaseEvalDepth
 EngineDepth       ..> EvalStore    : baseEvalDepth
+Sidebar           --> EngineDepth  : slot (continuousAnalysis)
 ResignConfirm     ..> EvalStore    : baseEvalScore
 
 ' ── Review history filters ──

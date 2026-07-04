@@ -3,7 +3,6 @@ import { createPersistedStore } from "~/store/createPersistedStore";
 import type { Difficulty, PieceSet, PlayerColorPref, PlayerIdentity } from "~/types/settings";
 import { randomName } from "~/utils/randomName";
 
-export const DEFAULT_OPPONENT_PIECE_SET: PieceSet = "selena";
 
 /**
  * Centipawn loss at which a move counts as a blunder, per difficulty.
