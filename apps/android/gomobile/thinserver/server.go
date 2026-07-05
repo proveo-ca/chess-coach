@@ -62,8 +62,12 @@ func NewServer(stateDir string, ev Events) *Server {
 
 // Start brings up the loopback static server for the WebView. The tailnet is
 // started lazily (HostGame/JoinGame/LoginWithAuthKey) so the UI renders before auth.
-func (s *Server) Start() error {
-	ln, err := net.Listen("tcp", "127.0.0.1:0")
+func (s *Server) Start() error { return s.StartOn(0) }
+
+// StartOn is Start pinned to a loopback port (0 = ephemeral). Android uses
+// Start(); cmd/devserver and the e2e android target need a predictable URL.
+func (s *Server) StartOn(port int) error {
+	ln, err := net.Listen("tcp", fmt.Sprintf("127.0.0.1:%d", port))
 	if err != nil {
 		return err
 	}

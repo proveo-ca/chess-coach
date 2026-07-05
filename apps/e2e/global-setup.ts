@@ -1,6 +1,24 @@
+import { execFileSync } from "node:child_process";
+
 import { chromium } from "@playwright/test";
 
-import { IS_DESKTOP, LLM } from "./target";
+import { IS_ANDROID, IS_DESKTOP, LLM } from "./target";
+
+// Android target only: the web server is the Go thin-server (cmd/devserver),
+// compiled on the fly by `go run` — fail fast with guidance if Go is missing
+// (globalSetup runs before Playwright launches the webServer command).
+function preflightAndroid(): void {
+  try {
+    execFileSync("go", ["version"], { stdio: "pipe" });
+  } catch {
+    throw new Error(
+      "\n[e2e] E2E_TARGET=android serves the UI via the embedded Android Go server\n" +
+        "  (apps/android/gomobile/cmd/devserver), which needs the Go toolchain:\n" +
+        "      brew install go\n" +
+        "  No Android SDK/NDK/emulator is required for this target.\n",
+    );
+  }
+}
 
 // Both targets: the LAN multiplayer specs open a loopback WebRTC DataChannel
 // between two browser contexts using host ICE candidates only (iceServers: []).
@@ -75,6 +93,8 @@ async function probeRtcLoopback(): Promise<void> {
 // and the first real request doesn't pay the cold-load (which can exceed the
 // server's 60s request timeout). No-op for the web targets.
 export default async function globalSetup(): Promise<void> {
+  if (IS_ANDROID) preflightAndroid();
+
   await probeRtcLoopback();
 
   if (!IS_DESKTOP) return;

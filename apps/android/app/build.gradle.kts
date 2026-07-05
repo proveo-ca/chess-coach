@@ -37,20 +37,32 @@ dependencies {
 val uiDir = file("../../ui")
 val gomobileDir = file("../gomobile")
 
+// Which apps/ui build the APK embeds. Default web-no-llm: no WebLLM/WebGPU —
+// commentary degrades to fallbackCommentary.ts (Android WebView WebGPU is
+// version-gated anyway, and the model would bloat the APK). Opt back into the
+// full coach with: ./gradlew :app:assembleDebug -PwebTarget=web-full
+val webTarget = (project.findProperty("webTarget") as String?) ?: "web-no-llm"
+
 val buildWeb by tasks.registering(Exec::class) {
     workingDir = uiDir
-    commandLine("npm", "run", "build:web-full")
+    commandLine("npm", "run", "build:$webTarget")
 }
 
 val syncWeb by tasks.registering(Sync::class) {
     dependsOn(buildWeb)
     from(uiDir.resolve("dist/chess"))
     into(gomobileDir.resolve("thinserver/webroot"))
+    // public/models (WebLLM's MLC wasm runtime) is copied verbatim by vite into
+    // every dist; without WebLLM it's 6MB of dead weight in the //go:embed.
+    if (webTarget == "web-no-llm") exclude("models/**")
+    // Tracked files that keep webroot/ compiling & clean in git (see its .gitignore).
+    preserve { include(".gitignore", "placeholder.html") }
 }
 
 val gomobileBind by tasks.registering(Exec::class) {
     dependsOn(syncWeb)
     workingDir = gomobileDir
+    doFirst { gomobileDir.resolve("build").mkdirs() } // gomobile won't create -o's parent dir
     commandLine(
         "gomobile", "bind",
         "-target=android", "-androidapi", "26",

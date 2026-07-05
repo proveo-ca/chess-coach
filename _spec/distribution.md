@@ -80,7 +80,8 @@ Serving the WebView from an in-app `http://127.0.0.1:PORT` origin (rather than
 ### 3.2 What the embedded server is — and is NOT
 
 - **IS:** a thin Go server (`net/http` + `tsnet`) in a foreground service that
-  (a) serves the `web-full` static build over loopback with COOP/COEP, (b) holds
+  (a) serves the embedded UI static build (`web-no-llm` by default, see §3.5)
+  over loopback with COOP/COEP, (b) holds
   game/session state, (c) owns the tailnet WSS peer link (or, in Model A, the
   WebRTC signaling socket).
 - **IS NOT:** the desktop coach endpoints. In this config the coach is client-side
@@ -148,7 +149,7 @@ P2P changes *which* parts of the engine run — important for behavior parity:
 |---|---|---|
 | `executeTurn` / Maia move-gen | generates the opponent's move | **bypassed** — opponent move arrives via data channel, applied to the board |
 | `getEvaluation` (hints, blunder hover) | local Stockfish | **still local**, per device |
-| `generateAdviceStream` / `generateExplanationStream` | local WebLLM | **still local**, per device — each player gets their own coach |
+| `generateAdviceStream` / `generateExplanationStream` | local WebLLM (`web-full`) or fallback phrases (`web-no-llm`, the Android default) | **still local**, per device — each player gets their own coach |
 | game state / history | local | local + synced over data channel; persisted by the service |
 
 So a P2P game is two independent local coaches over a shared move stream; Maia is
@@ -156,9 +157,10 @@ only used for the vs-AI mode.
 
 ### 3.5 Build reuse
 
-- Android serves the **`web-full`** build (`VITE_TARGET=web-full`) — same artifact
-  as Cloudflare, just hosted by the embedded server instead of Pages. No separate
-  UI build target is required for Android.
+- Android serves the **`web-no-llm`** build by default (`VITE_TARGET=web-no-llm`;
+  Gradle `-PwebTarget=web-full` opts into WebLLM commentary) — same artifact
+  family as Cloudflare, just hosted by the embedded server instead of Pages. No
+  separate UI build target is required for Android.
 - Single-threaded Stockfish (`stockfish-18-lite-single`) remains correct: the
   WebView still runs two Stockfish instances (main-thread hints + orchestrator
   worker) and shares the SAB budget, same as the web target.

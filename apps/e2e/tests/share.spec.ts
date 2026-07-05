@@ -1,6 +1,8 @@
 import { expect, test } from "@playwright/test";
 import type { Page } from "@playwright/test";
 
+import { SHARE_MODULE } from "../target";
+
 /**
  * Share a recorded game by URL: a GameRecord is encoded into a URL hash
  * (`#g=…`, lz-string), and opening that link in a fresh browser decodes it,
@@ -13,15 +15,13 @@ import type { Page } from "@playwright/test";
  *
  * The share URL is generated in-page via the app's own encoder
  * (`src/services/gameShare.ts`) so the test stays in lockstep with the wire
- * format instead of hard-coding a brittle payload string.
+ * format instead of hard-coding a brittle payload string. SHARE_MODULE
+ * (target.ts) points at the source module on vite targets and at an
+ * esbuild-bundled copy in the webroot on the android production build.
  */
 
 const HISTORY_KEY = "chess_coach_game_history";
 const STARTING_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-// Served by the vite dev server; imported in-page so the test uses the app's
-// real encoder. Kept as a variable so tsc treats `import(mod)` as dynamic
-// (returns `any`) instead of trying to resolve the URL as a module.
-const SHARE_MODULE = "/chess/src/services/gameShare.ts";
 
 // A complete GameRecord (the `id` is intentionally bogus — it must be recomputed
 // from the PGN on import, never trusted from the payload). The `{hint}` marker on

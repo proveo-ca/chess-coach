@@ -1,0 +1,6 @@
+# Build output: the web UI is synced here (gradle syncWeb / e2e android target)
+# and //go:embed'ed. Only the placeholder that keeps `go build` working
+# pre-sync is tracked.
+*
+!.gitignore
+!placeholder.html

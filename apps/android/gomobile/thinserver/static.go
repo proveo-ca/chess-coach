@@ -7,9 +7,10 @@ import (
 	"strings"
 )
 
-// webroot holds the built `web-full` UI (apps/ui `dist/chess`), synced here at
-// build time by the Gradle `syncWeb` task. A placeholder index.html keeps
-// `go build` working before the first sync.
+// webroot holds the built UI (apps/ui `dist/chess`, `web-no-llm` by default),
+// synced here at build time by the Gradle `syncWeb` task or the e2e android
+// target. A tracked placeholder.html keeps `go build` working before the
+// first sync; everything else in webroot/ is gitignored build output.
 //
 //go:embed webroot
 var webFS embed.FS
@@ -65,10 +66,11 @@ func spaFallback(sub fs.FS, fileServer http.Handler) http.Handler {
 			p = "index.html"
 		}
 		if _, err := fs.Stat(sub, p); err != nil {
-			// Not a real asset → SPA route: rewrite to index.html.
-			r2 := r.Clone(r.Context())
-			r2.URL.Path = "/index.html"
-			fileServer.ServeHTTP(w, r2)
+			// Not a real asset → SPA route: serve index.html by name. NOT via
+			// fileServer with a rewritten URL — http.FileServer canonicalizes
+			// "/index.html" to a relative "301 ./", which resolves against the
+			// original nested route (/review/<id> → /review/) and redirect-loops.
+			http.ServeFileFS(w, r, sub, "index.html")
 			return
 		}
 		fileServer.ServeHTTP(w, r)

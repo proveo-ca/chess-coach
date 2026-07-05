@@ -16,12 +16,12 @@ package "Android App — Player A" {
     [Signaling client (WSS)] as SIG_A
   }
 
-  package "WebView (web-full build)" as WV_A {
+  package "WebView (web-no-llm build — default;\nGradle -PwebTarget=web-full opts into WebLLM)" as WV_A {
     [SolidJS UI] as UI_A
     [WebWorkerCoachService] as COACH_A
     [Stockfish WASM\n(hints / eval)] as SF_A
     [lc0.wasm Maia\n(vs-AI only)] as MAIA_A
-    [WebLLM gemma-3-270m\n(commentary)] as LLM_A
+    [Commentary: fallback phrases\n(WebLLM in web-full builds)] as LLM_A
   }
 
   UI_A --> COACH_A
@@ -41,7 +41,7 @@ cloud "Hosted tier (NOT in-app)" as CLOUD {
 
 package "Android App — Player B" {
   [Embedded Go + Service\n(mirror of Player A)] as SVC_B
-  [WebView (web-full)\nlocal Stockfish + WebLLM] as WV_B
+  [WebView (web-no-llm)\nlocal Stockfish] as WV_B
   [WebRTC peer owner] as PEER_B
 }
 
@@ -75,7 +75,8 @@ end note
 
 note top of WV_A
   Coach is fully client-side per device:
-  each player runs their own Stockfish + WebLLM.
+  each player runs their own Stockfish
+  (+ WebLLM only in web-full builds).
   In live P2P the opponent's move arrives over the
   data channel — Maia move-gen is bypassed.
 end note

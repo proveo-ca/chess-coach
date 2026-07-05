@@ -7,20 +7,39 @@
 //                         the Bun server (apps/server) over HTTP. The server hosts
 //                         the SAME @chess-coach/engine-core, and commentary is
 //                         produced by a locally-run, OpenAI-compatible LLM (Ollama).
+//   android:              the web-no-llm UI built + synced into the Android
+//                         embedded server's webroot and served by the SAME Go
+//                         static host the APK uses (thinserver, via cmd/devserver
+//                         on :8790) — asserts the exact bytes and host behavior
+//                         (//go:embed, COOP/COEP, /chess/ base path, SPA fallback)
+//                         of the Android distribution, no emulator required.
+//                         Chromium only: Android System WebView is Chromium.
 //
-// Both targets render the identical UI and share engine-core, so the specs assert
-// the same behavior — running them against both proves the ui⇄server parity
-// (_spec/packages/engine-core/ui-engine-parity.md) holds in practice.
+// All targets render the identical UI and share engine-core, so the specs assert
+// the same behavior — running them against each wiring proves the parity
+// (_spec/packages/engine-core/ui-engine-parity.md, _spec/distribution.md §3.5)
+// holds in practice.
 //
 // `E2E_TARGET` selects the target. Specs may `import { IS_DESKTOP } from "../target"`
 // to branch expectations; the Playwright config branches baseURL / webServer /
 // projects / testIgnore below.
 import type { PlaywrightTestConfig } from "@playwright/test";
 
-export type Target = "web-no-llm" | "desktop";
+export type Target = "web-no-llm" | "desktop" | "android";
 
 export const TARGET: Target = (process.env.E2E_TARGET as Target) || "web-no-llm";
 export const IS_DESKTOP = TARGET === "desktop";
+export const IS_ANDROID = TARGET === "android";
+
+// Where specs can dynamically import the app's own share encoder in-page
+// (share.spec.ts): vite dev servers serve the source module directly; the
+// android target serves a production build, so android-devserver.sh bundles
+// the same source into the webroot as a standalone ESM file. Node-side import
+// is not an option: apps/ui is `"type": "module"`, and Playwright's CJS
+// transform can't load its TS across the package boundary.
+export const SHARE_MODULE = IS_ANDROID
+  ? "/chess/e2e-gameShare.js"
+  : "/chess/src/services/gameShare.ts";
 
 // The Bun server spawns native `stockfish` + `lc0` (brew: `brew install stockfish lc0`)
 // and loads Maia weights from MAIA_WEIGHTS_DIR. The web build already ships those
@@ -117,6 +136,31 @@ export function targetConfig(): TargetConfig {
       // pwa-offline pins its own baseURL to the wrangler PWA preview (:8787), which
       // the desktop target doesn't run — the service worker is a web-build concern,
       // not a server concern.
+      testIgnore: ["**/pwa-offline.spec.ts"],
+    };
+  }
+
+  if (IS_ANDROID) {
+    return {
+      baseURL: "http://127.0.0.1:8790/chess/",
+      webServer: [
+        {
+          // Builds web-no-llm, syncs it into thinserver/webroot (mirroring the
+          // Gradle syncWeb task), and serves it with the Go host the APK embeds.
+          // Needs Go on PATH (checked in global-setup) — no Android SDK/NDK.
+          // Timeout covers the UI build + the first `go run` compile of the
+          // tailscale.com dependency tree on a cold Go build cache.
+          command: "bash android-devserver.sh",
+          url: "http://127.0.0.1:8790/chess/",
+          reuseExistingServer: true,
+          timeout: 300_000,
+          env: { PORT: "8790" },
+        },
+      ],
+      // The WebView is Chromium; cross-browser coverage belongs to web-no-llm.
+      projects: [{ name: "chromium", use: { browserName: "chromium" } }],
+      // pwa-offline pins the wrangler preview (:8787); the service worker is a
+      // web-deploy concern — the Android WebView loads from loopback instead.
       testIgnore: ["**/pwa-offline.spec.ts"],
     };
   }

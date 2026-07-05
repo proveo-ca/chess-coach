@@ -1,19 +1,41 @@
 # e2e setup
 
-The same specs in `tests/` run against two **targets** (see `target.ts`), selected by
+The same specs in `tests/` run against three **targets** (see `target.ts`), selected by
 `E2E_TARGET`:
 
 | Target | Command | Wiring | Host deps |
 |---|---|---|---|
 | `web-no-llm` (default) | `npm test` / `npm run test:web` | UI + in-browser engine workers; vite `:5173` + wrangler PWA preview `:8787` | none beyond npm |
 | `desktop` | `npm run test:desktop` | UI (desktop mode) `:5174` + Bun server `apps/server` `:8080` → `@chess-coach/engine-core` + **native Stockfish/Maia** + **local LLM** | see below |
+| `android` | `npm run test:android` | `web-no-llm` UI built + synced into the Android embedded server's webroot, served by the **same Go static host the APK embeds** (`thinserver` via `cmd/devserver` `:8790`) | Go toolchain |
 
-## npm dependencies (both targets)
+## npm dependencies (all targets)
 
 ```sh
 npm install            # @playwright/test, @types/node, typescript, chess.js
 npx playwright install # browsers (chromium for desktop; + webkit/firefox/brave for web)
 ```
+
+## Android target — local installs
+
+`npm run test:android` asserts the Android distribution's web layer without an
+emulator: `android-devserver.sh` builds `web-no-llm`, syncs it into
+`apps/android/gomobile/thinserver/webroot/` (mirroring the Gradle `syncWeb` task,
+including the `models/**` exclude), and serves it with the exact Go host the APK
+`//go:embed`s — same COOP/COEP headers, `/chess/` base path, and SPA fallback.
+
+```sh
+brew install go   # the only extra dep; no Android SDK/NDK/emulator needed
+```
+
+- Chromium-only project: the Android System WebView is Chromium; cross-browser
+  coverage belongs to the web target.
+- First run compiles the `tailscale.com` dependency tree (`go run`) — a few
+  minutes cold, seconds warm; the web-server timeout (300s) allows for it.
+- What this target does **not** cover: the WebView itself on a device (WebGPU
+  gating, `window.ChessNative` bridge), the foreground service lifecycle, and
+  tsnet P2P — those need an emulator/device (instrumented tests or a Playwright
+  `_android` smoke layer, not this runner).
 
 ## Desktop target — local installs
 
@@ -74,6 +96,7 @@ out at the first handshake gate.
 ```sh
 npm run test:web       # default target — no host deps
 npm run test:desktop   # needs the three installs above
+npm run test:android   # needs Go; serves the APK's embedded webroot on :8790
 ```
 
 ## CI notes
@@ -81,7 +104,7 @@ npm run test:desktop   # needs the three installs above
 - Provide `stockfish` + `lc0` on `$PATH`, and an Ollama service with the model pulled
   (`ollama pull …`) — or repoint `LLM_*` / `MAIA_WEIGHTS_DIR` at alternatives.
 - `pwa-offline.spec.ts` is web-only (pins the `:8787` PWA preview) and is auto-ignored on
-  the desktop target.
+  the desktop and android targets.
 - macOS gotcha baked into the config: the Bun server binds `0.0.0.0`, so the desktop
   readiness probe targets `http://127.0.0.1:8080/hello` (avoids the `localhost`→`::1`
   resolution and the `/`→`/chess` redirect-404).
