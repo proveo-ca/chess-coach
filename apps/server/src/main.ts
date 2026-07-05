@@ -6,7 +6,10 @@ import { OllamaLlmClient } from "./LlmClient.ts";
 import { Orchestrator } from "./Orchestrator.ts";
 import { StateManager } from "./StateManager.ts";
 
-const HOST = process.env.HOST?.trim() || "0.0.0.0";
+// Default to loopback so the server isn't reachable off-host without opting in.
+// Docker sets HOST=0.0.0.0 explicitly so container port-publishing still works;
+// native users who want LAN reachability set HOST themselves.
+const HOST = process.env.HOST?.trim() || "127.0.0.1";
 const PORT = Number(process.env.PORT) || 8080;
 
 const stateManager = new StateManager();
@@ -24,6 +27,8 @@ Bun.serve({
   fetch: createFetchHandler({ orchestrator, stateManager, mutex }),
 });
 
-const publicHost = process.env.PUBLIC_HOST?.trim() || (HOST === "0.0.0.0" ? "localhost" : HOST);
+const publicHost =
+  process.env.PUBLIC_HOST?.trim() ||
+  (HOST === "0.0.0.0" || HOST === "127.0.0.1" ? "localhost" : HOST);
 const publicPort = Number(process.env.PUBLIC_PORT) || PORT;
 console.error(`Frontend available at http://${publicHost}:${publicPort}/chess`);

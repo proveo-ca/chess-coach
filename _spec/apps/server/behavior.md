@@ -57,22 +57,35 @@ Behavioral details:
 - **`/advice`, `/explain`** — a `text/plain` `ReadableStream`; each generator chunk is `enqueue`d. On client abort the stream's `cancel()` sets a flag and the generator is **drained** (kept iterating, writes suppressed) so the engines are released cleanly.
 - **`/new`** — `stateManager.resetGame()` writes the starting FEN to `game_state.fen` (creating parent dirs), then returns `readFen()`.
 
+### Input validation (security boundary)
+
+Request FEN/move strings reach native-engine UCI stdin, so they are validated at the boundary **before** any engine/state I/O, using the shared, dependency-free validators in `@chess-coach/engine-core` (`fenValidation.ts` — `isValidFen`, `isValidMoveToken`; see `_spec/packages/engine-core/entities.puml`). Invalid input → **400** (`BadRequestError`), never reaching the engine.
+
+- `/move` — `fenAfterHuman` must be a valid FEN; `humanMoveSan` must be a valid move token (when present).
+- `/advice` — `fen` must be a valid FEN; `humanMove` must be a valid move token (when non-empty).
+- `/explain` — `fenBefore` and `fenAfter` must be valid FENs; `moveSan` a valid move token (when present).
+- FEN validity = no control chars (rejects newline-injected UCI), exactly 6 fields, 8 ranks each summing to 8, valid side/castling/en-passant/clock fields. Structural only — full legality stays the engine's job.
+- Defense-in-depth: `StateManager.writeFen` re-asserts FEN validity before persisting; `UciDriver.send` rejects any command containing `\r`/`\n` (one command = one line).
+
 ### Error mapping (`errorResponse`, `apps/server/src/http.ts`)
 
 | Condition | HTTP status | Body |
 |---|---|---|
 | `UciTimeoutError` / per-request `TimeoutError` | 504 | `{ error: "Harness request timed out" }` |
-| `SyntaxError` (malformed JSON body) | 400 | `{ error: <message> }` |
+| `BadRequestError` (invalid FEN/move) / `SyntaxError` (malformed JSON body) | 400 | `{ error: <message> }` |
+| POST body route without `Content-Type: application/json` | 415 | `{ error: <message> }` |
+| `/new` with a present-but-disallowed `Origin` | 403 | `{ error: "Forbidden" }` |
 | anything else | 500 | `{ error: <message> }` |
 
-### Default headers / CORS (`BASE_HEADERS`)
+### Default headers / CORS (`corsHeaders(req)`)
 
-- `Cross-Origin-Opener-Policy: same-origin`, `Cross-Origin-Embedder-Policy: require-corp` (required for WASM threads on the static SolidJS app) — applied to every response.
-- CORS `Access-Control-Allow-Origin: *`, allows `Content-Type`, methods GET/POST/OPTIONS/PUT/PATCH/DELETE. `OPTIONS` → 204.
+- `Cross-Origin-Opener-Policy: same-origin`, `Cross-Origin-Embedder-Policy: require-corp` (required for WASM threads on the static SolidJS app) — applied to **every** response regardless of Origin.
+- CORS: `Access-Control-Allow-Origin` is **reflected only for an allowlisted Origin** (no wildcard). Default allowlist: `http://localhost:{5173,5174,8787}` + `127.0.0.1` equivalents (dev/e2e/preview); extend via `ALLOWED_ORIGINS` (comma-separated). When allowed: also `Vary: Origin`, `Allow-Headers: Content-Type`, `Allow-Methods: GET, POST, OPTIONS`. `OPTIONS` → 204.
+- CSRF defense: POST body routes require `application/json` (forces a cross-origin preflight, closing the `text/plain` simple-request bypass); bodyless `/new` rejects a present-but-disallowed `Origin` with 403.
 
 ### Server binding
 
-- `HOST` (default `0.0.0.0`), `PORT` (default `8080`). Logs a frontend URL using `PUBLIC_HOST`/`PUBLIC_PORT` (falls back to `localhost` when bound to `0.0.0.0`).
+- `HOST` (default `127.0.0.1` — loopback, not reachable off-host without opting in), `PORT` (default `8080`). Docker sets `HOST=0.0.0.0` explicitly so published ports work. Logs a frontend URL using `PUBLIC_HOST`/`PUBLIC_PORT` (falls back to `localhost` when bound to `127.0.0.1`/`0.0.0.0`).
 
 ---
 

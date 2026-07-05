@@ -161,7 +161,8 @@ to the API at `http://localhost:8080`.
 
 | Variable | Default | Purpose |
 |---|---|---|
-| `PORT` / `HOST` | `8080` / `0.0.0.0` | server bind address |
+| `PORT` / `HOST` | `8080` / `127.0.0.1` | server bind address. Binds loopback by default; set `HOST=0.0.0.0` (or a specific IP) to reach it from another device. Docker sets `HOST=0.0.0.0` in the image. |
+| `ALLOWED_ORIGINS` | localhost dev ports | comma-separated extra CORS origins allowed to call the API cross-origin (the UI is same-origin under `/chess`, so this is only for custom dev setups) |
 | `OLLAMA_BASE_URL` / `LLM_BASE_URL` | `http://localhost:11434/v1` | LLM endpoint (OpenAI-compatible) |
 | `LLM_COMMENTARY_MODEL` | = general model | commentary model — set to `hf.co/NAKSTStudio/chess-gemma-commentary:Q8_0` |
 | `LLM_MODEL` / `LLM_GENERAL_MODEL` | `qwen2.5:7b` | fallback when `LLM_COMMENTARY_MODEL` is unset |
@@ -169,6 +170,7 @@ to the API at `http://localhost:8080`.
 | `MAIA_WEIGHTS_DIR` | `/app/weights` | dir holding `maia-*.pb.gz` + `openings.bin` |
 | `SYZYGY_PATH` | — | Syzygy tablebase dir (set automatically in Docker) |
 | `STATIC_DIR` | `static` | dir of the compiled UI (`/chess` served from here) |
+| `CHESS_STATE_DIR` | cwd | dir for the `game_state.fen` file (Docker sets `/app/state`, owned by the non-root run user) |
 
 ---
 

@@ -51,7 +51,23 @@ package "@chess-coach/engine-core [packages/engine-core/src/]" {
       Δ < 20 → Best · Δ > 200 → Mistake · Δ > 100 → Inaccuracy · else Good
     · extractCommentary strips reasoning/markup down to the
       final commentary sentence(s).
-    · index.ts re-exports everything (`export * from "./llmPromptFormat"`).
+  end note
+
+  class fenValidation {
+    isValidFen(fen: string): boolean
+    assertValidFen(fen: string): void
+    isValidMoveToken(move: string): boolean
+    assertValidMoveToken(move: string): void
+  }
+
+  note bottom of fenValidation
+    **Security boundary** (see _spec/apps/server/behavior.md §2).
+    FEN/move strings reach native-engine UCI stdin; these reject
+    control chars (newline-injected UCI) + enforce structural shape.
+    Server validates at the HTTP boundary (400 on failure) and
+    re-asserts in StateManager.writeFen / UciDriver.send.
+    index.ts re-exports both modules
+    (`export * from "./llmPromptFormat"` + `"./fenValidation"`).
   end note
 }
 

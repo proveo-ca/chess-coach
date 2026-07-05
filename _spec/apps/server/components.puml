@@ -11,12 +11,20 @@ package "Bun Server (apps/server)" {
     [Bun.serve\n(HTTP)] as SERVER
 
     package "HTTP layer (app.ts / http.ts)" {
-        [createFetchHandler\n(routes)] as ROUTER
-        [BASE_HEADERS\n(COOP + COEP + CORS)] as HEADERS
-        [errorResponse\n(structured JSON errors)] as STATUS
+        [createFetchHandler\n(routes; validates FEN/move\n+ Content-Type at boundary)] as ROUTER
+        [corsHeaders\n(COOP + COEP + Origin allowlist)] as HEADERS
+        [errorResponse\n(structured JSON; 400/403/415/504)] as STATUS
         [serveStatic\n(SolidJS build, /chess/ + SPA)] as STATIC
         [Mutex + withTimeout\n(serialize engines, 504)] as GUARD
     }
+
+    note bottom of ROUTER
+      Security boundary: FEN/move validated via
+      @chess-coach/engine-core (isValidFen/isValidMoveToken)
+      before any engine/state I/O → 400. POST bodies require
+      application/json (415 otherwise); /new rejects a
+      disallowed Origin (403). See behavior.md §2.
+    end note
 
     package "Routes" {
         [GET /hello] as EP_HELLO

@@ -82,6 +82,10 @@ export class UciDriver {
   send(command: string): void {
     const proc = this.proc;
     if (!proc) throw new Error("UCI driver not started");
+    // Hard invariant: one command is exactly one line. A CR/LF in `command`
+    // would inject additional UCI commands into the engine — reject it here as
+    // defense-in-depth behind the request-boundary FEN/move validation.
+    if (/[\r\n]/.test(command)) throw new Error("Illegal newline in UCI command");
     proc.stdin.write(`${command}\n`);
     proc.stdin.flush();
   }

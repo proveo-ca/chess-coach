@@ -1,4 +1,5 @@
 // SPEC: _spec/apps/server/components.puml
+import { assertValidFen } from "@chess-coach/engine-core";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 
@@ -26,6 +27,9 @@ export class StateManager {
   }
 
   writeFen(fen: string): void {
+    // Defense-in-depth: never persist a FEN that could inject UCI commands when
+    // read back and fed to the engine (the /move path writes then reads back).
+    assertValidFen(fen);
     const dir = dirname(this.fenFilePath);
     if (dir && dir !== "." && !existsSync(dir)) mkdirSync(dir, { recursive: true });
     writeFileSync(this.fenFilePath, fen);

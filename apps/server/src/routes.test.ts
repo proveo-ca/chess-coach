@@ -128,3 +128,65 @@ test("unknown route returns 404", async () => {
   const res = await handler(new Request("http://localhost/nope", { method: "POST" }));
   expect(res.status).toBe(404);
 });
+
+test("POST /move with a newline-injected FEN is rejected with 400", async () => {
+  const handler = makeHandler(new FakeBridge({}, {}), new StubLlm([]));
+  const injected = `${START_FEN}\nsetoption name Debug Log File value /tmp/pwn`;
+  const res = await handler(
+    new Request("http://localhost/move", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ humanMoveSan: "e4", fenAfterHuman: injected }),
+    }),
+  );
+  expect(res.status).toBe(400);
+});
+
+test("POST /advice with a newline-injected FEN is rejected with 400", async () => {
+  const handler = makeHandler(new FakeBridge({}, {}), new StubLlm([]));
+  const injected = `${START_FEN}\nsetoption name EvalFile value /evil`;
+  const res = await handler(
+    new Request("http://localhost/advice", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ humanMove: "e4", aiMove: "", fen: injected }),
+    }),
+  );
+  expect(res.status).toBe(400);
+});
+
+test("POST body without application/json is rejected with 415", async () => {
+  const handler = makeHandler(new FakeBridge({}, {}), new StubLlm([]));
+  const res = await handler(
+    new Request("http://localhost/move", {
+      method: "POST",
+      headers: { "Content-Type": "text/plain" },
+      body: JSON.stringify({ humanMoveSan: "e4", fenAfterHuman: START_FEN }),
+    }),
+  );
+  expect(res.status).toBe(415);
+});
+
+test("CORS: allowlisted Origin is reflected, disallowed Origin is not", async () => {
+  const handler = makeHandler(new FakeBridge({}, {}), new StubLlm([]));
+  const allowed = await handler(
+    new Request("http://localhost/move", { method: "OPTIONS", headers: { Origin: "http://localhost:5174" } }),
+  );
+  expect(allowed.status).toBe(204);
+  expect(allowed.headers.get("Access-Control-Allow-Origin")).toBe("http://localhost:5174");
+
+  const denied = await handler(
+    new Request("http://localhost/move", { method: "OPTIONS", headers: { Origin: "http://evil.example" } }),
+  );
+  expect(denied.headers.get("Access-Control-Allow-Origin")).toBeNull();
+  // isolation headers still present regardless of Origin
+  expect(denied.headers.get("Cross-Origin-Opener-Policy")).toBe("same-origin");
+});
+
+test("POST /new from a disallowed Origin is forbidden (403)", async () => {
+  const handler = makeHandler(new FakeBridge({}, {}), new StubLlm([]));
+  const res = await handler(
+    new Request("http://localhost/new", { method: "POST", headers: { Origin: "http://evil.example" } }),
+  );
+  expect(res.status).toBe(403);
+});

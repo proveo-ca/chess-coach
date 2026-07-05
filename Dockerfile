@@ -71,7 +71,20 @@ COPY packages ./packages
 # Compiled UI → /app/static/chess (served by the Bun server under /chess/)
 COPY --from=ui-builder /work/apps/ui/dist ./static
 
+# Drop privileges: run as a non-root user. The FEN state file is the only thing
+# the server writes at runtime, so point it at a dedicated user-owned dir; the
+# weights/syzygy/static dirs stay root-owned and world-readable.
+RUN useradd -u 10001 -m appuser && \
+    mkdir -p /app/state && chown -R appuser:appuser /app/state
+ENV CHESS_STATE_DIR=/app/state
+
+# The code default binds loopback; inside the container bind all interfaces so
+# published ports (docker run -p) reach the server.
+ENV HOST=0.0.0.0
+
 EXPOSE 8080
+
+USER appuser
 
 # Run the Bun server (serves the UI and orchestrates native Stockfish + Maia + Ollama)
 CMD ["bun", "run", "/app/apps/server/src/main.ts"]
