@@ -300,4 +300,132 @@ describe("useHoverEvaluator", () => {
     expect(coachState.setHoverEmotion).not.toHaveBeenCalled();
     expect(coachState.setHoverAdvice).not.toHaveBeenCalled();
   });
+
+  it("uses mating-net-exit advice when a hover would leave a forced mate", () => {
+    const randomSpy = vi.spyOn(Math, "random").mockReturnValue(0);
+    try {
+      const [canApply] = createSignal(true);
+      const [hovered] = createSignal<Square>("e4");
+      const [selected] = createSignal<Square>("e2");
+      const [hoverEval] = createSignal<HoverEval>({
+        id: 1,
+        from: "e2",
+        to: "e4",
+        fen: "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1",
+      });
+      const [baseScore] = createSignal({ kind: "mate" as const, value: 3 });
+      const [game] = createSignal(new Chess());
+      const [humanBestMove] = createSignal<string | null>("d2d4");
+      const [analysis, setAnalysis] = createSignal<any>({ lastInfo: null });
+
+      renderHookTest({
+        hook: useHoverEvaluator,
+        props: {
+          canApplyHoverOverride: canApply,
+          hoveredSquare: hovered,
+          selectedSquare: selected,
+          currentHoverEval: hoverEval,
+          analysis,
+          baseEvalScore: baseScore,
+          humanBestMove,
+          game,
+        },
+      });
+
+      // After the hover, opponent to move with a plain CP eval — mate is gone.
+      setAnalysis({
+        lastInfo: {
+          score: { kind: "cp", value: 20 },
+          pv: ["e7e5"],
+        },
+      });
+
+      expect(coachState.setHoverBlunder).toHaveBeenCalledWith(true, expect.any(String), "e4");
+      expect(coachState.setHoverEmotion).toHaveBeenCalledWith("shocked");
+      expect(coachState.setHoverAdvice).toHaveBeenCalledWith("That move would exit your mating net");
+    } finally {
+      randomSpy.mockRestore();
+    }
+  });
+
+  it("does not use mating-net-exit advice when mate is merely lengthened", () => {
+    const [canApply] = createSignal(true);
+    const [hovered] = createSignal<Square>("e4");
+    const [selected] = createSignal<Square>("e2");
+    const [hoverEval] = createSignal<HoverEval>({
+      id: 1,
+      from: "e2",
+      to: "e4",
+      fen: "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1",
+    });
+    // Same mate distance before/after → delta ~0, still in the net.
+    const [baseScore] = createSignal({ kind: "mate" as const, value: 2 });
+    const [game] = createSignal(new Chess());
+    const [humanBestMove] = createSignal<string | null>("d2d4");
+    const [analysis, setAnalysis] = createSignal<any>({ lastInfo: null });
+
+    renderHookTest({
+      hook: useHoverEvaluator,
+      props: {
+        canApplyHoverOverride: canApply,
+        hoveredSquare: hovered,
+        selectedSquare: selected,
+        currentHoverEval: hoverEval,
+        analysis,
+        baseEvalScore: baseScore,
+        humanBestMove,
+        game,
+      },
+    });
+
+    setAnalysis({
+      lastInfo: {
+        score: { kind: "mate", value: -2 },
+        pv: ["e7e5"],
+      },
+    });
+
+    expect(coachState.setHoverBlunder).not.toHaveBeenCalled();
+    expect(coachState.setHoverAdvice).not.toHaveBeenCalled();
+  });
+
+  it("skips mating-net-exit when the hovered move is the engine best move", () => {
+    const [canApply] = createSignal(true);
+    const [hovered] = createSignal<Square>("e4");
+    const [selected] = createSignal<Square>("e2");
+    const [hoverEval] = createSignal<HoverEval>({
+      id: 1,
+      from: "e2",
+      to: "e4",
+      fen: "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1",
+    });
+    const [baseScore] = createSignal({ kind: "mate" as const, value: 3 });
+    const [game] = createSignal(new Chess());
+    const [humanBestMove] = createSignal<string | null>("e2e4");
+    const [analysis, setAnalysis] = createSignal<any>({ lastInfo: null });
+
+    renderHookTest({
+      hook: useHoverEvaluator,
+      props: {
+        canApplyHoverOverride: canApply,
+        hoveredSquare: hovered,
+        selectedSquare: selected,
+        currentHoverEval: hoverEval,
+        analysis,
+        baseEvalScore: baseScore,
+        humanBestMove,
+        game,
+      },
+    });
+
+    setAnalysis({
+      lastInfo: {
+        score: { kind: "cp", value: 0 },
+        pv: ["e7e5"],
+      },
+    });
+
+    expect(coachState.setHoverBlunder).not.toHaveBeenCalled();
+    expect(coachState.setHoverAdvice).not.toHaveBeenCalled();
+  });
 });

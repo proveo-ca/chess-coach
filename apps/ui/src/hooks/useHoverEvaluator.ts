@@ -10,6 +10,11 @@ import {
   setPendingTravel,
 } from "~/store/coachStore";
 import { currentFen } from "~/store/gameStore";
+import {
+  exitsMatingNet,
+  MATING_NET_EXIT_CP,
+  pickMatingNetExitAdvice,
+} from "~/engine/matingNetExitAdvice";
 import { blunderLabel, blunderThresholdCp } from "~/store/settingsStore";
 import type { StockfishAnalysis } from "~/types/Stockfish";
 import { logger } from "~/utils/logger";
@@ -88,13 +93,15 @@ export function useHoverEvaluator(props: UseHoverEvaluatorProps) {
     // After the hovered move, opponent is to move → invert perspective
     const humanHoverCp = scoreToHumanCp(msg.score, false);
 
+    const exitsNet = exitsMatingNet(baseScore, msg.score);
     const delta = humanHoverCp - humanBaseCp;
-    const isBlunder = delta <= blunderThresholdCp();
+    const isBlunder = exitsNet || delta <= blunderThresholdCp();
 
     logger.action(`Hover Eval Result [${evalTarget.from}-${evalTarget.to}]`, {
       baseScore,
       hoverScore: msg.score,
-      delta,
+      delta: exitsNet ? MATING_NET_EXIT_CP : delta,
+      exitsMatingNet: exitsNet,
       isBlunder,
     });
 
@@ -106,7 +113,7 @@ export function useHoverEvaluator(props: UseHoverEvaluatorProps) {
     const bestUci = props.humanBestMove();
     if (bestUci && bestUci.slice(0, 4) === `${evalTarget.from}${evalTarget.to}`) return;
 
-    logger.action("Stockfish Hover Blunder Detected", { msg, evalTarget });
+    logger.action("Stockfish Hover Blunder Detected", { msg, evalTarget, exitsMatingNet: exitsNet });
 
     const piece = props.game().get(evalTarget.from);
     const pieceName = piece ? `${piece.color}${piece.type}` : "piece";
@@ -117,7 +124,11 @@ export function useHoverEvaluator(props: UseHoverEvaluatorProps) {
     const san = m ? m.san : `${evalTarget.from}-${evalTarget.to}`;
 
     lastProcessedEvalId = evalTarget.id;
-    setHoverAdvice(`Moving the ${pieceName} to ${evalTarget.to} is ${blunderLabel()}`);
+    setHoverAdvice(
+      exitsNet
+        ? pickMatingNetExitAdvice()
+        : `Moving the ${pieceName} to ${evalTarget.to} is ${blunderLabel()}`,
+    );
     setHoverEmotion("shocked");
     setHoverBlunder(true, evalTarget.fen, san);
     setPendingTravel({ blunderFen: evalTarget.fen, blunderSan: san, fenBefore: currentFen() });

@@ -24,6 +24,7 @@ When you add, rename, or remove a component, hook, store, or service:
 | `_spec/apps/ui/components.puml` | UI component graph: screens, hooks, stores, services, web-engine (no method bodies) |
 | `_spec/apps/ui/entities.puml` | Full API reference: all store selectors/mutations, hook contracts, service interfaces, engine methods |
 | `_spec/apps/ui/scheduler.puml` | EnginePool scheduler: workers, priority tiers + preemption, legacy-vs-pool differences |
+| `_spec/apps/ui/blunder-detection.puml` | Blunder detection activity: hover (incl. mating-net-exit −9000), review annotations, LLM `classifyMoveTag` |
 | `_spec/apps/ui/state-machine.puml` | UI state machine: runtime-mode resolution, screen states, game/coach state transitions |
 | `_spec/apps/ui/web-llm-integration.puml` | WebLLM model loading and Linux/WebGPU workaround |
 | `_spec/apps/ui/multiplayer.puml` | Serverless LAN/online multiplayer: host-hub topology over Tailscale + WebRTC (no backend) |
