@@ -91,3 +91,6 @@ Thumbs.db
 .cecli*
 .claude
 .cursor/rules/nx-rules.mdc
+
+# Hero GIF capture scratch
+apps/e2e/.hero-capture/
