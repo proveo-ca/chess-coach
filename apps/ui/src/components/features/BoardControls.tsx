@@ -3,29 +3,37 @@ import { Show, createSignal } from "solid-js";
 import type { Component, JSX } from "solid-js";
 
 import { ResignConfirm } from "~/components/atoms/ResignConfirm";
+import { openMobileDrawer } from "~/components/features/MobileDrawer";
 import { MobileSidebar } from "~/components/features/MobileSidebar";
 import { DualNavButton } from "~/components/primitives/DualNavButton";
 import { IconButton } from "~/components/primitives/IconButton";
-import { FlagIcon, FlipBoardIcon, HintIcon, PlusCircleIcon } from "~/components/primitives/icons";
+import { FlagIcon, HamburgerIcon, HintIcon, PlusCircleIcon } from "~/components/primitives/icons";
 import { useFlip } from "~/hooks/useFlip";
 import { useGameControls } from "~/hooks/useGameControls";
 import { useHintSparkle } from "~/hooks/useHintSparkle";
 import { capabilities } from "~/store/capabilitiesStore";
 import { resetGame, reviewAnalysisMode } from "~/store/gameStore";
-import { activePlayerColor, setActivePlayerColor } from "~/store/settingsStore";
 import { isTravelling, travelFenHistory, travelIndex } from "~/store/travelStore.ts";
 
 /**
  * The MobileSidebar bar for the engine-backed board screens (Coach / Analysis /
- * Review): a per-screen `center` slot + up to four capability-gated quick
- * actions — hint, history nav, resign, flip, new game. The full option set
- * (settings, credits, routes) lives in the {@link MobileDrawer} hamburger.
- * Resign's confirm dialog renders as a sibling of the bar (not an Item), so the
- * bar's fan-out / max-4 rules don't touch it.
+ * Review): menu trigger (leftmost) + per-screen `center` slot + capability-gated
+ * quick actions — hint, history nav, resign, new game. Flip stays in the
+ * {@link MobileDrawer} menu and desktop {@link Sidebar}. Resign's confirm dialog
+ * renders as a sibling of the bar (not an Item), so the bar's fan-out / max-4
+ * rules don't touch it.
+ *
+ * Source order of left Items is chosen so Coach reads
+ * `[menu][hint][resign] · avatar · [nav]` after CSS fan-out + drawer pin.
+ * Analysis / Review title toolbars own the menu instead (`omitDrawer`) so the
+ * tall-mobile fixed float does not cover the matchup title.
  */
-export const BoardControls: Component<{ center?: JSX.Element; centerOverflow?: boolean }> = (
-  props,
-) => {
+export const BoardControls: Component<{
+  center?: JSX.Element;
+  centerOverflow?: boolean;
+  /** Skip the hamburger — screen mounts it in a title toolbar instead. */
+  omitDrawer?: boolean;
+}> = (props) => {
   const { hintSparkleClass, dismissHintSparkle } = useHintSparkle();
   const {
     atStart,
@@ -50,20 +58,19 @@ export const BoardControls: Component<{ center?: JSX.Element; centerOverflow?: b
   return (
     <>
       <MobileSidebar timeline={inTimelineMode()} centerOverflow={props.centerOverflow}>
-        <MobileSidebar.Main>{props.center}</MobileSidebar.Main>
+        <Show when={props.center}>
+          <MobileSidebar.Main>{props.center}</MobileSidebar.Main>
+        </Show>
 
-        <Show when={capabilities().hint}>
+        {/* Nearest-centre left control first → resign sits next to avatar */}
+        <Show when={capabilities().aiOpponent}>
           <MobileSidebar.Item>
             <IconButton
-              class={hintSparkleClass()}
-              onClick={() => {
-                dismissHintSparkle();
-                void handleHint();
-              }}
-              disabled={pendingHint() || isReplaying() || isTravelling()}
-              aria-label="Get a hint"
+              onClick={() => setShowResignConfirm(true)}
+              disabled={isResigned() || isReplaying() || isTravelling()}
+              aria-label="Resign"
             >
-              <HintIcon />
+              <FlagIcon />
             </IconButton>
           </MobileSidebar.Item>
         </Show>
@@ -89,33 +96,37 @@ export const BoardControls: Component<{ center?: JSX.Element; centerOverflow?: b
           </MobileSidebar.Item>
         </Show>
 
-        <Show when={capabilities().aiOpponent}>
+        <Show when={capabilities().hint}>
           <MobileSidebar.Item>
             <IconButton
-              onClick={() => setShowResignConfirm(true)}
-              disabled={isResigned() || isReplaying() || isTravelling()}
-              aria-label="Resign"
+              class={hintSparkleClass()}
+              onClick={() => {
+                dismissHintSparkle();
+                void handleHint();
+              }}
+              disabled={pendingHint() || isReplaying() || isTravelling()}
+              aria-label="Get a hint"
             >
-              <FlagIcon />
+              <HintIcon />
             </IconButton>
           </MobileSidebar.Item>
         </Show>
 
-        <Show when={capabilities().flipBoard}>
-          <MobileSidebar.Item>
-            <IconButton
-              onClick={() => setActivePlayerColor(activePlayerColor() === "w" ? "b" : "w")}
-              aria-label="Flip board"
-            >
-              <FlipBoardIcon />
-            </IconButton>
-          </MobileSidebar.Item>
-        </Show>
-
-        <Show when={!capabilities().aiOpponent && !capabilities().readOnly}>
+        <Show when={!capabilities().aiOpponent && !capabilities().readOnly && capabilities().flipBoard}>
           <MobileSidebar.Item>
             <IconButton onClick={() => resetGame()} aria-label="New game">
               <PlusCircleIcon />
+            </IconButton>
+          </MobileSidebar.Item>
+        </Show>
+
+        {/* Last in source + drawer pin → leftmost on short; floats top-left on
+            tall mobile / timeline (Coach). Analysis/Review pass omitDrawer and
+            mount the menu in their title toolbar instead. */}
+        <Show when={!props.omitDrawer}>
+          <MobileSidebar.Item drawer>
+            <IconButton onClick={openMobileDrawer} aria-label="Open menu">
+              <HamburgerIcon />
             </IconButton>
           </MobileSidebar.Item>
         </Show>

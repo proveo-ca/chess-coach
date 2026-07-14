@@ -3,6 +3,7 @@ import { For, type Component, Show, createEffect, createSignal, onCleanup, onMou
 
 import { OpponentCaptures, PlayerCaptures } from "~/components/atoms/CapturedPieces";
 import { Clock } from "~/components/atoms/Clock";
+import { ColorSwatch } from "~/components/atoms/ColorSwatch";
 import { Modal } from "~/components/atoms/Modal";
 import { SelectCard } from "~/components/atoms/SelectCard";
 import { GameOverBanner } from "~/components/features/GameOverBanner";
@@ -272,7 +273,7 @@ export const LanScreen: Component = () => {
     const mine = () => occupant()?.peerId === myPeerId();
     return (
       <SelectCard label={COLOR_LABEL[color]} selected={mine()} testId={`seat-${color}`}>
-        <span class={`${styles.swatch} ${styles[`swatch--${color}`]}`} />
+        <ColorSwatch color={color} size="md" />
         <span class={styles.seatName}>
           {occupant() ? `${occupant()!.identity.name}${mine() ? " (you)" : ""}` : "Open"}
         </span>
@@ -549,7 +550,7 @@ export const LanScreen: Component = () => {
             data-testid="matchup"
           >
             <span class={styles.player} data-mine={myColor() === "w" ? "" : undefined}>
-              <span class={`${styles.swatch} ${styles["swatch--w"]}`} />
+              <ColorSwatch color="w" />
               <span>{playerByColor("w")?.identity.name ?? "White"}</span>
               <Clock color="w" />
             </span>
@@ -557,7 +558,7 @@ export const LanScreen: Component = () => {
             <span class={styles.player} data-mine={myColor() === "b" ? "" : undefined}>
               <Clock color="b" />
               <span>{playerByColor("b")?.identity.name ?? "Black"}</span>
-              <span class={`${styles.swatch} ${styles["swatch--b"]}`} />
+              <ColorSwatch color="b" />
             </span>
           </div>
         </Screen.Header>

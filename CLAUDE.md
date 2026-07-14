@@ -29,6 +29,9 @@ When you add, rename, or remove a component, hook, store, or service:
 | `_spec/apps/ui/web-llm-integration.puml` | WebLLM model loading and Linux/WebGPU workaround |
 | `_spec/apps/ui/multiplayer.puml` | Serverless LAN/online multiplayer: host-hub topology over Tailscale + WebRTC (no backend) |
 | `_spec/apps/ui/multiplayer-sequence.puml` | Multiplayer flows: pairing handshake (QR/link), start gate, move relay, resign/disconnect |
+| `_spec/apps/ui/responsiveness/rules.md` | Responsiveness contract: min width, no page scroll, grid row priority (middle → top → bottom), avatar↔board overlap ≤50%, floating footer on short viewports |
+| `_spec/apps/ui/responsiveness/layout.puml` | Root `Screen` grid priority diagram |
+| `_spec/apps/ui/responsiveness/screenshots.md` | HEAD visual archive: desktop · mobile · dynamic (includes Review list + `/:id`, Analysis on all profiles) |
 | `_spec/apps/server/components.puml` | Bun server component breakdown (`apps/server`: routes, in-process orchestration, engine adapters, streaming) |
 | `_spec/apps/server/orchestration.puml` | Backend orchestration workflow end-to-end: move / advice / explain / hello |
 | `_spec/apps/server/behavior.md` | **Backend behavioral contract** — 100% of the Bun backend orchestration behavior (source of truth for web parity) |

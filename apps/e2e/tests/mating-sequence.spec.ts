@@ -37,8 +37,22 @@ test.describe("Mating sequence detection (web-no-llm)", () => {
     await expect(h5).toHaveAttribute("class", /valid/, { timeout: 5_000 });
     await h5.click();
 
-    // Qh5 executed: this exercises the exact human-move path in useMoveExecutor
-    // that contains the new mating-sequence detection (analysis mate<0 for opponent).
-    await expect(h5.locator("img[alt='w q']")).toBeVisible({ timeout: 10_000 });
+    // Qh5 executed — persists into game state even if Maia answers Nxh5 before
+    // the piece assertion can land (common on slower WebKit under Xvfb).
+    await expect
+      .poll(
+        async () =>
+          page.evaluate((key) => {
+            const raw = localStorage.getItem(key);
+            if (!raw) return "";
+            try {
+              return (JSON.parse(raw) as { pgn?: string }).pgn ?? "";
+            } catch {
+              return "";
+            }
+          }, "chess_coach_game_state"),
+        { timeout: 10_000 },
+      )
+      .toMatch(/\bQh5\b/);
   });
 });

@@ -1,6 +1,7 @@
+import { useNavigate } from "@solidjs/router";
 import type { Color, PieceSymbol, Square } from "chess.js";
 import { For, Show, createEffect, createSignal } from "solid-js";
-import type { Component } from "solid-js";
+import type { Component, JSX } from "solid-js";
 
 import { ChessBoardArrow } from "~/components/atoms/ChessBoardArrow.tsx";
 import { ChessSquare } from "~/components/atoms/ChessSquare";
@@ -30,7 +31,11 @@ const squareFromTouch = (touch: Touch): Square | null => {
   return ((el?.closest("[data-square]") as HTMLElement | null)?.dataset.square as Square) ?? null;
 };
 
-export const ChessBoard: Component = () => {
+export const ChessBoard: Component<{
+  /** Override end-of-game CTAs (Review: Another Game → /selena + Replay Review). */
+  gameOverActions?: JSX.Element;
+}> = (props) => {
+  const navigate = useNavigate();
   const board = useChessBoard();
 
   const displayRanks = () => (activePlayerColor() === "w" ? RANKS : [...RANKS].reverse());
@@ -135,6 +140,7 @@ export const ChessBoard: Component = () => {
         />
       </Show>
       <div
+        data-testid="chessboard"
         class={styles["chessboard-container"]}
         onMouseEnter={board.handleBoardMouseEnter}
         onMouseLeave={board.handleBoardMouseLeave}
@@ -269,13 +275,28 @@ export const ChessBoard: Component = () => {
                 : "Draw"
         }
       >
-        <Button primary onClick={() => setShowNewGame(true)}>
-          Another Game
-        </Button>
-        <Show when={hasRecordedReview(game().pgn(), startingFen())}>
-          <Button href={`/review/${getExpectedReviewId(game().pgn(), startingFen())}`}>
-            Review Game
-          </Button>
+        <Show
+          when={props.gameOverActions != null}
+          fallback={
+            <>
+              <Button
+                primary
+                onClick={() => {
+                  setShowNewGame(true);
+                  navigate("/selena");
+                }}
+              >
+                Another Game
+              </Button>
+              <Show when={hasRecordedReview(game().pgn(), startingFen())}>
+                <Button href={`/review/${getExpectedReviewId(game().pgn(), startingFen())}`}>
+                  Review Game
+                </Button>
+              </Show>
+            </>
+          }
+        >
+          {props.gameOverActions}
         </Show>
       </GameOverBanner>
     </div>

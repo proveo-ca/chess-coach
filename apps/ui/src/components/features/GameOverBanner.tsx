@@ -11,7 +11,7 @@ interface GameOverBannerProps {
   heading: string;
   /** Optional sub-line, e.g. "White resigned." (used by LAN). */
   detail?: string;
-  /** Action buttons (Another Game / Review / Back to Menu — caller decides). */
+      /** Action buttons (Coach: Another Game / Review Game; Review: Another Game / Replay Review). */
   children: JSX.Element;
 }
 

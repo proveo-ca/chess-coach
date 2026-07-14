@@ -25,8 +25,14 @@ type CoachState = {
 
   // Survives clearHoverOverride so mobile users can tap "Why?" after dropping
   // the piece. Stores the pre-blunder FEN because currentFen() will have
-  // advanced once the blunder move is made.
-  pendingTravel: { blunderFen: string; blunderSan: string; fenBefore: string } | null;
+  // advanced once the blunder move is made, plus the blunder advice text so
+  // the panel doesn't fall back to baseAdvice (e.g. "Welcome back…").
+  pendingTravel: {
+    blunderFen: string;
+    blunderSan: string;
+    fenBefore: string;
+    advice: string;
+  } | null;
 
   // Loading state
   llmProgress: number;
@@ -58,7 +64,9 @@ const [coachState, setCoachState] = createStore<CoachState>({
 
 // ===== Selectors (UI reads these; hover override wins) =====
 export const baseAdvice = () => coachState.baseAdvice;
-export const advice = () => coachState.hoverAdvice ?? coachState.baseAdvice;
+/** Hover text, else pending blunder copy, else base advice. */
+export const advice = () =>
+  coachState.hoverAdvice ?? coachState.pendingTravel?.advice ?? coachState.baseAdvice;
 
 export const baseCoachEmotion = () => coachState.baseCoachEmotion;
 export const coachEmotion = () => coachState.hoverCoachEmotion ?? coachState.baseCoachEmotion;
@@ -118,7 +126,13 @@ export const setHoverBlunder = (
 };
 
 export const setPendingTravel = (
-  val: { blunderFen: string; blunderSan: string; fenBefore: string } | null,
+  val: {
+    blunderFen: string;
+    blunderSan: string;
+    fenBefore: string;
+    /** Blunder copy — kept after clearHoverOverride so Why? still has context. */
+    advice: string;
+  } | null,
 ) => setCoachState("pendingTravel", val);
 
 export const clearPendingTravel = () => setCoachState("pendingTravel", null);

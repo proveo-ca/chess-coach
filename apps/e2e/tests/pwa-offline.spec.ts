@@ -8,6 +8,9 @@ import { type Page, expect, test } from "@playwright/test";
 test.use({ baseURL: "http://localhost:8787/chess/" });
 
 test.describe("PWA · offline play", () => {
+  // Online warm-up + three Selena replies (incl. offline); WebKit is especially slow.
+  test.describe.configure({ timeout: 240_000 });
+
   test.beforeEach(async ({ page }) => {
     await page.goto("/");
     await page.evaluate(async () => {
@@ -46,12 +49,15 @@ test.describe("PWA · offline play", () => {
     // ── 2. GO OFFLINE + reload. The SW must serve everything from cache. ──
     await context.setOffline(true);
     // `page.reload()` errors out in Webkit when offline (Playwright issue);
-    // navigating fresh to the same URL exercises the same code path and
-    // avoids the internal-error.
-    await page.goto("/");
-    await expect(page.getByText("Play with Selena")).toBeVisible({ timeout: 15_000 });
-    await page.getByText("Play with Selena").click();
+    // navigating fresh to the same URL exercises the same code path.
+    try {
+      await page.goto(page.url(), { waitUntil: "domcontentloaded", timeout: 15_000 });
+    } catch {
+      await page.evaluate(() => window.location.reload());
+      await page.waitForLoadState("domcontentloaded");
+    }
     await expect(page).toHaveURL(/\/selena/);
+    await expect(page.getByTestId("chessboard")).toBeVisible({ timeout: 15_000 });
 
     // The board should rehydrate the saved game state (1.e4 + Selena's reply).
     await expect(page.locator("[data-square='e4']").locator("img[alt='w p']")).toBeVisible({
@@ -105,12 +111,18 @@ async function playMove(page: Page, from: string, to: string): Promise<void> {
 
 const GAME_STATE_KEY = "chess_coach_game_state";
 
-/** Tokens of `pgn` with move-number markers ("1.", "2..") stripped out. */
+/** Tokens of `pgn` with headers / comments / move-numbers stripped. */
 function pgnPlies(pgn: string): string[] {
-  return pgn
+  const body = pgn
+    .replace(/\[[^\]]*]/g, " ")
+    .replace(/\{[^}]*\}/g, " ")
+    .replace(/\([^)]*\)/g, " ")
+    .replace(/\d+\.(\.\.)?/g, " ")
+    .replace(/\s+(1-0|0-1|1\/2-1\/2|\*)\s*/g, " ");
+  return body
     .trim()
     .split(/\s+/)
-    .filter((tok) => tok && !/^\d+\.+$/.test(tok));
+    .filter((tok) => tok.length > 0);
 }
 
 /**
@@ -126,17 +138,24 @@ async function waitForSelenaResponse(page: Page, ply: number): Promise<void> {
       try {
         const { pgn } = JSON.parse(raw) as { pgn?: string };
         if (!pgn) return false;
-        const plies = pgn
+        const body = pgn
+          .replace(/\[[^\]]*\]/g, " ")
+          .replace(/\{[^}]*\}/g, " ")
+          .replace(/\([^)]*\)/g, " ")
+          .replace(/\d+\.(\.\.)?/g, " ")
+          .replace(/\s+(1-0|0-1|1\/2-1\/2|\*)\s*/g, " ");
+        const plies = body
           .trim()
           .split(/\s+/)
-          .filter((t) => t && !/^\d+\.+$/.test(t));
+          .filter((t) => t.length > 0);
         return plies.length >= (target as number) + 1;
       } catch {
         return false;
       }
     },
     [GAME_STATE_KEY, ply],
-    { timeout: 30_000 },
+    // WebKit (esp. headed / offline SW) can take well over 30s for Maia + Stockfish.
+    { timeout: 60_000 },
   );
 }
 
@@ -146,6 +165,14 @@ async function readSan(page: Page, ply: number): Promise<string> {
     return raw ? (JSON.parse(raw).pgn as string | undefined) : undefined;
   }, GAME_STATE_KEY);
   if (!pgn) throw new Error(`no persisted game state at '${GAME_STATE_KEY}'`);
+  try {
+    const g = new Chess();
+    g.loadPgn(pgn);
+    const san = g.history()[ply];
+    if (san) return san;
+  } catch {
+    /* fall through */
+  }
   const san = pgnPlies(pgn)[ply];
   if (!san) throw new Error(`PGN '${pgn}' has no ply ${ply}`);
   return san;

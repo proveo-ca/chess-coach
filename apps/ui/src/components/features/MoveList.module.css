@@ -54,6 +54,14 @@
   text-align: left;
 }
 
+.ply-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  flex-shrink: 0;
+  min-width: 0;
+}
+
 .ply:hover,
 .ply:focus-visible {
   border-color: var(--primary-color);
@@ -73,9 +81,15 @@
 .tags {
   display: inline-flex;
   gap: 0.2rem;
-  margin-left: 0.25rem;
+  margin-left: 0.15rem;
   align-items: center;
   vertical-align: middle;
+  flex-shrink: 0;
+}
+
+.tags:empty {
+  display: none;
+  margin: 0;
 }
 
 .tag {
@@ -112,7 +126,8 @@
 .cp {
   font-size: 0.75rem;
   font-variant-numeric: tabular-nums;
-  opacity: 0.85;
+  /* Full opacity — 0.85 washed cp/emotion into the light surface. */
+  opacity: 1;
 }
 
 .cp--positive {
@@ -125,6 +140,7 @@
 
 .cp--neutral {
   color: var(--text-muted);
+  font-weight: 600;
 }
 
 .page-nav {
@@ -165,4 +181,142 @@
   font-variant-numeric: tabular-nums;
   min-width: 3rem;
   text-align: center;
+}
+
+/* §4 — Review /:id: horizontal 3-turn strip over the board.
+   Viewport-centred by default (mobile has no Sidebar). Desktop offsets left
+   by half --sidebar-width so the strip aligns with ChessBoard, matching
+   Screen.Header / Footer inset when Sidebar is visible. */
+.wrapper.floating {
+  position: fixed;
+  left: 50%;
+  bottom: 0.75rem;
+  z-index: 2000;
+  width: min(92vw, var(--board-size, 22rem));
+  max-width: min(92vw, var(--board-size, 22rem));
+  margin: 0;
+  padding: 0.35rem 0.5rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.35rem;
+  box-shadow: 0 4px 16px rgba(var(--shadow-rgb), 0.35);
+  transform: translateX(-50%);
+  animation: floatIn 0.25s ease-out;
+}
+
+@media (min-width: 720px) {
+  .wrapper.floating {
+    left: calc(50% - var(--sidebar-width) / 2);
+  }
+}
+
+.floating-dismiss {
+  flex: 0 0 auto;
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 0.25rem;
+}
+
+.floating-dismiss:hover {
+  color: var(--text-color);
+}
+
+.float-strip {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 0.25rem;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.float-turn {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0.15rem;
+  min-width: 0;
+  padding: 0.2rem 0.25rem;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  /* Must not clip the cp / emotion row under each SAN. */
+  overflow: visible;
+}
+
+.float-turn--active {
+  border-color: var(--border-color);
+  background: rgba(var(--primary-rgb), 0.1);
+}
+
+.float-turn .turn {
+  flex: 0 0 auto;
+  font-size: 0.75rem;
+}
+
+/* Same inline SAN + cp + emotion as the docked list — readable on the strip. */
+.float-turn .ply {
+  flex: 0 1 auto;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0.15rem;
+  min-width: 0;
+  max-width: none;
+  padding: 0.05rem 0.15rem;
+  overflow: visible;
+}
+
+.float-turn .san {
+  font-size: 0.8rem;
+  line-height: 1.2;
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.float-turn .ply-meta {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 0.15rem;
+  min-width: 0;
+  min-height: 0;
+}
+
+.float-turn .cp {
+  font-size: 0.75rem;
+  line-height: 1.2;
+  opacity: 1;
+  min-height: 0.9rem;
+}
+
+.float-turn .tags {
+  margin-left: 0;
+  gap: 0.1rem;
+  flex-shrink: 0;
+}
+
+@keyframes floatIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+:global(.highlight) .wrapper.floating {
+  z-index: 1100;
 }

@@ -6,23 +6,36 @@
 
 @media (max-width: 719px) {
   .bar {
+    /* position:relative so .main can pin to the true midpoint regardless of
+       asymmetric left/right chrome (e.g. 3 icons vs dual history nav). */
+    position: relative;
     display: flex;
     align-items: center;
-    justify-content: center;
     gap: 0.3rem;
     width: 100%;
     max-width: var(--board-size);
-    margin: 0 auto 0.6rem;
-    padding: 0.3rem 0.7rem;
+    margin-inline: auto;
+    /* Board-column is a size container — leftover middle height grows spacing. */
+    margin-block: clamp(0.15rem, 2cqh, 0.85rem);
+    /* Equal L/R — shared with FenLoader via --board-chrome-inline. */
+    padding-block: 0.3rem;
+    padding-inline: var(--board-chrome-inline, 0.7rem);
     border-radius: 1.6rem;
     background: var(--panel-bg);
     border: 1px solid var(--border-color);
+    box-sizing: border-box;
   }
 
-  /* Replay / travel: collapse the bar so the board rises into its place, and
-     leave only the nav — which floats to the top-right corner (mirroring the
-     top-left hamburger). The dock → corner move is FLIP-animated in
-     BoardControls. */
+  /* Short / dynamic: pack bars against FEN / board (taller phones keep cqh). */
+  @media (max-height: 639px) {
+    .bar {
+      margin-block: 0.1rem;
+    }
+  }
+
+  /* Replay / travel: collapse the bar so the board rises into its place.
+     Nav floats top-right; drawer (menu) floats top-left. The dock → corner
+     move for nav is FLIP-animated in BoardControls. */
   .bar.timeline {
     margin: 0;
     padding: 0;
@@ -32,7 +45,7 @@
   }
 
   .bar.timeline > .main,
-  .bar.timeline > .item:not(.nav-item) {
+  .bar.timeline > .item:not(.nav-item):not(.drawer-item) {
     display: none;
   }
 
@@ -46,16 +59,136 @@
     background: var(--surface-color);
     border: 1px solid var(--border-color);
   }
+
+  .bar.timeline > .drawer-item {
+    display: flex;
+    position: fixed;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: 1000;
+    padding: 0.3rem;
+    border-radius: 0.8rem;
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+  }
+
+  /* Tall mobile: float menu top-left even when the tool bar is visible
+     (matches --tall-mobile). Short / dynamic keeps the drawer in-bar so
+     the compact CoachAvatar can sit closer to the board. */
+  @media (min-height: 640px) {
+    .bar:not(.toolbar) > .drawer-item {
+      display: flex;
+      position: fixed;
+      top: 0.75rem;
+      left: 0.75rem;
+      z-index: 1000;
+      padding: 0.3rem;
+      border-radius: 0.8rem;
+      background: var(--surface-color);
+      border: 1px solid var(--border-color);
+    }
+
+    /* Hero avatar owns the cat — hide compact centre + restore full bar height. */
+    .bar.center-overflow {
+      height: auto;
+      overflow: visible;
+    }
+
+    .bar.center-overflow > .main {
+      display: none;
+    }
+  }
 }
 
-/* Centre slot — a <span>, so it's excluded from the item <div> numbering. */
+/* Centre slot — a <span>, so it's excluded from the item <div> numbering.
+   Absolutely pinned to 50% so CoachAvatar (etc.) stays geometrically centred
+   even when three left icons outweigh the single right-side nav control. */
 .main {
   order: 0;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
   display: flex;
   flex: 0 0 auto;
   align-items: center;
   justify-content: center;
   padding: 0 1rem;
+  min-width: 0;
+  pointer-events: auto;
+}
+
+.main-label {
+  display: block;
+  overflow: hidden;
+  min-width: 0;
+  max-width: min(12rem, 42vw);
+}
+
+.main-label > * {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin: 0 !important;
+  font-size: 0.85rem !important;
+  line-height: 1.2 !important;
+  font-weight: 600;
+}
+
+/* Review /:id matchup — full-width label · trailing back/share (not avatar-centred). */
+@media (max-width: 719px) {
+  .bar.toolbar {
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .bar.toolbar > .main {
+    /* Matchup label is a flex child again — not geometrically centred. */
+    position: static;
+    left: auto;
+    transform: none;
+    z-index: auto;
+    flex: 1 1 auto;
+    justify-content: flex-start;
+    padding: 0 0.25rem;
+    min-width: 0;
+  }
+
+  .bar.toolbar .main-label {
+    max-width: none;
+    width: 100%;
+    text-align: left;
+    margin: 0;
+    font-size: 0.85rem;
+    line-height: 1.2;
+  }
+
+  .bar.toolbar > .item.nav-item {
+    order: 1;
+    flex: 0 0 auto;
+  }
+
+  /* Menu left of the matchup / analysis title (in-flow — never fixed overlay). */
+  .bar.toolbar > .item.drawer-item {
+    order: -10;
+    flex: 0 0 auto;
+    position: static;
+  }
+
+  /* Analysis short / dynamic: drop the title toolbar entirely — menu moves
+     into FenLoader leading (left of the input), not a fixed overlay. */
+  @media (max-height: 639px) {
+    .bar.toolbar.collapse-on-short {
+      display: none;
+    }
+  }
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 }
 
 /* Coach screen: slim the bar so the centre avatar overflows it (peeks out),
@@ -79,10 +212,9 @@
 }
 
 /* The single-button quick-actions stack on the LEFT in source order (1st sits
-   inner-left, nearest the centre); the centre <span> stays at 0. nth-of-type
-   counts only the item divs, so this re-balances as capability-gated items
-   appear / disappear. The double-wide history nav owns the right on its own —
-   one fat control balancing the row of single buttons (see .nav-item below). */
+   inner-left, nearest the centre); nth-of-type counts only the item divs, so
+   this re-balances as capability-gated items appear / disappear. `.main` itself
+   is absolutely centred, independent of how many left icons render. */
 .bar > div:nth-of-type(1) {
   order: -1;
 }
@@ -99,9 +231,14 @@
   display: none;
 }
 
-/* The history nav (arrows) is always pinned to the right of centre — whatever
-   its source slot — and is the only thing there: a double-wide control that
-   balances the single buttons on the left. Outranks the fan-out (0,3,0 > 0,2,1). */
+/* History nav is the only right-side control: pin it to the trailing edge
+   (`.main` is out of flow, so ml:auto packs left icons startward). */
 .bar > .item.nav-item {
   order: 1;
+  margin-left: auto;
+}
+
+/* Menu trigger always leftmost, outranking the nth-of-type fan-out. */
+.bar > .item.drawer-item {
+  order: -10;
 }

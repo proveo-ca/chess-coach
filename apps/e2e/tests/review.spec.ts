@@ -147,16 +147,19 @@ test.describe("Review best-move arrow (branch mode)", () => {
             this.onmessage?.(ev);
             this.dispatchEvent(ev);
           };
-          if (msg === "uci") return void queueMicrotask(() => send("uciok"));
-          if (msg === "isready") return void queueMicrotask(() => send("readyok"));
+          // Reply synchronously. queueMicrotask races with an immediate `stop`
+          // (common under WebKit with mouse still over the board after a click
+          // → hover abort) and the go-bestmove is misread as the drain of stop,
+          // leaving the pool without a stable info line / arrow.
+          if (msg === "uci") return void send("uciok");
+          if (msg === "isready") return void send("readyok");
           if (msg === "ucinewgame" || msg.startsWith("position")) return;
           if (msg.startsWith("go")) {
-            return void queueMicrotask(() => {
-              send("info depth 18 score cp 20 pv a2a3");
-              send("bestmove a2a3");
-            });
+            send("info depth 18 score cp 20 pv a2a3");
+            send("bestmove a2a3");
+            return;
           }
-          if (msg === "stop") return void queueMicrotask(() => send("bestmove a2a3"));
+          if (msg === "stop") return void send("bestmove a2a3");
         }
         terminate() {}
       }
@@ -328,5 +331,77 @@ test.describe("Review analysis ownership", () => {
     if (!analyzed.includes("e2e4")) {
       throw new Error("Expected first player move e2e4 to be analyzed");
     }
+  });
+});
+
+test.describe("Review end-of-game CTAs", () => {
+  const MATE_ID = "test-review-mate-0001";
+  // Fool's mate — terminal position so GameOverBanner opens at the tip.
+  const MATE_PGN = "1. f3 e5 2. g4 Qh4#";
+  const STARTING_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+
+  const mateFixture = {
+    games: [
+      {
+        id: MATE_ID,
+        startedAt: new Date("2026-04-14").toISOString(),
+        endedAt: new Date("2026-04-14").toISOString(),
+        result: "loss",
+        pgn: MATE_PGN,
+        startingFen: STARTING_FEN,
+        playerColor: "w",
+        difficulty: "easy",
+        moves: [
+          { san: "f3", hasPressedHint: false, isAI: false },
+          { san: "e5", hasPressedHint: false, isAI: true },
+          { san: "g4", hasPressedHint: false, isAI: false },
+          { san: "Qh4#", hasPressedHint: false, isAI: true },
+        ],
+      },
+    ],
+    inProgress: null,
+  };
+
+  test.beforeEach(async ({ page }) => {
+    await page.goto("/");
+    await page.evaluate((payload) => {
+      localStorage.clear();
+      localStorage.setItem("chess_coach_game_history", JSON.stringify(payload));
+    }, mateFixture);
+  });
+
+  test("shows Another Game → /selena+new-game modal, and Replay Review → ply 0", async ({
+    page,
+  }) => {
+    await page.goto(`review/${MATE_ID}`);
+    const moveList = page.getByLabel("Move list");
+    await expect(moveList).toBeVisible({ timeout: 15_000 });
+
+    // loadGame parks at ply 0 — scrub to the mate tip so the banner opens.
+    await moveList.locator("[data-ply='3']").click();
+    await expect(page.getByRole("heading", { name: "Checkmate" })).toBeVisible({
+      timeout: 5_000,
+    });
+    await expect(page.getByRole("button", { name: "Review Game" })).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "Replay Review" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Another Game" })).toBeVisible();
+
+    await page.getByRole("button", { name: "Replay Review" }).click();
+    await expect(page.getByRole("heading", { name: "Checkmate" })).toHaveCount(0);
+    // Before move 1 — all pieces on their home squares.
+    await expect(page.locator("[data-square='e2']").locator("img[alt='w p']")).toBeVisible();
+    await expect(page.locator("[data-square='e4']").locator("img")).toHaveCount(0);
+
+    // Scrub back to mate, then Another Game → Coach + New Game modal.
+    await moveList.locator("[data-ply='3']").click();
+    await expect(page.getByRole("heading", { name: "Checkmate" })).toBeVisible({
+      timeout: 5_000,
+    });
+    await page.getByRole("button", { name: "Another Game" }).click();
+    await expect(page).toHaveURL(/\/selena/);
+    // Sidebar + MobileDrawer each mount a New Game modal bound to the same signal.
+    await expect(page.getByRole("heading", { name: "New Game" }).first()).toBeVisible({
+      timeout: 5_000,
+    });
   });
 });

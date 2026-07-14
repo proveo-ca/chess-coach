@@ -90,23 +90,6 @@
   min-height: 1.2em;
 }
 
-.swatch {
-  width: 1.1rem;
-  height: 1.1rem;
-  border-radius: 0.25rem;
-  border: 1px solid var(--border-color);
-  display: inline-block;
-}
-
-/* Literal chess-piece colors — these represent the White/Black sides. */
-.swatch--w {
-  background: #f3f3f3;
-}
-
-.swatch--b {
-  background: #222;
-}
-
 .linkBox {
   font-family: ui-monospace, monospace;
   font-size: 0.7rem;

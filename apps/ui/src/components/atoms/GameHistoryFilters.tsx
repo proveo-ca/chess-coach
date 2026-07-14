@@ -2,8 +2,8 @@
 import { For, Show } from "solid-js";
 import type { Component } from "solid-js";
 
-import { ColorSelector } from "~/components/primitives/ColorSelector";
-import styles from "~/components/primitives/GameHistoryFilters.module.css";
+import { ColorSwatch } from "~/components/atoms/ColorSwatch";
+import styles from "~/components/atoms/GameHistoryFilters.module.css";
 import { ChevronLeftIcon, ChevronRightIcon } from "~/components/primitives/icons";
 
 interface Props {
@@ -19,30 +19,56 @@ interface Props {
   goToNext: () => void;
 }
 
+/**
+ * Review list chrome: Playing as (swatch tiles) + First move share one grid;
+ * both use the same compact tile button size. Labels shrink-wrap and center
+ * over their own tile row (not the full grid track).
+ */
 export const GameHistoryFilters: Component<Props> = (props) => {
   return (
     <>
-      <div class={styles.filters}>
-        <div>
+      <div class={styles.filters} data-testid="game-history-filters">
+        <div class={styles.group}>
           <div class={styles.label}>Playing as</div>
-          <ColorSelector
-            value={props.colorFilter}
-            onChange={(v) => {
-              if (v === "random") return;
-              props.setColorFilter(v);
-              props.setFirstMoveFilter(null);
-            }}
-            hideRandom
-          />
+          <div class={styles.tiles} role="group" aria-label="Playing as">
+            <button
+              type="button"
+              class={styles.tile}
+              classList={{ [styles["tile--active"]]: props.colorFilter === "w" }}
+              aria-pressed={props.colorFilter === "w"}
+              onClick={() => {
+                props.setColorFilter("w");
+                props.setFirstMoveFilter(null);
+              }}
+            >
+              <ColorSwatch color="w" />
+              White
+            </button>
+            <button
+              type="button"
+              class={styles.tile}
+              classList={{ [styles["tile--active"]]: props.colorFilter === "b" }}
+              aria-pressed={props.colorFilter === "b"}
+              onClick={() => {
+                props.setColorFilter("b");
+                props.setFirstMoveFilter(null);
+              }}
+            >
+              <ColorSwatch color="b" />
+              Black
+            </button>
+          </div>
         </div>
+
         <Show when={props.availableFirstMoves.length > 0}>
-          <div>
+          <div class={styles.group}>
             <div class={styles.label}>First move</div>
-            <div class={styles.firstMoves}>
+            <div class={styles.tiles} role="group" aria-label="First move">
               <button
                 type="button"
-                class={styles["page-btn"]}
+                class={styles.tile}
                 classList={{ [styles["tile--active"]]: props.firstMoveFilter === null }}
+                aria-pressed={props.firstMoveFilter === null}
                 onClick={() => props.setFirstMoveFilter(null)}
               >
                 Any
@@ -51,8 +77,9 @@ export const GameHistoryFilters: Component<Props> = (props) => {
                 {(san) => (
                   <button
                     type="button"
-                    class={styles["page-btn"]}
+                    class={styles.tile}
                     classList={{ [styles["tile--active"]]: props.firstMoveFilter === san }}
+                    aria-pressed={props.firstMoveFilter === san}
                     onClick={() => props.setFirstMoveFilter(san)}
                   >
                     {san}
@@ -69,6 +96,7 @@ export const GameHistoryFilters: Component<Props> = (props) => {
         <div class={styles["page-nav"]}>
           <Show when={props.totalPages > 1}>
             <button
+              type="button"
               class={styles["page-btn"]}
               onClick={props.goToPrev}
               disabled={props.activePage === 0}
@@ -84,6 +112,7 @@ export const GameHistoryFilters: Component<Props> = (props) => {
 
           <Show when={props.totalPages > 1}>
             <button
+              type="button"
               class={styles["page-btn"]}
               onClick={props.goToNext}
               disabled={props.activePage >= props.totalPages - 1}

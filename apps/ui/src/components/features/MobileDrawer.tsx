@@ -17,7 +17,6 @@ import {
   BookIcon,
   FlagIcon,
   FlipBoardIcon,
-  HamburgerIcon,
   HintIcon,
   PlusCircleIcon,
   SearchIcon,
@@ -34,15 +33,20 @@ import { isTravelling, travelFenHistory, travelIndex } from "~/store/travelStore
 const isRoute = (pathname: string, route: string) =>
   pathname.endsWith(route) || pathname.includes(route + "/");
 
+/** Shared open state so {@link BoardControls} can mount the menu trigger in the bar. */
+const [drawerOpen, setDrawerOpen] = createSignal(false);
+
+/** Open the mobile menu modal (triggered from MobileSidebar.Item drawer). */
+export const openMobileDrawer = () => setDrawerOpen(true);
+
 /**
- * Mobile hamburger (top-left) that opens the full menu — every desktop-Sidebar
- * option (history nav, hint, resign, new game, flip, credits, settings) plus
- * the screen routes. The quick actions live in the {@link MobileSidebar} bar;
- * this is the complete set. Hidden on desktop, where the Sidebar shows.
+ * Mobile menu modal — every desktop-Sidebar option (history nav, hint, resign,
+ * new game, flip, credits, settings) plus the screen routes. The open trigger
+ * lives in the {@link MobileSidebar} bar via {@link openMobileDrawer}; this
+ * component owns only the modal content. Hidden on desktop, where the Sidebar shows.
  */
 export const MobileDrawer: Component = () => {
   const location = useLocation();
-  const [menuOpen, setMenuOpen] = createSignal(false);
   const [showResignConfirm, setShowResignConfirm] = createSignal(false);
   const { hintSparkleClass, dismissHintSparkle } = useHintSparkle();
   const controls = useGameControls();
@@ -59,7 +63,7 @@ export const MobileDrawer: Component = () => {
     handleResign: baseHandleResign,
   } = controls;
 
-  const close = () => setMenuOpen(false);
+  const close = () => setDrawerOpen(false);
   const handleHint = () => {
     dismissHintSparkle();
     void baseHandleHint();
@@ -77,11 +81,7 @@ export const MobileDrawer: Component = () => {
 
   return (
     <>
-      <button class={styles.hamburger} onClick={() => setMenuOpen(true)} aria-label="Open menu">
-        <HamburgerIcon />
-      </button>
-
-      <Modal open={menuOpen()} onClose={close} title="Menu" position="fixed">
+      <Modal open={drawerOpen()} onClose={close} title="Menu" position="fixed">
         <div class={styles["menu-modal"]}>
           <Show when={capabilities().historyNav}>
             <DualNavButton

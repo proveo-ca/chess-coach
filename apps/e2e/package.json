@@ -6,6 +6,7 @@
     "test:headed": "npx playwright test --headed",
     "test:web": "E2E_TARGET=web-no-llm npx playwright test",
     "test:desktop": "E2E_TARGET=desktop npx playwright test",
+    "capture:responsiveness": "node scripts/capture-responsiveness.mjs",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
