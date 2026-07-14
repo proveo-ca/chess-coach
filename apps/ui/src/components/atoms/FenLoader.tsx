@@ -1,5 +1,5 @@
 import { Show, createSignal } from "solid-js";
-import type { Component } from "solid-js";
+import type { Component, JSX } from "solid-js";
 
 import styles from "~/components/atoms/FenLoader.module.css";
 import { Button } from "~/components/primitives/Button";
@@ -8,7 +8,11 @@ import { loadFen } from "~/store/gameStore";
 const FEN_REGEX =
   /^([rnbqkpRNBQKP1-8]+\/){7}[rnbqkpRNBQKP1-8]+ [wb] (-|[KQkq]+) (-|[a-h][36]) \d+ \d+$/;
 
-export const FenLoader: Component = () => {
+export const FenLoader: Component<{
+  /** Prefixed control (e.g. Analysis short/dynamic menu left of the input). */
+  leading?: JSX.Element;
+  trailing?: JSX.Element;
+}> = (props) => {
   const [value, setValue] = createSignal("");
   const [error, setError] = createSignal<string | null>(null);
 
@@ -32,23 +36,37 @@ export const FenLoader: Component = () => {
 
   return (
     <>
-      <form class={`${styles.wrapper} mobile-nav-clear`}>
-        <textarea
+      <form
+        class={`${styles.wrapper} mobile-nav-clear`}
+        data-testid="fen-loader"
+        onSubmit={(e) => {
+          e.preventDefault();
+          submit();
+        }}
+      >
+        <Show when={props.leading}>
+          <div class={styles.leading} data-testid="fen-loader-leading">
+            {props.leading}
+          </div>
+        </Show>
+        <input
+          type="text"
           name="fen"
-          rows={3}
           class={styles.input}
           classList={{ [styles["input--invalid"]]: !!error() }}
-          placeholder="Load from FEN"
+          placeholder="paste FEN here"
           aria-label="Load from FEN"
           value={value()}
           onInput={(e) => setValue(e.currentTarget.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") submit();
-          }}
         />
-        <Button type="button" class={styles.button} onClick={submit}>
+        <Button type="submit" class={styles.button}>
           Load
         </Button>
+        <Show when={props.trailing}>
+          <div class={styles.trailing} data-testid="fen-loader-trailing">
+            {props.trailing}
+          </div>
+        </Show>
       </form>
       <Show when={error()}>
         {(msg) => (

@@ -5,18 +5,23 @@ import { type Browser, type Page, expect, test } from "@playwright/test";
  * browser contexts and connect them peer-to-peer over loopback host ICE
  * candidates — no STUN/TURN, mirroring the Tailscale design.
  *
- * Runs on Chromium + WebKit (the full handshake, move relay, and color-swap all
- * work). Firefox is exercised for the lobby/invite path but skips the live
- * handshake: it assigns per-context mDNS (.local) ICE candidates that don't
- * resolve between two contexts over loopback, so the DataChannel can't open in
- * this single-machine test. Real cross-device play uses routable Tailscale
- * 100.x candidates (validated separately via the public/lan-spike.html check).
+ * Runs fully on Chromium (Brave included). Firefox and Playwright WebKit on
+ * Linux are exercised for the lobby/invite path but skip the live handshake:
+ * both assign per-context mDNS (.local) ICE candidates that don't resolve
+ * between two contexts over loopback, so the DataChannel can't open in this
+ * single-machine test. Real cross-device play uses routable Tailscale 100.x
+ * candidates (validated separately via the public/lan-spike.html check).
+ * (macOS Safari / desktop WebKit often publishes resolvable host candidates
+ * and can pass the handshake there.)
  */
-const FIREFOX_LOOPBACK_SKIP =
-  "Firefox per-context mDNS (.local) ICE candidates don't resolve between two " +
+const MDNS_LOOPBACK_SKIP =
+  "Per-context mDNS (.local) ICE candidates don't resolve between two " +
   "contexts over loopback, so the DataChannel can't open here. Real cross-device " +
   "play uses routable Tailscale 100.x candidates (see public/lan-spike.html).";
 
+function skipMdnsLoopbackHandshake(browserName: string) {
+  test.skip(browserName === "firefox" || browserName === "webkit", MDNS_LOOPBACK_SKIP);
+}
 test.describe("LAN multiplayer (serverless WebRTC)", () => {
   // Set by the global-setup WebRTC loopback preflight: when the machine has no
   // active local network path (e.g. Tailscale service stopped), Chromium's mDNS
@@ -129,7 +134,7 @@ test.describe("LAN multiplayer (serverless WebRTC)", () => {
     browser,
     browserName,
   }) => {
-    test.skip(browserName === "firefox", FIREFOX_LOOPBACK_SKIP);
+    skipMdnsLoopbackHandshake(browserName);
     const hostCtx = await browser.newContext();
     const guestCtx = await browser.newContext();
     const host = await hostCtx.newPage();
@@ -168,7 +173,7 @@ test.describe("LAN multiplayer (serverless WebRTC)", () => {
   });
 
   test("players can swap colors in the lobby", async ({ browser, browserName }) => {
-    test.skip(browserName === "firefox", FIREFOX_LOOPBACK_SKIP);
+    skipMdnsLoopbackHandshake(browserName);
     const hostCtx = await browser.newContext();
     const guestCtx = await browser.newContext();
     const host = await hostCtx.newPage();
@@ -199,7 +204,7 @@ test.describe("LAN multiplayer (serverless WebRTC)", () => {
   // ── Draw offers ───────────────────────────────────────────────────────────
 
   test("offering a draw floats a 🤝 bubble on both ends", async ({ browser, browserName }) => {
-    test.skip(browserName === "firefox", FIREFOX_LOOPBACK_SKIP);
+    skipMdnsLoopbackHandshake(browserName);
     await withStartedGame(browser, async (host, guest) => {
       await drawButton(host).click();
       // 🤝 on the offerer's king, relayed to the opponent. No ⚔️ yet.
@@ -211,7 +216,7 @@ test.describe("LAN multiplayer (serverless WebRTC)", () => {
   });
 
   test("a pending offer persists across several moves", async ({ browser, browserName }) => {
-    test.skip(browserName === "firefox", FIREFOX_LOOPBACK_SKIP);
+    skipMdnsLoopbackHandshake(browserName);
     await withStartedGame(browser, async (host, guest) => {
       await drawButton(host).click();
       await expect(offerBubble(guest)).toBeVisible({ timeout: 10_000 });
@@ -230,7 +235,7 @@ test.describe("LAN multiplayer (serverless WebRTC)", () => {
   });
 
   test("accepting an offer ends the game as a draw", async ({ browser, browserName }) => {
-    test.skip(browserName === "firefox", FIREFOX_LOOPBACK_SKIP);
+    skipMdnsLoopbackHandshake(browserName);
     await withStartedGame(browser, async (host, guest) => {
       await drawButton(host).click();
       await expect(offerBubble(guest)).toBeVisible({ timeout: 10_000 });
@@ -255,7 +260,7 @@ test.describe("LAN multiplayer (serverless WebRTC)", () => {
     browser,
     browserName,
   }) => {
-    test.skip(browserName === "firefox", FIREFOX_LOOPBACK_SKIP);
+    skipMdnsLoopbackHandshake(browserName);
     await withStartedGame(browser, async (host, guest) => {
       await drawButton(host).click();
       await expect(offerBubble(guest)).toBeVisible({ timeout: 10_000 });
@@ -280,7 +285,7 @@ test.describe("LAN multiplayer (serverless WebRTC)", () => {
   });
 
   test("the offering player can cancel their own offer", async ({ browser, browserName }) => {
-    test.skip(browserName === "firefox", FIREFOX_LOOPBACK_SKIP);
+    skipMdnsLoopbackHandshake(browserName);
     await withStartedGame(browser, async (host, guest) => {
       await drawButton(host).click();
       await expect(offerBubble(host)).toBeVisible({ timeout: 10_000 });
@@ -341,7 +346,7 @@ test.describe("LAN multiplayer (serverless WebRTC)", () => {
   });
 
   test("a player loses when their clock runs out", async ({ browser, browserName }) => {
-    test.skip(browserName === "firefox", FIREFOX_LOOPBACK_SKIP);
+    skipMdnsLoopbackHandshake(browserName);
     const hostCtx = await browser.newContext();
     const guestCtx = await browser.newContext();
     const host = await hostCtx.newPage();

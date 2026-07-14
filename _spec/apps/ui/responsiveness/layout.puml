@@ -1,0 +1,47 @@
+@startuml ui-responsiveness-layout
+' SPEC: _spec/apps/ui/responsiveness/layout.puml
+!includeurl https://raw.githubusercontent.com/proveo-ca/identity/refs/heads/main/proveo.iuml
+
+skinparam defaultTextAlignment left
+skinparam shadowing false
+skinparam backgroundColor #FEFEFE
+skinparam handwritten false
+
+title UI Responsiveness · Root grid priority\n(Screen / .app-container)
+
+rectangle "**viewport**\n(no page vertical scroll · min width ≥ board+sideboard)" as VP {
+
+  rectangle "**TOP — priority 2**\nScreen.Header / SidebarInset\navatar · FEN · titles" as TOP #E8F0FE
+  rectangle "**MIDDLE — priority 1 (essentials)**\nScreen.BoardArea\nChessboard + Sidebar / MobileSidebar" as MID #D4EDDA
+  rectangle "**BOTTOM — priority 3**\nScreen.Footer\nCoachPanel · move list\n→ floats when forced off-screen" as BOT #F8D7DA
+
+}
+
+TOP -[hidden]-> MID
+MID -[hidden]-> BOT
+
+note right of MID
+  Never shrink below
+  --board-size (+ --sidebar-width
+  on desktop).
+  All other rows yield first.
+  Mobile: middle row is 1fr;
+  board stack centers in leftover.
+end note
+
+note right of BOT
+  Short height:
+  dismissible floating messages
+  max-height = 50% CoachAvatar
+  appear instantly
+  auto-dismiss on move
+  (CoachPanel · shipped)
+end note
+
+note bottom of VP
+  Avatar: tall mobile = hero above bar (0 overlap);
+  short / dynamic = compact in bar (≤ 50% overlap)
+  may sit below Chessboard top edge (Coach mobile).
+end note
+
+@enduml

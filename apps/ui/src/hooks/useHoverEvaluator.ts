@@ -32,6 +32,25 @@ function scoreToHumanCp(
   return scoreSideIsHuman ? signed : -signed;
 }
 
+/** True when the side to move has a legal mate-in-1. */
+function hasMateInOne(fen: string): boolean {
+  try {
+    const legal = new Chess(fen);
+    for (const m of legal.moves({ verbose: true })) {
+      const probe = new Chess(fen);
+      const played = probe.move({
+        from: m.from,
+        to: m.to,
+        ...(m.promotion ? { promotion: m.promotion } : {}),
+      });
+      if (played && probe.isCheckmate()) return true;
+    }
+  } catch {
+    /* ignore */
+  }
+  return false;
+}
+
 interface UseHoverEvaluatorProps {
   canApplyHoverOverride: () => boolean;
   hoveredSquare: () => Square | null;
@@ -63,18 +82,13 @@ export function useHoverEvaluator(props: UseHoverEvaluatorProps) {
     const msg = props.analysis().lastInfo;
     if (!msg || !msg.score) return;
 
-    const baseScore = props.baseEvalScore();
-    if (!baseScore) return; // We need the before-score to calculate a delta
-
     // Skip if we already processed this eval's result
     if (evalTarget.id <= lastProcessedEvalId) return;
 
-    // Anti-race-condition: Ensure the PV move is legal in the hover position.
-    if (!msg.pv || msg.pv.length === 0) {
-      if (msg.score.kind !== "mate" || msg.score.value !== 0) {
-        return; // Ignore empty PVs unless it's a checkmate (mate 0)
-      }
-    } else {
+    // When a PV is present, prefer discarding clearly-stale PVs. Lite WASM
+    // often attaches an outdated pv[0] while the score is already for the
+    // hover fen — treat those as score-only rather than dropping the eval.
+    if (msg.pv && msg.pv.length > 0) {
       try {
         const testGame = new Chess(evalTarget.fen);
         const uci = msg.pv[0];
@@ -82,20 +96,28 @@ export function useHoverEvaluator(props: UseHoverEvaluatorProps) {
         const to = uci.slice(2, 4);
         const promotion = uci.length > 4 ? uci[4] : undefined;
         const move = testGame.move({ from, to, promotion });
-        if (!move) return; // Stale info message from previous position
+        if (!move) {
+          // Stale PV — continue with score-only classification below.
+        }
       } catch {
-        return; // Invalid move format
+        // Invalid PV format — continue score-only.
       }
     }
 
-    // Calculate Human's CP before the move (base is human-to-move)
-    const humanBaseCp = scoreToHumanCp(baseScore, true);
-    // After the hovered move, opponent is to move → invert perspective
-    const humanHoverCp = scoreToHumanCp(msg.score, false);
+    const baseScore = props.baseEvalScore();
 
-    const exitsNet = exitsMatingNet(baseScore, msg.score);
+    // Prefer engine mate scores; fall back to a local mate-in-1 scan when
+    // Stockfish is still publishing shallow cp for a forced mate position.
+    let exitsNet = baseScore ? exitsMatingNet(baseScore, msg.score) : false;
+    if (!exitsNet && hasMateInOne(currentFen())) exitsNet = true;
+
+    // Without a base score we can only classify mating-net exits.
+    if (!baseScore && !exitsNet) return;
+
+    const humanBaseCp = baseScore ? scoreToHumanCp(baseScore, true) : 0;
+    const humanHoverCp = scoreToHumanCp(msg.score, false);
     const delta = humanHoverCp - humanBaseCp;
-    const isBlunder = exitsNet || delta <= blunderThresholdCp();
+    const isBlunder = exitsNet || (baseScore != null && delta <= blunderThresholdCp());
 
     logger.action(`Hover Eval Result [${evalTarget.from}-${evalTarget.to}]`, {
       baseScore,
@@ -124,13 +146,17 @@ export function useHoverEvaluator(props: UseHoverEvaluatorProps) {
     const san = m ? m.san : `${evalTarget.from}-${evalTarget.to}`;
 
     lastProcessedEvalId = evalTarget.id;
-    setHoverAdvice(
-      exitsNet
-        ? pickMatingNetExitAdvice()
-        : `Moving the ${pieceName} to ${evalTarget.to} is ${blunderLabel()}`,
-    );
+    const blunderAdvice = exitsNet
+      ? pickMatingNetExitAdvice()
+      : `Moving the ${pieceName} to ${evalTarget.to} is ${blunderLabel()}`;
+    setHoverAdvice(blunderAdvice);
     setHoverEmotion("shocked");
     setHoverBlunder(true, evalTarget.fen, san);
-    setPendingTravel({ blunderFen: evalTarget.fen, blunderSan: san, fenBefore: currentFen() });
+    setPendingTravel({
+      blunderFen: evalTarget.fen,
+      blunderSan: san,
+      fenBefore: currentFen(),
+      advice: blunderAdvice,
+    });
   });
 }

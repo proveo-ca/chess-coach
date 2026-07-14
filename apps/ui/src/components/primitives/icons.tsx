@@ -22,6 +22,28 @@ export const ChevronLeftIcon: Component<IconProps> = (props) => {
   );
 };
 
+/** Curved return/back arrow — Lucide CornerUpLeft proportions, distinct from
+ *  history {@link ChevronLeftIcon}. */
+export const BackArrowIcon: Component<IconProps> = (props) => {
+  const s = () => props.size ?? 20;
+  return (
+    <svg
+      width={s()}
+      height={s()}
+      viewBox="0 0 20 20"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      {/* Tip at (3,9) — stem must end at the same y so the junction is centred. */}
+      <polyline points="8,14 3,9 8,4" />
+      <path d="M17 17v-5a3 3 0 0 0-3-3H3" />
+    </svg>
+  );
+};
+
 export const ChevronRightIcon: Component<IconProps> = (props) => {
   const s = () => props.size ?? 20;
   return (

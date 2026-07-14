@@ -83,9 +83,8 @@ export const Sidebar: Component = () => {
           showBackToLive={inTimelineMode()}
           onBackToLive={handleBackToLive}
         />
+        <Divider class={styles.divider} />
       </Show>
-
-      <Divider class={styles.divider} />
 
       <Show when={capabilities().hint}>
         <IconButton
@@ -110,11 +109,11 @@ export const Sidebar: Component = () => {
         </IconButton>
       </Show>
 
-      <Show when={capabilities().continuousAnalysis}>
+      <Show when={capabilities().continuousAnalysis && capabilities().flipBoard}>
         <EngineDepth />
       </Show>
 
-      <Show when={!capabilities().aiOpponent && !capabilities().readOnly}>
+      <Show when={!capabilities().aiOpponent && !capabilities().readOnly && capabilities().flipBoard}>
         <IconButton label="New Game" onClick={() => resetGame()} aria-label="New game">
           <PlusCircleIcon />
         </IconButton>

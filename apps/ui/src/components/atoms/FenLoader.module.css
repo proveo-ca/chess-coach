@@ -1,13 +1,25 @@
 .wrapper {
   display: flex;
+  flex-direction: row;
   gap: 0.5rem;
   align-items: stretch;
 }
 
 @media (max-width: 719px) {
+  /* Same L/R gutter as MobileSidebar bars — content aligns with board chrome. */
   .wrapper {
-    flex-direction: column;
+    width: 100%;
+    max-width: var(--board-size);
+    margin-inline: auto;
+    padding-inline: var(--board-chrome-inline, 0.7rem);
+    box-sizing: border-box;
   }
+}
+
+.leading {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
 }
 
 .input {
@@ -38,10 +50,30 @@
   flex: 0 0 auto;
 }
 
+.trailing {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+}
+
 .error {
   color: var(--input-error-text);
   font-size: 0.85rem;
   margin: 0 auto 0.5rem;
   max-width: var(--board-size, 640px);
   text-align: left;
+}
+
+@media (max-width: 719px) {
+  .error {
+    padding-inline: var(--board-chrome-inline, 0.7rem);
+    box-sizing: border-box;
+  }
+
+  /* Tall mobile: menu lives in the Solo Analysis toolbar — hide the FEN leading. */
+  @media (min-height: 640px) {
+    .leading {
+      display: none;
+    }
+  }
 }

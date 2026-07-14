@@ -8,29 +8,34 @@ import { GameHistoryList } from "~/components/atoms/GameHistoryList";
 import { MatrixOverlay } from "~/components/atoms/MatrixOverlay";
 import { BoardControls } from "~/components/features/BoardControls";
 import { ChessBoard } from "~/components/features/ChessBoard";
-import { MobileDrawer } from "~/components/features/MobileDrawer";
+import { MobileDrawer, openMobileDrawer } from "~/components/features/MobileDrawer";
+import { MobileSidebar } from "~/components/features/MobileSidebar";
 import { MoveList } from "~/components/features/MoveList";
 import { Sidebar } from "~/components/features/Sidebar";
 import { Button } from "~/components/primitives/Button";
-import { GameHistoryFilters } from "~/components/primitives/GameHistoryFilters";
+import { GameHistoryFilters } from "~/components/atoms/GameHistoryFilters";
+import { IconButton } from "~/components/primitives/IconButton";
+import { BackArrowIcon, HamburgerIcon, ShareIcon } from "~/components/primitives/icons";
 import { Label } from "~/components/primitives/Label";
 import { Screen } from "~/components/primitives/Screen";
 import { resolveAnnotations } from "~/engine/moveAnnotations";
 import { useBlunderArrow } from "~/hooks/useBlunderArrow";
 import { useGameAnalysis } from "~/hooks/useGameAnalysis";
 import { useGameHistoryFilters } from "~/hooks/useGameHistoryFilters";
-import { useSharedGameImport } from "~/hooks/useSharedGameImport";
 import { useShareGame } from "~/hooks/useShareGame";
+import { useSharedGameImport } from "~/hooks/useSharedGameImport";
 import { REVIEW_CAPABILITIES, setCapabilities } from "~/store/capabilitiesStore";
+import { setShowNewGame } from "~/store/coachStore";
 import { gameHistory, getGameById } from "~/store/gameHistoryStore";
 import {
   fenHistory,
   loadGame,
   reviewAnalysisMode,
-  setSavedReviewBranchIndex,
   setReviewAnalysisMode,
+  setSavedReviewBranchIndex,
   setSavedReviewPgn,
   setSavedReviewStartingFen,
+  setViewIndex,
 } from "~/store/gameStore";
 import {
   activePlayerColor,
@@ -41,7 +46,7 @@ import {
   setOpponentIdentity,
   setPlayerIdentity,
 } from "~/store/settingsStore";
-import { formatGameLabel } from "~/utils/gameTitle";
+import { formatGameLabel, formatReviewMatchup } from "~/utils/gameTitle";
 import { canGoBackInApp } from "~/utils/navHistory";
 
 export const ReviewScreen: Component = () => {
@@ -234,7 +239,7 @@ export const ReviewScreen: Component = () => {
 
           return (
             <>
-              <Screen.SidebarInset class="mobile-nav-clear">
+              <Screen.SidebarInset class="desktop-only">
                 <Label variant="title" color={resultColor}>
                   {resultLabel} ({colorLabel})
                 </Label>
@@ -270,16 +275,74 @@ export const ReviewScreen: Component = () => {
 
               <Screen.BoardArea>
                 <Screen.BoardColumn>
-                  <BoardControls center={<EngineDepth />} />
+                  <MobileSidebar toolbar>
+                    <MobileSidebar.Item drawer>
+                      <IconButton onClick={openMobileDrawer} aria-label="Open menu">
+                        <HamburgerIcon />
+                      </IconButton>
+                    </MobileSidebar.Item>
+                    <MobileSidebar.Main>
+                      <MobileSidebar.MatchupLabel data-testid="review-matchup">
+                        <Label variant="title" color={resultColor}>
+                          {formatReviewMatchup(g())}
+                        </Label>
+                      </MobileSidebar.MatchupLabel>
+                    </MobileSidebar.Main>
+                    <MobileSidebar.Item nav>
+                      <MobileSidebar.NavActions>
+                        <IconButton onClick={() => void share(g())} aria-label="Share">
+                          <ShareIcon />
+                        </IconButton>
+                        <Show
+                          when={canGoBackInApp()}
+                          fallback={
+                            <IconButton onClick={() => navigate("/")} aria-label="Back to Main Menu">
+                              <BackArrowIcon />
+                            </IconButton>
+                          }
+                        >
+                          <IconButton onClick={() => navigate(-1)} aria-label="Back">
+                            <BackArrowIcon />
+                          </IconButton>
+                        </Show>
+                      </MobileSidebar.NavActions>
+                    </MobileSidebar.Item>
+                  </MobileSidebar>
+                  <Show when={shareMsg()}>
+                    <div class="mobile-only">
+                      <Label variant="caption">{shareMsg()}</Label>
+                    </div>
+                  </Show>
+                  <BoardControls center={<EngineDepth />} omitDrawer />
                   <OpponentCaptures />
-                  <ChessBoard />
+                  <ChessBoard
+                    gameOverActions={
+                      <>
+                        <Button
+                          primary
+                          onClick={() => {
+                            setShowNewGame(true);
+                            navigate("/selena");
+                          }}
+                        >
+                          Another Game
+                        </Button>
+                        <Button onClick={() => setViewIndex(0)}>Replay Review</Button>
+                      </>
+                    }
+                  />
                   <PlayerCaptures />
                 </Screen.BoardColumn>
                 <Sidebar />
               </Screen.BoardArea>
 
               <Screen.Footer>
-                <MoveList game={g()} activePly={analysisBranchPly()} analysis={gameAnalysis()} />
+                <MoveList
+                  game={g()}
+                  activePly={analysisBranchPly()}
+                  analysis={gameAnalysis()}
+                  floatingCapable
+                />
               </Screen.Footer>
             </>
           );

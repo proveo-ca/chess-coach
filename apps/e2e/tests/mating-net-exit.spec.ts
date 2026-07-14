@@ -6,8 +6,11 @@ import { expect, test } from "@playwright/test";
  * Position: White to move with Ra8# (mate in 1). Hovering a non-mating rook
  * slide (Rb1) leaves the forced mate — coach must use mating-net-exit copy,
  * not the generic "blunder" label.
+ *
+ * Uses three pawns on the 7th so the king has no f7 escape (two-pawn FENs
+ * make Ra8 only check, not mate).
  */
-const MATING_NET_FEN = "6k1/6pp/8/8/8/8/8/R5K1 w - - 0 1";
+const MATING_NET_FEN = "6k1/5ppp/8/8/8/8/8/R5K1 w - - 0 1";
 
 const MATING_NET_EXIT_RE =
   /That move would exit your mating net|That move would let them escape your mating net|Careful — that would break your mating net|That move would throw away the mate|Don't — that leaves the mating net/;
@@ -24,6 +27,18 @@ test.describe("Mating-net exit hover (web-no-llm)", () => {
     await page.goto("/");
     await page.evaluate((fen) => {
       localStorage.clear();
+      localStorage.setItem(
+        "chess_coach_settings_state",
+        JSON.stringify({
+          colorPref: "w",
+          activePlayerColor: "w",
+          difficulty: "intermediate",
+          playerIdentity: "Human",
+          opponentIdentity: "Cat",
+          playerName: "Tester",
+          imLost: true,
+        }),
+      );
       localStorage.setItem(
         "chess_coach_game_state",
         JSON.stringify({

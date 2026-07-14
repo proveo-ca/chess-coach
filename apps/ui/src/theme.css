@@ -1,5 +1,9 @@
 @custom-media --sm-up (min-width: 480px);
 @custom-media --desktop (min-width: 720px);
+/* Exclusive complement of --desktop — keep JS helpers in utils/breakpoints.ts in sync. */
+@custom-media --mobile (max-width: 719px);
+@custom-media --tall-mobile (max-width: 719px) and (min-height: 640px);
+@custom-media --short-mobile (max-width: 719px) and (max-height: 639px);
 
 :root {
   /* RGB tuples — base color components, used for both solid colors and rgba() */
@@ -39,6 +43,10 @@
   --board-light: #f0d9b5;
   --board-dark: #b58863;
   --board-border: #2c2c2c;
+
+  /* Side colour chips (LAN / Review filters) — not square fills */
+  --piece-side-white: #f3f3f3;
+  --piece-side-black: #222;
 
   /* Board state highlights */
   --square-selected-bg: rgba(20, 85, 30, 0.5);
@@ -106,6 +114,8 @@
   --app-max-width: 100%;
   --header-columns: 1fr; /* Stack avatar and advice vertically */
   --advice-width: 100%;
+  /* Board chrome gutters (MobileSidebar · FenLoader) — equal L/R on mobile. */
+  --board-chrome-inline: 0.7rem;
 }
 
 @media (prefers-color-scheme: light) {
@@ -127,6 +137,13 @@
     --result-draw: #b07f00;
     --result-neutral: #666;
 
+    /* Move-list / annotation chips — darker than dark-theme defaults so
+       cp Δ + emotion icons stay readable on --surface-color (#f9f9f9). */
+    --annotation-best: #1b5e20;
+    --annotation-blunder: #b71c1c;
+    --annotation-forced: #bf360c;
+    --annotation-inaccuracy: #f57f17;
+
     /* Overlays lighter on light backgrounds */
     --overlay-opacity: 0.5;
   }
@@ -136,6 +153,13 @@
    MobileSidebar bar above the board). */
 @media (max-width: 719px) {
   .desktop-only {
+    display: none;
+  }
+}
+
+/* Hidden on desktop — pairs with MobileSidebar / mobile chrome. */
+@media (min-width: 720px) {
+  .mobile-only {
     display: none;
   }
 }

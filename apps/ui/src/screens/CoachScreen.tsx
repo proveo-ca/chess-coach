@@ -42,12 +42,19 @@ import { activePlayerColor, difficulty } from "~/store/settingsStore";
 import { isTravelling } from "~/store/travelStore";
 import { logger } from "~/utils/logger";
 
+import styles from "~/screens/CoachScreen.module.css";
+
 /**
  * "Playing with Selena" screen. Shows the coach avatar, advice panel, and
  * replay/travel overlays. Installs the Coach capability set on mount so
  * downstream hooks (useChessBoard, useHoverEvaluator, etc.) wire up the
  * full Coach experience: hint button, travel, blunder detection, AI
  * opponent, replay-lock on past positions.
+ *
+ * Mobile layout is CSS-owned (`CoachScreen.module.css` + MobileSidebar):
+ * tall viewports show a hero CoachAvatar above the tool bar; short / dynamic
+ * keeps the compact avatar in the bar centre. Both slots stay mounted so
+ * emotion state does not remount across the 640px height boundary.
  */
 export const CoachScreen: Component = () => {
   const [unsupportedReason, setUnsupportedReason] = createSignal<string | null>(null);
@@ -133,7 +140,7 @@ export const CoachScreen: Component = () => {
       <LightSpeedOverlay active={debugLightSpeedOverlay() || isTravelling()} />
 
       <Screen.Header>
-        {/* Desktop shows the avatar here; on mobile it moves into the bar. */}
+        {/* Desktop shows the avatar here; on mobile it moves into the column. */}
         <div class="desktop-only">
           <CoachAvatar />
         </div>
@@ -141,6 +148,10 @@ export const CoachScreen: Component = () => {
 
       <Screen.BoardArea>
         <Screen.BoardColumn>
+          {/* Tall mobile: CSS shows hero. Short: CSS hides; compact stays in bar. */}
+          <div class={styles.mobileHero} data-testid="coach-mobile-hero">
+            <CoachAvatar />
+          </div>
           <BoardControls center={<CoachAvatar compact />} centerOverflow />
           <OpponentCaptures />
           <ChessBoard />

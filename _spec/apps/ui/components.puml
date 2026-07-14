@@ -41,8 +41,15 @@ package "Screens  [src/screens/]" {
   note right of AnalysisScreen
     mounts ANALYSIS_CAPABILITIES on init
     no coach avatar · no replay/travel overlays
+    FenLoader stays a single [input][button] row
+    desktop: SidebarInset "Solo Analysis" + Back / Back to Main Menu + FenLoader
+    tall mobile: MobileSidebar toolbar [menu][title]; FenLoader + Back (trailing Load)
+    short / dynamic: title toolbar hidden; FenLoader leading = menu (left of
+      input) · trailing = Back; shared --board-chrome-inline gutters
     composition: FenLoader · ChessBoard ·
-      CapturedPieces · Sidebar · MobileDrawer
+      CapturedPieces · Sidebar · MobileDrawer · BoardControls · MobileSidebar
+    end-of-game: ChessBoard default CTAs (Another Game →
+      /selena + New Game modal · Review Game when recorded)
   end note
 
   rectangle "ReviewScreen" as ReviewScreen
@@ -50,8 +57,14 @@ package "Screens  [src/screens/]" {
     mounts REVIEW_CAPABILITIES on init
     route param: id (Polyglot-Zobrist hash)
     loads GameRecord → gameStore.loadGame()
+    desktop: SidebarInset title + Share/Back
+    mobile /:id: MobileSidebar toolbar matchup row
+      [menu][Result vs Opponent][Share · Back] — drawer left of title
     composition: GameHistoryList · ChessBoard ·
-      MoveList · CapturedPieces
+      MoveList · CapturedPieces · MobileSidebar · BoardControls
+    end-of-game (ChessBoard GameOverBanner override):
+      Another Game → /selena + New Game modal (same as default)
+      Replay Review → setViewIndex(0) (before move 1)
   end note
 
   rectangle "MenuScreen" as MenuScreen
@@ -242,6 +255,8 @@ package "Components  [src/components/]" {
       EvalBar overlay · GameOverBanner · PromotionModal
       board flips on activePlayerColor change
       composes ChessSquare + ChessBoardArrow (atoms)
+      optional gameOverActions (Review: Replay Review → ply 0;
+        Another Game always → /selena + New Game modal)
     end note
     rectangle "MultiplayerBoard" as MultiplayerBoard
     note bottom of MultiplayerBoard
@@ -275,55 +290,75 @@ package "Components  [src/components/]" {
       Shared end-of-game banner over the board (Modal,
       board-absolute, non-dismissible). Caller passes the
       headline, optional detail, and action buttons.
-      Used by ChessBoard (Coach) and LanScreen (LAN).
+      ChessBoard defaults to Another Game → /selena + New
+      Game modal · Review Game; Review overrides with
+      Replay Review via gameOverActions. LanScreen renders
+      its own actions.
     end note
     rectangle "CoachPanel" as CoachPanel
     note right of CoachPanel
       parses SAN notation · interactive spans
       hover/click → board arrow highlight
       "Why?" button if hoverBlunder=true
+      short viewport (§4): collapses in-flow footer,
+        floats the CoachPanel (max-height ½ --avatar-height,
+        instant appear, dismiss / auto-dismiss on move;
+        desktop float inset matches MoveList)
     end note
     rectangle "Sidebar" as Sidebar
     note right of Sidebar
       hint · resign · new game · flip board · settings
       (gated by capabilities flags); shows EngineDepth on
-      continuousAnalysis screens (Analysis/Review). No credits
+      Analysis only (continuousAnalysis + flipBoard).
+      New Game same gate. Review: nav + settings + route links.
       (mobile drawer / menu only).
     end note
     rectangle "MobileDrawer" as MobileDrawer
     note right of MobileDrawer
-      mobile hamburger (fixed top-left) → Modal with the
-      desktop-Sidebar option set plus credits: history nav, hint,
-      resign, new game, flip, credits, SettingsPanel + route shortcuts
-      (Coach/Analysis/Review). Quick actions live in MobileSidebar.
+      modal menu (openMobileDrawer from BoardControls
+      drawer Item in MobileSidebar — no fixed hamburger):
+      desktop-Sidebar option set plus credits: history nav,
+      hint, resign, new game, flip, credits, SettingsPanel +
+      route shortcuts (Coach/Analysis/Review).
     end note
     rectangle "MobileSidebar" as MobileSidebar
     note right of MobileSidebar
       mobile-only horizontal control bar above the board, shared by
-      every board screen. Compound: <Main> (centred per-screen slot)
-      + up to 4 <Item> quick actions; CSS (nth-of-type, no JS) stacks
-      the single-button items on the LEFT of centre and drops any 5th.
-      The nav <Item> (double-wide history arrows) owns the RIGHT alone —
-      balancing the left buttons so <Main> stays truly centred, whatever
-      is gated out. Centre is per-screen: CoachAvatar (Coach), EngineDepth
-      (Analysis/Review), ConnIndicator (LAN). No settings/credits/routes.
+      every board screen. Compound: <Main> (absolutely pinned to 50%
+      so CoachAvatar stays geometrically centred even with 3 left
+      icons vs the dual history nav) + up to 4 <Item> quick actions;
+      CSS (nth-of-type, no JS) stacks the single-button items on the
+      LEFT of centre and drops any 5th. The nav <Item> owns the RIGHT
+      via margin-left:auto. The drawer <Item drawer> pins LEFTMOST on
+      short / dynamic; on tall mobile (and timeline) it floats fixed
+      top-left while nav floats top-right in timeline. Centre is
+      per-screen: CoachAvatar compact on short Coach only (tall Coach
+      stacks hero above bar), EngineDepth
+      (Analysis/Review board bar), ConnIndicator (LAN). Review /:id also
+      mounts a toolbar MobileSidebar (matchup label + back/share) above
+      BoardControls — absolute centering disabled in toolbar mode.
       timeline prop (replay/travel): the bar collapses (board rises),
-      <Main> + non-nav items hide, and the lone nav <Item nav> floats
-      fixed to the top-right corner (mirrors the top-left hamburger).
+      <Main> + non-nav/non-drawer items hide.
     end note
     rectangle "BoardControls" as BoardControls
     note right of BoardControls
       the MobileSidebar quick actions for the engine-backed boards
-      (Coach/Analysis/Review): hint · nav · flip · new game,
-      capability-gated. Renders bare MobileSidebar.Items. Passes
-      timeline=inTimelineMode() and FLIP-animates the nav <Item>
-      between its in-bar dock and the top-right corner.
+      (Coach/Analysis/Review): drawer menu · hint · nav · resign ·
+      new game, capability-gated (flip lives in MobileDrawer +
+      desktop Sidebar only). Renders bare MobileSidebar.Items.
+      Passes timeline=inTimelineMode() and FLIP-animates the nav
+      <Item> between its in-bar dock and the top-right corner.
     end note
     rectangle "MoveList" as MoveList
     note right of MoveList
       2-column layout · CP delta · annotation badges
       best | blunder | inaccuracy | hint | forced
-      ROWS_PER_PAGE=8 · swipe on mobile
+      rowsPerPage: 3 (≥720) / 6 (portrait)
+      Review /:id (§4b):
+        floatingCapable → footerFloat · 3-turn strip
+        strip shows SAN + cp Δ + emotion tags
+        dismiss × / play-move · reappear on history nav
+        desktop float inset matches CoachPanel
     end note
     rectangle "NewGamePanel"   as NewGamePanel
     rectangle "Settings"       as Settings
@@ -352,6 +387,18 @@ package "Components  [src/components/]" {
       seats + the guest's Play/Spectate choice. With onClick
       the whole card is a button; otherwise it hosts its own
       Take/Swap buttons. `selected` highlights the border.
+      Seats compose ColorSwatch for the side colour.
+    end note
+    rectangle "ColorSwatch"     as ColorSwatch
+    note right of ColorSwatch
+      White/Black square · theme --piece-side-* · LAN seats (md) ·
+      Review Playing-as tiles (sm) · LAN in-game matchup
+    end note
+    rectangle "GameHistoryFilters" as GameHistoryFilters
+    note right of GameHistoryFilters
+      Review list: Playing as + First move share one CSS grid;
+      compact tiles (ColorSwatch + label) match opening-move size.
+      Date pagination below. ColorSelector (pill) stays on NewGamePanel.
     end note
     rectangle "CoachAvatar"     as CoachAvatar
     note right of CoachAvatar
@@ -397,9 +444,13 @@ package "Components  [src/components/]" {
     rectangle "icons.tsx (40+ SVG icons)"        as Icons
     rectangle "ColorSelector"      as ColorSelector
     rectangle "EvalBar"            as EvalBar
+    note right of EvalBar
+      Vertical eval fill + numeric pill. On mobile (--mobile /
+      max-width 719px) the pill is hidden (too wide for the slim
+      gutter) and the bar tucks flush left of the board.
+    end note
     rectangle "CoachEmotionIcon"   as CoachEmotionIcon
     rectangle "PromotionModal"     as PromotionModal
-    rectangle "GameHistoryFilters" as GameHistoryFilters
     rectangle "DualNavButton"      as DualNavButton
     rectangle "SplashScreen"       as SplashScreen
     note right of SplashScreen
@@ -411,9 +462,11 @@ package "Components  [src/components/]" {
     note right of Screen
       gameplay layout shell — owns the app-container
       grid + compound regions (Header · SidebarInset ·
-      BoardArea · BoardColumn · Footer). Composed by
-      CoachScreen · AnalysisScreen · ReviewScreen
-      (replaced the shared App.module.css).
+      BoardArea · BoardColumn · Footer; data-region
+      top/middle/bottom). 100dvh · no page scroll;
+      data-footer-float driven by CoachPanel (§4).
+      Composed by CoachScreen · AnalysisScreen ·
+      ReviewScreen (replaced the shared App.module.css).
     end note
     rectangle "HistoryOverlay (presentational overlay)" as Overlays
     rectangle "ChatBubble" as ChatBubble
@@ -605,7 +658,7 @@ UseGameRecorder   --> HistoryStore : pushMove · finalizeGame
 UseMoveExecutor   --> GameStore    : addMove · addMoveSan
 UseChessBoard     --> EvalStore    : setBaseEvalScore · setBaseEvalDepth
 EngineDepth       ..> EvalStore    : baseEvalDepth
-Sidebar           --> EngineDepth  : slot (continuousAnalysis)
+Sidebar           --> EngineDepth  : slot (Analysis: continuousAnalysis ∧ flipBoard)
 ResignConfirm     ..> EvalStore    : baseEvalScore
 
 ' ── Review history filters ──
@@ -638,9 +691,10 @@ LanScreen           --> GameOverBanner      : renders (gameOver && !replaying)
 LanScreen           --> DualNavButton       : history nav → gameStore goBack/goForward/setViewIndex
 MultiplayerBoard    ..> UseMultiplayerBoard : uses
 LanScreen           --> Clock               : renders (matchup header, per side)
-CoachScreen         --> MobileSidebar        : bar above board (centre = CoachAvatar)
-AnalysisScreen      --> MobileSidebar        : bar above board (centre = EngineDepth)
-ReviewScreen        --> MobileSidebar        : bar above board (centre = EngineDepth)
+CoachScreen         --> MobileSidebar        : tall: avatar above bar; short/§4: compact in centre
+CoachScreen         --> CoachAvatar          : desktop Header · tall mobile hero · short bar compact
+AnalysisScreen      --> MobileSidebar        : tall: [menu][Solo Analysis]; short: no toolbar; Back trails FenLoader Load
+ReviewScreen        --> MobileSidebar        : [menu][matchup][Share · Back] + BoardControls (EngineDepth · omitDrawer)
 LanScreen           --> MobileSidebar        : bar above board (centre blank)
 MobileSidebar       --> BoardControls        : quick-action Items (coach screens)
 CoachScreen         --> MobileDrawer         : hamburger (full menu)
@@ -660,6 +714,11 @@ UseMultiplayerGame  --> SettingsStore       : setActivePlayerColor(myColor)
 UseMultiplayerGame  --> PeerTransportIF     : send · broadcast · onMessage
 UseLanGameRecorder  --> HistoryStore        : startNewRecord · pushMove · finalizeGame
 UseLanGameRecorder  ..> RoomStore           : started · gameOver · myColor (record trigger)
+LanScreen           --> SelectCard          : lobby seats / Play·Spectate
+LanScreen           --> ColorSwatch         : seat colour (md) · in-game matchup
+SelectCard          --> ColorSwatch         : composed in seats
+GameHistoryFilters  --> ColorSwatch         : Playing-as tiles (sm)
+ReviewScreen        --> GameHistoryFilters  : list filters
 LanScreen           --> TailscaleChecklist  : renders (lobby onboarding gate)
 TailscaleChecklist  ..> Platform            : detectPlatform()
 TailscaleChecklist  ..> Tailscale           : probeTailnet()

@@ -15,9 +15,12 @@ const THREADING = __STOCKFISH_VARIANT__.endsWith("-single") ? "single-thread" : 
 export const EngineDepth: Component = () => (
   <span
     class={styles.depth}
+    data-testid="engine-depth"
     title={`Stockfish (WASM, ${THREADING}) analysis depth: ${baseEvalDepth() || "–"}`}
   >
-    <span class={styles.num}>{baseEvalDepth() || "–"}</span>
+    <span class={styles.num} data-testid="engine-depth-value">
+      {baseEvalDepth() || "–"}
+    </span>
     <span class={styles.label}>depth</span>
   </span>
 );

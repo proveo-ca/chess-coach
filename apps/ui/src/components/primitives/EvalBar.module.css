@@ -1,7 +1,9 @@
 .eval-bar {
+  --eval-bar-offset: -2rem;
+  --eval-bar-thickness: calc(var(--square-size) * 0.5);
   position: absolute;
-  left: -2rem;
-  width: calc(var(--square-size) * 0.5);
+  left: var(--eval-bar-offset);
+  width: var(--eval-bar-thickness);
   height: var(--board-size);
   background: var(--eval-bar-bg);
   border-radius: 12px;
@@ -68,4 +70,17 @@
   border-radius: 999px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
   box-sizing: border-box;
+}
+
+/* Mobile: bar sits in a narrow gutter left of the board — hide the numeric
+   pill (min-width: 52px can't fit) and let the fill convey the eval. */
+@media (max-width: 719px) {
+  .eval-bar {
+    --eval-bar-offset: -0.75rem;
+    --eval-bar-thickness: 0.9rem;
+  }
+
+  .eval-value {
+    display: none;
+  }
 }

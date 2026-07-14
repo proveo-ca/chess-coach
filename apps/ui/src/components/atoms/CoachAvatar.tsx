@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/ui/components.puml
+// SPEC: _spec/apps/ui/components.puml, _spec/apps/ui/responsiveness/rules.md
 import clsx from "clsx";
 import type { Component } from "solid-js";
 
@@ -8,13 +8,15 @@ import { coachEmotion } from "~/store/coachStore";
 interface CoachAvatarProps {
   /** Force the sleeping pose, ignoring the live coach emotion (used by the loading splash). */
   sleeping?: boolean;
-  /** Bar-sized variant (used as the MobileSidebar centre slot). */
+  /** Bar-sized variant (MobileSidebar centre on short / dynamic Coach). */
   compact?: boolean;
 }
 
 export const CoachAvatar: Component<CoachAvatarProps> = (props) => {
   return (
     <div
+      data-testid="coach-avatar"
+      data-variant={props.sleeping ? "sleeping" : props.compact ? "compact" : "default"}
       class={clsx(
         styles.cat,
         props.compact && styles.compact,

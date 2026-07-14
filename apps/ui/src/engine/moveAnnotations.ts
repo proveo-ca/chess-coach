@@ -57,6 +57,7 @@ export function resolveAnnotations(
 export function formatCp(cp: number): string {
   if (cp >= 10000) return "M+";
   if (cp <= -10000) return "M-";
+  if (cp === 0) return "+0";
   return cp > 0 ? `+${cp}` : `${cp}`;
 }
 

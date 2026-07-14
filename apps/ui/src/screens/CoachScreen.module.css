@@ -1,0 +1,27 @@
+/* SPEC: _spec/apps/ui/responsiveness/rules.md */
+
+/* Tall mobile: hero CoachAvatar above the tool bar (not embedded in MobileSidebar).
+   Hidden on desktop (Header owns the avatar) and on short dynamic (bar compact).
+   Always mounted — visibility is CSS-only so the avatar does not remount. */
+.mobileHero {
+  display: none;
+}
+
+@media (--tall-mobile) {
+  .mobileHero {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    width: 100%;
+    max-width: var(--board-size);
+    margin-inline: auto;
+    /* Absorb leftover column space so the cat sits in the upper chrome. */
+    margin-block: clamp(0.25rem, 3cqh, 1.25rem);
+    min-height: 0;
+  }
+
+  /* Default cat uses a large top margin for desktop header — collapse it here. */
+  .mobileHero :global([data-testid="coach-avatar"]) {
+    margin-top: 0.35rem;
+  }
+}

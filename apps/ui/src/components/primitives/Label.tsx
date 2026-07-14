@@ -11,6 +11,7 @@ interface LabelProps {
   variant?: LabelVariant;
   color?: LabelColor;
   class?: string;
+  "data-testid"?: string;
   children: JSX.Element;
 }
 
@@ -18,10 +19,20 @@ export function Label(props: LabelProps) {
   const variant = () => props.variant ?? "muted";
   const color = () => props.color;
   const cls = () => clsx(styles.label, styles[variant()], color() && styles[color()!], props.class);
+  const testId = () => props["data-testid"];
 
   return (
-    <Show when={variant() === "section"} fallback={<span class={cls()}>{props.children}</span>}>
-      <p class={cls()}>{props.children}</p>
+    <Show
+      when={variant() === "section"}
+      fallback={
+        <span class={cls()} data-testid={testId()}>
+          {props.children}
+        </span>
+      }
+    >
+      <p class={cls()} data-testid={testId()}>
+        {props.children}
+      </p>
     </Show>
   );
 }

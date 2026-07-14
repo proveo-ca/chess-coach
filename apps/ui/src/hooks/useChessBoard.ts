@@ -12,6 +12,7 @@ import {
   baseCoachEmotion,
   clearHoverOverride,
   clearPendingTravel,
+  hoverBlunder,
   pendingTravel,
   setAdviceArrow,
   setAdviceHoveredSquares,
@@ -236,9 +237,11 @@ export function useChessBoard() {
 
     setHoverEmotion(emotion);
 
-    // Hover always overrides advice; baseline override matches current base advice
-    // so the UI doesn't "jump" until we have something meaningful to say.
-    setHoverAdvice(baseAdvice());
+    // Baseline advice so the panel doesn't jump to empty until a real hover
+    // verdict lands — but never clobber an active blunder / pending Why message.
+    if (!hoverBlunder() && !pendingTravel()) {
+      setHoverAdvice(baseAdvice());
+    }
   };
 
   createEffect(() => {
@@ -381,6 +384,8 @@ export function useChessBoard() {
       setValidMoves([]);
       setHoveredSquare(null);
       clearHoverOverride();
+      // Abandoned hover (no drop) — drop the pending Why episode too.
+      clearPendingTravel();
       setCurrentHoverEval(null);
       stopHover();
       return;
