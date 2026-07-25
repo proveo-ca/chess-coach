@@ -1,0 +1,26 @@
+.header {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 3.5rem;
+}
+
+.header > div {
+  grid-column: 2;
+}
+
+.matchup,
+.placeholder {
+  margin: 0.2rem 0;
+  color: var(--text-color);
+}
+
+.matchup {
+  font-size: 0.85rem;
+}
+
+.placeholder {
+  padding-top: 0.5rem;
+  opacity: 0.75;
+}

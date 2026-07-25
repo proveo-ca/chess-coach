@@ -1,3 +1,4 @@
+import { useNavigate } from "@solidjs/router";
 import type { Component } from "solid-js";
 
 import styles from "~/components/features/NewGamePanel.module.css";
@@ -14,6 +15,7 @@ import {
   activePlayerColor,
   colorPref,
   difficulty,
+  identityOptions,
   imLost,
   playerIdentity,
   setColorPref,
@@ -23,9 +25,14 @@ import {
 } from "~/store/settingsStore";
 import type { Difficulty, PlayerIdentity } from "~/types/settings";
 
-const IDENTITY_OPTIONS: PlayerIdentity[] = ["Human", "Cat", "Dog", "Rat"];
-
 export const NewGamePanel: Component = () => {
+  const navigate = useNavigate();
+
+  const selectIdentity = (identity: PlayerIdentity) => {
+    setPlayerIdentity(identity);
+    if (identity === "Nerd") navigate("/broodwar");
+  };
+
   const handleNewGame = async () => {
     try {
       const data = await postNewGame();
@@ -83,10 +90,10 @@ export const NewGamePanel: Component = () => {
       </Select>
       <Select
         value={playerIdentity()}
-        onChange={(e) => setPlayerIdentity(e.currentTarget.value as PlayerIdentity)}
+        onChange={(e) => selectIdentity(e.currentTarget.value as PlayerIdentity)}
         disabled={imLost()}
       >
-        {IDENTITY_OPTIONS.map((id) => (
+        {identityOptions().map((id) => (
           <option value={id}>{id}</option>
         ))}
       </Select>

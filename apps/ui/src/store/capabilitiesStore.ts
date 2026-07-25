@@ -137,4 +137,10 @@ export const LAN_OBSERVER_CAPABILITIES: ScreenCapabilities = {
   readOnly: true,
 };
 
+/** Secret Brood War placeholder: static board with the Nerd set on both sides. */
+export const NERD_CAPABILITIES: ScreenCapabilities = {
+  ...LAN_OBSERVER_CAPABILITIES,
+  opponentUsesPlayerPieceSet: true,
+};
+
 export const [capabilities, setCapabilities] = createSignal<ScreenCapabilities>(COACH_CAPABILITIES);

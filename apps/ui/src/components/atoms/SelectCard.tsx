@@ -2,6 +2,7 @@ import { Show } from "solid-js";
 import type { Component, JSX } from "solid-js";
 
 import styles from "~/components/atoms/SelectCard.module.css";
+import { Button } from "~/components/primitives/Button";
 
 interface SelectCardProps {
   /** Small uppercase header, e.g. "White" / "Play". */
@@ -40,7 +41,7 @@ export const SelectCard: Component<SelectCardProps> = (props) => {
         </div>
       }
     >
-      <button
+      <Button
         type="button"
         class={styles.card}
         classList={{ [styles.selected]: !!props.selected }}
@@ -49,7 +50,7 @@ export const SelectCard: Component<SelectCardProps> = (props) => {
         data-testid={props.testId}
       >
         {body()}
-      </button>
+      </Button>
     </Show>
   );
 };

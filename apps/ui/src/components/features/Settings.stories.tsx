@@ -1,0 +1,56 @@
+import type { Meta, StoryObj } from "storybook-solidjs-vite";
+
+import { Settings, SettingsPanel } from "~/components/features/Settings";
+import {
+  setImLost,
+  setNerdModeUnlocked,
+  setPlayerIdentity,
+  setPlayerName,
+} from "~/store/settingsStore";
+
+const prepareSettings = () => {
+  setPlayerName("Castle Crusher");
+  setNerdModeUnlocked(true);
+  setPlayerIdentity("Cat");
+  setImLost(false);
+};
+
+const meta = {
+  title: "Features/Settings",
+  component: Settings,
+  parameters: { layout: "fullscreen" },
+  args: {
+    open: true,
+    onClose: () => undefined,
+  },
+  render: (args) => {
+    prepareSettings();
+    return <Settings {...args} />;
+  },
+} satisfies Meta<typeof Settings>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const Desktop: Story = {
+  globals: { viewport: { value: "desktop", isRotated: false } },
+};
+
+export const Mobile: Story = {
+  globals: { viewport: { value: "mobile", isRotated: false } },
+};
+
+export const Dynamic: Story = {
+  globals: { viewport: { value: "dynamic", isRotated: false } },
+};
+
+export const InlinePanel: Story = {
+  render: () => {
+    prepareSettings();
+    return (
+      <div style={{ width: "min(28rem, calc(100vw - 2rem))", margin: "2rem auto" }}>
+        <SettingsPanel />
+      </div>
+    );
+  },
+};

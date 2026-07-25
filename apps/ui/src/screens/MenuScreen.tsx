@@ -3,6 +3,7 @@ import type { Component } from "solid-js";
 
 import { CoachAvatar } from "~/components/atoms/CoachAvatar";
 import { Credits } from "~/components/atoms/Credits";
+import { NerdModePrompt } from "~/components/features/NerdModePrompt";
 import { PlayerNameField } from "~/components/features/PlayerNameField";
 import { Label } from "~/components/primitives/Label";
 import { MenuButton } from "~/components/primitives/MenuButton";
@@ -13,6 +14,7 @@ import { setShowCredits, showCredits } from "~/store/coachStore";
 import { gameHistory } from "~/store/gameHistoryStore";
 import {
   difficulty,
+  identityOptions,
   playerIdentity,
   setDifficulty,
   setPlayerIdentity,
@@ -20,10 +22,13 @@ import {
 // SPEC: _spec/apps/ui/components.puml
 import type { Difficulty, PlayerIdentity } from "~/types/settings";
 
-const IDENTITY_OPTIONS: PlayerIdentity[] = ["Human", "Cat", "Dog", "Rat"];
-
 export const MenuScreen: Component = () => {
   const navigate = useNavigate();
+
+  const selectIdentity = (identity: PlayerIdentity) => {
+    setPlayerIdentity(identity);
+    if (identity === "Nerd") navigate("/broodwar");
+  };
 
   return (
     <SplashScreen title="Wanna play Chess?" avatar={<CoachAvatar />}>
@@ -40,9 +45,9 @@ export const MenuScreen: Component = () => {
         <Select
           id="player-identity"
           value={playerIdentity()}
-          onChange={(e) => setPlayerIdentity(e.currentTarget.value as PlayerIdentity)}
+          onChange={(e) => selectIdentity(e.currentTarget.value as PlayerIdentity)}
         >
-          {IDENTITY_OPTIONS.map((id) => (
+          {identityOptions().map((id) => (
             <option value={id}>{id}</option>
           ))}
         </Select>
@@ -76,6 +81,7 @@ export const MenuScreen: Component = () => {
         Credits
       </MenuButton>
       <Credits open={showCredits()} onClose={() => setShowCredits(false)} />
+      <NerdModePrompt />
     </SplashScreen>
   );
 };

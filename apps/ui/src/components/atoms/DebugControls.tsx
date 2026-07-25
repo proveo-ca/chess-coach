@@ -11,9 +11,9 @@ const [debugLightSpeedOverlay, setDebugLightSpeedOverlay] = createSignal(false);
 
 export { debugHistoryOverlay, debugLightSpeedOverlay };
 
-export const DebugControls: Component = () => {
+export const DebugControls: Component<{ forceVisible?: boolean }> = (props) => {
   return (
-    <Show when={isDebug}>
+    <Show when={props.forceVisible || isDebug}>
       <div
         class="debug-panel"
         style={{

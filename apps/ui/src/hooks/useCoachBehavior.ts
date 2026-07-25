@@ -35,6 +35,7 @@ const BISHOP_CAPTURE_PHRASES: Record<PlayerIdentity, string[]> = {
     "I'm calling Lord Ganesha if you misbehave",
     "Humble but mighty",
   ],
+  Nerd: ["You must construct additional pylons", "En taro Tassadar", "Knowledge is power"],
 };
 
 const QUEEN_CAPTURE_PHRASES: Record<PlayerIdentity, string[]> = {
@@ -61,6 +62,11 @@ const QUEEN_CAPTURE_PHRASES: Record<PlayerIdentity, string[]> = {
     "Hopefully the Haida people will understand me.",
     "Sorry King Capy, no more Queen.",
     "Too strong for that undeserving army.",
+  ],
+  Nerd: [
+    "The Queen of Blades approves.",
+    "Another victory for the Swarm.",
+    "You require more vespene gas.",
   ],
 };
 

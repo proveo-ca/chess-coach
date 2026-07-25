@@ -81,6 +81,7 @@ export const ChessSquare: Component<ChessSquareProps> = (props) => {
   return (
     <div
       data-square={props.square}
+      data-tone={props.isLight ? "light" : "dark"}
       classList={{
         [styles.square]: true,
         [styles.light]: props.isLight,

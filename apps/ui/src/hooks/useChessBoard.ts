@@ -144,6 +144,14 @@ export function useChessBoard() {
   // Coach play, arrow off) it stays at NORMAL.
   const startBase = () => {
     baseController?.abort();
+    const screenCapabilities = capabilities();
+    if (
+      !screenCapabilities.continuousAnalysis &&
+      !screenCapabilities.blunderDetection &&
+      screenCapabilities.bestMoveArrow === "off"
+    ) {
+      return;
+    }
     const g = activeGame();
     if (g.isGameOver()) return;
     if (!(capabilities().continuousAnalysis || g.turn() === activePlayerColor() || isReplaying())) {

@@ -13,12 +13,15 @@
    uses a wider breakpoint than the rest of the app's 719px phone split. */
 @media (max-width: 1024px) {
   .new-game-panel {
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: stretch;
   }
 
-  .new-game-panel > select,
-  .new-game-panel > button {
+  .new-game-panel > * {
+    min-width: 0;
     width: 100%;
+    box-sizing: border-box;
   }
 }
 

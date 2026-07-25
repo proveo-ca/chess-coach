@@ -25,6 +25,9 @@ const [state, setState] = createPersistedStore<GameHistoryState>("chess_coach_ga
 export const gameHistory = () => state.games;
 export const inProgressGame = () => state.inProgress;
 
+/** Clear recorded and in-progress games (used by isolated previews and tests). */
+export const resetGameHistory = () => setState({ games: [], inProgress: null });
+
 export const getGameById = (id: string): GameRecord | null => {
   if (state.inProgress && state.inProgress.id === id) return state.inProgress;
   return state.games.find((g) => g.id === id) ?? null;
@@ -69,7 +72,6 @@ export const pushMove = (move: MoveRecord) => {
   if (last && last.san === move.san && last.isAI === move.isAI) return;
   setState("inProgress", "moves", (prev) => [...prev, move]);
 };
-
 
 function annotatePgn(pgn: string, moves: MoveRecord[]): string {
   // Preserve PGN headers before the first blank line; only annotate the move body.

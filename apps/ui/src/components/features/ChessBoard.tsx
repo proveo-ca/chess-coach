@@ -1,5 +1,6 @@
 import { useNavigate } from "@solidjs/router";
 import type { Color, PieceSymbol, Square } from "chess.js";
+import clsx from "clsx";
 import { For, Show, createEffect, createSignal } from "solid-js";
 import type { Component, JSX } from "solid-js";
 
@@ -19,6 +20,7 @@ import { activePlayerColor, opponentPieceSet, playerPieceSet } from "~/store/set
 import { isTravelling } from "~/store/travelStore";
 // SPEC: _spec/apps/ui/components.puml
 import type { MoveSquares } from "~/types/game";
+import type { NerdBoardVariant } from "~/types/ui";
 
 const FILES = ["a", "b", "c", "d", "e", "f", "g", "h"];
 const RANKS = ["8", "7", "6", "5", "4", "3", "2", "1"];
@@ -34,6 +36,8 @@ const squareFromTouch = (touch: Touch): Square | null => {
 export const ChessBoard: Component<{
   /** Override end-of-game CTAs (Review: Another Game → /selena + Replay Review). */
   gameOverActions?: JSX.Element;
+  /** Brood War tile treatment; reserved for Nerd mode. */
+  variant?: NerdBoardVariant;
 }> = (props) => {
   const navigate = useNavigate();
   const board = useChessBoard();
@@ -146,7 +150,10 @@ export const ChessBoard: Component<{
         onMouseLeave={board.handleBoardMouseLeave}
       >
         <div
-          class={styles.chessboard}
+          class={clsx(
+            styles.chessboard,
+            props.variant && styles[`chessboard--${props.variant}`],
+          )}
           onContextMenu={(e) => e.preventDefault()}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}

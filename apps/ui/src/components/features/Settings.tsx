@@ -7,15 +7,19 @@ import styles from "~/components/features/Settings.module.css";
 import { Button } from "~/components/primitives/Button";
 import { Select } from "~/components/primitives/Select";
 import { Toggle } from "~/components/primitives/Toggle";
-import { imLost, playerIdentity, setImLost, setPlayerIdentity } from "~/store/settingsStore";
+import {
+  identityOptions,
+  imLost,
+  playerIdentity,
+  setImLost,
+  setPlayerIdentity,
+} from "~/store/settingsStore";
 import type { PlayerIdentity } from "~/types/settings";
 
 type Props = {
   open: boolean;
   onClose: () => void;
 };
-
-const IDENTITY_OPTIONS: PlayerIdentity[] = ["Human", "Cat", "Dog", "Rat"];
 
 /**
  * The raw settings content — identity picker, "i'm lost" toggle, back-to-menu.
@@ -29,6 +33,14 @@ export const SettingsPanel: Component<{ onDismiss?: () => void }> = (props) => {
   const handleBackToMenu = () => {
     props.onDismiss?.();
     navigate("/");
+  };
+
+  const selectIdentity = (identity: PlayerIdentity) => {
+    setPlayerIdentity(identity);
+    if (identity === "Nerd") {
+      props.onDismiss?.();
+      navigate("/broodwar");
+    }
   };
 
   return (
@@ -46,10 +58,10 @@ export const SettingsPanel: Component<{ onDismiss?: () => void }> = (props) => {
         <Select
           id="settings-player-identity"
           value={playerIdentity()}
-          onChange={(e) => setPlayerIdentity(e.currentTarget.value as PlayerIdentity)}
+          onChange={(e) => selectIdentity(e.currentTarget.value as PlayerIdentity)}
           disabled={imLost()}
         >
-          {IDENTITY_OPTIONS.map((id) => (
+          {identityOptions().map((id) => (
             <option value={id}>{id}</option>
           ))}
         </Select>

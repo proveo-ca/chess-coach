@@ -3,7 +3,6 @@ import { createPersistedStore } from "~/store/createPersistedStore";
 import type { Difficulty, PieceSet, PlayerColorPref, PlayerIdentity } from "~/types/settings";
 import { randomName } from "~/utils/randomName";
 
-
 /**
  * Centipawn loss at which a move counts as a blunder, per difficulty.
  * Stronger settings are stricter (a smaller drop already counts). Values are
@@ -33,7 +32,10 @@ export const IDENTITY_TO_PIECE_SET: Record<PlayerIdentity, PieceSet> = {
   Cat: "selena",
   Dog: "gord",
   Rat: "manuel",
+  Nerd: "nerd",
 };
+
+const CLASSIC_IDENTITY_OPTIONS: PlayerIdentity[] = ["Human", "Cat", "Dog", "Rat"];
 
 const [settingsState, setSettingsState] = createPersistedStore("chess_coach_settings_state", {
   colorPref: "w" as PlayerColorPref,
@@ -41,6 +43,7 @@ const [settingsState, setSettingsState] = createPersistedStore("chess_coach_sett
   difficulty: "intermediate" as Difficulty,
   playerIdentity: "Human" as PlayerIdentity,
   opponentIdentity: "Cat" as PlayerIdentity,
+  nerdModeUnlocked: false,
   // Free-text display name for the human player, used to label saved games
   // ("Juan (White) vs Selena (Black)"). The browser cannot supply a real name
   // (no device/host name or MAC is exposed to web pages), so we default to a
@@ -59,9 +62,19 @@ export const playerIdentity = () => settingsState.playerIdentity;
 export const opponentIdentity = () => settingsState.opponentIdentity;
 export const playerName = () => settingsState.playerName;
 export const imLost = () => settingsState.imLost;
+export const nerdModeUnlocked = () => settingsState.nerdModeUnlocked;
+export const identityOptions = (): PlayerIdentity[] =>
+  settingsState.nerdModeUnlocked ? [...CLASSIC_IDENTITY_OPTIONS, "Nerd"] : CLASSIC_IDENTITY_OPTIONS;
 export const playerPieceSet = (): PieceSet =>
-  settingsState.imLost ? "cburnett" : IDENTITY_TO_PIECE_SET[settingsState.playerIdentity];
+  settingsState.playerIdentity === "Nerd"
+    ? "nerd"
+    : settingsState.imLost
+      ? "cburnett"
+      : IDENTITY_TO_PIECE_SET[settingsState.playerIdentity];
 export const opponentPieceSet = (): PieceSet => {
+  if (capabilities().opponentUsesPlayerPieceSet && settingsState.playerIdentity === "Nerd") {
+    return "nerd";
+  }
   if (settingsState.imLost) return "cburnett";
   if (capabilities().opponentUsesPlayerPieceSet) {
     return IDENTITY_TO_PIECE_SET[settingsState.playerIdentity];
@@ -77,3 +90,4 @@ export const setPlayerName = (val: string) => setSettingsState("playerName", val
 export const setOpponentIdentity = (val: PlayerIdentity) =>
   setSettingsState("opponentIdentity", val);
 export const setImLost = (val: boolean) => setSettingsState("imLost", val);
+export const setNerdModeUnlocked = (val: boolean) => setSettingsState("nerdModeUnlocked", val);
