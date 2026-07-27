@@ -10,6 +10,25 @@
   grid-column: 2;
 }
 
+.topChrome {
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+  margin-bottom: 4px;
+}
+
+.topChrome :global([data-testid="resource-bar"]) {
+  width: 100%;
+  max-width: 100%;
+}
+
+.bottomChrome {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  margin-top: 4px;
+}
+
 .matchup,
 .placeholder {
   margin: 0.2rem 0;

@@ -17,20 +17,6 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Eclipse: Story = {
-  globals: { viewport: { value: "desktop", isRotated: false } },
-};
-
-export const Butter: Story = {
-  args: { boardVariant: "butter" },
-  globals: { viewport: { value: "desktop", isRotated: false } },
-};
-
-export const Vermeer: Story = {
-  args: { boardVariant: "vermeer" },
-  globals: { viewport: { value: "desktop", isRotated: false } },
-};
-
 export const Mobile: Story = {
   globals: { viewport: { value: "mobile", isRotated: false } },
 };

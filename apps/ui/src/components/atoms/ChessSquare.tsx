@@ -1,8 +1,9 @@
 import type { Color, PieceSymbol, Square } from "chess.js";
 import clsx from "clsx";
-import { createEffect, on } from "solid-js";
+import { Show, createEffect, on } from "solid-js";
 import type { Component } from "solid-js";
 
+import { SpiderMine } from "~/broodwar/specials/SpiderMine";
 import styles from "~/components/atoms/ChessSquare.module.css";
 // SPEC: _spec/apps/ui/components.puml
 import type { MoveSquares } from "~/types/game";
@@ -42,6 +43,12 @@ interface ChessSquareProps {
   isCheck: boolean;
   isCheckmate: boolean;
   isStalemate: boolean;
+  isFogged?: boolean;
+  hidePiece?: boolean;
+  /** Brood War spider mine under this square (always below the piece). */
+  spiderMine?: boolean;
+  /** Mine owner — white enamel + team-color bumps. */
+  spiderMineColor?: Color;
 }
 
 const getPieceImg = (type: PieceSymbol, color: Color, pieceSet: PieceSet) => {
@@ -82,6 +89,7 @@ export const ChessSquare: Component<ChessSquareProps> = (props) => {
     <div
       data-square={props.square}
       data-tone={props.isLight ? "light" : "dark"}
+      data-fog={props.isFogged == null ? undefined : props.isFogged ? "hidden" : "visible"}
       classList={{
         [styles.square]: true,
         [styles.light]: props.isLight,
@@ -112,10 +120,21 @@ export const ChessSquare: Component<ChessSquareProps> = (props) => {
       )}
 
       {isLastMove() && <div class={styles["last-move-indicator"]}></div>}
+      {/* Fogged tiles with a visible piece (own unit or bishop queen-ping) sit above
+          the board SVG fog; this local veil keeps the tile darkened under the piece. */}
+      {props.isFogged && props.piece && !props.hidePiece && (
+        <div class={styles.fog} aria-hidden="true"></div>
+      )}
 
-      {props.piece && (
+      <Show when={props.spiderMine}>
+        <SpiderMine color={props.spiderMineColor === "b" ? "b" : "w"} />
+      </Show>
+
+      {props.piece && !props.hidePiece && (
         <img
-          ref={pieceRef}
+          ref={(el) => {
+            pieceRef = el;
+          }}
           src={getPieceImg(props.piece.type, props.piece.color, props.pieceSet)}
           alt={`${props.piece.color} ${props.piece.type}`}
           class={styles.piece}

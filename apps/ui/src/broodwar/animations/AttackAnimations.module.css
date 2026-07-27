@@ -1,0 +1,914 @@
+.demo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+}
+
+.host {
+  position: relative;
+  display: inline-block;
+}
+
+.boardOverlay {
+  position: absolute;
+  pointer-events: none;
+  z-index: 30;
+  overflow: visible;
+  /* Shared with JS ATTACK_MS — attack cues use var(--attack-ms) once per phase. */
+  --attack-ms: 1000ms;
+  /* Knight frag lands at end of this window (JS FRAG_FLIGHT_MS / kill death delay). */
+  --frag-flight-ms: 250ms;
+}
+
+.originSlot,
+.targetSlot {
+  position: absolute;
+  overflow: visible;
+}
+
+.originSlot {
+  z-index: 2;
+}
+
+.targetSlot {
+  box-shadow: inset 0 0 0 3px rgba(255, 210, 90, 0.85);
+  background: rgba(255, 180, 40, 0.18);
+  z-index: 1;
+}
+
+.aimWrap {
+  position: absolute;
+  inset: 4%;
+  display: grid;
+  place-items: center;
+  transform-origin: center;
+  transition: transform 180ms ease-out;
+  overflow: visible;
+}
+
+.pieceFace {
+  width: 96%;
+  height: 96%;
+  display: grid;
+  place-items: center;
+  background: transparent;
+}
+
+.pieceFace svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/*
+ * fill-box only on parts that spin/scale about their own bbox.
+ * Never put data-part on SVG aim pivots (rebases rotate → flying mounts).
+ */
+.pieceFace :global([data-part="gatling-hub"]),
+.pieceFace :global([data-part="gatling-hub-far"]),
+.pieceFace :global([data-part="battery-blast"]),
+.pieceFace :global([data-part="cannon-flash"]),
+.pieceFace :global([data-part="muzzle-flash"]),
+.pieceFace :global([data-part="hat"]) {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.caption {
+  margin: 0;
+  font-size: 12px;
+  color: #6a7564;
+  letter-spacing: 0.02em;
+  text-align: center;
+  max-width: 520px;
+}
+
+/* ── FX overlays ─────────────────────────────────────────────────── */
+
+.boardFx {
+  position: absolute;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.fragL {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  z-index: 40;
+  pointer-events: none;
+  overflow: visible;
+  /* Flight only — lands at --frag-flight-ms (250ms); explosion is delayed separately. */
+  animation: fragLPath var(--frag-flight-ms) linear 1 forwards;
+  will-change: transform;
+  perspective: 64px;
+}
+
+.fragCylinder {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 18px;
+  height: 8px;
+  margin-left: -9px;
+  margin-top: -4px;
+  border-radius: 4px;
+  background: linear-gradient(
+    90deg,
+    #ffffff 0%,
+    #ffffff 18%,
+    #3b7dd8 18%,
+    #3b7dd8 30%,
+    #ffffff 30%,
+    #ffffff 70%,
+    #3b7dd8 70%,
+    #3b7dd8 82%,
+    #ffffff 82%,
+    #ffffff 100%
+  );
+  border: 1px solid #c8d0da;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -1px 0 rgba(180, 188, 198, 0.45),
+    0 0 4px rgba(59, 125, 216, 0.35);
+  transform-style: preserve-3d;
+  animation: fragCylinderSpin var(--frag-flight-ms) linear 1 forwards;
+}
+
+.fragL::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 12px;
+  height: 12px;
+  margin-left: -6px;
+  margin-top: -6px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    #ffffff 0%,
+    #d0d5dc 18%,
+    #8b93a0 36%,
+    #3b7dd8 52%,
+    rgba(59, 125, 216, 0.4) 68%,
+    transparent 76%
+  );
+  box-shadow:
+    0 0 0 1px rgba(180, 188, 198, 0.75),
+    0 0 5px rgba(59, 125, 216, 0.7),
+    0 0 9px rgba(140, 148, 160, 0.5);
+  opacity: 0;
+  transform: scale(0.2);
+  transform-origin: center;
+  /* Boom starts when the frag lands (delay = flight). */
+  animation: fragExplode 400ms ease-in-out 1 forwards;
+  animation-delay: var(--frag-flight-ms);
+  pointer-events: none;
+}
+
+.fragL::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 8px;
+  height: 8px;
+  margin-left: -4px;
+  margin-top: -4px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(59, 125, 216, 0.9);
+  box-shadow: 0 0 0 0.5px rgba(160, 168, 176, 0.55);
+  opacity: 0;
+  transform: scale(0.4);
+  transform-origin: center;
+  animation: fragShockwave 400ms ease-in-out 1 forwards;
+  animation-delay: var(--frag-flight-ms);
+  pointer-events: none;
+}
+
+.laserPulse {
+  position: absolute;
+  top: 50%;
+  height: 7px;
+  margin-top: -3.5px;
+  border-radius: 1px;
+  background: linear-gradient(90deg, #ffffff 0%, #b8e0ff 35%, #4aa8ff 100%);
+  border: 1px solid #e8f6ff;
+  box-shadow:
+    0 0 2px #ffffff,
+    0 0 6px rgba(94, 182, 255, 0.9);
+  transform-origin: left center;
+  z-index: 4;
+  animation: laserTravel var(--attack-ms) linear 1 forwards;
+}
+
+.laserStar {
+  position: absolute;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 38;
+  animation: laserStarBurst var(--attack-ms) linear 1 forwards;
+}
+
+.laserStarCore {
+  position: absolute;
+  inset: 28%;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff 0%, #c8ecff 40%, #4aa8ff 70%, transparent 78%);
+  box-shadow:
+    0 0 8px rgba(255, 255, 255, 0.95),
+    0 0 16px rgba(74, 168, 255, 0.85);
+}
+
+.laserStarRays {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, transparent 46%, #ffffff 49%, #7ec8ff 50%, #ffffff 51%, transparent 54%),
+    linear-gradient(0deg, transparent 46%, #ffffff 49%, #7ec8ff 50%, #ffffff 51%, transparent 54%);
+  filter: drop-shadow(0 0 3px rgba(120, 200, 255, 0.95));
+}
+
+.laserStarRaysDiag {
+  position: absolute;
+  inset: 12%;
+  transform: rotate(45deg);
+  background:
+    linear-gradient(90deg, transparent 47%, #e8f7ff 49.5%, #69bdff 50%, #e8f7ff 50.5%, transparent 53%),
+    linear-gradient(0deg, transparent 47%, #e8f7ff 49.5%, #69bdff 50%, #e8f7ff 50.5%, transparent 53%);
+  opacity: 0.9;
+  filter: drop-shadow(0 0 2px rgba(105, 189, 255, 0.8));
+}
+
+.rookImpact {
+  position: absolute;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 36;
+  transform-origin: center center;
+  animation: rookBlastBoom var(--attack-ms) ease-out 1 forwards;
+}
+
+/* Dark smoke billow — heavy gray/brown skirt around the fireball. */
+.rookImpactSmoke {
+  position: absolute;
+  inset: -8%;
+  border-radius: 48% 42% 55% 45% / 50% 46% 54% 48%;
+  background:
+    radial-gradient(ellipse at 35% 60%, rgba(42, 36, 30, 0.92) 0%, transparent 55%),
+    radial-gradient(ellipse at 70% 55%, rgba(28, 26, 24, 0.88) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 75%, rgba(55, 48, 40, 0.75) 0%, transparent 58%),
+    radial-gradient(circle at 50% 50%, rgba(20, 18, 16, 0.55) 0%, transparent 70%);
+  filter: blur(1.2px);
+  animation: rookSmokeExpand var(--attack-ms) ease-out 1 forwards;
+}
+
+/* Turbulent orange/yellow fire shell. */
+.rookImpactFire {
+  position: absolute;
+  inset: 12%;
+  border-radius: 46% 54% 48% 52% / 50% 45% 55% 50%;
+  background:
+    radial-gradient(ellipse at 42% 38%, #ffe566 0%, #ff9a1a 28%, #e84800 55%, #7a1a00 78%, transparent 88%),
+    radial-gradient(ellipse at 68% 58%, #ffb020 0%, #d43800 45%, transparent 70%);
+  box-shadow:
+    0 0 14px rgba(255, 140, 20, 0.85),
+    0 0 28px rgba(220, 60, 0, 0.55);
+  animation: rookFireRoil var(--attack-ms) linear 1 forwards;
+}
+
+/* Blinding white-hot core. */
+.rookImpactCore {
+  position: absolute;
+  inset: 32%;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff 0%, #fff4c8 28%, #ffcc44 55%, transparent 78%);
+  box-shadow:
+    0 0 10px rgba(255, 255, 255, 0.95),
+    0 0 22px rgba(255, 200, 60, 0.9);
+  animation: rookCoreFlash var(--attack-ms) ease-out 1 forwards;
+}
+
+/* High-velocity ejecta streaks (white-hot fragments). */
+.rookImpactEjecta,
+.rookImpactEjectaDiag {
+  position: absolute;
+  inset: -5%;
+  background:
+    linear-gradient(90deg, transparent 48%, #fff 49.5%, #ffd090 50%, #fff 50.5%, transparent 52%),
+    linear-gradient(0deg, transparent 48%, #fff8e0 49.5%, #ffb040 50%, #fff8e0 50.5%, transparent 52%);
+  filter: drop-shadow(0 0 2px rgba(255, 200, 80, 0.95));
+  mix-blend-mode: screen;
+  animation: rookEjectaBurst var(--attack-ms) ease-out 1 forwards;
+}
+
+.rookImpactEjectaDiag {
+  transform: rotate(28deg);
+  inset: 5%;
+  opacity: 0.85;
+  animation-name: rookEjectaBurstDiag;
+}
+
+/* ── Keyframes ───────────────────────────────────────────────────── */
+
+/* 6 shots × 50ms = 300ms burst inside attack phase */
+@keyframes recoilBurst {
+  0%,
+  30%,
+  100% {
+    transform: translate(0, 0);
+  }
+  0.5%,
+  5.5%,
+  10.5%,
+  15.5%,
+  20.5%,
+  25.5% {
+    transform: translate(-2.2px, 0.2px);
+  }
+  2.5%,
+  7.5%,
+  12.5%,
+  17.5%,
+  22.5%,
+  27.5% {
+    transform: translate(0.3px, 0);
+  }
+}
+
+@keyframes muzzleFlashBurst {
+  0%,
+  30%,
+  100% {
+    opacity: 0;
+    transform: scale(0.35);
+  }
+  0.5%,
+  5.5%,
+  10.5%,
+  15.5%,
+  20.5%,
+  25.5% {
+    opacity: 1;
+    transform: scale(1.25);
+  }
+  2.5%,
+  7.5%,
+  12.5%,
+  17.5%,
+  22.5%,
+  27.5% {
+    opacity: 0.1;
+    transform: scale(0.6);
+  }
+}
+
+@keyframes bodyShadowBurst {
+  0%,
+  30%,
+  100% {
+    opacity: 0;
+  }
+  0.5%,
+  5.5%,
+  10.5%,
+  15.5%,
+  20.5%,
+  25.5% {
+    opacity: 0.55;
+  }
+}
+
+@keyframes throwPose {
+  /* Release early so the frag is airborne for most of --frag-flight-ms. */
+  0%,
+  50%,
+  100% {
+    transform: rotate(0deg);
+  }
+  3% {
+    transform: rotate(-12deg) translate(-1px, -1px);
+  }
+  6% {
+    transform: rotate(6deg) translate(1px, 1px);
+  }
+}
+
+@keyframes fragLPath {
+  /* Timeline = --frag-flight-ms (lands at 100% = 250ms). */
+  0%,
+  8% {
+    transform: translate(var(--fx0), var(--fy0));
+  }
+  45% {
+    transform: translate(var(--fx1), var(--fy1));
+  }
+  100% {
+    transform: translate(var(--fx2), var(--fy2));
+  }
+}
+
+@keyframes fragCylinderSpin {
+  0% {
+    opacity: 1;
+    transform: rotateY(0deg) scale(0.85);
+  }
+  8% {
+    opacity: 1;
+    transform: rotateY(40deg) scale(1);
+  }
+  45% {
+    opacity: 1;
+    transform: rotateY(520deg) scale(1);
+  }
+  92% {
+    opacity: 1;
+    transform: rotateY(900deg) scale(0.95);
+  }
+  100% {
+    opacity: 0;
+    transform: rotateY(960deg) scale(0.4);
+  }
+}
+
+@keyframes fragExplode {
+  /* Local 400ms cue; delayed by --frag-flight-ms so boom = impact. */
+  0% {
+    opacity: 0;
+    transform: scale(0.15);
+  }
+  8% {
+    opacity: 1;
+    transform: scale(0.35);
+  }
+  28% {
+    opacity: 1;
+    transform: scale(1.55);
+  }
+  48% {
+    opacity: 0.95;
+    transform: scale(0.7);
+  }
+  68% {
+    opacity: 0.9;
+    transform: scale(1.25);
+  }
+  88% {
+    opacity: 0.45;
+    transform: scale(0.55);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.2);
+  }
+}
+
+@keyframes fragShockwave {
+  0% {
+    opacity: 0;
+    transform: scale(0.25);
+  }
+  8% {
+    opacity: 0.95;
+    transform: scale(0.45);
+    border-color: rgba(59, 125, 216, 0.95);
+  }
+  28% {
+    opacity: 0.75;
+    transform: scale(1.85);
+    border-color: rgba(140, 148, 160, 0.7);
+  }
+  86% {
+    opacity: 0.55;
+    transform: scale(0.9);
+    border-color: rgba(59, 125, 216, 0.55);
+  }
+  93% {
+    opacity: 0.35;
+    transform: scale(1.45);
+    border-color: rgba(150, 158, 168, 0.4);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+}
+
+@keyframes gatlingSpin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes gatlingFlash {
+  0%,
+  100% {
+    opacity: 0.15;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Local −x kick for +x barrels (bishop / king). */
+@keyframes turretRecoilX {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  10% {
+    transform: translateX(-2.8px);
+  }
+  22% {
+    transform: translateX(0.5px);
+  }
+  34% {
+    transform: translateX(0);
+  }
+}
+
+/* Gatling: stuttered recoil while hubs spin. */
+@keyframes gatlingRecoil {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  8%,
+  24%,
+  40%,
+  56%,
+  72%,
+  88% {
+    transform: translateX(-2.4px);
+  }
+  14%,
+  30%,
+  46%,
+  62%,
+  78%,
+  94% {
+    transform: translateX(0.4px);
+  }
+}
+
+/* Rook rest barrels aim −135°; kick toward hull along that axis. */
+@keyframes batteryKick {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  18% {
+    transform: translate(2.2px, 2.2px);
+  }
+  40% {
+    transform: translate(-0.5px, -0.5px);
+  }
+  55% {
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes batteryBlast {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0.35);
+  }
+  12% {
+    opacity: 1;
+    transform: scale(2.4);
+  }
+  35% {
+    opacity: 0.85;
+    transform: scale(1.9);
+  }
+  55% {
+    opacity: 0.15;
+    transform: scale(1.2);
+  }
+}
+
+@keyframes batterySmoke {
+  0%,
+  10% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.35);
+  }
+  22% {
+    opacity: 0.9;
+    transform: translate(-2px, -2px) scale(0.8);
+  }
+  50% {
+    opacity: 0.45;
+    transform: translate(-7px, -7px) scale(1.2);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-16px, -16px) scale(1.65);
+  }
+}
+
+/* HE fireball: hard flash → turbulent expand → dark fade. */
+@keyframes rookBlastBoom {
+  0% {
+    opacity: 0;
+    transform: scale(0.2);
+  }
+  6% {
+    opacity: 1;
+    transform: scale(0.55);
+  }
+  22% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  55% {
+    opacity: 0.9;
+    transform: scale(1.12);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.28);
+  }
+}
+
+@keyframes rookSmokeExpand {
+  0% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  15% {
+    opacity: 0.95;
+    transform: scale(0.85);
+  }
+  45% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.35);
+  }
+}
+
+@keyframes rookFireRoil {
+  0% {
+    opacity: 0;
+    transform: scale(0.35) rotate(0deg);
+  }
+  8% {
+    opacity: 1;
+    transform: scale(0.75) rotate(4deg);
+  }
+  28% {
+    opacity: 1;
+    transform: scale(1) rotate(-6deg);
+  }
+  55% {
+    opacity: 0.85;
+    transform: scale(1.08) rotate(3deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.2) rotate(-2deg);
+  }
+}
+
+@keyframes rookCoreFlash {
+  0% {
+    opacity: 0;
+    transform: scale(0.2);
+  }
+  5% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+  18% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  40% {
+    opacity: 0.55;
+    transform: scale(0.7);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.35);
+  }
+}
+
+@keyframes rookEjectaBurst {
+  0%,
+  4% {
+    opacity: 0;
+    transform: scale(0.25);
+  }
+  8% {
+    opacity: 1;
+    transform: scale(0.7);
+  }
+  28% {
+    opacity: 0.85;
+    transform: scale(1.15);
+  }
+  55% {
+    opacity: 0.2;
+    transform: scale(1.35);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.5);
+  }
+}
+
+@keyframes rookEjectaBurstDiag {
+  0%,
+  4% {
+    opacity: 0;
+    transform: rotate(28deg) scale(0.25);
+  }
+  8% {
+    opacity: 0.9;
+    transform: rotate(28deg) scale(0.7);
+  }
+  28% {
+    opacity: 0.7;
+    transform: rotate(28deg) scale(1.1);
+  }
+  55% {
+    opacity: 0.15;
+    transform: rotate(28deg) scale(1.3);
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(28deg) scale(1.45);
+  }
+}
+
+@keyframes laserTravel {
+  0%,
+  8% {
+    opacity: 0;
+    transform: translateX(0);
+  }
+  9% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  19% {
+    opacity: 1;
+    transform: translateX(calc(var(--laser-span, 40px) - 100%));
+  }
+  21%,
+  100% {
+    opacity: 0;
+    transform: translateX(calc(var(--laser-span, 40px) - 100%));
+  }
+}
+
+@keyframes laserStarBurst {
+  0%,
+  18% {
+    opacity: 0;
+    transform: scale(0.12) rotate(0deg);
+  }
+  19% {
+    opacity: 1;
+    transform: scale(0.45) rotate(0deg);
+  }
+  32% {
+    opacity: 1;
+    transform: scale(1.05) rotate(18deg);
+  }
+  48% {
+    opacity: 0.55;
+    transform: scale(1.35) rotate(32deg);
+  }
+  62%,
+  100% {
+    opacity: 0;
+    transform: scale(1.55) rotate(48deg);
+  }
+}
+
+@keyframes hatFlip {
+  0%,
+  100% {
+    transform: rotateX(0deg) translateY(0);
+  }
+  35%,
+  70% {
+    transform: rotateX(-75deg) translateY(-4px);
+  }
+}
+
+@keyframes cannonReveal {
+  0%,
+  18% {
+    opacity: 0;
+    transform: scaleX(0.2) translateX(-4px);
+  }
+  35%,
+  75% {
+    opacity: 1;
+    transform: scaleX(1) translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scaleX(0.2) translateX(-4px);
+  }
+}
+
+@keyframes cannonPulse {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  40%,
+  55% {
+    opacity: 1;
+  }
+}
+
+/* ── Per-cue bindings (single play; remount / class toggle restarts) ─ */
+
+.anim-pawnRifle :global([data-part="barrel"]) {
+  animation: recoilBurst var(--attack-ms) linear 1 forwards;
+}
+
+.anim-pawnRifle :global([data-part="muzzle-flash"]) {
+  animation: muzzleFlashBurst var(--attack-ms) linear 1 forwards;
+  /* Flash grows from the muzzle (outer end of the +x barrel). */
+  transform-origin: right center;
+  transform-box: fill-box;
+}
+
+.anim-pawnRifle :global([data-part="body-shadow"]) {
+  animation: bodyShadowBurst var(--attack-ms) linear 1 forwards;
+}
+
+.anim-knightFrag :global([data-part="body"]) {
+  animation: throwPose var(--attack-ms) ease-in-out 1 forwards;
+  transform-origin: 40% 60%;
+}
+
+.anim-bishopGatlings :global([data-part="gatling-hub"]),
+.anim-bishopGatlings :global([data-part="gatling-hub-far"]) {
+  animation: gatlingSpin 0.45s linear infinite;
+}
+
+.anim-bishopGatlings :global([data-part="gatling-recoil"]) {
+  animation: gatlingRecoil var(--attack-ms) linear 1 forwards;
+}
+
+.anim-bishopGatlings :global([data-part="gatling-flash-near"]),
+.anim-bishopGatlings :global([data-part="gatling-flash-far"]) {
+  animation: gatlingFlash 0.18s steps(2) infinite;
+}
+
+.anim-bishopGatlings :global([data-part="gatling-flash-far"]) {
+  animation-delay: 0.09s;
+}
+
+.anim-rookBattery :global([data-part="battery-recoil"]) {
+  animation: batteryKick calc(var(--attack-ms) / 3) ease-out 1 forwards;
+}
+
+.anim-rookBattery :global([data-part="battery-blast"]) {
+  animation: batteryBlast calc(var(--attack-ms) / 3) ease-out 1 forwards;
+  transform-origin: center;
+}
+
+.anim-rookBattery :global([data-part="battery-smoke"]) {
+  animation: batterySmoke calc(var(--attack-ms) / 3) ease-out 1 forwards;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+
+.anim-kingDualCannon :global([data-part="hat"]) {
+  animation: hatFlip var(--attack-ms) ease-in-out 1 forwards;
+  transform-origin: center bottom;
+  transform-style: preserve-3d;
+}
+
+.anim-kingDualCannon :global([data-part="cannons"]) {
+  animation: cannonReveal var(--attack-ms) ease-in-out 1 forwards;
+  transform-origin: left center;
+}
+
+.anim-kingDualCannon :global([data-part="cannon-recoil"]) {
+  animation: turretRecoilX var(--attack-ms) ease-out 1 both;
+  animation-delay: 0.32s;
+}
+
+.anim-kingDualCannon :global([data-part="cannon-flash"]) {
+  animation: cannonPulse var(--attack-ms) ease-in-out 1 forwards;
+}

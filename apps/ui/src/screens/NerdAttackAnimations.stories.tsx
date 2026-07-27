@@ -1,0 +1,95 @@
+import type { Meta, StoryObj } from "storybook-solidjs-vite";
+
+import { AttackBoardDemo } from "~/broodwar/animations/AttackBoardDemo";
+import { ANIM_BY_PIECE } from "~/broodwar/animations/attackAnim";
+
+/**
+ * Brood War attack VFX via ChessBoard `attackCue` → `AttackAnimation`.
+ */
+const meta = {
+  title: "Screens/Nerd/Brood War/Attack Animations",
+  parameters: {
+    layout: "centered",
+    docs: {
+      description: {
+        component:
+          "Production attack layer on ChessBoard. Each story cycles legal vectors: idle (board piece), then `attackCue` with `data-attack-anim`. Classical SVGs under `public/pieces/nerd/` remain for classical chess.",
+      },
+    },
+  },
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj;
+
+export const PawnRifle: Story = {
+  name: "Pawn Rifle",
+  parameters: {
+    docs: {
+      description: {
+        story: `Marine rifle (\`${ANIM_BY_PIECE.p}\`). White on d4 (back/helmet up-board) and opposing black on f3 (front glass down-board).`,
+      },
+    },
+  },
+  render: () => <AttackBoardDemo piece="p" />,
+};
+
+export const KnightFrag: Story = {
+  name: "Knight Frag",
+  parameters: {
+    docs: {
+      description: {
+        story: `Vulture frag (\`${ANIM_BY_PIECE.n}\`). L-path grenade to target.`,
+      },
+    },
+  },
+  render: () => <AttackBoardDemo piece="n" />,
+};
+
+export const BishopGatlings: Story = {
+  name: "Bishop Gatlings",
+  parameters: {
+    docs: {
+      description: {
+        story: `Goliath gatlings (\`${ANIM_BY_PIECE.b}\`). Hull fixed; guns aim.`,
+      },
+    },
+  },
+  render: () => <AttackBoardDemo piece="b" />,
+};
+
+export const RookBattery: Story = {
+  name: "Rook Battery",
+  parameters: {
+    docs: {
+      description: {
+        story: `Siege tank battery (\`${ANIM_BY_PIECE.r}\`). Impact on target square.`,
+      },
+    },
+  },
+  render: () => <AttackBoardDemo piece="r" />,
+};
+
+export const QueenLaser: Story = {
+  name: "Queen Laser",
+  parameters: {
+    docs: {
+      description: {
+        story: `Battlecruiser laser (\`${ANIM_BY_PIECE.q}\`). Bolt + star burst.`,
+      },
+    },
+  },
+  render: () => <AttackBoardDemo piece="q" />,
+};
+
+export const KingDualCannon: Story = {
+  name: "King Dual Cannon",
+  parameters: {
+    docs: {
+      description: {
+        story: `Command center dual cannons (\`${ANIM_BY_PIECE.k}\`). Hat flip + fire.`,
+      },
+    },
+  },
+  render: () => <AttackBoardDemo piece="k" />,
+};

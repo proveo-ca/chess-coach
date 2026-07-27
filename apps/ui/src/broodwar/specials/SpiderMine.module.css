@@ -1,0 +1,27 @@
+.mine {
+  position: absolute;
+  inset: 14%;
+  width: 72%;
+  height: 72%;
+  pointer-events: none;
+  z-index: 4;
+  overflow: visible;
+}
+
+.enamel {
+  filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.12));
+}
+
+.sensor {
+  animation: sensorPulse 1.6s ease-in-out infinite;
+}
+
+@keyframes sensorPulse {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}

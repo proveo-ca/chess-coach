@@ -1,9 +1,22 @@
 import { useNavigate } from "@solidjs/router";
 import type { Color, PieceSymbol, Square } from "chess.js";
 import clsx from "clsx";
-import { For, Show, createEffect, createSignal } from "solid-js";
+import {
+  For,
+  Show,
+  createEffect,
+  createMemo,
+  createSignal,
+  createUniqueId,
+  onCleanup,
+} from "solid-js";
 import type { Component, JSX } from "solid-js";
 
+import { AttackAnimation } from "~/broodwar/animations/AttackAnimation";
+import { DeathAnimation } from "~/broodwar/animations/DeathAnimation";
+import type { AttackCue, DeathCue } from "~/broodwar/animations/types";
+import type { KingDamageState } from "~/broodwar/types";
+import { getSideVision, getVisionDisplayCells, getVisionFogHolePaths } from "~/broodwar/vision";
 import { ChessBoardArrow } from "~/components/atoms/ChessBoardArrow.tsx";
 import { ChessSquare } from "~/components/atoms/ChessSquare";
 import { GameOverBanner } from "~/components/features/GameOverBanner";
@@ -38,6 +51,22 @@ export const ChessBoard: Component<{
   gameOverActions?: JSX.Element;
   /** Brood War tile treatment; reserved for Nerd mode. */
   variant?: NerdBoardVariant;
+  /** Cumulative side-vision fog; reserved for Nerd mode. */
+  fogOfWar?: boolean;
+  /** Single Brood War attack cue (convenience; prefer `attackCues` for simultaneous). */
+  attackCue?: AttackCue | null;
+  /** Active Brood War attack VFX cues. */
+  attackCues?: AttackCue[];
+  /** Attack cue ids whose hull has swapped to death art mid-cue. */
+  attackDying?: Record<string, boolean>;
+  /** Active Brood War death VFX cues. */
+  deathCues?: DeathCue[];
+  /** Squares with an armed spider mine (drawn under pieces). */
+  spiderMines?: readonly Square[] | ReadonlySet<Square>;
+  /** Owner color for `spiderMines` (defaults to active player). */
+  spiderMineColor?: Color;
+  /** Per-square king damage presentation (lives → fire / destroyed). */
+  kingDamage?: Partial<Record<Square, KingDamageState>>;
 }> = (props) => {
   const navigate = useNavigate();
   const board = useChessBoard();
@@ -49,6 +78,66 @@ export const ChessBoard: Component<{
   const lastMove = () => board.lastMove();
   const animationQueue = () => board.animationQueue();
   const consumeAnimation = (m: MoveSquares) => board.consumeAnimation?.(m);
+
+  const resolvedAttackCues = createMemo(() => {
+    if (props.attackCues?.length) return props.attackCues;
+    return props.attackCue ? [props.attackCue] : [];
+  });
+  const resolvedDeathCues = createMemo(() => props.deathCues ?? []);
+  const hasCombatFx = createMemo(
+    () => resolvedAttackCues().length > 0 || resolvedDeathCues().length > 0,
+  );
+  const fxHiddenSquares = createMemo(() => {
+    const hide = new Set<Square>();
+    for (const c of resolvedAttackCues()) hide.add(c.from);
+    for (const c of resolvedDeathCues()) hide.add(c.at);
+    return hide;
+  });
+  const mineSquares = createMemo(() => {
+    const raw = props.spiderMines;
+    if (!raw) return null;
+    return raw instanceof Set ? raw : new Set(raw);
+  });
+
+  const [boardSize, setBoardSize] = createSignal<{ width: number; height: number } | null>(null);
+  let boardGridRef: HTMLDivElement | undefined;
+
+  createEffect(() => {
+    if (!hasCombatFx()) {
+      setBoardSize(null);
+      return;
+    }
+    const el = boardGridRef;
+    if (!el) return;
+    const sync = () => {
+      // Content box only — absolute overlays use the padding box (inside the
+      // 4px board border). getBoundingClientRect includes the border and would
+      // stretch every squareBoxStyle slot down/right.
+      setBoardSize({ width: el.clientWidth, height: el.clientHeight });
+    };
+    sync();
+    const ro = new ResizeObserver(sync);
+    ro.observe(el);
+    onCleanup(() => ro.disconnect());
+  });
+
+  const nerdVision = createMemo(() =>
+    props.fogOfWar ? getSideVision(activeGame(), activePlayerColor()) : null,
+  );
+  const visibleSquares = createMemo(() => nerdVision()?.litSquares ?? null);
+  const revealedPieces = createMemo(() => nerdVision()?.revealedPieces ?? null);
+  const visionCells = createMemo(() => {
+    const visible = visibleSquares();
+    if (!visible || visible.size === 0) return [] as ReturnType<typeof getVisionDisplayCells>;
+    return getVisionDisplayCells(visible, displayFiles(), displayRanks());
+  });
+  const visionPaths = createMemo(() => getVisionFogHolePaths(visionCells()));
+  const fogOverlayId = createUniqueId();
+  const fogMaskId = `${fogOverlayId}-mask`;
+
+  const handleSquareClick = (square: Square) => {
+    void board.handleSquareClick(square);
+  };
 
   const isCheck = () => activeGame().inCheck();
   const isCheckmate = () => activeGame().isCheckmate();
@@ -150,9 +239,12 @@ export const ChessBoard: Component<{
         onMouseLeave={board.handleBoardMouseLeave}
       >
         <div
+          ref={boardGridRef}
+          data-board-grid
           class={clsx(
             styles.chessboard,
             props.variant && styles[`chessboard--${props.variant}`],
+            props.fogOfWar && styles["chessboard--fog"],
           )}
           onContextMenu={(e) => e.preventDefault()}
           onTouchStart={handleTouchStart}
@@ -165,6 +257,8 @@ export const ChessBoard: Component<{
                 {(file, fIndex) => {
                   const square = `${file}${rank}` as Square;
                   const piece = () => activeGame().get(square);
+                  const isFogged = () =>
+                    props.fogOfWar ? !visibleSquares()?.has(square) : undefined;
 
                   const isInvalid = () => {
                     if (board.hoveredSquare() !== square) return false;
@@ -199,9 +293,19 @@ export const ChessBoard: Component<{
                       isAdviceHovered={adviceHoveredSquares().includes(square)}
                       isDragging={touchDrag()?.from === square}
                       isInvalid={isInvalid()}
+                      isFogged={isFogged()}
+                      hidePiece={
+                        fxHiddenSquares().has(square) ||
+                        (isFogged() === true &&
+                          piece() != null &&
+                          piece()?.color !== activePlayerColor() &&
+                          !revealedPieces()?.has(square))
+                      }
+                      spiderMine={mineSquares()?.has(square) === true}
+                      spiderMineColor={props.spiderMineColor ?? activePlayerColor()}
                       showRank={fIndex() === 0 && rank}
                       showFile={rIndex() === 7 && file}
-                      onClick={() => board.handleSquareClick(square)}
+                      onClick={() => handleSquareClick(square)}
                       onMouseEnter={() => board.handleSquareHover(square)}
                       onDragStart={(e) => board.handleDragStart(square, e)}
                       onDragEnter={(e) => board.handleDragEnter(square, e)}
@@ -230,6 +334,38 @@ export const ChessBoard: Component<{
             )}
           </For>
 
+          <Show when={props.fogOfWar && visionCells().length < 64}>
+            <svg class={styles["fog-overlay"]} viewBox="0 0 8 8" preserveAspectRatio="none" aria-hidden="true">
+              <defs>
+                <mask
+                  id={fogMaskId}
+                  maskUnits="userSpaceOnUse"
+                  x="0"
+                  y="0"
+                  width="8"
+                  height="8"
+                >
+                  <rect width="8" height="8" fill="#fff" />
+                  <Show when={visionPaths().length > 0}>
+                    {/* Soft ~4px falloff, then fog hole rounded only at union corners. */}
+                    <g fill="none" stroke="#787878" stroke-width="0.13" stroke-linejoin="round">
+                      <For each={visionPaths()}>{(d) => <path d={d} />}</For>
+                    </g>
+                    <g fill="#000">
+                      <For each={visionPaths()}>{(d) => <path d={d} />}</For>
+                    </g>
+                  </Show>
+                </mask>
+              </defs>
+              <rect
+                width="8"
+                height="8"
+                fill="rgba(3, 7, 10, 0.88)"
+                mask={`url(#${fogMaskId})`}
+              />
+            </svg>
+          </Show>
+
           <Show when={board.bestMoveArrow()}>
             {(arrow) => (
               <ChessBoardArrow
@@ -249,6 +385,28 @@ export const ChessBoard: Component<{
                 color="#76b3e1"
                 id="advice-arrow-head"
               />
+            )}
+          </Show>
+
+          <Show when={hasCombatFx() && boardSize()}>
+            {(size) => (
+              <>
+                <Show when={resolvedAttackCues().length > 0}>
+                  <AttackAnimation
+                    cues={resolvedAttackCues()}
+                    dyingIds={props.attackDying}
+                    boardWidth={size().width}
+                    boardHeight={size().height}
+                  />
+                </Show>
+                <Show when={resolvedDeathCues().length > 0}>
+                  <DeathAnimation
+                    cues={resolvedDeathCues()}
+                    boardWidth={size().width}
+                    boardHeight={size().height}
+                  />
+                </Show>
+              </>
             )}
           </Show>
 
