@@ -1,5 +1,9 @@
 import type { Square } from "chess.js";
 
+import { ATTACK_MS } from "~/broodwar/constants";
+
+export { ATTACK_MS, FRAG_FLIGHT_MS } from "~/broodwar/constants";
+
 /** Attack VFX cue ids (CSS `anim-*` class stems). */
 export type AttackAnimKind =
   | "pawnRifle"
@@ -20,23 +24,15 @@ export const ANIM_BY_PIECE: Record<DemoPiece, AttackAnimKind> = {
   k: "kingDualCannon",
 };
 
-/** Shared attack-phase length (CSS `--attack-ms` + JS phase timer). */
-export const ATTACK_MS = 1000;
-
-/**
- * Knight frag flight duration (CSS `--frag-flight-ms`).
- * Must match kill death delay so the grenade lands when the victim starts dying.
- */
-export const FRAG_FLIGHT_MS = 250;
-
-/** Stand still facing the player before each attack. */
-export const IDLE_FRONT_MS = 1000;
+/** Stand still facing the player before each attack — one attack window. */
+export const IDLE_FRONT_MS = ATTACK_MS;
 
 /** Resting twin-cannon aim in `public/pieces/nerd/*R.svg` (upper-left diagonal). */
 export const ROOK_REST_AIM_DEG = -135;
 
 /** King idle cannons face the player (down the board). */
 export const KING_REST_AIM_DEG = 90;
+
 
 /**
  * Absolute screen aim for a turret: live `aimDeg` while active, else `restDeg`.

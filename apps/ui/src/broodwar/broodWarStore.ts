@@ -1,6 +1,7 @@
 import { createSignal } from "solid-js";
 
 import {
+  KING_MAX_LIVES,
   MAX_DEPLOYED_MATERIAL,
   MAX_STORED_MATERIAL,
   TURN_TIMEOUT_MS,
@@ -10,14 +11,24 @@ import type { BroodWarColor, PlayerEconomy } from "~/broodwar/types";
 import { activePlayerColor } from "~/store/settingsStore";
 
 type Economies = Record<BroodWarColor, PlayerEconomy>;
+type KingLives = Record<BroodWarColor, number>;
 
 const defaultEconomies = (): Economies => ({
   w: { stored: 0, deployed: 0 },
   b: { stored: 0, deployed: 0 },
 });
 
+const defaultKingLives = (): KingLives => ({
+  w: KING_MAX_LIVES,
+  b: KING_MAX_LIVES,
+});
+
+const clampLives = (n: number) => Math.max(0, Math.min(KING_MAX_LIVES, Math.floor(n)));
+
 const [_turn, _setTurn] = createSignal(1);
 const [_economies, _setEconomies] = createSignal<Economies>(defaultEconomies());
+/** Per-side king HP (0–3). Engine/game state — VFX maps via kingDamageStateForLives. */
+const [_kingLives, _setKingLives] = createSignal<KingLives>(defaultKingLives());
 /** Epoch ms when the current planning window ends; null = not running. */
 const [_deadlineAt, _setDeadlineAt] = createSignal<number | null>(null);
 
@@ -26,6 +37,28 @@ export const broodWarTurn = () => _turn();
 export const setBroodWarTurn = (turn: number) => _setTurn(Math.max(1, turn));
 
 export const broodWarEconomies = () => _economies();
+
+/** Both sides’ king HP (0–3). Source of truth for damage VFX / BWFEN lives. */
+export const kingLives = () => _kingLives();
+export const kingLivesFor = (color: BroodWarColor) => _kingLives()[color];
+
+export const setKingLives = (next: KingLives) => {
+  _setKingLives({ w: clampLives(next.w), b: clampLives(next.b) });
+};
+
+export const setKingLivesFor = (color: BroodWarColor, lives: number) => {
+  _setKingLives((prev) => ({ ...prev, [color]: clampLives(lives) }));
+};
+
+/** Successful king-shot: decrement one life. Returns remaining HP. */
+export const chipKingLife = (color: BroodWarColor): number => {
+  let remaining = 0;
+  _setKingLives((prev) => {
+    remaining = clampLives(prev[color] - 1);
+    return { ...prev, [color]: remaining };
+  });
+  return remaining;
+};
 
 /** Local / active player's stored material (0..12). */
 export const storedMaterial = () => _economies()[activePlayerColor()].stored;
@@ -100,6 +133,7 @@ export const resetBroodWarEconomy = (opts?: {
   turn?: number;
   white?: PlayerEconomy;
   black?: PlayerEconomy;
+  kingLives?: KingLives;
   /** When true (default), start a fresh planning timer. */
   startTimer?: boolean;
 }) => {
@@ -108,6 +142,7 @@ export const resetBroodWarEconomy = (opts?: {
     w: opts?.white ?? { stored: 0, deployed: 0 },
     b: opts?.black ?? { stored: 0, deployed: 0 },
   });
+  _setKingLives(opts?.kingLives ?? defaultKingLives());
   if (opts?.startTimer === false) {
     clearTurnDeadline();
   } else {

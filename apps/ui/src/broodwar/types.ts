@@ -52,8 +52,11 @@ export type PlayerEconomy = {
   deployed: number;
 };
 
-/** FEN-loadable piece occupancy for Brood War board snapshots. */
+/** FEN-loadable piece occupancy for Brood War board snapshots (classic placement). */
 export type BroodWarBoard = string;
+
+/** Planning / resolve phase codes used in BWFEN (see bwfen.ts). */
+export type BwPhaseCode = "P" | "B" | "A" | "M" | "F" | "O";
 
 export type ResolveEvent = {
   id: string;

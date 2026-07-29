@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45">
-    <g stroke="#222" stroke-linecap="round" stroke-linejoin="round"
+    <g transform="translate(22.5 22.5) scale(1.1) translate(-22.5 -22.5)" stroke="#222" stroke-linecap="round" stroke-linejoin="round"
        stroke-width="1.5">
         <!-- Vulture (black/red) — tilted nose-up -->
         <!-- Hover shadow -->

@@ -1,15 +1,11 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
+import { KingHuntDemo } from "~/broodwar/animations/KingHuntDemo";
 import { NerdCombatDemo } from "~/screens/nerdDemo/NerdCombatDemo";
 
 /**
- * Brood War combat as a 3-turn review: arrow keys / nav step turns.
- * Forward plays that turn’s VFX; back jumps to the prior position.
- *
- * Start: P d2, R c3, K e1; p e5, B e8, N f6, k f8
- * 1. d2-d4 & Be8-c6
- * 2. d4xe5 & Nf6-e4
- * 3. Rc3xc6 & Ne4xc3
+ * Brood War narrative demos: combat chain (simultaneous attack→move) and
+ * king HP hunt (into-fire + Option A). Arrow keys / nav step turns.
  */
 const meta = {
   title: "Screens/Nerd/Demo",
@@ -18,7 +14,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Review-style Brood War demo: three turns, stepped with arrows. Captures = attack → death → occupy. Fog of war on.",
+          "Review-style Brood War demos. Combat Chain = BWFEN turn shape (W & B). King Hunt adds checks + walk-into-check (FEN-illegal, BWFEN-legal). Fog on.",
       },
     },
   },
@@ -33,9 +29,22 @@ export const CombatChain: Story = {
     docs: {
       description: {
         story:
-          "Review 3 turns with ←/→. Captures call death on the victim (tank on c3 dies via Ne4xc3). 1. d2-d4 & Be8-c6 · 2. d4xe5 & Nf6-e4 · 3. Rc3xc6 & Ne4xc3.",
+          "BWFEN reference: each arrow = one turn = White & Black classical. 1. d2-d4 & Be8-c6 · 2. d4xe5 & Nf6-e4 · 3. Rc3xc6 & Ne4xc3. Captures = attack → death → occupy.",
       },
     },
   },
   render: () => <NerdCombatDemo />,
+};
+
+export const KingHunt: Story = {
+  name: "King Hunt",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Combat Chain grammar + checks + walk-into-check. HP via broodWarStore (3→2→1→0): 0. Nc5+ · 1. Kd5 & Bh2→Bg1 · 2. Kxc5 & Rf8→Rf6 · 3. Kc6 & Bg1→c5 · 4. Rf6+.",
+      },
+    },
+  },
+  render: () => <KingHuntDemo />,
 };

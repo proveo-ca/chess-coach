@@ -1,18 +1,16 @@
 import type { Square } from "chess.js";
 
+import { ATTACK_MS, DEATH_MS } from "~/broodwar/constants";
+
+export { DEATH_MS } from "~/broodwar/constants";
+
 export type DeathPiece = "p" | "n" | "b" | "r" | "q" | "k";
 
-/** Intact pose before death. */
-export const IDLE_MS = 1400;
+/** Intact pose before death (storybook loop) — 7/5 of an attack window. */
+export const IDLE_MS = (ATTACK_MS * 7) / 5;
 
-/**
- * Hard cap for the entire death cue (boom + pop / shard flight).
- * Every CSS animation must finish within this window — no overruns.
- */
-export const DEATH_MS = 500;
-
-/** Empty square pause before the loop restarts. */
-export const HOLD_MS = 700;
+/** Empty square pause before the loop restarts — 7/5 of a death window. */
+export const HOLD_MS = (DEATH_MS * 7) / 5;
 
 export const ORIGIN: Square = "d4";
 
@@ -55,5 +53,27 @@ export const shardFlightStyle = (
     "--dx": `${Math.cos(ang) * dist}px`,
     "--dy": `${Math.sin(ang) * dist}px`,
     "--spin": `${spin}deg`,
+  };
+};
+
+/**
+ * King rubble settle pose — parts drop downward into a pile (not outward shatter).
+ * CSS vars consumed by `rubbleCollapse` / static destroyed.
+ */
+export const rubbleSettleStyle = (
+  index: number,
+  seed: number,
+): Record<string, string> => {
+  // Prefer downward + slight lateral spread; hub/deck fall farther.
+  const baseX = [-2, 1, -9, 9, 3, -4, 0, -11, 11][index] ?? (index % 2 === 0 ? -6 : 6);
+  const baseY = [5, 3, 10, 10, 14, 18, 4, 12, 12][index] ?? 10 + (index % 5);
+  const baseSpin = [-8, 6, -28, 26, 18, -22, 4, -35, 32][index] ?? (index * 17) % 40 - 20;
+  const jx = ((seed * 13 + index * 7) % 7) - 3;
+  const jy = ((seed * 11 + index * 5) % 5);
+  const js = ((seed * 3 + index * 11) % 17) - 8;
+  return {
+    "--rx": `${baseX + jx}px`,
+    "--ry": `${baseY + jy}px`,
+    "--rspin": `${baseSpin + js}deg`,
   };
 };

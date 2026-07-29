@@ -17,15 +17,15 @@ const deathNode = (piece: BroodWarPiece, color: PieceColor, seed: number): JSX.E
     case "p":
       return <DeathPawn color={color} seed={seed} />;
     case "n":
-      return <DeathKnight seed={seed} />;
+      return <DeathKnight color={color} seed={seed} />;
     case "b":
       return <DeathBishop color={color} seed={seed} />;
     case "r":
-      return <DeathRook seed={seed} />;
+      return <DeathRook color={color} seed={seed} />;
     case "q":
-      return <DeathQueen seed={seed} />;
+      return <DeathQueen color={color} seed={seed} />;
     case "k":
-      return <DeathKing seed={seed} />;
+      return <DeathKing color={color} seed={seed} damage="destroyed" collapse />;
   }
 };
 
@@ -41,9 +41,8 @@ export type DeathAnimationProps = {
 };
 
 /**
- * Brood War death VFX layer — every cue finishes in `DEATH_MS` (500ms).
- * Pawn: outward bubble + shred; others: boom + shards.
- * Shard directions re-roll per cue id so repeats don't look identical.
+ * Brood War death VFX layer — every cue finishes in `DEATH_MS` (`ATTACK_MS / 2`).
+ * Pawn: outward bubble + shred; king: rubble collapse; others: boom + shards.
  */
 export const DeathAnimation: Component<DeathAnimationProps> = (props) => (
   <div
@@ -68,6 +67,7 @@ export const DeathAnimation: Component<DeathAnimationProps> = (props) => (
     <For each={props.cues}>
       {(cue) => {
         const pawnDeath = cue.piece === "p";
+        const kingDeath = cue.piece === "k";
         const seed = scatterSeedFromId(cue.id);
         return (
           <div
@@ -75,7 +75,8 @@ export const DeathAnimation: Component<DeathAnimationProps> = (props) => (
             classList={{
               [styles.dying]: true,
               [styles.dyingPawn]: pawnDeath,
-              [styles.dyingDrama]: true,
+              [styles.dyingDrama]: !pawnDeath && !kingDeath,
+              [styles.dyingKing]: kingDeath,
             }}
             style={squareBoxStyle(cue.at, props.boardWidth, props.boardHeight)}
             data-square={cue.at}

@@ -200,6 +200,10 @@ export function getNerdVision(game: Chess, source: Square | null): NerdVision {
 /**
  * Cumulative fog vision for one side: union of every friendly unit's vision.
  * Empty army ⇒ empty sets (full fog).
+ *
+ * Attackers under fog are **not** permanently revealed here — ChessBoard adds
+ * active `attackCues[].from` to `revealedPieces` for the duration of the shot
+ * (fog punishment until they fire).
  */
 export function getSideVision(game: Chess, color: Color): NerdVision {
   const litSquares = new Set<Square>();
@@ -223,4 +227,19 @@ export function getSideVision(game: Chess, color: Color): NerdVision {
 /** Fog-cleared tiles only (excludes bishop queen-pings that stay under fog). */
 export function getNerdVisibleSquares(game: Chess, source: Square | null): ReadonlySet<Square> {
   return getNerdVision(game, source).litSquares;
+}
+
+/**
+ * Player-facing fog gate (not engine legality).
+ * Own pieces are always visible; enemies only on lit tiles or `revealedPieces`.
+ */
+export function isPieceVisibleToSide(
+  game: Chess,
+  viewer: Color,
+  square: Square,
+  pieceColor: Color,
+): boolean {
+  if (pieceColor === viewer) return true;
+  const { litSquares, revealedPieces } = getSideVision(game, viewer);
+  return litSquares.has(square) || revealedPieces.has(square);
 }

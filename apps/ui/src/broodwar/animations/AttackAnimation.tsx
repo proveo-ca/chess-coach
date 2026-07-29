@@ -85,7 +85,11 @@ const attackNode = (cue: AttackCue): JSX.Element => {
     case "k":
       return (
         <div class={styles.pieceFace}>
-          <InlineKing aimDeg={screenAimDeg(true, deg, KING_REST_AIM_DEG)} />
+          <InlineKing
+            aimDeg={screenAimDeg(true, deg, KING_REST_AIM_DEG)}
+            damage={cue.damage}
+            seed={cue.seed}
+          />
         </div>
       );
   }
@@ -216,6 +220,8 @@ export const AttackAnimation: Component<AttackAnimationProps> = (props) => {
     >
       <For each={props.cues}>
         {(cue) => {
+          // Keyed by cue.id via stable cue objects from the combat bus — do not
+          // rebuild the cues array mid-attack or CSS attack anims restart.
           const anim = ANIM_BY_PIECE[cue.piece];
           const isDying = () => dying(cue.id);
           return (
@@ -226,26 +232,28 @@ export const AttackAnimation: Component<AttackAnimationProps> = (props) => {
                 data-square={cue.to}
               />
 
-              <Show when={rookImpactStyle(cue, props.boardWidth, props.boardHeight)}>
-                {(st) => (
-                  <BoardFx class={styles.rookImpact} style={st()}>
-                    <div class={styles.rookImpactSmoke} />
-                    <div class={styles.rookImpactFire} />
-                    <div class={styles.rookImpactCore} />
-                    <div class={styles.rookImpactEjecta} />
-                    <div class={styles.rookImpactEjectaDiag} />
-                  </BoardFx>
-                )}
+              <Show when={cue.piece === "r"}>
+                <BoardFx
+                  class={styles.rookImpact}
+                  style={rookImpactStyle(cue, props.boardWidth, props.boardHeight)!}
+                >
+                  <div class={styles.rookImpactSmoke} />
+                  <div class={styles.rookImpactFire} />
+                  <div class={styles.rookImpactCore} />
+                  <div class={styles.rookImpactEjecta} />
+                  <div class={styles.rookImpactEjectaDiag} />
+                </BoardFx>
               </Show>
 
-              <Show when={laserStarStyle(cue, props.boardWidth, props.boardHeight)}>
-                {(st) => (
-                  <BoardFx class={styles.laserStar} style={st()}>
-                    <div class={styles.laserStarRays} />
-                    <div class={styles.laserStarRaysDiag} />
-                    <div class={styles.laserStarCore} />
-                  </BoardFx>
-                )}
+              <Show when={cue.piece === "q"}>
+                <BoardFx
+                  class={styles.laserStar}
+                  style={laserStarStyle(cue, props.boardWidth, props.boardHeight)!}
+                >
+                  <div class={styles.laserStarRays} />
+                  <div class={styles.laserStarRaysDiag} />
+                  <div class={styles.laserStarCore} />
+                </BoardFx>
               </Show>
 
               {/*
@@ -263,19 +271,25 @@ export const AttackAnimation: Component<AttackAnimationProps> = (props) => {
                 >
                   <div class={styles.aimWrap} style={queenAimWrapStyle(cue)}>
                     {attackNode(cue)}
-                    <Show when={laserStyle(cue, props.boardWidth, props.boardHeight)}>
-                      {(ls) => <div class={styles.laserPulse} style={ls()} aria-hidden="true" />}
+                    <Show when={cue.piece === "q"}>
+                      <div
+                        class={styles.laserPulse}
+                        style={laserStyle(cue, props.boardWidth, props.boardHeight)!}
+                        aria-hidden="true"
+                      />
                     </Show>
                   </div>
                 </div>
               </Show>
 
-              <Show when={fragLStyle(cue, props.boardWidth, props.boardHeight)}>
-                {(st) => (
-                  <div class={styles.fragL} style={st()} aria-hidden="true">
-                    <div class={styles.fragCylinder} />
-                  </div>
-                )}
+              <Show when={cue.piece === "n"}>
+                <div
+                  class={styles.fragL}
+                  style={fragLStyle(cue, props.boardWidth, props.boardHeight) ?? undefined}
+                  aria-hidden="true"
+                >
+                  <div class={styles.fragCylinder} />
+                </div>
               </Show>
             </>
           );

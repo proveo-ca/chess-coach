@@ -131,6 +131,12 @@ export const knightElbowVec = (vec: AttackVec): AttackVec => {
   return { df: 0, dr: 0 };
 };
 
+/** Long leg then short leg of a knight L (deltas along each segment). */
+export const knightLegVecs = (vec: AttackVec): { leg1: AttackVec; leg2: AttackVec } => {
+  const leg1 = knightElbowVec(vec);
+  return { leg1, leg2: { df: vec.df - leg1.df, dr: vec.dr - leg1.dr } };
+};
+
 /**
  * Knight facing: one of the 4 diagonals in the target’s quadrant (not the
  * orthogonal long-leg of the L).

@@ -16,9 +16,9 @@
   pointer-events: none;
   z-index: 30;
   overflow: visible;
-  /* Shared with JS ATTACK_MS — attack cues use var(--attack-ms) once per phase. */
+  /* Shared with JS ATTACK_MS (= TURN_TIMEOUT_MS / 10). */
   --attack-ms: 1000ms;
-  /* Knight frag lands at end of this window (JS FRAG_FLIGHT_MS / kill death delay). */
+  /* Knight frag / impact (= ATTACK_MS / 4). JS FRAG_FLIGHT_MS / kill death delay. */
   --frag-flight-ms: 250ms;
 }
 

@@ -4,6 +4,7 @@ import { DeathBoardDemo } from "~/broodwar/animations/DeathBoardDemo";
 
 /**
  * Brood War death VFX via ChessBoard `deathCues` → `DeathAnimation`.
+ * King HP hunt lives under Screens/Nerd/Demo → King Hunt.
  */
 const meta = {
   title: "Screens/Nerd/Brood War/Death Animations",
@@ -12,7 +13,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Production death layer on ChessBoard. Every cue finishes in 500ms. Pawn: outward bubble + shred; others: boom + shards.",
+          "Production death layer on ChessBoard. Every cue finishes in 500ms. Pawn: outward bubble + shred; king: rubble collapse; others: boom + shards. For the 3-HP hunt narrative see Screens/Nerd/Demo → King Hunt.",
       },
     },
   },
@@ -82,11 +83,12 @@ export const QueenShatter: Story = {
 };
 
 export const KingShatter: Story = {
-  name: "King Shatter",
+  name: "King Rubble",
   parameters: {
     docs: {
       description: {
-        story: "Command center boom; foundation, bays, deck, and hub fly apart.",
+        story:
+          "Command center collapses into rubble (`destroyed` + collapse) — parts drop down, no outward shatter.",
       },
     },
   },

@@ -7,6 +7,7 @@ import {
   getSideVision,
   getVisionDisplayCells,
   getVisionFogHolePaths,
+  isPieceVisibleToSide,
 } from "~/broodwar/vision";
 
 const sorted = (squares: ReadonlySet<Square>) => [...squares].sort();
@@ -141,7 +142,7 @@ describe("getSideVision", () => {
     expect(side.litSquares).toHaveProperty("size", 13);
   });
 
-  it("ignores enemy pieces when computing a side's vision", () => {
+  it("ignores enemy pieces when computing a side's lit vision", () => {
     const game = new Chess("4n2k/8/8/8/3K4/8/8/8 w - - 0 1");
     const white = getSideVision(game, "w");
     const black = getSideVision(game, "b");
@@ -149,6 +150,23 @@ describe("getSideVision", () => {
     expect(white.litSquares).toHaveProperty("size", 9);
     expect(black.litSquares.size).toBeGreaterThan(9); // king + knight
     expect(white.litSquares.has("e8")).toBe(false);
+  });
+
+  it("does not permanently reveal king-attackers (fog punishment until they shoot)", () => {
+    // Nc5 checks Ke4 but stays hidden in vision — ChessBoard reveals on attackCues.
+    const game = new Chess("k4r2/8/8/2n5/4K3/8/7b/8 w - - 0 1");
+    const white = getSideVision(game, "w");
+    expect(white.revealedPieces.has("c5")).toBe(false);
+    expect(white.litSquares.has("c5")).toBe(false);
+  });
+});
+
+describe("isPieceVisibleToSide", () => {
+  it("always shows own pieces; hides fogged enemies", () => {
+    const g = new Chess("k4r2/8/8/2n5/4K3/8/7b/8 w - - 0 1");
+    expect(isPieceVisibleToSide(g, "w", "e4", "w")).toBe(true);
+    expect(isPieceVisibleToSide(g, "w", "h2", "b")).toBe(false);
+    expect(isPieceVisibleToSide(g, "w", "c5", "b")).toBe(false);
   });
 });
 

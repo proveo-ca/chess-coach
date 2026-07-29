@@ -1,24 +1,43 @@
-import { createUniqueId, type Component } from "solid-js";
+import { For, createMemo, createUniqueId, type Component } from "solid-js";
 
 import { KING_REST_AIM_DEG, svgPivotAround } from "~/broodwar/animations/attackAnim";
+import { FireColumn, pickFireSpots } from "~/broodwar/animations/pieces/kingFire";
+import damageStyles from "~/broodwar/animations/pieces/KingDamage.module.css";
+import type { KingDamageState } from "~/broodwar/types";
 
 type InlineKingProps = {
   /** Absolute screen aim degrees; dual cannons point along +x after pivot. */
   aimDeg?: number;
+  /** Carry HP fire overlays through the attack anim (don't swap to pristine). */
+  damage?: KingDamageState;
+  /** Stable fire-spot seed — match the damage overlay so flames don't jump. */
+  seed?: number;
 };
 
 /**
  * Experimental Command Center. Base stays static; only the top dual cannons
  * rotate to aim (same pattern as the siege-tank battery).
+ * Optional `damage` keeps smallFire/bigFire columns during kingDualCannon.
  */
 export const InlineKing: Component<InlineKingProps> = (props) => {
   const uid = createUniqueId();
   const bodyGrad = `${uid}-body`;
   const blueGrad = `${uid}-blue`;
   const aimDeg = () => props.aimDeg ?? KING_REST_AIM_DEG;
+  const damage = (): KingDamageState => props.damage ?? "pristine";
+  const fireSeed = () => props.seed ?? 0xc0ffee;
+  const smallSpots = createMemo(() => pickFireSpots(fireSeed(), 1));
+  const bigSpots = createMemo(() => pickFireSpots(fireSeed() ^ 0x9e3779b9, 2));
 
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45" aria-hidden="true" overflow="visible">
+    <svg
+      class={damageStyles.root}
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 45 45"
+      aria-hidden="true"
+      overflow="visible"
+      data-king-damage={damage()}
+    >
       <defs>
         <linearGradient id={bodyGrad} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stop-color="#c7d0d8" />
@@ -28,6 +47,22 @@ export const InlineKing: Component<InlineKingProps> = (props) => {
           <stop offset="0" stop-color="#55a7ff" />
           <stop offset="1" stop-color="#1f5cae" />
         </linearGradient>
+        <radialGradient id={`${uid}-core`} cx="50%" cy="70%" r="55%">
+          <stop offset="0" stop-color="#fff6d0" stop-opacity="0.95" />
+          <stop offset="0.35" stop-color="#ffc14a" stop-opacity="0.9" />
+          <stop offset="0.7" stop-color="#ff6a1a" stop-opacity="0.65" />
+          <stop offset="1" stop-color="#ff3b1a" stop-opacity="0" />
+        </radialGradient>
+        <radialGradient id={`${uid}-ember`} cx="50%" cy="60%" r="60%">
+          <stop offset="0" stop-color="#ffb020" stop-opacity="0.85" />
+          <stop offset="0.55" stop-color="#e04810" stop-opacity="0.55" />
+          <stop offset="1" stop-color="#6a1808" stop-opacity="0" />
+        </radialGradient>
+        <radialGradient id={`${uid}-smoke`} cx="50%" cy="80%" r="70%">
+          <stop offset="0" stop-color="#d8d0c4" stop-opacity="0.55" />
+          <stop offset="0.4" stop-color="#6a6560" stop-opacity="0.4" />
+          <stop offset="1" stop-color="#2a2826" stop-opacity="0" />
+        </radialGradient>
       </defs>
       <g stroke="#20262c" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.35">
         <ellipse cx="22.5" cy="28.8" rx="19" ry="13.7" fill="#4d5761" />
@@ -83,6 +118,36 @@ export const InlineKing: Component<InlineKingProps> = (props) => {
               />
             </g>
           </g>
+        </g>
+
+        {/* HP fires — same overlay language as DeathKing / kingDamageOverlay. */}
+        <g data-part="fire-small" stroke="none">
+          <For each={smallSpots()}>
+            {(spot) => (
+              <FireColumn
+                cx={spot.cx}
+                cy={spot.cy}
+                size="small"
+                coreId={`${uid}-core`}
+                emberId={`${uid}-ember`}
+                smokeId={`${uid}-smoke`}
+              />
+            )}
+          </For>
+        </g>
+        <g data-part="fire-big" stroke="none">
+          <For each={bigSpots()}>
+            {(spot) => (
+              <FireColumn
+                cx={spot.cx}
+                cy={spot.cy}
+                size="big"
+                coreId={`${uid}-core`}
+                emberId={`${uid}-ember`}
+                smokeId={`${uid}-smoke`}
+              />
+            )}
+          </For>
         </g>
       </g>
     </svg>

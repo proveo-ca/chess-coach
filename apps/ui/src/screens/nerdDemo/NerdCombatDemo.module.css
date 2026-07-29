@@ -20,6 +20,7 @@
   --attack-ms: 1000ms;
   --frag-flight-ms: 250ms;
   --death-ms: 500ms;
+  --move-ms: 550ms;
 }
 
 .slot {
@@ -69,14 +70,37 @@
   min-height: 44px;
 }
 
-/* Pawn slide d2 → d4 */
+/* Quiet / capture slide (orthogonal / diagonal). */
 .mover {
   position: absolute;
   z-index: 6;
   overflow: visible;
-  transition: left 550ms ease-in-out, top 550ms ease-in-out;
+  transition: left var(--move-ms) ease-in-out, top var(--move-ms) ease-in-out;
 }
 
 .mover .pieceFace {
   inset: 6%;
+}
+
+/* Knight: L-path (long leg → elbow → short leg); hull faces travel direction. */
+.moverKnight {
+  transition: none;
+  animation: knightLMove var(--move-ms) linear 1 forwards;
+}
+
+.moverFace {
+  transition: transform 90ms ease-out;
+}
+
+@keyframes knightLMove {
+  /* Distance-proportional: 2 squares then 1 → elbow at ~67%. */
+  0% {
+    transform: translate(0, 0);
+  }
+  67% {
+    transform: translate(var(--kx1), var(--ky1));
+  }
+  100% {
+    transform: translate(var(--kx2), var(--ky2));
+  }
 }

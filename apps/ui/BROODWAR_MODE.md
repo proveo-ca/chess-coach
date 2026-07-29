@@ -4,6 +4,8 @@ Design and implementation plan for the Nerd / Brood War ruleset.
 **Exclusive to** [`apps/ui/src/screens/NerdScreen.tsx`](apps/ui/src/screens/NerdScreen.tsx).
 **All engine logic lives under** [`apps/ui/src/broodwar/`](apps/ui/src/broodwar/) — not for reuse outside this mode.
 
+**Position encoding (classical FEN vs BWFEN, simultaneous attack→move, demo GIFs):** see sibling [`BROODWAR_FEN.md`](BROODWAR_FEN.md).
+
 ---
 
 ## Goals
@@ -19,7 +21,7 @@ Replace classical alternating chess turns with a simultaneous-action economy gam
 | Economy | None | Stored + deployed material caps |
 | Vision | Full board | Fog of war (**cumulative** vision of all own units) |
 | Spawning | Fixed army | King special: spawn adjacent for cost |
-| King | One checkmate | **3 lives** — three successful hits destroy the king and win |
+| King | One checkmate; cannot walk into check | **3 lives**; check/mate replaced; **may walk into fire** (fog punishment) |
 
 Fog of war and Brood War rules are both gated by `broodWarMode` on `NerdScreen`.
 
@@ -64,10 +66,16 @@ These are locked for v1 so the engine can ship without further product decisions
    - **attack** — classical part 1 (both players)
    - **move** — classical part 2 (both players)
    - **specialAfter** — specials with `timing: "after"`
-10. **King lives** — each king starts at **3 HP**. A successful **attack** that targets the enemy king decrements HP by 1 (king stays on board until HP = 0). Third hit → destroyed → that player loses. Visual states: [King damage states](#king-damage-states).
-11. **Attack animations (v1)** — one attack VFX per unit type ([Attack animations](#attack-animations-v1)); verified in Storybook. Move/special VFX deferred.
-12. **Special abilities** — long-press a friendly unit to queue that unit’s special (uses the **1 special** slot). See [Special moves](#special-moves).
-13. **Board chrome** — Brood War replaces classical captured-pieces rows with **`ResourceBar` (top)** + **`TurnBar` (bottom: End + 10s gauge)**.
+10. **King lives** — each king starts at **3 HP**. A successful **attack** that targets the enemy king decrements HP by 1 (king stays on board until HP = 0). Third hit → destroyed → that player loses. Visual states: [King damage states](#king-damage-states). Classical check / checkmate are **not** Brood War outcomes (HP replaces mate).
+11. **King hits vs classical check (attack timing)** — locked Option A: arrival / discovered threats are **next turn**. Same phase clock as every other unit — **no** “king-target resolves after move” exception.
+    1. A successful king hit = classical attack with `to === enemyKingSquare`, clear geometry from the attacker’s **pre-move** square, during the **attack** phase.
+    2. Relocating onto (or uncovering) a ray that attacks the king does **not** chip HP this resolve — that only enables a king-shot on a **later** turn’s attack phase.
+    3. Non-king pieces never occupy the enemy king’s square; damage is HP only. Kings may still capture other units with attack → occupy (e.g. `Kxc5`).
+    4. Classical `+` / checkmate annotations are not Brood War results. UI **may** show a post-`move` **threatened** telegraph (preview of next-turn shots) without applying damage.
+    5. **Caveat — king may walk into fire.** Moving or staying on a square attacked by the enemy is **legal** in Brood War (classically illegal as moving into / remaining in check). This is the fog-of-war punishment: without vision you can step onto a hidden shooter. Option A still applies — the standing shooter chips HP only when they queue a king-shot on a later attack phase (or this phase if they already stood on a clear ray and targeted the king).
+12. **Attack animations (v1)** — one attack VFX per unit type ([Attack animations](#attack-animations-v1)); verified in Storybook. Move/special VFX deferred.
+13. **Special abilities** — long-press a friendly unit to queue that unit’s special (uses the **1 special** slot). See [Special moves](#special-moves).
+14. **Board chrome** — Brood War replaces classical captured-pieces rows with **`ResourceBar` (top)** + **`TurnBar` (bottom: End + 10s gauge)**.
 
 ---
 
@@ -84,16 +92,57 @@ Triggered by **long-press** on a friendly piece during planning (not a tap/selec
 | **Queen** | Warp | Teleport to **any** empty board square. | **Illegal** — deferred |
 | **King** | Spawn (purchase) | Opens a [`PromotionModal`](apps/ui/src/components/primitives/PromotionModal.tsx) **variant** (spawn picker), not pawn promotion. Spends stored material; deploys adjacent (spawn rules already in economy). | FEN-legal once spawned (position stays FEN-loadable) |
 
-### Deferral — FEN-illegal specials
+### Classical / FEN-illegal scenarios (catalog)
 
-**Do not implement resolution for pawn double-step, bishop snipe, rook stationary attack, or queen warp yet.** They break or bypass `chess.js` legality and need a Brood War board snapshot that is not “classical move then FEN”. Until then:
+Brood War must **not** filter plans through `chess.js` check / mate legality. Most rows below are classically illegal; **king spawn is the exception** — see the subsection after the locked table.
 
-- Document + type the special kinds (`SpecialKind` below).
-- Long-press UI may surface “coming soon” / disabled for deferred kinds.
-- **Ship first:** king spawn modal + `ResourceBar` + economy validation (adjacent spawn, cost, deploy cap).
-- Knight mine: design-only until mine occupancy / vision / trigger rules are specified; not a FEN piece.
+#### Locked — allow in `resolveTurn` / `actions` (do not reject as “in check”)
 
-Capture / classical combat continues to use FEN-loadable snapshots for rendering (both kings present).
+| Scenario | Why classical / FEN rejects it | Brood War |
+|---|---|---|
+| **King walks into (or stays in) a line of fire** | Moving into check / leaving the king in check | **Allowed** — fog punishment for missing vision ([rule §11.5](#rules)). Shooters still need an attack-phase king-shot to chip HP (Option A). |
+| **King remains after hits (HP > 0)** | Capturing the king / checkmate ends the game | King stays on the board until HP = 0; third hit wins ([rule §10](#rules)). |
+| **King-shot without occupying the king square** | Capture removes the king | Non-king attackers never step onto the enemy king; damage is HP only ([rule §11.3](#rules)). |
+| **Damaged king keeps moving** | Game already over after mate / king capture | While HP > 0 the king may flee, capture, or walk into further fire. |
+| **Simultaneous both-sides classical actions** | One side moves per ply | Both plans resolve in one turn (`attack` then `move` for both). |
+| **Mutual classical captures both connect** | Only one capture resolves per ply | e.g. opposing pawns capture each other → both die in `attack` → neither moves ([rule §3](#rules)). |
+| **Attack → move split (dead units skip relocate)** | A capture is a single atomic move | Part 1 applies damage/removals; part 2 relocates only survivors ([rule §3](#rules) / §9). |
+
+#### King spawn — FEN-legal special (not classical-illegal)
+
+The king’s special is **purchase + deploy an adjacent unit** (`p` / `n` / `b` / `r` / `q`). It is **not** a `chess.js` SAN move (no classical ply adds a piece from the economy), but the **resulting board is ordinary FEN** — an extra friendly piece on an empty adjacent square, both kings still present.
+
+| Concern | Rule |
+|---|---|
+| Who | Long-press **friendly king** → spawn modal (not pawn promotion). |
+| Where | Empty square **adjacent** to the king (validation in `actions.ts`). |
+| Cost | Spend **stored** material per unit cost table; increment **deployed** (respect caps). |
+| Phase | Special with stack timing `"before"` / `"after"` like other specials ([rule §1](#rules) / §9). |
+| FEN | **Legal** after resolve — ship this special first; do **not** lump it with deferred FEN-illegal specials. |
+| vs illegal specials | Pawn double / bishop snipe / rook siege / queen warp / mines break or bypass piece-placement FEN; spawn does not. |
+
+#### Deferred specials — typed only; no resolve yet
+
+Do **not** implement resolution for these until Brood War board ops exist (not “classical move then FEN”):
+
+| Special | Classical / FEN issue |
+|---|---|
+| **Pawn double-step anytime** | Illegal unless from the pawn’s start rank |
+| **Bishop snipe queen** | Ignores blockers on the diagonal |
+| **Rook siege** | Attack/damage without relocating |
+| **Queen warp** | Teleport to any empty square |
+| **Knight spider mine** | Mine is not a FEN piece; occupancy / vision / trigger TBD |
+
+Until then: keep `SpecialKind` stubs; long-press UI may show “coming soon” / disabled; **ship first** king spawn + `ResourceBar` + economy validation.
+
+#### Render / snapshot constraints (still FEN-loadable)
+
+| Constraint | Why |
+|---|---|
+| **Both kings present in every render FEN** | `chess.js` rejects kingless FENs — even after HP = 0 / rubble VFX, keep a loadable snapshot (Storybook + live board). |
+| **Mines / non-piece overlays** | Not encoded in FEN piece placement; track beside the board snapshot when mines ship. |
+
+Capture / classical combat rendering continues to use FEN-loadable snapshots. Full catalog of divergences lives here; do not reintroduce classical check filters when wiring `actions.ts` / `resolveTurn.ts`.
 
 ### King spawn modal + ResourceBar
 
@@ -108,7 +157,6 @@ Long-press king → modal variant of `PromotionModal`:
 Classical pawn-promotion `PromotionModal` stays unchanged for Coach/Analysis; Brood War uses an explicit variant prop or a thin `SpawnModal` wrapper that reuses modal chrome + choice grid.
 
 ---
-
 ## Architecture
 
 ```mermaid
@@ -157,7 +205,7 @@ flowchart TB
 
 **Do not** put Brood War turn resolution into `gameStore` / `useMoveExecutor`. Classical chess remains FEN + `chess.js` for Coach/Analysis/LAN. Brood War owns its own board snapshot + turn plans.
 
-**FEN-compatible boards:** every Brood War position that renders on `ChessBoard` must be a valid FEN (including both kings). `chess.js` rejects kingless FENs, so Storybook seeds, fog demos, and live Brood War snapshots stay FEN-loadable even when rules diverge from classical chess.
+**FEN-compatible boards:** every Brood War position that renders on `ChessBoard` must be a valid FEN (including both kings). `chess.js` rejects kingless FENs, so Storybook seeds, fog demos, and live Brood War snapshots stay FEN-loadable even when rules diverge from classical chess. Divergences (king into fire, HP, mutual captures, deferred specials, …) are cataloged under [Classical / FEN-illegal scenarios](#classical--fen-illegal-scenarios-catalog) — never reintroduce classical check filters in `actions` / `resolveTurn`. Full BWFEN dialect + demo GIFs: [`BROODWAR_FEN.md`](BROODWAR_FEN.md).
 
 ---
 
@@ -365,8 +413,8 @@ On `NerdScreen` when `broodWarMode`:
 Deterministic within each phase: white then black (then by `id` if needed).
 
 1. **specialBefore** — specials with `timing: "before"` (king spawn, etc.).
-2. **attack** — for each classical action that targets an occupied enemy square (or king hit): two-pass mark → apply. Mutual classical captures both succeed. King targets decrement `kingLives`.
-3. **move** — for each classical action whose `from` unit still lives: move to `to` if empty / allowed after attacks. Capturing units that already removed the target and survive step onto `to`.
+2. **attack** — for each classical action that targets an occupied enemy square (or king hit): two-pass mark → apply. Mutual classical captures both succeed. King targets decrement `kingLives` only when `to === enemyKingSquare` with clear pre-move geometry ([rule §11](#rules)). Uncovering / arriving on a king ray does **not** chip HP here.
+3. **move** — for each classical action whose `from` unit still lives: move to `to` if empty / allowed after attacks. Capturing units that already removed the target and survive step onto `to`. Non-king pieces never step onto the enemy king’s square (HP damage only).
 4. **specialAfter** — specials with `timing: "after"`.
 
 Example — mutual pawn captures, no specials:
@@ -415,6 +463,8 @@ Fog is cleared by the **union of vision from every friendly unit still on the bo
 - `getSideVision(board, color)` — unions `litSquares` / `revealedPieces` across all pieces of `color`.
 - Board rendering always uses `getSideVision` for the local player (e.g. white on Nerd demos).
 - Empty army ⇒ full fog (no lit tiles). Own pieces remain visible through fog as today; enemies stay hidden unless on a lit tile or in `revealedPieces` (bishop queen-ping still contributes when any friendly bishop sees them).
+- **Attack-time reveal:** while an `attackCue` is active, `ChessBoard` adds that cue’s `from` to `revealedPieces` so a shooter under fog appears for the shot only (fog punishment until they fire).
+- **Fog = player info only.** The engine always resolves both sides’ plans; quiet enemy relocates under fog still happen — they just get **no mover VFX** for the local player (`isPieceVisibleToSide`).
 
 **Migration:** drop `visionSource` / `initialVisionSquare` as the fog driver. Storybook fog stories seed positions via FEN only; the mask updates whenever the board (or side) changes. Optional selection highlight may remain for UI, but it must not scope fog.
 

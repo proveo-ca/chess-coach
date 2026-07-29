@@ -98,10 +98,14 @@ export const DeathBoardDemo: Component<DeathBoardDemoProps> = (props) => {
     });
   });
 
-  const dramatic = () => props.piece !== "p";
+  const dramatic = () => props.piece !== "p" && props.piece !== "k";
   const phaseLabel = () => {
     if (phase() === "idle") return "idle";
-    if (phase() === "dying") return dramatic() ? "boom + shards" : "bubble rip";
+    if (phase() === "dying") {
+      if (props.piece === "p") return "bubble rip";
+      if (props.piece === "k") return "rubble collapse";
+      return "boom + shards";
+    }
     return "gone";
   };
 
@@ -116,7 +120,12 @@ export const DeathBoardDemo: Component<DeathBoardDemoProps> = (props) => {
       </div>
       <p class={styles.caption}>
         Brood War · {props.piece.toUpperCase()} death · {phaseLabel()}
-        {dramatic() ? " · 500ms shatter" : " · 500ms outward pop"} · ChessBoard deathCues
+        {props.piece === "k"
+          ? " · 500ms rubble"
+          : dramatic()
+            ? " · 500ms shatter"
+            : " · 500ms outward pop"}{" "}
+        · ChessBoard deathCues
       </p>
     </div>
   );
