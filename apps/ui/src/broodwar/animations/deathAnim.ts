@@ -15,12 +15,12 @@ export const HOLD_MS = (DEATH_MS * 7) / 5;
 export const ORIGIN: Square = "d4";
 
 export const FEN_BY_PIECE: Record<DeathPiece, string> = {
-  p: "r6k/8/8/8/3P4/8/8/K6R w - - 0 1",
-  n: "r6k/8/8/8/3N4/8/8/K6R w - - 0 1",
-  b: "r6k/8/8/8/3B4/8/8/K6R w - - 0 1",
-  r: "r6k/8/8/8/3R4/8/8/K6R w - - 0 1",
-  q: "r6k/8/8/8/3Q4/8/8/K6R w - - 0 1",
-  k: "r6k/8/8/8/3K4/8/8/7R w - - 0 1",
+  p: "7k/8/8/8/3P4/8/8/K7 w - - 0 1",
+  n: "7k/8/8/8/3N4/8/8/K7 w - - 0 1",
+  b: "7k/8/8/8/3B4/8/8/K7 w - - 0 1",
+  r: "7k/8/8/8/3R4/8/8/K7 w - - 0 1",
+  q: "7k/8/8/8/3Q4/8/8/K7 w - - 0 1",
+  k: "7k/8/8/8/3K4/8/8/8 w - - 0 1",
 };
 
 /** Stable hash → scatter seed so each death cue id flies differently. */

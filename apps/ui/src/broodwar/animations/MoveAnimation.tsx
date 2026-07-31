@@ -2,13 +2,14 @@ import { For, Show, type Component, type JSX } from "solid-js";
 
 import {
   attackFaceFor,
-  ROOK_REST_AIM_DEG,
   KING_REST_AIM_DEG,
+  ROOK_REST_AIM_DEG,
 } from "~/broodwar/animations/attackAnim";
 import {
   aimPoseFor,
   aimTransformCss,
   knightLegVecs,
+  rookTravelPose,
   screenAngleDeg,
   squareAt,
   type AttackVec,
@@ -56,10 +57,6 @@ const moverNode = (m: MoveCue): JSX.Element => {
   switch (m.piece) {
     case "b":
       return <InlineBishop color={m.color} face="front" />;
-    case "r":
-      return (
-        <InlineRook color={m.color} aimDeg={ROOK_REST_AIM_DEG} mode={rookModeAt(m.from)} />
-      );
     case "n":
       return <InlineKnight color={m.color} />;
     case "q":
@@ -262,6 +259,34 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => (
                 style={{ transform: aimTransformCss(aimPoseFor(vec())) }}
               >
                 <InlineQueen color={m.color} />
+              </div>
+            </div>
+          );
+        }
+
+        if (m.piece === "r") {
+          // Rank: rest silhouette. File: mirror only (no 90° tip — hull is ¾ front).
+          return (
+            <div
+              class={styles.mover}
+              classList={{ [styles.moverRook]: started() }}
+              style={{
+                ...slideMoverStyle(m.from, m.to, props.boardWidth, props.boardHeight),
+                "--move-ms": `${travelMs()}ms`,
+              }}
+              data-square={m.from}
+              data-move-id={m.id}
+              data-move-piece="r"
+            >
+              <div
+                class={`${styles.pieceFace} ${styles.moverFace}`}
+                style={{ transform: aimTransformCss(rookTravelPose(vec())) }}
+              >
+                <InlineRook
+                  color={m.color}
+                  aimDeg={ROOK_REST_AIM_DEG}
+                  mode={rookModeAt(m.from)}
+                />
               </div>
             </div>
           );

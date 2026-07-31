@@ -147,6 +147,12 @@
   animation: humanoidSlide var(--move-ms, 250ms) linear 1 forwards;
 }
 
+/* Rook / Siege Tank (tank mode): slide while twin battery faces travel. */
+.moverRook {
+  transition: none;
+  animation: humanoidSlide var(--move-ms, 250ms) linear 1 forwards;
+}
+
 @keyframes humanoidSlide {
   0% {
     transform: translate(0, 0);
@@ -161,6 +167,7 @@
   .moverPawn,
   .moverBishop,
   .moverQueen,
+  .moverRook,
   .moverPawn .pawnFace,
   .moverPawn :global([data-part="leg-left"]),
   .moverPawn :global([data-part="leg-right"]) {

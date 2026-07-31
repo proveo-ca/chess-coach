@@ -116,6 +116,16 @@ export const aimPoseFor = (vec: AttackVec): AimPose => {
   return { mirrorX, rotateDeg };
 };
 
+/**
+ * Siege Tank move facing — hull is a fixed ¾ front silhouette, so rank travel
+ * (up/down) keeps rest orientation; only file travel mirrors to face left/right.
+ * Rest art reads leftish (guns ≈ −135°); mirror when `df > 0` (moving right).
+ */
+export const rookTravelPose = (vec: AttackVec): AimPose => {
+  if (vec.df === 0) return { mirrorX: false, rotateDeg: 0 };
+  return { mirrorX: vec.df > 0, rotateDeg: 0 };
+};
+
 export const aimTransformCss = (pose: AimPose): string => {
   const flip = pose.mirrorX ? "scaleX(-1) " : "";
   return `${flip}rotate(${pose.rotateDeg}deg)`;

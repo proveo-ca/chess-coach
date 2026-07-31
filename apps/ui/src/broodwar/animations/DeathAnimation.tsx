@@ -9,10 +9,16 @@ import { DeathPawn } from "~/broodwar/animations/pieces/DeathPawn";
 import { DeathQueen } from "~/broodwar/animations/pieces/DeathQueen";
 import { DeathRook } from "~/broodwar/animations/pieces/DeathRook";
 import { squareBoxStyle } from "~/broodwar/animations/boardGeom";
+import { rookModeAt } from "~/broodwar/broodWarStore";
 import type { PieceColor } from "~/broodwar/animations/teamColors";
 import type { BroodWarPiece, DeathCue } from "~/broodwar/animations/types";
 
-const deathNode = (piece: BroodWarPiece, color: PieceColor, seed: number): JSX.Element => {
+const deathNode = (
+  piece: BroodWarPiece,
+  color: PieceColor,
+  seed: number,
+  cue: DeathCue,
+): JSX.Element => {
   switch (piece) {
     case "p":
       return <DeathPawn color={color} seed={seed} />;
@@ -21,7 +27,7 @@ const deathNode = (piece: BroodWarPiece, color: PieceColor, seed: number): JSX.E
     case "b":
       return <DeathBishop color={color} seed={seed} />;
     case "r":
-      return <DeathRook color={color} seed={seed} />;
+      return <DeathRook color={color} seed={seed} mode={rookModeAt(cue.at)} />;
     case "q":
       return <DeathQueen color={color} seed={seed} />;
     case "k":
@@ -84,7 +90,7 @@ export const DeathAnimation: Component<DeathAnimationProps> = (props) => (
             data-scatter-seed={String(seed)}
           >
             <div class={styles.pieceFace}>
-              {deathNode(cue.piece, cue.color, seed)}
+              {deathNode(cue.piece, cue.color, seed, cue)}
               <div class={styles.boomFlash} aria-hidden="true" />
               <div class={styles.boomRing} aria-hidden="true" />
             </div>

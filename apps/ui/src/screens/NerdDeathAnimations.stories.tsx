@@ -63,7 +63,8 @@ export const RookShatter: Story = {
   parameters: {
     docs: {
       description: {
-        story: "Siege tank boom; hull panels and twin cannons scatter.",
+        story:
+          "Siege Tank boom side-by-side: c4 tank (tracks + twin tubes) and e4 siege (wedge armor + filled twins) shatter together.",
       },
     },
   },

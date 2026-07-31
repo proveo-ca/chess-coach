@@ -2,6 +2,7 @@ import { createEffect, createSignal, onCleanup, type Component, type JSX } from 
 
 import { svgPivotLocal } from "~/broodwar/animations/attackAnim";
 import {
+  INK_BLACK,
   TEAM_DARK,
   TEAM_LIGHT,
   TEAM_PRIMARY,
@@ -149,7 +150,8 @@ const ShoulderMount: Component<ShoulderMountProps> = (props) => (
 /**
  * Experimental Goliath. Hull/cockpit stay fixed; each shoulder gatling is mounted
  * with `translate(shoulder) rotate(aim)` — same turret pattern as the rook.
- * Feet roll on full circles about the hips (steam-wheel crank), 90° knees.
+ * Idle / attack / deploy: standing legs (`*B.svg`). Quiet moves: feet roll on
+ * full circles about the hips (steam-wheel crank), 90° knees.
  */
 export const InlineBishop: Component<InlineBishopProps> = (props) => {
   const color = () => props.color ?? "w";
@@ -218,11 +220,32 @@ export const InlineBishop: Component<InlineBishopProps> = (props) => {
     </>
   );
 
+  /**
+   * Standing pose matches `*B.svg` (colinear hip→ankle + foot ellipses).
+   * Wheel-crank pose only while `crank` is set (quiet moves) — attack/deploy
+   * must keep the standing legs frozen.
+   */
   const mechaLeg = (side: "left" | "right"): JSX.Element => {
     const left = side === "left";
     const hip = left ? { x: 18, y: 28 } : { x: 27, y: 28 };
-    const pose = () =>
-      bishopLegPose(hip, left ? phase() : phase() + Math.PI, left ? 1 : -1);
+    const stand = left
+      ? { knee: { x: 16, y: 33 }, foot: { x: 14, y: 38 }, pad: { cx: 12, cy: 40 } }
+      : { knee: { x: 29, y: 33 }, foot: { x: 31, y: 38 }, pad: { cx: 33, cy: 40 } };
+    const pose = () => {
+      if (!props.crank) {
+        return {
+          knee: stand.knee,
+          foot: stand.foot,
+          pad: stand.pad,
+        };
+      }
+      const p = bishopLegPose(hip, left ? phase() : phase() + Math.PI, left ? 1 : -1);
+      return {
+        knee: p.knee,
+        foot: p.foot,
+        pad: { cx: p.foot.x, cy: p.foot.y },
+      };
+    };
     return (
       <g data-part={`leg-${side}`}>
         <g data-part={`leg-${side}-top`}>
@@ -231,16 +254,16 @@ export const InlineBishop: Component<InlineBishopProps> = (props) => {
             y1={hip.y}
             x2={pose().knee.x}
             y2={pose().knee.y}
-            stroke={team()}
+            stroke={INK_BLACK}
             stroke-width="2.5"
             stroke-linecap="round"
           />
           <circle
-            fill={teamDark()}
+            fill={INK_BLACK}
             cx={pose().knee.x}
             cy={pose().knee.y}
             r="1.5"
-            stroke="#222"
+            stroke={INK_BLACK}
             stroke-width="1"
           />
           <g data-part={`leg-${side}-bottom`}>
@@ -249,18 +272,18 @@ export const InlineBishop: Component<InlineBishopProps> = (props) => {
               y1={pose().knee.y}
               x2={pose().foot.x}
               y2={pose().foot.y}
-              stroke={team()}
+              stroke={INK_BLACK}
               stroke-width="2.5"
               stroke-linecap="round"
             />
             <ellipse
               data-part={`leg-${side}-foot`}
               fill={team()}
-              cx={pose().foot.x}
-              cy={pose().foot.y}
+              cx={pose().pad.cx}
+              cy={pose().pad.cy}
               rx="5"
               ry="2.5"
-              stroke="#222"
+              stroke={INK_BLACK}
               stroke-width="2"
             />
           </g>
