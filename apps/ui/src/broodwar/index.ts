@@ -1,5 +1,6 @@
 export * from "~/broodwar/types";
 export * from "~/broodwar/constants";
+export * from "~/broodwar/economy";
 export * from "~/broodwar/broodWarStore";
 export * from "~/broodwar/vision";
 export * from "~/broodwar/bwfen";

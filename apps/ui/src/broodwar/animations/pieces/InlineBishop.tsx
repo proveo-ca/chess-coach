@@ -5,8 +5,7 @@ import {
   TEAM_DARK,
   TEAM_LIGHT,
   TEAM_PRIMARY,
-  type PieceColor,
-} from "~/broodwar/animations/teamColors";
+  type PieceColor, NERD_FRAME } from "~/broodwar/animations/teamColors";
 
 type InlineBishopProps = {
   color?: PieceColor;
@@ -23,14 +22,14 @@ const GatlingFrontFaceLocal = (props: { hubPart: string; team: string }) => (
   <>
     <ellipse fill={props.team} cx="0" cy="0" rx="5" ry="6" />
     <g data-part={props.hubPart}>
-      <circle fill="#9aa3ad" cx="0" cy="0" r="3.6" stroke="#5c6570" stroke-width="1.2" />
-      <circle fill="#6a737c" cx="0" cy="0" r="2.9" stroke="none" />
-      <circle fill="#1a1e22" cx="2" cy="0" r="0.7" stroke="none" />
-      <circle fill="#1a1e22" cx="1" cy="1.73" r="0.7" stroke="none" />
-      <circle fill="#1a1e22" cx="-1" cy="1.73" r="0.7" stroke="none" />
-      <circle fill="#1a1e22" cx="-2" cy="0" r="0.7" stroke="none" />
-      <circle fill="#1a1e22" cx="-1" cy="-1.73" r="0.7" stroke="none" />
-      <circle fill="#1a1e22" cx="1" cy="-1.73" r="0.7" stroke="none" />
+      <circle fill="#fff" cx="0" cy="0" r="3.6" stroke="#222" stroke-width="1.2" />
+      <circle fill="#555" cx="0" cy="0" r="2.9" stroke="none" />
+      <circle fill="#222" cx="2" cy="0" r="0.7" stroke="none" />
+      <circle fill="#222" cx="1" cy="1.73" r="0.7" stroke="none" />
+      <circle fill="#222" cx="-1" cy="1.73" r="0.7" stroke="none" />
+      <circle fill="#222" cx="-2" cy="0" r="0.7" stroke="none" />
+      <circle fill="#222" cx="-1" cy="-1.73" r="0.7" stroke="none" />
+      <circle fill="#222" cx="1" cy="-1.73" r="0.7" stroke="none" />
     </g>
   </>
 );
@@ -51,10 +50,10 @@ const GatlingAimCannonLocal = (props: {
     <>
       <ellipse fill={props.team} cx="0" cy="0" rx="5" ry="6" />
       <circle data-part={props.hubPart} fill={props.teamDark} cx="0" cy="0" r="2" stroke="none" />
-      <circle fill="#0d3a6e" cx="0" cy="0" r="1" stroke="none" />
+      <circle fill="#222" cx="0" cy="0" r="1" stroke="none" />
       <g data-part="gatling-recoil">
         <rect fill="#555" x="2" y="-3.2" width={len - 2} height="6.4" rx="1.5" stroke-width="1" />
-        <rect fill="#777" x={len - 2.2} y="-4" width="2.2" height="8" rx="0.8" stroke-width="1" />
+        <rect fill="#555" x={len - 2.2} y="-4" width="2.2" height="8" rx="0.8" stroke-width="1" />
         <circle
           data-part={props.flashPart}
           fill="#ffe08a"
@@ -127,8 +126,8 @@ export const InlineBishop: Component<InlineBishopProps> = (props) => {
       </>
     ) : (
       <>
-        <ellipse fill="#999" cx="22.5" cy="20" rx="10" ry="12" />
-        <ellipse fill="#bbb" cx="18" cy="16" rx="3" ry="5" stroke="none" />
+        <ellipse fill="#fff" cx="22.5" cy="20" rx="10" ry="12" />
+        <ellipse fill="#fff" cx="18" cy="16" rx="3" ry="5" stroke="none" />
       </>
     );
 
@@ -157,6 +156,7 @@ export const InlineBishop: Component<InlineBishopProps> = (props) => {
 
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45" aria-hidden="true" overflow="visible">
+      <g transform={NERD_FRAME.B}>
       <g stroke="#222" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
         <ellipse fill={team()} cx="12" cy="40" rx="5" ry="2.5" />
         <ellipse fill={team()} cx="33" cy="40" rx="5" ry="2.5" />
@@ -175,6 +175,7 @@ export const InlineBishop: Component<InlineBishopProps> = (props) => {
           </>
         )}
       </g>
-    </svg>
+    
+      </g></svg>
   );
 };

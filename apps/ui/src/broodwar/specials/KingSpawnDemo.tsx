@@ -13,25 +13,25 @@ import {
 
 import {
   addDeployed,
+  energyRemainingFor,
+  refundEnergy,
   refundStored,
   removeDeployed,
   resetBroodWarEconomy,
+  spendEnergy,
   spendStored,
   storedMaterial,
 } from "~/broodwar/broodWarStore";
-import { UNIT_COST } from "~/broodwar/constants";
+import { SPECIAL_ENERGY_COST, UNIT_COST } from "~/broodwar/constants";
 import { findBoardGrid, squareBoxStyle } from "~/broodwar/animations/boardGeom";
 import { LONG_PRESS_MS, adjacentSquares } from "~/broodwar/specials/adjacent";
-import styles from "~/broodwar/specials/SpecialMoves.module.css";
+import styles from "~/broodwar/specials/KingSpawnDemo.module.css";
 import { ChessBoard } from "~/components/features/ChessBoard";
-import {
-  SpawnModal,
-  type SpawnModalPending,
-  type SpawnPiece,
-} from "~/components/primitives/SpawnModal";
+import { SpawnModal } from "~/components/primitives/SpawnModal";
 import { setStorybookCapabilities } from "~/screens/storybookCapabilities";
 import { NERD_CAPABILITIES } from "~/store/capabilitiesStore";
 import { loadFen } from "~/store/gameStore";
+import type { SpawnModalPending, SpawnPiece } from "~/types/broodwar";
 import {
   playerPieceSet,
   setActivePlayerColor,
@@ -57,7 +57,7 @@ export const KingSpawnDemo: Component = () => {
   const [overlayBox, setOverlayBox] = createSignal<OverlayBox | null>(null);
   const [caption, setCaption] = createSignal("Long-press the king on d4 to open spawn");
 
-  let hostRef: HTMLDivElement | undefined;
+  let hostRef = undefined as HTMLDivElement | undefined;
   let pressTimer = 0;
 
   const occupied = createMemo(() => {
@@ -120,6 +120,10 @@ export const KingSpawnDemo: Component = () => {
 
   const openSpawn = () => {
     clearPress();
+    if (energyRemainingFor("w") < SPECIAL_ENERGY_COST) {
+      setCaption("Need vespene gas to use a special");
+      return;
+    }
     setPhase("spawnModal");
     setCaption("Pick a unit to spawn (pawn first in the grid)");
   };
@@ -140,9 +144,19 @@ export const KingSpawnDemo: Component = () => {
     const piece = pendingSpawn();
     if (!piece) return;
     const cost = UNIT_COST[piece];
-    if (!spendStored("w", cost)) return;
-    if (!addDeployed("w", 1)) {
+    if (!spendEnergy("w")) {
+      setCaption("Need vespene gas to use a special");
+      setPhase("idle");
+      setPendingSpawn(null);
+      return;
+    }
+    if (!spendStored("w", cost)) {
+      refundEnergy("w");
+      return;
+    }
+    if (!addDeployed("w", cost)) {
       refundStored("w", cost);
+      refundEnergy("w");
       return;
     }
 
@@ -150,7 +164,8 @@ export const KingSpawnDemo: Component = () => {
     const ok = g.put({ type: piece as PieceSymbol, color: "w" }, sq);
     if (!ok) {
       refundStored("w", cost);
-      removeDeployed("w", 1);
+      removeDeployed("w", cost);
+      refundEnergy("w");
       return;
     }
 

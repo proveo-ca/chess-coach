@@ -6,7 +6,7 @@ import {
   type Component,
 } from "solid-js";
 
-import styles from "~/broodwar/animations/DeathAnimations.module.css";
+import styles from "~/broodwar/animations/DeathBoardDemo.module.css";
 import {
   DEATH_MS,
   FEN_BY_PIECE,

@@ -2,8 +2,8 @@ import { For, createMemo, createUniqueId, type Component, type JSX } from "solid
 
 import { rubbleSettleStyle } from "~/broodwar/animations/deathAnim";
 import { FireColumn, pickFireSpots } from "~/broodwar/animations/pieces/kingFire";
-import styles from "~/broodwar/animations/pieces/KingDamage.module.css";
-import { TEAM_DARK, TEAM_LIGHT, type PieceColor } from "~/broodwar/animations/teamColors";
+import styles from "~/broodwar/animations/pieces/DeathKing.module.css";
+import { TEAM_DARK, TEAM_LIGHT, type PieceColor, NERD_FRAME } from "~/broodwar/animations/teamColors";
 import type { KingDamageState } from "~/broodwar/types";
 
 type DeathKingProps = {
@@ -62,10 +62,11 @@ export const DeathKing: Component<DeathKingProps> = (props) => {
       data-collapse={collapse() ? "true" : "false"}
       data-team={color()}
     >
+      <g transform={NERD_FRAME.K}>
       <defs>
         <linearGradient id={bodyGrad} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#c7d0d8" />
-          <stop offset="1" stop-color="#68727d" />
+          <stop offset="0" stop-color="#fff" />
+          <stop offset="1" stop-color="#555" />
         </linearGradient>
         <linearGradient id={teamGrad} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stop-color={TEAM_LIGHT[color()]} />
@@ -88,9 +89,9 @@ export const DeathKing: Component<DeathKingProps> = (props) => {
           <stop offset="1" stop-color="#2a2826" stop-opacity="0" />
         </radialGradient>
       </defs>
-      <g stroke="#20262c" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.35">
-        {wrap(0, <ellipse cx="22.5" cy="28.8" rx="19" ry="13.7" fill="#4d5761" />)}
-        {wrap(1, <ellipse cx="22.5" cy="35.5" rx="15.8" ry="7.5" fill="#313a43" />)}
+      <g stroke="#222" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.35">
+        {wrap(0, <ellipse cx="22.5" cy="28.8" rx="19" ry="13.7" fill="#555" />)}
+        {wrap(1, <ellipse cx="22.5" cy="35.5" rx="15.8" ry="7.5" fill={TEAM_LIGHT[color()]} />)}
         {wrap(
           2,
           <>
@@ -109,7 +110,7 @@ export const DeathKing: Component<DeathKingProps> = (props) => {
           4,
           <>
             <ellipse cx="22.5" cy="25.5" rx="14.3" ry="10.5" fill={`url(#${bodyGrad})`} />
-            <ellipse cx="22.5" cy="28" rx="12.8" ry="7" fill="#8e9aa5" />
+            <ellipse cx="22.5" cy="28" rx="12.8" ry="7" fill="#fff" />
           </>,
         )}
         {wrap(
@@ -117,29 +118,29 @@ export const DeathKing: Component<DeathKingProps> = (props) => {
           <>
             <ellipse cx="22.5" cy="19" rx="10.2" ry="6" fill={`url(#${teamGrad})`} />
             <ellipse cx="22.5" cy="15.5" rx="9" ry="4.2" fill={TEAM_LIGHT[color()]} />
-            <ellipse cx="22.5" cy="15.1" rx="6.2" ry="2.7" fill="#49545e" />
-            <ellipse cx="22.5" cy="14.3" rx="3.8" ry="2" fill="#2b333a" />
+            <ellipse cx="22.5" cy="15.1" rx="6.2" ry="2.7" fill="#555" />
+            <ellipse cx="22.5" cy="14.3" rx="3.8" ry="2" fill="#222" />
           </>,
         )}
         {wrap(
           6,
           <>
-            <ellipse cx="22.5" cy="35" rx="7.3" ry="7.5" fill="#2b333a" />
-            <ellipse cx="22.5" cy="35.5" rx="5.3" ry="5.8" fill="#111820" />
+            <ellipse cx="22.5" cy="35" rx="7.3" ry="7.5" fill="#222" />
+            <ellipse cx="22.5" cy="35.5" rx="5.3" ry="5.8" fill="#222" />
             <ellipse cx="22.5" cy="32.5" rx="5.1" ry="1.5" fill={TEAM_DARK[color()]} />
-            <path d="M19.1 36.4h6.8M19 39h7" fill="none" stroke="#687782" stroke-width=".9" />
+            <path d="M19.1 36.4h6.8M19 39h7" fill="none" stroke="#555" stroke-width=".9" />
           </>,
         )}
         {wrap(
           7,
-          <g fill="#ffd75a" stroke="#5c4610" stroke-width=".65">
+          <g fill={TEAM_LIGHT[color()]} stroke={TEAM_LIGHT[color()]} stroke-width=".65">
             <circle cx="12.2" cy="34.2" r="1" />
             <circle cx="9.3" cy="25.1" r=".8" />
           </g>,
         )}
         {wrap(
           8,
-          <g fill="#ffd75a" stroke="#5c4610" stroke-width=".65">
+          <g fill={TEAM_LIGHT[color()]} stroke={TEAM_LIGHT[color()]} stroke-width=".65">
             <circle cx="32.8" cy="34.2" r="1" />
             <circle cx="35.7" cy="25.1" r=".8" />
           </g>,
@@ -175,6 +176,7 @@ export const DeathKing: Component<DeathKingProps> = (props) => {
           </For>
         </g>
       </g>
-    </svg>
+    
+      </g></svg>
   );
 };

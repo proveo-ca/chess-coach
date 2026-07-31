@@ -27,6 +27,7 @@ import {
   setOpponentIdentity,
   setPlayerIdentity,
   setPlayerName,
+  setNerdPieceSet,
 } from "~/store/settingsStore";
 import { exitTravel, startTravel } from "~/store/travelStore";
 import { setFooterFloat } from "~/store/viewportLayoutStore";
@@ -35,7 +36,7 @@ import { START_FEN } from "~/storybook/fixtures";
 import type { CoachEmotion } from "~/types/coach";
 import type { GameRecord, MoveSquares } from "~/types/game";
 import type { ConnStatus, Role, RoomSnapshot, Seat } from "~/types/multiplayer";
-import type { Difficulty, PlayerColorPref, PlayerIdentity } from "~/types/settings";
+import type { Difficulty, NerdPieceSet, PlayerColorPref, PlayerIdentity } from "~/types/settings";
 
 export type StoryState = {
   capabilities?: Parameters<typeof setStorybookCapabilities>[0];
@@ -50,6 +51,7 @@ export type StoryState = {
     playerName?: string;
     imLost?: boolean;
     nerdModeUnlocked?: boolean;
+    nerdPieceSet?: NerdPieceSet;
   };
   coach?: {
     advice?: string;
@@ -102,6 +104,7 @@ export function resetStoryState(state: StoryState = {}): void {
   setPlayerName(settings.playerName ?? "Story Player");
   setImLost(settings.imLost ?? false);
   setNerdModeUnlocked(settings.nerdModeUnlocked ?? false);
+  setNerdPieceSet(settings.nerdPieceSet ?? "nerd");
 
   const coach = state.coach ?? {};
   resetCoachState({

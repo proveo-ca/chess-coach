@@ -1,28 +1,23 @@
-import type { Color, PieceSymbol } from "chess.js";
+import type { Color } from "chess.js";
 import { For, Show } from "solid-js";
 import type { Component } from "solid-js";
 
 import {
   deployedSupply,
+  energyRemaining,
   maxDeployedSupply,
   storedMaterial,
 } from "~/broodwar/broodWarStore";
-import { UNIT_COST } from "~/broodwar/constants";
+import { SPECIAL_ENERGY_COST, UNIT_COST } from "~/broodwar/constants";
 import { Modal } from "~/components/atoms/Modal";
-import promoStyles from "~/components/primitives/PromotionModal.module.css";
-import { ResourceBar } from "~/components/primitives/ResourceBar";
+import { ResourceBar } from "~/components/atoms/ResourceBar";
 import styles from "~/components/primitives/SpawnModal.module.css";
+import type { SpawnModalPending, SpawnPiece } from "~/types/broodwar";
 import type { PieceSet } from "~/types/settings";
 
-/** King spawn choices — pawn first, then promotional set. */
-export type SpawnPiece = Extract<PieceSymbol, "p" | "q" | "r" | "b" | "n">;
+export type { SpawnModalPending, SpawnPiece } from "~/types/broodwar";
 
 export const SPAWN_CHOICES: SpawnPiece[] = ["p", "q", "r", "b", "n"];
-
-export type SpawnModalPending = {
-  color: Color;
-  pieceSet: PieceSet;
-};
 
 type SpawnModalProps = {
   pending: SpawnModalPending | null;
@@ -40,7 +35,11 @@ const getPieceImg = (piece: SpawnPiece, color: Color, pieceSet: PieceSet) =>
 export const SpawnModal: Component<SpawnModalProps> = (props) => {
   const canAfford = (piece: SpawnPiece) => {
     const cost = UNIT_COST[piece];
-    return storedMaterial() >= cost && deployedSupply() + 1 <= maxDeployedSupply;
+    return (
+      energyRemaining() >= SPECIAL_ENERGY_COST &&
+      storedMaterial() >= cost &&
+      deployedSupply() + cost <= maxDeployedSupply
+    );
   };
 
   return (
@@ -55,14 +54,14 @@ export const SpawnModal: Component<SpawnModalProps> = (props) => {
         {(pending) => (
           <div class={styles.body}>
             <ResourceBar />
-            <div class={`${promoStyles.choices} ${styles.choices}`}>
+            <div class={styles.choices}>
               <For each={SPAWN_CHOICES}>
                 {(piece) => {
                   const affordable = () => canAfford(piece);
                   return (
                     <button
                       type="button"
-                      class={promoStyles.choice}
+                      class={styles.choice}
                       classList={{ [styles.disabled]: !affordable() }}
                       disabled={!affordable()}
                       onClick={() => affordable() && props.onSelect(piece)}
@@ -73,7 +72,7 @@ export const SpawnModal: Component<SpawnModalProps> = (props) => {
                       <img
                         src={getPieceImg(piece, pending().color, pending().pieceSet)}
                         alt=""
-                        class={promoStyles.pieceImg}
+                        class={styles.pieceImg}
                       />
                       <span class={styles.cost}>{UNIT_COST[piece]}</span>
                     </button>

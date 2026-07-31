@@ -10,30 +10,13 @@ import {
 } from "solid-js";
 
 import { squareBoxStyle } from "~/broodwar/animations/boardGeom";
-import styles from "~/broodwar/animations/DeathAnimations.module.css";
+import styles from "~/broodwar/animations/kingDamageOverlay.module.css";
 import { HIT_BOOM_MS } from "~/broodwar/animations/kingDamage";
 import { DeathKing } from "~/broodwar/animations/pieces/DeathKing";
 import { MOVE_MS } from "~/broodwar/constants";
-import type { KingDamageState } from "~/broodwar/types";
+import type { KingDamageCue, KingDamageState } from "~/types/broodwar";
 
-export type KingDamageCue = {
-  /** Stable id so the slot survives square changes (king flee). */
-  id: string;
-  at: Square;
-  damage: KingDamageState;
-  /** Fire-spot RNG — keep stable across moves so flames don't jump. */
-  seed?: number;
-  /**
-   * Bumps only on a connecting king-shot. Overlay booms when this increases —
-   * not when BWFEN / turn-seek restores an already-damaged king.
-   */
-  impactSeq?: number;
-  /**
-   * Extra board squares whose `<img>` stays hidden. Prefer ChessBoard’s
-   * automatic flee-cover while `at` transitions — demos should not set this.
-   */
-  cover?: readonly Square[];
-};
+export type { KingDamageCue };
 
 export type KingDamageOverlayProps = {
   cues: KingDamageCue[];

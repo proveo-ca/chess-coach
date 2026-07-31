@@ -12,13 +12,17 @@ import {
 } from "solid-js";
 import type { Component, JSX } from "solid-js";
 
-import type { KingDamageState } from "~/broodwar/types";
-import type { KingDamageCue } from "~/broodwar/animations/kingDamageOverlay";
+import type {
+  AttackCue,
+  DeathCue,
+  KingDamageCue,
+  KingDamageState,
+  MoveCue,
+} from "~/types/broodwar";
 import { AttackAnimation } from "~/broodwar/animations/AttackAnimation";
 import { DeathAnimation } from "~/broodwar/animations/DeathAnimation";
 import { KingDamageOverlay } from "~/broodwar/animations/kingDamageOverlay";
 import { MoveAnimation } from "~/broodwar/animations/MoveAnimation";
-import type { AttackCue, DeathCue, MoveCue } from "~/broodwar/animations/types";
 import { buildFxHiddenSquares, EMPTY_FX_HIDDEN, hasCombatFxInput } from "~/broodwar/boardFx";
 import { MOVE_MS } from "~/broodwar/constants";
 import { getSideVision, getVisionDisplayCells, getVisionFogHolePaths } from "~/broodwar/vision";
@@ -133,7 +137,7 @@ export const ChessBoard: Component<{
       if (old && old !== c.at) newly.push(old);
       prevKingAt.set(c.id, c.at);
     }
-    for (const id of [...prevKingAt.keys()]) {
+    for (const id of prevKingAt.keys()) {
       if (!seen.has(id)) prevKingAt.delete(id);
     }
     if (newly.length === 0) return;
@@ -168,7 +172,7 @@ export const ChessBoard: Component<{
   });
 
   const [boardSize, setBoardSize] = createSignal<{ width: number; height: number } | null>(null);
-  let boardGridRef: HTMLDivElement | undefined;
+  let boardGridRef = undefined as HTMLDivElement | undefined;
 
   createEffect(() => {
     if (!hasCombatFx()) {

@@ -5,6 +5,7 @@ import {
   TEAM_LIGHT,
   TEAM_PRIMARY,
   TEAM_SHADOW,
+  NERD_FRAME,
   type PieceColor,
 } from "~/broodwar/animations/teamColors";
 
@@ -59,6 +60,7 @@ export const InlinePawn: Component<InlinePawnProps> = (props) => {
 
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45" aria-hidden="true" overflow="visible">
+      <g transform={NERD_FRAME.P}>
       {/* Exact standstill framing from public *P.svg */}
       <g
         stroke="#222"
@@ -117,7 +119,7 @@ export const InlinePawn: Component<InlinePawnProps> = (props) => {
         {front() ? (
           <>
             {/* Glass dome + shine — wP.svg */}
-            <ellipse fill="#eee" cx="22.5" cy="22" rx="13" ry="14" />
+            <ellipse fill="#fff" cx="22.5" cy="22" rx="13" ry="14" />
             <path fill="#fff" stroke="none" d="M16 14 Q18 10 24 11 Q20 10 16 14z" />
 
             {aiming() ? (
@@ -125,7 +127,7 @@ export const InlinePawn: Component<InlinePawnProps> = (props) => {
               <g transform={svgPivotLocal(FRONT_GUN_PIVOT.cx, FRONT_GUN_PIVOT.cy, aimDeg())}>
                 <g data-part="barrel">
                   <rect
-                    fill="#444"
+                    fill="#555"
                     x={FRONT_GUN_LOCAL.block.x}
                     y={FRONT_GUN_LOCAL.block.y}
                     width={FRONT_GUN_LOCAL.block.w}
@@ -154,7 +156,7 @@ export const InlinePawn: Component<InlinePawnProps> = (props) => {
             ) : (
               <>
                 {/* Idle gun — exact wP.svg paths */}
-                <rect fill="#444" x="8" y="24" width="16" height="9" rx="2" />
+                <rect fill="#555" x="8" y="24" width="16" height="9" rx="2" />
                 <path fill="#555" d="M8 26 L4 26 L4 30 L8 30z" />
               </>
             )}
@@ -175,6 +177,7 @@ export const InlinePawn: Component<InlinePawnProps> = (props) => {
             {!aiming() && <path fill="#555" d="M8 26 L4 26 L4 30 L8 30z" />}
           </>
         )}
+      </g>
       </g>
     </svg>
   );

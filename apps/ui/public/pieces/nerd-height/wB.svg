@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45">
+<g transform="translate(22.5 39.2) scale(0.9333) translate(-22.50 -42.50)"><g stroke="#222" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+    <!-- Goliath (white/blue) -->
+    <ellipse fill="#3b7dd8" cx="12" cy="40" rx="5" ry="2.5"/>
+    <ellipse fill="#3b7dd8" cx="33" cy="40" rx="5" ry="2.5"/>
+    <line x1="14" y1="38" x2="18" y2="28" stroke-width="2.5"/>
+    <line x1="31" y1="38" x2="27" y2="28" stroke-width="2.5"/>
+    <ellipse fill="#fff" cx="22.5" cy="20" rx="10" ry="12"/>
+    <ellipse fill="#fff" cx="18" cy="16" rx="3" ry="5" stroke="none"/>
+    <!-- Shoulder gatlings facing front: gray rim + 6 barrel holes -->
+    <ellipse fill="#3b7dd8" cx="10" cy="20" rx="5" ry="6"/>
+    <circle fill="#fff" cx="10" cy="20" r="3.6" stroke="#555" stroke-width="1.2"/>
+    <circle fill="#555" cx="10" cy="20" r="2.9" stroke="none"/>
+    <circle fill="#222" cx="12" cy="20" r="0.7" stroke="none"/>
+    <circle fill="#222" cx="11" cy="21.73" r="0.7" stroke="none"/>
+    <circle fill="#222" cx="9" cy="21.73" r="0.7" stroke="none"/>
+    <circle fill="#222" cx="8" cy="20" r="0.7" stroke="none"/>
+    <circle fill="#222" cx="9" cy="18.27" r="0.7" stroke="none"/>
+    <circle fill="#222" cx="11" cy="18.27" r="0.7" stroke="none"/>
+    <ellipse fill="#3b7dd8" cx="35" cy="20" rx="5" ry="6"/>
+    <circle fill="#fff" cx="35" cy="20" r="3.6" stroke="#555" stroke-width="1.2"/>
+    <circle fill="#555" cx="35" cy="20" r="2.9" stroke="none"/>
+    <circle fill="#222" cx="37" cy="20" r="0.7" stroke="none"/>
+    <circle fill="#222" cx="36" cy="21.73" r="0.7" stroke="none"/>
+    <circle fill="#222" cx="34" cy="21.73" r="0.7" stroke="none"/>
+    <circle fill="#222" cx="33" cy="20" r="0.7" stroke="none"/>
+    <circle fill="#222" cx="34" cy="18.27" r="0.7" stroke="none"/>
+    <circle fill="#222" cx="36" cy="18.27" r="0.7" stroke="none"/>
+  </g></g>
+</svg>

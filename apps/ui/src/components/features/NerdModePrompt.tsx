@@ -1,12 +1,24 @@
+import { useNavigate } from "@solidjs/router";
 import { createEffect, createSignal } from "solid-js";
 import type { Component } from "solid-js";
 
 import { Modal } from "~/components/atoms/Modal";
 import { Button } from "~/components/primitives/Button";
-import { nerdModeUnlocked, playerName, setNerdModeUnlocked } from "~/store/settingsStore";
+import {
+  nerdModeUnlocked,
+  playerName,
+  setNerdModeUnlocked,
+  setPlayerIdentity,
+} from "~/store/settingsStore";
 import { findNerdName } from "~/utils/nerdNames";
 
+/**
+ * Close-enough StarCraft name → choose path:
+ * - Yes → Brood War (`NerdScreen` / `/broodwar`)
+ * - Keep chess classic → unlock the Nerd identity (classical chess + `public/pieces/nerd/`)
+ */
 export const NerdModePrompt: Component = () => {
+  const navigate = useNavigate();
   const [open, setOpen] = createSignal(false);
   let dismissedName: string | null = null;
 
@@ -23,15 +35,16 @@ export const NerdModePrompt: Component = () => {
         <Button
           primary
           onClick={() => {
-            setNerdModeUnlocked(true);
             setOpen(false);
+            navigate("/broodwar");
           }}
         >
           yes
         </Button>
         <Button
           onClick={() => {
-            dismissedName = playerName().trim().toLocaleLowerCase();
+            setNerdModeUnlocked(true);
+            setPlayerIdentity("Nerd");
             setOpen(false);
           }}
         >

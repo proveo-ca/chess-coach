@@ -2,8 +2,7 @@ import type { Component } from "solid-js";
 
 import {
   TEAM_PRIMARY,
-  type PieceColor,
-} from "~/broodwar/animations/teamColors";
+  type PieceColor, NERD_FRAME } from "~/broodwar/animations/teamColors";
 import { Shard } from "~/broodwar/animations/pieces/Shard";
 
 type DeathBishopProps = {
@@ -15,14 +14,14 @@ type DeathBishopProps = {
 const Gatling = (props: { cx: number; cy: number; team: string }) => (
   <>
     <ellipse fill={props.team} cx={props.cx} cy={props.cy} rx="5" ry="6" />
-    <circle fill="#9aa3ad" cx={props.cx} cy={props.cy} r="3.6" stroke="#5c6570" stroke-width="1.2" />
-    <circle fill="#6a737c" cx={props.cx} cy={props.cy} r="2.9" stroke="none" />
-    <circle fill="#1a1e22" cx={props.cx + 2} cy={props.cy} r="0.7" stroke="none" />
-    <circle fill="#1a1e22" cx={props.cx + 1} cy={props.cy + 1.73} r="0.7" stroke="none" />
-    <circle fill="#1a1e22" cx={props.cx - 1} cy={props.cy + 1.73} r="0.7" stroke="none" />
-    <circle fill="#1a1e22" cx={props.cx - 2} cy={props.cy} r="0.7" stroke="none" />
-    <circle fill="#1a1e22" cx={props.cx - 1} cy={props.cy - 1.73} r="0.7" stroke="none" />
-    <circle fill="#1a1e22" cx={props.cx + 1} cy={props.cy - 1.73} r="0.7" stroke="none" />
+    <circle fill="#fff" cx={props.cx} cy={props.cy} r="3.6" stroke="#222" stroke-width="1.2" />
+    <circle fill="#555" cx={props.cx} cy={props.cy} r="2.9" stroke="none" />
+    <circle fill="#222" cx={props.cx + 2} cy={props.cy} r="0.7" stroke="none" />
+    <circle fill="#222" cx={props.cx + 1} cy={props.cy + 1.73} r="0.7" stroke="none" />
+    <circle fill="#222" cx={props.cx - 1} cy={props.cy + 1.73} r="0.7" stroke="none" />
+    <circle fill="#222" cx={props.cx - 2} cy={props.cy} r="0.7" stroke="none" />
+    <circle fill="#222" cx={props.cx - 1} cy={props.cy - 1.73} r="0.7" stroke="none" />
+    <circle fill="#222" cx={props.cx + 1} cy={props.cy - 1.73} r="0.7" stroke="none" />
   </>
 );
 
@@ -36,6 +35,7 @@ export const DeathBishop: Component<DeathBishopProps> = (props) => {
 
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45" aria-hidden="true" overflow="visible">
+      <g transform={NERD_FRAME.B}>
       <defs>
         <clipPath id={`bw-bishop-left-${seed()}`}>
           <rect x="0" y="0" width="22.5" height="45" />
@@ -56,7 +56,7 @@ export const DeathBishop: Component<DeathBishopProps> = (props) => {
         {/* Cockpit split so the big dome doesn't read as one flying SVG. */}
         <Shard index={2} seed={seed()}>
           <ellipse
-            fill="#999"
+            fill="#fff"
             cx="22.5"
             cy="20"
             rx="10"
@@ -66,7 +66,7 @@ export const DeathBishop: Component<DeathBishopProps> = (props) => {
         </Shard>
         <Shard index={3} seed={seed()}>
           <ellipse
-            fill="#999"
+            fill="#fff"
             cx="22.5"
             cy="20"
             rx="10"
@@ -75,7 +75,7 @@ export const DeathBishop: Component<DeathBishopProps> = (props) => {
           />
         </Shard>
         <Shard index={4} seed={seed()}>
-          <ellipse fill="#bbb" cx="18" cy="16" rx="3" ry="5" stroke="none" />
+          <ellipse fill="#fff" cx="18" cy="16" rx="3" ry="5" stroke="none" />
         </Shard>
         <Shard index={5} seed={seed()}>
           <Gatling cx={10} cy={20} team={team()} />
@@ -84,6 +84,7 @@ export const DeathBishop: Component<DeathBishopProps> = (props) => {
           <Gatling cx={35} cy={20} team={team()} />
         </Shard>
       </g>
-    </svg>
+    
+      </g></svg>
   );
 };

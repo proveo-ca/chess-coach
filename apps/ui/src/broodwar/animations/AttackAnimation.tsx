@@ -13,7 +13,7 @@ import {
   screenAimDeg,
   squareBoxStyle,
 } from "~/broodwar/animations/attackAnim";
-import styles from "~/broodwar/animations/AttackAnimations.module.css";
+import styles from "~/broodwar/animations/AttackAnimation.module.css";
 import {
   aimPoseFor,
   aimTransformCss,
@@ -29,6 +29,11 @@ import { InlineKnight } from "~/broodwar/animations/pieces/InlineKnight";
 import { InlinePawn } from "~/broodwar/animations/pieces/InlinePawn";
 import { InlineQueen } from "~/broodwar/animations/pieces/InlineQueen";
 import { InlineRook } from "~/broodwar/animations/pieces/InlineRook";
+import {
+  QUEEN_AIM_WRAP_SCALE,
+  QUEEN_LASER_MUZZLE_X,
+  QUEEN_PIECE_FACE_SCALE,
+} from "~/broodwar/animations/queenLaser";
 import type { AttackCue } from "~/broodwar/animations/types";
 import { vecBetween } from "~/broodwar/animations/boardGeom";
 
@@ -79,13 +84,14 @@ const attackNode = (cue: AttackCue): JSX.Element => {
       // Hull + laser share aim on `.aimWrap` (see `queenAimWrapStyle`).
       return (
         <div class={styles.pieceFace}>
-          <InlineQueen />
+          <InlineQueen color={cue.color} />
         </div>
       );
     case "k":
       return (
         <div class={styles.pieceFace}>
           <InlineKing
+            color={cue.color}
             aimDeg={screenAimDeg(true, deg, KING_REST_AIM_DEG)}
             damage={cue.damage}
             seed={cue.seed}
@@ -155,11 +161,14 @@ const laserStyle = (
   const { w: cell } = cellSize({ width: boardWidth, height: boardHeight });
   const vec = vecBetween(cue.from, cue.to);
   const dist = cell * Math.hypot(vec.df, vec.dr);
-  const muzzleFromCenter = cell * 0.36;
+  // Muzzle sits on local +x after InlineQueen’s bow normalize; map viewBox → aimWrap.
+  const facePx = cell * QUEEN_AIM_WRAP_SCALE * QUEEN_PIECE_FACE_SCALE;
+  const muzzleFromCenter = ((QUEEN_LASER_MUZZLE_X - 22.5) / 45) * facePx;
   const span = Math.max(6, dist - muzzleFromCenter);
   const bolt = Math.max(14, span * 0.38);
   return {
     left: `calc(50% + ${muzzleFromCenter}px)`,
+    top: "50%",
     width: `${bolt}px`,
     "--laser-span": `${span}px`,
   };

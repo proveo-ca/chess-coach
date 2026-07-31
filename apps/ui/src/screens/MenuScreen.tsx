@@ -25,11 +25,6 @@ import type { Difficulty, PlayerIdentity } from "~/types/settings";
 export const MenuScreen: Component = () => {
   const navigate = useNavigate();
 
-  const selectIdentity = (identity: PlayerIdentity) => {
-    setPlayerIdentity(identity);
-    if (identity === "Nerd") navigate("/broodwar");
-  };
-
   return (
     <SplashScreen title="Wanna play Chess?" avatar={<CoachAvatar />}>
       <div class={styles["identity-row"]}>
@@ -45,7 +40,7 @@ export const MenuScreen: Component = () => {
         <Select
           id="player-identity"
           value={playerIdentity()}
-          onChange={(e) => selectIdentity(e.currentTarget.value as PlayerIdentity)}
+          onChange={(e) => setPlayerIdentity(e.currentTarget.value as PlayerIdentity)}
         >
           {identityOptions().map((id) => (
             <option value={id}>{id}</option>

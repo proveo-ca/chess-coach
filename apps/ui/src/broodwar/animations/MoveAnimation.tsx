@@ -40,9 +40,9 @@ const moverNode = (m: MoveCue): JSX.Element => {
     case "n":
       return <InlineKnight color={m.color} />;
     case "q":
-      return <InlineQueen />;
+      return <InlineQueen color={m.color} />;
     case "k":
-      return <InlineKing aimDeg={KING_REST_AIM_DEG} />;
+      return <InlineKing color={m.color} aimDeg={KING_REST_AIM_DEG} />;
     default:
       return <InlinePawn color={m.color} face="back" />;
   }

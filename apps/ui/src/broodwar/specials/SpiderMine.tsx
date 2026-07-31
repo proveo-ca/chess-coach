@@ -2,7 +2,6 @@ import type { Component } from "solid-js";
 
 import styles from "~/broodwar/specials/SpiderMine.module.css";
 import {
-  TEAM_DARK,
   TEAM_LIGHT,
   TEAM_PRIMARY,
   type PieceColor,
@@ -22,7 +21,6 @@ export const SpiderMine: Component<SpiderMineProps> = (props) => {
   const color = () => props.color ?? "w";
   const team = () => TEAM_PRIMARY[color()];
   const teamLight = () => TEAM_LIGHT[color()];
-  const teamDark = () => TEAM_DARK[color()];
 
   return (
     <svg
@@ -40,8 +38,8 @@ export const SpiderMine: Component<SpiderMineProps> = (props) => {
       */}
       <path
         class={styles.enamel}
-        fill="#f7f8fa"
-        stroke={teamDark()}
+        fill="#fff"
+        stroke="#222"
         stroke-width="1.15"
         stroke-linejoin="round"
         d="
@@ -59,14 +57,14 @@ export const SpiderMine: Component<SpiderMineProps> = (props) => {
       />
 
       {/* Top / bottom bumps (was left / right, flipped 90°) */}
-      <ellipse cx="20.6" cy="11.2" rx="3.4" ry="3.1" fill={team()} stroke={teamDark()} stroke-width="0.9" />
-      <ellipse cx="20.6" cy="28.8" rx="3.4" ry="3.1" fill={team()} stroke={teamDark()} stroke-width="0.9" />
+      <ellipse cx="20.6" cy="11.2" rx="3.4" ry="3.1" fill={team()} stroke="#222" stroke-width="0.9" />
+      <ellipse cx="20.6" cy="28.8" rx="3.4" ry="3.1" fill={team()} stroke="#222" stroke-width="0.9" />
       <ellipse cx="19.4" cy="11.2" rx="1.2" ry="1.6" fill={teamLight()} opacity="0.7" />
       <ellipse cx="19.4" cy="28.8" rx="1.2" ry="1.6" fill={teamLight()} opacity="0.7" />
 
-      <ellipse cx="16.2" cy="20" rx="2.2" ry="4.2" fill="#ffffff" opacity="0.5" />
+      <ellipse cx="16.2" cy="20" rx="2.2" ry="4.2" fill="#fff" opacity="0.5" />
 
-      <circle cx="20.5" cy="20" r="2.1" fill={team()} stroke={teamDark()} stroke-width="0.85" />
+      <circle cx="20.5" cy="20" r="2.1" fill={team()} stroke="#222" stroke-width="0.85" />
       <circle class={styles.sensor} cx="20.2" cy="20" r="1.05" fill={teamLight()} />
     </svg>
   );

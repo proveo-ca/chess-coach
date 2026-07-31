@@ -35,14 +35,6 @@ export const SettingsPanel: Component<{ onDismiss?: () => void }> = (props) => {
     navigate("/");
   };
 
-  const selectIdentity = (identity: PlayerIdentity) => {
-    setPlayerIdentity(identity);
-    if (identity === "Nerd") {
-      props.onDismiss?.();
-      navigate("/broodwar");
-    }
-  };
-
   return (
     <div class={styles.settings}>
       <div class={styles.row}>
@@ -58,7 +50,7 @@ export const SettingsPanel: Component<{ onDismiss?: () => void }> = (props) => {
         <Select
           id="settings-player-identity"
           value={playerIdentity()}
-          onChange={(e) => selectIdentity(e.currentTarget.value as PlayerIdentity)}
+          onChange={(e) => setPlayerIdentity(e.currentTarget.value as PlayerIdentity)}
           disabled={imLost()}
         >
           {identityOptions().map((id) => (

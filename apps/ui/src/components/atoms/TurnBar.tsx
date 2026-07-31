@@ -7,7 +7,7 @@ import {
   turnSecondsRemaining,
 } from "~/broodwar/broodWarStore";
 import { TURN_TIMEOUT_MS } from "~/broodwar/constants";
-import styles from "~/components/primitives/TurnBar.module.css";
+import styles from "~/components/atoms/TurnBar.module.css";
 
 type TurnBarProps = {
   /** Called when the player presses End (submit / pass current plan). */

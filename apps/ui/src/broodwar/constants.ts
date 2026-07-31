@@ -46,3 +46,12 @@ export const incomeForTurn = (turn: number): number => {
   if (turn <= 20) return 2;
   return 3;
 };
+
+/**
+ * Vespene energy capacity for the planning turn — same tiers as material income.
+ * Energy does **not** accumulate; each turn refills to this cap.
+ */
+export const energyForTurn = (turn: number): number => incomeForTurn(turn);
+
+/** Gas burned when queueing / committing one special this turn. */
+export const SPECIAL_ENERGY_COST = 1;

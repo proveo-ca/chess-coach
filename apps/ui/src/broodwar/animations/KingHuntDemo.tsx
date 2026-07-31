@@ -16,7 +16,7 @@ import { useBroodWarCombat } from "~/broodwar/hooks/useBroodWarCombat";
 import { resolveTurn, type ClassicalPlan } from "~/broodwar/resolveTurn";
 import { ChessBoard } from "~/components/features/ChessBoard";
 import { DualNavButton } from "~/components/primitives/DualNavButton";
-import styles from "~/screens/nerdDemo/NerdCombatDemo.module.css";
+import styles from "~/broodwar/animations/KingHuntDemo.module.css";
 import { setStorybookCapabilities } from "~/screens/storybookCapabilities";
 import { NERD_CAPABILITIES } from "~/store/capabilitiesStore";
 import { loadFen, setViewIndex } from "~/store/gameStore";

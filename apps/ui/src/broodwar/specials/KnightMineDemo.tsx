@@ -12,7 +12,7 @@ import {
 
 import { findBoardGrid, squareBoxStyle } from "~/broodwar/animations/boardGeom";
 import { LONG_PRESS_MS } from "~/broodwar/specials/adjacent";
-import styles from "~/broodwar/specials/SpecialMoves.module.css";
+import styles from "~/broodwar/specials/KnightMineDemo.module.css";
 import type { SpecialTiming } from "~/broodwar/types";
 import { ChessBoard } from "~/components/features/ChessBoard";
 import { setStorybookCapabilities } from "~/screens/storybookCapabilities";
@@ -45,7 +45,7 @@ export const KnightMineDemo: Component = () => {
     "Long-press the knight on d4 to queue a spider mine · pick timing · Resolve",
   );
 
-  let hostRef: HTMLDivElement | undefined;
+  let hostRef = undefined as HTMLDivElement | undefined;
   let pressTimer = 0;
   const timers: number[] = [];
 

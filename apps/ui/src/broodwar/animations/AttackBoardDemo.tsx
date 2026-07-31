@@ -13,7 +13,7 @@ import {
   IDLE_FRONT_MS,
   type DemoPiece,
 } from "~/broodwar/animations/attackAnim";
-import styles from "~/broodwar/animations/AttackAnimations.module.css";
+import styles from "~/broodwar/animations/AttackBoardDemo.module.css";
 import { attackVectorsFor, squareAt } from "~/broodwar/animations/attackVectors";
 import type { AttackCue } from "~/broodwar/animations/types";
 import { ChessBoard } from "~/components/features/ChessBoard";

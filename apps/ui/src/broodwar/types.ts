@@ -18,9 +18,8 @@ export type SpecialKind =
   | "rookSiege"
   | "queenWarp";
 
-export type KingDamageState = "pristine" | "smallFire" | "bigFire" | "destroyed";
+export type { KingDamageState, BwPhaseCode } from "~/types/broodwar";
 
-/** At most one special per player per turn. */
 export type QueuedSpecial = {
   id: string;
   color: BroodWarColor;
@@ -55,8 +54,7 @@ export type PlayerEconomy = {
 /** FEN-loadable piece occupancy for Brood War board snapshots (classic placement). */
 export type BroodWarBoard = string;
 
-/** Planning / resolve phase codes used in BWFEN (see bwfen.ts). */
-export type BwPhaseCode = "P" | "B" | "A" | "M" | "F" | "O";
+/** Planning / resolve phase codes used in BWFEN (see bwfen.ts) — see ~/types/broodwar. */
 
 export type ResolveEvent = {
   id: string;

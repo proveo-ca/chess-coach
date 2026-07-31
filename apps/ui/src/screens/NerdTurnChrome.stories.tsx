@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
 import { resetBroodWarEconomy, startPlanningTimer } from "~/broodwar/broodWarStore";
-import { ResourceBar } from "~/components/primitives/ResourceBar";
-import { TurnBar } from "~/components/primitives/TurnBar";
+import { ResourceBar } from "~/components/atoms/ResourceBar";
+import { TurnBar } from "~/components/atoms/TurnBar";
 
 const meta = {
   title: "Screens/Nerd/Brood War/Turn Chrome",
@@ -11,7 +11,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "ResourceBar (top) + TurnBar (bottom) replace captured pieces in Brood War. TurnBar: End + 10s circular gauge.",
+          "ResourceBar (top): minerals + income, vespene cylinders, board-derived deploy. TurnBar (bottom): End + 10s circular gauge.",
       },
     },
   },

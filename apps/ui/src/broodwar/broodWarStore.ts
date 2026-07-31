@@ -4,7 +4,9 @@ import {
   KING_MAX_LIVES,
   MAX_DEPLOYED_MATERIAL,
   MAX_STORED_MATERIAL,
+  SPECIAL_ENERGY_COST,
   TURN_TIMEOUT_MS,
+  energyForTurn,
   incomeForTurn,
 } from "~/broodwar/constants";
 import type { BroodWarColor, PlayerEconomy } from "~/broodwar/types";
@@ -12,6 +14,7 @@ import { activePlayerColor } from "~/store/settingsStore";
 
 type Economies = Record<BroodWarColor, PlayerEconomy>;
 type KingLives = Record<BroodWarColor, number>;
+type EnergyPool = Record<BroodWarColor, number>;
 
 const defaultEconomies = (): Economies => ({
   w: { stored: 0, deployed: 0 },
@@ -25,16 +28,31 @@ const defaultKingLives = (): KingLives => ({
 
 const clampLives = (n: number) => Math.max(0, Math.min(KING_MAX_LIVES, Math.floor(n)));
 
+const clampEnergy = (n: number, cap: number) => Math.max(0, Math.min(cap, Math.floor(n)));
+
+const fullEnergyForTurn = (turn: number): EnergyPool => {
+  const cap = energyForTurn(turn);
+  return { w: cap, b: cap };
+};
+
 const [_turn, _setTurn] = createSignal(1);
 const [_economies, _setEconomies] = createSignal<Economies>(defaultEconomies());
 /** Per-side king HP (0–3). Engine/game state — VFX maps via kingDamageStateForLives. */
 const [_kingLives, _setKingLives] = createSignal<KingLives>(defaultKingLives());
+/** Remaining vespene this planning turn (0..energyForTurn). Does not bank. */
+const [_energy, _setEnergy] = createSignal<EnergyPool>(fullEnergyForTurn(1));
 /** Epoch ms when the current planning window ends; null = not running. */
 const [_deadlineAt, _setDeadlineAt] = createSignal<number | null>(null);
 
-/** Current Brood War turn index (1-based; drives income tier). */
+/** Current Brood War turn index (1-based; drives income / energy tier). */
 export const broodWarTurn = () => _turn();
-export const setBroodWarTurn = (turn: number) => _setTurn(Math.max(1, turn));
+
+export const setBroodWarTurn = (turn: number) => {
+  const next = Math.max(1, turn);
+  _setTurn(next);
+  // Fresh gas each turn — leftover does not accumulate.
+  _setEnergy(fullEnergyForTurn(next));
+};
 
 export const broodWarEconomies = () => _economies();
 
@@ -63,7 +81,7 @@ export const chipKingLife = (color: BroodWarColor): number => {
 /** Local / active player's stored material (0..12). */
 export const storedMaterial = () => _economies()[activePlayerColor()].stored;
 
-/** Local / active player's deployed supply. */
+/** Local / active player's deployed supply (store counter — prefer board sum in UI). */
 export const deployedSupply = () => _economies()[activePlayerColor()].deployed;
 
 /**
@@ -72,7 +90,15 @@ export const deployedSupply = () => _economies()[activePlayerColor()].deployed;
  */
 export const materialIncome = () => incomeForTurn(_turn());
 
-/** Static deploy cap — only constant ResourceBar shows. */
+/** Vespene capacity for the current turn (outlines on ResourceBar). */
+export const energyCapacity = () => energyForTurn(_turn());
+
+/** Remaining vespene for the local / active player this turn. */
+export const energyRemaining = () => _energy()[activePlayerColor()];
+
+export const energyRemainingFor = (color: BroodWarColor) => _energy()[color];
+
+/** Static deploy cap — ResourceBar denominator. */
 export const maxDeployedSupply = MAX_DEPLOYED_MATERIAL;
 
 export const turnDeadlineAt = () => _deadlineAt();
@@ -128,21 +154,61 @@ export const removeDeployed = (color: BroodWarColor, amount = 1) => {
   });
 };
 
+/** Burn vespene for a special. Default cost = `SPECIAL_ENERGY_COST` (1). */
+export const spendEnergy = (
+  color: BroodWarColor,
+  amount: number = SPECIAL_ENERGY_COST,
+): boolean => {
+  if (amount <= 0) return false;
+  const cap = energyForTurn(_turn());
+  const have = _energy()[color];
+  if (have < amount) return false;
+  _setEnergy((prev) => ({ ...prev, [color]: clampEnergy(have - amount, cap) }));
+  return true;
+};
+
+export const refundEnergy = (
+  color: BroodWarColor,
+  amount: number = SPECIAL_ENERGY_COST,
+) => {
+  if (amount <= 0) return;
+  const cap = energyForTurn(_turn());
+  _setEnergy((prev) => ({
+    ...prev,
+    [color]: clampEnergy(prev[color] + amount, cap),
+  }));
+};
+
 /** Storybook / new-game seed for the active side (and optional opponent). */
 export const resetBroodWarEconomy = (opts?: {
   turn?: number;
   white?: PlayerEconomy;
   black?: PlayerEconomy;
   kingLives?: KingLives;
+  /** Override remaining energy after refill (both sides unless per-side passed). */
+  energy?: Partial<EnergyPool> | number;
   /** When true (default), start a fresh planning timer. */
   startTimer?: boolean;
 }) => {
-  _setTurn(opts?.turn ?? 1);
+  const turn = opts?.turn ?? 1;
+  _setTurn(turn);
   _setEconomies({
     w: opts?.white ?? { stored: 0, deployed: 0 },
     b: opts?.black ?? { stored: 0, deployed: 0 },
   });
   _setKingLives(opts?.kingLives ?? defaultKingLives());
+  const filled = fullEnergyForTurn(turn);
+  if (typeof opts?.energy === "number") {
+    const n = clampEnergy(opts.energy, energyForTurn(turn));
+    _setEnergy({ w: n, b: n });
+  } else if (opts?.energy) {
+    _setEnergy({
+      w: clampEnergy(opts.energy.w ?? filled.w, energyForTurn(turn)),
+      b: clampEnergy(opts.energy.b ?? filled.b, energyForTurn(turn)),
+    });
+  } else {
+    _setEnergy(filled);
+  }
   if (opts?.startTimer === false) {
     clearTurnDeadline();
   } else {

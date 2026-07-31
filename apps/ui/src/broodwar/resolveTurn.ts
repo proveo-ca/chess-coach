@@ -6,18 +6,14 @@
 import type { Square } from "chess.js";
 
 import {
-  findKing,
   mapToPlacement,
   placementToMap,
   type BwPiece,
 } from "~/broodwar/board";
 import type { BroodWarColor } from "~/broodwar/types";
+import type { ClassicalPlan } from "~/types/broodwar";
 
-export type ClassicalPlan = {
-  color: BroodWarColor;
-  from: Square;
-  to: Square;
-};
+export type { ClassicalPlan };
 
 export type ResolveAttack =
   | {

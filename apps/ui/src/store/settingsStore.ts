@@ -1,6 +1,12 @@
 import { capabilities } from "~/store/capabilitiesStore";
 import { createPersistedStore } from "~/store/createPersistedStore";
-import type { Difficulty, PieceSet, PlayerColorPref, PlayerIdentity } from "~/types/settings";
+import type {
+  Difficulty,
+  NerdPieceSet,
+  PieceSet,
+  PlayerColorPref,
+  PlayerIdentity,
+} from "~/types/settings";
 import { randomName } from "~/utils/randomName";
 
 /**
@@ -44,6 +50,8 @@ const [settingsState, setSettingsState] = createPersistedStore("chess_coach_sett
   playerIdentity: "Human" as PlayerIdentity,
   opponentIdentity: "Cat" as PlayerIdentity,
   nerdModeUnlocked: false,
+  /** Which classical Nerd skin to render (`nerd` = shipping set). */
+  nerdPieceSet: "nerd" as NerdPieceSet,
   // Free-text display name for the human player, used to label saved games
   // ("Juan (White) vs Selena (Black)"). The browser cannot supply a real name
   // (no device/host name or MAC is exposed to web pages), so we default to a
@@ -63,17 +71,18 @@ export const opponentIdentity = () => settingsState.opponentIdentity;
 export const playerName = () => settingsState.playerName;
 export const imLost = () => settingsState.imLost;
 export const nerdModeUnlocked = () => settingsState.nerdModeUnlocked;
+export const nerdPieceSet = () => settingsState.nerdPieceSet;
 export const identityOptions = (): PlayerIdentity[] =>
   settingsState.nerdModeUnlocked ? [...CLASSIC_IDENTITY_OPTIONS, "Nerd"] : CLASSIC_IDENTITY_OPTIONS;
 export const playerPieceSet = (): PieceSet =>
   settingsState.playerIdentity === "Nerd"
-    ? "nerd"
+    ? settingsState.nerdPieceSet
     : settingsState.imLost
       ? "cburnett"
       : IDENTITY_TO_PIECE_SET[settingsState.playerIdentity];
 export const opponentPieceSet = (): PieceSet => {
   if (capabilities().opponentUsesPlayerPieceSet && settingsState.playerIdentity === "Nerd") {
-    return "nerd";
+    return settingsState.nerdPieceSet;
   }
   if (settingsState.imLost) return "cburnett";
   if (capabilities().opponentUsesPlayerPieceSet) {
@@ -91,3 +100,4 @@ export const setOpponentIdentity = (val: PlayerIdentity) =>
   setSettingsState("opponentIdentity", val);
 export const setImLost = (val: boolean) => setSettingsState("imLost", val);
 export const setNerdModeUnlocked = (val: boolean) => setSettingsState("nerdModeUnlocked", val);
+export const setNerdPieceSet = (val: NerdPieceSet) => setSettingsState("nerdPieceSet", val);

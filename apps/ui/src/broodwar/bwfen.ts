@@ -6,16 +6,9 @@
  */
 
 import type { BroodWarColor, BwPhaseCode } from "~/broodwar/types";
+import type { BwFenSnapshot } from "~/types/broodwar";
 
-export type { BwPhaseCode };
-
-export type BwFenSnapshot = {
-  /** Classic piece-placement ranks (FEN field 0). */
-  placement: string;
-  turn: number;
-  kingLives: Record<BroodWarColor, number>;
-  phase: BwPhaseCode;
-};
+export type { BwPhaseCode, BwFenSnapshot };
 
 const PHASE_OK = new Set<BwPhaseCode>(["P", "B", "A", "M", "F", "O"]);
 

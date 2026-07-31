@@ -1,7 +1,7 @@
 import { For, type Component, type JSX } from "solid-js";
 
 import { DEATH_MS, scatterSeedFromId } from "~/broodwar/animations/deathAnim";
-import styles from "~/broodwar/animations/DeathAnimations.module.css";
+import styles from "~/broodwar/animations/DeathAnimation.module.css";
 import { DeathBishop } from "~/broodwar/animations/pieces/DeathBishop";
 import { DeathKing } from "~/broodwar/animations/pieces/DeathKing";
 import { DeathKnight } from "~/broodwar/animations/pieces/DeathKnight";
