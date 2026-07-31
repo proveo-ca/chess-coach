@@ -12,21 +12,20 @@
 
 .topChrome {
   display: flex;
-  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
   width: 100%;
+  min-height: 1.4rem;
   margin-bottom: 4px;
 }
 
 .topChrome :global([data-testid="resource-bar"]) {
-  width: 100%;
-  max-width: 100%;
+  flex: 1;
+  min-width: 0;
 }
 
-.bottomChrome {
-  display: flex;
-  justify-content: flex-end;
-  width: 100%;
-  margin-top: 4px;
+.topChrome :global([data-testid="turn-bar"]) {
+  flex-shrink: 0;
 }
 
 .matchup,

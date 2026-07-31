@@ -8,7 +8,7 @@ import { NerdCombatDemo } from "~/screens/nerdDemo/NerdCombatDemo";
  * king HP hunt (into-fire + Option A). Arrow keys / nav step turns.
  */
 const meta = {
-  title: "Screens/Nerd/Demo",
+  title: "Screens/Nerd/Brood War/Demo",
   parameters: {
     layout: "centered",
     docs: {

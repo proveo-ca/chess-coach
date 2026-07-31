@@ -28,8 +28,26 @@ export const FRAG_FLIGHT_MS = ATTACK_MS / 4;
  */
 export const DEATH_MS = ATTACK_MS / 2;
 
-/** Quiet piece slide (king flee, etc.) — 11/20 of an attack. */
-export const MOVE_MS = (ATTACK_MS * 11) / 20;
+/**
+ * Quiet-move travel time per board square.
+ * Total move duration = squares × this (Chebyshev for slides; L-length for knights).
+ */
+export const MOVE_SQUARE_MS = 250;
+
+/** Single-square travel (king flee cover, 1-step default). */
+export const MOVE_MS = MOVE_SQUARE_MS;
+
+/** Command Center deploy — total drop + landing. */
+export const DEPLOY_MS = 500;
+
+/** Free-fall from above the board into the square. */
+export const DEPLOY_DROP_MS = 200;
+
+/** Landing phase (humanoid crouch / mechanoid thrust brake). */
+export const DEPLOY_LAND_MS = 300;
+
+/** @deprecated Prefer {@link DEPLOY_LAND_MS} — mechanoid thrust spans the landing window. */
+export const DEPLOY_THRUST_MS = DEPLOY_LAND_MS;
 
 export const UNIT_COST = {
   k: 1,

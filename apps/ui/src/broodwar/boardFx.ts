@@ -38,7 +38,11 @@ export const buildFxHiddenSquares = (fx: CombatFxInput): ReadonlySet<Square> => 
   const hide = new Set<Square>();
   for (const c of fx.attacks ?? []) hide.add(c.from);
   for (const c of fx.deaths ?? []) hide.add(c.at);
-  for (const c of fx.moves ?? []) hide.add(c.from);
+  for (const c of fx.moves ?? []) {
+    hide.add(c.from);
+    // Destination too — FEN may already show the piece on `to` (interactive moves).
+    hide.add(c.to);
+  }
   for (const c of fx.kingDamage ?? []) {
     hide.add(c.at);
     for (const sq of c.cover ?? []) hide.add(sq);

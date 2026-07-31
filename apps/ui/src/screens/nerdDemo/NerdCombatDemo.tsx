@@ -13,7 +13,7 @@ import { createSignal, onCleanup, onMount, type Component } from "solid-js";
 import { classicFenFromBw } from "~/broodwar/bwfen";
 import { useBroodWarCombat } from "~/broodwar/hooks/useBroodWarCombat";
 import { resolveTurn } from "~/broodwar/resolveTurn";
-import { ChessBoard } from "~/components/features/ChessBoard";
+import { BroodWarChessBoard } from "~/broodwar/BroodWarChessBoard";
 import { DualNavButton } from "~/components/primitives/DualNavButton";
 import styles from "~/screens/nerdDemo/NerdCombatDemo.module.css";
 import { setStorybookCapabilities } from "~/screens/storybookCapabilities";
@@ -190,7 +190,7 @@ export const NerdCombatDemo: Component = () => {
   return (
     <div class={styles.demo}>
       <div class={styles.host}>
-        <ChessBoard
+        <BroodWarChessBoard
           variant="eclipse"
           fogOfWar
           attackCues={combat.attackCues()}

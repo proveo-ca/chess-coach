@@ -9,9 +9,9 @@ import {
   storedMaterial,
 } from "~/broodwar/broodWarStore";
 import { SPECIAL_ENERGY_COST, UNIT_COST } from "~/broodwar/constants";
+import { ResourceBar } from "~/broodwar/primitives/ResourceBar";
+import styles from "~/broodwar/primitives/SpawnModal.module.css";
 import { Modal } from "~/components/atoms/Modal";
-import { ResourceBar } from "~/components/atoms/ResourceBar";
-import styles from "~/components/primitives/SpawnModal.module.css";
 import type { SpawnModalPending, SpawnPiece } from "~/types/broodwar";
 import type { PieceSet } from "~/types/settings";
 
@@ -29,8 +29,9 @@ const getPieceImg = (piece: SpawnPiece, color: Color, pieceSet: PieceSet) =>
   `/chess/pieces/${pieceSet}/${color}${piece.toUpperCase()}.svg`;
 
 /**
- * Brood War king special — PromotionModal variant with ResourceBar + pawn-first
- * spawn grid. Economy values come from `broodWarStore` (not props).
+ * Command Center deploy picker — ResourceBar + marine-first grid.
+ * Affordability reads the player's accumulated minerals, deploy cap, and
+ * remaining vespene from `broodWarStore` (gas is spent only on placement).
  */
 export const SpawnModal: Component<SpawnModalProps> = (props) => {
   const canAfford = (piece: SpawnPiece) => {
@@ -45,7 +46,7 @@ export const SpawnModal: Component<SpawnModalProps> = (props) => {
   return (
     <Modal
       open={!!props.pending}
-      title="Spawn unit"
+      title="Deploy unit"
       position="absolute"
       onClose={props.onCancel}
       dismissible={true}
@@ -65,7 +66,7 @@ export const SpawnModal: Component<SpawnModalProps> = (props) => {
                       classList={{ [styles.disabled]: !affordable() }}
                       disabled={!affordable()}
                       onClick={() => affordable() && props.onSelect(piece)}
-                      aria-label={`Spawn ${piece} (cost ${UNIT_COST[piece]})`}
+                      aria-label={`Deploy ${piece} (cost ${UNIT_COST[piece]})`}
                       data-spawn-piece={piece}
                       data-cost={UNIT_COST[piece]}
                     >

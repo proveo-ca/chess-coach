@@ -1,0 +1,48 @@
+import type { Meta, StoryObj } from "storybook-solidjs-vite";
+
+import { DeployBoardDemo } from "~/broodwar/animations/DeployBoardDemo";
+
+/**
+ * Command Center deploy VFX via ChessBoard `deployCues` → `DeployAnimation`.
+ * Piece is added to FEN (fog updates) only after the 500ms drop finishes.
+ */
+const meta = {
+  title: "Screens/Nerd/Brood War/Deploy Animations",
+  parameters: {
+    layout: "centered",
+    docs: {
+      description: {
+        component:
+          "Humanoid (marine/goliath): 200ms drop + 300ms crouch. Mechanoid (vulture/tank/battlecruiser): 200ms drop + 300ms thrust brake. Total 500ms; board occupancy updates when the cue ends.",
+      },
+    },
+  },
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj;
+
+export const Marine: Story = {
+  name: "Marine",
+  render: () => <DeployBoardDemo piece="p" />,
+};
+
+export const Goliath: Story = {
+  name: "Goliath",
+  render: () => <DeployBoardDemo piece="b" />,
+};
+
+export const Vulture: Story = {
+  name: "Vulture",
+  render: () => <DeployBoardDemo piece="n" />,
+};
+
+export const Tank: Story = {
+  name: "Tank",
+  render: () => <DeployBoardDemo piece="r" />,
+};
+
+export const Battlecruiser: Story = {
+  name: "Battlecruiser",
+  render: () => <DeployBoardDemo piece="q" />,
+};

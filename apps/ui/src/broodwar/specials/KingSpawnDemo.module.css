@@ -52,6 +52,13 @@
   line-height: 1.35;
 }
 
+.gasRow {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: 4px 0;
+}
+
 .toolbar {
   display: flex;
   flex-wrap: wrap;

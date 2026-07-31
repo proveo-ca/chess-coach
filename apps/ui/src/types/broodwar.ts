@@ -40,6 +40,14 @@ export type MoveCue = {
   to: Square;
 };
 
+/** Command Center deploy drop — piece is not on the board until the cue finishes. */
+export type DeployCue = {
+  id: string;
+  piece: BroodWarPiece;
+  color: PieceColor;
+  at: Square;
+};
+
 /** Damaged-king hull overlay cue (slides with the piece). */
 export type KingDamageCue = {
   /** Stable id so the slot survives square changes (king flee). */

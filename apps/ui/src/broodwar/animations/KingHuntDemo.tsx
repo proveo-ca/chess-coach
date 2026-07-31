@@ -14,7 +14,7 @@ import {
 import { classicFenFromBw, formatBwFen, type BwFenSnapshot } from "~/broodwar/bwfen";
 import { useBroodWarCombat } from "~/broodwar/hooks/useBroodWarCombat";
 import { resolveTurn, type ClassicalPlan } from "~/broodwar/resolveTurn";
-import { ChessBoard } from "~/components/features/ChessBoard";
+import { BroodWarChessBoard } from "~/broodwar/BroodWarChessBoard";
 import { DualNavButton } from "~/components/primitives/DualNavButton";
 import styles from "~/broodwar/animations/KingHuntDemo.module.css";
 import { setStorybookCapabilities } from "~/screens/storybookCapabilities";
@@ -247,7 +247,7 @@ export const KingHuntDemo: Component = () => {
   return (
     <div class={styles.demo}>
       <div class={styles.host}>
-        <ChessBoard
+        <BroodWarChessBoard
           variant="eclipse"
           fogOfWar
           attackCues={combat.attackCues()}

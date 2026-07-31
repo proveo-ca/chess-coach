@@ -88,13 +88,16 @@ describe("NerdScreen placeholder", () => {
     fireEvent.click(view.container.querySelector('[data-square="d4"]')!);
     fireEvent.click(view.container.querySelector('[data-square="d5"]')!);
     await waitFor(() => expect(currentFen()).not.toBe(fen));
-    await waitFor(() =>
-      expect(
-        view.container
-          .querySelector('img[alt="w k"]')
-          ?.closest("[data-square]")
-          ?.getAttribute("data-square"),
-      ).toBe("d5"),
+    // Brood War boards hide the destination `<img>` during MoveAnimation (MOVE_MS).
+    await waitFor(
+      () =>
+        expect(
+          view.container
+            .querySelector('img[alt="w k"]')
+            ?.closest("[data-square]")
+            ?.getAttribute("data-square"),
+        ).toBe("d5"),
+      { timeout: 2000 },
     );
     await waitFor(() => expect(view.container.querySelectorAll('[data-fog="visible"]')).toHaveLength(9));
     expect(view.container.querySelector('[data-square="d5"]')?.getAttribute("data-fog")).toBe("visible");

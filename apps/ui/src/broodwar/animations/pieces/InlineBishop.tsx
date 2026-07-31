@@ -1,11 +1,21 @@
-import type { Component, JSX } from "solid-js";
+import { createEffect, createSignal, onCleanup, type Component, type JSX } from "solid-js";
 
 import { svgPivotLocal } from "~/broodwar/animations/attackAnim";
 import {
   TEAM_DARK,
   TEAM_LIGHT,
   TEAM_PRIMARY,
-  type PieceColor, NERD_FRAME } from "~/broodwar/animations/teamColors";
+  type PieceColor,
+  NERD_FRAME,
+} from "~/broodwar/animations/teamColors";
+
+/** Quiet-move wheel crank — feet trace full circles about the hip. */
+export type BishopCrank = {
+  stepMs: number;
+  stepCount: number;
+  /** +1 = clockwise (moving +file / right); −1 = counter-clockwise. */
+  sense: 1 | -1;
+};
 
 type InlineBishopProps = {
   color?: PieceColor;
@@ -15,6 +25,38 @@ type InlineBishopProps = {
   gunDeg?: number;
   /** When true, show short forward cannons; idle shows hole faces. */
   aiming?: boolean;
+  crank?: BishopCrank;
+};
+
+/** 6 o'clock in SVG y-down (φ=0 at 3 o'clock, increasing clockwise). */
+const SIX_OCLOCK = Math.PI / 2;
+
+/**
+ * Reach matches nerd `*B.svg` hip→foot distance; equal thigh/shin ⇒ 90° knee
+ * puts the foot on a circle of this radius about the hip.
+ */
+const FOOT_RADIUS = Math.hypot(6, 12); // ≈ 13.416
+const SEG = FOOT_RADIUS / Math.SQRT2;
+
+type Pt = { x: number; y: number };
+
+/**
+ * Right-triangle leg: hip fixed, foot on circle at `phase`, 90° at knee.
+ * `outward` pushes the knee away from the body midline (−1 left, +1 right).
+ */
+export const bishopLegPose = (hip: Pt, phase: number, outward: -1 | 1) => {
+  const ux = Math.cos(phase);
+  const uy = Math.sin(phase);
+  // 90° CCW from û in y-down.
+  const vx = -uy;
+  const vy = ux;
+  const foot = { x: hip.x + FOOT_RADIUS * ux, y: hip.y + FOOT_RADIUS * uy };
+  // K = H + (L²/R)û + outward·(L²/R)v̂ with L=R/√2 ⇒ L²/R = R/2.
+  const knee = {
+    x: hip.x + (FOOT_RADIUS / 2) * ux + outward * (FOOT_RADIUS / 2) * vx,
+    y: hip.y + (FOOT_RADIUS / 2) * uy + outward * (FOOT_RADIUS / 2) * vy,
+  };
+  return { hip, knee, foot, seg: SEG };
 };
 
 /** Idle gatling in local space (origin = pod center). Face toward viewer (no yaw). */
@@ -107,6 +149,7 @@ const ShoulderMount: Component<ShoulderMountProps> = (props) => (
 /**
  * Experimental Goliath. Hull/cockpit stay fixed; each shoulder gatling is mounted
  * with `translate(shoulder) rotate(aim)` — same turret pattern as the rook.
+ * Feet roll on full circles about the hips (steam-wheel crank), 90° knees.
  */
 export const InlineBishop: Component<InlineBishopProps> = (props) => {
   const color = () => props.color ?? "w";
@@ -116,6 +159,27 @@ export const InlineBishop: Component<InlineBishopProps> = (props) => {
   const face = () => props.face ?? "front";
   const gunDeg = () => props.gunDeg ?? 0;
   const aiming = () => props.aiming ?? false;
+
+  /** Left-foot phase; right is always +π (12 when left is at 6). */
+  const [phase, setPhase] = createSignal(SIX_OCLOCK);
+
+  createEffect(() => {
+    const c = props.crank;
+    if (!c) {
+      setPhase(SIX_OCLOCK);
+      return;
+    }
+    const t0 = performance.now();
+    const total = Math.max(1, c.stepMs * c.stepCount);
+    let raf = 0;
+    const tick = (now: number) => {
+      const e = Math.min(Math.max(0, now - t0), total);
+      setPhase(SIX_OCLOCK + c.sense * (e / c.stepMs) * Math.PI * 2);
+      if (e < total) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    onCleanup(() => cancelAnimationFrame(raf));
+  });
 
   const cockpit = (): JSX.Element =>
     face() === "back" ? (
@@ -154,28 +218,81 @@ export const InlineBishop: Component<InlineBishopProps> = (props) => {
     </>
   );
 
+  const mechaLeg = (side: "left" | "right"): JSX.Element => {
+    const left = side === "left";
+    const hip = left ? { x: 18, y: 28 } : { x: 27, y: 28 };
+    const pose = () =>
+      bishopLegPose(hip, left ? phase() : phase() + Math.PI, left ? 1 : -1);
+    return (
+      <g data-part={`leg-${side}`}>
+        <g data-part={`leg-${side}-top`}>
+          <line
+            x1={hip.x}
+            y1={hip.y}
+            x2={pose().knee.x}
+            y2={pose().knee.y}
+            stroke={team()}
+            stroke-width="2.5"
+            stroke-linecap="round"
+          />
+          <circle
+            fill={teamDark()}
+            cx={pose().knee.x}
+            cy={pose().knee.y}
+            r="1.5"
+            stroke="#222"
+            stroke-width="1"
+          />
+          <g data-part={`leg-${side}-bottom`}>
+            <line
+              x1={pose().knee.x}
+              y1={pose().knee.y}
+              x2={pose().foot.x}
+              y2={pose().foot.y}
+              stroke={team()}
+              stroke-width="2.5"
+              stroke-linecap="round"
+            />
+            <ellipse
+              data-part={`leg-${side}-foot`}
+              fill={team()}
+              cx={pose().foot.x}
+              cy={pose().foot.y}
+              rx="5"
+              ry="2.5"
+              stroke="#222"
+              stroke-width="2"
+            />
+          </g>
+        </g>
+      </g>
+    );
+  };
+
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45" aria-hidden="true" overflow="visible">
       <g transform={NERD_FRAME.B}>
-      <g stroke="#222" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-        <ellipse fill={team()} cx="12" cy="40" rx="5" ry="2.5" />
-        <ellipse fill={team()} cx="33" cy="40" rx="5" ry="2.5" />
-        <line x1="14" y1="38" x2="18" y2="28" stroke-width="2.5" />
-        <line x1="31" y1="38" x2="27" y2="28" stroke-width="2.5" />
-
-        {face() === "back" ? (
-          <>
-            {mounts()}
-            {cockpit()}
-          </>
-        ) : (
-          <>
-            {cockpit()}
-            {mounts()}
-          </>
-        )}
+        <g stroke="#222" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+          {/* Legs under cockpit so the hull always occludes the hip joints. */}
+          <g data-part="body">
+            {mechaLeg("left")}
+            {mechaLeg("right")}
+          </g>
+          <g data-part="head">
+            {face() === "back" ? (
+              <>
+                {mounts()}
+                {cockpit()}
+              </>
+            ) : (
+              <>
+                {cockpit()}
+                {mounts()}
+              </>
+            )}
+          </g>
+        </g>
       </g>
-    
-      </g></svg>
+    </svg>
   );
 };

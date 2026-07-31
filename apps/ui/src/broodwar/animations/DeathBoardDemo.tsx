@@ -16,7 +16,7 @@ import {
   type DeathPiece,
 } from "~/broodwar/animations/deathAnim";
 import type { DeathCue } from "~/broodwar/animations/types";
-import { ChessBoard } from "~/components/features/ChessBoard";
+import { BroodWarChessBoard } from "~/broodwar/BroodWarChessBoard";
 import { setStorybookCapabilities } from "~/screens/storybookCapabilities";
 import { NERD_CAPABILITIES } from "~/store/capabilitiesStore";
 import { loadFen } from "~/store/gameStore";
@@ -112,7 +112,7 @@ export const DeathBoardDemo: Component<DeathBoardDemoProps> = (props) => {
   return (
     <div class={styles.demo}>
       <div class={styles.host}>
-        <ChessBoard
+        <BroodWarChessBoard
           variant="eclipse"
           fogOfWar
           deathCues={cue() ? [cue()!] : []}

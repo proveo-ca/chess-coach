@@ -50,24 +50,3 @@
   color: color-mix(in srgb, var(--text-color, #111) 45%, transparent);
   font-weight: 500;
 }
-
-.cylinders {
-  display: inline-flex;
-  align-items: flex-end;
-  gap: 3px;
-  height: 16px;
-}
-
-.cylinder {
-  width: 7px;
-  height: 14px;
-  border-radius: 2px;
-  box-sizing: border-box;
-  border: 1.5px solid color-mix(in srgb, #2a9b6a 70%, transparent);
-  background: transparent;
-}
-
-.cylinderFilled {
-  background: linear-gradient(180deg, #5ed4a0 0%, #2a9b6a 100%);
-  border-color: #2a9b6a;
-}

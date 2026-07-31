@@ -47,7 +47,7 @@ These are locked for v1 so the engine can ship without further product decisions
    - turns `1–10` → **+1**
    - turns `11–20` → **+2**
    - turns `21+` → **+3**
-5. **Vespene energy (special fuel)** — same tiers as material income (`1` / `2` / `3`). Refills to the tier cap at the start of each planning turn; **does not accumulate**. Each special costs **1** gas. Shown on [`ResourceBar`](apps/ui/src/components/atoms/ResourceBar.tsx) as filled vs outline cylinders.
+5. **Vespene energy (special fuel)** — same tiers as material income (`1` / `2` / `3`). Refills to the tier cap at the start of each planning turn; **does not accumulate**. Each special costs **1** gas. Shown on [`ResourceBar`](apps/ui/src/broodwar/primitives/ResourceBar.tsx) as remaining / capacity.
 6. **Idle bonus** — if a player queues **neither** special nor classical → income × **1.5** (rounded down).
 7. **Caps** — max **12** stored material; max **50** deployed material (King counts as **1** deployed). UI deploy count on ResourceBar is **Σ unit costs** of pieces the player owns on the board.
 8. **Unit purchase costs** (stored → deployed on spawn):
@@ -61,13 +61,13 @@ These are locked for v1 so the engine can ship without further product decisions
    | Rook | 5 |
    | Queen | 9 |
 
-9. **Turn timeout** — **10s** constant (`TURN_TIMEOUT_MS`). Shown on [`TurnBar`](apps/ui/src/components/atoms/TurnBar.tsx) as a circular gauge with seconds in the center. Expiry auto-submits the current plan (same as End).
+9. **Turn timeout** — **10s** constant (`TURN_TIMEOUT_MS`). Shown on [`TurnBar`](apps/ui/src/broodwar/primitives/TurnBar.tsx) as a circular gauge with seconds in the center. Expiry auto-submits the current plan (same as End).
 10. **Global phase order** — `[specialBefore | attack | move | specialAfter]`:
    - **specialBefore** — specials with `timing: "before"` (e.g. king spawn)
    - **attack** — classical part 1 (both players)
    - **move** — classical part 2 (both players)
    - **specialAfter** — specials with `timing: "after"`
-11. **King lives** — each king starts at **3 HP**. A successful **attack** that targets the enemy king decrements HP by 1 (king stays on board until HP = 0). Third hit → destroyed → that player loses. Visual states: [King damage states](#king-damage-states). Classical check / checkmate are **not** Brood War outcomes (HP replaces mate).
+11. **King lives** — each king starts at **3 HP**. A successful **attack** that targets the enemy king decrements HP by 1 (king stays on board until HP = 0). Third hit → destroyed → that player loses. Visual states: [King damage states](#king-damage-states). Classical check / checkmate / stalemate / insufficient-material **draws are not Brood War outcomes** (HP replaces mate; no DRAW banner).
 12. **King hits vs classical check (attack timing)** — locked Option A: arrival / discovered threats are **next turn**. Same phase clock as every other unit — **no** “king-target resolves after move” exception.
     1. A successful king hit = classical attack with `to === enemyKingSquare`, clear geometry from the attacker’s **pre-move** square, during the **attack** phase.
     2. Relocating onto (or uncovering) a ray that attacks the king does **not** chip HP this resolve — that only enables a king-shot on a **later** turn’s attack phase.
@@ -76,7 +76,7 @@ These are locked for v1 so the engine can ship without further product decisions
     5. **Caveat — king may walk into fire.** Moving or staying on a square attacked by the enemy is **legal** in Brood War (classically illegal as moving into / remaining in check). This is the fog-of-war punishment: without vision you can step onto a hidden shooter. Option A still applies — the standing shooter chips HP only when they queue a king-shot on a later attack phase (or this phase if they already stood on a clear ray and targeted the king).
 13. **Attack animations (v1)** — one attack VFX per unit type ([Attack animations](#attack-animations-v1)); verified in Storybook. Move/special VFX deferred.
 14. **Special abilities** — long-press a friendly unit to queue that unit’s special (uses the **1 special** slot; burns **1** vespene). See [Special moves](#special-moves).
-15. **Board chrome** — Brood War replaces classical captured-pieces rows with **`ResourceBar` (top: minerals, vespene, deploy)** + **`TurnBar` (bottom: End + 10s gauge)**.
+15. **Board chrome** — Brood War has **no captured-pieces rows**. **`ResourceBar` + `TurnBar` sit side-by-side above the board** (minerals / vespene / deploy | End + 10s gauge). Specials are armed by **dragging a footer gas canister** onto a unit ([`GasDeploy`](apps/ui/src/broodwar/features/GasDeploy.tsx) story); long-press demos remain until live wiring.
 
 ---
 
@@ -149,9 +149,9 @@ Capture / classical combat rendering continues to use FEN-loadable snapshots. Fu
 
 Long-press king → modal variant of `PromotionModal`:
 
-1. **Top: `ResourceBar`** ([`atoms/ResourceBar`](apps/ui/src/components/atoms/ResourceBar.tsx))
+1. **Top: `ResourceBar`** ([`broodwar/primitives/ResourceBar`](apps/ui/src/broodwar/primitives/ResourceBar.tsx))
    - **Minerals strip:** blocks icon + `{stored}` + `+{incomePerTurn}` (income is the *next* turn’s base income from [rules §4](#rules), not idle bonus).
-   - **Vespene strip:** canister icon + filled/outline cylinders for remaining/capacity this turn ([rules §5](#rules)).
+   - **Vespene strip:** canister icon + `{remaining} / {capacity}` this turn ([rules §5](#rules)).
    - **Deployed strip:** blocks+people icon + `{boardDeployed} / 50` (Σ `UNIT_COST` of owned pieces; `MAX_DEPLOYED_MATERIAL`).
 2. **Below: spawn choices** — **pawn first**, then the usual promotional set: `p`, `q`, `r`, `b`, `n` (order: pawn → queen → rook → bishop → knight). Disable / grey choices the player cannot afford (minerals, deploy cap, or **no vespene**).
 3. On select: queue `QueuedSpecial { kind: "spawn", unit, from: kingSq, to: spawnSq, … }`. Exact adjacent-target UX (auto-pick vs second tap on empty adjacent square) — implement with spawn validation in `actions.ts`.
@@ -232,13 +232,19 @@ apps/ui/src/broodwar/
   animations/              # done — AttackAnimation, DeathAnimation, cues, Storybook harnesses
     …
 
-apps/ui/src/components/atoms/
-  ResourceBar.tsx          # minerals + income | vespene cylinders | board deploy/50
-  TurnBar.tsx              # End + circular 10s gauge (replaces player captures)
+apps/ui/src/broodwar/primitives/
+  icons.tsx                # MineralsIcon | VespeneIcon | SupplyIcon
+  ResourceBar.tsx          # minerals + income | vespene remaining/cap | board deploy/50
+  TurnBar.tsx              # End + circular 10s gauge (beside ResourceBar above board)
+  SpawnModal.tsx           # king special — ResourceBar + pawn-first choices
+  SpecialPreview.tsx       # hover chat card (unit / special / description)
+  specialCopy.ts           # knight/king copy + TBD stubs
+
+apps/ui/src/broodwar/features/
+  GasDeploy.tsx            # footer gas rack — drag canister onto unit (store-backed)
 
 apps/ui/src/components/primitives/
   PromotionModal.tsx       # classical promote (unchanged)
-  SpawnModal.tsx           # king special — ResourceBar + pawn-first choices
 
 apps/ui/src/screens/
   NerdAttackAnimations.stories.tsx   # Screens/Nerd/Brood War/Attack Animations
@@ -405,12 +411,12 @@ sequenceDiagram
 
 ### Board chrome (replaces captures)
 
-On `NerdScreen` when `broodWarMode`:
+On `NerdScreen` when `broodWarMode`: **no** `OpponentCaptures` / `PlayerCaptures`. One row above the board:
 
-| Slot (was) | Brood War |
+| Side | Brood War |
 |---|---|
-| Opponent captures (top) | [`ResourceBar`](apps/ui/src/components/atoms/ResourceBar.tsx) — minerals, vespene, board-derived deploy |
-| Player captures (bottom) | [`TurnBar`](apps/ui/src/components/atoms/TurnBar.tsx) — **End** + circular seconds gauge (`TURN_TIMEOUT_MS` = 10s) |
+| Left (flex) | [`ResourceBar`](apps/ui/src/broodwar/primitives/ResourceBar.tsx) — minerals, vespene, board-derived deploy |
+| Right | [`TurnBar`](apps/ui/src/broodwar/primitives/TurnBar.tsx) — **End** + circular seconds gauge (`TURN_TIMEOUT_MS` = 10s) |
 
 ### Resolution order
 
@@ -456,7 +462,7 @@ stored = min(12, stored + gain)
 
 - `broodWarMode?: boolean` on `NerdScreen` (default `true` on `/broodwar`).
 - `fogOfWar = broodWarMode` — when mode is on, fog is forced on.
-- Maps / terrain gallery (`Screens/Nerd/Maps`) sets `broodWarMode: false` so board skins can be previewed without fog (not gameplay).
+- Maps / terrain gallery (`Screens/Nerd/Brood War/Maps`) sets `broodWarMode: false` so board skins can be previewed without fog (not gameplay).
 - Vision lives in [`broodwar/vision.ts`](apps/ui/src/broodwar/vision.ts) (re-export from [`utils/nerdVision.ts`](apps/ui/src/utils/nerdVision.ts)).
 
 ### Cumulative vision (not selected-unit)
@@ -492,7 +498,7 @@ if (props.broodWarMode ?? true) {
 />
 ```
 
-UI chrome (v1): `ResourceBar` + `TurnBar` (End + 10s gauge) instead of captured pieces; fog always on; long-press → special ([Special moves](#special-moves)).
+UI chrome (v1): `ResourceBar` + `TurnBar` side-by-side above the board (no captured pieces); fog always on; long-press → special ([Special moves](#special-moves)).
 
 ---
 
@@ -604,7 +610,7 @@ Play functions fire one cue and assert DOM. Visual review required for animation
 ### Notes — turn chrome + action stack (2026-07-27)
 
 - Action stack: special→move or move→special auto-submits; End / 10s timeout submits partial/empty plans.
-- `NerdScreen` chrome: **ResourceBar** (top) + **TurnBar** (End + circular seconds) replace captured pieces when `broodWarMode`.
+- `NerdScreen` chrome: **ResourceBar** + **TurnBar** side-by-side above the board (no captured pieces) when `broodWarMode`.
 - Timing toggle removed from UI — order of actions sets `before` / `after`.
 
 ### Next

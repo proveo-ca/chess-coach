@@ -80,13 +80,24 @@ export const InlinePawn: Component<InlinePawnProps> = (props) => {
           stroke="none"
         />
 
-        {/* Legs + body + shoulders — same paths/centers as wP.svg */}
-        <path fill={team()} d="M16 38 Q16 41 18 41 L20 41 Q21 41 21 39 L21 36z" />
-        <path fill={team()} d="M24 36 L24 39 Q24 41 25 41 L27 41 Q29 41 29 38z" />
-        <ellipse fill={team()} cx="22.5" cy="34" rx="8" ry="5" />
-        <circle fill={team()} cx="15" cy="31" r="2.5" />
-        <circle fill={team()} cx="30" cy="31" r="2.5" />
-
+        {/* Legs + body + shoulders — legs split for hop cycle (MoveAnimation). */}
+        <g data-part="body">
+          <g
+            data-part="leg-left"
+            style={{ "transform-box": "fill-box", "transform-origin": "center top" }}
+          >
+            <path fill={team()} d="M16 38 Q16 41 18 41 L20 41 Q21 41 21 39 L21 36z" />
+          </g>
+          <g
+            data-part="leg-right"
+            style={{ "transform-box": "fill-box", "transform-origin": "center top" }}
+          >
+            <path fill={team()} d="M24 36 L24 39 Q24 41 25 41 L27 41 Q29 41 29 38z" />
+          </g>
+          <ellipse fill={team()} cx="22.5" cy="34" rx="8" ry="5" />
+          <circle fill={team()} cx="15" cy="31" r="2.5" />
+          <circle fill={team()} cx="30" cy="31" r="2.5" />
+        </g>
         {/*
           Back-face attack: barrel under the helmet (drawn before the dome).
           Front-face keeps the public draw order (gun after dome).
@@ -117,7 +128,7 @@ export const InlinePawn: Component<InlinePawnProps> = (props) => {
         )}
 
         {front() ? (
-          <>
+          <g data-part="head">
             {/* Glass dome + shine — wP.svg */}
             <ellipse fill="#fff" cx="22.5" cy="22" rx="13" ry="14" />
             <path fill="#fff" stroke="none" d="M16 14 Q18 10 24 11 Q20 10 16 14z" />
@@ -160,9 +171,9 @@ export const InlinePawn: Component<InlinePawnProps> = (props) => {
                 <path fill="#555" d="M8 26 L4 26 L4 30 L8 30z" />
               </>
             )}
-          </>
+          </g>
         ) : (
-          <>
+          <g data-part="head">
             {/* Team helmet toward camera */}
             <ellipse fill={team()} cx="22.5" cy="22" rx="13" ry="14" />
             <ellipse
@@ -175,7 +186,7 @@ export const InlinePawn: Component<InlinePawnProps> = (props) => {
               opacity="0.55"
             />
             {!aiming() && <path fill="#555" d="M8 26 L4 26 L4 30 L8 30z" />}
-          </>
+          </g>
         )}
       </g>
       </g>

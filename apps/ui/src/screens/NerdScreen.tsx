@@ -2,13 +2,13 @@ import { Show, createEffect, createSignal, onMount } from "solid-js";
 import type { Component } from "solid-js";
 import type { RouteSectionProps } from "@solidjs/router";
 
+import { BroodWarChessBoard } from "~/broodwar/BroodWarChessBoard";
 import { resetBroodWarEconomy } from "~/broodwar/broodWarStore";
-import { ChessBoard } from "~/components/features/ChessBoard";
+import { ResourceBar } from "~/broodwar/primitives/ResourceBar";
+import { TurnBar } from "~/broodwar/primitives/TurnBar";
 import { Button } from "~/components/primitives/Button";
 import { Label } from "~/components/primitives/Label";
-import { ResourceBar } from "~/components/atoms/ResourceBar";
 import { Screen } from "~/components/primitives/Screen";
-import { TurnBar } from "~/components/atoms/TurnBar";
 import { NERD_STARTING_FEN } from "~/data/nerdMode";
 import styles from "~/screens/NerdScreen.module.css";
 import { NERD_CAPABILITIES, setCapabilities } from "~/store/capabilitiesStore";
@@ -73,11 +73,15 @@ export const NerdScreen: Component<NerdScreenProps> = (props) => {
             </div>
           </div>
           <Show when={broodWarMode()}>
-            <div class={styles.topChrome}>
+            <div class={styles.topChrome} data-testid="nerd-board-chrome">
               <ResourceBar />
+              <TurnBar
+                onEnd={() => submitTurn("end")}
+                onTimeout={() => submitTurn("timeout")}
+              />
             </div>
           </Show>
-          <ChessBoard
+          <BroodWarChessBoard
             variant={props.boardVariant ?? "eclipse"}
             fogOfWar={fogOfWar()}
           />
@@ -85,12 +89,6 @@ export const NerdScreen: Component<NerdScreenProps> = (props) => {
             when={broodWarMode()}
             fallback={<p class={styles.placeholder}>Nerd mode is awakening…</p>}
           >
-            <div class={styles.bottomChrome}>
-              <TurnBar
-                onEnd={() => submitTurn("end")}
-                onTimeout={() => submitTurn("timeout")}
-              />
-            </div>
             <p class={styles.placeholder}>{status()}</p>
           </Show>
         </Screen.BoardColumn>

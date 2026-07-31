@@ -7,7 +7,7 @@ export type TurnPhase = "specialBefore" | "attack" | "move" | "specialAfter";
 export type SpecialTiming = "before" | "after";
 
 /**
- * Per-unit special (long-press). Only `spawn` is implementable without
+ * Per-unit special (GasDeploy onto unit). Only `spawn` is implementable without
  * FEN-illegal board ops; other kinds are typed stubs — see BROODWAR_MODE.md.
  */
 export type SpecialKind =

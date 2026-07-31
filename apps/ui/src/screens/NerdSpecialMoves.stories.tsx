@@ -4,8 +4,8 @@ import { KingSpawnDemo } from "~/broodwar/specials/KingSpawnDemo";
 import { KnightMineDemo } from "~/broodwar/specials/KnightMineDemo";
 
 /**
- * Brood War specials (long-press). King spawn + knight spider mine only for now;
- * other unit specials are deferred (FEN-illegal).
+ * Brood War specials via GasDeploy. Command Center deploy + Vulture spider mine;
+ * other unit specials are deferred (FEN-illegal). Activation lives in piece hooks.
  */
 const meta = {
   title: "Screens/Nerd/Brood War/Special Moves",
@@ -14,7 +14,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Long-press specials. King: SpawnModal + ResourceBar → deploy adjacent. Knight: spider mine under the knight; timing before/after the classical move.",
+          "Drag a vespene canister from GasDeploy onto a unit. Command Center: SpawnModal → deploy adjacent. Vulture: stack order (special+move or move+special) sets before/after timing; completing both auto-submits. Specials are piece-owned hooks — not story logic.",
       },
     },
   },
@@ -24,12 +24,12 @@ export default meta;
 type Story = StoryObj;
 
 export const KingSpawn: Story = {
-  name: "King",
+  name: "Command Center",
   parameters: {
     docs: {
       description: {
         story:
-          "1. Long-press king on d4 → SpawnModal (ResourceBar + pawn-first choices). 2. Pick a unit. 3. Tap an adjacent empty square to deploy.",
+          "1. Drag gas onto the command center on d4 → SpawnModal. 2. Pick a unit. 3. Tap an adjacent empty square — 500ms deploy drop, then FEN/fog update.",
       },
     },
   },
@@ -37,12 +37,12 @@ export const KingSpawn: Story = {
 };
 
 export const KnightMine: Story = {
-  name: "Knight",
+  name: "Vulture",
   parameters: {
     docs: {
       description: {
         story:
-          "1. Long-press knight on d4 to queue a spider mine. 2. Choose Before move (mine on d4, then move) or After move (move, then mine on e6). 3. Optional: tap e6 to queue the jump. 4. Resolve.",
+          "Assert stack order: special+move (gas on d4, then move the knight — mine stays on origin) or move+special (move first, then gas — mine under the new square). Knight L-path comes from `BroodWarChessBoard`, not this story.",
       },
     },
   },

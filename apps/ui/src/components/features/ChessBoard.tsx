@@ -15,15 +15,18 @@ import type { Component, JSX } from "solid-js";
 import type {
   AttackCue,
   DeathCue,
+  DeployCue,
   KingDamageCue,
   KingDamageState,
   MoveCue,
 } from "~/types/broodwar";
 import { AttackAnimation } from "~/broodwar/animations/AttackAnimation";
 import { DeathAnimation } from "~/broodwar/animations/DeathAnimation";
+import { DeployAnimation } from "~/broodwar/animations/DeployAnimation";
 import { KingDamageOverlay } from "~/broodwar/animations/kingDamageOverlay";
 import { MoveAnimation } from "~/broodwar/animations/MoveAnimation";
 import { buildFxHiddenSquares, EMPTY_FX_HIDDEN, hasCombatFxInput } from "~/broodwar/boardFx";
+import { isBroodWarBoard } from "~/broodwar/classicalOutcomes";
 import { MOVE_MS } from "~/broodwar/constants";
 import { getSideVision, getVisionDisplayCells, getVisionFogHolePaths } from "~/broodwar/vision";
 import { ChessBoardArrow } from "~/components/atoms/ChessBoardArrow.tsx";
@@ -70,6 +73,11 @@ export const ChessBoard: Component<{
   attackDying?: Record<string, boolean>;
   /** Active Brood War death VFX cues. */
   deathCues?: DeathCue[];
+  /**
+   * Command Center deploy drops — piece is overlay-only until the cue ends;
+   * callers should commit FEN after {@link DEPLOY_MS}.
+   */
+  deployCues?: DeployCue[];
   /** Quiet / occupy slide cues — hides `from` while travelling. */
   moveCues?: MoveCue[];
   /** Slide progress keyed by move cue id (0 = from, 1 = to). */
@@ -94,11 +102,16 @@ export const ChessBoard: Component<{
   const animationQueue = () => board.animationQueue();
   const consumeAnimation = (m: MoveSquares) => board.consumeAnimation?.(m);
 
+  const broodWarRules = createMemo(() =>
+    isBroodWarBoard({ fogOfWar: props.fogOfWar, variant: props.variant }),
+  );
+
   const resolvedAttackCues = createMemo(() => {
     if (props.attackCues?.length) return props.attackCues;
     return props.attackCue ? [props.attackCue] : [];
   });
   const resolvedDeathCues = createMemo(() => props.deathCues ?? []);
+  const resolvedDeployCues = createMemo(() => props.deployCues ?? []);
   const resolvedMoveCues = createMemo(() => props.moveCues ?? []);
   const moveProgress = createMemo(() => props.moveProgress ?? {});
   const moveLeg = createMemo(() => props.moveLeg ?? {});
@@ -164,6 +177,8 @@ export const ChessBoard: Component<{
     fleeCover: kingFleeCover(),
   }));
   const hasCombatFx = createMemo(() => hasCombatFxInput(combatFxInput()));
+  const hasDeployFx = createMemo(() => resolvedDeployCues().length > 0);
+  const needsBoardMetrics = createMemo(() => hasCombatFx() || hasDeployFx());
   const fxHiddenSquares = createMemo(() => buildFxHiddenSquares(combatFxInput()));
   const mineSquares = createMemo(() => {
     const raw = props.spiderMines;
@@ -175,7 +190,7 @@ export const ChessBoard: Component<{
   let boardGridRef = undefined as HTMLDivElement | undefined;
 
   createEffect(() => {
-    if (!hasCombatFx()) {
+    if (!needsBoardMetrics()) {
       setBoardSize(null);
       return;
     }
@@ -195,6 +210,7 @@ export const ChessBoard: Component<{
       );
     };
     sync();
+    if (typeof ResizeObserver === "undefined") return;
     const ro = new ResizeObserver(sync);
     ro.observe(el);
     onCleanup(() => ro.disconnect());
@@ -204,6 +220,10 @@ export const ChessBoard: Component<{
   const combatOverlayReady = createMemo(() => {
     const s = boardSize();
     return hasCombatFx() && s != null && s.width > 0 && s.height > 0;
+  });
+  const deployOverlayReady = createMemo(() => {
+    const s = boardSize();
+    return hasDeployFx() && s != null && s.width > 0 && s.height > 0;
   });
   const combatBoardWidth = () => boardSize()?.width ?? 0;
   const combatBoardHeight = () => boardSize()?.height ?? 0;
@@ -243,9 +263,9 @@ export const ChessBoard: Component<{
     void board.handleSquareClick(square);
   };
 
-  const isCheck = () => activeGame().inCheck();
-  const isCheckmate = () => activeGame().isCheckmate();
-  const isStalemate = () => activeGame().isStalemate();
+  const isCheck = () => !broodWarRules() && activeGame().inCheck();
+  const isCheckmate = () => !broodWarRules() && activeGame().isCheckmate();
+  const isStalemate = () => !broodWarRules() && activeGame().isStalemate();
   const turn = () => activeGame().turn();
 
   // ── Touch-drag (mobile) ──────────────────────────────────────────────
@@ -324,8 +344,14 @@ export const ChessBoard: Component<{
   // End-game banner is shown only in the final game state — never while
   // replaying a past move or time-travelling. `game()` is the authoritative
   // live instance, so checkmate/stalemate read the true terminal position.
+  // End-game banner is shown only in the final game state — never while
+  // replaying a past move or time-travelling. Brood War suppresses classical
+  // draw / mate / stalemate (HP wins only).
   const isGameOver = () =>
-    !isReplaying() && !isTravelling() && (game().isGameOver() || isResigned());
+    !broodWarRules() &&
+    !isReplaying() &&
+    !isTravelling() &&
+    (game().isGameOver() || isResigned());
 
   return (
     <div class={styles["board-layout-wrapper"]}>
@@ -524,6 +550,14 @@ export const ChessBoard: Component<{
                 boardHeight={combatBoardHeight()}
               />
             </div>
+          </Show>
+
+          <Show when={deployOverlayReady()}>
+            <DeployAnimation
+              cues={resolvedDeployCues()}
+              boardWidth={combatBoardWidth()}
+              boardHeight={combatBoardHeight()}
+            />
           </Show>
 
           <Show when={touchDrag()}>

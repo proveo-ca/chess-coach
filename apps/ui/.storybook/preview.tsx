@@ -56,7 +56,30 @@ const preview: Preview = {
     docs: { codePanel: true },
     options: {
       storySort: {
-        order: ["Primitives", "Atoms", "Features", "Screens"],
+        order: [
+          "Primitives",
+          "Atoms",
+          "Features",
+          "Screens",
+          [
+            "Nerd",
+            [
+              "Brood War",
+              [
+                "Demo",
+                "Maps",
+                "Attack Animations",
+                "Death Animations",
+                "Deploy Animations",
+                "Fog of War and Move Animations",
+                "Special Moves",
+                "Turn Chrome",
+              ],
+              "Piece Sets",
+              "*",
+            ],
+          ],
+        ],
       },
     },
     viewport: { options: viewports },

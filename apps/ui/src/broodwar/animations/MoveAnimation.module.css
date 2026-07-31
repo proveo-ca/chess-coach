@@ -9,7 +9,7 @@
   position: absolute;
   z-index: 6;
   overflow: visible;
-  transition: left var(--move-ms, 550ms) ease-in-out, top var(--move-ms, 550ms) ease-in-out;
+  transition: left var(--move-ms, 250ms) ease-in-out, top var(--move-ms, 250ms) ease-in-out;
 }
 
 .pieceFace {
@@ -29,7 +29,7 @@
 /* Knight: L-path (long leg → elbow → short leg); hull faces travel direction. */
 .moverKnight {
   transition: none;
-  animation: knightLMove var(--move-ms, 550ms) linear 1 forwards;
+  animation: knightLMove var(--move-ms, 375ms) linear 1 forwards;
 }
 
 .moverFace {
@@ -46,5 +46,124 @@
   }
   100% {
     transform: translate(var(--kx2), var(--ky2));
+  }
+}
+
+/* ── Pawn / marine: springy hop while sliding to destination ─────────── */
+
+.moverPawn {
+  transition: none;
+  animation: humanoidSlide var(--move-ms, 250ms) linear 1 forwards;
+}
+
+.moverPawn .pawnFace {
+  transform-origin: center 70%;
+  animation-name: pawnTiltHop;
+  animation-duration: var(--pawn-hop-ms, 180ms);
+  animation-timing-function: cubic-bezier(0.7, 0, 0.84, 0);
+  animation-iteration-count: var(--hop-count, 3);
+}
+
+.moverPawn :global([data-part="leg-left"]),
+.moverPawn :global([data-part="leg-right"]) {
+  transform-box: fill-box;
+  transform-origin: center top;
+}
+
+.moverPawn :global([data-part="leg-left"]) {
+  animation-name: pawnLegLeft;
+  animation-duration: var(--pawn-hop-ms, 180ms);
+  animation-timing-function: cubic-bezier(0.7, 0, 0.84, 0);
+  animation-iteration-count: var(--hop-count, 3);
+}
+
+.moverPawn :global([data-part="leg-right"]) {
+  animation-name: pawnLegRight;
+  animation-duration: var(--pawn-hop-ms, 180ms);
+  animation-timing-function: cubic-bezier(0.7, 0, 0.84, 0);
+  animation-iteration-count: var(--hop-count, 3);
+}
+
+/*
+ * Tilt ≤20° to the right on an exponential-ish ease, then mirror left.
+ * Left leg tucks up on the right-lean; right leg tucks on the left-lean.
+ */
+@keyframes pawnTiltHop {
+  0% {
+    transform: rotate(0deg);
+  }
+  22% {
+    transform: rotate(20deg);
+  }
+  50% {
+    transform: rotate(0deg);
+  }
+  72% {
+    transform: rotate(-20deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes pawnLegLeft {
+  0%,
+  50%,
+  100% {
+    transform: scaleY(1) translateY(0);
+  }
+  22% {
+    transform: scaleY(0.42) translateY(-3px);
+  }
+  72% {
+    transform: scaleY(1) translateY(0);
+  }
+}
+
+@keyframes pawnLegRight {
+  0%,
+  50%,
+  100% {
+    transform: scaleY(1) translateY(0);
+  }
+  22% {
+    transform: scaleY(1) translateY(0);
+  }
+  72% {
+    transform: scaleY(0.42) translateY(-3px);
+  }
+}
+
+/* ── Bishop / goliath: hull slide; leg crank is SVG animateTransform ──── */
+
+.moverBishop {
+  transition: none;
+  animation: humanoidSlide var(--move-ms, 250ms) linear 1 forwards;
+}
+
+/* Queen / battlecruiser: slide while hull faces travel (same aim as attack). */
+.moverQueen {
+  transition: none;
+  animation: humanoidSlide var(--move-ms, 250ms) linear 1 forwards;
+}
+
+@keyframes humanoidSlide {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(var(--mx), var(--my));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .moverKnight,
+  .moverPawn,
+  .moverBishop,
+  .moverQueen,
+  .moverPawn .pawnFace,
+  .moverPawn :global([data-part="leg-left"]),
+  .moverPawn :global([data-part="leg-right"]) {
+    animation-duration: 1ms;
   }
 }

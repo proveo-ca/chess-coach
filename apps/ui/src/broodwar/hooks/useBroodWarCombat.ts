@@ -11,7 +11,8 @@ import { HIT_BOOM_MS, kingDamageStateForLives } from "~/broodwar/animations/king
 import type { KingDamageCue } from "~/broodwar/animations/kingDamageOverlay";
 import type { AttackCue, DeathCue, MoveCue } from "~/broodwar/animations/types";
 import { findKing, placementToMap } from "~/broodwar/board";
-import { MOVE_MS } from "~/broodwar/constants";
+import { MOVE_MS, MOVE_SQUARE_MS } from "~/broodwar/constants";
+import { knightElbowMs, moveDurationMs } from "~/broodwar/animations/moveTiming";
 import type { ResolveTurnResult } from "~/broodwar/resolveTurn";
 import type { BroodWarColor } from "~/broodwar/types";
 import { isPieceVisibleToSide } from "~/broodwar/vision";
@@ -23,9 +24,6 @@ const nextId = (prefix: string) => `${prefix}-${++cueSeq}-${Date.now()}`;
 
 /** One roll per damaged king — reuse via `existing?.seed` so flames don't jump on flee/hit. */
 const rollFireSeed = () => Math.floor(Math.random() * 0xffffffff);
-
-/** Knight elbow (length-2 leg ends) — matches `knightLMove` 67% keyframe. */
-const KNIGHT_ELBOW_MS = Math.round(MOVE_MS * 0.67);
 
 export type CombatCommit = {
   placement: string;
@@ -130,7 +128,7 @@ export function useBroodWarCombat() {
     const damagedIds = new Set(kingDamage().map((c) => c.id));
     const kingMoves = moves.filter((m) => m.piece === "k" && damagedIds.has(m.color));
     const hullMoves = moves.filter((m) => !(m.piece === "k" && damagedIds.has(m.color)));
-    // Fog gates player visuals only — engine still commits fenAfter after MOVE_MS.
+    // Fog gates player visuals only — engine still commits fenAfter after travel.
     const shown = hullMoves.filter((m) =>
       isPieceVisibleToSide(g, viewer, m.from, m.color),
     );
@@ -160,7 +158,7 @@ export function useBroodWarCombat() {
           prev.map((c) => (c.id === m.color ? { ...c, at: m.to } : c)),
         );
       });
-      arm(16 + MOVE_MS);
+      arm(16 + moveDurationMs(m.from, m.to, "k"));
     }
 
     if (shown.length > 0) {
@@ -173,7 +171,12 @@ export function useBroodWarCombat() {
         to: s.to,
       }));
       const ids = cues.map((c) => c.id);
-      const knightIds = cues.filter((c) => c.piece === "n").map((c) => c.id);
+      const knights = cues.filter((c) => c.piece === "n");
+      const knightIds = knights.map((c) => c.id);
+      const batchMs = Math.max(
+        MOVE_SQUARE_MS,
+        ...cues.map((c) => moveDurationMs(c.from, c.to, c.piece)),
+      );
       setMoveCues((prev) => [...prev, ...cues]);
       setMoveProgress((prev) => {
         const next = { ...prev };
@@ -192,18 +195,12 @@ export function useBroodWarCombat() {
           return next;
         });
       });
-      if (knightIds.length) {
-        after(40 + KNIGHT_ELBOW_MS, () => {
-          setMoveLeg((prev) => {
-            const next = { ...prev };
-            for (const id of knightIds) {
-              if (id in next) next[id] = 1;
-            }
-            return next;
-          });
+      for (const k of knights) {
+        after(40 + knightElbowMs(k.from, k.to), () => {
+          setMoveLeg((prev) => (k.id in prev ? { ...prev, [k.id]: 1 } : prev));
         });
       }
-      after(40 + MOVE_MS, () => {
+      after(40 + batchMs, () => {
         const idSet = new Set(ids);
         setMoveCues((prev) => prev.filter((m) => !idSet.has(m.id)));
         setMoveProgress((prev) => {

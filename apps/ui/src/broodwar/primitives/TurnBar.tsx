@@ -7,7 +7,7 @@ import {
   turnSecondsRemaining,
 } from "~/broodwar/broodWarStore";
 import { TURN_TIMEOUT_MS } from "~/broodwar/constants";
-import styles from "~/components/atoms/TurnBar.module.css";
+import styles from "~/broodwar/primitives/TurnBar.module.css";
 
 type TurnBarProps = {
   /** Called when the player presses End (submit / pass current plan). */
@@ -23,7 +23,7 @@ const C = 2 * Math.PI * R;
 
 /**
  * Brood War turn chrome — End control + circular countdown (default 10s).
- * Replaces player-side captured pieces under the board.
+ * Sits beside ResourceBar above the board (no captured-pieces rows in Nerd mode).
  */
 export const TurnBar: Component<TurnBarProps> = (props) => {
   const [now, setNow] = createSignal(Date.now());

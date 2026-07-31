@@ -16,7 +16,7 @@ import {
 import styles from "~/broodwar/animations/AttackBoardDemo.module.css";
 import { attackVectorsFor, squareAt } from "~/broodwar/animations/attackVectors";
 import type { AttackCue } from "~/broodwar/animations/types";
-import { ChessBoard } from "~/components/features/ChessBoard";
+import { BroodWarChessBoard } from "~/broodwar/BroodWarChessBoard";
 import { setStorybookCapabilities } from "~/screens/storybookCapabilities";
 import { NERD_CAPABILITIES } from "~/store/capabilitiesStore";
 import { loadFen } from "~/store/gameStore";
@@ -140,7 +140,7 @@ export const AttackBoardDemo: Component<AttackBoardDemoProps> = (props) => {
   return (
     <div class={styles.demo}>
       <div class={styles.host}>
-        <ChessBoard variant="eclipse" fogOfWar attackCues={cues()} />
+        <BroodWarChessBoard variant="eclipse" fogOfWar attackCues={cues()} />
       </div>
       <p class={styles.caption}>
         Brood War · {props.piece.toUpperCase()} · {captionTargets()} · ChessBoard attackCues

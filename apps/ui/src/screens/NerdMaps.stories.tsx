@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { NerdScreen } from "~/screens/NerdScreen";
 
 const meta = {
-  title: "Screens/Nerd/Maps",
+  title: "Screens/Nerd/Brood War/Maps",
   component: NerdScreen,
   parameters: {
     layout: "fullscreen",

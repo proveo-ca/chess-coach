@@ -90,7 +90,7 @@ export const deployedSupply = () => _economies()[activePlayerColor()].deployed;
  */
 export const materialIncome = () => incomeForTurn(_turn());
 
-/** Vespene capacity for the current turn (outlines on ResourceBar). */
+/** Vespene capacity for the current turn (ResourceBar denominator). */
 export const energyCapacity = () => energyForTurn(_turn());
 
 /** Remaining vespene for the local / active player this turn. */
