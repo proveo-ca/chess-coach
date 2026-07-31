@@ -58,16 +58,28 @@ export const BishopGatlings: Story = {
   render: () => <AttackBoardDemo piece="b" />,
 };
 
-export const RookBattery: Story = {
-  name: "Rook Battery",
+export const RookBatteryTank: Story = {
+  name: "Rook (tank mode)",
   parameters: {
     docs: {
       description: {
-        story: `Siege tank battery (\`${ANIM_BY_PIECE.r}\`). Impact on target square.`,
+        story: `Siege Tank tank-mode dual battery (\`${ANIM_BY_PIECE.r}\`). King-style black tubes + muzzle flashes — no HE impact.`,
       },
     },
   },
-  render: () => <AttackBoardDemo piece="r" />,
+  render: () => <AttackBoardDemo piece="r" rookMode="tank" />,
+};
+
+export const RookBatterySiege: Story = {
+  name: "Rook (siege mode)",
+  parameters: {
+    docs: {
+      description: {
+        story: `Sieged Tank shock cannon (\`${ANIM_BY_PIECE.r}\`). Aims local +x at the target; HE impact on the hit square.`,
+      },
+    },
+  },
+  render: () => <AttackBoardDemo piece="r" rookMode="siege" />,
 };
 
 export const QueenLaser: Story = {

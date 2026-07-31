@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
 import { ChessBoard } from "~/components/features/ChessBoard";
 import { setStorybookCapabilities } from "~/screens/storybookCapabilities";
-import { LAN_PLAYER_CAPABILITIES } from "~/store/capabilitiesStore";
+import { NERD_CAPABILITIES } from "~/store/capabilitiesStore";
 import { addMoveSan, resetGame } from "~/store/gameStore";
 import {
   setActivePlayerColor,
@@ -13,22 +13,27 @@ import {
   setOpponentIdentity,
   setPlayerIdentity,
 } from "~/store/settingsStore";
-import type { NerdPieceSet } from "~/types/settings";
 
 /**
- * Compare every Nerd skin to Cburnett (Human): black Nerd bottom, white
- * Cburnett top, after 1.e4. Variants are scale/translate wrappers of
- * `public/pieces/nerd/` aimed at Cburnett’s content box.
+ * Reference board: cburnett (white) vs nerd (black) after 1.e4 —
+ * compare weights / height / negative space against Lichess cburnett.
+ * Uses plain {@link ChessBoard} (not BroodWar) so nerd rooks stay static
+ * siege `*R.svg` — InlineRook is Brood War / GasDeploy only.
  */
-const prepareMatchup = (nerdSet: NerdPieceSet) => {
-  setStorybookCapabilities({ ...LAN_PLAYER_CAPABILITIES, readOnly: false });
+const prepareReferenceBoard = () => {
+  setStorybookCapabilities({
+    ...NERD_CAPABILITIES,
+    readOnly: false,
+    // Per-side piece sets: white = cburnett, black = nerd.
+    opponentUsesPlayerPieceSet: false,
+  });
   setNerdModeUnlocked(true);
-  setNerdPieceSet(nerdSet);
-  setPlayerIdentity("Nerd");
-  setOpponentIdentity("Human"); // cburnett
+  setNerdPieceSet("nerd");
   setImLost(false);
-  setColorPref("b");
-  setActivePlayerColor("b");
+  setPlayerIdentity("Human"); // → cburnett
+  setOpponentIdentity("Nerd"); // → nerd
+  setColorPref("w");
+  setActivePlayerColor("w");
   resetGame();
   addMoveSan("e4");
 };
@@ -41,9 +46,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Nerd (bottom) vs Cburnett (top). All variants share the 4-swatch army " +
-          "palette (#222 / #555 / team / #fff); only framing differs " +
-          "(height / padding / weight).",
+          "Piece-set reference: cburnett on white, nerd on black (`public/pieces/nerd/`). Use for height / weight / negative-space harmony checks.",
       },
     },
   },
@@ -53,36 +56,9 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Current: Story = {
-  name: "Current vs Cburnett (= harmonic spaces)",
+  name: "Current",
   render: () => {
-    prepareMatchup("nerd");
-    return <ChessBoard />;
-  },
-  globals: { viewport: { value: "desktop", isRotated: false } },
-};
-
-export const StandardHeight: Story = {
-  name: "Standard height vs Cburnett",
-  render: () => {
-    prepareMatchup("nerd-height");
-    return <ChessBoard />;
-  },
-  globals: { viewport: { value: "desktop", isRotated: false } },
-};
-
-export const HarmonicNegativeSpaces: Story = {
-  name: "Harmonic negative spaces vs Cburnett",
-  render: () => {
-    prepareMatchup("nerd-space");
-    return <ChessBoard />;
-  },
-  globals: { viewport: { value: "desktop", isRotated: false } },
-};
-
-export const MatchedVisualWeight: Story = {
-  name: "Matched visual weight vs Cburnett",
-  render: () => {
-    prepareMatchup("nerd-weight");
+    prepareReferenceBoard();
     return <ChessBoard />;
   },
   globals: { viewport: { value: "desktop", isRotated: false } },

@@ -10,6 +10,9 @@ export type BroodWarPiece = "p" | "n" | "b" | "r" | "q" | "k";
 
 export type KingDamageState = "pristine" | "smallFire" | "bigFire" | "destroyed";
 
+/** Siege Tank turret: mobile twin guns vs deployed shock cannon (`InlineRook`). */
+export type RookMode = "tank" | "siege";
+
 /** Active attack VFX cue (classical resolution part 1). */
 export type AttackCue = {
   id: string;

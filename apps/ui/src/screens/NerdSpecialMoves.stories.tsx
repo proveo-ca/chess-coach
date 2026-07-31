@@ -2,10 +2,11 @@ import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
 import { KingSpawnDemo } from "~/broodwar/specials/KingSpawnDemo";
 import { KnightMineDemo } from "~/broodwar/specials/KnightMineDemo";
+import { RookSiegeDemo } from "~/broodwar/specials/RookSiegeDemo";
 
 /**
- * Brood War specials via GasDeploy. Command Center deploy + Vulture spider mine;
- * other unit specials are deferred (FEN-illegal). Activation lives in piece hooks.
+ * Brood War specials via GasDeploy. Command Center deploy, Vulture spider mine,
+ * Siege Tank mode toggle. Activation lives in piece hooks.
  */
 const meta = {
   title: "Screens/Nerd/Brood War/Special Moves",
@@ -14,7 +15,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Drag a vespene canister from GasDeploy onto a unit. Command Center: SpawnModal → deploy adjacent. Vulture: stack order (special+move or move+special) sets before/after timing; completing both auto-submits. Specials are piece-owned hooks — not story logic.",
+          "Drag a vespene canister from GasDeploy onto a unit. Command Center: SpawnModal → deploy adjacent. Vulture: stack order (special+move or move+special). Siege Tank: toggle packed ↔ unpacked. Specials are piece-owned hooks — not story logic.",
       },
     },
   },
@@ -47,4 +48,17 @@ export const KnightMine: Story = {
     },
   },
   render: () => <KnightMineDemo />,
+};
+
+export const RookSiege: Story = {
+  name: "Siege Tank",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Two Siege Tanks: d4 starts packed (tank), f4 starts sieged. Drag gas onto either to toggle with pack↔unpack animation. Siege: 9×9 vision, immobile. Tank: 5×5 vision, can move.",
+      },
+    },
+  },
+  render: () => <RookSiegeDemo />,
 };

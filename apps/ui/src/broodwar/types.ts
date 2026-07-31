@@ -18,7 +18,7 @@ export type SpecialKind =
   | "rookSiege"
   | "queenWarp";
 
-export type { KingDamageState, BwPhaseCode } from "~/types/broodwar";
+export type { KingDamageState, BwPhaseCode, RookMode } from "~/types/broodwar";
 
 export type QueuedSpecial = {
   id: string;

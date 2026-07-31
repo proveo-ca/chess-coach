@@ -19,3 +19,4 @@ export { useBroodWarNativeMoves } from "~/broodwar/hooks/useBroodWarNativeMoves"
 export { usePieceSpecialArm } from "~/broodwar/hooks/usePieceSpecialArm";
 export { useCommandCenterDeploy } from "~/broodwar/hooks/useCommandCenterDeploy";
 export { useVultureSpiderMine } from "~/broodwar/hooks/useVultureSpiderMine";
+export { useRookSiege } from "~/broodwar/hooks/useRookSiege";

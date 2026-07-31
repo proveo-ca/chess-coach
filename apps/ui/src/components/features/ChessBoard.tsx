@@ -26,6 +26,7 @@ import { DeployAnimation } from "~/broodwar/animations/DeployAnimation";
 import { KingDamageOverlay } from "~/broodwar/animations/kingDamageOverlay";
 import { MoveAnimation } from "~/broodwar/animations/MoveAnimation";
 import { buildFxHiddenSquares, EMPTY_FX_HIDDEN, hasCombatFxInput } from "~/broodwar/boardFx";
+import { rookModeAt, siegedRooks } from "~/broodwar/broodWarStore";
 import { isBroodWarBoard } from "~/broodwar/classicalOutcomes";
 import { MOVE_MS } from "~/broodwar/constants";
 import { getSideVision, getVisionDisplayCells, getVisionFogHolePaths } from "~/broodwar/vision";
@@ -84,6 +85,8 @@ export const ChessBoard: Component<{
   moveProgress?: Record<string, 0 | 1>;
   /** Knight L-path facing: 0 = long leg, 1 = short leg (after elbow). */
   moveLeg?: Record<string, 0 | 1>;
+  /** @deprecated Prefer store {@link rookModeAt}; board-wide override for fog stories. */
+  rookMode?: import("~/types/broodwar").RookMode;
   /** Squares with an armed spider mine (drawn under pieces). */
   spiderMines?: readonly Square[] | ReadonlySet<Square>;
   /** Owner color for `spiderMines` (defaults to active player). */
@@ -227,9 +230,21 @@ export const ChessBoard: Component<{
   });
   const combatBoardWidth = () => boardSize()?.width ?? 0;
   const combatBoardHeight = () => boardSize()?.height ?? 0;
-  const nerdVision = createMemo(() =>
-    props.fogOfWar ? getSideVision(activeGame(), activePlayerColor()) : null,
-  );
+  /** Resolve Siege Tank mode for a square (board override → store). */
+  const modeForRook = (sq: Square) => {
+    if (props.rookMode != null) return props.rookMode;
+    // Track store so tank↔siege toggles re-render without fog vision memos.
+    void siegedRooks();
+    return rookModeAt(sq);
+  };
+
+  const nerdVision = createMemo(() => {
+    // Touch siegedRooks so vision recompute when tanks toggle.
+    void siegedRooks();
+    return props.fogOfWar
+      ? getSideVision(activeGame(), activePlayerColor(), { rookModeFor: modeForRook })
+      : null;
+  });
   const visibleSquares = createMemo(() => nerdVision()?.litSquares ?? null);
   /**
    * Pieces shown through fog without lighting the tile.
@@ -259,7 +274,30 @@ export const ChessBoard: Component<{
   const fogOverlayId = createUniqueId();
   const fogMaskId = `${fogOverlayId}-mask`;
 
+  /** Siege Tank in siege mode cannot relocate (vision widens instead). */
+  const isSiegedRookSquare = (sq: Square | null | undefined): boolean => {
+    if (!sq) return false;
+    if (activeGame().get(sq)?.type !== "r") return false;
+    return modeForRook(sq) === "siege";
+  };
+
+  const displayValidMoves = createMemo(() => {
+    const sel = board.selectedSquare();
+    if (isSiegedRookSquare(sel)) return [] as string[];
+    return board.validMoves();
+  });
+
   const handleSquareClick = (square: Square) => {
+    const sel = board.selectedSquare();
+    // Block completing a move from a sieged rook (hook still lists chess.js destinations).
+    if (
+      sel &&
+      sel !== square &&
+      isSiegedRookSquare(sel) &&
+      board.validMoves().includes(square)
+    ) {
+      return;
+    }
     void board.handleSquareClick(square);
   };
 
@@ -324,7 +362,7 @@ export const ChessBoard: Component<{
     const target = touch ? squareFromTouch(touch) : null;
 
     if (target && target !== touchDrag()!.from) {
-      board.handleSquareClick(target);
+      handleSquareClick(target);
     }
 
     setTouchDrag(null);
@@ -394,7 +432,7 @@ export const ChessBoard: Component<{
                     if (board.hoveredSquare() !== square) return false;
                     const selected = board.selectedSquare();
                     if (selected) {
-                      return !board.validMoves().includes(square) && square !== selected;
+                      return !displayValidMoves().includes(square) && square !== selected;
                     } else {
                       const p = piece();
                       if (!p) return false;
@@ -419,7 +457,7 @@ export const ChessBoard: Component<{
                       isLight={(rIndex() + fIndex()) % 2 === 0}
                       isSelected={board.selectedSquare() === square}
                       isHovered={board.hoveredSquare() === square}
-                      isValidMove={board.validMoves().includes(square)}
+                      isValidMove={displayValidMoves().includes(square)}
                       isAdviceHovered={adviceHoveredSquares().includes(square)}
                       isDragging={touchDrag()?.from === square}
                       isInvalid={isInvalid()}
@@ -434,6 +472,11 @@ export const ChessBoard: Component<{
                       }
                       spiderMine={mineSquares()?.has(square) === true}
                       spiderMineColor={props.spiderMineColor ?? activePlayerColor()}
+                      rookMode={
+                        piece()?.type === "r" && broodWarRules()
+                          ? modeForRook(square)
+                          : undefined
+                      }
                       showRank={fIndex() === 0 && rank}
                       showFile={rIndex() === 7 && file}
                       onClick={() => handleSquareClick(square)}

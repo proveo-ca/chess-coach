@@ -34,6 +34,9 @@ export const DEATH_MS = ATTACK_MS / 2;
  */
 export const MOVE_SQUARE_MS = 250;
 
+/** Siege Tank pack ↔ unpack (CSS `--siege-toggle-ms`). */
+export const SIEGE_TOGGLE_MS = 480;
+
 /** Single-square travel (king flee cover, 1-step default). */
 export const MOVE_MS = MOVE_SQUARE_MS;
 

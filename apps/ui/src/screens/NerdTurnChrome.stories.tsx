@@ -1,8 +1,10 @@
 import { createEffect, createSignal, onMount } from "solid-js";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { resetBroodWarEconomy, startPlanningTimer } from "~/broodwar/broodWarStore";
+import { clearSiegedRooks, resetBroodWarEconomy, startPlanningTimer } from "~/broodwar/broodWarStore";
 import { GasDeploy as GasDeployRack } from "~/broodwar/features/GasDeploy";
+import { usePieceSpecialArm } from "~/broodwar/hooks/usePieceSpecialArm";
+import { useRookSiege } from "~/broodwar/hooks/useRookSiege";
 import { ResourceBar } from "~/broodwar/primitives/ResourceBar";
 import { TurnBar } from "~/broodwar/primitives/TurnBar";
 import { BroodWarChessBoard } from "~/broodwar/BroodWarChessBoard";
@@ -73,7 +75,7 @@ export const GasDeploy: Story = {
     docs: {
       description: {
         story:
-          "Full army board + footer GasDeploy. Use Controls → gas (1–3) for canister count. Drag a canister onto Knight / King to spend; other units show TBD and cancel on drop.",
+          "Full army board + footer GasDeploy. Rooks use InlineRook (tank↔siege). Drag gas onto a rook to toggle siege mode; Knight / King specials TBD here. Use Controls → gas (1–3).",
       },
     },
   },
@@ -89,7 +91,13 @@ export const GasDeploy: Story = {
   },
   render: (args) => {
     const gas = () => Math.min(3, Math.max(1, Number(args.gas) || 3));
-    const [status, setStatus] = createSignal("Drag a canister onto a friendly unit");
+    const [status, setStatus] = createSignal(
+      "Drag gas onto a rook to toggle tank ↔ siege",
+    );
+    const rookSiege = useRookSiege();
+    const { onGasDeploy } = usePieceSpecialArm({
+      r: rookSiege.arm,
+    });
 
     onMount(() => {
       setCapabilities(NERD_CAPABILITIES);
@@ -97,6 +105,7 @@ export const GasDeploy: Story = {
       setPlayerIdentity("Nerd");
       setActivePlayerColor("w");
       loadFen(FULL_ARMY_FEN);
+      clearSiegedRooks();
     });
 
     createEffect(() => {
@@ -108,7 +117,8 @@ export const GasDeploy: Story = {
         energy: g,
         startTimer: false,
       });
-      setStatus("Drag a canister onto a friendly unit");
+      clearSiegedRooks();
+      setStatus("Drag gas onto a rook to toggle tank ↔ siege");
     });
 
     return (
@@ -141,9 +151,14 @@ export const GasDeploy: Story = {
             }}
           >
             <GasDeployRack
-              onDeploy={(t) =>
-                setStatus(`Special armed on ${t.piece.toUpperCase()} @ ${t.square}`)
-              }
+              onDeploy={(t) => {
+                onGasDeploy(t);
+                if (t.piece === "r") {
+                  setStatus(rookSiege.caption());
+                } else {
+                  setStatus(`Special armed on ${t.piece.toUpperCase()} @ ${t.square}`);
+                }
+              }}
               onCancel={() => setStatus("Cancelled — canister returned")}
             />
           </div>

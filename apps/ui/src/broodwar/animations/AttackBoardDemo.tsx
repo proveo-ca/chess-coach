@@ -16,11 +16,13 @@ import {
 import styles from "~/broodwar/animations/AttackBoardDemo.module.css";
 import { attackVectorsFor, squareAt } from "~/broodwar/animations/attackVectors";
 import type { AttackCue } from "~/broodwar/animations/types";
+import { clearSiegedRooks, setRookMode } from "~/broodwar/broodWarStore";
 import { BroodWarChessBoard } from "~/broodwar/BroodWarChessBoard";
 import { setStorybookCapabilities } from "~/screens/storybookCapabilities";
 import { NERD_CAPABILITIES } from "~/store/capabilitiesStore";
 import { loadFen } from "~/store/gameStore";
 import { setActivePlayerColor, setNerdModeUnlocked, setPlayerIdentity } from "~/store/settingsStore";
+import type { RookMode } from "~/types/broodwar";
 
 const ORIGIN: Square = "d4";
 /** Opposing pawn in the Pawn Rifle story — fires down the board (front glass). */
@@ -41,6 +43,8 @@ const FEN_BY_PIECE: Record<DemoPiece, string> = {
 
 type AttackBoardDemoProps = {
   piece: DemoPiece;
+  /** Seed store mode for the origin rook when `piece === "r"`. */
+  rookMode?: RookMode;
 };
 
 /**
@@ -63,6 +67,10 @@ export const AttackBoardDemo: Component<AttackBoardDemoProps> = (props) => {
     setNerdModeUnlocked(true);
     setPlayerIdentity("Nerd");
     setActivePlayerColor("w");
+    clearSiegedRooks();
+    if (props.piece === "r") {
+      setRookMode(ORIGIN, props.rookMode ?? "tank");
+    }
     loadFen(FEN_BY_PIECE[props.piece]);
   };
 
@@ -122,6 +130,7 @@ export const AttackBoardDemo: Component<AttackBoardDemoProps> = (props) => {
 
   createEffect(() => {
     void props.piece;
+    void props.rookMode;
     prepare();
     setVecIndex(0);
     armCycle();
@@ -140,7 +149,11 @@ export const AttackBoardDemo: Component<AttackBoardDemoProps> = (props) => {
   return (
     <div class={styles.demo}>
       <div class={styles.host}>
-        <BroodWarChessBoard variant="eclipse" fogOfWar attackCues={cues()} />
+        <BroodWarChessBoard
+          variant="eclipse"
+          fogOfWar
+          attackCues={cues()}
+        />
       </div>
       <p class={styles.caption}>
         Brood War · {props.piece.toUpperCase()} · {captionTargets()} · ChessBoard attackCues

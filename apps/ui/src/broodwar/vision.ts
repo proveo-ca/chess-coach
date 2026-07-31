@@ -1,5 +1,7 @@
 import type { Chess, Color, Square } from "chess.js";
 
+import type { RookMode } from "~/types/broodwar";
+
 const FILES = "abcdefgh";
 
 const squareAt = (file: number, rank: number): Square | null => {
@@ -134,8 +136,16 @@ export type NerdVision = {
 /**
  * Returns fog-cleared tiles and any pieces revealed through fog for one unit.
  * Vision is geometric: pieces do not block it.
+ *
+ * Rook (Siege Tank) vision depends on mode at `source`:
+ * - `tank` (default): bishop-sized 5×5
+ * - `siege`: 9×9 (immobile — enforced by the board, not here)
  */
-export function getNerdVision(game: Chess, source: Square | null): NerdVision {
+export function getNerdVision(
+  game: Chess,
+  source: Square | null,
+  opts?: { rookModeFor?: (square: Square) => RookMode },
+): NerdVision {
   const litSquares = new Set<Square>();
   const revealedPieces = new Set<Square>();
   if (!source) return { litSquares, revealedPieces };
@@ -188,7 +198,17 @@ export function getNerdVision(game: Chess, source: Square | null): NerdVision {
       }
       break;
 
-    case "r":
+    case "r": {
+      // Tank: 5×5 (same as bishop). Siege: 9×9.
+      const mode = opts?.rookModeFor?.(source) ?? "tank";
+      if (mode === "siege") {
+        addSquareGrid(litSquares, sourceFile, sourceRank, 9);
+      } else {
+        addRectangle(litSquares, sourceFile, sourceRank, 2);
+      }
+      break;
+    }
+
     case "q":
       addSquareGrid(litSquares, sourceFile, sourceRank, 7);
       break;
@@ -205,14 +225,18 @@ export function getNerdVision(game: Chess, source: Square | null): NerdVision {
  * active `attackCues[].from` to `revealedPieces` for the duration of the shot
  * (fog punishment until they fire).
  */
-export function getSideVision(game: Chess, color: Color): NerdVision {
+export function getSideVision(
+  game: Chess,
+  color: Color,
+  opts?: { rookModeFor?: (square: Square) => RookMode },
+): NerdVision {
   const litSquares = new Set<Square>();
   const revealedPieces = new Set<Square>();
 
   for (const row of game.board()) {
     for (const cell of row) {
       if (!cell || cell.color !== color) continue;
-      const unit = getNerdVision(game, cell.square);
+      const unit = getNerdVision(game, cell.square, opts);
       for (const square of unit.litSquares) litSquares.add(square);
       for (const square of unit.revealedPieces) revealedPieces.add(square);
     }
@@ -225,8 +249,12 @@ export function getSideVision(game: Chess, color: Color): NerdVision {
 }
 
 /** Fog-cleared tiles only (excludes bishop queen-pings that stay under fog). */
-export function getNerdVisibleSquares(game: Chess, source: Square | null): ReadonlySet<Square> {
-  return getNerdVision(game, source).litSquares;
+export function getNerdVisibleSquares(
+  game: Chess,
+  source: Square | null,
+  opts?: { rookModeFor?: (square: Square) => RookMode },
+): ReadonlySet<Square> {
+  return getNerdVision(game, source, opts).litSquares;
 }
 
 /**
@@ -238,8 +266,9 @@ export function isPieceVisibleToSide(
   viewer: Color,
   square: Square,
   pieceColor: Color,
+  opts?: { rookModeFor?: (square: Square) => RookMode },
 ): boolean {
   if (pieceColor === viewer) return true;
-  const { litSquares, revealedPieces } = getSideVision(game, viewer);
+  const { litSquares, revealedPieces } = getSideVision(game, viewer, opts);
   return litSquares.has(square) || revealedPieces.has(square);
 }

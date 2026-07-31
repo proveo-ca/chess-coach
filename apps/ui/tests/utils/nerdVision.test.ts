@@ -89,11 +89,33 @@ describe("getNerdVisibleSquares", () => {
     expect(revealedPieces.has("b2")).toBe(false);
   });
 
-  it.each([
-    ["rook", "R"],
-    ["queen", "Q"],
-  ])("shows a %s's centered 7x7 area", (_label, piece) => {
-    const game = new Chess(`7k/8/8/8/3${piece}4/8/8/K7 w - - 0 1`);
+  it("shows a tank-mode rook's 5x5 area (same as bishop)", () => {
+    const game = new Chess("7k/8/8/8/3R4/8/8/K7 w - - 0 1");
+    const visible = getNerdVisibleSquares(game, "d4", { rookModeFor: () => "tank" });
+
+    expect(visible).toHaveProperty("size", 25);
+    expect(visible.has("b2")).toBe(true);
+    expect(visible.has("f6")).toBe(true);
+    expect(visible.has("a1")).toBe(false);
+    expect(visible.has("g7")).toBe(false);
+  });
+
+  it("defaults rook vision to tank-mode 5x5", () => {
+    const game = new Chess("7k/8/8/8/3R4/8/8/K7 w - - 0 1");
+    expect(getNerdVisibleSquares(game, "d4")).toHaveProperty("size", 25);
+  });
+
+  it("shows a siege-mode rook's centered 9x9 area", () => {
+    const game = new Chess("7k/8/8/8/3R4/8/8/K7 w - - 0 1");
+    const visible = getNerdVisibleSquares(game, "d4", { rookModeFor: () => "siege" });
+
+    expect(visible).toHaveProperty("size", 64);
+    expect(visible.has("a1")).toBe(true);
+    expect(visible.has("h8")).toBe(true);
+  });
+
+  it("shows a queen's centered 7x7 area", () => {
+    const game = new Chess("7k/8/8/8/3Q4/8/8/K7 w - - 0 1");
     const visible = getNerdVisibleSquares(game, "d4");
 
     expect(visible).toHaveProperty("size", 49);
@@ -103,12 +125,17 @@ describe("getNerdVisibleSquares", () => {
     expect(visible.has("d8")).toBe(false);
   });
 
-  it("clips rook and queen vision at the board edge", () => {
-    const rook = new Chess("7k/8/8/8/8/8/8/R6K w - - 0 1");
+  it("clips queen vision at the board edge", () => {
     const queen = new Chess("7k/8/8/8/8/8/8/Q6K w - - 0 1");
-
-    expect(getNerdVisibleSquares(rook, "a1")).toHaveProperty("size", 16); // files a–d, ranks 1–4
     expect(getNerdVisibleSquares(queen, "a1")).toHaveProperty("size", 16); // files a–d, ranks 1–4
+  });
+
+  it("clips siege rook vision at the board edge", () => {
+    const rook = new Chess("7k/8/8/8/8/8/8/R6K w - - 0 1");
+    expect(getNerdVisibleSquares(rook, "a1", { rookModeFor: () => "siege" })).toHaveProperty(
+      "size",
+      25,
+    ); // files a–e, ranks 1–5 (9×9 clipped)
   });
 
   it("returns no visible squares without a selected piece", () => {

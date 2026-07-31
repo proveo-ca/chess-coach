@@ -68,14 +68,33 @@ export const Bishop: Story = {
   },
 };
 
-export const Rook: Story = {
+export const RookTankMode: Story = {
+  name: "Rook (tank mode)",
   args: {
     startingFen: "7k/8/8/8/3R4/8/8/K7 w - - 0 1",
+    rookMode: "tank",
   },
   parameters: {
     docs: {
       description: {
-        story: "Rook vision: centered 7×7.",
+        story:
+          "Tank mode (packed): side treads, compact dome, 5×5 vision, can move.",
+      },
+    },
+  },
+};
+
+export const RookSiegeMode: Story = {
+  name: "Rook (siege mode)",
+  args: {
+    startingFen: "7k/8/8/8/3R4/8/8/K7 w - - 0 1",
+    rookMode: "siege",
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Siege mode (unpacked trebuchet): outriggers, raised boom, 9×9 vision, cannot move.",
       },
     },
   },

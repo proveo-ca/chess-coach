@@ -878,16 +878,26 @@
   animation-delay: 0.09s;
 }
 
-.anim-rookBattery :global([data-part="battery-recoil"]) {
-  animation: batteryKick calc(var(--attack-ms) / 3) ease-out 1 forwards;
+/* Tank: king-style dual tubes — recoil + muzzle pulse, no HE blast. */
+.anim-rookBattery[data-rook-mode="tank"] :global([data-part="cannon-recoil"]) {
+  animation: turretRecoilX var(--attack-ms) ease-out 1 both;
 }
 
-.anim-rookBattery :global([data-part="battery-blast"]) {
+.anim-rookBattery[data-rook-mode="tank"] :global([data-part="cannon-flash"]) {
+  animation: cannonPulse var(--attack-ms) ease-in-out 1 forwards;
+}
+
+/* Siege: +x shock recoil + muzzle blast/smoke + target HE impact. */
+.anim-rookBattery[data-rook-mode="siege"] :global([data-part="battery-recoil"]) {
+  animation: turretRecoilX calc(var(--attack-ms) / 3) ease-out 1 forwards;
+}
+
+.anim-rookBattery[data-rook-mode="siege"] :global([data-part="battery-blast"]) {
   animation: batteryBlast calc(var(--attack-ms) / 3) ease-out 1 forwards;
   transform-origin: center;
 }
 
-.anim-rookBattery :global([data-part="battery-smoke"]) {
+.anim-rookBattery[data-rook-mode="siege"] :global([data-part="battery-smoke"]) {
   animation: batterySmoke calc(var(--attack-ms) / 3) ease-out 1 forwards;
   transform-origin: center;
   transform-box: fill-box;

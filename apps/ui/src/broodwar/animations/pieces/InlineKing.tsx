@@ -1,7 +1,8 @@
 import { For, createMemo, createUniqueId, type Component } from "solid-js";
 
-import { KING_REST_AIM_DEG, svgPivotAround } from "~/broodwar/animations/attackAnim";
+import { KING_REST_AIM_DEG, svgPivotLocal } from "~/broodwar/animations/attackAnim";
 import { FireColumn, pickFireSpots } from "~/broodwar/animations/pieces/kingFire";
+import { TwinBattery, TWIN_BATTERY_SCALE_KING } from "~/broodwar/animations/pieces/TwinBattery";
 import styles from "~/broodwar/animations/pieces/InlineKing.module.css";
 import {
   NERD_FRAME,
@@ -101,31 +102,10 @@ export const InlineKing: Component<InlineKingProps> = (props) => {
             <circle cx="35.7" cy="25.1" r=".8" />
           </g>
 
-          {/* Pivot has no data-part; reveal+recoil on inner group. */}
-          <g transform={svgPivotAround(22.5, 18, aimDeg())}>
-            <g data-part="cannons" opacity="0">
-              <g data-part="cannon-recoil">
-                <rect x="24" y="15.5" width="14" height="3.2" rx="1" fill="#222" />
-                <rect x="24" y="20.5" width="14" height="3.2" rx="1" fill="#222" />
-                <ellipse
-                  data-part="cannon-flash"
-                  cx="39.5"
-                  cy="17.1"
-                  rx="2.8"
-                  ry="2"
-                  fill="#ffe08a"
-                  stroke="none"
-                />
-                <ellipse
-                  data-part="cannon-flash"
-                  cx="39.5"
-                  cy="22.1"
-                  rx="2.8"
-                  ry="2"
-                  fill="#ffe08a"
-                  stroke="none"
-                />
-              </g>
+          {/* Exact same TwinBattery SVG as InlineRook tank mode (size-matched). */}
+          <g transform={svgPivotLocal(22.5, 18, aimDeg())}>
+            <g data-part="cannons" opacity="0" transform={`scale(${TWIN_BATTERY_SCALE_KING})`}>
+              <TwinBattery team={team()} />
             </g>
           </g>
 

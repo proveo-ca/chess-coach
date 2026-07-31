@@ -1,9 +1,14 @@
 import { Show, createEffect, createSignal, onMount } from "solid-js";
 import type { Component } from "solid-js";
 import type { RouteSectionProps } from "@solidjs/router";
+import { Chess, type Square } from "chess.js";
 
 import { BroodWarChessBoard } from "~/broodwar/BroodWarChessBoard";
-import { resetBroodWarEconomy } from "~/broodwar/broodWarStore";
+import {
+  clearSiegedRooks,
+  resetBroodWarEconomy,
+  setRookMode,
+} from "~/broodwar/broodWarStore";
 import { ResourceBar } from "~/broodwar/primitives/ResourceBar";
 import { TurnBar } from "~/broodwar/primitives/TurnBar";
 import { Button } from "~/components/primitives/Button";
@@ -18,6 +23,7 @@ import {
   setNerdModeUnlocked,
   setPlayerIdentity,
 } from "~/store/settingsStore";
+import type { RookMode } from "~/types/broodwar";
 import type { NerdBoardVariant } from "~/types/ui";
 
 type NerdScreenProps = Partial<RouteSectionProps> & {
@@ -29,6 +35,11 @@ type NerdScreenProps = Partial<RouteSectionProps> & {
    * Maps / terrain gallery sets `false` to preview boards without fog.
    */
   broodWarMode?: boolean;
+  /**
+   * Storybook seed: force every rook on the starting FEN into this mode
+   * (writes {@link setRookMode} / clears siege state).
+   */
+  rookMode?: RookMode;
 };
 
 export const NerdScreen: Component<NerdScreenProps> = (props) => {
@@ -51,9 +62,19 @@ export const NerdScreen: Component<NerdScreenProps> = (props) => {
     }
   });
 
-  // Storybook reuses this screen across fog variants — reload when FEN changes.
+  // Storybook reuses this screen across fog variants — reload when FEN / mode changes.
   createEffect(() => {
-    loadFen(props.startingFen ?? NERD_STARTING_FEN);
+    const fen = props.startingFen ?? NERD_STARTING_FEN;
+    loadFen(fen);
+    clearSiegedRooks();
+    if (props.rookMode === "siege") {
+      const g = new Chess(fen);
+      for (const row of g.board()) {
+        for (const cell of row) {
+          if (cell?.type === "r") setRookMode(cell.square as Square, "siege");
+        }
+      }
+    }
   });
 
   const submitTurn = (reason: "end" | "timeout") => {

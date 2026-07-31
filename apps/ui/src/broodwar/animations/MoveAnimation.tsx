@@ -23,6 +23,7 @@ import { InlinePawn } from "~/broodwar/animations/pieces/InlinePawn";
 import { InlineQueen } from "~/broodwar/animations/pieces/InlineQueen";
 import { InlineRook } from "~/broodwar/animations/pieces/InlineRook";
 import type { MoveCue } from "~/broodwar/animations/types";
+import { rookModeAt } from "~/broodwar/broodWarStore";
 import { MOVE_SQUARE_MS } from "~/broodwar/constants";
 
 export type MoveAnimationProps = {
@@ -56,7 +57,9 @@ const moverNode = (m: MoveCue): JSX.Element => {
     case "b":
       return <InlineBishop color={m.color} face="front" />;
     case "r":
-      return <InlineRook color={m.color} aimDeg={ROOK_REST_AIM_DEG} />;
+      return (
+        <InlineRook color={m.color} aimDeg={ROOK_REST_AIM_DEG} mode={rookModeAt(m.from)} />
+      );
     case "n":
       return <InlineKnight color={m.color} />;
     case "q":

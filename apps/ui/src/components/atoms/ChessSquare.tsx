@@ -3,10 +3,13 @@ import clsx from "clsx";
 import { Show, createEffect, on } from "solid-js";
 import type { Component } from "solid-js";
 
+import { ROOK_REST_AIM_DEG } from "~/broodwar/animations/attackAnim";
+import { InlineRook } from "~/broodwar/animations/pieces/InlineRook";
 import { SpiderMine } from "~/broodwar/specials/SpiderMine";
 import styles from "~/components/atoms/ChessSquare.module.css";
 // SPEC: _spec/apps/ui/components.puml
 import type { MoveSquares } from "~/types/game";
+import type { RookMode } from "~/types/broodwar";
 import type { PieceSet } from "~/types/settings";
 
 /** Grid-square offset from `from` to `to`, accounting for board flip. */
@@ -49,6 +52,12 @@ interface ChessSquareProps {
   spiderMine?: boolean;
   /** Mine owner — white enamel + team-color bumps. */
   spiderMineColor?: Color;
+/**
+   * When set, board rooks render {@link InlineRook} (tank vs siege art)
+   * instead of the static `*R.svg` asset. Brood War boards always pass this;
+   * piece-sets reference boards omit it so static siege `*R.svg` stays.
+   */
+  rookMode?: RookMode;
 }
 
 const getPieceImg = (type: PieceSymbol, color: Color, pieceSet: PieceSet) => {
@@ -61,7 +70,10 @@ export const ChessSquare: Component<ChessSquareProps> = (props) => {
   const isLastMove = () =>
     props.lastMove?.from === props.square || props.lastMove?.to === props.square;
 
-  let pieceRef: HTMLImageElement | undefined;
+  let pieceRef: HTMLElement | undefined;
+
+  const useInlineRook = () =>
+    props.piece?.type === "r" && props.rookMode != null;
 
   // Queue-driven animation: consumes the head of animationQueue when it targets
   // this square, ensuring rapid successive moves (human+AI) each get a visible slide.
@@ -130,18 +142,41 @@ export const ChessSquare: Component<ChessSquareProps> = (props) => {
         <SpiderMine color={props.spiderMineColor === "b" ? "b" : "w"} />
       </Show>
 
-      {props.piece && !props.hidePiece && (
-        <img
-          ref={(el) => {
-            pieceRef = el;
-          }}
-          src={getPieceImg(props.piece.type, props.piece.color, props.pieceSet)}
-          alt={`${props.piece.color} ${props.piece.type}`}
-          class={styles.piece}
-          draggable="true"
-          onDragStart={props.onDragStart}
-        />
-      )}
+      <Show when={props.piece && !props.hidePiece}>
+        <Show
+          when={useInlineRook()}
+          fallback={
+            <img
+              ref={(el) => {
+                pieceRef = el;
+              }}
+              src={getPieceImg(props.piece!.type, props.piece!.color, props.pieceSet)}
+              alt={`${props.piece!.color} ${props.piece!.type}`}
+              class={styles.piece}
+              draggable="true"
+              onDragStart={props.onDragStart}
+            />
+          }
+        >
+          <div
+            ref={(el) => {
+              pieceRef = el;
+            }}
+            class={styles.piece}
+            draggable="true"
+            onDragStart={props.onDragStart}
+            role="img"
+            aria-label={`${props.piece!.color} ${props.piece!.type}`}
+            data-piece-inline="r"
+          >
+            <InlineRook
+              color={props.piece!.color}
+              mode={props.rookMode}
+              aimDeg={ROOK_REST_AIM_DEG}
+            />
+          </div>
+        </Show>
+      </Show>
     </div>
   );
 };

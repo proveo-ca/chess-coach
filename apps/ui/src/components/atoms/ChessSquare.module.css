@@ -168,6 +168,13 @@
   cursor: grabbing;
 }
 
+/* Inline SVG pieces (Siege Tank modes) fill the same box as <img> pieces. */
+.piece :global(svg) {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 /* Hide source piece while touch-dragging (ghost replaces it) */
 .square.dragging .piece {
   opacity: 0;

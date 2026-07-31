@@ -1,4 +1,5 @@
 import { createSignal } from "solid-js";
+import type { Square } from "chess.js";
 
 import {
   KING_MAX_LIVES,
@@ -10,6 +11,7 @@ import {
   incomeForTurn,
 } from "~/broodwar/constants";
 import type { BroodWarColor, PlayerEconomy } from "~/broodwar/types";
+import type { RookMode } from "~/types/broodwar";
 import { activePlayerColor } from "~/store/settingsStore";
 
 type Economies = Record<BroodWarColor, PlayerEconomy>;
@@ -43,6 +45,8 @@ const [_kingLives, _setKingLives] = createSignal<KingLives>(defaultKingLives());
 const [_energy, _setEnergy] = createSignal<EnergyPool>(fullEnergyForTurn(1));
 /** Epoch ms when the current planning window ends; null = not running. */
 const [_deadlineAt, _setDeadlineAt] = createSignal<number | null>(null);
+/** Squares whose Siege Tank is unpacked (siege mode). Absent ⇒ tank mode. */
+const [_siegedRooks, _setSiegedRooks] = createSignal<ReadonlySet<Square>>(new Set());
 
 /** Current Brood War turn index (1-based; drives income / energy tier). */
 export const broodWarTurn = () => _turn();
@@ -102,6 +106,36 @@ export const energyRemainingFor = (color: BroodWarColor) => _energy()[color];
 export const maxDeployedSupply = MAX_DEPLOYED_MATERIAL;
 
 export const turnDeadlineAt = () => _deadlineAt();
+
+/** Squares currently in Siege Tank siege mode. */
+export const siegedRooks = () => _siegedRooks();
+
+/** Per-square Siege Tank mode (`tank` when not listed in {@link siegedRooks}). */
+export const rookModeAt = (square: Square): RookMode =>
+  _siegedRooks().has(square) ? "siege" : "tank";
+
+export const setRookMode = (square: Square, mode: RookMode) => {
+  _setSiegedRooks((prev) => {
+    const next = new Set(prev);
+    if (mode === "siege") next.add(square);
+    else next.delete(square);
+    return next;
+  });
+};
+
+/** Toggle tank ↔ siege on a square. Returns the mode after toggle. */
+export const toggleRookSiege = (square: Square): RookMode => {
+  const next: RookMode = rookModeAt(square) === "siege" ? "tank" : "siege";
+  setRookMode(square, next);
+  return next;
+};
+
+export const clearSiegedRooks = () => _setSiegedRooks(new Set());
+
+/** Replace the full sieged-rook set (Storybook seeds). */
+export const setSiegedRooks = (squares: Iterable<Square>) => {
+  _setSiegedRooks(new Set(squares));
+};
 
 /** Whole seconds left on the planning timer (0 when expired / idle). */
 export const turnSecondsRemaining = () => {
@@ -209,6 +243,7 @@ export const resetBroodWarEconomy = (opts?: {
   } else {
     _setEnergy(filled);
   }
+  clearSiegedRooks();
   if (opts?.startTimer === false) {
     clearTurnDeadline();
   } else {

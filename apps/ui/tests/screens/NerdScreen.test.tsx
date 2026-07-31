@@ -41,7 +41,7 @@ describe("NerdScreen placeholder", () => {
   });
 
   it("lights cumulative friendly vision on load without selecting a piece", async () => {
-    // White rook on d4 (7×7) + king on a1 (subset) ⇒ 49 lit tiles.
+    // White rook on d4 (tank 5×5) + king on a1 (3 extra tiles) ⇒ 28 lit tiles.
     const fen = "7k/8/8/8/3R3q/8/8/K7 w - - 0 1";
     const view = render(() => (
       <MemoryRouter>
@@ -49,9 +49,10 @@ describe("NerdScreen placeholder", () => {
       </MemoryRouter>
     ));
 
-    await waitFor(() => expect(view.container.querySelectorAll('[data-fog="visible"]')).toHaveLength(49));
-    expect(view.container.querySelector('img[alt="w r"]')).toBeTruthy();
-    // Enemy queen on h4 stays outside the rook's 7×7.
+    await waitFor(() => expect(view.container.querySelectorAll('[data-fog="visible"]')).toHaveLength(28));
+    expect(view.container.querySelector('[data-piece-inline="r"]')).toBeTruthy();
+    expect(view.container.querySelector('svg[data-rook-mode="tank"]')).toBeTruthy();
+    // Enemy queen on h4 stays outside the rook's tank 5×5.
     expect(view.container.querySelector('img[alt="b q"]')).toBeNull();
   });
 

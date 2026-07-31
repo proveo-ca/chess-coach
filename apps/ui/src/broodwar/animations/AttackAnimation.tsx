@@ -35,6 +35,7 @@ import {
   QUEEN_PIECE_FACE_SCALE,
 } from "~/broodwar/animations/queenLaser";
 import type { AttackCue } from "~/broodwar/animations/types";
+import { rookModeAt } from "~/broodwar/broodWarStore";
 import { vecBetween } from "~/broodwar/animations/boardGeom";
 
 type BoardFxProps = {
@@ -77,7 +78,11 @@ const attackNode = (cue: AttackCue): JSX.Element => {
     case "r":
       return (
         <div class={styles.pieceFace}>
-          <InlineRook color={cue.color} aimDeg={screenAimDeg(true, deg, ROOK_REST_AIM_DEG)} />
+          <InlineRook
+            color={cue.color}
+            aimDeg={screenAimDeg(true, deg, ROOK_REST_AIM_DEG)}
+            mode={rookModeAt(cue.from)}
+          />
         </div>
       );
     case "q":
@@ -241,7 +246,8 @@ export const AttackAnimation: Component<AttackAnimationProps> = (props) => {
                 data-square={cue.to}
               />
 
-              <Show when={cue.piece === "r"}>
+              {/* HE impact is siege-only — tank mode uses king-style muzzle flashes. */}
+              <Show when={cue.piece === "r" && rookModeAt(cue.from) === "siege"}>
                 <BoardFx
                   class={styles.rookImpact}
                   style={rookImpactStyle(cue, props.boardWidth, props.boardHeight)!}
@@ -277,6 +283,7 @@ export const AttackAnimation: Component<AttackAnimationProps> = (props) => {
                   style={squareBoxStyle(cue.from, props.boardWidth, props.boardHeight)}
                   data-square={cue.from}
                   data-attack-anim={anim}
+                  data-rook-mode={cue.piece === "r" ? rookModeAt(cue.from) : undefined}
                 >
                   <div class={styles.aimWrap} style={queenAimWrapStyle(cue)}>
                     {attackNode(cue)}

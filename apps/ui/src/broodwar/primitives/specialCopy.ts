@@ -23,7 +23,12 @@ const BY_TYPE: Record<PieceSymbol, SpecialCopy> = {
     deployable: true,
   },
   b: { unit: "Goliath", ...TBD },
-  r: { unit: "Tank", ...TBD },
+  r: {
+    unit: "Tank",
+    name: "Siege Mode",
+    description: "Toggle packed tank ↔ unpacked siege (vision and mobility).",
+    deployable: true,
+  },
   q: { unit: "Battlecruiser", ...TBD },
   k: {
     unit: "Command Center",
