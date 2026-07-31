@@ -2,13 +2,14 @@ import type { PieceSymbol, Square } from "chess.js";
 import { For, Show, createSignal, onCleanup, type Component } from "solid-js";
 import { Portal } from "solid-js/web";
 
-import { energyRemaining } from "~/broodwar/broodWarStore";
+import { energyRemaining, hasUsedSpecialThisTurn } from "~/broodwar/broodWarStore";
 import { SPECIAL_ENERGY_COST } from "~/broodwar/constants";
 import styles from "~/broodwar/features/GasDeploy.module.css";
 import { VespeneIcon } from "~/broodwar/primitives/icons";
 import { SpecialPreview } from "~/broodwar/primitives/SpecialPreview";
 import { specialCopyFor } from "~/broodwar/primitives/specialCopy";
-import { game } from "~/store/gameStore";
+import { canClassicalPawnDouble } from "~/broodwar/specials/pawnDouble";
+import { currentFen, game } from "~/store/gameStore";
 import { activePlayerColor } from "~/store/settingsStore";
 
 export type GasDeployTarget = {
@@ -132,7 +133,17 @@ export const GasDeploy: Component<GasDeployProps> = (props) => {
   const commitOrCancel = (clientX: number, clientY: number) => {
     const over = resolveHover(clientX, clientY);
     const copy = over ? specialCopyFor(over.piece) : null;
-    if (over && copy?.deployable && energyRemaining() >= SPECIAL_ENERGY_COST) {
+    const freeClassical =
+      !!over &&
+      over.piece === "p" &&
+      canClassicalPawnDouble(currentFen(), over.square);
+    const canArm =
+      over &&
+      copy?.deployable &&
+      (freeClassical ||
+        (!hasUsedSpecialThisTurn(over.square) &&
+          energyRemaining() >= SPECIAL_ENERGY_COST));
+    if (canArm && over) {
       const target = { square: over.square, piece: over.piece };
       setDrag(null);
       setHover(null);
@@ -184,7 +195,25 @@ export const GasDeploy: Component<GasDeployProps> = (props) => {
 
   const hoverCopy = () => {
     const h = hover();
-    return h ? specialCopyFor(h.piece) : null;
+    if (!h) return null;
+    const base = specialCopyFor(h.piece);
+    if (h.piece === "p" && canClassicalPawnDouble(currentFen(), h.square)) {
+      return {
+        ...base,
+        name: "Double Step (free)",
+        description: "Classical double — canister unused, no gas spent.",
+        deployable: true,
+      };
+    }
+    if (hasUsedSpecialThisTurn(h.square)) {
+      return {
+        ...base,
+        name: `${base.name} (used)`,
+        description: "This unit already used its special this turn.",
+        deployable: false,
+      };
+    }
+    return base;
   };
 
   return (

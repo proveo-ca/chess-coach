@@ -10,8 +10,11 @@ import {
   kingLives,
   resetBroodWarEconomy,
   setKingLives,
+  setSiegedRooks,
+  setSpecialsUsed,
 } from "~/broodwar/broodWarStore";
 import { classicFenFromBw, formatBwFen, type BwFenSnapshot } from "~/broodwar/bwfen";
+import { rookSquaresInPlacement } from "~/broodwar/board";
 import { useBroodWarCombat } from "~/broodwar/hooks/useBroodWarCombat";
 import { resolveTurn, type ClassicalPlan } from "~/broodwar/resolveTurn";
 import { BroodWarChessBoard } from "~/broodwar/BroodWarChessBoard";
@@ -32,11 +35,13 @@ import {
  *
  *   0. … & Nc5+              → 3→2
  *   1. Kd5 & Bh2→Bg1
- *   2. Kxc5 (Bg1+) & Rf8→Rf6 → walk into check
+ *   2. Kxc5 (Bg1+) & Rf7→Rf6 → walk into check
  *   3. Kc6 & Bg1→c5          → 2→1
  *   4. … & Rf6+              → 1→0
+ *
+ * Black rook starts on **f7** (one closer than f8) in **siege** mode.
  */
-const PLACEMENT_START = "k4r2/8/8/2n5/4K3/8/7b/8";
+const PLACEMENT_START = "k7/5r2/8/2n5/4K3/8/7b/8";
 
 type StoryTurn = {
   caption: string;
@@ -53,13 +58,13 @@ export const KING_HUNT_PLY_BW: readonly BwFenSnapshot[] = [
     phase: "P",
   },
   {
-    placement: "k4r2/8/8/2n5/4K3/8/7b/8",
+    placement: "k7/5r2/8/2n5/4K3/8/7b/8",
     turn: 1,
     kingLives: { w: 2, b: 3 },
     phase: "P",
   },
   {
-    placement: "k4r2/8/8/2nK4/8/8/8/6b1",
+    placement: "k7/5r2/8/2nK4/8/8/8/6b1",
     turn: 2,
     kingLives: { w: 2, b: 3 },
     phase: "P",
@@ -96,9 +101,9 @@ const TURNS: readonly StoryTurn[] = [
     black: { color: "b", from: "h2", to: "g1" },
   },
   {
-    caption: "2. Kxc5 (Bg1+) & Rf8→Rf6",
+    caption: "2. Kxc5 (Bg1+) & Rf7→Rf6",
     white: { color: "w", from: "d5", to: "c5" },
-    black: { color: "b", from: "f8", to: "f6" },
+    black: { color: "b", from: "f7", to: "f6" },
   },
   {
     caption: "3. Kc6 & Bg1→c5",
@@ -113,7 +118,7 @@ const TURNS: readonly StoryTurn[] = [
 ];
 
 const TOTAL_TURNS = TURNS.length;
-const START_CAPTION = "Start · 3 lives · pristine · Nc5 · Bh2 · Rf8";
+const START_CAPTION = "Start · 3 lives · pristine · Nc5 · Bh2 · Rf7 (siege)";
 
 /** @deprecated Prefer KING_HUNT_PLY_BW */
 export const KING_HUNT_PLY_FENS = KING_HUNT_PLY_BW.map((snap, ply) => ({
@@ -125,6 +130,9 @@ export const KING_HUNT_PLY_FENS = KING_HUNT_PLY_BW.map((snap, ply) => ({
 
 const applySnap = (snap: BwFenSnapshot) => {
   setKingLives(snap.kingLives);
+  setSpecialsUsed(snap.specialsUsed ?? []);
+  // Unpacked siege tank (9×9 vision) on every rook square in the snap.
+  setSiegedRooks(rookSquaresInPlacement(snap.placement));
   loadFen(classicFenFromBw(snap, "w"));
   setViewIndex(snap.turn);
 };
@@ -189,6 +197,7 @@ export const KingHuntDemo: Component = () => {
       livesBefore: before.kingLives,
       commit: (snap) => {
         setKingLives(snap.kingLives);
+        setSiegedRooks(rookSquaresInPlacement(snap.placement));
         loadFen(
           classicFenFromBw(
             {

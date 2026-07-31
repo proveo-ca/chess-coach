@@ -1,9 +1,14 @@
 /**
  * Brood War FEN dialect (BW-only). Classic FEN is a one-way render export —
- * never the rules oracle. See BROODWAR_MODE.md.
+ * never the rules oracle. See BROODWAR_MODE.md / BROODWAR_FEN.md.
  *
- * BWFEN1|<placement>|<turn>|<wlives><blives>|<phase>
+ * BWFEN1|<placement>|<turn>|<wlives><blives>|<phase>[|U:<squares>]
+ *
+ * Optional extras: `U:` + packed squares (e.g. `U:c4e4`) = units that already
+ * used a special this turn.
  */
+
+import type { Square } from "chess.js";
 
 import type { BroodWarColor, BwPhaseCode } from "~/broodwar/types";
 import type { BwFenSnapshot } from "~/types/broodwar";
@@ -11,6 +16,7 @@ import type { BwFenSnapshot } from "~/types/broodwar";
 export type { BwPhaseCode, BwFenSnapshot };
 
 const PHASE_OK = new Set<BwPhaseCode>(["P", "B", "A", "M", "F", "O"]);
+const SQ_RE = /^[a-h][1-8]$/;
 
 /** Classic FEN for ChessBoard / chess.js load (always both kings in placement). */
 export const toClassicFen = (
@@ -20,9 +26,32 @@ export const toClassicFen = (
   fullmove = 1,
 ): string => `${placement} ${sideToMove} - - ${halfmove} ${fullmove}`;
 
+/** Pack specials-used squares for the BWFEN `U:` extras field. */
+export const formatSpecialsUsedExtra = (squares: readonly Square[]): string | null => {
+  if (squares.length === 0) return null;
+  const uniq = [...new Set(squares)].filter((s) => SQ_RE.test(s)).sort();
+  if (uniq.length === 0) return null;
+  return `U:${uniq.join("")}`;
+};
+
+/** Parse `U:a1c4…` (and ignore unknown extras). */
+export const parseSpecialsUsedExtra = (extra: string | undefined): Square[] => {
+  if (!extra || !extra.startsWith("U:")) return [];
+  const body = extra.slice(2);
+  const out: Square[] = [];
+  for (let i = 0; i + 1 < body.length; i += 2) {
+    const sq = body.slice(i, i + 2);
+    if (SQ_RE.test(sq)) out.push(sq as Square);
+  }
+  return out;
+};
+
 export const formatBwFen = (snap: BwFenSnapshot): string => {
-  const { placement, turn, kingLives, phase } = snap;
-  return `BWFEN1|${placement}|${turn}|${kingLives.w}${kingLives.b}|${phase}`;
+  const { placement, turn, kingLives, phase, specialsUsed } = snap;
+  let s = `BWFEN1|${placement}|${turn}|${kingLives.w}${kingLives.b}|${phase}`;
+  const used = formatSpecialsUsedExtra(specialsUsed ?? []);
+  if (used) s += `|${used}`;
+  return s;
 };
 
 export const parseBwFen = (raw: string): BwFenSnapshot => {
@@ -40,11 +69,13 @@ export const parseBwFen = (raw: string): BwFenSnapshot => {
   if (placement.split("/").length !== 8) {
     throw new Error(`Invalid BWFEN placement ranks: ${placement}`);
   }
+  const specialsUsed = parseSpecialsUsedExtra(parts[5]);
   return {
     placement,
     turn,
     kingLives: { w: Number(lives[0]), b: Number(lives[1]) },
     phase,
+    ...(specialsUsed.length ? { specialsUsed } : {}),
   };
 };
 

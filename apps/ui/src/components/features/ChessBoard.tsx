@@ -26,7 +26,7 @@ import { DeployAnimation } from "~/broodwar/animations/DeployAnimation";
 import { KingDamageOverlay } from "~/broodwar/animations/kingDamageOverlay";
 import { MoveAnimation } from "~/broodwar/animations/MoveAnimation";
 import { buildFxHiddenSquares, EMPTY_FX_HIDDEN, hasCombatFxInput } from "~/broodwar/boardFx";
-import { rookModeAt, siegedRooks } from "~/broodwar/broodWarStore";
+import { rookModeAt, siegedRooks, specialsUsedThisTurn } from "~/broodwar/broodWarStore";
 import { isBroodWarBoard } from "~/broodwar/classicalOutcomes";
 import { MOVE_MS } from "~/broodwar/constants";
 import { getSideVision, getVisionDisplayCells, getVisionFogHolePaths } from "~/broodwar/vision";
@@ -476,6 +476,9 @@ export const ChessBoard: Component<{
                         piece()?.type === "r" && broodWarRules()
                           ? modeForRook(square)
                           : undefined
+                      }
+                      specialUsed={
+                        broodWarRules() && specialsUsedThisTurn().has(square)
                       }
                       showRank={fIndex() === 0 && rank}
                       showFile={rIndex() === 7 && file}

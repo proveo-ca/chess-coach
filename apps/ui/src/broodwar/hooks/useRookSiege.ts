@@ -41,11 +41,11 @@ export const useRookSiege = () => {
     setRookMode(SIEGE_TANK_SIEGE_SQ, "siege");
   };
 
-  const arm = (ctx: PieceSpecialArmCtx) => {
-    if (ctx.piece !== "r") return;
+  const arm = (ctx: PieceSpecialArmCtx): boolean => {
+    if (ctx.piece !== "r") return false;
     if (!spendEnergy(activePlayerColor())) {
       setCaption("Need vespene gas to toggle siege mode");
-      return;
+      return false;
     }
     const next = toggleRookSiege(ctx.square);
     setCaption(
@@ -53,6 +53,7 @@ export const useRookSiege = () => {
         ? `Siege mode on ${ctx.square}: unpacked, 9×9 vision, immobile`
         : `Tank mode on ${ctx.square}: packed treads, 5×5 vision, can move`,
     );
+    return true;
   };
 
   return {

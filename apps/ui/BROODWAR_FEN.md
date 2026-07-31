@@ -25,7 +25,7 @@ Classical chess is **one SAN per ply**. Brood War is **two classical actions per
 ```text
 1. d2-d4 & Be8-c6
 2. d4xe5 & Nf6-e4
-3. Rc3xc6 & Ne4xc3
+3. Rc4xc6 & Ne4xc4
 ```
 
 Each line is **one** BWFEN `turn` bump. After resolve you store **one** placement (both sides already moved) — not a white-to-move FEN waiting for Black.
@@ -34,10 +34,10 @@ Each line is **one** BWFEN `turn` bump. After resolve you store **one** placemen
 
 | After | Placement (classic field 1) | BWFEN1 |
 |---|---|---|
-| Start | `4bk2/8/5n2/4p3/8/2R5/3P4/4K3` | `BWFEN1\|4bk2/8/5n2/4p3/8/2R5/3P4/4K3\|0\|33\|P` |
-| `1. d2-d4 & Be8-c6` | `5k2/8/2b2n2/4p3/3P4/2R5/8/4K3` | `BWFEN1\|…\|1\|33\|P` |
-| `2. d4xe5 & Nf6-e4` | `5k2/8/2b5/4P3/4n3/2R5/8/4K3` | `BWFEN1\|…\|2\|33\|P` |
-| `3. Rc3xc6 & Ne4xc3` | `5k2/8/8/4P3/8/2n5/8/4K3` | `BWFEN1\|…\|3\|33\|P` |
+| Start | `4bk2/8/5n2/4p3/2R5/8/3P4/4K3` | `BWFEN1\|4bk2/8/5n2/4p3/2R5/8/3P4/4K3\|0\|33\|P` |
+| `1. d2-d4 & Be8-c6` | `5k2/8/2b2n2/4p3/2RP4/8/8/4K3` | `BWFEN1\|…\|1\|33\|P` |
+| `2. d4xe5 & Nf6-e4` | `5k2/8/2b5/4P3/2R1n3/8/8/4K3` | `BWFEN1\|…\|2\|33\|P` |
+| `3. Rc4xc6 & Ne4xc4` | `5k2/8/8/4P3/2n5/8/8/4K3` | `BWFEN1\|…\|3\|33\|P` |
 
 Quiet turn (`1`): both sides **slide** — one planning snap after both relocate.  
 Capture turns (`2`–`3`): resolve splits **attack → move** (deaths first, survivors occupy). Mid-resolve you may emit `phase=A` then `phase=M` with an intermediate placement (e.g. victims gone, capturers still on `from`); planning `P` snaps above are **after** the full turn.
@@ -79,7 +79,7 @@ specialBefore → attack → move → specialAfter
 ## BWFEN1 dialect
 
 ```text
-BWFEN1|<placement>|<turn>|<wlives><blives>|<phase>
+BWFEN1|<placement>|<turn>|<wlives><blives>|<phase>[|U:<squares>]
 ```
 
 | Field | Meaning |
@@ -88,12 +88,13 @@ BWFEN1|<placement>|<turn>|<wlives><blives>|<phase>
 | `turn` | Resolve round index (`0` = start) — matches Combat Chain turn counter |
 | `wlives` / `blives` | King HP `0–3` each |
 | `phase` | `P` planning · `B` specialBefore · `A` attack · `M` move · `F` specialAfter · `O` gameover |
+| `U:` (optional extras) | Packed squares whose unit already used a special this turn (e.g. `U:c4e4`). Cleared when `turn` advances. |
 
 Combat Chain examples (above) are the **default** dialect picture. King Hunt only changes `wlives` when a king-shot connects.
 
 API: [`src/broodwar/bwfen.ts`](src/broodwar/bwfen.ts). Geometry (no `.move()`): [`src/broodwar/board.ts`](src/broodwar/board.ts).
 
-**v1 omits** queued dual plans inside the string (planning snaps only). Mines / economy → `|extras` later — never overload classic castling/EP.
+**v1 omits** queued dual plans inside the string (planning snaps only). Economy stays outside the string; spider mines and per-turn specials-used use `|extras` (`U:…` for specials). Never overload classic castling/EP.
 
 ---
 
@@ -109,7 +110,7 @@ Same `W & B` captions:
 ```text
 0. … & Nc5+              → 3→2 (check shot)
 1. Kd5 & Bh2→Bg1
-2. Kxc5 (Bg1+) & Rf8→Rf6 → walk into check (no chip)
+2. Kxc5 (Bg1+) & Rf7→Rf6 → walk into check (no chip)
 3. Kc6 & Bg1→c5          → 2→1 (check shot), flee into Rf6
 4. … & Rf6+              → 1→0 rubble
 ```
@@ -120,10 +121,10 @@ Story: [screens-nerd-demo--king-hunt](http://localhost:6006/?path=/story/screens
 
 | After | Notable placement | Lives |
 |---|---|---|
-| Start | `k4r2/8/8/2n5/4K3/8/7b/8` | `33` |
+| Start | `k7/5r2/8/2n5/4K3/8/7b/8` (rook **f7**, siege) | `33` |
 | `0. … & Nc5+` | check shot (N revealed **during** attack VFX) | `23` |
 | `1. Kd5 & Bh2→Bg1` | bishop **slides** to g1 | `23` |
-| `2. Kxc5 & Rf8→Rf6` | walk into Bg1+; rook **slides** to f6 | `23` |
+| `2. Kxc5 & Rf7→Rf6` | walk into Bg1+; rook **slides** to f6 | `23` |
 | `3. Kc6 & Bg1→c5` | check shot, then flee | `13` |
 | `4. … & Rf6+` | check connects → rubble | `03` |
 
@@ -182,6 +183,18 @@ Until those resolve: do not pretend BWFEN v1 distinguishes “got here via snipe
 | **Both kings in every render FEN** | Even at `wlives=0` / rubble VFX, keep `K`/`k` in `placement` so `chess.js` `loadFen` works |
 | **Check chrome** | Derived from occupancy; side-to-move in classic export often forced `"w"` when showing white-in-fire (demo convention) — not a BW rules field |
 | **Mines / overlays** | Beside placement; never overload classic fields 3–4 |
+| **Siege Tank mode** | Store / UI (`siegedRooks`); not yet a BWFEN extras field. King Hunt seeds **siege** on the black rook (starts f7). Combat Chain keeps **tank** mode with the white rook on **c4** (one closer). |
+
+### Deferred — fog legality (not enforced yet)
+
+**Attacking a unit that is under fog of war must be illegal** in Brood War planning / `resolveTurn`. The attacker needs vision on the target square (or the target must be revealed) before a classical attack can be queued or applied.
+
+| Today | Later |
+|---|---|
+| Combat Chain / King Hunt / `resolveTurn` do **not** filter attacks by fog | Reject plans whose `to` is unseen by that side; optionally encode revealed-shot exceptions in `|extras` |
+| BWFEN snaps stay geometry-only | Document any mid-shot reveal flags if needed |
+
+Note this constraint here so BWFEN consumers do not assume “any geometrically clear capture is legal.” **Defer engine enforcement** until fog + plan validation land together.
 
 ---
 

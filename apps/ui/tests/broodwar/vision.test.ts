@@ -181,7 +181,7 @@ describe("getSideVision", () => {
 
   it("does not permanently reveal king-attackers (fog punishment until they shoot)", () => {
     // Nc5 checks Ke4 but stays hidden in vision — ChessBoard reveals on attackCues.
-    const game = new Chess("k4r2/8/8/2n5/4K3/8/7b/8 w - - 0 1");
+    const game = new Chess("k7/5r2/8/2n5/4K3/8/7b/8 w - - 0 1");
     const white = getSideVision(game, "w");
     expect(white.revealedPieces.has("c5")).toBe(false);
     expect(white.litSquares.has("c5")).toBe(false);
@@ -190,7 +190,7 @@ describe("getSideVision", () => {
 
 describe("isPieceVisibleToSide", () => {
   it("always shows own pieces; hides fogged enemies", () => {
-    const g = new Chess("k4r2/8/8/2n5/4K3/8/7b/8 w - - 0 1");
+    const g = new Chess("k7/5r2/8/2n5/4K3/8/7b/8 w - - 0 1");
     expect(isPieceVisibleToSide(g, "w", "e4", "w")).toBe(true);
     expect(isPieceVisibleToSide(g, "w", "h2", "b")).toBe(false);
     expect(isPieceVisibleToSide(g, "w", "c5", "b")).toBe(false);

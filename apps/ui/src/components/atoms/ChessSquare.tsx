@@ -52,12 +52,14 @@ interface ChessSquareProps {
   spiderMine?: boolean;
   /** Mine owner — white enamel + team-color bumps. */
   spiderMineColor?: Color;
-/**
+  /**
    * When set, board rooks render {@link InlineRook} (tank vs siege art)
    * instead of the static `*R.svg` asset. Brood War boards always pass this;
    * piece-sets reference boards omit it so static siege `*R.svg` stays.
    */
   rookMode?: RookMode;
+  /** Brood War: unit already used its special this turn — green aura. */
+  specialUsed?: boolean;
 }
 
 const getPieceImg = (type: PieceSymbol, color: Color, pieceSet: PieceSet) => {
@@ -153,8 +155,10 @@ export const ChessSquare: Component<ChessSquareProps> = (props) => {
               src={getPieceImg(props.piece!.type, props.piece!.color, props.pieceSet)}
               alt={`${props.piece!.color} ${props.piece!.type}`}
               class={styles.piece}
+              classList={{ [styles.pieceSpecialUsed]: props.specialUsed === true }}
               draggable="true"
               onDragStart={props.onDragStart}
+              data-special-used={props.specialUsed ? "true" : undefined}
             />
           }
         >
@@ -163,11 +167,13 @@ export const ChessSquare: Component<ChessSquareProps> = (props) => {
               pieceRef = el;
             }}
             class={styles.piece}
+            classList={{ [styles.pieceSpecialUsed]: props.specialUsed === true }}
             draggable="true"
             onDragStart={props.onDragStart}
             role="img"
             aria-label={`${props.piece!.color} ${props.piece!.type}`}
             data-piece-inline="r"
+            data-special-used={props.specialUsed ? "true" : undefined}
           >
             <InlineRook
               color={props.piece!.color}

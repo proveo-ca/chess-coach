@@ -5,6 +5,7 @@ import { createMemo, createSignal, onCleanup } from "solid-js";
 import { makeDeployCue } from "~/broodwar/animations/deployAnim";
 import {
   addDeployed,
+  markSpecialUsed,
   refundEnergy,
   refundStored,
   removeDeployed,
@@ -18,7 +19,7 @@ import type { PieceSpecialArmCtx } from "~/broodwar/hooks/usePieceSpecialArm";
 import { adjacentSquares } from "~/broodwar/specials/adjacent";
 import { loadFen } from "~/store/gameStore";
 import { activePlayerColor, playerPieceSet } from "~/store/settingsStore";
-import type { DeployCue, SpawnModalPending, SpawnPiece } from "~/types/broodwar";
+import type { DeployCue, DeployModalPending, SpawnPiece } from "~/types/broodwar";
 
 export type CommandCenterPhase = "idle" | "spawnModal" | "pickAdjacent" | "deploying";
 
@@ -41,7 +42,7 @@ export const useCommandCenterDeploy = (opts: {
   const [pendingSpawn, setPendingSpawn] = createSignal<SpawnPiece | null>(null);
   const [deployCue, setDeployCue] = createSignal<DeployCue | null>(null);
   const [caption, setCaption] = createSignal(
-    "Drag a vespene canister onto the command center on d4",
+    `Drag a vespene canister onto the command center on ${kingSq()}`,
   );
 
   let deployTimer = 0;
@@ -64,7 +65,7 @@ export const useCommandCenterDeploy = (opts: {
 
   const adjacent = createMemo(() => adjacentSquares(kingSq(), occupied()));
 
-  const modalPending = createMemo((): SpawnModalPending | null => {
+  const modalPending = createMemo((): DeployModalPending | null => {
     if (phase() !== "spawnModal") return null;
     return { color: color(), pieceSet: playerPieceSet() };
   });
@@ -80,9 +81,11 @@ export const useCommandCenterDeploy = (opts: {
   };
 
   /** GasDeploy drop — open picker; gas/minerals still in the store until place. */
-  const arm = (_ctx: PieceSpecialArmCtx) => {
+  const arm = (_ctx: PieceSpecialArmCtx): boolean => {
     setPhase("spawnModal");
     setCaption(`Pick a unit to deploy · minerals ${storedMaterial()}`);
+    // Special is not committed until `deployAt` spends gas — do not mark yet.
+    return false;
   };
 
   const onSelectUnit = (piece: SpawnPiece) => {
@@ -99,7 +102,7 @@ export const useCommandCenterDeploy = (opts: {
   const onCancelModal = () => {
     setPhase("idle");
     setPendingSpawn(null);
-    setCaption("Drag a vespene canister onto the command center on d4");
+    setCaption(`Drag a vespene canister onto the command center on ${kingSq()}`);
   };
 
   const deployAt = (sq: Square) => {
@@ -129,6 +132,7 @@ export const useCommandCenterDeploy = (opts: {
     setPendingSpawn(null);
     setPhase("deploying");
     setDeployCue(makeDeployCue(piece, side, sq));
+    markSpecialUsed(kingSq());
     setCaption(`Deploying ${piece.toUpperCase()} → ${sq}…`);
 
     deployTimer = window.setTimeout(() => {
@@ -150,13 +154,13 @@ export const useCommandCenterDeploy = (opts: {
       setDeployCue(null);
       setPhase("idle");
       setCaption(
-        `Deployed ${piece.toUpperCase()} on ${sq} · minerals ${storedMaterial()} · drag gas again`,
+        `Deployed ${piece.toUpperCase()} on ${sq} · minerals ${storedMaterial()} · special spent this turn`,
       );
     }, DEPLOY_MS);
   };
 
   const resetCaption = () =>
-    setCaption("Drag a vespene canister onto the command center on d4");
+    setCaption(`Drag a vespene canister onto the command center on ${kingSq()}`);
 
   return {
     kingSq,

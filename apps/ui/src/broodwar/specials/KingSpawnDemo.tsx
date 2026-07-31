@@ -14,7 +14,7 @@ import { GasDeploy } from "~/broodwar/features/GasDeploy";
 import { useCommandCenterDeploy } from "~/broodwar/hooks/useCommandCenterDeploy";
 import { usePieceSpecialArm } from "~/broodwar/hooks/usePieceSpecialArm";
 import styles from "~/broodwar/specials/KingSpawnDemo.module.css";
-import { SpawnModal } from "~/broodwar/primitives/SpawnModal";
+import { DeployModal } from "~/broodwar/primitives/DeployModal";
 import { BroodWarChessBoard } from "~/broodwar/BroodWarChessBoard";
 import { setStorybookCapabilities } from "~/screens/storybookCapabilities";
 import { NERD_CAPABILITIES } from "~/store/capabilitiesStore";
@@ -133,7 +133,7 @@ export const KingSpawnDemo: Component = () => {
             </div>
           )}
         </Show>
-        <SpawnModal
+        <DeployModal
           pending={special.modalPending()}
           onSelect={special.onSelectUnit}
           onCancel={special.onCancelModal}

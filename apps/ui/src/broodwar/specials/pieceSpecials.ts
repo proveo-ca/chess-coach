@@ -1,8 +1,11 @@
 import type { PieceSymbol, Square } from "chess.js";
 
+import { hasUsedSpecialThisTurn, markSpecialUsed } from "~/broodwar/broodWarStore";
 import { specialCopyFor, type SpecialCopy } from "~/broodwar/primitives/specialCopy";
 import type { SpecialKind } from "~/broodwar/types";
 import type { GasDeployTarget } from "~/broodwar/features/GasDeploy";
+import { canClassicalPawnDouble } from "~/broodwar/specials/pawnDouble";
+import { currentFen } from "~/store/gameStore";
 
 /**
  * Per-piece special metadata. Activation lives in piece hooks
@@ -13,6 +16,9 @@ export type PieceSpecialDef = {
   kind: SpecialKind | null;
   copy: SpecialCopy;
 };
+
+/** Handler outcome — `free` skips specials-used / once-per-turn marking. */
+export type ArmResult = false | "armed" | "free";
 
 const DEFS: Record<PieceSymbol, PieceSpecialDef> = {
   p: { piece: "p", kind: "pawnDouble", copy: specialCopyFor("p") },
@@ -26,12 +32,13 @@ const DEFS: Record<PieceSymbol, PieceSpecialDef> = {
 export const pieceSpecialDef = (piece: PieceSymbol): PieceSpecialDef => DEFS[piece];
 
 export type PieceSpecialArmHandlers = Partial<
-  Record<PieceSymbol, (ctx: { square: Square; piece: PieceSymbol }) => void>
+  Record<PieceSymbol, (ctx: { square: Square; piece: PieceSymbol }) => ArmResult | boolean | void>
 >;
 
 /**
  * Routes a GasDeploy commit to the matching piece special activator.
- * Gas is already spent by GasDeploy before this runs.
+ * `free` (e.g. classical pawn double) does not mark specials-used.
+ * `armed` / `true` / `void` marks the square. `false` aborts.
  */
 export const armPieceSpecial = (
   target: GasDeployTarget,
@@ -41,6 +48,18 @@ export const armPieceSpecial = (
   if (!def.copy.deployable) return false;
   const fn = handlers[target.piece];
   if (!fn) return false;
-  fn({ square: target.square, piece: target.piece });
+
+  const classicalFree =
+    target.piece === "p" && canClassicalPawnDouble(currentFen(), target.square);
+
+  if (!classicalFree && hasUsedSpecialThisTurn(target.square)) return false;
+
+  const result = fn({ square: target.square, piece: target.piece });
+  if (result === false) return false;
+  if (result === "free") return true;
+  // "armed" | true | void
+  markSpecialUsed(target.square);
   return true;
 };
+
+export { markSpecialUsed, hasUsedSpecialThisTurn };

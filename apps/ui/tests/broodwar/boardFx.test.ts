@@ -17,11 +17,11 @@ describe("boardFx (classical isolation)", () => {
     const hide = buildFxHiddenSquares({
       attacks: [{ id: "a", piece: "n", color: "b", from: "c5", to: "e4" }],
       deaths: [{ id: "d", piece: "n", color: "b", at: "c5" }],
-      moves: [{ id: "m", piece: "r", color: "b", from: "f8", to: "f6" }],
+      moves: [{ id: "m", piece: "r", color: "b", from: "f7", to: "f6" }],
       kingDamage: [{ id: "w", at: "e4", damage: "smallFire" }],
     });
     expect(hide).not.toBe(EMPTY_FX_HIDDEN);
-    expect([...hide].sort()).toEqual(["c5", "e4", "f6", "f8"]);
+    expect([...hide].sort()).toEqual(["c5", "e4", "f6", "f7"]);
   });
 
   it("includes flee cover after king damage slides", () => {

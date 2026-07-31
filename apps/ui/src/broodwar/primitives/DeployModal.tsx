@@ -10,17 +10,17 @@ import {
 } from "~/broodwar/broodWarStore";
 import { SPECIAL_ENERGY_COST, UNIT_COST } from "~/broodwar/constants";
 import { ResourceBar } from "~/broodwar/primitives/ResourceBar";
-import styles from "~/broodwar/primitives/SpawnModal.module.css";
+import styles from "~/broodwar/primitives/DeployModal.module.css";
 import { Modal } from "~/components/atoms/Modal";
-import type { SpawnModalPending, SpawnPiece } from "~/types/broodwar";
+import type { DeployModalPending, SpawnPiece } from "~/types/broodwar";
 import type { PieceSet } from "~/types/settings";
 
-export type { SpawnModalPending, SpawnPiece } from "~/types/broodwar";
+export type { DeployModalPending, SpawnPiece } from "~/types/broodwar";
 
 export const SPAWN_CHOICES: SpawnPiece[] = ["p", "q", "r", "b", "n"];
 
-type SpawnModalProps = {
-  pending: SpawnModalPending | null;
+type DeployModalProps = {
+  pending: DeployModalPending | null;
   onSelect: (piece: SpawnPiece) => void;
   onCancel: () => void;
 };
@@ -33,7 +33,7 @@ const getPieceImg = (piece: SpawnPiece, color: Color, pieceSet: PieceSet) =>
  * Affordability reads the player's accumulated minerals, deploy cap, and
  * remaining vespene from `broodWarStore` (gas is spent only on placement).
  */
-export const SpawnModal: Component<SpawnModalProps> = (props) => {
+export const DeployModal: Component<DeployModalProps> = (props) => {
   const canAfford = (piece: SpawnPiece) => {
     const cost = UNIT_COST[piece];
     return (

@@ -156,7 +156,7 @@ Long-press king → modal variant of `PromotionModal`:
 2. **Below: spawn choices** — **pawn first**, then the usual promotional set: `p`, `q`, `r`, `b`, `n` (order: pawn → queen → rook → bishop → knight). Disable / grey choices the player cannot afford (minerals, deploy cap, or **no vespene**).
 3. On select: queue `QueuedSpecial { kind: "spawn", unit, from: kingSq, to: spawnSq, … }`. Exact adjacent-target UX (auto-pick vs second tap on empty adjacent square) — implement with spawn validation in `actions.ts`.
 
-Classical pawn-promotion `PromotionModal` stays unchanged for Coach/Analysis; Brood War uses an explicit variant prop or a thin `SpawnModal` wrapper that reuses modal chrome + choice grid.
+Classical pawn-promotion `PromotionModal` stays unchanged for Coach/Analysis; Brood War uses an explicit variant prop or a thin `DeployModal` wrapper that reuses modal chrome + choice grid.
 
 ---
 ## Architecture
@@ -236,7 +236,7 @@ apps/ui/src/broodwar/primitives/
   icons.tsx                # MineralsIcon | VespeneIcon | SupplyIcon
   ResourceBar.tsx          # minerals + income | vespene remaining/cap | board deploy/50
   TurnBar.tsx              # End + circular 10s gauge (beside ResourceBar above board)
-  SpawnModal.tsx           # king special — ResourceBar + pawn-first choices
+  DeployModal.tsx          # king special — ResourceBar + pawn-first choices
   SpecialPreview.tsx       # hover chat card (unit / special / description)
   specialCopy.ts           # knight/king copy + TBD stubs
 

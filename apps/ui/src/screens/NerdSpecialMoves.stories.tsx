@@ -2,11 +2,12 @@ import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
 import { KingSpawnDemo } from "~/broodwar/specials/KingSpawnDemo";
 import { KnightMineDemo } from "~/broodwar/specials/KnightMineDemo";
+import { MarineDoubleDemo } from "~/broodwar/specials/MarineDoubleDemo";
 import { RookSiegeDemo } from "~/broodwar/specials/RookSiegeDemo";
 
 /**
  * Brood War specials via GasDeploy. Command Center deploy, Vulture spider mine,
- * Siege Tank mode toggle. Activation lives in piece hooks.
+ * Marine double-step, Siege Tank mode toggle. Activation lives in piece hooks.
  */
 const meta = {
   title: "Screens/Nerd/Brood War/Special Moves",
@@ -15,7 +16,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Drag a vespene canister from GasDeploy onto a unit. Command Center: SpawnModal → deploy adjacent. Vulture: stack order (special+move or move+special). Siege Tank: toggle packed ↔ unpacked. Specials are piece-owned hooks — not story logic.",
+          "Drag a vespene canister from GasDeploy onto a unit. Marine: start-rank doubles are free (no gas); otherwise 1 gas. Command Center: DeployModal → deploy adjacent. Vulture: stack order. Siege Tank: toggle packed ↔ unpacked.",
       },
     },
   },
@@ -24,13 +25,26 @@ const meta = {
 export default meta;
 type Story = StoryObj;
 
+export const MarineDouble: Story = {
+  name: "Marine",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "d2 can classical-double for free (canister unused). e3 needs 1 gas for a Brood War double-step anytime.",
+      },
+    },
+  },
+  render: () => <MarineDoubleDemo />,
+};
+
 export const KingSpawn: Story = {
   name: "Command Center",
   parameters: {
     docs: {
       description: {
         story:
-          "1. Drag gas onto the command center on d4 → SpawnModal. 2. Pick a unit. 3. Tap an adjacent empty square — 500ms deploy drop, then FEN/fog update.",
+          "1. Drag gas onto the command center on d4 → DeployModal. 2. Pick a unit. 3. Tap an adjacent empty square — 500ms deploy drop, then FEN/fog update.",
       },
     },
   },

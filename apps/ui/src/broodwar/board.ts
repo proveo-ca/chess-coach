@@ -49,6 +49,15 @@ export const placementToMap = (placement: string): Map<Square, BwPiece> => {
   return map;
 };
 
+/** Every rook / Siege Tank square in a placement (both colors). */
+export const rookSquaresInPlacement = (placement: string): Square[] => {
+  const out: Square[] = [];
+  for (const [square, piece] of placementToMap(placement)) {
+    if (piece.type === "r") out.push(square);
+  }
+  return out;
+};
+
 /** Serialize a square map back to classic placement. */
 export const mapToPlacement = (map: Map<Square, BwPiece>): string => {
   const ranks: string[] = [];

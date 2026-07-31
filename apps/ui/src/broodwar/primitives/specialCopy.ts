@@ -15,7 +15,13 @@ const TBD: Omit<SpecialCopy, "unit"> = {
 };
 
 const BY_TYPE: Record<PieceSymbol, SpecialCopy> = {
-  p: { unit: "Marine", ...TBD },
+  p: {
+    unit: "Marine",
+    name: "Double Step",
+    description:
+      "Advance two squares anytime. Start-rank classical doubles are free (no gas).",
+    deployable: true,
+  },
   n: {
     unit: "Vulture",
     name: "Spider Mine",

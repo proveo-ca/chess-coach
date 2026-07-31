@@ -80,6 +80,11 @@ export type BwFenSnapshot = {
   turn: number;
   kingLives: Record<PieceColor, number>;
   phase: BwPhaseCode;
+  /**
+   * Squares whose unit already used a special this turn (`|U:a1c4…` extras).
+   * Cleared when `turn` advances.
+   */
+  specialsUsed?: readonly Square[];
 };
 
 /** One side’s classical action for simultaneous resolve. */
@@ -92,7 +97,11 @@ export type ClassicalPlan = {
 /** King spawn choices — pawn first, then promotional set. */
 export type SpawnPiece = Extract<PieceSymbol, "p" | "q" | "r" | "b" | "n">;
 
-export type SpawnModalPending = {
+/** Pending Command Center deploy picker (was SpawnModalPending). */
+export type DeployModalPending = {
   color: Color;
   pieceSet: PieceSet;
 };
+
+/** @deprecated Prefer {@link DeployModalPending}. */
+export type SpawnModalPending = DeployModalPending;

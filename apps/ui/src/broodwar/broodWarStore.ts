@@ -47,6 +47,11 @@ const [_energy, _setEnergy] = createSignal<EnergyPool>(fullEnergyForTurn(1));
 const [_deadlineAt, _setDeadlineAt] = createSignal<number | null>(null);
 /** Squares whose Siege Tank is unpacked (siege mode). Absent ⇒ tank mode. */
 const [_siegedRooks, _setSiegedRooks] = createSignal<ReadonlySet<Square>>(new Set());
+/**
+ * Squares whose unit already used a special this planning turn.
+ * Serialized in BWFEN as `|U:…` extras; cleared when the turn advances.
+ */
+const [_specialsUsed, _setSpecialsUsed] = createSignal<ReadonlySet<Square>>(new Set());
 
 /** Current Brood War turn index (1-based; drives income / energy tier). */
 export const broodWarTurn = () => _turn();
@@ -56,6 +61,7 @@ export const setBroodWarTurn = (turn: number) => {
   _setTurn(next);
   // Fresh gas each turn — leftover does not accumulate.
   _setEnergy(fullEnergyForTurn(next));
+  clearSpecialsUsed();
 };
 
 export const broodWarEconomies = () => _economies();
@@ -135,6 +141,41 @@ export const clearSiegedRooks = () => _setSiegedRooks(new Set());
 /** Replace the full sieged-rook set (Storybook seeds). */
 export const setSiegedRooks = (squares: Iterable<Square>) => {
   _setSiegedRooks(new Set(squares));
+};
+
+/** Squares whose unit already spent its special this turn. */
+export const specialsUsedThisTurn = () => _specialsUsed();
+
+export const hasUsedSpecialThisTurn = (square: Square): boolean =>
+  _specialsUsed().has(square);
+
+/** Mark a unit (by square) as having used its special this turn. */
+export const markSpecialUsed = (square: Square) => {
+  _setSpecialsUsed((prev) => {
+    if (prev.has(square)) return prev;
+    const next = new Set(prev);
+    next.add(square);
+    return next;
+  });
+};
+
+/** Follow a unit that relocates after using a special (glow stays on the piece). */
+export const migrateSpecialUsed = (from: Square, to: Square) => {
+  if (from === to) return;
+  _setSpecialsUsed((prev) => {
+    if (!prev.has(from)) return prev;
+    const next = new Set(prev);
+    next.delete(from);
+    next.add(to);
+    return next;
+  });
+};
+
+export const clearSpecialsUsed = () => _setSpecialsUsed(new Set());
+
+/** Replace the full specials-used set (BWFEN load / Storybook seeds). */
+export const setSpecialsUsed = (squares: Iterable<Square>) => {
+  _setSpecialsUsed(new Set(squares));
 };
 
 /** Whole seconds left on the planning timer (0 when expired / idle). */
@@ -244,6 +285,7 @@ export const resetBroodWarEconomy = (opts?: {
     _setEnergy(filled);
   }
   clearSiegedRooks();
+  clearSpecialsUsed();
   if (opts?.startTimer === false) {
     clearTurnDeadline();
   } else {

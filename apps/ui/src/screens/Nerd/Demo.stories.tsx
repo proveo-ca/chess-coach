@@ -29,7 +29,7 @@ export const CombatChain: Story = {
     docs: {
       description: {
         story:
-          "BWFEN reference: each arrow = one turn = White & Black classical. 1. d2-d4 & Be8-c6 · 2. d4xe5 & Nf6-e4 · 3. Rc3xc6 & Ne4xc3. Captures = attack → death → occupy.",
+          "BWFEN reference: each arrow = one turn = White & Black classical. 1. d2-d4 & Be8-c6 · 2. d4xe5 & Nf6-e4 · 3. Rc4xc6 & Ne4xc4. Rook starts c4 (tank). Captures = attack → death → occupy.",
       },
     },
   },
@@ -42,7 +42,7 @@ export const KingHunt: Story = {
     docs: {
       description: {
         story:
-          "Combat Chain grammar + checks + walk-into-check. HP via broodWarStore (3→2→1→0): 0. Nc5+ · 1. Kd5 & Bh2→Bg1 · 2. Kxc5 & Rf8→Rf6 · 3. Kc6 & Bg1→c5 · 4. Rf6+.",
+          "Combat Chain grammar + checks + walk-into-check. HP via broodWarStore (3→2→1→0): 0. Nc5+ · 1. Kd5 & Bh2→Bg1 · 2. Kxc5 & Rf7→Rf6 · 3. Kc6 & Bg1→c5 · 4. Rf6+. Rook starts f7 (siege).",
       },
     },
   },

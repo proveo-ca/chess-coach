@@ -8,7 +8,6 @@ import type { SpecialTiming } from "~/broodwar/types";
 import { currentFen, loadFen } from "~/store/gameStore";
 import { activePlayerColor } from "~/store/settingsStore";
 
-const KNIGHT_START: Square = "d4";
 /** Kings + vulture only — fog/BW outcomes suppress classical DRAW (no filler tanks). */
 export const VULTURE_FEN_START = "4k3/8/8/8/3N4/8/8/4K3 w - - 0 1";
 
@@ -19,27 +18,35 @@ const whiteToMove = (fen: string): string => {
   return parts.join(" ");
 };
 
-const findWhiteKnight = (fen: string): Square | null => {
+const whiteKnightSquares = (fen: string): Set<Square> => {
   const g = new Chess(fen);
-  const cell = g.board().flat().find((c) => c?.type === "n" && c.color === "w");
-  return cell?.square ?? null;
+  const out = new Set<Square>();
+  for (const row of g.board()) {
+    for (const cell of row) {
+      if (cell?.type === "n" && cell.color === "w") out.add(cell.square);
+    }
+  }
+  return out;
 };
-
-const placementKey = (fen: string) => fen.split(/\s+/).slice(0, 4).join(" ");
 
 /**
  * Vulture (knight) special — Spider Mine.
- * Armed via GasDeploy; classical move via the board (L-path from
- * {@link BroodWarChessBoard}). Stack order sets timing.
+ * Armed via GasDeploy on a specific knight; classical move via the board
+ * (L-path from {@link BroodWarChessBoard}). Stack order sets timing.
  */
 export const useVultureSpiderMine = (opts: {
   fen: () => string;
   setFen: (fen: string) => void;
+  /** Reset target when calling {@link reset} (Storybook). */
+  startingFen?: string;
 }) => {
+  const startFen = () => opts.startingFen ?? VULTURE_FEN_START;
+
   const [timing, setTiming] = createSignal<SpecialTiming | null>(null);
   const [mineQueued, setMineQueued] = createSignal(false);
   const [mineAt, setMineAt] = createSignal<Square | null>(null);
   const [moveQueued, setMoveQueued] = createSignal(false);
+  const [moveFrom, setMoveFrom] = createSignal<Square | null>(null);
   const [moveTo, setMoveTo] = createSignal<Square | null>(null);
   const [playing, setPlaying] = createSignal(false);
   const [planDone, setPlanDone] = createSignal(false);
@@ -76,8 +83,8 @@ export const useVultureSpiderMine = (opts: {
   const resolveBefore = () => {
     setPlaying(true);
     setTiming("before");
-    const origin = mineAt() ?? KNIGHT_START;
-    setMineAt(origin);
+    const origin = mineAt() ?? moveFrom();
+    if (origin) setMineAt(origin);
     setCaption(`specialBefore: spider mine on ${origin}`);
     after(400, () => {
       finishPlan(
@@ -91,51 +98,64 @@ export const useVultureSpiderMine = (opts: {
     setTiming("after");
     setCaption(`move: vulture → ${moveTo() ?? "…"}`);
     after(450, () => {
-      const here = moveTo() ?? findWhiteKnight(opts.fen()) ?? KNIGHT_START;
-      setMineAt(here);
-      finishPlan(`specialAfter: spider mine under vulture on ${here}`);
+      const here = moveTo();
+      if (here) setMineAt(here);
+      finishPlan(`specialAfter: spider mine under vulture on ${here ?? "…"}`);
     });
   };
 
-  const arm = (_ctx: PieceSpecialArmCtx) => {
-    if (playing() || planDone() || mineQueued()) return;
+  const arm = (ctx: PieceSpecialArmCtx): boolean => {
+    if (ctx.piece !== "n") return false;
+    if (playing() || planDone() || mineQueued()) return false;
     if (!spendEnergy(activePlayerColor())) {
       setCaption("Need vespene gas to arm a spider mine");
-      return;
+      return false;
     }
     setMineQueued(true);
 
     if (moveQueued()) {
+      // Prefer mine under the knight that received gas (usually the moved one).
+      if (!moveTo()) setMoveTo(ctx.square);
       resolveAfter();
-      return;
+      return true;
     }
 
     setTiming("before");
-    const here = findWhiteKnight(opts.fen()) ?? KNIGHT_START;
-    setMineAt(here);
-    setCaption(`Mine queued (before) on ${here} · move the vulture to auto-submit`);
+    setMineAt(ctx.square);
+    setMoveFrom(ctx.square);
+    setCaption(`Mine queued (before) on ${ctx.square} · move the vulture to auto-submit`);
+    return true;
   };
 
   /**
    * React to a board move ({@link BroodWarChessBoard} owns L-path VFX).
-   * Normalizes side-to-move back to white and auto-submits when a mine is queued.
+   * Diffs white-knight squares vs the last planned fen.
    */
   const syncFromBoard = (boardFen: string) => {
     if (playing() || planDone() || moveQueued()) return;
-    if (placementKey(boardFen) === placementKey(VULTURE_FEN_START)) return;
-    const here = findWhiteKnight(boardFen);
-    if (!here || here === KNIGHT_START) return;
+    const prev = whiteKnightSquares(opts.fen());
+    const next = whiteKnightSquares(boardFen);
+    const departed = [...prev].filter((s) => !next.has(s));
+    const arrived = [...next].filter((s) => !prev.has(s));
+    if (departed.length !== 1 || arrived.length !== 1) return;
+
+    const from = departed[0]!;
+    const to = arrived[0]!;
+    // If a mine is already queued on another knight, ignore unrelated jumps.
+    const armed = mineAt();
+    if (armed && armed !== from) return;
 
     const normalized = whiteToMove(boardFen);
     setMoveQueued(true);
-    setMoveTo(here);
+    setMoveFrom(from);
+    setMoveTo(to);
     opts.setFen(normalized);
     if (currentFen() !== normalized) loadFen(normalized);
 
     if (mineQueued()) {
       resolveBefore();
     } else {
-      setCaption(`Move queued (${KNIGHT_START}→${here}) · drag gas onto the vulture for specialAfter`);
+      setCaption(`Move queued (${from}→${to}) · drag gas onto the vulture for specialAfter`);
     }
   };
 
@@ -146,10 +166,11 @@ export const useVultureSpiderMine = (opts: {
     setMineQueued(false);
     setMineAt(null);
     setMoveQueued(false);
+    setMoveFrom(null);
     setMoveTo(null);
     setTiming(null);
-    opts.setFen(VULTURE_FEN_START);
-    loadFen(VULTURE_FEN_START);
+    opts.setFen(startFen());
+    loadFen(startFen());
     seedEconomy();
     setCaption(
       "Move the vulture, or drag gas onto it — order is special+move or move+special",
@@ -157,11 +178,11 @@ export const useVultureSpiderMine = (opts: {
   };
 
   return {
-    knightStart: KNIGHT_START,
     timing,
     mineQueued,
     mineAt,
     moveQueued,
+    moveFrom,
     moveTo,
     playing,
     planDone,

@@ -3,6 +3,7 @@ import { createEffect, createMemo, createSignal, mergeProps, splitProps } from "
 import type { Square } from "chess.js";
 
 import { useBroodWarNativeMoves } from "~/broodwar/hooks/useBroodWarNativeMoves";
+import { migrateSpecialUsed } from "~/broodwar/broodWarStore";
 import { ChessBoard } from "~/components/features/ChessBoard";
 import { currentIndex, game, moveHistory } from "~/store/gameStore";
 import type { MoveSquares } from "~/types/game";
@@ -47,6 +48,7 @@ export const BroodWarChessBoard: Component<BroodWarChessBoardProps> = (props) =>
     if (key === enqueuedKey()) return;
 
     setEnqueuedKey(key);
+    migrateSpecialUsed(m.from, m.to);
     setQueue((q) => [...q, m]);
   });
 

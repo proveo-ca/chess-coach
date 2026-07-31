@@ -13,6 +13,7 @@ import type { AttackCue, DeathCue, MoveCue } from "~/broodwar/animations/types";
 import { findKing, placementToMap } from "~/broodwar/board";
 import { MOVE_MS, MOVE_SQUARE_MS } from "~/broodwar/constants";
 import { knightElbowMs, moveDurationMs } from "~/broodwar/animations/moveTiming";
+import { migrateSpecialUsed } from "~/broodwar/broodWarStore";
 import type { ResolveTurnResult } from "~/broodwar/resolveTurn";
 import type { BroodWarColor } from "~/broodwar/types";
 import { isPieceVisibleToSide } from "~/broodwar/vision";
@@ -178,6 +179,7 @@ export function useBroodWarCombat() {
         ...cues.map((c) => moveDurationMs(c.from, c.to, c.piece)),
       );
       setMoveCues((prev) => [...prev, ...cues]);
+      for (const c of cues) migrateSpecialUsed(c.from, c.to);
       setMoveProgress((prev) => {
         const next = { ...prev };
         for (const id of ids) next[id] = 0;

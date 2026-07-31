@@ -168,6 +168,14 @@
   cursor: grabbing;
 }
 
+/* Brood War: unit spent its special this turn. */
+.pieceSpecialUsed {
+  filter: drop-shadow(0 0 3px #3dce6a) drop-shadow(0 0 8px rgba(61, 206, 106, 0.85));
+  outline: 2px solid rgba(61, 206, 106, 0.9);
+  outline-offset: -2px;
+  border-radius: 8%;
+}
+
 /* Inline SVG pieces (Siege Tank modes) fill the same box as <img> pieces. */
 .piece :global(svg) {
   display: block;
