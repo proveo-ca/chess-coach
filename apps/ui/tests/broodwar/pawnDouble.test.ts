@@ -1,12 +1,13 @@
 import { describe, expect, it } from "vitest";
 
 import {
-  canBwPawnDouble,
+  canBwPawnSingle,
   canClassicalPawnDouble,
   pawnDoubleTarget,
+  pawnSingleTarget,
 } from "~/broodwar/specials/pawnDouble";
 
-describe("pawnDouble", () => {
+describe("pawn steps", () => {
   const start = "7k/8/8/8/8/4P3/3P4/4K3 w - - 0 1";
 
   it("classical double on start rank only", () => {
@@ -15,14 +16,16 @@ describe("pawnDouble", () => {
     expect(pawnDoubleTarget("d2", "w")).toBe("d4");
   });
 
-  it("BW double allows mid-board when path clear", () => {
-    expect(canBwPawnDouble(start, "e3")).toBe(true);
-    expect(canBwPawnDouble(start, "d2")).toBe(true);
+  it("gas canister moves only 1 extra square", () => {
+    expect(pawnSingleTarget("d4", "w")).toBe("d5");
+    expect(pawnSingleTarget("e3", "w")).toBe("e4");
+    expect(canBwPawnSingle(start, "e3")).toBe(true);
+    expect(canBwPawnSingle(start, "d2")).toBe(true);
   });
 
-  it("rejects blocked path", () => {
-    const blocked = "7k/8/8/8/3P4/8/3P4/4K3 w - - 0 1";
+  it("rejects a blocked single step", () => {
+    const blocked = "7k/8/8/8/8/3P4/3P4/4K3 w - - 0 1";
     expect(canClassicalPawnDouble(blocked, "d2")).toBe(false);
-    expect(canBwPawnDouble(blocked, "d2")).toBe(false);
+    expect(canBwPawnSingle(blocked, "d2")).toBe(false);
   });
 });

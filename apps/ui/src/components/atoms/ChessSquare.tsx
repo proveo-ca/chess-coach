@@ -4,6 +4,7 @@ import { Show, createEffect, on } from "solid-js";
 import type { Component } from "solid-js";
 
 import { ROOK_REST_AIM_DEG } from "~/broodwar/animations/attackAnim";
+import { InlineBishop } from "~/broodwar/animations/pieces/InlineBishop";
 import { InlineRook } from "~/broodwar/animations/pieces/InlineRook";
 import { SpiderMine } from "~/broodwar/specials/SpiderMine";
 import styles from "~/components/atoms/ChessSquare.module.css";
@@ -29,6 +30,8 @@ interface ChessSquareProps {
   isHovered: boolean;
   isValidMove: boolean;
   isAdviceHovered: boolean;
+  /** Brood War special targeting ring (Charon Booster Missiles queen). */
+  isSpecialTarget?: boolean;
   isDragging: boolean;
   isInvalid: boolean;
   showRank: string | false;
@@ -58,6 +61,10 @@ interface ChessSquareProps {
    * piece-sets reference boards omit it so static siege `*R.svg` stays.
    */
   rookMode?: RookMode;
+  /** Charon Booster Missiles armed Goliath — render InlineBishop with popped launchers. */
+  charonArmed?: boolean;
+  /** Armed Goliath face (front cockpit toward viewer / back canopy). */
+  bishopFace?: "front" | "back";
   /** Brood War: unit already used its special this turn — green aura. */
   specialUsed?: boolean;
 }
@@ -76,6 +83,8 @@ export const ChessSquare: Component<ChessSquareProps> = (props) => {
 
   const useInlineRook = () =>
     props.piece?.type === "r" && props.rookMode != null;
+  const useInlineArmedBishop = () =>
+    props.piece?.type === "b" && props.charonArmed === true;
 
   // Queue-driven animation: consumes the head of animationQueue when it targets
   // this square, ensuring rapid successive moves (human+AI) each get a visible slide.
@@ -114,6 +123,7 @@ export const ChessSquare: Component<ChessSquareProps> = (props) => {
         [styles.hovered]: props.isHovered && !props.isInvalid,
         [styles.invalid]: props.isInvalid,
         [styles["advice-highlight"]]: props.isAdviceHovered,
+        [styles["special-target"]]: props.isSpecialTarget === true,
         [styles.dragging]: props.isDragging,
         [styles["has-piece"]]: !!props.piece,
         [styles["in-check"]]: props.isCheck,
@@ -146,7 +156,7 @@ export const ChessSquare: Component<ChessSquareProps> = (props) => {
 
       <Show when={props.piece && !props.hidePiece}>
         <Show
-          when={useInlineRook()}
+          when={useInlineRook() || useInlineArmedBishop()}
           fallback={
             <img
               ref={(el) => {
@@ -162,25 +172,51 @@ export const ChessSquare: Component<ChessSquareProps> = (props) => {
             />
           }
         >
-          <div
-            ref={(el) => {
-              pieceRef = el;
-            }}
-            class={styles.piece}
-            classList={{ [styles.pieceSpecialUsed]: props.specialUsed === true }}
-            draggable="true"
-            onDragStart={props.onDragStart}
-            role="img"
-            aria-label={`${props.piece!.color} ${props.piece!.type}`}
-            data-piece-inline="r"
-            data-special-used={props.specialUsed ? "true" : undefined}
+          <Show
+            when={useInlineRook()}
+            fallback={
+              <div
+                ref={(el) => {
+                  pieceRef = el;
+                }}
+                class={styles.piece}
+                classList={{ [styles.pieceSpecialUsed]: props.specialUsed === true }}
+                draggable="true"
+                onDragStart={props.onDragStart}
+                role="img"
+                aria-label={`${props.piece!.color} ${props.piece!.type}`}
+                data-piece-inline="b"
+                data-special-used={props.specialUsed ? "true" : undefined}
+              >
+                <InlineBishop
+                  color={props.piece!.color}
+                  face={props.bishopFace ?? "front"}
+                  armed
+                  armAnim
+                />
+              </div>
+            }
           >
-            <InlineRook
-              color={props.piece!.color}
-              mode={props.rookMode}
-              aimDeg={ROOK_REST_AIM_DEG}
-            />
-          </div>
+            <div
+              ref={(el) => {
+                pieceRef = el;
+              }}
+              class={styles.piece}
+              classList={{ [styles.pieceSpecialUsed]: props.specialUsed === true }}
+              draggable="true"
+              onDragStart={props.onDragStart}
+              role="img"
+              aria-label={`${props.piece!.color} ${props.piece!.type}`}
+              data-piece-inline="r"
+              data-special-used={props.specialUsed ? "true" : undefined}
+            >
+              <InlineRook
+                color={props.piece!.color}
+                mode={props.rookMode}
+                aimDeg={ROOK_REST_AIM_DEG}
+              />
+            </div>
+          </Show>
         </Show>
       </Show>
     </div>

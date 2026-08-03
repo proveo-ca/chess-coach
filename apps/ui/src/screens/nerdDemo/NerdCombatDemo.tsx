@@ -5,15 +5,17 @@
  *
  *   1. d2-d4 & Be8-c6
  *   2. d4xe5 & Nf6-e4
- *   3. Rc4xc6 & Ne4xc4
+ *   3. Rc3xc6 & Ne4xc3
  *
- * White rook starts on **c4** (one closer than c3) in tank mode so it can still relocate.
+ * White rook starts on **c3** as an unpacked Siege Tank (siege mode), so
+ * Rc3xc6 is in siege range and Ne4xc3 is a legal knight attack.
  */
 
 import { createSignal, onCleanup, onMount, type Component } from "solid-js";
 
+import { rookSquaresInPlacement } from "~/broodwar/board";
 import { classicFenFromBw } from "~/broodwar/bwfen";
-import { clearSiegedRooks, setSpecialsUsed } from "~/broodwar/broodWarStore";
+import { setSiegedRooks, setSpecialsUsed } from "~/broodwar/broodWarStore";
 import { useBroodWarCombat } from "~/broodwar/hooks/useBroodWarCombat";
 import { resolveTurn } from "~/broodwar/resolveTurn";
 import { BroodWarChessBoard } from "~/broodwar/BroodWarChessBoard";
@@ -40,25 +42,25 @@ const LIVES = { w: 3, b: 3 } as const;
 /** One planning snap per review index (0 = start). */
 export const COMBAT_CHAIN_PLY_BW: readonly BwFenSnapshot[] = [
   {
-    placement: "4bk2/8/5n2/4p3/2R5/8/3P4/4K3",
+    placement: "4bk2/8/5n2/4p3/8/2R5/3P4/4K3",
     turn: 0,
     kingLives: { ...LIVES },
     phase: "P",
   },
   {
-    placement: "5k2/8/2b2n2/4p3/2RP4/8/8/4K3",
+    placement: "5k2/8/2b2n2/4p3/3P4/2R5/8/4K3",
     turn: 1,
     kingLives: { ...LIVES },
     phase: "P",
   },
   {
-    placement: "5k2/8/2b5/4P3/2R1n3/8/8/4K3",
+    placement: "5k2/8/2b5/4P3/4n3/2R5/8/4K3",
     turn: 2,
     kingLives: { ...LIVES },
     phase: "P",
   },
   {
-    placement: "5k2/8/8/4P3/2n5/8/8/4K3",
+    placement: "5k2/8/8/4P3/8/2n5/8/4K3",
     turn: 3,
     kingLives: { ...LIVES },
     phase: "P",
@@ -77,9 +79,9 @@ const TURNS: readonly StoryTurn[] = [
     black: { color: "b", from: "f6", to: "e4" },
   },
   {
-    caption: "3. Rc4xc6 & Ne4xc4",
-    white: { color: "w", from: "c4", to: "c6" },
-    black: { color: "b", from: "e4", to: "c4" },
+    caption: "3. Rc3xc6 & Ne4xc3",
+    white: { color: "w", from: "c3", to: "c6" },
+    black: { color: "b", from: "e4", to: "c3" },
   },
 ];
 
@@ -88,8 +90,8 @@ const START_CAPTION = "Start · use arrows to review turns";
 
 const applySnap = (snap: BwFenSnapshot) => {
   setSpecialsUsed(snap.specialsUsed ?? []);
-  // Tank mode (mobile) — rook already sits one square closer (c4).
-  clearSiegedRooks();
+  // Siege mode (unpacked, 9×9 vision) on every rook square in the snap.
+  setSiegedRooks(rookSquaresInPlacement(snap.placement));
   loadFen(classicFenFromBw(snap, "w"));
   setViewIndex(snap.turn);
 };
@@ -144,7 +146,7 @@ export const NerdCombatDemo: Component = () => {
       startPlacement: before.placement,
       livesBefore: before.kingLives,
       commit: (snap) => {
-        clearSiegedRooks();
+        setSiegedRooks(rookSquaresInPlacement(snap.placement));
         loadFen(
           classicFenFromBw(
             {

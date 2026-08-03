@@ -82,24 +82,36 @@ describe("resolveTurn", () => {
 
   it("Combat Chain turn 1: dual quiet slides", () => {
     const r = resolveTurn({
-      placement: "4bk2/8/5n2/4p3/2R5/8/3P4/4K3",
+      placement: "4bk2/8/5n2/4p3/8/2R5/3P4/4K3",
       kingLives: { w: 3, b: 3 },
       white: { color: "w", from: "d2", to: "d4" },
       black: { color: "b", from: "e8", to: "c6" },
     });
     expect(r.attacks).toEqual([]);
-    expect(r.afterMove.placement).toBe("5k2/8/2b2n2/4p3/2RP4/8/8/4K3");
+    expect(r.afterMove.placement).toBe("5k2/8/2b2n2/4p3/3P4/2R5/8/4K3");
   });
 
   it("Combat Chain turn 3: mutual capture — rook dies, knight occupies", () => {
     const r = resolveTurn({
-      placement: "5k2/8/2b5/4P3/2R1n3/8/8/4K3",
+      placement: "5k2/8/2b5/4P3/4n3/2R5/8/4K3",
       kingLives: { w: 3, b: 3 },
-      white: { color: "w", from: "c4", to: "c6" },
-      black: { color: "b", from: "e4", to: "c4" },
+      white: { color: "w", from: "c3", to: "c6" },
+      black: { color: "b", from: "e4", to: "c3" },
     });
     expect(r.afterAttack.placement).toBe("5k2/8/8/4P3/4n3/8/8/4K3");
-    expect(r.moves).toEqual([{ piece: "n", color: "b", from: "e4", to: "c4" }]);
-    expect(r.afterMove.placement).toBe("5k2/8/8/4P3/2n5/8/8/4K3");
+    expect(r.moves).toEqual([{ piece: "n", color: "b", from: "e4", to: "c3" }]);
+    expect(r.afterMove.placement).toBe("5k2/8/8/4P3/8/2n5/8/4K3");
+  });
+
+  it("Tactical Jump: attacks on a jumping queen are ignored", () => {
+    const r = resolveTurn({
+      placement: "4k3/8/8/4p3/3Q4/8/8/4K3",
+      kingLives: { w: 3, b: 3 },
+      white: null,
+      black: { color: "b", from: "e5", to: "d4" },
+      ignoreAttacksOn: ["d4"],
+    });
+    expect(r.attacks).toEqual([]);
+    expect(r.afterMove.placement).toBe("4k3/8/8/4p3/3Q4/8/8/4K3");
   });
 });

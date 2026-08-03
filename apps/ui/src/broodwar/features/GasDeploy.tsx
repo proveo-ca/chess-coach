@@ -45,6 +45,9 @@ type HoverState = {
 const CANISTER = 60;
 /** Max reserves in the oval (capacity 3 − ready slot). Stable DOM for slide anim. */
 const MAX_RESERVES = 2;
+/** Per-unit vespene cost (Goliath Charon Booster Missiles = 2; default = 1). */
+const gasCostFor = (piece: PieceSymbol): number =>
+  specialCopyFor(piece).gasCost ?? SPECIAL_ENERGY_COST;
 const RESERVE_SLOTS = Array.from({ length: MAX_RESERVES }, (_, i) => i);
 
 /**
@@ -60,10 +63,18 @@ export const GasDeploy: Component<GasDeployProps> = (props) => {
   let circleEl: HTMLButtonElement | undefined;
   let returnTimer: number | undefined;
 
+  /** Canisters visually lifted with the drag (2 while hovering a 2-gas unit). */
+  const dragCount = () => {
+    if (!drag()) return 0;
+    const h = hover();
+    if (!h) return 1;
+    return Math.max(1, Math.min(gasCostFor(h.piece), gas()));
+  };
+
   const dockCount = () => {
     const g = gas();
     // While lifted (or returning), the dock advances the queue visually.
-    return drag() ? Math.max(0, g - 1) : g;
+    return drag() ? Math.max(0, g - Math.max(1, dragCount())) : g;
   };
 
   const reserveCount = () => Math.max(0, dockCount() - 1);
@@ -137,12 +148,12 @@ export const GasDeploy: Component<GasDeployProps> = (props) => {
       !!over &&
       over.piece === "p" &&
       canClassicalPawnDouble(currentFen(), over.square);
+    const cost = over ? gasCostFor(over.piece) : SPECIAL_ENERGY_COST;
     const canArm =
       over &&
       copy?.deployable &&
       (freeClassical ||
-        (!hasUsedSpecialThisTurn(over.square) &&
-          energyRemaining() >= SPECIAL_ENERGY_COST));
+        (!hasUsedSpecialThisTurn(over.square) && energyRemaining() >= cost));
     if (canArm && over) {
       const target = { square: over.square, piece: over.piece };
       setDrag(null);
@@ -213,7 +224,18 @@ export const GasDeploy: Component<GasDeployProps> = (props) => {
         deployable: false,
       };
     }
-    return base;
+    const cost = gasCostFor(h.piece);
+    if (base.deployable && energyRemaining() < cost) {
+      return {
+        ...base,
+        name: "Not enough gas",
+        description: `${cost} required`,
+        deployable: false,
+      };
+    }
+    return cost === SPECIAL_ENERGY_COST
+      ? base
+      : { ...base, name: `${base.name} · ${cost} gas` };
   };
 
   return (
@@ -274,9 +296,17 @@ export const GasDeploy: Component<GasDeployProps> = (props) => {
               class={styles.ghost}
               classList={{ [styles.ghostReturning]: d().returning }}
               style={{ left: `${d().x}px`, top: `${d().y}px` }}
+              data-drag-count={dragCount()}
               aria-hidden="true"
             >
-              <VespeneIcon size={CANISTER * 0.55} />
+              <span class={styles.ghostCanister}>
+                <VespeneIcon size={CANISTER * 0.55} />
+              </span>
+              <Show when={dragCount() > 1}>
+                <span class={`${styles.ghostCanister} ${styles.ghostBuddy}`}>
+                  <VespeneIcon size={CANISTER * 0.5} />
+                </span>
+              </Show>
             </div>
             <Show when={hoverCopy()}>
               {(copy) => (

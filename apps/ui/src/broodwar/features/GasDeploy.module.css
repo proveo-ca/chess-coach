@@ -150,6 +150,32 @@
     top 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
+.ghostCanister {
+  display: grid;
+  place-items: center;
+}
+
+/* Second canister peels out of the rack for 2-gas specials (Charon Booster Missiles). */
+.ghostBuddy {
+  position: absolute;
+  right: -8px;
+  bottom: -6px;
+  transform: scale(0.92);
+  filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.4));
+  animation: ghostBuddyIn 180ms cubic-bezier(0.2, 0.8, 0.2, 1) 1 both;
+}
+
+@keyframes ghostBuddyIn {
+  from {
+    opacity: 0;
+    transform: translate(34px, 4px) scale(0.45);
+  }
+  to {
+    opacity: 1;
+    transform: translate(0, 0) scale(0.92);
+  }
+}
+
 .preview {
   position: fixed;
   z-index: 90;
@@ -161,5 +187,8 @@
   .reserve,
   .ghostReturning {
     transition-duration: 1ms;
+  }
+  .ghostBuddy {
+    animation-duration: 1ms;
   }
 }

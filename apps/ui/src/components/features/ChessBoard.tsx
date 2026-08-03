@@ -19,12 +19,14 @@ import type {
   KingDamageCue,
   KingDamageState,
   MoveCue,
+  QueenJumpTrail,
 } from "~/types/broodwar";
 import { AttackAnimation } from "~/broodwar/animations/AttackAnimation";
 import { DeathAnimation } from "~/broodwar/animations/DeathAnimation";
 import { DeployAnimation } from "~/broodwar/animations/DeployAnimation";
 import { KingDamageOverlay } from "~/broodwar/animations/kingDamageOverlay";
 import { MoveAnimation } from "~/broodwar/animations/MoveAnimation";
+import { QueenJumpAnimation } from "~/broodwar/animations/QueenJumpAnimation";
 import { buildFxHiddenSquares, EMPTY_FX_HIDDEN, hasCombatFxInput } from "~/broodwar/boardFx";
 import { rookModeAt, siegedRooks, specialsUsedThisTurn } from "~/broodwar/broodWarStore";
 import { isBroodWarBoard } from "~/broodwar/classicalOutcomes";
@@ -85,12 +87,25 @@ export const ChessBoard: Component<{
   moveProgress?: Record<string, 0 | 1>;
   /** Knight L-path facing: 0 = long leg, 1 = short leg (after elbow). */
   moveLeg?: Record<string, 0 | 1>;
+  /** Tactical Jump teleport cues (own fx-hidden squares; rendered by QueenJumpAnimation). */
+  jumpCues?: MoveCue[];
+  /** Tactical Jump green thruster trails (1000ms; no board hiding). */
+  jumpTrails?: QueenJumpTrail[];
   /** @deprecated Prefer store {@link rookModeAt}; board-wide override for fog stories. */
   rookMode?: import("~/types/broodwar").RookMode;
   /** Squares with an armed spider mine (drawn under pieces). */
   spiderMines?: readonly Square[] | ReadonlySet<Square>;
   /** Owner color for `spiderMines` (defaults to active player). */
   spiderMineColor?: Color;
+  /** Engine-special target squares (Charon Booster Missiles queen) with a distinct ring. */
+  specialTargets?: readonly Square[];
+  /** Squares whose Goliath is Charon-armed (popped shoulder launchers). */
+  armedBishops?: readonly Square[];
+  /**
+   * First chance at square clicks/taps. Return true to swallow the board's
+   * classical selection/move handling (special targeting mode).
+   */
+  onSquareClickIntercept?: (square: Square) => boolean;
   /** King HP presentation — prefer `KingDamageCue[]` (stable id across moves). */
   kingDamage?: readonly KingDamageCue[] | Partial<Record<Square, KingDamageState>>;
 }> = (props) => {
@@ -116,6 +131,8 @@ export const ChessBoard: Component<{
   const resolvedDeathCues = createMemo(() => props.deathCues ?? []);
   const resolvedDeployCues = createMemo(() => props.deployCues ?? []);
   const resolvedMoveCues = createMemo(() => props.moveCues ?? []);
+  const resolvedJumpCues = createMemo(() => props.jumpCues ?? []);
+  const resolvedJumpTrails = createMemo(() => props.jumpTrails ?? []);
   const moveProgress = createMemo(() => props.moveProgress ?? {});
   const moveLeg = createMemo(() => props.moveLeg ?? {});
   const kingDamageCues = createMemo((): KingDamageCue[] => {
@@ -175,8 +192,9 @@ export const ChessBoard: Component<{
   const combatFxInput = createMemo(() => ({
     attacks: resolvedAttackCues(),
     deaths: resolvedDeathCues(),
-    moves: resolvedMoveCues(),
+    moves: [...resolvedMoveCues(), ...resolvedJumpCues()],
     kingDamage: kingDamageCues(),
+    jumpTrails: resolvedJumpTrails(),
     fleeCover: kingFleeCover(),
   }));
   const hasCombatFx = createMemo(() => hasCombatFxInput(combatFxInput()));
@@ -188,6 +206,8 @@ export const ChessBoard: Component<{
     if (!raw) return null;
     return raw instanceof Set ? raw : new Set(raw);
   });
+  const specialTargetSquares = createMemo(() => new Set(props.specialTargets ?? []));
+  const armedBishopSquares = createMemo(() => new Set(props.armedBishops ?? []));
 
   const [boardSize, setBoardSize] = createSignal<{ width: number; height: number } | null>(null);
   let boardGridRef = undefined as HTMLDivElement | undefined;
@@ -288,6 +308,7 @@ export const ChessBoard: Component<{
   });
 
   const handleSquareClick = (square: Square) => {
+    if (props.onSquareClickIntercept?.(square)) return;
     const sel = board.selectedSquare();
     // Block completing a move from a sieged rook (hook still lists chess.js destinations).
     if (
@@ -320,7 +341,12 @@ export const ChessBoard: Component<{
     const touch = e.touches[0];
     if (!touch) return;
     const sq = squareFromTouch(touch);
-    if (!sq || board.isReplaying() || capabilities().readOnly) return;
+    if (!sq || board.isReplaying()) return;
+    if (props.onSquareClickIntercept?.(sq)) {
+      e.preventDefault();
+      return;
+    }
+    if (capabilities().readOnly) return;
 
     const g = board.game();
     const piece = g.get(sq);
@@ -459,6 +485,7 @@ export const ChessBoard: Component<{
                       isHovered={board.hoveredSquare() === square}
                       isValidMove={displayValidMoves().includes(square)}
                       isAdviceHovered={adviceHoveredSquares().includes(square)}
+                      isSpecialTarget={specialTargetSquares().has(square)}
                       isDragging={touchDrag()?.from === square}
                       isInvalid={isInvalid()}
                       isFogged={isFogged()}
@@ -477,6 +504,8 @@ export const ChessBoard: Component<{
                           ? modeForRook(square)
                           : undefined
                       }
+                      charonArmed={armedBishopSquares().has(square)}
+                      bishopFace={piece()?.color === activePlayerColor() ? "front" : "back"}
                       specialUsed={
                         broodWarRules() && specialsUsedThisTurn().has(square)
                       }
@@ -484,10 +513,22 @@ export const ChessBoard: Component<{
                       showFile={rIndex() === 7 && file}
                       onClick={() => handleSquareClick(square)}
                       onMouseEnter={() => board.handleSquareHover(square)}
-                      onDragStart={(e) => board.handleDragStart(square, e)}
+                      onDragStart={(e) => {
+                        if (props.onSquareClickIntercept?.(square)) {
+                          e.preventDefault();
+                          return;
+                        }
+                        board.handleDragStart(square, e);
+                      }}
                       onDragEnter={(e) => board.handleDragEnter(square, e)}
                       onDragOver={(e) => e.preventDefault()}
-                      onDrop={(e) => board.handleDrop(square, e)}
+                      onDrop={(e) => {
+                        if (props.onSquareClickIntercept?.(square)) {
+                          e.preventDefault();
+                          return;
+                        }
+                        board.handleDrop(square, e);
+                      }}
                       lastMove={lastMove()}
                       animationQueue={animationQueue()}
                       consumeAnimation={consumeAnimation}
@@ -592,6 +633,12 @@ export const ChessBoard: Component<{
                 cues={resolvedMoveCues()}
                 progress={moveProgress()}
                 leg={moveLeg()}
+                boardWidth={combatBoardWidth()}
+                boardHeight={combatBoardHeight()}
+              />
+              <QueenJumpAnimation
+                cues={resolvedJumpCues()}
+                trails={resolvedJumpTrails()}
                 boardWidth={combatBoardWidth()}
                 boardHeight={combatBoardHeight()}
               />

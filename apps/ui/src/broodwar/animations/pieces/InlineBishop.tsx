@@ -26,6 +26,14 @@ type InlineBishopProps = {
   gunDeg?: number;
   /** When true, show short forward cannons; idle shows hole faces. */
   aiming?: boolean;
+  /** Charon Booster Missiles armed — twin shoulder missile launchers popped. */
+  armed?: boolean;
+  /** Play the 2-canister arm animation (cockpit crouch + launcher raise). */
+  armAnim?: boolean;
+  /** Aim for armed launchers (special-move diagonal). Omit for the default \o/ pose. */
+  launcherDeg?: number;
+  /** Loaded green missile caps; hidden once the missile attack animation begins. */
+  launcherCapsVisible?: boolean;
   crank?: BishopCrank;
 };
 
@@ -111,6 +119,53 @@ const GatlingAimCannonLocal = (props: {
   );
 };
 
+/** Armed Charon launcher in local space: rail + missile nose along +x (1.5× bore). */
+const CharonLauncherLocal = (props: {
+  team: string;
+  teamDark: string;
+  capsVisible: boolean;
+}) => (
+  <g data-part="charon-launcher-body">
+    <ellipse fill={props.team} cx="0" cy="0" rx="6.75" ry="8.25" />
+    <circle fill={props.teamDark} cx="0" cy="0" r="2.7" stroke="none" />
+    <rect fill="#2b3440" x="3" y="-4.65" width="12" height="9.3" rx="3" stroke-width="1.2" />
+    {props.capsVisible ? (
+      <g data-part="charon-launcher-caps">
+        <rect fill="#9ff3c0" x="12" y="-3" width="3" height="6" rx="1.5" stroke="none" />
+        <circle fill="#eafff3" cx="15.4" cy="0" r="3.15" stroke="#0f4f35" stroke-width="1.2" />
+        <circle
+          data-part="charon-launcher-glow"
+          fill="#3dce6a"
+          cx="15.4"
+          cy="0"
+          r="5.1"
+          stroke="none"
+          opacity="0.28"
+        />
+      </g>
+    ) : null}
+  </g>
+);
+
+const CharonShoulderLauncher = (props: {
+  cx: number;
+  cy: number;
+  deg: number;
+  team: string;
+  teamDark: string;
+  capsVisible: boolean;
+}) => (
+  <g transform={svgPivotLocal(props.cx, props.cy, props.deg)} data-part="charon-launcher">
+    <g data-part="charon-launcher-raise">
+      <CharonLauncherLocal
+        team={props.team}
+        teamDark={props.teamDark}
+        capsVisible={props.capsVisible}
+      />
+    </g>
+  </g>
+);
+
 type ShoulderMountProps = {
   cx: number;
   cy: number;
@@ -161,6 +216,10 @@ export const InlineBishop: Component<InlineBishopProps> = (props) => {
   const face = () => props.face ?? "front";
   const gunDeg = () => props.gunDeg ?? 0;
   const aiming = () => props.aiming ?? false;
+  const armed = () => props.armed === true;
+  const armAnim = () => props.armAnim === true;
+  const launcherDeg = () => props.launcherDeg;
+  const launcherCapsVisible = () => props.launcherCapsVisible !== false;
 
   /** Left-foot phase; right is always +π (12 when left is at 6). */
   const [phase, setPhase] = createSignal(SIX_OCLOCK);
@@ -219,6 +278,34 @@ export const InlineBishop: Component<InlineBishopProps> = (props) => {
       />
     </>
   );
+
+  /** Twin shoulder launchers popped by the 2-gas Charon arm. */
+  const charonLaunchers = (): JSX.Element | null => {
+    if (!armed()) return null;
+    const aim = launcherDeg();
+    const leftDeg = aim ?? -135;
+    const rightDeg = aim ?? -45;
+    return (
+      <g data-part="charon-launchers" data-launcher-aim={aim != null ? String(aim) : undefined}>
+        <CharonShoulderLauncher
+          cx={14}
+          cy={20}
+          deg={leftDeg}
+          team={team()}
+          teamDark={teamDark()}
+          capsVisible={launcherCapsVisible()}
+        />
+        <CharonShoulderLauncher
+          cx={31}
+          cy={20}
+          deg={rightDeg}
+          team={team()}
+          teamDark={teamDark()}
+          capsVisible={launcherCapsVisible()}
+        />
+      </g>
+    );
+  };
 
   /**
    * Standing pose matches `*B.svg` (colinear hip→ankle + foot ellipses).
@@ -293,7 +380,15 @@ export const InlineBishop: Component<InlineBishopProps> = (props) => {
   };
 
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45" aria-hidden="true" overflow="visible">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 45 45"
+      aria-hidden="true"
+      overflow="visible"
+      data-bishop-face={face()}
+      data-charon-armed={armed() ? "true" : undefined}
+      data-charon-arm-anim={armAnim() ? "true" : undefined}
+    >
       <g transform={NERD_FRAME.B}>
         <g stroke="#222" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
           {/* Legs under cockpit so the hull always occludes the hip joints. */}
@@ -305,11 +400,15 @@ export const InlineBishop: Component<InlineBishopProps> = (props) => {
             {face() === "back" ? (
               <>
                 {mounts()}
-                {cockpit()}
+                <g data-part="cockpit">{cockpit()}</g>
+                {/* Back: full launchers render over the whole Goliath. */}
+                {charonLaunchers()}
               </>
             ) : (
               <>
-                {cockpit()}
+                {/* Front: 45° / 135° launchers sit under the cockpit glass. */}
+                {charonLaunchers()}
+                <g data-part="cockpit">{cockpit()}</g>
                 {mounts()}
               </>
             )}

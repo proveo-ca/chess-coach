@@ -50,10 +50,10 @@ export const canClassicalPawnDouble = (fen: string, square: Square): boolean => 
 };
 
 /**
- * Brood War double-step geometry: +2 forward with both squares empty.
- * Does not require the classical start rank.
+ * Brood War gas step geometry: +1 forward with the destination empty.
+ * Does not require the classical start rank — the canister is one extra square.
  */
-export const canBwPawnDouble = (fen: string, square: Square): boolean => {
+export const canBwPawnSingle = (fen: string, square: Square): boolean => {
   const g = new Chess();
   try {
     g.load(fen);
@@ -62,8 +62,6 @@ export const canBwPawnDouble = (fen: string, square: Square): boolean => {
   }
   const piece = g.get(square);
   if (!piece || piece.type !== "p") return false;
-  const mid = pawnSingleTarget(square, piece.color);
-  const to = pawnDoubleTarget(square, piece.color);
-  if (!mid || !to) return false;
-  return g.get(mid) == null && g.get(to) == null;
+  const to = pawnSingleTarget(square, piece.color);
+  return to != null && g.get(to) == null;
 };

@@ -52,6 +52,8 @@ export type ResolveTurnInput = {
   kingLives: Record<BroodWarColor, number>;
   white: ClassicalPlan | null;
   black: ClassicalPlan | null;
+  /** Queen squares under Tactical Jump — attacks targeting them are ignored. */
+  ignoreAttacksOn?: readonly Square[];
 };
 
 export type ResolveTurnResult = {
@@ -89,6 +91,7 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
     b: clampLives(input.kingLives.b),
   };
   const plans = plansOf(input);
+  const ignoreAttacksOn = new Set<Square>(input.ignoreAttacksOn ?? []);
 
   const attacks: ResolveAttack[] = [];
   const deadSquares = new Set<Square>();
@@ -102,6 +105,15 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
     if (!actor || actor.color !== plan.color) continue;
 
     const target = start.get(plan.to);
+    if (
+      target &&
+      target.color !== plan.color &&
+      target.type === "q" &&
+      ignoreAttacksOn.has(plan.to)
+    ) {
+      // Tactical Jump: the queen is already gone — attacks on her whiff.
+      continue;
+    }
     if (target && target.color !== plan.color && target.type === "k") {
       const hit = plan.color === "w" ? "b" : "w";
       const livesAfter = clampLives(lives[hit] - 1);

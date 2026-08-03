@@ -222,7 +222,8 @@ export function getNerdVision(
  * Empty army ⇒ empty sets (full fog).
  *
  * Attackers under fog are **not** permanently revealed here — ChessBoard adds
- * active `attackCues[].from` to `revealedPieces` for the duration of the shot
+ * active `attackCues[].from` to `revealedPieces` for the shot, and the combat
+ * hook carries that same origin credit into the attacker's occupy/slide cue
  * (fog punishment until they fire).
  */
 export function getSideVision(
@@ -271,4 +272,23 @@ export function isPieceVisibleToSide(
   if (pieceColor === viewer) return true;
   const { litSquares, revealedPieces } = getSideVision(game, viewer, opts);
   return litSquares.has(square) || revealedPieces.has(square);
+}
+
+/**
+ * Combat move-cue gate. A unit that attacked this resolve revealed its `from`
+ * square for the shot; keep that reveal credit for its occupy/slide cue even if
+ * the mid-resolve FEN removed the friendly spotter that used to light it.
+ */
+export function isMoverVisibleToSide(
+  game: Chess,
+  viewer: Color,
+  move: { from: Square; color: Color },
+  revealedFrom: ReadonlySet<Square>,
+  opts?: { rookModeFor?: (square: Square) => RookMode },
+): boolean {
+  return (
+    move.color === viewer ||
+    revealedFrom.has(move.from) ||
+    isPieceVisibleToSide(game, viewer, move.from, move.color, opts)
+  );
 }

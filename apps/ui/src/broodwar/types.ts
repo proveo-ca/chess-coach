@@ -1,14 +1,14 @@
 import type { PieceSymbol, Square } from "chess.js";
 
-import type { AttackAnimKind } from "~/broodwar/animations/attackAnim";
+import type { AttackAnimKind } from "~/types/broodwar";
 
 export type BroodWarColor = "w" | "b";
 export type TurnPhase = "specialBefore" | "attack" | "move" | "specialAfter";
 export type SpecialTiming = "before" | "after";
 
 /**
- * Per-unit special (GasDeploy onto unit). Only `spawn` is implementable without
- * FEN-illegal board ops; other kinds are typed stubs — see BROODWAR_MODE.md.
+ * Per-unit special (GasDeploy onto unit). `spawn`, pawn/knight/rook demos,
+ * `bishopSnipe` (Charon Booster Missiles), and `queenWarp` (Tactical Jump) have board-op paths — see BROODWAR_MODE.md.
  */
 export type SpecialKind =
   | "spawn"

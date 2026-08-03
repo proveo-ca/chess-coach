@@ -6,7 +6,7 @@
 import type { Square } from "chess.js";
 
 import type { KingDamageCue } from "~/broodwar/animations/kingDamageOverlay";
-import type { AttackCue, DeathCue, MoveCue } from "~/broodwar/animations/types";
+import type { AttackCue, DeathCue, MoveCue, QueenJumpTrail } from "~/broodwar/animations/types";
 
 /** Stable empty set — classical boards reuse this (no per-render allocation). */
 export const EMPTY_FX_HIDDEN: ReadonlySet<Square> = new Set();
@@ -16,6 +16,8 @@ export type CombatFxInput = {
   deaths?: readonly DeathCue[];
   moves?: readonly MoveCue[];
   kingDamage?: readonly KingDamageCue[];
+  /** Tactical Jump trails keep the FX layer alive only — never hide board pieces. */
+  jumpTrails?: readonly QueenJumpTrail[];
   /** Transient flee origins while a damaged king slides. */
   fleeCover?: ReadonlySet<Square>;
 };
@@ -26,6 +28,7 @@ export const hasCombatFxInput = (fx: CombatFxInput): boolean =>
   (fx.deaths?.length ?? 0) > 0 ||
   (fx.moves?.length ?? 0) > 0 ||
   (fx.kingDamage?.length ?? 0) > 0 ||
+  (fx.jumpTrails?.length ?? 0) > 0 ||
   (fx.fleeCover?.size ?? 0) > 0;
 
 /**

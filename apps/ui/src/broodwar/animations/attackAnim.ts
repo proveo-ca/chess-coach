@@ -1,17 +1,10 @@
 import type { Square } from "chess.js";
 
 import { ATTACK_MS } from "~/broodwar/constants";
+import type { AttackAnimKind } from "~/types/broodwar";
 
 export { ATTACK_MS, FRAG_FLIGHT_MS } from "~/broodwar/constants";
-
-/** Attack VFX cue ids (CSS `anim-*` class stems). */
-export type AttackAnimKind =
-  | "pawnRifle"
-  | "knightFrag"
-  | "bishopGatlings"
-  | "rookBattery"
-  | "queenLaser"
-  | "kingDualCannon";
+export type { AttackAnimKind } from "~/types/broodwar";
 
 export type DemoPiece = "p" | "n" | "b" | "r" | "q" | "k";
 

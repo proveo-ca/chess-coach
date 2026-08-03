@@ -32,4 +32,12 @@ describe("boardFx (classical isolation)", () => {
     expect(hide.has("c5")).toBe(true);
     expect(hide.has("d5")).toBe(true);
   });
+
+  it("keeps Tactical Jump trails alive without hiding board pieces", () => {
+    const fx = {
+      jumpTrails: [{ id: "t", color: "w" as const, from: "a1" as const, to: "c3" as const }],
+    };
+    expect(hasCombatFxInput(fx)).toBe(true);
+    expect(buildFxHiddenSquares(fx).size).toBe(0);
+  });
 });

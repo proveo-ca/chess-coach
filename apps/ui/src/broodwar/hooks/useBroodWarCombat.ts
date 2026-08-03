@@ -4,6 +4,7 @@
  */
 
 import { createMemo, createSignal, onCleanup } from "solid-js";
+import type { Square } from "chess.js";
 
 import { ATTACK_MS, FRAG_FLIGHT_MS } from "~/broodwar/animations/attackAnim";
 import { DEATH_MS } from "~/broodwar/animations/deathAnim";
@@ -13,10 +14,10 @@ import type { AttackCue, DeathCue, MoveCue } from "~/broodwar/animations/types";
 import { findKing, placementToMap } from "~/broodwar/board";
 import { MOVE_MS, MOVE_SQUARE_MS } from "~/broodwar/constants";
 import { knightElbowMs, moveDurationMs } from "~/broodwar/animations/moveTiming";
-import { migrateSpecialUsed } from "~/broodwar/broodWarStore";
+import { migrateSpecialUsed, rookModeAt } from "~/broodwar/broodWarStore";
 import type { ResolveTurnResult } from "~/broodwar/resolveTurn";
 import type { BroodWarColor } from "~/broodwar/types";
-import { isPieceVisibleToSide } from "~/broodwar/vision";
+import { isMoverVisibleToSide } from "~/broodwar/vision";
 import { game } from "~/store/gameStore";
 import { activePlayerColor } from "~/store/settingsStore";
 
@@ -41,6 +42,18 @@ export type PlayResolveOptions = {
   livesBefore: Record<BroodWarColor, number>;
   /** Viewer for fog-gated mover hulls (defaults to active player). */
   viewer?: BroodWarColor;
+  onDone?: () => void;
+};
+
+export type PlayRangedAttackOptions = {
+  /** Single special attack cue (e.g. bishop Charon Booster Missiles). */
+  cue: AttackCue;
+  /** Victim death cue spawned at impact (omit for pure damage FX). */
+  death?: DeathCue | null;
+  /** Projectile impact window; defaults to the combat kill→death delay. */
+  impactMs?: number;
+  /** Commit the board after impact + death collapse. */
+  commit: () => void;
   onDone?: () => void;
 };
 
@@ -122,6 +135,7 @@ export function useBroodWarCombat() {
     moves: ResolveTurnResult["moves"],
     fenAfter: CombatCommit,
     opts: PlayResolveOptions,
+    revealedFrom: ReadonlySet<Square> = new Set(),
   ) => {
     const viewer = opts.viewer ?? activePlayerColor();
     const g = game();
@@ -130,8 +144,10 @@ export function useBroodWarCombat() {
     const kingMoves = moves.filter((m) => m.piece === "k" && damagedIds.has(m.color));
     const hullMoves = moves.filter((m) => !(m.piece === "k" && damagedIds.has(m.color)));
     // Fog gates player visuals only — engine still commits fenAfter after travel.
+    // Attackers keep their shot reveal for the occupy/slide cue; rook vision
+    // parity comes from the store so siege mode matches ChessBoard fog.
     const shown = hullMoves.filter((m) =>
-      isPieceVisibleToSide(g, viewer, m.from, m.color),
+      isMoverVisibleToSide(g, viewer, m, revealedFrom, { rookModeFor: rookModeAt }),
     );
 
     let pending = 0;
@@ -221,6 +237,31 @@ export function useBroodWarCombat() {
     } else if (kingMoves.length === 0) {
       arm(MOVE_MS);
     }
+  };
+
+  /**
+   * Play one ranged special attack without a classical relocate:
+   * cue → impact (death cue) → death collapse → commit.
+   */
+  const playRangedAttack = (opts: PlayRangedAttackOptions) => {
+    clearTimers();
+    setAttackCues([]);
+    setAttackDying({});
+    setDeathCues([]);
+    setMoveCues([]);
+    setMoveProgress({});
+    setMoveLeg({});
+
+    setAttackCues([opts.cue]);
+    after(opts.impactMs ?? FRAG_FLIGHT_MS, () => {
+      if (opts.death) setDeathCues([opts.death]);
+      after(DEATH_MS, () => {
+        setAttackCues([]);
+        setDeathCues([]);
+        opts.commit();
+        opts.onDone?.();
+      });
+    });
   };
 
   /**
@@ -374,7 +415,7 @@ export function useBroodWarCombat() {
         return;
       }
 
-      playMoves(result.moves, afterMoveCommit, opts);
+      playMoves(result.moves, afterMoveCommit, opts, attackFrom);
     });
   };
 
@@ -392,6 +433,7 @@ export function useBroodWarCombat() {
     moveLeg,
     kingDamage: boardKingDamage,
     playResolve,
+    playRangedAttack,
     syncKingDamageFromBoard,
     clear,
     attackMs: ATTACK_MS,

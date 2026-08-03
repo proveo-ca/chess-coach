@@ -15,6 +15,11 @@ import {
 } from "~/broodwar/animations/attackAnim";
 import styles from "~/broodwar/animations/AttackAnimation.module.css";
 import {
+  BISHOP_CHARON,
+  charonImpactStyle,
+  charonVolleyStyle,
+} from "~/broodwar/animations/bishopCharon";
+import {
   aimPoseFor,
   aimTransformCss,
   knightAimDiagVec,
@@ -72,7 +77,15 @@ const attackNode = (cue: AttackCue): JSX.Element => {
     case "b":
       return (
         <div class={styles.pieceFace}>
-          <InlineBishop color={cue.color} face={face} gunDeg={deg} aiming />
+          <InlineBishop
+            color={cue.color}
+            face={face}
+            gunDeg={deg}
+            aiming
+            armed={cue.anim === BISHOP_CHARON}
+            launcherDeg={cue.anim === BISHOP_CHARON ? deg : undefined}
+            launcherCapsVisible={cue.anim !== BISHOP_CHARON}
+          />
         </div>
       );
     case "r":
@@ -236,7 +249,7 @@ export const AttackAnimation: Component<AttackAnimationProps> = (props) => {
         {(cue) => {
           // Keyed by cue.id via stable cue objects from the combat bus — do not
           // rebuild the cues array mid-attack or CSS attack anims restart.
-          const anim = ANIM_BY_PIECE[cue.piece];
+          const anim = cue.anim ?? ANIM_BY_PIECE[cue.piece];
           const isDying = () => dying(cue.id);
           return (
             <>
@@ -271,6 +284,30 @@ export const AttackAnimation: Component<AttackAnimationProps> = (props) => {
                 </BoardFx>
               </Show>
 
+              <Show when={anim === BISHOP_CHARON}>
+                <BoardFx
+                  class={styles.charonVolley}
+                  style={charonVolleyStyle(cue, props.boardWidth, props.boardHeight)}
+                >
+                  <div class={styles.charonMissile} data-charon-missile="a">
+                    <div class={`${styles.charonCurve} ${styles.charonCurveA}`}>
+                      <div class={styles.charonMissileBody} />
+                    </div>
+                  </div>
+                  <div class={styles.charonMissile} data-charon-missile="b">
+                    <div class={`${styles.charonCurve} ${styles.charonCurveB}`}>
+                      <div class={styles.charonMissileBody} />
+                    </div>
+                  </div>
+                </BoardFx>
+                <BoardFx
+                  class={styles.charonImpact}
+                  style={charonImpactStyle(cue, props.boardWidth, props.boardHeight)}
+                >
+                  <div class={styles.charonImpactCore} />
+                </BoardFx>
+              </Show>
+
               {/*
                 When the unit is captured mid-attack, hide the attack hull so
                 DeathAnimation owns the death cue. Target-square FX (impact /
@@ -280,7 +317,12 @@ export const AttackAnimation: Component<AttackAnimationProps> = (props) => {
                 <div
                   class={styles.originSlot}
                   classList={{ [styles[`anim-${anim}`]]: true }}
-                  style={squareBoxStyle(cue.from, props.boardWidth, props.boardHeight)}
+                  style={{
+                    ...squareBoxStyle(cue.from, props.boardWidth, props.boardHeight),
+                    ...(anim === BISHOP_CHARON
+                      ? { "--attack-ms": `${FRAG_FLIGHT_MS}ms` }
+                      : {}),
+                  }}
                   data-square={cue.from}
                   data-attack-anim={anim}
                   data-rook-mode={cue.piece === "r" ? rookModeAt(cue.from) : undefined}

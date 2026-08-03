@@ -19,10 +19,10 @@ export function InlineQueen(props: InlineQueenProps) {
         <g transform={NERD_FRAME.Q}>
           <g stroke="#222" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8">
             <ellipse fill="#555" cx="22.5" cy="42" rx="16" ry="2" stroke="none" opacity=".25" />
-            <rect fill="#555" x="13.5" y="2.5" width="7" height="12" rx="3" />
-            <rect fill="#555" x="24.5" y="2.5" width="7" height="12" rx="3" />
-            <ellipse fill={team()} cx="17" cy="3.5" rx="3" ry="1.6" />
-            <ellipse fill={team()} cx="28" cy="3.5" rx="3" ry="1.6" />
+            <rect data-part="jump-thruster" fill="#555" x="13.5" y="2.5" width="7" height="12" rx="3" />
+            <rect data-part="jump-thruster" fill="#555" x="24.5" y="2.5" width="7" height="12" rx="3" />
+            <ellipse data-part="jump-thruster-cap" fill={team()} cx="17" cy="3.5" rx="3" ry="1.6" />
+            <ellipse data-part="jump-thruster-cap" fill={team()} cx="28" cy="3.5" rx="3" ry="1.6" />
             <path fill="#fff" d="M5 9 14 6 18 9h9l4-3 9 3-2 10-11-2-2 5h-5l-2-5-11 2z" />
             <path fill={team()} d="M7 10 14 8l3 3-2 4-8 1z" />
             <path fill={team()} d="m38 10-7-2-3 3 2 4 8 1z" />

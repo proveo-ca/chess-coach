@@ -13,9 +13,10 @@ import {
 import type { PieceSpecialArmCtx } from "~/broodwar/hooks/usePieceSpecialArm";
 import type { ArmResult } from "~/broodwar/specials/pieceSpecials";
 import {
-  canBwPawnDouble,
+  canBwPawnSingle,
   canClassicalPawnDouble,
   pawnDoubleTarget,
+  pawnSingleTarget,
 } from "~/broodwar/specials/pawnDouble";
 import { addMove, currentFen, loadFen } from "~/store/gameStore";
 import { activePlayerColor } from "~/store/settingsStore";
@@ -36,7 +37,7 @@ const whiteToMove = (fen: string): string => {
  */
 export const useMarineDoubleStep = () => {
   const [caption, setCaption] = createSignal(
-    "Drag gas onto a pawn — start-rank doubles are free; otherwise 1 gas",
+    "Drag gas onto a pawn — start-rank doubles are free; gas moves 1 extra square",
   );
   const [moveCues, setMoveCues] = createSignal<MoveCue[]>([]);
   const [moveProgress, setMoveProgress] = createSignal<Record<string, 0 | 1>>({});
@@ -114,9 +115,10 @@ export const useMarineDoubleStep = () => {
       setCaption("Drop gas on your own marine");
       return false;
     }
-    const to = pawnDoubleTarget(ctx.square, piece.color);
-    if (!to) {
-      setCaption("No room for a double-step");
+    const classicalTo = pawnDoubleTarget(ctx.square, piece.color);
+    const gasTo = pawnSingleTarget(ctx.square, piece.color);
+    if (!classicalTo || !gasTo) {
+      setCaption("No room to move forward");
       return false;
     }
 
@@ -127,14 +129,14 @@ export const useMarineDoubleStep = () => {
           parts[1] = piece.color;
           loadFen(parts.join(" "));
         }
-        addMove({ from: ctx.square, to });
+        addMove({ from: ctx.square, to: classicalTo });
         // Let BroodWarChessBoard finish the hop before forcing side-to-move.
-        const settleMs = 40 + moveDurationMs(ctx.square, to, "p");
+        const settleMs = 40 + moveDurationMs(ctx.square, classicalTo, "p");
         after(settleMs, () => {
           const normalized = whiteToMove(currentFen());
           if (normalized !== currentFen()) loadFen(normalized);
         });
-        setCaption(`Free classical double ${ctx.square}→${to} — canister unused`);
+        setCaption(`Free classical double ${ctx.square}→${classicalTo} — canister unused`);
         return "free";
       } catch {
         setCaption("Classical double failed");
@@ -146,25 +148,25 @@ export const useMarineDoubleStep = () => {
       setCaption("This marine already used its special this turn");
       return false;
     }
-    if (!canBwPawnDouble(fen, ctx.square)) {
-      setCaption("Path blocked — need two empty squares ahead");
+    if (!canBwPawnSingle(fen, ctx.square)) {
+      setCaption("Path blocked — need the square ahead to be empty");
       return false;
     }
     if (!spendEnergy(activePlayerColor())) {
-      setCaption("Need vespene gas for a non-classical double");
+      setCaption("Need vespene gas for a non-classical extra step");
       return false;
     }
 
     const from = ctx.square;
-    playDoubleSlide(from, to, piece.color, () => {
-      if (!applyBwDoubleFen(from, to)) {
-        setCaption("Double-step failed");
+    playDoubleSlide(from, gasTo, piece.color, () => {
+      if (!applyBwDoubleFen(from, gasTo)) {
+        setCaption("Extra step failed");
         return;
       }
-      migrateSpecialUsed(from, to);
-      setCaption(`Special double ${from}→${to} · 1 gas`);
+      migrateSpecialUsed(from, gasTo);
+      setCaption(`Special extra step ${from}→${gasTo} · 1 gas`);
     });
-    setCaption(`Special double ${from}→${to}…`);
+    setCaption(`Special extra step ${from}→${gasTo}…`);
     return "armed";
   };
 

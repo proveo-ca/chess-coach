@@ -12,16 +12,18 @@ import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { findBoardGrid, squareBoxStyle } from "~/broodwar/animations/boardGeom";
 import { clearSiegedRooks, resetBroodWarEconomy, startPlanningTimer } from "~/broodwar/broodWarStore";
 import { GasDeploy as GasDeployRack } from "~/broodwar/features/GasDeploy";
+import { useBishopCharon } from "~/broodwar/hooks/useBishopCharon";
 import { useCommandCenterDeploy } from "~/broodwar/hooks/useCommandCenterDeploy";
 import { useMarineDoubleStep } from "~/broodwar/hooks/useMarineDoubleStep";
 import { usePieceSpecialArm } from "~/broodwar/hooks/usePieceSpecialArm";
+import { useQueenTacticalJump } from "~/broodwar/hooks/useQueenTacticalJump";
 import { useRookSiege } from "~/broodwar/hooks/useRookSiege";
 import { useVultureSpiderMine } from "~/broodwar/hooks/useVultureSpiderMine";
 import { ResourceBar } from "~/broodwar/primitives/ResourceBar";
 import { DeployModal } from "~/broodwar/primitives/DeployModal";
 import { TurnBar } from "~/broodwar/primitives/TurnBar";
-import kingSpawnStyles from "~/broodwar/specials/KingSpawnDemo.module.css";
 import { BroodWarChessBoard } from "~/broodwar/BroodWarChessBoard";
+import styles from "~/screens/NerdTurnChrome.stories.module.css";
 import { Screen } from "~/components/primitives/Screen";
 import { NERD_CAPABILITIES, setCapabilities } from "~/store/capabilitiesStore";
 import { currentFen, loadFen } from "~/store/gameStore";
@@ -92,7 +94,7 @@ export const GasDeploy: Story = {
     docs: {
       description: {
         story:
-          "Full army + GasDeploy: pawn (free classical / paid BW double), knight (spider mine), rook (siege), king (spawn). Controls → gas (1–3).",
+          "Full army + GasDeploy: pawn (free classical / paid BW double), knight (spider mine), bishop (2-gas Charon Booster Missiles when a diagonal queen exists), rook (siege), queen (2-gas Tactical Jump to a visible empty square), king (spawn). Controls → gas (1–3).",
       },
     },
   },
@@ -107,10 +109,11 @@ export const GasDeploy: Story = {
     },
   },
   render: (args) => {
-    const gas = () => Math.min(3, Math.max(1, Number(args.gas) || 3));
+    const gas = () =>
+      Math.min(3, Math.max(1, Number((args as { gas?: number }).gas) || 3));
     const [fen, setFen] = createSignal(FULL_ARMY_FEN);
     const [status, setStatus] = createSignal(
-      "Drag gas onto pawn / knight / rook / king",
+      "Drag gas onto pawn / knight / bishop / rook / queen / king",
     );
     const [overlayBox, setOverlayBox] = createSignal<OverlayBox | null>(null);
     let hostRef = undefined as HTMLDivElement | undefined;
@@ -128,11 +131,15 @@ export const GasDeploy: Story = {
       setFen,
       startingFen: FULL_ARMY_FEN,
     });
+    const charon = useBishopCharon({ startingFen: FULL_ARMY_FEN });
+    const tactical = useQueenTacticalJump({ startingFen: FULL_ARMY_FEN });
     const { onGasDeploy } = usePieceSpecialArm({
       r: rookSiege.arm,
       p: marine.arm,
       k: command.arm,
       n: vulture.arm,
+      b: charon.arm,
+      q: tactical.arm,
     });
 
     const syncOverlay = () => {
@@ -183,7 +190,9 @@ export const GasDeploy: Story = {
         startTimer: false,
       });
       clearSiegedRooks();
-      setStatus("Drag gas onto pawn / knight / rook / king");
+      charon.clear();
+      tactical.clear();
+      setStatus("Drag gas onto pawn / knight / bishop / rook / queen / king");
     });
 
     createEffect(() => {
@@ -197,6 +206,14 @@ export const GasDeploy: Story = {
     });
 
     const refreshStatus = () => {
+      if (charon.phase() !== "idle") {
+        setStatus(charon.caption());
+        return;
+      }
+      if (tactical.phase() !== "idle") {
+        setStatus(tactical.caption());
+        return;
+      }
       if (command.phase() !== "idle") {
         setStatus(command.caption());
         return;
@@ -207,6 +224,10 @@ export const GasDeploy: Story = {
     };
 
     createEffect(() => {
+      void charon.phase();
+      void charon.caption();
+      void tactical.phase();
+      void tactical.caption();
       void command.phase();
       void command.caption();
       void vulture.caption();
@@ -223,16 +244,28 @@ export const GasDeploy: Story = {
             <div ref={hostRef} style={{ position: "relative" }}>
               <BroodWarChessBoard
                 variant="eclipse"
-                fogOfWar={false}
+                fogOfWar
                 deployCues={command.deployCue() ? [command.deployCue()!] : []}
                 spiderMines={vulture.mineAt() ? [vulture.mineAt()!] : []}
-                moveCues={marine.moveCues()}
-                moveProgress={marine.moveProgress()}
+                attackCues={charon.combat.attackCues()}
+                attackDying={charon.combat.attackDying()}
+                deathCues={charon.combat.deathCues()}
+                kingDamage={charon.combat.kingDamage()}
+                specialTargets={[...charon.specialTargets(), ...tactical.specialTargets()]}
+                armedBishops={charon.armedBishops()}
+                onSquareClickIntercept={(square) =>
+                  tactical.interceptSquareClick(square) || charon.interceptSquareClick(square)
+                }
+                jumpCues={tactical.jumpCues()}
+                jumpTrails={tactical.jumpTrails()}
+                moveCues={[...marine.moveCues(), ...charon.combat.moveCues()]}
+                moveProgress={{ ...marine.moveProgress(), ...charon.combat.moveProgress() }}
+                moveLeg={{ ...charon.combat.moveLeg() }}
               />
               <Show when={overlayBox()}>
                 {(box) => (
                   <div
-                    class={kingSpawnStyles.boardOverlay}
+                    class={styles.boardOverlay}
                     data-special="king-spawn"
                     style={{
                       top: `${box().top}px`,
@@ -245,7 +278,7 @@ export const GasDeploy: Story = {
                       <For each={command.adjacent()}>
                         {(sq) => (
                           <div
-                            class={`${kingSpawnStyles.hit} ${kingSpawnStyles.hitAdjacent}`}
+                            class={`${styles.hit} ${styles.hitAdjacent}`}
                             style={squareBoxStyle(sq, box().width, box().height)}
                             data-square={sq}
                             data-spawn-target
@@ -306,7 +339,8 @@ export const GasDeploy: Story = {
                 else if (t.piece === "p") setStatus(marine.caption());
                 else if (t.piece === "k") setStatus(command.caption());
                 else if (t.piece === "n") setStatus(vulture.caption());
-                else setStatus(`Armed ${t.piece.toUpperCase()} @ ${t.square}`);
+                else if (t.piece === "b") setStatus(charon.caption());
+                else if (t.piece === "q") setStatus(tactical.caption());
                 setFen(currentFen());
               }}
               onCancel={() => setStatus("Cancelled — canister returned")}

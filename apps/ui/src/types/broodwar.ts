@@ -13,6 +13,16 @@ export type KingDamageState = "pristine" | "smallFire" | "bigFire" | "destroyed"
 /** Siege Tank turret: mobile twin guns vs deployed shock cannon (`InlineRook`). */
 export type RookMode = "tank" | "siege";
 
+/** Attack VFX cue ids (CSS `anim-*` class stems). */
+export type AttackAnimKind =
+  | "pawnRifle"
+  | "knightFrag"
+  | "bishopGatlings"
+  | "bishopCharon"
+  | "rookBattery"
+  | "queenLaser"
+  | "kingDualCannon";
+
 /** Active attack VFX cue (classical resolution part 1). */
 export type AttackCue = {
   id: string;
@@ -20,6 +30,8 @@ export type AttackCue = {
   color: PieceColor;
   from: Square;
   to: Square;
+  /** Per-cue VFX override (Charon Booster Missiles); defaults to `ANIM_BY_PIECE[piece]`. */
+  anim?: AttackAnimKind;
   /** King only — keep HP fire overlays on the attacking hull. */
   damage?: KingDamageState;
   /** Stable fire-spot seed (match kingDamage overlay). */
@@ -38,6 +50,14 @@ export type DeathCue = {
 export type MoveCue = {
   id: string;
   piece: BroodWarPiece;
+  color: PieceColor;
+  from: Square;
+  to: Square;
+};
+
+/** Tactical Jump green thruster trail (long-lived; does not hide board pieces). */
+export type QueenJumpTrail = {
+  id: string;
   color: PieceColor;
   from: Square;
   to: Square;

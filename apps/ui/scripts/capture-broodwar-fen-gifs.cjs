@@ -15,14 +15,14 @@ const BASE = "http://127.0.0.1:6006/iframe.html";
 
 const STORIES = [
   {
-    id: "screens-nerd-demo--combat-chain",
+    id: "screens-nerd-brood-war-demo--combat-chain",
     out: "combat-chain.gif",
     turns: 3,
     settleMs: 2400,
     samplesPerTurn: 8,
   },
   {
-    id: "screens-nerd-demo--king-hunt",
+    id: "screens-nerd-brood-war-demo--king-hunt",
     out: "king-hunt.gif",
     turns: 5,
     settleMs: 2200,

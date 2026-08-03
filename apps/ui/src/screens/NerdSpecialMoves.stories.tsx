@@ -1,13 +1,15 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
+import { BishopCharonDemo } from "~/broodwar/specials/BishopCharonDemo";
 import { KingSpawnDemo } from "~/broodwar/specials/KingSpawnDemo";
 import { KnightMineDemo } from "~/broodwar/specials/KnightMineDemo";
 import { MarineDoubleDemo } from "~/broodwar/specials/MarineDoubleDemo";
+import { QueenTacticalJumpDemo } from "~/broodwar/specials/QueenTacticalJumpDemo";
 import { RookSiegeDemo } from "~/broodwar/specials/RookSiegeDemo";
 
 /**
  * Brood War specials via GasDeploy. Command Center deploy, Vulture spider mine,
- * Marine double-step, Siege Tank mode toggle. Activation lives in piece hooks.
+ * Marine extra step, Siege Tank mode toggle. Activation lives in piece hooks.
  */
 const meta = {
   title: "Screens/Nerd/Brood War/Special Moves",
@@ -16,7 +18,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Drag a vespene canister from GasDeploy onto a unit. Marine: start-rank doubles are free (no gas); otherwise 1 gas. Command Center: DeployModal → deploy adjacent. Vulture: stack order. Siege Tank: toggle packed ↔ unpacked.",
+          "Drag vespene canisters from GasDeploy onto a unit. Marine: start-rank doubles are free (no gas); otherwise 1 gas. Command Center: DeployModal → deploy adjacent. Vulture: stack order. Siege Tank: toggle packed ↔ unpacked. Goliath: 2 gas arms Charon Booster Missiles, then click the revealed queen. Battlecruiser: 2 gas arms Tactical Jump, then click a visible empty square.",
       },
     },
   },
@@ -31,7 +33,7 @@ export const MarineDouble: Story = {
     docs: {
       description: {
         story:
-          "d2 can classical-double for free (canister unused). e3 needs 1 gas for a Brood War double-step anytime.",
+          "d2 can classical-double for free (canister unused). Gas on a pawn moves only 1 extra square forward (no d2→d6).",
       },
     },
   },
@@ -62,6 +64,32 @@ export const KnightMine: Story = {
     },
   },
   render: () => <KnightMineDemo />,
+};
+
+export const BishopCharon: Story = {
+  name: "Goliath",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Charon Booster Missiles costs 2 vespene: drag the two-canister drop onto the Goliath to arm targeting (no auto-fire), then click the highlighted enemy queen on the diagonal. Twin homing missiles ignore blockers; impact at 250ms, then the queen death + FEN commit.",
+      },
+    },
+  },
+  render: () => <BishopCharonDemo />,
+};
+
+export const QueenTacticalJump: Story = {
+  name: "Battlecruiser",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Tactical Jump costs 2 vespene: drag the two-canister drop onto the Battlecruiser to arm targeting, then click a highlighted visible empty square. The queen teleports through blockers (attacks on her are ignored): 200ms stretched-thin light travel facing the jump, 50ms appear burst, green back thrusters, and twin trails fading over 1000ms.",
+      },
+    },
+  },
+  render: () => <QueenTacticalJumpDemo />,
 };
 
 export const RookSiege: Story = {

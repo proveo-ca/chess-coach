@@ -11,8 +11,8 @@ import { loadFen } from "~/store/gameStore";
 import { setActivePlayerColor, setNerdModeUnlocked, setPlayerIdentity } from "~/store/settingsStore";
 
 /**
- * Storybook: Marine double-step.
- * d2 = classical free double (native slide); e3 = BW special (cued slide + aura).
+ * Storybook: Marine steps.
+ * d2 = classical free double (native slide); e3 = BW gas extra step (+1, cued slide + aura).
  */
 export const MarineDoubleDemo: Component = () => {
   const special = useMarineDoubleStep();

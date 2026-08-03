@@ -29,7 +29,7 @@ export const CombatChain: Story = {
     docs: {
       description: {
         story:
-          "BWFEN reference: each arrow = one turn = White & Black classical. 1. d2-d4 & Be8-c6 · 2. d4xe5 & Nf6-e4 · 3. Rc4xc6 & Ne4xc4. Rook starts c4 (tank). Captures = attack → death → occupy.",
+          "BWFEN reference: each arrow = one turn = White & Black classical. 1. d2-d4 & Be8-c6 · 2. d4xe5 & Nf6-e4 · 3. Rc3xc6 & Ne4xc3. Rook starts c3 (siege). Captures = attack → death → occupy.",
       },
     },
   },

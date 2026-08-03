@@ -47,7 +47,7 @@ These are locked for v1 so the engine can ship without further product decisions
    - turns `1–10` → **+1**
    - turns `11–20` → **+2**
    - turns `21+` → **+3**
-5. **Vespene energy (special fuel)** — same tiers as material income (`1` / `2` / `3`). Refills to the tier cap at the start of each planning turn; **does not accumulate**. Each special costs **1** gas. Shown on [`ResourceBar`](apps/ui/src/broodwar/primitives/ResourceBar.tsx) as remaining / capacity.
+5. **Vespene energy (special fuel)** — same tiers as material income (`1` / `2` / `3`). Refills to the tier cap at the start of each planning turn; **does not accumulate**. Each special costs **1** gas (exceptions: Bishop/Goliath Charon Booster Missiles and Queen/Battlecruiser Tactical Jump cost **2** — see Special moves). Shown on [`ResourceBar`](apps/ui/src/broodwar/primitives/ResourceBar.tsx) as remaining / capacity.
 6. **Idle bonus** — if a player queues **neither** special nor classical → income × **1.5** (rounded down).
 7. **Caps** — max **12** stored material; max **50** deployed material (King counts as **1** deployed). UI deploy count on ResourceBar is **Σ unit costs** of pieces the player owns on the board.
 8. **Unit purchase costs** (stored → deployed on spawn):
@@ -86,11 +86,11 @@ Triggered by **long-press** on a friendly piece during planning (not a tap/selec
 
 | Unit | Special | Notes | FEN / `chess.js` |
 |---|---|---|---|
-| **Pawn** | Double-step (any time) | Move two squares forward whenever (not only from start rank). | **Illegal** — deferred |
+| **Pawn (Marine)** | Extra step | Start-rank classical doubles remain free. Paid gas special moves only **1 extra square** forward (destination empty; no d2→d6 stacking). | Classical double FEN-legal; gas extra step is a Brood War board op |
 | **Knight** | Drop spider mine | Place a landmine on a legal adjacent/empty target (product TBD). **Once per knight** (track `minesUsed` / unit id). | Mine is not a chess piece — deferred board model |
-| **Bishop** | Snipe queen | Fire through any blockers; hits an enemy queen on the bishop’s diagonal ray (or chosen queen in range — product TBD). | **Illegal** (ignores blockers) — deferred |
+| **Bishop (Goliath)** | Charon Booster Missiles (internal `bishopSnipe`) | Costs **2** vespene. Two-canister GasDeploy drag arms targeting only (energy < 2 → “Not enough gas (2 required)”); exactly one enemy queen on the diagonal rays (blockers ignored) is highlighted; wrong clicks are ignored while armed; clicking the queen fires twin homing missiles (`bishopCharon`, 250ms). Bishop does **not** relocate; queen is removed on impact + normal death/FEN commit. | **Illegal** (ignores blockers) — **implemented** via Brood War board ops |
 | **Rook** | Attack without moving | Classical-style attack/capture VFX + damage on a rook-legal target square, but the rook **stays** on `from`. | **Illegal** — deferred |
-| **Queen** | Warp | Teleport to **any** empty board square. | **Illegal** — deferred |
+| **Queen (Battlecruiser)** | Tactical Jump (internal `queenWarp`) | Costs **2** vespene. Two-canister GasDeploy drag arms targeting; click a highlighted **visible empty** square (blockers ignored) to teleport. Attacks on the jumping queen are ignored. VFX: 200ms stretched-thin light travel facing the jump, 50ms appear burst, green back thrusters, twin trails fading over 1000ms. | **Illegal** (teleport / ignore path) — **implemented** via Brood War board ops |
 | **King** | Spawn (purchase) | Opens a [`PromotionModal`](apps/ui/src/components/primitives/PromotionModal.tsx) **variant** (spawn picker), not pawn promotion. Spends stored material; deploys adjacent (spawn rules already in economy). | FEN-legal once spawned (position stays FEN-loadable) |
 
 ### Classical / FEN-illegal scenarios (catalog)
@@ -120,18 +120,15 @@ The king’s special is **purchase + deploy an adjacent unit** (`p` / `n` / `b` 
 | Cost | Spend **stored** material per unit cost table; increment **deployed** (respect caps). |
 | Phase | Special with stack timing `"before"` / `"after"` like other specials ([rule §1](#rules) / §9). |
 | FEN | **Legal** after resolve — ship this special first; do **not** lump it with deferred FEN-illegal specials. |
-| vs illegal specials | Pawn double / bishop snipe / rook siege / queen warp / mines break or bypass piece-placement FEN; spawn does not. |
+| vs illegal specials | Rook attack-without-moving / mines break or bypass piece-placement FEN; spawn does not. Marine gas extra step, Bishop Charon Booster Missiles, and Queen Tactical Jump bypass classical limits but ship via Brood War board ops. |
 
-#### Deferred specials — typed only; no resolve yet
+#### Remaining deferred specials / board-model gaps
 
 Do **not** implement resolution for these until Brood War board ops exist (not “classical move then FEN”):
 
 | Special | Classical / FEN issue |
 |---|---|
-| **Pawn double-step anytime** | Illegal unless from the pawn’s start rank |
-| **Bishop snipe queen** | Ignores blockers on the diagonal |
 | **Rook siege** | Attack/damage without relocating |
-| **Queen warp** | Teleport to any empty square |
 | **Knight spider mine** | Mine is not a FEN piece; occupancy / vision / trigger TBD |
 
 Until then: keep `SpecialKind` stubs; long-press UI may show “coming soon” / disabled; **ship first** king spawn + `ResourceBar` + economy validation.
@@ -278,11 +275,11 @@ type SpecialTiming = "before" | "after";
 /** Per-unit special (long-press). `spawn` = king only for v1 implementable path. */
 type SpecialKind =
   | "spawn"           // king — purchase adjacent unit
-  | "pawnDouble"      // deferred — FEN illegal
+  | "pawnDouble"      // Marine steps — classical double free; gas extra step (+1) shipped
   | "knightMine"      // deferred — once per knight; mine board model TBD
-  | "bishopSnipe"     // deferred — FEN illegal (ignore blockers)
+  | "bishopSnipe"     // Charon Booster Missiles — shipped (2 gas; ignore blockers)
   | "rookSiege"       // deferred — attack without moving
-  | "queenWarp";      // deferred — teleport any empty square
+  | "queenWarp";      // Tactical Jump — shipped (2 gas; teleport to visible empty square)
 
 type KingDamageState = "pristine" | "smallFire" | "bigFire" | "destroyed";
 // lives 3 → pristine, 2 → smallFire, 1 → bigFire, 0 → destroyed
@@ -584,7 +581,7 @@ Play functions fire one cue and assert DOM. Visual review required for animation
 - Multiple specials or multiple classical actions per turn
 - Persisting Brood War matches to `gameHistoryStore`
 - Replacing Coach/Analysis chess engine
-- Resolving FEN-illegal specials (pawn double, bishop snipe, rook siege, queen warp) — typed only
+- Resolving remaining FEN-illegal rook attack-without-moving — typed only
 - Full spider-mine simulation (placement UX + trigger rules TBD)
 
 ---

@@ -7,6 +7,7 @@ import {
   getSideVision,
   getVisionDisplayCells,
   getVisionFogHolePaths,
+  isMoverVisibleToSide,
   isPieceVisibleToSide,
 } from "~/broodwar/vision";
 
@@ -194,6 +195,36 @@ describe("isPieceVisibleToSide", () => {
     expect(isPieceVisibleToSide(g, "w", "e4", "w")).toBe(true);
     expect(isPieceVisibleToSide(g, "w", "h2", "b")).toBe(false);
     expect(isPieceVisibleToSide(g, "w", "c5", "b")).toBe(false);
+  });
+});
+
+describe("isMoverVisibleToSide", () => {
+  it("keeps an attacker's occupy cue visible after its spotter dies mid-resolve", () => {
+    // Combat Chain turn 3 post-attack: the c3 siege rook is gone, so e4 is dark.
+    const g = new Chess("5k2/8/8/4P3/4n3/8/8/4K3 w - - 0 1");
+    const move = { from: "e4", color: "b" } as const;
+
+    expect(isPieceVisibleToSide(g, "w", move.from, move.color)).toBe(false);
+    expect(isMoverVisibleToSide(g, "w", move, new Set<Square>())).toBe(false);
+    expect(isMoverVisibleToSide(g, "w", move, new Set<Square>(["e4"]))).toBe(true);
+  });
+
+  it("still gates quiet enemy moves that did not attack this resolve", () => {
+    const g = new Chess("k7/5r2/8/2n5/4K3/8/7b/8 w - - 0 1");
+    const quiet = { from: "c5", color: "b" } as const;
+
+    expect(isMoverVisibleToSide(g, "w", quiet, new Set<Square>())).toBe(false);
+    expect(isMoverVisibleToSide(g, "w", quiet, new Set<Square>(["c5"]))).toBe(true);
+  });
+
+  it("uses rook mode for vision parity with the board fog", () => {
+    const g = new Chess("4k3/8/8/6n1/8/2R5/8/4K3 w - - 0 1");
+    const move = { from: "g5", color: "b" } as const;
+
+    expect(isMoverVisibleToSide(g, "w", move, new Set<Square>())).toBe(false);
+    expect(
+      isMoverVisibleToSide(g, "w", move, new Set<Square>(), { rookModeFor: () => "siege" }),
+    ).toBe(true);
   });
 });
 

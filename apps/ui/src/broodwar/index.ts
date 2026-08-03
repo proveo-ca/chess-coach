@@ -20,4 +20,6 @@ export { usePieceSpecialArm } from "~/broodwar/hooks/usePieceSpecialArm";
 export { useCommandCenterDeploy } from "~/broodwar/hooks/useCommandCenterDeploy";
 export { useVultureSpiderMine } from "~/broodwar/hooks/useVultureSpiderMine";
 export { useRookSiege } from "~/broodwar/hooks/useRookSiege";
+export { useBishopCharon } from "~/broodwar/hooks/useBishopCharon";
+export { useQueenTacticalJump } from "~/broodwar/hooks/useQueenTacticalJump";
 export { useMarineDoubleStep } from "~/broodwar/hooks/useMarineDoubleStep";
