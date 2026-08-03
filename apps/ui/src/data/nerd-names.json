@@ -35,7 +35,7 @@
     "Zagara",
     "Zeratul"
   ],
-  "broodWarUnits": [
+  "starChessUnits": [
     "Arbiter",
     "Archon",
     "Battlecruiser",
@@ -85,7 +85,7 @@
     "Zealot",
     "Zergling"
   ],
-  "broodWarKoreanPros": [
+  "starChessKoreanPros": [
     "Artosis",
     "Tasteless",
     "Flash",

@@ -9,20 +9,20 @@ import {
 } from "solid-js";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { findBoardGrid, squareBoxStyle } from "~/broodwar/animations/boardGeom";
-import { clearSiegedRooks, resetBroodWarEconomy, startPlanningTimer } from "~/broodwar/broodWarStore";
-import { GasDeploy as GasDeployRack } from "~/broodwar/features/GasDeploy";
-import { useBishopCharon } from "~/broodwar/hooks/useBishopCharon";
-import { useCommandCenterDeploy } from "~/broodwar/hooks/useCommandCenterDeploy";
-import { useMarineDoubleStep } from "~/broodwar/hooks/useMarineDoubleStep";
-import { usePieceSpecialArm } from "~/broodwar/hooks/usePieceSpecialArm";
-import { useQueenTacticalJump } from "~/broodwar/hooks/useQueenTacticalJump";
-import { useRookSiege } from "~/broodwar/hooks/useRookSiege";
-import { useVultureSpiderMine } from "~/broodwar/hooks/useVultureSpiderMine";
-import { ResourceBar } from "~/broodwar/primitives/ResourceBar";
-import { DeployModal } from "~/broodwar/primitives/DeployModal";
-import { TurnBar } from "~/broodwar/primitives/TurnBar";
-import { BroodWarChessBoard } from "~/broodwar/BroodWarChessBoard";
+import { findBoardGrid, squareBoxStyle } from "~/starchess/animations/boardGeom";
+import { clearSiegedRooks, resetStarChessEconomy, startPlanningTimer } from "~/starchess/starChessStore";
+import { GasDeploy as GasDeployRack } from "~/starchess/features/GasDeploy";
+import { useBishopCharon } from "~/starchess/hooks/useBishopCharon";
+import { useCommandCenterDeploy } from "~/starchess/hooks/useCommandCenterDeploy";
+import { useMarineDoubleStep } from "~/starchess/hooks/useMarineDoubleStep";
+import { usePieceSpecialArm } from "~/starchess/hooks/usePieceSpecialArm";
+import { useQueenTacticalJump } from "~/starchess/hooks/useQueenTacticalJump";
+import { useRookSiege } from "~/starchess/hooks/useRookSiege";
+import { useVultureSpiderMine } from "~/starchess/hooks/useVultureSpiderMine";
+import { ResourceBar } from "~/starchess/primitives/ResourceBar";
+import { DeployModal } from "~/starchess/primitives/DeployModal";
+import { TurnBar } from "~/starchess/primitives/TurnBar";
+import { StarChessChessBoard } from "~/starchess/StarChessChessBoard";
 import styles from "~/screens/NerdTurnChrome.stories.module.css";
 import { Screen } from "~/components/primitives/Screen";
 import { NERD_CAPABILITIES, setCapabilities } from "~/store/capabilitiesStore";
@@ -46,7 +46,7 @@ const turnForGas = (gas: number) => {
 type OverlayBox = { top: number; left: number; width: number; height: number };
 
 const meta = {
-  title: "Screens/Nerd/Brood War/Turn Chrome",
+  title: "Screens/Nerd/StarChess/Turn Chrome",
   parameters: {
     layout: "centered",
     docs: {
@@ -64,7 +64,7 @@ type Story = StoryObj;
 export const ResourceAndTurn: Story = {
   name: "ResourceBar + TurnBar",
   render: () => {
-    resetBroodWarEconomy({
+    resetStarChessEconomy({
       turn: 1,
       white: { stored: 12, deployed: 4 },
       startTimer: false,
@@ -82,7 +82,7 @@ export const ResourceAndTurn: Story = {
         <div style={{ flex: "1", "min-width": "0" }}>
           <ResourceBar />
         </div>
-        <TurnBar autoStart={false} onEnd={() => undefined} />
+        <TurnBar autoStart={false} resolveOnEnd={false} onEnd={() => undefined} />
       </div>
     );
   },
@@ -94,7 +94,7 @@ export const GasDeploy: Story = {
     docs: {
       description: {
         story:
-          "Full army + GasDeploy: pawn (free classical / paid BW double), knight (spider mine), bishop (2-gas Charon Booster Missiles when a diagonal queen exists), rook (siege), queen (2-gas Tactical Jump to a visible empty square), king (spawn). Controls → gas (1–3).",
+          "Full army + GasDeploy: pawn (free classical / paid StarChess double), knight (spider mine), bishop (2-gas Charon Booster Missiles when a diagonal queen exists), rook (siege), queen (2-gas Tactical Jump to a visible empty square), king (spawn). Controls → gas (1–3).",
       },
     },
   },
@@ -182,7 +182,7 @@ export const GasDeploy: Story = {
 
     createEffect(() => {
       const g = gas();
-      resetBroodWarEconomy({
+      resetStarChessEconomy({
         turn: turnForGas(g),
         white: { stored: 12, deployed: 39 },
         black: { stored: 12, deployed: 39 },
@@ -242,7 +242,7 @@ export const GasDeploy: Story = {
         <Screen.BoardArea>
           <Screen.BoardColumn>
             <div ref={hostRef} style={{ position: "relative" }}>
-              <BroodWarChessBoard
+              <StarChessChessBoard
                 variant="eclipse"
                 fogOfWar
                 deployCues={command.deployCue() ? [command.deployCue()!] : []}

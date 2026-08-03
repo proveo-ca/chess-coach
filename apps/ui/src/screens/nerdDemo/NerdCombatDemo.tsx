@@ -1,29 +1,26 @@
 /**
- * Combat Chain — BWFEN turn-shape reference story.
- * Visual agreement only: arrows step snaps; resolveTurn + useBroodWarCombat
- * own attack → death → occupy / slides (same pipeline as King Hunt).
- *
- *   1. d2-d4 & Be8-c6
- *   2. d4xe5 & Nf6-e4
- *   3. Rc3xc6 & Ne4xc3
- *
- * White rook starts on **c3** as an unpacked Siege Tank (siege mode), so
- * Rc3xc6 is in siege range and Ne4xc3 is a legal knight attack.
+ * Combat Chain — SCFEN + engine-driven turn-shape reference.
+ * Forward steps: queue via `addScMove` → `endScTurn` → combat VFX.
  */
 
 import { createSignal, onCleanup, onMount, type Component } from "solid-js";
 
-import { rookSquaresInPlacement } from "~/broodwar/board";
-import { classicFenFromBw } from "~/broodwar/bwfen";
-import { setSiegedRooks, setSpecialsUsed } from "~/broodwar/broodWarStore";
-import { useBroodWarCombat } from "~/broodwar/hooks/useBroodWarCombat";
-import { resolveTurn } from "~/broodwar/resolveTurn";
-import { BroodWarChessBoard } from "~/broodwar/BroodWarChessBoard";
+import { rookSquaresInPlacement } from "~/starchess/board";
+import {
+  COMBAT_CHAIN_PLY_SC,
+  COMBAT_CHAIN_STEPS,
+  queueCombatChainStep,
+} from "~/starchess/demos/combatChain";
+import { endScTurn } from "~/starchess/endScTurn";
+import { classicFenFromSc, toClassicFen } from "~/starchess/scfen";
+import { setPlanningSnapshot, setSiegedRooks } from "~/starchess/starChessStore";
+import { useStarChessCombat } from "~/starchess/hooks/useStarChessCombat";
+import { StarChessChessBoard } from "~/starchess/StarChessChessBoard";
 import { DualNavButton } from "~/components/primitives/DualNavButton";
 import styles from "~/screens/nerdDemo/NerdCombatDemo.module.css";
 import { setStorybookCapabilities } from "~/screens/storybookCapabilities";
 import { NERD_CAPABILITIES } from "~/store/capabilitiesStore";
-import type { BwFenSnapshot, ClassicalPlan } from "~/types/broodwar";
+import type { ScFenSnapshot } from "~/types/starchess";
 import { loadFen, setViewIndex } from "~/store/gameStore";
 import {
   setActivePlayerColor,
@@ -31,76 +28,29 @@ import {
   setPlayerIdentity,
 } from "~/store/settingsStore";
 
-type StoryTurn = {
-  caption: string;
-  white: ClassicalPlan | null;
-  black: ClassicalPlan | null;
-};
+export {
+  COMBAT_CHAIN_PLY_SC,
+  COMBAT_CHAIN_START_SCFEN,
+  COMBAT_CHAIN_STEPS,
+  buildCombatChainPlys,
+} from "~/starchess/demos/combatChain";
 
-const LIVES = { w: 3, b: 3 } as const;
-
-/** One planning snap per review index (0 = start). */
-export const COMBAT_CHAIN_PLY_BW: readonly BwFenSnapshot[] = [
-  {
-    placement: "4bk2/8/5n2/4p3/8/2R5/3P4/4K3",
-    turn: 0,
-    kingLives: { ...LIVES },
-    phase: "P",
-  },
-  {
-    placement: "5k2/8/2b2n2/4p3/3P4/2R5/8/4K3",
-    turn: 1,
-    kingLives: { ...LIVES },
-    phase: "P",
-  },
-  {
-    placement: "5k2/8/2b5/4P3/4n3/2R5/8/4K3",
-    turn: 2,
-    kingLives: { ...LIVES },
-    phase: "P",
-  },
-  {
-    placement: "5k2/8/8/4P3/8/2n5/8/4K3",
-    turn: 3,
-    kingLives: { ...LIVES },
-    phase: "P",
-  },
-] as const;
-
-const TURNS: readonly StoryTurn[] = [
-  {
-    caption: "1. d2-d4 & Be8-c6",
-    white: { color: "w", from: "d2", to: "d4" },
-    black: { color: "b", from: "e8", to: "c6" },
-  },
-  {
-    caption: "2. d4xe5 & Nf6-e4",
-    white: { color: "w", from: "d4", to: "e5" },
-    black: { color: "b", from: "f6", to: "e4" },
-  },
-  {
-    caption: "3. Rc3xc6 & Ne4xc3",
-    white: { color: "w", from: "c3", to: "c6" },
-    black: { color: "b", from: "e4", to: "c3" },
-  },
-];
-
-const TOTAL_TURNS = TURNS.length;
+const TOTAL_TURNS = COMBAT_CHAIN_STEPS.length;
 const START_CAPTION = "Start · use arrows to review turns";
 
-const applySnap = (snap: BwFenSnapshot) => {
-  setSpecialsUsed(snap.specialsUsed ?? []);
-  // Siege mode (unpacked, 9×9 vision) on every rook square in the snap.
+const applySnap = (snap: ScFenSnapshot) => {
+  setPlanningSnapshot(snap);
   setSiegedRooks(rookSquaresInPlacement(snap.placement));
-  loadFen(classicFenFromBw(snap, "w"));
+  loadFen(classicFenFromSc(snap, "w"));
   setViewIndex(snap.turn);
 };
 
 export const NerdCombatDemo: Component = () => {
-  const combat = useBroodWarCombat();
+  const combat = useStarChessCombat();
   const [caption, setCaption] = createSignal(START_CAPTION);
   const [turnIndex, setTurnIndex] = createSignal(0);
   const [playing, setPlaying] = createSignal(false);
+  const plies = COMBAT_CHAIN_PLY_SC;
 
   const prepare = () => {
     setStorybookCapabilities(NERD_CAPABILITIES);
@@ -111,55 +61,40 @@ export const NerdCombatDemo: Component = () => {
 
   const showPosition = (index: number) => {
     combat.clear();
-    applySnap(COMBAT_CHAIN_PLY_BW[index]!);
+    applySnap(plies[index]!);
     setTurnIndex(index);
     setPlaying(false);
-    setCaption(index === 0 ? START_CAPTION : TURNS[index - 1]!.caption);
+    setCaption(index === 0 ? START_CAPTION : COMBAT_CHAIN_STEPS[index - 1]!.caption);
   };
 
-  const finishTurn = (indexPlaying: number) => {
-    const next = indexPlaying + 1;
-    applySnap(COMBAT_CHAIN_PLY_BW[next]!);
-    setTurnIndex(next);
+  const finishTurn = (indexPlaying: number, next: ScFenSnapshot) => {
+    applySnap(next);
+    setTurnIndex(indexPlaying + 1);
     setPlaying(false);
-    setCaption(TURNS[indexPlaying]!.caption);
+    setCaption(COMBAT_CHAIN_STEPS[indexPlaying]!.caption);
   };
 
   const playTurn = (indexPlaying: number) => {
-    const turn = TURNS[indexPlaying];
-    const before = COMBAT_CHAIN_PLY_BW[indexPlaying];
-    if (!turn || !before) return;
+    const step = COMBAT_CHAIN_STEPS[indexPlaying];
+    const before = plies[indexPlaying];
+    if (!step || !before) return;
 
     combat.clear();
     setPlaying(true);
-    setCaption(turn.caption);
+    setCaption(step.caption);
     applySnap(before);
 
-    const resolved = resolveTurn({
-      placement: before.placement,
-      kingLives: before.kingLives,
-      white: turn.white,
-      black: turn.black,
-    });
+    const queued = queueCombatChainStep(before, step);
+    const { resolved, next } = endScTurn(queued);
 
     combat.playResolve(resolved, {
       startPlacement: before.placement,
       livesBefore: before.kingLives,
       commit: (snap) => {
         setSiegedRooks(rookSquaresInPlacement(snap.placement));
-        loadFen(
-          classicFenFromBw(
-            {
-              placement: snap.placement,
-              turn: before.turn + (snap.phase === "P" || snap.phase === "O" ? 1 : 0),
-              kingLives: snap.kingLives,
-              phase: snap.phase,
-            },
-            "w",
-          ),
-        );
+        loadFen(toClassicFen(snap.placement, "w", 0, Math.max(1, before.turn + 1)));
       },
-      onDone: () => finishTurn(indexPlaying),
+      onDone: () => finishTurn(indexPlaying, next),
     });
   };
 
@@ -199,7 +134,7 @@ export const NerdCombatDemo: Component = () => {
   return (
     <div class={styles.demo}>
       <div class={styles.host}>
-        <BroodWarChessBoard
+        <StarChessChessBoard
           variant="eclipse"
           fogOfWar
           attackCues={combat.attackCues()}

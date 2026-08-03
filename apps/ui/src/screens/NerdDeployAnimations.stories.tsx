@@ -1,13 +1,13 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { DeployBoardDemo } from "~/broodwar/animations/DeployBoardDemo";
+import { DeployBoardDemo } from "~/starchess/animations/DeployBoardDemo";
 
 /**
  * Command Center deploy VFX via ChessBoard `deployCues` → `DeployAnimation`.
  * Piece is added to FEN (fog updates) only after the 500ms drop finishes.
  */
 const meta = {
-  title: "Screens/Nerd/Brood War/Deploy Animations",
+  title: "Screens/Nerd/StarChess/Deploy Animations",
   parameters: {
     layout: "centered",
     docs: {

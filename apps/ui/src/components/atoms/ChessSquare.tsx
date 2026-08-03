@@ -3,14 +3,14 @@ import clsx from "clsx";
 import { Show, createEffect, on } from "solid-js";
 import type { Component } from "solid-js";
 
-import { ROOK_REST_AIM_DEG } from "~/broodwar/animations/attackAnim";
-import { InlineBishop } from "~/broodwar/animations/pieces/InlineBishop";
-import { InlineRook } from "~/broodwar/animations/pieces/InlineRook";
-import { SpiderMine } from "~/broodwar/specials/SpiderMine";
+import { ROOK_REST_AIM_DEG } from "~/starchess/animations/attackAnim";
+import { InlineBishop } from "~/starchess/animations/pieces/InlineBishop";
+import { InlineRook } from "~/starchess/animations/pieces/InlineRook";
+import { SpiderMine } from "~/starchess/specials/SpiderMine";
 import styles from "~/components/atoms/ChessSquare.module.css";
 // SPEC: _spec/apps/ui/components.puml
 import type { MoveSquares } from "~/types/game";
-import type { RookMode } from "~/types/broodwar";
+import type { RookMode } from "~/types/starchess";
 import type { PieceSet } from "~/types/settings";
 
 /** Grid-square offset from `from` to `to`, accounting for board flip. */
@@ -30,7 +30,7 @@ interface ChessSquareProps {
   isHovered: boolean;
   isValidMove: boolean;
   isAdviceHovered: boolean;
-  /** Brood War special targeting ring (Charon Booster Missiles queen). */
+  /** StarChess special targeting ring (Charon Booster Missiles queen). */
   isSpecialTarget?: boolean;
   isDragging: boolean;
   isInvalid: boolean;
@@ -51,13 +51,13 @@ interface ChessSquareProps {
   isStalemate: boolean;
   isFogged?: boolean;
   hidePiece?: boolean;
-  /** Brood War spider mine under this square (always below the piece). */
+  /** StarChess spider mine under this square (always below the piece). */
   spiderMine?: boolean;
   /** Mine owner — white enamel + team-color bumps. */
   spiderMineColor?: Color;
   /**
    * When set, board rooks render {@link InlineRook} (tank vs siege art)
-   * instead of the static `*R.svg` asset. Brood War boards always pass this;
+   * instead of the static `*R.svg` asset. StarChess boards always pass this;
    * piece-sets reference boards omit it so static siege `*R.svg` stays.
    */
   rookMode?: RookMode;
@@ -65,7 +65,7 @@ interface ChessSquareProps {
   charonArmed?: boolean;
   /** Armed Goliath face (front cockpit toward viewer / back canopy). */
   bishopFace?: "front" | "back";
-  /** Brood War: unit already used its special this turn — green aura. */
+  /** StarChess: unit already used its special this turn — green aura. */
   specialUsed?: boolean;
 }
 

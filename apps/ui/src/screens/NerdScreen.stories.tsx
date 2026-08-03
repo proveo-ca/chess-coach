@@ -7,7 +7,7 @@ const meta = {
   component: NerdScreen,
   parameters: {
     layout: "fullscreen",
-    route: "/broodwar",
+    route: "/starchess",
   },
   args: {
     boardVariant: "eclipse",

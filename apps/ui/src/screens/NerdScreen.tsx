@@ -3,14 +3,14 @@ import type { Component } from "solid-js";
 import type { RouteSectionProps } from "@solidjs/router";
 import { Chess, type Square } from "chess.js";
 
-import { BroodWarChessBoard } from "~/broodwar/BroodWarChessBoard";
+import { StarChessChessBoard } from "~/starchess/StarChessChessBoard";
 import {
   clearSiegedRooks,
-  resetBroodWarEconomy,
+  resetStarChessEconomy,
   setRookMode,
-} from "~/broodwar/broodWarStore";
-import { ResourceBar } from "~/broodwar/primitives/ResourceBar";
-import { TurnBar } from "~/broodwar/primitives/TurnBar";
+} from "~/starchess/starChessStore";
+import { ResourceBar } from "~/starchess/primitives/ResourceBar";
+import { TurnBar } from "~/starchess/primitives/TurnBar";
 import { Button } from "~/components/primitives/Button";
 import { Label } from "~/components/primitives/Label";
 import { Screen } from "~/components/primitives/Screen";
@@ -23,18 +23,18 @@ import {
   setNerdModeUnlocked,
   setPlayerIdentity,
 } from "~/store/settingsStore";
-import type { RookMode } from "~/types/broodwar";
+import type { RookMode } from "~/types/starchess";
 import type { NerdBoardVariant } from "~/types/ui";
 
 type NerdScreenProps = Partial<RouteSectionProps> & {
   boardVariant?: NerdBoardVariant;
   startingFen?: string;
   /**
-   * Brood War ruleset (default true on `/broodwar`).
+   * StarChess ruleset (default true on `/starchess`).
    * When on, fog of war is **always** enabled — not overridable.
    * Maps / terrain gallery sets `false` to preview boards without fog.
    */
-  broodWarMode?: boolean;
+  starChessMode?: boolean;
   /**
    * Storybook seed: force every rook on the starting FEN into this mode
    * (writes {@link setRookMode} / clears siege state).
@@ -43,9 +43,9 @@ type NerdScreenProps = Partial<RouteSectionProps> & {
 };
 
 export const NerdScreen: Component<NerdScreenProps> = (props) => {
-  const broodWarMode = () => props.broodWarMode ?? true;
-  /** Non-negotiable: Brood War / Nerd gameplay always has cumulative fog. */
-  const fogOfWar = () => broodWarMode();
+  const starChessMode = () => props.starChessMode ?? true;
+  /** Non-negotiable: StarChess / Nerd gameplay always has cumulative fog. */
+  const fogOfWar = () => starChessMode();
   const [status, setStatus] = createSignal("Plan a special and/or move · End to submit");
 
   onMount(() => {
@@ -53,8 +53,8 @@ export const NerdScreen: Component<NerdScreenProps> = (props) => {
     setNerdModeUnlocked(true);
     setPlayerIdentity("Nerd");
     setActivePlayerColor("w");
-    if (broodWarMode()) {
-      resetBroodWarEconomy({
+    if (starChessMode()) {
+      resetStarChessEconomy({
         turn: 1,
         white: { stored: 12, deployed: 1 },
         black: { stored: 12, deployed: 1 },
@@ -79,7 +79,7 @@ export const NerdScreen: Component<NerdScreenProps> = (props) => {
 
   const submitTurn = (reason: "end" | "timeout") => {
     setStatus(reason === "timeout" ? "Turn locked — time up" : "Turn submitted");
-    // Full resolveTurn wiring lands with broodWarStore planning lock.
+    // Full resolveTurn wiring lands with starChessStore planning lock.
   };
 
   return (
@@ -89,25 +89,26 @@ export const NerdScreen: Component<NerdScreenProps> = (props) => {
           <div class={styles.header}>
             <Button href="/">Back</Button>
             <div>
-              <Label variant="title">Brood War</Label>
+              <Label variant="title">StarChess</Label>
               <p class={styles.matchup}>Nerd vs Selena</p>
             </div>
           </div>
-          <Show when={broodWarMode()}>
+          <Show when={starChessMode()}>
             <div class={styles.topChrome} data-testid="nerd-board-chrome">
               <ResourceBar />
               <TurnBar
+                resolveOnEnd={false}
                 onEnd={() => submitTurn("end")}
                 onTimeout={() => submitTurn("timeout")}
               />
             </div>
           </Show>
-          <BroodWarChessBoard
+          <StarChessChessBoard
             variant={props.boardVariant ?? "eclipse"}
             fogOfWar={fogOfWar()}
           />
           <Show
-            when={broodWarMode()}
+            when={starChessMode()}
             fallback={<p class={styles.placeholder}>Nerd mode is awakening…</p>}
           >
             <p class={styles.placeholder}>{status()}</p>

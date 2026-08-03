@@ -1,2 +1,2 @@
-/** @deprecated Prefer `~/broodwar/vision` — kept for transitional imports. */
-export * from "~/broodwar/vision";
+/** @deprecated Prefer `~/starchess/vision` — kept for transitional imports. */
+export * from "~/starchess/vision";

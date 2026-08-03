@@ -1,13 +1,13 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { AttackBoardDemo } from "~/broodwar/animations/AttackBoardDemo";
-import { ANIM_BY_PIECE } from "~/broodwar/animations/attackAnim";
+import { AttackBoardDemo } from "~/starchess/animations/AttackBoardDemo";
+import { ANIM_BY_PIECE } from "~/starchess/animations/attackAnim";
 
 /**
- * Brood War attack VFX via ChessBoard `attackCue` → `AttackAnimation`.
+ * StarChess attack VFX via ChessBoard `attackCue` → `AttackAnimation`.
  */
 const meta = {
-  title: "Screens/Nerd/Brood War/Attack Animations",
+  title: "Screens/Nerd/StarChess/Attack Animations",
   parameters: {
     layout: "centered",
     docs: {

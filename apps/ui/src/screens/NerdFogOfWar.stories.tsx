@@ -3,25 +3,25 @@ import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { NerdScreen } from "~/screens/NerdScreen";
 
 /**
- * Fog of war vision samples + interactive board (move with Brood War chrome).
+ * Fog of war vision samples + interactive board (move with StarChess chrome).
  * Move L-path / attack / death VFX demos live in the sibling animation folders.
  */
 const meta = {
-  title: "Screens/Nerd/Brood War/Fog of War and Move Animations",
+  title: "Screens/Nerd/StarChess/Fog of War and Move Animations",
   component: NerdScreen,
   parameters: {
     layout: "fullscreen",
-    route: "/broodwar",
+    route: "/starchess",
     docs: {
       description: {
         component:
-          "Cumulative fog per unit type on NerdScreen. Move L-path / slides come from `BroodWarChessBoard` (not shared ChessBoard). Attack / Death / Deploy folders cover combat VFX; Demo → Combat Chain covers simultaneous resolve.",
+          "Cumulative fog per unit type on NerdScreen. Move L-path / slides come from `StarChessChessBoard` (not shared ChessBoard). Attack / Death / Deploy folders cover combat VFX; Demo → Combat Chain covers simultaneous resolve.",
       },
     },
   },
   args: {
     boardVariant: "eclipse",
-    broodWarMode: true,
+    starChessMode: true,
   },
 } satisfies Meta<typeof NerdScreen>;
 

@@ -1,19 +1,19 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { DeathBoardDemo } from "~/broodwar/animations/DeathBoardDemo";
+import { DeathBoardDemo } from "~/starchess/animations/DeathBoardDemo";
 
 /**
- * Brood War death VFX via ChessBoard `deathCues` → `DeathAnimation`.
- * King HP hunt lives under Screens/Nerd/Brood War/Demo → King Hunt.
+ * StarChess death VFX via ChessBoard `deathCues` → `DeathAnimation`.
+ * King HP hunt lives under Screens/Nerd/StarChess/Demo → King Hunt.
  */
 const meta = {
-  title: "Screens/Nerd/Brood War/Death Animations",
+  title: "Screens/Nerd/StarChess/Death Animations",
   parameters: {
     layout: "centered",
     docs: {
       description: {
         component:
-          "Production death layer on ChessBoard. Every cue finishes in 500ms. Pawn: outward bubble + shred; king: rubble collapse; others: boom + shards. For the 3-HP hunt narrative see Screens/Nerd/Brood War/Demo → King Hunt.",
+          "Production death layer on ChessBoard. Every cue finishes in 500ms. Pawn: outward bubble + shred; king: rubble collapse; others: boom + shards. For the 3-HP hunt narrative see Screens/Nerd/StarChess/Demo → King Hunt.",
       },
     },
   },

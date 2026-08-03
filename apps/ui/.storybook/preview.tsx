@@ -64,7 +64,7 @@ const preview: Preview = {
           [
             "Nerd",
             [
-              "Brood War",
+              "StarChess",
               [
                 "Demo",
                 "Maps",

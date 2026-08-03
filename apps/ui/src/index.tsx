@@ -44,7 +44,7 @@ render(
       <Route path="/review" component={ReviewScreen} />
       <Route path="/review/:id" component={ReviewScreen} />
       <Route path="/lan" component={LanScreen} />
-      <Route path="/broodwar" component={NerdScreen} />
+      <Route path="/starchess" component={NerdScreen} />
     </Router>
   ),
   root!,

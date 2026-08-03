@@ -53,7 +53,7 @@
   z-index: 6;
 }
 
-/* Nerd mode: named Brood War terrain palettes. Each theme is scoped to an
+/* Nerd mode: named StarChess terrain palettes. Each theme is scoped to an
    explicit board class, so normal ChessBoard instances keep the classic skin. */
 .chessboard--eclipse,
 .chessboard--butter,

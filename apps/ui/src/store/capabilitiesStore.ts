@@ -137,7 +137,7 @@ export const LAN_OBSERVER_CAPABILITIES: ScreenCapabilities = {
   readOnly: true,
 };
 
-/** Secret Brood War board: Nerd set on both sides, free move sandbox with fog. */
+/** Secret StarChess board: Nerd set on both sides, free move sandbox with fog. */
 export const NERD_CAPABILITIES: ScreenCapabilities = {
   ...LAN_OBSERVER_CAPABILITIES,
   opponentUsesPlayerPieceSet: true,

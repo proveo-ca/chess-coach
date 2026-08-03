@@ -19,13 +19,13 @@ afterEach(() => {
 });
 
 describe("NerdModePrompt", () => {
-  it("sends the user to Brood War when they accept nerd mode", async () => {
+  it("sends the user to StarChess when they accept nerd mode", async () => {
     setNerdModeUnlocked(false);
     setPlayerName("Kerrigam");
     render(() => (
       <MemoryRouter>
         <Route path="/" component={() => <NerdModePrompt />} />
-        <Route path="/broodwar" component={() => <div>Brood War screen</div>} />
+        <Route path="/starchess" component={() => <div>StarChess screen</div>} />
       </MemoryRouter>
     ));
 
@@ -34,7 +34,7 @@ describe("NerdModePrompt", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "yes" }));
 
-    expect(await screen.findByText("Brood War screen")).toBeTruthy();
+    expect(await screen.findByText("StarChess screen")).toBeTruthy();
     expect(screen.queryByRole("dialog")).toBeNull();
   });
 

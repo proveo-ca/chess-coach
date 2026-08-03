@@ -14,7 +14,7 @@ import { findNerdName } from "~/utils/nerdNames";
 
 /**
  * Close-enough StarCraft name → choose path:
- * - Yes → Brood War (`NerdScreen` / `/broodwar`)
+ * - Yes → StarChess (`NerdScreen` / `/starchess`)
  * - Keep chess classic → unlock the Nerd identity (classical chess + `public/pieces/nerd/`)
  */
 export const NerdModePrompt: Component = () => {
@@ -36,7 +36,7 @@ export const NerdModePrompt: Component = () => {
           primary
           onClick={() => {
             setOpen(false);
-            navigate("/broodwar");
+            navigate("/starchess");
           }}
         >
           yes

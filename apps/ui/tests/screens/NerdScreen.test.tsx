@@ -89,7 +89,7 @@ describe("NerdScreen placeholder", () => {
     fireEvent.click(view.container.querySelector('[data-square="d4"]')!);
     fireEvent.click(view.container.querySelector('[data-square="d5"]')!);
     await waitFor(() => expect(currentFen()).not.toBe(fen));
-    // Brood War boards hide the destination `<img>` during MoveAnimation (MOVE_MS).
+    // StarChess boards hide the destination `<img>` during MoveAnimation (MOVE_MS).
     await waitFor(
       () =>
         expect(

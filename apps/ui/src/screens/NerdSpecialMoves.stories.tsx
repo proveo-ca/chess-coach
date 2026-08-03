@@ -1,18 +1,18 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { BishopCharonDemo } from "~/broodwar/specials/BishopCharonDemo";
-import { KingSpawnDemo } from "~/broodwar/specials/KingSpawnDemo";
-import { KnightMineDemo } from "~/broodwar/specials/KnightMineDemo";
-import { MarineDoubleDemo } from "~/broodwar/specials/MarineDoubleDemo";
-import { QueenTacticalJumpDemo } from "~/broodwar/specials/QueenTacticalJumpDemo";
-import { RookSiegeDemo } from "~/broodwar/specials/RookSiegeDemo";
+import { BishopCharonDemo } from "~/starchess/specials/BishopCharonDemo";
+import { KingSpawnDemo } from "~/starchess/specials/KingSpawnDemo";
+import { KnightMineDemo } from "~/starchess/specials/KnightMineDemo";
+import { MarineDoubleDemo } from "~/starchess/specials/MarineDoubleDemo";
+import { QueenTacticalJumpDemo } from "~/starchess/specials/QueenTacticalJumpDemo";
+import { RookSiegeDemo } from "~/starchess/specials/RookSiegeDemo";
 
 /**
- * Brood War specials via GasDeploy. Command Center deploy, Vulture spider mine,
+ * StarChess specials via GasDeploy. Command Center deploy, Vulture spider mine,
  * Marine extra step, Siege Tank mode toggle. Activation lives in piece hooks.
  */
 const meta = {
-  title: "Screens/Nerd/Brood War/Special Moves",
+  title: "Screens/Nerd/StarChess/Special Moves",
   parameters: {
     layout: "centered",
     docs: {
@@ -59,7 +59,7 @@ export const KnightMine: Story = {
     docs: {
       description: {
         story:
-          "Assert stack order: special+move (gas on d4, then move the knight — mine stays on origin) or move+special (move first, then gas — mine under the new square). Knight L-path comes from `BroodWarChessBoard`, not this story.",
+          "Assert stack order: special+move (gas on d4, then move the knight — mine stays on origin) or move+special (move first, then gas — mine under the new square). Knight L-path comes from `StarChessChessBoard`, not this story.",
       },
     },
   },

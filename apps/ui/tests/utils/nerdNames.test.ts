@@ -12,7 +12,7 @@ describe("nerd name matching", () => {
     expect(findNerdName("Classic Chess Player")).toBeNull();
   });
 
-  it("recognizes Brood War units and Korean pro handles", () => {
+  it("recognizes StarChess units and Korean pro handles", () => {
     expect(findNerdName("Hydralizk")).toBe("Hydralisk");
     expect(findNerdName("Jaedong")).toBe("Jaedong");
     expect(findNerdName("iloveoov")).toBe("iloveoov");

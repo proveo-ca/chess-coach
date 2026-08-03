@@ -20,18 +20,18 @@ import type {
   KingDamageState,
   MoveCue,
   QueenJumpTrail,
-} from "~/types/broodwar";
-import { AttackAnimation } from "~/broodwar/animations/AttackAnimation";
-import { DeathAnimation } from "~/broodwar/animations/DeathAnimation";
-import { DeployAnimation } from "~/broodwar/animations/DeployAnimation";
-import { KingDamageOverlay } from "~/broodwar/animations/kingDamageOverlay";
-import { MoveAnimation } from "~/broodwar/animations/MoveAnimation";
-import { QueenJumpAnimation } from "~/broodwar/animations/QueenJumpAnimation";
-import { buildFxHiddenSquares, EMPTY_FX_HIDDEN, hasCombatFxInput } from "~/broodwar/boardFx";
-import { rookModeAt, siegedRooks, specialsUsedThisTurn } from "~/broodwar/broodWarStore";
-import { isBroodWarBoard } from "~/broodwar/classicalOutcomes";
-import { MOVE_MS } from "~/broodwar/constants";
-import { getSideVision, getVisionDisplayCells, getVisionFogHolePaths } from "~/broodwar/vision";
+} from "~/types/starchess";
+import { AttackAnimation } from "~/starchess/animations/AttackAnimation";
+import { DeathAnimation } from "~/starchess/animations/DeathAnimation";
+import { DeployAnimation } from "~/starchess/animations/DeployAnimation";
+import { KingDamageOverlay } from "~/starchess/animations/kingDamageOverlay";
+import { MoveAnimation } from "~/starchess/animations/MoveAnimation";
+import { QueenJumpAnimation } from "~/starchess/animations/QueenJumpAnimation";
+import { buildFxHiddenSquares, EMPTY_FX_HIDDEN, hasCombatFxInput } from "~/starchess/boardFx";
+import { rookModeAt, siegedRooks, specialsUsedThisTurn } from "~/starchess/starChessStore";
+import { isStarChessBoard } from "~/starchess/classicalOutcomes";
+import { MOVE_MS } from "~/starchess/constants";
+import { getSideVision, getVisionDisplayCells, getVisionFogHolePaths } from "~/starchess/vision";
 import { ChessBoardArrow } from "~/components/atoms/ChessBoardArrow.tsx";
 import { ChessSquare } from "~/components/atoms/ChessSquare";
 import { GameOverBanner } from "~/components/features/GameOverBanner";
@@ -64,17 +64,17 @@ const squareFromTouch = (touch: Touch): Square | null => {
 export const ChessBoard: Component<{
   /** Override end-of-game CTAs (Review: Another Game → /selena + Replay Review). */
   gameOverActions?: JSX.Element;
-  /** Brood War tile treatment; reserved for Nerd mode. */
+  /** StarChess tile treatment; reserved for Nerd mode. */
   variant?: NerdBoardVariant;
   /** Cumulative side-vision fog; reserved for Nerd mode. */
   fogOfWar?: boolean;
-  /** Single Brood War attack cue (convenience; prefer `attackCues` for simultaneous). */
+  /** Single StarChess attack cue (convenience; prefer `attackCues` for simultaneous). */
   attackCue?: AttackCue | null;
-  /** Active Brood War attack VFX cues. */
+  /** Active StarChess attack VFX cues. */
   attackCues?: AttackCue[];
   /** Attack cue ids whose hull has swapped to death art mid-cue. */
   attackDying?: Record<string, boolean>;
-  /** Active Brood War death VFX cues. */
+  /** Active StarChess death VFX cues. */
   deathCues?: DeathCue[];
   /**
    * Command Center deploy drops — piece is overlay-only until the cue ends;
@@ -92,7 +92,7 @@ export const ChessBoard: Component<{
   /** Tactical Jump green thruster trails (1000ms; no board hiding). */
   jumpTrails?: QueenJumpTrail[];
   /** @deprecated Prefer store {@link rookModeAt}; board-wide override for fog stories. */
-  rookMode?: import("~/types/broodwar").RookMode;
+  rookMode?: import("~/types/starchess").RookMode;
   /** Squares with an armed spider mine (drawn under pieces). */
   spiderMines?: readonly Square[] | ReadonlySet<Square>;
   /** Owner color for `spiderMines` (defaults to active player). */
@@ -120,8 +120,8 @@ export const ChessBoard: Component<{
   const animationQueue = () => board.animationQueue();
   const consumeAnimation = (m: MoveSquares) => board.consumeAnimation?.(m);
 
-  const broodWarRules = createMemo(() =>
-    isBroodWarBoard({ fogOfWar: props.fogOfWar, variant: props.variant }),
+  const starChessRules = createMemo(() =>
+    isStarChessBoard({ fogOfWar: props.fogOfWar, variant: props.variant }),
   );
 
   const resolvedAttackCues = createMemo(() => {
@@ -188,7 +188,7 @@ export const ChessBoard: Component<{
     while (fleeCoverTimers.length) window.clearTimeout(fleeCoverTimers.pop());
   });
 
-  /** Combat overlays — only when Brood War props feed cues (classical boards stay false). */
+  /** Combat overlays — only when StarChess props feed cues (classical boards stay false). */
   const combatFxInput = createMemo(() => ({
     attacks: resolvedAttackCues(),
     deaths: resolvedDeathCues(),
@@ -322,9 +322,9 @@ export const ChessBoard: Component<{
     void board.handleSquareClick(square);
   };
 
-  const isCheck = () => !broodWarRules() && activeGame().inCheck();
-  const isCheckmate = () => !broodWarRules() && activeGame().isCheckmate();
-  const isStalemate = () => !broodWarRules() && activeGame().isStalemate();
+  const isCheck = () => !starChessRules() && activeGame().inCheck();
+  const isCheckmate = () => !starChessRules() && activeGame().isCheckmate();
+  const isStalemate = () => !starChessRules() && activeGame().isStalemate();
   const turn = () => activeGame().turn();
 
   // ── Touch-drag (mobile) ──────────────────────────────────────────────
@@ -409,10 +409,10 @@ export const ChessBoard: Component<{
   // replaying a past move or time-travelling. `game()` is the authoritative
   // live instance, so checkmate/stalemate read the true terminal position.
   // End-game banner is shown only in the final game state — never while
-  // replaying a past move or time-travelling. Brood War suppresses classical
+  // replaying a past move or time-travelling. StarChess suppresses classical
   // draw / mate / stalemate (HP wins only).
   const isGameOver = () =>
-    !broodWarRules() &&
+    !starChessRules() &&
     !isReplaying() &&
     !isTravelling() &&
     (game().isGameOver() || isResigned());
@@ -500,14 +500,14 @@ export const ChessBoard: Component<{
                       spiderMine={mineSquares()?.has(square) === true}
                       spiderMineColor={props.spiderMineColor ?? activePlayerColor()}
                       rookMode={
-                        piece()?.type === "r" && broodWarRules()
+                        piece()?.type === "r" && starChessRules()
                           ? modeForRook(square)
                           : undefined
                       }
                       charonArmed={armedBishopSquares().has(square)}
                       bishopFace={piece()?.color === activePlayerColor() ? "front" : "back"}
                       specialUsed={
-                        broodWarRules() && specialsUsedThisTurn().has(square)
+                        starChessRules() && specialsUsedThisTurn().has(square)
                       }
                       showRank={fIndex() === 0 && rank}
                       showFile={rIndex() === 7 && file}
@@ -612,7 +612,7 @@ export const ChessBoard: Component<{
             AttackAnimation and restarts CSS (rook/tank double-fire at ~FRAG+DEATH).
           */}
           <Show when={combatOverlayReady()}>
-            <div data-broodwar-combat-root style={{ position: "absolute", inset: "0", "pointer-events": "none" }}>
+            <div data-starchess-combat-root style={{ position: "absolute", inset: "0", "pointer-events": "none" }}>
               <KingDamageOverlay
                 cues={kingDamageCues()}
                 boardWidth={combatBoardWidth()}

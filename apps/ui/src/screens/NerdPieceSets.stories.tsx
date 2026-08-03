@@ -17,8 +17,8 @@ import {
 /**
  * Reference board: cburnett (white) vs nerd (black) after 1.e4 —
  * compare weights / height / negative space against Lichess cburnett.
- * Uses plain {@link ChessBoard} (not BroodWar) so nerd rooks stay static
- * siege `*R.svg` — InlineRook is Brood War / GasDeploy only.
+ * Uses plain {@link ChessBoard} (not StarChess) so nerd rooks stay static
+ * siege `*R.svg` — InlineRook is StarChess / GasDeploy only.
  */
 const prepareReferenceBoard = () => {
   setStorybookCapabilities({

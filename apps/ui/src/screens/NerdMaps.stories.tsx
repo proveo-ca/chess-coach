@@ -3,16 +3,16 @@ import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { NerdScreen } from "~/screens/NerdScreen";
 
 const meta = {
-  title: "Screens/Nerd/Brood War/Maps",
+  title: "Screens/Nerd/StarChess/Maps",
   component: NerdScreen,
   parameters: {
     layout: "fullscreen",
-    route: "/broodwar",
+    route: "/starchess",
   },
   args: {
     boardVariant: "eclipse",
-    /** Terrain gallery — not Brood War gameplay; fog stays off. */
-    broodWarMode: false,
+    /** Terrain gallery — not StarChess gameplay; fog stays off. */
+    starChessMode: false,
   },
 } satisfies Meta<typeof NerdScreen>;
 

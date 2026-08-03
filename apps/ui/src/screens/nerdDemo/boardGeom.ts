@@ -1,2 +1,2 @@
-/** @deprecated Prefer `~/broodwar/animations/boardGeom`. */
-export * from "~/broodwar/animations/boardGeom";
+/** @deprecated Prefer `~/starchess/animations/boardGeom`. */
+export * from "~/starchess/animations/boardGeom";

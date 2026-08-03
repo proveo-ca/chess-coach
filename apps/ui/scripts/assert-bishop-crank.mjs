@@ -67,7 +67,7 @@ const main = async () => {
     await page.waitForTimeout(45);
     const snap = await page.evaluate(() => {
       const mover = document.querySelector(
-        "[data-broodwar-move-layer] [data-move-piece='b']",
+        "[data-starchess-move-layer] [data-move-piece='b']",
       );
       if (!mover) return null;
       const svg = mover.querySelector("svg");
