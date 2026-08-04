@@ -2,7 +2,6 @@ import type { PieceSymbol, Square } from "chess.js";
 import { Chess } from "chess.js";
 import { createMemo, createSignal, onCleanup } from "solid-js";
 
-import { makeDeployCue } from "~/starchess/animations/deployAnim";
 import {
   addDeployed,
   markSpecialUsed,
@@ -19,7 +18,7 @@ import type { PieceSpecialArmCtx } from "~/starchess/hooks/usePieceSpecialArm";
 import { adjacentSquares } from "~/starchess/specials/adjacent";
 import { loadFen } from "~/store/gameStore";
 import { activePlayerColor, playerPieceSet } from "~/store/settingsStore";
-import type { DeployCue, DeployModalPending, SpawnPiece } from "~/types/starchess";
+import type { DeployModalPending, SpawnPiece } from "~/types/starchess";
 
 export type CommandCenterPhase = "idle" | "spawnModal" | "pickAdjacent" | "deploying";
 
@@ -27,8 +26,8 @@ const KING_SQ: Square = "d4";
 
 /**
  * Command Center (king) special — Deploy.
- * Armed via GasDeploy (no spend yet). On square pick: play deploy VFX, then
- * spend store minerals + gas and commit FEN (fog) after {@link DEPLOY_MS}.
+ * Armed via GasDeploy (no spend yet). On square pick: spend economy, put the
+ * unit on the board immediately — {@link StarChessChessBoard} auto-deploy VFX.
  */
 export const useCommandCenterDeploy = (opts: {
   fen: () => string;
@@ -40,7 +39,6 @@ export const useCommandCenterDeploy = (opts: {
   const color = () => activePlayerColor();
   const [phase, setPhase] = createSignal<CommandCenterPhase>("idle");
   const [pendingSpawn, setPendingSpawn] = createSignal<SpawnPiece | null>(null);
-  const [deployCue, setDeployCue] = createSignal<DeployCue | null>(null);
   const [caption, setCaption] = createSignal(
     `Drag a vespene canister onto the command center on ${kingSq()}`,
   );
@@ -111,7 +109,6 @@ export const useCommandCenterDeploy = (opts: {
     const cost = UNIT_COST[piece];
     const side = color();
 
-    // Reserve economy up front; FEN / fog wait for the drop animation.
     if (!spendEnergy(side)) {
       setCaption("Need vespene gas to deploy");
       return;
@@ -131,27 +128,25 @@ export const useCommandCenterDeploy = (opts: {
     clearDeployTimer();
     setPendingSpawn(null);
     setPhase("deploying");
-    setDeployCue(makeDeployCue(piece, side, sq));
     markSpecialUsed(kingSq());
     setCaption(`Deploying ${piece.toUpperCase()} → ${sq}…`);
 
-    deployTimer = window.setTimeout(() => {
-      const g = new Chess(opts.fen());
-      const ok = g.put({ type: piece as PieceSymbol, color: side }, sq);
-      if (!ok) {
-        refundStored(side, cost);
-        removeDeployed(side, cost);
-        refundEnergy(side);
-        setDeployCue(null);
-        setPhase("idle");
-        setCaption("Deploy failed — square blocked");
-        return;
-      }
+    const g = new Chess(opts.fen());
+    const ok = g.put({ type: piece as PieceSymbol, color: side }, sq);
+    if (!ok) {
+      refundStored(side, cost);
+      removeDeployed(side, cost);
+      refundEnergy(side);
+      setPhase("idle");
+      setCaption("Deploy failed — square blocked");
+      return;
+    }
 
-      const next = g.fen();
-      opts.setFen(next);
-      loadFen(next);
-      setDeployCue(null);
+    const next = g.fen();
+    opts.setFen(next);
+    loadFen(next);
+    // Auto-deploy runs on StarChessChessBoard; brief "deploying" for UI chrome.
+    deployTimer = window.setTimeout(() => {
       setPhase("idle");
       setCaption(
         `Deployed ${piece.toUpperCase()} on ${sq} · minerals ${storedMaterial()} · special spent this turn`,
@@ -166,7 +161,6 @@ export const useCommandCenterDeploy = (opts: {
     kingSq,
     phase,
     pendingSpawn,
-    deployCue,
     caption,
     setCaption,
     adjacent,

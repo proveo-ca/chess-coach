@@ -1,11 +1,12 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
 import { KingHuntDemo } from "~/starchess/animations/KingHuntDemo";
+import { KING_HUNT_LIVE_START_SCFEN } from "~/starchess/demos/kingHunt";
 import { NerdCombatDemo } from "~/screens/nerdDemo/NerdCombatDemo";
+import { NerdScreen } from "~/screens/NerdScreen";
 
 /**
- * StarChess narrative demos: combat chain (simultaneous attack→move) and
- * king HP hunt (into-fire + Option A). Arrow keys / nav step turns.
+ * Stories mount SCFEN demos / live seeds only — no queue / resolve logic here.
  */
 const meta = {
   title: "Screens/Nerd/StarChess/Demo",
@@ -14,7 +15,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Review-style StarChess demos. Combat Chain = SCFEN turn shape (W & B). King Hunt adds checks + walk-into-check (FEN-illegal, SCFEN-legal). Fog on.",
+          "Review-style StarChess demos + one live seed. Combat Chain = turn shape. King Hunt = DualNav hunt. King Hunt (live) = ownership-flipped SCFEN with ResourceBar / TurnBar / End.",
       },
     },
   },
@@ -29,7 +30,7 @@ export const CombatChain: Story = {
     docs: {
       description: {
         story:
-          "SCFEN + engine: each arrow = one turn = White & Black classical via addScMove → endScTurn. 1. d2-d4 & Be8-c6 · 2. d4xe5 & Nf6-e4 · 3. Rc3xc6 & Ne4xc3. Rook starts c3 (siege). Captures = attack → death → occupy.",
+          "SCFEN + engine: each arrow = one turn = White & Black classical via addScMove → endScTurn. 1. d2-d4 & Be8-c6 · 2. d4xe5 & Nf6-e4 · 3. Rc3xc6 & Ne4xc3. Rook starts c3 (tank — siege cannot relocate). Captures = attack → death → occupy.",
       },
     },
   },
@@ -42,9 +43,26 @@ export const KingHunt: Story = {
     docs: {
       description: {
         story:
-          "SCFEN + engine: Combat Chain grammar + checks + walk-into-check. HP via endScTurn (3→2→1→0): 0. Nc5+ · 1. Kd5 & Bh2→Bg1 · 2. Kxc5 & Rf7→Rf6 · 3. Kc6 & Bg1→c5 · 4. Rf6+. Rook starts f7 (siege).",
+          "SCFEN + engine DualNav: checks + walk-into-check. HP via endScTurn (3→2→1→0): 0. Nc5+ · 1. Kd5 & Bh2→Bg1 · 2. Kxc5 & Rg7→Rg6 · 3. Kc6 & Bg1→c5 · 4. Rg6+. Tank on g7.",
       },
     },
   },
   render: () => <KingHuntDemo />,
+};
+
+export const KingHuntLive: Story = {
+  name: "King Hunt (live)",
+  parameters: {
+    layout: "fullscreen",
+    route: "/starchess",
+    docs: {
+      description: {
+        story:
+          "Ownership flipped vs King Hunt: White hunter (Ka8, Nc5, Bh2, Rg7 tank) vs black king e4. ResourceBar + TurnBar; queue into End. Nc5 checks ke4 — king-shot resolves in the attack phase (beginning of classical resolve). Play the hunt: knight check → bishop → tank on the g-file → siege.",
+      },
+    },
+  },
+  render: () => (
+    <NerdScreen boardVariant="eclipse" starChessMode startingScfen={KING_HUNT_LIVE_START_SCFEN} />
+  ),
 };

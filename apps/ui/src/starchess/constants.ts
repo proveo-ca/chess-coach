@@ -23,6 +23,23 @@ export const ATTACK_MS = TURN_TIMEOUT_MS / 10;
 export const FRAG_FLIGHT_MS = ATTACK_MS / 4;
 
 /**
+ * Spider Mine chase missile after the victim lands:
+ * lift in place → self-launch along the trail. Total = {@link MINE_MISSILE_MS}.
+ */
+export const MINE_MISSILE_LIFT_MS = 200;
+export const MINE_MISSILE_LAUNCH_MS = 50;
+export const MINE_MISSILE_MS = MINE_MISSILE_LIFT_MS + MINE_MISSILE_LAUNCH_MS;
+
+/** Green trail fade after the mine missile (shorter than Tactical Jump twin trails). */
+export const MINE_TRAIL_MS = 700;
+
+/** Mine added to the board — legs burrow independently within this window. */
+export const MINE_DEPLOY_MS = 250;
+
+/** Chase wake — legs leave the ground independently within this window. */
+export const MINE_EMERGE_MS = 50;
+
+/**
  * Death / rubble collapse (CSS `--death-ms`) — 1/2 of an attack
  * (= 1/20 of a turn).
  */
@@ -31,8 +48,9 @@ export const DEATH_MS = ATTACK_MS / 2;
 /**
  * Quiet-move travel time per board square.
  * Total move duration = squares × this (Chebyshev for slides; L-length for knights).
+ * 200ms = prior 250ms × 1.25 speed.
  */
-export const MOVE_SQUARE_MS = 250;
+export const MOVE_SQUARE_MS = 200;
 
 /** Siege Tank pack ↔ unpack (CSS `--siege-toggle-ms`). */
 export const SIEGE_TOGGLE_MS = 480;

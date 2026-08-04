@@ -7,6 +7,8 @@ import { ROOK_REST_AIM_DEG } from "~/starchess/animations/attackAnim";
 import { InlineBishop } from "~/starchess/animations/pieces/InlineBishop";
 import { InlineRook } from "~/starchess/animations/pieces/InlineRook";
 import { SpiderMine } from "~/starchess/specials/SpiderMine";
+import { TEAM_PRIMARY } from "~/starchess/animations/teamColors";
+import { VespeneIcon } from "~/starchess/primitives/icons";
 import styles from "~/components/atoms/ChessSquare.module.css";
 // SPEC: _spec/apps/ui/components.puml
 import type { MoveSquares } from "~/types/game";
@@ -32,6 +34,13 @@ interface ChessSquareProps {
   isAdviceHovered: boolean;
   /** StarChess special targeting ring (Charon Booster Missiles queen). */
   isSpecialTarget?: boolean;
+  /**
+   * Queued SCFEN intent destination — dashed border-only ring in that side's
+   * color (planning ghost; not resolve / review replay).
+   */
+  intentTargetColor?: Color;
+  /** Queued special — ghost vespene canister over the unit. */
+  intentCanisterColor?: Color;
   isDragging: boolean;
   isInvalid: boolean;
   showRank: string | false;
@@ -55,6 +64,12 @@ interface ChessSquareProps {
   spiderMine?: boolean;
   /** Mine owner — white enamel + team-color bumps. */
   spiderMineColor?: Color;
+  /** Wake / chase — lift off + 8 mechanic legs. */
+  spiderMineChasing?: boolean;
+  /** Just placed — legs burrowing into the ground. */
+  spiderMineDeploying?: boolean;
+  /** Per-leg bury/emerge durations (ms). */
+  spiderMineLegMs?: readonly number[];
   /**
    * When set, board rooks render {@link InlineRook} (tank vs siege art)
    * instead of the static `*R.svg` asset. StarChess boards always pass this;
@@ -113,6 +128,8 @@ export const ChessSquare: Component<ChessSquareProps> = (props) => {
       data-square={props.square}
       data-tone={props.isLight ? "light" : "dark"}
       data-fog={props.isFogged == null ? undefined : props.isFogged ? "hidden" : "visible"}
+      data-intent-dest={props.intentTargetColor ? props.square : undefined}
+      data-intent-canister={props.intentCanisterColor ? props.square : undefined}
       classList={{
         [styles.square]: true,
         [styles.light]: props.isLight,
@@ -144,6 +161,16 @@ export const ChessSquare: Component<ChessSquareProps> = (props) => {
       )}
 
       {isLastMove() && <div class={styles["last-move-indicator"]}></div>}
+      <Show when={props.intentTargetColor}>
+        {(color) => (
+          <div
+            class={styles.intentRing}
+            style={{ "--intent-ring": TEAM_PRIMARY[color()] }}
+            data-intent-dest={props.square}
+            aria-hidden="true"
+          />
+        )}
+      </Show>
       {/* Fogged tiles with a visible piece (own unit or bishop queen-ping) sit above
           the board SVG fog; this local veil keeps the tile darkened under the piece. */}
       {props.isFogged && props.piece && !props.hidePiece && (
@@ -151,7 +178,17 @@ export const ChessSquare: Component<ChessSquareProps> = (props) => {
       )}
 
       <Show when={props.spiderMine}>
-        <SpiderMine color={props.spiderMineColor === "b" ? "b" : "w"} />
+        <SpiderMine
+          color={props.spiderMineColor === "b" ? "b" : "w"}
+          state={
+            props.spiderMineDeploying
+              ? "deploying"
+              : props.spiderMineChasing
+                ? "chasing"
+                : "idle"
+          }
+          legMs={props.spiderMineLegMs}
+        />
       </Show>
 
       <Show when={props.piece && !props.hidePiece}>
@@ -218,6 +255,19 @@ export const ChessSquare: Component<ChessSquareProps> = (props) => {
             </div>
           </Show>
         </Show>
+      </Show>
+
+      <Show when={props.intentCanisterColor}>
+        {(color) => (
+          <div
+            class={styles.intentCanister}
+            style={{ color: TEAM_PRIMARY[color()] }}
+            data-intent-canister={props.square}
+            aria-hidden="true"
+          >
+            <VespeneIcon size={22} />
+          </div>
+        )}
       </Show>
     </div>
   );

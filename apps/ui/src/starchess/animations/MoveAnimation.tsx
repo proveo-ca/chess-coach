@@ -184,11 +184,8 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => (
                 data-square={m.from}
                 data-move-id={m.id}
               >
-                <div
-                  class={`${styles.pieceFace} ${styles.moverFace}`}
-                  style={{ transform: aimTransformCss(pose()) }}
-                >
-                  {moverNode(m)}
+                <div class={`${styles.pieceFace} ${styles.moverFace}`}>
+                  <InlineKnight color={m.color} aimPose={pose()} />
                 </div>
               </div>
             </Show>

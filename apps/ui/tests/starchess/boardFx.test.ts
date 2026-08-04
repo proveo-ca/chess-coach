@@ -40,4 +40,19 @@ describe("boardFx (classical isolation)", () => {
     expect(hasCombatFxInput(fx)).toBe(true);
     expect(buildFxHiddenSquares(fx).size).toBe(0);
   });
+
+  it("keeps mine missiles on the FX layer without hiding board pieces via boardFx", () => {
+    const fx = {
+      mineMissiles: [{ from: "a4" as const, to: "a5" as const }],
+    };
+    expect(hasCombatFxInput(fx)).toBe(true);
+    expect(buildFxHiddenSquares(fx).size).toBe(0);
+  });
+
+  it("hides deploy squares while the drop overlay plays", () => {
+    const hide = buildFxHiddenSquares({
+      deploys: [{ at: "d1" }],
+    });
+    expect(hide.has("d1")).toBe(true);
+  });
 });

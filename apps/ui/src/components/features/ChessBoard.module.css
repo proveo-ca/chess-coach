@@ -53,6 +53,13 @@
   z-index: 6;
 }
 
+/* Intent ghosts must read through fog (queued destination / canister). */
+.chessboard--fog :global([data-square][data-intent-dest]),
+.chessboard--fog :global([data-square][data-intent-canister]) {
+  position: relative;
+  z-index: 7;
+}
+
 /* Nerd mode: named StarChess terrain palettes. Each theme is scoped to an
    explicit board class, so normal ChessBoard instances keep the classic skin. */
 .chessboard--eclipse,

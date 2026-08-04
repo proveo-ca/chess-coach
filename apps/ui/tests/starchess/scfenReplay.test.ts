@@ -127,7 +127,7 @@ describe("validateScFenHistory / replayScFen", () => {
     const s0 =
       "SCFEN|k7/5r2/8/2n5/4K3/8/7b/8|0|33|P|G:11:11|Q:w:;b:C=c5e4";
     const s1 =
-      "SCFEN|k7/5r2/8/2n5/4K3/8/7b/8|1|23|P|G:11:11|Q:w:;b:";
+      "SCFEN|k7/5r2/8/2n5/4K3/8/7b/8|1|33|P|G:11:11|Q:w:;b:|H:b:n:c5e4";
     const v = validateScFenHistory(s0, [s1]);
     expect(v.ok).toBe(true);
     expect(v.replay).toBe("ok");

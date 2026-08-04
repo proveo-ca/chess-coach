@@ -21,9 +21,9 @@ describe("addScAction / addScMove", () => {
   it("rejects a second classical for the same side", () => {
     let snap = start();
     snap = addScMove(snap, { color: "w", from: "d2", to: "d4" });
-    expect(() => addScMove(snap, { color: "w", from: "e2", to: "e4" })).toThrow(AddScActionError);
+    expect(() => addScMove(snap, { color: "w", from: "c3", to: "c4" })).toThrow(AddScActionError);
     try {
-      addScMove(snap, { color: "w", from: "e2", to: "e4" });
+      addScMove(snap, { color: "w", from: "c3", to: "c4" });
     } catch (e) {
       expect((e as AddScActionError).code).toBe("SC_QUEUE_SHAPE");
     }
@@ -31,7 +31,7 @@ describe("addScAction / addScMove", () => {
 
   it("spends 2 gas for bishopSnipe and rejects when insufficient", () => {
     const poor = parseScFen(
-      "SCFEN|4k3/8/8/8/3B4/8/8/4K3|0|33|P|G:11:11|Q:w:;b:",
+      "SCFEN|4k2q/8/8/8/3B4/8/8/4K3|0|33|P|G:11:11|Q:w:;b:",
     );
     expect(() =>
       addScAction({
@@ -47,7 +47,7 @@ describe("addScAction / addScMove", () => {
     ).toThrow(AddScActionError);
 
     const rich = parseScFen(
-      "SCFEN|4k3/8/8/8/3B4/8/8/4K3|0|33|P|G:33:33|Q:w:;b:",
+      "SCFEN|4k2q/8/8/8/3B4/8/8/4K3|0|33|P|G:33:33|Q:w:;b:",
     );
     const { snapshot, action } = addScAction({
       snapshot: rich,
@@ -109,18 +109,14 @@ describe("addScAction / addScMove", () => {
     });
   });
 
-  it("classical does not spend gas; special cost 1 for pawnDouble", () => {
+  it("classical does not spend gas; F special after C spends gas", () => {
     let snap = start();
     snap = addScMove(snap, { color: "w", from: "d2", to: "d4" });
     expect(snap.gas.w).toBe(3);
     snap = addScAction({
       snapshot: snap,
-      action: { timing: "F", kind: "pawnDouble", color: "w", from: "d4", to: "d5" },
+      action: { timing: "F", kind: "rookSiege", color: "w", from: "c3" },
     }).snapshot;
-    // Wait — MODE is B xor F, and we already have C. F after C is allowed.
-    // But pawnDouble on white when we already have C — special+classical OK.
-    // Actually we added C first then F — that's C then F, one special. Good.
-    // Gas: pawnDouble costs 1 → 2 remaining.
     expect(snap.gas.w).toBe(2);
   });
 });

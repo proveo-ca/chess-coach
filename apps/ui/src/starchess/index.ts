@@ -6,6 +6,8 @@ export * from "~/starchess/vision";
 export * from "~/starchess/scfen";
 export * from "~/starchess/scActions";
 export * from "~/starchess/endScTurn";
+export * from "~/starchess/mines";
+export * from "~/starchess/scValidate";
 export * from "~/starchess/board";
 export * from "~/starchess/boardFx";
 export * from "~/starchess/classicalOutcomes";

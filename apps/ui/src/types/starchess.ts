@@ -44,6 +44,11 @@ export type DeathCue = {
   piece: StarChessPiece;
   color: PieceColor;
   at: Square;
+  /**
+   * Spider Mine (or mine+unit shared boom) — flash/ring only, no unit shatter
+   * glyph. `piece` is ignored for art when set.
+   */
+  mine?: boolean;
 };
 
 /** Quiet / occupy slide — ChessBoard hides `from` while the hull travels. */
@@ -61,6 +66,23 @@ export type QueenJumpTrail = {
   color: PieceColor;
   from: Square;
   to: Square;
+};
+
+/** Spider Mine self-missile after chase wake (chaseFrom → detonation). */
+export type MineMissileCue = {
+  id: string;
+  color: PieceColor;
+  from: Square;
+  to: Square;
+};
+
+/** Mine just placed — burrow VFX (per-leg random ≤ {@link MINE_DEPLOY_MS}). */
+export type MineDeployCue = {
+  id: string;
+  at: Square;
+  color: PieceColor;
+  /** Per-leg bury duration in ms (length 4, each in 1..MINE_DEPLOY_MS). */
+  legMs: number[];
 };
 
 /** Command Center deploy drop — piece is not on the board until the cue finishes. */
@@ -133,6 +155,11 @@ export type ScTurnQueue = {
   actions: readonly ScAction[];
 };
 
+export type ScMine = {
+  color: PieceColor;
+  at: Square;
+};
+
 export type ScFenSnapshot = {
   /** Classic piece-placement ranks (FEN field 0). */
   placement: string;
@@ -150,6 +177,28 @@ export type ScFenSnapshot = {
   specialsUsed?: readonly Square[];
   /** Planning queue (`|Q:…`). Omit = snapshot-only. */
   queue?: ScTurnQueue;
+  /** Spider Mines beside placement (`|M:…`). Max 2 per side. */
+  mines?: readonly ScMine[];
+  /**
+   * Squares whose Siege Tank is unpacked (`|S:c3f7…`). Immobile until toggled
+   * back to tank via `rookSiege`. Absent / empty ⇒ all rooks tank-mode.
+   */
+  siegedRooks?: readonly Square[];
+  /**
+   * Pending king-checks (`|H:…`). Armed by king-aimed `C=` this turn; HP / collision
+   * applies on the **next** `endScTurn` after `B` (deploy-to-block window).
+   */
+  pendingKingShots?: readonly ScPendingKingShot[];
+};
+
+/** Armed king-check waiting for next-turn resolve (SCFEN `H:`). */
+export type ScPendingKingShot = {
+  /** Attacking side. */
+  color: PieceColor;
+  piece: PieceSymbol;
+  from: Square;
+  /** Intent square (enemy king when armed). */
+  to: Square;
 };
 
 export type ScFenErrorCode =

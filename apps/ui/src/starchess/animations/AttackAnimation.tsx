@@ -69,8 +69,8 @@ const attackNode = (cue: AttackCue): JSX.Element => {
     case "n": {
       const pose = aimPoseFor(knightAimDiagVec(vec));
       return (
-        <div class={styles.pieceFace} style={{ transform: aimTransformCss(pose) }}>
-          <InlineKnight color={cue.color} />
+        <div class={styles.pieceFace}>
+          <InlineKnight color={cue.color} aimPose={pose} />
         </div>
       );
     }

@@ -1,4 +1,5 @@
 import type { Component } from "solid-js";
+import { For, Show, createMemo } from "solid-js";
 
 import styles from "~/starchess/specials/SpiderMine.module.css";
 import {
@@ -6,36 +7,109 @@ import {
   TEAM_PRIMARY,
   type PieceColor,
 } from "~/starchess/animations/teamColors";
+import {
+  MINE_LEG_COUNT,
+  legPath,
+  missileLeg,
+  radialLeg,
+} from "~/starchess/specials/spiderMineLegs";
+
+export type SpiderMineState = "idle" | "deploying" | "chasing" | "missile";
 
 type SpiderMineProps = {
   /** Owning player — white hull + team-color accents. */
   color?: PieceColor;
+  /**
+   * `idle` — burrowed (no legs).
+   * `deploying` — legs out then burrow (per-leg random ≤250ms).
+   * `chasing` — emerge from ground (per-leg random ≤50ms), radial stance.
+   * `missile` — legs swept opposite the target, hugging the green trail.
+   */
+  state?: SpiderMineState;
+  /** Per-leg anim duration (ms), length {@link MINE_LEG_COUNT} — bury or emerge. */
+  legMs?: readonly number[];
 };
 
+const LEG_INDEX = Array.from({ length: MINE_LEG_COUNT }, (_, i) => i);
+
 /**
- * Standstill spider mine — tooth-crown silhouette (no legs), two bumps.
- * Geometry is drawn already rotated 90° (bumps top/bottom). White + player color.
- * Legs stay hidden until an emerge anim (later).
+ * Spider mine glyph — tooth-crown silhouette; legs for deploy / chase / missile.
  */
 export const SpiderMine: Component<SpiderMineProps> = (props) => {
   const color = () => props.color ?? "w";
+  const state = () => props.state ?? "idle";
   const team = () => TEAM_PRIMARY[color()];
   const teamLight = () => TEAM_LIGHT[color()];
+  const showLegs = () => {
+    const s = state();
+    return s === "deploying" || s === "chasing" || s === "missile";
+  };
+  const legMode = createMemo(() => (state() === "missile" ? "missile" : "radial"));
+  const geom = (i: number) => (legMode() === "missile" ? missileLeg(i) : radialLeg(i));
+  const legDuration = (i: number) => props.legMs?.[i] ?? (state() === "chasing" ? 40 : 200);
 
   return (
     <svg
       class={styles.mine}
+      classList={{
+        [styles.deploying]: state() === "deploying",
+        [styles.chasing]: state() === "chasing",
+        [styles.missile]: state() === "missile",
+      }}
       viewBox="0 0 40 40"
       aria-hidden="true"
       data-spider-mine
       data-color={color()}
+      data-state={state()}
     >
-      <ellipse cx="20" cy="26.5" rx="8" ry="2.2" fill="rgba(0,0,0,0.14)" />
+      <ellipse
+        class={styles.shadow}
+        cx="20"
+        cy="26.5"
+        rx="8"
+        ry="2.2"
+        fill="rgba(0,0,0,0.14)"
+      />
 
-      {/*
-        Tooth crown, 90° from the prior left/right-bump layout:
-        long axis vertical; two bumps on the top and bottom sides.
-      */}
+      <Show when={showLegs()}>
+        <g class={styles.legs} data-part="legs">
+          <For each={[...LEG_INDEX]}>
+            {(i) => {
+              const g = () => geom(i);
+              const ms = () => legDuration(i);
+              return (
+                <g
+                  class={styles.legArm}
+                  style={{
+                    "--leg-ms": `${ms()}ms`,
+                    "transform-origin": `${g().hx}px ${g().hy}px`,
+                  }}
+                  data-leg={i}
+                >
+                  <path
+                    class={styles.leg}
+                    fill="none"
+                    stroke={team()}
+                    stroke-width="1.35"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d={legPath(g())}
+                  />
+                  <circle
+                    cx={g().tx}
+                    cy={g().ty}
+                    r="1.15"
+                    fill={teamLight()}
+                    stroke="#222"
+                    stroke-width="0.55"
+                  />
+                </g>
+              );
+            }}
+          </For>
+        </g>
+      </Show>
+
       <path
         class={styles.enamel}
         fill="#fff"
@@ -56,7 +130,6 @@ export const SpiderMine: Component<SpiderMineProps> = (props) => {
         "
       />
 
-      {/* Top / bottom bumps (was left / right, flipped 90°) */}
       <ellipse cx="20.6" cy="11.2" rx="3.4" ry="3.1" fill={team()} stroke="#222" stroke-width="0.9" />
       <ellipse cx="20.6" cy="28.8" rx="3.4" ry="3.1" fill={team()} stroke="#222" stroke-width="0.9" />
       <ellipse cx="19.4" cy="11.2" rx="1.2" ry="1.6" fill={teamLight()} opacity="0.7" />

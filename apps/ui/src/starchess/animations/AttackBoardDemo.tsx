@@ -26,14 +26,14 @@ import type { RookMode } from "~/types/starchess";
 
 const ORIGIN: Square = "d4";
 /** Opposing pawn in the Pawn Rifle story — fires down the board (front glass). */
-const OPPOSING_PAWN: Square = "f3";
+const OPPOSING_PAWN: Square = "d6";
 
 /**
  * Demo positions must be chess.js-valid (both kings present). StarChess keeps
  * the same contract so ChessBoard can always load via FEN.
  */
 const FEN_BY_PIECE: Record<DemoPiece, string> = {
-  p: "7k/8/8/8/3P4/5p2/8/K7 w - - 0 1",
+  p: "7k/8/3p4/8/3P4/8/8/K7 w - - 0 1",
   n: "7k/8/8/8/3N4/8/8/K7 w - - 0 1",
   b: "7k/8/8/8/3B4/8/8/K7 w - - 0 1",
   r: "7k/8/8/8/3R4/8/8/K7 w - - 0 1",

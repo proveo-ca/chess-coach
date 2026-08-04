@@ -3,8 +3,9 @@ import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { DeployBoardDemo } from "~/starchess/animations/DeployBoardDemo";
 
 /**
- * Command Center deploy VFX via ChessBoard `deployCues` → `DeployAnimation`.
- * Piece is added to FEN (fog updates) only after the 500ms drop finishes.
+ * Command Center deploy VFX: putting a unit on the board triggers auto-deploy
+ * on StarChessChessBoard (`DeployAnimation`). Occupancy updates immediately;
+ * the board piece is hidden while the drop plays ({@link DEPLOY_MS}).
  */
 const meta = {
   title: "Screens/Nerd/StarChess/Deploy Animations",
@@ -13,7 +14,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Humanoid (marine/goliath): 200ms drop + 300ms crouch. Mechanoid (vulture/tank/battlecruiser): 200ms drop + 300ms thrust brake. Total 500ms; board occupancy updates when the cue ends.",
+          "Humanoid (marine/goliath): 200ms drop + 300ms crouch. Mechanoid (vulture/tank/battlecruiser): 200ms drop + 300ms thrust brake. Total 500ms; board occupancy appears first, piece hidden until the cue ends.",
       },
     },
   },

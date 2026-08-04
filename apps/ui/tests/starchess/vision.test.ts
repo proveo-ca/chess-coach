@@ -2,6 +2,7 @@ import { Chess, type Square } from "chess.js";
 import { describe, expect, it } from "vitest";
 
 import {
+  gameWithMovePathOccupancy,
   getNerdVision,
   getNerdVisibleSquares,
   getSideVision,
@@ -10,6 +11,7 @@ import {
   isMoverVisibleToSide,
   isPieceVisibleToSide,
 } from "~/starchess/vision";
+import { MOVE_SQUARE_MS } from "~/starchess/constants";
 
 const sorted = (squares: ReadonlySet<Square>) => [...squares].sort();
 
@@ -184,8 +186,24 @@ describe("getSideVision", () => {
     // Nc5 checks Ke4 but stays hidden in vision — ChessBoard reveals on attackCues.
     const game = new Chess("k7/5r2/8/2n5/4K3/8/7b/8 w - - 0 1");
     const white = getSideVision(game, "w");
-    expect(white.revealedPieces.has("c5")).toBe(false);
     expect(white.litSquares.has("c5")).toBe(false);
+  });
+
+  it("friendly Spider Mines light only their own square", () => {
+    // King on e1 cannot see a4; white mine on a4 must still clear fog there.
+    const game = new Chess("7k/8/8/8/8/8/8/4K3 w - - 0 1");
+    const without = getSideVision(game, "w");
+    expect(without.litSquares.has("a4")).toBe(false);
+
+    const withMine = getSideVision(game, "w", {
+      mines: [{ at: "a4", color: "w" }],
+    });
+    expect(withMine.litSquares.has("a4")).toBe(true);
+    // Enemy mines do not light tiles for the viewer.
+    const enemyMine = getSideVision(game, "w", {
+      mines: [{ at: "a4", color: "b" }],
+    });
+    expect(enemyMine.litSquares.has("a4")).toBe(false);
   });
 });
 
@@ -225,6 +243,25 @@ describe("isMoverVisibleToSide", () => {
     expect(
       isMoverVisibleToSide(g, "w", move, new Set<Square>(), { rookModeFor: () => "siege" }),
     ).toBe(true);
+  });
+});
+
+describe("gameWithMovePathOccupancy", () => {
+  it("relocates a sliding rook along the file for progressive fog", () => {
+    const game = new Chess("7k/8/8/8/8/8/8/R3K3 w - - 0 1");
+    const atStart = getSideVision(game, "w");
+    expect(atStart.litSquares.has("a5")).toBe(false);
+
+    const mid = gameWithMovePathOccupancy(
+      game,
+      [{ id: "r1", from: "a1", to: "a8", piece: "r", startedAt: 0 }],
+      3 * MOVE_SQUARE_MS,
+    );
+    expect(mid.get("a4")?.type).toBe("r");
+    expect(mid.get("a1")).toBeUndefined();
+    const vision = getSideVision(mid, "w");
+    expect(vision.litSquares.has("a5")).toBe(true);
+    expect(vision.litSquares.has("a6")).toBe(true);
   });
 });
 

@@ -12,11 +12,11 @@ import {
 import { kingDamageStateForLives } from "~/starchess/animations/kingDamage";
 import {
   kingLives,
+  planningSnapshot,
   resetStarChessEconomy,
   setPlanningSnapshot,
   setSiegedRooks,
 } from "~/starchess/starChessStore";
-import { rookSquaresInPlacement } from "~/starchess/board";
 import {
   KING_HUNT_PLY_SC,
   KING_HUNT_STEPS,
@@ -47,11 +47,12 @@ export {
 } from "~/starchess/demos/kingHunt";
 
 const TOTAL_TURNS = KING_HUNT_STEPS.length;
-const START_CAPTION = "Start · 3 lives · pristine · Nc5 · Bh2 · Rf7 (siege)";
+const START_CAPTION =
+  "Start · 3 lives · pristine · Nc5 · Bh2 · Rg7 (tank) · checks arm HP next turn";
 
 const applySnap = (snap: ScFenSnapshot) => {
   setPlanningSnapshot(snap);
-  setSiegedRooks(rookSquaresInPlacement(snap.placement));
+  setSiegedRooks(snap.siegedRooks ?? []);
   loadFen(classicFenFromSc(snap, "w"));
   setViewIndex(snap.turn);
 };
@@ -100,14 +101,23 @@ export const KingHuntDemo: Component = () => {
     applySnap(before);
 
     const queued = queueKingHuntStep(before, step);
-    const { resolved, next } = endScTurn(queued);
+    const { resolved, next, afterB } = endScTurn(queued);
 
     combat.playResolve(resolved, {
-      startPlacement: before.placement,
+      startPlacement: afterB.placement,
       livesBefore: before.kingLives,
       commit: (snap) => {
-        setSiegedRooks(rookSquaresInPlacement(snap.placement));
+        setSiegedRooks(next.siegedRooks ?? []);
         loadFen(toClassicFen(snap.placement, "w", 0, Math.max(1, before.turn + 1)));
+        setPlanningSnapshot({
+          ...(planningSnapshot() ?? before),
+          placement: snap.placement,
+          kingLives: { ...snap.kingLives },
+          ...(snap.mines.length ? { mines: [...snap.mines] } : { mines: undefined }),
+          ...(next.siegedRooks?.length
+            ? { siegedRooks: [...next.siegedRooks] }
+            : { siegedRooks: undefined }),
+        });
       },
       onDone: () => finishTurn(indexPlaying, next),
     });

@@ -1,68 +1,81 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { NerdScreen } from "~/screens/NerdScreen";
+import { FogEdgeDemo } from "~/starchess/animations/FogEdgeDemo";
+import {
+  FogVisionDemo,
+  FOG_SIEGE_ROOK_SCFEN,
+} from "~/starchess/animations/FogVisionDemo";
+import { FOG_EDGE_BISHOP_SCENARIO } from "~/starchess/demos/fogEdgeBishop";
+import { FOG_EDGE_ROOK_TANK_SCENARIO } from "~/starchess/demos/fogEdgeRookTank";
+import {
+  FOG_MOVE_KING_SCENARIO,
+  FOG_MOVE_KNIGHT_SCENARIO,
+  FOG_MOVE_PAWN_SCENARIO,
+  FOG_MOVE_QUEEN_SCENARIO,
+} from "~/starchess/demos/fogMoveSamples";
 
 /**
- * Fog of war vision samples + interactive board (move with StarChess chrome).
- * Move L-path / attack / death VFX demos live in the sibling animation folders.
+ * Stories feed SCFEN scenario packages only — no queue / resolve / combat logic here.
+ * // SPEC: _spec/apps/ui/starchess/scfen.md §3, §5
  */
 const meta = {
   title: "Screens/Nerd/StarChess/Fog of War and Move Animations",
-  component: NerdScreen,
   parameters: {
     layout: "fullscreen",
-    route: "/starchess",
     docs: {
       description: {
         component:
-          "Cumulative fog per unit type on NerdScreen. Move L-path / slides come from `StarChessChessBoard` (not shared ChessBoard). Attack / Death / Deploy folders cover combat VFX; Demo → Combat Chain covers simultaneous resolve.",
+          "DualNav asserts **intent → resolve**: dashed ghost on `intentTo` (unit stays on `from`), then End-style combat resolve (slide + progressive fog). Bishop / Rook (tank) also assert fog-edge move collision. Siege rook stays a static vision sample (cannot relocate).",
       },
     },
   },
-  args: {
-    boardVariant: "eclipse",
-    starChessMode: true,
-  },
-} satisfies Meta<typeof NerdScreen>;
+} satisfies Meta;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj;
 
 export const King: Story = {
-  args: {
-    startingFen: "7k/7p/8/8/3K4/8/8/8 w - - 0 1",
-  },
-};
-
-export const Pawn: Story = {
-  args: {
-    startingFen: "7k/8/8/8/3P4/8/8/K7 w - - 0 1",
-  },
+  render: () => <FogEdgeDemo scenario={FOG_MOVE_KING_SCENARIO} />,
   parameters: {
     docs: {
       description: {
         story:
-          "Cumulative white vision: pawn wedge on d4 unioned with the corner king on a1.",
+          "Kd4→e5. First forward: ghost on e5, king stays on d4. Second: resolve slide + progressive fog.",
+      },
+    },
+  },
+};
+
+export const Pawn: Story = {
+  render: () => <FogEdgeDemo scenario={FOG_MOVE_PAWN_SCENARIO} />,
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Cumulative vision (pawn ∧ king). Pd4→d5: intent ghost then resolve hop.",
       },
     },
   },
 };
 
 export const Knight: Story = {
-  args: {
-    startingFen: "7k/7p/8/8/3N4/8/8/K7 w - - 0 1",
+  render: () => <FogEdgeDemo scenario={FOG_MOVE_KNIGHT_SCENARIO} />,
+  parameters: {
+    docs: {
+      description: {
+        story: "Nd4→e6: intent ghost on e6, then L-path resolve + fog.",
+      },
+    },
   },
 };
 
 export const Bishop: Story = {
-  args: {
-    startingFen: "7k/1q6/8/8/3B4/8/8/K7 w - - 0 1",
-  },
+  render: () => <FogEdgeDemo scenario={FOG_EDGE_BISHOP_SCENARIO} />,
   parameters: {
     docs: {
       description: {
         story:
-          "Cumulative white vision (bishop 5×5 + king). Remote queen on b7 shows through fog without clearing its tile.",
+          "Fog overrides FEN: queue Bd4→h8 onto a hidden king. Resolve discovers g7 → Bxg7 (king spared).",
       },
     },
   },
@@ -70,15 +83,12 @@ export const Bishop: Story = {
 
 export const RookTankMode: Story = {
   name: "Rook (tank mode)",
-  args: {
-    startingFen: "7k/8/8/8/3R4/8/8/K7 w - - 0 1",
-    rookMode: "tank",
-  },
+  render: () => <FogEdgeDemo scenario={FOG_EDGE_ROOK_TANK_SCENARIO} />,
   parameters: {
     docs: {
       description: {
         story:
-          "Tank mode (packed): side treads, compact dome, 5×5 vision, can move.",
+          "SCFEN-legal intent Rd4→d8. Resolve: approach → discover d7 → Rxd7 occupy.",
       },
     },
   },
@@ -86,28 +96,29 @@ export const RookTankMode: Story = {
 
 export const RookSiegeMode: Story = {
   name: "Rook (siege mode)",
-  args: {
-    startingFen: "7k/8/8/8/3R4/8/8/K7 w - - 0 1",
-    rookMode: "siege",
-  },
+  render: () => (
+    <FogVisionDemo
+      scfen={FOG_SIEGE_ROOK_SCFEN}
+      rookMode="siege"
+      caption="Siege · SCFEN Rd4 · 9×9 vision, immobile (vision sample)"
+    />
+  ),
   parameters: {
     docs: {
       description: {
         story:
-          "Siege mode (unpacked trebuchet): outriggers, raised boom, 9×9 vision, cannot move.",
+          "Siege mode (unpacked trebuchet): outriggers, raised boom, 9×9 vision, cannot move — static SCFEN vision sample.",
       },
     },
   },
 };
 
 export const Queen: Story = {
-  args: {
-    startingFen: "7k/8/8/8/3Q4/8/8/K7 w - - 0 1",
-  },
+  render: () => <FogEdgeDemo scenario={FOG_MOVE_QUEEN_SCENARIO} />,
   parameters: {
     docs: {
       description: {
-        story: "Queen vision: centered 7×7.",
+        story: "Qd4→d6: intent ghost on d6, then resolve slide + fog.",
       },
     },
   },

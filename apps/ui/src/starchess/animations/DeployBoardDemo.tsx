@@ -10,8 +10,6 @@ import {
   DEPLOY_FEN_EMPTY,
   DEPLOY_FEN_LANDED,
   DEPLOY_MS,
-  DEPLOY_ORIGIN,
-  makeDeployCue,
   type DeployPiece,
 } from "~/starchess/animations/deployAnim";
 import styles from "~/starchess/animations/DeployBoardDemo.module.css";
@@ -19,7 +17,6 @@ import { StarChessChessBoard } from "~/starchess/StarChessChessBoard";
 import { setStorybookCapabilities } from "~/screens/storybookCapabilities";
 import { NERD_CAPABILITIES } from "~/store/capabilitiesStore";
 import { loadFen } from "~/store/gameStore";
-import type { DeployCue } from "~/types/starchess";
 import { setActivePlayerColor, setNerdModeUnlocked, setPlayerIdentity } from "~/store/settingsStore";
 
 type DeployPhase = "idle" | "falling" | "landed";
@@ -29,12 +26,10 @@ type DeployBoardDemoProps = {
 };
 
 /**
- * Storybook harness: deploy drop through ChessBoard `deployCues`.
- * FEN / fog update only after {@link DEPLOY_MS}.
+ * Storybook harness: put the unit on the board → StarChessChessBoard auto-deploy.
  */
 export const DeployBoardDemo: Component<DeployBoardDemoProps> = (props) => {
   const [phase, setPhase] = createSignal<DeployPhase>("idle");
-  const [cue, setCue] = createSignal<DeployCue | null>(null);
 
   let stepTimer = 0;
   let loopTimer = 0;
@@ -49,16 +44,14 @@ export const DeployBoardDemo: Component<DeployBoardDemoProps> = (props) => {
 
   const runOnce = () => {
     window.clearTimeout(stepTimer);
-    setCue(null);
     setPhase("idle");
     loadFen(DEPLOY_FEN_EMPTY);
     stepTimer = window.setTimeout(() => {
       setPhase("falling");
-      setCue(makeDeployCue(props.piece, "w", DEPLOY_ORIGIN));
+      // Occupancy change triggers board auto-deploy (hide + DeployAnimation).
+      loadFen(DEPLOY_FEN_LANDED[props.piece]);
       stepTimer = window.setTimeout(() => {
-        setCue(null);
         setPhase("landed");
-        loadFen(DEPLOY_FEN_LANDED[props.piece]);
       }, DEPLOY_MS);
     }, 400);
   };
@@ -91,11 +84,7 @@ export const DeployBoardDemo: Component<DeployBoardDemoProps> = (props) => {
   return (
     <div class={styles.demo}>
       <div class={styles.host}>
-        <StarChessChessBoard
-          variant="eclipse"
-          fogOfWar
-          deployCues={cue() ? [cue()!] : []}
-        />
+        <StarChessChessBoard variant="eclipse" fogOfWar />
       </div>
       <p class={styles.caption} data-phase={phase()}>
         {label()} · {phase()} · {DEPLOY_MS}ms

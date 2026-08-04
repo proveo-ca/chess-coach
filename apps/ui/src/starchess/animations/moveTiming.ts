@@ -1,6 +1,8 @@
 import type { PieceSymbol, Square } from "chess.js";
 
 import { vecBetween } from "~/starchess/animations/boardGeom";
+import { knightLegVecs, squareAt } from "~/starchess/animations/attackVectors";
+import { rayBetween } from "~/starchess/mines";
 import { MOVE_SQUARE_MS } from "~/starchess/constants";
 
 /** Knight is the only piece that travels at half the per-square rate. */
@@ -22,6 +24,40 @@ export const moveTravelSquares = (
 
 const squareMsFor = (piece?: PieceSymbol): number =>
   piece === "n" ? knightSquareMs() : MOVE_SQUARE_MS;
+
+/**
+ * Ordered occupancy squares for a quiet move (inclusive `from` → `to`).
+ * Sliders follow the ray; knights follow the L (long leg → elbow → short);
+ * leaps are `[from, to]`.
+ */
+export const movePathSquares = (
+  from: Square,
+  to: Square,
+  piece?: PieceSymbol,
+): Square[] => {
+  if (from === to) return [from];
+  if (piece === "n") {
+    const { leg1 } = knightLegVecs(vecBetween(from, to));
+    const elbow = squareAt(from, leg1);
+    if (!elbow) return [from, to];
+    return [from, ...rayBetween(from, elbow), elbow, ...rayBetween(elbow, to), to];
+  }
+  if (piece === "k" || piece === "p") return [from, to];
+  return [from, ...rayBetween(from, to), to];
+};
+
+/** Square the mover occupies after `elapsedMs` of slide (matches MoveAnimation timing). */
+export const moveSquareAtElapsed = (
+  from: Square,
+  to: Square,
+  piece: PieceSymbol | undefined,
+  elapsedMs: number,
+): Square => {
+  const path = movePathSquares(from, to, piece);
+  const ms = squareMsFor(piece);
+  const i = Math.min(path.length - 1, Math.max(0, Math.floor(elapsedMs / ms)));
+  return path[i]!;
+};
 
 /** Total slide / L-path duration: per-square ms × squares (knight = half rate). */
 export const moveDurationMs = (

@@ -18,6 +18,7 @@ import type {
   DeployCue,
   KingDamageCue,
   KingDamageState,
+  MineMissileCue,
   MoveCue,
   QueenJumpTrail,
 } from "~/types/starchess";
@@ -25,13 +26,21 @@ import { AttackAnimation } from "~/starchess/animations/AttackAnimation";
 import { DeathAnimation } from "~/starchess/animations/DeathAnimation";
 import { DeployAnimation } from "~/starchess/animations/DeployAnimation";
 import { KingDamageOverlay } from "~/starchess/animations/kingDamageOverlay";
+import { MineMissileAnimation } from "~/starchess/animations/MineMissileAnimation";
 import { MoveAnimation } from "~/starchess/animations/MoveAnimation";
 import { QueenJumpAnimation } from "~/starchess/animations/QueenJumpAnimation";
 import { buildFxHiddenSquares, EMPTY_FX_HIDDEN, hasCombatFxInput } from "~/starchess/boardFx";
+import { useAutoMineDeploy } from "~/starchess/hooks/useAutoMineDeploy";
 import { rookModeAt, siegedRooks, specialsUsedThisTurn } from "~/starchess/starChessStore";
 import { isStarChessBoard } from "~/starchess/classicalOutcomes";
-import { MOVE_MS } from "~/starchess/constants";
-import { getSideVision, getVisionDisplayCells, getVisionFogHolePaths } from "~/starchess/vision";
+import { MOVE_MS, MOVE_SQUARE_MS } from "~/starchess/constants";
+import {
+  gameWithMovePathOccupancy,
+  getSideVision,
+  getVisionDisplayCells,
+  getVisionFogHolePaths,
+  type MoveVisionCue,
+} from "~/starchess/vision";
 import { ChessBoardArrow } from "~/components/atoms/ChessBoardArrow.tsx";
 import { ChessSquare } from "~/components/atoms/ChessSquare";
 import { GameOverBanner } from "~/components/features/GameOverBanner";
@@ -77,8 +86,8 @@ export const ChessBoard: Component<{
   /** Active StarChess death VFX cues. */
   deathCues?: DeathCue[];
   /**
-   * Command Center deploy drops — piece is overlay-only until the cue ends;
-   * callers should commit FEN after {@link DEPLOY_MS}.
+   * Deploy drop overlays. Prefer board auto-deploy via occupancy (StarChessChessBoard);
+   * optional explicit cues still hide `at` while playing.
    */
   deployCues?: DeployCue[];
   /** Quiet / occupy slide cues — hides `from` while travelling. */
@@ -91,14 +100,37 @@ export const ChessBoard: Component<{
   jumpCues?: MoveCue[];
   /** Tactical Jump green thruster trails (1000ms; no board hiding). */
   jumpTrails?: QueenJumpTrail[];
+  /** Spider Mine squares in chase wake (legs + lift on the board glyph). */
+  chasingMines?: readonly { at: Square; legMs: number[] }[];
+  /** Spider Mine self-missile hulls after the victim lands. */
+  mineMissiles?: MineMissileCue[];
+  /** Single green trails for mine missiles (queen/battlecruiser palette). */
+  mineMissileTrails?: QueenJumpTrail[];
+  /** Mines that already launched — stay off the board glyph until combat clears. */
+  spentMines?: readonly Square[];
+  /**
+   * When true, skip auto unit/mine deploy VFX and re-baseline (DualNav scrub).
+   * StarChessChessBoard forwards this for mine burrow + piece drop.
+   */
+  suppressAutoDeploy?: boolean;
   /** @deprecated Prefer store {@link rookModeAt}; board-wide override for fog stories. */
   rookMode?: import("~/types/starchess").RookMode;
-  /** Squares with an armed spider mine (drawn under pieces). */
-  spiderMines?: readonly Square[] | ReadonlySet<Square>;
-  /** Owner color for `spiderMines` (defaults to active player). */
+  /** Squares with an armed spider mine (drawn under pieces). Plain squares use `spiderMineColor`. */
+  spiderMines?:
+    | readonly Square[]
+    | ReadonlySet<Square>
+    | readonly { at: Square; color: Color }[];
+  /** Owner color for plain-square `spiderMines` (defaults to active player). */
   spiderMineColor?: Color;
   /** Engine-special target squares (Charon Booster Missiles queen) with a distinct ring. */
   specialTargets?: readonly Square[];
+  /**
+   * Queued planning intent destinations — dashed player-color rings
+   * (live NerdScreen; DualNav SCFEN review omits these).
+   */
+  intentDestinations?: readonly { at: Square; color: Color }[];
+  /** Queued specials — ghost canister over the unit square. */
+  intentCanisters?: readonly { at: Square; color: Color }[];
   /** Squares whose Goliath is Charon-armed (popped shoulder launchers). */
   armedBishops?: readonly Square[];
   /**
@@ -129,10 +161,21 @@ export const ChessBoard: Component<{
     return props.attackCue ? [props.attackCue] : [];
   });
   const resolvedDeathCues = createMemo(() => props.deathCues ?? []);
-  const resolvedDeployCues = createMemo(() => props.deployCues ?? []);
+  const resolvedDeployCuesRaw = createMemo(() => props.deployCues ?? []);
   const resolvedMoveCues = createMemo(() => props.moveCues ?? []);
   const resolvedJumpCues = createMemo(() => props.jumpCues ?? []);
   const resolvedJumpTrails = createMemo(() => props.jumpTrails ?? []);
+  const resolvedMineMissiles = createMemo(() => props.mineMissiles ?? []);
+  const resolvedMineTrails = createMemo(() => props.mineMissileTrails ?? []);
+  const chasingBySquare = createMemo(() => {
+    const map = new Map<Square, number[]>();
+    for (const c of props.chasingMines ?? []) map.set(c.at, c.legMs);
+    return map;
+  });
+  const mineMissileOrigins = createMemo(
+    () => new Set(resolvedMineMissiles().map((c) => c.from)),
+  );
+  const spentMineSquares = createMemo(() => new Set(props.spentMines ?? []));
   const moveProgress = createMemo(() => props.moveProgress ?? {});
   const moveLeg = createMemo(() => props.moveLeg ?? {});
   const kingDamageCues = createMemo((): KingDamageCue[] => {
@@ -194,20 +237,55 @@ export const ChessBoard: Component<{
     deaths: resolvedDeathCues(),
     moves: [...resolvedMoveCues(), ...resolvedJumpCues()],
     kingDamage: kingDamageCues(),
-    jumpTrails: resolvedJumpTrails(),
+    // Raw deploys for hide-set; fog-filtered cues feed DeployAnimation only.
+    deploys: resolvedDeployCuesRaw(),
+    jumpTrails: [...resolvedJumpTrails(), ...resolvedMineTrails()],
+    mineMissiles: resolvedMineMissiles(),
     fleeCover: kingFleeCover(),
   }));
   const hasCombatFx = createMemo(() => hasCombatFxInput(combatFxInput()));
-  const hasDeployFx = createMemo(() => resolvedDeployCues().length > 0);
-  const needsBoardMetrics = createMemo(() => hasCombatFx() || hasDeployFx());
+  const hasDeployFx = createMemo(() => resolvedDeployCuesRaw().length > 0);
   const fxHiddenSquares = createMemo(() => buildFxHiddenSquares(combatFxInput()));
-  const mineSquares = createMemo(() => {
+  const mineEntries = createMemo(() => {
     const raw = props.spiderMines;
-    if (!raw) return null;
-    return raw instanceof Set ? raw : new Set(raw);
+    if (!raw) return [] as { at: Square; color: Color }[];
+    const fallback = props.spiderMineColor ?? activePlayerColor();
+    if (raw instanceof Set) {
+      return [...raw].map((at) => ({ at, color: fallback }));
+    }
+    const list = [...raw];
+    if (list.length === 0) return [];
+    if (typeof list[0] === "string") {
+      return (list as Square[]).map((at) => ({ at, color: fallback }));
+    }
+    return list as { at: Square; color: Color }[];
   });
+  const { mineDeployCues, cueAt: mineDeployCueAt } = useAutoMineDeploy({
+    mines: mineEntries,
+    enabled: () => !props.suppressAutoDeploy,
+  });
+  const needsBoardMetrics = createMemo(
+    () =>
+      hasCombatFx() ||
+      hasDeployFx() ||
+      chasingBySquare().size > 0 ||
+      mineDeployCues().length > 0,
+  );
+  const mineSquares = createMemo(() => new Set(mineEntries().map((m) => m.at)));
+  const mineColorAt = (sq: Square): Color =>
+    mineEntries().find((m) => m.at === sq)?.color ?? props.spiderMineColor ?? activePlayerColor();
   const specialTargetSquares = createMemo(() => new Set(props.specialTargets ?? []));
   const armedBishopSquares = createMemo(() => new Set(props.armedBishops ?? []));
+  const intentDestAt = createMemo(() => {
+    const map = new Map<Square, Color>();
+    for (const g of props.intentDestinations ?? []) map.set(g.at, g.color);
+    return map;
+  });
+  const intentCanisterAt = createMemo(() => {
+    const map = new Map<Square, Color>();
+    for (const g of props.intentCanisters ?? []) map.set(g.at, g.color);
+    return map;
+  });
 
   const [boardSize, setBoardSize] = createSignal<{ width: number; height: number } | null>(null);
   let boardGridRef = undefined as HTMLDivElement | undefined;
@@ -258,28 +336,113 @@ export const ChessBoard: Component<{
     return rookModeAt(sq);
   };
 
+  /**
+   * Progressive path fog — tick while move cues are sliding so lit squares
+   * advance with the hull (SCFEN §4.1).
+   */
+  const [moveVisionTick, setMoveVisionTick] = createSignal(0);
+  const moveVisionStartedAt = new Map<string, number>();
+  createEffect(() => {
+    const cues = resolvedMoveCues();
+    const prog = moveProgress();
+    if (!props.fogOfWar || cues.length === 0) {
+      moveVisionStartedAt.clear();
+      return;
+    }
+    const now = performance.now();
+    const live = new Set(cues.map((c) => c.id));
+    for (const id of [...moveVisionStartedAt.keys()]) {
+      if (!live.has(id)) moveVisionStartedAt.delete(id);
+    }
+    for (const c of cues) {
+      if (prog[c.id] === 1 && !moveVisionStartedAt.has(c.id)) {
+        moveVisionStartedAt.set(c.id, now);
+      }
+    }
+    const sliding = cues.some((c) => prog[c.id] === 1);
+    if (!sliding) return;
+    const tick = window.setInterval(
+      () => setMoveVisionTick((n) => n + 1),
+      Math.max(32, MOVE_SQUARE_MS / 4),
+    );
+    onCleanup(() => window.clearInterval(tick));
+  });
+
   const nerdVision = createMemo(() => {
     // Touch siegedRooks so vision recompute when tanks toggle.
     void siegedRooks();
-    return props.fogOfWar
-      ? getSideVision(activeGame(), activePlayerColor(), { rookModeFor: modeForRook })
-      : null;
+    void moveVisionTick();
+    if (!props.fogOfWar) return null;
+    const cues = resolvedMoveCues();
+    const prog = moveProgress();
+    const now = performance.now();
+    const relocating: MoveVisionCue[] = [];
+    for (const c of cues) {
+      if (prog[c.id] !== 1) continue;
+      const startedAt = moveVisionStartedAt.get(c.id);
+      if (startedAt == null) continue;
+      relocating.push({
+        id: c.id,
+        from: c.from,
+        to: c.to,
+        piece: c.piece,
+        startedAt,
+      });
+    }
+    const visionGame =
+      relocating.length > 0
+        ? gameWithMovePathOccupancy(activeGame(), relocating, now)
+        : activeGame();
+    return getSideVision(visionGame, activePlayerColor(), {
+      rookModeFor: modeForRook,
+      mines: mineEntries(),
+    });
   });
   const visibleSquares = createMemo(() => nerdVision()?.litSquares ?? null);
+  /**
+   * Deploy drop overlays — never punch a fogged enemy into view. Own units
+   * remain visible (and may deploy) even on unlit tiles.
+   * Defined after `visibleSquares` (depends on fog vision).
+   */
+  const deployOverlayCues = createMemo(() => {
+    const cues = resolvedDeployCuesRaw();
+    if (!props.fogOfWar) return cues;
+    const lit = visibleSquares();
+    const viewer = activePlayerColor();
+    return cues.filter((c) => c.color === viewer || !!lit?.has(c.at));
+  });
   /**
    * Pieces shown through fog without lighting the tile.
    * Active attack origins are always included so shooters under fog reveal
    * for the duration of their attack VFX.
+   * Chase mine combat also reveals the hunted mover (engine mineTriggers →
+   * moveCues / missile to) so path-collide is not a fog-hidden “random boom”.
    * Classical boards (no fog) always get `null` — no fog gating.
    */
   const revealedPieces = createMemo(() => {
     if (!props.fogOfWar) return null;
     const base = nerdVision()?.revealedPieces;
     const attacks = resolvedAttackCues();
-    if (!attacks.length) return base ?? null;
+    const chaseActive =
+      (props.chasingMines?.length ?? 0) > 0 || resolvedMineMissiles().length > 0;
+    if (!attacks.length && !chaseActive) return base ?? null;
     const next = new Set(base ?? []);
-    // Attack-time only — quiet moveCues must not punch through fog.
-    for (const cue of attacks) next.add(cue.from);
+    // Reveal shooter origin and the target square (victim under fog for the shot).
+    for (const cue of attacks) {
+      next.add(cue.from);
+      next.add(cue.to);
+    }
+    // Quiet moves stay fog-gated — except engine chase victims mid-hunt.
+    if (chaseActive) {
+      for (const cue of resolvedMoveCues()) {
+        next.add(cue.from);
+        next.add(cue.to);
+      }
+      for (const m of resolvedMineMissiles()) {
+        next.add(m.from);
+        next.add(m.to);
+      }
+    }
     return next;
   });
   const visionCells = createMemo(() => {
@@ -486,6 +649,8 @@ export const ChessBoard: Component<{
                       isValidMove={displayValidMoves().includes(square)}
                       isAdviceHovered={adviceHoveredSquares().includes(square)}
                       isSpecialTarget={specialTargetSquares().has(square)}
+                      intentTargetColor={intentDestAt().get(square)}
+                      intentCanisterColor={intentCanisterAt().get(square)}
                       isDragging={touchDrag()?.from === square}
                       isInvalid={isInvalid()}
                       isFogged={isFogged()}
@@ -497,8 +662,18 @@ export const ChessBoard: Component<{
                           piece()?.color !== activePlayerColor() &&
                           !revealedPieces()?.has(square))
                       }
-                      spiderMine={mineSquares()?.has(square) === true}
-                      spiderMineColor={props.spiderMineColor ?? activePlayerColor()}
+                      spiderMine={
+                        mineSquares().has(square) &&
+                        !mineMissileOrigins().has(square) &&
+                        !spentMineSquares().has(square) &&
+                        !(props.fogOfWar === true && isFogged() === true)
+                      }
+                      spiderMineColor={mineColorAt(square)}
+                      spiderMineChasing={chasingBySquare().has(square)}
+                      spiderMineDeploying={!!mineDeployCueAt(square)}
+                      spiderMineLegMs={
+                        mineDeployCueAt(square)?.legMs ?? chasingBySquare().get(square)
+                      }
                       rookMode={
                         piece()?.type === "r" && starChessRules()
                           ? modeForRook(square)
@@ -642,12 +817,18 @@ export const ChessBoard: Component<{
                 boardWidth={combatBoardWidth()}
                 boardHeight={combatBoardHeight()}
               />
+              <MineMissileAnimation
+                cues={resolvedMineMissiles()}
+                trails={resolvedMineTrails()}
+                boardWidth={combatBoardWidth()}
+                boardHeight={combatBoardHeight()}
+              />
             </div>
           </Show>
 
           <Show when={deployOverlayReady()}>
             <DeployAnimation
-              cues={resolvedDeployCues()}
+              cues={deployOverlayCues()}
               boardWidth={combatBoardWidth()}
               boardHeight={combatBoardHeight()}
             />

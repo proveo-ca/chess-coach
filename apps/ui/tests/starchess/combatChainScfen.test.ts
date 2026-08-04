@@ -8,6 +8,7 @@ import {
   queueCombatChainStep,
 } from "~/starchess/demos/combatChain";
 import {
+  KING_HUNT_LIVE_START_SCFEN,
   KING_HUNT_PLY_SC,
   KING_HUNT_START_SCFEN,
   buildKingHuntPlys,
@@ -48,9 +49,19 @@ describe("King Hunt SCFEN engine history", () => {
   it("engine plies reach lethal phase O with 0 white lives", () => {
     const plies = buildKingHuntPlys();
     expect(plies[0]!.placement).toBe(parseScFen(KING_HUNT_START_SCFEN).placement);
+    expect(plies[0]!.placement).toBe("k7/6r1/8/2n5/4K3/8/7b/8");
     const last = plies[plies.length - 1]!;
     expect(last.kingLives.w).toBe(0);
     expect(last.phase).toBe("O");
     expect(KING_HUNT_PLY_SC[KING_HUNT_PLY_SC.length - 1]!.kingLives.w).toBe(0);
+  });
+
+  it("live seed is ownership-flipped with tank on g7 and pending H:", () => {
+    const live = parseScFen(KING_HUNT_LIVE_START_SCFEN);
+    expect(live.placement).toBe("K7/6R1/8/2N5/4k3/8/7B/8");
+    expect(live.gas.w).toBe(3);
+    expect(live.pendingKingShots).toEqual([
+      { color: "w", piece: "n", from: "c5", to: "e4" },
+    ]);
   });
 });

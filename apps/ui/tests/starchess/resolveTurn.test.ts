@@ -3,22 +3,18 @@ import { describe, expect, it } from "vitest";
 import { resolveTurn } from "~/starchess/resolveTurn";
 
 describe("resolveTurn", () => {
-  it("king-shot chips lives without occupying the king square", () => {
+  it("king-aimed C arms pending without chipping lives or occupying", () => {
     const r = resolveTurn({
       placement: "k7/5r2/8/2n5/4K3/8/7b/8",
       kingLives: { w: 3, b: 3 },
       white: null,
       black: { color: "b", from: "c5", to: "e4" },
     });
-    expect(r.attacks).toEqual([
-      expect.objectContaining({
-        kind: "kingShot",
-        from: "c5",
-        to: "e4",
-        livesAfter: 2,
-      }),
+    expect(r.attacks).toEqual([]);
+    expect(r.pendingKingShotsArmed).toEqual([
+      { color: "b", piece: "n", from: "c5", to: "e4" },
     ]);
-    expect(r.afterAttack.kingLives.w).toBe(2);
+    expect(r.afterAttack.kingLives.w).toBe(3);
     expect(r.afterAttack.placement).toBe("k7/5r2/8/2n5/4K3/8/7b/8");
     expect(r.moves).toEqual([]);
     expect(r.afterMove.placement).toBe(r.afterAttack.placement);
@@ -50,34 +46,37 @@ describe("resolveTurn", () => {
     expect(r.afterMove.placement).toBe("k7/8/5r2/2K5/8/8/8/6b1");
   });
 
-  it("king-shot then quiet flee on the same turn", () => {
+  it("king-aimed bishop arms pending; king may flee same turn", () => {
     const r = resolveTurn({
       placement: "k7/8/5r2/2K5/8/8/8/6b1",
       kingLives: { w: 2, b: 3 },
       white: { color: "w", from: "c5", to: "c6" },
       black: { color: "b", from: "g1", to: "c5" },
     });
-    expect(r.attacks[0]).toMatchObject({
-      kind: "kingShot",
-      from: "g1",
-      to: "c5",
-      livesAfter: 1,
-    });
-    expect(r.afterAttack.kingLives.w).toBe(1);
+    expect(r.attacks).toEqual([]);
+    expect(r.pendingKingShotsArmed).toEqual([
+      { color: "b", piece: "b", from: "g1", to: "c5" },
+    ]);
+    expect(r.afterAttack.kingLives.w).toBe(2);
     expect(r.moves).toEqual([{ piece: "k", color: "w", from: "c5", to: "c6" }]);
     expect(r.afterMove.placement).toBe("k7/8/2K2r2/8/8/8/8/6b1");
   });
 
-  it("lethal king-shot chips to 0 but keeps king in placement", () => {
+  it("path-discovery kingShot still chips immediately (not deferred)", () => {
+    // Sliding intent past a king on the ray — §4.3 path discovery, not king-aimed.
     const r = resolveTurn({
       placement: "k7/8/2K2r2/8/8/8/8/6b1",
       kingLives: { w: 1, b: 3 },
       white: null,
       black: { color: "b", from: "f6", to: "c6" },
     });
-    expect(r.attacks[0]).toMatchObject({ kind: "kingShot", livesAfter: 0 });
+    // f6→c6 is king-aimed (king on c6) → deferred, not path discovery.
+    expect(r.attacks).toEqual([]);
+    expect(r.pendingKingShotsArmed).toEqual([
+      { color: "b", piece: "r", from: "f6", to: "c6" },
+    ]);
+    expect(r.afterAttack.kingLives.w).toBe(1);
     expect(r.afterAttack.placement).toBe("k7/8/2K2r2/8/8/8/8/6b1");
-    expect(r.afterAttack.kingLives.w).toBe(0);
   });
 
   it("Combat Chain turn 1: dual quiet slides", () => {

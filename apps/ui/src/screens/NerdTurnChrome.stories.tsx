@@ -245,7 +245,6 @@ export const GasDeploy: Story = {
               <StarChessChessBoard
                 variant="eclipse"
                 fogOfWar
-                deployCues={command.deployCue() ? [command.deployCue()!] : []}
                 spiderMines={vulture.mineAt() ? [vulture.mineAt()!] : []}
                 attackCues={charon.combat.attackCues()}
                 attackDying={charon.combat.attackDying()}

@@ -1,6 +1,7 @@
 /**
  * End / timeout path — resolve one planning SCFEN snap into the next.
- * Order: B specials → classical attack → classical move → F specials.
+ * Order: B specials → pending king-checks → classical attack → classical move
+ * (+ mine triggers) → F specials.
  */
 
 import type { Square } from "chess.js";
@@ -11,28 +12,39 @@ import {
   type ScPiece,
 } from "~/starchess/board";
 import { energyForTurn } from "~/starchess/constants";
+import {
+  assertMineCap,
+  MAX_MINES_PER_SIDE,
+  minesFor,
+} from "~/starchess/mines";
 import { placementAfterCharon } from "~/starchess/specials/bishopCharon";
 import {
+  applyPendingKingShots,
   resolveTurn,
   type ResolveTurnResult,
 } from "~/starchess/resolveTurn";
+import { getSideVision } from "~/starchess/vision";
 import type { ResolveEvent, SpecialKind } from "~/starchess/types";
 import type {
   ClassicalPlan,
   PieceColor,
   ScAction,
   ScFenSnapshot,
+  ScMine,
 } from "~/types/starchess";
+import { Chess } from "chess.js";
 
 export type EndScTurnResult = {
   resolved: ResolveTurnResult;
   next: ScFenSnapshot;
-  events: ResolveEvent[];
-  /** Queen origins that Tactical-Jumped this resolve (attack immunity). */
   ignoreAttacksOn: readonly Square[];
+  events: ResolveEvent[];
+  /** Surviving `rookSiege` toggles this resolve (entered or left siege). */
+  siegedThisTurn: readonly Square[];
+  /** Placement + mines after B specials, before classical resolve (spawn / warp land). */
+  afterB: { placement: string; mines: ScMine[] };
 };
 
-/** Within a timing rank: white wire order, then black (SCFEN §2.1). */
 const byTiming = (actions: readonly ScAction[], timing: "B" | "C" | "F") =>
   actions
     .filter((a) => a.timing === timing)
@@ -41,7 +53,6 @@ const byTiming = (actions: readonly ScAction[], timing: "B" | "C" | "F") =>
       if (a.color !== b.color) return a.color === "w" ? -1 : 1;
       return a.seq - b.seq;
     });
-
 
 const relocate = (placement: string, from: Square, to: Square): string => {
   const map = placementToMap(placement);
@@ -52,11 +63,7 @@ const relocate = (placement: string, from: Square, to: Square): string => {
   return mapToPlacement(map);
 };
 
-const placeUnit = (
-  placement: string,
-  at: Square,
-  piece: ScPiece,
-): string => {
+const placeUnit = (placement: string, at: Square, piece: ScPiece): string => {
   const map = placementToMap(placement);
   map.set(at, piece);
   return mapToPlacement(map);
@@ -64,37 +71,45 @@ const placeUnit = (
 
 const applySpecial = (
   placement: string,
+  mines: ScMine[],
   action: Extract<ScAction, { timing: "B" | "F" }>,
   ignoreAttacksOn: Square[],
-): string => {
+): { placement: string; mines: ScMine[] } => {
   const kind = action.kind as SpecialKind;
   switch (kind) {
     case "bishopSnipe": {
-      if (!action.to) return placement;
-      return placementAfterCharon(placement, action.to);
+      if (!action.to) return { placement, mines };
+      return { placement: placementAfterCharon(placement, action.to), mines };
     }
     case "queenWarp": {
-      if (!action.to) return placement;
+      if (!action.to) return { placement, mines };
       ignoreAttacksOn.push(action.from);
-      return relocate(placement, action.from, action.to);
+      return { placement: relocate(placement, action.from, action.to), mines };
     }
     case "pawnDouble": {
-      if (!action.to) return placement;
-      return relocate(placement, action.from, action.to);
+      if (!action.to) return { placement, mines };
+      return { placement: relocate(placement, action.from, action.to), mines };
     }
     case "spawn": {
-      if (!action.to || !action.unit) return placement;
-      return placeUnit(placement, action.to, {
-        type: action.unit,
-        color: action.color,
-      });
+      if (!action.to || !action.unit) return { placement, mines };
+      return {
+        placement: placeUnit(placement, action.to, {
+          type: action.unit,
+          color: action.color,
+        }),
+        mines,
+      };
     }
-    case "knightMine":
+    case "knightMine": {
+      const at = action.to ?? action.from;
+      const next = [...mines, { color: action.color, at }];
+      assertMineCap(next, action.color);
+      return { placement, mines: next };
+    }
     case "rookSiege":
-      // Overlay / store-side; placement unchanged in SCFEN resolve.
-      return placement;
+      return { placement, mines };
     default:
-      return placement;
+      return { placement, mines };
   }
 };
 
@@ -119,10 +134,6 @@ const eventFor = (
   to: action.timing === "C" || action.to ? (action as { to?: Square }).to : undefined,
 });
 
-/**
- * Resolve a `phase=P` planning snapshot. Returns the next planning snap
- * (`turn+1`, empty queue, gas refilled from next-turn income).
- */
 export const endScTurn = (snapshot: ScFenSnapshot): EndScTurnResult => {
   if (snapshot.phase !== "P") {
     throw new Error(`endScTurn requires phase P (got ${snapshot.phase})`);
@@ -132,23 +143,55 @@ export const endScTurn = (snapshot: ScFenSnapshot): EndScTurnResult => {
   const events: ResolveEvent[] = [];
   const ignoreAttacksOn: Square[] = [];
   let placement = snapshot.placement;
+  let mines: ScMine[] = [...(snapshot.mines ?? [])];
   let eventSeq = 0;
 
   for (const a of byTiming(actions, "B")) {
     if (a.timing !== "B") continue;
-    placement = applySpecial(placement, a, ignoreAttacksOn);
+    const applied = applySpecial(placement, mines, a, ignoreAttacksOn);
+    placement = applied.placement;
+    mines = applied.mines;
     events.push(eventFor("specialBefore", a, `ev-${eventSeq++}`));
   }
 
-  const white = classicalFor(actions, "w");
-  const black = classicalFor(actions, "b");
-  const resolved = resolveTurn({
+  const afterB = { placement, mines: [...mines] };
+
+  const pendingApplied = applyPendingKingShots({
     placement,
     kingLives: snapshot.kingLives,
+    pending: snapshot.pendingKingShots ?? [],
+    mines,
+  });
+  placement = pendingApplied.placement;
+  mines = pendingApplied.mines;
+  let kingLives = pendingApplied.kingLives;
+
+  const visionGame = new Chess(`${placement} w - - 0 1`);
+  const visionOpts = { mines };
+  const visionW = getSideVision(visionGame, "w", visionOpts);
+  const visionB = getSideVision(visionGame, "b", visionOpts);
+  const isTargetVisible = (color: PieceColor, square: Square) => {
+    const v = color === "w" ? visionW : visionB;
+    return v.litSquares.has(square) || v.revealedPieces.has(square);
+  };
+
+  const white = classicalFor(actions, "w");
+  const black = classicalFor(actions, "b");
+  const classical = resolveTurn({
+    placement,
+    kingLives,
     white,
     black,
     ignoreAttacksOn,
+    mines,
+    isTargetVisible,
+    pathVisionOpts: { mines },
   });
+
+  const resolved: ResolveTurnResult = {
+    ...classical,
+    attacks: [...pendingApplied.attacks, ...classical.attacks],
+  };
 
   for (const atk of resolved.attacks) {
     events.push({
@@ -168,19 +211,72 @@ export const endScTurn = (snapshot: ScFenSnapshot): EndScTurnResult => {
       to: mv.to,
     });
   }
+  for (const blast of resolved.mineTriggers) {
+    events.push({
+      id: `ev-${eventSeq++}`,
+      phase: "move",
+      color: blast.color,
+      from: blast.from,
+      to: blast.to,
+    });
+  }
+  for (const hit of resolved.moveCollisions) {
+    events.push({
+      id: `ev-${eventSeq++}`,
+      phase: "move",
+      color: hit.color,
+      from: hit.from,
+      to: hit.to,
+    });
+  }
 
   placement = resolved.afterMove.placement;
-  const kingLives = resolved.afterMove.kingLives;
+  mines = resolved.afterMove.mines;
+  kingLives = resolved.afterMove.kingLives;
+  const siegedThisTurn: Square[] = [];
+  // Carry siege mode; drop squares that no longer hold a rook after combat.
+  const boardAfterMove = placementToMap(placement);
+  const sieged = new Set(
+    (snapshot.siegedRooks ?? []).filter((sq) => boardAfterMove.get(sq)?.type === "r"),
+  );
 
   for (const a of byTiming(actions, "F")) {
     if (a.timing !== "F") continue;
-    placement = applySpecial(placement, a, ignoreAttacksOn);
+    // Actor may have relocated via classical C; skip if gone (death / chase boom).
+    const classicalPlan = classicalFor(actions, a.color);
+    const at =
+      classicalPlan && classicalPlan.from === a.from ? classicalPlan.to : a.from;
+    const boardAfter = placementToMap(placement);
+    const actor = boardAfter.get(at);
+    if (!actor || actor.color !== a.color) continue;
+
+    if (a.kind === "rookSiege") {
+      if (actor.type !== "r") continue;
+      if (sieged.has(at)) sieged.delete(at);
+      else sieged.add(at);
+      siegedThisTurn.push(at);
+      events.push(eventFor("specialAfter", a, `ev-${eventSeq++}`));
+      continue;
+    }
+
+    const applied = applySpecial(placement, mines, a, ignoreAttacksOn);
+    placement = applied.placement;
+    mines = applied.mines;
     events.push(eventFor("specialAfter", a, `ev-${eventSeq++}`));
+  }
+
+  // Enforce cap after F drops too.
+  for (const color of ["w", "b"] as const) {
+    if (minesFor(mines, color).length > MAX_MINES_PER_SIDE) {
+      throw new Error(`endScTurn: ${color} mine cap exceeded`);
+    }
   }
 
   const nextTurn = snapshot.turn + 1;
   const income = energyForTurn(Math.max(1, nextTurn));
   const gasIncome = { w: income, b: income };
+  const siegedRooks = [...sieged].sort();
+  const pendingKingShots = resolved.pendingKingShotsArmed;
   const next: ScFenSnapshot = {
     placement,
     turn: nextTurn,
@@ -189,7 +285,10 @@ export const endScTurn = (snapshot: ScFenSnapshot): EndScTurnResult => {
     gas: { ...gasIncome },
     gasIncome,
     queue: { actions: [] },
+    ...(mines.length ? { mines } : {}),
+    ...(siegedRooks.length ? { siegedRooks } : {}),
+    ...(pendingKingShots.length ? { pendingKingShots } : {}),
   };
 
-  return { resolved, next, events, ignoreAttacksOn };
+  return { resolved, next, events, ignoreAttacksOn, siegedThisTurn, afterB };
 };

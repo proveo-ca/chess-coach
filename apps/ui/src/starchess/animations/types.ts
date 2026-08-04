@@ -8,6 +8,7 @@ export type {
   DeathCue,
   MoveCue,
   QueenJumpTrail,
+  MineMissileCue,
   KingDamageState,
   RookMode,
 } from "~/types/starchess";

@@ -1,19 +1,26 @@
 /**
  * StarChess FEN dialect (StarChess-only). Classic FEN is a one-way render export —
- * never the rules oracle. See STARCHESS_MODE.md / STARCHESS_FEN.md.
- *
- * SCFEN|<placement>|<turn>|<wlives><blives>|<phase>|G:<wGas><bGas>:<wInc><bInc>[|Q:<queue>][|U:<squares>]
+ * never the rules oracle.
+ * // SPEC: _spec/apps/ui/starchess/scfen.md
+ * Wire / tickets: STARCHESS_FEN.md
  */
 
 import type { Square } from "chess.js";
 
 import { endScTurn } from "~/starchess/endScTurn";
+import { energyForTurn } from "~/starchess/constants";
+import {
+  assertMineCap,
+  formatMinesExtra,
+  parseMinesExtra,
+} from "~/starchess/mines";
 import type { StarChessColor, ScPhaseCode, SpecialKind } from "~/starchess/types";
 import type {
   PieceColor,
   ScAction,
   ScFenError,
   ScFenSnapshot,
+  ScPendingKingShot,
   ScSpecialKind,
   ScTurnQueue,
   SpawnPiece,
@@ -46,6 +53,24 @@ export const toClassicFen = (
   fullmove = 1,
 ): string => `${placement} ${sideToMove} - - ${halfmove} ${fullmove}`;
 
+/** Planning snap from a classic placement (live `/starchess` seed). */
+export const snapFromPlacement = (
+  placement: string,
+  turn = 1,
+  kingLives: ScFenSnapshot["kingLives"] = { w: 3, b: 3 },
+): ScFenSnapshot => {
+  const income = energyForTurn(Math.max(1, turn));
+  return {
+    placement,
+    turn,
+    kingLives: { ...kingLives },
+    phase: "P",
+    gas: { w: income, b: income },
+    gasIncome: { w: income, b: income },
+    queue: { actions: [] },
+  };
+};
+
 /** Pack specials-used squares for the SCFEN `U:` extras field. */
 export const formatSpecialsUsedExtra = (squares: readonly Square[]): string | null => {
   if (squares.length === 0) return null;
@@ -62,6 +87,66 @@ export const parseSpecialsUsedExtra = (extra: string | undefined): Square[] => {
   for (let i = 0; i + 1 < body.length; i += 2) {
     const sq = body.slice(i, i + 2);
     if (SQ_RE.test(sq)) out.push(sq as Square);
+  }
+  return out;
+};
+
+/** Pack sieged-rook squares for the SCFEN `S:` extras field. */
+export const formatSiegedRooksExtra = (squares: readonly Square[]): string | null => {
+  if (squares.length === 0) return null;
+  const uniq = [...new Set(squares)].filter((s) => SQ_RE.test(s)).sort();
+  if (uniq.length === 0) return null;
+  return `S:${uniq.join("")}`;
+};
+
+/** Parse `S:c3f7…` sieged Siege Tank squares. */
+export const parseSiegedRooksExtra = (extra: string | undefined): Square[] => {
+  if (!extra || !extra.startsWith("S:")) return [];
+  const body = extra.slice(2);
+  const out: Square[] = [];
+  for (let i = 0; i + 1 < body.length; i += 2) {
+    const sq = body.slice(i, i + 2);
+    if (SQ_RE.test(sq)) out.push(sq as Square);
+  }
+  return out;
+};
+
+const PIECE_OK = new Set(["p", "n", "b", "r", "q", "k"]);
+
+/** Pack pending king-checks for the SCFEN `H:` extras field. */
+export const formatPendingKingShotsExtra = (
+  shots: readonly ScPendingKingShot[],
+): string | null => {
+  if (shots.length === 0) return null;
+  const parts = shots.map((s) => `${s.color}:${s.piece}:${s.from}${s.to}`);
+  return `H:${parts.join(";")}`;
+};
+
+/**
+ * Parse `H:b:n:c5e4` (`;`-separated hits). Attacker color, piece, from+to.
+ */
+export const parsePendingKingShotsExtra = (
+  extra: string | undefined,
+): ScPendingKingShot[] => {
+  if (!extra || !extra.startsWith("H:")) return [];
+  const body = extra.slice(2);
+  if (!body) return [];
+  const out: ScPendingKingShot[] = [];
+  for (const part of body.split(";")) {
+    const m = /^([wb]):([pnbrqk]):([a-h][1-8])([a-h][1-8])$/.exec(part);
+    if (!m) {
+      throw Object.assign(new Error(`Invalid SCFEN H: hit: ${part}`), { code: "SC_SCHEMA" });
+    }
+    const piece = m[2]!;
+    if (!PIECE_OK.has(piece)) {
+      throw Object.assign(new Error(`Invalid SCFEN H: piece: ${piece}`), { code: "SC_SCHEMA" });
+    }
+    out.push({
+      color: m[1] as PieceColor,
+      piece: piece as ScPendingKingShot["piece"],
+      from: m[3] as Square,
+      to: m[4] as Square,
+    });
   }
   return out;
 };
@@ -245,11 +330,27 @@ const hasBothKings = (placement: string): boolean => {
 };
 
 export const formatScFen = (snap: ScFenSnapshot): string => {
-  const { placement, turn, kingLives, phase, specialsUsed, queue } = snap;
+  const {
+    placement,
+    turn,
+    kingLives,
+    phase,
+    specialsUsed,
+    queue,
+    mines,
+    siegedRooks,
+    pendingKingShots,
+  } = snap;
   let s = `SCFEN|${placement}|${turn}|${kingLives.w}${kingLives.b}|${phase}|${formatGasField(snap)}`;
   if (queue) s += `|${formatQueueField(queue)}`;
   const used = formatSpecialsUsedExtra(specialsUsed ?? []);
   if (used) s += `|${used}`;
+  const siegeField = formatSiegedRooksExtra(siegedRooks ?? []);
+  if (siegeField) s += `|${siegeField}`;
+  const hits = formatPendingKingShotsExtra(pendingKingShots ?? []);
+  if (hits) s += `|${hits}`;
+  const mineField = formatMinesExtra(mines ?? []);
+  if (mineField) s += `|${mineField}`;
   return s;
 };
 
@@ -287,11 +388,17 @@ export const parseScFen = (raw: string): ScFenSnapshot => {
   let gasField: string | undefined;
   let queueField: string | undefined;
   let usedField: string | undefined;
+  let minesField: string | undefined;
+  let siegeField: string | undefined;
+  let hitsField: string | undefined;
   for (let i = 5; i < parts.length; i++) {
     const p = parts[i]!;
     if (p.startsWith("G:")) gasField = p;
     else if (p.startsWith("Q:")) queueField = p;
     else if (p.startsWith("U:")) usedField = p;
+    else if (p.startsWith("S:")) siegeField = p;
+    else if (p.startsWith("H:")) hitsField = p;
+    else if (p.startsWith("M:")) minesField = p;
     else {
       throw Object.assign(new Error(`Unknown SCFEN extras field: ${p}`), { code: "SC_SCHEMA" });
     }
@@ -307,6 +414,10 @@ export const parseScFen = (raw: string): ScFenSnapshot => {
     });
   }
   const specialsUsed = parseSpecialsUsedExtra(usedField);
+  const siegedRooks = parseSiegedRooksExtra(siegeField);
+  const pendingKingShots = parsePendingKingShotsExtra(hitsField);
+  const mines = parseMinesExtra(minesField);
+  for (const color of ["w", "b"] as const) assertMineCap(mines, color);
   const snap: ScFenSnapshot = {
     placement,
     turn,
@@ -316,6 +427,9 @@ export const parseScFen = (raw: string): ScFenSnapshot => {
     gasIncome,
     ...(queue ? { queue } : {}),
     ...(specialsUsed.length ? { specialsUsed } : {}),
+    ...(siegedRooks.length ? { siegedRooks } : {}),
+    ...(pendingKingShots.length ? { pendingKingShots } : {}),
+    ...(mines.length ? { mines } : {}),
   };
   if (queue) assertQueueGas(snap);
   return snap;
@@ -357,8 +471,6 @@ const snapCoreMatches = (got: ScFenSnapshot, expect: ScFenSnapshot): boolean => 
   ) {
     return false;
   }
-  // `got` is post-resolve (empty queue, gas refilled). `expect` may already have
-  // queued specials with gas decremented — remaining + spend must equal refill.
   for (const color of ["w", "b"] as const) {
     let spent = 0;
     for (const a of expect.queue?.actions ?? []) {
@@ -367,6 +479,18 @@ const snapCoreMatches = (got: ScFenSnapshot, expect: ScFenSnapshot): boolean => 
     }
     if (got.gas[color] !== expect.gas[color] + spent) return false;
   }
+  const pack = (mines: ScFenSnapshot["mines"]) =>
+    (mines ?? [])
+      .map((m) => `${m.color}${m.at}`)
+      .sort()
+      .join(",");
+  if (pack(got.mines) !== pack(expect.mines)) return false;
+  const packHits = (hits: ScFenSnapshot["pendingKingShots"]) =>
+    (hits ?? [])
+      .map((h) => `${h.color}${h.piece}${h.from}${h.to}`)
+      .sort()
+      .join(",");
+  if (packHits(got.pendingKingShots) !== packHits(expect.pendingKingShots)) return false;
   return true;
 };
 

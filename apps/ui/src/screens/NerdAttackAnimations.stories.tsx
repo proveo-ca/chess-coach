@@ -27,7 +27,7 @@ export const PawnRifle: Story = {
   parameters: {
     docs: {
       description: {
-        story: `Marine rifle (\`${ANIM_BY_PIECE.p}\`). White on d4 (back/helmet up-board) and opposing black on f3 (front glass down-board).`,
+        story: `Marine rifle (\`${ANIM_BY_PIECE.p}\`). White on d4 (back/helmet up-board) and opposing black on d6 (front glass down-board).`,
       },
     },
   },

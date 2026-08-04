@@ -147,6 +147,32 @@
   box-sizing: border-box;
 }
 
+/* Queued SCFEN intent destination — border-only dashed ring (player color).
+   Square is raised above board fog via [data-intent-dest]; keep the ring
+   above local tile chrome. */
+.intentRing {
+  position: absolute;
+  inset: 8%;
+  border: clamp(2px, 0.9vw, 4px) dashed var(--intent-ring, #3b7dd8);
+  border-radius: 50%;
+  background: transparent;
+  pointer-events: none;
+  z-index: 13;
+  box-sizing: border-box;
+}
+
+/* Queued special — ghost canister badge over the unit. */
+.intentCanister {
+  position: absolute;
+  top: 2%;
+  right: 2%;
+  z-index: 12;
+  pointer-events: none;
+  opacity: 0.88;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.45));
+  line-height: 0;
+}
+
 .fog {
   position: absolute;
   inset: 0;

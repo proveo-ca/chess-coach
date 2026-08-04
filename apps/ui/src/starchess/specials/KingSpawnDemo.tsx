@@ -101,7 +101,7 @@ export const KingSpawnDemo: Component = () => {
   return (
     <div class={styles.demo}>
       <div class={styles.host} ref={hostRef}>
-        <StarChessChessBoard variant="eclipse" fogOfWar deployCues={special.deployCue() ? [special.deployCue()!] : []} />
+        <StarChessChessBoard variant="eclipse" fogOfWar />
         <Show when={overlayBox()}>
           {(box) => (
             <div

@@ -1,5 +1,8 @@
-import type { Chess, Color, Square } from "chess.js";
+import { Chess, type Color, type PieceSymbol, type Square } from "chess.js";
 
+import { moveSquareAtElapsed } from "~/starchess/animations/moveTiming";
+import { mapToPlacement, placementToMap } from "~/starchess/board";
+import { rayBetween } from "~/starchess/mines";
 import type { RookMode } from "~/types/starchess";
 
 const FILES = "abcdefgh";
@@ -229,7 +232,11 @@ export function getNerdVision(
 export function getSideVision(
   game: Chess,
   color: Color,
-  opts?: { rookModeFor?: (square: Square) => RookMode },
+  opts?: {
+    rookModeFor?: (square: Square) => RookMode;
+    /** Friendly Spider Mines light only their own square (MODE rule 1). */
+    mines?: readonly { at: Square; color: Color }[];
+  },
 ): NerdVision {
   const litSquares = new Set<Square>();
   const revealedPieces = new Set<Square>();
@@ -241,6 +248,10 @@ export function getSideVision(
       for (const square of unit.litSquares) litSquares.add(square);
       for (const square of unit.revealedPieces) revealedPieces.add(square);
     }
+  }
+
+  for (const mine of opts?.mines ?? []) {
+    if (mine.color === color) litSquares.add(mine.at);
   }
 
   // Bishop queen-pings that land on a tile already lit by another unit stay lit, not "revealed only".
@@ -256,6 +267,102 @@ export function getNerdVisibleSquares(
   opts?: { rookModeFor?: (square: Square) => RookMode },
 ): ReadonlySet<Square> {
   return getNerdVision(game, source, opts).litSquares;
+}
+
+export type MoveVisionCue = {
+  id: string;
+  from: Square;
+  to: Square;
+  piece: PieceSymbol;
+  /** When the slide CSS started (`progress === 1`). */
+  startedAt: number;
+};
+
+/**
+ * Clone `game` with active movers relocated along their slide path so fog
+ * updates square-by-square during MoveAnimation (SCFEN progressive path vision).
+ * Handles both pre-commit occupancy (`from`) and native moves already on `to`.
+ */
+export function gameWithMovePathOccupancy(
+  game: Chess,
+  moves: readonly MoveVisionCue[],
+  nowMs: number,
+): Chess {
+  if (moves.length === 0) return game;
+  const next = new Chess(game.fen());
+  let changed = false;
+  for (const m of moves) {
+    const at = moveSquareAtElapsed(m.from, m.to, m.piece, nowMs - m.startedAt);
+    const onFrom = next.get(m.from);
+    if (at === m.from && onFrom) continue;
+    const piece = onFrom ?? next.get(m.to);
+    if (!piece) continue;
+    if (onFrom) next.remove(m.from);
+    const onTo = next.get(m.to);
+    if (
+      m.to !== at &&
+      onTo &&
+      onTo.type === piece.type &&
+      onTo.color === piece.color
+    ) {
+      next.remove(m.to);
+    }
+    next.put({ type: piece.type, color: piece.color }, at);
+    changed = true;
+  }
+  return changed ? next : game;
+}
+
+export type PathVisionOpts = {
+  rookModeFor?: (square: Square) => RookMode;
+  mines?: readonly { at: Square; color: Color }[];
+};
+
+/**
+ * SCFEN §4.1 — after walking each intermediate on `from→intentTo`, does side
+ * vision (with the mover on that square) light or reveal `target`?
+ * Leaping pieces have no intermediates (caller should skip).
+ */
+export function pathRevealsTarget(
+  placement: string,
+  from: Square,
+  intentTo: Square,
+  viewer: Color,
+  target: Square,
+  opts?: PathVisionOpts,
+): boolean {
+  return pathRevealSteps(placement, from, intentTo, viewer, target, opts) != null;
+}
+
+/**
+ * How many ray intermediates must the mover reach before `target` is lit/revealed?
+ * `null` = never along this path. `0` = already visible with the mover on `from`
+ * (caller usually checks start vision separately).
+ */
+export function pathRevealSteps(
+  placement: string,
+  from: Square,
+  intentTo: Square,
+  viewer: Color,
+  target: Square,
+  opts?: PathVisionOpts,
+): number | null {
+  const mids = rayBetween(from, intentTo);
+  if (mids.length === 0) return null;
+  const base = placementToMap(placement);
+  const piece = base.get(from);
+  if (!piece || piece.color !== viewer) return null;
+
+  for (let i = 0; i < mids.length; i++) {
+    const mid = mids[i]!;
+    const board = new Map(base);
+    board.delete(from);
+    board.set(mid, piece);
+    const game = new Chess(`${mapToPlacement(board)} w - - 0 1`);
+    const v = getSideVision(game, viewer, opts);
+    if (v.litSquares.has(target) || v.revealedPieces.has(target)) return i + 1;
+  }
+  return null;
 }
 
 /**

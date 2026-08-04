@@ -5,8 +5,8 @@
 
 import type { Square } from "chess.js";
 
-import { specialGasCost } from "~/starchess/scfen";
-import { assertQueueShape } from "~/starchess/scfen";
+import { specialGasCost, assertQueueShape } from "~/starchess/scfen";
+import { assertActionDeep, ScValidateError } from "~/starchess/scValidate";
 import type {
   PieceColor,
   ScAction,
@@ -17,7 +17,9 @@ import type {
 export type AddScActionErrorCode =
   | "SC_PHASE"
   | "SC_QUEUE_SHAPE"
-  | "SC_GAS";
+  | "SC_GAS"
+  | "SC_BASELINE_FEN"
+  | "SC_SPECIAL";
 
 export class AddScActionError extends Error {
   readonly code: AddScActionErrorCode;
@@ -48,6 +50,15 @@ export const addScAction = (input: {
   const { snapshot: snap } = input;
   if (snap.phase !== "P") {
     throw new AddScActionError("SC_PHASE", `addScAction requires phase P (got ${snap.phase})`);
+  }
+
+  try {
+    assertActionDeep(snap, input.action);
+  } catch (e) {
+    if (e instanceof ScValidateError) {
+      throw new AddScActionError(e.code, e.message);
+    }
+    throw e;
   }
 
   const action: ScAction = { ...input.action, seq: nextSeq(snap) } as ScAction;

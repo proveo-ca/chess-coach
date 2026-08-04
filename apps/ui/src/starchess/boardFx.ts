@@ -16,8 +16,12 @@ export type CombatFxInput = {
   deaths?: readonly DeathCue[];
   moves?: readonly MoveCue[];
   kingDamage?: readonly KingDamageCue[];
+  /** Deploy drops — hide board piece at `at` while the overlay falls. */
+  deploys?: readonly { at: Square }[];
   /** Tactical Jump trails keep the FX layer alive only — never hide board pieces. */
   jumpTrails?: readonly QueenJumpTrail[];
+  /** Mine self-missiles keep the FX layer alive (board mine hidden via ChessBoard). */
+  mineMissiles?: readonly { from: Square; to: Square }[];
   /** Transient flee origins while a damaged king slides. */
   fleeCover?: ReadonlySet<Square>;
 };
@@ -28,7 +32,9 @@ export const hasCombatFxInput = (fx: CombatFxInput): boolean =>
   (fx.deaths?.length ?? 0) > 0 ||
   (fx.moves?.length ?? 0) > 0 ||
   (fx.kingDamage?.length ?? 0) > 0 ||
+  (fx.deploys?.length ?? 0) > 0 ||
   (fx.jumpTrails?.length ?? 0) > 0 ||
+  (fx.mineMissiles?.length ?? 0) > 0 ||
   (fx.fleeCover?.size ?? 0) > 0;
 
 /**
@@ -46,6 +52,7 @@ export const buildFxHiddenSquares = (fx: CombatFxInput): ReadonlySet<Square> => 
     // Destination too — FEN may already show the piece on `to` (interactive moves).
     hide.add(c.to);
   }
+  for (const c of fx.deploys ?? []) hide.add(c.at);
   for (const c of fx.kingDamage ?? []) {
     hide.add(c.at);
     for (const sq of c.cover ?? []) hide.add(sq);

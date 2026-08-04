@@ -72,8 +72,9 @@ export const DeathAnimation: Component<DeathAnimationProps> = (props) => (
   >
     <For each={props.cues}>
       {(cue) => {
-        const pawnDeath = cue.piece === "p";
-        const kingDeath = cue.piece === "k";
+        const mineDeath = !!cue.mine;
+        const pawnDeath = !mineDeath && cue.piece === "p";
+        const kingDeath = !mineDeath && cue.piece === "k";
         const seed = scatterSeedFromId(cue.id);
         return (
           <div
@@ -81,16 +82,17 @@ export const DeathAnimation: Component<DeathAnimationProps> = (props) => (
             classList={{
               [styles.dying]: true,
               [styles.dyingPawn]: pawnDeath,
-              [styles.dyingDrama]: !pawnDeath && !kingDeath,
+              [styles.dyingDrama]: mineDeath || (!pawnDeath && !kingDeath),
               [styles.dyingKing]: kingDeath,
             }}
             style={squareBoxStyle(cue.at, props.boardWidth, props.boardHeight)}
             data-square={cue.at}
             data-death-phase="dying"
+            data-death-mine={mineDeath ? "true" : undefined}
             data-scatter-seed={String(seed)}
           >
             <div class={styles.pieceFace}>
-              {deathNode(cue.piece, cue.color, seed, cue)}
+              {!mineDeath && deathNode(cue.piece, cue.color, seed, cue)}
               <div class={styles.boomFlash} aria-hidden="true" />
               <div class={styles.boomRing} aria-hidden="true" />
             </div>

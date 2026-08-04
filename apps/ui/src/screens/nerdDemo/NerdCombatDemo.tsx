@@ -5,7 +5,6 @@
 
 import { createSignal, onCleanup, onMount, type Component } from "solid-js";
 
-import { rookSquaresInPlacement } from "~/starchess/board";
 import {
   COMBAT_CHAIN_PLY_SC,
   COMBAT_CHAIN_STEPS,
@@ -13,7 +12,11 @@ import {
 } from "~/starchess/demos/combatChain";
 import { endScTurn } from "~/starchess/endScTurn";
 import { classicFenFromSc, toClassicFen } from "~/starchess/scfen";
-import { setPlanningSnapshot, setSiegedRooks } from "~/starchess/starChessStore";
+import {
+  planningSnapshot,
+  setPlanningSnapshot,
+  setSiegedRooks,
+} from "~/starchess/starChessStore";
 import { useStarChessCombat } from "~/starchess/hooks/useStarChessCombat";
 import { StarChessChessBoard } from "~/starchess/StarChessChessBoard";
 import { DualNavButton } from "~/components/primitives/DualNavButton";
@@ -36,11 +39,12 @@ export {
 } from "~/starchess/demos/combatChain";
 
 const TOTAL_TURNS = COMBAT_CHAIN_STEPS.length;
-const START_CAPTION = "Start · use arrows to review turns";
+const START_CAPTION = "Start · tank on c3 · use arrows to review turns";
 
 const applySnap = (snap: ScFenSnapshot) => {
   setPlanningSnapshot(snap);
-  setSiegedRooks(rookSquaresInPlacement(snap.placement));
+  // Siege from SCFEN `S:` only — never force every rook into siege.
+  setSiegedRooks(snap.siegedRooks ?? []);
   loadFen(classicFenFromSc(snap, "w"));
   setViewIndex(snap.turn);
 };
@@ -85,14 +89,23 @@ export const NerdCombatDemo: Component = () => {
     applySnap(before);
 
     const queued = queueCombatChainStep(before, step);
-    const { resolved, next } = endScTurn(queued);
+    const { resolved, next, afterB } = endScTurn(queued);
 
     combat.playResolve(resolved, {
-      startPlacement: before.placement,
+      startPlacement: afterB.placement,
       livesBefore: before.kingLives,
       commit: (snap) => {
-        setSiegedRooks(rookSquaresInPlacement(snap.placement));
+        setSiegedRooks(next.siegedRooks ?? []);
         loadFen(toClassicFen(snap.placement, "w", 0, Math.max(1, before.turn + 1)));
+        setPlanningSnapshot({
+          ...(planningSnapshot() ?? before),
+          placement: snap.placement,
+          kingLives: { ...snap.kingLives },
+          ...(snap.mines.length ? { mines: [...snap.mines] } : { mines: undefined }),
+          ...(next.siegedRooks?.length
+            ? { siegedRooks: [...next.siegedRooks] }
+            : { siegedRooks: undefined }),
+        });
       },
       onDone: () => finishTurn(indexPlaying, next),
     });

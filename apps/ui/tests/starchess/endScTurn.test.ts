@@ -36,29 +36,80 @@ describe("endScTurn", () => {
     expect(r.next.kingLives).toEqual({ w: 3, b: 3 });
   });
 
-  it("king-shot chips HP and refills gas on next planning snap", () => {
+  it("king-aimed C arms pending; HP unchanged this turn", () => {
     let snap = parseScFen(
       "SCFEN|k7/5r2/8/2n5/4K3/8/7b/8|0|33|P|G:11:11|Q:w:;b:",
     );
     snap = addScMove(snap, { color: "b", from: "c5", to: "e4" });
     const r = endScTurn(snap);
-    expect(r.resolved.attacks[0]).toMatchObject({ kind: "kingShot", livesAfter: 2 });
-    expect(r.next.kingLives.w).toBe(2);
+    expect(r.resolved.attacks).toEqual([]);
+    expect(r.next.pendingKingShots).toEqual([
+      { color: "b", piece: "n", from: "c5", to: "e4" },
+    ]);
+    expect(r.next.kingLives.w).toBe(3);
     expect(r.next.placement).toBe("k7/5r2/8/2n5/4K3/8/7b/8");
     expect(r.next.gas).toEqual(r.next.gasIncome);
     expect(r.next.phase).toBe("P");
+    expect(formatScFen(r.next)).toContain("H:b:n:c5e4");
   });
 
-  it("lethal king-shot emits phase O", () => {
-    let snap = parseScFen(
-      "SCFEN|k7/8/2K2r2/8/8/8/8/6b1|4|13|P|G:11:11|Q:w:;b:",
+  it("next turn empty queue applies pending HP −1", () => {
+    const snap = parseScFen(
+      "SCFEN|k7/5r2/8/2n5/4K3/8/7b/8|1|33|P|G:11:11|Q:w:;b:|H:b:n:c5e4",
     );
-    snap = addScMove(snap, { color: "b", from: "f6", to: "c6" });
+    const r = endScTurn(snap);
+    expect(r.resolved.attacks[0]).toMatchObject({ kind: "kingShot", livesAfter: 2 });
+    expect(r.next.kingLives.w).toBe(2);
+    expect(r.next.pendingKingShots).toBeUndefined();
+    expect(r.next.phase).toBe("P");
+  });
+
+  it("next turn B=spawn on sliding ray blocks pending — collision, no HP", () => {
+    // Queen a1 → king e5 pending; black spawns on d4 (adjacent to king, on the ray).
+    let snap = parseScFen(
+      "SCFEN|8/8/8/4k3/8/8/8/Q3K3|1|33|P|G:33:33|Q:w:;b:|H:w:q:a1e5",
+    );
+    snap = addScAction({
+      snapshot: snap,
+      action: {
+        timing: "B",
+        kind: "spawn",
+        color: "b",
+        from: "e5",
+        to: "d4",
+        unit: "n",
+      },
+    }).snapshot;
+    const r = endScTurn(snap);
+    expect(r.next.kingLives.b).toBe(3);
+    expect(r.resolved.attacks[0]).toMatchObject({
+      kind: "capture",
+      to: "d4",
+      collision: true,
+      occupies: false,
+    });
+    expect(r.next.placement).toBe("8/8/8/4k3/8/8/8/Q3K3");
+    expect(r.next.pendingKingShots).toBeUndefined();
+  });
+
+  it("lethal pending king-shot emits phase O", () => {
+    const snap = parseScFen(
+      "SCFEN|k7/8/2K2r2/8/8/8/8/6b1|4|13|P|G:11:11|Q:w:;b:|H:b:r:f6c6",
+    );
     const r = endScTurn(snap);
     expect(r.next.kingLives.w).toBe(0);
     expect(r.next.phase).toBe("O");
   });
 
+  it("H: round-trips in parse/format", () => {
+    const raw =
+      "SCFEN|K7/6R1/8/2N5/4k3/8/7B/8|0|33|P|G:33:33|Q:w:;b:|H:w:n:c5e4";
+    const snap = parseScFen(raw);
+    expect(snap.pendingKingShots).toEqual([
+      { color: "w", piece: "n", from: "c5", to: "e4" },
+    ]);
+    expect(formatScFen(snap)).toContain("H:w:n:c5e4");
+  });
   it("queenWarp marks origin immune and relocates before classical", () => {
     // White queen a1 jumps to c3; black rook tries a1 (would capture queen origin) — whiff.
     let snap = parseScFen(
