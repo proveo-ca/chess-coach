@@ -1,6 +1,6 @@
 /**
  * Shared DualNav scenario package — stories feed this into FogEdgeDemo only.
- * // SPEC: _spec/apps/ui/starchess/scfen.md §5
+ * // SPEC: _spec/apps/ui/starchess/demos.puml
  */
 
 import type { ScFenSnapshot } from "~/starchess/types";

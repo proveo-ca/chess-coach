@@ -155,6 +155,15 @@ export type ScAction =
       seq: number;
     };
 
+/**
+ * Action without `seq`, distributed over the union so each variant keeps its
+ * discriminator and variant-only fields (`unit`, `promotion`). Plain
+ * `Omit<ScAction, "seq">` collapses the union and drops those fields.
+ */
+export type DistributiveOmit<T, K extends keyof T> = T extends unknown ? Omit<T, K> : never;
+
+export type ScActionInput = DistributiveOmit<ScAction, "seq">;
+
 export type ScTurnQueue = {
   /** Global insertion sequence. Resolve groups by timing, then seq. */
   actions: readonly ScAction[];

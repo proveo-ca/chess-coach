@@ -4,7 +4,7 @@ import { GasDeploy } from "~/starchess/features/GasDeploy";
 import { useMarineDoubleStep } from "~/starchess/hooks/useMarineDoubleStep";
 import { usePieceSpecialArm } from "~/starchess/hooks/usePieceSpecialArm";
 import styles from "~/starchess/specials/MarineDoubleDemo.module.css";
-import { StarChessChessBoard } from "~/starchess/StarChessChessBoard";
+import { StarChessBoard } from "~/starchess/StarChessBoard";
 import { setStorybookCapabilities } from "~/screens/storybookCapabilities";
 import { NERD_CAPABILITIES } from "~/starchess/capabilities";
 import { loadFen } from "~/store/gameStore";
@@ -33,7 +33,7 @@ export const MarineDoubleDemo: Component = () => {
   return (
     <div class={styles.demo}>
       <div class={styles.host}>
-        <StarChessChessBoard
+        <StarChessBoard
           variant="eclipse"
           fogOfWar
           moveCues={special.moveCues()}

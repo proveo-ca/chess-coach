@@ -1,0 +1,59 @@
+@startuml turn-queue-sequence
+' SPEC: _spec/apps/ui/starchess/turn-queue-sequence.puml
+' purpose: Simultaneous turn queue — planning Q:<w>;<b>, End submits, B < C < F then w then b, next snap.
+!include ../../../themes/proveo.puml
+
+title StarChess · Simultaneous Turn Queue
+
+actor Player as P
+participant "apps/ui StarChess screen" as UI <<app>>
+participant "endScTurn" as ES <<app>>
+participant "resolveTurn" as RT <<app>>
+database "ScFenSnapshot" as FEN <<db>>
+
+== Planning ==
+
+P ARROW_MAIN UI : queue special + classical for own side
+UI ARROW_MAIN FEN : ""Q:<sideQueue>;<sideQueue>""\n(B/F then C, or C then B/F)
+P ARROW_MAIN UI : End / timeout submits
+UI ARROW_MAIN ES : ""endScTurn(snapshot)""
+
+== Resolve ==
+
+ES ARROW_MAIN ES : resolve rank-major: king-checks → B → C → F\nw then b within each rank
+
+group 1 · turn-start legal king-checks (fog-visible, implicit)
+  ES ARROW_MAIN ES : white, then black\n""applyPendingKingShots"" + ""collectLegalKingChecks""
+end
+
+group 2 · rank B (specials before combat)
+  ES ARROW_MAIN ES : white B, then black B\n(applySpecial: spawn / mine / warp / siege)
+end
+
+group 3 · rank C (classical, both sides on same board)
+  ES ARROW_MAIN RT : resolveTurn(white, black)
+  RT ARROW_MAIN RT : attacks — visible targets + path-reveal shots\n(attack → death → occupy)
+  RT ARROW_MAIN RT : moves — occupy, move collisions, mine triggers
+end
+
+group 4 · rank F (specials after combat)
+  ES ARROW_MAIN ES : white F, then black F\n(applySpecial: post-move siege / late drops)
+end
+
+== Next snap ==
+
+ES ARROW_MAIN FEN : new snapshot (turn+1, ""G:"" refilled to income)
+FEN ARROW_QUEUE UI : cumulative fog for both sides (""vision.ts"")
+
+note over ES
+  Gas does not accumulate; ""endScTurn"" refills to full income
+  next turn (income == turn tier 1 / 2 / 3).
+end note
+
+note over RT
+  **Attacks must resolve before moves.** Attacks read the start board:
+  visible targets fire from the start square, path-reveal shots fire from
+  the discovery square; a target still fogged at contact becomes a
+  move-phase collision (capture/occupy, no attack cue).
+end note
+@enduml

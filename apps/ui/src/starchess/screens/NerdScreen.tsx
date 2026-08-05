@@ -1,3 +1,7 @@
+/**
+ * StarChess mode screen — exclusive UI surface for the StarChess engine.
+ * // SPEC: _spec/apps/ui/starchess/starchess-mode.puml, _spec/apps/ui/starchess/index.puml
+ */
 import {
   For,
   Show,
@@ -25,7 +29,7 @@ import { TurnBar } from "~/starchess/primitives/TurnBar";
 import { AddScActionError } from "~/starchess/scActions";
 import { classicFenFromSc, parseScFen, snapFromPlacement, toClassicFen } from "~/starchess/scfen";
 import { adjacentSquares } from "~/starchess/specials/adjacent";
-import { StarChessChessBoard } from "~/starchess/StarChessChessBoard";
+import { StarChessBoard } from "~/starchess/StarChessBoard";
 import {
   clearSiegedRooks,
   clearTurnDeadline,
@@ -523,7 +527,7 @@ export const NerdScreen: Component<NerdScreenProps> = (props) => {
             </div>
           </Show>
           <div class={styles.boardHost} ref={boardHost}>
-            <StarChessChessBoard
+            <StarChessBoard
               variant={props.boardVariant ?? "eclipse"}
               fogOfWar={fogOfWar()}
               suppressNativeMoves={starChessMode()}

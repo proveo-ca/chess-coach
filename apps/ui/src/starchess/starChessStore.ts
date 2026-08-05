@@ -13,7 +13,7 @@ import {
 import { endScTurn, type EndScTurnResult } from "~/starchess/endScTurn";
 import { addScAction } from "~/starchess/scActions";
 import type { StarChessColor, PlayerEconomy } from "~/starchess/types";
-import type { RookMode, ScAction, ScFenSnapshot } from "~/starchess/types";
+import type { RookMode, ScAction, ScActionInput, ScFenSnapshot } from "~/starchess/types";
 import { activePlayerColor } from "~/store/settingsStore";
 
 type Economies = Record<StarChessColor, PlayerEconomy>;
@@ -115,7 +115,7 @@ export const storedMaterial = () => _economies()[activePlayerColor()].stored;
 export const deployedSupply = () => _economies()[activePlayerColor()].deployed;
 
 /**
- * Base material income for the upcoming turn (rules §4).
+ * Base material income for the upcoming turn (starchess-mode.puml).
  * Idle 1.5× bonus is applied at resolve time — ResourceBar shows the base rate.
  */
 export const materialIncome = () => incomeForTurn(_turn());
@@ -226,7 +226,7 @@ export const setPlanningSnapshot = (snap: ScFenSnapshot | null) => {
 };
 
 /** Append via `addScAction` and sync the planning snap. */
-export const queueScAction = (action: Omit<ScAction, "seq">): ScFenSnapshot => {
+export const queueScAction = (action: ScActionInput): ScFenSnapshot => {
   const cur = _planningSnap();
   if (!cur) throw new Error("queueScAction: no planning snapshot");
   const { snapshot } = addScAction({ snapshot: cur, action });

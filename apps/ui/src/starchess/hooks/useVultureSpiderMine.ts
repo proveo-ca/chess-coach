@@ -32,7 +32,7 @@ const whiteKnightSquares = (fen: string): Set<Square> => {
 /**
  * Vulture (knight) special — Spider Mine.
  * Armed via GasDeploy on a specific knight; classical move via the board
- * (L-path from {@link StarChessChessBoard}). Stack order sets timing.
+ * (L-path from {@link StarChessBoard}). Stack order sets timing.
  */
 export const useVultureSpiderMine = (opts: {
   fen: () => string;
@@ -128,7 +128,7 @@ export const useVultureSpiderMine = (opts: {
   };
 
   /**
-   * React to a board move ({@link StarChessChessBoard} owns L-path VFX).
+   * React to a board move ({@link StarChessBoard} owns L-path VFX).
    * Diffs white-knight squares vs the last planned fen.
    */
   const syncFromBoard = (boardFen: string) => {

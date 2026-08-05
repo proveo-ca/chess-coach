@@ -6,7 +6,7 @@ import { moveDurationMs } from "~/starchess/animations/moveTiming";
 import { addMove, currentIndex, game, loadFen, moveHistory } from "~/store/gameStore";
 import type { MoveSquares } from "~/types/game";
 
-/** Mirrors {@link StarChessChessBoard} enqueue + native L-path (no DOM). */
+/** Mirrors {@link StarChessBoard} enqueue + native L-path (no DOM). */
 function harnessNativeKnightMove() {
   const [queue, setQueue] = createSignal<MoveSquares[]>([]);
   const [enqueuedKey, setEnqueuedKey] = createSignal<string | null>(null);
@@ -42,7 +42,7 @@ function harnessNativeKnightMove() {
 
 const flush = () => new Promise<void>((r) => queueMicrotask(r));
 
-describe("StarChessChessBoard native move pipeline", () => {
+describe("StarChessBoard native move pipeline", () => {
   beforeEach(() => {
     vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
     loadFen("7k/7p/8/8/3N4/8/8/K7 w - - 0 1");

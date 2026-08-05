@@ -36,6 +36,17 @@ playwright-report/
 .playwright/
 
 # ==========================================
+# pnpm
+# ==========================================
+# Project-local content-addressable store (pnpm `store-dir`)
+.pnpm-store/
+# Corepack-installed package-manager binaries (machine-local)
+**/.cache/node/corepack/
+# pnpm sometimes drops transient state / dumps here
+node_modules/.cache/
+*.tgz
+
+# ==========================================
 # Bun
 # ==========================================
 .bun/

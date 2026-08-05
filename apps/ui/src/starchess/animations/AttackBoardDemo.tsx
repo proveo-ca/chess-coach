@@ -17,7 +17,7 @@ import styles from "~/starchess/animations/AttackBoardDemo.module.css";
 import { attackVectorsFor, squareAt } from "~/starchess/animations/attackVectors";
 import type { AttackCue } from "~/starchess/animations/types";
 import { clearSiegedRooks, setRookMode } from "~/starchess/starChessStore";
-import { StarChessChessBoard } from "~/starchess/StarChessChessBoard";
+import { StarChessBoard } from "~/starchess/StarChessBoard";
 import { setStorybookCapabilities } from "~/screens/storybookCapabilities";
 import { NERD_CAPABILITIES } from "~/starchess/capabilities";
 import { loadFen } from "~/store/gameStore";
@@ -150,7 +150,7 @@ export const AttackBoardDemo: Component<AttackBoardDemoProps> = (props) => {
   return (
     <div class={styles.demo}>
       <div class={styles.host}>
-        <StarChessChessBoard
+        <StarChessBoard
           variant="eclipse"
           fogOfWar
           attackCues={cues()}

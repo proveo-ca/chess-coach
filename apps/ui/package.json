@@ -37,6 +37,7 @@
     "@solidjs/testing-library": "^0.8.10",
     "@storybook/addon-a11y": "^10.5.4",
     "@storybook/addon-docs": "^10.5.4",
+    "@testing-library/jest-dom": "^6.9.1",
     "@types/node": "^24.12.2",
     "@types/qrcode": "^1.5.6",
     "@typescript/native-preview": "^7.0.0-dev.20260428.1",

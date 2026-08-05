@@ -1,0 +1,44 @@
+@startuml starchess-mode
+' SPEC: _spec/apps/ui/starchess/starchess-mode.puml
+' purpose: Product / UX mode — goals, specials, economy, UX v1 (NerdScreen only).
+!include ../../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess Mode · Product / UX
+
+package "Goals (vs classical chess)" {
+  component "Turn structure — both sides queue,\nEnd / timeout submits" as G1 <<async>>
+  component "Actions per turn — ≤1 special + ≤1 classical\n(stack order → B / F)" as G2 <<app>>
+  component "Conflicts — classical = **attack** then **move**" as G3 <<app>>
+  component "Economy — minerals + vespene" as G4 <<db>>
+  component "Vision — cumulative fog (always on in mode)" as G5 <<db>>
+  component "King — **3 lives**; may walk into fire" as G6 <<app>>
+}
+
+package "Specials (product)" {
+  component "Pawn — Double (pawnDouble)\npaid StarChess double" as S1 <<app>>
+  component "Knight — Spider Mine (knightMine)\nM: overlay; cap 2 / side" as S2 <<app>>
+  component "Bishop — Charon (bishopSnipe)\n2 gas; ignore blockers" as S3 <<app>>
+  component "Rook — Siege toggle (rookSiege)\ntank ↔ siege vision / mobility" as S4 <<app>>
+  component "Queen — Tactical Jump (queenWarp)\n2 gas; visible empty square" as S5 <<app>>
+  component "King — Spawn\nadjacent deploy; can collide\nwith king-shots" as S6 <<app>>
+}
+
+package "UX (v1)" {
+  component "ResourceBar + TurnBar\nabove the board; fog forced\nwhen ""starChessMode""" as U1 <<app>>
+  component "Cumulative vision (""vision.ts"")\nunion of friendly units;\nmines light own square" as U2 <<db>>
+  component "Attack-time reveal\nshooter ""from"" shown for the shot cue" as U3 <<app>>
+  component "Fog-edge DualNav stories\n(Bishop / Rook tank) — SCFEN only" as U4 <<app>>
+}
+
+note bottom
+  Long-press / GasDeploy queues ""B"" or ""F"" (stack order).
+  Costs from the MODE economy — most specials **1** gas;
+  Charon + Jump **2**.
+  **Spider Mine combat:** path-chase / attack-mine; ignores allies
+  + enemy kings (""mines.ts"" + ""resolveTurn"").
+  Exclusive to ""apps/ui/src/starchess/screens/NerdScreen.tsx"".
+end note
+@enduml

@@ -1,14 +1,14 @@
 /**
  * Fog-edge bishop — SCFEN intent into fog onto a hidden king square;
  * path discovers g7 → Bxg7. Fog overrides classical FEN legality.
- * // SPEC: _spec/apps/ui/starchess/scfen.md §3–§5
+ * // SPEC: _spec/apps/ui/starchess/resolve.puml, _spec/apps/ui/starchess/demos.puml
  */
 
 import { addScAction } from "~/starchess/scActions";
 import { endScTurn } from "~/starchess/endScTurn";
 import type { FogEdgeScenario } from "~/starchess/demos/fogEdgeScenario";
 import { parseScFen } from "~/starchess/scfen";
-import type { ScAction, ScFenSnapshot } from "~/starchess/types";
+import type { ScActionInput, ScFenSnapshot } from "~/starchess/types";
 
 /**
  * Bd4 (5×5 lit), Ka1; black pawn g7 (outside vision) on d4–h8;
@@ -20,7 +20,7 @@ export const FOG_EDGE_BISHOP_START_SCFEN =
 export type FogEdgeStep = {
   caption: string;
   intentCaption?: string;
-  actions: readonly Omit<ScAction, "seq">[];
+  actions: readonly ScActionInput[];
 };
 
 export const FOG_EDGE_BISHOP_STEPS: readonly FogEdgeStep[] = [

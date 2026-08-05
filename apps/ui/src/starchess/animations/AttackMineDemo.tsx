@@ -16,7 +16,7 @@ import {
   setPlanningSnapshot,
 } from "~/starchess/starChessStore";
 import { useStarChessCombat } from "~/starchess/hooks/useStarChessCombat";
-import { StarChessChessBoard } from "~/starchess/StarChessChessBoard";
+import { StarChessBoard } from "~/starchess/StarChessBoard";
 import { DualNavButton } from "~/components/primitives/DualNavButton";
 import styles from "~/starchess/animations/PathCollideDemo.module.css";
 import { setStorybookCapabilities } from "~/screens/storybookCapabilities";
@@ -132,7 +132,7 @@ export const AttackMineDemo: Component = () => {
   return (
     <div class={styles.demo}>
       <div class={styles.host}>
-        <StarChessChessBoard
+        <StarChessBoard
           variant="eclipse"
           fogOfWar
           spiderMines={mines()}

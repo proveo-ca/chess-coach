@@ -22,7 +22,7 @@ import { useVultureSpiderMine } from "~/starchess/hooks/useVultureSpiderMine";
 import { ResourceBar } from "~/starchess/primitives/ResourceBar";
 import { DeployModal } from "~/starchess/primitives/DeployModal";
 import { TurnBar } from "~/starchess/primitives/TurnBar";
-import { StarChessChessBoard } from "~/starchess/StarChessChessBoard";
+import { StarChessBoard } from "~/starchess/StarChessBoard";
 import styles from "~/starchess/screens/NerdTurnChrome.stories.module.css";
 import { Screen } from "~/components/primitives/Screen";
 import { NERD_CAPABILITIES } from "~/starchess/capabilities";
@@ -240,7 +240,7 @@ export const GasDeploy: Story = {
         <Screen.BoardArea>
           <Screen.BoardColumn>
             <div ref={hostRef} style={{ position: "relative" }}>
-              <StarChessChessBoard
+              <StarChessBoard
                 variant="eclipse"
                 fogOfWar
                 spiderMines={vulture.mineAt() ? [vulture.mineAt()!] : []}

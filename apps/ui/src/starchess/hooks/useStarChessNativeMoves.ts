@@ -1,7 +1,7 @@
 /**
  * When StarChess boards animate a move, classical `animationQueue` slides are
  * replaced by {@link MoveAnimation} (knight L-path, others ease to destination).
- * Wired through {@link StarChessChessBoard} — shared ChessBoard stays cue-driven only.
+ * Wired through {@link StarChessBoard} — shared ChessBoard stays cue-driven only.
  */
 
 import type { Color, PieceSymbol, Square } from "chess.js";

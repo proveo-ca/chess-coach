@@ -1,7 +1,7 @@
 /**
  * SCFEN DualNav with intent ghosts → resolve.
  * Fog-edge collision + fog/move vision samples.
- * // SPEC: _spec/apps/ui/starchess/scfen.md §3, §5
+ * // SPEC: _spec/apps/ui/starchess/resolve.puml, _spec/apps/ui/starchess/demos.puml
  */
 
 import { createMemo, createSignal, onCleanup, onMount, type Component } from "solid-js";
@@ -18,7 +18,7 @@ import {
   setRookMode,
 } from "~/starchess/starChessStore";
 import { useStarChessCombat } from "~/starchess/hooks/useStarChessCombat";
-import { StarChessChessBoard } from "~/starchess/StarChessChessBoard";
+import { StarChessBoard } from "~/starchess/StarChessBoard";
 import { DualNavButton } from "~/components/primitives/DualNavButton";
 import styles from "~/starchess/animations/PathCollideDemo.module.css";
 import { setStorybookCapabilities } from "~/screens/storybookCapabilities";
@@ -213,7 +213,7 @@ export const FogEdgeDemo: Component<FogEdgeDemoProps> = (props) => {
   return (
     <div class={styles.demo}>
       <div class={styles.host}>
-        <StarChessChessBoard
+        <StarChessBoard
           variant="eclipse"
           fogOfWar
           suppressNativeMoves

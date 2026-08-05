@@ -19,7 +19,7 @@ import {
 } from "~/starchess/starChessStore";
 import { DEPLOY_MS, MINE_DEPLOY_MS } from "~/starchess/constants";
 import { useStarChessCombat } from "~/starchess/hooks/useStarChessCombat";
-import { StarChessChessBoard } from "~/starchess/StarChessChessBoard";
+import { StarChessBoard } from "~/starchess/StarChessBoard";
 import { DualNavButton } from "~/components/primitives/DualNavButton";
 import styles from "~/starchess/animations/PathCollideDemo.module.css";
 import { setStorybookCapabilities } from "~/screens/storybookCapabilities";
@@ -181,7 +181,7 @@ export const PathCollideDemo: Component = () => {
   return (
     <div class={styles.demo}>
       <div class={styles.host}>
-        <StarChessChessBoard
+        <StarChessBoard
           variant="eclipse"
           fogOfWar
           spiderMines={mines()}

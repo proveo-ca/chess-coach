@@ -16,7 +16,7 @@ import {
 
 /**
  * Stories feed SCFEN scenario packages only — no queue / resolve / combat logic here.
- * // SPEC: _spec/apps/ui/starchess/scfen.md §3, §5
+ * // SPEC: _spec/apps/ui/starchess/demos.puml, _spec/apps/ui/starchess/resolve.puml
  */
 const meta = {
   title: "Screens/Nerd/StarChess/Fog of War and Move Animations",

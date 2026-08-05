@@ -92,7 +92,7 @@ export const StarChessBoardView: Component<{
   /** Active StarChess death VFX cues. */
   deathCues?: DeathCue[];
   /**
-   * Deploy drop overlays. Prefer board auto-deploy via occupancy (StarChessChessBoard);
+   * Deploy drop overlays. Prefer board auto-deploy via occupancy (StarChessBoard);
    * optional explicit cues still hide `at` while playing.
    */
   deployCues?: DeployCue[];
@@ -116,7 +116,7 @@ export const StarChessBoardView: Component<{
   spentMines?: readonly Square[];
   /**
    * When true, skip auto unit/mine deploy VFX and re-baseline (DualNav scrub).
-   * StarChessChessBoard forwards this for mine burrow + piece drop.
+   * StarChessBoard forwards this for mine burrow + piece drop.
    */
   suppressAutoDeploy?: boolean;
   /** @deprecated Prefer store {@link rookModeAt}; board-wide override for fog stories. */
@@ -300,7 +300,7 @@ export const StarChessBoardView: Component<{
 
   /**
    * Progressive path fog — tick while move cues are sliding so lit squares
-   * advance with the hull (SCFEN §4.1).
+   * advance with the hull (resolve.puml).
    */
   const [moveVisionTick, setMoveVisionTick] = createSignal(0);
   const moveVisionStartedAt = new Map<string, number>();

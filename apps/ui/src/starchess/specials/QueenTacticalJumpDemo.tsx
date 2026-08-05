@@ -1,6 +1,6 @@
 import { onMount, type Component } from "solid-js";
 
-import { StarChessChessBoard } from "~/starchess/StarChessChessBoard";
+import { StarChessBoard } from "~/starchess/StarChessBoard";
 import { GasDeploy } from "~/starchess/features/GasDeploy";
 import { usePieceSpecialArm } from "~/starchess/hooks/usePieceSpecialArm";
 import {
@@ -36,7 +36,7 @@ export const QueenTacticalJumpDemo: Component = () => {
   return (
     <div class={styles.demo}>
       <div class={styles.host}>
-        <StarChessChessBoard
+        <StarChessBoard
           variant="eclipse"
           fogOfWar
           specialTargets={special.specialTargets()}

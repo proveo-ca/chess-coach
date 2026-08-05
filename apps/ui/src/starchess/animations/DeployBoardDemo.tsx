@@ -13,7 +13,7 @@ import {
   type DeployPiece,
 } from "~/starchess/animations/deployAnim";
 import styles from "~/starchess/animations/DeployBoardDemo.module.css";
-import { StarChessChessBoard } from "~/starchess/StarChessChessBoard";
+import { StarChessBoard } from "~/starchess/StarChessBoard";
 import { setStorybookCapabilities } from "~/screens/storybookCapabilities";
 import { NERD_CAPABILITIES } from "~/starchess/capabilities";
 import { loadFen } from "~/store/gameStore";
@@ -27,7 +27,7 @@ type DeployBoardDemoProps = {
 };
 
 /**
- * Storybook harness: put the unit on the board → StarChessChessBoard auto-deploy.
+ * Storybook harness: put the unit on the board → StarChessBoard auto-deploy.
  */
 export const DeployBoardDemo: Component<DeployBoardDemoProps> = (props) => {
   const [phase, setPhase] = createSignal<DeployPhase>("idle");
@@ -85,7 +85,7 @@ export const DeployBoardDemo: Component<DeployBoardDemoProps> = (props) => {
   return (
     <div class={styles.demo}>
       <div class={styles.host}>
-        <StarChessChessBoard variant="eclipse" fogOfWar />
+        <StarChessBoard variant="eclipse" fogOfWar />
       </div>
       <p class={styles.caption} data-phase={phase()}>
         {label()} · {phase()} · {DEPLOY_MS}ms

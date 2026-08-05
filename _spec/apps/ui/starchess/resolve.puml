@@ -1,0 +1,48 @@
+@startuml resolve
+' SPEC: _spec/apps/ui/starchess/resolve.puml
+' purpose: Rank-major classical resolve — king-checks → B → C (attack → death → occupy → move) → F.
+!include ../../../themes/proveo.puml
+
+title StarChess · Resolve — attack → death → occupy
+
+start
+
+:Take planning snap — turn N queue\nwith moves + specials for both sides;
+
+:Turn-start **legal king-checks** — fog-visible, implicit,\nwhite then black (""applyPendingKingShots"");
+
+:Apply rank **B** specials — white then black\n(spawn / mine / warp / siege);
+
+:Rank **C** — classical for both sides against\nthe same start board (""resolveTurn"");
+
+:Attack phase — targets read from the **start** board:\nvisible from the start square, or a path-reveal shot\nfired from the discovery square ("":fog lifts along the path"");
+
+if (attack hits a piece?) then (yes)
+  :Death — victim removed;
+  if (attacker survives?) then (yes)
+    :**Occupy** victim's square;
+  else (no)
+    :Attacker dies first —\nsquare stays empty, no occupy;
+  endif
+else (no)
+  :Quiet move;
+endif
+
+:Move phase — survivors relocate; collisions resolved\nagainst the post-attack board; a target **still fogged at\ncontact** → move collision (capture/occupy, no attack cue);
+
+:Apply rank **F** specials — white then black\n(post-move siege / late drops);
+
+:Serialize optional history\n""C=from intentTo>resolvedTo"" (pending);
+
+stop
+
+note right
+  **Intent ""C="" vs progressive path resolve:** ""pathRevealSteps"" /
+  ""pathRevealFrom"" in ""resolveTurn"" capture the fog approach — the
+  tank moves as an approach then attacks from the discovery square,
+  all inside the **attack** phase.
+  **King shots:** ""collectLegalKingChecks"" + ""applyPendingKingShots""
+  at turn start. Implicit check → turn-start HP (legal geometry at
+  ""endScTurn"", before B); no king-aimed ""C="".
+end note
+@enduml

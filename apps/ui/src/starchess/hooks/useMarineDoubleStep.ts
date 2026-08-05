@@ -130,7 +130,7 @@ export const useMarineDoubleStep = () => {
           loadFen(parts.join(" "));
         }
         addMove({ from: ctx.square, to: classicalTo });
-        // Let StarChessChessBoard finish the hop before forcing side-to-move.
+        // Let StarChessBoard finish the hop before forcing side-to-move.
         const settleMs = 40 + moveDurationMs(ctx.square, classicalTo, "p");
         after(settleMs, () => {
           const normalized = whiteToMove(currentFen());

@@ -1,13 +1,13 @@
 /**
  * Fog-edge rook (tank) — SCFEN intent into fog past a hidden unit → resolve Rxd7.
- * // SPEC: _spec/apps/ui/starchess/scfen.md §3–§5
+ * // SPEC: _spec/apps/ui/starchess/resolve.puml, _spec/apps/ui/starchess/demos.puml
  */
 
 import { addScAction } from "~/starchess/scActions";
 import { endScTurn } from "~/starchess/endScTurn";
 import type { FogEdgeScenario } from "~/starchess/demos/fogEdgeScenario";
 import { parseScFen } from "~/starchess/scfen";
-import type { ScAction, ScFenSnapshot } from "~/starchess/types";
+import type { ScActionInput, ScFenSnapshot } from "~/starchess/types";
 
 /** Rd4 tank 5×5 lit, Ka1; black pawn on d7 (outside lit); intent past to d8. */
 export const FOG_EDGE_ROOK_TANK_START_SCFEN =
@@ -16,7 +16,7 @@ export const FOG_EDGE_ROOK_TANK_START_SCFEN =
 export type FogEdgeRookStep = {
   caption: string;
   intentCaption?: string;
-  actions: readonly Omit<ScAction, "seq">[];
+  actions: readonly ScActionInput[];
 };
 
 export const FOG_EDGE_ROOK_TANK_STEPS: readonly FogEdgeRookStep[] = [

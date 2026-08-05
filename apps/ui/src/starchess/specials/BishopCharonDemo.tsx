@@ -1,6 +1,6 @@
 import { onMount, type Component } from "solid-js";
 
-import { StarChessChessBoard } from "~/starchess/StarChessChessBoard";
+import { StarChessBoard } from "~/starchess/StarChessBoard";
 import { GasDeploy } from "~/starchess/features/GasDeploy";
 import { BISHOP_CHARON_FEN, useBishopCharon } from "~/starchess/hooks/useBishopCharon";
 import { usePieceSpecialArm } from "~/starchess/hooks/usePieceSpecialArm";
@@ -33,7 +33,7 @@ export const BishopCharonDemo: Component = () => {
   return (
     <div class={styles.demo}>
       <div class={styles.host}>
-        <StarChessChessBoard
+        <StarChessBoard
           variant="eclipse"
           fogOfWar
           attackCues={special.combat.attackCues()}

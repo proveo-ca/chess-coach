@@ -1,5 +1,6 @@
 /**
  * Spider Mine helpers — path contact, caps, SCFEN M: packing.
+ * // SPEC: _spec/apps/ui/starchess/scfen-wire.puml, _spec/apps/ui/starchess/resolve.puml
  */
 
 import type { Square } from "chess.js";

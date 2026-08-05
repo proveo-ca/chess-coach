@@ -1,5 +1,7 @@
+import type { PieceColor } from "~/starchess/types";
+
 /** StarChess team fills — match `public/pieces/nerd/` (4-swatch army). */
-export type PieceColor = "w" | "b";
+export type { PieceColor };
 
 /** Black stroke / darkest fills. */
 export const INK_BLACK = "#222";

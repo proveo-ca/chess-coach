@@ -4,7 +4,7 @@ import { DeployBoardDemo } from "~/starchess/animations/DeployBoardDemo";
 
 /**
  * Command Center deploy VFX: putting a unit on the board triggers auto-deploy
- * on StarChessChessBoard (`DeployAnimation`). Occupancy updates immediately;
+ * on StarChessBoard (`DeployAnimation`). Occupancy updates immediately;
  * the board piece is hidden while the drop plays ({@link DEPLOY_MS}).
  */
 const meta = {

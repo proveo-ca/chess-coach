@@ -1,0 +1,42 @@
+@startuml demos
+' SPEC: _spec/apps/ui/starchess/demos.puml
+' purpose: Canonical demos, shipped vs pending, verify commands.
+!include ../../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess · Canonical Demos, Shipped vs Pending
+
+package "Canonical demos" {
+  component "Combat Chain\nstory: screens-nerd-star-chess-demo--combat-chain\nW & B per turn; attack → death → occupy" as D1 <<app>>
+  component "King Hunt\nstory: screens-nerd-starchess-demo--king-hunt\nimplicit legal checks + HP; tank on g6" as D2 <<app>>
+  component "King Hunt (live)\nstory: screens-nerd-starchess-demo--king-hunt-live\nstanding Nc5 check; ResourceBar / TurnBar / End" as D3 <<app>>
+  component "Fog-edge Bishop / Rook tank\nstory: screens-nerd-starchess-fog-of-war-and-move-animations--bishop\nmove into fog → capture/occupy blocker" as D4 <<app>>
+}
+
+package "Shipped (do not re-ticket)" {
+  component "Types — ScAction, ScTurnQueue, gas,\nScFenSnapshot.queue\n""src/types/starchess.ts""" as SH1 <<app>>
+  component "SCFEN parse/format — G: Q: U: M: S: H:\n""src/starchess/scfen.ts""" as SH2 <<app>>
+  component "Queue actions — addScAction / addScMove /\nendScTurn\n""scActions.ts"" + ""endScTurn.ts""" as SH3 <<app>>
+  component "Fog-aware classify + move collision\n""resolveTurn.ts"" + ""vision.ts"" via ""endScTurn""" as SH4 <<app>>
+  component "Intent C= vs progressive path resolve\n""pathRevealSteps"" / ""pathRevealFrom""" as SH5 <<app>>
+  component "King-shot ray / legal check\n""collectLegalKingChecks"" +\n""applyPendingKingShots"" at turn start" as SH6 <<app>>
+  component "Implicit check → turn-start HP\nlegal geometry at ""endScTurn"" (before B);\nno king-aimed ""C=""" as SH7 <<app>>
+  component "Spider Mines M:\n""mines.ts"" + ""resolveTurn""" as SH8 <<app>>
+  component "Fog-edge DualNav\n""demos/fogEdge*.ts"" + ""FogEdgeDemo""" as SH9 <<app>>
+  component "Sieged rook immobile S:\n""scValidate"" + ""endScTurn"" toggle" as SH10 <<app>>
+}
+
+package "Pending" {
+  component "History serializer — optional\n""C=a1a8>xa5"" for finished plies" as PD1 <<app>>
+}
+
+note bottom
+  **Verify:**
+  ""cd apps/ui && npm run lint""
+  ""cd apps/ui && npm run test:int -- tests/starchess""
+  (""tests/starchess"" is the doc's filter; the suite lives under
+  ""src/starchess/__tests__/"" — ""npm run test:int -- src/starchess"" runs it.)
+end note
+@enduml

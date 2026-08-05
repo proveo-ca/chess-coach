@@ -6,9 +6,9 @@
 import type { Color, PieceSymbol, Square } from "chess.js";
 import { createEffect, createSignal, onCleanup } from "solid-js";
 
-import { deployKindFor, makeDeployCue } from "~/starchess/animations/deployAnim";
+import { deployKindFor, makeDeployCue, type DeployPiece } from "~/starchess/animations/deployAnim";
 import { DEPLOY_MS } from "~/starchess/constants";
-import type { DeployCue, DeployPiece } from "~/starchess/types";
+import type { DeployCue } from "~/starchess/types";
 
 type PieceAt = { type: PieceSymbol; color: Color };
 
@@ -65,7 +65,7 @@ export const deployCuesForBoardDiff = (
 
 /**
  * Watches board occupancy and returns merged auto-deploy cues.
- * Call from StarChessChessBoard only (StarChess surfaces).
+ * Call from StarChessBoard only (StarChess surfaces).
  */
 export function useAutoDeploy(opts: {
   /** Current occupancy; pass a getter that tracks the live game. */

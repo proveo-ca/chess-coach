@@ -12,7 +12,7 @@ import {
   useVultureSpiderMine,
 } from "~/starchess/hooks/useVultureSpiderMine";
 import styles from "~/starchess/specials/KnightMineDemo.module.css";
-import { StarChessChessBoard } from "~/starchess/StarChessChessBoard";
+import { StarChessBoard } from "~/starchess/StarChessBoard";
 import { setStorybookCapabilities } from "~/screens/storybookCapabilities";
 import { NERD_CAPABILITIES } from "~/starchess/capabilities";
 import { currentFen, loadFen } from "~/store/gameStore";
@@ -21,7 +21,7 @@ import { setNerdModeUnlocked } from "~/starchess/identity";
 
 /**
  * Storybook: stack order for Vulture spider mine — special+move or move+special.
- * Move L-path is {@link StarChessChessBoard} native — not story-owned VFX.
+ * Move L-path is {@link StarChessBoard} native — not story-owned VFX.
  */
 export const KnightMineDemo: Component = () => {
   const [fen, setFen] = createSignal(VULTURE_FEN_START);
@@ -61,7 +61,7 @@ export const KnightMineDemo: Component = () => {
   return (
     <div class={styles.demo}>
       <div class={styles.host}>
-        <StarChessChessBoard
+        <StarChessBoard
           variant="eclipse"
           fogOfWar
           spiderMines={special.mineAt() ? [special.mineAt()!] : []}

@@ -15,7 +15,7 @@ import { useCommandCenterDeploy } from "~/starchess/hooks/useCommandCenterDeploy
 import { usePieceSpecialArm } from "~/starchess/hooks/usePieceSpecialArm";
 import styles from "~/starchess/specials/KingSpawnDemo.module.css";
 import { DeployModal } from "~/starchess/primitives/DeployModal";
-import { StarChessChessBoard } from "~/starchess/StarChessChessBoard";
+import { StarChessBoard } from "~/starchess/StarChessBoard";
 import { setStorybookCapabilities } from "~/screens/storybookCapabilities";
 import { NERD_CAPABILITIES } from "~/starchess/capabilities";
 import { loadFen } from "~/store/gameStore";
@@ -98,7 +98,7 @@ export const KingSpawnDemo: Component = () => {
   return (
     <div class={styles.demo}>
       <div class={styles.host} ref={hostRef}>
-        <StarChessChessBoard variant="eclipse" fogOfWar />
+        <StarChessBoard variant="eclipse" fogOfWar />
         <Show when={overlayBox()}>
           {(box) => (
             <div

@@ -1,6 +1,5 @@
 import type { Square } from "chess.js";
 
-import type { DemoPiece } from "~/starchess/animations/attackAnim";
 import type { PieceColor } from "~/starchess/animations/teamColors";
 
 export type {
@@ -12,7 +11,7 @@ export type {
   KingDamageState,
   RookMode,
 } from "~/starchess/types";
-export type StarChessPiece = DemoPiece;
+export type { StarChessPiece } from "~/starchess/types";
 
 export type BoardOverlayBox = {
   top: number;

@@ -1,6 +1,7 @@
 /**
  * Pure SCFEN planning appenders — the only way a queue is created.
- * See STARCHESS_FEN.md §3.
+ * See _spec/apps/ui/starchess/scfen-queue.puml.
+ * // SPEC: _spec/apps/ui/starchess/scfen-queue.puml
  */
 
 import type { Square } from "chess.js";
@@ -10,6 +11,7 @@ import { assertActionDeep, ScValidateError } from "~/starchess/scValidate";
 import type {
   PieceColor,
   ScAction,
+  ScActionInput,
   ScFenSnapshot,
   SpawnPiece,
 } from "~/starchess/types";
@@ -45,7 +47,7 @@ const nextSeq = (snap: ScFenSnapshot): number => {
  */
 export const addScAction = (input: {
   snapshot: ScFenSnapshot;
-  action: Omit<ScAction, "seq">;
+  action: ScActionInput;
 }): { snapshot: ScFenSnapshot; action: ScAction } => {
   const { snapshot: snap } = input;
   if (snap.phase !== "P") {

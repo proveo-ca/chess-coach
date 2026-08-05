@@ -17,7 +17,7 @@ import {
   type DeathPiece,
 } from "~/starchess/animations/deathAnim";
 import type { DeathCue } from "~/starchess/animations/types";
-import { StarChessChessBoard } from "~/starchess/StarChessChessBoard";
+import { StarChessBoard } from "~/starchess/StarChessBoard";
 import { clearSiegedRooks, setRookMode } from "~/starchess/starChessStore";
 import { setStorybookCapabilities } from "~/screens/storybookCapabilities";
 import { NERD_CAPABILITIES } from "~/starchess/capabilities";
@@ -158,7 +158,7 @@ export const DeathBoardDemo: Component<DeathBoardDemoProps> = (props) => {
   return (
     <div class={styles.demo}>
       <div class={styles.host}>
-        <StarChessChessBoard
+        <StarChessBoard
           variant="eclipse"
           fogOfWar
           deathCues={cues()}

@@ -1,7 +1,7 @@
 /**
  * StarChess FEN dialect (StarChess-only). Classic FEN is a one-way render export —
  * never the rules oracle.
- * // SPEC: _spec/apps/ui/starchess/scfen.md
+ * // SPEC: _spec/apps/ui/starchess/scfen-wire.puml, _spec/apps/ui/starchess/scfen-queue.puml
  * Wire / tickets: STARCHESS_FEN.md
  */
 
@@ -348,8 +348,6 @@ const parseGasField = (raw: string): { gas: ScFenSnapshot["gas"]; gasIncome: ScF
     gasIncome: { w: Number(m[3]), b: Number(m[4]) },
   };
 };
-
-const hasBothKings = (placement: string): boolean => hasExactKingPair(placement);
 
 export const formatScFen = (snap: ScFenSnapshot): string => {
   const {

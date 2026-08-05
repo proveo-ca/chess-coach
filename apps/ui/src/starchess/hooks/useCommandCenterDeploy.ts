@@ -27,7 +27,7 @@ const KING_SQ: Square = "d4";
 /**
  * Command Center (king) special — Deploy.
  * Armed via GasDeploy (no spend yet). On square pick: spend economy, put the
- * unit on the board immediately — {@link StarChessChessBoard} auto-deploy VFX.
+ * unit on the board immediately — {@link StarChessBoard} auto-deploy VFX.
  */
 export const useCommandCenterDeploy = (opts: {
   fen: () => string;
@@ -145,7 +145,7 @@ export const useCommandCenterDeploy = (opts: {
     const next = g.fen();
     opts.setFen(next);
     loadFen(next);
-    // Auto-deploy runs on StarChessChessBoard; brief "deploying" for UI chrome.
+    // Auto-deploy runs on StarChessBoard; brief "deploying" for UI chrome.
     deployTimer = window.setTimeout(() => {
       setPhase("idle");
       setCaption(

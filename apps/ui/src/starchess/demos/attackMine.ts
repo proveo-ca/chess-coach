@@ -6,7 +6,7 @@
 import { addScAction } from "~/starchess/scActions";
 import { endScTurn } from "~/starchess/endScTurn";
 import { parseScFen } from "~/starchess/scfen";
-import type { ScAction, ScFenSnapshot } from "~/starchess/types";
+import type { ScActionInput, ScFenSnapshot } from "~/starchess/types";
 
 /** White knight d1, black mine c3, Ke1, kh8. */
 export const ATTACK_MINE_START_SCFEN =
@@ -14,7 +14,7 @@ export const ATTACK_MINE_START_SCFEN =
 
 export type AttackMineStep = {
   caption: string;
-  actions: readonly Omit<ScAction, "seq">[];
+  actions: readonly ScActionInput[];
 };
 
 export const ATTACK_MINE_STEPS: readonly AttackMineStep[] = [

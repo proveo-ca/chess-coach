@@ -44,7 +44,7 @@ describe("resolveTurn", () => {
   });
 
   it("path-discovery kingShot chips when king sits mid-ray (intent past king)", () => {
-    // Rook a8 → a1 past white king on a4 — §4.3 path discovery.
+    // Rook a8 → a1 past white king on a4 — resolve.puml path discovery.
     const r = resolveTurn({
       placement: "r6k/8/8/8/K7/8/8/8",
       kingLives: { w: 2, b: 3 },

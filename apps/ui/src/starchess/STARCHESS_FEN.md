@@ -1,7 +1,7 @@
 # StarChess FEN (SCFEN) — wire & tickets
 
 **Rules authority** (classic FEN baseline, simultaneous resolve, fog, collisions):
-[`_spec/apps/ui/starchess/scfen.md`](../_spec/apps/ui/starchess/scfen.md) · [`resolve.puml`](../_spec/apps/ui/starchess/resolve.puml).
+[`scfen-wire.puml`](../../../../_spec/apps/ui/starchess/scfen-wire.puml) · [`scfen-queue.puml`](../../../../_spec/apps/ui/starchess/scfen-queue.puml) · [`resolve.puml`](../../../../_spec/apps/ui/starchess/resolve.puml).
 
 This file keeps **wire format**, **shipped/ticket tables**, and **demo links** only.
 
@@ -28,7 +28,7 @@ Product / UX / economy: [`STARCHESS_MODE.md`](STARCHESS_MODE.md).
 | `SCFEN` parse/format (`G:`, `Q:`, `U:`, `M:`, `S:`, `H:`) | `src/starchess/scfen.ts` |
 | `addScAction` / `addScMove` / `endScTurn` | `scActions.ts`, `endScTurn.ts` |
 | Fog-aware classify + move collision | `resolveTurn.ts` + `vision.ts` via `endScTurn` |
-| Intent `C=` vs progressive path resolve | `_spec/.../scfen.md` §3–§4; `pathRevealSteps` / `pathRevealFrom` in `resolveTurn` |
+| Intent `C=` vs progressive path resolve | `_spec/apps/ui/starchess/resolve.puml`; `pathRevealSteps` / `pathRevealFrom` in `resolveTurn` |
 | King-shot ray / legal check | `collectLegalKingChecks` + `applyPendingKingShots` at turn start |
 | Implicit check → turn-start HP | Legal geometry at `endScTurn` (before B); no king-aimed `C=` |
 | Spider Mines `M:` | `mines.ts`, `resolveTurn` |
@@ -67,7 +67,7 @@ classical  = "C=" from to [ promotion ]
 kind       = "spawn" / "pawnDouble" / "knightMine" / "bishopSnipe" / "rookSiege" / "queenWarp"
 ```
 
-King-shot classical actions encode `to` = **intent** (often enemy king square). Resolve may retarget; optional history `C=from intentTo>resolvedTo`. See `_spec` §3.
+King-shot classical actions encode `to` = **intent** (often enemy king square). Resolve may retarget; optional history `C=from intentTo>resolvedTo`. See `_spec/apps/ui/starchess/resolve.puml`.
 
 Queue shape: ≤1 `C` + ≤1 special (`B` xor `F`) per side; resolve rank `B < C < F`, then **w then b**.
 
@@ -76,5 +76,5 @@ Queue shape: ≤1 `C` + ≤1 special (`B` xor `F`) per side; resolve rank `B < C
 ## Verify
 
 ```bash
-cd apps/ui && npm run lint && npm run test:int -- tests/starchess
+cd apps/ui && npm run lint && npm run test:int -- src/starchess
 ```

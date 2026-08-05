@@ -9,7 +9,7 @@ import { charonTargetQueenFromPlacement } from "~/starchess/specials/bishopCharo
 import { minesFor, MAX_MINES_PER_SIDE, mineAt } from "~/starchess/mines";
 import { isRookSiegedAfterB } from "~/starchess/rookSiegeMode";
 import { classicFenFromSc } from "~/starchess/scfen";
-import type { ScAction, ScFenSnapshot } from "~/starchess/types";
+import type { ScAction, ScActionInput, ScFenSnapshot } from "~/starchess/types";
 
 export class ScValidateError extends Error {
   readonly code: "SC_BASELINE_FEN" | "SC_SPECIAL";
@@ -37,7 +37,7 @@ export const assertBaselineFen = (snap: ScFenSnapshot): void => {
 /**
  * Soft classical probe for C actions: piece exists on `from`.
  * Destination may be empty, enemy-occupied, **or the enemy king** — fog of war
- * overrides classical FEN check / mate filters (SCFEN §3–§4). Path blockers are
+ * overrides classical FEN check / mate filters (scfen-queue.puml). Path blockers are
  * not rejected at queue time; resolve walks the ray.
  */
 export const assertClassicalBaseline = (
@@ -188,7 +188,7 @@ export const assertSpecialLegal = (
   }
 };
 
-export const assertActionDeep = (snap: ScFenSnapshot, action: Omit<ScAction, "seq">): void => {
+export const assertActionDeep = (snap: ScFenSnapshot, action: ScActionInput): void => {
   assertBaselineFen(snap);
   if (action.timing === "C") {
     assertClassicalBaseline(snap, action as Extract<ScAction, { timing: "C" }>);

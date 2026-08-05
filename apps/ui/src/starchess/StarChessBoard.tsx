@@ -12,7 +12,7 @@ import { currentIndex, game, moveHistory } from "~/store/gameStore";
 import type { MoveSquares } from "~/types/game";
 import type { DeployCue } from "~/starchess/types";
 
-export type StarChessChessBoardProps = ComponentProps<typeof StarChessBoardView> & {
+export type StarChessBoardProps = ComponentProps<typeof StarChessBoardView> & {
   /**
    * When true, re-baseline occupancy without firing deploy VFX (DualNav scrub /
    * full-position jumps). Live adds still animate when this is false.
@@ -33,7 +33,7 @@ export type StarChessChessBoardProps = ComponentProps<typeof StarChessBoardView>
  * Cue props are merged with getters ({@link mergeProps}) so updates stay reactive —
  * `{...props} moveCues={...}` can freeze the first empty array.
  */
-export const StarChessChessBoard: Component<StarChessChessBoardProps> = (props) => {
+export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
   const [animProps, rest] = splitProps(props, [
     "moveCues",
     "moveProgress",

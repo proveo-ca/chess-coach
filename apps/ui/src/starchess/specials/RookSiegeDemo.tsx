@@ -9,7 +9,7 @@ import {
   useRookSiege,
 } from "~/starchess/hooks/useRookSiege";
 import styles from "~/starchess/specials/RookSiegeDemo.module.css";
-import { StarChessChessBoard } from "~/starchess/StarChessChessBoard";
+import { StarChessBoard } from "~/starchess/StarChessBoard";
 import { setStorybookCapabilities } from "~/screens/storybookCapabilities";
 import { NERD_CAPABILITIES } from "~/starchess/capabilities";
 import { loadFen } from "~/store/gameStore";
@@ -38,7 +38,7 @@ export const RookSiegeDemo: Component = () => {
   return (
     <div class={styles.demo}>
       <div class={styles.host}>
-        <StarChessChessBoard variant="eclipse" fogOfWar />
+        <StarChessBoard variant="eclipse" fogOfWar />
       </div>
       <div class={styles.gasRow}>
         <GasDeploy onDeploy={onGasDeploy} />

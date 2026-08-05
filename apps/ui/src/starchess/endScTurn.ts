@@ -2,6 +2,7 @@
  * End / timeout path — resolve one planning SCFEN snap into the next.
  * Order: pending king-checks → B specials (incl. intent siege) → classical
  * attack → classical move (+ mine triggers) → F specials.
+ * // SPEC: _spec/apps/ui/starchess/turn-queue-sequence.puml, _spec/apps/ui/starchess/resolve.puml
  */
 
 import type { Square } from "chess.js";

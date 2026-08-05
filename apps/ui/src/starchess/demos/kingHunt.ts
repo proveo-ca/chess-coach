@@ -8,14 +8,12 @@
  * diagonal check counts.
  */
 
-import type { Square } from "chess.js";
-
 import { findKing, placementToMap } from "~/starchess/board";
 import { UNIT_COST } from "~/starchess/constants";
 import { addScAction, addScMove, AddScActionError } from "~/starchess/scActions";
 import { endScTurn } from "~/starchess/endScTurn";
 import { classicFenFromSc, formatScFen, parseScFen } from "~/starchess/scfen";
-import type { PieceColor, ScAction, ScFenSnapshot } from "~/starchess/types";
+import type { PieceColor, ScActionInput, ScFenSnapshot } from "~/starchess/types";
 
 /** Black hunts white: ka8, rg6 (tank), nc5, Ke4, bh2 — Nc5 sees/checks Ke4. */
 export const KING_HUNT_START_SCFEN =
@@ -31,7 +29,7 @@ export const KING_HUNT_LIVE_START_SCFEN =
 export type KingHuntStep = {
   caption: string;
   /** ≤1 special + ≤1 classical per side (SCFEN queue shape). */
-  actions: readonly Omit<ScAction, "seq">[];
+  actions: readonly ScActionInput[];
 };
 
 /**

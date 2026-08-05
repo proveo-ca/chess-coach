@@ -7,7 +7,7 @@ import { createSignal, onCleanup, onMount, type Component } from "solid-js";
 import styles from "~/starchess/animations/SpiderMineFogDemo.module.css";
 import { classicFenFromSc, parseScFen } from "~/starchess/scfen";
 import { setPlanningSnapshot } from "~/starchess/starChessStore";
-import { StarChessChessBoard } from "~/starchess/StarChessChessBoard";
+import { StarChessBoard } from "~/starchess/StarChessBoard";
 import { setStorybookCapabilities } from "~/screens/storybookCapabilities";
 import { NERD_CAPABILITIES } from "~/starchess/capabilities";
 import type { ScMine } from "~/starchess/types";
@@ -43,7 +43,7 @@ export const SpiderMineFogDemo: Component = () => {
   return (
     <div class={styles.demo}>
       <div class={styles.host}>
-        <StarChessChessBoard variant="eclipse" fogOfWar spiderMines={mines()} />
+        <StarChessBoard variant="eclipse" fogOfWar spiderMines={mines()} />
       </div>
       <p class={styles.caption}>Fog · SCFEN M:w:a4 · own-square vision only</p>
     </div>

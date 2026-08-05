@@ -6,7 +6,7 @@
 import { addScAction, addScMove } from "~/starchess/scActions";
 import { endScTurn } from "~/starchess/endScTurn";
 import { parseScFen } from "~/starchess/scfen";
-import type { ScAction, ScFenSnapshot } from "~/starchess/types";
+import type { ScActionInput, ScFenSnapshot } from "~/starchess/types";
 
 /** Nb a4, Ke1, kh8 — black mine will be hostile on a4. */
 export const PATH_COLLIDE_START_SCFEN =
@@ -15,7 +15,7 @@ export const PATH_COLLIDE_START_SCFEN =
 export type PathCollideStep = {
   caption: string;
   /** Both sides’ actions for one parallel turn (≤1 special + ≤1 classical each). */
-  actions: readonly Omit<ScAction, "seq">[];
+  actions: readonly ScActionInput[];
 };
 
 export const PATH_COLLIDE_STEPS: readonly PathCollideStep[] = [

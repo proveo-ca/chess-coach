@@ -1,7 +1,7 @@
 /**
  * Static SCFEN fog vision sample — siege rook (immobile, 9×9).
  * Stories feed SCFEN only; no DualNav / combat.
- * // SPEC: _spec/apps/ui/starchess/scfen.md §5
+ * // SPEC: _spec/apps/ui/starchess/starchess-mode.puml
  */
 
 import { onCleanup, onMount, type Component } from "solid-js";
@@ -14,7 +14,7 @@ import {
   setPlanningSnapshot,
   setRookMode,
 } from "~/starchess/starChessStore";
-import { StarChessChessBoard } from "~/starchess/StarChessChessBoard";
+import { StarChessBoard } from "~/starchess/StarChessBoard";
 import { setStorybookCapabilities } from "~/screens/storybookCapabilities";
 import { NERD_CAPABILITIES } from "~/starchess/capabilities";
 import { loadFen } from "~/store/gameStore";
@@ -72,7 +72,7 @@ export const FogVisionDemo: Component<FogVisionDemoProps> = (props) => {
   return (
     <div class={styles.demo}>
       <div class={styles.host}>
-        <StarChessChessBoard variant="eclipse" fogOfWar />
+        <StarChessBoard variant="eclipse" fogOfWar />
       </div>
       <p class={styles.caption}>{props.caption}</p>
     </div>

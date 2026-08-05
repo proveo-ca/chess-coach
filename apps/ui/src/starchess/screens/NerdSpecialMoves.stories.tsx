@@ -59,7 +59,7 @@ export const KnightMine: Story = {
     docs: {
       description: {
         story:
-          "Assert stack order: special+move (gas on d4, then move the knight — mine stays on origin) or move+special (move first, then gas — mine under the new square). Knight L-path comes from `StarChessChessBoard`, not this story.",
+          "Assert stack order: special+move (gas on d4, then move the knight — mine stays on origin) or move+special (move first, then gas — mine under the new square). Knight L-path comes from `StarChessBoard`, not this story.",
       },
     },
   },

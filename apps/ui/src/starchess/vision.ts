@@ -1,3 +1,7 @@
+/**
+ * Cumulative fog — union of friendly-unit vision; mines light their own square.
+ * // SPEC: _spec/apps/ui/starchess/starchess-mode.puml, _spec/apps/ui/starchess/resolve.puml
+ */
 import { Chess, type Color, type PieceSymbol, type Square } from "chess.js";
 
 import { moveSquareAtElapsed } from "~/starchess/animations/moveTiming";
@@ -319,7 +323,7 @@ export type PathVisionOpts = {
 };
 
 /**
- * SCFEN §4.1 — after walking each intermediate on `from→intentTo`, does side
+ * resolve.puml — after walking each intermediate on `from→intentTo`, does side
  * vision (with the mover on that square) light or reveal `target`?
  * Leaping pieces have no intermediates (caller should skip).
  */

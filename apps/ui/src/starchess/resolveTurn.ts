@@ -1,7 +1,7 @@
 /**
  * StarChess classical resolve — attack then move (simultaneous dual plans).
  * Fog: visible targets attack; fogged occupancy → move collision capture/occupy.
- * // SPEC: _spec/apps/ui/starchess/scfen.md
+ * // SPEC: _spec/apps/ui/starchess/resolve.puml
  */
 
 import type { Square } from "chess.js";
@@ -37,7 +37,7 @@ export type ResolveAttack =
        * (combat plays approach `pathRevealFrom` → `from`, then this attack).
        */
       pathRevealFrom?: Square;
-      /** Intermediates walked before `to` became visible (SCFEN §4.1). */
+      /** Intermediates walked before `to` became visible (resolve.puml). */
       pathRevealSteps?: number;
     }
   | {
@@ -87,7 +87,7 @@ export type ResolveTurnInput = {
    * (tests / callers without fog). Production `endScTurn` passes post-B vision.
    */
   isTargetVisible?: (color: StarChessColor, square: Square) => boolean;
-  /** Progressive path vision (SCFEN §4.1) — rook mode + mines for mid-walk checks. */
+  /** Progressive path vision (resolve.puml) — rook mode + mines for mid-walk checks. */
   pathVisionOpts?: {
     rookModeFor?: (square: Square) => RookMode;
     mines?: readonly ScMine[];
@@ -314,7 +314,7 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
     if (target && target.color !== plan.color) {
       let visible = visible0;
       let revealSteps: number | null = null;
-      // SCFEN §4.1: fog lifts along the path — discover then attack from that square.
+      // resolve.puml: fog lifts along the path — discover then attack from that square.
       if (!visible && !leapsPiece(actor.type)) {
         revealSteps = pathRevealSteps(
           input.placement,
@@ -411,7 +411,7 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
       }
     }
 
-    // SCFEN §4.1–4.2: sliding intent into fog may pass a still-hidden unit.
+    // resolve.puml: sliding intent into fog may pass a still-hidden unit.
     // Walk the ray; first enemy that is (or becomes) visible → attack + stop.
     if (!leapsPiece(actor.type)) {
       const mids = rayBetween(plan.from, plan.to);

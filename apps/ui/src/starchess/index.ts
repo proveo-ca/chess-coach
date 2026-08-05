@@ -20,7 +20,7 @@ export * from "~/starchess/identity";
 export * from "~/starchess/capabilities";
 export * from "~/starchess/nerdNames";
 export { NERD_STARTING_FEN } from "~/starchess/nerdMode";
-export { StarChessChessBoard } from "~/starchess/StarChessChessBoard";
+export { StarChessBoard } from "~/starchess/StarChessBoard";
 export { NerdModePrompt } from "~/starchess/NerdModePrompt";
 export { NerdScreen } from "~/starchess/screens/NerdScreen";
 export { useStarChessAnimations } from "~/starchess/hooks/useStarChessAnimations";

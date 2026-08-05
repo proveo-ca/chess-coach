@@ -1,0 +1,47 @@
+@startuml index
+' SPEC: _spec/apps/ui/starchess/index.puml
+' purpose: Map of the StarChess spec set to the src/starchess engine modules.
+!include ../../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess · Spec Map (_spec/apps/ui/starchess)
+
+package "_spec/apps/ui/starchess" {
+  component "scfen-wire.puml\nSCFEN string + field roles" as WIRE <<db>>
+  component "scfen-queue.puml\nQueue ABNF + shape + order" as QUEUE <<async>>
+  component "resolve.puml\nattack → death → occupy" as RESOLVE <<app>>
+  component "turn-queue-sequence.puml\nSimultaneous turn queue" as SEQ <<async>>
+  component "starchess-mode.puml\nProduct / UX + economy" as MODE <<app>>
+  component "demos.puml\nCanonical demos + shipped/pending" as DEMOS <<app>>
+}
+
+package "src/starchess" {
+  component "scfen.ts\nSCFEN parse / format" as TSCFEN <<app>>
+  component "scActions.ts\naddScAction / addScMove" as ACT <<app>>
+  component "endScTurn.ts\nresolve planning snap" as END <<app>>
+  component "resolveTurn.ts\nclassical attack + move" as RT <<app>>
+  component "vision.ts\ncumulative fog" as VIS <<db>>
+  component "mines.ts\nspider mines" as MIN <<app>>
+}
+
+WIRE ARROW_OPTIONAL TSCFEN : documents
+QUEUE ARROW_OPTIONAL ACT : documents
+RESOLVE ARROW_OPTIONAL END : documents
+RESOLVE ARROW_OPTIONAL RT : documents
+RESOLVE ARROW_OPTIONAL VIS : documents
+RESOLVE ARROW_OPTIONAL MIN : documents
+MODE ARROW_OPTIONAL END : documents
+MODE ARROW_OPTIONAL ACT : documents
+DEMOS ARROW_OPTIONAL WIRE : covers
+DEMOS ARROW_OPTIONAL RESOLVE : covers
+DEMOS ARROW_OPTIONAL MODE : covers
+
+note bottom
+  **Contents carried over from** ""apps/ui/src/starchess/STARCHESS_FEN.md""
+  and ""STARCHESS_MODE.md"" — .puml only, no .md/.txt in this folder.
+  Engine is exclusive to ""apps/ui/src/starchess/screens/NerdScreen.tsx"".
+  The prior rules-authority pointer ""scfen.md"" is replaced by this set.
+end note
+@enduml
