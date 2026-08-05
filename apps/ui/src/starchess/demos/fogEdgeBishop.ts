@@ -8,14 +8,14 @@ import { addScAction } from "~/starchess/scActions";
 import { endScTurn } from "~/starchess/endScTurn";
 import type { FogEdgeScenario } from "~/starchess/demos/fogEdgeScenario";
 import { parseScFen } from "~/starchess/scfen";
-import type { ScAction, ScFenSnapshot } from "~/types/starchess";
+import type { ScAction, ScFenSnapshot } from "~/starchess/types";
 
 /**
  * Bd4 (5×5 lit), Ka1; black pawn g7 (outside vision) on d4–h8;
  * black king on h8 — also fogged. Intent `C=d4h8` is SCFEN-legal.
  */
 export const FOG_EDGE_BISHOP_START_SCFEN =
-  "SCFEN|7k/6p1/8/8/3B4/8/8/K7|0|33|P|G:33:33|Q:w:;b:";
+  "SCFEN|7k/6p1/8/8/3B4/8/8/K7|0|33|P|G:11:11|Q:w:;b:";
 
 export type FogEdgeStep = {
   caption: string;

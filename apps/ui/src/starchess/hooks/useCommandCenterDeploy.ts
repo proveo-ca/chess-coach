@@ -18,7 +18,7 @@ import type { PieceSpecialArmCtx } from "~/starchess/hooks/usePieceSpecialArm";
 import { adjacentSquares } from "~/starchess/specials/adjacent";
 import { loadFen } from "~/store/gameStore";
 import { activePlayerColor, playerPieceSet } from "~/store/settingsStore";
-import type { DeployModalPending, SpawnPiece } from "~/types/starchess";
+import type { DeployModalPending, SpawnPiece } from "~/starchess/types";
 
 export type CommandCenterPhase = "idle" | "spawnModal" | "pickAdjacent" | "deploying";
 

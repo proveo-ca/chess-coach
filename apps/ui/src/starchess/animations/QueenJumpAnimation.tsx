@@ -21,7 +21,7 @@ import {
   TACTICAL_JUMP_TRAIL_MS,
   TACTICAL_JUMP_TRAVEL_MS,
 } from "~/starchess/specials/queenTacticalJump";
-import type { QueenJumpTrail } from "~/types/starchess";
+import type { QueenJumpTrail } from "~/starchess/types";
 
 type BoardFxProps = {
   class: string;

@@ -9,18 +9,15 @@ import { classicFenFromSc, parseScFen } from "~/starchess/scfen";
 import { setPlanningSnapshot } from "~/starchess/starChessStore";
 import { StarChessChessBoard } from "~/starchess/StarChessChessBoard";
 import { setStorybookCapabilities } from "~/screens/storybookCapabilities";
-import { NERD_CAPABILITIES } from "~/store/capabilitiesStore";
-import type { ScMine } from "~/types/starchess";
+import { NERD_CAPABILITIES } from "~/starchess/capabilities";
+import type { ScMine } from "~/starchess/types";
 import { loadFen } from "~/store/gameStore";
-import {
-  setActivePlayerColor,
-  setNerdModeUnlocked,
-  setPlayerIdentity,
-} from "~/store/settingsStore";
+import { setActivePlayerColor, setPlayerIdentity } from "~/store/settingsStore";
+import { setNerdModeUnlocked } from "~/starchess/identity";
 
 /** Owner-side white mine on a4; king on e1 cannot see a4 without the mine. */
 const FOG_MINE_SCFEN =
-  "SCFEN|7k/8/8/8/8/8/8/4K3|0|33|P|G:33:33|M:w:a4|Q:w:;b:";
+  "SCFEN|7k/8/8/8/8/8/8/4K3|0|33|P|G:11:11|M:w:a4|Q:w:;b:";
 
 /**
  * Storybook: SCFEN `M:` + fog — no hand-rolled cues.

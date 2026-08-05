@@ -1,12 +1,14 @@
 /**
  * End / timeout path — resolve one planning SCFEN snap into the next.
- * Order: B specials → pending king-checks → classical attack → classical move
- * (+ mine triggers) → F specials.
+ * Order: pending king-checks → B specials (incl. intent siege) → classical
+ * attack → classical move (+ mine triggers) → F specials.
  */
 
 import type { Square } from "chess.js";
+import { Chess } from "chess.js";
 
 import {
+  collectLegalKingChecks,
   mapToPlacement,
   placementToMap,
   type ScPiece,
@@ -31,8 +33,7 @@ import type {
   ScAction,
   ScFenSnapshot,
   ScMine,
-} from "~/types/starchess";
-import { Chess } from "chess.js";
+} from "~/starchess/types";
 
 export type EndScTurnResult = {
   resolved: ResolveTurnResult;
@@ -41,8 +42,22 @@ export type EndScTurnResult = {
   events: ResolveEvent[];
   /** Surviving `rookSiege` toggles this resolve (entered or left siege). */
   siegedThisTurn: readonly Square[];
-  /** Placement + mines after B specials, before classical resolve (spawn / warp land). */
-  afterB: { placement: string; mines: ScMine[] };
+  /**
+   * Board after pending checks + B specials, before classical resolve
+   * (spawn / warp / mine drops / siege for deploy VFX).
+   */
+  afterB: {
+    placement: string;
+    mines: ScMine[];
+    /** Siege flags after B toggles — used for attack vision + combat VFX. */
+    siegedRooks: readonly Square[];
+  };
+  /** Board after pending king-checks only (pre-special attack VFX). */
+  afterPending: {
+    placement: string;
+    mines: ScMine[];
+    kingLives: ScFenSnapshot["kingLives"];
+  };
 };
 
 const byTiming = (actions: readonly ScAction[], timing: "B" | "C" | "F") =>
@@ -107,10 +122,28 @@ const applySpecial = (
       return { placement, mines: next };
     }
     case "rookSiege":
+      // Toggle applied via {@link toggleRookSiege} — placement unchanged.
       return { placement, mines };
     default:
       return { placement, mines };
   }
+};
+
+/**
+ * Toggle siege mode for a living rook on `at`.
+ * Returns false if the actor is missing / not a rook.
+ */
+const toggleRookSiege = (
+  placement: string,
+  sieged: Set<Square>,
+  color: PieceColor,
+  at: Square,
+): boolean => {
+  const actor = placementToMap(placement).get(at);
+  if (!actor || actor.color !== color || actor.type !== "r") return false;
+  if (sieged.has(at)) sieged.delete(at);
+  else sieged.add(at);
+  return true;
 };
 
 const classicalFor = (
@@ -119,7 +152,12 @@ const classicalFor = (
 ): ClassicalPlan | null => {
   const c = actions.find((a) => a.timing === "C" && a.color === color);
   if (!c || c.timing !== "C") return null;
-  return { color, from: c.from, to: c.to };
+  return {
+    color,
+    from: c.from,
+    to: c.to,
+    ...(c.promotion ? { promotion: c.promotion } : {}),
+  };
 };
 
 const eventFor = (
@@ -145,29 +183,72 @@ export const endScTurn = (snapshot: ScFenSnapshot): EndScTurnResult => {
   let placement = snapshot.placement;
   let mines: ScMine[] = [...(snapshot.mines ?? [])];
   let eventSeq = 0;
+  const siegedThisTurn: Square[] = [];
+  const sieged = new Set(snapshot.siegedRooks ?? []);
 
+  // Vision for turn-start checks (pre-B siege flags) and classical fog.
+  const rookModeFor = (sq: Square) => (sieged.has(sq) ? "siege" : "tank");
+  const visionGame0 = new Chess(`${placement} w - - 0 1`);
+  const visionOpts0 = { mines, rookModeFor };
+  const visionW0 = getSideVision(visionGame0, "w", visionOpts0);
+  const visionB0 = getSideVision(visionGame0, "b", visionOpts0);
+  const isCheckVisible = (color: PieceColor, square: Square) => {
+    const v = color === "w" ? visionW0 : visionB0;
+    return v.litSquares.has(square) || v.revealedPieces.has(square);
+  };
+
+  // 1) Fog-visible legal king-checks resolve at turn start — before any special.
+  const pendingApplied = applyPendingKingShots({
+    placement,
+    kingLives: snapshot.kingLives,
+    pending: collectLegalKingChecks(placement, {
+      isTargetVisible: isCheckVisible,
+    }),
+    mines,
+  });
+  placement = pendingApplied.placement;
+  mines = pendingApplied.mines;
+  let kingLives = pendingApplied.kingLives;
+  const afterPending = {
+    placement,
+    mines: [...mines],
+    kingLives: { ...kingLives },
+  };
+  for (const atk of pendingApplied.attacks) {
+    events.push({
+      id: `ev-${eventSeq++}`,
+      phase: "attack",
+      color: atk.color,
+      from: atk.from,
+      to: atk.to,
+    });
+  }
+
+  // 2) B specials (spawn / mine / warp / siege / …).
   for (const a of byTiming(actions, "B")) {
     if (a.timing !== "B") continue;
+    if (a.kind === "rookSiege") {
+      if (toggleRookSiege(placement, sieged, a.color, a.from)) {
+        siegedThisTurn.push(a.from);
+        events.push(eventFor("specialBefore", a, `ev-${eventSeq++}`));
+      }
+      continue;
+    }
     const applied = applySpecial(placement, mines, a, ignoreAttacksOn);
     placement = applied.placement;
     mines = applied.mines;
     events.push(eventFor("specialBefore", a, `ev-${eventSeq++}`));
   }
 
-  const afterB = { placement, mines: [...mines] };
-
-  const pendingApplied = applyPendingKingShots({
+  const afterB = {
     placement,
-    kingLives: snapshot.kingLives,
-    pending: snapshot.pendingKingShots ?? [],
-    mines,
-  });
-  placement = pendingApplied.placement;
-  mines = pendingApplied.mines;
-  let kingLives = pendingApplied.kingLives;
+    mines: [...mines],
+    siegedRooks: [...sieged].sort() as Square[],
+  };
 
+  // Post-B vision (siege toggles / mines) for classical attack fog.
   const visionGame = new Chess(`${placement} w - - 0 1`);
-  const visionOpts = { mines };
+  const visionOpts = { mines, rookModeFor };
   const visionW = getSideVision(visionGame, "w", visionOpts);
   const visionB = getSideVision(visionGame, "b", visionOpts);
   const isTargetVisible = (color: PieceColor, square: Square) => {
@@ -175,6 +256,7 @@ export const endScTurn = (snapshot: ScFenSnapshot): EndScTurnResult => {
     return v.litSquares.has(square) || v.revealedPieces.has(square);
   };
 
+  // 3) Classical attack → move (+ mine triggers).
   const white = classicalFor(actions, "w");
   const black = classicalFor(actions, "b");
   const classical = resolveTurn({
@@ -185,7 +267,8 @@ export const endScTurn = (snapshot: ScFenSnapshot): EndScTurnResult => {
     ignoreAttacksOn,
     mines,
     isTargetVisible,
-    pathVisionOpts: { mines },
+    pathVisionOpts: { mines, rookModeFor },
+    siegedRooks: afterB.siegedRooks,
   });
 
   const resolved: ResolveTurnResult = {
@@ -193,7 +276,7 @@ export const endScTurn = (snapshot: ScFenSnapshot): EndScTurnResult => {
     attacks: [...pendingApplied.attacks, ...classical.attacks],
   };
 
-  for (const atk of resolved.attacks) {
+  for (const atk of classical.attacks) {
     events.push({
       id: `ev-${eventSeq++}`,
       phase: "attack",
@@ -233,16 +316,16 @@ export const endScTurn = (snapshot: ScFenSnapshot): EndScTurnResult => {
   placement = resolved.afterMove.placement;
   mines = resolved.afterMove.mines;
   kingLives = resolved.afterMove.kingLives;
-  const siegedThisTurn: Square[] = [];
-  // Carry siege mode; drop squares that no longer hold a rook after combat.
-  const boardAfterMove = placementToMap(placement);
-  const sieged = new Set(
-    (snapshot.siegedRooks ?? []).filter((sq) => boardAfterMove.get(sq)?.type === "r"),
-  );
 
+  // Drop siege flags for squares that no longer hold a rook after combat.
+  const boardAfterMove = placementToMap(placement);
+  for (const sq of [...sieged]) {
+    if (boardAfterMove.get(sq)?.type !== "r") sieged.delete(sq);
+  }
+
+  // 4) F specials (post-move siege follow / late drops).
   for (const a of byTiming(actions, "F")) {
     if (a.timing !== "F") continue;
-    // Actor may have relocated via classical C; skip if gone (death / chase boom).
     const classicalPlan = classicalFor(actions, a.color);
     const at =
       classicalPlan && classicalPlan.from === a.from ? classicalPlan.to : a.from;
@@ -251,11 +334,10 @@ export const endScTurn = (snapshot: ScFenSnapshot): EndScTurnResult => {
     if (!actor || actor.color !== a.color) continue;
 
     if (a.kind === "rookSiege") {
-      if (actor.type !== "r") continue;
-      if (sieged.has(at)) sieged.delete(at);
-      else sieged.add(at);
-      siegedThisTurn.push(at);
-      events.push(eventFor("specialAfter", a, `ev-${eventSeq++}`));
+      if (toggleRookSiege(placement, sieged, a.color, at)) {
+        siegedThisTurn.push(at);
+        events.push(eventFor("specialAfter", a, `ev-${eventSeq++}`));
+      }
       continue;
     }
 
@@ -265,10 +347,23 @@ export const endScTurn = (snapshot: ScFenSnapshot): EndScTurnResult => {
     events.push(eventFor("specialAfter", a, `ev-${eventSeq++}`));
   }
 
-  // Enforce cap after F drops too.
   for (const color of ["w", "b"] as const) {
     if (minesFor(mines, color).length > MAX_MINES_PER_SIDE) {
       throw new Error(`endScTurn: ${color} mine cap exceeded`);
+    }
+  }
+
+  {
+    let w = 0;
+    let b = 0;
+    for (const ch of placement) {
+      if (ch === "K") w += 1;
+      else if (ch === "k") b += 1;
+    }
+    if (w !== 1 || b !== 1) {
+      throw new Error(
+        `endScTurn: illegal king count (w=${w} b=${b}) after resolve: ${placement}`,
+      );
     }
   }
 
@@ -276,7 +371,7 @@ export const endScTurn = (snapshot: ScFenSnapshot): EndScTurnResult => {
   const income = energyForTurn(Math.max(1, nextTurn));
   const gasIncome = { w: income, b: income };
   const siegedRooks = [...sieged].sort();
-  const pendingKingShots = resolved.pendingKingShotsArmed;
+  // Planning check rings come from live geometry — do not persist deferred H:.
   const next: ScFenSnapshot = {
     placement,
     turn: nextTurn,
@@ -287,8 +382,15 @@ export const endScTurn = (snapshot: ScFenSnapshot): EndScTurnResult => {
     queue: { actions: [] },
     ...(mines.length ? { mines } : {}),
     ...(siegedRooks.length ? { siegedRooks } : {}),
-    ...(pendingKingShots.length ? { pendingKingShots } : {}),
   };
 
-  return { resolved, next, events, ignoreAttacksOn, siegedThisTurn, afterB };
+  return {
+    resolved,
+    next,
+    events,
+    ignoreAttacksOn,
+    siegedThisTurn,
+    afterB,
+    afterPending,
+  };
 };

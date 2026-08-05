@@ -52,11 +52,12 @@ export const useBishopCharon = (opts?: { startingFen?: string }) => {
   const side = () => activePlayerColor();
 
   const seedEconomy = () => {
+    // Turn 11 → income 2 (Charon costs 2).
     resetStarChessEconomy({
-      turn: 21,
+      turn: 11,
       white: { stored: 12, deployed: 6 },
       black: { stored: 0, deployed: 2 },
-      energy: 3,
+      energy: 2,
       startTimer: false,
     });
   };

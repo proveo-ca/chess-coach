@@ -166,6 +166,52 @@ export const findKing = (
 };
 
 /**
+ * Every unit that **legally** checks a king (clear geometry via {@link attacksSquare}).
+ * Attack range is the piece’s geometry only (bishop/queen/rook rays are unlimited).
+ * Fog limit is **side vision**: if any friendly unit lights the king (e.g. sieged
+ * tank 9×9), every geometric checker of that side may chip — including a bishop
+ * whose own 5×5 would not cover the square.
+ */
+export const collectLegalKingChecks = (
+  placement: string,
+  opts?: {
+    /** Side can see the king (cumulative lit ∪ revealed). */
+    isTargetVisible?: (color: StarChessColor, square: Square) => boolean;
+  },
+): {
+  color: StarChessColor;
+  piece: ScPiece["type"];
+  from: Square;
+  to: Square;
+}[] => {
+  const map = placementToMap(placement);
+  const canSee = opts?.isTargetVisible ?? (() => true);
+
+  const out: {
+    color: StarChessColor;
+    piece: ScPiece["type"];
+    from: Square;
+    to: Square;
+  }[] = [];
+  for (const kingColor of ["w", "b"] as const) {
+    const kingSq = findKing(map, kingColor);
+    if (!kingSq) continue;
+    const enemy: StarChessColor = kingColor === "w" ? "b" : "w";
+    if (!canSee(enemy, kingSq)) continue;
+    for (const [from, piece] of map) {
+      if (piece.color !== enemy || piece.type === "k") continue;
+      if (!attacksSquare(map, from, kingSq)) continue;
+      out.push({ color: enemy, piece: piece.type, from, to: kingSq });
+    }
+  }
+  out.sort((a, b) => {
+    if (a.color !== b.color) return a.color === "w" ? -1 : 1;
+    return a.from.localeCompare(b.from);
+  });
+  return out;
+};
+
+/**
  * Classic “in check” on occupancy (side’s king attacked). Independent of
  * side-to-move tricks in a FEN string.
  */

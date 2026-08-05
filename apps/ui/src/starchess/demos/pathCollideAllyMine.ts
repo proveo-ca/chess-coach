@@ -6,11 +6,11 @@
 import { addScAction, addScMove } from "~/starchess/scActions";
 import { endScTurn } from "~/starchess/endScTurn";
 import { parseScFen } from "~/starchess/scfen";
-import type { ScAction, ScFenSnapshot } from "~/types/starchess";
+import type { ScAction, ScFenSnapshot } from "~/starchess/types";
 
 /** Nw a4, Ke1, ke8 — white mine will be allied on a4. */
 export const PATH_COLLIDE_ALLY_MINE_START_SCFEN =
-  "SCFEN|4k3/8/8/8/N7/8/8/4K3|0|33|P|G:33:33|Q:w:;b:";
+  "SCFEN|4k3/8/8/8/N7/8/8/4K3|0|33|P|G:11:11|Q:w:;b:";
 
 export type PathCollideAllyMineStep = {
   caption: string;

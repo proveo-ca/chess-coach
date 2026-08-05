@@ -13,7 +13,7 @@ import {
 } from "~/starchess/board";
 import { firstBlockerOnRay, mineAt, pathContactSquares, rayBetween } from "~/starchess/mines";
 import type { StarChessColor } from "~/starchess/types";
-import type { ClassicalPlan, RookMode, ScMine, ScPendingKingShot } from "~/types/starchess";
+import type { ClassicalPlan, RookMode, ScMine, ScPendingKingShot } from "~/starchess/types";
 import { pathRevealSteps } from "~/starchess/vision";
 
 export type { ClassicalPlan };
@@ -59,7 +59,7 @@ export type ResolveAttack =
       to: Square;
       /** Mine owner. */
       mineColor: StarChessColor;
-      /** Unit removed with the mine (ally friendly-fire or chase victim). */
+      /** Unit removed with the mine (chase victim). */
       victim?: { piece: ScPiece["type"]; color: StarChessColor };
       /**
        * Hostile path crossed the mine tile — mine chased to classical `to`
@@ -92,6 +92,11 @@ export type ResolveTurnInput = {
     rookModeFor?: (square: Square) => RookMode;
     mines?: readonly ScMine[];
   };
+  /**
+   * Squares in siege after B specials. Sieged rooks still attack but do not
+   * relocate (immobile until packed via a later `rookSiege`).
+   */
+  siegedRooks?: readonly Square[];
 };
 
 export type ResolveTurnResult = {
@@ -137,9 +142,10 @@ const squareBeforeOnRay = (from: Square, blocker: Square): Square | null => {
 };
 
 /**
- * Apply pending king-checks after `B` (deploy-to-block window).
+ * Apply legal king-checks at turn start (before B specials).
  * Sliding ray with a blocker → collision (no HP). Clear ray / knight → HP −1.
  * Fizzles if attacker gone or enemy king no longer on `to`.
+ * Callers pass {@link collectLegalKingChecks} (implicit geometry), not armed `H:`.
  */
 export const applyPendingKingShots = (input: {
   placement: string;
@@ -254,10 +260,8 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
 
     const visible0 = canSee(plan.color, plan.to);
 
-    // Planned king-shot: arm pending for next-turn HP / collision (after B).
-    // Same-turn fog discovery of a non-king blocker that lights mid-walk still
-    // occupies (Bxg7-style) — that is not a deferred king check.
-    // Knights never collide; sliding blockers are resolved when pending applies.
+    // King square as classical `to`: never arm deferred HP (checks are implicit
+    // at turn start). Fog path-discovery onto a hidden blocker still occupies.
     if (target && target.color !== plan.color && target.type === "k") {
       const leaps = leapsPiece(actor.type);
       const blocker = leaps ? null : firstBlockerOnRay(start, plan.from, plan.to);
@@ -276,7 +280,7 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
             );
         const becomesVisible = reveal != null && reveal > 0;
 
-        // Hidden blocker that lights mid-walk → Bxg7-style occupy (not deferred check).
+        // Hidden blocker that lights mid-walk → Bxg7-style occupy (not a check).
         if (becomesVisible && !startVisible) {
           const mids = rayBetween(plan.from, plan.to);
           const discovery = mids[reveal! - 1]!;
@@ -299,33 +303,11 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
           continue;
         }
       }
-
-      pendingKingShotsArmed.push({
-        color: plan.color,
-        piece: actor.type,
-        from: plan.from,
-        to: plan.to,
-      });
       continue;
     }
 
-    // Attack ally standing on a mine → explode ally + mine (rule 6), then occupy.
+    // Allies and enemy kings never arm a mine — only hostile non-kings do.
     if (target && target.color === plan.color) {
-      const m = mineAt(mines, plan.to);
-      if (m) {
-        attacks.push({
-          kind: "mineBlast",
-          piece: actor.type,
-          color: plan.color,
-          from: plan.from,
-          to: plan.to,
-          mineColor: m.color,
-          victim: { piece: target.type, color: target.color },
-        });
-        deadSquares.add(plan.to);
-        removeMineAt(plan.to);
-        occupy.push(plan);
-      }
       continue;
     }
 
@@ -406,9 +388,10 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
     }
 
     // Fogged hostile mine on empty square — clear + occupy, no attack cue.
+    // Kings are immune: they occupy without arming or clearing the mine.
     if (!target) {
       const m = mineAt(mines, plan.to);
-      if (m && m.color !== plan.color) {
+      if (m && m.color !== plan.color && actor.type !== "k") {
         const blast: ResolveAttack = {
           kind: "mineBlast",
           piece: actor.type,
@@ -568,15 +551,27 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
     if (deadSquares.has(plan.from) || moversDead.has(plan.from)) return;
     const piece = board.get(plan.from);
     if (!piece || piece.color !== plan.color) return;
+    // Intent siege (B) resolves before move — unpacked tanks stay put.
+    if (
+      piece.type === "r" &&
+      (input.siegedRooks ?? []).includes(plan.from)
+    ) {
+      return;
+    }
 
     let dest = plan.to;
 
     // Quiet slides: path unit blocks → truncate; capture/occupy enemy blocker.
+    // Kings are never occupied — stop on the square before (SCFEN: 1 king / side).
     if (!fromOccupyList && !leapsPiece(piece.type)) {
       const blocker = firstBlockerOnRay(board, plan.from, plan.to);
       if (blocker) {
         const blocking = board.get(blocker)!;
-        if (blocking.color !== plan.color) {
+        if (blocking.type === "k") {
+          const before = squareBeforeOnRay(plan.from, blocker);
+          if (!before || before === plan.from) return;
+          dest = before;
+        } else if (blocking.color !== plan.color) {
           dest = blocker;
         } else {
           const before = squareBeforeOnRay(plan.from, blocker);
@@ -587,8 +582,21 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
     }
 
     // Fog / destination collision: enemy still on dest → capture/occupy.
+    // Never delete or replace a king (simultaneous arrive / path truncate).
+    // Kings are immune to spider mines — they neither trigger nor clear them.
     const occ = board.get(dest);
-    if (occ && occ.color !== plan.color) {
+    if (occ?.type === "k") {
+      if (occ.color === plan.color) {
+        const before = squareBeforeOnRay(plan.from, dest);
+        if (!before || before === plan.from) return;
+        dest = before;
+      } else {
+        // Enemy king — bounce: stop before, or abort if adjacent / leap.
+        const before = squareBeforeOnRay(plan.from, dest);
+        if (!before || before === plan.from || board.get(before)) return;
+        dest = before;
+      }
+    } else if (occ && occ.color !== plan.color) {
       moveCollisions.push({
         kind: "capture",
         piece: piece.type,
@@ -604,7 +612,7 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
       if (mineAt(mines, dest) && mineAt(mines, dest)!.color !== plan.color) {
         removeMineAt(dest);
       }
-    } else if (!occ) {
+    } else if (!occ && piece.type !== "k") {
       const m = mineAt(mines, dest);
       if (m && m.color !== plan.color) {
         moveCollisions.push({
@@ -619,22 +627,31 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
       }
     }
 
-    // Wake predicate only: mid-path hostile mines (chase).
+    // Wake predicate only: mid-path hostile mines (chase). Kings immune.
     let woke: ScMine | null = null;
     let wakeAt: Square | null = null;
-    const contacts = pathContactSquares(plan.from, dest, piece.type);
-    for (const contact of contacts) {
-      const m = mineAt(mines, contact);
-      if (!m || m.color === plan.color) continue;
-      woke = m;
-      wakeAt = contact;
-      break;
+    if (piece.type !== "k") {
+      const contacts = pathContactSquares(plan.from, dest, piece.type);
+      for (const contact of contacts) {
+        const m = mineAt(mines, contact);
+        if (!m || m.color === plan.color) continue;
+        woke = m;
+        wakeAt = contact;
+        break;
+      }
     }
 
     board.delete(plan.from);
-    board.set(dest, piece);
+    const promoRank = plan.color === "w" ? 8 : 1;
+    const landed =
+      piece.type === "p" &&
+      plan.promotion &&
+      Number(dest[1]) === promoRank
+        ? { type: plan.promotion, color: piece.color }
+        : piece;
+    board.set(dest, landed);
     moves.push({
-      piece: piece.type,
+      piece: landed.type,
       color: plan.color,
       from: plan.from,
       to: dest,

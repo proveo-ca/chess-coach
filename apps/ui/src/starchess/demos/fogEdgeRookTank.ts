@@ -7,11 +7,11 @@ import { addScAction } from "~/starchess/scActions";
 import { endScTurn } from "~/starchess/endScTurn";
 import type { FogEdgeScenario } from "~/starchess/demos/fogEdgeScenario";
 import { parseScFen } from "~/starchess/scfen";
-import type { ScAction, ScFenSnapshot } from "~/types/starchess";
+import type { ScAction, ScFenSnapshot } from "~/starchess/types";
 
 /** Rd4 tank 5×5 lit, Ka1; black pawn on d7 (outside lit); intent past to d8. */
 export const FOG_EDGE_ROOK_TANK_START_SCFEN =
-  "SCFEN|7k/3p4/8/8/3R4/8/8/K7|0|33|P|G:33:33|Q:w:;b:";
+  "SCFEN|7k/3p4/8/8/3R4/8/8/K7|0|33|P|G:11:11|Q:w:;b:";
 
 export type FogEdgeRookStep = {
   caption: string;

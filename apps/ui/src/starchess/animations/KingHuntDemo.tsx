@@ -29,14 +29,11 @@ import { StarChessChessBoard } from "~/starchess/StarChessChessBoard";
 import { DualNavButton } from "~/components/primitives/DualNavButton";
 import styles from "~/starchess/animations/KingHuntDemo.module.css";
 import { setStorybookCapabilities } from "~/screens/storybookCapabilities";
-import { NERD_CAPABILITIES } from "~/store/capabilitiesStore";
-import type { ScFenSnapshot } from "~/types/starchess";
+import { NERD_CAPABILITIES } from "~/starchess/capabilities";
+import type { ScFenSnapshot } from "~/starchess/types";
 import { loadFen, setViewIndex } from "~/store/gameStore";
-import {
-  setActivePlayerColor,
-  setNerdModeUnlocked,
-  setPlayerIdentity,
-} from "~/store/settingsStore";
+import { setActivePlayerColor, setPlayerIdentity } from "~/store/settingsStore";
+import { setNerdModeUnlocked } from "~/starchess/identity";
 
 export {
   KING_HUNT_PLY_SC,
@@ -48,7 +45,7 @@ export {
 
 const TOTAL_TURNS = KING_HUNT_STEPS.length;
 const START_CAPTION =
-  "Start · 3 lives · pristine · Nc5 · Bh2 · Rg7 (tank) · checks arm HP next turn";
+  "Start · 3 lives · Nc5 sees/checks Ke4 · Rg6 tank · Bh2 · side vision";
 
 const applySnap = (snap: ScFenSnapshot) => {
   setPlanningSnapshot(snap);
@@ -101,10 +98,14 @@ export const KingHuntDemo: Component = () => {
     applySnap(before);
 
     const queued = queueKingHuntStep(before, step);
-    const { resolved, next, afterB } = endScTurn(queued);
+    const { resolved, next, afterB, afterPending } = endScTurn(queued);
+    const hadChecks =
+      before.kingLives.w !== afterPending.kingLives.w ||
+      before.kingLives.b !== afterPending.kingLives.b ||
+      before.placement !== afterPending.placement;
 
     combat.playResolve(resolved, {
-      startPlacement: afterB.placement,
+      startPlacement: hadChecks ? afterPending.placement : afterB.placement,
       livesBefore: before.kingLives,
       commit: (snap) => {
         setSiegedRooks(next.siegedRooks ?? []);

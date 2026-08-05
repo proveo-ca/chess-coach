@@ -3,7 +3,7 @@ import { Chess, type Color, type PieceSymbol, type Square } from "chess.js";
 import { moveSquareAtElapsed } from "~/starchess/animations/moveTiming";
 import { mapToPlacement, placementToMap } from "~/starchess/board";
 import { rayBetween } from "~/starchess/mines";
-import type { RookMode } from "~/types/starchess";
+import type { RookMode } from "~/starchess/types";
 
 const FILES = "abcdefgh";
 

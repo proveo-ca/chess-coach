@@ -1,12 +1,8 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
 import { Settings, SettingsPanel } from "~/components/features/Settings";
-import {
-  setImLost,
-  setNerdModeUnlocked,
-  setPlayerIdentity,
-  setPlayerName,
-} from "~/store/settingsStore";
+import { setImLost, setPlayerIdentity, setPlayerName } from "~/store/settingsStore";
+import { setNerdModeUnlocked } from "~/starchess/identity";
 
 const prepareSettings = () => {
   setPlayerName("Castle Crusher");

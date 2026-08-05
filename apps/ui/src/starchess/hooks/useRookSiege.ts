@@ -29,12 +29,12 @@ export const useRookSiege = () => {
   );
 
   const seedEconomy = () => {
-    // Turn 21 → energy cap 3 so both tanks can be toggled in one session.
+    // Turn 11 → energy cap 2 so both tanks can be toggled in one session.
     resetStarChessEconomy({
-      turn: 21,
+      turn: 11,
       white: { stored: 12, deployed: 6 },
       black: { stored: 0, deployed: 1 },
-      energy: 3,
+      energy: 2,
       startTimer: false,
     });
     // After economy reset (clears sieged set): f4 starts unpacked, d4 stays tank.

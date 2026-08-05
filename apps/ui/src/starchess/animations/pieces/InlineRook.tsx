@@ -12,7 +12,7 @@ import {
   type PieceColor,
 } from "~/starchess/animations/teamColors";
 import { SIEGE_TOGGLE_MS } from "~/starchess/constants";
-import type { RookMode } from "~/types/starchess";
+import type { RookMode } from "~/starchess/types";
 
 export type { RookMode };
 

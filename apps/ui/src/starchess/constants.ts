@@ -89,8 +89,11 @@ export const incomeForTurn = (turn: number): number => {
 /**
  * Vespene energy capacity for the planning turn — same tiers as material income.
  * Energy does **not** accumulate; each turn refills to this cap.
+ * Turn 0 (demo seeds) uses the turn-1 tier.
  */
-export const energyForTurn = (turn: number): number => incomeForTurn(turn);
+export const energyForTurn = (turn: number): number =>
+  incomeForTurn(Math.max(1, turn));
+
 
 /** Gas burned when queueing / committing one special this turn. */
 export const SPECIAL_ENERGY_COST = 1;

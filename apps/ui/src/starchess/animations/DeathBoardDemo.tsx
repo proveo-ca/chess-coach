@@ -20,9 +20,10 @@ import type { DeathCue } from "~/starchess/animations/types";
 import { StarChessChessBoard } from "~/starchess/StarChessChessBoard";
 import { clearSiegedRooks, setRookMode } from "~/starchess/starChessStore";
 import { setStorybookCapabilities } from "~/screens/storybookCapabilities";
-import { NERD_CAPABILITIES } from "~/store/capabilitiesStore";
+import { NERD_CAPABILITIES } from "~/starchess/capabilities";
 import { loadFen } from "~/store/gameStore";
-import { setActivePlayerColor, setNerdModeUnlocked, setPlayerIdentity } from "~/store/settingsStore";
+import { setActivePlayerColor, setPlayerIdentity } from "~/store/settingsStore";
+import { setNerdModeUnlocked } from "~/starchess/identity";
 
 /** Empty origin after death — kings only (StarChess suppresses classical draws). */
 const FEN_GONE: Record<DeathPiece, string> = {

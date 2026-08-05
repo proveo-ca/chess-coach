@@ -19,7 +19,7 @@ import {
   MINE_MISSILE_MS,
   MINE_TRAIL_MS,
 } from "~/starchess/constants";
-import type { MineMissileCue, QueenJumpTrail } from "~/types/starchess";
+import type { MineMissileCue, QueenJumpTrail } from "~/starchess/types";
 
 type BoardFxProps = {
   class: string;

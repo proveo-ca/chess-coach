@@ -1,7 +1,5 @@
 import type { JSX } from "solid-js";
 
-export type NerdBoardVariant = "eclipse" | "butter" | "vermeer";
-
 /** Shared props for the Button primitive and its variants (e.g. IconButton). */
 export interface ButtonProps extends JSX.ButtonHTMLAttributes<HTMLButtonElement> {
   /** Filled primary-color background. */

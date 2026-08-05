@@ -7,8 +7,9 @@ import { Chess, type Square } from "chess.js";
 import { findKing, placementToMap } from "~/starchess/board";
 import { charonTargetQueenFromPlacement } from "~/starchess/specials/bishopCharon";
 import { minesFor, MAX_MINES_PER_SIDE, mineAt } from "~/starchess/mines";
+import { isRookSiegedAfterB } from "~/starchess/rookSiegeMode";
 import { classicFenFromSc } from "~/starchess/scfen";
-import type { ScAction, ScFenSnapshot } from "~/types/starchess";
+import type { ScAction, ScFenSnapshot } from "~/starchess/types";
 
 export class ScValidateError extends Error {
   readonly code: "SC_BASELINE_FEN" | "SC_SPECIAL";
@@ -65,26 +66,29 @@ export const assertClassicalBaseline = (
       `no ${action.color} piece on ${action.from}`,
     );
   }
-  // Siege Tank unpacked (`S:`) cannot relocate — pack first via rookSiege.
+  // Siege Tank: immobile while sieged after B intents (quiet relocate blocked).
+  // Intent unsiege unlocks relocate; attacks on enemy squares stay legal (no occupy).
   if (
     piece.type === "r" &&
-    (snap.siegedRooks ?? []).includes(action.from)
+    isRookSiegedAfterB(action.from, snap.siegedRooks, snap.queue?.actions)
   ) {
-    throw new ScValidateError(
-      "SC_SPECIAL",
-      `sieged rook on ${action.from} cannot relocate`,
-    );
-  }
-  // Allow any destination that is empty or enemy-occupied (incl. king).
-  const dest = map.get(action.to);
-  if (dest && dest.color === action.color) {
-    // Ally-on-mine friendly-fire is StarChess-legal — only reject plain ally squares without mine.
-    if (!mineAt(snap.mines, action.to)) {
+    const destPiece = map.get(action.to);
+    const isEnemyAttack = !!destPiece && destPiece.color !== action.color;
+    if (!isEnemyAttack) {
       throw new ScValidateError(
-        "SC_BASELINE_FEN",
-        `cannot classical-target ally on ${action.to}`,
+        "SC_SPECIAL",
+        `sieged rook on ${action.from} cannot relocate`,
       );
     }
+  }
+  // Allow empty or enemy-occupied destinations (incl. king for fog path intents).
+  // Allies are never classical targets — mines ignore allies (no friendly-fire).
+  const dest = map.get(action.to);
+  if (dest && dest.color === action.color) {
+    throw new ScValidateError(
+      "SC_BASELINE_FEN",
+      `cannot classical-target ally on ${action.to}`,
+    );
   }
 };
 

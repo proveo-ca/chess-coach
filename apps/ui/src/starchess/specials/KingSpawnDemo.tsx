@@ -17,13 +17,10 @@ import styles from "~/starchess/specials/KingSpawnDemo.module.css";
 import { DeployModal } from "~/starchess/primitives/DeployModal";
 import { StarChessChessBoard } from "~/starchess/StarChessChessBoard";
 import { setStorybookCapabilities } from "~/screens/storybookCapabilities";
-import { NERD_CAPABILITIES } from "~/store/capabilitiesStore";
+import { NERD_CAPABILITIES } from "~/starchess/capabilities";
 import { loadFen } from "~/store/gameStore";
-import {
-  setActivePlayerColor,
-  setNerdModeUnlocked,
-  setPlayerIdentity,
-} from "~/store/settingsStore";
+import { setActivePlayerColor, setPlayerIdentity } from "~/store/settingsStore";
+import { setNerdModeUnlocked } from "~/starchess/identity";
 
 const KING_SQ: Square = "d4";
 /** Both kings + spare rook so FEN stays loadable. */

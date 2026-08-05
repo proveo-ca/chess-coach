@@ -20,14 +20,11 @@ import { StarChessChessBoard } from "~/starchess/StarChessChessBoard";
 import { DualNavButton } from "~/components/primitives/DualNavButton";
 import styles from "~/starchess/animations/PathCollideDemo.module.css";
 import { setStorybookCapabilities } from "~/screens/storybookCapabilities";
-import { NERD_CAPABILITIES } from "~/store/capabilitiesStore";
-import type { ScFenSnapshot } from "~/types/starchess";
+import { NERD_CAPABILITIES } from "~/starchess/capabilities";
+import type { ScFenSnapshot } from "~/starchess/types";
 import { loadFen, setViewIndex } from "~/store/gameStore";
-import {
-  setActivePlayerColor,
-  setNerdModeUnlocked,
-  setPlayerIdentity,
-} from "~/store/settingsStore";
+import { setActivePlayerColor, setPlayerIdentity } from "~/store/settingsStore";
+import { setNerdModeUnlocked } from "~/starchess/identity";
 
 const TOTAL_TURNS = ATTACK_MINE_STEPS.length;
 const START_CAPTION = "Start · Nb mine c3 · Nd1 · arrow plays attack→occupy";

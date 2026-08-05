@@ -17,7 +17,7 @@ import {
   tacticalJumpTargets,
 } from "~/starchess/specials/queenTacticalJump";
 import type { StarChessColor } from "~/starchess/types";
-import type { MoveCue, QueenJumpTrail } from "~/types/starchess";
+import type { MoveCue, QueenJumpTrail } from "~/starchess/types";
 import { currentFen, loadFen } from "~/store/gameStore";
 import { activePlayerColor } from "~/store/settingsStore";
 
@@ -60,11 +60,12 @@ export const useQueenTacticalJump = (opts?: { startingFen?: string }) => {
   const side = () => activePlayerColor();
 
   const seedEconomy = () => {
+    // Turn 11 → income 2 (Tactical Jump costs 2).
     resetStarChessEconomy({
-      turn: 21,
+      turn: 11,
       white: { stored: 12, deployed: 10 },
       black: { stored: 0, deployed: 1 },
-      energy: 3,
+      energy: 2,
       startTimer: false,
     });
   };

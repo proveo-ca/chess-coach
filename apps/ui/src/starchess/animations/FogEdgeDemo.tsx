@@ -13,6 +13,7 @@ import { intentOverlaysFromQueue } from "~/starchess/intentOverlays";
 import { classicFenFromSc, toClassicFen } from "~/starchess/scfen";
 import {
   clearSiegedRooks,
+  planningSnapshot,
   setPlanningSnapshot,
   setRookMode,
 } from "~/starchess/starChessStore";
@@ -21,14 +22,11 @@ import { StarChessChessBoard } from "~/starchess/StarChessChessBoard";
 import { DualNavButton } from "~/components/primitives/DualNavButton";
 import styles from "~/starchess/animations/PathCollideDemo.module.css";
 import { setStorybookCapabilities } from "~/screens/storybookCapabilities";
-import { NERD_CAPABILITIES } from "~/store/capabilitiesStore";
-import type { ScAction, ScFenSnapshot } from "~/types/starchess";
+import { NERD_CAPABILITIES } from "~/starchess/capabilities";
+import type { ScAction, ScFenSnapshot } from "~/starchess/types";
 import { loadFen, setViewIndex } from "~/store/gameStore";
-import {
-  setActivePlayerColor,
-  setNerdModeUnlocked,
-  setPlayerIdentity,
-} from "~/store/settingsStore";
+import { setActivePlayerColor, setPlayerIdentity } from "~/store/settingsStore";
+import { setNerdModeUnlocked } from "~/starchess/identity";
 
 export type FogEdgeDemoProps = {
   /** Pre-built SCFEN DualNav package from `demos/*` — stories feed this only. */
@@ -48,9 +46,13 @@ export const FogEdgeDemo: Component<FogEdgeDemoProps> = (props) => {
   const [suppressAutoDeploy, setSuppressAutoDeploy] = createSignal(false);
   const total = () => scenario().steps.length;
 
-  const ghosts = createMemo(() =>
-    navPhase() === "intent" ? intentOverlaysFromQueue(intentQueue()) : { destinations: [], canisters: [] },
-  );
+  const ghosts = createMemo(() => {
+    if (navPhase() !== "intent") return { destinations: [], canisters: [], checks: [] };
+    return intentOverlaysFromQueue(intentQueue(), {
+      placement: planningSnapshot()?.placement,
+      siegedRooks: planningSnapshot()?.siegedRooks,
+    });
+  });
 
   const applySnap = (snap: ScFenSnapshot) => {
     setPlanningSnapshot(snap);
@@ -218,6 +220,7 @@ export const FogEdgeDemo: Component<FogEdgeDemoProps> = (props) => {
           suppressAutoDeploy={suppressAutoDeploy()}
           intentDestinations={ghosts().destinations}
           intentCanisters={ghosts().canisters}
+          intentChecks={ghosts().checks}
           attackCues={combat.attackCues()}
           attackDying={combat.attackDying()}
           deathCues={combat.deathCues()}

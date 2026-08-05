@@ -23,14 +23,11 @@ import { StarChessChessBoard } from "~/starchess/StarChessChessBoard";
 import { DualNavButton } from "~/components/primitives/DualNavButton";
 import styles from "~/starchess/animations/PathCollideDemo.module.css";
 import { setStorybookCapabilities } from "~/screens/storybookCapabilities";
-import { NERD_CAPABILITIES } from "~/store/capabilitiesStore";
-import type { ScFenSnapshot, ScMine } from "~/types/starchess";
+import { NERD_CAPABILITIES } from "~/starchess/capabilities";
+import type { ScFenSnapshot, ScMine } from "~/starchess/types";
 import { loadFen, setViewIndex } from "~/store/gameStore";
-import {
-  setActivePlayerColor,
-  setNerdModeUnlocked,
-  setPlayerIdentity,
-} from "~/store/settingsStore";
+import { setActivePlayerColor, setPlayerIdentity } from "~/store/settingsStore";
+import { setNerdModeUnlocked } from "~/starchess/identity";
 
 const TOTAL_TURNS = PATH_COLLIDE_ALLY_MINE_STEPS.length;
 const START_CAPTION = "Start · Nw a4 · Ke1 · ke8 · arrows play 2 parallel turns";

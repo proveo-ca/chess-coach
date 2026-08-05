@@ -12,7 +12,7 @@ import type {
   ScAction,
   ScFenSnapshot,
   SpawnPiece,
-} from "~/types/starchess";
+} from "~/starchess/types";
 
 export type AddScActionErrorCode =
   | "SC_PHASE"

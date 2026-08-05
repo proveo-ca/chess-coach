@@ -8,7 +8,7 @@ import { addScAction } from "~/starchess/scActions";
 import { endScTurn } from "~/starchess/endScTurn";
 import type { FogEdgeScenario } from "~/starchess/demos/fogEdgeScenario";
 import { parseScFen } from "~/starchess/scfen";
-import type { ScAction, ScFenSnapshot } from "~/types/starchess";
+import type { ScAction, ScFenSnapshot } from "~/starchess/types";
 
 export type FogMoveStep = {
   caption: string;
@@ -50,7 +50,7 @@ const scenarioFor = (
 
 /** Kd4 3×3 vision; quiet step e5 expands fog. */
 export const FOG_MOVE_KING_START_SCFEN =
-  "SCFEN|7k/7p/8/8/3K4/8/8/8|0|33|P|G:33:33|Q:w:;b:";
+  "SCFEN|7k/7p/8/8/3K4/8/8/8|0|33|P|G:11:11|Q:w:;b:";
 
 export const FOG_MOVE_KING_STEPS: readonly FogMoveStep[] = [
   {
@@ -79,7 +79,7 @@ export const FOG_MOVE_KING_SCENARIO = scenarioFor(
 
 /** Pd4 wedge + Ka1; step d5. */
 export const FOG_MOVE_PAWN_START_SCFEN =
-  "SCFEN|7k/8/8/8/3P4/8/8/K7|0|33|P|G:33:33|Q:w:;b:";
+  "SCFEN|7k/8/8/8/3P4/8/8/K7|0|33|P|G:11:11|Q:w:;b:";
 
 export const FOG_MOVE_PAWN_STEPS: readonly FogMoveStep[] = [
   {
@@ -108,7 +108,7 @@ export const FOG_MOVE_PAWN_SCENARIO = scenarioFor(
 
 /** Nd4; leap to e6. */
 export const FOG_MOVE_KNIGHT_START_SCFEN =
-  "SCFEN|7k/7p/8/8/3N4/8/8/K7|0|33|P|G:33:33|Q:w:;b:";
+  "SCFEN|7k/7p/8/8/3N4/8/8/K7|0|33|P|G:11:11|Q:w:;b:";
 
 export const FOG_MOVE_KNIGHT_STEPS: readonly FogMoveStep[] = [
   {
@@ -137,7 +137,7 @@ export const FOG_MOVE_KNIGHT_SCENARIO = scenarioFor(
 
 /** Qd4 7×7; step to d6. */
 export const FOG_MOVE_QUEEN_START_SCFEN =
-  "SCFEN|7k/8/8/8/3Q4/8/8/K7|0|33|P|G:33:33|Q:w:;b:";
+  "SCFEN|7k/8/8/8/3Q4/8/8/K7|0|33|P|G:11:11|Q:w:;b:";
 
 export const FOG_MOVE_QUEEN_STEPS: readonly FogMoveStep[] = [
   {

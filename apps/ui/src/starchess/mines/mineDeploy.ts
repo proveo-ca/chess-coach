@@ -2,7 +2,7 @@ import type { Color, Square } from "chess.js";
 
 import { MINE_DEPLOY_MS } from "~/starchess/constants";
 import { MINE_LEG_COUNT } from "~/starchess/specials/spiderMineLegs";
-import type { MineDeployCue, PieceColor } from "~/types/starchess";
+import type { MineDeployCue, PieceColor } from "~/starchess/types";
 
 export type MineAt = { at: Square; color: Color };
 

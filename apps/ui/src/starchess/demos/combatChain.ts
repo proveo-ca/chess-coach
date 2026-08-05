@@ -7,7 +7,7 @@ import type { Square } from "chess.js";
 import { addScMove } from "~/starchess/scActions";
 import { endScTurn } from "~/starchess/endScTurn";
 import { parseScFen } from "~/starchess/scfen";
-import type { PieceColor, ScFenSnapshot } from "~/types/starchess";
+import type { PieceColor, ScFenSnapshot } from "~/starchess/types";
 
 export const COMBAT_CHAIN_START_SCFEN =
   "SCFEN|4bk2/8/5n2/4p3/8/2R5/3P4/4K3|0|33|P|G:11:11|Q:w:;b:";

@@ -1,10 +1,10 @@
 import type { Square } from "chess.js";
 
 import { ATTACK_MS } from "~/starchess/constants";
-import type { AttackAnimKind } from "~/types/starchess";
+import type { AttackAnimKind } from "~/starchess/types";
 
 export { ATTACK_MS, FRAG_FLIGHT_MS } from "~/starchess/constants";
-export type { AttackAnimKind } from "~/types/starchess";
+export type { AttackAnimKind } from "~/starchess/types";
 
 export type DemoPiece = "p" | "n" | "b" | "r" | "q" | "k";
 

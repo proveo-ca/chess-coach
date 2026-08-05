@@ -3,7 +3,7 @@
  * // SPEC: _spec/apps/ui/starchess/scfen.md §5
  */
 
-import type { ScFenSnapshot } from "~/types/starchess";
+import type { ScFenSnapshot } from "~/starchess/types";
 
 export type FogEdgeScenarioStep = {
   caption: string;

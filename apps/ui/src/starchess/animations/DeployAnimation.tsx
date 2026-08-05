@@ -16,7 +16,7 @@ import { InlinePawn } from "~/starchess/animations/pieces/InlinePawn";
 import { InlineQueen } from "~/starchess/animations/pieces/InlineQueen";
 import { InlineRook } from "~/starchess/animations/pieces/InlineRook";
 import { TEAM_PRIMARY, type PieceColor } from "~/starchess/animations/teamColors";
-import type { StarChessPiece, DeployCue } from "~/types/starchess";
+import type { StarChessPiece, DeployCue } from "~/starchess/types";
 
 const hull = (piece: StarChessPiece, color: PieceColor): JSX.Element | null => {
   switch (piece) {

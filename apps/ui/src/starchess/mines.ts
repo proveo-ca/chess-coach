@@ -5,7 +5,7 @@
 import type { Square } from "chess.js";
 
 import { parseSquare, sq, type ScPiece } from "~/starchess/board";
-import type { PieceColor, ScMine } from "~/types/starchess";
+import type { PieceColor, ScMine } from "~/starchess/types";
 
 export const MAX_MINES_PER_SIDE = 2;
 

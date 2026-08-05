@@ -1,14 +1,8 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
 import { NewGamePanel } from "~/components/features/NewGamePanel";
-import {
-  setColorPref,
-  setDifficulty,
-  setImLost,
-  setNerdModeUnlocked,
-  setPlayerIdentity,
-  setPlayerName,
-} from "~/store/settingsStore";
+import { setColorPref, setDifficulty, setImLost, setPlayerIdentity, setPlayerName } from "~/store/settingsStore";
+import { setNerdModeUnlocked } from "~/starchess/identity";
 
 const meta = {
   title: "Features/NewGamePanel",

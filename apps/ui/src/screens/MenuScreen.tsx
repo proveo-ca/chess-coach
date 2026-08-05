@@ -3,7 +3,7 @@ import type { Component } from "solid-js";
 
 import { CoachAvatar } from "~/components/atoms/CoachAvatar";
 import { Credits } from "~/components/atoms/Credits";
-import { NerdModePrompt } from "~/components/features/NerdModePrompt";
+import { NerdModePrompt } from "~/starchess/NerdModePrompt";
 import { PlayerNameField } from "~/components/features/PlayerNameField";
 import { Label } from "~/components/primitives/Label";
 import { MenuButton } from "~/components/primitives/MenuButton";
@@ -12,13 +12,8 @@ import { SplashScreen } from "~/components/primitives/SplashScreen";
 import styles from "~/screens/MenuScreen.module.css";
 import { setShowCredits, showCredits } from "~/store/coachStore";
 import { gameHistory } from "~/store/gameHistoryStore";
-import {
-  difficulty,
-  identityOptions,
-  playerIdentity,
-  setDifficulty,
-  setPlayerIdentity,
-} from "~/store/settingsStore";
+import { difficulty, playerIdentity, setDifficulty, setPlayerIdentity } from "~/store/settingsStore";
+import { identityOptions } from "~/starchess/identity";
 // SPEC: _spec/apps/ui/components.puml
 import type { Difficulty, PlayerIdentity } from "~/types/settings";
 

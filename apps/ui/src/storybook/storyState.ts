@@ -18,17 +18,8 @@ import {
   setRole,
   setSeat,
 } from "~/store/roomStore";
-import {
-  setActivePlayerColor,
-  setColorPref,
-  setDifficulty,
-  setImLost,
-  setNerdModeUnlocked,
-  setOpponentIdentity,
-  setPlayerIdentity,
-  setPlayerName,
-  setNerdPieceSet,
-} from "~/store/settingsStore";
+import { setActivePlayerColor, setColorPref, setDifficulty, setImLost, setOpponentIdentity, setPlayerIdentity, setPlayerName, setNerdPieceSet } from "~/store/settingsStore";
+import { setNerdModeUnlocked } from "~/starchess/identity";
 import { exitTravel, startTravel } from "~/store/travelStore";
 import { setFooterFloat } from "~/store/viewportLayoutStore";
 import { resetStorybookRandom } from "~/storybook/browserMocks";
@@ -50,7 +41,7 @@ export type StoryState = {
     opponentIdentity?: PlayerIdentity;
     playerName?: string;
     imLost?: boolean;
-    nerdModeUnlocked?: boolean;
+    nerdIdentityUnlocked?: boolean;
     nerdPieceSet?: NerdPieceSet;
   };
   coach?: {
@@ -103,7 +94,7 @@ export function resetStoryState(state: StoryState = {}): void {
   setOpponentIdentity(settings.opponentIdentity ?? "Cat");
   setPlayerName(settings.playerName ?? "Story Player");
   setImLost(settings.imLost ?? false);
-  setNerdModeUnlocked(settings.nerdModeUnlocked ?? false);
+  setNerdModeUnlocked(settings.nerdIdentityUnlocked ?? false);
   setNerdPieceSet(settings.nerdPieceSet ?? "nerd");
 
   const coach = state.coach ?? {};

@@ -7,13 +7,8 @@ import styles from "~/components/features/Settings.module.css";
 import { Button } from "~/components/primitives/Button";
 import { Select } from "~/components/primitives/Select";
 import { Toggle } from "~/components/primitives/Toggle";
-import {
-  identityOptions,
-  imLost,
-  playerIdentity,
-  setImLost,
-  setPlayerIdentity,
-} from "~/store/settingsStore";
+import { imLost, playerIdentity, setImLost, setPlayerIdentity } from "~/store/settingsStore";
+import { identityOptions } from "~/starchess/identity";
 import type { PlayerIdentity } from "~/types/settings";
 
 type Props = {

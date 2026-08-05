@@ -13,7 +13,7 @@ import {
 import { endScTurn, type EndScTurnResult } from "~/starchess/endScTurn";
 import { addScAction } from "~/starchess/scActions";
 import type { StarChessColor, PlayerEconomy } from "~/starchess/types";
-import type { RookMode, ScAction, ScFenSnapshot } from "~/types/starchess";
+import type { RookMode, ScAction, ScFenSnapshot } from "~/starchess/types";
 import { activePlayerColor } from "~/store/settingsStore";
 
 type Economies = Record<StarChessColor, PlayerEconomy>;
@@ -66,6 +66,22 @@ export const setStarChessTurn = (turn: number) => {
   // Fresh gas each turn — leftover does not accumulate.
   _setEnergy(fullEnergyForTurn(next));
   clearSpecialsUsed();
+};
+
+/**
+ * Credit both sides’ mineral income for the planning turn just entered.
+ * Cap at {@link MAX_STORED_MATERIAL}. Called when SCFEN `turn` advances.
+ */
+export const grantTurnIncome = (turn: number) => {
+  const amount = incomeForTurn(Math.max(1, turn));
+  if (amount <= 0) return;
+  for (const color of ["w", "b"] as const) {
+    const eco = _economies()[color];
+    setPlayerEconomy(color, {
+      stored: Math.min(MAX_STORED_MATERIAL, eco.stored + amount),
+      deployed: eco.deployed,
+    });
+  }
 };
 
 export const starChessEconomies = () => _economies();
@@ -190,13 +206,23 @@ export const currentQueue = (): readonly ScAction[] =>
   _planningSnap()?.queue?.actions ?? [];
 
 export const setPlanningSnapshot = (snap: ScFenSnapshot | null) => {
+  const prevTurn = _planningSnap()?.turn;
   _setPlanningSnap(snap);
   if (!snap) return;
   // Preserve turn 0 (demo / SCFEN start); do not coerce via `|| 1`.
-  _setTurn(Math.max(0, snap.turn));
+  const turn = Math.max(0, snap.turn);
+  const advanced = prevTurn != null && turn > prevTurn;
+  _setTurn(turn);
   setKingLives(snap.kingLives);
-  _setEnergy({ w: snap.gas.w, b: snap.gas.b });
+  // Cap remaining to this turn's tier — leftover never banks past income.
+  const cap = energyForTurn(turn);
+  _setEnergy({
+    w: clampEnergy(snap.gas.w, cap),
+    b: clampEnergy(snap.gas.b, cap),
+  });
   setSpecialsUsed(snap.specialsUsed ?? []);
+  // Minerals credit on End / turn advance (ResourceBar `+N` preview).
+  if (advanced) grantTurnIncome(turn);
 };
 
 /** Append via `addScAction` and sync the planning snap. */

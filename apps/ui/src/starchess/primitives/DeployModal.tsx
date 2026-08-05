@@ -2,6 +2,7 @@ import type { Color } from "chess.js";
 import { For, Show } from "solid-js";
 import type { Component } from "solid-js";
 
+import { InlineRook } from "~/starchess/animations/pieces/InlineRook";
 import {
   deployedSupply,
   energyRemaining,
@@ -12,10 +13,10 @@ import { SPECIAL_ENERGY_COST, UNIT_COST } from "~/starchess/constants";
 import { ResourceBar } from "~/starchess/primitives/ResourceBar";
 import styles from "~/starchess/primitives/DeployModal.module.css";
 import { Modal } from "~/components/atoms/Modal";
-import type { DeployModalPending, SpawnPiece } from "~/types/starchess";
+import type { DeployModalPending, SpawnPiece } from "~/starchess/types";
 import type { PieceSet } from "~/types/settings";
 
-export type { DeployModalPending, SpawnPiece } from "~/types/starchess";
+export type { DeployModalPending, SpawnPiece } from "~/starchess/types";
 
 export const SPAWN_CHOICES: SpawnPiece[] = ["p", "q", "r", "b", "n"];
 
@@ -32,6 +33,7 @@ const getPieceImg = (piece: SpawnPiece, color: Color, pieceSet: PieceSet) =>
  * Command Center deploy picker — ResourceBar + marine-first grid.
  * Affordability reads the player's accumulated minerals, deploy cap, and
  * remaining vespene from `starChessStore` (gas is spent only on placement).
+ * Siege Tank uses {@link InlineRook} tank mode (not static siege `*R.svg`).
  */
 export const DeployModal: Component<DeployModalProps> = (props) => {
   const canAfford = (piece: SpawnPiece) => {
@@ -70,11 +72,20 @@ export const DeployModal: Component<DeployModalProps> = (props) => {
                       data-spawn-piece={piece}
                       data-cost={UNIT_COST[piece]}
                     >
-                      <img
-                        src={getPieceImg(piece, pending().color, pending().pieceSet)}
-                        alt=""
-                        class={styles.pieceImg}
-                      />
+                      <Show
+                        when={piece === "r"}
+                        fallback={
+                          <img
+                            src={getPieceImg(piece, pending().color, pending().pieceSet)}
+                            alt=""
+                            class={styles.pieceImg}
+                          />
+                        }
+                      >
+                        <span class={styles.pieceImg} data-piece-inline="r" aria-hidden="true">
+                          <InlineRook color={pending().color} mode="tank" />
+                        </span>
+                      </Show>
                       <span class={styles.cost}>{UNIT_COST[piece]}</span>
                     </button>
                   );

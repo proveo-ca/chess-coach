@@ -8,7 +8,7 @@ import { AnalysisScreen } from "~/screens/AnalysisScreen";
 import { CoachScreen } from "~/screens/CoachScreen";
 import { LanScreen } from "~/screens/LanScreen.tsx";
 import { MenuScreen } from "~/screens/MenuScreen";
-import { NerdScreen } from "~/screens/NerdScreen";
+import { NerdScreen } from "~/starchess/screens/NerdScreen";
 import { ReviewScreen } from "~/screens/ReviewScreen";
 
 const root = document.getElementById("root");

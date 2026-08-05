@@ -8,7 +8,7 @@ import { createEffect, createSignal, onCleanup } from "solid-js";
 
 import { deployKindFor, makeDeployCue } from "~/starchess/animations/deployAnim";
 import { DEPLOY_MS } from "~/starchess/constants";
-import type { DeployCue, DeployPiece } from "~/types/starchess";
+import type { DeployCue, DeployPiece } from "~/starchess/types";
 
 type PieceAt = { type: PieceSymbol; color: Color };
 

@@ -16,17 +16,14 @@ import {
 } from "~/starchess/starChessStore";
 import { StarChessChessBoard } from "~/starchess/StarChessChessBoard";
 import { setStorybookCapabilities } from "~/screens/storybookCapabilities";
-import { NERD_CAPABILITIES } from "~/store/capabilitiesStore";
+import { NERD_CAPABILITIES } from "~/starchess/capabilities";
 import { loadFen } from "~/store/gameStore";
-import {
-  setActivePlayerColor,
-  setNerdModeUnlocked,
-  setPlayerIdentity,
-} from "~/store/settingsStore";
+import { setActivePlayerColor, setPlayerIdentity } from "~/store/settingsStore";
+import { setNerdModeUnlocked } from "~/starchess/identity";
 
 /** Rd4 siege; Ka1; kh8 — vision sample only. */
 export const FOG_SIEGE_ROOK_SCFEN =
-  "SCFEN|7k/8/8/8/3R4/8/8/K7|0|33|P|G:33:33|Q:w:;b:";
+  "SCFEN|7k/8/8/8/3R4/8/8/K7|0|33|P|G:11:11|Q:w:;b:";
 
 export type FogVisionDemoProps = {
   scfen: string;

@@ -1,7 +1,7 @@
 import type { PieceSymbol, Square } from "chess.js";
 
 import { DEPLOY_DROP_MS, DEPLOY_LAND_MS, DEPLOY_MS, DEPLOY_THRUST_MS } from "~/starchess/constants";
-import type { StarChessPiece, DeployCue, PieceColor } from "~/types/starchess";
+import type { StarChessPiece, DeployCue, PieceColor } from "~/starchess/types";
 
 export { DEPLOY_DROP_MS, DEPLOY_LAND_MS, DEPLOY_MS, DEPLOY_THRUST_MS };
 

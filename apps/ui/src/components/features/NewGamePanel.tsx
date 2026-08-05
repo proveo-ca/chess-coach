@@ -10,18 +10,8 @@ import { setLastAIMoveInfo } from "~/hooks/useMoveExecutor";
 import { postMove, postNewGame } from "~/services/api";
 import { dispatchCoachEvent, setAdvice, setShowNewGame } from "~/store/coachStore";
 import { addMoveSan, resetGame } from "~/store/gameStore";
-import {
-  activePlayerColor,
-  colorPref,
-  difficulty,
-  identityOptions,
-  imLost,
-  playerIdentity,
-  setColorPref,
-  setDifficulty,
-  setImLost,
-  setPlayerIdentity,
-} from "~/store/settingsStore";
+import { activePlayerColor, colorPref, difficulty, imLost, playerIdentity, setColorPref, setDifficulty, setImLost, setPlayerIdentity } from "~/store/settingsStore";
+import { identityOptions } from "~/starchess/identity";
 import type { Difficulty, PlayerIdentity } from "~/types/settings";
 
 export const NewGamePanel: Component = () => {

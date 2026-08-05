@@ -1,4 +1,4 @@
-import { For, Show, createSignal, onCleanup, onMount, type Component } from "solid-js";
+import { For, Show, createEffect, createSignal, onCleanup, onMount, type Component } from "solid-js";
 
 import {
   clearTurnDeadline,
@@ -11,7 +11,7 @@ import {
 } from "~/starchess/starChessStore";
 import { TURN_TIMEOUT_MS } from "~/starchess/constants";
 import styles from "~/starchess/primitives/TurnBar.module.css";
-import type { ScAction } from "~/types/starchess";
+import type { ScAction } from "~/starchess/types";
 import { activePlayerColor } from "~/store/settingsStore";
 
 type TurnBarProps = {
@@ -43,7 +43,8 @@ const badgeLabel = (a: ScAction): string => {
  */
 export const TurnBar: Component<TurnBarProps> = (props) => {
   const [now, setNow] = createSignal(Date.now());
-  let timedOut = false;
+  /** Deadline timestamp we already fired for — reset when a new planning window arms. */
+  let firedForDeadline: number | null = null;
 
   const resolveIfArmed = () => {
     if (props.resolveOnEnd === false) return;
@@ -57,14 +58,24 @@ export const TurnBar: Component<TurnBarProps> = (props) => {
     }
     const id = window.setInterval(() => {
       setNow(Date.now());
-      if (!timedOut && turnDeadlineAt() != null && turnSecondsRemaining() <= 0) {
-        timedOut = true;
-        clearTurnDeadline();
-        resolveIfArmed();
-        props.onTimeout?.();
-      }
+      const deadline = turnDeadlineAt();
+      if (deadline == null) return;
+      if (turnSecondsRemaining() > 0) return;
+      if (firedForDeadline === deadline) return;
+      firedForDeadline = deadline;
+      clearTurnDeadline();
+      resolveIfArmed();
+      props.onTimeout?.();
     }, 200);
     onCleanup(() => window.clearInterval(id));
+  });
+
+  // New planning window (after End / resolve) → allow another AFK timeout.
+  createEffect(() => {
+    const deadline = turnDeadlineAt();
+    if (deadline != null && deadline !== firedForDeadline) {
+      firedForDeadline = null;
+    }
   });
 
   const seconds = () => {

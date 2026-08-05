@@ -11,7 +11,7 @@ export type {
   MineMissileCue,
   KingDamageState,
   RookMode,
-} from "~/types/starchess";
+} from "~/starchess/types";
 export type StarChessPiece = DemoPiece;
 
 export type BoardOverlayBox = {

@@ -14,7 +14,7 @@ import styles from "~/starchess/animations/kingDamageOverlay.module.css";
 import { HIT_BOOM_MS } from "~/starchess/animations/kingDamage";
 import { DeathKing } from "~/starchess/animations/pieces/DeathKing";
 import { MOVE_MS } from "~/starchess/constants";
-import type { KingDamageCue, KingDamageState } from "~/types/starchess";
+import type { KingDamageCue, KingDamageState } from "~/starchess/types";
 
 export type { KingDamageCue };
 
@@ -83,7 +83,11 @@ const KingDamageSlot = (props: SlotProps) => {
       data-king-impact-seq={props.impactSeq ?? 0}
     >
       <div class={styles.pieceFace}>
-        <DeathKing damage={props.damage} seed={props.seed} />
+        <DeathKing
+          damage={props.damage}
+          seed={props.seed}
+          color={props.id === "b" ? "b" : "w"}
+        />
       </div>
       <Show when={phase() === "boom"}>
         <div
@@ -102,7 +106,9 @@ const KingDamageSlot = (props: SlotProps) => {
 /**
  * Persistent king HP presentation (pristine is a no-op — board `<img>` stays).
  * Fire is restored quietly from SCFEN; boom requires `impactSeq` from a shot.
- * Keys by `id` so a flee (`at` change) does not remount.
+ * Keys by `id` (side color) so a flee (`at` change) does not remount.
+ * Always pass that side into {@link DeathKing} — defaulting to white paints the
+ * enemy command center the wrong team after the first HP chip.
  */
 export function KingDamageOverlay(props: KingDamageOverlayProps): JSX.Element {
   const slots = createMemo(() => props.cues.filter((c) => c.damage !== "pristine"));

@@ -1,6 +1,6 @@
 import type { Chess, Square } from "chess.js";
 
-import type { RookMode } from "~/types/starchess";
+import type { RookMode } from "~/starchess/types";
 import { getSideVision } from "~/starchess/vision";
 
 export const TACTICAL_JUMP_GAS_COST = 2;

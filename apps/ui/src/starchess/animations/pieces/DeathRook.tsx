@@ -10,7 +10,7 @@ import {
   TEAM_PRIMARY,
   type PieceColor,
 } from "~/starchess/animations/teamColors";
-import type { RookMode } from "~/types/starchess";
+import type { RookMode } from "~/starchess/types";
 
 type DeathRookProps = {
   seed: number;

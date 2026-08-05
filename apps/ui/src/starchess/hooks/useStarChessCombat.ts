@@ -20,7 +20,7 @@ import type { StarChessColor } from "~/starchess/types";
 import { isMoverVisibleToSide } from "~/starchess/vision";
 import { game } from "~/store/gameStore";
 import { activePlayerColor } from "~/store/settingsStore";
-import type { MineMissileCue, QueenJumpTrail, ScMine } from "~/types/starchess";
+import type { MineMissileCue, QueenJumpTrail, ScMine } from "~/starchess/types";
 
 export type ChasingMineCue = { at: Square; legMs: number[] };
 

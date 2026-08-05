@@ -10,7 +10,7 @@ import {
   squareCenterPx,
 } from "~/starchess/animations/attackVectors";
 import { vecBetween } from "~/starchess/animations/boardGeom";
-import type { AttackCue } from "~/types/starchess";
+import type { AttackCue } from "~/starchess/types";
 
 /** Bishop special attack cue id — Charon Booster Missiles (`data-attack-anim`). */
 export const BISHOP_CHARON = "bishopCharon" as const;

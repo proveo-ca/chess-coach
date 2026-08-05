@@ -7,7 +7,7 @@
 import type { Color, PieceSymbol, Square } from "chess.js";
 import { createSignal, createEffect, onCleanup } from "solid-js";
 
-import type { MoveCue } from "~/types/starchess";
+import type { MoveCue } from "~/starchess/types";
 import type { StarChessPiece } from "~/starchess/animations/types";
 import { knightElbowMs, moveDurationMs } from "~/starchess/animations/moveTiming";
 import type { MoveSquares } from "~/types/game";

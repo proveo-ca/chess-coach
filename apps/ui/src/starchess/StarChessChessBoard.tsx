@@ -2,15 +2,17 @@ import type { Component, ComponentProps } from "solid-js";
 import { createEffect, createMemo, createSignal, mergeProps, splitProps } from "solid-js";
 import type { Square } from "chess.js";
 
+import {
+  StarChessBoardView,
+} from "~/starchess/board/StarChessBoardView";
 import { useAutoDeploy, pieceMapFromBoard } from "~/starchess/hooks/useAutoDeploy";
 import { useStarChessNativeMoves } from "~/starchess/hooks/useStarChessNativeMoves";
 import { migrateSpecialUsed } from "~/starchess/starChessStore";
-import { ChessBoard } from "~/components/features/ChessBoard";
 import { currentIndex, game, moveHistory } from "~/store/gameStore";
 import type { MoveSquares } from "~/types/game";
-import type { DeployCue } from "~/types/starchess";
+import type { DeployCue } from "~/starchess/types";
 
-export type StarChessChessBoardProps = ComponentProps<typeof ChessBoard> & {
+export type StarChessChessBoardProps = ComponentProps<typeof StarChessBoardView> & {
   /**
    * When true, re-baseline occupancy without firing deploy VFX (DualNav scrub /
    * full-position jumps). Live adds still animate when this is false.
@@ -25,16 +27,11 @@ export type StarChessChessBoardProps = ComponentProps<typeof ChessBoard> & {
 };
 
 /**
- * StarChess board — thin extension of shared {@link ChessBoard}.
- * Turns classical gameStore moves into {@link MoveAnimation} cues (knight L-path)
- * so fog / Nerd stories stay config-only. Parent-provided `moveCues` (combat
- * resolve) or {@link suppressNativeMoves} suppress native synthesis.
+ * StarChess board — native move synthesis + auto-deploy on top of
+ * {@link StarChessBoardView} (owns fog vision, combat overlays, mines).
  *
- * Newly added units (spawn / put, not relocates) auto-fire {@link DeployCue}s —
- * deploy VFX is board rendering logic, not per-story.
- *
- * Cue props are merged with getters ({@link mergeProps}) so updates stay reactive
- * into ChessBoard — `{...props} moveCues={...}` can freeze the first empty array.
+ * Cue props are merged with getters ({@link mergeProps}) so updates stay reactive —
+ * `{...props} moveCues={...}` can freeze the first empty array.
  */
 export const StarChessChessBoard: Component<StarChessChessBoardProps> = (props) => {
   const [animProps, rest] = splitProps(props, [
@@ -102,8 +99,6 @@ export const StarChessChessBoard: Component<StarChessChessBoardProps> = (props) 
 
   const boardProps = mergeProps(rest, {
     get moveCues() {
-      // When suppressNativeMoves with empty combat cues, pass [] so ChessBoard
-      // does not fall through to native synthesis via parentOwnsMoves alone.
       if (animProps.suppressNativeMoves) return animProps.moveCues ?? [];
       return parentOwnsMoves() ? (animProps.moveCues ?? []) : native.moveCues();
     },
@@ -123,5 +118,5 @@ export const StarChessChessBoard: Component<StarChessChessBoardProps> = (props) 
     },
   });
 
-  return <ChessBoard {...boardProps} />;
+  return <StarChessBoardView {...boardProps} />;
 };

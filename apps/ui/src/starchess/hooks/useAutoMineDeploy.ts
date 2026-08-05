@@ -11,7 +11,7 @@ import {
   mineDeployCuesForDiff,
   type MineAt,
 } from "~/starchess/mines/mineDeploy";
-import type { MineDeployCue } from "~/types/starchess";
+import type { MineDeployCue } from "~/starchess/types";
 
 export function useAutoMineDeploy(opts: {
   mines: () => readonly MineAt[];

@@ -24,9 +24,23 @@ import type {
   ScSpecialKind,
   ScTurnQueue,
   SpawnPiece,
-} from "~/types/starchess";
+} from "~/starchess/types";
 
 export type { ScPhaseCode, ScFenSnapshot, ScAction, ScTurnQueue, ScFenError };
+
+/**
+ * Exactly one white `K` and one black `k` in placement — SCFEN invariant.
+ * (`includes("K") && includes("k")` is too weak: it allows `KKk` / duplicates.)
+ */
+export const hasExactKingPair = (placement: string): boolean => {
+  let w = 0;
+  let b = 0;
+  for (const ch of placement) {
+    if (ch === "K") w += 1;
+    else if (ch === "k") b += 1;
+  }
+  return w === 1 && b === 1;
+};
 
 const PHASE_OK = new Set<ScPhaseCode>(["P", "B", "A", "M", "F", "O"]);
 const SQ_RE = /^[a-h][1-8]$/;
@@ -282,8 +296,12 @@ export const assertQueueShape = (actions: readonly ScAction[]): void => {
 /**
  * Gas conservation for a planning snap whose `gas` is remaining **after**
  * queue spends: spent + remaining ≤ income, and spent ≤ income.
+ * Income must match the turn tier (`energyForTurn`) — gas does not bank across turns.
  */
-export const assertQueueGas = (snap: Pick<ScFenSnapshot, "gas" | "gasIncome" | "queue">): void => {
+export const assertQueueGas = (
+  snap: Pick<ScFenSnapshot, "turn" | "gas" | "gasIncome" | "queue">,
+): void => {
+  const tier = energyForTurn(snap.turn);
   const spent: Record<PieceColor, number> = { w: 0, b: 0 };
   for (const a of snap.queue?.actions ?? []) {
     if (a.timing === "C") continue;
@@ -294,6 +312,14 @@ export const assertQueueGas = (snap: Pick<ScFenSnapshot, "gas" | "gasIncome" | "
     const inc = snap.gasIncome[color];
     if (rem < 0 || rem > 9 || inc < 0 || inc > 9) {
       throw Object.assign(new Error(`SCFEN gas: out of range for ${color}`), { code: "SC_GAS" as const });
+    }
+    if (inc !== tier) {
+      throw Object.assign(
+        new Error(
+          `SCFEN gas: ${color} income ${inc} != turn tier ${tier} (turn ${snap.turn}; gas does not accumulate)`,
+        ),
+        { code: "SC_GAS" as const },
+      );
     }
     if (spent[color] > inc) {
       throw Object.assign(
@@ -323,11 +349,7 @@ const parseGasField = (raw: string): { gas: ScFenSnapshot["gas"]; gasIncome: ScF
   };
 };
 
-const hasBothKings = (placement: string): boolean => {
-  const hasK = placement.includes("K");
-  const hask = placement.includes("k");
-  return hasK && hask;
-};
+const hasBothKings = (placement: string): boolean => hasExactKingPair(placement);
 
 export const formatScFen = (snap: ScFenSnapshot): string => {
   const {
@@ -379,10 +401,13 @@ export const parseScFen = (raw: string): ScFenSnapshot => {
       code: "SC_PLACEMENT",
     });
   }
-  if (!hasBothKings(placement)) {
-    throw Object.assign(new Error(`Invalid SCFEN placement (need both kings): ${placement}`), {
-      code: "SC_PLACEMENT",
-    });
+  if (!hasExactKingPair(placement)) {
+    throw Object.assign(
+      new Error(
+        `Invalid SCFEN placement (need exactly 1 king per player): ${placement}`,
+      ),
+      { code: "SC_PLACEMENT" },
+    );
   }
 
   let gasField: string | undefined;
@@ -431,7 +456,8 @@ export const parseScFen = (raw: string): ScFenSnapshot => {
     ...(pendingKingShots.length ? { pendingKingShots } : {}),
     ...(mines.length ? { mines } : {}),
   };
-  if (queue) assertQueueGas(snap);
+  // Always enforce turn-tier income + rem ≤ income (even snapshot-only / empty Q).
+  assertQueueGas(snap);
   return snap;
 };
 

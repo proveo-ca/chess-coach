@@ -15,9 +15,10 @@ import {
 import styles from "~/starchess/animations/DeployBoardDemo.module.css";
 import { StarChessChessBoard } from "~/starchess/StarChessChessBoard";
 import { setStorybookCapabilities } from "~/screens/storybookCapabilities";
-import { NERD_CAPABILITIES } from "~/store/capabilitiesStore";
+import { NERD_CAPABILITIES } from "~/starchess/capabilities";
 import { loadFen } from "~/store/gameStore";
-import { setActivePlayerColor, setNerdModeUnlocked, setPlayerIdentity } from "~/store/settingsStore";
+import { setActivePlayerColor, setPlayerIdentity } from "~/store/settingsStore";
+import { setNerdModeUnlocked } from "~/starchess/identity";
 
 type DeployPhase = "idle" | "falling" | "landed";
 

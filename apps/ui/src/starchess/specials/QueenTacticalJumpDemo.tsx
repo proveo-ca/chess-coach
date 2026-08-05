@@ -9,13 +9,10 @@ import {
 } from "~/starchess/hooks/useQueenTacticalJump";
 import styles from "~/starchess/specials/QueenTacticalJumpDemo.module.css";
 import { setStorybookCapabilities } from "~/screens/storybookCapabilities";
-import { NERD_CAPABILITIES } from "~/store/capabilitiesStore";
+import { NERD_CAPABILITIES } from "~/starchess/capabilities";
 import { loadFen } from "~/store/gameStore";
-import {
-  setActivePlayerColor,
-  setNerdModeUnlocked,
-  setPlayerIdentity,
-} from "~/store/settingsStore";
+import { setActivePlayerColor, setPlayerIdentity } from "~/store/settingsStore";
+import { setNerdModeUnlocked } from "~/starchess/identity";
 
 /**
  * Storybook: Battlecruiser Tactical Jump — 2 gas arms targeting; click a

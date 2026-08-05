@@ -14,9 +14,10 @@ import {
 import styles from "~/starchess/specials/KnightMineDemo.module.css";
 import { StarChessChessBoard } from "~/starchess/StarChessChessBoard";
 import { setStorybookCapabilities } from "~/screens/storybookCapabilities";
-import { NERD_CAPABILITIES } from "~/store/capabilitiesStore";
+import { NERD_CAPABILITIES } from "~/starchess/capabilities";
 import { currentFen, loadFen } from "~/store/gameStore";
-import { setActivePlayerColor, setNerdModeUnlocked, setPlayerIdentity } from "~/store/settingsStore";
+import { setActivePlayerColor, setPlayerIdentity } from "~/store/settingsStore";
+import { setNerdModeUnlocked } from "~/starchess/identity";
 
 /**
  * Storybook: stack order for Vulture spider mine — special+move or move+special.

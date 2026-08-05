@@ -41,16 +41,13 @@ export const IDENTITY_TO_PIECE_SET: Record<PlayerIdentity, PieceSet> = {
   Nerd: "nerd",
 };
 
-const CLASSIC_IDENTITY_OPTIONS: PlayerIdentity[] = ["Human", "Cat", "Dog", "Rat"];
-
 const [settingsState, setSettingsState] = createPersistedStore("chess_coach_settings_state", {
   colorPref: "w" as PlayerColorPref,
   activePlayerColor: "w" as "w" | "b",
   difficulty: "intermediate" as Difficulty,
   playerIdentity: "Human" as PlayerIdentity,
   opponentIdentity: "Cat" as PlayerIdentity,
-  nerdModeUnlocked: false,
-  /** Which classical Nerd skin to render (`nerd` = shipping set). */
+  /** Which classical Nerd skin to render (`nerd` = shipping set under public/pieces/nerd). */
   nerdPieceSet: "nerd" as NerdPieceSet,
   // Free-text display name for the human player, used to label saved games
   // ("Juan (White) vs Selena (Black)"). The browser cannot supply a real name
@@ -70,10 +67,7 @@ export const playerIdentity = () => settingsState.playerIdentity;
 export const opponentIdentity = () => settingsState.opponentIdentity;
 export const playerName = () => settingsState.playerName;
 export const imLost = () => settingsState.imLost;
-export const nerdModeUnlocked = () => settingsState.nerdModeUnlocked;
 export const nerdPieceSet = () => settingsState.nerdPieceSet;
-export const identityOptions = (): PlayerIdentity[] =>
-  settingsState.nerdModeUnlocked ? [...CLASSIC_IDENTITY_OPTIONS, "Nerd"] : CLASSIC_IDENTITY_OPTIONS;
 export const playerPieceSet = (): PieceSet =>
   settingsState.playerIdentity === "Nerd"
     ? settingsState.nerdPieceSet
@@ -99,5 +93,4 @@ export const setPlayerName = (val: string) => setSettingsState("playerName", val
 export const setOpponentIdentity = (val: PlayerIdentity) =>
   setSettingsState("opponentIdentity", val);
 export const setImLost = (val: boolean) => setSettingsState("imLost", val);
-export const setNerdModeUnlocked = (val: boolean) => setSettingsState("nerdModeUnlocked", val);
 export const setNerdPieceSet = (val: NerdPieceSet) => setSettingsState("nerdPieceSet", val);

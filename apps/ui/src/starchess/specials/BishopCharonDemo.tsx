@@ -6,13 +6,10 @@ import { BISHOP_CHARON_FEN, useBishopCharon } from "~/starchess/hooks/useBishopC
 import { usePieceSpecialArm } from "~/starchess/hooks/usePieceSpecialArm";
 import styles from "~/starchess/specials/BishopCharonDemo.module.css";
 import { setStorybookCapabilities } from "~/screens/storybookCapabilities";
-import { NERD_CAPABILITIES } from "~/store/capabilitiesStore";
+import { NERD_CAPABILITIES } from "~/starchess/capabilities";
 import { loadFen } from "~/store/gameStore";
-import {
-  setActivePlayerColor,
-  setNerdModeUnlocked,
-  setPlayerIdentity,
-} from "~/store/settingsStore";
+import { setActivePlayerColor, setPlayerIdentity } from "~/store/settingsStore";
+import { setNerdModeUnlocked } from "~/starchess/identity";
 
 /**
  * Storybook: Goliath Charon Booster Missiles — 2 gas arms targeting only; click the

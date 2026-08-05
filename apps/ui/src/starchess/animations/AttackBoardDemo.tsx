@@ -19,10 +19,11 @@ import type { AttackCue } from "~/starchess/animations/types";
 import { clearSiegedRooks, setRookMode } from "~/starchess/starChessStore";
 import { StarChessChessBoard } from "~/starchess/StarChessChessBoard";
 import { setStorybookCapabilities } from "~/screens/storybookCapabilities";
-import { NERD_CAPABILITIES } from "~/store/capabilitiesStore";
+import { NERD_CAPABILITIES } from "~/starchess/capabilities";
 import { loadFen } from "~/store/gameStore";
-import { setActivePlayerColor, setNerdModeUnlocked, setPlayerIdentity } from "~/store/settingsStore";
-import type { RookMode } from "~/types/starchess";
+import { setActivePlayerColor, setPlayerIdentity } from "~/store/settingsStore";
+import { setNerdModeUnlocked } from "~/starchess/identity";
+import type { RookMode } from "~/starchess/types";
 
 const ORIGIN: Square = "d4";
 /** Opposing pawn in the Pawn Rifle story — fires down the board (front glass). */

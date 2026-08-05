@@ -6,11 +6,11 @@
 import { addScAction, addScMove } from "~/starchess/scActions";
 import { endScTurn } from "~/starchess/endScTurn";
 import { parseScFen } from "~/starchess/scfen";
-import type { ScAction, ScFenSnapshot } from "~/types/starchess";
+import type { ScAction, ScFenSnapshot } from "~/starchess/types";
 
 /** Nb a4, Ke1, kh8 — black mine will be hostile on a4. */
 export const PATH_COLLIDE_START_SCFEN =
-  "SCFEN|7k/8/8/8/n7/8/8/4K3|0|33|P|G:33:33|Q:w:;b:";
+  "SCFEN|7k/8/8/8/n7/8/8/4K3|0|33|P|G:11:11|Q:w:;b:";
 
 export type PathCollideStep = {
   caption: string;
