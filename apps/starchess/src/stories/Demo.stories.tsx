@@ -5,25 +5,23 @@ import { FogEdgeDemo } from "~/demos/FogEdgeDemo";
 import { KingHuntDemo } from "~/demos/KingHuntDemo";
 import { KingHuntLiveScreen } from "~/demos/KingHuntLiveScreen";
 import {
-  GAS_STEP_SCENARIO,
   PROMOTION_MINE_SCENARIO,
   PROMOTION_SCENARIO,
 } from "~/demos/reviewSamples";
-import { FogVisionDemo } from "~/presentation/animations/FogVisionDemo";
-import { GAS_USED_FOG_FIXTURE } from "~/stories/fixtures/scenarios";
 
 /**
  * Stories mount SCFEN demos / fixtures only — no queue / resolve logic here.
  * Non-live = DualNav observer review. Live = King Hunt (live) only.
+ * GasDeploy specials live under StarChess/Special Moves.
  */
 const meta = {
   title: "StarChess/Demo",
   parameters: {
-    layout: "centered",
+    layout: "fullscreen",
     docs: {
       description: {
         component:
-          "Review DualNav demos + one live seed. Combat Chain / King Hunt / Promotion / Gas = observer DualNav. King Hunt (live) = ResourceBar / TurnBar / GasDeploy + adjutant.",
+          "Review DualNav demos + one live seed. Combat Chain / King Hunt / Promotion = observer DualNav. King Hunt (live) = ResourceBar / TurnBar / GasDeploy + adjutant. Every board mounts on Screen grid.",
       },
     },
   },
@@ -35,11 +33,11 @@ type Story = StoryObj;
 export const CombatChain: Story = {
   name: "Combat Chain",
   parameters: {
-    layout: "centered",
+    layout: "fullscreen",
     docs: {
       description: {
         story:
-          "SCFEN + engine: each arrow = one turn = White & Black classical via addScMove → endScTurn. 1. d2-d4 & Be8-c6 · 2. d4xe5 & Nf6-e4 · 3. Rc3xc6 & Ne4xc3. Rook starts c3 (tank — siege cannot relocate). Captures = attack → death → occupy.",
+          "SCFEN + engine: each arrow = one turn = White & Black classical via addScAction → endScTurn. 1. d2-d4 & Be8-c6 · 2. d4xe5 & Nf6-e4 · 3. Rc3xc6 & Ne4xc3. Rook starts c3 (tank — siege cannot relocate). Captures = attack → death → occupy.",
       },
     },
   },
@@ -81,19 +79,4 @@ export const Promotion: Story = {
 export const PromotionMine: Story = {
   name: "Promotion × mine",
   render: () => <FogEdgeDemo scenario={PROMOTION_MINE_SCENARIO} />,
-};
-
-export const GasStep: Story = {
-  name: "Gas step",
-  render: () => <FogEdgeDemo scenario={GAS_STEP_SCENARIO} />,
-};
-
-export const GasUsedFog: Story = {
-  name: "Gas-used fog reveal",
-  render: () => (
-    <FogVisionDemo
-      scfen={GAS_USED_FOG_FIXTURE.scfen}
-      caption={GAS_USED_FOG_FIXTURE.caption}
-    />
-  ),
 };

@@ -11,8 +11,23 @@ export const findBoardGrid = (host: HTMLElement): HTMLElement | null => {
   return container.querySelector(":scope > div");
 };
 
+/** True for classical a1–h8; false for virtual off-board cells (e.g. e9 / e0). */
+export const isBoardSquare = (sq: string): sq is Square =>
+  /^[a-h][1-8]$/.test(sq);
+
+/**
+ * One square beyond the promotion rank in the pawn’s forward direction.
+ * Virtual only — used by walk-off move VFX (not a legal chess square).
+ */
+export const promoWalkOffTo = (at: Square, color: "w" | "b"): Square => {
+  const file = at[0]!;
+  const rank = Number(at[1]);
+  return `${file}${color === "w" ? rank + 1 : rank - 1}` as Square;
+};
+
+/** Pixel box for a board square or virtual off-board cell (rank 0 / 9). */
 export const squareBoxStyle = (
-  sq: Square,
+  sq: Square | string,
   boardWidth: number,
   boardHeight: number,
 ): Record<string, string> => {
@@ -29,7 +44,7 @@ export const squareBoxStyle = (
 };
 
 export const squareCenterPx = (
-  sq: Square,
+  sq: Square | string,
   boardWidth: number,
   boardHeight: number,
 ): { x: number; y: number } => {

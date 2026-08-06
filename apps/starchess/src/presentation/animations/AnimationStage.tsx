@@ -33,12 +33,23 @@ import type {
   MoveCue,
 } from "~/presentation/types";
 import {
-  EclipseBoard,
+  ObserverStarChessBoard,
   type BoardVariant,
+  type IntentCanister,
+  type IntentCheck,
   type IntentGhost,
   type VisionMode,
-} from "~/presentation/board/EclipseBoard";
+} from "~/presentation/board/ObserverStarChessBoard";
 import { siegedRooksList } from "~/presentation/animations/rookModeStore";
+import type { ReviewTurnPhase } from "~/types/review";
+
+/** Stable empties — spreading `props.* ?? []` remounts For rows every render. */
+const NO_ATTACKS: AttackCue[] = [];
+const NO_DEATHS: DeathCue[] = [];
+const NO_MOVES: MoveCue[] = [];
+const NO_DEPLOYS: DeployCue[] = [];
+const NO_KING_DAMAGE: KingDamageCue[] = [];
+const NO_MOVE_PROGRESS: Record<string, 0 | 1> = {};
 
 const fenToSnapshot = (fen: string, sieged: readonly Square[] = []): ScFenSnapshot => {
   const placement = fen.split(/\s+/)[0] ?? "8/8/8/8/8/8/8/8";
@@ -69,8 +80,13 @@ export type AnimationStageProps = {
   viewer?: "w" | "b";
   /** DualNav review: full board + dual vision borders. Default `player`. */
   visionMode?: VisionMode;
+  /** Live / review phase — drives board frame border (same tones as phase chip). */
+  phase?: ReviewTurnPhase;
   mines?: readonly ScMine[];
   intentGhosts?: readonly IntentGhost[];
+  intentCanisters?: readonly IntentCanister[];
+  /** Pending check / attack-intent rings (red dashed). */
+  intentChecks?: readonly IntentCheck[];
   selected?: Square | null;
   legalDests?: readonly Square[];
   onSquareClick?: (square: Square) => void;
@@ -85,6 +101,9 @@ export type AnimationStageProps = {
   kingDamage?: readonly KingDamageCue[];
   /** Hide board pieces on these squares while VFX play. */
   hideSquares?: ReadonlySet<Square> | readonly Square[];
+  /** Hide mine glyphs after boom / while missile owns the square. */
+  spentMines?: readonly Square[];
+  chasingMines?: readonly Square[];
 };
 
 type OverlayBox = { top: number; left: number; w: number; h: number };
@@ -145,6 +164,7 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
   });
 
   // Fullscreen / flex layouts often size the grid after first paint.
+  // Remeasure whenever FX appear so the overlay aligns to the grid.
   createEffect(() => {
     if (!hasFx()) return;
     measure();
@@ -153,7 +173,10 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
 
   const dying = () => props.attackDying;
 
-  const overlayReady = () => hasFx() && box().w > 0 && box().h > 0;
+  // Keep the overlay mounted once the board is measured — toggling Show on
+  // hasFx remounts AttackAnimation between cues and drops CSS attack timelines
+  // (review DualNav + live resolve both commit playingIds:[] between steps).
+  const overlayReady = () => box().w > 0 && box().h > 0;
 
   const hidden = () => {
     const h = props.hideSquares;
@@ -176,20 +199,25 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
         "max-width": "100%",
       }}
     >
-      <EclipseBoard
+      <ObserverStarChessBoard
         snapshot={snap()}
         viewer={props.viewer ?? "w"}
         fog={props.fog !== false}
         visionMode={props.visionMode ?? "player"}
         variant={props.variant ?? "eclipse"}
+        phase={props.phase}
         siegedRooks={snap().siegedRooks ?? siegedRooksList()}
         intentGhosts={props.intentGhosts}
+        intentCanisters={props.intentCanisters}
+        intentChecks={props.intentChecks}
         selected={props.selected}
         legalDests={props.legalDests}
         onSquareClick={props.onSquareClick}
         hideSquares={hidden()}
         moveCues={props.moveCues}
         moveProgress={props.moveProgress}
+        spentMines={props.spentMines}
+        chasingMines={props.chasingMines}
       />
       <Show when={overlayReady()}>
         <div
@@ -208,30 +236,30 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
         >
           {/* Stable layer stack — do not wrap each in Show (remounts restart CSS). */}
           <KingDamageOverlay
-            cues={[...(props.kingDamage ?? [])]}
+            cues={props.kingDamage ?? NO_KING_DAMAGE}
             boardWidth={box().w}
             boardHeight={box().h}
           />
           <AttackAnimation
-            cues={[...(props.attackCues ?? [])]}
+            cues={props.attackCues ?? NO_ATTACKS}
             dyingIds={dying()}
             boardWidth={box().w}
             boardHeight={box().h}
           />
           <DeathAnimation
-            cues={[...(props.deathCues ?? [])]}
+            cues={props.deathCues ?? NO_DEATHS}
             boardWidth={box().w}
             boardHeight={box().h}
           />
           <MoveAnimation
-            cues={props.moveCues ?? []}
-            progress={props.moveProgress ?? {}}
+            cues={props.moveCues ?? NO_MOVES}
+            progress={props.moveProgress ?? NO_MOVE_PROGRESS}
             leg={props.moveLeg}
             boardWidth={box().w}
             boardHeight={box().h}
           />
           <DeployAnimation
-            cues={[...(props.deployCues ?? [])]}
+            cues={props.deployCues ?? NO_DEPLOYS}
             boardWidth={box().w}
             boardHeight={box().h}
           />

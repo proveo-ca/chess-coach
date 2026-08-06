@@ -1,7 +1,9 @@
 import { defineConfig } from "oxlint";
 
 export default defineConfig({
-  ignorePatterns: ["public/**/*", ".vite", "dist/**/*", "storybook-static/**/*"],
+  ignorePatterns: ["public/**/*", ".vite", "dist/**/*", "storybook-static/**/*", "lint/**"],
+  // Local architecture plugin (alpha JS-plugin API). See lint/architecture.ts.
+  jsPlugins: ["./lint/architecture.ts"],
   rules: {
     "sort-imports": "off",
     "no-restricted-imports": [
@@ -16,5 +18,9 @@ export default defineConfig({
         ],
       },
     ],
+    "proveo-starchess/pure-primitive": "error",
+    "proveo-starchess/route-target-in-screens": "error",
+    "proveo-starchess/own-css-module": "error",
+    "proveo-starchess/no-cross-module-types": "error",
   },
 });

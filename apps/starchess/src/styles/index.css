@@ -20,9 +20,9 @@
   --border-color: #444;
   --border-radius-md: 8px;
   --avatar-height: 8rem;
-  /* Extra-small / mobile defaults (< 720px): no sidebar; board fills width. */
+  /* Extra-small / mobile defaults (< 720px): no sidebar; 2rem gutter each side. */
   --sidebar-width: 0px;
-  --board-size: min(100vw - 2rem, 480px);
+  --board-size: min(100vw - 4rem, 480px);
   --square-size: calc(var(--board-size) / 8);
   --app-max-width: 100%;
   --board-light: #f0d9b5;
@@ -59,12 +59,12 @@
   }
 }
 
-/* Desktop (≥ 720px): fixed board + sidebar gutter — never squash squares. */
+/* Desktop (≥ 720px): fixed board + 2rem horizontal gutters (no classical sideboard). */
 @media (min-width: 720px) {
   :root {
-    --sidebar-width: 6rem;
+    --sidebar-width: 0px;
     --board-size: 480px;
-    --app-max-width: 720px;
+    --app-max-width: calc(var(--board-size) + 4rem);
   }
 }
 

@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { MenuScreen } from "~/screens/MenuScreen";
 import { setShowCredits } from "~/store/coachStore";
 import { setDifficulty, setPlayerIdentity, setPlayerName } from "~/store/settingsStore";
-import { setNerdModeUnlocked } from "~/starchess/identity";
+import { setNerdModeUnlocked } from "~/features/nerd/identity";
 
 const seedMenu = (creditsOpen = false) => {
   setPlayerName("Alex");

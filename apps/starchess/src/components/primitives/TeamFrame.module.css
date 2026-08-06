@@ -1,0 +1,7 @@
+.frame {
+  margin: 0;
+  border-radius: 8px;
+  background: transparent;
+  border: 2px solid var(--team, #3b7dd8);
+  box-sizing: border-box;
+}

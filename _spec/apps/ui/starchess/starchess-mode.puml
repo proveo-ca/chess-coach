@@ -1,12 +1,13 @@
 @startuml starchess-mode
 ' SPEC: _spec/apps/ui/starchess/starchess-mode.puml
-' purpose: Product / UX mode — goals, specials, economy, UX v1 (NerdScreen only).
+' OUTDATED: Phase 5–6 — product lives in apps/starchess; Coach only redirects/nerd prompt.
+' purpose: Product / UX mode — goals, specials, economy, UX v1.
 !include ../../../themes/proveo.puml
 
 skinparam packageStyle rectangle
 skinparam defaultTextAlignment left
 
-title StarChess Mode · Product / UX
+title OUTDATED — StarChess Mode · Product / UX
 
 package "Goals (vs classical chess)" {
   component "Turn structure — both sides queue,\nEnd / timeout submits" as G1 <<async>>
@@ -39,7 +40,9 @@ note bottom
   Charon + Jump **2**.
   **Spider Mine combat:** path-chase / attack-mine; ignores allies
   + enemy kings (""mines.ts"" + ""resolveTurn"").
-  Exclusive to ""apps/ui/src/starchess/screens/NerdScreen.tsx"".
+  **OUTDATED ownership:** not exclusive to Coach ""NerdScreen"".
+  Live UI → ""apps/starchess"" (""/starchess/""); Coach keeps
+  ""features/nerd"" + ""StarChessRedirect"" only.
   ====
   **Face-to-face kings (rules → resolve.puml).** Contact is **mutual and
   simultaneous**, and costs 1 HP **per checking unit**, so equal HP
@@ -79,6 +82,6 @@ note bottom
   ----
   **Queue edit:** TurnBar chips carry an X to
   ""removeQueuedScAction"" (refund special gas).
-  Opponent planner: ""demos/adjutant.ts"".
+  Opponent planner: ""packages/starchess-core/ai/adjutant.ts"".
 end note
 @enduml

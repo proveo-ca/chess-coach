@@ -47,8 +47,9 @@ export const firstBlockerOnRay = (
 
 /**
  * Squares a moving piece contacts for Spider Mine **chase** wakes (mid-path).
- * Destination-on-mine is handled in the attack phase (attack → occupy), not here.
- * Slides → intermediates only; leaps → no mid-path contacts.
+ * Destination walk-over (units that cannot attack `to`, e.g. pawn forward) is
+ * handled after landing in `resolveTurn`; attack-clearable dest mines are
+ * handled in the attack phase. Slides → intermediates only; leaps / pawns → none.
  */
 export const pathContactSquares = (
   from: Square,

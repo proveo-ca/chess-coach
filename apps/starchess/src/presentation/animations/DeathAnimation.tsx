@@ -36,7 +36,7 @@ const deathNode = (
 };
 
 export type DeathAnimationProps = {
-  cues: DeathCue[];
+  cues: readonly DeathCue[];
   boardWidth: number;
   boardHeight: number;
   /**

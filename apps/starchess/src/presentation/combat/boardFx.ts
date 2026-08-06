@@ -3,6 +3,7 @@
  */
 import type { Square } from "chess.js";
 
+import { isBoardSquare } from "~/presentation/animations/boardGeom";
 import type {
   AttackCue,
   DeathCue,
@@ -43,7 +44,8 @@ export const buildFxHiddenSquares = (fx: CombatFxInput): ReadonlySet<Square> => 
   for (const c of fx.deaths ?? []) hide.add(c.at);
   for (const c of fx.moves ?? []) {
     hide.add(c.from);
-    hide.add(c.to);
+    // Promo walk-off uses virtual destinations (e9 / e0) — only hide real cells.
+    if (isBoardSquare(c.to)) hide.add(c.to);
   }
   for (const c of fx.deploys ?? []) hide.add(c.at);
   for (const c of fx.kingDamage ?? []) hide.add(c.at);

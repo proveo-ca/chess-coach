@@ -14,7 +14,6 @@ import {
 import type { FogEdgeScenario } from "~/demos/fogEdgeScenario";
 import {
   COMBAT_CHAIN_START_SCFEN,
-  GAS_STEP_SCFEN,
   PROMOTION_CLEAN_SCFEN,
   PROMOTION_MINE_SCFEN,
 } from "~/stories/fixtures/seeds";
@@ -65,7 +64,7 @@ const observerScenario = (
 export const PROMOTION_STEPS: readonly ReviewStep[] = [
   {
     intentCaption: "Intent · Pe7→e8=Q · ghost on e8",
-    caption: "1. Pe7–e8=Q · land as pawn, then promote deploy",
+    caption: "1. Pe7–e8=Q · land as pawn → walk off → battlecruiser deploy",
     actions: [
       {
         timing: "C",
@@ -90,7 +89,7 @@ export const PROMOTION_SCENARIO = observerScenario(
 export const PROMOTION_MINE_STEPS: readonly ReviewStep[] = [
   {
     intentCaption: "Intent · Pe7→e8=Q · mine on e8",
-    caption: "1. Pe7–e8 · mine blast · no promote",
+    caption: "1. Pe7–e8 · walk onto mine · blast · no promote",
     actions: [
       {
         timing: "C",
@@ -107,26 +106,8 @@ export const PROMOTION_MINE_STEPS: readonly ReviewStep[] = [
 export const PROMOTION_MINE_SCENARIO = observerScenario(
   buildPlys(PROMOTION_MINE_SCFEN, PROMOTION_MINE_STEPS),
   PROMOTION_MINE_STEPS,
-  "Start · Pe7 · black mine e8 · DualNav intent → mine interrupt",
+  "Start · Pe7 · black mine e8 · DualNav intent → walk-over interrupt",
   "Promotion × mine",
-);
-
-/** B gas-step Pe2 → e3. */
-export const GAS_STEP_STEPS: readonly ReviewStep[] = [
-  {
-    intentCaption: "Intent · gas-step Pe2→e3 (B pawnDouble)",
-    caption: "1. Pe2–e3 · gas step relocate",
-    actions: [
-      { timing: "B", kind: "pawnDouble", color: "w", from: "e2", to: "e3" },
-    ],
-  },
-];
-
-export const GAS_STEP_SCENARIO = observerScenario(
-  buildPlys(GAS_STEP_SCFEN, GAS_STEP_STEPS),
-  GAS_STEP_STEPS,
-  "Start · Pe2 · DualNav gas-step intent → resolve",
-  "Gas step",
 );
 
 /** One combat-chain turn: W d2–d4 & B Be8–c6. */

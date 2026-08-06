@@ -19,7 +19,7 @@ import {
   setSeat,
 } from "~/store/roomStore";
 import { setActivePlayerColor, setColorPref, setDifficulty, setImLost, setOpponentIdentity, setPlayerIdentity, setPlayerName, setNerdPieceSet } from "~/store/settingsStore";
-import { setNerdModeUnlocked } from "~/starchess/identity";
+import { setNerdModeUnlocked } from "~/features/nerd/identity";
 import { exitTravel, startTravel } from "~/store/travelStore";
 import { setFooterFloat } from "~/store/viewportLayoutStore";
 import { resetStorybookRandom } from "~/storybook/browserMocks";

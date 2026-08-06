@@ -8,7 +8,7 @@ import { Button } from "~/components/primitives/Button";
 import { Select } from "~/components/primitives/Select";
 import { Toggle } from "~/components/primitives/Toggle";
 import { imLost, playerIdentity, setImLost, setPlayerIdentity } from "~/store/settingsStore";
-import { identityOptions } from "~/starchess/identity";
+import { identityOptions } from "~/features/nerd/identity";
 import type { PlayerIdentity } from "~/types/settings";
 
 type Props = {

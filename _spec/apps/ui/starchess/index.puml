@@ -1,12 +1,13 @@
 @startuml index
 ' SPEC: _spec/apps/ui/starchess/index.puml
-' purpose: Map of the StarChess spec set to the src/starchess engine modules.
+' OUTDATED: Phase 5–6 cutover — live ownership moved; keep as historical map.
+' purpose: Historical map of the StarChess spec set (pre-cutover module names).
 !include ../../../themes/proveo.puml
 
 skinparam packageStyle rectangle
 skinparam defaultTextAlignment left
 
-title StarChess · Spec Map (_spec/apps/ui/starchess)
+title OUTDATED — StarChess · Spec Map (_spec/apps/ui/starchess)
 
 package "_spec/apps/ui/starchess" {
   component "scfen-wire.puml\nSCFEN string + field roles" as WIRE <<db>>
@@ -18,7 +19,7 @@ package "_spec/apps/ui/starchess" {
   component "sc-moves.puml\nSC-native classical movegen + provider seam" as MOVES <<app>>
 }
 
-package "src/starchess" {
+package "historical module names\n(was apps/ui/src/starchess)" {
   component "scfen.ts\nSCFEN parse / format" as TSCFEN <<app>>
   component "scActions.ts\naddScAction / addScMove" as ACT <<app>>
   component "endScTurn.ts\nresolve planning snap" as END <<app>>
@@ -47,18 +48,15 @@ MOVES ARROW_OPTIONAL SCM : documents
 MOVES ARROW_OPTIONAL BRD : documents
 
 note bottom
-  **Contents carried over from** ""apps/ui/src/starchess/STARCHESS_FEN.md""
-  and ""STARCHESS_MODE.md"" — .puml only, no .md/.txt in this folder.
-  Engine is exclusive to ""apps/ui/src/starchess/screens/NerdScreen.tsx"".
-  The prior rules-authority pointer ""scfen.md"" is replaced by this set.
-  **King duel + draw** (""board.ts"" ""collectLegalKingChecks"",
-  ""resolveTurn"" ""applyPendingKingShots"", ""scOutcome.ts"") is specified in
-  resolve.puml, with the turn-start ordering in turn-queue-sequence.puml
-  and the product framing in starchess-mode.puml.
-  Both ""board.ts"" and ""scOutcome.ts"" carry a ""// SPEC:"" back-reference
-  to resolve.puml.
-  **SC classical movegen** (""scMoves.ts"", ""BoardMoveProvider"" seam) is
-  specified in sc-moves.puml — chess.js stays classical; SC legality is
-  authoritative only when a provider is present.
+  **OUTDATED after Phase 5–6.** ""apps/ui/src/starchess"" is **deleted**.
+  **Live ownership:** rules → ""packages/starchess-core"";
+  standalone UI/PWA → ""apps/starchess"" (served at ""/starchess/"");
+  Coach keeps ""apps/ui/src/features/nerd"" + ""StarChessRedirect"".
+  **Deployment (live):** ""_spec/apps/starchess/deployment.puml"".
+  ----
+  Historical: contents carried over from ""STARCHESS_FEN.md"" /
+  ""STARCHESS_MODE.md"". Module boxes above use pre-cutover names;
+  backlinks from core/app sources still point here until specs are
+  rewritten under ""_spec/packages/starchess-core"" / ""_spec/apps/starchess"".
 end note
 @enduml

@@ -1,10 +1,13 @@
 /**
  * Command Center deploy picker — ResourceBar + marine-first grid.
+ * Affordability reads MatchStore minerals / deploy cap / remaining vespene.
+ * Siege Tank uses {@link InlineRook} tank mode (not static siege `*R.svg`).
  */
 import type { Component } from "solid-js";
 import { For, Show } from "solid-js";
 import type { SpawnPiece, StarChessColor } from "@chess-coach/starchess-core";
 
+import { Modal } from "~/components/atoms/Modal";
 import { useMatchStore } from "~/app/MatchStoreContext";
 import {
   deployedMaterial,
@@ -30,9 +33,6 @@ type DeployModalProps = {
   onCancel: () => void;
 };
 
-/**
- * Absolute overlay picker (no Modal atom) — matches UI DeployModal choices.
- */
 export const DeployModal: Component<DeployModalProps> = (props) => {
   const store = useMatchStore();
 
@@ -46,68 +46,56 @@ export const DeployModal: Component<DeployModalProps> = (props) => {
   };
 
   return (
-    <Show when={props.pending}>
-      {(pending) => (
-        <div
-          class={styles.backdrop}
-          role="dialog"
-          aria-modal="true"
-          aria-label="Deploy unit"
-          data-testid="deploy-modal"
-        >
-          <div class={styles.panel}>
-            <header class={styles.header}>
-              <h2 class={styles.title}>Deploy unit</h2>
-              <button
-                type="button"
-                class={styles.close}
-                aria-label="Cancel deploy"
-                onClick={() => props.onCancel()}
-              >
-                ×
-              </button>
-            </header>
-            <div class={styles.body}>
-              <ResourceBar />
-              <div class={styles.choices}>
-                <For each={SPAWN_CHOICES}>
-                  {(piece) => {
-                    const affordable = () => canAfford(piece);
-                    return (
-                      <button
-                        type="button"
-                        class={styles.choice}
-                        classList={{ [styles.disabled]: !affordable() }}
-                        disabled={!affordable()}
-                        onClick={() => affordable() && props.onSelect(piece)}
-                        aria-label={`Deploy ${piece} (cost ${UNIT_COST[piece]})`}
-                        data-spawn-piece={piece}
-                        data-cost={UNIT_COST[piece]}
+    <Modal
+      open={!!props.pending}
+      title="Deploy unit"
+      position="absolute"
+      onClose={props.onCancel}
+      dismissible
+      contentClass={styles.panel}
+    >
+      <Show when={props.pending}>
+        {(pending) => (
+          <div class={styles.body} data-testid="deploy-modal">
+            <ResourceBar />
+            <div class={styles.choices}>
+              <For each={SPAWN_CHOICES}>
+                {(piece) => {
+                  const affordable = () => canAfford(piece);
+                  return (
+                    <button
+                      type="button"
+                      class={styles.choice}
+                      classList={{ [styles.disabled]: !affordable() }}
+                      disabled={!affordable()}
+                      onClick={() => affordable() && props.onSelect(piece)}
+                      aria-label={`Deploy ${piece} (cost ${UNIT_COST[piece]})`}
+                      data-spawn-piece={piece}
+                      data-cost={UNIT_COST[piece]}
+                    >
+                      <Show
+                        when={piece === "r"}
+                        fallback={
+                          <img
+                            src={pieceUrl(pending().color, piece)}
+                            alt=""
+                            class={styles.pieceImg}
+                          />
+                        }
                       >
-                        <Show
-                          when={piece === "r"}
-                          fallback={
-                            <img
-                              src={pieceUrl(pending().color, piece)}
-                              alt=""
-                              class={styles.pieceImg}
-                            />
-                          }
-                        >
-                          <span class={styles.pieceImg} data-piece-inline="r" aria-hidden="true">
-                            <InlineRook color={pending().color} mode="tank" />
-                          </span>
-                        </Show>
-                        <span class={styles.cost}>{UNIT_COST[piece]}</span>
-                      </button>
-                    );
-                  }}
-                </For>
-              </div>
+                        <span class={styles.pieceImg} data-piece-inline="r" aria-hidden="true">
+                          <InlineRook color={pending().color} mode="tank" />
+                        </span>
+                      </Show>
+                      <span class={styles.cost}>{UNIT_COST[piece]}</span>
+                    </button>
+                  );
+                }}
+              </For>
             </div>
           </div>
-        </div>
-      )}
-    </Show>
+        )}
+      </Show>
+    </Modal>
   );
 };

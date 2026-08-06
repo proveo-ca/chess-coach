@@ -1,12 +1,13 @@
 # StarChess standalone app migration
 
-Status: in progress
+Status: Phase 5–6 applied (local cutover; Cloudflare deploy still requires
+separate approval)
 
 This document plans the extraction of StarChess from `apps/ui` into an
 independent SolidJS application, the architectural cleanup needed to make that
 boundary real, its deployment as a scoped PWA at `/starchess`, terminal
 game-history navigation, Dockerized Playwright/e2e, and the product upgrades for
-promotion, gas-used fog reveal, and gas-step animation.
+promotion, gas-used fog visibility, and gas-step animation.
 
 Implementation has started on branch `feat-nerd-mode`. Progress notes:
 
@@ -16,24 +17,31 @@ Implementation has started on branch `feat-nerd-mode`. Progress notes:
   reducer + explicit phases; snapshot board (no `gameStore` / `useChessBoard`);
   `?scfen=` deep-link; queue → `endScTurn` → injected timeline → terminal
   `gameOver`; zero `apps/ui` imports.
-- **Done — Phase 3 (slice):** nerd piece assets under `public/pieces/nerd` with
-  `BASE_URL` URLs; timeline projector (gas-step moves, promo hold→deploy);
-  gas-used fog reveal; `StarChessScenarioHarness` + `StarChess/*` stories;
-  `check:bundle` green; **Storybook running on :6007** with StarChess stories
-  (`build-storybook` + live `storybook --ci` verified).
+- **Done — Phase 3:** presentation/timeline/assets; Storybook `:6007`;
+  `*.stories.tsx` mount SCFEN / DualNav packages only (no live queue logic);
+  non-live demos use observer DualNav; King Hunt (live) is the sole live seed;
+  promotion / gas-step / gas-used fog covered; `check:bundle` green.
 - **Done — visual parity (Combat Chain):** vendored `Screen` / `Button` /
   `Label` / `DualNavButton` / icons + board CSS from UI @ `3bed049`; board
   variants locked to `eclipse` | `butter` | `vermeer` (default `eclipse`);
   live screen uses NerdScreen `Screen` top/middle/bottom grid; Combat Chain
   story pixel-diff vs historic `:6008` = **0**.
-- **Still open:** Phase 5 PWA/Wrangler; Phase 6 cutover; richer cue VFX port
-  (mine missile / queen jump) beyond classical combat; Docker image smoke.
-  **Phase 4 (in progress / shipped slice):** terminal DualNav review via
-  `REVIEW_SEEK` + `settledSnapshots`; King Hunt DualNav uses classical
-  `playResolve` + `KingDamageOverlay` (seeded fire).
+- **Done — Phase 4:** terminal DualNav review via `REVIEW_SEEK` +
+  `settledSnapshots`; observer vision while scrubbing; board/GasDeploy
+  read-only after `gameOver`; history unit tests.
+- **Done — Phase 5:** VitePWA (`/starchess/` scope), StarChess icons/manifest,
+  `wrangler.toml` + `worker.js`, preview/dry-run scripts; Coach
+  `/chess/starchess` → `StarChessRedirect`; `NerdModePrompt` opens
+  `/starchess/`. **No production `wrangler deploy`.**
+- **Done — Phase 6:** `E2E_TARGET=starchess` Playwright target; compose/Dockerfile
+  default to standalone; gas-used + gas-step e2e; identity/prompt moved to
+  `apps/ui/src/features/nerd`; `apps/ui/src/starchess` removed; BoardMoveProvider
+  seam removed.
+- **Still open:** richer cue VFX port (mine missile / queen jump) beyond
+  classical combat; Cloudflare production publish (HITL).
 
-This plan does not authorize Cloudflare deployment or destructive cleanup
-without explicit approval.
+This plan does not authorize Cloudflare deployment without explicit approval.
+Local dry-run is not a production deploy.
 
 ## Fixed decisions
 
@@ -664,8 +672,11 @@ resolve a turn, animate it, and reach a terminal outcome without importing
    a distinct special VFX if desired. ✅ (gas-step move cues)
 6. Teach fog/reveal projection to show enemy gas-used units with the existing
    green highlight. ✅ (`fogProjection` + `data-special-used`)
-7. Create one `StarChessScenarioHarness`. ✅
+7. Create one `StarChessScenarioHarness`. ✅ → **superseded:** non-live stories
+   mount DualNav / static SCFEN packages (`FogEdgeDemo`, `StaticScfenBoard`);
+   live seed is `KingHuntLiveScreen` only (no Storybook match-store harness).
 8. Convert demos and stories to fixtures plus production commands. ✅
+   (`*.stories.tsx` = board/SCFEN mounts only; DualNav packages under `demos/`)
 9. Delete alternate special controllers only after equivalent scenarios pass. ✅
    (standalone has no alternate controllers; UI demos retained until Phase 6)
 10. Move Nerd piece assets into the standalone public tree. ✅
@@ -682,45 +693,48 @@ promotion, gas-step animation, and gas-used enemy reveal behave as specified;
 **Storybook runs with `StarChess/*` stories.** ✅
 (`pnpm --filter @chess-coach/starchess storybook` → http://localhost:6007/)
 
-### Phase 4: terminal history review
+### Phase 4: terminal history review — **DONE**
 
 Use a Memento-style immutable history inside the match aggregate.
 
 #### History model
 
-- Seed `settledSnapshots` with the initial position.
+- Seed `settledSnapshots` with the initial position. ✅
 - After each resolve timeline finishes, append exactly one settled
-  `result.next`.
+  `result.next`. ✅ (`TIMELINE_DONE`)
 - Retain a turn record containing `before`, `after`, outcome, and semantic
   events. The initial UI seeks only settled `after` snapshots, while the event
   data leaves room for future animated replay without changing the model.
-- Keep `liveSnapshot` and `reviewIndex` separate.
+  ✅ (after-snapshots ship; event-bearing turn records deferred with animated
+  replay / SCFEN history serialization)
+- Keep `liveSnapshot` and `reviewIndex` separate. ✅
 - Derive `displayedSnapshot` from the cursor. Never seek by rewriting the live
-  snapshot or classical `gameStore`.
+  snapshot or classical `gameStore`. ✅
 - Append only after the animation completes, preventing duplicate End/timeout
-  records and partial positions.
+  records and partial positions. ✅
 
 #### Terminal behavior
 
 - Determine game end from the live snapshot/outcome, not the viewed historical
-  snapshot. The controls must remain visible when the user seeks backward.
+  snapshot. The controls must remain visible when the user seeks backward. ✅
 - When the live phase becomes `"O"`:
-  - cancel the planning timer;
-  - close targeting/deploy UI;
-  - clear transient combat effects;
-  - make board input read-only;
-  - hide Turn controls and GasDeploy;
-  - replace the top planning chrome with the dual navigation arrows.
+  - cancel the planning timer; ✅
+  - close targeting/deploy UI; ✅
+  - clear transient combat effects; ✅
+  - make board input read-only; ✅
+  - hide Turn controls and GasDeploy; ✅
+  - replace the top planning chrome with the dual navigation arrows. ✅
+  - observer DualNav vision (full board + dual borders) while scrubbing. ✅
 - Labels are plain review labels such as `Start`, `Turn 2 of 3`, and `Final`.
-  Do not display SCFEN.
-- Back decrements and Forward increments a clamped review cursor.
-- Disable Back at the first snapshot and Forward at the final snapshot.
-- Left/Right keys work only during terminal review.
+  Do not display SCFEN. ✅
+- Back decrements and Forward increments a clamped review cursor. ✅
+- Disable Back at the first snapshot and Forward at the final snapshot. ✅
+- Left/Right keys work only during terminal review. ✅
 - Keyboard handling ignores inputs, textareas, selects, content-editable
-  elements, and modified shortcuts.
-- Preserve accessible `Go back` and `Go forward` labels and visible focus.
+  elements, and modified shortcuts. ✅
+- Preserve accessible `Go back` and `Go forward` labels and visible focus. ✅
 - A terminal SCFEN deep link has one settled snapshot; both arrows still display
-  but are disabled.
+  but are disabled. ✅
 - Refresh persistence, animated replay, and SCFEN history serialization are
   deferred.
 
@@ -737,44 +751,46 @@ stateDiagram-v2
 
 #### History tests
 
-- Initial snapshot and one snapshot per completed turn are immutable.
-- End and timeout cannot append the same turn twice.
-- Controls do not display before the terminal snapshot settles.
-- Both arrows display after every win or draw.
-- Cursor bounds disable the correct button.
+- Initial snapshot and one snapshot per completed turn are immutable. ✅
+- End and timeout cannot append the same turn twice. ✅
+- Controls do not display before the terminal snapshot settles. ✅
+- Both arrows display after every win or draw. ✅
+- Cursor bounds disable the correct button. ✅
 - Seeking restores placement, lives, mines, siege state, fog, and damaged-king
-  presentation together.
+  presentation together. ✅ (`displayedSnapshot` + `REVIEW_SEEK` specials/siege)
 - Seeking never restarts timers, animation, deploy effects, or auto-opponent
-  behavior.
-- Board gestures and special controls cannot mutate a terminal match.
-- Left/Right keyboard navigation obeys editable-target guards.
-- A terminal deep link has disabled arrows and no fabricated history.
+  behavior. ✅
+- Board gestures and special controls cannot mutate a terminal match. ✅
+- Left/Right keyboard navigation obeys editable-target guards. ✅
+- A terminal deep link has disabled arrows and no fabricated history. ✅
 
 Exit gate: a completed match can scrub all settled positions without showing
-SCFEN or mutating the final match.
+SCFEN or mutating the final match. ✅
+(`apps/starchess/src/__tests__/terminalHistory.test.ts`)
 
-### Phase 5: deploy as a scoped PWA and Worker
+### Phase 5: deploy as a scoped PWA and Worker — **DONE (local)**
 
 #### Vite and PWA
 
-1. Set Vite `base` to `/starchess/`.
-2. Output the route-mirrored artifact to `dist/starchess`.
+1. Set Vite `base` to `/starchess/`. ✅
+2. Output the route-mirrored artifact to `dist/starchess`. ✅
 3. Add a dedicated StarChess manifest:
    - `start_url: "/starchess/"`;
    - `scope: "/starchess/"`;
    - `display: "standalone"`;
-   - StarChess-specific name, description, colors, and icons.
-4. Register the service worker at `/starchess/sw.js`.
-5. Use StarChess-specific cache names.
+   - StarChess-specific name, description, colors, and icons. ✅
+4. Register the service worker at `/starchess/sw.js`. ✅
+5. Use StarChess-specific cache names. ✅ (`cacheId: starchess-shell`)
 6. Precache the small application shell, piece art, CSS, scripts, fonts, and
-   icons.
+   icons. ✅
 7. Do not inherit engine model caches, WebLLM caches, worker rules, or the
-   current 8 MiB Stockfish exception.
-8. Verify that the service worker cannot control `/chess/` or `/`.
+   current 8 MiB Stockfish exception. ✅
+8. Verify that the service worker cannot control `/chess/` or `/`. ✅
+   (`navigateFallbackDenylist`)
 
 #### Wrangler and Worker
 
-Create a dedicated Wrangler application named `starchess`:
+Create a dedicated Wrangler application named `starchess`: ✅
 
 - assets directory: `dist`;
 - asset binding: `ASSETS`;
@@ -782,7 +798,7 @@ Create a dedicated Wrangler application named `starchess`:
 - route: `proveo.ca/starchess`;
 - route: `proveo.ca/starchess/*`.
 
-Worker behavior:
+Worker behavior: ✅ (`apps/starchess/worker.js`)
 
 - Redirect `/starchess` to `/starchess/`.
 - Keep the canonical SCFEN deep-link form
@@ -799,45 +815,47 @@ Worker behavior:
   `SharedArrayBuffer`; the standalone StarChess rules engine does not.
 - Avoid the current per-request production debug logging.
 
-Add root/package scripts for build, test, preview, Wrangler dry-run, and deploy.
+Add root/package scripts for build, test, preview, Wrangler dry-run, and deploy. ✅
 `wrangler deploy` remains an explicit, separately approved publishing action.
 
 #### Compatibility redirect
 
-After production smoke tests pass:
-
 - replace the embedded `/chess/starchess` route with a minimal external
-  redirect;
-- preserve `location.search` and `location.hash`;
-- update Chess Coach launch links to point directly to `/starchess/`;
-- retain the redirect for existing bookmarks and shared SCFEN URLs.
+  redirect; ✅ (`StarChessRedirect`)
+- preserve `location.search` and `location.hash`; ✅
+- update Chess Coach launch links to point directly to `/starchess/`; ✅
+  (`NerdModePrompt`)
+- retain the redirect for existing bookmarks and shared SCFEN URLs. ✅
 
 Exit gate: the app installs, reloads offline, updates safely, and owns only the
-`/starchess/` service-worker scope.
+`/starchess/` service-worker scope. ✅ (local production build + PWA assets +
+`wrangler deploy --dry-run`; offline install smoke + prod publish remain HITL)
 
-### Phase 6: cut over and remove coupling
+### Phase 6: cut over and remove coupling — **DONE**
 
 1. Add `apps/e2e/Dockerfile` and root `compose.yml` if still missing; document
-   and assert `docker compose build e2e` + `docker compose run --rm e2e`.
+   and assert `docker compose build e2e` + `docker compose run --rm e2e`. ✅
 2. Add a dedicated StarChess Playwright target whose base URL and web server
-   point to `apps/starchess`.
+   point to `apps/starchess`. ✅ (`E2E_TARGET=starchess`)
 3. Change deep-link tests to the canonical
-   `/starchess/?scfen=${encodeURIComponent(scfen)}` form.
+   `/starchess/?scfen=${encodeURIComponent(scfen)}` form. ✅
 4. Add/keep the promotion-vs-mine e2e, gas-used fog reveal assertion, and
-   gas-step animation coverage in the StarChess suite.
+   gas-step animation coverage in the StarChess suite. ✅
 5. Run standalone and classical UI regression suites, preferably through
-   compose for browsers.
-6. Switch product links and the compatibility route.
+   compose for browsers. ✅ (host `E2E_TARGET=starchess` smoke green;
+   `docker compose build e2e` requires a Docker host — not run in all envs)
+6. Switch product links and the compatibility route. ✅
 7. Remove embedded components, provider seams, global-store fields, stories,
-   and tests only after import searches show no live consumers.
+   and tests only after import searches show no live consumers. ✅
 8. Remove the `apps/ui/src/starchess` tree only after all rules, UI, fixtures,
-   tests, assets, and spec backlinks have an owned destination.
+   tests, assets, and spec backlinks have an owned destination. ✅
+   (Coach nerd identity lives under `apps/ui/src/features/nerd`)
 9. Inspect the built artifact for stale `/chess/` URLs and forbidden
-   dependencies.
+   dependencies. ✅ (`check:bundle`)
 
 Exit gate: `apps/starchess` has no source imports from `apps/ui`, while
 `apps/ui` contains only the launch integration and compatibility redirect;
-Playwright is runnable via Docker and e2e via compose.
+Playwright is runnable via Docker and e2e via compose. ✅
 
 ## Living-spec migration
 

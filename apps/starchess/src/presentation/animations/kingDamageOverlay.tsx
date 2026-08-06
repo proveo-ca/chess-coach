@@ -19,7 +19,7 @@ import type { KingDamageCue, KingDamageState } from "~/presentation/types";
 export type { KingDamageCue };
 
 export type KingDamageOverlayProps = {
-  cues: KingDamageCue[];
+  cues: readonly KingDamageCue[];
   boardWidth: number;
   boardHeight: number;
 };
@@ -110,7 +110,7 @@ const KingDamageSlot = (props: SlotProps) => {
  * Always pass that side into {@link DeathKing} — defaulting to white paints the
  * enemy command center the wrong team after the first HP chip.
  */
-export function KingDamageOverlay(props: KingDamageOverlayProps): JSX.Element {
+export const KingDamageOverlay = (props: KingDamageOverlayProps): JSX.Element => {
   const slots = createMemo(() => props.cues.filter((c) => c.damage !== "pristine"));
   const ids = createMemo(() => slots().map((c) => c.id));
   const byId = createMemo(() => {
@@ -147,4 +147,4 @@ export function KingDamageOverlay(props: KingDamageOverlayProps): JSX.Element {
       </For>
     </div>
   );
-}
+};

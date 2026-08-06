@@ -1,12 +1,11 @@
+import { placementToMap } from "@chess-coach/starchess-core";
 /**
  * Footer gas rack — drag a vespene canister onto a friendly unit to arm its special.
  */
 import type { PieceSymbol, Square } from "chess.js";
 import { For, Show, createSignal, onCleanup, type Component } from "solid-js";
 import { Portal } from "solid-js/web";
-import { placementToMap } from "@chess-coach/starchess-core";
 
-import { useMatchStore } from "~/app/MatchStoreContext";
 import {
   canPawnDoubleFree,
   classicFenForViewer,
@@ -14,10 +13,11 @@ import {
   hasUsedSpecialThisTurn,
   viewerColor,
 } from "~/app/matchEconomy";
+import { useMatchStore } from "~/app/MatchStoreContext";
+import { VespeneIcon } from "~/components/primitives/icons";
+import { SpecialPreview } from "~/components/primitives/SpecialPreview";
 import { SPECIAL_ENERGY_COST } from "~/presentation/constants";
 import styles from "~/presentation/features/GasDeploy.module.css";
-import { VespeneIcon } from "~/presentation/hud/starchessIcons";
-import { SpecialPreview } from "~/presentation/hud/SpecialPreview";
 import { specialCopyFor } from "~/presentation/hud/specialCopy";
 
 export type GasDeployTarget = {
@@ -148,8 +148,7 @@ export const GasDeploy: Component<GasDeployProps> = (props) => {
   const commitOrCancel = (clientX: number, clientY: number) => {
     const over = resolveHover(clientX, clientY);
     const copy = over ? specialCopyFor(over.piece) : null;
-    const freeClassical =
-      !!over && over.piece === "p" && canPawnDoubleFree(store, over.square);
+    const freeClassical = !!over && over.piece === "p" && canPawnDoubleFree(store, over.square);
     const cost = over ? gasCostFor(over.piece) : SPECIAL_ENERGY_COST;
     const canArm =
       over &&
@@ -235,9 +234,7 @@ export const GasDeploy: Component<GasDeployProps> = (props) => {
         deployable: false,
       };
     }
-    return cost === SPECIAL_ENERGY_COST
-      ? base
-      : { ...base, name: `${base.name} · ${cost} gas` };
+    return cost === SPECIAL_ENERGY_COST ? base : { ...base, name: `${base.name} · ${cost} gas` };
   };
 
   // Touch fen helper so Solid tracks economy/placement for hover copy.
@@ -257,9 +254,7 @@ export const GasDeploy: Component<GasDeployProps> = (props) => {
             [styles.circleDragging]: !!drag() && !drag()!.returning,
           }}
           aria-label={
-            gas() > 0
-              ? `Drag vespene to a unit (${gas()} remaining)`
-              : "No vespene remaining"
+            gas() > 0 ? `Drag vespene to a unit (${gas()} remaining)` : "No vespene remaining"
           }
           disabled={gas() <= 0 && !drag()}
           onPointerDown={onPointerDown}
@@ -322,7 +317,11 @@ export const GasDeploy: Component<GasDeployProps> = (props) => {
                     top: `${hover()!.y}px`,
                   }}
                 >
-                  <SpecialPreview copy={copy()} />
+                  <SpecialPreview
+                    unit={copy().unit}
+                    name={copy().name}
+                    description={copy().description}
+                  />
                 </div>
               )}
             </Show>

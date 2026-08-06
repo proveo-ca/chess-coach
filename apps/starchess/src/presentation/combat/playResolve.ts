@@ -15,10 +15,10 @@ import {
   type ResolveAttack,
   type ResolveMove,
   type ResolveTurnResult,
-  type ScMine,
   type StarChessColor,
 } from "@chess-coach/starchess-core";
 
+import { promoWalkOffTo } from "~/presentation/animations/boardGeom";
 import { HIT_BOOM_MS, kingDamageStateForLives } from "~/presentation/animations/kingDamage";
 import { knightElbowMs, moveDurationMs } from "~/presentation/animations/moveTiming";
 import {
@@ -34,51 +34,26 @@ import {
 import type {
   AttackCue,
   DeathCue,
+  DeployCue,
   KingDamageCue,
   MineMissileCue,
   MoveCue,
   QueenJumpTrail,
-} from "~/presentation/types";
+} from "~/types/cues";
+import type {
+  ChasingMineCue,
+  CombatCommit,
+  CombatFxState,
+  PlayResolveHandle,
+  PlayResolveOptions,
+} from "~/types/combat";
 
-export type ChasingMineCue = { at: Square; legMs: number[] };
-
-export type CombatCommit = {
-  placement: string;
-  kingLives: Record<StarChessColor, number>;
-  phase: "A" | "M" | "P" | "O";
-  mines: readonly ScMine[];
-};
-
-export type CombatFxState = {
-  attackCues: AttackCue[];
-  attackDying: Record<string, boolean>;
-  deathCues: DeathCue[];
-  moveCues: MoveCue[];
-  moveProgress: Record<string, 0 | 1>;
-  moveLeg: Record<string, 0 | 1>;
-  kingDamage: KingDamageCue[];
-  chasingMines: ChasingMineCue[];
-  mineMissiles: MineMissileCue[];
-  mineMissileTrails: QueenJumpTrail[];
-  spentMines: Square[];
-};
-
-export type PlayResolveOptions = {
-  /** Board before this resolve (for damaged-king overlay seeding). */
-  startPlacement: string;
-  /** Apply mid / final board snapshots (classic placement + lives). */
-  commit: (snap: CombatCommit) => void;
-  /** Starting lives (before this resolve’s king-shots). */
-  livesBefore: Record<StarChessColor, number>;
-  /** Viewer for fog-gated mover hulls. Omit → show all move hulls. */
-  viewer?: StarChessColor;
-  /** Post-B siege flags for mover fog parity. */
-  siegedRooks?: readonly Square[];
-  onDone?: () => void;
-};
-
-export type PlayResolveHandle = {
-  cancel: () => void;
+export type {
+  ChasingMineCue,
+  CombatCommit,
+  CombatFxState,
+  PlayResolveHandle,
+  PlayResolveOptions,
 };
 
 const emptyFx = (): CombatFxState => ({
@@ -88,6 +63,7 @@ const emptyFx = (): CombatFxState => ({
   moveCues: [],
   moveProgress: {},
   moveLeg: {},
+  deployCues: [],
   kingDamage: [],
   chasingMines: [],
   mineMissiles: [],
@@ -323,6 +299,11 @@ export const playResolve = (
     mines: result.afterAll.mines,
   };
 
+  /**
+   * Promotion: land as pawn → walk one square off the board edge
+   * ({@link MOVE_SQUARE_MS}) → vacate → battlecruiser / unit deploy.
+   * Mines that kill the pawn never appear in `result.promotions`.
+   */
   const settlePromotionsThenDone = () => {
     if (!result.promotions.length) {
       doCommit(afterAllCommit);
@@ -342,10 +323,54 @@ export const playResolve = (
     };
     doCommit(prePromo);
     syncKingDamageFromBoard(prePromo.placement, prePromo.kingLives);
-    after(Math.max(MOVE_MS, 180), () => {
-      doCommit(afterAllCommit);
-      syncKingDamageFromBoard(afterAllCommit.placement, afterAllCommit.kingLives);
-      after(DEPLOY_MS, () => opts.onDone?.());
+
+    const walkCues: MoveCue[] = result.promotions.map((p) => ({
+      id: nextId("pw"),
+      piece: "p",
+      color: p.color,
+      from: p.at,
+      to: promoWalkOffTo(p.at, p.color),
+    }));
+    const walkIds = walkCues.map((c) => c.id);
+    setFx({
+      moveCues: walkCues,
+      moveProgress: Object.fromEntries(walkIds.map((id) => [id, 0 as const])),
+      moveLeg: {},
+      deployCues: [],
+    });
+    after(40, () => {
+      const nextProg = { ...fx.moveProgress };
+      for (const id of walkIds) nextProg[id] = 1;
+      setFx({ moveProgress: nextProg });
+    });
+
+    after(40 + MOVE_SQUARE_MS, () => {
+      const vacated = placementToMap(prePromo.placement);
+      for (const p of result.promotions) vacated.delete(p.at);
+      doCommit({
+        ...prePromo,
+        placement: mapToPlacement(vacated),
+      });
+
+      const deployCues: DeployCue[] = result.promotions.map((p) => ({
+        id: nextId("pd"),
+        piece: p.unit,
+        color: p.color,
+        at: p.at,
+      }));
+      setFx({
+        moveCues: [],
+        moveProgress: {},
+        moveLeg: {},
+        deployCues,
+      });
+
+      after(DEPLOY_MS, () => {
+        setFx({ deployCues: [] });
+        doCommit(afterAllCommit);
+        syncKingDamageFromBoard(afterAllCommit.placement, afterAllCommit.kingLives);
+        opts.onDone?.();
+      });
     });
   };
 
@@ -428,26 +453,47 @@ export const playResolve = (
             }
             const wait = a.livesAfter > 0 ? HIT_BOOM_MS : DEATH_MS;
             after(wait, () => {
-              doCommit(finalCommit);
-              syncKingDamageFromBoard(finalCommit.placement, finalCommit.kingLives);
-              running = {
-                placement: applied.placement,
-                mines: [...applied.mines],
-                kingLives: { ...applied.kingLives },
+              const done = () => {
+                running = {
+                  placement: applied.placement,
+                  mines: [...applied.mines],
+                  kingLives: { ...applied.kingLives },
+                };
+                playNext();
               };
-              playNext();
+              // After a discovery approach, slide discovery → stopAt. Otherwise
+              // the final commit already relocates pathRevealFrom → stopAt.
+              if (discoveryFree && stopAt !== a.from) {
+                const settle: ResolveMove = {
+                  piece: a.piece,
+                  color: a.color,
+                  from: a.from,
+                  to: stopAt,
+                };
+                playMoves([settle], finalCommit, {
+                  ...opts,
+                  onDone: done,
+                });
+              } else {
+                doCommit(finalCommit);
+                syncKingDamageFromBoard(finalCommit.placement, finalCommit.kingLives);
+                done();
+              }
             });
           });
         };
-        if (stopAt !== a.pathRevealFrom) {
+        // Fog discovery: walk to the discovery square, shoot, then the final
+        // commit already holds stopAt. Do NOT slide all the way to stopAt
+        // before the shot — that reads as "move then attack".
+        if (discoveryFree && a.from !== a.pathRevealFrom) {
           const approach: ResolveMove = {
             piece: a.piece,
             color: a.color,
             from: a.pathRevealFrom!,
-            to: stopAt,
+            to: a.from,
           };
           const approachCommit: CombatCommit = {
-            placement: relocatePlacement(running.placement, a.pathRevealFrom!, stopAt),
+            placement: relocatePlacement(running.placement, a.pathRevealFrom!, a.from),
             kingLives: { ...running.kingLives },
             phase: "M",
             mines: running.mines,
@@ -625,7 +671,19 @@ export const playResolve = (
           ...(hasVictim ? {} : { mine: true }),
         };
       });
-    if (deaths.length) setFx({ deathCues: [...fx.deathCues, ...deaths] });
+    if (deaths.length) {
+      setFx({
+        deathCues: [...fx.deathCues, ...deaths],
+        spentMines: [
+          ...new Set([
+            ...fx.spentMines,
+            ...result.mineTriggers
+              .filter((a) => a.kind === "mineBlast")
+              .map((a) => a.to),
+          ]),
+        ],
+      });
+    }
     after(DEATH_MS, () => {
       const ids = new Set(deaths.map((d) => d.id));
       setFx({ deathCues: fx.deathCues.filter((d) => !ids.has(d.id)) });

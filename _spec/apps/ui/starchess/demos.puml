@@ -1,5 +1,6 @@
 @startuml demos
 ' SPEC: _spec/apps/ui/starchess/demos.puml
+' Live demos: apps/starchess Storybook :6007 (starchess-demo--*, fog, specials).
 ' purpose: Canonical demos, shipped vs pending, verify commands.
 !include ../../../themes/proveo.puml
 
@@ -9,9 +10,10 @@ skinparam defaultTextAlignment left
 title StarChess · Canonical Demos, Shipped vs Pending
 
 package "Canonical demos" {
-  component "Combat Chain\nstory: screens-nerd-star-chess-demo--combat-chain\nW & B per turn; attack → death → occupy" as D1 <<app>>
-  component "King Hunt\nstory: screens-nerd-starchess-demo--king-hunt\nimplicit legal checks + HP; tank on g6" as D2 <<app>>
-  component "King Hunt (live)\nstory: screens-nerd-starchess-demo--king-hunt-live\nstanding Nc5 check; ResourceBar / TurnBar / End;\nbrain breaks off king contact (no HP trade)" as D3 <<app>>
+  component "Combat Chain\nstory: starchess-demo--combat-chain\nW & B per turn; attack → death → occupy" as D1 <<app>>
+  component "King Hunt\nstory: starchess-demo--king-hunt\nimplicit legal checks + HP; tank on g6" as D2 <<app>>
+  component "King Hunt (live)\nstory: starchess-demo--king-hunt-live\nstanding Nc5 check; ResourceBar / TurnBar / End;\nadjutant breaks off king contact (no HP trade)" as D3 <<app>>
+  component "GasDeploy specials\nstory: starchess-special-moves--*\n+ starchess-turn-chrome--gas-deploy\n+ starchess-features-gasdeploy--*\n""GasDeployScenarioScreen"" + fixtures" as D5 <<app>>
   component "Fog-edge Bishop / Rook tank\nstory: starchess-fog-of-war-and-move-animations--bishop\n(+ King/Pawn/Knight/Queen/Rook tank|siege)\nmove into fog → capture/occupy blocker" as D4 <<app>>
 }
 
@@ -28,7 +30,7 @@ package "Shipped (do not re-ticket)" {
   component "Sieged rook immobile S:\n""scValidate"" + ""endScTurn"" toggle" as SH10 <<app>>
   component "King duel — adjacent kings fight\nface-to-face: mutual 1 HP/turn, parting shot,\ndeploy doubling, 0/0 = draw, phase O absorbing\n""board.ts"" + ""resolveTurn"" + ""scOutcome.ts""\ntests: ""__tests__/kingDuel.test.ts""" as SH11 <<app>>
   component "Intent overlay rings **both** kings\nwhen they are in contact\n""intentOverlays.ts""" as SH12 <<app>>
-  component "Adjutant lockstep — an adjacent enemy king\nis a real threat; the adjutant breaks off\ncontact rather than trading HP\n""demos/adjutant.ts""" as SH13 <<app>>
+  component "Adjutant lockstep — an adjacent enemy king\nis a real threat; the adjutant breaks off\ncontact rather than trading HP\n""packages/starchess-core/ai/adjutant.ts""" as SH13 <<app>>
 }
 
 package "Pending" {
@@ -39,13 +41,16 @@ package "Pending" {
 }
 
 note bottom
-  **Verify:**
-  ""cd apps/ui && npm run lint""
-  ""cd apps/ui && npm run test:int -- tests/starchess""
-  (""tests/starchess"" is the doc's filter; the suite lives under
-  ""src/starchess/__tests__/"" — ""npm run test:int -- src/starchess"" runs it.)
-  **King duel rules:** resolve.puml. The Pending entries above are known
-  gaps, **not** shipped behaviour — a StarChess draw currently ends the
-  game silently (phase ""O"", no banner).
+  **OUTDATED after Phase 5–6.** ""apps/ui/src/starchess"" is **deleted**.
+  Shipped/pending path labels above are pre-cutover names.
+  **Live:** demos/stories → ""apps/starchess/src/demos"" + ""apps/starchess/src/stories"";
+  rules → ""packages/starchess-core""; PWA deploy → ""_spec/apps/starchess/deployment.puml"".
+  **Verify (current):**
+  ""pnpm --filter @chess-coach/starchess-core test""
+  ""pnpm --filter @chess-coach/starchess test""
+  ""pnpm --filter @chess-coach/starchess storybook""
+  **King duel rules:** resolve.puml (also OUTDATED path map). Pending entries
+  are known gaps, **not** shipped behaviour — a draw may still end silently
+  (phase ""O"") until banner work lands in ""apps/starchess"".
 end note
 @enduml

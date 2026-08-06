@@ -17,6 +17,7 @@ import type { Square } from "chess.js";
 import {
   UNIT_COST,
   adjacentSquares,
+  charonTargetQueenFromPlacement,
   findKing,
   pawnSingleTarget,
   placementToMap,
@@ -27,19 +28,21 @@ import {
 
 import { useMatchStore } from "~/app/MatchStoreContext";
 import { Button } from "~/components/primitives/Button";
-import { DualNavButton } from "~/components/primitives/DualNavButton";
 import { Label } from "~/components/primitives/Label";
 import { Screen } from "~/components/primitives/Screen";
 import { squareBoxStyle, findBoardGrid } from "~/presentation/animations/boardGeom";
-import { StarChessBoard, type BoardVariant } from "~/presentation/board/StarChessBoard";
+import { LiveStarChessBoard } from "~/presentation/board/LiveStarChessBoard";
 import { GasDeploy } from "~/presentation/features/GasDeploy";
 import { DeployModal } from "~/presentation/hud/DeployModal";
+import { ObserverReviewChrome } from "~/presentation/hud/ObserverReviewChrome";
 import { ResourceBar } from "~/presentation/hud/ResourceBar";
 import { TurnBar } from "~/presentation/hud/TurnBar";
 import { usePieceSpecialArm } from "~/presentation/hooks/usePieceSpecialArm";
+import type { BoardVariant } from "~/types/board";
+import { tacticalJumpTargets } from "~/presentation/specials/queenTacticalJump";
 import { storedMaterial, viewerColor } from "~/app/matchEconomy";
-import { outcomeLabel } from "~/app/selectors";
-import styles from "~/app/NerdScreen.module.css";
+import { displayedSnapshot, outcomeLabel } from "~/app/selectors";
+import styles from "~/app/StarChessScreen.module.css";
 
 export type AutoQueueOpponentResult = {
   snapshot: ScFenSnapshot;
@@ -102,6 +105,14 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
     return adjacentSquares(king, occupied);
   });
 
+  const specialTargetSquares = createMemo((): Square[] => {
+    const t = store.state().targeting;
+    if (!t) return [];
+    if (t.kind === "bishopSnipe") return [t.to];
+    if (t.kind === "queenWarp") return [...t.targets];
+    return [];
+  });
+
   const modalPending = createMemo(() => {
     if (spawnPhase() !== "modal") return null;
     return { color: viewerColor(store) };
@@ -156,7 +167,7 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
         type: "QUEUE_REJECT",
         message: `Pick a unit to deploy · minerals ${storedMaterial(store)}`,
       });
-      return false; // mark used only after spawn commits
+      return "pending"; // open modal; mark used only after spawn commits
     },
     r: (ctx) => {
       const color = viewerColor(store);
@@ -195,6 +206,53 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
       )
         ? "armed"
         : false;
+    },
+    b: (ctx) => {
+      const color = viewerColor(store);
+      const queen = charonTargetQueenFromPlacement(snap().placement, ctx.square);
+      if (!queen) {
+        store.dispatch({
+          type: "QUEUE_REJECT",
+          message: "Charon Booster Missiles needs exactly one enemy queen on a diagonal",
+        });
+        return false;
+      }
+      setSpawnPhase("idle");
+      setSpawnUnit(null);
+      store.dispatch({
+        type: "OPEN_BISHOP_SNIPE",
+        color,
+        from: ctx.square,
+        to: queen,
+      });
+      requestAnimationFrame(() => requestAnimationFrame(syncOverlay));
+      // Mark used only when the snipe queues.
+      return "pending";
+    },
+    q: (ctx) => {
+      const color = viewerColor(store);
+      const sieged = store.state().siegedRooks;
+      const targets = tacticalJumpTargets(snap().placement, ctx.square, color, {
+        rookModeFor: (sq) => (sieged.has(sq) ? "siege" : "tank"),
+      });
+      if (targets.length === 0) {
+        store.dispatch({
+          type: "QUEUE_REJECT",
+          message: "Tactical Jump needs a visible empty square",
+        });
+        return false;
+      }
+      setSpawnPhase("idle");
+      setSpawnUnit(null);
+      store.dispatch({
+        type: "OPEN_QUEEN_WARP",
+        color,
+        from: ctx.square,
+        targets,
+      });
+      requestAnimationFrame(() => requestAnimationFrame(syncOverlay));
+      // Mark used only when the jump queues.
+      return "pending";
     },
   });
 
@@ -257,6 +315,28 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
     setSpawnUnit(null);
   };
 
+  const commitBishopSnipe = (to: Square) => {
+    const t = store.state().targeting;
+    if (!t || t.kind !== "bishopSnipe" || t.to !== to) return;
+    const timing = specialTimingFor(snap().queue, t.color);
+    const ok = tryQueue(
+      { timing, kind: "bishopSnipe", color: t.color, from: t.from, to: t.to },
+      `Charon Booster Missiles ${t.from}→${t.to} queued · End to fire`,
+    );
+    if (ok) store.dispatch({ type: "MARK_SPECIAL_USED", square: t.from });
+  };
+
+  const commitQueenWarp = (to: Square) => {
+    const t = store.state().targeting;
+    if (!t || t.kind !== "queenWarp" || !t.targets.includes(to)) return;
+    const timing = specialTimingFor(snap().queue, t.color);
+    const ok = tryQueue(
+      { timing, kind: "queenWarp", color: t.color, from: t.from, to },
+      `Tactical Jump ${t.from}→${to} queued · End to resolve`,
+    );
+    if (ok) store.dispatch({ type: "MARK_SPECIAL_USED", square: t.from });
+  };
+
   // Demo AI: queue opponent once per open planning window (timer armed).
   createEffect(() => {
     if (!starChessMode()) return;
@@ -300,6 +380,7 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
   createEffect(() => {
     void snap().placement;
     void spawnPhase();
+    void store.state().targeting;
     requestAnimationFrame(() => requestAnimationFrame(syncOverlay));
   });
 
@@ -317,14 +398,12 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
         return;
       }
       if (e.metaKey || e.ctrlKey || e.altKey) return;
-      const max = store.state().settledSnapshots.length - 1;
-      const i = store.state().reviewIndex;
       if (e.key === "ArrowLeft") {
         e.preventDefault();
-        if (i > 0) store.dispatch({ type: "REVIEW_SEEK", index: i - 1 });
+        store.reviewBack();
       } else if (e.key === "ArrowRight") {
         e.preventDefault();
-        if (i < max) store.dispatch({ type: "REVIEW_SEEK", index: i + 1 });
+        store.reviewForward();
       }
     };
     window.addEventListener("keydown", onKey);
@@ -350,72 +429,70 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
 
   onCleanup(() => store.cancelEffects());
 
-  const reviewLabel = () => {
+  const reviewTurnNumber = () => {
     const s = store.state();
-    const max = Math.max(0, s.settledSnapshots.length - 1);
-    const i = s.reviewIndex;
-    if (i <= 0) return "Start";
-    if (i >= max) return "Final";
-    return `Turn ${i} of ${max}`;
+    const settled = s.settledSnapshots[s.reviewIndex];
+    return Math.max(1, settled?.turn ?? snap().turn);
   };
+
+  const reviewBusy = () =>
+    store.state().timeline.active ||
+    store.reviewPhase() === "check" ||
+    store.reviewPhase() === "intent" ||
+    store.reviewPhase() === "resolve";
 
   return (
     <Screen>
+      <Screen.SidebarInset>
+        <div class={styles.header}>
+          <Button href="/">Back</Button>
+          <div>
+            <Label variant="title">StarChess</Label>
+            <p class={styles.matchup}>Nerd vs Selena</p>
+          </div>
+        </div>
+        <Show when={starChessMode()}>
+          <div class={styles.topChrome} data-testid="nerd-board-chrome">
+            <span
+              data-testid="king-lives"
+              data-w={snap().kingLives.w}
+              data-b={snap().kingLives.b}
+              hidden
+            />
+            <Show
+              when={!ended()}
+              fallback={
+                <ObserverReviewChrome
+                  turn={reviewTurnNumber()}
+                  phase={store.reviewPhase()}
+                  snapshot={displayedSnapshot(store.state())}
+                  onBack={() => store.reviewBack()}
+                  onForward={() => store.reviewForward()}
+                  backDisabled={
+                    reviewBusy() || store.state().reviewIndex <= 0
+                  }
+                  forwardDisabled={
+                    reviewBusy() ||
+                    store.state().reviewIndex >=
+                      store.state().settledSnapshots.length - 1
+                  }
+                />
+              }
+            >
+              <ResourceBar />
+              <TurnBar
+                autoStart={false}
+                resolveOnEnd={false}
+                onEnd={() => store.submitTurn("end")}
+              />
+            </Show>
+          </div>
+        </Show>
+      </Screen.SidebarInset>
       <Screen.BoardArea>
         <Screen.BoardColumn>
-          <div class={styles.header}>
-            <Button href="/">Back</Button>
-            <div>
-              <Label variant="title">StarChess</Label>
-              <p class={styles.matchup}>Nerd vs Selena</p>
-            </div>
-          </div>
-          <Show when={starChessMode()}>
-            <div class={styles.topChrome} data-testid="nerd-board-chrome">
-              <span
-                data-testid="king-lives"
-                data-w={snap().kingLives.w}
-                data-b={snap().kingLives.b}
-                hidden
-              />
-              <Show
-                when={!ended()}
-                fallback={
-                  <DualNavButton
-                    inverted
-                    inline
-                    label={reviewLabel()}
-                    onBack={() =>
-                      store.dispatch({
-                        type: "REVIEW_SEEK",
-                        index: store.state().reviewIndex - 1,
-                      })
-                    }
-                    onForward={() =>
-                      store.dispatch({
-                        type: "REVIEW_SEEK",
-                        index: store.state().reviewIndex + 1,
-                      })
-                    }
-                    backDisabled={store.state().reviewIndex <= 0}
-                    forwardDisabled={
-                      store.state().reviewIndex >=
-                      store.state().settledSnapshots.length - 1
-                    }
-                  />
-                }
-              >
-                <ResourceBar />
-                <TurnBar
-                  autoStart={false}
-                  resolveOnEnd={false}
-                  onEnd={() => store.submitTurn("end")}
-                />
-              </Show>
-            </div>
-          </Show>
           <div class={styles.boardHost} ref={(el) => (boardHost = el)}>
-            <StarChessBoard fog={fogOfWar()} variant={variant()} />
+            <LiveStarChessBoard fog={fogOfWar()} variant={variant()} />
             <Show when={starChessMode() && overlayBox()}>
               {(box) => (
                 <div
@@ -441,10 +518,25 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
                       )}
                     </For>
                   </Show>
+                  <For each={specialTargetSquares()}>
+                    {(sq) => (
+                      <div
+                        class={`${styles.hit} ${styles.hitAdjacent}`}
+                        style={squareBoxStyle(sq, box().width, box().height)}
+                        data-square={sq}
+                        data-special-target
+                        onClick={() => {
+                          const kind = store.state().targeting?.kind;
+                          if (kind === "bishopSnipe") commitBishopSnipe(sq);
+                          else if (kind === "queenWarp") commitQueenWarp(sq);
+                        }}
+                      />
+                    )}
+                  </For>
                 </div>
               )}
             </Show>
-            <Show when={starChessMode()}>
+            <Show when={starChessMode() && !ended()}>
               <DeployModal
                 pending={modalPending()}
                 onSelect={onSelectSpawnUnit}
@@ -452,34 +544,37 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
               />
             </Show>
           </div>
-          <Show
-            when={starChessMode()}
-            fallback={<p class={styles.placeholder}>Nerd mode is awakening…</p>}
-          >
-            <Show
-              when={outcomeLabel(store.state())}
-              fallback={<p class={styles.placeholder}>{store.state().statusText}</p>}
-            >
-              {(label) => <p class={styles.placeholder}>{label()}</p>}
-            </Show>
-          </Show>
         </Screen.BoardColumn>
       </Screen.BoardArea>
-      <Show when={starChessMode() && !ended()}>
-        <Screen.Footer>
-          <div class={styles.gasFooter} data-testid="nerd-gas-deploy">
-            <GasDeploy
-              onDeploy={onGasDeploy}
-              onCancel={() =>
-                store.dispatch({
-                  type: "QUEUE_REJECT",
-                  message: "Cancelled — canister returned",
-                })
-              }
-            />
-          </div>
-        </Screen.Footer>
-      </Show>
+      <Screen.Footer>
+        <Show
+          when={starChessMode()}
+          fallback={<p class={styles.placeholder}>Nerd mode is awakening…</p>}
+        >
+          <Show
+            when={outcomeLabel(store.state())}
+            fallback={<p class={styles.placeholder}>{store.state().statusText}</p>}
+          >
+            {(label) => <p class={styles.placeholder}>{label()}</p>}
+          </Show>
+          <Show when={!ended()}>
+            <div class={styles.gasFooter} data-testid="nerd-gas-deploy">
+              <GasDeploy
+                onDeploy={onGasDeploy}
+                onCancel={() => {
+                  setSpawnPhase("idle");
+                  setSpawnUnit(null);
+                  store.dispatch({ type: "CANCEL_TARGET" });
+                  store.dispatch({
+                    type: "QUEUE_REJECT",
+                    message: "Cancelled — canister returned",
+                  });
+                }}
+              />
+            </div>
+          </Show>
+        </Show>
+      </Screen.Footer>
     </Screen>
   );
 };

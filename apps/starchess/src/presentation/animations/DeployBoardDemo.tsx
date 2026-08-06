@@ -14,6 +14,7 @@ import {
 } from "~/presentation/animations/deployAnim";
 import styles from "~/presentation/animations/DeployBoardDemo.module.css";
 import { AnimationStage } from "~/presentation/animations/AnimationStage";
+import { Screen } from "~/components/primitives/Screen";
 import type { DeployCue } from "~/presentation/types";
 
 type DeployPhase = "idle" | "falling" | "landed";
@@ -80,18 +81,24 @@ export const DeployBoardDemo: Component<{ piece: DeployPiece }> = (props) => {
   };
 
   return (
-    <div class={styles.demo}>
-      <div class={styles.host}>
-        <AnimationStage
-          fen={fen()}
-          fog={false}
-          deployCues={cues()}
-          hideSquares={hide() as never}
-        />
-      </div>
-      <p class={styles.caption}>
-        StarChess · {label()} · {phase()} · deployCues
-      </p>
-    </div>
+    <Screen>
+      <Screen.BoardArea>
+        <Screen.BoardColumn>
+          <div class={styles.host}>
+            <AnimationStage
+              fen={fen()}
+              fog={false}
+              deployCues={cues()}
+              hideSquares={hide() as never}
+            />
+          </div>
+        </Screen.BoardColumn>
+      </Screen.BoardArea>
+      <Screen.Footer>
+        <p class={styles.caption}>
+          StarChess · {label()} · {phase()} · deployCues
+        </p>
+      </Screen.Footer>
+    </Screen>
   );
 };

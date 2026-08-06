@@ -9,17 +9,11 @@
  */
 
 import {
-  AddScActionError,
-  UNIT_COST,
   addScAction,
-  addScMove,
   classicFenFromSc,
   endScTurn,
-  findKing,
   formatScFen,
   parseScFen,
-  placementToMap,
-  type PieceColor,
   type ScActionInput,
   type ScFenSnapshot,
 } from "@chess-coach/starchess-core";
@@ -102,122 +96,3 @@ export const KING_HUNT_PLY_FENS = KING_HUNT_PLY_SC.map((snap, ply) => ({
   scfen: formatScFen(snap),
   lives: snap.kingLives.w,
 }));
-
-export type KingHuntLiveOpponentResult = {
-  snapshot: ScFenSnapshot;
-  /** Minerals to debit when a spawn was queued (Command Center deploy). */
-  spendMinerals?: { color: PieceColor; amount: number };
-};
-
-/**
- * Live enemy (black) script — DualNav defender path (e4→d5→c5→c6) plus, once
- * on c5: spawn marine c4, gas +1 steps (c4→c3→c2), promote c2→c1=q.
- * No-ops if black already has a queued action.
- */
-export const queueKingHuntLiveOpponent = (
-  snap: ScFenSnapshot,
-): KingHuntLiveOpponentResult => {
-  if (snap.phase !== "P") return { snapshot: snap };
-  if (snap.queue?.actions.some((a) => a.color === "b")) return { snapshot: snap };
-
-  const map = placementToMap(snap.placement);
-  const king = findKing(map, "b");
-  if (!king) return { snapshot: snap };
-
-  const tryQueue = (build: (s: ScFenSnapshot) => ScFenSnapshot): ScFenSnapshot | null => {
-    try {
-      return build({ ...snap, queue: snap.queue ?? { actions: [] } });
-    } catch (e) {
-      if (e instanceof AddScActionError) return null;
-      throw e;
-    }
-  };
-
-  if (king === "e4") {
-    const next = tryQueue((s) => addScMove(s, { color: "b", from: "e4", to: "d5" }));
-    if (next) return { snapshot: next };
-  }
-  if (king === "d5") {
-    const next = tryQueue((s) => addScMove(s, { color: "b", from: "d5", to: "c5" }));
-    if (next) return { snapshot: next };
-  }
-
-  if (king === "c5") {
-    const pawnC4 = map.get("c4");
-    const pawnC3 = map.get("c3");
-    const pawnC2 = map.get("c2");
-    const queenC1 = map.get("c1");
-    const hasMarine =
-      !!(pawnC4 && pawnC4.color === "b") ||
-      !!(pawnC3 && pawnC3.color === "b") ||
-      !!(pawnC2 && pawnC2.color === "b") ||
-      !!(queenC1 && queenC1.color === "b");
-
-    if (!hasMarine) {
-      const next = tryQueue((s) =>
-        addScAction({
-          snapshot: s,
-          action: {
-            timing: "B",
-            kind: "spawn",
-            color: "b",
-            from: "c5",
-            to: "c4",
-            unit: "p",
-          },
-        }).snapshot,
-      );
-      if (next) {
-        return {
-          snapshot: next,
-          spendMinerals: { color: "b", amount: UNIT_COST.p },
-        };
-      }
-    }
-
-    // Gas step +1 only (pawnDouble).
-    if (pawnC4?.type === "p" && pawnC4.color === "b" && !map.has("c3")) {
-      const next = tryQueue((s) =>
-        addScAction({
-          snapshot: s,
-          action: {
-            timing: "B",
-            kind: "pawnDouble",
-            color: "b",
-            from: "c4",
-            to: "c3",
-          },
-        }).snapshot,
-      );
-      if (next) return { snapshot: next };
-    }
-
-    if (pawnC3?.type === "p" && pawnC3.color === "b" && !map.has("c2")) {
-      const next = tryQueue((s) =>
-        addScAction({
-          snapshot: s,
-          action: {
-            timing: "B",
-            kind: "pawnDouble",
-            color: "b",
-            from: "c3",
-            to: "c2",
-          },
-        }).snapshot,
-      );
-      if (next) return { snapshot: next };
-    }
-
-    if (pawnC2?.type === "p" && pawnC2.color === "b" && !map.has("c1")) {
-      const next = tryQueue((s) =>
-        addScMove(s, { color: "b", from: "c2", to: "c1", promotion: "q" }),
-      );
-      if (next) return { snapshot: next };
-    }
-
-    const next = tryQueue((s) => addScMove(s, { color: "b", from: "c5", to: "c6" }));
-    if (next) return { snapshot: next };
-  }
-
-  return { snapshot: snap };
-};

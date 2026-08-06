@@ -137,6 +137,8 @@ describe("golden — pawnDouble gas-step events", () => {
     const { next, bMoves } = endScTurn(snap);
     expect(bMoves).toEqual([{ piece: "p", color: "w", from: "e2", to: "e3" }]);
     expect(next.placement).toBe("4k3/8/8/8/8/4P3/8/4K3");
+    // Green aura square follows the gas-stepped pawn for the next planning window.
+    expect(next.specialsUsed).toEqual(["e3"]);
   });
 
   it("B+C advances two ranks with gas then classical rewrite", () => {
@@ -158,6 +160,8 @@ describe("golden — pawnDouble gas-step events", () => {
     const { next, bMoves } = endScTurn(snap);
     expect(bMoves).toEqual([{ piece: "p", color: "w", from: "e2", to: "e3" }]);
     expect(next.placement).toBe("4k3/8/8/8/4P3/8/8/4K3");
+    // Glow migrates with B then rewritten classical (e2→e3→e4).
+    expect(next.specialsUsed).toEqual(["e4"]);
   });
 });
 

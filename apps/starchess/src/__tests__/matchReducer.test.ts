@@ -111,6 +111,7 @@ describe("matchReducer", () => {
           kingLives: { w: 3, b: 0 },
         },
       ],
+      settledResolves: [],
       reviewIndex: 2,
       outcome: { winner: "w" },
     };

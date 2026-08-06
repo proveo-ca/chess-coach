@@ -4,7 +4,7 @@
  */
 import type { ScFenSnapshot } from "@chess-coach/starchess-core";
 
-import type { VisionMode } from "~/presentation/board/EclipseBoard";
+import type { VisionMode } from "~/types/board";
 
 export type FogEdgeScenarioStep = {
   caption: string;

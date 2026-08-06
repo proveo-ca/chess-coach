@@ -22,7 +22,16 @@ const emptyTimeline = (placement: string | null = null): TimelineState => ({
   hiddenSquares: new Set(),
   moveProgress: {},
   displayPlacement: placement,
+  displayKingLives: null,
+  displayMines: null,
+  displaySiegedRooks: null,
 });
+
+const reviewStatus = (index: number, max: number): string => {
+  if (index <= 0) return "Start";
+  if (index >= max) return "Final";
+  return `Turn ${index} of ${max}`;
+};
 
 const defaultEconomies = (stored: number): Record<StarChessColor, PlayerEconomy> => ({
   w: { stored, deployed: 0 },
@@ -55,11 +64,13 @@ const seedFromSnap = (snap: ScFenSnapshot, stored: number): MatchState => {
     viewer: "w",
     deadlineAt: null,
     targeting: null,
-    specialsUsed: new Set(snap.specialsUsed ?? []),
+    // Armed specials this planning window only — not snap `U:` (enemy fog pierce).
+    specialsUsed: new Set(),
     siegedRooks: new Set(snap.siegedRooks ?? []),
     timeline: emptyTimeline(),
     outcome,
     settledSnapshots: [snap],
+    settledResolves: [],
     reviewIndex: 0,
     statusText: outcome
       ? outcome.draw
@@ -144,22 +155,55 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
     case "REMOVE_ACTION": {
       if (state.phase !== "planning") return state;
       try {
-        const { snapshot } = removeScAction({
+        const { snapshot, removed } = removeScAction({
           snapshot: state.liveSnapshot,
           seq: action.seq,
         });
-        return { ...state, liveSnapshot: snapshot, statusText: "Action removed" };
+        const specialsUsed = new Set(state.specialsUsed);
+        if (removed.timing !== "C") specialsUsed.delete(removed.from);
+        return {
+          ...state,
+          liveSnapshot: snapshot,
+          specialsUsed,
+          statusText: "Action removed",
+        };
       } catch {
         return state;
       }
     }
     case "OPEN_SPAWN":
-      if (state.phase !== "planning") return state;
+      if (state.phase !== "planning" && state.phase !== "targeting") return state;
       return {
         ...state,
         phase: "targeting",
         targeting: { kind: "spawn", unit: action.unit, color: action.color },
         statusText: `Deploy ${action.unit}`,
+      };
+    case "OPEN_BISHOP_SNIPE":
+      if (state.phase !== "planning" && state.phase !== "targeting") return state;
+      return {
+        ...state,
+        phase: "targeting",
+        targeting: {
+          kind: "bishopSnipe",
+          from: action.from,
+          to: action.to,
+          color: action.color,
+        },
+        statusText: `Charon Booster Missiles armed — click the queen on ${action.to}`,
+      };
+    case "OPEN_QUEEN_WARP":
+      if (state.phase !== "planning" && state.phase !== "targeting") return state;
+      return {
+        ...state,
+        phase: "targeting",
+        targeting: {
+          kind: "queenWarp",
+          from: action.from,
+          targets: action.targets,
+          color: action.color,
+        },
+        statusText: `Tactical Jump armed — click a highlighted empty square`,
       };
     case "CANCEL_TARGET":
       return {
@@ -180,7 +224,7 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
         phase: "planning",
         liveSnapshot: action.snapshot,
         siegedRooks: new Set(action.snapshot.siegedRooks ?? []),
-        specialsUsed: new Set(action.snapshot.specialsUsed ?? []),
+        // Keep planning-window arm marks — never import snap `U:` (enemy aura).
         targeting: null,
         selected: null,
         legalDests: [],
@@ -265,6 +309,8 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
       }
       const next = result.next;
       const outcome = next.phase === "O" ? scOutcome(next) : null;
+      // Turn-open checks are their own history ply so DualNav review replays
+      // chip → (later) End, instead of folding HP into the following End.
       return {
         ...state,
         phase: outcome ? "gameOver" : "planning",
@@ -273,10 +319,9 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
         siegedRooks: new Set(next.siegedRooks ?? []),
         timeline: emptyTimeline(),
         outcome,
-        settledSnapshots: outcome
-          ? [...state.settledSnapshots, next]
-          : state.settledSnapshots,
-        reviewIndex: outcome ? state.settledSnapshots.length : state.reviewIndex,
+        settledSnapshots: [...state.settledSnapshots, next],
+        settledResolves: [...state.settledResolves, result],
+        reviewIndex: state.settledSnapshots.length,
         lastResolve: null,
         statusText: outcome
           ? outcome.draw
@@ -292,7 +337,8 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
     case "TIMELINE_START":
       return {
         ...state,
-        phase: "resolving",
+        // Terminal review replay stays in `gameOver` so DualNav chrome remains.
+        phase: state.phase === "gameOver" ? "gameOver" : "resolving",
         timeline: {
           active: true,
           cues: action.cues,
@@ -300,10 +346,45 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
           hiddenSquares: new Set(),
           moveProgress: {},
           displayPlacement: action.placement,
+          displayKingLives: null,
+          displayMines: null,
+          displaySiegedRooks: null,
         },
       };
     case "TIMELINE_COMMIT": {
       const hidden = new Set(action.hidden ?? [...state.timeline.hiddenSquares]);
+      if (state.phase === "gameOver") {
+        // Review replay: board reads timeline overlays; never mutate live/outcome.
+        return {
+          ...state,
+          siegedRooks: action.siegedRooks
+            ? new Set(action.siegedRooks)
+            : state.siegedRooks,
+          timeline: {
+            ...state.timeline,
+            playingIds:
+              action.playingIds !== undefined
+                ? [...action.playingIds]
+                : state.timeline.playingIds,
+            hiddenSquares: hidden,
+            moveProgress:
+              action.moveProgress !== undefined
+                ? action.moveProgress
+                : state.timeline.moveProgress,
+            displayPlacement: action.placement ?? state.timeline.displayPlacement,
+            displayKingLives:
+              action.kingLives ?? state.timeline.displayKingLives,
+            displayMines:
+              action.mines !== undefined
+                ? action.mines
+                : state.timeline.displayMines,
+            displaySiegedRooks:
+              action.siegedRooks !== undefined
+                ? [...action.siegedRooks]
+                : state.timeline.displaySiegedRooks,
+          },
+        };
+      }
       const snap = state.liveSnapshot;
       const sieged = action.siegedRooks
         ? new Set(action.siegedRooks)
@@ -332,10 +413,36 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
               ? action.moveProgress
               : state.timeline.moveProgress,
           displayPlacement: action.placement ?? state.timeline.displayPlacement,
+          displayKingLives: null,
+          displayMines: null,
+          displaySiegedRooks: null,
         },
       };
     }
     case "TIMELINE_DONE": {
+      // Terminal DualNav finished replaying a stored resolve.
+      if (state.phase === "gameOver") {
+        const max = state.settledSnapshots.length - 1;
+        const nextIndex = Math.min(state.reviewIndex + 1, Math.max(0, max));
+        const settled = state.settledSnapshots[nextIndex];
+        if (!settled) {
+          return {
+            ...state,
+            lastResolve: null,
+            timeline: emptyTimeline(),
+          };
+        }
+        return {
+          ...state,
+          reviewIndex: nextIndex,
+          lastResolve: null,
+          timeline: emptyTimeline(),
+          // Arm marks are live-planning only — do not import snap `U:`.
+          specialsUsed: new Set(),
+          siegedRooks: new Set(settled.siegedRooks ?? []),
+          statusText: reviewStatus(nextIndex, max),
+        };
+      }
       const result = state.lastResolve;
       if (!result) {
         return {
@@ -357,11 +464,13 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
         liveSnapshot: next,
         turnStartChecksApplied: false,
         economies,
-        specialsUsed: new Set(next.specialsUsed ?? []),
+        // Fresh arm marks — prior-turn `U:` stays on liveSnapshot for enemy aura/fog only.
+        specialsUsed: new Set(),
         siegedRooks: new Set(next.siegedRooks ?? []),
         timeline: emptyTimeline(),
         outcome,
         settledSnapshots: [...state.settledSnapshots, next],
+        settledResolves: [...state.settledResolves, result],
         reviewIndex: state.settledSnapshots.length,
         lastResolve: null,
         statusText: outcome
@@ -375,6 +484,14 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
         deadlineAt: outcome ? null : state.deadlineAt,
       };
     }
+    case "REVIEW_PLAY": {
+      if (state.phase !== "gameOver" || state.timeline.active) return state;
+      return {
+        ...state,
+        lastResolve: action.result,
+        statusText: "Reviewing…",
+      };
+    }
     case "REVIEW_SEEK": {
       if (state.phase !== "gameOver") return state;
       const max = state.settledSnapshots.length - 1;
@@ -385,18 +502,16 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
       return {
         ...state,
         reviewIndex: index,
+        lastResolve: null,
+        // Arm marks are live-planning only — do not import snap `U:`.
+        specialsUsed: new Set(),
         siegedRooks: new Set(settled.siegedRooks ?? []),
         timeline: emptyTimeline(),
         targeting: null,
         selected: null,
         legalDests: [],
         deadlineAt: null,
-        statusText:
-          index === 0
-            ? "Start"
-            : index === max
-              ? "Final"
-              : `Turn ${index} of ${max}`,
+        statusText: reviewStatus(index, max),
       };
     }
     case "SET_VIEWER":

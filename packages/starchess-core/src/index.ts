@@ -1,8 +1,9 @@
 /**
  * @chess-coach/starchess-core — pure StarChess rules (no SolidJS / DOM).
  *
- * Extraction is incremental: modules move here from apps/ui/src/starchess
- * behind temporary re-export facades. See PLAN.md Phase 1.
+ * Owns rules formerly under apps/ui/src/starchess (deleted in Phase 6).
+ * UI/PWA: apps/starchess. Specs still backlink _spec/apps/ui/starchess/*
+ * until rewritten under _spec/packages/starchess-core.
  */
 
 export type { Square } from "./model/square";
@@ -184,9 +185,6 @@ export {
 
 export {
   adjutant,
-  kingHuntBrain,
   type AdjutantResult,
   type AdjutantContext,
-  type KingHuntBrainResult,
-  type KingHuntBrainContext,
 } from "./ai/adjutant";

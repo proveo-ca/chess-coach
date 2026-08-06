@@ -1,6 +1,6 @@
 import type { PieceSymbol, Square } from "chess.js";
 
-import type { MatchStore } from "~/app/MatchStoreContext";
+import type { MatchStore } from "~/types/match";
 import {
   canPawnDoubleFree,
   hasUsedSpecialThisTurn,
@@ -19,8 +19,8 @@ export type PieceSpecialDef = {
   copy: SpecialCopy;
 };
 
-/** Handler outcome — `free` skips specials-used / once-per-turn marking. */
-export type ArmResult = false | "armed" | "free";
+/** Handler outcome — `free` / `pending` skip specials-used marking. */
+export type ArmResult = false | "armed" | "free" | "pending";
 
 const DEFS: Record<PieceSymbol, PieceSpecialDef> = {
   p: { piece: "p", kind: "pawnDouble", copy: specialCopyFor("p") },
@@ -59,7 +59,8 @@ export const armPieceSpecial = (
 
   const result = fn({ square: target.square, piece: target.piece });
   if (result === false) return false;
-  if (result === "free") return true;
+  // `pending` = modal / targeting armed; mark when the action actually queues.
+  if (result === "free" || result === "pending") return true;
   store.dispatch({ type: "MARK_SPECIAL_USED", square: target.square });
   return true;
 };

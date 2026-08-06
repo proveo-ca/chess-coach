@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 const gotoScfen = async (page: import("@playwright/test").Page, scfen: string) => {
-  await page.goto(`/starchess?scfen=${encodeURIComponent(scfen)}`);
+  await page.goto(`/?scfen=${encodeURIComponent(scfen)}`);
   await expect(page.getByTestId("nerd-board-chrome")).toBeVisible({ timeout: 20_000 });
 };
 
@@ -29,10 +29,14 @@ test.describe("StarChess queue edit + gas pawn", () => {
     await gotoScfen(page, scfen);
     const queue = page.getByTestId("turn-queue");
     await expect(queue).toContainText(/B pawnDouble/i);
+    // Intent canister on the gas-armed unit (top-right badge).
+    await expect(page.locator("[data-square='e2'][data-intent-canister]")).toBeVisible();
+    await expect(page.locator("[data-square='e2'] .intentCanister, [data-square='e2'] [class*='intentCanister']")).toBeVisible();
     const chrome = page.getByTestId("nerd-board-chrome");
     await expect(chrome).toBeVisible();
     await page.getByTestId("queue-remove-0").click();
     await expect(queue).not.toContainText(/pawnDouble/i);
+    await expect(page.locator("[data-square='e2'][data-intent-canister]")).toHaveCount(0);
   });
 
   test("pawnDouble gas then classical End advances two ranks", async ({ page }) => {

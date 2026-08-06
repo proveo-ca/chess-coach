@@ -1,12 +1,13 @@
 @startuml turn-queue-sequence
 ' SPEC: _spec/apps/ui/starchess/turn-queue-sequence.puml
+' OUTDATED: Phase 5–6 — live screen is apps/starchess.
 ' purpose: Simultaneous turn queue — planning Q:<w>;<b>, End submits, B < C < F then w then b, next snap.
 !include ../../../themes/proveo.puml
 
 title StarChess · Simultaneous Turn Queue
 
 actor Player as P
-participant "apps/ui StarChess screen" as UI <<app>>
+participant "apps/starchess screen\n(was apps/ui StarChess)" as UI <<app>>
 participant "endScTurn" as ES <<app>>
 participant "resolveTurn" as RT <<app>>
 participant "scOutcome" as OUT <<app>>

@@ -1,10 +1,12 @@
-# Playwright e2e against the local UI (web-no-llm).
-# Bind-mounts the repo at /work so playwright webServer can start vite from ../ui.
-# Anonymous volumes keep image node_modules when the bind mount would otherwise hide them.
+# Playwright e2e against standalone StarChess (default) or classical Coach UI.
+# Bind-mounts the repo at /work so playwright webServer can start vite from the
+# selected app. Anonymous volumes keep image node_modules when the bind mount
+# would otherwise hide them.
 #
-# Linux: network_mode host lets vite (localhost:5173) and wrangler (:8787) be reachable
-# the same way as a host run. On Docker Desktop (Mac/Windows), host networking differs —
-# drop network_mode or use port publishing if needed.
+# Linux: network_mode host lets vite (localhost:5175 / :5173) and Storybook
+# (:6007) be reachable the same way as a host run. On Docker Desktop
+# (Mac/Windows), host networking differs — drop network_mode or use port
+# publishing if needed.
 services:
   e2e:
     build:
@@ -14,9 +16,11 @@ services:
     volumes:
       - .:/work
       - /work/apps/e2e/node_modules
+      - /work/apps/starchess/node_modules
       - /work/apps/ui/node_modules
+      - /work/packages/starchess-core/node_modules
     environment:
-      E2E_TARGET: web-no-llm
+      E2E_TARGET: starchess
       CI: "1"
     network_mode: host
     # Default: StarChess-focused chromium smoke (same as Dockerfile CMD)
@@ -28,10 +32,13 @@ services:
         "tests/starchess-queue.spec.ts",
         "tests/starchess-exceptions.spec.ts",
         "tests/starchess-promotion.spec.ts",
+        "tests/starchess-gas-used.spec.ts",
+        "tests/starchess-gas-step.spec.ts",
         "--project=chromium",
       ]
 
-  # Full suite (chromium only): docker compose --profile full run --rm e2e-full
+  # Full classical Coach suite (chromium only):
+  #   docker compose --profile full run --rm e2e-full
   e2e-full:
     profiles: ["full"]
     build:
@@ -41,6 +48,7 @@ services:
     volumes:
       - .:/work
       - /work/apps/e2e/node_modules
+      - /work/apps/starchess/node_modules
       - /work/apps/ui/node_modules
     environment:
       E2E_TARGET: web-no-llm

@@ -205,7 +205,7 @@ const laserStarStyle = (
 };
 
 export type AttackAnimationProps = {
-  cues: AttackCue[];
+  cues: readonly AttackCue[];
   /** Cue ids whose hull has swapped to death art (stable — no remount). */
   dyingIds?: Record<string, boolean>;
   boardWidth: number;
@@ -247,12 +247,12 @@ export const AttackAnimation: Component<AttackAnimationProps> = (props) => {
     >
       <For each={props.cues}>
         {(cue) => {
-          // Keyed by cue.id via stable cue objects from the combat bus — do not
-          // rebuild the cues array mid-attack or CSS attack anims restart.
+          // Keyed by cue object identity from the combat bus / timeline —
+          // do not rebuild cue objects mid-attack or CSS anims restart.
           const anim = cue.anim ?? ANIM_BY_PIECE[cue.piece];
           const isDying = () => dying(cue.id);
           return (
-            <>
+            <div data-attack-cue={cue.id} style={{ display: "contents" }}>
               <div
                 class={styles.targetSlot}
                 style={squareBoxStyle(cue.to, props.boardWidth, props.boardHeight)}
@@ -349,7 +349,7 @@ export const AttackAnimation: Component<AttackAnimationProps> = (props) => {
                   <div class={styles.fragCylinder} />
                 </div>
               </Show>
-            </>
+            </div>
           );
         }}
       </For>

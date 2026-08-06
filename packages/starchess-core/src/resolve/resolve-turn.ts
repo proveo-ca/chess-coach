@@ -10,6 +10,7 @@ import type { Square } from "chess.js";
 import {
   mapToPlacement,
   placementToMap,
+  attacksSquare,
   type ScPiece,
 } from "../board/placement";
 import { firstBlockerOnRay, mineAt, pathContactSquares, rayBetween } from "../board/mines";
@@ -540,18 +541,21 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
     // Kings are immune: they occupy without arming or clearing the mine.
     // Sieged rooks cannot relocate, so they never step onto a fogged mine
     // (same fog-contact rule as the enemy-capture fizzle above).
-    // Non-promoting units: attack clears mine then occupy (attacker survives).
-    // Promoting pawns: mutual destruction — mine + pawn die; no occupy / promo.
+    // Units that **attack** `to` (pawn = front diagonals only): attack clears
+    // the mine then occupy (attacker survives). Promoting pawns never attack
+    // straight ahead — their forward step is a move-phase walk-over.
+    // Quiet walk-overs onto a mine are deferred to the move phase (trigger).
     if (!target) {
       const m = mineAt(mines, plan.to);
       if (m && m.color !== plan.color && actor.type !== "k") {
         if (!visible0 && input.siegedRooks?.includes(plan.from) && actor.type === "r") {
           continue;
         }
-        const promoting =
-          actor.type === "p" &&
-          !!plan.promotion &&
-          Number(plan.to[1]) === (plan.color === "w" ? 8 : 1);
+        // Quiet walk-over onto a mine — move phase triggers (pawn forward, etc.).
+        if (!attacksSquare(start, plan.from, plan.to)) {
+          quiets.push(plan);
+          continue;
+        }
         const blast: ResolveAttack = {
           kind: "mineBlast",
           piece: actor.type,
@@ -559,9 +563,6 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
           from: plan.from,
           to: plan.to,
           mineColor: m.color,
-          ...(promoting
-            ? { victim: { piece: actor.type, color: plan.color } }
-            : {}),
         };
         if (!visible0) {
           moveCollisions.push(blast);
@@ -569,11 +570,7 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
           attacks.push(blast);
         }
         removeMineAt(plan.to);
-        if (promoting) {
-          deadSquares.add(plan.from);
-        } else {
-          occupy.push(plan);
-        }
+        occupy.push(plan);
         continue;
       }
     }
@@ -644,7 +641,10 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
           input.pathVisionOpts,
         );
         const startVisible = canSee(plan.color, s);
-        const becomesVisible = reveal != null && reveal > 0;
+        // Path-discovery only when the unit was fogged at the start square.
+        // `pathRevealSteps` does not test `from` vision — a lit target can still
+        // return >0 as the mover walks; that must not defer to phase-3 approach.
+        const becomesVisible = !startVisible && reveal != null && reveal > 0;
         if (!startVisible && !becomesVisible) {
           // Sieged rooks never relocate, so a fogged mid-path unit they can
           // never reach is not contacted either — fizzle the whole intent.
@@ -795,22 +795,12 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
       if (mineAt(mines, dest) && mineAt(mines, dest)!.color !== plan.color) {
         removeMineAt(dest);
       }
-    } else if (!occ && piece.type !== "k") {
-      const m = mineAt(mines, dest);
-      if (m && m.color !== plan.color) {
-        moveCollisions.push({
-          kind: "mineBlast",
-          piece: piece.type,
-          color: plan.color,
-          from: plan.from,
-          to: dest,
-          mineColor: m.color,
-        });
-        removeMineAt(dest);
-      }
     }
 
     // Wake predicate only: mid-path hostile mines (chase). Kings immune.
+    // Destination-on-mine for units that cannot attack `dest` is handled after
+    // landing (walk-over trigger below). Attack-clearable dest mines are
+    // already removed in the attack phase.
     let woke: ScMine | null = null;
     let wakeAt: Square | null = null;
     if (piece.type !== "k") {
@@ -847,6 +837,27 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
         at: dest,
         unit: plan.promotion,
       });
+    }
+
+    // Destination walk-over: quiet step onto a hostile mine (e.g. pawn forward).
+    // Mine triggers — mover dies with the mine; no promotion / occupy left behind.
+    if (piece.type !== "k") {
+      const destMine = mineAt(mines, dest);
+      if (destMine && destMine.color !== plan.color) {
+        mineTriggers.push({
+          kind: "mineBlast",
+          piece: piece.type,
+          color: plan.color,
+          from: plan.from,
+          to: dest,
+          mineColor: destMine.color,
+          victim: { piece: piece.type, color: plan.color },
+        });
+        removeMineAt(dest);
+        board.delete(dest);
+        moversDead.add(dest);
+        return;
+      }
     }
 
     if (woke && wakeAt) {

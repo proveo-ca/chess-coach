@@ -20,6 +20,7 @@ import {
   clearSiegedRooks,
   setRookMode,
 } from "~/presentation/animations/rookModeStore";
+import { Screen } from "~/components/primitives/Screen";
 import type { AttackCue, RookMode } from "~/presentation/types";
 
 const ORIGIN: Square = "d4";
@@ -131,18 +132,24 @@ export const AttackBoardDemo: Component<{
   };
 
   return (
-    <div class={styles.demo}>
-      <div class={styles.host}>
-        <AnimationStage
-          fen={FEN_BY_PIECE[props.piece]}
-          fog
-          attackCues={cues()}
-          hideSquares={hide()}
-        />
-      </div>
-      <p class={styles.caption}>
-        StarChess · {props.piece.toUpperCase()} · {captionTargets()} · attackCues
-      </p>
-    </div>
+    <Screen>
+      <Screen.BoardArea>
+        <Screen.BoardColumn>
+          <div class={styles.host}>
+            <AnimationStage
+              fen={FEN_BY_PIECE[props.piece]}
+              fog
+              attackCues={cues()}
+              hideSquares={hide()}
+            />
+          </div>
+        </Screen.BoardColumn>
+      </Screen.BoardArea>
+      <Screen.Footer>
+        <p class={styles.caption}>
+          StarChess · {props.piece.toUpperCase()} · {captionTargets()} · attackCues
+        </p>
+      </Screen.Footer>
+    </Screen>
   );
 };

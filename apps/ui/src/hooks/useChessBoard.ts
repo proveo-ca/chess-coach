@@ -32,25 +32,15 @@ import {
 } from "~/store/gameStore";
 import { activePlayerColor, opponentPieceSet, playerPieceSet } from "~/store/settingsStore";
 import { isTravelling, travelFen, travelIndex, travelMoveHistory } from "~/store/travelStore";
-import type { BoardMoveProvider } from "~/types/board";
 import type { PromotionPiece } from "~/types/chess";
 // SPEC: _spec/apps/ui/components.puml
-// SPEC: _spec/apps/ui/starchess/sc-moves.puml — optional BoardMoveProvider seam
 import type { CoachEmotion } from "~/types/coach";
 import type { MoveSquares } from "~/types/game";
 import type { PieceSet } from "~/types/settings";
 import type { StockfishAnalysis } from "~/types/Stockfish";
 import { logger } from "~/utils/logger";
 
-export function useChessBoard(opts?: {
-  /** Static provider, or a getter so callers can gate on variant reactively. */
-  moveProvider?: BoardMoveProvider | (() => BoardMoveProvider | undefined);
-}) {
-  const provider = (): BoardMoveProvider | undefined => {
-    const p = opts?.moveProvider;
-    if (!p) return undefined;
-    return typeof p === "function" ? p() : p;
-  };
+export function useChessBoard() {
   // When viewing the latest position, return the authoritative instance
   // (full history for isGameOver/isThreefoldRepetition). When viewing a
   // past position, a short-lived instance from the FEN is fine for rendering.
@@ -357,12 +347,6 @@ export function useChessBoard(opts?: {
     // starving the blunder eval before it can land.
     clearTimeout(evalTimeout);
     evalTimeout = window.setTimeout(() => {
-      // SC provider: Stockfish would throw on SC-legal moves chess.js rejects.
-      if (provider()?.suppressHoverEval) {
-        setCurrentHoverEval(null);
-        stopHover();
-        return;
-      }
       const selected = selectedSquare();
       if (selected && validMoves().includes(square)) {
         const gameCopy = new Chess(game().fen());
@@ -400,7 +384,6 @@ export function useChessBoard(opts?: {
     const g = game();
     const selected = selectedSquare();
     const pieceOnSquare = g.get(square);
-    const prov = provider();
 
     logger.action("Square Clicked", { square, piece: pieceOnSquare, currentlySelected: selected });
 
@@ -417,58 +400,37 @@ export function useChessBoard(opts?: {
     }
 
     if (selected) {
-      if (prov) {
-        // SC path: bypass useMoveExecutor / gameStore.addMove entirely.
-        const result = await prov.commit({
-          from: selected,
-          to: square,
-          requestPromotion,
-        });
-        if (result.didMove) {
-          setSelectedSquare(null);
-          setValidMoves([]);
-          setHoveredSquare(null);
-          clearHoverOverride();
-          setCurrentHoverEval(null);
-          return;
-        }
-        if (result.cancelled) return;
-      } else {
-        const result = await moveExecutor.executeMove({
-          game: g,
-          selected,
-          square,
-          stockfishBestMove: humanBestMove() || undefined,
-          onPromotionRequired: () => {
-            const piece = g.get(selected);
-            if (!piece) return Promise.resolve(null);
-            const pieceSet =
-              piece.color === activePlayerColor() ? playerPieceSet() : opponentPieceSet();
-            return requestPromotion(piece.color, pieceSet);
-          },
-        });
+      const result = await moveExecutor.executeMove({
+        game: g,
+        selected,
+        square,
+        stockfishBestMove: humanBestMove() || undefined,
+        onPromotionRequired: () => {
+          const piece = g.get(selected);
+          if (!piece) return Promise.resolve(null);
+          const pieceSet =
+            piece.color === activePlayerColor() ? playerPieceSet() : opponentPieceSet();
+          return requestPromotion(piece.color, pieceSet);
+        },
+      });
 
-        if (result.didMove) {
-          setSelectedSquare(null);
-          setValidMoves([]);
-          setHoveredSquare(null);
-          clearHoverOverride();
-          setCurrentHoverEval(null);
-          return;
-        }
-
-        // Promotion was cancelled — leave selection intact so the user can
-        // retry the same move or pick a new square.
-        if (result.cancelled) return;
+      if (result.didMove) {
+        setSelectedSquare(null);
+        setValidMoves([]);
+        setHoveredSquare(null);
+        clearHoverOverride();
+        setCurrentHoverEval(null);
+        return;
       }
+
+      // Promotion was cancelled — leave selection intact so the user can
+      // retry the same move or pick a new square.
+      if (result.cancelled) return;
     }
 
     if (canSelectPiece(square)) {
-      const p = provider();
       setSelectedSquare(square);
-      setValidMoves(
-        p ? [...p.destinations(square)] : g.moves({ square, verbose: true }).map((m) => m.to),
-      );
+      setValidMoves(g.moves({ square, verbose: true }).map((m) => m.to));
     } else {
       setSelectedSquare(null);
       setValidMoves([]);
@@ -484,7 +446,6 @@ export function useChessBoard(opts?: {
     }
 
     const g = game();
-    const prov = provider();
     if (!canSelectPiece(square)) {
       e.preventDefault();
       return;
@@ -492,11 +453,7 @@ export function useChessBoard(opts?: {
 
     if (selectedSquare() !== square) {
       setSelectedSquare(square);
-      setValidMoves(
-        prov
-          ? [...prov.destinations(square)]
-          : g.moves({ square, verbose: true }).map((m) => m.to),
-      );
+      setValidMoves(g.moves({ square, verbose: true }).map((m) => m.to));
     }
 
     e.dataTransfer?.setData("text/plain", square);
@@ -590,8 +547,6 @@ export function useChessBoard(opts?: {
 
   /** Shared select gate for click / drag / touch / invalid chrome. */
   const canSelectPiece = (square: Square): boolean => {
-    const prov = provider();
-    if (prov?.canSelect) return prov.canSelect(square);
     const g = game();
     const piece = g.get(square);
     if (!piece) return false;

@@ -2,7 +2,7 @@
 import { Route, Router } from "@solidjs/router";
 import { render } from "solid-js/web";
 
-import { StarChessApp } from "~/app/StarChessApp";
+import { StarChessApp } from "~/screens/StarChessApp";
 import "~/styles/index.css";
 
 const root = document.getElementById("root");

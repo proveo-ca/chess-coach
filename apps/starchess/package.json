@@ -5,13 +5,18 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
-    "typecheck": "tsc -b --noEmit",
+    "build": "tsgo -b && vite build",
+    "typecheck": "tsgo -b --noEmit",
     "test": "vitest run",
     "lint": "oxlint -c oxlint.config.ts",
+    "lint:fix": "oxlint -c oxlint.config.ts --fix --fix-suggestions --fix-dangerously",
+    "format": "oxfmt",
     "storybook": "storybook dev -p 6007 --ci",
     "build-storybook": "storybook build -o storybook-static",
-    "check:bundle": "node scripts/check-bundle-boundary.mjs"
+    "check:bundle": "node scripts/check-bundle-boundary.mjs",
+    "preview": "npm run build && wrangler dev",
+    "deploy:dry-run": "npm run build && wrangler deploy --dry-run",
+    "deploy": "npm run build && wrangler deploy"
   },
   "dependencies": {
     "@chess-coach/starchess-core": "workspace:*",
@@ -26,13 +31,18 @@
     "@storybook/addon-docs": "^10.5.4",
     "@testing-library/jest-dom": "^6.9.1",
     "@types/node": "^24.12.2",
+    "@typescript/native-preview": "^7.0.0-dev.20260428.1",
     "jsdom": "^28.1.0",
+    "oxfmt": "^0.47.0",
     "oxlint": "^1.62.0",
     "storybook": "^10.5.4",
     "storybook-solidjs-vite": "^10.6.0",
     "typescript": "~5.9.3",
     "vite": "^7.3.2",
+    "vite-plugin-oxlint": "^2.1.1",
+    "vite-plugin-pwa": "^1.3.0",
     "vite-plugin-solid": "^2.11.12",
-    "vitest": "^4.1.5"
+    "vitest": "^4.1.5",
+    "wrangler": "^4.118.0"
   }
 }

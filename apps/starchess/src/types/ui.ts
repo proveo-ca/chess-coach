@@ -11,3 +11,21 @@ export interface ButtonProps extends JSX.ButtonHTMLAttributes<HTMLButtonElement>
   /** Anchor rel (e.g. `noreferrer`). */
   rel?: string;
 }
+
+/** Chip tone variants — queue timing, turn/phase chrome, muted empty slot. */
+export type ChipTone =
+  | "default"
+  | "before"
+  | "classical"
+  | "after"
+  | "muted"
+  /** Turn number — solid black / white. */
+  | "turn"
+  /** Review / live phase: check. */
+  | "check"
+  /** Review / live phase: intent. */
+  | "intent"
+  /** Review / live phase: resolve. */
+  | "resolve";
+
+export type ChipSize = "md" | "sm";

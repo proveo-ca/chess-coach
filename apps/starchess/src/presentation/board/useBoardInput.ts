@@ -1,5 +1,5 @@
 /**
- * Snapshot-driven board input — queues classical moves / spawn via match aggregate.
+ * Snapshot-driven board input — queues classical moves / spawn / Charon / Jump.
  */
 import type { Square } from "chess.js";
 import {
@@ -53,6 +53,62 @@ export const useBoardInput = () => {
         return;
       }
       store.dispatch({ type: "MARK_SPECIAL_USED", square: kingSq });
+      return;
+    }
+
+    if (state.targeting?.kind === "bishopSnipe") {
+      const t = state.targeting;
+      if (square !== t.to) return; // stay armed on miss-clicks
+      const timing = state.liveSnapshot.queue?.actions.some(
+        (a) => a.color === t.color && a.timing === "C",
+      )
+        ? "F"
+        : "B";
+      const before = store.state().liveSnapshot;
+      store.dispatch({
+        type: "QUEUE_ACTION",
+        action: {
+          timing,
+          kind: "bishopSnipe",
+          color: t.color,
+          from: t.from,
+          to: t.to,
+        },
+      });
+      if (store.state().liveSnapshot === before) return;
+      store.dispatch({ type: "MARK_SPECIAL_USED", square: t.from });
+      store.dispatch({
+        type: "QUEUE_REJECT",
+        message: `Charon Booster Missiles ${t.from}→${t.to} queued · End to fire`,
+      });
+      return;
+    }
+
+    if (state.targeting?.kind === "queenWarp") {
+      const t = state.targeting;
+      if (!t.targets.includes(square)) return; // stay armed on miss-clicks
+      const timing = state.liveSnapshot.queue?.actions.some(
+        (a) => a.color === t.color && a.timing === "C",
+      )
+        ? "F"
+        : "B";
+      const before = store.state().liveSnapshot;
+      store.dispatch({
+        type: "QUEUE_ACTION",
+        action: {
+          timing,
+          kind: "queenWarp",
+          color: t.color,
+          from: t.from,
+          to: square,
+        },
+      });
+      if (store.state().liveSnapshot === before) return;
+      store.dispatch({ type: "MARK_SPECIAL_USED", square: t.from });
+      store.dispatch({
+        type: "QUEUE_REJECT",
+        message: `Tactical Jump ${t.from}→${square} queued · End to resolve`,
+      });
       return;
     }
 

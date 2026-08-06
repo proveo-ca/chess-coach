@@ -26,10 +26,11 @@ footer advice / move list, chrome) yields before the board stack or the sideboar
 
 | Constraint | Value | Rationale |
 |---|---|---|
-| Desktop breakpoint | `min-width: 720px` (`--desktop`) | Board `480px` + sidebar `6rem` + gaps fit |
+| Desktop breakpoint | `min-width: 720px` (`--desktop`) | Board `480px` + sidebar `6rem` + gaps fit (Coach) |
 | Board size (desktop) | `--board-size: 480px` | Fixed square; never shrinks with chrome |
-| Board size (mobile) | `min(100vw - 2rem, 480px)` | Fills width while keeping ≥ ~2rem gutters |
-| Body min (board screens) | `--board-size` / `board + sidebar + 1.5rem` | Via `body:has([data-testid=screen-root])` |
+| Board size (mobile) | Coach: `min(100vw - 2rem, 480px)` · StarChess: `min(100vw - 4rem, 480px)` | StarChess keeps **2rem gutters each side** |
+| App max (StarChess desktop) | `board + 4rem`; top/footer `max-width: board` | No classical sideboard; chrome ≤ mid-pane board |
+| Body min (board screens) | Coach: `board` / `board + sidebar + 1.5rem` · StarChess: `board` / `board + 4rem` | Via `body:has([data-testid=screen-root])` |
 
 **Contract:** the root gameplay shell must not layout below the width required for
 `board + sideboard` (desktop) or `board` (mobile). Below that floor the page may

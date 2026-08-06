@@ -35,6 +35,8 @@ export * from "~/presentation/animations/teamColors";
 export * from "~/presentation/animations/types";
 export * from "~/presentation/animations/kingDamage";
 export { KingDamageOverlay } from "~/presentation/animations/kingDamageOverlay";
+export { AnimationStage } from "~/presentation/animations/AnimationStage";
+export type { AnimationStageProps } from "~/presentation/animations/AnimationStage";
 export { AttackAnimation } from "~/presentation/animations/AttackAnimation";
 export { DeathAnimation } from "~/presentation/animations/DeathAnimation";
 export { MoveAnimation } from "~/presentation/animations/MoveAnimation";

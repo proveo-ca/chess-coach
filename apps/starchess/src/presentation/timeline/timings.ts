@@ -5,7 +5,6 @@ export const FRAG_FLIGHT_MS = ATTACK_MS / 4;
 export const DEATH_MS = 500;
 export const MOVE_SQUARE_MS = 200;
 export const DEPLOY_MS = 500;
-export const PROMO_HOLD_MS = 400;
 export const TURN_TIMEOUT_MS = 10_000;
 
 export const moveDurationMs = (from: string, to: string): number => {

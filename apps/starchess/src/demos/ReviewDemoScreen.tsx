@@ -1,0 +1,168 @@
+import { placementToMap } from "@chess-coach/starchess-core";
+import type { Square } from "chess.js";
+/**
+ * Store-backed DualNav review host — ObserverReviewChrome + LiveStarChessBoard.
+ * Scenario packages supply history; MatchStore owns seek / playback / VFX timeline.
+ */
+import { createEffect, createMemo, onCleanup, onMount, type Component } from "solid-js";
+
+import { createMatchStore, MatchStoreProvider, useMatchStore } from "~/app/MatchStoreContext";
+import { createMatchStateFromReviewHistory } from "~/app/reviewHistory";
+import { displayedSnapshot } from "~/app/selectors";
+import { Screen } from "~/components/primitives/Screen";
+import styles from "~/demos/ReviewDemoScreen.module.css";
+import { clearSiegedRooks, setRookMode } from "~/presentation/animations/rookModeStore";
+import { LiveStarChessBoard } from "~/presentation/board/LiveStarChessBoard";
+import { isCheckOnlyResolve } from "~/presentation/hud/isCheckOnlyResolve";
+import { ObserverReviewChrome } from "~/presentation/hud/ObserverReviewChrome";
+import type { BoardVariant, VisionMode } from "~/types/board";
+import type { ReviewHistory } from "~/types/review";
+
+export type ReviewDemoScreenProps = {
+  history: ReviewHistory;
+  /** Prefix for footer caption (e.g. "Combat chain"). */
+  reviewLabel?: string;
+  visionMode?: VisionMode;
+  fog?: boolean;
+  variant?: BoardVariant;
+  /** Force all rooks to tank mode (fog-edge rook story). */
+  rookTank?: boolean;
+};
+
+const syncRookModes = (
+  placement: string,
+  sieged: readonly Square[] | undefined,
+  forceTank: boolean | undefined,
+) => {
+  clearSiegedRooks();
+  if (!forceTank) {
+    for (const sq of sieged ?? []) setRookMode(sq, "siege");
+    return;
+  }
+  try {
+    const map = placementToMap(placement);
+    for (const [sq, piece] of map) {
+      if (piece.type === "r") setRookMode(sq as Square, "tank");
+    }
+  } catch {
+    /* invalid placement — ignore */
+  }
+};
+
+const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
+  const store = useMatchStore();
+  const snap = createMemo(() => displayedSnapshot(store.state()));
+
+  const reviewBusy = () =>
+    store.state().timeline.active ||
+    store.reviewPhase() === "check" ||
+    store.reviewPhase() === "intent" ||
+    store.reviewPhase() === "resolve";
+
+  const reviewTurnNumber = () => {
+    const s = store.state();
+    const settled = s.settledSnapshots[s.reviewIndex];
+    return Math.max(1, settled?.turn ?? snap().turn);
+  };
+
+  const caption = createMemo(() => {
+    const s = store.state();
+    const phase = store.reviewPhase();
+    const steps = props.history.steps;
+    const startCaption = props.history.startCaption;
+    if (s.reviewIndex <= 0 && (phase === "start" || phase === "final")) {
+      return startCaption;
+    }
+    let endsBefore = 0;
+    for (let i = 0; i < s.reviewIndex; i += 1) {
+      const r = s.settledResolves[i];
+      if (r && !isCheckOnlyResolve(r)) endsBefore += 1;
+    }
+    const playing = phase === "check" || phase === "intent" || phase === "resolve";
+    const stepIdx = playing ? endsBefore : Math.max(0, endsBefore - 1);
+    const step = steps[Math.min(stepIdx, Math.max(0, steps.length - 1))];
+    if (!step) return startCaption;
+    if (phase === "intent" && step.intentCaption) return step.intentCaption;
+    if (phase === "check") return `Check · ${step.caption}`;
+    if (phase === "intent") return `Intent · ${step.caption}`;
+    return step.caption;
+  });
+
+  createEffect(() => {
+    const s = snap();
+    syncRookModes(s.placement, s.siegedRooks, props.rookTank);
+  });
+
+  onMount(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        store.reviewBack();
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        store.reviewForward();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    onCleanup(() => {
+      window.removeEventListener("keydown", onKey);
+      store.cancelEffects();
+      clearSiegedRooks();
+    });
+  });
+
+  return (
+    <Screen>
+      <Screen.SidebarInset>
+        <ObserverReviewChrome
+          turn={reviewTurnNumber()}
+          phase={store.reviewPhase()}
+          snapshot={snap()}
+          onBack={() => store.reviewBack()}
+          onForward={() => store.reviewForward()}
+          backDisabled={reviewBusy() || store.state().reviewIndex <= 0}
+          forwardDisabled={
+            reviewBusy() || store.state().reviewIndex >= store.state().settledSnapshots.length - 1
+          }
+        />
+      </Screen.SidebarInset>
+      <Screen.BoardArea>
+        <Screen.BoardColumn>
+          <div class={styles.host}>
+            <LiveStarChessBoard
+              fog={props.fog}
+              visionMode={props.visionMode}
+              variant={props.variant ?? "eclipse"}
+            />
+          </div>
+        </Screen.BoardColumn>
+      </Screen.BoardArea>
+      <Screen.Footer>
+        <p class={styles.caption}>
+          Review · {props.reviewLabel ?? "Review"} · {caption()}
+        </p>
+      </Screen.Footer>
+    </Screen>
+  );
+};
+
+export const ReviewDemoScreen: Component<ReviewDemoScreenProps> = (props) => {
+  const store = createMatchStore({
+    initial: createMatchStateFromReviewHistory(props.history),
+    autoArmTimer: false,
+  });
+
+  return (
+    <MatchStoreProvider store={store}>
+      <ReviewDemoInner
+        history={props.history}
+        reviewLabel={props.reviewLabel}
+        visionMode={props.visionMode}
+        fog={props.fog}
+        variant={props.variant}
+        rookTank={props.rookTank}
+      />
+    </MatchStoreProvider>
+  );
+};

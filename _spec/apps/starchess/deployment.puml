@@ -1,0 +1,38 @@
+@startuml deployment
+' SPEC: _spec/apps/starchess/deployment.puml
+' purpose: Scoped PWA + Worker routes for standalone StarChess.
+!include ../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess · Scoped PWA / Worker
+
+cloud "proveo.ca" {
+  component "Worker **starchess**\n/starchess + /starchess/*\nASSETS · run_worker_first" as W <<cloud>>
+  component "Worker **chess**\n/chess + /chess/*" as C <<cloud>>
+}
+
+package "StarChess shell" {
+  component "Vite base /starchess/\noutDir dist/starchess" as V <<app>>
+  component "Manifest + sw.js\nscope /starchess/\ncacheId starchess-shell" as P <<app>>
+  component "worker.js\n308 /starchess → /starchess/\nSPA nav fallback · asset 404\nno-cache bootstrap" as J <<app>>
+}
+
+package "Coach compatibility" {
+  component "/chess/starchess\n→ /starchess/ + search/hash\nStarChessRedirect" as R <<app>>
+  component "NerdModePrompt\nexternal /starchess/" as N <<app>>
+}
+
+V --> P
+V --> J
+W --> J
+C --> R
+R ..> W : external navigate
+N ..> W : location.assign
+
+note bottom of W
+  **Dry-run:** pnpm --filter @chess-coach/starchess deploy:dry-run
+  **Do not** treat dry-run as production deploy.
+end note
+@enduml

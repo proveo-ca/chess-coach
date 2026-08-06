@@ -2,17 +2,17 @@ import type { EndScTurnResult, ResolveAttack, ResolveMove } from "@chess-coach/s
 import { placementToMap, mapToPlacement } from "@chess-coach/starchess-core";
 import type { Square } from "chess.js";
 
-import type { TimelineCue } from "~/app/matchTypes";
-import type { Scheduler } from "~/ports";
+import { promoWalkOffTo, isBoardSquare } from "~/presentation/animations/boardGeom";
 import { deployCuesForPlacementDiff } from "~/presentation/timeline/deployDiff";
 import {
   ATTACK_MS,
   DEATH_MS,
   DEPLOY_MS,
   FRAG_FLIGHT_MS,
-  PROMO_HOLD_MS,
   moveDurationMs,
 } from "~/presentation/timeline/timings";
+import type { TimelineCue } from "~/types/match";
+import type { Scheduler } from "~/types/ports";
 
 export type TimelineCallbacks = {
   onStart: (cues: TimelineCue[], placement: string) => void;
@@ -66,6 +66,12 @@ const relocatePlacement = (placement: string, from: Square, to: Square): string 
   return mapToPlacement(map);
 };
 
+const withoutSquare = (placement: string, at: Square): string => {
+  const map = placementToMap(placement);
+  map.delete(at);
+  return mapToPlacement(map);
+};
+
 /**
  * HP before animated kingShots — undo chips that afterPending already applied
  * (begin / pending checks) so the hull stays pristine until frag impact.
@@ -88,7 +94,8 @@ const livesBeforeAnimatedShots = (
 
 /**
  * Project EndScTurnResult into a sequential cue timeline.
- * Order: B gas-steps → spawn deploys → classical attack/death/move → F steps → promo.
+ * Order: B gas-steps → spawn deploys → classical attack/death/move →
+ * path-reveal (fog discovery) → F steps → promo.
  */
 export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] => {
   const cues: TimelineCue[] = [];
@@ -134,14 +141,71 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
     }
   }
   for (const m of result.resolved.moves) cues.push(moveCue(m, `c${n++}`));
+
+  // Phase 3 — fog path-discovery. Intention slides to the discovery square,
+  // then attacks (king on the way ⇒ kingShot). Must not look like a post-move
+  // standing-check chip.
+  for (const a of result.resolved.pathRevealAttacks) {
+    if (a.kind === "kingShot") {
+      const origin = a.pathRevealFrom;
+      if (!origin) continue;
+      const stopAt = a.stopAt ?? a.from;
+      if (a.from !== origin) {
+        cues.push(
+          moveCue({ piece: a.piece, color: a.color, from: origin, to: a.from }, `prd${n++}`),
+        );
+      }
+      cues.push({
+        kind: "attack",
+        id: `pra${n++}`,
+        piece: a.piece,
+        color: a.color,
+        from: a.from,
+        to: a.to,
+        kingShot: { target: a.target, livesAfter: a.livesAfter },
+      });
+      if (stopAt !== a.from) {
+        cues.push(
+          moveCue({ piece: a.piece, color: a.color, from: a.from, to: stopAt }, `prs${n++}`),
+        );
+      }
+      continue;
+    }
+    if (a.kind === "capture") {
+      const origin = a.pathRevealFrom;
+      if (!origin) continue;
+      if (a.from !== origin) {
+        cues.push(
+          moveCue({ piece: a.piece, color: a.color, from: origin, to: a.from }, `prd${n++}`),
+        );
+      }
+      const c = attackCue(a, `pra${n++}`);
+      if (c) cues.push(c);
+      if (a.victim) {
+        cues.push({
+          kind: "death",
+          id: `prdth${n++}`,
+          piece: a.victim.piece,
+          color: a.victim.color,
+          at: a.to,
+        });
+      }
+      if (a.occupies) {
+        cues.push(moveCue({ piece: a.piece, color: a.color, from: a.from, to: a.to }, `pro${n++}`));
+      }
+    }
+  }
+
   for (const m of result.fMoves) cues.push(moveCue(m, `f${n++}`));
   for (const p of result.resolved.promotions) {
+    // Pawn walks one square off the board edge, then the unit deploys.
     cues.push({
-      kind: "promoHold",
-      id: `ph${n++}`,
+      kind: "move",
+      id: `pw${n++}`,
+      piece: "p",
       color: p.color,
-      at: p.at,
-      unit: p.unit,
+      from: p.at,
+      to: promoWalkOffTo(p.at, p.color),
     });
     cues.push({
       kind: "deploy",
@@ -164,8 +228,6 @@ const cueDuration = (cue: TimelineCue): number => {
       return DEATH_MS;
     case "deploy":
       return DEPLOY_MS;
-    case "promoHold":
-      return PROMO_HOLD_MS;
   }
 };
 
@@ -273,12 +335,6 @@ export const playTimeline = (
         });
       });
       cancels.push(kick);
-    } else if (cue.kind === "promoHold") {
-      cb.onCommit({
-        hidden: [],
-        playingIds: [cue.id],
-        moveProgress: {},
-      });
     } else {
       cb.onCommit({
         hidden,
@@ -303,7 +359,18 @@ export const playTimeline = (
 
     const wait = scheduler.delay(cueDuration(cue), () => {
       if (cancelled) return;
-      if (cue.kind === "move" && cue.id.startsWith("b")) {
+      if (cue.kind === "move" && cue.id.startsWith("pw")) {
+        // Vacate the promotion square after the pawn walks off.
+        displayPlacement = withoutSquare(displayPlacement, cue.from);
+        cb.onCommit({
+          placement: displayPlacement,
+          hidden: [],
+          playingIds: [],
+          moveProgress: {},
+        });
+      } else if (cue.kind === "move" && isBoardSquare(cue.to)) {
+        // Classical / B / F / path-reveal: land the piece so the next cue
+        // (esp. promo walk-off) does not leave a ghost on `from`.
         displayPlacement = relocatePlacement(displayPlacement, cue.from, cue.to);
         cb.onCommit({
           placement: displayPlacement,

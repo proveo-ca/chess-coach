@@ -1,10 +1,12 @@
 /**
  * Spider Mine fog harness — presents an SCFEN snap (M: vision), no combat logic.
+ * Always on Screen grid.
  */
 import { createMemo, type Component } from "solid-js";
 
 import { parseScFen } from "@chess-coach/starchess-core";
 
+import { Screen } from "~/components/primitives/Screen";
 import { AnimationStage } from "~/presentation/animations/AnimationStage";
 import styles from "~/presentation/animations/SpiderMineFogDemo.module.css";
 
@@ -19,11 +21,17 @@ export const SpiderMineFogDemo: Component = () => {
   const snap = createMemo(() => parseScFen(FOG_MINE_SCFEN));
 
   return (
-    <div class={styles.demo}>
-      <div class={styles.host}>
-        <AnimationStage snapshot={snap()} viewer="w" fog variant="eclipse" />
-      </div>
-      <p class={styles.caption}>Fog · SCFEN M:w:a4 · own-square vision only</p>
-    </div>
+    <Screen>
+      <Screen.BoardArea>
+        <Screen.BoardColumn>
+          <div class={styles.host}>
+            <AnimationStage snapshot={snap()} viewer="w" fog variant="eclipse" />
+          </div>
+        </Screen.BoardColumn>
+      </Screen.BoardArea>
+      <Screen.Footer>
+        <p class={styles.caption}>Fog · SCFEN M:w:a4 · own-square vision only</p>
+      </Screen.Footer>
+    </Screen>
   );
 };

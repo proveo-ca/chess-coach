@@ -1,19 +1,36 @@
-/**
- * StarChess turn chrome — queue badges + End + circular countdown (default 10s).
- */
-import { For, Show, createEffect, createSignal, onCleanup, onMount, type Component } from "solid-js";
 import type { ScAction } from "@chess-coach/starchess-core";
+/**
+ * StarChess turn chrome — phase chips + queue badges + End + countdown.
+ */
+import {
+  For,
+  Show,
+  createEffect,
+  createMemo,
+  createSignal,
+  onCleanup,
+  onMount,
+  type Component,
+} from "solid-js";
 
-import { useMatchStore } from "~/app/MatchStoreContext";
 import {
   currentQueue,
   turnDeadlineAt,
   turnSecondsRemaining,
   viewerColor,
 } from "~/app/matchEconomy";
-import { canSubmit } from "~/app/selectors";
+import { useMatchStore } from "~/app/MatchStoreContext";
+import { canSubmit, displayedSnapshot } from "~/app/selectors";
+import { Button } from "~/components/primitives/Button";
+import { Chip } from "~/components/primitives/Chip";
+import { CountdownRing } from "~/components/primitives/CountdownRing";
+import { TeamFrame } from "~/components/primitives/TeamFrame";
+import { TEAM_PRIMARY } from "~/presentation/animations/teamColors";
 import { TURN_TIMEOUT_MS } from "~/presentation/constants";
+import { liveMatchPhase, reviewPhaseLabel } from "~/presentation/hud/liveMatchPhase";
+import { reviewPhaseChipTone } from "~/presentation/hud/reviewPhases";
 import styles from "~/presentation/hud/TurnBar.module.css";
+import type { ChipTone } from "~/types/ui";
 
 type TurnBarProps = {
   /** Called when the player presses End (after store submit when resolveOnEnd). */
@@ -29,13 +46,16 @@ type TurnBarProps = {
   resolveOnEnd?: boolean;
 };
 
-const R = 18;
-const C = 2 * Math.PI * R;
-
 const badgeLabel = (a: ScAction): string => {
   if (a.timing === "C") return `C ${a.from}→${a.to}`;
   const to = a.to ? `→${a.to}` : "";
   return `${a.timing} ${a.kind}${to ? ` ${a.from}${to}` : ` ${a.from}`}`;
+};
+
+const toneFor = (timing: ScAction["timing"]): ChipTone => {
+  if (timing === "B") return "before";
+  if (timing === "F") return "after";
+  return "classical";
 };
 
 export const TurnBar: Component<TurnBarProps> = (props) => {
@@ -72,7 +92,6 @@ export const TurnBar: Component<TurnBarProps> = (props) => {
     onCleanup(() => window.clearInterval(id));
   });
 
-  // New planning window (after End / resolve) → allow another AFK timeout.
   createEffect(() => {
     const deadline = turnDeadlineAt(store);
     if (deadline != null && deadline !== firedForDeadline) {
@@ -90,7 +109,17 @@ export const TurnBar: Component<TurnBarProps> = (props) => {
     return Math.min(1, Math.max(0, seconds() / total));
   };
 
-  const dashOffset = () => C * (1 - progress());
+  const turnNumber = createMemo(() => Math.max(1, displayedSnapshot(store.state()).turn));
+
+  const phase = createMemo(() => {
+    const s = store.state();
+    if (s.phase === "gameOver") return store.reviewPhase();
+    return liveMatchPhase({
+      phase: s.phase,
+      lastResolve: s.lastResolve,
+      timelineActive: s.timeline.active,
+    });
+  });
 
   const sideQueue = () => {
     const color = viewerColor(store);
@@ -114,43 +143,53 @@ export const TurnBar: Component<TurnBarProps> = (props) => {
     }
   };
 
-  const chip = (a: ScAction, badgeClass: string) => (
-    <span
-      class={`${styles.badge} ${badgeClass}`}
+  const queueChip = (a: ScAction) => (
+    <Chip
+      size="sm"
+      tone={toneFor(a.timing)}
       data-timing={a.timing}
       data-seq={a.seq}
+      removeTestId={`queue-remove-${a.seq}`}
+      removeLabel={`Remove ${badgeLabel(a)}`}
+      onRemove={(e) => removeChip(a, e)}
     >
-      <span class={styles.badgeText}>{badgeLabel(a)}</span>
-      <button
-        type="button"
-        class={styles.badgeRemove}
-        data-testid={`queue-remove-${a.seq}`}
-        aria-label={`Remove ${badgeLabel(a)}`}
-        onClick={(e) => removeChip(a, e)}
-      >
-        ×
-      </button>
-    </span>
+      {badgeLabel(a)}
+    </Chip>
   );
 
   return (
-    <div class={styles.bar} data-testid="turn-bar" role="group" aria-label="Turn">
+    <TeamFrame
+      class={styles.bar}
+      teamColor={TEAM_PRIMARY[viewerColor(store)]}
+      data-testid="turn-bar"
+      data-team={viewerColor(store)}
+      data-phase={phase()}
+      role="group"
+      aria-label="Turn"
+    >
+      <div class={styles.chips}>
+        <Chip tone="turn" data-testid="live-turn-chip">
+          Turn {turnNumber()}
+        </Chip>
+        <Chip tone={reviewPhaseChipTone(phase())} data-testid="live-phase-chip">
+          {reviewPhaseLabel(phase())}
+        </Chip>
+      </div>
       <div class={styles.queue} data-testid="turn-queue" aria-label="Action queue">
-        <For each={befores()}>{(a) => chip(a, styles.badgeB)}</For>
+        <For each={befores()}>{(a) => queueChip(a)}</For>
         <Show
           when={classical()}
           fallback={
-            <span class={`${styles.badge} ${styles.badgeCEmpty}`} data-timing="C">
+            <Chip size="sm" tone="muted" data-timing="C">
               C —
-            </span>
+            </Chip>
           }
         >
-          {(c) => chip(c(), styles.badgeC)}
+          {(c) => queueChip(c())}
         </Show>
-        <For each={afters()}>{(a) => chip(a, styles.badgeF)}</For>
+        <For each={afters()}>{(a) => queueChip(a)}</For>
       </div>
-      <button
-        type="button"
+      <Button
         class={styles.end}
         data-testid="turn-end"
         onClick={() => {
@@ -159,28 +198,14 @@ export const TurnBar: Component<TurnBarProps> = (props) => {
         }}
       >
         End
-      </button>
-      <div
-        class={styles.gauge}
-        role="timer"
-        aria-live="polite"
+      </Button>
+      <CountdownRing
+        progress={progress()}
         aria-label={`${seconds()} seconds remaining`}
         data-seconds={seconds()}
       >
-        <svg class={styles.ring} viewBox="0 0 44 44" aria-hidden="true">
-          <circle class={styles.track} cx="22" cy="22" r={R} />
-          <circle
-            class={styles.fill}
-            cx="22"
-            cy="22"
-            r={R}
-            stroke-dasharray={`${C}`}
-            stroke-dashoffset={dashOffset()}
-            transform="rotate(-90 22 22)"
-          />
-        </svg>
-        <span class={styles.seconds}>{seconds()}</span>
-      </div>
-    </div>
+        {seconds()}
+      </CountdownRing>
+    </TeamFrame>
   );
 };

@@ -5,16 +5,19 @@
  * Context read every planning turn:
  *  1. all legal special moves (spawn / pawnDouble / knightMine / bishopSnipe /
  *     rookSiege / queenWarp) within this turn's gas budget,
- *  2. all SC-legal classical moves via {@link scMovesFor},
- *  3. side vision — fog-gates the enemy-King hunt bonus; pack-for-vision uses it,
- *  4. material — deployed supply from the board + stored minerals (host bank).
+ *  2. pawn gas+classical stacks (UI rewrite: B+C same step ⇒ 2 squares ahead),
+ *  3. all SC-legal classical moves via {@link scMovesFor},
+ *  4. side vision — fog-gates the enemy-King hunt bonus; pack-for-vision uses it,
+ *  5. material — deployed supply from the board + stored minerals (host bank).
  *
  * Scope note: demo opponent, not fog-faithful. Threat / ray checks read full
  * placement. Only the "attack the enemy King" term is gated on
  * {@link getSideVision}.
  *
  * Strategy: protect King → center → promote → attack enemy King → trades.
- * One action per open planning window. Deterministic.
+ * One plan per open planning window (may be B+C: pawn gas stack, or Command
+ * Center spawn + classical — including moving the King the same turn).
+ * Deterministic.
  *
  * // SPEC: _spec/apps/ui/starchess/starchess-mode.puml, _spec/apps/ui/starchess/demos.puml
  */
@@ -65,11 +68,6 @@ export type AdjutantContext = {
   storedFor?: (color: PieceColor) => number;
 };
 
-/** @deprecated Use {@link AdjutantResult}. */
-export type KingHuntBrainResult = AdjutantResult;
-/** @deprecated Use {@link AdjutantContext}. */
-export type KingHuntBrainContext = AdjutantContext;
-
 const FILES = "abcdefgh";
 
 /** Strategy weights — protect King dominates; promote beats quiet development. */
@@ -113,9 +111,10 @@ const estimateStoredFor =
   };
 
 type Candidate = {
-  action: ScActionInput;
+  /** One or more actions to append (pawn gas stack = B then C). */
+  actions: ScActionInput[];
   score: number;
-  /** Debit against stored minerals when the action is a spawn. */
+  /** Debit against stored minerals when the plan includes a spawn. */
   spendMinerals?: number;
 };
 
@@ -140,6 +139,15 @@ type Move = {
   firesInPlace?: boolean;
 };
 
+type ScoreCtx = {
+  map: Map<Square, ScPiece>;
+  king: Square;
+  kingThreatened: boolean;
+  whiteKingVisible: boolean;
+  whiteKing: Square | null;
+  sieged: ReadonlySet<Square>;
+};
+
 /** Classical candidates from the shared SC movegen (filter king-square traps). */
 const blackMoves = (map: Map<Square, ScPiece>, sieged: ReadonlySet<Square>): Move[] =>
   scMovesFor(map, "b", { siegedRooks: sieged })
@@ -151,6 +159,16 @@ const blackMoves = (map: Map<Square, ScPiece>, sieged: ReadonlySet<Square>): Mov
       firesInPlace: m.firesInPlace,
       ...(m.promotion ? { promotion: m.promotion } : {}),
     }));
+
+const asCandidate = (
+  action: ScActionInput,
+  score: number,
+  spendMinerals?: number,
+): Candidate => ({
+  actions: [action],
+  score,
+  ...(spendMinerals != null ? { spendMinerals } : {}),
+});
 
 /** Legal specials for black within this turn's gas budget. */
 const blackSpecials = (
@@ -174,15 +192,17 @@ const blackSpecials = (
       let score = CENTER * centerScore(to) + PROMOTE_RANK * (8 - rankOf(to));
       if (threatened) score += TRADE;
       if (isSquareAttackedBy(map, to, "w")) score -= ATTACKED_PENALTY;
-      out.push({
-        action: { timing: "B", kind: "spawn", color: "b", from: king, to, unit },
-        score,
-        spendMinerals: UNIT_COST[unit],
-      });
+      out.push(
+        asCandidate(
+          { timing: "B", kind: "spawn", color: "b", from: king, to, unit },
+          score,
+          UNIT_COST[unit],
+        ),
+      );
     }
   }
 
-  // pawnDouble — gas step +1 forward only (stacks with classical same turn).
+  // pawnDouble — gas step +1 forward only (lone B; stacks with classical below).
   // Landing on the last rank is excluded (promotion is classical).
   for (const [from, piece] of map) {
     if (piece.color !== "b" || piece.type !== "p") continue;
@@ -191,7 +211,9 @@ const blackSpecials = (
     if (rankOf(to) === 1) continue;
     let score = CENTER * centerScore(to) + PROMOTE_RANK * (8 - rankOf(to));
     if (isSquareAttackedBy(map, to, "w")) score -= ATTACKED_PENALTY;
-    out.push({ action: { timing: "B", kind: "pawnDouble", color: "b", from, to }, score });
+    out.push(
+      asCandidate({ timing: "B", kind: "pawnDouble", color: "b", from, to }, score),
+    );
   }
 
   // knightMine — lay a Spider Mine on the knight's square.
@@ -199,10 +221,12 @@ const blackSpecials = (
     if (piece.color !== "b" || piece.type !== "n") continue;
     if (mineAt(snap.mines, from)) continue;
     if (minesFor(snap.mines, "b").length >= MAX_MINES_PER_SIDE) continue;
-    out.push({
-      action: { timing: "B", kind: "knightMine", color: "b", from, to: from },
-      score: TRADE * 2,
-    });
+    out.push(
+      asCandidate(
+        { timing: "B", kind: "knightMine", color: "b", from, to: from },
+        TRADE * 2,
+      ),
+    );
   }
 
   // bishopSnipe — Charon missiles at a unique diagonal enemy queen.
@@ -210,10 +234,12 @@ const blackSpecials = (
     if (piece.color !== "b" || piece.type !== "b") continue;
     const target = charonTargetQueenFromPlacement(snap.placement, from);
     if (target) {
-      out.push({
-        action: { timing: "B", kind: "bishopSnipe", color: "b", from, to: target },
-        score: TRADE * (1 + UNIT_COST.q - UNIT_COST.b),
-      });
+      out.push(
+        asCandidate(
+          { timing: "B", kind: "bishopSnipe", color: "b", from, to: target },
+          TRADE * (1 + UNIT_COST.q - UNIT_COST.b),
+        ),
+      );
     }
   }
 
@@ -224,10 +250,12 @@ const blackSpecials = (
       for (let r = 1; r <= 8; r += 1) {
         const to = `${FILES[f]}${r}` as Square;
         if (map.has(to)) continue;
-        out.push({
-          action: { timing: "B", kind: "queenWarp", color: "b", from, to },
-          score: CENTER * centerScore(to),
-        });
+        out.push(
+          asCandidate(
+            { timing: "B", kind: "queenWarp", color: "b", from, to },
+            CENTER * centerScore(to),
+          ),
+        );
       }
     }
   }
@@ -251,15 +279,95 @@ const blackSpecials = (
         if (cheb > 2 && cheb <= 4) score = Math.max(score, ATTACK_KING);
       }
     }
-    out.push({
-      action: { timing: "B", kind: "rookSiege", color: "b", from, to: from },
-      score,
-    });
+    out.push(
+      asCandidate(
+        { timing: "B", kind: "rookSiege", color: "b", from, to: from },
+        score,
+      ),
+    );
   }
 
   return out.filter(
-    (c) => specialGasCost(c.action.kind as ScSpecialKind) <= snap.gas.b,
+    (c) =>
+      specialGasCost(c.actions[0]!.kind as ScSpecialKind) <= snap.gas.b,
   );
+};
+
+/**
+ * Gas canister + same-forward classical on a pawn (UI stack form).
+ * `endScTurn.rewriteClassicalAfterB` expands B from→mid + C from→mid into
+ * C mid→far, so the pawn resolves two steps ahead. Skip when a free classical
+ * double to `far` already exists.
+ */
+const blackPawnGasStacks = (
+  snap: ScFenSnapshot,
+  map: Map<Square, ScPiece>,
+  moves: readonly Move[],
+  ctx: ScoreCtx,
+): Candidate[] => {
+  if (specialGasCost("pawnDouble") > snap.gas.b) return [];
+  const out: Candidate[] = [];
+  for (const [from, piece] of map) {
+    if (piece.color !== "b" || piece.type !== "p") continue;
+    const mid = pawnSingleTarget(from, "b");
+    if (!mid || map.has(mid) || rankOf(mid) === 1) continue;
+    const far = pawnSingleTarget(mid, "b");
+    if (!far || map.has(far)) continue;
+    if (moves.some((m) => m.from === from && m.to === far)) continue;
+
+    const promotion: SpawnPiece | undefined = rankOf(far) === 1 ? "q" : undefined;
+    const synthetic: Move = {
+      from,
+      to: far,
+      capture: null,
+      ...(promotion ? { promotion } : {}),
+    };
+    out.push({
+      actions: [
+        { timing: "B", kind: "pawnDouble", color: "b", from, to: mid },
+        {
+          timing: "C",
+          kind: "classical",
+          color: "b",
+          from,
+          to: mid,
+          ...(promotion ? { promotion } : {}),
+        },
+      ],
+      score: scoreMove(synthetic, ctx),
+    });
+  }
+  return out;
+};
+
+/**
+ * Command Center spawn (B) + any classical (C) in the same turn.
+ * Planning validates each action on the pre-B board, so a classical `to` that
+ * equals the spawn square must be dropped — after B that tile is occupied by
+ * our own unit and the King (or other mover) would bounce / no-op.
+ */
+const blackSpawnStacks = (
+  spawnCandidates: readonly Candidate[],
+  moveCandidates: readonly Candidate[],
+): Candidate[] => {
+  const out: Candidate[] = [];
+  for (const spawn of spawnCandidates) {
+    const spawnAction = spawn.actions[0];
+    if (!spawnAction || spawnAction.kind !== "spawn" || !spawnAction.to) continue;
+    for (const move of moveCandidates) {
+      const moveAction = move.actions[0];
+      if (!moveAction || moveAction.timing !== "C" || moveAction.kind !== "classical") {
+        continue;
+      }
+      if (moveAction.to === spawnAction.to) continue;
+      out.push({
+        actions: [spawnAction, moveAction],
+        score: spawn.score + move.score,
+        ...(spawn.spendMinerals != null ? { spendMinerals: spawn.spendMinerals } : {}),
+      });
+    }
+  }
+  return out;
 };
 
 const cloneWithMove = (
@@ -283,14 +391,7 @@ const cloneWithMove = (
   return next;
 };
 
-const scoreMove = (move: Move, context: {
-  map: Map<Square, ScPiece>;
-  king: Square;
-  kingThreatened: boolean;
-  whiteKingVisible: boolean;
-  whiteKing: Square | null;
-  sieged: ReadonlySet<Square>;
-}): number => {
+const scoreMove = (move: Move, context: ScoreCtx): number => {
   const { map, king, kingThreatened, whiteKingVisible, whiteKing, sieged } = context;
   const piece = map.get(move.from);
   if (!piece) return Number.NEGATIVE_INFINITY;
@@ -363,11 +464,11 @@ const bestOf = <T extends Candidate>(candidates: T[]): T | null => {
 };
 
 /**
- * Occupancy after a candidate resolves, used to test whether the action really
+ * Occupancy after one action resolves, used to test whether the plan really
  * clears a check on our King. Actions that do not move or remove a unit
  * (knightMine / rookSiege) leave the board unchanged.
  */
-const simulateCandidate = (
+const simulateAction = (
   map: Map<Square, ScPiece>,
   action: ScActionInput,
   sieged: ReadonlySet<Square>,
@@ -403,19 +504,71 @@ const simulateCandidate = (
   return next;
 };
 
-/** True when the action leaves our King off every chip-capable attack ray. */
+/**
+ * Apply a candidate plan in resolve order. UI pawn stacks (B+C same from/to)
+ * relocate twice: mid, then far — matching `rewriteClassicalAfterB`.
+ */
+const simulatePlan = (
+  map: Map<Square, ScPiece>,
+  actions: readonly ScActionInput[],
+  sieged: ReadonlySet<Square>,
+): Map<Square, ScPiece> => {
+  let next = map;
+  const b = actions.find(
+    (a) =>
+      a.timing === "B" &&
+      (a.kind === "pawnDouble" || a.kind === "queenWarp") &&
+      a.to,
+  );
+  for (const action of actions) {
+    if (
+      action.timing === "C" &&
+      b &&
+      b.to &&
+      action.from === b.from &&
+      action.to === b.to
+    ) {
+      const fromP = parseSquare(b.from);
+      const toP = parseSquare(b.to);
+      const df = toP.file - fromP.file;
+      const dr = toP.rank - fromP.rank;
+      const farFile = toP.file + df;
+      const farRank = toP.rank + dr;
+      const far =
+        farFile >= 0 && farFile <= 7 && farRank >= 1 && farRank <= 8
+          ? (`${FILES[farFile]}${farRank}` as Square)
+          : null;
+      if (far) {
+        next = simulateAction(
+          next,
+          {
+            ...action,
+            from: b.to,
+            to: far,
+          },
+          sieged,
+        );
+        continue;
+      }
+    }
+    next = simulateAction(next, action, sieged);
+  }
+  return next;
+};
+
+/** True when the plan leaves our King off every chip-capable attack ray. */
 const clearsCheck = (
   map: Map<Square, ScPiece>,
-  action: ScActionInput,
+  actions: readonly ScActionInput[],
   sieged: ReadonlySet<Square>,
 ): boolean => {
-  const after = simulateCandidate(map, action, sieged);
+  const after = simulatePlan(map, actions, sieged);
   const king = findKing(after, "b");
   return !!king && !isSquareAttackedBy(after, king, "w");
 };
 
 /**
- * Decide one black action for an open planning window.
+ * Decide one black plan for an open planning window.
  * Returns the input snapshot untouched when black already queued, the phase is
  * not P, or no action scores above nothing.
  */
@@ -433,7 +586,7 @@ export const adjutant = (
 
   const sieged = new Set(snap.siegedRooks ?? []);
 
-  // Context 3 — side vision through fog (lit ∪ revealed enemy pieces).
+  // Context 4 — side vision through fog (lit ∪ revealed enemy pieces).
   // An unreadable board degrades to fighting blind rather than crashing the host.
   const whiteKing = findKing(map, "w");
   let whiteKingVisible = false;
@@ -449,43 +602,61 @@ export const adjutant = (
     whiteKingVisible = false;
   }
 
-  // Context 1 + 2 — candidates, scored against the strategy stack.
+  // Context 1–3 — candidates, scored against the strategy stack.
   // An adjacent enemy King counts: face-to-face kings chip each other.
   const kingThreatened = isSquareAttackedBy(map, king, "w");
+  const scoreCtx: ScoreCtx = {
+    map,
+    king,
+    kingThreatened,
+    whiteKingVisible,
+    whiteKing,
+    sieged,
+  };
   const moves = blackMoves(map, sieged);
-  const moveCandidates: Candidate[] = moves.map((m) => ({
-    action: {
-      timing: "C",
-      kind: "classical",
-      color: "b",
-      from: m.from,
-      to: m.to,
-      ...(m.promotion ? { promotion: m.promotion } : {}),
-    },
-    score: scoreMove(m, { map, king, kingThreatened, whiteKingVisible, whiteKing, sieged }),
-  }));
+  const moveCandidates: Candidate[] = moves.map((m) =>
+    asCandidate(
+      {
+        timing: "C",
+        kind: "classical",
+        color: "b",
+        from: m.from,
+        to: m.to,
+        ...(m.promotion ? { promotion: m.promotion } : {}),
+      },
+      scoreMove(m, scoreCtx),
+    ),
+  );
   const specialCandidates = blackSpecials(snap, map, king, sieged, storedFor);
+  const stackCandidates = [
+    ...blackPawnGasStacks(snap, map, moves, scoreCtx),
+    ...blackSpawnStacks(specialCandidates, moveCandidates),
+  ];
 
   /**
    * Strategy 1 — protect the King above all, as a single uniform rule: any
-   * action that leaves the King on a chip-capable ray is crushed by
+   * plan that leaves the King on a chip-capable ray is crushed by
    * KING_SAFETY. This covers all three cases at once — fleeing a real check,
    * interposing / capturing the checker, and (in the quiet case) not
    * self-exposing a pinned piece, which raw `attacksSquare` cannot see because
    * it ignores absolute pins.
    */
-  const guarded = [...specialCandidates, ...moveCandidates].map((c) =>
-    clearsCheck(map, c.action, sieged) ? c : { ...c, score: c.score - KING_SAFETY },
+  const guarded = [...specialCandidates, ...stackCandidates, ...moveCandidates].map(
+    (c) =>
+      clearsCheck(map, c.actions, sieged) ? c : { ...c, score: c.score - KING_SAFETY },
   );
 
-  // Specials lead the pool, so they win exact score ties.
+  // Specials / stacks lead the pool, so they win exact score ties.
   const chosen = bestOf(guarded);
 
   if (!chosen) return { snapshot: snap };
 
   // Commit through the SCFEN appenders (gas / queue-shape legality, no-op on error).
   try {
-    const next = addScAction({ snapshot: { ...snap, queue: snap.queue ?? { actions: [] } }, action: chosen.action }).snapshot;
+    let next: ScFenSnapshot = { ...snap, queue: snap.queue ?? { actions: [] } };
+    for (const action of chosen.actions) {
+      next = addScAction({ snapshot: next, action }).snapshot;
+    }
     return chosen.spendMinerals
       ? { snapshot: next, spendMinerals: { color: "b", amount: chosen.spendMinerals } }
       : { snapshot: next };
@@ -494,6 +665,3 @@ export const adjutant = (
     throw e;
   }
 };
-
-/** @deprecated Use {@link adjutant}. */
-export const kingHuntBrain = adjutant;

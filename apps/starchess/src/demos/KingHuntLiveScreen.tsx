@@ -1,9 +1,9 @@
 import type { Component } from "solid-js";
+import { adjutant } from "@chess-coach/starchess-core";
 
 import { createMatchStore, MatchStoreProvider, useMatchStore } from "~/app/MatchStoreContext";
 import { createMatchStateFromScfen } from "~/app/matchReducer";
 import { StarChessScreen } from "~/app/StarChessScreen";
-import { adjutant } from "~/demos/adjutant";
 import { KING_HUNT_LIVE_START_SCFEN } from "~/demos/kingHunt";
 
 /**

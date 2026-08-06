@@ -1,18 +1,29 @@
 # e2e setup
 
-The same specs in `tests/` run against two **targets** (see `target.ts`), selected by
+The same specs in `tests/` run against multiple **targets** (see `target.ts`), selected by
 `E2E_TARGET`:
 
 | Target | Command | Wiring | Host deps |
 |---|---|---|---|
-| `web-no-llm` (default) | `npm test` / `npm run test:web` | UI + in-browser engine workers; vite `:5173` + wrangler PWA preview `:8787` | none beyond npm |
+| `starchess` | `npm run test:starchess` / compose `e2e` | Standalone `apps/starchess` vite `:5175` + Storybook `:6007` | none beyond npm/pnpm |
+| `web-no-llm` (default host) | `npm test` / `npm run test:web` | Classical UI + in-browser engine; vite `:5173` + wrangler `:8787` | none beyond npm |
 | `desktop` | `npm run test:desktop` | UI (desktop mode) `:5174` + Bun server `apps/server` `:8080` → `@chess-coach/engine-core` + **native Stockfish/Maia** + **local LLM** | see below |
+
+StarChess deep links use the canonical form
+`/starchess/?scfen=${encodeURIComponent(scfen)}` (Playwright `baseURL` already includes
+`/starchess/`, so specs navigate with `/?scfen=…`).
 
 ## npm dependencies (both targets)
 
 ```sh
 npm install            # @playwright/test, @types/node, typescript, chess.js
 npx playwright install # browsers (chromium for desktop; + webkit/firefox/brave for web)
+```
+
+For the standalone app under test:
+
+```sh
+pnpm --filter @chess-coach/starchess... install
 ```
 
 ## Desktop target — local installs
@@ -72,15 +83,17 @@ out at the first handshake gate.
 ## Run
 
 ```sh
-npm run test:web       # default target — no host deps
+npm run test:starchess # standalone StarChess (compose default)
+npm run test:web       # classical Coach — no host deps
 npm run test:desktop   # needs the three installs above
 ```
 
 ## Docker Compose
 
-Runs the StarChess chromium smoke suite in the Playwright image (`E2E_TARGET=web-no-llm`).
-Playwright `webServer` starts vite from `apps/ui` (`npm run dev:web-no-llm:vite`); the
-image installs UI + e2e deps, and compose bind-mounts the repo at `/work` with anonymous
+Default `e2e` service runs the StarChess chromium smoke suite
+(`E2E_TARGET=starchess`). Playwright `webServer` starts vite from `apps/starchess`
+(`npm run dev -- --port 5175`). The image installs workspace StarChess deps via pnpm
+plus e2e/ui npm installs; compose bind-mounts the repo at `/work` with anonymous
 `node_modules` volumes so those installs survive.
 
 ```sh
@@ -88,8 +101,8 @@ docker compose build e2e
 docker compose run --rm e2e
 ```
 
-Full suite (chromium): `docker compose --profile full run --rm e2e-full`  
-Or override: `docker compose run --rm e2e npx playwright test --project=chromium`
+Full classical Coach suite (chromium): `docker compose --profile full run --rm e2e-full`  
+Or override: `docker compose run --rm -e E2E_TARGET=web-no-llm e2e npx playwright test --project=chromium`
 
 
 ## CI notes
@@ -97,7 +110,9 @@ Or override: `docker compose run --rm e2e npx playwright test --project=chromium
 - Provide `stockfish` + `lc0` on `$PATH`, and an Ollama service with the model pulled
   (`ollama pull …`) — or repoint `LLM_*` / `MAIA_WEIGHTS_DIR` at alternatives.
 - `pwa-offline.spec.ts` is web-only (pins the `:8787` PWA preview) and is auto-ignored on
-  the desktop target.
+  the desktop / starchess targets.
+- StarChess specs are ignored on `web-no-llm` / `desktop`; classical Coach specs are
+  ignored on `starchess`.
 - macOS gotcha baked into the config: the Bun server binds `0.0.0.0`, so the desktop
   readiness probe targets `http://127.0.0.1:8080/hello` (avoids the `localhost`→`::1`
   resolution and the `/`→`/chess` redirect-404).

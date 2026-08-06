@@ -1,4 +1,4 @@
-import type { Clock, LocationPort, RandomSource, Scheduler } from "~/ports";
+import type { Clock, LocationPort, RandomSource, Scheduler } from "~/types/ports";
 
 export const browserClock: Clock = {
   now: () => Date.now(),

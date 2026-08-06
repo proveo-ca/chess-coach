@@ -8,11 +8,11 @@ import {
 } from "~/stories/fixtures/scenarios";
 
 /**
- * Static SCFEN board samples — no live match store / DualNav.
+ * Static SCFEN board samples — always on Screen grid; no live match / DualNav.
  */
 const meta = {
   title: "StarChess/Board",
-  parameters: { layout: "centered" },
+  parameters: { layout: "fullscreen" },
 } satisfies Meta;
 
 export default meta;
@@ -21,12 +21,10 @@ type Story = StoryObj;
 export const FogReveal: Story = {
   name: "Fog + gas-used reveal",
   render: () => (
-    <div style={{ width: "420px" }}>
-      <FogVisionDemo
-        scfen={GAS_USED_FOG_FIXTURE.scfen}
-        caption={GAS_USED_FOG_FIXTURE.caption}
-      />
-    </div>
+    <FogVisionDemo
+      scfen={GAS_USED_FOG_FIXTURE.scfen}
+      caption={GAS_USED_FOG_FIXTURE.caption}
+    />
   ),
 };
 
@@ -37,7 +35,7 @@ export const OpenBoard: Story = {
       scfen={OPEN_BOARD_FIXTURE.scfen}
       fog={OPEN_BOARD_FIXTURE.fog}
       visionMode={OPEN_BOARD_FIXTURE.visionMode}
-      width="420px"
+      caption="Open board · no fog"
     />
   ),
 };

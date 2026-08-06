@@ -1,12 +1,13 @@
 /**
  * Static SCFEN fog vision sample — siege rook (immobile, 9×9).
- * Stories feed SCFEN only; no DualNav / combat.
+ * Always on Screen grid. Stories feed SCFEN only; no DualNav / combat.
  */
 import { createMemo, onCleanup, onMount, type Component } from "solid-js";
 import type { Square } from "chess.js";
 
 import { parseScFen, placementToMap } from "@chess-coach/starchess-core";
 
+import { Screen } from "~/components/primitives/Screen";
 import { AnimationStage } from "~/presentation/animations/AnimationStage";
 import styles from "~/presentation/animations/FogVisionDemo.module.css";
 import {
@@ -61,16 +62,22 @@ export const FogVisionDemo: Component<FogVisionDemoProps> = (props) => {
   });
 
   return (
-    <div class={styles.demo}>
-      <div class={styles.host}>
-        <AnimationStage
-          snapshot={{ ...snap(), siegedRooks: sieged() }}
-          viewer="w"
-          fog
-          variant="eclipse"
-        />
-      </div>
-      <p class={styles.caption}>{props.caption}</p>
-    </div>
+    <Screen>
+      <Screen.BoardArea>
+        <Screen.BoardColumn>
+          <div class={styles.host}>
+            <AnimationStage
+              snapshot={{ ...snap(), siegedRooks: sieged() }}
+              viewer="w"
+              fog
+              variant="eclipse"
+            />
+          </div>
+        </Screen.BoardColumn>
+      </Screen.BoardArea>
+      <Screen.Footer>
+        <p class={styles.caption}>{props.caption}</p>
+      </Screen.Footer>
+    </Screen>
   );
 };

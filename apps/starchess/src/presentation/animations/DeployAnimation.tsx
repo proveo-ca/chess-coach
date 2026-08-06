@@ -36,7 +36,7 @@ const hull = (piece: StarChessPiece, color: PieceColor): JSX.Element | null => {
 };
 
 export type DeployAnimationProps = {
-  cues: DeployCue[];
+  cues: readonly DeployCue[];
   boardWidth: number;
   boardHeight: number;
 };

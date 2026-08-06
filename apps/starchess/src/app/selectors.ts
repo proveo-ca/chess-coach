@@ -4,22 +4,43 @@ import {
   scOutcome,
   type ScFenSnapshot,
 } from "@chess-coach/starchess-core";
+import type { Square } from "chess.js";
 
 import type { MatchState } from "~/app/matchTypes";
 import { fogWithGasUsedReveal } from "~/presentation/board/fogProjection";
 
 export const displayedSnapshot = (state: MatchState): ScFenSnapshot => {
-  // Terminal review seeks settled history; live resolve still uses liveSnapshot.
-  if (state.phase === "gameOver" && !state.timeline.active) {
+  // Terminal review: settled cursor + optional in-flight timeline overlays.
+  if (state.phase === "gameOver") {
     const settled = state.settledSnapshots[state.reviewIndex];
     if (settled) {
-      const placement = state.timeline.displayPlacement ?? settled.placement;
-      return { ...settled, placement };
+      const tl = state.timeline;
+      if (tl.active) {
+        return {
+          ...settled,
+          placement: tl.displayPlacement ?? settled.placement,
+          kingLives: tl.displayKingLives ?? settled.kingLives,
+          mines: tl.displayMines ?? settled.mines,
+          siegedRooks: tl.displaySiegedRooks
+            ? [...tl.displaySiegedRooks]
+            : settled.siegedRooks,
+        };
+      }
+      return settled;
     }
   }
   const placement =
     state.timeline.displayPlacement ?? state.liveSnapshot.placement;
-  return { ...state.liveSnapshot, placement };
+  // Snap `U:` = prior-resolve gas stamps (enemy fog pierce / green aura only).
+  // Match `specialsUsed` = armed this planning window — do not merge into U:.
+  const { specialsUsed: usedMarks, ...rest } = state.liveSnapshot;
+  return {
+    ...rest,
+    placement,
+    ...(usedMarks?.length
+      ? { specialsUsed: [...usedMarks].sort() as Square[] }
+      : {}),
+  };
 };
 
 export const isTerminal = (state: MatchState) =>
@@ -41,9 +62,15 @@ export const outcomeLabel = (state: MatchState): string | null => {
 
 export const fogForViewer = (state: MatchState) => {
   const snap = displayedSnapshot(state);
+  const sieged = new Set(snap.siegedRooks ?? [...state.siegedRooks]);
   const base = getSideVision(snap.placement, state.viewer, {
-    rookModeFor: (sq) => (state.siegedRooks.has(sq) ? "siege" : "tank"),
+    rookModeFor: (sq) => (sieged.has(sq) ? "siege" : "tank"),
     mines: snap.mines,
   });
-  return fogWithGasUsedReveal(base, state.specialsUsed, state.viewer, snap);
+  return fogWithGasUsedReveal(
+    base,
+    new Set(snap.specialsUsed ?? []),
+    state.viewer,
+    snap,
+  );
 };

@@ -25,3 +25,13 @@
 # OS
 .DS_Store
 Thumbs.db
+
+# Secrets / local env (never bake into e2e images)
+.env
+.env.*
+**/.env
+**/.env.*
+*.pem
+*.key
+**/*.pem
+**/*.key

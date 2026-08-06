@@ -1,24 +1,52 @@
-import { createContext, createSignal, useContext, type ParentComponent } from "solid-js";
+/**
+ * Match store — Solid signal + reducer; timeline / timer / DualNav review runners.
+ */
+import {
+  createContext,
+  createSignal,
+  useContext,
+  type ParentComponent,
+} from "solid-js";
+import { beginScTurn, type ScAction } from "@chess-coach/starchess-core";
 
-import type { MatchAction, MatchState } from "~/app/matchTypes";
+import type { MatchAction, MatchState, MatchStore } from "~/types/match";
 import { createInitialMatchState, matchReducer } from "~/app/matchReducer";
-import type { Clock, Scheduler } from "~/ports";
+import type { Clock, Scheduler } from "~/types/ports";
 import { browserClock, browserScheduler } from "~/adapters/browser";
-import { beginScTurn } from "@chess-coach/starchess-core";
+import { classicalActionsFromResolve } from "~/presentation/hud/classicalActionsFromResolve";
+import {
+  isCheckOnlyResolve,
+  previousTurnStartIndex,
+} from "~/presentation/hud/isCheckOnlyResolve";
+import { playReviewTurn } from "~/presentation/hud/playReviewTurn";
+import type { ReviewTurnPhase } from "~/types/review";
 import { playTimeline } from "~/presentation/timeline/timelinePlayer";
 import { TURN_TIMEOUT_MS } from "~/presentation/timeline/timings";
 
-export type MatchStore = {
-  state: () => MatchState;
-  dispatch: (action: MatchAction) => void;
-  submitTurn: (reason?: "end" | "timeout") => void;
-  armTimer: () => void;
-  /** Resolve turn-open king-checks before intent; then arm timer when requested. */
-  ensureTurnOpenChecks: (opts?: { armTimer?: boolean }) => void;
-  cancelEffects: () => void;
-};
+export type { MatchStore };
 
-const MatchStoreContext = createContext<MatchStore>();
+export const MatchStoreContext = createContext<MatchStore>();
+
+const playOneResolve = (
+  result: NonNullable<MatchState["lastResolve"]>,
+  dispatch: (a: MatchAction) => void,
+  scheduler: Scheduler,
+  setCancel: (fn: (() => void) | null) => void,
+): Promise<void> =>
+  new Promise((resolve) => {
+    dispatch({ type: "REVIEW_PLAY", result });
+    const cancel = playTimeline(result, scheduler, {
+      onStart: (cues, placement) =>
+        dispatch({ type: "TIMELINE_START", cues, placement }),
+      onCommit: (patch) => dispatch({ type: "TIMELINE_COMMIT", ...patch }),
+      onDone: () => {
+        dispatch({ type: "TIMELINE_DONE" });
+        setCancel(null);
+        resolve();
+      },
+    });
+    setCancel(cancel);
+  });
 
 export const createMatchStore = (opts?: {
   clock?: Clock;
@@ -37,18 +65,46 @@ export const createMatchStore = (opts?: {
   const [state, setState] = createSignal<MatchState>(
     opts?.initial ?? createInitialMatchState(),
   );
+  const [reviewPhase, setReviewPhase] = createSignal<ReviewTurnPhase>("start");
+  const [reviewIntentActions, setReviewIntentActions] = createSignal<
+    readonly ScAction[] | null
+  >(null);
   let cancelTimeline: (() => void) | null = null;
   let cancelTimer: (() => void) | null = null;
+  let cancelReviewTurn: (() => void) | null = null;
+  let reviewBusy = false;
+  /** Settled index when the in-flight one-arrow turn began. */
+  let reviewTurnStart = 0;
 
   const dispatch = (action: MatchAction) => {
     setState((s) => matchReducer(s, action));
   };
 
+  const clearReviewIntent = () => setReviewIntentActions(null);
+
+  const syncReviewPhaseIdle = () => {
+    const s = state();
+    const max = Math.max(0, s.settledSnapshots.length - 1);
+    if (s.phase !== "gameOver") {
+      setReviewPhase("start");
+      clearReviewIntent();
+      return;
+    }
+    if (s.reviewIndex >= max) setReviewPhase("final");
+    else if (s.reviewIndex <= 0) setReviewPhase("start");
+    else setReviewPhase("start");
+    clearReviewIntent();
+  };
+
   const cancelEffects = () => {
+    cancelReviewTurn?.();
+    cancelReviewTurn = null;
+    reviewBusy = false;
     cancelTimeline?.();
     cancelTimeline = null;
     cancelTimer?.();
     cancelTimer = null;
+    clearReviewIntent();
     dispatch({ type: "CANCEL_EFFECTS" });
   };
 
@@ -103,6 +159,7 @@ export const createMatchStore = (opts?: {
         dispatch({ type: "BEGIN_CHECKS_DONE" });
         const next = state();
         if (next.phase === "planning" && opts?.armTimer) armTimer();
+        if (next.phase === "gameOver") syncReviewPhaseIdle();
       },
     });
   };
@@ -132,6 +189,92 @@ export const createMatchStore = (opts?: {
         if (next.phase === "planning") {
           ensureTurnOpenChecks({ armTimer: autoArmTimer });
         }
+        if (next.phase === "gameOver") syncReviewPhaseIdle();
+      },
+    });
+  };
+
+  const reviewBack = () => {
+    const s = state();
+    if (s.phase !== "gameOver") return;
+    if (reviewBusy || s.timeline.active) {
+      cancelReviewTurn?.();
+      cancelReviewTurn = null;
+      cancelTimeline?.();
+      cancelTimeline = null;
+      reviewBusy = false;
+      clearReviewIntent();
+      dispatch({ type: "CANCEL_EFFECTS" });
+      dispatch({ type: "REVIEW_SEEK", index: reviewTurnStart });
+      syncReviewPhaseIdle();
+      return;
+    }
+    if (s.reviewIndex <= 0) {
+      syncReviewPhaseIdle();
+      return;
+    }
+    const idx = previousTurnStartIndex(s.reviewIndex, s.settledResolves);
+    dispatch({ type: "REVIEW_SEEK", index: idx });
+    syncReviewPhaseIdle();
+  };
+
+  const reviewForward = () => {
+    const s0 = state();
+    if (s0.phase !== "gameOver") return;
+    if (reviewBusy || s0.timeline.active) return;
+    const max = s0.settledSnapshots.length - 1;
+    if (s0.reviewIndex >= max) return;
+
+    const startIndex = s0.reviewIndex;
+    const first = s0.settledResolves[startIndex];
+    if (!first) {
+      dispatch({ type: "REVIEW_SEEK", index: startIndex + 1 });
+      syncReviewPhaseIdle();
+      return;
+    }
+
+    reviewBusy = true;
+    reviewTurnStart = startIndex;
+    const setCancel = (fn: (() => void) | null) => {
+      cancelTimeline = fn;
+    };
+
+    const endResult =
+      isCheckOnlyResolve(first) && s0.settledResolves[startIndex + 1]
+        ? s0.settledResolves[startIndex + 1]!
+        : isCheckOnlyResolve(first)
+          ? null
+          : first;
+
+    cancelReviewTurn = playReviewTurn({
+      onPhase: (phase) => setReviewPhase(phase),
+      playChecks: isCheckOnlyResolve(first)
+        ? () => playOneResolve(first, dispatch, scheduler, setCancel)
+        : undefined,
+      showIntent: () => {
+        if (!endResult) {
+          clearReviewIntent();
+          return;
+        }
+        setReviewIntentActions(classicalActionsFromResolve(endResult));
+      },
+      playResolve: async () => {
+        clearReviewIntent();
+        if (!endResult) return;
+        // After check TIMELINE_DONE, reviewIndex is startIndex+1; End plays there.
+        // If no check, reviewIndex is still startIndex.
+        const idx = state().reviewIndex;
+        const result = state().settledResolves[idx];
+        if (!result || isCheckOnlyResolve(result)) {
+          // Check-only terminal (king died on check) — already settled by playChecks.
+          return;
+        }
+        await playOneResolve(result, dispatch, scheduler, setCancel);
+      },
+      onDone: () => {
+        reviewBusy = false;
+        cancelReviewTurn = null;
+        syncReviewPhaseIdle();
       },
     });
   };
@@ -142,12 +285,20 @@ export const createMatchStore = (opts?: {
     submitTurn,
     armTimer,
     ensureTurnOpenChecks,
+    reviewBack,
+    reviewForward,
+    reviewPhase,
+    reviewIntentActions,
     cancelEffects,
   };
 };
 
-export const MatchStoreProvider: ParentComponent<{ store: MatchStore }> = (props) => (
-  <MatchStoreContext.Provider value={props.store}>{props.children}</MatchStoreContext.Provider>
+export const MatchStoreProvider: ParentComponent<{ store: MatchStore }> = (
+  props,
+) => (
+  <MatchStoreContext.Provider value={props.store}>
+    {props.children}
+  </MatchStoreContext.Provider>
 );
 
 export const useMatchStore = (): MatchStore => {

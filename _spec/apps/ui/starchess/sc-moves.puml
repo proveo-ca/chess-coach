@@ -1,14 +1,15 @@
 @startuml sc-moves-layers
 ' SPEC: _spec/apps/ui/starchess/sc-moves.puml
+' OUTDATED: Phase 5–6 — live rules in packages/starchess-core; UI seam in apps/starchess.
 ' purpose: SC-native classical move generator — scMoves.ts, its three consumers, the BoardMoveProvider seam, and the classical boundary no StarChess concept crosses.
 !include ../../../themes/proveo.puml
 
 skinparam packageStyle rectangle
 skinparam defaultTextAlignment left
 
-title StarChess · scMoves.ts — SC-native classical legality (layers & seam)
+title OUTDATED — StarChess · scMoves.ts — SC-native classical legality (layers & seam)
 
-package "apps/ui/src/starchess — SC RULES layer" {
+package "packages/starchess-core — SC RULES\n(historical paths: apps/ui/src/starchess)" {
   component "scMoves.ts\nscMovesFrom / scMovesFor / isScMoveShape\nauthoritative SC classical legality" as SCM <<app>>
   component "board.ts\nattacksSquare + clearRay — piece geometry" as BRD <<app>>
   component "rookSiegeMode.ts\nisRookSiegedAfterB — siege truth after queued B" as SIEGE <<app>>
@@ -18,7 +19,7 @@ package "apps/ui/src/starchess — SC RULES layer" {
 
 package "Consumers" {
   component "starchess/hooks/useScMoveProvider.ts\nUI adapter — implements BoardMoveProvider" as PROV <<app>>
-  component "starchess/demos/adjutant.ts\nadjutant — strategy only" as BRAIN <<app>>
+  component "packages/starchess-core/ai/adjutant.ts\nadjutant — strategy only" as BRAIN <<app>>
   component "starchess/scValidate.ts\nassertClassicalBaseline — opt-in geometry, DEFAULT OFF" as VAL <<error>>
 }
 

@@ -1,8 +1,8 @@
 import { expect, test } from "@playwright/test";
 
-/** SCFEN deep-link helper (NerdScreen reads `?scfen=`). */
+/** Canonical deep link: baseURL is `/starchess/`. */
 const gotoScfen = async (page: import("@playwright/test").Page, scfen: string) => {
-  await page.goto(`/starchess?scfen=${encodeURIComponent(scfen)}`);
+  await page.goto(`/?scfen=${encodeURIComponent(scfen)}`);
   await expect(page.getByTestId("nerd-board-chrome")).toBeVisible({ timeout: 20_000 });
 };
 

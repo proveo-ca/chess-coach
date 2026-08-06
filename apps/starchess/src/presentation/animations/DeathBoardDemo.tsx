@@ -21,6 +21,7 @@ import {
   clearSiegedRooks,
   setRookMode,
 } from "~/presentation/animations/rookModeStore";
+import { Screen } from "~/components/primitives/Screen";
 import type { DeathCue } from "~/presentation/types";
 
 const FEN_GONE: Record<DeathPiece, string> = {
@@ -115,13 +116,19 @@ export const DeathBoardDemo: Component<{ piece: DeathPiece }> = (props) => {
   };
 
   return (
-    <div class={styles.demo}>
-      <div class={styles.host}>
-        <AnimationStage fen={fen()} fog deathCues={cues()} />
-      </div>
-      <p class={styles.caption}>
-        StarChess · {props.piece.toUpperCase()} · {phase()} · deathCues
-      </p>
-    </div>
+    <Screen>
+      <Screen.BoardArea>
+        <Screen.BoardColumn>
+          <div class={styles.host}>
+            <AnimationStage fen={fen()} fog deathCues={cues()} />
+          </div>
+        </Screen.BoardColumn>
+      </Screen.BoardArea>
+      <Screen.Footer>
+        <p class={styles.caption}>
+          StarChess · {props.piece.toUpperCase()} · {phase()} · deathCues
+        </p>
+      </Screen.Footer>
+    </Screen>
   );
 };

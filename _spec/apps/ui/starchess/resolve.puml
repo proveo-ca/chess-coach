@@ -1,5 +1,6 @@
 @startuml resolve
 ' SPEC: _spec/apps/ui/starchess/resolve.puml
+' OUTDATED: Phase 5–6 — live resolve in packages/starchess-core/src/resolve.
 ' purpose: Rank-major resolve — turn-open king-checks (before intent) → End: B → C → F.
 !include ../../../themes/proveo.puml
 
@@ -58,8 +59,11 @@ endif
 
 note right
   **Promotion (after move/mine):** relocate lands a **pawn**; survivors with
-  a queued promotion then convert (hold → deploy). A promoting pawn that
-  steps onto a hostile mine dies with the mine — **no** promotion deploy.
+  a queued promotion then **walk off** the board edge (1× ""MOVE_SQUARE_MS"")
+  and the chosen unit **deploys**. A promoting pawn that **walks onto** a
+  hostile mine (forward step — pawns only attack front diagonals) dies with
+  the mine — **no** walk-off / deploy. Units that attack the mine square
+  clear it in the attack phase then occupy.
   Completed-history wire ""C=from intentTo>resolvedTo"" remains **deferred**.
 end note
 
@@ -144,6 +148,7 @@ note right
   ""kingLives"". HP is the single source of truth, so there is no
   persisted winner field and **no SCFEN grammar change**
   (""STARCHESS_FEN.md"" stays as is; ""O"" was already a valid phase code).
-  Covered by ""src/starchess/__tests__/kingDuel.test.ts"".
+  Covered by core unit tests under ""packages/starchess-core""
+  (historical path: ""src/starchess/__tests__/kingDuel.test.ts"").
 end note
 @enduml

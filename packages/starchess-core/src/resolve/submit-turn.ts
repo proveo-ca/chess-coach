@@ -347,6 +347,43 @@ const classicalFor = (
   };
 };
 
+/**
+ * Squares that spent gas this resolve — stamped as `U:` on the next planning
+ * snap so enemies keep the green aura (and fog pierce) until the following End.
+ * Glow follows relocating units (gas-step / warp / rewritten classical).
+ */
+const collectSpecialsUsed = (
+  actions: readonly ScAction[],
+  actionsAfterB: readonly ScAction[],
+  finalPlacement: string,
+  bMoves: readonly { from: Square; to: Square }[],
+  fMoves: readonly { from: Square; to: Square }[],
+  /** Promotion landings — gas stamp must not follow onto the deployed unit. */
+  promotions: readonly { at: Square }[] = [],
+): Square[] => {
+  const used = new Set<Square>();
+  for (const a of actions) {
+    if (a.timing === "B" || a.timing === "F") used.add(a.from);
+  }
+  const migrate = (from: Square, to: Square) => {
+    if (from === to || !used.has(from)) return;
+    used.delete(from);
+    used.add(to);
+  };
+  for (const m of bMoves) migrate(m.from, m.to);
+  for (const a of actions) {
+    if (a.timing === "B" && a.kind === "queenWarp" && a.to) migrate(a.from, a.to);
+  }
+  for (const a of actionsAfterB) {
+    if (a.timing === "C") migrate(a.from, a.to);
+  }
+  for (const m of fMoves) migrate(m.from, m.to);
+  // Pawn spent gas then promoted — the deploy is a new unit, not a U: carrier.
+  for (const p of promotions) used.delete(p.at);
+  const map = placementToMap(finalPlacement);
+  return [...used].filter((sq) => map.has(sq)).sort();
+};
+
 /** Shift a square by a file/rank delta; null if off-board. */
 const shiftSquare = (s: Square, df: number, dr: number): Square | null => {
   const { file, rank } = parseSquare(s);
@@ -730,7 +767,16 @@ export const endScTurn = (
   const income = energyForTurn(Math.max(1, nextTurn));
   const gasIncome = { w: income, b: income };
   const siegedRooks = [...sieged].sort();
+  const specialsUsed = collectSpecialsUsed(
+    actions,
+    actionsAfterB,
+    placement,
+    bMoves,
+    fMoves,
+    resolved.promotions,
+  );
   // Planning check rings come from live geometry — do not persist deferred H:.
+  // Prior-turn U: is replaced (not carried) so green lasts one planning window.
   const next: ScFenSnapshot = {
     placement,
     turn: nextTurn,
@@ -741,6 +787,7 @@ export const endScTurn = (
     queue: { actions: [] },
     ...(mines.length ? { mines } : {}),
     ...(siegedRooks.length ? { siegedRooks } : {}),
+    ...(specialsUsed.length ? { specialsUsed } : {}),
   };
 
   return {

@@ -1,0 +1,86 @@
+.header {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 3.5rem;
+}
+
+.header > div {
+  grid-column: 2;
+}
+
+.topChrome {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  width: 100%;
+  max-width: var(--board-size);
+  /* Same floor for live ResourceBar+TurnBar and ObserverReviewChrome so
+     SidebarInset (Screen grid row 1) does not resize when phase flips. */
+  min-height: 6.5rem;
+  margin-bottom: 4px;
+  box-sizing: border-box;
+}
+
+.topChrome :global([data-testid="resource-bar"]) {
+  width: 100%;
+  min-width: 0;
+}
+
+.topChrome :global([data-testid="turn-bar"]) {
+  width: 100%;
+  min-width: 0;
+}
+
+.boardHost {
+  position: relative;
+  display: block;
+  width: 100%;
+  overflow: visible;
+}
+
+.boardOverlay {
+  position: absolute;
+  pointer-events: none;
+  z-index: 28;
+  overflow: visible;
+}
+
+.hit {
+  position: absolute;
+  pointer-events: auto;
+  cursor: pointer;
+  z-index: 3;
+  border-radius: 2px;
+}
+
+.hitAdjacent {
+  box-shadow: inset 0 0 0 3px rgba(126, 182, 245, 0.9);
+  background: rgba(59, 125, 216, 0.22);
+}
+
+.gasFooter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  box-sizing: border-box;
+}
+
+.matchup,
+.placeholder {
+  margin: 0.2rem 0;
+  color: var(--text-color);
+}
+
+.matchup {
+  font-size: 0.85rem;
+}
+
+.placeholder {
+  padding-top: 0.5rem;
+  opacity: 0.75;
+}

@@ -11,13 +11,12 @@ import type {
 import { mapToPlacement, placementToMap } from "@chess-coach/starchess-core";
 
 import { browserScheduler } from "~/adapters/browser";
-import type { TimelineCue } from "~/app/matchTypes";
+import type { TimelineCue } from "~/types/match";
 import { projectResolveTimeline } from "~/presentation/timeline/timelinePlayer";
 import {
   ATTACK_MS,
   DEATH_MS,
   DEPLOY_MS,
-  PROMO_HOLD_MS,
   moveDurationMs,
 } from "~/presentation/timeline/timings";
 import type {
@@ -55,8 +54,6 @@ const cueDuration = (cue: TimelineCue): number => {
       return DEATH_MS;
     case "deploy":
       return DEPLOY_MS;
-    case "promoHold":
-      return PROMO_HOLD_MS;
   }
 };
 
@@ -75,6 +72,12 @@ const relocatePlacement = (placement: string, from: Square, to: Square): string 
   if (!piece) return placement;
   map.delete(from);
   map.set(to, piece);
+  return mapToPlacement(map);
+};
+
+const withoutSquare = (placement: string, at: Square): string => {
+  const map = placementToMap(placement);
+  map.delete(at);
   return mapToPlacement(map);
 };
 
@@ -248,6 +251,10 @@ export const playResolveCues = (
     cancelDelay = browserScheduler.delay(cueDuration(cue), () => {
       if (cue.kind === "move" && cue.id.startsWith("b")) {
         displayPlacement = relocatePlacement(displayPlacement, cue.from, cue.to);
+        applyBoard({ placement: displayPlacement });
+        clearOverlays();
+      } else if (cue.kind === "move" && cue.id.startsWith("pw")) {
+        displayPlacement = withoutSquare(displayPlacement, cue.from);
         applyBoard({ placement: displayPlacement });
         clearOverlays();
       }

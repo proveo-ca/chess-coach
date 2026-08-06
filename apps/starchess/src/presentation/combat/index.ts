@@ -15,5 +15,8 @@ export {
 } from "~/presentation/combat/boardFx";
 export {
   intentOverlaysFromQueue,
+  type IntentCanisterGhost,
+  type IntentCheckGhost,
+  type IntentOverlays,
   type IntentOverlayOpts,
 } from "~/presentation/combat/intentOverlays";
