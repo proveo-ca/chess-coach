@@ -22,6 +22,7 @@ import {
   findKing,
   pawnSingleTarget,
   placementToMap,
+  spawnKingAnchor,
   type ScFenSnapshot,
   type SpawnPiece,
   type StarChessColor,
@@ -98,10 +99,17 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
     return findKing(placementToMap(s.placement), viewerColor(store));
   });
 
+  /** B = living king; F (after queued C) = post-move Command Center ring. */
+  const spawnAnchor = createMemo(() => {
+    const color = viewerColor(store);
+    const timing = specialTimingFor(snap().queue, color);
+    return spawnKingAnchor(snap(), color, timing);
+  });
+
   const spawnAdjacent = createMemo(() => {
-    const king = activeKingSq();
-    if (!king || spawnPhase() !== "pick") return [] as Square[];
-    const occupied = new Set(placementToMap(snap().placement).keys());
+    if (spawnPhase() !== "pick") return [] as Square[];
+    const { king, occupied } = spawnAnchor();
+    if (!king) return [] as Square[];
     return adjacentSquares(king, occupied);
   });
 

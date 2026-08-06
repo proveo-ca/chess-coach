@@ -32,6 +32,8 @@ export type MoveVisionCue = {
   piece: PieceSymbol;
   /** When the slide CSS started (`progress === 1`). */
   startedAt: number;
+  /** Pawn gas-step — stim per-square ms for progressive fog. */
+  stim?: boolean;
 };
 
 /**
@@ -48,7 +50,13 @@ export function mapWithMovePathOccupancy(
   const next = new Map(map);
   let changed = false;
   for (const m of moves) {
-    const at = moveSquareAtElapsed(m.from, m.to, m.piece, nowMs - m.startedAt);
+    const at = moveSquareAtElapsed(
+      m.from,
+      m.to,
+      m.piece,
+      nowMs - m.startedAt,
+      { stim: !!m.stim },
+    );
     const onFrom = next.get(m.from);
     if (at === m.from && onFrom) continue;
     const piece = onFrom ?? next.get(m.to);

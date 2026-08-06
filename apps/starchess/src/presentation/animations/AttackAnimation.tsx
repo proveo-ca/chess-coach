@@ -1,4 +1,5 @@
 import { For, Show, type Component, type JSX } from "solid-js";
+import type { Square } from "chess.js";
 
 import {
   ANIM_BY_PIECE,
@@ -14,6 +15,7 @@ import {
   squareBoxStyle,
 } from "~/presentation/animations/attackAnim";
 import styles from "~/presentation/animations/AttackAnimation.module.css";
+import aura from "~/presentation/animations/specialUsedAura.module.css";
 import {
   BISHOP_CHARON,
   charonImpactStyle,
@@ -43,6 +45,8 @@ import type { AttackCue } from "~/presentation/animations/types";
 import { rookModeAt } from "~/presentation/animations/rookModeStore";
 import { vecBetween } from "~/presentation/animations/boardGeom";
 
+const NO_SPECIAL_USED: ReadonlySet<Square> = new Set();
+
 type BoardFxProps = {
   class: string;
   style: Record<string, string>;
@@ -55,42 +59,54 @@ const BoardFx: Component<BoardFxProps> = (props) => (
   </div>
 );
 
-const attackNode = (cue: AttackCue): JSX.Element => {
+const attackNode = (
+  cue: AttackCue,
+  opts?: { specialUsed?: boolean; charon?: boolean },
+): JSX.Element => {
   const vec = vecBetween(cue.from, cue.to);
   const deg = screenAngleDeg(vec);
   const face = attackFaceFor(cue.piece, vec);
+  const specialUsed = !!opts?.specialUsed;
+  const charon = !!opts?.charon;
+  // Charon pods stay up whenever this unit spent gas this turn (U: / absorb).
+  const armed = specialUsed || charon;
+  const faceClass = () => ({
+    [styles.pieceFace]: true,
+    [aura.specialUsed]: specialUsed,
+  });
   switch (cue.piece) {
     case "p":
       return (
-        <div class={styles.pieceFace}>
+        <div classList={faceClass()}>
           <InlinePawn color={cue.color} face={face} aimDeg={deg} />
         </div>
       );
     case "n": {
       const pose = aimPoseFor(knightAimDiagVec(vec));
       return (
-        <div class={styles.pieceFace}>
+        <div classList={faceClass()}>
           <InlineKnight color={cue.color} aimPose={pose} />
         </div>
       );
     }
     case "b":
       return (
-        <div class={styles.pieceFace}>
+        <div classList={faceClass()}>
           <InlineBishop
             color={cue.color}
             face={face}
             gunDeg={deg}
-            aiming
-            armed={cue.anim === BISHOP_CHARON}
-            launcherDeg={cue.anim === BISHOP_CHARON ? deg : undefined}
-            launcherCapsVisible={cue.anim !== BISHOP_CHARON}
+            /* Charon volley: idle gatling faces so shoulder pods stay readable. */
+            aiming={!charon}
+            armed={armed}
+            launcherDeg={charon ? deg : undefined}
+            launcherCapsVisible={!charon}
           />
         </div>
       );
     case "r":
       return (
-        <div class={styles.pieceFace}>
+        <div classList={faceClass()}>
           <InlineRook
             color={cue.color}
             aimDeg={screenAimDeg(true, deg, ROOK_REST_AIM_DEG)}
@@ -101,13 +117,13 @@ const attackNode = (cue: AttackCue): JSX.Element => {
     case "q":
       // Hull + laser share aim on `.aimWrap` (see `queenAimWrapStyle`).
       return (
-        <div class={styles.pieceFace}>
+        <div classList={faceClass()}>
           <InlineQueen color={cue.color} />
         </div>
       );
     case "k":
       return (
-        <div class={styles.pieceFace}>
+        <div classList={faceClass()}>
           <InlineKing
             color={cue.color}
             aimDeg={screenAimDeg(true, deg, KING_REST_AIM_DEG)}
@@ -208,6 +224,8 @@ export type AttackAnimationProps = {
   cues: readonly AttackCue[];
   /** Cue ids whose hull has swapped to death art (stable — no remount). */
   dyingIds?: Record<string, boolean>;
+  /** Squares with gas / U: — keep green aura on attack hulls. */
+  specialUsedSquares?: ReadonlySet<Square> | readonly Square[];
   boardWidth: number;
   boardHeight: number;
   /**
@@ -223,6 +241,14 @@ export type AttackAnimationProps = {
  */
 export const AttackAnimation: Component<AttackAnimationProps> = (props) => {
   const dying = (id: string) => !!props.dyingIds?.[id];
+  const used = (): ReadonlySet<Square> => {
+    const g = props.specialUsedSquares;
+    if (!g) return NO_SPECIAL_USED;
+    return g instanceof Set ? g : new Set(g);
+  };
+  const hullUsed = (cue: AttackCue, anim: string) =>
+    anim === BISHOP_CHARON || used().has(cue.from);
+  const isCharon = (anim: string) => anim === BISHOP_CHARON;
 
   return (
     <div
@@ -325,12 +351,16 @@ export const AttackAnimation: Component<AttackAnimationProps> = (props) => {
                   }}
                   data-square={cue.from}
                   data-attack-anim={anim}
+                  data-special-used={hullUsed(cue, anim) ? "true" : undefined}
                   data-rook-mode={
                     cue.piece === "r" ? (cue.rookMode ?? rookModeAt(cue.from)) : undefined
                   }
                 >
                   <div class={styles.aimWrap} style={queenAimWrapStyle(cue)}>
-                    {attackNode(cue)}
+                    {attackNode(cue, {
+                      specialUsed: hullUsed(cue, anim),
+                      charon: isCharon(anim),
+                    })}
                     <Show when={cue.piece === "q"}>
                       <div
                         class={styles.laserPulse}

@@ -1,0 +1,9 @@
+/**
+ * Gas / U: special-used green aura for combat overlays (attack / move / death /
+ * jump / deploy). Filter-only — no outline — so hopping / cranking hulls do not
+ * flash a shaking green rectangle. Board pieces keep their rim via
+ * `.pieceSpecialUsed` on the static square slot.
+ */
+.specialUsed {
+  filter: drop-shadow(0 0 3px #3dce6a) drop-shadow(0 0 8px rgba(61, 206, 106, 0.85));
+}

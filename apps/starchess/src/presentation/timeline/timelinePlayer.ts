@@ -33,6 +33,8 @@ export type TimelineCallbacks = {
     kingLives?: EndScTurnResult["next"]["kingLives"];
     mines?: EndScTurnResult["next"]["mines"];
     siegedRooks?: readonly Square[];
+    /** In-resolve U: stamps — migrate with gas drops / moves for green aura. */
+    specialsUsed?: readonly Square[];
     hidden?: readonly Square[];
     playingIds?: readonly string[];
     moveProgress?: Record<string, 0 | 1>;
@@ -75,13 +77,18 @@ const attackCue = (
   return base;
 };
 
-const moveCue = (m: ResolveMove, id: string): TimelineCue => ({
+const moveCue = (
+  m: ResolveMove,
+  id: string,
+  opts?: { stim?: boolean },
+): TimelineCue => ({
   kind: "move",
   id,
   piece: m.piece,
   color: m.color,
   from: m.from,
   to: m.to,
+  ...(opts?.stim ? { stim: true } : {}),
 });
 
 const relocatePlacement = (placement: string, from: Square, to: Square): string => {
@@ -162,7 +169,7 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
   }
   cues.push(...bGas);
 
-  for (const m of result.bMoves) cues.push(moveCue(m, `b${n++}`));
+  for (const m of result.bMoves) cues.push(moveCue(m, `b${n++}`, { stim: true }));
 
   // B specials that need VFX before afterB locks (Charon missiles / Jump trail).
   for (const ev of result.events) {
@@ -358,7 +365,7 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
   }
 
   cues.push(...fGas);
-  for (const m of result.fMoves) cues.push(moveCue(m, `f${n++}`));
+  for (const m of result.fMoves) cues.push(moveCue(m, `f${n++}`, { stim: true }));
   for (const p of result.resolved.promotions) {
     // Pawn walks one square off the board edge, then the unit deploys.
     cues.push({
@@ -385,9 +392,10 @@ const cueDuration = (cue: TimelineCue): number => {
     case "move":
       if (cue.queenJump) return TACTICAL_JUMP_TRAVEL_MS + TACTICAL_JUMP_APPEAR_MS;
       // Knights use L-path timing (half per-square rate) — matches MoveAnimation.
+      // Stim gas-steps use STIM_MOVE_SQUARE_MS (100ms).
       return cue.piece === "n"
         ? pieceMoveDurationMs(cue.from, cue.to, "n")
-        : moveDurationMs(cue.from, cue.to);
+        : moveDurationMs(cue.from, cue.to, { stim: !!cue.stim });
     case "attack":
       return cue.anim === BISHOP_CHARON ? FRAG_FLIGHT_MS : ATTACK_MS;
     case "death":
@@ -479,6 +487,16 @@ export const playTimeline = (
   let displayPlacement = result.afterPending.placement;
   let displayLives = livesBeforeAnimatedShots(result);
   let afterBApplied = false;
+  /** Green aura squares — stamped on gas absorb, migrates with hull moves. */
+  const usedSquares = new Set<Square>();
+  const commitUsed = (): { specialsUsed: Square[] } => ({
+    specialsUsed: [...usedSquares].sort() as Square[],
+  });
+  const migrateUsed = (from: Square, to: Square) => {
+    if (from === to || !usedSquares.has(from)) return;
+    usedSquares.delete(from);
+    if (isBoardSquare(to)) usedSquares.add(to);
+  };
 
   const applyAfterB = (extra?: { hidden?: readonly Square[]; playingIds?: readonly string[] }) => {
     afterBApplied = true;
@@ -517,9 +535,12 @@ export const playTimeline = (
         kingLives: result.next.kingLives,
         mines: result.next.mines,
         siegedRooks: result.next.siegedRooks,
+        specialsUsed: result.next.specialsUsed ?? [],
         hidden: [],
-        moveProgress: {}, moveLeg: {},
+        moveProgress: {},
+        moveLeg: {},
         playingIds: [],
+        // Leave jumpTrails mounted — CSS fade outlives resolve / onDone.
       });
       cb.onDone();
       return;
@@ -539,11 +560,13 @@ export const playTimeline = (
       });
       const wait = scheduler.delay(GAS_DROP_MS, () => {
         if (cancelled) return;
+        for (const d of drops) usedSquares.add(d.at);
         cb.onCommit({
           hidden: [],
           playingIds: [],
           moveProgress: {},
           moveLeg: {},
+          ...commitUsed(),
         });
         run(next);
       });
@@ -753,6 +776,7 @@ export const playTimeline = (
         for (const m of moves) {
           if (isBoardSquare(m.to)) {
             displayPlacement = relocatePlacement(displayPlacement, m.from, m.to);
+            migrateUsed(m.from, m.to);
           }
         }
         cb.onCommit({
@@ -760,6 +784,7 @@ export const playTimeline = (
           hidden: [],
           playingIds: [],
           moveProgress: {}, moveLeg: {},
+          ...commitUsed(),
         });
         run(next);
       });
@@ -797,12 +822,14 @@ export const playTimeline = (
         if (cancelled) return;
         for (const m of walks) {
           displayPlacement = withoutSquare(displayPlacement, m.from);
+          usedSquares.delete(m.from);
         }
         cb.onCommit({
           placement: displayPlacement,
           hidden: [],
           playingIds: [],
           moveProgress: {}, moveLeg: {},
+          ...commitUsed(),
         });
         run(next);
       });
@@ -929,11 +956,13 @@ export const playTimeline = (
       const land = scheduler.delay(TACTICAL_JUMP_TRAVEL_MS, () => {
         if (cancelled) return;
         displayPlacement = relocatePlacement(displayPlacement, cue.from, cue.to);
+        migrateUsed(cue.from, cue.to);
         cb.onCommit({
           placement: displayPlacement,
           hidden: [cue.from, cue.to],
           playingIds: [cue.id],
           jumpTrails: [trail],
+          ...commitUsed(),
         });
       });
       cancels.push(land);
@@ -952,11 +981,10 @@ export const playTimeline = (
         },
       );
       cancels.push(hullDone);
-      const trailDone = scheduler.delay(TACTICAL_JUMP_TRAIL_MS, () => {
-        if (cancelled) return;
+      // Fire-and-forget: trail CSS is 1000ms; do not block onDone / cancel with resolve.
+      scheduler.delay(TACTICAL_JUMP_TRAIL_MS, () => {
         cb.onCommit({ jumpTrails: [] });
       });
-      cancels.push(trailDone);
       return;
     }
 
@@ -1024,22 +1052,26 @@ export const playTimeline = (
       if (cancelled) return;
       if (cue.kind === "move" && isBoardSquare(cue.to)) {
         displayPlacement = relocatePlacement(displayPlacement, cue.from, cue.to);
+        migrateUsed(cue.from, cue.to);
         cb.onCommit({
           placement: displayPlacement,
           hidden: [],
           playingIds: [],
           moveProgress: {},
           moveLeg: {},
+          ...commitUsed(),
         });
       } else if (cue.kind === "death") {
         // Vacate so the corpse does not flash back between death VFX and occupy.
         displayPlacement = withoutSquare(displayPlacement, cue.at);
+        usedSquares.delete(cue.at);
         cb.onCommit({
           placement: displayPlacement,
           hidden: [],
           playingIds: [],
           moveProgress: {},
           moveLeg: {},
+          ...commitUsed(),
         });
       } else {
         cb.onCommit({

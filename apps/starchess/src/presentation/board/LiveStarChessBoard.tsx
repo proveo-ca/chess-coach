@@ -166,9 +166,21 @@ export const LiveStarChessBoard: Component<{
   });
 
   const armedBishops = createMemo((): Square[] => {
+    const out = new Set<Square>();
     const t = store.state().targeting;
-    if (t?.kind === "bishopSnipe") return [t.from];
-    return [];
+    if (t?.kind === "bishopSnipe") out.add(t.from);
+    // Persist Charon launchers + green with U: / arm marks until turn-open checks.
+    const map = placementToMap(snap().placement);
+    for (const sq of snap().specialsUsed ?? []) {
+      if (map.get(sq)?.type === "b") out.add(sq);
+    }
+    return [...out];
+  });
+
+  /** Shoulder-raise anim only while arming — persistent U: keeps pods up quietly. */
+  const armAnimBishops = createMemo((): Square[] => {
+    const t = store.state().targeting;
+    return t?.kind === "bishopSnipe" ? [t.from] : [];
   });
 
   /** No canister / green absorb through fog for unseen enemy gas spends. */
@@ -232,6 +244,7 @@ export const LiveStarChessBoard: Component<{
         gasAbsorbSquares={gasAbsorbSquares()}
         kingDamage={visibleKingDamage()}
         armedBishops={armedBishops()}
+        armAnimBishops={armAnimBishops()}
         hideSquares={hideSquares()}
       />
       <PromotionModal

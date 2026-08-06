@@ -84,6 +84,17 @@
   animation-iteration-count: var(--hop-count, 3);
 }
 
+/* Gas-step stim — snappier lean (packed 2× hop cycles in half travel time). */
+.moverPawnStim .pawnFace {
+  animation-name: pawnTiltHopStim;
+  animation-timing-function: cubic-bezier(0.55, 0, 0.9, 0);
+}
+
+.moverPawnStim :global([data-part="leg-left"]),
+.moverPawnStim :global([data-part="leg-right"]) {
+  animation-timing-function: cubic-bezier(0.55, 0, 0.9, 0);
+}
+
 /*
  * Tilt ≤20° to the right on an exponential-ish ease, then mirror left.
  * Left leg tucks up on the right-lean; right leg tucks on the left-lean.
@@ -100,6 +111,24 @@
   }
   72% {
     transform: rotate(-20deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes pawnTiltHopStim {
+  0% {
+    transform: rotate(0deg);
+  }
+  20% {
+    transform: rotate(26deg);
+  }
+  50% {
+    transform: rotate(0deg);
+  }
+  70% {
+    transform: rotate(-26deg);
   }
   100% {
     transform: rotate(0deg);

@@ -1,7 +1,9 @@
 import { For, type Component, type JSX } from "solid-js";
+import type { Square } from "chess.js";
 
 import { DEATH_MS, scatterSeedFromId } from "~/presentation/animations/deathAnim";
 import styles from "~/presentation/animations/DeathAnimation.module.css";
+import aura from "~/presentation/animations/specialUsedAura.module.css";
 import { DeathBishop } from "~/presentation/animations/pieces/DeathBishop";
 import { DeathKing } from "~/presentation/animations/pieces/DeathKing";
 import { DeathKnight } from "~/presentation/animations/pieces/DeathKnight";
@@ -12,6 +14,8 @@ import { squareBoxStyle } from "~/presentation/animations/boardGeom";
 import { rookModeAt } from "~/presentation/animations/rookModeStore";
 import type { PieceColor } from "~/presentation/animations/teamColors";
 import type { StarChessPiece, DeathCue } from "~/presentation/animations/types";
+
+const NO_SPECIAL_USED: ReadonlySet<Square> = new Set();
 
 const deathNode = (
   piece: StarChessPiece,
@@ -37,6 +41,8 @@ const deathNode = (
 
 export type DeathAnimationProps = {
   cues: readonly DeathCue[];
+  /** Squares with gas / U: — keep green aura on dying hulls. */
+  specialUsedSquares?: ReadonlySet<Square> | readonly Square[];
   boardWidth: number;
   boardHeight: number;
   /**
@@ -50,7 +56,14 @@ export type DeathAnimationProps = {
  * StarChess death VFX layer — every cue finishes in `DEATH_MS` (`ATTACK_MS / 2`).
  * Pawn: outward bubble + shred; king: rubble collapse; others: boom + shards.
  */
-export const DeathAnimation: Component<DeathAnimationProps> = (props) => (
+export const DeathAnimation: Component<DeathAnimationProps> = (props) => {
+  const used = (): ReadonlySet<Square> => {
+    const g = props.specialUsedSquares;
+    if (!g) return NO_SPECIAL_USED;
+    return g instanceof Set ? g : new Set(g);
+  };
+
+  return (
   <div
     class={styles.boardOverlay}
     data-starchess-death-layer
@@ -76,6 +89,7 @@ export const DeathAnimation: Component<DeathAnimationProps> = (props) => (
         const pawnDeath = !mineDeath && cue.piece === "p";
         const kingDeath = !mineDeath && cue.piece === "k";
         const seed = scatterSeedFromId(cue.id);
+        const gas = () => used().has(cue.at);
         return (
           <div
             class={styles.originSlot}
@@ -89,9 +103,10 @@ export const DeathAnimation: Component<DeathAnimationProps> = (props) => (
             data-square={cue.at}
             data-death-phase="dying"
             data-death-mine={mineDeath ? "true" : undefined}
+            data-special-used={gas() ? "true" : undefined}
             data-scatter-seed={String(seed)}
           >
-            <div class={styles.pieceFace}>
+            <div class={styles.pieceFace} classList={{ [aura.specialUsed]: gas() }}>
               {!mineDeath && deathNode(cue.piece, cue.color, seed, cue)}
               <div class={styles.boomFlash} aria-hidden="true" />
               <div class={styles.boomRing} aria-hidden="true" />
@@ -101,4 +116,5 @@ export const DeathAnimation: Component<DeathAnimationProps> = (props) => (
       }}
     </For>
   </div>
-);
+  );
+};

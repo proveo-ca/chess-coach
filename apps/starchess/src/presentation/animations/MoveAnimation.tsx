@@ -1,4 +1,5 @@
 import { For, Show, type Component, type JSX } from "solid-js";
+import type { Square } from "chess.js";
 
 import {
   attackFaceFor,
@@ -16,6 +17,7 @@ import {
 } from "~/presentation/animations/attackVectors";
 import { squareBoxStyle, vecBetween } from "~/presentation/animations/boardGeom";
 import styles from "~/presentation/animations/MoveAnimation.module.css";
+import aura from "~/presentation/animations/specialUsedAura.module.css";
 import { moveDurationMs, moveTravelSquares } from "~/presentation/animations/moveTiming";
 import { InlineBishop, type BishopCrank } from "~/presentation/animations/pieces/InlineBishop";
 import { InlineKing } from "~/presentation/animations/pieces/InlineKing";
@@ -25,7 +27,9 @@ import { InlineQueen } from "~/presentation/animations/pieces/InlineQueen";
 import { InlineRook } from "~/presentation/animations/pieces/InlineRook";
 import type { MoveCue } from "~/presentation/animations/types";
 import { rookModeAt } from "~/presentation/animations/rookModeStore";
-import { MOVE_SQUARE_MS } from "~/presentation/constants";
+import { MOVE_SQUARE_MS, STIM_MOVE_SQUARE_MS } from "~/presentation/constants";
+
+const NO_SPECIAL_USED: ReadonlySet<Square> = new Set();
 
 export type MoveAnimationProps = {
   cues: readonly MoveCue[];
@@ -33,30 +37,45 @@ export type MoveAnimationProps = {
   progress: Record<string, 0 | 1>;
   /** Knight L-path facing: 0 = long leg, 1 = short leg (after elbow). */
   leg?: Record<string, 0 | 1>;
+  /** Squares with gas / U: — keep green aura on mover hulls. */
+  specialUsedSquares?: ReadonlySet<Square> | readonly Square[];
   boardWidth: number;
   boardHeight: number;
 };
 
-/** One hop cycle = right lean + left lean (2 waddles). One cycle per square. */
-const pawnHopPlan = (from: MoveCue["from"], to: MoveCue["to"]) => {
-  const hops = moveTravelSquares(from, to, "p");
-  return { hops, hopMs: MOVE_SQUARE_MS };
+/**
+ * One hop cycle = right lean + left lean (2 waddles).
+ * Classical: one cycle per square at {@link MOVE_SQUARE_MS}.
+ * Stim gas-step: travel {@link STIM_MOVE_SQUARE_MS} (100ms) with **2×** hop
+ * cycles packed into that window (50ms each) — stim look.
+ */
+const pawnHopPlan = (from: MoveCue["from"], to: MoveCue["to"], stim?: boolean) => {
+  const squares = moveTravelSquares(from, to, "p");
+  if (stim) {
+    return { hops: squares * 2, hopMs: STIM_MOVE_SQUARE_MS / 2 };
+  }
+  return { hops: squares, hopMs: MOVE_SQUARE_MS };
 };
 
 /** Bishop hull facing — same `face` + `gunDeg` as {@link AttackAnimation}. */
-const bishopMoverNode = (m: MoveCue, vec: AttackVec, crank?: BishopCrank): JSX.Element => (
+const bishopMoverNode = (
+  m: MoveCue,
+  vec: AttackVec,
+  opts?: { crank?: BishopCrank; armed?: boolean },
+): JSX.Element => (
   <InlineBishop
     color={m.color}
     face={attackFaceFor("b", vec)}
     gunDeg={screenAngleDeg(vec)}
-    crank={crank}
+    crank={opts?.crank}
+    armed={!!opts?.armed}
   />
 );
 
-const moverNode = (m: MoveCue): JSX.Element => {
+const moverNode = (m: MoveCue, opts?: { armed?: boolean }): JSX.Element => {
   switch (m.piece) {
     case "b":
-      return <InlineBishop color={m.color} face="front" />;
+      return <InlineBishop color={m.color} face="front" armed={!!opts?.armed} />;
     case "n":
       return <InlineKnight color={m.color} />;
     case "q":
@@ -135,7 +154,16 @@ export const bishopFootAimDeg = (vec: AttackVec): number => {
  * bishops steam-engine-walk on articulated legs (feet locked to shins).
  * Hull travel is {@link MOVE_SQUARE_MS} per square (not a fixed total).
  */
-export const MoveAnimation: Component<MoveAnimationProps> = (props) => (
+export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
+  const used = (): ReadonlySet<Square> => {
+    const g = props.specialUsedSquares;
+    if (!g) return NO_SPECIAL_USED;
+    return g instanceof Set ? g : new Set(g);
+  };
+  const hullUsed = (m: MoveCue) =>
+    !!m.stim || used().has(m.from) || used().has(m.to);
+
+  return (
   <div
     class={styles.boardOverlay}
     data-starchess-move-layer
@@ -147,7 +175,9 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => (
       {(m) => {
         const started = () => props.progress[m.id] === 1;
         const vec = () => vecBetween(m.from, m.to);
-        const travelMs = () => moveDurationMs(m.from, m.to, m.piece);
+        const travelMs = () =>
+          moveDurationMs(m.from, m.to, m.piece, { stim: !!m.stim });
+        const gas = () => hullUsed(m);
 
         if (m.piece === "n") {
           const legs = () => knightLegVecs(vec());
@@ -171,8 +201,12 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => (
                   )}
                   data-square={props.progress[m.id] === 1 ? m.to : m.from}
                   data-move-id={m.id}
+                  data-special-used={gas() ? "true" : undefined}
                 >
-                  <div class={`${styles.pieceFace} ${styles.moverFace}`}>
+                  <div
+                    class={`${styles.pieceFace} ${styles.moverFace}`}
+                    classList={{ [aura.specialUsed]: gas() }}
+                  >
                     <InlineKnight color={m.color} aimPose={pose()} />
                   </div>
                 </div>
@@ -187,8 +221,12 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => (
                 }}
                 data-square={m.from}
                 data-move-id={m.id}
+                data-special-used={gas() ? "true" : undefined}
               >
-                <div class={`${styles.pieceFace} ${styles.moverFace}`}>
+                <div
+                  class={`${styles.pieceFace} ${styles.moverFace}`}
+                  classList={{ [aura.specialUsed]: gas() }}
+                >
                   <InlineKnight color={m.color} aimPose={pose()} />
                 </div>
               </div>
@@ -197,11 +235,14 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => (
         }
 
         if (m.piece === "p") {
-          const { hops, hopMs } = pawnHopPlan(m.from, m.to);
+          const { hops, hopMs } = pawnHopPlan(m.from, m.to, m.stim);
           return (
             <div
               class={styles.mover}
-              classList={{ [styles.moverPawn]: started() }}
+              classList={{
+                [styles.moverPawn]: started(),
+                [styles.moverPawnStim]: started() && !!m.stim,
+              }}
               style={{
                 ...slideMoverStyle(m.from, m.to, props.boardWidth, props.boardHeight),
                 "--move-ms": `${travelMs()}ms`,
@@ -211,8 +252,15 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => (
               data-square={m.from}
               data-move-id={m.id}
               data-move-piece="p"
+              data-stim={m.stim ? "true" : undefined}
+              data-special-used={gas() ? "true" : undefined}
             >
-              <div class={`${styles.pieceFace} ${styles.pawnFace}`}>{moverNode(m)}</div>
+              <div
+                class={`${styles.pieceFace} ${styles.pawnFace}`}
+                classList={{ [aura.specialUsed]: gas() }}
+              >
+                {moverNode(m)}
+              </div>
             </div>
           );
         }
@@ -234,9 +282,16 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => (
               data-square={m.from}
               data-move-id={m.id}
               data-move-piece="b"
+              data-special-used={gas() ? "true" : undefined}
             >
-              <div class={`${styles.pieceFace} ${styles.bishopFace}`}>
-                {bishopMoverNode(m, vec(), { stepMs, stepCount, sense })}
+              <div
+                class={`${styles.pieceFace} ${styles.bishopFace}`}
+                classList={{ [aura.specialUsed]: gas() }}
+              >
+                {bishopMoverNode(m, vec(), {
+                  crank: { stepMs, stepCount, sense },
+                  armed: gas(),
+                })}
               </div>
             </div>
           );
@@ -254,9 +309,11 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => (
               data-square={m.from}
               data-move-id={m.id}
               data-move-piece="q"
+              data-special-used={gas() ? "true" : undefined}
             >
               <div
                 class={`${styles.pieceFace} ${styles.moverFace}`}
+                classList={{ [aura.specialUsed]: gas() }}
                 style={{ transform: aimTransformCss(aimPoseFor(vec())) }}
               >
                 <InlineQueen color={m.color} />
@@ -278,9 +335,11 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => (
               data-square={m.from}
               data-move-id={m.id}
               data-move-piece="r"
+              data-special-used={gas() ? "true" : undefined}
             >
               <div
                 class={`${styles.pieceFace} ${styles.moverFace}`}
+                classList={{ [aura.specialUsed]: gas() }}
                 style={{ transform: aimTransformCss(rookTravelPose(vec())) }}
               >
                 <InlineRook
@@ -303,11 +362,15 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => (
             }}
             data-square={sq()}
             data-move-id={m.id}
+            data-special-used={gas() ? "true" : undefined}
           >
-            <div class={styles.pieceFace}>{moverNode(m)}</div>
+            <div class={styles.pieceFace} classList={{ [aura.specialUsed]: gas() }}>
+              {moverNode(m, { armed: gas() })}
+            </div>
           </div>
         );
       }}
     </For>
   </div>
-);
+  );
+};

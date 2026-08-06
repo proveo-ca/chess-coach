@@ -59,6 +59,12 @@ export const DEATH_MS = ATTACK_MS / 2;
  */
 export const MOVE_SQUARE_MS = 200;
 
+/**
+ * Pawn / marine gas-step (stim) — half the classical per-square travel
+ * ({@link MOVE_SQUARE_MS} / 2 = 100ms) with a matching 2× hop gait.
+ */
+export const STIM_MOVE_SQUARE_MS = MOVE_SQUARE_MS / 2;
+
 /** Siege Tank pack ↔ unpack (CSS `--siege-toggle-ms`). */
 export const SIEGE_TOGGLE_MS = 480;
 

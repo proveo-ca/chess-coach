@@ -82,4 +82,13 @@ describe("endScTurn gas timing", () => {
     const begun = beginScTurn(r.next);
     expect(begun.next.gas).toEqual({ w: 1, b: 1 });
   });
+
+  it("clears prior-turn U: stamps at turn-open checks", () => {
+    const withUsed = parseScFen(
+      "SCFEN|4k3/8/8/8/8/4P3/8/4K3|1|33|P|G:00:11|U:e3|Q:w:;b:",
+    );
+    expect(withUsed.specialsUsed).toEqual(["e3"]);
+    const begun = beginScTurn(withUsed);
+    expect(begun.next.specialsUsed).toBeUndefined();
+  });
 });

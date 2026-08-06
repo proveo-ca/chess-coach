@@ -323,11 +323,17 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
       };
     case "REFILL_GAS": {
       // Turn-open: vespene arrives with the check chip (or no-check arm).
-      const live = refillTurnGas(state.liveSnapshot);
+      // U: green aura ends here — same moment as beginScTurn clearing stamps.
+      const stripUsed = (s: ScFenSnapshot): ScFenSnapshot => {
+        if (!s.specialsUsed?.length) return s;
+        const { specialsUsed: _drop, ...rest } = s;
+        return rest;
+      };
+      const live = stripUsed(refillTurnGas(state.liveSnapshot));
       if (state.phase === "gameOver") {
         const snaps = [...state.settledSnapshots];
         const cur = snaps[state.reviewIndex];
-        if (cur) snaps[state.reviewIndex] = refillTurnGas(cur);
+        if (cur) snaps[state.reviewIndex] = stripUsed(refillTurnGas(cur));
         return { ...state, liveSnapshot: live, settledSnapshots: snaps };
       }
       return { ...state, liveSnapshot: live };
@@ -391,7 +397,8 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
           hiddenSquares: new Set(),
           moveProgress: {},
           moveLeg: {},
-          jumpTrails: [],
+          // Keep fading Tactical Jump trails across resolve → checks handoff.
+          jumpTrails: [...state.timeline.jumpTrails],
           displayPlacement: action.placement,
           displayKingLives: null,
           displayMines: null,
@@ -444,17 +451,25 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
       const sieged = action.siegedRooks
         ? new Set(action.siegedRooks)
         : state.siegedRooks;
+      const liveSnapshot: ScFenSnapshot = {
+        ...snap,
+        placement: action.placement ?? snap.placement,
+        kingLives: action.kingLives ?? snap.kingLives,
+        mines: action.mines ?? snap.mines,
+        siegedRooks: action.siegedRooks
+          ? [...action.siegedRooks]
+          : snap.siegedRooks,
+      };
+      if (action.specialsUsed !== undefined) {
+        if (action.specialsUsed.length > 0) {
+          liveSnapshot.specialsUsed = [...action.specialsUsed];
+        } else {
+          delete liveSnapshot.specialsUsed;
+        }
+      }
       return {
         ...state,
-        liveSnapshot: {
-          ...snap,
-          placement: action.placement ?? snap.placement,
-          kingLives: action.kingLives ?? snap.kingLives,
-          mines: action.mines ?? snap.mines,
-          siegedRooks: action.siegedRooks
-            ? [...action.siegedRooks]
-            : snap.siegedRooks,
-        },
+        liveSnapshot,
         siegedRooks: sieged,
         timeline: {
           ...state.timeline,
@@ -483,6 +498,9 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
       };
     }
     case "TIMELINE_DONE": {
+      // Jump thruster trails keep fading for TACTICAL_JUMP_TRAIL_MS after the
+      // hull/appear cues end — preserve them across the idle timeline reset.
+      const lingeringJumpTrails = [...state.timeline.jumpTrails];
       // Terminal DualNav finished replaying a stored resolve.
       if (state.phase === "gameOver") {
         const max = state.settledSnapshots.length - 1;
@@ -492,14 +510,14 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
           return {
             ...state,
             lastResolve: null,
-            timeline: emptyTimeline(),
+            timeline: { ...emptyTimeline(), jumpTrails: lingeringJumpTrails },
           };
         }
         return {
           ...state,
           reviewIndex: nextIndex,
           lastResolve: null,
-          timeline: emptyTimeline(),
+          timeline: { ...emptyTimeline(), jumpTrails: lingeringJumpTrails },
           // Arm marks are live-planning only — do not import snap `U:`.
           specialsUsed: new Set(),
           siegedRooks: new Set(settled.siegedRooks ?? []),
@@ -511,7 +529,7 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
         return {
           ...state,
           phase: "planning",
-          timeline: emptyTimeline(),
+          timeline: { ...emptyTimeline(), jumpTrails: lingeringJumpTrails },
           statusText: "Plan your turn",
         };
       }
@@ -527,10 +545,10 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
         liveSnapshot: next,
         turnStartChecksApplied: false,
         economies,
-        // Fresh arm marks — prior-turn `U:` stays on liveSnapshot for enemy aura/fog only.
+        // Fresh arm marks — snap `U:` carries green until turn-open checks.
         specialsUsed: new Set(),
         siegedRooks: new Set(next.siegedRooks ?? []),
-        timeline: emptyTimeline(),
+        timeline: { ...emptyTimeline(), jumpTrails: lingeringJumpTrails },
         outcome,
         settledSnapshots: [...state.settledSnapshots, next],
         settledResolves: [...state.settledResolves, result],

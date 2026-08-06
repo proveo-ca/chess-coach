@@ -83,7 +83,7 @@ export type ScFenSnapshot = {
   gasIncome: Record<StarChessColor, number>;
   /**
    * Squares whose unit already used a special this turn (`|U:a1c4…` extras).
-   * Cleared when `turn` advances.
+   * Stamped on End resolve; cleared at the next turn-open checks (`beginScTurn`).
    */
   specialsUsed?: readonly Square[];
   /** Planning queue (`|Q:…`). Omit = snapshot-only. */

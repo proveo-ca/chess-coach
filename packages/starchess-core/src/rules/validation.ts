@@ -10,6 +10,7 @@ import { charonTargetQueenFromPlacement } from "./specials/bishopCharon";
 import { minesFor, MAX_MINES_PER_SIDE, mineAt } from "../board/mines";
 import { isRookSiegedAfterB } from "../board/siege";
 import { hasExactKingPair } from "../scfen/codec";
+import { spawnKingAnchor } from "./specials/adjacent";
 import { pawnSingleTarget } from "./specials/pawnDouble";
 import type { ScAction, ScActionInput, ScFenSnapshot } from "../model/types";
 
@@ -132,16 +133,21 @@ export const assertSpecialLegal = (
       if (!action.to || !action.unit) {
         throw new ScValidateError("SC_SPECIAL", "spawn needs to + unit");
       }
-      if (map.has(action.to)) {
+      // F = classical-then-gas: ring + empties are relative to the post-move king.
+      const { king, occupied } = spawnKingAnchor(
+        snap,
+        action.color,
+        action.timing,
+      );
+      if (!king) throw new ScValidateError("SC_SPECIAL", "king missing");
+      if (occupied.has(action.to)) {
         throw new ScValidateError("SC_SPECIAL", "spawn square occupied");
       }
-      const king = findKing(map, action.color);
-      if (!king) throw new ScValidateError("SC_SPECIAL", "king missing");
       const kf = king.charCodeAt(0);
       const kr = Number(king[1]);
       const tf = action.to.charCodeAt(0);
       const tr = Number(action.to[1]);
-      if (Math.abs(kf - tf) > 1 || Math.abs(kr - tr) > 1) {
+      if (Math.abs(kf - tf) > 1 || Math.abs(kr - tr) > 1 || action.to === king) {
         throw new ScValidateError("SC_SPECIAL", "spawn not adjacent");
       }
       break;

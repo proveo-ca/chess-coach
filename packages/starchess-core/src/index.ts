@@ -91,7 +91,7 @@ export {
   canScPawnSingle,
 } from "./rules/specials/pawnDouble";
 
-export { adjacentSquares } from "./rules/specials/adjacent";
+export { adjacentSquares, spawnKingAnchor } from "./rules/specials/adjacent";
 
 export {
   charonTargetQueen,

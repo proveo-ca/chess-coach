@@ -43,6 +43,8 @@ export type TimelineCue =
       to: Square;
       /** Battlecruiser Tactical Jump — QueenJumpAnimation, not a hull slide. */
       queenJump?: boolean;
+      /** Pawn gas-step (B/F pawnDouble) — stim square + hop timing. */
+      stim?: boolean;
     }
   | {
       kind: "attack";
@@ -177,6 +179,8 @@ export type MatchAction =
       kingLives?: ScFenSnapshot["kingLives"];
       mines?: ScFenSnapshot["mines"];
       siegedRooks?: readonly Square[];
+      /** In-resolve gas-used squares (green aura follows relocating units). */
+      specialsUsed?: readonly Square[];
       hidden?: readonly Square[];
       playingIds?: readonly string[];
       moveProgress?: Record<string, 0 | 1>;

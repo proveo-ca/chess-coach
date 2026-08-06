@@ -1,4 +1,6 @@
 import type { Square } from "../../model/square";
+import type { ScFenSnapshot, StarChessColor } from "../../model/types";
+import { findKing, placementToMap } from "../../board/placement";
 
 /** Empty squares adjacent to `origin` (king spawn ring). */
 export const adjacentSquares = (
@@ -19,4 +21,32 @@ export const adjacentSquares = (
     }
   }
   return out;
+};
+
+/**
+ * Command Center spawn ring anchor.
+ *
+ * - **B** (gas before classical): ring around the living king; planning occupancy.
+ * - **F** (classical then gas): ring around the **post-move** king square when a
+ *   same-side classical relocates the king; the vacated origin counts as empty.
+ */
+export const spawnKingAnchor = (
+  snap: ScFenSnapshot,
+  color: StarChessColor,
+  timing: "B" | "F",
+): { king: Square | null; occupied: ReadonlySet<Square> } => {
+  const map = placementToMap(snap.placement);
+  const king = findKing(map, color);
+  const occupied = new Set(map.keys());
+  if (!king) return { king: null, occupied };
+  if (timing !== "F") return { king, occupied };
+
+  const c = (snap.queue?.actions ?? []).find(
+    (a) => a.timing === "C" && a.color === color,
+  );
+  if (!c || c.from !== king) return { king, occupied };
+
+  occupied.delete(c.from);
+  occupied.add(c.to);
+  return { king: c.to, occupied };
 };

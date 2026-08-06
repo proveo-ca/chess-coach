@@ -51,7 +51,7 @@ const asPiece = (p: string): StarChessPiece => p as StarChessPiece;
 const cueDuration = (cue: TimelineCue): number => {
   switch (cue.kind) {
     case "move":
-      return moveDurationMs(cue.from, cue.to);
+      return moveDurationMs(cue.from, cue.to, { stim: !!cue.stim });
     case "attack":
       return ATTACK_MS;
     case "death":

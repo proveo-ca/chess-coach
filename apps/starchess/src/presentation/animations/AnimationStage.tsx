@@ -117,6 +117,8 @@ export type AnimationStageProps = {
   kingDamage?: readonly KingDamageCue[];
   /** Goliath squares with Charon launchers popped (arming pose). */
   armedBishops?: readonly Square[];
+  /** Charon shoulder-raise anim — arming only (persistent U: keeps pods up quietly). */
+  armAnimBishops?: readonly Square[];
   /** Hide board pieces on these squares while VFX play. */
   hideSquares?: ReadonlySet<Square> | readonly Square[];
   /** Hide mine glyphs after boom / while missile owns the square. */
@@ -211,6 +213,13 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
     return g instanceof Set ? g : new Set(g);
   };
 
+  /** U: stamps + absorb squares — combat overlays keep the green aura. */
+  const specialUsedSquares = (): ReadonlySet<Square> => {
+    const next = new Set<Square>(gasAbsorb());
+    for (const sq of snap().specialsUsed ?? []) next.add(sq);
+    return next;
+  };
+
   return (
     <div
       ref={(el) => {
@@ -246,6 +255,7 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
         spentMines={props.spentMines}
         chasingMines={props.chasingMines}
         armedBishops={props.armedBishops ?? NO_ARMED}
+        armAnimBishops={props.armAnimBishops ?? NO_ARMED}
         gasAbsorbSquares={gasAbsorb()}
       />
       <Show when={overlayReady()}>
@@ -277,11 +287,13 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
           <AttackAnimation
             cues={props.attackCues ?? NO_ATTACKS}
             dyingIds={dying()}
+            specialUsedSquares={specialUsedSquares()}
             boardWidth={box().w}
             boardHeight={box().h}
           />
           <DeathAnimation
             cues={props.deathCues ?? NO_DEATHS}
+            specialUsedSquares={specialUsedSquares()}
             boardWidth={box().w}
             boardHeight={box().h}
           />
@@ -289,17 +301,19 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
             cues={props.moveCues ?? NO_MOVES}
             progress={props.moveProgress ?? NO_MOVE_PROGRESS}
             leg={props.moveLeg}
+            specialUsedSquares={specialUsedSquares()}
             boardWidth={box().w}
             boardHeight={box().h}
           />
           <QueenJumpAnimation
-            cues={[...(props.jumpCues ?? NO_MOVES)]}
-            trails={[...(props.jumpTrails ?? NO_JUMP_TRAILS)]}
+            cues={(props.jumpCues as MoveCue[] | undefined) ?? NO_MOVES}
+            trails={(props.jumpTrails as QueenJumpTrail[] | undefined) ?? NO_JUMP_TRAILS}
             boardWidth={box().w}
             boardHeight={box().h}
           />
           <DeployAnimation
             cues={props.deployCues ?? NO_DEPLOYS}
+            specialUsedSquares={specialUsedSquares()}
             boardWidth={box().w}
             boardHeight={box().h}
           />

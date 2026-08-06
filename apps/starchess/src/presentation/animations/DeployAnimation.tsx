@@ -1,4 +1,5 @@
 import { For, type Component, type JSX } from "solid-js";
+import type { Square } from "chess.js";
 
 import {
   DEPLOY_DROP_MS,
@@ -9,6 +10,7 @@ import {
   deployKindFor,
 } from "~/presentation/animations/deployAnim";
 import styles from "~/presentation/animations/DeployAnimation.module.css";
+import aura from "~/presentation/animations/specialUsedAura.module.css";
 import { squareBoxStyle } from "~/presentation/animations/boardGeom";
 import { InlineBishop } from "~/presentation/animations/pieces/InlineBishop";
 import { InlineKnight } from "~/presentation/animations/pieces/InlineKnight";
@@ -17,6 +19,8 @@ import { InlineQueen } from "~/presentation/animations/pieces/InlineQueen";
 import { InlineRook } from "~/presentation/animations/pieces/InlineRook";
 import { TEAM_PRIMARY, type PieceColor } from "~/presentation/animations/teamColors";
 import type { StarChessPiece, DeployCue } from "~/presentation/types";
+
+const NO_SPECIAL_USED: ReadonlySet<Square> = new Set();
 
 const hull = (piece: StarChessPiece, color: PieceColor): JSX.Element | null => {
   switch (piece) {
@@ -37,6 +41,8 @@ const hull = (piece: StarChessPiece, color: PieceColor): JSX.Element | null => {
 
 export type DeployAnimationProps = {
   cues: readonly DeployCue[];
+  /** Squares with gas / U: — keep green aura on deploy hulls. */
+  specialUsedSquares?: ReadonlySet<Square> | readonly Square[];
   boardWidth: number;
   boardHeight: number;
 };
@@ -47,7 +53,14 @@ export type DeployAnimationProps = {
  * Mechanoid: same split with thrust brake on landing.
  * Total {@link DEPLOY_MS}; board FEN / fog should update only after the cue ends.
  */
-export const DeployAnimation: Component<DeployAnimationProps> = (props) => (
+export const DeployAnimation: Component<DeployAnimationProps> = (props) => {
+  const used = (): ReadonlySet<Square> => {
+    const g = props.specialUsedSquares;
+    if (!g) return NO_SPECIAL_USED;
+    return g instanceof Set ? g : new Set(g);
+  };
+
+  return (
   <div
     class={styles.boardOverlay}
     data-starchess-deploy-layer
@@ -71,6 +84,7 @@ export const DeployAnimation: Component<DeployAnimationProps> = (props) => (
           kind === "mechanoid" && (cue.piece === "n" || cue.piece === "r" || cue.piece === "q")
             ? MECHANOID_THRUST[cue.piece]
             : null;
+        const gas = () => used().has(cue.at);
         return (
           <div
             class={styles.slot}
@@ -87,8 +101,11 @@ export const DeployAnimation: Component<DeployAnimationProps> = (props) => (
             }}
             data-deploy-piece={cue.piece}
             data-deploy-kind={kind}
+            data-special-used={gas() ? "true" : undefined}
           >
-            <div class={styles.hull}>{hull(cue.piece, cue.color)}</div>
+            <div class={styles.hull} classList={{ [aura.specialUsed]: gas() }}>
+              {hull(cue.piece, cue.color)}
+            </div>
             {thrust === "air" && <span class={`${styles.thrust} ${styles.thrustAir}`} />}
             {thrust === "fuel" && (
               <span class={`${styles.thrust} ${styles.thrustFuel} ${styles.thrustLow}`} />
@@ -101,4 +118,5 @@ export const DeployAnimation: Component<DeployAnimationProps> = (props) => (
       }}
     </For>
   </div>
-);
+  );
+};

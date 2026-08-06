@@ -3,10 +3,13 @@ import type { PieceSymbol, Square } from "chess.js";
 import { vecBetween } from "~/presentation/animations/boardGeom";
 import { knightLegVecs, squareAt } from "~/presentation/animations/attackVectors";
 import { rayBetween } from "@chess-coach/starchess-core";
-import { MOVE_SQUARE_MS } from "~/presentation/constants";
+import { MOVE_SQUARE_MS, STIM_MOVE_SQUARE_MS } from "~/presentation/constants";
 
 /** Knight is the only piece that travels at half the per-square rate. */
 export const knightSquareMs = (): number => MOVE_SQUARE_MS / 2;
+
+/** Pawn gas-step stim — half classical travel (100ms / square). */
+export const stimSquareMs = (): number => STIM_MOVE_SQUARE_MS;
 
 /**
  * Squares of travel for quiet-move VFX.
@@ -22,8 +25,15 @@ export const moveTravelSquares = (
   return Math.max(1, Math.abs(df), Math.abs(dr));
 };
 
-const squareMsFor = (piece?: PieceSymbol): number =>
-  piece === "n" ? knightSquareMs() : MOVE_SQUARE_MS;
+export type MoveSquareMsOpts = {
+  /** Pawn / marine gas-step — {@link STIM_MOVE_SQUARE_MS}. */
+  stim?: boolean;
+};
+
+const squareMsFor = (piece?: PieceSymbol, opts?: MoveSquareMsOpts): number => {
+  if (opts?.stim) return stimSquareMs();
+  return piece === "n" ? knightSquareMs() : MOVE_SQUARE_MS;
+};
 
 /**
  * Ordered occupancy squares for a quiet move (inclusive `from` → `to`).
@@ -52,19 +62,21 @@ export const moveSquareAtElapsed = (
   to: Square,
   piece: PieceSymbol | undefined,
   elapsedMs: number,
+  opts?: MoveSquareMsOpts,
 ): Square => {
   const path = movePathSquares(from, to, piece);
-  const ms = squareMsFor(piece);
+  const ms = squareMsFor(piece, opts);
   const i = Math.min(path.length - 1, Math.max(0, Math.floor(elapsedMs / ms)));
   return path[i]!;
 };
 
-/** Total slide / L-path duration: per-square ms × squares (knight = half rate). */
+/** Total slide / L-path duration: per-square ms × squares (knight / stim rates). */
 export const moveDurationMs = (
   from: Square,
   to: Square,
   piece?: PieceSymbol,
-): number => moveTravelSquares(from, to, piece) * squareMsFor(piece);
+  opts?: MoveSquareMsOpts,
+): number => moveTravelSquares(from, to, piece) * squareMsFor(piece, opts);
 
 /**
  * Knight elbow (end of length-2 leg) — matches `knightLMove` 67% keyframe

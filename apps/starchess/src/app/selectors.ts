@@ -31,16 +31,15 @@ export const displayedSnapshot = (state: MatchState): ScFenSnapshot => {
   }
   const placement =
     state.timeline.displayPlacement ?? state.liveSnapshot.placement;
-  // Snap `U:` = prior-resolve gas stamps (green aura when already visible).
-  // Match `specialsUsed` = armed this planning window — do not merge into U:.
+  // Snap `U:` + planning arm marks → green aura / Charon pods until turn-open checks.
   // U: is not a fog pierce — hidden enemies stay hidden.
   const { specialsUsed: usedMarks, ...rest } = state.liveSnapshot;
+  const used = new Set<Square>(usedMarks ?? []);
+  for (const sq of state.specialsUsed) used.add(sq);
   return {
     ...rest,
     placement,
-    ...(usedMarks?.length
-      ? { specialsUsed: [...usedMarks].sort() as Square[] }
-      : {}),
+    ...(used.size ? { specialsUsed: [...used].sort() as Square[] } : {}),
   };
 };
 

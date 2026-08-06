@@ -96,7 +96,9 @@ export const useCombatOverlays = (store: MatchStore) => {
 
   const jumpTrails = createMemo(() => {
     const t = tl();
-    if (!t.active || t.jumpTrails.length === 0) return emptyTrails;
+    // Trails outlive the jump hull (1000ms fade) and may remain after
+    // timeline.active flips false on TIMELINE_DONE — do not gate on active.
+    if (t.jumpTrails.length === 0) return emptyTrails;
     return t.jumpTrails;
   });
 

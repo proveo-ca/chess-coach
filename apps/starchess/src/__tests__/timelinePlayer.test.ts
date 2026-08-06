@@ -27,6 +27,57 @@ describe("timelinePlayer", () => {
     expect(cues.some((c) => c.kind === "move" && c.from === "e2" && c.to === "e3")).toBe(
       true,
     );
+    const step = cues.find((c) => c.kind === "move" && c.from === "e2");
+    expect(step && "stim" in step && step.stim).toBe(true);
+  });
+
+  it("migrates U: green aura with gas-step then classical move", () => {
+    let snap = parseScFen(
+      "SCFEN|4k3/8/8/8/8/8/4P3/4K3|11|33|P|G:22:22|Q:w:;b:",
+    );
+    snap = addScAction({
+      snapshot: snap,
+      action: { timing: "B", kind: "pawnDouble", color: "w", from: "e2", to: "e3" },
+    }).snapshot;
+    snap = addScAction({
+      snapshot: snap,
+      action: {
+        timing: "C",
+        kind: "classical",
+        color: "w",
+        from: "e2",
+        to: "e3",
+      },
+    }).snapshot;
+    const result = endScTurn(snap, { skipTurnStartChecks: true });
+    expect(result.next.specialsUsed).toEqual(["e4"]);
+
+    const jobs: { ms: number; fn: () => void }[] = [];
+    const scheduler = {
+      delay: (ms: number, fn: () => void) => {
+        jobs.push({ ms, fn });
+        return () => {};
+      },
+    };
+    const commits: Array<{ specialsUsed?: readonly string[] }> = [];
+    playTimeline(result, scheduler, {
+      onStart: () => {},
+      onCommit: (patch) => {
+        if (patch.specialsUsed !== undefined) {
+          commits.push({ specialsUsed: patch.specialsUsed });
+        }
+      },
+      onDone: () => {},
+    });
+    // Drain scheduled work (gas → stim → classical).
+    for (let i = 0; i < 40 && jobs.length > 0; i++) {
+      const batch = jobs.splice(0, jobs.length);
+      for (const j of batch) j.fn();
+    }
+    const usedSeq = commits.map((c) => (c.specialsUsed ?? []).join(","));
+    expect(usedSeq.some((s) => s.includes("e2"))).toBe(true);
+    expect(usedSeq.some((s) => s === "e3" || s.includes("e3"))).toBe(true);
+    expect(usedSeq.at(-1)).toBe("e4");
   });
 
   it("projects promotion walk-off then deploy", () => {
@@ -593,6 +644,65 @@ describe("timelinePlayer", () => {
     expect(jumpCues.some((c) => c.kind === "move" && c.queenJump && c.to === "a3")).toBe(
       true,
     );
+  });
+
+  it("keeps Tactical Jump trails for 1000ms without blocking onDone", () => {
+    let jumpSnap = parseScFen(
+      "SCFEN|7k/8/8/8/8/8/8/Q6K|11|33|P|G:22:22|Q:w:;b:",
+    );
+    jumpSnap = addScAction({
+      snapshot: jumpSnap,
+      action: {
+        timing: "B",
+        kind: "queenWarp",
+        color: "w",
+        from: "a1",
+        to: "a3",
+      },
+    }).snapshot;
+    const result = endScTurn(jumpSnap, { skipTurnStartChecks: true });
+
+    type Job = { ms: number; fn: () => void };
+    const jobs: Job[] = [];
+    const scheduler = {
+      delay: (ms: number, fn: () => void) => {
+        jobs.push({ ms, fn });
+        return () => undefined;
+      },
+    };
+    let trails = 0;
+    let playing = 0;
+    const onDone = vi.fn();
+    playTimeline(result, scheduler, {
+      onStart: () => undefined,
+      onCommit: (patch) => {
+        if (patch.jumpTrails !== undefined) trails = patch.jumpTrails.length;
+        if (patch.playingIds !== undefined) playing = patch.playingIds.length;
+      },
+      onDone,
+    });
+
+    const flushMs = (ms: number) => {
+      const due = jobs.filter((j) => j.ms === ms);
+      for (const j of due) {
+        const idx = jobs.indexOf(j);
+        if (idx >= 0) jobs.splice(idx, 1);
+        j.fn();
+      }
+    };
+
+    flushMs(260); // gas absorb → jump starts
+    expect(trails).toBeGreaterThan(0);
+    expect(playing).toBeGreaterThan(0);
+
+    flushMs(200); // land
+    flushMs(250); // hull + appear done → resolve may finish; trails linger
+    expect(playing).toBe(0);
+    expect(trails).toBeGreaterThan(0);
+    expect(onDone).toHaveBeenCalled();
+
+    flushMs(1000); // CSS trail fade mount teardown
+    expect(trails).toBe(0);
   });
 
   it("projects a gasDrop cue before B steps (top-edge corner)", () => {

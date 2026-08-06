@@ -10,6 +10,7 @@ import {
   adjacentSquares,
   placementToMap,
   scMovesFrom,
+  spawnKingAnchor,
 } from "@chess-coach/starchess-core";
 
 import { useMatchStore } from "~/app/MatchStoreContext";
@@ -69,8 +70,17 @@ export const useBoardInput = () => {
         ([, p]) => p.type === "k" && p.color === color,
       )?.[0];
       if (!kingSq) return;
-      const occupied = new Set(map.keys());
-      if (!adjacentSquares(kingSq, occupied).includes(square)) return;
+      const timing = state.liveSnapshot.queue?.actions.some(
+        (a) => a.color === color && a.timing === "C",
+      )
+        ? "F"
+        : "B";
+      const { king: anchor, occupied } = spawnKingAnchor(
+        state.liveSnapshot,
+        color,
+        timing,
+      );
+      if (!anchor || !adjacentSquares(anchor, occupied).includes(square)) return;
       const cost = UNIT_COST[unit];
       const before = state.economies[color].stored;
       store.dispatch({ type: "SPEND_STORED", color, amount: cost });
@@ -78,11 +88,7 @@ export const useBoardInput = () => {
       store.dispatch({
         type: "QUEUE_ACTION",
         action: {
-          timing: state.liveSnapshot.queue?.actions.some(
-            (a) => a.color === color && a.timing === "C",
-          )
-            ? "F"
-            : "B",
+          timing,
           kind: "spawn",
           color,
           from: kingSq,

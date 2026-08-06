@@ -92,9 +92,11 @@ export const ObserverStarChessBoard: Component<{
   chasingMines?: readonly Square[];
   /** Goliath squares with Charon launchers armed (inline SVG). */
   armedBishops?: readonly Square[];
+  /** Shoulder-raise CSS only while arming (not for persistent U: pods). */
+  armAnimBishops?: readonly Square[];
   /**
    * Gas special absorb — ease green aura onto the unit while the canister drops.
-   * Independent of viewer (U: enemy-only glow); lasts for the drop cue only.
+   * Lasts for the drop cue only; persistent green is snap `U:` / arm marks.
    */
   gasAbsorbSquares?: ReadonlySet<Square> | readonly Square[];
 }> = (props) => {
@@ -114,6 +116,7 @@ export const ObserverStarChessBoard: Component<{
   const spentMines = createMemo(() => new Set(props.spentMines ?? []));
   const chasingMines = createMemo(() => new Set(props.chasingMines ?? []));
   const armedBishops = createMemo(() => new Set(props.armedBishops ?? []));
+  const armAnimBishops = createMemo(() => new Set(props.armAnimBishops ?? []));
   const gasAbsorb = createMemo((): ReadonlySet<Square> => {
     const g = props.gasAbsorbSquares;
     if (!g) return new Set();
@@ -179,6 +182,7 @@ export const ObserverStarChessBoard: Component<{
         to: c.to,
         piece: c.piece,
         startedAt,
+        stim: c.stim,
       });
     }
     const baseMap = map();
@@ -344,9 +348,9 @@ export const ObserverStarChessBoard: Component<{
                     if (!specialsUsed().has(square)) return false;
                     const p = piece();
                     if (!p) return false;
-                    // Persistent U: ring on *enemy* units the viewer can already see —
-                    // never a fog pierce, never on the viewer's own pieces.
-                    return p.color !== viewer();
+                    // Persistent U: / in-resolve stamp — any unit that spent gas
+                    // (own or enemy). Cleared at next turn-open checks.
+                    return true;
                   };
                   const canister = () => canisterAt(square);
                   const intentCheck = () => checkAt(square);
@@ -429,8 +433,14 @@ export const ObserverStarChessBoard: Component<{
                                 )}
                                 data-piece-inline="b"
                                 data-special-used={gasUsedAura() ? "true" : undefined}
+                                data-charon-armed="true"
                               >
-                                <InlineBishop color={p().color} face="front" armed armAnim />
+                                <InlineBishop
+                                  color={p().color}
+                                  face="front"
+                                  armed
+                                  armAnim={armAnimBishops().has(square)}
+                                />
                               </div>
                             );
                           }

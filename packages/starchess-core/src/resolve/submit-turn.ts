@@ -193,12 +193,11 @@ export const beginScTurn = (snapshot: ScFenSnapshot): BeginScTurnResult => {
     queue: { actions: [] },
     ...(afterPending.mines.length ? { mines: afterPending.mines } : {}),
     ...(sieged.length ? { siegedRooks: sieged } : {}),
-    ...(snapshot.specialsUsed?.length
-      ? { specialsUsed: [...snapshot.specialsUsed] }
-      : {}),
+    // Prior-turn U: ends at turn-open checks — do not carry into the new window.
   };
 
   if (!changed) {
+    const { specialsUsed: _cleared, ...rest } = snapshot;
     return {
       changed: false,
       attacks: [],
@@ -208,7 +207,7 @@ export const beginScTurn = (snapshot: ScFenSnapshot): BeginScTurnResult => {
         kingLives: { ...snapshot.kingLives },
       },
       next: refillTurnGas({
-        ...snapshot,
+        ...rest,
         queue: snapshot.queue ?? { actions: [] },
       }),
       asResolve: null,
@@ -795,7 +794,8 @@ export const endScTurn = (
     resolved.promotions,
   );
   // Planning check rings come from live geometry — do not persist deferred H:.
-  // Prior-turn U: is replaced (not carried) so green lasts one planning window.
+  // U: stamps this resolve's gas spends for the following planning window until
+  // the next turn-open checks (`beginScTurn`) clear them.
   const next: ScFenSnapshot = {
     placement,
     turn: nextTurn,
