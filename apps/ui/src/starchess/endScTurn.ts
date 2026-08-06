@@ -11,7 +11,9 @@ import { Chess } from "chess.js";
 import {
   collectLegalKingChecks,
   mapToPlacement,
+  parseSquare,
   placementToMap,
+  sq,
   type ScPiece,
 } from "~/starchess/board";
 import { energyForTurn } from "~/starchess/constants";
@@ -21,6 +23,7 @@ import {
   minesFor,
 } from "~/starchess/mines";
 import { placementAfterCharon } from "~/starchess/specials/bishopCharon";
+import { pawnSingleTarget } from "~/starchess/specials/pawnDouble";
 import {
   applyPendingKingShots,
   resolveTurn,
@@ -161,6 +164,45 @@ const classicalFor = (
   };
 };
 
+/** Shift a square by a file/rank delta; null if off-board. */
+const shiftSquare = (s: Square, df: number, dr: number): Square | null => {
+  const { file, rank } = parseSquare(s);
+  return sq(file + df, rank + dr);
+};
+
+/**
+ * After B relocates (pawnDouble / queenWarp), rewrite same-side classical
+ * only when C matches the same step as B (UI stacks gas + same forward intent):
+ * B e2→e3 + C e2→e3 ⇒ C e3→e4. Captures / longer doubles are left alone
+ * (pre-B C would fizzle if the piece left `from`).
+ */
+const rewriteClassicalAfterB = (actions: readonly ScAction[]): ScAction[] => {
+  const out = actions.map((a) => ({ ...a }));
+  for (let i = 0; i < out.length; i += 1) {
+    const c = out[i]!;
+    if (c.timing !== "C") continue;
+    const b = out.find(
+      (a) =>
+        a.timing === "B" &&
+        a.color === c.color &&
+        a.from === c.from &&
+        a.to === c.to &&
+        a.to &&
+        (a.kind === "pawnDouble" || a.kind === "queenWarp"),
+    );
+    if (!b || !b.to) continue;
+    const fromP = parseSquare(b.from);
+    const toP = parseSquare(b.to);
+    const df = toP.file - fromP.file;
+    const dr = toP.rank - fromP.rank;
+    const newFrom = b.to;
+    const newTo = shiftSquare(c.to, df, dr);
+    if (!newTo) continue;
+    out[i] = { ...c, from: newFrom, to: newTo };
+  }
+  return out;
+};
+
 const eventFor = (
   phase: ResolveEvent["phase"],
   action: ScAction,
@@ -225,6 +267,51 @@ export const endScTurn = (snapshot: ScFenSnapshot): EndScTurnResult => {
     });
   }
 
+  // A King destroyed in the check phase ends the match immediately: the turn
+  // bails out here, so no B special, classical move or F action resolves behind
+  // a dead King. Both shots of a face-to-face duel are already applied above
+  // (the pass is simultaneous), so mutual destruction still reads 0/0 = draw.
+  if (kingLives.w === 0 || kingLives.b === 0) {
+    const terminalBoard = {
+      placement,
+      kingLives: { ...kingLives },
+      mines: [...mines],
+    };
+    return {
+      resolved: {
+        attacks: [...pendingApplied.attacks],
+        afterAttack: terminalBoard,
+        moves: [],
+        afterMove: terminalBoard,
+        pathRevealAttacks: [],
+        afterAll: terminalBoard,
+        mineTriggers: [],
+        moveCollisions: [],
+        pendingKingShotsArmed: [],
+      },
+      next: {
+        placement,
+        turn: snapshot.turn + 1,
+        kingLives: { ...kingLives },
+        phase: "O",
+        gas: { ...snapshot.gas },
+        gasIncome: snapshot.gasIncome,
+        queue: { actions: [] },
+        ...(mines.length ? { mines } : {}),
+        ...(sieged.size ? { siegedRooks: [...sieged].sort() } : {}),
+      },
+      ignoreAttacksOn,
+      events,
+      siegedThisTurn,
+      afterB: {
+        placement,
+        mines: [...mines],
+        siegedRooks: [...sieged].sort(),
+      },
+      afterPending,
+    };
+  }
+
   // 2) B specials (spawn / mine / warp / siege / …).
   for (const a of byTiming(actions, "B")) {
     if (a.timing !== "B") continue;
@@ -258,8 +345,10 @@ export const endScTurn = (snapshot: ScFenSnapshot): EndScTurnResult => {
   };
 
   // 3) Classical attack → move (+ mine triggers).
-  const white = classicalFor(actions, "w");
-  const black = classicalFor(actions, "b");
+  // Rewrite C that shares from with a B relocate so UI pre-B intents still land.
+  const actionsAfterB = rewriteClassicalAfterB(actions);
+  const white = classicalFor(actionsAfterB, "w");
+  const black = classicalFor(actionsAfterB, "b");
   const classical = resolveTurn({
     placement,
     kingLives,
@@ -313,28 +402,74 @@ export const endScTurn = (snapshot: ScFenSnapshot): EndScTurnResult => {
       to: hit.to,
     });
   }
+  for (const atk of resolved.pathRevealAttacks) {
+    events.push({
+      id: `ev-${eventSeq++}`,
+      phase: "attack",
+      color: atk.color,
+      from: atk.from,
+      to: atk.to,
+    });
+  }
 
-  placement = resolved.afterMove.placement;
-  mines = resolved.afterMove.mines;
-  kingLives = resolved.afterMove.kingLives;
+  placement = resolved.afterAll.placement;
+  mines = resolved.afterAll.mines;
+  kingLives = resolved.afterAll.kingLives;
 
   // Drop siege flags for squares that no longer hold a rook after combat.
   const boardAfterMove = placementToMap(placement);
-  for (const sq of [...sieged]) {
+  for (const sq of sieged) {
     if (boardAfterMove.get(sq)?.type !== "r") sieged.delete(sq);
   }
 
+  // A King destroyed during the classical pass — including by a fog-discovered
+  // check, where a slider walks its ray onto a king it could not see at turn
+  // start — ends the match immediately, exactly like a check-phase kill. The
+  // classical pass itself is simultaneous and resolves as one unit, so the bail
+  // out happens on its far side: no F special resolves behind a dead King.
+  if (kingLives.w === 0 || kingLives.b === 0) {
+    return {
+      resolved,
+      next: {
+        placement,
+        turn: snapshot.turn + 1,
+        kingLives: { ...kingLives },
+        phase: "O",
+        gas: { ...snapshot.gas },
+        gasIncome: snapshot.gasIncome,
+        queue: { actions: [] },
+        ...(mines.length ? { mines } : {}),
+        ...(sieged.size ? { siegedRooks: [...sieged].sort() } : {}),
+      },
+      ignoreAttacksOn,
+      events,
+      siegedThisTurn,
+      afterB,
+      afterPending,
+    };
+  }
+
   // 4) F specials (post-move siege follow / late drops).
+  // Actor square: prefer where our unit still stands (handles fire-in-place C,
+  // quiet relocate, and gas ride after rewritten C).
   for (const a of byTiming(actions, "F")) {
     if (a.timing !== "F") continue;
-    const classicalPlan = classicalFor(actions, a.color);
-    const at =
-      classicalPlan && classicalPlan.from === a.from ? classicalPlan.to : a.from;
+    const origC = classicalFor(actions, a.color);
+    const rewrittenC = classicalFor(actionsAfterB, a.color);
     const boardAfter = placementToMap(placement);
+    const candidates: Square[] = [a.from];
+    if (rewrittenC) candidates.push(rewrittenC.to, rewrittenC.from);
+    if (origC) candidates.push(origC.to, origC.from);
+    const at =
+      candidates.find((s) => {
+        const p = boardAfter.get(s);
+        return !!p && p.color === a.color;
+      }) ?? a.from;
     const actor = boardAfter.get(at);
     if (!actor || actor.color !== a.color) continue;
 
     if (a.kind === "rookSiege") {
+      if (actor.type !== "r") continue;
       if (toggleRookSiege(placement, sieged, a.color, at)) {
         siegedThisTurn.push(at);
         events.push(eventFor("specialAfter", a, `ev-${eventSeq++}`));
@@ -342,7 +477,22 @@ export const endScTurn = (snapshot: ScFenSnapshot): EndScTurnResult => {
       continue;
     }
 
-    const applied = applySpecial(placement, mines, a, ignoreAttacksOn);
+    if (a.kind === "pawnDouble") {
+      if (actor.type !== "p") continue;
+      // Recompute +1 from the post-C square; fizzle if blocked / off-board.
+      const to = pawnSingleTarget(at, a.color);
+      if (!to || boardAfter.has(to)) continue;
+      placement = relocate(placement, at, to);
+      events.push(eventFor("specialAfter", { ...a, from: at, to }, `ev-${eventSeq++}`));
+      continue;
+    }
+
+    const applied = applySpecial(
+      placement,
+      mines,
+      { ...a, from: at },
+      ignoreAttacksOn,
+    );
     placement = applied.placement;
     mines = applied.mines;
     events.push(eventFor("specialAfter", a, `ev-${eventSeq++}`));

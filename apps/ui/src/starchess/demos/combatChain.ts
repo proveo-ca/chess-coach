@@ -33,7 +33,7 @@ export const COMBAT_CHAIN_STEPS: readonly CombatChainStep[] = [
     ],
   },
   {
-    caption: "3. Rc3xc6 & Ne4xc3",
+    caption: "3. Rc3xc6 (fogged off by Ne4xc3) & Ne4xc3",
     moves: [
       { color: "w", from: "c3", to: "c6" },
       { color: "b", from: "e4", to: "c3" },

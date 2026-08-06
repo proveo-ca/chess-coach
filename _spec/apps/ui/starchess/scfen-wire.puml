@@ -28,6 +28,12 @@ note right of WIRE
   Required: placement, turn, lives, phase, ""G:"".
   Optional: ""Q:"" ""U:"" ""S:"" ""H:"" ""M:"".
   Omitted ""Q:"" = snapshot-only snapshot.
+  **Lives carry the outcome.** ""scOutcome(snap)"" derives win / draw from
+  ""kingLives"" alone — 0/0 (face-to-face kings, see resolve.puml) is a
+  **draw**, one side at 0 is a win for the other. Phase ""O"" is the
+  pre-existing terminal code and is **absorbing**.
+  There is **no winner field and no grammar change** for the king duel —
+  ""STARCHESS_FEN.md"" stays as is.
 end note
 
 note right of G

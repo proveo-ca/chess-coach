@@ -27,6 +27,7 @@ import { DeployModal } from "~/starchess/primitives/DeployModal";
 import { ResourceBar } from "~/starchess/primitives/ResourceBar";
 import { TurnBar } from "~/starchess/primitives/TurnBar";
 import { AddScActionError } from "~/starchess/scActions";
+import { scOutcome } from "~/starchess/scOutcome";
 import { classicFenFromSc, parseScFen, snapFromPlacement, toClassicFen } from "~/starchess/scfen";
 import { adjacentSquares } from "~/starchess/specials/adjacent";
 import { StarChessBoard } from "~/starchess/StarChessBoard";
@@ -34,6 +35,7 @@ import {
   clearSiegedRooks,
   clearTurnDeadline,
   currentQueue,
+  kingLives,
   markSpecialUsed,
   planningSnapshot,
   queueScAction,
@@ -47,6 +49,7 @@ import {
   storedMaterial,
   turnDeadlineAt,
 } from "~/starchess/starChessStore";
+import { pawnSingleTarget } from "~/starchess/specials/pawnDouble";
 import { Button } from "~/components/primitives/Button";
 import { Label } from "~/components/primitives/Label";
 import { Screen } from "~/components/primitives/Screen";
@@ -54,7 +57,7 @@ import { NERD_STARTING_FEN } from "~/starchess/nerdMode";
 import styles from "~/starchess/screens/NerdScreen.module.css";
 import { NERD_CAPABILITIES } from "~/starchess/capabilities";
 import { setCapabilities } from "~/store/capabilitiesStore";
-import { currentIndex, loadFen, moveHistory } from "~/store/gameStore";
+import { loadFen } from "~/store/gameStore";
 import { activePlayerColor, playerPieceSet, setActivePlayerColor, setPlayerIdentity } from "~/store/settingsStore";
 import { setNerdModeUnlocked } from "~/starchess/identity";
 import type {
@@ -104,7 +107,9 @@ type NerdScreenProps = Partial<RouteSectionProps> & {
   startingStoredMaterial?: number;
   /**
    * Story / demo AI: when set, queues the opponent’s next action each planning
-   * turn (e.g. King Hunt live DualNav flee + c5 marine promote).
+   * turn (e.g. the King Hunt live `adjutant` defensive commander).
+   * A returned `spendMinerals` is debited from the host bank before the snapshot
+   * is applied; the whole result is discarded when the bank cannot cover it.
    */
   autoQueueOpponent?: (snap: ScFenSnapshot) => AutoQueueOpponentResult;
 };
@@ -211,6 +216,21 @@ export const NerdScreen: Component<NerdScreenProps> = (props) => {
         ? "armed"
         : false;
     },
+    p: (ctx) => {
+      const color = activePlayerColor();
+      const timing = specialTimingFor(color);
+      const to = pawnSingleTarget(ctx.square, color);
+      if (!to) {
+        setStatus("Pawn cannot step forward off the board");
+        return false;
+      }
+      return queueSpecial(
+        { timing, kind: "pawnDouble", color, from: ctx.square, to },
+        `Gas step ${ctx.square}→${to} queued · End to resolve`,
+      )
+        ? "armed"
+        : false;
+    },
   });
 
   const onSelectSpawnUnit = (piece: SpawnPiece) => {
@@ -294,9 +314,17 @@ export const NerdScreen: Component<NerdScreenProps> = (props) => {
   });
 
   // Storybook reuses this screen across fog variants — reload when seed / mode changes.
+  // E2E / deep-link: `?scfen=` wins over props.startingScfen.
   createEffect(() => {
     const mode = starChessMode();
-    const scfen = props.startingScfen;
+    let urlScfen: string | undefined;
+    try {
+      const q = new URLSearchParams(window.location.search).get("scfen");
+      if (q) urlScfen = decodeURIComponent(q);
+    } catch {
+      urlScfen = undefined;
+    }
+    const scfen = urlScfen ?? props.startingScfen;
     const fen = props.startingFen ?? NERD_STARTING_FEN;
     const key = `${mode}|${scfen ?? fen}|${props.rookMode ?? ""}`;
     if (key === seedKey) return;
@@ -364,42 +392,21 @@ export const NerdScreen: Component<NerdScreenProps> = (props) => {
     setPlanningSnapshot(result.snapshot);
   });
 
-  // Board gestures → SCFEN classical queue. Placement stays put (intent ghost on
-  // `to`); gameStore fen is restored so the unit does not relocate until End.
+  // Board gestures commit via BoardMoveProvider → queueScAction (sc-moves.puml).
+  // Reflect the queued classical on the status line; no moveHistory bridge.
   createEffect(() => {
     if (!starChessMode()) return;
     const snap = planningSnapshot();
     if (!snap || snap.phase !== "P") return;
-    const idx = currentIndex();
-    const hist = moveHistory();
-    if (idx <= 0) return;
-    const m = hist[idx - 1];
-    if (!m?.from || !m?.to) return;
-    const key = `${idx}:${m.from}-${m.to}`;
-    if (key === lastQueuedKey) return;
     const color = activePlayerColor();
-    if (snap.queue?.actions.some((a) => a.timing === "C" && a.color === color)) {
-      lastQueuedKey = key;
-      // Already queued — snap board back to placement (reject second relocate).
-      loadFen(toClassicFen(snap.placement, "w", 0, Math.max(1, snap.turn)));
-      return;
-    }
-    try {
-      const next = queueScAction({
-        timing: "C",
-        kind: "classical",
-        color,
-        from: m.from as Square,
-        to: m.to as Square,
-      });
-      lastQueuedKey = key;
-      // Intent only: keep units on SCFEN placement until resolve.
-      loadFen(toClassicFen(next.placement, "w", 0, Math.max(1, next.turn)));
-      setStatus(`Queued ${m.from}→${m.to} · End to resolve`);
-    } catch {
-      // Baseline / shape rejects — restore placement so the board does not drift.
-      loadFen(toClassicFen(snap.placement, "w", 0, Math.max(1, snap.turn)));
-    }
+    const classical = snap.queue?.actions.find(
+      (a) => a.timing === "C" && a.color === color && a.kind === "classical",
+    );
+    if (!classical || !("to" in classical) || !classical.to) return;
+    const key = `${snap.turn}:${classical.from}-${classical.to}:${classical.seq}`;
+    if (key === lastQueuedKey) return;
+    lastQueuedKey = key;
+    setStatus(`Queued ${classical.from}→${classical.to} · End to resolve`);
   });
 
   const submitPlan = (reason: "end" | "timeout") => {
@@ -428,7 +435,15 @@ export const NerdScreen: Component<NerdScreenProps> = (props) => {
         startPlanningTimer();
         setStatus("Plan a special and/or move · End to submit");
       } else {
-        setStatus("Match over");
+        // HP is the source of truth: both kings at 0 (face-to-face duel) is a draw.
+        const outcome = scOutcome(result.next);
+        setStatus(
+          outcome?.draw
+            ? "Match over · Draw — both Kings destroyed"
+            : outcome
+              ? `Match over · ${outcome.winner === "w" ? "White" : "Black"} wins`
+              : "Match over",
+        );
       }
     };
 
@@ -518,6 +533,12 @@ export const NerdScreen: Component<NerdScreenProps> = (props) => {
           </div>
           <Show when={starChessMode()}>
             <div class={styles.topChrome} data-testid="nerd-board-chrome">
+              <span
+                data-testid="king-lives"
+                data-w={kingLives().w}
+                data-b={kingLives().b}
+                hidden
+              />
               <ResourceBar />
               <TurnBar
                 resolveOnEnd={false}
@@ -526,7 +547,7 @@ export const NerdScreen: Component<NerdScreenProps> = (props) => {
               />
             </div>
           </Show>
-          <div class={styles.boardHost} ref={boardHost}>
+          <div class={styles.boardHost} ref={(el) => (boardHost = el)}>
             <StarChessBoard
               variant={props.boardVariant ?? "eclipse"}
               fogOfWar={fogOfWar()}

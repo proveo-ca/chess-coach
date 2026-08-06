@@ -100,14 +100,31 @@ export type ResolveTurnInput = {
 };
 
 export type ResolveTurnResult = {
+  /** Phase 1 — direct attacks (targets visible at resolve start). */
   attacks: ResolveAttack[];
   afterAttack: {
     placement: string;
     kingLives: Record<StarChessColor, number>;
     mines: ScMine[];
   };
+  /** Phase 2 — classical moves (occupy + quiet) for survivors of phase 1. */
   moves: ResolveMove[];
   afterMove: {
+    placement: string;
+    kingLives: Record<StarChessColor, number>;
+    mines: ScMine[];
+  };
+  /**
+   * Phase 3 — fog approaches (path-reveal) that FIRED: the attacker walked
+   * toward a hidden target, lit it, and captured it. Entries are dropped when
+   * the approach fizzles: attacker died in phases 1–2, its square was
+   * re-occupied by a phase-2 mover, it is sieged (rooks never relocate), or
+   * `to` no longer holds the in-the-way opponent the intent discovered (empty,
+   * converging ally, or a different enemy that is not in the way).
+   */
+  pathRevealAttacks: ResolveAttack[];
+  /** Board after all three phases (phase 3 applied). */
+  afterAll: {
     placement: string;
     kingLives: Record<StarChessColor, number>;
     mines: ScMine[];
@@ -124,6 +141,51 @@ export type ResolveTurnResult = {
 };
 
 const clampLives = (n: number) => Math.max(0, Math.min(3, Math.floor(n)));
+
+/** Post-phase-2 board state that phase-3 fog approaches apply onto. */
+export type PathRevealSnap = { placement: string; mines: readonly ScMine[] };
+
+export type PathRevealApply = PathRevealSnap & { fired: boolean };
+
+/**
+ * Apply ONE fog approach to a post-phase-2 snap — the single source of truth
+ * for the engine phase-3 loop and the UI replay.
+ *
+ * Fizzles (`fired: false`, snap unchanged) when the attacker no longer occupies
+ * `pathRevealFrom` (color/type mismatch) or `to` no longer holds the exact
+ * in-the-way opponent that the intent discovered — empty (already removed in
+ * phases 1–2), a same-side unit (a converging attack claimed it), or a
+ * different enemy that just happens to sit there (discovered, but not in the
+ * way of the intent — never captured).
+ *
+ * The two remaining fizzle gates are engine-turn context (not board state) and
+ * are enforced by the `resolveTurn` phase-3 loop before an attack is added to
+ * `pathRevealAttacks`: a sieged origin (`siegedRooks` — rooks never relocate)
+ * and an origin re-occupied by a phase-2 mover (`destinationsWritten`). The
+ * UI replays only the fired list, so this function never sees those cases.
+ */
+export const applyPathRevealAttack = (
+  snap: PathRevealSnap,
+  a: ResolveAttack,
+): PathRevealApply => {
+  if (a.kind !== "capture" || !a.pathRevealFrom) return { ...snap, fired: false };
+  const map = placementToMap(snap.placement);
+  const actor = map.get(a.pathRevealFrom);
+  if (!actor || actor.color !== a.color || actor.type !== a.piece) {
+    return { ...snap, fired: false };
+  }
+  const occ = map.get(a.to);
+  if (!occ || occ.color !== a.victim.color || occ.type !== a.victim.piece) {
+    return { ...snap, fired: false };
+  }
+  let mines = [...snap.mines];
+  map.delete(a.pathRevealFrom);
+  map.delete(a.to);
+  const m = mineAt(mines, a.to);
+  if (m && m.color !== a.color) mines = mines.filter((x) => x.at !== a.to);
+  map.set(a.to, actor);
+  return { placement: mapToPlacement(map), mines, fired: true };
+};
 
 const plansOf = (input: ResolveTurnInput): ClassicalPlan[] => {
   const out: ClassicalPlan[] = [];
@@ -146,6 +208,13 @@ const squareBeforeOnRay = (from: Square, blocker: Square): Square | null => {
  * Sliding ray with a blocker → collision (no HP). Clear ray / knight → HP −1.
  * Fizzles if attacker gone or enemy king no longer on `to`.
  * Callers pass {@link collectLegalKingChecks} (implicit geometry), not armed `H:`.
+ *
+ * King attackers leap ({@link leapsPiece}), so face-to-face kings never take the
+ * blocker branch — adjacency always chips. Firing is gated only on board
+ * occupancy and target identity, never on the shooter's own HP: a king already
+ * reduced to 0 in this same pass still returns fire. That is deliberate — it is
+ * what makes equal-HP contact end 0/0 as a draw rather than a win for whoever
+ * is ordered first. Do not "fix" it.
  */
 export const applyPendingKingShots = (input: {
   placement: string;
@@ -240,6 +309,10 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
   const occupy: ClassicalPlan[] = [];
   const quiets: ClassicalPlan[] = [];
   const pendingKingShotsArmed: ScPendingKingShot[] = [];
+  /** Phase-3 fog approaches — collected here, applied after moves. */
+  const pathRevealPending: ResolveAttack[] = [];
+  /** Squares a phase-2 mover landed on — re-occupied attacker squares fizzle. */
+  const destinationsWritten = new Set<Square>();
   const removeMineAt = (at: Square) => {
     mines = mines.filter((m) => m.at !== at);
   };
@@ -281,10 +354,12 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
         const becomesVisible = reveal != null && reveal > 0;
 
         // Hidden blocker that lights mid-walk → Bxg7-style occupy (not a check).
+        // Phase 3: fog approach — deferred until after moves, fizzles if the
+        // attacker dies in phase 1 or 2.
         if (becomesVisible && !startVisible) {
           const mids = rayBetween(plan.from, plan.to);
           const discovery = mids[reveal! - 1]!;
-          attacks.push({
+          pathRevealPending.push({
             kind: "capture",
             piece: actor.type,
             color: plan.color,
@@ -295,11 +370,6 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
             pathRevealFrom: plan.from,
             pathRevealSteps: reveal!,
           });
-          deadSquares.add(blocker);
-          if (mineAt(mines, blocker) && mineAt(mines, blocker)!.color !== plan.color) {
-            removeMineAt(blocker);
-          }
-          occupy.push({ color: plan.color, from: discovery, to: blocker });
           continue;
         }
       }
@@ -327,6 +397,12 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
         if (revealSteps != null && revealSteps > 0) visible = true;
       }
       if (!visible) {
+        // Sieged rooks never relocate, so they cannot "contact" a fogged
+        // square — a fogged target (adjacent, or one that never lights up)
+        // is not attacked at all. Visible targets still die to the turret.
+        if (input.siegedRooks?.includes(plan.from) && actor.type === "r") {
+          continue;
+        }
         // Still fogged at contact: clear + occupy, skip attack cue.
         attacks.push({
           kind: "capture",
@@ -348,10 +424,11 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
         continue;
       }
       // Path discovery: shoot from the first square that lights the target.
+      // Phase 3: deferred approach — attacker must survive phases 1–2.
       if (revealSteps != null && revealSteps > 0) {
         const mids = rayBetween(plan.from, plan.to);
         const discovery = mids[revealSteps - 1]!;
-        attacks.push({
+        pathRevealPending.push({
           kind: "capture",
           piece: actor.type,
           color: plan.color,
@@ -362,11 +439,6 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
           pathRevealFrom: plan.from,
           pathRevealSteps: revealSteps,
         });
-        deadSquares.add(plan.to);
-        if (mineAt(mines, plan.to) && mineAt(mines, plan.to)!.color !== plan.color) {
-          removeMineAt(plan.to);
-        }
-        occupy.push({ color: plan.color, from: discovery, to: plan.to });
         continue;
       }
       attacks.push({
@@ -389,9 +461,14 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
 
     // Fogged hostile mine on empty square — clear + occupy, no attack cue.
     // Kings are immune: they occupy without arming or clearing the mine.
+    // Sieged rooks cannot relocate, so they never step onto a fogged mine
+    // (same fog-contact rule as the enemy-capture fizzle above).
     if (!target) {
       const m = mineAt(mines, plan.to);
       if (m && m.color !== plan.color && actor.type !== "k") {
+        if (!visible0 && input.siegedRooks?.includes(plan.from) && actor.type === "r") {
+          continue;
+        }
         const blast: ResolveAttack = {
           kind: "mineBlast",
           piece: actor.type,
@@ -426,6 +503,14 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
         }
         if (occ.type === "k") {
           // King on the path before intentTo — HP chip, stop before the king.
+          //
+          // Deliberately NOT fog-gated, unlike the turn-start check
+          // (`collectLegalKingChecks` + `isTargetVisible`). A slider that could
+          // not see the enemy king at turn start still chips it by walking its
+          // ray into it: this is a **discovered check** — with the fog lifted it
+          // is a plain check, so the damage stands. The mover stops before the
+          // king (never occupies it), and a king killed here bails the turn out
+          // in `endScTurn` just like a check-phase kill.
           const hit = plan.color === "w" ? "b" : "w";
           const livesAfter = clampLives(lives[hit] - 1);
           lives[hit] = livesAfter;
@@ -458,6 +543,12 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
         const startVisible = canSee(plan.color, s);
         const becomesVisible = reveal != null && reveal > 0;
         if (!startVisible && !becomesVisible) {
+          // Sieged rooks never relocate, so a fogged mid-path unit they can
+          // never reach is not contacted either — fizzle the whole intent.
+          if (input.siegedRooks?.includes(plan.from)) {
+            pathHandled = true;
+            break;
+          }
           attacks.push({
             kind: "capture",
             piece: actor.type,
@@ -480,7 +571,7 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
         }
         if (becomesVisible) {
           const discovery = mids[reveal! - 1]!;
-          attacks.push({
+          pathRevealPending.push({
             kind: "capture",
             piece: actor.type,
             color: plan.color,
@@ -491,11 +582,6 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
             pathRevealFrom: plan.from,
             pathRevealSteps: reveal!,
           });
-          deadSquares.add(s);
-          if (mineAt(mines, s) && mineAt(mines, s)!.color !== plan.color) {
-            removeMineAt(s);
-          }
-          occupy.push({ color: plan.color, from: discovery, to: s });
           pathHandled = true;
           break;
         }
@@ -527,14 +613,6 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
 
   const mid = new Map(start);
   for (const sqDead of deadSquares) mid.delete(sqDead);
-  // Path-reveal shots: mover is on the discovery square after the approach.
-  for (const a of attacks) {
-    if (a.kind !== "capture" || !a.pathRevealFrom || a.pathRevealFrom === a.from) continue;
-    const piece = mid.get(a.pathRevealFrom);
-    if (!piece || piece.color !== a.color) continue;
-    mid.delete(a.pathRevealFrom);
-    mid.set(a.from, piece);
-  }
 
   const afterAttack = {
     placement: mapToPlacement(mid),
@@ -650,6 +728,7 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
         ? { type: plan.promotion, color: piece.color }
         : piece;
     board.set(dest, landed);
+    destinationsWritten.add(dest);
     moves.push({
       piece: landed.type,
       color: plan.color,
@@ -677,17 +756,45 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
   for (const plan of occupy) relocate(plan, true);
   for (const plan of quiets) relocate(plan, false);
 
+  const afterMove = {
+    placement: mapToPlacement(board),
+    kingLives: { ...lives },
+    mines: [...mines],
+  };
+
+  // Phase 3 — fog approaches fire after moves. Fizzle unless the same attacker
+  // still occupies `pathRevealFrom` (not sieged — they never relocate — and its
+  // square was not re-occupied by a phase-2 mover) and an enemy still holds `to`
+  // (empty target or converging attack ⇒ fizzle). `pathRevealAttacks` therefore
+  // contains only attacks that actually fired.
+  const pathRevealAttacks: ResolveAttack[] = [];
+  let phase3: PathRevealSnap = {
+    placement: afterMove.placement,
+    mines: [...mines],
+  };
+  for (const a of pathRevealPending) {
+    if (a.kind !== "capture" || !a.pathRevealFrom) continue;
+    if ((input.siegedRooks ?? []).includes(a.pathRevealFrom)) continue;
+    if (destinationsWritten.has(a.pathRevealFrom)) continue;
+    const applied = applyPathRevealAttack(phase3, a);
+    if (!applied.fired) continue;
+    phase3 = applied;
+    pathRevealAttacks.push(a);
+  }
+
   return {
     attacks,
     afterAttack,
     moves,
     mineTriggers,
     moveCollisions,
-    pendingKingShotsArmed,
-    afterMove: {
-      placement: mapToPlacement(board),
+    pathRevealAttacks,
+    afterMove,
+    afterAll: {
+      placement: phase3.placement,
       kingLives: { ...lives },
-      mines: [...mines],
+      mines: [...phase3.mines],
     },
+    pendingKingShotsArmed,
   };
 };

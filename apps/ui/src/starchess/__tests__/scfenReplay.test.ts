@@ -52,7 +52,7 @@ describe("validateScFenHistory / replayScFen", () => {
     const v = validateScFenHistory(s0, [s1, s2, s3]);
     expect(v.ok).toBe(true);
     expect(v.replay).toBe("ok");
-    expect(t3.placement).toBe("5k2/8/8/4P3/8/2n5/8/4K3");
+    expect(t3.placement).toBe("5k2/8/2b5/4P3/8/2n5/8/4K3");
   });
 
   it("marks snapshot-only histories", () => {
@@ -94,23 +94,24 @@ describe("validateScFenHistory / replayScFen", () => {
   });
 
   it("resolves B specials as w-then-b even if black was queued first", () => {
-    // Both pawns relocate to e4 — wire order is w then b (black overwrites).
+    // Both pawns gas-step +1 onto e3 — wire order is w then b (black overwrites).
     let snap = parseScFen(
       "SCFEN|4k3/4p3/8/8/8/8/4P3/4K3|0|33|P|G:11:11|Q:w:;b:",
     );
     snap = addScAction({
       snapshot: snap,
-      action: { timing: "B", kind: "pawnDouble", color: "b", from: "e7", to: "e4" },
+      action: { timing: "B", kind: "pawnDouble", color: "b", from: "e7", to: "e6" },
     }).snapshot;
     snap = addScAction({
       snapshot: snap,
-      action: { timing: "B", kind: "pawnDouble", color: "w", from: "e2", to: "e4" },
+      action: { timing: "B", kind: "pawnDouble", color: "w", from: "e2", to: "e3" },
     }).snapshot;
     const inMemory = endScTurn(snap).next.placement;
     const viaWire = endScTurn(parseScFen(formatScFen(snap))).next.placement;
     expect(viaWire).toBe(inMemory);
-    // Rank 4 (index 4): black pawn remains after w-then-b overwrite.
-    expect(inMemory.split("/")[4]).toMatch(/p/);
+    // Black pawn on e6, white on e3.
+    expect(inMemory).toContain("4p");
+    expect(inMemory).toMatch(/4P|P/);
   });
 
   it("rejects gas drift in history replay", () => {

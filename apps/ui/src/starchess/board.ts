@@ -1,6 +1,8 @@
 /**
  * StarChess board occupancy helpers (rules-side). Classic chess.js is not used
  * for legality — only optional render via toClassicFen / loadFen.
+ *
+ * // SPEC: _spec/apps/ui/starchess/resolve.puml
  */
 
 import type { Square } from "chess.js";
@@ -171,6 +173,12 @@ export const findKing = (
  * Fog limit is **side vision**: if any friendly unit lights the king (e.g. sieged
  * tank 9×9), every geometric checker of that side may chip — including a bishop
  * whose own 5×5 would not cover the square.
+ *
+ * Kings are legal checkers too: two adjacent kings fight face-to-face, each
+ * chipping the other every turn until one runs out of HP (or both reach 0 in the
+ * same pass — a draw). Adjacency is therefore always **mutual**, and because a
+ * king deploys its units ring-adjacent, a spawn next to the enemy king stacks a
+ * second checker for 2 HP/turn.
  */
 export const collectLegalKingChecks = (
   placement: string,
@@ -199,7 +207,7 @@ export const collectLegalKingChecks = (
     const enemy: StarChessColor = kingColor === "w" ? "b" : "w";
     if (!canSee(enemy, kingSq)) continue;
     for (const [from, piece] of map) {
-      if (piece.color !== enemy || piece.type === "k") continue;
+      if (piece.color !== enemy) continue;
       if (!attacksSquare(map, from, kingSq)) continue;
       out.push({ color: enemy, piece: piece.type, from, to: kingSq });
     }

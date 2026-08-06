@@ -2,7 +2,7 @@
  * Path collide (ally mine) — SCFEN DualNav: enemy rook walks over white a4 mine.
  */
 
-import { createSignal, onCleanup, onMount, type Component } from "solid-js";
+import { createMemo, createSignal, onCleanup, onMount, type Component } from "solid-js";
 
 import {
   PATH_COLLIDE_ALLY_MINE_PLY_SC,
@@ -10,6 +10,7 @@ import {
   queuePathCollideAllyMineStep,
 } from "~/starchess/demos/pathCollideAllyMine";
 import { endScTurn } from "~/starchess/endScTurn";
+import { intentOverlaysFromQueue } from "~/starchess/intentOverlays";
 import { classicFenFromSc, toClassicFen } from "~/starchess/scfen";
 import {
   clearSiegedRooks,
@@ -21,16 +22,18 @@ import { DEPLOY_MS, MINE_DEPLOY_MS } from "~/starchess/constants";
 import { useStarChessCombat } from "~/starchess/hooks/useStarChessCombat";
 import { StarChessBoard } from "~/starchess/StarChessBoard";
 import { DualNavButton } from "~/components/primitives/DualNavButton";
-import styles from "~/starchess/animations/PathCollideDemo.module.css";
+import styles from "~/starchess/animations/PathCollideAllyMineDemo.module.css";
 import { setStorybookCapabilities } from "~/screens/storybookCapabilities";
 import { NERD_CAPABILITIES } from "~/starchess/capabilities";
-import type { ScFenSnapshot, ScMine } from "~/starchess/types";
+import type { ScAction, ScFenSnapshot, ScMine } from "~/starchess/types";
 import { loadFen, setViewIndex } from "~/store/gameStore";
 import { setActivePlayerColor, setPlayerIdentity } from "~/store/settingsStore";
 import { setNerdModeUnlocked } from "~/starchess/identity";
 
 const TOTAL_TURNS = PATH_COLLIDE_ALLY_MINE_STEPS.length;
 const START_CAPTION = "Start · Nw a4 · Ke1 · ke8 · arrows play 2 parallel turns";
+
+type NavPhase = "ready" | "intent" | "playing";
 
 const minesKey = (mines: readonly ScMine[] | undefined) =>
   (mines ?? [])
@@ -49,13 +52,24 @@ export const PathCollideAllyMineDemo: Component = () => {
   const combat = useStarChessCombat();
   const [caption, setCaption] = createSignal(START_CAPTION);
   const [turnIndex, setTurnIndex] = createSignal(0);
-  const [playing, setPlaying] = createSignal(false);
+  const [navPhase, setNavPhase] = createSignal<NavPhase>("ready");
+  const [intentQueue, setIntentQueue] = createSignal<readonly ScAction[]>([]);
   /** DualNav scrub — re-baseline without spawn VFX on full-position jumps. */
   const [suppressAutoDeploy, setSuppressAutoDeploy] = createSignal(false);
   const plies = PATH_COLLIDE_ALLY_MINE_PLY_SC;
   let deployWait = 0;
 
   const mines = () => planningSnapshot()?.mines ?? plies[turnIndex()]?.mines ?? [];
+
+  const ghosts = createMemo(() => {
+    if (navPhase() !== "intent") return { destinations: [], canisters: [], checks: [] };
+    // No `viewer` → both players' intentions render as ghosts.
+    return intentOverlaysFromQueue(intentQueue(), {
+      placement: planningSnapshot()?.placement,
+      siegedRooks: planningSnapshot()?.siegedRooks,
+      mines: planningSnapshot()?.mines,
+    });
+  });
 
   const prepare = () => {
     setStorybookCapabilities(NERD_CAPABILITIES);
@@ -67,10 +81,11 @@ export const PathCollideAllyMineDemo: Component = () => {
   const showPosition = (index: number) => {
     window.clearTimeout(deployWait);
     combat.clear();
+    setIntentQueue([]);
     setSuppressAutoDeploy(true);
     applySnap(plies[index]!);
     setTurnIndex(index);
-    setPlaying(false);
+    setNavPhase("ready");
     setCaption(
       index === 0 ? START_CAPTION : PATH_COLLIDE_ALLY_MINE_STEPS[index - 1]!.caption,
     );
@@ -78,22 +93,42 @@ export const PathCollideAllyMineDemo: Component = () => {
   };
 
   const finishTurn = (indexPlaying: number, next: ScFenSnapshot) => {
+    setIntentQueue([]);
     setSuppressAutoDeploy(true);
     applySnap(next);
     setTurnIndex(indexPlaying + 1);
-    setPlaying(false);
+    setNavPhase("ready");
     setCaption(PATH_COLLIDE_ALLY_MINE_STEPS[indexPlaying]!.caption);
     queueMicrotask(() => setSuppressAutoDeploy(false));
   };
 
-  const playTurn = (indexPlaying: number) => {
+  const showIntent = (indexPlaying: number) => {
     const step = PATH_COLLIDE_ALLY_MINE_STEPS[indexPlaying];
     const before = plies[indexPlaying];
     if (!step || !before) return;
 
     window.clearTimeout(deployWait);
     combat.clear();
-    setPlaying(true);
+    setSuppressAutoDeploy(true);
+    applySnap(before);
+    const queued = queuePathCollideAllyMineStep(before, step);
+    // Placement unchanged — only Q: carries intent (ghost overlays).
+    setPlanningSnapshot(queued);
+    setIntentQueue(queued.queue?.actions ?? []);
+    setNavPhase("intent");
+    setCaption(`Intent · ${step.caption}`);
+    queueMicrotask(() => setSuppressAutoDeploy(false));
+  };
+
+  const resolveIntent = (indexPlaying: number) => {
+    const step = PATH_COLLIDE_ALLY_MINE_STEPS[indexPlaying];
+    const before = plies[indexPlaying];
+    if (!step || !before) return;
+
+    window.clearTimeout(deployWait);
+    combat.clear();
+    setIntentQueue([]);
+    setNavPhase("playing");
     setCaption(step.caption);
 
     const queued = queuePathCollideAllyMineStep(before, step);
@@ -147,18 +182,36 @@ export const PathCollideAllyMineDemo: Component = () => {
   };
 
   const goBack = () => {
-    if (playing()) return;
+    if (navPhase() === "playing") return;
+    if (navPhase() === "intent") {
+      showPosition(turnIndex());
+      return;
+    }
     const i = turnIndex();
     if (i <= 0) return;
     showPosition(i - 1);
   };
 
   const goForward = () => {
-    if (playing()) return;
+    if (navPhase() === "playing") return;
     const i = turnIndex();
+    if (navPhase() === "intent") {
+      resolveIntent(i);
+      return;
+    }
     if (i >= TOTAL_TURNS) return;
-    playTurn(i);
+    showIntent(i);
   };
+
+  const navLabel = () => {
+    const i = turnIndex();
+    const n = TOTAL_TURNS;
+    if (navPhase() === "intent") return `Intent ${i + 1} / ${n}`;
+    if (navPhase() === "playing") return `Resolve ${i + 1} / ${n}`;
+    return `Turn ${i} / ${n}`;
+  };
+
+  const busy = () => navPhase() === "playing";
 
   onMount(() => {
     prepare();
@@ -188,6 +241,9 @@ export const PathCollideAllyMineDemo: Component = () => {
           fogOfWar
           spiderMines={mines()}
           suppressAutoDeploy={suppressAutoDeploy()}
+          intentDestinations={ghosts().destinations}
+          intentCanisters={ghosts().canisters}
+          intentChecks={ghosts().checks}
           chasingMines={combat.chasingMines()}
           mineMissiles={combat.mineMissiles()}
           mineMissileTrails={combat.mineMissileTrails()}
@@ -205,11 +261,11 @@ export const PathCollideAllyMineDemo: Component = () => {
         <DualNavButton
           inverted
           inline
-          label={`Turn ${turnIndex()} / ${TOTAL_TURNS}`}
+          label={navLabel()}
           onBack={goBack}
           onForward={goForward}
-          backDisabled={playing() || turnIndex() <= 0}
-          forwardDisabled={playing() || turnIndex() >= TOTAL_TURNS}
+          backDisabled={busy() || (navPhase() === "ready" && turnIndex() <= 0)}
+          forwardDisabled={busy() || (navPhase() === "ready" && turnIndex() >= TOTAL_TURNS)}
         />
       </div>
       <p class={styles.caption}>Review · Path collide (ally mine) · {caption()}</p>

@@ -454,6 +454,17 @@ export const parseScFen = (raw: string): ScFenSnapshot => {
     ...(pendingKingShots.length ? { pendingKingShots } : {}),
     ...(mines.length ? { mines } : {}),
   };
+  // A destroyed King ends the match: the turn bails out in the check phase, so a
+  // 0-HP side can never sit in a playable snapshot. Reject authored / corrupted
+  // input that would let a dead King keep fighting.
+  if ((snap.kingLives.w === 0 || snap.kingLives.b === 0) && phase !== "O") {
+    throw Object.assign(
+      new Error(
+        `Invalid SCFEN: king at 0 HP requires phase O (got ${phase}, lives ${lives})`,
+      ),
+      { code: "SC_SCHEMA" },
+    );
+  }
   // Always enforce turn-tier income + rem ≤ income (even snapshot-only / empty Q).
   assertQueueGas(snap);
   return snap;

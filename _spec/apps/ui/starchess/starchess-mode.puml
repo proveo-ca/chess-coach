@@ -14,16 +14,16 @@ package "Goals (vs classical chess)" {
   component "Conflicts — classical = **attack** then **move**" as G3 <<app>>
   component "Economy — minerals + vespene" as G4 <<db>>
   component "Vision — cumulative fog (always on in mode)" as G5 <<db>>
-  component "King — **3 lives**; may walk into fire" as G6 <<app>>
+  component "King — **3 lives**; may walk into fire;\nadjacent kings duel — mutual, **1 HP per checker**,\nequal HP ends 0/0 as a **draw**" as G6 <<app>>
 }
 
 package "Specials (product)" {
-  component "Pawn — Double (pawnDouble)\npaid StarChess double" as S1 <<app>>
+  component "Pawn — gas step (pawnDouble)\n+1 forward; stacks with classical" as S1 <<app>>
   component "Knight — Spider Mine (knightMine)\nM: overlay; cap 2 / side" as S2 <<app>>
   component "Bishop — Charon (bishopSnipe)\n2 gas; ignore blockers" as S3 <<app>>
   component "Rook — Siege toggle (rookSiege)\ntank ↔ siege vision / mobility" as S4 <<app>>
   component "Queen — Tactical Jump (queenWarp)\n2 gas; visible empty square" as S5 <<app>>
-  component "King — Spawn\nadjacent deploy; can collide\nwith king-shots" as S6 <<app>>
+  component "King — Spawn\nadjacent deploy; can collide\nwith king-shots; a deploy on the enemy\nking's ring stacks a 2nd checker" as S6 <<app>>
 }
 
 package "UX (v1)" {
@@ -40,5 +40,42 @@ note bottom
   **Spider Mine combat:** path-chase / attack-mine; ignores allies
   + enemy kings (""mines.ts"" + ""resolveTurn"").
   Exclusive to ""apps/ui/src/starchess/screens/NerdScreen.tsx"".
+  ====
+  **Face-to-face kings (rules → resolve.puml).** Contact is **mutual and
+  simultaneous**, and costs 1 HP **per checking unit**, so equal HP
+  drains to 0/0 and the game is a **draw** (""scOutcome""). Because the King
+  deploys onto its own adjacent ring, contact becomes a **deploy race** —
+  a king that spawns a unit covering the enemy king chips 2 HP/turn while
+  taking 1. Breaking contact still pays that turn's **parting shot**.
+  ----
+  **Known gaps (not shipped):** the ""GameOverBanner"" is still suppressed
+  for StarChess in ""StarChessBoardView.tsx"", so a draw currently has **no
+  banner**; ""StarChessState.winner"" (""types.ts"") remains **unused**.
+  King adjacency via the board is unlocked by the SC movegen provider
+  (sc-moves.puml) when a planning snap is live.
+  ----
+  **Pending UI (deferred — do not treat as shipped):**
+  * **(a) deploy + move (spawn then C)** — broken in UI:
+    ""useScMoveProvider"" destinations/commit read pre-B
+    ""planningSnapshot.placement"", so a same-turn B=spawn
+    unit cannot be selected/moved even though
+    ""assertClassicalBaseline"" already accepts C.from =
+    spawn.to. Engine path is fine; board provider is not.
+  * **(b) siege tank mode + mode** — toggle UI (gas /
+    mode chip / double-toggle affordance) is broken or
+    unclear; engine ""rookSiege"" B/F + ""S:"" resolve is
+    authoritative. Defer UI fix.
+  ----
+  **Pending product — fog / vision first-class:**
+  * Cumulative fog is forced on in ""starChessMode"", but
+    viewer-masked movegen, fog-faithful AI, and first-class
+    vision UX (not only DualNav SCFEN samples) are **not**
+    done. ""scMoves"" still takes full occupancy; adjutant
+    threat reads are full-board (only enemy-king hunt bonus
+    is vision-gated). Track as pending, not regressions.
+  ----
+  **Queue edit:** TurnBar chips carry an X to
+  ""removeQueuedScAction"" (refund special gas).
+  Opponent planner: ""demos/adjutant.ts"".
 end note
 @enduml

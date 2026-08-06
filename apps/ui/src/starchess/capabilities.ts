@@ -1,4 +1,4 @@
-import type { ScreenCapabilities } from "~/store/capabilitiesStore";
+import type { ScreenCapabilities } from "~/types/capabilities";
 import { LAN_OBSERVER_CAPABILITIES } from "~/store/capabilitiesStore";
 
 /** StarChess board: Nerd set on both sides, free-move sandbox with fog. */

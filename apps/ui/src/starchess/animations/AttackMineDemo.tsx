@@ -2,7 +2,7 @@
  * Attack mine — SCFEN DualNav: engine resolveTurn attack→occupy + combat VFX.
  */
 
-import { createSignal, onCleanup, onMount, type Component } from "solid-js";
+import { createMemo, createSignal, onCleanup, onMount, type Component } from "solid-js";
 
 import {
   ATTACK_MINE_PLY_SC,
@@ -10,6 +10,7 @@ import {
   queueAttackMineStep,
 } from "~/starchess/demos/attackMine";
 import { endScTurn } from "~/starchess/endScTurn";
+import { intentOverlaysFromQueue } from "~/starchess/intentOverlays";
 import { classicFenFromSc, toClassicFen } from "~/starchess/scfen";
 import {
   planningSnapshot,
@@ -18,16 +19,18 @@ import {
 import { useStarChessCombat } from "~/starchess/hooks/useStarChessCombat";
 import { StarChessBoard } from "~/starchess/StarChessBoard";
 import { DualNavButton } from "~/components/primitives/DualNavButton";
-import styles from "~/starchess/animations/PathCollideDemo.module.css";
+import styles from "~/starchess/animations/AttackMineDemo.module.css";
 import { setStorybookCapabilities } from "~/screens/storybookCapabilities";
 import { NERD_CAPABILITIES } from "~/starchess/capabilities";
-import type { ScFenSnapshot } from "~/starchess/types";
+import type { ScAction, ScFenSnapshot } from "~/starchess/types";
 import { loadFen, setViewIndex } from "~/store/gameStore";
 import { setActivePlayerColor, setPlayerIdentity } from "~/store/settingsStore";
 import { setNerdModeUnlocked } from "~/starchess/identity";
 
 const TOTAL_TURNS = ATTACK_MINE_STEPS.length;
 const START_CAPTION = "Start · Nb mine c3 · Nd1 · arrow plays attack→occupy";
+
+type NavPhase = "ready" | "intent" | "playing";
 
 const applySnap = (snap: ScFenSnapshot) => {
   setPlanningSnapshot(snap);
@@ -39,10 +42,21 @@ export const AttackMineDemo: Component = () => {
   const combat = useStarChessCombat();
   const [caption, setCaption] = createSignal(START_CAPTION);
   const [turnIndex, setTurnIndex] = createSignal(0);
-  const [playing, setPlaying] = createSignal(false);
+  const [navPhase, setNavPhase] = createSignal<NavPhase>("ready");
+  const [intentQueue, setIntentQueue] = createSignal<readonly ScAction[]>([]);
   const plies = ATTACK_MINE_PLY_SC;
 
   const mines = () => planningSnapshot()?.mines ?? plies[turnIndex()]?.mines ?? [];
+
+  const ghosts = createMemo(() => {
+    if (navPhase() !== "intent") return { destinations: [], canisters: [], checks: [] };
+    // No `viewer` → both players' intentions render as ghosts.
+    return intentOverlaysFromQueue(intentQueue(), {
+      placement: planningSnapshot()?.placement,
+      siegedRooks: planningSnapshot()?.siegedRooks,
+      mines: planningSnapshot()?.mines,
+    });
+  });
 
   const prepare = () => {
     setStorybookCapabilities(NERD_CAPABILITIES);
@@ -53,26 +67,44 @@ export const AttackMineDemo: Component = () => {
 
   const showPosition = (index: number) => {
     combat.clear();
+    setIntentQueue([]);
     applySnap(plies[index]!);
     setTurnIndex(index);
-    setPlaying(false);
+    setNavPhase("ready");
     setCaption(index === 0 ? START_CAPTION : ATTACK_MINE_STEPS[index - 1]!.caption);
   };
 
   const finishTurn = (indexPlaying: number, next: ScFenSnapshot) => {
+    setIntentQueue([]);
     applySnap(next);
     setTurnIndex(indexPlaying + 1);
-    setPlaying(false);
+    setNavPhase("ready");
     setCaption(ATTACK_MINE_STEPS[indexPlaying]!.caption);
   };
 
-  const playTurn = (indexPlaying: number) => {
+  const showIntent = (indexPlaying: number) => {
     const step = ATTACK_MINE_STEPS[indexPlaying];
     const before = plies[indexPlaying];
     if (!step || !before) return;
 
     combat.clear();
-    setPlaying(true);
+    applySnap(before);
+    const queued = queueAttackMineStep(before, step);
+    // Placement unchanged — only Q: carries intent (ghost overlays).
+    setPlanningSnapshot(queued);
+    setIntentQueue(queued.queue?.actions ?? []);
+    setNavPhase("intent");
+    setCaption(`Intent · ${step.caption}`);
+  };
+
+  const resolveIntent = (indexPlaying: number) => {
+    const step = ATTACK_MINE_STEPS[indexPlaying];
+    const before = plies[indexPlaying];
+    if (!step || !before) return;
+
+    combat.clear();
+    setIntentQueue([]);
+    setNavPhase("playing");
     setCaption(step.caption);
     applySnap(before);
 
@@ -97,18 +129,36 @@ export const AttackMineDemo: Component = () => {
   };
 
   const goBack = () => {
-    if (playing()) return;
+    if (navPhase() === "playing") return;
+    if (navPhase() === "intent") {
+      showPosition(turnIndex());
+      return;
+    }
     const i = turnIndex();
     if (i <= 0) return;
     showPosition(i - 1);
   };
 
   const goForward = () => {
-    if (playing()) return;
+    if (navPhase() === "playing") return;
     const i = turnIndex();
+    if (navPhase() === "intent") {
+      resolveIntent(i);
+      return;
+    }
     if (i >= TOTAL_TURNS) return;
-    playTurn(i);
+    showIntent(i);
   };
+
+  const navLabel = () => {
+    const i = turnIndex();
+    const n = TOTAL_TURNS;
+    if (navPhase() === "intent") return `Intent ${i + 1} / ${n}`;
+    if (navPhase() === "playing") return `Resolve ${i + 1} / ${n}`;
+    return `Turn ${i} / ${n}`;
+  };
+
+  const busy = () => navPhase() === "playing";
 
   onMount(() => {
     prepare();
@@ -136,6 +186,9 @@ export const AttackMineDemo: Component = () => {
           variant="eclipse"
           fogOfWar
           spiderMines={mines()}
+          intentDestinations={ghosts().destinations}
+          intentCanisters={ghosts().canisters}
+          intentChecks={ghosts().checks}
           chasingMines={combat.chasingMines()}
           mineMissiles={combat.mineMissiles()}
           mineMissileTrails={combat.mineMissileTrails()}
@@ -153,11 +206,11 @@ export const AttackMineDemo: Component = () => {
         <DualNavButton
           inverted
           inline
-          label={`Turn ${turnIndex()} / ${TOTAL_TURNS}`}
+          label={navLabel()}
           onBack={goBack}
           onForward={goForward}
-          backDisabled={playing() || turnIndex() <= 0}
-          forwardDisabled={playing() || turnIndex() >= TOTAL_TURNS}
+          backDisabled={busy() || (navPhase() === "ready" && turnIndex() <= 0)}
+          forwardDisabled={busy() || (navPhase() === "ready" && turnIndex() >= TOTAL_TURNS)}
         />
       </div>
       <p class={styles.caption}>Review · Attack mine · {caption()}</p>

@@ -36,7 +36,8 @@ describe("fog-edge path resolve (SCFEN intent past / onto fog)", () => {
     });
     const { resolved, next } = endScTurn(queued);
 
-    expect(resolved.attacks[0]).toMatchObject({
+    expect(resolved.attacks).toEqual([]);
+    expect(resolved.pathRevealAttacks[0]).toMatchObject({
       kind: "capture",
       from: "e5",
       to: "g7",
@@ -45,11 +46,10 @@ describe("fog-edge path resolve (SCFEN intent past / onto fog)", () => {
       victim: { piece: "p", color: "b" },
       occupies: true,
     });
-    expect(resolved.attacks.some((a) => a.kind === "kingShot")).toBe(false);
     expect(resolved.moveCollisions).toEqual([]);
-    expect(resolved.moves).toEqual([
-      { piece: "b", color: "w", from: "e5", to: "g7" },
-    ]);
+    expect(resolved.moves).toEqual([]);
+    expect(resolved.afterMove.placement).toBe("7k/6p1/8/8/3B4/8/8/K7");
+    expect(resolved.afterAll.placement).toBe("7k/6B1/8/8/8/8/8/K7");
     expect(next.kingLives.b).toBe(3);
     expect(next.placement).toBe("7k/6B1/8/8/8/8/8/K7");
     expect(FOG_EDGE_BISHOP_PLY_SC[1]?.placement).toBe(next.placement);
@@ -72,7 +72,8 @@ describe("fog-edge path resolve (SCFEN intent past / onto fog)", () => {
     expect(queued.queue?.actions[0]).toMatchObject({ from: "d4", to: "d8" });
     const { resolved, next } = endScTurn(queued);
 
-    expect(resolved.attacks[0]).toMatchObject({
+    expect(resolved.attacks).toEqual([]);
+    expect(resolved.pathRevealAttacks[0]).toMatchObject({
       kind: "capture",
       from: "d5",
       to: "d7",
@@ -82,9 +83,9 @@ describe("fog-edge path resolve (SCFEN intent past / onto fog)", () => {
       occupies: true,
     });
     expect(resolved.moveCollisions).toEqual([]);
-    expect(resolved.moves).toEqual([
-      { piece: "r", color: "w", from: "d5", to: "d7" },
-    ]);
+    expect(resolved.moves).toEqual([]);
+    expect(resolved.afterMove.placement).toBe("7k/3p4/8/8/3R4/8/8/K7");
+    expect(resolved.afterAll.placement).toBe("7k/3R4/8/8/8/8/8/K7");
     expect(next.placement).toBe("7k/3R4/8/8/8/8/8/K7");
     expect(FOG_EDGE_ROOK_TANK_PLY_SC[1]?.placement).toBe(next.placement);
   });

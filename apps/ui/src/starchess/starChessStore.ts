@@ -11,7 +11,7 @@ import {
   incomeForTurn,
 } from "~/starchess/constants";
 import { endScTurn, type EndScTurnResult } from "~/starchess/endScTurn";
-import { addScAction } from "~/starchess/scActions";
+import { addScAction, removeScAction } from "~/starchess/scActions";
 import type { StarChessColor, PlayerEconomy } from "~/starchess/types";
 import type { RookMode, ScAction, ScActionInput, ScFenSnapshot } from "~/starchess/types";
 import { activePlayerColor } from "~/store/settingsStore";
@@ -220,7 +220,14 @@ export const setPlanningSnapshot = (snap: ScFenSnapshot | null) => {
     w: clampEnergy(snap.gas.w, cap),
     b: clampEnergy(snap.gas.b, cap),
   });
-  setSpecialsUsed(snap.specialsUsed ?? []);
+  // Only replace the once-per-turn ring when the snap carries U: / specialsUsed.
+  // Live queue appends do not stamp specialsUsed on the snap — wiping here
+  // desynced GasDeploy glow from still-queued specials.
+  if (snap.specialsUsed) {
+    setSpecialsUsed(snap.specialsUsed);
+  } else if (advanced || snap.phase !== "P") {
+    setSpecialsUsed([]);
+  }
   // Minerals credit on End / turn advance (ResourceBar `+N` preview).
   if (advanced) grantTurnIncome(turn);
 };
@@ -231,6 +238,24 @@ export const queueScAction = (action: ScActionInput): ScFenSnapshot => {
   if (!cur) throw new Error("queueScAction: no planning snapshot");
   const { snapshot } = addScAction({ snapshot: cur, action });
   setPlanningSnapshot(snapshot);
+  return snapshot;
+};
+
+/** Remove a queued action by seq (TurnBar X); refunds special gas. */
+export const removeQueuedScAction = (seq: number): ScFenSnapshot => {
+  const cur = _planningSnap();
+  if (!cur) throw new Error("removeQueuedScAction: no planning snapshot");
+  const { snapshot, removed } = removeScAction({ snapshot: cur, seq });
+  setPlanningSnapshot(snapshot);
+  // Clear local specialsUsed ring when the special chip is dismissed.
+  if (removed.timing !== "C") {
+    _setSpecialsUsed((prev) => {
+      if (!prev.has(removed.from)) return prev;
+      const next = new Set(prev);
+      next.delete(removed.from);
+      return next;
+    });
+  }
   return snapshot;
 };
 

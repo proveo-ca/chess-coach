@@ -1,6 +1,7 @@
 /**
  * StarChess combat move processor — plays resolveTurn results as
  * attack → death → occupy / slide, feeding ChessBoard cues.
+ * // SPEC: _spec/apps/ui/starchess/resolve.puml
  */
 
 import { createMemo, createSignal, onCleanup } from "solid-js";
@@ -15,7 +16,13 @@ import { findKing, mapToPlacement, placementToMap } from "~/starchess/board";
 import { MINE_MISSILE_MS, MINE_TRAIL_MS, MOVE_MS, MOVE_SQUARE_MS } from "~/starchess/constants";
 import { knightElbowMs, moveDurationMs } from "~/starchess/animations/moveTiming";
 import { migrateSpecialUsed, rookModeAt } from "~/starchess/starChessStore";
-import type { ResolveAttack, ResolveTurnResult } from "~/starchess/resolveTurn";
+import {
+  applyPathRevealAttack,
+  type PathRevealSnap,
+  type ResolveAttack,
+  type ResolveMove,
+  type ResolveTurnResult,
+} from "~/starchess/resolveTurn";
 import type { StarChessColor } from "~/starchess/types";
 import { isMoverVisibleToSide } from "~/starchess/vision";
 import { game } from "~/store/gameStore";
@@ -29,6 +36,23 @@ const nextId = (prefix: string) => `${prefix}-${++cueSeq}-${Date.now()}`;
 
 /** One roll per damaged king — reuse via `existing?.seed` so flames don't jump on flee/hit. */
 const rollFireSeed = () => Math.floor(Math.random() * 0xffffffff);
+
+/** Move one unit from→to in a placement string (no-op if `from` is empty). */
+const relocatePlacement = (placement: string, from: Square, to: Square): string => {
+  const map = placementToMap(placement);
+  const piece = map.get(from);
+  if (!piece) return placement;
+  map.delete(from);
+  map.set(to, piece);
+  return mapToPlacement(map);
+};
+
+/** Remove whatever occupies `at` from a placement string. */
+const withoutSquare = (placement: string, at: Square): string => {
+  const map = placementToMap(placement);
+  map.delete(at);
+  return mapToPlacement(map);
+};
 
 export type CombatCommit = {
   placement: string;
@@ -314,6 +338,166 @@ export function useStarChessCombat() {
       mines: result.afterMove.mines,
     };
 
+    /** Final board — phase 3 fog approaches applied (commit after all three phases). */
+    const afterAllCommit: CombatCommit = {
+      placement: result.afterAll.placement,
+      kingLives: result.afterAll.kingLives,
+      phase: result.afterAll.kingLives.w === 0 || result.afterAll.kingLives.b === 0 ? "O" : "P",
+      mines: result.afterAll.mines,
+    };
+
+    // Phase 3 — fog approaches (path-reveal captures) fire after moves:
+    // approach slide → attack cue + victim death → occupy slide → next.
+    // `result.pathRevealAttacks` holds only attacks that fired; the running
+    // state replays each attack through the engine's single source of truth so
+    // intermediate frames never clobber a discovery-square occupier or leave a
+    // cleared mine in place.
+    const playPathRevealAttacks = () => {
+      const atks = result.pathRevealAttacks.filter(
+        (a): a is Extract<ResolveAttack, { kind: "capture" }> =>
+          a.kind === "capture" && a.pathRevealFrom != null,
+      );
+      const stamp = Date.now();
+      let running: PathRevealSnap = {
+        placement: afterMoveCommit.placement,
+        mines: [...afterMoveCommit.mines],
+      };
+      let i = 0;
+
+      const playNext = () => {
+        const a = atks[i];
+        if (!a) {
+          opts.commit(afterAllCommit);
+          syncKingDamageFromBoard(afterAllCommit.placement, afterAllCommit.kingLives);
+          opts.onDone?.();
+          return;
+        }
+        i += 1;
+
+        // Authoritative post-attack state (mirror of the engine phase-3 loop).
+        const applied = applyPathRevealAttack(running, a);
+        if (!applied.fired) {
+          running = { placement: applied.placement, mines: [...applied.mines] };
+          playNext();
+          return;
+        }
+        const kingLives = afterMoveCommit.kingLives;
+        const discoveryFree = !placementToMap(running.placement).has(a.from);
+        const cue: AttackCue = {
+          id: nextId(`pa-${a.piece}-${a.to}-${stamp}-${i}`),
+          piece: a.piece,
+          color: a.color,
+          // Two-hop: the actor stages on the discovery square, so the shot
+          // originates there. Single-slide (discovery square occupied): the
+          // actor shoots from `pathRevealFrom` as it slides straight to `to`.
+          from: discoveryFree ? a.from : a.pathRevealFrom!,
+          to: a.to,
+        };
+        const deathId = nextId(`pa-death-${a.to}-${stamp}-${i}`);
+
+        const finishAttack = (
+          attackResolvedCommit: CombatCommit,
+          occupyMove: ResolveMove,
+          occupyCommit: CombatCommit,
+        ) => {
+          setAttackCues([cue]);
+          after(FRAG_FLIGHT_MS, () => {
+            setDeathCues((prev) => [
+              ...prev,
+              { id: deathId, piece: a.victim.piece, color: a.victim.color, at: a.to },
+            ]);
+            after(DEATH_MS, () => {
+              setAttackCues([]);
+              setDeathCues((prev) => prev.filter((d) => d.id !== deathId));
+              opts.commit(attackResolvedCommit);
+              syncKingDamageFromBoard(
+                attackResolvedCommit.placement,
+                attackResolvedCommit.kingLives,
+              );
+              playMoves([occupyMove], occupyCommit, {
+                ...opts,
+                onDone: () => {
+                  running = { placement: applied.placement, mines: [...applied.mines] };
+                  playNext();
+                },
+              });
+            });
+          });
+        };
+
+        // Cinematic two-hop (approach → attack → occupy) only when the discovery
+        // square is free; otherwise slide straight `pathRevealFrom → to`.
+        if (discoveryFree) {
+          const approach: ResolveMove = {
+            piece: a.piece,
+            color: a.color,
+            from: a.pathRevealFrom!,
+            to: a.from,
+          };
+          const occupy: ResolveMove = {
+            piece: a.piece,
+            color: a.color,
+            from: a.from,
+            to: a.to,
+          };
+          const approachCommit: CombatCommit = {
+            placement: relocatePlacement(running.placement, a.pathRevealFrom!, a.from),
+            kingLives,
+            phase: "M",
+            mines: running.mines,
+          };
+          const attackResolvedCommit: CombatCommit = {
+            placement: withoutSquare(approachCommit.placement, a.to),
+            kingLives,
+            phase: "M",
+            mines: applied.mines,
+          };
+          const occupyCommit: CombatCommit = {
+            placement: relocatePlacement(attackResolvedCommit.placement, a.from, a.to),
+            kingLives,
+            phase: "M",
+            mines: applied.mines,
+          };
+          playMoves([approach], approachCommit, {
+            ...opts,
+            onDone: () => finishAttack(attackResolvedCommit, occupy, occupyCommit),
+          });
+        } else {
+          const occupy: ResolveMove = {
+            piece: a.piece,
+            color: a.color,
+            from: a.pathRevealFrom!,
+            to: a.to,
+          };
+          const attackResolvedCommit: CombatCommit = {
+            placement: withoutSquare(running.placement, a.to),
+            kingLives,
+            phase: "M",
+            mines: applied.mines,
+          };
+          const occupyCommit: CombatCommit = {
+            placement: applied.placement,
+            kingLives,
+            phase: "M",
+            mines: applied.mines,
+          };
+          finishAttack(attackResolvedCommit, occupy, occupyCommit);
+        }
+      };
+
+      playNext();
+    };
+
+    const finishResolve = () => {
+      if (result.pathRevealAttacks.length === 0) {
+        opts.commit(afterAllCommit);
+        syncKingDamageFromBoard(afterAllCommit.placement, afterAllCommit.kingLives);
+        opts.onDone?.();
+        return;
+      }
+      playPathRevealAttacks();
+    };
+
     /** Board after slides land, before chase boom removes victims. */
     const landedCommit = (): CombatCommit => {
       const map = placementToMap(result.afterAttack.placement);
@@ -353,7 +537,7 @@ export function useStarChessCombat() {
         opts.commit(afterMoveCommit);
         syncKingDamageFromBoard(afterMoveCommit.placement, afterMoveCommit.kingLives);
         onAfter?.();
-        opts.onDone?.();
+        finishResolve();
       });
     };
 
@@ -473,13 +657,13 @@ export function useStarChessCombat() {
           playMoveCollisionsThen(() => {
             opts.commit(afterMoveCommit);
             syncKingDamageFromBoard(afterMoveCommit.placement, afterMoveCommit.kingLives);
-            opts.onDone?.();
+            finishResolve();
           });
           return;
         }
         playMoves(result.moves, afterMoveCommit, {
           ...opts,
-          onDone: afterCollisions(() => opts.onDone?.()),
+          onDone: afterCollisions(() => finishResolve()),
         }, revealedFrom);
         return;
       }
@@ -662,7 +846,7 @@ export function useStarChessCombat() {
             playMoveCollisionsThen(() => {
               opts.commit(afterMoveCommit);
               syncKingDamageFromBoard(afterMoveCommit.placement, afterMoveCommit.kingLives);
-              opts.onDone?.();
+              finishResolve();
             });
           });
           return;
@@ -671,38 +855,6 @@ export function useStarChessCombat() {
         playMovesThenMines(attackFrom);
       });
     };
-
-    // Path-reveal captures: approach until the target is lit, then attack.
-    const pathRevealAtks = result.attacks.filter(
-      (a): a is Extract<ResolveAttack, { kind: "capture" }> =>
-        a.kind === "capture" && a.pathRevealFrom != null && (a.pathRevealSteps ?? 0) > 0,
-    );
-    if (pathRevealAtks.length > 0) {
-      const approaches = pathRevealAtks.map((a) => ({
-        piece: a.piece,
-        color: a.color,
-        from: a.pathRevealFrom!,
-        to: a.from,
-      }));
-      const approachMap = placementToMap(opts.startPlacement);
-      for (const a of pathRevealAtks) {
-        const piece = approachMap.get(a.pathRevealFrom!);
-        if (!piece || piece.color !== a.color) continue;
-        approachMap.delete(a.pathRevealFrom!);
-        approachMap.set(a.from, piece);
-      }
-      const approachCommit: CombatCommit = {
-        placement: mapToPlacement(approachMap),
-        kingLives: { ...livesBefore },
-        phase: "M",
-        mines: result.afterAttack.mines,
-      };
-      playMoves(approaches, approachCommit, {
-        ...opts,
-        onDone: () => runAttackPhase(),
-      });
-      return;
-    }
 
     runAttackPhase();
   };

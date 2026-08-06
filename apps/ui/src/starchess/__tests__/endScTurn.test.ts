@@ -31,7 +31,7 @@ describe("endScTurn", () => {
     snap = addScMove(snap, { color: "w", from: "c3", to: "c6" });
     snap = addScMove(snap, { color: "b", from: "e4", to: "c3" });
     r = endScTurn(snap);
-    expect(r.next.placement).toBe("5k2/8/8/4P3/8/2n5/8/4K3");
+    expect(r.next.placement).toBe("5k2/8/2b5/4P3/8/2n5/8/4K3");
     expect(r.next.turn).toBe(3);
     expect(r.next.kingLives).toEqual({ w: 3, b: 3 });
   });

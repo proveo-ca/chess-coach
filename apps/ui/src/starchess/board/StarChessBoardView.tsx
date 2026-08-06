@@ -31,9 +31,9 @@ import { MoveAnimation } from "~/starchess/animations/MoveAnimation";
 import { QueenJumpAnimation } from "~/starchess/animations/QueenJumpAnimation";
 import { buildFxHiddenSquares, EMPTY_FX_HIDDEN, hasCombatFxInput } from "~/starchess/boardFx";
 import { useAutoMineDeploy } from "~/starchess/hooks/useAutoMineDeploy";
-import { isRookSiegedAfterB } from "~/starchess/rookSiegeMode";
+import { useScMoveProvider } from "~/starchess/hooks/useScMoveProvider";
 import {
-  currentQueue,
+  planningSnapshot,
   rookModeAt,
   siegedRooks,
   specialsUsedThisTurn,
@@ -62,6 +62,7 @@ import { currentIndex, fenHistory, game, isResigned, startingFen } from "~/store
 import { activePlayerColor, opponentPieceSet, playerPieceSet } from "~/store/settingsStore";
 import { isTravelling } from "~/store/travelStore";
 // SPEC: _spec/apps/ui/components.puml
+// SPEC: _spec/apps/ui/starchess/sc-moves.puml
 import type { MoveSquares } from "~/types/game";
 import type { NerdBoardVariant } from "~/starchess/types";
 
@@ -155,7 +156,21 @@ export const StarChessBoardView: Component<{
   kingDamage?: readonly KingDamageCue[] | Partial<Record<Square, KingDamageState>>;
 }> = (props) => {
   const navigate = useNavigate();
-  const board = useChessBoard();
+
+  const starChessRules = createMemo(() =>
+    isStarChessBoard({ fogOfWar: props.fogOfWar, variant: props.variant }),
+  );
+  // SC-native legality only during a live planning snap (phase P). Cosmetic
+  // fog/variant boards without a snap keep the classical chess.js path.
+  const scMoveProvider = useScMoveProvider();
+  const board = useChessBoard({
+    moveProvider: () => {
+      if (!starChessRules()) return undefined;
+      const snap = planningSnapshot();
+      if (!snap || snap.phase !== "P") return undefined;
+      return scMoveProvider;
+    },
+  });
 
   const displayRanks = () => (activePlayerColor() === "w" ? RANKS : [...RANKS].reverse());
   const displayFiles = () => (activePlayerColor() === "w" ? FILES : [...FILES].reverse());
@@ -164,10 +179,6 @@ export const StarChessBoardView: Component<{
   const lastMove = () => board.lastMove();
   const animationQueue = () => board.animationQueue();
   const consumeAnimation = (m: MoveSquares) => board.consumeAnimation?.(m);
-
-  const starChessRules = createMemo(() =>
-    isStarChessBoard({ fogOfWar: props.fogOfWar, variant: props.variant }),
-  );
 
   const resolvedAttackCues = createMemo(() => {
     if (props.attackCues?.length) return props.attackCues;
@@ -313,7 +324,7 @@ export const StarChessBoardView: Component<{
     }
     const now = performance.now();
     const live = new Set(cues.map((c) => c.id));
-    for (const id of [...moveVisionStartedAt.keys()]) {
+    for (const id of moveVisionStartedAt.keys()) {
       if (!live.has(id)) moveVisionStartedAt.delete(id);
     }
     for (const c of cues) {
@@ -508,32 +519,12 @@ export const StarChessBoardView: Component<{
   const fogOverlayId = createUniqueId();
   const fogMaskId = `${fogOverlayId}-mask`;
 
-  /** Siege Tank in siege mode cannot relocate (vision widens instead). */
-  const isSiegedRookSquare = (sq: Square | null | undefined): boolean => {
-    if (!sq) return false;
-    if (activeGame().get(sq)?.type !== "r") return false;
-    // B rookSiege intent toggles mobility before classical (enter locks, unsiege unlocks).
-    return isRookSiegedAfterB(sq, [...siegedRooks()], currentQueue());
-  };
-
-  const displayValidMoves = createMemo(() => {
-    const sel = board.selectedSquare();
-    if (isSiegedRookSquare(sel)) return [] as string[];
-    return board.validMoves();
-  });
+  // Under SC rules the provider already emits sieged-rook artillery captures
+  // (firesInPlace) and filters dropsAtResolve — no chess.js destination block.
+  const displayValidMoves = createMemo(() => board.validMoves());
 
   const handleSquareClick = (square: Square) => {
     if (props.onSquareClickIntercept?.(square)) return;
-    const sel = board.selectedSquare();
-    // Block completing a move from a sieged rook (hook still lists chess.js destinations).
-    if (
-      sel &&
-      sel !== square &&
-      isSiegedRookSquare(sel) &&
-      board.validMoves().includes(square)
-    ) {
-      return;
-    }
     void board.handleSquareClick(square);
   };
 
@@ -567,15 +558,18 @@ export const StarChessBoardView: Component<{
     const piece = g.get(sq);
     if (!piece) return;
 
-    const canTouch = capabilities().freeColorControl
-      ? piece.color === g.turn()
-      : g.turn() === activePlayerColor() && piece.color === activePlayerColor();
+    // Prefer provider canSelect (SC); classical turn/colour otherwise.
+    const canTouch = board.canSelectPiece
+      ? board.canSelectPiece(sq)
+      : capabilities().freeColorControl
+        ? piece.color === g.turn()
+        : g.turn() === activePlayerColor() && piece.color === activePlayerColor();
     if (!canTouch) return;
 
     e.preventDefault();
 
     // Select the piece (sets selectedSquare + validMoves inside the hook)
-    board.handleSquareClick(sq);
+    void board.handleSquareClick(sq);
 
     const pSet = piece.color === activePlayerColor() ? playerPieceSet() : opponentPieceSet();
     setTouchDrag({ from: sq, piece, pieceSet: pSet, x: touch.clientX, y: touch.clientY });
@@ -677,6 +671,7 @@ export const StarChessBoardView: Component<{
                     } else {
                       const p = piece();
                       if (!p) return false;
+                      if (board.canSelectPiece) return !board.canSelectPiece(square);
                       return (
                         p.color !== activePlayerColor() ||
                         board.game().turn() !== activePlayerColor()

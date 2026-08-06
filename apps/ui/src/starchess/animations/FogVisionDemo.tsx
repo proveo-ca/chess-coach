@@ -7,7 +7,7 @@
 import { onCleanup, onMount, type Component } from "solid-js";
 import type { Square } from "chess.js";
 
-import styles from "~/starchess/animations/PathCollideDemo.module.css";
+import styles from "~/starchess/animations/FogVisionDemo.module.css";
 import { classicFenFromSc, parseScFen } from "~/starchess/scfen";
 import {
   clearSiegedRooks,

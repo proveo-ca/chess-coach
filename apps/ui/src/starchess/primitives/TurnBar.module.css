@@ -20,17 +20,46 @@
 .badge {
   display: inline-flex;
   align-items: center;
-  max-width: 12rem;
+  gap: 4px;
+  max-width: 14rem;
   overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
   border-radius: 6px;
   border: 1px solid color-mix(in srgb, var(--text-color, #111) 18%, transparent);
-  padding: 3px 8px;
+  padding: 3px 4px 3px 8px;
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.02em;
   font-variant-numeric: tabular-nums;
+}
+
+.badgeText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.badgeRemove {
+  appearance: none;
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 0 4px;
+  opacity: 0.65;
+}
+
+.badgeRemove:hover,
+.badgeRemove:focus-visible {
+  opacity: 1;
+  background: color-mix(in srgb, var(--text-color, #111) 12%, transparent);
+  outline: none;
 }
 
 .badgeB {

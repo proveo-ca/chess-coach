@@ -20,7 +20,7 @@ import {
 import { useStarChessCombat } from "~/starchess/hooks/useStarChessCombat";
 import { StarChessBoard } from "~/starchess/StarChessBoard";
 import { DualNavButton } from "~/components/primitives/DualNavButton";
-import styles from "~/starchess/animations/PathCollideDemo.module.css";
+import styles from "~/starchess/animations/FogEdgeDemo.module.css";
 import { setStorybookCapabilities } from "~/screens/storybookCapabilities";
 import { NERD_CAPABILITIES } from "~/starchess/capabilities";
 import type { ScAction, ScFenSnapshot } from "~/starchess/types";

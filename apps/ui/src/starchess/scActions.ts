@@ -1,5 +1,5 @@
 /**
- * Pure SCFEN planning appenders — the only way a queue is created.
+ * Pure SCFEN planning appenders / removers — the only way a queue mutates.
  * See _spec/apps/ui/starchess/scfen-queue.puml.
  * // SPEC: _spec/apps/ui/starchess/scfen-queue.puml
  */
@@ -29,6 +29,17 @@ export class AddScActionError extends Error {
     super(message);
     this.code = code;
     this.name = "AddScActionError";
+  }
+}
+
+export type RemoveScActionErrorCode = "SC_PHASE" | "SC_NOT_FOUND";
+
+export class RemoveScActionError extends Error {
+  readonly code: RemoveScActionErrorCode;
+  constructor(code: RemoveScActionErrorCode, message: string) {
+    super(message);
+    this.code = code;
+    this.name = "RemoveScActionError";
   }
 }
 
@@ -107,6 +118,59 @@ export const addScAction = (input: {
     queue: { actions },
   };
   return { snapshot: next, action };
+};
+
+/**
+ * Remove one queued action by seq. Refunds gas for B|F specials.
+ * Remaining seqs are stable (TurnBar X targets).
+ */
+export const removeScAction = (input: {
+  snapshot: ScFenSnapshot;
+  seq: number;
+}): { snapshot: ScFenSnapshot; removed: ScAction } => {
+  const { snapshot: snap } = input;
+  if (snap.phase !== "P") {
+    throw new RemoveScActionError(
+      "SC_PHASE",
+      `removeScAction requires phase P (got ${snap.phase})`,
+    );
+  }
+  const existing = snap.queue?.actions ?? [];
+  const removed = existing.find((a) => a.seq === input.seq);
+  if (!removed) {
+    throw new RemoveScActionError(
+      "SC_NOT_FOUND",
+      `no queued action with seq ${input.seq}`,
+    );
+  }
+  const actions = existing.filter((a) => a.seq !== input.seq);
+  assertQueueShape(actions);
+
+  let gas = snap.gas;
+  if (removed.timing === "B" || removed.timing === "F") {
+    const refund = specialGasCost(removed.kind);
+    const cap = snap.gasIncome[removed.color];
+    gas = {
+      ...snap.gas,
+      [removed.color]: Math.min(cap, snap.gas[removed.color] + refund),
+    };
+  }
+
+  let specialsUsed = snap.specialsUsed ? [...snap.specialsUsed] : undefined;
+  if (removed.timing !== "C" && specialsUsed) {
+    specialsUsed = specialsUsed.filter((s) => s !== removed.from);
+    if (specialsUsed.length === 0) specialsUsed = undefined;
+  }
+
+  const next: ScFenSnapshot = {
+    ...snap,
+    gas,
+    queue: { actions },
+  };
+  if (specialsUsed) next.specialsUsed = specialsUsed;
+  else delete (next as { specialsUsed?: unknown }).specialsUsed;
+
+  return { snapshot: next, removed };
 };
 
 /** Convenience: queue a classical C action for one side. */

@@ -9,6 +9,7 @@ import { charonTargetQueenFromPlacement } from "~/starchess/specials/bishopCharo
 import { minesFor, MAX_MINES_PER_SIDE, mineAt } from "~/starchess/mines";
 import { isRookSiegedAfterB } from "~/starchess/rookSiegeMode";
 import { classicFenFromSc } from "~/starchess/scfen";
+import { pawnSingleTarget } from "~/starchess/specials/pawnDouble";
 import type { ScAction, ScActionInput, ScFenSnapshot } from "~/starchess/types";
 
 export class ScValidateError extends Error {
@@ -46,18 +47,36 @@ export const assertClassicalBaseline = (
 ): void => {
   const map = placementToMap(snap.placement);
   let piece = map.get(action.from);
-  // Same-turn B=spawn:d1:r then C=d1a1 — piece appears only after B resolves.
+  // Same-turn B relocates/spawns the actor onto `from` before classical.
   if (!piece || piece.color !== action.color) {
-    const spawn = (snap.queue?.actions ?? []).find(
+    const b = (snap.queue?.actions ?? []).find(
       (a) =>
         a.timing === "B" &&
-        a.kind === "spawn" &&
         a.color === action.color &&
         a.to === action.from &&
-        a.unit,
+        (a.kind === "spawn" || a.kind === "pawnDouble" || a.kind === "queenWarp"),
     );
-    if (spawn && spawn.timing === "B" && spawn.kind === "spawn" && spawn.unit) {
-      piece = { type: spawn.unit, color: action.color };
+    if (b && b.timing === "B" && b.kind === "spawn" && b.unit) {
+      piece = { type: b.unit, color: action.color };
+    } else if (b && b.timing === "B" && (b.kind === "pawnDouble" || b.kind === "queenWarp")) {
+      // Actor still lives on B.from in the planning placement.
+      const origin = map.get(b.from);
+      if (origin && origin.color === action.color) piece = origin;
+    }
+  }
+  // Also accept C authored on the pre-B square when B will move that piece
+  // (UI clicks before B resolve; endScTurn rewrites C by B's vector).
+  if (!piece || piece.color !== action.color) {
+    const bFrom = (snap.queue?.actions ?? []).find(
+      (a) =>
+        a.timing === "B" &&
+        a.color === action.color &&
+        a.from === action.from &&
+        (a.kind === "pawnDouble" || a.kind === "queenWarp"),
+    );
+    if (bFrom) {
+      const origin = map.get(action.from);
+      if (origin && origin.color === action.color) piece = origin;
     }
   }
   if (!piece || piece.color !== action.color) {
@@ -156,8 +175,23 @@ export const assertSpecialLegal = (
       if (!action.to) {
         throw new ScValidateError("SC_SPECIAL", "pawnDouble needs to");
       }
+      // Gas step is +1 forward only (not classical start-rank double).
+      const expected = pawnSingleTarget(action.from, action.color);
+      if (!expected || action.to !== expected) {
+        throw new ScValidateError(
+          "SC_SPECIAL",
+          `pawnDouble must step +1 to ${expected ?? "off-board"} (got ${action.to})`,
+        );
+      }
+      // F after C: dest may be free only post-classical; queue-time checks
+      // planning placement. For F, allow occupied-by-self-from when C will leave.
       if (map.has(action.to)) {
-        throw new ScValidateError("SC_SPECIAL", "pawnDouble blocked");
+        const c = (snap.queue?.actions ?? []).find(
+          (a) => a.timing === "C" && a.color === action.color && a.from === action.from,
+        );
+        if (!(action.timing === "F" && c && c.timing === "C" && c.to === action.to)) {
+          throw new ScValidateError("SC_SPECIAL", "pawnDouble blocked");
+        }
       }
       break;
     }

@@ -9,6 +9,7 @@ actor Player as P
 participant "apps/ui StarChess screen" as UI <<app>>
 participant "endScTurn" as ES <<app>>
 participant "resolveTurn" as RT <<app>>
+participant "scOutcome" as OUT <<app>>
 database "ScFenSnapshot" as FEN <<db>>
 
 == Planning ==
@@ -24,6 +25,7 @@ ES ARROW_MAIN ES : resolve rank-major: king-checks → B → C → F\nw then b w
 
 group 1 · turn-start legal king-checks (fog-visible, implicit)
   ES ARROW_MAIN ES : white, then black\n""applyPendingKingShots"" + ""collectLegalKingChecks""
+  ES ARROW_ERROR ES : adjacent kings — **mutual** chip, **1 HP per checker**\n(pendings read before B/C, so breaking contact\nstill pays a **parting shot**; a king left at 0 HP\nbails the turn out here — no B/C/F resolves)
 end
 
 group 2 · rank B (specials before combat)
@@ -32,8 +34,9 @@ end
 
 group 3 · rank C (classical, both sides on same board)
   ES ARROW_MAIN RT : resolveTurn(white, black)
-  RT ARROW_MAIN RT : attacks — visible targets + path-reveal shots\n(attack → death → occupy)
+  RT ARROW_MAIN RT : attacks — visible targets (start board)\n(attack → death → occupy)
   RT ARROW_MAIN RT : moves — occupy, move collisions, mine triggers
+  RT ARROW_MAIN RT : path-reveal fog approaches — ""pathRevealFrom"" →\ndiscovery square; fired only — fizzle unless attacker\nstill on ""pathRevealFrom"" and ""to"" holds the\nexact in-the-way victim
 end
 
 group 4 · rank F (specials after combat)
@@ -43,6 +46,8 @@ end
 == Next snap ==
 
 ES ARROW_MAIN FEN : new snapshot (turn+1, ""G:"" refilled to income)
+ES ARROW_ERROR FEN : phase ""O"" when either ""kingLives"" side hits 0
+FEN ARROW_OPTIONAL OUT : " ""scOutcome(snap)"" "
 FEN ARROW_QUEUE UI : cumulative fog for both sides (""vision.ts"")
 
 note over ES
@@ -50,10 +55,31 @@ note over ES
   next turn (income == turn tier 1 / 2 / 3).
 end note
 
+note over OUT
+  **Terminal outcome, derived from HP.** ""scOutcome(snap)"" reads
+  ""kingLives"" only: both at 0 → **draw**, exactly one at 0 → the other
+  side wins, otherwise ""null"". No persisted winner field, no SCFEN
+  grammar change.
+  A draw is reachable because **adjacent kings chip each other
+  simultaneously** — the shot is not gated on the shooter's own HP, so a
+  king that dies in the pass still returns fire and equal HP ends 0/0
+  (see resolve.puml). Phase ""O"" is **absorbing**: ""endScTurn"" throws on
+  a non-""P"" snapshot, so no further turn can be resolved.
+end note
+
 note over RT
-  **Attacks must resolve before moves.** Attacks read the start board:
-  visible targets fire from the start square, path-reveal shots fire from
-  the discovery square; a target still fogged at contact becomes a
-  move-phase collision (capture/occupy, no attack cue).
+  **Three phases.** 1) attacks on targets visible at resolve start (start
+  board); 2) moves + collisions for phase-1 survivors; 3) path-reveal fog
+  approaches fire **after** moves — fizzle (dropped) unless the attacker
+  still occupies ""pathRevealFrom"" (survived phases 1–2, origin not
+  re-occupied by a phase-2 mover, not sieged — rooks never relocate) and
+  ""to"" holds the exact in-the-way victim ""a.victim"" (empty, converging
+  same-side ally, or a different non-in-the-way enemy → fizzle, no
+  capture). ""applyPathRevealAttack"" is the shared source of truth for the
+  board-state fizzles; siege + origin-re-occupation gates are pre-filtered
+  by the engine loop, so ""pathRevealAttacks"" holds
+  **only attacks that fired**. A target still fogged at contact becomes a
+  move-phase collision (capture/occupy, no attack cue). Snapshots:
+  ""afterMove"" (post-phase-2) and ""afterAll"" (post-phase-3).
 end note
 @enduml

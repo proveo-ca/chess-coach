@@ -5,6 +5,7 @@ import {
   currentQueue,
   endPlanningTurn,
   planningSnapshot,
+  removeQueuedScAction,
   startPlanningTimer,
   turnDeadlineAt,
   turnSecondsRemaining,
@@ -102,16 +103,39 @@ export const TurnBar: Component<TurnBarProps> = (props) => {
   const classical = () => sideQueue().find((a) => a.timing === "C") ?? null;
   const afters = () => sideQueue().filter((a) => a.timing === "F");
 
+  const removeChip = (a: ScAction, e: MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    try {
+      removeQueuedScAction(a.seq);
+    } catch {
+      // No planning snap / already gone — ignore.
+    }
+  };
+
+  const chip = (a: ScAction, badgeClass: string) => (
+    <span
+      class={`${styles.badge} ${badgeClass}`}
+      data-timing={a.timing}
+      data-seq={a.seq}
+    >
+      <span class={styles.badgeText}>{badgeLabel(a)}</span>
+      <button
+        type="button"
+        class={styles.badgeRemove}
+        data-testid={`queue-remove-${a.seq}`}
+        aria-label={`Remove ${badgeLabel(a)}`}
+        onClick={(e) => removeChip(a, e)}
+      >
+        ×
+      </button>
+    </span>
+  );
+
   return (
     <div class={styles.bar} data-testid="turn-bar" role="group" aria-label="Turn">
       <div class={styles.queue} data-testid="turn-queue" aria-label="Action queue">
-        <For each={befores()}>
-          {(a) => (
-            <span class={`${styles.badge} ${styles.badgeB}`} data-timing="B">
-              {badgeLabel(a)}
-            </span>
-          )}
-        </For>
+        <For each={befores()}>{(a) => chip(a, styles.badgeB)}</For>
         <Show
           when={classical()}
           fallback={
@@ -120,19 +144,9 @@ export const TurnBar: Component<TurnBarProps> = (props) => {
             </span>
           }
         >
-          {(c) => (
-            <span class={`${styles.badge} ${styles.badgeC}`} data-timing="C">
-              {badgeLabel(c())}
-            </span>
-          )}
+          {(c) => chip(c(), styles.badgeC)}
         </Show>
-        <For each={afters()}>
-          {(a) => (
-            <span class={`${styles.badge} ${styles.badgeF}`} data-timing="F">
-              {badgeLabel(a)}
-            </span>
-          )}
-        </For>
+        <For each={afters()}>{(a) => chip(a, styles.badgeF)}</For>
       </div>
       <button
         type="button"

@@ -13,7 +13,7 @@ describe("king hunt live first-move king color", () => {
   it("SCFen placement keeps black king after first End (e4→d5 + HP)", () => {
     const start = parseScFen(KING_HUNT_LIVE_START_SCFEN);
     expect(placementToMap(start.placement).get("e4")).toEqual({ type: "k", color: "b" });
-    expect(placementToMap(start.placement).get("a8")).toEqual({ type: "k", color: "w" });
+    expect(placementToMap(start.placement).get("h1")).toEqual({ type: "k", color: "w" });
 
     const queued = queueKingHuntLiveOpponent(start).snapshot;
     const { next, resolved } = endScTurn(queued);
@@ -21,14 +21,14 @@ describe("king hunt live first-move king color", () => {
     expect(hasExactKingPair(next.placement)).toBe(true);
     const map = placementToMap(next.placement);
     expect(map.get("d5")).toEqual({ type: "k", color: "b" });
-    expect(map.get("a8")).toEqual({ type: "k", color: "w" });
+    expect(map.get("h1")).toEqual({ type: "k", color: "w" });
     expect(map.get("e4")).toBeUndefined();
 
     // chess.js load of classic export must agree
     const fen = classicFenFromSc(next, "w");
     const g = new Chess(fen);
     expect(g.get("d5")).toEqual({ type: "k", color: "b" });
-    expect(g.get("a8")).toEqual({ type: "k", color: "w" });
+    expect(g.get("h1")).toEqual({ type: "k", color: "w" });
 
     // Round-trip SCFEN
     const raw = formatScFen({ ...next, queue: { actions: [] } });

@@ -1,12 +1,11 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
 import { KingHuntDemo } from "~/starchess/animations/KingHuntDemo";
-import {
-  KING_HUNT_LIVE_START_SCFEN,
-  queueKingHuntLiveOpponent,
-} from "~/starchess/demos/kingHunt";
+import { adjutant } from "~/starchess/demos/adjutant";
+import { KING_HUNT_LIVE_START_SCFEN } from "~/starchess/demos/kingHunt";
 import { NerdCombatDemo } from "~/starchess/screens/nerdDemo/NerdCombatDemo";
 import { NerdScreen } from "~/starchess/screens/NerdScreen";
+import { starChessEconomies } from "~/starchess/starChessStore";
 
 /**
  * Stories mount SCFEN demos / live seeds only — no queue / resolve logic here.
@@ -61,7 +60,7 @@ export const KingHuntLive: Story = {
     docs: {
       description: {
         story:
-          "Ownership flipped vs King Hunt: White hunter (Ka8, Nc5, Bh2 — deploy the tank) vs black king e4. Enemy auto-queues DualNav flee (e4→d5→c5→c6); on c5 deploys marine → gas-double → promotes. 5 minerals; ResourceBar + TurnBar; queue into End. Nc5 legally checks ke4 — first End chips HP before flee.",
+          "Ownership flipped vs King Hunt: White hunter (Kh1, Nc5, Bh2 — the Charon bishop) vs black king e4. Enemy adjutant (defensive commander) auto-plays: protects the King first (flees, blocks or captures the checker), claims center, develops marines toward promotion, then holds a checking ray on the white king with the promoted queen. Starts on 1 stored mineral and spawns from turn income (1/turn). ResourceBar + TurnBar; queue into End. Nc5 legally checks ke4 — first End chips HP before the flee lands.",
       },
     },
   },
@@ -70,8 +69,12 @@ export const KingHuntLive: Story = {
       boardVariant="eclipse"
       starChessMode
       startingScfen={KING_HUNT_LIVE_START_SCFEN}
-      startingStoredMaterial={5}
-      autoQueueOpponent={queueKingHuntLiveOpponent}
+      startingStoredMaterial={1}
+      autoQueueOpponent={(snap) =>
+        adjutant(snap, {
+          storedFor: (color) => starChessEconomies()[color].stored,
+        })
+      }
     />
   ),
 };

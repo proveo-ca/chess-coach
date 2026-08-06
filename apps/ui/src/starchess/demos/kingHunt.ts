@@ -20,11 +20,11 @@ export const KING_HUNT_START_SCFEN =
   "SCFEN|k7/8/6r1/2n5/4K3/8/7b/8|0|33|P|G:11:11|Q:w:;b:";
 
 /**
- * Ownership reversed (live play as White hunter): Ka8, Nc5, ke4, Bh2 — no tank;
+ * Ownership reversed (live play as White hunter): Kh1, Nc5, ke4, Bh2 — no tank;
  * player deploys the Siege Tank. Nc5 sees ke4 — first End chips HP before flee.
  */
 export const KING_HUNT_LIVE_START_SCFEN =
-  "SCFEN|K7/8/8/2N5/4k3/8/7B/8|0|33|P|G:11:11|Q:w:;b:";
+  "SCFEN|8/8/8/2N5/4k3/8/7B/7K|0|33|P|G:11:11|Q:w:;b:";
 
 export type KingHuntStep = {
   caption: string;
@@ -100,12 +100,12 @@ export type KingHuntLiveOpponentResult = {
   spendMinerals?: { color: PieceColor; amount: number };
 };
 
-/**
- * Live enemy (black) script — DualNav defender path (e4→d5→c5→c6) plus, once
- * on c5: spawn a marine on c4, gas-double to c2, then promote c2→c1=q.
- * No-ops if black already has a queued action.
- */
-export const queueKingHuntLiveOpponent = (
+  /**
+   * Live enemy (black) script — DualNav defender path (e4→d5→c5→c6) plus, once
+   * on c5: spawn marine c4, gas +1 steps (c4→c3→c2), promote c2→c1=q.
+   * No-ops if black already has a queued action.
+   */
+  export const queueKingHuntLiveOpponent = (
   snap: ScFenSnapshot,
 ): KingHuntLiveOpponentResult => {
   if (snap.phase !== "P") return { snapshot: snap };
@@ -135,10 +135,16 @@ export const queueKingHuntLiveOpponent = (
 
   if (king === "c5") {
     const pawnC4 = map.get("c4");
+    const pawnC3 = map.get("c3");
     const pawnC2 = map.get("c2");
     const queenC1 = map.get("c1");
+    const hasMarine =
+      !!(pawnC4 && pawnC4.color === "b") ||
+      !!(pawnC3 && pawnC3.color === "b") ||
+      !!(pawnC2 && pawnC2.color === "b") ||
+      !!(queenC1 && queenC1.color === "b");
 
-    if (!pawnC4 && !pawnC2 && !(queenC1 && queenC1.color === "b")) {
+    if (!hasMarine) {
       const next = tryQueue((s) =>
         addScAction({
           snapshot: s,
@@ -160,7 +166,8 @@ export const queueKingHuntLiveOpponent = (
       }
     }
 
-    if (pawnC4?.type === "p" && pawnC4.color === "b" && !map.has("c2")) {
+    // Gas step +1 only (pawnDouble).
+    if (pawnC4?.type === "p" && pawnC4.color === "b" && !map.has("c3")) {
       const next = tryQueue((s) =>
         addScAction({
           snapshot: s,
@@ -169,6 +176,22 @@ export const queueKingHuntLiveOpponent = (
             kind: "pawnDouble",
             color: "b",
             from: "c4",
+            to: "c3",
+          },
+        }).snapshot,
+      );
+      if (next) return { snapshot: next };
+    }
+
+    if (pawnC3?.type === "p" && pawnC3.color === "b" && !map.has("c2")) {
+      const next = tryQueue((s) =>
+        addScAction({
+          snapshot: s,
+          action: {
+            timing: "B",
+            kind: "pawnDouble",
+            color: "b",
+            from: "c3",
             to: "c2",
           },
         }).snapshot,

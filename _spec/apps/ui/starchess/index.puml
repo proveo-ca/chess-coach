@@ -11,17 +11,21 @@ title StarChess · Spec Map (_spec/apps/ui/starchess)
 package "_spec/apps/ui/starchess" {
   component "scfen-wire.puml\nSCFEN string + field roles" as WIRE <<db>>
   component "scfen-queue.puml\nQueue ABNF + shape + order" as QUEUE <<async>>
-  component "resolve.puml\nattack → death → occupy" as RESOLVE <<app>>
+  component "resolve.puml\n3 phases: attack → move → fog approach" as RESOLVE <<app>>
   component "turn-queue-sequence.puml\nSimultaneous turn queue" as SEQ <<async>>
   component "starchess-mode.puml\nProduct / UX + economy" as MODE <<app>>
   component "demos.puml\nCanonical demos + shipped/pending" as DEMOS <<app>>
+  component "sc-moves.puml\nSC-native classical movegen + provider seam" as MOVES <<app>>
 }
 
 package "src/starchess" {
   component "scfen.ts\nSCFEN parse / format" as TSCFEN <<app>>
   component "scActions.ts\naddScAction / addScMove" as ACT <<app>>
   component "endScTurn.ts\nresolve planning snap" as END <<app>>
-  component "resolveTurn.ts\nclassical attack + move" as RT <<app>>
+  component "resolveTurn.ts\nclassical attack + move + fog approach" as RT <<app>>
+  component "board.ts\nlegal king-checks + piece geometry" as BRD <<app>>
+  component "scMoves.ts\nSC classical legality" as SCM <<app>>
+  component "scOutcome.ts\nterminal outcome from kingLives" as OUT <<app>>
   component "vision.ts\ncumulative fog" as VIS <<db>>
   component "mines.ts\nspider mines" as MIN <<app>>
 }
@@ -30,6 +34,8 @@ WIRE ARROW_OPTIONAL TSCFEN : documents
 QUEUE ARROW_OPTIONAL ACT : documents
 RESOLVE ARROW_OPTIONAL END : documents
 RESOLVE ARROW_OPTIONAL RT : documents
+RESOLVE ARROW_OPTIONAL BRD : documents
+RESOLVE ARROW_OPTIONAL OUT : documents
 RESOLVE ARROW_OPTIONAL VIS : documents
 RESOLVE ARROW_OPTIONAL MIN : documents
 MODE ARROW_OPTIONAL END : documents
@@ -37,11 +43,22 @@ MODE ARROW_OPTIONAL ACT : documents
 DEMOS ARROW_OPTIONAL WIRE : covers
 DEMOS ARROW_OPTIONAL RESOLVE : covers
 DEMOS ARROW_OPTIONAL MODE : covers
+MOVES ARROW_OPTIONAL SCM : documents
+MOVES ARROW_OPTIONAL BRD : documents
 
 note bottom
   **Contents carried over from** ""apps/ui/src/starchess/STARCHESS_FEN.md""
   and ""STARCHESS_MODE.md"" — .puml only, no .md/.txt in this folder.
   Engine is exclusive to ""apps/ui/src/starchess/screens/NerdScreen.tsx"".
   The prior rules-authority pointer ""scfen.md"" is replaced by this set.
+  **King duel + draw** (""board.ts"" ""collectLegalKingChecks"",
+  ""resolveTurn"" ""applyPendingKingShots"", ""scOutcome.ts"") is specified in
+  resolve.puml, with the turn-start ordering in turn-queue-sequence.puml
+  and the product framing in starchess-mode.puml.
+  Both ""board.ts"" and ""scOutcome.ts"" carry a ""// SPEC:"" back-reference
+  to resolve.puml.
+  **SC classical movegen** (""scMoves.ts"", ""BoardMoveProvider"" seam) is
+  specified in sc-moves.puml — chess.js stays classical; SC legality is
+  authoritative only when a provider is present.
 end note
 @enduml

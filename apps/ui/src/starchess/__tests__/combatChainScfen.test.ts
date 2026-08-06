@@ -24,7 +24,7 @@ describe("Combat Chain SCFEN engine history", () => {
     const plies = buildCombatChainPlys();
     expect(plies).toHaveLength(4);
     expect(plies[0]!.placement).toBe(parseScFen(COMBAT_CHAIN_START_SCFEN).placement);
-    expect(plies[3]!.placement).toBe("5k2/8/8/4P3/8/2n5/8/4K3");
+    expect(plies[3]!.placement).toBe("5k2/8/2b5/4P3/8/2n5/8/4K3");
     expect(COMBAT_CHAIN_PLY_SC[3]!.placement).toBe(plies[3]!.placement);
   });
 
@@ -61,7 +61,7 @@ describe("King Hunt SCFEN engine history", () => {
 
   it("live seed is ownership-flipped without tank; Nc5 legally checks ke4", () => {
     const live = parseScFen(KING_HUNT_LIVE_START_SCFEN);
-    expect(live.placement).toBe("K7/8/8/2N5/4k3/8/7B/8");
+    expect(live.placement).toBe("8/8/8/2N5/4k3/8/7B/7K");
     expect(live.gas.w).toBe(1);
     expect(live.pendingKingShots).toBeUndefined();
     // First End chips black HP from standing Nc5 before flee.
@@ -109,7 +109,7 @@ describe("King Hunt SCFEN engine history", () => {
     snap = endScTurn(q.snapshot).next;
     expect(placementToMap(snap.placement).get("c4")).toEqual({ type: "p", color: "b" });
 
-    // gas-double c4 → c2
+    // gas +1 c4 → c3
     q = queueKingHuntLiveOpponent(snap);
     expect(q.snapshot.queue?.actions).toEqual(
       expect.arrayContaining([
@@ -118,6 +118,22 @@ describe("King Hunt SCFEN engine history", () => {
           timing: "B",
           kind: "pawnDouble",
           from: "c4",
+          to: "c3",
+        }),
+      ]),
+    );
+    snap = endScTurn(q.snapshot).next;
+    expect(placementToMap(snap.placement).get("c3")).toEqual({ type: "p", color: "b" });
+
+    // gas +1 c3 → c2
+    q = queueKingHuntLiveOpponent(snap);
+    expect(q.snapshot.queue?.actions).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          color: "b",
+          timing: "B",
+          kind: "pawnDouble",
+          from: "c3",
           to: "c2",
         }),
       ]),
