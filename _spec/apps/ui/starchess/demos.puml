@@ -12,7 +12,7 @@ package "Canonical demos" {
   component "Combat Chain\nstory: screens-nerd-star-chess-demo--combat-chain\nW & B per turn; attack → death → occupy" as D1 <<app>>
   component "King Hunt\nstory: screens-nerd-starchess-demo--king-hunt\nimplicit legal checks + HP; tank on g6" as D2 <<app>>
   component "King Hunt (live)\nstory: screens-nerd-starchess-demo--king-hunt-live\nstanding Nc5 check; ResourceBar / TurnBar / End;\nbrain breaks off king contact (no HP trade)" as D3 <<app>>
-  component "Fog-edge Bishop / Rook tank\nstory: screens-nerd-starchess-fog-of-war-and-move-animations--bishop\nmove into fog → capture/occupy blocker" as D4 <<app>>
+  component "Fog-edge Bishop / Rook tank\nstory: starchess-fog-of-war-and-move-animations--bishop\n(+ King/Pawn/Knight/Queen/Rook tank|siege)\nmove into fog → capture/occupy blocker" as D4 <<app>>
 }
 
 package "Shipped (do not re-ticket)" {
@@ -21,10 +21,10 @@ package "Shipped (do not re-ticket)" {
   component "Queue actions — addScAction / addScMove /\nendScTurn\n""scActions.ts"" + ""endScTurn.ts""" as SH3 <<app>>
   component "Fog-aware classify + move collision\n""resolveTurn.ts"" + ""vision.ts"" via ""endScTurn""" as SH4 <<app>>
   component "Intent C= vs progressive path resolve\n""pathRevealSteps"" / ""pathRevealFrom""\nfog approach = phase-3 event: fires after moves;\nfizzle: attacker dead / origin re-occupied or sieged,\nor ""to"" lost the in-the-way victim\n""pathRevealAttacks"" = fired only" as SH5 <<app>>
-  component "King-shot ray / legal check\n""collectLegalKingChecks"" +\n""applyPendingKingShots"" at turn start;\nkings are legal checkers too" as SH6 <<app>>
-  component "Implicit check → turn-start HP\nlegal geometry at ""endScTurn"" (before B);\nno king-aimed ""C=""" as SH7 <<app>>
+  component "King-shot ray / legal check\n""collectLegalKingChecks"" +\n""beginScTurn"" / ""applyPendingKingShots""\nat turn open (before intent);\nkings are legal checkers too" as SH6 <<app>>
+  component "Implicit check → turn-open HP\n(""beginScTurn""); mid-resolve king HP only\nfog path-discovery; no king-aimed ""C=""" as SH7 <<app>>
   component "Spider Mines M:\n""mines.ts"" + ""resolveTurn""" as SH8 <<app>>
-  component "Fog-edge DualNav\n""demos/fogEdge*.ts"" + ""FogEdgeDemo""\nDualNav review demos (NerdCombat, PathCollide,\nPathCollideAllyMine, AttackMine, KingHunt): both\nplayers' intent overlays pre-resolve\n(""intentOverlays.ts"", no viewer)" as SH9 <<app>>
+  component "Fog-edge DualNav\n""demos/fogEdge*.ts"" + ""FogEdgeDemo""\n(+ fogMoveSamples · FogOfWar stories)\nDualNav review demos (NerdCombat, PathCollide,\nPathCollideAllyMine, AttackMine, KingHunt): both\nplayers' intent overlays pre-resolve\n(""intentOverlays.ts"", no viewer);\nKing Hunt: **check → intent → resolve**;\nobserver dual-vision borders\n(""visionMode=observer"" — full board +\n""getSideVision"" w/b strokes, no fog veil);\nFog-of-war move stories use player fog veil" as SH9 <<app>>
   component "Sieged rook immobile S:\n""scValidate"" + ""endScTurn"" toggle" as SH10 <<app>>
   component "King duel — adjacent kings fight\nface-to-face: mutual 1 HP/turn, parting shot,\ndeploy doubling, 0/0 = draw, phase O absorbing\n""board.ts"" + ""resolveTurn"" + ""scOutcome.ts""\ntests: ""__tests__/kingDuel.test.ts""" as SH11 <<app>>
   component "Intent overlay rings **both** kings\nwhen they are in contact\n""intentOverlays.ts""" as SH12 <<app>>

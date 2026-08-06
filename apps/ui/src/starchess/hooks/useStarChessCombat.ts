@@ -18,6 +18,7 @@ import { knightElbowMs, moveDurationMs } from "~/starchess/animations/moveTiming
 import { migrateSpecialUsed, rookModeAt } from "~/starchess/starChessStore";
 import {
   applyPathRevealAttack,
+  applyPathRevealKingShot,
   type PathRevealSnap,
   type ResolveAttack,
   type ResolveMove,
@@ -354,13 +355,18 @@ export function useStarChessCombat() {
     // cleared mine in place.
     const playPathRevealAttacks = () => {
       const atks = result.pathRevealAttacks.filter(
-        (a): a is Extract<ResolveAttack, { kind: "capture" }> =>
-          a.kind === "capture" && a.pathRevealFrom != null,
+        (
+          a,
+        ): a is
+          | Extract<ResolveAttack, { kind: "capture" }>
+          | Extract<ResolveAttack, { kind: "kingShot" }> =>
+          (a.kind === "capture" || a.kind === "kingShot") && a.pathRevealFrom != null,
       );
       const stamp = Date.now();
-      let running: PathRevealSnap = {
+      let running: PathRevealSnap & { kingLives: Record<StarChessColor, number> } = {
         placement: afterMoveCommit.placement,
         mines: [...afterMoveCommit.mines],
+        kingLives: { ...afterMoveCommit.kingLives },
       };
       let i = 0;
 
@@ -372,14 +378,108 @@ export function useStarChessCombat() {
         }
         i += 1;
 
-        // Authoritative post-attack state (mirror of the engine phase-3 loop).
-        const applied = applyPathRevealAttack(running, a);
-        if (!applied.fired) {
-          running = { placement: applied.placement, mines: [...applied.mines] };
+        if (a.kind === "kingShot") {
+          const applied = applyPathRevealKingShot(running, a);
+          if (!applied.fired) {
+            running = {
+              placement: applied.placement,
+              mines: [...applied.mines],
+              kingLives: { ...applied.kingLives },
+            };
+            playNext();
+            return;
+          }
+          const stopAt = a.stopAt ?? a.from;
+          const discoveryFree =
+            stopAt !== a.pathRevealFrom &&
+            !placementToMap(running.placement).has(a.from);
+          const cue: AttackCue = {
+            id: nextId(`pa-k-${a.piece}-${a.to}-${stamp}-${i}`),
+            piece: a.piece,
+            color: a.color,
+            from: discoveryFree ? a.from : a.pathRevealFrom!,
+            to: a.to,
+          };
+          const finalCommit: CombatCommit = {
+            placement: applied.placement,
+            kingLives: { ...applied.kingLives },
+            phase:
+              applied.kingLives.w === 0 || applied.kingLives.b === 0 ? "O" : "M",
+            mines: applied.mines,
+          };
+          const playShot = () => {
+            setAttackCues([cue]);
+            after(FRAG_FLIGHT_MS, () => {
+              const state = kingDamageStateForLives(a.livesAfter);
+              setKingDamage((prev) => {
+                const existing = prev.find((c) => c.id === a.target);
+                const rest = prev.filter((c) => c.id !== a.target);
+                if (state === "pristine") return rest;
+                return [
+                  ...rest,
+                  {
+                    id: a.target,
+                    at: a.to,
+                    damage: state,
+                    seed: seedFor(a.target, existing),
+                    impactSeq: (existing?.impactSeq ?? 0) + 1,
+                  },
+                ];
+              });
+              setAttackCues([]);
+              const wait = a.livesAfter > 0 ? HIT_BOOM_MS : DEATH_MS;
+              after(wait, () => {
+                opts.commit(finalCommit);
+                syncKingDamageFromBoard(finalCommit.placement, finalCommit.kingLives);
+                running = {
+                  placement: applied.placement,
+                  mines: [...applied.mines],
+                  kingLives: { ...applied.kingLives },
+                };
+                playNext();
+              });
+            });
+          };
+          if (stopAt !== a.pathRevealFrom) {
+            const approach: ResolveMove = {
+              piece: a.piece,
+              color: a.color,
+              from: a.pathRevealFrom!,
+              to: stopAt,
+            };
+            const approachCommit: CombatCommit = {
+              placement: relocatePlacement(running.placement, a.pathRevealFrom!, stopAt),
+              kingLives: { ...running.kingLives },
+              phase: "M",
+              mines: running.mines,
+            };
+            playMoves([approach], approachCommit, {
+              ...opts,
+              onDone: playShot,
+            });
+          } else {
+            playShot();
+          }
+          return;
+        }
+
+        if (a.kind !== "capture") {
           playNext();
           return;
         }
-        const kingLives = afterMoveCommit.kingLives;
+
+        // Authoritative post-attack state (mirror of the engine phase-3 loop).
+        const applied = applyPathRevealAttack(running, a);
+        if (!applied.fired) {
+          running = {
+            placement: applied.placement,
+            mines: [...applied.mines],
+            kingLives: { ...running.kingLives },
+          };
+          playNext();
+          return;
+        }
+        const kingLives = running.kingLives;
         const discoveryFree = !placementToMap(running.placement).has(a.from);
         const cue: AttackCue = {
           id: nextId(`pa-${a.piece}-${a.to}-${stamp}-${i}`),
@@ -415,7 +515,11 @@ export function useStarChessCombat() {
               playMoves([occupyMove], occupyCommit, {
                 ...opts,
                 onDone: () => {
-                  running = { placement: applied.placement, mines: [...applied.mines] };
+                  running = {
+                    placement: applied.placement,
+                    mines: [...applied.mines],
+                    kingLives: { ...kingLives },
+                  };
                   playNext();
                 },
               });

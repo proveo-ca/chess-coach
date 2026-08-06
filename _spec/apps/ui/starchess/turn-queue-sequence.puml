@@ -12,6 +12,18 @@ participant "resolveTurn" as RT <<app>>
 participant "scOutcome" as OUT <<app>>
 database "ScFenSnapshot" as FEN <<db>>
 
+== Turn open ==
+
+UI ARROW_MAIN ES : ""beginScTurn(snapshot)""\n(fog-visible legal king-checks)
+note right of ES
+  Checks resolve **before** intent.
+  Breaking contact later still paid the
+  **parting shot** at turn open.
+  Live End passes ""skipTurnStartChecks"".
+  Atomic replay / tests may still run
+  checks inside ""endScTurn"" (default).
+end note
+
 == Planning ==
 
 P ARROW_MAIN UI : queue special + classical for own side
@@ -21,11 +33,11 @@ UI ARROW_MAIN ES : ""endScTurn(snapshot)""
 
 == Resolve ==
 
-ES ARROW_MAIN ES : resolve rank-major: king-checks → B → C → F\nw then b within each rank
+ES ARROW_MAIN ES : resolve rank-major: B → C → F\n(+ king-checks unless skipped)\nw then b within each rank
 
-group 1 · turn-start legal king-checks (fog-visible, implicit)
+group 1 · turn-open legal king-checks (when not skipped)
   ES ARROW_MAIN ES : white, then black\n""applyPendingKingShots"" + ""collectLegalKingChecks""
-  ES ARROW_ERROR ES : adjacent kings — **mutual** chip, **1 HP per checker**\n(pendings read before B/C, so breaking contact\nstill pays a **parting shot**; a king left at 0 HP\nbails the turn out here — no B/C/F resolves)
+  ES ARROW_ERROR ES : adjacent kings — **mutual** chip, **1 HP per checker**\n(a king left at 0 HP bails — no B/C/F)
 end
 
 group 2 · rank B (specials before combat)

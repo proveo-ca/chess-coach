@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { matchReducer, createInitialMatchState } from "~/app/matchReducer";
+import {
+  matchReducer,
+  createInitialMatchState,
+  createMatchStateFromScfen,
+} from "~/app/matchReducer";
 
 describe("matchReducer", () => {
   it("loads SCFEN into planning", () => {
@@ -11,6 +15,18 @@ describe("matchReducer", () => {
     expect(next.phase).toBe("planning");
     expect(next.liveSnapshot.placement).toBe("4k3/8/8/8/8/8/4P3/4K3");
     expect(next.settledSnapshots).toHaveLength(1);
+  });
+
+  it("createMatchStateFromScfen seeds King Hunt live before mount", () => {
+    const s = createMatchStateFromScfen(
+      "SCFEN|8/8/8/2N5/4k3/8/7B/7K|0|33|P|G:11:11|Q:w:;b:",
+      1,
+    );
+    expect(s.phase).toBe("planning");
+    expect(s.liveSnapshot.placement).toBe("8/8/8/2N5/4k3/8/7B/7K");
+    expect(s.economies.w.stored).toBe(1);
+    expect(s.turnStartChecksApplied).toBe(false);
+    expect(s.deadlineAt).toBeNull();
   });
 
   it("queues classical and submits into resolving", () => {
@@ -72,5 +88,40 @@ describe("matchReducer", () => {
     s = matchReducer(s, { type: "TIMELINE_DONE" });
     expect(s.phase).toBe("gameOver");
     expect(s.outcome?.winner).toBe("w");
+    expect(s.settledSnapshots.length).toBeGreaterThanOrEqual(2);
+    expect(s.reviewIndex).toBe(s.settledSnapshots.length - 1);
+  });
+
+  it("REVIEW_SEEK clamps and restores settled history labels", () => {
+    let s = matchReducer(createInitialMatchState(), {
+      type: "LOAD_SCFEN",
+      scfen: "SCFEN|4k3/8/8/8/8/8/4P3/4K3|0|33|P|G:11:11|Q:w:;b:",
+    });
+    s = {
+      ...s,
+      phase: "gameOver",
+      settledSnapshots: [
+        s.liveSnapshot,
+        { ...s.liveSnapshot, placement: "4k3/8/8/8/8/8/8/4K3", turn: 1 },
+        {
+          ...s.liveSnapshot,
+          placement: "4k3/8/8/8/8/8/8/4K3",
+          turn: 2,
+          phase: "O",
+          kingLives: { w: 3, b: 0 },
+        },
+      ],
+      reviewIndex: 2,
+      outcome: { winner: "w" },
+    };
+    s = matchReducer(s, { type: "REVIEW_SEEK", index: 0 });
+    expect(s.reviewIndex).toBe(0);
+    expect(s.statusText).toBe("Start");
+    s = matchReducer(s, { type: "REVIEW_SEEK", index: 1 });
+    expect(s.reviewIndex).toBe(1);
+    expect(s.statusText).toBe("Turn 1 of 2");
+    s = matchReducer(s, { type: "REVIEW_SEEK", index: 99 });
+    expect(s.reviewIndex).toBe(2);
+    expect(s.statusText).toBe("Final");
   });
 });

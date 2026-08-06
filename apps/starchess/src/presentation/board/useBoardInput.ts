@@ -1,14 +1,17 @@
+/**
+ * Snapshot-driven board input — queues classical moves / spawn via match aggregate.
+ */
 import type { Square } from "chess.js";
-
-import { scMovesFrom, placementToMap } from "@chess-coach/starchess-core";
+import {
+  UNIT_COST,
+  adjacentSquares,
+  placementToMap,
+  scMovesFrom,
+} from "@chess-coach/starchess-core";
 
 import { useMatchStore } from "~/app/MatchStoreContext";
 import { canSubmit, displayedSnapshot } from "~/app/selectors";
 
-/**
- * Snapshot-driven board input — queues classical moves via the match aggregate.
- * No gameStore / useChessBoard.
- */
 export const useBoardInput = () => {
   const store = useMatchStore();
 
@@ -17,21 +20,39 @@ export const useBoardInput = () => {
     if (!canSubmit(state)) return;
 
     if (state.targeting?.kind === "spawn") {
-      const kingSq = [...placementToMap(state.liveSnapshot.placement).entries()].find(
-        ([, p]) => p.type === "k" && p.color === state.targeting!.color,
+      const color = state.targeting.color;
+      const unit = state.targeting.unit;
+      const map = placementToMap(state.liveSnapshot.placement);
+      const kingSq = [...map.entries()].find(
+        ([, p]) => p.type === "k" && p.color === color,
       )?.[0];
       if (!kingSq) return;
+      const occupied = new Set(map.keys());
+      if (!adjacentSquares(kingSq, occupied).includes(square)) return;
+      const cost = UNIT_COST[unit];
+      const before = state.economies[color].stored;
+      store.dispatch({ type: "SPEND_STORED", color, amount: cost });
+      if (store.state().economies[color].stored === before) return;
       store.dispatch({
         type: "QUEUE_ACTION",
         action: {
-          timing: "B",
+          timing: state.liveSnapshot.queue?.actions.some(
+            (a) => a.color === color && a.timing === "C",
+          )
+            ? "F"
+            : "B",
           kind: "spawn",
-          color: state.targeting.color,
+          color,
           from: kingSq,
           to: square,
-          unit: state.targeting.unit,
+          unit,
         },
       });
+      if (store.state().targeting) {
+        store.dispatch({ type: "REFUND_STORED", color, amount: cost });
+        return;
+      }
+      store.dispatch({ type: "MARK_SPECIAL_USED", square: kingSq });
       return;
     }
 

@@ -1,0 +1,145 @@
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  min-height: 2.5rem;
+  padding: 0;
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+}
+
+.queue {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-right: auto;
+  min-width: 0;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 14rem;
+  overflow: hidden;
+  white-space: nowrap;
+  border-radius: 6px;
+  border: 1px solid color-mix(in srgb, var(--text-color, #111) 18%, transparent);
+  padding: 3px 4px 3px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.badgeText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.badgeRemove {
+  appearance: none;
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 0 4px;
+  opacity: 0.65;
+}
+
+.badgeRemove:hover,
+.badgeRemove:focus-visible {
+  opacity: 1;
+  background: color-mix(in srgb, var(--text-color, #111) 12%, transparent);
+  outline: none;
+}
+
+.badgeB {
+  background: color-mix(in srgb, #c47b2b 22%, transparent);
+}
+
+.badgeC {
+  background: color-mix(in srgb, #3b7dd8 22%, transparent);
+}
+
+.badgeCEmpty {
+  background: transparent;
+  opacity: 0.45;
+  font-weight: 500;
+}
+
+.badgeF {
+  background: color-mix(in srgb, #5a9e6f 22%, transparent);
+}
+
+.end {
+  appearance: none;
+  border: 1px solid color-mix(in srgb, var(--text-color, #111) 22%, transparent);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--text-color, #111) 6%, transparent);
+  color: var(--text-color, #1a1a1a);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease;
+}
+
+.end:hover,
+.end:focus-visible {
+  background: color-mix(in srgb, #3b7dd8 28%, transparent);
+  border-color: #3b7dd8;
+  outline: none;
+}
+
+.gauge {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+}
+
+.ring {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.track {
+  fill: none;
+  stroke: color-mix(in srgb, var(--text-color, #111) 14%, transparent);
+  stroke-width: 3.5;
+}
+
+.fill {
+  fill: none;
+  stroke: #3b7dd8;
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 200ms linear;
+}
+
+.seconds {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-color, #1a1a1a);
+  pointer-events: none;
+}

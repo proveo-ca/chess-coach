@@ -19,11 +19,18 @@ Implementation has started on branch `feat-nerd-mode`. Progress notes:
 - **Done — Phase 3 (slice):** nerd piece assets under `public/pieces/nerd` with
   `BASE_URL` URLs; timeline projector (gas-step moves, promo hold→deploy);
   gas-used fog reveal; `StarChessScenarioHarness` + `StarChess/*` stories;
-  `check:bundle` green; **Storybook running on :6007** with 9 StarChess stories
+  `check:bundle` green; **Storybook running on :6007** with StarChess stories
   (`build-storybook` + live `storybook --ci` verified).
-- **Still open:** Phase 4 DualNav review polish in standalone; Phase 5
-  PWA/Wrangler; Phase 6 cutover; richer cue VFX port (Attack/Death/Move CSS
-  components) beyond the timeline projector; Docker image smoke.
+- **Done — visual parity (Combat Chain):** vendored `Screen` / `Button` /
+  `Label` / `DualNavButton` / icons + board CSS from UI @ `3bed049`; board
+  variants locked to `eclipse` | `butter` | `vermeer` (default `eclipse`);
+  live screen uses NerdScreen `Screen` top/middle/bottom grid; Combat Chain
+  story pixel-diff vs historic `:6008` = **0**.
+- **Still open:** Phase 5 PWA/Wrangler; Phase 6 cutover; richer cue VFX port
+  (mine missile / queen jump) beyond classical combat; Docker image smoke.
+  **Phase 4 (in progress / shipped slice):** terminal DualNav review via
+  `REVIEW_SEEK` + `settledSnapshots`; King Hunt DualNav uses classical
+  `playResolve` + `KingDamageOverlay` (seeded fire).
 
 This plan does not authorize Cloudflare deployment or destructive cleanup
 without explicit approval.
@@ -665,6 +672,10 @@ resolve a turn, animate it, and reach a terminal outcome without importing
 11. Replace hard-coded `/chess` asset references with base-aware URLs. ✅
 12. Add a bundle-boundary check proving that Stockfish, WebLLM, coach services,
     and Chess Coach stores are absent. ✅
+13. Live chrome on MatchStore (not UI `starChessStore`): ResourceBar, TurnBar,
+    GasDeploy, DeployModal, `usePieceSpecialArm`, `useCombatOverlays` →
+    `AnimationStage` attack/death/move/deploy. ✅
+14. King Hunt (live) + DualNav King Hunt review stories on eclipse board. ✅
 
 Exit gate: production, stories, and tests use one resolver and command path;
 promotion, gas-step animation, and gas-used enemy reveal behave as specified;

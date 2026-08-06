@@ -116,8 +116,8 @@ export function targetConfig(): TargetConfig {
       projects: [{ name: "chromium", use: { browserName: "chromium" } }],
       // pwa-offline pins its own baseURL to the wrangler PWA preview (:8787), which
       // the desktop target doesn't run — the service worker is a web-build concern,
-      // not a server concern.
-      testIgnore: ["**/pwa-offline.spec.ts"],
+      // not a server concern. Fog-path DualNav lives on starchess Storybook (:6007).
+      testIgnore: ["**/pwa-offline.spec.ts", "**/starchess-fog-path.spec.ts"],
     };
   }
 
@@ -141,6 +141,14 @@ export function targetConfig(): TargetConfig {
         reuseExistingServer: true,
         // `preview` runs the full vite build before booting wrangler dev.
         timeout: 180_000,
+      },
+      {
+        // Progressive fog DualNav stories (bishop / rook path reveal).
+        command: "npm run storybook",
+        cwd: "../starchess",
+        url: "http://127.0.0.1:6007",
+        reuseExistingServer: true,
+        timeout: 120_000,
       },
     ],
     projects: BROWSERS,

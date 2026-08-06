@@ -1,14 +1,15 @@
 /**
  * Deep SCFEN validators — SC_BASELINE_FEN + SC_SPECIAL.
+ * chess.js FEN load is never the oracle (sc-moves.puml).
  */
 
-import { Chess, type Square } from "chess.js";
+import type { Square } from "chess.js";
 
 import { findKing, placementToMap } from "../board/placement";
 import { charonTargetQueenFromPlacement } from "./specials/bishopCharon";
 import { minesFor, MAX_MINES_PER_SIDE, mineAt } from "../board/mines";
 import { isRookSiegedAfterB } from "../board/siege";
-import { classicFenFromSc } from "../scfen/classic";
+import { hasExactKingPair } from "../scfen/codec";
 import { pawnSingleTarget } from "./specials/pawnDouble";
 import type { ScAction, ScActionInput, ScFenSnapshot } from "../model/types";
 
@@ -21,16 +22,18 @@ export class ScValidateError extends Error {
   }
 }
 
-/** Classic export must load in chess.js (both kings already checked by parse). */
+/** SCFEN placement invariants — not chess.js FEN validation. */
 export const assertBaselineFen = (snap: ScFenSnapshot): void => {
-  try {
-    const fen = classicFenFromSc(snap, "w");
-    // eslint-disable-next-line no-new
-    new Chess(fen);
-  } catch (e) {
+  if (snap.placement.split("/").length !== 8) {
     throw new ScValidateError(
       "SC_BASELINE_FEN",
-      `classic export not loadable: ${(e as Error).message}`,
+      `bad placement ranks: ${snap.placement}`,
+    );
+  }
+  if (!hasExactKingPair(snap.placement)) {
+    throw new ScValidateError(
+      "SC_BASELINE_FEN",
+      `placement needs exactly 1 king per side: ${snap.placement}`,
     );
   }
 };

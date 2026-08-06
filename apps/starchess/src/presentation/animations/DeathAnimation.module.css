@@ -1,0 +1,305 @@
+.demo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+}
+
+.host {
+  position: relative;
+  display: inline-block;
+  overflow: visible;
+}
+
+.boardOverlay {
+  position: absolute;
+  pointer-events: none;
+  z-index: 35;
+  overflow: visible;
+  /* Single hard timeline — every death cue finishes here. */
+  --death-ms: 500ms;
+}
+
+.originSlot {
+  position: absolute;
+  z-index: 2;
+  overflow: visible;
+}
+
+/* Damaged king hull — slides with the piece (no pristine <img> clone). */
+.kingDamageSlot {
+  transition: left var(--move-ms, 550ms) ease-in-out, top var(--move-ms, 550ms) ease-in-out;
+  z-index: 6;
+}
+
+.pieceFace {
+  position: absolute;
+  inset: 4%;
+  display: grid;
+  place-items: center;
+  overflow: visible;
+}
+
+.pieceFace svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.caption {
+  margin: 0;
+  font-size: 12px;
+  color: #6a7564;
+  letter-spacing: 0.02em;
+  text-align: center;
+  max-width: 520px;
+}
+
+/* Brief central flash at death start */
+.boomFlash {
+  position: absolute;
+  inset: 12%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    #ffffff 0%,
+    #ffe08a 28%,
+    #ff9a3c 48%,
+    rgba(59, 125, 216, 0.55) 68%,
+    transparent 78%
+  );
+  opacity: 0;
+  transform: scale(0.35);
+  pointer-events: none;
+  z-index: 5;
+}
+
+.boomRing {
+  position: absolute;
+  inset: 8%;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 230, 160, 0.95);
+  box-shadow: 0 0 10px rgba(59, 125, 216, 0.55);
+  opacity: 0;
+  transform: scale(0.4);
+  pointer-events: none;
+  z-index: 4;
+}
+
+/* King HP hit — explosion flash over fire for HIT_BOOM_MS (= FRAG_FLIGHT_MS). */
+.kingHitBoom {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+  z-index: 6;
+  --hit-boom-ms: 250ms;
+  pointer-events: none;
+}
+
+.kingHitBoom .boomFlash {
+  animation: boomFlash var(--hit-boom-ms) ease-out 1 forwards;
+  inset: 8%;
+  background: radial-gradient(
+    circle,
+    #ffffff 0%,
+    #ffe08a 22%,
+    #ff7a18 48%,
+    #c42800 68%,
+    transparent 80%
+  );
+}
+
+.kingHitBoom .boomRing {
+  animation: boomRing var(--hit-boom-ms) ease-out 1 forwards;
+  border-color: rgba(255, 180, 80, 0.95);
+  box-shadow: 0 0 12px rgba(255, 120, 20, 0.65);
+}
+
+/* ── Keyframes (all bound to --death-ms = 500ms) ─────────────────── */
+
+/* Flash peaks early (~70ms / 14%), gone by end of window */
+@keyframes boomFlash {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  8% {
+    opacity: 1;
+    transform: scale(0.95);
+  }
+  18% {
+    opacity: 0.45;
+    transform: scale(1.25);
+  }
+  28%,
+  100% {
+    opacity: 0;
+    transform: scale(1.55);
+  }
+}
+
+@keyframes boomRing {
+  0% {
+    opacity: 0;
+    transform: scale(0.35);
+  }
+  10% {
+    opacity: 0.95;
+    transform: scale(0.7);
+  }
+  40% {
+    opacity: 0.25;
+    transform: scale(1.45);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.7);
+  }
+}
+
+/* Soap-film rings: expand outward and dissolve — never shrink */
+@keyframes bubbleRingOut {
+  0% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  12% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  45% {
+    opacity: 0.7;
+    transform: scale(1.55);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.35);
+  }
+}
+
+@keyframes bubbleRingOuterOut {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  18% {
+    opacity: 0.75;
+    transform: scale(1.2);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.8);
+  }
+}
+
+@keyframes bubbleShineOut {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(1);
+  }
+  10% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1.1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-18px, -22px) scale(1.8);
+  }
+}
+
+@keyframes shardFly {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+  /* Brief hold through boom flash, then peel apart on unique vectors. */
+  10% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0deg) scale(1.04);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--dx, 40px), var(--dy, -40px)) rotate(var(--spin, 180deg))
+      scale(0.65);
+  }
+}
+
+/* King: parts drop into a rubble pile (stay visible — no outward shatter). */
+@keyframes rubbleCollapse {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+  18% {
+    opacity: 1;
+    transform: translate(0, 1px) rotate(0deg) scale(1.02);
+  }
+  100% {
+    opacity: 0.95;
+    filter: saturate(0.45) brightness(0.78);
+    transform: translate(var(--rx, 0), var(--ry, 12px)) rotate(var(--rspin, 0deg)) scale(0.92);
+  }
+}
+
+/* ── Phase bindings — every animation is exactly --death-ms, no delay ─ */
+
+.dying .boomFlash {
+  animation: boomFlash var(--death-ms) ease-out 1 forwards;
+}
+
+.dying .boomRing {
+  animation: boomRing var(--death-ms) ease-out 1 forwards;
+}
+
+.dyingPawn :global([data-part="bubble-ring"]) {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: bubbleRingOut var(--death-ms) ease-out 1 forwards;
+}
+
+.dyingPawn :global([data-part="bubble-ring-outer"]) {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: bubbleRingOuterOut var(--death-ms) ease-out 1 forwards;
+}
+
+.dyingPawn :global([data-part="bubble-shine"]) {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: bubbleShineOut var(--death-ms) ease-out 1 forwards;
+}
+
+.dyingPawn .boomFlash,
+.dyingPawn .boomRing {
+  filter: saturate(0.7) brightness(1.2);
+  inset: 16%;
+}
+
+/* Marine body shreds with the bubble (was missing — SVG stayed after burst). */
+.dyingPawn :global([data-shard]) {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: shardFly var(--death-ms) cubic-bezier(0.15, 0.75, 0.2, 1) 1 forwards;
+}
+
+/* All pieces except king: shards fly outward */
+.dyingDrama :global([data-shard]) {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: shardFly var(--death-ms) cubic-bezier(0.15, 0.75, 0.2, 1) 1 forwards;
+}
+
+/* King death: rubble collapse downward */
+.dyingKing :global([data-rubble]) {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: rubbleCollapse var(--death-ms) cubic-bezier(0.33, 0.05, 0.2, 1) 1 forwards;
+}
+
+/* Softer impact flash — collapse, not explosion */
+.dyingKing .boomFlash,
+.dyingKing .boomRing {
+  filter: saturate(0.55) brightness(0.9);
+  inset: 18%;
+}

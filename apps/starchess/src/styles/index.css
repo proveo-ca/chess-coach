@@ -1,14 +1,71 @@
+/**
+ * App tokens — align with apps/ui `theme.css` + responsiveness contract.
+ * StarChess boards only use eclipse | butter | vermeer (board variant CSS).
+ * // SPEC: _spec/apps/ui/responsiveness/rules.md
+ */
 :root {
-  --sc-bg: #1a1d21;
-  --sc-surface: #24282e;
-  --sc-text: #e8eaed;
-  --sc-muted: #9aa0a6;
+  --font-family: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --white-rgb: 255, 255, 255;
+  --shadow-rgb: 0, 0, 0;
+  --primary-rgb: 0, 86, 179;
+  --primary-color: rgb(0, 86, 179);
+  --primary-hover: #646cff;
+  --bg-color: #12171c;
+  --surface-color: #1a1a1a;
+  --surface-hover: #2a2a2a;
+  --text-color: #e8eaed;
+  --text-muted: #aaa;
+  --text-strong: #f5f5f5;
+  --text: #e8eaed;
+  --border-color: #444;
+  --border-radius-md: 8px;
+  --avatar-height: 8rem;
+  /* Extra-small / mobile defaults (< 720px): no sidebar; board fills width. */
+  --sidebar-width: 0px;
+  --board-size: min(100vw - 2rem, 480px);
+  --square-size: calc(var(--board-size) / 8);
+  --app-max-width: 100%;
+  --board-light: #f0d9b5;
+  --board-dark: #b58863;
+  --board-border: #111a23;
+  --sc-bg: var(--bg-color);
+  --sc-surface: var(--surface-color);
+  --sc-text: var(--text-color);
+  --sc-muted: var(--text-muted);
   --sc-accent: #005f7f;
   --sc-accent-hover: #007a9e;
-  --sc-border: #3a4048;
-  --sc-board-light: #4a5560;
-  --sc-board-dark: #2d343c;
+  --sc-border: var(--border-color);
   color-scheme: dark;
+  font-family: var(--font-family);
+  line-height: 1.5;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg-color: #ffffff;
+    --surface-color: #f9f9f9;
+    --surface-hover: #ffffff;
+    --text-color: #213547;
+    --text-muted: #666;
+    --text-strong: #1a1a1a;
+    --text: #213547;
+    --border-color: #ccc;
+    --primary-hover: #747bff;
+    color-scheme: light;
+  }
+}
+
+/* Desktop (≥ 720px): fixed board + sidebar gutter — never squash squares. */
+@media (min-width: 720px) {
+  :root {
+    --sidebar-width: 6rem;
+    --board-size: 480px;
+    --app-max-width: 720px;
+  }
 }
 
 *,
@@ -25,15 +82,13 @@ body,
 }
 
 body {
-  background: var(--sc-bg);
-  color: var(--sc-text);
-  font-family: "Segoe UI", "Trebuchet MS", sans-serif;
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
+  background: var(--bg-color);
+  color: var(--text-color);
+  font-family: var(--font-family);
 }
 
 a {
-  color: var(--sc-accent-hover);
+  color: var(--primary-hover);
 }
 
 button {

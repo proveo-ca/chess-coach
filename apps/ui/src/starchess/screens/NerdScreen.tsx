@@ -18,7 +18,7 @@ import { Chess, type Square } from "chess.js";
 import { findBoardGrid, squareBoxStyle } from "~/starchess/animations/boardGeom";
 import { findKing, placementToMap } from "~/starchess/board";
 import { DEPLOY_MS, MINE_DEPLOY_MS, UNIT_COST } from "~/starchess/constants";
-import { endScTurn } from "~/starchess/endScTurn";
+import { beginScTurn, endScTurn } from "~/starchess/endScTurn";
 import { GasDeploy } from "~/starchess/features/GasDeploy";
 import { usePieceSpecialArm } from "~/starchess/hooks/usePieceSpecialArm";
 import { useStarChessCombat } from "~/starchess/hooks/useStarChessCombat";
@@ -143,6 +143,8 @@ export const NerdScreen: Component<NerdScreenProps> = (props) => {
   let seedKey: string | null = null;
   /** Blocks End/timeout re-entry while combat (or post-B deploy hold) is playing. */
   let resolving = false;
+  /** Turn-open checks already applied for the current planning window. */
+  let turnStartChecksApplied = false;
 
   const [spawnUnit, setSpawnUnit] = createSignal<SpawnPiece | null>(null);
   const [spawnPhase, setSpawnPhase] = createSignal<"idle" | "modal" | "pick">("idle");
@@ -343,6 +345,7 @@ export const NerdScreen: Component<NerdScreenProps> = (props) => {
     if (key === seedKey) return;
     seedKey = key;
     lastQueuedKey = null;
+    turnStartChecksApplied = false;
     combat.clear();
     setSpawnPhase("idle");
     setSpawnUnit(null);
@@ -366,6 +369,9 @@ export const NerdScreen: Component<NerdScreenProps> = (props) => {
           ? "Match over · Review with the arrows"
           : "Plan a special and/or move · End to submit",
       );
+      if (snap.phase === "P") {
+        queueMicrotask(() => openTurnChecks({ armTimer: true }));
+      }
       return;
     }
 
@@ -383,6 +389,7 @@ export const NerdScreen: Component<NerdScreenProps> = (props) => {
       const snap = snapFromPlacement(placement, 1);
       setPlanningSnapshot(snap);
       resetMatchHistory(snap);
+      queueMicrotask(() => openTurnChecks({ armTimer: true }));
       // Do not force siege — fog stories / live play default to tank unless rookMode prop says otherwise.
     }
   });
@@ -432,6 +439,80 @@ export const NerdScreen: Component<NerdScreenProps> = (props) => {
     setStatus(`Queued ${classical.from}→${classical.to} · End to resolve`);
   });
 
+  /**
+   * Resolve fog-visible king-checks before players may queue intent.
+   * Arms the planning timer when the window is ready (or after check VFX).
+   */
+  const openTurnChecks = (opts?: { armTimer?: boolean }) => {
+    if (resolving || gameEnded()) return;
+    const before = planningSnapshot();
+    if (!before || before.phase !== "P") return;
+    if (turnStartChecksApplied) {
+      if (opts?.armTimer !== false) startPlanningTimer();
+      return;
+    }
+
+    let begun;
+    try {
+      begun = beginScTurn(before);
+    } catch {
+      turnStartChecksApplied = true;
+      if (opts?.armTimer !== false) startPlanningTimer();
+      return;
+    }
+
+    if (!begun.changed || !begun.asResolve) {
+      turnStartChecksApplied = true;
+      if (opts?.armTimer !== false) startPlanningTimer();
+      return;
+    }
+
+    resolving = true;
+    clearTurnDeadline();
+    setStatus("Check — resolving…");
+    const livesBefore = { ...before.kingLives };
+    combat.playResolve(begun.asResolve.resolved, {
+      startPlacement: before.placement,
+      livesBefore,
+      commit: (snap) => {
+        loadFen(toClassicFen(snap.placement, "w", 0, Math.max(1, before.turn)));
+        const cur = planningSnapshot();
+        if (cur) {
+          setPlanningSnapshot({
+            ...cur,
+            placement: snap.placement,
+            kingLives: { ...snap.kingLives },
+            ...(snap.mines.length ? { mines: [...snap.mines] } : { mines: undefined }),
+          });
+        }
+      },
+      onDone: () => {
+        const next = begun.next;
+        setPlanningSnapshot(next);
+        setSiegedRooks(next.siegedRooks ?? []);
+        loadFen(classicFenFromSc(next, "w"));
+        combat.syncKingDamageFromBoard(next.placement, next.kingLives);
+        resolving = false;
+        if (next.phase === "O") {
+          turnStartChecksApplied = false;
+          appendSettledTurn(before, next);
+          const outcome = scOutcome(next);
+          setStatus(
+            outcome?.draw
+              ? "Match over · Draw — both Kings destroyed · Review with the arrows"
+              : outcome
+                ? `Match over · ${outcome.winner === "w" ? "White" : "Black"} wins · Review with the arrows`
+                : "Match over · Review with the arrows",
+          );
+          return;
+        }
+        turnStartChecksApplied = true;
+        if (opts?.armTimer !== false) startPlanningTimer();
+        setStatus("Plan a special and/or move · End to submit");
+      },
+    });
+  };
+
   const submitPlan = (reason: "end" | "timeout") => {
     if (resolving || gameEnded()) return;
     const before = planningSnapshot();
@@ -439,9 +520,16 @@ export const NerdScreen: Component<NerdScreenProps> = (props) => {
       setStatus(reason === "timeout" ? "Turn locked — time up" : "Turn submitted");
       return;
     }
+    if (!turnStartChecksApplied) {
+      openTurnChecks({ armTimer: false });
+      if (resolving) return;
+    }
     resolving = true;
     const livesBefore = { ...before.kingLives };
-    const result = endScTurn(before);
+    const result = endScTurn(before, {
+      skipTurnStartChecks: turnStartChecksApplied,
+    });
+    turnStartChecksApplied = false;
     clearTurnDeadline();
     setStatus(reason === "timeout" ? "Turn locked — time up" : "Turn submitted");
     lastQueuedKey = null;
@@ -455,8 +543,7 @@ export const NerdScreen: Component<NerdScreenProps> = (props) => {
       loadFen(classicFenFromSc(result.next, "w"));
       resolving = false;
       if (result.next.phase === "P") {
-        // AFK / next turn: re-arm the gauge so timeout keeps advancing SCFEN.
-        startPlanningTimer();
+        openTurnChecks({ armTimer: true });
         setStatus("Plan a special and/or move · End to submit");
       } else {
         // HP is the source of truth: both kings at 0 (face-to-face duel) is a draw.

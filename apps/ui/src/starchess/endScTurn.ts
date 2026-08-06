@@ -4,5 +4,9 @@
  * Compatibility facade — implementation lives in `@chess-coach/starchess-core`.
  * // SPEC: _spec/apps/ui/starchess/turn-queue-sequence.puml, _spec/apps/ui/starchess/resolve.puml
  */
-export type { EndScTurnResult } from "@chess-coach/starchess-core";
-export { endScTurn } from "@chess-coach/starchess-core";
+export type {
+  EndScTurnResult,
+  EndScTurnOptions,
+  BeginScTurnResult,
+} from "@chess-coach/starchess-core";
+export { endScTurn, beginScTurn } from "@chess-coach/starchess-core";

@@ -18,7 +18,9 @@ import type { MatchAction, MatchState, TimelineState } from "~/app/matchTypes";
 const emptyTimeline = (placement: string | null = null): TimelineState => ({
   active: false,
   cues: [],
+  playingIds: [],
   hiddenSquares: new Set(),
+  moveProgress: {},
   displayPlacement: placement,
 });
 
@@ -67,6 +69,7 @@ const seedFromSnap = (snap: ScFenSnapshot, stored: number): MatchState => {
     lastResolve: null,
     selected: null,
     legalDests: [],
+    turnStartChecksApplied: false,
   };
 };
 
@@ -75,6 +78,22 @@ export const createInitialMatchState = (): MatchState => {
     "SCFEN|4k3/8/8/8/8/8/8/4K3|0|33|P|G:11:11|Q:w:;b:",
   );
   return seedFromSnap(snap, 12);
+};
+
+/** Seed a match from SCFEN (Storybook / deep-link) before the screen mounts. */
+export const createMatchStateFromScfen = (
+  scfen: string,
+  stored = 12,
+): MatchState => {
+  try {
+    return seedFromSnap(parseScFen(scfen), stored);
+  } catch {
+    return {
+      ...createInitialMatchState(),
+      phase: "loading",
+      statusText: "Invalid SCFEN",
+    };
+  }
 };
 
 export const matchReducer = (state: MatchState, action: MatchAction): MatchState => {
@@ -154,6 +173,19 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
       next.add(action.square);
       return { ...state, specialsUsed: next };
     }
+    case "APPLY_SNAPSHOT": {
+      if (state.phase !== "planning" && state.phase !== "targeting") return state;
+      return {
+        ...state,
+        phase: "planning",
+        liveSnapshot: action.snapshot,
+        siegedRooks: new Set(action.snapshot.siegedRooks ?? []),
+        specialsUsed: new Set(action.snapshot.specialsUsed ?? []),
+        targeting: null,
+        selected: null,
+        legalDests: [],
+      };
+    }
     case "SPEND_STORED": {
       const eco = state.economies[action.color];
       if (eco.stored < action.amount) return state;
@@ -168,10 +200,25 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
         },
       };
     }
+    case "REFUND_STORED": {
+      const eco = state.economies[action.color];
+      return {
+        ...state,
+        economies: {
+          ...state.economies,
+          [action.color]: {
+            stored: Math.min(MAX_STORED_MATERIAL, eco.stored + action.amount),
+            deployed: Math.max(0, eco.deployed - action.amount),
+          },
+        },
+      };
+    }
     case "SUBMIT_TURN": {
       if (state.phase !== "planning" && state.phase !== "targeting") return state;
       try {
-        const result = endScTurn(state.liveSnapshot);
+        const result = endScTurn(state.liveSnapshot, {
+          skipTurnStartChecks: state.turnStartChecksApplied,
+        });
         return {
           ...state,
           phase: "resolving",
@@ -190,7 +237,58 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
       }
     }
     case "RESOLVE_READY":
-      return { ...state, lastResolve: action.result, phase: "resolving" };
+      return {
+        ...state,
+        lastResolve: action.result,
+        phase: "resolving",
+        statusText: "Resolving…",
+      };
+    case "MARK_CHECKS_APPLIED":
+      return {
+        ...state,
+        turnStartChecksApplied: true,
+        statusText:
+          state.statusText === "Plan your turn" || state.phase === "planning"
+            ? "Plan your turn"
+            : state.statusText,
+      };
+    case "BEGIN_CHECKS_DONE": {
+      const result = state.lastResolve;
+      if (!result) {
+        return {
+          ...state,
+          phase: "planning",
+          turnStartChecksApplied: true,
+          timeline: emptyTimeline(),
+          statusText: "Plan your turn",
+        };
+      }
+      const next = result.next;
+      const outcome = next.phase === "O" ? scOutcome(next) : null;
+      return {
+        ...state,
+        phase: outcome ? "gameOver" : "planning",
+        liveSnapshot: next,
+        turnStartChecksApplied: !outcome,
+        siegedRooks: new Set(next.siegedRooks ?? []),
+        timeline: emptyTimeline(),
+        outcome,
+        settledSnapshots: outcome
+          ? [...state.settledSnapshots, next]
+          : state.settledSnapshots,
+        reviewIndex: outcome ? state.settledSnapshots.length : state.reviewIndex,
+        lastResolve: null,
+        statusText: outcome
+          ? outcome.draw
+            ? "Draw"
+            : `${outcome.winner === "w" ? "White" : "Black"} wins`
+          : "Plan your turn",
+        selected: null,
+        legalDests: [],
+        targeting: null,
+        deadlineAt: outcome ? null : state.deadlineAt,
+      };
+    }
     case "TIMELINE_START":
       return {
         ...state,
@@ -198,13 +296,18 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
         timeline: {
           active: true,
           cues: action.cues,
+          playingIds: [],
           hiddenSquares: new Set(),
+          moveProgress: {},
           displayPlacement: action.placement,
         },
       };
     case "TIMELINE_COMMIT": {
       const hidden = new Set(action.hidden ?? [...state.timeline.hiddenSquares]);
       const snap = state.liveSnapshot;
+      const sieged = action.siegedRooks
+        ? new Set(action.siegedRooks)
+        : state.siegedRooks;
       return {
         ...state,
         liveSnapshot: {
@@ -212,10 +315,22 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
           placement: action.placement ?? snap.placement,
           kingLives: action.kingLives ?? snap.kingLives,
           mines: action.mines ?? snap.mines,
+          siegedRooks: action.siegedRooks
+            ? [...action.siegedRooks]
+            : snap.siegedRooks,
         },
+        siegedRooks: sieged,
         timeline: {
           ...state.timeline,
+          playingIds:
+            action.playingIds !== undefined
+              ? [...action.playingIds]
+              : state.timeline.playingIds,
           hiddenSquares: hidden,
+          moveProgress:
+            action.moveProgress !== undefined
+              ? action.moveProgress
+              : state.timeline.moveProgress,
           displayPlacement: action.placement ?? state.timeline.displayPlacement,
         },
       };
@@ -240,6 +355,7 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
         ...state,
         phase: outcome ? "gameOver" : "planning",
         liveSnapshot: next,
+        turnStartChecksApplied: false,
         economies,
         specialsUsed: new Set(next.specialsUsed ?? []),
         siegedRooks: new Set(next.siegedRooks ?? []),
@@ -255,6 +371,32 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
           : "Plan your turn",
         selected: null,
         legalDests: [],
+        targeting: null,
+        deadlineAt: outcome ? null : state.deadlineAt,
+      };
+    }
+    case "REVIEW_SEEK": {
+      if (state.phase !== "gameOver") return state;
+      const max = state.settledSnapshots.length - 1;
+      if (max < 0) return state;
+      const index = Math.max(0, Math.min(max, action.index));
+      const settled = state.settledSnapshots[index];
+      if (!settled) return state;
+      return {
+        ...state,
+        reviewIndex: index,
+        siegedRooks: new Set(settled.siegedRooks ?? []),
+        timeline: emptyTimeline(),
+        targeting: null,
+        selected: null,
+        legalDests: [],
+        deadlineAt: null,
+        statusText:
+          index === 0
+            ? "Start"
+            : index === max
+              ? "Final"
+              : `Turn ${index} of ${max}`,
       };
     }
     case "SET_VIEWER":

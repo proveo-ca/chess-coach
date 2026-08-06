@@ -1,5 +1,5 @@
 /**
- * King Hunt — SCFEN + engine-driven. Combat VFX from `endScTurn` → `useStarChessCombat`.
+ * King Hunt — DualNav: turn-open check → intent → resolve.
  */
 
 import {
@@ -23,7 +23,7 @@ import {
   KING_HUNT_STEPS,
   queueKingHuntStep,
 } from "~/starchess/demos/kingHunt";
-import { endScTurn } from "~/starchess/endScTurn";
+import { beginScTurn, endScTurn } from "~/starchess/endScTurn";
 import { intentOverlaysFromQueue } from "~/starchess/intentOverlays";
 import { classicFenFromSc, toClassicFen } from "~/starchess/scfen";
 import { useStarChessCombat } from "~/starchess/hooks/useStarChessCombat";
@@ -49,7 +49,7 @@ const TOTAL_TURNS = KING_HUNT_STEPS.length;
 const START_CAPTION =
   "Start · 3 lives · Nc5 sees/checks Ke4 · Rg6 tank · Bh2 · side vision";
 
-type NavPhase = "ready" | "intent" | "playing";
+type NavPhase = "ready" | "checking" | "intent" | "playing";
 
 const applySnap = (snap: ScFenSnapshot) => {
   setPlanningSnapshot(snap);
@@ -66,9 +66,10 @@ export const KingHuntDemo: Component = () => {
   const [intentQueue, setIntentQueue] = createSignal<readonly ScAction[]>([]);
   const plies = KING_HUNT_PLY_SC;
 
+  let afterCheckSnap: ScFenSnapshot | null = null;
+
   const ghosts = createMemo(() => {
     if (navPhase() !== "intent") return { destinations: [], canisters: [], checks: [] };
-    // No `viewer` → both players' intentions render as ghosts.
     return intentOverlaysFromQueue(intentQueue(), {
       placement: planningSnapshot()?.placement,
       siegedRooks: planningSnapshot()?.siegedRooks,
@@ -87,6 +88,7 @@ export const KingHuntDemo: Component = () => {
   const showPosition = (index: number) => {
     combat.clear();
     setIntentQueue([]);
+    afterCheckSnap = null;
     const snap = plies[index]!;
     applySnap(snap);
     combat.syncKingDamageFromBoard(snap.placement, snap.kingLives);
@@ -97,6 +99,7 @@ export const KingHuntDemo: Component = () => {
 
   const finishTurn = (indexPlaying: number, next: ScFenSnapshot) => {
     setIntentQueue([]);
+    afterCheckSnap = null;
     applySnap(next);
     combat.syncKingDamageFromBoard(next.placement, next.kingLives);
     setTurnIndex(indexPlaying + 1);
@@ -104,47 +107,93 @@ export const KingHuntDemo: Component = () => {
     setCaption(KING_HUNT_STEPS[indexPlaying]!.caption);
   };
 
-  const showIntent = (indexPlaying: number) => {
+  const showIntent = (indexPlaying: number, board: ScFenSnapshot) => {
     const step = KING_HUNT_STEPS[indexPlaying];
-    const before = plies[indexPlaying];
-    if (!step || !before) return;
+    if (!step) return;
 
     combat.clear();
-    applySnap(before);
-    const queued = queueKingHuntStep(before, step);
-    // Placement unchanged — only Q: carries intent (ghost overlays).
+    applySnap(board);
+    combat.syncKingDamageFromBoard(board.placement, board.kingLives);
+    const queued = queueKingHuntStep(board, step);
     setPlanningSnapshot(queued);
     setIntentQueue(queued.queue?.actions ?? []);
     setNavPhase("intent");
     setCaption(`Intent · ${step.caption}`);
   };
 
-  const resolveIntent = (indexPlaying: number) => {
+  const playChecksThenIntent = (indexPlaying: number) => {
     const step = KING_HUNT_STEPS[indexPlaying];
     const before = plies[indexPlaying];
     if (!step || !before) return;
 
     combat.clear();
     setIntentQueue([]);
+    applySnap(before);
+    combat.syncKingDamageFromBoard(before.placement, before.kingLives);
+
+    const begun = beginScTurn(before);
+    afterCheckSnap = begun.next;
+
+    if (!begun.changed || !begun.asResolve) {
+      afterCheckSnap = before;
+      showIntent(indexPlaying, before);
+      return;
+    }
+
+    setNavPhase("checking");
+    setCaption(`Check · ${step.caption}`);
+
+    combat.playResolve(begun.asResolve.resolved, {
+      startPlacement: before.placement,
+      livesBefore: before.kingLives,
+      commit: (snap) => {
+        setSiegedRooks(before.siegedRooks ?? []);
+        loadFen(toClassicFen(snap.placement, "w", 0, Math.max(1, before.turn)));
+        setPlanningSnapshot({
+          ...(planningSnapshot() ?? before),
+          placement: snap.placement,
+          kingLives: { ...snap.kingLives },
+          ...(snap.mines.length ? { mines: [...snap.mines] } : { mines: undefined }),
+        });
+      },
+      onDone: () => {
+        const after = begun.next;
+        applySnap(after);
+        combat.syncKingDamageFromBoard(after.placement, after.kingLives);
+        if (after.phase === "O") {
+          finishTurn(indexPlaying, plies[indexPlaying + 1] ?? after);
+          return;
+        }
+        showIntent(indexPlaying, after);
+      },
+    });
+  };
+
+  const resolveIntent = (indexPlaying: number) => {
+    const step = KING_HUNT_STEPS[indexPlaying];
+    const before = plies[indexPlaying];
+    if (!step || !before) return;
+    const board = afterCheckSnap ?? before;
+
+    combat.clear();
+    setIntentQueue([]);
     setNavPhase("playing");
     setCaption(step.caption);
-    applySnap(before);
+    applySnap(board);
 
-    const queued = queueKingHuntStep(before, step);
-    const { resolved, next, afterB, afterPending } = endScTurn(queued);
-    const hadChecks =
-      before.kingLives.w !== afterPending.kingLives.w ||
-      before.kingLives.b !== afterPending.kingLives.b ||
-      before.placement !== afterPending.placement;
+    const queued = queueKingHuntStep(board, step);
+    const { resolved, next, afterB } = endScTurn(queued, {
+      skipTurnStartChecks: true,
+    });
 
     combat.playResolve(resolved, {
-      startPlacement: hadChecks ? afterPending.placement : afterB.placement,
-      livesBefore: before.kingLives,
+      startPlacement: afterB.placement,
+      livesBefore: board.kingLives,
       commit: (snap) => {
         setSiegedRooks(next.siegedRooks ?? []);
         loadFen(toClassicFen(snap.placement, "w", 0, Math.max(1, before.turn + 1)));
         setPlanningSnapshot({
-          ...(planningSnapshot() ?? before),
+          ...(planningSnapshot() ?? board),
           placement: snap.placement,
           kingLives: { ...snap.kingLives },
           ...(snap.mines.length ? { mines: [...snap.mines] } : { mines: undefined }),
@@ -158,7 +207,7 @@ export const KingHuntDemo: Component = () => {
   };
 
   const goBack = () => {
-    if (navPhase() === "playing") return;
+    if (navPhase() === "playing" || navPhase() === "checking") return;
     if (navPhase() === "intent") {
       showPosition(turnIndex());
       return;
@@ -169,25 +218,26 @@ export const KingHuntDemo: Component = () => {
   };
 
   const goForward = () => {
-    if (navPhase() === "playing") return;
+    if (navPhase() === "playing" || navPhase() === "checking") return;
     const i = turnIndex();
     if (navPhase() === "intent") {
       resolveIntent(i);
       return;
     }
     if (i >= TOTAL_TURNS) return;
-    showIntent(i);
+    playChecksThenIntent(i);
   };
 
   const navLabel = () => {
     const i = turnIndex();
     const n = TOTAL_TURNS;
+    if (navPhase() === "checking") return `Check ${i + 1} / ${n}`;
     if (navPhase() === "intent") return `Intent ${i + 1} / ${n}`;
     if (navPhase() === "playing") return `Resolve ${i + 1} / ${n}`;
     return `Turn ${i} / ${n}`;
   };
 
-  const busy = () => navPhase() === "playing";
+  const busy = () => navPhase() === "playing" || navPhase() === "checking";
 
   onMount(() => {
     prepare();

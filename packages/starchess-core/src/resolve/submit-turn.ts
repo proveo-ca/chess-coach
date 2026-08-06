@@ -1,12 +1,17 @@
 /**
- * End / timeout path — resolve one planning SCFEN snap into the next.
- * Order: pending king-checks → B specials (incl. intent siege) → classical
- * attack → classical move (+ mine triggers) → F specials.
+ * Turn open / End paths.
+ *
+ * **Turn open** (`beginScTurn`): fog-visible legal king-checks apply **before**
+ * players choose intent. A unit that breaks contact later in the same turn still
+ * paid that shot (parting shot at open).
+ *
+ * **End** (`endScTurn`): by default still runs checks → B → C → F for atomic
+ * replay / tests. Live play that already ran `beginScTurn` passes
+ * `{ skipTurnStartChecks: true }` so End starts at B.
  * // SPEC: _spec/apps/ui/starchess/turn-queue-sequence.puml, _spec/apps/ui/starchess/resolve.puml
  */
 
 import type { Square } from "chess.js";
-import { Chess } from "chess.js";
 
 import {
   collectLegalKingChecks,
@@ -77,6 +82,169 @@ export type EndScTurnResult = {
   bMoves: ResolveMove[];
   /** Gas-step pawn slides applied during F (animate after classical). */
   fMoves: ResolveMove[];
+};
+
+export type EndScTurnOptions = {
+  /**
+   * When true, skip turn-start king-checks (already applied via {@link beginScTurn}).
+   * Live planning that resolved checks before intent must set this.
+   */
+  skipTurnStartChecks?: boolean;
+};
+
+export type BeginScTurnResult = {
+  /** True when at least one check attack or collision fired. */
+  changed: boolean;
+  attacks: ResolveTurnResult["attacks"];
+  afterPending: EndScTurnResult["afterPending"];
+  /** Planning snap after checks (phase O when a king hit 0 HP). */
+  next: ScFenSnapshot;
+  /**
+   * Synthetic End result for combat / timeline players (checks only; empty B/C/F).
+   * Present when `changed` (including lethal terminal).
+   */
+  asResolve: EndScTurnResult | null;
+};
+
+const emptyBoard = (
+  placement: string,
+  kingLives: ScFenSnapshot["kingLives"],
+  mines: ScMine[],
+): ResolveTurnResult["afterAttack"] => ({
+  placement,
+  kingLives: { ...kingLives },
+  mines: [...mines],
+});
+
+const visionCheckGate = (
+  placement: string,
+  mines: readonly ScMine[],
+  siegedRooks: readonly Square[] | undefined,
+) => {
+  const sieged = new Set(siegedRooks ?? []);
+  const rookModeFor = (s: Square) => (sieged.has(s) ? "siege" : "tank");
+  const visionOpts0 = { mines: [...mines], rookModeFor };
+  const visionW0 = getSideVision(placement, "w", visionOpts0);
+  const visionB0 = getSideVision(placement, "b", visionOpts0);
+  return (color: PieceColor, square: Square) => {
+    const v = color === "w" ? visionW0 : visionB0;
+    return v.litSquares.has(square) || v.revealedPieces.has(square);
+  };
+};
+
+/**
+ * Resolve fog-visible legal king-checks at turn open — before players queue intent.
+ * Does not advance `turn` unless a king dies (phase O, turn+1). Queue is cleared.
+ */
+export const beginScTurn = (snapshot: ScFenSnapshot): BeginScTurnResult => {
+  if (snapshot.phase !== "P") {
+    throw new Error(`beginScTurn requires phase P (got ${snapshot.phase})`);
+  }
+
+  const minesIn = [...(snapshot.mines ?? [])];
+  const isCheckVisible = visionCheckGate(
+    snapshot.placement,
+    minesIn,
+    snapshot.siegedRooks,
+  );
+  const pendingApplied = applyPendingKingShots({
+    placement: snapshot.placement,
+    kingLives: snapshot.kingLives,
+    pending: collectLegalKingChecks(snapshot.placement, {
+      isTargetVisible: isCheckVisible,
+    }),
+    mines: minesIn,
+  });
+
+  const afterPending = {
+    placement: pendingApplied.placement,
+    mines: [...pendingApplied.mines],
+    kingLives: { ...pendingApplied.kingLives },
+  };
+  const changed = pendingApplied.attacks.length > 0;
+  const terminal =
+    pendingApplied.kingLives.w === 0 || pendingApplied.kingLives.b === 0;
+  const sieged = [...(snapshot.siegedRooks ?? [])].sort();
+  const board = emptyBoard(
+    afterPending.placement,
+    afterPending.kingLives,
+    afterPending.mines,
+  );
+
+  const next: ScFenSnapshot = {
+    placement: afterPending.placement,
+    turn: terminal ? snapshot.turn + 1 : snapshot.turn,
+    kingLives: { ...afterPending.kingLives },
+    phase: terminal ? "O" : "P",
+    gas: { ...snapshot.gas },
+    gasIncome: snapshot.gasIncome,
+    queue: { actions: [] },
+    ...(afterPending.mines.length ? { mines: afterPending.mines } : {}),
+    ...(sieged.length ? { siegedRooks: sieged } : {}),
+    ...(snapshot.specialsUsed?.length
+      ? { specialsUsed: [...snapshot.specialsUsed] }
+      : {}),
+  };
+
+  if (!changed) {
+    return {
+      changed: false,
+      attacks: [],
+      afterPending: {
+        placement: snapshot.placement,
+        mines: minesIn,
+        kingLives: { ...snapshot.kingLives },
+      },
+      next: {
+        ...snapshot,
+        queue: snapshot.queue ?? { actions: [] },
+      },
+      asResolve: null,
+    };
+  }
+
+  const events: ResolveEvent[] = pendingApplied.attacks.map((atk, i) => ({
+    id: `ev-begin-${i}`,
+    phase: "attack" as const,
+    color: atk.color,
+    from: atk.from,
+    to: atk.to,
+  }));
+
+  const asResolve: EndScTurnResult = {
+    resolved: {
+      attacks: [...pendingApplied.attacks],
+      afterAttack: board,
+      moves: [],
+      afterMove: board,
+      pathRevealAttacks: [],
+      afterAll: board,
+      mineTriggers: [],
+      moveCollisions: [],
+      promotions: [],
+      pendingKingShotsArmed: [],
+    },
+    next,
+    ignoreAttacksOn: [],
+    events,
+    siegedThisTurn: [],
+    afterB: {
+      placement: afterPending.placement,
+      mines: afterPending.mines,
+      siegedRooks: sieged,
+    },
+    afterPending,
+    bMoves: [],
+    fMoves: [],
+  };
+
+  return {
+    changed: true,
+    attacks: [...pendingApplied.attacks],
+    afterPending,
+    next,
+    asResolve,
+  };
 };
 
 const byTiming = (actions: readonly ScAction[], timing: "B" | "C" | "F") =>
@@ -230,11 +398,15 @@ const eventFor = (
   to: action.timing === "C" || action.to ? (action as { to?: Square }).to : undefined,
 });
 
-export const endScTurn = (snapshot: ScFenSnapshot): EndScTurnResult => {
+export const endScTurn = (
+  snapshot: ScFenSnapshot,
+  opts?: EndScTurnOptions,
+): EndScTurnResult => {
   if (snapshot.phase !== "P") {
     throw new Error(`endScTurn requires phase P (got ${snapshot.phase})`);
   }
 
+  const skipChecks = opts?.skipTurnStartChecks === true;
   const actions = snapshot.queue?.actions ?? [];
   const events: ResolveEvent[] = [];
   const ignoreAttacksOn: Square[] = [];
@@ -248,24 +420,30 @@ export const endScTurn = (snapshot: ScFenSnapshot): EndScTurnResult => {
 
   // Vision for turn-start checks (pre-B siege flags) and classical fog.
   const rookModeFor = (sq: Square) => (sieged.has(sq) ? "siege" : "tank");
-  const visionGame0 = new Chess(`${placement} w - - 0 1`);
   const visionOpts0 = { mines, rookModeFor };
-  const visionW0 = getSideVision(visionGame0, "w", visionOpts0);
-  const visionB0 = getSideVision(visionGame0, "b", visionOpts0);
+  const visionW0 = getSideVision(placement, "w", visionOpts0);
+  const visionB0 = getSideVision(placement, "b", visionOpts0);
   const isCheckVisible = (color: PieceColor, square: Square) => {
     const v = color === "w" ? visionW0 : visionB0;
     return v.litSquares.has(square) || v.revealedPieces.has(square);
   };
 
-  // 1) Fog-visible legal king-checks resolve at turn start — before any special.
-  const pendingApplied = applyPendingKingShots({
-    placement,
-    kingLives: snapshot.kingLives,
-    pending: collectLegalKingChecks(placement, {
-      isTargetVisible: isCheckVisible,
-    }),
-    mines,
-  });
+  // 1) Fog-visible legal king-checks — skipped when already applied at turn open.
+  const pendingApplied = skipChecks
+    ? {
+        placement,
+        mines,
+        kingLives: { ...snapshot.kingLives },
+        attacks: [] as ReturnType<typeof applyPendingKingShots>["attacks"],
+      }
+    : applyPendingKingShots({
+        placement,
+        kingLives: snapshot.kingLives,
+        pending: collectLegalKingChecks(placement, {
+          isTargetVisible: isCheckVisible,
+        }),
+        mines,
+      });
   placement = pendingApplied.placement;
   mines = pendingApplied.mines;
   let kingLives = pendingApplied.kingLives;
@@ -363,10 +541,9 @@ export const endScTurn = (snapshot: ScFenSnapshot): EndScTurnResult => {
   };
 
   // Post-B vision (siege toggles / mines) for classical attack fog.
-  const visionGame = new Chess(`${placement} w - - 0 1`);
   const visionOpts = { mines, rookModeFor };
-  const visionW = getSideVision(visionGame, "w", visionOpts);
-  const visionB = getSideVision(visionGame, "b", visionOpts);
+  const visionW = getSideVision(placement, "w", visionOpts);
+  const visionB = getSideVision(placement, "b", visionOpts);
   const isTargetVisible = (color: PieceColor, square: Square) => {
     const v = color === "w" ? visionW : visionB;
     return v.litSquares.has(square) || v.revealedPieces.has(square);

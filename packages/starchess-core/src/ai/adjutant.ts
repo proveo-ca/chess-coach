@@ -19,7 +19,7 @@
  * // SPEC: _spec/apps/ui/starchess/starchess-mode.puml, _spec/apps/ui/starchess/demos.puml
  */
 
-import { Chess, type Square } from "chess.js";
+import type { Square } from "chess.js";
 
 import {
   attacksSquare,
@@ -36,7 +36,7 @@ import {
   incomeForTurn,
 } from "../rules/constants";
 import { addScAction, AddScActionError } from "../commands/queue-action";
-import { classicFenFromSc, specialGasCost } from "../scfen";
+import { specialGasCost } from "../scfen";
 import { MAX_MINES_PER_SIDE, mineAt, minesFor } from "../board/mines";
 import { scMovesFor, type ScMove } from "../board/moves";
 import { charonTargetQueenFromPlacement } from "../rules/specials/bishopCharon";
@@ -438,7 +438,7 @@ export const adjutant = (
   const whiteKing = findKing(map, "w");
   let whiteKingVisible = false;
   try {
-    const vision = getSideVision(new Chess(classicFenFromSc(snap, "b")), "b", {
+    const vision = getSideVision(map, "b", {
       mines: snap.mines,
       rookModeFor: (s) => (sieged.has(s) ? "siege" : "tank"),
     });

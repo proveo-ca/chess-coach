@@ -1,6 +1,7 @@
 /**
  * StarChess classical resolve — attack then move (simultaneous dual plans).
  * Fog: visible targets attack; fogged occupancy → move collision capture/occupy.
+ * King HP: turn-open checks only, except fog path-discovery onto a hidden king.
  * // SPEC: _spec/apps/ui/starchess/resolve.puml
  */
 
@@ -64,6 +65,14 @@ export type ResolveAttack =
       livesAfter: number;
       /** Fogged king — HP chip without attack cue. */
       moveCollision?: boolean;
+      /**
+       * Fog path-discovery onto a hidden king (phase 3). Original intent
+       * origin; combat plays approach then the HP chip.
+       */
+      pathRevealFrom?: Square;
+      pathRevealSteps?: number;
+      /** Square the slider stops on (before the king; never occupies it). */
+      stopAt?: Square;
     }
   | {
       kind: "mineBlast";
@@ -162,7 +171,11 @@ export type ResolveTurnResult = {
 const clampLives = (n: number) => Math.max(0, Math.min(3, Math.floor(n)));
 
 /** Post-phase-2 board state that phase-3 fog approaches apply onto. */
-export type PathRevealSnap = { placement: string; mines: readonly ScMine[] };
+export type PathRevealSnap = {
+  placement: string;
+  mines: readonly ScMine[];
+  kingLives?: Record<StarChessColor, number>;
+};
 
 export type PathRevealApply = PathRevealSnap & { fired: boolean };
 
@@ -203,7 +216,52 @@ export const applyPathRevealAttack = (
   const m = mineAt(mines, a.to);
   if (m && m.color !== a.color) mines = mines.filter((x) => x.at !== a.to);
   map.set(a.to, actor);
-  return { placement: mapToPlacement(map), mines, fired: true };
+  return {
+    placement: mapToPlacement(map),
+    mines,
+    kingLives: snap.kingLives ? { ...snap.kingLives } : undefined,
+    fired: true,
+  };
+};
+
+/**
+ * Fog path-discovery onto a hidden king — the only mid-resolve king HP chip.
+ * Stops on `stopAt` (before the king); never occupies or removes the king.
+ */
+export const applyPathRevealKingShot = (
+  snap: PathRevealSnap & { kingLives: Record<StarChessColor, number> },
+  a: Extract<ResolveAttack, { kind: "kingShot" }>,
+): PathRevealApply & { kingLives: Record<StarChessColor, number> } => {
+  if (!a.pathRevealFrom || a.stopAt == null) {
+    return { ...snap, kingLives: { ...snap.kingLives }, fired: false };
+  }
+  const map = placementToMap(snap.placement);
+  const actor = map.get(a.pathRevealFrom);
+  if (!actor || actor.color !== a.color || actor.type !== a.piece) {
+    return { ...snap, kingLives: { ...snap.kingLives }, fired: false };
+  }
+  const king = map.get(a.to);
+  if (!king || king.type !== "k" || king.color === a.color) {
+    return { ...snap, kingLives: { ...snap.kingLives }, fired: false };
+  }
+  if (a.stopAt !== a.pathRevealFrom) {
+    if (map.has(a.stopAt)) {
+      return { ...snap, kingLives: { ...snap.kingLives }, fired: false };
+    }
+    map.delete(a.pathRevealFrom);
+    map.set(a.stopAt, actor);
+  }
+  const kingLives = {
+    w: clampLives(snap.kingLives.w),
+    b: clampLives(snap.kingLives.b),
+  };
+  kingLives[a.target] = clampLives(kingLives[a.target] - 1);
+  return {
+    placement: mapToPlacement(map),
+    mines: [...snap.mines],
+    kingLives,
+    fired: true,
+  };
 };
 
 const plansOf = (input: ResolveTurnInput): ClassicalPlan[] => {
@@ -534,30 +592,43 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
           break;
         }
         if (occ.type === "k") {
-          // King on the path before intentTo — HP chip, stop before the king.
-          //
-          // Deliberately NOT fog-gated, unlike the turn-start check
-          // (`collectLegalKingChecks` + `isTargetVisible`). A slider that could
-          // not see the enemy king at turn start still chips it by walking its
-          // ray into it: this is a **discovered check** — with the fog lifted it
-          // is a plain check, so the damage stands. The mover stops before the
-          // king (never occupies it), and a king killed here bails the turn out
-          // in `endScTurn` just like a check-phase kill.
-          const hit = plan.color === "w" ? "b" : "w";
-          const livesAfter = clampLives(lives[hit] - 1);
-          lives[hit] = livesAfter;
-          const stop = i === 0 ? plan.from : mids[i - 1]!;
-          attacks.push({
-            kind: "kingShot",
-            piece: actor.type,
-            color: plan.color,
-            from: stop === plan.from ? plan.from : stop,
-            to: s,
-            target: hit,
-            livesAfter,
-          });
-          if (stop !== plan.from) {
-            occupy.push({ color: plan.color, from: plan.from, to: stop });
+          // King HP mid-resolve only via fog path-discovery (phase 3).
+          // Visible kings already paid at turn open (`beginScTurn`) — stop
+          // before the king with no further chip. Still-fogged kings that never
+          // light up also do not chip (truncate only).
+          const startVisible = canSee(plan.color, s);
+          const reveal = pathRevealSteps(
+            input.placement,
+            plan.from,
+            plan.to,
+            plan.color,
+            s,
+            input.pathVisionOpts,
+          );
+          const becomesVisible = !startVisible && reveal != null && reveal > 0;
+          const stopAt: Square | null = i === 0 ? null : mids[i - 1]!;
+
+          if (becomesVisible) {
+            const discovery = mids[reveal! - 1]!;
+            const hit = plan.color === "w" ? "b" : "w";
+            pathRevealPending.push({
+              kind: "kingShot",
+              piece: actor.type,
+              color: plan.color,
+              from: discovery,
+              to: s,
+              target: hit,
+              livesAfter: 0,
+              pathRevealFrom: plan.from,
+              pathRevealSteps: reveal!,
+              stopAt: stopAt ?? plan.from,
+            });
+            pathHandled = true;
+            break;
+          }
+
+          if (stopAt && stopAt !== plan.from) {
+            occupy.push({ color: plan.color, from: plan.from, to: stopAt });
           }
           pathHandled = true;
           break;
@@ -809,19 +880,42 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
   // square was not re-occupied by a phase-2 mover) and an enemy still holds `to`
   // (empty target or converging attack ⇒ fizzle). `pathRevealAttacks` therefore
   // contains only attacks that actually fired.
+  // King HP mid-resolve is only fog path-discovery onto a hidden king.
   const pathRevealAttacks: ResolveAttack[] = [];
-  let phase3: PathRevealSnap = {
+  let phase3: PathRevealSnap & { kingLives: Record<StarChessColor, number> } = {
     placement: afterMove.placement,
     mines: [...mines],
+    kingLives: { ...lives },
   };
   for (const a of pathRevealPending) {
-    if (a.kind !== "capture" || !a.pathRevealFrom) continue;
+    if (a.kind !== "capture" && a.kind !== "kingShot") continue;
+    if (!a.pathRevealFrom) continue;
     if ((input.siegedRooks ?? []).includes(a.pathRevealFrom)) continue;
     if (destinationsWritten.has(a.pathRevealFrom)) continue;
-    const applied = applyPathRevealAttack(phase3, a);
+    if (a.kind === "capture") {
+      const applied = applyPathRevealAttack(phase3, a);
+      if (!applied.fired) continue;
+      phase3 = {
+        placement: applied.placement,
+        mines: [...applied.mines],
+        kingLives: { ...phase3.kingLives },
+      };
+      pathRevealAttacks.push(a);
+      continue;
+    }
+    const applied = applyPathRevealKingShot(phase3, a);
     if (!applied.fired) continue;
-    phase3 = applied;
-    pathRevealAttacks.push(a);
+    phase3 = {
+      placement: applied.placement,
+      mines: [...applied.mines],
+      kingLives: { ...applied.kingLives },
+    };
+    lives.w = applied.kingLives.w;
+    lives.b = applied.kingLives.b;
+    pathRevealAttacks.push({
+      ...a,
+      livesAfter: applied.kingLives[a.target],
+    });
   }
 
   // Phase 4 — promotions for pawns that survived attack/move/mines.

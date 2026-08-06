@@ -39,6 +39,8 @@ export type TimelineCue =
       color: StarChessColor;
       from: Square;
       to: Square;
+      /** When set, HP chips at frag impact (live king-damage boom). */
+      kingShot?: { target: StarChessColor; livesAfter: number };
     }
   | {
       kind: "death";
@@ -66,8 +68,12 @@ export type TimelineCue =
 export type TimelineState = {
   active: boolean;
   cues: TimelineCue[];
+  /** Cue id(s) currently animating — multiple for parallel spawn deploys. */
+  playingIds: readonly string[];
   /** Squares whose piece glyph is hidden while a cue plays. */
   hiddenSquares: ReadonlySet<Square>;
+  /** Move slide progress (0 = at from, 1 = sliding/at to). */
+  moveProgress: Readonly<Record<string, 0 | 1>>;
   /** Temporary placement overrides during resolve (mid-timeline commits). */
   displayPlacement: string | null;
 };
@@ -89,6 +95,11 @@ export type MatchState = {
   lastResolve: EndScTurnResult | null;
   selected: Square | null;
   legalDests: readonly Square[];
+  /**
+   * True after turn-open king-checks were applied (`beginScTurn`) for this
+   * planning window. `SUBMIT_TURN` then skips re-applying those checks.
+   */
+  turnStartChecksApplied: boolean;
 };
 
 export type MatchAction =
@@ -102,18 +113,26 @@ export type MatchAction =
   | { type: "OPEN_SPAWN"; color: StarChessColor; unit: SpawnPiece }
   | { type: "CANCEL_TARGET" }
   | { type: "MARK_SPECIAL_USED"; square: Square }
+  | { type: "APPLY_SNAPSHOT"; snapshot: ScFenSnapshot }
   | { type: "SUBMIT_TURN"; reason: "end" | "timeout" }
   | { type: "RESOLVE_READY"; result: EndScTurnResult }
+  | { type: "MARK_CHECKS_APPLIED" }
+  | { type: "BEGIN_CHECKS_DONE" }
   | { type: "TIMELINE_START"; cues: TimelineCue[]; placement: string }
   | {
       type: "TIMELINE_COMMIT";
       placement?: string;
       kingLives?: ScFenSnapshot["kingLives"];
       mines?: ScFenSnapshot["mines"];
+      siegedRooks?: readonly Square[];
       hidden?: readonly Square[];
+      playingIds?: readonly string[];
+      moveProgress?: Record<string, 0 | 1>;
     }
   | { type: "TIMELINE_DONE" }
+  | { type: "REVIEW_SEEK"; index: number }
   | { type: "SET_VIEWER"; viewer: ViewerColor }
   | { type: "SET_DEADLINE"; at: number | null }
   | { type: "SPEND_STORED"; color: StarChessColor; amount: number }
+  | { type: "REFUND_STORED"; color: StarChessColor; amount: number }
   | { type: "CANCEL_EFFECTS" };

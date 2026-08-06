@@ -43,21 +43,42 @@ describe("resolveTurn", () => {
     expect(r.afterMove.placement).toBe("k7/8/5r2/2K5/8/8/8/6b1");
   });
 
-  it("path-discovery kingShot chips when king sits mid-ray (intent past king)", () => {
-    // Rook a8 → a1 past white king on a4 — resolve.puml path discovery.
+  it("visible king mid-ray: truncate before king, no mid-resolve HP", () => {
+    // Visible kings already paid at turn open — resolve only stops before them.
     const r = resolveTurn({
       placement: "r6k/8/8/8/K7/8/8/8",
       kingLives: { w: 2, b: 3 },
       white: null,
       black: { color: "b", from: "a8", to: "a1" },
     });
-    expect(r.attacks[0]).toMatchObject({
+    expect(r.attacks).toEqual([]);
+    expect(r.pathRevealAttacks).toEqual([]);
+    expect(r.afterAttack.kingLives.w).toBe(2);
+    expect(r.moves).toEqual([
+      expect.objectContaining({ piece: "r", color: "b", from: "a8", to: "a5" }),
+    ]);
+  });
+
+  it("fog path-discovery kingShot chips when a hidden king sits mid-ray", () => {
+    // King not visible at start; walking the ray lights it → phase-3 HP chip.
+    const r = resolveTurn({
+      placement: "r6k/8/8/8/K7/8/8/8",
+      kingLives: { w: 2, b: 3 },
+      white: null,
+      black: { color: "b", from: "a8", to: "a1" },
+      isTargetVisible: () => false,
+    });
+    expect(r.attacks).toEqual([]);
+    expect(r.pathRevealAttacks[0]).toMatchObject({
       kind: "kingShot",
-      from: "a5",
+      from: "a6",
       to: "a4",
       livesAfter: 1,
+      pathRevealFrom: "a8",
+      stopAt: "a5",
     });
-    expect(r.afterAttack.kingLives.w).toBe(1);
+    expect(r.afterAll.kingLives.w).toBe(1);
+    expect(r.afterAll.placement).toBe("7k/8/8/r7/K7/8/8/8");
   });
 
   it("Combat Chain turn 1: dual quiet slides", () => {

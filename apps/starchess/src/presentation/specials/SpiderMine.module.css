@@ -1,0 +1,146 @@
+.mine {
+  position: absolute;
+  inset: 14%;
+  width: 72%;
+  height: 72%;
+  pointer-events: none;
+  z-index: 4;
+  overflow: visible;
+  transform-origin: center bottom;
+  transition: transform 160ms ease-out;
+}
+
+.mine.deploying {
+  z-index: 5;
+}
+
+.mine.chasing {
+  /* Legs out, stay grounded — lift only after the victim lands (missile overlay). */
+  z-index: 6;
+  animation: mineChaseBob 420ms ease-in-out infinite;
+}
+
+.mine.missile {
+  /* No translateY — MineMissileAnimation aims with rotate(±90°) for
+     file chases; a lift becomes left/right padding on the a-file. */
+  z-index: 6;
+  animation: none;
+  transform-origin: center center;
+}
+
+.shadow {
+  transition: opacity 160ms ease-out, transform 160ms ease-out;
+}
+
+.mine.chasing .shadow {
+  opacity: 0.45;
+  transform: scale(0.9);
+}
+
+.mine.missile .shadow {
+  /* Keep shadow under the body — no translateY (same lateral bug as hull). */
+  opacity: 0.45;
+  transform: scale(0.85);
+}
+
+.legs {
+  pointer-events: none;
+}
+
+.legArm {
+  transform-box: view-box;
+}
+
+.mine.deploying .legArm {
+  animation: legBury var(--leg-ms, 200ms) ease-in 1 forwards;
+}
+
+.mine.chasing .legArm {
+  animation: legEmerge var(--leg-ms, 40ms) ease-out 1 forwards;
+}
+
+.mine.missile .legArm {
+  animation: none;
+  opacity: 1;
+  transform: scale(1);
+}
+
+.leg {
+  filter: drop-shadow(0 0.5px 0 rgba(0, 0, 0, 0.25));
+}
+
+.enamel {
+  filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.12));
+}
+
+.sensor {
+  animation: sensorPulse 1.6s ease-in-out infinite;
+}
+
+.mine.chasing .sensor,
+.mine.missile .sensor {
+  animation: sensorPulse 0.55s ease-in-out infinite;
+}
+
+@keyframes legBury {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.08);
+  }
+}
+
+@keyframes legEmerge {
+  0% {
+    opacity: 0;
+    transform: scale(0.08);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes sensorPulse {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes mineChaseBob {
+  0%,
+  100% {
+    transform: translateY(-28%);
+  }
+  50% {
+    transform: translateY(-34%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mine,
+  .shadow {
+    transition: none;
+  }
+
+  .mine.chasing {
+    animation: none;
+  }
+
+  .legArm {
+    animation-duration: 1ms !important;
+  }
+
+  .sensor,
+  .mine.chasing .sensor,
+  .mine.missile .sensor {
+    animation: none;
+  }
+}

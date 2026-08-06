@@ -136,12 +136,13 @@ export type {
 } from "./resolve/resolve-turn";
 export {
   applyPathRevealAttack,
+  applyPathRevealKingShot,
   applyPendingKingShots,
   resolveTurn,
 } from "./resolve/resolve-turn";
 
-export type { ResolveEvent, EndScTurnResult } from "./resolve/submit-turn";
-export { endScTurn } from "./resolve/submit-turn";
+export type { ResolveEvent, EndScTurnResult, EndScTurnOptions, BeginScTurnResult } from "./resolve/submit-turn";
+export { endScTurn, beginScTurn } from "./resolve/submit-turn";
 
 export {
   hasExactKingPair,
@@ -169,8 +170,9 @@ export {
   validateScFenHistory,
 } from "./replay/validate-history";
 
-export type { NerdVision, PathVisionOpts } from "./board/vision";
+export type { NerdVision, PathVisionOpts, VisionBoard } from "./board/vision";
 export {
+  visionMap,
   getNerdVision,
   getSideVision,
   getNerdVisibleSquares,

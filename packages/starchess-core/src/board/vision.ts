@@ -1,13 +1,14 @@
 /**
  * Cumulative fog — union of friendly-unit vision; mines light their own square.
- * Rules-side only (no SVG / animation). Display helpers stay in apps/ui vision.ts.
+ * Rules-side only (no SVG / animation). SCFEN placement maps are authoritative —
+ * chess.js FEN load is never consulted.
  * // SPEC: _spec/apps/ui/starchess/starchess-mode.puml, _spec/apps/ui/starchess/resolve.puml
  */
-import { Chess, type Color, type Square } from "chess.js";
+import type { Square } from "chess.js";
 
-import { mapToPlacement, placementToMap } from "./placement";
+import { placementToMap, type ScPiece } from "./placement";
 import { rayBetween } from "./mines";
-import type { RookMode } from "../model/types";
+import type { RookMode, StarChessColor } from "../model/types";
 
 const FILES = "abcdefgh";
 
@@ -61,6 +62,27 @@ export type NerdVision = {
 };
 
 /**
+ * Occupancy for fog math. Prefer SCFEN placement / piece maps.
+ * Duck-typed `{ fen() }` (e.g. chess.js Chess) is accepted only as a convenience
+ * adapter for legacy callers — never as a legality oracle.
+ */
+export type VisionBoard =
+  | ReadonlyMap<Square, ScPiece>
+  | string
+  | { fen: () => string };
+
+/** Normalize any {@link VisionBoard} into a mutable occupancy map. */
+export function visionMap(board: VisionBoard): Map<Square, ScPiece> {
+  if (typeof board === "string") return placementToMap(board);
+  if (board instanceof Map) return board;
+  const duck = board as { fen?: () => string };
+  if (typeof duck.fen === "function") {
+    return placementToMap(duck.fen().split(/\s+/)[0]!);
+  }
+  return new Map(board as ReadonlyMap<Square, ScPiece>);
+}
+
+/**
  * Returns fog-cleared tiles and any pieces revealed through fog for one unit.
  * Vision is geometric: pieces do not block it.
  *
@@ -69,15 +91,16 @@ export type NerdVision = {
  * - `siege`: 9×9 (immobile — enforced by the board, not here)
  */
 export function getNerdVision(
-  game: Chess,
+  board: VisionBoard,
   source: Square | null,
   opts?: { rookModeFor?: (square: Square) => RookMode },
 ): NerdVision {
+  const map = visionMap(board);
   const litSquares = new Set<Square>();
   const revealedPieces = new Set<Square>();
   if (!source) return { litSquares, revealedPieces };
 
-  const piece = game.get(source);
+  const piece = map.get(source);
   if (!piece) return { litSquares, revealedPieces };
 
   const sourceFile = FILES.indexOf(source[0]!);
@@ -114,13 +137,10 @@ export function getNerdVision(
 
     case "b":
       addRectangle(litSquares, sourceFile, sourceRank, 2);
-      for (let file = 0; file < 8; file++) {
-        for (let rank = 1; rank <= 8; rank++) {
-          const square = squareAt(file, rank);
-          // Queen ping: show the unit through fog, but keep its tile darkened.
-          if (square && game.get(square)?.type === "q" && !litSquares.has(square)) {
-            revealedPieces.add(square);
-          }
+      for (const [square, occ] of map) {
+        // Queen ping: show the unit through fog, but keep its tile darkened.
+        if (occ.type === "q" && !litSquares.has(square)) {
+          revealedPieces.add(square);
         }
       }
       break;
@@ -146,26 +166,26 @@ export function getNerdVision(
 
 /**
  * Cumulative fog vision for one side: union of every friendly unit's vision.
- * Empty army ⇒ empty sets (full fog).
+ * Empty army ⇒ empty sets (full fog). Kingless / odd SCFEN placements still work —
+ * chess.js FEN validation is never applied.
  */
 export function getSideVision(
-  game: Chess,
-  color: Color,
+  board: VisionBoard,
+  color: StarChessColor,
   opts?: {
     rookModeFor?: (square: Square) => RookMode;
-    mines?: readonly { at: Square; color: Color }[];
+    mines?: readonly { at: Square; color: StarChessColor }[];
   },
 ): NerdVision {
+  const map = visionMap(board);
   const litSquares = new Set<Square>();
   const revealedPieces = new Set<Square>();
 
-  for (const row of game.board()) {
-    for (const cell of row) {
-      if (!cell || cell.color !== color) continue;
-      const unit = getNerdVision(game, cell.square, opts);
-      for (const square of unit.litSquares) litSquares.add(square);
-      for (const square of unit.revealedPieces) revealedPieces.add(square);
-    }
+  for (const [square, piece] of map) {
+    if (piece.color !== color) continue;
+    const unit = getNerdVision(map, square, opts);
+    for (const lit of unit.litSquares) litSquares.add(lit);
+    for (const rev of unit.revealedPieces) revealedPieces.add(rev);
   }
 
   for (const mine of opts?.mines ?? []) {
@@ -179,16 +199,16 @@ export function getSideVision(
 
 /** Fog-cleared tiles only (excludes bishop queen-pings that stay under fog). */
 export function getNerdVisibleSquares(
-  game: Chess,
+  board: VisionBoard,
   source: Square | null,
   opts?: { rookModeFor?: (square: Square) => RookMode },
 ): ReadonlySet<Square> {
-  return getNerdVision(game, source, opts).litSquares;
+  return getNerdVision(board, source, opts).litSquares;
 }
 
 export type PathVisionOpts = {
   rookModeFor?: (square: Square) => RookMode;
-  mines?: readonly { at: Square; color: Color }[];
+  mines?: readonly { at: Square; color: StarChessColor }[];
 };
 
 /**
@@ -199,7 +219,7 @@ export function pathRevealsTarget(
   placement: string,
   from: Square,
   intentTo: Square,
-  viewer: Color,
+  viewer: StarChessColor,
   target: Square,
   opts?: PathVisionOpts,
 ): boolean {
@@ -215,7 +235,7 @@ export function pathRevealSteps(
   placement: string,
   from: Square,
   intentTo: Square,
-  viewer: Color,
+  viewer: StarChessColor,
   target: Square,
   opts?: PathVisionOpts,
 ): number | null {
@@ -230,8 +250,7 @@ export function pathRevealSteps(
     const board = new Map(base);
     board.delete(from);
     board.set(mid, piece);
-    const game = new Chess(`${mapToPlacement(board)} w - - 0 1`);
-    const v = getSideVision(game, viewer, opts);
+    const v = getSideVision(board, viewer, opts);
     if (v.litSquares.has(target) || v.revealedPieces.has(target)) return i + 1;
   }
   return null;
@@ -242,14 +261,14 @@ export function pathRevealSteps(
  * Own pieces are always visible; enemies only on lit tiles or `revealedPieces`.
  */
 export function isPieceVisibleToSide(
-  game: Chess,
-  viewer: Color,
+  board: VisionBoard,
+  viewer: StarChessColor,
   square: Square,
-  pieceColor: Color,
+  pieceColor: StarChessColor,
   opts?: { rookModeFor?: (square: Square) => RookMode },
 ): boolean {
   if (pieceColor === viewer) return true;
-  const { litSquares, revealedPieces } = getSideVision(game, viewer, opts);
+  const { litSquares, revealedPieces } = getSideVision(board, viewer, opts);
   return litSquares.has(square) || revealedPieces.has(square);
 }
 
@@ -258,15 +277,15 @@ export function isPieceVisibleToSide(
  * square for the shot; keep that reveal credit for its occupy/slide cue.
  */
 export function isMoverVisibleToSide(
-  game: Chess,
-  viewer: Color,
-  move: { from: Square; color: Color },
+  board: VisionBoard,
+  viewer: StarChessColor,
+  move: { from: Square; color: StarChessColor },
   revealedFrom: ReadonlySet<Square>,
   opts?: { rookModeFor?: (square: Square) => RookMode },
 ): boolean {
   return (
     move.color === viewer ||
     revealedFrom.has(move.from) ||
-    isPieceVisibleToSide(game, viewer, move.from, move.color, opts)
+    isPieceVisibleToSide(board, viewer, move.from, move.color, opts)
   );
 }

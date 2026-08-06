@@ -17,6 +17,7 @@ export type {
 } from "@chess-coach/starchess-core";
 export {
   applyPathRevealAttack,
+  applyPathRevealKingShot,
   applyPendingKingShots,
   resolveTurn,
 } from "@chess-coach/starchess-core";

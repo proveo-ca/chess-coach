@@ -1,5 +1,7 @@
 /** Presentation timings — injected scheduler advances these in tests. */
 export const ATTACK_MS = 1000;
+/** King HP chip / hit boom — aligns with attack frag (`ATTACK_MS / 4`). */
+export const FRAG_FLIGHT_MS = ATTACK_MS / 4;
 export const DEATH_MS = 500;
 export const MOVE_SQUARE_MS = 200;
 export const DEPLOY_MS = 500;

@@ -4,7 +4,6 @@
  */
 
 import type { PieceSymbol, Square } from "chess.js";
-import { Chess } from "chess.js";
 
 import { collectLegalKingChecks, placementToMap } from "~/starchess/board";
 import { rookModeAfterB } from "~/starchess/rookSiegeMode";
@@ -129,10 +128,9 @@ export const intentOverlaysFromQueue = (
     const sieged = new Set(opts.siegedRooks ?? []);
     const rookModeFor = (sq: Square): RookMode =>
       sieged.has(sq) ? "siege" : "tank";
-    const game = new Chess(`${opts.placement} w - - 0 1`);
     const vOpts = { rookModeFor, mines: opts.mines };
-    const visionW = getSideVision(game, "w", vOpts);
-    const visionB = getSideVision(game, "b", vOpts);
+    const visionW = getSideVision(opts.placement, "w", vOpts);
+    const visionB = getSideVision(opts.placement, "b", vOpts);
     for (const shot of collectLegalKingChecks(opts.placement, {
       isTargetVisible: (color, square) => {
         const v = color === "w" ? visionW : visionB;

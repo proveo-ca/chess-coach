@@ -1,15 +1,20 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { StarChessScenarioHarness } from "~/stories/StarChessScenarioHarness";
-import { COMBAT_CHAIN_START_SCFEN } from "~/stories/fixtures/seeds";
+import { FogEdgeDemo } from "~/demos/FogEdgeDemo";
+import { QUEUE_AND_END_SCENARIO } from "~/demos/reviewSamples";
 
+/**
+ * DualNav observer review of a single End (both sides queued).
+ * Stories feed the SCFEN scenario package only.
+ */
 const meta = {
   title: "StarChess/Harness",
   parameters: {
     layout: "fullscreen",
     docs: {
       description: {
-        component: "StarChessScenarioHarness — single production command path for demos.",
+        component:
+          "Queue-then-End as DualNav observer review (not a live match store).",
       },
     },
   },
@@ -20,17 +25,5 @@ type Story = StoryObj;
 
 export const QueueAndEnd: Story = {
   name: "Queue then End",
-  render: () => (
-    <StarChessScenarioHarness
-      fixture={{
-        scfen: COMBAT_CHAIN_START_SCFEN,
-        fast: true,
-        queue: [
-          { timing: "C", kind: "classical", color: "w", from: "d2", to: "d4" },
-          { timing: "C", kind: "classical", color: "b", from: "e8", to: "c6" },
-        ],
-        autoEnd: true,
-      }}
-    />
-  ),
+  render: () => <FogEdgeDemo scenario={QUEUE_AND_END_SCENARIO} />,
 };

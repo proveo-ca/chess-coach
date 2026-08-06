@@ -30,7 +30,7 @@ package "UX (v1)" {
   component "ResourceBar + TurnBar\nabove the board; fog forced\nwhen ""starChessMode""" as U1 <<app>>
   component "Cumulative vision (""vision.ts"")\nunion of friendly units;\nmines light own square" as U2 <<db>>
   component "Attack-time reveal\nshooter ""from"" shown for the shot cue" as U3 <<app>>
-  component "Fog-edge DualNav stories\n(Bishop / Rook tank) — SCFEN only" as U4 <<app>>
+  component "Fog-edge DualNav stories\n(Bishop / Rook tank) — SCFEN only;\nreview DualNav: observer dual-vision\n(""getSideVision"" w+b borders, no veil)" as U4 <<app>>
 }
 
 note bottom
@@ -70,9 +70,12 @@ note bottom
   * Cumulative fog is forced on in ""starChessMode"", but
     viewer-masked movegen, fog-faithful AI, and first-class
     vision UX (not only DualNav SCFEN samples) are **not**
-    done. ""scMoves"" still takes full occupancy; adjutant
-    threat reads are full-board (only enemy-king hunt bonus
-    is vision-gated). Track as pending, not regressions.
+    done. DualNav **review** now shows observer dual-vision
+    borders (SCFEN ""getSideVision"" for both colors; full board).
+    Live play remains single-viewer fog. ""scMoves"" still takes
+    full occupancy; adjutant threat reads are full-board (only
+    enemy-king hunt bonus is vision-gated). Track as pending,
+    not regressions.
   ----
   **Queue edit:** TurnBar chips carry an X to
   ""removeQueuedScAction"" (refund special gas).

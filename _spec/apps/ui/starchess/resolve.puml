@@ -1,21 +1,31 @@
 @startuml resolve
 ' SPEC: _spec/apps/ui/starchess/resolve.puml
-' purpose: Rank-major classical resolve — king-checks → B → C (phase-1 attack → phase-2 move → phase-3 fog approach) → F.
+' purpose: Rank-major resolve — turn-open king-checks (before intent) → End: B → C → F.
 !include ../../../themes/proveo.puml
 
 title StarChess · Resolve — 3 phases: attack → move → fog approach
 
 start
 
-:Take planning snap — turn N queue\nwith moves + specials for both sides;
+:Take planning snap — turn N is open;
 
-:Turn-start **legal king-checks** — fog-visible, implicit,\nwhite then black (""applyPendingKingShots"").\nPendings are collected **before** B and C, so a unit that\nbreaks contact this turn still pays a **parting shot**;
+:**Turn-open legal king-checks** (""beginScTurn"") — fog-visible, implicit,\nwhite then black (""applyPendingKingShots"").\nResolved **before** players choose intent. A unit that\nbreaks contact later this turn already paid a **parting shot**;\n
 
 if (the two kings are adjacent?) then (yes)
   :**King duel** — a king is a legal checker of the enemy king.\nThe collector loops **both** king colours independently, so\ncontact is always **mutual**. Damage is **per checker**: every\nunit checking a king costs it 1 HP, so N checkers = N HP.\nKings leap (""leapsPiece"") → never the blocker / collision\nbranch: adjacency always chips, nothing is captured, the\nplacement is untouched;
 else (no)
   :Only checkers with clear geometry to the king chip;
 endif
+
+if (either king at 0 HP after turn-open checks?) then (yes)
+  :Phase **""O""** — no intent / B / C / F;
+  stop
+else (no)
+endif
+
+:Players queue intent (specials + classical);
+
+:End / timeout — ""endScTurn"" (live passes\n""skipTurnStartChecks"" when checks already applied);
 
 :Apply rank **B** specials — white then black\n(spawn / mine / warp / siege);
 
@@ -36,7 +46,7 @@ endif
 
 :Phase 2 **move** — survivors relocate; collisions\nresolved against the post-attack board; a target\n**still fogged at contact** → move collision\n(capture/occupy, no attack cue);
 
-:Phase 3 **fog approach** — path-reveal shots slide\n""pathRevealFrom"" → discovery square → attack;\n**fizzle unless** the attacker still occupies\n""pathRevealFrom"" (died in phases 1–2 / square\nre-occupied by a phase-2 mover / sieged — rooks\nnever relocate) and ""to"" holds the exact\nin-the-way victim (empty, converging ally, or a\ndifferent non-in-the-way enemy → fizzle, no capture);
+:Phase 3 **fog approach** — path-reveal shots slide\n""pathRevealFrom"" → discovery square → attack;\n**King HP mid-resolve** only here: fog intent finds a\nhidden king on the path (""pathReveal"" kingShot).\nVisible kings already paid at turn open — no second chip.\n**fizzle unless** the attacker still occupies\n""pathRevealFrom"" (died in phases 1–2 / square\nre-occupied by a phase-2 mover / sieged — rooks\nnever relocate) and ""to"" holds the exact\nin-the-way victim (empty, converging ally, or a\ndifferent non-in-the-way enemy → fizzle, no capture);
 
 :Apply rank **F** specials — white then black\n(post-move siege / late drops);
 
@@ -81,8 +91,11 @@ note right
   ""pathRevealAttacks"" (phase 3), and the snapshots ""afterMove""
   (post-phase-2) and ""afterAll"" (post-phase-3).
   **King shots:** ""collectLegalKingChecks"" + ""applyPendingKingShots""
-  at turn start. Implicit check → turn-start HP (legal geometry at
-  ""endScTurn"", before B); no king-aimed ""C="".
+  via ""beginScTurn"" at turn open (before intent). The **only** mid-resolve
+  king HP is fog path-discovery (""applyPathRevealKingShot""): intent into
+  fog finds a hidden king on the ray. Live ""endScTurn"" skips re-application
+  of turn-open checks (""skipTurnStartChecks""); atomic replay may still run
+  checks inside ""endScTurn"". No king-aimed ""C="".
   ====
   **King duel — two adjacent kings fight face-to-face.**
   ""collectLegalKingChecks"" does **not** exclude king-type attackers, so a

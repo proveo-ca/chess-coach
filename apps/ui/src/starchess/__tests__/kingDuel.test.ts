@@ -175,9 +175,8 @@ describe("king duel — adjacent kings fight face to face", () => {
 
   it("lets a fog-discovered check chip a king the attacker could not see", () => {
     // Ra1 has no vision of kd1 at turn start, so the check phase is fog-gated
-    // out. Driving a1->h1 walks the ray into the king: a discovered check, which
-    // is a plain check once fog is lifted, so the chip stands and the rook stops
-    // on c1 (never occupying the king square).
+    // out. Driving a1→h1 discovers the king mid-ray (phase-3 path reveal) —
+    // the only mid-resolve king HP path. Rook stops on c1 (never occupies).
     const p = "K7/8/8/8/8/8/8/R2k4";
     const snap = parseScFen(`SCFEN|${p}|1|33|P|G:11:11|Q:w:;b:`);
     expect(
@@ -191,6 +190,10 @@ describe("king duel — adjacent kings fight face to face", () => {
     expect(r.next.kingLives).toEqual({ w: 3, b: 2 });
     expect(r.next.placement).toBe("K7/8/8/8/8/8/8/2Rk4");
     expect(r.next.phase).toBe("P");
+    expect(r.resolved.pathRevealAttacks.some((a) => a.kind === "kingShot")).toBe(
+      true,
+    );
+    expect(r.resolved.attacks.every((a) => a.kind !== "kingShot")).toBe(true);
   });
 
   it("bails out when a fog-discovered check is the killing blow", () => {
