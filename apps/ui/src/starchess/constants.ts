@@ -1,14 +1,20 @@
-/** Caps, costs, timeout, income, king lives — StarChess v1 locked values. */
-
-export const KING_MAX_LIVES = 3;
-export const MAX_STORED_MATERIAL = 12;
-export const MAX_DEPLOYED_MATERIAL = 50;
-
 /**
- * Planning turn length — base clock for all StarChess timing.
- * Attack / impact / death windows are fractions of this.
+ * Caps / costs / timeout / income — rules live in `@chess-coach/starchess-core`.
+ * Animation durations stay here (presentation).
  */
-export const TURN_TIMEOUT_MS = 10_000;
+
+export {
+  KING_MAX_LIVES,
+  MAX_STORED_MATERIAL,
+  MAX_DEPLOYED_MATERIAL,
+  TURN_TIMEOUT_MS,
+  UNIT_COST,
+  incomeForTurn,
+  energyForTurn,
+  SPECIAL_ENERGY_COST,
+} from "@chess-coach/starchess-core";
+
+import { TURN_TIMEOUT_MS } from "@chess-coach/starchess-core";
 
 /**
  * Attack VFX phase (CSS `--attack-ms`) — 1/10 of a turn.
@@ -69,31 +75,3 @@ export const DEPLOY_LAND_MS = 300;
 
 /** @deprecated Prefer {@link DEPLOY_LAND_MS} — mechanoid thrust spans the landing window. */
 export const DEPLOY_THRUST_MS = DEPLOY_LAND_MS;
-
-export const UNIT_COST = {
-  k: 1,
-  p: 1,
-  n: 3,
-  b: 3,
-  r: 5,
-  q: 9,
-} as const;
-
-/** Material income by turn index (starts at 1 after each resolved round). */
-export const incomeForTurn = (turn: number): number => {
-  if (turn <= 10) return 1;
-  if (turn <= 20) return 2;
-  return 3;
-};
-
-/**
- * Vespene energy capacity for the planning turn — same tiers as material income.
- * Energy does **not** accumulate; each turn refills to this cap.
- * Turn 0 (demo seeds) uses the turn-1 tier.
- */
-export const energyForTurn = (turn: number): number =>
-  incomeForTurn(Math.max(1, turn));
-
-
-/** Gas burned when queueing / committing one special this turn. */
-export const SPECIAL_ENERGY_COST = 1;

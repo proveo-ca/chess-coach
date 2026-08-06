@@ -34,6 +34,7 @@ coverage/
 test-results/
 playwright-report/
 .playwright/
+storybook-static/
 
 # ==========================================
 # pnpm

@@ -10,13 +10,20 @@ promotion, gas-used fog reveal, and gas-step animation.
 
 Implementation has started on branch `feat-nerd-mode`. Progress notes:
 
-- **Done (embedded `apps/ui` + package seed):** promotion deferred after
-  move/mines; promoting-pawn×mine mutual destruction; gas-step `bMoves`/`fMoves`
-  animation hooks; gas-used fog reveal; terminal DualNav history
-  (`matchHistory.ts`); `@chess-coach/starchess-core` seed (`scOutcome`);
-  `apps/e2e/Dockerfile` + root `compose.yml`; `starchess-promotion` e2e.
-- **Still open:** full core extraction, `apps/starchess` shell, PWA/Wrangler
-  cutover, promotion off-board walk-off VFX polish, Docker image build smoke.
+- **Done — Phase 1:** `@chess-coach/starchess-core` owns rules; UI facades;
+  golden + differential tests.
+- **Done — Phase 2:** standalone `apps/starchess` Solid/Vite shell; match
+  reducer + explicit phases; snapshot board (no `gameStore` / `useChessBoard`);
+  `?scfen=` deep-link; queue → `endScTurn` → injected timeline → terminal
+  `gameOver`; zero `apps/ui` imports.
+- **Done — Phase 3 (slice):** nerd piece assets under `public/pieces/nerd` with
+  `BASE_URL` URLs; timeline projector (gas-step moves, promo hold→deploy);
+  gas-used fog reveal; `StarChessScenarioHarness` + `StarChess/*` stories;
+  `check:bundle` green; **Storybook running on :6007** with 9 StarChess stories
+  (`build-storybook` + live `storybook --ci` verified).
+- **Still open:** Phase 4 DualNav review polish in standalone; Phase 5
+  PWA/Wrangler; Phase 6 cutover; richer cue VFX port (Attack/Death/Move CSS
+  components) beyond the timeline projector; Docker image smoke.
 
 This plan does not authorize Cloudflare deployment or destructive cleanup
 without explicit approval.
@@ -586,75 +593,83 @@ scenarios pass through the production reducer and special registry.
 
 Exit gate: the baseline and known gaps are reproducible.
 
-### Phase 1: extract the core behind a compatibility facade
+### Phase 1: extract the core behind a compatibility facade — **DONE**
 
-1. Add `@chess-coach/starchess-core` to the pnpm workspace.
+1. Add `@chess-coach/starchess-core` to the pnpm workspace. ✅
 2. Move domain types, board operations, validation, SCFEN codecs, actions,
-   resolution, outcome, and Adjutant logic in small slices.
-3. Keep temporary adapters at old `apps/ui` import paths while consumers move.
-4. Split presentation/animation types out of the current mixed type file.
-5. Move replay validation out of SCFEN parsing.
-6. Move animation durations out of rules-side vision.
-7. Introduce the special registry without changing wire format yet.
+   resolution, outcome, and Adjutant logic in small slices. ✅
+3. Keep temporary adapters at old `apps/ui` import paths while consumers move. ✅
+4. Split presentation/animation types out of the current mixed type file. ✅
+   (`types.ts` re-exports domain; attack/move cues stay UI-local.)
+5. Move replay validation out of SCFEN parsing. ✅ (`replay/validate-history.ts`)
+6. Move animation durations out of rules-side vision. ✅
+   (rules in core; SVG / move-path occupancy helpers in UI `vision.ts`;
+   `ATTACK_MS` etc. stay in UI `constants.ts`.)
+7. Introduce the special registry without changing wire format yet. ✅
 8. Change classical promotion so relocate lands a pawn; add an explicit
-   post-move/mine promotion phase before F specials.
+   post-move/mine promotion phase before F specials. ✅
 9. Emit gas-step move events from `pawnDouble` instead of silent placement
-   teleport.
+   teleport. ✅
 10. Move rule-focused tests into the package and add differential tests that
     run old and extracted implementations over the golden corpus, plus new
-    promotion/mine and gas-step cases.
+    promotion/mine and gas-step cases. ✅
+    (`packages/starchess-core/tests/*`, UI `coreFacadeDifferential.test.ts`)
 
 Exit gate: the current embedded UI consumes the package and all differential
 tests pass for preserved behavior; new upgrade tests are present and define
-the intended contract.
+the intended contract. ✅
 
 Rollback: retain old modules until each replacement has parity; remove only the
 adapter for a completed slice.
 
-### Phase 2: create the standalone shell and match aggregate
+### Phase 2: create the standalone shell and match aggregate — **DONE**
 
 1. Scaffold SolidJS, Vite, Vitest, lint, format, and Storybook configuration in
-   `apps/starchess`.
+   `apps/starchess`. ✅
 2. Add the app reducer, explicit state machine, selectors, effects, and browser
-   ports.
+   ports. ✅
 3. Move `NerdScreen` responsibilities into focused application commands and
-   presentation components.
-4. Implement a StarChess-native board input controller.
-5. Render placement directly from the selected StarChess snapshot.
+   presentation components. ✅ (`StarChessScreen` + `MatchHud`)
+4. Implement a StarChess-native board input controller. ✅ (`useBoardInput`)
+5. Render placement directly from the selected StarChess snapshot. ✅
 6. Remove `gameStore` and repeated `loadFen` synchronization from the
-   standalone path.
+   standalone path. ✅
 7. Copy only the small primitives StarChess needs, then simplify them under
-   app ownership instead of importing from `apps/ui`.
+   app ownership instead of importing from `apps/ui`. ✅
 8. Keep `/chess/starchess` on the embedded implementation until standalone
-   behavior is verified.
+   behavior is verified. ✅ (untouched)
 
 Exit gate: a local standalone game can deep-link from SCFEN, queue actions,
 resolve a turn, animate it, and reach a terminal outcome without importing
-`apps/ui`.
+`apps/ui`. ✅
 
-### Phase 3: consolidate presentation, demos, and assets
+### Phase 3: consolidate presentation, demos, and assets — **DONE (exit gate)**
 
-1. Move StarChess animation components and CSS under the new app.
+1. Move StarChess animation components and CSS under the new app. ✅
+   (timeline projector + board/HUD CSS; full Attack/Death SVG ports deferred)
 2. Replace store-aware combat orchestration with the domain-event timeline
-   projector.
+   projector. ✅ (`timelinePlayer.ts`)
 3. Inject scheduler, clock, and random source so tests can advance effects
-   deterministically.
+   deterministically. ✅
 4. Implement the new promotion walk-off animation, then reuse existing deploy
-   cues for the promoted unit.
+   cues for the promoted unit. ✅ (promoHold → deploy cues; off-board polish later)
 5. Animate `pawnDouble` gas steps with ordinary move slides; keep queen warp as
-   a distinct special VFX if desired.
+   a distinct special VFX if desired. ✅ (gas-step move cues)
 6. Teach fog/reveal projection to show enemy gas-used units with the existing
-   green highlight.
-7. Create one `StarChessScenarioHarness`.
-8. Convert demos and stories to fixtures plus production commands.
-9. Delete alternate special controllers only after equivalent scenarios pass.
-10. Move Nerd piece assets into the standalone public tree.
-11. Replace hard-coded `/chess` asset references with base-aware URLs.
+   green highlight. ✅ (`fogProjection` + `data-special-used`)
+7. Create one `StarChessScenarioHarness`. ✅
+8. Convert demos and stories to fixtures plus production commands. ✅
+9. Delete alternate special controllers only after equivalent scenarios pass. ✅
+   (standalone has no alternate controllers; UI demos retained until Phase 6)
+10. Move Nerd piece assets into the standalone public tree. ✅
+11. Replace hard-coded `/chess` asset references with base-aware URLs. ✅
 12. Add a bundle-boundary check proving that Stockfish, WebLLM, coach services,
-    and Chess Coach stores are absent.
+    and Chess Coach stores are absent. ✅
 
 Exit gate: production, stories, and tests use one resolver and command path;
-promotion, gas-step animation, and gas-used enemy reveal behave as specified.
+promotion, gas-step animation, and gas-used enemy reveal behave as specified;
+**Storybook runs with `StarChess/*` stories.** ✅
+(`pnpm --filter @chess-coach/starchess storybook` → http://localhost:6007/)
 
 ### Phase 4: terminal history review
 

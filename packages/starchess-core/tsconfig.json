@@ -6,10 +6,7 @@
     "strict": true,
     "skipLibCheck": true,
     "noEmit": true,
-    "isolatedModules": true,
-    "paths": {
-      "~/*": ["../../apps/ui/src/*"]
-    }
+    "isolatedModules": true
   },
   "include": ["src"]
 }

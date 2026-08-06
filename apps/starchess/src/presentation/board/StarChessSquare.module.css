@@ -1,0 +1,80 @@
+.square {
+  position: relative;
+  display: grid;
+  place-items: center;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  aspect-ratio: 1;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.light {
+  background: #c8b48a;
+}
+
+.dark {
+  background: #6b5538;
+}
+
+.selected {
+  box-shadow: inset 0 0 0 3px #005f7f;
+}
+
+.valid .dot {
+  width: 28%;
+  height: 28%;
+  border-radius: 50%;
+  background: rgb(0 95 127 / 0.55);
+}
+
+.capture {
+  box-shadow: inset 0 0 0 3px rgb(203 32 0 / 0.7);
+}
+
+.fogged {
+  filter: brightness(0.45);
+}
+
+.fogged .piece {
+  opacity: 0;
+}
+
+.specialUsed {
+  box-shadow: inset 0 0 0 3px #2ecc71;
+}
+
+.piece {
+  width: 88%;
+  height: 88%;
+  object-fit: contain;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.ghost {
+  opacity: 0.45;
+  filter: grayscale(0.2);
+}
+
+.mine {
+  position: absolute;
+  width: 34%;
+  height: 34%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #ddd, #333 70%);
+  z-index: 1;
+}
+
+.mine[data-color="w"] {
+  outline: 2px solid #005f7f;
+}
+
+.mine[data-color="b"] {
+  outline: 2px solid #cb2000;
+}
+
+.dot {
+  position: absolute;
+}

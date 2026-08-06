@@ -1,19 +1,40 @@
 import type { Color, PieceSymbol, Square } from "chess.js";
 
+import type {
+  PieceColor,
+  PlayerEconomy,
+  ResolveEvent as CoreResolveEvent,
+  SpecialKind,
+  StarChessColor,
+  StarChessPiece,
+} from "@chess-coach/starchess-core";
 import type { PieceSet } from "~/types/settings";
 
-/** White / black side used by StarChess VFX and economy. */
-export type PieceColor = "w" | "b";
-
-export type StarChessColor = "w" | "b";
-
-/** Classical piece kinds used by attack / death / move cues. */
-export type StarChessPiece = "p" | "n" | "b" | "r" | "q" | "k";
+/** Domain types — implementation lives in `@chess-coach/starchess-core`. */
+export type {
+  PieceColor,
+  StarChessColor,
+  StarChessPiece,
+  RookMode,
+  ScPhaseCode,
+  SpawnPiece,
+  ScActionTiming,
+  ScSpecialKind,
+  SpecialKind,
+  ScAction,
+  ScActionInput,
+  DistributiveOmit,
+  ScTurnQueue,
+  ScMine,
+  ScFenSnapshot,
+  ScPendingKingShot,
+  ScFenErrorCode,
+  ScFenError,
+  ClassicalPlan,
+  PlayerEconomy,
+} from "@chess-coach/starchess-core";
 
 export type KingDamageState = "pristine" | "smallFire" | "bigFire" | "destroyed";
-
-/** Siege Tank turret: mobile twin guns vs deployed shock cannon (`InlineRook`). */
-export type RookMode = "tank" | "siege";
 
 /** Map tile treatments for StarChess boards. */
 export type NerdBoardVariant = "eclipse" | "butter" | "vermeer";
@@ -118,127 +139,6 @@ export type KingDamageCue = {
   cover?: readonly Square[];
 };
 
-/** Planning / resolve phase codes used in SCFEN. */
-export type ScPhaseCode = "P" | "B" | "A" | "M" | "F" | "O";
-
-/** King spawn choices — pawn first, then promotional set. */
-export type SpawnPiece = Extract<PieceSymbol, "p" | "q" | "r" | "b" | "n">;
-
-/** Queue timing codes written in SCFEN `Q:`. */
-export type ScActionTiming = "B" | "C" | "F";
-
-export type ScSpecialKind =
-  | "spawn"
-  | "pawnDouble"
-  | "knightMine"
-  | "bishopSnipe"
-  | "rookSiege"
-  | "queenWarp";
-
-export type ScAction =
-  | {
-      timing: "B" | "F";
-      kind: ScSpecialKind;
-      color: PieceColor;
-      from: Square;
-      to?: Square;
-      unit?: SpawnPiece;
-      seq: number;
-    }
-  | {
-      timing: "C";
-      kind: "classical";
-      color: PieceColor;
-      from: Square;
-      to: Square;
-      promotion?: SpawnPiece;
-      seq: number;
-    };
-
-/**
- * Action without `seq`, distributed over the union so each variant keeps its
- * discriminator and variant-only fields (`unit`, `promotion`). Plain
- * `Omit<ScAction, "seq">` collapses the union and drops those fields.
- */
-export type DistributiveOmit<T, K extends keyof T> = T extends unknown ? Omit<T, K> : never;
-
-export type ScActionInput = DistributiveOmit<ScAction, "seq">;
-
-export type ScTurnQueue = {
-  /** Global insertion sequence. Resolve groups by timing, then seq. */
-  actions: readonly ScAction[];
-};
-
-export type ScMine = {
-  color: PieceColor;
-  at: Square;
-};
-
-export type ScFenSnapshot = {
-  /** Classic piece-placement ranks (FEN field 0). */
-  placement: string;
-  turn: number;
-  kingLives: Record<PieceColor, number>;
-  phase: ScPhaseCode;
-  /** Remaining vespene this planning turn (`G:` first pair). */
-  gas: Record<PieceColor, number>;
-  /** Gas income/cap this turn (`G:` second pair) — authoritative for legality. */
-  gasIncome: Record<PieceColor, number>;
-  /**
-   * Squares whose unit already used a special this turn (`|U:a1c4…` extras).
-   * Cleared when `turn` advances.
-   */
-  specialsUsed?: readonly Square[];
-  /** Planning queue (`|Q:…`). Omit = snapshot-only. */
-  queue?: ScTurnQueue;
-  /** Spider Mines beside placement (`|M:…`). Max 2 per side. */
-  mines?: readonly ScMine[];
-  /**
-   * Squares whose Siege Tank is unpacked (`|S:c3f7…`). Immobile until toggled
-   * back to tank via `rookSiege`. Absent / empty ⇒ all rooks tank-mode.
-   */
-  siegedRooks?: readonly Square[];
-  /**
-   * Legacy deferred king-checks (`|H:…`). Parsed for round-trip only —
-   * `endScTurn` applies **legal** checks from board geometry instead.
-   */
-  pendingKingShots?: readonly ScPendingKingShot[];
-};
-
-/** Armed king-check waiting for next-turn resolve (SCFEN `H:`). */
-export type ScPendingKingShot = {
-  /** Attacking side. */
-  color: PieceColor;
-  piece: PieceSymbol;
-  from: Square;
-  /** Intent square (enemy king when armed). */
-  to: Square;
-};
-
-export type ScFenErrorCode =
-  | "SC_SCHEMA"
-  | "SC_PLACEMENT"
-  | "SC_GAS"
-  | "SC_QUEUE_SHAPE"
-  | "SC_PHASE"
-  | "SC_BASELINE_FEN"
-  | "SC_SPECIAL"
-  | "SC_REPLAY";
-
-export type ScFenError = {
-  code: ScFenErrorCode;
-  message: string;
-};
-
-/** One side’s classical action for simultaneous resolve. */
-export type ClassicalPlan = {
-  color: PieceColor;
-  from: Square;
-  to: Square;
-  /** Pawn promotion choice when `to` is the last rank. */
-  promotion?: SpawnPiece;
-};
-
 /** Pending Command Center deploy picker (was SpawnModalPending). */
 export type DeployModalPending = {
   color: Color;
@@ -250,18 +150,6 @@ export type SpawnModalPending = DeployModalPending;
 
 export type TurnPhase = "specialBefore" | "attack" | "move" | "specialAfter";
 export type SpecialTiming = "before" | "after";
-
-/**
- * Per-unit special (GasDeploy onto unit). `spawn`, pawn/knight/rook demos,
- * `bishopSnipe` (Charon Booster Missiles), and `queenWarp` (Tactical Jump) have board-op paths — see STARCHESS_MODE.md.
- */
-export type SpecialKind =
-  | "spawn"
-  | "pawnDouble"
-  | "knightMine"
-  | "bishopSnipe"
-  | "rookSiege"
-  | "queenWarp";
 
 export type QueuedSpecial = {
   id: string;
@@ -289,20 +177,11 @@ export type PlayerTurnPlan = {
   classical: QueuedClassical | null;
 };
 
-export type PlayerEconomy = {
-  stored: number;
-  deployed: number;
-};
-
 /** FEN-loadable piece occupancy for StarChess board snapshots (classic placement). */
 export type StarChessBoard = string;
 
-export type ResolveEvent = {
-  id: string;
-  phase: TurnPhase;
-  color: StarChessColor;
-  from?: Square;
-  to?: Square;
+/** Core resolve cue + optional presentation anim override. */
+export type ResolveEvent = CoreResolveEvent & {
   anim?: AttackAnimKind;
 };
 

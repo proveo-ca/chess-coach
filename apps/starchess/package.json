@@ -1,0 +1,38 @@
+{
+  "name": "@chess-coach/starchess",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "typecheck": "tsc -b --noEmit",
+    "test": "vitest run",
+    "lint": "oxlint -c oxlint.config.ts",
+    "storybook": "storybook dev -p 6007 --ci",
+    "build-storybook": "storybook build -o storybook-static",
+    "check:bundle": "node scripts/check-bundle-boundary.mjs"
+  },
+  "dependencies": {
+    "@chess-coach/starchess-core": "workspace:*",
+    "@solidjs/router": "^0.16.1",
+    "chess.js": "^1.4.0",
+    "clsx": "^2.1.1",
+    "solid-js": "^1.9.12"
+  },
+  "devDependencies": {
+    "@solidjs/testing-library": "^0.8.10",
+    "@storybook/addon-a11y": "^10.5.4",
+    "@storybook/addon-docs": "^10.5.4",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@types/node": "^24.12.2",
+    "jsdom": "^28.1.0",
+    "oxlint": "^1.62.0",
+    "storybook": "^10.5.4",
+    "storybook-solidjs-vite": "^10.6.0",
+    "typescript": "~5.9.3",
+    "vite": "^7.3.2",
+    "vite-plugin-solid": "^2.11.12",
+    "vitest": "^4.1.5"
+  }
+}

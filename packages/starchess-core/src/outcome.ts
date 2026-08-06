@@ -1,6 +1,7 @@
 // SPEC: _spec/apps/ui/starchess/resolve.puml
-/** Shared StarChess color used by core rules. */
-export type StarChessColor = "w" | "b";
+import type { StarChessColor } from "./model/types";
+
+export type { StarChessColor };
 
 export type ScOutcome =
   | { winner: StarChessColor; draw?: false }
