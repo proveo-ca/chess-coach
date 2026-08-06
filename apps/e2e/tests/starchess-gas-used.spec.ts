@@ -6,23 +6,25 @@ const gotoScfen = async (page: import("@playwright/test").Page, scfen: string) =
   await expect(page.getByTestId("nerd-board-chrome")).toBeVisible({ timeout: 20_000 });
 };
 
-test.describe("StarChess gas-used fog reveal", () => {
+test.describe("StarChess gas-used fog (no pierce)", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/");
     await page.evaluate(() => localStorage.clear());
   });
 
-  test("enemy gas-spent unit is visible through fog with data-special-used", async ({
+  test("enemy gas-spent unit stays fogged — no green ring leak", async ({
     page,
   }) => {
-    // Black knight on e5 spent gas (U:e5); white viewer — fog pierces green used unit.
+    // Black knight on e5 spent gas (U:e5); white viewer must not see it.
     const scfen =
       "SCFEN|4k3/8/8/4n3/8/8/8/4K3|1|33|P|G:11:11|U:e5|Q:w:;b:";
     await gotoScfen(page, scfen);
 
-    const used = page.locator("[data-square='e5'] [data-special-used='true']");
-    await expect(used).toBeVisible({ timeout: 10_000 });
-    // Fog veil may still sit on the square; the gas-used piece must pierce it.
-    await expect(page.locator("[data-square='e5'] img[alt='b n'], [data-square='e5'] [data-piece-inline]")).toBeVisible();
+    const e5 = page.locator("[data-square='e5']");
+    await expect(e5).toHaveAttribute("data-fog", "hidden", { timeout: 10_000 });
+    await expect(e5.locator("[data-special-used='true']")).toHaveCount(0);
+    await expect(
+      e5.locator("img[alt='b n'], [data-piece-inline]"),
+    ).toHaveCount(0);
   });
 });

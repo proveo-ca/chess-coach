@@ -11,6 +11,7 @@ export {
   UNIT_COST,
   incomeForTurn,
   energyForTurn,
+  turnTimeoutMsForTurn,
   SPECIAL_ENERGY_COST,
 } from "@chess-coach/starchess-core";
 

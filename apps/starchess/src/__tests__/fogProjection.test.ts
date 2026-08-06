@@ -13,7 +13,7 @@ import { MOVE_SQUARE_MS } from "~/presentation/constants";
 import { COMBAT_CHAIN_START_SCFEN } from "~/demos/combatChain";
 
 describe("fogProjection", () => {
-  it("reveals enemy gas-used squares without lighting tiles", () => {
+  it("does not pierce fog for enemy gas-used squares", () => {
     const base = {
       litSquares: new Set<Square>(["e1", "e2"]),
       revealedPieces: new Set<Square>(),
@@ -31,8 +31,9 @@ describe("fogProjection", () => {
         gasIncome: { w: 1, b: 1 },
       },
     );
-    expect(out.revealedPieces.has("e5")).toBe(true);
+    expect(out.revealedPieces.has("e5")).toBe(false);
     expect(out.litSquares.has("e5")).toBe(false);
+    expect([...out.litSquares].sort()).toEqual(["e1", "e2"]);
   });
 
   it("does not reveal friendly specialsUsed as fog pierce", () => {

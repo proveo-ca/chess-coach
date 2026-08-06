@@ -7,7 +7,7 @@ import {
   useContext,
   type ParentComponent,
 } from "solid-js";
-import { beginScTurn, type ScAction } from "@chess-coach/starchess-core";
+import { beginScTurn, turnTimeoutMsForTurn, type ScAction } from "@chess-coach/starchess-core";
 
 import type { MatchAction, MatchState, MatchStore } from "~/types/match";
 import { createInitialMatchState, matchReducer } from "~/app/matchReducer";
@@ -21,7 +21,6 @@ import {
 import { playReviewTurn } from "~/presentation/hud/playReviewTurn";
 import type { ReviewTurnPhase } from "~/types/review";
 import { playTimeline } from "~/presentation/timeline/timelinePlayer";
-import { TURN_TIMEOUT_MS } from "~/presentation/timeline/timings";
 
 export type { MatchStore };
 
@@ -117,9 +116,10 @@ export const createMatchStore = (opts?: {
       ensureTurnOpenChecks({ armTimer: true });
       return;
     }
-    const at = clock.now() + TURN_TIMEOUT_MS;
+    const timeoutMs = turnTimeoutMsForTurn(s.liveSnapshot.turn);
+    const at = clock.now() + timeoutMs;
     dispatch({ type: "SET_DEADLINE", at });
-    cancelTimer = scheduler.delay(TURN_TIMEOUT_MS, () => {
+    cancelTimer = scheduler.delay(timeoutMs, () => {
       submitTurn("timeout");
     });
   };

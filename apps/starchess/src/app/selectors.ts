@@ -31,8 +31,9 @@ export const displayedSnapshot = (state: MatchState): ScFenSnapshot => {
   }
   const placement =
     state.timeline.displayPlacement ?? state.liveSnapshot.placement;
-  // Snap `U:` = prior-resolve gas stamps (enemy fog pierce / green aura only).
+  // Snap `U:` = prior-resolve gas stamps (green aura when already visible).
   // Match `specialsUsed` = armed this planning window — do not merge into U:.
+  // U: is not a fog pierce — hidden enemies stay hidden.
   const { specialsUsed: usedMarks, ...rest } = state.liveSnapshot;
   return {
     ...rest,

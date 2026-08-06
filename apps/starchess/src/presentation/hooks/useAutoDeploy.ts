@@ -90,9 +90,27 @@ export function useAutoDeploy(opts: {
 
     const fresh = deployCuesForBoardDiff(prev, next);
     prev = next;
+
+    // Cancel in-flight deploys when the unit leaves / is captured mid-anim.
+    setAutoCues((cur) => {
+      const kept = cur.filter((c) => {
+        const p = next.get(c.at as Square);
+        return !!p && p.type === c.piece && p.color === c.color;
+      });
+      for (const c of cur) {
+        if (kept.some((k) => k.id === c.id)) continue;
+        const t = timers.get(c.id);
+        if (t) {
+          window.clearTimeout(t);
+          timers.delete(c.id);
+        }
+      }
+      if (fresh.length === 0) return kept;
+      return [...kept, ...fresh];
+    });
+
     if (fresh.length === 0) return;
 
-    setAutoCues((cur) => [...cur, ...fresh]);
     for (const cue of fresh) {
       const existing = timers.get(cue.id);
       if (existing) window.clearTimeout(existing);

@@ -59,12 +59,12 @@
   }
 }
 
-/* Desktop (≥ 720px): fixed board + 2rem horizontal gutters (no classical sideboard). */
+/* Desktop (≥ 720px): fixed board + classical sideboard rail. */
 @media (min-width: 720px) {
   :root {
-    --sidebar-width: 0px;
+    --sidebar-width: 6rem;
     --board-size: 480px;
-    --app-max-width: calc(var(--board-size) + 4rem);
+    --app-max-width: calc(var(--board-size) + var(--sidebar-width) + 4rem);
   }
 }
 

@@ -31,6 +31,12 @@ end note
 P ARROW_MAIN UI : queue special + classical for own side
 UI ARROW_MAIN FEN : ""Q:<sideQueue>;<sideQueue>""\n(B/F then C, or C then B/F)
 P ARROW_MAIN UI : End / timeout submits
+note right of UI
+  Planning clock = ""turnTimeoutMsForTurn"":
+  gas income tier 1→**10s**, 2→**15s**, 3→**22s**
+  (+50% per tier from base ""TURN_TIMEOUT_MS"").
+  Attack VFX fractions stay on the 10s base.
+end note
 UI ARROW_MAIN ES : ""endScTurn(snapshot)""
 
 == Resolve ==

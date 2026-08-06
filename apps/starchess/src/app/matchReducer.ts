@@ -83,6 +83,7 @@ const seedFromSnap = (snap: ScFenSnapshot, stored: number): MatchState => {
     lastResolve: null,
     selected: null,
     legalDests: [],
+    pendingPromotion: null,
     turnStartChecksApplied: false,
   };
 };
@@ -145,6 +146,7 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
           targeting: null,
           selected: null,
           legalDests: [],
+          pendingPromotion: null,
           statusText: "Action queued",
         };
       } catch (err) {
@@ -155,6 +157,11 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
     }
     case "QUEUE_REJECT":
       return { ...state, statusText: action.message };
+    case "SET_PENDING_PROMOTION":
+      if (state.phase !== "planning" && state.phase !== "targeting") return state;
+      return { ...state, pendingPromotion: action.pending };
+    case "CLEAR_PENDING_PROMOTION":
+      return { ...state, pendingPromotion: null };
     case "REMOVE_ACTION": {
       if (state.phase !== "planning") return state;
       try {
@@ -213,6 +220,7 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
         ...state,
         phase: state.phase === "targeting" ? "planning" : state.phase,
         targeting: null,
+        pendingPromotion: null,
         statusText: "Plan your turn",
       };
     case "MARK_SPECIAL_USED": {
@@ -262,16 +270,38 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
     }
     case "SUBMIT_TURN": {
       if (state.phase !== "planning" && state.phase !== "targeting") return state;
+      let snap = state.liveSnapshot;
+      // Timeout / End with the picker open → default Battlecruiser (queen).
+      const pending = state.pendingPromotion;
+      if (pending) {
+        try {
+          snap = addScAction({
+            snapshot: snap,
+            action: {
+              timing: "C",
+              kind: "classical",
+              color: pending.color,
+              from: pending.from,
+              to: pending.to,
+              promotion: "q",
+            },
+          }).snapshot;
+        } catch {
+          // Already queued / illegal — resolve whatever is on the board.
+        }
+      }
       try {
-        const result = endScTurn(state.liveSnapshot, {
+        const result = endScTurn(snap, {
           skipTurnStartChecks: state.turnStartChecksApplied,
         });
         return {
           ...state,
           phase: "resolving",
+          liveSnapshot: snap,
           targeting: null,
           selected: null,
           legalDests: [],
+          pendingPromotion: null,
           deadlineAt: null,
           lastResolve: result,
           statusText: action.reason === "timeout" ? "Time — resolving…" : "Resolving…",
@@ -279,6 +309,7 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
       } catch (err) {
         return {
           ...state,
+          pendingPromotion: null,
           statusText: err instanceof Error ? err.message : "Resolve failed",
         };
       }

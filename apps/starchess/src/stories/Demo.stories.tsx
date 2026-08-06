@@ -4,6 +4,7 @@ import { CombatChainDemo } from "~/demos/CombatChainDemo";
 import { FogEdgeDemo } from "~/demos/FogEdgeDemo";
 import { KingHuntDemo } from "~/demos/KingHuntDemo";
 import { KingHuntLiveScreen } from "~/demos/KingHuntLiveScreen";
+import { VermeerLiveScreen } from "~/demos/VermeerLiveScreen";
 import {
   PROMOTION_MINE_SCENARIO,
   PROMOTION_SCENARIO,
@@ -11,7 +12,7 @@ import {
 
 /**
  * Stories mount SCFEN demos / fixtures only — no queue / resolve logic here.
- * Non-live = DualNav observer review. Live = King Hunt (live) only.
+ * Non-live = DualNav observer review. Live = King Hunt (live) + Vermeer (live).
  * GasDeploy specials live under StarChess/Special Moves.
  */
 const meta = {
@@ -21,7 +22,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Review DualNav demos + one live seed. Combat Chain / King Hunt / Promotion = observer DualNav. King Hunt (live) = ResourceBar / TurnBar / GasDeploy + adjutant. Every board mounts on Screen grid.",
+          "Review DualNav demos + live seeds. Combat Chain / King Hunt / Promotion = observer DualNav. King Hunt (live) + Vermeer (live) = ResourceBar / TurnBar / GasDeploy + adjutant. Every board mounts on Screen grid.",
       },
     },
   },
@@ -69,6 +70,20 @@ export const KingHuntLive: Story = {
     },
   },
   render: () => <KingHuntLiveScreen />,
+};
+
+export const VermeerLive: Story = {
+  name: "Vermeer (live)",
+  parameters: {
+    layout: "fullscreen",
+    docs: {
+      description: {
+        story:
+          "Classic live opening on Vermeer terrain: each side 1 king + 4 pawns (same SCFEN as Maps → Vermeer). You play White; adjutant plays Black. ResourceBar / TurnBar / GasDeploy + fog + combat VFX.",
+      },
+    },
+  },
+  render: () => <VermeerLiveScreen />,
 };
 
 export const Promotion: Story = {

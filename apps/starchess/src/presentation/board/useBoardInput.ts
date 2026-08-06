@@ -1,7 +1,10 @@
 /**
  * Snapshot-driven board input — queues classical moves / spawn / Charon / Jump.
+ * Last-rank pawn moves open {@link PromotionModal} instead of auto-queuing queen.
+ * Timeout / End flushes a pending promotion as queen (see SUBMIT_TURN).
  */
 import type { Square } from "chess.js";
+import { createMemo } from "solid-js";
 import {
   UNIT_COST,
   adjacentSquares,
@@ -11,13 +14,52 @@ import {
 
 import { useMatchStore } from "~/app/MatchStoreContext";
 import { canSubmit, displayedSnapshot } from "~/app/selectors";
+import type { PromotionPiece } from "~/types/chess";
 
 export const useBoardInput = () => {
   const store = useMatchStore();
+  const pendingPromotion = createMemo(() => store.state().pendingPromotion);
+
+  const clearSelection = () => {
+    store.dispatch({ type: "SELECT_SQUARE", square: null });
+    store.dispatch({ type: "SET_LEGAL_DESTS", dests: [] });
+  };
+
+  const queueClassical = (
+    from: Square,
+    to: Square,
+    color: "w" | "b",
+    promotion?: PromotionPiece,
+  ) => {
+    store.dispatch({
+      type: "QUEUE_ACTION",
+      action: {
+        timing: "C",
+        kind: "classical",
+        color,
+        from,
+        to,
+        ...(promotion ? { promotion } : {}),
+      },
+    });
+  };
+
+  const resolvePromotion = (piece: PromotionPiece) => {
+    const pending = pendingPromotion();
+    if (!pending) return;
+    store.dispatch({ type: "CLEAR_PENDING_PROMOTION" });
+    queueClassical(pending.from, pending.to, pending.color, piece);
+  };
+
+  const cancelPromotion = () => {
+    store.dispatch({ type: "CLEAR_PENDING_PROMOTION" });
+    // Keep selection / dests so the player can re-pick or cancel the move.
+  };
 
   const onSquareClick = (square: Square) => {
     const state = store.state();
     if (!canSubmit(state)) return;
+    if (state.pendingPromotion) return; // modal owns the click until resolved/cancelled
 
     if (state.targeting?.kind === "spawn") {
       const color = state.targeting.color;
@@ -133,8 +175,7 @@ export const useBoardInput = () => {
     }
 
     if (selected === square) {
-      store.dispatch({ type: "SELECT_SQUARE", square: null });
-      store.dispatch({ type: "SET_LEGAL_DESTS", dests: [] });
+      clearSelection();
       return;
     }
 
@@ -149,8 +190,7 @@ export const useBoardInput = () => {
           dests: moves.map((m) => m.to),
         });
       } else {
-        store.dispatch({ type: "SELECT_SQUARE", square: null });
-        store.dispatch({ type: "SET_LEGAL_DESTS", dests: [] });
+        clearSelection();
       }
       return;
     }
@@ -161,18 +201,29 @@ export const useBoardInput = () => {
       siegedRooks: [...state.siegedRooks],
     }).find((m) => m.to === square);
 
-    store.dispatch({
-      type: "QUEUE_ACTION",
-      action: {
-        timing: "C",
-        kind: "classical",
-        color: mover.color,
-        from: selected,
-        to: square,
-        ...(move?.promotes ? { promotion: move.promotion ?? "q" } : {}),
-      },
-    });
+    if (move?.promotes) {
+      store.dispatch({
+        type: "SET_PENDING_PROMOTION",
+        pending: {
+          color: mover.color,
+          from: selected,
+          to: square,
+        },
+      });
+      store.dispatch({
+        type: "QUEUE_REJECT",
+        message: `Promote ${selected}→${square} — pick a unit`,
+      });
+      return;
+    }
+
+    queueClassical(selected, square, mover.color);
   };
 
-  return { onSquareClick };
+  return {
+    onSquareClick,
+    pendingPromotion,
+    resolvePromotion,
+    cancelPromotion,
+  };
 };

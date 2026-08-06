@@ -5,8 +5,9 @@ export const MAX_STORED_MATERIAL = 12;
 export const MAX_DEPLOYED_MATERIAL = 50;
 
 /**
- * Planning turn length — base clock for all StarChess timing.
- * Attack / impact / death windows are fractions of this (presentation layer).
+ * Planning turn length — base clock for animation fractions and for income
+ * tier 1 (turns 1–10). Higher gas-income tiers stretch the live planning
+ * clock via {@link turnTimeoutMsForTurn}; attack/death VFX stay on this base.
  */
 export const TURN_TIMEOUT_MS = 10_000;
 
@@ -33,6 +34,20 @@ export const incomeForTurn = (turn: number): number => {
  */
 export const energyForTurn = (turn: number): number =>
   incomeForTurn(Math.max(1, turn));
+
+/**
+ * Live planning deadline for a turn — +50% per gas-income tier from base:
+ * income 1 → 10s, 2 → 15s, 3 → 22s (`floor(base × 1.5^(tier−1))` in whole seconds).
+ * Presentation attack windows keep using {@link TURN_TIMEOUT_MS}.
+ */
+export const turnTimeoutMsForTurn = (turn: number): number => {
+  const tier = energyForTurn(turn);
+  let ms = TURN_TIMEOUT_MS;
+  for (let i = 1; i < tier; i += 1) {
+    ms = Math.floor((ms * 1.5) / 1000) * 1000;
+  }
+  return ms;
+};
 
 /** Gas burned when queueing / committing one special this turn. */
 export const SPECIAL_ENERGY_COST = 1;

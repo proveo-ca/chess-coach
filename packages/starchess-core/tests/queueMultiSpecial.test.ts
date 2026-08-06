@@ -105,4 +105,53 @@ describe("endScTurn — F specials resolve on post-C square", () => {
     expect(gasEv?.from).toBe("c3");
     expect(gasEv?.to).toBe("c3");
   });
+
+  it("allows F mine when origin already has a mine (drop is post-C)", () => {
+    let snap = parseScFen(
+      "SCFEN|4k3/8/8/8/8/8/8/1N2K3|11|33|P|G:22:22|Q:w:;b:|M:w:b1",
+    );
+    snap = addScAction({
+      snapshot: snap,
+      action: {
+        timing: "C",
+        kind: "classical",
+        color: "w",
+        from: "b1",
+        to: "c3",
+      },
+    }).snapshot;
+    snap = addScAction({
+      snapshot: snap,
+      action: { timing: "F", kind: "knightMine", color: "w", from: "b1", to: "b1" },
+    }).snapshot;
+    const r = endScTurn(snap, { skipTurnStartChecks: true });
+    expect(r.next.mines).toEqual(
+      expect.arrayContaining([
+        { color: "w", at: "b1" },
+        { color: "w", at: "c3" },
+      ]),
+    );
+  });
+
+  it("refuses F mine when the post-C square already has a mine", () => {
+    let snap = parseScFen(
+      "SCFEN|4k3/8/8/8/8/8/8/1N2K3|11|33|P|G:22:22|Q:w:;b:|M:w:c3",
+    );
+    snap = addScAction({
+      snapshot: snap,
+      action: {
+        timing: "C",
+        kind: "classical",
+        color: "w",
+        from: "b1",
+        to: "c3",
+      },
+    }).snapshot;
+    expect(() =>
+      addScAction({
+        snapshot: snap,
+        action: { timing: "F", kind: "knightMine", color: "w", from: "b1", to: "b1" },
+      }),
+    ).toThrow(/mine already/);
+  });
 });

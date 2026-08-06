@@ -10,6 +10,7 @@ import type {
 } from "@chess-coach/starchess-core";
 import type { Square } from "chess.js";
 
+import type { PendingPromotion } from "~/types/chess";
 import type { ReviewTurnPhase } from "~/types/review";
 
 export type MatchPhase = "loading" | "planning" | "targeting" | "resolving" | "gameOver";
@@ -126,6 +127,11 @@ export type MatchState = {
   selected: Square | null;
   legalDests: readonly Square[];
   /**
+   * Last-rank marine move awaiting {@link PromotionModal}.
+   * Timeout / End defaults the choice to queen (Battlecruiser).
+   */
+  pendingPromotion: PendingPromotion | null;
+  /**
    * True after turn-open king-checks were applied (`beginScTurn`) for this
    * planning window. `SUBMIT_TURN` then skips re-applying those checks.
    */
@@ -139,6 +145,8 @@ export type MatchAction =
   | { type: "SET_LEGAL_DESTS"; dests: readonly Square[] }
   | { type: "QUEUE_ACTION"; action: ScActionInput }
   | { type: "QUEUE_REJECT"; message: string }
+  | { type: "SET_PENDING_PROMOTION"; pending: PendingPromotion }
+  | { type: "CLEAR_PENDING_PROMOTION" }
   | { type: "REMOVE_ACTION"; seq: number }
   | { type: "OPEN_SPAWN"; color: StarChessColor; unit: SpawnPiece }
   | {

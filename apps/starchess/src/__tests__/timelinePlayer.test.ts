@@ -165,6 +165,73 @@ describe("timelinePlayer", () => {
     while (jobs.length) jobs.shift()!.fn();
   });
 
+  it("projects post-move mineTrigger death after the walk-on (promotion × mine)", () => {
+    let snap = parseScFen(
+      "SCFEN|k7/4P3/8/8/8/8/8/4K3|1|33|P|G:11:11|M:b:e8|Q:w:;b:",
+    );
+    snap = addScAction({
+      snapshot: snap,
+      action: {
+        timing: "C",
+        kind: "classical",
+        color: "w",
+        from: "e7",
+        to: "e8",
+        promotion: "q",
+      },
+    }).snapshot;
+    const result = endScTurn(snap, { skipTurnStartChecks: true });
+    expect(result.resolved.mineTriggers).toEqual([
+      expect.objectContaining({ kind: "mineBlast", to: "e8", victim: { piece: "p", color: "w" } }),
+    ]);
+    expect(result.resolved.promotions).toEqual([]);
+
+    const cues = projectResolveTimeline(result);
+    const kinds = cues.map((c) => c.kind);
+    expect(kinds).toEqual(["move", "death", "death"]);
+    expect(cues[0]).toMatchObject({ kind: "move", from: "e7", to: "e8", piece: "p" });
+    expect(cues[1]).toMatchObject({
+      kind: "death",
+      id: expect.stringMatching(/^mtm/),
+      at: "e8",
+      mine: true,
+    });
+    expect(cues[2]).toMatchObject({
+      kind: "death",
+      id: expect.stringMatching(/^mt\d/),
+      piece: "p",
+      color: "w",
+      at: "e8",
+    });
+
+    type Job = { ms: number; fn: () => void };
+    const jobs: Job[] = [];
+    const scheduler = {
+      delay: (ms: number, fn: () => void) => {
+        jobs.push({ ms, fn });
+        return () => undefined;
+      },
+    };
+    const playingLog: string[][] = [];
+    const mineLog: Array<unknown> = [];
+    playTimeline(result, scheduler, {
+      onStart: () => undefined,
+      onCommit: (patch) => {
+        if (patch.playingIds) playingLog.push([...patch.playingIds]);
+        if (patch.mines !== undefined) mineLog.push(patch.mines);
+      },
+      onDone: () => undefined,
+    });
+    while (
+      jobs.length &&
+      !playingLog.some((ids) => ids.some((id) => id.startsWith("mt")))
+    ) {
+      jobs.shift()!.fn();
+    }
+    expect(playingLog.some((ids) => ids.some((id) => id.startsWith("mt")))).toBe(true);
+    expect(mineLog.some((m) => Array.isArray(m) && m.length === 0)).toBe(true);
+  });
+
   it("projects Command Center spawn as a deploy cue", () => {
     let snap = parseScFen(
       "SCFEN|4k3/8/8/8/8/8/8/4K3|1|33|P|G:11:11|Q:w:;b:",
@@ -189,6 +256,45 @@ describe("timelinePlayer", () => {
       color: "w",
       at: "e2",
     });
+  });
+
+  it("skips spawn deploy when the unit dies the same turn", () => {
+    // White spawns a pawn on e2; black rook on e8 finds it mid-ray (path-reveal).
+    let snap = parseScFen(
+      "SCFEN|4rk2/8/8/8/8/8/8/4K3|1|33|P|G:11:11|Q:w:;b:",
+    );
+    snap = addScAction({
+      snapshot: snap,
+      action: {
+        timing: "B",
+        kind: "spawn",
+        color: "w",
+        from: "e1",
+        to: "e2",
+        unit: "p",
+      },
+    }).snapshot;
+    snap = addScAction({
+      snapshot: snap,
+      action: {
+        timing: "C",
+        kind: "classical",
+        color: "b",
+        from: "e8",
+        to: "e2",
+      },
+    }).snapshot;
+    const result = endScTurn(snap, { skipTurnStartChecks: true });
+    expect(placementToMap(result.afterB.placement).get("e2")).toMatchObject({
+      type: "p",
+      color: "w",
+    });
+    expect(placementToMap(result.next.placement).get("e2")).toMatchObject({
+      type: "r",
+      color: "b",
+    });
+    const cues = projectResolveTimeline(result);
+    expect(cues.some((c) => c.kind === "deploy" && c.at === "e2")).toBe(false);
   });
 
   it("playTimeline advances with injected scheduler", () => {

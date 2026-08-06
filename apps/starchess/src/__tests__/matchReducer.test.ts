@@ -125,4 +125,24 @@ describe("matchReducer", () => {
     expect(s.reviewIndex).toBe(2);
     expect(s.statusText).toBe("Final");
   });
+
+  it("timeout with open promotion modal defaults to queen", () => {
+    let s = matchReducer(createInitialMatchState(), {
+      type: "LOAD_SCFEN",
+      scfen: "SCFEN|k7/4P3/8/8/8/8/8/4K3|1|33|P|G:11:11|Q:w:;b:",
+    });
+    s = { ...s, turnStartChecksApplied: true };
+    s = matchReducer(s, {
+      type: "SET_PENDING_PROMOTION",
+      pending: { color: "w", from: "e7", to: "e8" },
+    });
+    expect(s.pendingPromotion).toEqual({ color: "w", from: "e7", to: "e8" });
+
+    s = matchReducer(s, { type: "SUBMIT_TURN", reason: "timeout" });
+    expect(s.phase).toBe("resolving");
+    expect(s.pendingPromotion).toBeNull();
+    expect(s.lastResolve?.resolved.promotions).toEqual([
+      expect.objectContaining({ at: "e8", unit: "q", color: "w" }),
+    ]);
+  });
 });

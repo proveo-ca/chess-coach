@@ -1,4 +1,12 @@
 /* Host only — layout is Screen.app-container display:grid. */
+
+/* Match StarChessScreen top pane floor so DualNav chrome never nudges the board. */
+.topPane {
+  width: 100%;
+  max-width: var(--board-size);
+  box-sizing: border-box;
+  min-height: 6.5rem;
+}
 .host {
   position: relative;
   display: inline-block;

@@ -17,12 +17,12 @@ export const OPEN_BOARD_FIXTURE = {
   visionMode: "observer" as const,
 };
 
-/** Enemy knight spent gas — player fog pierce sample (Fog of War / Board). */
+/** Enemy knight spent gas — stays fogged (U: is not a vision pierce). */
 export const GAS_USED_FOG_FIXTURE = {
   scfen: GAS_USED_FOG_SCFEN,
   fog: true as const,
   visionMode: "player" as const,
-  caption: "Gas-used · Ne5 spent gas · visible through fog (green ring)",
+  caption: "Gas-used · Ne5 spent gas · stays fogged (no pierce / no green leak)",
 };
 
 export const mapFixture = (boardVariant: BoardVariant) => ({

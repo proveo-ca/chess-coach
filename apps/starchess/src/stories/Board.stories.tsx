@@ -19,7 +19,7 @@ export default meta;
 type Story = StoryObj;
 
 export const FogReveal: Story = {
-  name: "Fog + gas-used reveal",
+  name: "Fog + gas-used (no pierce)",
   render: () => (
     <FogVisionDemo
       scfen={GAS_USED_FOG_FIXTURE.scfen}

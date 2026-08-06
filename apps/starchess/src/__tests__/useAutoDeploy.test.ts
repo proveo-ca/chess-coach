@@ -32,4 +32,13 @@ describe("deployCuesForBoardDiff", () => {
     const next = new Map<Square, PieceAt>([at("e1", "k")]);
     expect(deployCuesForBoardDiff(prev, next)).toEqual([]);
   });
+
+  it("does not treat a same-turn capture as a lasting deploy candidate", () => {
+    // Diff helper only sees one step; capture is prev has pawn → next empty.
+    // Guarding cancel belongs to useAutoDeploy occupancy watch — here we only
+    // assert appearance-then-absence does not invent a relocate deploy.
+    const withPawn = new Map<Square, PieceAt>([at("e1", "k"), at("e2", "p")]);
+    const empty = new Map<Square, PieceAt>([at("e1", "k")]);
+    expect(deployCuesForBoardDiff(withPawn, empty)).toEqual([]);
+  });
 });

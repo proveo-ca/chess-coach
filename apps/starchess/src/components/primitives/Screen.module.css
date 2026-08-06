@@ -26,8 +26,8 @@
 
 @media (min-width: 720px) {
   :global(body:has([data-testid="screen-root"])) {
-    /* board + 2rem gutter each side (§1a) */
-    min-width: calc(var(--board-size) + 4rem);
+    /* board + sideboard + gutters (§1a) */
+    min-width: calc(var(--board-size) + var(--sidebar-width) + 4rem);
   }
 }
 

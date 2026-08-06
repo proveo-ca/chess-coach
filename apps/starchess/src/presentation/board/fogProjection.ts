@@ -13,26 +13,17 @@ import {
 import { moveSquareAtElapsed } from "~/presentation/animations/moveTiming";
 
 /**
- * Enemy units that already spent gas this turn stay visible through fog
- * (green special-used aura) without lighting the tile.
+ * Gas-used (`U:` / specialsUsed) is **not** a fog pierce.
+ * Green aura still paints on units the viewer can already see; hidden enemies
+ * stay hidden (no canister / slide / ring leak through the veil).
+ * Kept as a pass-through so call sites stay stable.
  */
 export const fogWithGasUsedReveal = (
   base: NerdVision,
-  specialsUsed: ReadonlySet<Square>,
-  viewer: StarChessColor,
-  snap: ScFenSnapshot,
-): NerdVision => {
-  if (specialsUsed.size === 0) return base;
-  const map = placementToMap(snap.placement);
-  const revealedPieces = new Set(base.revealedPieces);
-  for (const sq of specialsUsed) {
-    const piece = map.get(sq);
-    if (!piece) continue;
-    if (piece.color === viewer) continue;
-    revealedPieces.add(sq);
-  }
-  return { litSquares: base.litSquares, revealedPieces };
-};
+  _specialsUsed: ReadonlySet<Square>,
+  _viewer: StarChessColor,
+  _snap: ScFenSnapshot,
+): NerdVision => base;
 
 export type MoveVisionCue = {
   id: string;

@@ -1,5 +1,6 @@
 /**
- * Live StarChess screen — Screen top/middle/bottom grid matches NerdScreen.
+ * Live StarChess screen — Screen top/middle/bottom grid matches CoachScreen
+ * (SidebarInset chrome, BoardArea + right Sidebar, Footer).
  * Board variants: eclipse | butter | vermeer (default eclipse).
  * // SPEC: _spec/apps/ui/responsiveness/rules.md
  */
@@ -27,8 +28,7 @@ import {
 } from "@chess-coach/starchess-core";
 
 import { useMatchStore } from "~/app/MatchStoreContext";
-import { Button } from "~/components/primitives/Button";
-import { Label } from "~/components/primitives/Label";
+import { Sidebar } from "~/components/features/Sidebar";
 import { Screen } from "~/components/primitives/Screen";
 import { squareBoxStyle, findBoardGrid } from "~/presentation/animations/boardGeom";
 import { LiveStarChessBoard } from "~/presentation/board/LiveStarChessBoard";
@@ -443,14 +443,7 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
 
   return (
     <Screen>
-      <Screen.SidebarInset>
-        <div class={styles.header}>
-          <Button href="/">Back</Button>
-          <div>
-            <Label variant="title">StarChess</Label>
-            <p class={styles.matchup}>Nerd vs Selena</p>
-          </div>
-        </div>
+      <Screen.SidebarInset class={styles.topPane}>
         <Show when={starChessMode()}>
           <div class={styles.topChrome} data-testid="nerd-board-chrome">
             <span
@@ -545,6 +538,7 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
             </Show>
           </div>
         </Screen.BoardColumn>
+        <Sidebar />
       </Screen.BoardArea>
       <Screen.Footer>
         <Show

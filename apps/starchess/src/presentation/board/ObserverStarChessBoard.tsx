@@ -338,13 +338,14 @@ export const ObserverStarChessBoard: Component<{
                   const isSelected = () => props.selected === square;
                   const isLegal = () => props.legalDests?.includes(square) ?? false;
                   const gasUsedAura = () => {
-                    // Resolve absorb — green eases onto the unit with the canister drop.
+                    // Resolve absorb — green eases onto the unit with the canister drop
+                    // (LiveStarChessBoard already fog-gates gasDrop / absorb squares).
                     if (gasAbsorb().has(square)) return true;
                     if (!specialsUsed().has(square)) return false;
                     const p = piece();
                     if (!p) return false;
-                    // Prior-turn U: green ring is an *enemy* fog-pierce cue only —
-                    // never on the viewer's own pieces (even with fog off / observer).
+                    // Persistent U: ring on *enemy* units the viewer can already see —
+                    // never a fog pierce, never on the viewer's own pieces.
                     return p.color !== viewer();
                   };
                   const canister = () => canisterAt(square);

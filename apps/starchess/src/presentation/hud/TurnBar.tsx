@@ -26,7 +26,7 @@ import { Chip } from "~/components/primitives/Chip";
 import { CountdownRing } from "~/components/primitives/CountdownRing";
 import { TeamFrame } from "~/components/primitives/TeamFrame";
 import { TEAM_PRIMARY } from "~/presentation/animations/teamColors";
-import { TURN_TIMEOUT_MS } from "~/presentation/constants";
+import { turnTimeoutMsForTurn } from "~/presentation/constants";
 import { liveMatchPhase, reviewPhaseLabel } from "~/presentation/hud/liveMatchPhase";
 import { reviewPhaseChipTone } from "~/presentation/hud/reviewPhases";
 import styles from "~/presentation/hud/TurnBar.module.css";
@@ -105,8 +105,8 @@ export const TurnBar: Component<TurnBarProps> = (props) => {
   };
 
   const progress = () => {
-    const total = TURN_TIMEOUT_MS / 1000;
-    return Math.min(1, Math.max(0, seconds() / total));
+    const total = turnTimeoutMsForTurn(displayedSnapshot(store.state()).turn) / 1000;
+    return Math.min(1, Math.max(0, seconds() / Math.max(1, total)));
   };
 
   const turnNumber = createMemo(() => Math.max(1, displayedSnapshot(store.state()).turn));
@@ -167,13 +167,32 @@ export const TurnBar: Component<TurnBarProps> = (props) => {
       role="group"
       aria-label="Turn"
     >
-      <div class={styles.chips}>
-        <Chip tone="turn" data-testid="live-turn-chip">
-          Turn {turnNumber()}
-        </Chip>
-        <Chip tone={reviewPhaseChipTone(phase())} data-testid="live-phase-chip">
-          {reviewPhaseLabel(phase())}
-        </Chip>
+      <div class={styles.controls}>
+        <div class={styles.chips}>
+          <Chip tone="turn" data-testid="live-turn-chip">
+            Turn {turnNumber()}
+          </Chip>
+          <Chip tone={reviewPhaseChipTone(phase())} data-testid="live-phase-chip">
+            {reviewPhaseLabel(phase())}
+          </Chip>
+        </div>
+        <Button
+          class={styles.end}
+          data-testid="turn-end"
+          onClick={() => {
+            resolveIfArmed();
+            props.onEnd?.();
+          }}
+        >
+          End
+        </Button>
+        <CountdownRing
+          progress={progress()}
+          aria-label={`${seconds()} seconds remaining`}
+          data-seconds={seconds()}
+        >
+          {seconds()}
+        </CountdownRing>
       </div>
       <div class={styles.queue} data-testid="turn-queue" aria-label="Action queue">
         <For each={befores()}>{(a) => queueChip(a)}</For>
@@ -189,23 +208,6 @@ export const TurnBar: Component<TurnBarProps> = (props) => {
         </Show>
         <For each={afters()}>{(a) => queueChip(a)}</For>
       </div>
-      <Button
-        class={styles.end}
-        data-testid="turn-end"
-        onClick={() => {
-          resolveIfArmed();
-          props.onEnd?.();
-        }}
-      >
-        End
-      </Button>
-      <CountdownRing
-        progress={progress()}
-        aria-label={`${seconds()} seconds remaining`}
-        data-seconds={seconds()}
-      >
-        {seconds()}
-      </CountdownRing>
     </TeamFrame>
   );
 };

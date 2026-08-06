@@ -126,6 +126,7 @@ export const createMatchStateFromReviewHistory = (
     lastResolve: null,
     selected: null,
     legalDests: [],
+    pendingPromotion: null,
     turnStartChecksApplied: true,
   };
 };

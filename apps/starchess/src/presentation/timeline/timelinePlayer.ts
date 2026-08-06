@@ -202,11 +202,15 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
   }
 
   // Command Center / put spawns: pieces that appear on afterB without a matching leave.
+  // Skip units that do not survive the turn — deploy VFX must not play on a corpse.
+  const finalMap = placementToMap(result.next.placement);
   for (const d of deployCuesForPlacementDiff(
     result.afterPending.placement,
     result.afterB.placement,
     "spawn",
   )) {
+    const still = finalMap.get(d.at);
+    if (!still || still.type !== d.piece || still.color !== d.color) continue;
     cues.push({
       kind: "deploy",
       id: d.id,
@@ -259,6 +263,30 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
   cues.push(...phase1Attacks, ...phase1Deaths);
 
   for (const m of result.resolved.moves) cues.push(moveCue(m, `c${n++}`));
+
+  // Phase-2 walk-over / chase mine triggers — after land, before path-reveal.
+  // Promotion onto a hostile mine dies here (no promo walk-off).
+  for (const a of result.resolved.mineTriggers) {
+    if (a.kind !== "mineBlast") continue;
+    // Mine boom (hull hidden) — always; walk-over also shreds the victim.
+    cues.push({
+      kind: "death",
+      id: `mtm${n++}`,
+      piece: "n",
+      color: a.mineColor,
+      at: a.to,
+      mine: true,
+    });
+    if (a.victim) {
+      cues.push({
+        kind: "death",
+        id: `mt${n++}`,
+        piece: a.victim.piece,
+        color: a.victim.color,
+        at: a.to,
+      });
+    }
+  }
 
   // Phase 3 — fog path-discovery. Intention slides to the discovery square,
   // then attacks (king on the way ⇒ kingShot). Must not look like a post-move
@@ -390,9 +418,16 @@ const isGasDrop = (cue: TimelineCue): boolean => cue.kind === "gasDrop";
 const isPhase1Attack = (cue: TimelineCue): boolean =>
   cue.kind === "attack" && !cue.id.startsWith("pra") && !cue.id.startsWith("ch");
 
-/** Phase-1 deaths (not path-reveal `prdth*` / Charon `chd*`). */
+/** Phase-1 deaths (not path-reveal / Charon / post-move mine triggers). */
 const isPhase1Death = (cue: TimelineCue): boolean =>
-  cue.kind === "death" && !cue.id.startsWith("prdth") && !cue.id.startsWith("chd");
+  cue.kind === "death" &&
+  !cue.id.startsWith("prdth") &&
+  !cue.id.startsWith("chd") &&
+  !cue.id.startsWith("mt");
+
+/** Post-move mineTriggers (walk-over / chase boom) — after classical land. */
+const isMineTriggerDeath = (cue: TimelineCue): boolean =>
+  cue.kind === "death" && cue.id.startsWith("mt");
 
 /**
  * Simultaneous move waves: B gas-steps, classical C, or F gas-steps.
@@ -629,6 +664,37 @@ export const playTimeline = (
       const wait = scheduler.delay(DEATH_MS, () => {
         if (cancelled) return;
         commitAfterAttack();
+        run(next);
+      });
+      cancels.push(wait);
+      return;
+    }
+
+    // Post-move mineTriggers — land already applied; boom + victim shred, clear mine.
+    if (isMineTriggerDeath(cue)) {
+      if (!afterBApplied) applyAfterB();
+      const { batch, next } = takeWhile(cues, index, isMineTriggerDeath);
+      const deaths = batch as Extract<TimelineCue, { kind: "death" }>[];
+      cb.onCommit({
+        mines: result.resolved.afterMove.mines,
+        hidden: deaths.map((c) => c.at),
+        playingIds: deaths.map((c) => c.id),
+        moveProgress: {},
+        moveLeg: {},
+      });
+      const wait = scheduler.delay(DEATH_MS, () => {
+        if (cancelled) return;
+        for (const d of deaths) {
+          displayPlacement = withoutSquare(displayPlacement, d.at);
+        }
+        cb.onCommit({
+          placement: displayPlacement,
+          mines: result.resolved.afterMove.mines,
+          hidden: [],
+          playingIds: [],
+          moveProgress: {},
+          moveLeg: {},
+        });
         run(next);
       });
       cancels.push(wait);

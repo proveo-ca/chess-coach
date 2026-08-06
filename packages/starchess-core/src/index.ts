@@ -40,6 +40,7 @@ export {
   UNIT_COST,
   incomeForTurn,
   energyForTurn,
+  turnTimeoutMsForTurn,
   SPECIAL_ENERGY_COST,
   CHARON_GAS_COST,
 } from "./rules/constants";

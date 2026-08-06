@@ -114,7 +114,7 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
 
   return (
     <Screen>
-      <Screen.SidebarInset>
+      <Screen.SidebarInset class={styles.topPane}>
         <ObserverReviewChrome
           turn={reviewTurnNumber()}
           phase={store.reviewPhase()}

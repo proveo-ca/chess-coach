@@ -202,7 +202,19 @@ export const assertSpecialLegal = (
       if (actor.type !== "n") {
         throw new ScValidateError("SC_SPECIAL", "mine requires knight");
       }
-      const at = (action.to ?? action.from) as Square;
+      // F after same-piece C: drop lands on the post-move square (endScTurn
+      // rewrite). Do not refuse because the origin already has a mine.
+      let at = (action.to ?? action.from) as Square;
+      if (action.timing === "F") {
+        const c = (snap.queue?.actions ?? []).find(
+          (a) =>
+            a.timing === "C" &&
+            a.kind === "classical" &&
+            a.color === action.color &&
+            a.from === action.from,
+        );
+        if (c) at = c.to;
+      }
       if (mineAt(snap.mines, at)) {
         throw new ScValidateError("SC_SPECIAL", "mine already on square");
       }
