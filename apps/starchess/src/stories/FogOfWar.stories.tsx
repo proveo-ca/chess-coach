@@ -9,8 +9,7 @@ import {
   FOG_MOVE_PAWN_SCENARIO,
   FOG_MOVE_QUEEN_SCENARIO,
 } from "~/demos/fogMoveSamples";
-import { FogVisionDemo } from "~/presentation/animations/FogVisionDemo";
-import { FOG_SIEGE_ROOK_FIXTURE } from "~/stories/fixtures/scenarios";
+import { AttackBoardDemo } from "~/presentation/animations/AttackBoardDemo";
 
 /**
  * Stories feed SCFEN scenario packages only — no queue / resolve / combat logic here.
@@ -23,7 +22,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "DualNav asserts **intent → resolve**: dashed ghost on `intentTo` (unit stays on `from`), then End-style combat resolve (slide + progressive fog). Bishop / Rook (tank) also assert fog-edge move collision. Siege rook stays a static vision sample (cannot relocate).",
+          "DualNav asserts **intent → resolve**: dashed ghost on `intentTo` (unit stays on `from`), then End-style combat resolve (slide + progressive fog). Bishop / Rook (tank) also assert fog-edge move collision. Siege rook demo cycles HE battery attacks on adjacent squares.",
       },
     },
   },
@@ -94,18 +93,12 @@ export const RookTankMode: Story = {
 
 export const RookSiegeMode: Story = {
   name: "Rook (siege mode)",
-  render: () => (
-    <FogVisionDemo
-      scfen={FOG_SIEGE_ROOK_FIXTURE.scfen}
-      rookMode={FOG_SIEGE_ROOK_FIXTURE.rookMode}
-      caption={FOG_SIEGE_ROOK_FIXTURE.caption}
-    />
-  ),
+  render: () => <AttackBoardDemo piece="r" rookMode="siege" />,
   parameters: {
     docs: {
       description: {
         story:
-          "Siege mode (unpacked trebuchet): outriggers, raised boom, 9×9 vision, cannot move — static SCFEN vision sample.",
+          "Siege mode (unpacked trebuchet): cycles HE battery attacks on adjacent targets — hatch stays packed, boom + smoke on impact.",
       },
     },
   },

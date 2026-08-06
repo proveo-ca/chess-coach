@@ -1,7 +1,8 @@
 .boardOverlay {
   position: absolute;
   pointer-events: none;
-  z-index: 30;
+  /* Above king-damage fire (z 35) so hatch / battery attack VFX stay visible. */
+  z-index: 36;
   overflow: visible;
   /* Shared with JS ATTACK_MS (= TURN_TIMEOUT_MS / 10). */
   --attack-ms: 1000ms;
@@ -782,7 +783,8 @@
   100% {
     transform: rotateX(0deg) translateY(0);
   }
-  35%,
+  /* Open by ~FRAG_FLIGHT_MS (25% of ATTACK_MS) so guns meet the impact beat. */
+  20%,
   70% {
     transform: rotateX(-75deg) translateY(-4px);
   }
@@ -790,11 +792,11 @@
 
 @keyframes cannonReveal {
   0%,
-  18% {
+  10% {
     opacity: 0;
     transform: scaleX(0.2) translateX(-4px);
   }
-  35%,
+  22%,
   75% {
     opacity: 1;
     transform: scaleX(1) translateX(0);
@@ -810,8 +812,9 @@
   100% {
     opacity: 0;
   }
-  40%,
-  55% {
+  /* Peak at ~FRAG_FLIGHT_MS (25% of ATTACK_MS) with the kill/death meeting point. */
+  22%,
+  32% {
     opacity: 1;
   }
 }
@@ -857,47 +860,77 @@
 }
 
 /* Tank: king-style dual tubes — recoil + muzzle pulse, no HE blast. */
-.anim-rookBattery[data-rook-mode="tank"] :global([data-part="cannon-recoil"]) {
+.anim-rookBattery[data-rook-mode="tank"] :global([data-part="cannon-recoil"]),
+.originSlot[data-attack-anim="rookBattery"][data-rook-mode="tank"] :global([data-part="cannon-recoil"]) {
   animation: turretRecoilX var(--attack-ms) ease-out 1 both;
 }
 
-.anim-rookBattery[data-rook-mode="tank"] :global([data-part="cannon-flash"]) {
+.anim-rookBattery[data-rook-mode="tank"] :global([data-part="cannon-flash"]),
+.originSlot[data-attack-anim="rookBattery"][data-rook-mode="tank"] :global([data-part="cannon-flash"]) {
   animation: cannonPulse var(--attack-ms) ease-in-out 1 forwards;
 }
 
 /* Siege: +x shock recoil + muzzle blast/smoke + target HE impact. */
-.anim-rookBattery[data-rook-mode="siege"] :global([data-part="battery-recoil"]) {
+.anim-rookBattery[data-rook-mode="siege"] :global([data-part="battery-recoil"]),
+.originSlot[data-attack-anim="rookBattery"][data-rook-mode="siege"] :global([data-part="battery-recoil"]) {
   animation: turretRecoilX calc(var(--attack-ms) / 3) ease-out 1 forwards;
 }
 
-.anim-rookBattery[data-rook-mode="siege"] :global([data-part="battery-blast"]) {
+.anim-rookBattery[data-rook-mode="siege"] :global([data-part="battery-blast"]),
+.originSlot[data-attack-anim="rookBattery"][data-rook-mode="siege"] :global([data-part="battery-blast"]) {
   animation: batteryBlast calc(var(--attack-ms) / 3) ease-out 1 forwards;
   transform-origin: center;
 }
 
-.anim-rookBattery[data-rook-mode="siege"] :global([data-part="battery-smoke"]) {
+.anim-rookBattery[data-rook-mode="siege"] :global([data-part="battery-smoke"]),
+.originSlot[data-attack-anim="rookBattery"][data-rook-mode="siege"] :global([data-part="battery-smoke"]) {
   animation: batterySmoke calc(var(--attack-ms) / 3) ease-out 1 forwards;
   transform-origin: center;
   transform-box: fill-box;
 }
 
-.anim-kingDualCannon :global([data-part="hat"]) {
+/*
+ * Command Center attack — hatch flips open (rotateX) to reveal twin battery.
+ * `data-attack-anim` hooks mirror class hooks so CSS still fires if the
+ * hashed `anim-*` classList key is missing. Perspective is required for
+ * rotateX on the SVG hat group to read as a lid flip.
+ */
+.anim-kingDualCannon,
+.originSlot[data-attack-anim="kingDualCannon"] {
+  perspective: 90px;
+  transform-style: preserve-3d;
+}
+
+.anim-kingDualCannon .pieceFace,
+.anim-kingDualCannon .pieceFace svg,
+.originSlot[data-attack-anim="kingDualCannon"] .pieceFace,
+.originSlot[data-attack-anim="kingDualCannon"] .pieceFace svg {
+  transform-style: preserve-3d;
+  overflow: visible;
+}
+
+.anim-kingDualCannon :global([data-part="hat"]),
+.originSlot[data-attack-anim="kingDualCannon"] :global([data-part="hat"]) {
   animation: hatFlip var(--attack-ms) ease-in-out 1 forwards;
   transform-origin: center bottom;
   transform-style: preserve-3d;
 }
 
-.anim-kingDualCannon :global([data-part="cannons"]) {
+.anim-kingDualCannon :global([data-part="cannons"]),
+.originSlot[data-attack-anim="kingDualCannon"] :global([data-part="cannons"]) {
   animation: cannonReveal var(--attack-ms) ease-in-out 1 forwards;
   transform-origin: left center;
 }
 
-.anim-kingDualCannon :global([data-part="cannon-recoil"]) {
-  animation: turretRecoilX var(--attack-ms) ease-out 1 both;
-  animation-delay: 0.32s;
+.anim-kingDualCannon :global([data-part="cannon-recoil"]),
+.originSlot[data-attack-anim="kingDualCannon"] :global([data-part="cannon-recoil"]) {
+  /* Kick at FRAG_FLIGHT_MS — short window so the peak is the shot, not mid-attack. */
+  animation: turretRecoilX var(--frag-flight-ms) ease-out 1 forwards;
+  animation-delay: var(--frag-flight-ms);
 }
 
-.anim-kingDualCannon :global([data-part="cannon-flash"]) {
+.anim-kingDualCannon :global([data-part="cannon-flash"]),
+.originSlot[data-attack-anim="kingDualCannon"] :global([data-part="cannon-flash"]) {
   animation: cannonPulse var(--attack-ms) ease-in-out 1 forwards;
 }
 

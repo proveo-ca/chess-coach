@@ -6,6 +6,7 @@
 import {
   beginScTurn,
   endScTurn,
+  refillTurnGas,
   scOutcome,
   type EndScTurnResult,
   type ScFenSnapshot,
@@ -54,7 +55,12 @@ export const buildReviewHistory = (args: BuildReviewHistoryArgs): ReviewHistory 
         settledSnapshots.push(begun.next);
         cur = begun.next;
         if (cur.phase === "O") break;
+      } else {
+        // No standing checks — still refill like live turn-open.
+        cur = begun?.next ?? refillTurnGas(cur);
       }
+    } else {
+      cur = refillTurnGas(cur);
     }
 
     const queued = args.queueStep(cur, i);
@@ -105,6 +111,8 @@ export const createMatchStateFromReviewHistory = (
       playingIds: [],
       hiddenSquares: new Set(),
       moveProgress: {},
+      moveLeg: {},
+      jumpTrails: [],
       displayPlacement: null,
       displayKingLives: null,
       displayMines: null,

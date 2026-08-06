@@ -53,6 +53,8 @@ export type ResolveEvent = {
   color: StarChessColor;
   from?: Square;
   to?: Square;
+  /** Present for specialBefore / specialAfter — drives Charon / Jump VFX. */
+  kind?: ScAction["kind"];
 };
 
 export type EndScTurnResult = {
@@ -133,8 +135,18 @@ const visionCheckGate = (
 };
 
 /**
+ * Refill remaining vespene from this turn's income tier.
+ * Called at turn open (`beginScTurn`) — not at `endScTurn` (which leaves gas at 0).
+ */
+export const refillTurnGas = (snap: ScFenSnapshot): ScFenSnapshot => ({
+  ...snap,
+  gas: { w: snap.gasIncome.w, b: snap.gasIncome.b },
+});
+
+/**
  * Resolve fog-visible legal king-checks at turn open — before players queue intent.
  * Does not advance `turn` unless a king dies (phase O, turn+1). Queue is cleared.
+ * Always refills `gas` from `gasIncome` (vespene arrives with the check / turn-open).
  */
 export const beginScTurn = (snapshot: ScFenSnapshot): BeginScTurnResult => {
   if (snapshot.phase !== "P") {
@@ -176,7 +188,7 @@ export const beginScTurn = (snapshot: ScFenSnapshot): BeginScTurnResult => {
     turn: terminal ? snapshot.turn + 1 : snapshot.turn,
     kingLives: { ...afterPending.kingLives },
     phase: terminal ? "O" : "P",
-    gas: { ...snapshot.gas },
+    gas: { w: snapshot.gasIncome.w, b: snapshot.gasIncome.b },
     gasIncome: snapshot.gasIncome,
     queue: { actions: [] },
     ...(afterPending.mines.length ? { mines: afterPending.mines } : {}),
@@ -195,10 +207,10 @@ export const beginScTurn = (snapshot: ScFenSnapshot): BeginScTurnResult => {
         mines: minesIn,
         kingLives: { ...snapshot.kingLives },
       },
-      next: {
+      next: refillTurnGas({
         ...snapshot,
         queue: snapshot.queue ?? { actions: [] },
-      },
+      }),
       asResolve: null,
     };
   }
@@ -433,6 +445,7 @@ const eventFor = (
   color: action.color,
   from: action.from,
   to: action.timing === "C" || action.to ? (action as { to?: Square }).to : undefined,
+  kind: action.kind,
 });
 
 export const endScTurn = (
@@ -509,6 +522,8 @@ export const endScTurn = (
       kingLives: { ...kingLives },
       mines: [...mines],
     };
+    const nextTurn = snapshot.turn + 1;
+    const income = energyForTurn(Math.max(1, nextTurn));
     return {
       resolved: {
         attacks: [...pendingApplied.attacks],
@@ -524,11 +539,11 @@ export const endScTurn = (
       },
       next: {
         placement,
-        turn: snapshot.turn + 1,
+        turn: nextTurn,
         kingLives: { ...kingLives },
         phase: "O",
-        gas: { ...snapshot.gas },
-        gasIncome: snapshot.gasIncome,
+        gas: { w: 0, b: 0 },
+        gasIncome: { w: income, b: income },
         queue: { actions: [] },
         ...(mines.length ? { mines } : {}),
         ...(sieged.size ? { siegedRooks: [...sieged].sort() } : {}),
@@ -670,15 +685,17 @@ export const endScTurn = (
   // classical pass itself is simultaneous and resolves as one unit, so the bail
   // out happens on its far side: no F special resolves behind a dead King.
   if (kingLives.w === 0 || kingLives.b === 0) {
+    const nextTurn = snapshot.turn + 1;
+    const income = energyForTurn(Math.max(1, nextTurn));
     return {
       resolved,
       next: {
         placement,
-        turn: snapshot.turn + 1,
+        turn: nextTurn,
         kingLives: { ...kingLives },
         phase: "O",
-        gas: { ...snapshot.gas },
-        gasIncome: snapshot.gasIncome,
+        gas: { w: 0, b: 0 },
+        gasIncome: { w: income, b: income },
         queue: { actions: [] },
         ...(mines.length ? { mines } : {}),
         ...(sieged.size ? { siegedRooks: [...sieged].sort() } : {}),
@@ -712,11 +729,18 @@ export const endScTurn = (
     const actor = boardAfter.get(at);
     if (!actor || actor.color !== a.color) continue;
 
+    // Rewrite actor square to where the unit stands after C (move-then-gas).
+    // knightMine also rewrites `to` — applySpecial prefers action.to for the drop.
+    const rewritten: ScAction =
+      a.kind === "knightMine"
+        ? { ...a, from: at, to: at }
+        : { ...a, from: at };
+
     if (a.kind === "rookSiege") {
       if (actor.type !== "r") continue;
       if (toggleRookSiege(placement, sieged, a.color, at)) {
         siegedThisTurn.push(at);
-        events.push(eventFor("specialAfter", a, `ev-${eventSeq++}`));
+        events.push(eventFor("specialAfter", rewritten, `ev-${eventSeq++}`));
       }
       continue;
     }
@@ -728,19 +752,14 @@ export const endScTurn = (
       if (!to || boardAfter.has(to)) continue;
       placement = relocate(placement, at, to);
       fMoves.push({ piece: "p", color: a.color, from: at, to });
-      events.push(eventFor("specialAfter", { ...a, from: at, to }, `ev-${eventSeq++}`));
+      events.push(eventFor("specialAfter", { ...rewritten, to }, `ev-${eventSeq++}`));
       continue;
     }
 
-    const applied = applySpecial(
-      placement,
-      mines,
-      { ...a, from: at },
-      ignoreAttacksOn,
-    );
+    const applied = applySpecial(placement, mines, rewritten, ignoreAttacksOn);
     placement = applied.placement;
     mines = applied.mines;
-    events.push(eventFor("specialAfter", a, `ev-${eventSeq++}`));
+    events.push(eventFor("specialAfter", rewritten, `ev-${eventSeq++}`));
   }
 
   for (const color of ["w", "b"] as const) {
@@ -782,7 +801,7 @@ export const endScTurn = (
     turn: nextTurn,
     kingLives: { ...kingLives },
     phase: kingLives.w === 0 || kingLives.b === 0 ? "O" : "P",
-    gas: { ...gasIncome },
+    gas: { w: 0, b: 0 },
     gasIncome,
     queue: { actions: [] },
     ...(mines.length ? { mines } : {}),

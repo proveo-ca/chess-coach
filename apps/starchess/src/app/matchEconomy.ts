@@ -8,7 +8,10 @@ import {
   deployedMaterialFromPlacement,
   energyForTurn,
   incomeForTurn,
+  specialGasCost,
   toClassicFen,
+  type ScAction,
+  type ScFenSnapshot,
   type StarChessColor,
 } from "@chess-coach/starchess-core";
 import type { Square } from "chess.js";
@@ -27,10 +30,33 @@ export const materialIncome = (store: MatchStore) =>
 export const energyCapacity = (store: MatchStore) =>
   energyForTurn(Math.max(1, store.state().liveSnapshot.turn));
 
-/** Gas does not bank — remaining = snap.gas[viewer] (refills each turn from SCFEN). */
+/**
+ * Display remaining vespene for a side.
+ *
+ * `snap.gas` is already net of `snap.queue` spends (`addScAction`). DualNav
+ * intent may overlay reconstructed specials that are **not** on the snap —
+ * debit those so ResourceBar matches GasDeploy when ghost canisters render.
+ */
+export const gasRemainingFor = (
+  snap: Pick<ScFenSnapshot, "gas" | "queue">,
+  color: StarChessColor,
+  overlayActions?: readonly ScAction[] | null,
+): number => {
+  let rem = Math.max(0, snap.gas[color] ?? 0);
+  if (!overlayActions?.length) return rem;
+  const onSnap = new Set((snap.queue?.actions ?? []).map((a) => a.seq));
+  for (const a of overlayActions) {
+    if (a.color !== color || a.timing === "C") continue;
+    if (onSnap.has(a.seq)) continue;
+    rem -= specialGasCost(a.kind);
+  }
+  return Math.max(0, rem);
+};
+
+/** Gas does not bank — remaining refills at turn-open from gasIncome. */
 export const energyRemaining = (store: MatchStore) => {
   const snap = store.state().liveSnapshot;
-  return Math.max(0, snap.gas[viewerColor(store)] ?? 0);
+  return gasRemainingFor(snap, viewerColor(store), store.reviewIntentActions());
 };
 
 export const maxDeployedSupply = MAX_DEPLOYED_MATERIAL;

@@ -16,7 +16,7 @@ import {
  */
 import { createMemo, useContext, type Component } from "solid-js";
 
-import { viewerColor } from "~/app/matchEconomy";
+import { viewerColor, gasRemainingFor } from "~/app/matchEconomy";
 import { MatchStoreContext } from "~/app/MatchStoreContext";
 import { displayedSnapshot } from "~/app/selectors";
 import { MineralsIcon, SupplyIcon, VespeneIcon } from "~/components/primitives/icons";
@@ -84,9 +84,18 @@ export const ResourceBar: Component<ResourceBarProps> = (props) => {
       void d.gas.w;
       void d.gas.b;
       void d.placement;
+      void d.queue?.actions?.length;
       return d;
     }
     return null;
+  });
+
+  /** DualNav intent specials reconstructed off-snap — same ghosts GasDeploy / board use. */
+  const overlayActions = createMemo(() => {
+    if (!ctx) return null;
+    const actions = ctx.reviewIntentActions();
+    void actions?.length;
+    return actions;
   });
 
   const turn = createMemo(() => Math.max(1, snap()?.turn ?? 1));
@@ -105,10 +114,11 @@ export const ResourceBar: Component<ResourceBarProps> = (props) => {
   const income = createMemo(() => incomeForTurn(turn()));
   const gasCap = createMemo(() => energyForTurn(turn()));
 
+  /** Remaining after queued / intent ghost canisters — matches GasDeploy. */
   const gas = createMemo(() => {
     const s = snap();
     if (!s) return 0;
-    return Math.max(0, s.gas[color()] ?? 0);
+    return gasRemainingFor(s, color(), overlayActions());
   });
 
   const maxDeployed = createMemo(() => MAX_DEPLOYED_MATERIAL);

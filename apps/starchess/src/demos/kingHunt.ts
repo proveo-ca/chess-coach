@@ -31,7 +31,7 @@ export const KING_HUNT_LIVE_START_SCFEN =
 
 export type KingHuntStep = {
   caption: string;
-  /** ≤1 special + ≤1 classical per side (SCFEN queue shape). */
+  /** N specials (all B or all F) + ≤1 classical per side (SCFEN queue shape). */
   actions: readonly ScActionInput[];
 };
 

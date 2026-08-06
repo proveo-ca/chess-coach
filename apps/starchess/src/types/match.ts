@@ -40,6 +40,8 @@ export type TimelineCue =
       color: StarChessColor;
       from: Square;
       to: Square;
+      /** Battlecruiser Tactical Jump — QueenJumpAnimation, not a hull slide. */
+      queenJump?: boolean;
     }
   | {
       kind: "attack";
@@ -50,6 +52,10 @@ export type TimelineCue =
       to: Square;
       /** When set, HP chips at frag impact (live king-damage boom). */
       kingShot?: { target: StarChessColor; livesAfter: number };
+      /** Override ANIM_BY_PIECE (e.g. bishopCharon). */
+      anim?: string;
+      /** Siege Tank mode for rookBattery VFX (from afterB siegedRooks). */
+      rookMode?: "siege" | "tank";
     }
   | {
       kind: "death";
@@ -58,6 +64,7 @@ export type TimelineCue =
       color: StarChessColor;
       at: Square;
       mine?: boolean;
+      rookMode?: "siege" | "tank";
     }
   | {
       kind: "deploy";
@@ -65,6 +72,14 @@ export type TimelineCue =
       piece: string;
       color: StarChessColor;
       at: Square;
+    }
+  | {
+      kind: "gasDrop";
+      id: string;
+      color: StarChessColor;
+      at: Square;
+      /** Top-edge start: left / mid / right (always falls from the top). */
+      corner: "left" | "mid" | "right";
     };
 
 export type TimelineState = {
@@ -76,6 +91,10 @@ export type TimelineState = {
   hiddenSquares: ReadonlySet<Square>;
   /** Move slide progress (0 = at from, 1 = sliding/at to). */
   moveProgress: Readonly<Record<string, 0 | 1>>;
+  /** Knight L-path facing: 0 = long leg, 1 = short leg (after elbow). */
+  moveLeg: Readonly<Record<string, 0 | 1>>;
+  /** Tactical Jump thruster trails (outlive the hull cue). */
+  jumpTrails: ReadonlyArray<{ id: string; from: Square; to: Square }>;
   /** Temporary placement overrides during resolve (mid-timeline commits). */
   displayPlacement: string | null;
   /** Review-replay overlays — never rewrite `liveSnapshot` while `gameOver`. */
@@ -139,6 +158,8 @@ export type MatchAction =
   | { type: "APPLY_SNAPSHOT"; snapshot: ScFenSnapshot }
   | { type: "SUBMIT_TURN"; reason: "end" | "timeout" }
   | { type: "RESOLVE_READY"; result: EndScTurnResult }
+  /** Turn-open: refill G: remaining from gasIncome (check chip / no-check arm). */
+  | { type: "REFILL_GAS" }
   | { type: "MARK_CHECKS_APPLIED" }
   | { type: "BEGIN_CHECKS_DONE" }
   | { type: "TIMELINE_START"; cues: TimelineCue[]; placement: string }
@@ -151,6 +172,8 @@ export type MatchAction =
       hidden?: readonly Square[];
       playingIds?: readonly string[];
       moveProgress?: Record<string, 0 | 1>;
+      moveLeg?: Record<string, 0 | 1>;
+      jumpTrails?: ReadonlyArray<{ id: string; from: Square; to: Square }>;
     }
   | { type: "TIMELINE_DONE" }
   | { type: "REVIEW_SEEK"; index: number }

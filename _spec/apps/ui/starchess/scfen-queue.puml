@@ -1,6 +1,6 @@
 @startuml scfen-queue
 ' SPEC: _spec/apps/ui/starchess/scfen-queue.puml
-' purpose: Queue ABNF, per-side shape (≤1 C + ≤1 B/F), resolve order B < C < F then w then b.
+' purpose: Queue ABNF, per-side shape (≤1 C + N specials all B or all F), resolve order B < C < F then w then b.
 !include ../../../themes/proveo.puml
 
 skinparam packageStyle rectangle
@@ -10,14 +10,14 @@ title SCFEN · Queue ABNF, Shape & Order
 
 package "ABNF" {
   queue "queueField\n\"Q:\" sideQueue \";\" sideQueue" as QF <<async>>
-  component "sideQueue\nside \":\" [special \",\"] [classical]\n/ side \":\" [classical \",\"] [special]\n/ side \":\"" as SQ <<async>>
+  component "sideQueue\nside \":\" [special \",\"]* [classical]\n/ side \":\" [classical \",\"] [special \",\"]*\n/ side \":\"" as SQ <<async>>
   component "special\n(\"B\" / \"F\") \"=\" kind \":\" from\n[\":\" to [\":\" unit]]" as SP <<app>>
   component "classical\n\"C=\" from to [promotion]" as CL <<app>>
   component "kind\nspawn / pawnDouble / knightMine /\nbishopSnipe / rookSiege / queenWarp" as KD <<db>>
 }
 
 package "Shape & order" {
-  component "Per side: ≤1 classical + ≤1 special (B xor F)" as SHAPE <<async>>
+  component "Per side: ≤1 classical + N specials\n(all B **or** all F — B xor F)" as SHAPE <<async>>
   component "Resolve rank: B < C < F" as RANK <<app>>
   component "Then white, then black" as WB <<app>>
 }
@@ -33,8 +33,8 @@ note right of QF
 end note
 
 note right of SQ
-  ""sideQueue = side ':' [ special ',' ] [ classical ]""
-  ""          / side ':' [ classical ',' ] [ special ]""
+  ""sideQueue = side ':' [ special ',' ]* [ classical ]""
+  ""          / side ':' [ classical ',' ] [ special ',' ]*""
   ""          / side ':'""
 end note
 
@@ -53,7 +53,9 @@ note right of KD
 end note
 
 note bottom
-  Ordering rule: **≤1 C + ≤1 special (B xor F)** per side;
+  Ordering rule: **≤1 C + N specials (all B or all F)** per side;
   resolve rank **B < C < F**, then **w then b**.
+  F specials rewrite actor square to the unit's post-C position
+  (move-then-gas lands on the destination).
 end note
 @enduml

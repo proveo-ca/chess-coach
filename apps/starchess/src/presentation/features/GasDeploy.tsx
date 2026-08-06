@@ -103,9 +103,38 @@ export const GasDeploy: Component<GasDeployProps> = (props) => {
       setHover(null);
       return null;
     }
-    const map = placementToMap(store.state().liveSnapshot.placement);
+    const state = store.state();
+    const color = viewerColor(store);
+    const map = placementToMap(state.liveSnapshot.placement);
+    const queue = state.liveSnapshot.queue?.actions ?? [];
+    const myClassical = queue.filter(
+      (a) => a.timing === "C" && a.kind === "classical" && a.color === color,
+    );
+
+    // Destination ghost — gas the unit that intends to land here (queue on origin).
+    const ghostC = myClassical.find((a) => a.to === square);
+    if (ghostC) {
+      const actor = map.get(ghostC.from);
+      if (actor && actor.color === color) {
+        const next: HoverState = {
+          square: ghostC.from,
+          piece: actor.type,
+          x: clientX,
+          y: clientY,
+        };
+        setHover(next);
+        return next;
+      }
+    }
+
+    // Vacated origin — piece already queued away; drop on the ghost instead.
+    if (myClassical.some((a) => a.from === square)) {
+      setHover(null);
+      return null;
+    }
+
     const piece = map.get(square);
-    if (!piece || piece.color !== viewerColor(store)) {
+    if (!piece || piece.color !== color) {
       setHover(null);
       return null;
     }

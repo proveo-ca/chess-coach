@@ -347,6 +347,11 @@ export const playResolve = (
     after(40 + MOVE_SQUARE_MS, () => {
       const vacated = placementToMap(prePromo.placement);
       for (const p of result.promotions) vacated.delete(p.at);
+      // Place promoted units with the deploy cue so occupancy auto-deploy
+      // does not treat the late TIMELINE land as a second spawn.
+      for (const p of result.promotions) {
+        vacated.set(p.at, { type: p.unit, color: p.color });
+      }
       doCommit({
         ...prePromo,
         placement: mapToPlacement(vacated),
@@ -852,6 +857,9 @@ export const playResolve = (
         color: a.color,
         from: a.from,
         to: a.to,
+        ...(a.piece === "r"
+          ? { rookMode: rookModeFor(a.from) }
+          : {}),
       };
       if (a.kind === "capture" && a.piece === "k") {
         const dmg = kingDamageStateForLives(livesBefore[a.color]);

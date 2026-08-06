@@ -28,7 +28,7 @@ endif
 
 :End / timeout — ""endScTurn"" (live passes\n""skipTurnStartChecks"" when checks already applied);
 
-:Apply rank **B** specials — white then black\n(spawn / mine / warp / siege);
+:Apply rank **B** specials — white then black\n(spawn / mine / warp / siege);\n**Presentation:** gas absorb VFX — canister drops\nfrom the top of the actor square (left / mid / right)\ninto the unit; green special-used aura eases in;
 
 :Rank **C** — classical for both sides against\nthe same start board (""resolveTurn"");
 
@@ -49,7 +49,7 @@ endif
 
 :Phase 3 **fog approach** — path-reveal shots slide\n""pathRevealFrom"" → discovery square → attack;\n**King HP mid-resolve** only here: fog intent finds a\nhidden king on the path (""pathReveal"" kingShot).\nVisible kings already paid at turn open — no second chip.\n**fizzle unless** the attacker still occupies\n""pathRevealFrom"" (died in phases 1–2 / square\nre-occupied by a phase-2 mover / sieged — rooks\nnever relocate) and ""to"" holds the exact\nin-the-way victim (empty, converging ally, or a\ndifferent non-in-the-way enemy → fizzle, no capture);
 
-:Apply rank **F** specials — white then black\n(post-move siege / late drops);
+:Apply rank **F** specials — white then black\n(post-move siege / late drops);\n**Presentation:** same gas absorb drop + aura as B;
 
 if (either king at 0 HP after all ranks?) then (yes)
   :Next snap phase **""O""** — terminal and **absorbing**\n(""endScTurn"" throws on a non-""P"" snapshot).\n""scOutcome(snap)"" derives the result from ""kingLives""\nalone: 0/0 → **draw**, one side at 0 → the other wins;

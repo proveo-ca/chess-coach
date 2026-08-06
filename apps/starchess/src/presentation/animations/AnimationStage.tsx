@@ -1,5 +1,6 @@
 /**
- * Snapshot board + combat VFX overlay stack (Attack / Death / Move / Deploy).
+ * Snapshot board + combat VFX overlay stack
+ * (Attack / Death / Move / Deploy / GasDrop / Jump).
  * Store-free host for Storybook animation demos and timeline projection.
  * // SPEC: _spec/apps/ui/starchess/demos.puml
  */
@@ -22,15 +23,19 @@ import {
 import { AttackAnimation } from "~/presentation/animations/AttackAnimation";
 import { DeathAnimation } from "~/presentation/animations/DeathAnimation";
 import { DeployAnimation } from "~/presentation/animations/DeployAnimation";
+import { GasDropAnimation } from "~/presentation/animations/GasDropAnimation";
 import { MoveAnimation } from "~/presentation/animations/MoveAnimation";
+import { QueenJumpAnimation } from "~/presentation/animations/QueenJumpAnimation";
 import { KingDamageOverlay } from "~/presentation/animations/kingDamageOverlay";
 import { findBoardGrid } from "~/presentation/animations/boardGeom";
 import type {
   AttackCue,
   DeathCue,
   DeployCue,
+  GasDropCue,
   KingDamageCue,
   MoveCue,
+  QueenJumpTrail,
 } from "~/presentation/types";
 import {
   ObserverStarChessBoard,
@@ -49,7 +54,11 @@ const NO_DEATHS: DeathCue[] = [];
 const NO_MOVES: MoveCue[] = [];
 const NO_DEPLOYS: DeployCue[] = [];
 const NO_KING_DAMAGE: KingDamageCue[] = [];
+const NO_JUMP_TRAILS: QueenJumpTrail[] = [];
+const NO_GAS_DROPS: GasDropCue[] = [];
 const NO_MOVE_PROGRESS: Record<string, 0 | 1> = {};
+const NO_ARMED: Square[] = [];
+const NO_GAS_ABSORB: ReadonlySet<Square> = new Set();
 
 const fenToSnapshot = (fen: string, sieged: readonly Square[] = []): ScFenSnapshot => {
   const placement = fen.split(/\s+/)[0] ?? "8/8/8/8/8/8/8/8";
@@ -96,9 +105,18 @@ export type AnimationStageProps = {
   moveCues?: readonly MoveCue[];
   moveProgress?: Record<string, 0 | 1>;
   moveLeg?: Record<string, 0 | 1>;
+  /** Tactical Jump hull cues (QueenJumpAnimation). */
+  jumpCues?: readonly MoveCue[];
+  jumpTrails?: readonly QueenJumpTrail[];
   deployCues?: readonly DeployCue[];
+  /** Gas special absorb — canister drop + aura ease-in. */
+  gasDropCues?: readonly GasDropCue[];
+  /** Squares currently absorbing gas (piece green aura transition). */
+  gasAbsorbSquares?: ReadonlySet<Square> | readonly Square[];
   /** Damaged-king fire / destroyed overlay (stable seed across moves). */
   kingDamage?: readonly KingDamageCue[];
+  /** Goliath squares with Charon launchers popped (arming pose). */
+  armedBishops?: readonly Square[];
   /** Hide board pieces on these squares while VFX play. */
   hideSquares?: ReadonlySet<Square> | readonly Square[];
   /** Hide mine glyphs after boom / while missile owns the square. */
@@ -147,6 +165,9 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
     (props.attackCues?.length ?? 0) > 0 ||
     (props.deathCues?.length ?? 0) > 0 ||
     (props.moveCues?.length ?? 0) > 0 ||
+    (props.jumpCues?.length ?? 0) > 0 ||
+    (props.jumpTrails?.length ?? 0) > 0 ||
+    (props.gasDropCues?.length ?? 0) > 0 ||
     (props.deployCues?.length ?? 0) > 0 ||
     (props.kingDamage?.length ?? 0) > 0;
 
@@ -184,6 +205,12 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
     return h instanceof Set ? h : new Set(h);
   };
 
+  const gasAbsorb = () => {
+    const g = props.gasAbsorbSquares;
+    if (!g) return NO_GAS_ABSORB;
+    return g instanceof Set ? g : new Set(g);
+  };
+
   return (
     <div
       ref={(el) => {
@@ -218,6 +245,8 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
         moveProgress={props.moveProgress}
         spentMines={props.spentMines}
         chasingMines={props.chasingMines}
+        armedBishops={props.armedBishops ?? NO_ARMED}
+        gasAbsorbSquares={gasAbsorb()}
       />
       <Show when={overlayReady()}>
         <div
@@ -240,6 +269,11 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
             boardWidth={box().w}
             boardHeight={box().h}
           />
+          <GasDropAnimation
+            cues={props.gasDropCues ?? NO_GAS_DROPS}
+            boardWidth={box().w}
+            boardHeight={box().h}
+          />
           <AttackAnimation
             cues={props.attackCues ?? NO_ATTACKS}
             dyingIds={dying()}
@@ -255,6 +289,12 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
             cues={props.moveCues ?? NO_MOVES}
             progress={props.moveProgress ?? NO_MOVE_PROGRESS}
             leg={props.moveLeg}
+            boardWidth={box().w}
+            boardHeight={box().h}
+          />
+          <QueenJumpAnimation
+            cues={[...(props.jumpCues ?? NO_MOVES)]}
+            trails={[...(props.jumpTrails ?? NO_JUMP_TRAILS)]}
             boardWidth={box().w}
             boardHeight={box().h}
           />

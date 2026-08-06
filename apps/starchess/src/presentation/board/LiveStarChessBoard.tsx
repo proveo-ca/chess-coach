@@ -94,9 +94,52 @@ export const LiveStarChessBoard: Component<{
     return [...fromTimeline, ...extra];
   });
 
+  /** Attack hull owns the square — drop fire overlay so hatch/battery CSS can play. */
+  const attackFrom = createMemo(
+    () => new Set(combat.attackCues().map((c) => c.from)),
+  );
+
+  /** Lethal king crumple owns the square — suppress static destroyed rubble. */
+  const dyingKingKeys = createMemo(() => {
+    const ats = new Set<string>();
+    const colors = new Set<string>();
+    for (const c of combat.deathCues()) {
+      ats.add(c.at);
+      if (c.piece === "k") colors.add(c.color);
+    }
+    return { ats, colors };
+  });
+
+  const visibleKingDamage = createMemo(() => {
+    const atk = attackFrom();
+    const dying = dyingKingKeys();
+    return kingDamage().filter(
+      (c) => !atk.has(c.at) && !dying.ats.has(c.at) && !dying.colors.has(c.id),
+    );
+  });
+
+  const armedBishops = createMemo((): Square[] => {
+    const t = store.state().targeting;
+    if (t?.kind === "bishopSnipe") return [t.from];
+    return [];
+  });
+
+  /** Hide queued canister badges once this resolve will absorb them. */
+  const intentCanisters = createMemo(() => {
+    const dropping = combat.gasDropSquares();
+    if (dropping.size === 0) return overlays().canisters;
+    return overlays().canisters.filter((c) => !dropping.has(c.at));
+  });
+
+  const gasAbsorbSquares = createMemo((): ReadonlySet<Square> => {
+    const cues = combat.gasDropCues();
+    if (cues.length === 0) return new Set();
+    return new Set(cues.map((c) => c.at));
+  });
+
   const hideSquares = createMemo((): ReadonlySet<Square> => {
     const next = new Set(combat.hideSquares());
-    for (const c of kingDamage()) next.add(c.at);
+    for (const c of visibleKingDamage()) next.add(c.at);
     for (const c of deployCues()) next.add(c.at);
     return next;
   });
@@ -112,7 +155,7 @@ export const LiveStarChessBoard: Component<{
       variant={props.variant ?? "eclipse"}
       phase={phase()}
       intentGhosts={overlays().destinations}
-      intentCanisters={overlays().canisters}
+      intentCanisters={intentCanisters()}
       intentChecks={overlays().checks}
       selected={interactive() ? state().selected : null}
       legalDests={interactive() ? state().legalDests : []}
@@ -121,8 +164,14 @@ export const LiveStarChessBoard: Component<{
       deathCues={combat.deathCues()}
       moveCues={combat.moveCues()}
       moveProgress={combat.moveProgress()}
+      moveLeg={combat.moveLeg()}
+      jumpCues={combat.jumpCues()}
+      jumpTrails={combat.jumpTrails()}
       deployCues={deployCues()}
-      kingDamage={kingDamage()}
+      gasDropCues={combat.gasDropCues()}
+      gasAbsorbSquares={gasAbsorbSquares()}
+      kingDamage={visibleKingDamage()}
+      armedBishops={armedBishops()}
       hideSquares={hideSquares()}
     />
   );

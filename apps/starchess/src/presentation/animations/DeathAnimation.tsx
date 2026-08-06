@@ -27,7 +27,7 @@ const deathNode = (
     case "b":
       return <DeathBishop color={color} seed={seed} />;
     case "r":
-      return <DeathRook color={color} seed={seed} mode={rookModeAt(cue.at)} />;
+      return <DeathRook color={color} seed={seed} mode={cue.rookMode ?? rookModeAt(cue.at)} />;
     case "q":
       return <DeathQueen color={color} seed={seed} />;
     case "k":

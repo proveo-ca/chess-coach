@@ -62,7 +62,8 @@ export const GAS_DEPLOY_FIXTURES = {
     stored: 4,
   },
   siegeTank: {
-    scfen: "SCFEN|7k/8/8/8/3R1R2/8/8/K7|11|33|P|G:22:22|Q:w:;b:|S:f4",
+    // d4 tank, f4 sieged; black pawn on f7 so End after Cf4f7 shows siege HE attack.
+    scfen: "SCFEN|7k/5p2/8/8/3R1R2/8/8/K7|11|33|P|G:22:22|Q:w:;b:|S:f4",
     stored: 12,
   },
   fullArmy: {

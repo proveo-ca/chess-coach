@@ -1,6 +1,7 @@
 /**
- * Store-free sequential combat cue player for DualNav review demos.
- * Drives AnimationStage attack / death / move / deploy overlays.
+ * Store-free combat cue player for DualNav review demos (legacy sequential).
+ * Live match / DualNav store path uses {@link playTimeline}, which batches
+ * same-rank opposing actions simultaneously (checks → attacks → moves).
  */
 import type { Square } from "chess.js";
 import type {
@@ -17,12 +18,14 @@ import {
   ATTACK_MS,
   DEATH_MS,
   DEPLOY_MS,
+  GAS_DROP_MS,
   moveDurationMs,
 } from "~/presentation/timeline/timings";
 import type {
   AttackCue,
   DeathCue,
   DeployCue,
+  GasDropCue,
   MoveCue,
 } from "~/presentation/types";
 
@@ -31,6 +34,7 @@ export type ResolveOverlayState = {
   death: DeathCue[];
   move: MoveCue[];
   deploy: DeployCue[];
+  gasDrop: GasDropCue[];
   hide: Square[];
   moveProgress: Record<string, 0 | 1>;
 };
@@ -54,6 +58,8 @@ const cueDuration = (cue: TimelineCue): number => {
       return DEATH_MS;
     case "deploy":
       return DEPLOY_MS;
+    case "gasDrop":
+      return GAS_DROP_MS;
   }
 };
 
@@ -62,6 +68,7 @@ const emptyOverlays = (): ResolveOverlayState => ({
   death: [],
   move: [],
   deploy: [],
+  gasDrop: [],
   hide: [],
   moveProgress: {},
 });
@@ -135,6 +142,35 @@ export const playResolveCues = (
 
     const cue = cues[index]!;
 
+    // Gas absorbs — stay on afterPending; do not advance to afterB yet.
+    if (cue.kind === "gasDrop") {
+      const batch: Extract<TimelineCue, { kind: "gasDrop" }>[] = [];
+      let i = index;
+      while (i < cues.length && cues[i]!.kind === "gasDrop") {
+        batch.push(cues[i]! as Extract<TimelineCue, { kind: "gasDrop" }>);
+        i++;
+      }
+      setOverlays({
+        attack: [],
+        death: [],
+        move: [],
+        deploy: [],
+        gasDrop: batch.map((c) => ({
+          id: c.id,
+          at: c.at,
+          color: c.color,
+          corner: c.corner,
+        })),
+        hide: [],
+        moveProgress: {},
+      });
+      cancelDelay = browserScheduler.delay(GAS_DROP_MS, () => {
+        clearOverlays();
+        run(i);
+      });
+      return;
+    }
+
     if (isSpawnDeploy(cue)) {
       const batch: Extract<TimelineCue, { kind: "deploy" }>[] = [];
       let i = index;
@@ -153,6 +189,7 @@ export const playResolveCues = (
           color: c.color,
           at: c.at,
         })),
+        gasDrop: [],
         hide: batch.map((c) => c.at),
         moveProgress: {},
       });
@@ -182,6 +219,7 @@ export const playResolveCues = (
         death: [],
         move: [],
         deploy: [],
+        gasDrop: [],
         hide: [cue.from],
         moveProgress: {},
       });
@@ -199,6 +237,7 @@ export const playResolveCues = (
         ],
         move: [],
         deploy: [],
+        gasDrop: [],
         hide: [],
         moveProgress: {},
       });
@@ -215,6 +254,7 @@ export const playResolveCues = (
         death: [],
         move: [move],
         deploy: [],
+        gasDrop: [],
         hide: [cue.from],
         moveProgress: { [cue.id]: 0 },
       });
@@ -225,12 +265,17 @@ export const playResolveCues = (
             death: [],
             move: [move],
             deploy: [],
+            gasDrop: [],
             hide: [cue.from],
             moveProgress: { [cue.id]: 1 },
           });
         }
       });
     } else if (cue.kind === "deploy") {
+      const map = placementToMap(displayPlacement);
+      map.set(cue.at, { type: asPiece(cue.piece), color: cue.color });
+      displayPlacement = mapToPlacement(map);
+      applyBoard({ placement: displayPlacement });
       setOverlays({
         attack: [],
         death: [],
@@ -243,6 +288,7 @@ export const playResolveCues = (
             at: cue.at,
           },
         ],
+        gasDrop: [],
         hide: [cue.at],
         moveProgress: {},
       });

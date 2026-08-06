@@ -94,7 +94,7 @@ const attackNode = (cue: AttackCue): JSX.Element => {
           <InlineRook
             color={cue.color}
             aimDeg={screenAimDeg(true, deg, ROOK_REST_AIM_DEG)}
-            mode={rookModeAt(cue.from)}
+            mode={cue.rookMode ?? rookModeAt(cue.from)}
           />
         </div>
       );
@@ -252,7 +252,7 @@ export const AttackAnimation: Component<AttackAnimationProps> = (props) => {
           const anim = cue.anim ?? ANIM_BY_PIECE[cue.piece];
           const isDying = () => dying(cue.id);
           return (
-            <div data-attack-cue={cue.id} style={{ display: "contents" }}>
+            <>
               <div
                 class={styles.targetSlot}
                 style={squareBoxStyle(cue.to, props.boardWidth, props.boardHeight)}
@@ -260,7 +260,7 @@ export const AttackAnimation: Component<AttackAnimationProps> = (props) => {
               />
 
               {/* HE impact is siege-only — tank mode uses king-style muzzle flashes. */}
-              <Show when={cue.piece === "r" && rookModeAt(cue.from) === "siege"}>
+              <Show when={cue.piece === "r" && (cue.rookMode ?? rookModeAt(cue.from)) === "siege"}>
                 <BoardFx
                   class={styles.rookImpact}
                   style={rookImpactStyle(cue, props.boardWidth, props.boardHeight)!}
@@ -325,7 +325,9 @@ export const AttackAnimation: Component<AttackAnimationProps> = (props) => {
                   }}
                   data-square={cue.from}
                   data-attack-anim={anim}
-                  data-rook-mode={cue.piece === "r" ? rookModeAt(cue.from) : undefined}
+                  data-rook-mode={
+                    cue.piece === "r" ? (cue.rookMode ?? rookModeAt(cue.from)) : undefined
+                  }
                 >
                   <div class={styles.aimWrap} style={queenAimWrapStyle(cue)}>
                     {attackNode(cue)}
@@ -349,7 +351,7 @@ export const AttackAnimation: Component<AttackAnimationProps> = (props) => {
                   <div class={styles.fragCylinder} />
                 </div>
               </Show>
-            </div>
+            </>
           );
         }}
       </For>

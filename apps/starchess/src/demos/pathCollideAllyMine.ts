@@ -14,7 +14,7 @@ export const PATH_COLLIDE_ALLY_MINE_START_SCFEN =
 
 export type PathCollideAllyMineStep = {
   caption: string;
-  /** Both sides’ actions for one parallel turn (≤1 special + ≤1 classical each). */
+  /** Both sides’ actions for one parallel turn (N specials all B|F + ≤1 classical each). */
   actions: readonly ScActionInput[];
 };
 

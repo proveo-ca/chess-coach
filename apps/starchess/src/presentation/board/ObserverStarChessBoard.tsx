@@ -32,6 +32,7 @@ import {
 } from "~/presentation/board/fogProjection";
 import { pieceUrl } from "~/presentation/board/pieceUrl";
 import { TEAM_PRIMARY } from "~/presentation/animations/teamColors";
+import { InlineBishop } from "~/presentation/animations/pieces/InlineBishop";
 import { InlineRook } from "~/presentation/pieces/InlineRook";
 import { SpiderMine } from "~/presentation/specials/SpiderMine";
 import { VespeneIcon } from "~/components/primitives/icons";
@@ -89,6 +90,13 @@ export const ObserverStarChessBoard: Component<{
   spentMines?: readonly Square[];
   /** Wake / chase — legs out on these squares. */
   chasingMines?: readonly Square[];
+  /** Goliath squares with Charon launchers armed (inline SVG). */
+  armedBishops?: readonly Square[];
+  /**
+   * Gas special absorb — ease green aura onto the unit while the canister drops.
+   * Independent of viewer (U: enemy-only glow); lasts for the drop cue only.
+   */
+  gasAbsorbSquares?: ReadonlySet<Square> | readonly Square[];
 }> = (props) => {
   const maskId = createUniqueId();
   const viewer = () => props.viewer ?? "w";
@@ -105,6 +113,12 @@ export const ObserverStarChessBoard: Component<{
   );
   const spentMines = createMemo(() => new Set(props.spentMines ?? []));
   const chasingMines = createMemo(() => new Set(props.chasingMines ?? []));
+  const armedBishops = createMemo(() => new Set(props.armedBishops ?? []));
+  const gasAbsorb = createMemo((): ReadonlySet<Square> => {
+    const g = props.gasAbsorbSquares;
+    if (!g) return new Set();
+    return g instanceof Set ? g : new Set(g);
+  });
   const minesBySquare = createMemo(() => {
     const out = new Map<Square, StarChessColor>();
     for (const m of props.snapshot.mines ?? []) out.set(m.at, m.color);
@@ -324,6 +338,8 @@ export const ObserverStarChessBoard: Component<{
                   const isSelected = () => props.selected === square;
                   const isLegal = () => props.legalDests?.includes(square) ?? false;
                   const gasUsedAura = () => {
+                    // Resolve absorb — green eases onto the unit with the canister drop.
+                    if (gasAbsorb().has(square)) return true;
                     if (!specialsUsed().has(square)) return false;
                     const p = piece();
                     if (!p) return false;
@@ -388,34 +404,48 @@ export const ObserverStarChessBoard: Component<{
                         )}
                       </Show>
                       <Show when={visiblePiece()}>
-                        {(p) => (
-                          <Show
-                            when={p().type === "r"}
-                            fallback={
-                              <img
+                        {(p) => {
+                          if (p().type === "r") {
+                            return (
+                              <div
                                 class={clsx(
                                   styles.piece,
                                   gasUsedAura() && styles.pieceSpecialUsed,
                                 )}
-                                src={pieceUrl(p().color, p().type)}
-                                alt={`${p().color} ${p().type}`}
+                                data-piece-inline="r"
                                 data-special-used={gasUsedAura() ? "true" : undefined}
-                                draggable={false}
-                              />
-                            }
-                          >
-                            <div
+                              >
+                                <InlineRook color={p().color} mode={rookMode()} />
+                              </div>
+                            );
+                          }
+                          if (p().type === "b" && armedBishops().has(square)) {
+                            return (
+                              <div
+                                class={clsx(
+                                  styles.piece,
+                                  gasUsedAura() && styles.pieceSpecialUsed,
+                                )}
+                                data-piece-inline="b"
+                                data-special-used={gasUsedAura() ? "true" : undefined}
+                              >
+                                <InlineBishop color={p().color} face="front" armed armAnim />
+                              </div>
+                            );
+                          }
+                          return (
+                            <img
                               class={clsx(
                                 styles.piece,
                                 gasUsedAura() && styles.pieceSpecialUsed,
                               )}
-                              data-piece-inline="r"
+                              src={pieceUrl(p().color, p().type)}
+                              alt={`${p().color} ${p().type}`}
                               data-special-used={gasUsedAura() ? "true" : undefined}
-                            >
-                              <InlineRook color={p().color} mode={rookMode()} />
-                            </div>
-                          </Show>
-                        )}
+                              draggable={false}
+                            />
+                          );
+                        }}
                       </Show>
                       <Show when={canister()}>
                         {(c) => (

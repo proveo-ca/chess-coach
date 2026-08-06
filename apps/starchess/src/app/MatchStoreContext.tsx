@@ -136,12 +136,15 @@ export const createMatchStore = (opts?: {
     try {
       begun = beginScTurn(s.liveSnapshot);
     } catch {
+      dispatch({ type: "REFILL_GAS" });
       dispatch({ type: "MARK_CHECKS_APPLIED" });
       if (opts?.armTimer) armTimer();
       return;
     }
 
     if (!begun.changed || !begun.asResolve) {
+      // No standing checks — still refill at turn open before planning arms.
+      dispatch({ type: "REFILL_GAS" });
       dispatch({ type: "MARK_CHECKS_APPLIED" });
       if (opts?.armTimer) armTimer();
       return;
@@ -149,6 +152,8 @@ export const createMatchStore = (opts?: {
 
     cancelTimer?.();
     cancelTimer = null;
+    // Refill when the check chip starts (not after End resolve).
+    dispatch({ type: "REFILL_GAS" });
     dispatch({ type: "RESOLVE_READY", result: begun.asResolve });
     cancelTimeline?.();
     cancelTimeline = playTimeline(begun.asResolve, scheduler, {
@@ -235,6 +240,8 @@ export const createMatchStore = (opts?: {
 
     reviewBusy = true;
     reviewTurnStart = startIndex;
+    // Turn open — refill before check/intent (matches live ensureTurnOpenChecks).
+    dispatch({ type: "REFILL_GAS" });
     const setCancel = (fn: (() => void) | null) => {
       cancelTimeline = fn;
     };

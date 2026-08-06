@@ -3,7 +3,7 @@
  * Stories pass SCFEN fixtures only — no queue / arm logic here.
  * // SPEC: _spec/apps/ui/starchess/demos.puml
  */
-import { createEffect, type Component } from "solid-js";
+import { createEffect, untrack, type Component } from "solid-js";
 
 import {
   createMatchStore,
@@ -46,19 +46,23 @@ export const GasDeployScenarioScreen: Component<GasDeployScenarioScreenProps> = 
     autoArmTimer: props.armTimer === true,
   });
 
+  // Sync only when the Storybook control changes — do not wipe queue spends
+  // (ghost canisters) by re-applying the control on every store update.
   createEffect(() => {
     const g = props.gas;
     if (g == null) return;
     const next = Math.min(3, Math.max(0, Math.floor(g)));
-    const s = store.state();
-    const color = s.viewer;
-    if ((s.liveSnapshot.gas[color] ?? 0) === next) return;
-    store.dispatch({
-      type: "APPLY_SNAPSHOT",
-      snapshot: {
-        ...s.liveSnapshot,
-        gas: { ...s.liveSnapshot.gas, [color]: next },
-      },
+    untrack(() => {
+      const s = store.state();
+      const color = s.viewer;
+      if ((s.liveSnapshot.gas[color] ?? 0) === next) return;
+      store.dispatch({
+        type: "APPLY_SNAPSHOT",
+        snapshot: {
+          ...s.liveSnapshot,
+          gas: { ...s.liveSnapshot.gas, [color]: next },
+        },
+      });
     });
   });
 

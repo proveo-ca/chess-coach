@@ -39,8 +39,9 @@ end note
 note right of G
   **Remaining vespene** + this turn's income/cap.
   Income must equal the turn tier (1 / 2 / 3).
-  Gas does **not** accumulate — ""endScTurn"" refills
-  to full income next turn.
+  Gas does **not** accumulate — ""endScTurn"" leaves
+  remaining at **0**; ""beginScTurn"" / turn-open
+  **refills** to full income.
 end note
 
 note right of Q

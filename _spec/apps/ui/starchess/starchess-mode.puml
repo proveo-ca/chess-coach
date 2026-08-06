@@ -11,7 +11,7 @@ title OUTDATED — StarChess Mode · Product / UX
 
 package "Goals (vs classical chess)" {
   component "Turn structure — both sides queue,\nEnd / timeout submits" as G1 <<async>>
-  component "Actions per turn — ≤1 special + ≤1 classical\n(stack order → B / F)" as G2 <<app>>
+  component "Actions per turn — N specials (all B or all F)\n+ ≤1 classical (stack order → B / F)" as G2 <<app>>
   component "Conflicts — classical = **attack** then **move**" as G3 <<app>>
   component "Economy — minerals + vespene" as G4 <<db>>
   component "Vision — cumulative fog (always on in mode)" as G5 <<db>>

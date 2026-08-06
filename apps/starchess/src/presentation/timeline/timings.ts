@@ -1,11 +1,19 @@
-/** Presentation timings — injected scheduler advances these in tests. */
-export const ATTACK_MS = 1000;
-/** King HP chip / hit boom — aligns with attack frag (`ATTACK_MS / 4`). */
-export const FRAG_FLIGHT_MS = ATTACK_MS / 4;
-export const DEATH_MS = 500;
-export const MOVE_SQUARE_MS = 200;
-export const DEPLOY_MS = 500;
-export const TURN_TIMEOUT_MS = 10_000;
+/**
+ * Presentation timings — injected scheduler advances these in tests.
+ * Re-export from constants so FRAG_FLIGHT_MS / ATTACK_MS stay one source of truth
+ * (kill→death meeting point = FRAG_FLIGHT_MS = ATTACK_MS / 4 = 250ms).
+ */
+export {
+  ATTACK_MS,
+  FRAG_FLIGHT_MS,
+  DEATH_MS,
+  MOVE_SQUARE_MS,
+  DEPLOY_MS,
+  GAS_DROP_MS,
+  TURN_TIMEOUT_MS,
+} from "~/presentation/constants";
+
+import { MOVE_SQUARE_MS } from "~/presentation/constants";
 
 export const moveDurationMs = (from: string, to: string): number => {
   const df = Math.abs(from.charCodeAt(0) - to.charCodeAt(0));

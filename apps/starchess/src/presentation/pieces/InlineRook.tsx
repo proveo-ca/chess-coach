@@ -1,6 +1,6 @@
 import type { Component } from "solid-js";
 
-import { ROOK_REST_AIM_DEG, svgPivotAround } from "~/presentation/pieces/rookAim";
+import { ROOK_REST_AIM_DEG, NERD_ROOK_SCALE, svgPivotAroundAniso, SIEGE_TOGGLE_MS } from "~/presentation/pieces/rookAim";
 import styles from "~/presentation/pieces/InlineRook.module.css";
 import { TwinBattery, TWIN_BATTERY_SCALE_ROOK } from "~/presentation/pieces/TwinBattery";
 import {
@@ -12,7 +12,6 @@ import {
   type PieceColor,
 } from "~/presentation/pieces/teamColors";
 import type { RookMode } from "@chess-coach/starchess-core";
-import { SIEGE_TOGGLE_MS } from "~/presentation/pieces/rookAim";
 
 export type { RookMode };
 
@@ -239,7 +238,15 @@ export const InlineRook: Component<InlineRookProps> = (props) => {
             stroke-width={ROOK_STROKE}
           >
             <Hull team={team()} />
-            <g transform={svgPivotAround(PIVOT.x, PIVOT.y, aimDeg())}>
+            <g
+              transform={svgPivotAroundAniso(
+                PIVOT.x,
+                PIVOT.y,
+                aimDeg(),
+                NERD_ROOK_SCALE.sx,
+                NERD_ROOK_SCALE.sy,
+              )}
+            >
               <Turret team={team()} />
             </g>
           </g>

@@ -1,16 +1,28 @@
-import type { EndScTurnResult, ResolveAttack, ResolveMove } from "@chess-coach/starchess-core";
+import type { EndScTurnResult, ResolveAttack, ResolveMove, StarChessColor, StarChessPiece } from "@chess-coach/starchess-core";
 import { placementToMap, mapToPlacement } from "@chess-coach/starchess-core";
 import type { Square } from "chess.js";
 
 import { promoWalkOffTo, isBoardSquare } from "~/presentation/animations/boardGeom";
+import {
+  knightElbowMs,
+  moveDurationMs as pieceMoveDurationMs,
+} from "~/presentation/animations/moveTiming";
+import { BISHOP_CHARON } from "~/presentation/animations/bishopCharon";
 import { deployCuesForPlacementDiff } from "~/presentation/timeline/deployDiff";
 import {
   ATTACK_MS,
   DEATH_MS,
   DEPLOY_MS,
   FRAG_FLIGHT_MS,
+  GAS_DROP_MS,
   moveDurationMs,
 } from "~/presentation/timeline/timings";
+import {
+  TACTICAL_JUMP_APPEAR_MS,
+  TACTICAL_JUMP_TRAIL_MS,
+  TACTICAL_JUMP_TRAVEL_MS,
+} from "~/presentation/specials/queenTacticalJump";
+import { gasDropCornerFor } from "~/presentation/animations/gasDrop";
 import type { TimelineCue } from "~/types/match";
 import type { Scheduler } from "~/types/ports";
 
@@ -24,13 +36,27 @@ export type TimelineCallbacks = {
     hidden?: readonly Square[];
     playingIds?: readonly string[];
     moveProgress?: Record<string, 0 | 1>;
+    /** Knight L facing — 0 long leg, 1 short leg after elbow. */
+    moveLeg?: Record<string, 0 | 1>;
+    /** Tactical Jump thruster trails (outlive hull cue). */
+    jumpTrails?: ReadonlyArray<{ id: string; from: Square; to: Square }>;
   }) => void;
   onDone: () => void;
 };
 
-const attackCue = (a: ResolveAttack, id: string): TimelineCue | null => {
+const attackCue = (
+  a: ResolveAttack,
+  id: string,
+  siegedRooks: readonly Square[],
+): TimelineCue | null => {
   if (a.kind === "kingShot" && a.moveCollision) return null;
   if ("moveCollision" in a && a.moveCollision && a.kind === "capture") return null;
+  const rookMode =
+    a.piece === "r"
+      ? siegedRooks.includes(a.from)
+        ? ("siege" as const)
+        : ("tank" as const)
+      : undefined;
   const base = {
     kind: "attack" as const,
     id,
@@ -38,6 +64,7 @@ const attackCue = (a: ResolveAttack, id: string): TimelineCue | null => {
     color: a.color,
     from: a.from,
     to: a.to,
+    ...(rookMode ? { rookMode } : {}),
   };
   if (a.kind === "kingShot") {
     return {
@@ -72,6 +99,17 @@ const withoutSquare = (placement: string, at: Square): string => {
   return mapToPlacement(map);
 };
 
+/** Stamp a unit onto a square (promo land under a deploy cue). */
+const withPieceAt = (
+  placement: string,
+  at: Square,
+  piece: { type: StarChessPiece; color: StarChessColor },
+): string => {
+  const map = placementToMap(placement);
+  map.set(at, piece);
+  return mapToPlacement(map);
+};
+
 /**
  * HP before animated kingShots — undo chips that afterPending already applied
  * (begin / pending checks) so the hull stays pristine until frag impact.
@@ -93,14 +131,75 @@ const livesBeforeAnimatedShots = (
 };
 
 /**
- * Project EndScTurnResult into a sequential cue timeline.
- * Order: B gas-steps → spawn deploys → classical attack/death/move →
- * path-reveal (fog discovery) → F steps → promo.
+ * Project EndScTurnResult into a cue timeline.
+ * Order: B gas drops → B gas-steps → Charon / Tactical Jump → spawn deploys →
+ * phase-1 attacks/deaths → classical → path-reveal → F gas drops → F steps → promo.
  */
 export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] => {
   const cues: TimelineCue[] = [];
   let n = 0;
+
+  const pendingMap = placementToMap(result.afterPending.placement);
+  const bGas: TimelineCue[] = [];
+  const fGas: TimelineCue[] = [];
+  const seenGas = new Set<string>();
+  for (const ev of result.events) {
+    if (!ev.from) continue;
+    if (ev.phase !== "specialBefore" && ev.phase !== "specialAfter") continue;
+    // One absorb per actor square (2-gas specials still get a single drop).
+    const key = `${ev.phase}:${ev.from}`;
+    if (seenGas.has(key)) continue;
+    seenGas.add(key);
+    const drop: TimelineCue = {
+      kind: "gasDrop",
+      id: `gd${n++}`,
+      color: ev.color,
+      at: ev.from,
+      corner: gasDropCornerFor(ev.from),
+    };
+    if (ev.phase === "specialBefore") bGas.push(drop);
+    else fGas.push(drop);
+  }
+  cues.push(...bGas);
+
   for (const m of result.bMoves) cues.push(moveCue(m, `b${n++}`));
+
+  // B specials that need VFX before afterB locks (Charon missiles / Jump trail).
+  for (const ev of result.events) {
+    if (ev.phase !== "specialBefore") continue;
+    if (ev.kind === "bishopSnipe" && ev.from && ev.to) {
+      cues.push({
+        kind: "attack",
+        id: `ch${n++}`,
+        piece: "b",
+        color: ev.color,
+        from: ev.from,
+        to: ev.to,
+        anim: BISHOP_CHARON,
+      });
+      const victim = pendingMap.get(ev.to);
+      if (victim) {
+        cues.push({
+          kind: "death",
+          id: `chd${n++}`,
+          piece: victim.type,
+          color: victim.color,
+          at: ev.to,
+        });
+      }
+    }
+    if (ev.kind === "queenWarp" && ev.from && ev.to) {
+      cues.push({
+        kind: "move",
+        id: `qj${n++}`,
+        piece: "q",
+        color: ev.color,
+        from: ev.from,
+        to: ev.to,
+        queenJump: true,
+      });
+    }
+  }
 
   // Command Center / put spawns: pieces that appear on afterB without a matching leave.
   for (const d of deployCuesForPlacementDiff(
@@ -117,20 +216,27 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
     });
   }
 
+  // Phase 1 — simultaneous attacks, then simultaneous deaths (not interleaved).
+  const sieged = result.afterB.siegedRooks ?? [];
+  const phase1Attacks: TimelineCue[] = [];
+  const phase1Deaths: TimelineCue[] = [];
   for (const a of result.resolved.attacks) {
-    const c = attackCue(a, `a${n++}`);
-    if (c) cues.push(c);
+    const c = attackCue(a, `a${n++}`, sieged);
+    if (c) phase1Attacks.push(c);
     if (a.kind === "capture" && a.victim) {
-      cues.push({
+      phase1Deaths.push({
         kind: "death",
         id: `d${n++}`,
         piece: a.victim.piece,
         color: a.victim.color,
         at: a.to,
+        ...(a.victim.piece === "r"
+          ? { rookMode: sieged.includes(a.to) ? ("siege" as const) : ("tank" as const) }
+          : {}),
       });
     }
     if (a.kind === "mineBlast") {
-      cues.push({
+      phase1Deaths.push({
         kind: "death",
         id: `m${n++}`,
         piece: a.piece,
@@ -139,12 +245,24 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
         mine: true,
       });
     }
+    // Lethal kingShot — DeathAnimation collapse (not a static ruins snap).
+    if (a.kind === "kingShot" && a.livesAfter === 0) {
+      phase1Deaths.push({
+        kind: "death",
+        id: `dk${n++}`,
+        piece: "k",
+        color: a.target,
+        at: a.to,
+      });
+    }
   }
+  cues.push(...phase1Attacks, ...phase1Deaths);
+
   for (const m of result.resolved.moves) cues.push(moveCue(m, `c${n++}`));
 
   // Phase 3 — fog path-discovery. Intention slides to the discovery square,
   // then attacks (king on the way ⇒ kingShot). Must not look like a post-move
-  // standing-check chip.
+  // standing-check chip. Kept as per-approach chains (sequential).
   for (const a of result.resolved.pathRevealAttacks) {
     if (a.kind === "kingShot") {
       const origin = a.pathRevealFrom;
@@ -163,7 +281,19 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
         from: a.from,
         to: a.to,
         kingShot: { target: a.target, livesAfter: a.livesAfter },
+        ...(a.piece === "r"
+          ? { rookMode: sieged.includes(a.from) ? ("siege" as const) : ("tank" as const) }
+          : {}),
       });
+      if (a.livesAfter === 0) {
+        cues.push({
+          kind: "death",
+          id: `prdth${n++}`,
+          piece: "k",
+          color: a.target,
+          at: a.to,
+        });
+      }
       if (stopAt !== a.from) {
         cues.push(
           moveCue({ piece: a.piece, color: a.color, from: a.from, to: stopAt }, `prs${n++}`),
@@ -179,7 +309,7 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
           moveCue({ piece: a.piece, color: a.color, from: origin, to: a.from }, `prd${n++}`),
         );
       }
-      const c = attackCue(a, `pra${n++}`);
+      const c = attackCue(a, `pra${n++}`, sieged);
       if (c) cues.push(c);
       if (a.victim) {
         cues.push({
@@ -188,6 +318,9 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
           piece: a.victim.piece,
           color: a.victim.color,
           at: a.to,
+          ...(a.victim.piece === "r"
+            ? { rookMode: sieged.includes(a.to) ? ("siege" as const) : ("tank" as const) }
+            : {}),
         });
       }
       if (a.occupies) {
@@ -196,6 +329,7 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
     }
   }
 
+  cues.push(...fGas);
   for (const m of result.fMoves) cues.push(moveCue(m, `f${n++}`));
   for (const p of result.resolved.promotions) {
     // Pawn walks one square off the board edge, then the unit deploys.
@@ -221,22 +355,82 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
 const cueDuration = (cue: TimelineCue): number => {
   switch (cue.kind) {
     case "move":
-      return moveDurationMs(cue.from, cue.to);
+      if (cue.queenJump) return TACTICAL_JUMP_TRAVEL_MS + TACTICAL_JUMP_APPEAR_MS;
+      // Knights use L-path timing (half per-square rate) — matches MoveAnimation.
+      return cue.piece === "n"
+        ? pieceMoveDurationMs(cue.from, cue.to, "n")
+        : moveDurationMs(cue.from, cue.to);
     case "attack":
-      return ATTACK_MS;
+      return cue.anim === BISHOP_CHARON ? FRAG_FLIGHT_MS : ATTACK_MS;
     case "death":
       return DEATH_MS;
     case "deploy":
       return DEPLOY_MS;
+    case "gasDrop":
+      return GAS_DROP_MS;
   }
+};
+
+/** Initial knight facing map (long leg). Empty when no knights in the wave. */
+const knightLeg0 = (moves: readonly { id: string; piece: string }[]): Record<string, 0 | 1> => {
+  const out: Record<string, 0 | 1> = {};
+  for (const m of moves) {
+    if (m.piece === "n") out[m.id] = 0;
+  }
+  return out;
 };
 
 /** Spawn-batch deploy ids use the `spawn-` prefix from deployDiff. */
 const isSpawnDeploy = (cue: TimelineCue): boolean =>
   cue.kind === "deploy" && cue.id.startsWith("spawn-");
 
+const isGasDrop = (cue: TimelineCue): boolean => cue.kind === "gasDrop";
+
+/** Phase-1 attacks (not fog path-reveal `pra*` / Charon `ch*`). */
+const isPhase1Attack = (cue: TimelineCue): boolean =>
+  cue.kind === "attack" && !cue.id.startsWith("pra") && !cue.id.startsWith("ch");
+
+/** Phase-1 deaths (not path-reveal `prdth*` / Charon `chd*`). */
+const isPhase1Death = (cue: TimelineCue): boolean =>
+  cue.kind === "death" && !cue.id.startsWith("prdth") && !cue.id.startsWith("chd");
+
+/**
+ * Simultaneous move waves: B gas-steps, classical C, or F gas-steps.
+ * Path-reveal (`pr*`), promo walk-off (`pw*`), and Tactical Jump (`qj*`) stay sequential.
+ */
+const isSimulMoveWave = (cue: TimelineCue): boolean => {
+  if (cue.kind !== "move") return false;
+  if (cue.queenJump) return false;
+  if (cue.id.startsWith("pr") || cue.id.startsWith("pw") || cue.id.startsWith("qj")) {
+    return false;
+  }
+  return true;
+};
+
+const isPromoWalk = (cue: TimelineCue): boolean =>
+  cue.kind === "move" && cue.id.startsWith("pw");
+
+const isPromoDeploy = (cue: TimelineCue): boolean =>
+  cue.kind === "deploy" && cue.id.startsWith("pd");
+
+const takeWhile = (
+  cues: readonly TimelineCue[],
+  start: number,
+  pred: (c: TimelineCue) => boolean,
+): { batch: TimelineCue[]; next: number } => {
+  const batch: TimelineCue[] = [];
+  let i = start;
+  while (i < cues.length && pred(cues[i]!)) {
+    batch.push(cues[i]!);
+    i += 1;
+  }
+  return { batch, next: i };
+};
+
 /**
  * Play projected cues with an injected scheduler. Commits final board on done.
+ * Same-rank opposing actions share one window (checks/attacks together; deaths
+ * overlap at FRAG_FLIGHT_MS; then moves) — mirrors engine resolve + playResolve.
  * KingShot HP lands at frag impact so {@link KingDamageOverlay} boom syncs to the hit.
  */
 export const playTimeline = (
@@ -261,7 +455,20 @@ export const playTimeline = (
       kingLives: { ...displayLives },
       hidden: extra?.hidden ?? [],
       playingIds: extra?.playingIds ?? [],
-      moveProgress: {},
+      moveProgress: {}, moveLeg: {},
+    });
+  };
+
+  const commitAfterAttack = () => {
+    displayPlacement = result.resolved.afterAttack.placement;
+    displayLives = { ...result.resolved.afterAttack.kingLives };
+    cb.onCommit({
+      placement: displayPlacement,
+      kingLives: { ...displayLives },
+      mines: result.resolved.afterAttack.mines,
+      hidden: [],
+      playingIds: [],
+      moveProgress: {}, moveLeg: {},
     });
   };
 
@@ -276,7 +483,7 @@ export const playTimeline = (
         mines: result.next.mines,
         siegedRooks: result.next.siegedRooks,
         hidden: [],
-        moveProgress: {},
+        moveProgress: {}, moveLeg: {},
         playingIds: [],
       });
       cb.onDone();
@@ -285,46 +492,422 @@ export const playTimeline = (
 
     const cue = cues[index]!;
 
-    // Parallel spawn deploys (Command Center) — one DEPLOY_MS window.
-    if (isSpawnDeploy(cue)) {
-      const batch: Extract<TimelineCue, { kind: "deploy" }>[] = [];
-      let i = index;
-      while (i < cues.length && isSpawnDeploy(cues[i]!)) {
-        batch.push(cues[i]! as Extract<TimelineCue, { kind: "deploy" }>);
-        i++;
-      }
-      applyAfterB({
-        hidden: batch.map((c) => c.at),
-        playingIds: batch.map((c) => c.id),
+    // Gas absorbs — simultaneous for all B (or F) specials in this wave.
+    if (isGasDrop(cue)) {
+      const { batch, next } = takeWhile(cues, index, isGasDrop);
+      const drops = batch as Extract<TimelineCue, { kind: "gasDrop" }>[];
+      cb.onCommit({
+        hidden: [],
+        playingIds: drops.map((c) => c.id),
+        moveProgress: {},
+        moveLeg: {},
       });
-      const wait = scheduler.delay(DEPLOY_MS, () => {
+      const wait = scheduler.delay(GAS_DROP_MS, () => {
         if (cancelled) return;
-        cb.onCommit({ hidden: [], playingIds: [], moveProgress: {} });
-        run(i);
+        cb.onCommit({
+          hidden: [],
+          playingIds: [],
+          moveProgress: {},
+          moveLeg: {},
+        });
+        run(next);
       });
       cancels.push(wait);
       return;
     }
 
-    // Classical / promo / gas-step cues need afterB board (siege vision, spawns landed).
-    if (!afterBApplied && cue.kind !== "move") {
+    // Parallel spawn deploys (Command Center) — one DEPLOY_MS window.
+    if (isSpawnDeploy(cue)) {
+      const { batch, next } = takeWhile(cues, index, isSpawnDeploy);
+      const deploys = batch as Extract<TimelineCue, { kind: "deploy" }>[];
+      applyAfterB({
+        hidden: deploys.map((c) => c.at),
+        playingIds: deploys.map((c) => c.id),
+      });
+      const wait = scheduler.delay(DEPLOY_MS, () => {
+        if (cancelled) return;
+        cb.onCommit({ hidden: [], playingIds: [], moveProgress: {}, moveLeg: {} });
+        run(next);
+      });
+      cancels.push(wait);
+      return;
+    }
+
+    // Phase-1 attacks — opposing shots in one window. Deaths overlap at
+    // FRAG_FLIGHT_MS so impact (knight frag land / king hit-boom) meets the
+    // victim collapse — same meeting point as playResolve.
+    if (isPhase1Attack(cue)) {
+      if (!afterBApplied) applyAfterB();
+      const { batch, next } = takeWhile(cues, index, isPhase1Attack);
+      const attacks = batch as Extract<TimelineCue, { kind: "attack" }>[];
+      let deaths: Extract<TimelineCue, { kind: "death" }>[] = [];
+      let afterIdx = next;
+      if (next < cues.length && isPhase1Death(cues[next]!)) {
+        const taken = takeWhile(cues, next, isPhase1Death);
+        deaths = taken.batch as Extract<TimelineCue, { kind: "death" }>[];
+        afterIdx = taken.next;
+      }
+
+      const attackIds = attacks.map((c) => c.id);
+      const deathIds = deaths.map((c) => c.id);
+      const attackHidden = attacks.map((c) => c.from);
+      const deathHidden = deaths.map((c) => c.at);
+
+      cb.onCommit({
+        hidden: attackHidden,
+        playingIds: attackIds,
+        moveProgress: {},
+        moveLeg: {},
+      });
+
+      for (const atk of attacks) {
+        if (!atk.kingShot) continue;
+        const shot = atk.kingShot;
+        const impact = scheduler.delay(FRAG_FLIGHT_MS, () => {
+          if (cancelled) return;
+          displayLives = { ...displayLives, [shot.target]: shot.livesAfter };
+          cb.onCommit({ kingLives: { ...displayLives } });
+        });
+        cancels.push(impact);
+      }
+
+      if (deaths.length > 0) {
+        const deathStart = scheduler.delay(FRAG_FLIGHT_MS, () => {
+          if (cancelled) return;
+          cb.onCommit({
+            hidden: [...attackHidden, ...deathHidden],
+            playingIds: [...attackIds, ...deathIds],
+            moveProgress: {},
+            moveLeg: {},
+          });
+        });
+        cancels.push(deathStart);
+
+        const deathDone = scheduler.delay(FRAG_FLIGHT_MS + DEATH_MS, () => {
+          if (cancelled) return;
+          // Attacks may still be playing until ATTACK_MS.
+          cb.onCommit({
+            hidden: attackHidden,
+            playingIds: attackIds,
+            moveProgress: {},
+            moveLeg: {},
+          });
+          commitAfterAttack();
+        });
+        cancels.push(deathDone);
+      }
+
+      const phaseDoneAt =
+        deaths.length > 0
+          ? Math.max(ATTACK_MS, FRAG_FLIGHT_MS + DEATH_MS)
+          : ATTACK_MS;
+      const phaseDone = scheduler.delay(phaseDoneAt, () => {
+        if (cancelled) return;
+        cb.onCommit({
+          hidden: [],
+          playingIds: [],
+          moveProgress: {},
+          moveLeg: {},
+        });
+        if (deaths.length === 0) commitAfterAttack();
+        run(afterIdx);
+      });
+      cancels.push(phaseDone);
+      return;
+    }
+
+    // Phase-1 deaths without a preceding attack wave (fallback).
+    if (isPhase1Death(cue)) {
+      if (!afterBApplied) applyAfterB();
+      const { batch, next } = takeWhile(cues, index, isPhase1Death);
+      const deaths = batch as Extract<TimelineCue, { kind: "death" }>[];
+      cb.onCommit({
+        hidden: deaths.map((c) => c.at),
+        playingIds: deaths.map((c) => c.id),
+        moveProgress: {}, moveLeg: {},
+      });
+      const wait = scheduler.delay(DEATH_MS, () => {
+        if (cancelled) return;
+        commitAfterAttack();
+        run(next);
+      });
+      cancels.push(wait);
+      return;
+    }
+
+    // Simultaneous move wave (B gas / classical C / F) — opposing sides together.
+    if (isSimulMoveWave(cue)) {
+      if (!afterBApplied && !cue.id.startsWith("b")) applyAfterB();
+      const prefix = cue.id.replace(/\d+$/, "");
+      const { batch, next } = takeWhile(
+        cues,
+        index,
+        (c) => isSimulMoveWave(c) && c.id.replace(/\d+$/, "") === prefix,
+      );
+      const moves = batch as Extract<TimelineCue, { kind: "move" }>[];
+      const hidden = moves.map((c) => c.from);
+      const ids = moves.map((c) => c.id);
+      const progress0 = Object.fromEntries(ids.map((id) => [id, 0 as const]));
+      const progress1 = Object.fromEntries(ids.map((id) => [id, 1 as const]));
+      const leg0 = knightLeg0(moves);
+      let legState: Record<string, 0 | 1> = { ...leg0 };
+      cb.onCommit({
+        hidden,
+        playingIds: ids,
+        moveProgress: progress0,
+        moveLeg: leg0,
+      });
+      const kick = scheduler.delay(0, () => {
+        if (cancelled) return;
+        cb.onCommit({
+          hidden,
+          playingIds: ids,
+          moveProgress: progress1,
+          moveLeg: { ...legState },
+        });
+      });
+      cancels.push(kick);
+      for (const m of moves) {
+        if (m.piece !== "n") continue;
+        const elbow = scheduler.delay(knightElbowMs(m.from, m.to), () => {
+          if (cancelled) return;
+          legState = { ...legState, [m.id]: 1 };
+          cb.onCommit({
+            hidden,
+            playingIds: ids,
+            moveProgress: progress1,
+            moveLeg: { ...legState },
+          });
+        });
+        cancels.push(elbow);
+      }
+      const batchMs = Math.max(1, ...moves.map((c) => cueDuration(c)));
+      const wait = scheduler.delay(batchMs, () => {
+        if (cancelled) return;
+        for (const m of moves) {
+          if (isBoardSquare(m.to)) {
+            displayPlacement = relocatePlacement(displayPlacement, m.from, m.to);
+          }
+        }
+        cb.onCommit({
+          placement: displayPlacement,
+          hidden: [],
+          playingIds: [],
+          moveProgress: {}, moveLeg: {},
+        });
+        run(next);
+      });
+      cancels.push(wait);
+      return;
+    }
+
+    // Parallel promo walk-offs, then (separately) promo deploys.
+    if (isPromoWalk(cue)) {
+      if (!afterBApplied) applyAfterB();
+      const { batch, next } = takeWhile(cues, index, isPromoWalk);
+      const walks = batch as Extract<TimelineCue, { kind: "move" }>[];
+      const hidden = walks.map((c) => c.from);
+      const ids = walks.map((c) => c.id);
+      const progress0 = Object.fromEntries(ids.map((id) => [id, 0 as const]));
+      const progress1 = Object.fromEntries(ids.map((id) => [id, 1 as const]));
+      cb.onCommit({
+        hidden,
+        playingIds: ids,
+        moveProgress: progress0,
+        moveLeg: {},
+      });
+      const kick = scheduler.delay(0, () => {
+        if (cancelled) return;
+        cb.onCommit({
+          hidden,
+          playingIds: ids,
+          moveProgress: progress1,
+          moveLeg: {},
+        });
+      });
+      cancels.push(kick);
+      const batchMs = Math.max(...walks.map((c) => cueDuration(c)));
+      const wait = scheduler.delay(batchMs, () => {
+        if (cancelled) return;
+        for (const m of walks) {
+          displayPlacement = withoutSquare(displayPlacement, m.from);
+        }
+        cb.onCommit({
+          placement: displayPlacement,
+          hidden: [],
+          playingIds: [],
+          moveProgress: {}, moveLeg: {},
+        });
+        run(next);
+      });
+      cancels.push(wait);
+      return;
+    }
+
+    if (isPromoDeploy(cue)) {
+      if (!afterBApplied) applyAfterB();
+      const { batch, next } = takeWhile(cues, index, isPromoDeploy);
+      const deploys = batch as Extract<TimelineCue, { kind: "deploy" }>[];
+      // Place promoted units now so useAutoDeploy does not see a late spawn
+      // after TIMELINE_DONE (pawn leave ≠ queen arrive).
+      for (const d of deploys) {
+        displayPlacement = withPieceAt(displayPlacement, d.at, {
+          type: d.piece as StarChessPiece,
+          color: d.color,
+        });
+      }
+      cb.onCommit({
+        placement: displayPlacement,
+        hidden: deploys.map((c) => c.at),
+        playingIds: deploys.map((c) => c.id),
+        moveProgress: {}, moveLeg: {},
+      });
+      const wait = scheduler.delay(DEPLOY_MS, () => {
+        if (cancelled) return;
+        cb.onCommit({ hidden: [], playingIds: [], moveProgress: {}, moveLeg: {} });
+        run(next);
+      });
+      cancels.push(wait);
+      return;
+    }
+
+    // Path-reveal chains and any remaining single cues — sequential.
+    // Charon / Jump / gas drops play on the pre-B board — do not lock afterB yet.
+    const preAfterBSpecial =
+      cue.id.startsWith("ch") ||
+      cue.id.startsWith("chd") ||
+      cue.id.startsWith("qj") ||
+      cue.id.startsWith("gd") ||
+      cue.kind === "gasDrop" ||
+      (cue.kind === "move" && !!cue.queenJump);
+    if (!afterBApplied && cue.kind !== "move" && !preAfterBSpecial) {
       applyAfterB();
     }
-    // B gas-steps run on afterPending progressively; once we leave B moves, lock afterB.
-    if (!afterBApplied && cue.kind === "move" && !cue.id.startsWith("b")) {
+    if (
+      !afterBApplied &&
+      cue.kind === "move" &&
+      !cue.id.startsWith("b") &&
+      !cue.queenJump
+    ) {
       applyAfterB();
+    }
+
+    // Lethal kingShot on sequential chains (path-reveal `pra*` / Charon `ch*`):
+    // crumple at frag impact with the hit — not after full ATTACK_MS (ruins flash).
+    if (cue.kind === "attack" && cue.kingShot && index + 1 < cues.length) {
+      const follow = cues[index + 1]!;
+      if (
+        follow.kind === "death" &&
+        follow.piece === "k" &&
+        follow.at === cue.to
+      ) {
+        const attack = cue;
+        const death = follow;
+        const shot = attack.kingShot;
+        const attackHidden = [attack.from];
+        const deathHidden = [death.at];
+        cb.onCommit({
+          hidden: attackHidden,
+          playingIds: [attack.id],
+          moveProgress: {},
+          moveLeg: {},
+        });
+        const impact = scheduler.delay(FRAG_FLIGHT_MS, () => {
+          if (cancelled) return;
+          displayLives = { ...displayLives, [shot.target]: shot.livesAfter };
+          cb.onCommit({
+            kingLives: { ...displayLives },
+            hidden: [...attackHidden, ...deathHidden],
+            playingIds: [attack.id, death.id],
+            moveProgress: {},
+            moveLeg: {},
+          });
+        });
+        cancels.push(impact);
+        const deathDone = scheduler.delay(FRAG_FLIGHT_MS + DEATH_MS, () => {
+          if (cancelled) return;
+          cb.onCommit({
+            hidden: attackHidden,
+            playingIds: [attack.id],
+            moveProgress: {},
+            moveLeg: {},
+          });
+        });
+        cancels.push(deathDone);
+        const phaseDoneAt = Math.max(ATTACK_MS, FRAG_FLIGHT_MS + DEATH_MS);
+        const phaseDone = scheduler.delay(phaseDoneAt, () => {
+          if (cancelled) return;
+          cb.onCommit({
+            hidden: [],
+            playingIds: [],
+            moveProgress: {},
+            moveLeg: {},
+          });
+          run(index + 2);
+        });
+        cancels.push(phaseDone);
+        return;
+      }
+    }
+
+    // Tactical Jump — hull travel + trails (not MoveAnimation slide).
+    if (cue.kind === "move" && cue.queenJump) {
+      const trail = { id: `${cue.id}-trail`, from: cue.from, to: cue.to };
+      cb.onCommit({
+        hidden: [cue.from, cue.to],
+        playingIds: [cue.id],
+        moveProgress: {},
+        moveLeg: {},
+        jumpTrails: [trail],
+      });
+      const land = scheduler.delay(TACTICAL_JUMP_TRAVEL_MS, () => {
+        if (cancelled) return;
+        displayPlacement = relocatePlacement(displayPlacement, cue.from, cue.to);
+        cb.onCommit({
+          placement: displayPlacement,
+          hidden: [cue.from, cue.to],
+          playingIds: [cue.id],
+          jumpTrails: [trail],
+        });
+      });
+      cancels.push(land);
+      const hullDone = scheduler.delay(
+        TACTICAL_JUMP_TRAVEL_MS + TACTICAL_JUMP_APPEAR_MS,
+        () => {
+          if (cancelled) return;
+          cb.onCommit({
+            hidden: [],
+            playingIds: [],
+            moveProgress: {},
+            moveLeg: {},
+            jumpTrails: [trail],
+          });
+          run(index + 1);
+        },
+      );
+      cancels.push(hullDone);
+      const trailDone = scheduler.delay(TACTICAL_JUMP_TRAIL_MS, () => {
+        if (cancelled) return;
+        cb.onCommit({ jumpTrails: [] });
+      });
+      cancels.push(trailDone);
+      return;
     }
 
     const hidden: Square[] = [];
     if (cue.kind === "move") hidden.push(cue.from);
     if (cue.kind === "attack") hidden.push(cue.from);
     if (cue.kind === "deploy") hidden.push(cue.at);
+    if (cue.kind === "death") hidden.push(cue.at);
 
     if (cue.kind === "move") {
+      const leg0 = knightLeg0([cue]);
+      let legState: Record<string, 0 | 1> = { ...leg0 };
       cb.onCommit({
         hidden,
         playingIds: [cue.id],
         moveProgress: { [cue.id]: 0 },
+        moveLeg: leg0,
       });
       const kick = scheduler.delay(0, () => {
         if (cancelled) return;
@@ -332,18 +915,32 @@ export const playTimeline = (
           hidden,
           playingIds: [cue.id],
           moveProgress: { [cue.id]: 1 },
+          moveLeg: { ...legState },
         });
       });
       cancels.push(kick);
+      if (cue.piece === "n") {
+        const elbow = scheduler.delay(knightElbowMs(cue.from, cue.to), () => {
+          if (cancelled) return;
+          legState = { ...legState, [cue.id]: 1 };
+          cb.onCommit({
+            hidden,
+            playingIds: [cue.id],
+            moveProgress: { [cue.id]: 1 },
+            moveLeg: { ...legState },
+          });
+        });
+        cancels.push(elbow);
+      }
     } else {
       cb.onCommit({
         hidden,
         playingIds: [cue.id],
         moveProgress: {},
+        moveLeg: {},
       });
     }
 
-    // KingShot: chip HP at frag so fire/boom lands with the projectile.
     if (cue.kind === "attack" && cue.kingShot) {
       const shot = cue.kingShot;
       const impact = scheduler.delay(FRAG_FLIGHT_MS, () => {
@@ -359,24 +956,31 @@ export const playTimeline = (
 
     const wait = scheduler.delay(cueDuration(cue), () => {
       if (cancelled) return;
-      if (cue.kind === "move" && cue.id.startsWith("pw")) {
-        // Vacate the promotion square after the pawn walks off.
-        displayPlacement = withoutSquare(displayPlacement, cue.from);
-        cb.onCommit({
-          placement: displayPlacement,
-          hidden: [],
-          playingIds: [],
-          moveProgress: {},
-        });
-      } else if (cue.kind === "move" && isBoardSquare(cue.to)) {
-        // Classical / B / F / path-reveal: land the piece so the next cue
-        // (esp. promo walk-off) does not leave a ghost on `from`.
+      if (cue.kind === "move" && isBoardSquare(cue.to)) {
         displayPlacement = relocatePlacement(displayPlacement, cue.from, cue.to);
         cb.onCommit({
           placement: displayPlacement,
           hidden: [],
           playingIds: [],
           moveProgress: {},
+          moveLeg: {},
+        });
+      } else if (cue.kind === "death") {
+        // Vacate so the corpse does not flash back between death VFX and occupy.
+        displayPlacement = withoutSquare(displayPlacement, cue.at);
+        cb.onCommit({
+          placement: displayPlacement,
+          hidden: [],
+          playingIds: [],
+          moveProgress: {},
+          moveLeg: {},
+        });
+      } else {
+        cb.onCommit({
+          hidden: [],
+          playingIds: [],
+          moveProgress: {},
+          moveLeg: {},
         });
       }
       run(index + 1);
@@ -390,7 +994,7 @@ export const playTimeline = (
     kingLives: { ...displayLives },
     hidden: [],
     playingIds: [],
-    moveProgress: {},
+    moveProgress: {}, moveLeg: {},
   });
 
   if (cues.length === 0) {

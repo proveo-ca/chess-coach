@@ -93,3 +93,17 @@ export type KingDamageCue = {
   /** Side color for DeathKing hull tint (defaults from id when omitted). */
   color?: PieceColor;
 };
+
+/** Where the canister starts along the top edge of the square. */
+export type GasDropCorner = "left" | "mid" | "right";
+
+/**
+ * Resolve VFX — vespene canister falls from the top of the square into the unit
+ * that spent gas, then the green special-used aura eases in.
+ */
+export type GasDropCue = {
+  id: string;
+  at: Square;
+  color: PieceColor;
+  corner: GasDropCorner;
+};

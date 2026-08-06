@@ -141,10 +141,24 @@ export const intentOverlaysFromQueue = (
       continue;
     }
     // B / F specials — canister on the unit; destination ghost when relocating.
-    const canKey = `${a.color}:${a.from}`;
+    // F after a classical: follow the piece intent so the badge sits on the ghost.
+    const canAt =
+      a.timing === "F"
+        ? (() => {
+            const c = queue.find(
+              (q) =>
+                q.timing === "C" &&
+                q.kind === "classical" &&
+                q.color === a.color &&
+                q.from === a.from,
+            );
+            return c?.to ?? a.from;
+          })()
+        : a.from;
+    const canKey = `${a.color}:${canAt}`;
     if (!seenCan.has(canKey)) {
       seenCan.add(canKey);
-      canisters.push({ at: a.from, color: a.color });
+      canisters.push({ at: canAt, color: a.color });
     }
     if (!a.to || a.to === a.from) continue;
     const piece: PieceSymbol | undefined =

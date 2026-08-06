@@ -1,7 +1,7 @@
 /**
  * SCFEN history / replay validation — folds endScTurn over planning snaps.
  */
-import { endScTurn } from "../resolve/submit-turn";
+import { endScTurn, refillTurnGas } from "../resolve/submit-turn";
 import { specialGasCost, validateScFen } from "../scfen";
 import type { ScAction, ScFenError, ScFenSnapshot } from "../model/types";
 
@@ -55,14 +55,16 @@ export type ScFenReplayResult = {
 
 /**
  * Fold `endScTurn` over successive action lists (each list = one planning queue).
+ * Refills gas at each turn open between steps (matches `beginScTurn` / live).
  */
 export const replayScFen = (
   start: ScFenSnapshot,
   steps: readonly ScAction[][],
 ): ScFenSnapshot => {
-  let cur: ScFenSnapshot = { ...start, queue: { actions: [] } };
+  let cur: ScFenSnapshot = refillTurnGas({ ...start, queue: { actions: [] } });
   for (const step of steps) {
     cur = endScTurn({ ...cur, phase: "P", queue: { actions: step } }).next;
+    if (cur.phase === "P") cur = refillTurnGas(cur);
   }
   return cur;
 };

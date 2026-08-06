@@ -54,7 +54,8 @@ const nextSeq = (snap: ScFenSnapshot): number => {
 
 /**
  * Append one planning action. Assigns `seq`, enforces MODE budget
- * (≤1 special xor, ≤1 classical) and gas cost for specials.
+ * (≤1 classical; any number of specials all B or all F — B xor F) and gas
+ * cost for specials.
  */
 export const addScAction = (input: {
   snapshot: ScFenSnapshot;
@@ -86,10 +87,11 @@ export const addScAction = (input: {
       );
     }
   } else {
-    if (side.some((a) => a.timing === "B" || a.timing === "F")) {
+    const existingSpecial = side.find((a) => a.timing === "B" || a.timing === "F");
+    if (existingSpecial && existingSpecial.timing !== action.timing) {
       throw new AddScActionError(
         "SC_QUEUE_SHAPE",
-        `side ${action.color} already has a special action`,
+        `side ${action.color} specials must all be ${existingSpecial.timing} (B xor F)`,
       );
     }
     const cost = specialGasCost(action.kind);

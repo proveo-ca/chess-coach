@@ -20,6 +20,7 @@ note right of ES
   Checks resolve **before** intent.
   Breaking contact later still paid the
   **parting shot** at turn open.
+  **Refills ""G:""** from income (vespene arrives here).
   Live End passes ""skipTurnStartChecks"".
   Atomic replay / tests may still run
   checks inside ""endScTurn"" (default).
@@ -58,14 +59,15 @@ end
 
 == Next snap ==
 
-ES ARROW_MAIN FEN : new snapshot (turn+1, ""G:"" refilled to income)
+ES ARROW_MAIN FEN : new snapshot (turn+1, ""G:"" remaining 0,\nincome tier on gasIncome)
 ES ARROW_ERROR FEN : phase ""O"" when either ""kingLives"" side hits 0
 FEN ARROW_OPTIONAL OUT : " ""scOutcome(snap)"" "
 FEN ARROW_QUEUE UI : cumulative fog for both sides (""vision.ts"")
 
 note over ES
-  Gas does not accumulate; ""endScTurn"" refills to full income
-  next turn (income == turn tier 1 / 2 / 3).
+  Gas does not accumulate; ""endScTurn"" leaves remaining at **0**
+  and sets income tier. ""beginScTurn"" / turn-open **refills**
+  ""G:"" to full income (check chip, or no-check arm).
 end note
 
 note over OUT

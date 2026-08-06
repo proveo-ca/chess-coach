@@ -269,12 +269,7 @@ export const assertQueueShape = (actions: readonly ScAction[]): void => {
         { code: "SC_QUEUE_SHAPE" as const },
       );
     }
-    if (befores.length + afters.length > 1) {
-      throw Object.assign(
-        new Error(`SCFEN queue: at most one special per side (${color})`),
-        { code: "SC_QUEUE_SHAPE" as const },
-      );
-    }
+    // Many specials allowed, but all before (B) or all after (F) the classical.
     if (befores.length > 0 && afters.length > 0) {
       throw Object.assign(
         new Error(`SCFEN queue: B xor F per side (${color})`),

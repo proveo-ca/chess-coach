@@ -57,16 +57,14 @@
   outline: none;
 }
 
-.before {
-  background: color-mix(in srgb, #c47b2b 22%, transparent);
+.before,
+.after {
+  /* Same green as GasDeploy / VespeneIcon canisters. */
+  background: color-mix(in srgb, #2a9b6a 22%, transparent);
 }
 
 .classical {
   background: color-mix(in srgb, #3b7dd8 22%, transparent);
-}
-
-.after {
-  background: color-mix(in srgb, #5a9e6f 22%, transparent);
 }
 
 .muted {

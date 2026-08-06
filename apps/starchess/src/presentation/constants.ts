@@ -75,3 +75,9 @@ export const DEPLOY_LAND_MS = 300;
 
 /** @deprecated Prefer {@link DEPLOY_LAND_MS} — mechanoid thrust spans the landing window. */
 export const DEPLOY_THRUST_MS = DEPLOY_LAND_MS;
+
+/**
+ * Gas special resolve — canister falls from the top of the square into the unit
+ * while the green special-used aura eases in.
+ */
+export const GAS_DROP_MS = 260;

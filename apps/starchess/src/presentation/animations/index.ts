@@ -6,9 +6,11 @@ export {
   IDLE_FRONT_MS,
   ROOK_REST_AIM_DEG,
   KING_REST_AIM_DEG,
+  NERD_ROOK_SCALE,
   screenAimDeg,
   attackFaceFor,
   svgPivotAround,
+  svgPivotAroundAniso,
   svgPivotLocal,
   cellSize,
   centeredBoxStyle,
@@ -46,6 +48,8 @@ export { AttackBoardDemo } from "~/presentation/animations/AttackBoardDemo";
 export { DeathBoardDemo } from "~/presentation/animations/DeathBoardDemo";
 export { DeployBoardDemo } from "~/presentation/animations/DeployBoardDemo";
 export { DeployAnimation } from "~/presentation/animations/DeployAnimation";
+export { GasDropAnimation } from "~/presentation/animations/GasDropAnimation";
+export * from "~/presentation/animations/gasDrop";
 export * from "~/presentation/animations/deployAnim";
 export { PAWN_RIFLE } from "~/presentation/animations/pawnRifle";
 export { KNIGHT_FRAG } from "~/presentation/animations/knightFrag";

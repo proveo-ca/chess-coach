@@ -143,7 +143,7 @@ export {
 } from "./resolve/resolve-turn";
 
 export type { ResolveEvent, EndScTurnResult, EndScTurnOptions, BeginScTurnResult } from "./resolve/submit-turn";
-export { endScTurn, beginScTurn } from "./resolve/submit-turn";
+export { endScTurn, beginScTurn, refillTurnGas } from "./resolve/submit-turn";
 
 export {
   hasExactKingPair,

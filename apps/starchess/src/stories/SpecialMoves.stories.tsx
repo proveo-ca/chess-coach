@@ -119,7 +119,7 @@ export const SiegeTank: Story = {
     docs: {
       description: {
         story:
-          "Two Siege Tanks: d4 starts packed (tank), f4 starts sieged (S:f4). Drag gas onto either to queue a toggle · End to pack/unpack.",
+          "Two Siege Tanks: d4 starts packed (tank), f4 starts sieged (S:f4). Drag gas onto either to queue a toggle · End to pack/unpack. Capture the f7 pawn with the sieged tank (Cf4f7) to see the siege HE attack (not tank twins).",
       },
     },
   },

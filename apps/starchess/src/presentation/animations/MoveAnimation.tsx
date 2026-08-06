@@ -154,6 +154,8 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => (
           const hasL = () => squareAt(m.from, legs().leg1) != null;
           const pose = () => {
             const { leg1, leg2 } = legs();
+            // Always face the active travel leg (long → short); destination vec if no L.
+            if (!hasL()) return aimPoseFor(vec());
             return aimPoseFor((props.leg?.[m.id] ?? 0) === 1 ? leg2 : leg1);
           };
           return (
@@ -170,7 +172,9 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => (
                   data-square={props.progress[m.id] === 1 ? m.to : m.from}
                   data-move-id={m.id}
                 >
-                  <div class={styles.pieceFace}>{moverNode(m)}</div>
+                  <div class={`${styles.pieceFace} ${styles.moverFace}`}>
+                    <InlineKnight color={m.color} aimPose={pose()} />
+                  </div>
                 </div>
               }
             >

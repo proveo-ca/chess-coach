@@ -6,6 +6,7 @@ import {
   endScTurn,
   incomeForTurn,
   parseScFen,
+  refillTurnGas,
   removeScAction,
   scOutcome,
   type PlayerEconomy,
@@ -21,6 +22,8 @@ const emptyTimeline = (placement: string | null = null): TimelineState => ({
   playingIds: [],
   hiddenSquares: new Set(),
   moveProgress: {},
+  moveLeg: {},
+  jumpTrails: [],
   displayPlacement: placement,
   displayKingLives: null,
   displayMines: null,
@@ -287,6 +290,17 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
         phase: "resolving",
         statusText: "Resolving…",
       };
+    case "REFILL_GAS": {
+      // Turn-open: vespene arrives with the check chip (or no-check arm).
+      const live = refillTurnGas(state.liveSnapshot);
+      if (state.phase === "gameOver") {
+        const snaps = [...state.settledSnapshots];
+        const cur = snaps[state.reviewIndex];
+        if (cur) snaps[state.reviewIndex] = refillTurnGas(cur);
+        return { ...state, liveSnapshot: live, settledSnapshots: snaps };
+      }
+      return { ...state, liveSnapshot: live };
+    }
     case "MARK_CHECKS_APPLIED":
       return {
         ...state,
@@ -345,6 +359,8 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
           playingIds: [],
           hiddenSquares: new Set(),
           moveProgress: {},
+          moveLeg: {},
+          jumpTrails: [],
           displayPlacement: action.placement,
           displayKingLives: null,
           displayMines: null,
@@ -371,6 +387,14 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
               action.moveProgress !== undefined
                 ? action.moveProgress
                 : state.timeline.moveProgress,
+            moveLeg:
+              action.moveLeg !== undefined
+                ? action.moveLeg
+                : state.timeline.moveLeg,
+            jumpTrails:
+              action.jumpTrails !== undefined
+                ? [...action.jumpTrails]
+                : state.timeline.jumpTrails,
             displayPlacement: action.placement ?? state.timeline.displayPlacement,
             displayKingLives:
               action.kingLives ?? state.timeline.displayKingLives,
@@ -412,6 +436,14 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
             action.moveProgress !== undefined
               ? action.moveProgress
               : state.timeline.moveProgress,
+          moveLeg:
+            action.moveLeg !== undefined
+              ? action.moveLeg
+              : state.timeline.moveLeg,
+          jumpTrails:
+            action.jumpTrails !== undefined
+              ? [...action.jumpTrails]
+              : state.timeline.jumpTrails,
           displayPlacement: action.placement ?? state.timeline.displayPlacement,
           displayKingLives: null,
           displayMines: null,
