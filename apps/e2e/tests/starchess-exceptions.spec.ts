@@ -33,6 +33,11 @@ test.describe("StarChess SCFEN exceptions", () => {
     }
 
     await expect(page.locator("body")).toContainText(/draw/i, { timeout: 10_000 });
+    // Terminal DualNav appears for history review (no SCFEN label required).
+    await expect(page.getByRole("button", { name: "Go back" })).toBeVisible({
+      timeout: 5_000,
+    });
+    await expect(page.getByRole("button", { name: "Go forward" })).toBeVisible();
   });
 
   test("deploy stack second checker deals 2 HP next turn", async ({ page }) => {

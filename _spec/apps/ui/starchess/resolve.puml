@@ -46,7 +46,12 @@ else (no)
   :Next snap phase **""P""** — play continues;
 endif
 
-:Serialize optional history\n""C=from intentTo>resolvedTo"" (pending);
+note right
+  **Promotion (after move/mine):** relocate lands a **pawn**; survivors with
+  a queued promotion then convert (hold → deploy). A promoting pawn that
+  steps onto a hostile mine dies with the mine — **no** promotion deploy.
+  Completed-history wire ""C=from intentTo>resolvedTo"" remains **deferred**.
+end note
 
 stop
 

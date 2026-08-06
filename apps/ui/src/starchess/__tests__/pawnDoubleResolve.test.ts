@@ -38,8 +38,9 @@ describe("pawnDouble resolve", () => {
         to: "e3",
       },
     }).snapshot;
-    const { next } = endScTurn(snap);
+    const { next, bMoves } = endScTurn(snap);
     // B e2→e3, rewrite C→e3e4, move to e4
+    expect(bMoves).toEqual([{ piece: "p", color: "w", from: "e2", to: "e3" }]);
     expect(next.placement).toBe("4k3/8/8/8/4P3/8/8/4K3");
   });
 
@@ -59,7 +60,8 @@ describe("pawnDouble resolve", () => {
       snapshot: snap,
       action: { timing: "F", kind: "pawnDouble", color: "w", from: "e2", to: "e3" },
     }).snapshot;
-    const { next } = endScTurn(snap);
+    const { next, fMoves } = endScTurn(snap);
+    expect(fMoves).toEqual([{ piece: "p", color: "w", from: "e3", to: "e4" }]);
     expect(next.placement).toBe("4k3/8/8/8/4P3/8/8/4K3");
   });
 
@@ -69,7 +71,8 @@ describe("pawnDouble resolve", () => {
       snapshot: snap,
       action: { timing: "B", kind: "pawnDouble", color: "w", from: "e2", to: "e3" },
     }).snapshot;
-    const { next } = endScTurn(snap);
+    const { next, bMoves } = endScTurn(snap);
+    expect(bMoves).toEqual([{ piece: "p", color: "w", from: "e2", to: "e3" }]);
     expect(next.placement).toBe("4k3/8/8/8/8/4P3/8/4K3");
   });
 });

@@ -76,6 +76,22 @@ npm run test:web       # default target — no host deps
 npm run test:desktop   # needs the three installs above
 ```
 
+## Docker Compose
+
+Runs the StarChess chromium smoke suite in the Playwright image (`E2E_TARGET=web-no-llm`).
+Playwright `webServer` starts vite from `apps/ui` (`npm run dev:web-no-llm:vite`); the
+image installs UI + e2e deps, and compose bind-mounts the repo at `/work` with anonymous
+`node_modules` volumes so those installs survive.
+
+```sh
+docker compose build e2e
+docker compose run --rm e2e
+```
+
+Full suite (chromium): `docker compose --profile full run --rm e2e-full`  
+Or override: `docker compose run --rm e2e npx playwright test --project=chromium`
+
+
 ## CI notes
 
 - Provide `stockfish` + `lc0` on `$PATH`, and an Ollama service with the model pulled

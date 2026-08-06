@@ -395,11 +395,17 @@ export const StarChessBoardView: Component<{
   const revealedPieces = createMemo(() => {
     if (!props.fogOfWar) return null;
     const base = nerdVision()?.revealedPieces;
+    const next = new Set(base ?? []);
+    // Gas-spent units stay visible to the opposing viewer (green highlight).
+    if (starChessRules()) {
+      for (const sq of specialsUsedThisTurn()) next.add(sq);
+    }
     const attacks = resolvedAttackCues();
     const chaseActive =
       (props.chasingMines?.length ?? 0) > 0 || resolvedMineMissiles().length > 0;
-    if (!attacks.length && !chaseActive) return base ?? null;
-    const next = new Set(base ?? []);
+    if (!attacks.length && !chaseActive && next.size === (base?.size ?? 0)) {
+      return next.size ? next : (base ?? null);
+    }
     // Reveal shooter origin and the target square (victim under fog for the shot).
     for (const cue of attacks) {
       next.add(cue.from);

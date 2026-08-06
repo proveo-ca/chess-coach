@@ -1,0 +1,49 @@
+# Playwright e2e against the local UI (web-no-llm).
+# Bind-mounts the repo at /work so playwright webServer can start vite from ../ui.
+# Anonymous volumes keep image node_modules when the bind mount would otherwise hide them.
+#
+# Linux: network_mode host lets vite (localhost:5173) and wrangler (:8787) be reachable
+# the same way as a host run. On Docker Desktop (Mac/Windows), host networking differs —
+# drop network_mode or use port publishing if needed.
+services:
+  e2e:
+    build:
+      context: .
+      dockerfile: apps/e2e/Dockerfile
+    working_dir: /work/apps/e2e
+    volumes:
+      - .:/work
+      - /work/apps/e2e/node_modules
+      - /work/apps/ui/node_modules
+    environment:
+      E2E_TARGET: web-no-llm
+      CI: "1"
+    network_mode: host
+    # Default: StarChess-focused chromium smoke (same as Dockerfile CMD)
+    command:
+      [
+        "npx",
+        "playwright",
+        "test",
+        "tests/starchess-queue.spec.ts",
+        "tests/starchess-exceptions.spec.ts",
+        "tests/starchess-promotion.spec.ts",
+        "--project=chromium",
+      ]
+
+  # Full suite (chromium only): docker compose --profile full run --rm e2e-full
+  e2e-full:
+    profiles: ["full"]
+    build:
+      context: .
+      dockerfile: apps/e2e/Dockerfile
+    working_dir: /work/apps/e2e
+    volumes:
+      - .:/work
+      - /work/apps/e2e/node_modules
+      - /work/apps/ui/node_modules
+    environment:
+      E2E_TARGET: web-no-llm
+      CI: "1"
+    network_mode: host
+    command: ["npx", "playwright", "test", "--project=chromium"]

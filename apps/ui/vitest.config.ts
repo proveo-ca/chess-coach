@@ -11,6 +11,9 @@ export default defineConfig({
       "@chess-coach/engine-core": fileURLToPath(
         new URL("../../packages/engine-core/src/index.ts", import.meta.url),
       ),
+      "@chess-coach/starchess-core": fileURLToPath(
+        new URL("../../packages/starchess-core/src/index.ts", import.meta.url),
+      ),
     },
   },
   define: {

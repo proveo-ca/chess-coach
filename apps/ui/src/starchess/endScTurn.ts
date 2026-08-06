@@ -28,6 +28,7 @@ import {
   applyPendingKingShots,
   resolveTurn,
   type ResolveTurnResult,
+  type ResolveMove,
 } from "~/starchess/resolveTurn";
 import { getSideVision } from "~/starchess/vision";
 import type { ResolveEvent, SpecialKind } from "~/starchess/types";
@@ -62,6 +63,10 @@ export type EndScTurnResult = {
     mines: ScMine[];
     kingLives: ScFenSnapshot["kingLives"];
   };
+  /** Gas-step pawn slides applied during B (animate before classical). */
+  bMoves: ResolveMove[];
+  /** Gas-step pawn slides applied during F (animate after classical). */
+  fMoves: ResolveMove[];
 };
 
 const byTiming = (actions: readonly ScAction[], timing: "B" | "C" | "F") =>
@@ -228,6 +233,8 @@ export const endScTurn = (snapshot: ScFenSnapshot): EndScTurnResult => {
   let eventSeq = 0;
   const siegedThisTurn: Square[] = [];
   const sieged = new Set(snapshot.siegedRooks ?? []);
+  const bMoves: ResolveMove[] = [];
+  const fMoves: ResolveMove[] = [];
 
   // Vision for turn-start checks (pre-B siege flags) and classical fog.
   const rookModeFor = (sq: Square) => (sieged.has(sq) ? "siege" : "tank");
@@ -287,6 +294,7 @@ export const endScTurn = (snapshot: ScFenSnapshot): EndScTurnResult => {
         afterAll: terminalBoard,
         mineTriggers: [],
         moveCollisions: [],
+        promotions: [],
         pendingKingShotsArmed: [],
       },
       next: {
@@ -309,6 +317,8 @@ export const endScTurn = (snapshot: ScFenSnapshot): EndScTurnResult => {
         siegedRooks: [...sieged].sort(),
       },
       afterPending,
+      bMoves: [],
+      fMoves: [],
     };
   }
 
@@ -323,6 +333,14 @@ export const endScTurn = (snapshot: ScFenSnapshot): EndScTurnResult => {
       continue;
     }
     const applied = applySpecial(placement, mines, a, ignoreAttacksOn);
+    if (a.kind === "pawnDouble" && a.to && applied.placement !== placement) {
+      bMoves.push({
+        piece: "p",
+        color: a.color,
+        from: a.from,
+        to: a.to,
+      });
+    }
     placement = applied.placement;
     mines = applied.mines;
     events.push(eventFor("specialBefore", a, `ev-${eventSeq++}`));
@@ -446,6 +464,8 @@ export const endScTurn = (snapshot: ScFenSnapshot): EndScTurnResult => {
       siegedThisTurn,
       afterB,
       afterPending,
+      bMoves,
+      fMoves: [],
     };
   }
 
@@ -483,6 +503,7 @@ export const endScTurn = (snapshot: ScFenSnapshot): EndScTurnResult => {
       const to = pawnSingleTarget(at, a.color);
       if (!to || boardAfter.has(to)) continue;
       placement = relocate(placement, at, to);
+      fMoves.push({ piece: "p", color: a.color, from: at, to });
       events.push(eventFor("specialAfter", { ...a, from: at, to }, `ev-${eventSeq++}`));
       continue;
     }
@@ -543,5 +564,7 @@ export const endScTurn = (snapshot: ScFenSnapshot): EndScTurnResult => {
     siegedThisTurn,
     afterB,
     afterPending,
+    bMoves,
+    fMoves,
   };
 };

@@ -4,6 +4,8 @@
   "scripts": {
     "e2e:web-no-llm": "npm test --prefix apps/e2e",
     "e2e:desktop": "echo 'TODO: desktop e2e tests'",
+    "e2e:docker": "docker compose run --rm e2e",
+    "e2e:docker:build": "docker compose build e2e",
     "deploy:web-no-llm": "npm run deploy --prefix apps/ui",
     "deploy:desktop": "echo 'TODO: desktop deployment'"
   }

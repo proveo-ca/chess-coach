@@ -13,7 +13,7 @@ import { HIT_BOOM_MS, kingDamageStateForLives } from "~/starchess/animations/kin
 import type { KingDamageCue } from "~/starchess/animations/kingDamageOverlay";
 import type { AttackCue, DeathCue, MoveCue } from "~/starchess/animations/types";
 import { findKing, mapToPlacement, placementToMap } from "~/starchess/board";
-import { MINE_MISSILE_MS, MINE_TRAIL_MS, MOVE_MS, MOVE_SQUARE_MS } from "~/starchess/constants";
+import { MINE_MISSILE_MS, MINE_TRAIL_MS, MOVE_MS, MOVE_SQUARE_MS, DEPLOY_MS } from "~/starchess/constants";
 import { knightElbowMs, moveDurationMs } from "~/starchess/animations/moveTiming";
 import { migrateSpecialUsed, rookModeAt } from "~/starchess/starChessStore";
 import {
@@ -367,9 +367,7 @@ export function useStarChessCombat() {
       const playNext = () => {
         const a = atks[i];
         if (!a) {
-          opts.commit(afterAllCommit);
-          syncKingDamageFromBoard(afterAllCommit.placement, afterAllCommit.kingLives);
-          opts.onDone?.();
+          settlePromotionsThenDone();
           return;
         }
         i += 1;
@@ -488,11 +486,41 @@ export function useStarChessCombat() {
       playNext();
     };
 
-    const finishResolve = () => {
-      if (result.pathRevealAttacks.length === 0) {
+    /**
+     * Promotion: land as pawn, brief hold, then swap to the promoted unit so
+     * auto-deploy VFX plays. Promoting pawns killed by mines never appear in
+     * `result.promotions`. Full off-board walk-off overlay is a follow-up; the
+     * pawn→promoted swap is the shipped deploy contract.
+     */
+    const settlePromotionsThenDone = () => {
+      if (!result.promotions.length) {
         opts.commit(afterAllCommit);
         syncKingDamageFromBoard(afterAllCommit.placement, afterAllCommit.kingLives);
         opts.onDone?.();
+        return;
+      }
+      const map = placementToMap(afterAllCommit.placement);
+      for (const p of result.promotions) {
+        map.set(p.at, { type: "p", color: p.color });
+      }
+      const prePromo: CombatCommit = {
+        placement: mapToPlacement(map),
+        kingLives: afterAllCommit.kingLives,
+        phase: afterAllCommit.phase,
+        mines: afterAllCommit.mines,
+      };
+      opts.commit(prePromo);
+      syncKingDamageFromBoard(prePromo.placement, prePromo.kingLives);
+      after(Math.max(MOVE_MS, 180), () => {
+        opts.commit(afterAllCommit);
+        syncKingDamageFromBoard(afterAllCommit.placement, afterAllCommit.kingLives);
+        after(DEPLOY_MS, () => opts.onDone?.());
+      });
+    };
+
+    const finishResolve = () => {
+      if (result.pathRevealAttacks.length === 0) {
+        settlePromotionsThenDone();
         return;
       }
       playPathRevealAttacks();
@@ -877,6 +905,30 @@ export function useStarChessCombat() {
     mineMissileTrails,
     spentMines,
     playResolve,
+    playRelocates: (
+      moves: ResolveTurnResult["moves"],
+      fenAfter: CombatCommit,
+      opts: PlayResolveOptions,
+    ) => {
+      clearTimers();
+      setAttackCues([]);
+      setAttackDying({});
+      setDeathCues([]);
+      setMoveCues([]);
+      setMoveProgress({});
+      setMoveLeg({});
+      setChasingMines([]);
+      setMineMissiles([]);
+      setMineMissileTrails([]);
+      setSpentMines([]);
+      if (moves.length === 0) {
+        opts.commit(fenAfter);
+        syncKingDamageFromBoard(fenAfter.placement, fenAfter.kingLives);
+        opts.onDone?.();
+        return;
+      }
+      playMoves(moves, fenAfter, opts);
+    },
     playRangedAttack,
     syncKingDamageFromBoard,
     clear,

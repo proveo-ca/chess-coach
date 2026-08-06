@@ -26,6 +26,19 @@ import { intentOverlaysFromQueue } from "~/starchess/intentOverlays";
 import { DeployModal } from "~/starchess/primitives/DeployModal";
 import { ResourceBar } from "~/starchess/primitives/ResourceBar";
 import { TurnBar } from "~/starchess/primitives/TurnBar";
+import {
+  appendSettledTurn,
+  canGoBack,
+  canGoForward,
+  clearMatchHistory,
+  displayedSnapshot,
+  gameEnded,
+  goHistoryBack,
+  goHistoryForward,
+  resetMatchHistory,
+  reviewLabel,
+} from "~/starchess/matchHistory";
+import { DualNavButton } from "~/components/primitives/DualNavButton";
 import { AddScActionError } from "~/starchess/scActions";
 import { scOutcome } from "~/starchess/scOutcome";
 import { classicFenFromSc, parseScFen, snapFromPlacement, toClassicFen } from "~/starchess/scfen";
@@ -334,6 +347,7 @@ export const NerdScreen: Component<NerdScreenProps> = (props) => {
     setSpawnPhase("idle");
     setSpawnUnit(null);
     clearSiegedRooks();
+    clearMatchHistory();
 
     if (mode && scfen) {
       const snap = parseScFen(scfen);
@@ -343,7 +357,15 @@ export const NerdScreen: Component<NerdScreenProps> = (props) => {
         ...snap,
         queue: snap.queue ?? { actions: [] },
       });
-      setStatus("Plan a special and/or move · End to submit");
+      resetMatchHistory({
+        ...snap,
+        queue: snap.queue ?? { actions: [] },
+      });
+      setStatus(
+        snap.phase === "O"
+          ? "Match over · Review with the arrows"
+          : "Plan a special and/or move · End to submit",
+      );
       return;
     }
 
@@ -360,6 +382,7 @@ export const NerdScreen: Component<NerdScreenProps> = (props) => {
       const placement = fen.trim().split(/\s+/)[0] ?? fen;
       const snap = snapFromPlacement(placement, 1);
       setPlanningSnapshot(snap);
+      resetMatchHistory(snap);
       // Do not force siege — fog stories / live play default to tank unless rookMode prop says otherwise.
     }
   });
@@ -410,7 +433,7 @@ export const NerdScreen: Component<NerdScreenProps> = (props) => {
   });
 
   const submitPlan = (reason: "end" | "timeout") => {
-    if (resolving) return;
+    if (resolving || gameEnded()) return;
     const before = planningSnapshot();
     if (!before || before.phase !== "P") {
       setStatus(reason === "timeout" ? "Turn locked — time up" : "Turn submitted");
@@ -426,6 +449,7 @@ export const NerdScreen: Component<NerdScreenProps> = (props) => {
     setSpawnUnit(null);
 
     const finishPlanning = () => {
+      appendSettledTurn(before, result.next);
       setPlanningSnapshot(result.next);
       setSiegedRooks(result.next.siegedRooks ?? []);
       loadFen(classicFenFromSc(result.next, "w"));
@@ -439,10 +463,10 @@ export const NerdScreen: Component<NerdScreenProps> = (props) => {
         const outcome = scOutcome(result.next);
         setStatus(
           outcome?.draw
-            ? "Match over · Draw — both Kings destroyed"
+            ? "Match over · Draw — both Kings destroyed · Review with the arrows"
             : outcome
-              ? `Match over · ${outcome.winner === "w" ? "White" : "Black"} wins`
-              : "Match over",
+              ? `Match over · ${outcome.winner === "w" ? "White" : "Black"} wins · Review with the arrows`
+              : "Match over · Review with the arrows",
         );
       }
     };
@@ -451,6 +475,7 @@ export const NerdScreen: Component<NerdScreenProps> = (props) => {
       before.kingLives.w !== result.afterPending.kingLives.w ||
       before.kingLives.b !== result.afterPending.kingLives.b ||
       before.placement !== result.afterPending.placement;
+
     const startCombat = () => {
       combat.playResolve(result.resolved, {
         // Pending checks resolve before B — start from pre-special board so
@@ -475,11 +500,43 @@ export const NerdScreen: Component<NerdScreenProps> = (props) => {
             });
           }
         },
-        onDone: finishPlanning,
+        onDone: () => {
+          if (result.fMoves.length === 0) {
+            finishPlanning();
+            return;
+          }
+          // Animate F gas-steps onto the final board, then settle planning.
+          combat.playRelocates(
+            result.fMoves,
+            {
+              placement: result.next.placement,
+              kingLives: result.next.kingLives,
+              phase: result.next.phase === "O" ? "O" : "P",
+              mines: result.next.mines ?? [],
+            },
+            {
+              startPlacement: result.resolved.afterAll.placement,
+              livesBefore: result.next.kingLives,
+              commit: (snap) => {
+                loadFen(toClassicFen(snap.placement, "w", 0, Math.max(1, result.next.turn)));
+                const cur = planningSnapshot();
+                if (cur) {
+                  setPlanningSnapshot({
+                    ...cur,
+                    placement: snap.placement,
+                    kingLives: { ...snap.kingLives },
+                  });
+                }
+              },
+              onDone: finishPlanning,
+            },
+          );
+        },
       });
     };
 
     // Hold post-B board (spawn / mine / siege) for auto-deploy VFX, then resolve.
+    // Gas-step B moves animate from the pre-B board first (no teleport).
     const placementChanged = result.afterB.placement !== before.placement;
     const minesChanged = minesKey(result.afterB.mines) !== minesKey(before.mines);
     const siegeChanged =
@@ -487,30 +544,64 @@ export const NerdScreen: Component<NerdScreenProps> = (props) => {
       (before.siegedRooks ?? []).join("");
     // Intent siege must be visible before attack/move cues (HE / 9×9 fog).
     setSiegedRooks(result.afterB.siegedRooks ?? []);
-    setPlanningSnapshot({
-      ...before,
-      placement: result.afterB.placement,
-      kingLives: { ...result.afterPending.kingLives },
-      ...(result.afterB.mines.length ? { mines: result.afterB.mines } : { mines: undefined }),
-      ...(result.afterB.siegedRooks.length
-        ? { siegedRooks: [...result.afterB.siegedRooks] }
-        : { siegedRooks: undefined }),
-      queue: { actions: [] },
-    });
-    if (placementChanged || hadPending) {
-      loadFen(toClassicFen(result.afterB.placement, "w", 0, Math.max(1, before.turn)));
+
+    const armPostBHold = () => {
+      setPlanningSnapshot({
+        ...before,
+        placement: result.afterB.placement,
+        kingLives: { ...result.afterPending.kingLives },
+        ...(result.afterB.mines.length ? { mines: result.afterB.mines } : { mines: undefined }),
+        ...(result.afterB.siegedRooks.length
+          ? { siegedRooks: [...result.afterB.siegedRooks] }
+          : { siegedRooks: undefined }),
+        queue: { actions: [] },
+      });
+      if (placementChanged || hadPending) {
+        loadFen(toClassicFen(result.afterB.placement, "w", 0, Math.max(1, before.turn)));
+      }
+      const waitMs = Math.max(
+        placementChanged && result.bMoves.length === 0 ? DEPLOY_MS : 0,
+        minesChanged ? MINE_DEPLOY_MS : 0,
+        siegeChanged ? DEPLOY_MS : 0,
+      );
+      if (waitMs > 0) window.setTimeout(startCombat, waitMs);
+      else startCombat();
+    };
+
+    if (result.bMoves.length > 0) {
+      combat.playRelocates(
+        result.bMoves,
+        {
+          placement: result.afterB.placement,
+          kingLives: { ...result.afterPending.kingLives },
+          phase: "P",
+          mines: result.afterB.mines,
+        },
+        {
+          startPlacement: before.placement,
+          livesBefore,
+          commit: (snap) => {
+            loadFen(toClassicFen(snap.placement, "w", 0, Math.max(1, before.turn)));
+            const cur = planningSnapshot();
+            if (cur) {
+              setPlanningSnapshot({
+                ...cur,
+                placement: snap.placement,
+                kingLives: { ...snap.kingLives },
+                ...(snap.mines.length ? { mines: [...snap.mines] } : { mines: undefined }),
+              });
+            }
+          },
+          onDone: armPostBHold,
+        },
+      );
+    } else {
+      armPostBHold();
     }
-    const waitMs = Math.max(
-      placementChanged ? DEPLOY_MS : 0,
-      minesChanged ? MINE_DEPLOY_MS : 0,
-      siegeChanged ? DEPLOY_MS : 0,
-    );
-    if (waitMs > 0) window.setTimeout(startCombat, waitMs);
-    else startCombat();
   };
 
   const intentGhosts = createMemo(() => {
-    if (!starChessMode()) return { destinations: [], canisters: [], checks: [] };
+    if (!starChessMode() || gameEnded()) return { destinations: [], canisters: [], checks: [] };
     const snap = planningSnapshot();
     return intentOverlaysFromQueue(currentQueue(), {
       placement: snap?.placement,
@@ -518,6 +609,43 @@ export const NerdScreen: Component<NerdScreenProps> = (props) => {
       mines: snap?.mines,
       viewer: activePlayerColor(),
     });
+  });
+
+  // Terminal review: show the selected settled snapshot without mutating live state.
+  createEffect(() => {
+    if (!starChessMode() || !gameEnded()) return;
+    const view = displayedSnapshot();
+    if (!view) return;
+    combat.clear();
+    setSiegedRooks(view.siegedRooks ?? []);
+    loadFen(classicFenFromSc(view, "w"));
+    // Keep planning snap as the live terminal position; board reads gameStore FEN.
+  });
+
+  onMount(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (!gameEnded()) return;
+      const t = e.target as HTMLElement | null;
+      if (
+        t &&
+        (t.tagName === "INPUT" ||
+          t.tagName === "TEXTAREA" ||
+          t.tagName === "SELECT" ||
+          t.isContentEditable)
+      ) {
+        return;
+      }
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        goHistoryBack();
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        goHistoryForward();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    onCleanup(() => window.removeEventListener("keydown", onKey));
   });
 
   return (
@@ -539,12 +667,29 @@ export const NerdScreen: Component<NerdScreenProps> = (props) => {
                 data-b={kingLives().b}
                 hidden
               />
-              <ResourceBar />
-              <TurnBar
-                resolveOnEnd={false}
-                onEnd={() => submitPlan("end")}
-                onTimeout={() => submitPlan("timeout")}
-              />
+              <Show
+                when={gameEnded()}
+                fallback={
+                  <>
+                    <ResourceBar />
+                    <TurnBar
+                      resolveOnEnd={false}
+                      onEnd={() => submitPlan("end")}
+                      onTimeout={() => submitPlan("timeout")}
+                    />
+                  </>
+                }
+              >
+                <DualNavButton
+                  inverted
+                  inline
+                  label={reviewLabel()}
+                  onBack={goHistoryBack}
+                  onForward={goHistoryForward}
+                  backDisabled={!canGoBack()}
+                  forwardDisabled={!canGoForward()}
+                />
+              </Show>
             </div>
           </Show>
           <div class={styles.boardHost} ref={(el) => (boardHost = el)}>
@@ -552,6 +697,7 @@ export const NerdScreen: Component<NerdScreenProps> = (props) => {
               variant={props.boardVariant ?? "eclipse"}
               fogOfWar={fogOfWar()}
               suppressNativeMoves={starChessMode()}
+              suppressAutoDeploy={gameEnded()}
               intentDestinations={intentGhosts().destinations}
               intentCanisters={intentGhosts().canisters}
               intentChecks={intentGhosts().checks}
@@ -566,7 +712,9 @@ export const NerdScreen: Component<NerdScreenProps> = (props) => {
               mineMissiles={combat.mineMissiles()}
               mineMissileTrails={combat.mineMissileTrails()}
               spentMines={combat.spentMines()}
-              spiderMines={planningSnapshot()?.mines ?? []}
+              spiderMines={
+                (gameEnded() ? displayedSnapshot()?.mines : planningSnapshot()?.mines) ?? []
+              }
             />
             <Show when={starChessMode() && overlayBox()}>
               {(box) => (
@@ -612,7 +760,7 @@ export const NerdScreen: Component<NerdScreenProps> = (props) => {
           </Show>
         </Screen.BoardColumn>
       </Screen.BoardArea>
-      <Show when={starChessMode()}>
+      <Show when={starChessMode() && !gameEnded()}>
         <Screen.Footer>
           <div class={styles.gasFooter} data-testid="nerd-gas-deploy">
             <GasDeploy

@@ -13,10 +13,24 @@ import {
 } from "~/starchess/board";
 import { firstBlockerOnRay, mineAt, pathContactSquares, rayBetween } from "~/starchess/mines";
 import type { StarChessColor } from "~/starchess/types";
-import type { ClassicalPlan, RookMode, ScMine, ScPendingKingShot } from "~/starchess/types";
+import type {
+  ClassicalPlan,
+  RookMode,
+  ScMine,
+  ScPendingKingShot,
+  SpawnPiece,
+} from "~/starchess/types";
 import { pathRevealSteps } from "~/starchess/vision";
 
 export type { ClassicalPlan };
+
+/** Successful post-move promotion — pawn vacated, new unit deploys. */
+export type ResolvePromotion = {
+  color: StarChessColor;
+  from: Square;
+  at: Square;
+  unit: SpawnPiece;
+};
 
 export type ResolveAttack =
   | {
@@ -133,6 +147,11 @@ export type ResolveTurnResult = {
   mineTriggers: ResolveAttack[];
   /** Fog / path move collisions: capture/occupy (or fogged kingShot). */
   moveCollisions: ResolveAttack[];
+  /**
+   * Promotions applied after attack/move/mine settlement. Empty when the
+   * promoting pawn died (e.g. stepped onto a hostile mine).
+   */
+  promotions: ResolvePromotion[];
   /**
    * King-aimed `C=` this turn — armed for next-turn HP / collision (no lives
    * change this resolve).
@@ -459,16 +478,22 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
       continue;
     }
 
-    // Fogged hostile mine on empty square — clear + occupy, no attack cue.
+    // Hostile mine on empty square.
     // Kings are immune: they occupy without arming or clearing the mine.
     // Sieged rooks cannot relocate, so they never step onto a fogged mine
     // (same fog-contact rule as the enemy-capture fizzle above).
+    // Non-promoting units: attack clears mine then occupy (attacker survives).
+    // Promoting pawns: mutual destruction — mine + pawn die; no occupy / promo.
     if (!target) {
       const m = mineAt(mines, plan.to);
       if (m && m.color !== plan.color && actor.type !== "k") {
         if (!visible0 && input.siegedRooks?.includes(plan.from) && actor.type === "r") {
           continue;
         }
+        const promoting =
+          actor.type === "p" &&
+          !!plan.promotion &&
+          Number(plan.to[1]) === (plan.color === "w" ? 8 : 1);
         const blast: ResolveAttack = {
           kind: "mineBlast",
           piece: actor.type,
@@ -476,6 +501,9 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
           from: plan.from,
           to: plan.to,
           mineColor: m.color,
+          ...(promoting
+            ? { victim: { piece: actor.type, color: plan.color } }
+            : {}),
         };
         if (!visible0) {
           moveCollisions.push(blast);
@@ -483,7 +511,11 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
           attacks.push(blast);
         }
         removeMineAt(plan.to);
-        occupy.push(plan);
+        if (promoting) {
+          deadSquares.add(plan.from);
+        } else {
+          occupy.push(plan);
+        }
         continue;
       }
     }
@@ -624,6 +656,8 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
   const moves: ResolveMove[] = [];
   const mineTriggers: ResolveAttack[] = [];
   const moversDead = new Set<Square>();
+  /** Promotions deferred until after move/mine settlement. */
+  const pendingPromos: ResolvePromotion[] = [];
 
   const relocate = (plan: ClassicalPlan, fromOccupyList: boolean) => {
     if (deadSquares.has(plan.from) || moversDead.has(plan.from)) return;
@@ -720,21 +754,29 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
     }
 
     board.delete(plan.from);
-    const promoRank = plan.color === "w" ? 8 : 1;
-    const landed =
-      piece.type === "p" &&
-      plan.promotion &&
-      Number(dest[1]) === promoRank
-        ? { type: plan.promotion, color: piece.color }
-        : piece;
-    board.set(dest, landed);
+    // Land as the moving piece — promotion is deferred until after mines settle.
+    board.set(dest, piece);
     destinationsWritten.add(dest);
     moves.push({
-      piece: landed.type,
+      piece: piece.type,
       color: plan.color,
       from: plan.from,
       to: dest,
     });
+
+    const promoRank = plan.color === "w" ? 8 : 1;
+    if (
+      piece.type === "p" &&
+      plan.promotion &&
+      Number(dest[1]) === promoRank
+    ) {
+      pendingPromos.push({
+        color: plan.color,
+        from: plan.from,
+        at: dest,
+        unit: plan.promotion,
+      });
+    }
 
     if (woke && wakeAt) {
       mineTriggers.push({
@@ -782,6 +824,17 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
     pathRevealAttacks.push(a);
   }
 
+  // Phase 4 — promotions for pawns that survived attack/move/mines.
+  const promoBoard = placementToMap(phase3.placement);
+  const promotions: ResolvePromotion[] = [];
+  for (const promo of pendingPromos) {
+    if (moversDead.has(promo.at)) continue;
+    const landed = promoBoard.get(promo.at);
+    if (!landed || landed.type !== "p" || landed.color !== promo.color) continue;
+    promoBoard.set(promo.at, { type: promo.unit, color: promo.color });
+    promotions.push(promo);
+  }
+
   return {
     attacks,
     afterAttack,
@@ -789,9 +842,10 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
     mineTriggers,
     moveCollisions,
     pathRevealAttacks,
+    promotions,
     afterMove,
     afterAll: {
-      placement: phase3.placement,
+      placement: mapToPlacement(promoBoard),
       kingLives: { ...lives },
       mines: [...phase3.mines],
     },

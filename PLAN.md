@@ -1,6 +1,6 @@
 # StarChess standalone app migration
 
-Status: proposed
+Status: in progress
 
 This document plans the extraction of StarChess from `apps/ui` into an
 independent SolidJS application, the architectural cleanup needed to make that
@@ -8,10 +8,18 @@ boundary real, its deployment as a scoped PWA at `/starchess`, terminal
 game-history navigation, Dockerized Playwright/e2e, and the product upgrades for
 promotion, gas-used fog reveal, and gas-step animation.
 
-This plan is documentation only. It does not authorize source changes,
-destructive cleanup, a Git commit, or a Cloudflare deployment. The current
-uncommitted StarChess work must be preserved and reviewed before migration
-begins.
+Implementation has started on branch `feat-nerd-mode`. Progress notes:
+
+- **Done (embedded `apps/ui` + package seed):** promotion deferred after
+  move/mines; promoting-pawn×mine mutual destruction; gas-step `bMoves`/`fMoves`
+  animation hooks; gas-used fog reveal; terminal DualNav history
+  (`matchHistory.ts`); `@chess-coach/starchess-core` seed (`scOutcome`);
+  `apps/e2e/Dockerfile` + root `compose.yml`; `starchess-promotion` e2e.
+- **Still open:** full core extraction, `apps/starchess` shell, PWA/Wrangler
+  cutover, promotion off-board walk-off VFX polish, Docker image build smoke.
+
+This plan does not authorize Cloudflare deployment or destructive cleanup
+without explicit approval.
 
 ## Fixed decisions
 
