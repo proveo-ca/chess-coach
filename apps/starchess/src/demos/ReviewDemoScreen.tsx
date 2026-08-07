@@ -1,20 +1,22 @@
-import { placementToMap } from "@chess-coach/starchess-core";
-import type { Square } from "chess.js";
 /**
- * Store-backed DualNav review host — ObserverReviewChrome + LiveStarChessBoard.
+ * Store-backed DualNav review host — sidebar DualNav + LiveStarChessBoard.
  * Scenario packages supply history; MatchStore owns seek / playback / VFX timeline.
  */
+import { placementToMap } from "@chess-coach/starchess-core";
+import type { Square } from "chess.js";
 import { createEffect, createMemo, onCleanup, onMount, type Component } from "solid-js";
 
 import { createMatchStore, MatchStoreProvider, useMatchStore } from "~/app/MatchStoreContext";
 import { createMatchStateFromReviewHistory } from "~/app/reviewHistory";
 import { displayedSnapshot } from "~/app/selectors";
+import { Sidebar } from "~/components/features/Sidebar";
 import { Screen } from "~/components/primitives/Screen";
 import styles from "~/demos/ReviewDemoScreen.module.css";
 import { clearSiegedRooks, setRookMode } from "~/presentation/animations/rookModeStore";
 import { LiveStarChessBoard } from "~/presentation/board/LiveStarChessBoard";
 import { isCheckOnlyResolve } from "~/presentation/hud/isCheckOnlyResolve";
-import { ObserverReviewChrome } from "~/presentation/hud/ObserverReviewChrome";
+import { ResourceBar } from "~/presentation/hud/ResourceBar";
+import { TurnBarSidebar } from "~/presentation/hud/TurnBarSidebar";
 import type { BoardVariant, VisionMode } from "~/types/board";
 import type { ReviewHistory } from "~/types/review";
 
@@ -115,17 +117,10 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
   return (
     <Screen>
       <Screen.SidebarInset class={styles.topPane}>
-        <ObserverReviewChrome
-          turn={reviewTurnNumber()}
-          phase={store.reviewPhase()}
-          snapshot={snap()}
-          onBack={() => store.reviewBack()}
-          onForward={() => store.reviewForward()}
-          backDisabled={reviewBusy() || store.state().reviewIndex <= 0}
-          forwardDisabled={
-            reviewBusy() || store.state().reviewIndex >= store.state().settledSnapshots.length - 1
-          }
-        />
+        <div class={styles.dualResources} role="group" aria-label="Both sides resources">
+          <ResourceBar color="w" snapshot={snap()} />
+          <ResourceBar color="b" snapshot={snap()} />
+        </div>
       </Screen.SidebarInset>
       <Screen.BoardArea>
         <Screen.BoardColumn>
@@ -137,11 +132,29 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
             />
           </div>
         </Screen.BoardColumn>
+        <div class={styles.sideRail} data-testid="starchess-side-rail">
+          <TurnBarSidebar
+            review={{
+              turn: reviewTurnNumber(),
+              phase: store.reviewPhase(),
+              onBack: () => store.reviewBack(),
+              onForward: () => store.reviewForward(),
+              backDisabled: reviewBusy() || store.state().reviewIndex <= 0,
+              forwardDisabled:
+                reviewBusy() ||
+                store.state().reviewIndex >= store.state().settledSnapshots.length - 1,
+            }}
+          />
+          <hr class={styles.sideRailDivider} />
+          <Sidebar />
+        </div>
       </Screen.BoardArea>
       <Screen.Footer>
-        <p class={styles.caption}>
-          Review · {props.reviewLabel ?? "Review"} · {caption()}
-        </p>
+        <div class={styles.footerStack}>
+          <p class={styles.caption}>
+            Review · {props.reviewLabel ?? "Review"} · {caption()}
+          </p>
+        </div>
       </Screen.Footer>
     </Screen>
   );

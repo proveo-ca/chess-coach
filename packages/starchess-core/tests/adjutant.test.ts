@@ -80,4 +80,254 @@ describe("adjutant", () => {
     expect(map.get(kingTo!)).toEqual({ type: "k", color: "b" });
     expect(map.get("e8")).toBeUndefined();
   });
+
+  it("plants a Spider Mine with a Vulture on the d4–e5 hub", () => {
+    // Knight on e5 asserts hub; White King on e1 is outside N vision → seek.
+    const snap = parseScFen(
+      "SCFEN|4k3/8/8/4n3/8/8/8/4K3|0|33|P|G:11:11|Q:w:;b:",
+    );
+    const plan = adjutant(snap);
+    const actions = plan.snapshot.queue?.actions.filter((a) => a.color === "b") ?? [];
+    expect(actions.some((a) => a.kind === "knightMine" && a.from === "e5")).toBe(
+      true,
+    );
+  });
+
+  it("plants a Spider Mine on the a-file only after the hub is mined", () => {
+    // Hub already mined (e5); Vulture on a5 → flank corridor.
+    const snap = parseScFen(
+      "SCFEN|4k3/8/8/n7/8/8/8/4K3|0|33|P|G:11:11|M:w:;b:e5|Q:w:;b:",
+    );
+    const plan = adjutant(snap);
+    const actions = plan.snapshot.queue?.actions.filter((a) => a.color === "b") ?? [];
+    expect(actions.some((a) => a.kind === "knightMine" && a.from === "a5")).toBe(
+      true,
+    );
+  });
+
+  it("does not mine the a-file while the hub is still free", () => {
+    // No hub mine yet — hop toward centre rather than planting on a5.
+    const snap = parseScFen(
+      "SCFEN|4k3/8/8/n7/8/8/8/4K3|0|33|P|G:11:11|Q:w:;b:",
+    );
+    const plan = adjutant(snap);
+    const actions = plan.snapshot.queue?.actions.filter((a) => a.color === "b") ?? [];
+    expect(actions.some((a) => a.kind === "knightMine")).toBe(false);
+    expect(
+      actions.some(
+        (a) =>
+          a.kind === "classical" &&
+          a.from === "a5" &&
+          (a.to === "b3" || a.to === "c4" || a.to === "c6" || a.to === "b7"),
+      ),
+    ).toBe(true);
+  });
+
+  it("packs a Siege Tank on the centre hub", () => {
+    // Rook on d4 — expand/develop map control via siege pack.
+    const snap = parseScFen(
+      "SCFEN|4k3/8/8/8/3r4/8/8/4K3|0|33|P|G:11:11|Q:w:;b:",
+    );
+    const plan = adjutant(snap);
+    const actions = plan.snapshot.queue?.actions.filter((a) => a.color === "b") ?? [];
+    expect(actions.some((a) => a.kind === "rookSiege" && a.from === "d4")).toBe(
+      true,
+    );
+  });
+
+  it("warps a threatened Battlecruiser to safety (queenWarp)", () => {
+    // Turn 11 → gas tier 2 (Charon / Tactical Jump cost). White rook eyes d8.
+    const snap = parseScFen(
+      "SCFEN|3qk3/8/8/8/8/8/8/3RK3|11|33|P|G:22:22|Q:w:;b:",
+    );
+    const plan = adjutant(snap);
+    const actions = plan.snapshot.queue?.actions.filter((a) => a.color === "b") ?? [];
+    const warp = actions.find((a) => a.kind === "queenWarp");
+    expect(warp).toMatchObject({ timing: "B", from: "d8" });
+    expect(warp?.to).toBeTruthy();
+    expect(warp!.to).not.toBe("d8");
+  });
+
+  it("stacks Charon snipe (B) with a second classical strike (C)", () => {
+    // Turn 11 → gas 2. Bishop f8 → unique *white* queen a3; knight g4×h2.
+    const snap = parseScFen(
+      "SCFEN|5b1k/8/8/8/6n1/Q7/7p/4K3|11|33|P|G:22:22|Q:w:;b:",
+    );
+    const plan = adjutant(snap);
+    const actions = plan.snapshot.queue?.actions.filter((a) => a.color === "b") ?? [];
+    expect(actions.some((a) => a.kind === "bishopSnipe" && a.to === "a3")).toBe(
+      true,
+    );
+    // Same-turn second strike (gas spent on Charon; classical still queues).
+    expect(actions.some((a) => a.timing === "C" && a.kind === "classical")).toBe(
+      true,
+    );
+  });
+
+  it("takes the centre hub before a distant pawn push", () => {
+    // expand — pawn on a4 is 3 steps out (no near-promote rush); knight takes hub.
+    const snap = parseScFen(
+      "SCFEN|4k3/8/8/8/p7/2n5/8/4K3|0|33|P|G:11:11|Q:w:;b:",
+    );
+    const plan = adjutant(snap);
+    const actions = plan.snapshot.queue?.actions.filter((a) => a.color === "b") ?? [];
+    expect(
+      actions.some(
+        (a) =>
+          a.kind === "classical" &&
+          a.from === "c3" &&
+          (a.to === "d5" || a.to === "e4"),
+      ),
+    ).toBe(true);
+  });
+
+  it("seeks the King toward a visible pawn clump (siege vision)", () => {
+    // seek — hub rook d4 lights b2–d2 pawns; King on h1 fogged. Packing 9×9
+    // would reveal the King — prefer siege over a quiet king stroll.
+    const snap = parseScFen(
+      "SCFEN|4k3/8/8/8/3r4/8/1ppp4/7K|0|33|P|G:11:11|Q:w:;b:",
+    );
+    const plan = adjutant(snap);
+    const actions = plan.snapshot.queue?.actions.filter((a) => a.color === "b") ?? [];
+    expect(actions.some((a) => a.kind === "rookSiege" && a.from === "d4")).toBe(
+      true,
+    );
+  });
+
+  it("seeks toward a visible enemy deploy before a distant pawn push", () => {
+    // seek — hub knight e5; White knight on c4 (lit). Distant a4 pawn (3 steps).
+    const snap = parseScFen(
+      "SCFEN|4k3/8/8/4n3/p1N5/8/8/7K|0|33|P|G:11:11|Q:w:;b:",
+    );
+    const plan = adjutant(snap);
+    const actions = plan.snapshot.queue?.actions.filter((a) => a.color === "b") ?? [];
+    expect(
+      actions.some(
+        (a) =>
+          a.kind === "classical" &&
+          a.from === "e5" &&
+          (a.to === "c4" || a.to === "d3" || a.to === "c6" || a.to === "d7"),
+      ),
+    ).toBe(true);
+  });
+
+  it("seeks along a visible enemy pawn file (King deploy corridor)", () => {
+    // seek — hub knight e5 lights White pawn on c4; distant a4 is not a rush.
+    const snap = parseScFen(
+      "SCFEN|4k3/8/8/4n3/p1P5/8/8/7K|0|33|P|G:11:11|Q:w:;b:",
+    );
+    const plan = adjutant(snap);
+    const actions = plan.snapshot.queue?.actions.filter((a) => a.color === "b") ?? [];
+    expect(
+      actions.some(
+        (a) =>
+          a.kind === "classical" &&
+          a.from === "e5" &&
+          (a.to === "c4" || a.to === "d3" || a.to === "c6"),
+      ),
+    ).toBe(true);
+  });
+
+  it("as White seeks along a visible black pawn file toward ranks 7–8", () => {
+    // Hub knight e4 lights black pawn on c5; white pawn on a5 is 3 steps out.
+    const snap = parseScFen(
+      "SCFEN|k7/8/8/P1p5/4N3/8/8/4K3|0|33|P|G:11:11|Q:w:;b:",
+    );
+    const plan = adjutant(snap, { color: "w" });
+    const actions = plan.snapshot.queue?.actions.filter((a) => a.color === "w") ?? [];
+    expect(
+      actions.some(
+        (a) =>
+          a.kind === "classical" &&
+          a.from === "e4" &&
+          (a.to === "c5" || a.to === "d6" || a.to === "c3"),
+      ),
+    ).toBe(true);
+  });
+
+  it("hunts the visible King once map control is asserted", () => {
+    // hunt — hub knight e5 lights d3; rook f3→e3 checks (no near-promote bait).
+    const snap = parseScFen(
+      "SCFEN|4k3/8/8/4n3/8/3K1r2/8/8|0|33|P|G:11:11|Q:w:;b:",
+    );
+    const plan = adjutant(snap);
+    const actions = plan.snapshot.queue?.actions.filter((a) => a.color === "b") ?? [];
+    expect(
+      actions.some(
+        (a) => a.kind === "classical" && a.from === "f3" && a.to === "e3",
+      ),
+    ).toBe(true);
+  });
+
+  it("rushes gas+move when a pawn is 2 steps from promotion", () => {
+    // Black pawn e3 → B e3→e2 + C rewrite e2→e1 promote. King off the file.
+    const snap = parseScFen(
+      "SCFEN|4k3/8/8/4n3/8/4p3/8/3K4|0|33|P|G:11:11|Q:w:;b:",
+    );
+    const plan = adjutant(snap);
+    const actions = plan.snapshot.queue?.actions.filter((a) => a.color === "b") ?? [];
+    expect(actions).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          timing: "B",
+          kind: "pawnDouble",
+          from: "e3",
+          to: "e2",
+        }),
+        expect.objectContaining({
+          timing: "C",
+          kind: "classical",
+          from: "e3",
+          to: "e2",
+          promotion: "q",
+        }),
+      ]),
+    );
+  });
+
+  it("prioritises finishing promotion from 1 step out over map control", () => {
+    // Black pawn e2→e1; hub knight on e5 would rather mine — rush wins.
+    const snap = parseScFen(
+      "SCFEN|4k3/8/8/4n3/8/8/4p3/3K4|0|33|P|G:11:11|Q:w:;b:",
+    );
+    const plan = adjutant(snap);
+    const actions = plan.snapshot.queue?.actions.filter((a) => a.color === "b") ?? [];
+    expect(
+      actions.some(
+        (a) =>
+          a.kind === "classical" &&
+          a.from === "e2" &&
+          a.to === "e1" &&
+          a.promotion != null,
+      ),
+    ).toBe(true);
+  });
+
+  it("always takes an equal-material trade when in range", () => {
+    // Black knight d4 × white knight e2 — same cost → attack over mine/quiet.
+    const snap = parseScFen(
+      "SCFEN|4k3/8/8/8/3n4/8/4N3/4K3|0|33|P|G:11:11|Q:w:;b:",
+    );
+    const plan = adjutant(snap);
+    const actions = plan.snapshot.queue?.actions.filter((a) => a.color === "b") ?? [];
+    expect(
+      actions.some(
+        (a) =>
+          a.kind === "classical" && a.from === "d4" && a.to === "e2",
+      ),
+    ).toBe(true);
+  });
+
+  it("defends a threatened non-queen by fleeing to safety", () => {
+    // White rook pins the a-file; black knight on a3 can hop off to safety.
+    const snap = parseScFen(
+      "SCFEN|4k3/8/8/8/8/n7/8/R3K3|0|33|P|G:11:11|Q:w:;b:",
+    );
+    const plan = adjutant(snap);
+    const actions = plan.snapshot.queue?.actions.filter((a) => a.color === "b") ?? [];
+    const flee = actions.find((a) => a.kind === "classical" && a.from === "a3");
+    expect(flee).toBeTruthy();
+    // Leave the rook's a-file (a2/a4 still burn).
+    expect(flee!.to?.[0]).not.toBe("a");
+  });
 });

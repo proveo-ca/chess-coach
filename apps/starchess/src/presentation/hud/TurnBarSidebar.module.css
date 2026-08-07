@@ -1,0 +1,84 @@
+/**
+ * Experimental vertical turn chrome — board side rail (live + observer).
+ * Does not alter horizontal `TurnBar`.
+ */
+
+.rail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+  color: #f0f3f6;
+  background: transparent;
+  border: none;
+}
+
+.dualNav {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  width: 100%;
+}
+
+.chip {
+  width: 100%;
+  justify-content: center;
+  box-sizing: border-box;
+  text-align: center;
+  font-size: 0.7rem;
+  letter-spacing: 0.02em;
+}
+
+.gauge {
+  flex-shrink: 0;
+}
+
+.end {
+  width: 100%;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 8px 6px;
+  box-sizing: border-box;
+}
+
+.divider {
+  width: 60%;
+  margin: 2px 0;
+  border: 0;
+  border-top: 1px solid #3a4550;
+}
+
+.queue {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+  width: 100%;
+  min-width: 0;
+  max-height: 40%;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.queue :global([data-timing]) {
+  width: 100%;
+  justify-content: center;
+  box-sizing: border-box;
+  font-size: 0.65rem;
+  padding-inline: 4px;
+}

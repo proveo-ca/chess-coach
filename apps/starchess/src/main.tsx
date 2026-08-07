@@ -1,8 +1,12 @@
-/* @refresh reload */
+/**
+ * StarChess router entry — menu at `/`, live single-player at `/single`.
+ * Vite base is `/starchess/` → http://localhost:5175/starchess/single
+ */
 import { Route, Router } from "@solidjs/router";
 import { render } from "solid-js/web";
 
-import { StarChessApp } from "~/screens/StarChessApp";
+import { StarChessMenuRoute } from "~/screens/StarChessMenuRoute";
+import { StarChessSingleScreen } from "~/screens/StarChessSingleScreen";
 import "~/styles/index.css";
 
 const root = document.getElementById("root");
@@ -13,7 +17,9 @@ if (!root) {
 render(
   () => (
     <Router base="/starchess">
-      <Route path="/*" component={StarChessApp} />
+      <Route path="/" component={StarChessMenuRoute} />
+      <Route path="/single" component={StarChessSingleScreen} />
+      <Route path="/*" component={StarChessMenuRoute} />
     </Router>
   ),
   root,

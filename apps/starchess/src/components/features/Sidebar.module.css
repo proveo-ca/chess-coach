@@ -2,11 +2,18 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.25rem;
+  gap: 10px;
+  padding: 10px 8px;
   width: var(--sidebar-width);
+  min-width: 5.5rem;
   flex-shrink: 0;
-  margin-top: 1rem;
+  margin-top: 0;
+  box-sizing: border-box;
+  /* Opaque so labels stay readable on sky AND Storybook light canvas */
+  background: #0e151c;
+  border: 1px solid #3a4550;
+  border-radius: 0.35rem;
+  box-shadow: 0 4px 16px rgb(0 0 0 / 0.45);
 }
 
 @media (max-width: 719px) {
@@ -15,7 +22,27 @@
   }
 }
 
+.tool {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+}
+
+.toolLabel {
+  margin: 0;
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #f0f3f6;
+  text-align: center;
+}
+
 .divider {
   width: 60%;
-  margin: 0.15rem 0;
+  margin: 0;
+  border-color: #3a4550;
 }

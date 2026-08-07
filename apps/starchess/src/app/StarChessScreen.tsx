@@ -1,6 +1,5 @@
 /**
- * Live StarChess screen — Screen top/middle/bottom grid matches CoachScreen
- * (SidebarInset chrome, BoardArea + right Sidebar, Footer).
+ * Live StarChess screen — Command Column HUD (Resource → Turn → Board|Sidebar → Gas).
  * Board variants: eclipse | butter | vermeer (default eclipse).
  * // SPEC: _spec/apps/ui/responsiveness/rules.md
  */
@@ -36,9 +35,9 @@ import { squareBoxStyle, findBoardGrid } from "~/presentation/animations/boardGe
 import { LiveStarChessBoard } from "~/presentation/board/LiveStarChessBoard";
 import { GasDeploy } from "~/presentation/features/GasDeploy";
 import { DeployModal } from "~/presentation/hud/DeployModal";
-import { ObserverReviewChrome } from "~/presentation/hud/ObserverReviewChrome";
 import { ResourceBar } from "~/presentation/hud/ResourceBar";
 import { TurnBar } from "~/presentation/hud/TurnBar";
+import { TurnBarSidebar } from "~/presentation/hud/TurnBarSidebar";
 import { usePieceSpecialArm } from "~/presentation/hooks/usePieceSpecialArm";
 import type { BoardVariant } from "~/types/board";
 import type { PromotionPiece } from "~/types/chess";
@@ -71,6 +70,14 @@ export type StarChessScreenProps = {
    * turn (e.g. the King Hunt live `adjutant` defensive commander).
    */
   autoQueueOpponent?: (snap: ScFenSnapshot) => AutoQueueOpponentResult;
+  /** Sidebar Home — return to StarChess menu (SPA) instead of leaving the app. */
+  onExitToMenu?: () => void;
+  /**
+   * Experimental HUD variation: `"sidebar"` moves turn chrome into a vertical
+   * rail beside the board (`TurnBarSidebar`). Default `"bar"` keeps `TurnBar`
+   * above the board. Does not alter `TurnBar` itself.
+   */
+  turnChrome?: "bar" | "sidebar";
 };
 
 type OverlayBox = { top: number; left: number; width: number; height: number };
@@ -91,6 +98,8 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
   const fogOfWar = () => props.fog ?? starChessMode();
   const ended = () => store.state().phase === "gameOver";
   const snap = () => store.state().liveSnapshot;
+  const turnChrome = () => props.turnChrome ?? "bar";
+  const turnInSidebar = () => turnChrome() === "sidebar";
 
   const [spawnUnit, setSpawnUnit] = createSignal<SpawnPiece | null>(null);
   const [spawnPhase, setSpawnPhase] = createSignal<"idle" | "modal" | "pick">("idle");
@@ -496,48 +505,56 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
 
   return (
     <Screen>
+      {/* Hidden king-lives probe for tests / demos */}
+      <Show when={starChessMode()}>
+        <span
+          data-testid="king-lives"
+          data-w={snap().kingLives.w}
+          data-b={snap().kingLives.b}
+          hidden
+        />
+      </Show>
+
       <Screen.SidebarInset class={styles.topPane}>
-        <Show when={starChessMode()}>
-          <div class={styles.topChrome} data-testid="nerd-board-chrome">
-            <span
-              data-testid="king-lives"
-              data-w={snap().kingLives.w}
-              data-b={snap().kingLives.b}
-              hidden
+        <div class={styles.topChrome} data-testid="nerd-board-chrome">
+          <Show when={starChessMode() && !turnInSidebar() && !ended()}>
+            <TurnBar
+              autoStart={false}
+              resolveOnEnd={false}
+              onEnd={() => store.submitTurn("end")}
             />
+          </Show>
+          <Show when={starChessMode()}>
             <Show
-              when={!ended()}
-              fallback={
-                <ObserverReviewChrome
-                  turn={reviewTurnNumber()}
-                  phase={store.reviewPhase()}
-                  snapshot={displayedSnapshot(store.state())}
-                  onBack={() => store.reviewBack()}
-                  onForward={() => store.reviewForward()}
-                  backDisabled={
-                    reviewBusy() || store.state().reviewIndex <= 0
-                  }
-                  forwardDisabled={
-                    reviewBusy() ||
-                    store.state().reviewIndex >=
-                      store.state().settledSnapshots.length - 1
-                  }
-                />
-              }
+              when={ended()}
+              fallback={<ResourceBar />}
             >
-              <ResourceBar />
-              <TurnBar
-                autoStart={false}
-                resolveOnEnd={false}
-                onEnd={() => store.submitTurn("end")}
-              />
+              <div
+                class={styles.dualResources}
+                role="group"
+                aria-label="Both sides resources"
+              >
+                <ResourceBar
+                  color="w"
+                  snapshot={displayedSnapshot(store.state())}
+                />
+                <ResourceBar
+                  color="b"
+                  snapshot={displayedSnapshot(store.state())}
+                />
+              </div>
             </Show>
-          </div>
-        </Show>
+          </Show>
+        </div>
       </Screen.SidebarInset>
+
       <Screen.BoardArea>
         <Screen.BoardColumn>
-          <div class={styles.boardHost} ref={(el) => (boardHost = el)}>
+          <div
+            class={styles.boardHost}
+            data-testid="nerd-play-layout"
+            ref={(el) => (boardHost = el)}
+          >
             <LiveStarChessBoard fog={fogOfWar()} variant={variant()} />
             <Show when={starChessMode() && overlayBox()}>
               {(box) => (
@@ -596,21 +613,45 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
             </Show>
           </div>
         </Screen.BoardColumn>
-        <Sidebar />
-      </Screen.BoardArea>
-      <Screen.Footer>
-        <Show
-          when={starChessMode()}
-          fallback={<p class={styles.placeholder}>Nerd mode is awakening…</p>}
-        >
-          <Show
-            when={outcomeLabel(store.state())}
-            fallback={<p class={styles.placeholder}>{store.state().statusText}</p>}
-          >
-            {(label) => <p class={styles.placeholder}>{label()}</p>}
+        <div class={styles.sideRail} data-testid="starchess-side-rail">
+          <Show when={starChessMode() && turnInSidebar()}>
+            <Show
+              when={ended()}
+              fallback={
+                <>
+                  <TurnBarSidebar
+                    autoStart={false}
+                    resolveOnEnd={false}
+                    onEnd={() => store.submitTurn("end")}
+                  />
+                  <hr class={styles.sideRailDivider} />
+                </>
+              }
+            >
+              <TurnBarSidebar
+                review={{
+                  turn: reviewTurnNumber(),
+                  phase: store.reviewPhase(),
+                  onBack: () => store.reviewBack(),
+                  onForward: () => store.reviewForward(),
+                  backDisabled: reviewBusy() || store.state().reviewIndex <= 0,
+                  forwardDisabled:
+                    reviewBusy() ||
+                    store.state().reviewIndex >=
+                      store.state().settledSnapshots.length - 1,
+                }}
+              />
+              <hr class={styles.sideRailDivider} />
+            </Show>
           </Show>
-          <Show when={!ended()}>
-            <div class={styles.gasFooter} data-testid="nerd-gas-deploy">
+          <Sidebar onHome={props.onExitToMenu} />
+        </div>
+      </Screen.BoardArea>
+
+      <Screen.Footer>
+        <div class={styles.footerStack}>
+          <div class={styles.gasDock} data-testid="nerd-gas-deploy">
+            <Show when={starChessMode() && !ended()}>
               <GasDeploy
                 onDeploy={onGasDeploy}
                 onCancel={() => {
@@ -623,9 +664,24 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
                   });
                 }}
               />
-            </div>
-          </Show>
-        </Show>
+            </Show>
+          </div>
+          <div class={styles.statusLine}>
+            <Show
+              when={starChessMode()}
+              fallback={<p class={styles.placeholder}>Nerd mode is awakening…</p>}
+            >
+              <Show
+                when={outcomeLabel(store.state())}
+                fallback={
+                  <p class={styles.placeholder}>{store.state().statusText}</p>
+                }
+              >
+                {(label) => <p class={styles.placeholder}>{label()}</p>}
+              </Show>
+            </Show>
+          </div>
+        </div>
       </Screen.Footer>
     </Screen>
   );

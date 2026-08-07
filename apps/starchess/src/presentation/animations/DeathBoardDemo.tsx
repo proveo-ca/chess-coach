@@ -117,6 +117,7 @@ export const DeathBoardDemo: Component<{ piece: DeathPiece }> = (props) => {
 
   return (
     <Screen>
+      <Screen.SidebarInset />
       <Screen.BoardArea>
         <Screen.BoardColumn>
           <div class={styles.host}>

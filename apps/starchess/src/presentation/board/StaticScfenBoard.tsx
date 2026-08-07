@@ -1,10 +1,10 @@
 /**
  * Static SCFEN board frame — maps gallery / open-board samples.
- * Always mounts on Screen grid (BoardArea). No match store / DualNav.
+ * Always mounts on Screen grid (top · board · footer). No match store / DualNav.
  * // SPEC: _spec/apps/ui/starchess/demos.puml
  */
 import type { Component } from "solid-js";
-import { Show, createMemo } from "solid-js";
+import { createMemo } from "solid-js";
 
 import { parseScFen } from "@chess-coach/starchess-core";
 
@@ -27,6 +27,7 @@ export const StaticScfenBoard: Component<StaticScfenBoardProps> = (props) => {
   const mode = () => props.visionMode ?? (props.fog === false ? "observer" : "player");
   return (
     <Screen>
+      <Screen.SidebarInset />
       <Screen.BoardArea>
         <Screen.BoardColumn>
           <AnimationStage
@@ -38,13 +39,11 @@ export const StaticScfenBoard: Component<StaticScfenBoardProps> = (props) => {
           />
         </Screen.BoardColumn>
       </Screen.BoardArea>
-      <Show when={props.caption}>
-        {(c) => (
-          <Screen.Footer>
-            <p style={{ margin: 0, "font-size": "12px", color: "#6a7564" }}>{c()}</p>
-          </Screen.Footer>
-        )}
-      </Show>
+      <Screen.Footer>
+        <p style={{ margin: 0, "font-size": "12px", color: "#6a7564" }}>
+          {props.caption ?? ""}
+        </p>
+      </Screen.Footer>
     </Screen>
   );
 };

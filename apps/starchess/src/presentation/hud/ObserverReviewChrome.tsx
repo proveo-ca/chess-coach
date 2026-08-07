@@ -44,7 +44,7 @@ export const ObserverReviewChrome: Component<ObserverReviewChromeProps> = (props
   const turnLabel = () => {
     if (props.phase === "final") return "Final";
     if (props.phase === "start" && props.turn <= 0) return "Start";
-    return `Turn ${Math.max(1, props.turn)}`;
+    return `Turn - ${Math.max(1, props.turn)}`;
   };
 
   return (

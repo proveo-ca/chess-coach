@@ -134,6 +134,7 @@ export const AttackBoardDemo: Component<{
 
   return (
     <Screen>
+      <Screen.SidebarInset />
       <Screen.BoardArea>
         <Screen.BoardColumn>
           <div class={styles.host}>

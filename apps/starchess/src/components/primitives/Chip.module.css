@@ -9,9 +9,9 @@
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.02em;
-  color: var(--text-color, #1a1a1a);
+  color: var(--text-color, #e8eaed);
   background: transparent;
-  border: 2px solid color-mix(in srgb, var(--text-color, #111) 22%, transparent);
+  border: 2px solid color-mix(in srgb, var(--text-color, #e8eaed) 28%, transparent);
   box-sizing: border-box;
   /* Phase tones share width so check / intent / resolve morph without layout jump. */
   transition:
@@ -83,19 +83,19 @@
   background: transparent;
   border-style: solid;
   border-color: #c43c3c;
-  color: var(--text-color, #1a1a1a);
+  color: var(--text-color, #e8eaed);
 }
 
 .intent {
   background: transparent;
   border-style: dashed;
-  border-color: #111;
-  color: var(--text-color, #1a1a1a);
+  border-color: color-mix(in srgb, var(--text-color, #e8eaed) 55%, transparent);
+  color: var(--text-color, #e8eaed);
 }
 
 .resolve {
   background: transparent;
   border-style: solid;
-  border-color: #111;
-  color: var(--text-color, #1a1a1a);
+  border-color: color-mix(in srgb, var(--text-color, #e8eaed) 55%, transparent);
+  color: var(--text-color, #e8eaed);
 }

@@ -4,15 +4,11 @@ import { adjutant } from "@chess-coach/starchess-core";
 import { createMatchStore, MatchStoreProvider, useMatchStore } from "~/app/MatchStoreContext";
 import { createMatchStateFromScfen } from "~/app/matchReducer";
 import { StarChessScreen } from "~/app/StarChessScreen";
+import { LiveMatchShell } from "~/screens/LiveMatchShell";
 import { KING_HUNT_LIVE_START_SCFEN } from "~/demos/kingHunt";
 
 /**
- * King Hunt (live) — eclipse board, ResourceBar / TurnBar / GasDeploy,
- * combat timeline VFX, adjutant opponent.
- *
- * SCFEN is seeded into the store **before** the screen mounts so `armTimer` /
- * turn-open checks / adjutant see the real starting position (not the empty
- * default board).
+ * King Hunt (live) — same HUD shell as `/starchess/single`.
  */
 export const KingHuntLiveScreen: Component = () => {
   const store = createMatchStore({
@@ -20,9 +16,11 @@ export const KingHuntLiveScreen: Component = () => {
   });
 
   return (
-    <MatchStoreProvider store={store}>
-      <KingHuntLiveInner />
-    </MatchStoreProvider>
+    <LiveMatchShell world="eclipse">
+      <MatchStoreProvider store={store}>
+        <KingHuntLiveInner />
+      </MatchStoreProvider>
+    </LiveMatchShell>
   );
 };
 
@@ -35,6 +33,7 @@ const KingHuntLiveInner: Component = () => {
       armTimer
       autoQueueOpponent={(snap) =>
         adjutant(snap, {
+          color: "b",
           storedFor: (color) => store.state().economies[color].stored,
         })
       }

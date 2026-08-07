@@ -24,7 +24,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Static StarChess menu. Anchors: Single Player (debris playground — 2×2 crop + 2rem gutter; exits g5 / f5), Multiplayer (network signal), Review (moon), Exit (black hole). Tutorial is title-only; Credits opens the modal.",
+          "Static StarChess menu. Single Player opens the New Game setup modal (map / team / Adjutant). Anchors: Single Player (debris), Multiplayer (network), Review (moon), Exit (black hole). Tutorial is title-only; Credits opens the credits modal.",
       },
     },
   },

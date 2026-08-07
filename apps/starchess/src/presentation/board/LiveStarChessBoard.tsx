@@ -230,7 +230,14 @@ export const LiveStarChessBoard: Component<{
   const state = () => store.state();
 
   return (
-    <div style={{ position: "relative", width: "100%", height: "100%" }}>
+    <div
+      style={{
+        position: "relative",
+        width: "100%",
+        height: "100%",
+        "box-sizing": "border-box",
+      }}
+    >
       <AnimationStage
         snapshot={snap()}
         viewer={state().viewer}

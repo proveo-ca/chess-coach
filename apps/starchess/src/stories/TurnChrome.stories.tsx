@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
 import { GasDeployScenarioScreen } from "~/demos/GasDeployScenarioScreen";
+import { VermeerLiveScreen } from "~/demos/VermeerLiveScreen";
 import { ResourceBar } from "~/presentation/hud/ResourceBar";
 import { TurnBar } from "~/presentation/hud/TurnBar";
 import {
@@ -20,7 +21,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Stacked above the board (replaces captured pieces): ResourceBar (minerals, vespene, deploy), then TurnBar (queue chips + End + 10s gauge) underneath so chips grow height without shifting the board horizontally. GasDeploy: drag vespene onto a unit for specials.",
+          "Stacked above the board (replaces captured pieces): ResourceBar (minerals, vespene, deploy), then TurnBar (queue chips + End + 10s gauge) underneath so chips grow height without shifting the board horizontally. GasDeploy: drag vespene onto a unit for specials. TurnBarSidebar is an experimental vertical rail variation.",
       },
     },
   },
@@ -56,6 +57,20 @@ export const ResourceAndTurn: Story = {
       </MatchStoreProvider>
     );
   },
+};
+
+export const TurnSidebarRail: Story = {
+  name: "TurnBarSidebar (vertical)",
+  parameters: {
+    layout: "fullscreen",
+    docs: {
+      description: {
+        story:
+          "Experimental vertical turn chrome in the live side rail (same as `/starchess/single`). Horizontal TurnBar stays unused.",
+      },
+    },
+  },
+  render: () => <VermeerLiveScreen turnChrome="sidebar" />,
 };
 
 export const GasDeploy: Story = {

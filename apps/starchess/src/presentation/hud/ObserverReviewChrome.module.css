@@ -2,10 +2,10 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: 6px;
+  justify-content: flex-start;
+  gap: 8px;
   width: 100%;
-  /* Match live ResourceBar + TurnBar stack so SidebarInset row stays stable. */
-  min-height: 6.5rem;
+  height: 100%;
   box-sizing: border-box;
 }
 

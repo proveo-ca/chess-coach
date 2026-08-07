@@ -1,0 +1,16 @@
+.shell {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: #050810;
+}
+
+.playLayer {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  min-height: 100dvh;
+  background: transparent;
+}

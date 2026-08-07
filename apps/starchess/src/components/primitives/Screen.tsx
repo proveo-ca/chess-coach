@@ -21,9 +21,8 @@ interface RegionProps {
  * `app-container` grid and its regions so screens *compose* layout instead of
  * reaching into a shared stylesheet. Splash-style screens use SplashScreen.
  *
- * Responsiveness (§1b / §2): fills the viewport with no page scroll; middle
- * (board) is essential. `data-footer-float` is set by CoachPanel or MoveList
- * when §4 applies.
+ * StarChess locks three fixed tracks (top · --board-size · footer) so Live↔
+ * Observer / HUD swaps cannot move the board. Regions pin via `grid-row`.
  */
 const ScreenRoot: Component<ScreenProps> = (props) => {
   return (

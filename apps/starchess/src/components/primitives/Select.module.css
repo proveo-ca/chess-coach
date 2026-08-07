@@ -1,0 +1,30 @@
+.common-select {
+  border-radius: var(--border-radius-md);
+  border: 1px solid color-mix(in srgb, var(--sc-menu-neon, #7cff4a) 40%, #444);
+  padding: 0.55em 1em;
+  font-size: 0.85rem;
+  font-weight: 500;
+  font-family: inherit;
+  letter-spacing: 0.04em;
+  background-color: color-mix(in srgb, #050810 88%, #1a3a22);
+  cursor: pointer;
+  transition: border-color 0.25s;
+  color: color-mix(in srgb, var(--sc-menu-neon, #7cff4a) 82%, #e8ffe0);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.common-select:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--sc-menu-neon, #7cff4a) 70%, transparent);
+}
+
+.common-select:focus,
+.common-select:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--sc-menu-neon, #7cff4a) 70%, transparent);
+  outline-offset: 2px;
+}
+
+.common-select:disabled {
+  opacity: 0.72;
+  cursor: not-allowed;
+}

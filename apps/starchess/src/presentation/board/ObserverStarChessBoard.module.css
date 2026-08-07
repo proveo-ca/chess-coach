@@ -1,28 +1,36 @@
 .board-layout-wrapper {
   position: relative;
   z-index: 1;
-  display: flex;
-  flex-direction: row;
-  gap: 16px;
-  justify-content: center;
-  align-items: stretch;
+  display: block;
   width: 100%;
+  height: 100%;
+  box-sizing: border-box;
 }
 
 .chessboard-container {
+  /* Fill the locked Screen middle slot (--board-size × --board-size). */
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  --frame-pad: 4px;
+  --playable-size: calc(100% - 2 * var(--frame-pad));
+  --square-size: calc((var(--board-size) - 2 * var(--frame-pad)) / 8);
   display: flex;
   justify-content: center;
+  align-items: center;
   filter: none;
-  /* Frame via padding+bg so labels stay inside the full --board-size grid
+  /* Frame via padding+bg so labels stay inside the playable grid
      (a border on .chessboard with border-box ate the bottom file row). */
-  padding: 4px;
+  padding: var(--frame-pad);
   background: var(--board-border);
   border-radius: 4px;
   box-shadow: 0 4px 12px rgba(var(--shadow-rgb), 0.3);
-  overflow: hidden; /* clip promo walk-off / slide hulls at the frame */
-  /* Phase ring — same tones as the TurnBar phase chip (check / intent / resolve). */
+  /* Clip piece VFX inside the grid; keep overflow visible here so the phase
+     outline (outside the box) is not eaten. Inner .chessboard clips walk-offs. */
+  overflow: visible;
+  /* Phase ring — synced with TurnBar / Chip tones (check / intent / resolve). */
   outline: 2px solid transparent;
-  outline-offset: 1px;
+  outline-offset: 2px;
   transition:
     filter 220ms ease,
     background-color 280ms ease,
@@ -31,28 +39,30 @@
 }
 
 .chessboard-container[data-phase="check"] {
+  /* Red frame pad + solid outline — matches Chip.tone=check. */
   background: #c43c3c;
   outline-style: solid;
   outline-color: #c43c3c;
 }
 
 .chessboard-container[data-phase="intent"] {
-  background: #111;
+  background: var(--board-border);
   outline-style: dashed;
-  outline-color: #111;
+  outline-color: color-mix(in srgb, var(--text-color, #e8eaed) 55%, transparent);
 }
 
 .chessboard-container[data-phase="resolve"] {
-  background: #111;
+  background: var(--board-border);
   outline-style: solid;
-  outline-color: #111;
+  outline-color: color-mix(in srgb, var(--text-color, #e8eaed) 55%, transparent);
 }
 
 .chessboard {
   display: grid;
   grid-template-columns: repeat(8, 1fr);
-  width: var(--board-size);
-  height: var(--board-size);
+  grid-template-rows: repeat(8, 1fr);
+  width: 100%;
+  height: 100%;
   border: none;
   border-radius: 0;
   box-shadow: none;
@@ -443,8 +453,8 @@
 /* Game-over banner moved to the shared GameOverBanner feature component
    (components/features/GameOverBanner.{tsx,module.css}). */
 .square {
-  width: var(--square-size);
-  height: var(--square-size);
+  width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;

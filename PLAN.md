@@ -1,1062 +1,277 @@
-# StarChess standalone app migration
+# Adjutant evolution — from strategies to learned opponent
 
-Status: Phase 5–6 applied (local cutover; Cloudflare deploy still requires
-separate approval)
+Status: **planning only** (not scheduled work).  
+Scope: how Single Player’s opponent (`packages/starchess-core/src/ai/adjutant.ts`) grows from named strategy algorithms → a composed heuristic → something that learns, without rewriting the StarChess rules engine.
 
-This document plans the extraction of StarChess from `apps/ui` into an
-independent SolidJS application, the architectural cleanup needed to make that
-boundary real, its deployment as a scoped PWA at `/starchess`, terminal
-game-history navigation, Dockerized Playwright/e2e, and the product upgrades for
-promotion, gas-used fog visibility, and gas-step animation.
+This replaces the prior standalone-migration PLAN (Phases 1–6 are done).
 
-Implementation has started on branch `feat-nerd-mode`. Progress notes:
+---
 
-- **Done — Phase 1:** `@chess-coach/starchess-core` owns rules; UI facades;
-  golden + differential tests.
-- **Done — Phase 2:** standalone `apps/starchess` Solid/Vite shell; match
-  reducer + explicit phases; snapshot board (no `gameStore` / `useChessBoard`);
-  `?scfen=` deep-link; queue → `endScTurn` → injected timeline → terminal
-  `gameOver`; zero `apps/ui` imports.
-- **Done — Phase 3:** presentation/timeline/assets; Storybook `:6007`;
-  `*.stories.tsx` mount SCFEN / DualNav packages only (no live queue logic);
-  non-live demos use observer DualNav; King Hunt (live) is the sole live seed;
-  promotion / gas-step / gas-used fog covered; `check:bundle` green.
-- **Done — visual parity (Combat Chain):** vendored `Screen` / `Button` /
-  `Label` / `DualNavButton` / icons + board CSS from UI @ `3bed049`; board
-  variants locked to `eclipse` | `butter` | `vermeer` (default `eclipse`);
-  live screen uses NerdScreen `Screen` top/middle/bottom grid; Combat Chain
-  story pixel-diff vs historic `:6008` = **0**.
-- **Done — Phase 4:** terminal DualNav review via `REVIEW_SEEK` +
-  `settledSnapshots`; observer vision while scrubbing; board/GasDeploy
-  read-only after `gameOver`; history unit tests.
-- **Done — Phase 5:** VitePWA (`/starchess/` scope), StarChess icons/manifest,
-  `wrangler.toml` + `worker.js`, preview/dry-run scripts; Coach
-  `/chess/starchess` → `StarChessRedirect`; `NerdModePrompt` opens
-  `/starchess/`. **No production `wrangler deploy`.**
-- **Done — Phase 6:** `E2E_TARGET=starchess` Playwright target; compose/Dockerfile
-  default to standalone; gas-used + gas-step e2e; identity/prompt moved to
-  `apps/ui/src/features/nerd`; `apps/ui/src/starchess` removed; BoardMoveProvider
-  seam removed.
-- **Still open:** richer cue VFX port (mine missile / queen jump) beyond
-  classical combat; Cloudflare production publish (HITL).
+## Why this ladder exists
 
-This plan does not authorize Cloudflare deployment without explicit approval.
-Local dry-run is not a production deploy.
+The Adjutant already *plans* a turn: score legal specials + classical moves, pick a queue, commit via `addScAction`. That is enough for a fun scripted foe. It is **not** enough for:
 
-## Fixed decisions
+- long-horizon economy (minerals → spawn → map control),
+- counter-play that adapts to *your* habits,
+- opening / mid / endgame style shifts without hand-tuning weights.
 
-- Keep SolidJS and Vite. This is an extraction, not a framework rewrite.
-- Create a standalone `apps/starchess` application.
-- Extract rules into a pure `packages/starchess-core` package.
-- Do not create a shared `board-ui` package in this migration. Deduplicate
-  StarChess board mechanics locally and leave classical chess UI internals in
-  `apps/ui`.
-- Ship the first standalone release as an installable PWA on a dedicated
-  Cloudflare Worker at `/starchess` and `/starchess/*`.
-- Preserve `/chess/starchess` as a compatibility redirect, including its query
-  string.
-- Use the root pnpm workspace for the new app and package. Do not turn this
-  migration into a repository-wide package-manager conversion.
-- Add game review after the standalone match-store boundary exists. Keep its
-  history session-local and object-based. Do not display SCFEN or add completed
-  history to the SCFEN wire format yet.
-- Make Playwright runnable via a dedicated Dockerfile, and the e2e suite
-  runnable via Docker Compose. Create those files if missing; do not overload
-  the existing desktop-engine root `Dockerfile`.
-- Treat promotion, gas-step animation, and gas-used fog visibility as product
-  upgrades that ship with the migration rather than deferred demos.
-
-## Why this is an architectural migration
-
-StarChess already behaves like a separate product and rules engine, but its
-implementation is coupled to Chess Coach:
-
-- `apps/ui/src/index.tsx` mounts `NerdScreen` at `/chess/starchess` because the
-  router base is `/chess`.
-- `apps/ui/src/starchess/screens/NerdScreen.tsx` combines routing, deep-link
-  parsing, economy initialization, action commands, timers, turn resolution,
-  animation commits, terminal status, and layout.
-- `apps/ui/src/starchess/starChessStore.ts` owns only part of the match and
-  imports shared UI settings. `apps/ui/src/store/gameStore.ts` separately holds
-  a classical-FEN projection used to render the same position.
-- `apps/ui/src/starchess/board/StarChessBoardView.tsx` depends on coach, review,
-  travel, capabilities, settings, game history, router, and generic chess-board
-  behavior even though StarChess disables most of it.
-- `apps/ui/src/starchess/hooks/useStarChessCombat.ts` is both an animation
-  timeline player and a store-aware board mutator.
-- `apps/ui/src/starchess/types.ts` combines domain snapshots and actions,
-  deprecated state models, UI variants, and animation cues.
-- `apps/ui/vite.config.ts`, `apps/ui/wrangler.toml`, and `apps/ui/worker.js`
-  bind assets, PWA scope, SPA fallback, caching, and deployment to `/chess`.
-- The living specifications under `_spec/apps/ui/starchess` describe a separate
-  simultaneous-turn engine while still encoding `apps/ui` ownership.
-
-Moving files without correcting these boundaries would produce a nominally
-separate app that still imports Chess Coach internals. The migration must remove
-those dependencies rather than hide them behind path aliases.
-
-### Structural problems to resolve
-
-- SCFEN replay validation and turn resolution form a rule dependency cycle.
-- Rules-side vision depends on presentation animation timing.
-- Special kind, actor, cost, targeting, validation, resolution, copy, and demo
-  behavior are repeated in several modules.
-- Story and demo controllers can implement behavior independently from the
-  production queue and resolver.
-- The live screen bypasses the store's `endPlanningTurn` boundary.
-- The authoritative StarChess snapshot is mirrored into a classical
-  `gameStore`, forcing repeated `loadFen` synchronization.
-- Game end is terminal in the engine (`phase: "O"`) but incomplete in the UI:
-  planning controls remain and no match history exists.
-- Classical promotion lands already-promoted in `resolveTurn.relocate`, so a
-  mine on the last rank can still kill after the promoted piece is written, and
-  there is no "pawn walks off / new unit deploys" sequence.
-- `pawnDouble` B/F specials relocate placement immediately with no move cue, so
-  gas-stepped pawns teleport.
-- Gas-used green highlight (`pieceSpecialUsed`) is applied on the square, but
-  fog still hides enemy pieces unless otherwise revealed, so opponents often
-  cannot see that a unit spent gas.
-- Root `Dockerfile` builds the desktop Chess Coach image with Stockfish/lc0.
-  There is no Playwright image and no `docker-compose` / `compose.yml` file for
-  e2e.
-
-## Product rule and UX upgrades
-
-These upgrades are part of the migration plan, not optional polish. They must be
-specified in `_spec`, implemented in `packages/starchess-core` + the app
-timeline, and covered by unit/e2e tests.
-
-### 1. Playwright via Dockerfile; e2e via Docker Compose
-
-Current state:
-
-- Root [`Dockerfile`](Dockerfile) is the desktop product image only.
-- [`apps/e2e`](apps/e2e) runs Playwright via npm on the host and documents
-  `npx playwright install` in [`apps/e2e/SETUP.md`](apps/e2e/SETUP.md).
-- No `docker-compose.yml` / `compose.yml` exists anywhere in the repo.
-
-Plan:
-
-1. Add `apps/e2e/Dockerfile` based on the official Playwright image
-   (`mcr.microsoft.com/playwright`), matching the installed
-   `@playwright/test` major/minor.
-2. Add a root `compose.yml` (or `docker-compose.yml`) with an `e2e` service
-   that:
-   - builds from `apps/e2e/Dockerfile`;
-   - mounts the repo (or copies the workspace) so it can launch the UI under
-     test;
-   - runs `npm test` / target-selected Playwright for StarChess and the shared
-     suite as appropriate;
-   - does not require host-installed browsers.
-3. Add package/root scripts such as:
-   - `docker compose build e2e`
-   - `docker compose run --rm e2e`
-4. Keep the desktop-engine root `Dockerfile` untouched for product packaging.
-5. Document the compose workflow in `apps/e2e/SETUP.md` and this plan's
-   verification gates.
-6. After StarChess cutover, the compose target must be able to point at
-   `apps/starchess` (and optionally still at `apps/ui` for classical specs).
-
-Acceptance:
-
-- A clean machine with only Docker can build the e2e image and run Playwright.
-- Compose does not depend on host `npx playwright install`.
-- CI/local guidance prefers compose for reproducible browser installs.
-
-### 2. Promotion: pawn walks off the board, then the new unit deploys
-
-Desired presentation for a successful last-rank classical promotion:
-
-1. The pawn performs an ordinary move onto the promotion square as a pawn.
-2. The pawn then walks off the board (new animation; leave the file/rank edge).
-3. The chosen promoted unit deploys onto that square with the existing deploy
-   animation (`DeployCue` / auto-deploy behavior). Keep that deploy behavior.
-
-Rules consequence: promotion must not be an atomic rewrite inside the move
-relocate step. The move phase lands a pawn; a later promotion phase converts it.
-
-Domain events to add:
-
-- `pieceMoved` with the pawn still a pawn on the last rank;
-- `pawnWalkedOff` / `promotionVacated` from the last-rank square;
-- `unitDeployed` for the promoted piece on that square.
-
-If the pawn dies before the promotion phase, neither walk-off nor deploy fire.
-
-### 3. Enemy spider mine interrupts promotion
-
-Scenario:
-
-- A pawn is one square from promoting.
-- An enemy spider mine occupies the promotion square (or wakes on that path /
-  destination according to existing mine rules).
-- The pawn's classical move is interrupted by the mine.
-- The promoted unit never deploys.
-
-Recommended resolve order:
-
-```text
-king-checks → B specials → classical attack → classical move (+ mine triggers)
-  → promotion resolution → F specials
-```
-
-Promotion resolution means:
-
-1. Collect survivors that completed a classical move onto their promotion rank
-   with a queued `promotion` choice.
-2. For each survivor, emit walk-off then deploy the promoted unit.
-3. If a mine blast (or any earlier death) removed the pawn, skip that promotion
-   entirely.
-
-Today `resolveTurn.relocate` writes the promoted piece first and only then
-applies destination/path mine death. That can leave the wrong intermediate
-identity and makes "unit never gets deployed" hard to express. Move promotion
-after attack/move/mine settlement.
-
-Required tests:
-
-- Core unit: pawn promotes cleanly → final piece is the chosen unit; events
-  include move (as pawn), walk-off, deploy.
-- Core unit: pawn one step from last rank into an enemy mine → pawn dies, no
-  promoted piece, no deploy event.
-- E2E: seed SCFEN with a white pawn one square from promotion and a black
-  spider mine on the promotion square; queue the promoting classical; End;
-  assert the mine resolves, the pawn is gone, and no promoted unit appears /
-  no deploy overlay for the promotion. Prefer a dedicated
-  `apps/e2e/tests/starchess-promotion.spec.ts` (or an additions block in the
-  exceptions suite).
-
-Also update `_spec/.../resolve.puml` so promotion is an explicit post-move
-phase, not an in-relocate rewrite.
-
-### 4. Enemies can see gas-used units (green highlight)
-
-Current behavior:
-
-- `specialsUsedThisTurn` drives `data-special-used` / `.pieceSpecialUsed`.
-- Fog still hides enemy pieces unless the square is lit or otherwise revealed.
-- Intent canisters and other overlays are already fog-gated; gas-used glow is
-  not a reveal rule today.
-
-Required product rule:
-
-- If a unit has spent gas this planning turn (`U:` / specials-used set), enemy
-  viewers who would otherwise fog-hide that piece must still see the unit with
-  the green gas-used highlight.
-- This is a vision/reveal rule, not only a CSS tweak: treat gas-spent squares
-  like temporary reveals for the opposing viewer, similar to attack-origin
-  reveals.
-- Own-side gas-used glow continues to work as today.
-- When the special is removed from the queue / gas is refunded, the reveal and
-  glow clear with `specialsUsed`.
-
-Implementation notes for the plan:
-
-- Core/app vision projection accepts `specialsUsed` as an additional reveal
-  source for the opposing viewer.
-- Board `hidePiece` must not hide an enemy piece that is gas-marked.
-- Keep the existing green highlight styling; do not invent a second marker.
-- Cover with unit/component tests and an e2e assertion that an opposing
-  viewer/board orientation can observe `data-special-used` on a fogged enemy
-  square after gas is spent.
-
-### 5. Gas-moved pawns must animate, not teleport
-
-Current defect:
-
-- `endScTurn` applies `pawnDouble` during B/F by relocating placement.
-- `NerdScreen` commits the post-B board, then `useStarChessCombat.playResolve`
-  animates classical attacks/moves only.
-- Result: gas-stepped pawns snap/teleport.
-
-Required behavior:
-
-- `pawnDouble` emits a semantic `pieceMoved` (or `gasStepMoved`) event with
-  from/to and pawn identity.
-- The timeline projector plays the ordinary move slide for that event before
-  continuing later phases.
-- B+C / C+F stacks remain correct: gas step animates, then classical animates
-  (or classical then gas ride), without collapsing both into one teleport.
-- Queen warp may remain a teleport/special VFX; this requirement is specifically
-  for gas-moved pawns.
-
-Tests:
-
-- Timeline/unit: a B-only `pawnDouble` produces a move cue with progress, not
-  an instant occupancy swap.
-- E2E or Storybook harness: gas step visibly leaves `from` before occupying
-  `to`.
-
-## Target architecture
-
-Dependencies must point in one direction:
+The path below starts with the **strategy catalog** (what the script is made of), then the usual industrial sequence (AlphaZero-style), adapted to StarChess’s simultaneous B/C/F turns, gas budget, fog, and SCFEN replay surface.
 
 ```mermaid
 flowchart LR
-  MainUi[apps/ui] -->|"external launch or legacy redirect"| StarApp[apps/starchess]
-  StarApp --> StarCore[packages/starchess-core]
-  StarApp --> BrowserAdapters[Browser adapters]
-  StarCore --> DomainTypes[Domain types]
-  StarCore -.->|"must not import"| MainUi
-  StarCore -.->|"must not import"| Solid[SolidJS and DOM]
+  S[0 Strategy algorithms] --> A[1 Heuristic Adjutant]
+  A --> B[2 Classical ML / search]
+  B --> C[3 Self-play]
+  C --> D[4 Replay + credit assignment]
+  D --> E[5 Neural policy / value]
 ```
 
-### `packages/starchess-core`: functional core
+Each step keeps the **same rules API**: `ScFenSnapshot` in → queued actions out → `endScTurn` resolves. Learning never forks a second ruleset. Color is agnostic (`ctx.color` = side to plan).
 
-Proposed layout:
+---
+
+## 0. Strategy algorithms — named tactics before the heuristic
+
+**What it is:** a catalog of *individual* strategy algorithms. Each one answers a narrow question (“how do I save my King?”, “where do I plant the next mine?”) and emits scored candidates. The heuristic (stage 1) only **selects posture** and **blends weights** across these strategies.
+
+Think of strategies as pure policy fragments; postures decide which fragments are loud this turn.
+
+### Categories (posture families)
+
+| Category | Intent | Typical posture gate |
+|---|---|---|
+| **Survive** | Do not lose the King / flagship this turn | Always on; overrides everything |
+| **Control** | Own the map (hub, mines, diagonals, siege) | `expand` — no hub yet; dampened later |
+| **Seek** | Find a fogged enemy King from clues | `seek` — hub held, King not visible |
+| **Attack** | Chip / chase / check the visible King; equal-material trades | `hunt`; equal trades always |
+| **Defend** | Save threatened units — queen if savable, else flee non-queens | When in enemy range |
+| **Develop** | Promote, spawn, trades when higher goals idle | Secondary in seek/hunt |
+| **Combo** | Same-turn gas stacks (Charon+C, mine+hop, …) | Whenever gas + legality allow |
+
+### Individual strategies (by category)
+
+**Survive**
+
+- **King safety** — any plan that leaves our King on a chip ray is crushed (`KING_SAFETY`).
+- **Flee / interpose** — classical or special that clears check.
+- **Battlecruiser escape** — `queenWarp` to a safe square when the queen is under fire (`QUEEN_ESCAPE`).
+
+**Control**
+
+- **Siege hub** — walk / pack Siege Tank on d4–e5.
+- **Spider mines** — plant on d4–e5 first; once the hub is mined, plant on **a/h** files only.
+- **Vulture hop** — move knights onto preferred mine sites (hub, then flanks).
+- **Goliath diagonals** — bishops claiming centre-biting rays.
+- **Spawn for presence** — Command Center drop toward contested tiles (minerals permitting).
+
+**Seek** (fog intel — enemy-color aware)
+
+- **Pawn-file corridors** — each visible enemy pawn’s **file** is a deploy corridor back to the enemy home band (ranks 1–2 if enemy is White, 7–8 if Black).
+- **Pawn clumps** — dense Marines reinforce those files (shelter ⇒ King nearby).
+- **Deploy cues** — visible non-pawn enemy units (spawned beside their King); back-rank bias.
+- **Siege-to-reveal** — pack tank when 9×9 would cover the intel focus.
+- **Scout hop** — close Chebyshev distance to the inferred focus.
+
+**Attack**
+
+- **Check / ray** — land where we attack the visible enemy King (not onto the king square).
+- **Chase** — reduce Chebyshev distance to the visible King.
+- **Equal-material trade** — when in range of an enemy of the same `UNIT_COST`, always capture.
+- **Charon snipe** — bishop gas kill on a unique diagonal enemy queen (+ second classical strike).
+
+**Defend**
+
+- **Savable queen** — `queenWarp` / classical flee to a safe square when the Battlecruiser is under fire.
+- **Threatened non-queen** — leave the fire (defend) rather than hang; do not walk into fresh fire.
+
+- **Promote** — push / promote; **near-promote rush** (≤2 steps, ~6000) including gas+move stack outranks control/seek/hunt mid goals.
+- **Pawn gas stack** — B+C two-step when free classical double is unavailable (mandatory when 2 steps from last rank).
+- **Trades** — capture when value favors us; avoid hanging units.
+
+**Combo**
+
+- Charon (B) + classical (C)
+- Mine (B) + Vulture relocate (C)
+- Spawn (B) + classical (C)
+- Threatened warp (B) + second unit (C)
+
+### Composition rule
 
 ```text
-packages/starchess-core/
-  package.json
-  tsconfig.json
-  src/
-    model/
-      square.ts
-      piece.ts
-      action.ts
-      snapshot.ts
-      outcome.ts
-      events.ts
-      turn-record.ts
-    board/
-      placement.ts
-      geometry.ts
-      moves.ts
-      vision.ts
-      mines.ts
-      siege.ts
-    rules/
-      economy.ts
-      validation.ts
-      specials/
-        registry.ts
-        spawn.ts
-        pawn-double.ts
-        spider-mine.ts
-        bishop-charon.ts
-        rook-siege.ts
-        queen-jump.ts
-    commands/
-      queue-action.ts
-      remove-action.ts
-      submit-turn.ts
-    resolve/
-      king-checks.ts
-      classical-turn.ts
-      resolve-turn.ts
-    scfen/
-      parse.ts
-      format.ts
-      queue-codec.ts
-      errors.ts
-    replay/
-      validate-history.ts
-    ai/
-      adjutant.ts
-    index.ts
-  tests/
+for each legal candidate (special / classical / stack):
+  score = Σ strategy_i(candidate, snap, vision, posture_weights)
+pick max score (King-safety gate applied uniformly)
 ```
 
-The package must:
+Posture (`expand` | `seek` | `hunt`) only changes **weights**, not which strategies exist. New tactics should land here as named strategies before they become magic numbers inside `scoreMove`.
 
-- Have no SolidJS, DOM, browser-global, CSS, animation-duration, or app imports.
-- Expose pure commands that accept immutable values and return next state plus
-  semantic events.
-- Own StarChess-native domain types. `Square`, color, piece, action, snapshot,
-  and outcome types must not depend on UI settings types.
-- Keep SCFEN as a compatibility adapter around the domain rather than using its
-  serialized shape as the entire application store.
-- Preserve existing queue order and B/C/F turn semantics.
-- Keep its public `index.ts` narrow so app consumers cannot couple themselves to
-  internal folders.
+**Stay here until:** every shipped behaviour has a named strategy + unit test; posture table is documented (as in `WEIGHTS` today).
 
-`chess.js` may remain temporarily behind a compatibility adapter where removing
-it would change behavior, but the target core must not use a classical
-`Chess` instance as its state container.
+---
 
-### `apps/starchess`: imperative shell
+## 1. Algorithm (today) — heuristic planner
 
-Proposed layout:
+**What it is:** the **composer** over stage-0 strategies — fixed posture resolution + hand weights.
+
+- Enumerate legal specials within gas, classical moves via `scMovesFor`, same-turn stacks.
+- Resolve posture from hub presence + fog (enemy King visible?).
+- Score with dynamic weights (survive ≫ control in expand ≫ seek / attack by posture).
+- Deterministic: same snapshot + `color` → same plan (good for tests, demos, Storybook).
+
+**Strengths:** cheap, explainable, shippable, unit-testable.  
+**Limits:** weights are opinions; no look-ahead beyond “this queue looks good”; no memory of prior games; fog / bluffs are shallow.
+
+**Stay here until:** candidate generation is complete (all specials + meaningful stacks) and evaluation features are stable enough that a learner would not fight the rules API every week.
+
+---
+
+## 2. Machine learning algorithm — learn the *score*, keep the *search*
+
+Still an algorithm; only the **evaluation** (and optionally action ranking) is fit from data.
+
+Typical first ML step for this codebase:
+
+| Piece | Role |
+|---|---|
+| Features | material, minerals, gas left, king HP/threat, mines near hub, siege flags, vision size, promote distance, center control, intel focus, … |
+| Model | linear / GBDT / small MLP that outputs a **position value** or **action logits** |
+| Search | keep Adjutant’s candidate generator; optionally add shallow tree / beam over *queues* (not just single moves) |
+| Train signal | game outcome (±1), or stronger: turn-level rewards (king damage, mines planted, BC saved) |
+
+This is **supervised / offline RL-lite**, not yet a neural StarCraft-scale stack. Humans or the heuristic Adjutant can label “good queues”; a regressor learns to imitate or to predict win probability.
+
+**Product shape:** `adjutant(snap, ctx)` stays pure; a second entry `adjutantLearned(snap, weights)` swaps the score function. Tests pin the heuristic forever as a baseline / fallback.
+
+---
+
+## 3. Plays itself? — yes (self-play loop)
+
+Once you can run matches headlessly (`replayScFen` / `endScTurn` / mineral bookkeeping outside SCFEN), run:
 
 ```text
-apps/starchess/
-  package.json
-  tsconfig.json
-  vite.config.ts
-  vitest.config.ts
-  wrangler.toml
-  worker.js
-  index.html
-  src/
-    main.tsx
-    app/
-      StarChessApp.tsx
-      StarChessScreen.tsx
-      createMatchStore.ts
-      matchReducer.ts
-      selectors.ts
-      effects.ts
-    ports/
-      Clock.ts
-      Scheduler.ts
-      RandomSource.ts
-      Storage.ts
-      Location.ts
-    adapters/browser/
-      browserClock.ts
-      browserScheduler.ts
-      browserRandom.ts
-      localMatchStorage.ts
-      queryScfen.ts
-    presentation/
-      board/
-        StarChessBoard.tsx
-        StarChessSquare.tsx
-        BoardGrid.tsx
-        useBoardInput.ts
-        fogProjection.ts
-        intentProjection.ts
-      timeline/
-        timelinePlayer.ts
-        eventProjection.ts
-        components/
-      hud/
-        ResourceBar.tsx
-        TurnQueue.tsx
-        TurnControls.tsx
-        DeployModal.tsx
-        GasDeploy.tsx
-        DualNavButton.tsx
-        OutcomeStatus.tsx
-      layout/
-        MatchLayout.tsx
-    stories/
-      StarChessScenarioHarness.tsx
-      fixtures/
-    styles/
-      theme.css
-      index.css
-  public/
-    pieces/nerd/
+for episode in 1..N:
+  snap = startPosition(map)
+  while not terminal:
+    whitePlan = policy_A(snap, color="w")
+    blackPlan = policy_B(snap, color="b")
+    snap = resolve(whitePlan, blackPlan)
+  store (trajectory, outcome)
 ```
 
-The application must:
+**Self-play** means both seats use *versions of the learner* (or learner vs frozen Adjutant, or league of checkpoints). Goals:
 
-- Own one match aggregate instead of coordinating several global stores.
-- Render directly from a StarChess snapshot rather than mirroring it into
-  `gameStore`.
-- Use a StarChess-native board input controller rather than carrying
-  `useChessBoard`, Stockfish, coach behavior, travel, or classical review into
-  the bundle.
-- Own its theme tokens, responsive layout, piece assets, and navigation.
-- Resolve public assets from `import.meta.env.BASE_URL`; no `/chess/pieces/...`
-  URLs may remain.
-- Use the same commands and resolver in production, tests, Storybook, and demos.
+- generate unlimited labeled games without human play,
+- discover tactics the hand weights never encoded (e.g. sacrifice mine for Charon setup),
+- produce a **league** so strength is measurable (Elo / win-rate vs Adjutant-v0).
 
-### Remaining `apps/ui` integration
+Constraints specific to StarChess:
 
-After cutover, `apps/ui` should know StarChess only as an external product
-destination:
+- Simultaneous turns → each “ply” is a **pair of queues**, not alternating chess moves. The policy must output a *plan* (0–2 actions + timings), not one classical move.
+- Fog: training can use perfect information first; later train a **belief / fog-faithful** policy that only sees `getSideVision`.
+- Minerals live outside SCFEN today — the self-play host must carry economy state next to the snapshot (same as live Single Player).
 
-- Keep the Nerd name/unlock prompt only if it is still part of Chess Coach's
-  product flow.
-- Change StarChess launch actions to `/starchess/`.
-- Retain a small `/chess/starchess` route that performs an external redirect
-  while preserving `location.search` and `location.hash`.
-- Remove StarChess capabilities, provider branches, stores, stories, and tests
-  only after standalone parity is proven.
-- Do not import source from `apps/starchess` back into `apps/ui`.
+**No:** “plays itself” does not by itself create a neural net. It only creates **experience**.
 
-## Architectural upgrades and design patterns
+---
 
-### 1. Functional core, imperative shell
+## 4. Back-propagates game replays? — credit assignment over trajectories
 
-Rules are deterministic functions. Browser concerns remain at the edge.
+“Backpropagation” here means: take finished games (self-play or human replays) and **push the outcome back through the decisions** that led there.
 
-- Core commands return a next state and semantic events.
-- Timers, random values, URL access, local storage, Solid signals, and animation
-  scheduling are injected through app ports.
-- Core tests run as plain TypeScript without DOM setup, fake browser stores, or
-  global Solid signals.
+Two layers people often conflate:
 
-This separates game correctness from animation timing and allows replay,
-simulation, and AI to use the same rules.
+### 4a. Temporal credit (RL)
 
-### 2. Reducer with an explicit application state machine
+- Store each turn’s `(state, plan, reward, next_state)`.
+- Assign credit with Monte-Carlo returns, TD(λ), or PPO/A2C-style advantages so “saving the Battlecruiser on turn 4” is rewarded when that side wins twenty turns later.
+- Replays from DualNav / `settledSnapshots` are gold for **offline RL** and imitation: same format as live resolution.
 
-Replace distributed flags such as `resolving`, `spawnPhase`, deadline
-nullability, and inferred UI modes with explicit states:
+### 4b. Gradient backprop (optimizer)
 
-- `loading`
-- `planning`
-- `targeting`
-- `resolving`
-- `gameOver`
-- `reviewing`
+- If the scorer is a neural net, **backpropagation** (autodiff) updates weights so predicted value / policy matches the credit-assigned targets.
+- If the scorer is still linear/GBDT, you update coefficients / trees — same idea, different optimizer.
 
-The reducer owns legal transitions. Invalid commands return a typed rejection
-or no-op. Terminal game state is absorbing. Effects such as scheduling a
-timeout, playing a timeline, persisting state, and navigating are described
-separately and executed by the shell.
+**Practical recipe for us:**
 
-### 3. Strategy registry for specials
+1. Record trajectories from self-play + optional human Single Player games.
+2. Label terminal outcome (+ optional dense mid-game rewards).
+3. Train value: `V(snap) ≈ E[outcome | snap]`.
+4. Train policy: `π(plan | snap)` toward plans that led to high advantage (or toward expert Adjutant plans for warm-start).
+5. Evaluate always vs frozen heuristic Adjutant; never ship a regression without that gate.
 
-Create one registry entry per `ScSpecialKind`. Each entry owns:
+Human DualNav review is **not** automatic backprop — it is a **dataset**. The training job is what back-propagates.
 
-- actor piece type;
-- gas cost;
-- allowed B/F timing;
-- targeting policy;
-- deep validation;
-- queue normalization;
-- resolver.
+---
 
-Presentation copy and icons may remain app metadata keyed by the same kind, but
-cost and legality must have one authoritative source. Remove duplicate
-`SpecialKind`/`ScSpecialKind` declarations and retired queue/state models after
-confirming they have no consumers.
+## 5. Neural net? — policy + value over StarChess state
 
-### 4. Domain events and a timeline projector
+Final stage: replace (or heavily assist) hand features with a network that sees a board tensor + economy vector.
 
-The core should emit semantic events such as:
+Suggested shape (deliberately small first):
 
-- `attackStarted`;
-- `pieceDestroyed`;
-- `pieceMoved`;
-- `mineTriggered`;
-- `kingDamaged`;
-- `specialResolved`.
+```text
+Input:
+  - piece planes (type × color × siege/mine flags)
+  - scalar economy (minerals, gas, supply, turn)
+  - fog mask (optional second head trained fog-faithful)
 
-Events must contain game meaning, not CSS classes or milliseconds. Add events
-for promotion walk-off / deploy and for gas-step moves so the timeline can
-animate them independently of classical C moves. The app projects events into
-animation cues and controls timing through an injected, cancellable scheduler.
-Reset, deep-link load, unmount, and history seek must cancel pending effects.
-
-This removes the rules-to-animation dependency and turns
-`useStarChessCombat` into a presentation adapter rather than a second rules
-engine.
-
-### 5. SCFEN anti-corruption layer
-
-SCFEN remains the compatible wire format, but not the in-memory store shape.
-
-- Parsing and formatting cannot invoke turn resolution.
-- Replay validation runs after parsing through a separate service, breaking the
-  current dependency cycle.
-- Existing `Q:`, `M:`, `S:`, `U:`, and legacy `H:` fixtures retain byte or
-  semantic compatibility as appropriate.
-- Minerals and completed history remain explicitly outside SCFEN in this
-  migration.
-- The pending completed-history serializer must not appear in diagrams as
-  shipped behavior.
-
-### 6. Single match aggregate
-
-One app store owns:
-
-- live snapshot;
-- economies;
-- viewer side;
-- deadline;
-- application state;
-- transient targeting;
-- timeline state;
-- outcome;
-- settled history;
-- review cursor.
-
-Selectors derive gas, HP, siege state, fog, available commands, status, and the
-displayed snapshot. The live snapshot remains authoritative; seeking through
-history never mutates it.
-
-### 7. Scenario harness instead of alternate controllers
-
-Storybook and demos should seed a fixture, issue production commands, and
-control an injected scheduler. Remove demo-only special hooks once equivalent
-scenarios pass through the production reducer and special registry.
-
-## Migration phases
-
-### Phase 0: stabilize and characterize
-
-1. Select an explicit baseline after reviewing the current uncommitted
-   StarChess and spec work. Do not discard or overwrite it.
-2. Record the current results for UI typecheck, lint, unit tests, Storybook, and
-   both StarChess Playwright specs.
-3. Build a golden SCFEN and resolve corpus covering:
-   - omitted and populated optional fields;
-   - queue ordering and removal;
-   - B+C and C+F pawn rewrites;
-   - king checks, duel, mutual death, and draw;
-   - mines and mine collisions;
-   - siege mode;
-   - fog-edge and path-reveal resolution;
-   - terminal phase;
-   - legacy `H:`.
-4. Preserve the existing spawn-then-move failure and siege-toggle skip as known
-   product gaps. Migration must not silently classify them as regressions or
-   fixes.
-5. Capture golden cases for the new product upgrades as failing or pending
-   fixtures until implemented:
-   - promotion walk-off + deploy;
-   - promotion interrupted by enemy spider mine;
-   - gas-used enemy reveal under fog;
-   - gas-step pawn move animation (no teleport).
-6. Confirm Playwright can be imaged and that compose scaffolding is planned
-   before relying on host browsers for StarChess e2e.
-
-Exit gate: the baseline and known gaps are reproducible.
-
-### Phase 1: extract the core behind a compatibility facade — **DONE**
-
-1. Add `@chess-coach/starchess-core` to the pnpm workspace. ✅
-2. Move domain types, board operations, validation, SCFEN codecs, actions,
-   resolution, outcome, and Adjutant logic in small slices. ✅
-3. Keep temporary adapters at old `apps/ui` import paths while consumers move. ✅
-4. Split presentation/animation types out of the current mixed type file. ✅
-   (`types.ts` re-exports domain; attack/move cues stay UI-local.)
-5. Move replay validation out of SCFEN parsing. ✅ (`replay/validate-history.ts`)
-6. Move animation durations out of rules-side vision. ✅
-   (rules in core; SVG / move-path occupancy helpers in UI `vision.ts`;
-   `ATTACK_MS` etc. stay in UI `constants.ts`.)
-7. Introduce the special registry without changing wire format yet. ✅
-8. Change classical promotion so relocate lands a pawn; add an explicit
-   post-move/mine promotion phase before F specials. ✅
-9. Emit gas-step move events from `pawnDouble` instead of silent placement
-   teleport. ✅
-10. Move rule-focused tests into the package and add differential tests that
-    run old and extracted implementations over the golden corpus, plus new
-    promotion/mine and gas-step cases. ✅
-    (`packages/starchess-core/tests/*`, UI `coreFacadeDifferential.test.ts`)
-
-Exit gate: the current embedded UI consumes the package and all differential
-tests pass for preserved behavior; new upgrade tests are present and define
-the intended contract. ✅
-
-Rollback: retain old modules until each replacement has parity; remove only the
-adapter for a completed slice.
-
-### Phase 2: create the standalone shell and match aggregate — **DONE**
-
-1. Scaffold SolidJS, Vite, Vitest, lint, format, and Storybook configuration in
-   `apps/starchess`. ✅
-2. Add the app reducer, explicit state machine, selectors, effects, and browser
-   ports. ✅
-3. Move `NerdScreen` responsibilities into focused application commands and
-   presentation components. ✅ (`StarChessScreen` + `MatchHud`)
-4. Implement a StarChess-native board input controller. ✅ (`useBoardInput`)
-5. Render placement directly from the selected StarChess snapshot. ✅
-6. Remove `gameStore` and repeated `loadFen` synchronization from the
-   standalone path. ✅
-7. Copy only the small primitives StarChess needs, then simplify them under
-   app ownership instead of importing from `apps/ui`. ✅
-8. Keep `/chess/starchess` on the embedded implementation until standalone
-   behavior is verified. ✅ (untouched)
-
-Exit gate: a local standalone game can deep-link from SCFEN, queue actions,
-resolve a turn, animate it, and reach a terminal outcome without importing
-`apps/ui`. ✅
-
-### Phase 3: consolidate presentation, demos, and assets — **DONE (exit gate)**
-
-1. Move StarChess animation components and CSS under the new app. ✅
-   (timeline projector + board/HUD CSS; full Attack/Death SVG ports deferred)
-2. Replace store-aware combat orchestration with the domain-event timeline
-   projector. ✅ (`timelinePlayer.ts`)
-3. Inject scheduler, clock, and random source so tests can advance effects
-   deterministically. ✅
-4. Implement the new promotion walk-off animation, then reuse existing deploy
-   cues for the promoted unit. ✅ (promoHold → deploy cues; off-board polish later)
-5. Animate `pawnDouble` gas steps with ordinary move slides; keep queen warp as
-   a distinct special VFX if desired. ✅ (gas-step move cues)
-6. Teach fog/reveal projection to show enemy gas-used units with the existing
-   green highlight. ✅ (`fogProjection` + `data-special-used`)
-7. Create one `StarChessScenarioHarness`. ✅ → **superseded:** non-live stories
-   mount DualNav / static SCFEN packages (`FogEdgeDemo`, `StaticScfenBoard`);
-   live seed is `KingHuntLiveScreen` only (no Storybook match-store harness).
-8. Convert demos and stories to fixtures plus production commands. ✅
-   (`*.stories.tsx` = board/SCFEN mounts only; DualNav packages under `demos/`)
-9. Delete alternate special controllers only after equivalent scenarios pass. ✅
-   (standalone has no alternate controllers; UI demos retained until Phase 6)
-10. Move Nerd piece assets into the standalone public tree. ✅
-11. Replace hard-coded `/chess` asset references with base-aware URLs. ✅
-12. Add a bundle-boundary check proving that Stockfish, WebLLM, coach services,
-    and Chess Coach stores are absent. ✅
-13. Live chrome on MatchStore (not UI `starChessStore`): ResourceBar, TurnBar,
-    GasDeploy, DeployModal, `usePieceSpecialArm`, `useCombatOverlays` →
-    `AnimationStage` attack/death/move/deploy. ✅
-14. King Hunt (live) + DualNav King Hunt review stories on eclipse board. ✅
-
-Exit gate: production, stories, and tests use one resolver and command path;
-promotion, gas-step animation, and gas-used enemy reveal behave as specified;
-**Storybook runs with `StarChess/*` stories.** ✅
-(`pnpm --filter @chess-coach/starchess storybook` → http://localhost:6007/)
-
-### Phase 4: terminal history review — **DONE**
-
-Use a Memento-style immutable history inside the match aggregate.
-
-#### History model
-
-- Seed `settledSnapshots` with the initial position. ✅
-- After each resolve timeline finishes, append exactly one settled
-  `result.next`. ✅ (`TIMELINE_DONE`)
-- Retain a turn record containing `before`, `after`, outcome, and semantic
-  events. The initial UI seeks only settled `after` snapshots, while the event
-  data leaves room for future animated replay without changing the model.
-  ✅ (after-snapshots ship; event-bearing turn records deferred with animated
-  replay / SCFEN history serialization)
-- Keep `liveSnapshot` and `reviewIndex` separate. ✅
-- Derive `displayedSnapshot` from the cursor. Never seek by rewriting the live
-  snapshot or classical `gameStore`. ✅
-- Append only after the animation completes, preventing duplicate End/timeout
-  records and partial positions. ✅
-
-#### Terminal behavior
-
-- Determine game end from the live snapshot/outcome, not the viewed historical
-  snapshot. The controls must remain visible when the user seeks backward. ✅
-- When the live phase becomes `"O"`:
-  - cancel the planning timer; ✅
-  - close targeting/deploy UI; ✅
-  - clear transient combat effects; ✅
-  - make board input read-only; ✅
-  - hide Turn controls and GasDeploy; ✅
-  - replace the top planning chrome with the dual navigation arrows. ✅
-  - observer DualNav vision (full board + dual borders) while scrubbing. ✅
-- Labels are plain review labels such as `Start`, `Turn 2 of 3`, and `Final`.
-  Do not display SCFEN. ✅
-- Back decrements and Forward increments a clamped review cursor. ✅
-- Disable Back at the first snapshot and Forward at the final snapshot. ✅
-- Left/Right keys work only during terminal review. ✅
-- Keyboard handling ignores inputs, textareas, selects, content-editable
-  elements, and modified shortcuts. ✅
-- Preserve accessible `Go back` and `Go forward` labels and visible focus. ✅
-- A terminal SCFEN deep link has one settled snapshot; both arrows still display
-  but are disabled. ✅
-- Refresh persistence, animated replay, and SCFEN history serialization are
-  deferred.
-
-```mermaid
-stateDiagram-v2
-  [*] --> Planning
-  Planning --> Resolving: End or timeout
-  Resolving --> Planning: settled playable snapshot
-  Resolving --> GameOver: settled terminal snapshot
-  GameOver --> Reviewing: Back
-  Reviewing --> Reviewing: Back or Forward
-  Reviewing --> GameOver: Forward to final
+Trunk: CNN or transformer over 8×8
+Heads:
+  - Value: win / draw / loss
+  - Policy: distribution over candidate plans
+           (mask illegal; score Adjutant’s enumerator — do not invent illegal queues)
 ```
 
-#### History tests
+**Inference at play time:**
 
-- Initial snapshot and one snapshot per completed turn are immutable. ✅
-- End and timeout cannot append the same turn twice. ✅
-- Controls do not display before the terminal snapshot settles. ✅
-- Both arrows display after every win or draw. ✅
-- Cursor bounds disable the correct button. ✅
-- Seeking restores placement, lives, mines, siege state, fog, and damaged-king
-  presentation together. ✅ (`displayedSnapshot` + `REVIEW_SEEK` specials/siege)
-- Seeking never restarts timers, animation, deploy effects, or auto-opponent
-  behavior. ✅
-- Board gestures and special controls cannot mutate a terminal match. ✅
-- Left/Right keyboard navigation obeys editable-target guards. ✅
-- A terminal deep link has disabled arrows and no fabricated history. ✅
+1. Generate candidates with the same legality code as today.
+2. Neural policy ranks them; value net breaks ties / guides shallow search.
+3. Fall back to heuristic Adjutant if the model fails or is not loaded (web bundle size / WASM).
 
-Exit gate: a completed match can scrub all settled positions without showing
-SCFEN or mutating the final match. ✅
-(`apps/starchess/src/__tests__/terminalHistory.test.ts`)
+**Where it runs:**
 
-### Phase 5: deploy as a scoped PWA and Worker — **DONE (local)**
+| Target | Notes |
+|---|---|
+| Train offline | Python or Bun worker farm; not in the PWA critical path |
+| Infer in browser | ONNX / TF.js / tiny WASM — only after size budget is known |
+| Infer on host | Optional later for “hard” difficulty |
 
-#### Vite and PWA
+This is AlphaZero-shaped **only if** self-play + MCTS/beam over plans + neural policy/value are wired together. Jumping straight to “add a neural net” without steps 2–4 usually yields a worse Adjutant.
 
-1. Set Vite `base` to `/starchess/`. ✅
-2. Output the route-mirrored artifact to `dist/starchess`. ✅
-3. Add a dedicated StarChess manifest:
-   - `start_url: "/starchess/"`;
-   - `scope: "/starchess/"`;
-   - `display: "standalone"`;
-   - StarChess-specific name, description, colors, and icons. ✅
-4. Register the service worker at `/starchess/sw.js`. ✅
-5. Use StarChess-specific cache names. ✅ (`cacheId: starchess-shell`)
-6. Precache the small application shell, piece art, CSS, scripts, fonts, and
-   icons. ✅
-7. Do not inherit engine model caches, WebLLM caches, worker rules, or the
-   current 8 MiB Stockfish exception. ✅
-8. Verify that the service worker cannot control `/chess/` or `/`. ✅
-   (`navigateFallbackDenylist`)
+---
 
-#### Wrangler and Worker
+## Recommended order of work (when we choose to build it)
 
-Create a dedicated Wrangler application named `starchess`: ✅
+| Phase | Deliverable | Exit gate |
+|---|---|---|
+| **S — Strategy catalog** | Each tactic named + tested; posture table documented | New behaviour = new strategy, not a magic constant |
+| **A — Freeze the heuristic** | Feature list documented; candidate gen complete; vs-human smoke on `/single` | Heuristic still preferred default difficulty |
+| **B — Headless match harness** | Batch runner: map × seed → SCFEN trajectory + minerals + outcome | 1k games / hour on CI machine |
+| **C — Imitation / value fit** | Train scorer on Adjutant plans + outcomes; plug into `adjutantLearned` | ≥ heuristic win-rate vs random; ≤ 5% Elo drop vs frozen Adjutant when imitating |
+| **D — Self-play league** | Checkpoint pool; Elo ladder; store replays | Learner beats Adjutant-v0 at >55% over N games |
+| **E — Policy/value net** | Masked plan head + value; optional shallow search | Ships as “Hard”; Easy remains heuristic |
 
-- assets directory: `dist`;
-- asset binding: `ASSETS`;
-- `run_worker_first = true`;
-- route: `proveo.ca/starchess`;
-- route: `proveo.ca/starchess/*`.
+Non-goals until later: full MCTS at web latency, fog belief nets, multi-agent population training, GPU in Cloudflare Workers.
 
-Worker behavior: ✅ (`apps/starchess/worker.js`)
+---
 
-- Redirect `/starchess` to `/starchess/`.
-- Keep the canonical SCFEN deep-link form
-  `/starchess/?scfen=...`.
-- Preserve the query string during canonicalization.
-- Serve normal assets before applying fallback.
-- Fall back to `/starchess/index.html` only for navigation requests.
-- Return a real 404 for missing JavaScript, CSS, images, manifests, and other
-  assets instead of returning HTML.
-- Apply `no-cache` to HTML, manifest, registration, and service-worker
-  bootstrap files.
-- Keep content-hashed assets immutable/cacheable.
-- Do not add COOP/COEP unless a retained dependency is proven to require
-  `SharedArrayBuffer`; the standalone StarChess rules engine does not.
-- Avoid the current per-request production debug logging.
+## Design constraints (do not violate)
 
-Add root/package scripts for build, test, preview, Wrangler dry-run, and deploy. ✅
-`wrangler deploy` remains an explicit, separately approved publishing action.
+1. **One rules engine** — learning only selects among legal `addScAction` outcomes.
+2. **Heuristic remains** — Easy / demos / tests stay deterministic Adjutant.
+3. **Pure core** — training I/O and model weights live outside `starchess-core` rule purity; core may load a `ScoreFn` interface.
+4. **Replay format first** — settled snapshots + queued plans + economy are the dataset schema before any net architecture bikeshed.
+5. **HITL** — shipping a learned model, training infra, or new difficulty tier needs an explicit product decision; this PLAN does not authorize that work.
 
-#### Compatibility redirect
+---
 
-- replace the embedded `/chess/starchess` route with a minimal external
-  redirect; ✅ (`StarChessRedirect`)
-- preserve `location.search` and `location.hash`; ✅
-- update Chess Coach launch links to point directly to `/starchess/`; ✅
-  (`NerdModePrompt`)
-- retain the redirect for existing bookmarks and shared SCFEN URLs. ✅
+## Short answers
 
-Exit gate: the app installs, reloads offline, updates safely, and owns only the
-`/starchess/` service-worker scope. ✅ (local production build + PWA assets +
-`wrangler deploy --dry-run`; offline install smoke + prod publish remain HITL)
+0. **Strategy algorithms** — named tactics in categories (survive / control / seek / attack / develop / combo); posture only reweights them.  
+1. **Heuristic algorithm** — today’s composer over those strategies; keep forever as baseline.  
+2. **ML algorithm** — learn the evaluation / ranking; keep legality + candidate gen.  
+3. **Plays itself?** — yes: self-play generates experience at scale.  
+4. **Back-propagates replays?** — yes: assign credit from outcomes (and optionally dense rewards), then update the model (gradients or classical ML).  
+5. **Neural net?** — last: policy + value over candidates; only after self-play + replay pipeline exist.
 
-### Phase 6: cut over and remove coupling — **DONE**
-
-1. Add `apps/e2e/Dockerfile` and root `compose.yml` if still missing; document
-   and assert `docker compose build e2e` + `docker compose run --rm e2e`. ✅
-2. Add a dedicated StarChess Playwright target whose base URL and web server
-   point to `apps/starchess`. ✅ (`E2E_TARGET=starchess`)
-3. Change deep-link tests to the canonical
-   `/starchess/?scfen=${encodeURIComponent(scfen)}` form. ✅
-4. Add/keep the promotion-vs-mine e2e, gas-used fog reveal assertion, and
-   gas-step animation coverage in the StarChess suite. ✅
-5. Run standalone and classical UI regression suites, preferably through
-   compose for browsers. ✅ (host `E2E_TARGET=starchess` smoke green;
-   `docker compose build e2e` requires a Docker host — not run in all envs)
-6. Switch product links and the compatibility route. ✅
-7. Remove embedded components, provider seams, global-store fields, stories,
-   and tests only after import searches show no live consumers. ✅
-8. Remove the `apps/ui/src/starchess` tree only after all rules, UI, fixtures,
-   tests, assets, and spec backlinks have an owned destination. ✅
-   (Coach nerd identity lives under `apps/ui/src/features/nerd`)
-9. Inspect the built artifact for stale `/chess/` URLs and forbidden
-   dependencies. ✅ (`check:bundle`)
-
-Exit gate: `apps/starchess` has no source imports from `apps/ui`, while
-`apps/ui` contains only the launch integration and compatibility redirect;
-Playwright is runnable via Docker and e2e via compose. ✅
-
-## Living-spec migration
-
-Specifications must move according to ownership, not as one mechanical
-directory rename.
-
-### Application specs
-
-Create `_spec/apps/starchess/` with:
-
-- `index.puml`: standalone app and dependency boundary;
-- `components.puml`: application store, board, HUD, timeline, adapters, and
-  stories;
-- `starchess-mode.puml`: product rules and shipped/pending UX;
-- `demos.puml`: scenario harness and fixtures;
-- `deployment.puml`: Vite artifact, PWA scope, Worker routes, fallback, and
-  legacy redirect;
-- `review-history.puml`: terminal transition, settled history, cursor, and
-  read-only board.
-- Product notes in `starchess-mode.puml` / timeline specs for promotion
-  walk-off+deploy, gas-used enemy reveal, and gas-step move animation.
-
-### Core specs
-
-Create `_spec/packages/starchess-core/` with:
-
-- `index.puml`;
-- `scfen-wire.puml`;
-- `scfen-queue.puml`;
-- `resolve.puml`;
-- `turn-queue-sequence.puml`;
-- `sc-moves.puml`.
-
-The app-side board-input/provider flow belongs in the app component spec. The
-core move-generation rules belong in the package spec. The target diagrams must
-not preserve `useChessBoard` as the integration seam.
-
-Rewrite `resolve.puml` so promotion is an explicit phase after classical
-move/mine settlement and before F specials. Document that a mine death on the
-promoting pawn cancels walk-off and deploy.
-
-### Spec corrections
-
-- Correct stale `src/types/starchess.ts` references.
-- Correct test and Storybook paths.
-- Distinguish the public `/starchess/` route from the old
-  `/chess/starchess` route.
-- Remove the stale claim that board-driven king adjacency is unavailable.
-- Move the pending completed-history serializer out of the shipped resolve
-  activity and mark it deferred.
-- State clearly that minerals and completed history are not serialized in
-  SCFEN.
-- Clarify which validation is always enforced and which move-shape checks are
-  optional.
-
-### Top-level spec updates
-
-Update:
-
-- `_spec/architecture.puml`;
-- `_spec/components.puml`;
-- `_spec/summary.md`;
-- `_spec/distribution.md`;
-- affected `_spec/apps/ui` component, entity, state-machine, and responsive
-  specs;
-- `CLAUDE.md` spec index and key architecture notes.
-
-For every represented source file:
-
-- place one top-level `// SPEC:` comment;
-- comma-separate multiple diagrams on that line;
-- move the backlink with the behavior;
-- remove stale `_spec/apps/ui/starchess` links;
-- ensure every new `.puml` has at least one source backlink.
-
-Validate all PlantUML after each phase rather than postponing spec maintenance
-until the end.
-
-## Verification gates
-
-### Core
-
-- Typecheck and lint.
-- Unit tests for all commands and rules.
-- Golden parse/format tests.
-- Differential resolve tests against the migration baseline.
-- Property tests for parse/format stability, queue ordering, and state
-  invariants where practical.
-- Static boundary check for SolidJS, DOM, browser, CSS, and app imports.
-
-### Standalone app
-
-- Typecheck and lint.
-- Reducer, selector, adapter, and component tests.
-- Deterministic timeline tests with fake ports.
-- Storybook build.
-- Production build.
-- Bundle inspection for `apps/ui`, Stockfish, WebLLM, coach services, and
-  shared UI stores.
-- Visual coverage for desktop, mobile, fog, deploy, attack, death, mine, siege,
-  king damage, outcome, and terminal review.
-
-### Main UI
-
-- Existing typecheck, lint, unit tests, and Storybook.
-- Classical coach, analysis, review, and LAN E2E after removal of the
-  StarChess move-provider seam.
-- Launch-link and compatibility-redirect tests.
-
-### StarChess E2E
-
-- Queue add/remove and gas refunds.
-- Every special.
-- B/C/F ordering.
-- Fog collisions and path reveal.
-- Mines and siege.
-- King duel, win, and draw.
-- Promotion walk-off + deploy on a clean last-rank move.
-- Pawn one square from promotion into an enemy spider mine: mine resolves,
-  pawn dies, promoted unit never deploys.
-- Enemy viewer can see green `data-special-used` on a gas-spent fogged unit.
-- Gas-stepped pawn leaves `from` before occupying `to` (no teleport).
-- Terminal controls and read-only behavior.
-- Complete backward/forward history traversal.
-- Keyboard navigation.
-- Terminal deep-link behavior.
-
-### Docker / Compose e2e
-
-- `apps/e2e/Dockerfile` exists and builds.
-- Root compose file defines an `e2e` service.
-- `docker compose build e2e` succeeds.
-- `docker compose run --rm e2e` runs Playwright without host browser installs.
-- Compose docs in `apps/e2e/SETUP.md` match the actual commands.
-
-### Worker and PWA dry run
-
-- `/starchess` redirects to `/starchess/`.
-- Query data survives canonicalization.
-- `/starchess/` returns the shell.
-- A valid deep navigation request returns the shell.
-- A missing asset returns 404, not HTML.
-- Assets have correct MIME types.
-- The manifest and generated URLs stay under `/starchess/`.
-- Offline reload works after installation.
-- A new build updates without leaving a stale shell.
-- The StarChess service worker does not control `/chess/`.
-- Wrangler dry-run succeeds before any real deployment is requested.
-
-### Specs
-
-Run PlantUML validation over both new directories and search for:
-
-- stale `_spec/apps/ui/starchess` references;
-- stale `apps/ui/src/starchess` ownership claims;
-- unreferenced new diagrams;
-- source files with multiple separate `SPEC:` comments;
-- references to nonexistent type or test paths.
-
-## Acceptance criteria
-
-The migration is complete only when:
-
-- `apps/starchess` has no imports from `apps/ui`.
-- The StarChess production bundle contains no coach, Stockfish, WebLLM, travel,
-  or classical review payload.
-- `packages/starchess-core` imports no SolidJS, DOM, browser, CSS, animation
-  timing, or app modules.
-- Golden SCFEN and resolve cases remain compatible.
-- Production, tests, Storybook, and demos invoke the same rules and commands.
-- The app is installable and works offline at `/starchess/`.
-- `/chess/starchess` redirects without dropping SCFEN query data.
-- Completed games always show dual arrows.
-- Terminal review can seek every settled position without mutating the match or
-  displaying SCFEN.
-- Successful promotions animate pawn move → walk off board → promoted-unit
-  deploy.
-- A promoting pawn killed by an enemy spider mine never deploys a promoted
-  unit.
-- Opponents can see gas-used units via the green highlight even under fog.
-- Gas-moved pawns animate instead of teleporting.
-- Playwright runs via `apps/e2e/Dockerfile`; the suite runs via Docker Compose.
-- Classical Chess Coach behavior still passes its regression suite.
-- Living specs and source backlinks accurately describe final ownership.
-- A successful local build or dry run is not reported as a Cloudflare
-  deployment.
-
-## Risks and rollback checkpoints
-
-- Preserve a passing compatibility facade until core differential tests pass.
-- Preserve embedded `NerdScreen` until standalone E2E and visual parity pass.
-- Do not claim full replay persistence: minerals and completed history are not
-  currently serialized in SCFEN.
-- Treat animation parity, fog projection, B+C/F ordering, promotion/mine
-  ordering, gas-step timeline events, terminal absorbing behavior, PWA stale
-  caches, and route/query canonicalization as high-risk areas.
-- Treat Docker/Playwright image drift (`@playwright/test` vs image tag) as a
-  recurring maintenance risk; pin versions together.
-- Make each consumer cutover independently reversible.
-- If a phase fails, revert that phase's cutover rather than rewriting the
-  current uncommitted work.
-- Do not use destructive Git commands as a migration shortcut.
-- Do not deploy, commit, push, or remove compatibility behavior without
-  explicit approval at the relevant phase.
+The Adjutant does not “become” a neural net in one jump. It becomes a **search + legality shell** whose brain upgrades from named strategies → weighted heuristic → fitted weights → self-play-trained net.

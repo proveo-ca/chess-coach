@@ -28,7 +28,7 @@ export const GameplayLayout: Story = {
       </Screen.Header>
       <Screen.BoardArea>
         <Screen.BoardColumn>
-          <div style={{ ...panelStyle, "min-height": "360px" }}>Board column</div>
+          <div style={{ ...panelStyle, height: "100%", width: "100%" }}>Board column</div>
         </Screen.BoardColumn>
         <aside style={panelStyle}>Sidebar</aside>
       </Screen.BoardArea>
@@ -48,7 +48,7 @@ export const AnalysisLayout: Story = {
       </Screen.SidebarInset>
       <Screen.BoardArea>
         <Screen.BoardColumn>
-          <div style={{ ...panelStyle, "min-height": "360px" }}>Analysis board</div>
+          <div style={{ ...panelStyle, height: "100%", width: "100%" }}>Analysis board</div>
         </Screen.BoardColumn>
         <aside style={panelStyle}>Engine controls</aside>
       </Screen.BoardArea>

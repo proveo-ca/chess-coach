@@ -15,6 +15,9 @@ import { CoachAvatar } from "~/components/atoms/CoachAvatar";
 import { Credits } from "~/components/atoms/Credits";
 import { MenuAnchor } from "~/components/atoms/MenuAnchor";
 import { NetworkSignal } from "~/components/atoms/NetworkSignal";
+import {
+  NewGamePanel,
+} from "~/components/features/NewGamePanel";
 import { ChatBubble } from "~/components/primitives/ChatBubble";
 import { MenuTitle } from "~/components/primitives/MenuTitle";
 import { DebrisPawnPlayground } from "~/screens/menuSky/DebrisPawnPlayground";
@@ -22,6 +25,7 @@ import { MenuBlackHole } from "~/screens/menuSky/MenuBlackHole";
 import { MenuMoon } from "~/screens/menuSky/MenuMoon";
 import { MenuPlanet, type MenuWorldId } from "~/screens/menuSky/MenuPlanet";
 import styles from "~/screens/StarChessMenuScreen.module.css";
+import type { NewGameOptions } from "~/types/newGame";
 
 export type StarChessMenuAction =
   | "single-player"
@@ -34,6 +38,8 @@ export type StarChessMenuAction =
 export type StarChessMenuScreenProps = {
   /** Optional handler when an enabled item is activated (story / shell). */
   onAction?: (action: StarChessMenuAction) => void;
+  /** Fired when Single Player setup START is confirmed. */
+  onStartGame?: (opts: NewGameOptions) => void;
 };
 
 /** Title-only control (Tutorial / Credits) — same chrome as MenuAnchor, no visual. */
@@ -77,6 +83,7 @@ const MenuTextItem: Component<{
 export const StarChessMenuScreen: Component<StarChessMenuScreenProps> = (props) => {
   const [planetWorld, setPlanetWorld] = createSignal<MenuWorldId>("eclipse");
   const [creditsOpen, setCreditsOpen] = createSignal(false);
+  const [setupOpen, setSetupOpen] = createSignal(false);
 
   return (
     <div
@@ -112,7 +119,10 @@ export const StarChessMenuScreen: Component<StarChessMenuScreenProps> = (props) 
           class={styles.posSingle}
           action="single-player"
           label="Single Player"
-          onActivate={() => props.onAction?.("single-player")}
+          onActivate={() => {
+            props.onAction?.("single-player");
+            setSetupOpen(true);
+          }}
         >
           <DebrisPawnPlayground embedded />
         </MenuAnchor>
@@ -170,6 +180,14 @@ export const StarChessMenuScreen: Component<StarChessMenuScreenProps> = (props) 
       </div>
 
       <Credits open={creditsOpen()} onClose={() => setCreditsOpen(false)} />
+      <NewGamePanel
+        open={setupOpen()}
+        onClose={() => setSetupOpen(false)}
+        onStart={(opts) => {
+          setSetupOpen(false);
+          props.onStartGame?.(opts);
+        }}
+      />
     </div>
   );
 };

@@ -233,9 +233,10 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
       }}
       style={{
         position: "relative",
-        display: "inline-block",
-        width: "max-content",
-        "max-width": "100%",
+        display: "block",
+        width: "100%",
+        height: "100%",
+        "box-sizing": "border-box",
       }}
     >
       <ObserverStarChessBoard

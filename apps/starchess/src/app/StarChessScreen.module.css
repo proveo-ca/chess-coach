@@ -1,38 +1,109 @@
+/**
+ * StarChess play layout — Screen 3-row grid (top · board · bottom).
+ * Spacing: Proposal B Command Column (16px macro / 8px micro). Middle track
+ * stays --board-size so Live↔Observer never tilts the board.
+ */
+
 .topPane {
+  --hud-gap: 16px;
+  --hud-gap-micro: 8px;
+
   width: 100%;
-  max-width: var(--board-size);
+  height: 100%;
+  min-height: var(--avatar-height);
   box-sizing: border-box;
-  min-height: 6.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  /* Flush ResourceBar to the board inside the Coach-sized top track. */
+  justify-content: flex-end;
+  gap: var(--hud-gap-micro);
+  padding: 0 0 0.25rem;
+  overflow: visible;
 }
 
 .topChrome {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: 6px;
+  gap: var(--hud-gap-micro);
   width: 100%;
-  max-width: var(--board-size);
-  /* ResourceBar + TurnBar (controls + queue). Floor matches ObserverReviewChrome
-     so live ↔ DualNav does not nudge the board. */
-  min-height: 6.5rem;
-  margin-bottom: 4px;
+}
+
+.topPane :global([data-testid="turn-bar"]) {
+  width: 100%;
+  min-width: 0;
   box-sizing: border-box;
 }
 
-.topChrome :global([data-testid="resource-bar"]) {
+.topPane :global([data-testid="resource-bar"]) {
+  width: fit-content;
+  max-width: 100%;
   min-width: 0;
 }
 
-.topChrome :global([data-testid="turn-bar"]) {
+.dualResources {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 8px;
   width: 100%;
-  min-width: 0;
 }
 
+/* Middle — fills Screen.BoardColumn locked footprint. */
 .boardHost {
   position: relative;
-  display: block;
   width: 100%;
+  height: 100%;
+  box-sizing: border-box;
   overflow: visible;
+  flex-shrink: 0;
+}
+
+/* Board side column — one chrome panel: turn rail + Home/Flip tools. */
+.sideRail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  width: var(--sidebar-width);
+  min-width: 5.5rem;
+  max-height: var(--board-size);
+  padding: 10px 8px;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: #0e151c;
+  border: 1px solid #3a4550;
+  border-radius: 0.35rem;
+  box-shadow: 0 4px 16px rgb(0 0 0 / 0.45);
+}
+
+/* Nested Sidebar drops its own frame — rail owns the chrome. */
+.sideRail :global([data-testid="starchess-sidebar"]) {
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.sideRailDivider {
+  width: 60%;
+  margin: 2px 0;
+  border: 0;
+  border-top: 1px solid #3a4550;
+  flex-shrink: 0;
+}
+
+@media (max-width: 719px) {
+  .sideRail {
+    display: none;
+  }
 }
 
 .boardOverlay {
@@ -55,18 +126,44 @@
   background: rgba(59, 125, 216, 0.22);
 }
 
-.gasFooter {
+/* Bottom — gas + status. */
+.footerStack {
+  --hud-gap: 16px;
+  --hud-gap-micro: 8px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--hud-gap-micro);
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding-block: var(--hud-gap-micro);
+}
+
+.gasDock {
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
-  padding: 0.5rem 0.75rem;
+  min-height: 3.75rem; /* GasDeploy --rack-size 60px */
+}
+
+.statusLine {
+  width: 100%;
+  text-align: center;
   box-sizing: border-box;
 }
 
 .placeholder {
-  margin: 0.2rem 0;
-  padding-top: 0.5rem;
-  color: var(--text-color);
-  opacity: 0.75;
+  margin: 0;
+  padding: 0;
+  color: color-mix(in srgb, var(--text-color) 88%, #fff);
+  opacity: 0.9;
+  font-size: 0.85rem;
+}
+
+:global([data-testid="starchess-play"] [data-testid="screen-root"]) {
+  background: transparent;
 }

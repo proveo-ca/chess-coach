@@ -120,3 +120,29 @@
   height: 100%;
   width: auto;
 }
+
+/* Narrow side rail — stack chevrons so DualNav fits sidebar width. */
+.vertical {
+  width: 100%;
+}
+
+.vertical .dual-nav {
+  flex-direction: column;
+  width: 100%;
+}
+
+.vertical .half {
+  width: 100%;
+  min-width: 0;
+  height: 2.25rem;
+  min-height: 2.25rem;
+}
+
+.vertical .left {
+  border-right: none;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.vertical .inverted .left {
+  border-bottom-color: rgba(var(--shadow-rgb), 0.2);
+}

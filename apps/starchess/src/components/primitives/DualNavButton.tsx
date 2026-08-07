@@ -18,11 +18,19 @@ interface DualNavButtonProps {
   /** Lay arrows + "Back to Live" out in one row (same height) instead of a
    *  stack — keeps the mobile control bar from growing when replay starts. */
   inline?: boolean;
+  /** Stack back/forward for a narrow side rail. */
+  vertical?: boolean;
 }
 
 export const DualNavButton: Component<DualNavButtonProps> = (props) => {
   return (
-    <div class={clsx(styles.wrapper, props.inline && styles.inline)}>
+    <div
+      class={clsx(
+        styles.wrapper,
+        props.inline && styles.inline,
+        props.vertical && styles.vertical,
+      )}
+    >
       <Show when={props.label}>
         <span class={styles.label}>{props.label}</span>
       </Show>

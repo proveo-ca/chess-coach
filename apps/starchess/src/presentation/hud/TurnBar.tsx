@@ -25,7 +25,6 @@ import { Button } from "~/components/primitives/Button";
 import { Chip } from "~/components/primitives/Chip";
 import { CountdownRing } from "~/components/primitives/CountdownRing";
 import { TeamFrame } from "~/components/primitives/TeamFrame";
-import { TEAM_PRIMARY } from "~/presentation/animations/teamColors";
 import { turnTimeoutMsForTurn } from "~/presentation/constants";
 import { liveMatchPhase, reviewPhaseLabel } from "~/presentation/hud/liveMatchPhase";
 import { reviewPhaseChipTone } from "~/presentation/hud/reviewPhases";
@@ -161,7 +160,7 @@ export const TurnBar: Component<TurnBarProps> = (props) => {
   return (
     <TeamFrame
       class={styles.bar}
-      teamColor={TEAM_PRIMARY[viewerColor(store)]}
+      teamColor="#000"
       data-testid="turn-bar"
       data-team={viewerColor(store)}
       data-phase={phase()}
@@ -171,7 +170,7 @@ export const TurnBar: Component<TurnBarProps> = (props) => {
       <div class={styles.controls}>
         <div class={styles.chips}>
           <Chip tone="turn" data-testid="live-turn-chip">
-            Turn {turnNumber()}
+            Turn - {turnNumber()}
           </Chip>
           <Chip tone={reviewPhaseChipTone(phase())} data-testid="live-phase-chip">
             {reviewPhaseLabel(phase())}
@@ -185,7 +184,7 @@ export const TurnBar: Component<TurnBarProps> = (props) => {
             props.onEnd?.();
           }}
         >
-          End
+          End Turn
         </Button>
         <CountdownRing
           progress={progress()}

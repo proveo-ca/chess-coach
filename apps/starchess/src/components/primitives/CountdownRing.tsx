@@ -19,6 +19,17 @@ const C = 2 * Math.PI * R;
 export const CountdownRing = (props: CountdownRingProps) => {
   const clamped = () => Math.min(1, Math.max(0, props.progress));
   const dashOffset = () => C * (1 - clamped());
+  const seconds = () => {
+    const raw = props["data-seconds"];
+    if (raw === undefined || raw === null || raw === "") return null;
+    const n = typeof raw === "number" ? raw : Number(raw);
+    return Number.isFinite(n) ? n : null;
+  };
+  /** Pulse the digit when ≤3s remain. */
+  const urgent = () => {
+    const s = seconds();
+    return s != null && s <= 3 && s >= 0;
+  };
 
   return (
     <div
@@ -28,6 +39,7 @@ export const CountdownRing = (props: CountdownRingProps) => {
       aria-label={props["aria-label"]}
       data-testid={props["data-testid"]}
       data-seconds={props["data-seconds"]}
+      data-urgent={urgent() ? "true" : undefined}
     >
       <svg class={styles.ring} viewBox="0 0 44 44" aria-hidden="true">
         <circle class={styles.track} cx="22" cy="22" r={R} />
@@ -41,7 +53,9 @@ export const CountdownRing = (props: CountdownRingProps) => {
           transform="rotate(-90 22 22)"
         />
       </svg>
-      <span class={styles.label}>{props.children}</span>
+      <span classList={{ [styles.label]: true, [styles.labelUrgent]: urgent() }}>
+        {props.children}
+      </span>
     </div>
   );
 };

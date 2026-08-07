@@ -82,6 +82,7 @@ export const DeployBoardDemo: Component<{ piece: DeployPiece }> = (props) => {
 
   return (
     <Screen>
+      <Screen.SidebarInset />
       <Screen.BoardArea>
         <Screen.BoardColumn>
           <div class={styles.host}>

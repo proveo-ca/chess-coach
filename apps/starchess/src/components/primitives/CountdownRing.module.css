@@ -36,4 +36,28 @@
   font-variant-numeric: tabular-nums;
   color: var(--text-color, #1a1a1a);
   pointer-events: none;
+  transform: scale(1);
+  transform-origin: center;
+}
+
+/* ≤3s: alternate 1× ↔ 1.5× every 300ms (600ms full cycle). */
+.labelUrgent {
+  animation: countdownPulse 600ms ease-in-out infinite;
+}
+
+@keyframes countdownPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.5);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .labelUrgent {
+    animation: none;
+    transform: scale(1);
+  }
 }

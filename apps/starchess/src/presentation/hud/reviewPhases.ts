@@ -9,16 +9,16 @@ export type { ReviewTurnPhase };
 export const reviewPhaseLabel = (phase: ReviewTurnPhase): string => {
   switch (phase) {
     case "start":
-      return "Start";
+      return "Phase - Start";
     case "check":
-      return "Check";
+      return "Phase - Check";
     case "intent":
-      return "Intent";
+      return "Phase - Intent";
     case "resolve":
-      return "Resolve";
+      return "Phase - Resolve";
     case "final":
       // Game over / last settled ply — no active phase.
-      return "-";
+      return "Phase - -";
   }
 };
 

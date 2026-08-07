@@ -86,6 +86,20 @@ export const VermeerLive: Story = {
   render: () => <VermeerLiveScreen />,
 };
 
+export const VermeerLiveTurnSidebar: Story = {
+  name: "Vermeer (live) · turn sidebar",
+  parameters: {
+    layout: "fullscreen",
+    docs: {
+      description: {
+        story:
+          "Experimental variation: TurnBarSidebar (vertical) sits in the board side rail; ResourceBar stays on top. Horizontal TurnBar is unchanged and unused here.",
+      },
+    },
+  },
+  render: () => <VermeerLiveScreen turnChrome="sidebar" />,
+};
+
 export const Promotion: Story = {
   name: "Promotion",
   render: () => <FogEdgeDemo scenario={PROMOTION_SCENARIO} />,

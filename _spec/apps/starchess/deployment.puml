@@ -31,6 +31,11 @@ C --> R
 R ..> W : external navigate
 N ..> W : location.assign
 
+note bottom of V
+  SPA routes (Router base ``/starchess``):
+  ``/`` menu · ``/single?map=&team=`` live + Adjutant (Black).
+end note
+
 note bottom of N
   Local dual-serve: ``pnpm dev`` (nx ui + starchess).
   Coach vite ``:5173`` proxies ``/starchess`` → starchess ``:5175``.
