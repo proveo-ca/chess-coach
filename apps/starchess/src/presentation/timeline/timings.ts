@@ -1,7 +1,7 @@
 /**
  * Presentation timings — injected scheduler advances these in tests.
- * Re-export from constants so FRAG_FLIGHT_MS / ATTACK_MS stay one source of truth
- * (kill→death meeting point = FRAG_FLIGHT_MS = ATTACK_MS / 4 = 250ms).
+ * Re-export from constants so FRAG_FLIGHT_MS / ATTACK_MS stay one source of truth.
+ * Per-weapon kill→death meeting point: {@link impactMsFor} (default ≈ FRAG_FLIGHT_MS).
  */
 export {
   ATTACK_MS,
@@ -13,6 +13,8 @@ export {
   GAS_DROP_MS,
   TURN_TIMEOUT_MS,
 } from "~/presentation/constants";
+
+export { IMPACT_FRAC, impactMsFor, fragFlightMsCss } from "~/presentation/animations/impactTiming";
 
 import { MOVE_SQUARE_MS, STIM_MOVE_SQUARE_MS } from "~/presentation/constants";
 

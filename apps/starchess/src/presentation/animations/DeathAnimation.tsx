@@ -1,4 +1,4 @@
-import { For, type Component, type JSX } from "solid-js";
+import { For, createMemo, type Component, type JSX } from "solid-js";
 import type { Square } from "chess.js";
 
 import { DEATH_MS, scatterSeedFromId } from "~/presentation/animations/deathAnim";
@@ -55,6 +55,7 @@ export type DeathAnimationProps = {
 /**
  * StarChess death VFX layer — every cue finishes in `DEATH_MS` (`ATTACK_MS / 2`).
  * Pawn: outward bubble + shred; king: rubble collapse; others: boom + shards.
+ * Rows key by cue.id so remapped cue objects do not remount / restart CSS.
  */
 export const DeathAnimation: Component<DeathAnimationProps> = (props) => {
   const used = (): ReadonlySet<Square> => {
@@ -62,6 +63,13 @@ export const DeathAnimation: Component<DeathAnimationProps> = (props) => {
     if (!g) return NO_SPECIAL_USED;
     return g instanceof Set ? g : new Set(g);
   };
+
+  const ids = createMemo(() => props.cues.map((c) => c.id));
+  const byId = createMemo(() => {
+    const m = new Map<string, DeathCue>();
+    for (const c of props.cues) m.set(c.id, c);
+    return m;
+  });
 
   return (
   <div
@@ -83,31 +91,32 @@ export const DeathAnimation: Component<DeathAnimationProps> = (props) => {
       "--death-ms": `${DEATH_MS}ms`,
     }}
   >
-    <For each={props.cues}>
-      {(cue) => {
-        const mineDeath = !!cue.mine;
-        const pawnDeath = !mineDeath && cue.piece === "p";
-        const kingDeath = !mineDeath && cue.piece === "k";
-        const seed = scatterSeedFromId(cue.id);
-        const gas = () => used().has(cue.at);
+    <For each={ids()}>
+      {(id) => {
+        const cue = () => byId().get(id)!;
+        const mineDeath = () => !!cue().mine;
+        const pawnDeath = () => !mineDeath() && cue().piece === "p";
+        const kingDeath = () => !mineDeath() && cue().piece === "k";
+        const seed = () => scatterSeedFromId(id);
+        const gas = () => used().has(cue().at);
         return (
           <div
             class={styles.originSlot}
             classList={{
               [styles.dying]: true,
-              [styles.dyingPawn]: pawnDeath,
-              [styles.dyingDrama]: mineDeath || (!pawnDeath && !kingDeath),
-              [styles.dyingKing]: kingDeath,
+              [styles.dyingPawn]: pawnDeath(),
+              [styles.dyingDrama]: mineDeath() || (!pawnDeath() && !kingDeath()),
+              [styles.dyingKing]: kingDeath(),
             }}
-            style={squareBoxStyle(cue.at, props.boardWidth, props.boardHeight)}
-            data-square={cue.at}
+            style={squareBoxStyle(cue().at, props.boardWidth, props.boardHeight)}
+            data-square={cue().at}
             data-death-phase="dying"
-            data-death-mine={mineDeath ? "true" : undefined}
+            data-death-mine={mineDeath() ? "true" : undefined}
             data-special-used={gas() ? "true" : undefined}
-            data-scatter-seed={String(seed)}
+            data-scatter-seed={String(seed())}
           >
             <div class={styles.pieceFace} classList={{ [aura.specialUsed]: gas() }}>
-              {!mineDeath && deathNode(cue.piece, cue.color, seed, cue)}
+              {!mineDeath() && deathNode(cue().piece, cue().color, seed(), cue())}
               <div class={styles.boomFlash} aria-hidden="true" />
               <div class={styles.boomRing} aria-hidden="true" />
             </div>

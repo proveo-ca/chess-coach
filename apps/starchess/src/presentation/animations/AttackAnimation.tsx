@@ -1,4 +1,4 @@
-import { For, Show, type Component, type JSX } from "solid-js";
+import { For, Show, createMemo, type Component, type JSX } from "solid-js";
 import type { Square } from "chess.js";
 
 import {
@@ -21,6 +21,7 @@ import {
   charonImpactStyle,
   charonVolleyStyle,
 } from "~/presentation/animations/bishopCharon";
+import { fragFlightMsCss } from "~/presentation/animations/impactTiming";
 import {
   aimPoseFor,
   aimTransformCss,
@@ -195,7 +196,6 @@ const laserStyle = (
   const { w: cell } = cellSize({ width: boardWidth, height: boardHeight });
   const vec = vecBetween(cue.from, cue.to);
   const dist = cell * Math.hypot(vec.df, vec.dr);
-  // Muzzle sits on local +x after InlineQueen’s bow normalize; map viewBox → aimWrap.
   const facePx = cell * QUEEN_AIM_WRAP_SCALE * QUEEN_PIECE_FACE_SCALE;
   const muzzleFromCenter = ((QUEEN_LASER_MUZZLE_X - 22.5) / 45) * facePx;
   const span = Math.max(6, dist - muzzleFromCenter);
@@ -228,10 +228,6 @@ export type AttackAnimationProps = {
   specialUsedSquares?: ReadonlySet<Square> | readonly Square[];
   boardWidth: number;
   boardHeight: number;
-  /**
-   * When set, positions the overlay absolutely relative to a host wrapper
-   * (Storybook demos). Omit when nesting inside the ChessBoard grid (inset 0).
-   */
   box?: { top: number; left: number };
 };
 
@@ -249,6 +245,13 @@ export const AttackAnimation: Component<AttackAnimationProps> = (props) => {
   const hullUsed = (cue: AttackCue, anim: string) =>
     anim === BISHOP_CHARON || used().has(cue.from);
   const isCharon = (anim: string) => anim === BISHOP_CHARON;
+
+  const ids = createMemo(() => props.cues.map((c) => c.id));
+  const byId = createMemo(() => {
+    const m = new Map<string, AttackCue>();
+    for (const c of props.cues) m.set(c.id, c);
+    return m;
+  });
 
   return (
     <div
@@ -271,25 +274,25 @@ export const AttackAnimation: Component<AttackAnimationProps> = (props) => {
         "--frag-flight-ms": `${FRAG_FLIGHT_MS}ms`,
       }}
     >
-      <For each={props.cues}>
-        {(cue) => {
-          // Keyed by cue object identity from the combat bus / timeline —
-          // do not rebuild cue objects mid-attack or CSS anims restart.
-          const anim = cue.anim ?? ANIM_BY_PIECE[cue.piece];
-          const isDying = () => dying(cue.id);
+      <For each={ids()}>
+        {(id) => {
+          const cue = () => byId().get(id)!;
+          // Keyed by cue.id — keep hull CSS timelines across cue-object remap.
+          const anim = () => cue().anim ?? ANIM_BY_PIECE[cue().piece];
+          const isDying = () => dying(id);
           return (
             <>
               <div
                 class={styles.targetSlot}
-                style={squareBoxStyle(cue.to, props.boardWidth, props.boardHeight)}
-                data-square={cue.to}
+                style={squareBoxStyle(cue().to, props.boardWidth, props.boardHeight)}
+                data-square={cue().to}
               />
 
               {/* HE impact is siege-only — tank mode uses king-style muzzle flashes. */}
-              <Show when={cue.piece === "r" && (cue.rookMode ?? rookModeAt(cue.from)) === "siege"}>
+              <Show when={cue().piece === "r" && (cue().rookMode ?? rookModeAt(cue().from)) === "siege"}>
                 <BoardFx
                   class={styles.rookImpact}
-                  style={rookImpactStyle(cue, props.boardWidth, props.boardHeight)!}
+                  style={rookImpactStyle(cue(), props.boardWidth, props.boardHeight)!}
                 >
                   <div class={styles.rookImpactSmoke} />
                   <div class={styles.rookImpactFire} />
@@ -299,10 +302,10 @@ export const AttackAnimation: Component<AttackAnimationProps> = (props) => {
                 </BoardFx>
               </Show>
 
-              <Show when={cue.piece === "q"}>
+              <Show when={cue().piece === "q"}>
                 <BoardFx
                   class={styles.laserStar}
-                  style={laserStarStyle(cue, props.boardWidth, props.boardHeight)!}
+                  style={laserStarStyle(cue(), props.boardWidth, props.boardHeight)!}
                 >
                   <div class={styles.laserStarRays} />
                   <div class={styles.laserStarRaysDiag} />
@@ -310,10 +313,10 @@ export const AttackAnimation: Component<AttackAnimationProps> = (props) => {
                 </BoardFx>
               </Show>
 
-              <Show when={anim === BISHOP_CHARON}>
+              <Show when={anim() === BISHOP_CHARON}>
                 <BoardFx
                   class={styles.charonVolley}
-                  style={charonVolleyStyle(cue, props.boardWidth, props.boardHeight)}
+                  style={charonVolleyStyle(cue(), props.boardWidth, props.boardHeight)}
                 >
                   <div class={styles.charonMissile} data-charon-missile="a">
                     <div class={`${styles.charonCurve} ${styles.charonCurveA}`}>
@@ -328,7 +331,7 @@ export const AttackAnimation: Component<AttackAnimationProps> = (props) => {
                 </BoardFx>
                 <BoardFx
                   class={styles.charonImpact}
-                  style={charonImpactStyle(cue, props.boardWidth, props.boardHeight)}
+                  style={charonImpactStyle(cue(), props.boardWidth, props.boardHeight)}
                 >
                   <div class={styles.charonImpactCore} />
                 </BoardFx>
@@ -342,29 +345,31 @@ export const AttackAnimation: Component<AttackAnimationProps> = (props) => {
               <Show when={!isDying()}>
                 <div
                   class={styles.originSlot}
-                  classList={{ [styles[`anim-${anim}`]]: true }}
+                  classList={{ [styles[`anim-${anim()}`]]: true }}
                   style={{
-                    ...squareBoxStyle(cue.from, props.boardWidth, props.boardHeight),
-                    ...(anim === BISHOP_CHARON
+                    ...squareBoxStyle(cue().from, props.boardWidth, props.boardHeight),
+                    // Per-weapon impact; board overlay keeps default FRAG_FLIGHT_MS.
+                    "--frag-flight-ms": fragFlightMsCss(anim()),
+                    ...(anim() === BISHOP_CHARON
                       ? { "--attack-ms": `${FRAG_FLIGHT_MS}ms` }
                       : {}),
                   }}
-                  data-square={cue.from}
-                  data-attack-anim={anim}
-                  data-special-used={hullUsed(cue, anim) ? "true" : undefined}
+                  data-square={cue().from}
+                  data-attack-anim={anim()}
+                  data-special-used={hullUsed(cue(), anim()) ? "true" : undefined}
                   data-rook-mode={
-                    cue.piece === "r" ? (cue.rookMode ?? rookModeAt(cue.from)) : undefined
+                    cue().piece === "r" ? (cue().rookMode ?? rookModeAt(cue().from)) : undefined
                   }
                 >
-                  <div class={styles.aimWrap} style={queenAimWrapStyle(cue)}>
-                    {attackNode(cue, {
-                      specialUsed: hullUsed(cue, anim),
-                      charon: isCharon(anim),
+                  <div class={styles.aimWrap} style={queenAimWrapStyle(cue())}>
+                    {attackNode(cue(), {
+                      specialUsed: hullUsed(cue(), anim()),
+                      charon: isCharon(anim()),
                     })}
-                    <Show when={cue.piece === "q"}>
+                    <Show when={cue().piece === "q"}>
                       <div
                         class={styles.laserPulse}
-                        style={laserStyle(cue, props.boardWidth, props.boardHeight)!}
+                        style={laserStyle(cue(), props.boardWidth, props.boardHeight)!}
                         aria-hidden="true"
                       />
                     </Show>
@@ -372,10 +377,10 @@ export const AttackAnimation: Component<AttackAnimationProps> = (props) => {
                 </div>
               </Show>
 
-              <Show when={cue.piece === "n"}>
+              <Show when={cue().piece === "n"}>
                 <div
                   class={styles.fragL}
-                  style={fragLStyle(cue, props.boardWidth, props.boardHeight) ?? undefined}
+                  style={fragLStyle(cue(), props.boardWidth, props.boardHeight) ?? undefined}
                   aria-hidden="true"
                 >
                   <div class={styles.fragCylinder} />

@@ -137,8 +137,8 @@ type OverlayBox = { top: number; left: number; w: number; h: number };
 
 export const AnimationStage: Component<AnimationStageProps> = (props) => {
   let host: HTMLDivElement | undefined;
-  /** Content-box of `[data-board-grid]` relative to host — matches UI combat root. */
   const [box, setBox] = createSignal<OverlayBox>({ top: 0, left: 0, w: 480, h: 480 });
+  const [measured, setMeasured] = createSignal(false);
 
   const snap = (): ScFenSnapshot => {
     if (props.snapshot) {
@@ -154,8 +154,7 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
     if (!host) return;
     const grid = findBoardGrid(host);
     if (!grid) return;
-    // clientWidth/Height = content box (inside 4px border). getBoundingClientRect
-    // includes the border and would stretch every squareBoxStyle slot.
+
     const w = grid.clientWidth;
     const h = grid.clientHeight;
     if (w <= 0 || h <= 0) return;
@@ -168,6 +167,7 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
         ? prev
         : { top, left, w, h },
     );
+    setMeasured(true);
   };
 
   const hasFx = () =>
@@ -204,11 +204,7 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
   });
 
   const dying = () => props.attackDying;
-
-  // Keep the overlay mounted once the board is measured — toggling Show on
-  // hasFx remounts AttackAnimation between cues and drops CSS attack timelines
-  // (review DualNav + live resolve both commit playingIds:[] between steps).
-  const overlayReady = () => box().w > 0 && box().h > 0;
+  const overlayReady = () => measured() && box().w > 0 && box().h > 0;
 
   const hidden = () => {
     const h = props.hideSquares;
@@ -233,13 +229,11 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
     <div
       ref={(el) => {
         host = el;
-        // Remeasure after paint when host attaches (fullscreen / flex layouts).
         requestAnimationFrame(measure);
       }}
       style={{
         position: "relative",
         display: "inline-block",
-        /* Shrink-wrap the board (DualNav demos). Live screen host is already full width. */
         width: "max-content",
         "max-width": "100%",
       }}

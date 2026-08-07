@@ -1,4 +1,4 @@
-import { For, Show, type Component, type JSX } from "solid-js";
+import { For, Show, createMemo, type Component, type JSX } from "solid-js";
 import type { Square } from "chess.js";
 
 import {
@@ -160,6 +160,7 @@ export const bishopFootAimDeg = (vec: AttackVec): number => {
  * while a cue is active (fxHidden). Knights use the L-path; pawns hop;
  * bishops steam-engine-walk on articulated legs (feet locked to shins).
  * Hull travel is {@link MOVE_SQUARE_MS} per square (not a fixed total).
+ * Rows key by cue.id so remapped cue objects do not remount / restart CSS.
  */
 export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
   const used = (): ReadonlySet<Square> => {
@@ -170,6 +171,13 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
   const hullUsed = (m: MoveCue) =>
     !!m.stim || used().has(m.from) || used().has(m.to);
 
+  const ids = createMemo(() => props.cues.map((c) => c.id));
+  const byId = createMemo(() => {
+    const m = new Map<string, MoveCue>();
+    for (const c of props.cues) m.set(c.id, c);
+    return m;
+  });
+
   return (
   <div
     class={styles.boardOverlay}
@@ -178,8 +186,9 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
       inset: "0",
     }}
   >
-    <For each={[...props.cues]}>
-      {(m) => {
+    <For each={ids()}>
+      {(id) => {
+        const m = byId().get(id)!;
         const started = () => props.progress[m.id] === 1;
         const vec = () => vecBetween(m.from, m.to);
         const travelMs = () =>

@@ -18,6 +18,7 @@ import { useMatchStore } from "~/app/MatchStoreContext";
 import { canSubmit, displayedSnapshot } from "~/app/selectors";
 import { AnimationStage } from "~/presentation/animations/AnimationStage";
 import { kingDamageCuesFromBoard } from "~/presentation/animations/kingDamage";
+import { deriveVisualFrame } from "~/presentation/animations/visualFrame";
 import { useBoardInput } from "~/presentation/board/useBoardInput";
 import { intentOverlaysFromQueue } from "~/presentation/combat/intentOverlays";
 import { useAutoDeploy } from "~/presentation/hooks/useAutoDeploy";
@@ -35,7 +36,6 @@ export type { BoardVariant };
 
 export const LiveStarChessBoard: Component<{
   fog?: boolean;
-  /** Override fog/vision during DualNav review (default: observer, no fog). */
   visionMode?: VisionMode;
   variant?: BoardVariant;
 }> = (props) => {
@@ -123,8 +123,6 @@ export const LiveStarChessBoard: Component<{
     setKingDamage((prev) => kingDamageCuesFromBoard(s.placement, s.kingLives, prev));
   });
 
-  // Occupancy auto-deploy (Command Center / put) — same pattern as apps/ui.
-  // Timeline owns spawn VFX while playing; DualNav seek re-baselines only.
   const { autoDeployCues } = useAutoDeploy({
     pieces: () => placementToMap(snap().placement),
     enabled: () => !reviewing() && !store.state().timeline.active,
@@ -207,10 +205,25 @@ export const LiveStarChessBoard: Component<{
     combat.jumpCues().filter((c) => moverFxVisible(c)),
   );
 
+  /**
+   * combat.hideSquares already derives from cues + attackDying via
+   * deriveVisualFrame. Merge kingDamage + auto-deploy extras (timeline deploys
+   * are already included; Set union is idempotent).
+   */
   const hideSquares = createMemo((): ReadonlySet<Square> => {
-    const next = new Set(combat.hideSquares());
-    for (const c of visibleKingDamage()) next.add(c.at);
-    for (const c of deployCues()) next.add(c.at);
+    const frame = deriveVisualFrame({
+      attackCues: combat.attackCues(),
+      attackDying: combat.attackDying(),
+      deathCues: combat.deathCues(),
+      moveCues: moveCues(),
+      jumpCues: jumpCues(),
+      deployCues: deployCues(),
+      kingDamage: visibleKingDamage(),
+    });
+    // Union with timeline-hidden so mid-window victim hides (deaths done,
+    // board not yet committed) stay covered even without a live death cue.
+    const next = new Set(frame.hideSquares);
+    for (const sq of combat.hideSquares()) next.add(sq);
     return next;
   });
 
@@ -232,6 +245,7 @@ export const LiveStarChessBoard: Component<{
         legalDests={interactive() ? state().legalDests : []}
         onSquareClick={interactive() ? onSquareClick : undefined}
         attackCues={combat.attackCues()}
+        attackDying={combat.attackDying()}
         deathCues={combat.deathCues()}
         moveCues={moveCues()}
         moveProgress={combat.moveProgress()}

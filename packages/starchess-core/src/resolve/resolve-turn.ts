@@ -482,7 +482,8 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
           continue;
         }
         // Still fogged at contact: clear + occupy, skip attack cue.
-        attacks.push({
+        // Phase owner is moveCollisions only — never dual-list in attacks.
+        const hit: ResolveAttack = {
           kind: "capture",
           piece: actor.type,
           color: plan.color,
@@ -492,13 +493,13 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
           occupies: true,
           collision: true,
           moveCollision: true,
-        });
+        };
+        moveCollisions.push(hit);
         deadSquares.add(plan.to);
         if (mineAt(mines, plan.to) && mineAt(mines, plan.to)!.color !== plan.color) {
           removeMineAt(plan.to);
         }
         occupy.push(plan);
-        moveCollisions.push(attacks[attacks.length - 1]!);
         continue;
       }
       // Path discovery: shoot from the first square that lights the target.
@@ -652,7 +653,8 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
             pathHandled = true;
             break;
           }
-          attacks.push({
+          // Fogged mid-path contact — moveCollisions only (no phase-1 attack cue).
+          const hit: ResolveAttack = {
             kind: "capture",
             piece: actor.type,
             color: plan.color,
@@ -662,13 +664,13 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
             occupies: true,
             collision: true,
             moveCollision: true,
-          });
+          };
+          moveCollisions.push(hit);
           deadSquares.add(s);
           if (mineAt(mines, s) && mineAt(mines, s)!.color !== plan.color) {
             removeMineAt(s);
           }
           occupy.push({ color: plan.color, from: plan.from, to: s });
-          moveCollisions.push(attacks[attacks.length - 1]!);
           pathHandled = true;
           break;
         }

@@ -109,6 +109,7 @@ export const createMatchStateFromReviewHistory = (
       active: false,
       cues: [],
       playingIds: [],
+      attackDying: {},
       hiddenSquares: new Set(),
       moveProgress: {},
       moveLeg: {},

@@ -9,8 +9,7 @@
 import { createMemo } from "solid-js";
 import type { Square } from "chess.js";
 
-import type { StarChessPiece } from "@chess-coach/starchess-core";
-
+import { deriveVisualFrame } from "~/presentation/animations/visualFrame";
 import type { MatchStore, TimelineCue } from "~/types/match";
 import type {
   AttackCue,
@@ -34,19 +33,12 @@ const playing = <K extends TimelineCue["kind"]>(
   return cues.filter((c): c is CueOf<K> => c.kind === kind && set.has(c.id));
 };
 
-const asAttack = (c: CueOf<"attack">): AttackCue =>
-  c as unknown as AttackCue & { piece: StarChessPiece };
-
-const asDeath = (c: CueOf<"death">): DeathCue =>
-  c as unknown as DeathCue & { piece: StarChessPiece };
-
-const asMove = (c: CueOf<"move">): MoveCue =>
-  c as unknown as MoveCue & { piece: StarChessPiece };
-
-const asDeploy = (c: CueOf<"deploy">): DeployCue =>
-  c as unknown as DeployCue & { piece: StarChessPiece };
-
-const asGasDrop = (c: CueOf<"gasDrop">): GasDropCue => c as GasDropCue;
+/** Timeline attack cues are a superset of AttackCue (kingShot); strip via assign. */
+const asAttack = (c: CueOf<"attack">): AttackCue => c;
+const asDeath = (c: CueOf<"death">): DeathCue => c;
+const asMove = (c: CueOf<"move">): MoveCue => c;
+const asDeploy = (c: CueOf<"deploy">): DeployCue => c;
+const asGasDrop = (c: CueOf<"gasDrop">): GasDropCue => c;
 
 const asMineMissile = (c: CueOf<"mineMissile">): MineMissileCue => ({
   id: c.id,
@@ -90,10 +82,16 @@ export const useCombatOverlays = (store: MatchStore) => {
   /** Stable empty — avoid new `{}` each memo run when idle. */
   const emptyProgress: Record<string, 0 | 1> = {};
   const emptyLeg: Record<string, 0 | 1> = {};
+  const emptyDying: Record<string, boolean> = {};
   const emptyTrails: QueenJumpTrail[] = [];
   const emptyGas: GasDropCue[] = [];
   const emptyMissiles: MineMissileCue[] = [];
   const emptySpent: Square[] = [];
+
+  const attackDying = createMemo((): Record<string, boolean> => {
+    const d = tl().attackDying;
+    return Object.keys(d).length === 0 ? emptyDying : (d as Record<string, boolean>);
+  });
 
   const moveProgress = createMemo((): Record<string, 0 | 1> => {
     const p = tl().moveProgress;
@@ -152,10 +150,39 @@ export const useCombatOverlays = (store: MatchStore) => {
     return playing(t.cues, t.playingIds, "deploy").map(asDeploy);
   });
 
-  const hideSquares = createMemo(() => tl().hiddenSquares);
+  /**
+   * Prefer ownership from playing cues + attackDying when combat overlays are
+   * present; otherwise fall back to timeline.hiddenSquares.
+   * LiveStarChessBoard still merges kingDamage + auto-deploy extras.
+   */
+  const hideSquares = createMemo((): ReadonlySet<Square> => {
+    const attacks = attackCues();
+    const deaths = deathCues();
+    const moves = moveCues();
+    const jumps = jumpCues();
+    const deploys = deployCues();
+    if (
+      attacks.length === 0 &&
+      deaths.length === 0 &&
+      moves.length === 0 &&
+      jumps.length === 0 &&
+      deploys.length === 0
+    ) {
+      return tl().hiddenSquares;
+    }
+    return deriveVisualFrame({
+      attackCues: attacks,
+      attackDying: attackDying(),
+      deathCues: deaths,
+      moveCues: moves,
+      jumpCues: jumps,
+      deployCues: deploys,
+    }).hideSquares;
+  });
 
   return {
     attackCues,
+    attackDying,
     deathCues,
     moveCues,
     jumpCues,

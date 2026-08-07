@@ -20,6 +20,7 @@ const emptyTimeline = (placement: string | null = null): TimelineState => ({
   active: false,
   cues: [],
   playingIds: [],
+  attackDying: {},
   hiddenSquares: new Set(),
   moveProgress: {},
   moveLeg: {},
@@ -412,6 +413,7 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
           active: true,
           cues: action.cues,
           playingIds: [],
+          attackDying: {},
           hiddenSquares: new Set(),
           moveProgress: {},
           moveLeg: {},
@@ -440,6 +442,10 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
               action.playingIds !== undefined
                 ? [...action.playingIds]
                 : state.timeline.playingIds,
+            attackDying:
+              action.attackDying !== undefined
+                ? { ...action.attackDying }
+                : state.timeline.attackDying,
             hiddenSquares: hidden,
             moveProgress:
               action.moveProgress !== undefined
@@ -505,6 +511,10 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
             action.playingIds !== undefined
               ? [...action.playingIds]
               : state.timeline.playingIds,
+          attackDying:
+            action.attackDying !== undefined
+              ? { ...action.attackDying }
+              : state.timeline.attackDying,
           hiddenSquares: hidden,
           moveProgress:
             action.moveProgress !== undefined

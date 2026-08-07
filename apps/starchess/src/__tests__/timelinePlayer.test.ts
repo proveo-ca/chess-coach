@@ -445,7 +445,7 @@ describe("timelinePlayer", () => {
     expect(lastAttack).toBeLessThan(firstDeath);
   });
 
-  it("starts phase-1 deaths at FRAG_FLIGHT_MS while attacks still play", () => {
+  it("starts phase-1 deaths at max batch impactMsFor while attacks still play", () => {
     let snap = parseScFen(
       "SCFEN|4k3/8/8/8/8/8/3p4/3RK3|0|33|P|G:11:11|Q:w:;b:",
     );
@@ -485,8 +485,8 @@ describe("timelinePlayer", () => {
     expect(playingLogs[0]?.some((id) => id.startsWith("a"))).toBe(true);
     expect(playingLogs[0]?.some((id) => id.startsWith("d"))).toBe(false);
 
-    // Kill→death meeting point (FRAG_FLIGHT_MS = 250): death joins while attack plays.
-    const atImpact = jobs.filter((j) => j.ms === 250);
+    // Rook HE impact ≈ 22% of ATTACK_MS (220ms) — death joins while attack plays.
+    const atImpact = jobs.filter((j) => j.ms === 220);
     expect(atImpact.length).toBeGreaterThan(0);
     for (const j of atImpact) j.fn();
 
@@ -498,6 +498,163 @@ describe("timelinePlayer", () => {
     expect(overlapped).toBeTruthy();
 
     while (jobs.length) jobs.shift()!.fn();
+  });
+
+  it("keeps attacks in playingIds until ATTACK_MS when deaths exist", () => {
+    let snap = parseScFen(
+      "SCFEN|4k3/8/8/8/8/8/3p4/3RK3|0|33|P|G:11:11|Q:w:;b:",
+    );
+    snap = addScAction({
+      snapshot: snap,
+      action: {
+        timing: "C",
+        kind: "classical",
+        color: "w",
+        from: "d1",
+        to: "d2",
+      },
+    }).snapshot;
+    const result = endScTurn(snap, { skipTurnStartChecks: true });
+    expect(result.resolved.attacks.some((a) => a.kind === "capture")).toBe(true);
+
+    type Job = { ms: number; fn: () => void };
+    const jobs: Job[] = [];
+    const scheduler = {
+      delay: (ms: number, fn: () => void) => {
+        jobs.push({ ms, fn });
+        return () => undefined;
+      },
+    };
+    let playing: readonly string[] = [];
+    playTimeline(result, scheduler, {
+      onStart: () => undefined,
+      onCommit: (patch) => {
+        if (patch.playingIds !== undefined) playing = patch.playingIds;
+      },
+      onDone: () => undefined,
+    });
+
+    // Rook HE: impact 220, deathDone 720, phaseDone ATTACK_MS 1000.
+    jobs.sort((a, b) => a.ms - b.ms);
+    let sawAttacksAfterDeath = false;
+    for (const j of jobs) {
+      j.fn();
+      if (j.ms === 720) {
+        expect(playing.some((id) => id.startsWith("a"))).toBe(true);
+        expect(playing.some((id) => id.startsWith("d"))).toBe(false);
+        sawAttacksAfterDeath = true;
+      }
+      if (j.ms === 1000) {
+        expect(playing.some((id) => id.startsWith("a"))).toBe(false);
+      }
+    }
+    expect(sawAttacksAfterDeath).toBe(true);
+  });
+
+  it("sets attackDying at impact when death.at matches attack.from", () => {
+    // Mutual diagonal pawn fire — each attacker dies on their own square.
+    let snap = parseScFen(
+      "SCFEN|4k3/8/8/3p4/4P3/8/8/4K3|0|33|P|G:11:11|Q:w:;b:",
+    );
+    snap = addScAction({
+      snapshot: snap,
+      action: {
+        timing: "C",
+        kind: "classical",
+        color: "w",
+        from: "e4",
+        to: "d5",
+      },
+    }).snapshot;
+    snap = addScAction({
+      snapshot: snap,
+      action: {
+        timing: "C",
+        kind: "classical",
+        color: "b",
+        from: "d5",
+        to: "e4",
+      },
+    }).snapshot;
+    const result = endScTurn(snap, { skipTurnStartChecks: true });
+    expect(result.resolved.attacks.length).toBe(2);
+
+    type Job = { ms: number; fn: () => void };
+    const jobs: Job[] = [];
+    const scheduler = {
+      delay: (ms: number, fn: () => void) => {
+        jobs.push({ ms, fn });
+        return () => undefined;
+      },
+    };
+    let attackDying: Record<string, boolean> = {};
+    let playing: readonly string[] = [];
+    playTimeline(result, scheduler, {
+      onStart: () => undefined,
+      onCommit: (patch) => {
+        if (patch.playingIds !== undefined) playing = patch.playingIds;
+        if (patch.attackDying !== undefined) attackDying = patch.attackDying;
+      },
+      onDone: () => undefined,
+    });
+
+    const cues = projectResolveTimeline(result);
+    const attacks = cues.filter((c) => c.kind === "attack");
+    expect(attacks.length).toBe(2);
+
+    // Pawn rifle impact = 250ms.
+    const atImpact = jobs.filter((j) => j.ms === 250);
+    expect(atImpact.length).toBeGreaterThan(0);
+    for (const j of atImpact) j.fn();
+
+    for (const a of attacks) {
+      expect(attackDying[a.id]).toBe(true);
+    }
+    expect(
+      playing.some((id) => id.startsWith("a")) &&
+        playing.some((id) => id.startsWith("d")),
+    ).toBe(true);
+
+    jobs.sort((a, b) => a.ms - b.ms);
+    for (const j of jobs) {
+      if (j.ms === 250) continue;
+      j.fn();
+    }
+    expect(Object.keys(attackDying).length).toBe(0);
+  });
+
+  it("never dual-lists moveCollision in phase-1 attacks; projects mc deaths after moves", () => {
+    let snap = parseScFen(
+      "SCFEN|4k3/8/8/8/3p4/8/8/3RK3|0|33|P|G:11:11|Q:w:;b:",
+    );
+    snap = addScAction({
+      snapshot: snap,
+      action: {
+        timing: "C",
+        kind: "classical",
+        color: "w",
+        from: "d1",
+        to: "d5",
+      },
+    }).snapshot;
+    const result = endScTurn(snap, { skipTurnStartChecks: true });
+    expect(
+      result.resolved.attacks.every(
+        (a) => !("moveCollision" in a && a.moveCollision),
+      ),
+    ).toBe(true);
+
+    const cues = projectResolveTimeline(result);
+    if (result.resolved.moveCollisions.length > 0) {
+      const firstMove = cues.findIndex(
+        (c) => c.kind === "move" && c.id.startsWith("c"),
+      );
+      const firstMc = cues.findIndex(
+        (c) => c.kind === "death" && c.id.startsWith("mc"),
+      );
+      expect(firstMc).toBeGreaterThan(-1);
+      expect(firstMc).toBeGreaterThan(firstMove);
+    }
   });
 
   it("plays opposing classical moves in one simultaneous window", () => {

@@ -51,6 +51,19 @@ export { DeployAnimation } from "~/presentation/animations/DeployAnimation";
 export { GasDropAnimation } from "~/presentation/animations/GasDropAnimation";
 export * from "~/presentation/animations/gasDrop";
 export * from "~/presentation/animations/deployAnim";
+export {
+  IMPACT_FRAC,
+  impactMsFor,
+  fragFlightMsCss,
+} from "~/presentation/animations/impactTiming";
+export {
+  deriveVisualFrame,
+} from "~/presentation/animations/visualFrame";
+export type {
+  VisualFrame,
+  VisualFrameInput,
+  VisualOwnerKind,
+} from "~/presentation/animations/visualFrame";
 export { PAWN_RIFLE } from "~/presentation/animations/pawnRifle";
 export { KNIGHT_FRAG } from "~/presentation/animations/knightFrag";
 export { BISHOP_GATLINGS } from "~/presentation/animations/bishopGatlings";

@@ -7,10 +7,12 @@ import type {
   ScOutcome,
   SpawnPiece,
   StarChessColor,
+  StarChessPiece,
 } from "@chess-coach/starchess-core";
 import type { Square } from "chess.js";
 
 import type { PendingPromotion } from "~/types/chess";
+import type { AttackAnimKind } from "~/types/cues";
 import type { ReviewTurnPhase } from "~/types/review";
 
 export type MatchPhase = "loading" | "planning" | "targeting" | "resolving" | "gameOver";
@@ -37,7 +39,7 @@ export type TimelineCue =
   | {
       kind: "move";
       id: string;
-      piece: string;
+      piece: StarChessPiece;
       color: StarChessColor;
       from: Square;
       to: Square;
@@ -49,21 +51,21 @@ export type TimelineCue =
   | {
       kind: "attack";
       id: string;
-      piece: string;
+      piece: StarChessPiece;
       color: StarChessColor;
       from: Square;
       to: Square;
       /** When set, HP chips at frag impact (live king-damage boom). */
       kingShot?: { target: StarChessColor; livesAfter: number };
       /** Override ANIM_BY_PIECE (e.g. bishopCharon). */
-      anim?: string;
+      anim?: AttackAnimKind;
       /** Siege Tank mode for rookBattery VFX (from afterB siegedRooks). */
       rookMode?: "siege" | "tank";
     }
   | {
       kind: "death";
       id: string;
-      piece: string;
+      piece: StarChessPiece;
       color: StarChessColor;
       at: Square;
       mine?: boolean;
@@ -72,7 +74,7 @@ export type TimelineCue =
   | {
       kind: "deploy";
       id: string;
-      piece: string;
+      piece: StarChessPiece;
       color: StarChessColor;
       at: Square;
     }
@@ -98,6 +100,11 @@ export type TimelineState = {
   cues: TimelineCue[];
   /** Cue id(s) currently animating — multiple for parallel spawn deploys. */
   playingIds: readonly string[];
+  /**
+   * Attack cue ids whose hull is suppressed (attacker died mid-shot).
+   * Keys match attack cue ids; DeathAnimation owns those squares.
+   */
+  attackDying: Readonly<Record<string, boolean>>;
   /** Squares whose piece glyph is hidden while a cue plays. */
   hiddenSquares: ReadonlySet<Square>;
   /** Move slide progress (0 = at from, 1 = sliding/at to). */
@@ -195,6 +202,8 @@ export type MatchAction =
       specialsUsed?: readonly Square[];
       hidden?: readonly Square[];
       playingIds?: readonly string[];
+      /** Attack cue ids suppressed mid-shot (reciprocal / attacker death). */
+      attackDying?: Record<string, boolean>;
       moveProgress?: Record<string, 0 | 1>;
       moveLeg?: Record<string, 0 | 1>;
       jumpTrails?: ReadonlyArray<{ id: string; from: Square; to: Square }>;
