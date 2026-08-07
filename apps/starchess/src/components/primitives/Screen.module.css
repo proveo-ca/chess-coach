@@ -2,9 +2,11 @@
    Priority: middle (board+sideboard) > top > bottom. No page vertical scroll;
    enforce min width for essentials. */
 
-:global(#root) {
+/* Board Screen only — do not cap #root for the StarChess menu (full-bleed). */
+:global(#root:has([data-testid="screen-root"])) {
   max-width: 1280px;
-  margin: 0 auto;
+  margin-left: auto;
+  margin-right: auto;
   text-align: center;
   width: 100%;
   box-sizing: border-box;

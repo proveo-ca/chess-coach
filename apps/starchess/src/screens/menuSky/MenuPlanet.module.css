@@ -1,0 +1,227 @@
+/* Orbital planet carousel + TTY callout (Eclipse → Butter → Vermeer).
+ *
+ * Motion wrapper is transform-only (no fill). Disc is a separate circle layer
+ * so border-radius isn't broken by compositor transforms (square halo bug).
+ */
+
+@property --orbit-a {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.root {
+  --sc-menu-neon: #7cff4a;
+  --tty-ink: #041208;
+  --planet-size: 62vmin;
+  --orbit-r: 42vmin;
+
+  position: absolute;
+  left: -18%;
+  bottom: -35%;
+  width: 0;
+  height: 0;
+  overflow: visible;
+  background: transparent;
+  pointer-events: none;
+}
+
+.stage {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 0;
+  z-index: 1;
+}
+
+/* Transform-only carrier — never paints a fill (avoids square backing store). */
+.planetMotion {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: var(--planet-size);
+  height: var(--planet-size);
+  pointer-events: none;
+  background: transparent;
+  --orbit-a: 0deg;
+}
+
+.planetMotion[data-active="hold"] {
+  /* No transform while parked — a 0-translate layer can still paint a square. */
+  transform: none;
+}
+
+.planetMotion[data-active="enter"] {
+  transform: translate(
+    calc(sin(var(--orbit-a)) * var(--orbit-r)),
+    calc((1 - cos(var(--orbit-a))) * var(--orbit-r))
+  );
+  animation: orbit-enter 900ms cubic-bezier(0.33, 0.12, 0.2, 1) forwards;
+}
+
+.planetMotion[data-active="exit"] {
+  transform: translate(
+    calc(sin(var(--orbit-a)) * var(--orbit-r)),
+    calc((1 - cos(var(--orbit-a))) * var(--orbit-r))
+  );
+  animation: orbit-exit 900ms cubic-bezier(0.55, 0.05, 0.7, 0.25) forwards;
+}
+
+.planetDisc {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  background: transparent;
+}
+
+.planetDisc[data-world="eclipse"] {
+  background:
+    radial-gradient(circle at 35% 30%, #6aa8d8 0%, #2a5a88 40%, #0a2038 78%);
+  box-shadow:
+    inset -12px -8px 40px color-mix(in srgb, #000 55%, transparent),
+    0 0 48px color-mix(in srgb, #3a7ab0 40%, transparent);
+}
+
+.planetDisc[data-world="butter"] {
+  background:
+    radial-gradient(circle at 35% 30%, #f0b060 0%, #c46a20 42%, #3a1808 78%);
+  box-shadow:
+    inset -12px -8px 40px color-mix(in srgb, #000 50%, transparent),
+    0 0 48px color-mix(in srgb, #e08030 45%, transparent);
+}
+
+.planetDisc[data-world="vermeer"] {
+  background:
+    radial-gradient(circle at 35% 30%, #8ecf6a 0%, #2a6a28 42%, #0a2010 78%);
+  box-shadow:
+    inset -12px -8px 40px color-mix(in srgb, #000 55%, transparent),
+    0 0 48px color-mix(in srgb, #4a9030 45%, transparent);
+}
+
+@keyframes orbit-enter {
+  from {
+    --orbit-a: 72deg;
+  }
+  to {
+    --orbit-a: 0deg;
+  }
+}
+
+@keyframes orbit-exit {
+  from {
+    --orbit-a: 0deg;
+  }
+  to {
+    --orbit-a: -72deg;
+  }
+}
+
+.tty {
+  position: absolute;
+  left: calc(var(--planet-size) * 0.58);
+  bottom: calc(var(--planet-size) * 0.78);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: max-content;
+  max-width: calc(var(--planet-size) * 0.55);
+  font-family: "IBM Plex Mono", "Consolas", "Courier New", monospace;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.block {
+  display: inline-flex;
+  align-items: stretch;
+  min-height: 1.25em;
+  min-width: 0.65em;
+  padding: 0.15em 0.1em 0.15em 0.2em;
+  background: var(--sc-menu-neon);
+  color: var(--tty-ink);
+  box-shadow:
+    0 0 10px color-mix(in srgb, var(--sc-menu-neon) 65%, transparent),
+    0 0 2px #000;
+  animation: tty-pulse 1s steps(1, end) infinite;
+  transition: min-width 40ms linear;
+}
+
+.text {
+  font-size: clamp(0.7rem, 1.8vw, 1.05rem);
+  font-weight: 700;
+  line-height: 1.15;
+  white-space: pre;
+}
+
+.caret {
+  display: inline-block;
+  width: 0.55em;
+  margin-left: 0.05em;
+  flex-shrink: 0;
+  background: var(--tty-ink);
+  opacity: 0.9;
+}
+
+.caret[data-empty="true"] {
+  width: 0.65em;
+  margin-left: 0;
+}
+
+.stem {
+  width: 2px;
+  height: calc(var(--planet-size) * 0.14);
+  min-height: 1.75rem;
+  margin-left: 0.55em;
+  background: linear-gradient(
+    to bottom,
+    var(--sc-menu-neon),
+    color-mix(in srgb, var(--sc-menu-neon) 45%, transparent)
+  );
+  box-shadow: 0 0 6px color-mix(in srgb, var(--sc-menu-neon) 55%, transparent);
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  margin-left: calc(0.55em - 2.5px);
+  margin-top: -1px;
+  border-radius: 50%;
+  background: var(--sc-menu-neon);
+  box-shadow:
+    0 0 8px var(--sc-menu-neon),
+    0 0 2px #000;
+}
+
+@keyframes tty-pulse {
+  0%,
+  49% {
+    filter: brightness(1.08);
+    opacity: 1;
+  }
+  50%,
+  100% {
+    filter: brightness(0.68);
+    opacity: 0.8;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .planetMotion[data-active="enter"],
+  .planetMotion[data-active="exit"] {
+    animation: none;
+  }
+
+  .planetMotion[data-active="enter"],
+  .planetMotion[data-active="hold"],
+  .planetMotion[data-active="exit"] {
+    visibility: visible;
+    transform: none;
+  }
+
+  .block {
+    animation: none;
+    transition: none;
+  }
+}

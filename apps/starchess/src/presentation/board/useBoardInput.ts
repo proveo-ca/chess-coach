@@ -11,11 +11,38 @@ import {
   placementToMap,
   scMovesFrom,
   spawnKingAnchor,
+  type ScFenSnapshot,
+  type StarChessColor,
 } from "@chess-coach/starchess-core";
 
 import { useMatchStore } from "~/app/MatchStoreContext";
 import { canSubmit, displayedSnapshot } from "~/app/selectors";
 import type { PromotionPiece } from "~/types/chess";
+
+/**
+ * Gas then same-vector classical (B e6→e7 + C e6→e7) rewrites to e7→e8.
+ * That stack is how a stim+step reaches the last rank in one End — open the
+ * picker and attach `promotion` on the pre-rewrite C (core rewrite keeps it).
+ */
+export const gasStackPromotes = (
+  snap: ScFenSnapshot,
+  color: StarChessColor,
+  from: Square,
+  to: Square,
+): boolean => {
+  const b = (snap.queue?.actions ?? []).find(
+    (a) =>
+      a.timing === "B" &&
+      a.kind === "pawnDouble" &&
+      a.color === color &&
+      a.from === from &&
+      a.to === to,
+  );
+  if (!b?.to) return false;
+  const dir = color === "w" ? 1 : -1;
+  const land = Number(to[1]) + dir;
+  return land === (color === "w" ? 8 : 1);
+};
 
 export const useBoardInput = () => {
   const store = useMatchStore();
@@ -207,7 +234,12 @@ export const useBoardInput = () => {
       siegedRooks: [...state.siegedRooks],
     }).find((m) => m.to === square);
 
-    if (move?.promotes) {
+    const needsPromo =
+      !!move?.promotes ||
+      (mover.type === "p" &&
+        gasStackPromotes(state.liveSnapshot, mover.color, selected, square));
+
+    if (needsPromo) {
       store.dispatch({
         type: "SET_PENDING_PROMOTION",
         pending: {

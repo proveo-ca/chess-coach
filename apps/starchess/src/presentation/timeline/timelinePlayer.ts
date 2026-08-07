@@ -18,6 +18,10 @@ import {
   moveDurationMs,
 } from "~/presentation/timeline/timings";
 import {
+  MINE_MISSILE_MS,
+  MINE_TRAIL_MS,
+} from "~/presentation/constants";
+import {
   TACTICAL_JUMP_APPEAR_MS,
   TACTICAL_JUMP_TRAIL_MS,
   TACTICAL_JUMP_TRAVEL_MS,
@@ -42,6 +46,10 @@ export type TimelineCallbacks = {
     moveLeg?: Record<string, 0 | 1>;
     /** Tactical Jump thruster trails (outlive hull cue). */
     jumpTrails?: ReadonlyArray<{ id: string; from: Square; to: Square }>;
+    /** Spider Mine chase trails (outlive missile hull). */
+    mineMissileTrails?: ReadonlyArray<{ id: string; from: Square; to: Square }>;
+    /** Hide board mine glyphs while missile / after boom. */
+    spentMines?: readonly Square[];
   }) => void;
   onDone: () => void;
 };
@@ -272,10 +280,20 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
   for (const m of result.resolved.moves) cues.push(moveCue(m, `c${n++}`));
 
   // Phase-2 walk-over / chase mine triggers — after land, before path-reveal.
+  // Chase: missile from wake square → impact, then boom. Walk-over: boom only.
   // Promotion onto a hostile mine dies here (no promo walk-off).
   for (const a of result.resolved.mineTriggers) {
     if (a.kind !== "mineBlast") continue;
-    // Mine boom (hull hidden) — always; walk-over also shreds the victim.
+    if (a.chaseFrom != null) {
+      cues.push({
+        kind: "mineMissile",
+        id: `mm${n++}`,
+        color: a.mineColor,
+        from: a.chaseFrom,
+        to: a.to,
+      });
+    }
+    // Mine boom (hull hidden) — always; walk-over / chase also shreds the victim.
     cues.push({
       kind: "death",
       id: `mtm${n++}`,
@@ -404,6 +422,8 @@ const cueDuration = (cue: TimelineCue): number => {
       return DEPLOY_MS;
     case "gasDrop":
       return GAS_DROP_MS;
+    case "mineMissile":
+      return MINE_MISSILE_MS;
   }
 };
 
@@ -436,6 +456,9 @@ const isPhase1Death = (cue: TimelineCue): boolean =>
 /** Post-move mineTriggers (walk-over / chase boom) — after classical land. */
 const isMineTriggerDeath = (cue: TimelineCue): boolean =>
   cue.kind === "death" && cue.id.startsWith("mt");
+
+/** Chase missile before mineTrigger boom. */
+const isMineMissile = (cue: TimelineCue): boolean => cue.kind === "mineMissile";
 
 /**
  * Simultaneous move waves: B gas-steps, classical C, or F gas-steps.
@@ -693,13 +716,56 @@ export const playTimeline = (
       return;
     }
 
+    // Chase missile — after land, before boom (lift + launch = MINE_MISSILE_MS).
+    if (isMineMissile(cue)) {
+      if (!afterBApplied) applyAfterB();
+      const { batch, next } = takeWhile(cues, index, isMineMissile);
+      const missiles = batch as Extract<TimelineCue, { kind: "mineMissile" }>[];
+      const trails = missiles
+        .filter((m) => m.from !== m.to)
+        .map((m) => ({ id: `${m.id}-trail`, from: m.from, to: m.to }));
+      const spent = [
+        ...new Set(missiles.map((m) => m.from)),
+      ] as Square[];
+      cb.onCommit({
+        // Keep wake mine in snap until boom; spentMines hides the board glyph.
+        mines: result.resolved.afterAttack.mines,
+        spentMines: spent,
+        mineMissileTrails: trails,
+        playingIds: missiles.map((c) => c.id),
+        hidden: [],
+        moveProgress: {},
+        moveLeg: {},
+      });
+      const wait = scheduler.delay(MINE_MISSILE_MS, () => {
+        if (cancelled) return;
+        cb.onCommit({
+          playingIds: [],
+          spentMines: spent,
+          mineMissileTrails: trails,
+          moveProgress: {},
+          moveLeg: {},
+        });
+        const clearTrails = scheduler.delay(MINE_TRAIL_MS, () => {
+            if (cancelled) return;
+            cb.onCommit({ mineMissileTrails: [] });
+          });
+        cancels.push(clearTrails);
+        run(next);
+      });
+      cancels.push(wait);
+      return;
+    }
+
     // Post-move mineTriggers — land already applied; boom + victim shred, clear mine.
     if (isMineTriggerDeath(cue)) {
       if (!afterBApplied) applyAfterB();
       const { batch, next } = takeWhile(cues, index, isMineTriggerDeath);
       const deaths = batch as Extract<TimelineCue, { kind: "death" }>[];
+      const spentExtra = deaths.filter((d) => d.mine).map((d) => d.at);
       cb.onCommit({
         mines: result.resolved.afterMove.mines,
+        spentMines: spentExtra,
         hidden: deaths.map((c) => c.at),
         playingIds: deaths.map((c) => c.id),
         moveProgress: {},
@@ -713,6 +779,7 @@ export const playTimeline = (
         cb.onCommit({
           placement: displayPlacement,
           mines: result.resolved.afterMove.mines,
+          spentMines: spentExtra,
           hidden: [],
           playingIds: [],
           moveProgress: {},

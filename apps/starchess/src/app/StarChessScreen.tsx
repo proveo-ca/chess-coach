@@ -30,6 +30,7 @@ import {
 
 import { useMatchStore } from "~/app/MatchStoreContext";
 import { Sidebar } from "~/components/features/Sidebar";
+import { PromotionModal } from "~/components/primitives/PromotionModal";
 import { Screen } from "~/components/primitives/Screen";
 import { squareBoxStyle, findBoardGrid } from "~/presentation/animations/boardGeom";
 import { LiveStarChessBoard } from "~/presentation/board/LiveStarChessBoard";
@@ -40,9 +41,11 @@ import { ResourceBar } from "~/presentation/hud/ResourceBar";
 import { TurnBar } from "~/presentation/hud/TurnBar";
 import { usePieceSpecialArm } from "~/presentation/hooks/usePieceSpecialArm";
 import type { BoardVariant } from "~/types/board";
+import type { PromotionPiece } from "~/types/chess";
 import { tacticalJumpTargets } from "~/presentation/specials/queenTacticalJump";
 import { storedMaterial, viewerColor } from "~/app/matchEconomy";
 import { displayedSnapshot, outcomeLabel } from "~/app/selectors";
+import { liveMatchPhase } from "~/presentation/hud/liveMatchPhase";
 import styles from "~/app/StarChessScreen.module.css";
 
 export type AutoQueueOpponentResult = {
@@ -126,6 +129,40 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
     return { color: viewerColor(store) };
   });
 
+  /** Intent-phase last-rank picker — same chrome surface as DeployModal. */
+  const promotionPending = createMemo(() => {
+    const s = store.state();
+    if (!s.pendingPromotion) return null;
+    const phase = liveMatchPhase({
+      phase: s.phase,
+      lastResolve: s.lastResolve,
+      timelineActive: s.timeline.active,
+      pendingPromotion: true,
+    });
+    return phase === "intent" ? s.pendingPromotion : null;
+  });
+
+  const resolvePromotion = (piece: PromotionPiece) => {
+    const pending = store.state().pendingPromotion;
+    if (!pending) return;
+    store.dispatch({ type: "CLEAR_PENDING_PROMOTION" });
+    store.dispatch({
+      type: "QUEUE_ACTION",
+      action: {
+        timing: "C",
+        kind: "classical",
+        color: pending.color,
+        from: pending.from,
+        to: pending.to,
+        promotion: piece,
+      },
+    });
+  };
+
+  const cancelPromotion = () => {
+    store.dispatch({ type: "CLEAR_PENDING_PROMOTION" });
+  };
+
   const syncOverlay = () => {
     const host = boardHost;
     if (!host) return;
@@ -205,6 +242,14 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
         store.dispatch({
           type: "QUEUE_REJECT",
           message: "Pawn cannot step forward off the board",
+        });
+        return false;
+      }
+      const lastRank = color === "w" ? "8" : "1";
+      if (to[1] === lastRank) {
+        store.dispatch({
+          type: "QUEUE_REJECT",
+          message: "Last-rank advance is classical — click the promotion square",
         });
         return false;
       }
@@ -542,6 +587,11 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
                 pending={modalPending()}
                 onSelect={onSelectSpawnUnit}
                 onCancel={onCancelSpawn}
+              />
+              <PromotionModal
+                pending={promotionPending()}
+                onSelect={resolvePromotion}
+                onCancel={cancelPromotion}
               />
             </Show>
           </div>

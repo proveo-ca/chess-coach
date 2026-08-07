@@ -113,6 +113,16 @@ export const assertClassicalBaseline = (
       `cannot classical-target ally on ${action.to}`,
     );
   }
+  // Last-rank marine advance must carry a promotion choice (picker / timeout default).
+  if (piece.type === "p") {
+    const lastRank = action.color === "w" ? 8 : 1;
+    if (Number(action.to[1]) === lastRank && !action.promotion) {
+      throw new ScValidateError(
+        "SC_SPECIAL",
+        `classical last-rank ${action.from}→${action.to} needs promotion`,
+      );
+    }
+  }
 };
 
 export const assertSpecialLegal = (
@@ -190,6 +200,14 @@ export const assertSpecialLegal = (
         throw new ScValidateError(
           "SC_SPECIAL",
           `pawnDouble must step +1 to ${expected ?? "off-board"} (got ${action.to})`,
+        );
+      }
+      // Last rank is classical promotion only — gas must not park a marine there.
+      const lastRank = action.color === "w" ? 8 : 1;
+      if (Number(action.to[1]) === lastRank) {
+        throw new ScValidateError(
+          "SC_SPECIAL",
+          "pawnDouble cannot enter last rank (use classical promotion)",
         );
       }
       // F after C: dest may be free only post-classical; queue-time checks

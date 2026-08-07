@@ -3,6 +3,10 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { NerdModePrompt } from "~/features/nerd/NerdModePrompt";
 import { identityOptions, setNerdModeUnlocked } from "~/features/nerd/identity";
+import {
+  commitPlayerNameCheck,
+  resetPlayerNameCommitTick,
+} from "~/features/nerd/nameCommit";
 import { playerIdentity, setPlayerIdentity, setPlayerName } from "~/store/settingsStore";
 
 afterEach(() => {
@@ -10,10 +14,23 @@ afterEach(() => {
   setPlayerName("Classic Player");
   setPlayerIdentity("Human");
   setNerdModeUnlocked(false);
+  resetPlayerNameCommitTick();
   vi.restoreAllMocks();
 });
 
 describe("NerdModePrompt", () => {
+  it("does not open on name change alone — only after commit", async () => {
+    setNerdModeUnlocked(false);
+    setPlayerName("Kerrigam");
+    render(() => <NerdModePrompt />);
+
+    expect(screen.queryByRole("dialog", { name: "Activate nerd mode?" })).toBeNull();
+
+    commitPlayerNameCheck();
+
+    expect(await screen.findByRole("dialog", { name: "Activate nerd mode?" })).toBeTruthy();
+  });
+
   it("opens standalone StarChess when they accept nerd mode", async () => {
     const assign = vi.fn();
     vi.stubGlobal("location", {
@@ -24,6 +41,7 @@ describe("NerdModePrompt", () => {
     });
     setNerdModeUnlocked(false);
     setPlayerName("Kerrigam");
+    commitPlayerNameCheck();
     render(() => <NerdModePrompt />);
 
     expect(await screen.findByRole("dialog", { name: "Activate nerd mode?" })).toBeTruthy();
@@ -38,6 +56,7 @@ describe("NerdModePrompt", () => {
   it("unlocks the Nerd identity for classic chess when declined", async () => {
     setNerdModeUnlocked(false);
     setPlayerName("Zeratul");
+    commitPlayerNameCheck();
     render(() => <NerdModePrompt />);
 
     fireEvent.click(

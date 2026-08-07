@@ -13,7 +13,8 @@ type InlinePawnProps = {
   color?: PieceColor;
   /**
    * Camera-relative silhouette: `front` = glass visor (wP/bP); `back` = team helmet.
-   * Friendly pawns fire up (`back`); opposing pawns fire down (`front`).
+   * Up the board (`dr > 0`): helmet. Down the board (`dr ≤ 0`): glass toward camera.
+   * Same for attack and quiet moves (see {@link attackFaceFor}).
    */
   face?: "front" | "back";
   /**

@@ -1,0 +1,239 @@
+/* StarChess spatial main menu — neon labels over a CSS space backdrop. */
+
+@property --sky-planet-wash {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #1a4a7a;
+}
+
+.root {
+  --sc-menu-neon: #7cff4a;
+  --sc-menu-neon-dim: color-mix(in srgb, #7dff6a 55%, #1a3a22);
+  --sc-menu-glow: color-mix(in srgb, #7dff6a 70%, transparent);
+
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  max-width: none;
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0 auto;
+  overflow: hidden;
+  color: var(--sc-menu-neon);
+  font-family: "Eurostile", "Microgramma", "Bank Gothic", "Orbitron", "Segoe UI",
+    sans-serif;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  /* SC-style green triangle pointer for the whole StarChess surface. */
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cpath d='M2 2 L26 14 L10 18 L2 26 Z' fill='%237dff6a' stroke='%230a1a0c' stroke-width='1.5'/%3E%3C/svg%3E")
+      2 2,
+    crosshair;
+}
+
+/* Menu owns the viewport — never inherit board Screen #root max-width. */
+:global(#root:has([data-testid="starchess-menu"])) {
+  max-width: none;
+  width: 100%;
+  margin: 0;
+  text-align: left;
+}
+
+.sky {
+  --sky-planet-wash: #1a4a7a;
+
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 45% 40% at 88% 18%, #2a5a3a 0%, transparent 50%),
+    radial-gradient(ellipse 55% 45% at 92% 88%, #4a1a5a 0%, transparent 55%),
+    radial-gradient(ellipse 100% 80% at 50% 40%, #1a0a18 0%, #050810 70%);
+}
+
+/* Bottom-left ambient — eases blue ↔ orange ↔ green with the orbiting world.
+ * Use a circle (not a wide axis-aligned ellipse) so the wash doesn't read as a square. */
+.skyWash {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    circle 58vmin at 6% 96%,
+    color-mix(in srgb, var(--sky-planet-wash) 85%, transparent) 0%,
+    color-mix(in srgb, var(--sky-planet-wash) 35%, transparent) 38%,
+    transparent 72%
+  );
+  transition: background 900ms ease;
+}
+
+.sky[data-planet-world="eclipse"] {
+  --sky-planet-wash: #1a4a7a;
+}
+
+.sky[data-planet-world="butter"] {
+  --sky-planet-wash: #7a3a14;
+}
+
+.sky[data-planet-world="vermeer"] {
+  --sky-planet-wash: #1a4a28;
+}
+
+.nebula {
+  position: absolute;
+  inset: -10%;
+  background:
+    radial-gradient(ellipse at 30% 20%, color-mix(in srgb, #8a2040 35%, transparent), transparent 45%),
+    radial-gradient(ellipse at 70% 60%, color-mix(in srgb, #302060 40%, transparent), transparent 50%);
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+.stage {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  min-height: 100%;
+  pointer-events: none;
+}
+
+.stage :global(button) {
+  pointer-events: auto;
+}
+
+/*
+ * Pixel-locked to apps/ui SplashScreen.module.css (.splash-content /
+ * .splash-avatar-wrapper / .splash-title). Do not tweak margins/size here
+ * without updating the Chess MenuScreen splash slot in lockstep.
+ */
+.splashContent {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  margin: 0 auto;
+  pointer-events: none;
+}
+
+.splashAvatarWrapper {
+  margin: 1.5rem auto;
+}
+
+.guideBubble {
+  margin: 0 0 1.5rem;
+}
+
+/* Tutorial / Credits — title-only, same hit chrome as MenuAnchor. */
+.textItem {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 0;
+  padding: 0.35rem 0.5rem;
+  border: none;
+  background: transparent;
+  color: var(--sc-menu-neon);
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  text-align: left;
+  cursor: inherit;
+  transition: color 0.15s ease, transform 0.15s ease, filter 0.15s ease;
+}
+
+.textItem:hover:not(:disabled),
+.textItem:focus-visible:not(:disabled) {
+  color: #e8ffb8;
+  transform: scale(1.04);
+  outline: none;
+  filter: brightness(1.15);
+}
+
+.textItemDisabled {
+  color: var(--sc-menu-neon-dim);
+  opacity: 0.55;
+  cursor: not-allowed;
+  filter: grayscale(1);
+}
+
+.textItemDisabled:hover {
+  transform: none;
+  filter: grayscale(1);
+  color: var(--sc-menu-neon-dim);
+}
+
+/*
+ * Brood War main-menu anchors (approx. viewport % from reference frame).
+ *   Single Player   debris playground + title
+ *   Multiplayer     network signal (disabled / grayscale)
+ *   Review          moon + title
+ *   Exit            black hole + title
+ *   Tutorial / Credits — title-only on planet rim
+ */
+.posSingle {
+  left: calc(8% + 2rem);
+  top: calc(14% + 2rem);
+}
+
+.posMulti {
+  left: 16%;
+  top: 42%;
+}
+
+.posReview {
+  left: 75%;
+  top: 23%;
+}
+
+.posTutorial {
+  left: 18%;
+  top: 85%;
+}
+
+.posCredits {
+  left: 18%;
+  top: 92%;
+}
+
+.posExit {
+  left: 80%;
+  top: 68%;
+}
+
+@media (max-width: 720px) {
+  .posSingle {
+    left: calc(6% + 2rem);
+    top: calc(12% + 2rem);
+  }
+
+  .posMulti {
+    left: 8%;
+    top: 38%;
+  }
+
+  .posReview {
+    left: auto;
+    right: 4%;
+    top: 18%;
+  }
+
+  .posTutorial {
+    left: 8%;
+    top: 78%;
+  }
+
+  .posCredits {
+    left: 8%;
+    top: 88%;
+  }
+
+  .posExit {
+    left: auto;
+    right: 6%;
+    top: 72%;
+  }
+}

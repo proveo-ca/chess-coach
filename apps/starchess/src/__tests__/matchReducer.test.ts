@@ -137,6 +137,7 @@ describe("matchReducer", () => {
       pending: { color: "w", from: "e7", to: "e8" },
     });
     expect(s.pendingPromotion).toEqual({ color: "w", from: "e7", to: "e8" });
+    expect(s.phase).toBe("targeting");
 
     s = matchReducer(s, { type: "SUBMIT_TURN", reason: "timeout" });
     expect(s.phase).toBe("resolving");

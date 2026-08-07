@@ -3,6 +3,10 @@
 # selected app. Anonymous volumes keep image node_modules when the bind mount
 # would otherwise hide them.
 #
+# Classical web-no-llm starts Coach (:5173) and StarChess (:5175); Coach vite
+# proxies /starchess → :5175 so NerdModePrompt same-origin redirects work.
+# Local dual-dev: `pnpm dev` (nx: ui+starchess vite + Storybooks :6006/:6007).
+#
 # Linux: network_mode host lets vite (localhost:5175 / :5173) and Storybook
 # (:6007) be reachable the same way as a host run. On Docker Desktop
 # (Mac/Windows), host networking differs — drop network_mode or use port
@@ -37,7 +41,8 @@ services:
         "--project=chromium",
       ]
 
-  # Full classical Coach suite (chromium only):
+  # Full classical Coach suite (chromium only) — includes nerd-mode journeys;
+  # Playwright webServer boots Coach + StarChess for the /starchess proxy.
   #   docker compose --profile full run --rm e2e-full
   e2e-full:
     profiles: ["full"]
@@ -50,8 +55,50 @@ services:
       - /work/apps/e2e/node_modules
       - /work/apps/starchess/node_modules
       - /work/apps/ui/node_modules
+      - /work/node_modules
     environment:
       E2E_TARGET: web-no-llm
       CI: "1"
     network_mode: host
     command: ["npx", "playwright", "test", "--project=chromium"]
+
+  # Nerd-mode blur + yes/keep journeys only (Coach + StarChess via webServer).
+  #   docker compose --profile nerd run --rm e2e-nerd
+  e2e-nerd:
+    profiles: ["nerd"]
+    build:
+      context: .
+      dockerfile: apps/e2e/Dockerfile
+    working_dir: /work/apps/e2e
+    volumes:
+      - .:/work
+      - /work/apps/e2e/node_modules
+      - /work/apps/starchess/node_modules
+      - /work/apps/ui/node_modules
+      - /work/node_modules
+    environment:
+      E2E_TARGET: web-no-llm
+      CI: "1"
+    network_mode: host
+    command:
+      [
+        "npx",
+        "playwright",
+        "test",
+        "tests/nerd-mode.spec.ts",
+        "--project=chromium",
+      ]
+
+  # Dual local apps on host network (Coach :5173 proxies /starchess → :5175).
+  #   docker compose --profile dev up dev
+  dev:
+    profiles: ["dev"]
+    image: node:24-bookworm
+    working_dir: /work
+    volumes:
+      - .:/work
+      - /work/node_modules
+      - /work/apps/ui/node_modules
+      - /work/apps/starchess/node_modules
+    network_mode: host
+    command: ["pnpm", "dev"]

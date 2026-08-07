@@ -7,6 +7,7 @@
  * “plays twice”, bishop gatling looks like a loop).
  */
 import { createMemo } from "solid-js";
+import type { Square } from "chess.js";
 
 import type { StarChessPiece } from "@chess-coach/starchess-core";
 
@@ -16,6 +17,7 @@ import type {
   DeathCue,
   DeployCue,
   GasDropCue,
+  MineMissileCue,
   MoveCue,
   QueenJumpTrail,
 } from "~/types/cues";
@@ -45,6 +47,13 @@ const asDeploy = (c: CueOf<"deploy">): DeployCue =>
   c as unknown as DeployCue & { piece: StarChessPiece };
 
 const asGasDrop = (c: CueOf<"gasDrop">): GasDropCue => c as GasDropCue;
+
+const asMineMissile = (c: CueOf<"mineMissile">): MineMissileCue => ({
+  id: c.id,
+  from: c.from,
+  to: c.to,
+  color: c.color,
+});
 
 export const useCombatOverlays = (store: MatchStore) => {
   const tl = () => store.state().timeline;
@@ -83,6 +92,8 @@ export const useCombatOverlays = (store: MatchStore) => {
   const emptyLeg: Record<string, 0 | 1> = {};
   const emptyTrails: QueenJumpTrail[] = [];
   const emptyGas: GasDropCue[] = [];
+  const emptyMissiles: MineMissileCue[] = [];
+  const emptySpent: Square[] = [];
 
   const moveProgress = createMemo((): Record<string, 0 | 1> => {
     const p = tl().moveProgress;
@@ -100,6 +111,24 @@ export const useCombatOverlays = (store: MatchStore) => {
     // timeline.active flips false on TIMELINE_DONE — do not gate on active.
     if (t.jumpTrails.length === 0) return emptyTrails;
     return t.jumpTrails;
+  });
+
+  const mineMissiles = createMemo((): MineMissileCue[] => {
+    const t = tl();
+    if (!t.active) return emptyMissiles;
+    return playing(t.cues, t.playingIds, "mineMissile").map(asMineMissile);
+  });
+
+  const mineMissileTrails = createMemo(() => {
+    const t = tl();
+    if (t.mineMissileTrails.length === 0) return emptyTrails;
+    return t.mineMissileTrails;
+  });
+
+  const spentMines = createMemo((): readonly Square[] => {
+    const t = tl();
+    if (t.spentMines.length === 0) return emptySpent;
+    return t.spentMines;
   });
 
   const gasDropCues = createMemo((): GasDropCue[] => {
@@ -131,6 +160,9 @@ export const useCombatOverlays = (store: MatchStore) => {
     moveCues,
     jumpCues,
     jumpTrails,
+    mineMissiles,
+    mineMissileTrails,
+    spentMines,
     gasDropCues,
     gasDropSquares,
     moveProgress,

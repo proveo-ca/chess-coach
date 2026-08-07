@@ -40,12 +40,14 @@ export const screenAimDeg = (active: boolean, aimDeg: number, restDeg: number): 
   active ? aimDeg : restDeg;
 
 /**
- * Which silhouette to show while attacking (camera-relative, white at bottom).
+ * Which silhouette to show for pawn/bishop attack or quiet travel
+ * (camera-relative, white at bottom).
  *
- * - Pawn / bishop: team rear (`back`) when firing up the board (`dr > 0`);
- *   front glass when firing down. Same rule for both colors — opponent pieces
- *   keep the glass toward the camera when they shoot at the player (do not
- *   reuse white’s “toward-opponent ⇒ back” test, which would hide it).
+ * - Pawn / bishop: team rear (`back` / helmet) when moving or firing up the
+ *   board (`dr > 0`); front glass visor when moving or firing down (`dr ≤ 0`).
+ *   Same rule for both colors — opposing units keep the glass toward the
+ *   camera when they walk/shoot toward the player (do not reuse white’s
+ *   “toward-opponent ⇒ back” test, which would hide it).
  */
 export const attackFaceFor = (
   piece: DemoPiece,

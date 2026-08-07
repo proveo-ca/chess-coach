@@ -3,10 +3,15 @@
  * Verification for Attack (path collide) Spider Mine story.
  */
 
-import { addScAction, addScMove } from "@chess-coach/starchess-core";
-import { endScTurn } from "@chess-coach/starchess-core";
-import { parseScFen } from "@chess-coach/starchess-core";
-import type { ScActionInput, ScFenSnapshot } from "@chess-coach/starchess-core";
+import {
+  addScAction,
+  addScMove,
+  endScTurn,
+  parseScFen,
+  refillTurnGas,
+  type ScActionInput,
+  type ScFenSnapshot,
+} from "@chess-coach/starchess-core";
 
 /** Nb a4, Ke1, kh8 — black mine will be hostile on a4. */
 export const PATH_COLLIDE_START_SCFEN =
@@ -56,6 +61,8 @@ export const buildPathCollidePlys = (): ScFenSnapshot[] => {
   const plies: ScFenSnapshot[] = [parseScFen(PATH_COLLIDE_START_SCFEN)];
   let cur = plies[0]!;
   for (const step of PATH_COLLIDE_STEPS) {
+    // endScTurn zeroes gas; refill like beginScTurn / live turn-open.
+    cur = refillTurnGas(cur);
     cur = endScTurn(queuePathCollideStep(cur, step)).next;
     plies.push(cur);
   }

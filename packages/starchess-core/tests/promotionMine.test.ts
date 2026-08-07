@@ -38,6 +38,42 @@ describe("core promotion / mine (package)", () => {
     });
   });
 
+  it("rejects gas step onto the last rank (promotion is classical)", () => {
+    const snap = parseScFen(
+      "SCFEN|k7/4P3/8/8/8/8/8/4K3|1|33|P|G:11:11|Q:w:;b:",
+    );
+    expect(() =>
+      addScAction({
+        snapshot: snap,
+        action: {
+          timing: "B",
+          kind: "pawnDouble",
+          color: "w",
+          from: "e7",
+          to: "e8",
+        },
+      }),
+    ).toThrow(/last rank/i);
+  });
+
+  it("rejects classical last-rank without a promotion choice", () => {
+    const snap = parseScFen(
+      "SCFEN|k7/4P3/8/8/8/8/8/4K3|1|33|P|G:11:11|Q:w:;b:",
+    );
+    expect(() =>
+      addScAction({
+        snapshot: snap,
+        action: {
+          timing: "C",
+          kind: "classical",
+          color: "w",
+          from: "e7",
+          to: "e8",
+        },
+      }),
+    ).toThrow(/promotion/i);
+  });
+
   it("gas + promote does not stamp U: on the deployed unit", () => {
     let snap = parseScFen(
       "SCFEN|k7/8/4P3/8/8/8/8/4K3|1|33|P|G:11:11|Q:w:;b:",

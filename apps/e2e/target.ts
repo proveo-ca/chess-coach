@@ -1,7 +1,8 @@
 // Resolves the e2e "target" — which app/wiring is under test.
 //
 //   web-no-llm (default): Classical Chess Coach UI + in-browser engine workers
-//                         (apps/ui), vite (:5173) + wrangler PWA preview (:8787).
+//                         (apps/ui), vite (:5173) + StarChess vite (:5175) for
+//                         /starchess proxy + wrangler PWA preview (:8787).
 //   desktop:              UI built in desktop mode (HttpCoachService) talking to
 //                         the Bun server (apps/server) over HTTP.
 //   starchess:            Standalone StarChess app (apps/starchess) at /starchess/,
@@ -131,21 +132,30 @@ export function targetConfig(): TargetConfig {
     };
   }
 
-  // web-no-llm (default): classical Coach UI.
+  // web-no-llm (default): classical Coach UI + StarChess proxy target for
+  // NerdModePrompt → /starchess/ (same origin via vite proxy on :5173).
   return {
-    baseURL: "http://localhost:5173/chess/",
+    baseURL: "http://127.0.0.1:5173/chess/",
     webServer: [
       {
         command: "npm run dev:web-no-llm:vite",
         cwd: "../ui",
-        url: "http://localhost:5173/chess/",
+        url: "http://127.0.0.1:5173/chess/",
         reuseExistingServer: !process.env.CI,
         timeout: 30_000,
       },
       {
+        // Proxied from coach :5173 /starchess → this server (NerdModePrompt).
+        command: "npm run dev",
+        cwd: "../starchess",
+        url: "http://127.0.0.1:5175/starchess/",
+        reuseExistingServer: !process.env.CI,
+        timeout: 60_000,
+      },
+      {
         command: "npm run preview",
         cwd: "../ui",
-        url: "http://localhost:8787/chess/",
+        url: "http://127.0.0.1:8787/chess/",
         reuseExistingServer: !process.env.CI,
         timeout: 180_000,
       },

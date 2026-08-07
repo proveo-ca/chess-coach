@@ -1,0 +1,23 @@
+{
+  "name": "ui",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/ui/src",
+  "targets": {
+    "dev": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npm run dev:web-no-llm:vite",
+        "cwd": "apps/ui"
+      }
+    },
+    "storybook": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npm run storybook -- --ci",
+        "cwd": "apps/ui"
+      }
+    }
+  },
+  "tags": ["type:app", "scope:ui"]
+}

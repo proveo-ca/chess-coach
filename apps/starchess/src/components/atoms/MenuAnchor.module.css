@@ -1,0 +1,52 @@
+.root {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0.35rem 0.5rem;
+  border: none;
+  background: transparent;
+  color: var(--sc-menu-neon, #7cff4a);
+  font: inherit;
+  font-family: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  text-align: left;
+  cursor: inherit;
+  transition:
+    color 0.15s ease,
+    transform 0.15s ease,
+    filter 0.2s ease;
+}
+
+.root:hover:not(:disabled),
+.root:focus-visible:not(:disabled) {
+  color: #e8ffb8;
+  transform: scale(1.04);
+  outline: none;
+  filter: brightness(1.15);
+}
+
+.visual {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  max-width: 100%;
+  pointer-events: none;
+}
+
+.disabled {
+  color: var(--sc-menu-neon-dim, color-mix(in srgb, #7dff6a 55%, #1a3a22));
+  opacity: 0.7;
+  cursor: not-allowed;
+  /* Grayscale the title + animation together when the anchor is off. */
+  filter: grayscale(1);
+}
+
+.disabled:hover {
+  transform: none;
+  filter: grayscale(1);
+  color: var(--sc-menu-neon-dim, color-mix(in srgb, #7dff6a 55%, #1a3a22));
+}

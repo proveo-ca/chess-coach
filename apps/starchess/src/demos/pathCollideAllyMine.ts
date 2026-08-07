@@ -3,10 +3,15 @@
  * Verification for Attack (path collide · ally mine) Spider Mine story.
  */
 
-import { addScAction, addScMove } from "@chess-coach/starchess-core";
-import { endScTurn } from "@chess-coach/starchess-core";
-import { parseScFen } from "@chess-coach/starchess-core";
-import type { ScActionInput, ScFenSnapshot } from "@chess-coach/starchess-core";
+import {
+  addScAction,
+  addScMove,
+  endScTurn,
+  parseScFen,
+  refillTurnGas,
+  type ScActionInput,
+  type ScFenSnapshot,
+} from "@chess-coach/starchess-core";
 
 /** Nw a4, Ke1, ke8 — white mine will be allied on a4. */
 export const PATH_COLLIDE_ALLY_MINE_START_SCFEN =
@@ -56,6 +61,8 @@ export const buildPathCollideAllyMinePlys = (): ScFenSnapshot[] => {
   const plies: ScFenSnapshot[] = [parseScFen(PATH_COLLIDE_ALLY_MINE_START_SCFEN)];
   let cur = plies[0]!;
   for (const step of PATH_COLLIDE_ALLY_MINE_STEPS) {
+    // endScTurn zeroes gas; refill like beginScTurn / live turn-open.
+    cur = refillTurnGas(cur);
     cur = endScTurn(queuePathCollideAllyMineStep(cur, step)).next;
     plies.push(cur);
   }

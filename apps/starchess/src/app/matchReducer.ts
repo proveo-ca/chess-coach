@@ -24,6 +24,8 @@ const emptyTimeline = (placement: string | null = null): TimelineState => ({
   moveProgress: {},
   moveLeg: {},
   jumpTrails: [],
+  mineMissileTrails: [],
+  spentMines: [],
   displayPlacement: placement,
   displayKingLives: null,
   displayMines: null,
@@ -159,9 +161,25 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
       return { ...state, statusText: action.message };
     case "SET_PENDING_PROMOTION":
       if (state.phase !== "planning" && state.phase !== "targeting") return state;
-      return { ...state, pendingPromotion: action.pending };
+      return {
+        ...state,
+        // Same intent chrome as Deploy / Charon / Jump — TurnBar + board frame.
+        phase: "targeting",
+        targeting: null,
+        pendingPromotion: action.pending,
+        statusText: `Promote ${action.pending.from}→${action.pending.to} — pick a unit`,
+      };
     case "CLEAR_PENDING_PROMOTION":
-      return { ...state, pendingPromotion: null };
+      return {
+        ...state,
+        pendingPromotion: null,
+        phase:
+          state.phase === "targeting" && !state.targeting ? "planning" : state.phase,
+        statusText:
+          state.phase === "targeting" && !state.targeting
+            ? "Plan your turn"
+            : state.statusText,
+      };
     case "REMOVE_ACTION": {
       if (state.phase !== "planning") return state;
       try {
@@ -397,8 +415,10 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
           hiddenSquares: new Set(),
           moveProgress: {},
           moveLeg: {},
-          // Keep fading Tactical Jump trails across resolve → checks handoff.
+          // Keep fading Tactical Jump / mine chase trails across resolve handoff.
           jumpTrails: [...state.timeline.jumpTrails],
+          mineMissileTrails: [...state.timeline.mineMissileTrails],
+          spentMines: [],
           displayPlacement: action.placement,
           displayKingLives: null,
           displayMines: null,
@@ -433,6 +453,14 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
               action.jumpTrails !== undefined
                 ? [...action.jumpTrails]
                 : state.timeline.jumpTrails,
+            mineMissileTrails:
+              action.mineMissileTrails !== undefined
+                ? [...action.mineMissileTrails]
+                : state.timeline.mineMissileTrails,
+            spentMines:
+              action.spentMines !== undefined
+                ? [...action.spentMines]
+                : state.timeline.spentMines,
             displayPlacement: action.placement ?? state.timeline.displayPlacement,
             displayKingLives:
               action.kingLives ?? state.timeline.displayKingLives,
@@ -490,6 +518,14 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
             action.jumpTrails !== undefined
               ? [...action.jumpTrails]
               : state.timeline.jumpTrails,
+          mineMissileTrails:
+            action.mineMissileTrails !== undefined
+              ? [...action.mineMissileTrails]
+              : state.timeline.mineMissileTrails,
+          spentMines:
+            action.spentMines !== undefined
+              ? [...action.spentMines]
+              : state.timeline.spentMines,
           displayPlacement: action.placement ?? state.timeline.displayPlacement,
           displayKingLives: null,
           displayMines: null,
@@ -498,9 +534,9 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
       };
     }
     case "TIMELINE_DONE": {
-      // Jump thruster trails keep fading for TACTICAL_JUMP_TRAIL_MS after the
-      // hull/appear cues end — preserve them across the idle timeline reset.
+      // Jump / mine-chase trails keep fading after hull cues end — preserve across reset.
       const lingeringJumpTrails = [...state.timeline.jumpTrails];
+      const lingeringMineTrails = [...state.timeline.mineMissileTrails];
       // Terminal DualNav finished replaying a stored resolve.
       if (state.phase === "gameOver") {
         const max = state.settledSnapshots.length - 1;
@@ -510,14 +546,22 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
           return {
             ...state,
             lastResolve: null,
-            timeline: { ...emptyTimeline(), jumpTrails: lingeringJumpTrails },
+            timeline: {
+              ...emptyTimeline(),
+              jumpTrails: lingeringJumpTrails,
+              mineMissileTrails: lingeringMineTrails,
+            },
           };
         }
         return {
           ...state,
           reviewIndex: nextIndex,
           lastResolve: null,
-          timeline: { ...emptyTimeline(), jumpTrails: lingeringJumpTrails },
+          timeline: {
+            ...emptyTimeline(),
+            jumpTrails: lingeringJumpTrails,
+            mineMissileTrails: lingeringMineTrails,
+          },
           // Arm marks are live-planning only — do not import snap `U:`.
           specialsUsed: new Set(),
           siegedRooks: new Set(settled.siegedRooks ?? []),
@@ -529,7 +573,11 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
         return {
           ...state,
           phase: "planning",
-          timeline: { ...emptyTimeline(), jumpTrails: lingeringJumpTrails },
+          timeline: {
+            ...emptyTimeline(),
+            jumpTrails: lingeringJumpTrails,
+            mineMissileTrails: lingeringMineTrails,
+          },
           statusText: "Plan your turn",
         };
       }
@@ -548,7 +596,11 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
         // Fresh arm marks — snap `U:` carries green until turn-open checks.
         specialsUsed: new Set(),
         siegedRooks: new Set(next.siegedRooks ?? []),
-        timeline: { ...emptyTimeline(), jumpTrails: lingeringJumpTrails },
+        timeline: {
+          ...emptyTimeline(),
+          jumpTrails: lingeringJumpTrails,
+          mineMissileTrails: lingeringMineTrails,
+        },
         outcome,
         settledSnapshots: [...state.settledSnapshots, next],
         settledResolves: [...state.settledResolves, result],

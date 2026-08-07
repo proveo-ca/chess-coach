@@ -83,7 +83,14 @@ const moverNode = (m: MoveCue, opts?: { armed?: boolean }): JSX.Element => {
     case "k":
       return <InlineKing color={m.color} aimDeg={KING_REST_AIM_DEG} />;
     default:
-      return <InlinePawn color={m.color} face="back" />;
+      // Pawn: helmet when walking up the board, glass visor when walking down
+      // (same camera rule as attackFaceFor — red/black g8→g6 stays front).
+      return (
+        <InlinePawn
+          color={m.color}
+          face={attackFaceFor("p", vecBetween(m.from, m.to))}
+        />
+      );
   }
 };
 

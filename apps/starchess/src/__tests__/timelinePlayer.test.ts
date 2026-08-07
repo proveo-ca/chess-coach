@@ -956,4 +956,80 @@ describe("timelinePlayer", () => {
       cues.some((c) => c.kind === "death" && c.piece === "k" && c.color === "b"),
     ).toBe(true);
   });
+
+  it("projects chase mineMissile before boom (path-collide wake)", () => {
+    // Mine on a4; rook walks a1→a8 and wakes it — chaseFrom a4 → impact a8.
+    let snap = parseScFen(
+      "SCFEN|7k/8/8/8/8/8/8/R3K3|0|33|P|G:11:11|M:b:a4|Q:w:;b:",
+    );
+    snap = addScAction({
+      snapshot: snap,
+      action: {
+        timing: "C",
+        kind: "classical",
+        color: "w",
+        from: "a1",
+        to: "a8",
+      },
+    }).snapshot;
+    const result = endScTurn(snap, { skipTurnStartChecks: true });
+    const chase = result.resolved.mineTriggers.find(
+      (a) => a.kind === "mineBlast" && a.chaseFrom != null,
+    );
+    expect(chase).toMatchObject({
+      kind: "mineBlast",
+      chaseFrom: "a4",
+      to: "a8",
+      mineColor: "b",
+    });
+
+    const cues = projectResolveTimeline(result);
+    const missileIdx = cues.findIndex((c) => c.kind === "mineMissile");
+    const boomIdx = cues.findIndex(
+      (c) => c.kind === "death" && c.id.startsWith("mtm"),
+    );
+    expect(missileIdx).toBeGreaterThanOrEqual(0);
+    expect(boomIdx).toBeGreaterThan(missileIdx);
+    expect(cues[missileIdx]).toMatchObject({
+      kind: "mineMissile",
+      from: "a4",
+      to: "a8",
+      color: "b",
+    });
+
+    type Job = { ms: number; fn: () => void };
+    const jobs: Job[] = [];
+    const scheduler = {
+      delay: (ms: number, fn: () => void) => {
+        jobs.push({ ms, fn });
+        return () => undefined;
+      },
+    };
+    const playingLog: string[][] = [];
+    const trailLog: unknown[] = [];
+    const spentLog: unknown[] = [];
+    playTimeline(result, scheduler, {
+      onStart: () => undefined,
+      onCommit: (patch) => {
+        if (patch.playingIds) playingLog.push([...patch.playingIds]);
+        if (patch.mineMissileTrails !== undefined) {
+          trailLog.push(patch.mineMissileTrails);
+        }
+        if (patch.spentMines !== undefined) spentLog.push(patch.spentMines);
+      },
+      onDone: () => undefined,
+    });
+    while (
+      jobs.length &&
+      !playingLog.some((ids) => ids.some((id) => id.startsWith("mm")))
+    ) {
+      jobs.shift()!.fn();
+    }
+    expect(playingLog.some((ids) => ids.some((id) => id.startsWith("mm")))).toBe(
+      true,
+    );
+    expect(spentLog.some((s) => Array.isArray(s) && s.includes("a4"))).toBe(true);
+    expect(trailLog.some((t) => Array.isArray(t) && t.length > 0)).toBe(true);
+    while (jobs.length) jobs.shift()!.fn();
+  });
 });

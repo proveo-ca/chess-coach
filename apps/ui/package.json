@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev:web-no-llm": "VITE_TARGET=web-no-llm vite build && wrangler dev",
-    "dev:web-no-llm:vite": "VITE_TARGET=web-no-llm vite",
+    "dev:web-no-llm:vite": "VITE_TARGET=web-no-llm vite --host 127.0.0.1 --port 5173 --strictPort",
     "dev:web-full:vite": "VITE_TARGET=web-full vite",
     "dev:desktop": "VITE_API_URL=http://localhost:8080 vite",
     "build:web-no-llm": "tsgo -b && VITE_TARGET=web-no-llm vite build",

@@ -15,7 +15,6 @@ import {
 } from "@chess-coach/starchess-core";
 
 import { useMatchStore } from "~/app/MatchStoreContext";
-import { PromotionModal } from "~/components/primitives/PromotionModal";
 import { canSubmit, displayedSnapshot } from "~/app/selectors";
 import { AnimationStage } from "~/presentation/animations/AnimationStage";
 import { kingDamageCuesFromBoard } from "~/presentation/animations/kingDamage";
@@ -41,8 +40,7 @@ export const LiveStarChessBoard: Component<{
   variant?: BoardVariant;
 }> = (props) => {
   const store = useMatchStore();
-  const { onSquareClick, pendingPromotion, resolvePromotion, cancelPromotion } =
-    useBoardInput();
+  const { onSquareClick } = useBoardInput();
   const combat = useCombatOverlays(store);
   const snap = createMemo(() => displayedSnapshot(store.state()));
   const [kingDamage, setKingDamage] = createSignal<KingDamageCue[]>([]);
@@ -59,6 +57,7 @@ export const LiveStarChessBoard: Component<{
       phase: s.phase,
       lastResolve: s.lastResolve,
       timelineActive: s.timeline.active,
+      pendingPromotion: !!s.pendingPromotion,
     });
   });
 
@@ -239,6 +238,9 @@ export const LiveStarChessBoard: Component<{
         moveLeg={combat.moveLeg()}
         jumpCues={jumpCues()}
         jumpTrails={combat.jumpTrails()}
+        mineMissiles={combat.mineMissiles()}
+        mineMissileTrails={combat.mineMissileTrails()}
+        spentMines={combat.spentMines()}
         deployCues={deployCues()}
         gasDropCues={gasDropCues()}
         gasAbsorbSquares={gasAbsorbSquares()}
@@ -246,11 +248,6 @@ export const LiveStarChessBoard: Component<{
         armedBishops={armedBishops()}
         armAnimBishops={armAnimBishops()}
         hideSquares={hideSquares()}
-      />
-      <PromotionModal
-        pending={pendingPromotion()}
-        onSelect={resolvePromotion}
-        onCancel={cancelPromotion}
       />
     </div>
   );

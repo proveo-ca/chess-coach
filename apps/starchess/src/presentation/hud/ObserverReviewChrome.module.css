@@ -10,8 +10,9 @@
 }
 
 .bars {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
   gap: 6px;
   width: 100%;
   min-width: 0;

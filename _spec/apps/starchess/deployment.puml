@@ -21,7 +21,7 @@ package "StarChess shell" {
 
 package "Coach compatibility" {
   component "/chess/starchess\n→ /starchess/ + search/hash\nStarChessRedirect" as R <<app>>
-  component "NerdModePrompt\nexternal /starchess/" as N <<app>>
+  component "NerdModePrompt\nLevenshtein on name **blur/commit**\nyes → /starchess/\nkeep classic → Nerd identity" as N <<app>>
 }
 
 V --> P
@@ -30,6 +30,11 @@ W --> J
 C --> R
 R ..> W : external navigate
 N ..> W : location.assign
+
+note bottom of N
+  Local dual-serve: ``pnpm dev`` (nx ui + starchess).
+  Coach vite ``:5173`` proxies ``/starchess`` → starchess ``:5175``.
+end note
 
 note bottom of W
   **Dry-run:** pnpm --filter @chess-coach/starchess deploy:dry-run

@@ -118,6 +118,7 @@ export const TurnBar: Component<TurnBarProps> = (props) => {
       phase: s.phase,
       lastResolve: s.lastResolve,
       timelineActive: s.timeline.active,
+      pendingPromotion: !!s.pendingPromotion,
     });
   });
 

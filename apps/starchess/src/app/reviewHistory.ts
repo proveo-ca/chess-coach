@@ -113,6 +113,8 @@ export const createMatchStateFromReviewHistory = (
       moveProgress: {},
       moveLeg: {},
       jumpTrails: [],
+      mineMissileTrails: [],
+      spentMines: [],
       displayPlacement: null,
       displayKingLives: null,
       displayMines: null,

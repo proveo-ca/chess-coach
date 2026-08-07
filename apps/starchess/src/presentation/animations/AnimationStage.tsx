@@ -25,6 +25,7 @@ import { DeathAnimation } from "~/presentation/animations/DeathAnimation";
 import { DeployAnimation } from "~/presentation/animations/DeployAnimation";
 import { GasDropAnimation } from "~/presentation/animations/GasDropAnimation";
 import { MoveAnimation } from "~/presentation/animations/MoveAnimation";
+import { MineMissileAnimation } from "~/presentation/animations/MineMissileAnimation";
 import { QueenJumpAnimation } from "~/presentation/animations/QueenJumpAnimation";
 import { KingDamageOverlay } from "~/presentation/animations/kingDamageOverlay";
 import { findBoardGrid } from "~/presentation/animations/boardGeom";
@@ -34,6 +35,7 @@ import type {
   DeployCue,
   GasDropCue,
   KingDamageCue,
+  MineMissileCue,
   MoveCue,
   QueenJumpTrail,
 } from "~/presentation/types";
@@ -56,9 +58,11 @@ const NO_DEPLOYS: DeployCue[] = [];
 const NO_KING_DAMAGE: KingDamageCue[] = [];
 const NO_JUMP_TRAILS: QueenJumpTrail[] = [];
 const NO_GAS_DROPS: GasDropCue[] = [];
+const NO_MINE_MISSILES: MineMissileCue[] = [];
 const NO_MOVE_PROGRESS: Record<string, 0 | 1> = {};
 const NO_ARMED: Square[] = [];
 const NO_GAS_ABSORB: ReadonlySet<Square> = new Set();
+const NO_SPENT: Square[] = [];
 
 const fenToSnapshot = (fen: string, sieged: readonly Square[] = []): ScFenSnapshot => {
   const placement = fen.split(/\s+/)[0] ?? "8/8/8/8/8/8/8/8";
@@ -108,6 +112,9 @@ export type AnimationStageProps = {
   /** Tactical Jump hull cues (QueenJumpAnimation). */
   jumpCues?: readonly MoveCue[];
   jumpTrails?: readonly QueenJumpTrail[];
+  /** Spider Mine chase missile + trails. */
+  mineMissiles?: readonly MineMissileCue[];
+  mineMissileTrails?: readonly QueenJumpTrail[];
   deployCues?: readonly DeployCue[];
   /** Gas special absorb — canister drop + aura ease-in. */
   gasDropCues?: readonly GasDropCue[];
@@ -169,6 +176,8 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
     (props.moveCues?.length ?? 0) > 0 ||
     (props.jumpCues?.length ?? 0) > 0 ||
     (props.jumpTrails?.length ?? 0) > 0 ||
+    (props.mineMissiles?.length ?? 0) > 0 ||
+    (props.mineMissileTrails?.length ?? 0) > 0 ||
     (props.gasDropCues?.length ?? 0) > 0 ||
     (props.deployCues?.length ?? 0) > 0 ||
     (props.kingDamage?.length ?? 0) > 0;
@@ -252,7 +261,7 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
         hideSquares={hidden()}
         moveCues={props.moveCues}
         moveProgress={props.moveProgress}
-        spentMines={props.spentMines}
+        spentMines={props.spentMines ?? NO_SPENT}
         chasingMines={props.chasingMines}
         armedBishops={props.armedBishops ?? NO_ARMED}
         armAnimBishops={props.armAnimBishops ?? NO_ARMED}
@@ -308,6 +317,12 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
           <QueenJumpAnimation
             cues={(props.jumpCues as MoveCue[] | undefined) ?? NO_MOVES}
             trails={(props.jumpTrails as QueenJumpTrail[] | undefined) ?? NO_JUMP_TRAILS}
+            boardWidth={box().w}
+            boardHeight={box().h}
+          />
+          <MineMissileAnimation
+            cues={props.mineMissiles ?? NO_MINE_MISSILES}
+            trails={props.mineMissileTrails ?? NO_JUMP_TRAILS}
             boardWidth={box().w}
             boardHeight={box().h}
           />

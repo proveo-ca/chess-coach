@@ -83,6 +83,14 @@ export type TimelineCue =
       at: Square;
       /** Top-edge start: left / mid / right (always falls from the top). */
       corner: "left" | "mid" | "right";
+    }
+  | {
+      /** Spider Mine chase — lift+launch from wake square to impact (`chaseFrom` → `to`). */
+      kind: "mineMissile";
+      id: string;
+      color: StarChessColor;
+      from: Square;
+      to: Square;
     };
 
 export type TimelineState = {
@@ -98,6 +106,10 @@ export type TimelineState = {
   moveLeg: Readonly<Record<string, 0 | 1>>;
   /** Tactical Jump thruster trails (outlive the hull cue). */
   jumpTrails: ReadonlyArray<{ id: string; from: Square; to: Square }>;
+  /** Spider Mine chase trails (outlive the missile hull cue). */
+  mineMissileTrails: ReadonlyArray<{ id: string; from: Square; to: Square }>;
+  /** Hide board mine glyphs after boom / while missile owns the square. */
+  spentMines: readonly Square[];
   /** Temporary placement overrides during resolve (mid-timeline commits). */
   displayPlacement: string | null;
   /** Review-replay overlays — never rewrite `liveSnapshot` while `gameOver`. */
@@ -186,6 +198,8 @@ export type MatchAction =
       moveProgress?: Record<string, 0 | 1>;
       moveLeg?: Record<string, 0 | 1>;
       jumpTrails?: ReadonlyArray<{ id: string; from: Square; to: Square }>;
+      mineMissileTrails?: ReadonlyArray<{ id: string; from: Square; to: Square }>;
+      spentMines?: readonly Square[];
     }
   | { type: "TIMELINE_DONE" }
   | { type: "REVIEW_SEEK"; index: number }

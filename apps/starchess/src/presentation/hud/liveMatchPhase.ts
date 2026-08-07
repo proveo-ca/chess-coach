@@ -15,13 +15,17 @@ export const liveMatchPhase = (input: {
   phase: MatchPhase;
   lastResolve: EndScTurnResult | null;
   timelineActive: boolean;
+  /** Last-rank picker — intent chrome while the modal is open. */
+  pendingPromotion?: boolean;
 }): ReviewTurnPhase => {
-  const { phase, lastResolve, timelineActive } = input;
+  const { phase, lastResolve, timelineActive, pendingPromotion } = input;
   if (phase === "gameOver") return "final";
   if (phase === "resolving" || timelineActive) {
     if (lastResolve && isCheckOnlyResolve(lastResolve)) return "check";
     return "resolve";
   }
-  if (phase === "planning" || phase === "targeting") return "intent";
+  if (pendingPromotion || phase === "planning" || phase === "targeting") {
+    return "intent";
+  }
   return "start";
 };

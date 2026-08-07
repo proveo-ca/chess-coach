@@ -10,6 +10,7 @@ import {
   FOG_MOVE_QUEEN_SCENARIO,
 } from "~/demos/fogMoveSamples";
 import { AttackBoardDemo } from "~/presentation/animations/AttackBoardDemo";
+import { SpiderMineFogDemo } from "~/presentation/animations/SpiderMineFogDemo";
 
 /**
  * Stories feed SCFEN scenario packages only — no queue / resolve / combat logic here.
@@ -22,7 +23,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "DualNav asserts **intent → resolve**: dashed ghost on `intentTo` (unit stays on `from`), then End-style combat resolve (slide + progressive fog). Bishop / Rook (tank) also assert fog-edge move collision. Siege rook demo cycles HE battery attacks on adjacent squares.",
+          "DualNav asserts **intent → resolve**: dashed ghost on `intentTo` (unit stays on `from`), then End-style combat resolve (slide + progressive fog). Bishop / Rook (tank) also assert fog-edge move collision. Siege rook demo cycles HE battery attacks on adjacent squares. Spider Mine fog: `M:` own-square vision.",
       },
     },
   },
@@ -110,6 +111,19 @@ export const Queen: Story = {
     docs: {
       description: {
         story: "Qd4→d6: intent ghost on d6, then resolve slide + fog.",
+      },
+    },
+  },
+};
+
+export const SpiderMine: Story = {
+  name: "Spider Mine",
+  render: () => <SpiderMineFogDemo />,
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "SCFEN `M:w:a4` — vision is only the mine’s own square for the owning side (fog veil).",
       },
     },
   },

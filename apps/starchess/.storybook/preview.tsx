@@ -66,6 +66,10 @@ const preview: Preview = {
         root.style.setProperty("--border-color", "#ccc");
         root.style.setProperty("--border-radius-md", "8px");
         root.style.setProperty("--avatar-height", "8rem");
+        root.style.setProperty("--avatar-fur", "#f5f5f5");
+        root.style.setProperty("--avatar-outline", "#161616");
+        root.style.setProperty("--avatar-nose", "#d4a5a5");
+        root.style.setProperty("--avatar-iris", "#b3e79f");
         /* Do not hardcode --board-size — let theme media queries own responsiveness. */
         root.style.setProperty("--board-light", "#f0d9b5");
         root.style.setProperty("--board-dark", "#b58863");
