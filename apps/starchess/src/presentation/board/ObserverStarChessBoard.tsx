@@ -1,7 +1,7 @@
 /**
  * Observer / snapshot-driven StarChess board — eclipse/butter/vermeer (default eclipse).
  * Presentation CSS matches apps/ui StarChessBoardView + StarChessSquare at 3bed049.
- * // SPEC: _spec/apps/ui/starchess/demos.puml
+ * // SPEC: _spec/apps/starchess/demos.puml
  */
 import { For, Show, createEffect, createMemo, createSignal, createUniqueId, onCleanup } from "solid-js";
 import type { Component } from "solid-js";

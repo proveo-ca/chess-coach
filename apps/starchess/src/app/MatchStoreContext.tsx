@@ -1,5 +1,7 @@
 /**
  * Match store — Solid signal + reducer; timeline / timer / DualNav review runners.
+ * // SPEC: _spec/apps/starchess/match-store.puml
+ * // SPEC: _spec/apps/starchess/animation-pipeline.md
  */
 import {
   createContext,

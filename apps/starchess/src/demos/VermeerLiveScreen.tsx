@@ -1,7 +1,7 @@
 /**
  * Vermeer (live) — classic 1K+4P opening on Vermeer terrain vs adjutant.
  * Same HUD shell as `/starchess/single`.
- * // SPEC: _spec/apps/ui/starchess/demos.puml
+ * // SPEC: _spec/apps/starchess/demos.puml
  */
 import type { Component } from "solid-js";
 import { adjutant } from "@chess-coach/starchess-core";

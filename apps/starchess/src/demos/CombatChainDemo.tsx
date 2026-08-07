@@ -1,6 +1,6 @@
 /**
  * Combat Chain — DualNav review via MatchStore (observer).
- * // SPEC: _spec/apps/ui/starchess/demos.puml
+ * // SPEC: _spec/apps/starchess/demos.puml
  */
 import type { Component } from "solid-js";
 

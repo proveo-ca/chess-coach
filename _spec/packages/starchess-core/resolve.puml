@@ -1,8 +1,7 @@
 @startuml resolve
-' SPEC: _spec/apps/ui/starchess/resolve.puml
-' OUTDATED: Phase 5–6 — live resolve in packages/starchess-core/src/resolve.
+' SPEC: _spec/packages/starchess-core/resolve.puml
 ' purpose: Rank-major resolve — turn-open king-checks (before intent) → End: B → C → F.
-!include ../../../themes/proveo.puml
+!include ../../themes/proveo.puml
 
 title StarChess · Resolve — 3 phases: attack → move → fog approach
 
@@ -10,51 +9,53 @@ start
 
 :Take planning snap — turn N is open;
 
-:**Turn-open legal king-checks** (""beginScTurn"") — fog-visible, implicit,\nwhite then black (""applyPendingKingShots"").\nResolved **before** players choose intent. A unit that\nbreaks contact later this turn already paid a **parting shot**;\n
+:**Turn-open legal king-checks** — ""beginScTurn"" — fog-visible, implicit,\nwhite then black — ""applyPendingKingShots"".\nResolved **before** players choose intent. A unit that\nbreaks contact later this turn already paid a **parting shot**;
 
 if (the two kings are adjacent?) then (yes)
-  :**King duel** — a king is a legal checker of the enemy king.\nThe collector loops **both** king colours independently, so\ncontact is always **mutual**. Damage is **per checker**: every\nunit checking a king costs it 1 HP, so N checkers = N HP.\nKings leap (""leapsPiece"") → never the blocker / collision\nbranch: adjacency always chips, nothing is captured, the\nplacement is untouched;
+  :**King duel** — a king is a legal checker of the enemy king.\nThe collector loops **both** king colours independently, so\ncontact is always **mutual**. Damage is **per checker**: every\nunit checking a king costs it 1 HP, so N checkers = N HP.\nKings leap — ""leapsPiece"" — never the blocker / collision\nbranch: adjacency always chips, nothing is captured, the\nplacement is untouched;
 else (no)
   :Only checkers with clear geometry to the king chip;
 endif
 
 if (either king at 0 HP after turn-open checks?) then (yes)
-  :Phase **""O""** — no intent / B / C / F;
+  :Phase O — no intent / B / C / F;
   stop
 else (no)
 endif
 
 :Players queue intent (specials + classical);
 
-:End / timeout — ""endScTurn"" (live passes\n""skipTurnStartChecks"" when checks already applied);
+:End / timeout — ""endScTurn"" — live passes\n""skipTurnStartChecks"" when checks already applied;
 
-:Apply rank **B** specials — white then black\n(spawn / mine / warp / siege);\n**Presentation:** gas absorb VFX — canister drops\nfrom the top of the actor square (left / mid / right)\ninto the unit; green special-used aura eases in;
+:Apply rank **B** specials — white then black\n— spawn / mine / warp / siege;\n**Presentation:** gas absorb VFX — canister drops\nfrom the top of the actor square — left / mid / right —\ninto the unit; green special-used aura eases in;
 
-:Rank **C** — classical for both sides against\nthe same start board (""resolveTurn"");
+:Rank **C** — classical for both sides against\nthe same start board — ""resolveTurn"";
 
-:Phase 1 **attack** — direct attacks on targets visible\nfrom the start board: attack → death → occupy;
+:Phase 1 **attack** — direct attacks on targets visible\nfrom the start board — attack → death → occupy;
 
 if (attack hits a piece?) then (yes)
   :Death — victim removed;
   if (attacker survives?) then (yes)
     :**Occupy** victim's square;
   else (no)
-    :Attacker dies first —\nsquare stays empty, no occupy;
+    :Attacker dies first — square stays empty, no occupy;
   endif
 else (no)
-  :No direct hit —\nquiet intent defers to phase 2;
+  :No direct hit — quiet intent defers to phase 2;
 endif
 
-:Phase 2 **move** — survivors relocate; collisions\nresolved against the post-attack board; a target\n**still fogged at contact** → move collision\n(capture/occupy, no attack cue);
+:Phase 2 **move** — survivors relocate; collisions\nresolved against the post-attack board; a target\n**still fogged at contact** → move collision\n— capture/occupy, no attack cue;
 
-:Phase 3 **fog approach** — path-reveal shots slide\n""pathRevealFrom"" → discovery square → attack;\n**King HP mid-resolve** only here: fog intent finds a\nhidden king on the path (""pathReveal"" kingShot).\nVisible kings already paid at turn open — no second chip.\n**fizzle unless** the attacker still occupies\n""pathRevealFrom"" (died in phases 1–2 / square\nre-occupied by a phase-2 mover / sieged — rooks\nnever relocate) and ""to"" holds the exact\nin-the-way victim (empty, converging ally, or a\ndifferent non-in-the-way enemy → fizzle, no capture);
+:Phase 3 **fog approach** — path-reveal shots slide\n""pathRevealFrom"" → discovery square → attack;\n**King HP mid-resolve** only here: fog intent finds a\nhidden king on the path — ""pathReveal"" kingShot.\nVisible kings already paid at turn open — no second chip.\n**fizzle unless** the attacker still occupies\n""pathRevealFrom"" — died in phases 1–2 / square\nre-occupied by a phase-2 mover / sieged — rooks\nnever relocate — and ""to"" holds the exact\nin-the-way victim;
 
-:Apply rank **F** specials — white then black\n(post-move siege / late drops);\n**Presentation:** same gas absorb drop + aura as B;
+:Apply rank **F** specials — white then black\n— post-move siege / late drops;\n**Presentation:** same gas absorb drop + aura as B;
 
 if (either king at 0 HP after all ranks?) then (yes)
-  :Next snap phase **""O""** — terminal and **absorbing**\n(""endScTurn"" throws on a non-""P"" snapshot).\n""scOutcome(snap)"" derives the result from ""kingLives""\nalone: 0/0 → **draw**, one side at 0 → the other wins;
+  :Next snap phase **O** — terminal and **absorbing**;
+  :""endScTurn"" throws on a non-P snapshot;
+  :""scOutcome"" from kingLives — 0/0 draw, else win;
 else (no)
-  :Next snap phase **""P""** — play continues;
+  :Next snap phase **P** — play continues;
 endif
 
 note right
@@ -87,8 +88,8 @@ note right
   board-state fizzles (attacker still on ""pathRevealFrom"", exact victim on
   ""to""); the engine loop pre-filters the siege (""siegedRooks"") and
   origin-re-occupation (""destinationsWritten"") gates before the attack is
-  listed, and the UI replay (""useStarChessCombat"" →
-  ""playPathRevealAttacks"") replays only that fired list, so
+  listed, and the UI replay (""playTimeline"" / MatchStore ""TIMELINE_*"")
+  replays only that fired list, so
   ""pathRevealAttacks"" holds **only attacks that fired**.
   ""resolveTurn"" returns ""attacks"" (phase 1),
   ""moves"" / ""mineTriggers"" / ""moveCollisions"" (phase 2),
@@ -142,13 +143,13 @@ note right
   Phase ""O"" is **absorbing** (""endScTurn"" throws on a non-""P"" snapshot),
   and ""parseScFen"" rejects a 0-HP side outside phase ""O"" so a dead king
   can never sit in a playable snapshot.
-  ""scOutcome(snap)"" (""scOutcome.ts"") returns ""{winner:'w'}"" /
+  ""scOutcome(snap)"" (""outcome.ts"") returns ""{winner:'w'}"" /
   ""{winner:'b'}"" for a win, ""{winner:null,draw:true}"" for a draw, or
   ""null"" while play continues — derived purely from
   ""kingLives"". HP is the single source of truth, so there is no
   persisted winner field and **no SCFEN grammar change**
-  (""STARCHESS_FEN.md"" stays as is; ""O"" was already a valid phase code).
+  (wire grammar unchanged; ""O"" was already a valid phase code).
   Covered by core unit tests under ""packages/starchess-core""
-  (historical path: ""src/starchess/__tests__/kingDuel.test.ts"").
+  (historical path: ""packages/starchess-core/tests/"" (king duel / beginScTurn)).
 end note
 @enduml

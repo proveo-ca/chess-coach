@@ -96,7 +96,7 @@ export function gameWithMovePathOccupancy(
 /**
  * DualNav / observer review — both sides' cumulative vision from one SCFEN snap.
  * Engine-only: placement + `S:` siege + `M:` mines via {@link getSideVision}.
- * // SPEC: _spec/apps/ui/starchess/demos.puml
+ * // SPEC: _spec/apps/starchess/demos.puml
  */
 export const observerVisionFromSnap = (
   snap: ScFenSnapshot,

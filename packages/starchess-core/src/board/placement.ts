@@ -2,7 +2,7 @@
  * StarChess board occupancy helpers (rules-side). Classic chess.js is not used
  * for legality — only optional render via toClassicFen / loadFen.
  *
- * // SPEC: _spec/apps/ui/starchess/resolve.puml
+ * // SPEC: _spec/packages/starchess-core/resolve.puml
  */
 
 import type { Square } from "../model/square";

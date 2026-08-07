@@ -1,16 +1,15 @@
 @startuml turn-queue-sequence
-' SPEC: _spec/apps/ui/starchess/turn-queue-sequence.puml
-' OUTDATED: Phase 5–6 — live screen is apps/starchess.
+' SPEC: _spec/packages/starchess-core/turn-queue-sequence.puml
 ' purpose: Simultaneous turn queue — planning Q:<w>;<b>, End submits, B < C < F then w then b, next snap.
-!include ../../../themes/proveo.puml
+!include ../../themes/proveo.puml
 
 title StarChess · Simultaneous Turn Queue
 
 actor Player as P
-participant "apps/starchess screen\n(was apps/ui StarChess)" as UI <<app>>
-participant "endScTurn" as ES <<app>>
-participant "resolveTurn" as RT <<app>>
-participant "scOutcome" as OUT <<app>>
+participant "apps/starchess\nMatchStore + StarChessScreen" as UI <<app>>
+participant "beginScTurn / endScTurn\nresolve/submit-turn.ts" as ES <<app>>
+participant "resolveTurn\nresolve/resolve-turn.ts" as RT <<app>>
+participant "scOutcome\noutcome.ts" as OUT <<app>>
 database "ScFenSnapshot" as FEN <<db>>
 
 == Turn open ==
@@ -36,8 +35,9 @@ note right of UI
   gas income tier 1→**10s**, 2→**15s**, 3→**22s**
   (+50% per tier from base ""TURN_TIMEOUT_MS"").
   Attack VFX fractions stay on the 10s base.
+  Queue via MatchStore ""QUEUE_ACTION"" → ""addScAction"".
 end note
-UI ARROW_MAIN ES : ""endScTurn(snapshot)""
+UI ARROW_MAIN ES : ""endScTurn(snapshot, { skipTurnStartChecks })""
 
 == Resolve ==
 
@@ -68,7 +68,7 @@ end
 ES ARROW_MAIN FEN : new snapshot (turn+1, ""G:"" remaining 0,\nincome tier on gasIncome)
 ES ARROW_ERROR FEN : phase ""O"" when either ""kingLives"" side hits 0
 FEN ARROW_OPTIONAL OUT : " ""scOutcome(snap)"" "
-FEN ARROW_QUEUE UI : cumulative fog for both sides (""vision.ts"")
+FEN ARROW_QUEUE UI : cumulative fog (""board/vision.ts"")\n+ ""playTimeline"" presentation
 
 note over ES
   Gas does not accumulate; ""endScTurn"" leaves remaining at **0**
@@ -82,25 +82,16 @@ note over OUT
   side wins, otherwise ""null"". No persisted winner field, no SCFEN
   grammar change.
   A draw is reachable because **adjacent kings chip each other
-  simultaneously** — the shot is not gated on the shooter's own HP, so a
-  king that dies in the pass still returns fire and equal HP ends 0/0
-  (see resolve.puml). Phase ""O"" is **absorbing**: ""endScTurn"" throws on
-  a non-""P"" snapshot, so no further turn can be resolved.
+  simultaneously** — see resolve.puml. Phase ""O"" is **absorbing**:
+  ""endScTurn"" throws on a non-""P"" snapshot.
 end note
 
 note over RT
-  **Three phases.** 1) attacks on targets visible at resolve start (start
-  board); 2) moves + collisions for phase-1 survivors; 3) path-reveal fog
-  approaches fire **after** moves — fizzle (dropped) unless the attacker
-  still occupies ""pathRevealFrom"" (survived phases 1–2, origin not
-  re-occupied by a phase-2 mover, not sieged — rooks never relocate) and
-  ""to"" holds the exact in-the-way victim ""a.victim"" (empty, converging
-  same-side ally, or a different non-in-the-way enemy → fizzle, no
-  capture). ""applyPathRevealAttack"" is the shared source of truth for the
-  board-state fizzles; siege + origin-re-occupation gates are pre-filtered
-  by the engine loop, so ""pathRevealAttacks"" holds
-  **only attacks that fired**. A target still fogged at contact becomes a
-  move-phase collision (capture/occupy, no attack cue). Snapshots:
+  **Three phases.** 1) attacks on targets visible at resolve start;
+  2) moves + collisions for phase-1 survivors; 3) path-reveal fog
+  approaches fire **after** moves — fizzle unless attacker still on
+  ""pathRevealFrom"" and ""to"" holds exact victim. Snapshots:
   ""afterMove"" (post-phase-2) and ""afterAll"" (post-phase-3).
+  UI replay: ""playTimeline"" (""animation-pipeline.md"").
 end note
 @enduml

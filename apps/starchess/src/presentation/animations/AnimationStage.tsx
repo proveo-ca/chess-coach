@@ -2,7 +2,7 @@
  * Snapshot board + combat VFX overlay stack
  * (Attack / Death / Move / Deploy / GasDrop / Jump).
  * Store-free host for Storybook animation demos and timeline projection.
- * // SPEC: _spec/apps/ui/starchess/demos.puml
+ * // SPEC: _spec/apps/starchess/demos.puml
  */
 import {
   Show,

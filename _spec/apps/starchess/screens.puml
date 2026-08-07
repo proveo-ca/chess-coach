@@ -1,0 +1,52 @@
+@startuml screens
+' SPEC: _spec/apps/starchess/screens.puml
+' purpose: Live StarChess Screen HUD — regions, chrome, live vs review.
+!include ../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess · Screen HUD (apps/starchess)
+
+package "Screen grid\n(top · board · footer)\ntracks: avatar-height · board-size · avatar-height" {
+  component "SidebarInset (top)\nResourceBar (viewer)\nor dual ResourceBars (review)\nbottom-aligned in track" as TOP <<app>>
+  component "BoardArea\nBoardColumn + side rail" as MID <<app>>
+  component "Footer\nGasDeploy (live) · status / outcome" as BOT <<app>>
+}
+
+package "Board column" {
+  component "LiveStarChessBoard\n→ AnimationStage\n→ ObserverStarChessBoard" as BOARD <<app>>
+  component "DeployModal / PromotionModal" as MODALS <<app>>
+}
+
+package "Side rail\n(turnChrome=sidebar on /single)" {
+  component "TurnBarSidebar (live)\nTurn · Phase · queue · timer · End Turn" as LIVE <<app>>
+  component "TurnBarSidebar (review)\nDualNav (top) · Turn · Phase" as REV <<app>>
+  component "Sidebar\nHome (+ ExitGameConfirm if live)\nFlip when capabilities allow" as SIDE <<app>>
+}
+
+package "Legacy / stories" {
+  component "TurnBar (horizontal)\nturnChrome=bar only" as BAR <<async>>
+  component "ObserverReviewChrome\n(top DualNav + dual bars)\nstill available; demos prefer rail" as OBS <<async>>
+}
+
+TOP ARROW_MAIN MID
+MID ARROW_MAIN BOT
+MID ARROW_MAIN BOARD
+MID ARROW_MAIN LIVE
+MID ARROW_OPTIONAL REV
+MID ARROW_MAIN SIDE
+LIVE ARROW_OPTIONAL BAR : alt chrome
+REV ARROW_OPTIONAL OBS : alt chrome
+BOARD ARROW_OPTIONAL MODALS
+SIDE ARROW_ERROR SIDE : Leave Match modal
+
+note bottom
+  **Layout floors** match CoachScreen: top/footer ``--avatar-height`` (8rem),
+  middle ``--board-size``; ``align-content: start``. See Screen.module.css.
+  **Live route** ``/single``: ``turnChrome="sidebar"`` (StarChessSingleScreen).
+  **Review / gameOver:** DualNav on TurnBarSidebar; dual ResourceBars in top;
+  outcome via status line (no GameOverBanner in apps/starchess).
+  **Animation clock:** ``_spec/apps/starchess/animation-pipeline.md``.
+end note
+@enduml

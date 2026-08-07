@@ -1,7 +1,7 @@
 /**
  * Fog + move DualNav samples — quiet relocate with intent ghost → resolve.
  * Used by Fog of War and Move Animations stories (King / Pawn / Knight / Queen).
- * // SPEC: _spec/apps/ui/starchess/resolve.puml, _spec/apps/ui/starchess/demos.puml
+ * // SPEC: _spec/packages/starchess-core/resolve.puml, _spec/apps/starchess/demos.puml
  */
 import {
   addScAction,

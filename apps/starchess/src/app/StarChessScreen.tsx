@@ -1,7 +1,8 @@
 /**
- * Live StarChess screen — Command Column HUD (Resource → Turn → Board|Sidebar → Gas).
+ * Live StarChess screen — Command Column HUD (Resource → Board|Sidebar → Gas).
  * Board variants: eclipse | butter | vermeer (default eclipse).
  * // SPEC: _spec/apps/ui/responsiveness/rules.md
+ * // SPEC: _spec/apps/starchess/screens.puml
  */
 import {
   For,

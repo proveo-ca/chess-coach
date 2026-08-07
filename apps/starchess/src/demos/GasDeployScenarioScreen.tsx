@@ -1,7 +1,7 @@
 /**
  * MatchStore + StarChessScreen seed for GasDeploy special stories.
  * Stories pass SCFEN fixtures only — no queue / arm logic here.
- * // SPEC: _spec/apps/ui/starchess/demos.puml
+ * // SPEC: _spec/apps/starchess/demos.puml
  */
 import { createEffect, untrack, type Component } from "solid-js";
 

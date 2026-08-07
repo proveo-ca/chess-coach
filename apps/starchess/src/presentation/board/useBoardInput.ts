@@ -2,6 +2,8 @@
  * Snapshot-driven board input — queues classical moves / spawn / Charon / Jump.
  * Last-rank pawn moves open {@link PromotionModal} instead of auto-queuing queen.
  * Timeout / End flushes a pending promotion as queen (see SUBMIT_TURN).
+ * // SPEC: _spec/packages/starchess-core/sc-moves.puml
+ * // SPEC: _spec/apps/starchess/match-store.puml
  */
 import type { Square } from "chess.js";
 import { createMemo } from "solid-js";

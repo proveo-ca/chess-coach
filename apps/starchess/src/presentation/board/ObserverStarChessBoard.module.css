@@ -450,8 +450,7 @@
   transform: translate(-50%, -50%);
 }
 
-/* Game-over banner moved to the shared GameOverBanner feature component
-   (components/features/GameOverBanner.{tsx,module.css}). */
+/* Terminal outcome: status / DualNav review on gameOver — no Coach GameOverBanner. */
 .square {
   width: 100%;
   height: 100%;

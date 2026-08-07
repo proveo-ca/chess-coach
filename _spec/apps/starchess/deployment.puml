@@ -33,7 +33,9 @@ N ..> W : location.assign
 
 note bottom of V
   SPA routes (Router base ``/starchess``):
-  ``/`` menu · ``/single?map=&team=`` live + Adjutant (Black).
+  ``/`` menu · ``/single?map=&team=`` live match.
+  Adjutant plays the **opposite** of ``team`` (not always Black).
+  ``/single`` HUD: ResourceBar (top) · TurnBarSidebar (rail) · GasDeploy (footer).
 end note
 
 note bottom of N

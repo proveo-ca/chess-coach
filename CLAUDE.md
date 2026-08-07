@@ -38,7 +38,15 @@ When you add, rename, or remove a component, hook, store, or service:
 | `_spec/apps/android/distribution.puml` | Android distribution topology: embedded thin server + WASM WebView + P2P (proposed; `apps/android` is WIP) |
 | `_spec/apps/android/webrtc-p2p.puml` | P2P multiplayer signaling + move-exchange sequence (proposed; `apps/android` is WIP) |
 | `_spec/apps/starchess/deployment.puml` | Standalone StarChess scoped PWA + Worker (`/starchess/`); Coach `/chess/starchess` redirect |
-| `_spec/apps/ui/starchess/*` | **OUTDATED** (pre–Phase 5–6): rules/UI path map for deleted `apps/ui/src/starchess`; live code is `packages/starchess-core` + `apps/starchess` |
+| `_spec/apps/starchess/index.puml` | Live StarChess UI/PWA spec map |
+| `_spec/apps/starchess/screens.puml` | Live Screen HUD: ResourceBar / TurnBarSidebar / DualNav / ExitGameConfirm |
+| `_spec/apps/starchess/menu-flow.puml` | Menu → NewGamePanel → `/single` match |
+| `_spec/apps/starchess/match-store.puml` | MatchStore / matchReducer / `playTimeline` wiring |
+| `_spec/apps/starchess/demos.puml` | Canonical demos + shipped vs pending |
+| `_spec/apps/starchess/starchess-mode.puml` | Product / UX mode (economy, specials, HUD) |
+| `_spec/apps/starchess/animation-pipeline.md` | `playTimeline` → `TIMELINE_*` MatchStore → AnimationStage |
+| `_spec/apps/starchess/roadmap.md` | Spec remediation P0–P2 |
+| `_spec/packages/starchess-core/*` | Live StarChess rules: SCFEN wire/queue, resolve, turn queue, sc-moves |
 | `_spec/packages/engine-core/entities.puml` | `@chess-coach/engine-core` API: shared prompt/classification/commentary exports and their two consumers |
 | `_spec/packages/engine-core/ui-engine-parity.md` | Bun backend ⇄ `apps/ui/src/engine` parity map (prompt logic shared via `@chess-coach/engine-core`) |
 

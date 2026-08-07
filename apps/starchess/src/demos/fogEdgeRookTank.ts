@@ -1,6 +1,6 @@
 /**
  * Fog-edge rook (tank) — SCFEN intent into fog past a hidden unit → resolve Rxd7.
- * // SPEC: _spec/apps/ui/starchess/resolve.puml, _spec/apps/ui/starchess/demos.puml
+ * // SPEC: _spec/packages/starchess-core/resolve.puml, _spec/apps/starchess/demos.puml
  */
 import {
   addScAction,

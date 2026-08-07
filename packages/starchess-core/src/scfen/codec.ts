@@ -1,7 +1,7 @@
 /**
  * StarChess FEN dialect (StarChess-only). Classic FEN is a one-way render export —
  * never the rules oracle.
- * // SPEC: _spec/apps/ui/starchess/scfen-wire.puml, _spec/apps/ui/starchess/scfen-queue.puml
+ * // SPEC: _spec/packages/starchess-core/scfen-wire.puml, _spec/packages/starchess-core/scfen-queue.puml
  * Wire / tickets: STARCHESS_FEN.md
  */
 

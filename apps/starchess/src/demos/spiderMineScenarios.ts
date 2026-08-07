@@ -2,7 +2,7 @@
  * Spider Mine DualNav packages — FogEdgeDemo / Spider Mines stories.
  * SCFEN builders live in `demos/attackMine`, `pathCollide*`; promotion×mine
  * mirrors `@chess-coach/starchess-core` `tests/promotionMine.test.ts`.
- * // SPEC: _spec/apps/ui/starchess/demos.puml
+ * // SPEC: _spec/apps/starchess/demos.puml
  */
 import type { ScFenSnapshot } from "@chess-coach/starchess-core";
 

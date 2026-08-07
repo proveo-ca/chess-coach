@@ -1,0 +1,45 @@
+@startuml index
+' SPEC: _spec/apps/starchess/index.puml
+' purpose: Live StarChess UI/PWA spec map.
+!include ../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess · Live Spec Map (_spec/apps/starchess)
+
+package "_spec/apps/starchess" {
+  component "deployment.puml\nPWA / Worker / Coach redirect" as DEP <<host>>
+  component "menu-flow.puml\nMenu → NewGame → /single" as MENU <<app>>
+  component "screens.puml\nScreen HUD chrome" as HUD <<app>>
+  component "match-store.puml\nMatchStore / matchReducer / timeline" as MS <<async>>
+  component "animation-pipeline.md\nplayTimeline / TIMELINE_*" as ANIM <<async>>
+  component "demos.puml / starchess-mode.puml" as DEMO <<app>>
+  component "roadmap.md\nP0–P2 remediation" as ROAD <<db>>
+}
+
+package "apps/starchess (runtime)" {
+  component "StarChessMenuRoute / MenuScreen" as RMENU <<app>>
+  component "StarChessSingleScreen + LiveMatchShell" as RSINGLE <<app>>
+  component "StarChessScreen + MatchStore" as RSCREEN <<app>>
+  component "useBoardInput + timelinePlayer" as RINPUT <<async>>
+}
+
+package "rules" {
+  component "_spec/packages/starchess-core/*\nSCFEN · resolve · sc-moves · turn queue" as RULES <<app>>
+}
+
+MENU ARROW_MAIN RMENU
+MENU ARROW_MAIN RSINGLE
+HUD ARROW_MAIN RSCREEN
+MS ARROW_MAIN RSCREEN
+ANIM ARROW_MAIN RINPUT
+DEP ARROW_MAIN RSINGLE
+RULES ARROW_OPTIONAL RINPUT : legality / End
+DEMO ARROW_OPTIONAL RSCREEN
+ROAD ARROW_OPTIONAL RULES
+
+note bottom
+  Rules live under ""_spec/packages/starchess-core/"".
+end note
+@enduml

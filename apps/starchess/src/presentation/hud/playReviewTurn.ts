@@ -1,6 +1,6 @@
 /**
  * One DualNav Forward = one full turn: check → intent hold → resolve.
- * // SPEC: _spec/apps/ui/starchess/turn-queue-sequence.puml
+ * // SPEC: _spec/packages/starchess-core/turn-queue-sequence.puml
  */
 import {
   REVIEW_INTENT_HOLD_MS,

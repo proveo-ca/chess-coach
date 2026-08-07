@@ -1,13 +1,12 @@
 @startuml starchess-mode
-' SPEC: _spec/apps/ui/starchess/starchess-mode.puml
-' OUTDATED: Phase 5–6 — product lives in apps/starchess; Coach only redirects/nerd prompt.
+' SPEC: _spec/apps/starchess/starchess-mode.puml
 ' purpose: Product / UX mode — goals, specials, economy, UX v1.
-!include ../../../themes/proveo.puml
+!include ../../themes/proveo.puml
 
 skinparam packageStyle rectangle
 skinparam defaultTextAlignment left
 
-title OUTDATED — StarChess Mode · Product / UX
+title StarChess Mode · Product / UX
 
 package "Goals (vs classical chess)" {
   component "Turn structure — both sides queue,\nEnd / timeout submits" as G1 <<async>>
@@ -27,8 +26,8 @@ package "Specials (product)" {
   component "King — Spawn\nadjacent deploy; can collide\nwith king-shots; a deploy on the enemy\nking's ring stacks a 2nd checker" as S6 <<app>>
 }
 
-package "UX (v1)" {
-  component "ResourceBar + TurnBar\nabove the board; fog forced\nwhen ""starChessMode""" as U1 <<app>>
+package "UX (v1) — live apps/starchess" {
+  component "ResourceBar (top track)\n+ TurnBarSidebar (rail on /single)\nhorizontal TurnBar = stories only;\nfog on in mode" as U1 <<app>>
   component "Cumulative vision (""vision.ts"")\nunion of friendly units;\nmines light own square" as U2 <<db>>
   component "Attack-time reveal\nshooter ""from"" shown for the shot cue" as U3 <<app>>
   component "Fog-edge DualNav stories\n(Bishop / Rook tank) — SCFEN only;\nreview DualNav: observer dual-vision\n(""getSideVision"" w+b borders, no veil)" as U4 <<app>>
@@ -40,7 +39,6 @@ note bottom
   Charon + Jump **2**.
   **Spider Mine combat:** path-chase / attack-mine; ignores allies
   + enemy kings (""mines.ts"" + ""resolveTurn"").
-  **OUTDATED ownership:** not exclusive to Coach ""NerdScreen"".
   Live UI → ""apps/starchess"" (""/starchess/""); Coach keeps
   ""features/nerd"" + ""StarChessRedirect"" only.
   ====
@@ -51,37 +49,19 @@ note bottom
   a king that spawns a unit covering the enemy king chips 2 HP/turn while
   taking 1. Breaking contact still pays that turn's **parting shot**.
   ----
-  **Known gaps (not shipped):** the ""GameOverBanner"" is still suppressed
-  for StarChess in ""StarChessBoardView.tsx"", so a draw currently has **no
-  banner**; ""StarChessState.winner"" (""types.ts"") remains **unused**.
-  King adjacency via the board is unlocked by the SC movegen provider
-  (sc-moves.puml) when a planning snap is live.
+  **Terminal UX (live):** no Coach ""GameOverBanner"" /
+  ""StarChessBoardView"" — those paths are deleted. Outcome is
+  ""scOutcome"" + status / DualNav review on ""gameOver"".
+  HUD: ""_spec/apps/starchess/screens.puml"".
   ----
-  **Pending UI (deferred — do not treat as shipped):**
-  * **(a) deploy + move (spawn then C)** — broken in UI:
-    ""useScMoveProvider"" destinations/commit read pre-B
-    ""planningSnapshot.placement"", so a same-turn B=spawn
-    unit cannot be selected/moved even though
-    ""assertClassicalBaseline"" already accepts C.from =
-    spawn.to. Engine path is fine; board provider is not.
-  * **(b) siege tank mode + mode** — toggle UI (gas /
-    mode chip / double-toggle affordance) is broken or
-    unclear; engine ""rookSiege"" B/F + ""S:"" resolve is
-    authoritative. Defer UI fix.
+  **Deferred product (engine ok / UI polish):**
+  * Same-turn deploy-then-C selection polish (core accepts
+    C.from = spawn.to; board input must follow planning placement).
+  * Siege tank/siege toggle UX clarity (""rookSiege"" + ""S:"" authoritative).
+  * Fog-first movegen / adjutant (live remains viewer fog;
+    DualNav review = observer dual-vision).
   ----
-  **Pending product — fog / vision first-class:**
-  * Cumulative fog is forced on in ""starChessMode"", but
-    viewer-masked movegen, fog-faithful AI, and first-class
-    vision UX (not only DualNav SCFEN samples) are **not**
-    done. DualNav **review** now shows observer dual-vision
-    borders (SCFEN ""getSideVision"" for both colors; full board).
-    Live play remains single-viewer fog. ""scMoves"" still takes
-    full occupancy; adjutant threat reads are full-board (only
-    enemy-king hunt bonus is vision-gated). Track as pending,
-    not regressions.
-  ----
-  **Queue edit:** TurnBar chips carry an X to
-  ""removeQueuedScAction"" (refund special gas).
-  Opponent planner: ""packages/starchess-core/ai/adjutant.ts"".
+  **Queue edit:** TurnBar / TurnBarSidebar chips → remove + gas refund.
+  Opponent: ""packages/starchess-core/ai/adjutant.ts"" (opposite of team).
 end note
 @enduml

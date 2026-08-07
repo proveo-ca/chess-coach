@@ -1,5 +1,6 @@
 /**
  * Menu route — `/starchess/` · START navigates to `/single`.
+ * // SPEC: _spec/apps/starchess/menu-flow.puml
  */
 import { useNavigate, type RouteSectionProps } from "@solidjs/router";
 import type { Component } from "solid-js";

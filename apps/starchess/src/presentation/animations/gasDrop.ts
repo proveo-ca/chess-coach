@@ -1,6 +1,6 @@
 /**
  * Gas special resolve VFX — canister drop into the unit + green aura ease-in.
- * // SPEC: _spec/apps/ui/starchess/resolve.puml
+ * // SPEC: _spec/packages/starchess-core/resolve.puml
  */
 import type { Square } from "chess.js";
 

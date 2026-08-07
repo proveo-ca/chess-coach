@@ -8,7 +8,7 @@
  * **End** (`endScTurn`): by default still runs checks → B → C → F for atomic
  * replay / tests. Live play that already ran `beginScTurn` passes
  * `{ skipTurnStartChecks: true }` so End starts at B.
- * // SPEC: _spec/apps/ui/starchess/turn-queue-sequence.puml, _spec/apps/ui/starchess/resolve.puml
+ * // SPEC: _spec/packages/starchess-core/turn-queue-sequence.puml, _spec/packages/starchess-core/resolve.puml
  */
 
 import type { Square } from "chess.js";

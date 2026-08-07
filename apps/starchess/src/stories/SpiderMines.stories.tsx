@@ -13,7 +13,7 @@ import {
  * Restored from apps/ui `NerdSpiderMines.stories` @ 4340996; DualNav via FogEdgeDemo.
  * Mine fog vision lives under Fog of War and Move Animations.
  * Promotion × mine mirrors `packages/starchess-core/tests/promotionMine.test.ts`.
- * // SPEC: _spec/apps/ui/starchess/demos.puml
+ * // SPEC: _spec/apps/starchess/demos.puml
  */
 const meta = {
   title: "StarChess/Spider Mines",

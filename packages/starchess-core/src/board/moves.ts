@@ -2,7 +2,7 @@
  * SC-native classical move generator — authoritative SC legality for human
  * input and the brain. chess.js is not consulted.
  *
- * // SPEC: _spec/apps/ui/starchess/sc-moves.puml
+ * // SPEC: _spec/packages/starchess-core/sc-moves.puml
  */
 
 import type { Square } from "chess.js";

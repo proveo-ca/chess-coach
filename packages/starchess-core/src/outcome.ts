@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/ui/starchess/resolve.puml
+// SPEC: _spec/packages/starchess-core/resolve.puml
 import type { StarChessColor } from "./model/types";
 
 export type { StarChessColor };

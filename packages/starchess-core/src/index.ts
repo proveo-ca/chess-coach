@@ -2,8 +2,7 @@
  * @chess-coach/starchess-core — pure StarChess rules (no SolidJS / DOM).
  *
  * Owns rules formerly under apps/ui/src/starchess (deleted in Phase 6).
- * UI/PWA: apps/starchess. Specs still backlink _spec/apps/ui/starchess/*
- * until rewritten under _spec/packages/starchess-core.
+ * UI/PWA: apps/starchess. Rules specs: _spec/packages/starchess-core. Product/UI: _spec/apps/starchess.
  */
 
 export type { Square } from "./model/square";

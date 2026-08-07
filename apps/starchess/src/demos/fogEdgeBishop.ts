@@ -1,7 +1,7 @@
 /**
  * Fog-edge bishop — SCFEN intent into fog onto a hidden king square;
  * path discovers g7 → Bxg7. Fog overrides classical FEN legality.
- * // SPEC: _spec/apps/ui/starchess/resolve.puml, _spec/apps/ui/starchess/demos.puml
+ * // SPEC: _spec/packages/starchess-core/resolve.puml, _spec/apps/starchess/demos.puml
  */
 import {
   addScAction,

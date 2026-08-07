@@ -14,7 +14,7 @@ import { SpiderMineFogDemo } from "~/presentation/animations/SpiderMineFogDemo";
 
 /**
  * Stories feed SCFEN scenario packages only — no queue / resolve / combat logic here.
- * // SPEC: _spec/apps/ui/starchess/demos.puml, _spec/apps/ui/starchess/resolve.puml
+ * // SPEC: _spec/apps/starchess/demos.puml, _spec/packages/starchess-core/resolve.puml
  */
 const meta = {
   title: "StarChess/Fog of War and Move Animations",

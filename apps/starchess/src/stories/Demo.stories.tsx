@@ -79,7 +79,7 @@ export const VermeerLive: Story = {
     docs: {
       description: {
         story:
-          "Classic live opening on Vermeer terrain: each side 1 king + 4 pawns (same SCFEN as Maps → Vermeer). You play White; adjutant plays Black. ResourceBar / TurnBar / GasDeploy + fog + combat VFX.",
+          "Classic live opening on Vermeer terrain: each side 1 king + 4 pawns (same SCFEN as Maps → Vermeer). You pick team via story controls; adjutant plays the opposite color. ResourceBar / TurnBar / GasDeploy + fog + combat VFX.",
       },
     },
   },

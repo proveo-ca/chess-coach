@@ -1,6 +1,6 @@
 /**
  * Shared DualNav scenario package — stories feed this into FogEdgeDemo only.
- * // SPEC: _spec/apps/ui/starchess/demos.puml
+ * // SPEC: _spec/apps/starchess/demos.puml
  */
 import type { ScFenSnapshot } from "@chess-coach/starchess-core";
 

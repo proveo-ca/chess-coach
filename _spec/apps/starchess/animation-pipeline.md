@@ -1,17 +1,26 @@
 # StarChess animation pipeline
 
-Solid + Flux: the presentation clock **dispatches**; a pure **reducer** owns frames; components only **select and render**.
+Solid presentation clock: **core resolve** produces an `EndScTurnResult`;
+`playTimeline` compiles typed cues and drives the MatchStore via `TIMELINE_*`
+actions. Components select timeline fields and render overlays — they do not
+own the clock.
 
 ```
-core resolve (starchess-core endScTurn)
-  → compileAnimationPlan (typed clips + absolute ms)
-  → dispatch ANIMATION_* actions
-  → animationReducer → PresentationFrame
-  → Solid selectors (createMemo)
-  → AnimationStage / ObserverStarChessBoard
+starchess-core endScTurn → EndScTurnResult
+  → playTimeline (timelinePlayer.ts)
+      schedules cues with Scheduler + runId guards
+  → MatchStore dispatch:
+      TIMELINE_START  (cues + placement)
+      TIMELINE_COMMIT (placement / lives / mines / hide / progress …)
+      TIMELINE_DONE
+  → selectors + createMemo
+  → AnimationStage / ObserverStarChessBoard / combat overlays
 ```
 
-Authoritative `liveSnapshot` does not mutate mid-playback. Intermediate placement/lives/mines live on the presentation frame until `ANIMATION_DONE`.
+Authoritative `liveSnapshot` is not rewritten mid-playback for intermediate
+frames. Commits patch timeline presentation state until `TIMELINE_DONE`.
+Terminal DualNav review keeps `phase: gameOver` and replays via the same
+timeline path (`REVIEW_PLAY` → `playTimeline`).
 
 ## Square ownership (`deriveVisualFrame`)
 
@@ -28,8 +37,22 @@ Priority (first claim wins):
 
 ## Impact meeting point (`impactMsFor`)
 
-Kill→death meeting point is per `AttackAnimKind` (`impactTiming.ts`). The reducer applies impact as one action so death and hull suppression land in the same frame. Phase-1 waves use max batch impact so victims sync.
+Kill→death meeting point is per `AttackAnimKind` (`impactTiming.ts`). Timeline
+commits apply impact so death and hull suppression land together. Phase-1 waves
+use max batch impact so victims sync.
 
 ## Scheduler role
 
-Thin adapter only: `delay(ms, () => dispatch({ type, runId, ... }))`. Every callback checks `runId` before reducing. No direct board writes from timers.
+Thin adapter only: `delay(ms, () => …)` with `runId` checks before commit/done.
+No direct board writes from timers — only MatchStore dispatches.
+
+## Key sources
+
+| Piece | Path |
+|---|---|
+| Timeline player | `apps/starchess/src/presentation/timeline/timelinePlayer.ts` |
+| Match actions | `apps/starchess/src/types/match.ts` (`TIMELINE_*`) |
+| Reducer | `apps/starchess/src/app/matchReducer.ts` |
+| Store wiring | `apps/starchess/src/app/MatchStoreContext.tsx` |
+| Visual frame | `apps/starchess/src/presentation/animations/visualFrame.ts` |
+| Impact timing | `apps/starchess/src/presentation/animations/impactTiming.ts` |

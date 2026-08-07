@@ -1,7 +1,7 @@
 /**
  * DualNav review packages for Demo stories (observer, not live).
  * Stories mount these into FogEdgeDemo — no queue/resolve in `*.stories.tsx`.
- * // SPEC: _spec/apps/ui/starchess/demos.puml
+ * // SPEC: _spec/apps/starchess/demos.puml
  */
 import {
   addScAction,

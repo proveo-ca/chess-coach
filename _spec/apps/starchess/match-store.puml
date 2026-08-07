@@ -1,0 +1,54 @@
+@startuml match-store
+' SPEC: _spec/apps/starchess/match-store.puml
+' purpose: MatchStore / matchReducer / timeline — live app state clock.
+!include ../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess · MatchStore (apps/starchess)
+
+package "Store shell" {
+  component "MatchStoreContext\ncreateMatchStore / Provider" as CTX <<app>>
+  component "matchReducer\nQUEUE_ACTION · SUBMIT_TURN · TIMELINE_*\nREVIEW_* · SELECT_SQUARE · …" as RED <<async>>
+  component "selectors\ndisplayedSnapshot / canSubmit / …" as SEL <<db>>
+}
+
+package "Core rules (@chess-coach/starchess-core)" {
+  component "addScAction / removeScAction" as QACT <<app>>
+  component "beginScTurn / endScTurn" as END <<app>>
+  component "scOutcome" as OUT <<app>>
+  component "adjutant" as AI <<app>>
+}
+
+package "Presentation" {
+  component "playTimeline\ntimelinePlayer.ts" as TL <<async>>
+  component "AnimationStage +\nObserverStarChessBoard" as STAGE <<app>>
+  component "useBoardInput +\nLiveStarChessBoard" as INPUT <<app>>
+  component "TurnBarSidebar / ResourceBar\nGasDeploy / DualNav" as HUD <<app>>
+}
+
+package "Ports" {
+  component "Scheduler / Clock\nbrowser adapters" as PORT <<host>>
+}
+
+CTX ARROW_MAIN RED : dispatch
+CTX ARROW_MAIN SEL : read
+INPUT ARROW_MAIN CTX : QUEUE_ACTION / SELECT_*
+HUD ARROW_MAIN CTX : SUBMIT_TURN / REVIEW_*
+RED ARROW_MAIN QACT : queue mutate
+RED ARROW_MAIN END : End / timeout
+RED ARROW_OPTIONAL OUT : terminal
+CTX ARROW_QUEUE TL : after endScTurn
+TL ARROW_MAIN CTX : TIMELINE_START/COMMIT/DONE
+TL ARROW_OPTIONAL PORT : delay(ms)
+STAGE ARROW_MAIN SEL : visual frame
+CTX ARROW_OPTIONAL AI : opposite of team
+
+note bottom
+  Authoritative live snap is ""liveSnapshot""; timeline patches
+  presentation until ""TIMELINE_DONE"". See animation-pipeline.md.
+  Classical legality seam: ""_spec/packages/starchess-core/sc-moves.puml"".
+  Turn lifecycle: ""turn-queue-sequence.puml"".
+end note
+@enduml

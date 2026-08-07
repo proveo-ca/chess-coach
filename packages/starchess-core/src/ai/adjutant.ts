@@ -25,7 +25,7 @@
  *
  * Deterministic.
  *
- * // SPEC: _spec/apps/ui/starchess/starchess-mode.puml, _spec/apps/ui/starchess/demos.puml
+ * // SPEC: _spec/apps/starchess/starchess-mode.puml, _spec/apps/starchess/demos.puml
  */
 
 import type { Square } from "chess.js";

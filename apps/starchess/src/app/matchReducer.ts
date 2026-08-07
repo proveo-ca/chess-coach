@@ -1,3 +1,8 @@
+/**
+ * Match state transitions — queue, End, timeline, review seek.
+ * // SPEC: _spec/apps/starchess/match-store.puml
+ * // SPEC: _spec/packages/starchess-core/turn-queue-sequence.puml
+ */
 import {
   MAX_STORED_MATERIAL,
   UNIT_COST,

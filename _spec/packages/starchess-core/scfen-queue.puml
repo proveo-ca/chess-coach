@@ -1,7 +1,7 @@
 @startuml scfen-queue
-' SPEC: _spec/apps/ui/starchess/scfen-queue.puml
+' SPEC: _spec/packages/starchess-core/scfen-queue.puml
 ' purpose: Queue ABNF, per-side shape (≤1 C + N specials all B or all F), resolve order B < C < F then w then b.
-!include ../../../themes/proveo.puml
+!include ../../themes/proveo.puml
 
 skinparam packageStyle rectangle
 skinparam defaultTextAlignment left
@@ -22,11 +22,18 @@ package "Shape & order" {
   component "Then white, then black" as WB <<app>>
 }
 
+package "packages/starchess-core" {
+  component "scfen/codec.ts\nformatQueueField / parseQueueField\nassertQueueShape / assertQueueGas" as COD <<app>>
+  component "commands/queue-action.ts\naddScAction / removeScAction\naddScMove" as QACT <<async>>
+}
+
 QF ARROW_MAIN SQ : expands to two
 SQ ARROW_OPTIONAL SP : may hold
 SQ ARROW_OPTIONAL CL : may hold
 SP ARROW_OPTIONAL KD : kind
 CL ARROW_OPTIONAL KD : resolves to
+COD ARROW_MAIN QF : serializes
+QACT ARROW_MAIN COD : mutates snap.queue
 
 note right of QF
   ""queueField = 'Q:' sideQueue ';' sideQueue""

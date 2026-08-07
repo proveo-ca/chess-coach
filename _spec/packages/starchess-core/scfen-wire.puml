@@ -1,7 +1,7 @@
 @startuml scfen-wire
-' SPEC: _spec/apps/ui/starchess/scfen-wire.puml
+' SPEC: _spec/packages/starchess-core/scfen-wire.puml
 ' purpose: SCFEN wire string and the roles of each optional/required field.
-!include ../../../themes/proveo.puml
+!include ../../themes/proveo.puml
 
 skinparam packageStyle rectangle
 skinparam defaultTextAlignment left
@@ -28,12 +28,12 @@ note right of WIRE
   Required: placement, turn, lives, phase, ""G:"".
   Optional: ""Q:"" ""U:"" ""S:"" ""H:"" ""M:"".
   Omitted ""Q:"" = snapshot-only snapshot.
-  **Lives carry the outcome.** ""scOutcome(snap)"" derives win / draw from
-  ""kingLives"" alone — 0/0 (face-to-face kings, see resolve.puml) is a
-  **draw**, one side at 0 is a win for the other. Phase ""O"" is the
-  pre-existing terminal code and is **absorbing**.
-  There is **no winner field and no grammar change** for the king duel —
-  ""STARCHESS_FEN.md"" stays as is.
+  **Lives carry the outcome.** ""scOutcome(snap)"" (""outcome.ts"")
+  derives win / draw from ""kingLives"" alone — 0/0 (face-to-face
+  kings, see resolve.puml) is a **draw**, one side at 0 is a win
+  for the other. Phase ""O"" is terminal and **absorbing**.
+  No winner field and no grammar change for the king duel.
+  Codec: ""packages/starchess-core/src/scfen/codec.ts"".
 end note
 
 note right of G
@@ -63,12 +63,12 @@ end note
 
 note right of M
   Mines ""M:w:c3d4;b:f5"" (max 2 / side).
-  Not FEN pieces.
+  Not FEN pieces. ""board/mines.ts"".
 end note
 
 note bottom
   **King-shot intent:** classical actions encode ""to"" as **intent**
   (often the enemy king square). Resolve may retarget; optional history
-  ""C=from intentTo>resolvedTo"".
+  ""C=from intentTo>resolvedTo"" (deferred).
 end note
 @enduml

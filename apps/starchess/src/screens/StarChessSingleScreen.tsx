@@ -1,6 +1,8 @@
 /**
  * Single-player match — `/starchess/single?map=&team=` (+ optional `scfen=`).
  * Adjutant script always plays the opposite of `team` (White or Black).
+ * // SPEC: _spec/apps/starchess/menu-flow.puml
+ * // SPEC: _spec/apps/starchess/screens.puml
  */
 import { useNavigate, useSearchParams, type RouteSectionProps } from "@solidjs/router";
 import { adjutant } from "@chess-coach/starchess-core";
