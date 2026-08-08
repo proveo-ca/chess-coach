@@ -18,12 +18,14 @@ import {
 import type { Square } from "chess.js";
 import { For, Show, createEffect, createMemo, createSignal, onCleanup, onMount } from "solid-js";
 import type { Component } from "solid-js";
+import { Portal } from "solid-js/web";
 
 import { storedMaterial, viewerColor } from "~/app/matchEconomy";
 import { useMatchStore } from "~/app/MatchStoreContext";
 import { displayedSnapshot, outcomeLabel } from "~/app/selectors";
 import styles from "~/app/StarChessScreen.module.css";
 import { CoachAvatar } from "~/components/atoms/CoachAvatar";
+import { MobileBanner } from "~/components/atoms/MobileBanner";
 import { ExitGameConfirm } from "~/components/features/ExitGameConfirm";
 import { Label } from "~/components/primitives/Label";
 import { PromotionModal } from "~/components/primitives/PromotionModal";
@@ -127,7 +129,19 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
   const [spawnPhase, setSpawnPhase] = createSignal<"idle" | "modal" | "pick">("idle");
   const [overlayBox, setOverlayBox] = createSignal<OverlayBox | null>(null);
   const [exitOpen, setExitOpen] = createSignal(false);
+  /** Matches MobileBanner / gas-corner band (Storybook Dynamic 560×420). */
+  const [dynamicMobile, setDynamicMobile] = createSignal(false);
   let boardHost: HTMLDivElement | undefined;
+
+  onMount(() => {
+    const mq = window.matchMedia(
+      "(max-width: 719px) and (min-width: 480px) and (max-height: 639px)",
+    );
+    const sync = () => setDynamicMobile(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    onCleanup(() => mq.removeEventListener("change", sync));
+  });
 
   const liveMatch = () => {
     const phase = store.state().phase;
@@ -562,13 +576,14 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
     <>
       <Show when={starChessMode() && !turnInSidebar() && !turnHidden() && !ended()}>
         <TurnBar
+          class={styles.topTurnBar}
           autoStart={false}
           resolveOnEnd={false}
           onEnd={() => store.submitTurn("end")}
         />
       </Show>
       <Show when={starChessMode() && !props.hideResources}>
-        <Show when={ended()} fallback={<ResourceBar />}>
+        <Show when={ended()} fallback={<ResourceBar class={styles.topResourceBar} />}>
           <ReviewTurnNav
             onBack={() => store.reviewBack()}
             onForward={() => store.reviewForward()}
@@ -590,10 +605,18 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
               }
             >
               <Show when={showWhiteResources()}>
-                <ResourceBar color="w" snapshot={displayedSnapshot(store.state())} />
+                <ResourceBar
+                  class={styles.topResourceBar}
+                  color="w"
+                  snapshot={displayedSnapshot(store.state())}
+                />
               </Show>
               <Show when={showBlackResources()}>
-                <ResourceBar color="b" snapshot={displayedSnapshot(store.state())} />
+                <ResourceBar
+                  class={styles.topResourceBar}
+                  color="b"
+                  snapshot={displayedSnapshot(store.state())}
+                />
               </Show>
             </div>
           </ReviewTurnNav>
@@ -622,18 +645,42 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
               when={props.onExitToMenu}
               fallback={<div class={styles.topChrome} data-testid="nerd-board-chrome">{topChrome()}</div>}
             >
-              <ScreenBackNav onBack={requestLeave} data-testid="live-back">
-                <Show when={props.matchTitle}>
-                  <div class={styles.matchTitle} data-testid="live-match-title">
-                    <Label variant="title" class={styles.matchupLine}>
-                      {props.matchTitle}
-                    </Label>
+              {/* Dynamic: ‹ Back (4rem) · resources · turn — gas is bottom-right. */}
+              <Show when={starChessMode() && !ended() && dynamicMobile()}>
+                <MobileBanner
+                  onBack={requestLeave}
+                  resources={
+                    <Show when={!props.hideResources}>
+                      <ResourceBar compact />
+                    </Show>
+                  }
+                  turn={
+                    <Show when={!turnHidden()}>
+                      <TurnBar
+                        compact
+                        autoStart={false}
+                        resolveOnEnd={false}
+                        onEnd={() => store.submitTurn("end")}
+                      />
+                    </Show>
+                  }
+                />
+              </Show>
+              {/* Tall / desktop live chrome — hidden on dynamic while the banner owns HUD. */}
+              <div classList={{ [styles.dynamicHide]: starChessMode() && !ended() && dynamicMobile() }}>
+                <ScreenBackNav onBack={requestLeave} data-testid="live-back">
+                  <Show when={props.matchTitle}>
+                    <div class={styles.matchTitle} data-testid="live-match-title">
+                      <Label variant="title" class={styles.matchupLine}>
+                        {props.matchTitle}
+                      </Label>
+                    </div>
+                  </Show>
+                  <div class={styles.topChrome} data-testid="nerd-board-chrome">
+                    {topChrome()}
                   </div>
-                </Show>
-                <div class={styles.topChrome} data-testid="nerd-board-chrome">
-                  {topChrome()}
-                </div>
-              </ScreenBackNav>
+                </ScreenBackNav>
+              </div>
             </Show>
           </Screen.SidebarInset>
         }
@@ -775,7 +822,19 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
       <Screen.Footer>
         <div class={styles.footerStack}>
           <Show when={props.footerExtra}>{props.footerExtra}</Show>
-          <div class={styles.gasDock} data-testid="nerd-gas-deploy">
+          {/* Tall / desktop gas — in-flow footer. Dynamic uses Portaled corner dock. */}
+          <div
+            classList={{
+              [styles.gasDock]: true,
+              [styles.dynamicHide]: !!(
+                props.onExitToMenu &&
+                starChessMode() &&
+                !ended() &&
+                dynamicMobile()
+              ),
+            }}
+            data-testid="nerd-gas-deploy"
+          >
             <Show when={starChessMode() && !ended() && !props.hideGas}>
               <GasDeploy
                 onDeploy={onGasDeploy}
@@ -815,6 +874,46 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
           </Show>
         </div>
       </Screen.Footer>
+      {/* Dynamic only: gas bottom-right via Portal (outside Screen overflow). */}
+      <Show
+        when={
+          !!(
+            props.onExitToMenu &&
+            starChessMode() &&
+            !ended() &&
+            !props.hideGas &&
+            dynamicMobile()
+          )
+        }
+      >
+        <Portal>
+          <div
+            class={`gas-dock-dynamic ${styles.gasDockDynamic}`}
+            data-testid="nerd-gas-deploy-dynamic"
+            style={{
+              display: "block",
+              position: "fixed",
+              bottom: "0.75rem",
+              right: "0.75rem",
+              top: "auto",
+              "z-index": "70",
+            }}
+          >
+            <GasDeploy
+              onDeploy={onGasDeploy}
+              onCancel={() => {
+                setSpawnPhase("idle");
+                setSpawnUnit(null);
+                store.dispatch({ type: "CANCEL_TARGET" });
+                store.dispatch({
+                  type: "QUEUE_REJECT",
+                  message: "Cancelled — canister returned",
+                });
+              }}
+            />
+          </div>
+        </Portal>
+      </Show>
       <ExitGameConfirm
         open={exitOpen()}
         onClose={() => setExitOpen(false)}

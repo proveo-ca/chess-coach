@@ -1,0 +1,64 @@
+/* Dynamic live strip — Back | resources | turn
+   Tracks: 4rem · 1fr · 1fr (gas is fixed bottom-right outside this banner).
+   Child density via ResourceBar/TurnBar `compact` props — not testids. */
+
+.banner {
+  display: none;
+}
+
+/* Dynamic: w≥480 · h<640 · mobile (Storybook Dynamic 560×420). */
+@media (max-width: 719px) and (min-width: 480px) and (max-height: 639px) {
+  .banner {
+    display: grid;
+    grid-template-columns: 4rem 1fr 1fr;
+    align-items: center;
+    column-gap: 0.35rem;
+    width: 100%;
+    max-width: none;
+    align-self: stretch;
+    box-sizing: border-box;
+    margin: 0;
+    flex-shrink: 0;
+    padding-block: 0.25rem;
+    padding-inline: 0.5rem;
+    min-height: 40px;
+    background: var(--panel-bg, rgba(0, 0, 0, 0.2));
+    border-bottom: 1px solid var(--border-color, #444);
+    z-index: 5;
+    overflow: visible;
+  }
+
+  .back {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .resources {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .resources > * {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .turn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .turn > * {
+    min-width: 0;
+    max-width: 100%;
+  }
+}

@@ -22,6 +22,20 @@
   }
 }
 
+/* Dynamic fuse — scale captures with the 0.75 coach avatar; hug the board. */
+@media (--dynamic-mobile) {
+  .captures {
+    font-size: 0.9rem; /* 1.2 × 0.75 */
+    min-height: 1.05rem; /* 1.4 × 0.75 */
+    margin-block: 0;
+    padding-block: 0.1rem;
+  }
+
+  .advantage {
+    font-size: 0.6rem; /* 0.8 × 0.75 */
+  }
+}
+
 .captures--left {
   justify-content: flex-start;
 }

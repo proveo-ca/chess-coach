@@ -22,6 +22,13 @@
     box-sizing: border-box;
   }
 
+  /* Fused into full-width banner host — never cap to board width. */
+  :global([data-fuse-root]) > .bar {
+    max-width: none;
+    margin-inline: 0;
+    width: auto;
+  }
+
   /* Segmented toolbar: IconButtons drop their own border; DualNav keeps its
      internal half-divider. Floated timeline / tall-drawer chips keep chrome. */
   .bar:not(.timeline) > .item :is(button, a) {
@@ -261,4 +268,66 @@
 /* Menu trigger — rightmost in-bar (floats top-right when tall / timeline). */
 .bar > .item.drawer-item {
   order: 2;
+}
+
+/* Dynamic-only fuse tools — never a standalone bar on tall/narrow mobile. */
+.bar[data-dynamic-only] {
+  display: none;
+}
+
+/* Dynamic fuse: bar cells hoist into [data-fuse-root] beside banner.
+   Left-tool fan-out stays on `.bar > div:nth-of-type(*)` (do not override order).
+   SPEC: _spec/apps/ui/responsiveness/rules.md */
+@media (--dynamic-mobile) {
+  :global([data-fuse-root]) > .bar:not(.timeline) {
+    display: contents;
+  }
+
+  :global([data-fuse-root]) > .bar:not(.timeline) > .item.nav-item {
+    margin-left: auto;
+    flex: 0 0 auto;
+  }
+
+  :global([data-fuse-root]) > .bar:not(.timeline) > .item.drawer-item {
+    flex: 0 0 auto;
+  }
+
+  :global([data-fuse-root]) > .bar:not(.timeline) > .item:not(.nav-item):not(.drawer-item) {
+    flex: 0 0 auto;
+  }
+
+  /* hideCentre (Coach avatar / Analysis EngineDepth): absolute centre slot. */
+  :global([data-fuse-root]:has([data-hide-centre])) > .bar:not(.timeline) > .main {
+    order: 0;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    padding: 0 1.25rem;
+    overflow: visible;
+  }
+
+  /* LAN / title banners: keep banner centre; drop bar Main to avoid double-centre. */
+  :global([data-fuse-root]:not(:has([data-hide-centre]))) > .bar:not(.timeline) > .main {
+    display: none;
+  }
+
+  /* Dynamic-only tools: force hoist even when base CSS hides the bar. */
+  :global([data-fuse-root]) > .bar[data-dynamic-only] {
+    display: contents;
+  }
+
+  /* Coach compact avatar — 0.75 of bar size so it fits the fused strip. */
+  :global([data-fuse-root])
+    > .bar.center-overflow
+    > .main
+    :global([data-testid="coach-avatar"]) {
+    transform: scale(0.75);
+    transform-origin: center center;
+  }
+
+  /* Segmented tools drop own borders inside the fused strip. */
+  :global([data-fuse-root]) > .bar:not(.timeline) > .item :is(button, a) {
+    border: 0;
+  }
 }

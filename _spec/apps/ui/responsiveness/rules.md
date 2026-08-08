@@ -28,7 +28,7 @@ footer advice / move list, chrome) yields before the board stack or the sideboar
 |---|---|---|
 | Desktop breakpoint | `min-width: 720px` (`--desktop`) | Board `480px` + sidebar `6rem` + gaps fit (Coach) |
 | Board size (desktop) | `--board-size: 480px` | Fixed square; never shrinks with chrome |
-| Board size (mobile) | Coach: `min(100vw - 2rem, 480px)` · StarChess: `min(100vw - 4rem, 480px)` | StarChess keeps **2rem gutters each side** |
+| Board size (mobile) | Coach: `min(100vw - 2rem, 320px)` · StarChess: `min(100vw - 4rem, 480px)` | Coach dynamic board cap 320px; StarChess keeps **2rem gutters each side** |
 | App max (StarChess desktop) | `board + 4rem`; top/footer `max-width: board` | No classical sideboard; chrome ≤ mid-pane board |
 | Body min (board screens) | Coach: `board` / `board + sidebar + 1.5rem` · StarChess: `board` / `board + 4rem` | Via `body:has([data-testid=screen-root])` |
 
@@ -89,8 +89,13 @@ grid-template-rows: minmax(0, auto) 1fr minmax(0, auto);
 At most **50% of the live CoachAvatar height** may sit below the Chessboard top
 edge (Coach mobile). Tall mobile keeps `MobileBanner` flush top and floats
 the hero avatar **over** the banner (`z-index`, negative margin) with the tool
-bar still below. Short / §4 float keeps the compact avatar in the bar with
-`centerOverflow`. E2E asserts the overlap cap on Coach across viewports.
+bar still below. **Dynamic** (`--dynamic-mobile`: mobile · `min-width: 480px` ·
+`max-height: 639px`, e.g. Storybook Dynamic 560×420) **fuses** `MobileBanner` +
+`MobileSidebar` into one top strip via `[data-testid=mobile-fuse]`:
+`‹ Back` · action items · compact `CoachAvatar` at **0.75** · history nav ·
+hamburger. Captured-piece strips also scale to **0.75** and hug the board
+(no gap). Narrow short (`width < 480`) keeps the stacked banner + bar. E2E
+asserts the overlap cap on Coach across viewports.
 
 | Screen | Assert overlap |
 |---|---|
@@ -176,6 +181,7 @@ top + board content + MoveList page budget > viewport
 | `--sm-up` | `min-width: 480px` | Slightly larger type / spacing |
 | `--tall-mobile` / `TALL_MOBILE_MQ` | mobile + `min-height: 640px` | Hero `CoachAvatar`; Analysis `MobileBanner` at top; drawer floats top-right on non-toolbar bars |
 | `--short-mobile` / `SHORT_MOBILE_MQ` | mobile + `max-height: 639px` | Clumped gaps; Coach compact avatar; Analysis `MobileBanner` stays at top; shared `--board-chrome-inline` L/R gutter |
+| `--dynamic-mobile` / `DYNAMIC_MOBILE_MQ` | mobile + `min-width: 480px` + `max-height: 639px` | Fused `MobileBanner`+`MobileSidebar` row (`[data-testid=mobile-fuse]`); Coach avatar + captures at 0.75; board cap 320px |
 
 ---
 

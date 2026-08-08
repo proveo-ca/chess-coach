@@ -14,6 +14,8 @@ export const FenLoader: Component<{
   /** Prefixed control (e.g. Analysis short/dynamic menu left of the input). */
   leading?: JSX.Element;
   trailing?: JSX.Element;
+  /** Fired after a FEN loads successfully (e.g. close a summon dialog). */
+  onLoaded?: () => void;
 }> = (props) => {
   const [value, setValue] = createSignal("");
   const [error, setError] = createSignal<string | null>(null);
@@ -31,6 +33,8 @@ export const FenLoader: Component<{
     try {
       loadFen(fen);
       setError(null);
+      setValue("");
+      props.onLoaded?.();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Invalid FEN.");
     }

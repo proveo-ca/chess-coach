@@ -9,7 +9,7 @@
 }
 
 /* Keep Selena above the frosted glass so helm ferry stays visible. */
-.root :global([data-testid="menu-splash-slot"]) {
+.root :global(.menu-splash-slot) {
   position: relative;
   z-index: 5;
 }

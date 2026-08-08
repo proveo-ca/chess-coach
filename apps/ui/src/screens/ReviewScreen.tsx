@@ -24,9 +24,11 @@ import { ScreenBackNav } from "~/components/primitives/ScreenBackNav";
 import { resolveAnnotations } from "~/engine/moveAnnotations";
 import { useBlunderArrow } from "~/hooks/useBlunderArrow";
 import { useGameAnalysis } from "~/hooks/useGameAnalysis";
+import { useGameControls } from "~/hooks/useGameControls";
 import { useGameHistoryFilters } from "~/hooks/useGameHistoryFilters";
 import { useShareGame } from "~/hooks/useShareGame";
 import { useSharedGameImport } from "~/hooks/useSharedGameImport";
+import { DualNavButton } from "~/components/primitives/DualNavButton";
 import { REVIEW_CAPABILITIES, setCapabilities } from "~/store/capabilitiesStore";
 import { setShowNewGame } from "~/store/coachStore";
 import { gameHistory, getGameById } from "~/store/gameHistoryStore";
@@ -59,6 +61,14 @@ export const ReviewScreen: Component = () => {
   const filters = useGameHistoryFilters();
   const { importError, importing } = useSharedGameImport();
   const { share, shareMsg } = useShareGame();
+  const {
+    atStart,
+    atLatest,
+    isReplaying,
+    handleBack,
+    handleForward,
+    handleBackToLive,
+  } = useGameControls();
 
   let prevPlayerIdentity = playerIdentity();
   let prevOpponentIdentity = opponentIdentity();
@@ -205,7 +215,7 @@ export const ReviewScreen: Component = () => {
               <div class="desktop-only">
                 <ScreenBackNav data-testid="review-back">{historyFilters()}</ScreenBackNav>
               </div>
-              <MobileBanner title="Review Games" onMenu={openMobileDrawer} />
+              <MobileBanner title="Review Games" onMenu={openMobileDrawer} hideCentre />
               <div class="mobile-only">{historyFilters()}</div>
             </Screen.SidebarInset>
             <Screen.BoardArea>
@@ -275,25 +285,43 @@ export const ReviewScreen: Component = () => {
                     </div>
                   </ScreenBackNav>
                 </div>
-                <MobileBanner
-                  title={
-                    <Label
-                      variant="title"
-                      color={resultColor}
-                      class={styles.bannerMatchup}
-                      data-testid="review-matchup"
-                    >
-                      {formatReviewMatchup(g())}
-                    </Label>
-                  }
-                  onMenu={openMobileDrawer}
-                />
+                {/* Dynamic: fuse Back · Share · title · nav · menu (no EngineDepth). */}
+                <div data-fuse-root data-testid="mobile-fuse">
+                  <MobileBanner
+                    title={
+                      <Label
+                        variant="title"
+                        color={resultColor}
+                        class={styles.bannerMatchup}
+                        data-testid="review-matchup"
+                      >
+                        {formatReviewMatchup(g())}
+                      </Label>
+                    }
+                    onMenu={openMobileDrawer}
+                  />
+                  <MobileSidebar dynamicOnly>
+                    {shareItem}
+                    <MobileSidebar.Item nav>
+                      <DualNavButton
+                        onBack={handleBack}
+                        onForward={handleForward}
+                        backDisabled={atStart()}
+                        forwardDisabled={atLatest()}
+                        inverted={isReplaying()}
+                        showBackToLive={isReplaying()}
+                        onBackToLive={handleBackToLive}
+                        label={isReplaying() ? "History" : undefined}
+                      />
+                    </MobileSidebar.Item>
+                  </MobileSidebar>
+                </div>
                 <Show when={shareMsg()}>
                   <div class="mobile-only">
                     <Label variant="caption">{shareMsg()}</Label>
                   </div>
                 </Show>
-                <div class={styles.moveListSlot}>
+                <div class={`${styles.moveListSlot} ${styles.tallOnly}`}>
                   <MoveList
                     game={g()}
                     activePly={analysisBranchPly()}
@@ -328,7 +356,9 @@ export const ReviewScreen: Component = () => {
 
               <Screen.Footer>
                 <PlayerCaptures />
-                <BoardControls center={<EngineDepth />} omitDrawer leading={shareItem} />
+                <div class={styles.tallOnly}>
+                  <BoardControls center={<EngineDepth />} omitDrawer leading={shareItem} />
+                </div>
               </Screen.Footer>
             </>
           );

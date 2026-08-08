@@ -26,7 +26,7 @@ const viewports = {
   },
   dynamic: {
     name: "Dynamic",
-    styles: { width: "480px", height: "480px" },
+    styles: { width: "560px", height: "420px" },
     type: "mobile" as const,
   },
 };

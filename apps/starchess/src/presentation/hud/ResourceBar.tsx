@@ -34,6 +34,9 @@ export type ResourceBarProps = {
   snapshot?: ScFenSnapshot;
   /** Mineral bank override (live MatchStore). When omitted, estimated from snap. */
   stored?: number;
+  /** MobileBanner density — tighter padding / type. */
+  compact?: boolean;
+  class?: string;
 };
 
 /**
@@ -137,7 +140,7 @@ export const ResourceBar: Component<ResourceBarProps> = (props) => {
 
   return (
     <TeamFrame
-      class={styles.bar}
+      class={`${styles.bar}${props.compact ? ` ${styles.compact}` : ""}${props.class ? ` ${props.class}` : ""}`}
       teamColor={team()}
       data-testid="resource-bar"
       data-team={color()}

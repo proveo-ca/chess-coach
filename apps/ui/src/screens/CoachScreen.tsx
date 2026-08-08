@@ -137,12 +137,15 @@ export const CoachScreen: Component = () => {
             <CoachAvatar />
           </ScreenBackNav>
         </div>
-        <MobileBanner title="Selena" onMenu={openMobileDrawer} />
-        {/* Tall mobile: hero floats over the banner (z-index). Short: CSS hides; compact in bar. */}
+        {/* Dynamic: banner+bar fuse. Tall: display:contents — hero + bar layout unchanged. */}
+        <div data-fuse-root data-testid="mobile-fuse">
+          <MobileBanner title="Selena" onMenu={openMobileDrawer} hideCentre />
+          <BoardControls center={<CoachAvatar compact />} centerOverflow omitDrawer />
+        </div>
+        {/* Outside fuse so tall-mobile margin-bottom:auto spacer still works. */}
         <div class={styles.mobileHero} data-testid="coach-mobile-hero">
           <CoachAvatar />
         </div>
-        <BoardControls center={<CoachAvatar compact />} centerOverflow omitDrawer />
         <OpponentCaptures />
       </Screen.Header>
 

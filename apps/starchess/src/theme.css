@@ -1,5 +1,7 @@
 /**
  * StarChess design tokens — mirrors apps/ui `theme.css` (tokens + breakpoints).
+ * Layout classes (not testids): .screen-root · .mobile-banner · .starchess-play ·
+ * .starchess-menu · .coach-avatar · .chessboard · .mobile-hero
  * // SPEC: _spec/apps/ui/responsiveness/rules.md
  */
 
@@ -27,9 +29,15 @@
   --avatar-nose: #d4a5a5;
   --avatar-iris: #b3e79f;
 
-  /* Extra-small / mobile defaults (< 720px): no sidebar; 2rem gutter each side. */
+  /* Mobile board: floor 320 · grow with viewport · ceiling 480 (desktop overrides).
+     Width: 2rem gutter each side. Height: leave room for top/bottom HUD. */
   --sidebar-width: 0px;
-  --board-size: min(100vw - 4rem, 480px);
+  --board-chrome-block: 10rem;
+  --board-size: clamp(
+    320px,
+    min(100vw - 4rem, 100dvh - var(--board-chrome-block)),
+    480px
+  );
   --square-size: calc(var(--board-size) / 8);
   --app-max-width: 100%;
 
@@ -147,7 +155,7 @@
     min-height: 0;
   }
 
-  .mobile-hero [data-testid="coach-avatar"] {
+  .mobile-hero .coach-avatar {
     margin-top: 0.35rem;
   }
 }

@@ -50,3 +50,20 @@
   color: color-mix(in srgb, var(--text-color, #e8eaed) 62%, transparent);
   font-weight: 500;
 }
+
+/* MobileBanner density */
+.compact {
+  padding: 2px 4px;
+  gap: 4px;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.compact .strip {
+  font-size: 11px;
+  gap: 3px;
+}
+
+.compact .income {
+  font-size: 10px;
+}

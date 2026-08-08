@@ -66,6 +66,11 @@ const Root: Component<{
    * drawer only (hides the “Solo Analysis” label).
    */
   collapseOnShort?: boolean;
+  /**
+   * Dynamic-only tool strip (Analysis / Review detail) — hidden outside
+   * `--dynamic-mobile` (tall mobile keeps footer BoardControls instead).
+   */
+  dynamicOnly?: boolean;
 }> = (props) => (
   <div
     classList={{
@@ -75,6 +80,8 @@ const Root: Component<{
       [styles.toolbar]: !!props.toolbar,
       [styles["collapse-on-short"]]: !!props.collapseOnShort,
     }}
+    data-testid="mobile-fuse-bar"
+    data-dynamic-only={props.dynamicOnly ? "" : undefined}
   >
     {props.children}
   </div>

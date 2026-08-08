@@ -26,7 +26,7 @@ export const TutorialGuideBubble: Component<TutorialGuideBubbleProps> = (
   return (
     <Show when={open()}>
       <div
-        class={styles.dock}
+        class={`tutorial-guide-bubble ${styles.dock}`}
         data-testid="tutorial-guide-bubble"
       >
         <ChatBubble

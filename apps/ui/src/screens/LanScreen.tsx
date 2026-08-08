@@ -579,31 +579,33 @@ export const LanScreen: Component = () => {
               </div>
             </ScreenBackNav>
           </div>
-          <MobileBanner title={bannerMatchup()} onMenu={openMobileDrawer} />
-          <MobileSidebar timeline={playerReplaying()}>
-            <MobileSidebar.Main>
-              <ConnIndicator />
-            </MobileSidebar.Main>
-            <Show when={!gameOver() && seat() === "player"}>
-              <MobileSidebar.Item>
-                <IconButton onClick={onDrawAction} aria-label="Draw">
-                  <span class={styles.drawIcon} aria-hidden="true">
-                    🤝
-                  </span>
-                </IconButton>
+          <div data-fuse-root data-testid="mobile-fuse">
+            <MobileBanner title={bannerMatchup()} onMenu={openMobileDrawer} />
+            <MobileSidebar timeline={playerReplaying()}>
+              <MobileSidebar.Main>
+                <ConnIndicator />
+              </MobileSidebar.Main>
+              <Show when={!gameOver() && seat() === "player"}>
+                <MobileSidebar.Item>
+                  <IconButton onClick={onDrawAction} aria-label="Draw">
+                    <span class={styles.drawIcon} aria-hidden="true">
+                      🤝
+                    </span>
+                  </IconButton>
+                </MobileSidebar.Item>
+              </Show>
+              <MobileSidebar.Item nav ref={(el) => (navEl = el)}>
+                {historyNav(isObserver())}
               </MobileSidebar.Item>
-            </Show>
-            <MobileSidebar.Item nav ref={(el) => (navEl = el)}>
-              {historyNav(isObserver())}
-            </MobileSidebar.Item>
-            <Show when={!gameOver() && seat() === "player"}>
-              <MobileSidebar.Item>
-                <IconButton onClick={() => mp.resign()} aria-label="Resign">
-                  <FlagIcon />
-                </IconButton>
-              </MobileSidebar.Item>
-            </Show>
-          </MobileSidebar>
+              <Show when={!gameOver() && seat() === "player"}>
+                <MobileSidebar.Item>
+                  <IconButton onClick={() => mp.resign()} aria-label="Resign">
+                    <FlagIcon />
+                  </IconButton>
+                </MobileSidebar.Item>
+              </Show>
+            </MobileSidebar>
+          </div>
           <OpponentCaptures />
         </Screen.Header>
 

@@ -38,7 +38,7 @@
   box-sizing: border-box;
 }
 
-.coachNav :global([data-testid="coach-avatar"]) {
+.coachNav :global(.coach-avatar) {
   flex: 0 0 auto;
 }
 

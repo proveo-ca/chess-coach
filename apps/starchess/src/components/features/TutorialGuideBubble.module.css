@@ -1,6 +1,6 @@
 /* Float ChatBubble over board ranks 7–8 without shifting Screen header. */
 
-:global([data-region="top"]:has([data-testid="tutorial-guide-bubble"])) {
+:global([data-region="top"]:has(.tutorial-guide-bubble)) {
   overflow: visible;
   z-index: 50;
 }

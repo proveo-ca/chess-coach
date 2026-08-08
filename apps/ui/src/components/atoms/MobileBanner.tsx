@@ -16,6 +16,11 @@ export type MobileBannerProps = {
   onBack?: () => void;
   /** Opens the mobile menu (hamburger). */
   onMenu: () => void;
+  /**
+   * Dynamic-mobile fuse: hide the centre title so the MobileSidebar centre
+   * (e.g. CoachAvatar) owns the strip. No-op outside `--dynamic-mobile`.
+   */
+  hideCentre?: boolean;
   class?: string;
   "data-testid"?: string;
 };
@@ -23,6 +28,8 @@ export type MobileBannerProps = {
 /**
  * Mobile-only top strip flush to the viewport edge:
  * `‹ Back` · title · hamburger. Hidden on desktop (Sidebar / ScreenBackNav).
+ * At `--dynamic-mobile`, a parent `[data-testid=mobile-fuse]` row hoists
+ * these cells beside MobileSidebar items (display:contents).
  */
 export const MobileBanner: Component<MobileBannerProps> = (props) => {
   const navigate = useNavigate();
@@ -38,10 +45,11 @@ export const MobileBanner: Component<MobileBannerProps> = (props) => {
 
   return (
     <header
-      class={`${styles.banner} ${props.class ?? ""}`.trim()}
+      class={`mobile-banner ${styles.banner} ${props.class ?? ""}`.trim()}
       data-testid={props["data-testid"] ?? "mobile-banner"}
+      data-hide-centre={props.hideCentre ? "" : undefined}
     >
-      <div class={styles.side}>
+      <div class={styles.side} data-fuse="back">
         <ChevronNav
           direction="back"
           onClick={goBack}
@@ -51,7 +59,7 @@ export const MobileBanner: Component<MobileBannerProps> = (props) => {
           Back
         </ChevronNav>
       </div>
-      <div class={styles.center}>
+      <div class={styles.center} data-fuse="centre">
         <Show
           when={typeof props.title === "string"}
           fallback={<span class={styles.title}>{props.title}</span>}
@@ -61,7 +69,7 @@ export const MobileBanner: Component<MobileBannerProps> = (props) => {
           </Label>
         </Show>
       </div>
-      <div class={`${styles.side} ${styles.trailing}`}>
+      <div class={`${styles.side} ${styles.trailing}`} data-fuse="menu">
         <IconButton onClick={() => props.onMenu()} aria-label="Open menu">
           <HamburgerIcon />
         </IconButton>

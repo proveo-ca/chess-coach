@@ -6,7 +6,7 @@
 /* Board Screen only — do not cap #root for the StarChess menu (full-bleed).
    apps/ui uses `:global(#root)` unconditionally; StarChess keeps the menu sky
    uncapped by scoping the cap to screens that mount `screen-root`. */
-:global(#root:has([data-testid="screen-root"])) {
+:global(#root:has(.screen-root)) {
   max-width: 1280px;
   margin: 0 auto;
   text-align: center;
@@ -15,19 +15,19 @@
 }
 
 /* Board-centric screens own the viewport — no page vertical scroll (§1b). */
-:global(html:has([data-testid="screen-root"])) {
+:global(html:has(.screen-root)) {
   height: 100%;
   overflow: hidden;
 }
 
-:global(body:has([data-testid="screen-root"])) {
+:global(body:has(.screen-root)) {
   height: 100%;
   overflow: hidden;
   min-width: var(--board-size);
 }
 
 @media (min-width: 720px) {
-  :global(body:has([data-testid="screen-root"])) {
+  :global(body:has(.screen-root)) {
     /* board + sidebar + modest gutter (§1a) */
     min-width: calc(var(--board-size) + var(--sidebar-width) + 1.5rem);
   }
@@ -45,7 +45,7 @@
   }
 
   .app-container:has([data-board-column])[data-footer-float="true"]:not(
-      :has([data-region="top"] [data-testid="floating-move-list"])
+      :has([data-region="top"] .floating-move-list)
     ) {
     grid-template-rows: calc(var(--avatar-height) + 1rem) auto 0fr;
   }
@@ -72,17 +72,17 @@
    When MoveList docks/floats from the top region (Review /:id), keep the bottom
    row so BoardControls + player captures stay visible. */
 .app-container[data-footer-float="true"]:not(
-    :has([data-region="top"] [data-testid="floating-move-list"])
+    :has([data-region="top"] .floating-move-list)
   ) {
   grid-template-rows: minmax(0, auto) auto 0fr;
 }
 
 .app-container[data-footer-float="true"]:not(
-    :has([data-region="top"] [data-testid="floating-move-list"])
+    :has([data-region="top"] .floating-move-list)
   )
   > .footer,
 .app-container[data-footer-float="true"]:not(
-    :has([data-region="top"] [data-testid="floating-move-list"])
+    :has([data-region="top"] .floating-move-list)
   )
   > [data-region="bottom"] {
   overflow: hidden;
@@ -140,8 +140,8 @@
 
 /* §4b: floating MoveList is position:fixed but still a top-region descendant —
    let it paint below the title stack without the track clipping it. */
-.sidebar-inset:has([data-testid="floating-move-list"]),
-.coach-header:has([data-testid="floating-move-list"]) {
+.sidebar-inset:has(.floating-move-list),
+.coach-header:has(.floating-move-list) {
   overflow: visible;
 }
 
@@ -173,7 +173,7 @@ h1 {
   }
 
   .app-container[data-footer-float="true"]:not(
-      :has([data-region="top"] [data-testid="floating-move-list"])
+      :has([data-region="top"] .floating-move-list)
     ) {
     grid-template-rows: minmax(min-content, 1fr) auto 0fr;
   }
@@ -214,13 +214,13 @@ h1 {
 
   /* With MobileBanner: start packing from the top so margin-bottom:auto on
      the banner pins it to the viewport edge; FEN / captures stay near board. */
-  .sidebar-inset:has([data-testid="mobile-banner"]),
-  .coach-header:has([data-testid="mobile-banner"]) {
+  .sidebar-inset:has(.mobile-banner),
+  .coach-header:has(.mobile-banner) {
     justify-content: flex-start;
   }
 
-  .sidebar-inset > :global([data-testid="mobile-banner"]) ~ *,
-  .coach-header > :global([data-testid="mobile-banner"]) ~ * {
+  .sidebar-inset > :global(.mobile-banner) ~ *,
+  .coach-header > :global(.mobile-banner) ~ * {
     margin-top: 0;
   }
 

@@ -4,6 +4,8 @@
 @custom-media --mobile (max-width: 719px);
 @custom-media --tall-mobile (max-width: 719px) and (min-height: 640px);
 @custom-media --short-mobile (max-width: 719px) and (max-height: 639px);
+/* Dynamic: short height + wide-enough mobile for fused banner+bar (Storybook Dynamic 560×420). */
+@custom-media --dynamic-mobile (max-width: 719px) and (min-width: 480px) and (max-height: 639px);
 
 :root {
   /* RGB tuples — base color components, used for both solid colors and rgba() */
@@ -107,9 +109,15 @@
   --border-radius-md: 8px;
   --avatar-height: 8rem;
 
-  /* Extra-small defaults (< 480px): no sidebar */
+  /* Mobile board: floor 320 · grow with viewport · ceiling 480 (desktop overrides).
+     Width gutters 1rem each side; height leaves room for banner/captures/footer. */
   --sidebar-width: 0px;
-  --board-size: min(100vw - 2rem, 480px);
+  --board-chrome-block: 10rem;
+  --board-size: clamp(
+    320px,
+    min(100vw - 2rem, 100dvh - var(--board-chrome-block)),
+    480px
+  );
   --square-size: calc(var(--board-size) / 8);
   --app-max-width: 100%;
   --header-columns: 1fr; /* Stack avatar and advice vertically */

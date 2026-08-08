@@ -33,6 +33,9 @@ type GasDeployProps = {
   onDeploy?: (target: GasDeployTarget) => void;
   /** Fired when a drag cancels (miss / TBD unit / pointer cancel). */
   onCancel?: () => void;
+  /** MobileBanner density — smaller rack. */
+  compact?: boolean;
+  class?: string;
 };
 
 type DragState = {
@@ -270,7 +273,12 @@ export const GasDeploy: Component<GasDeployProps> = (props) => {
   void classicFenForViewer(store);
 
   return (
-    <div class={styles.dock} data-testid="gas-deploy" role="group" aria-label="Vespene deploy">
+    <div
+      class={`${styles.dock}${props.compact ? ` ${styles.compact}` : ""}${props.class ? ` ${props.class}` : ""}`}
+      data-testid="gas-deploy"
+      role="group"
+      aria-label="Vespene deploy"
+    >
       <div class={styles.circleBase}>
         <button
           ref={(el) => {

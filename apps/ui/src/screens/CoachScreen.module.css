@@ -2,15 +2,17 @@
 
 /* Tall mobile: hero CoachAvatar floats over MobileBanner (z-index), then
    BoardControls hug the board. Hidden on desktop (Header owns the avatar via
-   ScreenBackNav) and on short dynamic (compact stays in BoardControls).
-   Always mounted — visibility is CSS-only so the avatar does not remount. */
+   ScreenBackNav) and on short / dynamic (compact stays in BoardControls fuse).
+   Always mounted — visibility is CSS-only so the avatar does not remount.
+   SPEC: _spec/apps/ui/responsiveness/rules.md */
 .mobileHero {
   display: none;
 }
 
 @media (--tall-mobile) {
-  /* Banner keeps flush-top layout; hero owns the leftover spacer instead. */
-  :global([data-testid="mobile-banner"]) {
+  /* Banner keeps flush-top layout; hero owns the leftover spacer instead.
+     Fuse wrapper is display:contents here, so banner is a header flex child. */
+  :global(.mobile-banner) {
     margin-bottom: 0;
   }
 
@@ -33,5 +35,12 @@
   .mobileHero :global([data-testid="coach-avatar"]) {
     margin-top: 0.35rem;
     pointer-events: auto;
+  }
+}
+
+/* Dynamic fuse: hero stays hidden; compact avatar in the fused strip is 0.75. */
+@media (--dynamic-mobile) {
+  .mobileHero {
+    display: none;
   }
 }

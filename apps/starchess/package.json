@@ -8,6 +8,7 @@
     "build": "tsgo -b && vite build",
     "typecheck": "tsgo -b --noEmit",
     "test": "vitest run",
+    "check:css-layout": "! rg -n 'data-testid' --glob '*.css' src theme.css 2>/dev/null && ! rg -n 'data-testid' --glob '*.module.css' src && echo 'css-layout: ok'",
     "lint": "oxlint -c oxlint.config.ts",
     "lint:fix": "oxlint -c oxlint.config.ts --fix --fix-suggestions --fix-dangerously",
     "format": "oxfmt",

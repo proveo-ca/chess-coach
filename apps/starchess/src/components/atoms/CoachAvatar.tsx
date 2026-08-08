@@ -158,6 +158,7 @@ export const CoachAvatar: Component<CoachAvatarProps> = (props) => {
       }
       data-emotion={emotion()}
       class={clsx(
+        "coach-avatar",
         styles.cat,
         props.compact && styles.compact,
         styles[emotion()],

@@ -18,7 +18,7 @@ export const LiveMatchShell: Component<{
     data-testid={props.testId ?? "starchess-live-shell"}
   >
     <MenuSkyBackdrop world={props.world ?? "eclipse"} />
-    <div class={styles.playLayer} data-testid="starchess-play">
+    <div class={`starchess-play ${styles.playLayer}`} data-testid="starchess-play">
       {props.children}
     </div>
   </div>

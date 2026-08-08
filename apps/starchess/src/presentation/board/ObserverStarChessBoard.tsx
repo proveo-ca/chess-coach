@@ -239,7 +239,7 @@ export const ObserverStarChessBoard: Component<{
   return (
     <div class={styles["board-layout-wrapper"]}>
       <div
-        class={styles["chessboard-container"]}
+        class={`chessboard ${styles["chessboard-container"]}`}
         data-testid="chessboard"
         data-phase={props.phase ?? "start"}
       >

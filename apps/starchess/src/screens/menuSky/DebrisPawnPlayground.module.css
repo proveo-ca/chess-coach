@@ -44,8 +44,8 @@
   );
 }
 
-/* Strip board chrome — attribute selectors (CSS modules hash class names). */
-.invisible :global([data-testid="chessboard"]) {
+/* Strip board chrome — layout class on the board root. */
+.invisible :global(.chessboard) {
   background: transparent !important;
   box-shadow: none !important;
   padding: 0 !important;
@@ -66,8 +66,8 @@
 /* Eclipse (etc.) terrain noise lives on the board ::after — kill it. */
 .invisible :global([data-board-grid])::before,
 .invisible :global([data-board-grid])::after,
-.invisible :global([data-testid="chessboard"])::before,
-.invisible :global([data-testid="chessboard"])::after {
+.invisible :global(.chessboard)::before,
+.invisible :global(.chessboard)::after {
   display: none !important;
   content: none !important;
   background: none !important;

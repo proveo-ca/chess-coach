@@ -43,6 +43,11 @@ type TurnBarProps = {
    * Stories that only demo chrome can set false and handle via onEnd.
    */
   resolveOnEnd?: boolean;
+  /**
+   * Dynamic MobileBanner density — timer + End Turn only (no chips / queue).
+   */
+  compact?: boolean;
+  class?: string;
 };
 
 const badgeLabel = (a: ScAction): string => {
@@ -159,7 +164,7 @@ export const TurnBar: Component<TurnBarProps> = (props) => {
 
   return (
     <TeamFrame
-      class={styles.bar}
+      class={`${styles.bar}${props.compact ? ` ${styles.compact}` : ""}${props.class ? ` ${props.class}` : ""}`}
       teamColor="#000"
       data-testid="turn-bar"
       data-team={viewerColor(store)}
@@ -168,14 +173,16 @@ export const TurnBar: Component<TurnBarProps> = (props) => {
       aria-label="Turn"
     >
       <div class={styles.controls}>
-        <div class={styles.chips}>
-          <Chip tone="turn" data-testid="live-turn-chip">
-            Turn - {turnNumber()}
-          </Chip>
-          <Chip tone={reviewPhaseChipTone(phase())} data-testid="live-phase-chip">
-            {reviewPhaseLabel(phase())}
-          </Chip>
-        </div>
+        <Show when={!props.compact}>
+          <div class={styles.chips}>
+            <Chip tone="turn" data-testid="live-turn-chip">
+              Turn - {turnNumber()}
+            </Chip>
+            <Chip tone={reviewPhaseChipTone(phase())} data-testid="live-phase-chip">
+              {reviewPhaseLabel(phase())}
+            </Chip>
+          </div>
+        </Show>
         <Button
           class={styles.end}
           data-testid="turn-end"
@@ -194,20 +201,22 @@ export const TurnBar: Component<TurnBarProps> = (props) => {
           {seconds()}
         </CountdownRing>
       </div>
-      <div class={styles.queue} data-testid="turn-queue" aria-label="Action queue">
-        <For each={befores()}>{(a) => queueChip(a)}</For>
-        <Show
-          when={classical()}
-          fallback={
-            <Chip size="sm" tone="muted" data-timing="C">
-              C —
-            </Chip>
-          }
-        >
-          {(c) => queueChip(c())}
-        </Show>
-        <For each={afters()}>{(a) => queueChip(a)}</For>
-      </div>
+      <Show when={!props.compact}>
+        <div class={styles.queue} data-testid="turn-queue" aria-label="Action queue">
+          <For each={befores()}>{(a) => queueChip(a)}</For>
+          <Show
+            when={classical()}
+            fallback={
+              <Chip size="sm" tone="muted" data-timing="C">
+                C —
+              </Chip>
+            }
+          >
+            {(c) => queueChip(c())}
+          </Show>
+          <For each={afters()}>{(a) => queueChip(a)}</For>
+        </div>
+      </Show>
     </TeamFrame>
   );
 };

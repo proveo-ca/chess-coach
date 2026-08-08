@@ -114,8 +114,9 @@ export const StarChessMenuScreen: Component<StarChessMenuScreenProps> = (props) 
 
   return (
     <div
-      class={styles.root}
+      class={`starchess-menu ${styles.root}`}
       data-testid="starchess-menu"
+      data-layout="menu"
       data-menu="starchess"
       data-chrome={chrome()}
     >
@@ -135,7 +136,7 @@ export const StarChessMenuScreen: Component<StarChessMenuScreenProps> = (props) 
         Same splash column as apps/ui SplashScreen / MenuScreen — avatar box
         must stay pixel-identical across Chess ↔ StarChess.
       */}
-      <div class={styles.splashContent} data-testid="menu-splash-slot">
+      <div class={`menu-splash-slot ${styles.splashContent}`} data-testid="menu-splash-slot">
         <div class={styles.splashAvatarWrapper}>
           <Show when={props.showAvatar !== false}>
             <CoachAvatar identity={identity()} />

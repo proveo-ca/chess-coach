@@ -11,6 +11,11 @@
   touch-action: none;
 }
 
+/* MobileBanner density */
+.compact {
+  --rack-size: 36px;
+}
+
 /*
  * Continuous rack: gray circle + oval share fill/border.
  * Oval tucks under the circle so the join is circular, not a flat cut.
@@ -181,16 +186,6 @@
   z-index: 90;
   transform: translate(-50%, calc(-100% - 12px));
   pointer-events: none;
-}
-
-/* Short / dynamic — height only (not width); float rack to viewport top-right. */
-@media (max-height: 639px) {
-  .dock {
-    position: fixed;
-    top: 0.75rem;
-    right: 0.75rem;
-    z-index: 70;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {

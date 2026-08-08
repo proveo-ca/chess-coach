@@ -15,8 +15,7 @@
   isolation: isolate;
   width: 100%;
   max-width: none;
-  min-height: 100vh;
-  min-height: 100dvh;
+  height: 100dvh;
   margin: 0 auto;
   overflow: hidden;
   color: var(--sc-menu-neon);
@@ -31,7 +30,7 @@
 }
 
 /* Menu owns the viewport — never inherit board Screen #root max-width. */
-:global(#root:has([data-testid="starchess-menu"])) {
+:global(#root:has(.starchess-menu)) {
   max-width: none;
   width: 100%;
   margin: 0;
@@ -156,7 +155,7 @@
     filter 0.85s ease;
 }
 
-.guideSlot :global([data-testid="starchess-menu-bubble"]) {
+.guideSlot .guideBubble {
   pointer-events: auto;
 }
 
@@ -271,18 +270,18 @@
 }
 
 .posTutorial {
-  left: calc(18% + 4rem);
-  top: 85%;
+  left: calc(33% + 4rem);
+  top: 70%;
 }
 
 .posCredits {
-  left: calc(18% + 4rem);
-  top: 92%;
+  left: calc(33% + 4rem);
+  top: 78%;
 }
 
 .posExit {
   left: 80%;
-  top: 68%;
+  top: 72%;
 }
 
 /*
@@ -340,7 +339,7 @@
   .posExit {
     left: auto;
     right: 4%;
-    top: 60%;
+    top: 80%;
   }
 
   .posTutorial,
@@ -374,7 +373,7 @@
 }
 
 /* Narrow + short — reclaim vertical space; hide Selena’s guide line. */
-@media (max-width: 720px) and (max-height: 860px) {
+@media (max-width: 720px) and (max-height: 640px) {
   .guideSlot {
     display: none;
   }
@@ -384,26 +383,26 @@
   }
 
   .posSingle {
-    top: 24%;
+    top: 12%;
   }
 
   .posReview {
-    top: 33%;
+    top: 20%;
   }
 
   .posMulti {
-    top: 46%;
+    top: 48%;
   }
 
   .posExit {
-    top: 57%;
+    top: 66%;
   }
 
   .posTutorial {
-    top: 70%;
+    top: 64%;
   }
 
   .posCredits {
-    top: 76%;
+    top: 72%;
   }
 }
