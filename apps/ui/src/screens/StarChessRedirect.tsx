@@ -7,6 +7,11 @@ import { onMount, type Component } from "solid-js";
 export const StarChessRedirect: Component = () => {
   onMount(() => {
     const { search, hash } = window.location;
+    try {
+      sessionStorage.setItem("starchess_from_chess", "1");
+    } catch {
+      /* ignore */
+    }
     window.location.replace(`/starchess/${search}${hash}`);
   });
   return (

@@ -14,7 +14,7 @@ package "Canonical demos" {
   component "King Hunt\nstory: starchess-demo--king-hunt\nimplicit legal checks + HP; tank on g6" as D2 <<app>>
   component "King Hunt (live)\nstory: starchess-demo--king-hunt-live\nstanding Nc5 check; ResourceBar / TurnBarSidebar / End;\nadjutant opposite of viewer (no HP trade)" as D3 <<app>>
   component "Vermeer (live)\nstory: starchess-demo--vermeer-live\n1K+4P opening (Maps → Vermeer SCFEN);\nvermeer terrain; ResourceBar / TurnBar / GasDeploy;\nadjutant opposite of team\n(+ VermeerLiveTurnSidebar story)" as D3b <<app>>
-  component "GasDeploy specials\nstory: starchess-special-moves--*\n+ starchess-turn-chrome--gas-deploy\n+ starchess-features-gasdeploy--*\n""GasDeployScenarioScreen"" + fixtures" as D5 <<app>>
+  component "GasDeploy specials\nstory: starchess-special-moves--*\n+ features-turn-chrome--gas-deploy\n+ features-gasdeploy--*\n""GasDeployScenarioScreen"" + fixtures" as D5 <<app>>
   component "Fog-edge Bishop / Rook tank\nstory: starchess-fog-of-war-and-move-animations--bishop\n(+ King/Pawn/Knight/Queen/Rook tank|siege)\nmove into fog → capture/occupy blocker" as D4 <<app>>
   component "Spider Mines\nstory: starchess-spider-mines--*\npath collide · ally mine · attack mine\n+ Promotion × mine (core promotionMine.test)\nFog vision: starchess-fog-of-war-and-move-animations--spider-mine" as D6 <<app>>
 }

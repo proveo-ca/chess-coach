@@ -1,6 +1,6 @@
 // SPEC: _spec/apps/ui/components.puml
 import { useNavigate } from "@solidjs/router";
-import { Show, onCleanup, onMount } from "solid-js";
+import { onCleanup, onMount } from "solid-js";
 import type { Component } from "solid-js";
 
 import { OpponentCaptures, PlayerCaptures } from "~/components/atoms/CapturedPieces";
@@ -12,16 +12,18 @@ import { ChessBoard } from "~/components/features/ChessBoard";
 import { MobileDrawer, openMobileDrawer } from "~/components/features/MobileDrawer";
 import { MobileSidebar } from "~/components/features/MobileSidebar";
 import { Sidebar } from "~/components/features/Sidebar";
-import { Button } from "~/components/primitives/Button";
+import { ChevronNav } from "~/components/primitives/ChevronNav";
 import { IconButton } from "~/components/primitives/IconButton";
-import { BackArrowIcon, HamburgerIcon } from "~/components/primitives/icons";
+import { HamburgerIcon } from "~/components/primitives/icons";
 import { Label } from "~/components/primitives/Label";
 import { Screen } from "~/components/primitives/Screen";
 import { ANALYSIS_CAPABILITIES, setCapabilities } from "~/store/capabilitiesStore";
 import { inProgressGame } from "~/store/gameHistoryStore";
 import { persistFreshStart } from "~/store/gameStore";
 import { imLost, setImLost } from "~/store/settingsStore";
-import { canGoBackInApp } from "~/utils/navHistory";
+import { screenBackTarget } from "~/utils/navHistory";
+
+import styles from "~/screens/AnalysisScreen.module.css";
 
 /**
  * Solo Analysis screen. No coach avatar, no advice panel, no replay or
@@ -34,7 +36,8 @@ import { canGoBackInApp } from "~/utils/navHistory";
  * Mobile chrome mirrors Review `/:id`: title toolbar always mounted with
  * drawer left of the label + `omitDrawer` on BoardControls. Short / dynamic
  * hides the title toolbar; the menu sits in FenLoader’s leading slot (left of
- * the FEN input) so it never overlays the field. Back stays trailing Load.
+ * the FEN input) so it never overlays the field. `‹ Back` sits top-left on
+ * desktop and in the mobile toolbar.
  */
 export const AnalysisScreen: Component = () => {
   const navigate = useNavigate();
@@ -55,53 +58,35 @@ export const AnalysisScreen: Component = () => {
     setImLost(previousImLost);
   });
 
+  const goBack = () => {
+    const target = screenBackTarget();
+    if (typeof target === "number") navigate(target);
+    else navigate(target);
+  };
+
   const menuButton = () => (
     <IconButton onClick={openMobileDrawer} aria-label="Open menu">
       <HamburgerIcon />
     </IconButton>
   );
 
-  const backButton = () => (
-    <Show
-      when={canGoBackInApp()}
-      fallback={
-        <IconButton onClick={() => navigate("/")} aria-label="Back to Main Menu">
-          <BackArrowIcon />
-        </IconButton>
-      }
+  const backNav = () => (
+    <ChevronNav
+      direction="back"
+      onClick={goBack}
+      aria-label="Back"
+      data-testid="analysis-back"
     >
-      <IconButton onClick={() => navigate(-1)} aria-label="Back">
-        <BackArrowIcon />
-      </IconButton>
-    </Show>
+      Back
+    </ChevronNav>
   );
 
   return (
     <Screen>
       <div class="desktop-only">
         <Screen.SidebarInset>
+          <div class={styles.topNav}>{backNav()}</div>
           <Label variant="title">Solo Analysis</Label>
-          <div
-            style={{
-              display: "flex",
-              "justify-content": "center",
-              gap: "0.75rem",
-              padding: "0.6rem 0",
-            }}
-          >
-            <Show
-              when={canGoBackInApp()}
-              fallback={
-                <Button primary href="/">
-                  Back to Main Menu
-                </Button>
-              }
-            >
-              <Button primary onClick={() => navigate(-1)}>
-                Back
-              </Button>
-            </Show>
-          </div>
           <FenLoader />
         </Screen.SidebarInset>
       </div>
@@ -110,6 +95,7 @@ export const AnalysisScreen: Component = () => {
         <Screen.BoardColumn>
           <MobileSidebar toolbar collapseOnShort>
             <MobileSidebar.Item drawer>{menuButton()}</MobileSidebar.Item>
+            <MobileSidebar.Item>{backNav()}</MobileSidebar.Item>
             <MobileSidebar.Main>
               <MobileSidebar.MatchupLabel data-testid="analysis-title">
                 <Label variant="title">Solo Analysis</Label>
@@ -117,7 +103,7 @@ export const AnalysisScreen: Component = () => {
             </MobileSidebar.Main>
           </MobileSidebar>
           <div class="mobile-only">
-            <FenLoader leading={menuButton()} trailing={backButton()} />
+            <FenLoader leading={menuButton()} trailing={backNav()} />
           </div>
           <BoardControls center={<EngineDepth />} omitDrawer />
           <OpponentCaptures />

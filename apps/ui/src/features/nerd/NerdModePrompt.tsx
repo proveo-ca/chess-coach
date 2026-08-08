@@ -16,11 +16,16 @@ import {
 
 /**
  * Close-enough StarCraft name (checked on name commit / blur) → choose path:
- * - Yes → standalone StarChess at `/starchess/`
+ * - Yes → MenuScreen sets coach happy, then standalone StarChess at `/starchess/`
  * - Keep chess classic → unlock the Nerd identity (classical chess + `public/pieces/nerd/`)
  * // SPEC: _spec/apps/starchess/deployment.puml
  */
-export const NerdModePrompt: Component = () => {
+export type NerdModePromptProps = {
+  /** Fired when the player accepts StarChess (before redirect). */
+  onAccept?: () => void;
+};
+
+export const NerdModePrompt: Component<NerdModePromptProps> = (props) => {
   const [open, setOpen] = createSignal(false);
   let dismissedName: string | null = null;
 
@@ -45,8 +50,15 @@ export const NerdModePrompt: Component = () => {
         <Button
           primary
           onClick={() => {
+            props.onAccept?.();
             setOpen(false);
             const { search, hash } = window.location;
+            try {
+              // Consumed by apps/starchess MenuArrival / menuEntrance.
+              sessionStorage.setItem("starchess_from_chess", "1");
+            } catch {
+              /* ignore */
+            }
             window.location.assign(`/starchess/${search}${hash}`);
           }}
         >

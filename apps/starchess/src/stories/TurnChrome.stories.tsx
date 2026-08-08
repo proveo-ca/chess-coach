@@ -15,7 +15,7 @@ import { GAS_DEPLOY_FIXTURES } from "~/stories/fixtures/scenarios";
  * Turn chrome + full-army GasDeploy. Stories mount fixtures / chrome only.
  */
 const meta = {
-  title: "StarChess/Turn Chrome",
+  title: "Features/Turn Chrome",
   parameters: {
     layout: "centered",
     docs: {

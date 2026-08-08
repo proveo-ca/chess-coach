@@ -15,6 +15,7 @@ afterEach(() => {
   setPlayerIdentity("Human");
   setNerdModeUnlocked(false);
   resetPlayerNameCommitTick();
+  sessionStorage.clear();
   vi.restoreAllMocks();
 });
 
@@ -33,6 +34,7 @@ describe("NerdModePrompt", () => {
 
   it("opens standalone StarChess when they accept nerd mode", async () => {
     const assign = vi.fn();
+    const onAccept = vi.fn();
     vi.stubGlobal("location", {
       ...window.location,
       search: "?scfen=SCFEN%7Cx",
@@ -42,13 +44,15 @@ describe("NerdModePrompt", () => {
     setNerdModeUnlocked(false);
     setPlayerName("Kerrigam");
     commitPlayerNameCheck();
-    render(() => <NerdModePrompt />);
+    render(() => <NerdModePrompt onAccept={onAccept} />);
 
     expect(await screen.findByRole("dialog", { name: "Activate nerd mode?" })).toBeTruthy();
     expect(identityOptions()).not.toContain("Nerd");
 
     fireEvent.click(screen.getByRole("button", { name: "yes" }));
 
+    expect(onAccept).toHaveBeenCalledOnce();
+    expect(sessionStorage.getItem("starchess_from_chess")).toBe("1");
     expect(assign).toHaveBeenCalledWith("/starchess/?scfen=SCFEN%7Cx#h");
     expect(screen.queryByRole("dialog")).toBeNull();
   });

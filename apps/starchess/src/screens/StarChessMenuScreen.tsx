@@ -7,11 +7,17 @@
  * Single Player / Multiplayer / Review / Exit use {@link MenuAnchor}
  * (MenuTitle primitive + visual). Tutorial is title-only; Credits opens the
  * StarChess credits modal.
+ *
+ * Chess → StarChess arrival (glass / shatter / identity) lives in
+ * {@link MenuArrival} — this screen exposes `identity` + `chrome` for that host.
+ * // SPEC: _spec/apps/starchess/menu-flow.puml
  */
 import clsx from "clsx";
-import { createSignal, type Component, type JSX } from "solid-js";
+import { Show, createSignal, type Component, type JSX } from "solid-js";
 
 import { CoachAvatar } from "~/components/atoms/CoachAvatar";
+import type { CoachIdentity } from "~/types/coach";
+import type { StarChessMenuChrome } from "~/types/menu";
 import { Credits } from "~/components/features/Credits";
 import { MenuAnchor } from "~/components/atoms/MenuAnchor";
 import { NetworkSignal } from "~/components/atoms/NetworkSignal";
@@ -35,11 +41,28 @@ export type StarChessMenuAction =
   | "credits"
   | "exit";
 
+export type { StarChessMenuChrome } from "~/types/menu";
+
 export type StarChessMenuScreenProps = {
   /** Optional handler when an enabled item is activated (story / shell). */
   onAction?: (action: StarChessMenuAction) => void;
   /** Fired when Single Player setup START is confirmed. */
   onStartGame?: (opts: NewGameOptions) => void;
+  /**
+   * Avatar identity — `selena` matches Coach MenuScreen; `kerrigan` is StarChess.
+   * Defaults to kerrigan for the settled menu.
+   */
+  identity?: CoachIdentity;
+  /**
+   * Spatial menu chrome — `hidden` during Chess mockup / early arrival,
+   * `in` while fading up, `on` when interactive (default).
+   */
+  chrome?: StarChessMenuChrome;
+  /**
+   * When false, keep the splash avatar box for layout but omit CoachAvatar
+   * (MenuArrival / ChessMenuMockup owns Selena above the glass).
+   */
+  showAvatar?: boolean;
 };
 
 /** Title-only control (Tutorial / Credits) — same chrome as MenuAnchor, no visual. */
@@ -85,11 +108,16 @@ export const StarChessMenuScreen: Component<StarChessMenuScreenProps> = (props) 
   const [creditsOpen, setCreditsOpen] = createSignal(false);
   const [setupOpen, setSetupOpen] = createSignal(false);
 
+  const identity = (): CoachIdentity => props.identity ?? "kerrigan";
+  const chrome = (): StarChessMenuChrome => props.chrome ?? "on";
+  const chromeInteractive = () => chrome() === "on";
+
   return (
     <div
       class={styles.root}
       data-testid="starchess-menu"
       data-menu="starchess"
+      data-chrome={chrome()}
     >
       <div
         class={styles.sky}
@@ -109,19 +137,42 @@ export const StarChessMenuScreen: Component<StarChessMenuScreenProps> = (props) 
       */}
       <div class={styles.splashContent} data-testid="menu-splash-slot">
         <div class={styles.splashAvatarWrapper}>
-          <CoachAvatar identity="kerrigan" />
+          <Show when={props.showAvatar !== false}>
+            <CoachAvatar identity={identity()} />
+          </Show>
+          {/* Float under Selena like TutorialGuideBubble (out of document flow). */}
+          <div
+            class={styles.guideSlot}
+            classList={{
+              [styles.chromeHidden]: chrome() === "hidden",
+              [styles.chromeIn]: chrome() === "in",
+              [styles.chromeOn]: chrome() === "on",
+            }}
+            data-testid="starchess-menu-guide-dock"
+          >
+            <ChatBubble testId="starchess-menu-bubble" class={styles.guideBubble}>
+              I'm Selena Kerrigan, assigned to guide you through the stars!
+            </ChatBubble>
+          </div>
         </div>
-        <ChatBubble testId="starchess-menu-bubble" class={styles.guideBubble}>
-          I'm Selena Kerrigan, assigned to guide you through the stars!
-        </ChatBubble>
       </div>
 
-      <div class={styles.stage} aria-label="StarChess menu">
+      <div
+        class={styles.stage}
+        classList={{
+          [styles.chromeHidden]: chrome() === "hidden",
+          [styles.chromeIn]: chrome() === "in",
+          [styles.chromeOn]: chrome() === "on",
+        }}
+        aria-label="StarChess menu"
+        aria-hidden={chrome() === "hidden" ? true : undefined}
+      >
         <MenuAnchor
           class={styles.posSingle}
           action="single-player"
           label="Single Player"
           onActivate={() => {
+            if (!chromeInteractive()) return;
             props.onAction?.("single-player");
             setSetupOpen(true);
           }}
@@ -144,7 +195,10 @@ export const StarChessMenuScreen: Component<StarChessMenuScreenProps> = (props) 
           class={styles.posReview}
           action="review"
           label="Review"
-          onActivate={() => props.onAction?.("review")}
+          onActivate={() => {
+            if (!chromeInteractive()) return;
+            props.onAction?.("review");
+          }}
         >
           <MenuMoon embedded />
         </MenuAnchor>
@@ -153,16 +207,20 @@ export const StarChessMenuScreen: Component<StarChessMenuScreenProps> = (props) 
           class={styles.posTutorial}
           action="tutorial"
           label="Tutorial"
-          onAction={props.onAction}
+          onAction={chromeInteractive() ? props.onAction : undefined}
         />
         <MenuTextItem
           class={styles.posCredits}
           action="credits"
           label="Credits"
-          onAction={(action) => {
-            props.onAction?.(action);
-            setCreditsOpen(true);
-          }}
+          onAction={
+            chromeInteractive()
+              ? (action) => {
+                  props.onAction?.(action);
+                  setCreditsOpen(true);
+                }
+              : undefined
+          }
         />
 
         <MenuAnchor
@@ -170,6 +228,7 @@ export const StarChessMenuScreen: Component<StarChessMenuScreenProps> = (props) 
           action="exit"
           label="Exit"
           onActivate={() => {
+            if (!chromeInteractive()) return;
             props.onAction?.("exit");
             // Leave StarChess → Coach Chess (sibling app on /chess/).
             window.location.assign("/chess/");

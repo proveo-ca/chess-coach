@@ -1,5 +1,6 @@
 // SPEC: _spec/apps/ui/multiplayer.puml
 import { For, type Component, Show, createEffect, createSignal, onCleanup, onMount } from "solid-js";
+import { useNavigate } from "@solidjs/router";
 
 import { OpponentCaptures, PlayerCaptures } from "~/components/atoms/CapturedPieces";
 import { Clock } from "~/components/atoms/Clock";
@@ -12,6 +13,7 @@ import { MultiplayerBoard } from "~/components/features/MultiplayerBoard";
 import { PlayerNameField } from "~/components/features/PlayerNameField";
 import { TailscaleChecklist } from "~/components/features/TailscaleChecklist";
 import { Button } from "~/components/primitives/Button";
+import { ChevronNav } from "~/components/primitives/ChevronNav";
 import { DualNavButton } from "~/components/primitives/DualNavButton";
 import { HistoryOverlay } from "~/components/primitives/HistoryOverlay";
 import { IconButton } from "~/components/primitives/IconButton";
@@ -46,7 +48,7 @@ import {
   currentIndex,
   fenHistory,
   game,
-  goBack,
+  goBack as goHistoryBack,
   goForward,
   loadFen,
   setViewIndex,
@@ -77,6 +79,7 @@ import { difficulty, playerName } from "~/store/settingsStore";
 import type { PositionEval } from "~/types/analysis";
 import type { Color, ConnStatus, PeerTransport, Seat, SignalPayload } from "~/types/multiplayer";
 import type { Difficulty } from "~/types/settings";
+import { screenBackTarget } from "~/utils/navHistory";
 
 const START_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
@@ -149,6 +152,7 @@ const ConnIndicator: Component = () => (
  * tailnet before exchanging invites.
  */
 export const LanScreen: Component = () => {
+  const navigate = useNavigate();
   const [transport, setTransport] = createSignal<PeerTransport | null>(null);
   const [desiredRole, setDesiredRole] = createSignal<Seat>("player");
   const [incomingOffer, setIncomingOffer] = createSignal<SignalPayload | null>(null);
@@ -159,6 +163,23 @@ export const LanScreen: Component = () => {
   const [drawModalOpen, setDrawModalOpen] = createSignal(false);
   // Default time seeded from the last Selena difficulty; the dropdown can change it.
   const [timeControlSec, setTimeControlSec] = createSignal(DIFFICULTY_TIME_SEC[difficulty()]);
+
+  const leaveToMenu = () => {
+    const target = screenBackTarget();
+    if (typeof target === "number") navigate(target);
+    else navigate(target);
+  };
+
+  const backNav = () => (
+    <ChevronNav
+      direction="back"
+      onClick={leaveToMenu}
+      aria-label="Back"
+      data-testid="lan-back"
+    >
+      Back
+    </ChevronNav>
+  );
 
   const mp = useMultiplayerGame(transport, () =>
     role() === "guest" ? { identity: { name: playerName() }, desiredRole: desiredRole() } : null,
@@ -342,7 +363,7 @@ export const LanScreen: Component = () => {
   const historyNav = (inline = false) => (
     <DualNavButton
       inline={inline}
-      onBack={goBack}
+      onBack={goHistoryBack}
       onForward={goForward}
       backDisabled={currentIndex() === 0}
       forwardDisabled={!replaying()}
@@ -392,6 +413,7 @@ export const LanScreen: Component = () => {
       fallback={
         <SplashScreen title="Play LAN" wide>
           <TailscaleChecklist>
+            <div class={styles.lobbyBack}>{backNav()}</div>
             {/* ── Setup: choose to host or join ── */}
             <Show when={role() == null}>
               <div class={styles.lobby}>
@@ -527,10 +549,6 @@ export const LanScreen: Component = () => {
               <Label color="loss">{error()}</Label>
             </Show>
           </TailscaleChecklist>
-
-          <Button href="/" class={styles.backBtn}>
-            Back to Menu
-          </Button>
         </SplashScreen>
       }
     >
@@ -540,26 +558,29 @@ export const LanScreen: Component = () => {
         <HistoryOverlay active={replaying()} />
 
         <Screen.Header>
-          {/* While a *player* replays on mobile this collapses to just their own
+          <div class={styles.headerChrome}>
+            {backNav()}
+            {/* While a *player* replays on mobile this collapses to just their own
               clock, pinned top-left (data-mine) — it keeps ticking, so it must
               stay visible — while names + opponent clock hide. Spectators keep
               the full matchup (both clocks) at all times. See the CSS. */}
-          <div
-            class={styles.gameHeader}
-            classList={{ [styles.replaying]: playerReplaying() }}
-            data-testid="matchup"
-          >
-            <span class={styles.player} data-mine={myColor() === "w" ? "" : undefined}>
-              <ColorSwatch color="w" />
-              <span>{playerByColor("w")?.identity.name ?? "White"}</span>
-              <Clock color="w" />
-            </span>
-            <span>vs</span>
-            <span class={styles.player} data-mine={myColor() === "b" ? "" : undefined}>
-              <Clock color="b" />
-              <span>{playerByColor("b")?.identity.name ?? "Black"}</span>
-              <ColorSwatch color="b" />
-            </span>
+            <div
+              class={styles.gameHeader}
+              classList={{ [styles.replaying]: playerReplaying() }}
+              data-testid="matchup"
+            >
+              <span class={styles.player} data-mine={myColor() === "w" ? "" : undefined}>
+                <ColorSwatch color="w" />
+                <span>{playerByColor("w")?.identity.name ?? "White"}</span>
+                <Clock color="w" />
+              </span>
+              <span>vs</span>
+              <span class={styles.player} data-mine={myColor() === "b" ? "" : undefined}>
+                <Clock color="b" />
+                <span>{playerByColor("b")?.identity.name ?? "Black"}</span>
+                <ColorSwatch color="b" />
+              </span>
+            </div>
           </div>
         </Screen.Header>
 
@@ -613,7 +634,7 @@ export const LanScreen: Component = () => {
                     Review Game
                   </Button>
                 </Show>
-                <Button href="/">Back to Menu</Button>
+                {backNav()}
               </GameOverBanner>
             </div>
             <PlayerCaptures />

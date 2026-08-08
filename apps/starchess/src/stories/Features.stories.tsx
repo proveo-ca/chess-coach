@@ -10,7 +10,7 @@ import { createMatchStateFromScfen } from "~/app/matchReducer";
 import { GAS_DEPLOY_FIXTURES } from "~/stories/fixtures/scenarios";
 
 const meta = {
-  title: "StarChess/Features/GasDeploy",
+  title: "Features/GasDeploy",
   parameters: {
     layout: "centered",
     docs: {

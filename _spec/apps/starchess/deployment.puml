@@ -41,6 +41,8 @@ note bottom of V
   ``/single`` HUD: ResourceBar (top) · TurnBarSidebar (rail) · GasDeploy (footer).
   gameOver → save ``starchess_match_history`` → ``MatchResultModal``
   (Another Game rematch · Replay → ``/review/:id``).
+  From Coach ``/chess/`` (nerd yes / ``StarChessRedirect``):
+  ``starchess_from_chess`` → ``MenuArrival`` (Chess mockup → sky).
   Tutorial: CoachScreen-shaped (Kerrigan header) · HOME-only sidebar · story demos.
 end note
 

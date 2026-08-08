@@ -21,3 +21,11 @@ export function canGoBackInApp(): boolean {
     return false;
   }
 }
+
+/**
+ * Prefer in-app `history.back()`; otherwise land on the main menu so a cold
+ * shared-link tab never escapes the site.
+ */
+export function screenBackTarget(): number | string {
+  return canGoBackInApp() ? -1 : "/";
+}

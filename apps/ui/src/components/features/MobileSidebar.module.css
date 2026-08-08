@@ -20,7 +20,7 @@
     /* Equal L/R — shared with FenLoader via --board-chrome-inline. */
     padding-block: 0.3rem;
     padding-inline: var(--board-chrome-inline, 0.7rem);
-    border-radius: 1.6rem;
+    border-radius: var(--border-radius-md);
     background: var(--panel-bg);
     border: 1px solid var(--border-color);
     box-sizing: border-box;
@@ -55,7 +55,7 @@
     right: 0.75rem;
     z-index: 1000;
     padding: 0.3rem;
-    border-radius: 0.8rem;
+    border-radius: var(--border-radius-md);
     background: var(--surface-color);
     border: 1px solid var(--border-color);
   }
@@ -67,7 +67,7 @@
     left: 0.75rem;
     z-index: 1000;
     padding: 0.3rem;
-    border-radius: 0.8rem;
+    border-radius: var(--border-radius-md);
     background: var(--surface-color);
     border: 1px solid var(--border-color);
   }
@@ -83,7 +83,7 @@
       left: 0.75rem;
       z-index: 1000;
       padding: 0.3rem;
-      border-radius: 0.8rem;
+      border-radius: var(--border-radius-md);
       background: var(--surface-color);
       border: 1px solid var(--border-color);
     }

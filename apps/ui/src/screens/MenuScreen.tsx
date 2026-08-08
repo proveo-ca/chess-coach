@@ -10,7 +10,7 @@ import { MenuButton } from "~/components/primitives/MenuButton";
 import { Select } from "~/components/primitives/Select";
 import { SplashScreen } from "~/components/primitives/SplashScreen";
 import styles from "~/screens/MenuScreen.module.css";
-import { setShowCredits, showCredits } from "~/store/coachStore";
+import { setCoachEmotion, setShowCredits, showCredits } from "~/store/coachStore";
 import { gameHistory } from "~/store/gameHistoryStore";
 import { difficulty, playerIdentity, setDifficulty, setPlayerIdentity } from "~/store/settingsStore";
 import { identityOptions } from "~/features/nerd/identity";
@@ -71,7 +71,7 @@ export const MenuScreen: Component = () => {
         Credits
       </MenuButton>
       <Credits open={showCredits()} onClose={() => setShowCredits(false)} />
-      <NerdModePrompt />
+      <NerdModePrompt onAccept={() => setCoachEmotion("happy")} />
     </SplashScreen>
   );
 };

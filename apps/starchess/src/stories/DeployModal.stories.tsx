@@ -10,7 +10,7 @@ import { DeployModal } from "~/presentation/hud/DeployModal";
 import { GAS_DEPLOY_FIXTURES } from "~/stories/fixtures/scenarios";
 
 const meta = {
-  title: "StarChess/Atoms/DeployModal",
+  title: "Atoms/DeployModal",
   parameters: {
     layout: "centered",
     docs: {

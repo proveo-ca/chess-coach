@@ -1,5 +1,30 @@
 /* SPEC: _spec/apps/ui/responsiveness/rules.md */
 
+.headerChrome {
+  position: relative;
+  width: 100%;
+  min-height: inherit;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.backNav {
+  position: absolute;
+  top: 0.35rem;
+  left: 0.75rem;
+  z-index: 5;
+}
+
+.mobileBack {
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+  max-width: var(--board-size);
+  margin-inline: auto;
+  padding-inline: 0.25rem;
+}
+
 /* Tall mobile: hero CoachAvatar above the tool bar (not embedded in MobileSidebar).
    Hidden on desktop (Header owns the avatar) and on short dynamic (bar compact).
    Always mounted — visibility is CSS-only so the avatar does not remount. */

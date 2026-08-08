@@ -309,9 +309,8 @@ package "Components  [src/components/]" {
     note right of Sidebar
       hint · resign · new game · flip board · settings
       (gated by capabilities flags); shows EngineDepth on
-      Analysis only (continuousAnalysis + flipBoard).
-      New Game same gate. Review: nav + settings + route links.
-      (mobile drawer / menu only).
+      Analysis + Review /:id (continuousAnalysis ∧ bestMoveArrow≠off).
+      New Game gated by flipBoard. Review list: settings + route links.
     end note
     rectangle "MobileDrawer" as MobileDrawer
     note right of MobileDrawer
@@ -437,6 +436,7 @@ package "Components  [src/components/]" {
   ' Primitives = presentational, props-driven shared kit (was components/common/).
   package "Primitives  [components/primitives/]" {
     rectangle "Button / IconButton / MenuButton" as Buttons
+    rectangle "ChevronNav" as ChevronNav
     rectangle "Select / Toggle / Label / Input"  as Inputs
     rectangle "Divider / ProgressBar"            as Utility
     rectangle "Collapsible (accordion step)"     as Collapsible
@@ -658,7 +658,7 @@ UseGameRecorder   --> HistoryStore : pushMove · finalizeGame
 UseMoveExecutor   --> GameStore    : addMove · addMoveSan
 UseChessBoard     --> EvalStore    : setBaseEvalScore · setBaseEvalDepth
 EngineDepth       ..> EvalStore    : baseEvalDepth
-Sidebar           --> EngineDepth  : slot (Analysis: continuousAnalysis ∧ flipBoard)
+Sidebar           --> EngineDepth  : slot (Analysis + Review /:id:\ncontinuousAnalysis ∧ bestMoveArrow≠off)
 ResignConfirm     ..> EvalStore    : baseEvalScore
 
 ' ── Review history filters ──
@@ -693,9 +693,13 @@ MultiplayerBoard    ..> UseMultiplayerBoard : uses
 LanScreen           --> Clock               : renders (matchup header, per side)
 CoachScreen         --> MobileSidebar        : tall: avatar above bar; short/§4: compact in centre
 CoachScreen         --> CoachAvatar          : desktop Header · tall mobile hero · short bar compact
-AnalysisScreen      --> MobileSidebar        : tall: [menu][Solo Analysis]; short: no toolbar; Back trails FenLoader Load
-ReviewScreen        --> MobileSidebar        : [menu][matchup][Share · Back] + BoardControls (EngineDepth · omitDrawer)
-LanScreen           --> MobileSidebar        : bar above board (centre blank)
+AnalysisScreen      --> MobileSidebar        : tall: [menu][‹ Back][Solo Analysis]; short: no toolbar; menu leads FenLoader
+ReviewScreen        --> MobileSidebar        : [menu][‹ Back][matchup][Share ›] + BoardControls (EngineDepth · omitDrawer)
+LanScreen           --> MobileSidebar        : bar above board (ConnIndicator centre)
+CoachScreen         --> ChevronNav           : ‹ Back top-left (Header)
+AnalysisScreen      --> ChevronNav           : ‹ Back top-left
+ReviewScreen        --> ChevronNav           : ‹ Back · Share ›
+LanScreen           --> ChevronNav           : ‹ Back (lobby + in-game + game-over)
 MobileSidebar       --> BoardControls        : quick-action Items (coach screens)
 CoachScreen         --> MobileDrawer         : hamburger (full menu)
 Clock               ..> RoomStore           : clocks · timeControl

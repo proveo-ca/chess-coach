@@ -13,9 +13,10 @@ import { MobileSidebar } from "~/components/features/MobileSidebar";
 import { MoveList } from "~/components/features/MoveList";
 import { Sidebar } from "~/components/features/Sidebar";
 import { Button } from "~/components/primitives/Button";
+import { ChevronNav } from "~/components/primitives/ChevronNav";
 import { GameHistoryFilters } from "~/components/atoms/GameHistoryFilters";
 import { IconButton } from "~/components/primitives/IconButton";
-import { BackArrowIcon, HamburgerIcon, ShareIcon } from "~/components/primitives/icons";
+import { HamburgerIcon } from "~/components/primitives/icons";
 import { Label } from "~/components/primitives/Label";
 import { Screen } from "~/components/primitives/Screen";
 import { resolveAnnotations } from "~/engine/moveAnnotations";
@@ -47,7 +48,9 @@ import {
   setPlayerIdentity,
 } from "~/store/settingsStore";
 import { formatGameLabel, formatReviewMatchup } from "~/utils/gameTitle";
-import { canGoBackInApp } from "~/utils/navHistory";
+import { screenBackTarget } from "~/utils/navHistory";
+
+import styles from "~/screens/ReviewScreen.module.css";
 
 export const ReviewScreen: Component = () => {
   const params = useParams<{ id?: string }>();
@@ -56,6 +59,22 @@ export const ReviewScreen: Component = () => {
   const { importError, importing } = useSharedGameImport();
   const { share, shareMsg } = useShareGame();
 
+  const goBack = () => {
+    const target = screenBackTarget();
+    if (typeof target === "number") navigate(target);
+    else navigate(target);
+  };
+
+  const backNav = () => (
+    <ChevronNav
+      direction="back"
+      onClick={goBack}
+      aria-label="Back"
+      data-testid="review-back"
+    >
+      Back
+    </ChevronNav>
+  );
   let prevPlayerIdentity = playerIdentity();
   let prevOpponentIdentity = opponentIdentity();
   let prevActivePlayerColor = activePlayerColor();
@@ -183,6 +202,7 @@ export const ReviewScreen: Component = () => {
         fallback={
           <>
             <Screen.SidebarInset>
+              <div class={styles.topNav}>{backNav()}</div>
               <GameHistoryFilters
                 colorFilter={filters.colorFilter()}
                 setColorFilter={filters.setColorFilter}
@@ -201,17 +221,7 @@ export const ReviewScreen: Component = () => {
               <Sidebar />
             </Screen.BoardArea>
             <Screen.Footer>
-              <div
-                style={{
-                  color: "rgba(255,255,255,0.6)",
-                  padding: "2rem",
-                  "text-align": "center",
-                  display: "flex",
-                  "flex-direction": "column",
-                  "align-items": "center",
-                  gap: "1rem",
-                }}
-              >
+              <div class={styles.listHint}>
                 <span>
                   {importing()
                     ? "Loading shared game…"
@@ -221,9 +231,6 @@ export const ReviewScreen: Component = () => {
                         ? "Game not found. Pick one above."
                         : "Pick a game above to review."}
                 </span>
-                <Button primary href="/">
-                  Back to Main Menu
-                </Button>
               </div>
             </Screen.Footer>
           </>
@@ -237,36 +244,29 @@ export const ReviewScreen: Component = () => {
           const colorLabel = g().playerColor === "w" ? "White" : "Black";
           const resultColor = g().result === "ongoing" ? undefined : g().result;
 
+          const shareNav = () => (
+            <ChevronNav
+              direction="forward"
+              onClick={() => void share(g())}
+              aria-label="Share"
+              data-testid="review-share"
+            >
+              Share
+            </ChevronNav>
+          );
+
           return (
             <>
               <Screen.SidebarInset class="desktop-only">
+                <div class={styles.topNavRow}>
+                  {backNav()}
+                  {shareNav()}
+                </div>
                 <Label variant="title" color={resultColor}>
                   {resultLabel} ({colorLabel})
                 </Label>
                 <Label variant="title">{formatGameLabel(g())}</Label>
-                <div
-                  style={{
-                    display: "flex",
-                    "justify-content": "center",
-                    gap: "0.75rem",
-                    padding: "0.6rem 0",
-                  }}
-                >
-                  <Button onClick={() => void share(g())}>Share</Button>
-                  <Show
-                    when={canGoBackInApp()}
-                    fallback={
-                      <Button primary href="/">
-                        Back to Main Menu
-                      </Button>
-                    }
-                  >
-                    <Button primary onClick={() => navigate(-1)}>
-                      Back
-                    </Button>
-                  </Show>
-                </div>
-                <div style={{ "min-height": "1.25rem", "margin-top": "0.5rem" }}>
+                <div class={styles.shareMsg}>
                   <Show when={shareMsg()}>
                     <Label variant="caption">{shareMsg()}</Label>
                   </Show>
@@ -281,6 +281,7 @@ export const ReviewScreen: Component = () => {
                         <HamburgerIcon />
                       </IconButton>
                     </MobileSidebar.Item>
+                    <MobileSidebar.Item>{backNav()}</MobileSidebar.Item>
                     <MobileSidebar.Main>
                       <MobileSidebar.MatchupLabel data-testid="review-matchup">
                         <Label variant="title" color={resultColor}>
@@ -289,23 +290,7 @@ export const ReviewScreen: Component = () => {
                       </MobileSidebar.MatchupLabel>
                     </MobileSidebar.Main>
                     <MobileSidebar.Item nav>
-                      <MobileSidebar.NavActions>
-                        <IconButton onClick={() => void share(g())} aria-label="Share">
-                          <ShareIcon />
-                        </IconButton>
-                        <Show
-                          when={canGoBackInApp()}
-                          fallback={
-                            <IconButton onClick={() => navigate("/")} aria-label="Back to Main Menu">
-                              <BackArrowIcon />
-                            </IconButton>
-                          }
-                        >
-                          <IconButton onClick={() => navigate(-1)} aria-label="Back">
-                            <BackArrowIcon />
-                          </IconButton>
-                        </Show>
-                      </MobileSidebar.NavActions>
+                      <MobileSidebar.NavActions>{shareNav()}</MobileSidebar.NavActions>
                     </MobileSidebar.Item>
                   </MobileSidebar>
                   <Show when={shareMsg()}>

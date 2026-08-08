@@ -9,8 +9,8 @@ const THREADING = __STOCKFISH_VARIANT__.endsWith("-single") ? "single-thread" : 
 /**
  * Live Stockfish search depth behind the on-board best-move (green) and advice
  * (blue) arrows: the centre slot of the Analysis / Review mobile sidebar, and
- * the same slot in the desktop Sidebar. The ring is split green→blue to tie it
- * to those arrows.
+ * the same slot in the desktop Sidebar (Analysis + Review `/:id`). The ring is
+ * split green→blue to tie it to those arrows.
  */
 export const EngineDepth: Component = () => (
   <span

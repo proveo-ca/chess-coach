@@ -57,9 +57,6 @@ const preview: Preview = {
     options: {
       storySort: {
         order: [
-          "Primitives",
-          "Atoms",
-          "Features",
           "Screens",
           [
             "Nerd",
@@ -79,6 +76,9 @@ const preview: Preview = {
               "*",
             ],
           ],
+          "Features",
+          "Atoms",
+          "Primitives",
         ],
       },
     },

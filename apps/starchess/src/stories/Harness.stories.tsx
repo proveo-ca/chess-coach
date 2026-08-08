@@ -8,7 +8,7 @@ import { QUEUE_AND_END_SCENARIO } from "~/demos/reviewSamples";
  * Stories feed the SCFEN scenario package only.
  */
 const meta = {
-  title: "StarChess/Harness",
+  title: "StarChess/Engine",
   parameters: {
     layout: "fullscreen",
     docs: {

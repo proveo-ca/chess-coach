@@ -1,4 +1,5 @@
 // SPEC: _spec/apps/ui/components.puml
+import { useNavigate } from "@solidjs/router";
 import { createSignal, onMount } from "solid-js";
 import type { Component } from "solid-js";
 
@@ -16,6 +17,7 @@ import { ChessBoard } from "~/components/features/ChessBoard";
 import { CoachPanel } from "~/components/features/CoachPanel.tsx";
 import { MobileDrawer } from "~/components/features/MobileDrawer";
 import { Sidebar } from "~/components/features/Sidebar";
+import { ChevronNav } from "~/components/primitives/ChevronNav";
 import { HistoryOverlay } from "~/components/primitives/HistoryOverlay";
 import { Screen } from "~/components/primitives/Screen";
 import { useGameRecorder } from "~/hooks/useGameRecorder";
@@ -41,6 +43,7 @@ import {
 import { activePlayerColor, difficulty } from "~/store/settingsStore";
 import { isTravelling } from "~/store/travelStore";
 import { logger } from "~/utils/logger";
+import { screenBackTarget } from "~/utils/navHistory";
 
 import styles from "~/screens/CoachScreen.module.css";
 
@@ -57,6 +60,7 @@ import styles from "~/screens/CoachScreen.module.css";
  * emotion state does not remount across the 640px height boundary.
  */
 export const CoachScreen: Component = () => {
+  const navigate = useNavigate();
   const [unsupportedReason, setUnsupportedReason] = createSignal<string | null>(null);
   const [debugInfo, setDebugInfo] = createSignal<string>("");
 
@@ -68,6 +72,12 @@ export const CoachScreen: Component = () => {
   // Warm the review-analysis cache as moves are recorded (background
   // priority), so opening Review after the game is instant/near-instant.
   useLivePreAnalysis();
+
+  const goBack = () => {
+    const target = screenBackTarget();
+    if (typeof target === "number") navigate(target);
+    else navigate(target);
+  };
 
   onMount(async () => {
     setCapabilities(COACH_CAPABILITIES);
@@ -140,14 +150,35 @@ export const CoachScreen: Component = () => {
       <LightSpeedOverlay active={debugLightSpeedOverlay() || isTravelling()} />
 
       <Screen.Header>
-        {/* Desktop shows the avatar here; on mobile it moves into the column. */}
-        <div class="desktop-only">
-          <CoachAvatar />
+        <div class={styles.headerChrome}>
+          <ChevronNav
+            class={`${styles.backNav} desktop-only`}
+            direction="back"
+            onClick={goBack}
+            aria-label="Back"
+            data-testid="coach-back"
+          >
+            Back
+          </ChevronNav>
+          {/* Desktop shows the avatar here; on mobile it moves into the column. */}
+          <div class="desktop-only">
+            <CoachAvatar />
+          </div>
         </div>
       </Screen.Header>
 
       <Screen.BoardArea>
         <Screen.BoardColumn>
+          <div class={`mobile-only ${styles.mobileBack}`}>
+            <ChevronNav
+              direction="back"
+              onClick={goBack}
+              aria-label="Back"
+              data-testid="coach-back-mobile"
+            >
+              Back
+            </ChevronNav>
+          </div>
           {/* Tall mobile: CSS shows hero. Short: CSS hides; compact stays in bar. */}
           <div class={styles.mobileHero} data-testid="coach-mobile-hero">
             <CoachAvatar />
