@@ -29,6 +29,10 @@
     /* board + sidebar + modest gutter (§1a) */
     min-width: calc(var(--board-size) + var(--sidebar-width) + 1.5rem);
   }
+
+  .app-container {
+    padding-block: 2rem;
+  }
 }
 
 .app-container {

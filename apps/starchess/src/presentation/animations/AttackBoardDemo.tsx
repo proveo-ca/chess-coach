@@ -5,6 +5,7 @@ import {
   createSignal,
   onCleanup,
   onMount,
+  Show,
   type Component,
 } from "solid-js";
 
@@ -39,6 +40,11 @@ const FEN_BY_PIECE: Record<DemoPiece, string> = {
 export const AttackBoardDemo: Component<{
   piece: DemoPiece;
   rookMode?: RookMode;
+  variant?: import("~/types/board").BoardSkin;
+  pieceSet?: import("~/types/board").PieceSet;
+  header?: import("solid-js").JSX.Element;
+  footerExtra?: import("solid-js").JSX.Element;
+  sidebar?: import("solid-js").JSX.Element;
 }> = (props) => {
   const vectors = createMemo(() => attackVectorsFor(props.piece, ORIGIN));
   const opposingVectors = createMemo(() =>
@@ -134,7 +140,9 @@ export const AttackBoardDemo: Component<{
 
   return (
     <Screen>
-      <Screen.SidebarInset />
+      <Show when={props.header} fallback={<Screen.SidebarInset />}>
+        <Screen.Header>{props.header}</Screen.Header>
+      </Show>
       <Screen.BoardArea>
         <Screen.BoardColumn>
           <div class={styles.host}>
@@ -143,11 +151,15 @@ export const AttackBoardDemo: Component<{
               fog
               attackCues={cues()}
               hideSquares={hide()}
+              variant={props.variant}
+              pieceSet={props.pieceSet}
             />
           </div>
         </Screen.BoardColumn>
+        <Show when={props.sidebar}>{props.sidebar}</Show>
       </Screen.BoardArea>
       <Screen.Footer>
+        <Show when={props.footerExtra}>{props.footerExtra}</Show>
         <p class={styles.caption}>
           StarChess · {props.piece.toUpperCase()} · {captionTargets()} · attackCues
         </p>

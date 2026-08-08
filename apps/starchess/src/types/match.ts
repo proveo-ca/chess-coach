@@ -14,6 +14,7 @@ import type { Square } from "chess.js";
 import type { PendingPromotion } from "~/types/chess";
 import type { AttackAnimKind } from "~/types/cues";
 import type { ReviewTurnPhase } from "~/types/review";
+import type { ResolveWaveId } from "~/types/tutorial";
 
 export type MatchPhase = "loading" | "planning" | "targeting" | "resolving" | "gameOver";
 
@@ -220,6 +221,11 @@ export type MatchAction =
       spentMines?: readonly Square[];
     }
   | { type: "TIMELINE_DONE" }
+  /**
+   * Mid-resolve tutorial wave finished — clear `active` so the next wave can
+   * `REVIEW_PLAY`, but keep display overlays for the partial board.
+   */
+  | { type: "TIMELINE_SOFT_DONE" }
   | { type: "REVIEW_SEEK"; index: number }
   /** Arm a stored resolve for terminal DualNav replay (phase stays `gameOver`). */
   | { type: "REVIEW_PLAY"; result: EndScTurnResult }
@@ -246,5 +252,20 @@ export type MatchStore = {
   reviewForward: () => void;
   reviewPhase: () => ReviewTurnPhase;
   reviewIntentActions: () => readonly ScAction[] | null;
+  /** Tutorial / stepped DualNav — show or clear intent ghosts. */
+  reviewShowIntent: (actions: readonly ScAction[] | null) => void;
+  /** Tutorial / stepped DualNav — set phase chip without running playReviewTurn. */
+  reviewSetPhase: (phase: ReviewTurnPhase) => void;
+  /**
+   * Tutorial resolve wave — plays one partitioned cue batch. Last wave runs
+   * {@link TIMELINE_DONE}; earlier waves use {@link TIMELINE_SOFT_DONE}.
+   */
+  playReviewResolveWave: (
+    result: EndScTurnResult,
+    waveId: ResolveWaveId,
+    opts?: { isLastWave?: boolean },
+  ) => Promise<void>;
+  /** Full resolve timeline (check-only ply or unpartitioned End). */
+  playReviewResolve: (result: EndScTurnResult) => Promise<void>;
   cancelEffects: () => void;
 };

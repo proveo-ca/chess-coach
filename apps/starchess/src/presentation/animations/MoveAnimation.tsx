@@ -17,16 +17,15 @@ import {
 } from "~/presentation/animations/attackVectors";
 import { squareBoxStyle, vecBetween } from "~/presentation/animations/boardGeom";
 import styles from "~/presentation/animations/MoveAnimation.module.css";
-import aura from "~/presentation/animations/specialUsedAura.module.css";
 import { moveDurationMs, moveTravelSquares } from "~/presentation/animations/moveTiming";
 import { InlineBishop, type BishopCrank } from "~/presentation/animations/pieces/InlineBishop";
 import { InlineKing } from "~/presentation/animations/pieces/InlineKing";
 import { InlineKnight } from "~/presentation/animations/pieces/InlineKnight";
 import { InlinePawn } from "~/presentation/animations/pieces/InlinePawn";
 import { InlineQueen } from "~/presentation/animations/pieces/InlineQueen";
-import { InlineRook } from "~/presentation/animations/pieces/InlineRook";
 import type { MoveCue } from "~/presentation/animations/types";
 import { rookModeAt } from "~/presentation/animations/rookModeStore";
+import { RookGlyph } from "~/presentation/board/RookGlyph";
 import { MOVE_SQUARE_MS, STIM_MOVE_SQUARE_MS } from "~/presentation/constants";
 
 const NO_SPECIAL_USED: ReadonlySet<Square> = new Set();
@@ -39,6 +38,8 @@ export type MoveAnimationProps = {
   leg?: Record<string, 0 | 1>;
   /** Squares with gas / U: — keep green aura on mover hulls. */
   specialUsedSquares?: ReadonlySet<Square> | readonly Square[];
+  /** Tutorial Chess skin — flat SVGs instead of Inline* hulls. */
+  pieceSet?: import("~/types/board").PieceSet;
   boardWidth: number;
   boardHeight: number;
 };
@@ -221,7 +222,7 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
                 >
                   <div
                     class={`${styles.pieceFace} ${styles.moverFace}`}
-                    classList={{ [aura.specialUsed]: gas() }}
+                    classList={{ ["sc-special-used"]: gas() }}
                   >
                     <InlineKnight color={m.color} aimPose={pose()} />
                   </div>
@@ -241,7 +242,7 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
               >
                 <div
                   class={`${styles.pieceFace} ${styles.moverFace}`}
-                  classList={{ [aura.specialUsed]: gas() }}
+                  classList={{ ["sc-special-used"]: gas() }}
                 >
                   <InlineKnight color={m.color} aimPose={pose()} />
                 </div>
@@ -273,7 +274,7 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
             >
               <div
                 class={`${styles.pieceFace} ${styles.pawnFace}`}
-                classList={{ [aura.specialUsed]: gas() }}
+                classList={{ ["sc-special-used"]: gas() }}
               >
                 {moverNode(m)}
               </div>
@@ -302,7 +303,7 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
             >
               <div
                 class={`${styles.pieceFace} ${styles.bishopFace}`}
-                classList={{ [aura.specialUsed]: gas() }}
+                classList={{ ["sc-special-used"]: gas() }}
               >
                 {bishopMoverNode(m, vec(), {
                   crank: { stepMs, stepCount, sense },
@@ -329,7 +330,7 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
             >
               <div
                 class={`${styles.pieceFace} ${styles.moverFace}`}
-                classList={{ [aura.specialUsed]: gas() }}
+                classList={{ ["sc-special-used"]: gas() }}
                 style={{ transform: aimTransformCss(aimPoseFor(vec())) }}
               >
                 <InlineQueen color={m.color} />
@@ -340,6 +341,9 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
 
         if (m.piece === "r") {
           // Rank: rest silhouette. File: mirror only (no 90° tip — hull is ¾ front).
+          // cburnett: classic rook for tank *or* siege. nerd: InlineRook at live mode.
+          const mode = rookModeAt(m.from);
+          const set = props.pieceSet ?? "nerd";
           return (
             <div
               class={styles.mover}
@@ -355,13 +359,18 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
             >
               <div
                 class={`${styles.pieceFace} ${styles.moverFace}`}
-                classList={{ [aura.specialUsed]: gas() }}
-                style={{ transform: aimTransformCss(rookTravelPose(vec())) }}
+                classList={{ ["sc-special-used"]: gas() }}
+                style={
+                  set === "nerd"
+                    ? { transform: aimTransformCss(rookTravelPose(vec())) }
+                    : undefined
+                }
               >
-                <InlineRook
+                <RookGlyph
                   color={m.color}
-                  aimDeg={ROOK_REST_AIM_DEG}
-                  mode={rookModeAt(m.from)}
+                  pieceSet={set}
+                  mode={mode}
+                  aimDeg={set === "nerd" ? ROOK_REST_AIM_DEG : undefined}
                 />
               </div>
             </div>
@@ -380,7 +389,7 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
             data-move-id={m.id}
             data-special-used={gas() ? "true" : undefined}
           >
-            <div class={styles.pieceFace} classList={{ [aura.specialUsed]: gas() }}>
+            <div class={styles.pieceFace} classList={{ ["sc-special-used"]: gas() }}>
               {moverNode(m, { armed: gas() })}
             </div>
           </div>

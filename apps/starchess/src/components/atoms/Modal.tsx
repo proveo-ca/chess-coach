@@ -3,8 +3,9 @@ import type { Component, JSX } from "solid-js";
 
 import styles from "~/components/atoms/Modal.module.css";
 import { Button } from "~/components/primitives/Button";
+import type { ModalPosition } from "~/types/ui";
 
-export type ModalPosition = "fixed" | "absolute";
+export type { ModalPosition } from "~/types/ui";
 
 type ModalProps = {
   open: boolean;

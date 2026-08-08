@@ -1,6 +1,7 @@
 import type { Preview } from "storybook-solidjs-vite";
 import { MemoryRouter, Route, createMemoryHistory } from "@solidjs/router";
 
+import "~/theme.css";
 import "~/styles/index.css";
 
 /**
@@ -74,6 +75,9 @@ const preview: Preview = {
         root.style.setProperty("--board-light", "#f0d9b5");
         root.style.setProperty("--board-dark", "#b58863");
         root.style.setProperty("--board-border", "#111a23");
+        root.style.setProperty("--sc-guide-green", "#3ecf8e");
+        root.style.setProperty("--sc-menu-neon", "#7dff6a");
+        root.style.setProperty("--toggle-off-bg", "#2a3238");
         document.body.style.background = "transparent";
         document.body.style.color = "#213547";
         document.body.style.margin = "0";

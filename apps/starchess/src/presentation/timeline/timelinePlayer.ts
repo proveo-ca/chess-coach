@@ -554,8 +554,15 @@ export const playTimeline = (
   result: EndScTurnResult,
   scheduler: Scheduler,
   cb: TimelineCallbacks,
+  opts?: {
+    /** Override projected cues (tutorial resolve waves). */
+    cues?: TimelineCue[];
+    /** When false, skip applying `result.next` on completion (mid-wave). */
+    finalize?: boolean;
+  },
 ): (() => void) => {
-  const cues = projectResolveTimeline(result);
+  const cues = opts?.cues ?? projectResolveTimeline(result);
+  const finalize = opts?.finalize !== false;
   let cancelled = false;
   const cancels: Array<() => void> = [];
   let displayPlacement = result.afterPending.placement;
@@ -619,18 +626,24 @@ export const playTimeline = (
   const run = (index: number) => {
     if (cancelled) return;
     if (index >= cues.length) {
-      cb.onCommit({
-        placement: result.next.placement,
-        kingLives: result.next.kingLives,
-        mines: result.next.mines,
-        siegedRooks: result.next.siegedRooks,
-        specialsUsed: result.next.specialsUsed ?? [],
-        hidden: [],
-        moveProgress: {},
-        moveLeg: {},
-        playingIds: [],
-        // Leave jumpTrails mounted — CSS fade outlives resolve / onDone.
-      });
+      if (finalize) {
+        cb.onCommit({
+          placement: result.next.placement,
+          kingLives: result.next.kingLives,
+          mines: result.next.mines,
+          siegedRooks: result.next.siegedRooks,
+          specialsUsed: result.next.specialsUsed ?? [],
+          hidden: [],
+          moveProgress: {},
+          moveLeg: {},
+          playingIds: [],
+          // Leave jumpTrails mounted — CSS fade outlives resolve / onDone.
+        });
+      } else if (!afterAttackCommitted && cues.some((c) => c.kind === "attack" || c.kind === "death")) {
+        commitAfterAttack();
+      } else if (!afterBApplied && cues.some((c) => c.kind === "gasDrop" || c.kind === "deploy" || (c.kind === "move" && (c.stim || c.queenJump)))) {
+        applyAfterB();
+      }
       cb.onDone();
       return;
     }

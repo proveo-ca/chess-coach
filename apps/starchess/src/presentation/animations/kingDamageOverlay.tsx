@@ -32,16 +32,17 @@ type SlotProps = {
   impactSeq?: number;
   boardWidth: number;
   boardHeight: number;
+  /** Shared across remounts so filtering fire off/on does not re-boom. */
+  lastPlayedBoomSeq: Map<string, number>;
 };
 
 const isFire = (d: KingDamageState) => d === "smallFire" || d === "bigFire";
 
 /**
- * One king hull: boom only on `impactSeq` bumps (real hits). SCFEN restores
- * mount with fire already lit and seq unchanged — no explosion.
+ * One king hull: boom only when `impactSeq` advances past the last played hit
+ * for this side. Remounts (attack ownership hide/show, flee) stay quiet.
  */
 const KingDamageSlot = (props: SlotProps) => {
-  // Always start on fire/rubble — never boom on mount from a planning snap.
   const [phase, setPhase] = createSignal<"boom" | "fire">("fire");
   let boomTimer = 0;
 
@@ -51,21 +52,20 @@ const KingDamageSlot = (props: SlotProps) => {
     boomTimer = window.setTimeout(() => setPhase("fire"), HIT_BOOM_MS);
   };
 
-  createEffect((prevSeq: number | undefined) => {
+  createEffect(() => {
     const seq = props.impactSeq ?? 0;
     const d = props.damage;
-    if (!isFire(d)) {
+    if (!isFire(d) && d !== "destroyed") {
       setPhase("fire");
-      return seq;
+      return;
     }
-    // Hit: seq increased (including mount with seq>0 right after a chip).
-    if (prevSeq === undefined) {
-      if (seq > 0) playBoom();
-      else setPhase("fire");
-    } else if (seq > prevSeq) {
+    const last = props.lastPlayedBoomSeq.get(props.id) ?? 0;
+    if (seq > last) {
+      props.lastPlayedBoomSeq.set(props.id, seq);
       playBoom();
+    } else {
+      setPhase("fire");
     }
-    return seq;
   });
 
   onCleanup(() => window.clearTimeout(boomTimer));
@@ -105,12 +105,11 @@ const KingDamageSlot = (props: SlotProps) => {
 
 /**
  * Persistent king HP presentation (pristine is a no-op — board `<img>` stays).
- * Fire is restored quietly from SCFEN; boom requires `impactSeq` from a shot.
+ * Boom requires an `impactSeq` increase from an HP chip — not fire remounts.
  * Keys by `id` (side color) so a flee (`at` change) does not remount.
- * Always pass that side into {@link DeathKing} — defaulting to white paints the
- * enemy command center the wrong team after the first HP chip.
  */
 export const KingDamageOverlay = (props: KingDamageOverlayProps): JSX.Element => {
+  const lastPlayedBoomSeq = new Map<string, number>();
   const slots = createMemo(() => props.cues.filter((c) => c.damage !== "pristine"));
   const ids = createMemo(() => slots().map((c) => c.id));
   const byId = createMemo(() => {
@@ -141,6 +140,7 @@ export const KingDamageOverlay = (props: KingDamageOverlayProps): JSX.Element =>
               impactSeq={cue().impactSeq}
               boardWidth={props.boardWidth}
               boardHeight={props.boardHeight}
+              lastPlayedBoomSeq={lastPlayedBoomSeq}
             />
           );
         }}

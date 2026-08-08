@@ -1,14 +1,18 @@
 /**
- * Menu route — `/starchess/` · START → `/single`.
- * Review / Multiplayer anchors stay disabled (Coming Soon).
+ * Menu route — `/starchess/` · START → `/single` · Tutorial → `/tutorial/fog/king`
+ * · Review → `/review`. Multiplayer stays disabled (Coming Soon).
  * // SPEC: _spec/apps/starchess/menu-flow.puml
  */
 import { useNavigate, type RouteSectionProps } from "@solidjs/router";
 import type { Component } from "solid-js";
 
-import { StarChessMenuScreen } from "~/screens/StarChessMenuScreen";
+import {
+  StarChessMenuScreen,
+  type StarChessMenuAction,
+} from "~/screens/StarChessMenuScreen";
 import { clearMatchSession } from "~/store/matchSessionStore";
 import type { NewGameOptions } from "~/types/newGame";
+import { tutorialPath } from "~/tutorial/tutorialScript";
 
 export const StarChessMenuRoute: Component<RouteSectionProps> = () => {
   const navigate = useNavigate();
@@ -23,5 +27,12 @@ export const StarChessMenuRoute: Component<RouteSectionProps> = () => {
     navigate(`/single?${q.toString()}`);
   };
 
-  return <StarChessMenuScreen onStartGame={onStartGame} />;
+  const onAction = (action: StarChessMenuAction) => {
+    if (action === "tutorial") navigate(tutorialPath("fog"));
+    if (action === "review") navigate("/review");
+  };
+
+  return (
+    <StarChessMenuScreen onStartGame={onStartGame} onAction={onAction} />
+  );
 };

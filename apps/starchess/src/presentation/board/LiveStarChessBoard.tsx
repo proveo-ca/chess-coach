@@ -28,8 +28,8 @@ import {
   useIntentOverlays,
 } from "~/presentation/hooks/useIntentOverlays";
 import { liveMatchPhase } from "~/presentation/hud/liveMatchPhase";
-import { LIVE_CAPABILITIES, setCapabilities } from "~/store/capabilitiesStore";
-import type { BoardVariant, VisionMode } from "~/types/board";
+import { LIVE_CAPABILITIES, capabilities, setCapabilities } from "~/store/capabilitiesStore";
+import type { BoardSkin, BoardVariant, PieceSet, VisionMode } from "~/types/board";
 import type { KingDamageCue } from "~/types/cues";
 import type { ReviewTurnPhase } from "~/types/review";
 
@@ -38,23 +38,34 @@ export type { BoardVariant };
 export const LiveStarChessBoard: Component<{
   fog?: boolean;
   visionMode?: VisionMode;
-  variant?: BoardVariant;
+  variant?: BoardSkin;
+  pieceSet?: PieceSet;
+  /** Tutorial / coach destination rings. */
+  hintSquares?: readonly Square[];
 }> = (props) => {
   const store = useMatchStore();
-  const { onSquareClick } = useBoardInput();
-  const combat = useCombatOverlays(store);
-  const overlays = useIntentOverlays(store);
-  const boardVision = useBoardVision(store, () => ({
+  const visionOverrides = () => ({
     fog: props.fog,
     visionMode: props.visionMode,
-  }));
+  });
+  const boardVision = useBoardVision(store, visionOverrides);
+  const fog = () => boardVision().fog;
+  const visionMode = () => boardVision().visionMode;
+  // Same vision overrides as the veil — fog intent clicks are app-wide policy.
+  const { onSquareClick } = useBoardInput(visionOverrides);
+  const combat = useCombatOverlays(store);
+  const overlays = useIntentOverlays(store);
   const snap = createMemo(() => displayedSnapshot(store.state()));
   const [kingDamage, setKingDamage] = createSignal<KingDamageCue[]>([]);
   const reviewing = () => store.state().phase === "gameOver";
   const interactive = () => canSubmit(store.state());
 
   // Live play locks viewer orientation — Flip stays off in Sidebar.
-  onMount(() => setCapabilities(LIVE_CAPABILITIES));
+  // Tutorial sets homeOnly; do not clobber that chrome.
+  onMount(() => {
+    if (capabilities().homeOnly) return;
+    setCapabilities(LIVE_CAPABILITIES);
+  });
 
   const phase = createMemo((): ReviewTurnPhase => {
     const s = store.state();
@@ -66,9 +77,6 @@ export const LiveStarChessBoard: Component<{
       pendingPromotion: !!s.pendingPromotion,
     });
   });
-
-  const fog = () => boardVision().fog;
-  const visionMode = () => boardVision().visionMode;
 
   /** Player fog gates combat VFX; DualNav / no-fog shows everything. */
   const gateFx = () => fog() && visionMode() === "player";
@@ -143,7 +151,11 @@ export const LiveStarChessBoard: Component<{
     const atk = attackFrom();
     const dying = dyingKingKeys();
     return kingDamage().filter(
-      (c) => !atk.has(c.at) && !dying.ats.has(c.at) && !dying.colors.has(c.id),
+      (c) =>
+        c.damage !== "pristine" &&
+        !atk.has(c.at) &&
+        !dying.ats.has(c.at) &&
+        !dying.colors.has(c.id),
     );
   });
 
@@ -229,12 +241,14 @@ export const LiveStarChessBoard: Component<{
         fog={fog()}
         visionMode={visionMode()}
         variant={props.variant ?? "eclipse"}
+        pieceSet={props.pieceSet}
         phase={phase()}
         intentGhosts={overlays().destinations}
         intentCanisters={intentCanisters()}
         intentChecks={overlays().checks}
         selected={interactive() ? state().selected : null}
         legalDests={interactive() ? state().legalDests : []}
+        hintSquares={props.hintSquares}
         onSquareClick={interactive() ? onSquareClick : undefined}
         attackCues={combat.attackCues()}
         attackDying={combat.attackDying()}

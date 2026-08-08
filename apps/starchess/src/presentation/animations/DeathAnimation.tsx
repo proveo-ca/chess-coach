@@ -3,7 +3,6 @@ import type { Square } from "chess.js";
 
 import { DEATH_MS, scatterSeedFromId } from "~/presentation/animations/deathAnim";
 import styles from "~/presentation/animations/DeathAnimation.module.css";
-import aura from "~/presentation/animations/specialUsedAura.module.css";
 import { DeathBishop } from "~/presentation/animations/pieces/DeathBishop";
 import { DeathKing } from "~/presentation/animations/pieces/DeathKing";
 import { DeathKnight } from "~/presentation/animations/pieces/DeathKnight";
@@ -115,7 +114,7 @@ export const DeathAnimation: Component<DeathAnimationProps> = (props) => {
             data-special-used={gas() ? "true" : undefined}
             data-scatter-seed={String(seed())}
           >
-            <div class={styles.pieceFace} classList={{ [aura.specialUsed]: gas() }}>
+            <div class={styles.pieceFace} classList={{ ["sc-special-used"]: gas() }}>
               {!mineDeath() && deathNode(cue().piece, cue().color, seed(), cue())}
               <div class={styles.boomFlash} aria-hidden="true" />
               <div class={styles.boomRing} aria-hidden="true" />

@@ -59,3 +59,14 @@ export const boardVisionFor = (
   }
   return { fog: true, visionMode: "player" };
 };
+
+/**
+ * Player fog hides unseen enemies for classical click targets across all of
+ * `apps/starchess` (live, tutorial, stories). Observer / fog-off previews keep
+ * full occupancy. Soft SCFEN queue already allows intent through fog; this is
+ * the matching UI seam — resolve still owns collisions.
+ */
+export const playerFogOccultsMoves = (vision: {
+  fog: boolean;
+  visionMode: VisionMode;
+}): boolean => vision.fog && vision.visionMode === "player";

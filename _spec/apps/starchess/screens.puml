@@ -8,8 +8,8 @@ skinparam defaultTextAlignment left
 
 title StarChess · Screen HUD (apps/starchess)
 
-package "Screen grid\n(top · board · footer)\ntracks: avatar-height · board-size · avatar-height" {
-  component "SidebarInset (top)\nResourceBar (viewer)\nor dual ResourceBars (review)\nbottom-aligned in track" as TOP <<app>>
+package "Screen grid\n(top · board · footer)\nrows: minmax(0,auto) · auto · minmax(0,auto)\n(= apps/ui Screen)" {
+  component "SidebarInset (top)\nResourceBar (live viewer)\nor ReviewTurnNav ‹ ResourceBars ›\n(review)" as TOP <<app>>
   component "BoardArea\nBoardColumn + side rail" as MID <<app>>
   component "Footer\nGasDeploy (live) · status / outcome" as BOT <<app>>
 }
@@ -21,8 +21,8 @@ package "Board column" {
 
 package "Side rail\n(turnChrome=sidebar on /single)" {
   component "TurnBarSidebar (live)\nTurn · Phase · queue · timer · End Turn" as LIVE <<app>>
-  component "TurnBarSidebar (review)\nDualNav (top) · Turn · Phase" as REV <<app>>
-  component "Sidebar\nHome (+ ExitGameConfirm if live)\nFlip when capabilities allow" as SIDE <<app>>
+  component "TurnBarSidebar (review)\nTurn · Phase chips only\n(DualNav → top ReviewTurnNav)" as REV <<app>>
+  component "Sidebar\nHome (+ ExitGameConfirm if live)\nFlip when capabilities allow\n(= apps/ui Sidebar slot)" as SIDE <<app>>
 }
 
 package "Menu modals (NeonModal atom)" {
@@ -46,11 +46,18 @@ SIDE ARROW_ERROR SIDE : Leave Match modal
 MENU ARROW_MAIN NEON
 
 note bottom
-  **Layout floors** match CoachScreen: top/footer ``--avatar-height`` (8rem),
-  middle ``--board-size``; ``align-content: start``. See Screen.module.css.
+  **Layout** matches ``apps/ui`` ``Screen`` (content-sized rows; desktop
+  header ``min-height: --avatar-height``). BoardArea = BoardColumn + sideboard
+  (``--sidebar-width`` only — no board-height lock). See Screen.module.css.
   **Live route** ``/single``: ``turnChrome="sidebar"`` (StarChessSingleScreen).
-  **Review / gameOver:** DualNav on TurnBarSidebar; dual ResourceBars in top;
-  outcome via status line (no GameOverBanner in apps/starchess).
+  **Review / gameOver:** ``ReviewTurnNav`` (green ‹ ›) flanks dual ResourceBars
+  in the top row; rail keeps Turn/Phase chips + Home (no stacked DualNav).
+  Outcome via status line (no GameOverBanner in apps/starchess).
+  **Tutorial** ``/tutorial/:section/:story`` (``TUTORIAL_SCRIPT`` anchors):
+  CoachScreen-shaped Kerrigan header; HOME-only Sidebar (``homeOnly``);
+  no ResourceBars; fog Chess|StarChess skin toggle;
+  resolve ``combat-chain`` shows ``TurnBarSidebar`` phase chips (DualNav off);
+  resolve/king footer is typewriter turn/phase nav (‹ Turn · Check · Intent · Resolve ›).
   **Animation clock:** ``_spec/apps/starchess/animation-pipeline.md``.
 end note
 @enduml

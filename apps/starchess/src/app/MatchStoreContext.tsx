@@ -9,7 +9,12 @@ import {
   useContext,
   type ParentComponent,
 } from "solid-js";
-import { beginScTurn, turnTimeoutMsForTurn, type ScAction } from "@chess-coach/starchess-core";
+import {
+  beginScTurn,
+  turnTimeoutMsForTurn,
+  type EndScTurnResult,
+  type ScAction,
+} from "@chess-coach/starchess-core";
 
 import type { MatchAction, MatchState, MatchStore } from "~/types/match";
 import { createInitialMatchState, matchReducer } from "~/app/matchReducer";
@@ -23,6 +28,10 @@ import {
 import { playReviewTurn } from "~/presentation/hud/playReviewTurn";
 import type { ReviewTurnPhase } from "~/types/review";
 import { playTimeline } from "~/presentation/timeline/timelinePlayer";
+import {
+  playResolveWave,
+} from "~/presentation/timeline/playResolveWave";
+import type { ResolveWaveId } from "~/types/tutorial";
 
 export type { MatchStore };
 
@@ -288,6 +297,46 @@ export const createMatchStore = (opts?: {
     });
   };
 
+  const reviewShowIntent = (actions: readonly ScAction[] | null) => {
+    setReviewIntentActions(actions);
+  };
+
+  const reviewSetPhase = (phase: ReviewTurnPhase) => {
+    setReviewPhase(phase);
+  };
+
+  const playReviewResolveWave = (
+    result: EndScTurnResult,
+    waveId: ResolveWaveId,
+    opts?: { isLastWave?: boolean },
+  ): Promise<void> =>
+    new Promise((resolve) => {
+      dispatch({ type: "REVIEW_PLAY", result });
+      const isLast = opts?.isLastWave ?? false;
+      cancelTimeline = playResolveWave(
+        result,
+        waveId,
+        scheduler,
+        {
+          onStart: (cues, placement) =>
+            dispatch({ type: "TIMELINE_START", cues, placement }),
+          onCommit: (patch) => dispatch({ type: "TIMELINE_COMMIT", ...patch }),
+          onDone: () => {
+            if (isLast) dispatch({ type: "TIMELINE_DONE" });
+            else dispatch({ type: "TIMELINE_SOFT_DONE" });
+            cancelTimeline = null;
+            resolve();
+          },
+        },
+        { isLastWave: isLast },
+      );
+    });
+
+  const playReviewResolve = (result: EndScTurnResult): Promise<void> =>
+    playOneResolve(result, dispatch, scheduler, (fn) => {
+      cancelTimeline = fn;
+    });
+
   return {
     state,
     dispatch,
@@ -298,6 +347,10 @@ export const createMatchStore = (opts?: {
     reviewForward,
     reviewPhase,
     reviewIntentActions,
+    reviewShowIntent,
+    reviewSetPhase,
+    playReviewResolveWave,
+    playReviewResolve,
     cancelEffects,
   };
 };

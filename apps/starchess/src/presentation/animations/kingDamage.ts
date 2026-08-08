@@ -17,7 +17,19 @@ export const kingDamageStateForLives = (lives: number): KingDamageState => {
   return "destroyed";
 };
 
-/** Build fire cues from placement + lives, preserving seeds across syncs. */
+const livesForDamage = (damage: KingDamageState): number => {
+  if (damage === "pristine") return 3;
+  if (damage === "smallFire") return 2;
+  if (damage === "bigFire") return 1;
+  return 0;
+};
+
+/**
+ * Build fire cues from placement + lives, preserving seeds across syncs.
+ * Bumps `impactSeq` only when HP drops vs the previous cue (not on remount /
+ * first paint of an already-damaged SCFEN).
+ * Keeps pristine entries so 3→2 can detect a real chip.
+ */
 export const kingDamageCuesFromBoard = (
   placement: string,
   lives: Record<StarChessColor, number>,
@@ -27,18 +39,19 @@ export const kingDamageCuesFromBoard = (
   const cues: KingDamageCue[] = [];
   for (const color of ["w", "b"] as const) {
     const state = kingDamageStateForLives(lives[color]);
-    if (state === "pristine") continue;
     const at = findKing(map, color);
     if (!at) continue;
     const existing = prev.find((c) => c.id === color);
-    // First appearance or worse HP → bump impact so the hit boom plays.
-    const hit = existing == null || existing.damage !== state;
+    const hit =
+      existing != null && lives[color] < livesForDamage(existing.damage);
     cues.push({
       id: color,
       at,
       damage: state,
       seed: existing?.seed ?? Math.floor(Math.random() * 0xffffffff),
-      impactSeq: hit ? (existing?.impactSeq ?? 0) + 1 : existing?.impactSeq,
+      impactSeq: hit
+        ? (existing.impactSeq ?? 0) + 1
+        : (existing?.impactSeq ?? 0),
     });
   }
   return cues;

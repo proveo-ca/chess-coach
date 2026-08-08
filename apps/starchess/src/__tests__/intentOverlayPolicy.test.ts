@@ -7,6 +7,7 @@ import {
   boardVisionFor,
   intentOverlayActions,
   intentOverlayViewer,
+  playerFogOccultsMoves,
 } from "~/app/intentOverlayPolicy";
 import type { ScAction } from "@chess-coach/starchess-core";
 
@@ -66,5 +67,17 @@ describe("intentOverlayPolicy", () => {
       fog: true,
       visionMode: "player",
     });
+  });
+
+  it("playerFogOccultsMoves follows live player fog (app-wide input policy)", () => {
+    expect(
+      playerFogOccultsMoves({ fog: true, visionMode: "player" }),
+    ).toBe(true);
+    expect(
+      playerFogOccultsMoves({ fog: false, visionMode: "observer" }),
+    ).toBe(false);
+    expect(
+      playerFogOccultsMoves({ fog: false, visionMode: "player" }),
+    ).toBe(false);
   });
 });

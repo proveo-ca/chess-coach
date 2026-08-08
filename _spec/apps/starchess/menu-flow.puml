@@ -1,12 +1,12 @@
 @startuml menu-flow
 ' SPEC: _spec/apps/starchess/menu-flow.puml
-' purpose: Menu → Single Player; gameOver → /review/:id.
+' purpose: Menu → Single Player / Tutorial; gameOver → /review/:id.
 !include ../../themes/proveo.puml
 
 skinparam packageStyle rectangle
 skinparam defaultTextAlignment left
 
-title StarChess · Menu → Single Player / Review replay
+title StarChess · Menu → Single Player / Tutorial / Review replay
 
 actor Player
 
@@ -15,7 +15,12 @@ package "apps/starchess" {
   component "StarChessMenuScreen\n+ MenuSkyBackdrop" as UI <<app>>
   component "NewGamePanel\nMAP · TEAM · Adjutant(Script) · START" as SETUP <<app>>
   component "navigate /single?map=&team=" as NAV <<async>>
+  component "navigate /tutorial" as NAVT <<async>>
+  component "navigate /review" as NAVR <<async>>
   component "StarChessSingleScreen\nMatchStore + LiveMatchShell\nStarChessScreen turnChrome=sidebar\nAdjutant = opposite of team" as LIVE <<app>>
+  component "StarChessTutorialScreen\n/tutorial/:section/:story\n(TUTORIAL_SCRIPT ids)\nKerrigan header · HOME-only\ne.g. /tutorial/fog/king" as TUT <<app>>
+  component "TutorialIncompleteConfirm\nking-hunt-live enemy HP=0\nwhen tutorialCleared=false" as TUTWARN <<error>>
+  component "localStorage\nstarchess_tutorial_cleared" as TUTFLAG <<db>>
   component "ExitGameConfirm\nHome during planning/targeting/resolving" as EXIT <<error>>
   component "gameOver → matchHistory\nreplace /review/:id" as END <<db>>
   component "StarChessReviewScreen\n/review list · /review/:id DualNav" as REV <<app>>
@@ -26,16 +31,29 @@ MENU ARROW_MAIN UI
 UI ARROW_MAIN SETUP : Single Player
 SETUP ARROW_MAIN NAV : START
 NAV ARROW_MAIN LIVE
+UI ARROW_MAIN NAVT : Tutorial
+NAVT ARROW_MAIN TUT
+UI ARROW_MAIN NAVR : Review
+NAVR ARROW_MAIN REV
 LIVE ARROW_ERROR EXIT : Home
 EXIT ARROW_OPTIONAL MENU : Leave confirmed
+TUT ARROW_OPTIONAL MENU : Home
+TUT ARROW_ERROR TUTWARN : king-hunt-live win\n+ uncleared
+TUTWARN ARROW_MAIN TUTFLAG : Yes → cleared=true\n→ menu
+TUTWARN ARROW_OPTIONAL TUT : No → stay
 LIVE ARROW_MAIN END : gameOver
 END ARROW_MAIN REV
 
 note bottom
-  Multiplayer / Review **MenuAnchor**s are ``disabled`` + ``Coming Soon``;
-  grayscale covers visual, title, and hint.
-  Tutorial is title-level (WIP). Credits → Credits modal.
-  Replay routes stay live (post-match navigate); menu Review is not a nav entry yet.
+  Multiplayer **MenuAnchor** stays ``disabled`` + ``Coming Soon``.
+  Review → ``/review`` list (``matchHistory``) · ``/review/:id`` DualNav replay
+  (same routes as post-match handoff).
+  Tutorial → ``/tutorial/:section/:story`` (ids from ``TUTORIAL_SCRIPT``,
+  e.g. ``/tutorial/fog/king`` · ``/tutorial/specials/marine``).
+  Bare ``/tutorial`` canonicalizes to the first Fog story.
+  ``starchess_tutorial_cleared`` (default false): King Hunt (live) enemy
+  HP=0 opens ``TutorialIncompleteConfirm`` when still false —
+  Yes sets true + Home; No dismisses and stays on gameOver.
   Deployment / PWA: ``deployment.puml``. HUD: ``screens.puml``.
 end note
 @enduml

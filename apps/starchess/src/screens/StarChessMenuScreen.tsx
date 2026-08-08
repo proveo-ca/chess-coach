@@ -144,8 +144,6 @@ export const StarChessMenuScreen: Component<StarChessMenuScreenProps> = (props) 
           class={styles.posReview}
           action="review"
           label="Review"
-          hint="Coming Soon"
-          disabled
           onActivate={() => props.onAction?.("review")}
         >
           <MenuMoon embedded />

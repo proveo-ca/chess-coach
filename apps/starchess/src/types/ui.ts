@@ -30,4 +30,8 @@ export type ChipTone =
   /** Review / live phase: resolve. */
   | "resolve";
 
+/** Chip size variants. */
 export type ChipSize = "md" | "sm";
+
+/** Modal positioning — page-fixed vs parent-absolute. */
+export type ModalPosition = "fixed" | "absolute";

@@ -1,10 +1,19 @@
 /**
- * Store-backed DualNav review host — sidebar DualNav + LiveStarChessBoard.
+ * Store-backed DualNav review host — top ReviewTurnNav + LiveStarChessBoard.
  * Scenario packages supply history; MatchStore owns seek / playback / VFX timeline.
+ * // SPEC: _spec/apps/starchess/screens.puml
  */
 import { placementToMap, type StarChessColor } from "@chess-coach/starchess-core";
 import type { Square } from "chess.js";
-import { createEffect, createMemo, onCleanup, onMount, Show, type Component } from "solid-js";
+import {
+  createEffect,
+  createMemo,
+  onCleanup,
+  onMount,
+  Show,
+  type Component,
+  type JSX,
+} from "solid-js";
 
 import { createMatchStore, MatchStoreProvider, useMatchStore } from "~/app/MatchStoreContext";
 import { createMatchStateFromReviewHistory } from "~/app/reviewHistory";
@@ -16,13 +25,22 @@ import { clearSiegedRooks, setRookMode } from "~/presentation/animations/rookMod
 import { LiveStarChessBoard } from "~/presentation/board/LiveStarChessBoard";
 import { isCheckOnlyResolve } from "~/presentation/hud/isCheckOnlyResolve";
 import { ResourceBar } from "~/presentation/hud/ResourceBar";
+import { ReviewTurnNav } from "~/presentation/hud/ReviewTurnNav";
 import { TurnBarSidebar } from "~/presentation/hud/TurnBarSidebar";
+import {
+  TUTORIAL_CAPABILITIES,
+  setCapabilities,
+} from "~/store/capabilitiesStore";
+import {
+  resetTutorialNarration,
+  setTutorialNarration,
+} from "~/tutorial/tutorialNarrationStore";
 import {
   resetReviewVisionFilter,
   reviewVisionFilter,
   setReviewVisionFilter,
 } from "~/store/reviewVisionStore";
-import type { BoardVariant, VisionMode } from "~/types/board";
+import type { BoardSkin, PieceSet, VisionMode } from "~/types/board";
 import type { ReviewHistory } from "~/types/review";
 
 export type ReviewDemoScreenProps = {
@@ -31,13 +49,23 @@ export type ReviewDemoScreenProps = {
   reviewLabel?: string;
   visionMode?: VisionMode;
   fog?: boolean;
-  variant?: BoardVariant;
+  variant?: BoardSkin;
+  pieceSet?: PieceSet;
   /** Force all rooks to tank mode (fog-edge rook story). */
   rookTank?: boolean;
   /** Human team for You / Adjutant vision labels. */
   playerColor?: StarChessColor;
   /** Sidebar Home — SPA navigate (review routes). */
   onHome?: () => void;
+  /** Hide dual ResourceBars (tutorial). */
+  hideResources?: boolean;
+  /** Hide top ReviewTurnNav + rail turn chrome (tutorial steppers own advance). */
+  hideDualNav?: boolean;
+  /** Tutorial HOME-only sidebar chrome. */
+  tutorial?: boolean;
+  /** Replaces SidebarInset when set (tutorial avatar header). */
+  header?: JSX.Element;
+  footerExtra?: JSX.Element;
 };
 
 const syncRookModes = (
@@ -104,7 +132,17 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
     syncRookModes(s.placement, s.siegedRooks, props.rookTank);
   });
 
+  createEffect(() => {
+    if (!props.tutorial) return;
+    setTutorialNarration({
+      reviewPhase: store.reviewPhase(),
+      timelineActive: store.state().timeline.active,
+    });
+  });
+
   onMount(() => {
+    if (props.tutorial) setCapabilities(TUTORIAL_CAPABILITIES);
+
     // Seed review vision: observer demos → BOTH; player fog demos → white vision.
     if (props.visionMode === "player" || props.fog === true) {
       setReviewVisionFilter("w");
@@ -115,6 +153,7 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
 
     const onKey = (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (props.hideDualNav) return;
       if (e.key === "ArrowLeft") {
         e.preventDefault();
         store.reviewBack();
@@ -129,6 +168,7 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
       store.cancelEffects();
       clearSiegedRooks();
       resetReviewVisionFilter();
+      if (props.tutorial) resetTutorialNarration();
     });
   });
 
@@ -141,53 +181,89 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
     return f === "both" || f === "b";
   };
 
+  const dualResourceBars = () => (
+    <div
+      class={styles.dualResources}
+      role="group"
+      aria-label={
+        reviewVisionFilter() === "both"
+          ? "Both sides resources"
+          : reviewVisionFilter() === "w"
+            ? "Blue side resources"
+            : "Red side resources"
+      }
+    >
+      <Show when={showWhiteResources()}>
+        <ResourceBar color="w" snapshot={snap()} />
+      </Show>
+      <Show when={showBlackResources()}>
+        <ResourceBar color="b" snapshot={snap()} />
+      </Show>
+    </div>
+  );
+
+  const reviewNavDisabled = () => ({
+    back: reviewBusy() || store.state().reviewIndex <= 0,
+    forward:
+      reviewBusy() ||
+      store.state().reviewIndex >= store.state().settledSnapshots.length - 1,
+  });
+
   return (
     <Screen>
-      <Screen.SidebarInset class={styles.topPane}>
-        <div
-          class={styles.dualResources}
-          role="group"
-          aria-label={
-            reviewVisionFilter() === "both"
-              ? "Both sides resources"
-              : reviewVisionFilter() === "w"
-                ? "Blue side resources"
-                : "Red side resources"
-          }
-        >
-          <Show when={showWhiteResources()}>
-            <ResourceBar color="w" snapshot={snap()} />
+      <Show when={props.header} fallback={
+        <Screen.SidebarInset class={styles.topPane}>
+          <Show when={!props.hideResources}>
+            <Show
+              when={!props.hideDualNav}
+              fallback={dualResourceBars()}
+            >
+              <ReviewTurnNav
+                onBack={() => store.reviewBack()}
+                onForward={() => store.reviewForward()}
+                backDisabled={reviewNavDisabled().back}
+                forwardDisabled={reviewNavDisabled().forward}
+              >
+                {dualResourceBars()}
+              </ReviewTurnNav>
+            </Show>
           </Show>
-          <Show when={showBlackResources()}>
-            <ResourceBar color="b" snapshot={snap()} />
-          </Show>
-        </div>
-      </Screen.SidebarInset>
+        </Screen.SidebarInset>
+      }>
+        <Screen.Header>{props.header}</Screen.Header>
+      </Show>
       <Screen.BoardArea>
         <Screen.BoardColumn>
           <div class={styles.host}>
-            <LiveStarChessBoard variant={props.variant ?? "eclipse"} />
+            <LiveStarChessBoard
+              variant={props.variant ?? "eclipse"}
+              pieceSet={props.pieceSet}
+              fog={props.fog}
+              visionMode={props.visionMode}
+            />
           </div>
         </Screen.BoardColumn>
-        <div class={styles.sideRail} data-testid="starchess-side-rail">
-          <TurnBarSidebar
-            review={{
-              turn: reviewTurnNumber(),
-              phase: store.reviewPhase(),
-              onBack: () => store.reviewBack(),
-              onForward: () => store.reviewForward(),
-              backDisabled: reviewBusy() || store.state().reviewIndex <= 0,
-              forwardDisabled:
-                reviewBusy() ||
-                store.state().reviewIndex >= store.state().settledSnapshots.length - 1,
-            }}
-          />
-          <hr class={styles.sideRailDivider} />
+        <aside class={styles.sideboard} data-testid="starchess-side-rail">
+          <Show when={!props.hideDualNav}>
+            <TurnBarSidebar
+              review={{
+                turn: reviewTurnNumber(),
+                phase: store.reviewPhase(),
+                hideDualNav: true,
+                onBack: () => store.reviewBack(),
+                onForward: () => store.reviewForward(),
+                backDisabled: reviewNavDisabled().back,
+                forwardDisabled: reviewNavDisabled().forward,
+              }}
+            />
+            <hr class={styles.sideboardDivider} />
+          </Show>
           <Sidebar onHome={props.onHome} />
-        </div>
+        </aside>
       </Screen.BoardArea>
       <Screen.Footer>
         <div class={styles.footerStack}>
+          <Show when={props.footerExtra}>{props.footerExtra}</Show>
           <p class={styles.caption}>
             Review · {props.reviewLabel ?? "Review"} · {caption()}
           </p>
@@ -213,8 +289,14 @@ export const ReviewDemoScreen: Component<ReviewDemoScreenProps> = (props) => {
         visionMode={props.visionMode}
         fog={props.fog}
         variant={props.variant}
+        pieceSet={props.pieceSet}
         rookTank={props.rookTank}
         onHome={props.onHome}
+        hideResources={props.hideResources}
+        hideDualNav={props.hideDualNav}
+        tutorial={props.tutorial}
+        header={props.header}
+        footerExtra={props.footerExtra}
       />
     </MatchStoreProvider>
   );

@@ -41,13 +41,13 @@ import type {
 } from "~/presentation/types";
 import {
   ObserverStarChessBoard,
-  type BoardVariant,
   type IntentCanister,
   type IntentCheck,
   type IntentGhost,
   type VisionMode,
 } from "~/presentation/board/ObserverStarChessBoard";
 import { siegedRooksList } from "~/presentation/animations/rookModeStore";
+import type { BoardSkin, PieceSet } from "~/types/board";
 import type { ReviewTurnPhase } from "~/types/review";
 
 /** Stable empties — spreading `props.* ?? []` remounts For rows every render. */
@@ -88,7 +88,8 @@ export type AnimationStageProps = {
   /** Classical FEN or already-built SCFEN snapshot. */
   fen?: string;
   snapshot?: ScFenSnapshot;
-  variant?: BoardVariant;
+  variant?: BoardSkin;
+  pieceSet?: PieceSet;
   fog?: boolean;
   viewer?: "w" | "b";
   /** DualNav review: full board + dual vision borders. Default `player`. */
@@ -102,6 +103,8 @@ export type AnimationStageProps = {
   intentChecks?: readonly IntentCheck[];
   selected?: Square | null;
   legalDests?: readonly Square[];
+  /** Tutorial destination rings (independent of legal-move chrome). */
+  hintSquares?: readonly Square[];
   onSquareClick?: (square: Square) => void;
   attackCues?: readonly AttackCue[];
   attackDying?: Record<string, boolean>;
@@ -245,6 +248,7 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
         fog={props.fog !== false}
         visionMode={props.visionMode ?? "player"}
         variant={props.variant ?? "eclipse"}
+        pieceSet={props.pieceSet}
         phase={props.phase}
         siegedRooks={snap().siegedRooks ?? siegedRooksList()}
         intentGhosts={props.intentGhosts}
@@ -252,6 +256,7 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
         intentChecks={props.intentChecks}
         selected={props.selected}
         legalDests={props.legalDests}
+        hintSquares={props.hintSquares}
         onSquareClick={props.onSquareClick}
         hideSquares={hidden()}
         moveCues={props.moveCues}
@@ -306,6 +311,7 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
             progress={props.moveProgress ?? NO_MOVE_PROGRESS}
             leg={props.moveLeg}
             specialUsedSquares={specialUsedSquares()}
+            pieceSet={props.pieceSet}
             boardWidth={box().w}
             boardHeight={box().h}
           />

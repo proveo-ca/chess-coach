@@ -1,0 +1,105 @@
+/* Tutorial chrome only — Screen layout matches CoachScreen.
+   Guide line is TutorialGuideBubble (floating ChatBubble over ranks 7–8). */
+
+.footerNav {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: var(--board-size);
+}
+
+.carousel {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.lessonLabel {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-muted, #c5d0da);
+  text-align: center;
+  min-width: 8rem;
+}
+
+/* Fog: Previous / Next float beside Kerrigan (no lesson title). */
+.coachNav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: var(--board-size);
+  box-sizing: border-box;
+}
+
+.coachNav :global([data-testid="coach-avatar"]) {
+  flex: 0 0 auto;
+}
+
+.lessonNav {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0.35rem 0.25rem;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  cursor: pointer;
+}
+
+.lessonNav:hover:not(:disabled) .lessonNavText {
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.lessonNav:focus-visible {
+  outline: 2px solid var(--sc-guide-green, #3ecf8e);
+  outline-offset: 2px;
+  border-radius: 0.2rem;
+}
+
+.lessonNav:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.lessonNavText {
+  color: #fff;
+}
+
+.lessonNavArrow {
+  color: var(--sc-guide-green, #3ecf8e);
+  font-weight: 700;
+}
+
+.skinToggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+}
+
+.skinLabel {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-muted, #c5d0da);
+  letter-spacing: 0.02em;
+  user-select: none;
+}
+
+.skinActive {
+  color: var(--sc-guide-green, #3ecf8e);
+}

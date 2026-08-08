@@ -1,6 +1,6 @@
 /**
  * Match history list + DualNav replay — `/review` and `/review/:id`.
- * Mirrors Coach ReviewScreen routing; StarChess DualNav instead of PGN board.
+ * Mirrors Coach ReviewScreen routing; StarChess ReviewTurnNav + board replay.
  * // SPEC: _spec/apps/starchess/deployment.puml
  */
 import { A, useNavigate, useParams, type RouteSectionProps } from "@solidjs/router";
@@ -88,14 +88,20 @@ const ReviewListShell: Component<{ activeId?: string }> = (props) => (
       </Screen.SidebarInset>
       <Screen.BoardArea>
         <div class={styles.listPane}>
+          <Button
+            href="/"
+            primary
+            class={styles.back}
+            data-testid="review-back-menu"
+          >
+            <span class={styles.backArrow} aria-hidden="true">
+              ‹
+            </span>{" "}
+            Back to Menu
+          </Button>
           <MatchList activeId={props.activeId} />
         </div>
       </Screen.BoardArea>
-      <Screen.Footer>
-        <Button href="/" primary data-testid="review-back-menu">
-          Back to Main Menu
-        </Button>
-      </Screen.Footer>
     </Screen>
   </LiveMatchShell>
 );

@@ -13,4 +13,8 @@ export type ScreenCapabilities = {
   // Visual / chrome
   /** Show flip-board control in the Sidebar. */
   flipBoard: boolean;
+  /**
+   * Tutorial shell — Home only (hide vision radios even when reviewing).
+   */
+  homeOnly?: boolean;
 };

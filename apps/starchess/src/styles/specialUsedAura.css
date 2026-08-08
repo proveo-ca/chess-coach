@@ -1,0 +1,4 @@
+/** Gas / U: special-used green aura for combat overlays (attack / move / death / jump / deploy). */
+.sc-special-used {
+  filter: drop-shadow(0 0 3px #3dce6a) drop-shadow(0 0 8px rgba(61, 206, 106, 0.85));
+}

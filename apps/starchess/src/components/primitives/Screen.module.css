@@ -1,16 +1,13 @@
 /* SPEC: _spec/apps/ui/responsiveness/rules.md
    Priority: middle (board+sideboard) > top > bottom. No page vertical scroll;
-   enforce min width for essentials.
+   enforce min width for essentials. */
 
-   StarChess Screen tracks match apps/ui CoachScreen floors:
-   top/footer = --avatar-height (8rem), middle = --board-size. Same on every
-   StarChess screen so Live↔Observer / demos share one layout. */
-
-/* Board Screen only — do not cap #root for the StarChess menu (full-bleed). */
+/* Board Screen only — do not cap #root for the StarChess menu (full-bleed).
+   apps/ui uses `:global(#root)` unconditionally; StarChess keeps the menu sky
+   uncapped by scoping the cap to screens that mount `screen-root`. */
 :global(#root:has([data-testid="screen-root"])) {
   max-width: 1280px;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 0 auto;
   text-align: center;
   width: 100%;
   box-sizing: border-box;
@@ -32,29 +29,20 @@
 
 @media (min-width: 720px) {
   :global(body:has([data-testid="screen-root"])) {
-    /* board + sideboard + gutters (§1a) */
-    min-width: calc(var(--board-size) + var(--sidebar-width) + 4rem);
+    /* board + sidebar + modest gutter (§1a) */
+    min-width: calc(var(--board-size) + var(--sidebar-width) + 1.5rem);
+  }
+
+  .app-container {
+    padding-block: 2rem;
   }
 }
 
 .app-container {
-  /* Locked tracks match apps/ui CoachScreen dimensions:
-     top = --avatar-height (coach-header), middle = board, footer = --avatar-height
-     (CoachPanel). Same on every StarChess Screen so the board never jumps. */
-  --hud-gap: 16px;
-  --hud-gap-micro: 8px;
-  --screen-top-track: var(--avatar-height);
-  --screen-footer-track: var(--avatar-height);
-  --screen-play-width: calc(
-    var(--board-size) + var(--sidebar-width) + var(--hud-gap)
-  );
-
   display: grid;
-  grid-template-rows:
-    var(--screen-top-track)
-    var(--board-size)
-    var(--screen-footer-track);
-  /* Coach Screen gap */
+  /* Top (2nd) can shrink; middle (1st) is content-sized essentials; bottom (3rd)
+     collapses when data-footer-float=true. */
+  grid-template-rows: minmax(0, auto) auto minmax(0, auto);
   gap: 0.25rem;
   justify-items: center;
   max-width: var(--app-max-width);
@@ -68,7 +56,7 @@
 }
 
 .app-container[data-footer-float="true"] {
-  grid-template-rows: var(--screen-top-track) var(--board-size) 0fr;
+  grid-template-rows: minmax(0, auto) auto 0fr;
 }
 
 .app-container[data-footer-float="true"] > .footer,
@@ -79,17 +67,14 @@
   border: 0;
 }
 
-/* Grid layout for the header — same floor as CoachScreen.Header */
+/* Grid layout for the header — offset to align with board center (not board+sidebar) */
 .coach-header {
   display: grid;
-  gap: var(--hud-gap);
+  gap: 1.5rem;
   align-items: center;
   width: 100%;
-  max-width: var(--screen-play-width);
-  height: 100%;
-  min-height: var(--avatar-height);
-  max-height: 100%;
-  padding-right: calc(var(--sidebar-width) + var(--hud-gap));
+  min-height: 0;
+  padding-right: var(--sidebar-width);
   box-sizing: border-box;
   overflow: hidden;
   grid-row: 1;
@@ -106,63 +91,38 @@
   flex-direction: row;
   justify-content: center;
   align-items: flex-start;
-  column-gap: var(--hud-gap);
   width: 100%;
-  max-width: var(--screen-play-width);
-  /* Essentials: do not shrink below the board footprint (§2). */
+  /* Essentials: do not shrink below content (§2). */
   flex-shrink: 0;
-  height: var(--board-size);
-  min-height: var(--board-size);
-  max-height: var(--board-size);
-  /* Pin to middle track so a display:none top inset does not steal row 2. */
+  /* Pin to middle track so a display:none top inset (Review mobile) does not
+     promote BoardArea into row 1 and steal the 1fr stretch track. */
   grid-row: 2;
-  box-sizing: border-box;
 }
 
 .board-column {
   display: flex;
   flex-direction: column;
-  width: var(--board-size);
-  height: var(--board-size);
-  min-width: var(--board-size);
-  min-height: var(--board-size);
-  max-width: var(--board-size);
-  max-height: var(--board-size);
-  box-sizing: border-box;
-  justify-content: flex-start;
-  align-items: stretch;
 }
 
-/*
- * Top chrome — same play width as BoardArea; padding-right reserves the
- * sidebar rail so Resource/Turn align with the board (not board+sidebar).
- * Do NOT combine max-width:board with padding-right:sidebar (that crams HUD).
- */
+/* Offset content to align with the board center (not board+sidebar). */
 .sidebar-inset {
+  padding-top: 0.5rem;
+  padding-right: var(--sidebar-width);
+  min-height: 0;
+  overflow: hidden;
   width: 100%;
-  max-width: var(--screen-play-width);
-  height: 100%;
-  min-height: var(--avatar-height);
-  max-height: 100%;
-  padding-right: calc(var(--sidebar-width) + var(--hud-gap));
   box-sizing: border-box;
-  overflow: visible;
   grid-row: 1;
 }
 
 .footer {
   display: flex;
   flex-direction: column;
-  align-items: stretch;
-  justify-content: flex-start;
+  align-items: center;
   width: 100%;
-  max-width: var(--screen-play-width);
-  height: 100%;
-  min-height: 0;
-  max-height: 100%;
-  padding-right: calc(var(--sidebar-width) + var(--hud-gap));
+  padding-right: var(--sidebar-width);
   box-sizing: border-box;
-  overflow: hidden;
+  min-height: 0;
   grid-row: 3;
 }
 
@@ -174,52 +134,51 @@ h1 {
 
 /* Mobile overrides after base rules so they win the cascade. */
 @media (max-width: 719px) {
+  /* Tall mobile: top/bottom stay content-sized; middle claims leftover height so
+     the board stack can center instead of packing to the top (§2 mobile stretch).
+     Top row still collapses when empty (Coach avatar lives in the board bar). */
   .app-container {
-    --screen-play-width: var(--board-size);
-    align-content: start;
-    /* Keep the same locked tracks as desktop (Coach avatar-height floors). */
-    grid-template-rows:
-      var(--screen-top-track)
-      var(--board-size)
-      var(--screen-footer-track);
-    gap: 0.25rem;
-    padding: 0;
+    align-content: stretch;
+    grid-template-rows: minmax(0, auto) 1fr minmax(0, auto);
   }
 
   .app-container[data-footer-float="true"] {
-    grid-template-rows: var(--screen-top-track) var(--board-size) 0fr;
+    grid-template-rows: minmax(0, auto) 1fr 0fr;
   }
 
   .board-area {
-    height: var(--board-size);
-    align-items: flex-start;
-    column-gap: 0;
-    max-width: var(--board-size);
+    height: 100%;
+    align-items: stretch;
   }
 
   .board-column {
-    height: var(--board-size);
-    width: var(--board-size);
+    height: 100%;
+    width: 100%;
     max-width: var(--board-size);
     box-sizing: border-box;
+    container-type: size;
     justify-content: flex-start;
-    gap: 0;
+    /* Leftover middle height becomes in-betweens among chrome / board. */
+    gap: clamp(0.35rem, 3.5cqh, 1.25rem);
   }
 
+  /* §4 float: center the board stack in the leftover middle track so the
+     floating panel sits over the lower board instead of a dead band below. */
   .app-container[data-footer-float="true"] .board-column {
-    justify-content: flex-start;
+    justify-content: center;
   }
 
-  .sidebar-inset,
-  .footer,
+  /* Short / dynamic: clump top chrome (bars · FEN · tools) so the board
+     reclaim height — no generous cqh gaps. */
+  @media (max-height: 639px) {
+    .board-column {
+      gap: 0.2rem;
+    }
+  }
+
   .coach-header {
-    max-width: var(--board-size);
+    min-height: 0;
     padding-right: 0;
-    min-height: var(--avatar-height);
-  }
-
-  .coach-header {
-    height: 100%;
-    gap: var(--hud-gap-micro);
+    gap: 0.5rem;
   }
 }

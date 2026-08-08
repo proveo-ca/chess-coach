@@ -5,7 +5,8 @@
 import type { Component, JSX } from "solid-js";
 import clsx from "clsx";
 
-import { Modal, type ModalPosition } from "~/components/atoms/Modal";
+import { Modal } from "~/components/atoms/Modal";
+import type { ModalPosition } from "~/types/ui";
 import styles from "~/components/atoms/NeonModal.module.css";
 
 export type NeonModalSize = "md" | "lg";

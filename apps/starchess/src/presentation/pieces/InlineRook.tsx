@@ -23,8 +23,10 @@ type InlineRookProps = {
    */
   aimDeg?: number;
   /**
-   * Tank ↔ siege — store-backed via {@link rookModeAt} / {@link toggleRookSiege}.
+   * Tank ↔ siege — store-backed via {@link rookModeAt} / sieged SCFEN `S:`.
    * Siege: ea839cb wedge armor + filled white twins. Tank: squared hull + treads + TwinBattery.
+   * Defaults to **tank**. Chess/`cburnett` skin never uses this component — both
+   * modes map to the classic rook via {@link RookGlyph}.
    */
   mode?: RookMode;
 };

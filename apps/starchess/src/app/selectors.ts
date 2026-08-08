@@ -15,7 +15,8 @@ export const displayedSnapshot = (state: MatchState): ScFenSnapshot => {
     const settled = state.settledSnapshots[state.reviewIndex];
     if (settled) {
       const tl = state.timeline;
-      if (tl.active) {
+      // Active playback OR mid-wave soft-done (display kept, active cleared).
+      if (tl.active || tl.displayPlacement != null) {
         return {
           ...settled,
           placement: tl.displayPlacement ?? settled.placement,

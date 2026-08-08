@@ -29,18 +29,22 @@ import {
 } from "@chess-coach/starchess-core";
 
 import { useMatchStore } from "~/app/MatchStoreContext";
+import { CoachAvatar } from "~/components/atoms/CoachAvatar";
 import { Sidebar } from "~/components/features/Sidebar";
 import { PromotionModal } from "~/components/primitives/PromotionModal";
 import { Screen } from "~/components/primitives/Screen";
 import { squareBoxStyle, findBoardGrid } from "~/presentation/animations/boardGeom";
 import { LiveStarChessBoard } from "~/presentation/board/LiveStarChessBoard";
+import { moveThenGasPromotes } from "~/presentation/board/useBoardInput";
 import { GasDeploy } from "~/presentation/features/GasDeploy";
 import { DeployModal } from "~/presentation/hud/DeployModal";
 import { ResourceBar } from "~/presentation/hud/ResourceBar";
+import { ReviewTurnNav } from "~/presentation/hud/ReviewTurnNav";
 import { TurnBar } from "~/presentation/hud/TurnBar";
 import { TurnBarSidebar } from "~/presentation/hud/TurnBarSidebar";
 import { usePieceSpecialArm } from "~/presentation/hooks/usePieceSpecialArm";
-import type { BoardVariant } from "~/types/board";
+import type { BoardSkin, PieceSet } from "~/types/board";
+import type { KerriganEmotion } from "~/types/coach";
 import type { PromotionPiece } from "~/types/chess";
 import { tacticalJumpTargets } from "~/presentation/specials/queenTacticalJump";
 import { storedMaterial, viewerColor } from "~/app/matchEconomy";
@@ -51,6 +55,10 @@ import {
   resetReviewVisionFilter,
   reviewVisionFilter,
 } from "~/store/reviewVisionStore";
+import {
+  TUTORIAL_CAPABILITIES,
+  setCapabilities,
+} from "~/store/capabilitiesStore";
 
 export type AutoQueueOpponentResult = {
   snapshot: ScFenSnapshot;
@@ -66,8 +74,10 @@ export type StarChessScreenProps = {
   starChessMode?: boolean;
   /** When false, skip fog overlay. Defaults to `starChessMode`. */
   fog?: boolean;
-  /** eclipse | butter | vermeer — default eclipse. */
-  boardVariant?: BoardVariant;
+  /** eclipse | butter | vermeer | classic — default eclipse. */
+  boardVariant?: BoardSkin;
+  /** Piece SVG set — `cburnett` for tutorial Chess mode. */
+  pieceSet?: PieceSet;
   /** Auto-arm planning timer on mount. */
   armTimer?: boolean;
   /**
@@ -80,9 +90,31 @@ export type StarChessScreenProps = {
   /**
    * Experimental HUD variation: `"sidebar"` moves turn chrome into a vertical
    * rail beside the board (`TurnBarSidebar`). Default `"bar"` keeps `TurnBar`
-   * above the board. Does not alter `TurnBar` itself.
+   * above the board. `"none"` hides turn chrome (Fog of War tutorial).
    */
-  turnChrome?: "bar" | "sidebar";
+  turnChrome?: "bar" | "sidebar" | "none";
+  /** Hide ResourceBars (tutorial). */
+  hideResources?: boolean;
+  /** Hide GasDeploy rack (Fog of War tutorial). */
+  hideGas?: boolean;
+  /** Tutorial HOME-only sidebar. */
+  tutorial?: boolean;
+  /**
+   * Tutorial-only auto-End when the player queue meets a threshold:
+   * - `first` — first intent (Fog of War; Command Center)
+   * - `moveAndSpecial` — one classical + one special (other Special Moves)
+   * Ignored unless `tutorial` is set.
+   */
+  endTurnAfterQueue?: "first" | "moveAndSpecial";
+  /** Kerrigan emotion for CoachScreen-shaped header / mobile hero (tutorial). */
+  coachEmotion?: KerriganEmotion;
+  /** Floating guide ChatBubble (tutorial) — hangs under Header over ranks 7–8. */
+  guideBubble?: import("solid-js").JSX.Element;
+  /** Replaces SidebarInset when set (tutorial desktop header avatar slot). */
+  header?: import("solid-js").JSX.Element;
+  footerExtra?: import("solid-js").JSX.Element;
+  /** Tutorial destination rings (e.g. fog/knight hop path). */
+  hintSquares?: readonly Square[];
 };
 
 type OverlayBox = { top: number; left: number; width: number; height: number };
@@ -98,13 +130,14 @@ const specialTimingFor = (
 
 export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
   const store = useMatchStore();
-  const variant = (): BoardVariant => props.boardVariant ?? "eclipse";
+  const variant = (): BoardSkin => props.boardVariant ?? "eclipse";
   const starChessMode = () => props.starChessMode ?? true;
   const fogOfWar = () => props.fog ?? starChessMode();
   const ended = () => store.state().phase === "gameOver";
   const snap = () => store.state().liveSnapshot;
   const turnChrome = () => props.turnChrome ?? "bar";
   const turnInSidebar = () => turnChrome() === "sidebar";
+  const turnHidden = () => turnChrome() === "none";
 
   const [spawnUnit, setSpawnUnit] = createSignal<SpawnPiece | null>(null);
   const [spawnPhase, setSpawnPhase] = createSignal<"idle" | "modal" | "pick">("idle");
@@ -266,6 +299,32 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
           message: "Last-rank advance is classical — click the promotion square",
         });
         return false;
+      }
+      // Move-then-gas onto last rank: F would park a marine on 8/1 with no
+      // picker. Peel the mid-step C, queue B, open PromotionModal (same as
+      // gas-then-move via gasStackPromotes).
+      const convert = moveThenGasPromotes(snap(), color, ctx.square, to);
+      if (convert) {
+        store.dispatch({ type: "REMOVE_ACTION", seq: convert.seq });
+        if (
+          !tryQueue(
+            {
+              timing: "B",
+              kind: "pawnDouble",
+              color,
+              from: ctx.square,
+              to,
+            },
+            `Gas step ${ctx.square}→${to} queued · pick promotion`,
+          )
+        ) {
+          return false;
+        }
+        store.dispatch({
+          type: "SET_PENDING_PROMOTION",
+          pending: { color, from: ctx.square, to },
+        });
+        return "armed";
       }
       return tryQueue(
         { timing, kind: "pawnDouble", color, from: ctx.square, to },
@@ -444,6 +503,36 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
     store.armTimer();
   });
 
+  // Tutorial only: Fog ends on first intent; Specials on move+special (or first).
+  let prevQueueReady = false;
+  createEffect(() => {
+    if (!props.tutorial) return;
+    const mode = props.endTurnAfterQueue;
+    if (!mode) return;
+    const s = store.state();
+    const color = s.playerColor;
+    const side = (s.liveSnapshot.queue?.actions ?? []).filter(
+      (a) => a.color === color,
+    );
+    const planning = s.phase === "planning" || s.phase === "targeting";
+    if (!planning || s.timeline.active) {
+      prevQueueReady = false;
+      return;
+    }
+    // Wait for promotion / targeting modal to commit before End.
+    if (s.pendingPromotion || s.targeting) {
+      return;
+    }
+    const ready =
+      mode === "first"
+        ? side.length >= 1
+        : side.some((a) => a.timing === "C") &&
+          side.some((a) => a.timing !== "C");
+    const shouldEnd = ready && !prevQueueReady;
+    prevQueueReady = ready;
+    if (shouldEnd) store.submitTurn("end");
+  });
+
   createEffect(() => {
     void snap().placement;
     void spawnPhase();
@@ -452,6 +541,7 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
   });
 
   onMount(() => {
+    if (props.tutorial) setCapabilities(TUTORIAL_CAPABILITIES);
     const onKey = (e: KeyboardEvent) => {
       if (store.state().phase !== "gameOver") return;
       const t = e.target as HTMLElement | null;
@@ -532,51 +622,105 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
         />
       </Show>
 
-      <Screen.SidebarInset class={styles.topPane}>
-        <div class={styles.topChrome} data-testid="nerd-board-chrome">
-          <Show when={starChessMode() && !turnInSidebar() && !ended()}>
-            <TurnBar
-              autoStart={false}
-              resolveOnEnd={false}
-              onEnd={() => store.submitTurn("end")}
-            />
-          </Show>
-          <Show when={starChessMode()}>
-            <Show
-              when={ended()}
-              fallback={<ResourceBar />}
-            >
-              <div
-                class={styles.dualResources}
-                role="group"
-                aria-label={
-                  reviewVisionFilter() === "both"
-                    ? "Both sides resources"
-                    : reviewVisionFilter() === "w"
-                      ? "Blue side resources"
-                      : "Red side resources"
+      <Show
+        when={props.header != null || props.tutorial}
+        fallback={
+          <Screen.SidebarInset class={styles.topPane}>
+            <div class={styles.topChrome} data-testid="nerd-board-chrome">
+              <Show when={starChessMode() && !turnInSidebar() && !turnHidden() && !ended()}>
+                <TurnBar
+                  autoStart={false}
+                  resolveOnEnd={false}
+                  onEnd={() => store.submitTurn("end")}
+                />
+              </Show>
+              <Show when={starChessMode() && !props.hideResources}>
+                <Show
+                  when={ended()}
+                  fallback={<ResourceBar />}
+                >
+                  <ReviewTurnNav
+                    onBack={() => store.reviewBack()}
+                    onForward={() => store.reviewForward()}
+                    backDisabled={
+                      reviewBusy() || store.state().reviewIndex <= 0
+                    }
+                    forwardDisabled={
+                      reviewBusy() ||
+                      store.state().reviewIndex >=
+                        store.state().settledSnapshots.length - 1
+                    }
+                  >
+                    <div
+                      class={styles.dualResources}
+                      role="group"
+                      aria-label={
+                        reviewVisionFilter() === "both"
+                          ? "Both sides resources"
+                          : reviewVisionFilter() === "w"
+                            ? "Blue side resources"
+                            : "Red side resources"
+                      }
+                    >
+                      <Show when={showWhiteResources()}>
+                        <ResourceBar
+                          color="w"
+                          snapshot={displayedSnapshot(store.state())}
+                        />
+                      </Show>
+                      <Show when={showBlackResources()}>
+                        <ResourceBar
+                          color="b"
+                          snapshot={displayedSnapshot(store.state())}
+                        />
+                      </Show>
+                    </div>
+                  </ReviewTurnNav>
+                </Show>
+              </Show>
+            </div>
+          </Screen.SidebarInset>
+        }
+      >
+        <Screen.Header>
+          <div class={styles.headerSlot}>
+            {/* CoachScreen: desktop header owns the avatar. */}
+            <div class="desktop-only" data-testid="tutorial-header">
+              <Show
+                when={props.header}
+                fallback={
+                  <CoachAvatar
+                    identity="kerrigan"
+                    emotion={props.coachEmotion ?? "idle"}
+                  />
                 }
               >
-                <Show when={showWhiteResources()}>
-                  <ResourceBar
-                    color="w"
-                    snapshot={displayedSnapshot(store.state())}
-                  />
-                </Show>
-                <Show when={showBlackResources()}>
-                  <ResourceBar
-                    color="b"
-                    snapshot={displayedSnapshot(store.state())}
-                  />
-                </Show>
-              </div>
-            </Show>
-          </Show>
-        </div>
-      </Screen.SidebarInset>
+                {props.header}
+              </Show>
+            </div>
+            {props.guideBubble}
+          </div>
+        </Screen.Header>
+      </Show>
 
       <Screen.BoardArea>
         <Screen.BoardColumn>
+          <Show when={props.tutorial}>
+            {/* CoachScreen tall-mobile hero — same header slot as desktop. */}
+            <div class="mobile-hero" data-testid="tutorial-mobile-hero">
+              <Show
+                when={props.header}
+                fallback={
+                  <CoachAvatar
+                    identity="kerrigan"
+                    emotion={props.coachEmotion ?? "idle"}
+                  />
+                }
+              >
+                {props.header}
+              </Show>
+            </div>
+          </Show>
           <div
             class={styles.boardHost}
             data-testid="nerd-play-layout"
@@ -584,7 +728,10 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
           >
             <LiveStarChessBoard
               fog={ended() ? undefined : fogOfWar()}
+              visionMode="player"
               variant={variant()}
+              pieceSet={props.pieceSet}
+              hintSquares={props.hintSquares}
             />
             <Show when={starChessMode() && overlayBox()}>
               {(box) => (
@@ -643,8 +790,8 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
             </Show>
           </div>
         </Screen.BoardColumn>
-        <div class={styles.sideRail} data-testid="starchess-side-rail">
-          <Show when={starChessMode() && turnInSidebar()}>
+        <aside class={styles.sideboard} data-testid="starchess-side-rail">
+          <Show when={starChessMode() && turnInSidebar() && !turnHidden()}>
             <Show
               when={ended()}
               fallback={
@@ -654,7 +801,7 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
                     resolveOnEnd={false}
                     onEnd={() => store.submitTurn("end")}
                   />
-                  <hr class={styles.sideRailDivider} />
+                  <hr class={styles.sideboardDivider} />
                 </>
               }
             >
@@ -662,6 +809,7 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
                 review={{
                   turn: reviewTurnNumber(),
                   phase: store.reviewPhase(),
+                  hideDualNav: true,
                   onBack: () => store.reviewBack(),
                   onForward: () => store.reviewForward(),
                   backDisabled: reviewBusy() || store.state().reviewIndex <= 0,
@@ -671,17 +819,18 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
                       store.state().settledSnapshots.length - 1,
                 }}
               />
-              <hr class={styles.sideRailDivider} />
+              <hr class={styles.sideboardDivider} />
             </Show>
           </Show>
           <Sidebar onHome={props.onExitToMenu} />
-        </div>
+        </aside>
       </Screen.BoardArea>
 
       <Screen.Footer>
         <div class={styles.footerStack}>
+          <Show when={props.footerExtra}>{props.footerExtra}</Show>
           <div class={styles.gasDock} data-testid="nerd-gas-deploy">
-            <Show when={starChessMode() && !ended()}>
+            <Show when={starChessMode() && !ended() && !props.hideGas}>
               <GasDeploy
                 onDeploy={onGasDeploy}
                 onCancel={() => {
@@ -696,21 +845,23 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
               />
             </Show>
           </div>
-          <div class={styles.statusLine}>
-            <Show
-              when={starChessMode()}
-              fallback={<p class={styles.placeholder}>Nerd mode is awakening…</p>}
-            >
+          <Show when={!props.tutorial}>
+            <div class={styles.statusLine}>
               <Show
-                when={outcomeLabel(store.state())}
-                fallback={
-                  <p class={styles.placeholder}>{store.state().statusText}</p>
-                }
+                when={starChessMode()}
+                fallback={<p class={styles.placeholder}>Nerd mode is awakening…</p>}
               >
-                {(label) => <p class={styles.placeholder}>{label()}</p>}
+                <Show
+                  when={outcomeLabel(store.state())}
+                  fallback={
+                    <p class={styles.placeholder}>{store.state().statusText}</p>
+                  }
+                >
+                  {(label) => <p class={styles.placeholder}>{label()}</p>}
+                </Show>
               </Show>
-            </Show>
-          </div>
+            </div>
+          </Show>
         </div>
       </Screen.Footer>
     </Screen>

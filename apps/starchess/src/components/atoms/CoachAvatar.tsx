@@ -17,22 +17,9 @@ import {
 } from "solid-js";
 
 import styles from "~/components/atoms/CoachAvatar.module.css";
+import type { CoachIdentity, KerriganEmotion } from "~/types/coach";
 
-export type CoachIdentity = "selena" | "kerrigan";
-
-export type KerriganEmotion =
-  | "idle"
-  | "watching"
-  | "watching--left"
-  | "watching--right"
-  | "watching--up"
-  | "thinking"
-  | "happy"
-  | "shocked"
-  | "sleepy"
-  | "sleeping"
-  /** Visor slides from forehead down over the eyes. */
-  | "scanning";
+export type { CoachIdentity, KerriganEmotion } from "~/types/coach";
 
 export type CoachAvatarProps = {
   /** Force the sleeping pose (loading splash). */

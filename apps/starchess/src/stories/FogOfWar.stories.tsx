@@ -1,19 +1,25 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { FogEdgeDemo } from "~/demos/FogEdgeDemo";
-import { FOG_EDGE_BISHOP_SCENARIO } from "~/demos/fogEdgeBishop";
-import { FOG_EDGE_ROOK_TANK_SCENARIO } from "~/demos/fogEdgeRookTank";
+import { FogLiveScenarioScreen } from "~/demos/FogLiveScenarioScreen";
+import { FOG_EDGE_BISHOP_START_SCFEN } from "~/demos/fogEdgeBishop";
+import { FOG_EDGE_ROOK_TANK_START_SCFEN } from "~/demos/fogEdgeRookTank";
 import {
-  FOG_MOVE_KING_SCENARIO,
-  FOG_MOVE_KNIGHT_SCENARIO,
-  FOG_MOVE_PAWN_SCENARIO,
-  FOG_MOVE_QUEEN_SCENARIO,
+  FOG_MOVE_KING_START_SCFEN,
+  FOG_MOVE_KNIGHT_START_SCFEN,
+  FOG_MOVE_PAWN_START_SCFEN,
+  FOG_MOVE_QUEEN_START_SCFEN,
 } from "~/demos/fogMoveSamples";
-import { AttackBoardDemo } from "~/presentation/animations/AttackBoardDemo";
-import { SpiderMineFogDemo } from "~/presentation/animations/SpiderMineFogDemo";
+import { FOG_SIEGE_ROOK_SCFEN } from "~/presentation/animations/FogVisionDemo";
+
+/** Own-square mine vision — live player fog. */
+const FOG_MINE_LIVE_SCFEN =
+  "SCFEN|7k/8/8/8/8/8/8/4K3|0|33|P|G:11:11|M:w:a4|Q:w:;b:";
+
+/** Siege rook on d4 (immobile 9×9) — live. */
+const FOG_SIEGE_LIVE_SCFEN = `${FOG_SIEGE_ROOK_SCFEN}|S:d4`;
 
 /**
- * Stories feed SCFEN scenario packages only — no queue / resolve / combat logic here.
+ * Live player-fog lessons — HOME-only sidebar, no DualNav.
  * // SPEC: _spec/apps/starchess/demos.puml, _spec/packages/starchess-core/resolve.puml
  */
 const meta = {
@@ -23,7 +29,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "DualNav asserts **intent → resolve**: dashed ghost on `intentTo` (unit stays on `from`), then End-style combat resolve (slide + progressive fog). Bishop / Rook (tank) also assert fog-edge move collision. Siege rook demo cycles HE battery attacks on adjacent squares. Spider Mine fog: `M:` own-square vision.",
+          "Live MatchStore + player fog. Queue a move, End to resolve — fog expands with your pieces. Sidebar shows HOME only.",
       },
     },
   },
@@ -33,47 +39,45 @@ export default meta;
 type Story = StoryObj;
 
 export const King: Story = {
-  render: () => <FogEdgeDemo scenario={FOG_MOVE_KING_SCENARIO} />,
+  render: () => <FogLiveScenarioScreen scfen={FOG_MOVE_KING_START_SCFEN} />,
   parameters: {
     docs: {
       description: {
-        story:
-          "Kd4→e5. First forward: ghost on e5, king stays on d4. Second: resolve slide + progressive fog.",
+        story: "Kd4 live. Queue Kd4→e5, End — slide + progressive fog.",
       },
     },
   },
 };
 
 export const Pawn: Story = {
-  render: () => <FogEdgeDemo scenario={FOG_MOVE_PAWN_SCENARIO} />,
+  render: () => <FogLiveScenarioScreen scfen={FOG_MOVE_PAWN_START_SCFEN} />,
   parameters: {
     docs: {
       description: {
-        story:
-          "Cumulative vision (pawn ∧ king). Pd4→d5: intent ghost then resolve hop.",
+        story: "Pd4 + Ka1 cumulative vision. Queue Pd4→d5, End.",
       },
     },
   },
 };
 
 export const Knight: Story = {
-  render: () => <FogEdgeDemo scenario={FOG_MOVE_KNIGHT_SCENARIO} />,
+  render: () => <FogLiveScenarioScreen scfen={FOG_MOVE_KNIGHT_START_SCFEN} />,
   parameters: {
     docs: {
       description: {
-        story: "Nd4→e6: intent ghost on e6, then L-path resolve + fog.",
+        story: "Nd4 live. Queue Nd4→e6, End — L-path + fog.",
       },
     },
   },
 };
 
 export const Bishop: Story = {
-  render: () => <FogEdgeDemo scenario={FOG_EDGE_BISHOP_SCENARIO} />,
+  render: () => <FogLiveScenarioScreen scfen={FOG_EDGE_BISHOP_START_SCFEN} />,
   parameters: {
     docs: {
       description: {
         story:
-          "Fog overrides FEN: queue Bd4→h8 onto a hidden king. Resolve discovers g7 → Bxg7 (king spared).",
+          "Bd4 into fog toward h8. End discovers g7 → Bxg7 (king spared).",
       },
     },
   },
@@ -81,12 +85,13 @@ export const Bishop: Story = {
 
 export const RookTankMode: Story = {
   name: "Rook (tank mode)",
-  render: () => <FogEdgeDemo scenario={FOG_EDGE_ROOK_TANK_SCENARIO} />,
+  render: () => (
+    <FogLiveScenarioScreen scfen={FOG_EDGE_ROOK_TANK_START_SCFEN} rookTank />
+  ),
   parameters: {
     docs: {
       description: {
-        story:
-          "SCFEN-legal intent Rd4→d8. Resolve: approach → discover d7 → Rxd7 occupy.",
+        story: "Tank Rd4→d8 into fog. End: discover d7 → Rxd7.",
       },
     },
   },
@@ -94,23 +99,25 @@ export const RookTankMode: Story = {
 
 export const RookSiegeMode: Story = {
   name: "Rook (siege mode)",
-  render: () => <AttackBoardDemo piece="r" rookMode="siege" />,
+  render: () => (
+    <FogLiveScenarioScreen scfen={FOG_SIEGE_LIVE_SCFEN} rookSiege />
+  ),
   parameters: {
     docs: {
       description: {
         story:
-          "Siege mode (unpacked trebuchet): cycles HE battery attacks on adjacent targets — hatch stays packed, boom + smoke on impact.",
+          "Siege rook on d4 — immobile 9×9 vision. Explore fog; siege HE when you capture adjacent.",
       },
     },
   },
 };
 
 export const Queen: Story = {
-  render: () => <FogEdgeDemo scenario={FOG_MOVE_QUEEN_SCENARIO} />,
+  render: () => <FogLiveScenarioScreen scfen={FOG_MOVE_QUEEN_START_SCFEN} />,
   parameters: {
     docs: {
       description: {
-        story: "Qd4→d6: intent ghost on d6, then resolve slide + fog.",
+        story: "Qd4 live. Queue Qd4→d6, End — slide + fog.",
       },
     },
   },
@@ -118,12 +125,12 @@ export const Queen: Story = {
 
 export const SpiderMine: Story = {
   name: "Spider Mine",
-  render: () => <SpiderMineFogDemo />,
+  render: () => <FogLiveScenarioScreen scfen={FOG_MINE_LIVE_SCFEN} />,
   parameters: {
     docs: {
       description: {
         story:
-          "SCFEN `M:w:a4` — vision is only the mine’s own square for the owning side (fog veil).",
+          "Live `M:w:a4` — mine lights only its own square under player fog.",
       },
     },
   },

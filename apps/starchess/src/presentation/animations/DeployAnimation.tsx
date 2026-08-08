@@ -10,7 +10,6 @@ import {
   deployKindFor,
 } from "~/presentation/animations/deployAnim";
 import styles from "~/presentation/animations/DeployAnimation.module.css";
-import aura from "~/presentation/animations/specialUsedAura.module.css";
 import { squareBoxStyle } from "~/presentation/animations/boardGeom";
 import { InlineBishop } from "~/presentation/animations/pieces/InlineBishop";
 import { InlineKnight } from "~/presentation/animations/pieces/InlineKnight";
@@ -103,7 +102,7 @@ export const DeployAnimation: Component<DeployAnimationProps> = (props) => {
             data-deploy-kind={kind}
             data-special-used={gas() ? "true" : undefined}
           >
-            <div class={styles.hull} classList={{ [aura.specialUsed]: gas() }}>
+            <div class={styles.hull} classList={{ ["sc-special-used"]: gas() }}>
               {hull(cue.piece, cue.color)}
             </div>
             {thrust === "air" && <span class={`${styles.thrust} ${styles.thrustAir}`} />}

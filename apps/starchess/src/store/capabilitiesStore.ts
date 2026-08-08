@@ -30,5 +30,13 @@ export const MAP_CAPABILITIES: ScreenCapabilities = {
   flipBoard: false,
 };
 
+/** Tutorial — Home only; no flip / vision chrome. */
+export const TUTORIAL_CAPABILITIES: ScreenCapabilities = {
+  readOnly: false,
+  freeColorControl: false,
+  flipBoard: false,
+  homeOnly: true,
+};
+
 export const [capabilities, setCapabilities] =
   createSignal<ScreenCapabilities>(LIVE_CAPABILITIES);

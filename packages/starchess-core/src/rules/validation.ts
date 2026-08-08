@@ -210,6 +210,26 @@ export const assertSpecialLegal = (
           "pawnDouble cannot enter last rank (use classical promotion)",
         );
       }
+      // Move-then-gas (F after C): post-C +1 must not be last rank either —
+      // that path relocates onto 8/1 with no promotion picker.
+      if (action.timing === "F") {
+        const c = (snap.queue?.actions ?? []).find(
+          (a) =>
+            a.timing === "C" &&
+            a.kind === "classical" &&
+            a.color === action.color &&
+            a.from === action.from,
+        );
+        if (c && c.timing === "C") {
+          const land = pawnSingleTarget(c.to, action.color);
+          if (land && Number(land[1]) === lastRank) {
+            throw new ScValidateError(
+              "SC_SPECIAL",
+              "pawnDouble after move onto last rank needs gas-first + promotion",
+            );
+          }
+        }
+      }
       // F after C: dest may be free only post-classical; queue-time checks
       // planning placement. For F, allow occupied-by-self-from when C will leave.
       if (map.has(action.to)) {

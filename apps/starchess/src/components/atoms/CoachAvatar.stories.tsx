@@ -3,9 +3,8 @@ import { createSignal } from "solid-js";
 
 import {
   CoachAvatar,
-  type CoachIdentity,
-  type KerriganEmotion,
 } from "~/components/atoms/CoachAvatar";
+import type { CoachIdentity, KerriganEmotion } from "~/types/coach";
 
 /**
  * Selena Kerrigan — Ghost sniper helm on the classic coach cat.

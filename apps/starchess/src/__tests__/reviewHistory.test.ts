@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { createMatchStore } from "~/app/MatchStoreContext";
 import { buildReviewHistory, createMatchStateFromReviewHistory } from "~/app/reviewHistory";
 import { COMBAT_CHAIN_PLY_SC, COMBAT_CHAIN_STEPS, queueCombatChainStep } from "~/demos/combatChain";
+import { buildTypewriterBeats } from "~/tutorial/typewriterBeats";
 
 describe("reviewHistory", () => {
   const history = buildReviewHistory({
@@ -32,9 +33,23 @@ describe("reviewHistory", () => {
     });
     expect(store.state().reviewIndex).toBe(0);
     expect(store.state().settledResolves.length).toBeGreaterThan(0);
-    // Does not throw — playback is async; seed wiring is the contract under test.
     store.reviewForward();
     store.cancelEffects();
     expect(store.state().phase).toBe("gameOver");
+  });
+
+  it("builds typewriter beats as Turn + Check + Intent + Resolve per combat turn", () => {
+    const beats = buildTypewriterBeats(history.settledResolves);
+    expect(beats.filter((b) => b.kind === "turn")).toHaveLength(
+      COMBAT_CHAIN_STEPS.length,
+    );
+    expect(beats.map((b) => b.kind)).toEqual(
+      COMBAT_CHAIN_STEPS.flatMap(() => [
+        "turn",
+        "check",
+        "intent",
+        "resolve",
+      ]),
+    );
   });
 });

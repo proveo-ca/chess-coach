@@ -1,0 +1,126 @@
+/**
+ * StarChess design tokens — mirrors apps/ui `theme.css` (tokens + breakpoints).
+ * // SPEC: _spec/apps/ui/responsiveness/rules.md
+ */
+
+:root {
+  --white-rgb: 255, 255, 255;
+  --shadow-rgb: 0, 0, 0;
+  --primary-rgb: 0, 86, 179;
+  --primary-color: rgb(var(--primary-rgb));
+  --primary-hover: #646cff;
+
+  --bg-color: #12171c;
+  --surface-color: #1a1a1a;
+  --surface-hover: #2a2a2a;
+  --panel-bg: rgba(var(--shadow-rgb), 0.2);
+  --text-color: #e8eaed;
+  --text-muted: #aaa;
+  --text-strong: #f5f5f5;
+  --text: #e8eaed;
+  --border-color: #444;
+  --border-radius-md: 8px;
+
+  --avatar-height: 8rem;
+  --avatar-fur: #f5f5f5;
+  --avatar-outline: #161616;
+  --avatar-nose: #d4a5a5;
+  --avatar-iris: #b3e79f;
+
+  /* Extra-small / mobile defaults (< 720px): no sidebar; 2rem gutter each side. */
+  --sidebar-width: 0px;
+  --board-size: min(100vw - 4rem, 480px);
+  --square-size: calc(var(--board-size) / 8);
+  --app-max-width: 100%;
+
+  --board-light: #f0d9b5;
+  --board-dark: #b58863;
+  --board-border: #111a23;
+
+  /* StarChess product tokens */
+  --sc-bg: var(--bg-color);
+  --sc-surface: var(--surface-color);
+  --sc-text: var(--text-color);
+  --sc-muted: var(--text-muted);
+  --sc-accent: #005f7f;
+  --sc-accent-hover: #007a9e;
+  --sc-border: var(--border-color);
+  /* Menu / Brood War neon (splash anchors). */
+  --sc-menu-neon: #7dff6a;
+  /*
+   * Guide chrome green — breadcrumb · Toggle · lesson arrows.
+   * Single hue for tutorial HUD; do not reintroduce a second green.
+   */
+  --sc-guide-green: #3ecf8e;
+
+  --toggle-off-bg: #2a3238;
+
+  --font-family: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  color-scheme: dark;
+  font-family: var(--font-family);
+  line-height: 1.5;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg-color: #ffffff;
+    --surface-color: #f9f9f9;
+    --surface-hover: #ffffff;
+    --text-color: #213547;
+    --text-muted: #666;
+    --text-strong: #1a1a1a;
+    --text: #213547;
+    --border-color: #ccc;
+    --primary-hover: #747bff;
+    color-scheme: light;
+  }
+}
+
+/* Desktop (≥ 720px): fixed board + classical sideboard rail. */
+@media (min-width: 720px) {
+  :root {
+    --sidebar-width: 6rem;
+    --board-size: 480px;
+    --app-max-width: calc(var(--board-size) + var(--sidebar-width) + 4rem);
+  }
+}
+
+/* Hidden on mobile (Coach header avatar moves into the board column hero). */
+@media (max-width: 719px) {
+  .desktop-only {
+    display: none;
+  }
+}
+
+/* Hidden on desktop — pairs with mobile chrome. */
+@media (min-width: 720px) {
+  .mobile-only {
+    display: none;
+  }
+}
+
+/* Tall mobile: hero CoachAvatar above the board (CoachScreen.module.css). */
+.mobile-hero {
+  display: none;
+}
+
+@media (max-width: 719px) and (min-height: 640px) {
+  .mobile-hero {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    width: 100%;
+    max-width: var(--board-size);
+    margin-inline: auto;
+    margin-block: clamp(0.25rem, 3cqh, 1.25rem);
+    min-height: 0;
+  }
+
+  .mobile-hero [data-testid="coach-avatar"] {
+    margin-top: 0.35rem;
+  }
+}

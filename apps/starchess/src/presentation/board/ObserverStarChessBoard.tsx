@@ -31,19 +31,21 @@ import {
   type MoveVisionCue,
 } from "~/presentation/board/fogProjection";
 import { pieceUrl } from "~/presentation/board/pieceUrl";
+import { RookGlyph } from "~/presentation/board/RookGlyph";
 import { TEAM_PRIMARY } from "~/presentation/animations/teamColors";
 import { InlineBishop } from "~/presentation/animations/pieces/InlineBishop";
-import { InlineRook } from "~/presentation/pieces/InlineRook";
 import { SpiderMine } from "~/presentation/specials/SpiderMine";
 import { VespeneIcon } from "~/components/primitives/icons";
 import { MOVE_SQUARE_MS } from "~/presentation/constants";
 import type { MoveCue } from "~/types/cues";
 import styles from "~/presentation/board/ObserverStarChessBoard.module.css";
 import type {
+  BoardSkin,
   BoardVariant,
   IntentCanister,
   IntentCheck,
   IntentGhost,
+  PieceSet,
   VisionMode,
 } from "~/types/board";
 import type { ReviewTurnPhase } from "~/types/review";
@@ -65,8 +67,10 @@ export const ObserverStarChessBoard: Component<{
    * Default `player` keeps live fog.
    */
   visionMode?: VisionMode;
-  /** Only eclipse | butter | vermeer — default eclipse. */
-  variant?: BoardVariant;
+  /** Only eclipse | butter | vermeer | classic — default eclipse. */
+  variant?: BoardSkin;
+  /** Piece SVG set — `cburnett` for tutorial Chess mode. */
+  pieceSet?: PieceSet;
   /** Phase frame border — matches TurnBar phase chip tones. */
   phase?: ReviewTurnPhase;
   siegedRooks?: readonly Square[];
@@ -77,6 +81,8 @@ export const ObserverStarChessBoard: Component<{
   intentChecks?: readonly IntentCheck[];
   selected?: Square | null;
   legalDests?: readonly Square[];
+  /** Tutorial destination rings. */
+  hintSquares?: readonly Square[];
   onSquareClick?: (square: Square) => void;
   /**
    * Hide board glyphs on these squares (combat / king-damage overlays own them).
@@ -102,7 +108,9 @@ export const ObserverStarChessBoard: Component<{
 }> = (props) => {
   const maskId = createUniqueId();
   const viewer = () => props.viewer ?? "w";
-  const variant = (): BoardVariant => props.variant ?? "eclipse";
+  const variant = (): BoardSkin => props.variant ?? "eclipse";
+  const pieceSet = (): PieceSet => props.pieceSet ?? "nerd";
+  const useInlineUnits = () => pieceSet() === "nerd";
   const isObserver = () => props.visionMode === "observer";
   /** Player fog veil — off in observer mode or when fog=false. */
   const usePlayerFog = () => !isObserver() && props.fog !== false;
@@ -240,7 +248,8 @@ export const ObserverStarChessBoard: Component<{
           data-vision-mode={isObserver() ? "observer" : "player"}
           class={clsx(
             styles.chessboard,
-            styles[`chessboard--${variant()}`],
+            variant() !== "classic" && styles[`chessboard--${variant()}`],
+            variant() === "classic" && styles["chessboard--classic"],
             usePlayerFog() && styles["chessboard--fog"],
             isObserver() && styles["chessboard--observer"],
           )}
@@ -340,6 +349,7 @@ export const ObserverStarChessBoard: Component<{
                     sieged().has(square) ? "siege" : "tank";
                   const isSelected = () => props.selected === square;
                   const isLegal = () => props.legalDests?.includes(square) ?? false;
+                  const isHint = () => props.hintSquares?.includes(square) ?? false;
                   const gasUsedAura = () => {
                     // Resolve absorb — green eases onto the unit with the canister drop
                     // (LiveStarChessBoard already fog-gates gasDrop / absorb squares).
@@ -386,8 +396,10 @@ export const ObserverStarChessBoard: Component<{
                         isLight() ? styles.light : styles.dark,
                         isSelected() && styles.selected,
                         isLegal() && styles["advice-highlight"],
+                        isHint() && styles["hint-highlight"],
                       )}
                       data-square={square}
+                      data-hint={isHint() ? square : undefined}
                       data-tone={isLight() ? "light" : "dark"}
                       data-fog={
                         !usePlayerFog()
@@ -428,19 +440,26 @@ export const ObserverStarChessBoard: Component<{
                         {(p) => {
                           if (p().type === "r") {
                             return (
-                              <div
+                              <RookGlyph
+                                color={p().color}
+                                pieceSet={pieceSet()}
+                                mode={rookMode()}
                                 class={clsx(
                                   styles.piece,
                                   gasUsedAura() && styles.pieceSpecialUsed,
                                 )}
-                                data-piece-inline="r"
-                                data-special-used={gasUsedAura() ? "true" : undefined}
-                              >
-                                <InlineRook color={p().color} mode={rookMode()} />
-                              </div>
+                                alt={`${p().color} r`}
+                                data-special-used={
+                                  gasUsedAura() ? "true" : undefined
+                                }
+                              />
                             );
                           }
-                          if (p().type === "b" && armedBishops().has(square)) {
+                          if (
+                            useInlineUnits() &&
+                            p().type === "b" &&
+                            armedBishops().has(square)
+                          ) {
                             return (
                               <div
                                 class={clsx(
@@ -466,7 +485,7 @@ export const ObserverStarChessBoard: Component<{
                                 styles.piece,
                                 gasUsedAura() && styles.pieceSpecialUsed,
                               )}
-                              src={pieceUrl(p().color, p().type)}
+                              src={pieceUrl(p().color, p().type, pieceSet())}
                               alt={`${p().color} ${p().type}`}
                               data-special-used={gasUsedAura() ? "true" : undefined}
                               draggable={false}
@@ -493,33 +512,34 @@ export const ObserverStarChessBoard: Component<{
                       </Show>
                       <Show when={ghost()}>
                         {(g) => (
-                          <Show
-                            when={g().piece === "r"}
-                            fallback={
-                              <img
-                                class={styles.intentPieceGhost}
-                                src={pieceUrl(g().color, g().piece)}
-                                alt=""
-                                style={{ "--intent-ring": TEAM_PRIMARY[g().color] }}
-                                data-intent-dest={square}
-                                draggable={false}
-                                aria-hidden="true"
-                              />
+                          <div
+                            class={styles.intentPieceGhost}
+                            style={{ "--intent-ring": TEAM_PRIMARY[g().color] }}
+                            data-intent-dest={square}
+                            data-piece-inline={
+                              g().piece === "r" && pieceSet() === "nerd"
+                                ? "r"
+                                : undefined
                             }
+                            aria-hidden="true"
                           >
-                            <div
-                              class={styles.intentPieceGhost}
-                              style={{ "--intent-ring": TEAM_PRIMARY[g().color] }}
-                              data-intent-dest={square}
-                              data-piece-inline="r"
-                              aria-hidden="true"
+                            <Show
+                              when={g().piece === "r"}
+                              fallback={
+                                <img
+                                  src={pieceUrl(g().color, g().piece, pieceSet())}
+                                  alt=""
+                                  draggable={false}
+                                />
+                              }
                             >
-                              <InlineRook
+                              <RookGlyph
                                 color={g().color}
+                                pieceSet={pieceSet()}
                                 mode={g().rookMode ?? "tank"}
                               />
-                            </div>
-                          </Show>
+                            </Show>
+                          </div>
                         )}
                       </Show>
                     </div>

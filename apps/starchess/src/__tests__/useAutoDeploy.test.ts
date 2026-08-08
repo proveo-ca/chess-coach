@@ -3,7 +3,7 @@ import type { Square } from "chess.js";
 import type { StarChessPiece } from "@chess-coach/starchess-core";
 
 import { deployCuesForBoardDiff } from "~/presentation/hooks/useAutoDeploy";
-import type { PieceColor } from "~/presentation/types";
+import type { PieceColor } from "@chess-coach/starchess-core";
 
 type PieceAt = { type: StarChessPiece; color: PieceColor };
 

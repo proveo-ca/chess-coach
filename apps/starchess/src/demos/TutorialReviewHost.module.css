@@ -1,0 +1,66 @@
+/* Host only — Screen owns grid; this file styles board host + sideboard slot. */
+
+.headerSlot {
+  position: relative;
+  width: 100%;
+}
+
+.dualResources {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 8px;
+  width: 100%;
+}
+
+.host {
+  position: relative;
+  display: block;
+  overflow: visible;
+  width: var(--board-size);
+  height: var(--board-size);
+  /* Mock apps/ui CapturedPieces strips (min-height 1.4rem each). */
+  margin-block: 1.4rem;
+  box-sizing: border-box;
+}
+
+/* Same role as apps/ui Sidebar beside BoardColumn — no board-height lock.
+   Match boardHost margin-top so the rail starts with the board square. */
+.sideboard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.4rem;
+  width: var(--sidebar-width);
+  flex-shrink: 0;
+  margin-top: 1.4rem;
+  box-sizing: border-box;
+}
+
+.sideboardDivider {
+  width: 60%;
+  margin: 0.15rem 0;
+  border: 0;
+  border-top: 1px solid var(--border-color, #3a4550);
+  flex-shrink: 0;
+}
+
+@media (max-width: 719px) {
+  .sideboard {
+    display: none;
+  }
+}
+
+.footerStack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  width: 100%;
+  max-width: var(--board-size);
+  box-sizing: border-box;
+  padding-block: 8px;
+}

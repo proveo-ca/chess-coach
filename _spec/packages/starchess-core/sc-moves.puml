@@ -57,6 +57,9 @@ note bottom of STORE
   **No Coach BoardMoveProvider.** Live StarChess does not go through
   Coach ""useChessBoard"" / ""useMoveExecutor"" / ""gameStore"".
   Classical commits are MatchStore actions; legality is ""scMoves*"".
+  **Player fog (all apps/starchess):** ""useBoardInput"" always feeds
+  ""scMovesFrom"" a viewer-occulted map (""occupancyForViewerMoves"") so
+  intent through fog stays clickable; resolve owns collisions.
   See also ""_spec/apps/starchess/match-store.puml"".
 end note
 
@@ -83,8 +86,9 @@ participant "commands/queue-action.ts\naddScAction" as QACT <<app>>
 
 H ARROW_MAIN VIEW : taps own piece
 VIEW ARROW_MAIN INPUT : ""onSquareClick(from)""
-INPUT ARROW_MAIN SCM : ""scMovesFrom(map, from, color, opts)""
-SCM ARROW_MAIN INPUT : ""ScMove[]"" — SC-legal
+INPUT ARROW_MAIN INPUT : ""occupancyForViewerMoves""\n(player fog — occult unseen enemies)
+INPUT ARROW_MAIN SCM : ""scMovesFrom(occultedMap, …)""
+SCM ARROW_MAIN INPUT : ""ScMove[]"" — SC-legal under fog info
 INPUT ARROW_ERROR INPUT : filter ""dropsAtResolve""\n(enemy-king square burns C)
 INPUT ARROW_MAIN STORE : ""SELECT_SQUARE"" + ""SET_LEGAL_DESTS""
 

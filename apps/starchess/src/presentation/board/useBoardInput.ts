@@ -2,6 +2,11 @@
  * Snapshot-driven board input — queues classical moves / spawn / Charon / Jump.
  * Last-rank pawn moves open {@link PromotionModal} instead of auto-queuing queen.
  * Timeout / End flushes a pending promotion as queen (see SUBMIT_TURN).
+ *
+ * **Universal fog intent (all of apps/starchess):** legal dests always use
+ * {@link occupancyForViewerMoves} whenever {@link playerFogOccultsMoves} —
+ * same vision policy as the board veil. Unseen enemies do not block rays;
+ * resolve owns path collisions. Not tutorial-only.
  * // SPEC: _spec/packages/starchess-core/sc-moves.puml
  * // SPEC: _spec/apps/starchess/match-store.puml
  */
@@ -17,8 +22,12 @@ import {
   type StarChessColor,
 } from "@chess-coach/starchess-core";
 
+import { playerFogOccultsMoves } from "~/app/intentOverlayPolicy";
 import { useMatchStore } from "~/app/MatchStoreContext";
 import { canSubmit, displayedSnapshot } from "~/app/selectors";
+import { occupancyForViewerMoves } from "~/presentation/board/occupancyForViewerMoves";
+import { useBoardVision } from "~/presentation/hooks/useIntentOverlays";
+import type { VisionMode } from "~/types/board";
 import type { PromotionPiece } from "~/types/chess";
 
 /**
@@ -46,13 +55,60 @@ export const gasStackPromotes = (
   return land === (color === "w" ? 8 : 1);
 };
 
-export const useBoardInput = () => {
+/**
+ * Classical mid-step already queued (C from→mid) + gas on the same vector would
+ * F-step from mid onto the last rank — parks a marine with no picker.
+ * Caller should peel C, queue B, and open {@link PromotionModal}.
+ */
+export const moveThenGasPromotes = (
+  snap: ScFenSnapshot,
+  color: StarChessColor,
+  from: Square,
+  gasTo: Square,
+): { seq: number } | null => {
+  const c = (snap.queue?.actions ?? []).find(
+    (a) =>
+      a.timing === "C" &&
+      a.kind === "classical" &&
+      a.color === color &&
+      a.from === from &&
+      a.to === gasTo,
+  );
+  if (!c || c.timing !== "C") return null;
+  const dir = color === "w" ? 1 : -1;
+  const land = Number(gasTo[1]) + dir;
+  if (land !== (color === "w" ? 8 : 1)) return null;
+  return { seq: c.seq };
+};
+
+/**
+ * @param visionOverrides — same optional fog / visionMode overrides as
+ *   {@link useBoardVision} / LiveStarChessBoard (maps gallery fog-off, etc.).
+ *   Live play defaults: fog on + player → occulted occupancy always.
+ */
+export const useBoardInput = (
+  visionOverrides?: () => { fog?: boolean; visionMode?: VisionMode },
+) => {
   const store = useMatchStore();
+  const vision = useBoardVision(store, visionOverrides);
   const pendingPromotion = createMemo(() => store.state().pendingPromotion);
 
   const clearSelection = () => {
     store.dispatch({ type: "SELECT_SQUARE", square: null });
     store.dispatch({ type: "SET_LEGAL_DESTS", dests: [] });
+  };
+
+  const moveMap = (state: ReturnType<typeof store.state>) => {
+    const raw = placementToMap(displayedSnapshot(state).placement);
+    const sieged = state.siegedRooks;
+    return occupancyForViewerMoves(
+      raw,
+      state.viewer,
+      playerFogOccultsMoves(vision()),
+      {
+        rookModeFor: (sq) => (sieged.has(sq) ? "siege" : "tank"),
+      },
+    );
   };
 
   const queueClassical = (
@@ -83,13 +139,12 @@ export const useBoardInput = () => {
 
   const cancelPromotion = () => {
     store.dispatch({ type: "CLEAR_PENDING_PROMOTION" });
-    // Keep selection / dests so the player can re-pick or cancel the move.
   };
 
   const onSquareClick = (square: Square) => {
     const state = store.state();
     if (!canSubmit(state)) return;
-    if (state.pendingPromotion) return; // modal owns the click until resolved/cancelled
+    if (state.pendingPromotion) return;
 
     if (state.targeting?.kind === "spawn") {
       const color = state.targeting.color;
@@ -135,7 +190,7 @@ export const useBoardInput = () => {
 
     if (state.targeting?.kind === "bishopSnipe") {
       const t = state.targeting;
-      if (square !== t.to) return; // stay armed on miss-clicks
+      if (square !== t.to) return;
       const timing = state.liveSnapshot.queue?.actions.some(
         (a) => a.color === t.color && a.timing === "C",
       )
@@ -163,7 +218,7 @@ export const useBoardInput = () => {
 
     if (state.targeting?.kind === "queenWarp") {
       const t = state.targeting;
-      if (!t.targets.includes(square)) return; // stay armed on miss-clicks
+      if (!t.targets.includes(square)) return;
       const timing = state.liveSnapshot.queue?.actions.some(
         (a) => a.color === t.color && a.timing === "C",
       )
@@ -190,8 +245,9 @@ export const useBoardInput = () => {
     }
 
     const selected = state.selected;
-    const map = placementToMap(displayedSnapshot(state).placement);
-    const piece = map.get(square);
+    const fullMap = placementToMap(displayedSnapshot(state).placement);
+    const map = moveMap(state);
+    const piece = fullMap.get(square);
 
     if (!selected) {
       if (!piece || piece.color !== state.viewer) {
@@ -230,7 +286,7 @@ export const useBoardInput = () => {
       return;
     }
 
-    const mover = map.get(selected);
+    const mover = fullMap.get(selected);
     if (!mover) return;
     const move = scMovesFrom(map, selected, mover.color, {
       siegedRooks: [...state.siegedRooks],

@@ -3,6 +3,12 @@ import type { PieceSymbol, Square } from "chess.js";
 
 export type BoardVariant = "eclipse" | "butter" | "vermeer";
 
+/** Classic wood board (tutorial Chess mode) — no SC terrain. */
+export type BoardSkin = BoardVariant | "classic";
+
+/** Piece SVG folder under `public/pieces/`. */
+export type PieceSet = "nerd" | "cburnett";
+
 /** Alias used by older demo fixtures. */
 export type NerdBoardVariant = BoardVariant;
 

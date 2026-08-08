@@ -1,19 +1,16 @@
+/* CoachScreen Sidebar footprint — width token only; Screen owns the row.
+   When nested in a sideboard that already sizes to --sidebar-width, fill it. */
 .sidebar {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
-  padding: 10px 8px;
-  width: var(--sidebar-width);
-  min-width: 5.5rem;
+  gap: 0.4rem;
+  padding: 0.25rem 0.25rem 0.25rem 1rem;
+  width: 100%;
+  max-width: var(--sidebar-width);
   flex-shrink: 0;
   margin-top: 0;
   box-sizing: border-box;
-  /* Opaque so labels stay readable on sky AND Storybook light canvas */
-  background: #0e151c;
-  border: 1px solid #3a4550;
-  border-radius: 0.35rem;
-  box-shadow: 0 4px 16px rgb(0 0 0 / 0.45);
 }
 
 @media (max-width: 719px) {
@@ -37,14 +34,13 @@
   line-height: 1.1;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #f0f3f6;
+  color: var(--text-color, #f0f3f6);
   text-align: center;
 }
 
 .divider {
   width: 60%;
-  margin: 0;
-  border-color: #3a4550;
+  margin: 0.15rem 0;
 }
 
 .visionGroup {

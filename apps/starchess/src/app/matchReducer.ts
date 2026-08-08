@@ -549,6 +549,22 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
         },
       };
     }
+    case "TIMELINE_SOFT_DONE": {
+      // Mid-wave tutorial pause — keep board overlays, allow next REVIEW_PLAY.
+      return {
+        ...state,
+        timeline: {
+          ...state.timeline,
+          active: false,
+          cues: [],
+          playingIds: [],
+          attackDying: {},
+          hiddenSquares: new Set(),
+          moveProgress: {},
+          moveLeg: {},
+        },
+      };
+    }
     case "TIMELINE_DONE": {
       // Jump / mine-chase trails keep fading after hull cues end — preserve across reset.
       const lingeringJumpTrails = [...state.timeline.jumpTrails];

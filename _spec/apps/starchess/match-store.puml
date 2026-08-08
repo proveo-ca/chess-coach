@@ -49,6 +49,8 @@ note bottom
   Authoritative live snap is ""liveSnapshot""; timeline patches
   presentation until ""TIMELINE_DONE"". See animation-pipeline.md.
   Classical legality seam: ""_spec/packages/starchess-core/sc-moves.puml"".
+  **Player fog intent:** ""useBoardInput"" occults unseen enemies for
+  legal dests app-wide (live + tutorial) — resolve owns collisions.
   Turn lifecycle: ""turn-queue-sequence.puml"".
 end note
 @enduml

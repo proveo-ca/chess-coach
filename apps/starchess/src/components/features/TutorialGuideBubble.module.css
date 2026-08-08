@@ -1,0 +1,85 @@
+/* Float ChatBubble over board ranks 7–8 without shifting Screen header. */
+
+:global([data-region="top"]:has([data-testid="tutorial-guide-bubble"])) {
+  overflow: visible;
+  z-index: 50;
+}
+
+.dock {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 0.25rem;
+  width: min(22rem, 92%);
+  max-height: calc(var(--board-size) / 4);
+  pointer-events: auto;
+}
+
+.bubble {
+  flex: 1 1 auto;
+  margin: 0;
+  max-width: none;
+  max-height: calc(var(--board-size) / 4);
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 0.55rem 0.85rem;
+  font-size: 0.88rem;
+  text-align: left;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.45rem;
+}
+
+.message {
+  white-space: pre-line;
+}
+
+.action {
+  appearance: none;
+  margin: 0;
+  padding: 0.3rem 0.65rem;
+  border: 1px solid var(--sc-guide-green, #3ecf8e);
+  border-radius: 0.25rem;
+  background: color-mix(in srgb, var(--sc-guide-green, #3ecf8e) 18%, transparent);
+  color: #e8ffb8;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+}
+
+.action:hover {
+  background: color-mix(in srgb, var(--sc-guide-green, #3ecf8e) 32%, transparent);
+}
+
+.action:focus-visible {
+  outline: 2px solid var(--sc-guide-green, #3ecf8e);
+  outline-offset: 2px;
+}
+
+.dismiss {
+  flex: 0 0 auto;
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: color-mix(in srgb, var(--text-muted, #c5d0da) 80%, transparent);
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0.15rem 0.2rem;
+  margin-top: 0.15rem;
+}
+
+.dismiss:hover {
+  color: var(--sc-menu-neon, #7dff6a);
+}

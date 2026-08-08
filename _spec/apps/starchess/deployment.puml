@@ -34,10 +34,13 @@ N ..> W : location.assign
 note bottom of V
   SPA routes (Router base ``/starchess``):
   ``/`` menu · ``/single?map=&team=`` live match ·
-  ``/review`` list · ``/review/:id`` DualNav replay.
+  ``/review`` list · ``/review/:id`` DualNav replay ·
+  ``/tutorial`` · ``/tutorial/:section`` · ``/tutorial/:section/:story``
+  (``TUTORIAL_SCRIPT`` ids — e.g. ``/tutorial/fog/king``).
   Adjutant plays the **opposite** of ``team`` (not always Black).
   ``/single`` HUD: ResourceBar (top) · TurnBarSidebar (rail) · GasDeploy (footer).
   gameOver → save ``starchess_match_history`` → replace-navigate ``/review/:id``.
+  Tutorial: CoachScreen-shaped (Kerrigan header) · HOME-only sidebar · story demos.
 end note
 
 note bottom of N

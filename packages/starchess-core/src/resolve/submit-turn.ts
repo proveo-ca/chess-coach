@@ -603,6 +603,20 @@ export const endScTurn = (
   // 3) Classical attack → move (+ mine triggers).
   // Rewrite C that shares from with a B relocate so UI pre-B intents still land.
   const actionsAfterB = rewriteClassicalAfterB(actions);
+  {
+    const boardAfterB = placementToMap(placement);
+    for (const a of actionsAfterB) {
+      if (a.timing !== "C") continue;
+      const piece = boardAfterB.get(a.from);
+      if (!piece || piece.type !== "p" || piece.color !== a.color) continue;
+      const lastRank = a.color === "w" ? 8 : 1;
+      if (Number(a.to[1]) === lastRank && !a.promotion) {
+        throw new Error(
+          `endScTurn: classical last-rank ${a.from}→${a.to} needs promotion`,
+        );
+      }
+    }
+  }
   const white = classicalFor(actionsAfterB, "w");
   const black = classicalFor(actionsAfterB, "b");
   const classical = resolveTurn({

@@ -30,14 +30,22 @@
 }
 
 .common-btn--primary {
-  background-color: var(--primary-color);
-  color: var(--surface-color);
-  border-color: transparent;
-  font-weight: 600;
+  /* StarChess CTA — neon green, not Coach blue primary. */
+  --sc-menu-neon: #7cff4a;
+  border-radius: 0;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 700;
+  border: 1px solid color-mix(in srgb, var(--sc-menu-neon) 55%, transparent);
+  background: color-mix(in srgb, var(--sc-menu-neon) 22%, #041208);
+  color: var(--sc-menu-neon);
+  box-shadow: 0 0 14px color-mix(in srgb, var(--sc-menu-neon) 22%, transparent);
 }
 .common-btn--primary:hover:not(:disabled) {
-  background-color: var(--primary-hover);
-  color: var(--surface-color);
+  background: color-mix(in srgb, var(--sc-menu-neon) 34%, #041208);
+  color: #e8ffb8;
+  border-color: color-mix(in srgb, var(--sc-menu-neon) 70%, transparent);
+  filter: brightness(1.05);
 }
 
 /* Brood War menu neon — Start / Stay / Leave */

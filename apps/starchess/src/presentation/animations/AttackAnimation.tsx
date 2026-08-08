@@ -15,7 +15,6 @@ import {
   squareBoxStyle,
 } from "~/presentation/animations/attackAnim";
 import styles from "~/presentation/animations/AttackAnimation.module.css";
-import aura from "~/presentation/animations/specialUsedAura.module.css";
 import {
   BISHOP_CHARON,
   charonImpactStyle,
@@ -73,7 +72,7 @@ const attackNode = (
   const armed = specialUsed || charon;
   const faceClass = () => ({
     [styles.pieceFace]: true,
-    [aura.specialUsed]: specialUsed,
+    ["sc-special-used"]: specialUsed,
   });
   switch (cue.piece) {
     case "p":

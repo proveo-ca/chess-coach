@@ -122,7 +122,7 @@ export const Sidebar: Component<SidebarProps> = (props) => {
         </IconButton>
       </div>
 
-      <Show when={reviewing()}>
+      <Show when={reviewing() && !capabilities().homeOnly}>
         <div
           class={styles.visionGroup}
           role="radiogroup"
@@ -144,7 +144,7 @@ export const Sidebar: Component<SidebarProps> = (props) => {
         </div>
       </Show>
 
-      <Show when={capabilities().flipBoard}>
+      <Show when={capabilities().flipBoard && !capabilities().homeOnly}>
         <Divider class={styles.divider} />
         <div class={styles.tool}>
           <span class={styles.toolLabel}>Flip</span>

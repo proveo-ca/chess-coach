@@ -1,6 +1,8 @@
 /**
- * Experimental vertical TurnBar — board side rail (live + observer DualNav).
+ * Experimental vertical TurnBar — board side rail (live + review chips).
+ * Review DualNav lives in top {@link ReviewTurnNav}; pass `hideDualNav`.
  * Does not replace horizontal `TurnBar`.
+ * // SPEC: _spec/apps/starchess/screens.puml
  */
 import type { ScAction } from "@chess-coach/starchess-core";
 import {
@@ -37,10 +39,12 @@ import type { ReviewTurnPhase } from "~/types/review";
 export type TurnBarSidebarReviewProps = {
   turn: number;
   phase: ReviewTurnPhase;
-  onBack: () => void;
-  onForward: () => void;
+  onBack?: () => void;
+  onForward?: () => void;
   backDisabled?: boolean;
   forwardDisabled?: boolean;
+  /** Hide DualNav (tutorial phase steppers own advance). */
+  hideDualNav?: boolean;
 };
 
 export type TurnBarSidebarProps = {
@@ -49,8 +53,8 @@ export type TurnBarSidebarProps = {
   autoStart?: boolean;
   resolveOnEnd?: boolean;
   /**
-   * Observer DualNav review — DualNav sits at the top of the rail; live End /
-   * countdown / queue are omitted.
+   * Observer review — Turn/Phase chips on the rail. DualNav is owned by top
+   * {@link ReviewTurnNav}; pass `hideDualNav: true` (default for new hosts).
    */
   review?: TurnBarSidebarReviewProps;
 };
@@ -209,16 +213,18 @@ export const TurnBarSidebar: Component<TurnBarSidebarProps> = (props) => {
     >
       <Show when={props.review}>
         {(r) => (
-          <div class={styles.dualNav} data-testid="sidebar-dual-nav">
-            <DualNavButton
-              inverted
-              vertical
-              onBack={() => r().onBack()}
-              onForward={() => r().onForward()}
-              backDisabled={r().backDisabled}
-              forwardDisabled={r().forwardDisabled}
-            />
-          </div>
+          <Show when={!r().hideDualNav}>
+            <div class={styles.dualNav} data-testid="sidebar-dual-nav">
+              <DualNavButton
+                inverted
+                vertical
+                onBack={() => r().onBack?.()}
+                onForward={() => r().onForward?.()}
+                backDisabled={r().backDisabled}
+                forwardDisabled={r().forwardDisabled}
+              />
+            </div>
+          </Show>
         )}
       </Show>
 
