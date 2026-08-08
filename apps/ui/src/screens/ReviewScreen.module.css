@@ -1,26 +1,43 @@
-.topNav {
-  display: flex;
-  justify-content: flex-start;
-  width: 100%;
-  margin-bottom: 0.35rem;
-}
-
-.topNavRow {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  gap: 0.75rem;
-  margin-bottom: 0.5rem;
-}
-
 .shareMsg {
   min-height: 1.25rem;
-  margin-top: 0.5rem;
+  margin-top: 0.15rem;
 }
 
 .listHint {
   color: rgba(255, 255, 255, 0.6);
   padding: 2rem;
   text-align: center;
+}
+
+/* MobileBanner centre — kill Label.title’s bottom margin so Back / title / menu
+   share one vertical centerline. */
+.bannerMatchup {
+  margin: 0 !important;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.2 !important;
+}
+
+/* SPEC: _spec/apps/ui/responsiveness/rules.md — MoveList in top (like Analysis FEN). */
+@media (max-width: 719px) {
+  :global([data-region="top"]:has([data-testid="review-matchup"]) [data-testid="mobile-banner"]) {
+    margin-bottom: 0;
+  }
+
+  .moveListSlot {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-self: stretch;
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+  }
 }

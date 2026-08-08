@@ -10,6 +10,7 @@ import { For, Show, type Component } from "solid-js";
 import { CoachAvatar } from "~/components/atoms/CoachAvatar";
 import type { CoachIdentity } from "~/types/coach";
 import styles from "~/screens/menuSky/ChessMenuMockup.module.css";
+import { playerName } from "~/store/settingsStore";
 
 export type ChessMenuMockupProps = {
   /** Frosted Coach panel over the sky — clears toward outer space. */
@@ -134,7 +135,7 @@ export const ChessMenuMockup: Component<ChessMenuMockupProps> = (props) => {
           <div class={styles.identityRow}>
             <span class={styles.identityLabel}>Name:</span>
             <div class={styles.nameField}>
-              <span class={styles.input}>Alex</span>
+              <span class={styles.input}>{playerName()}</span>
               <span class={styles.diceBtn} aria-hidden="true">
                 🎲
               </span>

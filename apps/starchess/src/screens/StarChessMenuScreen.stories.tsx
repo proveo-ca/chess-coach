@@ -139,7 +139,7 @@ export const Network: Story = {
           left: "16%",
           top: "42%",
           display: "flex",
-          flexDirection: "column",
+          "flex-direction": "column",
           gap: "0.75rem",
         }}
       >

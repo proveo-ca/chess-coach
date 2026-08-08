@@ -25,7 +25,6 @@ const headlineFor = (result: StarChessMatchResult | null): string => {
 export const MatchResultModal: Component<MatchResultModalProps> = (props) => (
   <NeonModal
     open={props.open}
-    title="Match Over"
     position="fixed"
     size="md"
     dismissible={false}

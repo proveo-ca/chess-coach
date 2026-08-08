@@ -5,7 +5,7 @@
  * // SPEC: _spec/apps/starchess/deployment.puml
  * // SPEC: _spec/apps/starchess/menu-flow.puml
  */
-import { useNavigate, useParams, type RouteSectionProps } from "@solidjs/router";
+import { useNavigate, useParams } from "@solidjs/router";
 import {
   Match,
   Show,
@@ -205,7 +205,7 @@ const FogSection: Component<{
   </Show>
 );
 
-export const StarChessTutorialScreen: Component<RouteSectionProps> = () => {
+export const StarChessTutorialScreen: Component = () => {
   const params = useParams<{ section?: string; story?: string }>();
   const navigate = useNavigate();
   const section = createMemo(() => parseTutorialSection(params.section));

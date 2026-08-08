@@ -4,8 +4,10 @@ import type { Component } from "solid-js";
 
 import { OpponentCaptures, PlayerCaptures } from "~/components/atoms/CapturedPieces";
 import { EngineDepth } from "~/components/atoms/EngineDepth";
+import { GameHistoryFilters } from "~/components/atoms/GameHistoryFilters";
 import { GameHistoryList } from "~/components/atoms/GameHistoryList";
 import { MatrixOverlay } from "~/components/atoms/MatrixOverlay";
+import { MobileBanner } from "~/components/atoms/MobileBanner";
 import { BoardControls } from "~/components/features/BoardControls";
 import { ChessBoard } from "~/components/features/ChessBoard";
 import { MobileDrawer, openMobileDrawer } from "~/components/features/MobileDrawer";
@@ -14,11 +16,11 @@ import { MoveList } from "~/components/features/MoveList";
 import { Sidebar } from "~/components/features/Sidebar";
 import { Button } from "~/components/primitives/Button";
 import { ChevronNav } from "~/components/primitives/ChevronNav";
-import { GameHistoryFilters } from "~/components/atoms/GameHistoryFilters";
 import { IconButton } from "~/components/primitives/IconButton";
-import { HamburgerIcon } from "~/components/primitives/icons";
+import { ShareIcon } from "~/components/primitives/icons";
 import { Label } from "~/components/primitives/Label";
 import { Screen } from "~/components/primitives/Screen";
+import { ScreenBackNav } from "~/components/primitives/ScreenBackNav";
 import { resolveAnnotations } from "~/engine/moveAnnotations";
 import { useBlunderArrow } from "~/hooks/useBlunderArrow";
 import { useGameAnalysis } from "~/hooks/useGameAnalysis";
@@ -48,7 +50,6 @@ import {
   setPlayerIdentity,
 } from "~/store/settingsStore";
 import { formatGameLabel, formatReviewMatchup } from "~/utils/gameTitle";
-import { screenBackTarget } from "~/utils/navHistory";
 
 import styles from "~/screens/ReviewScreen.module.css";
 
@@ -59,22 +60,6 @@ export const ReviewScreen: Component = () => {
   const { importError, importing } = useSharedGameImport();
   const { share, shareMsg } = useShareGame();
 
-  const goBack = () => {
-    const target = screenBackTarget();
-    if (typeof target === "number") navigate(target);
-    else navigate(target);
-  };
-
-  const backNav = () => (
-    <ChevronNav
-      direction="back"
-      onClick={goBack}
-      aria-label="Back"
-      data-testid="review-back"
-    >
-      Back
-    </ChevronNav>
-  );
   let prevPlayerIdentity = playerIdentity();
   let prevOpponentIdentity = opponentIdentity();
   let prevActivePlayerColor = activePlayerColor();
@@ -195,6 +180,21 @@ export const ReviewScreen: Component = () => {
     setActivePlayerColor(prevActivePlayerColor);
   });
 
+  const historyFilters = () => (
+    <GameHistoryFilters
+      colorFilter={filters.colorFilter()}
+      setColorFilter={filters.setColorFilter}
+      firstMoveFilter={filters.firstMoveFilter()}
+      setFirstMoveFilter={filters.setFirstMoveFilter}
+      availableFirstMoves={filters.availableFirstMoves()}
+      totalPages={filters.totalPages()}
+      activePage={filters.activePage()}
+      currentDateLabel={filters.currentDateLabel()}
+      goToPrev={filters.goToPrev}
+      goToNext={filters.goToNext}
+    />
+  );
+
   return (
     <Screen highlight={reviewAnalysisMode()}>
       <Show
@@ -202,19 +202,11 @@ export const ReviewScreen: Component = () => {
         fallback={
           <>
             <Screen.SidebarInset>
-              <div class={styles.topNav}>{backNav()}</div>
-              <GameHistoryFilters
-                colorFilter={filters.colorFilter()}
-                setColorFilter={filters.setColorFilter}
-                firstMoveFilter={filters.firstMoveFilter()}
-                setFirstMoveFilter={filters.setFirstMoveFilter}
-                availableFirstMoves={filters.availableFirstMoves()}
-                totalPages={filters.totalPages()}
-                activePage={filters.activePage()}
-                currentDateLabel={filters.currentDateLabel()}
-                goToPrev={filters.goToPrev}
-                goToNext={filters.goToNext}
-              />
+              <div class="desktop-only">
+                <ScreenBackNav data-testid="review-back">{historyFilters()}</ScreenBackNav>
+              </div>
+              <MobileBanner title="Review Games" onMenu={openMobileDrawer} />
+              <div class="mobile-only">{historyFilters()}</div>
             </Screen.SidebarInset>
             <Screen.BoardArea>
               <GameHistoryList games={filters.visibleGames()} activeId={params.id} />
@@ -244,7 +236,7 @@ export const ReviewScreen: Component = () => {
           const colorLabel = g().playerColor === "w" ? "White" : "Black";
           const resultColor = g().result === "ongoing" ? undefined : g().result;
 
-          const shareNav = () => (
+          const shareNav = (
             <ChevronNav
               direction="forward"
               onClick={() => void share(g())}
@@ -255,51 +247,65 @@ export const ReviewScreen: Component = () => {
             </ChevronNav>
           );
 
+          const shareItem = (
+            <MobileSidebar.Item>
+              <IconButton
+                onClick={() => void share(g())}
+                aria-label="Share"
+                data-testid="review-share"
+              >
+                <ShareIcon />
+              </IconButton>
+            </MobileSidebar.Item>
+          );
+
           return (
             <>
-              <Screen.SidebarInset class="desktop-only">
-                <div class={styles.topNavRow}>
-                  {backNav()}
-                  {shareNav()}
+              <Screen.SidebarInset>
+                <div class="desktop-only">
+                  <ScreenBackNav data-testid="review-back" trailing={shareNav}>
+                    <Label variant="title" color={resultColor}>
+                      {resultLabel} ({colorLabel})
+                    </Label>
+                    <Label variant="title">{formatGameLabel(g())}</Label>
+                    <div class={styles.shareMsg}>
+                      <Show when={shareMsg()}>
+                        <Label variant="caption">{shareMsg()}</Label>
+                      </Show>
+                    </div>
+                  </ScreenBackNav>
                 </div>
-                <Label variant="title" color={resultColor}>
-                  {resultLabel} ({colorLabel})
-                </Label>
-                <Label variant="title">{formatGameLabel(g())}</Label>
-                <div class={styles.shareMsg}>
-                  <Show when={shareMsg()}>
+                <MobileBanner
+                  title={
+                    <Label
+                      variant="title"
+                      color={resultColor}
+                      class={styles.bannerMatchup}
+                      data-testid="review-matchup"
+                    >
+                      {formatReviewMatchup(g())}
+                    </Label>
+                  }
+                  onMenu={openMobileDrawer}
+                />
+                <Show when={shareMsg()}>
+                  <div class="mobile-only">
                     <Label variant="caption">{shareMsg()}</Label>
-                  </Show>
+                  </div>
+                </Show>
+                <div class={styles.moveListSlot}>
+                  <MoveList
+                    game={g()}
+                    activePly={analysisBranchPly()}
+                    analysis={gameAnalysis()}
+                    floatingCapable
+                  />
                 </div>
+                <OpponentCaptures />
               </Screen.SidebarInset>
 
               <Screen.BoardArea>
                 <Screen.BoardColumn>
-                  <MobileSidebar toolbar>
-                    <MobileSidebar.Item drawer>
-                      <IconButton onClick={openMobileDrawer} aria-label="Open menu">
-                        <HamburgerIcon />
-                      </IconButton>
-                    </MobileSidebar.Item>
-                    <MobileSidebar.Item>{backNav()}</MobileSidebar.Item>
-                    <MobileSidebar.Main>
-                      <MobileSidebar.MatchupLabel data-testid="review-matchup">
-                        <Label variant="title" color={resultColor}>
-                          {formatReviewMatchup(g())}
-                        </Label>
-                      </MobileSidebar.MatchupLabel>
-                    </MobileSidebar.Main>
-                    <MobileSidebar.Item nav>
-                      <MobileSidebar.NavActions>{shareNav()}</MobileSidebar.NavActions>
-                    </MobileSidebar.Item>
-                  </MobileSidebar>
-                  <Show when={shareMsg()}>
-                    <div class="mobile-only">
-                      <Label variant="caption">{shareMsg()}</Label>
-                    </div>
-                  </Show>
-                  <BoardControls center={<EngineDepth />} omitDrawer />
-                  <OpponentCaptures />
                   <ChessBoard
                     gameOverActions={
                       <>
@@ -316,18 +322,13 @@ export const ReviewScreen: Component = () => {
                       </>
                     }
                   />
-                  <PlayerCaptures />
                 </Screen.BoardColumn>
                 <Sidebar />
               </Screen.BoardArea>
 
               <Screen.Footer>
-                <MoveList
-                  game={g()}
-                  activePly={analysisBranchPly()}
-                  analysis={gameAnalysis()}
-                  floatingCapable
-                />
+                <PlayerCaptures />
+                <BoardControls center={<EngineDepth />} omitDrawer leading={shareItem} />
               </Screen.Footer>
             </>
           );

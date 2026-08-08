@@ -67,25 +67,33 @@ Allowed exceptions (local scroll only):
 
 ```css
 grid-template-rows: minmax(0, auto) auto minmax(0, auto);
+/* desktop board screens (≥720, has [data-board-column]):
+   +1rem for opponent CapturedPieces under the title stack */
+grid-template-rows: calc(var(--avatar-height) + 1rem) auto minmax(0, auto);
 /* when data-footer-float="true": */
 grid-template-rows: minmax(0, auto) auto 0fr;
-/* mobile (max-width: 719px) — middle claims leftover height: */
+/* desktop board + footer-float (CoachPanel): */
+grid-template-rows: calc(var(--avatar-height) + 1rem) auto 0fr;
+/* mobile board screens — board-only middle; leftover hugs via top/bottom: */
+grid-template-rows: minmax(min-content, 1fr) auto minmax(min-content, 1fr);
+/* mobile board + float: */
+grid-template-rows: minmax(min-content, 1fr) auto 0fr;
+/* mobile list / no board column — middle claims leftover for scroll: */
 grid-template-rows: minmax(0, auto) 1fr minmax(0, auto);
-/* mobile + float: */
-grid-template-rows: minmax(0, auto) 1fr 0fr;
 ```
 
-1. **Middle first** — board/sideboard stay content-sized (`--board-size`); never stolen from for chrome. On mobile the **middle row** may be `1fr` so leftover viewport height centers the board stack (bar + board as one unit) instead of packing under the top — not a priority demotion. Regions pin to tracks via `grid-row` (`top`→1, `middle`→2, `bottom`→3) so a `display:none` top inset (Review mobile) does not auto-place the board into row 1.
-2. **Top second** — `minmax(0, auto)` may shrink/clip; stays flush to the top of the viewport.
-3. **Bottom last** — collapses when CoachPanel / MoveList activate §4 float; when docked on mobile it sits under the stretched middle (footer near the bottom of the viewport).
+1. **Middle first** — **ChessBoard (+ sideboard) only**; never stolen from for chrome. Captures, tool bars, FEN, banners, and panels live in top / bottom. On mobile board screens leftover height splits into **top** (`flex-end`) and **bottom** (`flex-start`) so chrome hugs the board; `min-content` minima keep chrome from crushing. List screens without `[data-board-column]` keep middle as `1fr` for scroll. Regions pin to tracks via `grid-row` (`top`→1, `middle`→2, `bottom`→3) so a `display:none` top inset (Review mobile) does not auto-place the board into row 1.
+2. **Top second** — Back / avatar / MobileBanner / tool bars / opponent captures; on mobile packs to the **end** (near the board). Captures are a board-width strip (`max-width: var(--board-size)`), **top-left** aligned (`OpponentCaptures`).
+3. **Bottom last** — player captures / CoachPanel / EngineDepth `BoardControls` bar; collapses on §4 float **only when the float source is in the footer** (CoachPanel). Review MoveList floats from the top without collapsing the footer. When docked on mobile packs to the **start** (near the board). Player captures share the same board-width strip, **bottom-right** aligned (`PlayerCaptures`) — desktop footer `align-items: center` must not shrink-wrap the strip or `flex-end` is a no-op.
 
 ---
 
 ## 3. Coach Avatar ↔ Chessboard overlap ≤ 50%
 
 At most **50% of the live CoachAvatar height** may sit below the Chessboard top
-edge (Coach mobile). Tall mobile stacks the avatar **above** the tool bar (no
-overlap). Short / §4 float keeps the compact avatar in the bar with
+edge (Coach mobile). Tall mobile keeps `MobileBanner` flush top and floats
+the hero avatar **over** the banner (`z-index`, negative margin) with the tool
+bar still below. Short / §4 float keeps the compact avatar in the bar with
 `centerOverflow`. E2E asserts the overlap cap on Coach across viewports.
 
 | Screen | Assert overlap |
@@ -134,12 +142,13 @@ dismiss    human move
 
 | Property | Rule |
 |---|---|
-| Form | Same `MoveList`, `.wrapper.floating` — horizontal strip of up to **3 turns** (`1. e4 e5` = one turn). Each player ply shows **SAN + cp Δ + coach emotion tags inline** (same annotations as the docked list). `data-testid=floating-move-list`. **Desktop only** (`min-width: 720px`, when `Sidebar` is shown): `left: calc(50% - var(--sidebar-width) / 2)` so the strip centers on the ChessBoard (same inset as Header/Footer / floating CoachPanel). Mobile stays viewport-centred (`left: 50%`). |
-| When | Float when `top + board-column content + MoveList budget` exceeds the viewport (≈ 1.5rem wrapper + optional ≈ 2.8rem page-nav when `turnCount > rowsPerPage` + `min(rowsPerPage, turnCount)` × ≈ 2.1rem, plus slack). Portrait phone **rowsPerPage = 6** (desktop ≥720 **3**). Desktop uses the same fit check — if a docked page would clip, float the 3-turn strip. |
+| Placement | **Top** Screen region (under MobileBanner / desktop titles), same chrome stack as Analysis FEN. Footer holds player captures + `BoardControls` (EngineDepth bar). Desktop board screens fix the top **grid track** to `calc(var(--avatar-height) + 1rem)` (parent `grid-template-rows`, not child max-height; +1rem for opponent CapturedPieces) so board Y stays aligned with Coach / Analysis; MoveList floats when it would exceed that track. |
+| Form | Same `MoveList`, `.wrapper.floating` — horizontal strip of up to **3 turns** (`1. e4 e5` = one turn). Each player ply shows **SAN + cp Δ + coach emotion tags inline** (same annotations as the docked list). `data-testid=floating-move-list`. **Mobile / dynamic:** just below MobileBanner. **Desktop:** just below the title stack (ScreenBackNav), hanging slightly under the fixed top track (`overflow: visible` while floating). `left: calc(50% - var(--sidebar-width) / 2)` when Sidebar is shown. |
+| When | Float when (a) `top (excluding MoveList) + board + MoveList budget + footer + shell padding` exceeds the viewport, **or** (b) on desktop, `top + MoveList budget` exceeds the fixed top track (`--avatar-height + 1rem`). Portrait phone **rowsPerPage = 6** (desktop ≥720 **3**). |
 | Scroll | Window follows the active ply as the player navigates history (centered when possible) |
 | Dismiss | × **or** playing a move (enters analysis / MatrixOverlay — `fenHistory` changes while `reviewAnalysisMode`) |
 | Reappear | After dismiss, **every history-nav** action (`currentIndex` change with unchanged `fenHistory`) shows the float again |
-| Shell flag | Same `data-footer-float` / `footerFloat` store (Review owns measurement when CoachPanel is absent) |
+| Shell flag | Same `data-footer-float` / `footerFloat` store (Review owns measurement when CoachPanel is absent). **Do not collapse** the bottom grid row when the float source is a top-region MoveList — BoardControls must stay visible. |
 
 ```
 top + board content + MoveList page budget > viewport
@@ -169,8 +178,8 @@ top + board content + MoveList page budget > viewport
 | `--desktop` / `DESKTOP_MQ` | `min-width: 720px` | Sidebar visible; fixed 480px board (prefer this token) |
 | `--mobile` / `MOBILE_MQ` | `max-width: 719px` | Exclusive complement of `--desktop` |
 | `--sm-up` | `min-width: 480px` | Slightly larger type / spacing |
-| `--tall-mobile` / `TALL_MOBILE_MQ` | mobile + `min-height: 640px` | Hero `CoachAvatar`; Analysis title toolbar; drawer floats top-left on non-toolbar bars |
-| `--short-mobile` / `SHORT_MOBILE_MQ` | mobile + `max-height: 639px` | Clumped gaps; Coach compact avatar; Analysis title toolbar hidden — menu in FenLoader leading (left of FEN); shared `--board-chrome-inline` L/R gutter |
+| `--tall-mobile` / `TALL_MOBILE_MQ` | mobile + `min-height: 640px` | Hero `CoachAvatar`; Analysis `MobileBanner` at top; drawer floats top-right on non-toolbar bars |
+| `--short-mobile` / `SHORT_MOBILE_MQ` | mobile + `max-height: 639px` | Clumped gaps; Coach compact avatar; Analysis `MobileBanner` stays at top; shared `--board-chrome-inline` L/R gutter |
 
 ---
 

@@ -69,32 +69,16 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Desktop: Story = {
-  globals: { viewport: { value: "desktop", isRotated: false } },
+/** List view. Switch Desktop / Mobile / Dynamic via the viewport toolbar. */
+export const Default: Story = {
   render: () => {
     seedHistory();
     return <ReviewScreen />;
   },
 };
 
-export const Mobile: Story = {
-  globals: { viewport: { value: "mobile", isRotated: false } },
-  render: () => {
-    seedHistory();
-    return <ReviewScreen />;
-  },
-};
-
-export const Dynamic: Story = {
-  globals: { viewport: { value: "dynamic", isRotated: false } },
-  render: () => {
-    seedHistory();
-    return <ReviewScreen />;
-  },
-};
-
+/** Game `/:id` board. Switch Desktop / Mobile / Dynamic via the viewport toolbar. */
 export const GameDetail: Story = {
-  globals: { viewport: { value: "desktop", isRotated: false } },
   parameters: { route: `/review/${reviewId}` },
   render: () => {
     seedHistory();

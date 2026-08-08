@@ -122,24 +122,32 @@ function renderPieces(pieces: string[]) {
   });
 }
 
-/** Opponent's captured pieces — top left of the board */
+/** Opponent's captured pieces — top-left (opposes the top/far side).
+ *  Used on Coach · Analysis · Review detail · LAN (Screen top region). */
 export const OpponentCaptures: Component = () => {
   const stats = useCaptureStats();
 
   return (
-    <div class={clsx(styles.captures, styles["captures--left"])}>
+    <div
+      class={clsx(styles.captures, styles["captures--left"])}
+      data-testid="opponent-captures"
+    >
       {renderPieces(stats().aiCaptured)}
       {stats().aiAdvantage > 0 && <span class={styles.advantage}>+{stats().aiAdvantage}</span>}
     </div>
   );
 };
 
-/** Player's captured pieces — bottom right of the board */
+/** Player's captured pieces — bottom-right (opposes the near side).
+ *  Used on Coach · Analysis · Review detail · LAN (Screen footer). */
 export const PlayerCaptures: Component = () => {
   const stats = useCaptureStats();
 
   return (
-    <div class={clsx(styles.captures, styles["captures--right"])}>
+    <div
+      class={clsx(styles.captures, styles["captures--right"])}
+      data-testid="player-captures"
+    >
       {stats().humanAdvantage > 0 && (
         <span class={styles.advantage}>+{stats().humanAdvantage}</span>
       )}

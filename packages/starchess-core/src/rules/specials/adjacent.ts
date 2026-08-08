@@ -44,7 +44,7 @@ export const spawnKingAnchor = (
   const c = (snap.queue?.actions ?? []).find(
     (a) => a.timing === "C" && a.color === color,
   );
-  if (!c || c.from !== king) return { king, occupied };
+  if (!c || c.timing !== "C" || c.from !== king) return { king, occupied };
 
   occupied.delete(c.from);
   occupied.add(c.to);

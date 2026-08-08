@@ -29,6 +29,10 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const TutorialStages: Story = {
+  args: {
+    items: [...TUTORIAL_STAGES],
+    current: "fog",
+  },
   render: () => {
     const [current, setCurrent] = createSignal<(typeof TUTORIAL_STAGES)[number]["id"]>(
       "fog",

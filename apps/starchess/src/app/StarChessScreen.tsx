@@ -25,8 +25,11 @@ import { useMatchStore } from "~/app/MatchStoreContext";
 import { displayedSnapshot, outcomeLabel } from "~/app/selectors";
 import styles from "~/app/StarChessScreen.module.css";
 import { CoachAvatar } from "~/components/atoms/CoachAvatar";
+import { ExitGameConfirm } from "~/components/features/ExitGameConfirm";
+import { Label } from "~/components/primitives/Label";
 import { PromotionModal } from "~/components/primitives/PromotionModal";
 import { Screen } from "~/components/primitives/Screen";
+import { ScreenBackNav } from "~/components/primitives/ScreenBackNav";
 import { squareBoxStyle, findBoardGrid } from "~/presentation/animations/boardGeom";
 import { LiveStarChessBoard } from "~/presentation/board/LiveStarChessBoard";
 import { moveThenGasPromotes } from "~/presentation/board/useBoardInput";
@@ -73,6 +76,11 @@ export type StarChessScreenProps = {
   autoQueueOpponent?: (snap: ScFenSnapshot) => AutoQueueOpponentResult;
   /** Side-rail Home — return to StarChess menu (SPA) instead of leaving the app. */
   onExitToMenu?: () => void;
+  /**
+   * Live match title above ResourceBar (e.g. ``Game vs Adjutant (Script)``),
+   * same Label stack as Review detail matchup.
+   */
+  matchTitle?: string;
   /**
    * HUD variation: `"sidebar"` moves turn chrome into `BoardSideRail`.
    * Default `"bar"` keeps `TurnBar`
@@ -125,7 +133,27 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
   const [spawnUnit, setSpawnUnit] = createSignal<SpawnPiece | null>(null);
   const [spawnPhase, setSpawnPhase] = createSignal<"idle" | "modal" | "pick">("idle");
   const [overlayBox, setOverlayBox] = createSignal<OverlayBox | null>(null);
+  const [exitOpen, setExitOpen] = createSignal(false);
   let boardHost: HTMLDivElement | undefined;
+
+  const liveMatch = () => {
+    const phase = store.state().phase;
+    return phase === "planning" || phase === "targeting" || phase === "resolving";
+  };
+
+  const requestLeave = () => {
+    if (!props.onExitToMenu) return;
+    if (liveMatch()) {
+      setExitOpen(true);
+      return;
+    }
+    props.onExitToMenu();
+  };
+
+  const confirmLeave = () => {
+    setExitOpen(false);
+    props.onExitToMenu?.();
+  };
 
   const activeKingSq = createMemo((): Square | null => {
     const s = snap();
@@ -610,6 +638,50 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
     return f === "both" || f === "b";
   };
 
+  const topChrome = () => (
+    <>
+      <Show when={starChessMode() && !turnInSidebar() && !turnHidden() && !ended()}>
+        <TurnBar
+          autoStart={false}
+          resolveOnEnd={false}
+          onEnd={() => store.submitTurn("end")}
+        />
+      </Show>
+      <Show when={starChessMode() && !props.hideResources}>
+        <Show when={ended()} fallback={<ResourceBar />}>
+          <ReviewTurnNav
+            onBack={() => store.reviewBack()}
+            onForward={() => store.reviewForward()}
+            backDisabled={reviewBusy() || store.state().reviewIndex <= 0}
+            forwardDisabled={
+              reviewBusy() ||
+              store.state().reviewIndex >= store.state().settledSnapshots.length - 1
+            }
+          >
+            <div
+              class={styles.dualResources}
+              role="group"
+              aria-label={
+                reviewVisionFilter() === "both"
+                  ? "Both sides resources"
+                  : reviewVisionFilter() === "w"
+                    ? "Blue side resources"
+                    : "Red side resources"
+              }
+            >
+              <Show when={showWhiteResources()}>
+                <ResourceBar color="w" snapshot={displayedSnapshot(store.state())} />
+              </Show>
+              <Show when={showBlackResources()}>
+                <ResourceBar color="b" snapshot={displayedSnapshot(store.state())} />
+              </Show>
+            </div>
+          </ReviewTurnNav>
+        </Show>
+      </Show>
+    </>
+  );
+
   return (
     <Screen>
       {/* Hidden king-lives probe for tests / demos */}
@@ -626,47 +698,23 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
         when={props.header != null || props.tutorial}
         fallback={
           <Screen.SidebarInset class={styles.topPane}>
-            <div class={styles.topChrome} data-testid="nerd-board-chrome">
-              <Show when={starChessMode() && !turnInSidebar() && !turnHidden() && !ended()}>
-                <TurnBar
-                  autoStart={false}
-                  resolveOnEnd={false}
-                  onEnd={() => store.submitTurn("end")}
-                />
-              </Show>
-              <Show when={starChessMode() && !props.hideResources}>
-                <Show when={ended()} fallback={<ResourceBar />}>
-                  <ReviewTurnNav
-                    onBack={() => store.reviewBack()}
-                    onForward={() => store.reviewForward()}
-                    backDisabled={reviewBusy() || store.state().reviewIndex <= 0}
-                    forwardDisabled={
-                      reviewBusy() ||
-                      store.state().reviewIndex >= store.state().settledSnapshots.length - 1
-                    }
-                  >
-                    <div
-                      class={styles.dualResources}
-                      role="group"
-                      aria-label={
-                        reviewVisionFilter() === "both"
-                          ? "Both sides resources"
-                          : reviewVisionFilter() === "w"
-                            ? "Blue side resources"
-                            : "Red side resources"
-                      }
-                    >
-                      <Show when={showWhiteResources()}>
-                        <ResourceBar color="w" snapshot={displayedSnapshot(store.state())} />
-                      </Show>
-                      <Show when={showBlackResources()}>
-                        <ResourceBar color="b" snapshot={displayedSnapshot(store.state())} />
-                      </Show>
-                    </div>
-                  </ReviewTurnNav>
+            <Show
+              when={props.onExitToMenu}
+              fallback={<div class={styles.topChrome} data-testid="nerd-board-chrome">{topChrome()}</div>}
+            >
+              <ScreenBackNav onBack={requestLeave} data-testid="live-back">
+                <Show when={props.matchTitle}>
+                  <div class={styles.matchTitle} data-testid="live-match-title">
+                    <Label variant="title" class={styles.matchupLine}>
+                      {props.matchTitle}
+                    </Label>
+                  </div>
                 </Show>
-              </Show>
-            </div>
+                <div class={styles.topChrome} data-testid="nerd-board-chrome">
+                  {topChrome()}
+                </div>
+              </ScreenBackNav>
+            </Show>
           </Screen.SidebarInset>
         }
       >
@@ -840,6 +888,11 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
           </Show>
         </div>
       </Screen.Footer>
+      <ExitGameConfirm
+        open={exitOpen()}
+        onClose={() => setExitOpen(false)}
+        onConfirm={confirmLeave}
+      />
     </Screen>
   );
 };

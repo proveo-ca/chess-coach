@@ -4,8 +4,8 @@
  * aren’t clipped. Paths that leave the crop (red → g5, BC → f5) are
  * intentional — pieces walk/jump out of frame.
  *
- * Loop: blue(g7) × red(h8) rifles → attackDying + deaths at FRAG_FLIGHT_MS →
- * red pawn g8→g5 (exits) → blue pawn h5→h8 (enters, promotes) →
+ * Loop: deploy blue(g7) + red(h8) → rifles → attackDying + deaths at
+ * FRAG_FLIGHT_MS → red pawn g8→g5 (exits) → blue pawn h5→h8 (enters, promotes) →
  * deploy battlecruiser → gas → jump to f5 (exits).
  *
  * Team paints: w = blue, b = red (nerd piece set).
@@ -75,7 +75,7 @@ const HOLD_MS = 700;
 const BEAT_MS = 320;
 
 export const DebrisPawnPlayground: Component<DebrisPawnPlaygroundProps> = (props) => {
-  const [fen, setFen] = createSignal(FEN_DUEL);
+  const [fen, setFen] = createSignal(FEN_EMPTY);
   const [attackCues, setAttackCues] = createSignal<AttackCue[]>([]);
   const [attackDying, setAttackDying] = createSignal<Record<string, boolean>>(
     {},
@@ -149,7 +149,33 @@ export const DebrisPawnPlayground: Component<DebrisPawnPlaygroundProps> = (props
     while (!cancelled) {
       cycle += 1;
       resetFx();
+      setFen(FEN_EMPTY);
+      await wait(BEAT_MS);
+      if (cancelled) break;
+
+      // 0) Deploy both marines (no FEN pop-in)
       setFen(FEN_DUEL);
+      setHide([SQ.blueHome, SQ.redHome]);
+      setDeployCues([
+        {
+          id: `debris-deploy-w-${cycle}`,
+          piece: "p",
+          color: "w",
+          at: SQ.blueHome,
+        },
+        {
+          id: `debris-deploy-b-${cycle}`,
+          piece: "p",
+          color: "b",
+          at: SQ.redHome,
+        },
+      ]);
+      await wait(DEPLOY_MS);
+      if (cancelled) break;
+      setDeployCues([]);
+      setHide([]);
+      await wait(BEAT_MS);
+      if (cancelled) break;
 
       // 1) Idle → mutual rifle (board SVGs hidden for the whole combat window)
       await wait(IDLE_FRONT_MS);

@@ -64,11 +64,14 @@ const preview: Preview = {
               "Sky · Black Hole",
               "*",
             ],
+            "Single",
+            "Tutorial",
+            "Review",
           ],
           "Features",
           ["Credits", "GasDeploy", "Side Rail Tools", "Turn Chrome", "*"],
           "Atoms",
-          ["CoachAvatar", "DeployModal", "Modal", "NeonModal", "*"],
+          ["CoachAvatar", "ColorSwatch", "DeployModal", "MatchHistoryFilters", "Modal", "NeonModal", "*"],
           "Primitives",
           [
             "Breadcrumb",
@@ -93,7 +96,7 @@ const preview: Preview = {
     viewport: { value: "desktop", isRotated: false },
   },
   decorators: [
-    (Story) => {
+    (Story, context) => {
       if (typeof document !== "undefined") {
         /* Prefer light Storybook canvas tokens (maps + DualNav demos). */
         const root = document.documentElement;
@@ -136,10 +139,15 @@ const preview: Preview = {
           document.head.appendChild(style);
         }
       }
+      const parameters = context.parameters as { route?: string };
       const history = createMemoryHistory();
-      history.set({ value: "/" });
+      history.set({ value: parameters.route ?? "/" });
       return (
         <MemoryRouter history={history}>
+          <Route path="/review/:id" component={Story} />
+          <Route path="/tutorial/:section/:story" component={Story} />
+          <Route path="/tutorial/:section" component={Story} />
+          <Route path="/single" component={Story} />
           <Route path="*" component={Story} />
         </MemoryRouter>
       );

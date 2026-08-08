@@ -169,7 +169,7 @@
   :root {
     --sidebar-width: 6rem;
     --board-size: 480px;
-    --app-max-width: 720px;
+    --app-max-width: calc(var(--board-size) + var(--sidebar-width) + 2rem);
     --header-columns: 1fr 3fr; /* Avatar left, Advice right */
     --advice-width: 32rem;
   }

@@ -625,7 +625,7 @@ const sideSpecials = (
   weights: StrategyWeights,
   intel: KingIntel,
   enemyQueenVisible: boolean,
-  tactical: TacticalBoard,
+  _tactical: TacticalBoard,
 ): Candidate[] => {
   const out: Candidate[] = [];
   const threatened = isSquareAttackedBy(map, king, enemy);

@@ -37,16 +37,8 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Desktop: Story = {
-  globals: { viewport: { value: "desktop", isRotated: false } },
-};
-
-export const Mobile: Story = {
-  globals: { viewport: { value: "mobile", isRotated: false } },
-};
-
-export const Dynamic: Story = {
-  globals: { viewport: { value: "dynamic", isRotated: false } },
+/** Switch Desktop / Mobile / Dynamic via the Storybook viewport toolbar. */
+export const Default: Story = {
 };
 
 export const WithReviewActions: Story = {

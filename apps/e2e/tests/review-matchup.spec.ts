@@ -1,7 +1,8 @@
 import { expect, test } from "@playwright/test";
 
 /**
- * Review /:id mobile chrome — matchup toolbar above the board.
+ * Review /:id mobile chrome — MobileBanner [‹ Back][matchup][menu] + Share
+ * IconButton in the BoardControls bar.
  * Fixture mirrors review.spec.ts (Win as White vs Selena).
  */
 const FIXTURE_ID = "test-review-matchup-0001";
@@ -47,7 +48,7 @@ async function seedAndOpen(page: import("@playwright/test").Page) {
 test.describe("Review /:id mobile matchup chrome", () => {
   test.use({ viewport: { width: 390, height: 844 } });
 
-  test("shows Win (White) vs Opponent with back + share icons", async ({ page }) => {
+  test("shows MobileBanner matchup with Share in the controls bar", async ({ page }) => {
     await seedAndOpen(page);
 
     const matchup = page.getByTestId("review-matchup");
@@ -56,23 +57,23 @@ test.describe("Review /:id mobile matchup chrome", () => {
 
     await expect(page.getByRole("button", { name: "Share" })).toBeVisible();
     await expect(page.getByRole("button", { name: /Back/ })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Open menu" })).toBeVisible();
 
-    // Drawer left of matchup title (in-toolbar, not floated over text).
+    // MobileBanner: ‹ Back · matchup · hamburger (same chrome as Coach / Analysis).
+    const back = page.getByTestId("mobile-banner-back");
     const menu = page.getByRole("button", { name: "Open menu" });
-    const mb = await menu.boundingBox();
-    const tb = await matchup.boundingBox();
-    expect(mb && tb).toBeTruthy();
-    expect(tb!.x, "matchup title should start after the drawer").toBeGreaterThan(
-      mb!.x + mb!.width - 1,
-    );
-
-    // Back stays rightmost in the matchup nav cluster (Share · Back).
-    const share = page.getByRole("button", { name: "Share" });
-    const back = page.getByRole("button", { name: /Back/ });
-    const sb = await share.boundingBox();
     const bb = await back.boundingBox();
-    expect(sb && bb).toBeTruthy();
-    expect(bb!.x, "Back should sit to the right of Share").toBeGreaterThan(sb!.x);
+    const tb = await matchup.boundingBox();
+    const mb = await menu.boundingBox();
+    expect(bb && tb && mb).toBeTruthy();
+    expect(tb!.x, "matchup should sit after Back").toBeGreaterThan(bb!.x + bb!.width - 1);
+    expect(mb!.x, "menu should sit after matchup").toBeGreaterThan(tb!.x + tb!.width - 1);
+
+    // Share IconButton lives in the footer BoardControls bar (below the board).
+    const share = page.getByRole("button", { name: "Share" });
+    const sb = await share.boundingBox();
+    expect(sb).toBeTruthy();
+    expect(sb!.y, "Share should sit below the banner matchup").toBeGreaterThan(tb!.y + tb!.height - 1);
 
     // Full desktop title stack stays in the DOM but is not shown on mobile.
     await expect(page.locator(".desktop-only").filter({ hasText: /vs Selena \(Black\)/ })).toBeHidden();

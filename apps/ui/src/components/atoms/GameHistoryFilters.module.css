@@ -23,6 +23,11 @@
   .group {
     flex: 0 1 auto;
   }
+
+  /* Swatches alone on mobile — "White" / "Black" live in aria-label. */
+  .colorName {
+    display: none;
+  }
 }
 
 .group {

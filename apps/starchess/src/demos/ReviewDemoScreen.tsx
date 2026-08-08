@@ -18,7 +18,9 @@ import {
 import { createMatchStore, MatchStoreProvider, useMatchStore } from "~/app/MatchStoreContext";
 import { createMatchStateFromReviewHistory } from "~/app/reviewHistory";
 import { displayedSnapshot } from "~/app/selectors";
+import { Label } from "~/components/primitives/Label";
 import { Screen } from "~/components/primitives/Screen";
+import { ScreenBackNav } from "~/components/primitives/ScreenBackNav";
 import styles from "~/demos/ReviewDemoScreen.module.css";
 import { clearSiegedRooks, setRookMode } from "~/presentation/animations/rookModeStore";
 import { LiveStarChessBoard } from "~/presentation/board/LiveStarChessBoard";
@@ -35,12 +37,24 @@ import {
 } from "~/store/reviewVisionStore";
 import { resetTutorialNarration, setTutorialNarration } from "~/tutorial/tutorialNarrationStore";
 import type { BoardSkin, PieceSet, VisionMode } from "~/types/board";
-import type { ReviewHistory } from "~/types/review";
+import type { ReviewHistory, StarChessMatchResult } from "~/types/review";
+
+/** Coach-style Review detail title stack (result + matchup). */
+export type ReviewMatchTitle = {
+  /** e.g. "Win (Blue)" */
+  resultLine: string;
+  /** win / loss / draw — colors the result Label */
+  result: StarChessMatchResult;
+  /** e.g. "Alex (Blue) vs Adjutant (Red)" */
+  matchup: string;
+};
 
 export type ReviewDemoScreenProps = {
   history: ReviewHistory;
   /** Prefix for footer caption (e.g. "Combat chain"). */
   reviewLabel?: string;
+  /** Optional result + matchup above DualNav (SPA `/review/:id`). */
+  matchTitle?: ReviewMatchTitle;
   visionMode?: VisionMode;
   fog?: boolean;
   variant?: BoardSkin;
@@ -207,18 +221,42 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
         when={props.header}
         fallback={
           <Screen.SidebarInset class={styles.topPane}>
-            <Show when={!props.hideResources}>
-              <Show when={!props.hideDualNav} fallback={dualResourceBars()}>
-                <ReviewTurnNav
-                  onBack={() => store.reviewBack()}
-                  onForward={() => store.reviewForward()}
-                  backDisabled={reviewNavDisabled().back}
-                  forwardDisabled={reviewNavDisabled().forward}
-                >
-                  {dualResourceBars()}
-                </ReviewTurnNav>
+            <ScreenBackNav
+              onBack={() => props.onHome?.()}
+              data-testid="review-detail-back"
+            >
+              <Show when={props.matchTitle}>
+                {(title) => (
+                  <div
+                    class={styles.matchTitle}
+                    data-testid="review-match-title"
+                  >
+                    <Label
+                      variant="title"
+                      color={title().result}
+                      class={styles.resultLine}
+                    >
+                      {title().resultLine}
+                    </Label>
+                    <Label variant="title" class={styles.matchupLine}>
+                      {title().matchup}
+                    </Label>
+                  </div>
+                )}
               </Show>
-            </Show>
+              <Show when={!props.hideResources}>
+                <Show when={!props.hideDualNav} fallback={dualResourceBars()}>
+                  <ReviewTurnNav
+                    onBack={() => store.reviewBack()}
+                    onForward={() => store.reviewForward()}
+                    backDisabled={reviewNavDisabled().back}
+                    forwardDisabled={reviewNavDisabled().forward}
+                  >
+                    {dualResourceBars()}
+                  </ReviewTurnNav>
+                </Show>
+              </Show>
+            </ScreenBackNav>
           </Screen.SidebarInset>
         }
       >
@@ -278,11 +316,13 @@ export const ReviewDemoScreen: Component<ReviewDemoScreenProps> = (props) => {
       <ReviewDemoInner
         history={props.history}
         reviewLabel={props.reviewLabel}
+        matchTitle={props.matchTitle}
         visionMode={props.visionMode}
         fog={props.fog}
         variant={props.variant}
         pieceSet={props.pieceSet}
         rookTank={props.rookTank}
+        playerColor={props.playerColor}
         onHome={props.onHome}
         hideResources={props.hideResources}
         hideDualNav={props.hideDualNav}

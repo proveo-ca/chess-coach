@@ -183,14 +183,16 @@
   text-align: center;
 }
 
-/* §4 — Review /:id: horizontal 3-turn strip over the board.
-   Viewport-centred by default (mobile has no Sidebar). Desktop offsets left
-   by half --sidebar-width so the strip aligns with ChessBoard, matching
-   Screen.Header / Footer inset when Sidebar is visible. */
+/* §4 — Review /:id: horizontal 3-turn strip in the top chrome (MoveList
+   docks in the top region; float must stay there — a bottom-fixed strip is
+   clipped by the top track’s overflow:hidden on desktop). Viewport-centred
+   by default (mobile has no Sidebar). Desktop offsets left by half
+   --sidebar-width so the strip aligns with ChessBoard. */
 .wrapper.floating {
   position: fixed;
   left: 50%;
-  bottom: 0.75rem;
+  top: 3.25rem; /* below MobileBanner on short / dynamic */
+  bottom: auto;
   z-index: 2000;
   width: min(92vw, var(--board-size, 22rem));
   max-width: min(92vw, var(--board-size, 22rem));
@@ -207,6 +209,8 @@
 
 @media (min-width: 720px) {
   .wrapper.floating {
+    /* Below shell padding + inset pad + Review title stack (ScreenBackNav). */
+    top: calc(2rem + 0.5rem + 5.85rem);
     left: calc(50% - var(--sidebar-width) / 2);
   }
 }

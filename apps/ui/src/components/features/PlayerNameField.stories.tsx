@@ -16,17 +16,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Desktop: Story = {
-  args: { id: "storybook-player-name-desktop" },
-  globals: { viewport: { value: "desktop", isRotated: false } },
-};
-
-export const Mobile: Story = {
-  args: { id: "storybook-player-name-mobile" },
-  globals: { viewport: { value: "mobile", isRotated: false } },
-};
-
-export const Dynamic: Story = {
-  args: { id: "storybook-player-name-dynamic" },
-  globals: { viewport: { value: "dynamic", isRotated: false } },
+/** Switch Desktop / Mobile / Dynamic via the Storybook viewport toolbar. */
+export const Default: Story = {
+  args: { id: "storybook-player-name" },
 };

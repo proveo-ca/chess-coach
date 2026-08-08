@@ -1,13 +1,3 @@
-.title {
-  margin: 0;
-  font-size: 1.25rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #e8eaed;
-  text-align: center;
-}
-
 .listPane {
   display: flex;
   flex-direction: column;
@@ -17,19 +7,6 @@
   overflow-y: auto;
   padding: 0.5rem;
   box-sizing: border-box;
-}
-
-.back {
-  align-self: flex-start;
-  gap: 0.35rem;
-  padding: 0.45em 0.9em;
-  font-size: 0.85rem;
-}
-
-.backArrow {
-  font-size: 1.15em;
-  font-weight: 700;
-  line-height: 1;
 }
 
 .list {

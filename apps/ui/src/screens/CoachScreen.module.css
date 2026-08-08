@@ -1,52 +1,37 @@
 /* SPEC: _spec/apps/ui/responsiveness/rules.md */
 
-.headerChrome {
-  position: relative;
-  width: 100%;
-  min-height: inherit;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.backNav {
-  position: absolute;
-  top: 0.35rem;
-  left: 0.75rem;
-  z-index: 5;
-}
-
-.mobileBack {
-  display: flex;
-  justify-content: flex-start;
-  width: 100%;
-  max-width: var(--board-size);
-  margin-inline: auto;
-  padding-inline: 0.25rem;
-}
-
-/* Tall mobile: hero CoachAvatar above the tool bar (not embedded in MobileSidebar).
-   Hidden on desktop (Header owns the avatar) and on short dynamic (bar compact).
+/* Tall mobile: hero CoachAvatar floats over MobileBanner (z-index), then
+   BoardControls hug the board. Hidden on desktop (Header owns the avatar via
+   ScreenBackNav) and on short dynamic (compact stays in BoardControls).
    Always mounted — visibility is CSS-only so the avatar does not remount. */
 .mobileHero {
   display: none;
 }
 
 @media (--tall-mobile) {
+  /* Banner keeps flush-top layout; hero owns the leftover spacer instead. */
+  :global([data-testid="mobile-banner"]) {
+    margin-bottom: 0;
+  }
+
   .mobileHero {
     display: flex;
     justify-content: center;
     align-items: flex-end;
+    position: relative;
+    z-index: 6; /* above MobileBanner (z-index: 5) */
     width: 100%;
     max-width: var(--board-size);
     margin-inline: auto;
-    /* Absorb leftover column space so the cat sits in the upper chrome. */
-    margin-block: clamp(0.25rem, 3cqh, 1.25rem);
+    /* Pull up so the cat overlaps the banner strip. */
+    margin-bottom: auto;
     min-height: 0;
+    pointer-events: none; /* keep banner Back / menu clickable under the float */
   }
 
   /* Default cat uses a large top margin for desktop header — collapse it here. */
   .mobileHero :global([data-testid="coach-avatar"]) {
     margin-top: 0.35rem;
+    pointer-events: auto;
   }
 }

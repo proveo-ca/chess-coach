@@ -55,7 +55,11 @@ note bottom
   Live gameOver → ``matchHistory`` + ``MatchResultModal``
   (``VICTORY`` / ``DEFEAT`` / ``DRAW``): **Another Game** remounts
   ``/single?map=&team=``; **Replay** → ``/review/:id`` DualNav.
-  Review list remains at ``/review``.
+  Review list remains at ``/review``: ``MatchHistoryFilters``
+  (Playing as Blue/Red + date pages; no First move; no Review title) via
+  ``useMatchHistoryFilters`` · ``‹ Back`` only.
+  Review detail ``/review/:id``: Coach-style title stack
+  (``Win (Blue)`` · ``Alex (Blue) vs Adjutant (Red)``) above ``ReviewTurnNav``.
   Coach ``/chess/`` → ``/starchess/`` (nerd yes / ``StarChessRedirect``)
   sets ``starchess_from_chess``; menu plays ``MenuArrival``:
   Chess mockup → glass clears to sky → Selena→Kerrigan → buttons shatter
@@ -67,5 +71,7 @@ note bottom
   HP=0 opens ``TutorialCompleteConfirm`` when still false —
   Go Home sets cleared=true and returns to menu.
   Deployment / PWA: ``deployment.puml``. HUD: ``screens.puml``.
+  Leave chrome: ``ScreenBackNav`` + ``ChevronNav`` (+ ``PanelTitle`` where
+  labeled) on tutorial / live ``/single`` (top panel · ``‹ Back``).
 end note
 @enduml

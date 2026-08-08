@@ -1,8 +1,10 @@
+import clsx from "clsx";
 import { Show, createSignal } from "solid-js";
 import type { Component, JSX } from "solid-js";
 
 import styles from "~/components/atoms/FenLoader.module.css";
 import { Button } from "~/components/primitives/Button";
+import { Input } from "~/components/primitives/Input";
 import { loadFen } from "~/store/gameStore";
 
 const FEN_REGEX =
@@ -49,11 +51,10 @@ export const FenLoader: Component<{
             {props.leading}
           </div>
         </Show>
-        <input
+        <Input
           type="text"
           name="fen"
-          class={styles.input}
-          classList={{ [styles["input--invalid"]]: !!error() }}
+          class={clsx(styles.input, error() && styles["input--invalid"])}
           placeholder="paste FEN here"
           aria-label="Load from FEN"
           value={value()}

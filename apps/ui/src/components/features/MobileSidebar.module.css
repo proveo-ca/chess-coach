@@ -6,27 +6,28 @@
 
 @media (max-width: 719px) {
   .bar {
-    /* position:relative so .main can pin to the true midpoint regardless of
-       asymmetric left/right chrome (e.g. 3 icons vs dual history nav). */
     position: relative;
     display: flex;
     align-items: center;
-    gap: 0.3rem;
+    /* Tight gap so ::after rules between left tools read as shared edges. */
+    gap: 0.15rem;
     width: 100%;
     max-width: var(--board-size);
     margin-inline: auto;
-    /* Board-column is a size container — leftover middle height grows spacing. */
     margin-block: clamp(0.15rem, 2cqh, 0.85rem);
-    /* Equal L/R — shared with FenLoader via --board-chrome-inline. */
     padding-block: 0.3rem;
-    padding-inline: var(--board-chrome-inline, 0.7rem);
     border-radius: var(--border-radius-md);
     background: var(--panel-bg);
     border: 1px solid var(--border-color);
     box-sizing: border-box;
   }
 
-  /* Short / dynamic: pack bars against FEN / board (taller phones keep cqh). */
+  /* Segmented toolbar: IconButtons drop their own border; DualNav keeps its
+     internal half-divider. Floated timeline / tall-drawer chips keep chrome. */
+  .bar:not(.timeline) > .item :is(button, a) {
+    border: 0;
+  }
+
   @media (max-height: 639px) {
     .bar {
       margin-block: 0.1rem;
@@ -34,7 +35,7 @@
   }
 
   /* Replay / travel: collapse the bar so the board rises into its place.
-     Nav floats top-right; drawer (menu) floats top-left. The dock → corner
+     Nav + drawer float top-right (menu outermost). The dock → corner
      move for nav is FLIP-animated in BoardControls. */
   .bar.timeline {
     margin: 0;
@@ -52,7 +53,8 @@
   .bar.timeline > .nav-item {
     position: fixed;
     top: 0.75rem;
-    right: 0.75rem;
+    /* Sit just left of the hamburger so both clear the corner. */
+    right: 3.75rem;
     z-index: 1000;
     padding: 0.3rem;
     border-radius: var(--border-radius-md);
@@ -64,7 +66,8 @@
     display: flex;
     position: fixed;
     top: 0.75rem;
-    left: 0.75rem;
+    right: 0.75rem;
+    left: auto;
     z-index: 1000;
     padding: 0.3rem;
     border-radius: var(--border-radius-md);
@@ -72,15 +75,16 @@
     border: 1px solid var(--border-color);
   }
 
-  /* Tall mobile: float menu top-left even when the tool bar is visible
-     (matches --tall-mobile). Short / dynamic keeps the drawer in-bar so
-     the compact CoachAvatar can sit closer to the board. */
+  /* Tall mobile: float menu top-right even when the tool bar is visible
+     (matches --tall-mobile). Short / dynamic keeps the drawer in-bar on
+     the right so the compact CoachAvatar can sit closer to the board. */
   @media (min-height: 640px) {
     .bar:not(.toolbar) > .drawer-item {
       display: flex;
       position: fixed;
       top: 0.75rem;
-      left: 0.75rem;
+      right: 0.75rem;
+      left: auto;
       z-index: 1000;
       padding: 0.3rem;
       border-radius: var(--border-radius-md);
@@ -176,8 +180,7 @@
     position: static;
   }
 
-  /* Analysis short / dynamic: drop the title toolbar entirely — menu moves
-     into FenLoader leading (left of the input), not a fixed overlay. */
+  /* Analysis short / dynamic: optional collapse for legacy title toolbars. */
   @media (max-height: 639px) {
     .bar.toolbar.collapse-on-short {
       display: none;
@@ -209,6 +212,23 @@
 .item {
   display: flex;
   align-items: center;
+  position: relative;
+}
+
+/* Vertical rule between left tool Items. BoardControls puts nearest-centre
+   tools first in DOM; flex order fans later items further left — so a rule on
+   the trailing edge of every left Item *after* the first left Item in DOM
+   lands between visual neighbours. A lone left tool gets no dangling line. */
+.item:not(.nav-item):not(.drawer-item)
+  ~ .item:not(.nav-item):not(.drawer-item)::after {
+  content: "";
+  position: absolute;
+  top: 20%;
+  bottom: 20%;
+  right: 0;
+  width: 1px;
+  background: var(--border-color);
+  pointer-events: none;
 }
 
 /* The single-button quick-actions stack on the LEFT in source order (1st sits
@@ -231,14 +251,14 @@
   display: none;
 }
 
-/* History nav is the only right-side control: pin it to the trailing edge
+/* History nav packs to the trailing edge; menu sits after it (far right).
    (`.main` is out of flow, so ml:auto packs left icons startward). */
 .bar > .item.nav-item {
   order: 1;
   margin-left: auto;
 }
 
-/* Menu trigger always leftmost, outranking the nth-of-type fan-out. */
+/* Menu trigger — rightmost in-bar (floats top-right when tall / timeline). */
 .bar > .item.drawer-item {
-  order: -10;
+  order: 2;
 }

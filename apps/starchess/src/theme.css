@@ -85,7 +85,7 @@
   :root {
     --sidebar-width: 6rem;
     --board-size: 480px;
-    --app-max-width: calc(var(--board-size) + var(--sidebar-width) + 4rem);
+    --app-max-width: calc(var(--board-size) + var(--sidebar-width) + 2rem);
   }
 }
 

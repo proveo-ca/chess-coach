@@ -8,11 +8,12 @@
     "e2e:docker": "docker compose run --rm e2e",
     "e2e:docker:build": "docker compose build e2e",
     "e2e:nerd-mode": "CI=1 E2E_TARGET=web-no-llm npm test --prefix apps/e2e -- --project=chromium tests/nerd-mode.spec.ts",
-    "deploy:web-no-llm": "npm run deploy --prefix apps/ui",
+    "deploy:web-no-llm": "npm run deploy --prefix apps/ui && npm run deploy --prefix apps/starchess",
     "deploy:desktop": "echo 'TODO: desktop deployment'",
     "build:starchess": "pnpm --filter @chess-coach/starchess build",
     "test:starchess": "pnpm --filter @chess-coach/starchess test",
     "preview:starchess": "pnpm --filter @chess-coach/starchess preview",
+    "deploy:starchess": "npm run deploy --prefix apps/starchess",
     "deploy:starchess:dry-run": "pnpm --filter @chess-coach/starchess deploy:dry-run",
     "e2e:starchess": "E2E_TARGET=starchess npm test --prefix apps/e2e -- --project=chromium"
   },

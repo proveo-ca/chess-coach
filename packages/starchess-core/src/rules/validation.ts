@@ -5,7 +5,7 @@
 
 import type { Square } from "chess.js";
 
-import { findKing, placementToMap } from "../board/placement";
+import { placementToMap } from "../board/placement";
 import { charonTargetQueenFromPlacement } from "./specials/bishopCharon";
 import { minesFor, MAX_MINES_PER_SIDE, mineAt } from "../board/mines";
 import { isRookSiegedAfterB } from "../board/siege";
@@ -258,7 +258,8 @@ export const assertSpecialLegal = (
             a.color === action.color &&
             a.from === action.from,
         );
-        if (c) at = c.to;
+        const dest = c?.to;
+        if (dest) at = dest;
       }
       if (mineAt(snap.mines, at)) {
         throw new ScValidateError("SC_SPECIAL", "mine already on square");

@@ -8,7 +8,7 @@
  * // SPEC: _spec/apps/starchess/screens.puml
  * // SPEC: _spec/apps/starchess/deployment.puml
  */
-import { useNavigate, useSearchParams, type RouteSectionProps } from "@solidjs/router";
+import { useNavigate, useSearchParams } from "@solidjs/router";
 import { adjutant } from "@chess-coach/starchess-core";
 import type { StarChessColor } from "@chess-coach/starchess-core";
 import { Show, createEffect, createSignal, onCleanup, type Component } from "solid-js";
@@ -35,6 +35,7 @@ import {
 import { playerName } from "~/store/settingsStore";
 import type { BoardVariant } from "~/types/board";
 import type { StarChessMatchResult } from "~/types/review";
+import { LIVE_ADJUTANT_MATCH_TITLE } from "~/utils/matchTitle";
 
 const MAPS: readonly BoardVariant[] = ["eclipse", "butter", "vermeer"];
 
@@ -150,6 +151,7 @@ const MatchInner: Component<{
       starChessMode
       armTimer
       turnChrome="sidebar"
+      matchTitle={LIVE_ADJUTANT_MATCH_TITLE}
       onExitToMenu={props.onExitToMenu}
       autoQueueOpponent={(snap) =>
         adjutant(snap, {
@@ -199,7 +201,7 @@ const LiveMatchSession: Component<{
   );
 };
 
-export const StarChessSingleScreen: Component<RouteSectionProps> = () => {
+export const StarChessSingleScreen: Component = () => {
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const [matchEpoch, setMatchEpoch] = createSignal(0);

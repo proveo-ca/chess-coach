@@ -49,13 +49,15 @@ MENU ARROW_MAIN NEON
 
 note bottom
   **Layout** matches ``apps/ui`` ``Screen`` (content-sized rows; desktop
-  header ``min-height: --avatar-height``). BoardArea = BoardColumn +
+  header ``min-height: calc(--avatar-height + 1rem)`` for captures). BoardArea = BoardColumn +
   ``BoardSideRail`` (``--sidebar-width`` only — no board-height lock).
   ``ReviewDemoScreen``, ``StarChessScreen``, and ``TutorialReviewHost`` supply
   mode-specific controls to the same rail shell.
-  **Live route** ``/single``: ``turnChrome="sidebar"`` (StarChessSingleScreen).
+  **Live route** ``/single``: ``turnChrome="sidebar"`` (StarChessSingleScreen);
+  title ``Game vs Adjutant (Script)`` above ResourceBar (Review-style Label).
   **Review / gameOver:** ``ReviewTurnNav`` (green ‹ ›) flanks dual ResourceBars
   in the top row; rail keeps Turn/Phase chips + Home (no stacked DualNav).
+  Review detail also shows result + matchup Labels above DualNav.
   Outcome via status line (no GameOverBanner in apps/starchess).
   **Tutorial** ``/tutorial/:section/:story`` (``TUTORIAL_SCRIPT`` anchors):
   CoachScreen-shaped Kerrigan header; HOME-only SideRailTools (``homeOnly``);

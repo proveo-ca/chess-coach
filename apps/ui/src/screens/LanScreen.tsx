@@ -1,19 +1,19 @@
 // SPEC: _spec/apps/ui/multiplayer.puml
 import { For, type Component, Show, createEffect, createSignal, onCleanup, onMount } from "solid-js";
-import { useNavigate } from "@solidjs/router";
 
 import { OpponentCaptures, PlayerCaptures } from "~/components/atoms/CapturedPieces";
 import { Clock } from "~/components/atoms/Clock";
 import { ColorSwatch } from "~/components/atoms/ColorSwatch";
+import { MobileBanner } from "~/components/atoms/MobileBanner";
 import { Modal } from "~/components/atoms/Modal";
 import { SelectCard } from "~/components/atoms/SelectCard";
 import { GameOverBanner } from "~/components/features/GameOverBanner";
+import { MobileDrawer, openMobileDrawer } from "~/components/features/MobileDrawer";
 import { MobileSidebar } from "~/components/features/MobileSidebar";
 import { MultiplayerBoard } from "~/components/features/MultiplayerBoard";
 import { PlayerNameField } from "~/components/features/PlayerNameField";
 import { TailscaleChecklist } from "~/components/features/TailscaleChecklist";
 import { Button } from "~/components/primitives/Button";
-import { ChevronNav } from "~/components/primitives/ChevronNav";
 import { DualNavButton } from "~/components/primitives/DualNavButton";
 import { HistoryOverlay } from "~/components/primitives/HistoryOverlay";
 import { IconButton } from "~/components/primitives/IconButton";
@@ -22,6 +22,7 @@ import { Input } from "~/components/primitives/Input";
 import { Label } from "~/components/primitives/Label";
 import { QrCode } from "~/components/primitives/QrCode";
 import { Screen } from "~/components/primitives/Screen";
+import { ScreenBackNav } from "~/components/primitives/ScreenBackNav";
 import { Select } from "~/components/primitives/Select";
 import { SplashScreen } from "~/components/primitives/SplashScreen";
 import { enginePool } from "~/engine/EnginePool";
@@ -79,7 +80,6 @@ import { difficulty, playerName } from "~/store/settingsStore";
 import type { PositionEval } from "~/types/analysis";
 import type { Color, ConnStatus, PeerTransport, Seat, SignalPayload } from "~/types/multiplayer";
 import type { Difficulty } from "~/types/settings";
-import { screenBackTarget } from "~/utils/navHistory";
 
 const START_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
@@ -152,7 +152,6 @@ const ConnIndicator: Component = () => (
  * tailnet before exchanging invites.
  */
 export const LanScreen: Component = () => {
-  const navigate = useNavigate();
   const [transport, setTransport] = createSignal<PeerTransport | null>(null);
   const [desiredRole, setDesiredRole] = createSignal<Seat>("player");
   const [incomingOffer, setIncomingOffer] = createSignal<SignalPayload | null>(null);
@@ -163,23 +162,6 @@ export const LanScreen: Component = () => {
   const [drawModalOpen, setDrawModalOpen] = createSignal(false);
   // Default time seeded from the last Selena difficulty; the dropdown can change it.
   const [timeControlSec, setTimeControlSec] = createSignal(DIFFICULTY_TIME_SEC[difficulty()]);
-
-  const leaveToMenu = () => {
-    const target = screenBackTarget();
-    if (typeof target === "number") navigate(target);
-    else navigate(target);
-  };
-
-  const backNav = () => (
-    <ChevronNav
-      direction="back"
-      onClick={leaveToMenu}
-      aria-label="Back"
-      data-testid="lan-back"
-    >
-      Back
-    </ChevronNav>
-  );
 
   const mp = useMultiplayerGame(transport, () =>
     role() === "guest" ? { identity: { name: playerName() }, desiredRole: desiredRole() } : null,
@@ -288,6 +270,22 @@ export const LanScreen: Component = () => {
   };
 
   const iAmReady = () => players().find((p) => p.peerId === myPeerId())?.ready ?? false;
+
+  /** MobileBanner centre: both clocks only — colour/name hide on the tight
+   *  Back · title · menu strip (desktop matchup keeps full chrome). */
+  const bannerMatchup = () => (
+    <span class={styles.bannerMatchup} data-testid="mobile-banner-matchup">
+      <span class={styles.bannerClock} data-mine={myColor() === "w" ? "" : undefined}>
+        <Clock color="w" />
+      </span>
+      <span class={styles.bannerVs} aria-hidden="true">
+        ·
+      </span>
+      <span class={styles.bannerClock} data-mine={myColor() === "b" ? "" : undefined}>
+        <Clock color="b" />
+      </span>
+    </span>
+  );
 
   const seatCard = (color: Color) => {
     const occupant = () => playerByColor(color);
@@ -411,9 +409,14 @@ export const LanScreen: Component = () => {
     <Show
       when={started()}
       fallback={
-        <SplashScreen title="Play LAN" wide>
+        <SplashScreen wide>
+          <div class="desktop-only">
+            <ScreenBackNav data-testid="lan-back" class={styles.lobbyBack}>
+              <h2 class={styles.lobbyTitle}>Play LAN</h2>
+            </ScreenBackNav>
+          </div>
+          <MobileBanner title="Play LAN" onMenu={openMobileDrawer} />
           <TailscaleChecklist>
-            <div class={styles.lobbyBack}>{backNav()}</div>
             {/* ── Setup: choose to host or join ── */}
             <Show when={role() == null}>
               <div class={styles.lobby}>
@@ -549,6 +552,7 @@ export const LanScreen: Component = () => {
               <Label color="loss">{error()}</Label>
             </Show>
           </TailscaleChecklist>
+          <MobileDrawer />
         </SplashScreen>
       }
     >
@@ -558,66 +562,53 @@ export const LanScreen: Component = () => {
         <HistoryOverlay active={replaying()} />
 
         <Screen.Header>
-          <div class={styles.headerChrome}>
-            {backNav()}
-            {/* While a *player* replays on mobile this collapses to just their own
-              clock, pinned top-left (data-mine) — it keeps ticking, so it must
-              stay visible — while names + opponent clock hide. Spectators keep
-              the full matchup (both clocks) at all times. See the CSS. */}
-            <div
-              class={styles.gameHeader}
-              classList={{ [styles.replaying]: playerReplaying() }}
-              data-testid="matchup"
-            >
-              <span class={styles.player} data-mine={myColor() === "w" ? "" : undefined}>
-                <ColorSwatch color="w" />
-                <span>{playerByColor("w")?.identity.name ?? "White"}</span>
-                <Clock color="w" />
-              </span>
-              <span>vs</span>
-              <span class={styles.player} data-mine={myColor() === "b" ? "" : undefined}>
-                <Clock color="b" />
-                <span>{playerByColor("b")?.identity.name ?? "Black"}</span>
-                <ColorSwatch color="b" />
-              </span>
-            </div>
+          <div class="desktop-only">
+            <ScreenBackNav data-testid="lan-back">
+              <div class={styles.gameHeader} data-testid="matchup">
+                <span class={styles.player} data-mine={myColor() === "w" ? "" : undefined}>
+                  <ColorSwatch color="w" />
+                  <span>{playerByColor("w")?.identity.name ?? "White"}</span>
+                  <Clock color="w" />
+                </span>
+                <span>vs</span>
+                <span class={styles.player} data-mine={myColor() === "b" ? "" : undefined}>
+                  <Clock color="b" />
+                  <span>{playerByColor("b")?.identity.name ?? "Black"}</span>
+                  <ColorSwatch color="b" />
+                </span>
+              </div>
+            </ScreenBackNav>
           </div>
+          <MobileBanner title={bannerMatchup()} onMenu={openMobileDrawer} />
+          <MobileSidebar timeline={playerReplaying()}>
+            <MobileSidebar.Main>
+              <ConnIndicator />
+            </MobileSidebar.Main>
+            <Show when={!gameOver() && seat() === "player"}>
+              <MobileSidebar.Item>
+                <IconButton onClick={onDrawAction} aria-label="Draw">
+                  <span class={styles.drawIcon} aria-hidden="true">
+                    🤝
+                  </span>
+                </IconButton>
+              </MobileSidebar.Item>
+            </Show>
+            <MobileSidebar.Item nav ref={(el) => (navEl = el)}>
+              {historyNav(isObserver())}
+            </MobileSidebar.Item>
+            <Show when={!gameOver() && seat() === "player"}>
+              <MobileSidebar.Item>
+                <IconButton onClick={() => mp.resign()} aria-label="Resign">
+                  <FlagIcon />
+                </IconButton>
+              </MobileSidebar.Item>
+            </Show>
+          </MobileSidebar>
+          <OpponentCaptures />
         </Screen.Header>
 
         <Screen.BoardArea>
           <Screen.BoardColumn>
-            {/* Mobile control bar above the board. Connectivity is the centred
-                Main; Draw sits inner-left (the hint's spot on Coach), Resign
-                outer-left (Coach's resign spot), and the history nav is pinned
-                right. While a player replays it collapses to just the nav
-                (top-right); spectators keep the full bar. */}
-            <MobileSidebar timeline={playerReplaying()}>
-              <MobileSidebar.Main>
-                <ConnIndicator />
-              </MobileSidebar.Main>
-              <Show when={!gameOver() && seat() === "player"}>
-                <MobileSidebar.Item>
-                  <IconButton onClick={onDrawAction} aria-label="Draw">
-                    <span class={styles.drawIcon} aria-hidden="true">
-                      🤝
-                    </span>
-                  </IconButton>
-                </MobileSidebar.Item>
-              </Show>
-              <MobileSidebar.Item nav ref={(el) => (navEl = el)}>
-                {historyNav(isObserver())}
-              </MobileSidebar.Item>
-              <Show when={!gameOver() && seat() === "player"}>
-                <MobileSidebar.Item>
-                  <IconButton onClick={() => mp.resign()} aria-label="Resign">
-                    <FlagIcon />
-                  </IconButton>
-                </MobileSidebar.Item>
-              </Show>
-            </MobileSidebar>
-            <OpponentCaptures />
-            {/* Relative wrapper so the game-over banner overlays just the board,
-                mirroring the Coach end screen. */}
             <div class={styles.boardWrap}>
               <MultiplayerBoard
                 onDrawBubbleClick={onDrawAction}
@@ -634,15 +625,10 @@ export const LanScreen: Component = () => {
                     Review Game
                   </Button>
                 </Show>
-                {backNav()}
+                <ScreenBackNav data-testid="lan-back-gameover" />
               </GameOverBanner>
             </div>
-            <PlayerCaptures />
           </Screen.BoardColumn>
-          {/* Sidebar — connectivity, move-history nav, Resign. Reserves
-              --sidebar-width so the board stays centered against the offset
-              header/footer (like the other screens). Hidden on mobile, where
-              these live in the footer instead. */}
           <div class={styles.sidebar}>
             <ConnIndicator />
             {historyNav()}
@@ -658,6 +644,12 @@ export const LanScreen: Component = () => {
             </Show>
           </div>
         </Screen.BoardArea>
+
+        <Screen.Footer>
+          <PlayerCaptures />
+        </Screen.Footer>
+
+        <MobileDrawer />
 
         <Modal
           open={drawModalOpen()}

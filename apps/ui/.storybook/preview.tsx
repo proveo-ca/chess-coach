@@ -85,6 +85,8 @@ const preview: Preview = {
     viewport: { options: viewports },
   },
   initialGlobals: {
+    // Toolbar: Desktop · Mobile · Dynamic — do not lock viewport on stories
+    // (`globals.viewport` disables the toolbar). Same pattern as apps/starchess.
     viewport: { value: "desktop", isRotated: false },
   },
 };

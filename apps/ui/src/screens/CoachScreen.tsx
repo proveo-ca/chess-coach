@@ -1,5 +1,4 @@
 // SPEC: _spec/apps/ui/components.puml
-import { useNavigate } from "@solidjs/router";
 import { createSignal, onMount } from "solid-js";
 import type { Component } from "solid-js";
 
@@ -11,15 +10,16 @@ import {
   debugLightSpeedOverlay,
 } from "~/components/atoms/DebugControls";
 import { LightSpeedOverlay } from "~/components/atoms/LightSpeedOverlay";
+import { MobileBanner } from "~/components/atoms/MobileBanner";
 import { Modal } from "~/components/atoms/Modal";
 import { BoardControls } from "~/components/features/BoardControls";
 import { ChessBoard } from "~/components/features/ChessBoard";
 import { CoachPanel } from "~/components/features/CoachPanel.tsx";
-import { MobileDrawer } from "~/components/features/MobileDrawer";
+import { MobileDrawer, openMobileDrawer } from "~/components/features/MobileDrawer";
 import { Sidebar } from "~/components/features/Sidebar";
-import { ChevronNav } from "~/components/primitives/ChevronNav";
 import { HistoryOverlay } from "~/components/primitives/HistoryOverlay";
 import { Screen } from "~/components/primitives/Screen";
+import { ScreenBackNav } from "~/components/primitives/ScreenBackNav";
 import { useGameRecorder } from "~/hooks/useGameRecorder";
 import { useLivePreAnalysis } from "~/hooks/useLivePreAnalysis";
 import { fetchHello, postAdviceStream, postMove } from "~/services/api";
@@ -43,7 +43,6 @@ import {
 import { activePlayerColor, difficulty } from "~/store/settingsStore";
 import { isTravelling } from "~/store/travelStore";
 import { logger } from "~/utils/logger";
-import { screenBackTarget } from "~/utils/navHistory";
 
 import styles from "~/screens/CoachScreen.module.css";
 
@@ -54,38 +53,21 @@ import styles from "~/screens/CoachScreen.module.css";
  * full Coach experience: hint button, travel, blunder detection, AI
  * opponent, replay-lock on past positions.
  *
- * Mobile layout is CSS-owned (`CoachScreen.module.css` + MobileSidebar):
- * tall viewports show a hero CoachAvatar above the tool bar; short / dynamic
- * keeps the compact avatar in the bar centre. Both slots stay mounted so
- * emotion state does not remount across the 640px height boundary.
+ * Layout: top = {@link MobileBanner} flush top; tall-mobile hero
+ * {@link CoachAvatar} floats over the banner (z-index); then BoardControls,
+ * opponent captures; desktop Back+avatar; middle = ChessBoard (+ Sidebar)
+ * only; bottom = player captures / CoachPanel.
+ * Mobile hero vs compact avatar is CSS-owned (`CoachScreen.module.css`).
  */
 export const CoachScreen: Component = () => {
-  const navigate = useNavigate();
   const [unsupportedReason, setUnsupportedReason] = createSignal<string | null>(null);
   const [debugInfo, setDebugInfo] = createSignal<string>("");
 
-  // Passively record this game (PGN + per-move annotations) for later
-  // review at /review/:id. Mounted here so it only runs on the Coach
-  // screen where the AI-driven metadata (best-move, hint) is meaningful.
   useGameRecorder();
-
-  // Warm the review-analysis cache as moves are recorded (background
-  // priority), so opening Review after the game is instant/near-instant.
   useLivePreAnalysis();
-
-  const goBack = () => {
-    const target = screenBackTarget();
-    if (typeof target === "number") navigate(target);
-    else navigate(target);
-  };
 
   onMount(async () => {
     setCapabilities(COACH_CAPABILITIES);
-
-    // Restore the coach's live game from localStorage. Other screens
-    // (Review, Analysis) load ephemeral positions into gameStore without
-    // persisting, so the coach's slot is still intact. If the restored
-    // game was resigned / over, the game-over modal shows naturally.
     restoreGame();
 
     try {
@@ -150,48 +132,29 @@ export const CoachScreen: Component = () => {
       <LightSpeedOverlay active={debugLightSpeedOverlay() || isTravelling()} />
 
       <Screen.Header>
-        <div class={styles.headerChrome}>
-          <ChevronNav
-            class={`${styles.backNav} desktop-only`}
-            direction="back"
-            onClick={goBack}
-            aria-label="Back"
-            data-testid="coach-back"
-          >
-            Back
-          </ChevronNav>
-          {/* Desktop shows the avatar here; on mobile it moves into the column. */}
-          <div class="desktop-only">
+        <div class="desktop-only">
+          <ScreenBackNav data-testid="coach-back">
             <CoachAvatar />
-          </div>
+          </ScreenBackNav>
         </div>
+        <MobileBanner title="Selena" onMenu={openMobileDrawer} />
+        {/* Tall mobile: hero floats over the banner (z-index). Short: CSS hides; compact in bar. */}
+        <div class={styles.mobileHero} data-testid="coach-mobile-hero">
+          <CoachAvatar />
+        </div>
+        <BoardControls center={<CoachAvatar compact />} centerOverflow omitDrawer />
+        <OpponentCaptures />
       </Screen.Header>
 
       <Screen.BoardArea>
         <Screen.BoardColumn>
-          <div class={`mobile-only ${styles.mobileBack}`}>
-            <ChevronNav
-              direction="back"
-              onClick={goBack}
-              aria-label="Back"
-              data-testid="coach-back-mobile"
-            >
-              Back
-            </ChevronNav>
-          </div>
-          {/* Tall mobile: CSS shows hero. Short: CSS hides; compact stays in bar. */}
-          <div class={styles.mobileHero} data-testid="coach-mobile-hero">
-            <CoachAvatar />
-          </div>
-          <BoardControls center={<CoachAvatar compact />} centerOverflow />
-          <OpponentCaptures />
           <ChessBoard />
-          <PlayerCaptures />
         </Screen.BoardColumn>
         <Sidebar />
       </Screen.BoardArea>
 
       <Screen.Footer>
+        <PlayerCaptures />
         <CoachPanel />
       </Screen.Footer>
 

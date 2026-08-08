@@ -1,6 +1,23 @@
-.topNav {
-  display: flex;
-  justify-content: flex-start;
-  width: 100%;
-  margin-bottom: 0.35rem;
+/* SPEC: _spec/apps/ui/responsiveness/rules.md */
+
+/* Mobile FEN slot: claim leftover height in the top grid region and pin the
+   control to the bottom (near the board). Banner stays flush-top.
+   Do not set `display` here — `.mobile-only` owns desktop hiding; a base
+   `display` would override it (same specificity, later cascade). */
+@media (max-width: 719px) {
+  /* Own the leftover spacer — do not leave it on MobileBanner's margin-bottom. */
+  :global([data-region="top"]:has([data-testid="analysis-mobile-fen"]) [data-testid="mobile-banner"]) {
+    margin-bottom: 0;
+  }
+
+  .mobileFen {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-self: stretch;
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+  }
 }

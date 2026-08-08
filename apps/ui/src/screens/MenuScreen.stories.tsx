@@ -25,24 +25,8 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Desktop: Story = {
-  globals: { viewport: { value: "desktop", isRotated: false } },
-  render: () => {
-    seedMenu();
-    return <MenuScreen />;
-  },
-};
-
-export const Mobile: Story = {
-  globals: { viewport: { value: "mobile", isRotated: false } },
-  render: () => {
-    seedMenu();
-    return <MenuScreen />;
-  },
-};
-
-export const Dynamic: Story = {
-  globals: { viewport: { value: "dynamic", isRotated: false } },
+/** Switch Desktop / Mobile / Dynamic via the Storybook viewport toolbar. */
+export const Default: Story = {
   render: () => {
     seedMenu();
     return <MenuScreen />;
@@ -50,7 +34,6 @@ export const Dynamic: Story = {
 };
 
 export const CreditsOpen: Story = {
-  globals: { viewport: { value: "desktop", isRotated: false } },
   render: () => {
     seedMenu(true);
     return <MenuScreen />;
