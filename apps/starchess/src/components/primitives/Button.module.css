@@ -39,3 +39,32 @@
   background-color: var(--primary-hover);
   color: var(--surface-color);
 }
+
+/* Brood War menu neon — Start / Stay / Leave */
+.common-btn--neon {
+  --sc-menu-neon: #7cff4a;
+  min-width: 7rem;
+  border-radius: 0 !important;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 700;
+  border: 1px solid color-mix(in srgb, var(--sc-menu-neon) 35%, transparent) !important;
+  background: color-mix(in srgb, #041208 80%, transparent) !important;
+  color: color-mix(in srgb, var(--sc-menu-neon) 75%, #c8e8b8) !important;
+}
+.common-btn--neon:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--sc-menu-neon) 12%, #041208) !important;
+  border-color: color-mix(in srgb, var(--sc-menu-neon) 55%, transparent) !important;
+  filter: brightness(1.08);
+}
+.common-btn--neon-primary {
+  border: 1px solid color-mix(in srgb, var(--sc-menu-neon) 55%, transparent) !important;
+  background: color-mix(in srgb, var(--sc-menu-neon) 22%, #041208) !important;
+  color: var(--sc-menu-neon) !important;
+  box-shadow: 0 0 14px color-mix(in srgb, var(--sc-menu-neon) 22%, transparent);
+}
+.common-btn--neon-primary:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--sc-menu-neon) 34%, #041208) !important;
+  color: #e8ffb8 !important;
+  filter: brightness(1.08);
+}

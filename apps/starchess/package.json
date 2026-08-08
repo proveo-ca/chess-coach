@@ -23,7 +23,8 @@
     "@solidjs/router": "^0.16.1",
     "chess.js": "^1.4.0",
     "clsx": "^2.1.1",
-    "solid-js": "^1.9.12"
+    "solid-js": "^1.9.12",
+    "unique-names-generator": "^4.7.1"
   },
   "devDependencies": {
     "@solidjs/testing-library": "^0.8.10",

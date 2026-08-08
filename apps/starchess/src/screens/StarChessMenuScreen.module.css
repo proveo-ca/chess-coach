@@ -65,6 +65,11 @@
   transition: background 900ms ease;
 }
 
+/* World name rides the wash on narrow viewports (planet TTY is hidden there). */
+.washLabel {
+  display: none;
+}
+
 .sky[data-planet-world="eclipse"] {
   --sky-planet-wash: #1a4a7a;
 }
@@ -190,12 +195,12 @@
 }
 
 .posTutorial {
-  left: 18%;
+  left: calc(18% + 4rem);
   top: 85%;
 }
 
 .posCredits {
-  left: 18%;
+  left: calc(18% + 4rem);
   top: 92%;
 }
 
@@ -204,36 +209,125 @@
   top: 68%;
 }
 
+/*
+ * Narrow width — vertical zig-zag (desktop positions unchanged above):
+ *   > Single Player
+ *         < Review
+ *   > Multiplayer
+ *         < Exit
+ *      - Tutorial -
+ *      - Credits -
+ *   < wash label + planet rim (see MenuPlanet / .washLabel)
+ */
 @media (max-width: 720px) {
-  .posSingle {
-    left: calc(6% + 2rem);
-    top: calc(12% + 2rem);
+  .stage {
+    z-index: 3;
   }
 
-  .posMulti {
-    left: 8%;
-    top: 38%;
+  .washLabel {
+    display: inline-block;
+    position: absolute;
+    left: 0.65rem;
+    bottom: 0.55rem;
+    z-index: 1;
+    padding: 0.2em 0.35em 0.15em;
+    background: var(--sc-menu-neon);
+    color: #041208;
+    font-family: "IBM Plex Mono", "Consolas", "Courier New", monospace;
+    font-size: clamp(0.7rem, 3.4vw, 0.95rem);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    box-shadow:
+      0 0 10px color-mix(in srgb, var(--sc-menu-neon) 65%, transparent),
+      0 0 2px #000;
+  }
+
+  .posSingle {
+    left: 5%;
+    right: auto;
+    top: 30%;
   }
 
   .posReview {
     left: auto;
     right: 4%;
-    top: 18%;
+    top: 38%;
   }
 
-  .posTutorial {
-    left: 8%;
-    top: 78%;
-  }
-
-  .posCredits {
-    left: 8%;
-    top: 88%;
+  .posMulti {
+    left: 5%;
+    right: auto;
+    top: 50%;
   }
 
   .posExit {
     left: auto;
-    right: 6%;
-    top: 72%;
+    right: 4%;
+    top: 60%;
+  }
+
+  .posTutorial,
+  .posCredits {
+    left: 50%;
+    right: auto;
+    align-items: center;
+    text-align: center;
+    transform: translateX(-50%);
+  }
+
+  .posTutorial {
+    top: 74%;
+  }
+
+  .posCredits {
+    top: 80%;
+  }
+
+  .posTutorial:hover:not(:disabled),
+  .posTutorial:focus-visible:not(:disabled),
+  .posCredits:hover:not(:disabled),
+  .posCredits:focus-visible:not(:disabled) {
+    transform: translateX(-50%) scale(1.04);
+  }
+
+  .posTutorial.textItemDisabled:hover,
+  .posCredits.textItemDisabled:hover {
+    transform: translateX(-50%);
+  }
+}
+
+/* Narrow + short — reclaim vertical space; hide Selena’s guide line. */
+@media (max-width: 720px) and (max-height: 860px) {
+  .guideBubble {
+    display: none;
+  }
+
+  .splashAvatarWrapper {
+    margin: 0.85rem auto 0.35rem;
+  }
+
+  .posSingle {
+    top: 24%;
+  }
+
+  .posReview {
+    top: 33%;
+  }
+
+  .posMulti {
+    top: 46%;
+  }
+
+  .posExit {
+    top: 57%;
+  }
+
+  .posTutorial {
+    top: 70%;
+  }
+
+  .posCredits {
+    top: 76%;
   }
 }

@@ -53,6 +53,9 @@ importers:
       solid-js:
         specifier: ^1.9.12
         version: 1.9.14
+      unique-names-generator:
+        specifier: ^4.7.1
+        version: 4.7.1
     devDependencies:
       '@solidjs/testing-library':
         specifier: ^0.8.10

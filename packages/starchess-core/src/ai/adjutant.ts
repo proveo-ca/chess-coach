@@ -20,6 +20,17 @@
  * (≤2 steps) → Charon stacks.
  * Engagement (in range): equal material → always attack; savable queen →
  * defend; otherwise defend threatened non-queens (flee to safety).
+ * Spawn: prefer queens/rooks when minerals allow; skip light drops once the
+ * bank can pay for a rook+ (unless the King is threatened). Always prioritize
+ * getting **at least one bishop** first (Charon / diagonals). When an enemy
+ * queen is visible, stack **more bishops** and **protect the King** (no resign).
+ * Cap knights at 2 — prefer rooks after that. Pawn **file clusters**
+ * (≥7 of ours in any 3 consecutive files) → trade / hunt undefended pawns;
+ * knights sneak-check the King only onto uncovered squares.
+ * Tactical awareness: enemy-attacked squares, friendly-protected squares, and
+ * one-move enemy checks (e.g. a knight a hop from checking our King).
+ * Back-rank cheese: prefer **deploy rook + capture** the checker (same-turn
+ * spawn→classical from the new unit), else step the King to the rank in front.
  *
  * Color-agnostic: plays `ctx.color` (default `"b"` for backward compatibility).
  *
@@ -98,6 +109,16 @@ const isLastRank = (rank: number, us: PieceColor): boolean =>
 const KING_SAFETY = 10_000;
 const QUEEN_ESCAPE = 8_000;
 /**
+ * Spawn a unit then capture the back-rank / checking threat with that same unit.
+ * Above mere King flee — material win + survival (deploy + attack).
+ */
+const DEPLOY_ATTACK_SURVIVAL = KING_SAFETY + 3_500;
+/**
+ * Step the King off its back rank when a file-rook (or similar) threatens check.
+ * Below deploy+attack; above quiet development.
+ */
+const BACKRANK_ESCAPE = 4_500;
+/**
  * Pawn ≤2 steps from last rank — rush promote (gas+move when needed).
  * Below King/queen survival; above equal trades / hunt checks.
  */
@@ -107,6 +128,32 @@ const CHARON_COMBO = 2_500;
 const EQUAL_TRADE_ATTACK = 2_400;
 /** Flee a threatened non-queen to a safe square (defend). */
 const DEFEND_UNIT = 1_800;
+/** Ensure ≥1 bishop before stacking rooks/queens (Charon / diagonals). */
+const BISHOP_FIRST = 2_200;
+/** Visible enemy queen — mass bishops for Charon angles (never resign). */
+const BISHOP_VS_QUEEN = 3_500;
+/** Visible enemy queen — prefer safe King moves / flee over hanging. */
+const QUEEN_THREAT_KING = 1_500;
+/** Cap Vultures — after this many knights, prefer rook deploys. */
+const MAX_KNIGHTS = 2;
+/** Bonus to spawn rook once we already have {@link MAX_KNIGHTS} knights. */
+const ROOK_AFTER_KNIGHTS = 900;
+/**
+ * Pawn congestion — density in a file window, not total army size.
+ * Congested when ≥{@link CLUSTER_PAWNS} of our pawns sit in any
+ * {@link CLUSTER_FILES} consecutive files (e.g. 7 pawns across c–e).
+ */
+const CLUSTER_FILES = 3;
+const CLUSTER_PAWNS = 7;
+/** Congested: trade pawn-for-pawn to clear clutter. */
+const PAWN_TRADE = 750;
+/** Congested / always: take an undefended enemy pawn. */
+const HUNT_UNDEFENDED_PAWN = 950;
+/**
+ * Knight lands a check on a square the enemy does not cover (sneak).
+ * Below equal-material trades (always take those); above quiet hops.
+ */
+const SNEAK_KNIGHT_CHECK = 2_000;
 
 /**
  * Absolute rush when a pawn starts ≤2 steps from promotion and this move
@@ -412,6 +459,8 @@ type ScoreCtx = {
   king: Square;
   kingThreatened: boolean;
   enemyKingVisible: boolean;
+  /** Lit/revealed enemy queen — drive bishop spam + King safety. */
+  enemyQueenVisible: boolean;
   enemyKing: Square | null;
   sieged: ReadonlySet<Square>;
   posture: Posture;
@@ -419,8 +468,123 @@ type ScoreCtx = {
   intel: KingIntel;
   /** True when our side already has a Spider Mine on the d4–e5 hub. */
   hubMineTaken: boolean;
+  /** Own pawn clutter — trade / hunt undefended pawns. */
+  congested: boolean;
+  /**
+   * Tactical map — squares attacked by the enemy / protected by us.
+   * Used for sneak checks, undefended captures, and hang avoidance.
+   */
+  tactical: TacticalBoard;
   us: PieceColor;
   enemy: PieceColor;
+};
+
+/** Per-turn attack / threat awareness for scoring. */
+type TacticalBoard = {
+  /** Square is attacked by ≥1 enemy unit (current board). */
+  enemyAttacks: (sq: Square) => boolean;
+  /** Square is attacked by ≥1 friendly unit (current board). */
+  friendlyProtects: (sq: Square) => boolean;
+  /** Enemy has a legal move that would check our King next. */
+  enemyThreatensCheck: boolean;
+  /** Enemy units currently checking our King. */
+  checkers: ReadonlySet<Square>;
+  /**
+   * Enemy units that can deliver check in one classical move (includes
+   * {@link checkers}). Used for back-rank / pre-mate awareness.
+   */
+  checkThreatSquares: ReadonlySet<Square>;
+};
+
+const countType = (
+  map: Map<Square, ScPiece>,
+  color: PieceColor,
+  type: ScPiece["type"],
+): number => {
+  let n = 0;
+  for (const piece of map.values()) {
+    if (piece.color === color && piece.type === type) n += 1;
+  }
+  return n;
+};
+
+/**
+ * True when our pawns form a dense file cluster — ≥{@link CLUSTER_PAWNS}
+ * pawns inside any window of {@link CLUSTER_FILES} consecutive files.
+ */
+const isPawnClustered = (
+  map: Map<Square, ScPiece>,
+  color: PieceColor,
+): boolean => {
+  const byFile = [0, 0, 0, 0, 0, 0, 0, 0];
+  for (const [square, piece] of map) {
+    if (piece.color !== color || piece.type !== "p") continue;
+    byFile[parseSquare(square).file] += 1;
+  }
+  for (let start = 0; start <= 8 - CLUSTER_FILES; start += 1) {
+    let sum = 0;
+    for (let i = 0; i < CLUSTER_FILES; i += 1) sum += byFile[start + i]!;
+    if (sum >= CLUSTER_PAWNS) return true;
+  }
+  return false;
+};
+
+/**
+ * Build attack predicates + one-ply enemy check threats.
+ * 1) squares attacked by enemy · 2) squares protected by us ·
+ * 3) whether any enemy unit can check our King in one move ·
+ * 4) squares of those checkers / future checkers.
+ */
+const buildTacticalBoard = (
+  map: Map<Square, ScPiece>,
+  us: PieceColor,
+  enemy: PieceColor,
+  ourKing: Square,
+  sieged: ReadonlySet<Square>,
+): TacticalBoard => {
+  const enemyAttacks = (sq: Square) => isSquareAttackedBy(map, sq, enemy);
+  const friendlyProtects = (sq: Square) => isSquareAttackedBy(map, sq, us);
+
+  const checkers = new Set<Square>();
+  const checkThreatSquares = new Set<Square>();
+  // Already checking us.
+  for (const [sq, piece] of map) {
+    if (piece.color !== enemy) continue;
+    if (attacksSquare(map, sq, ourKing)) {
+      checkers.add(sq);
+      checkThreatSquares.add(sq);
+    }
+  }
+
+  let enemyThreatensCheck = checkers.size > 0;
+  for (const m of scMovesFor(map, enemy, { siegedRooks: sieged })) {
+    if (m.dropsAtResolve) continue;
+    const after = cloneWithMove(
+      map,
+      {
+        from: m.from,
+        to: m.to,
+        capture: m.capture,
+        ...(m.firesInPlace ? { firesInPlace: true } : {}),
+        ...(m.promotion ? { promotion: m.promotion } : {}),
+      },
+      sieged,
+    );
+    if (!findKing(after, us)) continue;
+    const land = m.firesInPlace ? m.from : m.to;
+    if (attacksSquare(after, land, ourKing)) {
+      enemyThreatensCheck = true;
+      checkThreatSquares.add(m.from);
+    }
+  }
+
+  return {
+    enemyAttacks,
+    friendlyProtects,
+    enemyThreatensCheck,
+    checkers,
+    checkThreatSquares,
+  };
 };
 
 /** Classical candidates from the shared SC movegen (filter king-square traps). */
@@ -460,9 +624,12 @@ const sideSpecials = (
   storedFor: (color: PieceColor) => number,
   weights: StrategyWeights,
   intel: KingIntel,
+  enemyQueenVisible: boolean,
+  tactical: TacticalBoard,
 ): Candidate[] => {
   const out: Candidate[] = [];
   const threatened = isSquareAttackedBy(map, king, enemy);
+  const underCheckThreat = threatened;
   const {
     siegeHub,
     mapControl,
@@ -474,15 +641,56 @@ const sideSpecials = (
   } = weights;
 
   // spawn — adjacent to the King; afford units within stored minerals.
+  // Prefer queens / rooks when the bank can pay for them — same-square scores
+  // used to be identical across unit types, so cheap pawns won ties and the
+  // Adjutant accumulated too much light material.
+  // Cap Vultures at MAX_KNIGHTS — after that prefer Siege Tanks (rooks).
+  // Always prioritize **≥1 bishop** before heavy spam (diagonals / Charon).
+  // Visible enemy queen → keep spawning bishops (Charon angles) + protect King.
+  // Congested pawns → stop dropping more Marines.
   // Pawns must never resolve onto an edge row (rank 1 or 8 breaks chess.js), so
   // those squares are excluded for pawn spawns.
+  const bank = storedFor(us);
+  const preferHeavy = bank >= UNIT_COST.r;
+  const ownBishops = countType(map, us, "b");
+  const ownKnights = countType(map, us, "n");
+  const congested = isPawnClustered(map, us);
+  const needBishop = ownBishops === 0;
+  const wantBishops = needBishop || enemyQueenVisible;
+  const knightsFull = ownKnights >= MAX_KNIGHTS;
   const adjacent = neighbors(king).filter((at) => !map.has(at));
-  for (const unit of ["p", "n", "b", "r"] as const) {
-    if (UNIT_COST[unit] > storedFor(us)) continue;
+  for (const unit of ["p", "n", "b", "r", "q"] as const) {
+    if (UNIT_COST[unit] > bank) continue;
+    if (unit === "n" && knightsFull) continue;
+    if (congested && unit === "p") continue;
+    // Skip light drops when we can afford a rook+ (unless King threatened, or
+    // we still need bishops vs a visible enemy queen).
+    if (
+      preferHeavy &&
+      !underCheckThreat &&
+      UNIT_COST[unit] < UNIT_COST.r &&
+      !(wantBishops && unit === "b")
+    ) {
+      continue;
+    }
+    // After 2 knights, prefer rook deploys over other mid-tier options.
+    if (knightsFull && preferHeavy && unit !== "r" && unit !== "q" && unit !== "b") {
+      continue;
+    }
     for (const to of adjacent) {
       if (unit === "p" && (rankOf(to) === 1 || rankOf(to) === 8)) continue;
-      let score = center * centerScore(to) + promoteRank * promoteProgress(rankOf(to), us);
-      if (threatened) score += trade;
+      let score =
+        center * centerScore(to) +
+        promoteRank * promoteProgress(rankOf(to), us) +
+        // Heavier piece → higher score (q=9, r=5 ≫ p=1).
+        trade * (1 + UNIT_COST[unit]);
+      // Survival first — do not force bishop-before-rook while the King is hot.
+      if (needBishop && unit === "b" && !underCheckThreat) score += BISHOP_FIRST;
+      if (enemyQueenVisible && unit === "b" && !underCheckThreat) score += BISHOP_VS_QUEEN;
+      if (knightsFull && unit === "r") score += ROOK_AFTER_KNIGHTS;
+      // Back-rank cheese: prefer rook deploys that can take the threat next.
+      if (underCheckThreat && unit === "r") score += trade * 4;
+      if (underCheckThreat) score += trade;
       if (isSquareAttackedBy(map, to, enemy)) score -= attackedPenalty;
       out.push(
         asCandidate(
@@ -687,6 +895,78 @@ const sideSpawnStacks = (
 };
 
 /**
+ * Spawn (B) then classical (C) **from the newly deployed unit**.
+ * Validation accepts C.from === spawn.to once B is queued — this is the
+ * deploy+attack survival line (e.g. drop a rook that takes the back-rank checker).
+ */
+const sideSpawnCaptureStacks = (
+  spawnCandidates: readonly Candidate[],
+  map: Map<Square, ScPiece>,
+  sieged: ReadonlySet<Square>,
+  us: PieceColor,
+  enemy: PieceColor,
+  tactical: TacticalBoard,
+  weights: StrategyWeights,
+): Candidate[] => {
+  const out: Candidate[] = [];
+  const { trade } = weights;
+
+  for (const spawn of spawnCandidates) {
+    const spawnAction = spawn.actions[0];
+    if (
+      !spawnAction ||
+      spawnAction.kind !== "spawn" ||
+      !spawnAction.to ||
+      !spawnAction.unit
+    ) {
+      continue;
+    }
+    const after = new Map(map);
+    after.set(spawnAction.to, { type: spawnAction.unit, color: us });
+    const from = spawnAction.to;
+    for (const m of scMovesFor(after, us, { siegedRooks: sieged })) {
+      if (m.dropsAtResolve || m.from !== from) continue;
+      // Deploy+attack is about capturing the threat / winning material.
+      if (!m.capture || m.capture.color !== enemy) continue;
+
+      let score = spawn.score + trade * (1 + UNIT_COST[m.capture.type]);
+      // Deploy+attack survival — only when taking a unit that is checking us now
+      // (not a distant one-ply threat; that is handled by King back-rank escape).
+      const takesChecker = tactical.checkers.has(m.to);
+      const equalOrBetter =
+        UNIT_COST[m.capture.type] >= UNIT_COST[spawnAction.unit];
+      if (takesChecker) {
+        score += DEPLOY_ATTACK_SURVIVAL;
+        if (spawnAction.unit === "r" && m.capture.type === "r") {
+          score += EQUAL_TRADE_ATTACK;
+        } else if (equalOrBetter) {
+          score += EQUAL_TRADE_ATTACK * 0.5;
+        }
+      } else if (equalOrBetter) {
+        score += EQUAL_TRADE_ATTACK;
+      }
+
+      out.push({
+        actions: [
+          spawnAction,
+          {
+            timing: "C",
+            kind: "classical",
+            color: us,
+            from,
+            to: m.to,
+            ...(m.promotion ? { promotion: m.promotion } : {}),
+          },
+        ],
+        score,
+        ...(spawn.spendMinerals != null ? { spendMinerals: spawn.spendMinerals } : {}),
+      });
+    }
+  }
+  return out;
+};
+
+/**
  * Same-turn gas special (B) + classical (C).
  * Charon burns 2 gas then a second unit still strikes; Vulture mines then hops;
  * threatened Battlecruiser warps then another unit develops.
@@ -777,10 +1057,13 @@ const scoreMove = (move: Move, context: ScoreCtx): number => {
     king,
     kingThreatened,
     enemyKingVisible,
+    enemyQueenVisible,
     enemyKing,
     sieged,
     weights,
     intel,
+    congested,
+    tactical,
     us,
     enemy,
   } = context;
@@ -810,20 +1093,40 @@ const scoreMove = (move: Move, context: ScoreCtx): number => {
     // on the pre-move map but stays in check.
     const destSafe = !isSquareAttackedBy(cloneWithMove(map, move, sieged), move.to, enemy);
     if (kingThreatened) {
-      // Flee: strong pull to a safe square, hard penalty for walking into fire.
       score += KING_SAFETY * (destSafe ? 1 : -1);
     } else {
       // No intrinsic value in strolling an unthreatened King: an idle bonus here
       // outranks every real action (spawning, unpacking a pinned tank, pushing a
-      // pawn) and makes the commander wander. Only the centre pull applies.
+      // pawn). Only punish walking into fire.
       if (!destSafe) score -= KING_SAFETY;
+    }
+    // Visible enemy queen — protect the King (flee to safety / avoid hang).
+    if (enemyQueenVisible) {
+      if (destSafe) score += QUEEN_THREAT_KING * (kingThreatened ? 2 : 1);
+      else score -= QUEEN_THREAT_KING;
+    }
+    // Enemy can check next hop — prefer leaving the hot square / staying safe.
+    if (tactical.enemyThreatensCheck && destSafe) score += QUEEN_THREAT_KING * 0.35;
+    // Back-rank cheese: step to the rank in front (e.g. e8→e7) when threatened.
+    if (destSafe && (kingThreatened || tactical.enemyThreatensCheck)) {
+      const backRank = us === "b" ? 8 : 1;
+      const frontRank = us === "b" ? 7 : 2;
+      if (rankOf(move.from) === backRank && rankOf(move.to) === frontRank) {
+        score += BACKRANK_ESCAPE;
+      }
     }
   } else {
     // Engagement — in range of another unit: attack vs defend.
-    const underFire = isSquareAttackedBy(map, move.from, enemy);
+    const underFire = tactical.enemyAttacks(move.from);
     if (move.capture) {
       const victimValue = UNIT_COST[move.capture.type];
       const attackerValue = UNIT_COST[piece.type];
+      const undefended = !tactical.enemyAttacks(move.to);
+      if (move.capture.type === "p") {
+        if (undefended) score += HUNT_UNDEFENDED_PAWN;
+        else if (congested) score += HUNT_UNDEFENDED_PAWN * 0.35;
+        if (congested && piece.type === "p") score += PAWN_TRADE;
+      }
       if (victimValue === attackerValue) {
         // Same material — always attack.
         score += EQUAL_TRADE_ATTACK;
@@ -833,6 +1136,8 @@ const scoreMove = (move: Move, context: ScoreCtx): number => {
         // Bad trade — only slightly tempting unless it also saves us.
         score += trade * 0.25;
       }
+      // Prefer capturing onto a square we already protect.
+      if (tactical.friendlyProtects(move.to)) score += trade * 0.35;
     }
     if (underFire) {
       const after = cloneWithMove(map, move, sieged);
@@ -854,12 +1159,25 @@ const scoreMove = (move: Move, context: ScoreCtx): number => {
       score += promoteRank * promoteProgress(rankOf(move.to), us);
       if (isLastRank(rankOf(move.to), us)) score += promotionBonus;
       score += nearPromoteRush(rankOf(move.from), rankOf(move.to), us);
+      // Congested — quiet pawn advances are less useful than trades / clears.
+      if (congested && !move.capture) score -= trade * 0.5;
     }
     // Vulture — hop onto hub mine sites; once hub is mined, prefer a/h flanks.
     if (piece.type === "n") {
       const site = mineSiteWeight(move.to, context.hubMineTaken);
       if (site > 0) score += mapControl * (1 + site);
       else score += mapControl * centerScore(move.to) * 0.15;
+      // Sneak check: land checking the King on a square the enemy does not cover.
+      // Uses full-board King location (same omniscience as capture scoring).
+      if (enemyKing && move.to !== enemyKing) {
+        const after = cloneWithMove(map, move, sieged);
+        if (attacksSquare(after, move.to, enemyKing)) {
+          const covered = isSquareAttackedBy(after, move.to, enemy);
+          if (!covered) score += SNEAK_KNIGHT_CHECK;
+          else if (tactical.friendlyProtects(move.to)) score += SNEAK_KNIGHT_CHECK * 0.25;
+          else score -= attackedPenalty;
+        }
+      }
     }
     // Goliath — claim long diagonals that bite the centre.
     if (piece.type === "b") {
@@ -872,8 +1190,13 @@ const scoreMove = (move: Move, context: ScoreCtx): number => {
     if (piece.type === "r" && !sieged.has(move.from) && isSiegeHub(move.to)) {
       score += siegeHub * 0.75;
     }
-    // Blunder guard: do not park a unit on a square the enemy already covers.
-    if (!move.capture && isSquareAttackedBy(map, move.to, enemy)) score -= attackedPenalty;
+    // Blunder guard: do not park a unit on a square the enemy already covers
+    // unless we protect it (or we are capturing).
+    if (!move.capture && tactical.enemyAttacks(move.to)) {
+      score -= tactical.friendlyProtects(move.to)
+        ? attackedPenalty * 0.35
+        : attackedPenalty;
+    }
   }
 
   // Enemy-King pressure — posture-scaled (0 unless hunt).
@@ -1076,6 +1399,15 @@ export const adjutant = (
     enemyKingVisible = false;
   }
 
+  let enemyQueenVisible = false;
+  for (const [sq, piece] of map) {
+    if (piece.color !== enemy || piece.type !== "q") continue;
+    if (litSquares.has(sq) || revealedPieces.has(sq)) {
+      enemyQueenVisible = true;
+      break;
+    }
+  }
+
   // Context 1–3 — candidates, scored with posture-dynamic weights.
   // An adjacent enemy King counts: face-to-face kings chip each other.
   const kingThreatened = isSquareAttackedBy(map, king, enemy);
@@ -1083,17 +1415,22 @@ export const adjutant = (
   const posture = resolvePosture(hubHeld, enemyKingVisible);
   const weights = WEIGHTS[posture];
   const intel = gatherKingIntel(map, litSquares, revealedPieces, enemy);
+  const congested = isPawnClustered(map, us);
+  const tactical = buildTacticalBoard(map, us, enemy, king, sieged);
   const scoreCtx: ScoreCtx = {
     map,
     king,
     kingThreatened,
     enemyKingVisible,
+    enemyQueenVisible,
     enemyKing,
     sieged,
     posture,
     weights,
     intel,
     hubMineTaken: hubMineTaken(snap, us),
+    congested,
+    tactical,
     us,
     enemy,
   };
@@ -1121,10 +1458,21 @@ export const adjutant = (
     storedFor,
     weights,
     intel,
+    enemyQueenVisible,
+    tactical,
   );
   const stackCandidates = [
     ...sidePawnGasStacks(snap, map, moves, scoreCtx),
     ...sideSpawnStacks(specialCandidates, moveCandidates),
+    ...sideSpawnCaptureStacks(
+      specialCandidates,
+      map,
+      sieged,
+      us,
+      enemy,
+      tactical,
+      weights,
+    ),
     ...sideSpecialClassicalStacks(
       specialCandidates,
       moveCandidates,

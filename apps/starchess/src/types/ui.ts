@@ -4,6 +4,8 @@ import type { JSX } from "solid-js";
 export interface ButtonProps extends JSX.ButtonHTMLAttributes<HTMLButtonElement> {
   /** Filled primary-color background. */
   primary?: boolean;
+  /** Visual skin — neon = Brood War menu chrome (Start / Stay / Leave). */
+  variant?: "default" | "neon";
   /** When set, renders a link instead of a `<button>` (router `<A>` for internal paths, native `<a>` for external/`target` links). */
   href?: string;
   /** Anchor target (e.g. `_blank`); its presence also forces a native `<a>`. */

@@ -1,14 +1,14 @@
 /**
  * StarChess single-player setup — MAP / TEAM / locked Adjutant / START.
- * Adapted from apps/ui NewGamePanel for Brood War menu chrome.
  */
 import type { StarChessColor } from "@chess-coach/starchess-core";
 import { For, createSignal, type Component } from "solid-js";
 
 import { MapSwatch, mapLabel } from "~/components/atoms/MapSwatch";
-import { Modal } from "~/components/atoms/Modal";
+import { NeonModal } from "~/components/atoms/NeonModal";
 import { TeamSwatch } from "~/components/atoms/TeamSwatch";
 import styles from "~/components/features/NewGamePanel.module.css";
+import { PlayerNameField } from "~/components/features/PlayerNameField";
 import { Button } from "~/components/primitives/Button";
 import { Select } from "~/components/primitives/Select";
 import type { BoardVariant } from "~/types/board";
@@ -31,15 +31,21 @@ export const NewGamePanel: Component<NewGamePanelProps> = (props) => {
   };
 
   return (
-    <Modal
+    <NeonModal
       open={props.open}
       onClose={props.onClose}
       title="Single Player"
       position="fixed"
-      overlayClass={styles.overlay}
-      contentClass={styles.panel}
+      size="md"
     >
       <div class={styles["new-game-panel"]} data-testid="starchess-new-game-panel">
+        <section class={styles.section} aria-labelledby="new-game-player-name">
+          <h3 id="new-game-player-name" class={styles.sectionTitle}>
+            Name
+          </h3>
+          <PlayerNameField id="starchess-player-name" />
+        </section>
+
         <section class={styles.section} aria-labelledby="new-game-map">
           <h3 id="new-game-map" class={styles.sectionTitle}>
             Map
@@ -84,6 +90,7 @@ export const NewGamePanel: Component<NewGamePanelProps> = (props) => {
           </h3>
           <Select
             class={styles.opponent}
+            variant="neon"
             value="adjutant"
             disabled
             aria-label="Opponent"
@@ -93,10 +100,16 @@ export const NewGamePanel: Component<NewGamePanelProps> = (props) => {
           </Select>
         </section>
 
-        <Button class={styles["start-btn"]} primary onClick={start} data-testid="new-game-start">
+        <Button
+          class={styles["start-btn"]}
+          variant="neon"
+          primary
+          onClick={start}
+          data-testid="new-game-start"
+        >
           Start
         </Button>
       </div>
-    </Modal>
+    </NeonModal>
   );
 };

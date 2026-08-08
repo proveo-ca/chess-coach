@@ -12,7 +12,7 @@ import clsx from "clsx";
 import { createSignal, type Component, type JSX } from "solid-js";
 
 import { CoachAvatar } from "~/components/atoms/CoachAvatar";
-import { Credits } from "~/components/atoms/Credits";
+import { Credits } from "~/components/features/Credits";
 import { MenuAnchor } from "~/components/atoms/MenuAnchor";
 import { NetworkSignal } from "~/components/atoms/NetworkSignal";
 import {
@@ -97,7 +97,9 @@ export const StarChessMenuScreen: Component<StarChessMenuScreenProps> = (props) 
         aria-hidden="true"
       >
         <div class={styles.nebula} />
-        <div class={styles.skyWash} />
+        <div class={styles.skyWash}>
+          <span class={styles.washLabel}>{planetWorld().toUpperCase()}</span>
+        </div>
         <MenuPlanet onWorldChange={setPlanetWorld} />
       </div>
 
@@ -107,7 +109,7 @@ export const StarChessMenuScreen: Component<StarChessMenuScreenProps> = (props) 
       */}
       <div class={styles.splashContent} data-testid="menu-splash-slot">
         <div class={styles.splashAvatarWrapper}>
-          <CoachAvatar identity="kerrigan" emotion="idle" />
+          <CoachAvatar identity="kerrigan" />
         </div>
         <ChatBubble testId="starchess-menu-bubble" class={styles.guideBubble}>
           I'm Selena Kerrigan, assigned to guide you through the stars!

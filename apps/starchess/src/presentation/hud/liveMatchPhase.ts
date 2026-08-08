@@ -1,5 +1,5 @@
 /**
- * Derive live / review phase label for TurnBar + ObserverReviewChrome chips.
+ * Derive live / review phase label for TurnBar + TurnBarSidebar chips.
  */
 import type { EndScTurnResult } from "@chess-coach/starchess-core";
 

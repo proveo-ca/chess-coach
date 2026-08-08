@@ -1,12 +1,12 @@
 @startuml menu-flow
 ' SPEC: _spec/apps/starchess/menu-flow.puml
-' purpose: Menu → Single Player setup → live match.
+' purpose: Menu → Single Player; gameOver → /review/:id.
 !include ../../themes/proveo.puml
 
 skinparam packageStyle rectangle
 skinparam defaultTextAlignment left
 
-title StarChess · Menu → Single Player
+title StarChess · Menu → Single Player / Review replay
 
 actor Player
 
@@ -17,6 +17,8 @@ package "apps/starchess" {
   component "navigate /single?map=&team=" as NAV <<async>>
   component "StarChessSingleScreen\nMatchStore + LiveMatchShell\nStarChessScreen turnChrome=sidebar\nAdjutant = opposite of team" as LIVE <<app>>
   component "ExitGameConfirm\nHome during planning/targeting/resolving" as EXIT <<error>>
+  component "gameOver → matchHistory\nreplace /review/:id" as END <<db>>
+  component "StarChessReviewScreen\n/review list · /review/:id DualNav" as REV <<app>>
 }
 
 Player ARROW_MAIN MENU
@@ -26,10 +28,14 @@ SETUP ARROW_MAIN NAV : START
 NAV ARROW_MAIN LIVE
 LIVE ARROW_ERROR EXIT : Home
 EXIT ARROW_OPTIONAL MENU : Leave confirmed
+LIVE ARROW_MAIN END : gameOver
+END ARROW_MAIN REV
 
 note bottom
-  Multiplayer / Review / Tutorial anchors are title-level (WIP or modal).
-  Credits → Credits modal (same neon chrome family as ExitGameConfirm).
+  Multiplayer / Review **MenuAnchor**s are ``disabled`` + ``Coming Soon``;
+  grayscale covers visual, title, and hint.
+  Tutorial is title-level (WIP). Credits → Credits modal.
+  Replay routes stay live (post-match navigate); menu Review is not a nav entry yet.
   Deployment / PWA: ``deployment.puml``. HUD: ``screens.puml``.
 end note
 @enduml

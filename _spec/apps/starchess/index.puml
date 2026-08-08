@@ -10,7 +10,7 @@ title StarChess · Live Spec Map (_spec/apps/starchess)
 
 package "_spec/apps/starchess" {
   component "deployment.puml\nPWA / Worker / Coach redirect" as DEP <<host>>
-  component "menu-flow.puml\nMenu → NewGame → /single" as MENU <<app>>
+  component "menu-flow.puml\nMenu → NewGame → /single · Review" as MENU <<app>>
   component "screens.puml\nScreen HUD chrome" as HUD <<app>>
   component "match-store.puml\nMatchStore / matchReducer / timeline" as MS <<async>>
   component "animation-pipeline.md\nplayTimeline / TIMELINE_*" as ANIM <<async>>
@@ -21,6 +21,7 @@ package "_spec/apps/starchess" {
 package "apps/starchess (runtime)" {
   component "StarChessMenuRoute / MenuScreen" as RMENU <<app>>
   component "StarChessSingleScreen + LiveMatchShell" as RSINGLE <<app>>
+  component "StarChessReviewScreen\n/review · /review/:id" as RREV <<app>>
   component "StarChessScreen + MatchStore" as RSCREEN <<app>>
   component "useBoardInput + timelinePlayer" as RINPUT <<async>>
 }
@@ -31,10 +32,12 @@ package "rules" {
 
 MENU ARROW_MAIN RMENU
 MENU ARROW_MAIN RSINGLE
+MENU ARROW_MAIN RREV
 HUD ARROW_MAIN RSCREEN
 MS ARROW_MAIN RSCREEN
 ANIM ARROW_MAIN RINPUT
 DEP ARROW_MAIN RSINGLE
+DEP ARROW_MAIN RREV
 RULES ARROW_OPTIONAL RINPUT : legality / End
 DEMO ARROW_OPTIONAL RSCREEN
 ROAD ARROW_OPTIONAL RULES

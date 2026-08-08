@@ -38,10 +38,10 @@
 }
 
 .disabled {
+  /* Whole anchor: visual + title + Coming Soon hint. */
   color: var(--sc-menu-neon-dim, color-mix(in srgb, #7dff6a 55%, #1a3a22));
   opacity: 0.7;
   cursor: not-allowed;
-  /* Grayscale the title + animation together when the anchor is off. */
   filter: grayscale(1);
 }
 

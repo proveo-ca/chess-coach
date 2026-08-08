@@ -1,4 +1,4 @@
-/* StarChess credits — neon / Brood War chrome over the shared Modal. */
+/* Shared Brood War neon modal chrome (Credits / New Game / Leave Match). */
 
 .overlay {
   background: color-mix(in srgb, #02060c 82%, transparent);
@@ -9,8 +9,6 @@
   --sc-menu-neon: #7cff4a;
   --sc-menu-neon-dim: color-mix(in srgb, #7dff6a 55%, #1a3a22);
 
-  width: min(28rem, calc(100vw - 2rem));
-  max-height: min(80vh, 36rem);
   overflow: auto;
   padding: 1.25rem 1.5rem 1.6rem !important;
   border-radius: 0 !important;
@@ -31,6 +29,16 @@
     sans-serif;
   letter-spacing: 0.05em;
   text-transform: uppercase;
+}
+
+.panel--md {
+  width: min(26rem, calc(100vw - 2rem));
+  max-height: min(85vh, 40rem);
+}
+
+.panel--lg {
+  width: min(28rem, calc(100vw - 2rem));
+  max-height: min(80vh, 36rem);
 }
 
 .panel:focus {
@@ -62,45 +70,4 @@
 .panel :global(button[aria-label="Close modal"]:hover) {
   background: color-mix(in srgb, var(--sc-menu-neon) 18%, #041208);
   filter: brightness(1.12);
-}
-
-.credits ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.credits li {
-  margin-bottom: 1.05rem;
-  line-height: 1.45;
-  color: color-mix(in srgb, var(--sc-menu-neon) 78%, #d8f5c8);
-  text-shadow: 0 0 2px #000;
-}
-
-.credits li:last-child {
-  margin-bottom: 0;
-}
-
-.credits strong {
-  color: var(--sc-menu-neon);
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-shadow:
-    0 0 8px color-mix(in srgb, var(--sc-menu-neon) 55%, transparent),
-    0 0 1px #000;
-}
-
-.credits a {
-  color: color-mix(in srgb, var(--sc-menu-neon) 70%, #fff);
-  text-decoration: none;
-  font-size: 0.82rem;
-  letter-spacing: 0.04em;
-  text-transform: none;
-  border-bottom: 1px solid color-mix(in srgb, var(--sc-menu-neon) 35%, transparent);
-}
-
-.credits a:hover {
-  color: #e8ffb8;
-  border-bottom-color: color-mix(in srgb, var(--sc-menu-neon) 75%, transparent);
-  text-shadow: 0 0 8px color-mix(in srgb, var(--sc-menu-neon) 45%, transparent);
 }

@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { Credits } from "~/components/atoms/Credits";
+import { Credits } from "~/components/features/Credits";
 
 const meta = {
-  title: "Atoms/Credits",
+  title: "Features/Credits",
   component: Credits,
   args: { open: true, onClose: () => undefined },
   parameters: { layout: "fullscreen" },

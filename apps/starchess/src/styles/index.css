@@ -97,4 +97,6 @@ a {
 
 button {
   font-family: inherit;
+  /* Buttons are not text fields — hide the I-beam caret on focus. */
+  caret-color: transparent;
 }

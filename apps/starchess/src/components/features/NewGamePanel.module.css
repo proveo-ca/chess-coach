@@ -1,68 +1,4 @@
-/* StarChess New Game — neon chrome over Modal (Credits-aligned). */
-
-.overlay {
-  background: color-mix(in srgb, #02060c 82%, transparent);
-  backdrop-filter: blur(3px);
-}
-
-.panel {
-  --sc-menu-neon: #7cff4a;
-  --sc-menu-neon-dim: color-mix(in srgb, #7dff6a 55%, #1a3a22);
-
-  width: min(26rem, calc(100vw - 2rem));
-  max-height: min(85vh, 40rem);
-  overflow: auto;
-  padding: 1.15rem 1.35rem 1.4rem !important;
-  border-radius: 0 !important;
-  border: 1px solid color-mix(in srgb, var(--sc-menu-neon) 48%, transparent) !important;
-  background:
-    linear-gradient(
-      165deg,
-      color-mix(in srgb, #0c1a12 92%, var(--sc-menu-neon)) 0%,
-      #050810 58%,
-      #03060a 100%
-    ) !important;
-  box-shadow:
-    0 0 0 1px #000,
-    0 0 28px color-mix(in srgb, var(--sc-menu-neon) 22%, transparent),
-    0 18px 48px rgba(0, 0, 0, 0.72) !important;
-  color: color-mix(in srgb, var(--sc-menu-neon) 82%, #e8ffe0) !important;
-  font-family: "Eurostile", "Microgramma", "Bank Gothic", "Orbitron", "Segoe UI",
-    sans-serif;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
-.panel:focus {
-  outline: 2px solid color-mix(in srgb, var(--sc-menu-neon) 70%, transparent);
-  outline-offset: 3px;
-}
-
-.panel :global(h2) {
-  margin: 0;
-  color: var(--sc-menu-neon);
-  font-size: clamp(1.05rem, 2.4vw, 1.35rem);
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-shadow:
-    0 0 10px color-mix(in srgb, var(--sc-menu-neon) 65%, transparent),
-    0 0 2px #000;
-}
-
-.panel :global(button[aria-label="Close modal"]) {
-  width: 2.25rem;
-  height: 2.25rem;
-  border-radius: 0;
-  border: 1px solid color-mix(in srgb, var(--sc-menu-neon) 40%, transparent);
-  background: color-mix(in srgb, #041208 70%, transparent);
-  color: var(--sc-menu-neon);
-  box-shadow: 0 0 10px color-mix(in srgb, var(--sc-menu-neon) 25%, transparent);
-}
-
-.panel :global(button[aria-label="Close modal"]:hover) {
-  background: color-mix(in srgb, var(--sc-menu-neon) 18%, #041208);
-  filter: brightness(1.12);
-}
+/* New Game layout — panel chrome on NeonModal; actions use neon Button/Select. */
 
 .new-game-panel {
   display: flex;
@@ -83,7 +19,7 @@
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.18em;
-  color: color-mix(in srgb, var(--sc-menu-neon) 70%, #9ab890);
+  color: color-mix(in srgb, var(--sc-menu-neon, #7cff4a) 70%, #9ab890);
   text-align: center;
 }
 
@@ -110,18 +46,4 @@
   align-self: center;
   min-width: 8rem;
   margin-top: 0.25rem;
-  border-radius: 0 !important;
-  border: 1px solid color-mix(in srgb, var(--sc-menu-neon) 55%, transparent) !important;
-  background: color-mix(in srgb, var(--sc-menu-neon) 22%, #041208) !important;
-  color: var(--sc-menu-neon) !important;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  font-weight: 700;
-  box-shadow: 0 0 14px color-mix(in srgb, var(--sc-menu-neon) 22%, transparent);
-}
-
-.start-btn:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--sc-menu-neon) 34%, #041208) !important;
-  color: #e8ffb8 !important;
-  filter: brightness(1.08);
 }

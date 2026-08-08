@@ -3,6 +3,8 @@
  * `identity="selena"` matches apps/ui CoachAvatar (no helm). Switching to
  * kerrigan drops the helm onto her forehead (500ms) with a happy bounce;
  * switching back lifts it toward the top-middle while she watches it leave.
+ * With no `emotion` prop, ambient-cycles idle ↔ scanning (scoped visor)
+ * every 5s — same look as Atoms/CoachAvatar · Scanning scoped/unscoped.
  */
 import clsx from "clsx";
 import {
@@ -10,6 +12,7 @@ import {
   createSignal,
   on,
   onCleanup,
+  onMount,
   type Component,
 } from "solid-js";
 
@@ -36,7 +39,10 @@ export type CoachAvatarProps = {
   sleeping?: boolean;
   /** Bar-sized variant. */
   compact?: boolean;
-  /** Emotion class — story / host driven (no coachStore in starchess). */
+  /**
+   * Emotion class — story / host driven (no coachStore in starchess).
+   * When omitted, ambient-cycles `"idle"` ↔ `"scanning"` every 5s.
+   */
   emotion?: KerriganEmotion;
   /**
    * `selena` — classic cat, no Ghost gear (UI CoachAvatar look).
@@ -47,6 +53,7 @@ export type CoachAvatarProps = {
 };
 
 const HELM_MS = 500;
+const AMBIENT_MS = 5000;
 
 type HelmPhase = "off" | "on" | "dropping" | "lifting";
 
@@ -63,11 +70,15 @@ function ferryOffsetPx(avatarEl: HTMLElement): number {
   return Math.min(0, stageTop - avatarTop);
 }
 
+const pickAmbient = (): "idle" | "scanning" =>
+  Math.random() < 0.5 ? "idle" : "scanning";
+
 export const CoachAvatar: Component<CoachAvatarProps> = (props) => {
   const identity = () => props.identity ?? "kerrigan";
   const [helmPhase, setHelmPhase] = createSignal<HelmPhase>(
     identity() === "kerrigan" ? "on" : "off",
   );
+  const [ambient, setAmbient] = createSignal<"idle" | "scanning">(pickAmbient());
 
   let rootEl: HTMLDivElement | undefined;
   let helmTimer: ReturnType<typeof setTimeout> | undefined;
@@ -115,6 +126,19 @@ export const CoachAvatar: Component<CoachAvatarProps> = (props) => {
     }),
   );
 
+  // Ambient scoped ↔ unscoped when the host does not pin an emotion.
+  onMount(() => {
+    const id = window.setInterval(() => {
+      if (props.emotion != null || props.sleeping) return;
+      setAmbient((prev) => {
+        const next = pickAmbient();
+        // Always change so the visor slide is visible each tick.
+        return next === prev ? (prev === "idle" ? "scanning" : "idle") : next;
+      });
+    }, AMBIENT_MS);
+    onCleanup(() => window.clearInterval(id));
+  });
+
   onCleanup(() => {
     if (helmTimer !== undefined) clearTimeout(helmTimer);
   });
@@ -124,7 +148,7 @@ export const CoachAvatar: Component<CoachAvatarProps> = (props) => {
     const phase = helmPhase();
     if (phase === "dropping") return "happy";
     if (phase === "lifting") return "watching--up";
-    return props.emotion ?? "idle";
+    return props.emotion ?? ambient();
   };
 
   const character = () =>

@@ -9,6 +9,12 @@ export type NerdBoardVariant = BoardVariant;
 /** `player` = single-viewer fog veil; `observer` = full board + dual vision borders. */
 export type VisionMode = "player" | "observer";
 
+/**
+ * Review DualNav vision filter (Sidebar radios under Home).
+ * `both` → observer borders; `w`/`b` → that side's fog, no dual borders.
+ */
+export type ReviewVisionFilter = "both" | StarChessColor;
+
 export type IntentGhost = {
   at: Square;
   color: StarChessColor;

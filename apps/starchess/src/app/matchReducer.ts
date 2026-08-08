@@ -73,6 +73,7 @@ const seedFromSnap = (snap: ScFenSnapshot, stored: number): MatchState => {
     liveSnapshot: snap,
     economies: defaultEconomies(stored),
     viewer: "w",
+    playerColor: "w",
     deadlineAt: null,
     targeting: null,
     // Armed specials this planning window only — not snap `U:` (enemy fog pierce).
@@ -664,6 +665,8 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
     }
     case "SET_VIEWER":
       return { ...state, viewer: action.viewer };
+    case "SET_PLAYER_COLOR":
+      return { ...state, playerColor: action.playerColor };
     case "SET_DEADLINE":
       return { ...state, deadlineAt: action.at };
     case "CANCEL_EFFECTS":

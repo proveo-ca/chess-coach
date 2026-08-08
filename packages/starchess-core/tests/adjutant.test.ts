@@ -5,6 +5,7 @@ import {
   endScTurn,
   parseScFen,
   placementToMap,
+  UNIT_COST,
 } from "../src/index";
 
 describe("adjutant", () => {
@@ -329,5 +330,147 @@ describe("adjutant", () => {
     expect(flee).toBeTruthy();
     // Leave the rook's a-file (a2/a4 still burn).
     expect(flee!.to?.[0]).not.toBe("a");
+  });
+
+  it("spawns a queen when the mineral bank can afford one", () => {
+    // Already has a bishop — heavy preference may pick queen.
+    const snap = parseScFen(
+      "SCFEN|4kb2/8/8/8/8/8/8/4K3|5|33|P|G:11:11|Q:w:;b:",
+    );
+    const plan = adjutant(snap, { storedFor: () => 12 });
+    const spawn = plan.snapshot.queue?.actions.find(
+      (a) => a.color === "b" && a.kind === "spawn",
+    );
+    expect(spawn).toMatchObject({ unit: "q" });
+    expect(plan.spendMinerals).toEqual({ color: "b", amount: 9 });
+  });
+
+  it("spawns a rook when bank covers rook but not queen", () => {
+    const snap = parseScFen(
+      "SCFEN|4kb2/8/8/8/8/8/8/4K3|5|33|P|G:11:11|Q:w:;b:",
+    );
+    const plan = adjutant(snap, { storedFor: () => 5 });
+    const spawn = plan.snapshot.queue?.actions.find(
+      (a) => a.color === "b" && a.kind === "spawn",
+    );
+    expect(spawn).toMatchObject({ unit: "r" });
+    expect(plan.spendMinerals).toEqual({ color: "b", amount: 5 });
+  });
+
+  it("still spawns light units when bank is below rook cost", () => {
+    const snap = parseScFen(
+      "SCFEN|4k3/8/8/8/8/8/8/4K3|5|33|P|G:11:11|Q:w:;b:",
+    );
+    const plan = adjutant(snap, { storedFor: () => 3 });
+    const spawn = plan.snapshot.queue?.actions.find(
+      (a) => a.color === "b" && a.kind === "spawn",
+    );
+    expect(spawn?.unit).toMatch(/^[pnb]$/);
+    expect(plan.spendMinerals?.amount).toBeLessThan(UNIT_COST.r);
+  });
+
+  it("prioritises the first bishop before queens/rooks", () => {
+    const snap = parseScFen(
+      "SCFEN|4k3/8/8/8/8/8/8/4K3|5|33|P|G:11:11|Q:w:;b:",
+    );
+    const plan = adjutant(snap, { storedFor: () => 12 });
+    const spawn = plan.snapshot.queue?.actions.find(
+      (a) => a.color === "b" && a.kind === "spawn",
+    );
+    expect(spawn).toMatchObject({ unit: "b" });
+    expect(plan.spendMinerals).toEqual({ color: "b", amount: 3 });
+  });
+
+  it("spawns more bishops when an enemy queen is visible", () => {
+    const snap = parseScFen(
+      "SCFEN|4kb2/8/8/3Q4/4n3/8/8/4K3|0|33|P|G:11:11|Q:w:;b:",
+    );
+    const plan = adjutant(snap, { storedFor: () => 12 });
+    const spawn = plan.snapshot.queue?.actions.find(
+      (a) => a.color === "b" && a.kind === "spawn",
+    );
+    expect(spawn).toMatchObject({ unit: "b" });
+    expect(plan.spendMinerals).toEqual({ color: "b", amount: 3 });
+  });
+
+  it("spawns a rook instead of a third knight once two Vultures exist", () => {
+    const snap = parseScFen(
+      "SCFEN|4kb2/8/2n5/3n4/8/8/8/4K3|5|33|P|G:11:11|Q:w:;b:",
+    );
+    const plan = adjutant(snap, { storedFor: () => 5 });
+    const spawn = plan.snapshot.queue?.actions.find(
+      (a) => a.color === "b" && a.kind === "spawn",
+    );
+    expect(spawn).toMatchObject({ unit: "r" });
+    expect(plan.spendMinerals).toEqual({ color: "b", amount: 5 });
+  });
+
+  it("trades pawn-for-pawn when pawns are file-clustered", () => {
+    // Seven black pawns packed on files c–e (3 consecutive) → congested cluster.
+    // Prefer d6×e5 (pawn trade) over quieter moves / non-pawn captures.
+    const snap = parseScFen(
+      "SCFEN|4k3/2ppp3/2ppp3/2p1P3/8/3n4/8/4K3|0|33|P|G:11:11|Q:w:;b:",
+    );
+    const plan = adjutant(snap);
+    const actions = plan.snapshot.queue?.actions.filter((a) => a.color === "b") ?? [];
+    expect(
+      actions.some(
+        (a) => a.kind === "classical" && a.from === "d6" && a.to === "e5",
+      ),
+    ).toBe(true);
+  });
+
+  it("sneak-checks with a knight onto an uncovered square", () => {
+    // Nb4→d3 checks Ke1; d3 is not covered by the lone king.
+    const snap = parseScFen(
+      "SCFEN|4k3/8/8/8/1n6/8/8/4K3|0|33|P|G:11:11|Q:w:;b:",
+    );
+    const plan = adjutant(snap);
+    const actions = plan.snapshot.queue?.actions.filter((a) => a.color === "b") ?? [];
+    expect(
+      actions.some(
+        (a) => a.kind === "classical" && a.from === "b4" && a.to === "d3",
+      ),
+    ).toBe(true);
+  });
+
+  it("survives back-rank check by deploy rook + capture (material win)", () => {
+    // Rh8 checks Ke8 — spawn rook on f8 then take the checker.
+    const snap = parseScFen(
+      "SCFEN|4k2R/8/8/8/8/8/8/4K3|0|33|P|G:11:11|Q:w:;b:",
+    );
+    const plan = adjutant(snap, { storedFor: () => 12 });
+    const actions = plan.snapshot.queue?.actions.filter((a) => a.color === "b") ?? [];
+    expect(actions).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          timing: "B",
+          kind: "spawn",
+          unit: "r",
+          to: "f8",
+        }),
+        expect.objectContaining({
+          timing: "C",
+          kind: "classical",
+          from: "f8",
+          to: "h8",
+        }),
+      ]),
+    );
+    expect(plan.spendMinerals).toEqual({ color: "b", amount: 5 });
+  });
+
+  it("steps the King off the back rank when a file-rook threatens check", () => {
+    // Rh1 can slide to h8 — leave rank 8 (e8→e7) rather than hang for mate.
+    const snap = parseScFen(
+      "SCFEN|4k3/8/8/8/8/8/8/4K2R|0|33|P|G:11:11|Q:w:;b:",
+    );
+    const plan = adjutant(snap, { storedFor: () => 12 });
+    const actions = plan.snapshot.queue?.actions.filter((a) => a.color === "b") ?? [];
+    expect(
+      actions.some(
+        (a) => a.kind === "classical" && a.from === "e8" && a.to === "e7",
+      ),
+    ).toBe(true);
   });
 });

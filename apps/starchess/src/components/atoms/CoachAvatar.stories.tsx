@@ -62,6 +62,7 @@ const toggleBtnStyle = (active: boolean): Record<string, string> => ({
     : "color-mix(in srgb, #3a3d42 55%, #f5f5f5)",
   color: active ? "#e8ffb8" : "#1a1c1f",
   cursor: "pointer",
+  "caret-color": "transparent",
 });
 
 export const Idle: Story = {

@@ -1,10 +1,10 @@
 /**
- * Confirm leaving a live StarChess match — Credits / Brood War neon chrome.
+ * Confirm leaving a live StarChess match — NeonModal + neon Buttons.
  */
 import type { Component } from "solid-js";
 
-import styles from "~/components/atoms/ExitGameConfirm.module.css";
-import { Modal } from "~/components/atoms/Modal";
+import { NeonModal } from "~/components/atoms/NeonModal";
+import styles from "~/components/features/ExitGameConfirm.module.css";
 import { Button } from "~/components/primitives/Button";
 
 export type ExitGameConfirmProps = {
@@ -14,29 +14,25 @@ export type ExitGameConfirmProps = {
 };
 
 export const ExitGameConfirm: Component<ExitGameConfirmProps> = (props) => (
-  <Modal
+  <NeonModal
     open={props.open}
     onClose={props.onClose}
     title="Leave Match"
     position="fixed"
-    overlayClass={styles.overlay}
-    contentClass={styles.panel}
+    size="md"
   >
     <div class={styles.body} data-testid="exit-game-confirm">
-      <p class={styles.copy}>
-        Leave this live game and return to the menu? Progress on this match will
-        be lost.
-      </p>
+      <p class={styles.copy}>By leaving this match the progress will be lost</p>
       <div class={styles.actions}>
         <Button
-          class={styles.secondary}
+          variant="neon"
           onClick={() => props.onClose()}
           data-testid="exit-game-stay"
         >
           Stay
         </Button>
         <Button
-          class={styles.primary}
+          variant="neon"
           primary
           onClick={() => props.onConfirm()}
           data-testid="exit-game-leave"
@@ -45,5 +41,5 @@ export const ExitGameConfirm: Component<ExitGameConfirmProps> = (props) => (
         </Button>
       </div>
     </div>
-  </Modal>
+  </NeonModal>
 );

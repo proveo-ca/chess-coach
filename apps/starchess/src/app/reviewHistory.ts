@@ -10,6 +10,7 @@ import {
   scOutcome,
   type EndScTurnResult,
   type ScFenSnapshot,
+  type StarChessColor,
 } from "@chess-coach/starchess-core";
 
 import { createInitialMatchState } from "~/app/matchReducer";
@@ -78,11 +79,12 @@ export const buildReviewHistory = (args: BuildReviewHistoryArgs): ReviewHistory 
   };
 };
 
-/** Seed MatchStore in gameOver DualNav mode at the opening ply. */
 export const createMatchStateFromReviewHistory = (
   history: Pick<ReviewHistory, "settledSnapshots" | "settledResolves">,
-  stored = 12,
+  opts?: { stored?: number; playerColor?: StarChessColor },
 ): MatchState => {
+  const stored = opts?.stored ?? 12;
+  const playerColor = opts?.playerColor ?? "w";
   const snaps = history.settledSnapshots;
   const resolves = history.settledResolves;
   if (snaps.length === 0) return createInitialMatchState();
@@ -100,7 +102,8 @@ export const createMatchStateFromReviewHistory = (
       w: { stored, deployed: 0 },
       b: { stored, deployed: 0 },
     },
-    viewer: "w",
+    viewer: playerColor,
+    playerColor,
     deadlineAt: null,
     targeting: null,
     specialsUsed: new Set(),

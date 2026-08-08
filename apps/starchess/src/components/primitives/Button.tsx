@@ -9,13 +9,22 @@ export function Button(props: ButtonProps) {
   const [local, others] = splitProps(props, [
     "class",
     "primary",
+    "variant",
     "href",
     "target",
     "rel",
     "children",
   ]);
   const cls = () =>
-    clsx(styles["common-btn"], local.primary && styles["common-btn--primary"], local.class);
+    clsx(
+      styles["common-btn"],
+      local.primary && styles["common-btn--primary"],
+      local.variant === "neon" && styles["common-btn--neon"],
+      local.variant === "neon" &&
+        local.primary &&
+        styles["common-btn--neon-primary"],
+      local.class,
+    );
 
   if (local.href != null) {
     // Router <A> is for in-app routes; external URLs (or any target) get a native <a>.

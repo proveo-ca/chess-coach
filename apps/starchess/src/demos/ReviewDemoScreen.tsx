@@ -2,9 +2,9 @@
  * Store-backed DualNav review host — sidebar DualNav + LiveStarChessBoard.
  * Scenario packages supply history; MatchStore owns seek / playback / VFX timeline.
  */
-import { placementToMap } from "@chess-coach/starchess-core";
+import { placementToMap, type StarChessColor } from "@chess-coach/starchess-core";
 import type { Square } from "chess.js";
-import { createEffect, createMemo, onCleanup, onMount, type Component } from "solid-js";
+import { createEffect, createMemo, onCleanup, onMount, Show, type Component } from "solid-js";
 
 import { createMatchStore, MatchStoreProvider, useMatchStore } from "~/app/MatchStoreContext";
 import { createMatchStateFromReviewHistory } from "~/app/reviewHistory";
@@ -17,6 +17,11 @@ import { LiveStarChessBoard } from "~/presentation/board/LiveStarChessBoard";
 import { isCheckOnlyResolve } from "~/presentation/hud/isCheckOnlyResolve";
 import { ResourceBar } from "~/presentation/hud/ResourceBar";
 import { TurnBarSidebar } from "~/presentation/hud/TurnBarSidebar";
+import {
+  resetReviewVisionFilter,
+  reviewVisionFilter,
+  setReviewVisionFilter,
+} from "~/store/reviewVisionStore";
 import type { BoardVariant, VisionMode } from "~/types/board";
 import type { ReviewHistory } from "~/types/review";
 
@@ -29,6 +34,10 @@ export type ReviewDemoScreenProps = {
   variant?: BoardVariant;
   /** Force all rooks to tank mode (fog-edge rook story). */
   rookTank?: boolean;
+  /** Human team for You / Adjutant vision labels. */
+  playerColor?: StarChessColor;
+  /** Sidebar Home — SPA navigate (review routes). */
+  onHome?: () => void;
 };
 
 const syncRookModes = (
@@ -96,6 +105,14 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
   });
 
   onMount(() => {
+    // Seed review vision: observer demos → BOTH; player fog demos → white vision.
+    if (props.visionMode === "player" || props.fog === true) {
+      setReviewVisionFilter("w");
+      store.dispatch({ type: "SET_VIEWER", viewer: "w" });
+    } else {
+      resetReviewVisionFilter();
+    }
+
     const onKey = (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey || e.altKey) return;
       if (e.key === "ArrowLeft") {
@@ -111,25 +128,45 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
       window.removeEventListener("keydown", onKey);
       store.cancelEffects();
       clearSiegedRooks();
+      resetReviewVisionFilter();
     });
   });
+
+  const showWhiteResources = () => {
+    const f = reviewVisionFilter();
+    return f === "both" || f === "w";
+  };
+  const showBlackResources = () => {
+    const f = reviewVisionFilter();
+    return f === "both" || f === "b";
+  };
 
   return (
     <Screen>
       <Screen.SidebarInset class={styles.topPane}>
-        <div class={styles.dualResources} role="group" aria-label="Both sides resources">
-          <ResourceBar color="w" snapshot={snap()} />
-          <ResourceBar color="b" snapshot={snap()} />
+        <div
+          class={styles.dualResources}
+          role="group"
+          aria-label={
+            reviewVisionFilter() === "both"
+              ? "Both sides resources"
+              : reviewVisionFilter() === "w"
+                ? "Blue side resources"
+                : "Red side resources"
+          }
+        >
+          <Show when={showWhiteResources()}>
+            <ResourceBar color="w" snapshot={snap()} />
+          </Show>
+          <Show when={showBlackResources()}>
+            <ResourceBar color="b" snapshot={snap()} />
+          </Show>
         </div>
       </Screen.SidebarInset>
       <Screen.BoardArea>
         <Screen.BoardColumn>
           <div class={styles.host}>
-            <LiveStarChessBoard
-              fog={props.fog}
-              visionMode={props.visionMode}
-              variant={props.variant ?? "eclipse"}
-            />
+            <LiveStarChessBoard variant={props.variant ?? "eclipse"} />
           </div>
         </Screen.BoardColumn>
         <div class={styles.sideRail} data-testid="starchess-side-rail">
@@ -146,7 +183,7 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
             }}
           />
           <hr class={styles.sideRailDivider} />
-          <Sidebar />
+          <Sidebar onHome={props.onHome} />
         </div>
       </Screen.BoardArea>
       <Screen.Footer>
@@ -162,7 +199,9 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
 
 export const ReviewDemoScreen: Component<ReviewDemoScreenProps> = (props) => {
   const store = createMatchStore({
-    initial: createMatchStateFromReviewHistory(props.history),
+    initial: createMatchStateFromReviewHistory(props.history, {
+      playerColor: props.playerColor ?? "w",
+    }),
     autoArmTimer: false,
   });
 
@@ -175,6 +214,7 @@ export const ReviewDemoScreen: Component<ReviewDemoScreenProps> = (props) => {
         fog={props.fog}
         variant={props.variant}
         rookTank={props.rookTank}
+        onHome={props.onHome}
       />
     </MatchStoreProvider>
   );

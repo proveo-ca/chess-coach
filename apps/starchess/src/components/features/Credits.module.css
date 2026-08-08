@@ -1,0 +1,42 @@
+/* Credits list content only — panel chrome lives on NeonModal. */
+
+.credits ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.credits li {
+  margin-bottom: 1.05rem;
+  line-height: 1.45;
+  color: color-mix(in srgb, var(--sc-menu-neon, #7cff4a) 78%, #d8f5c8);
+  text-shadow: 0 0 2px #000;
+}
+
+.credits li:last-child {
+  margin-bottom: 0;
+}
+
+.credits strong {
+  color: var(--sc-menu-neon, #7cff4a);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-shadow:
+    0 0 8px color-mix(in srgb, var(--sc-menu-neon, #7cff4a) 55%, transparent),
+    0 0 1px #000;
+}
+
+.credits a {
+  color: color-mix(in srgb, var(--sc-menu-neon, #7cff4a) 70%, #fff);
+  text-decoration: none;
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--sc-menu-neon, #7cff4a) 35%, transparent);
+}
+
+.credits a:hover {
+  color: #e8ffb8;
+  border-bottom-color: color-mix(in srgb, var(--sc-menu-neon, #7cff4a) 75%, transparent);
+  text-shadow: 0 0 8px color-mix(in srgb, var(--sc-menu-neon, #7cff4a) 45%, transparent);
+}

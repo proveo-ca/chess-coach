@@ -17,8 +17,10 @@ const walk = (dir: string): string[] => {
 
 describe("apps/starchess boundary", () => {
   it("does not import apps/ui, gameStore, coach, EnginePool, stockfish, web-llm", () => {
+    // Ban Coach UI / engine paths. StarChess may use its own `~/store/*`
+    // (settings, capabilities, review vision) — not apps/ui's store tree.
     const forbidden =
-      /from ["'](?:.*apps\/ui|~\/(?:store|engine|hooks\/useChessBoard)|.*gameStore|.*coachStore|.*EnginePool|.*stockfish|.*web-llm|@mlc-ai)/;
+      /from ["'](?:.*apps\/ui|~\/(?:engine|hooks\/useChessBoard)|.*gameStore|.*coachStore|.*EnginePool|.*stockfish|.*web-llm|@mlc-ai)/;
     const offenders: string[] = [];
     for (const file of walk(SRC)) {
       const text = readFileSync(file, "utf8");

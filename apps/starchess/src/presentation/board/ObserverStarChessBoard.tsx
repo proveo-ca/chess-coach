@@ -336,7 +336,6 @@ export const ObserverStarChessBoard: Component<{
                     return isFogged() && !!p && !hidePiece();
                   };
                   const visiblePiece = () => (hidePiece() ? null : piece());
-                  const ghost = () => ghostAt(square);
                   const rookMode = (): RookMode =>
                     sieged().has(square) ? "siege" : "tank";
                   const isSelected = () => props.selected === square;
@@ -348,12 +347,29 @@ export const ObserverStarChessBoard: Component<{
                     if (!specialsUsed().has(square)) return false;
                     const p = piece();
                     if (!p) return false;
-                    // Persistent U: / in-resolve stamp — any unit that spent gas
-                    // (own or enemy). Cleared at next turn-open checks.
+                    // Player fog: do not leak enemy U: stamps through the veil.
+                    if (usePlayerFog() && hidePiece()) return false;
                     return true;
                   };
-                  const canister = () => canisterAt(square);
-                  const intentCheck = () => checkAt(square);
+                  const canister = () => {
+                    const c = canisterAt(square);
+                    if (!c) return undefined;
+                    // Player fog: hide canisters on fogged / hidden squares.
+                    if (usePlayerFog() && (isFogged() || hidePiece())) return undefined;
+                    return c;
+                  };
+                  const ghost = () => {
+                    const g = ghostAt(square);
+                    if (!g) return undefined;
+                    if (usePlayerFog() && isFogged()) return undefined;
+                    return g;
+                  };
+                  const intentCheck = () => {
+                    if (!checkAt(square)) return false;
+                    // Standing checks stay visible when lit; skip fogged tiles.
+                    if (usePlayerFog() && isFogged()) return false;
+                    return true;
+                  };
                   const mineColor = () => minesBySquare().get(square);
                   const showMine = () => {
                     const color = mineColor();

@@ -25,9 +25,13 @@ package "Side rail\n(turnChrome=sidebar on /single)" {
   component "Sidebar\nHome (+ ExitGameConfirm if live)\nFlip when capabilities allow" as SIDE <<app>>
 }
 
+package "Menu modals (NeonModal atom)" {
+  component "NeonModal\natoms/NeonModal" as NEON <<app>>
+  component "Credits / NewGamePanel /\nExitGameConfirm (features)" as MENU <<app>>
+}
+
 package "Legacy / stories" {
   component "TurnBar (horizontal)\nturnChrome=bar only" as BAR <<async>>
-  component "ObserverReviewChrome\n(top DualNav + dual bars)\nstill available; demos prefer rail" as OBS <<async>>
 }
 
 TOP ARROW_MAIN MID
@@ -37,9 +41,9 @@ MID ARROW_MAIN LIVE
 MID ARROW_OPTIONAL REV
 MID ARROW_MAIN SIDE
 LIVE ARROW_OPTIONAL BAR : alt chrome
-REV ARROW_OPTIONAL OBS : alt chrome
 BOARD ARROW_OPTIONAL MODALS
 SIDE ARROW_ERROR SIDE : Leave Match modal
+MENU ARROW_MAIN NEON
 
 note bottom
   **Layout floors** match CoachScreen: top/footer ``--avatar-height`` (8rem),

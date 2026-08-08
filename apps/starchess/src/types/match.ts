@@ -129,7 +129,16 @@ export type MatchState = {
   phase: MatchPhase;
   liveSnapshot: ScFenSnapshot;
   economies: Record<StarChessColor, PlayerEconomy>;
+  /**
+   * Whose fog / input seat is active (live play = human; review VISION may
+   * temporarily switch to the Adjutant color).
+   */
   viewer: ViewerColor;
+  /**
+   * Human’s chosen team for this match — stable across review vision toggles.
+   * Sidebar labels: You = playerColor, Adjutant = opposite.
+   */
+  playerColor: ViewerColor;
   deadlineAt: number | null;
   targeting: TargetingState;
   specialsUsed: ReadonlySet<Square>;
@@ -215,6 +224,7 @@ export type MatchAction =
   /** Arm a stored resolve for terminal DualNav replay (phase stays `gameOver`). */
   | { type: "REVIEW_PLAY"; result: EndScTurnResult }
   | { type: "SET_VIEWER"; viewer: ViewerColor }
+  | { type: "SET_PLAYER_COLOR"; playerColor: ViewerColor }
   | { type: "SET_DEADLINE"; at: number | null }
   | { type: "SPEND_STORED"; color: StarChessColor; amount: number }
   | { type: "REFUND_STORED"; color: StarChessColor; amount: number }

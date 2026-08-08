@@ -47,6 +47,10 @@ import { storedMaterial, viewerColor } from "~/app/matchEconomy";
 import { displayedSnapshot, outcomeLabel } from "~/app/selectors";
 import { liveMatchPhase } from "~/presentation/hud/liveMatchPhase";
 import styles from "~/app/StarChessScreen.module.css";
+import {
+  resetReviewVisionFilter,
+  reviewVisionFilter,
+} from "~/store/reviewVisionStore";
 
 export type AutoQueueOpponentResult = {
   snapshot: ScFenSnapshot;
@@ -490,7 +494,10 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
     }
   });
 
-  onCleanup(() => store.cancelEffects());
+  onCleanup(() => {
+    store.cancelEffects();
+    resetReviewVisionFilter();
+  });
 
   const reviewTurnNumber = () => {
     const s = store.state();
@@ -503,6 +510,15 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
     store.reviewPhase() === "check" ||
     store.reviewPhase() === "intent" ||
     store.reviewPhase() === "resolve";
+
+  const showWhiteResources = () => {
+    const f = reviewVisionFilter();
+    return f === "both" || f === "w";
+  };
+  const showBlackResources = () => {
+    const f = reviewVisionFilter();
+    return f === "both" || f === "b";
+  };
 
   return (
     <Screen>
@@ -533,16 +549,26 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
               <div
                 class={styles.dualResources}
                 role="group"
-                aria-label="Both sides resources"
+                aria-label={
+                  reviewVisionFilter() === "both"
+                    ? "Both sides resources"
+                    : reviewVisionFilter() === "w"
+                      ? "Blue side resources"
+                      : "Red side resources"
+                }
               >
-                <ResourceBar
-                  color="w"
-                  snapshot={displayedSnapshot(store.state())}
-                />
-                <ResourceBar
-                  color="b"
-                  snapshot={displayedSnapshot(store.state())}
-                />
+                <Show when={showWhiteResources()}>
+                  <ResourceBar
+                    color="w"
+                    snapshot={displayedSnapshot(store.state())}
+                  />
+                </Show>
+                <Show when={showBlackResources()}>
+                  <ResourceBar
+                    color="b"
+                    snapshot={displayedSnapshot(store.state())}
+                  />
+                </Show>
               </div>
             </Show>
           </Show>
@@ -556,7 +582,10 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
             data-testid="nerd-play-layout"
             ref={(el) => (boardHost = el)}
           >
-            <LiveStarChessBoard fog={fogOfWar()} variant={variant()} />
+            <LiveStarChessBoard
+              fog={ended() ? undefined : fogOfWar()}
+              variant={variant()}
+            />
             <Show when={starChessMode() && overlayBox()}>
               {(box) => (
                 <div

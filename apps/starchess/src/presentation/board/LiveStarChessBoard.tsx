@@ -3,6 +3,7 @@ import type { Square } from "chess.js";
  * Live match board — snapshot from match store + combat VFX from timeline.
  * Variants: eclipse | butter | vermeer.
  * Deploy drops: timeline cues + occupancy auto-deploy (apps/ui parity).
+ * Intent / fog ownership: {@link useIntentOverlays} / {@link useBoardVision}.
  */
 import type { Component } from "solid-js";
 import { createEffect, createMemo, createSignal, onMount } from "solid-js";
@@ -20,14 +21,14 @@ import { AnimationStage } from "~/presentation/animations/AnimationStage";
 import { kingDamageCuesFromBoard } from "~/presentation/animations/kingDamage";
 import { deriveVisualFrame } from "~/presentation/animations/visualFrame";
 import { useBoardInput } from "~/presentation/board/useBoardInput";
-import { intentOverlaysFromQueue } from "~/presentation/combat/intentOverlays";
 import { useAutoDeploy } from "~/presentation/hooks/useAutoDeploy";
 import { useCombatOverlays } from "~/presentation/hooks/useCombatOverlays";
-import { liveMatchPhase } from "~/presentation/hud/liveMatchPhase";
 import {
-  LIVE_CAPABILITIES,
-  setCapabilities,
-} from "~/store/capabilitiesStore";
+  useBoardVision,
+  useIntentOverlays,
+} from "~/presentation/hooks/useIntentOverlays";
+import { liveMatchPhase } from "~/presentation/hud/liveMatchPhase";
+import { LIVE_CAPABILITIES, setCapabilities } from "~/store/capabilitiesStore";
 import type { BoardVariant, VisionMode } from "~/types/board";
 import type { KingDamageCue } from "~/types/cues";
 import type { ReviewTurnPhase } from "~/types/review";
@@ -42,6 +43,11 @@ export const LiveStarChessBoard: Component<{
   const store = useMatchStore();
   const { onSquareClick } = useBoardInput();
   const combat = useCombatOverlays(store);
+  const overlays = useIntentOverlays(store);
+  const boardVision = useBoardVision(store, () => ({
+    fog: props.fog,
+    visionMode: props.visionMode,
+  }));
   const snap = createMemo(() => displayedSnapshot(store.state()));
   const [kingDamage, setKingDamage] = createSignal<KingDamageCue[]>([]);
   const reviewing = () => store.state().phase === "gameOver";
@@ -61,14 +67,8 @@ export const LiveStarChessBoard: Component<{
     });
   });
 
-  const fog = () => {
-    if (props.fog !== undefined) return props.fog;
-    return reviewing() ? false : true;
-  };
-  const visionMode = (): VisionMode => {
-    if (props.visionMode) return props.visionMode;
-    return reviewing() ? "observer" : "player";
-  };
+  const fog = () => boardVision().fog;
+  const visionMode = () => boardVision().visionMode;
 
   /** Player fog gates combat VFX; DualNav / no-fog shows everything. */
   const gateFx = () => fog() && visionMode() === "player";
@@ -98,21 +98,6 @@ export const LiveStarChessBoard: Component<{
       { rookModeFor },
     );
   };
-
-  /** Live: only our queue. Review DualNav: both sides (no viewer filter). */
-  const overlays = createMemo(() => {
-    const s = snap();
-    const reviewIntent = reviewing() ? store.reviewIntentActions() : null;
-    const viewer = store.state().viewer;
-    const raw = reviewing() ? (reviewIntent ?? undefined) : s.queue?.actions;
-    const actions = reviewing() || !raw ? raw : raw.filter((a) => a.color === viewer);
-    return intentOverlaysFromQueue(actions, {
-      placement: s.placement,
-      siegedRooks: s.siegedRooks,
-      mines: s.mines,
-      viewer: reviewing() ? undefined : viewer,
-    });
-  });
 
   // Persist fire overlays for both kings from HP (turn-open checks + path reveal).
   createEffect(() => {

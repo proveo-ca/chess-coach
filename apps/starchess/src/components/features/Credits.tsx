@@ -1,10 +1,10 @@
 /**
- * StarChess credits modal — Brood War neon chrome over the shared Modal atom.
+ * StarChess credits modal — Brood War neon chrome via NeonModal.
  */
 import type { Component } from "solid-js";
 
-import styles from "~/components/atoms/Credits.module.css";
-import { Modal } from "~/components/atoms/Modal";
+import { NeonModal } from "~/components/atoms/NeonModal";
+import styles from "~/components/features/Credits.module.css";
 
 type Props = {
   open: boolean;
@@ -12,13 +12,12 @@ type Props = {
 };
 
 export const Credits: Component<Props> = (props) => (
-  <Modal
+  <NeonModal
     open={props.open}
     onClose={props.onClose}
     title="Credits"
     position="fixed"
-    overlayClass={styles.overlay}
-    contentClass={styles.panel}
+    size="lg"
   >
     <div class={styles.credits}>
       <ul>
@@ -56,5 +55,5 @@ export const Credits: Component<Props> = (props) => (
         </li>
       </ul>
     </div>
-  </Modal>
+  </NeonModal>
 );

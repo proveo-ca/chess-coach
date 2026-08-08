@@ -1,6 +1,6 @@
 /**
  * Experimental vertical TurnBar — board side rail (live + observer DualNav).
- * Does not replace horizontal `TurnBar` / full `ObserverReviewChrome`.
+ * Does not replace horizontal `TurnBar`.
  */
 import type { ScAction } from "@chess-coach/starchess-core";
 import {

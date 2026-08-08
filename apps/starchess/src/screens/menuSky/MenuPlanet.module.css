@@ -17,7 +17,7 @@
   --orbit-r: 42vmin;
 
   position: absolute;
-  left: -18%;
+  left: calc(-18% + 4rem);
   bottom: -35%;
   width: 0;
   height: 0;
@@ -204,6 +204,17 @@
   100% {
     filter: brightness(0.68);
     opacity: 0.8;
+  }
+}
+
+/*
+ * Narrow (≤720px): hide the orbital disc + TTY — the changing sky wash
+ * carries identity, with the world name label on StarChessMenuScreen.
+ * (Half-size disc still clipped the wash tag; wash-only is simpler.)
+ */
+@media (max-width: 720px) {
+  .root {
+    display: none;
   }
 }
 

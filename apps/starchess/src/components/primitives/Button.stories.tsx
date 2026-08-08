@@ -34,11 +34,23 @@ export const InternalLink: Story = {
 
 export const Variants: Story = {
   render: () => (
-    <div style={{ display: "flex", gap: "12px", "align-items": "center" }}>
+    <div style={{ display: "flex", gap: "12px", "align-items": "center", "flex-wrap": "wrap" }}>
       <Button>Secondary action</Button>
       <Button primary>Primary action</Button>
       <Button disabled>Unavailable</Button>
       <Button href="/review">Review link</Button>
+      <Button variant="neon">Stay</Button>
+      <Button variant="neon" primary>
+        Leave
+      </Button>
     </div>
   ),
+};
+
+export const Neon: Story = {
+  args: { variant: "neon", children: "Stay" },
+};
+
+export const NeonPrimary: Story = {
+  args: { variant: "neon", primary: true, children: "Start" },
 };
