@@ -90,7 +90,7 @@ export const SpiderMine: Component<SpiderMineProps> = (props) => {
                     class={styles.leg}
                     fill="none"
                     stroke={team()}
-                    stroke-width="1.35"
+                    stroke-width="1"
                     stroke-linecap="round"
                     stroke-linejoin="round"
                     d={legPath(g())}
@@ -114,7 +114,7 @@ export const SpiderMine: Component<SpiderMineProps> = (props) => {
         class={styles.enamel}
         fill="#fff"
         stroke="#222"
-        stroke-width="1.15"
+        stroke-width="1"
         stroke-linejoin="round"
         d="
           M16.5 14

@@ -14,7 +14,7 @@ type DeathBishopProps = {
 const Gatling = (props: { cx: number; cy: number; team: string }) => (
   <>
     <ellipse fill={props.team} cx={props.cx} cy={props.cy} rx="5" ry="6" />
-    <circle fill="#fff" cx={props.cx} cy={props.cy} r="3.6" stroke="#222" stroke-width="1.2" />
+    <circle fill="#fff" cx={props.cx} cy={props.cy} r="3.6" stroke="#222" stroke-width="0.9" />
     <circle fill="#555" cx={props.cx} cy={props.cy} r="2.9" stroke="none" />
     <circle fill="#222" cx={props.cx + 2} cy={props.cy} r="0.7" stroke="none" />
     <circle fill="#222" cx={props.cx + 1} cy={props.cy + 1.73} r="0.7" stroke="none" />
@@ -44,14 +44,14 @@ export const DeathBishop: Component<DeathBishopProps> = (props) => {
           <rect x="22.5" y="0" width="22.5" height="45" />
         </clipPath>
       </defs>
-      <g stroke="#222" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+      <g stroke="#222" stroke-linecap="round" stroke-linejoin="round" stroke-width="1">
         <Shard index={0} seed={seed()}>
           <ellipse fill={team()} cx="12" cy="40" rx="5" ry="2.5" />
-          <line x1="14" y1="38" x2="18" y2="28" stroke-width="2.5" />
+          <line x1="14" y1="38" x2="18" y2="28" stroke-width="1" />
         </Shard>
         <Shard index={1} seed={seed()}>
           <ellipse fill={team()} cx="33" cy="40" rx="5" ry="2.5" />
-          <line x1="31" y1="38" x2="27" y2="28" stroke-width="2.5" />
+          <line x1="31" y1="38" x2="27" y2="28" stroke-width="1" />
         </Shard>
         {/* Cockpit split so the big dome doesn't read as one flying SVG. */}
         <Shard index={2} seed={seed()}>

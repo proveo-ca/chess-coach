@@ -635,8 +635,9 @@
 }
 
 /* Queued SCFEN intent destination — dashed / outline ghost of the moving or
-   spawned unit (player color tint via drop-shadow). Square is raised above board
-   fog via [data-intent-dest]. Always overlays the live unit (never flex layout). */
+   spawned unit. Square is raised above board fog via [data-intent-dest].
+   Always overlays the live unit (never flex layout). Outline only — no CSS
+   filter (mobile compositor ghosting). */
 .intentPieceGhost {
   position: absolute;
   inset: 6%;
@@ -646,10 +647,9 @@
   pointer-events: none;
   z-index: 13; /* above .piece (10) — ghost paints on top of the unit */
   opacity: 0.55;
-  /* Team-colored outline so the silhouette reads as a dashed intent ghost. */
-  filter: drop-shadow(0 0 0.5px var(--intent-ring, #3b7dd8))
-    drop-shadow(0 0 1px var(--intent-ring, #3b7dd8))
-    drop-shadow(0 0 0 var(--intent-ring, #3b7dd8));
+  outline: 1.5px dashed var(--intent-ring, #3b7dd8);
+  outline-offset: 1px;
+  border-radius: 8%;
   box-sizing: border-box;
 }
 
@@ -692,7 +692,6 @@
   z-index: 12;
   pointer-events: none;
   opacity: 0.88;
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.45));
   line-height: 0;
 }
 
@@ -730,18 +729,16 @@
   outline: 2px solid transparent;
   outline-offset: -2px;
   border-radius: 8%;
-  transition:
-    filter 260ms ease-out,
-    outline-color 260ms ease-out;
+  transition: outline-color 260ms ease-out;
 }
 .piece:active {
   cursor: grabbing;
 }
 
-/* StarChess: unit spent its special this turn (or absorbing gas mid-resolve). */
+/* StarChess: unit spent its special this turn (or absorbing gas mid-resolve).
+   Outline only — CSS filters force extra compositor layers on mobile GPUs. */
 .pieceSpecialUsed {
-  filter: drop-shadow(0 0 3px #3dce6a) drop-shadow(0 0 8px rgba(61, 206, 106, 0.85));
-  outline-color: rgba(61, 206, 106, 0.9);
+  outline-color: rgba(61, 206, 106, 0.95);
 }
 
 @media (prefers-reduced-motion: reduce) {

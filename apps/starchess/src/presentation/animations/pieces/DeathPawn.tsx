@@ -27,7 +27,7 @@ export const DeathPawn: Component<DeathPawnProps> = (props) => {
           stroke="#222"
           stroke-linecap="round"
           stroke-linejoin="round"
-          stroke-width="2"
+          stroke-width="1"
           transform="translate(2.25,2.25) scale(0.9)"
         >
           <Shard index={0} seed={seed()} distScale={0.55}>
@@ -67,7 +67,7 @@ export const DeathPawn: Component<DeathPawnProps> = (props) => {
           ry="16"
           fill="none"
           stroke="#c8e8ff"
-          stroke-width="1.6"
+          stroke-width="1"
           opacity="0"
         />
         <ellipse

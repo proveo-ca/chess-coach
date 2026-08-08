@@ -27,8 +27,6 @@ type DeathKingProps = {
 /** Command center — damage states + rubble collapse (no outward shatter). */
 export const DeathKing: Component<DeathKingProps> = (props) => {
   const uid = createUniqueId();
-  const bodyGrad = `${uid}-body`;
-  const teamGrad = `${uid}-team`;
   /** Stable per-instance seed when parent doesn't pass one (overlay HP states). */
   const instanceSeed = Math.floor(Math.random() * 0xffffffff);
 
@@ -64,14 +62,6 @@ export const DeathKing: Component<DeathKingProps> = (props) => {
     >
       <g transform={NERD_FRAME.K}>
       <defs>
-        <linearGradient id={bodyGrad} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#fff" />
-          <stop offset="1" stop-color="#555" />
-        </linearGradient>
-        <linearGradient id={teamGrad} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color={TEAM_LIGHT[color()]} />
-          <stop offset="1" stop-color={TEAM_DARK[color()]} />
-        </linearGradient>
         <radialGradient id={`${uid}-core`} cx="50%" cy="70%" r="55%">
           <stop offset="0" stop-color="#fff6d0" stop-opacity="0.95" />
           <stop offset="0.35" stop-color="#ffc14a" stop-opacity="0.9" />
@@ -89,34 +79,34 @@ export const DeathKing: Component<DeathKingProps> = (props) => {
           <stop offset="1" stop-color="#2a2826" stop-opacity="0" />
         </radialGradient>
       </defs>
-      <g stroke="#222" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.35">
+      <g stroke="#222" stroke-linecap="round" stroke-linejoin="round" stroke-width="1">
         {wrap(0, <ellipse cx="22.5" cy="28.8" rx="19" ry="13.7" fill="#555" />)}
         {wrap(1, <ellipse cx="22.5" cy="35.5" rx="15.8" ry="7.5" fill={TEAM_LIGHT[color()]} />)}
         {wrap(
           2,
           <>
-            <ellipse cx="8.5" cy="27" rx="5.8" ry="8.3" fill={`url(#${teamGrad})`} />
+            <ellipse cx="8.5" cy="27" rx="5.8" ry="8.3" fill={TEAM_LIGHT[color()]} />
             <ellipse cx="8" cy="34" rx="4.5" ry="5" fill={TEAM_DARK[color()]} />
           </>,
         )}
         {wrap(
           3,
           <>
-            <ellipse cx="36.5" cy="27" rx="5.8" ry="8.3" fill={`url(#${teamGrad})`} />
+            <ellipse cx="36.5" cy="27" rx="5.8" ry="8.3" fill={TEAM_LIGHT[color()]} />
             <ellipse cx="37" cy="34" rx="4.5" ry="5" fill={TEAM_DARK[color()]} />
           </>,
         )}
         {wrap(
           4,
           <>
-            <ellipse cx="22.5" cy="25.5" rx="14.3" ry="10.5" fill={`url(#${bodyGrad})`} />
+            <ellipse cx="22.5" cy="25.5" rx="14.3" ry="10.5" fill="#c8c8c8" />
             <ellipse cx="22.5" cy="28" rx="12.8" ry="7" fill="#fff" />
           </>,
         )}
         {wrap(
           5,
           <>
-            <ellipse cx="22.5" cy="19" rx="10.2" ry="6" fill={`url(#${teamGrad})`} />
+            <ellipse cx="22.5" cy="19" rx="10.2" ry="6" fill={TEAM_LIGHT[color()]} />
             <ellipse cx="22.5" cy="15.5" rx="9" ry="4.2" fill={TEAM_LIGHT[color()]} />
             <ellipse cx="22.5" cy="15.1" rx="6.2" ry="2.7" fill="#555" />
             <ellipse cx="22.5" cy="14.3" rx="3.8" ry="2" fill="#222" />

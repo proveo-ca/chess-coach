@@ -45,7 +45,7 @@ const PIVOT = { x: 22.5, y: 23.5 };
 /** Content scale inside {@link NERD_FRAME.R} — hull size, not barrel crop. */
 export const ROOK_CONTENT_SCALE = 1.28;
 
-const ROOK_STROKE = 1.6;
+const ROOK_STROKE = 1;
 
 const RX = 2.2;
 const RX_TURRET = 1;

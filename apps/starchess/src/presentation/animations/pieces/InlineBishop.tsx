@@ -73,7 +73,7 @@ const GatlingFrontFaceLocal = (props: { hubPart: string; team: string }) => (
   <>
     <ellipse fill={props.team} cx="0" cy="0" rx="5" ry="6" />
     <g data-part={props.hubPart}>
-      <circle fill="#fff" cx="0" cy="0" r="3.6" stroke="#222" stroke-width="1.2" />
+      <circle fill="#fff" cx="0" cy="0" r="3.6" stroke="#222" stroke-width="0.9" />
       <circle fill="#555" cx="0" cy="0" r="2.9" stroke="none" />
       <circle fill="#222" cx="2" cy="0" r="0.7" stroke="none" />
       <circle fill="#222" cx="1" cy="1.73" r="0.7" stroke="none" />
@@ -128,11 +128,11 @@ const CharonLauncherLocal = (props: {
   <g data-part="charon-launcher-body">
     <ellipse fill={props.team} cx="0" cy="0" rx="6.75" ry="8.25" />
     <circle fill={props.teamDark} cx="0" cy="0" r="2.7" stroke="none" />
-    <rect fill="#2b3440" x="3" y="-4.65" width="12" height="9.3" rx="3" stroke-width="1.2" />
+    <rect fill="#2b3440" x="3" y="-4.65" width="12" height="9.3" rx="3" stroke-width="0.9" />
     {props.capsVisible ? (
       <g data-part="charon-launcher-caps">
         <rect fill="#9ff3c0" x="12" y="-3" width="3" height="6" rx="1.5" stroke="none" />
-        <circle fill="#eafff3" cx="15.4" cy="0" r="3.15" stroke="#0f4f35" stroke-width="1.2" />
+        <circle fill="#eafff3" cx="15.4" cy="0" r="3.15" stroke="#0f4f35" stroke-width="0.9" />
         <circle
           data-part="charon-launcher-glow"
           fill="#3dce6a"
@@ -342,7 +342,7 @@ export const InlineBishop: Component<InlineBishopProps> = (props) => {
             x2={pose().knee.x}
             y2={pose().knee.y}
             stroke={INK_BLACK}
-            stroke-width="2.5"
+            stroke-width="1.15"
             stroke-linecap="round"
           />
           <circle
@@ -360,7 +360,7 @@ export const InlineBishop: Component<InlineBishopProps> = (props) => {
               x2={pose().foot.x}
               y2={pose().foot.y}
               stroke={INK_BLACK}
-              stroke-width="2.5"
+              stroke-width="1.15"
               stroke-linecap="round"
             />
             <ellipse
@@ -371,7 +371,7 @@ export const InlineBishop: Component<InlineBishopProps> = (props) => {
               rx="5"
               ry="2.5"
               stroke={INK_BLACK}
-              stroke-width="2"
+              stroke-width="1"
             />
           </g>
         </g>
@@ -390,7 +390,7 @@ export const InlineBishop: Component<InlineBishopProps> = (props) => {
       data-charon-arm-anim={armAnim() ? "true" : undefined}
     >
       <g transform={NERD_FRAME.B}>
-        <g stroke="#222" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+        <g stroke="#222" stroke-linecap="round" stroke-linejoin="round" stroke-width="1">
           {/* Legs under cockpit so the hull always occludes the hip joints. */}
           <g data-part="body">
             {mechaLeg("left")}

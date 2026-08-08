@@ -9,7 +9,6 @@ import {
   adjacentSquares,
   charonTargetQueenFromPlacement,
   findKing,
-  pawnSingleTarget,
   placementToMap,
   spawnKingAnchor,
   type ScFenSnapshot,
@@ -32,7 +31,6 @@ import { Screen } from "~/components/primitives/Screen";
 import { ScreenBackNav } from "~/components/primitives/ScreenBackNav";
 import { squareBoxStyle, findBoardGrid } from "~/presentation/animations/boardGeom";
 import { LiveStarChessBoard } from "~/presentation/board/LiveStarChessBoard";
-import { moveThenGasPromotes } from "~/presentation/board/useBoardInput";
 import { GasDeploy } from "~/presentation/features/GasDeploy";
 import { usePieceSpecialArm } from "~/presentation/hooks/usePieceSpecialArm";
 import { BoardSideRail } from "~/presentation/hud/BoardSideRail";
@@ -42,6 +40,7 @@ import { ResourceBar } from "~/presentation/hud/ResourceBar";
 import { ReviewTurnNav } from "~/presentation/hud/ReviewTurnNav";
 import { TurnBar } from "~/presentation/hud/TurnBar";
 import { TurnBarSidebar } from "~/presentation/hud/TurnBarSidebar";
+import { pawnGasArm, specialTimingFor, tryQueue } from "~/presentation/specials/pawnGasArm";
 import { tacticalJumpTargets } from "~/presentation/specials/queenTacticalJump";
 import { TUTORIAL_CAPABILITIES, setCapabilities } from "~/store/capabilitiesStore";
 import { resetReviewVisionFilter, reviewVisionFilter } from "~/store/reviewVisionStore";
@@ -112,12 +111,6 @@ export type StarChessScreenProps = {
 };
 
 type OverlayBox = { top: number; left: number; width: number; height: number };
-
-/** B if no classical yet this turn for the side; else F (stack order). */
-const specialTimingFor = (queue: ScFenSnapshot["queue"], color: StarChessColor): "B" | "F" => {
-  const side = queue?.actions.filter((a) => a.color === color) ?? [];
-  return side.some((a) => a.timing === "C") ? "F" : "B";
-};
 
 export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
   const store = useMatchStore();
@@ -251,28 +244,6 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
     });
   };
 
-  const tryQueue = (
-    action: {
-      timing: "B" | "F" | "C";
-      kind: string;
-      color: StarChessColor;
-      from: Square;
-      to?: Square;
-      unit?: SpawnPiece;
-    },
-    okMsg: string,
-  ): boolean => {
-    const beforeSnap = store.state().liveSnapshot;
-    store.dispatch({
-      type: "QUEUE_ACTION",
-      action: action as never,
-    });
-    const after = store.state();
-    if (after.liveSnapshot === beforeSnap) return false;
-    store.dispatch({ type: "QUEUE_REJECT", message: okMsg });
-    return true;
-  };
-
   const { onGasDeploy } = usePieceSpecialArm({
     k: () => {
       if (!activeKingSq()) {
@@ -291,6 +262,7 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
       const color = viewerColor(store);
       const timing = specialTimingFor(snap().queue, color);
       return tryQueue(
+        store,
         { timing, kind: "rookSiege", color, from: ctx.square },
         `Siege Tank toggle queued on ${ctx.square} · End to resolve`,
       )
@@ -301,69 +273,14 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
       const color = viewerColor(store);
       const timing = specialTimingFor(snap().queue, color);
       return tryQueue(
+        store,
         { timing, kind: "knightMine", color, from: ctx.square, to: ctx.square },
         `Spider Mine queued on ${ctx.square} · End to resolve`,
       )
         ? "armed"
         : false;
     },
-    p: (ctx) => {
-      const color = viewerColor(store);
-      const timing = specialTimingFor(snap().queue, color);
-      const to = pawnSingleTarget(ctx.square, color);
-      if (!to) {
-        store.dispatch({
-          type: "QUEUE_REJECT",
-          message: "Pawn cannot step forward off the board",
-        });
-        return false;
-      }
-      const lastRank = color === "w" ? "8" : "1";
-      if (to[1] === lastRank) {
-        // Gas-only promote from the approach rank — picker, then B + promotion.
-        store.dispatch({
-          type: "SET_PENDING_PROMOTION",
-          pending: { color, from: ctx.square, to, via: "gas" },
-        });
-        store.dispatch({
-          type: "QUEUE_REJECT",
-          message: `Promote ${ctx.square}→${to} — pick a unit`,
-        });
-        return "pending";
-      }
-      // Move-then-gas onto last rank: F would park a marine on 8/1 with no
-      // picker. Peel the mid-step C, queue B, open PromotionModal (same as
-      // gas-then-move via gasStackPromotes).
-      const convert = moveThenGasPromotes(snap(), color, ctx.square, to);
-      if (convert) {
-        store.dispatch({ type: "REMOVE_ACTION", seq: convert.seq });
-        if (
-          !tryQueue(
-            {
-              timing: "B",
-              kind: "pawnDouble",
-              color,
-              from: ctx.square,
-              to,
-            },
-            `Gas step ${ctx.square}→${to} queued · pick promotion`,
-          )
-        ) {
-          return false;
-        }
-        store.dispatch({
-          type: "SET_PENDING_PROMOTION",
-          pending: { color, from: ctx.square, to },
-        });
-        return "armed";
-      }
-      return tryQueue(
-        { timing, kind: "pawnDouble", color, from: ctx.square, to },
-        `Gas step ${ctx.square}→${to} queued · End to resolve`,
-      )
-        ? "armed"
-        : false;
-    },
+    p: (ctx) => pawnGasArm(store, snap(), ctx),
     b: (ctx) => {
       const color = viewerColor(store);
       const queen = charonTargetQueenFromPlacement(snap().placement, ctx.square);
@@ -460,6 +377,7 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
     }
     const timing = specialTimingFor(snap().queue, color);
     const ok = tryQueue(
+      store,
       { timing, kind: "spawn", color, from, to, unit },
       `Deploy ${unit.toUpperCase()} → ${to} queued · End to drop`,
     );
@@ -477,6 +395,7 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
     if (!t || t.kind !== "bishopSnipe" || t.to !== to) return;
     const timing = specialTimingFor(snap().queue, t.color);
     const ok = tryQueue(
+      store,
       { timing, kind: "bishopSnipe", color: t.color, from: t.from, to: t.to },
       `Charon Booster Missiles ${t.from}→${t.to} queued · End to fire`,
     );
@@ -488,6 +407,7 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
     if (!t || t.kind !== "queenWarp" || !t.targets.includes(to)) return;
     const timing = specialTimingFor(snap().queue, t.color);
     const ok = tryQueue(
+      store,
       { timing, kind: "queenWarp", color: t.color, from: t.from, to },
       `Tactical Jump ${t.from}→${to} queued · End to resolve`,
     );

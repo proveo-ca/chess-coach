@@ -42,7 +42,7 @@ export const DeathRook: Component<DeathRookProps> = (props) => {
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45" aria-hidden="true" overflow="visible">
       <g transform={NERD_FRAME.R}>
         <g transform={`translate(22.5 22.5) scale(${ROOK_CONTENT_SCALE}) translate(-22.5 -22.5)`}>
-          <g stroke="#222" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6">
+          <g stroke="#222" stroke-linecap="round" stroke-linejoin="round" stroke-width="1">
             <Show
               when={mode() === "siege"}
               fallback={

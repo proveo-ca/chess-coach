@@ -17,7 +17,7 @@ export function InlineQueen(props: InlineQueenProps) {
       {/* Rotate outside NERD_FRAME so the bow tip stays on y=22.5 after aim normalize. */}
       <g transform="translate(22.5 22.5) rotate(-90) translate(-22.5 -22.5)">
         <g transform={NERD_FRAME.Q}>
-          <g stroke="#222" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8">
+          <g stroke="#222" stroke-linecap="round" stroke-linejoin="round" stroke-width="1">
             <ellipse fill="#555" cx="22.5" cy="42" rx="16" ry="2" stroke="none" opacity=".25" />
             <rect data-part="jump-thruster" fill="#555" x="13.5" y="2.5" width="7" height="12" rx="3" />
             <rect data-part="jump-thruster" fill="#555" x="24.5" y="2.5" width="7" height="12" rx="3" />

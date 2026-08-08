@@ -43,7 +43,7 @@ export const InlineKnight: Component<InlineKnightProps> = (props) => {
           <g transform="translate(22.5 22.5) scale(1.1) translate(-22.5 -22.5)">
             <g transform="translate(22.5 22.5) scale(-1 1) translate(-22.5 -22.5)">
               <g transform="translate(22.5 22.5) rotate(40) translate(-22.5 -22.5)">
-                <g stroke="#222" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
+                <g stroke="#222" stroke-linecap="round" stroke-linejoin="round" stroke-width="1">
                   <g data-part="body">
                     <ellipse
                       fill={team()}

@@ -1,16 +1,3 @@
-/**
- * Snapshot-driven board input — queues classical moves / spawn / Charon / Jump.
- * Last-rank pawn moves open {@link PromotionModal} instead of auto-queuing queen.
- * Gas onto last rank uses `pending.via = "gas"` (pawnDouble + promotion).
- * Timeout / End flushes a pending promotion as queen (see SUBMIT_TURN).
- *
- * **Universal fog intent (all of apps/starchess):** legal dests always use
- * {@link occupancyForViewerMoves} whenever {@link playerFogOccultsMoves} —
- * same vision policy as the board veil. Unseen enemies do not block rays;
- * resolve owns path collisions. Not tutorial-only.
- * // SPEC: _spec/packages/starchess-core/sc-moves.puml
- * // SPEC: _spec/apps/starchess/match-store.puml
- */
 import type { Square } from "chess.js";
 import { createMemo } from "solid-js";
 import {

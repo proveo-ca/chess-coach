@@ -404,11 +404,24 @@ const shiftSquare = (s: Square, df: number, dr: number): Square | null => {
 
 /**
  * After B relocates (pawnDouble / queenWarp), rewrite same-side classical
- * only when C matches the same step as B (UI stacks gas + same forward intent):
- * B e2→e3 + C e2→e3 ⇒ C e3→e4. Captures / longer doubles are left alone
- * (pre-B C would fizzle if the piece left `from`).
+ * so pre-B intents still land after the piece leaves `from`:
+ * B e2→e3 + C e2→e3 ⇒ C e3→e4. Order-independent with move-then-gas, which
+ * resolves F from the post-C square.
+ *
+ * A pawnDouble B also carries a start-rank classical double the same way:
+ * B e2→e3 + C e2→e4 ⇒ C e3→e5. Gas-then-move then matches move-then-gas
+ * (double + gas both advance 3 squares from the start rank) instead of
+ * fizzling the longer intent. When the final square is occupied the rewrite
+ * is skipped — the pre-B C fizzles once B leaves `from`, so gas-then-move is
+ * blocked at the gas step, mirroring move-then-gas's post-C gas fizzle
+ * (a gas step never captures through a blocked landing square).
+ * Captures / off-vector C are left alone (pre-B C would fizzle).
  */
-const rewriteClassicalAfterB = (actions: readonly ScAction[]): ScAction[] => {
+const rewriteClassicalAfterB = (
+  actions: readonly ScAction[],
+  placement: string,
+): ScAction[] => {
+  const occupied = placementToMap(placement);
   const out = actions.map((a) => ({ ...a }));
   for (let i = 0; i < out.length; i += 1) {
     const c = out[i]!;
@@ -418,19 +431,45 @@ const rewriteClassicalAfterB = (actions: readonly ScAction[]): ScAction[] => {
         a.timing === "B" &&
         a.color === c.color &&
         a.from === c.from &&
-        a.to === c.to &&
         a.to &&
         (a.kind === "pawnDouble" || a.kind === "queenWarp"),
     );
     if (!b || !b.to) continue;
+
     const fromP = parseSquare(b.from);
     const toP = parseSquare(b.to);
     const df = toP.file - fromP.file;
     const dr = toP.rank - fromP.rank;
-    const newFrom = b.to;
     const newTo = shiftSquare(c.to, df, dr);
     if (!newTo) continue;
-    out[i] = { ...c, from: newFrom, to: newTo };
+
+    // pawnDouble: rewrite same-file forward C (single step, or the start-rank
+    // classical double). queenWarp: only the C matching the exact warp step.
+    if (b.kind === "pawnDouble") {
+      const sameFile = c.from[0] === c.to[0];
+      const ranks = Math.abs(Number(c.to[1]) - Number(c.from[1]));
+      const forward =
+        (Number(c.to[1]) - Number(c.from[1])) * (b.color === "w" ? 1 : -1) > 0;
+      // The classical double only exists from the pawn's start rank — never
+      // rewrite a 2-rank C from elsewhere (that was never a legal double).
+      const startRank = b.color === "w" ? 2 : 7;
+      const onStartRank = Number(c.from[1]) === startRank;
+      // Blocked final square: gas-then-move must fizzle like move-then-gas's
+      // post-C gas step (occupied = blocked, never a capture).
+      if (
+        c.kind !== "classical" ||
+        !sameFile ||
+        !forward ||
+        (ranks !== 1 && (ranks !== 2 || !onStartRank)) ||
+        occupied.has(newTo)
+      ) {
+        continue;
+      }
+    } else if (b.to !== c.to) {
+      continue;
+    }
+
+    out[i] = { ...c, from: b.to, to: newTo };
   }
   return out;
 };
@@ -617,7 +656,7 @@ export const endScTurn = (
 
   // 3) Classical attack → move (+ mine triggers).
   // Rewrite C that shares from with a B relocate so UI pre-B intents still land.
-  const actionsAfterB = rewriteClassicalAfterB(actions);
+  const actionsAfterB = rewriteClassicalAfterB(actions, placement);
   {
     const boardAfterB = placementToMap(placement);
     for (const a of actionsAfterB) {
