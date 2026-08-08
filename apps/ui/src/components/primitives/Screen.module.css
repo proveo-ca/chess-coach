@@ -11,17 +11,15 @@
   box-sizing: border-box;
 }
 
-/* Board-centric screens own the viewport — no visual page scroll (§1b).
-   ≤1px document overflow keeps Android Chrome / PWA pull-to-refresh alive;
-   `.app-container` still clips at 100dvh so chrome cannot be scrolled into view. */
+/* Board-centric screens own the viewport — no page vertical scroll (§1b). */
 :global(html:has([data-testid="screen-root"])) {
-  min-height: calc(100dvh + 1px);
+  height: 100%;
+  overflow: hidden;
 }
 
 :global(body:has([data-testid="screen-root"])) {
-  min-height: calc(100dvh + 1px);
-  overflow-x: hidden;
-  overflow-y: auto;
+  height: 100%;
+  overflow: hidden;
   min-width: var(--board-size);
 }
 

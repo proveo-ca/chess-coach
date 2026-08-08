@@ -1,7 +1,8 @@
 /**
  * Shatterable facsimile of apps/ui MenuScreen — not imported from Coach.
  * Intact state is laid out + styled to match `/chess/` MenuScreen 1:1
- * (SplashScreen column, identity rows, MenuButtons, Credits).
+ * (SplashScreen column, identity rows, MenuButtons, Credits), including
+ * Coach light/dark tokens via `data-theme` / prefers-color-scheme.
  * On shatter, action buttons become abstract SVG shards.
  * // SPEC: _spec/apps/starchess/menu-flow.puml
  */

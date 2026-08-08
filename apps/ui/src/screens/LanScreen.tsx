@@ -410,7 +410,7 @@ export const LanScreen: Component = () => {
       when={started()}
       fallback={
         <SplashScreen wide>
-          <div class="desktop-only">
+          <div class={`desktop-only ${styles.lobbyTop}`}>
             <ScreenBackNav data-testid="lan-back" class={styles.lobbyBack}>
               <h2 class={styles.lobbyTitle}>Play LAN</h2>
             </ScreenBackNav>

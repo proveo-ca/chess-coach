@@ -101,7 +101,7 @@ const PROFILES: Profile[] = [
   { name: "desktop", viewport: { width: 1280, height: 800 } },
   { name: "mobile", viewport: { width: 390, height: 844 } },
   // Short height forces the bottom row off-screen → §4 floating chrome.
-  { name: "dynamic", viewport: { width: 390, height: 560 } },
+  { name: "dynamic", viewport: { width: 480, height: 480 } },
 ];
 
 const SCREENS: { id: string; path: string; hasBoard: boolean; hasAvatar: boolean }[] = [
@@ -358,8 +358,8 @@ test.describe("responsiveness contract", () => {
               doc: document.documentElement.scrollHeight - document.documentElement.clientHeight,
               body: document.body.scrollHeight - document.body.clientHeight,
             }));
-            expect(scroll.doc, "documentElement must not page-scroll").toBeLessThanOrEqual(1);
-            expect(scroll.body, "body must not page-scroll").toBeLessThanOrEqual(1);
+            expect(scroll.doc, "documentElement must not page-scroll").toBe(0);
+            expect(scroll.body, "body must not page-scroll").toBe(0);
           }
 
           if (screen.hasBoard) {
@@ -393,7 +393,7 @@ test.describe("responsiveness contract", () => {
   }
 
   test("dynamic floating advice dismisses on move", async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 560 });
+    await page.setViewportSize({ width: 480, height: 480 });
     await ready(page, "selena");
     const float = page.getByTestId("floating-advice");
     await expect(float).toBeVisible({ timeout: 5_000 });

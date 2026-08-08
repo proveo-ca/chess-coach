@@ -57,7 +57,10 @@ dimension:
 | ------- | ---------- | -------------------------------- |
 | Desktop | 1280 × 900 | Width ≥ 720px                    |
 | Mobile  | 390 × 844  | Width ≤ 719px and height ≥ 640px |
-| Dynamic | 390 × 560  | Width ≤ 719px and height ≤ 639px |
+| Dynamic | 480 × 480  | Height ≤ 639px (short chrome)    |
+
+A separate **Theme** toolbar toggles Light / Dark (`data-theme` on
+`document.documentElement`), independent of the viewport profile.
 
 Keep stories beside their components as `*.stories.tsx`, give them an explicit
 layer-prefixed title, and use `parameters.storyState` for deterministic store

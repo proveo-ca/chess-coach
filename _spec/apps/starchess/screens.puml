@@ -54,7 +54,10 @@ note bottom
   ``ReviewDemoScreen``, ``StarChessScreen``, and ``TutorialReviewHost`` supply
   mode-specific controls to the same rail shell.
   **Live route** ``/single``: ``turnChrome="sidebar"`` (StarChessSingleScreen);
-  title ``Game vs Adjutant (Script)`` above ResourceBar (Review-style Label).
+  title ``Game vs Adjutant (Script)`` above ResourceBar; hidden when
+  ``max-height: 639px`` (dynamic / short — height only, not width).
+  GasDeploy floats top-right on the same short height (footer spacer collapses);
+  idle ``Plan your turn`` status line is hidden then too.
   **Review / gameOver:** ``ReviewTurnNav`` (green ‹ ›) flanks dual ResourceBars
   in the top row; rail keeps Turn/Phase chips + Home (no stacked DualNav).
   Review detail also shows result + matchup Labels above DualNav.

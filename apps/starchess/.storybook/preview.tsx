@@ -1,11 +1,16 @@
 import type { Preview } from "storybook-solidjs-vite";
 import { MemoryRouter, Route, createMemoryHistory } from "@solidjs/router";
 
+import {
+  applyStorybookTheme,
+  readStorybookTheme,
+  storybookThemeGlobalTypes,
+} from "./applyTheme";
 import "~/theme.css";
 import "~/styles/index.css";
 
 /**
- * Match apps/ui Storybook: viewports + Screen responsiveness tokens.
+ * Match apps/ui Storybook: viewports + theme toolbar + Screen responsiveness tokens.
  * // SPEC: _spec/apps/ui/responsiveness/rules.md
  */
 const viewports = {
@@ -21,15 +26,17 @@ const viewports = {
   },
   dynamic: {
     name: "Dynamic",
-    styles: { width: "390px", height: "560px" },
+    styles: { width: "480px", height: "480px" },
     type: "mobile" as const,
   },
 };
 
 const preview: Preview = {
+  globalTypes: {
+    ...storybookThemeGlobalTypes,
+  },
   parameters: {
     layout: "centered",
-    backgrounds: { default: "light" },
     controls: {
       matchers: {
         color: /(background|color)$/i,
@@ -94,51 +101,12 @@ const preview: Preview = {
   },
   initialGlobals: {
     viewport: { value: "desktop", isRotated: false },
+    // Match apps/starchess :root default (dark).
+    theme: "dark",
   },
   decorators: [
     (Story, context) => {
-      if (typeof document !== "undefined") {
-        /* Prefer light Storybook canvas tokens (maps + DualNav demos). */
-        const root = document.documentElement;
-        root.style.colorScheme = "light";
-        root.style.setProperty("--white-rgb", "255, 255, 255");
-        root.style.setProperty("--shadow-rgb", "0, 0, 0");
-        root.style.setProperty("--primary-rgb", "0, 86, 179");
-        root.style.setProperty("--primary-color", "rgb(0, 86, 179)");
-        root.style.setProperty("--primary-hover", "#747bff");
-        root.style.setProperty("--bg-color", "#ffffff");
-        root.style.setProperty("--surface-color", "#f9f9f9");
-        root.style.setProperty("--surface-hover", "#ffffff");
-        root.style.setProperty("--text-color", "#213547");
-        root.style.setProperty("--text-muted", "#666");
-        root.style.setProperty("--text-strong", "#1a1a1a");
-        root.style.setProperty("--text", "#213547");
-        root.style.setProperty("--border-color", "#ccc");
-        root.style.setProperty("--border-radius-md", "8px");
-        root.style.setProperty("--avatar-height", "8rem");
-        root.style.setProperty("--avatar-fur", "#f5f5f5");
-        root.style.setProperty("--avatar-outline", "#161616");
-        root.style.setProperty("--avatar-nose", "#d4a5a5");
-        root.style.setProperty("--avatar-iris", "#b3e79f");
-        /* Do not hardcode --board-size — let theme media queries own responsiveness. */
-        root.style.setProperty("--board-light", "#f0d9b5");
-        root.style.setProperty("--board-dark", "#b58863");
-        root.style.setProperty("--board-border", "#111a23");
-        root.style.setProperty("--sc-guide-green", "#3ecf8e");
-        root.style.setProperty("--sc-menu-neon", "#7dff6a");
-        root.style.setProperty("--toggle-off-bg", "#2a3238");
-        document.body.style.background = "transparent";
-        document.body.style.color = "#213547";
-        document.body.style.margin = "0";
-        if (!document.getElementById("sc-storybook-font-inherit")) {
-          const style = document.createElement("style");
-          style.id = "sc-storybook-font-inherit";
-          style.textContent = `
-            button, input, select, textarea { font-family: inherit; }
-          `;
-          document.head.appendChild(style);
-        }
-      }
+      applyStorybookTheme(readStorybookTheme(context.globals));
       const parameters = context.parameters as { route?: string };
       const history = createMemoryHistory();
       history.set({ value: parameters.route ?? "/" });

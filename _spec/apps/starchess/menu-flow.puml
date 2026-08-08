@@ -62,8 +62,9 @@ note bottom
   (``Win (Blue)`` · ``Alex (Blue) vs Adjutant (Red)``) above ``ReviewTurnNav``.
   Coach ``/chess/`` → ``/starchess/`` (nerd yes / ``StarChessRedirect``)
   sets ``starchess_from_chess``; menu plays ``MenuArrival``:
-  Chess mockup → glass clears to sky → Selena→Kerrigan → buttons shatter
-  → StarChess anchors fade in. Storybook: Screens/Menu · StarChess toggle.
+  Chess mockup (Coach light/dark tokens via ``data-theme``) → glass clears
+  to sky → Selena→Kerrigan → buttons shatter → StarChess anchors fade in.
+  Storybook: Screens/Menu · StarChess toggle · Theme toolbar.
   Tutorial → ``/tutorial/:section/:story`` (ids from ``TUTORIAL_SCRIPT``,
   e.g. ``/tutorial/fog/king`` · ``/tutorial/specials/marine``).
   Bare ``/tutorial`` canonicalizes to the first Fog story.

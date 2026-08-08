@@ -40,19 +40,15 @@ scroll horizontally — it must **not** squash board squares.
 
 Board-centric `Screen` shells own the viewport (`height: 100dvh; overflow: hidden`
 on `.app-container`). Vertical page scroll to reveal the board or chrome is
-forbidden.
-
-**PTR affordance:** `html` / `body:has([data-testid=screen-root])` may retain
-**≤1px** vertical overflow (`min-height: calc(100dvh + 1px)`, `overflow-y: auto`)
-solely so Android Chrome / installed PWA pull-to-refresh still works. That 1px
-must not expose chrome; the shell remains visually locked.
+forbidden. `html` / `body:has([data-testid=screen-root])` also use
+`overflow: hidden` (no ≤1px PTR overflow).
 
 Allowed exceptions (local scroll only):
 
 - `GameHistoryList` overflow inside Review's list pane
 - Modal / drawer bodies
 - LAN lobby checklist regions that are themselves scroll containers
-
+- In-panel overflow (e.g. floating CoachPanel body, TurnBarSidebar chips)
 ---
 
 ## 2. Root `display: grid` priority
@@ -112,7 +108,7 @@ instead. **Measure `data-board-column` content height**, not the stretched middl
 `apps/ui/src/utils/footerFloatMeasure.ts`.
 
 Tall mobile (e.g. 390×844) docks CoachPanel / MoveList when the budget fits;
-short dynamic (e.g. 390×560) still floats.
+short dynamic (e.g. 480×480) still floats.
 
 ### 4a. Coach advice (`CoachPanel`)
 

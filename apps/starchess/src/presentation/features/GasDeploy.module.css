@@ -183,6 +183,16 @@
   pointer-events: none;
 }
 
+/* Short / dynamic — height only (not width); float rack to viewport top-right. */
+@media (max-height: 639px) {
+  .dock {
+    position: fixed;
+    top: 0.75rem;
+    right: 0.75rem;
+    z-index: 70;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .reserve,
   .ghostReturning {

@@ -77,8 +77,8 @@ export type StarChessScreenProps = {
   /** Side-rail Home — return to StarChess menu (SPA) instead of leaving the app. */
   onExitToMenu?: () => void;
   /**
-   * Live match title above ResourceBar (e.g. ``Game vs Adjutant (Script)``),
-   * same Label stack as Review detail matchup.
+   * Optional live match title above ResourceBar (Review-style Label stack).
+   * Hidden on short / dynamic viewports via ``max-height: 639px`` (height only).
    */
   matchTitle?: string;
   /**
@@ -872,7 +872,14 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
             </Show>
           </div>
           <Show when={!props.tutorial}>
-            <div class={styles.statusLine}>
+            <div
+              class={styles.statusLine}
+              data-idle-plan={
+                !outcomeLabel(store.state()) && store.state().statusText === "Plan your turn"
+                  ? "true"
+                  : "false"
+              }
+            >
               <Show
                 when={starChessMode()}
                 fallback={<p class={styles.placeholder}>Nerd mode is awakening…</p>}

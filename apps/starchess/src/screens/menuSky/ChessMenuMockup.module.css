@@ -1,11 +1,11 @@
 /*
  * Chess MenuScreen facsimile — tokens + spacing mirrored from apps/ui
  * MenuScreen / SplashScreen / Button / MenuButton / Select / Input / PlayerNameField.
- * Force Coach dark menu chrome regardless of StarChess theme.
+ * Coach light/dark via `data-theme` / prefers-color-scheme (not StarChess chrome).
  */
 
 .root {
-  /* Coach MenuScreen dark tokens (apps/ui theme.css). */
+  /* Coach MenuScreen dark tokens (apps/ui theme.css :root). */
   --mock-bg: #242424;
   --mock-surface: #1a1a1a;
   --mock-text: rgba(255, 255, 255, 0.87);
@@ -14,6 +14,7 @@
   --mock-primary: rgb(118, 179, 225);
   --mock-radius: 8px;
   --mock-font: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --mock-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='rgba(255,255,255,0.87)' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
 
   position: absolute;
   inset: 0;
@@ -28,6 +29,39 @@
   font-weight: 400;
   /* Match apps/ui Screen #root text-align on splash. */
   text-align: center;
+}
+
+/* Coach light MenuScreen — same values as apps/ui theme.css light block. */
+@media (prefers-color-scheme: light) {
+  :global(html:not([data-theme="dark"])) .root {
+    --mock-bg: #ffffff;
+    --mock-surface: #f9f9f9;
+    --mock-text: #213547;
+    --mock-muted: #666;
+    --mock-border: #ccc;
+    --mock-primary: rgb(0, 86, 179);
+    --mock-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23213547' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+  }
+}
+
+:global(html[data-theme="light"]) .root {
+  --mock-bg: #ffffff;
+  --mock-surface: #f9f9f9;
+  --mock-text: #213547;
+  --mock-muted: #666;
+  --mock-border: #ccc;
+  --mock-primary: rgb(0, 86, 179);
+  --mock-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23213547' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+}
+
+:global(html[data-theme="dark"]) .root {
+  --mock-bg: #242424;
+  --mock-surface: #1a1a1a;
+  --mock-text: rgba(255, 255, 255, 0.87);
+  --mock-muted: #aaa;
+  --mock-border: #444;
+  --mock-primary: rgb(118, 179, 225);
+  --mock-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='rgba(255,255,255,0.87)' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
 }
 
 .glass {
@@ -169,7 +203,7 @@
   min-height: 37px;
   cursor: default;
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='rgba(255,255,255,0.87)' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+  background-image: var(--mock-chevron);
   background-repeat: no-repeat;
   background-position: right 0.85em center;
   padding-right: 2em;

@@ -1,6 +1,11 @@
 import { MemoryRouter, Route, createMemoryHistory } from "@solidjs/router";
 import type { Preview } from "storybook-solidjs-vite";
 
+import {
+  applyStorybookTheme,
+  readStorybookTheme,
+  storybookThemeGlobalTypes,
+} from "./applyTheme";
 import "../src/theme.css";
 import "../src/index.css";
 import { installStorybookBrowserMocks } from "../src/storybook/browserMocks";
@@ -21,14 +26,19 @@ const viewports = {
   },
   dynamic: {
     name: "Dynamic",
-    styles: { width: "390px", height: "560px" },
+    styles: { width: "480px", height: "480px" },
     type: "mobile" as const,
   },
 };
 
 const preview: Preview = {
+  globalTypes: {
+    ...storybookThemeGlobalTypes,
+  },
   decorators: [
     (Story, context) => {
+      applyStorybookTheme(readStorybookTheme(context.globals));
+
       const parameters = context.parameters as {
         route?: string;
         storyState?: StoryState;
@@ -88,6 +98,8 @@ const preview: Preview = {
     // Toolbar: Desktop · Mobile · Dynamic — do not lock viewport on stories
     // (`globals.viewport` disables the toolbar). Same pattern as apps/starchess.
     viewport: { value: "desktop", isRotated: false },
+    // Match apps/ui :root default (dark).
+    theme: "dark",
   },
 };
 

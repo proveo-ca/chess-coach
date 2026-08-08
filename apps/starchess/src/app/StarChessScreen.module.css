@@ -40,6 +40,13 @@
   text-align: center;
 }
 
+/* Short / dynamic — height only (not width); free vertical space above ResourceBar. */
+@media (max-height: 639px) {
+  .matchTitle {
+    display: none;
+  }
+}
+
 .matchupLine {
   margin-bottom: 0;
   color: #e8eaed;
@@ -68,12 +75,11 @@
   max-width: 100%;
 }
 
-/* Board footprint — same as apps/ui ChessBoard; margin mocks CapturedPieces. */
+/* Board footprint — same as apps/ui ChessBoard. */
 .boardHost {
   position: relative;
   width: var(--board-size);
   height: var(--board-size);
-  margin-block: 1.4rem;
   box-sizing: border-box;
   overflow: visible;
   flex-shrink: 0;
@@ -125,10 +131,26 @@
   min-height: 3.75rem;
 }
 
+/* Short / dynamic — rack is position:fixed; drop the footer spacer. */
+@media (max-height: 639px) {
+  .gasDock {
+    min-height: 0;
+    height: 0;
+    overflow: visible;
+  }
+}
+
 .statusLine {
   width: 100%;
   text-align: center;
   box-sizing: border-box;
+}
+
+/* Short / dynamic — height only; drop idle "Plan your turn" to reclaim footer space. */
+@media (max-height: 639px) {
+  .statusLine[data-idle-plan="true"] {
+    display: none;
+  }
 }
 
 .placeholder {

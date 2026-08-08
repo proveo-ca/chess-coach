@@ -119,7 +119,7 @@
 }
 
 @media (prefers-color-scheme: light) {
-  :root {
+  :root:not([data-theme="dark"]) {
     --primary-rgb: 0, 86, 179;
 
     --bg-color: #ffffff;
@@ -147,6 +147,51 @@
     /* Overlays lighter on light backgrounds */
     --overlay-opacity: 0.5;
   }
+}
+
+/* Storybook toolbar (and any explicit toggle) — beats prefers-color-scheme. */
+:root[data-theme="light"] {
+  --primary-rgb: 0, 86, 179;
+  --bg-color: #ffffff;
+  --surface-color: #f9f9f9;
+  --panel-bg: rgba(var(--shadow-rgb), 0.05);
+  --text-color: #213547;
+  --text-muted: #666;
+  --text-strong: #1a1a1a;
+  --primary-hover: #747bff;
+  --border-color: #ccc;
+  --result-win: #2e7d32;
+  --result-loss: #c62828;
+  --result-draw: #b07f00;
+  --result-neutral: #666;
+  --annotation-best: #1b5e20;
+  --annotation-blunder: #b71c1c;
+  --annotation-forced: #bf360c;
+  --annotation-inaccuracy: #f57f17;
+  --overlay-opacity: 0.5;
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --primary-rgb: 118, 179, 225;
+  --bg-color: #242424;
+  --surface-color: #1a1a1a;
+  --panel-bg: rgba(var(--shadow-rgb), 0.2);
+  --text-color: rgba(var(--white-rgb), 0.87);
+  --text-muted: #aaa;
+  --text-strong: #e0e0e0;
+  --primary-hover: #646cff;
+  --border-color: #444;
+  --result-win: #7ddf7d;
+  --result-loss: #f08080;
+  --result-draw: #f0c86a;
+  --result-neutral: #d0d0d0;
+  --annotation-best: #2e7d32;
+  --annotation-blunder: #c62828;
+  --annotation-forced: #e65100;
+  --annotation-inaccuracy: #f9a825;
+  --overlay-opacity: 0.33;
+  color-scheme: dark;
 }
 
 /* Hidden on mobile (e.g. the Coach header avatar, which moves into the

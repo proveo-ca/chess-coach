@@ -27,7 +27,9 @@ interface RegionProps {
  * board. Desktop board screens fix the top grid track to
  * `calc(var(--avatar-height) + 1rem)` (extra rem for opponent captures)
  * so board Y stays stable across screens (Review MoveList floats when taller).
- * `data-footer-float` is set by CoachPanel or MoveList when §4 applies.
+ * `html`/`body:has([data-testid=screen-root])` use `overflow: hidden` — no
+ * vertical page scroll. `data-footer-float` is set by CoachPanel or MoveList
+ * when §4 applies.
  */
 const ScreenRoot: Component<ScreenProps> = (props) => {
   return (
