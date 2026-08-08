@@ -202,16 +202,17 @@ export const assertSpecialLegal = (
           `pawnDouble must step +1 to ${expected ?? "off-board"} (got ${action.to})`,
         );
       }
-      // Last rank is classical promotion only — gas must not park a marine there.
+      // Last-rank gas step must carry a promotion choice (picker / timeout default).
       const lastRank = action.color === "w" ? 8 : 1;
-      if (Number(action.to[1]) === lastRank) {
+      if (Number(action.to[1]) === lastRank && !action.promotion) {
         throw new ScValidateError(
           "SC_SPECIAL",
-          "pawnDouble cannot enter last rank (use classical promotion)",
+          "pawnDouble onto last rank needs promotion",
         );
       }
       // Move-then-gas (F after C): post-C +1 must not be last rank either —
-      // that path relocates onto 8/1 with no promotion picker.
+      // that path relocates onto 8/1 with no promotion picker. Convert to
+      // gas-first + classical (or gas-only promote from the approach rank).
       if (action.timing === "F") {
         const c = (snap.queue?.actions ?? []).find(
           (a) =>

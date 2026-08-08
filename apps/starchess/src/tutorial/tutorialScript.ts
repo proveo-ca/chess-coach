@@ -79,10 +79,10 @@ const KING_ENEMY_DEAD: TutorialReaction = {
   emotion: "happy",
 };
 
-const KING_HP_REACTIONS: readonly TutorialReaction[] = [
+/** Review DualNav king-hunt — HP teaching only (no live retry / incomplete flows). */
+const KING_HUNT_REVIEW_REACTIONS: readonly TutorialReaction[] = [
   KING_ALLY_HP2,
   KING_ALLY_HP1,
-  KING_ALLY_DEAD,
   KING_ENEMY_DEAD,
 ];
 
@@ -324,7 +324,7 @@ export const TUTORIAL_SCRIPT: readonly TutorialStageScript[] = [
         comment:
           "A Command Center crumbles when being checked 3 times.",
         emotion: "watching",
-        reactions: KING_HP_REACTIONS,
+        reactions: KING_HUNT_REVIEW_REACTIONS,
       },
       {
         id: "king-hunt-live",

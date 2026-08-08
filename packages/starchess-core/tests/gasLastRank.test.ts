@@ -97,4 +97,32 @@ describe("gas + last-rank promotion contract", () => {
       color: "w",
     });
   });
+
+  it("gas-only from approach rank promotes with picker choice", () => {
+    let snap = parseScFen(
+      "SCFEN|k7/4P3/8/8/8/8/8/4K3|1|33|P|G:11:11|Q:w:;b:",
+    );
+    snap = addScAction({
+      snapshot: snap,
+      action: {
+        timing: "B",
+        kind: "pawnDouble",
+        color: "w",
+        from: "e7",
+        to: "e8",
+        promotion: "n",
+      },
+    }).snapshot;
+    const r = endScTurn(snap);
+    expect(r.bMoves).toEqual([
+      expect.objectContaining({ from: "e7", to: "e8", piece: "p" }),
+    ]);
+    expect(r.resolved.promotions).toEqual([
+      expect.objectContaining({ at: "e8", unit: "n", color: "w" }),
+    ]);
+    expect(placementToMap(r.next.placement).get("e8")).toEqual({
+      type: "n",
+      color: "w",
+    });
+  });
 });

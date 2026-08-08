@@ -55,3 +55,7 @@
   width: max-content;
   box-sizing: border-box;
 }
+
+.panel :global(h2) {
+  color: #fff;
+}

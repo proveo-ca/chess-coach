@@ -224,6 +224,16 @@ describe("tutorialScript", () => {
         scfen: allyDead,
       }),
     ).toEqual({
+      comment: "A Command Center crumbles when being checked 3 times.",
+      emotion: "watching",
+    });
+    expect(
+      resolveTutorialLine({
+        stageId: "king",
+        storyId: "king-hunt-live",
+        scfen: allyDead,
+      }),
+    ).toEqual({
       comment: "Oh no! Give it another try, it's a lot to process",
       emotion: "shocked",
       action: { kind: "retryLesson", label: "Retry lesson" },

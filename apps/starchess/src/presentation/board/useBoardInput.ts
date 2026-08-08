@@ -1,6 +1,7 @@
 /**
  * Snapshot-driven board input — queues classical moves / spawn / Charon / Jump.
  * Last-rank pawn moves open {@link PromotionModal} instead of auto-queuing queen.
+ * Gas onto last rank uses `pending.via = "gas"` (pawnDouble + promotion).
  * Timeout / End flushes a pending promotion as queen (see SUBMIT_TURN).
  *
  * **Universal fog intent (all of apps/starchess):** legal dests always use
@@ -134,6 +135,21 @@ export const useBoardInput = (
     const pending = pendingPromotion();
     if (!pending) return;
     store.dispatch({ type: "CLEAR_PENDING_PROMOTION" });
+    if (pending.via === "gas") {
+      store.dispatch({
+        type: "QUEUE_ACTION",
+        action: {
+          timing: "B",
+          kind: "pawnDouble",
+          color: pending.color,
+          from: pending.from,
+          to: pending.to,
+          promotion: piece,
+        },
+      });
+      store.dispatch({ type: "MARK_SPECIAL_USED", square: pending.from });
+      return;
+    }
     queueClassical(pending.from, pending.to, pending.color, piece);
   };
 

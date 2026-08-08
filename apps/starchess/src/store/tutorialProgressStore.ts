@@ -1,7 +1,7 @@
 /**
  * Tutorial completion flag — localStorage `starchess_tutorial_cleared`.
- * Default `false` until the player confirms on King Hunt (live) win, or a
- * future flow marks the tutorial cleared.
+ * Default `false` until Go Home on King Hunt (live) win, or a future flow
+ * marks the tutorial cleared.
  * // SPEC: _spec/apps/starchess/menu-flow.puml
  */
 
@@ -23,15 +23,12 @@ export const setTutorialCleared = (cleared: boolean): void => {
   }
 };
 
-/** King Hunt (live) final — warn when enemy CC dies and tutorial is not cleared. */
-export const shouldWarnTutorialIncomplete = (input: {
+/** King Hunt (live) final — offer complete modal when enemy CC dies and uncleared. */
+export const shouldOfferTutorialComplete = (input: {
   tutorial: boolean;
   phase: string;
   /** Black king lives when the human plays White (king-hunt-live). */
   enemyKingLives: number;
   cleared: boolean;
 }): boolean =>
-  input.tutorial &&
-  input.phase === "gameOver" &&
-  input.enemyKingLives === 0 &&
-  !input.cleared;
+  input.tutorial && input.phase === "gameOver" && input.enemyKingLives === 0 && !input.cleared;

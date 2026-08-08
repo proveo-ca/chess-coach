@@ -166,7 +166,9 @@ const formatAction = (a: ScAction): string => {
   }
   const to = a.to ? `:${a.to}` : "";
   const unit = a.unit ? `:${a.unit}` : "";
-  return `${a.timing}=${a.kind}:${a.from}${to}${unit}`;
+  const promo =
+    a.kind === "pawnDouble" && a.promotion && !a.unit ? `:${a.promotion}` : "";
+  return `${a.timing}=${a.kind}:${a.from}${to}${unit}${promo}`;
 };
 
 const formatSideQueue = (color: PieceColor, actions: readonly ScAction[]): string => {
@@ -215,11 +217,30 @@ const parseOneAction = (raw: string, color: PieceColor, seq: number): ScAction =
   }
   const from = m[3] as Square;
   const to = m[4] as Square | undefined;
-  const unit = m[5] as SpawnPiece | undefined;
-  if (unit && !UNITS.has(unit)) {
-    throw Object.assign(new Error(`Invalid SCFEN unit: ${unit}`), { code: "SC_QUEUE_SHAPE" });
+  const pieceRaw = m[5] as SpawnPiece | undefined;
+  if (pieceRaw && !UNITS.has(pieceRaw)) {
+    throw Object.assign(new Error(`Invalid SCFEN unit: ${pieceRaw}`), { code: "SC_QUEUE_SHAPE" });
   }
-  return { timing, kind, color, from, ...(to ? { to } : {}), ...(unit ? { unit } : {}), seq };
+  if (kind === "pawnDouble" && pieceRaw) {
+    return {
+      timing,
+      kind,
+      color,
+      from,
+      ...(to ? { to } : {}),
+      promotion: pieceRaw,
+      seq,
+    };
+  }
+  return {
+    timing,
+    kind,
+    color,
+    from,
+    ...(to ? { to } : {}),
+    ...(pieceRaw ? { unit: pieceRaw } : {}),
+    seq,
+  };
 };
 
 /** Parse `Q:w:…;b:…` into a turn queue. Throws on shape violations. */

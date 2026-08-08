@@ -3,10 +3,7 @@
  */
 import type { EndScTurnResult } from "@chess-coach/starchess-core";
 
-import {
-  isCheckOnlyResolve,
-  isTurnStartIndex,
-} from "~/presentation/hud/isCheckOnlyResolve";
+import { isCheckOnlyResolve, isTurnStartIndex } from "~/presentation/hud/isCheckOnlyResolve";
 import type { TypewriterBeat } from "~/types/tutorial";
 
 export type { TypewriterBeat } from "~/types/tutorial";
@@ -22,10 +19,34 @@ export const endResultAt = (
   return first;
 };
 
-/** Flat typewriter beats: Turn N → Check → Intent → Resolve per turn. */
-export const buildTypewriterBeats = (
+/**
+ * Settled index DualNav uses to play the End resolve for this turn start.
+ * After a check-only ply, TIMELINE_DONE advances to `resolveIndex + 1` — End plays there.
+ */
+export const endPlayIndexForTurn = (
+  resolveIndex: number,
   resolves: readonly EndScTurnResult[],
-): TypewriterBeat[] => {
+): number => {
+  const first = resolves[resolveIndex];
+  return first && isCheckOnlyResolve(first) ? resolveIndex + 1 : resolveIndex;
+};
+
+/**
+ * Settled snapshot index to display for a typewriter beat (DualNav-aligned).
+ * Intent stays on the post-check board; completed Resolve sits on the post-End board.
+ */
+export const boardIndexForBeat = (
+  beat: TypewriterBeat,
+  resolves: readonly EndScTurnResult[],
+): number => {
+  if (beat.kind === "turn" || beat.kind === "check") return beat.resolveIndex;
+  const endPlay = endPlayIndexForTurn(beat.resolveIndex, resolves);
+  if (beat.kind === "intent") return endPlay;
+  return endPlay + 1;
+};
+
+/** Flat typewriter beats: Turn N → Check → Intent → Resolve per turn. */
+export const buildTypewriterBeats = (resolves: readonly EndScTurnResult[]): TypewriterBeat[] => {
   const beats: TypewriterBeat[] = [];
   let turn = 0;
   let i = 0;

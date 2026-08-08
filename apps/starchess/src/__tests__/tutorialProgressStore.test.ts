@@ -4,7 +4,7 @@ import {
   TUTORIAL_CLEARED_KEY,
   isTutorialCleared,
   setTutorialCleared,
-  shouldWarnTutorialIncomplete,
+  shouldOfferTutorialComplete,
 } from "~/store/tutorialProgressStore";
 
 describe("tutorialProgressStore", () => {
@@ -40,9 +40,9 @@ describe("tutorialProgressStore", () => {
     expect(isTutorialCleared()).toBe(false);
   });
 
-  it("warns only on tutorial gameOver with enemy HP 0 and uncleared", () => {
+  it("offers complete only on tutorial gameOver with enemy HP 0 and uncleared", () => {
     expect(
-      shouldWarnTutorialIncomplete({
+      shouldOfferTutorialComplete({
         tutorial: true,
         phase: "gameOver",
         enemyKingLives: 0,
@@ -50,7 +50,7 @@ describe("tutorialProgressStore", () => {
       }),
     ).toBe(true);
     expect(
-      shouldWarnTutorialIncomplete({
+      shouldOfferTutorialComplete({
         tutorial: true,
         phase: "gameOver",
         enemyKingLives: 0,
@@ -58,7 +58,7 @@ describe("tutorialProgressStore", () => {
       }),
     ).toBe(false);
     expect(
-      shouldWarnTutorialIncomplete({
+      shouldOfferTutorialComplete({
         tutorial: true,
         phase: "planning",
         enemyKingLives: 0,
@@ -66,7 +66,7 @@ describe("tutorialProgressStore", () => {
       }),
     ).toBe(false);
     expect(
-      shouldWarnTutorialIncomplete({
+      shouldOfferTutorialComplete({
         tutorial: true,
         phase: "gameOver",
         enemyKingLives: 1,
@@ -74,7 +74,7 @@ describe("tutorialProgressStore", () => {
       }),
     ).toBe(false);
     expect(
-      shouldWarnTutorialIncomplete({
+      shouldOfferTutorialComplete({
         tutorial: false,
         phase: "gameOver",
         enemyKingLives: 0,

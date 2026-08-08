@@ -28,7 +28,6 @@ export const Modal: Component<ModalProps> = (props) => {
 
   const titleId = createUniqueId();
 
-  let closeButtonEl: HTMLButtonElement | undefined;
   let contentEl: HTMLDivElement | undefined;
 
   let previouslyFocused: HTMLElement | null = null;
@@ -37,8 +36,7 @@ export const Modal: Component<ModalProps> = (props) => {
   const focusModal = () => {
     queueMicrotask(() => {
       if (!props.open) return;
-      const target = closeButtonEl ?? contentEl;
-      target?.focus?.();
+      contentEl?.focus?.();
     });
   };
 
@@ -107,9 +105,6 @@ export const Modal: Component<ModalProps> = (props) => {
 
               {props.onClose && (props.showCloseButton ?? true) && (
                 <Button
-                  ref={(el) => {
-                    closeButtonEl = el;
-                  }}
                   class={styles["modal-close"]}
                   type="button"
                   onClick={props.onClose}

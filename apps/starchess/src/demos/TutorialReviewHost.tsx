@@ -33,7 +33,12 @@ import { splitResolveWaves } from "~/presentation/timeline/resolveWaves";
 import { TUTORIAL_CAPABILITIES, setCapabilities } from "~/store/capabilitiesStore";
 import { resetReviewVisionFilter, setReviewVisionFilter } from "~/store/reviewVisionStore";
 import { resetTutorialNarration, setTutorialNarration } from "~/tutorial/tutorialNarrationStore";
-import { buildTypewriterBeats, endResultAt } from "~/tutorial/typewriterBeats";
+import {
+  boardIndexForBeat,
+  buildTypewriterBeats,
+  endPlayIndexForTurn,
+  endResultAt,
+} from "~/tutorial/typewriterBeats";
 import type { BoardSkin, PieceSet, VisionMode } from "~/types/board";
 import type { KerriganEmotion } from "~/types/coach";
 import type { ReviewHistory } from "~/types/review";
@@ -114,9 +119,13 @@ const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
     });
   });
 
-  const seekTurnStart = (resolveIndex: number) => {
+  const seekBoard = (index: number) => {
     store.cancelEffects();
-    store.dispatch({ type: "REVIEW_SEEK", index: resolveIndex });
+    store.dispatch({ type: "REVIEW_SEEK", index });
+  };
+
+  const seekTurnStart = (resolveIndex: number) => {
+    seekBoard(resolveIndex);
     store.reviewShowIntent(null);
   };
 
@@ -130,12 +139,15 @@ const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
 
   /** Apply board/chrome for a beat without replaying resolve VFX (rewind). */
   const applyBeatStatic = (beat: TypewriterBeat) => {
-    seekTurnStart(beat.resolveIndex);
+    const resolves = store.state().settledResolves;
+    seekBoard(boardIndexForBeat(beat, resolves));
     if (beat.kind === "turn") {
+      store.reviewShowIntent(null);
       store.reviewSetPhase("start");
       return;
     }
     if (beat.kind === "check") {
+      store.reviewShowIntent(null);
       store.dispatch({ type: "REFILL_GAS" });
       store.reviewSetPhase("check");
       return;
@@ -170,7 +182,11 @@ const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
     }
 
     if (beat.kind === "intent") {
-      seekTurnStart(beat.resolveIndex);
+      // DualNav stays on the post-check board after check TIMELINE_DONE — do not seek back.
+      const intentBoard = boardIndexForBeat(beat, s.settledResolves);
+      if (store.state().reviewIndex !== intentBoard) {
+        seekBoard(intentBoard);
+      }
       showIntentFor(beat.resolveIndex);
       return;
     }
@@ -178,6 +194,11 @@ const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
     if (beat.kind === "resolve" && end) {
       store.reviewShowIntent(null);
       store.reviewSetPhase("resolve");
+      // End plays at the DualNav cursor (post-check when a check ply exists).
+      const playIndex = endPlayIndexForTurn(beat.resolveIndex, s.settledResolves);
+      if (store.state().reviewIndex !== playIndex) {
+        seekBoard(playIndex);
+      }
       const waves = splitResolveWaves(end);
       if (waves.length === 0) {
         await store.playReviewResolve(end);

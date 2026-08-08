@@ -2,7 +2,8 @@
  * Single-player match — `/starchess/single?map=&team=` (+ optional `scfen=`).
  * Adjutant script always plays the opposite of `team` (White or Black).
  * Persists SCFEN + playerColor to localStorage for refresh resume.
- * On gameOver: save match history and replace-navigate to `/review/:id`.
+ * On gameOver: save match history, show VICTORY/DEFEAT modal
+ * (Another Game = rematch same map/team · Replay = `/review/:id`).
  * // SPEC: _spec/apps/starchess/menu-flow.puml
  * // SPEC: _spec/apps/starchess/screens.puml
  * // SPEC: _spec/apps/starchess/deployment.puml
@@ -10,18 +11,20 @@
 import { useNavigate, useSearchParams, type RouteSectionProps } from "@solidjs/router";
 import { adjutant } from "@chess-coach/starchess-core";
 import type { StarChessColor } from "@chess-coach/starchess-core";
-import { createEffect, onCleanup, type Component } from "solid-js";
+import { Show, createEffect, createSignal, onCleanup, type Component } from "solid-js";
 
 import { browserLocation, readScfenQuery } from "~/adapters/browser";
 import { createMatchStore, MatchStoreProvider, useMatchStore } from "~/app/MatchStoreContext";
 import { createMatchStateFromScfen } from "~/app/matchReducer";
 import { StarChessScreen } from "~/app/StarChessScreen";
+import { MatchResultModal } from "~/components/features/MatchResultModal";
 import { LiveMatchShell } from "~/screens/LiveMatchShell";
 import { NERD_STARTING_SCFEN } from "~/stories/fixtures/seeds";
 import {
   addMatchRecord,
   makeMatchId,
   recordFromMatchState,
+  resultForPlayer,
 } from "~/store/matchHistoryStore";
 import {
   clearMatchSession,
@@ -31,6 +34,7 @@ import {
 } from "~/store/matchSessionStore";
 import { playerName } from "~/store/settingsStore";
 import type { BoardVariant } from "~/types/board";
+import type { StarChessMatchResult } from "~/types/review";
 
 const MAPS: readonly BoardVariant[] = ["eclipse", "butter", "vermeer"];
 
@@ -45,13 +49,56 @@ const parseMap = (raw: string | string[] | undefined): BoardVariant => {
 const parseTeam = (raw: string | string[] | undefined): StarChessColor =>
   asOne(raw) === "b" ? "b" : "w";
 
+type MatchBootstrap = {
+  matchId: string;
+  startedAt: string;
+  scfen: string;
+  storedW: number;
+  storedB: number;
+};
+
+/** Resolve opening SCFEN + ids once per LiveMatchSession mount. */
+const bootstrapMatch = (
+  map: BoardVariant,
+  team: StarChessColor,
+  opts: { rematch: boolean },
+): MatchBootstrap => {
+  if (opts.rematch) {
+    return {
+      matchId: makeMatchId(),
+      startedAt: new Date().toISOString(),
+      scfen: NERD_STARTING_SCFEN,
+      storedW: 3,
+      storedB: 3,
+    };
+  }
+
+  const queryScfen = readScfenQuery(browserLocation.search());
+  const session = loadMatchSession();
+  const resume =
+    !queryScfen &&
+    session &&
+    session.map === map &&
+    session.playerColor === team
+      ? session
+      : null;
+
+  return {
+    matchId: resume?.id ?? makeMatchId(),
+    startedAt: resume?.startedAt ?? new Date().toISOString(),
+    scfen: queryScfen ?? resume?.scfen ?? NERD_STARTING_SCFEN,
+    storedW: resume?.economies.w.stored ?? 3,
+    storedB: resume?.economies.b.stored ?? 3,
+  };
+};
+
 const MatchInner: Component<{
   boardVariant: BoardVariant;
   team: StarChessColor;
   matchId: string;
   startedAt: string;
   onExitToMenu: () => void;
-  onMatchFinished: (id: string) => void;
+  onMatchFinished: (id: string, result: StarChessMatchResult) => void;
 }> = (props) => {
   const store = useMatchStore();
   const opponentColor = (): StarChessColor => (props.team === "w" ? "b" : "w");
@@ -74,21 +121,22 @@ const MatchInner: Component<{
     );
   });
 
-  // Terminal → persist DualNav package and hand off to `/review/:id`.
+  // Terminal → persist DualNav package, then offer rematch / replay.
   createEffect(() => {
     const s = store.state();
     if (s.phase !== "gameOver" || historySaved) return;
+    const result = resultForPlayer(s);
     const record = recordFromMatchState(s, {
       id: props.matchId,
       startedAt: props.startedAt,
       map: props.boardVariant,
       playerName: playerName(),
     });
-    if (!record) return;
+    if (!record || !result) return;
     historySaved = true;
     addMatchRecord(record);
     clearMatchSession();
-    props.onMatchFinished(props.matchId);
+    props.onMatchFinished(props.matchId, result);
   });
 
   onCleanup(() => {
@@ -113,66 +161,108 @@ const MatchInner: Component<{
   );
 };
 
-export const StarChessSingleScreen: Component<RouteSectionProps> = () => {
-  const navigate = useNavigate();
-  const [params] = useSearchParams();
-
-  const map = () => parseMap(params.map);
-  const team = () => parseTeam(params.team);
-  const queryScfen = readScfenQuery(browserLocation.search());
-
-  // Resume: same map+team as a saved session (refresh mid-match). Explicit
-  // `scfen=` query always wins; brand-new starts use the opening seed.
-  const session = loadMatchSession();
-  const resume =
-    !queryScfen &&
-    session &&
-    session.map === map() &&
-    session.playerColor === team()
-      ? session
-      : null;
-
-  const matchId = resume?.id ?? makeMatchId();
-  const startedAt = resume?.startedAt ?? new Date().toISOString();
-
-  const scfen = queryScfen ?? resume?.scfen ?? NERD_STARTING_SCFEN;
-  const storedW = resume?.economies.w.stored ?? 3;
-  const storedB = resume?.economies.b.stored ?? 3;
-
-  const seeded = createMatchStateFromScfen(scfen, storedW);
+/** One live match instance — remount via `epoch` for Another Game. */
+const LiveMatchSession: Component<{
+  epoch: number;
+  map: BoardVariant;
+  team: StarChessColor;
+  onExitToMenu: () => void;
+  onMatchFinished: (id: string, result: StarChessMatchResult) => void;
+}> = (props) => {
+  const boot = bootstrapMatch(props.map, props.team, {
+    rematch: props.epoch > 0,
+  });
+  const seeded = createMatchStateFromScfen(boot.scfen, boot.storedW);
   const store = createMatchStore({
     initial: {
       ...seeded,
-      viewer: team(),
-      playerColor: team(),
+      viewer: props.team,
+      playerColor: props.team,
       economies: {
-        w: { stored: storedW, deployed: seeded.economies.w.deployed },
-        b: { stored: storedB, deployed: seeded.economies.b.deployed },
+        w: { stored: boot.storedW, deployed: seeded.economies.w.deployed },
+        b: { stored: boot.storedB, deployed: seeded.economies.b.deployed },
       },
     },
   });
+
+  return (
+    <MatchStoreProvider store={store}>
+      <MatchInner
+        boardVariant={props.map}
+        team={props.team}
+        matchId={boot.matchId}
+        startedAt={boot.startedAt}
+        onExitToMenu={props.onExitToMenu}
+        onMatchFinished={props.onMatchFinished}
+      />
+    </MatchStoreProvider>
+  );
+};
+
+export const StarChessSingleScreen: Component<RouteSectionProps> = () => {
+  const navigate = useNavigate();
+  const [params] = useSearchParams();
+  const [matchEpoch, setMatchEpoch] = createSignal(0);
+  const [resultOpen, setResultOpen] = createSignal(false);
+  const [result, setResult] = createSignal<StarChessMatchResult | null>(null);
+  const [finishedId, setFinishedId] = createSignal<string | null>(null);
+
+  const map = () => parseMap(params.map);
+  const team = () => parseTeam(params.team);
 
   const exitToMenu = () => {
     clearMatchSession();
     navigate("/");
   };
 
-  const onMatchFinished = (id: string) => {
+  const onMatchFinished = (id: string, matchResult: StarChessMatchResult) => {
+    setFinishedId(id);
+    setResult(matchResult);
+    setResultOpen(true);
+  };
+
+  const onAnotherGame = () => {
+    setResultOpen(false);
+    setResult(null);
+    setFinishedId(null);
+    clearMatchSession();
+    // Drop one-shot scfen= so rematch uses the opening seed.
+    const q = new URLSearchParams();
+    q.set("map", map());
+    q.set("team", team());
+    navigate(`/single?${q.toString()}`, { replace: true });
+    setMatchEpoch((n) => n + 1);
+  };
+
+  const onReplay = () => {
+    const id = finishedId();
+    if (!id) return;
+    setResultOpen(false);
     navigate(`/review/${id}`, { replace: true });
   };
 
   return (
     <LiveMatchShell world={map()} testId="starchess-app">
-      <MatchStoreProvider store={store}>
-        <MatchInner
-          boardVariant={map()}
-          team={team()}
-          matchId={matchId}
-          startedAt={startedAt}
-          onExitToMenu={exitToMenu}
-          onMatchFinished={onMatchFinished}
-        />
-      </MatchStoreProvider>
+      <Show when={`${map()}-${team()}-${matchEpoch()}`} keyed>
+        {(key) => {
+          const epoch = Number(key.slice(key.lastIndexOf("-") + 1));
+          return (
+            <LiveMatchSession
+              epoch={epoch}
+              map={map()}
+              team={team()}
+              onExitToMenu={exitToMenu}
+              onMatchFinished={onMatchFinished}
+            />
+          );
+        }}
+      </Show>
+      <MatchResultModal
+        open={resultOpen()}
+        result={result()}
+        onAnotherGame={onAnotherGame}
+        onReplay={onReplay}
+      />
     </LiveMatchShell>
   );
 };

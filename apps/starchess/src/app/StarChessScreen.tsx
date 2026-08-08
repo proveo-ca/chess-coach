@@ -176,6 +176,21 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
     const pending = store.state().pendingPromotion;
     if (!pending) return;
     store.dispatch({ type: "CLEAR_PENDING_PROMOTION" });
+    if (pending.via === "gas") {
+      store.dispatch({
+        type: "QUEUE_ACTION",
+        action: {
+          timing: "B",
+          kind: "pawnDouble",
+          color: pending.color,
+          from: pending.from,
+          to: pending.to,
+          promotion: piece,
+        },
+      });
+      store.dispatch({ type: "MARK_SPECIAL_USED", square: pending.from });
+      return;
+    }
     store.dispatch({
       type: "QUEUE_ACTION",
       action: {
@@ -277,11 +292,16 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
       }
       const lastRank = color === "w" ? "8" : "1";
       if (to[1] === lastRank) {
+        // Gas-only promote from the approach rank — picker, then B + promotion.
+        store.dispatch({
+          type: "SET_PENDING_PROMOTION",
+          pending: { color, from: ctx.square, to, via: "gas" },
+        });
         store.dispatch({
           type: "QUEUE_REJECT",
-          message: "Last-rank advance is classical — click the promotion square",
+          message: `Promote ${ctx.square}→${to} — pick a unit`,
         });
-        return false;
+        return "pending";
       }
       // Move-then-gas onto last rank: F would park a marine on 8/1 with no
       // picker. Peel the mid-step C, queue B, open PromotionModal (same as

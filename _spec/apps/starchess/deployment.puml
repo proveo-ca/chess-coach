@@ -39,7 +39,8 @@ note bottom of V
   (``TUTORIAL_SCRIPT`` ids — e.g. ``/tutorial/fog/king``).
   Adjutant plays the **opposite** of ``team`` (not always Black).
   ``/single`` HUD: ResourceBar (top) · TurnBarSidebar (rail) · GasDeploy (footer).
-  gameOver → save ``starchess_match_history`` → replace-navigate ``/review/:id``.
+  gameOver → save ``starchess_match_history`` → ``MatchResultModal``
+  (Another Game rematch · Replay → ``/review/:id``).
   Tutorial: CoachScreen-shaped (Kerrigan header) · HOME-only sidebar · story demos.
 end note
 

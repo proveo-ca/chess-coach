@@ -16,6 +16,7 @@ describe("nerd name matching", () => {
     expect(findNerdName("Hydralizk")).toBe("Hydralisk");
     expect(findNerdName("Jaedong")).toBe("Jaedong");
     expect(findNerdName("iloveoov")).toBe("iloveoov");
+    expect(findNerdName("hieldan")).toBe("HieLdaN");
   });
 
   it("computes insertions, removals, and substitutions", () => {

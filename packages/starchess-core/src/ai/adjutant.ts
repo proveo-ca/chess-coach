@@ -638,6 +638,7 @@ const sideSpecials = (
     center,
     trade,
     attackedPenalty,
+    promotionBonus,
   } = weights;
 
   // spawn — adjacent to the King; afford units within stored minerals.
@@ -703,17 +704,28 @@ const sideSpecials = (
   }
 
   // pawnDouble — gas step +1 forward only (lone B; stacks with classical below).
-  // Landing on the last rank is excluded (promotion is classical).
+  // Last-rank landing carries a promotion choice (gas-only promote).
   for (const [from, piece] of map) {
     if (piece.color !== us || piece.type !== "p") continue;
     const to = pawnSingleTarget(from, us);
     if (!to || map.has(to)) continue;
-    if (isLastRank(rankOf(to), us)) continue;
+    const promotion = isLastRank(rankOf(to), us) ? ("q" as const) : undefined;
     let score = center * centerScore(to) + promoteRank * promoteProgress(rankOf(to), us);
     score += nearPromoteRush(rankOf(from), rankOf(to), us);
+    if (promotion) score += promotionBonus;
     if (isSquareAttackedBy(map, to, enemy)) score -= attackedPenalty;
     out.push(
-      asCandidate({ timing: "B", kind: "pawnDouble", color: us, from, to }, score),
+      asCandidate(
+        {
+          timing: "B",
+          kind: "pawnDouble",
+          color: us,
+          from,
+          to,
+          ...(promotion ? { promotion } : {}),
+        },
+        score,
+      ),
     );
   }
 

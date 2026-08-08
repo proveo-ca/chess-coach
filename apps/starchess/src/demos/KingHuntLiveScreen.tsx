@@ -1,28 +1,21 @@
+import { adjutant, formatScFen } from "@chess-coach/starchess-core";
 import type { Component, JSX } from "solid-js";
 import { createEffect, createSignal, onCleanup, Show } from "solid-js";
-import { adjutant, formatScFen } from "@chess-coach/starchess-core";
 
-import {
-  createMatchStore,
-  MatchStoreProvider,
-  useMatchStore,
-} from "~/app/MatchStoreContext";
 import { createMatchStateFromScfen } from "~/app/matchReducer";
+import { createMatchStore, MatchStoreProvider, useMatchStore } from "~/app/MatchStoreContext";
 import { displayedSnapshot } from "~/app/selectors";
 import { StarChessScreen } from "~/app/StarChessScreen";
-import { TutorialIncompleteConfirm } from "~/components/features/TutorialIncompleteConfirm";
-import { LiveMatchShell } from "~/screens/LiveMatchShell";
+import { TutorialCompleteConfirm } from "~/components/features/TutorialCompleteConfirm";
 import { KING_HUNT_LIVE_START_SCFEN } from "~/demos/kingHunt";
-import {
-  resetTutorialNarration,
-  setTutorialNarration,
-} from "~/tutorial/tutorialNarrationStore";
 import { liveMatchPhase } from "~/presentation/hud/liveMatchPhase";
+import { LiveMatchShell } from "~/screens/LiveMatchShell";
 import {
   isTutorialCleared,
   setTutorialCleared,
-  shouldWarnTutorialIncomplete,
+  shouldOfferTutorialComplete,
 } from "~/store/tutorialProgressStore";
+import { resetTutorialNarration, setTutorialNarration } from "~/tutorial/tutorialNarrationStore";
 import type { KerriganEmotion } from "~/types/coach";
 
 export type KingHuntLiveScreenProps = {
@@ -44,9 +37,7 @@ export type KingHuntLiveScreenProps = {
  * Tutorial embeds without a second sky shell.
  * // SPEC: _spec/apps/starchess/menu-flow.puml
  */
-export const KingHuntLiveScreen: Component<KingHuntLiveScreenProps> = (
-  props,
-) => {
+export const KingHuntLiveScreen: Component<KingHuntLiveScreenProps> = (props) => {
   const store = createMatchStore({
     initial: createMatchStateFromScfen(KING_HUNT_LIVE_START_SCFEN, 1),
     autoArmTimer: props.tutorial ? true : undefined,
@@ -71,12 +62,10 @@ export const KingHuntLiveScreen: Component<KingHuntLiveScreenProps> = (
   return <LiveMatchShell world="eclipse">{body}</LiveMatchShell>;
 };
 
-const KingHuntLiveInner: Component<
-  Omit<KingHuntLiveScreenProps, "embedded">
-> = (props) => {
+const KingHuntLiveInner: Component<Omit<KingHuntLiveScreenProps, "embedded">> = (props) => {
   const store = useMatchStore();
-  const [incompleteOpen, setIncompleteOpen] = createSignal(false);
-  let incompleteOffered = false;
+  const [completeOpen, setCompleteOpen] = createSignal(false);
+  let completeOffered = false;
 
   createEffect(() => {
     if (!props.tutorial) return;
@@ -103,9 +92,9 @@ const KingHuntLiveInner: Component<
     const s = store.state();
     void s.phase;
     void s.liveSnapshot.kingLives.b;
-    if (incompleteOffered) return;
+    if (completeOffered) return;
     if (
-      !shouldWarnTutorialIncomplete({
+      !shouldOfferTutorialComplete({
         tutorial: true,
         phase: s.phase,
         enemyKingLives: s.liveSnapshot.kingLives.b,
@@ -114,18 +103,17 @@ const KingHuntLiveInner: Component<
     ) {
       return;
     }
-    incompleteOffered = true;
-    setIncompleteOpen(true);
+    completeOffered = true;
+    setCompleteOpen(true);
   });
 
   onCleanup(() => {
     if (props.tutorial) resetTutorialNarration();
   });
 
-  const onIncompleteNo = () => setIncompleteOpen(false);
-  const onIncompleteYes = () => {
+  const onGoHome = () => {
     setTutorialCleared(true);
-    setIncompleteOpen(false);
+    setCompleteOpen(false);
     props.onExitToMenu?.();
   };
 
@@ -151,11 +139,7 @@ const KingHuntLiveInner: Component<
         }
       />
       <Show when={props.tutorial}>
-        <TutorialIncompleteConfirm
-          open={incompleteOpen()}
-          onNo={onIncompleteNo}
-          onYes={onIncompleteYes}
-        />
+        <TutorialCompleteConfirm open={completeOpen()} onGoHome={onGoHome} />
       </Show>
     </>
   );

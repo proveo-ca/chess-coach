@@ -98,17 +98,12 @@ const seedFromSnap = (snap: ScFenSnapshot, stored: number): MatchState => {
 };
 
 export const createInitialMatchState = (): MatchState => {
-  const snap = parseScFen(
-    "SCFEN|4k3/8/8/8/8/8/8/4K3|0|33|P|G:11:11|Q:w:;b:",
-  );
+  const snap = parseScFen("SCFEN|4k3/8/8/8/8/8/8/4K3|0|33|P|G:11:11|Q:w:;b:");
   return seedFromSnap(snap, 12);
 };
 
 /** Seed a match from SCFEN (Storybook / deep-link) before the screen mounts. */
-export const createMatchStateFromScfen = (
-  scfen: string,
-  stored = 12,
-): MatchState => {
+export const createMatchStateFromScfen = (scfen: string, stored = 12): MatchState => {
   try {
     return seedFromSnap(parseScFen(scfen), stored);
   } catch {
@@ -138,7 +133,11 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
       return { ...state, phase: "loading", statusText: action.message };
     case "SELECT_SQUARE":
       if (state.phase !== "planning" && state.phase !== "targeting") return state;
-      return { ...state, selected: action.square, legalDests: action.square ? state.legalDests : [] };
+      return {
+        ...state,
+        selected: action.square,
+        legalDests: action.square ? state.legalDests : [],
+      };
     case "SET_LEGAL_DESTS":
       return { ...state, legalDests: action.dests };
     case "QUEUE_ACTION": {
@@ -159,8 +158,7 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
           statusText: "Action queued",
         };
       } catch (err) {
-        const message =
-          err instanceof AddScActionError ? err.message : "Could not queue action";
+        const message = err instanceof AddScActionError ? err.message : "Could not queue action";
         return { ...state, statusText: message };
       }
     }
@@ -180,12 +178,9 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
       return {
         ...state,
         pendingPromotion: null,
-        phase:
-          state.phase === "targeting" && !state.targeting ? "planning" : state.phase,
+        phase: state.phase === "targeting" && !state.targeting ? "planning" : state.phase,
         statusText:
-          state.phase === "targeting" && !state.targeting
-            ? "Plan your turn"
-            : state.statusText,
+          state.phase === "targeting" && !state.targeting ? "Plan your turn" : state.statusText,
       };
     case "REMOVE_ACTION": {
       if (state.phase !== "planning") return state;
@@ -302,14 +297,24 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
         try {
           snap = addScAction({
             snapshot: snap,
-            action: {
-              timing: "C",
-              kind: "classical",
-              color: pending.color,
-              from: pending.from,
-              to: pending.to,
-              promotion: "q",
-            },
+            action:
+              pending.via === "gas"
+                ? {
+                    timing: "B",
+                    kind: "pawnDouble",
+                    color: pending.color,
+                    from: pending.from,
+                    to: pending.to,
+                    promotion: "q",
+                  }
+                : {
+                    timing: "C",
+                    kind: "classical",
+                    color: pending.color,
+                    from: pending.from,
+                    to: pending.to,
+                    promotion: "q",
+                  },
           }).snapshot;
         } catch {
           // Already queued / illegal — resolve whatever is on the board.
@@ -439,47 +444,30 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
         // Review replay: board reads timeline overlays; never mutate live/outcome.
         return {
           ...state,
-          siegedRooks: action.siegedRooks
-            ? new Set(action.siegedRooks)
-            : state.siegedRooks,
+          siegedRooks: action.siegedRooks ? new Set(action.siegedRooks) : state.siegedRooks,
           timeline: {
             ...state.timeline,
             playingIds:
-              action.playingIds !== undefined
-                ? [...action.playingIds]
-                : state.timeline.playingIds,
+              action.playingIds !== undefined ? [...action.playingIds] : state.timeline.playingIds,
             attackDying:
               action.attackDying !== undefined
                 ? { ...action.attackDying }
                 : state.timeline.attackDying,
             hiddenSquares: hidden,
             moveProgress:
-              action.moveProgress !== undefined
-                ? action.moveProgress
-                : state.timeline.moveProgress,
-            moveLeg:
-              action.moveLeg !== undefined
-                ? action.moveLeg
-                : state.timeline.moveLeg,
+              action.moveProgress !== undefined ? action.moveProgress : state.timeline.moveProgress,
+            moveLeg: action.moveLeg !== undefined ? action.moveLeg : state.timeline.moveLeg,
             jumpTrails:
-              action.jumpTrails !== undefined
-                ? [...action.jumpTrails]
-                : state.timeline.jumpTrails,
+              action.jumpTrails !== undefined ? [...action.jumpTrails] : state.timeline.jumpTrails,
             mineMissileTrails:
               action.mineMissileTrails !== undefined
                 ? [...action.mineMissileTrails]
                 : state.timeline.mineMissileTrails,
             spentMines:
-              action.spentMines !== undefined
-                ? [...action.spentMines]
-                : state.timeline.spentMines,
+              action.spentMines !== undefined ? [...action.spentMines] : state.timeline.spentMines,
             displayPlacement: action.placement ?? state.timeline.displayPlacement,
-            displayKingLives:
-              action.kingLives ?? state.timeline.displayKingLives,
-            displayMines:
-              action.mines !== undefined
-                ? action.mines
-                : state.timeline.displayMines,
+            displayKingLives: action.kingLives ?? state.timeline.displayKingLives,
+            displayMines: action.mines !== undefined ? action.mines : state.timeline.displayMines,
             displaySiegedRooks:
               action.siegedRooks !== undefined
                 ? [...action.siegedRooks]
@@ -488,17 +476,13 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
         };
       }
       const snap = state.liveSnapshot;
-      const sieged = action.siegedRooks
-        ? new Set(action.siegedRooks)
-        : state.siegedRooks;
+      const sieged = action.siegedRooks ? new Set(action.siegedRooks) : state.siegedRooks;
       const liveSnapshot: ScFenSnapshot = {
         ...snap,
         placement: action.placement ?? snap.placement,
         kingLives: action.kingLives ?? snap.kingLives,
         mines: action.mines ?? snap.mines,
-        siegedRooks: action.siegedRooks
-          ? [...action.siegedRooks]
-          : snap.siegedRooks,
+        siegedRooks: action.siegedRooks ? [...action.siegedRooks] : snap.siegedRooks,
       };
       if (action.specialsUsed !== undefined) {
         if (action.specialsUsed.length > 0) {
@@ -514,34 +498,23 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
         timeline: {
           ...state.timeline,
           playingIds:
-            action.playingIds !== undefined
-              ? [...action.playingIds]
-              : state.timeline.playingIds,
+            action.playingIds !== undefined ? [...action.playingIds] : state.timeline.playingIds,
           attackDying:
             action.attackDying !== undefined
               ? { ...action.attackDying }
               : state.timeline.attackDying,
           hiddenSquares: hidden,
           moveProgress:
-            action.moveProgress !== undefined
-              ? action.moveProgress
-              : state.timeline.moveProgress,
-          moveLeg:
-            action.moveLeg !== undefined
-              ? action.moveLeg
-              : state.timeline.moveLeg,
+            action.moveProgress !== undefined ? action.moveProgress : state.timeline.moveProgress,
+          moveLeg: action.moveLeg !== undefined ? action.moveLeg : state.timeline.moveLeg,
           jumpTrails:
-            action.jumpTrails !== undefined
-              ? [...action.jumpTrails]
-              : state.timeline.jumpTrails,
+            action.jumpTrails !== undefined ? [...action.jumpTrails] : state.timeline.jumpTrails,
           mineMissileTrails:
             action.mineMissileTrails !== undefined
               ? [...action.mineMissileTrails]
               : state.timeline.mineMissileTrails,
           spentMines:
-            action.spentMines !== undefined
-              ? [...action.spentMines]
-              : state.timeline.spentMines,
+            action.spentMines !== undefined ? [...action.spentMines] : state.timeline.spentMines,
           displayPlacement: action.placement ?? state.timeline.displayPlacement,
           displayKingLives: null,
           displayMines: null,
@@ -694,11 +667,7 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
         selected: null,
         legalDests: [],
         phase:
-          state.phase === "resolving"
-            ? state.outcome
-              ? "gameOver"
-              : "planning"
-            : state.phase,
+          state.phase === "resolving" ? (state.outcome ? "gameOver" : "planning") : state.phase,
       };
     default:
       return state;

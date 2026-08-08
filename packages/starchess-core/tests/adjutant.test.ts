@@ -288,6 +288,7 @@ describe("adjutant", () => {
 
   it("prioritises finishing promotion from 1 step out over map control", () => {
     // Black pawn e2→e1; hub knight on e5 would rather mine — rush wins.
+    // Gas-only B+promotion or classical C+promotion both finish the job.
     const snap = parseScFen(
       "SCFEN|4k3/8/8/4n3/8/8/4p3/3K4|0|33|P|G:11:11|Q:w:;b:",
     );
@@ -296,10 +297,10 @@ describe("adjutant", () => {
     expect(
       actions.some(
         (a) =>
-          a.kind === "classical" &&
           a.from === "e2" &&
           a.to === "e1" &&
-          a.promotion != null,
+          a.promotion != null &&
+          (a.kind === "classical" || a.kind === "pawnDouble"),
       ),
     ).toBe(true);
   });

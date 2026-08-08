@@ -38,7 +38,7 @@ describe("core promotion / mine (package)", () => {
     });
   });
 
-  it("rejects gas step onto the last rank (promotion is classical)", () => {
+  it("rejects gas step onto the last rank without a promotion choice", () => {
     const snap = parseScFen(
       "SCFEN|k7/4P3/8/8/8/8/8/4K3|1|33|P|G:11:11|Q:w:;b:",
     );
@@ -53,7 +53,33 @@ describe("core promotion / mine (package)", () => {
           to: "e8",
         },
       }),
-    ).toThrow(/last rank/i);
+    ).toThrow(/promotion|last rank/i);
+  });
+
+  it("gas-only last-rank step with promotion deploys", () => {
+    let snap = parseScFen(
+      "SCFEN|k7/4P3/8/8/8/8/8/4K3|1|33|P|G:11:11|Q:w:;b:",
+    );
+    snap = addScAction({
+      snapshot: snap,
+      action: {
+        timing: "B",
+        kind: "pawnDouble",
+        color: "w",
+        from: "e7",
+        to: "e8",
+        promotion: "q",
+      },
+    }).snapshot;
+    const r = endScTurn(snap);
+    expect(r.resolved.promotions).toEqual([
+      expect.objectContaining({ at: "e8", unit: "q", color: "w" }),
+    ]);
+    expect(placementToMap(r.next.placement).get("e8")).toEqual({
+      type: "q",
+      color: "w",
+    });
+    expect(r.next.specialsUsed ?? []).not.toContain("e8");
   });
 
   it("rejects classical last-rank without a promotion choice", () => {

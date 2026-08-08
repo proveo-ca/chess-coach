@@ -40,6 +40,8 @@ export type ScAction =
       from: Square;
       to?: Square;
       unit?: SpawnPiece;
+      /** Gas step onto last rank — Marine promotes on End (pawnDouble only). */
+      promotion?: SpawnPiece;
       seq: number;
     }
   | {

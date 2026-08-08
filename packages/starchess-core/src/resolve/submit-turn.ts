@@ -32,6 +32,7 @@ import { pawnSingleTarget } from "../rules/specials/pawnDouble";
 import {
   applyPendingKingShots,
   resolveTurn,
+  type ResolvePromotion,
   type ResolveTurnResult,
   type ResolveMove,
 } from "./resolve-turn";
@@ -466,6 +467,7 @@ export const endScTurn = (
   const sieged = new Set(snapshot.siegedRooks ?? []);
   const bMoves: ResolveMove[] = [];
   const fMoves: ResolveMove[] = [];
+  const gasPromotions: ResolvePromotion[] = [];
 
   // Vision for turn-start checks (pre-B siege flags) and classical fog.
   const rookModeFor = (sq: Square) => (sieged.has(sq) ? "siege" : "tank");
@@ -579,6 +581,19 @@ export const endScTurn = (
         from: a.from,
         to: a.to,
       });
+      const lastRank = a.color === "w" ? 8 : 1;
+      if (Number(a.to[1]) === lastRank && a.promotion) {
+        applied.placement = placeUnit(applied.placement, a.to, {
+          type: a.promotion,
+          color: a.color,
+        });
+        gasPromotions.push({
+          color: a.color,
+          from: a.from,
+          at: a.to,
+          unit: a.promotion,
+        });
+      }
     }
     placement = applied.placement;
     mines = applied.mines;
@@ -631,9 +646,10 @@ export const endScTurn = (
     siegedRooks: afterB.siegedRooks,
   });
 
-  const resolved: ResolveTurnResult = {
+  let resolved: ResolveTurnResult = {
     ...classical,
     attacks: [...pendingApplied.attacks, ...classical.attacks],
+    promotions: [...gasPromotions, ...classical.promotions],
   };
 
   for (const atk of classical.attacks) {
@@ -765,6 +781,19 @@ export const endScTurn = (
       if (!to || boardAfter.has(to)) continue;
       placement = relocate(placement, at, to);
       fMoves.push({ piece: "p", color: a.color, from: at, to });
+      const lastRank = a.color === "w" ? 8 : 1;
+      if (Number(to[1]) === lastRank && a.promotion) {
+        placement = placeUnit(placement, to, {
+          type: a.promotion,
+          color: a.color,
+        });
+        gasPromotions.push({
+          color: a.color,
+          from: a.from,
+          at: to,
+          unit: a.promotion,
+        });
+      }
       events.push(eventFor("specialAfter", { ...rewritten, to }, `ev-${eventSeq++}`));
       continue;
     }
@@ -774,6 +803,12 @@ export const endScTurn = (
     mines = applied.mines;
     events.push(eventFor("specialAfter", rewritten, `ev-${eventSeq++}`));
   }
+
+  // F gas-promotes append after classical promotions were frozen.
+  resolved = {
+    ...resolved,
+    promotions: [...gasPromotions, ...classical.promotions],
+  };
 
   for (const color of ["w", "b"] as const) {
     if (minesFor(mines, color).length > MAX_MINES_PER_SIDE) {

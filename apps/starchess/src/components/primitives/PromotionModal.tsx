@@ -24,7 +24,7 @@ export const PromotionModal: Component<PromotionModalProps> = (props) => {
   return (
     <Modal
       open={!!props.pending}
-      title="Promote pawn"
+      title="Promote Marine"
       position="absolute"
       onClose={props.onCancel}
       dismissible

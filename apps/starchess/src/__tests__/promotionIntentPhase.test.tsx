@@ -1,29 +1,25 @@
+import { render } from "@solidjs/testing-library";
+import type { Square } from "chess.js";
+import type { JSX } from "solid-js";
 /**
  * Intent-phase contract: pawn two squares from last rank + gas + classical
  * MUST open PromotionModal (pendingPromotion) before End — never park a
  * marine on 8/1 without a picker.
  */
 import { describe, expect, it } from "vitest";
-import { render } from "@solidjs/testing-library";
-import type { Square } from "chess.js";
-import type { JSX } from "solid-js";
 
-import {
-  createMatchStore,
-  MatchStoreProvider,
-} from "~/app/MatchStoreContext";
 import { createMatchStateFromScfen } from "~/app/matchReducer";
-import { liveMatchPhase } from "~/presentation/hud/liveMatchPhase";
+import { createMatchStore, MatchStoreProvider } from "~/app/MatchStoreContext";
 import {
   gasStackPromotes,
   moveThenGasPromotes,
   useBoardInput,
 } from "~/presentation/board/useBoardInput";
+import { liveMatchPhase } from "~/presentation/hud/liveMatchPhase";
 import type { MatchStore } from "~/types/match";
 
 /** White marine on rank 6 — two steps from promotion (gas mid h7 + C → h8). */
-const TWO_FROM_PROMO =
-  "SCFEN|k7/8/7P/8/8/8/8/4K3|1|33|P|G:11:11|Q:w:;b:";
+const TWO_FROM_PROMO = "SCFEN|k7/8/7P/8/8/8/8/4K3|1|33|P|G:11:11|Q:w:;b:";
 
 const intentPhase = (store: MatchStore) => {
   const s = store.state();
@@ -79,9 +75,9 @@ describe("promotion modal — two squares away (intent phase)", () => {
         to: "h7",
       },
     });
-    expect(
-      moveThenGasPromotes(moveFirst.state().liveSnapshot, "w", "h6", "h7"),
-    ).toEqual({ seq: expect.any(Number) });
+    expect(moveThenGasPromotes(moveFirst.state().liveSnapshot, "w", "h6", "h7")).toEqual({
+      seq: expect.any(Number),
+    });
   });
 
   it("gas-then-move: board click opens pendingPromotion in intent (useBoardInput)", () => {
@@ -123,15 +119,11 @@ describe("promotion modal — two squares away (intent phase)", () => {
     expect(store.state().phase).toBe("targeting");
     expect(intentPhase(store)).toBe("intent");
     // Classical not queued until the picker commits.
-    expect(
-      store.state().liveSnapshot.queue?.actions.some((a) => a.timing === "C"),
-    ).toBe(false);
+    expect(store.state().liveSnapshot.queue?.actions.some((a) => a.timing === "C")).toBe(false);
 
     api!.resolvePromotion("q");
     expect(store.state().pendingPromotion).toBeNull();
-    const classical = store
-      .state()
-      .liveSnapshot.queue?.actions.find((a) => a.timing === "C");
+    const classical = store.state().liveSnapshot.queue?.actions.find((a) => a.timing === "C");
     expect(classical).toMatchObject({
       kind: "classical",
       from: "h6",
@@ -156,9 +148,7 @@ describe("promotion modal — two squares away (intent phase)", () => {
       },
     });
     const seq = store.state().liveSnapshot.queue!.actions[0]!.seq;
-    expect(moveThenGasPromotes(store.state().liveSnapshot, "w", "h6", "h7")).toEqual(
-      { seq },
-    );
+    expect(moveThenGasPromotes(store.state().liveSnapshot, "w", "h6", "h7")).toEqual({ seq });
 
     // StarChessScreen pawn gas path when moveThenGasPromotes hits.
     store.dispatch({ type: "REMOVE_ACTION", seq });
@@ -184,9 +174,7 @@ describe("promotion modal — two squares away (intent phase)", () => {
     });
     expect(store.state().phase).toBe("targeting");
     expect(intentPhase(store)).toBe("intent");
-    expect(
-      store.state().liveSnapshot.queue?.actions.map((a) => a.timing),
-    ).toEqual(["B"]);
+    expect(store.state().liveSnapshot.queue?.actions.map((a) => a.timing)).toEqual(["B"]);
 
     // Picker commit (StarChessScreen.resolvePromotion).
     store.dispatch({ type: "CLEAR_PENDING_PROMOTION" });
@@ -271,6 +259,27 @@ describe("promotion modal — two squares away (intent phase)", () => {
 
     store.dispatch({ type: "SUBMIT_TURN", reason: "timeout" });
     expect(store.state().pendingPromotion).toBeNull();
+    expect(store.state().lastResolve?.resolved.promotions).toEqual([
+      expect.objectContaining({ at: "h8", unit: "q", color: "w" }),
+    ]);
+  });
+
+  it("gas-only from approach rank: pending via=gas End deploys queen", () => {
+    const onRank7 = "SCFEN|k7/7P/8/8/8/8/8/4K3|1|33|P|G:11:11|Q:w:;b:";
+    const store = createMatchStore({
+      initial: {
+        ...createMatchStateFromScfen(onRank7, 1),
+        turnStartChecksApplied: true,
+      },
+    });
+    store.dispatch({
+      type: "SET_PENDING_PROMOTION",
+      pending: { color: "w", from: "h7", to: "h8", via: "gas" },
+    });
+    store.dispatch({ type: "SUBMIT_TURN", reason: "end" });
+    expect(store.state().lastResolve?.bMoves).toEqual([
+      expect.objectContaining({ from: "h7", to: "h8", piece: "p" }),
+    ]);
     expect(store.state().lastResolve?.resolved.promotions).toEqual([
       expect.objectContaining({ at: "h8", unit: "q", color: "w" }),
     ]);

@@ -127,8 +127,8 @@ note as RULES
   ====
   **pawn** — single push empty; free classical double from start rank
   (mid+to empty); diagonal enemy capture; **no en passant**;
-  ""promotes"" on last rank. Gas ""pawnDouble"" is +1 forward (any rank),
-  may stack with classical.
+  // Promotes on last rank. Gas ""pawnDouble"" is +1 forward (any rank),
+  // including onto last rank when a promotion choice is set; may stack with classical.
   ----
   **knight, king** — leap via ""attacksSquare"". King: **no** self-check /
   castling; **may** step adjacent to enemy king (duel — resolve.puml).

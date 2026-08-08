@@ -1,7 +1,7 @@
 /**
  * Typewriter turn/phase transcript — left/right arrows for tutorial resolve.
  */
-import { For, createEffect, type Component } from "solid-js";
+import { For, createEffect, onCleanup, onMount, type Component } from "solid-js";
 
 import styles from "~/components/features/TutorialTypewriterNav.module.css";
 import type { TypewriterLine } from "~/types/tutorial";
@@ -17,9 +17,13 @@ export type TutorialTypewriterNavProps = {
   onNext: () => void;
 };
 
-export const TutorialTypewriterNav: Component<TutorialTypewriterNavProps> = (
-  props,
-) => {
+const isEditableTarget = (target: EventTarget | null): boolean => {
+  if (!(target instanceof HTMLElement)) return false;
+  const tag = target.tagName;
+  return tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || target.isContentEditable;
+};
+
+export const TutorialTypewriterNav: Component<TutorialTypewriterNavProps> = (props) => {
   let listEl: HTMLDivElement | undefined;
 
   createEffect(() => {
@@ -28,6 +32,27 @@ export const TutorialTypewriterNav: Component<TutorialTypewriterNavProps> = (
     if (!root) return;
     const row = root.querySelector(`[data-line-index="${idx}"]`);
     row?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  });
+
+  onMount(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (isEditableTarget(e.target)) return;
+      if (props.busy) return;
+      if (e.key === "ArrowLeft") {
+        if (!props.canPrev) return;
+        e.preventDefault();
+        props.onPrev();
+        return;
+      }
+      if (e.key === "ArrowRight") {
+        if (!props.canNext) return;
+        e.preventDefault();
+        props.onNext();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    onCleanup(() => window.removeEventListener("keydown", onKey));
   });
 
   return (
