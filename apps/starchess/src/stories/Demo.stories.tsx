@@ -4,11 +4,8 @@ import { CombatChainDemo } from "~/demos/CombatChainDemo";
 import { FogEdgeDemo } from "~/demos/FogEdgeDemo";
 import { KingHuntDemo } from "~/demos/KingHuntDemo";
 import { KingHuntLiveScreen } from "~/demos/KingHuntLiveScreen";
+import { PROMOTION_MINE_SCENARIO, PROMOTION_SCENARIO } from "~/demos/reviewSamples";
 import { VermeerLiveScreen } from "~/demos/VermeerLiveScreen";
-import {
-  PROMOTION_MINE_SCENARIO,
-  PROMOTION_SCENARIO,
-} from "~/demos/reviewSamples";
 
 /**
  * Stories mount SCFEN demos / fixtures only — no queue / resolve logic here.
@@ -22,7 +19,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Review DualNav demos + live seeds. Combat Chain / King Hunt / Promotion = observer DualNav. King Hunt (live) + Vermeer (live) = ResourceBar / TurnBar / GasDeploy + adjutant. Every board mounts on Screen grid.",
+          "Review DualNav demos + live seeds. Combat Chain / King Hunt / Promotion = observer DualNav. King Hunt (live) uses ResourceBar / TurnBarSidebar / GasDeploy; Vermeer (live) uses ResourceBar / TurnBar / GasDeploy. Both use an adjutant. Every board mounts on Screen grid.",
       },
     },
   },
@@ -65,7 +62,7 @@ export const KingHuntLive: Story = {
     docs: {
       description: {
         story:
-          "Ownership flipped vs King Hunt: White hunter (Kh1, Nc5, Bh2) vs black king e4. Adjutant auto-plays black. ResourceBar + TurnBar + GasDeploy; eclipse board + combat VFX.",
+          "Ownership flipped vs King Hunt: White hunter (Kh1, Nc5, Bh2) vs black king e4. Adjutant auto-plays black. ResourceBar + shared BoardSideRail (live TurnBarSidebar + SideRailTools) + GasDeploy; eclipse board + combat VFX.",
       },
     },
   },

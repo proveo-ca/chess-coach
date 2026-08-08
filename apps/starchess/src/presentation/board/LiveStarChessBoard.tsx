@@ -1,3 +1,10 @@
+import {
+  isMoverVisibleToSide,
+  isPieceVisibleToSide,
+  placementToMap,
+  type RookMode,
+  type StarChessColor,
+} from "@chess-coach/starchess-core";
 import type { Square } from "chess.js";
 /**
  * Live match board — snapshot from match store + combat VFX from timeline.
@@ -7,13 +14,6 @@ import type { Square } from "chess.js";
  */
 import type { Component } from "solid-js";
 import { createEffect, createMemo, createSignal, onMount } from "solid-js";
-import {
-  isMoverVisibleToSide,
-  isPieceVisibleToSide,
-  placementToMap,
-  type RookMode,
-  type StarChessColor,
-} from "@chess-coach/starchess-core";
 
 import { useMatchStore } from "~/app/MatchStoreContext";
 import { canSubmit, displayedSnapshot } from "~/app/selectors";
@@ -23,10 +23,7 @@ import { deriveVisualFrame } from "~/presentation/animations/visualFrame";
 import { useBoardInput } from "~/presentation/board/useBoardInput";
 import { useAutoDeploy } from "~/presentation/hooks/useAutoDeploy";
 import { useCombatOverlays } from "~/presentation/hooks/useCombatOverlays";
-import {
-  useBoardVision,
-  useIntentOverlays,
-} from "~/presentation/hooks/useIntentOverlays";
+import { useBoardVision, useIntentOverlays } from "~/presentation/hooks/useIntentOverlays";
 import { liveMatchPhase } from "~/presentation/hud/liveMatchPhase";
 import { LIVE_CAPABILITIES, capabilities, setCapabilities } from "~/store/capabilitiesStore";
 import type { BoardSkin, BoardVariant, PieceSet, VisionMode } from "~/types/board";
@@ -60,7 +57,7 @@ export const LiveStarChessBoard: Component<{
   const reviewing = () => store.state().phase === "gameOver";
   const interactive = () => canSubmit(store.state());
 
-  // Live play locks viewer orientation — Flip stays off in Sidebar.
+  // Live play locks viewer orientation — Flip stays off in SideRailTools.
   // Tutorial sets homeOnly; do not clobber that chrome.
   onMount(() => {
     if (capabilities().homeOnly) return;
@@ -93,18 +90,11 @@ export const LiveStarChessBoard: Component<{
     });
   };
 
-  const moverFxVisible = (m: {
-    from: Square;
-    color: StarChessColor;
-  }) => {
+  const moverFxVisible = (m: { from: Square; color: StarChessColor }) => {
     if (!gateFx()) return true;
-    return isMoverVisibleToSide(
-      snap().placement,
-      store.state().viewer,
-      m,
-      new Set(),
-      { rookModeFor },
-    );
+    return isMoverVisibleToSide(snap().placement, store.state().viewer, m, new Set(), {
+      rookModeFor,
+    });
   };
 
   // Persist fire overlays for both kings from HP (turn-open checks + path reveal).
@@ -132,9 +122,7 @@ export const LiveStarChessBoard: Component<{
   });
 
   /** Attack hull owns the square — drop fire overlay so hatch/battery CSS can play. */
-  const attackFrom = createMemo(
-    () => new Set(combat.attackCues().map((c) => c.from)),
-  );
+  const attackFrom = createMemo(() => new Set(combat.attackCues().map((c) => c.from)));
 
   /** Lethal king crumple owns the square — suppress static destroyed rubble. */
   const dyingKingKeys = createMemo(() => {
@@ -195,12 +183,8 @@ export const LiveStarChessBoard: Component<{
     return new Set(cues.map((c) => c.at));
   });
 
-  const moveCues = createMemo(() =>
-    combat.moveCues().filter((c) => moverFxVisible(c)),
-  );
-  const jumpCues = createMemo(() =>
-    combat.jumpCues().filter((c) => moverFxVisible(c)),
-  );
+  const moveCues = createMemo(() => combat.moveCues().filter((c) => moverFxVisible(c)));
+  const jumpCues = createMemo(() => combat.jumpCues().filter((c) => moverFxVisible(c)));
 
   /**
    * combat.hideSquares already derives from cues + attackDying via

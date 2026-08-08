@@ -1,8 +1,7 @@
 /**
- * Right-rail tools — CoachScreen Sidebar layout, StarChess actions.
- * Labels live in this module (not IconButton) so contrast is guaranteed.
- * Live Home asks for confirm before leaving (NeonModal).
- * Review: vision radios under Home (BOTH / You / Adjutant).
+ * Home, vision, and flip tools rendered inside BoardSideRail.
+ * Live Home asks for confirmation before leaving; review exposes vision radios.
+ * // SPEC: _spec/apps/starchess/screens.puml
  * // SPEC: _spec/apps/ui/responsiveness/rules.md
  */
 import type { StarChessColor } from "@chess-coach/starchess-core";
@@ -12,18 +11,12 @@ import { For, Show, createMemo, createSignal } from "solid-js";
 import { useMatchStore } from "~/app/MatchStoreContext";
 import { VisionSwatch } from "~/components/atoms/VisionSwatch";
 import { ExitGameConfirm } from "~/components/features/ExitGameConfirm";
-import styles from "~/components/features/Sidebar.module.css";
+import styles from "~/components/features/SideRailTools.module.css";
 import { Divider } from "~/components/primitives/Divider";
 import { IconButton } from "~/components/primitives/IconButton";
-import {
-  BackArrowIcon,
-  FlipBoardIcon,
-} from "~/components/primitives/icons";
+import { BackArrowIcon, FlipBoardIcon } from "~/components/primitives/icons";
 import { capabilities } from "~/store/capabilitiesStore";
-import {
-  reviewVisionFilter,
-  setReviewVisionFilter,
-} from "~/store/reviewVisionStore";
+import { reviewVisionFilter, setReviewVisionFilter } from "~/store/reviewVisionStore";
 import type { ReviewVisionFilter } from "~/types/board";
 
 const opposite = (c: StarChessColor): StarChessColor => (c === "w" ? "b" : "w");
@@ -35,12 +28,12 @@ type VisionOption = {
   aria: string;
 };
 
-export type SidebarProps = {
+export type SideRailToolsProps = {
   /** Prefer SPA return to menu when set; otherwise navigate to `/`. */
   onHome?: () => void;
 };
 
-export const Sidebar: Component<SidebarProps> = (props) => {
+export const SideRailTools: Component<SideRailToolsProps> = (props) => {
   const store = useMatchStore();
   const [exitOpen, setExitOpen] = createSignal(false);
 
@@ -125,7 +118,7 @@ export const Sidebar: Component<SidebarProps> = (props) => {
       <Show when={reviewing() && !capabilities().homeOnly}>
         <div
           class={styles.visionGroup}
-          role="radiogroup"
+          role="group"
           aria-label="Review vision"
           data-testid="review-vision-filter"
         >

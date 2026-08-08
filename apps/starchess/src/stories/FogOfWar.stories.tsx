@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { FogLiveScenarioScreen } from "~/demos/FogLiveScenarioScreen";
 import { FOG_EDGE_BISHOP_START_SCFEN } from "~/demos/fogEdgeBishop";
 import { FOG_EDGE_ROOK_TANK_START_SCFEN } from "~/demos/fogEdgeRookTank";
+import { FogLiveScenarioScreen } from "~/demos/FogLiveScenarioScreen";
 import {
   FOG_MOVE_KING_START_SCFEN,
   FOG_MOVE_KNIGHT_START_SCFEN,
@@ -12,8 +12,7 @@ import {
 import { FOG_SIEGE_ROOK_SCFEN } from "~/presentation/animations/FogVisionDemo";
 
 /** Own-square mine vision — live player fog. */
-const FOG_MINE_LIVE_SCFEN =
-  "SCFEN|7k/8/8/8/8/8/8/4K3|0|33|P|G:11:11|M:w:a4|Q:w:;b:";
+const FOG_MINE_LIVE_SCFEN = "SCFEN|7k/8/8/8/8/8/8/4K3|0|33|P|G:11:11|M:w:a4|Q:w:;b:";
 
 /** Siege rook on d4 (immobile 9×9) — live. */
 const FOG_SIEGE_LIVE_SCFEN = `${FOG_SIEGE_ROOK_SCFEN}|S:d4`;
@@ -29,7 +28,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Live MatchStore + player fog. Queue a move, End to resolve — fog expands with your pieces. Sidebar shows HOME only.",
+          "Live MatchStore + player fog. Queue a move, End to resolve — fog expands with your pieces. SideRailTools shows HOME only.",
       },
     },
   },
@@ -76,8 +75,7 @@ export const Bishop: Story = {
   parameters: {
     docs: {
       description: {
-        story:
-          "Bd4 into fog toward h8. End discovers g7 → Bxg7 (king spared).",
+        story: "Bd4 into fog toward h8. End discovers g7 → Bxg7 (king spared).",
       },
     },
   },
@@ -85,9 +83,7 @@ export const Bishop: Story = {
 
 export const RookTankMode: Story = {
   name: "Rook (tank mode)",
-  render: () => (
-    <FogLiveScenarioScreen scfen={FOG_EDGE_ROOK_TANK_START_SCFEN} rookTank />
-  ),
+  render: () => <FogLiveScenarioScreen scfen={FOG_EDGE_ROOK_TANK_START_SCFEN} rookTank />,
   parameters: {
     docs: {
       description: {
@@ -99,9 +95,7 @@ export const RookTankMode: Story = {
 
 export const RookSiegeMode: Story = {
   name: "Rook (siege mode)",
-  render: () => (
-    <FogLiveScenarioScreen scfen={FOG_SIEGE_LIVE_SCFEN} rookSiege />
-  ),
+  render: () => <FogLiveScenarioScreen scfen={FOG_SIEGE_LIVE_SCFEN} rookSiege />,
   parameters: {
     docs: {
       description: {
@@ -129,8 +123,7 @@ export const SpiderMine: Story = {
   parameters: {
     docs: {
       description: {
-        story:
-          "Live `M:w:a4` — mine lights only its own square under player fog.",
+        story: "Live `M:w:a4` — mine lights only its own square under player fog.",
       },
     },
   },

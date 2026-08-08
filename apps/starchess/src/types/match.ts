@@ -137,7 +137,7 @@ export type MatchState = {
   viewer: ViewerColor;
   /**
    * Human’s chosen team for this match — stable across review vision toggles.
-   * Sidebar labels: You = playerColor, Adjutant = opposite.
+   * SideRailTools labels: You = playerColor, Adjutant = opposite.
    */
   playerColor: ViewerColor;
   deadlineAt: number | null;

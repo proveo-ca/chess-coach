@@ -11,7 +11,7 @@ export type ScreenCapabilities = {
   freeColorControl: boolean;
 
   // Visual / chrome
-  /** Show flip-board control in the Sidebar. */
+  /** Show flip-board control in SideRailTools. */
   flipBoard: boolean;
   /**
    * Tutorial shell — Home only (hide vision radios even when reviewing).

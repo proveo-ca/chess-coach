@@ -16,7 +16,7 @@ export type NerdBoardVariant = BoardVariant;
 export type VisionMode = "player" | "observer";
 
 /**
- * Review DualNav vision filter (Sidebar radios under Home).
+ * Review DualNav vision filter (SideRailTools radios under Home).
  * `both` → observer borders; `w`/`b` → that side's fog, no dual borders.
  */
 export type ReviewVisionFilter = "both" | StarChessColor;

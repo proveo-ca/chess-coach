@@ -1,5 +1,5 @@
 /**
- * Per-screen capabilities — screens / live board set on mount; Sidebar and
+ * Per-screen capabilities — screens / live board set on mount; SideRailTools and
  * input hooks read flags instead of branching on a mode name.
  * Pattern mirrors apps/ui `capabilitiesStore`.
  */
@@ -38,5 +38,4 @@ export const TUTORIAL_CAPABILITIES: ScreenCapabilities = {
   homeOnly: true,
 };
 
-export const [capabilities, setCapabilities] =
-  createSignal<ScreenCapabilities>(LIVE_CAPABILITIES);
+export const [capabilities, setCapabilities] = createSignal<ScreenCapabilities>(LIVE_CAPABILITIES);

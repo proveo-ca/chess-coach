@@ -3,6 +3,7 @@
  * // SPEC: _spec/apps/starchess/screens.puml
  */
 import { placementToMap, formatScFen } from "@chess-coach/starchess-core";
+import type { StarChessColor } from "@chess-coach/starchess-core";
 import type { Square } from "chess.js";
 import {
   Show,
@@ -15,45 +16,28 @@ import {
   type JSX,
 } from "solid-js";
 
-import {
-  createMatchStore,
-  MatchStoreProvider,
-  useMatchStore,
-} from "~/app/MatchStoreContext";
+import { createMatchStore, MatchStoreProvider, useMatchStore } from "~/app/MatchStoreContext";
 import { createMatchStateFromReviewHistory } from "~/app/reviewHistory";
 import { displayedSnapshot } from "~/app/selectors";
 import { CoachAvatar } from "~/components/atoms/CoachAvatar";
 import { TutorialTypewriterNav } from "~/components/features/TutorialTypewriterNav";
-import { Sidebar } from "~/components/features/Sidebar";
 import { Screen } from "~/components/primitives/Screen";
 import styles from "~/demos/TutorialReviewHost.module.css";
-import type { KerriganEmotion } from "~/types/coach";
 import { clearSiegedRooks, setRookMode } from "~/presentation/animations/rookModeStore";
 import { LiveStarChessBoard } from "~/presentation/board/LiveStarChessBoard";
+import { BoardSideRail } from "~/presentation/hud/BoardSideRail";
 import { classicalActionsFromResolve } from "~/presentation/hud/classicalActionsFromResolve";
 import { isCheckOnlyResolve } from "~/presentation/hud/isCheckOnlyResolve";
 import { TurnBarSidebar } from "~/presentation/hud/TurnBarSidebar";
 import { splitResolveWaves } from "~/presentation/timeline/resolveWaves";
-import {
-  TUTORIAL_CAPABILITIES,
-  setCapabilities,
-} from "~/store/capabilitiesStore";
-import {
-  resetTutorialNarration,
-  setTutorialNarration,
-} from "~/tutorial/tutorialNarrationStore";
-import {
-  buildTypewriterBeats,
-  endResultAt,
-} from "~/tutorial/typewriterBeats";
-import {
-  resetReviewVisionFilter,
-  setReviewVisionFilter,
-} from "~/store/reviewVisionStore";
+import { TUTORIAL_CAPABILITIES, setCapabilities } from "~/store/capabilitiesStore";
+import { resetReviewVisionFilter, setReviewVisionFilter } from "~/store/reviewVisionStore";
+import { resetTutorialNarration, setTutorialNarration } from "~/tutorial/tutorialNarrationStore";
+import { buildTypewriterBeats, endResultAt } from "~/tutorial/typewriterBeats";
 import type { BoardSkin, PieceSet, VisionMode } from "~/types/board";
+import type { KerriganEmotion } from "~/types/coach";
 import type { ReviewHistory } from "~/types/review";
 import type { TypewriterBeat, TypewriterLine } from "~/types/tutorial";
-import type { StarChessColor } from "@chess-coach/starchess-core";
 
 const syncRookModes = (
   placement: string,
@@ -106,9 +90,7 @@ const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
   const [beatIndex, setBeatIndex] = createSignal(0);
   const [busy, setBusy] = createSignal(false);
 
-  const beats = createMemo(() =>
-    buildTypewriterBeats(store.state().settledResolves),
-  );
+  const beats = createMemo(() => buildTypewriterBeats(store.state().settledResolves));
   const lines = createMemo(() => beatLines(beats()));
 
   const reviewTurnNumber = () => {
@@ -266,12 +248,7 @@ const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
           <div class="desktop-only" data-testid="tutorial-header">
             <Show
               when={props.header}
-              fallback={
-                <CoachAvatar
-                  identity="kerrigan"
-                  emotion={props.coachEmotion ?? "idle"}
-                />
-              }
+              fallback={<CoachAvatar identity="kerrigan" emotion={props.coachEmotion ?? "idle"} />}
             >
               {props.header}
             </Show>
@@ -282,10 +259,7 @@ const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
       <Screen.BoardArea>
         <Screen.BoardColumn>
           <div class="mobile-hero" data-testid="tutorial-mobile-hero">
-            <CoachAvatar
-              identity="kerrigan"
-              emotion={props.coachEmotion ?? "idle"}
-            />
+            <CoachAvatar identity="kerrigan" emotion={props.coachEmotion ?? "idle"} />
           </div>
           <div class={styles.host}>
             <LiveStarChessBoard
@@ -296,8 +270,10 @@ const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
             />
           </div>
         </Screen.BoardColumn>
-        <aside class={styles.sideboard} data-testid="starchess-side-rail">
-          <Show when={props.turnChrome === "sidebar"}>
+        <BoardSideRail
+          controlsVisible={props.turnChrome === "sidebar"}
+          onHome={props.onHome}
+          controls={
             <TurnBarSidebar
               review={{
                 turn: reviewTurnNumber(),
@@ -305,10 +281,8 @@ const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
                 hideDualNav: true,
               }}
             />
-            <hr class={styles.sideboardDivider} />
-          </Show>
-          <Sidebar onHome={props.onHome} />
-        </aside>
+          }
+        />
       </Screen.BoardArea>
       <Screen.Footer>
         <div class={styles.footerStack}>

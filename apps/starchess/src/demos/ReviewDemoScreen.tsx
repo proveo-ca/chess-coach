@@ -18,28 +18,22 @@ import {
 import { createMatchStore, MatchStoreProvider, useMatchStore } from "~/app/MatchStoreContext";
 import { createMatchStateFromReviewHistory } from "~/app/reviewHistory";
 import { displayedSnapshot } from "~/app/selectors";
-import { Sidebar } from "~/components/features/Sidebar";
 import { Screen } from "~/components/primitives/Screen";
 import styles from "~/demos/ReviewDemoScreen.module.css";
 import { clearSiegedRooks, setRookMode } from "~/presentation/animations/rookModeStore";
 import { LiveStarChessBoard } from "~/presentation/board/LiveStarChessBoard";
+import { BoardSideRail } from "~/presentation/hud/BoardSideRail";
 import { isCheckOnlyResolve } from "~/presentation/hud/isCheckOnlyResolve";
 import { ResourceBar } from "~/presentation/hud/ResourceBar";
 import { ReviewTurnNav } from "~/presentation/hud/ReviewTurnNav";
 import { TurnBarSidebar } from "~/presentation/hud/TurnBarSidebar";
-import {
-  TUTORIAL_CAPABILITIES,
-  setCapabilities,
-} from "~/store/capabilitiesStore";
-import {
-  resetTutorialNarration,
-  setTutorialNarration,
-} from "~/tutorial/tutorialNarrationStore";
+import { TUTORIAL_CAPABILITIES, setCapabilities } from "~/store/capabilitiesStore";
 import {
   resetReviewVisionFilter,
   reviewVisionFilter,
   setReviewVisionFilter,
 } from "~/store/reviewVisionStore";
+import { resetTutorialNarration, setTutorialNarration } from "~/tutorial/tutorialNarrationStore";
 import type { BoardSkin, PieceSet, VisionMode } from "~/types/board";
 import type { ReviewHistory } from "~/types/review";
 
@@ -55,7 +49,7 @@ export type ReviewDemoScreenProps = {
   rookTank?: boolean;
   /** Human team for You / Adjutant vision labels. */
   playerColor?: StarChessColor;
-  /** Sidebar Home — SPA navigate (review routes). */
+  /** Side-rail Home — SPA navigate (review routes). */
   onHome?: () => void;
   /** Hide dual ResourceBars (tutorial). */
   hideResources?: boolean;
@@ -204,32 +198,30 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
 
   const reviewNavDisabled = () => ({
     back: reviewBusy() || store.state().reviewIndex <= 0,
-    forward:
-      reviewBusy() ||
-      store.state().reviewIndex >= store.state().settledSnapshots.length - 1,
+    forward: reviewBusy() || store.state().reviewIndex >= store.state().settledSnapshots.length - 1,
   });
 
   return (
     <Screen>
-      <Show when={props.header} fallback={
-        <Screen.SidebarInset class={styles.topPane}>
-          <Show when={!props.hideResources}>
-            <Show
-              when={!props.hideDualNav}
-              fallback={dualResourceBars()}
-            >
-              <ReviewTurnNav
-                onBack={() => store.reviewBack()}
-                onForward={() => store.reviewForward()}
-                backDisabled={reviewNavDisabled().back}
-                forwardDisabled={reviewNavDisabled().forward}
-              >
-                {dualResourceBars()}
-              </ReviewTurnNav>
+      <Show
+        when={props.header}
+        fallback={
+          <Screen.SidebarInset class={styles.topPane}>
+            <Show when={!props.hideResources}>
+              <Show when={!props.hideDualNav} fallback={dualResourceBars()}>
+                <ReviewTurnNav
+                  onBack={() => store.reviewBack()}
+                  onForward={() => store.reviewForward()}
+                  backDisabled={reviewNavDisabled().back}
+                  forwardDisabled={reviewNavDisabled().forward}
+                >
+                  {dualResourceBars()}
+                </ReviewTurnNav>
+              </Show>
             </Show>
-          </Show>
-        </Screen.SidebarInset>
-      }>
+          </Screen.SidebarInset>
+        }
+      >
         <Screen.Header>{props.header}</Screen.Header>
       </Show>
       <Screen.BoardArea>
@@ -243,8 +235,10 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
             />
           </div>
         </Screen.BoardColumn>
-        <aside class={styles.sideboard} data-testid="starchess-side-rail">
-          <Show when={!props.hideDualNav}>
+        <BoardSideRail
+          controlsVisible={!props.hideDualNav}
+          onHome={props.onHome}
+          controls={
             <TurnBarSidebar
               review={{
                 turn: reviewTurnNumber(),
@@ -256,10 +250,8 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
                 forwardDisabled: reviewNavDisabled().forward,
               }}
             />
-            <hr class={styles.sideboardDivider} />
-          </Show>
-          <Sidebar onHome={props.onHome} />
-        </aside>
+          }
+        />
       </Screen.BoardArea>
       <Screen.Footer>
         <div class={styles.footerStack}>

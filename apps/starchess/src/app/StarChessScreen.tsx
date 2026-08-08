@@ -1,20 +1,9 @@
 /**
- * Live StarChess screen — Command Column HUD (Resource → Board|Sidebar → Gas).
+ * Live StarChess screen — Command Column HUD (Resource → Board|SideRail → Gas).
  * Board variants: eclipse | butter | vermeer (default eclipse).
  * // SPEC: _spec/apps/ui/responsiveness/rules.md
  * // SPEC: _spec/apps/starchess/screens.puml
  */
-import {
-  For,
-  Show,
-  createEffect,
-  createMemo,
-  createSignal,
-  onCleanup,
-  onMount,
-} from "solid-js";
-import type { Component } from "solid-js";
-import type { Square } from "chess.js";
 import {
   UNIT_COST,
   adjacentSquares,
@@ -27,38 +16,35 @@ import {
   type SpawnPiece,
   type StarChessColor,
 } from "@chess-coach/starchess-core";
+import type { Square } from "chess.js";
+import { For, Show, createEffect, createMemo, createSignal, onCleanup, onMount } from "solid-js";
+import type { Component } from "solid-js";
 
+import { storedMaterial, viewerColor } from "~/app/matchEconomy";
 import { useMatchStore } from "~/app/MatchStoreContext";
+import { displayedSnapshot, outcomeLabel } from "~/app/selectors";
+import styles from "~/app/StarChessScreen.module.css";
 import { CoachAvatar } from "~/components/atoms/CoachAvatar";
-import { Sidebar } from "~/components/features/Sidebar";
 import { PromotionModal } from "~/components/primitives/PromotionModal";
 import { Screen } from "~/components/primitives/Screen";
 import { squareBoxStyle, findBoardGrid } from "~/presentation/animations/boardGeom";
 import { LiveStarChessBoard } from "~/presentation/board/LiveStarChessBoard";
 import { moveThenGasPromotes } from "~/presentation/board/useBoardInput";
 import { GasDeploy } from "~/presentation/features/GasDeploy";
+import { usePieceSpecialArm } from "~/presentation/hooks/usePieceSpecialArm";
+import { BoardSideRail } from "~/presentation/hud/BoardSideRail";
 import { DeployModal } from "~/presentation/hud/DeployModal";
+import { liveMatchPhase } from "~/presentation/hud/liveMatchPhase";
 import { ResourceBar } from "~/presentation/hud/ResourceBar";
 import { ReviewTurnNav } from "~/presentation/hud/ReviewTurnNav";
 import { TurnBar } from "~/presentation/hud/TurnBar";
 import { TurnBarSidebar } from "~/presentation/hud/TurnBarSidebar";
-import { usePieceSpecialArm } from "~/presentation/hooks/usePieceSpecialArm";
-import type { BoardSkin, PieceSet } from "~/types/board";
-import type { KerriganEmotion } from "~/types/coach";
-import type { PromotionPiece } from "~/types/chess";
 import { tacticalJumpTargets } from "~/presentation/specials/queenTacticalJump";
-import { storedMaterial, viewerColor } from "~/app/matchEconomy";
-import { displayedSnapshot, outcomeLabel } from "~/app/selectors";
-import { liveMatchPhase } from "~/presentation/hud/liveMatchPhase";
-import styles from "~/app/StarChessScreen.module.css";
-import {
-  resetReviewVisionFilter,
-  reviewVisionFilter,
-} from "~/store/reviewVisionStore";
-import {
-  TUTORIAL_CAPABILITIES,
-  setCapabilities,
-} from "~/store/capabilitiesStore";
+import { TUTORIAL_CAPABILITIES, setCapabilities } from "~/store/capabilitiesStore";
+import { resetReviewVisionFilter, reviewVisionFilter } from "~/store/reviewVisionStore";
+import type { BoardSkin, PieceSet } from "~/types/board";
+import type { PromotionPiece } from "~/types/chess";
+import type { KerriganEmotion } from "~/types/coach";
 
 export type AutoQueueOpponentResult = {
   snapshot: ScFenSnapshot;
@@ -85,11 +71,11 @@ export type StarChessScreenProps = {
    * turn (e.g. the King Hunt live `adjutant` defensive commander).
    */
   autoQueueOpponent?: (snap: ScFenSnapshot) => AutoQueueOpponentResult;
-  /** Sidebar Home — return to StarChess menu (SPA) instead of leaving the app. */
+  /** Side-rail Home — return to StarChess menu (SPA) instead of leaving the app. */
   onExitToMenu?: () => void;
   /**
-   * Experimental HUD variation: `"sidebar"` moves turn chrome into a vertical
-   * rail beside the board (`TurnBarSidebar`). Default `"bar"` keeps `TurnBar`
+   * HUD variation: `"sidebar"` moves turn chrome into `BoardSideRail`.
+   * Default `"bar"` keeps `TurnBar`
    * above the board. `"none"` hides turn chrome (Fog of War tutorial).
    */
   turnChrome?: "bar" | "sidebar" | "none";
@@ -120,10 +106,7 @@ export type StarChessScreenProps = {
 type OverlayBox = { top: number; left: number; width: number; height: number };
 
 /** B if no classical yet this turn for the side; else F (stack order). */
-const specialTimingFor = (
-  queue: ScFenSnapshot["queue"],
-  color: StarChessColor,
-): "B" | "F" => {
+const specialTimingFor = (queue: ScFenSnapshot["queue"], color: StarChessColor): "B" | "F" => {
   const side = queue?.actions.filter((a) => a.color === color) ?? [];
   return side.some((a) => a.timing === "C") ? "F" : "B";
 };
@@ -511,9 +494,7 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
     if (!mode) return;
     const s = store.state();
     const color = s.playerColor;
-    const side = (s.liveSnapshot.queue?.actions ?? []).filter(
-      (a) => a.color === color,
-    );
+    const side = (s.liveSnapshot.queue?.actions ?? []).filter((a) => a.color === color);
     const planning = s.phase === "planning" || s.phase === "targeting";
     if (!planning || s.timeline.active) {
       prevQueueReady = false;
@@ -526,8 +507,7 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
     const ready =
       mode === "first"
         ? side.length >= 1
-        : side.some((a) => a.timing === "C") &&
-          side.some((a) => a.timing !== "C");
+        : side.some((a) => a.timing === "C") && side.some((a) => a.timing !== "C");
     const shouldEnd = ready && !prevQueueReady;
     prevQueueReady = ready;
     if (shouldEnd) store.submitTurn("end");
@@ -635,20 +615,14 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
                 />
               </Show>
               <Show when={starChessMode() && !props.hideResources}>
-                <Show
-                  when={ended()}
-                  fallback={<ResourceBar />}
-                >
+                <Show when={ended()} fallback={<ResourceBar />}>
                   <ReviewTurnNav
                     onBack={() => store.reviewBack()}
                     onForward={() => store.reviewForward()}
-                    backDisabled={
-                      reviewBusy() || store.state().reviewIndex <= 0
-                    }
+                    backDisabled={reviewBusy() || store.state().reviewIndex <= 0}
                     forwardDisabled={
                       reviewBusy() ||
-                      store.state().reviewIndex >=
-                        store.state().settledSnapshots.length - 1
+                      store.state().reviewIndex >= store.state().settledSnapshots.length - 1
                     }
                   >
                     <div
@@ -663,16 +637,10 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
                       }
                     >
                       <Show when={showWhiteResources()}>
-                        <ResourceBar
-                          color="w"
-                          snapshot={displayedSnapshot(store.state())}
-                        />
+                        <ResourceBar color="w" snapshot={displayedSnapshot(store.state())} />
                       </Show>
                       <Show when={showBlackResources()}>
-                        <ResourceBar
-                          color="b"
-                          snapshot={displayedSnapshot(store.state())}
-                        />
+                        <ResourceBar color="b" snapshot={displayedSnapshot(store.state())} />
                       </Show>
                     </div>
                   </ReviewTurnNav>
@@ -689,10 +657,7 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
               <Show
                 when={props.header}
                 fallback={
-                  <CoachAvatar
-                    identity="kerrigan"
-                    emotion={props.coachEmotion ?? "idle"}
-                  />
+                  <CoachAvatar identity="kerrigan" emotion={props.coachEmotion ?? "idle"} />
                 }
               >
                 {props.header}
@@ -711,10 +676,7 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
               <Show
                 when={props.header}
                 fallback={
-                  <CoachAvatar
-                    identity="kerrigan"
-                    emotion={props.coachEmotion ?? "idle"}
-                  />
+                  <CoachAvatar identity="kerrigan" emotion={props.coachEmotion ?? "idle"} />
                 }
               >
                 {props.header}
@@ -790,19 +752,18 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
             </Show>
           </div>
         </Screen.BoardColumn>
-        <aside class={styles.sideboard} data-testid="starchess-side-rail">
-          <Show when={starChessMode() && turnInSidebar() && !turnHidden()}>
+        <BoardSideRail
+          controlsVisible={starChessMode() && turnInSidebar() && !turnHidden()}
+          onHome={props.onExitToMenu}
+          controls={
             <Show
               when={ended()}
               fallback={
-                <>
-                  <TurnBarSidebar
-                    autoStart={false}
-                    resolveOnEnd={false}
-                    onEnd={() => store.submitTurn("end")}
-                  />
-                  <hr class={styles.sideboardDivider} />
-                </>
+                <TurnBarSidebar
+                  autoStart={false}
+                  resolveOnEnd={false}
+                  onEnd={() => store.submitTurn("end")}
+                />
               }
             >
               <TurnBarSidebar
@@ -815,15 +776,12 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
                   backDisabled: reviewBusy() || store.state().reviewIndex <= 0,
                   forwardDisabled:
                     reviewBusy() ||
-                    store.state().reviewIndex >=
-                      store.state().settledSnapshots.length - 1,
+                    store.state().reviewIndex >= store.state().settledSnapshots.length - 1,
                 }}
               />
-              <hr class={styles.sideboardDivider} />
             </Show>
-          </Show>
-          <Sidebar onHome={props.onExitToMenu} />
-        </aside>
+          }
+        />
       </Screen.BoardArea>
 
       <Screen.Footer>
@@ -853,9 +811,7 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
               >
                 <Show
                   when={outcomeLabel(store.state())}
-                  fallback={
-                    <p class={styles.placeholder}>{store.state().statusText}</p>
-                  }
+                  fallback={<p class={styles.placeholder}>{store.state().statusText}</p>}
                 >
                   {(label) => <p class={styles.placeholder}>{label()}</p>}
                 </Show>

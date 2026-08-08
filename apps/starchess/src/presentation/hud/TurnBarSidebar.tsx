@@ -1,5 +1,5 @@
 /**
- * Experimental vertical TurnBar — board side rail (live + review chips).
+ * Vertical turn controls for BoardSideRail (live + review chips).
  * Review DualNav lives in top {@link ReviewTurnNav}; pass `hideDualNav`.
  * Does not replace horizontal `TurnBar`.
  * // SPEC: _spec/apps/starchess/screens.puml
@@ -33,8 +33,8 @@ import { turnTimeoutMsForTurn } from "~/presentation/constants";
 import { liveMatchPhase } from "~/presentation/hud/liveMatchPhase";
 import { reviewPhaseChipTone } from "~/presentation/hud/reviewPhases";
 import styles from "~/presentation/hud/TurnBarSidebar.module.css";
-import type { ChipTone } from "~/types/ui";
 import type { ReviewTurnPhase } from "~/types/review";
+import type { ChipTone } from "~/types/ui";
 
 export type TurnBarSidebarReviewProps = {
   turn: number;
@@ -140,9 +140,7 @@ export const TurnBarSidebar: Component<TurnBarSidebarProps> = (props) => {
     return Math.min(1, Math.max(0, seconds() / Math.max(1, total)));
   };
 
-  const liveTurnNumber = createMemo(() =>
-    Math.max(1, displayedSnapshot(store.state()).turn),
-  );
+  const liveTurnNumber = createMemo(() => Math.max(1, displayedSnapshot(store.state()).turn));
 
   const livePhase = createMemo(() => {
     const s = store.state();
@@ -155,8 +153,7 @@ export const TurnBarSidebar: Component<TurnBarSidebarProps> = (props) => {
     });
   });
 
-  const turnNumber = () =>
-    reviewing() ? Math.max(1, props.review!.turn) : liveTurnNumber();
+  const turnNumber = () => (reviewing() ? Math.max(1, props.review!.turn) : liveTurnNumber());
   const phase = () => (reviewing() ? props.review!.phase : livePhase());
 
   const turnLabel = (): JSX.Element => {

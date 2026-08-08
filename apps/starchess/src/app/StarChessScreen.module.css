@@ -64,38 +64,9 @@
   flex-shrink: 0;
 }
 
-/*
- * Sideboard slot — same role as apps/ui `<Sidebar />` beside BoardColumn.
- * Width = --sidebar-width only; never lock height to the board.
- * Match boardHost margin-top so the rail starts with the board square.
- */
-.sideboard {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 0.4rem;
-  width: var(--sidebar-width);
-  flex-shrink: 0;
-  margin-top: 1.4rem;
-  box-sizing: border-box;
-}
-
-.sideboardDivider {
-  width: 60%;
-  margin: 0.15rem 0;
-  border: 0;
-  border-top: 1px solid var(--border-color, #3a4550);
-  flex-shrink: 0;
-}
-
 @media (max-width: 719px) {
   .topPane {
     min-height: 0;
-  }
-
-  .sideboard {
-    display: none;
   }
 }
 

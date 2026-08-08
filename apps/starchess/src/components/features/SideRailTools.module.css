@@ -1,5 +1,4 @@
-/* CoachScreen Sidebar footprint — width token only; Screen owns the row.
-   When nested in a sideboard that already sizes to --sidebar-width, fill it. */
+/* Tools fill the shared BoardSideRail width; Screen owns the row. */
 .sidebar {
   display: flex;
   flex-direction: column;
@@ -11,12 +10,6 @@
   flex-shrink: 0;
   margin-top: 0;
   box-sizing: border-box;
-}
-
-@media (max-width: 719px) {
-  .sidebar {
-    display: none;
-  }
 }
 
 .tool {
