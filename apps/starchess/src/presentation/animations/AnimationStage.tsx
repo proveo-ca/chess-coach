@@ -192,16 +192,22 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
     const grid = host ? findBoardGrid(host) : null;
     if (grid) ro.observe(grid);
     window.addEventListener("resize", measure);
+    const onVis = () => {
+      if (document.hidden) return;
+      measure();
+    };
+    document.addEventListener("visibilitychange", onVis);
     onCleanup(() => {
       ro.disconnect();
       window.removeEventListener("resize", measure);
+      document.removeEventListener("visibilitychange", onVis);
     });
   });
 
   // Fullscreen / flex layouts often size the grid after first paint.
-  // Remeasure whenever FX appear so the overlay aligns to the grid.
+  // Remeasure only until the first valid box — ResizeObserver owns later updates.
   createEffect(() => {
-    if (!hasFx()) return;
+    if (!hasFx() || measured()) return;
     measure();
     requestAnimationFrame(measure);
   });
@@ -279,6 +285,8 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
             "pointer-events": "none",
             "z-index": "30",
             overflow: "visible",
+            /* Contain paint so bolts don't invalidate the whole HUD tree. */
+            contain: "layout",
           }}
           aria-hidden
         >

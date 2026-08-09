@@ -5,11 +5,14 @@
  * is playing. Remapping into new objects on every TIMELINE_COMMIT remounts
  * Solid `<For>` rows and restarts CSS attack animations (knight/vulture
  * “plays twice”, bishop gatling looks like a loop).
+ *
+ * Memos also cache by playing-id key so idle ticks reuse the prior array.
  */
 import { createMemo } from "solid-js";
 import type { Square } from "chess.js";
 
 import { deriveVisualFrame } from "~/presentation/animations/visualFrame";
+import { capCues } from "~/presentation/animations/vfxPerf";
 import type { MatchStore, TimelineCue } from "~/types/match";
 import type {
   AttackCue,
@@ -33,12 +36,30 @@ const playing = <K extends TimelineCue["kind"]>(
   return cues.filter((c): c is CueOf<K> => c.kind === kind && set.has(c.id));
 };
 
-/** Timeline attack cues are a superset of AttackCue (kingShot); strip via assign. */
-const asAttack = (c: CueOf<"attack">): AttackCue => c;
-const asDeath = (c: CueOf<"death">): DeathCue => c;
-const asMove = (c: CueOf<"move">): MoveCue => c;
-const asDeploy = (c: CueOf<"deploy">): DeployCue => c;
-const asGasDrop = (c: CueOf<"gasDrop">): GasDropCue => c;
+/** Cache last filtered list by id-key so Solid sees stable array identity. */
+const stablePlaying = <K extends TimelineCue["kind"]>() => {
+  let key = "";
+  let prev: CueOf<K>[] = [];
+  return (cues: readonly TimelineCue[], ids: readonly string[], kind: K): CueOf<K>[] => {
+    if (ids.length === 0) {
+      key = "";
+      prev = [];
+      return prev;
+    }
+    const nextKey = `${kind}:${ids.join(",")}`;
+    if (nextKey === key) return prev;
+    key = nextKey;
+    prev = playing(cues, ids, kind);
+    return prev;
+  };
+};
+
+const playAttacks = stablePlaying<"attack">();
+const playDeaths = stablePlaying<"death">();
+const playMoves = stablePlaying<"move">();
+const playDeploys = stablePlaying<"deploy">();
+const playGas = stablePlaying<"gasDrop">();
+const playMissiles = stablePlaying<"mineMissile">();
 
 const asMineMissile = (c: CueOf<"mineMissile">): MineMissileCue => ({
   id: c.id,
@@ -50,36 +71,7 @@ const asMineMissile = (c: CueOf<"mineMissile">): MineMissileCue => ({
 export const useCombatOverlays = (store: MatchStore) => {
   const tl = () => store.state().timeline;
 
-  const attackCues = createMemo((): AttackCue[] => {
-    const t = tl();
-    if (!t.active) return [];
-    return playing(t.cues, t.playingIds, "attack").map(asAttack);
-  });
-
-  const deathCues = createMemo((): DeathCue[] => {
-    const t = tl();
-    if (!t.active) return [];
-    return playing(t.cues, t.playingIds, "death").map(asDeath);
-  });
-
-  const moveCues = createMemo((): MoveCue[] => {
-    const t = tl();
-    if (!t.active) return [];
-    // Hull slides only — Tactical Jump uses QueenJumpAnimation.
-    return playing(t.cues, t.playingIds, "move")
-      .filter((c) => !c.queenJump)
-      .map(asMove);
-  });
-
-  const jumpCues = createMemo((): MoveCue[] => {
-    const t = tl();
-    if (!t.active) return [];
-    return playing(t.cues, t.playingIds, "move")
-      .filter((c) => !!c.queenJump)
-      .map(asMove);
-  });
-
-  /** Stable empty — avoid new `{}` each memo run when idle. */
+  /** Stable empty — avoid new `{}` / `[]` each memo run when idle. */
   const emptyProgress: Record<string, 0 | 1> = {};
   const emptyLeg: Record<string, 0 | 1> = {};
   const emptyDying: Record<string, boolean> = {};
@@ -87,6 +79,50 @@ export const useCombatOverlays = (store: MatchStore) => {
   const emptyGas: GasDropCue[] = [];
   const emptyMissiles: MineMissileCue[] = [];
   const emptySpent: Square[] = [];
+  const emptyAttacks: AttackCue[] = [];
+  const emptyDeaths: DeathCue[] = [];
+  const emptyMoves: MoveCue[] = [];
+  const emptyDeploys: DeployCue[] = [];
+  let lastMissileKey = "";
+  let lastMissiles: MineMissileCue[] = emptyMissiles;
+  let lastHullKey = "";
+  let lastHull: MoveCue[] = emptyMoves;
+  let lastJumpKey = "";
+  let lastJump: MoveCue[] = emptyMoves;
+
+  const attackCues = createMemo((): readonly AttackCue[] => {
+    const t = tl();
+    if (!t.active) return emptyAttacks;
+    return capCues(playAttacks(t.cues, t.playingIds, "attack")) as readonly AttackCue[];
+  });
+
+  const deathCues = createMemo((): readonly DeathCue[] => {
+    const t = tl();
+    if (!t.active) return emptyDeaths;
+    return capCues(playDeaths(t.cues, t.playingIds, "death")) as readonly DeathCue[];
+  });
+
+  const moveCues = createMemo((): readonly MoveCue[] => {
+    const t = tl();
+    if (!t.active) return emptyMoves;
+    const all = playMoves(t.cues, t.playingIds, "move");
+    const key = `hull:${all.map((c) => c.id).join(",")}`;
+    if (key === lastHullKey) return lastHull;
+    lastHullKey = key;
+    lastHull = [...capCues(all.filter((c) => !c.queenJump))] as MoveCue[];
+    return lastHull;
+  });
+
+  const jumpCues = createMemo((): readonly MoveCue[] => {
+    const t = tl();
+    if (!t.active) return emptyMoves;
+    const all = playMoves(t.cues, t.playingIds, "move");
+    const key = `jump:${all.map((c) => c.id).join(",")}`;
+    if (key === lastJumpKey) return lastJump;
+    lastJumpKey = key;
+    lastJump = [...capCues(all.filter((c) => !!c.queenJump))] as MoveCue[];
+    return lastJump;
+  });
 
   const attackDying = createMemo((): Record<string, boolean> => {
     const d = tl().attackDying;
@@ -111,10 +147,16 @@ export const useCombatOverlays = (store: MatchStore) => {
     return t.jumpTrails;
   });
 
-  const mineMissiles = createMemo((): MineMissileCue[] => {
+  const mineMissiles = createMemo((): readonly MineMissileCue[] => {
     const t = tl();
     if (!t.active) return emptyMissiles;
-    return playing(t.cues, t.playingIds, "mineMissile").map(asMineMissile);
+    const raw = playMissiles(t.cues, t.playingIds, "mineMissile");
+    const key = raw.map((c) => c.id).join(",");
+    if (key === lastMissileKey) return lastMissiles;
+    lastMissileKey = key;
+    // Mine missiles need a thin projection object (timeline cue is a superset).
+    lastMissiles = [...capCues(raw.map(asMineMissile))];
+    return lastMissiles;
   });
 
   const mineMissileTrails = createMemo(() => {
@@ -129,10 +171,10 @@ export const useCombatOverlays = (store: MatchStore) => {
     return t.spentMines;
   });
 
-  const gasDropCues = createMemo((): GasDropCue[] => {
+  const gasDropCues = createMemo((): readonly GasDropCue[] => {
     const t = tl();
     if (!t.active) return emptyGas;
-    return playing(t.cues, t.playingIds, "gasDrop").map(asGasDrop);
+    return capCues(playGas(t.cues, t.playingIds, "gasDrop")) as readonly GasDropCue[];
   });
 
   /** Squares that will / did absorb gas this resolve — hide intent canisters. */
@@ -144,10 +186,10 @@ export const useCombatOverlays = (store: MatchStore) => {
     );
   });
 
-  const deployCues = createMemo((): DeployCue[] => {
+  const deployCues = createMemo((): readonly DeployCue[] => {
     const t = tl();
-    if (!t.active) return [];
-    return playing(t.cues, t.playingIds, "deploy").map(asDeploy);
+    if (!t.active) return emptyDeploys;
+    return capCues(playDeploys(t.cues, t.playingIds, "deploy")) as readonly DeployCue[];
   });
 
   /**

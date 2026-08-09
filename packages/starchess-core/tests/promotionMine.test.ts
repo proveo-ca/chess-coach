@@ -171,7 +171,7 @@ describe("core promotion / mine (package)", () => {
     expect(r.next.mines ?? []).toEqual([]);
   });
 
-  it("knight attack-clears a hostile mine then occupies", () => {
+  it("knight landing on a hostile mine — unit and mine both die", () => {
     const start = parseScFen(
       "SCFEN|7k/8/8/8/8/8/8/3NK3|0|33|P|G:11:11|M:b:c3|Q:w:;b:",
     );
@@ -186,23 +186,19 @@ describe("core promotion / mine (package)", () => {
       },
     }).snapshot;
     const r = endScTurn(queued);
-    expect(r.resolved.attacks).toEqual([
+    expect(r.resolved.mineTriggers).toEqual([
       expect.objectContaining({
         kind: "mineBlast",
         piece: "n",
         from: "d1",
         to: "c3",
         mineColor: "b",
+        victim: { piece: "n", color: "w" },
       }),
     ]);
-    expect(r.resolved.moves).toEqual([
-      { piece: "n", color: "w", from: "d1", to: "c3" },
-    ]);
-    expect(r.resolved.mineTriggers).toEqual([]);
-    expect(placementToMap(r.next.placement).get("c3")).toEqual({
-      type: "n",
-      color: "w",
-    });
+    expect(placementToMap(r.next.placement).get("c3")).toBeUndefined();
+    expect(placementToMap(r.next.placement).get("d1")).toBeUndefined();
+    expect(r.next.mines ?? []).toEqual([]);
   });
 });
 

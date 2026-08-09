@@ -21,6 +21,7 @@ import type { StarChessMenuChrome } from "~/types/menu";
 import { Credits } from "~/components/features/Credits";
 import { MenuAnchor } from "~/components/atoms/MenuAnchor";
 import { NetworkSignal } from "~/components/atoms/NetworkSignal";
+import { FirstTimePrompt } from "~/components/features/FirstTimePrompt";
 import {
   NewGamePanel,
 } from "~/components/features/NewGamePanel";
@@ -31,6 +32,7 @@ import { MenuBlackHole } from "~/screens/menuSky/MenuBlackHole";
 import { MenuMoon } from "~/screens/menuSky/MenuMoon";
 import { MenuPlanet, type MenuWorldId } from "~/screens/menuSky/MenuPlanet";
 import styles from "~/screens/StarChessMenuScreen.module.css";
+import { isTutorialCleared } from "~/store/tutorialProgressStore";
 import type { NewGameOptions } from "~/types/newGame";
 
 export type StarChessMenuAction =
@@ -107,10 +109,22 @@ export const StarChessMenuScreen: Component<StarChessMenuScreenProps> = (props) 
   const [planetWorld, setPlanetWorld] = createSignal<MenuWorldId>("eclipse");
   const [creditsOpen, setCreditsOpen] = createSignal(false);
   const [setupOpen, setSetupOpen] = createSignal(false);
+  const [firstTimeOpen, setFirstTimeOpen] = createSignal(false);
 
   const identity = (): CoachIdentity => props.identity ?? "kerrigan";
   const chrome = (): StarChessMenuChrome => props.chrome ?? "on";
   const chromeInteractive = () => chrome() === "on";
+
+  /** Uncleared tutorial → first-time gate; else open New Game setup. */
+  const requestSinglePlayer = () => {
+    if (!chromeInteractive()) return;
+    props.onAction?.("single-player");
+    if (!isTutorialCleared()) {
+      setFirstTimeOpen(true);
+      return;
+    }
+    setSetupOpen(true);
+  };
 
   return (
     <div
@@ -172,11 +186,7 @@ export const StarChessMenuScreen: Component<StarChessMenuScreenProps> = (props) 
           class={styles.posSingle}
           action="single-player"
           label="Single Player"
-          onActivate={() => {
-            if (!chromeInteractive()) return;
-            props.onAction?.("single-player");
-            setSetupOpen(true);
-          }}
+          onActivate={requestSinglePlayer}
         >
           <DebrisPawnPlayground embedded />
         </MenuAnchor>
@@ -240,6 +250,18 @@ export const StarChessMenuScreen: Component<StarChessMenuScreenProps> = (props) 
       </div>
 
       <Credits open={creditsOpen()} onClose={() => setCreditsOpen(false)} />
+      <FirstTimePrompt
+        open={firstTimeOpen()}
+        onClose={() => setFirstTimeOpen(false)}
+        onShowMe={() => {
+          setFirstTimeOpen(false);
+          props.onAction?.("tutorial");
+        }}
+        onYolo={() => {
+          setFirstTimeOpen(false);
+          setSetupOpen(true);
+        }}
+      />
       <NewGamePanel
         open={setupOpen()}
         onClose={() => setSetupOpen(false)}

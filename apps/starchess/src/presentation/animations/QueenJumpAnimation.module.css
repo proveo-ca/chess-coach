@@ -31,7 +31,7 @@
   display: grid;
   place-items: center;
   animation: queenJumpTravel var(--jump-ms) linear 1 forwards;
-  will-change: transform, opacity;
+  
 }
 
 .jumpHull svg {
@@ -67,7 +67,7 @@
   place-items: center;
   animation: queenJumpAppear var(--jump-appear-ms) ease-out 1 both;
   animation-delay: var(--jump-ms);
-  will-change: opacity, transform;
+  
 }
 
 .jumpAppearCore {
@@ -109,7 +109,7 @@
   background: linear-gradient(90deg, rgba(47, 208, 106, 0.95), rgba(47, 208, 106, 0));
   box-shadow: 0 0 10px rgba(47, 208, 106, 0.65);
   animation: queenJumpTrail var(--jump-trail-ms) linear 1 forwards;
-  will-change: opacity, transform;
+  
 }
 
 .jumpTrailA {

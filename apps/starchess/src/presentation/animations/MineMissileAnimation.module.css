@@ -34,7 +34,7 @@
   place-items: center;
   transform-origin: center center;
   animation: mineMissileLift var(--mine-missile-ms) ease-out 1 forwards;
-  will-change: transform;
+  
 }
 
 .aimed {
@@ -52,7 +52,7 @@
   display: grid;
   place-items: center;
   animation: mineMissileTravel var(--mine-missile-ms) linear 1 forwards;
-  will-change: transform, opacity;
+  
 }
 
 .hull.hullStationary {
@@ -127,7 +127,6 @@
   background: linear-gradient(90deg, rgba(47, 208, 106, 0.95), rgba(47, 208, 106, 0));
   box-shadow: 0 0 10px rgba(47, 208, 106, 0.65);
   animation: mineMissileTrail var(--mine-trail-ms) linear var(--mine-missile-lift-ms) 1 forwards;
-  will-change: opacity, transform;
   opacity: 0;
 }
 

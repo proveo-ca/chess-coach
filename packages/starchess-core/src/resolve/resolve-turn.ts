@@ -10,7 +10,6 @@ import type { Square } from "chess.js";
 import {
   mapToPlacement,
   placementToMap,
-  attacksSquare,
   type ScPiece,
 } from "../board/placement";
 import { firstBlockerOnRay, mineAt, pathContactSquares, rayBetween } from "../board/mines";

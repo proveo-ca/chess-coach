@@ -39,7 +39,7 @@
   inset: 0;
   border-radius: 50%;
   animation: bh-spin 14s linear infinite;
-  will-change: transform;
+  
 }
 
 .diskRing {
@@ -99,7 +99,7 @@
   --orbit-rot: calc(var(--debris-i) * 60deg);
   animation: bh-absorb var(--debris-dur) linear infinite;
   animation-delay: var(--debris-delay);
-  will-change: transform, opacity;
+  
 }
 
 @keyframes bh-spin {
