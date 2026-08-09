@@ -16,9 +16,6 @@ import {
 import { mineAt } from "./mines";
 import type { PieceColor, ScMine, SpawnPiece } from "../model/types";
 
-/** Siege Tank unpacked footprint: 9×9 grid → Chebyshev distance ≤ 4. */
-const SIEGE_CHEBYSHEV = 4;
-
 export type ScMove = {
   from: Square;
   to: Square;
@@ -28,7 +25,7 @@ export type ScMove = {
   promotes: boolean;
   /** Promotion target when `promotes` (caller may override via picker). */
   promotion?: SpawnPiece;
-  /** Sieged rook artillery — capture without relocating. */
+  /** Sieged rook — capture on rook ray without relocating. */
   firesInPlace: boolean;
   /**
    * Enemy king on `to`. Resolver drops the plan (no relocate, no HP chip) —
@@ -59,12 +56,6 @@ const asSiegedSet = (
   return sieged instanceof Set ? sieged : new Set(sieged);
 };
 
-const chebyshev = (a: Square, b: Square): number => {
-  const pa = parseSquare(a);
-  const pb = parseSquare(b);
-  return Math.max(Math.abs(pa.file - pb.file), Math.abs(pa.rank - pb.rank));
-};
-
 const everySquare = (): Square[] => {
   const out: Square[] = [];
   for (let f = 0; f < 8; f += 1) {
@@ -77,6 +68,7 @@ const everySquare = (): Square[] => {
 
 const ALL_SQUARES = everySquare();
 
+/** Hostile spider mine on `to` — advisory flag for UI / brain (allies never arm). */
 const hostileMine = (
   mines: readonly ScMine[] | undefined,
   at: Square,
@@ -179,7 +171,10 @@ const pawnMoves = (
   }
 };
 
-/** Sieged rook: 9×9 artillery captures only, fires in place. */
+/**
+ * Sieged rook: classic rook attacks only (same file or rank, blocked by
+ * occupancy) — captures fire in place (no relocate). No diagonal / area fire.
+ */
 const siegedRookMoves = (
   map: Map<Square, ScPiece>,
   from: Square,
@@ -189,7 +184,8 @@ const siegedRookMoves = (
 ): void => {
   for (const to of ALL_SQUARES) {
     if (to === from) continue;
-    if (chebyshev(from, to) > SIEGE_CHEBYSHEV) continue;
+    // Rook geometry via placement attacks (rays stop at first piece).
+    if (!attacksSquare(map, from, to)) continue;
     const occ = map.get(to);
     if (!occ || occ.color === color) continue;
     pushMove(

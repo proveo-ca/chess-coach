@@ -538,40 +538,18 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
       continue;
     }
 
-    // Hostile mine on empty square.
-    // Kings are immune: they occupy without arming or clearing the mine.
-    // Sieged rooks cannot relocate, so they never step onto a fogged mine
-    // (same fog-contact rule as the enemy-capture fizzle above).
-    // Units that **attack** `to` (pawn = front diagonals only): attack clears
-    // the mine then occupy (attacker survives). Promoting pawns never attack
-    // straight ahead — their forward step is a move-phase walk-over.
-    // Quiet walk-overs onto a mine are deferred to the move phase (trigger).
+    // Hostile mine on empty destination.
+    // Kings are immune (occupy without arming). Allies never arm.
+    // Every other piece that lands on a hostile mine dies with it in the move
+    // phase (walk-over trigger) — including units that "attack" the empty square.
+    // Sieged rooks cannot relocate onto a fogged mine (same fizzle as above).
     if (!target) {
       const m = mineAt(mines, plan.to);
       if (m && m.color !== plan.color && actor.type !== "k") {
         if (!visible0 && input.siegedRooks?.includes(plan.from) && actor.type === "r") {
           continue;
         }
-        // Quiet walk-over onto a mine — move phase triggers (pawn forward, etc.).
-        if (!attacksSquare(start, plan.from, plan.to)) {
-          quiets.push(plan);
-          continue;
-        }
-        const blast: ResolveAttack = {
-          kind: "mineBlast",
-          piece: actor.type,
-          color: plan.color,
-          from: plan.from,
-          to: plan.to,
-          mineColor: m.color,
-        };
-        if (!visible0) {
-          moveCollisions.push(blast);
-        } else {
-          attacks.push(blast);
-        }
-        removeMineAt(plan.to);
-        occupy.push(plan);
+        quiets.push(plan);
         continue;
       }
     }
