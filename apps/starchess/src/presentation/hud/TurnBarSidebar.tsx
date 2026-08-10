@@ -1,6 +1,6 @@
 /**
  * Vertical turn controls for BoardSideRail (live + review chips).
- * Review DualNav lives in top {@link ReviewTurnNav}; pass `hideDualNav`.
+ * Review DualNav lives in top ReviewTurnNav; pass `hideDualNav`.
  * Does not replace horizontal `TurnBar`.
  * // SPEC: _spec/apps/starchess/screens.puml
  */
@@ -54,7 +54,7 @@ export type TurnBarSidebarProps = {
   resolveOnEnd?: boolean;
   /**
    * Observer review — Turn/Phase chips on the rail. DualNav is owned by top
-   * {@link ReviewTurnNav}; pass `hideDualNav: true` (default for new hosts).
+   * top ReviewTurnNav; pass `hideDualNav: true` (default for new hosts).
    */
   review?: TurnBarSidebarReviewProps;
 };

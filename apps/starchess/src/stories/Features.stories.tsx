@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
 import { GasDeployScenarioScreen } from "~/demos/GasDeployScenarioScreen";
-import { GasRack } from "~/components/features/GasRack";
+import { GasRack } from "~/presentation/hud/GasRack";
 import {
   createMatchStore,
   MatchStoreProvider,

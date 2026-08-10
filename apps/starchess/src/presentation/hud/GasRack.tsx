@@ -1,7 +1,9 @@
-import { placementToMap } from "@chess-coach/starchess-core";
+// SPEC: _spec/apps/starchess/architecture/base-screen.puml, _spec/apps/starchess/screens.puml
 /**
  * Footer gas rack — drag a vespene canister onto a friendly unit to arm its special.
+ * Match HUD (lives with ResourceBar / TurnBar), not the app shell kit.
  */
+import { placementToMap } from "@chess-coach/starchess-core";
 import type { PieceSymbol, Square } from "chess.js";
 import { For, Show, createSignal, onCleanup, type Component } from "solid-js";
 import { Portal } from "solid-js/web";
@@ -17,7 +19,7 @@ import { useMatchStore } from "~/app/MatchStoreContext";
 import { VespeneIcon } from "~/components/primitives/icons";
 import { SpecialPreview } from "~/components/primitives/SpecialPreview";
 import { SPECIAL_ENERGY_COST } from "~/presentation/constants";
-import styles from "~/components/features/GasRack.module.css";
+import styles from "~/presentation/hud/GasRack.module.css";
 import { specialCopyFor } from "~/presentation/hud/specialCopy";
 import type { GasDeployTarget } from "~/types/specials";
 

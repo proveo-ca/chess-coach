@@ -50,8 +50,8 @@ assemblers that slot into `MatchBoardHost`.
 | `Screen` + `BoardArea` + `BoardColumn` + board host wrapper | `MatchBoardHost` |
 | Mount `LiveStarChessBoard` with fog/vision/variant/pieceSet/hints | `LiveBoardBinding` (single place) |
 | MatchStoreProvider + createMatchStore(review history) | keep on review hosts (or small `ReviewStoreShell`) |
-| Live HUD: ResourceBar, GasDeploy, DeployModal, spawn hit overlays | stay in `BaseScreen` / live chrome slots |
-| DualNav / ReviewTurnNav / match title | stay in `ReviewDemoScreen` chrome slots |
+| Live HUD: ResourceBar, GasRack (`presentation/hud`), DeployModal, spawn hit overlays | stay in `BaseScreen` / live chrome slots |
+| DualNav / ReviewTurnNav (`components/primitives` shell) / match title | stay in `ReviewDemoScreen` chrome slots |
 | Typewriter nav / beats | stay in `TutorialReviewHost` chrome slots |
 | `BoardSideRail` + optional `TurnBarSidebar` | slot via rail prop (shared defaults OK) |
 

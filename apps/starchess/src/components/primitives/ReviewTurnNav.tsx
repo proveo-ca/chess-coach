@@ -1,11 +1,11 @@
+// SPEC: _spec/apps/starchess/screens.puml
 /**
- * Review turn Prev/Next — tutorial-style green ‹ › flanking ResourceBars.
- * Replaces stacked DualNavButton in the review side rail.
- * // SPEC: _spec/apps/starchess/screens.puml
+ * Pure shell: green ‹ › flanking children (typically dual ResourceBars).
+ * Domain wiring stays in BaseScreen / ReviewDemoScreen.
  */
 import type { Component, JSX } from "solid-js";
 
-import styles from "~/presentation/hud/ReviewTurnNav.module.css";
+import styles from "~/components/primitives/ReviewTurnNav.module.css";
 
 export type ReviewTurnNavProps = {
   onBack: () => void;

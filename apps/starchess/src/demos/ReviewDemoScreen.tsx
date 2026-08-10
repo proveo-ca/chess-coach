@@ -27,7 +27,7 @@ import { LiveBoardBinding } from "~/presentation/board/LiveBoardBinding";
 import { isCheckOnlyResolve } from "~/presentation/hud/isCheckOnlyResolve";
 import { MatchBoardHost } from "~/presentation/hud/MatchBoardHost";
 import { ResourceBar } from "~/presentation/hud/ResourceBar";
-import { ReviewTurnNav } from "~/presentation/hud/ReviewTurnNav";
+import { ReviewTurnNav } from "~/components/primitives/ReviewTurnNav";
 import { TurnBarSidebar } from "~/presentation/hud/TurnBarSidebar";
 import { TUTORIAL_CAPABILITIES, setCapabilities } from "~/store/capabilitiesStore";
 import {
