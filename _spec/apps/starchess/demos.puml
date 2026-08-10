@@ -17,6 +17,7 @@ package "Canonical demos" {
   component "GasDeploy specials\nstory: starchess-special-moves--*\n+ features-turn-chrome--gas-deploy\n+ features-gasdeploy--*\n""GasDeployScenarioScreen"" + fixtures" as D5 <<app>>
   component "Fog-edge Bishop / Rook tank\nstory: starchess-fog-of-war-and-move-animations--bishop\n(+ King/Pawn/Knight/Queen/Rook tank|siege)\nmove into fog → capture/occupy blocker" as D4 <<app>>
   component "Spider Mines\nstory: starchess-spider-mines--*\npath collide · ally mine · attack mine\n+ Promotion × mine (core promotionMine.test)\nFog vision: starchess-fog-of-war-and-move-animations--spider-mine" as D6 <<app>>
+  component "Collision races\nstory: starchess-collision--*\npath block · ally truncate · same-square bishops\nknight speed (gas pawn + bishop 1/2/3)\ncore: collisionRaces.test · e2e: starchess-collision" as D7 <<app>>
 }
 
 package "Shipped (do not re-ticket)" {

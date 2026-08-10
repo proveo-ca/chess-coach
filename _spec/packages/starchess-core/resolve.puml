@@ -44,7 +44,7 @@ else (no)
   :No direct hit — quiet intent defers to phase 2;
 endif
 
-:Phase 2 **move** — survivors relocate; collisions\nresolved against the post-attack board; a target\n**still fogged at contact** → move collision\n— capture/occupy, no attack cue;
+:Phase 2 **move** — survivors relocate; collisions\nresolved against the post-attack board; a target\n**still fogged at contact** → move collision\n— capture/occupy, no attack cue;\n**same-square race** (two movers land on one tile)\n→ **both die**, square empty, no attack cue;
 
 :Phase 3 **fog approach** — path-reveal shots slide\n""pathRevealFrom"" → discovery square → attack;\n**King HP mid-resolve** only here: fog intent finds a\nhidden king on the path — ""pathReveal"" kingShot.\nVisible kings already paid at turn open — no second chip.\n**fizzle unless** the attacker still occupies\n""pathRevealFrom"" — died in phases 1–2 / square\nre-occupied by a phase-2 mover / sieged — rooks\nnever relocate — and ""to"" holds the exact\nin-the-way victim;
 

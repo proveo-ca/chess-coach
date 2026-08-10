@@ -458,6 +458,108 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
       continue;
     }
 
+    // Sliding: mid-path units always beat a further destination target.
+    // Re e1→e8 with pe7 + re8 must discover/capture the pawn first (not skip to e8).
+    if (
+      target &&
+      target.color !== plan.color &&
+      !leapsPiece(actor.type)
+    ) {
+      const mids = rayBetween(plan.from, plan.to);
+      let pathHandled = false;
+      for (let i = 0; i < mids.length; i++) {
+        const s = mids[i]!;
+        const occ = start.get(s);
+        if (!occ) continue;
+        if (occ.color === plan.color) {
+          // Ally blocks — truncate in move phase (fall through to quiet path).
+          pathHandled = false;
+          break;
+        }
+        if (occ.type === "k") {
+          // Leave king-on-path to the shared mid-path walk below.
+          break;
+        }
+        const reveal = pathRevealSteps(
+          input.placement,
+          plan.from,
+          plan.to,
+          plan.color,
+          s,
+          input.pathVisionOpts,
+        );
+        const startVisible = canSee(plan.color, s);
+        const becomesVisible = !startVisible && reveal != null && reveal > 0;
+        if (!startVisible && !becomesVisible) {
+          if (input.siegedRooks?.includes(plan.from)) {
+            pathHandled = true;
+            break;
+          }
+          const hit: ResolveAttack = {
+            kind: "capture",
+            piece: actor.type,
+            color: plan.color,
+            from: plan.from,
+            to: s,
+            victim: { piece: occ.type, color: occ.color },
+            occupies: true,
+            collision: true,
+            moveCollision: true,
+          };
+          moveCollisions.push(hit);
+          deadSquares.add(s);
+          if (mineAt(mines, s) && mineAt(mines, s)!.color !== plan.color) {
+            removeMineAt(s);
+          }
+          occupy.push({ color: plan.color, from: plan.from, to: s });
+          pathHandled = true;
+          break;
+        }
+        if (becomesVisible) {
+          const discovery = mids[reveal! - 1]!;
+          pathRevealPending.push({
+            kind: "capture",
+            piece: actor.type,
+            color: plan.color,
+            from: discovery,
+            to: s,
+            victim: { piece: occ.type, color: occ.color },
+            occupies: true,
+            pathRevealFrom: plan.from,
+            pathRevealSteps: reveal!,
+          });
+          pathHandled = true;
+          break;
+        }
+        // Visible mid-path enemy — phase-1 capture + occupy.
+        attacks.push({
+          kind: "capture",
+          piece: actor.type,
+          color: plan.color,
+          from: plan.from,
+          to: s,
+          victim: { piece: occ.type, color: occ.color },
+          occupies: true,
+        });
+        deadSquares.add(s);
+        if (mineAt(mines, s) && mineAt(mines, s)!.color !== plan.color) {
+          removeMineAt(s);
+        }
+        occupy.push({ color: plan.color, from: plan.from, to: s });
+        pathHandled = true;
+        break;
+      }
+      if (pathHandled) continue;
+      // Ally mid-path (pathHandled false after ally break): treat as quiet truncate.
+      if (mids.some((sq) => {
+        const o = start.get(sq);
+        return o && o.color === plan.color;
+      })) {
+        quiets.push(plan);
+        continue;
+      }
+    }
+
     if (target && target.color !== plan.color) {
       let visible = visible0;
       let revealSteps: number | null = null;
@@ -759,6 +861,42 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
         dest = before;
       }
     } else if (occ && occ.color !== plan.color) {
+      // Same-square race: another mover already landed here this phase → both die
+      // (no survivor, no attack cue). Stationary / fog contact still capture+occupy.
+      if (destinationsWritten.has(dest)) {
+        moveCollisions.push({
+          kind: "capture",
+          piece: piece.type,
+          color: plan.color,
+          from: plan.from,
+          to: dest,
+          victim: { piece: occ.type, color: occ.color },
+          occupies: false,
+          collision: true,
+          moveCollision: true,
+        });
+        moveCollisions.push({
+          kind: "capture",
+          piece: occ.type,
+          color: occ.color,
+          from: dest,
+          to: dest,
+          victim: { piece: piece.type, color: plan.color },
+          occupies: false,
+          collision: true,
+          moveCollision: true,
+        });
+        board.delete(dest);
+        board.delete(plan.from);
+        destinationsWritten.delete(dest);
+        moves.push({
+          piece: piece.type,
+          color: plan.color,
+          from: plan.from,
+          to: dest,
+        });
+        return;
+      }
       moveCollisions.push({
         kind: "capture",
         piece: piece.type,

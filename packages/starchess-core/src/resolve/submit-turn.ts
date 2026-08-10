@@ -85,6 +85,11 @@ export type EndScTurnResult = {
   bMoves: ResolveMove[];
   /** Gas-step pawn slides applied during F (animate after classical). */
   fMoves: ResolveMove[];
+  /**
+   * Planning queue that produced this End — DualNav intent ghosts read this
+   * (settled snaps clear `Q:`). Empty for turn-open check-only plies.
+   */
+  queue: readonly ScAction[];
 };
 
 export type EndScTurnOptions = {
@@ -248,6 +253,7 @@ export const beginScTurn = (snapshot: ScFenSnapshot): BeginScTurnResult => {
     afterPending,
     bMoves: [],
     fMoves: [],
+    queue: [],
   };
 
   return {
@@ -599,6 +605,7 @@ export const endScTurn = (
       afterPending,
       bMoves: [],
       fMoves: [],
+      queue: [],
     };
   }
 
@@ -775,6 +782,7 @@ export const endScTurn = (
       afterPending,
       bMoves,
       fMoves: [],
+      queue: [...actions],
     };
   }
 
@@ -907,5 +915,6 @@ export const endScTurn = (
     afterPending,
     bMoves,
     fMoves,
+    queue: [...actions],
   };
 };
