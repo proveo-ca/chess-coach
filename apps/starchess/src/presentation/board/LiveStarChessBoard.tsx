@@ -1,3 +1,10 @@
+// SPEC: _spec/apps/starchess/architecture/board-entities.puml, _spec/apps/starchess/architecture/screen-entities.puml
+/**
+ * Live match board — snapshot from match store + combat VFX from timeline.
+ * Variants: eclipse | butter | vermeer.
+ * Deploy drops: timeline cues + occupancy auto-deploy (apps/ui parity).
+ * Intent / fog ownership: {@link useIntentOverlays} / {@link useBoardVision}.
+ */
 import {
   isMoverVisibleToSide,
   isPieceVisibleToSide,
@@ -6,18 +13,13 @@ import {
   type StarChessColor,
 } from "@chess-coach/starchess-core";
 import type { Square } from "chess.js";
-/**
- * Live match board — snapshot from match store + combat VFX from timeline.
- * Variants: eclipse | butter | vermeer.
- * Deploy drops: timeline cues + occupancy auto-deploy (apps/ui parity).
- * Intent / fog ownership: {@link useIntentOverlays} / {@link useBoardVision}.
- */
 import type { Component } from "solid-js";
 import { createEffect, createMemo, createSignal, onMount } from "solid-js";
 
 import { useMatchStore } from "~/app/MatchStoreContext";
 import { canSubmit, displayedSnapshot } from "~/app/selectors";
 import { AnimationStage } from "~/presentation/animations/AnimationStage";
+import type { CombatCueFrame } from "~/presentation/animations/combatCueFrame";
 import { kingDamageCuesFromBoard } from "~/presentation/animations/kingDamage";
 import { deriveVisualFrame } from "~/presentation/animations/visualFrame";
 import { useBoardInput } from "~/presentation/board/useBoardInput";
@@ -26,11 +28,9 @@ import { useCombatOverlays } from "~/presentation/hooks/useCombatOverlays";
 import { useBoardVision, useIntentOverlays } from "~/presentation/hooks/useIntentOverlays";
 import { liveMatchPhase } from "~/presentation/hud/liveMatchPhase";
 import { LIVE_CAPABILITIES, capabilities, setCapabilities } from "~/store/capabilitiesStore";
-import type { BoardSkin, BoardVariant, PieceSet, VisionMode } from "~/types/board";
+import type { BoardSkin, PieceSet, VisionMode } from "~/types/board";
 import type { KingDamageCue } from "~/types/cues";
 import type { ReviewTurnPhase } from "~/types/review";
-
-export type { BoardVariant };
 
 export const LiveStarChessBoard: Component<{
   fog?: boolean;
@@ -210,6 +210,22 @@ export const LiveStarChessBoard: Component<{
 
   const state = () => store.state();
 
+  const combatFrame = createMemo((): CombatCueFrame => ({
+    attackCues: combat.attackCues(),
+    attackDying: combat.attackDying(),
+    deathCues: combat.deathCues(),
+    moveCues: moveCues(),
+    moveProgress: combat.moveProgress(),
+    moveLeg: combat.moveLeg(),
+    jumpCues: jumpCues(),
+    jumpTrails: combat.jumpTrails(),
+    mineMissiles: combat.mineMissiles(),
+    mineMissileTrails: combat.mineMissileTrails(),
+    deployCues: deployCues(),
+    gasDropCues: gasDropCues(),
+    kingDamage: visibleKingDamage(),
+  }));
+
   return (
     <div
       style={{
@@ -234,21 +250,9 @@ export const LiveStarChessBoard: Component<{
         legalDests={interactive() ? state().legalDests : []}
         hintSquares={props.hintSquares}
         onSquareClick={interactive() ? onSquareClick : undefined}
-        attackCues={combat.attackCues()}
-        attackDying={combat.attackDying()}
-        deathCues={combat.deathCues()}
-        moveCues={moveCues()}
-        moveProgress={combat.moveProgress()}
-        moveLeg={combat.moveLeg()}
-        jumpCues={jumpCues()}
-        jumpTrails={combat.jumpTrails()}
-        mineMissiles={combat.mineMissiles()}
-        mineMissileTrails={combat.mineMissileTrails()}
+        combat={combatFrame()}
         spentMines={combat.spentMines()}
-        deployCues={deployCues()}
-        gasDropCues={gasDropCues()}
         gasAbsorbSquares={gasAbsorbSquares()}
-        kingDamage={visibleKingDamage()}
         armedBishops={armedBishops()}
         armAnimBishops={armAnimBishops()}
         hideSquares={hideSquares()}

@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { StarChessTutorialScreen } from "~/screens/StarChessTutorialScreen";
+import { TutorialScreen } from "~/screens/TutorialScreen.tsx";
 import { tutorialPath } from "~/tutorial/tutorialScript";
 
 const meta = {
   title: "Screens/Tutorial",
-  component: StarChessTutorialScreen,
+  component: TutorialScreen,
   parameters: {
     layout: "fullscreen",
     route: tutorialPath("fog"),
@@ -16,7 +16,7 @@ const meta = {
       },
     },
   },
-} satisfies Meta<typeof StarChessTutorialScreen>;
+} satisfies Meta<typeof TutorialScreen>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -25,26 +25,26 @@ type Story = StoryObj<typeof meta>;
 export const Fog: Story = {
   name: "Fog of War",
   parameters: { route: tutorialPath("fog", "king") },
-  render: () => <StarChessTutorialScreen />,
+  render: () => <TutorialScreen />,
 };
 
 /** Special Moves · Marine gas deploy. */
 export const Specials: Story = {
   name: "Special Moves",
   parameters: { route: tutorialPath("specials", "marine") },
-  render: () => <StarChessTutorialScreen />,
+  render: () => <TutorialScreen />,
 };
 
 /** Turn Resolution · combat chain DualNav. */
 export const Resolve: Story = {
   name: "Turn Resolution",
   parameters: { route: tutorialPath("resolve") },
-  render: () => <StarChessTutorialScreen />,
+  render: () => <TutorialScreen />,
 };
 
 /** King Damage · DualNav review. */
 export const King: Story = {
   name: "King Damage",
   parameters: { route: tutorialPath("king") },
-  render: () => <StarChessTutorialScreen />,
+  render: () => <TutorialScreen />,
 };

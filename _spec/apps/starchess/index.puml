@@ -12,6 +12,7 @@ package "_spec/apps/starchess" {
   component "deployment.puml\nPWA / Worker / Coach redirect" as DEP <<host>>
   component "menu-flow.puml\nMenu → NewGame → /single · Review" as MENU <<app>>
   component "screens.puml\nScreen HUD chrome" as HUD <<app>>
+  component "architecture/\nboard + screen entities\nP1–P3 accepted designs" as ARCH <<app>>
   component "match-store.puml\nMatchStore / matchReducer / timeline" as MS <<async>>
   component "animation-pipeline.md\nplayTimeline / TIMELINE_*" as ANIM <<async>>
   component "demos.puml / starchess-mode.puml" as DEMO <<app>>
@@ -34,6 +35,9 @@ MENU ARROW_MAIN RMENU
 MENU ARROW_MAIN RSINGLE
 MENU ARROW_MAIN RREV
 HUD ARROW_MAIN RSCREEN
+ARCH ARROW_MAIN RSCREEN
+ARCH ARROW_MAIN RSINGLE
+ARCH ARROW_MAIN RREV
 MS ARROW_MAIN RSCREEN
 ANIM ARROW_MAIN RINPUT
 DEP ARROW_MAIN RSINGLE
@@ -44,5 +48,7 @@ ROAD ARROW_OPTIONAL RULES
 
 note bottom
   Rules live under ""_spec/packages/starchess-core/"".
+  ""architecture/"" = current board/screen class maps
+  + accepted P1–P3 structure designs.
 end note
 @enduml

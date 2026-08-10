@@ -121,7 +121,7 @@ export const DeathBoardDemo: Component<{ piece: DeathPiece }> = (props) => {
       <Screen.BoardArea>
         <Screen.BoardColumn>
           <div class={styles.host}>
-            <AnimationStage fen={fen()} fog deathCues={cues()} />
+            <AnimationStage fen={fen()} fog combat={{ deathCues: cues() }} />
           </div>
         </Screen.BoardColumn>
       </Screen.BoardArea>

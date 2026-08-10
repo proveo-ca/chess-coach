@@ -10,7 +10,7 @@ import { MenuArrival } from "~/screens/menuSky/MenuArrival";
 import { MenuMoon } from "~/screens/menuSky/MenuMoon";
 import { MenuPlanet, type MenuWorldId } from "~/screens/menuSky/MenuPlanet";
 import { MenuSkyStage } from "~/screens/menuSky/MenuSkyStage";
-import { StarChessMenuScreen } from "~/screens/StarChessMenuScreen";
+import { MenuScreen } from "~/screens/MenuScreen.tsx";
 import type { MenuSurface } from "~/types/menu";
 
 /**
@@ -21,7 +21,7 @@ import type { MenuSurface } from "~/types/menu";
  */
 const meta = {
   title: "Screens/Menu",
-  component: StarChessMenuScreen,
+  component: MenuScreen,
   parameters: {
     layout: "fullscreen",
     docs: {
@@ -31,7 +31,7 @@ const meta = {
       },
     },
   },
-} satisfies Meta<typeof StarChessMenuScreen>;
+} satisfies Meta<typeof MenuScreen>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;

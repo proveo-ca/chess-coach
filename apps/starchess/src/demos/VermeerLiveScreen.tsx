@@ -8,7 +8,7 @@ import { adjutant } from "@chess-coach/starchess-core";
 
 import { createMatchStore, MatchStoreProvider, useMatchStore } from "~/app/MatchStoreContext";
 import { createMatchStateFromScfen } from "~/app/matchReducer";
-import { StarChessScreen } from "~/app/StarChessScreen";
+import { BaseScreen } from "~/app/BaseScreen.tsx";
 import { LiveMatchShell } from "~/screens/LiveMatchShell";
 import { NERD_STARTING_SCFEN } from "~/stories/fixtures/seeds";
 
@@ -34,7 +34,7 @@ export const VermeerLiveScreen: Component<VermeerLiveScreenProps> = (props) => {
 const VermeerLiveInner: Component<VermeerLiveScreenProps> = (props) => {
   const store = useMatchStore();
   return (
-    <StarChessScreen
+    <BaseScreen
       boardVariant="vermeer"
       starChessMode
       armTimer

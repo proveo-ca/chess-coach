@@ -342,16 +342,18 @@ export const DebrisPawnPlayground: Component<DebrisPawnPlaygroundProps> = (props
         <AnimationStage
           fen={fen()}
           fog={false}
-          attackCues={attackCues()}
-          attackDying={attackDying()}
-          deathCues={deathCues()}
-          moveCues={moveCues()}
-          moveProgress={moveProgress()}
-          deployCues={deployCues()}
-          gasDropCues={gasDropCues()}
+          combat={{
+            attackCues: attackCues(),
+            attackDying: attackDying(),
+            deathCues: deathCues(),
+            moveCues: moveCues(),
+            moveProgress: moveProgress(),
+            deployCues: deployCues(),
+            gasDropCues: gasDropCues(),
+            jumpCues: jumpCues(),
+            jumpTrails: jumpTrails(),
+          }}
           gasAbsorbSquares={gasAbsorb()}
-          jumpCues={jumpCues()}
-          jumpTrails={jumpTrails()}
           hideSquares={hide()}
         />
       </div>

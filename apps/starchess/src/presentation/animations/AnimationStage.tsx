@@ -1,12 +1,13 @@
+// SPEC: _spec/apps/starchess/demos.puml, _spec/apps/starchess/architecture/board-entities.puml, _spec/apps/starchess/architecture/p2-composite-vfx-stack.puml
 /**
- * Snapshot board + combat VFX overlay stack
- * (Attack / Death / Move / Deploy / GasDrop / Jump).
+ * Snapshot board + combat VFX overlay stack (Facade).
  * Store-free host for Storybook animation demos and timeline projection.
- * // SPEC: _spec/apps/starchess/demos.puml
+ * Combat VFX: single `combat` bag ({@link CombatCueFrame}).
  */
 import {
   Show,
   createEffect,
+  createMemo,
   createSignal,
   onCleanup,
   onMount,
@@ -14,52 +15,26 @@ import {
 } from "solid-js";
 import type { Square } from "chess.js";
 
-import {
-  parseScFen,
-  type ScFenSnapshot,
-  type ScMine,
-} from "@chess-coach/starchess-core";
+import { parseScFen, type ScFenSnapshot } from "@chess-coach/starchess-core";
 
-import { AttackAnimation } from "~/presentation/animations/AttackAnimation";
-import { DeathAnimation } from "~/presentation/animations/DeathAnimation";
-import { DeployAnimation } from "~/presentation/animations/DeployAnimation";
-import { GasDropAnimation } from "~/presentation/animations/GasDropAnimation";
-import { MoveAnimation } from "~/presentation/animations/MoveAnimation";
-import { MineMissileAnimation } from "~/presentation/animations/MineMissileAnimation";
-import { QueenJumpAnimation } from "~/presentation/animations/QueenJumpAnimation";
-import { KingDamageOverlay } from "~/presentation/animations/kingDamageOverlay";
-import { findBoardGrid } from "~/presentation/animations/boardGeom";
-import type {
-  AttackCue,
-  DeathCue,
-  DeployCue,
-  GasDropCue,
-  KingDamageCue,
-  MineMissileCue,
-  MoveCue,
-  QueenJumpTrail,
-} from "~/presentation/types";
+import { CombatOverlayRoot } from "~/presentation/animations/CombatOverlayRoot";
 import {
-  ObserverStarChessBoard,
-  type IntentCanister,
-  type IntentCheck,
-  type IntentGhost,
-  type VisionMode,
-} from "~/presentation/board/ObserverStarChessBoard";
+  type CombatCueFrame,
+  EMPTY_COMBAT_CUE_FRAME,
+} from "~/presentation/animations/combatCueFrame";
+import { findBoardGrid } from "~/presentation/animations/boardGeom";
 import { siegedRooksList } from "~/presentation/animations/rookModeStore";
-import type { BoardSkin, PieceSet } from "~/types/board";
+import { StarChessBoard } from "~/presentation/board/StarChessBoard";
+import type {
+  BoardSkin,
+  IntentCanister,
+  IntentCheck,
+  IntentGhost,
+  PieceSet,
+  VisionMode,
+} from "~/types/board";
 import type { ReviewTurnPhase } from "~/types/review";
 
-/** Stable empties — spreading `props.* ?? []` remounts For rows every render. */
-const NO_ATTACKS: AttackCue[] = [];
-const NO_DEATHS: DeathCue[] = [];
-const NO_MOVES: MoveCue[] = [];
-const NO_DEPLOYS: DeployCue[] = [];
-const NO_KING_DAMAGE: KingDamageCue[] = [];
-const NO_JUMP_TRAILS: QueenJumpTrail[] = [];
-const NO_GAS_DROPS: GasDropCue[] = [];
-const NO_MINE_MISSILES: MineMissileCue[] = [];
-const NO_MOVE_PROGRESS: Record<string, 0 | 1> = {};
 const NO_ARMED: Square[] = [];
 const NO_GAS_ABSORB: ReadonlySet<Square> = new Set();
 const NO_SPENT: Square[] = [];
@@ -96,7 +71,6 @@ export type AnimationStageProps = {
   visionMode?: VisionMode;
   /** Live / review phase — drives board frame border (same tones as phase chip). */
   phase?: ReviewTurnPhase;
-  mines?: readonly ScMine[];
   intentGhosts?: readonly IntentGhost[];
   intentCanisters?: readonly IntentCanister[];
   /** Pending check / attack-intent rings (red dashed). */
@@ -106,34 +80,18 @@ export type AnimationStageProps = {
   /** Tutorial destination rings (independent of legal-move chrome). */
   hintSquares?: readonly Square[];
   onSquareClick?: (square: Square) => void;
-  attackCues?: readonly AttackCue[];
-  attackDying?: Record<string, boolean>;
-  deathCues?: readonly DeathCue[];
-  moveCues?: readonly MoveCue[];
-  moveProgress?: Record<string, 0 | 1>;
-  moveLeg?: Record<string, 0 | 1>;
-  /** Tactical Jump hull cues (QueenJumpAnimation). */
-  jumpCues?: readonly MoveCue[];
-  jumpTrails?: readonly QueenJumpTrail[];
-  /** Spider Mine chase missile + trails. */
-  mineMissiles?: readonly MineMissileCue[];
-  mineMissileTrails?: readonly QueenJumpTrail[];
-  deployCues?: readonly DeployCue[];
-  /** Gas special absorb — canister drop + aura ease-in. */
-  gasDropCues?: readonly GasDropCue[];
+  /** Combat VFX cues — single bag for the Composite overlay root. */
+  combat?: CombatCueFrame;
   /** Squares currently absorbing gas (piece green aura transition). */
   gasAbsorbSquares?: ReadonlySet<Square> | readonly Square[];
-  /** Damaged-king fire / destroyed overlay (stable seed across moves). */
-  kingDamage?: readonly KingDamageCue[];
   /** Goliath squares with Charon launchers popped (arming pose). */
   armedBishops?: readonly Square[];
-  /** Charon shoulder-raise anim — arming only (persistent U: keeps pods up quietly). */
+  /** Charon shoulder-raise anim — arming only. */
   armAnimBishops?: readonly Square[];
   /** Hide board pieces on these squares while VFX play. */
   hideSquares?: ReadonlySet<Square> | readonly Square[];
   /** Hide mine glyphs after boom / while missile owns the square. */
   spentMines?: readonly Square[];
-  chasingMines?: readonly Square[];
 };
 
 type OverlayBox = { top: number; left: number; w: number; h: number };
@@ -144,14 +102,14 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
   const [measured, setMeasured] = createSignal(false);
 
   const snap = (): ScFenSnapshot => {
-    if (props.snapshot) {
-      const mines = props.mines ?? props.snapshot.mines;
-      return mines ? { ...props.snapshot, mines: [...mines] } : props.snapshot;
-    }
+    if (props.snapshot) return props.snapshot;
     const fen = props.fen ?? "4k3/8/8/8/8/8/8/4K3 w - - 0 1";
-    const base = fenToSnapshot(fen, siegedRooksList());
-    return props.mines ? { ...base, mines: [...props.mines] } : base;
+    return fenToSnapshot(fen, siegedRooksList());
   };
+
+  const combatFrame = createMemo(
+    (): CombatCueFrame => props.combat ?? EMPTY_COMBAT_CUE_FRAME,
+  );
 
   const measure = () => {
     if (!host) return;
@@ -173,17 +131,21 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
     setMeasured(true);
   };
 
-  const hasFx = () =>
-    (props.attackCues?.length ?? 0) > 0 ||
-    (props.deathCues?.length ?? 0) > 0 ||
-    (props.moveCues?.length ?? 0) > 0 ||
-    (props.jumpCues?.length ?? 0) > 0 ||
-    (props.jumpTrails?.length ?? 0) > 0 ||
-    (props.mineMissiles?.length ?? 0) > 0 ||
-    (props.mineMissileTrails?.length ?? 0) > 0 ||
-    (props.gasDropCues?.length ?? 0) > 0 ||
-    (props.deployCues?.length ?? 0) > 0 ||
-    (props.kingDamage?.length ?? 0) > 0;
+  const hasFx = () => {
+    const c = combatFrame();
+    return (
+      (c.attackCues?.length ?? 0) > 0 ||
+      (c.deathCues?.length ?? 0) > 0 ||
+      (c.moveCues?.length ?? 0) > 0 ||
+      (c.jumpCues?.length ?? 0) > 0 ||
+      (c.jumpTrails?.length ?? 0) > 0 ||
+      (c.mineMissiles?.length ?? 0) > 0 ||
+      (c.mineMissileTrails?.length ?? 0) > 0 ||
+      (c.gasDropCues?.length ?? 0) > 0 ||
+      (c.deployCues?.length ?? 0) > 0 ||
+      (c.kingDamage?.length ?? 0) > 0
+    );
+  };
 
   onMount(() => {
     measure();
@@ -204,15 +166,12 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
     });
   });
 
-  // Fullscreen / flex layouts often size the grid after first paint.
-  // Remeasure only until the first valid box — ResizeObserver owns later updates.
   createEffect(() => {
     if (!hasFx() || measured()) return;
     measure();
     requestAnimationFrame(measure);
   });
 
-  const dying = () => props.attackDying;
   const overlayReady = () => measured() && box().w > 0 && box().h > 0;
 
   const hidden = () => {
@@ -248,7 +207,7 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
         "box-sizing": "border-box",
       }}
     >
-      <ObserverStarChessBoard
+      <StarChessBoard
         snapshot={snap()}
         viewer={props.viewer ?? "w"}
         fog={props.fog !== false}
@@ -265,83 +224,20 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
         hintSquares={props.hintSquares}
         onSquareClick={props.onSquareClick}
         hideSquares={hidden()}
-        moveCues={props.moveCues}
-        moveProgress={props.moveProgress}
+        moveCues={combatFrame().moveCues}
+        moveProgress={combatFrame().moveProgress}
         spentMines={props.spentMines ?? NO_SPENT}
-        chasingMines={props.chasingMines}
         armedBishops={props.armedBishops ?? NO_ARMED}
         armAnimBishops={props.armAnimBishops ?? NO_ARMED}
         gasAbsorbSquares={gasAbsorb()}
       />
       <Show when={overlayReady()}>
-        <div
-          data-starchess-combat-root
-          style={{
-            position: "absolute",
-            top: `${box().top}px`,
-            left: `${box().left}px`,
-            width: `${box().w}px`,
-            height: `${box().h}px`,
-            "pointer-events": "none",
-            "z-index": "30",
-            overflow: "visible",
-            /* Contain paint so bolts don't invalidate the whole HUD tree. */
-            contain: "layout",
-          }}
-          aria-hidden
-        >
-          {/* Stable layer stack — do not wrap each in Show (remounts restart CSS). */}
-          <KingDamageOverlay
-            cues={props.kingDamage ?? NO_KING_DAMAGE}
-            boardWidth={box().w}
-            boardHeight={box().h}
-          />
-          <GasDropAnimation
-            cues={props.gasDropCues ?? NO_GAS_DROPS}
-            boardWidth={box().w}
-            boardHeight={box().h}
-          />
-          <AttackAnimation
-            cues={props.attackCues ?? NO_ATTACKS}
-            dyingIds={dying()}
-            specialUsedSquares={specialUsedSquares()}
-            boardWidth={box().w}
-            boardHeight={box().h}
-          />
-          <DeathAnimation
-            cues={props.deathCues ?? NO_DEATHS}
-            specialUsedSquares={specialUsedSquares()}
-            boardWidth={box().w}
-            boardHeight={box().h}
-          />
-          <MoveAnimation
-            cues={props.moveCues ?? NO_MOVES}
-            progress={props.moveProgress ?? NO_MOVE_PROGRESS}
-            leg={props.moveLeg}
-            specialUsedSquares={specialUsedSquares()}
-            pieceSet={props.pieceSet}
-            boardWidth={box().w}
-            boardHeight={box().h}
-          />
-          <QueenJumpAnimation
-            cues={(props.jumpCues as MoveCue[] | undefined) ?? NO_MOVES}
-            trails={(props.jumpTrails as QueenJumpTrail[] | undefined) ?? NO_JUMP_TRAILS}
-            boardWidth={box().w}
-            boardHeight={box().h}
-          />
-          <MineMissileAnimation
-            cues={props.mineMissiles ?? NO_MINE_MISSILES}
-            trails={props.mineMissileTrails ?? NO_JUMP_TRAILS}
-            boardWidth={box().w}
-            boardHeight={box().h}
-          />
-          <DeployAnimation
-            cues={props.deployCues ?? NO_DEPLOYS}
-            specialUsedSquares={specialUsedSquares()}
-            boardWidth={box().w}
-            boardHeight={box().h}
-          />
-        </div>
+        <CombatOverlayRoot
+          box={box()}
+          cues={combatFrame()}
+          specialUsedSquares={specialUsedSquares()}
+          pieceSet={props.pieceSet}
+        />
       </Show>
     </div>
   );

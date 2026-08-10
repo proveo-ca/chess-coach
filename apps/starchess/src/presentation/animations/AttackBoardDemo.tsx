@@ -149,7 +149,7 @@ export const AttackBoardDemo: Component<{
             <AnimationStage
               fen={FEN_BY_PIECE[props.piece]}
               fog
-              attackCues={cues()}
+              combat={{ attackCues: cues() }}
               hideSquares={hide()}
               variant={props.variant}
               pieceSet={props.pieceSet}

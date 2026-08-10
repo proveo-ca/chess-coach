@@ -1,8 +1,7 @@
+// SPEC: _spec/apps/ui/responsiveness/rules.md, _spec/apps/starchess/screens.puml, _spec/apps/starchess/architecture/screen-entities.puml
 /**
  * Live StarChess screen — Command Column HUD (Resource → Board|SideRail → Gas).
  * Board variants: eclipse | butter | vermeer (default eclipse).
- * // SPEC: _spec/apps/ui/responsiveness/rules.md
- * // SPEC: _spec/apps/starchess/screens.puml
  */
 import {
   UNIT_COST,
@@ -32,12 +31,12 @@ import { PromotionModal } from "~/components/primitives/PromotionModal";
 import { Screen } from "~/components/primitives/Screen";
 import { ScreenBackNav } from "~/components/primitives/ScreenBackNav";
 import { squareBoxStyle, findBoardGrid } from "~/presentation/animations/boardGeom";
-import { LiveStarChessBoard } from "~/presentation/board/LiveStarChessBoard";
-import { GasDeploy } from "~/presentation/features/GasDeploy";
+import { LiveBoardBinding } from "~/presentation/board/LiveBoardBinding";
+import { GasRack } from "~/components/features/GasRack";
 import { usePieceSpecialArm } from "~/presentation/hooks/usePieceSpecialArm";
-import { BoardSideRail } from "~/presentation/hud/BoardSideRail";
 import { DeployModal } from "~/presentation/hud/DeployModal";
 import { liveMatchPhase } from "~/presentation/hud/liveMatchPhase";
+import { MatchBoardHost } from "~/presentation/hud/MatchBoardHost";
 import { ResourceBar } from "~/presentation/hud/ResourceBar";
 import { ReviewTurnNav } from "~/presentation/hud/ReviewTurnNav";
 import { TurnBar } from "~/presentation/hud/TurnBar";
@@ -114,7 +113,7 @@ export type StarChessScreenProps = {
 
 type OverlayBox = { top: number; left: number; width: number; height: number };
 
-export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
+export const BaseScreen: Component<StarChessScreenProps> = (props) => {
   const store = useMatchStore();
   const variant = (): BoardSkin => props.boardVariant ?? "eclipse";
   const starChessMode = () => props.starChessMode ?? true;
@@ -703,10 +702,9 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
         </Screen.Header>
       </Show>
 
-      <Screen.BoardArea>
-        <Screen.BoardColumn>
+      <MatchBoardHost>
+        <MatchBoardHost.BoardColumn>
           <Show when={props.tutorial}>
-            {/* CoachScreen tall-mobile hero — same header slot as desktop. */}
             <div class="mobile-hero" data-testid="tutorial-mobile-hero">
               <Show
                 when={props.header}
@@ -718,12 +716,14 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
               </Show>
             </div>
           </Show>
-          <div
+          <MatchBoardHost.BoardHost
             class={styles.boardHost}
             data-testid="nerd-play-layout"
-            ref={(el) => (boardHost = el)}
+            ref={(el) => {
+              boardHost = el;
+            }}
           >
-            <LiveStarChessBoard
+            <LiveBoardBinding
               fog={ended() ? undefined : fogOfWar()}
               visionMode="player"
               variant={variant()}
@@ -785,39 +785,38 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
                 onCancel={cancelPromotion}
               />
             </Show>
-          </div>
-        </Screen.BoardColumn>
-        <BoardSideRail
-          controlsVisible={starChessMode() && turnInSidebar() && !turnHidden()}
+          </MatchBoardHost.BoardHost>
+        </MatchBoardHost.BoardColumn>
+        <MatchBoardHost.Rail
           onHome={props.onExitToMenu}
-          controls={
-            <Show
-              when={ended()}
-              fallback={
-                <TurnBarSidebar
-                  autoStart={false}
-                  resolveOnEnd={false}
-                  onEnd={() => store.submitTurn("end")}
-                />
-              }
-            >
+          controlsVisible={starChessMode() && turnInSidebar() && !turnHidden()}
+        >
+          <Show
+            when={ended()}
+            fallback={
               <TurnBarSidebar
-                review={{
-                  turn: reviewTurnNumber(),
-                  phase: store.reviewPhase(),
-                  hideDualNav: true,
-                  onBack: () => store.reviewBack(),
-                  onForward: () => store.reviewForward(),
-                  backDisabled: reviewBusy() || store.state().reviewIndex <= 0,
-                  forwardDisabled:
-                    reviewBusy() ||
-                    store.state().reviewIndex >= store.state().settledSnapshots.length - 1,
-                }}
+                autoStart={false}
+                resolveOnEnd={false}
+                onEnd={() => store.submitTurn("end")}
               />
-            </Show>
-          }
-        />
-      </Screen.BoardArea>
+            }
+          >
+            <TurnBarSidebar
+              review={{
+                turn: reviewTurnNumber(),
+                phase: store.reviewPhase(),
+                hideDualNav: true,
+                onBack: () => store.reviewBack(),
+                onForward: () => store.reviewForward(),
+                backDisabled: reviewBusy() || store.state().reviewIndex <= 0,
+                forwardDisabled:
+                  reviewBusy() ||
+                  store.state().reviewIndex >= store.state().settledSnapshots.length - 1,
+              }}
+            />
+          </Show>
+        </MatchBoardHost.Rail>
+      </MatchBoardHost>
 
       <Screen.Footer>
         <div class={styles.footerStack}>
@@ -836,7 +835,7 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
             data-testid="nerd-gas-deploy"
           >
             <Show when={starChessMode() && !ended() && !props.hideGas}>
-              <GasDeploy
+              <GasRack
                 onDeploy={onGasDeploy}
                 onCancel={() => {
                   setSpawnPhase("idle");
@@ -899,7 +898,7 @@ export const StarChessScreen: Component<StarChessScreenProps> = (props) => {
               "z-index": "70",
             }}
           >
-            <GasDeploy
+            <GasRack
               onDeploy={onGasDeploy}
               onCancel={() => {
                 setSpawnPhase("idle");

@@ -15,7 +15,7 @@ package "Screen grid\n(top · board · footer)\nrows: minmax(0,auto) · auto · 
 }
 
 package "Board column" {
-  component "LiveStarChessBoard\n→ AnimationStage\n→ ObserverStarChessBoard" as BOARD <<app>>
+  component "LiveStarChessBoard\n→ AnimationStage\n→ StarChessBoard" as BOARD <<app>>
   component "DeployModal / PromotionModal" as MODALS <<app>>
 }
 

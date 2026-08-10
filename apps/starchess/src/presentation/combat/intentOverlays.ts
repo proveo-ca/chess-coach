@@ -21,7 +21,7 @@ import {
   type StarChessColor,
 } from "@chess-coach/starchess-core";
 
-import type { IntentGhost } from "~/presentation/board/ObserverStarChessBoard";
+import type { IntentGhost } from "~/types/board";
 
 export type IntentCanisterGhost = {
   at: Square;

@@ -31,7 +31,7 @@ import { DebrisPawnPlayground } from "~/screens/menuSky/DebrisPawnPlayground";
 import { MenuBlackHole } from "~/screens/menuSky/MenuBlackHole";
 import { MenuMoon } from "~/screens/menuSky/MenuMoon";
 import { MenuPlanet, type MenuWorldId } from "~/screens/menuSky/MenuPlanet";
-import styles from "~/screens/StarChessMenuScreen.module.css";
+import styles from "~/screens/MenuScreen.module.css";
 import { isTutorialCleared } from "~/store/tutorialProgressStore";
 import type { NewGameOptions } from "~/types/newGame";
 
@@ -105,7 +105,7 @@ const MenuTextItem: Component<{
   );
 };
 
-export const StarChessMenuScreen: Component<StarChessMenuScreenProps> = (props) => {
+export const MenuScreen: Component<StarChessMenuScreenProps> = (props) => {
   const [planetWorld, setPlanetWorld] = createSignal<MenuWorldId>("eclipse");
   const [creditsOpen, setCreditsOpen] = createSignal(false);
   const [setupOpen, setSetupOpen] = createSignal(false);

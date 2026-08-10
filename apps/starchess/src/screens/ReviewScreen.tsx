@@ -1,8 +1,7 @@
+// SPEC: _spec/apps/starchess/deployment.puml, _spec/apps/starchess/menu-flow.puml, _spec/apps/starchess/architecture/screen-entities.puml
 /**
  * Match history list + DualNav replay — `/review` and `/review/:id`.
  * List chrome mirrors Coach Review: Playing as + date (no First move, no title).
- * // SPEC: _spec/apps/starchess/deployment.puml
- * // SPEC: _spec/apps/starchess/menu-flow.puml
  */
 import { A, useNavigate, useParams } from "@solidjs/router";
 import { For, Show, createMemo, type Component } from "solid-js";
@@ -13,7 +12,7 @@ import { ScreenBackNav } from "~/components/primitives/ScreenBackNav";
 import { ReviewDemoScreen } from "~/demos/ReviewDemoScreen";
 import { useMatchHistoryFilters } from "~/hooks/useMatchHistoryFilters";
 import { LiveMatchShell } from "~/screens/LiveMatchShell";
-import styles from "~/screens/StarChessReviewScreen.module.css";
+import styles from "~/screens/ReviewScreen.module.css";
 import {
   getMatchById,
   historyFromRecord,
@@ -157,7 +156,7 @@ const ReviewDetail: Component<{ record: StarChessGameRecord }> = (props) => {
   );
 };
 
-export const StarChessReviewScreen: Component = () => {
+export const ReviewScreen: Component = () => {
   const params = useParams<{ id?: string }>();
   const id = () => params.id;
 

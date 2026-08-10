@@ -1,12 +1,10 @@
+// SPEC: _spec/apps/starchess/menu-flow.puml, _spec/apps/starchess/screens.puml, _spec/apps/starchess/deployment.puml, _spec/apps/starchess/architecture/screen-entities.puml
 /**
  * Single-player match — `/starchess/single?map=&team=` (+ optional `scfen=`).
  * Adjutant script always plays the opposite of `team` (White or Black).
  * Persists SCFEN + playerColor to localStorage for refresh resume.
  * On gameOver: save match history, show VICTORY/DEFEAT modal
  * (Another Game = rematch same map/team · Replay = `/review/:id`).
- * // SPEC: _spec/apps/starchess/menu-flow.puml
- * // SPEC: _spec/apps/starchess/screens.puml
- * // SPEC: _spec/apps/starchess/deployment.puml
  */
 import { useNavigate, useSearchParams } from "@solidjs/router";
 import { adjutant } from "@chess-coach/starchess-core";
@@ -16,7 +14,7 @@ import { Show, createEffect, createSignal, onCleanup, type Component } from "sol
 import { browserLocation, readScfenQuery } from "~/adapters/browser";
 import { createMatchStore, MatchStoreProvider, useMatchStore } from "~/app/MatchStoreContext";
 import { createMatchStateFromScfen } from "~/app/matchReducer";
-import { StarChessScreen } from "~/app/StarChessScreen";
+import { BaseScreen } from "~/app/BaseScreen.tsx";
 import { MatchResultModal } from "~/components/features/MatchResultModal";
 import { LiveMatchShell } from "~/screens/LiveMatchShell";
 import { NERD_STARTING_SCFEN } from "~/stories/fixtures/seeds";
@@ -146,7 +144,7 @@ const MatchInner: Component<{
   });
 
   return (
-    <StarChessScreen
+    <BaseScreen
       boardVariant={props.boardVariant}
       starChessMode
       armTimer
@@ -175,15 +173,29 @@ const LiveMatchSession: Component<{
     rematch: props.epoch > 0,
   });
   const seeded = createMatchStateFromScfen(boot.scfen, boot.storedW);
+  // Prefer SCFEN `B:` when present; else session / opening seed.
+  const economies = {
+    w: {
+      stored: seeded.liveSnapshot.stored?.w ?? boot.storedW,
+      deployed: seeded.economies.w.deployed,
+    },
+    b: {
+      stored: seeded.liveSnapshot.stored?.b ?? boot.storedB,
+      deployed: seeded.economies.b.deployed,
+    },
+  };
+  const liveSnapshot = {
+    ...seeded.liveSnapshot,
+    stored: { w: economies.w.stored, b: economies.b.stored },
+  };
   const store = createMatchStore({
     initial: {
       ...seeded,
       viewer: props.team,
       playerColor: props.team,
-      economies: {
-        w: { stored: boot.storedW, deployed: seeded.economies.w.deployed },
-        b: { stored: boot.storedB, deployed: seeded.economies.b.deployed },
-      },
+      liveSnapshot,
+      settledSnapshots: [liveSnapshot, ...seeded.settledSnapshots.slice(1)],
+      economies,
     },
   });
 
@@ -201,7 +213,7 @@ const LiveMatchSession: Component<{
   );
 };
 
-export const StarChessSingleScreen: Component = () => {
+export const SingleScreen: Component = () => {
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const [matchEpoch, setMatchEpoch] = createSignal(0);

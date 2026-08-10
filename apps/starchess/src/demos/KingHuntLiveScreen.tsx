@@ -5,7 +5,7 @@ import { createEffect, createSignal, onCleanup, Show } from "solid-js";
 import { createMatchStateFromScfen } from "~/app/matchReducer";
 import { createMatchStore, MatchStoreProvider, useMatchStore } from "~/app/MatchStoreContext";
 import { displayedSnapshot } from "~/app/selectors";
-import { StarChessScreen } from "~/app/StarChessScreen";
+import { BaseScreen } from "~/app/BaseScreen.tsx";
 import { TutorialCompleteConfirm } from "~/components/features/TutorialCompleteConfirm";
 import { KING_HUNT_LIVE_START_SCFEN } from "~/demos/kingHunt";
 import { liveMatchPhase } from "~/presentation/hud/liveMatchPhase";
@@ -119,7 +119,7 @@ const KingHuntLiveInner: Component<Omit<KingHuntLiveScreenProps, "embedded">> = 
 
   return (
     <>
-      <StarChessScreen
+      <BaseScreen
         boardVariant="eclipse"
         starChessMode
         armTimer

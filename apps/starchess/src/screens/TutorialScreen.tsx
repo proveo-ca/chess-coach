@@ -1,9 +1,8 @@
+// SPEC: _spec/apps/starchess/deployment.puml, _spec/apps/starchess/menu-flow.puml, _spec/apps/starchess/architecture/screen-entities.puml
 /**
  * StarChess tutorial — CoachScreen-shaped shell (Header avatar · board · footer).
  * Floating dismissible ChatBubble overlays ranks 7–8.
  * Deep links: `/tutorial/:section/:story` (ids from TUTORIAL_SCRIPT).
- * // SPEC: _spec/apps/starchess/deployment.puml
- * // SPEC: _spec/apps/starchess/menu-flow.puml
  */
 import { useNavigate, useParams } from "@solidjs/router";
 import {
@@ -46,7 +45,7 @@ import { KingHuntLiveScreen } from "~/demos/KingHuntLiveScreen";
 import { TutorialReviewHost } from "~/demos/TutorialReviewHost";
 import { FOG_SIEGE_ROOK_SCFEN } from "~/presentation/animations/FogVisionDemo";
 import { LiveMatchShell } from "~/screens/LiveMatchShell";
-import styles from "~/screens/StarChessTutorialScreen.module.css";
+import styles from "~/screens/TutorialScreen.module.css";
 import { GAS_DEPLOY_FIXTURES } from "~/stories/fixtures/scenarios";
 import { tutorialNarration } from "~/tutorial/tutorialNarrationStore";
 import {
@@ -205,7 +204,7 @@ const FogSection: Component<{
   </Show>
 );
 
-export const StarChessTutorialScreen: Component = () => {
+export const TutorialScreen: Component = () => {
   const params = useParams<{ section?: string; story?: string }>();
   const navigate = useNavigate();
   const section = createMemo(() => parseTutorialSection(params.section));

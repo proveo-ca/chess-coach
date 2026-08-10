@@ -23,7 +23,7 @@ package "Core rules (@chess-coach/starchess-core)" {
 
 package "Presentation" {
   component "playTimeline\ntimelinePlayer.ts" as TL <<async>>
-  component "AnimationStage +\nObserverStarChessBoard" as STAGE <<app>>
+  component "AnimationStage +\nStarChessBoard" as STAGE <<app>>
   component "useBoardInput +\nLiveStarChessBoard" as INPUT <<app>>
   component "TurnBarSidebar / ResourceBar\nGasDeploy / DualNav" as HUD <<app>>
 }

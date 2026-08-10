@@ -14,7 +14,7 @@ starchess-core endScTurn → EndScTurnResult
       TIMELINE_COMMIT (placement / lives / mines / hide / progress …)
       TIMELINE_DONE
   → selectors + createMemo
-  → AnimationStage / ObserverStarChessBoard / combat overlays
+  → AnimationStage / StarChessBoard / combat overlays
 ```
 
 Authoritative `liveSnapshot` is not rewritten mid-playback for intermediate

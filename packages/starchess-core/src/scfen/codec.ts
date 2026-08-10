@@ -159,6 +159,25 @@ export const parsePendingKingShotsExtra = (
 const formatGasField = (snap: ScFenSnapshot): string =>
   `G:${snap.gas.w}${snap.gas.b}:${snap.gasIncome.w}${snap.gasIncome.b}`;
 
+/** Mineral bank extras — `B:<wStored>:<bStored>` (0–12 each). */
+const formatStoredField = (stored: NonNullable<ScFenSnapshot["stored"]>): string =>
+  `B:${stored.w}:${stored.b}`;
+
+const parseStoredField = (raw: string): NonNullable<ScFenSnapshot["stored"]> => {
+  const m = /^B:(\d{1,2}):(\d{1,2})$/.exec(raw);
+  if (!m) {
+    throw Object.assign(new Error(`Invalid SCFEN B: field: ${raw}`), { code: "SC_SCHEMA" });
+  }
+  const w = Number(m[1]);
+  const b = Number(m[2]);
+  if (w > 12 || b > 12) {
+    throw Object.assign(new Error(`SCFEN B: out of range (max 12): ${raw}`), {
+      code: "SC_SCHEMA",
+    });
+  }
+  return { w, b };
+};
+
 const formatAction = (a: ScAction): string => {
   if (a.timing === "C") {
     const promo = a.promotion ?? "";
@@ -367,8 +386,10 @@ export const formatScFen = (snap: ScFenSnapshot): string => {
     mines,
     siegedRooks,
     pendingKingShots,
+    stored,
   } = snap;
   let s = `SCFEN|${placement}|${turn}|${kingLives.w}${kingLives.b}|${phase}|${formatGasField(snap)}`;
+  if (stored) s += `|${formatStoredField(stored)}`;
   if (queue) s += `|${formatQueueField(queue)}`;
   const used = formatSpecialsUsedExtra(specialsUsed ?? []);
   if (used) s += `|${used}`;
@@ -416,6 +437,7 @@ export const parseScFen = (raw: string): ScFenSnapshot => {
   }
 
   let gasField: string | undefined;
+  let storedField: string | undefined;
   let queueField: string | undefined;
   let usedField: string | undefined;
   let minesField: string | undefined;
@@ -424,6 +446,7 @@ export const parseScFen = (raw: string): ScFenSnapshot => {
   for (let i = 5; i < parts.length; i++) {
     const p = parts[i]!;
     if (p.startsWith("G:")) gasField = p;
+    else if (p.startsWith("B:")) storedField = p;
     else if (p.startsWith("Q:")) queueField = p;
     else if (p.startsWith("U:")) usedField = p;
     else if (p.startsWith("S:")) siegeField = p;
@@ -437,6 +460,7 @@ export const parseScFen = (raw: string): ScFenSnapshot => {
     throw Object.assign(new Error("Invalid SCFEN: missing required G: field"), { code: "SC_SCHEMA" });
   }
   const { gas, gasIncome } = parseGasField(gasField);
+  const stored = storedField ? parseStoredField(storedField) : undefined;
   const queue = queueField ? parseQueueField(queueField) : undefined;
   if (queue && phase !== "P" && phase !== "O") {
     throw Object.assign(new Error(`SCFEN queue only allowed on phase P/O (got ${phase})`), {
@@ -455,6 +479,7 @@ export const parseScFen = (raw: string): ScFenSnapshot => {
     phase,
     gas,
     gasIncome,
+    ...(stored ? { stored } : {}),
     ...(queue ? { queue } : {}),
     ...(specialsUsed.length ? { specialsUsed } : {}),
     ...(siegedRooks.length ? { siegedRooks } : {}),

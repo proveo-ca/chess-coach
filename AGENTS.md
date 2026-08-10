@@ -54,5 +54,5 @@ You are the lead of a software engineering team. Your job is to coordinate subag
 - **Never style via `data-testid`.** Testids are for Playwright/RTL only.
 - Prefer **layout classes** on roots: `.screen-root`, `.mobile-banner`, `.starchess-play`, `.starchess-menu`, `.coach-avatar`, `.chessboard`, `.menu-splash-slot`, `.tutorial-guide-bubble`, `.floating-move-list`.
 - Allowed structural attrs: `data-region`, `data-layout`, `data-slot`, `data-board-column`, `data-theme`.
-- Parent→child density: pass **`compact` / `class` props** into HUD modules (`ResourceBar`, `TurnBar`, `GasDeploy`) — do not pierce with `[data-testid=…]` or `[class*="…"]` in CSS.
+- Parent→child density: pass **`compact` / `class` props** into HUD modules (`ResourceBar`, `TurnBar`, `GasRack`) — do not pierce with `[data-testid=…]` or `[class*="…"]` in CSS.
 - Check: `cd apps/starchess && npm run check:css-layout`

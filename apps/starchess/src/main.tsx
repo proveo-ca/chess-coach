@@ -8,10 +8,10 @@
 import { Route, Router } from "@solidjs/router";
 import { render } from "solid-js/web";
 
-import { StarChessMenuRoute } from "~/screens/StarChessMenuRoute";
-import { StarChessReviewScreen } from "~/screens/StarChessReviewScreen";
-import { StarChessSingleScreen } from "~/screens/StarChessSingleScreen";
-import { StarChessTutorialScreen } from "~/screens/StarChessTutorialScreen";
+import { MenuRoute } from "~/screens/MenuRoute.tsx";
+import { ReviewScreen } from "~/screens/ReviewScreen.tsx";
+import { SingleScreen } from "~/screens/SingleScreen.tsx";
+import { TutorialScreen } from "~/screens/TutorialScreen.tsx";
 import "~/theme.css";
 import "~/styles/index.css";
 
@@ -23,17 +23,17 @@ if (!root) {
 render(
   () => (
     <Router base="/starchess">
-      <Route path="/" component={StarChessMenuRoute} />
-      <Route path="/single" component={StarChessSingleScreen} />
-      <Route path="/review" component={StarChessReviewScreen} />
-      <Route path="/review/:id" component={StarChessReviewScreen} />
-      <Route path="/tutorial" component={StarChessTutorialScreen} />
-      <Route path="/tutorial/:section" component={StarChessTutorialScreen} />
+      <Route path="/" component={MenuRoute} />
+      <Route path="/single" component={SingleScreen} />
+      <Route path="/review" component={ReviewScreen} />
+      <Route path="/review/:id" component={ReviewScreen} />
+      <Route path="/tutorial" component={TutorialScreen} />
+      <Route path="/tutorial/:section" component={TutorialScreen} />
       <Route
         path="/tutorial/:section/:story"
-        component={StarChessTutorialScreen}
+        component={TutorialScreen}
       />
-      <Route path="/*" component={StarChessMenuRoute} />
+      <Route path="/*" component={MenuRoute} />
     </Router>
   ),
   root,

@@ -1,4 +1,4 @@
-import type { GasDeployTarget } from "~/presentation/features/GasDeploy";
+import type { GasDeployTarget } from "~/components/features/GasRack";
 import {
   armPieceSpecial,
   type PieceSpecialArmHandlers,

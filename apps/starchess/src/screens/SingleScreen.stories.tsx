@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { StarChessSingleScreen } from "~/screens/StarChessSingleScreen";
+import { SingleScreen } from "~/screens/SingleScreen.tsx";
 import { clearMatchSession } from "~/store/matchSessionStore";
 
 const meta = {
   title: "Screens/Single",
-  component: StarChessSingleScreen,
+  component: SingleScreen,
   parameters: {
     layout: "fullscreen",
     route: "/single?map=eclipse&team=w",
@@ -16,7 +16,7 @@ const meta = {
       },
     },
   },
-} satisfies Meta<typeof StarChessSingleScreen>;
+} satisfies Meta<typeof SingleScreen>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -25,7 +25,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   render: () => {
     clearMatchSession();
-    return <StarChessSingleScreen />;
+    return <SingleScreen />;
   },
 };
 
@@ -35,6 +35,6 @@ export const VermeerRed: Story = {
   parameters: { route: "/single?map=vermeer&team=b" },
   render: () => {
     clearMatchSession();
-    return <StarChessSingleScreen />;
+    return <SingleScreen />;
   },
 };

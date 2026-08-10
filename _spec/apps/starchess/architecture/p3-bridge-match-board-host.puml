@@ -1,0 +1,142 @@
+@startuml p3-bridge-match-board-host
+' SPEC: _spec/apps/starchess/architecture/p3-bridge-match-board-host.puml
+' purpose: P3 proposal — Bridge/composition unify live vs review Screen hosts.
+' constraint: NO BEHAVIORAL CHANGE — same pixels, fog, vision, cues, routes.
+!include ../../../themes/proveo.puml
+
+skinparam defaultTextAlignment left
+skinparam packageStyle rectangle
+skinparam classAttributeIconSize 0
+hide empty members
+
+title StarChess · P3 Bridge / Composition\nMatchBoardHost + LiveBoardBinding (BEFORE → AFTER)
+
+package "BEFORE · two mount paths" as BEFORE {
+
+  class BaseScreen_B <<app>> {
+    BaseScreen.tsx
+    --
+    Screen grid + live HUD
+    visionMode = 'player'
+    mounts Live directly
+  }
+
+  class ReviewDemoScreen_B <<app>> {
+    ReviewDemoScreen.tsx
+    --
+    Screen grid + DualNav
+    mounts Live directly
+    NOT BaseScreen
+  }
+
+  class TutorialReviewHost_B <<app>> {
+    TutorialReviewHost.tsx
+    --
+    Screen grid + typewriter
+    mounts Live directly
+    NOT BaseScreen
+  }
+
+  class LiveStarChessBoard_B <<app>> {
+    LiveStarChessBoard.tsx
+    --
+    triple-mounted
+  }
+
+  note as N_BEFORE
+    Duplicated Screen.BoardArea /
+    BoardColumn / host div wiring.
+    Chrome differs; board binding same.
+    **no behavioral change** in P3.
+  end note
+
+  N_BEFORE .. LiveStarChessBoard_B
+  BaseScreen_B *-- LiveStarChessBoard_B
+  ReviewDemoScreen_B *-- LiveStarChessBoard_B
+  TutorialReviewHost_B *-- LiveStarChessBoard_B
+}
+
+package "AFTER · Bridge via composition" as AFTER {
+
+  class BaseScreen_A <<app>> {
+    BaseScreen.tsx
+    --
+    **LiveChrome** assembler
+    slots: HUD · spawn · gas
+  }
+
+  class ReviewDemoScreen_A <<app>> {
+    ReviewDemoScreen.tsx
+    --
+    **DualNavChrome** assembler
+    slots: title · ReviewTurnNav
+  }
+
+  class TutorialReviewHost_A <<app>> {
+    TutorialReviewHost.tsx
+    --
+    **TypewriterChrome** assembler
+    slots: coach · typewriter
+  }
+
+  class MatchBoardHost <<host>> {
+    MatchBoardHost.tsx
+    --
+    **Abstraction** (structure)
+    Screen · BoardArea · Column
+    rail · footer · header slots
+    single board host wrapper
+  }
+
+  class LiveBoardBinding <<app>> {
+    LiveBoardBinding.tsx
+    --
+    **Implementor**
+    only mount of LiveStarChessBoard
+    fog · visionMode · variant · hints
+  }
+
+  class LiveStarChessBoard_A <<app>> {
+    LiveStarChessBoard.tsx
+    --
+    unchanged behavior
+    Stage + store hooks
+  }
+
+  class ScreenPrim <<app>> {
+    components/primitives/Screen
+    --
+    layout regions unchanged
+  }
+
+  note as N_AFTER
+    **Patterns:** Bridge (chrome ⟂ board)
+    implemented as **Composition**
+    (Template Method optional reading).
+    No class inheritance tree.
+    HUD content stays in assemblers —
+    Host is structure only.
+    **Migration:** extract binding → Host
+    from review first → BaseScreen last.
+    **no behavioral change**
+  end note
+
+  N_AFTER .. MatchBoardHost
+
+  BaseScreen_A *-- MatchBoardHost : LiveChrome slots
+  ReviewDemoScreen_A *-- MatchBoardHost : DualNav slots
+  TutorialReviewHost_A *-- MatchBoardHost : Typewriter slots
+  MatchBoardHost *-- LiveBoardBinding : default board
+  MatchBoardHost ..> ScreenPrim
+  LiveBoardBinding *-- LiveStarChessBoard_A : **sole** mount
+}
+
+BEFORE -[hidden]- AFTER
+
+note bottom
+  **Related current-state:** ""architecture/screen-entities.puml"" · ""screens.puml"".
+  **Mode matrix unchanged:** live player fog · review observer · tutorial paths.
+  **Out of scope:** LiveMultiScreen (still ABSENT) · LiveMatchShell sky · routes.
+end note
+
+@enduml

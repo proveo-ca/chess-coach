@@ -89,7 +89,7 @@ export const DeployBoardDemo: Component<{ piece: DeployPiece }> = (props) => {
             <AnimationStage
               fen={fen()}
               fog={false}
-              deployCues={cues()}
+              combat={{ deployCues: cues() }}
               hideSquares={hide() as never}
             />
           </div>

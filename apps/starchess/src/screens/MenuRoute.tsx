@@ -10,14 +10,14 @@ import { createSignal, onMount, type Component } from "solid-js";
 import {
   MenuArrival,
 } from "~/screens/menuSky/MenuArrival";
-import type { StarChessMenuAction } from "~/screens/StarChessMenuScreen";
+import type { StarChessMenuAction } from "~/screens/MenuScreen.tsx";
 import { consumeChessMenuEntrance } from "~/store/menuEntrance";
 import { clearMatchSession } from "~/store/matchSessionStore";
 import type { MenuSurface } from "~/types/menu";
 import type { NewGameOptions } from "~/types/newGame";
 import { tutorialPath } from "~/tutorial/tutorialScript";
 
-export const StarChessMenuRoute: Component<RouteSectionProps> = () => {
+export const MenuRoute: Component<RouteSectionProps> = () => {
   const navigate = useNavigate();
   const fromChess = consumeChessMenuEntrance();
   const [surface, setSurface] = createSignal<MenuSurface>(

@@ -1,7 +1,8 @@
+// SPEC: _spec/apps/starchess/demos.puml, _spec/apps/starchess/architecture/board-entities.puml, _spec/apps/starchess/architecture/p1-strategy-starchess-board.puml
 /**
- * Observer / snapshot-driven StarChess board — eclipse/butter/vermeer (default eclipse).
+ * Snapshot-driven StarChess board — eclipse/butter/vermeer (default eclipse).
+ * Vision via VisionStrategy (player fog | observer dual borders).
  * Presentation CSS matches apps/ui StarChessBoardView + StarChessSquare at 3bed049.
- * // SPEC: _spec/apps/starchess/demos.puml
  */
 import { For, Show, createEffect, createMemo, createSignal, createUniqueId, onCleanup } from "solid-js";
 import type { Component } from "solid-js";
@@ -32,16 +33,16 @@ import {
 } from "~/presentation/board/fogProjection";
 import { pieceUrl } from "~/presentation/board/pieceUrl";
 import { RookGlyph } from "~/presentation/board/RookGlyph";
+import { visionStrategyFor } from "~/presentation/board/vision/VisionStrategy";
 import { TEAM_PRIMARY } from "~/presentation/animations/teamColors";
 import { InlineBishop } from "~/presentation/animations/pieces/InlineBishop";
 import { SpiderMine } from "~/presentation/specials/SpiderMine";
 import { VespeneIcon } from "~/components/primitives/icons";
 import { MOVE_SQUARE_MS } from "~/presentation/constants";
 import type { MoveCue } from "~/types/cues";
-import styles from "~/presentation/board/ObserverStarChessBoard.module.css";
+import styles from "~/presentation/board/StarChessBoard.module.css";
 import type {
   BoardSkin,
-  BoardVariant,
   IntentCanister,
   IntentCheck,
   IntentGhost,
@@ -50,15 +51,7 @@ import type {
 } from "~/types/board";
 import type { ReviewTurnPhase } from "~/types/review";
 
-export type {
-  BoardVariant,
-  IntentCanister,
-  IntentCheck,
-  IntentGhost,
-  VisionMode,
-};
-
-export const ObserverStarChessBoard: Component<{
+export type StarChessBoardProps = {
   snapshot: ScFenSnapshot;
   viewer?: StarChessColor;
   fog?: boolean;
@@ -105,15 +98,18 @@ export const ObserverStarChessBoard: Component<{
    * Lasts for the drop cue only; persistent green is snap `U:` / arm marks.
    */
   gasAbsorbSquares?: ReadonlySet<Square> | readonly Square[];
-}> = (props) => {
+};
+
+export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
   const maskId = createUniqueId();
   const viewer = () => props.viewer ?? "w";
   const variant = (): BoardSkin => props.variant ?? "eclipse";
   const pieceSet = (): PieceSet => props.pieceSet ?? "nerd";
   const useInlineUnits = () => pieceSet() === "nerd";
-  const isObserver = () => props.visionMode === "observer";
+  const strategy = () => visionStrategyFor(props.visionMode);
+  const isObserver = () => strategy().isObserver;
   /** Player fog veil — off in observer mode or when fog=false. */
-  const usePlayerFog = () => !isObserver() && props.fog !== false;
+  const usePlayerFog = () => strategy().usePlayerFog(props.fog);
   const map = createMemo(() => placementToMap(props.snapshot.placement));
   const sieged = createMemo(
     () => new Set(props.siegedRooks ?? props.snapshot.siegedRooks ?? []),

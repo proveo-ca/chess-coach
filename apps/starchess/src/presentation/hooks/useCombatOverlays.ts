@@ -177,15 +177,6 @@ export const useCombatOverlays = (store: MatchStore) => {
     return capCues(playGas(t.cues, t.playingIds, "gasDrop")) as readonly GasDropCue[];
   });
 
-  /** Squares that will / did absorb gas this resolve — hide intent canisters. */
-  const gasDropSquares = createMemo((): ReadonlySet<string> => {
-    const t = tl();
-    if (!t.active) return new Set();
-    return new Set(
-      t.cues.filter((c): c is CueOf<"gasDrop"> => c.kind === "gasDrop").map((c) => c.at),
-    );
-  });
-
   const deployCues = createMemo((): readonly DeployCue[] => {
     const t = tl();
     if (!t.active) return emptyDeploys;
@@ -233,7 +224,6 @@ export const useCombatOverlays = (store: MatchStore) => {
     mineMissileTrails,
     spentMines,
     gasDropCues,
-    gasDropSquares,
     moveProgress,
     moveLeg,
     deployCues,

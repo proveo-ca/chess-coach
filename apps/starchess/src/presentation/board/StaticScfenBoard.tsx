@@ -10,7 +10,7 @@ import { parseScFen } from "@chess-coach/starchess-core";
 
 import { Screen } from "~/components/primitives/Screen";
 import { AnimationStage } from "~/presentation/animations/AnimationStage";
-import type { BoardVariant, VisionMode } from "~/presentation/board/ObserverStarChessBoard";
+import type { BoardVariant, VisionMode } from "~/types/board";
 
 export type StaticScfenBoardProps = {
   scfen: string;

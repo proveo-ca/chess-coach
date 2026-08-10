@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
 import { GasDeployScenarioScreen } from "~/demos/GasDeployScenarioScreen";
-import { GasDeploy } from "~/presentation/features/GasDeploy";
+import { GasRack } from "~/components/features/GasRack";
 import {
   createMatchStore,
   MatchStoreProvider,
@@ -38,7 +38,7 @@ export const RackOnly: Story = {
     return (
       <MatchStoreProvider store={store}>
         <div style={{ padding: "2rem", width: "24rem" }}>
-          <GasDeploy />
+          <GasRack />
         </div>
       </MatchStoreProvider>
     );

@@ -1,7 +1,7 @@
+// SPEC: _spec/apps/starchess/screens.puml, _spec/apps/starchess/architecture/screen-entities.puml
 /**
  * Store-backed DualNav review host — top ReviewTurnNav + LiveStarChessBoard.
  * Scenario packages supply history; MatchStore owns seek / playback / VFX timeline.
- * // SPEC: _spec/apps/starchess/screens.puml
  */
 import { placementToMap, type StarChessColor } from "@chess-coach/starchess-core";
 import type { Square } from "chess.js";
@@ -23,9 +23,9 @@ import { Screen } from "~/components/primitives/Screen";
 import { ScreenBackNav } from "~/components/primitives/ScreenBackNav";
 import styles from "~/demos/ReviewDemoScreen.module.css";
 import { clearSiegedRooks, setRookMode } from "~/presentation/animations/rookModeStore";
-import { LiveStarChessBoard } from "~/presentation/board/LiveStarChessBoard";
-import { BoardSideRail } from "~/presentation/hud/BoardSideRail";
+import { LiveBoardBinding } from "~/presentation/board/LiveBoardBinding";
 import { isCheckOnlyResolve } from "~/presentation/hud/isCheckOnlyResolve";
+import { MatchBoardHost } from "~/presentation/hud/MatchBoardHost";
 import { ResourceBar } from "~/presentation/hud/ResourceBar";
 import { ReviewTurnNav } from "~/presentation/hud/ReviewTurnNav";
 import { TurnBarSidebar } from "~/presentation/hud/TurnBarSidebar";
@@ -262,35 +262,34 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
       >
         <Screen.Header>{props.header}</Screen.Header>
       </Show>
-      <Screen.BoardArea>
-        <Screen.BoardColumn>
-          <div class={styles.host}>
-            <LiveStarChessBoard
+      <MatchBoardHost>
+        <MatchBoardHost.BoardColumn>
+          <MatchBoardHost.BoardHost class={styles.host}>
+            <LiveBoardBinding
               variant={props.variant ?? "eclipse"}
               pieceSet={props.pieceSet}
               fog={props.fog}
               visionMode={props.visionMode}
             />
-          </div>
-        </Screen.BoardColumn>
-        <BoardSideRail
-          controlsVisible={!props.hideDualNav}
+          </MatchBoardHost.BoardHost>
+        </MatchBoardHost.BoardColumn>
+        <MatchBoardHost.Rail
           onHome={props.onHome}
-          controls={
-            <TurnBarSidebar
-              review={{
-                turn: reviewTurnNumber(),
-                phase: store.reviewPhase(),
-                hideDualNav: true,
-                onBack: () => store.reviewBack(),
-                onForward: () => store.reviewForward(),
-                backDisabled: reviewNavDisabled().back,
-                forwardDisabled: reviewNavDisabled().forward,
-              }}
-            />
-          }
-        />
-      </Screen.BoardArea>
+          controlsVisible={!props.hideDualNav}
+        >
+          <TurnBarSidebar
+            review={{
+              turn: reviewTurnNumber(),
+              phase: store.reviewPhase(),
+              hideDualNav: true,
+              onBack: () => store.reviewBack(),
+              onForward: () => store.reviewForward(),
+              backDisabled: reviewNavDisabled().back,
+              forwardDisabled: reviewNavDisabled().forward,
+            }}
+          />
+        </MatchBoardHost.Rail>
+      </MatchBoardHost>
       <Screen.Footer>
         <div class={styles.footerStack}>
           <Show when={props.footerExtra}>{props.footerExtra}</Show>

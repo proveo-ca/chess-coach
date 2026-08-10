@@ -77,6 +77,8 @@ export const ResourceBar: Component<ResourceBarProps> = (props) => {
       void s.turn;
       void s.gas.w;
       void s.gas.b;
+      void s.stored?.w;
+      void s.stored?.b;
       void s.placement;
       void s.queue?.actions?.length;
       return s;
@@ -86,6 +88,8 @@ export const ResourceBar: Component<ResourceBarProps> = (props) => {
       void d.turn;
       void d.gas.w;
       void d.gas.b;
+      void d.stored?.w;
+      void d.stored?.b;
       void d.placement;
       void d.queue?.actions?.length;
       return d;
@@ -105,11 +109,15 @@ export const ResourceBar: Component<ResourceBarProps> = (props) => {
 
   const stored = createMemo(() => {
     if (props.stored != null) return props.stored;
+    const s = snap();
+    // SCFEN `B:` bank — authoritative when present (live stamp + review history).
+    const bank = s?.stored?.[color()];
+    if (bank != null) return bank;
     if (ctx && !props.snapshot) {
       void ctx.state().economies[color()].stored;
       return ctx.state().economies[color()].stored;
     }
-    const s = snap();
+    // Legacy snaps without `B:` — rough estimate only.
     if (s) return estimateStoredFromSnap(s, color());
     return 0;
   });

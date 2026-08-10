@@ -17,7 +17,7 @@ import { useMatchStore } from "~/app/MatchStoreContext";
 import { VespeneIcon } from "~/components/primitives/icons";
 import { SpecialPreview } from "~/components/primitives/SpecialPreview";
 import { SPECIAL_ENERGY_COST } from "~/presentation/constants";
-import styles from "~/presentation/features/GasDeploy.module.css";
+import styles from "~/components/features/GasRack.module.css";
 import { specialCopyFor } from "~/presentation/hud/specialCopy";
 
 export type GasDeployTarget = {
@@ -60,7 +60,7 @@ const gasCostFor = (piece: PieceSymbol): number =>
   specialCopyFor(piece).gasCost ?? SPECIAL_ENERGY_COST;
 const RESERVE_SLOTS = Array.from({ length: MAX_RESERVES }, (_, i) => i);
 
-export const GasDeploy: Component<GasDeployProps> = (props) => {
+export const GasRack: Component<GasDeployProps> = (props) => {
   const store = useMatchStore();
   const gas = () => Math.max(0, energyRemaining(store));
 

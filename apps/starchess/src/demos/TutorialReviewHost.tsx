@@ -1,6 +1,6 @@
+// SPEC: _spec/apps/starchess/screens.puml, _spec/apps/starchess/architecture/screen-entities.puml
 /**
  * Tutorial review host — typewriter turn/phase footer (Check → Intent → Resolve).
- * // SPEC: _spec/apps/starchess/screens.puml
  */
 import { placementToMap, formatScFen } from "@chess-coach/starchess-core";
 import type { StarChessColor } from "@chess-coach/starchess-core";
@@ -24,10 +24,10 @@ import { TutorialTypewriterNav } from "~/components/features/TutorialTypewriterN
 import { Screen } from "~/components/primitives/Screen";
 import styles from "~/demos/TutorialReviewHost.module.css";
 import { clearSiegedRooks, setRookMode } from "~/presentation/animations/rookModeStore";
-import { LiveStarChessBoard } from "~/presentation/board/LiveStarChessBoard";
-import { BoardSideRail } from "~/presentation/hud/BoardSideRail";
+import { LiveBoardBinding } from "~/presentation/board/LiveBoardBinding";
 import { classicalActionsFromResolve } from "~/presentation/hud/classicalActionsFromResolve";
 import { isCheckOnlyResolve } from "~/presentation/hud/isCheckOnlyResolve";
+import { MatchBoardHost } from "~/presentation/hud/MatchBoardHost";
 import { TurnBarSidebar } from "~/presentation/hud/TurnBarSidebar";
 import { splitResolveWaves } from "~/presentation/timeline/resolveWaves";
 import { TUTORIAL_CAPABILITIES, setCapabilities } from "~/store/capabilitiesStore";
@@ -277,34 +277,33 @@ const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
           {props.guideBubble}
         </div>
       </Screen.Header>
-      <Screen.BoardArea>
-        <Screen.BoardColumn>
+      <MatchBoardHost>
+        <MatchBoardHost.BoardColumn>
           <div class="mobile-hero" data-testid="tutorial-mobile-hero">
             <CoachAvatar identity="kerrigan" emotion={props.coachEmotion ?? "idle"} />
           </div>
-          <div class={styles.host}>
-            <LiveStarChessBoard
+          <MatchBoardHost.BoardHost class={styles.host}>
+            <LiveBoardBinding
               variant={props.variant ?? "eclipse"}
               pieceSet={props.pieceSet}
               fog={props.fog}
               visionMode={props.visionMode}
             />
-          </div>
-        </Screen.BoardColumn>
-        <BoardSideRail
-          controlsVisible={props.turnChrome === "sidebar"}
+          </MatchBoardHost.BoardHost>
+        </MatchBoardHost.BoardColumn>
+        <MatchBoardHost.Rail
           onHome={props.onHome}
-          controls={
-            <TurnBarSidebar
-              review={{
-                turn: reviewTurnNumber(),
-                phase: store.reviewPhase(),
-                hideDualNav: true,
-              }}
-            />
-          }
-        />
-      </Screen.BoardArea>
+          controlsVisible={props.turnChrome === "sidebar"}
+        >
+          <TurnBarSidebar
+            review={{
+              turn: reviewTurnNumber(),
+              phase: store.reviewPhase(),
+              hideDualNav: true,
+            }}
+          />
+        </MatchBoardHost.Rail>
+      </MatchBoardHost>
       <Screen.Footer>
         <div class={styles.footerStack}>
           <Show when={props.footerExtra}>{props.footerExtra}</Show>

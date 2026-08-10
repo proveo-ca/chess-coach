@@ -94,13 +94,26 @@ export const createMatchStateFromReviewHistory = (
   const outcome = live.phase === "O" ? scOutcome(live) : null;
 
   const base = createInitialMatchState();
+  // Prefer each snap's SCFEN `B:` bank; legacy history falls back to seed.
+  const stampedSnaps = snaps.map((s) =>
+    s.stored
+      ? s
+      : {
+          ...s,
+          stored: {
+            w: live.stored?.w ?? stored,
+            b: live.stored?.b ?? stored,
+          },
+        },
+  );
+  const stampedLive = stampedSnaps[stampedSnaps.length - 1]!;
   return {
     ...base,
     phase: "gameOver",
-    liveSnapshot: live,
+    liveSnapshot: stampedLive,
     economies: {
-      w: { stored, deployed: 0 },
-      b: { stored, deployed: 0 },
+      w: { stored: stampedLive.stored?.w ?? stored, deployed: 0 },
+      b: { stored: stampedLive.stored?.b ?? stored, deployed: 0 },
     },
     viewer: playerColor,
     playerColor,
@@ -125,7 +138,7 @@ export const createMatchStateFromReviewHistory = (
       displaySiegedRooks: null,
     },
     outcome,
-    settledSnapshots: [...snaps],
+    settledSnapshots: stampedSnaps,
     settledResolves: [...resolves],
     reviewIndex: 0,
     statusText: "Start",

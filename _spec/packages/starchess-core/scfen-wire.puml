@@ -8,9 +8,10 @@ skinparam defaultTextAlignment left
 
 title SCFEN · Wire Format & Field Roles
 
-database "SCFEN|<placement>|<turn>|\n<wlives><blives>|<phase>|G:<wGas><bGas>:<wInc><bInc>|[|Q:...][|U:...][|S:...][|H:...][|M:...]" as WIRE <<db>>
+database "SCFEN|<placement>|<turn>|\n<wlives><blives>|<phase>|G:<wGas><bGas>:<wInc><bInc>|[|B:w:b][|Q:...][|U:...][|S:...][|H:...][|M:...]" as WIRE <<db>>
 
 component "G: vespene + income" as G <<app>>
+component "B: mineral bank (0–12)" as B <<app>>
 component "Q: planning queue" as Q <<async>>
 component "U: specials-used squares\nthis turn" as U <<db>>
 component "S: sieged rook squares" as S <<db>>
@@ -18,6 +19,7 @@ component "H: legacy king-checks" as H <<db>>
 component "M: mines" as M <<db>>
 
 WIRE ARROW_MAIN G : carries
+WIRE ARROW_OPTIONAL B : carries
 WIRE ARROW_OPTIONAL Q : carries
 WIRE ARROW_OPTIONAL U : carries
 WIRE ARROW_OPTIONAL S : carries
@@ -26,8 +28,10 @@ WIRE ARROW_OPTIONAL M : carries
 
 note right of WIRE
   Required: placement, turn, lives, phase, ""G:"".
-  Optional: ""Q:"" ""U:"" ""S:"" ""H:"" ""M:"".
+  Optional: ""B:"" ""Q:"" ""U:"" ""S:"" ""H:"" ""M:"".
   Omitted ""Q:"" = snapshot-only snapshot.
+  ""B:<w>:<b>"" = available minerals (Command Center bank).
+  Deployed supply is still derived from placement.
   **Lives carry the outcome.** ""scOutcome(snap)"" (""outcome.ts"")
   derives win / draw from ""kingLives"" alone — 0/0 (face-to-face
   kings, see resolve.puml) is a **draw**, one side at 0 is a win

@@ -7,7 +7,7 @@ import {
   COMBAT_CHAIN_STEPS,
   queueCombatChainStep,
 } from "~/demos/combatChain";
-import { StarChessReviewScreen } from "~/screens/StarChessReviewScreen";
+import { ReviewScreen } from "~/screens/ReviewScreen.tsx";
 import { NERD_STARTING_SCFEN } from "~/stories/fixtures/seeds";
 import { addMatchRecord } from "~/store/matchHistoryStore";
 import type { StarChessGameRecord } from "~/types/review";
@@ -64,12 +64,12 @@ const seedHistory = () => {
 
 const meta = {
   title: "Screens/Review",
-  component: StarChessReviewScreen,
+  component: ReviewScreen,
   parameters: {
     layout: "fullscreen",
     route: "/review",
   },
-} satisfies Meta<typeof StarChessReviewScreen>;
+} satisfies Meta<typeof ReviewScreen>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -78,7 +78,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   render: () => {
     seedHistory();
-    return <StarChessReviewScreen />;
+    return <ReviewScreen />;
   },
 };
 
@@ -87,6 +87,6 @@ export const GameDetail: Story = {
   parameters: { route: `/review/${REVIEW_ID}` },
   render: () => {
     seedHistory();
-    return <StarChessReviewScreen />;
+    return <ReviewScreen />;
   },
 };

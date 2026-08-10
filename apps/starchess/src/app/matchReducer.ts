@@ -44,9 +44,21 @@ const reviewStatus = (index: number, max: number): string => {
   return `Turn ${index} of ${max}`;
 };
 
-const defaultEconomies = (stored: number): Record<StarChessColor, PlayerEconomy> => ({
-  w: { stored, deployed: 0 },
-  b: { stored, deployed: 0 },
+/** Stamp SCFEN `B:` bank from host economies (source of truth on the wire). */
+export const stampSnapStored = (
+  snap: ScFenSnapshot,
+  economies: Record<StarChessColor, PlayerEconomy>,
+): ScFenSnapshot => ({
+  ...snap,
+  stored: { w: economies.w.stored, b: economies.b.stored },
+});
+
+const economiesFromSnap = (
+  snap: ScFenSnapshot,
+  fallback: number,
+): Record<StarChessColor, PlayerEconomy> => ({
+  w: { stored: snap.stored?.w ?? fallback, deployed: 0 },
+  b: { stored: snap.stored?.b ?? fallback, deployed: 0 },
 });
 
 const grantIncome = (
@@ -68,10 +80,12 @@ const grantIncome = (
 
 const seedFromSnap = (snap: ScFenSnapshot, stored: number): MatchState => {
   const outcome = snap.phase === "O" ? scOutcome(snap) : null;
+  const economies = economiesFromSnap(snap, stored);
+  const stamped = stampSnapStored(snap, economies);
   return {
     phase: outcome ? "gameOver" : "planning",
-    liveSnapshot: snap,
-    economies: defaultEconomies(stored),
+    liveSnapshot: stamped,
+    economies,
     viewer: "w",
     playerColor: "w",
     deadlineAt: null,
@@ -81,7 +95,7 @@ const seedFromSnap = (snap: ScFenSnapshot, stored: number): MatchState => {
     siegedRooks: new Set(snap.siegedRooks ?? []),
     timeline: emptyTimeline(),
     outcome,
-    settledSnapshots: [snap],
+    settledSnapshots: [stamped],
     settledResolves: [],
     reviewIndex: 0,
     statusText: outcome
@@ -150,7 +164,7 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
         return {
           ...state,
           phase: "planning",
-          liveSnapshot: snapshot,
+          liveSnapshot: stampSnapStored(snapshot, state.economies),
           targeting: null,
           selected: null,
           legalDests: [],
@@ -193,7 +207,7 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
         if (removed.timing !== "C") specialsUsed.delete(removed.from);
         return {
           ...state,
-          liveSnapshot: snapshot,
+          liveSnapshot: stampSnapStored(snapshot, state.economies),
           specialsUsed,
           statusText: "Action removed",
         };
@@ -253,7 +267,7 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
       return {
         ...state,
         phase: "planning",
-        liveSnapshot: action.snapshot,
+        liveSnapshot: stampSnapStored(action.snapshot, state.economies),
         siegedRooks: new Set(action.snapshot.siegedRooks ?? []),
         // Keep planning-window arm marks — never import snap `U:` (enemy aura).
         targeting: null,
@@ -264,28 +278,32 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
     case "SPEND_STORED": {
       const eco = state.economies[action.color];
       if (eco.stored < action.amount) return state;
+      const economies = {
+        ...state.economies,
+        [action.color]: {
+          stored: eco.stored - action.amount,
+          deployed: eco.deployed + action.amount,
+        },
+      };
       return {
         ...state,
-        economies: {
-          ...state.economies,
-          [action.color]: {
-            stored: eco.stored - action.amount,
-            deployed: eco.deployed + action.amount,
-          },
-        },
+        economies,
+        liveSnapshot: stampSnapStored(state.liveSnapshot, economies),
       };
     }
     case "REFUND_STORED": {
       const eco = state.economies[action.color];
+      const economies = {
+        ...state.economies,
+        [action.color]: {
+          stored: Math.min(MAX_STORED_MATERIAL, eco.stored + action.amount),
+          deployed: Math.max(0, eco.deployed - action.amount),
+        },
+      };
       return {
         ...state,
-        economies: {
-          ...state.economies,
-          [action.color]: {
-            stored: Math.min(MAX_STORED_MATERIAL, eco.stored + action.amount),
-            deployed: Math.max(0, eco.deployed - action.amount),
-          },
-        },
+        economies,
+        liveSnapshot: stampSnapStored(state.liveSnapshot, economies),
       };
     }
     case "SUBMIT_TURN": {
@@ -327,7 +345,7 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
         return {
           ...state,
           phase: "resolving",
-          liveSnapshot: snap,
+          liveSnapshot: stampSnapStored(snap, state.economies),
           targeting: null,
           selected: null,
           legalDests: [],
@@ -359,11 +377,19 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
         const { specialsUsed: _drop, ...rest } = s;
         return rest;
       };
-      const live = stripUsed(refillTurnGas(state.liveSnapshot));
+      const live = stampSnapStored(
+        stripUsed(refillTurnGas(state.liveSnapshot)),
+        state.economies,
+      );
       if (state.phase === "gameOver") {
         const snaps = [...state.settledSnapshots];
         const cur = snaps[state.reviewIndex];
-        if (cur) snaps[state.reviewIndex] = stripUsed(refillTurnGas(cur));
+        if (cur) {
+          snaps[state.reviewIndex] = stampSnapStored(
+            stripUsed(refillTurnGas(cur)),
+            state.economies,
+          );
+        }
         return { ...state, liveSnapshot: live, settledSnapshots: snaps };
       }
       return { ...state, liveSnapshot: live };
@@ -388,7 +414,7 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
           statusText: "Plan your turn",
         };
       }
-      const next = result.next;
+      const next = stampSnapStored(result.next, state.economies);
       const outcome = next.phase === "O" ? scOutcome(next) : null;
       // Turn-open checks are their own history ply so DualNav review replays
       // chip → (later) End, instead of folding HP into the following End.
@@ -477,7 +503,7 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
       }
       const snap = state.liveSnapshot;
       const sieged = action.siegedRooks ? new Set(action.siegedRooks) : state.siegedRooks;
-      const liveSnapshot: ScFenSnapshot = {
+      let liveSnapshot: ScFenSnapshot = {
         ...snap,
         placement: action.placement ?? snap.placement,
         kingLives: action.kingLives ?? snap.kingLives,
@@ -491,6 +517,7 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
           delete liveSnapshot.specialsUsed;
         }
       }
+      liveSnapshot = stampSnapStored(liveSnapshot, state.economies);
       return {
         ...state,
         liveSnapshot,
@@ -592,10 +619,11 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
         next.turn > state.liveSnapshot.turn
           ? grantIncome(state.economies, next.turn)
           : state.economies;
+      const stampedNext = stampSnapStored(next, economies);
       return {
         ...state,
         phase: outcome ? "gameOver" : "planning",
-        liveSnapshot: next,
+        liveSnapshot: stampedNext,
         turnStartChecksApplied: false,
         economies,
         // Fresh arm marks — snap `U:` carries green until turn-open checks.
@@ -607,7 +635,7 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
           mineMissileTrails: lingeringMineTrails,
         },
         outcome,
-        settledSnapshots: [...state.settledSnapshots, next],
+        settledSnapshots: [...state.settledSnapshots, stampedNext],
         settledResolves: [...state.settledResolves, result],
         reviewIndex: state.settledSnapshots.length,
         lastResolve: null,

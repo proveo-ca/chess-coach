@@ -84,6 +84,12 @@ export type ScFenSnapshot = {
   /** Gas income/cap this turn (`G:` second pair) — authoritative for legality. */
   gasIncome: Record<StarChessColor, number>;
   /**
+   * Command Center mineral bank per side (`|B:<w>:<b>` extras, 0–12).
+   * Optional for backward-compatible SCFEN; when present it is the source of
+   * truth for available minerals (deployed supply still comes from placement).
+   */
+  stored?: Record<StarChessColor, number>;
+  /**
    * Squares whose unit already used a special this turn (`|U:a1c4…` extras).
    * Stamped on End resolve; cleared at the next turn-open checks (`beginScTurn`).
    */

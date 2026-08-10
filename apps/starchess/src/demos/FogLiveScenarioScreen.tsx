@@ -21,7 +21,7 @@ import {
 } from "~/app/MatchStoreContext";
 import { createMatchStateFromScfen } from "~/app/matchReducer";
 import { displayedSnapshot } from "~/app/selectors";
-import { StarChessScreen } from "~/app/StarChessScreen";
+import { BaseScreen } from "~/app/BaseScreen.tsx";
 import {
   clearSiegedRooks,
   setRookMode,
@@ -129,7 +129,7 @@ const FogLiveInner: Component<FogLiveScenarioScreenProps> = (props) => {
   });
 
   return (
-    <StarChessScreen
+    <BaseScreen
       boardVariant={props.boardVariant ?? "eclipse"}
       pieceSet={props.pieceSet}
       starChessMode

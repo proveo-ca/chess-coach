@@ -13,9 +13,9 @@ import {
 
 import { ChessMenuMockup } from "~/screens/menuSky/ChessMenuMockup";
 import {
-  StarChessMenuScreen,
+  MenuScreen,
   type StarChessMenuScreenProps,
-} from "~/screens/StarChessMenuScreen";
+} from "~/screens/MenuScreen.tsx";
 import type { CoachIdentity } from "~/types/coach";
 import type { MenuSurface } from "~/types/menu";
 import styles from "~/screens/menuSky/MenuArrival.module.css";
@@ -116,7 +116,7 @@ export const MenuArrival: Component<MenuArrivalProps> = (props) => {
       data-surface={props.surface}
       data-helm-ferry-stage
     >
-      <StarChessMenuScreen
+      <MenuScreen
         identity={identity()}
         chrome={starChrome()}
         showAvatar={!showMock()}

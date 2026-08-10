@@ -20,7 +20,7 @@ import {
 import { createMatchStateFromScfen } from "~/app/matchReducer";
 import { displayedSnapshot } from "~/app/selectors";
 import type { MatchState } from "~/types/match";
-import { StarChessScreen } from "~/app/StarChessScreen";
+import { BaseScreen } from "~/app/BaseScreen.tsx";
 import { liveMatchPhase } from "~/presentation/hud/liveMatchPhase";
 import {
   resetTutorialNarration,
@@ -86,7 +86,7 @@ const GasDeployInner: Component<GasDeployScenarioScreenProps> = (props) => {
   });
 
   return (
-    <StarChessScreen
+    <BaseScreen
       boardVariant="eclipse"
       starChessMode
       armTimer={props.armTimer === true}
