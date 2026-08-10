@@ -4,6 +4,7 @@
  */
 import {
   formatScFen,
+  normalizeSnapGas,
   parseScFen,
   type EndScTurnResult,
   type ScFenSnapshot,
@@ -72,7 +73,7 @@ export const recordFromMatchState = (
     map: opts.map,
     playerColor: match.playerColor,
     playerName: opts.playerName,
-    scfens: snaps.map((s) => formatScFen(s)),
+    scfens: snaps.map((s) => formatScFen(normalizeSnapGas(s))),
     resolves: [...match.settledResolves],
   };
 };
@@ -86,7 +87,10 @@ export const addMatchRecord = (record: StarChessGameRecord): void => {
 export const historyFromRecord = (
   record: StarChessGameRecord,
 ): { settledSnapshots: ScFenSnapshot[]; settledResolves: EndScTurnResult[] } => {
-  const settledSnapshots = record.scfens.map((s) => parseScFen(s));
+  // repairGas: legacy plies may have turn advanced without restamping G: income.
+  const settledSnapshots = record.scfens.map((s) =>
+    parseScFen(s, { repairGas: true }),
+  );
   return {
     settledSnapshots,
     settledResolves: record.resolves,

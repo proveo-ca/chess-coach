@@ -3,7 +3,7 @@ export const QUEEN_LASER = "queenLaser" as const;
 
 /**
  * Laser muzzle X in the 45×45 viewBox after bow→+x normalize
- * (`rotate(-90)` *outside* `NERD_FRAME.Q` so Y stays 22.5).
+ * (`rotate(-90)` *outside* `PIECE_FRAME.Q` so Y stays 22.5).
  */
 export const QUEEN_LASER_MUZZLE_X = 37.21;
 

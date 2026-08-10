@@ -19,11 +19,9 @@ import { SpecialPreview } from "~/components/primitives/SpecialPreview";
 import { SPECIAL_ENERGY_COST } from "~/presentation/constants";
 import styles from "~/components/features/GasRack.module.css";
 import { specialCopyFor } from "~/presentation/hud/specialCopy";
+import type { GasDeployTarget } from "~/types/specials";
 
-export type GasDeployTarget = {
-  square: Square;
-  piece: PieceSymbol;
-};
+export type { GasDeployTarget };
 
 type GasDeployProps = {
   /**

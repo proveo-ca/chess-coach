@@ -126,7 +126,25 @@ const ReviewListShell: Component<{ activeId?: string }> = (props) => {
 
 const ReviewDetail: Component<{ record: StarChessGameRecord }> = (props) => {
   const navigate = useNavigate();
-  const pack = historyFromRecord(props.record);
+  let pack: ReturnType<typeof historyFromRecord> | null = null;
+  let loadError: string | null = null;
+  try {
+    pack = historyFromRecord(props.record);
+  } catch (e) {
+    loadError = e instanceof Error ? e.message : "Could not open match";
+  }
+
+  if (!pack) {
+    return (
+      <LiveMatchShell world={props.record.map} testId="starchess-review-detail">
+        <ReviewListShell activeId={props.record.id} />
+        <p style={{ color: "#c44", padding: "1rem" }} data-testid="review-load-error">
+          {loadError ?? "Could not open match"}
+        </p>
+      </LiveMatchShell>
+    );
+  }
+
   const history = {
     settledSnapshots: pack.settledSnapshots,
     settledResolves: pack.settledResolves,

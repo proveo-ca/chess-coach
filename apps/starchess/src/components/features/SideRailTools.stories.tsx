@@ -9,11 +9,11 @@ import {
   LIVE_CAPABILITIES,
   setCapabilities,
 } from "~/store/capabilitiesStore";
-import { NERD_STARTING_SCFEN } from "~/stories/fixtures/seeds";
+import { STAR_STARTING_SCFEN } from "~/stories/fixtures/seeds";
 
 function SideRailToolsHarness(props: { flipBoard: boolean }) {
   const store = createMatchStore({
-    initial: createMatchStateFromScfen(NERD_STARTING_SCFEN, 1),
+    initial: createMatchStateFromScfen(STAR_STARTING_SCFEN, 1),
   });
   onMount(() => setCapabilities(props.flipBoard ? ANALYSIS_CAPABILITIES : LIVE_CAPABILITIES));
   return (

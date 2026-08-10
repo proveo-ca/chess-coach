@@ -55,8 +55,8 @@ note bottom
   HUD: ""_spec/apps/starchess/screens.puml"".
   ----
   **Deferred product (engine ok / UI polish):**
-  * Same-turn deploy-then-C selection polish (core accepts
-    C.from = spawn.to; board input must follow planning placement).
+  * Same-turn deploy-then-C / gas-then-C / unsiege-then-C via occupancyForQueuedMoves (core accepts
+    C.from = spawn.to; board input projects B occupancy for selection).
   * Siege tank/siege toggle UX clarity (""rookSiege"" + ""S:"" authoritative).
   * Fog-first movegen / adjutant (live remains viewer fog;
     DualNav review = observer dual-vision).

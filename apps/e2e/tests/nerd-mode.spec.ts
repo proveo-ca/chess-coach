@@ -35,7 +35,7 @@ test.describe("Nerd mode easter egg", () => {
 
     await page.getByRole("button", { name: "yes" }).click();
     await expect(page).toHaveURL(/\/starchess\//);
-    await expect(page.getByTestId("nerd-board-chrome")).toBeVisible({ timeout: 20_000 });
+    await expect(page.getByTestId("starchess-board-chrome")).toBeVisible({ timeout: 20_000 });
   });
 
   test("keep chess classic unlocks Nerd identity and stays on /chess", async ({ page }) => {

@@ -6,7 +6,7 @@ export {
   IDLE_FRONT_MS,
   ROOK_REST_AIM_DEG,
   KING_REST_AIM_DEG,
-  NERD_ROOK_SCALE,
+  ROOK_FRAME_SCALE,
   screenAimDeg,
   attackFaceFor,
   svgPivotAround,

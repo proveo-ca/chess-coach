@@ -118,7 +118,7 @@
   z-index: 7;
 }
 
-/* Nerd mode: named StarChess terrain palettes. Each theme is scoped to an
+/* StarChess: named StarChess terrain palettes. Each theme is scoped to an
    explicit board class, so classic / unnamed boards keep the wood skin. */
 .chessboard--classic {
   --board-light: #f0d9b5;

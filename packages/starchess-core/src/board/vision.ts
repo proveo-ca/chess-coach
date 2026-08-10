@@ -53,13 +53,16 @@ const addSquareGrid = (
 };
 
 /**
- * Nerd fog vision for one unit.
+ * Fog vision for one unit (or one side via {@link getSideVision}).
  * `litSquares` clear fog; `revealedPieces` show units through fog without lighting the tile.
  */
-export type NerdVision = {
+export type SideVision = {
   litSquares: ReadonlySet<Square>;
   revealedPieces: ReadonlySet<Square>;
 };
+
+/** @deprecated Use {@link SideVision}. */
+export type NerdVision = SideVision;
 
 /**
  * Occupancy for fog math. Prefer SCFEN placement / piece maps.
@@ -90,11 +93,11 @@ export function visionMap(board: VisionBoard): Map<Square, ScPiece> {
  * - `tank` (default): bishop-sized 5×5
  * - `siege`: 9×9 (immobile — enforced by the board, not here)
  */
-export function getNerdVision(
+export function getUnitVision(
   board: VisionBoard,
   source: Square | null,
   opts?: { rookModeFor?: (square: Square) => RookMode },
-): NerdVision {
+): SideVision {
   const map = visionMap(board);
   const litSquares = new Set<Square>();
   const revealedPieces = new Set<Square>();
@@ -164,6 +167,9 @@ export function getNerdVision(
   return { litSquares, revealedPieces };
 }
 
+/** @deprecated Use {@link getUnitVision}. */
+export const getNerdVision = getUnitVision;
+
 /**
  * Cumulative fog vision for one side: union of every friendly unit's vision.
  * Empty army ⇒ empty sets (full fog). Kingless / odd SCFEN placements still work —
@@ -176,14 +182,14 @@ export function getSideVision(
     rookModeFor?: (square: Square) => RookMode;
     mines?: readonly { at: Square; color: StarChessColor }[];
   },
-): NerdVision {
+): SideVision {
   const map = visionMap(board);
   const litSquares = new Set<Square>();
   const revealedPieces = new Set<Square>();
 
   for (const [square, piece] of map) {
     if (piece.color !== color) continue;
-    const unit = getNerdVision(map, square, opts);
+    const unit = getUnitVision(map, square, opts);
     for (const lit of unit.litSquares) litSquares.add(lit);
     for (const rev of unit.revealedPieces) revealedPieces.add(rev);
   }
@@ -203,7 +209,7 @@ export function getNerdVisibleSquares(
   source: Square | null,
   opts?: { rookModeFor?: (square: Square) => RookMode },
 ): ReadonlySet<Square> {
-  return getNerdVision(board, source, opts).litSquares;
+  return getUnitVision(board, source, opts).litSquares;
 }
 
 export type PathVisionOpts = {

@@ -9,6 +9,8 @@ Canonical home for board presentation and screen-host class structure under
 | --- | --- |
 | [`board-entities.puml`](./board-entities.puml) | Leaves → `StarChessBoard` → `AnimationStage` / VFX → `Live` \| `Static` |
 | [`screen-entities.puml`](./screen-entities.puml) | SPA routes / demos → `MatchBoardHost` → `LiveBoardBinding` |
+| [`base-screen.puml`](./base-screen.puml) | `BaseScreen` props + HUD composition |
+| [`naming.puml`](./naming.puml) | Allowed `nerd` piece-set vs product naming |
 
 ## Accepted structure designs (P1–P3)
 

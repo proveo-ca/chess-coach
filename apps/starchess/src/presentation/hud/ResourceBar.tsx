@@ -3,8 +3,6 @@ import {
   energyForTurn,
   incomeForTurn,
   MAX_DEPLOYED_MATERIAL,
-  MAX_STORED_MATERIAL,
-  placementToMap,
   type ScFenSnapshot,
   type StarChessColor,
 } from "@chess-coach/starchess-core";
@@ -16,7 +14,12 @@ import {
  */
 import { createMemo, useContext, type Component } from "solid-js";
 
-import { viewerColor, gasRemainingFor } from "~/app/matchEconomy";
+import {
+  displayedStoredMaterial,
+  estimateStoredFromSnap,
+  gasRemainingFor,
+  viewerColor,
+} from "~/app/matchEconomy";
 import { MatchStoreContext } from "~/app/MatchStoreContext";
 import { displayedSnapshot } from "~/app/selectors";
 import { MineralsIcon, SupplyIcon, VespeneIcon } from "~/components/primitives/icons";
@@ -39,26 +42,7 @@ export type ResourceBarProps = {
   class?: string;
 };
 
-/**
- * Opening bank 1 + income granted on each turn advance (matches grantIncome).
- * Turn 0 seed → 1; after first End (turn 1) → 1+income(1); etc.
- */
-export const estimateStoredFromSnap = (snap: ScFenSnapshot, color: StarChessColor): number => {
-  let stored = 1;
-  const turn = Math.max(0, snap.turn);
-  for (let t = 1; t <= turn; t += 1) {
-    stored += incomeForTurn(t);
-  }
-  let units = 0;
-  try {
-    for (const piece of placementToMap(snap.placement).values()) {
-      if (piece.color === color) units += 1;
-    }
-  } catch {
-    units = 0;
-  }
-  return Math.min(MAX_STORED_MATERIAL, Math.max(0, stored - Math.max(0, units - 1)));
-};
+export { estimateStoredFromSnap } from "~/app/matchEconomy";
 
 export const ResourceBar: Component<ResourceBarProps> = (props) => {
   const ctx = useContext(MatchStoreContext);
@@ -110,14 +94,14 @@ export const ResourceBar: Component<ResourceBarProps> = (props) => {
   const stored = createMemo(() => {
     if (props.stored != null) return props.stored;
     const s = snap();
-    // SCFEN `B:` bank — authoritative when present (live stamp + review history).
-    const bank = s?.stored?.[color()];
-    if (bank != null) return bank;
-    if (ctx && !props.snapshot) {
+    if (ctx) {
       void ctx.state().economies[color()].stored;
-      return ctx.state().economies[color()].stored;
+      void ctx.state().reviewIndex;
+      void ctx.reviewPhase();
+      void ctx.state().settledResolves.length;
+      return displayedStoredMaterial(ctx, color(), s);
     }
-    // Legacy snaps without `B:` — rough estimate only.
+    if (s?.stored?.[color()] != null) return s.stored![color()];
     if (s) return estimateStoredFromSnap(s, color());
     return 0;
   });

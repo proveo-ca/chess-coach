@@ -73,4 +73,25 @@ describe("matchHistoryStore", () => {
     expect(pack.settledSnapshots.length).toBe(1);
     expect(pack.settledSnapshots[0]!.placement).toBe(base.liveSnapshot.placement);
   });
+
+  it("historyFromRecord repairs legacy gas income vs turn tier", () => {
+    // Turn 11 requires income tier 2; stale G: income 1 used to throw on open.
+    const stale =
+      "SCFEN|4k3/8/8/8/8/8/4P3/4K3|11|33|P|G:11:11|B:3:3|Q:w:;b:";
+    const record: StarChessGameRecord = {
+      id: "sc-stale-gas",
+      startedAt: "2026-01-01T00:00:00.000Z",
+      endedAt: "2026-01-01T00:10:00.000Z",
+      result: "win",
+      map: "eclipse",
+      playerColor: "w",
+      scfens: [stale],
+      resolves: [],
+    };
+    const pack = historyFromRecord(record);
+    expect(pack.settledSnapshots).toHaveLength(1);
+    expect(pack.settledSnapshots[0]!.turn).toBe(11);
+    expect(pack.settledSnapshots[0]!.gasIncome).toEqual({ w: 2, b: 2 });
+    expect(pack.settledSnapshots[0]!.gas.w).toBeLessThanOrEqual(2);
+  });
 });

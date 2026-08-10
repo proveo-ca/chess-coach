@@ -8,8 +8,8 @@ export const TWIN_BATTERY_LEN = 10.5;
 export const TWIN_BATTERY_H = 3.2;
 
 /**
- * On-screen size equalizers — rook runs `NERD_FRAME.R × ROOK_CONTENT_SCALE (1.3)`,
- * king only `NERD_FRAME.K`. Scale each host so TwinBattery hits the midpoint.
+ * On-screen size equalizers — rook runs `PIECE_FRAME.R × ROOK_CONTENT_SCALE (1.3)`,
+ * king only `PIECE_FRAME.K`. Scale each host so TwinBattery hits the midpoint.
  *
  *   rookEff ≈ √(0.8299×1.0503)×1.3 ≈ 1.213
  *   kingEff ≈ √(0.9169×1.1172) ≈ 1.012

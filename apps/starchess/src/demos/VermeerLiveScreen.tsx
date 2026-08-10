@@ -10,7 +10,7 @@ import { createMatchStore, MatchStoreProvider, useMatchStore } from "~/app/Match
 import { createMatchStateFromScfen } from "~/app/matchReducer";
 import { BaseScreen } from "~/app/BaseScreen.tsx";
 import { LiveMatchShell } from "~/screens/LiveMatchShell";
-import { NERD_STARTING_SCFEN } from "~/stories/fixtures/seeds";
+import { STAR_STARTING_SCFEN } from "~/stories/fixtures/seeds";
 
 export type VermeerLiveScreenProps = {
   /** Experimental: vertical turn chrome in the side rail. */
@@ -19,7 +19,7 @@ export type VermeerLiveScreenProps = {
 
 export const VermeerLiveScreen: Component<VermeerLiveScreenProps> = (props) => {
   const store = createMatchStore({
-    initial: createMatchStateFromScfen(NERD_STARTING_SCFEN, 1),
+    initial: createMatchStateFromScfen(STAR_STARTING_SCFEN, 1),
   });
 
   return (

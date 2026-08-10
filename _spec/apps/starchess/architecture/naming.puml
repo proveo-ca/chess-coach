@@ -1,0 +1,44 @@
+@startuml naming
+' SPEC: _spec/apps/starchess/architecture/naming.puml
+' purpose: Allowed vs deprecated "nerd" naming in apps/starchess.
+!include ../../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess · Naming — nerd piece set only
+
+package "allowed (piece art)" {
+  component "PieceSet = 'nerd' | 'cburnett'" as PS <<app>>
+  component "public/pieces/nerd/*.svg" as SVG <<db>>
+  component "pieceUrl(..., 'nerd')" as URL <<app>>
+}
+
+package "preferred product names" {
+  component "STAR_STARTING_SCFEN" as SEED <<app>>
+  component "PIECE_FRAME / ROOK_FRAME_SCALE" as FRAME <<app>>
+  component "data-testid starchess-*" as TID <<app>>
+  component "SideVision (alias of core NerdVision)" as VIS <<app>>
+}
+
+package "deprecated product names" {
+  component "NerdScreen / Nerd mode copy" as OLD <<error>>
+  component "NERD_STARTING_SCFEN" as OLDSEED <<error>>
+  component "NerdBoardVariant" as OLDVAR <<error>>
+  component "nerd-board-chrome testids" as OLDTID <<error>>
+}
+
+PS ARROW_MAIN SVG
+URL ARROW_MAIN SVG
+OLD ARROW_ERROR PS : do not use for chrome
+OLDSEED ARROW_ERROR SEED : rename
+OLDTID ARROW_ERROR TID : rename
+
+note bottom
+  **Only** the StarCraft-themed **piece set** keeps the ""nerd"" id
+  (folder + PieceSet union). Everything else is StarChess product naming.
+  Core may still export ""NerdVision"" historically — app code prefers
+  ""SideVision"" alias until core renames.
+end note
+
+@enduml

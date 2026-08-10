@@ -5,7 +5,7 @@ import {
   TEAM_LIGHT,
   TEAM_PRIMARY,
   TEAM_SHADOW,
-  NERD_FRAME,
+  PIECE_FRAME,
   type PieceColor,
 } from "~/presentation/animations/teamColors";
 
@@ -61,7 +61,7 @@ export const InlinePawn: Component<InlinePawnProps> = (props) => {
 
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45" aria-hidden="true" overflow="visible">
-      <g transform={NERD_FRAME.P}>
+      <g transform={PIECE_FRAME.P}>
       {/* Exact standstill framing from public *P.svg */}
       <g
         stroke="#222"

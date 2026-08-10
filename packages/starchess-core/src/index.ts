@@ -158,6 +158,8 @@ export {
   parseQueueField,
   assertQueueShape,
   assertQueueGas,
+  queueGasSpent,
+  normalizeSnapGas,
   formatScFen,
   parseScFen,
   validateScFen,
@@ -171,9 +173,10 @@ export {
   validateScFenHistory,
 } from "./replay/validate-history";
 
-export type { NerdVision, PathVisionOpts, VisionBoard } from "./board/vision";
+export type { SideVision, NerdVision, PathVisionOpts, VisionBoard } from "./board/vision";
 export {
   visionMap,
+  getUnitVision,
   getNerdVision,
   getSideVision,
   getNerdVisibleSquares,

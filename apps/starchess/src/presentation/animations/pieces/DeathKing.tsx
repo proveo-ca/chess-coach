@@ -3,7 +3,7 @@ import { For, createMemo, createUniqueId, type Component, type JSX } from "solid
 import { rubbleSettleStyle } from "~/presentation/animations/deathAnim";
 import { FireColumn, pickFireSpots } from "~/presentation/animations/pieces/kingFire";
 import styles from "~/presentation/animations/pieces/DeathKing.module.css";
-import { TEAM_DARK, TEAM_LIGHT, type PieceColor, NERD_FRAME } from "~/presentation/animations/teamColors";
+import { TEAM_DARK, TEAM_LIGHT, type PieceColor, PIECE_FRAME } from "~/presentation/animations/teamColors";
 import type { KingDamageState } from "~/presentation/types";
 
 type DeathKingProps = {
@@ -60,7 +60,7 @@ export const DeathKing: Component<DeathKingProps> = (props) => {
       data-collapse={collapse() ? "true" : "false"}
       data-team={color()}
     >
-      <g transform={NERD_FRAME.K}>
+      <g transform={PIECE_FRAME.K}>
       <defs>
         <radialGradient id={`${uid}-core`} cx="50%" cy="70%" r="55%">
           <stop offset="0" stop-color="#fff6d0" stop-opacity="0.95" />

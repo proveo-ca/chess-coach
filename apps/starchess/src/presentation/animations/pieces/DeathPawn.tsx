@@ -3,7 +3,7 @@ import type { Component } from "solid-js";
 import {
   TEAM_PRIMARY,
   type PieceColor,
-  NERD_FRAME,
+  PIECE_FRAME,
 } from "~/presentation/animations/teamColors";
 import { Shard } from "~/presentation/animations/pieces/Shard";
 
@@ -21,7 +21,7 @@ export const DeathPawn: Component<DeathPawnProps> = (props) => {
 
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45" aria-hidden="true" overflow="visible">
-      <g transform={NERD_FRAME.P}>
+      <g transform={PIECE_FRAME.P}>
         {/* Exact standstill framing from public *P.svg / InlinePawn */}
         <g
           stroke="#222"

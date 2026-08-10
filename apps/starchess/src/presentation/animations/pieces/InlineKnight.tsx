@@ -1,7 +1,7 @@
 import type { Component } from "solid-js";
 
 import type { AimPose } from "~/presentation/animations/attackVectors";
-import { TEAM_PRIMARY, type PieceColor, NERD_FRAME } from "~/presentation/animations/teamColors";
+import { TEAM_PRIMARY, type PieceColor, PIECE_FRAME } from "~/presentation/animations/teamColors";
 
 type InlineKnightProps = {
   color?: PieceColor;
@@ -24,7 +24,7 @@ export const InlineKnight: Component<InlineKnightProps> = (props) => {
 
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45" aria-hidden="true" overflow="visible">
-      {/* Ground blob in raw viewBox space — never inside NERD_FRAME or aim. */}
+      {/* Ground blob in raw viewBox space — never inside PIECE_FRAME or aim. */}
       <ellipse
         data-part="ground-shadow"
         fill="#555"
@@ -35,7 +35,7 @@ export const InlineKnight: Component<InlineKnightProps> = (props) => {
         stroke="none"
         opacity="0.3"
       />
-      <g transform={NERD_FRAME.N}>
+      <g transform={PIECE_FRAME.N}>
         <g
           data-part="hull"
           transform={props.aimPose ? hullAimTransform(props.aimPose) : undefined}

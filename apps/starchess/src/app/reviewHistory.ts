@@ -4,8 +4,10 @@
  * reviewForward/Back can replay without a parallel harness.
  */
 import {
+  UNIT_COST,
   beginScTurn,
   endScTurn,
+  incomeForTurn,
   refillTurnGas,
   scOutcome,
   type EndScTurnResult,
@@ -13,6 +15,10 @@ import {
   type StarChessColor,
 } from "@chess-coach/starchess-core";
 
+import {
+  OPENING_STORED_MATERIAL,
+  reconstructStoredBanks,
+} from "~/app/matchEconomy";
 import { createInitialMatchState } from "~/app/matchReducer";
 import type { MatchState } from "~/types/match";
 import type { ReviewHistory, ReviewHistoryStep } from "~/types/review";
@@ -35,11 +41,21 @@ export type BuildReviewHistoryArgs = {
  * Walk a scenario into settledSnapshots / settledResolves matching
  * BEGIN_CHECKS_DONE + TIMELINE_DONE recording order.
  */
+const withBank = (
+  snap: ScFenSnapshot,
+  bank: NonNullable<ScFenSnapshot["stored"]>,
+): ScFenSnapshot => ({ ...snap, stored: { ...bank } });
+
 export const buildReviewHistory = (args: BuildReviewHistoryArgs): ReviewHistory => {
   const includeChecks = args.includeTurnOpenChecks !== false;
-  const settledSnapshots: ScFenSnapshot[] = [args.start];
+  const opening = args.start.stored ?? {
+    w: OPENING_STORED_MATERIAL,
+    b: OPENING_STORED_MATERIAL,
+  };
+  let bank = { ...opening };
+  let cur = withBank(args.start, bank);
+  const settledSnapshots: ScFenSnapshot[] = [cur];
   const settledResolves: EndScTurnResult[] = [];
-  let cur = args.start;
 
   for (let i = 0; i < args.steps.length; i += 1) {
     if (cur.phase === "O") break;
@@ -53,22 +69,42 @@ export const buildReviewHistory = (args: BuildReviewHistoryArgs): ReviewHistory 
       }
       if (begun?.changed && begun.asResolve) {
         settledResolves.push(begun.asResolve);
-        settledSnapshots.push(begun.next);
-        cur = begun.next;
+        const next = withBank(begun.next, bank);
+        settledSnapshots.push(next);
+        cur = next;
         if (cur.phase === "O") break;
       } else {
-        // No standing checks — still refill like live turn-open.
-        cur = begun?.next ?? refillTurnGas(cur);
+        cur = withBank(begun?.next ?? refillTurnGas(cur), bank);
       }
     } else {
-      cur = refillTurnGas(cur);
+      cur = withBank(refillTurnGas(cur), bank);
     }
 
     const queued = args.queueStep(cur, i);
+    // Spawn spends (B/F spawn) debit bank before End — keep SCFEN `B:` in sync.
+    for (const a of queued.queue?.actions ?? []) {
+      if (a.kind === "spawn" && a.unit) {
+        const cost = UNIT_COST[a.unit];
+        const c = a.color;
+        bank = {
+          ...bank,
+          [c]: Math.max(0, bank[c] - cost),
+        };
+      }
+    }
     const result = endScTurn(queued, { skipTurnStartChecks: true });
     settledResolves.push(result);
-    settledSnapshots.push(result.next);
-    cur = result.next;
+    // Income lands when the wire turn advances (same as live TIMELINE_DONE).
+    if (result.next.turn > cur.turn) {
+      const inc = incomeForTurn(Math.max(1, result.next.turn));
+      bank = {
+        w: Math.min(12, bank.w + inc),
+        b: Math.min(12, bank.b + inc),
+      };
+    }
+    const next = withBank(result.next, bank);
+    settledSnapshots.push(next);
+    cur = next;
   }
 
   return {
@@ -83,7 +119,7 @@ export const createMatchStateFromReviewHistory = (
   history: Pick<ReviewHistory, "settledSnapshots" | "settledResolves">,
   opts?: { stored?: number; playerColor?: StarChessColor },
 ): MatchState => {
-  const stored = opts?.stored ?? 12;
+  const stored = opts?.stored ?? OPENING_STORED_MATERIAL;
   const playerColor = opts?.playerColor ?? "w";
   const snaps = history.settledSnapshots;
   const resolves = history.settledResolves;
@@ -94,18 +130,9 @@ export const createMatchStateFromReviewHistory = (
   const outcome = live.phase === "O" ? scOutcome(live) : null;
 
   const base = createInitialMatchState();
-  // Prefer each snap's SCFEN `B:` bank; legacy history falls back to seed.
-  const stampedSnaps = snaps.map((s) =>
-    s.stored
-      ? s
-      : {
-          ...s,
-          stored: {
-            w: live.stored?.w ?? stored,
-            b: live.stored?.b ?? stored,
-          },
-        },
-  );
+  // Prefer SCFEN `B:` when present; legacy history rebuilds spends from
+  // deployed-material deltas (old replays never stored the bank).
+  const stampedSnaps = reconstructStoredBanks(snaps, stored);
   const stampedLive = stampedSnaps[stampedSnaps.length - 1]!;
   return {
     ...base,

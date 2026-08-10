@@ -1,7 +1,6 @@
+// SPEC: _spec/apps/starchess/match-store.puml, _spec/apps/starchess/animation-pipeline.md
 /**
  * Match store — Solid signal + reducer; timeline / timer / DualNav review runners.
- * // SPEC: _spec/apps/starchess/match-store.puml
- * // SPEC: _spec/apps/starchess/animation-pipeline.md
  */
 import {
   createContext,
@@ -20,6 +19,7 @@ import type { MatchAction, MatchState, MatchStore } from "~/types/match";
 import { createInitialMatchState, matchReducer } from "~/app/matchReducer";
 import type { Clock, Scheduler } from "~/types/ports";
 import { browserClock, browserScheduler } from "~/adapters/browser";
+import { perfNoteDispatch, perfNoteMatch } from "~/debug/perfMonitor";
 import { classicalActionsFromResolve } from "~/presentation/hud/classicalActionsFromResolve";
 import {
   isCheckOnlyResolve,
@@ -87,7 +87,12 @@ export const createMatchStore = (opts?: {
   let reviewTurnStart = 0;
 
   const dispatch = (action: MatchAction) => {
-    setState((s) => matchReducer(s, action));
+    perfNoteDispatch(action.type);
+    setState((s) => {
+      const next = matchReducer(s, action);
+      perfNoteMatch(next.phase, next.timeline.active);
+      return next;
+    });
   };
 
   const clearReviewIntent = () => setReviewIntentActions(null);

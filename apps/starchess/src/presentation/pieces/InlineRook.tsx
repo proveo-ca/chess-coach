@@ -1,13 +1,13 @@
 import type { Component } from "solid-js";
 
-import { ROOK_REST_AIM_DEG, NERD_ROOK_SCALE, svgPivotAroundAniso, SIEGE_TOGGLE_MS } from "~/presentation/pieces/rookAim";
+import { ROOK_REST_AIM_DEG, ROOK_FRAME_SCALE, svgPivotAroundAniso, SIEGE_TOGGLE_MS } from "~/presentation/pieces/rookAim";
 import styles from "~/presentation/pieces/InlineRook.module.css";
 import { TwinBattery, TWIN_BATTERY_SCALE_ROOK } from "~/presentation/pieces/TwinBattery";
 import {
   INK_BLACK,
   INK_DARK_GRAY,
   INK_WHITE,
-  NERD_FRAME,
+  PIECE_FRAME,
   TEAM_PRIMARY,
   type PieceColor,
 } from "~/presentation/pieces/teamColors";
@@ -42,7 +42,7 @@ type GunProps = {
 /** Turret pivot on the hull deck — matches static `*R.svg` (siege rest). */
 const PIVOT = { x: 22.5, y: 23.5 };
 
-/** Content scale inside {@link NERD_FRAME.R} — hull size, not barrel crop. */
+/** Content scale inside {@link PIECE_FRAME.R} — hull size, not barrel crop. */
 export const ROOK_CONTENT_SCALE = 1.28;
 
 const ROOK_STROKE = 1;
@@ -231,7 +231,7 @@ export const InlineRook: Component<InlineRookProps> = (props) => {
       data-rook-mode={mode()}
       style={{ "--siege-toggle-ms": `${SIEGE_TOGGLE_MS}ms` }}
     >
-      <g transform={NERD_FRAME.R}>
+      <g transform={PIECE_FRAME.R}>
         <g transform={`translate(22.5 22.5) scale(${ROOK_CONTENT_SCALE}) translate(-22.5 -22.5)`}>
           <g
             stroke={INK_BLACK}
@@ -245,8 +245,8 @@ export const InlineRook: Component<InlineRookProps> = (props) => {
                 PIVOT.x,
                 PIVOT.y,
                 aimDeg(),
-                NERD_ROOK_SCALE.sx,
-                NERD_ROOK_SCALE.sy,
+                ROOK_FRAME_SCALE.sx,
+                ROOK_FRAME_SCALE.sy,
               )}
             >
               <Turret team={team()} />

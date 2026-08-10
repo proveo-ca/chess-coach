@@ -6,11 +6,8 @@ export type BoardVariant = "eclipse" | "butter" | "vermeer";
 /** Classic wood board (tutorial Chess mode) — no SC terrain. */
 export type BoardSkin = BoardVariant | "classic";
 
-/** Piece SVG folder under `public/pieces/`. */
+/** Piece SVG folder under `public/pieces/` (`nerd` = StarCraft set). */
 export type PieceSet = "nerd" | "cburnett";
-
-/** Alias used by older demo fixtures. */
-export type NerdBoardVariant = BoardVariant;
 
 /** `player` = single-viewer fog veil; `observer` = full board + dual vision borders. */
 export type VisionMode = "player" | "observer";

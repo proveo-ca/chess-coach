@@ -319,6 +319,41 @@ export const assertQueueShape = (actions: readonly ScAction[]): void => {
   }
 };
 
+/** Queue special gas spend per side (classical is free). */
+export const queueGasSpent = (
+  actions: readonly { timing: string; color: PieceColor; kind: string }[] | undefined,
+): Record<PieceColor, number> => {
+  const spent: Record<PieceColor, number> = { w: 0, b: 0 };
+  for (const a of actions ?? []) {
+    if (a.timing === "C") continue;
+    spent[a.color as PieceColor] += specialGasCost(a.kind as Parameters<typeof specialGasCost>[0]);
+  }
+  return spent;
+};
+
+/**
+ * Align `gasIncome` to {@link energyForTurn} and clamp remaining so rem+spent ≤ tier.
+ * Used for legacy history plies that advanced `turn` without restamping income.
+ */
+export const normalizeSnapGas = (snap: ScFenSnapshot): ScFenSnapshot => {
+  const tier = energyForTurn(snap.turn);
+  const spent = queueGasSpent(snap.queue?.actions);
+  const gasIncome = { w: tier, b: tier };
+  const gas = {
+    w: Math.max(0, Math.min(snap.gas.w, Math.max(0, tier - spent.w))),
+    b: Math.max(0, Math.min(snap.gas.b, Math.max(0, tier - spent.b))),
+  };
+  if (
+    gas.w === snap.gas.w &&
+    gas.b === snap.gas.b &&
+    snap.gasIncome.w === tier &&
+    snap.gasIncome.b === tier
+  ) {
+    return snap;
+  }
+  return { ...snap, gas, gasIncome };
+};
+
 /**
  * Gas conservation for a planning snap whose `gas` is remaining **after**
  * queue spends: spent + remaining ≤ income, and spent ≤ income.
@@ -328,11 +363,7 @@ export const assertQueueGas = (
   snap: Pick<ScFenSnapshot, "turn" | "gas" | "gasIncome" | "queue">,
 ): void => {
   const tier = energyForTurn(snap.turn);
-  const spent: Record<PieceColor, number> = { w: 0, b: 0 };
-  for (const a of snap.queue?.actions ?? []) {
-    if (a.timing === "C") continue;
-    spent[a.color] += specialGasCost(a.kind);
-  }
+  const spent = queueGasSpent(snap.queue?.actions);
   for (const color of ["w", "b"] as const) {
     const rem = snap.gas[color];
     const inc = snap.gasIncome[color];
@@ -402,7 +433,15 @@ export const formatScFen = (snap: ScFenSnapshot): string => {
   return s;
 };
 
-export const parseScFen = (raw: string): ScFenSnapshot => {
+export type ParseScFenOptions = {
+  /**
+   * Repair gasIncome to the turn tier and clamp remaining (legacy history plies
+   * that advanced `turn` without restamping `G:` income).
+   */
+  repairGas?: boolean;
+};
+
+export const parseScFen = (raw: string, opts?: ParseScFenOptions): ScFenSnapshot => {
   const parts = raw.trim().split("|");
   if (parts[0] !== "SCFEN" || parts.length < 6) {
     throw Object.assign(new Error(`Invalid SCFEN (expected SCFEN|…|G:…): ${raw.slice(0, 64)}`), {
@@ -497,9 +536,10 @@ export const parseScFen = (raw: string): ScFenSnapshot => {
       { code: "SC_SCHEMA" },
     );
   }
+  const fixed = opts?.repairGas ? normalizeSnapGas(snap) : snap;
   // Always enforce turn-tier income + rem ≤ income (even snapshot-only / empty Q).
-  assertQueueGas(snap);
-  return snap;
+  assertQueueGas(fixed);
+  return fixed;
 };
 
 export const validateScFen = (

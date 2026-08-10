@@ -19,6 +19,7 @@ import {
   type StarChessColor,
 } from "@chess-coach/starchess-core";
 
+import { OPENING_STORED_MATERIAL } from "~/app/matchEconomy";
 import type { MatchAction, MatchState, TimelineState } from "~/app/matchTypes";
 
 const emptyTimeline = (placement: string | null = null): TimelineState => ({
@@ -60,6 +61,18 @@ const economiesFromSnap = (
   w: { stored: snap.stored?.w ?? fallback, deployed: 0 },
   b: { stored: snap.stored?.b ?? fallback, deployed: 0 },
 });
+
+/** Sync host economies to a settled snap's SCFEN `B:` (review cursor). */
+const syncEconomiesToSnap = (
+  snap: ScFenSnapshot,
+  prev: Record<StarChessColor, PlayerEconomy>,
+): Record<StarChessColor, PlayerEconomy> => {
+  if (!snap.stored) return prev;
+  return {
+    w: { stored: snap.stored.w, deployed: prev.w.deployed },
+    b: { stored: snap.stored.b, deployed: prev.b.deployed },
+  };
+};
 
 const grantIncome = (
   economies: Record<StarChessColor, PlayerEconomy>,
@@ -112,12 +125,17 @@ const seedFromSnap = (snap: ScFenSnapshot, stored: number): MatchState => {
 };
 
 export const createInitialMatchState = (): MatchState => {
-  const snap = parseScFen("SCFEN|4k3/8/8/8/8/8/8/4K3|0|33|P|G:11:11|Q:w:;b:");
-  return seedFromSnap(snap, 12);
+  const snap = parseScFen(
+    `SCFEN|4k3/8/8/8/8/8/8/4K3|0|33|P|G:11:11|B:${OPENING_STORED_MATERIAL}:${OPENING_STORED_MATERIAL}|Q:w:;b:`,
+  );
+  return seedFromSnap(snap, OPENING_STORED_MATERIAL);
 };
 
 /** Seed a match from SCFEN (Storybook / deep-link) before the screen mounts. */
-export const createMatchStateFromScfen = (scfen: string, stored = 12): MatchState => {
+export const createMatchStateFromScfen = (
+  scfen: string,
+  stored = OPENING_STORED_MATERIAL,
+): MatchState => {
   try {
     return seedFromSnap(parseScFen(scfen), stored);
   } catch {
@@ -134,7 +152,7 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
     case "LOAD_SCFEN": {
       try {
         const snap = parseScFen(action.scfen);
-        return seedFromSnap(snap, action.stored ?? 12);
+        return seedFromSnap(snap, action.stored ?? OPENING_STORED_MATERIAL);
       } catch (err) {
         return {
           ...state,
@@ -377,21 +395,29 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
         const { specialsUsed: _drop, ...rest } = s;
         return rest;
       };
+      if (state.phase === "gameOver") {
+        // DualNav: refill gas on the cursor snap only — keep that snap's `B:` bank.
+        // Never stamp terminal economies (was overwriting Start/mid with 12).
+        const snaps = [...state.settledSnapshots];
+        const cur = snaps[state.reviewIndex];
+        if (!cur) return state;
+        const bank = cur.stored;
+        const refilled = stripUsed(refillTurnGas(cur));
+        const nextSnap: ScFenSnapshot = bank
+          ? { ...refilled, stored: { ...bank } }
+          : stampSnapStored(refilled, state.economies);
+        snaps[state.reviewIndex] = nextSnap;
+        return {
+          ...state,
+          liveSnapshot: nextSnap,
+          settledSnapshots: snaps,
+          economies: syncEconomiesToSnap(nextSnap, state.economies),
+        };
+      }
       const live = stampSnapStored(
         stripUsed(refillTurnGas(state.liveSnapshot)),
         state.economies,
       );
-      if (state.phase === "gameOver") {
-        const snaps = [...state.settledSnapshots];
-        const cur = snaps[state.reviewIndex];
-        if (cur) {
-          snaps[state.reviewIndex] = stampSnapStored(
-            stripUsed(refillTurnGas(cur)),
-            state.economies,
-          );
-        }
-        return { ...state, liveSnapshot: live, settledSnapshots: snaps };
-      }
       return { ...state, liveSnapshot: live };
     }
     case "MARK_CHECKS_APPLIED":
@@ -585,10 +611,13 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
             },
           };
         }
+        const economies = syncEconomiesToSnap(settled, state.economies);
         return {
           ...state,
           reviewIndex: nextIndex,
           lastResolve: null,
+          // Keep terminal liveSnapshot; DualNav display uses settled[reviewIndex].
+          economies,
           timeline: {
             ...emptyTimeline(),
             jumpTrails: lingeringJumpTrails,
@@ -665,10 +694,13 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
       const index = Math.max(0, Math.min(max, action.index));
       const settled = state.settledSnapshots[index];
       if (!settled) return state;
+      const economies = syncEconomiesToSnap(settled, state.economies);
       return {
         ...state,
         reviewIndex: index,
         lastResolve: null,
+        // Keep terminal liveSnapshot; DualNav display uses settled[reviewIndex].
+        economies,
         // Arm marks are live-planning only — do not import snap `U:`.
         specialsUsed: new Set(),
         siegedRooks: new Set(settled.siegedRooks ?? []),

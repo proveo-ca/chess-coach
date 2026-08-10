@@ -149,6 +149,70 @@ describe("intentOverlaysFromQueue", () => {
     ).toEqual([{ at: "e5" }]);
   });
 
+  it("spawn + classical: deploy ghost with canister, move ghost without", () => {
+    // B deploy marine d1, C d1→d2 — both ghosts; gas only on deploy square.
+    const actions: ScAction[] = [
+      {
+        timing: "B",
+        kind: "spawn",
+        color: "w",
+        from: "e1",
+        to: "d1",
+        unit: "p",
+        seq: 0,
+      },
+      {
+        timing: "C",
+        kind: "classical",
+        color: "w",
+        from: "d1",
+        to: "d2",
+        seq: 1,
+      },
+    ];
+    const out = intentOverlaysFromQueue(actions, {
+      placement: "4k3/8/8/8/8/8/8/4K3",
+      viewer: "w",
+    });
+    expect(out.destinations).toEqual([
+      { at: "d1", color: "w", piece: "p" },
+      { at: "d2", color: "w", piece: "p" },
+    ]);
+    expect(out.canisters).toEqual([{ at: "d1", color: "w" }]);
+    expect(out.canisters.some((c) => c.at === "d2")).toBe(false);
+  });
+
+  it("gas landing + classical: B ghost and further move ghost", () => {
+    // B pawnDouble e2→e3, C e3→e4 — canister stays on origin (marine gas).
+    const actions: ScAction[] = [
+      {
+        timing: "B",
+        kind: "pawnDouble",
+        color: "w",
+        from: "e2",
+        to: "e3",
+        seq: 0,
+      },
+      {
+        timing: "C",
+        kind: "classical",
+        color: "w",
+        from: "e3",
+        to: "e4",
+        seq: 1,
+      },
+    ];
+    const out = intentOverlaysFromQueue(actions, {
+      placement: "4k3/8/8/8/8/8/4P3/4K3",
+      viewer: "w",
+    });
+    expect(out.destinations).toEqual([
+      { at: "e3", color: "w", piece: "p" },
+      { at: "e4", color: "w", piece: "p" },
+    ]);
+    expect(out.canisters).toEqual([{ at: "e2", color: "w" }]);
+  });
+
   it("does not project opponent classical moves into check rings (no intent leak)", () => {
     // Black Ke4→d5 would discover nothing useful; white must not see black's
     // destination via projected geometry. Only standing checks from current board.

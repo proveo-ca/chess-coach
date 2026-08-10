@@ -11,7 +11,7 @@ import {
   LIVE_CAPABILITIES,
   setCapabilities,
 } from "~/store/capabilitiesStore";
-import { NERD_STARTING_SCFEN } from "~/stories/fixtures/seeds";
+import { STAR_STARTING_SCFEN } from "~/stories/fixtures/seeds";
 
 afterEach(() => {
   cleanup();
@@ -26,7 +26,7 @@ describe("BoardSideRail", () => {
     setCapabilities(LIVE_CAPABILITIES);
     const onHome = vi.fn();
     const store = createMatchStore({
-      initial: createMatchStateFromScfen(NERD_STARTING_SCFEN, 1),
+      initial: createMatchStateFromScfen(STAR_STARTING_SCFEN, 1),
     });
 
     render(() => (
@@ -57,7 +57,7 @@ describe("BoardSideRail", () => {
   it("wraps review controls and exposes review-only tools", () => {
     setCapabilities(ANALYSIS_CAPABILITIES);
     const onHome = vi.fn();
-    const base = createMatchStateFromScfen(NERD_STARTING_SCFEN, 1);
+    const base = createMatchStateFromScfen(STAR_STARTING_SCFEN, 1);
     const store = createMatchStore({
       initial: { ...base, phase: "gameOver" },
     });
@@ -85,7 +85,7 @@ describe("BoardSideRail", () => {
 
   it("reactively toggles controls and the shared divider together", () => {
     const store = createMatchStore({
-      initial: createMatchStateFromScfen(NERD_STARTING_SCFEN, 1),
+      initial: createMatchStateFromScfen(STAR_STARTING_SCFEN, 1),
     });
     const [controlsVisible, setControlsVisible] = createSignal(false);
 

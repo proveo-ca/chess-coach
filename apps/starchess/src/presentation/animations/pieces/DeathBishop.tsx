@@ -2,7 +2,7 @@ import type { Component } from "solid-js";
 
 import {
   TEAM_PRIMARY,
-  type PieceColor, NERD_FRAME } from "~/presentation/animations/teamColors";
+  type PieceColor, PIECE_FRAME } from "~/presentation/animations/teamColors";
 import { Shard } from "~/presentation/animations/pieces/Shard";
 
 type DeathBishopProps = {
@@ -35,7 +35,7 @@ export const DeathBishop: Component<DeathBishopProps> = (props) => {
 
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45" aria-hidden="true" overflow="visible">
-      <g transform={NERD_FRAME.B}>
+      <g transform={PIECE_FRAME.B}>
       <defs>
         <clipPath id={`sc-bishop-left-${seed()}`}>
           <rect x="0" y="0" width="22.5" height="45" />

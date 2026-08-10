@@ -1,19 +1,23 @@
+// SPEC: _spec/apps/starchess/deployment.puml
 /**
  * StarChess router entry — menu `/`, live `/single`, replays `/review` + `/review/:id`,
  * tutorial `/tutorial` · `/tutorial/:section` · `/tutorial/:section/:story`
  * (story ids from TUTORIAL_SCRIPT, e.g. `/tutorial/fog/king`).
  * Vite base is `/starchess/` → http://localhost:5175/starchess/tutorial/fog/king
- * // SPEC: _spec/apps/starchess/deployment.puml
+ * Perf debug: `npm run dev:debug` · `?debug=perf` · localStorage starchess_debug=perf
  */
 import { Route, Router } from "@solidjs/router";
 import { render } from "solid-js/web";
 
+import { initPerfDebug } from "~/debug/perfMonitor";
 import { MenuRoute } from "~/screens/MenuRoute.tsx";
 import { ReviewScreen } from "~/screens/ReviewScreen.tsx";
 import { SingleScreen } from "~/screens/SingleScreen.tsx";
 import { TutorialScreen } from "~/screens/TutorialScreen.tsx";
 import "~/theme.css";
 import "~/styles/index.css";
+
+initPerfDebug();
 
 const root = document.getElementById("root");
 if (!root) {

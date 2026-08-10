@@ -13,6 +13,11 @@ import {
 import { playerFogOccultsMoves } from "~/app/intentOverlayPolicy";
 import { useMatchStore } from "~/app/MatchStoreContext";
 import { canSubmit, displayedSnapshot } from "~/app/selectors";
+import {
+  isViewerBRelocateOrigin,
+  occupancyForQueuedMoves,
+  pieceAtQueuedSquare,
+} from "~/presentation/board/occupancyForQueuedMoves";
 import { occupancyForViewerMoves } from "~/presentation/board/occupancyForViewerMoves";
 import { useBoardVision } from "~/presentation/hooks/useIntentOverlays";
 import type { VisionMode } from "~/types/board";
@@ -86,16 +91,16 @@ export const useBoardInput = (
     store.dispatch({ type: "SET_LEGAL_DESTS", dests: [] });
   };
 
-  const moveMap = (state: ReturnType<typeof store.state>) => {
-    const raw = placementToMap(displayedSnapshot(state).placement);
-    const sieged = state.siegedRooks;
-    return occupancyForViewerMoves(
+  /** Pre-B fog map + viewer B projection (spawn / gas / warp) + post-B siege. */
+  const planningMoves = (state: ReturnType<typeof store.state>) => {
+    const snap = displayedSnapshot(state);
+    const raw = placementToMap(snap.placement);
+    return occupancyForQueuedMoves(
       raw,
       state.viewer,
       playerFogOccultsMoves(vision()),
-      {
-        rookModeFor: (sq) => (sieged.has(sq) ? "siege" : "tank"),
-      },
+      snap,
+      state.siegedRooks,
     );
   };
 
@@ -248,18 +253,38 @@ export const useBoardInput = (
     }
 
     const selected = state.selected;
-    const fullMap = placementToMap(displayedSnapshot(state).placement);
-    const map = moveMap(state);
-    const piece = fullMap.get(square);
+    const snap = displayedSnapshot(state);
+    const raw = placementToMap(snap.placement);
+    const actions = snap.queue?.actions;
+    const { map: postBMap, siegedRooks } = planningMoves(state);
+    // Gas/warp origin: legal dests from pre-B occupancy (engine rewrite stack).
+    // Landing / spawn: legal dests from post-B occupancy.
+    const mapFor = (from: Square) => {
+      if (isViewerBRelocateOrigin(from, state.viewer, actions)) {
+        return occupancyForViewerMoves(
+          raw,
+          state.viewer,
+          playerFogOccultsMoves(vision()),
+          {
+            rookModeFor: (sq) =>
+              siegedRooks.includes(sq) ? "siege" : "tank",
+          },
+        );
+      }
+      return postBMap;
+    };
+    const piece =
+      pieceAtQueuedSquare(raw, square, state.viewer, actions) ??
+      raw.get(square) ??
+      null;
 
     if (!selected) {
       if (!piece || piece.color !== state.viewer) {
         store.dispatch({ type: "SELECT_SQUARE", square: null });
         return;
       }
-      const moves = scMovesFrom(map, square, piece.color, {
-        siegedRooks: [...state.siegedRooks],
-      });
+      const map = mapFor(square);
+      const moves = scMovesFrom(map, square, piece.color, { siegedRooks });
       store.dispatch({ type: "SELECT_SQUARE", square });
       store.dispatch({
         type: "SET_LEGAL_DESTS",
@@ -275,9 +300,8 @@ export const useBoardInput = (
 
     if (!state.legalDests.includes(square)) {
       if (piece && piece.color === state.viewer) {
-        const moves = scMovesFrom(map, square, piece.color, {
-          siegedRooks: [...state.siegedRooks],
-        });
+        const map = mapFor(square);
+        const moves = scMovesFrom(map, square, piece.color, { siegedRooks });
         store.dispatch({ type: "SELECT_SQUARE", square });
         store.dispatch({
           type: "SET_LEGAL_DESTS",
@@ -289,11 +313,15 @@ export const useBoardInput = (
       return;
     }
 
-    const mover = fullMap.get(selected);
+    const mover =
+      pieceAtQueuedSquare(raw, selected, state.viewer, actions) ??
+      raw.get(selected) ??
+      null;
     if (!mover) return;
-    const move = scMovesFrom(map, selected, mover.color, {
-      siegedRooks: [...state.siegedRooks],
-    }).find((m) => m.to === square);
+    const map = mapFor(selected);
+    const move = scMovesFrom(map, selected, mover.color, { siegedRooks }).find(
+      (m) => m.to === square,
+    );
 
     const needsPromo =
       !!move?.promotes ||

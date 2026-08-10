@@ -2,13 +2,13 @@ import { expect, test } from "@playwright/test";
 
 /** Canonical deep link: baseURL is `/starchess/`. */
 const gotoScfen = async (page: import("@playwright/test").Page, scfen: string) => {
-  await page.goto(`/?scfen=${encodeURIComponent(scfen)}`);
-  await expect(page.getByTestId("nerd-board-chrome")).toBeVisible({ timeout: 20_000 });
+  await page.goto(`single?scfen=${encodeURIComponent(scfen)}`);
+  await expect(page.getByTestId("starchess-board-chrome")).toBeVisible({ timeout: 20_000 });
 };
 
 test.describe("StarChess gas-used fog (no pierce)", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/");
+    await page.goto("./");
     await page.evaluate(() => localStorage.clear());
   });
 

@@ -1,0 +1,61 @@
+@startuml base-screen
+' SPEC: _spec/apps/starchess/architecture/base-screen.puml
+' purpose: BaseScreen live chrome — props, HUD regions, MatchBoardHost composition.
+!include ../../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+hide empty members
+
+title StarChess · BaseScreen (live chrome assembler)
+
+class BaseScreen <<app>> {
+  app/BaseScreen.tsx
+  --
+  starChessMode? fog? boardVariant? pieceSet?
+  armTimer? autoQueueOpponent?
+  onExitToMenu? matchTitle?
+  turnChrome: bar | sidebar | none
+  tutorial? hideResources? hideGas?
+  endTurnAfterQueue? coachEmotion?
+  header? guideBubble? footerExtra?
+  hintSquares?
+}
+
+class MatchBoardHost <<host>> {
+  BoardColumn · BoardHost · Rail
+}
+
+class LiveBoardBinding <<app>>
+class ResourceBar <<app>>
+class GasRack <<app>>
+class TurnBarSidebar <<app>>
+class DeployModal <<app>>
+class PromotionModal <<app>>
+
+note as N_PROPS
+  **starChessMode** (default true) — StarChess rules + fog default on.
+  Maps gallery may set false for open terrain preview.
+  **turnChrome** — bar (default) | sidebar (BoardSideRail) | none (fog tutorial).
+  **tutorial** — HOME-only rail, optional auto-End on queue threshold.
+  **endTurnAfterQueue** — first | moveAndSpecial (tutorial only).
+  **matchTitle** — live label above ResourceBar; hidden at max-height 639px.
+  Spawn / Charon / Jump overlays + DeployModal live in BoardHost children.
+  Overlay measure (spawn hit boxes) stays in BaseScreen, not Host.
+end note
+
+N_PROPS .. BaseScreen
+BaseScreen *-- MatchBoardHost
+MatchBoardHost *-- LiveBoardBinding
+BaseScreen *-- ResourceBar
+BaseScreen *-- GasRack
+BaseScreen *-- TurnBarSidebar
+BaseScreen *-- DeployModal
+BaseScreen *-- PromotionModal
+
+note bottom
+  Naming: piece set id remains ""nerd"" (""public/pieces/nerd/"").
+  Product chrome uses ""starchess-*"" testids — not ""nerd-*"".
+end note
+
+@enduml

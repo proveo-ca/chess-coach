@@ -5,7 +5,7 @@ import {
   applyStorybookTheme,
   readStorybookTheme,
   storybookThemeGlobalTypes,
-} from "./applyTheme";
+} from "~/storybookApplyTheme";
 import "~/theme.css";
 import "~/styles/index.css";
 

@@ -6,7 +6,7 @@ import type { BoardVariant } from "~/types/board";
 import {
   COMBAT_CHAIN_START_SCFEN,
   GAS_USED_FOG_SCFEN,
-  NERD_STARTING_SCFEN,
+  STAR_STARTING_SCFEN,
 } from "~/stories/fixtures/seeds";
 import { FOG_SIEGE_ROOK_SCFEN } from "~/presentation/animations/FogVisionDemo";
 
@@ -26,7 +26,7 @@ export const GAS_USED_FOG_FIXTURE = {
 };
 
 export const mapFixture = (boardVariant: BoardVariant) => ({
-  scfen: NERD_STARTING_SCFEN,
+  scfen: STAR_STARTING_SCFEN,
   fog: false as const,
   visionMode: "observer" as const,
   boardVariant,

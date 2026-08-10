@@ -17,7 +17,7 @@ import { createMatchStateFromScfen } from "~/app/matchReducer";
 import { BaseScreen } from "~/app/BaseScreen.tsx";
 import { MatchResultModal } from "~/components/features/MatchResultModal";
 import { LiveMatchShell } from "~/screens/LiveMatchShell";
-import { NERD_STARTING_SCFEN } from "~/stories/fixtures/seeds";
+import { STAR_STARTING_SCFEN } from "~/stories/fixtures/seeds";
 import {
   addMatchRecord,
   makeMatchId,
@@ -66,7 +66,7 @@ const bootstrapMatch = (
     return {
       matchId: makeMatchId(),
       startedAt: new Date().toISOString(),
-      scfen: NERD_STARTING_SCFEN,
+      scfen: STAR_STARTING_SCFEN,
       storedW: 3,
       storedB: 3,
     };
@@ -85,7 +85,7 @@ const bootstrapMatch = (
   return {
     matchId: resume?.id ?? makeMatchId(),
     startedAt: resume?.startedAt ?? new Date().toISOString(),
-    scfen: queryScfen ?? resume?.scfen ?? NERD_STARTING_SCFEN,
+    scfen: queryScfen ?? resume?.scfen ?? STAR_STARTING_SCFEN,
     storedW: resume?.economies.w.stored ?? 3,
     storedB: resume?.economies.b.stored ?? 3,
   };

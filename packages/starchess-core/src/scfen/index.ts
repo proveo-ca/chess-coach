@@ -15,6 +15,8 @@ export {
   parseQueueField,
   assertQueueShape,
   assertQueueGas,
+  queueGasSpent,
+  normalizeSnapGas,
   formatScFen,
   parseScFen,
   validateScFen,

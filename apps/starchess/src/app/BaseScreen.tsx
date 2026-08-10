@@ -1,8 +1,4 @@
-// SPEC: _spec/apps/ui/responsiveness/rules.md, _spec/apps/starchess/screens.puml, _spec/apps/starchess/architecture/screen-entities.puml
-/**
- * Live StarChess screen — Command Column HUD (Resource → Board|SideRail → Gas).
- * Board variants: eclipse | butter | vermeer (default eclipse).
- */
+// SPEC: _spec/apps/ui/responsiveness/rules.md, _spec/apps/starchess/screens.puml, _spec/apps/starchess/architecture/screen-entities.puml, _spec/apps/starchess/architecture/base-screen.puml
 import {
   UNIT_COST,
   adjacentSquares,
@@ -22,7 +18,7 @@ import { Portal } from "solid-js/web";
 import { storedMaterial, viewerColor } from "~/app/matchEconomy";
 import { useMatchStore } from "~/app/MatchStoreContext";
 import { displayedSnapshot, outcomeLabel } from "~/app/selectors";
-import styles from "~/app/StarChessScreen.module.css";
+import styles from "~/app/BaseScreen.module.css";
 import { CoachAvatar } from "~/components/atoms/CoachAvatar";
 import { MobileBanner } from "~/components/atoms/MobileBanner";
 import { ExitGameConfirm } from "~/components/features/ExitGameConfirm";
@@ -55,59 +51,23 @@ export type AutoQueueOpponentResult = {
 };
 
 export type StarChessScreenProps = {
-  /**
-   * StarChess ruleset (default true). When on, fog of war is always enabled.
-   * Maps / terrain gallery sets `false` to preview boards without fog — matches
-   * apps/ui `NerdScreen` `starChessMode`.
-   */
   starChessMode?: boolean;
-  /** When false, skip fog overlay. Defaults to `starChessMode`. */
   fog?: boolean;
-  /** eclipse | butter | vermeer | classic — default eclipse. */
   boardVariant?: BoardSkin;
-  /** Piece SVG set — `cburnett` for tutorial Chess mode. */
   pieceSet?: PieceSet;
-  /** Auto-arm planning timer on mount. */
   armTimer?: boolean;
-  /**
-   * Story / demo AI: when set, queues the opponent’s next action each planning
-   * turn (e.g. the King Hunt live `adjutant` defensive commander).
-   */
   autoQueueOpponent?: (snap: ScFenSnapshot) => AutoQueueOpponentResult;
-  /** Side-rail Home — return to StarChess menu (SPA) instead of leaving the app. */
   onExitToMenu?: () => void;
-  /**
-   * Optional live match title above ResourceBar (Review-style Label stack).
-   * Hidden on short / dynamic viewports via ``max-height: 639px`` (height only).
-   */
   matchTitle?: string;
-  /**
-   * HUD variation: `"sidebar"` moves turn chrome into `BoardSideRail`.
-   * Default `"bar"` keeps `TurnBar`
-   * above the board. `"none"` hides turn chrome (Fog of War tutorial).
-   */
   turnChrome?: "bar" | "sidebar" | "none";
-  /** Hide ResourceBars (tutorial). */
   hideResources?: boolean;
-  /** Hide GasDeploy rack (Fog of War tutorial). */
   hideGas?: boolean;
-  /** Tutorial HOME-only sidebar. */
   tutorial?: boolean;
-  /**
-   * Tutorial-only auto-End when the player queue meets a threshold:
-   * - `first` — first intent (Fog of War; Command Center)
-   * - `moveAndSpecial` — one classical + one special (other Special Moves)
-   * Ignored unless `tutorial` is set.
-   */
   endTurnAfterQueue?: "first" | "moveAndSpecial";
-  /** Kerrigan emotion for CoachScreen-shaped header / mobile hero (tutorial). */
   coachEmotion?: KerriganEmotion;
-  /** Floating guide ChatBubble (tutorial) — hangs under Header over ranks 7–8. */
   guideBubble?: import("solid-js").JSX.Element;
-  /** Replaces SidebarInset when set (tutorial desktop header avatar slot). */
   header?: import("solid-js").JSX.Element;
   footerExtra?: import("solid-js").JSX.Element;
-  /** Tutorial destination rings (e.g. fog/knight hop path). */
   hintSquares?: readonly Square[];
 };
 
@@ -128,7 +88,6 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
   const [spawnPhase, setSpawnPhase] = createSignal<"idle" | "modal" | "pick">("idle");
   const [overlayBox, setOverlayBox] = createSignal<OverlayBox | null>(null);
   const [exitOpen, setExitOpen] = createSignal(false);
-  /** Matches MobileBanner / gas-corner band (Storybook Dynamic 560×420). */
   const [dynamicMobile, setDynamicMobile] = createSignal(false);
   let boardHost: HTMLDivElement | undefined;
 
@@ -166,7 +125,6 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
     return findKing(placementToMap(s.placement), viewerColor(store));
   });
 
-  /** B = living king; F (after queued C) = post-move Command Center ring. */
   const spawnAnchor = createMemo(() => {
     const color = viewerColor(store);
     const timing = specialTimingFor(snap().queue, color);
@@ -193,7 +151,6 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
     return { color: viewerColor(store) };
   });
 
-  /** Intent-phase last-rank picker — same chrome surface as DeployModal. */
   const promotionPending = createMemo(() => {
     const s = store.state();
     if (!s.pendingPromotion) return null;
@@ -313,7 +270,6 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
         to: queen,
       });
       requestAnimationFrame(() => requestAnimationFrame(syncOverlay));
-      // Mark used only when the snipe queues.
       return "pending";
     },
     q: (ctx) => {
@@ -338,7 +294,6 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
         targets,
       });
       requestAnimationFrame(() => requestAnimationFrame(syncOverlay));
-      // Mark used only when the jump queues.
       return "pending";
     },
   });
@@ -358,7 +313,6 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
       type: "QUEUE_REJECT",
       message: `Tap an adjacent empty square to deploy ${piece.toUpperCase()}`,
     });
-    // Keep targeting in store for board input path as well.
     store.dispatch({
       type: "OPEN_SPAWN",
       color: viewerColor(store),
@@ -427,7 +381,6 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
     if (ok) store.dispatch({ type: "MARK_SPECIAL_USED", square: t.from });
   };
 
-  // Demo AI: queue opponent once per open planning window (timer armed).
   createEffect(() => {
     if (!starChessMode()) return;
     const fn = props.autoQueueOpponent;
@@ -451,11 +404,6 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
     store.dispatch({ type: "APPLY_SNAPSHOT", snapshot: result.snapshot });
   });
 
-  /**
-   * Keep the planning window armed after SCFEN load / check resolve.
-   * Story mounts often load SCFEN after the first onMount armTimer — re-arm
-   * whenever we sit in idle planning without a deadline.
-   */
   createEffect(() => {
     if (props.armTimer === false || !starChessMode()) return;
     const s = store.state();
@@ -467,7 +415,6 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
     store.armTimer();
   });
 
-  // Tutorial only: Fog ends on first intent; Specials on move+special (or first).
   let prevQueueReady = false;
   createEffect(() => {
     if (!props.tutorial) return;
@@ -481,7 +428,6 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
       prevQueueReady = false;
       return;
     }
-    // Wait for promotion / targeting modal to commit before End.
     if (s.pendingPromotion || s.targeting) {
       return;
     }
@@ -626,7 +572,6 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
 
   return (
     <Screen>
-      {/* Hidden king-lives probe for tests / demos */}
       <Show when={starChessMode()}>
         <span
           data-testid="king-lives"
@@ -642,9 +587,8 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
           <Screen.SidebarInset class={styles.topPane}>
             <Show
               when={props.onExitToMenu}
-              fallback={<div class={styles.topChrome} data-testid="nerd-board-chrome">{topChrome()}</div>}
+              fallback={<div class={styles.topChrome} data-testid="starchess-board-chrome">{topChrome()}</div>}
             >
-              {/* Dynamic: ‹ Back (4rem) · resources · turn — gas is bottom-right. */}
               <Show when={starChessMode() && !ended() && dynamicMobile()}>
                 <MobileBanner
                   onBack={requestLeave}
@@ -665,7 +609,6 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
                   }
                 />
               </Show>
-              {/* Tall / desktop live chrome — hidden on dynamic while the banner owns HUD. */}
               <div classList={{ [styles.dynamicHide]: starChessMode() && !ended() && dynamicMobile() }}>
                 <ScreenBackNav onBack={requestLeave} data-testid="live-back">
                   <Show when={props.matchTitle}>
@@ -675,7 +618,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
                       </Label>
                     </div>
                   </Show>
-                  <div class={styles.topChrome} data-testid="nerd-board-chrome">
+                  <div class={styles.topChrome} data-testid="starchess-board-chrome">
                     {topChrome()}
                   </div>
                 </ScreenBackNav>
@@ -686,7 +629,6 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
       >
         <Screen.Header>
           <div class={styles.headerSlot}>
-            {/* CoachScreen: desktop header owns the avatar. */}
             <div class="desktop-only" data-testid="tutorial-header">
               <Show
                 when={props.header}
@@ -718,7 +660,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
           </Show>
           <MatchBoardHost.BoardHost
             class={styles.boardHost}
-            data-testid="nerd-play-layout"
+            data-testid="starchess-play-layout"
             ref={(el) => {
               boardHost = el;
             }}
@@ -821,7 +763,6 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
       <Screen.Footer>
         <div class={styles.footerStack}>
           <Show when={props.footerExtra}>{props.footerExtra}</Show>
-          {/* Tall / desktop gas — in-flow footer. Dynamic uses Portaled corner dock. */}
           <div
             classList={{
               [styles.gasDock]: true,
@@ -832,7 +773,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
                 dynamicMobile()
               ),
             }}
-            data-testid="nerd-gas-deploy"
+            data-testid="starchess-gas-deploy"
           >
             <Show when={starChessMode() && !ended() && !props.hideGas}>
               <GasRack
@@ -860,7 +801,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
             >
               <Show
                 when={starChessMode()}
-                fallback={<p class={styles.placeholder}>Nerd mode is awakening…</p>}
+                fallback={<p class={styles.placeholder}>StarChess is loading…</p>}
               >
                 <Show
                   when={outcomeLabel(store.state())}
@@ -873,7 +814,6 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
           </Show>
         </div>
       </Screen.Footer>
-      {/* Dynamic only: gas bottom-right via Portal (outside Screen overflow). */}
       <Show
         when={
           !!(
@@ -888,7 +828,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
         <Portal>
           <div
             class={`gas-dock-dynamic ${styles.gasDockDynamic}`}
-            data-testid="nerd-gas-deploy-dynamic"
+            data-testid="starchess-gas-deploy-dynamic"
             style={{
               display: "block",
               position: "fixed",

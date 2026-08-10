@@ -5,7 +5,7 @@ import { FireColumn, pickFireSpots } from "~/presentation/animations/pieces/king
 import { TwinBattery, TWIN_BATTERY_SCALE_KING } from "~/presentation/animations/pieces/TwinBattery";
 import styles from "~/presentation/animations/pieces/InlineKing.module.css";
 import {
-  NERD_FRAME,
+  PIECE_FRAME,
   TEAM_PRIMARY,
   type PieceColor,
 } from "~/presentation/animations/teamColors";
@@ -45,7 +45,7 @@ export const InlineKing: Component<InlineKingProps> = (props) => {
       data-king-damage={damage()}
       data-team={color()}
     >
-      <g transform={NERD_FRAME.K}>
+      <g transform={PIECE_FRAME.K}>
         <defs>
           <radialGradient id={`${uid}-core`} cx="50%" cy="70%" r="55%">
             <stop offset="0" stop-color="#fff6d0" stop-opacity="0.95" />

@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:debug": "VITE_STARC_DEBUG=1 vite",
     "build": "tsgo -b && vite build",
     "typecheck": "tsgo -b --noEmit",
     "test": "vitest run",
@@ -13,9 +14,11 @@
     "lint:fix": "oxlint -c oxlint.config.ts --fix --fix-suggestions --fix-dangerously",
     "format": "oxfmt",
     "storybook": "storybook dev -p 6007 --ci",
+    "storybook:debug": "VITE_STARC_DEBUG=1 storybook dev -p 6007 --ci",
     "build-storybook": "storybook build -o storybook-static",
     "check:bundle": "node scripts/check-bundle-boundary.mjs",
     "preview": "npm run build && wrangler dev",
+    "preview:debug": "VITE_STARC_DEBUG=1 npm run build && VITE_STARC_DEBUG=1 wrangler dev",
     "deploy:dry-run": "npm run build && wrangler deploy --dry-run",
     "deploy": "npm run build && wrangler deploy"
   },

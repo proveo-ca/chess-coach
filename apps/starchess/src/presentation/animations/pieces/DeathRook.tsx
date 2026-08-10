@@ -1,7 +1,7 @@
 import { Show, type Component } from "solid-js";
 
 import {
-  NERD_ROOK_SCALE,
+  ROOK_FRAME_SCALE,
   ROOK_REST_AIM_DEG,
   svgPivotAroundAniso,
 } from "~/presentation/animations/attackAnim";
@@ -11,7 +11,7 @@ import {
   INK_BLACK,
   INK_DARK_GRAY,
   INK_WHITE,
-  NERD_FRAME,
+  PIECE_FRAME,
   TEAM_PRIMARY,
   type PieceColor,
 } from "~/presentation/animations/teamColors";
@@ -30,8 +30,8 @@ const restAim = () =>
     PIVOT.x,
     PIVOT.y,
     ROOK_REST_AIM_DEG,
-    NERD_ROOK_SCALE.sx,
-    NERD_ROOK_SCALE.sy,
+    ROOK_FRAME_SCALE.sx,
+    ROOK_FRAME_SCALE.sy,
   );
 
 export const DeathRook: Component<DeathRookProps> = (props) => {
@@ -40,7 +40,7 @@ export const DeathRook: Component<DeathRookProps> = (props) => {
 
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45" aria-hidden="true" overflow="visible">
-      <g transform={NERD_FRAME.R}>
+      <g transform={PIECE_FRAME.R}>
         <g transform={`translate(22.5 22.5) scale(${ROOK_CONTENT_SCALE}) translate(-22.5 -22.5)`}>
           <g stroke="#222" stroke-linecap="round" stroke-linejoin="round" stroke-width="1">
             <Show

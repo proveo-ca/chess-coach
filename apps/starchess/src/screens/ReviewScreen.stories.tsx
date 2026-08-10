@@ -8,7 +8,7 @@ import {
   queueCombatChainStep,
 } from "~/demos/combatChain";
 import { ReviewScreen } from "~/screens/ReviewScreen.tsx";
-import { NERD_STARTING_SCFEN } from "~/stories/fixtures/seeds";
+import { STAR_STARTING_SCFEN } from "~/stories/fixtures/seeds";
 import { addMatchRecord } from "~/store/matchHistoryStore";
 import type { StarChessGameRecord } from "~/types/review";
 
@@ -42,7 +42,7 @@ const games = [
     map: "butter",
     playerColor: "w",
     playerName: "Alex",
-    scfens: [NERD_STARTING_SCFEN],
+    scfens: [STAR_STARTING_SCFEN],
     resolves: [],
   },
   {
@@ -53,7 +53,7 @@ const games = [
     map: "vermeer",
     playerColor: "b",
     playerName: "Alex",
-    scfens: [NERD_STARTING_SCFEN],
+    scfens: [STAR_STARTING_SCFEN],
     resolves: [],
   },
 ] satisfies StarChessGameRecord[];

@@ -5,7 +5,7 @@ import {
   canPawnDoubleFree,
   hasUsedSpecialThisTurn,
 } from "~/app/matchEconomy";
-import type { GasDeployTarget } from "~/components/features/GasRack";
+import type { GasDeployTarget } from "~/types/specials";
 import { specialCopyFor, type SpecialCopy } from "~/presentation/hud/specialCopy";
 import type { ScSpecialKind } from "@chess-coach/starchess-core";
 

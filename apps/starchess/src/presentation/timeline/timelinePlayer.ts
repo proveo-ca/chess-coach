@@ -650,17 +650,41 @@ export const playTimeline = (
 
     const cue = cues[index]!;
 
-    // Gas absorbs — simultaneous for all B (or F) specials in this wave.
+    // Gas absorbs (+ optional spawn deploys in the same window).
+    // CC canister on the king and unit drop start together so deploy is not
+    // clipped by a trailing attack when gas finishes first.
     if (isGasDrop(cue)) {
-      const { batch, next } = takeWhile(cues, index, isGasDrop);
-      const drops = batch as Extract<TimelineCue, { kind: "gasDrop" }>[];
-      cb.onCommit({
-        hidden: [],
-        playingIds: drops.map((c) => c.id),
-        moveProgress: {},
-        moveLeg: {},
-      });
-      const wait = scheduler.delay(GAS_DROP_MS, () => {
+      const gasTaken = takeWhile(cues, index, isGasDrop);
+      const drops = gasTaken.batch as Extract<TimelineCue, { kind: "gasDrop" }>[];
+      let deploys: Extract<TimelineCue, { kind: "deploy" }>[] = [];
+      let next = gasTaken.next;
+      if (next < cues.length && isSpawnDeploy(cues[next]!)) {
+        const depTaken = takeWhile(cues, next, isSpawnDeploy);
+        deploys = depTaken.batch as Extract<TimelineCue, { kind: "deploy" }>[];
+        next = depTaken.next;
+      }
+      const playingIds = [
+        ...drops.map((c) => c.id),
+        ...deploys.map((c) => c.id),
+      ];
+      if (deploys.length > 0) {
+        applyAfterB({
+          hidden: deploys.map((c) => c.at),
+          playingIds,
+        });
+      } else {
+        cb.onCommit({
+          hidden: [],
+          playingIds,
+          moveProgress: {},
+          moveLeg: {},
+        });
+      }
+      const waitMs = Math.max(
+        GAS_DROP_MS,
+        deploys.length > 0 ? DEPLOY_MS : 0,
+      );
+      const wait = scheduler.delay(waitMs, () => {
         if (cancelled) return;
         for (const d of drops) usedSquares.add(d.at);
         cb.onCommit({
@@ -676,7 +700,7 @@ export const playTimeline = (
       return;
     }
 
-    // Parallel spawn deploys (Command Center) — one DEPLOY_MS window.
+    // Spawn deploys without a preceding gas drop (edge / auto-deploy).
     if (isSpawnDeploy(cue)) {
       const { batch, next } = takeWhile(cues, index, isSpawnDeploy);
       const deploys = batch as Extract<TimelineCue, { kind: "deploy" }>[];

@@ -7,7 +7,7 @@ import {
   TEAM_LIGHT,
   TEAM_PRIMARY,
   type PieceColor,
-  NERD_FRAME,
+  PIECE_FRAME,
 } from "~/presentation/animations/teamColors";
 
 /** Quiet-move wheel crank — feet trace full circles about the hip. */
@@ -389,7 +389,7 @@ export const InlineBishop: Component<InlineBishopProps> = (props) => {
       data-charon-armed={armed() ? "true" : undefined}
       data-charon-arm-anim={armAnim() ? "true" : undefined}
     >
-      <g transform={NERD_FRAME.B}>
+      <g transform={PIECE_FRAME.B}>
         <g stroke="#222" stroke-linecap="round" stroke-linejoin="round" stroke-width="1">
           {/* Legs under cockpit so the hull always occludes the hip joints. */}
           <g data-part="body">

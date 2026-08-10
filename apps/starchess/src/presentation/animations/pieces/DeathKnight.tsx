@@ -1,7 +1,7 @@
 import type { Component } from "solid-js";
 
 import { Shard } from "~/presentation/animations/pieces/Shard";
-import { TEAM_PRIMARY, type PieceColor, NERD_FRAME } from "~/presentation/animations/teamColors";
+import { TEAM_PRIMARY, type PieceColor, PIECE_FRAME } from "~/presentation/animations/teamColors";
 
 type DeathKnightProps = {
   seed: number;
@@ -16,7 +16,7 @@ export const DeathKnight: Component<DeathKnightProps> = (props) => {
       <Shard index={0} seed={props.seed}>
         <ellipse fill="#555" cx="22.5" cy="41" rx="11" ry="2.2" stroke="none" opacity="0.3" />
       </Shard>
-      <g transform={NERD_FRAME.N}>
+      <g transform={PIECE_FRAME.N}>
         {/* Idle normalize — same nest as InlineKnight (no aimPose). */}
         <g transform="translate(22.5 22.5) scale(1.1) translate(-22.5 -22.5)">
           <g transform="translate(22.5 22.5) scale(-1 1) translate(-22.5 -22.5)">

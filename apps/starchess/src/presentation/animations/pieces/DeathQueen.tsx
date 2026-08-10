@@ -1,7 +1,7 @@
 import type { Component } from "solid-js";
 
 import { Shard } from "~/presentation/animations/pieces/Shard";
-import { TEAM_LIGHT, TEAM_PRIMARY, type PieceColor, NERD_FRAME } from "~/presentation/animations/teamColors";
+import { TEAM_LIGHT, TEAM_PRIMARY, type PieceColor, PIECE_FRAME } from "~/presentation/animations/teamColors";
 
 type DeathQueenProps = {
   seed: number;
@@ -14,7 +14,7 @@ export const DeathQueen: Component<DeathQueenProps> = (props) => {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45" aria-hidden="true" overflow="visible">
       <g transform="translate(22.5 22.5) rotate(-90) translate(-22.5 -22.5)">
-        <g transform={NERD_FRAME.Q}>
+        <g transform={PIECE_FRAME.Q}>
           <g stroke="#222" stroke-linecap="round" stroke-linejoin="round" stroke-width="1">
             <Shard index={0} seed={props.seed}>
               <ellipse fill="#555" cx="22.5" cy="42" rx="16" ry="2" stroke="none" opacity=".25" />

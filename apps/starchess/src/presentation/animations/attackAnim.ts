@@ -24,10 +24,10 @@ export const IDLE_FRONT_MS = ATTACK_MS;
 export const ROOK_REST_AIM_DEG = -135;
 
 /**
- * Anisotropic scale baked into {@link NERD_FRAME}.R — turret yaw must conjugate
+ * Anisotropic scale baked into {@link PIECE_FRAME}.R — turret yaw must conjugate
  * through this or `rotate(aim)` skews (siege tank looks tilted sideways).
  */
-export const NERD_ROOK_SCALE = { sx: 0.8299, sy: 1.0503 } as const;
+export const ROOK_FRAME_SCALE = { sx: 0.8299, sy: 1.0503 } as const;
 
 /** King idle cannons face the player (down the board). */
 export const KING_REST_AIM_DEG = 90;
@@ -62,7 +62,7 @@ export const svgPivotAround = (cx: number, cy: number, deg: number): string =>
   `translate(${cx} ${cy}) rotate(${deg}) translate(${-cx} ${-cy})`;
 
 /**
- * Screen-space yaw under an anisotropic parent scale (e.g. rook NERD_FRAME).
+ * Screen-space yaw under an anisotropic parent scale (e.g. rook PIECE_FRAME).
  * Uses S⁻¹ R S so the turret rotates rigidly instead of shearing.
  */
 export const svgPivotAroundAniso = (

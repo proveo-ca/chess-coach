@@ -4,7 +4,7 @@ import {
   getSideVision,
   mapToPlacement,
   placementToMap,
-  type NerdVision,
+  type SideVision,
   type ScFenSnapshot,
   type ScPiece,
   type StarChessColor,
@@ -19,11 +19,11 @@ import { moveSquareAtElapsed } from "~/presentation/animations/moveTiming";
  * Kept as a pass-through so call sites stay stable.
  */
 export const fogWithGasUsedReveal = (
-  base: NerdVision,
+  base: SideVision,
   _specialsUsed: ReadonlySet<Square>,
   _viewer: StarChessColor,
   _snap: ScFenSnapshot,
-): NerdVision => base;
+): SideVision => base;
 
 export type MoveVisionCue = {
   id: string;
@@ -101,7 +101,7 @@ export function gameWithMovePathOccupancy(
 export const observerVisionFromSnap = (
   snap: ScFenSnapshot,
   opts?: { siegedRooks?: readonly Square[] },
-): { w: NerdVision; b: NerdVision } => {
+): { w: SideVision; b: SideVision } => {
   const sieged = new Set(opts?.siegedRooks ?? snap.siegedRooks ?? []);
   const rookModeFor = (sq: Square) => (sieged.has(sq) ? "siege" : "tank");
   const visionOpts = { rookModeFor, mines: snap.mines };

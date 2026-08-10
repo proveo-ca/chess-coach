@@ -7,7 +7,7 @@ import type { Square } from "../model/square";
 import type { StarChessColor, ScMine } from "../model/types";
 import { parseSquare, sq, type ScPiece } from "./placement";
 
-export const MAX_MINES_PER_SIDE = 2;
+export const MAX_MINES_PER_SIDE = 3;
 
 /** Intermediate squares on a sliding ray (exclusive of both ends). */
 export const rayBetween = (from: Square, to: Square): Square[] => {

@@ -1,6 +1,6 @@
-/** Classic Nerd starting placement as SCFEN (maps gallery / open board). */
-export const NERD_STARTING_SCFEN =
-  "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|Q:w:;b:";
+/** Classic StarChess starting placement as SCFEN (maps gallery / open board). */
+export const STAR_STARTING_SCFEN =
+  "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:";
 
 export const COMBAT_CHAIN_START_SCFEN =
   "SCFEN|4bk2/8/5n2/4p3/8/2R5/3P4/4K3|0|33|P|G:11:11|Q:w:;b:";

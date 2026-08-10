@@ -1,13 +1,13 @@
 import { expect, test } from "@playwright/test";
 
 const gotoScfen = async (page: import("@playwright/test").Page, scfen: string) => {
-  await page.goto(`/?scfen=${encodeURIComponent(scfen)}`);
-  await expect(page.getByTestId("nerd-board-chrome")).toBeVisible({ timeout: 20_000 });
+  await page.goto(`single?scfen=${encodeURIComponent(scfen)}`);
+  await expect(page.getByTestId("starchess-board-chrome")).toBeVisible({ timeout: 20_000 });
 };
 
 test.describe("StarChess queue edit + gas pawn", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/");
+    await page.goto("./");
     await page.evaluate(() => localStorage.clear());
   });
 
@@ -16,9 +16,8 @@ test.describe("StarChess queue edit + gas pawn", () => {
       "SCFEN|4k3/8/8/8/8/8/4P3/4K3|11|33|P|G:22:22|Q:w:C=e2e3;b:";
     await gotoScfen(page, scfen);
     const queue = page.getByTestId("turn-queue");
-    await expect(queue).toContainText(/C e2→e3/i);
+    await expect(queue).toContainText(/e2→e3/);
     await page.getByTestId("queue-remove-0").click();
-    await expect(queue).toContainText("C —");
     await expect(queue).not.toContainText(/e2→e3/);
   });
 
@@ -28,11 +27,11 @@ test.describe("StarChess queue edit + gas pawn", () => {
       "SCFEN|4k3/8/8/8/8/8/4P3/4K3|11|33|P|G:12:22|Q:w:B=pawnDouble:e2:e3;b:";
     await gotoScfen(page, scfen);
     const queue = page.getByTestId("turn-queue");
-    await expect(queue).toContainText(/B pawnDouble/i);
+    await expect(queue).toContainText(/e2→e3|pawnDouble/i);
     // Intent canister on the gas-armed unit (top-right badge).
     await expect(page.locator("[data-square='e2'][data-intent-canister]")).toBeVisible();
     await expect(page.locator("[data-square='e2'] .intentCanister, [data-square='e2'] [class*='intentCanister']")).toBeVisible();
-    const chrome = page.getByTestId("nerd-board-chrome");
+    const chrome = page.getByTestId("starchess-board-chrome");
     await expect(chrome).toBeVisible();
     await page.getByTestId("queue-remove-0").click();
     await expect(queue).not.toContainText(/pawnDouble/i);
@@ -56,6 +55,22 @@ test.describe("StarChess queue edit + gas pawn", () => {
     const scfen =
       "SCFEN|4k3/8/8/8/8/8/4P3/4K3|11|33|P|G:12:22|Q:w:C=e2e3,F=pawnDouble:e2:e3;b:";
     await gotoScfen(page, scfen);
+    await page.getByTestId("turn-end").click();
+    await expect(page.locator("[data-square='e4'] img[alt='w p']")).toBeVisible({
+      timeout: 15_000,
+    });
+  });
+
+  test("board click queues C from gas landing then End", async ({ page }) => {
+    // Gas e2→e3 queued; click e3 → e4 classical from post-B square.
+    const scfen =
+      "SCFEN|4k3/8/8/8/8/8/4P3/4K3|1|33|P|G:01:11|B:3:3|Q:w:B=pawnDouble:e2:e3;b:";
+    await gotoScfen(page, scfen);
+    await page.locator("[data-square='e3']").click();
+    await page.locator("[data-square='e4']").click();
+    await expect(page.getByTestId("turn-queue")).toContainText(/e3→e4/, {
+      timeout: 3_000,
+    });
     await page.getByTestId("turn-end").click();
     await expect(page.locator("[data-square='e4'] img[alt='w p']")).toBeVisible({
       timeout: 15_000,

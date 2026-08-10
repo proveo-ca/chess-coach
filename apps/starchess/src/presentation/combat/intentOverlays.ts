@@ -21,6 +21,7 @@ import {
   type StarChessColor,
 } from "@chess-coach/starchess-core";
 
+import { pieceAtQueuedSquare } from "~/presentation/board/occupancyForQueuedMoves";
 import type { IntentGhost } from "~/types/board";
 
 export type IntentCanisterGhost = {
@@ -35,7 +36,10 @@ export type IntentCheckGhost = {
 
 export type IntentOverlays = {
   destinations: IntentGhost[];
-  /** Ghost vespene canister over units with a queued B/F special. */
+  /**
+   * Ghost vespene badge: gas/warp/siege on the live actor; spawn on the
+   * deploy square so a deploy ghost reads “with gas” vs a pure move ghost.
+   */
   canisters: IntentCanisterGhost[];
   checks: IntentCheckGhost[];
 };
@@ -118,8 +122,11 @@ export const intentOverlaysFromQueue = (
   for (const a of queue) {
     if (viewer && a.color !== viewer) continue;
     if (a.timing === "C") {
-      const actor = map?.get(a.from);
-      const piece = actor?.type;
+      // Resolve actor via post-B occupancy (spawn / gas / warp landing) so a
+      // classical after deploy paints a move ghost — not only the B ghost.
+      const piece = map
+        ? pieceAtQueuedSquare(map, a.from, a.color, queue)?.type
+        : undefined;
       if (!piece) continue;
       const key = `${a.color}:${a.to}`;
       if (!seenDest.has(key)) {
@@ -140,21 +147,25 @@ export const intentOverlaysFromQueue = (
       }
       continue;
     }
-    // B / F specials — canister on the unit; destination ghost when relocating.
-    // F after a classical: follow the piece intent so the badge sits on the ghost.
+    // B / F specials — canister badge + destination ghost when relocating.
+    // Spawn: badge rides the deploy ghost (to), not the king — differentiates
+    // deploy-with-gas vs pure classical move ghost (no canister).
+    // Gas/warp/etc.: badge on live actor (from). F after C: follow C landing.
     const canAt =
-      a.timing === "F"
-        ? (() => {
-            const c = queue.find(
-              (q) =>
-                q.timing === "C" &&
-                q.kind === "classical" &&
-                q.color === a.color &&
-                q.from === a.from,
-            );
-            return c?.to ?? a.from;
-          })()
-        : a.from;
+      a.kind === "spawn" && a.to
+        ? a.to
+        : a.timing === "F"
+          ? (() => {
+              const c = queue.find(
+                (q) =>
+                  q.timing === "C" &&
+                  q.kind === "classical" &&
+                  q.color === a.color &&
+                  q.from === a.from,
+              );
+              return c?.to ?? a.from;
+            })()
+          : a.from;
     const canKey = `${a.color}:${canAt}`;
     if (!seenCan.has(canKey)) {
       seenCan.add(canKey);
