@@ -1,5 +1,6 @@
 /* Dynamic live strip — Back | resources | turn
-   Tracks: 4rem · 1fr · 1fr (gas is fixed bottom-right outside this banner).
+   Tracks: 4rem · 10rem · minmax(0,1fr) (gas fixed bottom-right).
+   Resources fixed; turn column (queue + End + timer) gets the rest.
    Child density via ResourceBar/TurnBar `compact` props — not testids. */
 
 .banner {
@@ -10,7 +11,7 @@
 @media (max-width: 719px) and (min-width: 480px) and (max-height: 639px) {
   .banner {
     display: grid;
-    grid-template-columns: 4rem 1fr 1fr;
+    grid-template-columns: 4rem 10rem minmax(0, 1fr);
     align-items: center;
     column-gap: 0.35rem;
     width: 100%;
@@ -32,7 +33,9 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    min-width: 0;
+    width: 4rem;
+    min-width: 4rem;
+    max-width: 4rem;
     overflow: hidden;
   }
 
@@ -40,7 +43,9 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    min-width: 0;
+    width: 10rem;
+    min-width: 10rem;
+    max-width: 10rem;
     overflow: hidden;
   }
 
@@ -52,7 +57,7 @@
   .turn {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: stretch;
     min-width: 0;
     overflow: hidden;
   }
@@ -60,5 +65,6 @@
   .turn > * {
     min-width: 0;
     max-width: 100%;
+    width: 100%;
   }
 }

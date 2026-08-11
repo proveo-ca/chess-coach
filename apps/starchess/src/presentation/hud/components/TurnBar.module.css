@@ -46,7 +46,7 @@
   flex-shrink: 0;
 }
 
-/* MobileBanner density — timer + End only, single horizontal row. */
+/* MobileBanner density — queue (flex) + End + timer (fixed). */
 .compact {
   flex-direction: row;
   align-items: center;
@@ -57,17 +57,68 @@
   width: 100%;
   max-width: 100%;
   min-width: 0;
-  justify-content: center;
+  justify-content: stretch;
 }
 
 .compact .controls {
-  gap: 0.35rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  column-gap: 0.35rem;
   min-height: 0;
-  justify-content: center;
   width: 100%;
+  min-width: 0;
 }
 
 .compact .end {
   padding: 0.25rem 0.55rem;
   font-size: 0.75rem;
+  flex-shrink: 0;
+  width: 4.75rem;
+  box-sizing: border-box;
+  justify-self: end;
+}
+
+.compact .timer {
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  justify-self: end;
+}
+
+/* Queue takes leftover banner space; chips scroll/clip inside. */
+.compact .inlineQueue {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.25rem;
+  min-width: 0;
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.inlineQueue {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+}
+
+/* Dynamic gas dock — last queue chip only (cancel), no End/timer frame. */
+.queueOnly {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  width: auto;
+  max-width: min(12rem, 40vw);
+  min-width: 0;
+}
+
+.queueOnly .queue {
+  width: auto;
+  flex-wrap: nowrap;
 }

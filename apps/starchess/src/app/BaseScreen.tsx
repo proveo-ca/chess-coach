@@ -90,17 +90,35 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
   const [overlayBox, setOverlayBox] = createSignal<OverlayBox | null>(null);
   const [exitOpen, setExitOpen] = createSignal(false);
   const [dynamicMobile, setDynamicMobile] = createSignal(false);
+  const [mobileViewport, setMobileViewport] = createSignal(false);
   let boardHost: HTMLDivElement | undefined;
 
   onMount(() => {
-    const mq = window.matchMedia(
+    const dynamicMq = window.matchMedia(
       "(max-width: 719px) and (min-width: 480px) and (max-height: 639px)",
     );
-    const sync = () => setDynamicMobile(mq.matches);
+    const mobileMq = window.matchMedia("(max-width: 719px)");
+    const sync = () => {
+      setDynamicMobile(dynamicMq.matches);
+      setMobileViewport(mobileMq.matches);
+    };
     sync();
-    mq.addEventListener("change", sync);
-    onCleanup(() => mq.removeEventListener("change", sync));
+    dynamicMq.addEventListener("change", sync);
+    mobileMq.addEventListener("change", sync);
+    onCleanup(() => {
+      dynamicMq.removeEventListener("change", sync);
+      mobileMq.removeEventListener("change", sync);
+    });
   });
+
+  /** Tall/narrow mobile loses the rail — TurnBar under GasRack (no phase chips). */
+  const showFooterTurnBar = () =>
+    starChessMode() &&
+    !ended() &&
+    !turnHidden() &&
+    turnInSidebar() &&
+    mobileViewport() &&
+    !dynamicMobile();
 
   const liveMatch = () => {
     const phase = store.state().phase;
@@ -731,31 +749,35 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
         </MatchBoardHost.BoardColumn>
         <MatchBoardHost.Rail
           onHome={props.onExitToMenu}
-          controlsVisible={starChessMode() && turnInSidebar() && !turnHidden()}
+          controlsVisible={
+            starChessMode() && turnInSidebar() && !turnHidden() && !mobileViewport()
+          }
         >
-          <Show
-            when={ended()}
-            fallback={
+          <Show when={!mobileViewport()}>
+            <Show
+              when={ended()}
+              fallback={
+                <TurnBarSidebar
+                  autoStart={false}
+                  resolveOnEnd={false}
+                  onEnd={() => store.submitTurn("end")}
+                />
+              }
+            >
               <TurnBarSidebar
-                autoStart={false}
-                resolveOnEnd={false}
-                onEnd={() => store.submitTurn("end")}
+                review={{
+                  turn: reviewTurnNumber(),
+                  phase: store.reviewPhase(),
+                  hideDualNav: true,
+                  onBack: () => store.reviewBack(),
+                  onForward: () => store.reviewForward(),
+                  backDisabled: reviewBusy() || store.state().reviewIndex <= 0,
+                  forwardDisabled:
+                    reviewBusy() ||
+                    store.state().reviewIndex >= store.state().settledSnapshots.length - 1,
+                }}
               />
-            }
-          >
-            <TurnBarSidebar
-              review={{
-                turn: reviewTurnNumber(),
-                phase: store.reviewPhase(),
-                hideDualNav: true,
-                onBack: () => store.reviewBack(),
-                onForward: () => store.reviewForward(),
-                backDisabled: reviewBusy() || store.state().reviewIndex <= 0,
-                forwardDisabled:
-                  reviewBusy() ||
-                  store.state().reviewIndex >= store.state().settledSnapshots.length - 1,
-              }}
-            />
+            </Show>
           </Show>
         </MatchBoardHost.Rail>
       </MatchBoardHost>
@@ -790,6 +812,16 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
               />
             </Show>
           </div>
+          <Show when={showFooterTurnBar()}>
+            <TurnBar
+              density="default"
+              hidePhase
+              class={styles.footerTurnBar}
+              autoStart={false}
+              resolveOnEnd={false}
+              onEnd={() => store.submitTurn("end")}
+            />
+          </Show>
           <Show when={!props.tutorial}>
             <div
               class={styles.statusLine}

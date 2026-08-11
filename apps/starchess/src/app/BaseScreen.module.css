@@ -132,6 +132,14 @@
   min-height: 3.75rem;
 }
 
+/* Tall mobile (sidebar chrome lost with rail) — full TurnBar under GasRack. */
+.footerTurnBar {
+  width: 100%;
+  max-width: var(--board-size);
+  min-width: 0;
+  box-sizing: border-box;
+}
+
 /* Short / dynamic — rack is position:fixed; drop the footer spacer. */
 @media (max-height: 639px) {
   .gasDock {
@@ -167,8 +175,8 @@
   background: transparent;
 }
 
-/* Live dynamic (560×420 band): MobileBanner owns Back/resources/turn.
-   GasDeploy.compact floats bottom-right (see GasDeploy.module.css). */
+/* Live dynamic (560×420 band): MobileBanner owns Back/resources/turn
+   (compact TurnBar = last queue chip + End + timer). Gas floats bottom-right. */
 @media (max-width: 719px) and (min-width: 480px) and (max-height: 639px) {
   .dynamicHide {
     display: none !important;
@@ -180,7 +188,7 @@
     height: auto;
   }
 
-    /* Gas corner dock is portaled; reveal only in this band. */
+  /* Gas corner dock is portaled; reveal only in this band. */
   .gasDockDynamic,
   :global(.gas-dock-dynamic) {
     display: block;

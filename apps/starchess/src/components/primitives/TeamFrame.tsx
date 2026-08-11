@@ -14,6 +14,7 @@ export type TeamFrameProps = {
   "data-testid"?: string;
   "data-team"?: string;
   "data-phase"?: string;
+  "data-density"?: string;
   "data-turn"?: number | string;
   "data-gas"?: number | string;
 };
@@ -27,6 +28,7 @@ export const TeamFrame = (props: TeamFrameProps) => (
     data-testid={props["data-testid"]}
     data-team={props["data-team"]}
     data-phase={props["data-phase"]}
+    data-density={props["data-density"]}
     data-turn={props["data-turn"]}
     data-gas={props["data-gas"]}
   >

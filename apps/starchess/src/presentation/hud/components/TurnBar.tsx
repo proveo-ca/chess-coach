@@ -31,6 +31,8 @@ import { reviewPhaseChipTone } from "~/presentation/hud/reviewPhases";
 import styles from "~/presentation/hud/components/TurnBar.module.css";
 import type { ChipTone } from "~/types/ui";
 
+export type TurnBarDensity = "default" | "compact" | "queueOnly";
+
 type TurnBarProps = {
   /** Called when the player presses End (after store submit when resolveOnEnd). */
   onEnd?: () => void;
@@ -44,9 +46,15 @@ type TurnBarProps = {
    */
   resolveOnEnd?: boolean;
   /**
-   * Dynamic MobileBanner density — timer + End Turn only (no chips / queue).
+   * default  — phase chips + full queue + End + timer
+   * compact  — last queue chip (cancel) + End + timer (MobileBanner)
+   * queueOnly — last viewer queue chip only (cancel); no End/timer
    */
+  density?: TurnBarDensity;
+  /** Alias for density="compact" (MobileBanner). */
   compact?: boolean;
+  /** Hide Turn/Phase label chips (tall-mobile footer under GasRack). */
+  hidePhase?: boolean;
   class?: string;
 };
 
@@ -68,6 +76,14 @@ export const TurnBar: Component<TurnBarProps> = (props) => {
   /** Deadline timestamp we already fired for — reset when a new planning window arms. */
   let firedForDeadline: number | null = null;
 
+  const density = (): TurnBarDensity =>
+    props.density ?? (props.compact ? "compact" : "default");
+  const isCompact = () => density() === "compact";
+  const isQueueOnly = () => density() === "queueOnly";
+  const showControls = () => !isQueueOnly();
+  const showTurnMeta = () => density() === "default";
+  const showFullQueue = () => density() === "default";
+
   const resolveIfArmed = () => {
     if (props.resolveOnEnd === false) return;
     if (!canSubmit(store.state())) return;
@@ -75,6 +91,8 @@ export const TurnBar: Component<TurnBarProps> = (props) => {
   };
 
   onMount(() => {
+    // queueOnly is cancel chrome only — never arm or tick the planning timer.
+    if (isQueueOnly()) return;
     if (props.autoStart !== false && turnDeadlineAt(store) == null) {
       store.armTimer();
     }
@@ -97,6 +115,7 @@ export const TurnBar: Component<TurnBarProps> = (props) => {
   });
 
   createEffect(() => {
+    if (isQueueOnly()) return;
     const deadline = turnDeadlineAt(store);
     if (deadline != null && deadline !== firedForDeadline) {
       firedForDeadline = null;
@@ -137,6 +156,16 @@ export const TurnBar: Component<TurnBarProps> = (props) => {
   const befores = () => sideQueue().filter((a) => a.timing === "B");
   const classical = () => sideQueue().find((a) => a.timing === "C") ?? null;
   const afters = () => sideQueue().filter((a) => a.timing === "F");
+  /** Highest seq among viewer actions (most recently queued). */
+  const lastQueued = createMemo(() => {
+    const q = sideQueue();
+    if (!q.length) return null;
+    let best = q[0]!;
+    for (const a of q) {
+      if (a.seq > best.seq) best = a;
+    }
+    return best;
+  });
 
   const removeChip = (a: ScAction, e: MouseEvent) => {
     e.stopPropagation();
@@ -163,60 +192,86 @@ export const TurnBar: Component<TurnBarProps> = (props) => {
   );
 
   return (
-    <TeamFrame
-      class={`${styles.bar}${props.compact ? ` ${styles.compact}` : ""}${props.class ? ` ${props.class}` : ""}`}
-      teamColor="#000"
-      data-testid="turn-bar"
-      data-team={viewerColor(store)}
-      data-phase={phase()}
-      role="group"
-      aria-label="Turn"
-    >
-      <div class={styles.controls}>
-        <Show when={!props.compact}>
-          <div class={styles.chips}>
-            <Chip tone="turn" data-testid="live-turn-chip">
-              Turn - {turnNumber()}
-            </Chip>
-            <Chip tone={reviewPhaseChipTone(phase())} data-testid="live-phase-chip">
-              {reviewPhaseLabel(phase())}
-            </Chip>
+    <Show when={!isQueueOnly() || lastQueued()}>
+      <TeamFrame
+        class={`${styles.bar}${isCompact() ? ` ${styles.compact}` : ""}${isQueueOnly() ? ` ${styles.queueOnly}` : ""}${props.class ? ` ${props.class}` : ""}`}
+        teamColor="#000"
+        data-testid="turn-bar"
+        data-density={density()}
+        data-team={viewerColor(store)}
+        data-phase={phase()}
+        role="group"
+        aria-label={isQueueOnly() ? "Queued action" : "Turn"}
+      >
+        <Show when={showControls()}>
+          <div class={styles.controls}>
+            <Show when={showTurnMeta()}>
+              <div class={styles.chips}>
+                <Chip tone="turn" data-testid="live-turn-chip">
+                  Turn - {turnNumber()}
+                </Chip>
+                <Show when={!props.hidePhase}>
+                  <Chip tone={reviewPhaseChipTone(phase())} data-testid="live-phase-chip">
+                    {reviewPhaseLabel(phase())}
+                  </Chip>
+                </Show>
+              </div>
+            </Show>
+            <Show when={isCompact()}>
+              <div
+                class={styles.inlineQueue}
+                data-testid="turn-queue"
+                aria-label="Last queued action"
+              >
+                <Show when={lastQueued()} keyed>
+                  {(a) => queueChip(a)}
+                </Show>
+              </div>
+            </Show>
+            <Button
+              class={styles.end}
+              data-testid="turn-end"
+              onClick={() => {
+                resolveIfArmed();
+                props.onEnd?.();
+              }}
+            >
+              End Turn
+            </Button>
+            <CountdownRing
+              class={styles.timer}
+              progress={progress()}
+              aria-label={`${seconds()} seconds remaining`}
+              data-seconds={seconds()}
+            >
+              {seconds()}
+            </CountdownRing>
           </div>
         </Show>
-        <Button
-          class={styles.end}
-          data-testid="turn-end"
-          onClick={() => {
-            resolveIfArmed();
-            props.onEnd?.();
-          }}
-        >
-          End Turn
-        </Button>
-        <CountdownRing
-          progress={progress()}
-          aria-label={`${seconds()} seconds remaining`}
-          data-seconds={seconds()}
-        >
-          {seconds()}
-        </CountdownRing>
-      </div>
-      <Show when={!props.compact}>
-        <div class={styles.queue} data-testid="turn-queue" aria-label="Action queue">
-          <For each={befores()}>{(a) => queueChip(a)}</For>
-          <Show
-            when={classical()}
-            fallback={
-              <Chip size="sm" tone="muted" data-timing="C">
-                C —
-              </Chip>
-            }
-          >
-            {(c) => queueChip(c())}
-          </Show>
-          <For each={afters()}>{(a) => queueChip(a)}</For>
-        </div>
-      </Show>
-    </TeamFrame>
+        <Show when={showFullQueue()}>
+          <div class={styles.queue} data-testid="turn-queue" aria-label="Action queue">
+            <For each={befores()}>{(a) => queueChip(a)}</For>
+            <Show
+              when={classical()}
+              fallback={
+                <Chip size="sm" tone="muted" data-timing="C">
+                  C —
+                </Chip>
+              }
+            >
+              {(c) => queueChip(c())}
+            </Show>
+            <For each={afters()}>{(a) => queueChip(a)}</For>
+          </div>
+        </Show>
+        <Show when={isQueueOnly() && lastQueued()}>
+          {(a) => (
+            <div class={styles.queue} data-testid="turn-queue" aria-label="Last queued action">
+              {queueChip(a())}
+            </div>
+          )}
+        </Show>
+      </TeamFrame>
+    </Show>
   );
 };

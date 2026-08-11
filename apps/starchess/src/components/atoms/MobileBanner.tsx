@@ -1,6 +1,6 @@
 /**
  * Dynamic live strip — three-slot grid (gas lives bottom-right, not here):
- *   Back (4rem) · resources (1fr) · turn (1fr)
+ *   Back (4rem) · resources (10rem) · turn (minmax 0 1fr → queue + End + timer)
  * // SPEC: _spec/apps/starchess/screens.puml
  * // SPEC: _spec/apps/ui/responsiveness/rules.md
  */
