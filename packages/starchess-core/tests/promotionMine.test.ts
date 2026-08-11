@@ -206,7 +206,7 @@ describe("special registry", () => {
   it("exposes gas costs for every special kind", () => {
     expect(specialGasCost("spawn")).toBe(SPECIAL_REGISTRY.spawn.gasCost);
     expect(specialGasCost("bishopSnipe")).toBe(2);
-    expect(specialGasCost("queenWarp")).toBe(2);
+    expect(specialGasCost("queenWarp")).toBe(3);
     expect(specialGasCost("pawnDouble")).toBe(1);
   });
 });

@@ -17,7 +17,7 @@ import org.json.JSONObject
  * server's loopback URL (http://127.0.0.1:PORT/chess), and inbound peer events
  * are pushed into the page via `window.__chessNative`. The peer socket itself
  * lives natively in the Go server (survives WebView recreation — no JS socket,
- * so no mixed-content issue). See _spec/distribution.md §3.2 (Option Y).
+ * so no mixed-content issue). See _spec/distribution.puml §Android.
  */
 class MainActivity : AppCompatActivity(), PeerListener {
     private lateinit var webView: WebView

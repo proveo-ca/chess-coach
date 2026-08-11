@@ -4,6 +4,8 @@
   pointer-events: none;
   z-index: 26;
   overflow: visible;
+  contain: layout style;
+  isolation: isolate;
 }
 
 .slot {
@@ -18,7 +20,7 @@
   height: 100%;
   display: grid;
   place-items: center;
-  
+  will-change: transform;
   z-index: 1;
 }
 

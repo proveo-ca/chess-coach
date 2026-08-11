@@ -20,7 +20,7 @@ import {
 import type { Square } from "chess.js";
 
 import type { MatchStore } from "~/app/MatchStoreContext";
-import { displayedSnapshot } from "~/app/selectors";
+import { readDisplayedSnapshot } from "~/app/selectors";
 import { isCheckOnlyResolve } from "~/presentation/hud/isCheckOnlyResolve";
 
 /** Single-player / review opening Command Center bank (both sides). */
@@ -134,7 +134,7 @@ export const displayedStoredMaterial = (
   color: StarChessColor,
   snap: ScFenSnapshot | null,
 ): number => {
-  const st = store.state();
+  const st = store.shell();
 
   // Live planning / resolve / targeting — store bank (post-queue spend).
   if (st.phase !== "gameOver") {
@@ -157,16 +157,16 @@ export const displayedStoredMaterial = (
   return Math.max(0, bank - spawnSpendFromResolve(snap, result, color));
 };
 
-export const viewerColor = (store: MatchStore): StarChessColor => store.state().viewer;
+export const viewerColor = (store: MatchStore): StarChessColor => store.shell().viewer;
 
 export const storedMaterial = (store: MatchStore) =>
-  store.state().economies[viewerColor(store)].stored;
+  store.shell().economies[viewerColor(store)].stored;
 
 export const materialIncome = (store: MatchStore) =>
-  incomeForTurn(Math.max(1, store.state().liveSnapshot.turn));
+  incomeForTurn(Math.max(1, store.shell().liveSnapshot.turn));
 
 export const energyCapacity = (store: MatchStore) =>
-  energyForTurn(Math.max(1, store.state().liveSnapshot.turn));
+  energyForTurn(Math.max(1, store.shell().liveSnapshot.turn));
 
 /**
  * Display remaining vespene for a side.
@@ -193,7 +193,7 @@ export const gasRemainingFor = (
 
 /** Gas does not bank — remaining refills at turn-open from gasIncome. */
 export const energyRemaining = (store: MatchStore) => {
-  const snap = store.state().liveSnapshot;
+  const snap = store.shell().liveSnapshot;
   return gasRemainingFor(snap, viewerColor(store), store.reviewIntentActions());
 };
 
@@ -202,7 +202,7 @@ export const maxDeployedSupply = MAX_DEPLOYED_MATERIAL;
 export const deployedMaterial = (store: MatchStore) => {
   try {
     return deployedMaterialFromPlacement(
-      displayedSnapshot(store.state()).placement,
+      readDisplayedSnapshot(store).placement,
       viewerColor(store),
     );
   } catch {
@@ -211,10 +211,10 @@ export const deployedMaterial = (store: MatchStore) => {
 };
 
 export const hasUsedSpecialThisTurn = (store: MatchStore, square: Square) =>
-  store.state().specialsUsed.has(square);
+  store.shell().specialsUsed.has(square);
 
 export const classicFenForViewer = (store: MatchStore) => {
-  const snap = displayedSnapshot(store.state());
+  const snap = readDisplayedSnapshot(store);
   return toClassicFen(snap.placement, viewerColor(store), 0, Math.max(1, snap.turn));
 };
 
@@ -227,12 +227,12 @@ export const canPawnDoubleFree = (store: MatchStore, square: Square) => {
 };
 
 export const currentQueue = (store: MatchStore) =>
-  store.state().liveSnapshot.queue?.actions ?? [];
+  store.shell().liveSnapshot.queue?.actions ?? [];
 
-export const turnDeadlineAt = (store: MatchStore) => store.state().deadlineAt;
+export const turnDeadlineAt = (store: MatchStore) => store.shell().deadlineAt;
 
 export const turnSecondsRemaining = (store: MatchStore, now = Date.now()) => {
-  const at = store.state().deadlineAt;
+  const at = store.shell().deadlineAt;
   if (at == null) return 0;
   return Math.max(0, Math.ceil((at - now) / 1000));
 };

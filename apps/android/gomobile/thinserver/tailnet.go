@@ -12,7 +12,7 @@ import (
 
 // startTailnet brings up the embedded Tailscale node (userspace WireGuard +
 // netstack — no root, no system tailscaled) and serves the /p2p WSS endpoint
-// over the tailnet with a real MagicDNS cert. See _spec/distribution.md §3.3
+// over the tailnet with a real MagicDNS cert. See _spec/distribution.puml §Transport
 // (Model B). NOTE: requires `go mod tidy` + the Android NDK to build; the tsnet
 // API surface should be re-checked against the resolved tailscale.com version.
 func (s *Server) startTailnet() error {

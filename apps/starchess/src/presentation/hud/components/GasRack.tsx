@@ -106,7 +106,7 @@ export const GasRack: Component<GasDeployProps> = (props) => {
       setHover(null);
       return null;
     }
-    const state = store.state();
+    const state = store.shell();
     const color = viewerColor(store);
     const map = placementToMap(state.liveSnapshot.placement);
     const queue = state.liveSnapshot.queue?.actions ?? [];
@@ -342,6 +342,13 @@ export const GasRack: Component<GasDeployProps> = (props) => {
               <Show when={dragCount() > 1}>
                 <span class={`${styles.ghostCanister} ${styles.ghostBuddy}`}>
                   <VespeneIcon size={CANISTER * 0.5} />
+                </span>
+              </Show>
+              <Show when={dragCount() > 2}>
+                <span
+                  class={`${styles.ghostCanister} ${styles.ghostBuddy} ${styles.ghostBuddyFar}`}
+                >
+                  <VespeneIcon size={CANISTER * 0.45} />
                 </span>
               </Show>
             </div>

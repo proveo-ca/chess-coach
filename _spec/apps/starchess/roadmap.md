@@ -1,8 +1,10 @@
 # StarChess spec remediation roadmap
 
-Living plan after the Aug 2026 drift sweep. **P0–P1 done**; P2 remains.
+Living plan after the Aug 2026 drift sweep. Spec-claim fixes and core relocation
+are done; polish items remain. Timeline perf is a separate track under
+`architecture/`.
 
-## P0 — Fix wrong claims + thin live UI coverage (done)
+## Fix wrong claims + thin live UI coverage (done)
 
 | Item | Status |
 |---|---|
@@ -15,7 +17,7 @@ Living plan after the Aug 2026 drift sweep. **P0–P1 done**; P2 remains.
 | CLAUDE.md index + key `// SPEC:` on live screens | Done |
 | ui/starchess `index.puml` points at live `_spec/apps/starchess/` | Done |
 
-## P1 — Relocate / rewrite rules specs (done)
+## Relocate / rewrite rules specs (done)
 
 | Item | Status |
 |---|---|
@@ -25,18 +27,31 @@ Living plan after the Aug 2026 drift sweep. **P0–P1 done**; P2 remains.
 | `match-store.puml` under `_spec/apps/starchess/` | Done |
 | Product demos/mode live under `_spec/apps/starchess/`; `_spec/apps/ui/starchess/` removed | Done |
 
-## P2 — Remaining polish
+## Remaining polish
 
 1. ~~Optionally delete `_spec/apps/ui/starchess/` stubs~~ **Done** — directory removed (content lived in core + apps/starchess; stubs/PNGs had no unique value).
 2. Align `starchess-mode` UX package with sidebar chrome as product default.
 3. Extend demos inventory: `VermeerLiveTurnSidebar`, menu stories, review DualNav host.
 4. Mention StarChess in `_spec/summary.md` / top-level architecture if still silent.
 
+## Animation / timeline performance
+
+Design: [`architecture/timeline-perf.puml`](./architecture/timeline-perf.puml).
+
+| Phase | Work | Status |
+| --- | --- | --- |
+| Specs | timeline-perf + batching/reactivity diagrams | **Done** |
+| Commit path | `TimelineCommitGate` (`delay(0)`) + reducer structural share | **Implemented** |
+| Dual-signal | Shell ∥ timeline; selector split | **Implemented** |
+| Light paint/GPU | DPR, contain layout style, will-change active, trail caps | **Implemented** (DroppedFrame target missed) |
+| **Compositor relief** | Paint-property audit (outline/border/box-shadow → transform/opacity), `.board-phase-ring` opacity-only overlay, review caps (`capForDensity`) — [`timeline-vfx-density.puml`](./architecture/timeline-vfx-density.puml) | **Shipped + measured** (2026-08-11 · `…105537`: DroppedFrame 330 / 8% of baseline — met) |
+
 ## Verify
 
 ```bash
 pnpm --filter @chess-coach/starchess-core test
 pnpm --filter @chess-coach/starchess test
-plantuml -checkmetadata _spec/packages/starchess-core/*.puml _spec/apps/starchess/*.puml
+plantuml -checkonly _spec/packages/starchess-core/*.puml _spec/apps/starchess/*.puml \
+  _spec/apps/starchess/architecture/*.puml _spec/apps/starchess/core/turn/*.puml
 cd apps/ui && npm run lint && npm run test:int
 ```

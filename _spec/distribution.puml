@@ -1,0 +1,180 @@
+@startuml distribution
+' SPEC: _spec/distribution.puml
+' purpose: Distribution architecture — UI + CoachService + shell across mediums; Android embedded server + P2P transport decision.
+' constraint: ONE coach port; VITE_TARGET picks wiring at compile time; behaviour-defining prompt logic shared via @chess-coach/engine-core.
+!include themes/proveo.puml
+
+skinparam defaultTextAlignment left
+skinparam packageStyle rectangle
+skinparam classAttributeIconSize 0
+hide empty members
+
+title Chess Coach · Distribution\nUI + CoachService + shell · matrix · Android · transport
+
+package "The one idea — UI + CoachService + shell" as ONE {
+
+  class "SolidJS UI (apps/ui)" as UI <<app>> {
+    VITE_TARGET: web-no-llm · web-full · desktop
+  }
+
+  interface "CoachService port\nservices/api.ts" as CSP
+
+  class "HttpCoachService" as HTTP <<app>> {
+    desktop / Docker line
+  }
+
+  class "WebWorkerCoachService" as WW <<app>> {
+    web / Android line
+  }
+
+  class "Bun server (apps/server)" as BUN <<app>> {
+    in-process Orchestrator (no daemon)
+  }
+
+  class "native Stockfish + lc0 (Maia)" as NATIVE <<app>> {
+    Bun.spawn subprocesses
+  }
+
+  class "Ollama / LLM" as OLLAMA <<cloud>> {
+    commentary · advice · explain
+  }
+
+  class "browser workers" as WORKERS <<async>> {
+    orchestrator.worker · maia.worker
+  }
+
+  class "Stockfish WASM + lc0.wasm" as WASM <<async>> {
+    SAB budget shared with UI hints
+  }
+
+  class "WebLLM (WebGPU)" as WEBLLM <<async>> {
+    chess-gemma-commentary on-device
+  }
+
+  note as N_CORE
+    Behavior-defining prompt / classification / commentary logic is **one shared
+    implementation** (""@chess-coach/engine-core"") pinned by
+    ""apps/server/behavior.md""; parity map in
+    ""packages/engine-core/ui-engine-parity.md"".
+  end note
+
+  N_CORE .. UI
+}
+
+package "Mediums" as MED {
+
+  class "Web · Cloudflare\nPages / Workers" as WEB <<host>> {
+    exists — /chess path
+  }
+
+  class "Docker desktop\nroot Dockerfile" as DOCKER <<host>> {
+    exists — UI + native engines + Bun
+  }
+
+  class "Desktop app\nTauri / bun build --compile" as DESK <<host>> {
+    proposed
+  }
+
+  class "Android\nWebView → embedded Go server" as AND <<host>> {
+    scaffolded (apps/android)
+  }
+
+  note as N_STATUS
+    **Status:**
+    * Web (Cloudflare) — **exists**
+    * Docker desktop — **exists**
+    * Desktop app — **proposed**
+    * Android — **scaffolded** (WIP)
+
+    Medium = **UI + a chosen CoachService + a shell** — nothing new in engine
+    code to add a shell, only packaging.
+  end note
+}
+
+package "Android — embedded thin server + WASM WebView + P2P" as AN {
+
+  class "Go server (net/http + tsnet)\nforeground service" as GO <<host>> {
+    serves web-full over loopback 127.0.0.1
+    COOP: same-origin · COEP: require-corp
+    owns tailnet WSS / WebRTC signaling
+    persists game/session state (survives churn)
+    IS NOT the desktop coach endpoints
+  }
+
+  class "WebView (web-full build)" as WV <<app>> {
+    WebWorkerCoachService client-side
+  }
+
+  class "Tailscale tailnet" as TS <<cloud>> {
+    WireGuard mesh + DERP relays
+  }
+
+  class "Model A infra\nCloudflare DO signaling + STUN/TURN" as A_INFRA <<cloud>> {
+    only when Model A chosen
+  }
+
+  note as N_ANDROID
+    **Why a server in the app (2026-06-24 decisions):**
+    * Secure context for free (""localhost"" is potentially trustworthy) — no TLS
+      for RTCPeerConnection / SharedArrayBuffer.
+    * Header control — COOP/COEP ⇒ cross-origin isolation ⇒ threaded WASM.
+    * Lifecycle — peer/signaling socket owned by a foreground service survives
+      rotation/backgrounding (a WebView-owned peer dies).
+    * State survives churn — FEN/history + P2P session persisted for resume.
+
+    The embedded server is a **thin host**: coach runs client-side, so /move,
+    /advice, /explain are NOT used on-device.
+  end note
+
+  N_ANDROID .. GO
+}
+
+note as N_TRANSPORT
+  **Transport — audience decides (2026-06-24).**
+  * **Model A — WebRTC + hosted signaling + STUN/TURN:** open / public peers
+    (strangers). Signaling = Cloudflare DO/Worker WebSocket; STUN = public;
+    TURN = coturn (cellular symmetric NAT). Protocol: SDP/ICE/data-channel.
+  * **Model B — Tailscale mesh:** known group (friends / own devices),
+    **recommended when it fits**. WireGuard = direct path, DERP = relay fallback —
+    no STUN/TURN/self-hosted signaling. A plain WSS between the two in-app
+    servers replaces WebRTC. Cost: both peers must join the same tailnet.
+
+  **P2P engine delta:** ""executeTurn"" / Maia move-gen is bypassed (opponent move
+  arrives via data channel); hints + commentary stay local per device. A P2P game
+  is two independent local coaches over a shared move stream.
+end note
+
+UI ARROW_MAIN CSP : selects
+CSP ARROW_OPTIONAL HTTP : desktop / Docker
+CSP ARROW_OPTIONAL WW : web / Android
+HTTP ARROW_MAIN BUN : HTTP REST
+BUN ARROW_MAIN NATIVE : UCI (Bun.spawn)
+BUN ARROW_CLOUD OLLAMA : OpenAI-compatible HTTP
+WW ARROW_QUEUE WORKERS : postMessage
+WORKERS ARROW_MAIN WASM : UCI
+WORKERS ARROW_MAIN WEBLLM : prompt/stream
+UI ARROW_MAIN WEB : deployed to
+BUN ARROW_MAIN DOCKER : packaged in
+UI ARROW_OPTIONAL DESK : wraps in (proposed)
+UI ARROW_OPTIONAL AND : serves in (scaffolded)
+GO ARROW_MAIN WV : serves web-full (loopback)
+WV ARROW_OPTIONAL GO : injects ChessNative bridge
+GO ARROW_CLOUD TS : tailnet peer link
+TS ARROW_OPTIONAL A_INFRA : Model A only
+
+note bottom of AN
+  **Related:** ""apps/android/webrtc-p2p.puml"" (peer/signaling details) ·
+  ""architecture.puml"" (deployment topology) ·
+  ""apps/server/behavior.md"" (backend contract).
+end note
+
+note bottom
+  **Open decisions / risks:**
+  * Transport model — decide audience first: Model A (strangers) vs Model B (Tailscale).
+  * tsnet on Android via gomobile; AAR size (limit ABIs to arm64); foreground-service lifecycle.
+  * Model A peer — native libwebrtc in service (stable) vs JS RTCPeerConnection (dies on WebView recreation).
+  * Reconnect/resume semantics — whose state is authoritative; move-number reconciliation.
+  * Matchmaking (rooms/links/lobby) — out of scope here.
+end note
+
+@enduml

@@ -126,34 +126,37 @@ export type TimelineState = {
   displaySiegedRooks: readonly Square[] | null;
 };
 
+/** Patch shape for TIMELINE_COMMIT / TimelineCallbacks.onCommit. */
+export type TimelineCommitPatch = {
+  placement?: string;
+  kingLives?: EndScTurnResult["next"]["kingLives"];
+  mines?: EndScTurnResult["next"]["mines"];
+  siegedRooks?: readonly Square[];
+  /** In-resolve U: stamps — migrate with gas drops / moves for green aura. */
+  specialsUsed?: readonly Square[];
+  hidden?: readonly Square[];
+  playingIds?: readonly string[];
+  /**
+   * Attack cue ids whose hull is suppressed mid-shot (attacker died —
+   * reciprocal fire). DeathAnimation owns the square until death ends;
+   * keep flags until the attack wave clears so hulls do not flash back.
+   */
+  attackDying?: Record<string, boolean>;
+  moveProgress?: Record<string, 0 | 1>;
+  /** Knight L facing — 0 long leg, 1 short leg after elbow. */
+  moveLeg?: Record<string, 0 | 1>;
+  /** Tactical Jump thruster trails (outlive hull cue). */
+  jumpTrails?: ReadonlyArray<{ id: string; from: Square; to: Square }>;
+  /** Spider Mine chase trails (outlive missile hull). */
+  mineMissileTrails?: ReadonlyArray<{ id: string; from: Square; to: Square }>;
+  /** Hide board mine glyphs while missile / after boom. */
+  spentMines?: readonly Square[];
+};
+
 /** Playback binder: timelinePlayer → match store TIMELINE_* commits. */
 export type TimelineCallbacks = {
   onStart: (cues: TimelineCue[], placement: string) => void;
-  onCommit: (patch: {
-    placement?: string;
-    kingLives?: EndScTurnResult["next"]["kingLives"];
-    mines?: EndScTurnResult["next"]["mines"];
-    siegedRooks?: readonly Square[];
-    /** In-resolve U: stamps — migrate with gas drops / moves for green aura. */
-    specialsUsed?: readonly Square[];
-    hidden?: readonly Square[];
-    playingIds?: readonly string[];
-    /**
-     * Attack cue ids whose hull is suppressed mid-shot (attacker died —
-     * reciprocal fire). DeathAnimation owns the square until death ends;
-     * keep flags until the attack wave clears so hulls do not flash back.
-     */
-    attackDying?: Record<string, boolean>;
-    moveProgress?: Record<string, 0 | 1>;
-    /** Knight L facing — 0 long leg, 1 short leg after elbow. */
-    moveLeg?: Record<string, 0 | 1>;
-    /** Tactical Jump thruster trails (outlive hull cue). */
-    jumpTrails?: ReadonlyArray<{ id: string; from: Square; to: Square }>;
-    /** Spider Mine chase trails (outlive missile hull). */
-    mineMissileTrails?: ReadonlyArray<{ id: string; from: Square; to: Square }>;
-    /** Hide board mine glyphs while missile / after boom. */
-    spentMines?: readonly Square[];
-  }) => void;
+  onCommit: (patch: TimelineCommitPatch) => void;
   onDone: () => void;
 };
 
@@ -272,9 +275,17 @@ export type MatchAction =
   | { type: "REFUND_STORED"; color: StarChessColor; amount: number }
   | { type: "CANCEL_EFFECTS" };
 
-/** Match store surface — Solid signal + reducer runners. */
+/** Match state without timeline — HUD / planning shell. */
+export type MatchShell = Omit<MatchState, "timeline">;
+
+/** Match store surface — dual-signal shell ∥ timeline + reducer runners. */
 export type MatchStore = {
+  /** Full snapshot (reads shell + timeline). Prefer shell/timeline in hot paths. */
   state: () => MatchState;
+  /** Phase, snaps, economies, selection — not cue ticks. */
+  shell: () => MatchShell;
+  /** Timeline presentation only. */
+  timeline: () => TimelineState;
   dispatch: (action: MatchAction) => void;
   submitTurn: (reason?: "end" | "timeout") => void;
   armTimer: () => void;

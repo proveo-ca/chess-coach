@@ -14,9 +14,9 @@ package "Facade in" {
 
 package "Pipeline phases" {
   component "resolve/resolve-turn.ts" as RT <<app>>
-  component "P1 attack\nvisible targets → death → occupy" as P1 <<app>>
-  component "P2 move\ncollisions · same-square race · mines" as P2 <<app>>
-  component "P3 path-reveal\nfog approach shots" as P3 <<app>>
+  component "Attack phase\nvisible targets → death → occupy" as ATK <<app>>
+  component "Move phase\ncollisions · same-square race · mines" as MOV <<app>>
+  component "Path-reveal phase\nfog approach shots" as PRV <<app>>
 }
 
 package "Board queries (read during resolve)" {
@@ -26,14 +26,14 @@ package "Board queries (read during resolve)" {
 }
 
 SUB ARROW_MAIN RT : resolveTurn(white, black)
-RT ARROW_MAIN P1
-P1 ARROW_MAIN P2
-P2 ARROW_MAIN P3
-P1 ARROW_OPTIONAL PL
-P2 ARROW_OPTIONAL MN : contact / trigger
-P2 ARROW_OPTIONAL PL
-P3 ARROW_OPTIONAL VIS : reveal steps
-P3 ARROW_OPTIONAL PL
+RT ARROW_MAIN ATK
+ATK ARROW_MAIN MOV
+MOV ARROW_MAIN PRV
+ATK ARROW_OPTIONAL PL
+MOV ARROW_OPTIONAL MN : contact / trigger
+MOV ARROW_OPTIONAL PL
+PRV ARROW_OPTIONAL VIS : reveal steps
+PRV ARROW_OPTIONAL PL
 
 note bottom
   **Pattern:** Pipeline (ordered domain phases).

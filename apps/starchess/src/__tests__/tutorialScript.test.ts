@@ -17,6 +17,7 @@ import {
   FOG_MOVE_PAWN_START_SCFEN,
   FOG_MOVE_KNIGHT_START_SCFEN,
 } from "~/demos/fogMoveSamples";
+import { GAS_DEPLOY_FIXTURES } from "~/stories/fixtures/scenarios";
 
 describe("tutorialScript", () => {
   it("covers four stages with the expected story counts", () => {
@@ -77,6 +78,35 @@ describe("tutorialScript", () => {
         "SCFEN|7k/7p/8/6N1/8/8/8/K7|2|33|P|G:00:11|Q:w:;b:",
       ),
     ).toBe(true);
+  });
+
+  it("ship completeWhen/restartWhen gate on the turn-21 tier-3 seed", () => {
+    const ship = tutorialStory("specials", "ship")!;
+    const seed = GAS_DEPLOY_FIXTURES.battleship.scfen;
+    // Tactical Jump costs 3 gas → tier-3 seed at turn 21. The seed must never
+    // auto-advance (queen on board, turn 21) nor restart (queen on board).
+    expect(matchesTutorialCompleteWhen(ship.completeWhen, seed)).toBe(false);
+    expect(matchesTutorialCompleteWhen(ship.restartWhen, seed)).toBe(false);
+    // Survived the Charon (warped): turn 22, queen still on board → advance.
+    expect(
+      matchesTutorialCompleteWhen(
+        ship.completeWhen,
+        "SCFEN|k6b/8/8/8/8/8/8/Q6K|22|33|P|G:33:33|Q:w:;b:",
+      ),
+    ).toBe(true);
+    // Died: turn 22, no queen → restart; turn-21 no-queen board must not.
+    expect(
+      matchesTutorialCompleteWhen(
+        ship.restartWhen,
+        "SCFEN|k6b/8/8/8/8/8/8/K7|22|33|P|G:33:33|Q:w:;b:",
+      ),
+    ).toBe(true);
+    expect(
+      matchesTutorialCompleteWhen(
+        ship.restartWhen,
+        "SCFEN|k6b/8/8/8/8/8/8/K7|21|33|P|G:31:33|Q:w:;b:",
+      ),
+    ).toBe(false);
   });
 
   it("canonicalizes section aliases and unknown stories", () => {

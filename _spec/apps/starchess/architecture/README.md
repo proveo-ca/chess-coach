@@ -12,15 +12,22 @@ Canonical home for board presentation and screen-host class structure under
 | [`base-screen.puml`](./base-screen.puml) | `BaseScreen` props + HUD composition |
 | [`naming.puml`](./naming.puml) | Allowed `nerd` piece-set vs product naming |
 
-## Accepted structure designs (P1–P3)
+## Accepted structure designs
 
 Applied; no further behavioral change. Kept as design history + pattern notes.
 
-| ID | Name | Pattern(s) | Status |
-| -- | ---- | ---------- | ------ |
-| **P1** | [`p1-strategy-starchess-board`](./p1-strategy-starchess-board.md) · [`.puml`](./p1-strategy-starchess-board.puml) | Strategy, Extract Class | **ACCEPTED** |
-| **P2** | [`p2-composite-vfx-stack`](./p2-composite-vfx-stack.md) · [`.puml`](./p2-composite-vfx-stack.puml) | Composite, Facade, Parameter Object | **ACCEPTED** |
-| **P3** | [`p3-bridge-match-board-host`](./p3-bridge-match-board-host.md) · [`.puml`](./p3-bridge-match-board-host.puml) | Bridge via Composition | **ACCEPTED** |
+| Name | Pattern(s) | Status |
+| ---- | ---------- | ------ |
+| [`strategy-starchess-board.puml`](./strategy-starchess-board.puml) | Strategy, Extract Class | **ACCEPTED** |
+| [`composite-vfx-stack.puml`](./composite-vfx-stack.puml) | Composite, Facade, Parameter Object | **ACCEPTED** |
+| [`bridge-match-board-host.puml`](./bridge-match-board-host.puml) | Bridge via Composition | **ACCEPTED** |
+
+## Performance designs
+
+| Name | Pattern(s) | Status |
+| ---- | ---------- | ------ |
+| [`timeline-perf.puml`](./timeline-perf.puml) · [batching](./timeline-commit-batching.mmd) · [reactivity](./timeline-reactivity.puml) | Commit gate, structural share, dual-signal, light paint/GPU | **DONE (main phase)** — measured 2026-08-11 (DroppedFrame 330 / 8% of baseline); P2 remains |
+| [`timeline-vfx-density`](./timeline-vfx-density.puml) | Paint-property audit, phase ring, review caps | **SHIPPED + MEASURED** (2026-08-11: DroppedFrame 330 / 8% of baseline — met; GPU busy 8.3s) |
 
 ## Validation
 

@@ -1,0 +1,52 @@
+%%{init:{
+  "theme":"base",
+  "themeVariables":{
+    "background"          : "#FAFAFA",
+    "primaryColor"        : "#005F7F",
+    "primaryTextColor"    : "#FAFAFA",
+    "primaryBorderColor"  : "#00BAC6",
+    "secondaryColor"      : "#00BAC6",
+    "secondaryTextColor"  : "#181818",
+    "secondaryBorderColor": "#006B70",
+    "tertiaryColor"       : "#CBDB2A",
+    "tertiaryTextColor"   : "#181818",
+    "tertiaryBorderColor" : "#818D00",
+    "lineColor"           : "#585858",
+    "textColor"           : "#181818",
+    "clusterBkg"          : "#FAFAFA",
+    "clusterBorder"       : "#005F7F",
+    "noteBkgColor"        : "#E5E4E4",
+    "noteTextColor"       : "#181818",
+    "noteBorderColor"     : "#B4B3B3",
+    "fontSize"            : "14px"
+  },
+  "themeCSS":"rect{rx:6;ry:6;}"
+}}%%
+sequenceDiagram
+  autonumber
+  participant TL as timelinePlayer
+  participant G as TimelineCommitGate
+  participant S as Scheduler delay(0)
+  participant D as dispatch TIMELINE_*
+  participant R as matchReducer
+
+  TL->>G: onStart(cues, placement)
+  G->>G: flush pending (none)
+  G->>D: TIMELINE_START
+  D->>R: apply
+
+  TL->>G: onCommit(patch A)
+  G->>G: buffer = merge(buffer, A)
+  G->>S: schedule flush if idle
+  TL->>G: onCommit(patch B)
+  G->>G: buffer = merge(buffer, B)
+  Note over G: last-write-wins fields
+
+  S->>G: delay(0) fires
+  G->>D: TIMELINE_COMMIT(merged)
+  D->>R: structural share
+
+  TL->>G: onDone()
+  G->>G: flush pending sync
+  G->>D: TIMELINE_DONE
+  D->>R: apply

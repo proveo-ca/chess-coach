@@ -20,7 +20,7 @@ When you add, rename, or remove a component, hook, store, or service:
 | `_spec/components.puml` | Full-stack architecture: UI ↔ Bun server (desktop) / in-browser workers (web); runtime modes (desktop / web-full / web-no-llm) |
 | `_spec/sequence.puml` | Move, hint, and advice request flows (end-to-end) |
 | `_spec/summary.md` | High-level overview |
-| `_spec/distribution.md` | **Distribution architecture** (partly proposed): web / docker / desktop / Android mediums; CoachService port; Android embedded-server + P2P design; WebRTC-vs-Tailscale transport |
+| `_spec/distribution.puml` | **Distribution architecture** (partly proposed): web / docker / desktop / Android mediums; CoachService port; Android embedded-server + P2P design; WebRTC-vs-Tailscale transport |
 | `_spec/apps/ui/components.puml` | UI component graph: screens, hooks, stores, services, web-engine (no method bodies) |
 | `_spec/apps/ui/entities.puml` | Full API reference: all store selectors/mutations, hook contracts, service interfaces, engine methods |
 | `_spec/apps/ui/scheduler.puml` | EnginePool scheduler: workers, priority tiers + preemption, legacy-vs-pool differences |
@@ -45,7 +45,7 @@ When you add, rename, or remove a component, hook, store, or service:
 | `_spec/apps/starchess/demos.puml` | Canonical demos + shipped vs pending |
 | `_spec/apps/starchess/starchess-mode.puml` | Product / UX mode (economy, specials, HUD) |
 | `_spec/apps/starchess/animation-pipeline.md` | `playTimeline` → `TIMELINE_*` MatchStore → AnimationStage |
-| `_spec/apps/starchess/roadmap.md` | Spec remediation P0–P2 |
+| `_spec/apps/starchess/roadmap.md` | Spec remediation roadmap |
 | `_spec/packages/starchess-core/*` | Live StarChess rules: SCFEN wire/queue, resolve, turn queue, sc-moves |
 | `_spec/packages/engine-core/entities.puml` | `@chess-coach/engine-core` API: shared prompt/classification/commentary exports and their two consumers |
 | `_spec/packages/engine-core/ui-engine-parity.md` | Bun backend ⇄ `apps/ui/src/engine` parity map (prompt logic shared via `@chess-coach/engine-core`) |

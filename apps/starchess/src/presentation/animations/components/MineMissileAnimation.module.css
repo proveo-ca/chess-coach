@@ -3,6 +3,8 @@
   pointer-events: none;
   z-index: 44;
   overflow: visible;
+  contain: layout style;
+  isolation: isolate;
   --mine-missile-ms: 250ms;
   --mine-missile-lift-ms: 200ms;
   --mine-missile-launch-ms: 50ms;
@@ -51,8 +53,8 @@
   inset: 4%;
   display: grid;
   place-items: center;
+  will-change: transform;
   animation: mineMissileTravel var(--mine-missile-ms) linear 1 forwards;
-  
 }
 
 .hull.hullStationary {

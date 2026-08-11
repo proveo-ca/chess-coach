@@ -17,7 +17,7 @@ import { Portal } from "solid-js/web";
 
 import { storedMaterial, viewerColor } from "~/app/matchEconomy";
 import { useMatchStore } from "~/app/MatchStoreContext";
-import { displayedSnapshot, outcomeLabel } from "~/app/selectors";
+import { outcomeLabel, readDisplayedSnapshot } from "~/app/selectors";
 import styles from "~/app/BaseScreen.module.css";
 import { CoachAvatar } from "~/components/atoms/CoachAvatar";
 import { MobileBanner } from "~/components/atoms/MobileBanner";
@@ -79,8 +79,8 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
   const variant = (): BoardSkin => props.boardVariant ?? "eclipse";
   const starChessMode = () => props.starChessMode ?? true;
   const fogOfWar = () => props.fog ?? starChessMode();
-  const ended = () => store.state().phase === "gameOver";
-  const snap = () => store.state().liveSnapshot;
+  const ended = () => store.shell().phase === "gameOver";
+  const snap = () => store.shell().liveSnapshot;
   const turnChrome = () => props.turnChrome ?? "bar";
   const turnInSidebar = () => turnChrome() === "sidebar";
   const turnHidden = () => turnChrome() === "none";
@@ -121,7 +121,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
     !dynamicMobile();
 
   const liveMatch = () => {
-    const phase = store.state().phase;
+    const phase = store.shell().phase;
     return phase === "planning" || phase === "targeting" || phase === "resolving";
   };
 
@@ -158,7 +158,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
   });
 
   const specialTargetSquares = createMemo((): Square[] => {
-    const t = store.state().targeting;
+    const t = store.shell().targeting;
     if (!t) return [];
     if (t.kind === "bishopSnipe") return [t.to];
     if (t.kind === "queenWarp") return [...t.targets];
@@ -171,19 +171,19 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
   });
 
   const promotionPending = createMemo(() => {
-    const s = store.state();
+    const s = store.shell();
     if (!s.pendingPromotion) return null;
     const phase = liveMatchPhase({
       phase: s.phase,
       lastResolve: s.lastResolve,
-      timelineActive: s.timeline.active,
+      timelineActive: store.timeline().active,
       pendingPromotion: true,
     });
     return phase === "intent" ? s.pendingPromotion : null;
   });
 
   const resolvePromotion = (piece: PromotionPiece) => {
-    const pending = store.state().pendingPromotion;
+    const pending = store.shell().pendingPromotion;
     if (!pending) return;
     store.dispatch({ type: "CLEAR_PENDING_PROMOTION" });
     if (pending.via === "gas") {
@@ -294,7 +294,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
     q: (ctx) => {
       const color = viewerColor(store);
       const targets = tacticalJumpTargets(snap().placement, ctx.square, color, {
-        rookModeFor: rookModeForSieged(store.state().siegedRooks),
+        rookModeFor: rookModeForSieged(store.shell().siegedRooks),
       });
       if (targets.length === 0) {
         store.dispatch({
@@ -351,9 +351,9 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
     const color = viewerColor(store);
     if (!unit || !from) return;
     const cost = UNIT_COST[unit];
-    const before = store.state().economies[color].stored;
+    const before = store.shell().economies[color].stored;
     store.dispatch({ type: "SPEND_STORED", color, amount: cost });
-    if (store.state().economies[color].stored === before) {
+    if (store.shell().economies[color].stored === before) {
       store.dispatch({
         type: "QUEUE_REJECT",
         message: `Need ${cost} minerals (have ${storedMaterial(store)})`,
@@ -376,7 +376,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
   };
 
   const commitBishopSnipe = (to: Square) => {
-    const t = store.state().targeting;
+    const t = store.shell().targeting;
     if (!t || t.kind !== "bishopSnipe" || t.to !== to) return;
     const timing = specialTimingFor(snap().queue, t.color);
     const ok = tryQueue(
@@ -388,7 +388,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
   };
 
   const commitQueenWarp = (to: Square) => {
-    const t = store.state().targeting;
+    const t = store.shell().targeting;
     if (!t || t.kind !== "queenWarp" || !t.targets.includes(to)) return;
     const timing = specialTimingFor(snap().queue, t.color);
     const ok = tryQueue(
@@ -403,10 +403,10 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
     if (!starChessMode()) return;
     const fn = props.autoQueueOpponent;
     if (!fn) return;
-    if (store.state().deadlineAt == null) return;
-    if (store.state().timeline.active) return;
-    if (!store.state().turnStartChecksApplied) return;
-    const s = store.state().liveSnapshot;
+    if (store.shell().deadlineAt == null) return;
+    if (store.timeline().active) return;
+    if (!store.shell().turnStartChecksApplied) return;
+    const s = store.shell().liveSnapshot;
     if (s.phase !== "P") return;
     void s.turn;
     void s.placement;
@@ -415,20 +415,20 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
     if (result.snapshot === s) return;
     if (result.spendMinerals) {
       const { color, amount } = result.spendMinerals;
-      const before = store.state().economies[color].stored;
+      const before = store.shell().economies[color].stored;
       store.dispatch({ type: "SPEND_STORED", color, amount });
-      if (store.state().economies[color].stored === before) return;
+      if (store.shell().economies[color].stored === before) return;
     }
     store.dispatch({ type: "APPLY_SNAPSHOT", snapshot: result.snapshot });
   });
 
   createEffect(() => {
     if (props.armTimer === false || !starChessMode()) return;
-    const s = store.state();
+    const s = store.shell();
     void s.liveSnapshot.turn;
     void s.liveSnapshot.placement;
     if (s.phase !== "planning" && s.phase !== "targeting") return;
-    if (s.timeline.active) return;
+    if (store.timeline().active) return;
     if (s.deadlineAt != null) return;
     store.armTimer();
   });
@@ -438,11 +438,11 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
     if (!props.tutorial) return;
     const mode = props.endTurnAfterQueue;
     if (!mode) return;
-    const s = store.state();
+    const s = store.shell();
     const color = s.playerColor;
     const side = (s.liveSnapshot.queue?.actions ?? []).filter((a) => a.color === color);
     const planning = s.phase === "planning" || s.phase === "targeting";
-    if (!planning || s.timeline.active) {
+    if (!planning || store.timeline().active) {
       prevQueueReady = false;
       return;
     }
@@ -461,14 +461,14 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
   createEffect(() => {
     void snap().placement;
     void spawnPhase();
-    void store.state().targeting;
+    void store.shell().targeting;
     requestAnimationFrame(() => requestAnimationFrame(syncOverlay));
   });
 
   onMount(() => {
     if (props.tutorial) setCapabilities(TUTORIAL_CAPABILITIES);
     const onKey = (e: KeyboardEvent) => {
-      if (store.state().phase !== "gameOver") return;
+      if (store.shell().phase !== "gameOver") return;
       const t = e.target as HTMLElement | null;
       if (
         t &&
@@ -515,13 +515,13 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
   });
 
   const reviewTurnNumber = () => {
-    const s = store.state();
+    const s = store.shell();
     const settled = s.settledSnapshots[s.reviewIndex];
     return Math.max(1, settled?.turn ?? snap().turn);
   };
 
   const reviewBusy = () =>
-    store.state().timeline.active ||
+    store.timeline().active ||
     store.reviewPhase() === "check" ||
     store.reviewPhase() === "intent" ||
     store.reviewPhase() === "resolve";
@@ -550,10 +550,10 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
           <ReviewTurnNav
             onBack={() => store.reviewBack()}
             onForward={() => store.reviewForward()}
-            backDisabled={reviewBusy() || store.state().reviewIndex <= 0}
+            backDisabled={reviewBusy() || store.shell().reviewIndex <= 0}
             forwardDisabled={
               reviewBusy() ||
-              store.state().reviewIndex >= store.state().settledSnapshots.length - 1
+              store.shell().reviewIndex >= store.shell().settledSnapshots.length - 1
             }
           >
             <div
@@ -571,14 +571,14 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
                 <ResourceBar
                   class={styles.topResourceBar}
                   color="w"
-                  snapshot={displayedSnapshot(store.state())}
+                  snapshot={readDisplayedSnapshot(store)}
                 />
               </Show>
               <Show when={showBlackResources()}>
                 <ResourceBar
                   class={styles.topResourceBar}
                   color="b"
-                  snapshot={displayedSnapshot(store.state())}
+                  snapshot={readDisplayedSnapshot(store)}
                 />
               </Show>
             </div>
@@ -723,7 +723,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
                         data-square={sq}
                         data-special-target
                         onClick={() => {
-                          const kind = store.state().targeting?.kind;
+                          const kind = store.shell().targeting?.kind;
                           if (kind === "bishopSnipe") commitBishopSnipe(sq);
                           else if (kind === "queenWarp") commitQueenWarp(sq);
                         }}
@@ -771,10 +771,10 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
                   hideDualNav: true,
                   onBack: () => store.reviewBack(),
                   onForward: () => store.reviewForward(),
-                  backDisabled: reviewBusy() || store.state().reviewIndex <= 0,
+                  backDisabled: reviewBusy() || store.shell().reviewIndex <= 0,
                   forwardDisabled:
                     reviewBusy() ||
-                    store.state().reviewIndex >= store.state().settledSnapshots.length - 1,
+                    store.shell().reviewIndex >= store.shell().settledSnapshots.length - 1,
                 }}
               />
             </Show>
@@ -826,7 +826,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
             <div
               class={styles.statusLine}
               data-idle-plan={
-                !outcomeLabel(store.state()) && store.state().statusText === "Plan your turn"
+                !outcomeLabel(store.shell()) && store.shell().statusText === "Plan your turn"
                   ? "true"
                   : "false"
               }
@@ -836,8 +836,8 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
                 fallback={<p class={styles.placeholder}>StarChess is loading…</p>}
               >
                 <Show
-                  when={outcomeLabel(store.state())}
-                  fallback={<p class={styles.placeholder}>{store.state().statusText}</p>}
+                  when={outcomeLabel(store.shell())}
+                  fallback={<p class={styles.placeholder}>{store.shell().statusText}</p>}
                 >
                   {(label) => <p class={styles.placeholder}>{label()}</p>}
                 </Show>

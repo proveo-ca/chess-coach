@@ -458,6 +458,16 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
       continue;
     }
 
+    // Marine diagonals are capture-only: an intent that steps sideways onto an
+    // empty square fizzles (fog attack intents never degrade into a quiet step).
+    if (
+      actor.type === "p" &&
+      plan.to[0] !== plan.from[0] &&
+      !target
+    ) {
+      continue;
+    }
+
     // Sliding: mid-path units always beat a further destination target.
     // Re e1→e8 with pe7 + re8 must discover/capture the pawn first (not skip to e8).
     if (

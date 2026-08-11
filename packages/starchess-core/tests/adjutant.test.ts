@@ -137,9 +137,9 @@ describe("adjutant", () => {
   });
 
   it("warps a threatened BattleShip to safety (queenWarp)", () => {
-    // Turn 11 → gas tier 2 (Charon / Tactical Jump cost). White rook eyes d8.
+    // Turn 21 → gas tier 3 (Tactical Jump costs 3). White rook eyes d8.
     const snap = parseScFen(
-      "SCFEN|3qk3/8/8/8/8/8/8/3RK3|11|33|P|G:22:22|Q:w:;b:",
+      "SCFEN|3qk3/8/8/8/8/8/8/3RK3|21|33|P|G:33:33|Q:w:;b:",
     );
     const plan = adjutant(snap);
     const actions = plan.snapshot.queue?.actions.filter((a) => a.color === "b") ?? [];

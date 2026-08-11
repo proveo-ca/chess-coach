@@ -12,7 +12,7 @@ const startingFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 // Session is the authoritative, churn-surviving record of a P2P game. The move
 // log is append-only and turn-alternating, so the state is simply the union of
 // both peers' appends; a lost message is recovered by seq-gap replay, not by
-// conflict resolution. See _spec/distribution.md §3 + _spec/webrtc-p2p.puml.
+// conflict resolution. See _spec/distribution.puml §Android + _spec/apps/android/webrtc-p2p.puml.
 type Session struct {
 	mu          sync.Mutex
 	path        string

@@ -21,7 +21,7 @@ import {
   viewerColor,
 } from "~/app/matchEconomy";
 import { MatchStoreContext } from "~/app/MatchStoreContext";
-import { displayedSnapshot } from "~/app/selectors";
+import { readDisplayedSnapshot } from "~/app/selectors";
 import { MineralsIcon, SupplyIcon, VespeneIcon } from "~/components/primitives/icons";
 import { TeamFrame } from "~/components/primitives/TeamFrame";
 import { TEAM_PRIMARY } from "~/presentation/animations/teamColors";
@@ -68,7 +68,7 @@ export const ResourceBar: Component<ResourceBarProps> = (props) => {
       return s;
     }
     if (ctx) {
-      const d = displayedSnapshot(ctx.state());
+      const d = readDisplayedSnapshot(ctx);
       void d.turn;
       void d.gas.w;
       void d.gas.b;

@@ -24,7 +24,7 @@ import {
   viewerColor,
 } from "~/app/matchEconomy";
 import { useMatchStore } from "~/app/MatchStoreContext";
-import { canSubmit, displayedSnapshot } from "~/app/selectors";
+import { canSubmit, readDisplayedSnapshot } from "~/app/selectors";
 import { Button } from "~/components/primitives/Button";
 import { Chip } from "~/components/primitives/Chip";
 import { CountdownRing } from "~/components/primitives/CountdownRing";
@@ -94,7 +94,7 @@ export const TurnBarSidebar: Component<TurnBarSidebarProps> = (props) => {
 
   const resolveIfArmed = () => {
     if (props.resolveOnEnd === false) return;
-    if (!canSubmit(store.state())) return;
+    if (!canSubmit(store.shell())) return;
     store.submitTurn("end");
   };
 
@@ -116,7 +116,7 @@ export const TurnBarSidebar: Component<TurnBarSidebarProps> = (props) => {
         props.onTimeout?.();
         return;
       }
-      if (canSubmit(store.state())) store.submitTurn("timeout");
+      if (canSubmit(store.shell())) store.submitTurn("timeout");
       props.onTimeout?.();
     }, 200);
     onCleanup(() => window.clearInterval(id));
@@ -136,19 +136,19 @@ export const TurnBarSidebar: Component<TurnBarSidebarProps> = (props) => {
   };
 
   const progress = () => {
-    const total = turnTimeoutMsForTurn(displayedSnapshot(store.state()).turn) / 1000;
+    const total = turnTimeoutMsForTurn(readDisplayedSnapshot(store).turn) / 1000;
     return Math.min(1, Math.max(0, seconds() / Math.max(1, total)));
   };
 
-  const liveTurnNumber = createMemo(() => Math.max(1, displayedSnapshot(store.state()).turn));
+  const liveTurnNumber = createMemo(() => Math.max(1, readDisplayedSnapshot(store).turn));
 
   const livePhase = createMemo(() => {
-    const s = store.state();
+    const s = store.shell();
     if (s.phase === "gameOver") return store.reviewPhase();
     return liveMatchPhase({
       phase: s.phase,
       lastResolve: s.lastResolve,
-      timelineActive: s.timeline.active,
+      timelineActive: store.timeline().active,
       pendingPromotion: !!s.pendingPromotion,
     });
   });

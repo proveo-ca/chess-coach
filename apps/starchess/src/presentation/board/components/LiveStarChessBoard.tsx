@@ -14,7 +14,7 @@ import type { Component } from "solid-js";
 import { createEffect, createMemo, createSignal, onMount } from "solid-js";
 
 import { useMatchStore } from "~/app/MatchStoreContext";
-import { canSubmit, displayedSnapshot } from "~/app/selectors";
+import { canSubmit, readDisplayedSnapshot } from "~/app/selectors";
 import { AnimationStage } from "~/presentation/animations/components/AnimationStage";
 import type { CombatCueFrame } from "~/presentation/animations/combatCueFrame";
 import { kingDamageCuesFromBoard } from "~/presentation/animations/kingDamage";
@@ -50,10 +50,10 @@ export const LiveStarChessBoard: Component<{
   const { onSquareClick } = useBoardInput(visionOverrides);
   const combat = useCombatOverlays(store);
   const overlays = useIntentOverlays(store);
-  const snap = createMemo(() => displayedSnapshot(store.state()));
+  const snap = createMemo(() => readDisplayedSnapshot(store));
   const [kingDamage, setKingDamage] = createSignal<KingDamageCue[]>([]);
-  const reviewing = () => store.state().phase === "gameOver";
-  const interactive = () => canSubmit(store.state());
+  const reviewing = () => store.shell().phase === "gameOver";
+  const interactive = () => canSubmit(store.shell());
 
   // Live play locks viewer orientation — Flip stays off in SideRailTools.
   // Tutorial sets homeOnly; do not clobber that chrome.
@@ -63,12 +63,12 @@ export const LiveStarChessBoard: Component<{
   });
 
   const phase = createMemo((): ReviewTurnPhase => {
-    const s = store.state();
+    const s = store.shell();
     if (s.phase === "gameOver") return store.reviewPhase();
     return liveMatchPhase({
       phase: s.phase,
       lastResolve: s.lastResolve,
-      timelineActive: s.timeline.active,
+      timelineActive: store.timeline().active,
       pendingPromotion: !!s.pendingPromotion,
     });
   });
@@ -82,7 +82,7 @@ export const LiveStarChessBoard: Component<{
     if (!gateFx()) return true;
     return pieceVisibleToViewer(
       snap().placement,
-      store.state().viewer,
+      store.shell().viewer,
       at,
       color,
       fogOpts(),
@@ -92,10 +92,10 @@ export const LiveStarChessBoard: Component<{
   const moverFxVisible = (m: { from: Square; color: StarChessColor }) => {
     if (!gateFx()) return true;
     return (
-      m.color === store.state().viewer ||
+      m.color === store.shell().viewer ||
       pieceVisibleToViewer(
         snap().placement,
-        store.state().viewer,
+        store.shell().viewer,
         m.from,
         m.color,
         fogOpts(),
@@ -114,7 +114,7 @@ export const LiveStarChessBoard: Component<{
 
   const { autoDeployCues } = useAutoDeploy({
     pieces: () => placementToMap(snap().placement),
-    enabled: () => !reviewing() && !store.state().timeline.active,
+    enabled: () => !reviewing() && !store.timeline().active,
   });
 
   const deployCues = createMemo(() => {
@@ -155,7 +155,7 @@ export const LiveStarChessBoard: Component<{
 
   const armedBishops = createMemo((): Square[] => {
     const out = new Set<Square>();
-    const t = store.state().targeting;
+    const t = store.shell().targeting;
     if (t?.kind === "bishopSnipe") out.add(t.from);
     // Persist Charon launchers + green with U: / arm marks until turn-open checks.
     const map = placementToMap(snap().placement);
@@ -167,7 +167,7 @@ export const LiveStarChessBoard: Component<{
 
   /** Shoulder-raise anim only while arming — persistent U: keeps pods up quietly. */
   const armAnimBishops = createMemo((): Square[] => {
-    const t = store.state().targeting;
+    const t = store.shell().targeting;
     return t?.kind === "bishopSnipe" ? [t.from] : [];
   });
 
@@ -214,7 +214,7 @@ export const LiveStarChessBoard: Component<{
     return next;
   });
 
-  const state = () => store.state();
+  const state = () => store.shell();
 
   const combatFrame = createMemo((): CombatCueFrame => ({
     attackCues: combat.attackCues(),

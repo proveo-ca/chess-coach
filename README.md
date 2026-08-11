@@ -37,7 +37,7 @@ your browser. No account, no backend, no GPU required.
 > via WebGPU/WebLLM — the same `chess-gemma-commentary` model, compiled to WASM
 > with MLC (`chess-gemma-commentary-q0f32-MLC`). It's the same client-only
 > deployment as `web-no-llm` with the coach turned on — see
-> [`_spec/distribution.md`](_spec/distribution.md). Local commands:
+> [`_spec/distribution.puml`](_spec/distribution.puml). Local commands:
 > `cd apps/ui && npm run dev:web-full:vite` / `npm run build:web-full`.
 
 The architecture rule that makes this work: the coaching orchestration sits behind
@@ -206,7 +206,7 @@ Dockerfile       desktop-edition image (UI + native engines + Bun server)
 
 ## Further reading
 
-- [`_spec/distribution.md`](_spec/distribution.md) — full distribution matrix (web / docker / desktop / Android)
+- [`_spec/distribution.puml`](_spec/distribution.puml) — full distribution matrix (web / docker / desktop / Android)
 - [`_spec/apps/server/behavior.md`](_spec/apps/server/behavior.md) — backend orchestration behavioural contract
 - [`_spec/summary.md`](_spec/summary.md) — high-level overview (incl. LAN multiplayer)
 - [`apps/e2e/SETUP.md`](apps/e2e/SETUP.md) — Playwright targets (`web-no-llm` / `desktop`) and host deps

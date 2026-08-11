@@ -1,7 +1,7 @@
 // Package thinserver is the embedded Android server: it serves the web-full UI
 // build over loopback (secure-context origin + COOP/COEP for the WebView) and
 // owns the P2P tailnet link for two-player play. It runs NO chess/LLM logic —
-// the coach is the in-WebView WASM engine. See _spec/distribution.md.
+// the coach is the in-WebView WASM engine. See _spec/distribution.puml.
 //
 // Built into an Android AAR via `gomobile bind`. The exported surface below is
 // the Kotlin↔Go boundary; structured payloads cross as JSON strings and
