@@ -375,18 +375,18 @@ export const TUTORIAL_SCRIPT: readonly TutorialStageScript[] = [
         id: "ship",
         title: "BattleShip",
         comment:
-          "The BattleShip can teleport anywhere in the map in an instant. \nIt only takes 2 gas canisters.",
+          "The BattleShip can teleport anywhere in the map in an instant. \nIt only takes 3 gas canisters.",
         emotion: "watching",
         // White Q still on board after turn advances (survived Charon).
         completeWhen: {
           kind: "scfen",
-          re: /SCFEN\|[^|]*Q[^|]*\|(?:1[2-9]|[2-9]\d+)/,
+          re: /SCFEN\|[^|]*Q[^|]*\|(?:2[2-9]|[3-9]\d+)/,
           delayMs: 1200,
         },
         // Turn advanced and no white Q — Charon hit; auto-restart lesson.
         restartWhen: {
           kind: "scfen",
-          re: /SCFEN\|[^|Q]*\|(?:1[2-9]|[2-9]\d+)/,
+          re: /SCFEN\|[^|Q]*\|(?:2[2-9]|[3-9]\d+)/,
           delayMs: 800,
         },
         reactions: [
@@ -394,7 +394,7 @@ export const TUTORIAL_SCRIPT: readonly TutorialStageScript[] = [
           {
             when: {
               kind: "scfen",
-              re: /SCFEN\|[^|Q]*\|(?:1[2-9]|[2-9]\d+)/,
+              re: /SCFEN\|[^|Q]*\|(?:2[2-9]|[3-9]\d+)/,
             },
             comment: "Bruh",
             emotion: "watching",

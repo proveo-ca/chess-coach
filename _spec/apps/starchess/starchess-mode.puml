@@ -19,10 +19,10 @@ package "Goals (vs classical chess)" {
 
 package "Specials (product)" {
   component "Pawn — gas step (pawnDouble)\n+1 forward; stacks with classical" as S1 <<app>>
-  component "Knight — Spider Mine (knightMine)\nM: overlay; cap 2 / side" as S2 <<app>>
+  component "Knight — Spider Mine (knightMine)\nM: overlay; cap 3 / side" as S2 <<app>>
   component "Bishop — Charon (bishopSnipe)\n2 gas; ignore blockers" as S3 <<app>>
   component "Rook — Siege toggle (rookSiege)\ntank ↔ siege vision / mobility" as S4 <<app>>
-  component "Queen — Tactical Jump (queenWarp)\n2 gas; visible empty square" as S5 <<app>>
+  component "Queen — Tactical Jump (queenWarp)\n3 gas; visible empty square" as S5 <<app>>
   component "King — Spawn\nadjacent deploy; can collide\nwith king-shots; a deploy on the enemy\nking's ring stacks a 2nd checker" as S6 <<app>>
 }
 
@@ -36,7 +36,7 @@ package "UX (v1) — live apps/starchess" {
 note bottom
   Long-press / GasDeploy queues ""B"" or ""F"" (stack order).
   Costs from the MODE economy — most specials **1** gas;
-  Charon + Jump **2**.
+  Charon **2**, Jump **3**.
   **Spider Mine combat:** path-chase / attack-mine; ignores allies
   + enemy kings (""mines.ts"" + ""resolveTurn"").
   Live UI → ""apps/starchess"" (""/starchess/""); Coach keeps

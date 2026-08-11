@@ -344,6 +344,13 @@ export const GasRack: Component<GasDeployProps> = (props) => {
                   <VespeneIcon size={CANISTER * 0.5} />
                 </span>
               </Show>
+              <Show when={dragCount() > 2}>
+                <span
+                  class={`${styles.ghostCanister} ${styles.ghostBuddy} ${styles.ghostBuddyFar}`}
+                >
+                  <VespeneIcon size={CANISTER * 0.45} />
+                </span>
+              </Show>
             </div>
             <Show when={hoverCopy()}>
               {(copy) => (

@@ -14,7 +14,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Drag vespene canisters from GasDeploy onto a unit. Marine: start-rank doubles are free (no gas); otherwise 1 gas. Command Center: DeployModal → deploy adjacent. Hoverbike: spider mine. Siege Tank: toggle packed ↔ unpacked. Mecha: 2-gas Charon Booster Missiles, then click the revealed queen. BattleShip: 2-gas Tactical Jump, then click a visible empty square. End to resolve.",
+          "Drag vespene canisters from GasDeploy onto a unit. Marine: start-rank doubles are free (no gas); otherwise 1 gas. Command Center: DeployModal → deploy adjacent. Hoverbike: spider mine. Siege Tank: toggle packed ↔ unpacked. Mecha: 2-gas Charon Booster Missiles, then click the revealed queen. BattleShip: 3-gas Tactical Jump, then click a visible empty square. End to resolve.",
       },
     },
   },
@@ -101,7 +101,7 @@ export const BattleShip: Story = {
     docs: {
       description: {
         story:
-          "Tactical Jump costs 2 vespene: drag onto the BattleShip to arm targeting, click a highlighted visible empty square, then End to resolve.",
+          "Tactical Jump costs 3 vespene: drag onto the BattleShip to arm targeting, click a highlighted visible empty square, then End to resolve.",
       },
     },
   },

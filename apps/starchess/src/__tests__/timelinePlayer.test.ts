@@ -784,7 +784,7 @@ describe("timelinePlayer", () => {
     expect(charonCues.some((c) => c.kind === "death" && c.at === "h8")).toBe(true);
 
     let jumpSnap = parseScFen(
-      "SCFEN|7k/8/8/8/8/8/8/Q6K|11|33|P|G:22:22|Q:w:;b:",
+      "SCFEN|7k/8/8/8/8/8/8/Q6K|21|33|P|G:33:33|Q:w:;b:",
     );
     jumpSnap = addScAction({
       snapshot: jumpSnap,
@@ -805,7 +805,7 @@ describe("timelinePlayer", () => {
 
   it("keeps Tactical Jump trails for 1000ms without blocking onDone", () => {
     let jumpSnap = parseScFen(
-      "SCFEN|7k/8/8/8/8/8/8/Q6K|11|33|P|G:22:22|Q:w:;b:",
+      "SCFEN|7k/8/8/8/8/8/8/Q6K|21|33|P|G:33:33|Q:w:;b:",
     );
     jumpSnap = addScAction({
       snapshot: jumpSnap,

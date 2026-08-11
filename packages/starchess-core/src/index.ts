@@ -42,6 +42,7 @@ export {
   turnTimeoutMsForTurn,
   SPECIAL_ENERGY_COST,
   CHARON_GAS_COST,
+  QUEEN_WARP_GAS_COST,
 } from "./rules/constants";
 
 export {

@@ -66,7 +66,7 @@ note right of H
 end note
 
 note right of M
-  Mines ""M:w:c3d4;b:f5"" (max 2 / side).
+  Mines ""M:w:c3d4;b:f5"" (max 3 / side).
   Not FEN pieces. ""board/mines.ts"".
 end note
 

@@ -11,7 +11,7 @@ import {
 
 import type { RookMode } from "~/presentation/types";
 
-export const TACTICAL_JUMP_GAS_COST = 2;
+export const TACTICAL_JUMP_GAS_COST = 3;
 export const TACTICAL_JUMP_TRAVEL_MS = 200;
 export const TACTICAL_JUMP_APPEAR_MS = 50;
 export const TACTICAL_JUMP_TRAIL_MS = 1000;

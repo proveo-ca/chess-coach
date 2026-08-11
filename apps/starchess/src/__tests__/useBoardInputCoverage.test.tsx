@@ -149,7 +149,7 @@ describe("useBoardInput — bishop snipe targeting", () => {
 
 describe("useBoardInput — queen warp targeting", () => {
   it("queues B Tactical Jump on a valid destination and marks the queen", () => {
-    const store = makeStore(WARP_BOARD, 12, "22", 11);
+    const store = makeStore(WARP_BOARD, 12, "33", 21);
     store.dispatch({
       type: "OPEN_QUEEN_WARP",
       from: "e4",
@@ -166,7 +166,7 @@ describe("useBoardInput — queen warp targeting", () => {
   });
 
   it("ignores clicks outside the warp targets", () => {
-    const store = makeStore(WARP_BOARD, 12, "22", 11);
+    const store = makeStore(WARP_BOARD, 12, "33", 21);
     store.dispatch({
       type: "OPEN_QUEEN_WARP",
       from: "e4",

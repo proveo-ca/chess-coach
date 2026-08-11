@@ -42,9 +42,9 @@ const BY_TYPE: Record<PieceSymbol, SpecialCopy> = {
     unit: "BattleShip",
     name: "Tactical Jump",
     description:
-      "Arm for 2 gas, then click a visible empty square — teleport through blockers and ignore attacks on the queen.",
+      "Arm for 3 gas, then click a visible empty square — teleport through blockers and ignore attacks on the queen.",
     deployable: true,
-    gasCost: 2,
+    gasCost: 3,
   },
   k: {
     unit: "Command Center",
