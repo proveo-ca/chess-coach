@@ -81,6 +81,13 @@ export const DEPLOY_DROP_MS = 200;
 export const DEPLOY_LAND_MS = 300;
 
 /**
+ * Deploy-crush death delay — a Command Center drop onto an enemy square
+ * collapses the occupant ~100ms after the deploy begins (mid free-fall).
+ * Crush window total = max({@link DEPLOY_MS}, CRUSH_DEATH_MS + {@link DEATH_MS}).
+ */
+export const CRUSH_DEATH_MS = 100;
+
+/**
  * Gas special resolve — canister falls from the top of the square into the unit
  * while the green special-used aura eases in.
  */

@@ -45,6 +45,7 @@ import type {
   ScMine,
   SpecialKind,
   StarChessColor,
+  StarChessPiece,
 } from "../model/types";
 
 /** Semantic resolve cue (presentation may extend with anim). */
@@ -56,6 +57,11 @@ export type ResolveEvent = {
   to?: Square;
   /** Present for specialBefore / specialAfter — drives Charon / Jump VFX. */
   kind?: ScAction["kind"];
+  /**
+   * Present for `spawn` events whose target held an enemy at application time
+   * — the deploy crushed the occupant (presentation draws the death at the drop).
+   */
+  victim?: { type: StarChessPiece; color: StarChessColor };
 };
 
 export type EndScTurnResult = {
@@ -294,7 +300,11 @@ const applySpecial = (
   mines: ScMine[],
   action: Extract<ScAction, { timing: "B" | "F" }>,
   ignoreAttacksOn: Square[],
-): { placement: string; mines: ScMine[] } => {
+): {
+  placement: string;
+  mines: ScMine[];
+  victim?: { type: StarChessPiece; color: StarChessColor };
+} => {
   const kind = action.kind as SpecialKind;
   switch (kind) {
     case "bishopSnipe": {
@@ -312,12 +322,17 @@ const applySpecial = (
     }
     case "spawn": {
       if (!action.to || !action.unit) return { placement, mines };
+      // Capture the occupant before the overwrite — an enemy there is crushed.
+      const occupant = placementToMap(placement).get(action.to);
       return {
         placement: placeUnit(placement, action.to, {
           type: action.unit,
           color: action.color,
         }),
         mines,
+        ...(occupant && occupant.color !== action.color
+          ? { victim: { type: occupant.type, color: occupant.color } }
+          : {}),
       };
     }
     case "knightMine": {
@@ -643,7 +658,8 @@ export const endScTurn = (
     }
     placement = applied.placement;
     mines = applied.mines;
-    events.push(eventFor("specialBefore", a, `ev-${eventSeq++}`));
+    const bEv = eventFor("specialBefore", a, `ev-${eventSeq++}`);
+    events.push(applied.victim ? { ...bEv, victim: applied.victim } : bEv);
   }
 
   const afterB = {
@@ -848,7 +864,8 @@ export const endScTurn = (
     const applied = applySpecial(placement, mines, rewritten, ignoreAttacksOn);
     placement = applied.placement;
     mines = applied.mines;
-    events.push(eventFor("specialAfter", rewritten, `ev-${eventSeq++}`));
+    const fEv = eventFor("specialAfter", rewritten, `ev-${eventSeq++}`);
+    events.push(applied.victim ? { ...fEv, victim: applied.victim } : fEv);
   }
 
   // F gas-promotes append after classical promotions were frozen.

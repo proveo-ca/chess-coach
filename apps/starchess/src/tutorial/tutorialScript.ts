@@ -519,9 +519,43 @@ export const TUTORIAL_SCRIPT: readonly TutorialStageScript[] = [
         ],
       },
       {
+        id: "king-defense-2",
+        title: "King Defense II",
+        comment: "",
+        emotion: "shocked",
+        // Enemy mecha (b) and ship (q) off the board.
+        completeWhen: {
+          kind: "scfen",
+          re: /SCFEN\|[^|bq]*\|/,
+          delayMs: 1200,
+        },
+        restartWhen: {
+          kind: "scfen",
+          re: /SCFEN\|[^|]+\|\d+\|0[0-3]\|/,
+          delayMs: 800,
+        },
+        reactions: [
+          {
+            when: { kind: "scfen", re: /spawn:[^:;]*:g2/ },
+            comment: "Now, queue an attack on that ship with your Command Center",
+            emotion: "watching",
+          },
+          {
+            when: { kind: "scfen", re: /SCFEN\|[^|]+\|11\|1[0-3]\|/ },
+            comment:
+              "Cornered! Crush the enemy mecha by deploying a Marine onto its square.",
+            emotion: "shocked",
+          },
+        ],
+        hints: [
+          { when: { kind: "scfen", re: /spawn:[^:;]*:g2/ }, squares: ["h2"] },
+          { squares: ["g2"] },
+        ],
+      },
+      {
         id: "king-hunt-live",
         title: "King Hunt (live)",
-        comment: "",
+        comment: "The enemy King is overextended. \nPunish it!",
         emotion: "happy",
         // Enemy (black) CC destroyed — `|w0|` lives. Modal opens (play single player).
         completeWhen: {

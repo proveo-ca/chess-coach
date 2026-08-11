@@ -170,12 +170,15 @@ export const useBoardInput = (
       )
         ? "F"
         : "B";
-      const { king: anchor, occupied } = spawnKingAnchor(
+      // Enemy-occupied squares stay deployable (crush) — only ally squares block.
+      const { king: anchor, allyOccupied } = spawnKingAnchor(
         state.liveSnapshot,
         color,
         timing,
       );
-      if (!anchor || !adjacentSquares(anchor, occupied).includes(square)) return;
+      if (!anchor || !adjacentSquares(anchor, allyOccupied).includes(square)) {
+        return;
+      }
       const cost = UNIT_COST[unit];
       const before = state.economies[color].stored;
       store.dispatch({ type: "SPEND_STORED", color, amount: cost });

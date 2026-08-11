@@ -44,13 +44,13 @@ import {
 } from "~/demos/kingHunt";
 import { KingHuntLiveScreen } from "~/demos/KingHuntLiveScreen";
 import { KingDefenseScreen } from "~/demos/KingDefenseScreen";
+import { KingDefenseIIScreen } from "~/demos/KingDefenseIIScreen";
 import { TutorialReviewHost } from "~/demos/TutorialReviewHost";
 import { FOG_SIEGE_ROOK_SCFEN } from "~/presentation/animations/components/FogVisionDemo";
 import { LiveMatchShell } from "~/screens/LiveMatchShell";
 import styles from "~/screens/TutorialScreen.module.css";
 import { GAS_DEPLOY_FIXTURES } from "~/stories/fixtures/scenarios";
 import { tutorialNarration } from "~/tutorial/tutorialNarrationStore";
-import { LIVE_ADJUTANT_MATCH_TITLE } from "~/utils/matchTitle";
 import {
   TUTORIAL_SCRIPT,
   adjacentTutorialStoryId,
@@ -324,12 +324,9 @@ export const TutorialScreen: Component = () => {
 
     if (matched && (gate.armedKey === key || gate.pendingKey === key)) {
       gate.pendingKey = key;
-    } else if (
-      !matched &&
-      gate.pendingKey !== key &&
-      gate.firedKey !== key
-    ) {
-      gate.armedKey = key;
+    } else if (!matched) {
+      if (gate.pendingKey === key) gate.pendingKey = "";
+      if (gate.firedKey !== key) gate.armedKey = key;
     }
 
     if (gate.firedKey === key) return;
@@ -615,10 +612,10 @@ export const TutorialScreen: Component = () => {
                   <KingHuntLiveScreen
                     embedded
                     tutorial
-                    fullMatchHud
                     turnChrome="sidebar"
-                    matchTitle={LIVE_ADJUTANT_MATCH_TITLE}
                     onExitToMenu={goHome}
+                    coachEmotion={line().emotion}
+                    header={kingCoachHeader()}
                     guideBubble={guideBubble()}
                     footerExtra={kingFooter()}
                     boardHints={tutorialStory("king", "king-hunt-live")?.hints}
@@ -635,6 +632,19 @@ export const TutorialScreen: Component = () => {
                     guideBubble={guideBubble()}
                     footerExtra={kingFooter()}
                     boardHints={tutorialStory("king", "king-defense")?.hints}
+                  />
+                );
+              }
+              if (id === "king-defense-2") {
+                return (
+                  <KingDefenseIIScreen
+                    turnChrome="sidebar"
+                    onExitToMenu={goHome}
+                    coachEmotion={line().emotion}
+                    header={kingCoachHeader()}
+                    guideBubble={guideBubble()}
+                    footerExtra={kingFooter()}
+                    boardHints={tutorialStory("king", "king-defense-2")?.hints}
                   />
                 );
               }

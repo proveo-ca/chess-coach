@@ -1,5 +1,5 @@
 // SPEC: _spec/apps/starchess/animation-pipeline.md, _spec/apps/starchess/core/turn/playback-interpreter.puml
-import type { EndScTurnResult, ResolveAttack, ResolveMove, StarChessColor, StarChessPiece } from "@chess-coach/starchess-core";
+import type { EndScTurnResult, ResolveAttack, ResolveEvent, ResolveMove, StarChessColor, StarChessPiece } from "@chess-coach/starchess-core";
 import { placementToMap, mapToPlacement } from "@chess-coach/starchess-core";
 import type { Square } from "chess.js";
 
@@ -22,6 +22,7 @@ import {
 } from "~/presentation/timeline/timings";
 import type { AttackAnimKind } from "~/types/cues";
 import {
+  CRUSH_DEATH_MS,
   MINE_MISSILE_MS,
   MINE_TRAIL_MS,
 } from "~/presentation/constants";
@@ -197,14 +198,26 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
 
   // Command Center / put spawns: pieces that appear on afterB without a matching leave.
   // Skip units that do not survive the turn — deploy VFX must not play on a corpse.
+  // Exception: a spawn that crushed an enemy still deploys (the crush death plays
+  // mid-drop) even when the deployed unit dies later the same turn.
+  const sieged = result.afterB.siegedRooks ?? [];
   const finalMap = placementToMap(result.next.placement);
+  const crushVictim = new Map<string, ResolveEvent["victim"]>();
+  for (const ev of result.events) {
+    if (ev.kind !== "spawn" || !ev.to || !ev.victim) continue;
+    crushVictim.set(`${ev.color}:${ev.to}`, ev.victim);
+  }
+  const crushDeaths: TimelineCue[] = [];
   for (const d of deployCuesForPlacementDiff(
     result.afterPending.placement,
     result.afterB.placement,
     "spawn",
   )) {
+    const crush = crushVictim.get(`${d.color}:${d.at}`);
     const still = finalMap.get(d.at);
-    if (!still || still.type !== d.piece || still.color !== d.color) continue;
+    if (!crush && (!still || still.type !== d.piece || still.color !== d.color)) {
+      continue;
+    }
     cues.push({
       kind: "deploy",
       id: d.id,
@@ -212,11 +225,24 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
       color: d.color,
       at: d.at,
     });
+    if (crush) {
+      // Enemy collapses ~100ms into the drop (before the unit lands).
+      crushDeaths.push({
+        kind: "death",
+        id: `crush${n++}`,
+        piece: crush.type,
+        color: crush.color,
+        at: d.at,
+        ...(crush.type === "r"
+          ? { rookMode: rookModeAt(d.at, sieged) }
+          : {}),
+      });
+    }
   }
+  cues.push(...crushDeaths);
 
   // Phase 1 — simultaneous attacks, then simultaneous deaths (not interleaved).
   // moveCollision captures belong after moves — never phase-1.
-  const sieged = result.afterB.siegedRooks ?? [];
   const phase1Attacks: TimelineCue[] = [];
   const phase1Deaths: TimelineCue[] = [];
   for (const a of result.resolved.attacks) {
@@ -433,6 +459,12 @@ const cueDuration = (cue: TimelineCue): number => {
   }
 };
 
+/**
+ * Crush deaths are joined to their deploy batch; duration covers the whole
+ * mid-drop collapse window (starts {@link CRUSH_DEATH_MS} into the deploy).
+ */
+const crushDurationMs = (): number => CRUSH_DEATH_MS + DEATH_MS;
+
 /** Per-weapon kill→death / king-chip meeting point (see impactTiming.ts). */
 const attackImpactMs = (a: { anim?: string; piece: string }): number => {
   const anim =
@@ -454,6 +486,10 @@ const knightLeg0 = (moves: readonly { id: string; piece: string }[]): Record<str
 /** Spawn-batch deploy ids use the `spawn-` prefix from deployDiff. */
 const isSpawnDeploy = (cue: TimelineCue): boolean =>
   cue.kind === "deploy" && cue.id.startsWith("spawn-");
+
+/** Crushed-occupant death — plays mid-deploy (~100ms in), joined to its spawn. */
+const isCrushDeath = (cue: TimelineCue): boolean =>
+  cue.kind === "death" && cue.id.startsWith("crush");
 
 const isGasDrop = (cue: TimelineCue): boolean => cue.kind === "gasDrop";
 
@@ -626,32 +662,57 @@ export const playTimeline = (
       const gasTaken = takeWhile(cues, index, isGasDrop);
       const drops = gasTaken.batch as Extract<TimelineCue, { kind: "gasDrop" }>[];
       let deploys: Extract<TimelineCue, { kind: "deploy" }>[] = [];
+      let crushes: Extract<TimelineCue, { kind: "death" }>[] = [];
       let next = gasTaken.next;
       if (next < cues.length && isSpawnDeploy(cues[next]!)) {
         const depTaken = takeWhile(cues, next, isSpawnDeploy);
         deploys = depTaken.batch as Extract<TimelineCue, { kind: "deploy" }>[];
         next = depTaken.next;
       }
-      const playingIds = [
+      if (next < cues.length && isCrushDeath(cues[next]!)) {
+        const crushTaken = takeWhile(cues, next, isCrushDeath);
+        crushes = crushTaken.batch as Extract<TimelineCue, { kind: "death" }>[];
+        next = crushTaken.next;
+      }
+      const initialPlayingIds = [
         ...drops.map((c) => c.id),
         ...deploys.map((c) => c.id),
+      ];
+      const fullPlayingIds = [
+        ...initialPlayingIds,
+        ...crushes.map((c) => c.id),
       ];
       if (deploys.length > 0) {
         applyAfterB({
           hidden: deploys.map((c) => c.at),
-          playingIds,
+          playingIds: initialPlayingIds,
         });
       } else {
         cb.onCommit({
           hidden: [],
-          playingIds,
+          playingIds: initialPlayingIds,
           moveProgress: {},
           moveLeg: {},
         });
       }
+      // Crushed occupants collapse ~100ms into the drop — start their death VFX
+      // while the deploy still plays (ids stay mounted; overlays key by id).
+      if (crushes.length > 0) {
+        const crushStart = scheduler.delay(CRUSH_DEATH_MS, () => {
+          if (cancelled) return;
+          cb.onCommit({
+            hidden: deploys.map((c) => c.at),
+            playingIds: fullPlayingIds,
+            moveProgress: {},
+            moveLeg: {},
+          });
+        });
+        cancels.push(crushStart);
+      }
       const waitMs = Math.max(
         GAS_DROP_MS,
         deploys.length > 0 ? DEPLOY_MS : 0,
+        crushes.length > 0 ? crushDurationMs() : 0,
       );
       const wait = scheduler.delay(waitMs, () => {
         if (cancelled) return;
@@ -673,14 +734,42 @@ export const playTimeline = (
     if (isSpawnDeploy(cue)) {
       const { batch, next } = takeWhile(cues, index, isSpawnDeploy);
       const deploys = batch as Extract<TimelineCue, { kind: "deploy" }>[];
+      let crushes: Extract<TimelineCue, { kind: "death" }>[] = [];
+      let afterIdx = next;
+      if (afterIdx < cues.length && isCrushDeath(cues[afterIdx]!)) {
+        const crushTaken = takeWhile(cues, afterIdx, isCrushDeath);
+        crushes = crushTaken.batch as Extract<TimelineCue, { kind: "death" }>[];
+        afterIdx = crushTaken.next;
+      }
+      const initialPlayingIds = deploys.map((c) => c.id);
+      const fullPlayingIds = [
+        ...initialPlayingIds,
+        ...crushes.map((c) => c.id),
+      ];
       applyAfterB({
         hidden: deploys.map((c) => c.at),
-        playingIds: deploys.map((c) => c.id),
+        playingIds: initialPlayingIds,
       });
-      const wait = scheduler.delay(DEPLOY_MS, () => {
+      if (crushes.length > 0) {
+        const crushStart = scheduler.delay(CRUSH_DEATH_MS, () => {
+          if (cancelled) return;
+          cb.onCommit({
+            hidden: deploys.map((c) => c.at),
+            playingIds: fullPlayingIds,
+            moveProgress: {},
+            moveLeg: {},
+          });
+        });
+        cancels.push(crushStart);
+      }
+      const waitMs = Math.max(
+        DEPLOY_MS,
+        crushes.length > 0 ? crushDurationMs() : 0,
+      );
+      const wait = scheduler.delay(waitMs, () => {
         if (cancelled) return;
         cb.onCommit({ hidden: [], playingIds: [], moveProgress: {}, moveLeg: {} });
-        run(next);
+        run(afterIdx);
       });
       cancels.push(wait);
       return;

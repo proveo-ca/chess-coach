@@ -159,9 +159,9 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
 
   const spawnAdjacent = createMemo(() => {
     if (spawnPhase() !== "pick") return [] as Square[];
-    const { king, occupied } = spawnAnchor();
+    const { king, allyOccupied } = spawnAnchor();
     if (!king) return [] as Square[];
-    return adjacentSquares(king, occupied);
+    return adjacentSquares(king, allyOccupied);
   });
 
   const specialTargetSquares = createMemo((): Square[] => {
