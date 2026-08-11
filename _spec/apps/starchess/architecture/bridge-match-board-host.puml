@@ -1,6 +1,6 @@
-@startuml p3-bridge-match-board-host
-' SPEC: _spec/apps/starchess/architecture/p3-bridge-match-board-host.puml
-' purpose: P3 proposal — Bridge/composition unify live vs review Screen hosts.
+@startuml bridge-match-board-host
+' SPEC: _spec/apps/starchess/architecture/bridge-match-board-host.puml
+' purpose: Bridge/composition unify live vs review Screen hosts.
 ' constraint: NO BEHAVIORAL CHANGE — same pixels, fog, vision, cues, routes.
 !include ../../../themes/proveo.puml
 
@@ -9,7 +9,7 @@ skinparam packageStyle rectangle
 skinparam classAttributeIconSize 0
 hide empty members
 
-title StarChess · P3 Bridge / Composition\nMatchBoardHost + LiveBoardBinding (BEFORE → AFTER)
+title StarChess · Bridge / Composition\nMatchBoardHost + LiveBoardBinding (BEFORE → AFTER)
 
 package "BEFORE · two mount paths" as BEFORE {
 
@@ -47,7 +47,7 @@ package "BEFORE · two mount paths" as BEFORE {
     Duplicated Screen.BoardArea /
     BoardColumn / host div wiring.
     Chrome differs; board binding same.
-    **no behavioral change** in P3.
+    **no behavioral change**.
   end note
 
   N_BEFORE .. LiveStarChessBoard_B

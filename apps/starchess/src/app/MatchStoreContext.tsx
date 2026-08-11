@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/starchess/match-store.puml, _spec/apps/starchess/animation-pipeline.md, _spec/apps/starchess/core/turn/playback-interpreter.puml, _spec/apps/starchess/core/engine-boundary.puml
+// SPEC: _spec/apps/starchess/match-store.puml, _spec/apps/starchess/animation-pipeline.md, _spec/apps/starchess/core/turn/playback-interpreter.puml, _spec/apps/starchess/core/engine-boundary.puml, _spec/apps/starchess/architecture/timeline-perf.puml
 /**
  * Match store — Solid signal + reducer; timeline / timer / DualNav review runners.
  */
@@ -14,7 +14,13 @@ import {
   type ScAction,
 } from "@chess-coach/starchess-core";
 
-import type { MatchAction, MatchState, MatchStore } from "~/types/match";
+import type {
+  MatchAction,
+  MatchShell,
+  MatchState,
+  MatchStore,
+  TimelineState,
+} from "~/types/match";
 import { createInitialMatchState, matchReducer } from "~/app/matchReducer";
 import type { Clock, Scheduler } from "~/types/ports";
 import { browserClock, browserScheduler } from "~/adapters/browser";
@@ -26,7 +32,7 @@ import {
 import { playReviewTurn } from "~/presentation/hud/playReviewTurn";
 import type { ReviewTurnPhase } from "~/types/review";
 import { playTimeline } from "~/presentation/timeline/timelinePlayer";
-import type { TimelineCallbacks } from "~/types/match";
+import { bindTimeline } from "~/presentation/timeline/timelineCommitGate";
 import {
   playResolveWave,
 } from "~/presentation/timeline/playResolveWave";
@@ -36,16 +42,34 @@ export type { MatchStore };
 
 export const MatchStoreContext = createContext<MatchStore>();
 
-/** Sole binder: timelinePlayer → TIMELINE_* (no second playback path). */
-const bindTimeline = (
+const toShell = (s: MatchState): MatchShell => {
+  const { timeline: _t, ...shell } = s;
+  return shell;
+};
+
+const shellShallowEqual = (a: MatchShell, b: MatchShell): boolean => {
+  const keys = Object.keys(a) as (keyof MatchShell)[];
+  if (keys.length !== (Object.keys(b) as (keyof MatchShell)[]).length) return false;
+  for (const k of keys) {
+    if (!Object.is(a[k], b[k])) return false;
+  }
+  return true;
+};
+
+/** playTimeline + commit gate; cancel drops pending flush + player. */
+const runTimeline = (
+  result: EndScTurnResult,
   dispatch: (a: MatchAction) => void,
+  scheduler: Scheduler,
   onDone: () => void,
-): TimelineCallbacks => ({
-  onStart: (cues, placement) =>
-    dispatch({ type: "TIMELINE_START", cues, placement }),
-  onCommit: (patch) => dispatch({ type: "TIMELINE_COMMIT", ...patch }),
-  onDone,
-});
+): (() => void) => {
+  const { callbacks, cancelGate } = bindTimeline(dispatch, scheduler, onDone);
+  const cancelPlayer = playTimeline(result, scheduler, callbacks);
+  return () => {
+    cancelGate();
+    cancelPlayer();
+  };
+};
 
 const playOneResolve = (
   result: NonNullable<MatchState["lastResolve"]>,
@@ -55,15 +79,11 @@ const playOneResolve = (
 ): Promise<void> =>
   new Promise((resolve) => {
     dispatch({ type: "REVIEW_PLAY", result });
-    const cancel = playTimeline(
-      result,
-      scheduler,
-      bindTimeline(dispatch, () => {
-        dispatch({ type: "TIMELINE_DONE" });
-        setCancel(null);
-        resolve();
-      }),
-    );
+    const cancel = runTimeline(result, dispatch, scheduler, () => {
+      dispatch({ type: "TIMELINE_DONE" });
+      setCancel(null);
+      resolve();
+    });
     setCancel(cancel);
   });
 
@@ -81,9 +101,10 @@ export const createMatchStore = (opts?: {
   const clock = opts?.clock ?? browserClock;
   const scheduler = opts?.scheduler ?? browserScheduler;
   const autoArmTimer = opts?.autoArmTimer !== false;
-  const [state, setState] = createSignal<MatchState>(
-    opts?.initial ?? createInitialMatchState(),
-  );
+  const initial = opts?.initial ?? createInitialMatchState();
+  const [shell, setShell] = createSignal<MatchShell>(toShell(initial));
+  const [timeline, setTimeline] = createSignal<TimelineState>(initial.timeline);
+  const state = (): MatchState => ({ ...shell(), timeline: timeline() });
   const [reviewPhase, setReviewPhase] = createSignal<ReviewTurnPhase>("start");
   const [reviewIntentActions, setReviewIntentActions] = createSignal<
     readonly ScAction[] | null
@@ -97,11 +118,13 @@ export const createMatchStore = (opts?: {
 
   const dispatch = (action: MatchAction) => {
     perfNoteDispatch(action.type);
-    setState((s) => {
-      const next = matchReducer(s, action);
-      perfNoteMatch(next.phase, next.timeline.active);
-      return next;
-    });
+    const prev = state();
+    const next = matchReducer(prev, action);
+    perfNoteMatch(next.phase, next.timeline.active);
+    if (next === prev) return;
+    const nextShell = toShell(next);
+    if (!shellShallowEqual(shell(), nextShell)) setShell(nextShell);
+    if (timeline() !== next.timeline) setTimeline(next.timeline);
   };
 
   const clearReviewIntent = () => setReviewIntentActions(null);
@@ -173,16 +196,12 @@ export const createMatchStore = (opts?: {
     cancelTimer?.();
     cancelTimer = null;
     cancelTimeline?.();
-    cancelTimeline = playTimeline(
-      result,
-      scheduler,
-      bindTimeline(dispatch, () => {
-        dispatch({ type: "BEGIN_CHECKS_DONE" });
-        const next = state();
-        if (next.phase === "planning" && opts?.armTimer) armTimer();
-        if (next.phase === "gameOver") syncReviewPhaseIdle();
-      }),
-    );
+    cancelTimeline = runTimeline(result, dispatch, scheduler, () => {
+      dispatch({ type: "BEGIN_CHECKS_DONE" });
+      const next = state();
+      if (next.phase === "planning" && opts?.armTimer) armTimer();
+      if (next.phase === "gameOver") syncReviewPhaseIdle();
+    });
   };
 
   const submitTurn = (reason: "end" | "timeout" = "end") => {
@@ -200,18 +219,14 @@ export const createMatchStore = (opts?: {
     const result = after.lastResolve;
     if (!result) return;
     cancelTimeline?.();
-    cancelTimeline = playTimeline(
-      result,
-      scheduler,
-      bindTimeline(dispatch, () => {
-        dispatch({ type: "TIMELINE_DONE" });
-        const next = state();
-        if (next.phase === "planning") {
-          ensureTurnOpenChecks({ armTimer: autoArmTimer });
-        }
-        if (next.phase === "gameOver") syncReviewPhaseIdle();
-      }),
-    );
+    cancelTimeline = runTimeline(result, dispatch, scheduler, () => {
+      dispatch({ type: "TIMELINE_DONE" });
+      const next = state();
+      if (next.phase === "planning") {
+        ensureTurnOpenChecks({ armTimer: autoArmTimer });
+      }
+      if (next.phase === "gameOver") syncReviewPhaseIdle();
+    });
   };
 
   const reviewBack = () => {
@@ -318,18 +333,19 @@ export const createMatchStore = (opts?: {
     new Promise((resolve) => {
       dispatch({ type: "REVIEW_PLAY", result });
       const isLast = opts?.isLastWave ?? false;
-      cancelTimeline = playResolveWave(
-        result,
-        waveId,
-        scheduler,
-        bindTimeline(dispatch, () => {
-          if (isLast) dispatch({ type: "TIMELINE_DONE" });
-          else dispatch({ type: "TIMELINE_SOFT_DONE" });
-          cancelTimeline = null;
-          resolve();
-        }),
-        { isLastWave: isLast },
-      );
+      const { callbacks, cancelGate } = bindTimeline(dispatch, scheduler, () => {
+        if (isLast) dispatch({ type: "TIMELINE_DONE" });
+        else dispatch({ type: "TIMELINE_SOFT_DONE" });
+        cancelTimeline = null;
+        resolve();
+      });
+      const cancelPlayer = playResolveWave(result, waveId, scheduler, callbacks, {
+        isLastWave: isLast,
+      });
+      cancelTimeline = () => {
+        cancelGate();
+        cancelPlayer();
+      };
     });
 
   const playReviewResolve = (result: EndScTurnResult): Promise<void> =>
@@ -339,6 +355,8 @@ export const createMatchStore = (opts?: {
 
   return {
     state,
+    shell,
+    timeline,
     dispatch,
     submitTurn,
     armTimer,

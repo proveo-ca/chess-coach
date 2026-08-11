@@ -4,6 +4,8 @@
   /* Above king-damage fire (z 35) so hatch / battery attack VFX stay visible. */
   z-index: 36;
   overflow: visible;
+  contain: layout style;
+  isolation: isolate;
   /* Shared with JS ATTACK_MS (= TURN_TIMEOUT_MS / 10). */
   --attack-ms: 1000ms;
   /* Knight frag / impact (= ATTACK_MS / 4). JS FRAG_FLIGHT_MS / kill death delay. */
@@ -34,6 +36,7 @@
   transform-origin: center;
   transition: transform 180ms ease-out;
   overflow: visible;
+  will-change: transform;
 }
 
 .pieceFace {
@@ -81,6 +84,7 @@
   z-index: 40;
   pointer-events: none;
   overflow: visible;
+  will-change: transform;
   /* Flight only — lands at --frag-flight-ms (250ms); explosion is delayed separately. */
   animation: fragLPath var(--frag-flight-ms) linear 1 forwards;
   

@@ -10,6 +10,7 @@ title StarChess · Playback interpreter (sole path)
 
 database "EndScTurnResult" as RES <<db>>
 component "bindTimeline(dispatch)" as BIND <<async>>
+component "TimelineCommitGate\nbinder coalesce only" as GATE <<async>>
 component "timelinePlayer.ts\nproject + playTimeline" as TL <<async>>
 component "playResolveWave.ts\nwave subset (tutorial)" as WAVE <<async>>
 component "matchReducer TIMELINE_*" as RED <<async>>
@@ -20,7 +21,8 @@ RES ARROW_QUEUE TL
 RES ARROW_OPTIONAL WAVE : tutorial steppers
 WAVE ARROW_MAIN TL : cues subset
 BIND ARROW_MAIN TL : onStart/Commit/Done
-TL ARROW_MAIN RED : TIMELINE_*
+TL ARROW_QUEUE GATE : callbacks
+GATE ARROW_MAIN RED : TIMELINE_*
 TL ARROW_OPTIONAL HELP
 RED ARROW_MAIN RES : TIMELINE_DONE → next snap
 STAGE ARROW_OPTIONAL RED
@@ -28,6 +30,9 @@ STAGE ARROW_OPTIONAL RED
 note bottom
   **Pattern:** Interpreter. One binder, one player.
   playResolveWave is a **cue filter**, not a second engine.
+  **TimelineCommitGate** is binder coalesce — not a second interpreter.
+  Perf path: ""architecture/timeline-perf.md"" · compositor relief (shipped):
+  ""architecture/timeline-vfx-density.puml"".
   DualNav intent ghosts: ""EndScTurnResult.queue"" (stamped SCFEN Q:) —
   never reconstruct classical from resolved moves.
   **Deleted:** playResolve.ts; classicalActionsFromResolve.ts.

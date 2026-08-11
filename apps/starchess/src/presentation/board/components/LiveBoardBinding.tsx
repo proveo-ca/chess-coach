@@ -1,6 +1,6 @@
-// SPEC: _spec/apps/starchess/architecture/p3-bridge-match-board-host.puml, _spec/apps/starchess/architecture/screen-entities.puml
+// SPEC: _spec/apps/starchess/architecture/bridge-match-board-host.puml, _spec/apps/starchess/architecture/screen-entities.puml
 /**
- * Sole mount point for LiveStarChessBoard (P3 implementor).
+ * Sole mount point for LiveStarChessBoard.
  */
 import type { Component } from "solid-js";
 import type { Square } from "chess.js";

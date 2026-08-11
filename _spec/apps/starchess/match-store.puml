@@ -10,8 +10,10 @@ title StarChess · MatchStore (apps/starchess)
 
 package "Store shell" {
   component "MatchStoreContext\ncreateMatchStore / Provider" as CTX <<app>>
+  database "shell()\nphase · snaps · economies" as SHELL <<db>>
+  database "timeline()\ncues · playing · display*" as TLS <<db>>
   component "matchReducer\nQUEUE_ACTION · SUBMIT_TURN · TIMELINE_*\nREVIEW_* · SELECT_SQUARE · …" as RED <<async>>
-  component "selectors\ndisplayedSnapshot / canSubmit / …" as SEL <<db>>
+  component "selectors\nreadDisplayedSnapshot / canSubmit / …" as SEL <<db>>
 }
 
 package "Core rules (@chess-coach/starchess-core)" {
@@ -22,10 +24,13 @@ package "Core rules (@chess-coach/starchess-core)" {
 }
 
 package "Presentation" {
-  component "bindTimeline → playTimeline\ntimelinePlayer (sole interpreter)" as TL <<async>>
+  component "playTimeline\ntimelinePlayer (sole interpreter)" as TL <<async>>
+  component "TimelineCommitGate\nmerge onCommit · delay(0)\nflush before done/start" as GATE <<async>>
   component "AnimationStage +\nStarChessBoard" as STAGE <<app>>
   component "useBoardInput +\nLiveStarChessBoard" as INPUT <<app>>
   component "TurnBarSidebar / ResourceBar\nGasDeploy / DualNav" as HUD <<app>>
+  component "useCombatOverlays\ntimeline() + shell().phase\n(review caps signal)" as UCO <<app>>
+  component "CombatOverlayRoot\ncapCues · DPR · density (review|full)" as VFX <<app>>
 }
 
 package "Ports" {
@@ -33,26 +38,37 @@ package "Ports" {
 }
 
 CTX ARROW_MAIN RED : dispatch
-CTX ARROW_MAIN SEL : read
+CTX ARROW_MAIN SHELL : shell fields
+CTX ARROW_MAIN TLS : timeline fields
+SHELL ARROW_MAIN SEL
+TLS ARROW_OPTIONAL SEL : display*
+SHELL ARROW_MAIN HUD
+TLS ARROW_OPTIONAL HUD : timeline.active
 INPUT ARROW_MAIN CTX : QUEUE_ACTION / SELECT_*
 HUD ARROW_MAIN CTX : SUBMIT_TURN / REVIEW_*
 RED ARROW_MAIN QACT : queue mutate
 RED ARROW_MAIN END : End / timeout
 RED ARROW_OPTIONAL OUT : terminal
 CTX ARROW_QUEUE TL : after endScTurn
-TL ARROW_MAIN CTX : TIMELINE_START/COMMIT/DONE
-TL ARROW_OPTIONAL PORT : delay(ms)
+TL ARROW_QUEUE GATE : onStart / onCommit / onDone
+GATE ARROW_MAIN CTX : TIMELINE_START/COMMIT/DONE
+GATE ARROW_OPTIONAL PORT : delay(0) flush
+TL ARROW_OPTIONAL PORT : cue delays
 STAGE ARROW_MAIN SEL : visual frame
+TLS ARROW_MAIN UCO
+UCO ARROW_MAIN VFX : CombatCueFrame
 CTX ARROW_OPTIONAL AI : opposite of team
 
 note bottom
   Authoritative live snap is ""liveSnapshot""; timeline patches
   presentation until ""TIMELINE_DONE"". See animation-pipeline.md.
+  **Perf shipped:** CommitGate · structural share · dual-signal shell∥timeline ·
+  light paint/GPU · compositor relief (paint audit · phase ring · review caps)
+  (""architecture/timeline-vfx-density.puml"").
   Classical legality seam: ""_spec/packages/starchess-core/sc-moves.puml"".
   **Player fog intent:** ""useBoardInput"" occults unseen enemies for
   legal dests app-wide (live + tutorial) — resolve owns collisions.
   Turn lifecycle: ""turn-queue-sequence.puml"".
-  Interaction plan: ""_spec/apps/starchess/core/"".
   Income: ""applyTurnIncome""; rook mode: ""rookModeForSieged"".
 end note
 @enduml

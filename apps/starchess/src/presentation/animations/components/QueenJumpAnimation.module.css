@@ -3,6 +3,8 @@
   pointer-events: none;
   z-index: 44;
   overflow: visible;
+  contain: layout style;
+  isolation: isolate;
   --jump-ms: 200ms;
   --jump-appear-ms: 50ms;
   --jump-trail-ms: 1000ms;
@@ -30,8 +32,8 @@
   inset: 4%;
   display: grid;
   place-items: center;
+  will-change: transform, opacity;
   animation: queenJumpTravel var(--jump-ms) linear 1 forwards;
-  
 }
 
 .jumpHull svg {

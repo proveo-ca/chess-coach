@@ -1,6 +1,6 @@
-@startuml p1-strategy-starchess-board
-' SPEC: _spec/apps/starchess/architecture/p1-strategy-starchess-board.puml
-' purpose: P1 proposal — Extract Class + Strategy for board leaf rename/vision.
+@startuml strategy-starchess-board
+' SPEC: _spec/apps/starchess/architecture/strategy-starchess-board.puml
+' purpose: Strategy + Rename for board leaf / vision.
 ' constraint: NO BEHAVIORAL CHANGE — same pixels, fog, vision, cues, routes.
 !include ../../../themes/proveo.puml
 
@@ -9,7 +9,7 @@ skinparam packageStyle rectangle
 skinparam classAttributeIconSize 0
 hide empty members
 
-title StarChess · P1 Strategy + Rename\nStarChessBoard + VisionStrategy (BEFORE → AFTER)
+title StarChess · Strategy + Rename\nStarChessBoard + VisionStrategy (BEFORE → AFTER)
 
 package "BEFORE · board hosts" as BEFORE {
 
@@ -45,7 +45,7 @@ package "BEFORE · board hosts" as BEFORE {
     **Gap:** no ""StarChessBoard"" class.
     Name ""Observer*"" implies review-only
     but live player fog terminates here too.
-    **no behavioral change** in P1 —
+    **no behavioral change** —
     structure/naming only.
   end note
 
@@ -144,7 +144,7 @@ BEFORE -[hidden]- AFTER
 
 note bottom
   **Related current-state:** ""architecture/board-entities.puml"".
-  **Next:** P2 Composite VFX stack consumes ""StarChessBoard"".
+  **Next:** Composite VFX stack consumes ""StarChessBoard"".
   **Verify:** FogVisionDemo · live /single · DualNav review · StaticScfenBoard.
 end note
 

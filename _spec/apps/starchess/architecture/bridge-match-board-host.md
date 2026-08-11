@@ -1,8 +1,8 @@
-# P3 — Bridge / Template Method: unify live vs review hosts
+# Bridge / Template Method: unify live vs review hosts
 
 **Patterns:** Bridge (GoF) — or Template Method + Composition if Bridge feels heavy  
 **Status:** ACCEPTED  
-**Depends on:** P1+P2 preferred (stable `LiveStarChessBoard` → Stage contract)  
+**Depends on:** stable `LiveStarChessBoard` → Stage contract preferred  
 **Unblocks:** single mount point for Live board; less Screen grid duplication
 
 ## Goal
@@ -45,7 +45,7 @@ assemblers that slot into `MatchBoardHost`.
 
 ### What moves where
 
-| Responsibility | Owner after P3 |
+| Responsibility | Owner after bridge |
 | -------------- | -------------- |
 | `Screen` + `BoardArea` + `BoardColumn` + board host wrapper | `MatchBoardHost` |
 | Mount `LiveStarChessBoard` with fog/vision/variant/pieceSet/hints | `LiveBoardBinding` (single place) |

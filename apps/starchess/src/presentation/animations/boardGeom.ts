@@ -8,7 +8,9 @@ export const findBoardGrid = (host: HTMLElement): HTMLElement | null => {
   for (const child of Array.from(container.children)) {
     if (getComputedStyle(child).display === "grid") return child as HTMLElement;
   }
-  return container.querySelector(":scope > div");
+  // No grid child (e.g. a non-board host) — never fall back to the first
+  // child: the phase ring overlay precedes the grid and is not a board.
+  return null;
 };
 
 /** True for classical a1–h8; false for virtual off-board cells (e.g. e9 / e0). */

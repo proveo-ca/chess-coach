@@ -9,7 +9,7 @@ skinparam arrowColor #446688
 skinparam packageStyle rectangle
 hide empty members
 
-title StarChess · Board presentation entities\n(post P1–P2)
+title StarChess · Board presentation entities\n(current)
 
 package "leaves" {
 
@@ -79,7 +79,7 @@ package "board hosts" {
   }
 
   class LiveBoardBinding <<app>> {
-    sole Live mount (P3)
+    sole Live mount
   }
 
   class StaticScfenBoard <<app>> {
@@ -146,8 +146,8 @@ LiveStarChessBoard ..> liveMatchPhase
 LiveStarChessBoard ..> MatchStore
 
 note bottom
-  **P1** StarChessBoard + VisionStrategy · **P2** CombatOverlayRoot + CombatCueFrame.
-  Design history: sibling P1–P2. Screen hosts: ""screen-entities.puml"" (this folder).
+  StarChessBoard + VisionStrategy · CombatOverlayRoot + CombatCueFrame.
+  Design history: strategy-starchess-board · composite-vfx-stack. Screen hosts: ""screen-entities.puml"" (this folder).
 end note
 
 @enduml

@@ -1,0 +1,46 @@
+@startuml timeline-reactivity
+' SPEC: _spec/apps/starchess/architecture/timeline-reactivity.puml
+' purpose: Who invalidates on TIMELINE_COMMIT field groups (shell ∥ timeline).
+!include ../../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess · Timeline reactivity\nTIMELINE_COMMIT → shell ∥ timeline → readers
+
+queue "TIMELINE_COMMIT" as COMMIT <<async>>
+
+database "timeline signal\ncues · playing · progress\ndying · trails · display*" as TLS <<db>>
+database "matchShell signal\nphase · snaps · economies" as SHELL <<db>>
+component "no shell set\nunchanged shell fields" as SKIP <<host>>
+
+component "useCombatOverlays" as UCO <<app>>
+component "displayedSnapshot\ndisplay* only" as DISP <<app>>
+component "TurnBar / ResourceBar\nDualNav" as HUD <<app>>
+component "StarChessBoard\nglyphs / fog" as BOARD <<app>>
+database "CombatCueFrame" as FRAME <<db>>
+component "CombatOverlayRoot\nlayers" as VFX <<app>>
+
+COMMIT ARROW_MAIN TLS : playingIds / progress\ndying / trails
+COMMIT ARROW_MAIN TLS : displayPlacement\nlives / mines
+COMMIT ARROW_MAIN SHELL : live placement\n(non-review)
+COMMIT ARROW_OPTIONAL SKIP : shell fields\nunchanged
+
+TLS ARROW_MAIN UCO
+TLS ARROW_OPTIONAL DISP : display*
+SHELL ARROW_MAIN HUD
+SHELL ARROW_MAIN DISP
+SHELL ARROW_MAIN BOARD
+DISP ARROW_MAIN BOARD
+
+UCO ARROW_MAIN FRAME
+FRAME ARROW_MAIN VFX
+
+note bottom
+  Overlay cue ticks must not wake HUD.
+  ""displayedSnapshot"" reads shell + timeline **display*** only —
+  not playingIds / moveProgress / trails.
+  See ""timeline-perf.md"" · ""timeline-commit-batching.mmd"".
+end note
+
+@enduml

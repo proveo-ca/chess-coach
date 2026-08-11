@@ -3,6 +3,8 @@
   pointer-events: none;
   z-index: 35;
   overflow: visible;
+  contain: layout style;
+  isolation: isolate;
   /* Single hard timeline — every death cue finishes here. */
   --death-ms: 500ms;
 }

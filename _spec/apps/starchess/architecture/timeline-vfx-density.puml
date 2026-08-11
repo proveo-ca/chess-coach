@@ -1,0 +1,61 @@
+@startuml timeline-vfx-density
+' SPEC: _spec/apps/starchess/architecture/timeline-vfx-density.puml
+' purpose: Shipped compositor relief — paint-property audit, phase-ring overlay, review caps.
+!include ../../../themes/proveo.puml
+
+skinparam defaultTextAlignment left
+skinparam packageStyle rectangle
+
+title StarChess · VFX density / compositor\npaint-animation audit · phase ring · review caps
+
+package "Inputs" {
+  database "timeline()\nCombatCueFrame" as TL <<db>>
+  component "vfxDensity → capForDensity\nfull | review" as DEN <<host>>
+}
+
+package "Filter pipeline" {
+  component "capCues + trail caps\n(vfxPerf · density-aware limits)" as CAP <<async>>
+  component "paint-property audit\noutline-color · border-*-color · box-shadow\n→ transform/opacity | static + opacity" as PAINT <<async>>
+}
+
+package "Render" {
+  component "CombatOverlayRoot\nlayers always mounted\nempty = NO_* stables" as ROOT <<app>>
+  component "GasDropAnimation\n.aura static outline + glow\nopacity-only keyframes" as GAS <<app>>
+  component "StarChessBoard\n.board-phase-ring overlay\nopacity-only fade · data-phase" as BOARD <<app>>
+  component "GPU / CSS Animations\ntransform+opacity preferred" as GPU <<cloud>>
+}
+
+TL ARROW_MAIN CAP
+DEN ARROW_MAIN CAP : tighter limits
+CAP ARROW_MAIN ROOT : capped cue lists
+TL ARROW_OPTIONAL BOARD : hide / display* only
+ROOT ARROW_MAIN GAS
+ROOT ARROW_MAIN GPU
+GAS ARROW_MAIN GPU : opacity only
+BOARD ARROW_MAIN GPU
+PAINT ARROW_OPTIONAL GAS : no paint-only props
+PAINT ARROW_OPTIONAL BOARD : ring fade = opacity only
+PAINT ARROW_OPTIONAL ROOT : no paint-only @keyframes
+
+note right of PAINT
+  **audit:** @keyframes / transition on paint-only
+  properties (outline-color · border-*-color ·
+  box-shadow) repaint every frame → move to
+  transform/opacity, or pay paint once and fade
+  opacity (gas .aura · .board-phase-ring).
+end note
+
+note bottom
+  **Do not:** per-layer Show (CSS restart) · contain:paint on overflow root ·
+  second clock · change cue math · transition / @keyframes on paint-only
+  properties (outline-color · border-*-color · box-shadow).
+  **Rejected:** fog-cull of hidden leaves — the review perf case has no fog.
+  **Measured (…105537):** DroppedFrame **330 (8% of baseline 4045) — met**;
+  GPU main busy **8.3s** (was ~39s); paint max 0.88ms. Paint/s · Commit/s ·
+  Swap/s doubled — cheap frames, not a regression signal in vsync-off env.
+  **P2:** fragShockwave border-color removal · .pieceSpecialUsed outline
+  (30ms hotspot, accepted) · optional-FX drop.
+  Parent design: ""timeline-perf.md"".
+end note
+
+@enduml

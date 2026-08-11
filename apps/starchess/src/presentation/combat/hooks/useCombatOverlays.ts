@@ -12,7 +12,7 @@ import { createMemo } from "solid-js";
 import type { Square } from "chess.js";
 
 import { deriveVisualFrame } from "~/presentation/animations/visualFrame";
-import { capCues } from "~/presentation/animations/vfxPerf";
+import { capCues, capForDensity, type VfxDensity } from "~/presentation/animations/vfxPerf";
 import type { MatchStore, TimelineCue } from "~/types/match";
 import type {
   AttackCue,
@@ -69,7 +69,20 @@ const asMineMissile = (c: CueOf<"mineMissile">): MineMissileCue => ({
 });
 
 export const useCombatOverlays = (store: MatchStore) => {
-  const tl = () => store.state().timeline;
+  const tl = () => store.timeline();
+
+  /**
+   * Review playback runs under phase === "gameOver" while the timeline is
+   * active (matchReducer guards REVIEW_PLAY to gameOver; live play stays
+   * resolving until TIMELINE_DONE, which resets the timeline). Gating on
+   * `active` keeps live game-over trail fades (which outlive TIMELINE_DONE)
+   * on full caps so they never get truncated by the review caps.
+   */
+  const density = createMemo(
+    (): VfxDensity =>
+      tl().active && store.shell().phase === "gameOver" ? "review" : "full",
+  );
+  const cap = createMemo(() => capForDensity(density()));
 
   /** Stable empty — avoid new `{}` / `[]` each memo run when idle. */
   const emptyProgress: Record<string, 0 | 1> = {};
@@ -93,23 +106,23 @@ export const useCombatOverlays = (store: MatchStore) => {
   const attackCues = createMemo((): readonly AttackCue[] => {
     const t = tl();
     if (!t.active) return emptyAttacks;
-    return capCues(playAttacks(t.cues, t.playingIds, "attack")) as readonly AttackCue[];
+    return capCues(playAttacks(t.cues, t.playingIds, "attack"), cap()) as readonly AttackCue[];
   });
 
   const deathCues = createMemo((): readonly DeathCue[] => {
     const t = tl();
     if (!t.active) return emptyDeaths;
-    return capCues(playDeaths(t.cues, t.playingIds, "death")) as readonly DeathCue[];
+    return capCues(playDeaths(t.cues, t.playingIds, "death"), cap()) as readonly DeathCue[];
   });
 
   const moveCues = createMemo((): readonly MoveCue[] => {
     const t = tl();
     if (!t.active) return emptyMoves;
     const all = playMoves(t.cues, t.playingIds, "move");
-    const key = `hull:${all.map((c) => c.id).join(",")}`;
+    const key = `hull:${cap()}:${all.map((c) => c.id).join(",")}`;
     if (key === lastHullKey) return lastHull;
     lastHullKey = key;
-    lastHull = [...capCues(all.filter((c) => !c.queenJump))] as MoveCue[];
+    lastHull = [...capCues(all.filter((c) => !c.queenJump), cap())] as MoveCue[];
     return lastHull;
   });
 
@@ -117,10 +130,10 @@ export const useCombatOverlays = (store: MatchStore) => {
     const t = tl();
     if (!t.active) return emptyMoves;
     const all = playMoves(t.cues, t.playingIds, "move");
-    const key = `jump:${all.map((c) => c.id).join(",")}`;
+    const key = `jump:${cap()}:${all.map((c) => c.id).join(",")}`;
     if (key === lastJumpKey) return lastJump;
     lastJumpKey = key;
-    lastJump = [...capCues(all.filter((c) => !!c.queenJump))] as MoveCue[];
+    lastJump = [...capCues(all.filter((c) => !!c.queenJump), cap())] as MoveCue[];
     return lastJump;
   });
 
@@ -144,25 +157,25 @@ export const useCombatOverlays = (store: MatchStore) => {
     // Trails outlive the jump hull (1000ms fade) and may remain after
     // timeline.active flips false on TIMELINE_DONE — do not gate on active.
     if (t.jumpTrails.length === 0) return emptyTrails;
-    return t.jumpTrails;
+    return capCues(t.jumpTrails, cap());
   });
 
   const mineMissiles = createMemo((): readonly MineMissileCue[] => {
     const t = tl();
     if (!t.active) return emptyMissiles;
     const raw = playMissiles(t.cues, t.playingIds, "mineMissile");
-    const key = raw.map((c) => c.id).join(",");
+    const key = `${cap()}:${raw.map((c) => c.id).join(",")}`;
     if (key === lastMissileKey) return lastMissiles;
     lastMissileKey = key;
     // Mine missiles need a thin projection object (timeline cue is a superset).
-    lastMissiles = [...capCues(raw.map(asMineMissile))];
+    lastMissiles = [...capCues(raw.map(asMineMissile), cap())];
     return lastMissiles;
   });
 
   const mineMissileTrails = createMemo(() => {
     const t = tl();
     if (t.mineMissileTrails.length === 0) return emptyTrails;
-    return t.mineMissileTrails;
+    return capCues(t.mineMissileTrails, cap());
   });
 
   const spentMines = createMemo((): readonly Square[] => {
@@ -174,13 +187,13 @@ export const useCombatOverlays = (store: MatchStore) => {
   const gasDropCues = createMemo((): readonly GasDropCue[] => {
     const t = tl();
     if (!t.active) return emptyGas;
-    return capCues(playGas(t.cues, t.playingIds, "gasDrop")) as readonly GasDropCue[];
+    return capCues(playGas(t.cues, t.playingIds, "gasDrop"), cap()) as readonly GasDropCue[];
   });
 
   const deployCues = createMemo((): readonly DeployCue[] => {
     const t = tl();
     if (!t.active) return emptyDeploys;
-    return capCues(playDeploys(t.cues, t.playingIds, "deploy")) as readonly DeployCue[];
+    return capCues(playDeploys(t.cues, t.playingIds, "deploy"), cap()) as readonly DeployCue[];
   });
 
   /**

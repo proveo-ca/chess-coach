@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/starchess/architecture/p2-composite-vfx-stack.puml
+// SPEC: _spec/apps/starchess/architecture/composite-vfx-stack.puml, _spec/apps/starchess/architecture/timeline-perf.puml
 /**
  * Composite combat VFX stack — stable layer order (never per-layer Show).
  */
@@ -14,6 +14,10 @@ import { MineMissileAnimation } from "~/presentation/animations/components/MineM
 import { QueenJumpAnimation } from "~/presentation/animations/components/QueenJumpAnimation";
 import { KingDamageOverlay } from "~/presentation/animations/components/kingDamageOverlay";
 import type { CombatCueFrame } from "~/presentation/animations/combatCueFrame";
+import {
+  overlayDevicePixelRatio,
+  overlayRootPerfStyle,
+} from "~/presentation/animations/vfxPerf";
 import type {
   AttackCue,
   DeathCue,
@@ -51,6 +55,7 @@ export const CombatOverlayRoot: Component<CombatOverlayRootProps> = (props) => {
   return (
     <div
       data-starchess-combat-root
+      data-overlay-dpr={overlayDevicePixelRatio()}
       style={{
         position: "absolute",
         top: `${props.box.top}px`,
@@ -60,7 +65,7 @@ export const CombatOverlayRoot: Component<CombatOverlayRootProps> = (props) => {
         "pointer-events": "none",
         "z-index": "30",
         overflow: "visible",
-        contain: "layout",
+        ...overlayRootPerfStyle(),
       }}
       aria-hidden
     >

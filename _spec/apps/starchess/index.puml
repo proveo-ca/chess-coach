@@ -12,12 +12,13 @@ package "_spec/apps/starchess" {
   component "deployment.puml\nPWA / Worker / Coach redirect" as DEP <<host>>
   component "menu-flow.puml\nMenu → NewGame → /single · Review" as MENU <<app>>
   component "screens.puml\nScreen HUD chrome" as HUD <<app>>
-  component "architecture/\nboard + screen entities\nP1–P3 accepted designs" as ARCH <<app>>
-  component "match-store.puml\nMatchStore / matchReducer / timeline" as MS <<async>>
-  component "animation-pipeline.md\nplayTimeline / TIMELINE_*" as ANIM <<async>>
+  component "architecture/\nboard + screen entities\nstructure accepted · perf IN PROGRESS" as ARCH <<app>>
+  component "match-store.puml\nMatchStore / gate / dual-signal" as MS <<async>>
+  component "animation-pipeline.md\nplayTimeline / TIMELINE_* / perf status" as ANIM <<async>>
+  component "architecture/timeline-perf\nshipped + compositor relief" as TPERF <<async>>
   component "core/\nturn · board · adjutant · scfen\nengine-boundary (interaction plan)" as COREPLAN <<app>>
   component "demos.puml / starchess-mode.puml" as DEMO <<app>>
-  component "roadmap.md\nP0–P2 remediation" as ROAD <<db>>
+  component "roadmap.md\nremediation + timeline perf track" as ROAD <<db>>
 }
 
 package "apps/starchess (runtime)" {
@@ -41,6 +42,9 @@ ARCH ARROW_MAIN RSINGLE
 ARCH ARROW_MAIN RREV
 MS ARROW_MAIN RSCREEN
 ANIM ARROW_MAIN RINPUT
+TPERF ARROW_MAIN ANIM : perf budget / gate
+TPERF ARROW_MAIN MS : commit path
+TPERF ARROW_OPTIONAL ARCH : design home
 COREPLAN ARROW_MAIN MS : state machine / playback
 COREPLAN ARROW_MAIN RINPUT : planning / boundary
 COREPLAN ARROW_OPTIONAL RULES : package detail
@@ -49,11 +53,12 @@ DEP ARROW_MAIN RREV
 RULES ARROW_OPTIONAL RINPUT : legality / End
 DEMO ARROW_OPTIONAL RSCREEN
 ROAD ARROW_OPTIONAL RULES
+ROAD ARROW_OPTIONAL TPERF
 
 note bottom
   Rules detail: ""_spec/packages/starchess-core/"".
   Interaction **plan** (patterns + allowed edges):
   ""_spec/apps/starchess/core/"".
-  ""architecture/"" = board/screen class maps + P1–P3.
+  ""architecture/"" = board/screen class maps + timeline perf.
 end note
 @enduml

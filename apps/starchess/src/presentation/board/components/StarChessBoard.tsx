@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/starchess/demos.puml, _spec/apps/starchess/architecture/board-entities.puml, _spec/apps/starchess/architecture/p1-strategy-starchess-board.puml
+// SPEC: _spec/apps/starchess/demos.puml, _spec/apps/starchess/architecture/board-entities.puml, _spec/apps/starchess/architecture/strategy-starchess-board.puml
 /**
  * Snapshot-driven StarChess board — eclipse/butter/vermeer (default eclipse).
  * Vision via VisionStrategy (player fog | observer dual borders).
@@ -240,6 +240,7 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
         data-testid="chessboard"
         data-phase={props.phase ?? "start"}
       >
+        <div class={styles["board-phase-ring"]} aria-hidden="true" />
         <div
           data-board-grid
           data-vision-mode={isObserver() ? "observer" : "player"}

@@ -1,0 +1,68 @@
+@startuml timeline-perf
+' SPEC: _spec/apps/starchess/architecture/timeline-perf.puml
+' purpose: Shipped timeline perf — gate + dual-signal + compositor relief (paint audit · phase ring · review caps).
+!include ../../../themes/proveo.puml
+
+skinparam defaultTextAlignment left
+skinparam packageStyle rectangle
+skinparam classAttributeIconSize 0
+hide empty members
+
+title StarChess · Timeline perf\nShipped gate/dual-signal + compositor relief
+
+package "Shipped · sole clock + isolate" as SHIPPED {
+
+  component "timelinePlayer\nplayTimeline (sole clock)" as TL <<async>>
+  component "TimelineCommitGate\nmerge · delay(0) · flush" as GATE <<async>>
+  component "matchReducer\nstructural share" as RED <<async>>
+  database "shell()\nphase · snaps · economies" as SHELL <<db>>
+  database "timeline()\ncues · playing · display*" as TLS <<db>>
+  component "HUD / DualNav\nshell + timeline.active" as HUD <<app>>
+  component "readDisplayedSnapshot\n+ StarChessBoard" as BOARD <<app>>
+  component "useCombatOverlays\ntimeline() + shell().phase\n(review caps signal)" as UCO <<app>>
+  component "CombatOverlayRoot\ncapCues · DPR · contain layout style\nwill-change on active anim only" as VFX <<app>>
+
+  TL ARROW_QUEUE GATE : onStart / onCommit / onDone
+  GATE ARROW_MAIN RED : TIMELINE_*
+  RED ARROW_OPTIONAL SHELL : shell fields changed
+  RED ARROW_MAIN TLS : timeline fields
+  SHELL ARROW_MAIN HUD
+  SHELL ARROW_MAIN BOARD
+  TLS ARROW_OPTIONAL BOARD : display*
+  TLS ARROW_MAIN UCO
+  UCO ARROW_MAIN VFX
+}
+
+package "Shipped · compositor relief (…105537)" as NEXT {
+
+  component "paint-animation audit\noutline-color · border-*-color · box-shadow\n→ transform/opacity | static + opacity" as PAINT <<async>>
+  component "Board phase ring\n.board-phase-ring overlay\nopacity-only fade" as ISO <<app>>
+  component "vfxDensity mode\nfull | review → capForDensity\ncaps · trails" as DEN <<host>>
+  component "CSS Animation budget\ntransform/opacity only\nno root contain:paint" as CSS <<app>>
+
+  PAINT ARROW_MAIN VFX : fewer paint targets
+  PAINT ARROW_OPTIONAL ISO : ring = opacity only
+  ISO ARROW_MAIN BOARD : no container repaint
+  DEN ARROW_MAIN UCO : tighter capCues
+  DEN ARROW_MAIN VFX
+  CSS ARROW_MAIN VFX
+}
+
+note bottom
+  **Diagnosis (…101115):** renderer JS main ~12% busy; GPU process main ~90%
+  busy — Swap ~260/s · Paint ~200/s · Commit ~192/s · BeginImplFrame ~448/s,
+  driven by paint-invalidating CSS animations (outline/border-color/box-shadow)
+  + simultaneous VFX volume.
+  **Measured (…105537):** DroppedFrame **330 vs 4045 baseline (8% — met)** ·
+  GPU main busy **8.3s** (was ~39s) · paint max 0.88ms · Swap 567/s (cheap
+  frames — vsync-off env no longer throttles).
+  **Shipped:** paint-animation audit · .board-phase-ring · gas .aura opacity-only ·
+  review caps (capForDensity, VFX_CAP_REVIEW_*).
+  **P2:** AttackAnimation fragShockwave border-color removal · .pieceSpecialUsed
+  outline (30ms hotspot, accepted) · optional-FX drop.
+  **Deferred:** Chip phase border · InlineBishop crank loop.
+  See ""timeline-perf.md"" · ""timeline-vfx-density.puml"".
+  **Invariant:** no per-layer Show · components never own the clock.
+end note
+
+@enduml

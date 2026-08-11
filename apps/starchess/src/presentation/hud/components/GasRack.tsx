@@ -106,7 +106,7 @@ export const GasRack: Component<GasDeployProps> = (props) => {
       setHover(null);
       return null;
     }
-    const state = store.state();
+    const state = store.shell();
     const color = viewerColor(store);
     const map = placementToMap(state.liveSnapshot.placement);
     const queue = state.liveSnapshot.queue?.actions ?? [];

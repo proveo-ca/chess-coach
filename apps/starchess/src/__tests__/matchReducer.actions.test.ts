@@ -147,6 +147,63 @@ describe("matchReducer action surface", () => {
     expect(["planning", "gameOver"]).toContain(s.phase);
   });
 
+  it("TIMELINE_COMMIT reuses hiddenSquares Set when membership unchanged", () => {
+    let s = load();
+    s = matchReducer(s, { type: "SUBMIT_TURN", reason: "end" });
+    const result = s.lastResolve!;
+    s = matchReducer(s, {
+      type: "TIMELINE_START",
+      cues: [],
+      placement: result.afterPending.placement,
+    });
+    s = matchReducer(s, {
+      type: "TIMELINE_COMMIT",
+      hidden: ["e2", "e4"],
+      playingIds: ["m1"],
+    });
+    const hiddenRef = s.timeline.hiddenSquares;
+    const playRef = s.timeline.playingIds;
+    s = matchReducer(s, {
+      type: "TIMELINE_COMMIT",
+      hidden: ["e2", "e4"],
+      playingIds: ["m1"],
+    });
+    expect(s.timeline.hiddenSquares).toBe(hiddenRef);
+    expect(s.timeline.playingIds).toBe(playRef);
+    s = matchReducer(s, { type: "TIMELINE_COMMIT" });
+    expect(s.timeline.hiddenSquares).toBe(hiddenRef);
+  });
+
+  it("TIMELINE_COMMIT review never mutates liveSnapshot", () => {
+    let s = load();
+    s = matchReducer(s, { type: "SUBMIT_TURN", reason: "end" });
+    const result = s.lastResolve!;
+    s = {
+      ...s,
+      phase: "gameOver",
+      liveSnapshot: result.next,
+      settledSnapshots: [s.liveSnapshot, result.next],
+      settledResolves: [result],
+      reviewIndex: 0,
+      lastResolve: result,
+    };
+    const liveRef = s.liveSnapshot;
+    s = matchReducer(s, {
+      type: "TIMELINE_START",
+      cues: [],
+      placement: result.afterPending.placement,
+    });
+    s = matchReducer(s, {
+      type: "TIMELINE_COMMIT",
+      placement: "8/8/8/8/8/8/8/8",
+      kingLives: { w: 1, b: 1 },
+      playingIds: ["a1"],
+    });
+    expect(s.liveSnapshot).toBe(liveRef);
+    expect(s.timeline.displayPlacement).toBe("8/8/8/8/8/8/8/8");
+    expect(s.phase).toBe("gameOver");
+  });
+
   it("CLEAR_PENDING_PROMOTION and QUEUE_REJECT", () => {
     let s = load("SCFEN|k7/4P3/8/8/8/8/8/4K3|1|33|P|G:11:11|Q:w:;b:");
     s = matchReducer(s, {

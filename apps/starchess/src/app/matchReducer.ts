@@ -1,7 +1,7 @@
 /**
  * Match state transitions — queue, End, timeline, review seek.
  * // SPEC: _spec/apps/starchess/match-store.puml, _spec/apps/starchess/core/turn/match-state-machine.puml, _spec/apps/starchess/core/index.puml
- * // SPEC: _spec/packages/starchess-core/turn-queue-sequence.puml
+ * // SPEC: _spec/packages/starchess-core/turn-queue-sequence.puml, _spec/apps/starchess/architecture/timeline-perf.puml
  */
 import {
   MAX_STORED_MATERIAL,
@@ -21,6 +21,14 @@ import {
 
 import { OPENING_STORED_MATERIAL, applyTurnIncome } from "~/app/matchEconomy";
 import type { MatchAction, MatchState, TimelineState } from "~/app/matchTypes";
+import {
+  withHiddenSquares,
+  withIdList,
+  withShallowRecord,
+  withSquareList,
+  withSquareSet,
+  withTrails,
+} from "~/app/timelineStructuralShare";
 
 const emptyTimeline = (placement: string | null = null): TimelineState => ({
   active: false,
@@ -531,84 +539,92 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
         },
       };
     case "TIMELINE_COMMIT": {
-      const hidden = new Set(action.hidden ?? [...state.timeline.hiddenSquares]);
+      const tl = state.timeline;
+      const hidden = withHiddenSquares(tl.hiddenSquares, action.hidden);
+      const playingIds = withIdList(tl.playingIds, action.playingIds);
+      const attackDying = withShallowRecord(tl.attackDying, action.attackDying);
+      const moveProgress = withShallowRecord(tl.moveProgress, action.moveProgress);
+      const moveLeg = withShallowRecord(tl.moveLeg, action.moveLeg);
+      const jumpTrails = withTrails(tl.jumpTrails, action.jumpTrails);
+      const mineMissileTrails = withTrails(tl.mineMissileTrails, action.mineMissileTrails);
+      const spentMines = withSquareList(tl.spentMines, action.spentMines);
+      const siegedRooks = withSquareSet(state.siegedRooks, action.siegedRooks);
+
       if (state.phase === "gameOver") {
         // Review replay: board reads timeline overlays; never mutate live/outcome.
+        const displayPlacement = action.placement ?? tl.displayPlacement;
+        const displayKingLives = action.kingLives ?? tl.displayKingLives;
+        const displayMines = action.mines !== undefined ? action.mines : tl.displayMines;
+        const displaySiegedRooks =
+          action.siegedRooks !== undefined
+            ? withSquareList(tl.displaySiegedRooks ?? [], action.siegedRooks)
+            : tl.displaySiegedRooks;
         return {
           ...state,
-          siegedRooks: action.siegedRooks ? new Set(action.siegedRooks) : state.siegedRooks,
+          siegedRooks,
           timeline: {
-            ...state.timeline,
-            playingIds:
-              action.playingIds !== undefined ? [...action.playingIds] : state.timeline.playingIds,
-            attackDying:
-              action.attackDying !== undefined
-                ? { ...action.attackDying }
-                : state.timeline.attackDying,
+            ...tl,
+            playingIds,
+            attackDying,
             hiddenSquares: hidden,
-            moveProgress:
-              action.moveProgress !== undefined ? action.moveProgress : state.timeline.moveProgress,
-            moveLeg: action.moveLeg !== undefined ? action.moveLeg : state.timeline.moveLeg,
-            jumpTrails:
-              action.jumpTrails !== undefined ? [...action.jumpTrails] : state.timeline.jumpTrails,
-            mineMissileTrails:
-              action.mineMissileTrails !== undefined
-                ? [...action.mineMissileTrails]
-                : state.timeline.mineMissileTrails,
-            spentMines:
-              action.spentMines !== undefined ? [...action.spentMines] : state.timeline.spentMines,
-            displayPlacement: action.placement ?? state.timeline.displayPlacement,
-            displayKingLives: action.kingLives ?? state.timeline.displayKingLives,
-            displayMines: action.mines !== undefined ? action.mines : state.timeline.displayMines,
-            displaySiegedRooks:
-              action.siegedRooks !== undefined
-                ? [...action.siegedRooks]
-                : state.timeline.displaySiegedRooks,
+            moveProgress,
+            moveLeg,
+            jumpTrails,
+            mineMissileTrails,
+            spentMines,
+            displayPlacement,
+            displayKingLives,
+            displayMines,
+            displaySiegedRooks,
           },
         };
       }
       const snap = state.liveSnapshot;
-      const sieged = action.siegedRooks ? new Set(action.siegedRooks) : state.siegedRooks;
-      let liveSnapshot: ScFenSnapshot = {
-        ...snap,
-        placement: action.placement ?? snap.placement,
-        kingLives: action.kingLives ?? snap.kingLives,
-        mines: action.mines ?? snap.mines,
-        siegedRooks: action.siegedRooks ? [...action.siegedRooks] : snap.siegedRooks,
-      };
-      if (action.specialsUsed !== undefined) {
-        if (action.specialsUsed.length > 0) {
-          liveSnapshot.specialsUsed = [...action.specialsUsed];
-        } else {
-          delete liveSnapshot.specialsUsed;
+      const nextPlacement = action.placement ?? snap.placement;
+      const nextLives = action.kingLives ?? snap.kingLives;
+      const nextMines = action.mines ?? snap.mines;
+      const nextSiegedList = action.siegedRooks
+        ? withSquareList(snap.siegedRooks ?? [], action.siegedRooks)
+        : (snap.siegedRooks ?? []);
+      const snapTouched =
+        action.placement !== undefined ||
+        action.kingLives !== undefined ||
+        action.mines !== undefined ||
+        action.siegedRooks !== undefined ||
+        action.specialsUsed !== undefined;
+      let liveSnapshot: ScFenSnapshot = snap;
+      if (snapTouched) {
+        liveSnapshot = {
+          ...snap,
+          placement: nextPlacement,
+          kingLives: nextLives,
+          mines: nextMines,
+          siegedRooks: nextSiegedList,
+        };
+        if (action.specialsUsed !== undefined) {
+          if (action.specialsUsed.length > 0) {
+            liveSnapshot.specialsUsed = [...action.specialsUsed];
+          } else {
+            delete liveSnapshot.specialsUsed;
+          }
         }
+        liveSnapshot = stampSnapStored(liveSnapshot, state.economies);
       }
-      liveSnapshot = stampSnapStored(liveSnapshot, state.economies);
       return {
         ...state,
         liveSnapshot,
-        siegedRooks: sieged,
+        siegedRooks,
         timeline: {
-          ...state.timeline,
-          playingIds:
-            action.playingIds !== undefined ? [...action.playingIds] : state.timeline.playingIds,
-          attackDying:
-            action.attackDying !== undefined
-              ? { ...action.attackDying }
-              : state.timeline.attackDying,
+          ...tl,
+          playingIds,
+          attackDying,
           hiddenSquares: hidden,
-          moveProgress:
-            action.moveProgress !== undefined ? action.moveProgress : state.timeline.moveProgress,
-          moveLeg: action.moveLeg !== undefined ? action.moveLeg : state.timeline.moveLeg,
-          jumpTrails:
-            action.jumpTrails !== undefined ? [...action.jumpTrails] : state.timeline.jumpTrails,
-          mineMissileTrails:
-            action.mineMissileTrails !== undefined
-              ? [...action.mineMissileTrails]
-              : state.timeline.mineMissileTrails,
-          spentMines:
-            action.spentMines !== undefined ? [...action.spentMines] : state.timeline.spentMines,
-          displayPlacement: action.placement ?? state.timeline.displayPlacement,
+          moveProgress,
+          moveLeg,
+          jumpTrails,
+          mineMissileTrails,
+          spentMines,
+          displayPlacement: action.placement ?? tl.displayPlacement,
           displayKingLives: null,
           displayMines: null,
           displaySiegedRooks: null,

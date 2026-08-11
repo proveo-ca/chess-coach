@@ -1,6 +1,6 @@
 @startuml screen-entities
 ' SPEC: _spec/apps/starchess/architecture/screen-entities.puml
-' purpose: Current-state class composition — SPA routes / demos → board hosts (post P3).
+' purpose: Current-state class composition — SPA routes / demos → board hosts (current).
 !include ../../../themes/proveo.puml
 
 skinparam packageStyle rectangle
@@ -8,7 +8,7 @@ skinparam defaultTextAlignment left
 skinparam classAttributeIconSize 0
 hide empty members
 
-title StarChess · Screen / demo entities → board hosts\n(post P3 MatchBoardHost)
+title StarChess · Screen / demo entities → board hosts\n(MatchBoardHost)
 
 package "SPA routes" {
 
@@ -49,7 +49,7 @@ package "review hosts" {
 
 }
 
-package "board structure (P3)" {
+package "board structure (MatchBoardHost)" {
 
   class MatchBoardHost <<host>> {
     compound: BoardColumn · BoardHost · Rail

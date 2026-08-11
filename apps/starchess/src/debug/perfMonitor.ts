@@ -220,9 +220,30 @@ export const onPerfSample = (fn: PerfListener): (() => void) => {
 
 export const getPerfHistory = (): readonly PerfSnapshot[] => history;
 
+const downloadPerfJson = (rows: readonly PerfSnapshot[]): void => {
+  const payload = {
+    exportedAt: new Date().toISOString(),
+    sampleMs: SAMPLE_MS,
+    count: rows.length,
+    samples: rows,
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  const stamp = payload.exportedAt.replace(/[:.]/g, "-");
+  a.href = url;
+  a.download = `starchess-perf-${stamp}.json`;
+  a.rel = "noopener";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+};
+
 export const dumpPerfHistory = (): void => {
+  const rows = history.slice();
   console.table(
-    history.map((s) => ({
+    rows.map((s) => ({
       fps: s.fps,
       longTasks: s.longTasks,
       longMs: s.longTaskMs,
@@ -236,7 +257,9 @@ export const dumpPerfHistory = (): void => {
       tl: s.timelineActive,
     })),
   );
-  console.info("[starchess-perf] full history", history.slice());
+  console.info("[starchess-perf] full history", rows);
+  downloadPerfJson(rows);
+  console.info("[starchess-perf] downloaded starchess-perf-*.json (%d samples)", rows.length);
 };
 
 export const startPerfMonitor = (): void => {
@@ -246,7 +269,7 @@ export const startPerfMonitor = (): void => {
   ensureHud();
   document.documentElement.dataset.starchessPerf = "1";
   console.info(
-    "[starchess-perf] monitor on — samples/sec in console; dump: window.__starchessPerf.dump()",
+    "[starchess-perf] monitor on — samples/sec in console; dump JSON: window.__starchessPerf.dump()",
   );
 
   rafId = requestAnimationFrame(tickRaf);

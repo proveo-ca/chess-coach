@@ -1,6 +1,6 @@
-@startuml p2-composite-vfx-stack
-' SPEC: _spec/apps/starchess/architecture/p2-composite-vfx-stack.puml
-' purpose: P2 proposal — Composite VFX root + Facade + Parameter Object.
+@startuml composite-vfx-stack
+' SPEC: _spec/apps/starchess/architecture/composite-vfx-stack.puml
+' purpose: Composite VFX root + Facade + Parameter Object.
 ' constraint: NO BEHAVIORAL CHANGE — same pixels, fog, vision, cues, routes.
 !include ../../../themes/proveo.puml
 
@@ -9,7 +9,7 @@ skinparam packageStyle rectangle
 skinparam classAttributeIconSize 0
 hide empty members
 
-title StarChess · P2 Composite + Facade\nVFX layer stack + CombatCueFrame (BEFORE → AFTER)
+title StarChess · Composite + Facade\nVFX layer stack + CombatCueFrame (BEFORE → AFTER)
 
 package "BEFORE · flat Facade" as BEFORE {
 
@@ -99,7 +99,7 @@ package "AFTER · Facade + Composite + Parameter Object" as AFTER {
   class StarChessBoard_A <<app>> {
     StarChessBoard
     --
-    board leaf (P1)
+    board leaf (StarChessBoard)
     BoardViewProps only
   }
 
@@ -155,7 +155,7 @@ BEFORE -[hidden]- AFTER
 note bottom
   **Related:** ""architecture/board-entities.puml"" · ""animation-pipeline.md"" · ""visualFrame.ts"".
   **Preserve:** NO_* stable empties · layer order · overlayReady gate around root only.
-  **Next:** P3 host Bridge mounts Live with stable Stage contract.
+  **Next:** MatchBoardHost bridge mounts Live with stable Stage contract.
 end note
 
 @enduml

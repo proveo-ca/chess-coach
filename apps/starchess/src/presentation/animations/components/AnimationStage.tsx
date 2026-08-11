@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/starchess/demos.puml, _spec/apps/starchess/architecture/board-entities.puml, _spec/apps/starchess/architecture/p2-composite-vfx-stack.puml
+// SPEC: _spec/apps/starchess/demos.puml, _spec/apps/starchess/architecture/board-entities.puml, _spec/apps/starchess/architecture/composite-vfx-stack.puml
 /**
  * Snapshot board + combat VFX overlay stack (Facade).
  * Store-free host for Storybook animation demos and timeline projection.

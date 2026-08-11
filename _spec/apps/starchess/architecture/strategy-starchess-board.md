@@ -1,9 +1,9 @@
-# P1 — Strategy + Rename: `StarChessBoard` + `VisionStrategy`
+# Strategy + Rename: `StarChessBoard` + `VisionStrategy`
 
 **Patterns:** Strategy (GoF), Extract Class  
 **Status:** ACCEPTED (alias `ObserverStarChessBoard.tsx` removed)  
 **Depends on:** none  
-**Unblocks:** P2 (stable leaf name), honest type exports
+**Unblocks:** composite VFX stack (stable leaf name), honest type exports
 
 ## Goal
 
@@ -110,8 +110,8 @@ Types: import from `~/types/board` only — **stop** re-exporting from the board
 ## Non-goals
 
 - Changing fog math in `fogProjection.ts`
-- Splitting VFX / `AnimationStage` (P2)
-- Unifying `BaseScreen` / review hosts (P3)
+- Splitting VFX / `AnimationStage` (composite VFX stack)
+- Unifying `BaseScreen` / review hosts (MatchBoardHost bridge)
 - New vision modes beyond `player` | `observer`
 
 ## Risks & open questions

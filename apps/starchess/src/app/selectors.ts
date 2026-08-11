@@ -7,14 +7,25 @@ import {
 import type { Square } from "chess.js";
 
 import type { MatchState } from "~/app/matchTypes";
+import type { MatchShell, MatchStore, TimelineState } from "~/types/match";
 import { rookModeForSieged } from "~/presentation/board/rookMode";
 
-export const displayedSnapshot = (state: MatchState): ScFenSnapshot => {
+/** Pure: shell + timeline display* (not playingIds / progress / trails). */
+export const displayedSnapshotFrom = (
+  shell: MatchShell,
+  tl: Pick<
+    TimelineState,
+    | "active"
+    | "displayPlacement"
+    | "displayKingLives"
+    | "displayMines"
+    | "displaySiegedRooks"
+  >,
+): ScFenSnapshot => {
   // Terminal review: settled cursor + optional in-flight timeline overlays.
-  if (state.phase === "gameOver") {
-    const settled = state.settledSnapshots[state.reviewIndex];
+  if (shell.phase === "gameOver") {
+    const settled = shell.settledSnapshots[shell.reviewIndex];
     if (settled) {
-      const tl = state.timeline;
       // Active playback OR mid-wave soft-done (display kept, active cleared).
       if (tl.active || tl.displayPlacement != null) {
         return {
@@ -30,13 +41,12 @@ export const displayedSnapshot = (state: MatchState): ScFenSnapshot => {
       return settled;
     }
   }
-  const placement =
-    state.timeline.displayPlacement ?? state.liveSnapshot.placement;
+  const placement = tl.displayPlacement ?? shell.liveSnapshot.placement;
   // Snap `U:` + planning arm marks → green aura / Charon pods until turn-open checks.
   // U: is not a fog pierce — hidden enemies stay hidden.
-  const { specialsUsed: usedMarks, ...rest } = state.liveSnapshot;
+  const { specialsUsed: usedMarks, ...rest } = shell.liveSnapshot;
   const used = new Set<Square>(usedMarks ?? []);
-  for (const sq of state.specialsUsed) used.add(sq);
+  for (const sq of shell.specialsUsed) used.add(sq);
   return {
     ...rest,
     placement,
@@ -44,16 +54,23 @@ export const displayedSnapshot = (state: MatchState): ScFenSnapshot => {
   };
 };
 
-export const isTerminal = (state: MatchState) =>
+export const displayedSnapshot = (state: MatchState): ScFenSnapshot =>
+  displayedSnapshotFrom(state, state.timeline);
+
+/** Reactive read: shell + timeline (call inside createMemo). */
+export const readDisplayedSnapshot = (store: MatchStore): ScFenSnapshot =>
+  displayedSnapshotFrom(store.shell(), store.timeline());
+
+export const isTerminal = (state: MatchShell | MatchState) =>
   state.phase === "gameOver" || state.liveSnapshot.phase === "O";
 
-export const canSubmit = (state: MatchState) =>
+export const canSubmit = (state: MatchShell | MatchState) =>
   state.phase === "planning" || state.phase === "targeting";
 
 export const pieceMap = (state: MatchState) =>
   placementToMap(displayedSnapshot(state).placement);
 
-export const outcomeLabel = (state: MatchState): string | null => {
+export const outcomeLabel = (state: MatchShell | MatchState): string | null => {
   if (!isTerminal(state)) return null;
   const o = state.outcome ?? scOutcome(state.liveSnapshot);
   if (!o) return "Game over";

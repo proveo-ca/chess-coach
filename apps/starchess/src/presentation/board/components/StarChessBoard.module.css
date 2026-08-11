@@ -28,31 +28,45 @@
   /* Clip piece VFX inside the grid; keep overflow visible here so the phase
      outline (outside the box) is not eaten. Inner .chessboard clips walk-offs. */
   overflow: visible;
-  /* Phase ring — synced with TurnBar / Chip tones (check / intent / resolve). */
-  outline: 2px solid transparent;
-  outline-offset: 2px;
-  transition:
-    filter 220ms ease,
-    background-color 280ms ease,
-    outline-color 280ms ease,
-    outline-style 280ms ease;
+  /* Containing block for the phase ring overlay (.board-phase-ring). */
+  position: relative;
 }
 
-.chessboard-container[data-phase="check"] {
+/* Phase ring — synced with TurnBar / Chip tones (check / intent / resolve).
+   The ring is an overlay child (first in DOM, so the grid paints above it).
+   Colors snap per phase; the fade is opacity-only so phase changes stay on the
+   compositor instead of repainting the board-sized container outline every
+   280ms. */
+.board-phase-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 4px;
+  pointer-events: none;
+  opacity: 0;
+  background: transparent;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  transition: opacity 280ms ease;
+}
+
+.chessboard-container[data-phase="check"] .board-phase-ring {
   /* Red frame pad + solid outline — matches Chip.tone=check. */
+  opacity: 1;
   background: #c43c3c;
   outline-style: solid;
   outline-color: #c43c3c;
 }
 
-.chessboard-container[data-phase="intent"] {
-  background: var(--board-border);
+.chessboard-container[data-phase="intent"] .board-phase-ring {
+  opacity: 1;
+  background: transparent;
   outline-style: dashed;
   outline-color: color-mix(in srgb, var(--text-color, #e8eaed) 55%, transparent);
 }
 
-.chessboard-container[data-phase="resolve"] {
-  background: var(--board-border);
+.chessboard-container[data-phase="resolve"] .board-phase-ring {
+  opacity: 1;
+  background: transparent;
   outline-style: solid;
   outline-color: color-mix(in srgb, var(--text-color, #e8eaed) 55%, transparent);
 }
@@ -753,7 +767,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .piece {
+  .piece,
+  .board-phase-ring {
     transition-duration: 1ms;
   }
 }

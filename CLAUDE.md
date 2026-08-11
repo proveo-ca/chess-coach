@@ -45,7 +45,7 @@ When you add, rename, or remove a component, hook, store, or service:
 | `_spec/apps/starchess/demos.puml` | Canonical demos + shipped vs pending |
 | `_spec/apps/starchess/starchess-mode.puml` | Product / UX mode (economy, specials, HUD) |
 | `_spec/apps/starchess/animation-pipeline.md` | `playTimeline` → `TIMELINE_*` MatchStore → AnimationStage |
-| `_spec/apps/starchess/roadmap.md` | Spec remediation P0–P2 |
+| `_spec/apps/starchess/roadmap.md` | Spec remediation roadmap |
 | `_spec/packages/starchess-core/*` | Live StarChess rules: SCFEN wire/queue, resolve, turn queue, sc-moves |
 | `_spec/packages/engine-core/entities.puml` | `@chess-coach/engine-core` API: shared prompt/classification/commentary exports and their two consumers |
 | `_spec/packages/engine-core/ui-engine-parity.md` | Bun backend ⇄ `apps/ui/src/engine` parity map (prompt logic shared via `@chess-coach/engine-core`) |

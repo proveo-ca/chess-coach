@@ -1,9 +1,9 @@
-# P2 — Composite + Facade: VFX layer stack
+# Composite + Facade: VFX layer stack
 
 **Patterns:** Composite, Facade, Parameter Object  
 **Status:** ACCEPTED  
-**Depends on:** P1 preferred (`StarChessBoard` leaf name); can alias through Observer  
-**Unblocks:** cheaper cue updates; cleaner Live surface for P3
+**Depends on:** `StarChessBoard` leaf name preferred; can alias through Observer  
+**Unblocks:** cheaper cue updates; cleaner Live surface for MatchBoardHost
 
 ## Goal
 
@@ -31,7 +31,7 @@ a 20-prop surface into the board on every cue tick.
 `AnimationStage` remains the public store-free entry for Storybook demos and Live:
 
 - Resolves `fen` | `snapshot`
-- Renders board leaf (`StarChessBoard` post-P1)
+- Renders board leaf (`StarChessBoard`)
 - Hosts overlay measure + `CombatOverlayRoot`
 
 ### Composite
@@ -112,12 +112,21 @@ export type AnimationStageProps = BoardViewProps & {
 5. Remove flat cue props from public Facade type after call-site sweep (or keep
    as thin deprecated sugar for demos).
 
+## Depends-up
+
+[`timeline-perf.md`](./timeline-perf.md) tightened cue invalidation (commit
+coalesce + shell ∥ timeline). Shipped compositor relief
+([`timeline-vfx-density.puml`](./timeline-vfx-density.puml)) adds review caps
+(`capForDensity`, 2026-08-11) upstream of this Composite plus the board
+phase-ring overlay — it must **not** introduce per-layer `Show` or change this
+Composite layer order.
+
 ## Non-goals
 
 - Changing cue math, timeline player, or `deriveVisualFrame` priority rules
 - Lazy-loading individual VFX modules
-- Vision Strategy work (P1)
-- Screen chrome unify (P3)
+- Vision Strategy work (board strategy design)
+- Screen chrome unify (MatchBoardHost)
 - Removing `Show when={overlayReady()}` around the whole composite
 
 ## Decisions
