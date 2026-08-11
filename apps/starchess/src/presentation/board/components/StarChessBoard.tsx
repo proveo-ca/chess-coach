@@ -321,9 +321,9 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
             </svg>
           </Show>
           <For each={RANKS}>
-            {(rank, rIndex) => (
+            {(rank) => (
               <For each={FILES}>
-                {(file, fIndex) => {
+                {(file) => {
                   const square = `${file}${rank}` as Square;
                   const piece = () => map().get(square) ?? null;
                   const isLight = () => isLightSquare(file, rank);
@@ -361,19 +361,19 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
                   const canister = () => {
                     const c = canisterAt(square);
                     if (!c) return undefined;
-                    // Player fog: hide canisters on fogged / hidden squares.
-                    if (usePlayerFog() && (isFogged() || hidePiece())) return undefined;
+                    // Hide only when the actor unit is occulted (enemy in fog).
+                    // Own fogged tiles still show queued canisters above the veil.
+                    if (usePlayerFog() && hidePiece()) return undefined;
                     return c;
                   };
                   const ghost = () => {
-                    const g = ghostAt(square);
-                    if (!g) return undefined;
-                    if (usePlayerFog() && isFogged()) return undefined;
-                    return g;
+                    // Intent destinations paint above fog (square lift + ghost z).
+                    return ghostAt(square);
                   };
                   const intentCheck = () => {
                     if (!checkAt(square)) return false;
-                    // Standing checks stay visible when lit; skip fogged tiles.
+                    // Capture/check rings use true occupancy — never paint on fogged
+                    // tiles or they leak hidden enemies (ghost dests stay visible).
                     if (usePlayerFog() && isFogged()) return false;
                     return true;
                   };
@@ -412,16 +412,6 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
                       role={props.onSquareClick ? "button" : undefined}
                       onClick={() => props.onSquareClick?.(square)}
                     >
-                      <Show when={fIndex() === 0}>
-                        <span class={clsx(styles.coordinate, styles["rank-label"])}>
-                          {rank}
-                        </span>
-                      </Show>
-                      <Show when={rIndex() === 7}>
-                        <span class={clsx(styles.coordinate, styles["file-label"])}>
-                          {file}
-                        </span>
-                      </Show>
                       <Show when={localFogVeil()}>
                         <div class={styles.fog} aria-hidden="true" />
                       </Show>
@@ -545,6 +535,30 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
               </For>
             )}
           </For>
+          {/* Board-level labels — sibling of squares/fog so theme cell z-index
+              (e.g. vermeer spill) cannot trap ranks/files under the veil. */}
+          <div class={styles["coordinate-layer"]} aria-hidden="true">
+            <For each={RANKS}>
+              {(rank, rIndex) => (
+                <span
+                  class={clsx(styles.coordinate, styles["rank-label"])}
+                  style={{ top: `calc(${rIndex()} * 12.5% + 2px)` }}
+                >
+                  {rank}
+                </span>
+              )}
+            </For>
+            <For each={FILES}>
+              {(file, fIndex) => (
+                <span
+                  class={clsx(styles.coordinate, styles["file-label"])}
+                  style={{ right: `calc(${7 - fIndex()} * 12.5% + 4px)` }}
+                >
+                  {file}
+                </span>
+              )}
+            </For>
+          </div>
         </div>
       </div>
     </div>

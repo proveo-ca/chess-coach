@@ -103,13 +103,17 @@
   /* Marker class for DualNav review — full board, dual vision strokes only. */
 }
 
-/* Own pieces outside vision sit above the SVG fog; local .fog veils the tile. */
-.chessboard--fog :global([data-fog="hidden"]:has(img)) {
+/* Own pieces outside vision sit above the SVG fog; local .fog veils the tile.
+   Match img + inline SVG units (rook/bishop glyphs via .piece / data-piece-inline). */
+.chessboard--fog :global([data-fog="hidden"]:has(img)),
+.chessboard--fog :global([data-fog="hidden"]:has([data-piece-inline])),
+.chessboard--fog :global([data-fog="hidden"]):has(.piece) {
   position: relative;
   z-index: 6;
 }
 
-/* Intent ghosts must read through fog (queued destination / canister). */
+/* Intent chrome + hints must read through fog (queued dest / canister / check).
+   Whole-square lift beats theme cell stacking (vermeer light/dark z 0/1). */
 .chessboard--fog :global([data-square][data-intent-dest]),
 .chessboard--fog :global([data-square][data-intent-canister]),
 .chessboard--fog :global([data-square][data-intent-check]),
@@ -482,15 +486,22 @@
 
 /* =========================================
    Coordinates (Ranks & Files)
-   Always above fog (SVG z=5, local veil z=9, terrain wash z=11).
+   Board-level layer (not inside cells) so vermeer cell z-index and fog SVG
+   cannot bury a–h / 1–8. Above fog (5), intent lifts (7), pieces (10), wash (11).
    White fill + black outline so labels stay readable on lit or fogged tiles.
    ========================================= */
+.coordinate-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 20;
+}
+
 .coordinate {
   position: absolute;
   font-size: clamp(8px, 2.5vw, 12px);
   font-weight: bold;
   user-select: none;
-  z-index: 12;
   pointer-events: none;
   color: #fff;
   -webkit-text-stroke: 0.6px #000;
@@ -505,13 +516,11 @@
 }
 
 .rank-label {
-  top: 2px;
   left: 4px;
 }
 
 .file-label {
   bottom: 0px;
-  right: 4px;
 }
 
 /* =========================================
