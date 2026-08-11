@@ -29,18 +29,20 @@
   max-width: 33rem;
 }
 
-/* Mobile banner must span the full viewport, not the splash column. */
+/* Full-bleed banner: 100vw child of a centered ~92vw flex column is already
+   viewport-centered — no left/translate breakout (that overshoots left). */
 @media (max-width: 719px) {
   .splash-content > :global(.mobile-banner),
   .splash-content--wide > :global(.mobile-banner) {
     width: 100vw;
     max-width: 100vw;
     position: relative;
-    left: 50%;
+    left: auto;
     right: auto;
-    transform: translateX(-50%);
+    transform: none;
     margin-bottom: 0.75rem;
     box-sizing: border-box;
+    flex-shrink: 0;
   }
 }
 

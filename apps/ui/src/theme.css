@@ -124,6 +124,9 @@
   --advice-width: 100%;
   /* Board chrome gutters (MobileSidebar · FenLoader) — equal L/R on mobile. */
   --board-chrome-inline: 0.7rem;
+  /* MobileBanner strip: min-height 40px + padding-block 0.35rem×2. Absolute banner
+     clearance on Screen top region uses this (see Screen.module.css). */
+  --mobile-banner-height: calc(40px + 0.7rem);
 }
 
 @media (prefers-color-scheme: light) {

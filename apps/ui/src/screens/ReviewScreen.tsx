@@ -215,7 +215,7 @@ export const ReviewScreen: Component = () => {
               <div class="desktop-only">
                 <ScreenBackNav data-testid="review-back">{historyFilters()}</ScreenBackNav>
               </div>
-              <MobileBanner title="Review Games" onMenu={openMobileDrawer} hideCentre />
+              <MobileBanner title="Review Games" onMenu={openMobileDrawer} />
               <div class="mobile-only">{historyFilters()}</div>
             </Screen.SidebarInset>
             <Screen.BoardArea>

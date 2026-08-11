@@ -10,12 +10,8 @@
 }
 
 @media (--tall-mobile) {
-  /* Banner keeps flush-top layout; hero owns the leftover spacer instead.
-     Fuse wrapper is display:contents here, so banner is a header flex child. */
-  :global(.mobile-banner) {
-    margin-bottom: 0;
-  }
-
+  /* Banner is absolute flush-top; header padding clears the bar. Hero owns the
+     leftover spacer and may paint over the banner strip (z-index). */
   .mobileHero {
     display: flex;
     justify-content: center;
@@ -25,7 +21,8 @@
     width: 100%;
     max-width: var(--board-size);
     margin-inline: auto;
-    /* Pull up so the cat overlaps the banner strip. */
+    /* Pull into the banner pad so the cat overlaps the strip (spec §3). */
+    margin-top: calc(-0.45 * var(--mobile-banner-height, calc(40px + 0.7rem)));
     margin-bottom: auto;
     min-height: 0;
     pointer-events: none; /* keep banner Back / menu clickable under the float */

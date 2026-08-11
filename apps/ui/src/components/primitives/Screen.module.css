@@ -196,8 +196,8 @@ h1 {
     gap: 0;
   }
 
-  /* flex-end: FEN / captures / tools hug the board. MobileBanner keeps
-     margin-bottom: auto so it stays pinned to the top of the region. */
+  /* flex-end: FEN / captures / tools hug the board. MobileBanner is
+      position:absolute flush-top — pad the region so bar/hero/FEN clear it. */
   .coach-header,
   .sidebar-inset {
     justify-content: flex-end;
@@ -208,6 +208,14 @@ h1 {
     padding-top: 0;
     gap: 0.2rem;
     box-sizing: border-box;
+  }
+
+  /* Absolute banner containing block + in-flow clearance (= banner min-height
+     + padding-block). Dynamic fuse zeroes this — strip is in-flow there. */
+  .coach-header:has(:global(.mobile-banner)),
+  .sidebar-inset:has(:global(.mobile-banner)) {
+    position: relative;
+    padding-top: var(--mobile-banner-height, calc(40px + 0.7rem));
   }
 
   /* Banner may sit under [data-fuse-root]; match class, not testid. */
@@ -255,6 +263,8 @@ h1 {
     justify-content: flex-start;
     height: auto;
     min-height: 0;
+    /* Fuse row is in-flow; banner is display:contents — no absolute clearance. */
+    padding-top: 0;
   }
 
   :global([data-fuse-root]) {
