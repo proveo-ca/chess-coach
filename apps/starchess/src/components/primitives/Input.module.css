@@ -1,0 +1,33 @@
+.common-input {
+  border-radius: 0.25rem;
+  border: 1px solid color-mix(in srgb, var(--sc-menu-neon, #7cff4a) 35%, #444);
+  padding: 0.55em 0.9em;
+  font-size: 0.9rem;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: color-mix(in srgb, #050810 70%, transparent);
+  transition: border-color 0.25s;
+  color: inherit;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.common-input:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--sc-menu-neon, #7cff4a) 65%, #888);
+}
+
+.common-input:focus,
+.common-input:focus-visible {
+  outline: 2px solid var(--sc-menu-neon, #7cff4a);
+  outline-offset: 1px;
+}
+
+.common-input::placeholder {
+  color: inherit;
+  opacity: 0.45;
+}
+
+.common-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

@@ -1,0 +1,45 @@
+@startuml resolve-pipeline
+' SPEC: _spec/apps/starchess/core/turn/resolve-pipeline.puml
+' purpose: Pipeline — classical C phases; pure domain; no UI, no queue mutate.
+!include ../../../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess · Resolve pipeline (plan)
+
+package "Facade in" {
+  component "submit-turn\nrank C call" as SUB <<app>>
+}
+
+package "Pipeline phases" {
+  component "resolve/resolve-turn.ts" as RT <<app>>
+  component "P1 attack\nvisible targets → death → occupy" as P1 <<app>>
+  component "P2 move\ncollisions · same-square race · mines" as P2 <<app>>
+  component "P3 path-reveal\nfog approach shots" as P3 <<app>>
+}
+
+package "Board queries (read during resolve)" {
+  component "board/mines.ts\ncaps · path contact · rays" as MN <<db>>
+  component "board/vision.ts\npathRevealSteps" as VIS <<db>>
+  component "board/placement.ts" as PL <<db>>
+}
+
+SUB ARROW_MAIN RT : resolveTurn(white, black)
+RT ARROW_MAIN P1
+P1 ARROW_MAIN P2
+P2 ARROW_MAIN P3
+P1 ARROW_OPTIONAL PL
+P2 ARROW_OPTIONAL MN : contact / trigger
+P2 ARROW_OPTIONAL PL
+P3 ARROW_OPTIONAL VIS : reveal steps
+P3 ARROW_OPTIONAL PL
+
+note bottom
+  **Pattern:** Pipeline (ordered domain phases).
+  **Allowed:** submit-turn → resolve-turn only.
+  **Forbidden:** timeline / input / overlays calling resolve-turn.
+  **Forbidden:** pipeline mutating Q: (read intent already stamped by facade).
+  Activity detail: ""_spec/packages/starchess-core/resolve.puml"".
+end note
+@enduml

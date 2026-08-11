@@ -25,5 +25,19 @@ export default defineConfig({
     setupFiles: ["./vitest.setup.ts"],
     globals: true,
     isolate: false,
+    coverage: {
+      provider: "v8",
+      reportsDirectory: "./coverage",
+      reporter: ["text", "text-summary", "json-summary", "html", "lcov"],
+      // Coverage instruments .ts only (no .tsx components).
+      include: ["src/**/*.ts"],
+      exclude: [
+        "src/**/*.tsx",
+        "src/**/*.{test,spec}.ts",
+        "src/**/*.stories.ts",
+        "src/vite-env.d.ts",
+        "src/**/*.d.ts",
+      ],
+    },
   },
 });

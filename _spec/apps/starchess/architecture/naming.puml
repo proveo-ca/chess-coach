@@ -1,0 +1,48 @@
+@startuml naming
+' SPEC: _spec/apps/starchess/architecture/naming.puml
+' purpose: Piece art naming — product nerd/inline vs tutorial-only cburnett; never core.
+!include ../../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess · Naming — piece art (app only)
+
+package "product default (apps/starchess presentation)" {
+  component "PieceSet = 'nerd'" as NERD <<app>>
+  component "Inline* SVG units\n(InlineRook, …)" as INLINE <<app>>
+  component "public/pieces/nerd/*.svg" as SVG <<db>>
+  component "pieceUrl(..., 'nerd')" as URL <<app>>
+}
+
+package "tutorial fog Chess skin ONLY" {
+  component "PieceSet = 'cburnett'" as CB <<host>>
+  component "public/pieces/cburnett/*.svg" as CBSVG <<db>>
+  component "TutorialScreen FogSection\nchessMode toggle" as TUT <<host>>
+}
+
+package "packages/starchess-core" {
+  component "rules · resolve · SCFEN\n(no PieceSet / no art)" as CORE <<app>>
+}
+
+package "deprecated product names" {
+  component "NerdScreen / Nerd mode copy" as OLD <<error>>
+  component "NERD_STARTING_SCFEN" as OLDSEED <<error>>
+}
+
+NERD ARROW_MAIN INLINE
+NERD ARROW_MAIN SVG
+URL ARROW_MAIN SVG
+TUT ARROW_OPTIONAL CB : sole entry
+CB ARROW_MAIN CBSVG
+CORE ARROW_ERROR CB : never support
+CORE ARROW_ERROR NERD : art stays in app
+OLD ARROW_ERROR NERD : chrome naming
+
+note bottom
+  **Product** = ""nerd"" + inline units forever.
+  **cburnett** exists only so one fog-tutorial section can look like classic chess.
+  Do **not** add PieceSet, skins, or SVG paths to ""@chess-coach/starchess-core"".
+  Rules/resolve stay piece-symbol + color only.
+end note
+@enduml

@@ -8,7 +8,7 @@ import { expect, test } from "@playwright/test";
  * hovering f7 must surface "blunder" inside `data-testid=floating-advice`
  * (the real CoachPanel, not an in-flow footer).
  */
-const DYNAMIC = { width: 390, height: 560 };
+const DYNAMIC = { width: 480, height: 480 };
 
 const BLUNDER_GAME = {
   pgn: "1. e4 e5 2. Qh5 Nc6",

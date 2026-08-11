@@ -2,17 +2,18 @@
   display: flex;
   flex-direction: row;
   gap: 0.5rem;
-  align-items: stretch;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 @media (max-width: 719px) {
   /* Same L/R gutter as MobileSidebar bars — content aligns with board chrome. */
   .wrapper {
-    width: 100%;
     max-width: var(--board-size);
     margin-inline: auto;
     padding-inline: var(--board-chrome-inline, 0.7rem);
-    box-sizing: border-box;
   }
 }
 
@@ -23,21 +24,25 @@
 }
 
 .input {
-  flex: 1 1 auto;
+  /* flex-basis 0 so the field reliably consumes leftover row space */
+  flex: 1 1 0;
+  width: 100%;
   min-width: 0;
-  padding: 0.5rem 0.75rem;
-  font: inherit;
+  height: 40px;
+  box-sizing: border-box;
+  padding: 0 0.75rem;
   color: var(--text-strong);
   background: rgba(var(--shadow-rgb), 0.35);
   border: 1px solid rgba(var(--white-rgb), 0.15);
-  border-radius: 6px;
   outline: none;
   transition:
     border-color 120ms ease,
     background-color 120ms ease;
 }
 
-.input:focus {
+.input:focus,
+.input:focus-visible {
+  outline: none;
   border-color: rgba(var(--primary-rgb), 0.9);
   background: rgba(var(--shadow-rgb), 0.5);
 }
@@ -48,6 +53,8 @@
 
 .button {
   flex: 0 0 auto;
+  height: 40px;
+  box-sizing: border-box;
 }
 
 .trailing {

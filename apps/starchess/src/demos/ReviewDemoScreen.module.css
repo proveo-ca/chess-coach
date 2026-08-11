@@ -1,0 +1,85 @@
+/* Host only — Screen owns grid; this file styles board host + sideboard slot. */
+
+/* Flush ResourceBars to the board inside the top Screen row.
+   Screen.SidebarInset already pads --sidebar-width on the right so this
+   column’s center matches the board (sidebar ignored). Center children. */
+.topPane {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  height: 100%;
+  min-height: calc(var(--avatar-height) + 1rem);
+  box-sizing: border-box;
+}
+
+@media (max-width: 719px) {
+  .topPane {
+    min-height: 0;
+  }
+}
+
+.dualResources {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  justify-content: center;
+  gap: 8px;
+  width: fit-content;
+  max-width: 100%;
+}
+
+.host {
+  position: relative;
+  display: block;
+  overflow: visible;
+  width: var(--board-size);
+  height: var(--board-size);
+  /* Mock apps/ui CapturedPieces strips (min-height 1.4rem each). */
+  margin-block: 1.4rem;
+  box-sizing: border-box;
+}
+
+.footerStack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  width: 100%;
+  max-width: var(--board-size);
+  box-sizing: border-box;
+  padding-block: 8px;
+}
+
+.caption {
+  margin: 0;
+  padding-block: 4px;
+  font-size: 12px;
+  color: #6a7564;
+  letter-spacing: 0.02em;
+  text-align: center;
+  max-width: var(--board-size);
+  line-height: 1.35;
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+}
+
+/* Coach Review detail title stack — readable on LiveMatchShell dark HUD. */
+.matchTitle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  margin-bottom: 0.35rem;
+  text-align: center;
+}
+
+.resultLine {
+  margin-bottom: 0;
+}
+
+.matchupLine {
+  margin-bottom: 0;
+  color: #e8eaed;
+}

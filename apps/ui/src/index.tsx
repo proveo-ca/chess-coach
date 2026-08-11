@@ -9,6 +9,7 @@ import { CoachScreen } from "~/screens/CoachScreen";
 import { LanScreen } from "~/screens/LanScreen.tsx";
 import { MenuScreen } from "~/screens/MenuScreen";
 import { ReviewScreen } from "~/screens/ReviewScreen";
+import { StarChessRedirect } from "~/screens/StarChessRedirect";
 
 const root = document.getElementById("root");
 
@@ -43,6 +44,7 @@ render(
       <Route path="/review" component={ReviewScreen} />
       <Route path="/review/:id" component={ReviewScreen} />
       <Route path="/lan" component={LanScreen} />
+      <Route path="/starchess" component={StarChessRedirect} />
     </Router>
   ),
   root!,

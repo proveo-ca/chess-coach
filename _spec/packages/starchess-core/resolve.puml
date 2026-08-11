@@ -1,0 +1,155 @@
+@startuml resolve
+' SPEC: _spec/packages/starchess-core/resolve.puml
+' purpose: Rank-major resolve — turn-open king-checks (before intent) → End: B → C → F.
+!include ../../themes/proveo.puml
+
+title StarChess · Resolve — 3 phases: attack → move → fog approach
+
+start
+
+:Take planning snap — turn N is open;
+
+:**Turn-open legal king-checks** — ""beginScTurn"" — fog-visible, implicit,\nwhite then black — ""applyPendingKingShots"".\nResolved **before** players choose intent. A unit that\nbreaks contact later this turn already paid a **parting shot**;
+
+if (the two kings are adjacent?) then (yes)
+  :**King duel** — a king is a legal checker of the enemy king.\nThe collector loops **both** king colours independently, so\ncontact is always **mutual**. Damage is **per checker**: every\nunit checking a king costs it 1 HP, so N checkers = N HP.\nKings leap — ""leapsPiece"" — never the blocker / collision\nbranch: adjacency always chips, nothing is captured, the\nplacement is untouched;
+else (no)
+  :Only checkers with clear geometry to the king chip;
+endif
+
+if (either king at 0 HP after turn-open checks?) then (yes)
+  :Phase O — no intent / B / C / F;
+  stop
+else (no)
+endif
+
+:Players queue intent (specials + classical);
+
+:End / timeout — ""endScTurn"" — live passes\n""skipTurnStartChecks"" when checks already applied;
+
+:Apply rank **B** specials — white then black\n— spawn / mine / warp / siege;\n**Presentation:** gas absorb VFX — canister drops\nfrom the top of the actor square — left / mid / right —\ninto the unit; green special-used aura eases in;
+
+:Rank **C** — classical for both sides against\nthe same start board — ""resolveTurn"";
+
+:Phase 1 **attack** — direct attacks on targets visible\nfrom the start board — attack → death → occupy;
+
+if (attack hits a piece?) then (yes)
+  :Death — victim removed;
+  if (attacker survives?) then (yes)
+    :**Occupy** victim's square;
+  else (no)
+    :Attacker dies first — square stays empty, no occupy;
+  endif
+else (no)
+  :No direct hit — quiet intent defers to phase 2;
+endif
+
+:Phase 2 **move** — survivors relocate; collisions\nresolved against the post-attack board; a target\n**still fogged at contact** → move collision\n— capture/occupy, no attack cue;\n**same-square race** (two movers land on one tile)\n→ **both die**, square empty, no attack cue;
+
+:Phase 3 **fog approach** — path-reveal shots slide\n""pathRevealFrom"" → discovery square → attack;\n**King HP mid-resolve** only here: fog intent finds a\nhidden king on the path — ""pathReveal"" kingShot.\nVisible kings already paid at turn open — no second chip.\n**fizzle unless** the attacker still occupies\n""pathRevealFrom"" — died in phases 1–2 / square\nre-occupied by a phase-2 mover / sieged — rooks\nnever relocate — and ""to"" holds the exact\nin-the-way victim;
+
+:Apply rank **F** specials — white then black\n— post-move siege / late drops;\n**Presentation:** same gas absorb drop + aura as B;
+
+if (either king at 0 HP after all ranks?) then (yes)
+  :Next snap phase **O** — terminal and **absorbing**;
+  :""endScTurn"" throws on a non-P snapshot;
+  :""scOutcome"" from kingLives — 0/0 draw, else win;
+else (no)
+  :Next snap phase **P** — play continues;
+endif
+
+note right
+  **Promotion (after move/mine):** relocate lands a **pawn**; survivors with
+  a queued promotion then **walk off** the board edge (1× ""MOVE_SQUARE_MS"")
+  and the chosen unit **deploys**. A promoting pawn that **walks onto** a
+  hostile mine (forward step — pawns only attack front diagonals) dies with
+  the mine — **no** walk-off / deploy. Units that attack the mine square
+  clear it in the attack phase then occupy.
+  Completed-history wire ""C=from intentTo>resolvedTo"" remains **deferred**.
+end note
+
+stop
+
+note right
+  **Intent ""C="" vs progressive path resolve:** ""pathRevealSteps"" /
+  ""pathRevealFrom"" in ""resolveTurn"" capture the fog approach — now a
+  **phase-3** event: the attacker slides from ""pathRevealFrom"" to the
+  discovery square, then attacks, applied **after** moves. An approach
+  **fizzles** when the attacker no longer occupies ""pathRevealFrom""
+  (died in phases 1–2, or its square was re-occupied by a phase-2 mover
+  — ""destinationsWritten""), when the origin is sieged (""siegedRooks""
+  — rooks never relocate), or when ""to"" no longer holds the exact
+  in-the-way victim (""a.victim"" color+type): empty, a converging
+  same-side ally, or a different enemy not in the way — never captured.
+  Sieged rooks also **fizzle fogged contact** — they never relocate, so
+  a fogged adjacent (or never-revealed) target and a fogged mine square
+  are not attacked; visible targets still die to the turret.
+  ""applyPathRevealAttack(snap, a)"" is the shared source of truth for the
+  board-state fizzles (attacker still on ""pathRevealFrom"", exact victim on
+  ""to""); the engine loop pre-filters the siege (""siegedRooks"") and
+  origin-re-occupation (""destinationsWritten"") gates before the attack is
+  listed, and the UI replay (""playTimeline"" / MatchStore ""TIMELINE_*"")
+  replays only that fired list, so
+  ""pathRevealAttacks"" holds **only attacks that fired**.
+  ""resolveTurn"" returns ""attacks"" (phase 1),
+  ""moves"" / ""mineTriggers"" / ""moveCollisions"" (phase 2),
+  ""pathRevealAttacks"" (phase 3), and the snapshots ""afterMove""
+  (post-phase-2) and ""afterAll"" (post-phase-3).
+  **King shots:** ""collectLegalKingChecks"" + ""applyPendingKingShots""
+  via ""beginScTurn"" at turn open (before intent). The **only** mid-resolve
+  king HP is fog path-discovery (""applyPathRevealKingShot""): intent into
+  fog finds a hidden king on the ray. Live ""endScTurn"" skips re-application
+  of turn-open checks (""skipTurnStartChecks""); atomic replay may still run
+  checks inside ""endScTurn"". No king-aimed ""C="".
+  ====
+  **King duel — two adjacent kings fight face-to-face.**
+  ""collectLegalKingChecks"" does **not** exclude king-type attackers, so a
+  king is a legal implicit checker of the enemy king. The collector loops
+  both king colours independently, so contact is always **mutual**.
+  Damage is **per checking unit**, not capped per turn: every unit that
+  checks a king takes 1 HP off it, so N checkers cost N HP in one pass.
+  A lone duel is therefore 1 HP each way at turn start.
+  * **Kings leap** (""leapsPiece"" includes 'k'), so a duel never takes the
+    blocker / collision branch: adjacency always chips, nothing is
+    captured, the placement is returned untouched.
+  * **Firing is never gated on the shooter's own HP** — only on board
+    occupancy and target identity. A king reduced to 0 in the **same** pass
+    still returns fire. Deliberate and load-bearing: it is what makes equal
+    HP end 0/0 a **draw** instead of a win for whoever is ordered first
+    (white sorts first). ""resolveTurn"" carries a comment warning against
+    //fixing// it.
+  * **Equal HP** drains 3/3 → 2/2 → 1/1 → 0/0 and flips phase to ""O""
+    (a draw). **Unequal HP**: the lower king dies first.
+  * **Deploy race** — a king deploys onto its own adjacent ring, so a unit
+    spawned next to the enemy king stacks a **second** checker. Per-checker
+    damage then chips **2 HP/turn** while taking 1. The doubling is an
+    intended feature of the rule, and follows from the per-checker rule
+    rather than being a special case.
+  * **Parting shot** — pendings are computed before the move phase, so a
+    king that breaks contact still loses 1 HP that turn.
+  * **Immediate exit** — the moment a king is left at 0 HP the turn **bails
+    out**: from the check phase nothing else resolves at all (no B, C or F),
+    and from the classical pass no F special resolves behind the dead king
+    (""endScTurn"" returns a terminal result at both seams). The classical
+    pass is simultaneous, so it completes as one unit before the far-side
+    bail out. Both shots of a duel are already applied, so mutual death
+    still reads 0/0 = draw.
+  * **Fog-discovered check** — the mid-path king chip is deliberately **not**
+    fog-gated, unlike the turn-start check. A slider with no vision of the
+    enemy king still chips it by walking its ray into it: that is a
+    //discovered check//, which is a plain check once the fog is lifted, so
+    the damage stands. The mover stops **before** the king (never occupies
+    it), and such a killing blow bails the turn out like any other.
+  Phase ""O"" is **absorbing** (""endScTurn"" throws on a non-""P"" snapshot),
+  and ""parseScFen"" rejects a 0-HP side outside phase ""O"" so a dead king
+  can never sit in a playable snapshot.
+  ""scOutcome(snap)"" (""outcome.ts"") returns ""{winner:'w'}"" /
+  ""{winner:'b'}"" for a win, ""{winner:null,draw:true}"" for a draw, or
+  ""null"" while play continues — derived purely from
+  ""kingLives"". HP is the single source of truth, so there is no
+  persisted winner field and **no SCFEN grammar change**
+  (wire grammar unchanged; ""O"" was already a valid phase code).
+  Covered by core unit tests under ""packages/starchess-core""
+  (historical path: ""packages/starchess-core/tests/"" (king duel / beginScTurn)).
+end note
+@enduml

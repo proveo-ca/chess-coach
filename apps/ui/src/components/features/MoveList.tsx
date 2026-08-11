@@ -16,6 +16,7 @@ import type { GameRecord, MoveRecord } from "~/types/game";
 import { DESKTOP_MQ } from "~/utils/breakpoints";
 import {
   measureShellChrome,
+  measureTopTrackBudget,
   observeFooterFloatLayout,
   remToPx,
   syncFooterFloatAttr,
@@ -124,7 +125,8 @@ interface Props {
   game: GameRecord | null;
   activePly?: number | null;
   analysis?: GameAnalysis;
-  /** Review /:id — float a dismissible 3-turn strip when a full docked page won't fit (§4b). */
+  /** Review /:id — float a dismissible 3-turn strip when a full docked page won't fit (§4b).
+   *  Docks in the top Screen region; footer keeps BoardControls when floating. */
   floatingCapable?: boolean;
 }
 
@@ -175,19 +177,22 @@ export const MoveList: Component<Props> = (props) => {
         syncFooterFloatAttr(false);
         return;
       }
-      // Fit check (same shape as CoachPanel). Desktop included — a docked page
-      // that would clip under the board must float the 3-turn strip (§4b).
-      // Budget only the turns that will actually render (capped at rowsPerPage),
-      // so a short game does not reserve empty page slots and falsely float.
-      const { topH, midContentH } = measureShellChrome(shell);
+      // Fit check: top chrome (excl. MoveList) + board + MoveList budget + footer
+      // + shell padding. Desktop also floats when the list won't fit in the fixed
+      // top grid track (--avatar-height + 1rem) so board Y stays stable across screens.
+      const { topH, midContentH, bottomH, padY } = measureShellChrome(shell);
       const turnCount = rows().length;
-      const rpp = window.matchMedia(DESKTOP_MQ).matches ? 3 : 6;
+      const desktop = window.matchMedia(DESKTOP_MQ).matches;
+      const rpp = desktop ? 3 : 6;
       const budgetRows = Math.min(rpp, Math.max(turnCount, 1));
       const chromeRem =
         MOVE_LIST_CHROME_REM + (turnCount > rpp ? MOVE_LIST_NAV_REM : 0);
       const inflow = remToPx(chromeRem + budgetRows * MOVE_LIST_ROW_REM);
-      // Measure board-column *content*, not the stretched middle 1fr track.
-      syncFooterFloatAttr(topH + midContentH + inflow + MOVE_LIST_FIT_SLACK_PX > window.innerHeight + 1);
+      const exceedsViewport =
+        topH + midContentH + inflow + bottomH + padY + MOVE_LIST_FIT_SLACK_PX >
+        window.innerHeight + 1;
+      const exceedsTopCap = desktop && topH + inflow > measureTopTrackBudget() + 1;
+      syncFooterFloatAttr(exceedsViewport || exceedsTopCap);
     };
 
     const disconnect = observeFooterFloatLayout(measureFloatMode);

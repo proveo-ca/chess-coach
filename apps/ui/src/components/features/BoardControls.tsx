@@ -17,22 +17,27 @@ import { isTravelling, travelFenHistory, travelIndex } from "~/store/travelStore
 
 /**
  * The MobileSidebar bar for the engine-backed board screens (Coach / Analysis /
- * Review): menu trigger (leftmost) + per-screen `center` slot + capability-gated
- * quick actions — hint, history nav, resign, new game. Flip stays in the
- * {@link MobileDrawer} menu and desktop {@link Sidebar}. Resign's confirm dialog
- * renders as a sibling of the bar (not an Item), so the bar's fan-out / max-4
- * rules don't touch it.
+ * Review): per-screen `center` slot + capability-gated quick actions — hint,
+ * history nav, resign, new game — plus menu trigger (rightmost / top-right).
+ * Flip stays in the {@link MobileDrawer} menu and desktop {@link Sidebar}.
+ * Resign's confirm dialog renders as a sibling of the bar (not an Item), so
+ * the bar's fan-out / max-4 rules don't touch it.
  *
  * Source order of left Items is chosen so Coach reads
- * `[menu][hint][resign] · avatar · [nav]` after CSS fan-out + drawer pin.
- * Analysis / Review title toolbars own the menu instead (`omitDrawer`) so the
- * tall-mobile fixed float does not cover the matchup title.
+ * `[hint][resign] · avatar · [nav][menu]` after CSS fan-out + drawer pin.
+ * Analysis / Review pass `omitDrawer` and mount the hamburger in
+ * {@link MobileBanner} instead. Review may pass `leading` (e.g. Share).
  */
 export const BoardControls: Component<{
   center?: JSX.Element;
   centerOverflow?: boolean;
-  /** Skip the hamburger — screen mounts it in a title toolbar instead. */
+  /** Skip the hamburger — screen mounts it in {@link MobileBanner} instead. */
   omitDrawer?: boolean;
+  /**
+   * Extra left-side {@link MobileSidebar.Item}s (nearest-centre first), e.g.
+   * Review Share. Inserted before capability-gated tools.
+   */
+  leading?: JSX.Element;
 }> = (props) => {
   const { hintSparkleClass, dismissHintSparkle } = useHintSparkle();
   const {
@@ -61,6 +66,8 @@ export const BoardControls: Component<{
         <Show when={props.center}>
           <MobileSidebar.Main>{props.center}</MobileSidebar.Main>
         </Show>
+
+        {props.leading}
 
         {/* Nearest-centre left control first → resign sits next to avatar */}
         <Show when={capabilities().aiOpponent}>
@@ -120,9 +127,9 @@ export const BoardControls: Component<{
           </MobileSidebar.Item>
         </Show>
 
-        {/* Last in source + drawer pin → leftmost on short; floats top-left on
+        {/* Last in source + drawer pin → rightmost on short; floats top-right on
             tall mobile / timeline (Coach). Analysis/Review pass omitDrawer and
-            mount the menu in their title toolbar instead. */}
+            mount the menu in MobileBanner instead. */}
         <Show when={!props.omitDrawer}>
           <MobileSidebar.Item drawer>
             <IconButton onClick={openMobileDrawer} aria-label="Open menu">

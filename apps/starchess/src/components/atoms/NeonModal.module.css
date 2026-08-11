@@ -1,0 +1,73 @@
+/* Shared Brood War neon modal chrome (Credits / New Game / Leave Match). */
+
+.overlay {
+  background: color-mix(in srgb, #02060c 82%, transparent);
+  backdrop-filter: blur(3px);
+}
+
+.panel {
+  --sc-menu-neon: #7cff4a;
+  --sc-menu-neon-dim: color-mix(in srgb, #7dff6a 55%, #1a3a22);
+
+  overflow: auto;
+  padding: 1.25rem 1.5rem 1.6rem !important;
+  border-radius: 0 !important;
+  border: 1px solid color-mix(in srgb, var(--sc-menu-neon) 48%, transparent) !important;
+  background:
+    linear-gradient(
+      165deg,
+      color-mix(in srgb, #0c1a12 92%, var(--sc-menu-neon)) 0%,
+      #050810 58%,
+      #03060a 100%
+    ) !important;
+  box-shadow:
+    0 0 0 1px #000,
+    0 0 28px color-mix(in srgb, var(--sc-menu-neon) 22%, transparent),
+    0 18px 48px rgba(0, 0, 0, 0.72) !important;
+  color: color-mix(in srgb, var(--sc-menu-neon) 82%, #e8ffe0) !important;
+  font-family: "Eurostile", "Microgramma", "Bank Gothic", "Orbitron", "Segoe UI",
+    sans-serif;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.panel--md {
+  width: min(26rem, calc(100vw - 2rem));
+  max-height: min(85vh, 40rem);
+}
+
+.panel--lg {
+  width: min(28rem, calc(100vw - 2rem));
+  max-height: min(80vh, 36rem);
+}
+
+.panel:focus {
+  outline: 2px solid color-mix(in srgb, var(--sc-menu-neon) 70%, transparent);
+  outline-offset: 3px;
+}
+
+.panel :global(h2) {
+  margin: 0;
+  color: var(--sc-menu-neon);
+  font-size: clamp(1.05rem, 2.4vw, 1.35rem);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-shadow:
+    0 0 10px color-mix(in srgb, var(--sc-menu-neon) 65%, transparent),
+    0 0 2px #000;
+}
+
+.panel :global(button[aria-label="Close modal"]) {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0;
+  border: 1px solid color-mix(in srgb, var(--sc-menu-neon) 40%, transparent);
+  background: color-mix(in srgb, #041208 70%, transparent);
+  color: var(--sc-menu-neon);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--sc-menu-neon) 25%, transparent);
+}
+
+.panel :global(button[aria-label="Close modal"]:hover) {
+  background: color-mix(in srgb, var(--sc-menu-neon) 18%, #041208);
+  filter: brightness(1.12);
+}

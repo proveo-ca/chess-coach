@@ -21,12 +21,14 @@ TOP -[hidden]-> MID
 MID -[hidden]-> BOT
 
 note right of MID
-  Never shrink below
-  --board-size (+ --sidebar-width
-  on desktop).
-  All other rows yield first.
-  Mobile: middle row is 1fr;
-  board stack centers in leftover.
+  ChessBoard (+ sideboard) ONLY —
+  no captures / bars / FEN.
+  Never shrink below --board-size.
+  Mobile board screens:
+  leftover → top + bottom 1fr;
+  top flex-end · bottom flex-start.
+  List (no board-column):
+  middle stays 1fr for scroll.
 end note
 
 note right of BOT
@@ -39,7 +41,7 @@ note right of BOT
 end note
 
 note bottom of VP
-  Avatar: tall mobile = hero above bar (0 overlap);
+  Avatar: tall mobile = hero floats over MobileBanner;
   short / dynamic = compact in bar (≤ 50% overlap)
   may sit below Chessboard top edge (Coach mobile).
 end note

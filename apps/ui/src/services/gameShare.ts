@@ -39,7 +39,7 @@ const MAX_STR_LEN = 128;
 
 const ZERO_HASH = "0".repeat(16);
 const RESULTS: readonly GameResult[] = ["win", "loss", "draw", "ongoing"];
-const IDENTITIES: readonly PlayerIdentity[] = ["Human", "Cat", "Dog", "Rat"];
+const IDENTITIES: readonly PlayerIdentity[] = ["Human", "Cat", "Dog", "Rat", "Nerd"];
 
 type ShareEnvelope = { v?: unknown; g?: unknown };
 

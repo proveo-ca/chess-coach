@@ -36,3 +36,12 @@ if (!usable) {
     writable: true,
   });
 }
+
+/** jsdom lacks ResizeObserver — board metric / overlay observers need a stub. */
+if (typeof globalThis.ResizeObserver === "undefined") {
+  globalThis.ResizeObserver = class {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  } as unknown as typeof ResizeObserver;
+}

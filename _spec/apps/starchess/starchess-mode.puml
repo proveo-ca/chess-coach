@@ -1,0 +1,67 @@
+@startuml starchess-mode
+' SPEC: _spec/apps/starchess/starchess-mode.puml
+' purpose: Product / UX mode — goals, specials, economy, UX v1.
+!include ../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess Mode · Product / UX
+
+package "Goals (vs classical chess)" {
+  component "Turn structure — both sides queue,\nEnd / timeout submits" as G1 <<async>>
+  component "Actions per turn — N specials (all B or all F)\n+ ≤1 classical (stack order → B / F)" as G2 <<app>>
+  component "Conflicts — classical = **attack** then **move**" as G3 <<app>>
+  component "Economy — minerals + vespene" as G4 <<db>>
+  component "Vision — cumulative fog (always on in mode)" as G5 <<db>>
+  component "King — **3 lives**; may walk into fire;\nadjacent kings duel — mutual, **1 HP per checker**,\nequal HP ends 0/0 as a **draw**" as G6 <<app>>
+}
+
+package "Specials (product)" {
+  component "Pawn — gas step (pawnDouble)\n+1 forward; stacks with classical" as S1 <<app>>
+  component "Knight — Spider Mine (knightMine)\nM: overlay; cap 2 / side" as S2 <<app>>
+  component "Bishop — Charon (bishopSnipe)\n2 gas; ignore blockers" as S3 <<app>>
+  component "Rook — Siege toggle (rookSiege)\ntank ↔ siege vision / mobility" as S4 <<app>>
+  component "Queen — Tactical Jump (queenWarp)\n2 gas; visible empty square" as S5 <<app>>
+  component "King — Spawn\nadjacent deploy; can collide\nwith king-shots; a deploy on the enemy\nking's ring stacks a 2nd checker" as S6 <<app>>
+}
+
+package "UX (v1) — live apps/starchess" {
+  component "ResourceBar (top track)\n+ TurnBarSidebar (rail on /single)\nhorizontal TurnBar = stories only;\nfog on in mode" as U1 <<app>>
+  component "Cumulative vision (""vision.ts"")\nunion of friendly units;\nmines light own square" as U2 <<db>>
+  component "Attack-time reveal\nshooter ""from"" shown for the shot cue" as U3 <<app>>
+  component "Fog-edge DualNav stories\n(Bishop / Rook tank) — SCFEN only;\nreview DualNav: observer dual-vision\n(""getSideVision"" w+b borders, no veil)" as U4 <<app>>
+}
+
+note bottom
+  Long-press / GasDeploy queues ""B"" or ""F"" (stack order).
+  Costs from the MODE economy — most specials **1** gas;
+  Charon + Jump **2**.
+  **Spider Mine combat:** path-chase / attack-mine; ignores allies
+  + enemy kings (""mines.ts"" + ""resolveTurn"").
+  Live UI → ""apps/starchess"" (""/starchess/""); Coach keeps
+  ""features/nerd"" + ""StarChessRedirect"" only.
+  ====
+  **Face-to-face kings (rules → resolve.puml).** Contact is **mutual and
+  simultaneous**, and costs 1 HP **per checking unit**, so equal HP
+  drains to 0/0 and the game is a **draw** (""scOutcome""). Because the King
+  deploys onto its own adjacent ring, contact becomes a **deploy race** —
+  a king that spawns a unit covering the enemy king chips 2 HP/turn while
+  taking 1. Breaking contact still pays that turn's **parting shot**.
+  ----
+  **Terminal UX (live):** no Coach ""GameOverBanner"" /
+  ""StarChessBoardView"" — those paths are deleted. Outcome is
+  ""scOutcome"" + status / DualNav review on ""gameOver"".
+  HUD: ""_spec/apps/starchess/screens.puml"".
+  ----
+  **Deferred product (engine ok / UI polish):**
+  * Same-turn deploy-then-C / gas-then-C / unsiege-then-C via occupancyForQueuedMoves (core accepts
+    C.from = spawn.to; board input projects B occupancy for selection).
+  * Siege tank/siege toggle UX clarity (""rookSiege"" + ""S:"" authoritative).
+  * Fog-first movegen / adjutant (live remains viewer fog;
+    DualNav review = observer dual-vision).
+  ----
+  **Queue edit:** TurnBar / TurnBarSidebar chips → remove + gas refund.
+  Opponent: ""packages/starchess-core/ai/adjutant.ts"" (opposite of team).
+end note
+@enduml

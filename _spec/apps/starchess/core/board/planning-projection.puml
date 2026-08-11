@@ -1,0 +1,59 @@
+@startuml planning-projection
+' SPEC: _spec/apps/starchess/core/board/planning-projection.puml
+' purpose: Projection — intent-time view models; clicks become commands, never resolve.
+!include ../../../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess · Planning projection (plan)
+
+package "Live chrome" {
+  component "BaseScreen\ndeploy · gas · auto-queue glue" as BASE <<host>>
+  component "presentation/board/hooks/useBoardInput.ts\nselect · C queue · spawn/snipe/warp" as IN <<app>>
+}
+
+package "Intent projections (stacked, single owner each)" {
+  component "occupancyForQueuedMoves\n→ occupancyForViewerMoves" as OCC <<app>>
+  component "intentOverlays.ts\npolicy → hook → pure" as OV <<app>>
+  component "rookModeForSieged\nshared siege helper" as ROOK <<db>>
+  component "fogVisibility.ts\ntargetVisibleGate · pieceVisible" as FOG <<db>>
+  component "matchEconomy\napplyTurnIncome · display" as ECO <<db>>
+}
+
+package "Dispatch" {
+  component "matchReducer" as RED <<async>>
+}
+
+package "Board queries (public core)" {
+  component "scMovesFrom · spawnKingAnchor\nadjacentSquares · getSideVision\ncollectLegalKingChecks · costs" as BQ <<db>>
+}
+
+BASE ARROW_MAIN IN : board host
+BASE ARROW_OPTIONAL ECO : HUD bind
+BASE ARROW_MAIN RED : SUBMIT / spend / auto paths
+IN ARROW_MAIN OCC : post-B origins
+IN ARROW_MAIN OV : ghosts
+IN ARROW_MAIN BQ : dests / fog policy
+OCC ARROW_MAIN ROOK
+OV ARROW_MAIN ROOK
+OV ARROW_MAIN FOG : check rings
+OCC ARROW_OPTIONAL BQ
+OV ARROW_OPTIONAL BQ
+ECO ARROW_OPTIONAL BQ : income / unit / gas
+IN ARROW_MAIN RED : QUEUE_ACTION · SELECT_* · SPEND_*
+
+note bottom
+  **Pattern:** Projection stack — no third occupancy fork.
+  Vision base: resolved placement + B gas/warp relocates (**not** spawn).
+  Fog filter on vision base → layer spawn ghosts → scMovesFrom.
+  Deploy intent grants **no** vision; End resolves the unit first.
+  Under player fog: pawn front-diagonals stay attack intents without a
+  visible victim; intent attack/move rings paint **above** fog (enemies stay hidden).
+  Intent: policy → hook → pure overlays.
+  Fog gate: ""targetVisibleGate"" / ""pieceVisibleToViewer"" (one predicate family).
+  U: specialsUsed is **not** a fog pierce.
+  **Forbidden:** endScTurn / resolveTurn / addScAction from projections.
+end note
+@enduml
+

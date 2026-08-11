@@ -1,27 +1,34 @@
 // SPEC: _spec/apps/ui/components.puml
-import { useNavigate } from "@solidjs/router";
-import { Show, onCleanup, onMount } from "solid-js";
+import { createSignal, onCleanup, onMount } from "solid-js";
 import type { Component } from "solid-js";
 
 import { OpponentCaptures, PlayerCaptures } from "~/components/atoms/CapturedPieces";
 import { DebugControls } from "~/components/atoms/DebugControls";
 import { EngineDepth } from "~/components/atoms/EngineDepth";
 import { FenLoader } from "~/components/atoms/FenLoader";
+import { MobileBanner } from "~/components/atoms/MobileBanner";
+import { Modal } from "~/components/atoms/Modal";
 import { BoardControls } from "~/components/features/BoardControls";
 import { ChessBoard } from "~/components/features/ChessBoard";
 import { MobileDrawer, openMobileDrawer } from "~/components/features/MobileDrawer";
 import { MobileSidebar } from "~/components/features/MobileSidebar";
 import { Sidebar } from "~/components/features/Sidebar";
-import { Button } from "~/components/primitives/Button";
+import { DualNavButton } from "~/components/primitives/DualNavButton";
 import { IconButton } from "~/components/primitives/IconButton";
-import { BackArrowIcon, HamburgerIcon } from "~/components/primitives/icons";
 import { Label } from "~/components/primitives/Label";
+import {
+  FlipBoardIcon,
+  LoadFenIcon,
+  PlusCircleIcon,
+} from "~/components/primitives/icons";
 import { Screen } from "~/components/primitives/Screen";
+import { ScreenBackNav } from "~/components/primitives/ScreenBackNav";
+import { useGameControls } from "~/hooks/useGameControls";
+import styles from "~/screens/AnalysisScreen.module.css";
 import { ANALYSIS_CAPABILITIES, setCapabilities } from "~/store/capabilitiesStore";
 import { inProgressGame } from "~/store/gameHistoryStore";
-import { persistFreshStart } from "~/store/gameStore";
-import { imLost, setImLost } from "~/store/settingsStore";
-import { canGoBackInApp } from "~/utils/navHistory";
+import { persistFreshStart, resetGame } from "~/store/gameStore";
+import { activePlayerColor, imLost, setActivePlayerColor, setImLost } from "~/store/settingsStore";
 
 /**
  * Solo Analysis screen. No coach avatar, no advice panel, no replay or
@@ -31,19 +38,25 @@ import { canGoBackInApp } from "~/utils/navHistory";
  * positions branch on new moves, no AI opponent, no blunder detection,
  * no hint button.
  *
- * Mobile chrome mirrors Review `/:id`: title toolbar always mounted with
- * drawer left of the label + `omitDrawer` on BoardControls. Short / dynamic
- * hides the title toolbar; the menu sits in FenLoader’s leading slot (left of
- * the FEN input) so it never overlays the field. Back stays trailing Load.
+ * Layout: top = desktop Back/title/FEN or mobile {@link MobileBanner}.
+ * Dynamic (w≥480 · h<640): fused banner — Back · New Game · Flip · Load FEN ·
+ * EngineDepth · history nav · menu — plus captures + board (no stacked FEN /
+ * footer bar). Tall mobile: title banner + FenLoader + captures; footer
+ * BoardControls. Middle = ChessBoard (+ Sidebar).
  */
 export const AnalysisScreen: Component = () => {
-  const navigate = useNavigate();
   let previousImLost = false;
+  const [fenOpen, setFenOpen] = createSignal(false);
+  const {
+    atStart,
+    atLatest,
+    isReplaying,
+    handleBack,
+    handleForward,
+    handleBackToLive,
+  } = useGameControls();
 
   onMount(() => {
-    // Circuit-breaker: if no game is active, persist a clean starting
-    // position so that navigating to /selena restores fresh instead of
-    // loading a corrupted or stale game state from localStorage.
     if (!inProgressGame()) persistFreshStart();
 
     setCapabilities(ANALYSIS_CAPABILITIES);
@@ -55,77 +68,89 @@ export const AnalysisScreen: Component = () => {
     setImLost(previousImLost);
   });
 
-  const menuButton = () => (
-    <IconButton onClick={openMobileDrawer} aria-label="Open menu">
-      <HamburgerIcon />
-    </IconButton>
-  );
-
-  const backButton = () => (
-    <Show
-      when={canGoBackInApp()}
-      fallback={
-        <IconButton onClick={() => navigate("/")} aria-label="Back to Main Menu">
-          <BackArrowIcon />
-        </IconButton>
-      }
-    >
-      <IconButton onClick={() => navigate(-1)} aria-label="Back">
-        <BackArrowIcon />
-      </IconButton>
-    </Show>
-  );
+  const flipBoard = () => {
+    setActivePlayerColor(activePlayerColor() === "w" ? "b" : "w");
+  };
 
   return (
     <Screen>
-      <div class="desktop-only">
-        <Screen.SidebarInset>
-          <Label variant="title">Solo Analysis</Label>
-          <div
-            style={{
-              display: "flex",
-              "justify-content": "center",
-              gap: "0.75rem",
-              padding: "0.6rem 0",
-            }}
-          >
-            <Show
-              when={canGoBackInApp()}
-              fallback={
-                <Button primary href="/">
-                  Back to Main Menu
-                </Button>
-              }
-            >
-              <Button primary onClick={() => navigate(-1)}>
-                Back
-              </Button>
-            </Show>
+      <Screen.SidebarInset>
+        <div class="desktop-only">
+          <ScreenBackNav data-testid="analysis-back">
+            <Label variant="title">Solo Analysis</Label>
+            <FenLoader />
+          </ScreenBackNav>
+        </div>
+
+        {/* Dynamic: fused strip = tools in banner. Tall: title banner pinned top + FEN below. */}
+        <div data-fuse-root data-testid="mobile-fuse">
+          <MobileBanner title="Solo Analysis" onMenu={openMobileDrawer} hideCentre />
+          <MobileSidebar dynamicOnly>
+            <MobileSidebar.Main>
+              <EngineDepth />
+            </MobileSidebar.Main>
+            {/* Nearest-centre first → fan-out: [New Game][Flip][Load] · depth · nav */}
+            <MobileSidebar.Item>
+              <IconButton onClick={() => setFenOpen(true)} aria-label="Load FEN">
+                <LoadFenIcon />
+              </IconButton>
+            </MobileSidebar.Item>
+            <MobileSidebar.Item>
+              <IconButton onClick={flipBoard} aria-label="Flip board">
+                <FlipBoardIcon />
+              </IconButton>
+            </MobileSidebar.Item>
+            <MobileSidebar.Item>
+              <IconButton onClick={() => resetGame()} aria-label="New game">
+                <PlusCircleIcon />
+              </IconButton>
+            </MobileSidebar.Item>
+            <MobileSidebar.Item nav>
+              <DualNavButton
+                onBack={handleBack}
+                onForward={handleForward}
+                backDisabled={atStart()}
+                forwardDisabled={atLatest()}
+                inverted={isReplaying()}
+                showBackToLive={isReplaying()}
+                onBackToLive={handleBackToLive}
+                label={isReplaying() ? "History" : undefined}
+              />
+            </MobileSidebar.Item>
+          </MobileSidebar>
+        </div>
+
+        <div class={`mobile-only ${styles.tallOnly}`}>
+          <div class={styles.mobileFen} data-testid="analysis-mobile-fen">
+            <FenLoader />
           </div>
-          <FenLoader />
-        </Screen.SidebarInset>
-      </div>
+        </div>
+        {/* Captures stay on dynamic (0.75 scale via CapturedPieces CSS). */}
+        <OpponentCaptures />
+      </Screen.SidebarInset>
 
       <Screen.BoardArea>
         <Screen.BoardColumn>
-          <MobileSidebar toolbar collapseOnShort>
-            <MobileSidebar.Item drawer>{menuButton()}</MobileSidebar.Item>
-            <MobileSidebar.Main>
-              <MobileSidebar.MatchupLabel data-testid="analysis-title">
-                <Label variant="title">Solo Analysis</Label>
-              </MobileSidebar.MatchupLabel>
-            </MobileSidebar.Main>
-          </MobileSidebar>
-          <div class="mobile-only">
-            <FenLoader leading={menuButton()} trailing={backButton()} />
-          </div>
-          <BoardControls center={<EngineDepth />} omitDrawer />
-          <OpponentCaptures />
           <ChessBoard />
-          <PlayerCaptures />
         </Screen.BoardColumn>
         <Sidebar />
       </Screen.BoardArea>
+
+      <Screen.Footer>
+        <PlayerCaptures />
+        <div class={styles.tallOnly}>
+          <BoardControls center={<EngineDepth />} omitDrawer />
+        </div>
+      </Screen.Footer>
+
+      <Modal
+        open={fenOpen()}
+        title="Load FEN"
+        onClose={() => setFenOpen(false)}
+        contentClass={styles.fenModal}
+      >
+        <FenLoader onLoaded={() => setFenOpen(false)} />
+      </Modal>
 
       <DebugControls />
       <MobileDrawer />

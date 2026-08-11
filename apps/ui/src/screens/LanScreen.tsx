@@ -4,9 +4,11 @@ import { For, type Component, Show, createEffect, createSignal, onCleanup, onMou
 import { OpponentCaptures, PlayerCaptures } from "~/components/atoms/CapturedPieces";
 import { Clock } from "~/components/atoms/Clock";
 import { ColorSwatch } from "~/components/atoms/ColorSwatch";
+import { MobileBanner } from "~/components/atoms/MobileBanner";
 import { Modal } from "~/components/atoms/Modal";
 import { SelectCard } from "~/components/atoms/SelectCard";
 import { GameOverBanner } from "~/components/features/GameOverBanner";
+import { MobileDrawer, openMobileDrawer } from "~/components/features/MobileDrawer";
 import { MobileSidebar } from "~/components/features/MobileSidebar";
 import { MultiplayerBoard } from "~/components/features/MultiplayerBoard";
 import { PlayerNameField } from "~/components/features/PlayerNameField";
@@ -20,6 +22,7 @@ import { Input } from "~/components/primitives/Input";
 import { Label } from "~/components/primitives/Label";
 import { QrCode } from "~/components/primitives/QrCode";
 import { Screen } from "~/components/primitives/Screen";
+import { ScreenBackNav } from "~/components/primitives/ScreenBackNav";
 import { Select } from "~/components/primitives/Select";
 import { SplashScreen } from "~/components/primitives/SplashScreen";
 import { enginePool } from "~/engine/EnginePool";
@@ -46,7 +49,7 @@ import {
   currentIndex,
   fenHistory,
   game,
-  goBack,
+  goBack as goHistoryBack,
   goForward,
   loadFen,
   setViewIndex,
@@ -268,6 +271,22 @@ export const LanScreen: Component = () => {
 
   const iAmReady = () => players().find((p) => p.peerId === myPeerId())?.ready ?? false;
 
+  /** MobileBanner centre: both clocks only — colour/name hide on the tight
+   *  Back · title · menu strip (desktop matchup keeps full chrome). */
+  const bannerMatchup = () => (
+    <span class={styles.bannerMatchup} data-testid="mobile-banner-matchup">
+      <span class={styles.bannerClock} data-mine={myColor() === "w" ? "" : undefined}>
+        <Clock color="w" />
+      </span>
+      <span class={styles.bannerVs} aria-hidden="true">
+        ·
+      </span>
+      <span class={styles.bannerClock} data-mine={myColor() === "b" ? "" : undefined}>
+        <Clock color="b" />
+      </span>
+    </span>
+  );
+
   const seatCard = (color: Color) => {
     const occupant = () => playerByColor(color);
     const mine = () => occupant()?.peerId === myPeerId();
@@ -342,7 +361,7 @@ export const LanScreen: Component = () => {
   const historyNav = (inline = false) => (
     <DualNavButton
       inline={inline}
-      onBack={goBack}
+      onBack={goHistoryBack}
       onForward={goForward}
       backDisabled={currentIndex() === 0}
       forwardDisabled={!replaying()}
@@ -390,7 +409,13 @@ export const LanScreen: Component = () => {
     <Show
       when={started()}
       fallback={
-        <SplashScreen title="Play LAN" wide>
+        <SplashScreen wide>
+          <div class={`desktop-only ${styles.lobbyTop}`}>
+            <ScreenBackNav data-testid="lan-back" class={styles.lobbyBack}>
+              <h2 class={styles.lobbyTitle}>Play LAN</h2>
+            </ScreenBackNav>
+          </div>
+          <MobileBanner title="Play LAN" onMenu={openMobileDrawer} />
           <TailscaleChecklist>
             {/* ── Setup: choose to host or join ── */}
             <Show when={role() == null}>
@@ -527,10 +552,7 @@ export const LanScreen: Component = () => {
               <Label color="loss">{error()}</Label>
             </Show>
           </TailscaleChecklist>
-
-          <Button href="/" class={styles.backBtn}>
-            Back to Menu
-          </Button>
+          <MobileDrawer />
         </SplashScreen>
       }
     >
@@ -540,36 +562,25 @@ export const LanScreen: Component = () => {
         <HistoryOverlay active={replaying()} />
 
         <Screen.Header>
-          {/* While a *player* replays on mobile this collapses to just their own
-              clock, pinned top-left (data-mine) — it keeps ticking, so it must
-              stay visible — while names + opponent clock hide. Spectators keep
-              the full matchup (both clocks) at all times. See the CSS. */}
-          <div
-            class={styles.gameHeader}
-            classList={{ [styles.replaying]: playerReplaying() }}
-            data-testid="matchup"
-          >
-            <span class={styles.player} data-mine={myColor() === "w" ? "" : undefined}>
-              <ColorSwatch color="w" />
-              <span>{playerByColor("w")?.identity.name ?? "White"}</span>
-              <Clock color="w" />
-            </span>
-            <span>vs</span>
-            <span class={styles.player} data-mine={myColor() === "b" ? "" : undefined}>
-              <Clock color="b" />
-              <span>{playerByColor("b")?.identity.name ?? "Black"}</span>
-              <ColorSwatch color="b" />
-            </span>
+          <div class="desktop-only">
+            <ScreenBackNav data-testid="lan-back">
+              <div class={styles.gameHeader} data-testid="matchup">
+                <span class={styles.player} data-mine={myColor() === "w" ? "" : undefined}>
+                  <ColorSwatch color="w" />
+                  <span>{playerByColor("w")?.identity.name ?? "White"}</span>
+                  <Clock color="w" />
+                </span>
+                <span>vs</span>
+                <span class={styles.player} data-mine={myColor() === "b" ? "" : undefined}>
+                  <Clock color="b" />
+                  <span>{playerByColor("b")?.identity.name ?? "Black"}</span>
+                  <ColorSwatch color="b" />
+                </span>
+              </div>
+            </ScreenBackNav>
           </div>
-        </Screen.Header>
-
-        <Screen.BoardArea>
-          <Screen.BoardColumn>
-            {/* Mobile control bar above the board. Connectivity is the centred
-                Main; Draw sits inner-left (the hint's spot on Coach), Resign
-                outer-left (Coach's resign spot), and the history nav is pinned
-                right. While a player replays it collapses to just the nav
-                (top-right); spectators keep the full bar. */}
+          <div data-fuse-root data-testid="mobile-fuse">
+            <MobileBanner title={bannerMatchup()} onMenu={openMobileDrawer} />
             <MobileSidebar timeline={playerReplaying()}>
               <MobileSidebar.Main>
                 <ConnIndicator />
@@ -594,9 +605,12 @@ export const LanScreen: Component = () => {
                 </MobileSidebar.Item>
               </Show>
             </MobileSidebar>
-            <OpponentCaptures />
-            {/* Relative wrapper so the game-over banner overlays just the board,
-                mirroring the Coach end screen. */}
+          </div>
+          <OpponentCaptures />
+        </Screen.Header>
+
+        <Screen.BoardArea>
+          <Screen.BoardColumn>
             <div class={styles.boardWrap}>
               <MultiplayerBoard
                 onDrawBubbleClick={onDrawAction}
@@ -613,15 +627,10 @@ export const LanScreen: Component = () => {
                     Review Game
                   </Button>
                 </Show>
-                <Button href="/">Back to Menu</Button>
+                <ScreenBackNav data-testid="lan-back-gameover" />
               </GameOverBanner>
             </div>
-            <PlayerCaptures />
           </Screen.BoardColumn>
-          {/* Sidebar — connectivity, move-history nav, Resign. Reserves
-              --sidebar-width so the board stays centered against the offset
-              header/footer (like the other screens). Hidden on mobile, where
-              these live in the footer instead. */}
           <div class={styles.sidebar}>
             <ConnIndicator />
             {historyNav()}
@@ -637,6 +646,12 @@ export const LanScreen: Component = () => {
             </Show>
           </div>
         </Screen.BoardArea>
+
+        <Screen.Footer>
+          <PlayerCaptures />
+        </Screen.Footer>
+
+        <MobileDrawer />
 
         <Modal
           open={drawModalOpen()}

@@ -172,9 +172,20 @@ export default defineConfig({
     },
   },
   server: {
+    host: "127.0.0.1",
+    port: 5173,
+    strictPort: true,
     headers: {
       "Cross-Origin-Opener-Policy": "same-origin",
       "Cross-Origin-Embedder-Policy": "require-corp",
+    },
+    // Same-origin /starchess for NerdModePrompt → apps/starchess (:5175).
+    proxy: {
+      "/starchess": {
+        target: "http://127.0.0.1:5175",
+        changeOrigin: true,
+        ws: true,
+      },
     },
   },
 });

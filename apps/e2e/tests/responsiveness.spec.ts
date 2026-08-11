@@ -101,7 +101,7 @@ const PROFILES: Profile[] = [
   { name: "desktop", viewport: { width: 1280, height: 800 } },
   { name: "mobile", viewport: { width: 390, height: 844 } },
   // Short height forces the bottom row off-screen → §4 floating chrome.
-  { name: "dynamic", viewport: { width: 390, height: 560 } },
+  { name: "dynamic", viewport: { width: 480, height: 480 } },
 ];
 
 const SCREENS: { id: string; path: string; hasBoard: boolean; hasAvatar: boolean }[] = [
@@ -341,15 +341,16 @@ test.describe("responsiveness contract", () => {
             );
             await expect(page.getByTestId("move-list")).toBeVisible({ timeout: 5_000 });
             await expect(page.getByTestId("floating-move-list")).toHaveCount(0);
-            // Drawer sits in the matchup toolbar left of the title, not floated over it.
+            // MobileBanner: ‹ Back · matchup · hamburger (menu trailing, not left of title).
+            const back = page.getByTestId("mobile-banner-back");
             const menu = page.getByRole("button", { name: "Open menu" });
             const title = page.getByTestId("review-matchup");
+            const bb = await back.boundingBox();
             const mb = await menu.boundingBox();
             const tb = await title.boundingBox();
-            expect(mb && tb).toBeTruthy();
-            expect(tb!.x, "matchup title should start after the drawer").toBeGreaterThan(
-              mb!.x + mb!.width - 1,
-            );
+            expect(bb && mb && tb).toBeTruthy();
+            expect(tb!.x, "matchup should sit after Back").toBeGreaterThan(bb!.x + bb!.width - 1);
+            expect(mb!.x, "menu should sit after matchup").toBeGreaterThan(tb!.x + tb!.width - 1);
           }
 
           if (screen.hasBoard || screen.id === "coach") {
@@ -357,8 +358,8 @@ test.describe("responsiveness contract", () => {
               doc: document.documentElement.scrollHeight - document.documentElement.clientHeight,
               body: document.body.scrollHeight - document.body.clientHeight,
             }));
-            expect(scroll.doc, "documentElement must not page-scroll").toBeLessThanOrEqual(1);
-            expect(scroll.body, "body must not page-scroll").toBeLessThanOrEqual(1);
+            expect(scroll.doc, "documentElement must not page-scroll").toBe(0);
+            expect(scroll.body, "body must not page-scroll").toBe(0);
           }
 
           if (screen.hasBoard) {
@@ -392,7 +393,7 @@ test.describe("responsiveness contract", () => {
   }
 
   test("dynamic floating advice dismisses on move", async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 560 });
+    await page.setViewportSize({ width: 480, height: 480 });
     await ready(page, "selena");
     const float = page.getByTestId("floating-advice");
     await expect(float).toBeVisible({ timeout: 5_000 });

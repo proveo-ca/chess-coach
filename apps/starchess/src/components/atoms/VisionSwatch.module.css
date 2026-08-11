@@ -1,0 +1,62 @@
+.tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  margin: 0;
+  padding: 0.25rem 0.3rem 0.3rem;
+  border: 1px solid transparent;
+  border-radius: 0.2rem;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  min-width: 0;
+}
+
+.tile:hover {
+  border-color: #5a6a78;
+  color: #f0f3f6;
+}
+
+.selected {
+  border-color: #7cff4a;
+  background: color-mix(in srgb, #7cff4a 18%, transparent);
+}
+
+.swatch {
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 0.2rem;
+  border: 1px solid #6a7682;
+  flex-shrink: 0;
+  display: inline-block;
+}
+
+.tile--both .swatch {
+  background: #e8eaed;
+  border-color: #9aa3ad;
+}
+
+.tile--w .swatch {
+  background: #3b7dd8;
+  border-color: color-mix(in srgb, #3b7dd8 50%, #fff);
+}
+
+.tile--b .swatch {
+  background: #c43c3c;
+  border-color: color-mix(in srgb, #c43c3c 50%, #fff);
+}
+
+.title {
+  font-size: 0.55rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: #c8d0d8;
+}
+
+.selected .title {
+  color: #f0f3f6;
+}

@@ -1,0 +1,25 @@
+/* First-time Single Player gate — same action row pattern as ExitGameConfirm. */
+
+.body {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1.25rem;
+}
+
+.copy {
+  margin: 0;
+  line-height: 1.45;
+  text-align: center;
+  color: color-mix(in srgb, var(--sc-menu-neon, #7cff4a) 78%, #d8f5c8);
+  text-shadow: 0 0 2px #000;
+  letter-spacing: 0.06em;
+  font-size: 0.95rem;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+}

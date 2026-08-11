@@ -1,0 +1,45 @@
+@startuml turn-facade
+' SPEC: _spec/apps/starchess/core/turn/turn-facade.puml
+' purpose: Facade — beginScTurn / endScTurn orchestrate ranks; app never opens the pipeline.
+!include ../../../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess · Turn facade (plan)
+
+package "App state machine" {
+  component "MatchStoreContext\nensureTurnOpenChecks" as CTX <<async>>
+  component "matchReducer\nSUBMIT_TURN · REFILL_GAS" as RED <<async>>
+}
+
+package "Core — Facade" {
+  component "resolve/submit-turn.ts\nbeginScTurn / endScTurn\nB→C→F · rewriteClassicalAfterB\nsiege · gas stamp · queue stamp" as SUB <<app>>
+}
+
+package "Core — Pipeline (internal)" {
+  component "resolve/resolve-turn.ts\nresolveTurn" as RT <<app>>
+  component "applyPendingKingShots\ncollectLegalKingChecks" as KING <<app>>
+  component "specials B/F apply\nspawn · mine · warp · siege" as SP <<async>>
+}
+
+package "Document out" {
+  database "EndScTurnResult\nnext snap + events" as RES <<db>>
+}
+
+CTX ARROW_MAIN SUB : beginScTurn(liveSnapshot)
+RED ARROW_MAIN SUB : endScTurn(snap, { skipTurnStartChecks })
+SUB ARROW_MAIN KING : turn-open checks\n(unless skipped)
+SUB ARROW_MAIN SP : rank B then F
+SUB ARROW_MAIN RT : rank C classical
+SUB ARROW_MAIN RES : stamped result
+RED ARROW_QUEUE RES : lastResolve → playback
+
+note bottom
+  **Pattern:** Facade / Application service.
+  **Allowed:** Reducer → submit-turn (sole End/open write with queue-action).
+  **Allowed:** submit-turn → resolve-turn (phase run, stamped snap out).
+  **Forbidden:** app → resolve-turn; playback → endScTurn.
+  Sequence detail: ""_spec/packages/starchess-core/turn-queue-sequence.puml"".
+end note
+@enduml

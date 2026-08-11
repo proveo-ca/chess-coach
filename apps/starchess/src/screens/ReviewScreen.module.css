@@ -1,0 +1,87 @@
+.listPane {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: min(28rem, 100%);
+  max-height: var(--board-size, 70vh);
+  overflow-y: auto;
+  padding: 0.5rem;
+  box-sizing: border-box;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.empty {
+  margin: 2rem 0;
+  color: color-mix(in srgb, #e8eaed 55%, transparent);
+  text-align: center;
+  line-height: 1.45;
+  font-size: 0.9rem;
+}
+
+.tile {
+  display: block;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid #3a4550;
+  border-radius: 0.35rem;
+  background: #0e151c;
+  color: inherit;
+  text-decoration: none;
+  text-align: left;
+}
+
+.tile:hover {
+  border-color: #7cff4a;
+}
+
+.tile--active {
+  border-color: #7cff4a;
+  box-shadow: 0 0 0 1px color-mix(in srgb, #7cff4a 40%, transparent);
+}
+
+.tileHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.result {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.result[data-result="win"] {
+  color: #7cff4a;
+}
+
+.result[data-result="loss"] {
+  color: #c43c3c;
+}
+
+.result[data-result="draw"] {
+  color: #9aa3ad;
+}
+
+.date {
+  font-size: 0.7rem;
+  color: #9aa3ad;
+}
+
+.meta {
+  font-size: 0.8rem;
+  color: #c8d0d8;
+}
+
+.name {
+  margin-top: 0.2rem;
+  font-size: 0.75rem;
+  color: #9aa3ad;
+}

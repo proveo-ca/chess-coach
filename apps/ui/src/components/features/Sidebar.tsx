@@ -109,7 +109,7 @@ export const Sidebar: Component = () => {
         </IconButton>
       </Show>
 
-      <Show when={capabilities().continuousAnalysis && capabilities().flipBoard}>
+      <Show when={capabilities().continuousAnalysis && capabilities().bestMoveArrow !== "off"}>
         <EngineDepth />
       </Show>
 

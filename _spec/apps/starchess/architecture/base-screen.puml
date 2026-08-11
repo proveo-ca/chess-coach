@@ -1,0 +1,79 @@
+@startuml base-screen
+' SPEC: _spec/apps/starchess/architecture/base-screen.puml
+' purpose: BaseScreen live chrome — props, HUD regions, MatchBoardHost composition.
+!include ../../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+hide empty members
+
+title StarChess · BaseScreen (live chrome assembler)
+
+class BaseScreen <<app>> {
+  app/BaseScreen.tsx
+  --
+  starChessMode? fog? boardVariant? pieceSet?
+  armTimer? autoQueueOpponent?
+  onExitToMenu? matchTitle?
+  turnChrome: bar | sidebar | none
+  tutorial? hideResources? hideGas?
+  endTurnAfterQueue? coachEmotion?
+  header? guideBubble? footerExtra?
+  hintSquares?
+}
+
+class MatchBoardHost <<host>> {
+  BoardColumn · BoardHost · Rail
+}
+
+class LiveBoardBinding <<app>>
+class ResourceBar <<app>> {
+  presentation/hud/components/ResourceBar.tsx
+}
+class GasRack <<app>> {
+  presentation/hud/components/GasRack.tsx
+}
+class TurnBarSidebar <<app>> {
+  presentation/hud/components/TurnBarSidebar.tsx
+}
+class DeployModal <<app>> {
+  presentation/hud/components/DeployModal.tsx
+}
+class PromotionModal <<app>> {
+  components/primitives/PromotionModal.tsx
+}
+class ReviewTurnNav <<app>> {
+  components/primitives/ReviewTurnNav.tsx
+  pure shell
+}
+
+note as N_PROPS
+  **starChessMode** (default true) — StarChess rules + fog default on.
+  Maps gallery may set false for open terrain preview.
+  **turnChrome** — bar (default) | sidebar (BoardSideRail) | none (fog tutorial).
+  **tutorial** — HOME-only rail, optional auto-End on queue threshold.
+  **endTurnAfterQueue** — first | moveAndSpecial (tutorial only).
+  **matchTitle** — live label above ResourceBar; hidden at max-height 639px.
+  Spawn / Charon / Jump overlays + DeployModal live in BoardHost children.
+  Overlay measure (spawn hit boxes) stays in BaseScreen, not Host.
+end note
+
+N_PROPS .. BaseScreen
+BaseScreen *-- MatchBoardHost
+MatchBoardHost *-- LiveBoardBinding
+BaseScreen *-- ResourceBar
+BaseScreen *-- GasRack
+BaseScreen *-- TurnBarSidebar
+BaseScreen *-- DeployModal
+BaseScreen *-- PromotionModal
+BaseScreen *-- ReviewTurnNav
+
+note bottom
+  **HUD vs shell:** match chrome (ResourceBar, GasRack, TurnBar*) lives under
+  ""presentation/hud/"". Pure layout shells (ReviewTurnNav, PromotionModal)
+  live under ""components/primitives/"".
+  Naming: piece set id remains ""nerd"" (""public/pieces/nerd/"").
+  Product chrome uses ""starchess-*"" testids — not ""nerd-*"".
+end note
+
+@enduml

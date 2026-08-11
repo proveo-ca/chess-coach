@@ -287,6 +287,28 @@ export const FlipBoardIcon: Component<IconProps> = (props) => {
   );
 };
 
+/** Load / paste FEN — document with an inbound arrow. */
+export const LoadFenIcon: Component<IconProps> = (props) => {
+  const s = () => props.size ?? 20;
+  return (
+    <svg
+      width={s()}
+      height={s()}
+      viewBox="0 0 20 20"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <path d="M5 3h6l4 4v10H5z" />
+      <polyline points="11,3 11,7 15,7" />
+      <line x1="10" y1="9" x2="10" y2="15" />
+      <polyline points="7,12 10,15 13,12" />
+    </svg>
+  );
+};
+
 export const SignalIcon: Component<IconProps> = (props) => {
   const s = () => props.size ?? 20;
   return (

@@ -1,0 +1,68 @@
+@startuml scfen-queue
+' SPEC: _spec/packages/starchess-core/scfen-queue.puml
+' purpose: Queue ABNF, per-side shape (≤1 C + N specials all B or all F), resolve order B < C < F then w then b.
+!include ../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title SCFEN · Queue ABNF, Shape & Order
+
+package "ABNF" {
+  queue "queueField\n\"Q:\" sideQueue \";\" sideQueue" as QF <<async>>
+  component "sideQueue\nside \":\" [special \",\"]* [classical]\n/ side \":\" [classical \",\"] [special \",\"]*\n/ side \":\"" as SQ <<async>>
+  component "special\n(\"B\" / \"F\") \"=\" kind \":\" from\n[\":\" to [\":\" unit]]" as SP <<app>>
+  component "classical\n\"C=\" from to [promotion]" as CL <<app>>
+  component "kind\nspawn / pawnDouble / knightMine /\nbishopSnipe / rookSiege / queenWarp" as KD <<db>>
+}
+
+package "Shape & order" {
+  component "Per side: ≤1 classical + N specials\n(all B **or** all F — B xor F)" as SHAPE <<async>>
+  component "Resolve rank: B < C < F" as RANK <<app>>
+  component "Then white, then black" as WB <<app>>
+}
+
+package "packages/starchess-core" {
+  component "scfen/codec.ts\nformatQueueField / parseQueueField\nassertQueueShape / assertQueueGas" as COD <<app>>
+  component "commands/queue-action.ts\naddScAction / removeScAction\naddScMove" as QACT <<async>>
+}
+
+QF ARROW_MAIN SQ : expands to two
+SQ ARROW_OPTIONAL SP : may hold
+SQ ARROW_OPTIONAL CL : may hold
+SP ARROW_OPTIONAL KD : kind
+CL ARROW_OPTIONAL KD : resolves to
+COD ARROW_MAIN QF : serializes
+QACT ARROW_MAIN COD : mutates snap.queue
+
+note right of QF
+  ""queueField = 'Q:' sideQueue ';' sideQueue""
+end note
+
+note right of SQ
+  ""sideQueue = side ':' [ special ',' ]* [ classical ]""
+  ""          / side ':' [ classical ',' ] [ special ',' ]*""
+  ""          / side ':'""
+end note
+
+note right of SP
+  ""special = ('B' / 'F') '=' kind ':' from [ ':' to [ ':' unit ] ]""
+end note
+
+note right of CL
+  ""classical = 'C=' from to [ promotion ]""
+  King-shot actions encode ""to"" as intent (see scfen-wire).
+end note
+
+note right of KD
+  ""kind = 'spawn' / 'pawnDouble' / 'knightMine' /""
+  ""       'bishopSnipe' / 'rookSiege' / 'queenWarp'""
+end note
+
+note bottom
+  Ordering rule: **≤1 C + N specials (all B or all F)** per side;
+  resolve rank **B < C < F**, then **w then b**.
+  F specials rewrite actor square to the unit's post-C position
+  (move-then-gas lands on the destination).
+end note
+@enduml

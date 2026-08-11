@@ -1,0 +1,78 @@
+@startuml scfen-wire
+' SPEC: _spec/packages/starchess-core/scfen-wire.puml
+' purpose: SCFEN wire string and the roles of each optional/required field.
+!include ../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title SCFEN · Wire Format & Field Roles
+
+database "SCFEN|<placement>|<turn>|\n<wlives><blives>|<phase>|G:<wGas><bGas>:<wInc><bInc>|[|B:w:b][|Q:...][|U:...][|S:...][|H:...][|M:...]" as WIRE <<db>>
+
+component "G: vespene + income" as G <<app>>
+component "B: mineral bank (0–12)" as B <<app>>
+component "Q: planning queue" as Q <<async>>
+component "U: specials-used squares\nthis turn" as U <<db>>
+component "S: sieged rook squares" as S <<db>>
+component "H: legacy king-checks" as H <<db>>
+component "M: mines" as M <<db>>
+
+WIRE ARROW_MAIN G : carries
+WIRE ARROW_OPTIONAL B : carries
+WIRE ARROW_OPTIONAL Q : carries
+WIRE ARROW_OPTIONAL U : carries
+WIRE ARROW_OPTIONAL S : carries
+WIRE ARROW_OPTIONAL H : carries
+WIRE ARROW_OPTIONAL M : carries
+
+note right of WIRE
+  Required: placement, turn, lives, phase, ""G:"".
+  Optional: ""B:"" ""Q:"" ""U:"" ""S:"" ""H:"" ""M:"".
+  Omitted ""Q:"" = snapshot-only snapshot.
+  ""B:<w>:<b>"" = available minerals (Command Center bank).
+  Deployed supply is still derived from placement.
+  **Lives carry the outcome.** ""scOutcome(snap)"" (""outcome.ts"")
+  derives win / draw from ""kingLives"" alone — 0/0 (face-to-face
+  kings, see resolve.puml) is a **draw**, one side at 0 is a win
+  for the other. Phase ""O"" is terminal and **absorbing**.
+  No winner field and no grammar change for the king duel.
+  Codec: ""packages/starchess-core/src/scfen/codec.ts"".
+end note
+
+note right of G
+  **Remaining vespene** + this turn's income/cap.
+  Income must equal the turn tier (1 / 2 / 3).
+  Gas does **not** accumulate — ""endScTurn"" leaves
+  remaining at **0**; ""beginScTurn"" / turn-open
+  **refills** to full income.
+end note
+
+note right of Q
+  Planning queue; omit = snapshot-only.
+  Shape: scfen-queue.puml.
+end note
+
+note right of S
+  Sieged rook squares (""S:c3f7"").
+  Unpacked tanks are **immobile** until ""rookSiege""
+  toggles tank mode.
+end note
+
+note right of H
+  Legacy pending king-checks (""H:b:n:c5e4"").
+  Parsed for round-trip; **unused** by ""endScTurn""
+  (checks are implicit legal geometry).
+end note
+
+note right of M
+  Mines ""M:w:c3d4;b:f5"" (max 2 / side).
+  Not FEN pieces. ""board/mines.ts"".
+end note
+
+note bottom
+  **King-shot intent:** classical actions encode ""to"" as **intent**
+  (often the enemy king square). Resolve may retarget; optional history
+  ""C=from intentTo>resolvedTo"" (deferred).
+end note
+@enduml

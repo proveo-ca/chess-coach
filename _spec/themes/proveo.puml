@@ -1,0 +1,232 @@
+@startuml
+'==============================================================
+' Proveo — PlantUML theme (light)
+' Generic, includable theme. Grab it with:
+'   !include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+' Dark canvas: use proveo-dark.puml (same macros, same role colours).
+' Palette reference: colors.md. No FontName is set — PlantUML's default
+' font is used; reach for Creole modifiers (""mono"", **bold**, //italic//)
+' for inline emphasis instead of theming the whole diagram to one face.
+'==============================================================
+
+' --- Brand palette --------------------------------------------
+!$BLACK    = "#181818"
+!$WHITE    = "#FAFAFA"
+!$GRAY     = "#888888"
+!$GRAY_2   = "#585858"
+!$GRAY_3   = "#B4B3B3"
+!$GRAY_4   = "#E5E4E4"
+
+!$MAIN     = "#005F7F"
+!$MAIN_3   = "#00769D"
+!$ALT      = "#00BAC6"
+!$ALT_1    = "#006B70"
+!$ACCENT   = "#CBDB2A"
+!$ACCENT_1 = "#818D00"
+
+!$ERROR    = "#CB2000"
+!$SUCCESS  = "#009532"
+
+'==============================================================
+' Role colours — semantic, palette-derived. Tag any node with the
+' matching <<stereotype>> (preferred) or use the macros inline.
+'   <<app>>    first-party app / runtime service        MAIN   (teal)
+'   <<async>>  queue / event-driven / background         ACCENT (lime)
+'   <<host>>   host / platform / operator boundary       ALT    (cyan)
+'   <<cloud>>  external / third-party / vendor           GRAY_2 (slate)
+'   <<db>>     persistence / state store                 GRAY_4 (light)
+'   <<error>>  failure / destructive / dangerous         ERROR  (red)
+'==============================================================
+
+' Background only (text colour left to the default / stereotype)
+!define COLOR_APP    #005F7F
+!define COLOR_ASYNC  #CBDB2A
+!define COLOR_HOST   #00BAC6
+!define COLOR_CLOUD  #585858
+!define COLOR_DB     #E5E4E4
+!define COLOR_ERROR  #CB2000
+
+' Background + white text, for inline declarations on dark fills
+!define STYLE_APP    #005F7F;text:White
+!define STYLE_CLOUD  #585858;text:White
+!define STYLE_ERROR  #CB2000;text:White
+
+'==============================================================
+' Semantic arrow macros — intent is carried by line STYLE
+' (bold / dotted / dashed) as well as colour, so it survives
+' greyscale and colour-blind viewing. One macro per edge, by intent.
+'   ARROW_MAIN      primary / synchronous happy path
+'   ARROW_OPTIONAL  alt / re-run / resume / retry / optional
+'   ARROW_ERROR     failure / cancel / destructive transition
+'   ARROW_QUEUE     internal async hand-off (background, event bus)
+'   ARROW_CLOUD     crosses a boundary to an external system
+' Usage:  A ARROW_MAIN B : event / action
+'==============================================================
+!define ARROW_MAIN     -[#585858,bold]->
+!define ARROW_OPTIONAL -[#585858,dotted]->
+!define ARROW_ERROR    -[#CB2000,bold]->
+!define ARROW_QUEUE    -[#818D00,bold]->
+!define ARROW_CLOUD    -[#585858,dashed,bold]->
+
+' --- Legacy aliases (kept so older diagrams keep working) ----
+!define COLOR_MAIN #005F7F
+!define COLOR_ALT #00BAC6
+!define COLOR_ACCENT #CBDB2A
+!define COLOR_SUCCESS #009532
+!define COLOR_GRAY #585858
+
+!define PATH_MAIN thickness=3
+!define PATH_COMMON thickness=1
+
+!define errorLabel(x) <color:#CB2000><b>x</b></color>
+!define successLabel(x) <color:#009532><b>x</b></color>
+!define dbLabel(x) <color:#585858><b>x</b></color>
+
+' --- Cleaner primitives ---------------------------------------
+skinparam componentStyle rectangle
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment center
+
+<style>
+  root {
+    Shadowing false;
+    FontColor $BLACK;
+    BackgroundColor $WHITE;
+    LineColor $GRAY_2;
+  }
+
+  title    { FontColor $MAIN; FontSize 20; }
+  caption  { FontColor $GRAY_2; }
+
+  arrow {
+    LineColor $GRAY_2;
+    LineThickness 1.5;
+    FontColor $BLACK;
+  }
+
+  note {
+    BackgroundColor $GRAY_4;
+    LineColor $GRAY_3;
+    FontColor $BLACK;
+    RoundCorner 8;
+  }
+  legend {
+    BackgroundColor $WHITE;
+    LineColor $GRAY_3;
+    FontColor $BLACK;
+    RoundCorner 8;
+  }
+
+  ' --- Element-type defaults (used when no stereotype is set) ---
+  component {
+    BackgroundColor $MAIN;
+    BorderColor $ALT;
+    FontColor $WHITE;
+    FontSize 14;
+    RoundCorner 12;
+    Padding 10;
+  }
+  interface {
+    BackgroundColor $ALT;
+    BorderColor $MAIN;
+    FontColor $BLACK;
+  }
+  node {
+    BackgroundColor $WHITE;
+    BorderColor $GRAY_3;
+    FontColor $BLACK;
+    FontSize 14;
+    RoundCorner 12;
+    Padding 12;
+  }
+  rectangle {
+    BackgroundColor $WHITE;
+    BorderColor $GRAY_3;
+    FontColor $BLACK;
+    RoundCorner 12;
+  }
+  card {
+    BackgroundColor $WHITE;
+    BorderColor $GRAY_3;
+    FontColor $BLACK;
+    RoundCorner 12;
+  }
+  database {
+    BackgroundColor $GRAY_2;
+    BorderColor $MAIN_3;
+    FontColor $WHITE;
+    FontSize 14;
+    RoundCorner 8;
+  }
+  collections {
+    BackgroundColor $MAIN_3;
+    BorderColor $ALT;
+    FontColor $WHITE;
+  }
+  actor {
+    BackgroundColor $ALT;
+    BorderColor $ALT_1;
+    FontColor $BLACK;
+    FontSize 14;
+  }
+  queue {
+    BackgroundColor $ACCENT;
+    BorderColor $ACCENT_1;
+    FontColor $BLACK;
+    RoundCorner 8;
+  }
+  cloud {
+    BackgroundColor $WHITE;
+    LineColor $ALT;
+    FontColor $MAIN;
+  }
+  frame {
+    LineColor $MAIN;
+    FontColor $MAIN;
+    RoundCorner 10;
+  }
+  package {
+    LineColor $MAIN;
+    FontColor $MAIN;
+  }
+  folder {
+    LineColor $ALT;
+    FontColor $MAIN;
+  }
+
+  ' --- Role stereotypes -----------------------------------------
+  ' Prefer these over inline <<#hex>>: they set FontColor across
+  ' \n line breaks (inline <color:..> Creole does not), they read
+  ' as intent at the use site, and they restyle from one place.
+  .app {
+    BackgroundColor $MAIN;
+    FontColor $WHITE;
+    LineColor $ALT;
+  }
+  .async {
+    BackgroundColor $ACCENT;
+    FontColor $BLACK;
+    LineColor $ACCENT_1;
+  }
+  .host {
+    BackgroundColor $ALT;
+    FontColor $BLACK;
+    LineColor $ALT_1;
+  }
+  .cloud {
+    BackgroundColor $GRAY_2;
+    FontColor $WHITE;
+    LineColor $GRAY_2;
+  }
+  .db {
+    BackgroundColor $GRAY_4;
+    FontColor $BLACK;
+    LineColor $GRAY_2;
+  }
+  .error {
+    BackgroundColor $ERROR;
+    FontColor $WHITE;
+    LineColor $ERROR;
+  }
+</style>
+@enduml

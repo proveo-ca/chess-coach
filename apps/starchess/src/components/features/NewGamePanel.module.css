@@ -1,0 +1,49 @@
+/* New Game layout — panel chrome on NeonModal; actions use neon Button/Select. */
+
+.new-game-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  align-items: stretch;
+  padding-top: 0.35rem;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: color-mix(in srgb, var(--sc-menu-neon, #7cff4a) 70%, #9ab890);
+  text-align: center;
+}
+
+.sectionTitle::before,
+.sectionTitle::after {
+  content: " —— ";
+  letter-spacing: 0.08em;
+  opacity: 0.65;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.65rem;
+}
+
+.opponent {
+  max-width: 18rem;
+  margin-inline: auto;
+}
+
+.start-btn {
+  align-self: center;
+  min-width: 8rem;
+  margin-top: 0.25rem;
+}

@@ -1,0 +1,15 @@
+/* Host for Chess ↔ StarChess menu arrival — stacks mockup over StarChess. */
+
+.root {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* Keep Selena above the frosted glass so helm ferry stays visible. */
+.root :global(.menu-splash-slot) {
+  position: relative;
+  z-index: 5;
+}

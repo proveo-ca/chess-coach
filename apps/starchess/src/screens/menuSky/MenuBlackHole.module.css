@@ -1,0 +1,145 @@
+/* Black hole — rotating disk + debris spiraling into the horizon. */
+
+.root {
+  --bh-size: 22vmin;
+  position: absolute;
+  right: 4%;
+  bottom: 6%;
+  width: var(--bh-size);
+  height: var(--bh-size);
+  pointer-events: none;
+}
+
+.embedded {
+  position: relative;
+  right: auto;
+  bottom: auto;
+  /* 1.5× prior embedded size (14vmin / 88px). */
+  --bh-size: min(21vmin, 132px);
+  width: var(--bh-size);
+  height: var(--bh-size);
+  flex-shrink: 0;
+}
+
+.glow {
+  position: absolute;
+  inset: -12%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, #6a30a0 45%, transparent) 0%,
+    transparent 70%
+  );
+  filter: blur(4px);
+  pointer-events: none;
+}
+
+.disk {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  animation: bh-spin 14s linear infinite;
+  
+}
+
+.diskRing {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    conic-gradient(
+      from 0deg,
+      #1a0828 0%,
+      #5a2080 18%,
+      #2a1040 36%,
+      #8a40b0 52%,
+      #1a0828 68%,
+      #4a1868 84%,
+      #1a0828 100%
+    );
+  box-shadow:
+    0 0 40px color-mix(in srgb, #6a30a0 45%, transparent),
+    inset 0 0 18px color-mix(in srgb, #000 70%, transparent);
+  opacity: 0.92;
+}
+
+.eventHorizon {
+  position: absolute;
+  inset: 28%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, #000 0 70%, #1a0828 100%);
+  box-shadow:
+    0 0 12px #000,
+    inset 0 0 10px #000;
+}
+
+.debrisLayer {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.debris {
+  --debris-delay: 0s;
+  --debris-dur: 4s;
+  --debris-size: 3px;
+  --debris-i: 1;
+
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--debris-size);
+  height: var(--debris-size);
+  margin: calc(var(--debris-size) / -2) 0 0 calc(var(--debris-size) / -2);
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffb060 0%, #ff6020 55%, transparent 75%);
+  box-shadow: 0 0 4px color-mix(in srgb, #ff8020 70%, transparent);
+  /* Start angle offset per particle so orbits fan out. */
+  --orbit-rot: calc(var(--debris-i) * 60deg);
+  animation: bh-absorb var(--debris-dur) linear infinite;
+  animation-delay: var(--debris-delay);
+  
+}
+
+@keyframes bh-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/*
+ * Orbit then fall inward: rotate around center while radius shrinks to the
+ * event horizon, fading as debris is absorbed.
+ */
+@keyframes bh-absorb {
+  0% {
+    opacity: 0.95;
+    transform: rotate(var(--orbit-rot)) translateX(calc(var(--bh-size) * 0.46))
+      rotate(calc(-1 * var(--orbit-rot))) scale(1);
+  }
+  70% {
+    opacity: 0.85;
+    transform: rotate(calc(var(--orbit-rot) + 220deg))
+      translateX(calc(var(--bh-size) * 0.22))
+      rotate(calc(-1 * (var(--orbit-rot) + 220deg))) scale(0.75);
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(calc(var(--orbit-rot) + 360deg))
+      translateX(calc(var(--bh-size) * 0.08))
+      rotate(calc(-1 * (var(--orbit-rot) + 360deg))) scale(0.2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .disk {
+    animation: none;
+  }
+
+  .debris {
+    animation: none;
+    opacity: 0.5;
+    transform: rotate(var(--orbit-rot)) translateX(calc(var(--bh-size) * 0.38));
+  }
+}

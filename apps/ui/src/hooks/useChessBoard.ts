@@ -144,6 +144,14 @@ export function useChessBoard() {
   // Coach play, arrow off) it stays at NORMAL.
   const startBase = () => {
     baseController?.abort();
+    const screenCapabilities = capabilities();
+    if (
+      !screenCapabilities.continuousAnalysis &&
+      !screenCapabilities.blunderDetection &&
+      screenCapabilities.bestMoveArrow === "off"
+    ) {
+      return;
+    }
     const g = activeGame();
     if (g.isGameOver()) return;
     if (!(capabilities().continuousAnalysis || g.turn() === activePlayerColor() || isReplaying())) {
@@ -420,11 +428,7 @@ export function useChessBoard() {
       if (result.cancelled) return;
     }
 
-    const canTouch = capabilities().freeColorControl
-      ? pieceOnSquare?.color === g.turn()
-      : g.turn() === activePlayerColor() && pieceOnSquare?.color === activePlayerColor();
-
-    if (canTouch) {
+    if (canSelectPiece(square)) {
       setSelectedSquare(square);
       setValidMoves(g.moves({ square, verbose: true }).map((m) => m.to));
     } else {
@@ -442,12 +446,7 @@ export function useChessBoard() {
     }
 
     const g = game();
-    const piece = g.get(square);
-    const canTouch = capabilities().freeColorControl
-      ? piece?.color === g.turn()
-      : g.turn() === activePlayerColor() && piece?.color === activePlayerColor();
-
-    if (!canTouch) {
+    if (!canSelectPiece(square)) {
       e.preventDefault();
       return;
     }
@@ -546,6 +545,16 @@ export function useChessBoard() {
     prevTravelIdx = idx;
   });
 
+  /** Shared select gate for click / drag / touch / invalid chrome. */
+  const canSelectPiece = (square: Square): boolean => {
+    const g = game();
+    const piece = g.get(square);
+    if (!piece) return false;
+    return capabilities().freeColorControl
+      ? piece.color === g.turn()
+      : g.turn() === activePlayerColor() && piece.color === activePlayerColor();
+  };
+
   return {
     game,
     activeGame,
@@ -561,6 +570,7 @@ export function useChessBoard() {
     pendingPromotion,
     resolvePromotion,
     cancelPromotion,
+    canSelectPiece,
     handleBoardMouseEnter,
     handleBoardMouseLeave,
     handleSquareHover,

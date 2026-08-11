@@ -36,26 +36,28 @@ export const GameHistoryFilters: Component<Props> = (props) => {
               class={styles.tile}
               classList={{ [styles["tile--active"]]: props.colorFilter === "w" }}
               aria-pressed={props.colorFilter === "w"}
+              aria-label="White"
               onClick={() => {
                 props.setColorFilter("w");
                 props.setFirstMoveFilter(null);
               }}
             >
               <ColorSwatch color="w" />
-              White
+              <span class={styles.colorName}>White</span>
             </button>
             <button
               type="button"
               class={styles.tile}
               classList={{ [styles["tile--active"]]: props.colorFilter === "b" }}
               aria-pressed={props.colorFilter === "b"}
+              aria-label="Black"
               onClick={() => {
                 props.setColorFilter("b");
                 props.setFirstMoveFilter(null);
               }}
             >
               <ColorSwatch color="b" />
-              Black
+              <span class={styles.colorName}>Black</span>
             </button>
           </div>
         </div>

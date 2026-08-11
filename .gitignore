@@ -31,9 +31,20 @@ lerna-debug.log*
 
 # Test / coverage output
 coverage/
+coverage-full/
 test-results/
 playwright-report/
 .playwright/
+storybook-static/
+
+# ==========================================
+# pnpm
+# ==========================================
+# Project-local content-addressable store (pnpm `store-dir`)
+.pnpm-store/
+# Caches (pnpm, corepack, vite, tooling) — any depth
+.cache/
+*.tgz
 
 # ==========================================
 # Bun
@@ -85,12 +96,26 @@ Thumbs.db
 *.sw?
 
 # ==========================================
+# Nx
+# ==========================================
+.nx/cache
+.nx/workspace-data
+.nx/migrate-runs
+.nx/installation
+.nx/self-healing
+.nx/polygraph
+.nx-cache
+tmp/
+out-tsc/
+# Cursor Nx plugin local rules (generated)
+.cursor/rules/nx-rules.mdc
+
+# ==========================================
 # AI / harness tooling
 # ==========================================
 .aider*
 .cecli*
 .claude
-.cursor/rules/nx-rules.mdc
 
 # Hero GIF capture scratch
 apps/e2e/.hero-capture/

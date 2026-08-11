@@ -2,9 +2,32 @@
   "name": "chess-coach",
   "private": true,
   "scripts": {
+    "dev": "nx run-many -t dev,storybook --projects=ui,starchess --parallel=4",
     "e2e:web-no-llm": "npm test --prefix apps/e2e",
     "e2e:desktop": "echo 'TODO: desktop e2e tests'",
-    "deploy:web-no-llm": "npm run deploy --prefix apps/ui",
-    "deploy:desktop": "echo 'TODO: desktop deployment'"
+    "e2e:docker": "docker compose run --rm e2e",
+    "e2e:docker:build": "docker compose build e2e",
+    "e2e:nerd-mode": "CI=1 E2E_TARGET=web-no-llm npm test --prefix apps/e2e -- --project=chromium tests/nerd-mode.spec.ts",
+    "deploy:web-no-llm": "npm run deploy --prefix apps/ui && npm run deploy --prefix apps/starchess",
+    "deploy:desktop": "echo 'TODO: desktop deployment'",
+    "build:starchess": "pnpm --filter @chess-coach/starchess build",
+    "test:starchess": "pnpm --filter @chess-coach/starchess test",
+    "ci": "pnpm run ci:typecheck && pnpm run ci:lint && pnpm run ci:test",
+    "ci:typecheck": "pnpm --filter @chess-coach/starchess typecheck && pnpm --filter chess-coach-ui typecheck && pnpm --filter @chess-coach/starchess-core typecheck && pnpm --filter @chess-coach/server typecheck",
+    "ci:lint": "pnpm --filter @chess-coach/starchess lint && pnpm --filter chess-coach-ui lint",
+    "ci:test": "pnpm run test:coverage",
+    "test:coverage": "pnpm run test:coverage:starchess && pnpm run test:coverage:ui",
+    "test:coverage:starchess": "pnpm --filter @chess-coach/starchess test:coverage",
+    "test:coverage:starchess:full": "pnpm --filter @chess-coach/starchess test:coverage:full",
+    "test:coverage:ui": "pnpm --filter chess-coach-ui test:coverage",
+    "preview:starchess": "pnpm --filter @chess-coach/starchess preview",
+    "dev:starchess": "pnpm --filter @chess-coach/starchess dev",
+    "dev:starchess:debug": "pnpm --filter @chess-coach/starchess dev:debug",
+    "deploy:starchess": "npm run deploy --prefix apps/starchess",
+    "deploy:starchess:dry-run": "pnpm --filter @chess-coach/starchess deploy:dry-run",
+    "e2e:starchess": "E2E_TARGET=starchess npm test --prefix apps/e2e -- --project=chromium"
+  },
+  "devDependencies": {
+    "nx": "^21.6.11"
   }
 }

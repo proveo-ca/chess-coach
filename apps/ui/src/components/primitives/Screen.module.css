@@ -1,6 +1,7 @@
 /* SPEC: _spec/apps/ui/responsiveness/rules.md
    Priority: middle (board+sideboard) > top > bottom. No page vertical scroll;
-   enforce min width for essentials. */
+   enforce min width for essentials. Mobile: middle is board-only; leftover
+   height splits into top/bottom so chrome hugs the board. */
 
 :global(#root) {
   max-width: 1280px;
@@ -10,17 +11,15 @@
   box-sizing: border-box;
 }
 
-/* Board-centric screens own the viewport — no visual page scroll (§1b).
-   ≤1px document overflow keeps Android Chrome / PWA pull-to-refresh alive;
-   `.app-container` still clips at 100dvh so chrome cannot be scrolled into view. */
+/* Board-centric screens own the viewport — no page vertical scroll (§1b). */
 :global(html:has([data-testid="screen-root"])) {
-  min-height: calc(100dvh + 1px);
+  height: 100%;
+  overflow: hidden;
 }
 
 :global(body:has([data-testid="screen-root"])) {
-  min-height: calc(100dvh + 1px);
-  overflow-x: hidden;
-  overflow-y: auto;
+  height: 100%;
+  overflow: hidden;
   min-width: var(--board-size);
 }
 
@@ -28,6 +27,23 @@
   :global(body:has([data-testid="screen-root"])) {
     /* board + sidebar + modest gutter (§1a) */
     min-width: calc(var(--board-size) + var(--sidebar-width) + 1.5rem);
+  }
+
+  .app-container {
+    padding-block: 2rem;
+  }
+
+  /* Board screens: fixed top track so board Y never jumps (Coach / Analysis /
+     Review). +1rem leaves room for opponent CapturedPieces under the title
+     stack. List screens without a board column keep auto-sized top. */
+  .app-container:has([data-board-column]) {
+    grid-template-rows: calc(var(--avatar-height) + 1rem) auto minmax(0, auto);
+  }
+
+  .app-container:has([data-board-column])[data-footer-float="true"]:not(
+      :has([data-region="top"] [data-testid="floating-move-list"])
+    ) {
+    grid-template-rows: calc(var(--avatar-height) + 1rem) auto 0fr;
   }
 }
 
@@ -48,12 +64,23 @@
   align-content: start;
 }
 
-.app-container[data-footer-float="true"] {
+/* Collapse the footer track for CoachPanel (and legacy footer MoveList) floats.
+   When MoveList docks/floats from the top region (Review /:id), keep the bottom
+   row so BoardControls + player captures stay visible. */
+.app-container[data-footer-float="true"]:not(
+    :has([data-region="top"] [data-testid="floating-move-list"])
+  ) {
   grid-template-rows: minmax(0, auto) auto 0fr;
 }
 
-.app-container[data-footer-float="true"] > .footer,
-.app-container[data-footer-float="true"] > [data-region="bottom"] {
+.app-container[data-footer-float="true"]:not(
+    :has([data-region="top"] [data-testid="floating-move-list"])
+  )
+  > .footer,
+.app-container[data-footer-float="true"]:not(
+    :has([data-region="top"] [data-testid="floating-move-list"])
+  )
+  > [data-region="bottom"] {
   overflow: hidden;
   min-height: 0;
   padding: 0;
@@ -62,21 +89,16 @@
 
 /* Grid layout for the header — offset to align with board center (not board+sidebar) */
 .coach-header {
-  display: grid;
-  gap: 1.5rem;
-  align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
   width: 100%;
   min-height: 0;
+  height: 100%;
   padding-right: var(--sidebar-width);
   box-sizing: border-box;
   overflow: hidden;
   grid-row: 1;
-}
-
-@media (min-width: 720px) {
-  .coach-header {
-    min-height: var(--avatar-height);
-  }
 }
 
 .board-area {
@@ -88,7 +110,7 @@
   /* Essentials: do not shrink below content (§2). */
   flex-shrink: 0;
   /* Pin to middle track so a display:none top inset (Review mobile) does not
-     promote BoardArea into row 1 and steal the 1fr stretch track. */
+     promote BoardArea into row 1 and steal the stretch track. */
   grid-row: 2;
 }
 
@@ -99,13 +121,24 @@
 
 /* Offset content to align with the board center (not board+sidebar). */
 .sidebar-inset {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
   padding-top: 0.5rem;
   padding-right: var(--sidebar-width);
   min-height: 0;
+  height: 100%;
   overflow: hidden;
   width: 100%;
   box-sizing: border-box;
   grid-row: 1;
+}
+
+/* §4b: floating MoveList is position:fixed but still a top-region descendant —
+   let it paint below the title stack without the track clipping it. */
+.sidebar-inset:has([data-testid="floating-move-list"]),
+.coach-header:has([data-testid="floating-move-list"]) {
+  overflow: visible;
 }
 
 .footer {
@@ -127,51 +160,136 @@ h1 {
 
 /* Mobile overrides after base rules so they win the cascade. */
 @media (max-width: 719px) {
-  /* Tall mobile: top/bottom stay content-sized; middle claims leftover height so
-     the board stack can center instead of packing to the top (§2 mobile stretch).
-     Top row still collapses when empty (Coach avatar lives in the board bar). */
+  /* Board-only middle (§2): leftover height splits into top + bottom tracks;
+     chrome hugs the board (top flex-end, bottom flex-start). min-content
+     minima keep Back / banner / controls from crushing to zero. */
   .app-container {
     align-content: stretch;
+    grid-template-rows: minmax(min-content, 1fr) auto minmax(min-content, 1fr);
+  }
+
+  .app-container[data-footer-float="true"]:not(
+      :has([data-region="top"] [data-testid="floating-move-list"])
+    ) {
+    grid-template-rows: minmax(min-content, 1fr) auto 0fr;
+  }
+
+  /* List screens without a board column keep middle as the scroll claim. */
+  .app-container:not(:has([data-board-column])) {
     grid-template-rows: minmax(0, auto) 1fr minmax(0, auto);
   }
 
-  .app-container[data-footer-float="true"] {
+  .app-container:not(:has([data-board-column]))[data-footer-float="true"] {
     grid-template-rows: minmax(0, auto) 1fr 0fr;
   }
 
   .board-area {
-    height: 100%;
-    align-items: stretch;
+    height: auto;
+    align-items: flex-start;
   }
 
   .board-column {
-    height: 100%;
     width: 100%;
     max-width: var(--board-size);
     box-sizing: border-box;
-    container-type: size;
     justify-content: flex-start;
-    /* Leftover middle height becomes in-betweens among chrome / board. */
-    gap: clamp(0.35rem, 3.5cqh, 1.25rem);
+    gap: 0;
   }
 
-  /* §4 float: center the board stack in the leftover middle track so the
-     floating panel sits over the lower board instead of a dead band below. */
-  .app-container[data-footer-float="true"] .board-column {
-    justify-content: center;
-  }
-
-  /* Short / dynamic: clump top chrome (bars · FEN · tools) so the board
-     reclaim height — no generous cqh gaps. */
-  @media (max-height: 639px) {
-    .board-column {
-      gap: 0.2rem;
-    }
-  }
-
-  .coach-header {
-    min-height: 0;
+  /* flex-end: FEN / captures / tools hug the board. MobileBanner is
+      position:absolute flush-top — pad the region so bar/hero/FEN clear it. */
+  .coach-header,
+  .sidebar-inset {
+    justify-content: flex-end;
+    align-items: stretch;
+    min-height: min-content;
+    height: 100%;
     padding-right: 0;
-    gap: 0.5rem;
+    padding-top: 0;
+    gap: 0.2rem;
+    box-sizing: border-box;
+  }
+
+  /* Absolute banner containing block + in-flow clearance (= banner min-height
+     + padding-block). Dynamic fuse zeroes this — strip is in-flow there. */
+  .coach-header:has(:global(.mobile-banner)),
+  .sidebar-inset:has(:global(.mobile-banner)) {
+    position: relative;
+    padding-top: var(--mobile-banner-height, calc(40px + 0.7rem));
+  }
+
+  /* Banner may sit under [data-fuse-root]; match class, not testid. */
+  .sidebar-inset > :global(.mobile-banner) ~ *,
+  .coach-header > :global(.mobile-banner) ~ *,
+  .sidebar-inset > :global([data-fuse-root]) ~ *,
+  .coach-header > :global([data-fuse-root]) ~ *,
+  :global([data-fuse-root]) > :global(.mobile-banner) ~ * {
+    margin-top: 0;
+  }
+
+  .footer {
+    justify-content: flex-start;
+    min-height: min-content;
+    height: 100%;
+    padding-right: 0;
+    gap: 0.2rem;
+  }
+}
+
+/* Tall mobile: hoist fuse children into the header flex so banner can use
+   margin-bottom:auto and Coach hero can own the spacer. Dynamic turns the
+   host into the full-width fused strip.
+   SPEC: _spec/apps/ui/responsiveness/rules.md */
+:global([data-fuse-root]) {
+  display: contents;
+}
+
+@media (--dynamic-mobile) {
+  /* Fuse screens: top track = content only (no 1fr stretch); bottom keeps leftover. */
+  .app-container:has([data-fuse-root]):has([data-board-column]) {
+    gap: 0;
+    grid-template-rows: auto auto minmax(min-content, 1fr);
+  }
+
+  .app-container:has([data-fuse-root]):has([data-board-column])[data-footer-float="true"]:not(
+      :has([data-region="top"] [data-testid="floating-move-list"])
+    ) {
+    grid-template-rows: auto auto 0fr;
+  }
+
+  .coach-header:has(:global([data-fuse-root])),
+  .sidebar-inset:has(:global([data-fuse-root])) {
+    gap: 0;
+    justify-content: flex-start;
+    height: auto;
+    min-height: 0;
+    /* Fuse row is in-flow; banner is display:contents — no absolute clearance. */
+    padding-top: 0;
+  }
+
+  :global([data-fuse-root]) {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.15rem;
+    position: relative;
+    /* Full chrome width — never capped to --board-size. */
+    width: 100%;
+    max-width: none;
+    margin-inline: 0;
+    margin-bottom: 0;
+    flex-shrink: 0;
+    padding-block: 0.3rem;
+    padding-inline: var(--board-chrome-inline, 0.7rem);
+    min-height: 40px;
+    box-sizing: border-box;
+    background: var(--panel-bg);
+    border-bottom: 1px solid var(--border-color);
+    z-index: 5;
+    overflow: visible;
+  }
+
+  :global([data-fuse-root]) ~ * {
+    margin-top: 0;
   }
 }

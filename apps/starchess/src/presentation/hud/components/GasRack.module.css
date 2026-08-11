@@ -1,0 +1,199 @@
+.dock {
+  /* Opaque rack chrome (mix against bg, not transparent). */
+  --rack-fill: color-mix(in srgb, var(--text-color, #e0e0e0) 10%, var(--bg-color, #242424));
+  --rack-border: color-mix(in srgb, var(--text-color, #e0e0e0) 22%, var(--bg-color, #242424));
+  --rack-size: 60px;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  user-select: none;
+  touch-action: none;
+}
+
+/* MobileBanner density */
+.compact {
+  --rack-size: 36px;
+}
+
+/*
+ * Continuous rack: gray circle + oval share fill/border.
+ * Oval tucks under the circle so the join is circular, not a flat cut.
+ */
+.circleBase {
+  position: relative;
+  z-index: 2;
+  width: var(--rack-size);
+  height: var(--rack-size);
+  border-radius: 50%;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  background: var(--rack-fill);
+  border: 1px solid var(--rack-border);
+  display: grid;
+  place-items: center;
+}
+
+/* Green ready ring nested inside the gray disc. */
+.circle {
+  position: absolute;
+  inset: 6px;
+  width: auto;
+  height: auto;
+  border-radius: 50%;
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, #2a9b6a 14%, transparent);
+  border: 2px solid color-mix(in srgb, #2a9b6a 55%, transparent);
+  color: #2a9b6a;
+  cursor: grab;
+  appearance: none;
+  padding: 0;
+  margin: 0;
+  transition:
+    border-color 120ms ease,
+    background-color 120ms ease,
+    opacity 120ms ease;
+}
+
+.circle:focus-visible {
+  outline: 2px solid #3b7dd8;
+  outline-offset: 2px;
+}
+
+.circleEmpty {
+  cursor: default;
+  opacity: 0.45;
+  border-style: dashed;
+}
+
+.circleDragging {
+  cursor: grabbing;
+}
+
+.oval {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  /* Half under the gray circle so the silhouette is round, not a hard left edge. */
+  margin-left: calc(var(--rack-size) / -2);
+  padding: 0 14px 0 calc(var(--rack-size) / 2 + 6px);
+  height: var(--rack-size);
+  min-width: calc(var(--rack-size) / 2);
+  border-radius: 0 999px 999px 0;
+  box-sizing: border-box;
+  background: var(--rack-fill);
+  border: 1px solid var(--rack-border);
+  border-left: none;
+}
+
+.track {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.reserve {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  margin-left: -8px;
+  color: #2a9b6a;
+  opacity: 1;
+  transform: translateX(0);
+  transition:
+    transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 180ms ease,
+    width 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    margin-left 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.reserve:first-child {
+  margin-left: 0;
+}
+
+/* Off-rack: collapsed toward the circle (left). */
+.reserveHidden {
+  width: 0;
+  margin-left: 0;
+  opacity: 0;
+  transform: translateX(-28px);
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.canister {
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+.ghost {
+  position: fixed;
+  z-index: 80;
+  width: var(--rack-size);
+  height: var(--rack-size);
+  margin: 0;
+  display: grid;
+  place-items: center;
+  color: #2a9b6a;
+  pointer-events: none;
+  /* Single soft shadow; avoid permanent will-change (VRAM on idle). */
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.35));
+  transform: translate(-50%, -50%);
+}
+
+.ghostReturning {
+  transition:
+    left 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    top 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.ghostCanister {
+  display: grid;
+  place-items: center;
+}
+
+/* Second canister peels out of the rack for 2-gas specials (Charon Booster Missiles). */
+.ghostBuddy {
+  position: absolute;
+  right: -8px;
+  bottom: -6px;
+  transform: scale(0.92);
+  filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.4));
+  animation: ghostBuddyIn 180ms cubic-bezier(0.2, 0.8, 0.2, 1) 1 both;
+}
+
+@keyframes ghostBuddyIn {
+  from {
+    opacity: 0;
+    transform: translate(34px, 4px) scale(0.45);
+  }
+  to {
+    opacity: 1;
+    transform: translate(0, 0) scale(0.92);
+  }
+}
+
+.preview {
+  position: fixed;
+  z-index: 90;
+  transform: translate(-50%, calc(-100% - 12px));
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reserve,
+  .ghostReturning {
+    transition-duration: 1ms;
+  }
+  .ghostBuddy {
+    animation-duration: 1ms;
+  }
+}

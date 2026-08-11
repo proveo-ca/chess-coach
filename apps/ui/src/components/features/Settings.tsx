@@ -8,14 +8,13 @@ import { Button } from "~/components/primitives/Button";
 import { Select } from "~/components/primitives/Select";
 import { Toggle } from "~/components/primitives/Toggle";
 import { imLost, playerIdentity, setImLost, setPlayerIdentity } from "~/store/settingsStore";
+import { identityOptions } from "~/features/nerd/identity";
 import type { PlayerIdentity } from "~/types/settings";
 
 type Props = {
   open: boolean;
   onClose: () => void;
 };
-
-const IDENTITY_OPTIONS: PlayerIdentity[] = ["Human", "Cat", "Dog", "Rat"];
 
 /**
  * The raw settings content — identity picker, "i'm lost" toggle, back-to-menu.
@@ -49,7 +48,7 @@ export const SettingsPanel: Component<{ onDismiss?: () => void }> = (props) => {
           onChange={(e) => setPlayerIdentity(e.currentTarget.value as PlayerIdentity)}
           disabled={imLost()}
         >
-          {IDENTITY_OPTIONS.map((id) => (
+          {identityOptions().map((id) => (
             <option value={id}>{id}</option>
           ))}
         </Select>

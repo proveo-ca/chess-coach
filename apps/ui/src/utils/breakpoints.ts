@@ -14,5 +14,12 @@ export const MOBILE_MQ = "(max-width: 719px)";
 /** Tall phone — hero avatar / title toolbars (e.g. 390×844). */
 export const TALL_MOBILE_MQ = "(max-width: 719px) and (min-height: 640px)";
 
-/** Short / dynamic — compact chrome (e.g. 390×560). */
+/** Short / dynamic — compact chrome (e.g. 480×480). */
 export const SHORT_MOBILE_MQ = "(max-width: 719px) and (max-height: 639px)";
+
+/**
+ * Fused MobileBanner+MobileSidebar row — short height and ≥480px wide
+ * (Storybook Dynamic 560×420). Keep in sync with `theme.css` `--dynamic-mobile`.
+ */
+export const DYNAMIC_MOBILE_MQ =
+  "(max-width: 719px) and (min-width: 480px) and (max-height: 639px)";

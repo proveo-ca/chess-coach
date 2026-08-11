@@ -1,0 +1,32 @@
+/* SPEC: _spec/apps/ui/responsiveness/rules.md */
+
+/* Tall / narrow mobile chrome — FEN below banner + captures + footer bar.
+   Top region is flex-end (hug board); `.mobile-banner` margin-bottom:auto
+   keeps the strip fixed to the top. Do not zero that margin here. */
+@media (max-width: 719px) {
+  .mobileFen {
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+  }
+}
+
+@media (--dynamic-mobile) {
+  /* Keep captures; hide stacked FEN + footer BoardControls (tools are in the fuse). */
+  .tallOnly {
+    display: none !important;
+  }
+
+  .fenModal {
+    min-width: min(100%, 22rem);
+  }
+
+  .fenModal :global([data-testid="fen-loader"]) {
+    max-width: none;
+    margin-inline: 0;
+    padding-inline: 0;
+  }
+}

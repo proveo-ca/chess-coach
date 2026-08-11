@@ -1,33 +1,25 @@
 import type { Component } from "solid-js";
 
-import type { CoachEmotion } from "~/types/coach";
+import type { CoachIconEmotion } from "~/types/coach";
 
 interface IconProps {
-  emotion: CoachEmotion;
+  emotion: CoachIconEmotion;
   size?: number;
   title?: string;
 }
 
 /** Accessible description per emotion — used as the alt/aria fallback. */
-const EMOTION_LABELS: Record<CoachEmotion, string> = {
-  idle: "idle",
-  watching: "watching the board",
-  "watching--left": "watching the board",
-  "watching--right": "watching the board",
+const EMOTION_LABELS: Record<CoachIconEmotion, string> = {
   thinking: "thinking",
   happy: "happy",
   shocked: "shocked",
   shrug: "no better option",
-  sleepy: "sleepy",
-  sleeping: "sleeping",
 };
 
 /**
  * Compact inline icon for a coach emotion — used in the move list on the
  * ReviewScreen. Separate from `CoachAvatar`, which is a full animated SVG
- * cat and far too heavy to render once per half-move. Maps the subset of
- * emotions we actually need for move annotations; others fall through to
- * a neutral circle.
+ * cat and far too heavy to render once per half-move.
  */
 export const CoachEmotionIcon: Component<IconProps> = (props) => {
   const s = () => props.size ?? 16;

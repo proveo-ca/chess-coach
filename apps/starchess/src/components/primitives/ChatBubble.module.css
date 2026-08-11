@@ -1,0 +1,77 @@
+/*
+ * StarChess ChatBubble — opaque gray glass + neon green rim
+ * (Brood War menu / coach line). Base API matches apps/ui ChatBubble.
+ */
+
+.bubble {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  max-width: min(22rem, 88vw);
+  border-radius: 1.15rem;
+  border: 2px solid var(--sc-menu-neon, #7dff6a);
+  background: color-mix(in srgb, #2a2e32 88%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow:
+    0 0 12px color-mix(in srgb, var(--sc-menu-neon, #7dff6a) 35%, transparent),
+    0 4px 14px color-mix(in srgb, #000 55%, transparent),
+    inset 0 1px 0 color-mix(in srgb, #fff 8%, transparent);
+  color: color-mix(in srgb, #e8ffb8 92%, #fff);
+  font-family: var(--font-family);
+  font-size: 0.95rem;
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  text-align: center;
+  padding: 0.75rem 1.1rem;
+  transform-origin: 50% 0%;
+  animation: chat-bubble-in 200ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.interactive {
+  cursor: inherit;
+  color: inherit;
+}
+
+.interactive:hover {
+  border-color: #e8ffb8;
+  box-shadow:
+    0 0 16px color-mix(in srgb, var(--sc-menu-neon, #7dff6a) 55%, transparent),
+    0 4px 14px color-mix(in srgb, #000 55%, transparent);
+}
+
+.exiting {
+  animation: chat-bubble-out 180ms ease-in forwards;
+}
+
+@keyframes chat-bubble-in {
+  from {
+    opacity: 0;
+    transform: scale(0.2);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes chat-bubble-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bubble,
+  .exiting {
+    animation-duration: 1ms;
+  }
+}

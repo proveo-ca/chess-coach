@@ -1,0 +1,45 @@
+/* Tools fill the shared BoardSideRail width; Screen owns the row. */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  width: 100%;
+  max-width: var(--sidebar-width);
+  flex-shrink: 0;
+  margin-top: 0;
+  box-sizing: border-box;
+}
+
+.tool {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+}
+
+.toolLabel {
+  margin: 0;
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-color, #f0f3f6);
+  text-align: center;
+}
+
+.divider {
+  width: 60%;
+  margin: 0.15rem 0;
+}
+
+.visionGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+  width: 100%;
+  padding: 2px 0 4px;
+}

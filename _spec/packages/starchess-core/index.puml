@@ -1,0 +1,52 @@
+@startuml index
+' SPEC: _spec/packages/starchess-core/index.puml
+' purpose: Live StarChess rules spec map (packages/starchess-core).
+!include ../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess Core · Spec Map (_spec/packages/starchess-core)
+
+package "_spec/packages/starchess-core" {
+  component "scfen-wire.puml" as WIRE <<db>>
+  component "scfen-queue.puml" as QUEUE <<async>>
+  component "resolve.puml" as RESOLVE <<app>>
+  component "turn-queue-sequence.puml" as SEQ <<async>>
+  component "sc-moves.puml" as MOVES <<app>>
+}
+
+package "packages/starchess-core/src" {
+  component "scfen/codec.ts" as COD <<app>>
+  component "commands/queue-action.ts" as QACT <<async>>
+  component "resolve/submit-turn.ts" as SUB <<app>>
+  component "resolve/resolve-turn.ts" as RT <<app>>
+  component "board/moves.ts" as SCM <<app>>
+  component "outcome.ts" as OUT <<app>>
+  component "board/{placement,mines,vision,siege}.ts" as BRD <<db>>
+  component "ai/adjutant.ts" as AI <<app>>
+}
+
+package "UI (apps/starchess)" {
+  component "_spec/apps/starchess/*\nHUD · match-store · demos · mode" as UI <<host>>
+}
+
+WIRE ARROW_MAIN COD
+QUEUE ARROW_MAIN COD
+QUEUE ARROW_MAIN QACT
+RESOLVE ARROW_MAIN SUB
+RESOLVE ARROW_MAIN RT
+RESOLVE ARROW_MAIN OUT
+RESOLVE ARROW_OPTIONAL BRD
+SEQ ARROW_MAIN SUB
+SEQ ARROW_MAIN RT
+MOVES ARROW_MAIN SCM
+MOVES ARROW_OPTIONAL BRD
+MOVES ARROW_OPTIONAL AI
+SEQ ARROW_OPTIONAL UI : MatchStore End
+MOVES ARROW_OPTIONAL UI : useBoardInput
+
+note bottom
+  Product/UX diagrams live under ""_spec/apps/starchess/"".
+end note
+@enduml

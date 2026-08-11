@@ -30,11 +30,13 @@ package "Screens  [src/screens/]" {
   note right of CoachScreen
     mounts COACH_CAPABILITIES on init
     calls useGameRecorder() · useLivePreAnalysis() · restoreGame()
-    composition: CoachAvatar · ChessBoard ·
-      CapturedPieces · CoachPanel · Sidebar ·
-      MobileDrawer · DualNavButton
+    regions: top = MobileBanner flush top; tall-mobile hero CoachAvatar
+      floats over banner (z-index) · BoardControls (omitDrawer) · opp captures;
+      desktop Back·avatar;
+      middle = ChessBoard (+ Sidebar) only;
+      bottom = player captures · CoachPanel
     overlays: HistoryOverlay · LightSpeedOverlay ·
-      Modal (browser support check)
+      Modal (browser support check) · MobileDrawer
   end note
 
   rectangle "AnalysisScreen" as AnalysisScreen
@@ -42,12 +44,12 @@ package "Screens  [src/screens/]" {
     mounts ANALYSIS_CAPABILITIES on init
     no coach avatar · no replay/travel overlays
     FenLoader stays a single [input][button] row
-    desktop: SidebarInset "Solo Analysis" + Back / Back to Main Menu + FenLoader
-    tall mobile: MobileSidebar toolbar [menu][title]; FenLoader + Back (trailing Load)
-    short / dynamic: title toolbar hidden; FenLoader leading = menu (left of
-      input) · trailing = Back; shared --board-chrome-inline gutters
-    composition: FenLoader · ChessBoard ·
-      CapturedPieces · Sidebar · MobileDrawer · BoardControls · MobileSidebar
+    desktop: SidebarInset ScreenBackNav + title + FenLoader
+    mobile: MobileBanner flush top [‹ Back][Solo Analysis][menu];
+      FenLoader grows in leftover top-region space (bottom-aligned near board)
+    regions: top = banner · FenLoader · opp captures;
+      middle = ChessBoard (+ Sidebar) only;
+      bottom = player captures · BoardControls (EngineDepth)
     end-of-game: ChessBoard default CTAs (Another Game →
       /selena + New Game modal · Review Game when recorded)
   end note
@@ -57,11 +59,13 @@ package "Screens  [src/screens/]" {
     mounts REVIEW_CAPABILITIES on init
     route param: id (Polyglot-Zobrist hash)
     loads GameRecord → gameStore.loadGame()
-    desktop: SidebarInset title + Share/Back
-    mobile /:id: MobileSidebar toolbar matchup row
-      [menu][Result vs Opponent][Share · Back] — drawer left of title
+    desktop: SidebarInset title + Share/Back · MoveList · opp captures
+    mobile list: MobileBanner [‹ Back][Review Games][menu] + filters
+    mobile /:id: MobileBanner [‹ Back][matchup][menu] · MoveList (top) ·
+      opp captures; footer = player captures + BoardControls
+      (Share IconButton Item · EngineDepth · omitDrawer) — mirrors Analysis
     composition: GameHistoryList · ChessBoard ·
-      MoveList · CapturedPieces · MobileSidebar · BoardControls
+      MoveList · CapturedPieces · MobileBanner · BoardControls
     end-of-game (ChessBoard GameOverBanner override):
       Another Game → /selena + New Game modal (same as default)
       Replay Review → setViewIndex(0) (before move 1)
@@ -85,12 +89,12 @@ package "Screens  [src/screens/]" {
       pick/swap colors (SelectCard) · guest Play/Spectate
       (SelectCard) · observers ≤4 · Start Game
     host browser = room authority (relays all moves)
-    layout: lobby = SplashScreen (no board, like MenuScreen) —
-      Tailscale onboarding + room setup. Once started, the
-      board-centric Screen grid: matchup header + board. Controls
-      (connectivity · history nav · Draw · Resign) in the right
-      sidebar on desktop; on mobile the shared MobileSidebar bar above
-      the board (centre blank — no coach), under the names + clocks.
+    layout: lobby = SplashScreen + MobileBanner ("Play LAN");
+      once started, Screen grid — mobile: MobileBanner centre =
+      both Clocks only (colour/name omitted — strip is tight);
+      desktop: full matchup in ScreenBackNav. Controls in sidebar
+      (desktop) / MobileSidebar under banner (mobile). Middle =
+      MultiplayerBoard only.
     draw offers: one "Draw" control (sidebar button + 🤝 bubble) ·
       no offer → propose · pending → Modal ("Accept Draw?" for the
       recipient · "Draw requested"/Cancel for the offerer waiting).
@@ -98,21 +102,19 @@ package "Screens  [src/screens/]" {
       MultiplayerBoard (DrawBubbles). See multiplayer.puml.
     time control: Select dropdown at room creation (default from the
       last Selena difficulty), shown again to the joiner from the offer
-      link; in-game each side's Clock atom shows in the matchup header.
+      link; in-game Clock in matchup header / MobileBanner.
       Flag-fall → "Time Out" end screen. ?clock=<sec> deep-link override.
     history nav: DualNavButton bound straight to gameStore
       (engine-free); MultiplayerBoard replays past plies and locks
       input while replaying. HistoryOverlay vignette + Screen
       highlight while reviewing.
-    mobile review chrome: a *player* reviewing collapses the bar + header
-      to just their own clock (top-left) + history nav (top-right); a
-      *spectator* keeps both clocks + a live EvalBar (screen-computed) at
-      all times — the only engine use here, player boards stay engine-free.
+    mobile review: banner keeps the live clock; history nav floats
+      top-right (MobileSidebar timeline). Spectators keep EvalBar.
     end screen: shared GameOverBanner (Resignation / Checkmate /
       Stalemate / Draw / Opponent Left), hidden during replay
       → Review Game · Back to Menu
     renders MultiplayerBoard (coach/engine-free) — NOT ChessBoard
-    composition: SplashScreen · Screen · MultiplayerBoard ·
+    composition: SplashScreen · Screen · MobileBanner · MultiplayerBoard ·
       CapturedPieces · SelectCard · TailscaleChecklist · QR
       encode/scan · ConnIndicator (SignalIcon) · DualNavButton ·
       HistoryOverlay · GameOverBanner · Modal (draw offer)
@@ -309,9 +311,8 @@ package "Components  [src/components/]" {
     note right of Sidebar
       hint · resign · new game · flip board · settings
       (gated by capabilities flags); shows EngineDepth on
-      Analysis only (continuousAnalysis + flipBoard).
-      New Game same gate. Review: nav + settings + route links.
-      (mobile drawer / menu only).
+      Analysis + Review /:id (continuousAnalysis ∧ bestMoveArrow≠off).
+      New Game gated by flipBoard. Review list: settings + route links.
     end note
     rectangle "MobileDrawer" as MobileDrawer
     note right of MobileDrawer
@@ -329,14 +330,14 @@ package "Components  [src/components/]" {
       icons vs the dual history nav) + up to 4 <Item> quick actions;
       CSS (nth-of-type, no JS) stacks the single-button items on the
       LEFT of centre and drops any 5th. The nav <Item> owns the RIGHT
-      via margin-left:auto. The drawer <Item drawer> pins LEFTMOST on
+      via margin-left:auto. The drawer <Item drawer> pins RIGHTMOST on
       short / dynamic; on tall mobile (and timeline) it floats fixed
-      top-left while nav floats top-right in timeline. Centre is
-      per-screen: CoachAvatar compact on short Coach only (tall Coach
-      stacks hero above bar), EngineDepth
-      (Analysis/Review board bar), ConnIndicator (LAN). Review /:id also
-      mounts a toolbar MobileSidebar (matchup label + back/share) above
-      BoardControls — absolute centering disabled in toolbar mode.
+      top-right (outermost) while nav floats just left of it in timeline.
+      Centre is per-screen: CoachAvatar compact on short Coach only (tall
+      Coach floats hero over MobileBanner), EngineDepth
+      (Analysis/Review **footer** BoardControls), ConnIndicator (LAN).
+      Review /:id: MobileBanner matchup + MoveList in top; Share is a
+      BoardControls leading Item in the footer (Analysis-shaped stack).
       timeline prop (replay/travel): the bar collapses (board rises),
       <Main> + non-nav/non-drawer items hide.
     end note
@@ -345,9 +346,10 @@ package "Components  [src/components/]" {
       the MobileSidebar quick actions for the engine-backed boards
       (Coach/Analysis/Review): drawer menu · hint · nav · resign ·
       new game, capability-gated (flip lives in MobileDrawer +
-      desktop Sidebar only). Renders bare MobileSidebar.Items.
-      Passes timeline=inTimelineMode() and FLIP-animates the nav
-      <Item> between its in-bar dock and the top-right corner.
+      desktop Sidebar only). Optional `leading` Items (Review Share).
+      Renders bare MobileSidebar.Items. Passes timeline=inTimelineMode()
+      and FLIP-animates the nav <Item> between its in-bar dock and the
+      top-right corner.
     end note
     rectangle "MoveList" as MoveList
     note right of MoveList
@@ -424,6 +426,15 @@ package "Components  [src/components/]" {
     rectangle "Credits"         as Credits
     rectangle "DebugControls"   as DebugControls
     rectangle "FenLoader"       as FenLoader
+    note right of FenLoader
+      atom: Input + Load Button (both 40px, match IconButton)
+      optional leading / trailing slots
+    end note
+    rectangle "MobileBanner"    as MobileBanner
+    note right of MobileBanner
+      mobile-only top strip flush to viewport edge:
+      ‹ Back · title · hamburger (onMenu). Hidden on desktop.
+    end note
     rectangle "ResignConfirm"   as ResignConfirm
     rectangle "Modal"           as Modal
     note right of Modal
@@ -437,6 +448,7 @@ package "Components  [src/components/]" {
   ' Primitives = presentational, props-driven shared kit (was components/common/).
   package "Primitives  [components/primitives/]" {
     rectangle "Button / IconButton / MenuButton" as Buttons
+    rectangle "ChevronNav / ScreenBackNav" as ChevronNav
     rectangle "Select / Toggle / Label / Input"  as Inputs
     rectangle "Divider / ProgressBar"            as Utility
     rectangle "Collapsible (accordion step)"     as Collapsible
@@ -658,7 +670,7 @@ UseGameRecorder   --> HistoryStore : pushMove · finalizeGame
 UseMoveExecutor   --> GameStore    : addMove · addMoveSan
 UseChessBoard     --> EvalStore    : setBaseEvalScore · setBaseEvalDepth
 EngineDepth       ..> EvalStore    : baseEvalDepth
-Sidebar           --> EngineDepth  : slot (Analysis: continuousAnalysis ∧ flipBoard)
+Sidebar           --> EngineDepth  : slot (Analysis + Review /:id:\ncontinuousAnalysis ∧ bestMoveArrow≠off)
 ResignConfirm     ..> EvalStore    : baseEvalScore
 
 ' ── Review history filters ──
@@ -690,14 +702,27 @@ LanScreen           --> MultiplayerBoard    : renders (started)
 LanScreen           --> GameOverBanner      : renders (gameOver && !replaying)
 LanScreen           --> DualNavButton       : history nav → gameStore goBack/goForward/setViewIndex
 MultiplayerBoard    ..> UseMultiplayerBoard : uses
-LanScreen           --> Clock               : renders (matchup header, per side)
-CoachScreen         --> MobileSidebar        : tall: avatar above bar; short/§4: compact in centre
-CoachScreen         --> CoachAvatar          : desktop Header · tall mobile hero · short bar compact
-AnalysisScreen      --> MobileSidebar        : tall: [menu][Solo Analysis]; short: no toolbar; Back trails FenLoader Load
-ReviewScreen        --> MobileSidebar        : [menu][matchup][Share · Back] + BoardControls (EngineDepth · omitDrawer)
-LanScreen           --> MobileSidebar        : bar above board (centre blank)
+LanScreen           --> Clock               : matchup header / MobileBanner
+LanScreen           --> MobileBanner         : lobby "Play LAN"; in-game both clocks
+LanScreen           --> MobileDrawer         : hamburger (full menu)
+LanScreen           --> MobileSidebar        : under banner (ConnIndicator centre)
+CoachScreen         --> MobileBanner         : mobile top [‹ Back][Selena][menu]
+CoachScreen         --> CoachAvatar          : desktop Header · tall mobile hero floats over banner · short bar compact
+CoachScreen         --> MobileSidebar        : BoardControls bar (omitDrawer)
+AnalysisScreen      --> MobileBanner         : mobile top [‹ Back][title][menu]
+AnalysisScreen      --> BoardControls        : Footer EngineDepth (omitDrawer)
+ReviewScreen        --> MobileBanner         : list [‹ Back][Review Games][menu]; /:id matchup
+ReviewScreen        --> BoardControls        : Footer EngineDepth · Share Item · omitDrawer
+ReviewScreen        --> MoveList             : top region (floatingCapable §4b)
+LanScreen           --> ScreenBackNav        : desktop lobby + matchup; game-over Back
+CoachScreen         --> ScreenBackNav        : desktop ‹ Back | avatar |
+AnalysisScreen      --> ScreenBackNav        : desktop ‹ Back | title·FEN |
+ReviewScreen        --> ScreenBackNav        : desktop list filters · /:id titles | Share ›
 MobileSidebar       --> BoardControls        : quick-action Items (coach screens)
+MobileBanner        --> ChevronNav           : ‹ Back
+AnalysisScreen      --> MobileDrawer         : hamburger (full menu)
 CoachScreen         --> MobileDrawer         : hamburger (full menu)
+ReviewScreen        --> MobileDrawer         : hamburger (full menu)
 Clock               ..> RoomStore           : clocks · timeControl
 LanScreen           ..> SettingsStore        : difficulty → default time control
 MultiplayerBoard    --> DrawBubbles         : renders (draw overlay)

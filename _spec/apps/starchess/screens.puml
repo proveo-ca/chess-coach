@@ -1,0 +1,72 @@
+@startuml screens
+' SPEC: _spec/apps/starchess/screens.puml
+' purpose: Live StarChess Screen HUD — regions, chrome, live vs review.
+!include ../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess · Screen HUD (apps/starchess)
+
+package "Screen grid\n(top · board · footer)\nrows: minmax(0,auto) · auto · minmax(0,auto)\n(= apps/ui Screen)" {
+  component "SidebarInset (top)\nResourceBar (live viewer)\nor ReviewTurnNav ‹ ResourceBars ›\n(review)" as TOP <<app>>
+  component "BoardArea\nBoardColumn + side rail" as MID <<app>>
+  component "Footer\nGasDeploy (live) · status / outcome" as BOT <<app>>
+}
+
+package "Board column" {
+  component "LiveStarChessBoard\n→ AnimationStage\n→ StarChessBoard" as BOARD <<app>>
+  component "DeployModal / PromotionModal" as MODALS <<app>>
+}
+
+package "Shared BoardSideRail\n(single aside + geometry + responsive hiding)" {
+  component "BoardSideRail\ncontrols slot · divider · SideRailTools" as RAIL <<app>>
+  component "TurnBarSidebar (live)\nTurn · Phase · queue · timer · End Turn" as LIVE <<app>>
+  component "TurnBarSidebar (review)\nTurn · Phase chips only\n(DualNav → top ReviewTurnNav)" as REV <<app>>
+  component "SideRailTools\nHome (+ ExitGameConfirm if live)\nreview vision · optional Flip" as TOOLS <<app>>
+}
+
+package "Menu modals (NeonModal atom)" {
+  component "NeonModal\natoms/NeonModal" as NEON <<app>>
+  component "Credits / NewGamePanel /\nExitGameConfirm (features)" as MENU <<app>>
+}
+
+package "Legacy / stories" {
+  component "TurnBar (horizontal)\nturnChrome=bar only" as BAR <<async>>
+}
+
+TOP ARROW_MAIN MID
+MID ARROW_MAIN BOT
+MID ARROW_MAIN BOARD
+MID ARROW_MAIN RAIL
+RAIL ARROW_MAIN LIVE : live controls
+RAIL ARROW_OPTIONAL REV : review controls
+RAIL ARROW_MAIN TOOLS
+LIVE ARROW_OPTIONAL BAR : alt chrome
+BOARD ARROW_OPTIONAL MODALS
+TOOLS ARROW_ERROR TOOLS : Leave Match modal
+MENU ARROW_MAIN NEON
+
+note bottom
+  **Layout** matches ``apps/ui`` ``Screen`` (content-sized rows; desktop
+  header ``min-height: calc(--avatar-height + 1rem)`` for captures). BoardArea = BoardColumn +
+  ``BoardSideRail`` (``--sidebar-width`` only — no board-height lock).
+  ``ReviewDemoScreen``, ``StarChessScreen``, and ``TutorialReviewHost`` supply
+  mode-specific controls to the same rail shell.
+  **Live route** ``/single``: ``turnChrome="sidebar"`` (StarChessSingleScreen);
+  title ``Game vs Adjutant (Script)`` above ResourceBar; hidden when
+  ``max-height: 639px`` (dynamic / short — height only, not width).
+  GasDeploy floats top-right on the same short height (footer spacer collapses);
+  idle ``Plan your turn`` status line is hidden then too.
+  **Review / gameOver:** ``ReviewTurnNav`` (green ‹ ›) flanks dual ResourceBars
+  in the top row; rail keeps Turn/Phase chips + Home (no stacked DualNav).
+  Review detail also shows result + matchup Labels above DualNav.
+  Outcome via status line (no GameOverBanner in apps/starchess).
+  **Tutorial** ``/tutorial/:section/:story`` (``TUTORIAL_SCRIPT`` anchors):
+  CoachScreen-shaped Kerrigan header; HOME-only SideRailTools (``homeOnly``);
+  no ResourceBars; fog Chess|StarChess skin toggle;
+  resolve ``combat-chain`` shows ``TurnBarSidebar`` phase chips (DualNav off);
+  resolve/king footer is typewriter turn/phase nav (‹ Turn · Check · Intent · Resolve ›).
+  **Animation clock:** ``_spec/apps/starchess/animation-pipeline.md``.
+end note
+@enduml

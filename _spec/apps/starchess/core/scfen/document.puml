@@ -1,0 +1,49 @@
+@startuml scfen-document
+' SPEC: _spec/apps/starchess/core/scfen/document.puml
+' purpose: Document — ScFenSnapshot as the single board/economy/queue source of truth.
+!include ../../../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess · SCFEN document (plan)
+
+package "Codec" {
+  component "scfen/codec.ts\nparseScFen / formatScFen · gas repair" as COD <<db>>
+}
+
+package "Writers (engine only)" {
+  component "queue-action\nQ: + G: debit" as Q <<async>>
+  component "submit-turn\nstamps · next snap" as SUB <<app>>
+  component "refillTurnGas / economy helpers" as GAS <<app>>
+}
+
+package "Readers" {
+  component "matchReducer liveSnapshot" as RED <<async>>
+  component "planning-projection · economy view" as PLAN <<app>>
+  component "playback interpreter" as PLAY <<async>>
+  component "session / history / demos" as IO <<host>>
+}
+
+package "Package specs (detail)" {
+  component "_spec/packages/starchess-core/\nscfen-wire.puml" as WIRE <<db>>
+  component "_spec/packages/starchess-core/\nscfen-queue.puml" as QUEUE <<async>>
+}
+
+COD ARROW_MAIN WIRE : field grammar
+COD ARROW_MAIN QUEUE : Q: shape
+Q ARROW_MAIN COD : mutate queue/gas
+SUB ARROW_MAIN COD : emit next
+GAS ARROW_MAIN COD : G: refill
+RED ARROW_OPTIONAL COD : hold snap
+PLAN ARROW_OPTIONAL COD : read fields
+PLAY ARROW_OPTIONAL COD : placement maps
+IO ARROW_MAIN COD : parse/format I/O
+
+note bottom
+  **Pattern:** Document / memento for match state.
+  **Allowed writers:** Command + Facade (+ gas refill) inside core.
+  **Allowed readers:** app projections, reducer, playback, I/O.
+  **Forbidden:** UI string-splicing Q: or G: outside codec/commands.
+end note
+@enduml

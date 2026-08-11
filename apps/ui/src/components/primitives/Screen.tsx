@@ -21,8 +21,14 @@ interface RegionProps {
  * `app-container` grid and its regions so screens *compose* layout instead of
  * reaching into a shared stylesheet. Splash-style screens use SplashScreen.
  *
- * Responsiveness (§1b / §2): fills the viewport with no page scroll; middle
- * (board) is essential. `data-footer-float` is set by CoachPanel or MoveList
+ * Responsiveness (§1b / §2): fills the viewport with no page scroll. Middle
+ * holds the ChessBoard (+ sideboard) only — chrome lives in top / bottom.
+ * On mobile, leftover height splits into top + bottom so chrome hugs the
+ * board. Desktop board screens fix the top grid track to
+ * `calc(var(--avatar-height) + 1rem)` (extra rem for opponent captures)
+ * so board Y stays stable across screens (Review MoveList floats when taller).
+ * `html`/`body:has([data-testid=screen-root])` use `overflow: hidden` — no
+ * vertical page scroll. `data-footer-float` is set by CoachPanel or MoveList
  * when §4 applies.
  */
 const ScreenRoot: Component<ScreenProps> = (props) => {
@@ -61,7 +67,7 @@ const BoardArea: ParentComponent = (props) => (
   </div>
 );
 
-/** The board stack (captures + board) within the board row. */
+/** The board column within the board row — ChessBoard only (no chrome). */
 const BoardColumn: ParentComponent = (props) => (
   <div class={styles["board-column"]} data-board-column>
     {props.children}

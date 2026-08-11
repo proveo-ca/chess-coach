@@ -1,0 +1,151 @@
+@startuml p1-strategy-starchess-board
+' SPEC: _spec/apps/starchess/architecture/p1-strategy-starchess-board.puml
+' purpose: P1 proposal — Extract Class + Strategy for board leaf rename/vision.
+' constraint: NO BEHAVIORAL CHANGE — same pixels, fog, vision, cues, routes.
+!include ../../../themes/proveo.puml
+
+skinparam defaultTextAlignment left
+skinparam packageStyle rectangle
+skinparam classAttributeIconSize 0
+hide empty members
+
+title StarChess · P1 Strategy + Rename\nStarChessBoard + VisionStrategy (BEFORE → AFTER)
+
+package "BEFORE · board hosts" as BEFORE {
+
+  class AnimationStage_B <<app>> {
+    AnimationStage.tsx
+    --
+    composes misnamed leaf
+  }
+
+  class ObserverStarChessBoard_B <<app>> {
+    ObserverStarChessBoard.tsx
+    --
+    **THE** snapshot board renderer
+    visionMode branches inline
+    re-exports VisionMode / intents
+    --
+    player fog **and** observer dual
+  }
+
+  class OrphanCss_B <<error>> {
+    StarChessBoard.module.css
+    --
+    orphaned — no component
+  }
+
+  class fogProjection_B <<app>> {
+    fogProjection.ts
+    --
+    pure path helpers
+  }
+
+  note as N_BEFORE
+    **Gap:** no ""StarChessBoard"" class.
+    Name ""Observer*"" implies review-only
+    but live player fog terminates here too.
+    **no behavioral change** in P1 —
+    structure/naming only.
+  end note
+
+  N_BEFORE .. ObserverStarChessBoard_B
+  AnimationStage_B *-- ObserverStarChessBoard_B
+  ObserverStarChessBoard_B ..> fogProjection_B
+  OrphanCss_B ..> ObserverStarChessBoard_B : unused by
+}
+
+package "AFTER · Strategy + Extract Class" as AFTER {
+
+  class AnimationStage_A <<app>> {
+    AnimationStage.tsx
+    --
+    composes StarChessBoard
+  }
+
+  class StarChessBoard <<app>> {
+    StarChessBoard.tsx
+    --
+    pure snapshot square grid
+    glyphs · selection · intents
+    --
+    visionMode? → strategy pick
+    adopts StarChessBoard.module.css
+  }
+
+  interface VisionStrategy <<app>> {
+    id: VisionMode
+    project(input): VisionStrategyResult
+  }
+
+  class PlayerFogStrategy <<app>> {
+    visionMode = 'player'
+    --
+    veil when fog ≠ false
+    single-viewer cells / holes
+  }
+
+  class ObserverDualVisionStrategy <<app>> {
+    visionMode = 'observer'
+    --
+    no player veil
+    dual getSideVision borders
+  }
+
+  class visionStrategyFor <<app>> {
+    (mode?) → VisionStrategy
+    --
+    default PlayerFogStrategy
+  }
+
+  class fogProjection_A <<app>> {
+    fogProjection.ts
+    --
+    unchanged pure helpers
+  }
+
+  class TypesBoard <<db>> {
+    ~/types/board
+    --
+    VisionMode · Intent*
+    BoardSkin · PieceSet
+    **canonical** — no leaf re-export
+  }
+
+  class Alias_Deprecated <<cloud>> {
+    ObserverStarChessBoard
+    --
+    = StarChessBoard
+    migration alias only
+  }
+
+  note as N_AFTER
+    **Patterns:** Extract Class + Strategy (GoF).
+    Two concrete strategies today — no factory/registry.
+    **Migration:** alias export first → retarget imports
+    → delete alias. CSS orphan becomes real module.
+    **no behavioral change**
+  end note
+
+  N_AFTER .. StarChessBoard
+
+  AnimationStage_A *-- StarChessBoard
+  StarChessBoard ..> visionStrategyFor
+  visionStrategyFor ..> VisionStrategy
+  PlayerFogStrategy ..|> VisionStrategy
+  ObserverDualVisionStrategy ..|> VisionStrategy
+  PlayerFogStrategy ..> fogProjection_A
+  ObserverDualVisionStrategy ..> fogProjection_A
+  StarChessBoard ..> TypesBoard : import types
+  Alias_Deprecated ..> StarChessBoard : deprecated alias
+}
+
+BEFORE -[hidden]- AFTER
+
+note bottom
+  **Related current-state:** ""architecture/board-entities.puml"".
+  **Next:** P2 Composite VFX stack consumes ""StarChessBoard"".
+  **Verify:** FogVisionDemo · live /single · DualNav review · StaticScfenBoard.
+end note
+
+@enduml

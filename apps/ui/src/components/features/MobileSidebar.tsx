@@ -9,7 +9,6 @@ const Main: Component<{ children?: JSX.Element }> = (props) => (
   <span class={styles.main}>{props.children}</span>
 );
 
-/** Ellipsized title used in Review matchup toolbar. */
 const MatchupLabel: Component<{
   children: JSX.Element;
   class?: string;
@@ -23,7 +22,6 @@ const MatchupLabel: Component<{
   </span>
 );
 
-/** Trailing icon cluster for toolbar / nav Item. */
 const NavActions: Component<{ children: JSX.Element }> = (props) => (
   <div class={styles["nav-actions"]}>{props.children}</div>
 );
@@ -32,8 +30,8 @@ const NavActions: Component<{ children: JSX.Element }> = (props) => (
  * A control. Up to four render; CSS fans them out around the centre. Mark the
  * single nav control with `nav` so it survives `timeline` mode (and pass a
  * `ref` to drive the dock → top-right FLIP animation from the parent). Mark
- * the menu trigger with `drawer` to pin it leftmost (top-left when tall mobile
- * or timeline; stays in-bar on short / dynamic).
+ * the menu trigger with `drawer` to pin it rightmost (top-right when tall
+ * mobile or timeline; stays in-bar on the right on short / dynamic).
  */
 const Item: Component<{
   children: JSX.Element;
@@ -68,6 +66,11 @@ const Root: Component<{
    * drawer only (hides the “Solo Analysis” label).
    */
   collapseOnShort?: boolean;
+  /**
+   * Dynamic-only tool strip (Analysis / Review detail) — hidden outside
+   * `--dynamic-mobile` (tall mobile keeps footer BoardControls instead).
+   */
+  dynamicOnly?: boolean;
 }> = (props) => (
   <div
     classList={{
@@ -77,6 +80,8 @@ const Root: Component<{
       [styles.toolbar]: !!props.toolbar,
       [styles["collapse-on-short"]]: !!props.collapseOnShort,
     }}
+    data-testid="mobile-fuse-bar"
+    data-dynamic-only={props.dynamicOnly ? "" : undefined}
   >
     {props.children}
   </div>
@@ -90,16 +95,16 @@ const Root: Component<{
  * exact middle even when three left icons outweigh the history nav on the
  * right. Single-button items stack on the left by source order (1st nearest
  * the centre); any 5th+ item is dropped. The `nav` item (dual history arrows)
- * owns the right via `margin-left: auto`. The `drawer` item pins leftmost on
+ * owns the right via `margin-left: auto`. The `drawer` item pins rightmost on
  * short viewports; on tall mobile (`min-height: 640px`) it floats fixed
- * top-left (same chrome as timeline) so the bar can pack tools without the
+ * top-right (same chrome as timeline) so the bar can pack tools without the
  * With `toolbar`, Main stretches after an optional leading `drawer` Item and
  * nav stays right (Review / Analysis matchup) — absolute centering is disabled.
  * Hidden on desktop, where {@link Sidebar} takes over.
  *
  * In `timeline` mode (replay / travel) the bar collapses: `Main` and every
- * non-`nav` / non-`drawer` item are hidden; the `nav` item floats top-right and
- * the `drawer` item floats top-left. See {@link BoardControls} for the FLIP
- * animation on the nav dock.
+ * non-`nav` / non-`drawer` item are hidden; the `nav` item floats top-right
+ * (inset for the menu) and the `drawer` item floats outermost top-right. See
+ * {@link BoardControls} for the FLIP animation on the nav dock.
  */
 export const MobileSidebar = Object.assign(Root, { Main, Item, MatchupLabel, NavActions });

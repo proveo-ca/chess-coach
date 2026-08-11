@@ -1,0 +1,78 @@
+@startuml menu-flow
+' SPEC: _spec/apps/starchess/menu-flow.puml
+' purpose: Menu → Single Player / Tutorial; gameOver → result modal → rematch|/review/:id.
+!include ../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess · Menu → Single Player / Tutorial / Review replay
+
+actor Player
+
+package "apps/starchess" {
+  component "StarChessMenuRoute\n/ (Router base /starchess)" as MENU <<app>>
+  component "StarChessMenuScreen\n+ MenuSky / MenuArrival" as UI <<app>>
+  component "ChessMenuMockup\nglass · shatter SVGs" as MOCK <<async>>
+  component "NewGamePanel\nMAP · TEAM · Adjutant(Script) · START" as SETUP <<app>>
+  component "navigate /single?map=&team=" as NAV <<async>>
+  component "navigate /tutorial" as NAVT <<async>>
+  component "navigate /review" as NAVR <<async>>
+  component "StarChessSingleScreen\nMatchStore + LiveMatchShell\nStarChessScreen turnChrome=sidebar\nAdjutant = opposite of team" as LIVE <<app>>
+  component "StarChessTutorialScreen\n/tutorial/:section/:story\n(TUTORIAL_SCRIPT ids)\nKerrigan header · HOME-only\ne.g. /tutorial/fog/king" as TUT <<app>>
+  component "TutorialCompleteConfirm\nking-hunt-live enemy HP=0\nwhen tutorialCleared=false" as TUTDONE <<app>>
+  component "localStorage\nstarchess_tutorial_cleared" as TUTFLAG <<db>>
+  component "ExitGameConfirm\nHome during planning/targeting/resolving" as EXIT <<error>>
+  component "gameOver → matchHistory\nMatchResultModal\nVICTORY|DEFEAT (+DRAW)" as END <<db>>
+  component "MatchResultModal\nAnother Game · Replay" as RESULT <<app>>
+  component "StarChessReviewScreen\n/review list · /review/:id DualNav" as REV <<app>>
+}
+
+Player ARROW_MAIN MENU
+MENU ARROW_MAIN UI
+UI ARROW_OPTIONAL MOCK : from /chess/\n(session flag)
+MOCK ARROW_MAIN UI : glass · Kerrigan\n· shatter · chrome in
+UI ARROW_MAIN SETUP : Single Player
+SETUP ARROW_MAIN NAV : START
+NAV ARROW_MAIN LIVE
+UI ARROW_MAIN NAVT : Tutorial
+NAVT ARROW_MAIN TUT
+UI ARROW_MAIN NAVR : Review
+NAVR ARROW_MAIN REV
+LIVE ARROW_ERROR EXIT : Home
+EXIT ARROW_OPTIONAL MENU : Leave confirmed
+TUT ARROW_OPTIONAL MENU : Home
+TUT ARROW_MAIN TUTDONE : king-hunt-live win\n+ uncleared
+TUTDONE ARROW_MAIN TUTFLAG : Go Home → cleared=true
+TUTDONE ARROW_MAIN MENU : Go Home
+LIVE ARROW_MAIN END : gameOver
+END ARROW_MAIN RESULT : save + open modal
+RESULT ARROW_MAIN LIVE : Another Game\n(same map+team rematch)
+RESULT ARROW_MAIN REV : Replay\nreplace /review/:id
+
+note bottom
+  Multiplayer **MenuAnchor** stays ``disabled`` + ``Coming Soon``.
+  Live gameOver → ``matchHistory`` + ``MatchResultModal``
+  (``VICTORY`` / ``DEFEAT`` / ``DRAW``): **Another Game** remounts
+  ``/single?map=&team=``; **Replay** → ``/review/:id`` DualNav.
+  Review list remains at ``/review``: ``MatchHistoryFilters``
+  (Playing as Blue/Red + date pages; no First move; no Review title) via
+  ``useMatchHistoryFilters`` · ``‹ Back`` only.
+  Review detail ``/review/:id``: Coach-style title stack
+  (``Win (Blue)`` · ``Alex (Blue) vs Adjutant (Red)``) above ``ReviewTurnNav``.
+  Coach ``/chess/`` → ``/starchess/`` (nerd yes / ``StarChessRedirect``)
+  sets ``starchess_from_chess``; menu plays ``MenuArrival``:
+  Chess mockup (Coach light/dark tokens via ``data-theme``) → glass clears
+  to sky → Selena→Kerrigan → buttons shatter → StarChess anchors fade in.
+  Storybook: Screens/Menu · StarChess toggle · Theme toolbar.
+  Tutorial → ``/tutorial/:section/:story`` (ids from ``TUTORIAL_SCRIPT``,
+  e.g. ``/tutorial/fog/king`` · ``/tutorial/specials/marine``).
+  Bare ``/tutorial`` canonicalizes to the first Fog story.
+  ``starchess_tutorial_cleared`` (default false): King Hunt (live) enemy
+  HP=0 opens ``TutorialCompleteConfirm`` when still false —
+  Go Home sets cleared=true and returns to menu.
+  Deployment / PWA: ``deployment.puml``. HUD: ``screens.puml``.
+  Leave chrome: ``ScreenBackNav`` + ``ChevronNav`` (+ ``PanelTitle`` where
+  labeled) on tutorial / live ``/single`` (top panel · ``‹ Back``).
+end note
+@enduml

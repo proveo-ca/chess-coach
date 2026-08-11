@@ -1,0 +1,23 @@
+{
+  "name": "starchess",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/starchess/src",
+  "targets": {
+    "dev": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npm run dev",
+        "cwd": "apps/starchess"
+      }
+    },
+    "storybook": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npm run storybook",
+        "cwd": "apps/starchess"
+      }
+    }
+  },
+  "tags": ["type:app", "scope:starchess"]
+}

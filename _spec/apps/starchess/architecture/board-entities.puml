@@ -1,0 +1,153 @@
+@startuml starchess-board-entities
+' SPEC: _spec/apps/starchess/architecture/board-entities.puml
+' purpose: Current-state class entities for apps/starchess board presentation stack
+'          (leaves → StarChessBoard → AnimationStage → Live | Static).
+!include ../../../themes/proveo.puml
+
+skinparam defaultTextAlignment left
+skinparam arrowColor #446688
+skinparam packageStyle rectangle
+hide empty members
+
+title StarChess · Board presentation entities\n(post P1–P2)
+
+package "leaves" {
+
+  class RookGlyph <<app>>
+  class SpiderMine <<app>>
+  class InlineBishop <<app>>
+  class VespeneIcon <<app>>
+  class pieceUrl <<app>>
+  class fogProjection <<app>>
+  class StarChessSquare <<app>>
+  class TEAM_PRIMARY <<app>>
+
+}
+
+package "vision" {
+
+  interface VisionStrategy <<app>> {
+    id: VisionMode
+    usePlayerFog(fog?)
+    isObserver
+  }
+
+  class PlayerFogStrategy <<app>>
+  class ObserverDualVisionStrategy <<app>>
+  class visionStrategyFor <<app>>
+
+}
+
+package "vfx overlays" {
+
+  class CombatCueFrame <<db>> {
+    Parameter Object
+  }
+
+  class CombatOverlayRoot <<async>> {
+    Composite — stable layers
+  }
+
+  class KingDamageOverlay <<app>>
+  class GasDropAnimation <<app>>
+  class AttackAnimation <<app>>
+  class DeathAnimation <<app>>
+  class MoveAnimation <<app>>
+  class QueenJumpAnimation <<app>>
+  class MineMissileAnimation <<app>>
+  class DeployAnimation <<app>>
+
+}
+
+package "board hosts" {
+
+  class StarChessBoard <<app>> {
+    presentation/board/components/StarChessBoard.tsx
+    --
+    snapshot square grid
+    VisionStrategy pick
+  }
+
+  class AnimationStage <<app>> {
+    Facade — board + CombatOverlayRoot
+    combat?: CombatCueFrame
+  }
+
+  class LiveStarChessBoard <<app>> {
+    MatchStore-backed
+    builds CombatCueFrame
+  }
+
+  class LiveBoardBinding <<app>> {
+    sole Live mount (P3)
+  }
+
+  class StaticScfenBoard <<app>> {
+    store-free → AnimationStage
+  }
+
+}
+
+package "hooks" {
+
+  class useBoardVision <<app>>
+  class useIntentOverlays <<app>>
+  class useBoardInput <<app>>
+  class useCombatOverlays <<app>>
+  class useAutoDeploy <<app>>
+  class deriveVisualFrame <<app>>
+  class kingDamageCuesFromBoard <<app>>
+  class liveMatchPhase <<app>>
+
+}
+
+package "store (external)" {
+  class MatchStore <<db>>
+}
+
+StarChessBoard *-- RookGlyph
+StarChessBoard *-- SpiderMine
+StarChessBoard *-- InlineBishop
+StarChessBoard *-- VespeneIcon
+StarChessBoard ..> pieceUrl
+StarChessBoard ..> fogProjection
+StarChessBoard ..> StarChessSquare
+StarChessBoard ..> TEAM_PRIMARY
+StarChessBoard ..> visionStrategyFor
+visionStrategyFor ..> VisionStrategy
+PlayerFogStrategy ..|> VisionStrategy
+ObserverDualVisionStrategy ..|> VisionStrategy
+
+AnimationStage *-- StarChessBoard
+AnimationStage *-- CombatOverlayRoot
+CombatOverlayRoot ..> CombatCueFrame
+CombatOverlayRoot *-- KingDamageOverlay
+CombatOverlayRoot *-- GasDropAnimation
+CombatOverlayRoot *-- AttackAnimation
+CombatOverlayRoot *-- DeathAnimation
+CombatOverlayRoot *-- MoveAnimation
+CombatOverlayRoot *-- QueenJumpAnimation
+CombatOverlayRoot *-- MineMissileAnimation
+CombatOverlayRoot *-- DeployAnimation
+
+LiveStarChessBoard *-- AnimationStage
+LiveStarChessBoard ..> CombatCueFrame : builds
+LiveBoardBinding *-- LiveStarChessBoard
+StaticScfenBoard *-- AnimationStage
+
+LiveStarChessBoard ..> useBoardVision
+LiveStarChessBoard ..> useIntentOverlays
+LiveStarChessBoard ..> useBoardInput
+LiveStarChessBoard ..> useCombatOverlays
+LiveStarChessBoard ..> useAutoDeploy
+LiveStarChessBoard ..> deriveVisualFrame
+LiveStarChessBoard ..> kingDamageCuesFromBoard
+LiveStarChessBoard ..> liveMatchPhase
+LiveStarChessBoard ..> MatchStore
+
+note bottom
+  **P1** StarChessBoard + VisionStrategy · **P2** CombatOverlayRoot + CombatCueFrame.
+  Design history: sibling P1–P2. Screen hosts: ""screen-entities.puml"" (this folder).
+end note
+
+@enduml

@@ -1,0 +1,46 @@
+@startuml command-queue
+' SPEC: _spec/apps/starchess/core/turn/command-queue.puml
+' purpose: Command + Specification — sole queue mutate path (plan).
+!include ../../../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess · Command queue (plan)
+
+package "App — dispatch only" {
+  component "useBoardInput / HUD / BaseScreen" as IN <<host>>
+  component "matchReducer\nQUEUE_ACTION · REMOVE_ACTION" as RED <<async>>
+}
+
+package "Core — Command" {
+  component "commands/queue-action.ts\naddScAction / removeScAction\ngas debit · shape gates" as QACT <<async>>
+}
+
+package "Core — Specification" {
+  component "rules/validation.ts\nassertActionDeep · queue shape" as VAL <<app>>
+  component "rules/specials/adjacent.ts\nspawn ring" as ADJ <<app>>
+  component "board/mines.ts · board/siege.ts\n(read for legality)" as BRD <<db>>
+  component "scfen/codec.ts\nhasExactKingPair · Q: parse" as COD <<db>>
+}
+
+package "Strategy (same command)" {
+  component "ai/adjutant.ts" as AI <<app>>
+}
+
+IN ARROW_MAIN RED : QUEUE_ACTION | SUBMIT_TURN only\n(no direct addScAction from input)
+RED ARROW_MAIN QACT : sole human write
+AI ARROW_MAIN QACT : same gates as human
+QACT ARROW_MAIN VAL : assert before commit
+VAL ARROW_OPTIONAL ADJ : spawn ring
+VAL ARROW_OPTIONAL BRD : mine / siege caps
+VAL ARROW_OPTIONAL COD : king pair / Q:
+QACT ARROW_MAIN COD : commit Q: + G:
+
+note bottom
+  **Pattern:** Command + Specification.
+  **Allowed:** Input/HUD → Reducer (dispatch) → ""addScAction"" only.
+  **Forbidden:** presentation calling validation or mutating Q: directly.
+  Detail grammar: ""_spec/packages/starchess-core/scfen-queue.puml"".
+end note
+@enduml

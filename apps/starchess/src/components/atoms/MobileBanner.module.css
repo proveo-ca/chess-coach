@@ -1,0 +1,70 @@
+/* Dynamic live strip — Back | resources | turn
+   Tracks: 4rem · 10rem · minmax(0,1fr) (gas fixed bottom-right).
+   Resources fixed; turn column (queue + End + timer) gets the rest.
+   Child density via ResourceBar/TurnBar `compact` props — not testids. */
+
+.banner {
+  display: none;
+}
+
+/* Dynamic: w≥480 · h<640 · mobile (Storybook Dynamic 560×420). */
+@media (max-width: 719px) and (min-width: 480px) and (max-height: 639px) {
+  .banner {
+    display: grid;
+    grid-template-columns: 4rem 10rem minmax(0, 1fr);
+    align-items: center;
+    column-gap: 0.35rem;
+    width: 100%;
+    max-width: none;
+    align-self: stretch;
+    box-sizing: border-box;
+    margin: 0;
+    flex-shrink: 0;
+    padding-block: 0.25rem;
+    padding-inline: 0.5rem;
+    min-height: 40px;
+    background: var(--panel-bg, rgba(0, 0, 0, 0.2));
+    border-bottom: 1px solid var(--border-color, #444);
+    z-index: 5;
+    overflow: visible;
+  }
+
+  .back {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 4rem;
+    min-width: 4rem;
+    max-width: 4rem;
+    overflow: hidden;
+  }
+
+  .resources {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 10rem;
+    min-width: 10rem;
+    max-width: 10rem;
+    overflow: hidden;
+  }
+
+  .resources > * {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .turn {
+    display: flex;
+    align-items: center;
+    justify-content: stretch;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .turn > * {
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
+  }
+}

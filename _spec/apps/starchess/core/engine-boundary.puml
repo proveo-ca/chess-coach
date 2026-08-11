@@ -1,0 +1,59 @@
+@startuml engine-boundary
+' SPEC: _spec/apps/starchess/core/engine-boundary.puml
+' purpose: ACL — public @chess-coach/starchess-core only; single playback interpreter.
+!include ../../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess · Engine boundary (ACL)
+
+package "apps/starchess" {
+  component "matchReducer\nTURN_OPEN · SUBMIT\nbindTimeline" as RED <<async>>
+  component "useBoardInput\noccupancy* · intentOverlays" as PLAN <<app>>
+  component "timelinePlayer\n(+ playResolveWave)" as TL <<async>>
+  component "matchEconomy\napplyTurnIncome · display" as HUD <<app>>
+  component "autoQueueOpponent" as AQ <<app>>
+}
+
+package "@chess-coach/starchess-core\n(public index.ts only)" {
+  component "addScAction / removeScAction\nrefillTurnGas" as QAPI <<async>>
+  component "beginScTurn / endScTurn" as TAPI <<app>>
+  component "scMovesFrom · placement*\nspawnKingAnchor · adjacentSquares" as MAPI <<app>>
+  component "getSideVision · isPieceVisible*\ncollectLegalKingChecks" as VAPI <<db>>
+  component "parse/formatScFen\nincomeForTurn · costs" as DAPI <<db>>
+  component "adjutant" as AAPI <<app>>
+  component "scOutcome" as OAPI <<app>>
+}
+
+package "FORBIDDEN from app" {
+  component "resolve/resolve-turn.ts" as RT <<error>>
+  component "rules/validation.ts" as VAL <<error>>
+}
+
+RED ARROW_MAIN QAPI
+RED ARROW_MAIN TAPI
+RED ARROW_OPTIONAL OAPI
+RED ARROW_OPTIONAL DAPI
+PLAN ARROW_MAIN MAPI
+PLAN ARROW_MAIN VAPI
+TL ARROW_OPTIONAL MAPI : placement maps only
+note right of TL
+  Interpreter ← EndScTurnResult only.
+  Never endScTurn / resolveTurn /
+  applyPathReveal*.
+end note
+HUD ARROW_MAIN DAPI
+HUD ARROW_MAIN RED
+AQ ARROW_MAIN AAPI
+AAPI ARROW_MAIN QAPI
+RED ARROW_ERROR RT
+PLAN ARROW_ERROR VAL
+PLAN ARROW_ERROR RT
+TL ARROW_ERROR RT
+
+note bottom
+  **Deleted dual path:** presentation/combat/playResolve.ts (re-resolved path-reveal).
+  Live + tutorial + review all use timelinePlayer / playResolveWave.
+end note
+@enduml

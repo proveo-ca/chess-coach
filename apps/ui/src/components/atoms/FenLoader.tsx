@@ -1,8 +1,10 @@
+import clsx from "clsx";
 import { Show, createSignal } from "solid-js";
 import type { Component, JSX } from "solid-js";
 
 import styles from "~/components/atoms/FenLoader.module.css";
 import { Button } from "~/components/primitives/Button";
+import { Input } from "~/components/primitives/Input";
 import { loadFen } from "~/store/gameStore";
 
 const FEN_REGEX =
@@ -12,6 +14,8 @@ export const FenLoader: Component<{
   /** Prefixed control (e.g. Analysis short/dynamic menu left of the input). */
   leading?: JSX.Element;
   trailing?: JSX.Element;
+  /** Fired after a FEN loads successfully (e.g. close a summon dialog). */
+  onLoaded?: () => void;
 }> = (props) => {
   const [value, setValue] = createSignal("");
   const [error, setError] = createSignal<string | null>(null);
@@ -29,6 +33,8 @@ export const FenLoader: Component<{
     try {
       loadFen(fen);
       setError(null);
+      setValue("");
+      props.onLoaded?.();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Invalid FEN.");
     }
@@ -49,11 +55,10 @@ export const FenLoader: Component<{
             {props.leading}
           </div>
         </Show>
-        <input
+        <Input
           type="text"
           name="fen"
-          class={styles.input}
-          classList={{ [styles["input--invalid"]]: !!error() }}
+          class={clsx(styles.input, error() && styles["input--invalid"])}
           placeholder="paste FEN here"
           aria-label="Load from FEN"
           value={value()}

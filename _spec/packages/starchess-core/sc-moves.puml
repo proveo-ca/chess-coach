@@ -1,0 +1,165 @@
+@startuml sc-moves-layers
+' SPEC: _spec/packages/starchess-core/sc-moves.puml
+' purpose: SC-native classical move generator — board/moves.ts, consumers, MatchStore seam.
+!include ../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess · scMoves — SC-native classical legality (layers & seam)
+
+package "packages/starchess-core — SC RULES" {
+  component "board/moves.ts\nscMovesFrom / scMovesFor / isScMoveShape\nauthoritative SC classical legality" as SCM <<app>>
+  component "board/placement.ts\nattacksSquare + clearRay — piece geometry" as BRD <<app>>
+  component "board/siege.ts\nisRookSiegedAfterB — siege truth after queued B" as SIEGE <<app>>
+  component "board/mines.ts\nspider mines — advisory only" as MIN <<app>>
+  component "board/vision.ts\nsieged rook 9x9 grid vs tank 5x5 rectangle" as VIS <<db>>
+  component "rules/validation.ts\nassertClassicalBaseline — opt-in geometry" as VAL <<error>>
+}
+
+package "Consumers" {
+  component "apps/starchess\npresentation/board/hooks/useBoardInput.ts\nselect + commit classical / spawn / specials" as INPUT <<app>>
+  component "packages/starchess-core\nai/adjutant.ts\ncandidates via scMovesFor" as BRAIN <<app>>
+}
+
+package "apps/starchess — MatchStore seam" {
+  component "MatchStore + matchReducer\nQUEUE_ACTION → addScAction\nSELECT_SQUARE / SET_LEGAL_DESTS" as STORE <<async>>
+  component "LiveStarChessBoard\nonSquareClick from useBoardInput" as LIVE <<app>>
+}
+
+cloud "chess.js\nNOT authoritative for StarChess\n(Square type only)" as CJS <<cloud>>
+
+SCM ARROW_MAIN     BRD   : leap + ray geometry
+SCM ARROW_OPTIONAL SIEGE : siege state after queued B
+SCM ARROW_OPTIONAL MIN   : hostileMineOnTo flag
+SCM ARROW_OPTIONAL VIS   : siege footprint authority
+
+INPUT ARROW_MAIN     SCM : destinations via ""scMovesFrom""
+BRAIN ARROW_MAIN     SCM : candidates via ""scMovesFor""
+VAL   ARROW_OPTIONAL SCM : opt-in ""isScMoveShape""
+
+INPUT ARROW_QUEUE STORE : QUEUE_ACTION (C / B / F)
+LIVE  ARROW_MAIN INPUT : click
+STORE ARROW_OPTIONAL CJS : Square type only
+
+note right of SCM
+  **Exports.**
+  * ""scMovesFrom(map, from, color, opts?) : ScMove[]""
+  * ""scMovesFor(map, color, opts?) : ScMove[]""
+  * ""isScMoveShape(piece, from, to) : boolean"" — shape-only;
+    ignores path blockers so fog path-discovery stays queueable.
+  ----
+  ""ScMoveOptions.siegedRooks"" — resolved **after** queued B
+  via ""isRookSiegedAfterB"", **never** raw ""snap.siegedRooks"".
+end note
+
+note bottom of STORE
+  **No Coach BoardMoveProvider.** Live StarChess does not go through
+  Coach ""useChessBoard"" / ""useMoveExecutor"" / ""gameStore"".
+  Classical commits are MatchStore actions; legality is ""scMoves*"".
+  **Player fog (all apps/starchess):** ""useBoardInput"" always feeds
+  ""scMovesFrom"" a viewer-occulted map (""occupancyForViewerMoves"") so
+  intent through fog stays clickable; resolve owns collisions.
+  See also ""_spec/apps/starchess/match-store.puml"".
+end note
+
+note bottom of CJS
+  chess.js forbids adjacent kings; SC allows the king duel
+  (resolve.puml). Using chess.js ""moves()"" would hard-lock play.
+end note
+@enduml
+
+@startuml sc-moves-sequence
+' purpose: Click → highlights → QUEUE_ACTION under useBoardInput.
+!include ../../themes/proveo.puml
+
+title StarChess · Board input — select and commit
+
+actor "Human" as H
+participant "LiveStarChessBoard" as VIEW <<app>>
+participant "useBoardInput" as INPUT <<app>>
+participant "board/moves.ts\nscMovesFrom" as SCM <<app>>
+participant "MatchStore\nmatchReducer" as STORE <<async>>
+participant "commands/queue-action.ts\naddScAction" as QACT <<app>>
+
+== 1 · Select — derive highlights ==
+
+H ARROW_MAIN VIEW : taps own piece
+VIEW ARROW_MAIN INPUT : ""onSquareClick(from)""
+INPUT ARROW_MAIN INPUT : ""occupancyForViewerMoves""\n(player fog — occult unseen enemies)
+INPUT ARROW_MAIN SCM : ""scMovesFrom(occultedMap, …)""
+SCM ARROW_MAIN INPUT : ""ScMove[]"" — SC-legal under fog info
+INPUT ARROW_ERROR INPUT : filter ""dropsAtResolve""\n(enemy-king square burns C)
+INPUT ARROW_MAIN STORE : ""SELECT_SQUARE"" + ""SET_LEGAL_DESTS""
+
+== 2 · Commit ==
+
+H ARROW_MAIN VIEW : taps highlighted destination
+VIEW ARROW_MAIN INPUT : ""onSquareClick(to)""
+opt last-rank pawn — ""promotes"" / gas-stack promote
+  INPUT ARROW_OPTIONAL STORE : ""SET_PENDING_PROMOTION""
+  note right of INPUT
+    PromotionModal; timeout / End may flush queen
+    (SUBMIT_TURN).
+  end note
+end
+INPUT ARROW_MAIN STORE : ""QUEUE_ACTION"" classical C
+STORE ARROW_MAIN QACT : ""addScAction""
+STORE ARROW_MAIN VIEW : snap + intent overlay re-render
+
+note over INPUT, STORE
+  Specials (spawn / Charon / Jump / siege / mine / pawnDouble) also
+  enter via ""QUEUE_ACTION"" from GasDeploy / targeting modes — same store.
+  Queue shape: scfen-queue.puml. Resolve: resolve.puml.
+end note
+@enduml
+
+@startuml sc-moves-rules
+' purpose: Per-piece SC classical legality (verified against board/moves.ts).
+!include ../../themes/proveo.puml
+
+skinparam defaultTextAlignment left
+
+title StarChess · scMoves — rule table
+
+note as RULES
+  <size:14>**SC classical legality, per piece**</size>
+  ====
+  **pawn** — single push empty; free classical double from start rank
+  (mid+to empty); diagonal enemy capture; **no en passant**;
+  // Promotes on last rank. Gas ""pawnDouble"" is +1 forward (any rank),
+  // including onto last rank when a promotion choice is set; may stack with classical.
+  ----
+  **knight, king** — leap via ""attacksSquare"". King: **no** self-check /
+  castling; **may** step adjacent to enemy king (duel — resolve.puml).
+  ----
+  **bishop, rook, queen** — rays inclusive of first enemy, exclusive of ally.
+  ----
+  **SIEGED rook** — Chebyshev ≤ 4 captures only, ""firesInPlace"";
+  vision footprint from ""vision.ts"" (9×9 vs tank 5×5).
+  ----
+  **ally on to** — never emitted.
+  ----
+  **enemy KING on to** — emitted with ""dropsAtResolve""; resolver drops
+  (burns C). UI/brain filter; validation accepts (fog path-discovery).
+  ----
+  **mines** — ""hostileMineOnTo"" advisory only.
+  ----
+  **fog** — not filtered in generator; occupancy is a caller parameter.
+end note
+
+note as NOTIMPL
+  <size:14>**Deliberately NOT implemented**</size>
+  ====
+  castling · en passant · self-check / pins · checkmate/stalemate ·
+  queue-time path-blocker rejection · B/F generation · gas budgeting
+end note
+
+note as XREF
+  scfen-queue.puml · resolve.puml ·
+  _spec/apps/starchess/starchess-mode.puml · match-store.puml
+end note
+
+RULES -[hidden]right- NOTIMPL
+NOTIMPL -[hidden]down- XREF
+@enduml

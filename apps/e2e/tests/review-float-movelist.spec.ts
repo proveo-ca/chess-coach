@@ -85,7 +85,7 @@ async function seedAndOpen(
 }
 
 test.describe("Review /:id floating move list (dynamic)", () => {
-  test.use({ viewport: { width: 390, height: 560 } });
+  test.use({ viewport: { width: 480, height: 480 } });
 
   test("floats MoveList when Review renders a stored mid-game FEN", async ({ page }) => {
     await seedAndOpen(page, midgameFixture, STORED_MIDGAME_ID);

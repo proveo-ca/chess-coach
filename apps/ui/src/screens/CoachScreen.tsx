@@ -10,14 +10,16 @@ import {
   debugLightSpeedOverlay,
 } from "~/components/atoms/DebugControls";
 import { LightSpeedOverlay } from "~/components/atoms/LightSpeedOverlay";
+import { MobileBanner } from "~/components/atoms/MobileBanner";
 import { Modal } from "~/components/atoms/Modal";
 import { BoardControls } from "~/components/features/BoardControls";
 import { ChessBoard } from "~/components/features/ChessBoard";
 import { CoachPanel } from "~/components/features/CoachPanel.tsx";
-import { MobileDrawer } from "~/components/features/MobileDrawer";
+import { MobileDrawer, openMobileDrawer } from "~/components/features/MobileDrawer";
 import { Sidebar } from "~/components/features/Sidebar";
 import { HistoryOverlay } from "~/components/primitives/HistoryOverlay";
 import { Screen } from "~/components/primitives/Screen";
+import { ScreenBackNav } from "~/components/primitives/ScreenBackNav";
 import { useGameRecorder } from "~/hooks/useGameRecorder";
 import { useLivePreAnalysis } from "~/hooks/useLivePreAnalysis";
 import { fetchHello, postAdviceStream, postMove } from "~/services/api";
@@ -51,31 +53,21 @@ import styles from "~/screens/CoachScreen.module.css";
  * full Coach experience: hint button, travel, blunder detection, AI
  * opponent, replay-lock on past positions.
  *
- * Mobile layout is CSS-owned (`CoachScreen.module.css` + MobileSidebar):
- * tall viewports show a hero CoachAvatar above the tool bar; short / dynamic
- * keeps the compact avatar in the bar centre. Both slots stay mounted so
- * emotion state does not remount across the 640px height boundary.
+ * Layout: top = {@link MobileBanner} flush top; tall-mobile hero
+ * {@link CoachAvatar} floats over the banner (z-index); then BoardControls,
+ * opponent captures; desktop Back+avatar; middle = ChessBoard (+ Sidebar)
+ * only; bottom = player captures / CoachPanel.
+ * Mobile hero vs compact avatar is CSS-owned (`CoachScreen.module.css`).
  */
 export const CoachScreen: Component = () => {
   const [unsupportedReason, setUnsupportedReason] = createSignal<string | null>(null);
   const [debugInfo, setDebugInfo] = createSignal<string>("");
 
-  // Passively record this game (PGN + per-move annotations) for later
-  // review at /review/:id. Mounted here so it only runs on the Coach
-  // screen where the AI-driven metadata (best-move, hint) is meaningful.
   useGameRecorder();
-
-  // Warm the review-analysis cache as moves are recorded (background
-  // priority), so opening Review after the game is instant/near-instant.
   useLivePreAnalysis();
 
   onMount(async () => {
     setCapabilities(COACH_CAPABILITIES);
-
-    // Restore the coach's live game from localStorage. Other screens
-    // (Review, Analysis) load ephemeral positions into gameStore without
-    // persisting, so the coach's slot is still intact. If the restored
-    // game was resigned / over, the game-over modal shows naturally.
     restoreGame();
 
     try {
@@ -140,27 +132,32 @@ export const CoachScreen: Component = () => {
       <LightSpeedOverlay active={debugLightSpeedOverlay() || isTravelling()} />
 
       <Screen.Header>
-        {/* Desktop shows the avatar here; on mobile it moves into the column. */}
         <div class="desktop-only">
+          <ScreenBackNav data-testid="coach-back">
+            <CoachAvatar />
+          </ScreenBackNav>
+        </div>
+        {/* Dynamic: banner+bar fuse. Tall: display:contents — hero + bar layout unchanged. */}
+        <div data-fuse-root data-testid="mobile-fuse">
+          <MobileBanner title="Selena" onMenu={openMobileDrawer} hideCentre />
+          <BoardControls center={<CoachAvatar compact />} centerOverflow omitDrawer />
+        </div>
+        {/* Outside fuse so tall-mobile margin-bottom:auto spacer still works. */}
+        <div class={styles.mobileHero} data-testid="coach-mobile-hero">
           <CoachAvatar />
         </div>
+        <OpponentCaptures />
       </Screen.Header>
 
       <Screen.BoardArea>
         <Screen.BoardColumn>
-          {/* Tall mobile: CSS shows hero. Short: CSS hides; compact stays in bar. */}
-          <div class={styles.mobileHero} data-testid="coach-mobile-hero">
-            <CoachAvatar />
-          </div>
-          <BoardControls center={<CoachAvatar compact />} centerOverflow />
-          <OpponentCaptures />
           <ChessBoard />
-          <PlayerCaptures />
         </Screen.BoardColumn>
         <Sidebar />
       </Screen.BoardArea>
 
       <Screen.Footer>
+        <PlayerCaptures />
         <CoachPanel />
       </Screen.Footer>
 

@@ -1,0 +1,58 @@
+import type { Square } from "../../model/square";
+import {
+  mapToPlacement,
+  parseSquare,
+  placementToMap,
+  sq,
+  type ScPiece,
+} from "../../board/placement";
+
+export { CHARON_GAS_COST } from "../constants";
+
+const DIRS = [
+  { df: 1, dr: 1 },
+  { df: 1, dr: -1 },
+  { df: -1, dr: -1 },
+  { df: -1, dr: 1 },
+] as const;
+
+/**
+ * Single legal Charon target: exactly one enemy queen on the bishop's diagonal
+ * rays. Blockers are ignored — Charon Booster Missiles fire through units.
+ */
+export const charonTargetQueen = (
+  map: Map<Square, ScPiece>,
+  from: Square,
+): Square | null => {
+  const attacker = map.get(from);
+  if (!attacker || attacker.type !== "b") return null;
+  const { file, rank } = parseSquare(from);
+  const targets: Square[] = [];
+
+  for (const dir of DIRS) {
+    let f = file + dir.df;
+    let r = rank + dir.dr;
+    for (;;) {
+      const at = sq(f, r);
+      if (!at) break;
+      const piece = map.get(at);
+      if (piece?.type === "q" && piece.color !== attacker.color) targets.push(at);
+      f += dir.df;
+      r += dir.dr;
+    }
+  }
+
+  return targets.length === 1 ? targets[0]! : null;
+};
+
+export const charonTargetQueenFromPlacement = (
+  placement: string,
+  from: Square,
+): Square | null => charonTargetQueen(placementToMap(placement), from);
+
+/** Remove the sniped queen; the Mecha stays on its origin square. */
+export const placementAfterCharon = (placement: string, queen: Square): string => {
+  const map = placementToMap(placement);
+  map.delete(queen);
+  return mapToPlacement(map);
+};

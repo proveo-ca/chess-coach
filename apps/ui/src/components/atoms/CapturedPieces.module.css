@@ -1,3 +1,8 @@
+/* SPEC: _spec/apps/ui/responsiveness/rules.md
+   Board-width strip in top/footer regions so --left / --right align to the
+   board edges (not a shrink-wrapped centered chip). Desktop footer uses
+   align-items:center — without width:100% + max-width, flex-end is a no-op.
+   Consumers: Coach · Analysis · Review detail · LAN. */
 .captures {
   display: flex;
   gap: 2px;
@@ -5,6 +10,30 @@
   font-size: 1.2rem;
   line-height: 1;
   min-height: 1.4rem;
+  width: 100%;
+  max-width: var(--board-size);
+  margin-inline: auto;
+  box-sizing: border-box;
+}
+
+@media (max-width: 719px) {
+  .captures {
+    padding-inline: var(--board-chrome-inline, 0.7rem);
+  }
+}
+
+/* Dynamic fuse — scale captures with the 0.75 coach avatar; hug the board. */
+@media (--dynamic-mobile) {
+  .captures {
+    font-size: 0.9rem; /* 1.2 × 0.75 */
+    min-height: 1.05rem; /* 1.4 × 0.75 */
+    margin-block: 0;
+    padding-block: 0.1rem;
+  }
+
+  .advantage {
+    font-size: 0.6rem; /* 0.8 × 0.75 */
+  }
 }
 
 .captures--left {

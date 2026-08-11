@@ -1,0 +1,51 @@
+@startuml match-state-machine
+' SPEC: _spec/apps/starchess/core/turn/match-state-machine.puml
+' purpose: State machine — matchReducer is sole app write clock into the engine.
+!include ../../../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess · Match state machine (plan)
+
+package "Presenters (no engine writes)" {
+  component "useBoardInput" as IN <<host>>
+  component "TurnBar / ResourceBar / BaseScreen" as HUD <<host>>
+  component "timelinePlayer" as TL <<async>>
+}
+
+package "State machine" {
+  component "matchReducer\n+ MatchStoreContext" as RED <<async>>
+  component "liveSnapshot · lastResolve\nphase · timeline fields" as ST <<db>>
+}
+
+package "Engine writes (public only)" {
+  component "addScAction / removeScAction" as Q <<async>>
+  component "beginScTurn via TURN_OPEN\nendScTurn via SUBMIT_TURN\nrefillTurnGas" as T <<app>>
+  component "scOutcome" as O <<app>>
+}
+
+package "Engine reads (selectors)" {
+  component "matchEconomy\nincome · gas remaining · unit cost" as ECO <<db>>
+}
+
+IN ARROW_MAIN RED : QUEUE_ACTION · SELECT_* · SPEND_*
+HUD ARROW_MAIN RED : SUBMIT_TURN · REVIEW_*
+TL ARROW_MAIN RED : TIMELINE_START/COMMIT/DONE
+RED ARROW_MAIN ST : pure reduce
+RED ARROW_MAIN Q : queue mutate
+RED ARROW_MAIN T : TURN_OPEN / SUBMIT_TURN
+RED ARROW_OPTIONAL O : terminal phase O
+HUD ARROW_OPTIONAL ECO : display only
+ECO ARROW_OPTIONAL ST : read snap fields
+
+note bottom
+  **Pattern:** State machine (Reducer) + single writer.
+  **Allowed Input/HUD → Reducer:** QUEUE_ACTION, SUBMIT_TURN (+ SELECT/REVIEW/TIMELINE bookkeeping).
+  **Allowed Reducer → engine:** addScAction / beginScTurn / endScTurn only.
+  **TURN_OPEN** is the sole ""beginScTurn"" owner (store dispatches; never calls facade).
+  **Forbidden:** presentation calling addScAction/endScTurn/beginScTurn
+  (adjutant → APPLY_SNAPSHOT; demos/tests offline builders exempt).
+  Enforced by ""bundleBoundary.test.ts"".
+end note
+@enduml

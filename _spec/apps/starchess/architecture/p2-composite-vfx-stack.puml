@@ -1,0 +1,161 @@
+@startuml p2-composite-vfx-stack
+' SPEC: _spec/apps/starchess/architecture/p2-composite-vfx-stack.puml
+' purpose: P2 proposal — Composite VFX root + Facade + Parameter Object.
+' constraint: NO BEHAVIORAL CHANGE — same pixels, fog, vision, cues, routes.
+!include ../../../themes/proveo.puml
+
+skinparam defaultTextAlignment left
+skinparam packageStyle rectangle
+skinparam classAttributeIconSize 0
+hide empty members
+
+title StarChess · P2 Composite + Facade\nVFX layer stack + CombatCueFrame (BEFORE → AFTER)
+
+package "BEFORE · flat Facade" as BEFORE {
+
+  class LiveStarChessBoard_B <<app>> {
+    LiveStarChessBoard.tsx
+    --
+    many createMemo → ~20 props
+    spreads cues into Stage
+  }
+
+  class AnimationStage_B <<app>> {
+    AnimationStage.tsx
+    --
+    Facade + measure/RO
+    + inline layer list
+    giant prop surface
+  }
+
+  class ObserverOrBoard_B <<app>> {
+    Observer / StarChessBoard
+    --
+    snapshot grid
+  }
+
+  class LayersInline_B <<async>> {
+    KingDamage · GasDrop · Attack
+    Death · Move · Jump · Mine · Deploy
+    --
+    stable order (good)
+    owned directly by Stage
+  }
+
+  note as N_BEFORE
+    Comment already correct:
+    // Stable layer stack — do not wrap
+    // each in Show (remounts restart CSS).
+    Pain = prop churn + measure coupling,
+    not missing Composite concept.
+    **no behavioral change**
+  end note
+
+  N_BEFORE .. AnimationStage_B
+  LiveStarChessBoard_B *-- AnimationStage_B : 20 props
+  AnimationStage_B *-- ObserverOrBoard_B
+  AnimationStage_B *-- LayersInline_B
+}
+
+package "AFTER · Facade + Composite + Parameter Object" as AFTER {
+
+  class LiveStarChessBoard_A <<app>> {
+    LiveStarChessBoard.tsx
+    --
+    memos → CombatCueFrame
+    one combat prop to Stage
+  }
+
+  class CombatCueFrame <<db>> {
+    Parameter Object
+    --
+    attack/death/move/jump
+    mine/deploy/gas/kingDamage
+    progress · leg · trails · dying
+  }
+
+  class BoardViewProps <<db>> {
+    Parameter Object
+    --
+    snapshot · vision · intents
+    selection · hideSquares · phase
+  }
+
+  class AnimationStage_A <<app>> {
+    AnimationStage.tsx
+    --
+    **Facade** (store-free)
+    fen|snapshot resolve
+    board + overlay host
+  }
+
+  class OverlayMeasureHost <<host>> {
+    ResizeObserver + box
+    --
+    measure grid only
+    feeds Composite box
+  }
+
+  class StarChessBoard_A <<app>> {
+    StarChessBoard
+    --
+    board leaf (P1)
+    BoardViewProps only
+  }
+
+  class CombatOverlayRoot <<async>> {
+    **Composite**
+    data-starchess-combat-root
+    --
+    stable children
+    never per-layer Show
+    contain: layout
+  }
+
+  class KingDamageOverlay <<app>>
+  class GasDropAnimation <<app>>
+  class AttackAnimation <<app>>
+  class DeathAnimation <<app>>
+  class MoveAnimation <<app>>
+  class QueenJumpAnimation <<app>>
+  class MineMissileAnimation <<app>>
+  class DeployAnimation <<app>>
+
+  note as N_AFTER
+    **Patterns:** Facade · Composite · Parameter Object.
+    Perf: cue-only updates invalidate Composite,
+    not board squares. Measure stays on overlay host.
+    Migration: Facade adapts flat props → frame
+    so demos keep working.
+    **no behavioral change**
+  end note
+
+  N_AFTER .. CombatOverlayRoot
+
+  LiveStarChessBoard_A ..> CombatCueFrame : builds
+  LiveStarChessBoard_A ..> BoardViewProps : builds
+  LiveStarChessBoard_A *-- AnimationStage_A : board + combat bags
+  AnimationStage_A *-- StarChessBoard_A : BoardViewProps
+  AnimationStage_A *-- OverlayMeasureHost
+  AnimationStage_A *-- CombatOverlayRoot : Facade→Composite
+  OverlayMeasureHost ..> CombatOverlayRoot : box
+  CombatOverlayRoot ..> CombatCueFrame : cues
+  CombatOverlayRoot *-- KingDamageOverlay
+  CombatOverlayRoot *-- GasDropAnimation
+  CombatOverlayRoot *-- AttackAnimation
+  CombatOverlayRoot *-- DeathAnimation
+  CombatOverlayRoot *-- MoveAnimation
+  CombatOverlayRoot *-- QueenJumpAnimation
+  CombatOverlayRoot *-- MineMissileAnimation
+  CombatOverlayRoot *-- DeployAnimation
+}
+
+BEFORE -[hidden]- AFTER
+
+note bottom
+  **Related:** ""architecture/board-entities.puml"" · ""animation-pipeline.md"" · ""visualFrame.ts"".
+  **Preserve:** NO_* stable empties · layer order · overlayReady gate around root only.
+  **Next:** P3 host Bridge mounts Live with stable Stage contract.
+end note
+
+@enduml

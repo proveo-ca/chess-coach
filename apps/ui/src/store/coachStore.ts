@@ -40,7 +40,7 @@ type CoachState = {
   isAppReady: boolean;
 };
 
-const [coachState, setCoachState] = createStore<CoachState>({
+const DEFAULT_COACH_STATE: CoachState = {
   baseAdvice: "Zzz...",
   baseCoachEmotion: "sleeping",
 
@@ -60,7 +60,9 @@ const [coachState, setCoachState] = createStore<CoachState>({
   llmProgress: 0,
   llmLoadingText: "Waking up...",
   isAppReady: false,
-});
+};
+
+const [coachState, setCoachState] = createStore<CoachState>({ ...DEFAULT_COACH_STATE });
 
 // ===== Selectors (UI reads these; hover override wins) =====
 export const baseAdvice = () => coachState.baseAdvice;
@@ -223,6 +225,16 @@ export type CoachEvent =
 // recorder on CoachScreen) can react without the dispatcher needing to
 // know about them. Subscribers use `on(lastCoachEvent, ...)`.
 export const [lastCoachEvent, setLastCoachEvent] = createSignal<CoachEvent | null>(null);
+
+/** Restore deterministic defaults for isolated hosts such as Storybook and tests. */
+export const resetCoachState = (overrides: Partial<CoachState> = {}) => {
+  clearDecay();
+  setCoachState({ ...DEFAULT_COACH_STATE, ...overrides });
+  setShowNewGame(false);
+  setShowCredits(false);
+  setShowSettings(false);
+  setLastCoachEvent(null);
+};
 
 export const dispatchCoachEvent = (event: CoachEvent) => {
   console.log("[debug:coach] dispatch", { event: event.type, cur: coachState.baseCoachEmotion });

@@ -101,7 +101,7 @@ const REVIEW_FIXTURE = {
 const PROFILES = [
   { name: "desktop", viewport: { width: 1280, height: 800 } },
   { name: "mobile", viewport: { width: 390, height: 844 } },
-  { name: "dynamic", viewport: { width: 390, height: 560 } },
+  { name: "dynamic", viewport: { width: 480, height: 480 } },
 ];
 
 const SCREENS = [
@@ -254,7 +254,7 @@ for (const profile of PROFILES) {
           doc: document.documentElement.scrollHeight - document.documentElement.clientHeight,
           body: document.body.scrollHeight - document.body.clientHeight,
         }));
-        if (scroll.doc > 1 || scroll.body > 1) {
+        if (scroll.doc > 0 || scroll.body > 0) {
           results.push(
             `WARN ${profile.name}/${screen.id}: page scroll doc=${scroll.doc} body=${scroll.body}`,
           );

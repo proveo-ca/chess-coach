@@ -11,6 +11,25 @@
   margin-bottom: 0.75rem;
 }
 
+@media (max-width: 719px) {
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding-inline: var(--spacing-md);
+    box-sizing: border-box;
+  }
+
+  .group {
+    flex: 0 1 auto;
+  }
+
+  /* Swatches alone on mobile — "White" / "Black" live in aria-label. */
+  .colorName {
+    display: none;
+  }
+}
+
 .group {
   display: flex;
   flex-direction: column;

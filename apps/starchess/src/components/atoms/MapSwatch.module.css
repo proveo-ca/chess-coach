@@ -1,0 +1,80 @@
+/* Half ColorSwatch-md (1.1rem → 0.55rem cells) 2×2 map preview. */
+
+.tile {
+  --map-light: #68737b;
+  --map-dark: #273746;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0.4rem 0.5rem 0.45rem;
+  border: 1px solid color-mix(in srgb, var(--sc-menu-neon, #7cff4a) 35%, #444);
+  border-radius: 0.25rem;
+  background: color-mix(in srgb, #050810 70%, transparent);
+  color: inherit;
+  font: inherit;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.tile:hover {
+  border-color: color-mix(in srgb, var(--sc-menu-neon, #7cff4a) 65%, #888);
+  filter: brightness(1.06);
+}
+
+.selected {
+  border-color: var(--sc-menu-neon, #7cff4a);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--sc-menu-neon, #7cff4a) 40%, transparent),
+    0 0 12px color-mix(in srgb, var(--sc-menu-neon, #7cff4a) 28%, transparent);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 0.55rem);
+  grid-template-rows: repeat(2, 0.55rem);
+  border: 1px solid color-mix(in srgb, #e8eaed 28%, transparent);
+  border-radius: 0.15rem;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.cell {
+  width: 0.55rem;
+  height: 0.55rem;
+  display: block;
+}
+
+.cell[data-tone="light"] {
+  background: var(--map-light);
+}
+
+.cell[data-tone="dark"] {
+  background: var(--map-dark);
+}
+
+.tile--eclipse {
+  --map-light: #68737b;
+  --map-dark: #273746;
+}
+
+.tile--butter {
+  --map-light: #9b927b;
+  --map-dark: #793719;
+}
+
+.tile--vermeer {
+  --map-light: #817968;
+  --map-dark: #183315;
+}
+
+.title {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: color-mix(in srgb, var(--sc-menu-neon, #7cff4a) 78%, #e8ffe0);
+  text-shadow: 0 0 2px #000;
+  line-height: 1.1;
+}

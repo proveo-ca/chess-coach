@@ -10,20 +10,9 @@ import { setLastAIMoveInfo } from "~/hooks/useMoveExecutor";
 import { postMove, postNewGame } from "~/services/api";
 import { dispatchCoachEvent, setAdvice, setShowNewGame } from "~/store/coachStore";
 import { addMoveSan, resetGame } from "~/store/gameStore";
-import {
-  activePlayerColor,
-  colorPref,
-  difficulty,
-  imLost,
-  playerIdentity,
-  setColorPref,
-  setDifficulty,
-  setImLost,
-  setPlayerIdentity,
-} from "~/store/settingsStore";
+import { activePlayerColor, colorPref, difficulty, imLost, playerIdentity, setColorPref, setDifficulty, setImLost, setPlayerIdentity } from "~/store/settingsStore";
+import { identityOptions } from "~/features/nerd/identity";
 import type { Difficulty, PlayerIdentity } from "~/types/settings";
-
-const IDENTITY_OPTIONS: PlayerIdentity[] = ["Human", "Cat", "Dog", "Rat"];
 
 export const NewGamePanel: Component = () => {
   const handleNewGame = async () => {
@@ -86,7 +75,7 @@ export const NewGamePanel: Component = () => {
         onChange={(e) => setPlayerIdentity(e.currentTarget.value as PlayerIdentity)}
         disabled={imLost()}
       >
-        {IDENTITY_OPTIONS.map((id) => (
+        {identityOptions().map((id) => (
           <option value={id}>{id}</option>
         ))}
       </Select>
