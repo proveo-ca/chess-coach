@@ -5,7 +5,7 @@ type InlineQueenProps = {
 };
 
 /**
- * Experimental Battlecruiser. Shipping art is bow-down; we rotate the *framed*
+ * Experimental BattleShip. Shipping art is bow-down; we rotate the *framed*
  * upright glyph so the laser muzzle stays on local +x (frame-then-rotate drifts
  * the muzzle off-axis and the bolt looks uncentered when aiming).
  */

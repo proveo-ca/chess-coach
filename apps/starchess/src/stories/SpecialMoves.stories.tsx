@@ -14,7 +14,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Drag vespene canisters from GasDeploy onto a unit. Marine: start-rank doubles are free (no gas); otherwise 1 gas. Command Center: DeployModal → deploy adjacent. Vulture: spider mine. Siege Tank: toggle packed ↔ unpacked. Goliath: 2-gas Charon Booster Missiles, then click the revealed queen. Battlecruiser: 2-gas Tactical Jump, then click a visible empty square. End to resolve.",
+          "Drag vespene canisters from GasDeploy onto a unit. Marine: start-rank doubles are free (no gas); otherwise 1 gas. Command Center: DeployModal → deploy adjacent. Hoverbike: spider mine. Siege Tank: toggle packed ↔ unpacked. Mecha: 2-gas Charon Booster Missiles, then click the revealed queen. BattleShip: 2-gas Tactical Jump, then click a visible empty square. End to resolve.",
       },
     },
   },
@@ -59,8 +59,8 @@ export const CommandCenter: Story = {
   ),
 };
 
-export const Vulture: Story = {
-  name: "Vulture",
+export const Hoverbike: Story = {
+  name: "Hoverbike",
   parameters: {
     docs: {
       description: {
@@ -71,44 +71,44 @@ export const Vulture: Story = {
   },
   render: () => (
     <GasDeployScenarioScreen
-      scfen={GAS_DEPLOY_FIXTURES.vulture.scfen}
-      stored={GAS_DEPLOY_FIXTURES.vulture.stored}
+      scfen={GAS_DEPLOY_FIXTURES.hoverbike.scfen}
+      stored={GAS_DEPLOY_FIXTURES.hoverbike.stored}
     />
   ),
 };
 
-export const Goliath: Story = {
-  name: "Goliath",
+export const Mecha: Story = {
+  name: "Mecha",
   parameters: {
     docs: {
       description: {
         story:
-          "Charon Booster Missiles costs 2 vespene: drag onto the Goliath to arm targeting, click the highlighted enemy queen, then End to fire.",
+          "Charon Booster Missiles costs 2 vespene: drag onto the Mecha to arm targeting, click the highlighted enemy queen, then End to fire.",
       },
     },
   },
   render: () => (
     <GasDeployScenarioScreen
-      scfen={GAS_DEPLOY_FIXTURES.goliath.scfen}
-      stored={GAS_DEPLOY_FIXTURES.goliath.stored}
+      scfen={GAS_DEPLOY_FIXTURES.mecha.scfen}
+      stored={GAS_DEPLOY_FIXTURES.mecha.stored}
     />
   ),
 };
 
-export const Battlecruiser: Story = {
-  name: "Battlecruiser",
+export const BattleShip: Story = {
+  name: "BattleShip",
   parameters: {
     docs: {
       description: {
         story:
-          "Tactical Jump costs 2 vespene: drag onto the Battlecruiser to arm targeting, click a highlighted visible empty square, then End to resolve.",
+          "Tactical Jump costs 2 vespene: drag onto the BattleShip to arm targeting, click a highlighted visible empty square, then End to resolve.",
       },
     },
   },
   render: () => (
     <GasDeployScenarioScreen
-      scfen={GAS_DEPLOY_FIXTURES.battlecruiser.scfen}
-      stored={GAS_DEPLOY_FIXTURES.battlecruiser.stored}
+      scfen={GAS_DEPLOY_FIXTURES.battleship.scfen}
+      stored={GAS_DEPLOY_FIXTURES.battleship.stored}
     />
   ),
 };

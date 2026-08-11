@@ -64,7 +64,7 @@ const observerScenario = (
 export const PROMOTION_STEPS: readonly ReviewStep[] = [
   {
     intentCaption: "Intent · Pe7→e8=Q · ghost on e8",
-    caption: "1. Pe7–e8=Q · land as pawn → walk off → battlecruiser deploy",
+    caption: "1. Pe7–e8=Q · land as pawn → walk off → battleship deploy",
     actions: [
       {
         timing: "C",

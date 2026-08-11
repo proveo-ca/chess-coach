@@ -6,7 +6,7 @@ const meta = {
   title: "Primitives/SpecialPreview",
   component: SpecialPreview,
   args: {
-    unit: "Vulture",
+    unit: "Hoverbike",
     name: "Spider Mine",
     description: "Spawns a mine that explodes on collision.",
   },

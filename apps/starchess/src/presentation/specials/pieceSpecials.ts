@@ -11,7 +11,7 @@ import type { ScSpecialKind } from "@chess-coach/starchess-core";
 
 /**
  * Per-piece special metadata. Activation lives in piece hooks
- * (command center deploy, vulture mine, …) — not in Storybook stories.
+ * (command center deploy, hoverbike mine, …) — not in Storybook stories.
  */
 export type PieceSpecialDef = {
   piece: PieceSymbol;

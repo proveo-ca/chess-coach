@@ -116,9 +116,9 @@ describe("tutorialScript", () => {
     expect(specialIds).toEqual([
       "marine",
       "cc",
-      "vulture",
-      "goliath",
-      "bc",
+      "hoverbike",
+      "mecha",
+      "ship",
       "tank",
     ]);
   });

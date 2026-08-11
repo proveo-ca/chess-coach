@@ -327,7 +327,7 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
     case "SUBMIT_TURN": {
       if (state.phase !== "planning" && state.phase !== "targeting") return state;
       let snap = state.liveSnapshot;
-      // Timeout / End with the picker open → default Battlecruiser (queen).
+      // Timeout / End with the picker open → default BattleShip (queen).
       const pending = state.pendingPromotion;
       if (pending) {
         try {

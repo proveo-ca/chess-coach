@@ -54,14 +54,14 @@ Think of strategies as pure policy fragments; postures decide which fragments ar
 
 - **King safety** — any plan that leaves our King on a chip ray is crushed (`KING_SAFETY`).
 - **Flee / interpose** — classical or special that clears check.
-- **Battlecruiser escape** — `queenWarp` to a safe square when the queen is under fire (`QUEEN_ESCAPE`).
+- **BattleShip escape** — `queenWarp` to a safe square when the queen is under fire (`QUEEN_ESCAPE`).
 
 **Control**
 
 - **Siege hub** — walk / pack Siege Tank on d4–e5.
 - **Spider mines** — plant on d4–e5 first; once the hub is mined, plant on **a/h** files only.
-- **Vulture hop** — move knights onto preferred mine sites (hub, then flanks).
-- **Goliath diagonals** — bishops claiming centre-biting rays.
+- **Hoverbike hop** — move knights onto preferred mine sites (hub, then flanks).
+- **Mecha diagonals** — bishops claiming centre-biting rays.
 - **Spawn for presence** — Command Center drop toward contested tiles (minerals permitting).
 
 **Seek** (fog intel — enemy-color aware)
@@ -81,7 +81,7 @@ Think of strategies as pure policy fragments; postures decide which fragments ar
 
 **Defend**
 
-- **Savable queen** — `queenWarp` / classical flee to a safe square when the Battlecruiser is under fire.
+- **Savable queen** — `queenWarp` / classical flee to a safe square when the BattleShip is under fire.
 - **Threatened non-queen** — leave the fire (defend) rather than hang; do not walk into fresh fire.
 
 - **Promote** — push / promote; **near-promote rush** (≤2 steps, ~6000) including gas+move stack outranks control/seek/hunt mid goals.
@@ -91,7 +91,7 @@ Think of strategies as pure policy fragments; postures decide which fragments ar
 **Combo**
 
 - Charon (B) + classical (C)
-- Mine (B) + Vulture relocate (C)
+- Mine (B) + Hoverbike relocate (C)
 - Spawn (B) + classical (C)
 - Threatened warp (B) + second unit (C)
 
@@ -136,7 +136,7 @@ Typical first ML step for this codebase:
 | Features | material, minerals, gas left, king HP/threat, mines near hub, siege flags, vision size, promote distance, center control, intel focus, … |
 | Model | linear / GBDT / small MLP that outputs a **position value** or **action logits** |
 | Search | keep Adjutant’s candidate generator; optionally add shallow tree / beam over *queues* (not just single moves) |
-| Train signal | game outcome (±1), or stronger: turn-level rewards (king damage, mines planted, BC saved) |
+| Train signal | game outcome (±1), or stronger: turn-level rewards (king damage, mines planted, Ship saved) |
 
 This is **supervised / offline RL-lite**, not yet a neural StarCraft-scale stack. Humans or the heuristic Adjutant can label “good queues”; a regressor learns to imitate or to predict win probability.
 
@@ -183,7 +183,7 @@ Two layers people often conflate:
 ### 4a. Temporal credit (RL)
 
 - Store each turn’s `(state, plan, reward, next_state)`.
-- Assign credit with Monte-Carlo returns, TD(λ), or PPO/A2C-style advantages so “saving the Battlecruiser on turn 4” is rewarded when that side wins twenty turns later.
+- Assign credit with Monte-Carlo returns, TD(λ), or PPO/A2C-style advantages so “saving the BattleShip on turn 4” is rewarded when that side wins twenty turns later.
 - Replays from DualNav / `settledSnapshots` are gold for **offline RL** and imitation: same format as live resolution.
 
 ### 4b. Gradient backprop (optimizer)

@@ -113,7 +113,7 @@
   z-index: 43;
 }
 
-/* Single trail — same green as battlecruiser Tactical Jump.
+/* Single trail — same green as battleship Tactical Jump.
    Starts with the launch (after lift delay). */
 .trail {
   position: absolute;

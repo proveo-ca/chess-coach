@@ -201,7 +201,7 @@ const ShoulderMount: Component<ShoulderMountProps> = (props) => (
 );
 
 /**
- * Experimental Goliath. Hull/cockpit stay fixed; each shoulder gatling is mounted
+ * Experimental Mecha. Hull/cockpit stay fixed; each shoulder gatling is mounted
  * with `translate(shoulder) rotate(aim)` — same turret pattern as the rook.
  * Idle / attack / deploy: standing legs (`*B.svg`). Quiet moves: feet roll on
  * full circles about the hips (steam-wheel crank), 90° knees.
@@ -399,7 +399,7 @@ export const InlineBishop: Component<InlineBishopProps> = (props) => {
               <>
                 {mounts()}
                 <g data-part="cockpit">{cockpit()}</g>
-                {/* Back: full launchers render over the whole Goliath. */}
+                {/* Back: full launchers render over the whole Mecha. */}
                 {charonLaunchers()}
               </>
             ) : (

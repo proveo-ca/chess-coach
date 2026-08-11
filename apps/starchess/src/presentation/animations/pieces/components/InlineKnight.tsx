@@ -18,7 +18,7 @@ const hullAimTransform = (pose: AimPose): string => {
   return `translate(22.5 22.5) ${flip}rotate(${pose.rotateDeg}) translate(-22.5 -22.5)`;
 };
 
-/** Experimental Vulture. Nose / throw aim normalized to +x. */
+/** Experimental Hoverbike. Nose / throw aim normalized to +x. */
 export const InlineKnight: Component<InlineKnightProps> = (props) => {
   const team = () => TEAM_PRIMARY[props.color ?? "w"];
 

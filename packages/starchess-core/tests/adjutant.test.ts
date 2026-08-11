@@ -82,7 +82,7 @@ describe("adjutant", () => {
     expect(map.get("e8")).toBeUndefined();
   });
 
-  it("plants a Spider Mine with a Vulture on the d4–e5 hub", () => {
+  it("plants a Spider Mine with a Hoverbike on the d4–e5 hub", () => {
     // Knight on e5 asserts hub; White King on e1 is outside N vision → seek.
     const snap = parseScFen(
       "SCFEN|4k3/8/8/4n3/8/8/8/4K3|0|33|P|G:11:11|Q:w:;b:",
@@ -95,7 +95,7 @@ describe("adjutant", () => {
   });
 
   it("plants a Spider Mine on the a-file only after the hub is mined", () => {
-    // Hub already mined (e5); Vulture on a5 → flank corridor.
+    // Hub already mined (e5); Hoverbike on a5 → flank corridor.
     const snap = parseScFen(
       "SCFEN|4k3/8/8/n7/8/8/8/4K3|0|33|P|G:11:11|M:w:;b:e5|Q:w:;b:",
     );
@@ -136,7 +136,7 @@ describe("adjutant", () => {
     );
   });
 
-  it("warps a threatened Battlecruiser to safety (queenWarp)", () => {
+  it("warps a threatened BattleShip to safety (queenWarp)", () => {
     // Turn 11 → gas tier 2 (Charon / Tactical Jump cost). White rook eyes d8.
     const snap = parseScFen(
       "SCFEN|3qk3/8/8/8/8/8/8/3RK3|11|33|P|G:22:22|Q:w:;b:",
@@ -394,7 +394,7 @@ describe("adjutant", () => {
     expect(plan.spendMinerals).toEqual({ color: "b", amount: 3 });
   });
 
-  it("spawns a rook instead of a third knight once two Vultures exist", () => {
+  it("spawns a rook instead of a third knight once two Hoverbikes exist", () => {
     const snap = parseScFen(
       "SCFEN|4kb2/8/2n5/3n4/8/8/8/4K3|5|33|P|G:11:11|Q:w:;b:",
     );

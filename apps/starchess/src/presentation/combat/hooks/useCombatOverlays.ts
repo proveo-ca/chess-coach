@@ -3,7 +3,7 @@
  *
  * Important: return the same cue object refs from `timeline.cues` while a cue
  * is playing. Remapping into new objects on every TIMELINE_COMMIT remounts
- * Solid `<For>` rows and restarts CSS attack animations (knight/vulture
+ * Solid `<For>` rows and restarts CSS attack animations (knight/hoverbike
  * “plays twice”, bishop gatling looks like a loop).
  *
  * Memos also cache by playing-id key so idle ticks reuse the prior array.

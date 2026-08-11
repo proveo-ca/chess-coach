@@ -49,15 +49,15 @@ export const GAS_DEPLOY_FIXTURES = {
     scfen: "SCFEN|r6k/8/8/8/3K4/8/8/7R|1|33|P|G:11:11|Q:w:;b:",
     stored: 12,
   },
-  vulture: {
+  hoverbike: {
     scfen: "SCFEN|4k3/8/8/8/3N4/8/8/4K3|1|33|P|G:11:11|Q:w:;b:",
     stored: 4,
   },
-  goliath: {
+  mecha: {
     scfen: "SCFEN|k6q/8/4P3/4p3/3B4/8/8/K7|11|33|P|G:22:22|Q:w:;b:",
     stored: 4,
   },
-  battlecruiser: {
+  battleship: {
     // White ship a1; black Charon-armed bishop h8 pre-queued at a1 (G: black spent 2).
     // Warp away to survive; die → tutorial restarts the lesson.
     scfen:

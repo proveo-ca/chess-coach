@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45">
 <g transform="translate(22.5 39.2) scale(1.0374 1.0265) translate(-22.50 -42.50)"><g stroke="#222" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-    <!-- Goliath (black/red) -->
+    <!-- Mecha (black/red) -->
     <ellipse fill="#a22" cx="12" cy="40" rx="5" ry="2.5"/>
     <ellipse fill="#a22" cx="33" cy="40" rx="5" ry="2.5"/>
     <line x1="14" y1="38" x2="18" y2="28" stroke-width="2.5"/>

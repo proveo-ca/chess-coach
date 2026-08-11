@@ -1,12 +1,12 @@
 /**
  * Menu Debris playground — invisible board cropped to top-right 2×2
  * (g7/h7/g8/h8), with a 2rem gutter (Storybook stage + embedded menu) so FX
- * aren’t clipped. Paths that leave the crop (red → g5, BC → f5) are
+ * aren’t clipped. Paths that leave the crop (red → g5, Ship → f5) are
  * intentional — pieces walk/jump out of frame.
  *
  * Loop: deploy blue(g7) + red(h8) → rifles → attackDying + deaths at
  * FRAG_FLIGHT_MS → red pawn g8→g5 (exits) → blue pawn h5→h8 (enters, promotes) →
- * deploy battlecruiser → gas → jump to f5 (exits).
+ * deploy battleship → gas → jump to f5 (exits).
  *
  * Team paints: w = blue, b = red (nerd piece set).
  */
@@ -56,9 +56,9 @@ const FEN_RED_G5 = "4k3/8/8/6p1/8/8/8/4K3 w - - 0 1";
 const FEN_BLUE_H5 = "4k3/8/8/6pP/8/8/8/4K3 w - - 0 1";
 /** Blue marine arrived on h8 (promotion square). */
 const FEN_BLUE_H8 = "4k2P/8/8/6p1/8/8/8/4K3 w - - 0 1";
-/** Battlecruiser on h8. */
+/** BattleShip on h8. */
 const FEN_QUEEN_H8 = "4k2Q/8/8/6p1/8/8/8/4K3 w - - 0 1";
-/** Battlecruiser after Tactical Jump to f5. */
+/** BattleShip after Tactical Jump to f5. */
 const FEN_QUEEN_F5 = "4k3/8/8/5Q2/8/8/8/4K3 w - - 0 1";
 
 const SQ = {
@@ -264,7 +264,7 @@ export const DebrisPawnPlayground: Component<DebrisPawnPlaygroundProps> = (props
       await wait(BEAT_MS);
       if (cancelled) break;
 
-      // 5) Deploy battlecruiser (queen) onto h8
+      // 5) Deploy battleship (queen) onto h8
       setFen(FEN_QUEEN_H8);
       setHide([SQ.bluePromo]);
       setDeployCues([

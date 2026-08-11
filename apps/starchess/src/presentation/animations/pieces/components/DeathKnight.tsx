@@ -8,7 +8,7 @@ type DeathKnightProps = {
   color?: PieceColor;
 };
 
-/** Vulture — body parts scatter after the boom. */
+/** Hoverbike — body parts scatter after the boom. */
 export const DeathKnight: Component<DeathKnightProps> = (props) => {
   const team = () => TEAM_PRIMARY[props.color ?? "w"];
   return (

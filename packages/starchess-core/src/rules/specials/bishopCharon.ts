@@ -50,7 +50,7 @@ export const charonTargetQueenFromPlacement = (
   from: Square,
 ): Square | null => charonTargetQueen(placementToMap(placement), from);
 
-/** Remove the sniped queen; the Goliath stays on its origin square. */
+/** Remove the sniped queen; the Mecha stays on its origin square. */
 export const placementAfterCharon = (placement: string, queen: Square): string => {
   const map = placementToMap(placement);
   map.delete(queen);

@@ -19,13 +19,13 @@ const BY_TYPE: Record<PieceSymbol, SpecialCopy> = {
     deployable: true,
   },
   n: {
-    unit: "Vulture",
+    unit: "Hoverbike",
     name: "Spider Mine",
     description: "Spawns a mine that explodes on collision.",
     deployable: true,
   },
   b: {
-    unit: "Goliath",
+    unit: "Mecha",
     name: "Charon Booster Missiles",
     description:
       "Arm for 2 gas, then click the revealed enemy queen on a diagonal — twin homing missiles ignore blockers.",
@@ -39,7 +39,7 @@ const BY_TYPE: Record<PieceSymbol, SpecialCopy> = {
     deployable: true,
   },
   q: {
-    unit: "Battlecruiser",
+    unit: "BattleShip",
     name: "Tactical Jump",
     description:
       "Arm for 2 gas, then click a visible empty square — teleport through blockers and ignore attacks on the queen.",

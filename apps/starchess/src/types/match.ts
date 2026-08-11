@@ -44,7 +44,7 @@ export type TimelineCue =
       color: StarChessColor;
       from: Square;
       to: Square;
-      /** Battlecruiser Tactical Jump — QueenJumpAnimation, not a hull slide. */
+      /** BattleShip Tactical Jump — QueenJumpAnimation, not a hull slide. */
       queenJump?: boolean;
       /** Pawn gas-step (B/F pawnDouble) — stim square + hop timing. */
       stim?: boolean;
@@ -159,7 +159,7 @@ export type MatchState = {
   legalDests: readonly Square[];
   /**
    * Last-rank marine move awaiting {@link PromotionModal}.
-   * Timeout / End defaults the choice to queen (Battlecruiser).
+   * Timeout / End defaults the choice to queen (BattleShip).
    */
   pendingPromotion: PendingPromotion | null;
   /**

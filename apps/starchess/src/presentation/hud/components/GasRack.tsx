@@ -55,7 +55,7 @@ type HoverState = {
 const CANISTER = 60;
 /** Max reserves in the oval (capacity 3 − ready slot). Stable DOM for slide anim. */
 const MAX_RESERVES = 2;
-/** Per-unit vespene cost (Goliath Charon Booster Missiles = 2; default = 1). */
+/** Per-unit vespene cost (Mecha Charon Booster Missiles = 2; default = 1). */
 const gasCostFor = (piece: PieceSymbol): number =>
   specialCopyFor(piece).gasCost ?? SPECIAL_ENERGY_COST;
 const RESERVE_SLOTS = Array.from({ length: MAX_RESERVES }, (_, i) => i);

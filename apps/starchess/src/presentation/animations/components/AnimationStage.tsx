@@ -84,7 +84,7 @@ export type AnimationStageProps = {
   combat?: CombatCueFrame;
   /** Squares currently absorbing gas (piece green aura transition). */
   gasAbsorbSquares?: ReadonlySet<Square> | readonly Square[];
-  /** Goliath squares with Charon launchers popped (arming pose). */
+  /** Mecha squares with Charon launchers popped (arming pose). */
   armedBishops?: readonly Square[];
   /** Charon shoulder-raise anim — arming only. */
   armAnimBishops?: readonly Square[];

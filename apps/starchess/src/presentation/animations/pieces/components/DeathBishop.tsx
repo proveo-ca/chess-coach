@@ -26,7 +26,7 @@ const Gatling = (props: { cx: number; cy: number; team: string }) => (
 );
 
 /**
- * Goliath shatter — legs, canopy halves, shine, and both gatlings each fly
+ * Mecha shatter — legs, canopy halves, shine, and both gatlings each fly
  * on their own vector (seeded per death cue).
  */
 export const DeathBishop: Component<DeathBishopProps> = (props) => {

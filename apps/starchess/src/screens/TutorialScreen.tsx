@@ -109,9 +109,9 @@ type SpecialLesson = {
 const SPECIAL_LESSONS: SpecialLesson[] = [
   { id: "marine", ...GAS_DEPLOY_FIXTURES.marine },
   { id: "cc", ...GAS_DEPLOY_FIXTURES.commandCenter },
-  { id: "vulture", ...GAS_DEPLOY_FIXTURES.vulture },
-  { id: "goliath", ...GAS_DEPLOY_FIXTURES.goliath },
-  { id: "bc", ...GAS_DEPLOY_FIXTURES.battlecruiser },
+  { id: "hoverbike", ...GAS_DEPLOY_FIXTURES.hoverbike },
+  { id: "mecha", ...GAS_DEPLOY_FIXTURES.mecha },
+  { id: "ship", ...GAS_DEPLOY_FIXTURES.battleship },
   { id: "tank", ...GAS_DEPLOY_FIXTURES.siegeTank },
 ];
 
@@ -576,7 +576,7 @@ export const TutorialScreen: Component = () => {
                   hideResources
                   turnChrome="none"
                   endTurnAfterQueue={
-                    id === "cc" || id === "bc" ? "first" : "moveAndSpecial"
+                    id === "cc" || id === "ship" ? "first" : "moveAndSpecial"
                   }
                   onExitToMenu={goHome}
                   coachEmotion={line().emotion}

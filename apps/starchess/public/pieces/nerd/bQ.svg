@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45">
 <g transform="translate(22.5 39.2) scale(0.8987 0.9927) translate(-22.50 -44.00)"><g stroke="#222" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8">
-    <!-- Battlecruiser (black/red): two jets, I-shaped hull, hammerhead bow -->
+    <!-- BattleShip (black/red): two jets, I-shaped hull, hammerhead bow -->
     <ellipse fill="#555" cx="22.5" cy="42" rx="16" ry="2" stroke="none" opacity=".25"/>
 
     <!-- Two rear jets -->

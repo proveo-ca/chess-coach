@@ -74,10 +74,10 @@ export const DeployBoardDemo: Component<{ piece: DeployPiece }> = (props) => {
   const label = () => {
     const p = props.piece;
     if (p === "p") return "Marine · humanoid crouch landing";
-    if (p === "b") return "Goliath · humanoid crouch landing";
-    if (p === "n") return "Vulture · air thrusters";
+    if (p === "b") return "Mecha · humanoid crouch landing";
+    if (p === "n") return "Hoverbike · air thrusters";
     if (p === "r") return "Siege Tank · air thrusters";
-    return "Battlecruiser · air thrusters";
+    return "BattleShip · air thrusters";
   };
 
   return (

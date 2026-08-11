@@ -163,14 +163,14 @@
   }
 }
 
-/* ── Bishop / goliath: hull slide; leg crank is SVG animateTransform ──── */
+/* ── Bishop / mecha: hull slide; leg crank is SVG animateTransform ──── */
 
 .moverBishop {
   transition: none;
   animation: humanoidSlide var(--move-ms, 250ms) linear 1 forwards;
 }
 
-/* Queen / battlecruiser: slide while hull faces travel (same aim as attack). */
+/* Queen / battleship: slide while hull faces travel (same aim as attack). */
 .moverQueen {
   transition: none;
   animation: humanoidSlide var(--move-ms, 250ms) linear 1 forwards;

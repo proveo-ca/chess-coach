@@ -57,7 +57,7 @@ export type QueenJumpAnimationProps = {
 };
 
 /**
- * Battlecruiser Tactical Jump — 200ms stretched-thin light travel, 50ms appear
+ * BattleShip Tactical Jump — 200ms stretched-thin light travel, 50ms appear
  * burst on the destination, and 1000ms fading twin thruster trails.
  */
 export const QueenJumpAnimation: Component<QueenJumpAnimationProps> = (props) => (

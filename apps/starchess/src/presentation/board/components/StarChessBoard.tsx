@@ -92,7 +92,7 @@ export type StarChessBoardProps = {
   spentMines?: readonly Square[];
   /** Wake / chase — legs out on these squares. */
   chasingMines?: readonly Square[];
-  /** Goliath squares with Charon launchers armed (inline SVG). */
+  /** Mecha squares with Charon launchers armed (inline SVG). */
   armedBishops?: readonly Square[];
   /** Shoulder-raise CSS only while arming (not for persistent U: pods). */
   armAnimBishops?: readonly Square[];

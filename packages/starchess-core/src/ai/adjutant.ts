@@ -6,7 +6,7 @@
  *  1. all legal specials (spawn / pawnDouble / knightMine / bishopSnipe /
  *     rookSiege / queenWarp) within this turn's gas budget,
  *  2. pawn gas+classical stacks; Charon (B) + classical (C) same-turn combos;
- *     mine (B) + Vulture relocate (C); spawn (B) + classical (C),
+ *     mine (B) + Hoverbike relocate (C); spawn (B) + classical (C),
  *  3. all SC-legal classical moves via {@link scMovesFor},
  *  4. side vision — fog picks the posture (what can be seen),
  *  5. material — deployed supply + stored minerals (host bank).
@@ -134,7 +134,7 @@ const BISHOP_FIRST = 2_200;
 const BISHOP_VS_QUEEN = 3_500;
 /** Visible enemy queen — prefer safe King moves / flee over hanging. */
 const QUEEN_THREAT_KING = 1_500;
-/** Cap Vultures — after this many knights, prefer rook deploys. */
+/** Cap Hoverbikes — after this many knights, prefer rook deploys. */
 const MAX_KNIGHTS = 2;
 /** Bonus to spawn rook once we already have {@link MAX_KNIGHTS} knights. */
 const ROOK_AFTER_KNIGHTS = 900;
@@ -645,7 +645,7 @@ const sideSpecials = (
   // Prefer queens / rooks when the bank can pay for them — same-square scores
   // used to be identical across unit types, so cheap pawns won ties and the
   // Adjutant accumulated too much light material.
-  // Cap Vultures at MAX_KNIGHTS — after that prefer Siege Tanks (rooks).
+  // Cap Hoverbikes at MAX_KNIGHTS — after that prefer Siege Tanks (rooks).
   // Always prioritize **≥1 bishop** before heavy spam (diagonals / Charon).
   // Visible enemy queen → keep spawning bishops (Charon angles) + protect King.
   // Congested pawns → stop dropping more Marines.
@@ -980,8 +980,8 @@ const sideSpawnCaptureStacks = (
 
 /**
  * Same-turn gas special (B) + classical (C).
- * Charon burns 2 gas then a second unit still strikes; Vulture mines then hops;
- * threatened Battlecruiser warps then another unit develops.
+ * Charon burns 2 gas then a second unit still strikes; Hoverbike mines then hops;
+ * threatened BattleShip warps then another unit develops.
  */
 const sideSpecialClassicalStacks = (
   specialCandidates: readonly Candidate[],
@@ -1006,11 +1006,11 @@ const sideSpecialClassicalStacks = (
       const c = move.actions[0];
       if (!c || c.timing !== "C" || c.kind !== "classical") continue;
 
-      // After Charon the Goliath stays put — any classical is fine (often another unit).
+      // After Charon the Mecha stays put — any classical is fine (often another unit).
       // After mine / siege the actor may also relocate the same piece.
       // After queenWarp, classical from the same from is rewritten to the warp destination.
       if (b.kind === "queenWarp" && c.from !== b.from) {
-        // Warp frees the Battlecruiser; a second unit may still act.
+        // Warp frees the BattleShip; a second unit may still act.
       } else if (b.kind === "bishopSnipe" && c.from === b.from) {
         // Bishop stays — classical from the same square would be a move after snipe (legal).
       }
@@ -1021,7 +1021,7 @@ const sideSpecialClassicalStacks = (
         if (c.to && map.get(c.to)?.color === enemy) score += weights.trade * 2;
       }
       if (b.kind === "knightMine" && c.from === b.from) {
-        // Plant then leave — deny the Vulture sitting on its own mine tile.
+        // Plant then leave — deny the Hoverbike sitting on its own mine tile.
         score += weights.mapControl;
       }
       if (b.kind === "rookSiege" && c.from === b.from) {
@@ -1174,7 +1174,7 @@ const scoreMove = (move: Move, context: ScoreCtx): number => {
       // Congested — quiet pawn advances are less useful than trades / clears.
       if (congested && !move.capture) score -= trade * 0.5;
     }
-    // Vulture — hop onto hub mine sites; once hub is mined, prefer a/h flanks.
+    // Hoverbike — hop onto hub mine sites; once hub is mined, prefer a/h flanks.
     if (piece.type === "n") {
       const site = mineSiteWeight(move.to, context.hubMineTaken);
       if (site > 0) score += mapControl * (1 + site);
@@ -1191,7 +1191,7 @@ const scoreMove = (move: Move, context: ScoreCtx): number => {
         }
       }
     }
-    // Goliath — claim long diagonals that bite the centre.
+    // Mecha — claim long diagonals that bite the centre.
     if (piece.type === "b") {
       score += diagonal * Math.max(1, centerScore(move.to));
       if (enemyKing && attacksSquare(cloneWithMove(map, move, sieged), move.to, enemyKing)) {
