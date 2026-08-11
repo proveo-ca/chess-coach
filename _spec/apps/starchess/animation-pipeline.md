@@ -69,7 +69,7 @@ Binder-internal coalesce between `playTimeline` callbacks and `dispatch`:
 `deriveVisualFrame` priority, root `contain:paint` (clips trails), `transition` /
 `@keyframes` on paint-only properties (outline-color, border-*-color, box-shadow).
 
-Full design + shipped phase: [`architecture/timeline-perf.md`](./architecture/timeline-perf.md) ·
+Full design + shipped phase: [`architecture/timeline-perf.puml`](./architecture/timeline-perf.puml) ·
 [`architecture/timeline-vfx-density.puml`](./architecture/timeline-vfx-density.puml).
 
 ## Key sources

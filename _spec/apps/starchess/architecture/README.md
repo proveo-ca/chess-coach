@@ -18,15 +18,15 @@ Applied; no further behavioral change. Kept as design history + pattern notes.
 
 | Name | Pattern(s) | Status |
 | ---- | ---------- | ------ |
-| [`strategy-starchess-board`](./strategy-starchess-board.md) · [`.puml`](./strategy-starchess-board.puml) | Strategy, Extract Class | **ACCEPTED** |
-| [`composite-vfx-stack`](./composite-vfx-stack.md) · [`.puml`](./composite-vfx-stack.puml) | Composite, Facade, Parameter Object | **ACCEPTED** |
-| [`bridge-match-board-host`](./bridge-match-board-host.md) · [`.puml`](./bridge-match-board-host.puml) | Bridge via Composition | **ACCEPTED** |
+| [`strategy-starchess-board.puml`](./strategy-starchess-board.puml) | Strategy, Extract Class | **ACCEPTED** |
+| [`composite-vfx-stack.puml`](./composite-vfx-stack.puml) | Composite, Facade, Parameter Object | **ACCEPTED** |
+| [`bridge-match-board-host.puml`](./bridge-match-board-host.puml) | Bridge via Composition | **ACCEPTED** |
 
 ## Performance designs
 
 | Name | Pattern(s) | Status |
 | ---- | ---------- | ------ |
-| [`timeline-perf`](./timeline-perf.md) · [`.puml`](./timeline-perf.puml) · [batching](./timeline-commit-batching.mmd) · [reactivity](./timeline-reactivity.puml) | Commit gate, structural share, dual-signal, light paint/GPU | **DONE (main phase)** — measured 2026-08-11 (DroppedFrame 330 / 8% of baseline); P2 remains |
+| [`timeline-perf.puml`](./timeline-perf.puml) · [batching](./timeline-commit-batching.mmd) · [reactivity](./timeline-reactivity.puml) | Commit gate, structural share, dual-signal, light paint/GPU | **DONE (main phase)** — measured 2026-08-11 (DroppedFrame 330 / 8% of baseline); P2 remains |
 | [`timeline-vfx-density`](./timeline-vfx-density.puml) | Paint-property audit, phase ring, review caps | **SHIPPED + MEASURED** (2026-08-11: DroppedFrame 330 / 8% of baseline — met; GPU busy 8.3s) |
 
 ## Validation

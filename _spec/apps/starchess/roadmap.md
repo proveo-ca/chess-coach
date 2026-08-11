@@ -36,7 +36,7 @@ are done; polish items remain. Timeline perf is a separate track under
 
 ## Animation / timeline performance
 
-Design: [`architecture/timeline-perf.md`](./architecture/timeline-perf.md).
+Design: [`architecture/timeline-perf.puml`](./architecture/timeline-perf.puml).
 
 | Phase | Work | Status |
 | --- | --- | --- |

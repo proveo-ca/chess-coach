@@ -24,7 +24,7 @@ interface PeerListener {
 /**
  * Foreground service owning the embedded Go thin-server. Lives across WebView /
  * Activity recreation so the P2P session + tailnet link survive rotation and
- * backgrounding (the core "stability" win — _spec/distribution.md §3.1).
+ * backgrounding (the core "stability" win — _spec/distribution.puml §Android).
  *
  * NOTE: scaffolding — the gomobile-generated Java symbol names (Thinserver.newServer,
  * Server.start/localURL/sendMove…, the Events interface methods) must be verified

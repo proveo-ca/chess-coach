@@ -20,7 +20,7 @@ When you add, rename, or remove a component, hook, store, or service:
 | `_spec/components.puml` | Full-stack architecture: UI ↔ Bun server (desktop) / in-browser workers (web); runtime modes (desktop / web-full / web-no-llm) |
 | `_spec/sequence.puml` | Move, hint, and advice request flows (end-to-end) |
 | `_spec/summary.md` | High-level overview |
-| `_spec/distribution.md` | **Distribution architecture** (partly proposed): web / docker / desktop / Android mediums; CoachService port; Android embedded-server + P2P design; WebRTC-vs-Tailscale transport |
+| `_spec/distribution.puml` | **Distribution architecture** (partly proposed): web / docker / desktop / Android mediums; CoachService port; Android embedded-server + P2P design; WebRTC-vs-Tailscale transport |
 | `_spec/apps/ui/components.puml` | UI component graph: screens, hooks, stores, services, web-engine (no method bodies) |
 | `_spec/apps/ui/entities.puml` | Full API reference: all store selectors/mutations, hook contracts, service interfaces, engine methods |
 | `_spec/apps/ui/scheduler.puml` | EnginePool scheduler: workers, priority tiers + preemption, legacy-vs-pool differences |

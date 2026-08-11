@@ -40,7 +40,7 @@ note bottom
   Overlay cue ticks must not wake HUD.
   ""displayedSnapshot"" reads shell + timeline **display*** only —
   not playingIds / moveProgress / trails.
-  See ""timeline-perf.md"" · ""timeline-commit-batching.mmd"".
+  See ""timeline-perf.puml"" · ""timeline-commit-batching.mmd"".
 end note
 
 @enduml

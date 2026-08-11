@@ -1,7 +1,8 @@
+// SPEC: _spec/distribution.puml, _spec/apps/android/webrtc-p2p.puml
 // Bridge to the embedded Go thin-server on Android (apps/android). In the
 // Android WebView the shell injects `window.ChessNative` (MoveBridge.kt) and
 // pushes peer events to `window.__chessNative`. Everywhere else this is inert
-// (`isP2PAvailable()` is false). See _spec/distribution.md §3 + webrtc-p2p.puml.
+// (`isP2PAvailable()` is false). See _spec/distribution.puml §Android.
 
 export type P2PMove = { san: string; uci: string; fenAfter: string; seq?: number };
 

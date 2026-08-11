@@ -31,7 +31,7 @@ note bottom
   **Pattern:** Interpreter. One binder, one player.
   playResolveWave is a **cue filter**, not a second engine.
   **TimelineCommitGate** is binder coalesce — not a second interpreter.
-  Perf path: ""architecture/timeline-perf.md"" · compositor relief (shipped):
+  Perf path: ""architecture/timeline-perf.puml"" · compositor relief (shipped):
   ""architecture/timeline-vfx-density.puml"".
   DualNav intent ghosts: ""EndScTurnResult.queue"" (stamped SCFEN Q:) —
   never reconstruct classical from resolved moves.

@@ -5,7 +5,7 @@ skinparam componentStyle rectangle
 title Chess Coach — Android Distribution Topology (proposed)
 
 ' Forward-looking design. Android = embedded thin server + WASM WebView + P2P.
-' See _spec/distribution.md and _spec/apps/android/webrtc-p2p.puml.
+' See _spec/distribution.puml and _spec/apps/android/webrtc-p2p.puml.
 
 package "Android App — Player A" {
 
@@ -70,7 +70,7 @@ note bottom of CLOUD
   DERP = relay fallback. No STUN/TURN, no signaling,
   and a plain WSS replaces WebRTC. Cost: both peers
   must join the same tailnet (known group only).
-  See _spec/distribution.md §3.3.
+  See _spec/distribution.puml §Transport.
 end note
 
 note top of WV_A

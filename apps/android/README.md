@@ -4,7 +4,7 @@ A single-Activity WebView loads the `web-full` UI from an **embedded Go server**
 over loopback (`http://127.0.0.1:PORT/chess`); the Go server (`tsnet`) carries
 two-player **P2P** moves over a Tailscale tailnet. The coach (Stockfish WASM +
 WebLLM) runs entirely in the WebView — the Go server does **no** chess/LLM work.
-Design: [`../../_spec/distribution.md`](../../_spec/distribution.md) +
+Design: [`../../_spec/distribution.puml`](../../_spec/distribution.puml) +
 `../../_spec/apps/android/webrtc-p2p.puml`.
 
 ## Layout

@@ -1,7 +1,7 @@
 package thinserver
 
 // Move is the P2P payload, matching the browser's chess.js move
-// (result.san / result.lan / result.after). See _spec/distribution.md §3.4.
+// (result.san / result.lan / result.after). See _spec/distribution.puml §Android.
 type Move struct {
 	San      string `json:"san"`
 	Uci      string `json:"uci"`
