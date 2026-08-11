@@ -26,8 +26,11 @@ export type KingHuntLiveScreenProps = {
   /** Skip outer LiveMatchShell when nested in the tutorial shell. */
   embedded?: boolean;
   tutorial?: boolean;
-  /** Keep ResourceBars for the live final test (default true). */
+  /** Hide the ResourceBars (default: keep them, like `/single`). */
   hideResources?: boolean;
+  /** Full match HUD top pane (Home + title + ResourceBar) like `/single`. */
+  fullMatchHud?: boolean;
+  matchTitle?: string;
   onExitToMenu?: () => void;
   header?: JSX.Element;
   coachEmotion?: KerriganEmotion;
@@ -53,6 +56,8 @@ export const KingHuntLiveScreen: Component<KingHuntLiveScreenProps> = (props) =>
       <KingHuntLiveInner
         tutorial={props.tutorial}
         hideResources={props.hideResources}
+        fullMatchHud={props.fullMatchHud}
+        matchTitle={props.matchTitle}
         onExitToMenu={props.onExitToMenu}
         header={props.header}
         coachEmotion={props.coachEmotion}
@@ -140,6 +145,8 @@ const KingHuntLiveInner: Component<Omit<KingHuntLiveScreenProps, "embedded">> = 
         starChessMode
         armTimer
         tutorial={props.tutorial}
+        fullMatchHud={props.fullMatchHud}
+        matchTitle={props.matchTitle}
         hideResources={props.hideResources}
         turnChrome={props.turnChrome ?? "sidebar"}
         onExitToMenu={props.onExitToMenu}

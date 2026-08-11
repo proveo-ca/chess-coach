@@ -9,9 +9,22 @@
   width: 100%;
 }
 
+/* Full-HUD top pane: pin the guide bubble to the pane bottom edge so it
+   floats over board ranks 7–8 (dock top:100% of this 0-height slot) without
+   covering the ResourceBar. Width is the *content* box (sidebar padding
+   excluded) so the dock centers over the board like the ResourceBar above it. */
+.hudGuideSlot {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: calc(100% - var(--sidebar-width));
+  height: 0;
+}
+
 /* Flush Resource / TurnBar to the board inside the top Screen row.
    SidebarInset pads --sidebar-width on the right — center children on the board. */
 .topPane {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;

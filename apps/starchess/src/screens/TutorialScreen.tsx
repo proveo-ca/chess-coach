@@ -50,6 +50,7 @@ import { LiveMatchShell } from "~/screens/LiveMatchShell";
 import styles from "~/screens/TutorialScreen.module.css";
 import { GAS_DEPLOY_FIXTURES } from "~/stories/fixtures/scenarios";
 import { tutorialNarration } from "~/tutorial/tutorialNarrationStore";
+import { LIVE_ADJUTANT_MATCH_TITLE } from "~/utils/matchTitle";
 import {
   TUTORIAL_SCRIPT,
   adjacentTutorialStoryId,
@@ -614,10 +615,10 @@ export const TutorialScreen: Component = () => {
                   <KingHuntLiveScreen
                     embedded
                     tutorial
+                    fullMatchHud
                     turnChrome="sidebar"
+                    matchTitle={LIVE_ADJUTANT_MATCH_TITLE}
                     onExitToMenu={goHome}
-                    coachEmotion={line().emotion}
-                    header={kingCoachHeader()}
                     guideBubble={guideBubble()}
                     footerExtra={kingFooter()}
                     boardHints={tutorialStory("king", "king-hunt-live")?.hints}

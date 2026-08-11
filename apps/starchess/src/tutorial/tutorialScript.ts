@@ -338,7 +338,7 @@ export const TUTORIAL_SCRIPT: readonly TutorialStageScript[] = [
         id: "mecha",
         title: "Mecha",
         comment:
-          "Mecha can see BattleShips anywhere in the board! \nArm your Mecha with 2 gas canisters.",
+          "Mecha can see BattleShips anywhere in the board! \nGas your Mecha, it will cost 2 gas canisters.",
         emotion: "thinking",
         // Bishop on e5 after capturing the marine (rank 5 = 4th FEN row).
         completeWhen: {
@@ -375,7 +375,7 @@ export const TUTORIAL_SCRIPT: readonly TutorialStageScript[] = [
         id: "ship",
         title: "BattleShip",
         comment:
-          "The BattleShip can teleport anywhere in the map in an instant. \nIt only takes 3 gas canisters.",
+          "The BattleShip can teleport anywhere in the map in an instant. \nGassing it takes all 3 canisters.",
         emotion: "watching",
         // White Q still on board after turn advances (survived Charon).
         completeWhen: {
