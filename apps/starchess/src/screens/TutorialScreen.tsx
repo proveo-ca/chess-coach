@@ -12,6 +12,7 @@ import {
   createEffect,
   createMemo,
   createSignal,
+  onCleanup,
   type Component,
   type JSX,
 } from "solid-js";
@@ -42,6 +43,7 @@ import {
   queueKingHuntStep,
 } from "~/demos/kingHunt";
 import { KingHuntLiveScreen } from "~/demos/KingHuntLiveScreen";
+import { KingDefenseScreen } from "~/demos/KingDefenseScreen";
 import { TutorialReviewHost } from "~/demos/TutorialReviewHost";
 import { FOG_SIEGE_ROOK_SCFEN } from "~/presentation/animations/components/FogVisionDemo";
 import { LiveMatchShell } from "~/screens/LiveMatchShell";
@@ -51,12 +53,16 @@ import { tutorialNarration } from "~/tutorial/tutorialNarrationStore";
 import {
   TUTORIAL_SCRIPT,
   adjacentTutorialStoryId,
+  holdTutorialLine,
+  matchesTutorialCompleteWhen,
   parseTutorialSection,
   resolveTutorialLine,
   resolveTutorialStoryId,
   tutorialPath,
   tutorialStage,
   tutorialStory,
+  type TutorialCompleteWhen,
+  type TutorialLineHold,
 } from "~/tutorial/tutorialScript";
 import type { TutorialSectionId } from "~/types/tutorial";
 
@@ -238,22 +244,181 @@ export const TutorialScreen: Component = () => {
     if (next) goStory(next);
   };
 
-  const line = createMemo(() =>
-    resolveTutorialLine({
-      stageId: section(),
-      storyId: storyId(),
-      chessSkin: section() === "fog" ? chessMode() : undefined,
-      reviewPhase: tutorialNarration().reviewPhase,
-      timelineActive: tutorialNarration().timelineActive,
-      scfen: tutorialNarration().scfen,
-      turn: tutorialNarration().turn,
-    }),
-  );
+  /** Same targets as coach-nav "Next Lesson" / end-of-section handoff. */
+  const goNextLesson = () => {
+    const sec = section();
+    const story = storyId();
+    const next = adjacentTutorialStoryId(sec, story, 1);
+    if (next) {
+      goStory(next);
+      return;
+    }
+    if (sec === "fog") selectSection("specials");
+    else if (sec === "specials") selectSection("resolve");
+    else if (sec === "resolve") selectSection("king");
+  };
+
+  // Script completeWhen / restartWhen → next lesson or remount.
+  // Arm on seed (non-match). Latch match through auto-End queue wipe; wait for
+  // timeline idle + delayMs. Never clear the timer once fired.
+  type LessonGate = {
+    armedKey: string;
+    pendingKey: string;
+    firedKey: string;
+    timer?: ReturnType<typeof setTimeout>;
+  };
+  const completeGate: LessonGate = {
+    armedKey: "",
+    pendingKey: "",
+    firedKey: "",
+  };
+  const restartGate: LessonGate = {
+    armedKey: "",
+    pendingKey: "",
+    firedKey: "",
+  };
+  onCleanup(() => {
+    if (completeGate.timer != null) clearTimeout(completeGate.timer);
+    if (restartGate.timer != null) clearTimeout(restartGate.timer);
+  });
+  const runLessonGate = (
+    gate: LessonGate,
+    rule: TutorialCompleteWhen | undefined,
+    key: string,
+    n: ReturnType<typeof tutorialNarration>,
+    onFire: () => void,
+  ) => {
+    if (!rule) return;
+
+    // Timer-only advance — no board condition.
+    if (rule.kind === "elapsed") {
+      if (gate.firedKey === key) return;
+      if (gate.armedKey === key) return;
+      gate.armedKey = key;
+      gate.firedKey = key;
+      gate.timer = setTimeout(() => {
+        gate.timer = undefined;
+        gate.pendingKey = "";
+        onFire();
+      }, Math.max(0, rule.ms));
+      return;
+    }
+
+    if (rule.kind === "scfen" && !n.scfen) return;
+    if (rule.kind === "queue" && n.queue == null && !n.scfen) return;
+    if (
+      rule.kind === "typewriter" &&
+      (n.typewriterTurn == null || n.typewriterBeat == null)
+    )
+      return;
+
+    const matched = matchesTutorialCompleteWhen(rule, {
+      scfen: n.scfen,
+      queue: n.queue,
+      typewriterTurn: n.typewriterTurn,
+      typewriterBeat: n.typewriterBeat,
+    });
+
+    if (matched && (gate.armedKey === key || gate.pendingKey === key)) {
+      gate.pendingKey = key;
+    } else if (
+      !matched &&
+      gate.pendingKey !== key &&
+      gate.firedKey !== key
+    ) {
+      gate.armedKey = key;
+    }
+
+    if (gate.firedKey === key) return;
+    if (gate.pendingKey !== key) return;
+    if (n.timelineActive) return;
+
+    gate.firedKey = key;
+    gate.armedKey = "";
+    const delayMs = Math.max(0, rule.delayMs ?? 0);
+    const fire = () => {
+      gate.timer = undefined;
+      gate.pendingKey = "";
+      onFire();
+    };
+    if (delayMs === 0) {
+      queueMicrotask(fire);
+      return;
+    }
+    gate.timer = setTimeout(fire, delayMs);
+  };
+  let lastLessonGateKey = "";
+  const resetGate = (gate: LessonGate) => {
+    if (gate.timer != null) clearTimeout(gate.timer);
+    gate.armedKey = "";
+    gate.pendingKey = "";
+    gate.firedKey = "";
+    gate.timer = undefined;
+  };
+  createEffect(() => {
+    const sec = section();
+    const story = storyId();
+    const key = `${sec}/${story}`;
+    const script = tutorialStory(sec, story);
+    const n = tutorialNarration();
+    // New lesson → drop prior timers so `elapsed` can arm fresh.
+    if (lastLessonGateKey !== key) {
+      lastLessonGateKey = key;
+      resetGate(completeGate);
+      resetGate(restartGate);
+    }
+    runLessonGate(completeGate, script?.completeWhen, key, n, () => {
+      if (section() !== sec || storyId() !== story) return;
+      goNextLesson();
+    });
+    runLessonGate(restartGate, script?.restartWhen, key, n, () => {
+      if (section() !== sec || storyId() !== story) return;
+      // Remount seed + clear gate so the lesson can fail/complete again.
+      resetGate(restartGate);
+      resetGate(completeGate);
+      lastLessonGateKey = "";
+      retryLesson();
+    });
+  });
+
+  // Intro comment once per lesson; reactions stick (no bounce back to opener).
+  let lineHold: TutorialLineHold = { lessonKey: "", introDone: false };
+  const [line, setLine] = createSignal(resolveTutorialLine({
+    stageId: "fog",
+    storyId: "king",
+  }));
+  createEffect(() => {
+    const sec = section();
+    const story = storyId();
+    const n = tutorialNarration();
+    const ctx = {
+      stageId: sec,
+      storyId: story,
+      chessSkin: sec === "fog" ? chessMode() : undefined,
+      reviewPhase: n.reviewPhase,
+      timelineActive: n.timelineActive,
+      scfen: n.scfen,
+      turn: n.turn,
+      targetingKind: n.targetingKind,
+    };
+    const raw = resolveTutorialLine(ctx);
+    const next = holdTutorialLine(
+      lineHold,
+      `${sec}|${story}|${lessonEpoch()}`,
+      raw,
+      ctx,
+    );
+    lineHold = next.hold;
+    setLine(next.line);
+  });
 
   const lineKey = () =>
     `${section()}|${storyId()}|${line().comment}|${line().emotion}|${line().action?.kind ?? ""}`;
 
-  const retryLesson = () => setLessonEpoch((n) => n + 1);
+  const retryLesson = () => {
+    lineHold = { lessonKey: "", introDone: false };
+    setLessonEpoch((n) => n + 1);
+  };
 
   const guideBubble = () => (
     <TutorialGuideBubble
@@ -262,6 +427,7 @@ export const TutorialScreen: Component = () => {
       action={line().action}
       onAction={(action) => {
         if (action.kind === "retryLesson") retryLesson();
+        if (action.kind === "goSection") selectSection(action.section);
       }}
     />
   );
@@ -398,8 +564,9 @@ export const TutorialScreen: Component = () => {
           />
         </Match>
         <Match when={section() === "specials"}>
-          <Show when={storyId()} keyed>
-            {(id) => {
+          <Show when={`${storyId()}#${lessonEpoch()}`} keyed>
+            {(key) => {
+              const id = key.split("#")[0]!;
               const lesson = SPECIAL_LESSONS.find((l) => l.id === id)!;
               return (
                 <GasDeployScenarioScreen
@@ -440,18 +607,35 @@ export const TutorialScreen: Component = () => {
           <Show when={`${storyId()}#${lessonEpoch()}`} keyed>
             {(key) => {
               const id = key.split("#")[0]!;
-              return id === "king-hunt-live" ? (
-                <KingHuntLiveScreen
-                  embedded
-                  tutorial
-                  turnChrome="sidebar"
-                  onExitToMenu={goHome}
-                  coachEmotion={line().emotion}
-                  header={kingCoachHeader()}
-                  guideBubble={guideBubble()}
-                  footerExtra={kingFooter()}
-                />
-              ) : (
+              if (id === "king-hunt-live") {
+                return (
+                  <KingHuntLiveScreen
+                    embedded
+                    tutorial
+                    turnChrome="sidebar"
+                    onExitToMenu={goHome}
+                    coachEmotion={line().emotion}
+                    header={kingCoachHeader()}
+                    guideBubble={guideBubble()}
+                    footerExtra={kingFooter()}
+                    boardHints={tutorialStory("king", "king-hunt-live")?.hints}
+                  />
+                );
+              }
+              if (id === "king-defense") {
+                return (
+                  <KingDefenseScreen
+                    turnChrome="sidebar"
+                    onExitToMenu={goHome}
+                    coachEmotion={line().emotion}
+                    header={kingCoachHeader()}
+                    guideBubble={guideBubble()}
+                    footerExtra={kingFooter()}
+                    boardHints={tutorialStory("king", "king-defense")?.hints}
+                  />
+                );
+              }
+              return (
                 <TutorialReviewHost
                   history={KING_HISTORY}
                   reviewLabel="King hunt"

@@ -9,11 +9,10 @@ export type ResolveWaveId =
   | "move"
   | "specialAfter";
 
-/** Optional in-bubble CTA from a tutorial reaction. */
-export type TutorialReactionAction = {
-  kind: "retryLesson";
-  label?: string;
-};
+/** Optional in-bubble CTA from a tutorial reaction or story intro. */
+export type TutorialReactionAction =
+  | { kind: "retryLesson"; label?: string }
+  | { kind: "goSection"; section: TutorialSectionId; label: string };
 
 /** One revealed line in the resolve typewriter footer nav. */
 export type TypewriterLine = {

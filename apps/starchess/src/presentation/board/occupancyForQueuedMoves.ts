@@ -75,8 +75,61 @@ export const siegedRooksAfterViewerB = (
 };
 
 /**
+ * B relocates only (gas / warp) — not spawn. Used for fog visibility so a
+ * queued deploy ghost never lights tiles; gas/warp still move the live unit.
+ */
+export const applyViewerBRelocates = (
+  map: Map<Square, ScPiece>,
+  actions: readonly ScAction[] | undefined,
+  viewer: StarChessColor,
+): Map<Square, ScPiece> => {
+  const out = new Map(map);
+  const bs = (actions ?? [])
+    .filter((a) => a.timing === "B" && a.color === viewer)
+    .slice()
+    .sort((a, b) => a.seq - b.seq);
+
+  for (const a of bs) {
+    if (
+      (a.kind === "pawnDouble" || a.kind === "queenWarp") &&
+      a.to &&
+      a.from
+    ) {
+      const piece = out.get(a.from);
+      if (!piece || piece.color !== a.color) continue;
+      out.delete(a.from);
+      out.set(a.to, piece);
+    }
+    // spawn / siege / snipe / mine — no occupancy for vision base
+  }
+  return out;
+};
+
+/** Apply viewer B spawns onto a map (after fog filter). */
+export const applyViewerBSpawns = (
+  map: Map<Square, ScPiece>,
+  actions: readonly ScAction[] | undefined,
+  viewer: StarChessColor,
+): Map<Square, ScPiece> => {
+  const out = new Map(map);
+  const bs = (actions ?? [])
+    .filter((a) => a.timing === "B" && a.color === viewer && a.kind === "spawn")
+    .slice()
+    .sort((a, b) => a.seq - b.seq);
+  for (const a of bs) {
+    if (a.kind !== "spawn" || !a.to || !a.unit) continue;
+    out.set(a.to, { type: a.unit, color: a.color });
+  }
+  return out;
+};
+
+/**
  * Fog-filtered occupancy with viewer B intents applied (spawn / gas / warp).
  * Use for classical legal dests and selecting about-to-exist units.
+ *
+ * Vision filter uses resolved placement + gas/warp relocates only — a deploy
+ * ghost must not grant vision; End must resolve the unit first.
+ * Spawns are layered on after the fog filter so the unit is selectable.
  */
 export const occupancyForQueuedMoves = (
   raw: ReadonlyMap<Square, ScPiece>,
@@ -89,16 +142,15 @@ export const occupancyForQueuedMoves = (
   siegedRooks: Square[];
 } => {
   const siegedRooks = siegedRooksAfterViewerB(snap, viewer, baseSieged);
+  const actions = snap.queue?.actions;
 
-  // Project B first so fog visibility uses post-B positions for own units.
-  const projected = applyViewerBOccupancy(
-    new Map(raw),
-    snap.queue?.actions,
-    viewer,
-  );
-  const map = occupancyForViewerMoves(projected, viewer, fog, {
+  // Fog visibility without spawn ghosts (deploy does not pierce fog).
+  const visionBase = applyViewerBRelocates(new Map(raw), actions, viewer);
+  const fogFiltered = occupancyForViewerMoves(visionBase, viewer, fog, {
     rookModeFor: rookModeForSieged(siegedRooks),
   });
+  // Spawns after filter — selectable / move-gen origin, no vision grant.
+  const map = applyViewerBSpawns(fogFiltered, actions, viewer);
   return { map, siegedRooks };
 };
 

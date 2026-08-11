@@ -31,7 +31,7 @@ export const TutorialCompleteConfirm: Component<TutorialCompleteConfirmProps> = 
           onClick={() => props.onGoHome()}
           data-testid="tutorial-complete-go-home"
         >
-          Go Home
+          play single player
         </Button>
       </div>
     </div>

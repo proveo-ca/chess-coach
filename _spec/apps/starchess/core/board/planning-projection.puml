@@ -45,7 +45,11 @@ IN ARROW_MAIN RED : QUEUE_ACTION · SELECT_* · SPEND_*
 
 note bottom
   **Pattern:** Projection stack — no third occupancy fork.
-  B occupancy (queued) → viewer fog filter → scMovesFrom.
+  Vision base: resolved placement + B gas/warp relocates (**not** spawn).
+  Fog filter on vision base → layer spawn ghosts → scMovesFrom.
+  Deploy intent grants **no** vision; End resolves the unit first.
+  Under player fog: pawn front-diagonals stay attack intents without a
+  visible victim; intent attack/move rings paint **above** fog (enemies stay hidden).
   Intent: policy → hook → pure overlays.
   Fog gate: ""targetVisibleGate"" / ""pieceVisibleToViewer"" (one predicate family).
   U: specialsUsed is **not** a fog pierce.

@@ -10,10 +10,10 @@
  * // SPEC: _spec/apps/starchess/core/board/planning-projection.puml
  */
 import type { PieceSymbol, Square } from "chess.js";
-
 import {
   collectLegalKingChecks,
   mapToPlacement,
+  parseSquare,
   placementToMap,
   rookModeAfterB,
   type RookMode,
@@ -23,8 +23,23 @@ import {
 } from "@chess-coach/starchess-core";
 
 import { pieceAtQueuedSquare } from "~/presentation/board/occupancyForQueuedMoves";
-import { targetVisibleGate } from "~/presentation/board/fogVisibility";
+import {
+  pieceVisibleToViewer,
+  targetVisibleGate,
+} from "~/presentation/board/fogVisibility";
 import type { IntentGhost } from "~/types/board";
+
+/** Pawn front-diagonal attack shape (fog attack intents need no visible victim). */
+const isPawnDiagonalAttack = (
+  from: Square,
+  to: Square,
+  color: StarChessColor,
+): boolean => {
+  const a = parseSquare(from);
+  const b = parseSquare(to);
+  const dir = color === "w" ? 1 : -1;
+  return Math.abs(b.file - a.file) === 1 && b.rank - a.rank === dir;
+};
 
 export type IntentCanisterGhost = {
   at: Square;
@@ -125,9 +140,21 @@ export const intentOverlaysFromQueue = (
             : {}),
         });
       }
-      // Capture / attack intent — red ring on the enemy square.
+      // Capture / attack intent — red ring. Never key red chrome off a fully
+      // fogged enemy (that would leak occupancy); pawn diagonals always ring
+      // (attack shape, victim optional). Visible / revealed enemies still ring
+      // and paint above the veil.
       const target = map?.get(a.to);
       if (target && target.color !== a.color) {
+        const known =
+          !viewer ||
+          !opts?.placement ||
+          pieceVisibleToViewer(opts.placement, viewer, a.to, target.color, {
+            siegedRooks: opts.siegedRooks,
+            mines: opts.mines,
+          });
+        if (known) pushCheck(checks, seenCheck, a.to);
+      } else if (piece === "p" && isPawnDiagonalAttack(a.from, a.to, a.color)) {
         pushCheck(checks, seenCheck, a.to);
       }
       continue;

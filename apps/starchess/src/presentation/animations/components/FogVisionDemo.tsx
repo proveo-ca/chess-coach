@@ -15,9 +15,13 @@ import {
   setRookMode,
 } from "~/presentation/animations/rookModeStore";
 
-/** Rd4 siege; Ka1; kh8 — vision sample only. */
+/**
+ * Rd4 siege (9×9); Ka1; kh8.
+ * Four black pawns on the siege file + rank (one per side):
+ *   d7 N, d2 S, a4 W (board edge), h4 E (board edge).
+ */
 export const FOG_SIEGE_ROOK_SCFEN =
-  "SCFEN|7k/8/8/8/3R4/8/8/K7|0|33|P|G:11:11|Q:w:;b:";
+  "SCFEN|7k/3p4/8/8/p2R3p/8/3p4/K7|0|33|P|G:11:11|Q:w:;b:";
 
 export type FogVisionDemoProps = {
   scfen: string;

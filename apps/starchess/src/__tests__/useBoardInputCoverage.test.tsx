@@ -186,7 +186,8 @@ describe("useBoardInput — selection state machine", () => {
     const store = makeStore(PAWN_BOARD);
     mountInput(store).onSquareClick("e2");
     expect(store.state().selected).toBe("e2");
-    expect([...store.state().legalDests].sort()).toEqual(["e3", "e4"]);
+    // Player fog: pawn front-diagonals stay attack intents without a visible victim.
+    expect([...store.state().legalDests].sort()).toEqual(["d3", "e3", "e4", "f3"]);
   });
 
   it("clicking an empty square with no selection stays unselected", () => {

@@ -112,10 +112,22 @@ const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
   createEffect(() => {
     const s = store.state();
     const board = snap();
+    const list = beats();
+    const idx = beatIndex();
+    const beat = list[idx];
+    let typewriterTurn = 0;
+    for (let i = 0; i <= idx; i += 1) {
+      const b = list[i];
+      if (b?.kind === "turn") typewriterTurn = b.turn;
+    }
     setTutorialNarration({
       reviewPhase: store.reviewPhase(),
-      timelineActive: s.timeline.active,
+      // Busy covers resolve VFX await so completeWhen waits for Turn 3 end.
+      timelineActive: s.timeline.active || busy(),
       scfen: formatScFen(board),
+      turn: typewriterTurn || reviewTurnNumber(),
+      typewriterTurn: typewriterTurn || undefined,
+      typewriterBeat: beat?.kind,
     });
   });
 

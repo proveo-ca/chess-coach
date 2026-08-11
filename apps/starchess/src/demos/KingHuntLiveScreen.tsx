@@ -1,6 +1,12 @@
 import { adjutant, formatScFen } from "@chess-coach/starchess-core";
 import type { Component, JSX } from "solid-js";
-import { createEffect, createSignal, onCleanup, Show } from "solid-js";
+import {
+  createEffect,
+  createMemo,
+  createSignal,
+  onCleanup,
+  Show,
+} from "solid-js";
 
 import { createMatchStateFromScfen } from "~/app/matchReducer";
 import { createMatchStore, MatchStoreProvider, useMatchStore } from "~/app/MatchStoreContext";
@@ -10,12 +16,12 @@ import { TutorialCompleteConfirm } from "~/components/features/TutorialCompleteC
 import { KING_HUNT_LIVE_START_SCFEN } from "~/demos/kingHunt";
 import { liveMatchPhase } from "~/presentation/hud/liveMatchPhase";
 import { LiveMatchShell } from "~/screens/LiveMatchShell";
-import {
-  isTutorialCleared,
-  setTutorialCleared,
-  shouldOfferTutorialComplete,
-} from "~/store/tutorialProgressStore";
+import { setTutorialCleared } from "~/store/tutorialProgressStore";
 import { resetTutorialNarration, setTutorialNarration } from "~/tutorial/tutorialNarrationStore";
+import {
+  resolveTutorialHints,
+  type TutorialBoardHint,
+} from "~/tutorial/tutorialScript";
 import type { KerriganEmotion } from "~/types/coach";
 
 export type KingHuntLiveScreenProps = {
@@ -30,6 +36,7 @@ export type KingHuntLiveScreenProps = {
   guideBubble?: JSX.Element;
   footerExtra?: JSX.Element;
   turnChrome?: "bar" | "sidebar";
+  boardHints?: readonly TutorialBoardHint[];
 };
 
 /**
@@ -54,6 +61,7 @@ export const KingHuntLiveScreen: Component<KingHuntLiveScreenProps> = (props) =>
         footerExtra={props.footerExtra}
         turnChrome={props.turnChrome}
         guideBubble={props.guideBubble}
+        boardHints={props.boardHints}
       />
     </MatchStoreProvider>
   );
@@ -66,6 +74,7 @@ const KingHuntLiveInner: Component<Omit<KingHuntLiveScreenProps, "embedded">> = 
   const store = useMatchStore();
   const [completeOpen, setCompleteOpen] = createSignal(false);
   let completeOffered = false;
+  let completeTimer: ReturnType<typeof setTimeout> | undefined;
 
   createEffect(() => {
     if (!props.tutorial) return;
@@ -92,22 +101,31 @@ const KingHuntLiveInner: Component<Omit<KingHuntLiveScreenProps, "embedded">> = 
     const s = store.state();
     void s.phase;
     void s.liveSnapshot.kingLives.b;
+    void s.outcome;
     if (completeOffered) return;
-    if (
-      !shouldOfferTutorialComplete({
-        tutorial: true,
-        phase: s.phase,
-        enemyKingLives: s.liveSnapshot.kingLives.b,
-        cleared: isTutorialCleared(),
-      })
-    ) {
-      return;
-    }
+    // Show graduation whenever the enemy CC dies in this run — even if the
+    // player already cleared tutorial once (replay). `cleared` only gates menu.
+    const enemyDead = s.liveSnapshot.kingLives.b === 0;
+    const over =
+      s.phase === "gameOver" ||
+      s.liveSnapshot.phase === "O" ||
+      s.outcome != null;
+    if (!enemyDead || !over) return;
     completeOffered = true;
-    setCompleteOpen(true);
+    // Do not clear this timer on effect re-runs (Solid onCleanup would cancel it).
+    completeTimer = setTimeout(() => {
+      completeTimer = undefined;
+      setCompleteOpen(true);
+    }, 1200);
+  });
+
+  const hintSquares = createMemo(() => {
+    const snap = displayedSnapshot(store.state());
+    return resolveTutorialHints(props.boardHints, formatScFen(snap));
   });
 
   onCleanup(() => {
+    if (completeTimer != null) clearTimeout(completeTimer);
     if (props.tutorial) resetTutorialNarration();
   });
 
@@ -131,6 +149,7 @@ const KingHuntLiveInner: Component<Omit<KingHuntLiveScreenProps, "embedded">> = 
         coachEmotion={props.coachEmotion}
         guideBubble={props.guideBubble}
         footerExtra={props.footerExtra}
+        hintSquares={hintSquares()}
         autoQueueOpponent={(snap) =>
           adjutant(snap, {
             color: "b",

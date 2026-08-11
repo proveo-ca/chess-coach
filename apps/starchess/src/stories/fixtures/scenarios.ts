@@ -58,7 +58,10 @@ export const GAS_DEPLOY_FIXTURES = {
     stored: 4,
   },
   battlecruiser: {
-    scfen: "SCFEN|7k/8/8/8/8/8/8/Q6K|11|33|P|G:22:22|Q:w:;b:",
+    // White ship a1; black Charon-armed bishop h8 pre-queued at a1 (G: black spent 2).
+    // Warp away to survive; die → tutorial restarts the lesson.
+    scfen:
+      "SCFEN|k6b/8/8/8/8/8/8/Q6K|11|33|P|G:20:22|Q:w:;b:B=bishopSnipe:h8:a1",
     stored: 4,
   },
   siegeTank: {

@@ -21,11 +21,11 @@ export const KING_HUNT_START_SCFEN =
   "SCFEN|k7/8/6r1/2n5/4K3/8/7b/8|0|33|P|G:11:11|Q:w:;b:";
 
 /**
- * Ownership reversed (live play as White hunter): Kh1, Nc5, ke4, Bh2 — no tank;
- * player deploys the Siege Tank. Nc5 sees ke4 — first End chips HP before flee.
+ * Ownership reversed (live play as White hunter): Kh1, Bg1, Ne1, Pf3, Pg2, ke4 —
+ * no tank; player deploys the Siege Tank. Opening check geometry depends on sight.
  */
 export const KING_HUNT_LIVE_START_SCFEN =
-  "SCFEN|8/8/8/2N5/4k3/8/7B/7K|0|33|P|G:11:11|Q:w:;b:";
+  "SCFEN|8/8/8/8/4k3/5P2/6P1/4N1BK|0|33|P|G:11:11|Q:w:;b:";
 
 export type KingHuntStep = {
   caption: string;

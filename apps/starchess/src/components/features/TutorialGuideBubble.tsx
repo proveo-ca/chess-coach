@@ -35,17 +35,23 @@ export const TutorialGuideBubble: Component<TutorialGuideBubbleProps> = (
         >
           <div class={styles.body}>
             <span class={styles.message}>{props.message}</span>
-            <Show when={props.action?.kind === "retryLesson"}>
-              <button
-                type="button"
-                class={styles.action}
-                data-testid="tutorial-selena-retry"
-                onClick={() => {
-                  if (props.action) props.onAction?.(props.action);
-                }}
-              >
-                {props.action?.label ?? "Retry lesson"}
-              </button>
+            <Show when={props.action}>
+              {(action) => (
+                <button
+                  type="button"
+                  class={styles.action}
+                  data-testid={
+                    action().kind === "retryLesson"
+                      ? "tutorial-selena-retry"
+                      : "tutorial-selena-action"
+                  }
+                  onClick={() => props.onAction?.(action())}
+                >
+                  {action().kind === "retryLesson"
+                    ? (action().label ?? "Retry lesson")
+                    : action().label}
+                </button>
+              )}
             </Show>
           </div>
         </ChatBubble>

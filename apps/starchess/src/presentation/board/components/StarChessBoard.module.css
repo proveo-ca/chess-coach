@@ -112,11 +112,13 @@
   z-index: 6;
 }
 
-/* Intent chrome + hints must read through fog (queued dest / canister / check).
-   Whole-square lift beats theme cell stacking (vermeer light/dark z 0/1). */
+/* Intent chrome, legal-move rings, and hints must read through fog.
+   Whole-square lift beats theme cell stacking (vermeer light/dark z 0/1)
+   and sits above .fog-overlay (z=5). */
 .chessboard--fog :global([data-square][data-intent-dest]),
 .chessboard--fog :global([data-square][data-intent-canister]),
 .chessboard--fog :global([data-square][data-intent-check]),
+.chessboard--fog :global([data-square][data-legal]),
 .chessboard--fog :global([data-square][data-hint]) {
   position: relative;
   z-index: 7;

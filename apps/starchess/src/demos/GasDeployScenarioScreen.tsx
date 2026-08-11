@@ -6,6 +6,7 @@
 import { formatScFen } from "@chess-coach/starchess-core";
 import {
   createEffect,
+  createMemo,
   onCleanup,
   onMount,
   untrack,
@@ -26,6 +27,10 @@ import {
   resetTutorialNarration,
   setTutorialNarration,
 } from "~/tutorial/tutorialNarrationStore";
+import {
+  resolveTutorialHints,
+  type TutorialBoardHint,
+} from "~/tutorial/tutorialScript";
 import type { KerriganEmotion } from "~/types/coach";
 
 export type GasDeployScenarioScreenProps = {
@@ -45,6 +50,8 @@ export type GasDeployScenarioScreenProps = {
   turnChrome?: "bar" | "sidebar" | "none";
   /** Tutorial-only auto-End threshold (omit in Storybook / live demos). */
   endTurnAfterQueue?: "first" | "moveAndSpecial";
+  /** Script-driven board hint rings. */
+  boardHints?: readonly TutorialBoardHint[];
 };
 
 const withViewerGas = (state: MatchState, gas: number | undefined): MatchState => {
@@ -67,6 +74,11 @@ const GasDeployInner: Component<GasDeployScenarioScreenProps> = (props) => {
     if (!props.tutorial) return;
     const s = store.state();
     const snap = displayedSnapshot(s);
+    const queue = (snap.queue?.actions ?? []).map((a) => ({
+      timing: a.timing,
+      kind: a.kind,
+      color: a.color,
+    }));
     setTutorialNarration({
       reviewPhase: liveMatchPhase({
         phase: s.phase,
@@ -76,7 +88,14 @@ const GasDeployInner: Component<GasDeployScenarioScreenProps> = (props) => {
       }),
       timelineActive: s.timeline.active,
       scfen: formatScFen(snap),
+      queue,
+      targetingKind: s.targeting?.kind ?? null,
     });
+  });
+
+  const hintSquares = createMemo(() => {
+    const snap = displayedSnapshot(store.state());
+    return resolveTutorialHints(props.boardHints, formatScFen(snap));
   });
 
   onMount(() => {
@@ -99,6 +118,7 @@ const GasDeployInner: Component<GasDeployScenarioScreenProps> = (props) => {
       guideBubble={props.guideBubble}
       footerExtra={props.footerExtra}
       endTurnAfterQueue={props.endTurnAfterQueue}
+      hintSquares={hintSquares()}
     />
   );
 };

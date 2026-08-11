@@ -20,6 +20,7 @@ import {
   pieceAtQueuedSquare,
 } from "~/presentation/board/occupancyForQueuedMoves";
 import { occupancyForViewerMoves } from "~/presentation/board/occupancyForViewerMoves";
+import { legalDestsWithFogPawnAttacks } from "~/presentation/board/pawnFogAttackDests";
 import { rookModeForSieged } from "~/presentation/board/rookMode";
 import { useBoardVision } from "~/presentation/combat/hooks/useIntentOverlays";
 import type { VisionMode } from "~/types/board";
@@ -277,17 +278,24 @@ export const useBoardInput = (
       raw.get(square) ??
       null;
 
+    const fogOccult = playerFogOccultsMoves(vision());
+    const destsFor = (from: Square, p: NonNullable<typeof piece>) => {
+      const map = mapFor(from);
+      const classical = scMovesFrom(map, from, p.color, { siegedRooks }).map(
+        (m) => m.to,
+      );
+      return legalDestsWithFogPawnAttacks(classical, from, p, map, fogOccult);
+    };
+
     if (!selected) {
       if (!piece || piece.color !== state.viewer) {
         store.dispatch({ type: "SELECT_SQUARE", square: null });
         return;
       }
-      const map = mapFor(square);
-      const moves = scMovesFrom(map, square, piece.color, { siegedRooks });
       store.dispatch({ type: "SELECT_SQUARE", square });
       store.dispatch({
         type: "SET_LEGAL_DESTS",
-        dests: moves.map((m) => m.to),
+        dests: destsFor(square, piece),
       });
       return;
     }
@@ -299,12 +307,10 @@ export const useBoardInput = (
 
     if (!state.legalDests.includes(square)) {
       if (piece && piece.color === state.viewer) {
-        const map = mapFor(square);
-        const moves = scMovesFrom(map, square, piece.color, { siegedRooks });
         store.dispatch({ type: "SELECT_SQUARE", square });
         store.dispatch({
           type: "SET_LEGAL_DESTS",
-          dests: moves.map((m) => m.to),
+          dests: destsFor(square, piece),
         });
       } else {
         clearSelection();
@@ -322,8 +328,10 @@ export const useBoardInput = (
       (m) => m.to === square,
     );
 
+    const lastRank = mover.color === "w" ? 8 : 1;
     const needsPromo =
       !!move?.promotes ||
+      (mover.type === "p" && Number(square[1]) === lastRank) ||
       (mover.type === "p" &&
         gasStackPromotes(state.liveSnapshot, mover.color, selected, square));
 

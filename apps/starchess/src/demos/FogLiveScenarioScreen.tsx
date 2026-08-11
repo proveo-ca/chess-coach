@@ -103,6 +103,11 @@ const FogLiveInner: Component<FogLiveScenarioScreenProps> = (props) => {
     if (!props.narrate) return;
     const s = store.state();
     const snap = displayedSnapshot(s);
+    const queue = (snap.queue?.actions ?? []).map((a) => ({
+      timing: a.timing,
+      kind: a.kind,
+      color: a.color,
+    }));
     setTutorialNarration({
       reviewPhase: liveMatchPhase({
         phase: s.phase,
@@ -112,6 +117,8 @@ const FogLiveInner: Component<FogLiveScenarioScreenProps> = (props) => {
       }),
       timelineActive: s.timeline.active,
       scfen: formatScFen(snap),
+      queue,
+      targetingKind: s.targeting?.kind ?? null,
     });
   });
 

@@ -371,11 +371,9 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
                     return ghostAt(square);
                   };
                   const intentCheck = () => {
-                    if (!checkAt(square)) return false;
-                    // Capture/check rings use true occupancy — never paint on fogged
-                    // tiles or they leak hidden enemies (ghost dests stay visible).
-                    if (usePlayerFog() && isFogged()) return false;
-                    return true;
+                    // Attack/move intent rings paint above fog (square lift z=7).
+                    // Enemies stay hidden via hidePiece — ring alone does not reveal.
+                    return checkAt(square);
                   };
                   const mineColor = () => minesBySquare().get(square);
                   const showMine = () => {
@@ -397,6 +395,7 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
                       )}
                       data-square={square}
                       data-hint={isHint() ? square : undefined}
+                      data-legal={isLegal() ? square : undefined}
                       data-tone={isLight() ? "light" : "dark"}
                       data-fog={
                         !usePlayerFog()

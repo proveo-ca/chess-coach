@@ -5,8 +5,7 @@ export const STAR_STARTING_SCFEN =
 export const COMBAT_CHAIN_START_SCFEN =
   "SCFEN|4bk2/8/5n2/4p3/8/2R5/3P4/4K3|0|33|P|G:11:11|Q:w:;b:";
 
-export const KING_HUNT_LIVE_START_SCFEN =
-  "SCFEN|8/8/8/2N5/4k3/8/7B/7K|0|33|P|G:11:11|Q:w:;b:";
+export { KING_HUNT_LIVE_START_SCFEN } from "~/demos/kingHunt";
 
 export const PROMOTION_CLEAN_SCFEN =
   "SCFEN|k7/4P3/8/8/8/8/8/4K3|1|33|P|G:11:11|Q:w:;b:";
