@@ -32,38 +32,10 @@ import {
 } from "~/presentation/specials/queenTacticalJump";
 import { gasDropCornerFor } from "~/presentation/animations/gasDrop";
 import { rookModeAt } from "~/presentation/board/rookMode";
-import type { TimelineCue } from "~/types/match";
+import type { TimelineCallbacks, TimelineCue } from "~/types/match";
 import type { Scheduler } from "~/types/ports";
 
-export type TimelineCallbacks = {
-  onStart: (cues: TimelineCue[], placement: string) => void;
-  onCommit: (patch: {
-    placement?: string;
-    kingLives?: EndScTurnResult["next"]["kingLives"];
-    mines?: EndScTurnResult["next"]["mines"];
-    siegedRooks?: readonly Square[];
-    /** In-resolve U: stamps — migrate with gas drops / moves for green aura. */
-    specialsUsed?: readonly Square[];
-    hidden?: readonly Square[];
-    playingIds?: readonly string[];
-    /**
-     * Attack cue ids whose hull is suppressed mid-shot (attacker died —
-     * reciprocal fire). DeathAnimation owns the square until death ends;
-     * keep flags until the attack wave clears so hulls do not flash back.
-     */
-    attackDying?: Record<string, boolean>;
-    moveProgress?: Record<string, 0 | 1>;
-    /** Knight L facing — 0 long leg, 1 short leg after elbow. */
-    moveLeg?: Record<string, 0 | 1>;
-    /** Tactical Jump thruster trails (outlive hull cue). */
-    jumpTrails?: ReadonlyArray<{ id: string; from: Square; to: Square }>;
-    /** Spider Mine chase trails (outlive missile hull). */
-    mineMissileTrails?: ReadonlyArray<{ id: string; from: Square; to: Square }>;
-    /** Hide board mine glyphs while missile / after boom. */
-    spentMines?: readonly Square[];
-  }) => void;
-  onDone: () => void;
-};
+export type { TimelineCallbacks } from "~/types/match";
 
 const attackCue = (
   a: ResolveAttack,

@@ -65,7 +65,7 @@ export type FogLiveScenarioScreenProps = {
   /** Tutorial-only auto-End threshold (omit outside `/tutorial`). */
   endTurnAfterQueue?: "first" | "moveAndSpecial";
   /** Script-driven board hint rings (resolved against live SCFEN). */
-  boardHints?: readonly import("~/tutorial/tutorialScript").TutorialBoardHint[];
+  boardHints?: readonly import("~/types/tutorial").TutorialBoardHint[];
 };
 
 const FogLiveInner: Component<FogLiveScenarioScreenProps> = (props) => {

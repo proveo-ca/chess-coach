@@ -1,7 +1,7 @@
 import { defineConfig } from "oxlint";
 
 export default defineConfig({
-  ignorePatterns: ["public/**/*", ".vite", "lint/**"],
+  ignorePatterns: ["public/**/*", ".vite", "lint/**", ".storybook/**"],
   // Local architecture plugin (alpha JS-plugin API). See lint/architecture.ts.
   jsPlugins: ["./lint/architecture.ts"],
   rules: {

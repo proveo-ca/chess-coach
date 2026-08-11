@@ -54,7 +54,7 @@ export const ChessSquare: Component<ChessSquareProps> = (props) => {
   const isLastMove = () =>
     props.lastMove?.from === props.square || props.lastMove?.to === props.square;
 
-  let pieceRef: HTMLImageElement | undefined;
+  let pieceEl: HTMLImageElement | undefined;
 
   // Queue-driven animation: consumes the head of animationQueue when it targets
   // this square, ensuring rapid successive moves (human+AI) each get a visible slide.
@@ -62,17 +62,17 @@ export const ChessSquare: Component<ChessSquareProps> = (props) => {
     on(
       () => props.animationQueue,
       (queue) => {
-        if (!queue.length || !pieceRef || props.isDragging) return;
+        if (!queue.length || !pieceEl || props.isDragging) return;
         const head = queue[0];
         if (!head || head.to !== props.square) return;
         // Consume immediately so the next queued move for any square can proceed
         props.consumeAnimation?.(head);
         const { dx, dy } = squareOffset(head.from, head.to, props.flipped);
-        pieceRef.style.transition = "none";
-        pieceRef.style.transform = `translate(${dx * 100}%, ${dy * 100}%)`;
-        void pieceRef.offsetWidth;
-        pieceRef.style.transition = "transform 150ms ease-out";
-        pieceRef.style.transform = "translate(0, 0)";
+        pieceEl.style.transition = "none";
+        pieceEl.style.transform = `translate(${dx * 100}%, ${dy * 100}%)`;
+        void pieceEl.offsetWidth;
+        pieceEl.style.transition = "transform 150ms ease-out";
+        pieceEl.style.transform = "translate(0, 0)";
       },
       { defer: true },
     ),
@@ -114,7 +114,9 @@ export const ChessSquare: Component<ChessSquareProps> = (props) => {
 
       {props.piece && (
         <img
-          ref={pieceRef}
+          ref={(el) => {
+            pieceEl = el;
+          }}
           src={getPieceImg(props.piece.type, props.piece.color, props.pieceSet)}
           alt={`${props.piece.color} ${props.piece.type}`}
           class={styles.piece}

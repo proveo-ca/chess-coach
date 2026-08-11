@@ -11,7 +11,7 @@ import {
   type ScFenSnapshot,
 } from "@chess-coach/starchess-core";
 
-import type { FogEdgeScenario } from "~/demos/fogEdgeScenario";
+import type { FogEdgeScenario } from "~/types/demos";
 
 /**
  * Bd4 (5×5 lit), Ka1; black pawn g7 (outside vision) on d4–h8;

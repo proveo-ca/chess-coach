@@ -5,11 +5,11 @@ import {
   applyStorybookTheme,
   readStorybookTheme,
   storybookThemeGlobalTypes,
-} from "./applyTheme";
-import "../src/theme.css";
-import "../src/index.css";
-import { installStorybookBrowserMocks } from "../src/storybook/browserMocks";
-import { resetStoryState, type StoryState } from "../src/storybook/storyState";
+} from "~/storybookApplyTheme";
+import "~/theme.css";
+import "~/index.css";
+import { installStorybookBrowserMocks } from "~/storybook/browserMocks";
+import { resetStoryState, type StoryState } from "~/storybook/storyState";
 
 installStorybookBrowserMocks();
 

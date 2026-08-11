@@ -25,10 +25,8 @@ import {
 } from "~/presentation/hud/isCheckOnlyResolve";
 import { playReviewTurn } from "~/presentation/hud/playReviewTurn";
 import type { ReviewTurnPhase } from "~/types/review";
-import {
-  playTimeline,
-  type TimelineCallbacks,
-} from "~/presentation/timeline/timelinePlayer";
+import { playTimeline } from "~/presentation/timeline/timelinePlayer";
+import type { TimelineCallbacks } from "~/types/match";
 import {
   playResolveWave,
 } from "~/presentation/timeline/playResolveWave";

@@ -8,7 +8,7 @@ import {
   COLLISION_PATH_BLOCK_SCENARIO,
   COLLISION_SAME_SQUARE_SCENARIO,
 } from "~/demos/collisionRaces";
-import type { FogEdgeScenario } from "~/demos/fogEdgeScenario";
+import type { FogEdgeScenario } from "~/types/demos";
 import { ReviewScreen } from "~/screens/ReviewScreen";
 import { addMatchRecord } from "~/store/matchHistoryStore";
 import type { StarChessGameRecord } from "~/types/review";

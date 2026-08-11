@@ -18,11 +18,9 @@ import { liveMatchPhase } from "~/presentation/hud/liveMatchPhase";
 import { LiveMatchShell } from "~/screens/LiveMatchShell";
 import { setTutorialCleared } from "~/store/tutorialProgressStore";
 import { resetTutorialNarration, setTutorialNarration } from "~/tutorial/tutorialNarrationStore";
-import {
-  resolveTutorialHints,
-  type TutorialBoardHint,
-} from "~/tutorial/tutorialScript";
+import { resolveTutorialHints } from "~/tutorial/tutorialScript";
 import type { KerriganEmotion } from "~/types/coach";
+import type { TutorialBoardHint } from "~/types/tutorial";
 
 export type KingHuntLiveScreenProps = {
   /** Skip outer LiveMatchShell when nested in the tutorial shell. */

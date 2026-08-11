@@ -11,7 +11,7 @@ import {
   type ScFenSnapshot,
 } from "@chess-coach/starchess-core";
 
-import type { FogEdgeScenario } from "~/demos/fogEdgeScenario";
+import type { FogEdgeScenario } from "~/types/demos";
 
 export type FogMoveStep = {
   caption: string;

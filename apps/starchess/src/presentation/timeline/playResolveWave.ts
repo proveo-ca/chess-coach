@@ -3,14 +3,12 @@
  */
 import type { EndScTurnResult } from "@chess-coach/starchess-core";
 
-import {
-  playTimeline,
-  type TimelineCallbacks,
-} from "~/presentation/timeline/timelinePlayer";
+import { playTimeline } from "~/presentation/timeline/timelinePlayer";
 import {
   splitResolveWaves,
   type ResolveWaveId,
 } from "~/presentation/timeline/resolveWaves";
+import type { TimelineCallbacks } from "~/types/match";
 import type { Scheduler } from "~/types/ports";
 
 export type { ResolveWaveId } from "~/types/tutorial";

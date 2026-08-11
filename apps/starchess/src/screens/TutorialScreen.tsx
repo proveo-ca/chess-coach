@@ -61,10 +61,12 @@ import {
   tutorialPath,
   tutorialStage,
   tutorialStory,
-  type TutorialCompleteWhen,
-  type TutorialLineHold,
 } from "~/tutorial/tutorialScript";
-import type { TutorialSectionId } from "~/types/tutorial";
+import type {
+  TutorialCompleteWhen,
+  TutorialLineHold,
+  TutorialSectionId,
+} from "~/types/tutorial";
 
 export type { TutorialSectionId } from "~/types/tutorial";
 

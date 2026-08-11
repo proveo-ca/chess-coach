@@ -10,7 +10,7 @@ import {
   type ScFenSnapshot,
 } from "@chess-coach/starchess-core";
 
-import type { FogEdgeScenario } from "~/demos/fogEdgeScenario";
+import type { FogEdgeScenario } from "~/types/demos";
 
 /** Rd4 tank 5×5 lit, Ka1; black pawn on d7 (outside lit); intent past to d8. */
 export const FOG_EDGE_ROOK_TANK_START_SCFEN =

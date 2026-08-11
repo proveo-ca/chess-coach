@@ -11,7 +11,7 @@ import {
   ATTACK_MINE_STEPS,
   queueAttackMineStep,
 } from "~/demos/attackMine";
-import type { FogEdgeScenario } from "~/demos/fogEdgeScenario";
+import type { FogEdgeScenario } from "~/types/demos";
 import {
   PATH_COLLIDE_ALLY_MINE_PLY_SC,
   PATH_COLLIDE_ALLY_MINE_STEPS,

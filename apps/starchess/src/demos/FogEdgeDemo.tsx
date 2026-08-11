@@ -5,7 +5,7 @@
 import type { Component } from "solid-js";
 
 import { buildReviewHistory } from "~/app/reviewHistory";
-import type { FogEdgeScenario } from "~/demos/fogEdgeScenario";
+import type { FogEdgeScenario } from "~/types/demos";
 import { ReviewDemoScreen } from "~/demos/ReviewDemoScreen";
 
 export type FogEdgeDemoProps = {

@@ -28,11 +28,9 @@ import {
   resetTutorialNarration,
   setTutorialNarration,
 } from "~/tutorial/tutorialNarrationStore";
-import {
-  resolveTutorialHints,
-  type TutorialBoardHint,
-} from "~/tutorial/tutorialScript";
+import { resolveTutorialHints } from "~/tutorial/tutorialScript";
 import type { KerriganEmotion } from "~/types/coach";
+import type { TutorialBoardHint } from "~/types/tutorial";
 
 export type KingDefenseScreenProps = {
   onExitToMenu?: () => void;

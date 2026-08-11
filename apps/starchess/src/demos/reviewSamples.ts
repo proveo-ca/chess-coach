@@ -11,7 +11,7 @@ import {
   type ScFenSnapshot,
 } from "@chess-coach/starchess-core";
 
-import type { FogEdgeScenario } from "~/demos/fogEdgeScenario";
+import type { FogEdgeScenario } from "~/types/demos";
 import {
   COMBAT_CHAIN_START_SCFEN,
   PROMOTION_CLEAN_SCFEN,
