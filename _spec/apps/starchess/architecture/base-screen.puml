@@ -16,7 +16,7 @@ class BaseScreen <<app>> {
   armTimer? autoQueueOpponent?
   onExitToMenu? matchTitle?
   turnChrome: bar | sidebar | none
-  tutorial? hideResources? hideGas?
+  tutorial? fullMatchHud? hideResources? hideGas?
   endTurnAfterQueue? coachEmotion?
   header? guideBubble? footerExtra?
   hintSquares?
@@ -52,6 +52,13 @@ note as N_PROPS
   Maps gallery may set false for open terrain preview.
   **turnChrome** — bar (default) | sidebar (BoardSideRail) | none (fog tutorial).
   **tutorial** — HOME-only rail, optional auto-End on queue threshold.
+  **fullMatchHud** (tutorial only) — full SingleScreen-style top pane
+  (Home + matchTitle + ResourceBar) instead of the coach lesson-nav
+  header; tutorial mobile hero hidden; guide bubble docks below the pane
+  (""hudGuideSlot""). Used by the final lesson king-hunt-live.
+  **status line** — gated ""!tutorial || fullMatchHud"": hidden for regular
+  tutorials; visible on /single and the fullMatchHud lesson; carries
+  statusText incl. QUEUE_REJECT feedback.
   **endTurnAfterQueue** — first | moveAndSpecial (tutorial only).
   **matchTitle** — live label above ResourceBar; hidden at max-height 639px.
   Spawn / Charon / Jump overlays + DeployModal live in BoardHost children.

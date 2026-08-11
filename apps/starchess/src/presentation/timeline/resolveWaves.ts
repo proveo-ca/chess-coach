@@ -41,6 +41,12 @@ export const splitResolveWaves = (result: EndScTurnResult): ResolveWave[] => {
 
   let seenClassicalMove = false;
   for (const cue of cues) {
+    // Crush deaths are joined to their spawn deploy (same drop window) — keep
+    // them in the deploy's wave bucket rather than treating them as attacks.
+    if (cue.kind === "death" && cue.id.startsWith("crush")) {
+      buckets[seenClassicalMove ? "specialAfter" : "specialBefore"].push(cue);
+      continue;
+    }
     if (cue.kind === "move" && !cue.queenJump && !cue.stim) {
       seenClassicalMove = true;
       buckets.move.push(cue);

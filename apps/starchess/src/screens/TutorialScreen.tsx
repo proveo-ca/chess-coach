@@ -44,6 +44,7 @@ import {
 } from "~/demos/kingHunt";
 import { KingHuntLiveScreen } from "~/demos/KingHuntLiveScreen";
 import { KingDefenseScreen } from "~/demos/KingDefenseScreen";
+import { KingDefenseIIScreen } from "~/demos/KingDefenseIIScreen";
 import { TutorialReviewHost } from "~/demos/TutorialReviewHost";
 import { FOG_SIEGE_ROOK_SCFEN } from "~/presentation/animations/components/FogVisionDemo";
 import { LiveMatchShell } from "~/screens/LiveMatchShell";
@@ -323,12 +324,9 @@ export const TutorialScreen: Component = () => {
 
     if (matched && (gate.armedKey === key || gate.pendingKey === key)) {
       gate.pendingKey = key;
-    } else if (
-      !matched &&
-      gate.pendingKey !== key &&
-      gate.firedKey !== key
-    ) {
-      gate.armedKey = key;
+    } else if (!matched) {
+      if (gate.pendingKey === key) gate.pendingKey = "";
+      if (gate.firedKey !== key) gate.armedKey = key;
     }
 
     if (gate.firedKey === key) return;
@@ -634,6 +632,19 @@ export const TutorialScreen: Component = () => {
                     guideBubble={guideBubble()}
                     footerExtra={kingFooter()}
                     boardHints={tutorialStory("king", "king-defense")?.hints}
+                  />
+                );
+              }
+              if (id === "king-defense-2") {
+                return (
+                  <KingDefenseIIScreen
+                    turnChrome="sidebar"
+                    onExitToMenu={goHome}
+                    coachEmotion={line().emotion}
+                    header={kingCoachHeader()}
+                    guideBubble={guideBubble()}
+                    footerExtra={kingFooter()}
+                    boardHints={tutorialStory("king", "king-defense-2")?.hints}
                   />
                 );
               }

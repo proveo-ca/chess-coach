@@ -144,14 +144,16 @@ export const assertSpecialLegal = (
         throw new ScValidateError("SC_SPECIAL", "spawn needs to + unit");
       }
       // F = classical-then-gas: ring + empties are relative to the post-move king.
-      const { king, occupied } = spawnKingAnchor(
+      const { king, allyOccupied } = spawnKingAnchor(
         snap,
         action.color,
         action.timing,
       );
       if (!king) throw new ScValidateError("SC_SPECIAL", "king missing");
-      if (occupied.has(action.to)) {
-        throw new ScValidateError("SC_SPECIAL", "spawn square occupied");
+      // Enemy-occupied targets are legal (the deploy crushes the occupant);
+      // only own-color squares are blocked.
+      if (allyOccupied.has(action.to)) {
+        throw new ScValidateError("SC_SPECIAL", "spawn square occupied by ally");
       }
       const kf = king.charCodeAt(0);
       const kr = Number(king[1]);

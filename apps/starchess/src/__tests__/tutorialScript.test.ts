@@ -30,10 +30,11 @@ describe("tutorialScript", () => {
     expect(TUTORIAL_SCRIPT[0]!.stories).toHaveLength(8);
     expect(TUTORIAL_SCRIPT[1]!.stories).toHaveLength(6);
     expect(TUTORIAL_SCRIPT[2]!.stories).toHaveLength(1);
-    expect(TUTORIAL_SCRIPT[3]!.stories).toHaveLength(3);
+    expect(TUTORIAL_SCRIPT[3]!.stories).toHaveLength(4);
     expect(TUTORIAL_SCRIPT[3]!.stories.map((s) => s.id)).toEqual([
       "king-hunt",
       "king-defense",
+      "king-defense-2",
       "king-hunt-live",
     ]);
   });
@@ -358,7 +359,7 @@ describe("tutorialScript", () => {
       }),
     ).toEqual({
       comment:
-        "Queue your intent: \nProtect the Hoverbike with your Mecha. \nDeploy more units.",
+        "The enemy King is overextended. \nPunish it!. \nDeploy more units.",
       emotion: "watching",
       source: "reaction",
     });
@@ -369,7 +370,7 @@ describe("tutorialScript", () => {
         turn: 2,
       }),
     ).toEqual({
-      comment: "Prioritize saving your hoverbike and planting mines!",
+      comment: "Prioritize planting mines with your hoverbike!",
       emotion: "watching",
       source: "reaction",
     });
@@ -501,6 +502,65 @@ describe("tutorialScript", () => {
       comment: "The enemy King is overextended. \nPunish it!",
       emotion: "happy",
       source: "intro",
+    });
+  });
+
+  it("handles king-defense-2 script completeWhen and coach reactions", () => {
+    const story = tutorialStory("king", "king-defense-2");
+    expect(story).toBeDefined();
+    expect(story!.title).toBe("King Defense II");
+
+    const complete = story!.completeWhen;
+    const initial =
+      "SCFEN|7k/8/8/8/8/8/6bq/6BK|11|33|P|G:22:22|B:1:1|Q:w:;b:";
+    const mechaDeadShipAlive =
+      "SCFEN|7k/8/8/8/8/8/7q/6BK|11|33|P|G:22:22|B:1:1|Q:w:;b:";
+    const bothDead =
+      "SCFEN|7k/8/8/8/8/8/8/6BK|11|33|P|G:22:22|B:1:1|Q:w:;b:";
+
+    expect(matchesTutorialCompleteWhen(complete, initial)).toBe(false);
+    expect(matchesTutorialCompleteWhen(complete, mechaDeadShipAlive)).toBe(false);
+    expect(matchesTutorialCompleteWhen(complete, bothDead)).toBe(true);
+
+    const checkChipScfen =
+      "SCFEN|7k/8/8/8/8/8/6bq/6BK|11|13|P|G:22:22|B:1:1|Q:w:;b:";
+    expect(
+      resolveTutorialLine({
+        stageId: "king",
+        storyId: "king-defense-2",
+        scfen: checkChipScfen,
+      }),
+    ).toEqual({
+      comment:
+        "Cornered! Crush the enemy mecha by deploying a Marine onto its square.",
+      emotion: "shocked",
+      source: "reaction",
+    });
+
+    const turn12Scfen =
+      "SCFEN|7k/8/8/8/8/8/6bq/6BK|12|13|P|G:22:22|B:1:1|Q:w:;b:";
+    expect(
+      resolveTutorialLine({
+        stageId: "king",
+        storyId: "king-defense-2",
+        scfen: turn12Scfen,
+      }).comment,
+    ).not.toBe(
+      "Cornered! Crush the enemy mecha by deploying a Marine onto its square.",
+    );
+
+    const spawnQueuedScfen =
+      "SCFEN|7k/8/8/8/8/8/6bq/6BK|11|13|P|G:22:22|B:0:1|Q:w:B=spawn:h1:g2:p;b:";
+    expect(
+      resolveTutorialLine({
+        stageId: "king",
+        storyId: "king-defense-2",
+        scfen: spawnQueuedScfen,
+      }),
+    ).toEqual({
+      comment: "Now, queue an attack on that ship with your Command Center",
+      emotion: "watching",
+      source: "reaction",
     });
   });
 });

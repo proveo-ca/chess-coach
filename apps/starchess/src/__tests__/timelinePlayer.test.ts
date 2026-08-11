@@ -309,6 +309,72 @@ describe("timelinePlayer", () => {
     });
   });
 
+  it("projects deploy and crush death cues when spawning onto an enemy unit", () => {
+    // White spawns a marine on e2, crushing black knight on e2.
+    let snap = parseScFen(
+      "SCFEN|4k3/8/8/8/8/8/4n3/4K3|1|33|P|G:11:11|Q:w:;b:",
+    );
+    snap = addScAction({
+      snapshot: snap,
+      action: {
+        timing: "B",
+        kind: "spawn",
+        color: "w",
+        from: "e1",
+        to: "e2",
+        unit: "p",
+      },
+    }).snapshot;
+    const result = endScTurn(snap, { skipTurnStartChecks: true });
+    const cues = projectResolveTimeline(result);
+    const deploy = cues.find((c) => c.kind === "deploy" && c.at === "e2");
+    expect(deploy).toMatchObject({
+      kind: "deploy",
+      piece: "p",
+      color: "w",
+      at: "e2",
+    });
+    const crushDeath = cues.find(
+      (c) => c.kind === "death" && c.id.startsWith("crush") && c.at === "e2",
+    );
+    expect(crushDeath).toMatchObject({
+      kind: "death",
+      piece: "n",
+      color: "b",
+      at: "e2",
+    });
+  });
+
+  it("plays deploy and crush death cues even when the spawned unit dies later the same turn", () => {
+    // White spawns marine on e2 (crushing black knight e2 in B).
+    // A black spider mine on e2 detonates, killing the spawned marine.
+    let snap = parseScFen(
+      "SCFEN|4k3/8/8/8/8/8/4n3/4K3|1|33|P|G:11:11|Q:w:;b:",
+    );
+    snap = {
+      ...snap,
+      mines: [{ at: "e2", color: "b" }],
+    };
+    snap = addScAction({
+      snapshot: snap,
+      action: {
+        timing: "B",
+        kind: "spawn",
+        color: "w",
+        from: "e1",
+        to: "e2",
+        unit: "p",
+      },
+    }).snapshot;
+    const result = endScTurn(snap, { skipTurnStartChecks: true });
+    const cues = projectResolveTimeline(result);
+    // Deploy and crush death cues must be present despite white marine dying on e2.
+    expect(cues.some((c) => c.kind === "deploy" && c.at === "e2")).toBe(true);
+    expect(
+      cues.some((c) => c.kind === "death" && c.id.startsWith("crush") && c.at === "e2"),
+    ).toBe(true);
+  });
+
   it("skips spawn deploy when the unit dies the same turn", () => {
     // White spawns a pawn on e2; black rook on e8 finds it mid-ray (path-reveal).
     let snap = parseScFen(

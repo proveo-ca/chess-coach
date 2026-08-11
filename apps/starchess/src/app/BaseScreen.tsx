@@ -64,6 +64,13 @@ export type StarChessScreenProps = {
   hideResources?: boolean;
   hideGas?: boolean;
   tutorial?: boolean;
+  /**
+   * Tutorial lesson that renders the full match HUD (Home + title + ResourceBar
+   * top pane) exactly like `/single`, instead of the coach header. Guide bubble
+   * still docks below the pane; coach lesson-nav `header` is ignored. Intended
+   * for the final tutorial lesson, used together with `tutorial`.
+   */
+  fullMatchHud?: boolean;
   endTurnAfterQueue?: "first" | "moveAndSpecial";
   coachEmotion?: KerriganEmotion;
   guideBubble?: import("solid-js").JSX.Element;
@@ -152,9 +159,9 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
 
   const spawnAdjacent = createMemo(() => {
     if (spawnPhase() !== "pick") return [] as Square[];
-    const { king, occupied } = spawnAnchor();
+    const { king, allyOccupied } = spawnAnchor();
     if (!king) return [] as Square[];
-    return adjacentSquares(king, occupied);
+    return adjacentSquares(king, allyOccupied);
   });
 
   const specialTargetSquares = createMemo((): Square[] => {
@@ -600,9 +607,12 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
       </Show>
 
       <Show
-        when={props.header != null || props.tutorial}
+        when={(props.header != null || props.tutorial) && !props.fullMatchHud}
         fallback={
           <Screen.SidebarInset class={styles.topPane}>
+            <Show when={props.guideBubble}>
+              <div class={styles.hudGuideSlot}>{props.guideBubble}</div>
+            </Show>
             <Show
               when={props.onExitToMenu}
               fallback={<div class={styles.topChrome} data-testid="starchess-board-chrome">{topChrome()}</div>}
@@ -664,7 +674,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
 
       <MatchBoardHost>
         <MatchBoardHost.BoardColumn>
-          <Show when={props.tutorial}>
+          <Show when={props.tutorial && !props.fullMatchHud}>
             <div class="mobile-hero" data-testid="tutorial-mobile-hero">
               <Show
                 when={props.header}
@@ -822,9 +832,10 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
               onEnd={() => store.submitTurn("end")}
             />
           </Show>
-          <Show when={!props.tutorial}>
+          <Show when={!props.tutorial || props.fullMatchHud}>
             <div
               class={styles.statusLine}
+              data-testid="status-line"
               data-idle-plan={
                 !outcomeLabel(store.shell()) && store.shell().statusText === "Plan your turn"
                   ? "true"
