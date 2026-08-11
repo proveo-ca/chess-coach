@@ -19,7 +19,7 @@ import {
   FRAG_FLIGHT_MS,
   IDLE_FRONT_MS,
 } from "~/presentation/animations/attackAnim";
-import { AnimationStage } from "~/presentation/animations/AnimationStage";
+import { AnimationStage } from "~/presentation/animations/components/AnimationStage";
 import { DEATH_MS } from "~/presentation/animations/deathAnim";
 import { DEPLOY_MS } from "~/presentation/animations/deployAnim";
 import { moveDurationMs } from "~/presentation/animations/moveTiming";
@@ -200,7 +200,7 @@ export const DebrisPawnPlayground: Component<DebrisPawnPlaygroundProps> = (props
           to: SQ.blueHome,
         },
       ]);
-      // Kill→death meeting point — interrupt attack hulls (attackDying), same as playResolve.
+      // Kill→death meeting point — interrupt attack hulls (attackDying).
       await wait(FRAG_FLIGHT_MS);
       if (cancelled) break;
 

@@ -1,6 +1,6 @@
 /**
  * Match state transitions — queue, End, timeline, review seek.
- * // SPEC: _spec/apps/starchess/match-store.puml
+ * // SPEC: _spec/apps/starchess/match-store.puml, _spec/apps/starchess/core/turn/match-state-machine.puml, _spec/apps/starchess/core/index.puml
  * // SPEC: _spec/packages/starchess-core/turn-queue-sequence.puml
  */
 import {
@@ -8,8 +8,8 @@ import {
   UNIT_COST,
   addScAction,
   AddScActionError,
+  beginScTurn,
   endScTurn,
-  incomeForTurn,
   parseScFen,
   refillTurnGas,
   removeScAction,
@@ -19,7 +19,7 @@ import {
   type StarChessColor,
 } from "@chess-coach/starchess-core";
 
-import { OPENING_STORED_MATERIAL } from "~/app/matchEconomy";
+import { OPENING_STORED_MATERIAL, applyTurnIncome } from "~/app/matchEconomy";
 import type { MatchAction, MatchState, TimelineState } from "~/app/matchTypes";
 
 const emptyTimeline = (placement: string | null = null): TimelineState => ({
@@ -78,17 +78,17 @@ const grantIncome = (
   economies: Record<StarChessColor, PlayerEconomy>,
   turn: number,
 ): Record<StarChessColor, PlayerEconomy> => {
-  const amount = incomeForTurn(Math.max(1, turn));
-  if (amount <= 0) return economies;
-  const next = { ...economies };
-  for (const color of ["w", "b"] as const) {
-    const eco = next[color];
-    next[color] = {
-      stored: Math.min(MAX_STORED_MATERIAL, eco.stored + amount),
-      deployed: eco.deployed,
-    };
+  const bank = applyTurnIncome(
+    { w: economies.w.stored, b: economies.b.stored },
+    turn,
+  );
+  if (bank.w === economies.w.stored && bank.b === economies.b.stored) {
+    return economies;
   }
-  return next;
+  return {
+    w: { stored: bank.w, deployed: economies.w.deployed },
+    b: { stored: bank.b, deployed: economies.b.deployed },
+  };
 };
 
 const seedFromSnap = (snap: ScFenSnapshot, stored: number): MatchState => {
@@ -387,6 +387,46 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
         phase: "resolving",
         statusText: "Resolving…",
       };
+    case "TURN_OPEN": {
+      // SPEC: sole beginScTurn owner — MatchStore dispatches only.
+      if (state.phase !== "planning" && state.phase !== "targeting") return state;
+      if (state.turnStartChecksApplied) return state;
+      const stripUsed = (s: ScFenSnapshot): ScFenSnapshot => {
+        if (!s.specialsUsed?.length) return s;
+        const { specialsUsed: _drop, ...rest } = s;
+        return rest;
+      };
+      const refillLive = (s: MatchState): MatchState => {
+        const live = stampSnapStored(
+          stripUsed(refillTurnGas(s.liveSnapshot)),
+          s.economies,
+        );
+        return { ...s, liveSnapshot: live };
+      };
+      try {
+        const begun = beginScTurn(state.liveSnapshot);
+        const refilled = refillLive(state);
+        if (!begun.changed || !begun.asResolve) {
+          return {
+            ...refilled,
+            turnStartChecksApplied: true,
+            statusText: "Plan your turn",
+          };
+        }
+        return {
+          ...refilled,
+          lastResolve: begun.asResolve,
+          phase: "resolving",
+          statusText: "Resolving…",
+        };
+      } catch {
+        return {
+          ...refillLive(state),
+          turnStartChecksApplied: true,
+          statusText: "Plan your turn",
+        };
+      }
+    }
     case "REFILL_GAS": {
       // Turn-open: vespene arrives with the check chip (or no-check arm).
       // U: green aura ends here — same moment as beginScTurn clearing stamps.

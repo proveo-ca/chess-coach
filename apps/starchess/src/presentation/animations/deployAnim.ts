@@ -1,9 +1,9 @@
 import type { PieceSymbol, Square } from "chess.js";
 
-import { DEPLOY_DROP_MS, DEPLOY_LAND_MS, DEPLOY_MS, DEPLOY_THRUST_MS } from "~/presentation/constants";
+import { DEPLOY_DROP_MS, DEPLOY_LAND_MS, DEPLOY_MS } from "~/presentation/constants";
 import type { StarChessPiece, DeployCue, PieceColor } from "~/presentation/types";
 
-export { DEPLOY_DROP_MS, DEPLOY_LAND_MS, DEPLOY_MS, DEPLOY_THRUST_MS };
+export { DEPLOY_DROP_MS, DEPLOY_LAND_MS, DEPLOY_MS };
 
 export type DeployKind = "humanoid" | "mechanoid";
 

@@ -4,7 +4,7 @@ import { addScAction, parseScFen } from "@chess-coach/starchess-core";
 import {
   gasStackPromotes,
   moveThenGasPromotes,
-} from "~/presentation/board/useBoardInput";
+} from "~/presentation/board/hooks/useBoardInput";
 
 describe("gasStackPromotes", () => {
   it("detects B+C stack that rewrites onto last rank", () => {

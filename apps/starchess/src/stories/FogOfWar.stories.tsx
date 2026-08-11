@@ -9,7 +9,7 @@ import {
   FOG_MOVE_PAWN_START_SCFEN,
   FOG_MOVE_QUEEN_START_SCFEN,
 } from "~/demos/fogMoveSamples";
-import { FOG_SIEGE_ROOK_SCFEN } from "~/presentation/animations/FogVisionDemo";
+import { FOG_SIEGE_ROOK_SCFEN } from "~/presentation/animations/components/FogVisionDemo";
 
 /** Own-square mine vision — live player fog. */
 const FOG_MINE_LIVE_SCFEN = "SCFEN|7k/8/8/8/8/8/8/4K3|0|33|P|G:11:11|M:w:a4|Q:w:;b:";

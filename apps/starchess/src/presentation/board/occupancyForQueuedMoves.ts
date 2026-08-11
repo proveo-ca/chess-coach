@@ -1,4 +1,4 @@
-// SPEC: _spec/packages/starchess-core/sc-moves.puml, _spec/apps/starchess/starchess-mode.puml
+// SPEC: _spec/packages/starchess-core/sc-moves.puml, _spec/apps/starchess/starchess-mode.puml, _spec/apps/starchess/core/board/planning-projection.puml
 /**
  * Planning occupancy after viewer B intents — spawn / gas / warp / siege toggle.
  * Board input uses this so classical can be queued from post-B squares.
@@ -13,6 +13,7 @@ import {
 } from "@chess-coach/starchess-core";
 
 import { occupancyForViewerMoves } from "~/presentation/board/occupancyForViewerMoves";
+import { rookModeForSieged } from "~/presentation/board/rookMode";
 
 /** Apply one side's B specials onto a mutable occupancy map. */
 export const applyViewerBOccupancy = (
@@ -88,8 +89,6 @@ export const occupancyForQueuedMoves = (
   siegedRooks: Square[];
 } => {
   const siegedRooks = siegedRooksAfterViewerB(snap, viewer, baseSieged);
-  const rookModeFor = (sq: Square) =>
-    siegedRooks.includes(sq) ? ("siege" as const) : ("tank" as const);
 
   // Project B first so fog visibility uses post-B positions for own units.
   const projected = applyViewerBOccupancy(
@@ -97,7 +96,9 @@ export const occupancyForQueuedMoves = (
     snap.queue?.actions,
     viewer,
   );
-  const map = occupancyForViewerMoves(projected, viewer, fog, { rookModeFor });
+  const map = occupancyForViewerMoves(projected, viewer, fog, {
+    rookModeFor: rookModeForSieged(siegedRooks),
+  });
   return { map, siegedRooks };
 };
 

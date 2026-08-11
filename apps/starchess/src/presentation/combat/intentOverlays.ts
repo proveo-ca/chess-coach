@@ -6,12 +6,13 @@
  * - fog-visible standing king-checks on the board (resolve at next turn open)
  * - checks that appear after applying queued classical moves (projected)
  * - capture/attack destinations (enemy on classical `to`)
+ *
+ * // SPEC: _spec/apps/starchess/core/board/planning-projection.puml
  */
 import type { PieceSymbol, Square } from "chess.js";
 
 import {
   collectLegalKingChecks,
-  getSideVision,
   mapToPlacement,
   placementToMap,
   rookModeAfterB,
@@ -22,6 +23,7 @@ import {
 } from "@chess-coach/starchess-core";
 
 import { pieceAtQueuedSquare } from "~/presentation/board/occupancyForQueuedMoves";
+import { targetVisibleGate } from "~/presentation/board/fogVisibility";
 import type { IntentGhost } from "~/types/board";
 
 export type IntentCanisterGhost = {
@@ -53,23 +55,6 @@ export type IntentOverlayOpts = {
    * (both intentions). Check rings stay global (threat is public once lit).
    */
   viewer?: StarChessColor;
-};
-
-const fogVisibleGate = (
-  placement: string,
-  siegedRooks: readonly Square[] | undefined,
-  mines: readonly ScMine[] | undefined,
-) => {
-  const sieged = new Set(siegedRooks ?? []);
-  const rookModeFor = (sq: Square): RookMode =>
-    sieged.has(sq) ? "siege" : "tank";
-  const vOpts = { rookModeFor, mines: mines ? [...mines] : undefined };
-  const visionW = getSideVision(placement, "w", vOpts);
-  const visionB = getSideVision(placement, "b", vOpts);
-  return (color: StarChessColor, square: Square) => {
-    const v = color === "w" ? visionW : visionB;
-    return v.litSquares.has(square) || v.revealedPieces.has(square);
-  };
 };
 
 /** Apply queued classical relocates for check projection (captures clear `to`). */
@@ -204,11 +189,10 @@ export const intentOverlaysFromQueue = (
       placements.push(placementAfterClassicalQueue(opts.placement, projectQueue));
     }
     for (const placement of placements) {
-      const isTargetVisible = fogVisibleGate(
-        placement,
-        opts.siegedRooks,
-        opts.mines,
-      );
+      const isTargetVisible = targetVisibleGate(placement, {
+        siegedRooks: opts.siegedRooks,
+        mines: opts.mines,
+      });
       for (const shot of collectLegalKingChecks(placement, { isTargetVisible })) {
         pushCheck(checks, seenCheck, shot.to);
       }

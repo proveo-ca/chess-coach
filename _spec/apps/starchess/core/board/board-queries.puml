@@ -1,0 +1,49 @@
+@startuml board-queries
+' SPEC: _spec/apps/starchess/core/board/board-queries.puml
+' purpose: Query — shared read-model geometry (fog, mines, spawn ring); no snap mutate.
+!include ../../../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess · Board queries (plan)
+
+package "Core query modules" {
+  component "board/vision.ts\nlit / revealed · pathRevealSteps" as VIS <<db>>
+  component "board/mines.ts\ncaps · path contact · rays" as MN <<db>>
+  component "rules/specials/adjacent.ts\nspawn ring · F vacate projection" as ADJ <<db>>
+  component "board/moves.ts\nscMovesFrom" as MOV <<app>>
+  component "board/siege.ts · placement.ts" as PL <<db>>
+}
+
+package "Consumers (read-only)" {
+  component "rules/validation.ts\n(command path)" as VAL <<app>>
+  component "resolve/resolve-turn.ts\n(pipeline)" as RT <<app>>
+  component "planning-projection\ninput · occupancy · overlays" as PLAN <<app>>
+  component "ai/adjutant.ts" as AI <<app>>
+}
+
+VAL ARROW_OPTIONAL VIS
+VAL ARROW_OPTIONAL MN
+VAL ARROW_OPTIONAL ADJ
+VAL ARROW_OPTIONAL MOV
+RT ARROW_OPTIONAL VIS
+RT ARROW_OPTIONAL MN
+RT ARROW_OPTIONAL PL
+PLAN ARROW_OPTIONAL VIS
+PLAN ARROW_OPTIONAL MOV
+PLAN ARROW_OPTIONAL ADJ
+PLAN ARROW_OPTIONAL MN
+AI ARROW_OPTIONAL VIS
+AI ARROW_OPTIONAL MOV
+AI ARROW_OPTIONAL MN
+AI ARROW_OPTIONAL ADJ
+
+note bottom
+  **Pattern:** Query / read-model.
+  **Allowed:** Planning / overlays → board-queries (read-only legality & fog).
+  **Allowed:** command Specification + resolve Pipeline + Strategy share the same queries.
+  **Forbidden:** queries writing Q: or placement; all writes stay Command/Facade.
+  App must import via public core API (see engine-boundary.puml).
+end note
+@enduml

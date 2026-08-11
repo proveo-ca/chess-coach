@@ -2,7 +2,7 @@
  * Cumulative fog — union of friendly-unit vision; mines light their own square.
  * Rules-side only (no SVG / animation). SCFEN placement maps are authoritative —
  * chess.js FEN load is never consulted.
- * // SPEC: _spec/apps/starchess/starchess-mode.puml, _spec/packages/starchess-core/resolve.puml
+ * // SPEC: _spec/apps/starchess/starchess-mode.puml, _spec/packages/starchess-core/resolve.puml, _spec/apps/starchess/core/board/board-queries.puml
  */
 import type { Square } from "chess.js";
 

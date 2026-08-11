@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/starchess/match-store.puml, _spec/apps/starchess/animation-pipeline.md
+// SPEC: _spec/apps/starchess/match-store.puml, _spec/apps/starchess/animation-pipeline.md, _spec/apps/starchess/core/turn/playback-interpreter.puml, _spec/apps/starchess/core/engine-boundary.puml
 /**
  * Match store — Solid signal + reducer; timeline / timer / DualNav review runners.
  */
@@ -9,7 +9,6 @@ import {
   type ParentComponent,
 } from "solid-js";
 import {
-  beginScTurn,
   turnTimeoutMsForTurn,
   type EndScTurnResult,
   type ScAction,
@@ -20,14 +19,16 @@ import { createInitialMatchState, matchReducer } from "~/app/matchReducer";
 import type { Clock, Scheduler } from "~/types/ports";
 import { browserClock, browserScheduler } from "~/adapters/browser";
 import { perfNoteDispatch, perfNoteMatch } from "~/debug/perfMonitor";
-import { classicalActionsFromResolve } from "~/presentation/hud/classicalActionsFromResolve";
 import {
   isCheckOnlyResolve,
   previousTurnStartIndex,
 } from "~/presentation/hud/isCheckOnlyResolve";
 import { playReviewTurn } from "~/presentation/hud/playReviewTurn";
 import type { ReviewTurnPhase } from "~/types/review";
-import { playTimeline } from "~/presentation/timeline/timelinePlayer";
+import {
+  playTimeline,
+  type TimelineCallbacks,
+} from "~/presentation/timeline/timelinePlayer";
 import {
   playResolveWave,
 } from "~/presentation/timeline/playResolveWave";
@@ -37,6 +38,17 @@ export type { MatchStore };
 
 export const MatchStoreContext = createContext<MatchStore>();
 
+/** Sole binder: timelinePlayer → TIMELINE_* (no second playback path). */
+const bindTimeline = (
+  dispatch: (a: MatchAction) => void,
+  onDone: () => void,
+): TimelineCallbacks => ({
+  onStart: (cues, placement) =>
+    dispatch({ type: "TIMELINE_START", cues, placement }),
+  onCommit: (patch) => dispatch({ type: "TIMELINE_COMMIT", ...patch }),
+  onDone,
+});
+
 const playOneResolve = (
   result: NonNullable<MatchState["lastResolve"]>,
   dispatch: (a: MatchAction) => void,
@@ -45,16 +57,15 @@ const playOneResolve = (
 ): Promise<void> =>
   new Promise((resolve) => {
     dispatch({ type: "REVIEW_PLAY", result });
-    const cancel = playTimeline(result, scheduler, {
-      onStart: (cues, placement) =>
-        dispatch({ type: "TIMELINE_START", cues, placement }),
-      onCommit: (patch) => dispatch({ type: "TIMELINE_COMMIT", ...patch }),
-      onDone: () => {
+    const cancel = playTimeline(
+      result,
+      scheduler,
+      bindTimeline(dispatch, () => {
         dispatch({ type: "TIMELINE_DONE" });
         setCancel(null);
         resolve();
-      },
-    });
+      }),
+    );
     setCancel(cancel);
   });
 
@@ -148,41 +159,32 @@ export const createMatchStore = (opts?: {
       return;
     }
 
-    let begun;
-    try {
-      begun = beginScTurn(s.liveSnapshot);
-    } catch {
-      dispatch({ type: "REFILL_GAS" });
-      dispatch({ type: "MARK_CHECKS_APPLIED" });
+    // Sole engine write for turn-open — reducer owns beginScTurn.
+    dispatch({ type: "TURN_OPEN" });
+    const after = state();
+    if (after.turnStartChecksApplied) {
       if (opts?.armTimer) armTimer();
       return;
     }
-
-    if (!begun.changed || !begun.asResolve) {
-      // No standing checks — still refill at turn open before planning arms.
-      dispatch({ type: "REFILL_GAS" });
-      dispatch({ type: "MARK_CHECKS_APPLIED" });
+    const result = after.lastResolve;
+    if (!result || after.phase !== "resolving") {
       if (opts?.armTimer) armTimer();
       return;
     }
 
     cancelTimer?.();
     cancelTimer = null;
-    // Refill when the check chip starts (not after End resolve).
-    dispatch({ type: "REFILL_GAS" });
-    dispatch({ type: "RESOLVE_READY", result: begun.asResolve });
     cancelTimeline?.();
-    cancelTimeline = playTimeline(begun.asResolve, scheduler, {
-      onStart: (cues, placement) =>
-        dispatch({ type: "TIMELINE_START", cues, placement }),
-      onCommit: (patch) => dispatch({ type: "TIMELINE_COMMIT", ...patch }),
-      onDone: () => {
+    cancelTimeline = playTimeline(
+      result,
+      scheduler,
+      bindTimeline(dispatch, () => {
         dispatch({ type: "BEGIN_CHECKS_DONE" });
         const next = state();
         if (next.phase === "planning" && opts?.armTimer) armTimer();
         if (next.phase === "gameOver") syncReviewPhaseIdle();
-      },
-    });
+      }),
+    );
   };
 
   const submitTurn = (reason: "end" | "timeout" = "end") => {
@@ -200,19 +202,18 @@ export const createMatchStore = (opts?: {
     const result = after.lastResolve;
     if (!result) return;
     cancelTimeline?.();
-    cancelTimeline = playTimeline(result, scheduler, {
-      onStart: (cues, placement) =>
-        dispatch({ type: "TIMELINE_START", cues, placement }),
-      onCommit: (patch) => dispatch({ type: "TIMELINE_COMMIT", ...patch }),
-      onDone: () => {
+    cancelTimeline = playTimeline(
+      result,
+      scheduler,
+      bindTimeline(dispatch, () => {
         dispatch({ type: "TIMELINE_DONE" });
         const next = state();
         if (next.phase === "planning") {
           ensureTurnOpenChecks({ armTimer: autoArmTimer });
         }
         if (next.phase === "gameOver") syncReviewPhaseIdle();
-      },
-    });
+      }),
+    );
   };
 
   const reviewBack = () => {
@@ -279,7 +280,8 @@ export const createMatchStore = (opts?: {
           clearReviewIntent();
           return;
         }
-        setReviewIntentActions(classicalActionsFromResolve(endResult));
+        // Stamped planning Q: on EndScTurnResult (SCFen) — no reconstruct.
+        setReviewIntentActions(endResult.queue);
       },
       playResolve: async () => {
         clearReviewIntent();
@@ -322,17 +324,12 @@ export const createMatchStore = (opts?: {
         result,
         waveId,
         scheduler,
-        {
-          onStart: (cues, placement) =>
-            dispatch({ type: "TIMELINE_START", cues, placement }),
-          onCommit: (patch) => dispatch({ type: "TIMELINE_COMMIT", ...patch }),
-          onDone: () => {
-            if (isLast) dispatch({ type: "TIMELINE_DONE" });
-            else dispatch({ type: "TIMELINE_SOFT_DONE" });
-            cancelTimeline = null;
-            resolve();
-          },
-        },
+        bindTimeline(dispatch, () => {
+          if (isLast) dispatch({ type: "TIMELINE_DONE" });
+          else dispatch({ type: "TIMELINE_SOFT_DONE" });
+          cancelTimeline = null;
+          resolve();
+        }),
         { isLastWave: isLast },
       );
     });

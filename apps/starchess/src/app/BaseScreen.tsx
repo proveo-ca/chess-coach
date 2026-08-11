@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/ui/responsiveness/rules.md, _spec/apps/starchess/screens.puml, _spec/apps/starchess/architecture/screen-entities.puml, _spec/apps/starchess/architecture/base-screen.puml
+// SPEC: _spec/apps/ui/responsiveness/rules.md, _spec/apps/starchess/screens.puml, _spec/apps/starchess/architecture/screen-entities.puml, _spec/apps/starchess/architecture/base-screen.puml, _spec/apps/starchess/core/board/planning-projection.puml, _spec/apps/starchess/core/engine-boundary.puml
 import {
   UNIT_COST,
   adjacentSquares,
@@ -27,16 +27,17 @@ import { PromotionModal } from "~/components/primitives/PromotionModal";
 import { Screen } from "~/components/primitives/Screen";
 import { ScreenBackNav } from "~/components/primitives/ScreenBackNav";
 import { squareBoxStyle, findBoardGrid } from "~/presentation/animations/boardGeom";
-import { LiveBoardBinding } from "~/presentation/board/LiveBoardBinding";
-import { GasRack } from "~/presentation/hud/GasRack";
-import { usePieceSpecialArm } from "~/presentation/hooks/usePieceSpecialArm";
-import { DeployModal } from "~/presentation/hud/DeployModal";
+import { LiveBoardBinding } from "~/presentation/board/components/LiveBoardBinding";
+import { rookModeForSieged } from "~/presentation/board/rookMode";
+import { GasRack } from "~/presentation/hud/components/GasRack";
+import { usePieceSpecialArm } from "~/presentation/specials/hooks/usePieceSpecialArm";
+import { DeployModal } from "~/presentation/hud/components/DeployModal";
 import { liveMatchPhase } from "~/presentation/hud/liveMatchPhase";
-import { MatchBoardHost } from "~/presentation/hud/MatchBoardHost";
-import { ResourceBar } from "~/presentation/hud/ResourceBar";
+import { MatchBoardHost } from "~/presentation/hud/components/MatchBoardHost";
+import { ResourceBar } from "~/presentation/hud/components/ResourceBar";
 import { ReviewTurnNav } from "~/components/primitives/ReviewTurnNav";
-import { TurnBar } from "~/presentation/hud/TurnBar";
-import { TurnBarSidebar } from "~/presentation/hud/TurnBarSidebar";
+import { TurnBar } from "~/presentation/hud/components/TurnBar";
+import { TurnBarSidebar } from "~/presentation/hud/components/TurnBarSidebar";
 import { pawnGasArm, specialTimingFor, tryQueue } from "~/presentation/specials/pawnGasArm";
 import { tacticalJumpTargets } from "~/presentation/specials/queenTacticalJump";
 import { TUTORIAL_CAPABILITIES, setCapabilities } from "~/store/capabilitiesStore";
@@ -274,9 +275,8 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
     },
     q: (ctx) => {
       const color = viewerColor(store);
-      const sieged = store.state().siegedRooks;
       const targets = tacticalJumpTargets(snap().placement, ctx.square, color, {
-        rookModeFor: (sq) => (sieged.has(sq) ? "siege" : "tank"),
+        rookModeFor: rookModeForSieged(store.state().siegedRooks),
       });
       if (targets.length === 0) {
         store.dispatch({

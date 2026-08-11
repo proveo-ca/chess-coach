@@ -197,6 +197,11 @@ export type MatchAction =
   | { type: "APPLY_SNAPSHOT"; snapshot: ScFenSnapshot }
   | { type: "SUBMIT_TURN"; reason: "end" | "timeout" }
   | { type: "RESOLVE_READY"; result: EndScTurnResult }
+  /**
+   * Turn-open facade — sole path to `beginScTurn` (checks + gas refill).
+   * Store only dispatches; never calls beginScTurn directly.
+   */
+  | { type: "TURN_OPEN" }
   /** Turn-open: refill G: remaining from gasIncome (check chip / no-check arm). */
   | { type: "REFILL_GAS" }
   | { type: "MARK_CHECKS_APPLIED" }

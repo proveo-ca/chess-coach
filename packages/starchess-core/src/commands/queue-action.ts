@@ -1,7 +1,7 @@
 /**
  * Pure SCFEN planning appenders / removers — the only way a queue mutates.
  * See _spec/packages/starchess-core/scfen-queue.puml.
- * // SPEC: _spec/packages/starchess-core/scfen-queue.puml
+ * // SPEC: _spec/packages/starchess-core/scfen-queue.puml, _spec/apps/starchess/core/turn/command-queue.puml
  */
 
 import type { Square } from "chess.js";

@@ -2,28 +2,13 @@ import type { PieceSymbol, Square } from "chess.js";
 
 import {
   getSideVision,
-  mapToPlacement,
-  placementToMap,
   type SideVision,
   type ScFenSnapshot,
   type ScPiece,
-  type StarChessColor,
 } from "@chess-coach/starchess-core";
 
 import { moveSquareAtElapsed } from "~/presentation/animations/moveTiming";
-
-/**
- * Gas-used (`U:` / specialsUsed) is **not** a fog pierce.
- * Green aura still paints on units the viewer can already see; hidden enemies
- * stay hidden (no canister / slide / ring leak through the veil).
- * Kept as a pass-through so call sites stay stable.
- */
-export const fogWithGasUsedReveal = (
-  base: SideVision,
-  _specialsUsed: ReadonlySet<Square>,
-  _viewer: StarChessColor,
-  _snap: ScFenSnapshot,
-): SideVision => base;
+import { rookModeForSieged } from "~/presentation/board/rookMode";
 
 export type MoveVisionCue = {
   id: string;
@@ -78,21 +63,6 @@ export function mapWithMovePathOccupancy(
   return changed ? next : new Map(map);
 }
 
-/** @deprecated Prefer {@link mapWithMovePathOccupancy}; kept for UI Chess adapters. */
-export function gameWithMovePathOccupancy(
-  game: { fen: () => string },
-  moves: readonly MoveVisionCue[],
-  nowMs: number,
-): { fen: () => string } {
-  const map = mapWithMovePathOccupancy(
-    placementToMap(game.fen().split(/\s+/)[0]!),
-    moves,
-    nowMs,
-  );
-  const placement = mapToPlacement(map);
-  return { fen: () => `${placement} w - - 0 1` };
-}
-
 /**
  * DualNav / observer review — both sides' cumulative vision from one SCFEN snap.
  * Engine-only: placement + `S:` siege + `M:` mines via {@link getSideVision}.
@@ -103,8 +73,10 @@ export const observerVisionFromSnap = (
   opts?: { siegedRooks?: readonly Square[] },
 ): { w: SideVision; b: SideVision } => {
   const sieged = new Set(opts?.siegedRooks ?? snap.siegedRooks ?? []);
-  const rookModeFor = (sq: Square) => (sieged.has(sq) ? "siege" : "tank");
-  const visionOpts = { rookModeFor, mines: snap.mines };
+  const visionOpts = {
+    rookModeFor: rookModeForSieged(sieged),
+    mines: snap.mines,
+  };
   return {
     w: getSideVision(snap.placement, "w", visionOpts),
     b: getSideVision(snap.placement, "b", visionOpts),

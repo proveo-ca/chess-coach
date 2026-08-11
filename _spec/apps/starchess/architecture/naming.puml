@@ -1,44 +1,48 @@
 @startuml naming
 ' SPEC: _spec/apps/starchess/architecture/naming.puml
-' purpose: Allowed vs deprecated "nerd" naming in apps/starchess.
+' purpose: Piece art naming — product nerd/inline vs tutorial-only cburnett; never core.
 !include ../../../themes/proveo.puml
 
 skinparam packageStyle rectangle
 skinparam defaultTextAlignment left
 
-title StarChess · Naming — nerd piece set only
+title StarChess · Naming — piece art (app only)
 
-package "allowed (piece art)" {
-  component "PieceSet = 'nerd' | 'cburnett'" as PS <<app>>
+package "product default (apps/starchess presentation)" {
+  component "PieceSet = 'nerd'" as NERD <<app>>
+  component "Inline* SVG units\n(InlineRook, …)" as INLINE <<app>>
   component "public/pieces/nerd/*.svg" as SVG <<db>>
   component "pieceUrl(..., 'nerd')" as URL <<app>>
 }
 
-package "preferred product names" {
-  component "STAR_STARTING_SCFEN" as SEED <<app>>
-  component "PIECE_FRAME / ROOK_FRAME_SCALE" as FRAME <<app>>
-  component "data-testid starchess-*" as TID <<app>>
-  component "SideVision (alias of core NerdVision)" as VIS <<app>>
+package "tutorial fog Chess skin ONLY" {
+  component "PieceSet = 'cburnett'" as CB <<host>>
+  component "public/pieces/cburnett/*.svg" as CBSVG <<db>>
+  component "TutorialScreen FogSection\nchessMode toggle" as TUT <<host>>
+}
+
+package "packages/starchess-core" {
+  component "rules · resolve · SCFEN\n(no PieceSet / no art)" as CORE <<app>>
 }
 
 package "deprecated product names" {
   component "NerdScreen / Nerd mode copy" as OLD <<error>>
   component "NERD_STARTING_SCFEN" as OLDSEED <<error>>
-  component "NerdBoardVariant" as OLDVAR <<error>>
-  component "nerd-board-chrome testids" as OLDTID <<error>>
 }
 
-PS ARROW_MAIN SVG
+NERD ARROW_MAIN INLINE
+NERD ARROW_MAIN SVG
 URL ARROW_MAIN SVG
-OLD ARROW_ERROR PS : do not use for chrome
-OLDSEED ARROW_ERROR SEED : rename
-OLDTID ARROW_ERROR TID : rename
+TUT ARROW_OPTIONAL CB : sole entry
+CB ARROW_MAIN CBSVG
+CORE ARROW_ERROR CB : never support
+CORE ARROW_ERROR NERD : art stays in app
+OLD ARROW_ERROR NERD : chrome naming
 
 note bottom
-  **Only** the StarCraft-themed **piece set** keeps the ""nerd"" id
-  (folder + PieceSet union). Everything else is StarChess product naming.
-  Core may still export ""NerdVision"" historically — app code prefers
-  ""SideVision"" alias until core renames.
+  **Product** = ""nerd"" + inline units forever.
+  **cburnett** exists only so one fog-tutorial section can look like classic chess.
+  Do **not** add PieceSet, skins, or SVG paths to ""@chess-coach/starchess-core"".
+  Rules/resolve stay piece-symbol + color only.
 end note
-
 @enduml

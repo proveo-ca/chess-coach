@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/starchess/animation-pipeline.md
+// SPEC: _spec/apps/starchess/animation-pipeline.md, _spec/apps/starchess/core/turn/playback-interpreter.puml
 import type { EndScTurnResult, ResolveAttack, ResolveMove, StarChessColor, StarChessPiece } from "@chess-coach/starchess-core";
 import { placementToMap, mapToPlacement } from "@chess-coach/starchess-core";
 import type { Square } from "chess.js";
@@ -31,6 +31,7 @@ import {
   TACTICAL_JUMP_TRAVEL_MS,
 } from "~/presentation/specials/queenTacticalJump";
 import { gasDropCornerFor } from "~/presentation/animations/gasDrop";
+import { rookModeAt } from "~/presentation/board/rookMode";
 import type { TimelineCue } from "~/types/match";
 import type { Scheduler } from "~/types/ports";
 
@@ -72,11 +73,7 @@ const attackCue = (
   if (a.kind === "kingShot" && a.moveCollision) return null;
   if ("moveCollision" in a && a.moveCollision && a.kind === "capture") return null;
   const rookMode =
-    a.piece === "r"
-      ? siegedRooks.includes(a.from)
-        ? ("siege" as const)
-        : ("tank" as const)
-      : undefined;
+    a.piece === "r" ? rookModeAt(a.from, siegedRooks) : undefined;
   const base = {
     kind: "attack" as const,
     id,
@@ -262,7 +259,7 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
         color: a.victim.color,
         at: a.to,
         ...(a.victim.piece === "r"
-          ? { rookMode: sieged.includes(a.to) ? ("siege" as const) : ("tank" as const) }
+          ? { rookMode: rookModeAt(a.to, sieged) }
           : {}),
       });
     }
@@ -301,7 +298,7 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
         color: a.victim.color,
         at: a.to,
         ...(a.victim.piece === "r"
-          ? { rookMode: sieged.includes(a.to) ? ("siege" as const) : ("tank" as const) }
+          ? { rookMode: rookModeAt(a.to, sieged) }
           : {}),
       });
     } else if (a.kind === "mineBlast") {
@@ -372,7 +369,7 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
         to: a.to,
         kingShot: { target: a.target, livesAfter: a.livesAfter },
         ...(a.piece === "r"
-          ? { rookMode: sieged.includes(a.from) ? ("siege" as const) : ("tank" as const) }
+          ? { rookMode: rookModeAt(a.from, sieged) }
           : {}),
       });
       if (a.livesAfter === 0) {
@@ -409,7 +406,7 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
           color: a.victim.color,
           at: a.to,
           ...(a.victim.piece === "r"
-            ? { rookMode: sieged.includes(a.to) ? ("siege" as const) : ("tank" as const) }
+            ? { rookMode: rookModeAt(a.to, sieged) }
             : {}),
         });
       }
@@ -547,7 +544,7 @@ const takeWhile = (
 /**
  * Play projected cues with an injected scheduler. Commits final board on done.
  * Same-rank opposing actions share one window (checks/attacks together; deaths
- * overlap at FRAG_FLIGHT_MS; then moves) — mirrors engine resolve + playResolve.
+  * overlap at FRAG_FLIGHT_MS; then moves) — mirrors engine resolve event order.
  * KingShot HP lands at frag impact so {@link KingDamageOverlay} boom syncs to the hit.
  */
 export const playTimeline = (
@@ -758,7 +755,7 @@ export const playTimeline = (
 
       if (deaths.length > 0) {
         // Reciprocal fire: attacker dies on their own square — suppress hull
-        // so DeathAnimation owns the cell (same as playResolve). Keep flags
+        // so DeathAnimation owns the cell. Keep flags
         // until the attack wave ends so hulls do not flash back.
         const dying: Record<string, boolean> = {};
         for (const a of attacks) {

@@ -43,7 +43,7 @@ import {
 } from "~/demos/kingHunt";
 import { KingHuntLiveScreen } from "~/demos/KingHuntLiveScreen";
 import { TutorialReviewHost } from "~/demos/TutorialReviewHost";
-import { FOG_SIEGE_ROOK_SCFEN } from "~/presentation/animations/FogVisionDemo";
+import { FOG_SIEGE_ROOK_SCFEN } from "~/presentation/animations/components/FogVisionDemo";
 import { LiveMatchShell } from "~/screens/LiveMatchShell";
 import styles from "~/screens/TutorialScreen.module.css";
 import { GAS_DEPLOY_FIXTURES } from "~/stories/fixtures/scenarios";
@@ -185,6 +185,7 @@ const FogSection: Component<{
           rookTank={lesson.rookTank}
           rookSiege={lesson.rookSiege}
           boardVariant={props.chessMode ? "classic" : "eclipse"}
+          // Sole product entry for cburnett — fog tutorial Chess skin only.
           pieceSet={props.chessMode ? "cburnett" : "nerd"}
           homeOnly
           hideResources

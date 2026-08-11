@@ -14,7 +14,7 @@ import {
 
 import { viewerColor } from "~/app/matchEconomy";
 import type { MatchStore } from "~/types/match";
-import { moveThenGasPromotes } from "~/presentation/board/useBoardInput";
+import { moveThenGasPromotes } from "~/presentation/board/hooks/useBoardInput";
 import type { ArmResult } from "~/presentation/specials/pieceSpecials";
 
 /** B if no classical yet this turn for the side; else F (stack order). */

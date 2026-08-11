@@ -2,8 +2,8 @@ import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
 import { GasDeployScenarioScreen } from "~/demos/GasDeployScenarioScreen";
 import { VermeerLiveScreen } from "~/demos/VermeerLiveScreen";
-import { ResourceBar } from "~/presentation/hud/ResourceBar";
-import { TurnBar } from "~/presentation/hud/TurnBar";
+import { ResourceBar } from "~/presentation/hud/components/ResourceBar";
+import { TurnBar } from "~/presentation/hud/components/TurnBar";
 import {
   createMatchStore,
   MatchStoreProvider,

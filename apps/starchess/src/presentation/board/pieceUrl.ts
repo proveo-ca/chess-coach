@@ -1,4 +1,5 @@
 /** Base-aware piece asset URL — never hard-code `/chess/pieces`. */
+/** App asset paths only — piece sets are presentation, not starchess-core. */
 import type { PieceSet } from "~/types/board";
 
 export const pieceUrl = (

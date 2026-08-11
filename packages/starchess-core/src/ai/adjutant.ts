@@ -36,7 +36,7 @@
  *
  * Deterministic.
  *
- * // SPEC: _spec/apps/starchess/starchess-mode.puml, _spec/apps/starchess/demos.puml
+ * // SPEC: _spec/apps/starchess/starchess-mode.puml, _spec/apps/starchess/demos.puml, _spec/apps/starchess/core/adjutant/opponent-strategy.puml
  */
 
 import type { Square } from "chess.js";

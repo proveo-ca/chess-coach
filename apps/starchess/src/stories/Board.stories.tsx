@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { FogVisionDemo } from "~/presentation/animations/FogVisionDemo";
-import { StaticScfenBoard } from "~/presentation/board/StaticScfenBoard";
+import { FogVisionDemo } from "~/presentation/animations/components/FogVisionDemo";
+import { StaticScfenBoard } from "~/presentation/board/components/StaticScfenBoard";
 import {
   GAS_USED_FOG_FIXTURE,
   OPEN_BOARD_FIXTURE,

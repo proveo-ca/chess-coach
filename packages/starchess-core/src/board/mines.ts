@@ -1,6 +1,6 @@
 /**
  * Spider Mine helpers — path contact, caps, SCFEN M: packing.
- * // SPEC: _spec/packages/starchess-core/scfen-wire.puml, _spec/packages/starchess-core/resolve.puml
+ * // SPEC: _spec/packages/starchess-core/scfen-wire.puml, _spec/packages/starchess-core/resolve.puml, _spec/apps/starchess/core/board/board-queries.puml
  */
 
 import type { Square } from "../model/square";

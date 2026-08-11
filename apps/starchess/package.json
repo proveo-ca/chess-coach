@@ -9,6 +9,8 @@
     "build": "tsgo -b && vite build",
     "typecheck": "tsgo -b --noEmit",
     "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:coverage:full": "vitest run --coverage --config vitest.coverage-full.config.ts",
     "check:css-layout": "! rg -n 'data-testid' --glob '*.css' src theme.css 2>/dev/null && ! rg -n 'data-testid' --glob '*.module.css' src && echo 'css-layout: ok'",
     "lint": "oxlint -c oxlint.config.ts",
     "lint:fix": "oxlint -c oxlint.config.ts --fix --fix-suggestions --fix-dangerously",
@@ -47,6 +49,7 @@
     "vite-plugin-oxlint": "^2.1.1",
     "vite-plugin-pwa": "^1.3.0",
     "vite-plugin-solid": "^2.11.12",
+    "@vitest/coverage-v8": "^4.1.5",
     "vitest": "^4.1.5",
     "wrangler": "^4.118.0"
   }

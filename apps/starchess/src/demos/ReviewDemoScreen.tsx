@@ -23,12 +23,12 @@ import { Screen } from "~/components/primitives/Screen";
 import { ScreenBackNav } from "~/components/primitives/ScreenBackNav";
 import styles from "~/demos/ReviewDemoScreen.module.css";
 import { clearSiegedRooks, setRookMode } from "~/presentation/animations/rookModeStore";
-import { LiveBoardBinding } from "~/presentation/board/LiveBoardBinding";
+import { LiveBoardBinding } from "~/presentation/board/components/LiveBoardBinding";
 import { isCheckOnlyResolve } from "~/presentation/hud/isCheckOnlyResolve";
-import { MatchBoardHost } from "~/presentation/hud/MatchBoardHost";
-import { ResourceBar } from "~/presentation/hud/ResourceBar";
+import { MatchBoardHost } from "~/presentation/hud/components/MatchBoardHost";
+import { ResourceBar } from "~/presentation/hud/components/ResourceBar";
 import { ReviewTurnNav } from "~/components/primitives/ReviewTurnNav";
-import { TurnBarSidebar } from "~/presentation/hud/TurnBarSidebar";
+import { TurnBarSidebar } from "~/presentation/hud/components/TurnBarSidebar";
 import { TUTORIAL_CAPABILITIES, setCapabilities } from "~/store/capabilitiesStore";
 import {
   resetReviewVisionFilter,

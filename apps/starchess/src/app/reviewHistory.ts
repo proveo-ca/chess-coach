@@ -7,7 +7,6 @@ import {
   UNIT_COST,
   beginScTurn,
   endScTurn,
-  incomeForTurn,
   refillTurnGas,
   scOutcome,
   type EndScTurnResult,
@@ -17,6 +16,7 @@ import {
 
 import {
   OPENING_STORED_MATERIAL,
+  applyTurnIncome,
   reconstructStoredBanks,
 } from "~/app/matchEconomy";
 import { createInitialMatchState } from "~/app/matchReducer";
@@ -96,11 +96,7 @@ export const buildReviewHistory = (args: BuildReviewHistoryArgs): ReviewHistory 
     settledResolves.push(result);
     // Income lands when the wire turn advances (same as live TIMELINE_DONE).
     if (result.next.turn > cur.turn) {
-      const inc = incomeForTurn(Math.max(1, result.next.turn));
-      bank = {
-        w: Math.min(12, bank.w + inc),
-        b: Math.min(12, bank.b + inc),
-      };
+      bank = applyTurnIncome(bank, result.next.turn);
     }
     const next = withBank(result.next, bank);
     settledSnapshots.push(next);

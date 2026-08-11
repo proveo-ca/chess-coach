@@ -28,16 +28,16 @@ class MatchBoardHost <<host>> {
 
 class LiveBoardBinding <<app>>
 class ResourceBar <<app>> {
-  presentation/hud/ResourceBar.tsx
+  presentation/hud/components/ResourceBar.tsx
 }
 class GasRack <<app>> {
-  presentation/hud/GasRack.tsx
+  presentation/hud/components/GasRack.tsx
 }
 class TurnBarSidebar <<app>> {
-  presentation/hud/TurnBarSidebar.tsx
+  presentation/hud/components/TurnBarSidebar.tsx
 }
 class DeployModal <<app>> {
-  presentation/hud/DeployModal.tsx
+  presentation/hud/components/DeployModal.tsx
 }
 class PromotionModal <<app>> {
   components/primitives/PromotionModal.tsx

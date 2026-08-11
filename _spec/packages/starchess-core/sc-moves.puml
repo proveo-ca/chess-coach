@@ -18,7 +18,7 @@ package "packages/starchess-core — SC RULES" {
 }
 
 package "Consumers" {
-  component "apps/starchess\npresentation/board/useBoardInput.ts\nselect + commit classical / spawn / specials" as INPUT <<app>>
+  component "apps/starchess\npresentation/board/hooks/useBoardInput.ts\nselect + commit classical / spawn / specials" as INPUT <<app>>
   component "packages/starchess-core\nai/adjutant.ts\ncandidates via scMovesFor" as BRAIN <<app>>
 }
 

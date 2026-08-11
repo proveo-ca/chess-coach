@@ -9,7 +9,7 @@ import { parseScFen } from "@chess-coach/starchess-core";
 
 import { Label } from "~/components/primitives/Label";
 import { Screen } from "~/components/primitives/Screen";
-import { AnimationStage } from "~/presentation/animations/AnimationStage";
+import { AnimationStage } from "~/presentation/animations/components/AnimationStage";
 import type { BoardVariant } from "~/types/board";
 import { mapFixture } from "~/stories/fixtures/scenarios";
 

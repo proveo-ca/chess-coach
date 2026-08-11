@@ -4,8 +4,8 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { createMatchStateFromScfen } from "~/app/matchReducer";
 import { createMatchStore, MatchStoreProvider } from "~/app/MatchStoreContext";
-import { BoardSideRail } from "~/presentation/hud/BoardSideRail";
-import { TurnBarSidebar } from "~/presentation/hud/TurnBarSidebar";
+import { BoardSideRail } from "~/presentation/hud/components/BoardSideRail";
+import { TurnBarSidebar } from "~/presentation/hud/components/TurnBarSidebar";
 import {
   ANALYSIS_CAPABILITIES,
   LIVE_CAPABILITIES,

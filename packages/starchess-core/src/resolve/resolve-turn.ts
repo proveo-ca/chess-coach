@@ -2,7 +2,7 @@
  * StarChess classical resolve — attack then move (simultaneous dual plans).
  * Fog: visible targets attack; fogged occupancy → move collision capture/occupy.
  * King HP: turn-open checks only, except fog path-discovery onto a hidden king.
- * // SPEC: _spec/packages/starchess-core/resolve.puml
+ * // SPEC: _spec/packages/starchess-core/resolve.puml, _spec/apps/starchess/core/turn/resolve-pipeline.puml
  */
 
 import type { Square } from "chess.js";

@@ -1,12 +1,4 @@
-/** Combat resolve playback — store-free classical timing. */
-export {
-  playResolve,
-  type CombatCommit,
-  type CombatFxState,
-  type PlayResolveHandle,
-  type PlayResolveOptions,
-  type ChasingMineCue,
-} from "~/presentation/combat/playResolve";
+/** Combat presentation — intent overlays + board FX (playback = timeline). */
 export {
   buildFxHiddenSquares,
   EMPTY_FX_HIDDEN,

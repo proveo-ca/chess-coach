@@ -15,18 +15,6 @@ export const TEAM_PRIMARY: Record<PieceColor, string> = {
   b: "#a22",
 };
 
-/** @deprecated flat 4-swatch — use TEAM_PRIMARY */
-export const TEAM_LIGHT: Record<PieceColor, string> = {
-  w: "#3b7dd8",
-  b: "#a22",
-};
-
-/** @deprecated flat 4-swatch — use TEAM_PRIMARY */
-export const TEAM_DARK: Record<PieceColor, string> = {
-  w: "#3b7dd8",
-  b: "#a22",
-};
-
 export const TEAM_SHADOW: Record<PieceColor, string> = {
   w: "#222",
   b: "#222",

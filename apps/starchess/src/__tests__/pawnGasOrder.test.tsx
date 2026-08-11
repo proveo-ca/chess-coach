@@ -11,7 +11,7 @@ import { placementToMap, type Square } from "@chess-coach/starchess-core";
 
 import { createMatchStateFromScfen } from "~/app/matchReducer";
 import { createMatchStore, MatchStoreProvider } from "~/app/MatchStoreContext";
-import { useBoardInput } from "~/presentation/board/useBoardInput";
+import { useBoardInput } from "~/presentation/board/hooks/useBoardInput";
 import { armPieceSpecial } from "~/presentation/specials/pieceSpecials";
 import { pawnGasArm } from "~/presentation/specials/pawnGasArm";
 import type { MatchStore } from "~/types/match";

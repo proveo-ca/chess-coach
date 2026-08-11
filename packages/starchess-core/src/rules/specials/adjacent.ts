@@ -1,3 +1,4 @@
+// SPEC: _spec/apps/starchess/core/board/board-queries.puml, _spec/apps/starchess/core/turn/command-queue.puml
 import type { Square } from "../../model/square";
 import type { ScFenSnapshot, StarChessColor } from "../../model/types";
 import { findKing, placementToMap } from "../../board/placement";
@@ -26,9 +27,11 @@ export const adjacentSquares = (
 /**
  * Command Center spawn ring anchor.
  *
- * - **B** (gas before classical): ring around the living king; planning occupancy.
- * - **F** (classical then gas): ring around the **post-move** king square when a
- *   same-side classical relocates the king; the vacated origin counts as empty.
+ * - **B** (gas before classical): ring around the living king; raw planning
+ *   occupancy (B resolves before C — squares still full).
+ * - **F** (classical then gas): ring around the **post-move** king when a
+ *   same-side classical relocates it; **all** same-side classical vacates count
+ *   as empty so a unit can move off a square then receive an F deploy there.
  */
 export const spawnKingAnchor = (
   snap: ScFenSnapshot,
@@ -36,17 +39,33 @@ export const spawnKingAnchor = (
   timing: "B" | "F",
 ): { king: Square | null; occupied: ReadonlySet<Square> } => {
   const map = placementToMap(snap.placement);
-  const king = findKing(map, color);
+  let king = findKing(map, color);
   const occupied = new Set(map.keys());
   if (!king) return { king: null, occupied };
   if (timing !== "F") return { king, occupied };
 
-  const c = (snap.queue?.actions ?? []).find(
-    (a) => a.timing === "C" && a.color === color,
-  );
-  if (!c || c.timing !== "C" || c.from !== king) return { king, occupied };
-
-  occupied.delete(c.from);
-  occupied.add(c.to);
-  return { king: c.to, occupied };
+  // Project same-side classical relocates (and B gas/warp) onto occupancy.
+  // F spawns after B+C at resolve — vacated origins are legal deploy targets.
+  const actions = snap.queue?.actions ?? [];
+  for (const a of actions) {
+    if (a.color !== color) continue;
+    if (a.timing === "B") {
+      if (
+        (a.kind === "pawnDouble" || a.kind === "queenWarp") &&
+        a.from &&
+        a.to
+      ) {
+        occupied.delete(a.from);
+        occupied.add(a.to);
+      } else if (a.kind === "spawn" && a.to) {
+        occupied.add(a.to);
+      }
+      continue;
+    }
+    if (a.timing !== "C" || a.kind !== "classical") continue;
+    occupied.delete(a.from);
+    occupied.add(a.to);
+    if (a.from === king) king = a.to;
+  }
+  return { king, occupied };
 };

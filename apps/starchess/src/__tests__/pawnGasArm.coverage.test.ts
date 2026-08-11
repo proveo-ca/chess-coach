@@ -1,0 +1,118 @@
+import { describe, expect, it } from "vitest";
+
+import {
+  pawnGasArm,
+  specialTimingFor,
+  tryQueue,
+} from "~/presentation/specials/pawnGasArm";
+import { createMatchStore } from "~/app/MatchStoreContext";
+import { createMatchStateFromScfen } from "~/app/matchReducer";
+
+describe("pawnGasArm", () => {
+  it("specialTimingFor switches B→F after classical", () => {
+    expect(specialTimingFor(undefined, "w")).toBe("B");
+    expect(specialTimingFor({ actions: [] }, "w")).toBe("B");
+    expect(
+      specialTimingFor(
+        {
+          actions: [
+            {
+              timing: "C",
+              kind: "classical",
+              color: "w",
+              from: "e2",
+              to: "e4",
+              seq: 0,
+            },
+          ],
+        },
+        "w",
+      ),
+    ).toBe("F");
+  });
+
+  it("tryQueue and pawnGasArm happy path", () => {
+    const store = createMatchStore({
+      initial: createMatchStateFromScfen(
+        "SCFEN|4k3/8/8/8/8/8/4P3/4K3|11|33|P|G:22:22|Q:w:;b:",
+        3,
+      ),
+    });
+    expect(
+      tryQueue(
+        store,
+        { timing: "B", kind: "pawnDouble", color: "w", from: "e2", to: "e3" },
+        "ok",
+      ),
+    ).toBe(true);
+    expect(store.state().statusText).toBe("ok");
+    const store2 = createMatchStore({
+      initial: createMatchStateFromScfen(
+        "SCFEN|4k3/8/8/8/8/8/4P3/4K3|11|33|P|G:22:22|Q:w:;b:",
+        3,
+      ),
+    });
+    expect(
+      pawnGasArm(store2, store2.state().liveSnapshot, {
+        square: "e2",
+        piece: "p",
+      }),
+    ).toBe("armed");
+  });
+
+  it("last-rank gas opens pending promotion", () => {
+    const store = createMatchStore({
+      initial: createMatchStateFromScfen(
+        "SCFEN|k7/4P3/8/8/8/8/8/4K3|11|33|P|G:22:22|Q:w:;b:",
+        3,
+      ),
+    });
+    expect(
+      pawnGasArm(store, store.state().liveSnapshot, {
+        square: "e7",
+        piece: "p",
+      }),
+    ).toBe("pending");
+    expect(store.state().pendingPromotion?.via).toBe("gas");
+  });
+
+  it("off-board step rejects", () => {
+    const store = createMatchStore({
+      initial: createMatchStateFromScfen(
+        "SCFEN|4k3/8/8/8/8/8/8/4K3|11|33|P|G:22:22|Q:w:;b:",
+        3,
+      ),
+    });
+    // no pawn — use a1 as nonsense
+    expect(
+      pawnGasArm(store, store.state().liveSnapshot, {
+        square: "a8",
+        piece: "p",
+      }),
+    ).toBe(false);
+  });
+
+  it("move-then-gas convert peels C and arms B + promotion", () => {
+    const store = createMatchStore({
+      initial: createMatchStateFromScfen(
+        "SCFEN|k7/8/7P/8/8/8/8/4K3|11|33|P|G:22:22|Q:w:;b:",
+        3,
+      ),
+    });
+    store.dispatch({
+      type: "QUEUE_ACTION",
+      action: {
+        timing: "C",
+        kind: "classical",
+        color: "w",
+        from: "h6",
+        to: "h7",
+      },
+    });
+    const snap = store.state().liveSnapshot;
+    expect(
+      pawnGasArm(store, snap, { square: "h6", piece: "p" }),
+    ).toBe("armed");
+    expect(store.state().pendingPromotion).toBeTruthy();
+  });
+});

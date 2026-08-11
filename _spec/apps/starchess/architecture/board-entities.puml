@@ -62,7 +62,7 @@ package "vfx overlays" {
 package "board hosts" {
 
   class StarChessBoard <<app>> {
-    presentation/board/StarChessBoard.tsx
+    presentation/board/components/StarChessBoard.tsx
     --
     snapshot square grid
     VisionStrategy pick

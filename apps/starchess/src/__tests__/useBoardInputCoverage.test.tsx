@@ -10,7 +10,7 @@ import { describe, expect, it } from "vitest";
 
 import { createMatchStateFromScfen } from "~/app/matchReducer";
 import { createMatchStore, MatchStoreProvider } from "~/app/MatchStoreContext";
-import { useBoardInput } from "~/presentation/board/useBoardInput";
+import { useBoardInput } from "~/presentation/board/hooks/useBoardInput";
 import type { MatchStore } from "~/types/match";
 
 /** Black king a8 + white king e1 — no checks, no blocked e-file. */

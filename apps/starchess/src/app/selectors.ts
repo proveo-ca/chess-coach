@@ -7,7 +7,7 @@ import {
 import type { Square } from "chess.js";
 
 import type { MatchState } from "~/app/matchTypes";
-import { fogWithGasUsedReveal } from "~/presentation/board/fogProjection";
+import { rookModeForSieged } from "~/presentation/board/rookMode";
 
 export const displayedSnapshot = (state: MatchState): ScFenSnapshot => {
   // Terminal review: settled cursor + optional in-flight timeline overlays.
@@ -64,14 +64,8 @@ export const outcomeLabel = (state: MatchState): string | null => {
 export const fogForViewer = (state: MatchState) => {
   const snap = displayedSnapshot(state);
   const sieged = new Set(snap.siegedRooks ?? [...state.siegedRooks]);
-  const base = getSideVision(snap.placement, state.viewer, {
-    rookModeFor: (sq) => (sieged.has(sq) ? "siege" : "tank"),
+  return getSideVision(snap.placement, state.viewer, {
+    rookModeFor: rookModeForSieged(sieged),
     mines: snap.mines,
   });
-  return fogWithGasUsedReveal(
-    base,
-    new Set(snap.specialsUsed ?? []),
-    state.viewer,
-    snap,
-  );
 };

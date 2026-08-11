@@ -22,7 +22,7 @@ package "Core rules (@chess-coach/starchess-core)" {
 }
 
 package "Presentation" {
-  component "playTimeline\ntimelinePlayer.ts" as TL <<async>>
+  component "bindTimeline → playTimeline\ntimelinePlayer (sole interpreter)" as TL <<async>>
   component "AnimationStage +\nStarChessBoard" as STAGE <<app>>
   component "useBoardInput +\nLiveStarChessBoard" as INPUT <<app>>
   component "TurnBarSidebar / ResourceBar\nGasDeploy / DualNav" as HUD <<app>>
@@ -52,5 +52,7 @@ note bottom
   **Player fog intent:** ""useBoardInput"" occults unseen enemies for
   legal dests app-wide (live + tutorial) — resolve owns collisions.
   Turn lifecycle: ""turn-queue-sequence.puml"".
+  Interaction plan: ""_spec/apps/starchess/core/"".
+  Income: ""applyTurnIncome""; rook mode: ""rookModeForSieged"".
 end note
 @enduml

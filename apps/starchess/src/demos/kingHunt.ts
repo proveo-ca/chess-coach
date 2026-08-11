@@ -10,9 +10,7 @@
 
 import {
   addScAction,
-  classicFenFromSc,
   endScTurn,
-  formatScFen,
   parseScFen,
   type ScActionInput,
   type ScFenSnapshot,
@@ -88,11 +86,3 @@ export const buildKingHuntPlys = (): ScFenSnapshot[] => {
 };
 
 export const KING_HUNT_PLY_SC: readonly ScFenSnapshot[] = buildKingHuntPlys();
-
-/** @deprecated Prefer KING_HUNT_PLY_SC */
-export const KING_HUNT_PLY_FENS = KING_HUNT_PLY_SC.map((snap, ply) => ({
-  ply,
-  fen: classicFenFromSc(snap, "w"),
-  scfen: formatScFen(snap),
-  lives: snap.kingLives.w,
-}));

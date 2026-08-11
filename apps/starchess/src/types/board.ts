@@ -6,7 +6,12 @@ export type BoardVariant = "eclipse" | "butter" | "vermeer";
 /** Classic wood board (tutorial Chess mode) — no SC terrain. */
 export type BoardSkin = BoardVariant | "classic";
 
-/** Piece SVG folder under `public/pieces/` (`nerd` = StarCraft set). */
+/**
+ * App presentation only — never in `@chess-coach/starchess-core`.
+ * - `nerd` — product default (inline SVG units + `public/pieces/nerd/`).
+ * - `cburnett` — **tutorial fog Chess-mode skin only** (flat Lichess SVGs).
+ *   Not a second product mode; do not grow core/rules around it.
+ */
 export type PieceSet = "nerd" | "cburnett";
 
 /** `player` = single-viewer fog veil; `observer` = full board + dual vision borders. */

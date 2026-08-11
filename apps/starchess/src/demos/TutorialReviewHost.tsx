@@ -24,11 +24,11 @@ import { TutorialTypewriterNav } from "~/components/features/TutorialTypewriterN
 import { Screen } from "~/components/primitives/Screen";
 import styles from "~/demos/TutorialReviewHost.module.css";
 import { clearSiegedRooks, setRookMode } from "~/presentation/animations/rookModeStore";
-import { LiveBoardBinding } from "~/presentation/board/LiveBoardBinding";
-import { classicalActionsFromResolve } from "~/presentation/hud/classicalActionsFromResolve";
+import { LiveBoardBinding } from "~/presentation/board/components/LiveBoardBinding";
+
 import { isCheckOnlyResolve } from "~/presentation/hud/isCheckOnlyResolve";
-import { MatchBoardHost } from "~/presentation/hud/MatchBoardHost";
-import { TurnBarSidebar } from "~/presentation/hud/TurnBarSidebar";
+import { MatchBoardHost } from "~/presentation/hud/components/MatchBoardHost";
+import { TurnBarSidebar } from "~/presentation/hud/components/TurnBarSidebar";
 import { splitResolveWaves } from "~/presentation/timeline/resolveWaves";
 import { TUTORIAL_CAPABILITIES, setCapabilities } from "~/store/capabilitiesStore";
 import { resetReviewVisionFilter, setReviewVisionFilter } from "~/store/reviewVisionStore";
@@ -133,7 +133,7 @@ const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
     const end = endResultAt(store.state().settledResolves, resolveIndex);
     store.dispatch({ type: "REFILL_GAS" });
     store.reviewSetPhase("intent");
-    if (end) store.reviewShowIntent(classicalActionsFromResolve(end));
+    if (end) store.reviewShowIntent(end.queue);
     else store.reviewShowIntent(null);
   };
 

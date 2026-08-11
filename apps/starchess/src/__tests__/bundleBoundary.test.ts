@@ -33,4 +33,69 @@ describe("apps/starchess boundary", () => {
     }
     expect(offenders).toEqual([]);
   });
+
+  it("ACL: only public @chess-coach/starchess-core — no deep resolve/rules/board paths", () => {
+    // SPEC: _spec/apps/starchess/core/engine-boundary.puml
+    const deep =
+      /from ["']@chess-coach\/starchess-core\/(?:src\/)?(?:resolve|rules|board|commands|scfen|ai)\//;
+    const relativeDeep =
+      /from ["'](?:\.\.\/)+packages\/starchess-core\/src\/(?:resolve|rules)\//;
+    const offenders: string[] = [];
+    for (const file of walk(SRC)) {
+      if (file.includes(`${join("src", "__tests__")}`)) continue;
+      const text = readFileSync(file, "utf8");
+      for (const line of text.split("\n")) {
+        if (!line.includes("import") && !line.includes("require")) continue;
+        if (line.trimStart().startsWith("//") || line.trimStart().startsWith("*")) continue;
+        if (deep.test(line) || relativeDeep.test(line)) {
+          offenders.push(`${file}: ${line.trim()}`);
+        }
+      }
+    }
+    expect(offenders).toEqual([]);
+  });
+
+  it("live presentation never imports addScAction/endScTurn/beginScTurn (reducer/store only)", () => {
+    // SPEC: _spec/apps/starchess/core/turn/match-state-machine.puml
+    // Demos/tests/reviewHistory builders may call engine offline.
+    const allow = [
+      `${join("src", "app", "matchReducer.ts")}`,
+      `${join("src", "app", "reviewHistory.ts")}`,
+      `${join("src", "demos")}`,
+      `${join("src", "__tests__")}`,
+      `${join("src", "stories")}`,
+    ];
+    const engineWrite =
+      /\b(?:addScAction|removeScAction|endScTurn|beginScTurn)\b/;
+    const offenders: string[] = [];
+    for (const file of walk(SRC)) {
+      if (allow.some((a) => file.includes(a))) continue;
+      // MatchStoreContext must not call beginScTurn (TURN_OPEN owns it).
+      const text = readFileSync(file, "utf8");
+      if (!engineWrite.test(text)) continue;
+      for (const line of text.split("\n")) {
+        const t = line.trim();
+        if (t.startsWith("//") || t.startsWith("*") || t.startsWith("/*")) continue;
+        if (t.includes("import") && engineWrite.test(t)) {
+          // type-only imports ok; value imports of writers forbidden outside allow
+          if (/\bimport\b/.test(t) && !/\btype\b/.test(t.split("{")[0] ?? "")) {
+            offenders.push(`${file}: ${t}`);
+          }
+        } else if (
+          engineWrite.test(t) &&
+          !t.includes("SPEC") &&
+          !t.includes("addScAction") && // comments about snap.gas
+          !t.startsWith("*") &&
+          !t.includes("`") &&
+          (t.includes("beginScTurn(") ||
+            t.includes("endScTurn(") ||
+            t.includes("addScAction(") ||
+            t.includes("removeScAction("))
+        ) {
+          offenders.push(`${file}: ${t}`);
+        }
+      }
+    }
+    expect(offenders).toEqual([]);
+  });
 });

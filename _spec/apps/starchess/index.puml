@@ -15,6 +15,7 @@ package "_spec/apps/starchess" {
   component "architecture/\nboard + screen entities\nP1–P3 accepted designs" as ARCH <<app>>
   component "match-store.puml\nMatchStore / matchReducer / timeline" as MS <<async>>
   component "animation-pipeline.md\nplayTimeline / TIMELINE_*" as ANIM <<async>>
+  component "core/\nturn · board · adjutant · scfen\nengine-boundary (interaction plan)" as COREPLAN <<app>>
   component "demos.puml / starchess-mode.puml" as DEMO <<app>>
   component "roadmap.md\nP0–P2 remediation" as ROAD <<db>>
 }
@@ -40,6 +41,9 @@ ARCH ARROW_MAIN RSINGLE
 ARCH ARROW_MAIN RREV
 MS ARROW_MAIN RSCREEN
 ANIM ARROW_MAIN RINPUT
+COREPLAN ARROW_MAIN MS : state machine / playback
+COREPLAN ARROW_MAIN RINPUT : planning / boundary
+COREPLAN ARROW_OPTIONAL RULES : package detail
 DEP ARROW_MAIN RSINGLE
 DEP ARROW_MAIN RREV
 RULES ARROW_OPTIONAL RINPUT : legality / End
@@ -47,8 +51,9 @@ DEMO ARROW_OPTIONAL RSCREEN
 ROAD ARROW_OPTIONAL RULES
 
 note bottom
-  Rules live under ""_spec/packages/starchess-core/"".
-  ""architecture/"" = current board/screen class maps
-  + accepted P1–P3 structure designs.
+  Rules detail: ""_spec/packages/starchess-core/"".
+  Interaction **plan** (patterns + allowed edges):
+  ""_spec/apps/starchess/core/"".
+  ""architecture/"" = board/screen class maps + P1–P3.
 end note
 @enduml

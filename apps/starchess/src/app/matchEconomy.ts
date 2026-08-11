@@ -1,6 +1,7 @@
 /**
  * Match-store selectors used by ResourceBar / TurnBar / GasDeploy.
  * Replaces apps/ui starChessStore reads for the standalone app.
+ * // SPEC: _spec/apps/starchess/core/board/planning-projection.puml
  */
 import {
   MAX_DEPLOYED_MATERIAL,
@@ -25,6 +26,19 @@ import { isCheckOnlyResolve } from "~/presentation/hud/isCheckOnlyResolve";
 /** Single-player / review opening Command Center bank (both sides). */
 export const OPENING_STORED_MATERIAL = 3;
 
+/** Sole owner for mineral income on turn advance (live + review history). */
+export const applyTurnIncome = (
+  bank: { w: number; b: number },
+  turn: number,
+): { w: number; b: number } => {
+  const amount = incomeForTurn(Math.max(1, turn));
+  if (amount <= 0) return bank;
+  return {
+    w: Math.min(MAX_STORED_MATERIAL, bank.w + amount),
+    b: Math.min(MAX_STORED_MATERIAL, bank.b + amount),
+  };
+};
+
 /**
  * Legacy snaps without SCFEN `B:` — opening bank + income by turn.
  * Prefer {@link reconstructStoredBanks} when a full history is available.
@@ -36,9 +50,9 @@ export const estimateStoredFromSnap = (
   let stored = OPENING_STORED_MATERIAL;
   const turn = Math.max(0, snap.turn);
   for (let t = 1; t <= turn; t += 1) {
-    stored += incomeForTurn(t);
+    stored = applyTurnIncome({ w: stored, b: stored }, t).w;
   }
-  return Math.min(MAX_STORED_MATERIAL, Math.max(0, stored));
+  return Math.max(0, stored);
 };
 
 /**
@@ -67,11 +81,7 @@ export const reconstructStoredBanks = (
       continue;
     }
     if (s.turn > prev.turn) {
-      const inc = incomeForTurn(Math.max(1, s.turn));
-      bank = {
-        w: Math.min(MAX_STORED_MATERIAL, bank.w + inc),
-        b: Math.min(MAX_STORED_MATERIAL, bank.b + inc),
-      };
+      bank = applyTurnIncome(bank, s.turn);
     }
     try {
       for (const c of ["w", "b"] as const) {

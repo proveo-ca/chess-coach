@@ -6,7 +6,7 @@ import {
   MatchStoreProvider,
 } from "~/app/MatchStoreContext";
 import { createMatchStateFromScfen } from "~/app/matchReducer";
-import { DeployModal } from "~/presentation/hud/DeployModal";
+import { DeployModal } from "~/presentation/hud/components/DeployModal";
 import { GAS_DEPLOY_FIXTURES } from "~/stories/fixtures/scenarios";
 
 const meta = {

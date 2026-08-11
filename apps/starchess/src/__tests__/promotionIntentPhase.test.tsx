@@ -14,7 +14,7 @@ import {
   gasStackPromotes,
   moveThenGasPromotes,
   useBoardInput,
-} from "~/presentation/board/useBoardInput";
+} from "~/presentation/board/hooks/useBoardInput";
 import { liveMatchPhase } from "~/presentation/hud/liveMatchPhase";
 import type { MatchStore } from "~/types/match";
 

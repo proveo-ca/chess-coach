@@ -8,7 +8,7 @@ import {
   GAS_USED_FOG_SCFEN,
   STAR_STARTING_SCFEN,
 } from "~/stories/fixtures/seeds";
-import { FOG_SIEGE_ROOK_SCFEN } from "~/presentation/animations/FogVisionDemo";
+import { FOG_SIEGE_ROOK_SCFEN } from "~/presentation/animations/components/FogVisionDemo";
 
 /** Static open board (no fog) — Combat Chain start placement. */
 export const OPEN_BOARD_FIXTURE = {

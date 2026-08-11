@@ -1,0 +1,66 @@
+@startuml core-index
+' SPEC: _spec/apps/starchess/core/index.puml
+' purpose: Single-owner interaction plan — Command / Facade / Pipeline / Interpreter / Query.
+!include ../../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess · Core interaction plan (single-owner)
+
+package "core/scfen — Document" {
+  component "scfen/document.puml\ncodec sole wire I/O" as SCFEN <<db>>
+}
+
+package "core/turn" {
+  component "turn/command-queue.puml\naddScAction only queue write" as CMD <<async>>
+  component "turn/turn-facade.puml\nbegin/endScTurn" as FAC <<app>>
+  component "turn/resolve-pipeline.puml\nresolveTurn phases" as PIPE <<app>>
+  component "turn/match-state-machine.puml\nmatchReducer sole app write" as SM <<async>>
+  component "turn/playback-interpreter.puml\ntimelinePlayer only" as PLAY <<async>>
+}
+
+package "core/board" {
+  component "board/board-queries.puml\nvision · mines · adjacent" as BQ <<db>>
+  component "board/planning-projection.puml\noccupancy → overlays stack" as PLAN <<app>>
+}
+
+package "core/adjutant" {
+  component "adjutant/opponent-strategy.puml" as AI <<app>>
+}
+
+component "engine-boundary.puml" as BOUND <<host>>
+
+SCFEN ARROW_MAIN CMD
+CMD ARROW_MAIN FAC
+FAC ARROW_MAIN PIPE
+BQ ARROW_OPTIONAL CMD
+BQ ARROW_OPTIONAL PIPE
+BQ ARROW_OPTIONAL PLAN
+BQ ARROW_OPTIONAL AI
+SM ARROW_MAIN CMD
+SM ARROW_MAIN FAC
+FAC ARROW_QUEUE PLAY : EndScTurnResult
+PLAY ARROW_MAIN SM : TIMELINE_*
+AI ARROW_MAIN CMD
+PLAN ARROW_MAIN SM : QUEUE_ACTION
+BOUND ARROW_CLOUD SM : public API only
+
+note bottom
+  **Single owners (no dual path)**
+  |= Concern |= Owner |= Forbidden |
+  | Queue mutate | addScAction via reducer | UI direct Q: / validation |
+  | Turn open/End | submit-turn facade | app → resolveTurn |
+  | Classical phases | resolve-turn pipeline | playback re-resolve |
+  | Playback | timelinePlayer | playResolve (deleted) |
+  | Planning dests | occupancyForQueuedMoves → viewer | third occupancy fork |
+  | Rook siege mode | rookModeForSieged | inline siege?tank lambdas |
+  | Mineral income | applyTurnIncome | magic caps / copy loops |
+  | Timeline bind | bindTimeline(dispatch) | 4× callback paste |
+  | Turn open | TURN_OPEN → beginScTurn | store calling beginScTurn |
+  | Fog visibility | fogVisibility.ts | parallel lit/revealed forks |
+  Enforced: bundleBoundary.test.ts (ACL + no presentation engine writes).
+  Intentional soft dual: UI fogged scMovesFrom + core soft queue (resolve owns collisions).
+  Coverage floor: 75% four-axis on gated .ts surface.
+end note
+@enduml

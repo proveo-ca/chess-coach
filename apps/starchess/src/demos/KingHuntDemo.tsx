@@ -6,7 +6,6 @@ import type { Component } from "solid-js";
 
 import { buildReviewHistory } from "~/app/reviewHistory";
 import {
-  KING_HUNT_PLY_FENS,
   KING_HUNT_PLY_SC,
   KING_HUNT_START_SCFEN,
   KING_HUNT_STEPS,
@@ -17,7 +16,6 @@ import { ReviewDemoScreen } from "~/demos/ReviewDemoScreen";
 
 export {
   KING_HUNT_PLY_SC,
-  KING_HUNT_PLY_FENS,
   KING_HUNT_START_SCFEN,
   KING_HUNT_STEPS,
   buildKingHuntPlys,
