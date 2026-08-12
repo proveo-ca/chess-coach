@@ -68,6 +68,10 @@ note bottom
   Chess mockup (Coach light/dark tokens via ``data-theme``) → glass clears
   to sky → Selena→Kerrigan → buttons shatter → StarChess anchors fade in.
   Storybook: Screens/Menu · StarChess toggle · Theme toolbar.
+  The mockup must match Coach ``MenuScreen`` box-for-box at Desktop / Mobile /
+  Dynamic — two columns on desktop **and** dynamic, one on portrait mobile,
+  plus Coach's sub-480 root-font scale and the dynamic-band chat bubble.
+  Contract + the two hand-copied Coach details: ``_spec/apps/ui/responsiveness/rules.md`` §5.
   Tutorial → ``/tutorial/:section/:story`` (ids from ``TUTORIAL_SCRIPT``,
   e.g. ``/tutorial/fog/king`` · ``/tutorial/specials/marine``).
   Bare ``/tutorial`` canonicalizes to the first Fog story.

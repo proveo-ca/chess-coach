@@ -84,6 +84,17 @@
   color: var(--sc-menu-neon, #7dff6a);
 }
 
+@media (max-width: 719px) and (min-width: 480px) and (max-height: 639px) {
+  .dock {
+    width: min(26rem, calc(100vw - 2rem));
+  }
+
+  .dock,
+  .bubble {
+    max-height: calc(var(--board-size) * 3 / 8);
+  }
+}
+
 /* Objective complete — accent the bubble and badge the check line. */
 .success .bubble {
   border-color: color-mix(in srgb, var(--accent, #00bac6) 60%, transparent);

@@ -406,7 +406,8 @@ describe("tutorialScript", () => {
         scfen: allyDead,
       }),
     ).toEqual({
-      comment: "A Command Center crumbles when being checked 3 times.",
+      comment:
+        "We're observing live combat! \nA Command Center crumbles after 3 attacks.",
       emotion: "watching",
       source: "intro",
     });

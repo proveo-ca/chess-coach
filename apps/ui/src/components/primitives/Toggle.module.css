@@ -1,8 +1,12 @@
+/* The switch keeps its own 24px pill; the row it sits in takes the standard
+   control height so it lines up with its neighbours. Consumers that stack it
+   with inputs add `--control-inset-inline` to align the label with their text. */
 .toggle-container {
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   gap: 12px;
-  border-radius: 20px;
+  min-height: var(--control-height);
 }
 
 .toggle-label {

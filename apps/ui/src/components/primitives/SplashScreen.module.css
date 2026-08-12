@@ -47,11 +47,55 @@
 }
 
 .splash-avatar-wrapper {
-  margin: 1.5rem auto;
+  grid-column: var(--splash-span, auto);
+  margin-block: var(--splash-avatar-space, 1.5rem);
+  margin-inline: auto;
 }
 
 .splash-title {
+  grid-column: var(--splash-span, auto);
   margin-bottom: 1.5rem;
   font-size: 1.5rem;
   font-weight: 600;
+}
+
+/* Two-column menu splash — by **aspect**, not width alone: desktop, plus the
+   short-and-wide `dynamic` band (560×420), where one column would not fit the
+   height. Portrait mobile — any width below `--desktop` with room to stack —
+   keeps this flex column. `:has` keeps the loading / lobby splashes single. */
+@media (--desktop), (--dynamic-mobile) {
+  .splash-content:has(:global(.menu-options)) {
+    --splash-span: 1 / -1;
+    --splash-avatar-space: 0 0.25rem;
+    --splash-gap: 0.5rem 1.5rem;
+    --splash-width: 34rem;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    /* dense: the right column's items come last in DOM order. */
+    grid-auto-flow: row dense;
+    align-content: start;
+    gap: var(--splash-gap);
+    width: min(92vw, var(--splash-width));
+    max-width: var(--splash-width);
+  }
+}
+
+@media (--desktop) {
+  .splash-content:has(:global(.menu-options)) {
+    --splash-avatar-space: 1rem 0.5rem;
+    --splash-gap: 1rem 2.5rem;
+    --splash-width: 40rem;
+  }
+}
+
+/* Selena says the line in this band, so the heading stays for a11y only. */
+@media (--dynamic-mobile) {
+  .splash-content:has(:global(.menu-options)) .splash-title {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
 }

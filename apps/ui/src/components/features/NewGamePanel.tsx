@@ -2,17 +2,17 @@ import type { Component } from "solid-js";
 
 import styles from "~/components/features/NewGamePanel.module.css";
 import { PlayerNameField } from "~/components/features/PlayerNameField";
-import { Button } from "~/components/primitives/Button";
 import { ColorSelector } from "~/components/primitives/ColorSelector";
 import { Select } from "~/components/primitives/Select";
+import { SplitButton } from "~/components/primitives/SplitButton";
 import { Toggle } from "~/components/primitives/Toggle";
 import { setLastAIMoveInfo } from "~/hooks/useMoveExecutor";
 import { postMove, postNewGame } from "~/services/api";
 import { dispatchCoachEvent, setAdvice, setShowNewGame } from "~/store/coachStore";
 import { addMoveSan, resetGame } from "~/store/gameStore";
-import { activePlayerColor, colorPref, difficulty, imLost, playerIdentity, setColorPref, setDifficulty, setImLost, setPlayerIdentity } from "~/store/settingsStore";
+import { DIFFICULTY_OPTIONS, activePlayerColor, colorPref, difficulty, imLost, playerIdentity, setColorPref, setDifficulty, setImLost, setPlayerIdentity } from "~/store/settingsStore";
 import { identityOptions } from "~/features/nerd/identity";
-import type { Difficulty, PlayerIdentity } from "~/types/settings";
+import type { PlayerIdentity } from "~/types/settings";
 
 export const NewGamePanel: Component = () => {
   const handleNewGame = async () => {
@@ -62,15 +62,6 @@ export const NewGamePanel: Component = () => {
       <PlayerNameField />
       <ColorSelector value={colorPref()} onChange={setColorPref} />
       <Select
-        class={styles["difficulty-select"]}
-        value={difficulty()}
-        onChange={(e) => setDifficulty(e.currentTarget.value as Difficulty)}
-      >
-        <option value="intermediate">Intermediate (1100)</option>
-        <option value="advanced">Advanced (1600)</option>
-        <option value="expert">Expert (2200)</option>
-      </Select>
-      <Select
         value={playerIdentity()}
         onChange={(e) => setPlayerIdentity(e.currentTarget.value as PlayerIdentity)}
         disabled={imLost()}
@@ -79,10 +70,23 @@ export const NewGamePanel: Component = () => {
           <option value={id}>{id}</option>
         ))}
       </Select>
-      <Toggle label="i'm lost" checked={imLost()} onChange={(v) => setImLost(v)} />
-      <Button class={styles["start-btn"]} onClick={handleNewGame}>
+      <Toggle
+        class={styles["lost-toggle"]}
+        label="i'm lost"
+        checked={imLost()}
+        onChange={(v) => setImLost(v)}
+      />
+      <SplitButton
+        class={styles["start-split"]}
+        primary
+        onClick={handleNewGame}
+        value={difficulty()}
+        onChange={setDifficulty}
+        options={DIFFICULTY_OPTIONS}
+        selectLabel="Difficulty"
+      >
         Start
-      </Button>
+      </SplitButton>
     </div>
   );
 };

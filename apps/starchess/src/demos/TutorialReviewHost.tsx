@@ -310,34 +310,26 @@ const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
       />
       <Screen.Header>
         <div class={styles.headerSlot}>
-          {/*
-            `/review/:id` chrome: `‹ Back` + arrows above the board. Here the
-            arrows step one *phase* (Check → Intent → Resolve) instead of a
-            whole turn — the slow-motion version of the Review screen this
-            lesson introduces.
-          */}
-          <ScreenBackNav
-            onBack={props.onHome}
-            class={styles.reviewNav}
-            data-testid="tutorial-review-back"
-          >
-            <ReviewTurnNav
-              onBack={goPrev}
-              onForward={() => void goNext()}
-              backDisabled={beatIndex() <= 0 || busy()}
-              forwardDisabled={beatIndex() >= beats().length - 1 || busy()}
+          <div class={styles.reviewChrome}>
+            <ScreenBackNav
+              onBack={props.onHome}
+              class={styles.reviewNav}
+              data-testid="tutorial-review-back"
             >
-              {/* Fixed width — the label grows `Turn 1` → `Turn 1 · Resolve`
-                  and the arrows must not dance as it does. */}
-              <span class={styles.phaseLabel} data-testid="tutorial-review-phase">
-                {beatLabel()}
-              </span>
-            </ReviewTurnNav>
-          </ScreenBackNav>
-          {/* Mobile coach lives in the chrome track, never in the board column:
-              anything above the board there shifts its Y off every other screen. */}
-          <div class="mobile-hero" data-testid="tutorial-mobile-hero">
-            <CoachAvatar identity="kerrigan" emotion={props.coachEmotion ?? "idle"} />
+              <ReviewTurnNav
+                onBack={goPrev}
+                onForward={() => void goNext()}
+                backDisabled={beatIndex() <= 0 || busy()}
+                forwardDisabled={beatIndex() >= beats().length - 1 || busy()}
+              >
+                <span class={styles.phaseLabel} data-testid="tutorial-review-phase">
+                  {beatLabel()}
+                </span>
+              </ReviewTurnNav>
+            </ScreenBackNav>
+            <div class="mobile-hero" data-testid="tutorial-mobile-hero">
+              <CoachAvatar identity="kerrigan" emotion={props.coachEmotion ?? "idle"} />
+            </div>
           </div>
           {props.guideBubble}
         </div>
@@ -357,7 +349,6 @@ const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
           onHome={props.onHome}
           controlsVisible={props.turnChrome === "sidebar"}
         >
-          {/* Same as `/review/:id`: rail shows turn + phase, arrows live up top. */}
           <TurnBarSidebar
             review={{
               turn: reviewTurnNumber(),

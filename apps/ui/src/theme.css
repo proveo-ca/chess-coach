@@ -107,6 +107,12 @@
   --spacing-md: 1rem;
   --spacing-lg: 2rem;
   --border-radius-md: 8px;
+  /* Shared height for inputs, selects and menu-scale buttons so a row of mixed
+     controls lines up. The Toggle is a switch and keeps its own size. */
+  --control-height: 40px;
+  /* Where a control's text starts: Input/Select's 1.2em at 0.9rem, plus their
+     1px border. Anything that must align with them uses this instead. */
+  --control-inset-inline: 1.14rem;
   --avatar-height: 8rem;
 
   /* Mobile board: floor 320 · grow with viewport · ceiling 480 (desktop overrides).

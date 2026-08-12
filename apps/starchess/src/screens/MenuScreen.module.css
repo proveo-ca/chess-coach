@@ -256,12 +256,12 @@
  */
 .posSingle {
   left: calc(8% + 2rem);
-  top: calc(14% + 2rem);
+  top: calc(12% + 2rem);
 }
 
 .posMulti {
   left: 16%;
-  top: 42%;
+  top: 45%;
 }
 
 .posReview {
