@@ -23,7 +23,9 @@ import { Screen } from "~/components/primitives/Screen";
 import { ScreenBackNav } from "~/components/primitives/ScreenBackNav";
 import styles from "~/demos/ReviewDemoScreen.module.css";
 import { clearSiegedRooks, setRookMode } from "~/presentation/animations/rookModeStore";
+import { MobileBanner } from "~/components/atoms/MobileBanner";
 import { LiveBoardBinding } from "~/presentation/board/components/LiveBoardBinding";
+import { displayPlayerName } from "~/utils/playerName";
 import { isCheckOnlyResolve } from "~/presentation/hud/isCheckOnlyResolve";
 import { MatchBoardHost } from "~/presentation/hud/components/MatchBoardHost";
 import { ResourceBar } from "~/presentation/hud/components/ResourceBar";
@@ -63,6 +65,8 @@ export type ReviewDemoScreenProps = {
   rookTank?: boolean;
   /** Human team for You / Adjutant vision labels. */
   playerColor?: StarChessColor;
+  /** Shown at the left of the player's ResourceBar. */
+  playerName?: string;
   /** Side-rail Home — SPA navigate (review routes). */
   onHome?: () => void;
   /** Hide dual ResourceBars (tutorial). */
@@ -189,6 +193,11 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
     return f === "both" || f === "b";
   };
 
+  const sideName = (color: StarChessColor): string =>
+    color === (props.playerColor ?? "w")
+      ? displayPlayerName(props.playerName)
+      : "Adjutant";
+
   const dualResourceBars = () => (
     <div
       class={styles.dualResources}
@@ -201,11 +210,13 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
             : "Red side resources"
       }
     >
+      {/* The frame carries the team colour, so the name replaces the
+          "X (Blue) vs Y (Red)" title line. */}
       <Show when={showWhiteResources()}>
-        <ResourceBar color="w" snapshot={snap()} />
+        <ResourceBar color="w" snapshot={snap()} name={sideName("w")} />
       </Show>
       <Show when={showBlackResources()}>
-        <ResourceBar color="b" snapshot={snap()} />
+        <ResourceBar color="b" snapshot={snap()} name={sideName("b")} />
       </Show>
     </div>
   );
@@ -217,6 +228,21 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
 
   return (
     <Screen>
+      {/* Dynamic-only chrome (CSS-gated): banner + board, nothing else. */}
+      <MobileBanner
+        onBack={() => props.onHome?.()}
+        resources={dualResourceBars()}
+        turn={
+          <ReviewTurnNav
+            onBack={() => store.reviewBack()}
+            onForward={() => store.reviewForward()}
+            backDisabled={reviewNavDisabled().back}
+            forwardDisabled={reviewNavDisabled().forward}
+          >
+            <span />
+          </ReviewTurnNav>
+        }
+      />
       <Show
         when={props.header}
         fallback={
@@ -237,9 +263,6 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
                       class={styles.resultLine}
                     >
                       {title().resultLine}
-                    </Label>
-                    <Label variant="title" class={styles.matchupLine}>
-                      {title().matchup}
                     </Label>
                   </div>
                 )}

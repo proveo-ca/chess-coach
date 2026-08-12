@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/starchess/architecture/bridge-match-board-host.puml, _spec/apps/starchess/screens.puml
+// SPEC: _spec/apps/starchess/architecture/bridge-match-board-host.puml, _spec/apps/starchess/screens.puml, _spec/apps/starchess/architecture/screen-entities.puml
 /**
  * Structural board row shell — compound regions like {@link Screen}.
  * Chrome assemblers compose Column / BoardHost / Rail; no slot props.

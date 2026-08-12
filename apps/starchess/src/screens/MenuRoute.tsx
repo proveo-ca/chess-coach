@@ -1,8 +1,8 @@
+// SPEC: _spec/apps/starchess/menu-flow.puml, _spec/apps/starchess/architecture/screen-entities.puml
 /**
  * Menu route — `/starchess/` · START → `/single` · Tutorial → `/tutorial/fog/king`
  * · Review → `/review`. Multiplayer stays disabled (Coming Soon).
  * Redirects from `/chess/` play {@link MenuArrival} (Chess mockup → StarChess).
- * // SPEC: _spec/apps/starchess/menu-flow.puml
  */
 import { useNavigate, type RouteSectionProps } from "@solidjs/router";
 import { createSignal, onMount, type Component } from "solid-js";

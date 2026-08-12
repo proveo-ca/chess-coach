@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/starchess/architecture/composite-vfx-stack.puml, _spec/apps/starchess/architecture/timeline-perf.puml
+// SPEC: _spec/apps/starchess/architecture/composite-vfx-stack.puml, _spec/apps/starchess/architecture/timeline-perf.puml, _spec/apps/starchess/architecture/board-entities.puml
 /**
  * Composite combat VFX stack — stable layer order (never per-layer Show).
  */

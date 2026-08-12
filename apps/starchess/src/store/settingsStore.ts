@@ -4,6 +4,7 @@
  */
 import { createSharedSettingsFieldStore } from "~/store/createPersistedStore";
 import { randomName } from "~/utils/randomName";
+import { clampPlayerName } from "~/utils/playerName";
 
 /** Must match `apps/ui/src/store/settingsStore.ts`. */
 export const SETTINGS_STORAGE_KEY = "chess_coach_settings_state";
@@ -16,4 +17,5 @@ const [settingsState, setSettingsState] = createSharedSettingsFieldStore(
 );
 
 export const playerName = () => settingsState.playerName;
-export const setPlayerName = (val: string) => setSettingsState("playerName", val);
+export const setPlayerName = (val: string) =>
+  setSettingsState("playerName", clampPlayerName(val));

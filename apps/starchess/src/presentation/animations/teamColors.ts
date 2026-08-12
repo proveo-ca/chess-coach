@@ -1,3 +1,4 @@
+// SPEC: _spec/apps/starchess/architecture/board-entities.puml
 import type { PieceColor } from "~/presentation/types";
 
 /** StarChess team fills — match `public/pieces/nerd/` (4-swatch army). */

@@ -1,6 +1,6 @@
+// SPEC: _spec/apps/starchess/demos.puml, _spec/apps/starchess/architecture/screen-entities.puml
 /**
  * King Hunt — DualNav review via MatchStore (check → intent → resolve).
- * // SPEC: _spec/apps/starchess/demos.puml
  */
 import type { Component } from "solid-js";
 

@@ -227,3 +227,37 @@
   --text-color: #e8eaed;
   --border-color: #444;
 }
+
+/*
+ * The top region is a column flex with `align-items: center`, so an unstyled
+ * wrapper shrink-wraps and pulls `‹ Back` off the board's left edge. Stretch
+ * it so ScreenBackNav spans the full board width.
+ */
+.topNavRow {
+  width: 100%;
+  /* The wrapper is the flex item, so the pin has to live here — the band's own
+     `margin-bottom: auto` cannot escape it. */
+  margin-bottom: auto;
+}
+
+/*
+ * Mobile: the chrome track bottom-packs, so the slot holding the nav band must
+ * pin to the top — otherwise `‹ Back` sits at a different Y on every screen
+ * depending on how tall that screen's chrome happens to be.
+ */
+@media (max-width: 719px) {
+  .headerSlot {
+    margin-bottom: auto;
+  }
+}
+
+/*
+ * Dynamic: the banner is `position: absolute` and must resolve against the
+ * viewport box, not this pane — `position: relative` here would scope it to
+ * the board column and it would render inset instead of full-bleed.
+ */
+@media (max-width: 719px) and (min-width: 480px) and (max-height: 639px) {
+  .topPane {
+    position: static;
+  }
+}

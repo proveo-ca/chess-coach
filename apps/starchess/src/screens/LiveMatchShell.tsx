@@ -1,3 +1,4 @@
+// SPEC: _spec/apps/starchess/architecture/screen-entities.puml
 /**
  * Shared live-match shell — sky + play layer (`/starchess/single` + live demos).
  */

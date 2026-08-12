@@ -1,3 +1,4 @@
+// SPEC: _spec/apps/starchess/architecture/board-entities.puml
 import { For, createMemo, type Component, type JSX } from "solid-js";
 import type { Square } from "chess.js";
 

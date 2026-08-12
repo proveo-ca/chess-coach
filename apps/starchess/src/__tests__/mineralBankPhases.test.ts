@@ -19,7 +19,7 @@ import { buildReviewHistory } from "~/app/reviewHistory";
 import { displayedSnapshot } from "~/app/selectors";
 import { isCheckOnlyResolve } from "~/presentation/hud/isCheckOnlyResolve";
 import type { MatchStore } from "~/types/match";
-import { STAR_STARTING_SCFEN } from "~/stories/fixtures/seeds";
+import { STAR_STARTING_SCFEN } from "~/app/seeds";
 
 const bank = (store: MatchStore, color: "w" | "b" = "w") =>
   displayedStoredMaterial(store, color, displayedSnapshot(store.state()));

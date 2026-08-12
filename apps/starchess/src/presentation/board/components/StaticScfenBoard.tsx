@@ -1,7 +1,7 @@
+// SPEC: _spec/apps/starchess/demos.puml, _spec/apps/starchess/architecture/board-entities.puml
 /**
  * Static SCFEN board frame — maps gallery / open-board samples.
  * Always mounts on Screen grid (top · board · footer). No match store / DualNav.
- * // SPEC: _spec/apps/starchess/demos.puml
  */
 import type { Component } from "solid-js";
 import { createMemo } from "solid-js";

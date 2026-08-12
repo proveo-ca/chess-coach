@@ -1,18 +1,13 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { GasDeployScenarioScreen } from "~/demos/GasDeployScenarioScreen";
-import { VermeerLiveScreen } from "~/demos/VermeerLiveScreen";
+import { LiveLessonHost } from "~/demos/LiveLessonHost";
+import { FULL_ARMY_SAMPLE, VERMEER_LIVE_SAMPLE } from "~/demos/samples";
 import { ResourceBar } from "~/presentation/hud/components/ResourceBar";
 import { TurnBar } from "~/presentation/hud/components/TurnBar";
-import {
-  createMatchStore,
-  MatchStoreProvider,
-} from "~/app/MatchStoreContext";
-import { createMatchStateFromScfen } from "~/app/matchReducer";
-import { GAS_DEPLOY_FIXTURES } from "~/stories/fixtures/scenarios";
+import { WithMatchStore, sampleStory } from "~/stories/project";
 
 /**
- * Turn chrome + full-army GasDeploy. Stories mount fixtures / chrome only.
+ * Turn chrome + full-army GasDeploy. Boards come from `demos/samples.ts`.
  */
 const meta = {
   title: "Features/Turn Chrome",
@@ -28,52 +23,37 @@ const meta = {
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
 
-export const ResourceAndTurn: Story = {
+export const ResourceAndTurn: StoryObj = {
   name: "ResourceBar + TurnBar",
-  render: () => {
-    const store = createMatchStore({
-      initial: createMatchStateFromScfen(
-        GAS_DEPLOY_FIXTURES.fullArmy.scfen,
-        GAS_DEPLOY_FIXTURES.fullArmy.stored,
-      ),
-      autoArmTimer: false,
-    });
-    return (
-      <MatchStoreProvider store={store}>
-        <div
-          style={{
-            width: "420px",
-            display: "flex",
-            "flex-direction": "column",
-            "align-items": "stretch",
-            gap: "6px",
-          }}
-        >
-          <ResourceBar />
-          <TurnBar autoStart={false} resolveOnEnd={false} onEnd={() => undefined} />
-        </div>
-      </MatchStoreProvider>
-    );
-  },
+  render: () => (
+    <WithMatchStore board={FULL_ARMY_SAMPLE}>
+      <div
+        style={{
+          width: "420px",
+          display: "flex",
+          "flex-direction": "column",
+          "align-items": "stretch",
+          gap: "6px",
+        }}
+      >
+        <ResourceBar />
+        <TurnBar autoStart={false} resolveOnEnd={false} onEnd={() => undefined} />
+      </div>
+    </WithMatchStore>
+  ),
 };
 
-export const TurnSidebarRail: Story = {
+export const TurnSidebarRail = sampleStory(VERMEER_LIVE_SAMPLE, {
   name: "TurnBarSidebar (vertical)",
-  parameters: {
-    layout: "fullscreen",
-    docs: {
-      description: {
-        story:
-          "Experimental vertical turn chrome in the live side rail (same as `/starchess/single`). Horizontal TurnBar stays unused.",
-      },
-    },
-  },
-  render: () => <VermeerLiveScreen turnChrome="sidebar" />,
-};
+  docs:
+    "Experimental vertical turn chrome in the live side rail (same as `/starchess/single`). Horizontal TurnBar stays unused.",
+  boardVariant: "vermeer",
+  shell: "vermeer",
+  turnChrome: "sidebar",
+});
 
-export const GasDeploy: Story = {
+export const GasDeploy: StoryObj = {
   parameters: {
     layout: "fullscreen",
     docs: {
@@ -83,9 +63,7 @@ export const GasDeploy: Story = {
       },
     },
   },
-  args: {
-    gas: 3,
-  },
+  args: { gas: 3 },
   argTypes: {
     gas: {
       control: { type: "inline-radio" },
@@ -94,9 +72,8 @@ export const GasDeploy: Story = {
     },
   },
   render: (args) => (
-    <GasDeployScenarioScreen
-      scfen={GAS_DEPLOY_FIXTURES.fullArmy.scfen}
-      stored={GAS_DEPLOY_FIXTURES.fullArmy.stored}
+    <LiveLessonHost
+      board={FULL_ARMY_SAMPLE}
       gas={Number((args as { gas?: number }).gas) || 3}
     />
   ),

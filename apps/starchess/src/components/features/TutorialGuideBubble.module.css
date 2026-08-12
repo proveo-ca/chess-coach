@@ -83,3 +83,54 @@
 .dismiss:hover {
   color: var(--sc-menu-neon, #7dff6a);
 }
+
+/* Objective complete — accent the bubble and badge the check line. */
+.success .bubble {
+  border-color: color-mix(in srgb, var(--accent, #00bac6) 60%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent, #00bac6) 35%, transparent);
+}
+
+.successMark {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent, #00bac6);
+}
+
+/* Auto-advance countdown — a 4px line walking the button's border. */
+.counting {
+  position: relative;
+  overflow: visible;
+}
+
+.actionLabel {
+  position: relative;
+  z-index: 1;
+}
+
+.countdown {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.countdown rect {
+  fill: none;
+  stroke: var(--accent, #00bac6);
+  stroke-width: 4;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: tutorial-countdown-draw var(--auto-advance, 3000ms) linear forwards;
+}
+
+@keyframes tutorial-countdown-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}

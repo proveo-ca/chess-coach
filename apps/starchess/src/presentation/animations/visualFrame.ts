@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/starchess/animation-pipeline.md
+// SPEC: _spec/apps/starchess/animation-pipeline.md, _spec/apps/starchess/architecture/board-entities.puml
 import type { Square } from "chess.js";
 
 import { isBoardSquare } from "~/presentation/animations/boardGeom";

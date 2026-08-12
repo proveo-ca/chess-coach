@@ -1,3 +1,4 @@
+// SPEC: _spec/apps/starchess/architecture/board-entities.puml
 /**
  * Rook board glyph — product path is {@link InlineRook} (`nerd`).
  * `cburnett` flattens tank/siege to a classic rook img for the **fog tutorial

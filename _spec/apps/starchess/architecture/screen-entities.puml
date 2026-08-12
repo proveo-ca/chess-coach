@@ -8,28 +8,77 @@ skinparam defaultTextAlignment left
 skinparam classAttributeIconSize 0
 hide empty members
 
-title StarChess · Screen / demo entities → board hosts\n(MatchBoardHost)
+title StarChess · Screen / demo entities → board hosts\n(LiveLessonHost · MatchBoardHost)
 
 package "SPA routes" {
 
-  class SingleScreen <<app>>
-  class ReviewScreen <<app>>
-  class TutorialScreen <<app>>
+  class MenuRoute <<app>> {
+    `/` · `/*` fallback
+    menu sky — no board host
+  }
+
+  class SingleScreen <<app>> {
+    `/single`
+  }
+
+  class ReviewScreen <<app>> {
+    `/review` list — no board host
+    `/review/:id` — ReviewDemoScreen
+  }
+
+  class TutorialScreen <<app>> {
+    `/tutorial/:section/:story`
+    routing + lesson gates only
+  }
+
+}
+
+package "catalog (source of truth)" {
+
+  class TutorialScriptConfig <<db>> {
+    tutorial/tutorialScript.config.ts
+    --
+    17 live lessons
+    seed · chrome · hints · gates · docs
+  }
+
+  class DemoSamples <<db>> {
+    demos/samples.ts
+    --
+    vermeer · full army
+  }
 
 }
 
 package "live hosts" {
 
   class LiveMatchShell <<host>>
+
+  class LiveLessonHost <<app>> {
+    demos/LiveLessonHost.tsx
+    --
+    **sole** live-lesson host
+    seed · narration · hints
+  }
+
+  class Choreography <<async>> {
+    demos/choreography/
+    --
+    kingDefenseOpening
+    kingDefenseIIChecks
+    kingHuntGraduation
+  }
+
+  class LessonNarration <<app>> {
+    tutorial/useLessonNarration.ts
+    --
+    sole narration publisher
+  }
+
   class BaseScreen <<app>> {
     LiveChrome assembler
     visionMode = 'player'
   }
-
-  class VermeerLiveScreen <<app>>
-  class KingHuntLiveScreen <<app>>
-  class FogLiveScenarioScreen <<app>>
-  class GasDeployScenarioScreen <<app>>
 
 }
 
@@ -65,6 +114,14 @@ package "board structure (MatchBoardHost)" {
 
 }
 
+package "projection" {
+  class Stories <<host>> {
+    ""*.stories.tsx"" + stories/project.tsx
+    --
+    ids only — no board content
+  }
+}
+
 package "missing" {
   class LiveMultiScreen <<error>> {
     live/multi — ABSENT
@@ -76,15 +133,18 @@ ReviewScreen *-- LiveMatchShell
 TutorialScreen *-- LiveMatchShell
 SingleScreen *-- BaseScreen
 ReviewScreen *-- ReviewDemoScreen
-TutorialScreen *-- FogLiveScenarioScreen
-TutorialScreen *-- GasDeployScenarioScreen
+TutorialScreen *-- LiveLessonHost
 TutorialScreen *-- TutorialReviewHost
-TutorialScreen *-- KingHuntLiveScreen
 
-VermeerLiveScreen *-- BaseScreen
-KingHuntLiveScreen *-- BaseScreen
-FogLiveScenarioScreen *-- BaseScreen
-GasDeployScenarioScreen *-- BaseScreen
+LiveLessonHost *-- BaseScreen
+LiveLessonHost ..> Choreography : board.choreography
+LiveLessonHost ..> LessonNarration
+LiveLessonHost ..> TutorialScriptConfig : lessonBoard()
+LiveLessonHost ..> DemoSamples
+
+Stories ..> LiveLessonHost : project
+Stories ..> TutorialScriptConfig : project
+Stories ..> ReviewDemoScreen
 
 CombatChainDemo *-- ReviewDemoScreen
 KingHuntDemo *-- ReviewDemoScreen
@@ -100,9 +160,18 @@ AnimationStage *-- StarChessBoard
 
 note as ModeMatrix
   **Mode matrix (unchanged behavior)**
-  | live/* | BaseScreen → MatchBoardHost → LiveBoardBinding | player fog |
+  | live/* | LiveLessonHost → BaseScreen → MatchBoardHost → LiveBoardBinding | player fog |
   | review/* | ReviewDemo / TutorialReviewHost → MatchBoardHost | prop-driven / observer |
   | live/multi | ABSENT |
+end note
+
+note as Collapsed
+  **Collapsed** into ""LiveLessonHost"" (was 6 hosts, 818 lines):
+  FogLiveScenarioScreen · GasDeployScenarioScreen · KingDefenseScreen ·
+  KingDefenseIIScreen · KingHuntLiveScreen · VermeerLiveScreen.
+  Config → ""TutorialStoryScript.board"" · ""demos/samples.ts"";
+  the imperative residue → ""demos/choreography/"".
+  Design: ""storybook-projection.puml"" · ""bridge-match-board-host.puml"".
 end note
 
 @enduml

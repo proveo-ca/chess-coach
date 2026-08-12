@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/starchess/core/board/planning-projection.puml, _spec/apps/starchess/core/engine-boundary.puml
+// SPEC: _spec/apps/starchess/core/board/planning-projection.puml, _spec/apps/starchess/core/engine-boundary.puml, _spec/apps/starchess/architecture/board-entities.puml
 import type { Square } from "chess.js";
 import { createMemo } from "solid-js";
 import {

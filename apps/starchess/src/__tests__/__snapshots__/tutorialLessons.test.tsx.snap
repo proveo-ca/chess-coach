@@ -1,0 +1,35 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`tutorial lesson catalog > 'fog'/'bishop' > mounts with a board and a stable chrome fingerprint 1`] = `"squares=64,pieces=2,chessboard,starchess-gas-deploy,starchess-side-rail,tutorial-header,tutorial-footer-nav"`;
+
+exports[`tutorial lesson catalog > 'fog'/'king' > mounts with a board and a stable chrome fingerprint 1`] = `"squares=64,pieces=1,chessboard,starchess-gas-deploy,starchess-side-rail,tutorial-header,tutorial-footer-nav"`;
+
+exports[`tutorial lesson catalog > 'fog'/'knight' > mounts with a board and a stable chrome fingerprint 1`] = `"squares=64,pieces=2,chessboard,starchess-gas-deploy,starchess-side-rail,tutorial-header,tutorial-footer-nav"`;
+
+exports[`tutorial lesson catalog > 'fog'/'mine' > mounts with a board and a stable chrome fingerprint 1`] = `"squares=64,pieces=1,chessboard,starchess-gas-deploy,starchess-side-rail,tutorial-header,tutorial-footer-nav"`;
+
+exports[`tutorial lesson catalog > 'fog'/'pawn' > mounts with a board and a stable chrome fingerprint 1`] = `"squares=64,pieces=2,chessboard,starchess-gas-deploy,starchess-side-rail,tutorial-header,tutorial-footer-nav"`;
+
+exports[`tutorial lesson catalog > 'fog'/'queen' > mounts with a board and a stable chrome fingerprint 1`] = `"squares=64,pieces=2,chessboard,starchess-gas-deploy,starchess-side-rail,tutorial-header,tutorial-footer-nav"`;
+
+exports[`tutorial lesson catalog > 'fog'/'rook-siege' > mounts with a board and a stable chrome fingerprint 1`] = `"squares=64,pieces=6,chessboard,starchess-gas-deploy,starchess-side-rail,tutorial-header,tutorial-footer-nav"`;
+
+exports[`tutorial lesson catalog > 'fog'/'rook-tank' > mounts with a board and a stable chrome fingerprint 1`] = `"squares=64,pieces=1,chessboard,starchess-gas-deploy,starchess-side-rail,tutorial-header,tutorial-footer-nav"`;
+
+exports[`tutorial lesson catalog > 'king'/'king-defense' > mounts with a board and a stable chrome fingerprint 1`] = `"squares=64,pieces=1,chessboard,turn-end,starchess-gas-deploy,starchess-side-rail,tutorial-header,tutorial-footer-nav"`;
+
+exports[`tutorial lesson catalog > 'king'/'king-defense-2' > mounts with a board and a stable chrome fingerprint 1`] = `"squares=64,pieces=4,chessboard,turn-end,starchess-gas-deploy,starchess-side-rail,tutorial-header,tutorial-footer-nav"`;
+
+exports[`tutorial lesson catalog > 'king'/'king-hunt-live' > mounts with a board and a stable chrome fingerprint 1`] = `"squares=64,pieces=6,chessboard,turn-end,starchess-gas-deploy,starchess-side-rail,tutorial-header,tutorial-footer-nav"`;
+
+exports[`tutorial lesson catalog > 'specials'/'cc' > mounts with a board and a stable chrome fingerprint 1`] = `"squares=64,pieces=1,chessboard,starchess-gas-deploy,starchess-side-rail,tutorial-header,tutorial-footer-nav"`;
+
+exports[`tutorial lesson catalog > 'specials'/'hoverbike' > mounts with a board and a stable chrome fingerprint 1`] = `"squares=64,pieces=2,chessboard,starchess-gas-deploy,starchess-side-rail,tutorial-header,tutorial-footer-nav"`;
+
+exports[`tutorial lesson catalog > 'specials'/'marine' > mounts with a board and a stable chrome fingerprint 1`] = `"squares=64,pieces=3,chessboard,starchess-gas-deploy,starchess-side-rail,tutorial-header,tutorial-footer-nav"`;
+
+exports[`tutorial lesson catalog > 'specials'/'mecha' > mounts with a board and a stable chrome fingerprint 1`] = `"squares=64,pieces=5,chessboard,starchess-gas-deploy,starchess-side-rail,tutorial-header,tutorial-footer-nav"`;
+
+exports[`tutorial lesson catalog > 'specials'/'ship' > mounts with a board and a stable chrome fingerprint 1`] = `"squares=64,pieces=2,chessboard,starchess-gas-deploy,starchess-side-rail,tutorial-header,tutorial-footer-nav"`;
+
+exports[`tutorial lesson catalog > 'specials'/'tank' > mounts with a board and a stable chrome fingerprint 1`] = `"squares=64,pieces=3,chessboard,starchess-gas-deploy,starchess-side-rail,tutorial-header,tutorial-footer-nav"`;

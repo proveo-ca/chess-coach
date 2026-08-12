@@ -17,7 +17,7 @@ import { createMatchStateFromScfen } from "~/app/matchReducer";
 import { BaseScreen } from "~/app/BaseScreen.tsx";
 import { MatchResultModal } from "~/components/features/MatchResultModal";
 import { LiveMatchShell } from "~/screens/LiveMatchShell";
-import { STAR_STARTING_SCFEN } from "~/stories/fixtures/seeds";
+import { STAR_STARTING_SCFEN } from "~/app/seeds";
 import {
   addMatchRecord,
   makeMatchId,

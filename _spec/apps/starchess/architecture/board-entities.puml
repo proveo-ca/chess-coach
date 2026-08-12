@@ -19,6 +19,7 @@ package "leaves" {
   class VespeneIcon <<app>>
   class pieceUrl <<app>>
   class fogProjection <<app>>
+  class rookMode <<app>>
   class StarChessSquare <<app>>
   class TEAM_PRIMARY <<app>>
 
@@ -56,6 +57,7 @@ package "vfx overlays" {
   class QueenJumpAnimation <<app>>
   class MineMissileAnimation <<app>>
   class DeployAnimation <<app>>
+  class vfxPerf <<app>>
 
 }
 
@@ -86,6 +88,11 @@ package "board hosts" {
     store-free → AnimationStage
   }
 
+  class MapScreen <<app>> {
+    terrain gallery
+    store-free → AnimationStage
+  }
+
 }
 
 package "hooks" {
@@ -98,11 +105,18 @@ package "hooks" {
   class deriveVisualFrame <<app>>
   class kingDamageCuesFromBoard <<app>>
   class liveMatchPhase <<app>>
+  class pieceVisibleToViewer <<app>>
 
 }
 
-package "store (external)" {
+package "geometry / local stores" {
+  class rookModeStore <<db>>
+  class boardGeom <<app>>
+}
+
+package "app state (external)" {
   class MatchStore <<db>>
+  class capabilitiesStore <<db>>
 }
 
 StarChessBoard *-- RookGlyph
@@ -111,6 +125,7 @@ StarChessBoard *-- InlineBishop
 StarChessBoard *-- VespeneIcon
 StarChessBoard ..> pieceUrl
 StarChessBoard ..> fogProjection
+StarChessBoard ..> rookMode
 StarChessBoard ..> StarChessSquare
 StarChessBoard ..> TEAM_PRIMARY
 StarChessBoard ..> visionStrategyFor
@@ -120,7 +135,10 @@ ObserverDualVisionStrategy ..|> VisionStrategy
 
 AnimationStage *-- StarChessBoard
 AnimationStage *-- CombatOverlayRoot
+AnimationStage ..> boardGeom
+AnimationStage ..> rookModeStore
 CombatOverlayRoot ..> CombatCueFrame
+CombatOverlayRoot ..> vfxPerf
 CombatOverlayRoot *-- KingDamageOverlay
 CombatOverlayRoot *-- GasDropAnimation
 CombatOverlayRoot *-- AttackAnimation
@@ -134,6 +152,7 @@ LiveStarChessBoard *-- AnimationStage
 LiveStarChessBoard ..> CombatCueFrame : builds
 LiveBoardBinding *-- LiveStarChessBoard
 StaticScfenBoard *-- AnimationStage
+MapScreen *-- AnimationStage
 
 LiveStarChessBoard ..> useBoardVision
 LiveStarChessBoard ..> useIntentOverlays
@@ -143,10 +162,13 @@ LiveStarChessBoard ..> useAutoDeploy
 LiveStarChessBoard ..> deriveVisualFrame
 LiveStarChessBoard ..> kingDamageCuesFromBoard
 LiveStarChessBoard ..> liveMatchPhase
+LiveStarChessBoard ..> pieceVisibleToViewer : fog-gates VFX
 LiveStarChessBoard ..> MatchStore
+LiveStarChessBoard ..> capabilitiesStore : LIVE_CAPABILITIES on mount
 
 note bottom
   StarChessBoard + VisionStrategy · CombatOverlayRoot + CombatCueFrame.
+  ""useBoardVision"" ships beside ""useIntentOverlays"" (""presentation/combat/hooks/"").
   Design history: strategy-starchess-board · composite-vfx-stack. Screen hosts: ""screen-entities.puml"" (this folder).
 end note
 

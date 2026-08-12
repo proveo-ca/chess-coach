@@ -11,7 +11,8 @@
 @media (max-width: 719px) and (min-width: 480px) and (max-height: 639px) {
   .banner {
     display: grid;
-    grid-template-columns: 4rem 10rem minmax(0, 1fr);
+    /* Back hugs left · resources take every spare pixel · turn hugs right. */
+    grid-template-columns: 4rem minmax(0, 1fr) auto;
     align-items: center;
     column-gap: 0.35rem;
     width: 100%;
@@ -20,6 +21,13 @@
     box-sizing: border-box;
     margin: 0;
     flex-shrink: 0;
+    /* Full-bleed strip pinned to the viewport top — it owns the dynamic
+       chrome, so it ignores the Screen grid's inset entirely. */
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
     padding-block: 0.25rem;
     padding-inline: 0.5rem;
     min-height: 40px;
@@ -42,29 +50,29 @@
   .resources {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    width: 10rem;
-    min-width: 10rem;
-    max-width: 10rem;
+    justify-content: stretch;
+    min-width: 0;
     overflow: hidden;
   }
 
   .resources > * {
+    flex: 1 1 auto;
     min-width: 0;
+    width: 100%;
     max-width: 100%;
   }
 
   .turn {
     display: flex;
     align-items: center;
-    justify-content: stretch;
+    justify-content: flex-end;
     min-width: 0;
-    overflow: hidden;
+    overflow: visible;
   }
 
   .turn > * {
     min-width: 0;
+    width: auto;
     max-width: 100%;
-    width: 100%;
   }
 }

@@ -6,6 +6,7 @@
 import type { StarChessColor } from "@chess-coach/starchess-core";
 
 import type { StarChessGameRecord, StarChessMatchResult } from "~/types/review";
+import { displayPlayerName } from "~/utils/playerName";
 
 const colorWord = (c: StarChessColor): string => (c === "w" ? "Blue" : "Red");
 
@@ -26,7 +27,7 @@ export const formatMatchResultTitle = (g: StarChessGameRecord): string =>
  * Player name falls back to "You" when unset.
  */
 export const formatMatchLabel = (g: StarChessGameRecord): string => {
-  const player = g.playerName?.trim() || "You";
+  const player = displayPlayerName(g.playerName);
   const opponentColor: StarChessColor = g.playerColor === "w" ? "b" : "w";
   return `${player} (${colorWord(g.playerColor)}) vs Adjutant (${colorWord(opponentColor)})`;
 };

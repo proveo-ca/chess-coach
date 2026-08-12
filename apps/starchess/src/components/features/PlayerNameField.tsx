@@ -7,6 +7,7 @@ import styles from "~/components/features/PlayerNameField.module.css";
 import { IconButton } from "~/components/primitives/IconButton";
 import { Input } from "~/components/primitives/Input";
 import { playerName, setPlayerName } from "~/store/settingsStore";
+import { PLAYER_NAME_MAX } from "~/utils/playerName";
 import { randomName } from "~/utils/randomName";
 
 export const PlayerNameField: Component<{ id?: string }> = (props) => (
@@ -16,7 +17,7 @@ export const PlayerNameField: Component<{ id?: string }> = (props) => (
       type="text"
       value={playerName()}
       placeholder="Your name"
-      maxLength={24}
+      maxLength={PLAYER_NAME_MAX}
       onInput={(e) => setPlayerName(e.currentTarget.value)}
       data-testid="starchess-player-name"
     />

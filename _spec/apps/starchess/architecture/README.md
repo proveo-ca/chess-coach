@@ -21,6 +21,7 @@ Applied; no further behavioral change. Kept as design history + pattern notes.
 | [`strategy-starchess-board.puml`](./strategy-starchess-board.puml) | Strategy, Extract Class | **ACCEPTED** |
 | [`composite-vfx-stack.puml`](./composite-vfx-stack.puml) | Composite, Facade, Parameter Object | **ACCEPTED** |
 | [`bridge-match-board-host.puml`](./bridge-match-board-host.puml) | Bridge via Composition | **ACCEPTED** |
+| [`storybook-projection.puml`](./storybook-projection.puml) | Catalog + Projection, Extract Class | **ACCEPTED** — all phases applied |
 
 ## Performance designs
 

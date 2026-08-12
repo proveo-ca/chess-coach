@@ -1,3 +1,4 @@
+// SPEC: _spec/apps/starchess/architecture/board-entities.puml
 import type { Component } from "solid-js";
 
 interface IconProps {

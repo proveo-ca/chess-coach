@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/starchess/architecture/bridge-match-board-host.puml, _spec/apps/starchess/architecture/screen-entities.puml
+// SPEC: _spec/apps/starchess/architecture/bridge-match-board-host.puml, _spec/apps/starchess/architecture/screen-entities.puml, _spec/apps/starchess/architecture/board-entities.puml
 /**
  * Sole mount point for LiveStarChessBoard.
  */

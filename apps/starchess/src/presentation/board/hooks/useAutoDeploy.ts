@@ -1,3 +1,4 @@
+// SPEC: _spec/apps/starchess/architecture/board-entities.puml
 /**
  * Auto-deploy: when a unit appears on the board without relocating from
  * another square, fire a DeployCue and hide the square until DEPLOY_MS ends.

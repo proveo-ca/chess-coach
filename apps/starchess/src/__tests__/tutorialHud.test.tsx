@@ -3,17 +3,23 @@ import { MemoryRouter, Route, createMemoryHistory } from "@solidjs/router";
 import { afterEach, describe, expect, it } from "vitest";
 
 import { TutorialGuideBubble } from "~/components/features/TutorialGuideBubble";
-import { KingHuntLiveScreen } from "~/demos/KingHuntLiveScreen";
+import { LiveLessonHost } from "~/demos/LiveLessonHost";
+import { lessonBoard } from "~/tutorial/tutorialScript";
 import { LIVE_ADJUTANT_MATCH_TITLE } from "~/utils/matchTitle";
 
 afterEach(() => cleanup());
 
-const renderLesson = (props: Parameters<typeof KingHuntLiveScreen>[0]) => {
+const renderLesson = (props: Partial<Parameters<typeof LiveLessonHost>[0]>) => {
   const history = createMemoryHistory();
   history.set({ value: "/" });
   return render(() => (
     <MemoryRouter history={history}>
-      <Route path="*" component={() => <KingHuntLiveScreen embedded {...props} />} />
+      <Route
+        path="*"
+        component={() => (
+          <LiveLessonHost board={lessonBoard("king", "king-hunt-live")} {...props} />
+        )}
+      />
     </MemoryRouter>
   ));
 };

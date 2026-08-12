@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/starchess/architecture/timeline-perf.puml
+// SPEC: _spec/apps/starchess/architecture/timeline-perf.puml, _spec/apps/starchess/architecture/board-entities.puml
 /**
  * Combat VFX performance helpers — stable lists, concurrency caps, DPR clamp.
  * Look-preserving GPU relief for AnimationStage overlays.

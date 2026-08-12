@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/starchess/architecture/strategy-starchess-board.puml
+// SPEC: _spec/apps/starchess/architecture/strategy-starchess-board.puml, _spec/apps/starchess/architecture/board-entities.puml
 /**
  * Vision presentation strategy — player fog veil vs observer dual borders.
  * Selection only; fog math stays in fogProjection / StarChessBoard.

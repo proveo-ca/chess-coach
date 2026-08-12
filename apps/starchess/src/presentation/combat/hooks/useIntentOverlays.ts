@@ -1,3 +1,4 @@
+// SPEC: _spec/apps/starchess/architecture/board-entities.puml
 /**
  * Intent overlays from match store + review vision filter (app policy).
  * Presentation boards consume the result — they do not choose whose queue shows.
