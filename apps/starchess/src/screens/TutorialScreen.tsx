@@ -43,6 +43,7 @@ import {
   TUTORIAL_SCRIPT,
   adjacentTutorialStoryId,
   lessonBoard,
+  lessonEndMessageMs,
   holdTutorialLine,
   matchesTutorialCompleteWhen,
   parseTutorialSection,
@@ -203,7 +204,7 @@ export const TutorialScreen: Component = () => {
   };
 
   /**
-   * Lesson outcome — objective → success → next.
+   * Lesson outcome — objective → ending → success → next.
    *
    * Evaluated only on a *settled* board (timeline idle), which is what lets
    * this be a plain state machine: mid-resolve the board churns through
@@ -213,18 +214,27 @@ export const TutorialScreen: Component = () => {
    * On success the coach bubble switches to its success variant with a
    * `Next lesson →` CTA whose border draws over LESSON_ADVANCE_MS and then
    * fires — the auto-press is visible before it happens, and the CTA skips it.
+   *
+   * `ending` sits between objective-met and that success bubble: lessons whose
+   * closing coach line lands on the same beat need it read before the modal
+   * hides it. Lessons with nothing left to say pass straight through.
    */
-  type LessonOutcome = "active" | "success" | "failed";
+  type LessonOutcome = "active" | "ending" | "success" | "failed";
   const [outcome, setOutcome] = createSignal<LessonOutcome>("active");
   let outcomeKey = "";
   let advanceTimer: ReturnType<typeof setTimeout> | undefined;
   let elapsedTimer: ReturnType<typeof setTimeout> | undefined;
+  let endingTimer: ReturnType<typeof setTimeout> | undefined;
+  /** Auto-advance hold the pending success was requested with. */
+  let successAdvanceMs = LESSON_ADVANCE_MS;
 
   const clearTimers = () => {
     if (advanceTimer != null) clearTimeout(advanceTimer);
     if (elapsedTimer != null) clearTimeout(elapsedTimer);
+    if (endingTimer != null) clearTimeout(endingTimer);
     advanceTimer = undefined;
     elapsedTimer = undefined;
+    endingTimer = undefined;
   };
   onCleanup(clearTimers);
 
@@ -237,14 +247,24 @@ export const TutorialScreen: Component = () => {
     adjacentTutorialStoryId(section(), storyId(), 1) != null ||
     section() !== "king";
 
-  /** Success → hold one beat, then advance (the CTA skips the wait). */
+  /**
+   * Objective met → `ending`, which keeps the coach's closing line up for its
+   * reading time (see the effect below). `delayMs` is the auto-advance hold the
+   * success bubble that follows will use.
+   */
   const succeed = (delayMs: number = LESSON_ADVANCE_MS) => {
+    successAdvanceMs = delayMs;
+    setOutcome("ending");
+  };
+
+  /** `ending` → success bubble; hold one beat, then advance (the CTA skips it). */
+  const completeObjective = () => {
     setOutcome("success");
     if (!hasNextLesson()) return;
     advanceTimer = setTimeout(() => {
       advanceTimer = undefined;
       goNextLesson();
-    }, delayMs);
+    }, successAdvanceMs);
   };
 
   /**
@@ -318,6 +338,9 @@ export const TutorialScreen: Component = () => {
 
   // Intro comment once per lesson; reactions stick (no bounce back to opener).
   let lineHold: TutorialLineHold = { lessonKey: "", introDone: false };
+  /** When the currently displayed comment landed — the ending hold subtracts it. */
+  let shownComment = "";
+  let shownAt = 0;
   const [line, setLine] = createSignal(resolveTutorialLine({
     stageId: "fog",
     storyId: "king",
@@ -344,7 +367,36 @@ export const TutorialScreen: Component = () => {
       ctx,
     );
     lineHold = next.hold;
+    // Plain fields, not a signal read: this effect writes `line`, so reading it
+    // here would loop (`next.line` is a fresh object every run).
+    if (next.line.comment !== shownComment) {
+      shownComment = next.line.comment;
+      shownAt = performance.now();
+    }
     setLine(next.line);
+  });
+
+  /**
+   * `ending` → success handoff. Created *after* the line effect on purpose: by
+   * the time this runs, `line()` is the line the completing board produced, not
+   * the one before it. Time the line has already been on screen counts toward
+   * its reading budget, so only a line that lands with the objective waits the
+   * full hold — a mid-lesson line the player has been reading doesn't re-charge
+   * for it.
+   */
+  createEffect(() => {
+    if (outcome() !== "ending") return;
+    if (endingTimer != null) return;
+    const hold =
+      lessonEndMessageMs(line().comment) - (performance.now() - shownAt);
+    if (hold <= 0) {
+      completeObjective();
+      return;
+    }
+    endingTimer = setTimeout(() => {
+      endingTimer = undefined;
+      completeObjective();
+    }, hold);
   });
 
   const lineKey = () =>
@@ -373,10 +425,12 @@ export const TutorialScreen: Component = () => {
   const guideBubble = () => (
     <TutorialGuideBubble
       variant={outcome() === "success" ? "success" : "coach"}
+      // Only when a timer is actually armed — `ending` waits on the line, not
+      // on a countdown, so its bubble draws no border.
       autoAdvanceMs={
-        outcome() === "active" || (outcome() === "success" && !hasNextLesson())
-          ? undefined
-          : LESSON_ADVANCE_MS
+        outcome() === "failed" || (outcome() === "success" && hasNextLesson())
+          ? LESSON_ADVANCE_MS
+          : undefined
       }
       message={bubbleMessage()}
       lineKey={`${lineKey()}|${outcome()}`}

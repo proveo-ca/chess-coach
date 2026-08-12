@@ -71,12 +71,17 @@ note bottom
   Tutorial → ``/tutorial/:section/:story`` (ids from ``TUTORIAL_SCRIPT``,
   e.g. ``/tutorial/fog/king`` · ``/tutorial/specials/marine``).
   Bare ``/tutorial`` canonicalizes to the first Fog story.
-  **Lesson loop — objective → success → next.** The goal shows persistently in
-  the footer (``board.objective``, else the story comment) so coach reactions
-  never bury it. ``completeWhen`` / ``restartWhen`` are judged **only on a
-  settled board** (timeline idle): success flips the guide bubble to its
-  success variant (``✓ Objective complete`` + ``Next lesson →``) and
-  auto-advances after 1.5s; the CTA skips the wait. Failure offers Retry.
+  **Lesson loop — objective → ending → success → next.** The goal shows
+  persistently in the footer (``board.objective``, else the story comment) so
+  coach reactions never bury it. ``completeWhen`` / ``restartWhen`` are judged
+  **only on a settled board** (timeline idle). A hit lands in ``ending`` first:
+  the bubble keeps the coach's closing line for its reading time
+  (``lessonEndMessageMs`` — ~200 wpm, floor 1.2s, ceiling 4s; no line → no
+  hold), because the success bubble **hides** that line. Then the guide bubble
+  flips to its success variant (``✓ Objective complete`` + ``Next lesson →``,
+  message suppressed between them) and auto-advances after
+  ``LESSON_ADVANCE_MS`` (3s, drawn as the CTA's border); the CTA skips the
+  wait. Failure offers Retry and keeps its line.
   Every live lesson must carry a ``completeWhen`` — a lesson without one is a
   dead end (guarded by ``tutorialLessons.test.tsx``).
   **Stage 3 (Turn Resolution)** wears ``/review/:id`` chrome: ``‹ Back`` +

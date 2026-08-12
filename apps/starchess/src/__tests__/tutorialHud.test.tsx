@@ -24,6 +24,35 @@ const renderLesson = (props: Partial<Parameters<typeof LiveLessonHost>[0]>) => {
   ));
 };
 
+describe("tutorial guide bubble", () => {
+  const renderBubble = (
+    props: Partial<Parameters<typeof TutorialGuideBubble>[0]>,
+  ) =>
+    render(() => (
+      <TutorialGuideBubble message="Nicely done." lineKey="k" {...props} />
+    ));
+
+  it("drops the line between ✓ Objective complete and Next lesson", () => {
+    renderBubble({ variant: "success", action: { kind: "nextLesson" } });
+
+    expect(screen.getByTestId("tutorial-objective-complete")).not.toBeNull();
+    expect(screen.getByTestId("tutorial-next-lesson")).not.toBeNull();
+    expect(screen.queryByText("Nicely done.")).toBeNull();
+  });
+
+  it("keeps the line when either end is missing", () => {
+    // Last lesson of a stage: ✓ with no CTA — the line is all the player gets.
+    renderBubble({ variant: "success" });
+    expect(screen.getByText("Nicely done.")).not.toBeNull();
+    cleanup();
+
+    // Retry after a failure keeps the coach's explanation.
+    renderBubble({ action: { kind: "retryLesson" } });
+    expect(screen.getByText("Nicely done.")).not.toBeNull();
+    expect(screen.queryByTestId("tutorial-objective-complete")).toBeNull();
+  });
+});
+
 describe("king-hunt-live tutorial HUD", () => {
   it("final lesson renders the full match HUD like /single", () => {
     renderLesson({

@@ -31,6 +31,14 @@ export const TutorialGuideBubble: Component<TutorialGuideBubbleProps> = (
   const open = () =>
     !!props.message.trim() && dismissedKey() !== props.lineKey;
 
+  /**
+   * "✓ Objective complete" plus the Next lesson button already say everything
+   * the player needs, so the coach line between them is noise — drop it when
+   * both ends are showing.
+   */
+  const showMessage = () =>
+    !(props.variant === "success" && props.action?.kind === "nextLesson");
+
   return (
     <Show when={open()}>
       <div
@@ -52,7 +60,9 @@ export const TutorialGuideBubble: Component<TutorialGuideBubbleProps> = (
                 ✓ Objective complete
               </span>
             </Show>
-            <span class={styles.message}>{props.message}</span>
+            <Show when={showMessage()}>
+              <span class={styles.message}>{props.message}</span>
+            </Show>
             <Show when={props.action}>
               {(action) => (
                 <button

@@ -101,6 +101,20 @@ export const TUTORIAL_SCRIPT: TutorialScriptConfig = TUTORIAL_SCRIPT_CONFIG;
  */
 export const LESSON_ADVANCE_MS = 3000;
 
+/**
+ * Reading time for the coach line a lesson closes on. The objective modal hides
+ * that line (✓ + `Next lesson →` already say it), so it has to be readable
+ * *before* the handoff — a line that lands on the same beat as the objective
+ * would otherwise flash past. Comfortable prose pace (~200 wpm) with a floor so
+ * a three-word quip still registers and a ceiling so nothing stalls the
+ * tutorial. No line → no hold: the modal takes the bubble at once.
+ */
+export const lessonEndMessageMs = (comment: string): number => {
+  const words = comment.trim().split(/\s+/).filter(Boolean).length;
+  if (words === 0) return 0;
+  return Math.min(4000, Math.max(1200, words * 300));
+};
+
 export const tutorialStage = (
   stageId: TutorialSectionId,
 ): TutorialStageScript =>

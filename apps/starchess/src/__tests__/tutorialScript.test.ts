@@ -5,6 +5,7 @@ import {
   adjacentTutorialStoryId,
   holdTutorialLine,
   lessonBoard,
+  lessonEndMessageMs,
   matchesTutorialCompleteWhen,
   parseTutorialSection,
   resolveTutorialHints,
@@ -561,5 +562,31 @@ describe("tutorialScript", () => {
       emotion: "watching",
       source: "reaction",
     });
+  });
+
+  it("grants a closing line reading time, and none when there is no line", () => {
+    // Silence → the objective modal takes the bubble on the same beat.
+    expect(lessonEndMessageMs("")).toBe(0);
+    expect(lessonEndMessageMs("   \n ")).toBe(0);
+    // Short quip still registers (floor), long line stays bounded (ceiling).
+    expect(lessonEndMessageMs("Did you see that?!")).toBe(1200);
+    expect(lessonEndMessageMs("one two three four five six")).toBe(1800);
+    expect(
+      lessonEndMessageMs(
+        "This is the immobile rook mode; it has the biggest range. \nIt reveals the entire board when in the center!",
+      ),
+    ).toBe(4000);
+  });
+
+  it("gives every lesson closing line a hold shorter than the tutorial's patience", () => {
+    for (const stage of TUTORIAL_SCRIPT) {
+      for (const story of stage.stories) {
+        for (const r of story.reactions ?? []) {
+          const ms = lessonEndMessageMs(r.comment);
+          expect(ms).toBeGreaterThan(0);
+          expect(ms).toBeLessThanOrEqual(4000);
+        }
+      }
+    }
   });
 });
