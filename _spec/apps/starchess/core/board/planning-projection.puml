@@ -52,6 +52,11 @@ note bottom
   Deploy intent grants **no** vision; End resolves the unit first.
   Under player fog: pawn front-diagonals stay attack intents without a
   visible victim; intent attack/move rings paint **above** fog (enemies stay hidden).
+  A pawn diagonal rings whether or not the target holds a fogged enemy — ringing
+  only the empty ones would mark occupancy by omission.
+  King-check rings are gated on the viewer's **current** vision: a projected
+  check (post-queue placement) never rings a king the viewer cannot see yet,
+  or the ring would confirm its square at intent time.
   Intent: policy → hook → pure overlays.
   Fog gate: ""targetVisibleGate"" / ""pieceVisibleToViewer"" (one predicate family).
   U: specialsUsed is **not** a fog pierce.

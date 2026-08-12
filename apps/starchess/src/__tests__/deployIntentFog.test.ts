@@ -128,6 +128,41 @@ describe("intent circles above fog / pawn diagonals", () => {
     expect(out.canisters).toEqual([{ at: "d1", color: "w" }]);
   });
 
+  it("rings a deploy-pawn diagonal onto a fogged enemy like an empty one", () => {
+    // A deployed marine grants no vision, so its diagonal target stays fogged.
+    // Ring presence must not track occupancy under the veil — a ring only on the
+    // empty diagonal would mark the occupied one by omission.
+    const actions = [
+      {
+        timing: "B" as const,
+        kind: "spawn" as const,
+        color: "w" as const,
+        from: "e1" as const,
+        to: "d1" as const,
+        unit: "p" as const,
+        seq: 0,
+      },
+      {
+        timing: "C" as const,
+        kind: "classical" as const,
+        color: "w" as const,
+        from: "d1" as const,
+        to: "c2" as const,
+        seq: 1,
+      },
+    ];
+    const hidden = intentOverlaysFromQueue(actions, {
+      placement: "4k3/8/8/8/8/8/2p5/4K3",
+      viewer: "w",
+    });
+    const empty = intentOverlaysFromQueue(actions, {
+      placement: "4k3/8/8/8/8/8/8/4K3",
+      viewer: "w",
+    });
+    expect(hidden.checks).toEqual([{ at: "c2" }]);
+    expect(hidden.checks).toEqual(empty.checks);
+  });
+
   it("pawnFogAttackDests offers diagonals without enemy", () => {
     const map = placementToMap("4k3/8/8/8/8/8/4P3/4K3");
     expect(pawnFogAttackDests("e2", "w", map).sort()).toEqual(["d3", "f3"]);

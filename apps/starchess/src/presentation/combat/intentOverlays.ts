@@ -7,6 +7,9 @@
  * - checks that appear after applying queued classical moves (projected)
  * - capture/attack destinations (enemy on classical `to`)
  *
+ * King-check rings are gated on the viewer's **current** vision — a projected
+ * check never paints on a king the viewer cannot see yet (fog leak at intent).
+ *
  * // SPEC: _spec/apps/starchess/core/board/planning-projection.puml
  */
 import type { PieceSymbol, Square } from "chess.js";
@@ -69,7 +72,8 @@ export type IntentOverlayOpts = {
   mines?: readonly ScMine[];
   /**
    * Local player — only that side’s queue ghosts. Omit for DualNav / observers
-   * (both intentions). Check rings stay global (threat is public once lit).
+   * (both intentions). Check rings stay global (threat is public once lit), but
+   * a king-check ring needs this viewer's *current* vision of that king.
    */
   viewer?: StarChessColor;
 };
@@ -209,10 +213,13 @@ export const intentOverlaysFromQueue = (
       }
       // Capture / attack intent — red ring. Never key red chrome off a fully
       // fogged enemy (that would leak occupancy); pawn diagonals always ring
-      // (attack shape, victim optional). Visible / revealed enemies still ring
-      // and paint above the veil.
+      // (attack shape, victim optional) — ringing only the *empty* ones would
+      // leak the same occupancy by omission. Visible / revealed enemies still
+      // ring and paint above the veil.
       const target = map?.get(a.to);
-      if (target && target.color !== a.color) {
+      if (piece === "p" && isPawnDiagonalAttack(a.from, a.to, a.color)) {
+        pushCheck(checks, seenCheck, a.to);
+      } else if (target && target.color !== a.color) {
         const known =
           !viewer ||
           !opts?.placement ||
@@ -221,8 +228,6 @@ export const intentOverlaysFromQueue = (
             mines: opts.mines,
           });
         if (known) pushCheck(checks, seenCheck, a.to);
-      } else if (piece === "p" && isPawnDiagonalAttack(a.from, a.to, a.color)) {
-        pushCheck(checks, seenCheck, a.to);
       }
       continue;
     }
@@ -271,12 +276,22 @@ export const intentOverlaysFromQueue = (
     if (projectQueue.some((a) => a.timing === "C" && a.kind === "classical")) {
       placements.push(placementAfterClassicalQueue(opts.placement, projectQueue));
     }
+    const fogOpts = { siegedRooks: opts.siegedRooks, mines: opts.mines };
+    /**
+     * A check ring names a king's square, so it may only paint where the viewer
+     * sees it *right now* — never on the projected board's vision. A queued move
+     * that would light and check a hidden king (a knight stepping beside it, a
+     * discovered ray) would otherwise confirm its position at intent time,
+     * before the move ever resolves. Observers (no viewer) keep every ring.
+     */
+    const liveGate = targetVisibleGate(opts.placement, fogOpts);
     for (const placement of placements) {
-      const isTargetVisible = targetVisibleGate(placement, {
-        siegedRooks: opts.siegedRooks,
-        mines: opts.mines,
-      });
+      const isTargetVisible =
+        placement === opts.placement
+          ? liveGate
+          : targetVisibleGate(placement, fogOpts);
       for (const shot of collectLegalKingChecks(placement, { isTargetVisible })) {
+        if (viewer && !liveGate(viewer, shot.to)) continue;
         pushCheck(checks, seenCheck, shot.to);
       }
     }

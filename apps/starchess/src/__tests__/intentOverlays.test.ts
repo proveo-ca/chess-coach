@@ -134,6 +134,7 @@ describe("intentOverlaysFromQueue", () => {
 
   it("projects a red ring when queued classical would give check", () => {
     // Bd2→f4 discovers check on Ke5 (not checking yet from d2).
+    // Pe4 lights e5 now, so the ring reveals nothing the viewer cannot see.
     const actions: ScAction[] = [
       {
         timing: "C",
@@ -146,10 +147,49 @@ describe("intentOverlaysFromQueue", () => {
     ];
     expect(
       intentOverlaysFromQueue(actions, {
-        placement: "8/8/8/4k3/8/8/3B4/7K",
+        placement: "8/8/8/4k3/4P3/8/3B4/7K",
         viewer: "w",
       }).checks,
     ).toEqual([{ at: "e5" }]);
+  });
+
+  it("never rings a king the viewer cannot see yet (fog leak at intent)", () => {
+    // Nc4→d6 would light *and* check Ke8 once it resolves, but at intent time
+    // e8 is still fogged — a ring there would confirm the hidden king.
+    const actions: ScAction[] = [
+      {
+        timing: "C",
+        kind: "classical",
+        color: "w",
+        from: "c4",
+        to: "d6",
+        seq: 0,
+      },
+    ];
+    const out = intentOverlaysFromQueue(actions, {
+      placement: "4k3/8/8/8/2N5/8/8/7K",
+      viewer: "w",
+    });
+    expect(out.checks).toEqual([]);
+    expect(out.destinations).toEqual([{ at: "d6", color: "w", piece: "n" }]);
+  });
+
+  it("keeps observer / DualNav projections unringed by fog (no viewer)", () => {
+    const actions: ScAction[] = [
+      {
+        timing: "C",
+        kind: "classical",
+        color: "w",
+        from: "c4",
+        to: "d6",
+        seq: 0,
+      },
+    ];
+    expect(
+      intentOverlaysFromQueue(actions, {
+        placement: "4k3/8/8/8/2N5/8/8/7K",
+      }).checks,
+    ).toEqual([{ at: "e8" }]);
   });
 
   it("spawn + classical: deploy ghost with canister, move ghost without", () => {
