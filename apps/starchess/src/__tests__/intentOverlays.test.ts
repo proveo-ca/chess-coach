@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import type { Square } from "chess.js";
 import type { ScAction } from "@chess-coach/starchess-core";
 
 import { intentOverlaysFromQueue } from "~/presentation/combat/intentOverlays";
@@ -467,5 +468,37 @@ describe("intentOverlaysFromQueue", () => {
     // Standing check on e4 (Nc5) — not a black-intent ring on d5.
     expect(out.checks).toEqual([{ at: "e4" }]);
     expect(out.checks.some((c) => c.at === "d5")).toBe(false);
+  });
+
+  describe("marine front step — never an attack", () => {
+    const frontStep = (from: Square, to: Square): ScAction[] => [
+      { timing: "C", kind: "classical", color: "w", from, to, seq: 0 },
+    ];
+
+    it("does not ring a unit straight ahead, or project a capture", () => {
+      // d2→d3 is blocked by the black marine: no capture ring on d3, and the
+      // projection must not walk the marine onto d3 where it would check Ke4.
+      const out = intentOverlaysFromQueue(frontStep("d2", "d3"), {
+        placement: "8/8/8/8/4k3/3p4/3P4/7K",
+      });
+      expect(out.checks).toEqual([]);
+      // The ghost still paints — under fog the player does not know it blocks.
+      expect(out.destinations).toEqual([{ at: "d3", color: "w", piece: "p" }]);
+    });
+
+    it("does not ring a mine straight ahead (the marine walks in and dies)", () => {
+      const out = intentOverlaysFromQueue(frontStep("d2", "d3"), {
+        placement: "4k3/8/8/8/8/8/3P4/4K3",
+        mines: [{ color: "b", at: "d3" }],
+      });
+      expect(out.checks).toEqual([]);
+    });
+
+    it("still rings the front diagonals", () => {
+      const out = intentOverlaysFromQueue(frontStep("d2", "c3"), {
+        placement: "4k3/8/8/8/8/2p5/3P4/4K3",
+      });
+      expect(out.checks).toEqual([{ at: "c3" }]);
+    });
   });
 });

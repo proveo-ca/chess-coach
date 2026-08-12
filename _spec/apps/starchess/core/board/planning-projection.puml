@@ -54,6 +54,11 @@ note bottom
   visible victim; intent attack/move rings paint **above** fog (enemies stay hidden).
   A pawn diagonal rings whether or not the target holds a fogged enemy — ringing
   only the empty ones would mark occupancy by omission.
+  A marine **front** step never rings and never projects a capture: marines only
+  attack their diagonals, so a unit ahead blocks the advance and a mine ahead
+  takes the marine with it (resolve.puml). The move ghost still paints — under
+  fog the player does not know the step is blocked — and the projection
+  truncates the marine before the blocker instead of walking it through.
   King-check rings are gated on the viewer's **current** vision: a projected
   check (post-queue placement) never rings a king the viewer cannot see yet,
   or the ring would confirm its square at intent time.

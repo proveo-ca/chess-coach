@@ -427,6 +427,29 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
 
     const visible0 = canSee(plan.color, plan.to);
 
+    // Marines never attack **forward** — they only ever fire on their front
+    // diagonals. A unit on the forward path therefore *blocks* rather than
+    // dies: no attack cue, no move collision, no fog discovery. The marine
+    // truncates onto the last empty square before the blocker, exactly like an
+    // ally-blocked slide — a double step stops short (d2→d4 with d4 taken
+    // lands on d3), a single step simply stays put. The whole path is walked,
+    // so a double never slips past an occupied intermediate either: a marine
+    // walks, it does not leap.
+    // Head-on races are untouched — two marines stepping onto the same *empty*
+    // square still both die in the move phase, because neither one attacked.
+    if (actor.type === "p" && plan.to[0] === plan.from[0]) {
+      const path = [...rayBetween(plan.from, plan.to), plan.to];
+      const blocked = path.findIndex((s) => start.has(s));
+      if (blocked >= 0) {
+        // Truncated: a short step is never a promotion, so `promotion` is dropped.
+        const stopAt = blocked > 0 ? path[blocked - 1]! : null;
+        if (stopAt) {
+          quiets.push({ color: plan.color, from: plan.from, to: stopAt });
+        }
+        continue;
+      }
+    }
+
     // King square as classical `to`: never arm deferred HP (checks are implicit
     // at turn start). Fog path-discovery onto a hidden blocker still occupies.
     if (target && target.color !== plan.color && target.type === "k") {

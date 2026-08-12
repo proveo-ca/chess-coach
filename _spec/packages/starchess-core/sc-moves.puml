@@ -128,6 +128,10 @@ note as RULES
   **pawn** — single push empty; free classical double from the double-step
   band (mid+to empty); diagonal enemy capture **or hostile mine** (the marine
   attacks the mine — see **mines** below); **no en passant**;
+  // Marines attack **only** on the front diagonals. The generator therefore
+  // never emits a push onto an occupied square — and where **fog** hides the
+  // occupant, the intent is still queueable but resolves as a **block**, not a
+  // capture: the marine truncates before the blocker (resolve.puml).
   // Band = ""canPawnDoubleStep"" — start rank **and behind it** (rank ≤2 white,
   // ≥7 black), so a marine deployed on its own back rank keeps the double.
   // Sole owner of the rule: movegen, ""isScMoveShape"" and

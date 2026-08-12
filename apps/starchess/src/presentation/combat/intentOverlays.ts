@@ -21,6 +21,7 @@ import {
   parseSquare,
   pawnSingleTarget,
   placementToMap,
+  rayBetween,
   rewriteClassicalAfterB,
   rookModeAfterB,
   type RookMode,
@@ -47,6 +48,33 @@ const isPawnDiagonalAttack = (
   const b = parseSquare(to);
   const dir = color === "w" ? 1 : -1;
   return Math.abs(b.file - a.file) === 1 && b.rank - a.rank === dir;
+};
+
+/**
+ * Marine front step (single or double). Marines only ever fire on their front
+ * diagonals — core `resolveTurn` blocks a front step that meets a unit and lets
+ * a front step walk into a mine, so a straight advance is never an attack.
+ */
+const isMarineFrontStep = (
+  piece: PieceSymbol | undefined,
+  from: Square,
+  to: Square,
+): boolean => piece === "p" && from[0] === to[0];
+
+/**
+ * Where a marine front step actually comes to rest: `to` when the path is
+ * clear, otherwise the last empty square before the blocker (core `resolveTurn`
+ * truncates the advance), or `null` when it cannot move at all.
+ */
+const marineFrontStop = (
+  map: ReadonlyMap<Square, unknown>,
+  from: Square,
+  to: Square,
+): Square | null => {
+  const path = [...rayBetween(from, to), to];
+  const blocked = path.findIndex((s) => map.has(s));
+  if (blocked < 0) return to;
+  return blocked > 0 ? path[blocked - 1]! : null;
 };
 
 export type IntentCanisterGhost = {
@@ -94,9 +122,17 @@ const placementAfterClassicalQueue = (
     const target = map.get(a.to);
     // Engine never occupies the enemy king via classical `C=` — skip projection.
     if (target?.type === "k" && target.color !== actor.color) continue;
+    // A marine front step that meets a unit is blocked, never a capture — it
+    // truncates before the blocker, so the projection must not walk it through.
+    const dest = isMarineFrontStep(actor.type, a.from, a.to)
+      ? marineFrontStop(map, a.from, a.to)
+      : a.to;
+    if (!dest) continue;
     map.delete(a.from);
-    if (target && target.color !== actor.color) map.delete(a.to);
-    map.set(a.to, actor);
+    if (target && target.color !== actor.color && dest === a.to) {
+      map.delete(a.to);
+    }
+    map.set(dest, actor);
   }
   return mapToPlacement(map);
 };
@@ -219,6 +255,10 @@ export const intentOverlaysFromQueue = (
       // (attack shape, victim optional) — ringing only the *empty* ones would
       // leak the same occupancy by omission. Visible / revealed enemies still
       // ring and paint above the veil.
+      // A marine advance is never an attack — a unit ahead blocks it and a mine
+      // ahead takes the marine with it. No red ring either way, and skipping it
+      // here also keeps the ring from leaking a fogged blocker to observers.
+      if (isMarineFrontStep(piece, a.from, a.to)) continue;
       const target = map?.get(a.to);
       const mineOnTo = mineAt(opts?.mines, a.to);
       if (piece === "p" && isPawnDiagonalAttack(a.from, a.to, a.color)) {
