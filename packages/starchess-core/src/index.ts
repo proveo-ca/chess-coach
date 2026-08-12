@@ -84,11 +84,8 @@ export {
 export { isRookSiegedAfterB, rookModeAfterB } from "./board/siege";
 
 export {
-  pawnDoubleTarget,
   pawnSingleTarget,
-  isPawnStartRank,
-  canClassicalPawnDouble,
-  canScPawnSingle,
+  canPawnDoubleStep,
 } from "./rules/specials/pawnDouble";
 
 export { adjacentSquares, spawnKingAnchor } from "./rules/specials/adjacent";
@@ -106,7 +103,12 @@ export {
 } from "./rules/specials/registry";
 
 export type { ScMove, ScMoveOptions } from "./board/moves";
-export { scMovesFrom, scMovesFor, isScMoveShape } from "./board/moves";
+export {
+  scMovesFrom,
+  scMovesFor,
+  isScMoveShape,
+  canClassicalPawnDouble,
+} from "./board/moves";
 
 export {
   ScValidateError,
@@ -144,7 +146,12 @@ export {
 } from "./resolve/resolve-turn";
 
 export type { ResolveEvent, EndScTurnResult, EndScTurnOptions, BeginScTurnResult } from "./resolve/submit-turn";
-export { endScTurn, beginScTurn, refillTurnGas } from "./resolve/submit-turn";
+export {
+  endScTurn,
+  beginScTurn,
+  refillTurnGas,
+  rewriteClassicalAfterB,
+} from "./resolve/submit-turn";
 
 export {
   hasExactKingPair,

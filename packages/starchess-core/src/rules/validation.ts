@@ -1,6 +1,8 @@
 /**
  * Deep SCFEN validators — SC_BASELINE_FEN + SC_SPECIAL.
  * chess.js FEN load is never the oracle (sc-moves.puml).
+ *
+ * // SPEC: _spec/packages/starchess-core/sc-moves.puml, _spec/packages/starchess-core/scfen-queue.puml
  */
 
 import type { Square } from "chess.js";

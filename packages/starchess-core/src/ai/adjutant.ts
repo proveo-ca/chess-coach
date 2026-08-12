@@ -45,11 +45,13 @@ import {
   attacksSquare,
   findKing,
   isSquareAttackedBy,
+  mapToPlacement,
   parseSquare,
   placementToMap,
   sq,
   type ScPiece,
 } from "../board/placement";
+import { rewriteClassicalAfterB } from "../resolve/submit-turn";
 import {
   MAX_STORED_MATERIAL,
   UNIT_COST,
@@ -63,6 +65,7 @@ import { charonTargetQueenFromPlacement } from "../rules/specials/bishopCharon";
 import { pawnSingleTarget } from "../rules/specials/pawnDouble";
 import type {
   PieceColor,
+  ScAction,
   ScActionInput,
   ScFenSnapshot,
   ScSpecialKind,
@@ -1303,8 +1306,13 @@ const simulateAction = (
 };
 
 /**
- * Apply a candidate plan in resolve order. UI pawn stacks (B+C same from/to)
- * relocate twice: mid, then far — matching `rewriteClassicalAfterB`.
+ * Apply a candidate plan in resolve order.
+ *
+ * Pawn/queen stacks (B+C on the same vector) relocate twice — mid, then far.
+ * That folding is `rewriteClassicalAfterB`'s job, and the simulation borrows it
+ * verbatim so a plan we score can never land somewhere the resolver would not
+ * put it (the rewrite also declines on a blocked landing and outside the
+ * double-step band, which a hand-rolled shift misses).
  */
 const simulatePlan = (
   map: Map<Square, ScPiece>,
@@ -1313,44 +1321,12 @@ const simulatePlan = (
   us: PieceColor,
 ): Map<Square, ScPiece> => {
   let next = map;
-  const b = actions.find(
-    (a) =>
-      a.timing === "B" &&
-      (a.kind === "pawnDouble" || a.kind === "queenWarp") &&
-      a.to,
+  // `seq` is unused by the rewrite; index order is already resolve order here.
+  const folded = rewriteClassicalAfterB(
+    actions.map((a, seq) => ({ ...a, seq }) as ScAction),
+    mapToPlacement(map),
   );
-  for (const action of actions) {
-    if (
-      action.timing === "C" &&
-      b &&
-      b.to &&
-      action.from === b.from &&
-      action.to === b.to
-    ) {
-      const fromP = parseSquare(b.from);
-      const toP = parseSquare(b.to);
-      const df = toP.file - fromP.file;
-      const dr = toP.rank - fromP.rank;
-      const farFile = toP.file + df;
-      const farRank = toP.rank + dr;
-      const far =
-        farFile >= 0 && farFile <= 7 && farRank >= 1 && farRank <= 8
-          ? (`${FILES[farFile]}${farRank}` as Square)
-          : null;
-      if (far) {
-        next = simulateAction(
-          next,
-          {
-            ...action,
-            from: b.to,
-            to: far,
-          },
-          sieged,
-          us,
-        );
-        continue;
-      }
-    }
+  for (const action of folded) {
     next = simulateAction(next, action, sieged, us);
   }
   return next;

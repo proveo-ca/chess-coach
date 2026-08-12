@@ -39,6 +39,10 @@ note bottom
   **Pattern:** Facade / Application service.
   **Allowed:** Reducer → submit-turn (sole End/open write with queue-action).
   **Allowed:** submit-turn → resolve-turn (phase run, stamped snap out).
+  **Allowed:** anyone → ""rewriteClassicalAfterB"" — pure stack folding, no
+  write, no resolve. Presentation reads it so intent ghosts land on the square
+  the stack actually reaches (planning-projection.puml); the adjutant's plan
+  simulation reads it so a scored plan cannot diverge from the resolver.
   **Forbidden:** app → resolve-turn; playback → endScTurn.
   Sequence detail: ""_spec/packages/starchess-core/turn-queue-sequence.puml"".
 end note

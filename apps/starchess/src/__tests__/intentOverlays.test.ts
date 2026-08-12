@@ -78,7 +78,7 @@ describe("intentOverlaysFromQueue", () => {
     });
   });
 
-  it("places a canister badge on queued special actors", () => {
+  it("badges both the live special actor and its gas ghost", () => {
     const actions: ScAction[] = [
       {
         timing: "B",
@@ -94,7 +94,10 @@ describe("intentOverlaysFromQueue", () => {
         placement: "4k3/8/8/8/8/8/4P3/4K3",
         viewer: "w",
       }).canisters,
-    ).toEqual([{ at: "e2", color: "w" }]);
+    ).toEqual([
+      { at: "e2", color: "w" },
+      { at: "e3", color: "w" },
+    ]);
   });
 
   it("maps legal standing checks to red rings on the king square", () => {
@@ -183,7 +186,8 @@ describe("intentOverlaysFromQueue", () => {
   });
 
   it("gas landing + classical: B ghost and further move ghost", () => {
-    // B pawnDouble e2→e3, C e3→e4 — canister stays on origin (marine gas).
+    // C is queued from the post-gas landing, so the resolver never folds the
+    // legs — e3 stays the gas ghost and the marine really does stop on e4.
     const actions: ScAction[] = [
       {
         timing: "B",
@@ -207,10 +211,190 @@ describe("intentOverlaysFromQueue", () => {
       viewer: "w",
     });
     expect(out.destinations).toEqual([
-      { at: "e3", color: "w", piece: "p" },
+      { at: "e3", color: "w", piece: "p", via: "gas" },
       { at: "e4", color: "w", piece: "p" },
     ]);
-    expect(out.canisters).toEqual([{ at: "e2", color: "w" }]);
+    expect(out.canisters).toEqual([
+      { at: "e2", color: "w" },
+      { at: "e3", color: "w" },
+    ]);
+  });
+
+  describe("stacked gas + move — ghost lands on the resolver's endpoint", () => {
+    // The queue never records the composed landing square: the resolver folds
+    // the legs at End. Painting the raw `to` leaves the square the player is
+    // actually aiming at unmarked.
+
+    it("start-rank stack: B e2→e3 + C e2→e4 lands e5", () => {
+      const actions: ScAction[] = [
+        {
+          timing: "B",
+          kind: "pawnDouble",
+          color: "w",
+          from: "e2",
+          to: "e3",
+          seq: 0,
+        },
+        {
+          timing: "C",
+          kind: "classical",
+          color: "w",
+          from: "e2",
+          to: "e4",
+          seq: 1,
+        },
+      ];
+      const out = intentOverlaysFromQueue(actions, {
+        placement: "4k3/8/8/8/8/8/4P3/4K3",
+        viewer: "w",
+      });
+      expect(out.destinations).toEqual(
+        expect.arrayContaining([
+          { at: "e4", color: "w", piece: "p" },
+          { at: "e5", color: "w", piece: "p", via: "gas" },
+        ]),
+      );
+      expect(out.destinations).toHaveLength(2);
+      expect(out.destinations.some((d) => d.at === "e3")).toBe(false);
+      expect(out.canisters).toEqual(
+        expect.arrayContaining([
+          { at: "e2", color: "w" },
+          { at: "e5", color: "w" },
+        ]),
+      );
+    });
+
+    it("same-vector stack: B e6→e7 + C e6→e7 lands e8", () => {
+      // Both actions carry `to: e7`; the endpoint projection is also what keeps
+      // the destination dedup from collapsing them into one ghost.
+      const actions: ScAction[] = [
+        {
+          timing: "B",
+          kind: "pawnDouble",
+          color: "w",
+          from: "e6",
+          to: "e7",
+          seq: 0,
+        },
+        {
+          timing: "C",
+          kind: "classical",
+          color: "w",
+          from: "e6",
+          to: "e7",
+          seq: 1,
+        },
+      ];
+      const out = intentOverlaysFromQueue(actions, {
+        placement: "8/8/4P3/8/8/8/8/4K2k",
+        viewer: "w",
+      });
+      expect(out.destinations).toEqual(
+        expect.arrayContaining([
+          { at: "e7", color: "w", piece: "p" },
+          { at: "e8", color: "w", piece: "p", via: "gas" },
+        ]),
+      );
+      expect(out.destinations).toHaveLength(2);
+    });
+
+    it("move then gas: C e2→e4 + F e2→e3 lands e5", () => {
+      // F is a placeholder for pre-move geometry — the resolver recomputes +1
+      // from the classical landing.
+      const actions: ScAction[] = [
+        {
+          timing: "C",
+          kind: "classical",
+          color: "w",
+          from: "e2",
+          to: "e4",
+          seq: 0,
+        },
+        {
+          timing: "F",
+          kind: "pawnDouble",
+          color: "w",
+          from: "e2",
+          to: "e3",
+          seq: 1,
+        },
+      ];
+      const out = intentOverlaysFromQueue(actions, {
+        placement: "4k3/8/8/8/8/8/4P3/4K3",
+        viewer: "w",
+      });
+      expect(out.destinations).toEqual(
+        expect.arrayContaining([
+          { at: "e4", color: "w", piece: "p" },
+          { at: "e5", color: "w", piece: "p", via: "gas" },
+        ]),
+      );
+      expect(out.destinations.some((d) => d.at === "e3")).toBe(false);
+    });
+
+    it("blocked landing: rewrite is declined, gas ghost stays on B.to", () => {
+      // Enemy rook on e5 — core skips the rewrite so the classical fizzles and
+      // the marine parks on the gas step. Never paint e5.
+      const actions: ScAction[] = [
+        {
+          timing: "B",
+          kind: "pawnDouble",
+          color: "w",
+          from: "e2",
+          to: "e3",
+          seq: 0,
+        },
+        {
+          timing: "C",
+          kind: "classical",
+          color: "w",
+          from: "e2",
+          to: "e4",
+          seq: 1,
+        },
+      ];
+      const out = intentOverlaysFromQueue(actions, {
+        placement: "4k3/8/8/4r3/8/8/4P3/4K3",
+        viewer: "w",
+      });
+      expect(out.destinations.some((d) => d.at === "e5")).toBe(false);
+      expect(out.destinations).toEqual(
+        expect.arrayContaining([
+          { at: "e3", color: "w", piece: "p", via: "gas" },
+        ]),
+      );
+    });
+
+    it("queen warp + classical stack lands past the warp square", () => {
+      const actions: ScAction[] = [
+        {
+          timing: "B",
+          kind: "queenWarp",
+          color: "w",
+          from: "d1",
+          to: "d3",
+          seq: 0,
+        },
+        {
+          timing: "C",
+          kind: "classical",
+          color: "w",
+          from: "d1",
+          to: "d3",
+          seq: 1,
+        },
+      ];
+      const out = intentOverlaysFromQueue(actions, {
+        placement: "4k3/8/8/8/8/8/8/3QK3",
+        viewer: "w",
+      });
+      expect(out.destinations).toEqual(
+        expect.arrayContaining([
+          { at: "d3", color: "w", piece: "q" },
+          { at: "d5", color: "w", piece: "q", via: "gas" },
+        ]),
+      );
+    });
   });
 
   it("does not project opponent classical moves into check rings (no intent leak)", () => {

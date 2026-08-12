@@ -1,18 +1,6 @@
-import { Chess } from "chess.js";
+// SPEC: _spec/packages/starchess-core/sc-moves.puml, _spec/packages/starchess-core/turn-queue-sequence.puml
 import type { Square } from "../../model/square";
 import type { StarChessColor } from "../../model/types";
-
-/** Two squares forward for a pawn, or null if off-board. */
-export const pawnDoubleTarget = (
-  square: Square,
-  color: StarChessColor,
-): Square | null => {
-  const file = square[0]!;
-  const rank = Number(square[1]);
-  const dest = color === "w" ? rank + 2 : rank - 2;
-  if (dest < 1 || dest > 8) return null;
-  return `${file}${dest}` as Square;
-};
 
 /** One square forward for a pawn, or null if off-board. */
 export const pawnSingleTarget = (
@@ -26,49 +14,23 @@ export const pawnSingleTarget = (
   return `${file}${dest}` as Square;
 };
 
-export const isPawnStartRank = (square: Square, color: StarChessColor): boolean =>
-  color === "w" ? square[1] === "2" : square[1] === "7";
-
 /**
- * Classical chess.js double-step: start rank, clear path, legal `.move`.
- * Side-to-move in `fen` is forced to the pawn’s color for the probe.
+ * Rank eligibility for the free classical double.
+ *
+ * Positional, not historical — a marine deployed onto rank 2 gets the double
+ * having never “started” there. Marines can also be deployed onto their own
+ * back rank (the Command Center ring reaches d1/f1 from a king on e1), so the
+ * band extends behind the start rank: denying it there would tax deploying
+ * behind the king with a lost tempo that no rule expresses.
+ *
+ * Sole owner of this rule. Move generation, shape validation and the
+ * classical-after-B rewrite all read it — they must never disagree, or the
+ * board offers a double the resolver refuses to land.
  */
-export const canClassicalPawnDouble = (fen: string, square: Square): boolean => {
-  const probe = new Chess();
-  try {
-    probe.load(fen);
-  } catch {
-    return false;
-  }
-  const piece = probe.get(square);
-  if (!piece || piece.type !== "p") return false;
-  const to = pawnDoubleTarget(square, piece.color);
-  if (!to) return false;
-
-  // Probe as the pawn’s side so `.moves` is meaningful mid-StarChess planning.
-  const parts = probe.fen().split(" ");
-  parts[1] = piece.color;
-  try {
-    probe.load(parts.join(" "));
-  } catch {
-    return false;
-  }
-  return probe.moves({ square, verbose: true }).some((m) => m.to === to);
-};
-
-/**
- * StarChess gas step geometry: +1 forward with the destination empty.
- * Does not require the classical start rank — the canister is one extra square.
- */
-export const canScPawnSingle = (fen: string, square: Square): boolean => {
-  const g = new Chess();
-  try {
-    g.load(fen);
-  } catch {
-    return false;
-  }
-  const piece = g.get(square);
-  if (!piece || piece.type !== "p") return false;
-  const to = pawnSingleTarget(square, piece.color);
-  return to != null && g.get(to) == null;
+export const canPawnDoubleStep = (
+  square: Square,
+  color: StarChessColor,
+): boolean => {
+  const rank = Number(square[1]);
+  return color === "w" ? rank <= 2 : rank >= 7;
 };

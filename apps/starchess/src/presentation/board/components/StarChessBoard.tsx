@@ -500,9 +500,15 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
                       <Show when={ghost()}>
                         {(g) => (
                           <div
-                            class={styles.intentPieceGhost}
+                            class={clsx(
+                              styles.intentPieceGhost,
+                              g().via === "gas" && styles.intentPieceGhostGas,
+                            )}
                             style={{ "--intent-ring": TEAM_PRIMARY[g().color] }}
                             data-intent-dest={square}
+                            data-intent-gas={
+                              g().via === "gas" ? "true" : undefined
+                            }
                             data-piece-inline={
                               g().piece === "r" && pieceSet() === "nerd"
                                 ? "r"

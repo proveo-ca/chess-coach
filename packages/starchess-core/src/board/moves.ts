@@ -10,10 +10,12 @@ import type { Square } from "chess.js";
 import {
   attacksSquare,
   parseSquare,
+  placementToMap,
   sq,
   type ScPiece,
 } from "./placement";
 import { mineAt } from "./mines";
+import { canPawnDoubleStep } from "../rules/specials/pawnDouble";
 import type { PieceColor, ScMine, SpawnPiece } from "../model/types";
 
 export type ScMove = {
@@ -120,7 +122,6 @@ const pawnMoves = (
 ): void => {
   const { file, rank } = parseSquare(from);
   const dir = piece.color === "w" ? 1 : -1;
-  const startRank = piece.color === "w" ? 2 : 7;
   const lastRank = piece.color === "w" ? 8 : 1;
 
   const tryQuiet = (to: Square, doubleStep: boolean): void => {
@@ -144,7 +145,7 @@ const pawnMoves = (
 
   const fwd = sq(file, rank + dir);
   if (fwd) tryQuiet(fwd, false);
-  if (rank === startRank && fwd && !map.has(fwd)) {
+  if (canPawnDoubleStep(from, piece.color) && fwd && !map.has(fwd)) {
     const fwd2 = sq(file, rank + 2 * dir);
     if (fwd2) tryQuiet(fwd2, true);
   }
@@ -276,6 +277,26 @@ export const scMovesFor = (
 };
 
 /**
+ * Free classical double available from `square` — drives the "Double Step
+ * (free)" affordance, so the player is not asked to spend a canister on a step
+ * the board already grants.
+ *
+ * Derived from the generator rather than probed through chess.js: chess.js
+ * rejects a placement with a marine on the edge rows outright ("some pawns are
+ * on the edge rows"), which is a legal StarChess position via a Command Center
+ * deploy, and it has no notion of the widened rank band either way.
+ */
+export const canClassicalPawnDouble = (
+  placement: string,
+  square: Square,
+): boolean => {
+  const map = placementToMap(placement);
+  const piece = map.get(square);
+  if (!piece || piece.type !== "p") return false;
+  return scMovesFrom(map, square, piece.color).some((m) => m.isPawnDoubleStep);
+};
+
+/**
  * Shape-only geometry — deliberately ignores path blockers so fog
  * path-discovery intents stay queueable. Opt-in validation only.
  */
@@ -306,10 +327,7 @@ export const isScMoveShape = (
       }
       const dir = color === "w" ? 1 : -1;
       if (adf === 0 && dr === dir) return true;
-      if (adf === 0 && dr === 2 * dir) {
-        const start = color === "w" ? 2 : 7;
-        return fr === start;
-      }
+      if (adf === 0 && dr === 2 * dir) return canPawnDoubleStep(from, color);
       return adf === 1 && dr === dir;
     }
     case "b":

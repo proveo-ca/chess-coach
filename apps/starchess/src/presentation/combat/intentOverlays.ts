@@ -14,7 +14,9 @@ import {
   collectLegalKingChecks,
   mapToPlacement,
   parseSquare,
+  pawnSingleTarget,
   placementToMap,
+  rewriteClassicalAfterB,
   rookModeAfterB,
   type RookMode,
   type ScAction,
@@ -102,6 +104,68 @@ const pushCheck = (
   checks.push({ at });
 };
 
+const pushCanister = (
+  canisters: IntentCanisterGhost[],
+  seen: Set<string>,
+  at: Square,
+  color: StarChessColor,
+) => {
+  const key = `${color}:${at}`;
+  if (seen.has(key)) return;
+  seen.add(key);
+  canisters.push({ at, color });
+};
+
+/**
+ * Where each B/F relocate's unit actually comes to rest, keyed by the actor's
+ * live square (what B/F carry as `from`).
+ *
+ * A special stacked with a same-vector classical resolves as one longer
+ * advance, and the queue never records the composed endpoint:
+ * - **gas/warp then move** — `rewriteClassicalAfterB` folds the legs together,
+ *   so the landing is the *rewritten* C's `to`, not `B.to`.
+ * - **move then gas** — the F step recomputes +1 from the post-classical
+ *   square (see the `pawnDouble` F branch in core `submit-turn`), so `F.to` is
+ *   only a placeholder for the pre-move geometry.
+ *
+ * Both endpoints come from the same core helpers the resolver uses. Never
+ * re-derive the vector here: the rewrite's guards (same-file, forward, start
+ * rank, blocked landing) are the contract, and a hand-rolled version would
+ * paint squares the unit never reaches.
+ */
+const stackEndpoints = (
+  queue: readonly ScAction[],
+  placement: string,
+): Map<string, Square> => {
+  const out = new Map<string, Square>();
+  const projected = rewriteClassicalAfterB(queue, placement);
+  projected.forEach((r, i) => {
+    const raw = queue[i];
+    if (!raw || raw.timing !== "C" || r.timing !== "C") return;
+    if (r.from === raw.from && r.to === raw.to) return;
+    out.set(`${raw.color}:${raw.from}`, r.to);
+  });
+
+  const afterC = placementToMap(placementAfterClassicalQueue(placement, queue));
+  for (const a of queue) {
+    if (a.timing !== "F" || a.kind !== "pawnDouble") continue;
+    const c = queue.find(
+      (q) =>
+        q.timing === "C" &&
+        q.kind === "classical" &&
+        q.color === a.color &&
+        q.from === a.from,
+    );
+    if (!c || c.timing !== "C") continue;
+    // Resolver fizzles a blocked / off-board F step and the unit parks on the
+    // classical landing — no gas leg to paint.
+    const land = pawnSingleTarget(c.to, a.color);
+    if (!land || afterC.has(land)) continue;
+    out.set(`${a.color}:${a.from}`, land);
+  }
+  return out;
+};
+
 /**
  * Map planning `Q:` → destination ghosts + canister badges + red check rings.
  */
@@ -118,6 +182,9 @@ export const intentOverlaysFromQueue = (
   const map = opts?.placement ? placementToMap(opts.placement) : null;
   const viewer = opts?.viewer;
   const queue = actions ?? [];
+  const stackEnd = opts?.placement
+    ? stackEndpoints(queue, opts.placement)
+    : new Map<string, Square>();
 
   for (const a of queue) {
     if (viewer && a.color !== viewer) continue;
@@ -162,41 +229,30 @@ export const intentOverlaysFromQueue = (
     // B / F specials — canister badge + destination ghost when relocating.
     // Spawn: badge rides the deploy ghost (to), not the king — differentiates
     // deploy-with-gas vs pure classical move ghost (no canister).
-    // Gas/warp/etc.: badge on live actor (from). F after C: follow C landing.
-    const canAt =
-      a.kind === "spawn" && a.to
-        ? a.to
-        : a.timing === "F"
-          ? (() => {
-              const c = queue.find(
-                (q) =>
-                  q.timing === "C" &&
-                  q.kind === "classical" &&
-                  q.color === a.color &&
-                  q.from === a.from,
-              );
-              return c?.to ?? a.from;
-            })()
-          : a.from;
-    const canKey = `${a.color}:${canAt}`;
-    if (!seenCan.has(canKey)) {
-      seenCan.add(canKey);
-      canisters.push({ at: canAt, color: a.color });
+    // Relocates: the unit rests on its stack endpoint (see stackEndpoints), and
+    // the badge sits on both the live actor and that ghost — "this unit is
+    // spending" plus "it arrives here by vespene, not by the classical leg".
+    const isSpawn = a.kind === "spawn";
+    const dest = isSpawn ? a.to : (stackEnd.get(`${a.color}:${a.from}`) ?? a.to);
+    pushCanister(canisters, seenCan, isSpawn && a.to ? a.to : a.from, a.color);
+    if (!isSpawn && dest && dest !== a.from) {
+      pushCanister(canisters, seenCan, dest, a.color);
     }
-    if (!a.to || a.to === a.from) continue;
+    if (!dest || dest === a.from) continue;
     const piece: PieceSymbol | undefined =
-      a.kind === "spawn" && a.unit ? a.unit : map?.get(a.from)?.type;
+      isSpawn && a.unit ? a.unit : map?.get(a.from)?.type;
     if (!piece) continue;
-    const key = `${a.color}:${a.to}`;
+    const key = `${a.color}:${dest}`;
     if (seenDest.has(key)) continue;
     seenDest.add(key);
     destinations.push({
-      at: a.to,
+      at: dest,
       color: a.color,
       piece,
+      ...(isSpawn ? {} : { via: "gas" as const }),
       ...(piece === "r"
         ? {
-            rookMode: (a.kind === "spawn"
+            rookMode: (isSpawn
               ? "tank"
               : rookModeAfterB(a.from, opts?.siegedRooks, queue)) as RookMode,
           }

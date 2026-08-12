@@ -27,6 +27,7 @@ package "Dispatch" {
 
 package "Board queries (public core)" {
   component "scMovesFrom · spawnKingAnchor\nadjacentSquares · getSideVision\ncollectLegalKingChecks · costs" as BQ <<db>>
+  component "rewriteClassicalAfterB\npawnSingleTarget\n(pure stack folding)" as FOLD <<db>>
 }
 
 BASE ARROW_MAIN IN : board host
@@ -38,6 +39,7 @@ IN ARROW_MAIN BQ : dests / fog policy
 OCC ARROW_MAIN ROOK
 OV ARROW_MAIN ROOK
 OV ARROW_MAIN FOG : check rings
+OV ARROW_MAIN FOLD : stack endpoints
 OCC ARROW_OPTIONAL BQ
 OV ARROW_OPTIONAL BQ
 ECO ARROW_OPTIONAL BQ : income / unit / gas
@@ -53,6 +55,14 @@ note bottom
   Intent: policy → hook → pure overlays.
   Fog gate: ""targetVisibleGate"" / ""pieceVisibleToViewer"" (one predicate family).
   U: specialsUsed is **not** a fog pierce.
+  A special stacked with a same-vector classical resolves as **one** longer
+  advance, and the queue never records the composed square. Ghosts paint the
+  classical leg on the raw ""C.to"" and the gas leg on the folded endpoint —
+  ""rewriteClassicalAfterB"" (gas-then-move) or ""pawnSingleTarget"" from the
+  post-C square (move-then-gas). A declined fold (blocked landing / outside
+  the double-step band) means the C fizzles: the ghost stays on ""B.to"".
+  **Allowed:** the pure folding helpers above — never re-derive the vector by
+  hand, the guards are the contract.
   **Forbidden:** endScTurn / resolveTurn / addScAction from projections.
 end note
 @enduml

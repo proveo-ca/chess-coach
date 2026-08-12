@@ -28,7 +28,10 @@ import {
   minesFor,
 } from "../board/mines";
 import { placementAfterCharon } from "../rules/specials/bishopCharon";
-import { pawnSingleTarget } from "../rules/specials/pawnDouble";
+import {
+  canPawnDoubleStep,
+  pawnSingleTarget,
+} from "../rules/specials/pawnDouble";
 import {
   applyPendingKingShots,
   resolveTurn,
@@ -437,8 +440,13 @@ const shiftSquare = (s: Square, df: number, dr: number): Square | null => {
  * blocked at the gas step, mirroring move-then-gas's post-C gas fizzle
  * (a gas step never captures through a blocked landing square).
  * Captures / off-vector C are left alone (pre-B C would fizzle).
+ *
+ * Pure — exported so planning projections (intent ghosts) can paint the square
+ * the stack actually lands on instead of the pre-rewrite `to`. Presentation
+ * must never re-derive this vector by hand: the guards above (same-file,
+ * forward, start rank, blocked landing) are the contract.
  */
-const rewriteClassicalAfterB = (
+export const rewriteClassicalAfterB = (
   actions: readonly ScAction[],
   placement: string,
 ): ScAction[] => {
@@ -471,10 +479,9 @@ const rewriteClassicalAfterB = (
       const ranks = Math.abs(Number(c.to[1]) - Number(c.from[1]));
       const forward =
         (Number(c.to[1]) - Number(c.from[1])) * (b.color === "w" ? 1 : -1) > 0;
-      // The classical double only exists from the pawn's start rank — never
+      // The classical double only exists from the double-step band — never
       // rewrite a 2-rank C from elsewhere (that was never a legal double).
-      const startRank = b.color === "w" ? 2 : 7;
-      const onStartRank = Number(c.from[1]) === startRank;
+      const onStartRank = canPawnDoubleStep(c.from, b.color);
       // Blocked final square: gas-then-move must fizzle like move-then-gas's
       // post-C gas step (occupied = blocked, never a capture).
       if (

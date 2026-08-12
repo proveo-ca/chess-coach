@@ -220,7 +220,7 @@ export const classicFenForViewer = (store: MatchStore) => {
 
 export const canPawnDoubleFree = (store: MatchStore, square: Square) => {
   try {
-    return canClassicalPawnDouble(classicFenForViewer(store), square);
+    return canClassicalPawnDouble(readDisplayedSnapshot(store).placement, square);
   } catch {
     return false;
   }

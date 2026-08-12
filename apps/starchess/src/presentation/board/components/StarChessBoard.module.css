@@ -678,6 +678,16 @@
   box-sizing: border-box;
 }
 
+/* Endpoint of a vespene-powered leg (gas step / warp) stacked onto a classical
+   move — the marine's classical square keeps the plain team-coloured ghost, so
+   the gas tone is what separates "move lands here" from "gas carries me here".
+   Same green as .pieceSpecialUsed; outline only, no filter. */
+.intentPieceGhostGas {
+  outline-style: solid;
+  outline-color: rgba(61, 206, 106, 0.95);
+  opacity: 0.62;
+}
+
 .intentPieceGhost :global(svg) {
   width: 100%;
   height: 100%;

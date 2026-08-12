@@ -125,8 +125,13 @@ title StarChess · scMoves — rule table
 note as RULES
   <size:14>**SC classical legality, per piece**</size>
   ====
-  **pawn** — single push empty; free classical double from start rank
-  (mid+to empty); diagonal enemy capture; **no en passant**;
+  **pawn** — single push empty; free classical double from the double-step
+  band (mid+to empty); diagonal enemy capture; **no en passant**;
+  // Band = ""canPawnDoubleStep"" — start rank **and behind it** (rank ≤2 white,
+  // ≥7 black), so a marine deployed on its own back rank keeps the double.
+  // Sole owner of the rule: movegen, ""isScMoveShape"" and
+  // ""rewriteClassicalAfterB"" all read it, or the board offers a double the
+  // resolver refuses to land.
   // Promotes on last rank. Gas ""pawnDouble"" is +1 forward (any rank),
   // including onto last rank when a promotion choice is set; may stack with classical.
   ----
