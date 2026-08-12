@@ -26,6 +26,11 @@ package "Shared BoardSideRail\n(single aside + geometry + responsive hiding)" {
   component "SideRailTools\nHome (+ ExitGameConfirm if live)\nreview vision · optional Flip" as TOOLS <<app>>
 }
 
+package "Dynamic band chrome\n(mobile · min-width 480px · max-height 639px)\nDYNAMIC_MOBILE_MQ — utils/breakpoints.ts + hooks/useMediaQuery.ts" {
+  component "MobileBanner\natoms/MobileBanner\nBack (onBack or href) · resources · turn" as BANNER <<app>>
+  component "Floating docks (fixed bottom-right)\nGasRack (live) · ReviewTurnNav ‹ › (review)\nportaled — pin to viewport, not the grid" as DOCK <<app>>
+}
+
 package "Menu modals (NeonModal atom)" {
   component "NeonModal\natoms/NeonModal" as NEON <<app>>
   component "Credits / NewGamePanel /\nExitGameConfirm (features)" as MENU <<app>>
@@ -37,6 +42,8 @@ package "Legacy / stories" {
 
 TOP ARROW_MAIN MID
 MID ARROW_MAIN BOT
+TOP ARROW_OPTIONAL BANNER : dynamic band — inset chrome stands down
+MID ARROW_OPTIONAL DOCK : overlays the board corner
 MID ARROW_MAIN BOARD
 MID ARROW_MAIN RAIL
 RAIL ARROW_MAIN LIVE : live controls
@@ -56,12 +63,22 @@ note bottom
   **Live route** ``/single``: ``turnChrome="sidebar"`` (StarChessSingleScreen);
   title ``Game vs Adjutant (Script)`` above ResourceBar; hidden when
   ``max-height: 639px`` (dynamic / short — height only, not width).
-  GasDeploy floats top-right on the same short height (footer spacer collapses);
+  GasDeploy floats bottom-right on the same short height (footer spacer collapses);
   idle ``Plan your turn`` status line is hidden then too.
   **Review / gameOver:** ``ReviewTurnNav`` (green ‹ ›) flanks dual ResourceBars
   in the top row; rail keeps Turn/Phase chips + Home (no stacked DualNav).
   Review detail also shows result + matchup Labels above DualNav.
   Outcome via status line (no GameOverBanner in apps/starchess).
+  **Dynamic band** (``DYNAMIC_MOBILE_MQ``, e.g. Storybook Dynamic 560×420) —
+  one ``MobileBanner`` strip per screen, in-flow chrome hidden:
+  ``/single`` Back · fixed-width ResourceBar (12rem, ``fixedResources``:
+  tracks flip to 4rem · auto · 1fr so the slack sits left of End Turn) ·
+  compact TurnBar;
+  ``/review/:id`` Back · dual ResourceBars (arrows move to the dock);
+  ``/review`` Back · compact ``MatchHistoryFilters`` (swatches + date pager,
+  no "Playing as" caption) — ``MobileBanner href`` keeps link navigation.
+  Bottom-right dock is the one floating-control slot: GasRack when live,
+  ``ReviewTurnNav`` ‹ › when reviewing (same rack fill / border).
   **Tutorial** ``/tutorial/:section/:story`` (``TUTORIAL_SCRIPT`` anchors):
   CoachScreen-shaped Kerrigan header; HOME-only SideRailTools (``homeOnly``);
   no ResourceBars; fog Chess|StarChess skin toggle;

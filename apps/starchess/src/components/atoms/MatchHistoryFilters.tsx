@@ -1,7 +1,8 @@
 /**
  * Review list chrome: Playing as (Blue / Red) + date pagination.
  * First-move filter is Coach-only (StarChess has no opening SAN).
- * // SPEC: _spec/apps/starchess/menu-flow.puml
+ * `compact` is the MobileBanner density (dynamic band).
+ * // SPEC: _spec/apps/starchess/menu-flow.puml, _spec/apps/starchess/screens.puml
  */
 import { Show } from "solid-js";
 import type { Component } from "solid-js";
@@ -19,13 +20,19 @@ export type MatchHistoryFiltersProps = {
   currentDateLabel: string;
   goToPrev: () => void;
   goToNext: () => void;
+  /** MobileBanner density — one row, no "Playing as" label / divider. */
+  compact?: boolean;
 };
 
 export const MatchHistoryFilters: Component<MatchHistoryFiltersProps> = (
   props,
 ) => (
   <>
-    <div class={styles.filters} data-testid="match-history-filters">
+    <div
+      class={styles.filters}
+      classList={{ [styles.compact]: props.compact }}
+      data-testid="match-history-filters"
+    >
       <div class={styles.group}>
         <div class={styles.label}>Playing as</div>
         <div class={styles.tiles} role="group" aria-label="Playing as">
@@ -56,7 +63,10 @@ export const MatchHistoryFilters: Component<MatchHistoryFiltersProps> = (
     </div>
 
     <Show when={props.totalPages >= 1 && props.currentDateLabel}>
-      <div class={styles["page-nav"]}>
+      <div
+        class={styles["page-nav"]}
+        classList={{ [styles.compact]: props.compact }}
+      >
         <Show when={props.totalPages > 1}>
           <button
             type="button"

@@ -14,10 +14,13 @@ import {
   type Component,
   type JSX,
 } from "solid-js";
+import { Portal } from "solid-js/web";
 
 import { createMatchStore, MatchStoreProvider, useMatchStore } from "~/app/MatchStoreContext";
 import { createMatchStateFromReviewHistory } from "~/app/reviewHistory";
 import { displayedSnapshot } from "~/app/selectors";
+import { useMediaQuery } from "~/hooks/useMediaQuery";
+import { DYNAMIC_MOBILE_MQ } from "~/utils/breakpoints";
 import { Label } from "~/components/primitives/Label";
 import { Screen } from "~/components/primitives/Screen";
 import { ScreenBackNav } from "~/components/primitives/ScreenBackNav";
@@ -103,6 +106,8 @@ const syncRookModes = (
 const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
   const store = useMatchStore();
   const snap = createMemo(() => displayedSnapshot(store.state()));
+  /** Dynamic band: turn arrows leave the banner and float bottom-right (gas rack parity). */
+  const dynamicMobile = useMediaQuery(DYNAMIC_MOBILE_MQ);
 
   const reviewBusy = () =>
     store.state().timeline.active ||
@@ -228,20 +233,12 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
 
   return (
     <Screen>
-      {/* Dynamic-only chrome (CSS-gated): banner + board, nothing else. */}
+      {/* Dynamic-only chrome (CSS-gated): banner + board, nothing else.
+          Turn arrows are not a banner slot here — they float bottom-right
+          (portaled dock below), so the ResourceBars own the whole strip. */}
       <MobileBanner
         onBack={() => props.onHome?.()}
         resources={dualResourceBars()}
-        turn={
-          <ReviewTurnNav
-            onBack={() => store.reviewBack()}
-            onForward={() => store.reviewForward()}
-            backDisabled={reviewNavDisabled().back}
-            forwardDisabled={reviewNavDisabled().forward}
-          >
-            <span />
-          </ReviewTurnNav>
-        }
       />
       <Show
         when={props.header}
@@ -321,6 +318,26 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
           </p>
         </div>
       </Screen.Footer>
+      {/* Dynamic band: the strip has no room for ‹ › beside the ResourceBars,
+          so they dock bottom-right like the live GasRack. Portaled because the
+          dock must pin to the viewport, not the Screen grid. */}
+      <Show when={dynamicMobile() && !props.hideDualNav}>
+        <Portal>
+          <div
+            class={styles.navDockDynamic}
+            data-testid="review-turn-nav-dynamic"
+          >
+            <ReviewTurnNav
+              onBack={() => store.reviewBack()}
+              onForward={() => store.reviewForward()}
+              backDisabled={reviewNavDisabled().back}
+              forwardDisabled={reviewNavDisabled().forward}
+            >
+              <span />
+            </ReviewTurnNav>
+          </div>
+        </Portal>
+      </Show>
     </Screen>
   );
 };

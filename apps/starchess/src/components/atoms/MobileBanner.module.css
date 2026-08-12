@@ -1,6 +1,7 @@
-/* Dynamic live strip — Back | resources | turn
-   Tracks: 4rem · 10rem · minmax(0,1fr) (gas fixed bottom-right).
-   Resources fixed; turn column (queue + End + timer) gets the rest.
+/* Dynamic strip — Back | resources | turn (floating docks are bottom-right).
+   Tracks: 4rem · minmax(0,1fr) · auto — resources fill (review: two bars, or
+   filters + date pager). With `fixedResources` (live) the tracks flip to
+   4rem · auto · minmax(0,1fr) so the slack sits left of End Turn instead.
    Child density via ResourceBar/TurnBar `compact` props — not testids. */
 
 .banner {
@@ -35,6 +36,19 @@
     border-bottom: 1px solid var(--border-color, #444);
     z-index: 5;
     overflow: visible;
+  }
+
+  /* `fixedResources`: the strip is content-sized (ResourceBar owns its width)
+     and the turn column takes the slack — End Turn / timer stay pinned right
+     while the stats never stretch. Review keeps the filling default. */
+  .banner[data-resources="fixed"] {
+    grid-template-columns: 4rem auto minmax(0, 1fr);
+  }
+
+  /* Don't stretch or shrink the strip — it keeps the width its own stylesheet
+     sets (`ResourceBar` `.bar.compact`), so the track sizes to it. */
+  .banner[data-resources="fixed"] .resources > * {
+    flex: 0 0 auto;
   }
 
   .back {

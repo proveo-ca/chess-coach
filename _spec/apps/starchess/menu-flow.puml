@@ -57,7 +57,10 @@ note bottom
   ``/single?map=&team=``; **Replay** → ``/review/:id`` DualNav.
   Review list remains at ``/review``: ``MatchHistoryFilters``
   (Playing as Blue/Red + date pages; no First move; no Review title) via
-  ``useMatchHistoryFilters`` · ``‹ Back`` only.
+  ``useMatchHistoryFilters`` · ``‹ Back`` only. On the dynamic band a
+  ``MobileBanner`` (``href="/"``) owns that chrome — ``‹ Back`` + ``compact``
+  filters (swatches + date pager, no caption); the in-flow inset stands down
+  because its min-content height collides with the list. See ``screens.puml``.
   Review detail ``/review/:id``: Coach-style title stack
   (``Win (Blue)`` · ``Alex (Blue) vs Adjutant (Red)``) above ``ReviewTurnNav``.
   Coach ``/chess/`` → ``/starchess/`` (nerd yes / ``StarChessRedirect``)
