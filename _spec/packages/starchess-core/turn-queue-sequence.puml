@@ -28,7 +28,7 @@ end note
 == Planning ==
 
 P ARROW_MAIN UI : queue special + classical for own side
-UI ARROW_MAIN FEN : ""Q:<sideQueue>;<sideQueue>""\n(B/F then C, or C then B/F)
+UI ARROW_MAIN FEN : ""Q:<sideQueue>;<sideQueue>""\n(specials before and/or after the C — free order)
 P ARROW_MAIN UI : End / timeout submits
 note right of UI
   Planning clock = ""turnTimeoutMsForTurn"":
@@ -74,6 +74,14 @@ end
 group 4 · rank F (specials after combat)
   ES ARROW_MAIN ES : white F, then black F\n(applySpecial: post-move siege / late drops)
 end
+
+note over ES
+  The same side may hold **B and F specials in one turn** — nothing forbids
+  acting before *and* after its own classical. ≤1 C per side is the only
+  shape rule (""assertQueueShape""); gas caps the special count.
+  F actor squares are resolved post-C, so a B relocate, the C and a late
+  F drop all compose on the square the unit actually ends on.
+end note
 
 == Next snap ==
 

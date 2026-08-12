@@ -54,8 +54,8 @@ const nextSeq = (snap: ScFenSnapshot): number => {
 
 /**
  * Append one planning action. Assigns `seq`, enforces MODE budget
- * (≤1 classical; any number of specials all B or all F — B xor F) and gas
- * cost for specials.
+ * (≤1 classical; any number of specials, freely before (B) and/or after (F)
+ * that classical) and gas cost for specials.
  */
 export const addScAction = (input: {
   snapshot: ScFenSnapshot;
@@ -87,13 +87,8 @@ export const addScAction = (input: {
       );
     }
   } else {
-    const existingSpecial = side.find((a) => a.timing === "B" || a.timing === "F");
-    if (existingSpecial && existingSpecial.timing !== action.timing) {
-      throw new AddScActionError(
-        "SC_QUEUE_SHAPE",
-        `side ${action.color} specials must all be ${existingSpecial.timing} (B xor F)`,
-      );
-    }
+    // No timing gate: specials may sit before (B) and/or after (F) the side's
+    // classical in the same turn — only gas limits how many.
     const cost = specialGasCost(action.kind);
     if (snap.gas[action.color] < cost) {
       throw new AddScActionError(

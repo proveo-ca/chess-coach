@@ -10,7 +10,7 @@ title StarChess Mode · Product / UX
 
 package "Goals (vs classical chess)" {
   component "Turn structure — both sides queue,\nEnd / timeout submits" as G1 <<async>>
-  component "Actions per turn — N specials (all B or all F)\n+ ≤1 classical (stack order → B / F)" as G2 <<app>>
+  component "Actions per turn — N specials, **before and/or after**\n+ ≤1 classical (stack order → B / F)" as G2 <<app>>
   component "Conflicts — classical = **attack** then **move**" as G3 <<app>>
   component "Economy — minerals + vespene" as G4 <<db>>
   component "Vision — cumulative fog (always on in mode)" as G5 <<db>>
@@ -34,7 +34,9 @@ package "UX (v1) — live apps/starchess" {
 }
 
 note bottom
-  Long-press / GasDeploy queues ""B"" or ""F"" (stack order).
+  Long-press / GasDeploy queues ""B"" or ""F"" purely by stack order —
+  specials armed before the classical are ""B"", after it ""F"", and a turn
+  may hold both (nothing forbids acting before *and* after the move).
   Costs from the MODE economy — most specials **1** gas;
   Charon **2**, Jump **3**.
   **Spider Mine combat:** a lit hostile mine is a **clickable target** — the

@@ -301,21 +301,15 @@ export const assertQueueShape = (actions: readonly ScAction[]): void => {
   for (const color of ["w", "b"] as const) {
     const side = actionsFor(actions, color);
     const classical = side.filter((a) => a.timing === "C");
-    const befores = side.filter((a) => a.timing === "B");
-    const afters = side.filter((a) => a.timing === "F");
     if (classical.length > 1) {
       throw Object.assign(
         new Error(`SCFEN queue: at most one C per side (${color} has ${classical.length})`),
         { code: "SC_QUEUE_SHAPE" as const },
       );
     }
-    // Many specials allowed, but all before (B) or all after (F) the classical.
-    if (befores.length > 0 && afters.length > 0) {
-      throw Object.assign(
-        new Error(`SCFEN queue: B xor F per side (${color})`),
-        { code: "SC_QUEUE_SHAPE" as const },
-      );
-    }
+    // Specials are unconstrained in count *and* timing: a side may stack them
+    // before (B) and/or after (F) its classical in the same turn. Gas is the
+    // only budget; ≤1 C is the only shape rule.
   }
 };
 
