@@ -5,7 +5,8 @@
  * Red dashed rings (`checks`):
  * - fog-visible standing king-checks on the board (resolve at next turn open)
  * - checks that appear after applying queued classical moves (projected)
- * - capture/attack destinations (enemy on classical `to`)
+ * - capture/attack destinations (enemy on classical `to`), including a visible
+ *   hostile spider mine there — the unit attacks the mine, it does not walk in
  *
  * King-check rings are gated on the viewer's **current** vision — a projected
  * check never paints on a king the viewer cannot see yet (fog leak at intent).
@@ -16,6 +17,7 @@ import type { PieceSymbol, Square } from "chess.js";
 import {
   collectLegalKingChecks,
   mapToPlacement,
+  mineAt,
   parseSquare,
   pawnSingleTarget,
   placementToMap,
@@ -29,6 +31,7 @@ import {
 
 import { pieceAtQueuedSquare } from "~/presentation/board/occupancyForQueuedMoves";
 import {
+  isSquareVisibleToSide,
   pieceVisibleToViewer,
   targetVisibleGate,
 } from "~/presentation/board/fogVisibility";
@@ -217,7 +220,23 @@ export const intentOverlaysFromQueue = (
       // leak the same occupancy by omission. Visible / revealed enemies still
       // ring and paint above the veil.
       const target = map?.get(a.to);
+      const mineOnTo = mineAt(opts?.mines, a.to);
       if (piece === "p" && isPawnDiagonalAttack(a.from, a.to, a.color)) {
+        pushCheck(checks, seenCheck, a.to);
+      } else if (
+        !target &&
+        mineOnTo &&
+        mineOnTo.color !== a.color &&
+        piece !== "k" &&
+        (!viewer ||
+          !opts?.placement ||
+          isSquareVisibleToSide(opts.placement, viewer, a.to, {
+            siegedRooks: opts.siegedRooks,
+            mines: opts.mines,
+          }))
+      ) {
+        // Attacking a visible hostile mine — same red ring as a capture intent
+        // (the mine dies in the attack phase and the unit occupies).
         pushCheck(checks, seenCheck, a.to);
       } else if (target && target.color !== a.color) {
         const known =

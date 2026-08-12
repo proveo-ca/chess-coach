@@ -770,6 +770,10 @@ const sideSpecials = (
       for (let r = 1; r <= 8; r += 1) {
         const to = `${FILES[f]}${r}` as Square;
         if (map.has(to)) continue;
+        // Mined tiles stay legal landings, but the jump is no attack — a hostile
+        // mine detonates on arrival and takes the BattleShip with it.
+        const mine = mineAt(snap.mines, to);
+        if (mine && mine.color !== us) continue;
         let score = center * centerScore(to);
         if (underFire) {
           score += isSafeSquare(map, to, enemy) ? QUEEN_ESCAPE : -QUEEN_ESCAPE * 0.5;

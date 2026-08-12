@@ -37,8 +37,13 @@ note bottom
   Long-press / GasDeploy queues ""B"" or ""F"" (stack order).
   Costs from the MODE economy — most specials **1** gas;
   Charon **2**, Jump **3**.
-  **Spider Mine combat:** path-chase / attack-mine; ignores allies
-  + enemy kings (""mines.ts"" + ""resolveTurn"").
+  **Spider Mine combat:** a lit hostile mine is a **clickable target** — the
+  attacker clears it and occupies (red intent ring, mine boom, no death);
+  walking in (marine forward step, fogged tile) or crossing one mid-slide
+  (path-chase) kills the mover. A **Tactical Jump** may land on a mined tile
+  (mines are not occupancy) but the jump does not attack — a hostile mine takes
+  the BattleShip with it. Ignores allies + enemy kings
+  (""mines.ts"" + ""resolveTurn"" + ""submit-turn"" queenWarp).
   Live UI → ""apps/starchess"" (""/starchess/""); Coach keeps
   ""features/nerd"" + ""StarChessRedirect"" only.
   ====

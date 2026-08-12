@@ -49,6 +49,26 @@ export const targetVisibleGate = (placement: string, opts?: FogVisionOpts) => {
 };
 
 /**
+ * Mines `viewer` may act on: own mines always, hostile mines only while their
+ * tile is lit / revealed — the same gate the engine attack phase uses, so the
+ * "attack the mine" affordance never reveals a mine the viewer cannot see.
+ * `fog: false` (observer / fog-off gallery) keeps every mine.
+ * // SPEC: _spec/packages/starchess-core/resolve.puml
+ */
+export const minesVisibleToViewer = (
+  placement: string,
+  viewer: StarChessColor,
+  mines: readonly ScMine[] | undefined,
+  fog: boolean,
+  opts?: FogVisionOpts,
+): ScMine[] => {
+  const all = mines ? [...mines] : [];
+  if (!fog || all.length === 0) return all;
+  const gate = targetVisibleGate(placement, { ...opts, mines: all });
+  return all.filter((m) => m.color === viewer || gate(viewer, m.at));
+};
+
+/**
  * Piece-on-square gate (occupancy / FX) — core isPieceVisibleToSide + shared rook mode.
  */
 export const pieceVisibleToViewer = (

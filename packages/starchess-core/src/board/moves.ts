@@ -36,7 +36,13 @@ export type ScMove = {
    */
   dropsAtResolve: boolean;
   isPawnDoubleStep: boolean;
-  /** Advisory only — never restricts legality. */
+  /**
+   * Hostile spider mine on `to`. Advisory for pieces that already reach the
+   * square; **legality-bearing** for the two shapes that only exist because a
+   * mine is targetable — a marine front-diagonal onto an empty tile and a
+   * sieged tank firing at an empty tile (both attack the mine, see
+   * `_spec/packages/starchess-core/resolve.puml`).
+   */
   hostileMineOnTo: boolean;
 };
 
@@ -154,7 +160,10 @@ const pawnMoves = (
     const cap = sq(file + df, rank + dir);
     if (!cap) continue;
     const victim = map.get(cap);
-    if (!victim || victim.color === piece.color) continue;
+    if (victim && victim.color === piece.color) continue;
+    // Empty diagonal is only a move when a hostile mine sits there — the marine
+    // attacks (and clears) it. Otherwise diagonals stay capture-only.
+    if (!victim && !hostileMine(mines, cap, piece.color)) continue;
     const promotes = parseSquare(cap).rank === lastRank;
     pushMove(
       out,
@@ -163,7 +172,7 @@ const pawnMoves = (
         to: cap,
         piece: "p",
         color: piece.color,
-        capture: victim,
+        capture: victim ?? null,
         promotes,
         ...(promotes ? { promotion: "q" as SpawnPiece } : {}),
       },
@@ -175,6 +184,8 @@ const pawnMoves = (
 /**
  * Sieged rook: classic rook attacks only (same file or rank, blocked by
  * occupancy) — captures fire in place (no relocate). No diagonal / area fire.
+ * A hostile mine on an empty ray square is a target too: the turret clears it
+ * without relocating (mines are not occupancy, so the ray runs through them).
  */
 const siegedRookMoves = (
   map: Map<Square, ScPiece>,
@@ -188,7 +199,8 @@ const siegedRookMoves = (
     // Rook geometry via placement attacks (rays stop at first piece).
     if (!attacksSquare(map, from, to)) continue;
     const occ = map.get(to);
-    if (!occ || occ.color === color) continue;
+    if (occ && occ.color === color) continue;
+    if (!occ && !hostileMine(mines, to, color)) continue;
     pushMove(
       out,
       {
@@ -196,7 +208,7 @@ const siegedRookMoves = (
         to,
         piece: "r",
         color,
-        capture: occ,
+        capture: occ ?? null,
         firesInPlace: true,
       },
       mines,

@@ -25,6 +25,7 @@ import { energyForTurn } from "../rules/constants";
 import {
   assertMineCap,
   MAX_MINES_PER_SIDE,
+  mineAt,
   minesFor,
 } from "../board/mines";
 import { placementAfterCharon } from "../rules/specials/bishopCharon";
@@ -63,8 +64,16 @@ export type ResolveEvent = {
   /**
    * Present for `spawn` events whose target held an enemy at application time
    * — the deploy crushed the occupant (presentation draws the death at the drop).
+   * Also set on a `queenWarp` that landed on a hostile mine: the BattleShip is
+   * the victim of its own jump (see {@link ResolveEvent.mineColor}).
    */
   victim?: { type: StarChessPiece; color: StarChessColor };
+  /**
+   * Owner of a spider mine detonated by this special — a `queenWarp` landing on
+   * a hostile mine. The jump is a teleport, not an attack: mine and BattleShip
+   * both die (allied mines stay armed and inert).
+   */
+  mineColor?: StarChessColor;
 };
 
 export type EndScTurnResult = {
@@ -307,6 +316,7 @@ const applySpecial = (
   placement: string;
   mines: ScMine[];
   victim?: { type: StarChessPiece; color: StarChessColor };
+  mineColor?: StarChessColor;
 } => {
   const kind = action.kind as SpecialKind;
   switch (kind) {
@@ -317,7 +327,24 @@ const applySpecial = (
     case "queenWarp": {
       if (!action.to) return { placement, mines };
       ignoreAttacksOn.push(action.from);
-      return { placement: relocate(placement, action.from, action.to), mines };
+      // Actor may have died at turn open — a jump with no hull fizzles, and must
+      // not disturb the landing tile (or detonate a mine sitting on it).
+      const hull = placementToMap(placement).get(action.from);
+      if (!hull || hull.color !== action.color) return { placement, mines };
+      const landed = relocate(placement, action.from, action.to);
+      // Mines are never occupancy, so a mined tile is always a legal landing.
+      // A hostile mine still detonates on arrival — the jump teleports, it does
+      // not attack: BattleShip and mine both die. Allied mines stay armed.
+      const m = mineAt(mines, action.to);
+      if (!m || m.color === action.color) return { placement: landed, mines };
+      const board = placementToMap(landed);
+      board.delete(action.to);
+      return {
+        placement: mapToPlacement(board),
+        mines: mines.filter((x) => x.at !== action.to),
+        victim: { type: hull.type, color: hull.color },
+        mineColor: m.color,
+      };
     }
     case "pawnDouble": {
       if (!action.to) return { placement, mines };
@@ -666,7 +693,11 @@ export const endScTurn = (
     placement = applied.placement;
     mines = applied.mines;
     const bEv = eventFor("specialBefore", a, `ev-${eventSeq++}`);
-    events.push(applied.victim ? { ...bEv, victim: applied.victim } : bEv);
+    events.push({
+      ...bEv,
+      ...(applied.victim ? { victim: applied.victim } : {}),
+      ...(applied.mineColor ? { mineColor: applied.mineColor } : {}),
+    });
   }
 
   const afterB = {
@@ -872,7 +903,11 @@ export const endScTurn = (
     placement = applied.placement;
     mines = applied.mines;
     const fEv = eventFor("specialAfter", rewritten, `ev-${eventSeq++}`);
-    events.push(applied.victim ? { ...fEv, victim: applied.victim } : fEv);
+    events.push({
+      ...fEv,
+      ...(applied.victim ? { victim: applied.victim } : {}),
+      ...(applied.mineColor ? { mineColor: applied.mineColor } : {}),
+    });
   }
 
   // F gas-promotes append after classical promotions were frozen.

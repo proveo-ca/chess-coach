@@ -273,6 +273,23 @@ const plansOf = (input: ResolveTurnInput): ClassicalPlan[] => {
 
 const leapsPiece = (t: ScPiece["type"]) => t === "n" || t === "k" || t === "p";
 
+/**
+ * Does this unit **attack** its own destination square (rather than merely walk
+ * onto it)? Marines only attack their front diagonals — a forward step is a
+ * walk-over. Every other unit attacks where it lands. Kings never attack a mine
+ * square (they are immune and leave it armed), so they are excluded here.
+ * // SPEC: _spec/packages/starchess-core/resolve.puml
+ */
+const attacksOwnDest = (
+  type: ScPiece["type"],
+  from: Square,
+  to: Square,
+): boolean => {
+  if (type === "k") return false;
+  if (type === "p") return from[0] !== to[0];
+  return true;
+};
+
 /** Square immediately before `blocker` on the ray from `from` (or null). */
 const squareBeforeOnRay = (from: Square, blocker: Square): Square | null => {
   const mids = rayBetween(from, blocker);
@@ -460,10 +477,17 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
 
     // Marine diagonals are capture-only: an intent that steps sideways onto an
     // empty square fizzles (fog attack intents never degrade into a quiet step).
+    // Exception: a visible hostile mine there **is** the target — the marine
+    // clears it below like any other attacker.
     if (
       actor.type === "p" &&
       plan.to[0] !== plan.from[0] &&
-      !target
+      !target &&
+      !(
+        visible0 &&
+        mineAt(mines, plan.to) &&
+        mineAt(mines, plan.to)!.color !== plan.color
+      )
     ) {
       continue;
     }
@@ -651,13 +675,31 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
 
     // Hostile mine on empty destination.
     // Kings are immune (occupy without arming). Allies never arm.
-    // Every other piece that lands on a hostile mine dies with it in the move
-    // phase (walk-over trigger) — including units that "attack" the empty square.
-    // Sieged rooks cannot relocate onto a fogged mine (same fizzle as above).
+    // A unit that **attacks** the tile and can reach it clears the mine in the
+    // attack phase, then occupies (resolve.puml) — sieged tanks clear it without
+    // relocating. Everything else walks onto it and dies with it in the move
+    // phase (walk-over trigger): marine forward steps, and any mine still fogged
+    // at contact (an unseen mine is never a chosen target).
     if (!target) {
       const m = mineAt(mines, plan.to);
       if (m && m.color !== plan.color && actor.type !== "k") {
-        if (!visible0 && input.siegedRooks?.includes(plan.from) && actor.type === "r") {
+        const sieged = !!input.siegedRooks?.includes(plan.from) && actor.type === "r";
+        // Sieged rooks never relocate, so they cannot contact a fogged tile.
+        if (!visible0 && sieged) continue;
+        const reachable =
+          leapsPiece(actor.type) || !firstBlockerOnRay(start, plan.from, plan.to);
+        if (visible0 && reachable && attacksOwnDest(actor.type, plan.from, plan.to)) {
+          attacks.push({
+            kind: "mineBlast",
+            piece: actor.type,
+            color: plan.color,
+            from: plan.from,
+            to: plan.to,
+            mineColor: m.color,
+          });
+          removeMineAt(plan.to);
+          // Turret fire never vacates the siege square.
+          if (!sieged) occupy.push(plan);
           continue;
         }
         quiets.push(plan);

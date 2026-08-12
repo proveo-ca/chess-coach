@@ -193,6 +193,28 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
         to: ev.to,
         queenJump: true,
       });
+      // Landed on a hostile mine: the jump is a teleport, not an attack — mine
+      // boom then the BattleShip goes with it (`qj*` ids keep both on the
+      // pre-afterB board so the hull is still there to shred).
+      if (ev.mineColor) {
+        cues.push({
+          kind: "death",
+          id: `qjm${n++}`,
+          piece: "n",
+          color: ev.mineColor,
+          at: ev.to,
+          mine: true,
+        });
+        if (ev.victim) {
+          cues.push({
+            kind: "death",
+            id: `qjd${n++}`,
+            piece: ev.victim.type,
+            color: ev.victim.color,
+            at: ev.to,
+          });
+        }
+      }
     }
   }
 
@@ -262,11 +284,13 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
       });
     }
     if (a.kind === "mineBlast") {
+      // Attack phase mineBlast = a unit cleared the mine (it survives and
+      // occupies) — the boom belongs to the mine, drawn as its owner's hull.
       phase1Deaths.push({
         kind: "death",
         id: `m${n++}`,
-        piece: a.piece,
-        color: a.color,
+        piece: "n",
+        color: a.mineColor,
         at: a.to,
         mine: true,
       });
@@ -497,11 +521,15 @@ const isGasDrop = (cue: TimelineCue): boolean => cue.kind === "gasDrop";
 const isPhase1Attack = (cue: TimelineCue): boolean =>
   cue.kind === "attack" && !cue.id.startsWith("pra") && !cue.id.startsWith("ch");
 
-/** Phase-1 deaths (not path-reveal / Charon / post-move mine / move-collision). */
+/**
+ * Phase-1 deaths (not path-reveal / Charon / Tactical-Jump mine / post-move mine
+ * / move-collision). `qj*` deaths play on the pre-afterB board with the jump.
+ */
 const isPhase1Death = (cue: TimelineCue): boolean =>
   cue.kind === "death" &&
   !cue.id.startsWith("prdth") &&
   !cue.id.startsWith("chd") &&
+  !cue.id.startsWith("qj") &&
   !cue.id.startsWith("mt") &&
   !cue.id.startsWith("mc");
 
@@ -823,12 +851,16 @@ export const playTimeline = (
           if (deaths.some((d) => d.at === a.from)) dying[a.id] = true;
         }
 
+        // Mine cleared by an attack: hide the hull as the boom starts (the mine
+        // stays in the snap until afterAttack stamps).
+        const spentMines = deaths.filter((d) => d.mine).map((d) => d.at);
         const deathStart = scheduler.delay(batchImpactMs, () => {
           if (cancelled) return;
           cb.onCommit({
             hidden: [...attackHidden, ...deathHidden],
             playingIds: [...attackIds, ...deathIds],
             attackDying: dying,
+            ...(spentMines.length ? { spentMines } : {}),
             moveProgress: {},
             moveLeg: {},
           });
@@ -1140,6 +1172,7 @@ export const playTimeline = (
     const preAfterBSpecial =
       cue.id.startsWith("ch") ||
       cue.id.startsWith("chd") ||
+      // qj / qjm / qjd — jump hull, mine boom, and the BattleShip it took out.
       cue.id.startsWith("qj") ||
       cue.id.startsWith("gd") ||
       cue.kind === "gasDrop" ||

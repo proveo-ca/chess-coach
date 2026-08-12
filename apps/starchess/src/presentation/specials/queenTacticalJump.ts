@@ -1,3 +1,4 @@
+// SPEC: _spec/packages/starchess-core/resolve.puml
 /**
  * Tactical Jump destinations from SCFEN placement (no chess.js FEN gate).
  */

@@ -29,9 +29,31 @@ endif
 
 :Apply rank **B** specials — white then black\n— spawn / mine / warp / siege;\n**Presentation:** gas absorb VFX — canister drops\nfrom the top of the actor square — left / mid / right —\ninto the unit; green special-used aura eases in;
 
+note right
+  **Tactical Jump × mine:** mines are **never occupancy**, so a mined tile is
+  always a legal landing (""tacticalJumpTargets"" only drops occupied squares).
+  The jump **teleports, it never attacks**: a **hostile** mine detonates on
+  arrival — BattleShip and mine both die (event carries ""mineColor"" + the hull
+  as ""victim""; cues ""qj"" hull → ""qjm"" boom → ""qjd"" wreck, all pre-""afterB"").
+  An **allied** mine stays armed and inert under the hull.
+end note
+
 :Rank **C** — classical for both sides against\nthe same start board — ""resolveTurn"";
 
 :Phase 1 **attack** — direct attacks on targets visible\nfrom the start board — attack → death → occupy;
+
+note right
+  **A mine is a target, not a wall.** The tile is attacked when the mover
+  *attacks where it lands* (""attacksOwnDest"") — every unit but a **marine
+  forward step** (marines only attack front diagonals) — the mine is **lit for
+  that side**, and the tile is **reachable** (no blocker on the ray). Otherwise
+  the intent stays a quiet step and the mine takes the mover in phase 2:
+  * marine forward step onto a mine → **both die**, promotion cancelled;
+  * mine still **fogged** at contact → walk-over death (never a chosen target);
+  * mine **crossed mid-slide** → chase wake → both die at the landing tile;
+  * **kings** are immune — they neither trigger nor clear a mine;
+  * **allied** mines are inert underfoot (no friendly fire).
+end note
 
 if (attack hits a piece?) then (yes)
   :Death — victim removed;
@@ -40,6 +62,8 @@ if (attack hits a piece?) then (yes)
   else (no)
     :Attacker dies first — square stays empty, no occupy;
   endif
+elseif (attack hits a visible hostile **mine**?) then (yes)
+  :""mineBlast"" in ""attacks"" — the **mine** dies (no victim);\nattacker **occupies** the tile — a sieged tank clears it\nwithout relocating (""firesInPlace"");
 else (no)
   :No direct hit — quiet intent defers to phase 2;
 endif
@@ -64,7 +88,8 @@ note right
   and the chosen unit **deploys**. A promoting pawn that **walks onto** a
   hostile mine (forward step — pawns only attack front diagonals) dies with
   the mine — **no** walk-off / deploy. Units that attack the mine square
-  clear it in the attack phase then occupy.
+  clear it in the attack phase then occupy — including a marine that
+  **promotes by taking a last-rank mine on its front diagonal**.
   Completed-history wire ""C=from intentTo>resolvedTo"" remains **deferred**.
 end note
 

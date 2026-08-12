@@ -93,12 +93,17 @@ export const assertClassicalBaseline = (
   }
   // Siege Tank: immobile while sieged after B intents (quiet relocate blocked).
   // Intent unsiege unlocks relocate; attacks on enemy squares stay legal (no occupy).
+  // A hostile mine on the destination is an attack too — the turret clears it
+  // in place (resolve.puml), so it must not read as a blocked relocate.
   if (
     piece.type === "r" &&
     isRookSiegedAfterB(action.from, snap.siegedRooks, snap.queue?.actions)
   ) {
     const destPiece = map.get(action.to);
-    const isEnemyAttack = !!destPiece && destPiece.color !== action.color;
+    const destMine = mineAt(snap.mines, action.to);
+    const isEnemyAttack =
+      (!!destPiece && destPiece.color !== action.color) ||
+      (!destPiece && !!destMine && destMine.color !== action.color);
     if (!isEnemyAttack) {
       throw new ScValidateError(
         "SC_SPECIAL",
