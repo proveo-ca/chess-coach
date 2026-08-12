@@ -18,6 +18,7 @@ import {
   historyFromRecord,
 } from "~/store/matchHistoryStore";
 import type { StarChessGameRecord } from "~/types/review";
+import { clampPlayerName } from "~/utils/playerName";
 import {
   formatMatchLabel,
   formatMatchResultTitle,
@@ -74,7 +75,7 @@ const MatchList: Component<{
               {g.map.charAt(0).toUpperCase() + g.map.slice(1)}
             </div>
             <Show when={g.playerName}>
-              <div class={styles.name}>{g.playerName}</div>
+              <div class={styles.name}>{clampPlayerName(g.playerName)}</div>
             </Show>
           </A>
         )}
@@ -168,6 +169,7 @@ const ReviewDetail: Component<{ record: StarChessGameRecord }> = (props) => {
         }`}
         variant={props.record.map}
         playerColor={props.record.playerColor}
+        playerName={props.record.playerName}
         onHome={() => navigate("/review")}
       />
     </LiveMatchShell>

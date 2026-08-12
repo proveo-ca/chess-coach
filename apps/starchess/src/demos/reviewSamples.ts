@@ -12,11 +12,8 @@ import {
 } from "@chess-coach/starchess-core";
 
 import type { FogEdgeScenario } from "~/types/demos";
-import {
-  COMBAT_CHAIN_START_SCFEN,
-  PROMOTION_CLEAN_SCFEN,
-  PROMOTION_MINE_SCFEN,
-} from "~/stories/fixtures/seeds";
+import { PROMOTION_CLEAN_SCFEN, PROMOTION_MINE_SCFEN } from "~/app/seeds";
+import { COMBAT_CHAIN_START_SCFEN } from "~/demos/combatChain";
 
 export type ReviewStep = {
   caption: string;

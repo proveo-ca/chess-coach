@@ -1,6 +1,6 @@
+// SPEC: _spec/packages/starchess-core/resolve.puml, _spec/apps/starchess/architecture/board-entities.puml
 /**
  * Resolve VFX — vespene canister falls from the top of the square into the unit.
- * // SPEC: _spec/packages/starchess-core/resolve.puml
  */
 import { For, type Component } from "solid-js";
 

@@ -1,3 +1,4 @@
+// SPEC: _spec/apps/starchess/architecture/board-entities.puml
 /**
  * Map match timeline cues → AnimationStage overlay props.
  *

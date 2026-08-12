@@ -1,3 +1,4 @@
+// SPEC: _spec/apps/starchess/architecture/board-entities.puml
 import { createEffect, createSignal, onCleanup, type Component, type JSX } from "solid-js";
 
 import { svgPivotLocal } from "~/presentation/animations/attackAnim";

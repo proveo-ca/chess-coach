@@ -36,6 +36,9 @@ test-results/
 playwright-report/
 .playwright/
 storybook-static/
+# Playwright MCP scratch — page snapshots, screenshots, console logs written
+# beside the cwd whenever the browser tools drive a page.
+.playwright-mcp/
 
 # ==========================================
 # pnpm

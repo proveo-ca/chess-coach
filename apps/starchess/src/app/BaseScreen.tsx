@@ -17,7 +17,7 @@ import { Portal } from "solid-js/web";
 
 import { storedMaterial, viewerColor } from "~/app/matchEconomy";
 import { useMatchStore } from "~/app/MatchStoreContext";
-import { outcomeLabel, readDisplayedSnapshot } from "~/app/selectors";
+import { canSubmit, outcomeLabel, readDisplayedSnapshot } from "~/app/selectors";
 import styles from "~/app/BaseScreen.module.css";
 import { CoachAvatar } from "~/components/atoms/CoachAvatar";
 import { MobileBanner } from "~/components/atoms/MobileBanner";
@@ -440,6 +440,22 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
     store.armTimer();
   });
 
+  /**
+   * End the turn exactly the way the End button does. Auto-End must not
+   * dispatch from inside a reactive effect: SUBMIT_TURN starts the resolve
+   * timeline, and running that inside the effect's batch lands the timeline's
+   * coalesced TIMELINE_COMMIT patches after TIMELINE_DONE — the cues are
+   * cleared before any `playingIds` reach the overlays, so the move VFX never
+   * renders and pieces appear to teleport. Deferring to a task puts the submit
+   * in the same context a click would.
+   */
+  const endTurnLikeAClick = () => {
+    setTimeout(() => {
+      if (!canSubmit(store.shell())) return;
+      store.submitTurn("end");
+    }, 0);
+  };
+
   let prevQueueReady = false;
   createEffect(() => {
     if (!props.tutorial) return;
@@ -462,7 +478,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
         : side.some((a) => a.timing === "C") && side.some((a) => a.timing !== "C");
     const shouldEnd = ready && !prevQueueReady;
     prevQueueReady = ready;
-    if (shouldEnd) store.submitTurn("end");
+    if (shouldEnd) endTurnLikeAClick();
   });
 
   createEffect(() => {
@@ -637,7 +653,10 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
                   }
                 />
               </Show>
-              <div classList={{ [styles.dynamicHide]: starChessMode() && !ended() && dynamicMobile() }}>
+              <div
+                class={styles.topNavRow}
+                classList={{ [styles.dynamicHide]: starChessMode() && !ended() && dynamicMobile() }}
+              >
                 <ScreenBackNav onBack={requestLeave} data-testid="live-back">
                   <Show when={props.matchTitle}>
                     <div class={styles.matchTitle} data-testid="live-match-title">
@@ -667,6 +686,20 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
                 {props.header}
               </Show>
             </div>
+            {/* Mobile coach lives in the chrome track, never in the board
+                column — see TutorialReviewHost. */}
+            <Show when={props.tutorial && !props.fullMatchHud}>
+              <div class="mobile-hero" data-testid="tutorial-mobile-hero">
+                <Show
+                  when={props.header}
+                  fallback={
+                    <CoachAvatar identity="kerrigan" emotion={props.coachEmotion ?? "idle"} />
+                  }
+                >
+                  {props.header}
+                </Show>
+              </div>
+            </Show>
             {props.guideBubble}
           </div>
         </Screen.Header>
@@ -674,18 +707,6 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
 
       <MatchBoardHost>
         <MatchBoardHost.BoardColumn>
-          <Show when={props.tutorial && !props.fullMatchHud}>
-            <div class="mobile-hero" data-testid="tutorial-mobile-hero">
-              <Show
-                when={props.header}
-                fallback={
-                  <CoachAvatar identity="kerrigan" emotion={props.coachEmotion ?? "idle"} />
-                }
-              >
-                {props.header}
-              </Show>
-            </div>
-          </Show>
           <MatchBoardHost.BoardHost
             class={styles.boardHost}
             data-testid="starchess-play-layout"

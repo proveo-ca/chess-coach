@@ -1,13 +1,8 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { GasDeployScenarioScreen } from "~/demos/GasDeployScenarioScreen";
+import { FULL_ARMY_SAMPLE } from "~/demos/samples";
 import { GasRack } from "~/presentation/hud/components/GasRack";
-import {
-  createMatchStore,
-  MatchStoreProvider,
-} from "~/app/MatchStoreContext";
-import { createMatchStateFromScfen } from "~/app/matchReducer";
-import { GAS_DEPLOY_FIXTURES } from "~/stories/fixtures/scenarios";
+import { WithMatchStore, lessonStory } from "~/stories/project";
 
 const meta = {
   title: "Features/GasDeploy",
@@ -23,35 +18,19 @@ const meta = {
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
 
-export const RackOnly: Story = {
+export const RackOnly: StoryObj = {
   name: "Rack",
-  render: () => {
-    const store = createMatchStore({
-      initial: createMatchStateFromScfen(
-        GAS_DEPLOY_FIXTURES.fullArmy.scfen,
-        GAS_DEPLOY_FIXTURES.fullArmy.stored,
-      ),
-      autoArmTimer: false,
-    });
-    return (
-      <MatchStoreProvider store={store}>
-        <div style={{ padding: "2rem", width: "24rem" }}>
-          <GasRack />
-        </div>
-      </MatchStoreProvider>
-    );
-  },
+  render: () => (
+    <WithMatchStore board={FULL_ARMY_SAMPLE}>
+      <div style={{ padding: "2rem", width: "24rem" }}>
+        <GasRack />
+      </div>
+    </WithMatchStore>
+  ),
 };
 
-export const OnBoard: Story = {
+export const OnBoard = {
+  ...lessonStory("specials", "cc"),
   name: "On board (Command Center)",
-  parameters: { layout: "fullscreen" },
-  render: () => (
-    <GasDeployScenarioScreen
-      scfen={GAS_DEPLOY_FIXTURES.commandCenter.scfen}
-      stored={GAS_DEPLOY_FIXTURES.commandCenter.stored}
-    />
-  ),
 };

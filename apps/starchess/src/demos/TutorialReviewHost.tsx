@@ -20,8 +20,10 @@ import { createMatchStore, MatchStoreProvider, useMatchStore } from "~/app/Match
 import { createMatchStateFromReviewHistory } from "~/app/reviewHistory";
 import { displayedSnapshot } from "~/app/selectors";
 import { CoachAvatar } from "~/components/atoms/CoachAvatar";
-import { TutorialTypewriterNav } from "~/components/features/TutorialTypewriterNav";
+import { MobileBanner } from "~/components/atoms/MobileBanner";
+import { ReviewTurnNav } from "~/components/primitives/ReviewTurnNav";
 import { Screen } from "~/components/primitives/Screen";
+import { ScreenBackNav } from "~/components/primitives/ScreenBackNav";
 import styles from "~/demos/TutorialReviewHost.module.css";
 import { clearSiegedRooks, setRookMode } from "~/presentation/animations/rookModeStore";
 import { LiveBoardBinding } from "~/presentation/board/components/LiveBoardBinding";
@@ -42,7 +44,7 @@ import {
 import type { BoardSkin, PieceSet, VisionMode } from "~/types/board";
 import type { KerriganEmotion } from "~/types/coach";
 import type { ReviewHistory } from "~/types/review";
-import type { TypewriterBeat, TypewriterLine } from "~/types/tutorial";
+import type { TypewriterBeat } from "~/types/tutorial";
 
 const syncRookModes = (
   placement: string,
@@ -64,11 +66,11 @@ const syncRookModes = (
   }
 };
 
-const beatLines = (beats: readonly TypewriterBeat[]): TypewriterLine[] =>
-  beats.map((b) => ({
-    text: b.text,
-    indent: b.kind !== "turn",
-  }));
+/** `Turn 2 · Intent` — the beat the arrows are parked on. */
+const labelForBeat = (beat: TypewriterBeat | undefined, turn: number): string => {
+  if (!beat) return "";
+  return beat.kind === "turn" ? beat.text : `Turn ${turn} · ${beat.text}`;
+};
 
 export type TutorialReviewHostProps = {
   history: ReviewHistory;
@@ -96,7 +98,22 @@ const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
   const [busy, setBusy] = createSignal(false);
 
   const beats = createMemo(() => buildTypewriterBeats(store.state().settledResolves));
-  const lines = createMemo(() => beatLines(beats()));
+  /**
+   * Turn comes from the most recent `turn` beat, not the store: the store's
+   * review turn lags the cursor, which mislabelled `Turn 2 · Check` as
+   * `Turn 1 · Check`.
+   */
+  const beatTurn = () => {
+    const list = beats();
+    let turn = 0;
+    for (let i = 0; i <= beatIndex(); i += 1) {
+      const b = list[i];
+      if (b?.kind === "turn") turn = b.turn;
+    }
+    return turn || reviewTurnNumber();
+  };
+
+  const beatLabel = () => labelForBeat(beats()[beatIndex()], beatTurn());
 
   const reviewTurnNumber = () => {
     const s = store.state();
@@ -276,24 +293,57 @@ const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
 
   return (
     <Screen>
+      {/* Dynamic-only chrome (CSS-gated): banner + board, nothing else. */}
+      {/* Stepper hugs the right in the `turn` slot, matching Review's arrows. */}
+      <MobileBanner
+        onBack={() => props.onHome?.()}
+        turn={
+          <ReviewTurnNav
+            onBack={goPrev}
+            onForward={() => void goNext()}
+            backDisabled={beatIndex() <= 0 || busy()}
+            forwardDisabled={beatIndex() >= beats().length - 1 || busy()}
+          >
+            <span class={styles.phaseLabel}>{beatLabel()}</span>
+          </ReviewTurnNav>
+        }
+      />
       <Screen.Header>
         <div class={styles.headerSlot}>
-          <div class="desktop-only" data-testid="tutorial-header">
-            <Show
-              when={props.header}
-              fallback={<CoachAvatar identity="kerrigan" emotion={props.coachEmotion ?? "idle"} />}
+          {/*
+            `/review/:id` chrome: `‹ Back` + arrows above the board. Here the
+            arrows step one *phase* (Check → Intent → Resolve) instead of a
+            whole turn — the slow-motion version of the Review screen this
+            lesson introduces.
+          */}
+          <ScreenBackNav
+            onBack={props.onHome}
+            class={styles.reviewNav}
+            data-testid="tutorial-review-back"
+          >
+            <ReviewTurnNav
+              onBack={goPrev}
+              onForward={() => void goNext()}
+              backDisabled={beatIndex() <= 0 || busy()}
+              forwardDisabled={beatIndex() >= beats().length - 1 || busy()}
             >
-              {props.header}
-            </Show>
+              {/* Fixed width — the label grows `Turn 1` → `Turn 1 · Resolve`
+                  and the arrows must not dance as it does. */}
+              <span class={styles.phaseLabel} data-testid="tutorial-review-phase">
+                {beatLabel()}
+              </span>
+            </ReviewTurnNav>
+          </ScreenBackNav>
+          {/* Mobile coach lives in the chrome track, never in the board column:
+              anything above the board there shifts its Y off every other screen. */}
+          <div class="mobile-hero" data-testid="tutorial-mobile-hero">
+            <CoachAvatar identity="kerrigan" emotion={props.coachEmotion ?? "idle"} />
           </div>
           {props.guideBubble}
         </div>
       </Screen.Header>
       <MatchBoardHost>
         <MatchBoardHost.BoardColumn>
-          <div class="mobile-hero" data-testid="tutorial-mobile-hero">
-            <CoachAvatar identity="kerrigan" emotion={props.coachEmotion ?? "idle"} />
-          </div>
           <MatchBoardHost.BoardHost class={styles.host}>
             <LiveBoardBinding
               variant={props.variant ?? "eclipse"}
@@ -307,6 +357,7 @@ const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
           onHome={props.onHome}
           controlsVisible={props.turnChrome === "sidebar"}
         >
+          {/* Same as `/review/:id`: rail shows turn + phase, arrows live up top. */}
           <TurnBarSidebar
             review={{
               turn: reviewTurnNumber(),
@@ -319,15 +370,6 @@ const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
       <Screen.Footer>
         <div class={styles.footerStack}>
           <Show when={props.footerExtra}>{props.footerExtra}</Show>
-          <TutorialTypewriterNav
-            lines={lines()}
-            currentIndex={beatIndex()}
-            busy={busy()}
-            canPrev={beatIndex() > 0}
-            canNext={beatIndex() < beats().length - 1}
-            onPrev={goPrev}
-            onNext={() => void goNext()}
-          />
         </div>
       </Screen.Footer>
     </Screen>

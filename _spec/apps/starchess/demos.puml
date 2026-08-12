@@ -12,9 +12,9 @@ title StarChess · Canonical Demos, Shipped vs Pending
 package "Canonical demos" {
   component "Combat Chain\nstory: starchess-demo--combat-chain\nW & B per turn; attack → death → occupy" as D1 <<app>>
   component "King Hunt\nstory: starchess-demo--king-hunt\nimplicit legal checks + HP; tank on g6" as D2 <<app>>
-  component "King Hunt (live)\nstory: starchess-demo--king-hunt-live\nstanding Nc5 check; ResourceBar / TurnBarSidebar / End;\nadjutant opposite of viewer (no HP trade)" as D3 <<app>>
-  component "Vermeer (live)\nstory: starchess-demo--vermeer-live\n1K+4P opening (Maps → Vermeer SCFEN);\nvermeer terrain; ResourceBar / TurnBar / GasDeploy;\nadjutant opposite of team\n(+ VermeerLiveTurnSidebar story)" as D3b <<app>>
-  component "GasDeploy specials\nstory: starchess-special-moves--*\n+ features-turn-chrome--gas-deploy\n+ features-gasdeploy--*\n""GasDeployScenarioScreen"" + fixtures" as D5 <<app>>
+  component "King Hunt (live)\nstory: starchess-demo--king-hunt-live\nstanding Nc5 check; ResourceBar / TurnBarSidebar / End;\nadjutant opposite of viewer (no HP trade)\n""LiveLessonHost"" + king/king-hunt-live" as D3 <<app>>
+  component "Vermeer (live)\nstory: starchess-demo--vermeer-live\n1K+4P opening (Maps → Vermeer SCFEN);\nvermeer terrain; ResourceBar / TurnBar / GasDeploy;\nadjutant opposite of team\n(+ VermeerLiveTurnSidebar story)\n""LiveLessonHost"" + ""VERMEER_LIVE_SAMPLE""" as D3b <<app>>
+  component "GasDeploy specials\nstory: starchess-special-moves--*\n+ features-turn-chrome--gas-deploy\n+ features-gasdeploy--*\n""LiveLessonHost"" + catalog\n(""lessonStory('specials', id)"")" as D5 <<app>>
   component "Fog-edge Bishop / Rook tank\nstory: starchess-fog-of-war-and-move-animations--bishop\n(+ King/Pawn/Knight/Queen/Rook tank|siege)\nmove into fog → capture/occupy blocker" as D4 <<app>>
   component "Spider Mines\nstory: starchess-spider-mines--*\npath collide · ally mine · attack mine\n+ Promotion × mine (core promotionMine.test)\nFog vision: starchess-fog-of-war-and-move-animations--spider-mine" as D6 <<app>>
   component "Collision races\nstory: starchess-collision--*\npath block · ally truncate · same-square bishops\nknight speed (gas pawn + bishop 1/2/3)\ncore: collisionRaces.test · e2e: starchess-collision" as D7 <<app>>
@@ -49,5 +49,9 @@ note bottom
   deploy/HUD → ""_spec/apps/starchess/{deployment,screens,menu-flow}.puml"".
   **Verify:** ""pnpm --filter @chess-coach/starchess-core test"" ·
   ""pnpm --filter @chess-coach/starchess test"" · storybook :6007.
+  **Seed ownership:** product positions → ""app/seeds.ts""; live lesson boards →
+  ""TutorialStoryScript.board""; demo-only samples → ""demos/samples.ts"";
+  scenario packages → ""demos/*.ts"". Storybook owns none of them —
+  ""architecture/storybook-projection.puml"".
 end note
 @enduml

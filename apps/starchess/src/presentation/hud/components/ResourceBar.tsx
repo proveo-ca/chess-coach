@@ -12,7 +12,7 @@ import {
  * All values are createMemo'd from `snapshot` / MatchStore so DualNav turn +
  * gas spends update the strips as phases play.
  */
-import { createMemo, useContext, type Component } from "solid-js";
+import { Show, createMemo, useContext, type Component } from "solid-js";
 
 import {
   displayedStoredMaterial,
@@ -21,6 +21,7 @@ import {
   viewerColor,
 } from "~/app/matchEconomy";
 import { MatchStoreContext } from "~/app/MatchStoreContext";
+import { clampPlayerName } from "~/utils/playerName";
 import { readDisplayedSnapshot } from "~/app/selectors";
 import { MineralsIcon, SupplyIcon, VespeneIcon } from "~/components/primitives/icons";
 import { TeamFrame } from "~/components/primitives/TeamFrame";
@@ -39,6 +40,11 @@ export type ResourceBarProps = {
   stored?: number;
   /** MobileBanner density — tighter padding / type. */
   compact?: boolean;
+  /**
+   * Side's name, shown at the left of the bar. The frame already carries the
+   * team colour, so the name replaces a separate "X (Blue) vs Y (Red)" title.
+   */
+  name?: string;
   class?: string;
 };
 
@@ -139,8 +145,19 @@ export const ResourceBar: Component<ResourceBarProps> = (props) => {
       data-turn={turn()}
       data-gas={gas()}
       role="group"
-      aria-label={`${color() === "w" ? "White" : "Black"} resources`}
+      aria-label={
+        props.name
+          ? `${props.name} resources`
+          : `${color() === "w" ? "White" : "Black"} resources`
+      }
     >
+      <Show when={props.name}>
+        {(name) => (
+          <span class={styles.name} data-testid="resource-bar-name">
+            {clampPlayerName(name())}
+          </span>
+        )}
+      </Show>
       <div class={styles.strip} title="Stored minerals + income per turn">
         <span class={styles.icon} aria-hidden="true">
           <MineralsIcon />
@@ -151,7 +168,7 @@ export const ResourceBar: Component<ResourceBarProps> = (props) => {
         </span>
       </div>
       <div
-        class={styles.strip}
+        class={`${styles.strip} ${styles.gas}`}
         title="Vespene gas this turn (specials burn 1; does not accumulate)"
         aria-label={`Vespene ${gas()} of ${gasCap()}`}
       >

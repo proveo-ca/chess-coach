@@ -9,7 +9,7 @@ import {
   LIVE_CAPABILITIES,
   setCapabilities,
 } from "~/store/capabilitiesStore";
-import { STAR_STARTING_SCFEN } from "~/stories/fixtures/seeds";
+import { STAR_STARTING_SCFEN } from "~/app/seeds";
 
 function SideRailToolsHarness(props: { flipBoard: boolean }) {
   const store = createMatchStore({

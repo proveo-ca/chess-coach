@@ -1,6 +1,6 @@
+// SPEC: _spec/apps/ui/responsiveness/rules.md, _spec/apps/starchess/architecture/board-entities.puml
 /**
  * Terrain gallery board — Screen grid + static SCFEN (no match store).
- * // SPEC: _spec/apps/ui/responsiveness/rules.md
  */
 import type { Component } from "solid-js";
 import { createMemo } from "solid-js";
@@ -11,7 +11,7 @@ import { Label } from "~/components/primitives/Label";
 import { Screen } from "~/components/primitives/Screen";
 import { AnimationStage } from "~/presentation/animations/components/AnimationStage";
 import type { BoardVariant } from "~/types/board";
-import { mapFixture } from "~/stories/fixtures/scenarios";
+import { mapSample } from "~/demos/samples";
 
 const VARIANT_LABEL: Record<BoardVariant, string> = {
   eclipse: "Eclipse",
@@ -24,7 +24,7 @@ export type MapScreenProps = {
 };
 
 export const MapScreen: Component<MapScreenProps> = (props) => {
-  const fixture = () => mapFixture(props.boardVariant);
+  const fixture = () => mapSample(props.boardVariant);
   const snap = createMemo(() => parseScFen(fixture().scfen));
   const mode = () => fixture().visionMode;
 

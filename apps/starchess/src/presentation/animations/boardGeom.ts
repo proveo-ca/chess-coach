@@ -1,3 +1,4 @@
+// SPEC: _spec/apps/starchess/architecture/board-entities.puml
 import type { Square } from "chess.js";
 
 export const findBoardGrid = (host: HTMLElement): HTMLElement | null => {

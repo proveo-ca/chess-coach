@@ -87,3 +87,23 @@ Full design + shipped phase: [`architecture/timeline-perf.puml`](./architecture/
 | VFX caps / DPR | `apps/starchess/src/presentation/animations/vfxPerf.ts` |
 | Combat root | `apps/starchess/src/presentation/animations/components/CombatOverlayRoot.tsx` |
 | Perf HUD | `apps/starchess/src/debug/perfMonitor.ts` |
+
+## Auto-End must not dispatch from a reactive effect
+
+`endTurnAfterQueue` (fog + specials lessons) ends the turn for the player.
+It must submit the way the End **button** does — deferred to a task, not
+dispatched inline from the `createEffect` that detects the queue threshold.
+
+Submitting inside the effect's batch lands the timeline's coalesced
+`TIMELINE_COMMIT` patches *after* `TIMELINE_DONE`. The reducer clears
+`timeline.cues` on DONE, so every later commit carries `playingIds` that match
+nothing: `useCombatOverlays.moveCues` returns empty for the whole resolve and
+`MoveAnimation` never renders. The board still commits each placement, so
+pieces appear to teleport — observed on `/tutorial/fog/bishop` as
+`d4 → g7 → e5 → gone` with an empty overlay root.
+
+Attack / KingDamage looked fine because they arrive on the *second* timeline
+(turn-open checks), which races nothing.
+
+Guard: `BaseScreen.endTurnLikeAClick`. See `timeline-commit-batching.mmd` for
+the gate this interacts with.

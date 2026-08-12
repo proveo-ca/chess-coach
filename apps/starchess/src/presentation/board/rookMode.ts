@@ -1,3 +1,4 @@
+// SPEC: _spec/apps/starchess/architecture/board-entities.puml
 /**
  * Single owner for rook siege/tank mode from a sieged-rook set.
  * Used by planning occupancy, fog, intent overlays, board, and timeline cues.

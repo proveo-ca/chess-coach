@@ -3,9 +3,9 @@ import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { CombatChainDemo } from "~/demos/CombatChainDemo";
 import { FogEdgeDemo } from "~/demos/FogEdgeDemo";
 import { KingHuntDemo } from "~/demos/KingHuntDemo";
-import { KingHuntLiveScreen } from "~/demos/KingHuntLiveScreen";
 import { PROMOTION_MINE_SCENARIO, PROMOTION_SCENARIO } from "~/demos/reviewSamples";
-import { VermeerLiveScreen } from "~/demos/VermeerLiveScreen";
+import { VERMEER_LIVE_SAMPLE } from "~/demos/samples";
+import { lessonStory, sampleStory } from "~/stories/project";
 
 /**
  * Stories mount SCFEN demos / fixtures only — no queue / resolve logic here.
@@ -56,6 +56,7 @@ export const KingHunt: Story = {
 };
 
 export const KingHuntLive: Story = {
+  ...lessonStory("king", "king-hunt-live", { shell: "eclipse", turnChrome: "sidebar" }),
   name: "King Hunt (live)",
   parameters: {
     layout: "fullscreen",
@@ -66,36 +67,24 @@ export const KingHuntLive: Story = {
       },
     },
   },
-  render: () => <KingHuntLiveScreen />,
 };
 
-export const VermeerLive: Story = {
+export const VermeerLive: Story = sampleStory(VERMEER_LIVE_SAMPLE, {
   name: "Vermeer (live)",
-  parameters: {
-    layout: "fullscreen",
-    docs: {
-      description: {
-        story:
-          "Classic live opening on Vermeer terrain: each side 1 king + 4 pawns (same SCFEN as Maps → Vermeer). You pick team via story controls; adjutant plays the opposite color. ResourceBar / TurnBar / GasDeploy + fog + combat VFX.",
-      },
-    },
-  },
-  render: () => <VermeerLiveScreen />,
-};
+  docs:
+    "Classic live opening on Vermeer terrain: each side 1 king + 4 pawns (same SCFEN as Maps \u2192 Vermeer). You pick team via story controls; adjutant plays the opposite color. ResourceBar / TurnBar / GasDeploy + fog + combat VFX.",
+  boardVariant: "vermeer",
+  shell: "vermeer",
+});
 
-export const VermeerLiveTurnSidebar: Story = {
-  name: "Vermeer (live) · turn sidebar",
-  parameters: {
-    layout: "fullscreen",
-    docs: {
-      description: {
-        story:
-          "Experimental variation: TurnBarSidebar (vertical) sits in the board side rail; ResourceBar stays on top. Horizontal TurnBar is unchanged and unused here.",
-      },
-    },
-  },
-  render: () => <VermeerLiveScreen turnChrome="sidebar" />,
-};
+export const VermeerLiveTurnSidebar: Story = sampleStory(VERMEER_LIVE_SAMPLE, {
+  name: "Vermeer (live) \u00b7 turn sidebar",
+  docs:
+    "Experimental variation: TurnBarSidebar (vertical) sits in the board side rail; ResourceBar stays on top. Horizontal TurnBar is unchanged and unused here.",
+  boardVariant: "vermeer",
+  shell: "vermeer",
+  turnChrome: "sidebar",
+});
 
 export const Promotion: Story = {
   name: "Promotion",

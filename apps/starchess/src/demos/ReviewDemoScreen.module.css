@@ -36,8 +36,8 @@
   overflow: visible;
   width: var(--board-size);
   height: var(--board-size);
-  /* Mock apps/ui CapturedPieces strips (min-height 1.4rem each). */
-  margin-block: 1.4rem;
+  /* No vertical margin: the board's Y is owned by the Screen grid's middle
+     track, and any offset here desyncs this screen from /single. */
   box-sizing: border-box;
 }
 
@@ -82,4 +82,40 @@
 .matchupLine {
   margin-bottom: 0;
   color: #e8eaed;
+}
+
+/*
+ * Dynamic (w≥480 · h<640): board-first. The title and per-bar names are chrome
+ * this height cannot afford — the frame colours already say which side is
+ * which — and the two bars sit side by side instead of stacked.
+ */
+@media (max-width: 719px) and (min-width: 480px) and (max-height: 639px) {
+  .matchTitle {
+    display: none;
+  }
+
+  .dualResources {
+    flex-wrap: nowrap;
+    gap: 6px;
+    width: 100%;
+    max-width: none;
+  }
+
+  /* Scoped from this screen — ResourceBar owns its own stylesheet. */
+  .dualResources :global([data-testid="resource-bar-name"]) {
+    display: none;
+  }
+
+  .dualResources :global([data-testid="resource-bar"]) {
+    width: auto;
+    min-width: 0;
+    flex: 1 1 0;
+  }
+}
+
+/* Dynamic: the banner owns the chrome, so the in-flow top pane stands down. */
+@media (max-width: 719px) and (min-width: 480px) and (max-height: 639px) {
+  .topPane {
+    display: none;
+  }
 }

@@ -1,13 +1,9 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { createSignal } from "solid-js";
 
-import {
-  createMatchStore,
-  MatchStoreProvider,
-} from "~/app/MatchStoreContext";
-import { createMatchStateFromScfen } from "~/app/matchReducer";
 import { DeployModal } from "~/presentation/hud/components/DeployModal";
-import { GAS_DEPLOY_FIXTURES } from "~/stories/fixtures/scenarios";
+import { WithMatchStore } from "~/stories/project";
+import { lessonBoard } from "~/tutorial/tutorialScript";
 
 const meta = {
   title: "Atoms/DeployModal",
@@ -23,21 +19,13 @@ const meta = {
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
 
-export const Open: Story = {
+export const Open: StoryObj = {
   name: "Open (absolute)",
   render: () => {
-    const store = createMatchStore({
-      initial: createMatchStateFromScfen(
-        GAS_DEPLOY_FIXTURES.commandCenter.scfen,
-        GAS_DEPLOY_FIXTURES.commandCenter.stored,
-      ),
-      autoArmTimer: false,
-    });
     const [pending, setPending] = createSignal<{ color: "w" } | null>({ color: "w" });
     return (
-      <MatchStoreProvider store={store}>
+      <WithMatchStore board={lessonBoard("specials", "cc")}>
         <div
           style={{
             position: "relative",
@@ -55,7 +43,7 @@ export const Open: Story = {
             onCancel={() => setPending(null)}
           />
         </div>
-      </MatchStoreProvider>
+      </WithMatchStore>
     );
   },
 };

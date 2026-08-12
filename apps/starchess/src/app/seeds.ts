@@ -1,11 +1,13 @@
-/** Classic StarChess starting placement as SCFEN (maps gallery / open board). */
+// SPEC: _spec/apps/starchess/architecture/storybook-projection.puml
+/**
+ * Canonical StarChess SCFEN positions — product source of truth.
+ * Shipped screens, demos, and tests all seed from here; nothing seeds from
+ * Storybook. Scenario *packages* (ply lists + queue steps) live in `demos/`.
+ */
+
+/** Classic StarChess starting placement — `/single` opening + maps gallery. */
 export const STAR_STARTING_SCFEN =
   "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:";
-
-export const COMBAT_CHAIN_START_SCFEN =
-  "SCFEN|4bk2/8/5n2/4p3/8/2R5/3P4/4K3|0|33|P|G:11:11|Q:w:;b:";
-
-export { KING_HUNT_LIVE_START_SCFEN } from "~/demos/kingHunt";
 
 export const PROMOTION_CLEAN_SCFEN =
   "SCFEN|k7/4P3/8/8/8/8/8/4K3|1|33|P|G:11:11|Q:w:;b:";

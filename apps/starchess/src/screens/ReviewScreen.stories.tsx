@@ -8,8 +8,8 @@ import {
   queueCombatChainStep,
 } from "~/demos/combatChain";
 import { ReviewScreen } from "~/screens/ReviewScreen.tsx";
-import { STAR_STARTING_SCFEN } from "~/stories/fixtures/seeds";
-import { addMatchRecord } from "~/store/matchHistoryStore";
+import { STAR_STARTING_SCFEN } from "~/app/seeds";
+import { seedMatchHistory } from "~/stories/project";
 import type { StarChessGameRecord } from "~/types/review";
 
 const COMBAT_HISTORY = buildReviewHistory({
@@ -58,10 +58,6 @@ const games = [
   },
 ] satisfies StarChessGameRecord[];
 
-const seedHistory = () => {
-  for (const game of games) addMatchRecord(game);
-};
-
 const meta = {
   title: "Screens/Review",
   component: ReviewScreen,
@@ -76,17 +72,13 @@ type Story = StoryObj<typeof meta>;
 
 /** List view with Playing as + date filters (no Review title). */
 export const Default: Story = {
-  render: () => {
-    seedHistory();
-    return <ReviewScreen />;
-  },
+  beforeEach: seedMatchHistory(...games),
+  render: () => <ReviewScreen />,
 };
 
 /** Game `/:id` DualNav replay. */
 export const GameDetail: Story = {
   parameters: { route: `/review/${REVIEW_ID}` },
-  render: () => {
-    seedHistory();
-    return <ReviewScreen />;
-  },
+  beforeEach: seedMatchHistory(...games),
+  render: () => <ReviewScreen />,
 };

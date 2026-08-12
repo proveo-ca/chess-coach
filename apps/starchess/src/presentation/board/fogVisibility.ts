@@ -1,7 +1,7 @@
+// SPEC: _spec/apps/starchess/core/board/planning-projection.puml, _spec/apps/starchess/architecture/board-entities.puml
 /**
  * Sole app fog-visibility predicate for planning projections.
  * Matches core submit-turn isTargetVisible (lit ∪ revealed for a side).
- * // SPEC: _spec/apps/starchess/core/board/planning-projection.puml
  */
 import type { Square } from "chess.js";
 import {

@@ -6,7 +6,7 @@ import { describe, expect, it } from "vitest";
 
 import { createMatchStore } from "~/app/MatchStoreContext";
 import type { Clock, Scheduler } from "~/types/ports";
-import { PROMOTION_CLEAN_SCFEN } from "~/stories/fixtures/seeds";
+import { PROMOTION_CLEAN_SCFEN } from "~/app/seeds";
 
 const FixedClock = (t = 0): Clock => ({ now: () => t });
 

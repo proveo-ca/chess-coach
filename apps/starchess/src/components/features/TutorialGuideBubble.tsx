@@ -14,6 +14,14 @@ export type TutorialGuideBubbleProps = {
   lineKey: string;
   action?: TutorialReactionAction;
   onAction?: (action: TutorialReactionAction) => void;
+  /** `success` marks the objective complete — check mark + accent. */
+  variant?: "coach" | "success";
+  /**
+   * Milliseconds until the action fires on its own. Draws a border around the
+   * button over exactly this long, so the auto-press is visible before it
+   * happens rather than surprising the player.
+   */
+  autoAdvanceMs?: number;
 };
 
 export const TutorialGuideBubble: Component<TutorialGuideBubbleProps> = (
@@ -27,29 +35,72 @@ export const TutorialGuideBubble: Component<TutorialGuideBubbleProps> = (
     <Show when={open()}>
       <div
         class={`tutorial-guide-bubble ${styles.dock}`}
+        classList={{ [styles.success!]: props.variant === "success" }}
         data-testid="tutorial-guide-bubble"
+        data-variant={props.variant ?? "coach"}
       >
         <ChatBubble
           testId="tutorial-selena-bubble"
           class={styles.bubble}
         >
           <div class={styles.body}>
+            <Show when={props.variant === "success"}>
+              <span
+                class={styles.successMark}
+                data-testid="tutorial-objective-complete"
+              >
+                ✓ Objective complete
+              </span>
+            </Show>
             <span class={styles.message}>{props.message}</span>
             <Show when={props.action}>
               {(action) => (
                 <button
                   type="button"
                   class={styles.action}
+                  classList={{ [styles.counting!]: props.autoAdvanceMs != null }}
+                  style={
+                    props.autoAdvanceMs != null
+                      ? { "--auto-advance": `${props.autoAdvanceMs}ms` }
+                      : undefined
+                  }
                   data-testid={
                     action().kind === "retryLesson"
                       ? "tutorial-selena-retry"
-                      : "tutorial-selena-action"
+                      : action().kind === "nextLesson"
+                        ? "tutorial-next-lesson"
+                        : "tutorial-selena-action"
                   }
                   onClick={() => props.onAction?.(action())}
                 >
-                  {action().kind === "retryLesson"
-                    ? (action().label ?? "Retry lesson")
-                    : action().label}
+                  <Show when={props.autoAdvanceMs != null}>
+                    {/*
+                      pathLength normalizes the perimeter to 100 so one
+                      dashoffset animation draws the whole border regardless of
+                      the button's size. Stroke straddles the edge — 4px read.
+                    */}
+                    <svg
+                      class={styles.countdown}
+                      data-testid="tutorial-next-countdown"
+                      aria-hidden="true"
+                    >
+                      <rect
+                        x="0"
+                        y="0"
+                        width="100%"
+                        height="100%"
+                        rx="6"
+                        pathLength="100"
+                      />
+                    </svg>
+                  </Show>
+                  <span class={styles.actionLabel}>
+                    {action().kind === "retryLesson"
+                      ? (action().label ?? "Retry lesson")
+                      : action().kind === "nextLesson"
+                        ? (action().label ?? "Next lesson →")
+                        : action().label}
+                  </span>
                 </button>
               )}
             </Show>

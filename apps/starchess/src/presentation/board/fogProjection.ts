@@ -1,3 +1,4 @@
+// SPEC: _spec/apps/starchess/architecture/board-entities.puml
 import type { PieceSymbol, Square } from "chess.js";
 
 import {

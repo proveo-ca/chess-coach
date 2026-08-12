@@ -1,6 +1,6 @@
+// SPEC: _spec/packages/starchess-core/resolve.puml, _spec/apps/starchess/demos.puml, _spec/apps/starchess/architecture/screen-entities.puml
 /**
  * Fog-edge DualNav — MatchStore review. Stories feed a scenario package only.
- * // SPEC: _spec/packages/starchess-core/resolve.puml, _spec/apps/starchess/demos.puml
  */
 import type { Component } from "solid-js";
 

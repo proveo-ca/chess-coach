@@ -17,6 +17,7 @@ import type {
   StarChessGameRecord,
   StarChessMatchResult,
 } from "~/types/review";
+import { clampPlayerName } from "~/utils/playerName";
 
 export type { StarChessGameRecord, StarChessMatchResult };
 
@@ -72,7 +73,8 @@ export const recordFromMatchState = (
     result,
     map: opts.map,
     playerColor: match.playerColor,
-    playerName: opts.playerName,
+    // Records outlive the settings value — clamp on the way in.
+    playerName: clampPlayerName(opts.playerName),
     scfens: snaps.map((s) => formatScFen(normalizeSnapGas(s))),
     resolves: [...match.settledResolves],
   };

@@ -1,3 +1,4 @@
+// SPEC: _spec/apps/starchess/architecture/board-entities.puml
 /**
  * Derive live / review phase label for TurnBar + TurnBarSidebar chips.
  */

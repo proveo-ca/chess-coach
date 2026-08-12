@@ -21,102 +21,46 @@ import { buildReviewHistory } from "~/app/reviewHistory";
 import { CoachAvatar } from "~/components/atoms/CoachAvatar";
 import { TutorialGuideBubble } from "~/components/features/TutorialGuideBubble";
 import { Breadcrumb } from "~/components/primitives/Breadcrumb";
+import { ScreenBackNav } from "~/components/primitives/ScreenBackNav";
 import { Toggle } from "~/components/primitives/Toggle";
 import {
   COMBAT_CHAIN_PLY_SC,
   COMBAT_CHAIN_STEPS,
   queueCombatChainStep,
 } from "~/demos/combatChain";
-import { FogLiveScenarioScreen } from "~/demos/FogLiveScenarioScreen";
-import { GasDeployScenarioScreen } from "~/demos/GasDeployScenarioScreen";
-import { FOG_EDGE_BISHOP_START_SCFEN } from "~/demos/fogEdgeBishop";
-import { FOG_EDGE_ROOK_TANK_START_SCFEN } from "~/demos/fogEdgeRookTank";
-import {
-  FOG_MOVE_KING_START_SCFEN,
-  FOG_MOVE_KNIGHT_START_SCFEN,
-  FOG_MOVE_PAWN_START_SCFEN,
-  FOG_MOVE_QUEEN_START_SCFEN,
-} from "~/demos/fogMoveSamples";
+import { LiveLessonHost } from "~/demos/LiveLessonHost";
 import {
   KING_HUNT_PLY_SC,
   KING_HUNT_STEPS,
   queueKingHuntStep,
 } from "~/demos/kingHunt";
-import { KingHuntLiveScreen } from "~/demos/KingHuntLiveScreen";
-import { KingDefenseScreen } from "~/demos/KingDefenseScreen";
-import { KingDefenseIIScreen } from "~/demos/KingDefenseIIScreen";
 import { TutorialReviewHost } from "~/demos/TutorialReviewHost";
-import { FOG_SIEGE_ROOK_SCFEN } from "~/presentation/animations/components/FogVisionDemo";
 import { LiveMatchShell } from "~/screens/LiveMatchShell";
 import styles from "~/screens/TutorialScreen.module.css";
-import { GAS_DEPLOY_FIXTURES } from "~/stories/fixtures/scenarios";
 import { tutorialNarration } from "~/tutorial/tutorialNarrationStore";
 import {
+  LESSON_ADVANCE_MS,
   TUTORIAL_SCRIPT,
   adjacentTutorialStoryId,
+  lessonBoard,
   holdTutorialLine,
   matchesTutorialCompleteWhen,
   parseTutorialSection,
   resolveTutorialLine,
   resolveTutorialStoryId,
   tutorialPath,
-  tutorialStage,
   tutorialStory,
 } from "~/tutorial/tutorialScript";
 import type {
   TutorialCompleteWhen,
   TutorialLineHold,
+  TutorialReactionAction,
   TutorialSectionId,
 } from "~/types/tutorial";
 
 export type { TutorialSectionId } from "~/types/tutorial";
 
 const SECTIONS = TUTORIAL_SCRIPT.map((s) => ({ id: s.id, label: s.label }));
-
-const FOG_MINE_LIVE_SCFEN =
-  "SCFEN|7k/8/8/8/8/8/8/4K3|0|33|P|G:11:11|M:w:a4|Q:w:;b:";
-const FOG_SIEGE_LIVE_SCFEN = `${FOG_SIEGE_ROOK_SCFEN}|S:d4`;
-
-type FogLesson = {
-  id: string;
-  scfen: string;
-  rookTank?: boolean;
-  rookSiege?: boolean;
-};
-
-const FOG_LESSONS: FogLesson[] = [
-  { id: "king", scfen: FOG_MOVE_KING_START_SCFEN },
-  { id: "pawn", scfen: FOG_MOVE_PAWN_START_SCFEN },
-  { id: "knight", scfen: FOG_MOVE_KNIGHT_START_SCFEN },
-  { id: "bishop", scfen: FOG_EDGE_BISHOP_START_SCFEN },
-  {
-    id: "rook-tank",
-    scfen: FOG_EDGE_ROOK_TANK_START_SCFEN,
-    rookTank: true,
-  },
-  {
-    id: "rook-siege",
-    scfen: FOG_SIEGE_LIVE_SCFEN,
-    rookSiege: true,
-  },
-  { id: "queen", scfen: FOG_MOVE_QUEEN_START_SCFEN },
-  { id: "mine", scfen: FOG_MINE_LIVE_SCFEN },
-];
-
-type SpecialLesson = {
-  id: string;
-  scfen: string;
-  stored: number;
-};
-
-const SPECIAL_LESSONS: SpecialLesson[] = [
-  { id: "marine", ...GAS_DEPLOY_FIXTURES.marine },
-  { id: "cc", ...GAS_DEPLOY_FIXTURES.commandCenter },
-  { id: "hoverbike", ...GAS_DEPLOY_FIXTURES.hoverbike },
-  { id: "mecha", ...GAS_DEPLOY_FIXTURES.mecha },
-  { id: "ship", ...GAS_DEPLOY_FIXTURES.battleship },
-  { id: "tank", ...GAS_DEPLOY_FIXTURES.siegeTank },
-];
 
 const COMBAT_HISTORY = buildReviewHistory({
   start: COMBAT_CHAIN_PLY_SC[0]!,
@@ -135,9 +79,18 @@ const KING_HISTORY = buildReviewHistory({
 const TutorialFooterNav: Component<{
   section: TutorialSectionId;
   onSelect: (id: TutorialSectionId) => void;
+  /** Persistent lesson goal — stays put while coach reactions come and go. */
+  objective?: string;
   children?: JSX.Element;
 }> = (props) => (
   <div class={styles.footerNav} data-testid="tutorial-footer-nav">
+    <Show when={props.objective}>
+      {(text) => (
+        <p class={styles.objective} data-testid="tutorial-objective">
+          {text()}
+        </p>
+      )}
+    </Show>
     <Breadcrumb
       items={SECTIONS}
       current={props.section}
@@ -186,31 +139,26 @@ const FogSection: Component<{
   onHome: () => void;
 }> = (props) => (
   <Show when={props.lessonId} keyed>
-    {(id) => {
-      const lesson = FOG_LESSONS.find((l) => l.id === id)!;
-      return (
-        <FogLiveScenarioScreen
-          scfen={lesson.scfen}
-          rookTank={lesson.rookTank}
-          rookSiege={lesson.rookSiege}
-          boardVariant={props.chessMode ? "classic" : "eclipse"}
-          // Sole product entry for cburnett — fog tutorial Chess skin only.
-          pieceSet={props.chessMode ? "cburnett" : "nerd"}
-          homeOnly
-          hideResources
-          hideGas
-          narrate
-          turnChrome="none"
-          endTurnAfterQueue="first"
-          onExitToMenu={props.onHome}
-          coachEmotion={props.coachEmotion}
-          header={props.header}
-          guideBubble={props.guideBubble}
-          footerExtra={props.footer}
-          boardHints={tutorialStory("fog", id)?.hints}
-        />
-      );
-    }}
+    {(id) => (
+      <LiveLessonHost
+        board={lessonBoard("fog", id)}
+        fog
+        boardVariant={props.chessMode ? "classic" : "eclipse"}
+        // Sole product entry for cburnett — fog tutorial Chess skin only.
+        pieceSet={props.chessMode ? "cburnett" : "nerd"}
+        tutorial
+        hideResources
+        hideGas
+        narrate
+        turnChrome="none"
+        onExitToMenu={props.onHome}
+        coachEmotion={props.coachEmotion}
+        header={props.header}
+        guideBubble={props.guideBubble}
+        footerExtra={props.footer}
+        boardHints={tutorialStory("fog", id)?.hints}
+      />
+    )}
   </Show>
 );
 
@@ -240,13 +188,6 @@ export const TutorialScreen: Component = () => {
   const goStory = (id: string) => {
     navigate(tutorialPath(section(), id));
   };
-  const goAdjacent = (delta: -1 | 1, wrap = false) => {
-    const next = adjacentTutorialStoryId(section(), storyId(), delta, {
-      wrap,
-    });
-    if (next) goStory(next);
-  };
-
   /** Same targets as coach-nav "Next Lesson" / end-of-section handoff. */
   const goNextLesson = () => {
     const sec = section();
@@ -261,125 +202,119 @@ export const TutorialScreen: Component = () => {
     else if (sec === "resolve") selectSection("king");
   };
 
-  // Script completeWhen / restartWhen → next lesson or remount.
-  // Arm on seed (non-match). Latch match through auto-End queue wipe; wait for
-  // timeline idle + delayMs. Never clear the timer once fired.
-  type LessonGate = {
-    armedKey: string;
-    pendingKey: string;
-    firedKey: string;
-    timer?: ReturnType<typeof setTimeout>;
+  /**
+   * Lesson outcome — objective → success → next.
+   *
+   * Evaluated only on a *settled* board (timeline idle), which is what lets
+   * this be a plain state machine: mid-resolve the board churns through
+   * intermediate placements, and matching against those is what previously
+   * needed a three-key armed/pending/fired latch plus timers.
+   *
+   * On success the coach bubble switches to its success variant with a
+   * `Next lesson →` CTA whose border draws over LESSON_ADVANCE_MS and then
+   * fires — the auto-press is visible before it happens, and the CTA skips it.
+   */
+  type LessonOutcome = "active" | "success" | "failed";
+  const [outcome, setOutcome] = createSignal<LessonOutcome>("active");
+  let outcomeKey = "";
+  let advanceTimer: ReturnType<typeof setTimeout> | undefined;
+  let elapsedTimer: ReturnType<typeof setTimeout> | undefined;
+
+  const clearTimers = () => {
+    if (advanceTimer != null) clearTimeout(advanceTimer);
+    if (elapsedTimer != null) clearTimeout(elapsedTimer);
+    advanceTimer = undefined;
+    elapsedTimer = undefined;
   };
-  const completeGate: LessonGate = {
-    armedKey: "",
-    pendingKey: "",
-    firedKey: "",
+  onCleanup(clearTimers);
+
+  /**
+   * Is there anywhere to go after this lesson? The last story of the last
+   * stage ends the tutorial — graduation is handled by the lesson itself
+   * (`useKingHuntGraduation`), so success must not offer a dead CTA.
+   */
+  const hasNextLesson = () =>
+    adjacentTutorialStoryId(section(), storyId(), 1) != null ||
+    section() !== "king";
+
+  /** Success → hold one beat, then advance (the CTA skips the wait). */
+  const succeed = (delayMs: number = LESSON_ADVANCE_MS) => {
+    setOutcome("success");
+    if (!hasNextLesson()) return;
+    advanceTimer = setTimeout(() => {
+      advanceTimer = undefined;
+      goNextLesson();
+    }, delayMs);
   };
-  const restartGate: LessonGate = {
-    armedKey: "",
-    pendingKey: "",
-    firedKey: "",
+
+  /**
+   * Failure (`restartWhen`) → same shape as success: the bubble offers Retry
+   * with the countdown border, and remounts the seed when it completes. The
+   * player sees *why* the lesson is restarting instead of it just happening.
+   */
+  const fail = (delayMs: number = LESSON_ADVANCE_MS) => {
+    setOutcome("failed");
+    advanceTimer = setTimeout(() => {
+      advanceTimer = undefined;
+      retryLesson();
+    }, delayMs);
   };
-  onCleanup(() => {
-    if (completeGate.timer != null) clearTimeout(completeGate.timer);
-    if (restartGate.timer != null) clearTimeout(restartGate.timer);
-  });
-  const runLessonGate = (
-    gate: LessonGate,
+
+  const matches = (
     rule: TutorialCompleteWhen | undefined,
-    key: string,
     n: ReturnType<typeof tutorialNarration>,
-    onFire: () => void,
-  ) => {
-    if (!rule) return;
-
-    // Timer-only advance — no board condition.
-    if (rule.kind === "elapsed") {
-      if (gate.firedKey === key) return;
-      if (gate.armedKey === key) return;
-      gate.armedKey = key;
-      gate.firedKey = key;
-      gate.timer = setTimeout(() => {
-        gate.timer = undefined;
-        gate.pendingKey = "";
-        onFire();
-      }, Math.max(0, rule.ms));
-      return;
-    }
-
-    if (rule.kind === "scfen" && !n.scfen) return;
-    if (rule.kind === "queue" && n.queue == null && !n.scfen) return;
+  ): boolean => {
+    if (!rule || rule.kind === "elapsed") return false;
+    if (rule.kind === "scfen" && !n.scfen) return false;
+    if (rule.kind === "queue" && n.queue == null && !n.scfen) return false;
     if (
       rule.kind === "typewriter" &&
       (n.typewriterTurn == null || n.typewriterBeat == null)
     )
-      return;
-
-    const matched = matchesTutorialCompleteWhen(rule, {
+      return false;
+    return matchesTutorialCompleteWhen(rule, {
       scfen: n.scfen,
       queue: n.queue,
       typewriterTurn: n.typewriterTurn,
       typewriterBeat: n.typewriterBeat,
     });
-
-    if (matched && (gate.armedKey === key || gate.pendingKey === key)) {
-      gate.pendingKey = key;
-    } else if (!matched) {
-      if (gate.pendingKey === key) gate.pendingKey = "";
-      if (gate.firedKey !== key) gate.armedKey = key;
-    }
-
-    if (gate.firedKey === key) return;
-    if (gate.pendingKey !== key) return;
-    if (n.timelineActive) return;
-
-    gate.firedKey = key;
-    gate.armedKey = "";
-    const delayMs = Math.max(0, rule.delayMs ?? 0);
-    const fire = () => {
-      gate.timer = undefined;
-      gate.pendingKey = "";
-      onFire();
-    };
-    if (delayMs === 0) {
-      queueMicrotask(fire);
-      return;
-    }
-    gate.timer = setTimeout(fire, delayMs);
   };
-  let lastLessonGateKey = "";
-  const resetGate = (gate: LessonGate) => {
-    if (gate.timer != null) clearTimeout(gate.timer);
-    gate.armedKey = "";
-    gate.pendingKey = "";
-    gate.firedKey = "";
-    gate.timer = undefined;
-  };
+
   createEffect(() => {
     const sec = section();
     const story = storyId();
-    const key = `${sec}/${story}`;
+    const key = `${sec}/${story}/${lessonEpoch()}`;
     const script = tutorialStory(sec, story);
     const n = tutorialNarration();
-    // New lesson → drop prior timers so `elapsed` can arm fresh.
-    if (lastLessonGateKey !== key) {
-      lastLessonGateKey = key;
-      resetGate(completeGate);
-      resetGate(restartGate);
+
+    // New lesson (or retry) → fresh objective.
+    if (outcomeKey !== key) {
+      outcomeKey = key;
+      clearTimers();
+      setOutcome("active");
+      // `elapsed` needs no board condition — arm it on entry.
+      const complete = script?.completeWhen;
+      if (complete?.kind === "elapsed") {
+        elapsedTimer = setTimeout(() => {
+          elapsedTimer = undefined;
+          if (section() === sec && storyId() === story) succeed(0);
+        }, Math.max(0, complete.ms));
+      }
     }
-    runLessonGate(completeGate, script?.completeWhen, key, n, () => {
-      if (section() !== sec || storyId() !== story) return;
-      goNextLesson();
-    });
-    runLessonGate(restartGate, script?.restartWhen, key, n, () => {
-      if (section() !== sec || storyId() !== story) return;
-      // Remount seed + clear gate so the lesson can fail/complete again.
-      resetGate(restartGate);
-      resetGate(completeGate);
-      lastLessonGateKey = "";
-      retryLesson();
-    });
+
+    if (outcome() !== "active") return;
+    // Only judge a board that has finished animating.
+    if (n.timelineActive) return;
+
+    if (matches(script?.restartWhen, n)) {
+      fail();
+      return;
+    }
+    if (matches(script?.completeWhen, n)) {
+      succeed(LESSON_ADVANCE_MS);
+    }
   });
+
 
   // Intro comment once per lesson; reactions stick (no bounce back to opener).
   let lineHold: TutorialLineHold = { lessonKey: "", introDone: false };
@@ -417,126 +352,86 @@ export const TutorialScreen: Component = () => {
 
   const retryLesson = () => {
     lineHold = { lessonKey: "", introDone: false };
+    clearTimers();
     setLessonEpoch((n) => n + 1);
+  };
+
+  /** Success / failure keep the coach's line and add the matching CTA. */
+  const bubbleMessage = () =>
+    outcome() === "success"
+      ? (line().comment || tutorialStory(section(), storyId())?.title || "Nice.")
+      : line().comment;
+
+  const bubbleAction = (): TutorialReactionAction | undefined => {
+    if (outcome() === "success") {
+      return hasNextLesson() ? { kind: "nextLesson" } : undefined;
+    }
+    if (outcome() === "failed") return { kind: "retryLesson" };
+    return line().action;
   };
 
   const guideBubble = () => (
     <TutorialGuideBubble
-      message={line().comment}
-      lineKey={lineKey()}
-      action={line().action}
+      variant={outcome() === "success" ? "success" : "coach"}
+      autoAdvanceMs={
+        outcome() === "active" || (outcome() === "success" && !hasNextLesson())
+          ? undefined
+          : LESSON_ADVANCE_MS
+      }
+      message={bubbleMessage()}
+      lineKey={`${lineKey()}|${outcome()}`}
+      action={bubbleAction()}
       onAction={(action) => {
         if (action.kind === "retryLesson") retryLesson();
+        if (action.kind === "nextLesson") {
+          clearTimers();
+          goNextLesson();
+        }
         if (action.kind === "goSection") selectSection(action.section);
       }}
     />
   );
 
+  /**
+   * Persistent goal — survives coach reactions while the lesson is active.
+   * Only an explicit `board.objective` renders: falling back to the story
+   * comment duplicates whatever the guide bubble is already saying.
+   */
+  const objectiveLine = () => tutorialStory(section(), storyId())?.board?.objective;
+
   const withFooter = (extra?: JSX.Element) => (
-    <TutorialFooterNav section={section()} onSelect={selectSection}>
+    <TutorialFooterNav
+      section={section()}
+      onSelect={selectSection}
+      objective={outcome() === "active" ? objectiveLine() : undefined}
+    >
       {extra}
     </TutorialFooterNav>
   );
 
-  const fogStories = () => tutorialStage("fog").stories;
-  const fogIdx = () => fogStories().findIndex((s) => s.id === storyId());
-  const specialStories = () => tutorialStage("specials").stories;
-  const specialIdx = () =>
-    specialStories().findIndex((s) => s.id === storyId());
-  const kingStories = () => tutorialStage("king").stories;
-  const kingIdx = () => kingStories().findIndex((s) => s.id === storyId());
 
-  const lessonCoachHeader = (opts: {
-    testId: string;
-    atStart: boolean;
-    atEnd: boolean;
-    /** First-lesson prev label (e.g. prior tutorial section). */
-    startPrevLabel?: string;
-    onStartPrev?: () => void;
-    /** Last-lesson next label (e.g. next tutorial section). */
-    endNextLabel?: string;
-    onEndNext?: () => void;
-  }) => (
-    <div class={styles.coachNav} data-testid={opts.testId}>
-      <button
-        type="button"
-        class={styles.lessonNav}
-        disabled={opts.atStart && !opts.onStartPrev}
-        onClick={() =>
-          opts.atStart && opts.onStartPrev
-            ? opts.onStartPrev()
-            : goAdjacent(-1)
-        }
-        data-testid="tutorial-lesson-prev"
-      >
-        <span class={styles.lessonNavArrow} aria-hidden="true">
-          &lt;
-        </span>
-        <span class={styles.lessonNavText}>
-          {opts.atStart && opts.startPrevLabel
-            ? opts.startPrevLabel
-            : "Previous Lesson"}
-        </span>
-      </button>
+  /**
+   * Lesson chrome: the shared `ScreenBackNav` band — `‹ Back` left, coach
+   * centred. The old `‹ Previous Lesson` / `Next Lesson ›` pair is retired;
+   * forward is the success CTA and sections are the breadcrumb.
+   */
+  const lessonCoachHeader = (opts: { testId: string }) => (
+    <ScreenBackNav
+      onBack={goHome}
+      data-testid={opts.testId}
+    >
       <CoachAvatar identity="kerrigan" emotion={line().emotion} />
-      <button
-        type="button"
-        class={styles.lessonNav}
-        disabled={opts.atEnd && !opts.onEndNext}
-        onClick={() =>
-          opts.atEnd && opts.onEndNext ? opts.onEndNext() : goAdjacent(1)
-        }
-        data-testid="tutorial-lesson-next"
-      >
-        <span class={styles.lessonNavText}>
-          {opts.atEnd && opts.endNextLabel
-            ? opts.endNextLabel
-            : "Next Lesson"}
-        </span>
-        <span class={styles.lessonNavArrow} aria-hidden="true">
-          &gt;
-        </span>
-      </button>
-    </div>
+    </ScreenBackNav>
   );
 
   const fogCoachHeader = () =>
-    lessonCoachHeader({
-      testId: "tutorial-fog-coach-nav",
-      atStart: fogIdx() <= 0,
-      atEnd: fogIdx() >= fogStories().length - 1,
-      endNextLabel: "Special Moves",
-      onEndNext: () => selectSection("specials"),
-    });
+    lessonCoachHeader({ testId: "tutorial-fog-coach-nav" });
 
   const specialCoachHeader = () =>
-    lessonCoachHeader({
-      testId: "tutorial-specials-coach-nav",
-      atStart: specialIdx() <= 0,
-      atEnd: specialIdx() >= specialStories().length - 1,
-      endNextLabel: "Turn Resolution",
-      onEndNext: () => selectSection("resolve"),
-    });
-
-  const resolveCoachHeader = () =>
-    lessonCoachHeader({
-      testId: "tutorial-resolve-coach-nav",
-      atStart: true,
-      atEnd: true,
-      startPrevLabel: "Special Moves",
-      onStartPrev: () => selectSection("specials"),
-      endNextLabel: "King Damage",
-      onEndNext: () => selectSection("king"),
-    });
+    lessonCoachHeader({ testId: "tutorial-specials-coach-nav" });
 
   const kingCoachHeader = () =>
-    lessonCoachHeader({
-      testId: "tutorial-king-coach-nav",
-      atStart: kingIdx() <= 0,
-      atEnd: kingIdx() >= kingStories().length - 1,
-      startPrevLabel: "Turn Resolution",
-      onStartPrev: () => selectSection("resolve"),
-    });
+    lessonCoachHeader({ testId: "tutorial-king-coach-nav" });
 
   const fogFooter = () =>
     withFooter(
@@ -567,22 +462,19 @@ export const TutorialScreen: Component = () => {
           <Show when={`${storyId()}#${lessonEpoch()}`} keyed>
             {(key) => {
               const id = key.split("#")[0]!;
-              const lesson = SPECIAL_LESSONS.find((l) => l.id === id)!;
               return (
-                <GasDeployScenarioScreen
-                  scfen={lesson.scfen}
-                  stored={lesson.stored}
+                <LiveLessonHost
+                  board={lessonBoard("specials", id)}
                   tutorial
+                  narrate
                   hideResources
                   turnChrome="none"
-                  endTurnAfterQueue={
-                    id === "cc" || id === "ship" ? "first" : "moveAndSpecial"
-                  }
                   onExitToMenu={goHome}
                   coachEmotion={line().emotion}
                   header={specialCoachHeader()}
                   guideBubble={guideBubble()}
                   footerExtra={specialFooter()}
+                  boardHints={tutorialStory("specials", id)?.hints}
                 />
               );
             }}
@@ -598,7 +490,6 @@ export const TutorialScreen: Component = () => {
             turnChrome="sidebar"
             onHome={goHome}
             coachEmotion={line().emotion}
-            header={resolveCoachHeader()}
             guideBubble={guideBubble()}
             footerExtra={resolveFooter()}
           />
@@ -607,44 +498,19 @@ export const TutorialScreen: Component = () => {
           <Show when={`${storyId()}#${lessonEpoch()}`} keyed>
             {(key) => {
               const id = key.split("#")[0]!;
-              if (id === "king-hunt-live") {
+              if (tutorialStory("king", id)?.board) {
                 return (
-                  <KingHuntLiveScreen
-                    embedded
+                  <LiveLessonHost
+                    board={lessonBoard("king", id)}
                     tutorial
+                    narrate
                     turnChrome="sidebar"
                     onExitToMenu={goHome}
                     coachEmotion={line().emotion}
                     header={kingCoachHeader()}
                     guideBubble={guideBubble()}
                     footerExtra={kingFooter()}
-                    boardHints={tutorialStory("king", "king-hunt-live")?.hints}
-                  />
-                );
-              }
-              if (id === "king-defense") {
-                return (
-                  <KingDefenseScreen
-                    turnChrome="sidebar"
-                    onExitToMenu={goHome}
-                    coachEmotion={line().emotion}
-                    header={kingCoachHeader()}
-                    guideBubble={guideBubble()}
-                    footerExtra={kingFooter()}
-                    boardHints={tutorialStory("king", "king-defense")?.hints}
-                  />
-                );
-              }
-              if (id === "king-defense-2") {
-                return (
-                  <KingDefenseIIScreen
-                    turnChrome="sidebar"
-                    onExitToMenu={goHome}
-                    coachEmotion={line().emotion}
-                    header={kingCoachHeader()}
-                    guideBubble={guideBubble()}
-                    footerExtra={kingFooter()}
-                    boardHints={tutorialStory("king", "king-defense-2")?.hints}
+                    boardHints={tutorialStory("king", id)?.hints}
                   />
                 );
               }

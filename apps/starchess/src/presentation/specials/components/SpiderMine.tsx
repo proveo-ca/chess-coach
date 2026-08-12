@@ -1,3 +1,4 @@
+// SPEC: _spec/apps/starchess/architecture/board-entities.puml
 import type { Component } from "solid-js";
 import { For, Show, createMemo } from "solid-js";
 

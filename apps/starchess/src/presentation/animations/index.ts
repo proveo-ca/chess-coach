@@ -75,4 +75,4 @@ export { ROOK_BATTERY } from "~/presentation/animations/rookBattery";
 export { QUEEN_LASER } from "~/presentation/animations/queenLaser";
 export { KING_DUAL_CANNON } from "~/presentation/animations/kingDualCannon";
 export { SpiderMineFogDemo } from "~/presentation/animations/components/SpiderMineFogDemo";
-export { FogVisionDemo, FOG_SIEGE_ROOK_SCFEN } from "~/presentation/animations/components/FogVisionDemo";
+export { FogVisionDemo } from "~/presentation/animations/components/FogVisionDemo";

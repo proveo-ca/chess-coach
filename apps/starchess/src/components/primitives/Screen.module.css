@@ -91,6 +91,18 @@
   border: 0;
 }
 
+/*
+ * Chrome regions span the same box as `.board-area` (board + sidebar, centred),
+ * so after `padding-right: var(--sidebar-width)` their content box is exactly
+ * the board width — `‹ Back` lands on the board's left edge on every screen.
+ */
+.coach-header,
+.sidebar-inset,
+.footer {
+  max-width: calc(var(--board-size) + var(--sidebar-width));
+  margin-inline: auto;
+}
+
 /* Grid layout for the header — offset to align with board center (not board+sidebar) */
 .coach-header {
   display: flex;
@@ -99,6 +111,9 @@
   width: 100%;
   min-height: 0;
   height: 100%;
+  /* Same inset as `.sidebar-inset` — the two chrome regions must start at the
+     same Y or `‹ Back` shifts between screens that use different ones. */
+  padding-top: 0.5rem;
   padding-right: var(--sidebar-width);
   box-sizing: border-box;
   overflow: hidden;
@@ -170,6 +185,8 @@ h1 {
   .app-container {
     align-content: stretch;
     grid-template-rows: minmax(min-content, 1fr) auto minmax(min-content, 1fr);
+    /* Floor so top/bottom chrome never sits flush against the viewport edge. */
+    padding-block: 2rem;
   }
 
   .app-container[data-footer-float="true"]:not(
@@ -230,5 +247,16 @@ h1 {
     height: 100%;
     padding-right: 0;
     gap: 0.2rem;
+  }
+}
+
+/*
+ * Dynamic: MobileBanner is `position: fixed` and full-bleed, so it occupies no
+ * flow. Reserve its height here or the board slides underneath it.
+ */
+@media (max-width: 719px) and (min-width: 480px) and (max-height: 639px) {
+  .app-container {
+    padding-top: 3rem;
+    padding-bottom: 0.5rem;
   }
 }

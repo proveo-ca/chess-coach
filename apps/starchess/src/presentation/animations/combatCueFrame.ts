@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/starchess/architecture/composite-vfx-stack.puml
+// SPEC: _spec/apps/starchess/architecture/composite-vfx-stack.puml, _spec/apps/starchess/architecture/board-entities.puml
 /**
  * Parameter object — combat VFX cues for AnimationStage / CombatOverlayRoot.
  */

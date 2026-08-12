@@ -1,47 +1,20 @@
-import { formatScFen } from "@chess-coach/starchess-core";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { buildReviewHistory } from "~/app/reviewHistory";
 import {
   COLLISION_ALLY_BLOCK_SCENARIO,
   COLLISION_KNIGHT_SPEED_SCENARIO,
   COLLISION_PATH_BLOCK_SCENARIO,
   COLLISION_SAME_SQUARE_SCENARIO,
 } from "~/demos/collisionRaces";
-import type { FogEdgeScenario } from "~/types/demos";
 import { ReviewScreen } from "~/screens/ReviewScreen";
-import { addMatchRecord } from "~/store/matchHistoryStore";
-import type { StarChessGameRecord } from "~/types/review";
+import { recordFromScenario, seedMatchHistory } from "~/stories/project";
+import type { FogEdgeScenario } from "~/types/demos";
 
 /**
  * Collision races as plain ReviewScreen + pre-loaded SCFEN history
  * (same path as `/review/:id`).
  * // SPEC: _spec/apps/starchess/demos.puml, _spec/packages/starchess-core/resolve.puml
  */
-
-const recordFromScenario = (
-  id: string,
-  scenario: FogEdgeScenario,
-  label: string,
-): StarChessGameRecord => {
-  const history = buildReviewHistory({
-    start: scenario.plies[0]!,
-    steps: scenario.steps,
-    startCaption: scenario.startCaption,
-    queueStep: scenario.queueStep,
-  });
-  return {
-    id,
-    startedAt: "2026-08-10T12:00:00.000Z",
-    endedAt: "2026-08-10T12:05:00.000Z",
-    result: "win",
-    map: "eclipse",
-    playerColor: "w",
-    playerName: label,
-    scfens: history.settledSnapshots.map((s) => formatScFen(s)),
-    resolves: [...history.settledResolves],
-  };
-};
 
 const meta = {
   title: "StarChess/Collision",
@@ -70,11 +43,8 @@ const storyOf = (id: string, scenario: FogEdgeScenario, label: string): Story =>
       },
     },
   },
-  render: () => {
-    // Seed before ReviewScreen mounts (same pattern as Screens/Review stories).
-    addMatchRecord(recordFromScenario(id, scenario, label));
-    return <ReviewScreen />;
-  },
+  beforeEach: seedMatchHistory(recordFromScenario(id, scenario, label)),
+  render: () => <ReviewScreen />,
 });
 
 export const PathBlockDiscoveredPawn = storyOf(

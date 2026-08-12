@@ -18,8 +18,6 @@
   align-items: stretch;
   justify-content: center;
   gap: 8px;
-  min-width: 0;
-  /* Stay within board column; arrows sit just outside this cluster. */
   max-width: calc(var(--board-size) - 3rem);
 }
 

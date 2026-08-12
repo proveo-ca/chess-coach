@@ -1,3 +1,4 @@
+// SPEC: _spec/apps/starchess/architecture/board-entities.puml
 import { findKing, placementToMap, type StarChessColor } from "@chess-coach/starchess-core";
 
 import type { KingDamageCue, KingDamageState } from "~/presentation/types";

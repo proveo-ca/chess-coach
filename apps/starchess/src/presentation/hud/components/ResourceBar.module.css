@@ -1,11 +1,15 @@
+/*
+ * Fixed width, not `fit-content`: the two review bars must read as a matched
+ * pair regardless of name length or digit count, and a stable width is what
+ * keeps the flanking turn arrows from shifting as the numbers change.
+ */
 .bar {
   display: flex;
   align-items: stretch;
   gap: 10px;
   padding: 8px 10px;
-  width: fit-content;
+  width: 18rem;
   max-width: 100%;
-  min-width: 0;
   box-sizing: border-box;
 }
 
@@ -13,7 +17,6 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  min-width: 0;
   flex: 0 1 auto;
   color: var(--text-color, #e8eaed);
   font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
@@ -29,7 +32,12 @@
   flex-shrink: 0;
 }
 
-.strip:nth-child(2) .icon {
+/*
+ * Vespene green. Addressed by class, not `:nth-child(2)` — any element added
+ * before the strips (the side name) shifts positional selectors and silently
+ * recolours every icon.
+ */
+.gas .icon {
   color: #2a9b6a;
 }
 
@@ -66,4 +74,29 @@
 
 .compact .income {
   font-size: 10px;
+}
+
+/* Side name at the left of the bar — the frame already carries the team colour. */
+.name {
+  display: flex;
+  align-items: center;
+  width: 6rem;
+  padding-right: 2px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: color-mix(in srgb, var(--text) 88%, transparent);
+}
+
+.compact .name {
+  max-width: 4.5rem;
+  font-size: 0.78rem;
+}
+
+/* MobileBanner sets its own width. */
+.bar.compact {
+  width: auto;
 }

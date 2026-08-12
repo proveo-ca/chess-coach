@@ -4,6 +4,7 @@ import {
   TUTORIAL_SCRIPT,
   adjacentTutorialStoryId,
   holdTutorialLine,
+  lessonBoard,
   matchesTutorialCompleteWhen,
   parseTutorialSection,
   resolveTutorialHints,
@@ -17,7 +18,6 @@ import {
   FOG_MOVE_PAWN_START_SCFEN,
   FOG_MOVE_KNIGHT_START_SCFEN,
 } from "~/demos/fogMoveSamples";
-import { GAS_DEPLOY_FIXTURES } from "~/stories/fixtures/scenarios";
 
 describe("tutorialScript", () => {
   it("covers four stages with the expected story counts", () => {
@@ -83,7 +83,7 @@ describe("tutorialScript", () => {
 
   it("ship completeWhen/restartWhen gate on the turn-21 tier-3 seed", () => {
     const ship = tutorialStory("specials", "ship")!;
-    const seed = GAS_DEPLOY_FIXTURES.battleship.scfen;
+    const seed = lessonBoard("specials", "ship").scfen;
     // Tactical Jump costs 3 gas → tier-3 seed at turn 21. The seed must never
     // auto-advance (queen on board, turn 21) nor restart (queen on board).
     expect(matchesTutorialCompleteWhen(ship.completeWhen, seed)).toBe(false);
@@ -308,7 +308,6 @@ describe("tutorialScript", () => {
       kind: "queue",
       classical: true,
       specialKind: "pawnDouble",
-      delayMs: 1000,
     });
     expect(
       matchesTutorialCompleteWhen(complete, {

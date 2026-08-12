@@ -1,3 +1,4 @@
+// SPEC: _spec/apps/starchess/architecture/storybook-projection.puml
 /** Tutorial stage ids (Breadcrumb / routes / script). */
 
 import type { Square } from "chess.js";
@@ -16,13 +17,8 @@ export type ResolveWaveId =
 /** Optional in-bubble CTA from a tutorial reaction or story intro. */
 export type TutorialReactionAction =
   | { kind: "retryLesson"; label?: string }
+  | { kind: "nextLesson"; label?: string }
   | { kind: "goSection"; section: TutorialSectionId; label: string };
-
-/** One revealed line in the resolve typewriter footer nav. */
-export type TypewriterLine = {
-  text: string;
-  indent?: boolean;
-};
 
 /** Flat beat cursor: Turn N → Check → Intent → Resolve. */
 export type TypewriterBeat =
@@ -36,6 +32,49 @@ export type TypewriterBeat =
   | { kind: "intent"; resolveIndex: number; text: string }
   | { kind: "resolve"; resolveIndex: number; text: string };
 
+/**
+ * Seed + board chrome for a live lesson — the catalog half of a story.
+ * Storybook projects these; it never declares its own.
+ */
+export type LiveLessonBoard = {
+  /** Opening position for this lesson. */
+  scfen: string;
+  /** Starting minerals for the viewer (defaults per host). */
+  stored?: number;
+  /** Force every rook into a mode the seed cannot express. */
+  rookMode?: "tank" | "siege";
+  /** Auto-End threshold once the player has queued. */
+  endTurnAfterQueue?: "first" | "moveAndSpecial";
+  /** Script-driven opponent for live lessons. */
+  opponent?: "adjutant";
+  /**
+   * Planning timer. `false` disables it (fog / specials lessons teach without
+   * clock pressure); omitted means enabled, matching `autoArmTimer !== false`.
+   */
+  armTimer?: boolean;
+  /**
+   * The player-facing goal, shown persistently while the lesson is active so
+   * it survives coach reactions. Falls back to the story's opening comment.
+   */
+  objective?: string;
+  /**
+   * What this board demonstrates, in prose. Storybook renders it as the story
+   * description — the copy lives with the lesson, not in the story file.
+   */
+  docs?: string;
+  /**
+   * Imperative store choreography this lesson needs — a scripted opening or a
+   * terminal condition. Resolved through the `demos/choreography/` registry.
+   */
+  choreography?: LessonChoreographyId;
+};
+
+/** Lessons whose behavior is more than config. Registry: `demos/choreography/`. */
+export type LessonChoreographyId =
+  | "kingDefenseOpening"
+  | "kingDefenseIIChecks"
+  | "kingHuntGraduation";
+
 /** Board hint step — first matching entry wins (SCFEN `when`, else fallback). */
 export type TutorialBoardHint = {
   when?: { kind: "scfen"; re: RegExp };
@@ -47,8 +86,6 @@ export type TutorialCompleteWhen =
   | {
       kind: "scfen";
       re: RegExp;
-      /** Hold before Next Lesson (ms). Default 0. */
-      delayMs?: number;
     }
   | {
       /** Live intent queue — classical + special stack (gas↔move, etc.). */
@@ -57,14 +94,12 @@ export type TutorialCompleteWhen =
       classical?: boolean;
       /** Require this special kind on B or F (e.g. `pawnDouble`). */
       specialKind?: string;
-      delayMs?: number;
     }
   | {
       /** Typewriter stepper (Turn Resolution) at a given turn + beat. */
       kind: "typewriter";
       turn: number;
       beat: "turn" | "check" | "intent" | "resolve";
-      delayMs?: number;
     }
   | {
       /** Auto-advance after ms on the lesson — no board action required. */
