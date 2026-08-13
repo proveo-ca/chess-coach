@@ -87,7 +87,7 @@ note bottom
   ``LESSON_ADVANCE_MS`` (3s, drawn as the CTA's border); the CTA skips the
   wait. Failure offers Retry and keeps its line.
   Every live lesson must carry a ``completeWhen`` — a lesson without one is a
-  dead end (guarded by ``tutorialLessons.test.tsx``).
+  dead end (guarded by ``tutorial/tutorialLessons.test.tsx``).
   **Stage 3 (Turn Resolution)** wears ``/review/:id`` chrome: ``‹ Back`` +
   ``ReviewTurnNav`` arrows above the board, turn/phase in the rail
   (``hideDualNav``). The arrows step one **phase** (Check → Intent → Resolve)

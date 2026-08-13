@@ -16,7 +16,7 @@ package "Canonical demos" {
   component "Vermeer (live)\nstory: starchess-demo--vermeer-live\n1K+4P opening (Maps → Vermeer SCFEN);\nvermeer terrain; ResourceBar / TurnBar / GasDeploy;\nadjutant opposite of team\n(+ VermeerLiveTurnSidebar story)\n""LiveLessonHost"" + ""VERMEER_LIVE_SAMPLE""" as D3b <<app>>
   component "GasDeploy specials\nstory: starchess-special-moves--*\n+ features-turn-chrome--gas-deploy\n+ features-gasdeploy--*\n""LiveLessonHost"" + catalog\n(""lessonStory('specials', id)"")" as D5 <<app>>
   component "Fog-edge Bishop / Rook tank\nstory: starchess-fog-of-war-and-move-animations--bishop\n(+ King/Pawn/Knight/Queen/Rook tank|siege)\nmove into fog → capture/occupy blocker" as D4 <<app>>
-  component "Spider Mines\nstory: starchess-spider-mines--*\npath collide · ally mine · attack mine\n+ Promotion × mine (core promotionMine.test)\nFog vision: starchess-fog-of-war-and-move-animations--spider-mine" as D6 <<app>>
+  component "Spider Mines\nstory: starchess-spider-mines--*\npath collide · ally mine · attack mine\n+ Promotion × mine (core mine/minePathContact.test)\nFog vision: starchess-fog-of-war-and-move-animations--spider-mine" as D6 <<app>>
   component "Collision races\nstory: starchess-collision--*\npath block · ally truncate · same-square bishops\nknight speed (gas pawn + bishop 1/2/3)\ncore: collisionRaces.test · e2e: starchess-collision" as D7 <<app>>
 }
 
@@ -31,7 +31,7 @@ package "Shipped (do not re-ticket)" {
   component "Spider Mines M:\n""board/mines.ts"" + ""resolve-turn""" as SH8 <<app>>
   component "Fog-edge DualNav\n""demos/fogEdge*.ts"" + ""FogEdgeDemo""\n(+ fogMoveSamples · FogOfWar stories)\nDualNav review demos (NerdCombat, PathCollide,\nPathCollideAllyMine, AttackMine, KingHunt): both\nplayers' intent overlays pre-resolve\n(""intentOverlays.ts"", no viewer);\nKing Hunt: **check → intent → resolve**;\nobserver dual-vision borders\n(""visionMode=observer"" — full board +\n""getSideVision"" w/b strokes, no fog veil);\nFog-of-war move stories use player fog veil" as SH9 <<app>>
   component "Sieged rook immobile S:\n""rules/validation.ts"" + ""endScTurn"" toggle" as SH10 <<app>>
-  component "King duel — adjacent kings fight\nface-to-face: mutual 1 HP/turn, parting shot,\ndeploy doubling, 0/0 = draw, phase O absorbing\n""board/placement.ts"" + ""resolve-turn"" + ""outcome.ts""\ntests: ""packages/starchess-core/tests/""" as SH11 <<app>>
+  component "King duel — adjacent kings fight\nface-to-face: mutual 1 HP/turn, parting shot,\ndeploy doubling, 0/0 = draw, phase O absorbing\n""board/placement.ts"" + ""resolve-turn"" + ""outcome.ts""\ntests: ""packages/starchess-core/src/__tests__/""" as SH11 <<app>>
   component "Intent overlay rings **both** kings\nwhen they are in contact\n""intentOverlays.ts""" as SH12 <<app>>
   component "Adjutant lockstep — an adjacent enemy king\nis a real threat; the adjutant breaks off\ncontact rather than trading HP\n""packages/starchess-core/ai/adjutant.ts""" as SH13 <<app>>
 }

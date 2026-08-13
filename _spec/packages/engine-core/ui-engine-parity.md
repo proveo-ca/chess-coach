@@ -118,6 +118,6 @@ Both run lc0 with constant base `Temperature 0.5`; they add early-game variety d
   prompt) — the web engine imports the same module, so it inherits this behavior.
 - `apps/server/src/Orchestrator.test.ts` covers executeTurn (legal/illegal), the
   advice/explanation stream semantics, and the prompt fields.
-- `apps/server/src/routes.test.ts` covers the HTTP contract + COOP/COEP + error mapping.
+- `apps/server/src/app.test.ts` covers the HTTP contract + COOP/COEP + error mapping.
 - Web-only concerns (worker plumbing, `EnginePool`, sanitizer/fallback) keep their
   own tests under `apps/ui`.

@@ -13,7 +13,7 @@ viewports. Implementation lives primarily in:
 
 Visual evidence: [`screenshots.md`](./screenshots.md).  
 Grid priority diagram: [`layout.puml`](./layout.puml).  
-E2E: `apps/e2e/tests/responsiveness.spec.ts`.
+E2E: `apps/e2e/tests/responsiveness/responsiveness.spec.ts`.
 
 ---
 

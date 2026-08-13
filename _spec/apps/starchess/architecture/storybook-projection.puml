@@ -133,7 +133,7 @@ package "AFTER · Storybook projects the source" as AFTER {
   }
 
   class Guards <<async>> {
-    __tests__/storybookProjection.test.ts
+    __tests__/storybook/storybookProjection.test.ts
     --
     1· nothing outside ""*.stories.tsx""
        imports ""~/stories/""
@@ -181,7 +181,7 @@ note bottom
   | 2 | lesson catalog onto ""TutorialStoryScript.board"" | **APPLIED** |
   | 3 | ""LiveLessonHost"" + choreography hooks replace the 6 live hosts | **APPLIED** |
   | 4 | regenerate stories as projections; content → ""board.docs"" | **APPLIED** |
-  | 5 | drift guards (""__tests__/storybookProjection.test.ts"") | **APPLIED** |
+  | 5 | drift guards (""__tests__/storybook/storybookProjection.test.ts"") | **APPLIED** |
   **Config format:** ""tutorialScript.config.ts"", not ""*.json"" — JSON imports
   widen to ""string"", so a misspelled ""kind"" / ""emotion"" would only fail at
   runtime. ""as const satisfies"" checks all 19 stories + 45 patterns.
