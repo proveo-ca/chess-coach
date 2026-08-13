@@ -46,6 +46,6 @@ note bottom
   **TURN_OPEN** is the sole ""beginScTurn"" owner (store dispatches; never calls facade).
   **Forbidden:** presentation calling addScAction/endScTurn/beginScTurn
   (adjutant → APPLY_SNAPSHOT; demos/tests offline builders exempt).
-  Enforced by ""bundleBoundary.test.ts"".
+  Enforced by ""bundle/bundleBoundary.test.ts"".
 end note
 @enduml

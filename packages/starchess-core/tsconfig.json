@@ -8,5 +8,10 @@
     "noEmit": true,
     "isolatedModules": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  // Tests live in `src/__tests__` (same shape as apps/starchess) but stay out of
+  // the typecheck gate, exactly as they did from `tests/`. Pulling them in needs
+  // `@types/node` here (the boundary guard walks the source tree) plus a handful
+  // of union narrowings in the table-driven suites.
+  "exclude": ["src/__tests__"]
 }

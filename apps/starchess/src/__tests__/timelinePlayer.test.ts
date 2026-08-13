@@ -386,7 +386,9 @@ describe("timelinePlayer", () => {
     const cues = projectResolveTimeline(endScTurn(snap, { skipTurnStartChecks: true }));
     // The marine still hops, then the mine goes off under it.
     const step = cues.findIndex((c) => c.kind === "move" && c.to === "e3");
-    const boom = cues.findIndex((c) => c.id.startsWith("armm") && c.at === "e3");
+    const boom = cues.findIndex(
+      (c) => c.kind === "death" && c.id.startsWith("armm") && c.at === "e3",
+    );
     const hull = cues.findIndex(
       (c) => c.kind === "death" && c.id.startsWith("armd") && c.piece === "p",
     );
@@ -405,7 +407,9 @@ describe("timelinePlayer", () => {
     }).snapshot;
     const cues = projectResolveTimeline(endScTurn(snap, { skipTurnStartChecks: true }));
     const deploy = cues.findIndex((c) => c.kind === "deploy" && c.at === "d2");
-    const boom = cues.findIndex((c) => c.id.startsWith("armm") && c.at === "d2");
+    const boom = cues.findIndex(
+      (c) => c.kind === "death" && c.id.startsWith("armm") && c.at === "d2",
+    );
     expect(deploy).toBeGreaterThanOrEqual(0);
     expect(boom).toBeGreaterThan(deploy);
     expect(

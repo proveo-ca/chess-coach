@@ -703,7 +703,7 @@ export const playTimeline = (
 
   cb.onStart(cues, result.afterPending.placement);
 
-  const handleGasWindow: CueHandler = (cue, index) => {
+  const handleGasWindow: CueHandler = (_cue, index) => {
     const gasTaken = takeWhile(cues, index, isGasDrop);
     const drops = gasTaken.batch as Extract<TimelineCue, { kind: "gasDrop" }>[];
     let deploys: Extract<TimelineCue, { kind: "deploy" }>[] = [];
@@ -774,7 +774,7 @@ export const playTimeline = (
       next,
     });
   };
-  const handleDeployWindow: CueHandler = (cue, index) => {
+  const handleDeployWindow: CueHandler = (_cue, index) => {
     const { batch, next } = takeWhile(cues, index, isSpawnDeploy);
     const deploys = batch as Extract<TimelineCue, { kind: "deploy" }>[];
     let crushes: Extract<TimelineCue, { kind: "death" }>[] = [];
@@ -818,7 +818,7 @@ export const playTimeline = (
       next: afterIdx,
     });
   };
-  const handlePhase1Wave: CueHandler = (cue, index) => {
+  const handlePhase1Wave: CueHandler = (_cue, index) => {
     if (!afterBApplied) applyAfterB();
     const { batch, next } = takeWhile(cues, index, isPhase1Attack);
     const attacks = batch as Extract<TimelineCue, { kind: "attack" }>[];
@@ -906,7 +906,7 @@ export const playTimeline = (
     });
     cancels.push(phaseDone);
   };
-  const handlePhase1Deaths: CueHandler = (cue, index) => {
+  const handlePhase1Deaths: CueHandler = (_cue, index) => {
     if (!afterBApplied) applyAfterB();
     const { batch, next } = takeWhile(cues, index, isPhase1Death);
     const deaths = batch as Extract<TimelineCue, { kind: "death" }>[];
@@ -922,7 +922,7 @@ export const playTimeline = (
       next,
     });
   };
-  const handleMineMissile: CueHandler = (cue, index) => {
+  const handleMineMissile: CueHandler = (_cue, index) => {
     if (!afterBApplied) applyAfterB();
     const { batch, next } = takeWhile(cues, index, isMineMissile);
     const missiles = batch as Extract<TimelineCue, { kind: "mineMissile" }>[];
@@ -963,7 +963,7 @@ export const playTimeline = (
       next,
     });
   };
-  const handleCollisionDeaths: CueHandler = (cue, index) => {
+  const handleCollisionDeaths: CueHandler = (_cue, index) => {
     if (!afterBApplied) applyAfterB();
     const { batch, next } = takeWhile(cues, index, isMoveCollisionDeath);
     const deaths = batch as Extract<TimelineCue, { kind: "death" }>[];
@@ -991,7 +991,7 @@ export const playTimeline = (
       next,
     });
   };
-  const handleMineDeaths: CueHandler = (cue, index) => {
+  const handleMineDeaths: CueHandler = (_cue, index) => {
     if (!afterBApplied) applyAfterB();
     const { batch, next } = takeWhile(cues, index, isMineTriggerDeath);
     const deaths = batch as Extract<TimelineCue, { kind: "death" }>[];
@@ -1095,7 +1095,7 @@ export const playTimeline = (
       next,
     });
   };
-  const handlePromoWalks: CueHandler = (cue, index) => {
+  const handlePromoWalks: CueHandler = (_cue, index) => {
     if (!afterBApplied) applyAfterB();
     const { batch, next } = takeWhile(cues, index, isPromoWalk);
     const walks = batch as Extract<TimelineCue, { kind: "move" }>[];
@@ -1137,7 +1137,7 @@ export const playTimeline = (
       next,
     });
   };
-  const handlePromoDeploys: CueHandler = (cue, index) => {
+  const handlePromoDeploys: CueHandler = (_cue, index) => {
     if (!afterBApplied) applyAfterB();
     const { batch, next } = takeWhile(cues, index, isPromoDeploy);
     const deploys = batch as Extract<TimelineCue, { kind: "deploy" }>[];

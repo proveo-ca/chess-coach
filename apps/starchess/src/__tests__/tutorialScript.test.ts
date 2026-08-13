@@ -14,13 +14,88 @@ import {
   tutorialPath,
   tutorialStory,
 } from "~/tutorial/tutorialScript";
+import type { TutorialLine, TutorialSectionId } from "~/types/tutorial";
 import {
   FOG_MOVE_KING_START_SCFEN,
   FOG_MOVE_PAWN_START_SCFEN,
   FOG_MOVE_KNIGHT_START_SCFEN,
 } from "~/demos/fogMoveSamples";
 
+const storyOf = (stageId: TutorialSectionId, storyId: string) => {
+  const story = tutorialStory(stageId, storyId);
+  if (!story) throw new Error(`No tutorial story ${stageId}/${storyId}`);
+  return story;
+};
+
+/** One scripted overlay line — the reaction shape the config declares. */
+type ScriptedReaction = NonNullable<ReturnType<typeof storyOf>["reactions"]>[number];
+
+/**
+ * Labels a story's reactions in resolver order (first match wins). Tests then say
+ * *which* scripted line should show — `r.checked`, `r.cornered` — instead of
+ * quoting it. Copy edits stay in `tutorialScript.config.ts`; a reorder or a new
+ * reaction trips the length guard here, because both change what the player sees.
+ */
+const namedReactions = <N extends string>(
+  stageId: TutorialSectionId,
+  storyId: string,
+  ...names: readonly N[]
+): Record<N, ScriptedReaction> => {
+  const list = storyOf(stageId, storyId).reactions ?? [];
+  if (list.length !== names.length) {
+    throw new Error(
+      `${stageId}/${storyId} has ${list.length} reactions, named ${names.length}: ${names.join(", ")}`,
+    );
+  }
+  return Object.fromEntries(names.map((n, i) => [n, list[i]!])) as Record<
+    N,
+    ScriptedReaction
+  >;
+};
+
+/** The scripted reaction claimed the bubble — its text, emotion, and CTA. */
+const expectReaction = (line: TutorialLine, reaction: ScriptedReaction) => {
+  expect(line.source).toBe("reaction");
+  expect(line.comment).toBe(reaction.comment);
+  if (reaction.emotion) expect(line.emotion).toBe(reaction.emotion);
+  expect(line.action).toEqual(reaction.action);
+};
+
+/** No reaction matched — the story's own opening line is showing. */
+const expectIntro = (
+  line: TutorialLine,
+  stageId: TutorialSectionId,
+  storyId: string,
+) => {
+  const story = storyOf(stageId, storyId);
+  expect(line.source).toBe("intro");
+  expect(line.comment).toBe(story.comment);
+  expect(line.emotion).toBe(story.emotion);
+};
+
 describe("tutorialScript", () => {
+  const FOG_KNIGHT = namedReactions("fog", "knight", "sawIt", "moveToG5");
+  const FOG_BISHOP = namedReactions("fog", "bishop", "kingOnFire", "pawnBlocks");
+  const KING_HUNT = namedReactions(
+    "king",
+    "king-hunt",
+    "checked",
+    "shouldHaveDeployed",
+    "enemyDown",
+  );
+  const KING_HUNT_LIVE = namedReactions(
+    "king",
+    "king-hunt-live",
+    "ownCcDead",
+    "enemyDown",
+    "stopEnemyPawns",
+    "pushMarine",
+    "checked",
+    "oneMoreHit",
+    "intentTipTurn1",
+    "minesTipTurn2",
+  );
+
   it("covers four stages with the expected story counts", () => {
     expect(TUTORIAL_SCRIPT.map((s) => s.id)).toEqual([
       "fog",
@@ -50,9 +125,9 @@ describe("tutorialScript", () => {
   });
 
   it("fog completeWhen does not match seed SCFEN but matches post-goal boards", () => {
-    const king = tutorialStory("fog", "king")!.completeWhen;
-    const pawn = tutorialStory("fog", "pawn")!.completeWhen;
-    const knight = tutorialStory("fog", "knight")!.completeWhen;
+    const king = storyOf("fog", "king").completeWhen;
+    const pawn = storyOf("fog", "pawn").completeWhen;
+    const knight = storyOf("fog", "knight").completeWhen;
     expect(matchesTutorialCompleteWhen(king, FOG_MOVE_KING_START_SCFEN)).toBe(
       false,
     );
@@ -83,7 +158,7 @@ describe("tutorialScript", () => {
   });
 
   it("ship completeWhen/restartWhen gate on the turn-21 tier-3 seed", () => {
-    const ship = tutorialStory("specials", "ship")!;
+    const ship = storyOf("specials", "ship");
     const seed = lessonBoard("specials", "ship").scfen;
     // Tactical Jump costs 3 gas → tier-3 seed at turn 21. The seed must never
     // auto-advance (queen on board, turn 21) nor restart (queen on board).
@@ -156,60 +231,61 @@ describe("tutorialScript", () => {
   });
 
   it("returns the story comment by default", () => {
-    const line = resolveTutorialLine({ stageId: "fog", storyId: "king" });
-    expect(line.comment).toMatch(/pieces move the same as Chess/i);
-    expect(line.source).toBe("intro");
+    expectIntro(
+      resolveTutorialLine({ stageId: "fog", storyId: "king" }),
+      "fog",
+      "king",
+    );
   });
 
   it("overrides with a review-phase reaction", () => {
-    const line = resolveTutorialLine({
-      stageId: "resolve",
-      storyId: "combat-chain",
-      reviewPhase: "intent",
-    });
-    expect(line.comment).toMatch(/promises/i);
-    expect(line.emotion).toBe("watching");
-    expect(line.source).toBe("reaction");
+    const r = namedReactions(
+      "resolve",
+      "combat-chain",
+      "checkPhase",
+      "intentPhase",
+      "resolvePhase",
+      "timelinePlaying",
+    );
+    expectReaction(
+      resolveTutorialLine({
+        stageId: "resolve",
+        storyId: "combat-chain",
+        reviewPhase: "intent",
+      }),
+      r.intentPhase,
+    );
   });
 
   it("overrides with chess-skin reaction on fog stories", () => {
-    const line = resolveTutorialLine({
-      stageId: "fog",
-      storyId: "mine",
-      chessSkin: true,
-    });
-    expect(line.comment).toMatch(/lantern/i);
-    expect(line.source).toBe("reaction");
+    const r = namedReactions("fog", "mine", "chessSkin");
+    expectReaction(
+      resolveTutorialLine({
+        stageId: "fog",
+        storyId: "mine",
+        chessSkin: true,
+      }),
+      r.chessSkin,
+    );
   });
 
   it("fires the fog/pawn 7th-rank promote tease via SCFEN regex", () => {
-    const on7 =
-      "SCFEN|7k/3P4/8/8/8/8/8/K7|0|33|P|G:11:11|Q:w:;b:";
-    const on4 =
-      "SCFEN|7k/8/8/8/3P4/8/8/K7|0|33|P|G:11:11|Q:w:;b:";
-    expect(
-      resolveTutorialLine({
-        stageId: "fog",
-        storyId: "pawn",
-        scfen: on7,
-      }),
-    ).toEqual({
-      comment: "Go ahead promote. See how the pieces look!",
-      emotion: "happy",
-      source: "reaction",
-    });
-    expect(
-      resolveTutorialLine({
-        stageId: "fog",
-        storyId: "pawn",
-        scfen: on4,
-      }).comment,
-    ).toMatch(/fog of war clears/i);
+    const r = namedReactions("fog", "pawn", "promoteTease");
+    const on7 = "SCFEN|7k/3P4/8/8/8/8/8/K7|0|33|P|G:11:11|Q:w:;b:";
+    const on4 = "SCFEN|7k/8/8/8/3P4/8/8/K7|0|33|P|G:11:11|Q:w:;b:";
+    expectReaction(
+      resolveTutorialLine({ stageId: "fog", storyId: "pawn", scfen: on7 }),
+      r.promoteTease,
+    );
+    expectIntro(
+      resolveTutorialLine({ stageId: "fog", storyId: "pawn", scfen: on4 }),
+      "fog",
+      "pawn",
+    );
   });
 
   it("holdTutorialLine keeps intro only before action, then sticks reactions", () => {
-    const seed =
-      "SCFEN|7k/6p1/8/8/3B4/8/8/K7|0|33|P|G:11:11|Q:w:;b:";
+    const seed = "SCFEN|7k/6p1/8/8/3B4/8/8/K7|0|33|P|G:11:11|Q:w:;b:";
     const key = "fog|bishop";
     let hold = { lessonKey: "", introDone: false as boolean };
     const intro = resolveTutorialLine({
@@ -219,8 +295,7 @@ describe("tutorialScript", () => {
     });
     let step = holdTutorialLine(hold, key, intro, { scfen: seed });
     hold = step.hold;
-    expect(step.line.comment).toMatch(/capture just like Chess/i);
-    expect(step.line.source).toBe("intro");
+    expectIntro(step.line, "fog", "bishop");
 
     const duringResolve = resolveTutorialLine({
       stageId: "fog",
@@ -233,7 +308,7 @@ describe("tutorialScript", () => {
       reviewPhase: "resolve",
     });
     hold = step.hold;
-    expect(step.line.comment).toMatch(/pawn blocks/i);
+    expectReaction(step.line, FOG_BISHOP.pawnBlocks);
 
     // Resolve ends — no reaction match; must NOT bounce to intro.
     step = holdTutorialLine(
@@ -242,39 +317,30 @@ describe("tutorialScript", () => {
       resolveTutorialLine({ stageId: "fog", storyId: "bishop", scfen: seed }),
       { scfen: seed, reviewPhase: "intent" },
     );
-    expect(step.line.comment).toMatch(/pawn blocks/i);
-    expect(step.line.source).toBe("reaction");
+    expectReaction(step.line, FOG_BISHOP.pawnBlocks);
   });
 
   it("marks fog/knight hops e6 then g5 from SCFEN hints", () => {
-    const hints = tutorialStory("fog", "knight")!.hints;
-    const start =
-      "SCFEN|7k/7p/8/8/3N4/8/8/K7|0|33|P|G:11:11|Q:w:;b:";
-    const onE6 =
-      "SCFEN|7k/7p/4N3/8/8/8/8/K7|0|33|P|G:11:11|Q:w:;b:";
+    const hints = storyOf("fog", "knight").hints;
+    const start = "SCFEN|7k/7p/8/8/3N4/8/8/K7|0|33|P|G:11:11|Q:w:;b:";
+    const onE6 = "SCFEN|7k/7p/4N3/8/8/8/8/K7|0|33|P|G:11:11|Q:w:;b:";
     // Live resolve encodes Ng5 as `6N1` (not `5N2`).
-    const onG5 =
-      "SCFEN|7k/7p/8/6N1/8/8/8/K7|2|33|P|G:00:11|Q:w:;b:";
+    const onG5 = "SCFEN|7k/7p/8/6N1/8/8/8/K7|2|33|P|G:00:11|Q:w:;b:";
     expect(resolveTutorialHints(hints, start)).toEqual(["e6"]);
     expect(resolveTutorialHints(hints, onE6)).toEqual(["g5"]);
     expect(resolveTutorialHints(hints, onG5)).toEqual([]);
-    expect(
+    expectReaction(
       resolveTutorialLine({ stageId: "fog", storyId: "knight", scfen: onE6 }),
-    ).toEqual({
-      comment: "Now move to g5",
-      emotion: "watching",
-      source: "reaction",
-    });
-    expect(
+      FOG_KNIGHT.moveToG5,
+    );
+    expectReaction(
       resolveTutorialLine({ stageId: "fog", storyId: "knight", scfen: onG5 }),
-    ).toEqual({
-      comment: "Did you see that?!",
-      emotion: "shocked",
-      source: "reaction",
-    });
+      FOG_KNIGHT.sawIt,
+    );
   });
 
   it("fires specials/marine cheer when gas is queued before or after move", () => {
+    const r = namedReactions("specials", "marine", "gasQueued");
     const gasOnly =
       "SCFEN|7k/8/8/8/8/4P3/3P4/4K3|1|33|P|G:01:11|Q:w:B=pawnDouble:d2:d3;b:";
     const gasThenMove =
@@ -284,27 +350,26 @@ describe("tutorialScript", () => {
     const moveOnly =
       "SCFEN|7k/8/8/8/8/4P3/3P4/4K3|1|33|P|G:11:11|Q:w:C=d2d4;b:";
     for (const scfen of [gasOnly, gasThenMove, moveThenGas]) {
-      expect(
+      expectReaction(
         resolveTutorialLine({
           stageId: "specials",
           storyId: "marine",
           scfen,
         }),
-      ).toEqual({
-        comment: "Oh, yeah!",
-        emotion: "watching",
-        source: "reaction",
-      });
+        r.gasQueued,
+      );
     }
-    expect(
+    expectIntro(
       resolveTutorialLine({
         stageId: "specials",
         storyId: "marine",
         scfen: moveOnly,
-      }).comment,
-    ).toMatch(/gas canister/i);
+      }),
+      "specials",
+      "marine",
+    );
 
-    const complete = tutorialStory("specials", "marine")!.completeWhen;
+    const complete = storyOf("specials", "marine").completeWhen;
     expect(complete).toMatchObject({
       kind: "queue",
       classical: true,
@@ -339,179 +404,106 @@ describe("tutorialScript", () => {
   });
 
   it("gates king-hunt-live intro + intent tip to display turn 1", () => {
-    expect(
+    expectIntro(
       resolveTutorialLine({
         stageId: "king",
         storyId: "king-hunt-live",
         turn: 1,
       }),
-    ).toEqual({
-      comment: "The enemy King is overextended. \nPunish it!",
-      emotion: "happy",
-      source: "intro",
-    });
-    expect(
+      "king",
+      "king-hunt-live",
+    );
+    expectReaction(
       resolveTutorialLine({
         stageId: "king",
         storyId: "king-hunt-live",
         turn: 1,
         reviewPhase: "intent",
       }),
-    ).toEqual({
-      comment:
-        "The enemy King is overextended. \nPunish it!. \nDeploy more units.",
-      emotion: "watching",
-      source: "reaction",
-    });
-    expect(
+      KING_HUNT_LIVE.intentTipTurn1,
+    );
+    expectReaction(
       resolveTutorialLine({
         stageId: "king",
         storyId: "king-hunt-live",
         turn: 2,
       }),
-    ).toEqual({
-      comment: "Prioritize planting mines with your hoverbike!",
-      emotion: "watching",
-      source: "reaction",
-    });
+      KING_HUNT_LIVE.minesTipTurn2,
+    );
   });
 
   it("fires king-hunt lines from white/black kingLives digits in SCFEN", () => {
-    const at2 =
-      "SCFEN|k7/8/6r1/2n5/3K4/8/7b/8|1|23|P|G:11:11|Q:w:;b:";
-    const at1 =
-      "SCFEN|k7/8/6r1/2n5/2K5/8/7b/8|2|13|P|G:11:11|Q:w:;b:";
-    const allyDead =
-      "SCFEN|k7/8/6r1/2n5/2K5/8/7b/8|3|03|P|G:11:11|Q:w:;b:";
-    const enemyDead =
-      "SCFEN|8/8/8/2N5/4k3/8/7B/7K|2|30|P|G:11:11|Q:w:;b:";
-    expect(
+    const at2 = "SCFEN|k7/8/6r1/2n5/3K4/8/7b/8|1|23|P|G:11:11|Q:w:;b:";
+    const at1 = "SCFEN|k7/8/6r1/2n5/2K5/8/7b/8|2|13|P|G:11:11|Q:w:;b:";
+    const allyDead = "SCFEN|k7/8/6r1/2n5/2K5/8/7b/8|3|03|P|G:11:11|Q:w:;b:";
+    const enemyDead = "SCFEN|8/8/8/2N5/4k3/8/7B/7K|2|30|P|G:11:11|Q:w:;b:";
+    expectReaction(
       resolveTutorialLine({ stageId: "king", storyId: "king-hunt", scfen: at2 }),
-    ).toEqual({
-      comment: "Checked, a fire represents the damage.",
-      emotion: "shocked",
-      source: "reaction",
-    });
-    expect(
+      KING_HUNT.checked,
+    );
+    expectReaction(
       resolveTutorialLine({ stageId: "king", storyId: "king-hunt", scfen: at1 }),
-    ).toEqual({
-      comment: "Another hit and it's done",
-      emotion: "thinking",
-      source: "reaction",
-    });
-    expect(
+      KING_HUNT.shouldHaveDeployed,
+    );
+    // Observer lesson: an ally CC dying has no line of its own, so the intro holds.
+    expectIntro(
       resolveTutorialLine({
         stageId: "king",
         storyId: "king-hunt",
         scfen: allyDead,
       }),
-    ).toEqual({
-      comment:
-        "We're observing live combat! \nA Command Center crumbles after 3 attacks.",
-      emotion: "watching",
-      source: "intro",
-    });
-    expect(
+      "king",
+      "king-hunt",
+    );
+    // Live lesson: the same board offers a retry CTA instead.
+    expectReaction(
       resolveTutorialLine({
         stageId: "king",
         storyId: "king-hunt-live",
         scfen: allyDead,
       }),
-    ).toEqual({
-      comment: "Oh no! Give it another try, it's a lot to process",
-      emotion: "shocked",
-      action: { kind: "retryLesson", label: "Retry lesson" },
-      source: "reaction",
+      KING_HUNT_LIVE.ownCcDead,
+    );
+    expect(KING_HUNT_LIVE.ownCcDead.action).toMatchObject({
+      kind: "retryLesson",
     });
-    expect(
+    expectReaction(
       resolveTutorialLine({
         stageId: "king",
         storyId: "king-hunt-live",
         scfen: enemyDead,
       }),
-    ).toEqual({
-      comment: "Thinking the same thing",
-      emotion: "happy",
-      source: "reaction",
-    });
+      KING_HUNT_LIVE.enemyDown,
+    );
   });
 
   it("fires king-hunt-live tips for enemy pawns and Marine on rank 5", () => {
-    const twoEnemyPawns =
-      "SCFEN|8/1p1p4/8/4k3/8/8/8/7K|2|33|P|G:11:11|Q:w:;b:";
-    const oneEnemyPawn =
-      "SCFEN|8/1p6/8/4k3/8/8/8/7K|2|33|P|G:11:11|Q:w:;b:";
-    const marineRank5Hp3 =
-      "SCFEN|8/8/8/4k1P1/8/8/8/7K|2|33|P|G:11:11|Q:w:;b:";
-    const marineRank5Hp1 =
-      "SCFEN|8/8/8/4k1P1/8/8/8/7K|2|13|P|G:11:11|Q:w:;b:";
-    const marineRank4Hp3 =
-      "SCFEN|8/8/8/4k3/6P1/8/8/7K|2|33|P|G:11:11|Q:w:;b:";
-    expect(
+    const twoEnemyPawns = "SCFEN|8/1p1p4/8/4k3/8/8/8/7K|2|33|P|G:11:11|Q:w:;b:";
+    const oneEnemyPawn = "SCFEN|8/1p6/8/4k3/8/8/8/7K|2|33|P|G:11:11|Q:w:;b:";
+    const marineRank5Hp3 = "SCFEN|8/8/8/4k1P1/8/8/8/7K|2|33|P|G:11:11|Q:w:;b:";
+    const marineRank5Hp1 = "SCFEN|8/8/8/4k1P1/8/8/8/7K|2|13|P|G:11:11|Q:w:;b:";
+    const marineRank4Hp3 = "SCFEN|8/8/8/4k3/6P1/8/8/7K|2|33|P|G:11:11|Q:w:;b:";
+    const lineFor = (scfen: string) =>
       resolveTutorialLine({
         stageId: "king",
         storyId: "king-hunt-live",
-        scfen: twoEnemyPawns,
-      }),
-    ).toEqual({
-      comment:
-        "Stop the enemy pawns! \nKeep a guard in g1 for your Command Center.",
-      emotion: "shocked",
-      source: "reaction",
-    });
-    expect(
-      resolveTutorialLine({
-        stageId: "king",
-        storyId: "king-hunt-live",
-        scfen: oneEnemyPawn,
-      }),
-    ).toEqual({
-      comment: "The enemy King is overextended. \nPunish it!",
-      emotion: "happy",
-      source: "intro",
-    });
-    expect(
-      resolveTutorialLine({
-        stageId: "king",
-        storyId: "king-hunt-live",
-        scfen: marineRank5Hp3,
-      }),
-    ).toEqual({
-      comment:
-        "Yes, keep pushing your Marine. \nRemember Gas gives you an extra step!",
-      emotion: "happy",
-      source: "reaction",
-    });
-    expect(
-      resolveTutorialLine({
-        stageId: "king",
-        storyId: "king-hunt-live",
-        scfen: marineRank5Hp1,
-      }),
-    ).toEqual({
-      comment: "Another hit and it's done",
-      emotion: "thinking",
-      source: "reaction",
-    });
-    expect(
-      resolveTutorialLine({
-        stageId: "king",
-        storyId: "king-hunt-live",
-        scfen: marineRank4Hp3,
-      }),
-    ).toEqual({
-      comment: "The enemy King is overextended. \nPunish it!",
-      emotion: "happy",
-      source: "intro",
-    });
+        scfen,
+      });
+    expectReaction(lineFor(twoEnemyPawns), KING_HUNT_LIVE.stopEnemyPawns);
+    expectIntro(lineFor(oneEnemyPawn), "king", "king-hunt-live");
+    expectReaction(lineFor(marineRank5Hp3), KING_HUNT_LIVE.pushMarine);
+    expectReaction(lineFor(marineRank5Hp1), KING_HUNT_LIVE.oneMoreHit);
+    expectIntro(lineFor(marineRank4Hp3), "king", "king-hunt-live");
   });
 
   it("handles king-defense-2 script completeWhen and coach reactions", () => {
-    const story = tutorialStory("king", "king-defense-2");
-    expect(story).toBeDefined();
-    expect(story!.title).toBe("King Defense II");
-
-    const complete = story!.completeWhen;
+    const r = namedReactions(
+      "king",
+      "king-defense-2",
+      "attackTheShip",
+      "cornered",
+    );
+    const complete = storyOf("king", "king-defense-2").completeWhen;
     const initial =
       "SCFEN|7k/8/8/8/8/8/6bq/6BK|11|33|P|G:22:22|B:1:1|Q:w:;b:";
     const mechaDeadShipAlive =
@@ -525,44 +517,36 @@ describe("tutorialScript", () => {
 
     const checkChipScfen =
       "SCFEN|7k/8/8/8/8/8/6bq/6BK|11|13|P|G:22:22|B:1:1|Q:w:;b:";
-    expect(
+    expectReaction(
       resolveTutorialLine({
         stageId: "king",
         storyId: "king-defense-2",
         scfen: checkChipScfen,
       }),
-    ).toEqual({
-      comment:
-        "Cornered! Crush the enemy mecha by deploying a Marine onto its square.",
-      emotion: "shocked",
-      source: "reaction",
-    });
+      r.cornered,
+    );
 
+    // Same chip one turn later: the tip is gated to turn 11, so nothing shows.
     const turn12Scfen =
       "SCFEN|7k/8/8/8/8/8/6bq/6BK|12|13|P|G:22:22|B:1:1|Q:w:;b:";
-    expect(
-      resolveTutorialLine({
-        stageId: "king",
-        storyId: "king-defense-2",
-        scfen: turn12Scfen,
-      }).comment,
-    ).not.toBe(
-      "Cornered! Crush the enemy mecha by deploying a Marine onto its square.",
-    );
+    const turn12 = resolveTutorialLine({
+      stageId: "king",
+      storyId: "king-defense-2",
+      scfen: turn12Scfen,
+    });
+    expect(turn12.comment).not.toBe(r.cornered.comment);
+    expectIntro(turn12, "king", "king-defense-2");
 
     const spawnQueuedScfen =
       "SCFEN|7k/8/8/8/8/8/6bq/6BK|11|13|P|G:22:22|B:0:1|Q:w:B=spawn:h1:g2:p;b:";
-    expect(
+    expectReaction(
       resolveTutorialLine({
         stageId: "king",
         storyId: "king-defense-2",
         scfen: spawnQueuedScfen,
       }),
-    ).toEqual({
-      comment: "Now, queue an attack on that ship with your Command Center",
-      emotion: "watching",
-      source: "reaction",
-    });
+      r.attackTheShip,
+    );
   });
 
   it("grants a closing line reading time, and none when there is no line", () => {
@@ -570,13 +554,12 @@ describe("tutorialScript", () => {
     expect(lessonEndMessageMs("")).toBe(0);
     expect(lessonEndMessageMs("   \n ")).toBe(0);
     // Short quip still registers (floor), long line stays bounded (ceiling).
-    expect(lessonEndMessageMs("Did you see that?!")).toBe(1200);
+    expect(lessonEndMessageMs("one two three")).toBe(1200);
     expect(lessonEndMessageMs("one two three four five six")).toBe(1800);
-    expect(
-      lessonEndMessageMs(
-        "This is the immobile rook mode; it has the biggest range. \nIt reveals the entire board when in the center!",
-      ),
-    ).toBe(4000);
+    const twentyWords = Array.from({ length: 20 }, (_, i) => `word${i}`).join(
+      " ",
+    );
+    expect(lessonEndMessageMs(twentyWords)).toBe(4000);
   });
 
   it("gives every lesson closing line a hold shorter than the tutorial's patience", () => {

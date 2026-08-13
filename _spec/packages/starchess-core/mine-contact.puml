@@ -53,7 +53,7 @@ note bottom
   fourteen ""mineAt"" reads in ""resolve-turn.ts"" plus a private copy in
   ""submit-turn.ts"" and three guards in the Adjutant. The halves drifted: gas
   steps, deploys and fog approaches silently skipped the rule until the arrival
-  work landed (see ""mineContactRoutes.test.ts"").
+  work landed (see ""src/__tests__/mine/mineContactRoutes.test.ts"").
 
   **Two deliberate corrections came with the table:**
   * a move that crosses **and** lands on mines now trips the **first** one it

@@ -216,6 +216,6 @@ note right
   persisted winner field and **no SCFEN grammar change**
   (wire grammar unchanged; ""O"" was already a valid phase code).
   Covered by core unit tests under ""packages/starchess-core""
-  (historical path: ""packages/starchess-core/tests/"" (king duel / beginScTurn)).
+  (historical path: ""packages/starchess-core/src/__tests__/"" (king duel / beginScTurn)).
 end note
 @enduml

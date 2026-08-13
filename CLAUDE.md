@@ -73,4 +73,11 @@ When you add, rename, or remove a component, hook, store, or service:
 - **These three files carry no comments**: `resolve-turn.ts`, `submit-turn.ts`,
   `timelinePlayer.ts` keep only their `// SPEC:` header — their decision record lives
   in the diagrams above. Update the diagram, not a comment.
+- **Test layout**: every package keeps its tests in `src/__tests__/` (`apps/starchess`,
+  `packages/starchess-core`). A test that mirrors one source file keeps that file's
+  name and sits at the root of `__tests__/`; a test with no source doppelganger
+  (behavior suites, guards, cross-module flows) goes in a subject folder —
+  `__tests__/mine/`, `__tests__/gas/`, `__tests__/tutorial/`. Same rule for e2e
+  specs under `apps/e2e/tests/<subject>/`. One subject, one owner: put a case where
+  its subject folder is, not where the fixture was handy.
 - **Engine scheduling**: all main-thread Stockfish work goes through the `EnginePool` singleton (`engine/EnginePool.ts`) via `evaluate(req)` — never spawn a Stockfish `Worker` directly. Pick a priority (`interactive` for hint/hover and for the best-move arrow whenever it's shown, `normal` for the best-move arrow during live Coach play when the arrow is off, `background` for review/pre-analysis) so interactive searches preempt bulk work. See `_spec/apps/ui/scheduler.puml`.

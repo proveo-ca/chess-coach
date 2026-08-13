@@ -3,7 +3,7 @@
  *
  * Scenes (same recording):
  *   1. Coach — Play with Selena, e4, AI reply, Hint
- *   2. Review — fixture from apps/e2e/tests/review.spec.ts (annotated MoveList)
+ *   2. Review — fixture from apps/e2e/tests/review/review.spec.ts (annotated MoveList)
  *
  * Volatile on purpose — regenerate whenever the UI chrome drifts:
  *
@@ -26,7 +26,7 @@ const GIF = path.join(OUT_DIR, "hero.gif");
 const BASE = process.env.BASE_URL ?? "http://localhost:5173/chess";
 const SLOW_MO = Number(process.env.HERO_SLOW_MO ?? 200);
 
-/** Same fixture as apps/e2e/tests/review.spec.ts — annotated MoveList hero beat. */
+/** Same fixture as apps/e2e/tests/review/review.spec.ts — annotated MoveList hero beat. */
 const REVIEW_FIXTURE_ID = "test-review-fixture-0001";
 const REVIEW_FIXTURE = {
   games: [

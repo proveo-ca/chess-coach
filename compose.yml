@@ -33,11 +33,11 @@ services:
         "npx",
         "playwright",
         "test",
-        "tests/starchess-queue.spec.ts",
-        "tests/starchess-exceptions.spec.ts",
-        "tests/starchess-promotion.spec.ts",
-        "tests/starchess-gas-used.spec.ts",
-        "tests/starchess-gas-step.spec.ts",
+        "tests/starchess/starchess-queue.spec.ts",
+        "tests/starchess/starchess-exceptions.spec.ts",
+        "tests/starchess/starchess-promotion.spec.ts",
+        "tests/starchess/starchess-gas-used.spec.ts",
+        "tests/starchess/starchess-gas-step.spec.ts",
         "--project=chromium",
       ]
 
@@ -85,7 +85,7 @@ services:
         "npx",
         "playwright",
         "test",
-        "tests/nerd-mode.spec.ts",
+        "tests/nerd/nerd-mode.spec.ts",
         "--project=chromium",
       ]
 

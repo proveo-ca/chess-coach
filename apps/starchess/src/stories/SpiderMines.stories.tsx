@@ -12,7 +12,7 @@ import {
  * Stories mount SCFEN demos only — no queue / resolve / combat logic here.
  * Restored from apps/ui `SpiderMines.stories` @ 4340996; DualNav via FogEdgeDemo.
  * Mine fog vision lives under Fog of War and Move Animations.
- * Promotion × mine mirrors `packages/starchess-core/tests/promotionMine.test.ts`.
+ * Promotion × mine mirrors `packages/starchess-core/src/__tests__/mine/minePathContact.test.ts`.
  * // SPEC: _spec/apps/starchess/demos.puml
  */
 const meta = {
@@ -77,7 +77,7 @@ export const PromotionMine: Story = {
     docs: {
       description: {
         story:
-          "From `packages/starchess-core/tests/promotionMine.test.ts`: Pe7→e8=Q onto black mine e8 — walk-over blast, no queen deploy.",
+          "From `packages/starchess-core/src/__tests__/mine/minePathContact.test.ts`: Pe7→e8=Q onto black mine e8 — walk-over blast, no queen deploy.",
       },
     },
   },
