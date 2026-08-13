@@ -20,6 +20,10 @@ exports[`tutorial lesson catalog > 'king'/'king-defense' > mounts with a board a
 
 exports[`tutorial lesson catalog > 'king'/'king-defense-2' > mounts with a board and a stable chrome fingerprint 1`] = `"squares=64,pieces=4,chessboard,turn-end,starchess-gas-deploy,starchess-side-rail,tutorial-header,tutorial-footer-nav"`;
 
+exports[`tutorial lesson catalog > 'king'/'king-defense-3' > mounts with a board and a stable chrome fingerprint 1`] = `"squares=64,pieces=4,chessboard,turn-end,starchess-gas-deploy,starchess-side-rail,tutorial-header,tutorial-footer-nav"`;
+
+exports[`tutorial lesson catalog > 'king'/'king-defense-4' > mounts with a board and a stable chrome fingerprint 1`] = `"squares=64,pieces=3,chessboard,turn-end,starchess-gas-deploy,starchess-side-rail,tutorial-header,tutorial-footer-nav"`;
+
 exports[`tutorial lesson catalog > 'king'/'king-hunt-live' > mounts with a board and a stable chrome fingerprint 1`] = `"squares=64,pieces=6,chessboard,turn-end,starchess-gas-deploy,starchess-side-rail,tutorial-header,tutorial-footer-nav"`;
 
 exports[`tutorial lesson catalog > 'specials'/'cc' > mounts with a board and a stable chrome fingerprint 1`] = `"squares=64,pieces=1,chessboard,starchess-gas-deploy,starchess-side-rail,tutorial-header,tutorial-footer-nav"`;

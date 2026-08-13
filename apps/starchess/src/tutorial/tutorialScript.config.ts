@@ -697,6 +697,97 @@ export const TUTORIAL_SCRIPT_CONFIG = [
         ],
       },
       {
+        id: "king-defense-3",
+        title: "King Defense III",
+        board: {
+          scfen: "SCFEN|k7/8/8/8/4n3/8/4PP1P/7K|1|13|P|G:11:11|Q:w:;b:C=e4f2",
+          stored: 4,
+          endTurnAfterQueue: "moveAndSpecial",
+          docs: "Command Center on h1 at HP 1. Black has ne4 pre-queued onto f2 — from there it checks h1 next turn open. Only line: gas the f2 marine (B=pawnDouble:f2:f3) then Pf3×e4 — the B step lands before the attack phase, so the marine shoots the hoverbike off e4 and black's plan never moves.",
+        },
+        comment: "That hoverbike will end the game if it reaches f2. \nGas your marine in f2 and attack it before it can move!",
+        emotion: "shocked",
+        completeWhen: {
+          kind: "scfen",
+          re: /SCFEN\|[^|n]*\|/,
+        },
+        restartWhen: {
+          kind: "scfen",
+          re: /SCFEN\|[^|]+\|\d+\|0[0-3]\|/,
+        },
+        reactions: [
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|\d+\|0[0-3]\|/,
+            },
+            comment: "Bruh",
+            emotion: "watching",
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /[BF]=pawnDouble:f2/,
+            },
+            comment: "Now shoot it off e4!",
+            emotion: "watching",
+          },
+        ],
+        hints: [
+          {
+            when: {
+              kind: "scfen",
+              re: /[BF]=pawnDouble:f2/,
+            },
+            squares: [
+              "e4",
+            ],
+          },
+          {
+            squares: [
+              "f2",
+            ],
+          },
+        ],
+      },
+      {
+        id: "king-defense-4",
+        title: "King Defense IV",
+        board: {
+          scfen: "SCFEN|k7/8/8/4B3/8/8/4r3/5NPK|1|13|P|G:11:11|Q:w:;b:C=e2h2",
+          stored: 4,
+          endTurnAfterQueue: "first",
+          docs: "Command Center on h1 at HP 1, guarded by Nf1 + Pg1. The hoverbike is the only unit whose vision reaches re2 — and e2 is off its move graph, so spotting is all it can do. Black has the tank pre-queued e2→h2, one square from the CC. Order Be5→h2: two movers land on the same tile in the move phase, so both die — the mecha trades itself for the tank.",
+        },
+        comment: "Your hoverbike found a tank... \nOrder your mecha to h2 to cause a collision.",
+        emotion: "thinking",
+        completeWhen: {
+          kind: "scfen",
+          re: /SCFEN\|[^|r]*\|/,
+        },
+        restartWhen: {
+          kind: "scfen",
+          re: /SCFEN\|[^|]+\|\d+\|0[0-3]\|/,
+        },
+        reactions: [
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|\d+\|0[0-3]\|/,
+            },
+            comment: "Bruh",
+            emotion: "watching",
+          },
+        ],
+        hints: [
+          {
+            squares: [
+              "h2",
+            ],
+          },
+        ],
+      },
+      {
         id: "king-hunt-live",
         title: "King Hunt (live)",
         board: {

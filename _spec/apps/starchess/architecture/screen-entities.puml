@@ -38,7 +38,7 @@ package "catalog (source of truth)" {
   class TutorialScriptConfig <<db>> {
     tutorial/tutorialScript.config.ts
     --
-    17 live lessons
+    19 live lessons
     seed · chrome · hints · gates · docs
   }
 

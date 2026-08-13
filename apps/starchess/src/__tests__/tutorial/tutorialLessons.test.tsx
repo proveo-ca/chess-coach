@@ -81,6 +81,8 @@ describe("tutorial lesson catalog", () => {
       "specials/tank",
       "king/king-defense",
       "king/king-defense-2",
+      "king/king-defense-3",
+      "king/king-defense-4",
       "king/king-hunt-live",
     ]);
   });

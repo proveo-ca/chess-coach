@@ -1,3 +1,16 @@
+import {
+  addScAction,
+  beginScTurn,
+  endScTurn,
+  formatScFen,
+  getSideVision,
+  getUnitVision,
+  parseScFen,
+  placementToMap,
+  refillTurnGas,
+  scMovesFrom,
+  type ScActionInput,
+} from "@chess-coach/starchess-core";
 import { describe, expect, it } from "vitest";
 
 import {
@@ -20,6 +33,10 @@ import {
   FOG_MOVE_PAWN_START_SCFEN,
   FOG_MOVE_KNIGHT_START_SCFEN,
 } from "~/demos/fogMoveSamples";
+import {
+  occupancyForQueuedMoves,
+  pieceAtQueuedSquare,
+} from "~/presentation/board/occupancyForQueuedMoves";
 
 const storyOf = (stageId: TutorialSectionId, storyId: string) => {
   const story = tutorialStory(stageId, storyId);
@@ -106,11 +123,13 @@ describe("tutorialScript", () => {
     expect(TUTORIAL_SCRIPT[0]!.stories).toHaveLength(8);
     expect(TUTORIAL_SCRIPT[1]!.stories).toHaveLength(6);
     expect(TUTORIAL_SCRIPT[2]!.stories).toHaveLength(1);
-    expect(TUTORIAL_SCRIPT[3]!.stories).toHaveLength(4);
+    expect(TUTORIAL_SCRIPT[3]!.stories).toHaveLength(6);
     expect(TUTORIAL_SCRIPT[3]!.stories.map((s) => s.id)).toEqual([
       "king-hunt",
       "king-defense",
       "king-defense-2",
+      "king-defense-3",
+      "king-defense-4",
       "king-hunt-live",
     ]);
   });
@@ -546,6 +565,195 @@ describe("tutorialScript", () => {
         scfen: spawnQueuedScfen,
       }),
       r.attackTheShip,
+    );
+  });
+
+  /**
+   * King Defense III / IV are single-turn races against a pre-queued enemy
+   * intent, so their gates are pinned against the **engine**, not against
+   * hand-written SCFEN: `endScTurn` decides whether the solve line kills the
+   * threat, and `beginScTurn` decides whether an idle turn costs the CC its last
+   * HP. A hand-authored literal would keep passing after a resolve-order change.
+   */
+  const playLesson = (
+    storyId: "king-defense-3" | "king-defense-4",
+    actions: readonly ScActionInput[],
+  ): { afterResolve: string; afterNextTurnOpen: string } => {
+    const seed = refillTurnGas(parseScFen(lessonBoard("king", storyId).scfen));
+    let planned = seed;
+    for (const action of actions) {
+      planned = addScAction({ snapshot: planned, action }).snapshot;
+    }
+    const { next } = endScTurn(planned);
+    return {
+      afterResolve: formatScFen(next),
+      afterNextTurnOpen: formatScFen(beginScTurn(next).next),
+    };
+  };
+
+  it("king-defense-3 completes on the gas-then-shoot line and restarts when idle", () => {
+    const r = namedReactions(
+      "king",
+      "king-defense-3",
+      "ownCcDead",
+      "shootTheHoverbike",
+    );
+    const { completeWhen: complete, restartWhen: restart } = storyOf(
+      "king",
+      "king-defense-3",
+    );
+    const seed = lessonBoard("king", "king-defense-3").scfen;
+
+    // Neither gate may fire on the seed, or the lesson resolves before it starts.
+    expect(matchesTutorialCompleteWhen(complete, seed)).toBe(false);
+    expect(matchesTutorialCompleteWhen(restart, seed)).toBe(false);
+
+    // Gas the f2 marine onto f3 (resolves before the attack phase), then shoot e4.
+    const solved = playLesson("king-defense-3", [
+      { timing: "B", kind: "pawnDouble", color: "w", from: "f2", to: "f3" },
+      { timing: "C", kind: "classical", color: "w", from: "f3", to: "e4" },
+    ]);
+    expect(matchesTutorialCompleteWhen(complete, solved.afterResolve)).toBe(true);
+    expect(matchesTutorialCompleteWhen(restart, solved.afterResolve)).toBe(false);
+    expect(matchesTutorialCompleteWhen(restart, solved.afterNextTurnOpen)).toBe(
+      false,
+    );
+
+    // Idle: nf2 lands, then checks h1 at the next turn open — CC at HP 1 dies.
+    const idle = playLesson("king-defense-3", []);
+    expect(matchesTutorialCompleteWhen(complete, idle.afterResolve)).toBe(false);
+    expect(matchesTutorialCompleteWhen(restart, idle.afterNextTurnOpen)).toBe(true);
+    expect(matchesTutorialCompleteWhen(complete, idle.afterNextTurnOpen)).toBe(
+      false,
+    );
+
+    // Gas without the shot is not a solve — the hoverbike just walks onto f2.
+    const gasOnly = playLesson("king-defense-3", [
+      { timing: "B", kind: "pawnDouble", color: "w", from: "f2", to: "f3" },
+    ]);
+    expect(matchesTutorialCompleteWhen(complete, gasOnly.afterResolve)).toBe(false);
+    expect(matchesTutorialCompleteWhen(restart, gasOnly.afterNextTurnOpen)).toBe(
+      true,
+    );
+
+    // Ship-lesson failure shape: the death line holds the bubble while
+    // `restartWhen` draws the Retry countdown, so the player reads *why* first.
+    expectReaction(
+      resolveTutorialLine({
+        stageId: "king",
+        storyId: "king-defense-3",
+        scfen: idle.afterNextTurnOpen,
+      }),
+      r.ownCcDead,
+    );
+  });
+
+  it("king-defense-3 moves its line and hint once the marine is gassed", () => {
+    const r = namedReactions(
+      "king",
+      "king-defense-3",
+      "ownCcDead",
+      "shootTheHoverbike",
+    );
+    const hints = storyOf("king", "king-defense-3").hints;
+    const seed = lessonBoard("king", "king-defense-3").scfen;
+    const gasQueued =
+      "SCFEN|k7/8/8/8/4n3/8/4PP1P/7K|1|13|P|G:01:11|Q:w:B=pawnDouble:f2:f3;b:C=e4f2";
+
+    expectIntro(
+      resolveTutorialLine({
+        stageId: "king",
+        storyId: "king-defense-3",
+        scfen: seed,
+      }),
+      "king",
+      "king-defense-3",
+    );
+    expectReaction(
+      resolveTutorialLine({
+        stageId: "king",
+        storyId: "king-defense-3",
+        scfen: gasQueued,
+      }),
+      r.shootTheHoverbike,
+    );
+
+    expect(resolveTutorialHints(hints, seed)).toEqual(["f2"]);
+    expect(resolveTutorialHints(hints, gasQueued)).toEqual(["e4"]);
+
+    // The solve is only *clickable* if the board projects the gassed marine onto
+    // f3 and offers e4 from there — the same two helpers `useBoardInput` uses to
+    // select a piece and fill `legalDests`.
+    const snap = parseScFen(gasQueued);
+    const raw = placementToMap(snap.placement);
+    const { map, siegedRooks } = occupancyForQueuedMoves(raw, "w", true, snap);
+    expect(pieceAtQueuedSquare(raw, "f3", "w", snap.queue?.actions)).toEqual({
+      type: "p",
+      color: "w",
+    });
+    expect(
+      scMovesFrom(map, "f3", "w", { siegedRooks }).map((m) => m.to),
+    ).toContain("e4");
+  });
+
+  it("king-defense-4 completes on the h2 collision and restarts when idle", () => {
+    const r = namedReactions("king", "king-defense-4", "ownCcDead");
+    const story = storyOf("king", "king-defense-4");
+    const { completeWhen: complete, restartWhen: restart } = story;
+    const seed = lessonBoard("king", "king-defense-4").scfen;
+
+    expect(matchesTutorialCompleteWhen(complete, seed)).toBe(false);
+    expect(matchesTutorialCompleteWhen(restart, seed)).toBe(false);
+    expect(resolveTutorialHints(story.hints, seed)).toEqual(["h2"]);
+
+    // The lesson only teaches the collision if the tank is *spotted but
+    // unreachable*: the Nf1 hoverbike is the sole unit lighting e2, and e2 sits
+    // off its move graph (f1 reaches d2/h2/e3/g3, never e2). If any white unit
+    // could reach e2 the player would take a free capture instead of the trade.
+    const placement = parseScFen(seed).placement;
+    const map = placementToMap(placement);
+    expect(getSideVision(placement, "w").litSquares.has("e2")).toBe(true);
+    expect(getUnitVision(map, "f1").litSquares.has("e2")).toBe(true);
+    for (const from of ["f1", "g1", "e5", "h1"] as const) {
+      expect(
+        scMovesFrom(map, from, "w").map((m) => m.to),
+        `${from} must not reach the tank`,
+      ).not.toContain("e2");
+    }
+    expectIntro(
+      resolveTutorialLine({
+        stageId: "king",
+        storyId: "king-defense-4",
+        scfen: seed,
+      }),
+      "king",
+      "king-defense-4",
+    );
+
+    // Both movers land on h2 in the move phase → both die, tile empty.
+    const solved = playLesson("king-defense-4", [
+      { timing: "C", kind: "classical", color: "w", from: "e5", to: "h2" },
+    ]);
+    expect(matchesTutorialCompleteWhen(complete, solved.afterResolve)).toBe(true);
+    expect(matchesTutorialCompleteWhen(restart, solved.afterResolve)).toBe(false);
+    expect(matchesTutorialCompleteWhen(restart, solved.afterNextTurnOpen)).toBe(
+      false,
+    );
+
+    // Idle: the tank reaches h2 and checks the HP-1 CC at the next turn open.
+    const idle = playLesson("king-defense-4", []);
+    expect(matchesTutorialCompleteWhen(complete, idle.afterResolve)).toBe(false);
+    expect(matchesTutorialCompleteWhen(restart, idle.afterNextTurnOpen)).toBe(true);
+    expect(matchesTutorialCompleteWhen(complete, idle.afterNextTurnOpen)).toBe(
+      false,
+    );
+    expectReaction(
+      resolveTutorialLine({
+        stageId: "king",
+        storyId: "king-defense-4",
+        scfen: idle.afterNextTurnOpen,
+      }),
+      r.ownCcDead,
     );
   });
 
