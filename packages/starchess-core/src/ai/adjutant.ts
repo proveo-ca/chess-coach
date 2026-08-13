@@ -60,6 +60,7 @@ import {
 import { addScAction, AddScActionError } from "../commands/queue-action";
 import { specialGasCost } from "../scfen";
 import { MAX_MINES_PER_SIDE, mineAt, minesFor } from "../board/mines";
+import { hostileMineOn } from "../board/mine-contact";
 import { scMovesFor, type ScMove } from "../board/moves";
 import { charonTargetQueenFromPlacement } from "../rules/specials/bishopCharon";
 import { pawnSingleTarget } from "../rules/specials/pawnDouble";
@@ -664,11 +665,9 @@ const sideSpecials = (
   const knightsFull = ownKnights >= MAX_KNIGHTS;
   // Mined tiles are legal drops, but a deploy is no attack — a hostile mine
   // takes the fresh unit on arrival (same rule as the Tactical Jump below).
-  const adjacent = neighbors(king).filter((at) => {
-    if (map.has(at)) return false;
-    const m = mineAt(snap.mines, at);
-    return !m || m.color === us;
-  });
+  const adjacent = neighbors(king).filter(
+    (at) => !map.has(at) && !hostileMineOn(snap.mines, us, at),
+  );
   for (const unit of ["p", "n", "b", "r", "q"] as const) {
     if (UNIT_COST[unit] > bank) continue;
     if (unit === "n" && knightsFull) continue;
@@ -719,8 +718,7 @@ const sideSpecials = (
     const to = pawnSingleTarget(from, us);
     if (!to || map.has(to)) continue;
     // A gas step walks onto the tile — a hostile mine there kills the marine.
-    const stepMine = mineAt(snap.mines, to);
-    if (stepMine && stepMine.color !== us) continue;
+    if (hostileMineOn(snap.mines, us, to)) continue;
     const promotion = isLastRank(rankOf(to), us) ? ("q" as const) : undefined;
     let score = center * centerScore(to) + promoteRank * promoteProgress(rankOf(to), us);
     score += nearPromoteRush(rankOf(from), rankOf(to), us);
@@ -781,8 +779,7 @@ const sideSpecials = (
         if (map.has(to)) continue;
         // Mined tiles stay legal landings, but the jump is no attack — a hostile
         // mine detonates on arrival and takes the BattleShip with it.
-        const mine = mineAt(snap.mines, to);
-        if (mine && mine.color !== us) continue;
+        if (hostileMineOn(snap.mines, us, to)) continue;
         let score = center * centerScore(to);
         if (underFire) {
           score += isSafeSquare(map, to, enemy) ? QUEEN_ESCAPE : -QUEEN_ESCAPE * 0.5;

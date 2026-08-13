@@ -1,0 +1,90 @@
+@startuml overview
+' SPEC: _spec/packages/starchess-core/overview.puml
+' purpose: Module interior of the resolve engine — every function in
+' resolve-turn.ts / submit-turn.ts, what it owns, and where its decisions live.
+!include ../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess Core · Resolve engine overview (module interior)
+
+package "resolve/submit-turn.ts — facade (rank order)" {
+  component "beginScTurn(snap)\nturn-open checks · gas refill" as BEGIN <<app>>
+  component "endScTurn(snap, opts)\nchecks → B → C → F → next snap" as END <<app>>
+  component "rewriteClassicalAfterB(actions, placement)\npure stack folding (exported)" as REWRITE <<app>>
+  component "applySpecial(placement, mines, action)\nsnipe · warp · gas step · deploy · drop · siege" as SPECIAL <<async>>
+  component "applyArrivalMine(placement, mines, at, color, unit)\n**one** non-attack arrival rule" as ARRIVE <<async>>
+  component "collectSpecialsUsed(...)\nU: aura squares, migrated" as USED <<db>>
+  component "visionCheckGate / byTiming / eventFor\nclassicalFor · toggleRookSiege" as SUBHELP <<db>>
+}
+
+package "resolve/resolve-turn.ts — pipeline (phases)" {
+  component "resolveTurn(input)\nRULES pipeline → 4 phases" as RT <<app>>
+  component "relocate(plan, fromOccupyList)\nphase-2 closure over board/mines" as RELOC <<async>>
+  component "applyPendingKingShots(input)\nturn-open HP / blocker collision" as KSHOT <<app>>
+  component "applyPathRevealAttack(snap, a)\napplyPathRevealKingShot(snap, a)\nshared engine ⇄ UI replay" as PRAPPLY <<app>>
+  component "RULES / applyOutcome / rayContactOutcome\napproachWalk · attacksOwnDest · leapsPiece\nplansOf · squareBeforeOnRay" as RTHELP <<db>>
+}
+
+package "board/* — queries the engine reads" {
+  component "placement.ts\nplacementToMap · mapToPlacement\ncollectLegalKingChecks · attacksSquare" as PL <<db>>
+  component "mines.ts\nrayBetween · firstBlockerOnRay\npathContactSquares · mineAt · caps" as MN <<db>>
+  component "**mine-contact.ts**\nmineContact · withoutMine · hostileMineOn\n(the one spider-mine rules table)" as MC <<app>>
+  component "vision.ts\ngetSideVision · pathRevealSteps" as VIS <<db>>
+}
+
+package "documents out" {
+  database "ResolveTurnResult\nattacks · moves · mineTriggers\nmoveCollisions · pathRevealAttacks\npathRevealMineTriggers · promotions\nafterAttack ▸ afterMove ▸ afterAll" as RTR <<db>>
+  database "EndScTurnResult\nresolved · next · events\nafterPending ▸ afterB · bMoves · fMoves\nignoreAttacksOn · siegedThisTurn · queue" as ESR <<db>>
+}
+
+BEGIN ARROW_MAIN KSHOT
+BEGIN ARROW_MAIN ESR : asResolve (checks-only)
+END ARROW_MAIN KSHOT : unless skipTurnStartChecks
+END ARROW_MAIN SPECIAL : rank B then F
+END ARROW_MAIN REWRITE : C after a B relocate
+END ARROW_MAIN RT : rank C
+END ARROW_MAIN USED
+END ARROW_MAIN ESR
+SPECIAL ARROW_MAIN ARRIVE : warp · gas step · deploy
+ARRIVE ARROW_MAIN MC : mode = arrive
+RT ARROW_MAIN RELOC : phase 2
+RT ARROW_MAIN PRAPPLY : phase 3
+RT ARROW_MAIN RTR
+RT ARROW_OPTIONAL VIS : pathRevealSteps per candidate
+RT ARROW_MAIN MC : every mine decision
+RT ARROW_OPTIONAL MN
+RT ARROW_OPTIONAL PL
+RELOC ARROW_MAIN MC : one ordered walk — chase or walk-over
+KSHOT ARROW_OPTIONAL PL
+SUBHELP ARROW_OPTIONAL VIS
+ESR ARROW_QUEUE RTR : embeds
+
+note right of RTR
+  **Snapshot ladder** — every consumer (UI replay included) reads these in
+  order and never recomputes a board:
+  ""afterPending"" (turn-open checks) ▸ ""afterB"" (specials) ▸
+  ""afterAttack"" (phase 1) ▸ ""afterMove"" (phase 2) ▸ ""afterAll"" = ""next"".
+  Mines are spent at the rung that spends them: B arrivals in ""afterB"",
+  attack-clear in ""afterAttack"", walk-over / chase in ""afterMove"",
+  fog-approach trips only in ""afterAll"".
+end note
+
+note bottom
+  **Source files carry no prose.** These diagrams are the decision record:
+  * ""resolve.puml"" — the **rules** (what the game does);
+  * ""overview.puml"" (this file) — the **module interior** (who owns what);
+  * ""resolve-turn-activity.puml"" — the ""RULES"" precedence list + phase run;
+  * ""ray-scan.puml"" — one ray walk, one classified contact;
+  * ""submit-turn-activity.puml"" — rank pipeline, bail-outs, invariants;
+  * ""turn-queue-sequence.puml"" / ""index.puml"" — call sequence + spec map;
+  * ""mine-contact.puml"" — the shared spider-mine rules table (+ what is
+    still open in the engine).
+
+  **Invariants asserted by ""endScTurn"" (throw, never repair):** exactly one
+  king per side in the final placement; ≤ ""MAX_MINES_PER_SIDE"" mines per side;
+  a last-rank classical pawn intent must carry a promotion; ""beginScTurn"" /
+  ""endScTurn"" only accept phase **P**.
+end note
+@enduml

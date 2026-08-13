@@ -1,0 +1,71 @@
+@startuml cue-projection
+' SPEC: _spec/apps/starchess/timeline/cue-projection.puml
+' purpose: projectResolveTimeline emission order — the cue list is the script,
+' so the order below *is* the animation.
+!include ../../../themes/proveo.puml
+
+skinparam defaultTextAlignment left
+
+title StarChess · ""projectResolveTimeline"" — emission order
+
+start
+:one **gas drop** per actor square per rank\n(a 2-gas special still absorbs a single canister);
+:emit the **B** drops;
+:**B gas steps** (""result.bMoves"") — stim hop timing;
+
+partition "B specials that need the pre-afterB board" {
+  :**Charon** ""ch"" shot + ""chd"" victim read from the ""afterPending"" map;
+  :**gas step onto a hostile mine** → ""armm"" boom + ""armd"" hull\n(the marine already hopped above, now the mine takes it);
+  :**Tactical Jump** ""qj"" hull travel, then ""qjm"" boom + ""qjd"" wreck\nwhen the landing tile was mined;
+}
+
+partition "deploys" {
+  :diff ""afterPending"" ▸ ""afterB"" for units that appeared;
+  :**skip** a deploy whose unit does not survive the turn —\ndrop VFX must not play on a corpse …;
+  :… **unless** it crushed an occupant: the crush death plays mid-drop,\nso the deploy still reads even if the unit dies later;
+  :a drop that died **on arrival** never reaches ""afterB"", so the diff\ncannot see it — synthesise ""spawn-mine"" deploy + ""crush"" (if any)\n+ ""armm"" / ""armd"" straight from the event;
+  :emit deploys, then all ""crush"" deaths, then the arrival blasts;
+}
+
+partition "phase 1" {
+  :attacks and deaths are emitted as two blocks, never interleaved —\nthe interpreter plays them as one synchronised wave;
+  :""moveCollision"" captures are **excluded** here: they belong after moves;
+  :""mineBlast"" in ""attacks"" means a unit **cleared** the mine and lives —\nthe boom is drawn as the mine owner's hull (""m"");
+  :a lethal ""kingShot"" gets a real death cue (""dk"") so the king collapses\ninstead of snapping to ruins;
+}
+
+:**classical moves** (""c"") — one simultaneous wave;
+:**move collisions** — ""mc"" victim, ""mcm"" mine (no attack cue: the mover\nnever saw what it hit);
+
+partition "phase-2 mine triggers" {
+  :chase → ""mm"" missile from the wake tile to the landing tile;
+  :always → ""mtm"" boom, then ""mt"" victim when the mover died;
+}
+
+partition "phase-3 fog approaches (sequential chains, one per approach)" {
+  :""prd"" approach slide (origin → discovery square) when they differ;
+  :""pra"" shot — ""kingShot"" carries the HP chip, ""prdth"" the victim /\nlethal king;
+  :kingShot → ""prs"" stop-short slide · capture → ""pro"" occupy slide;
+  :approach that walked into a mine → ""prmm"" missile (chase only),\n""prm"" boom, ""prv"" hull;
+}
+
+:**F** gas drops, then ""f"" gas steps, then any F arrival blast;
+:**promotions** — ""pw"" walk-off one square past the edge, then ""pd"" deploy;
+note right
+  **Why the order is load-bearing:** the interpreter is a single forward walk
+  with ""takeWhile"" batching. A cue batches with its neighbours, so emission
+  order decides which cues share a window (simultaneous) and which play in
+  sequence. Moving a cue is a timing change, not a cosmetic one.
+
+  **Lane stamping is the last step:** ""cues.map(withLane)"" gives every cue its
+  ""lane"" / ""board"" / ""group"" from the registry (""cue-lanes.puml""), so the
+  interpreter never reads an id.
+
+  **Never re-derive rules here.** Everything drawn comes from a list the engine
+  already stamped (""attacks"", ""moves"", ""mineTriggers"", ""moveCollisions"",
+  ""pathRevealAttacks"", ""pathRevealMineTriggers"", ""promotions"", ""events"").
+  If a cue cannot be built from the result, the engine is missing a field —
+  add it there, not a second rules pass here.
+end note
+stop
+@enduml
