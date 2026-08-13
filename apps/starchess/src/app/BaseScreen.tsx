@@ -22,6 +22,8 @@ import styles from "~/app/BaseScreen.module.css";
 import { CoachAvatar } from "~/components/atoms/CoachAvatar";
 import { MobileBanner } from "~/components/atoms/MobileBanner";
 import { ExitGameConfirm } from "~/components/features/ExitGameConfirm";
+import { useMediaQuery } from "~/hooks/useMediaQuery";
+import { DYNAMIC_MOBILE_MQ, MOBILE_MQ } from "~/utils/breakpoints";
 import { Label } from "~/components/primitives/Label";
 import { PromotionModal } from "~/components/primitives/PromotionModal";
 import { Screen } from "~/components/primitives/Screen";
@@ -96,27 +98,9 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
   const [spawnPhase, setSpawnPhase] = createSignal<"idle" | "modal" | "pick">("idle");
   const [overlayBox, setOverlayBox] = createSignal<OverlayBox | null>(null);
   const [exitOpen, setExitOpen] = createSignal(false);
-  const [dynamicMobile, setDynamicMobile] = createSignal(false);
-  const [mobileViewport, setMobileViewport] = createSignal(false);
+  const dynamicMobile = useMediaQuery(DYNAMIC_MOBILE_MQ);
+  const mobileViewport = useMediaQuery(MOBILE_MQ);
   let boardHost: HTMLDivElement | undefined;
-
-  onMount(() => {
-    const dynamicMq = window.matchMedia(
-      "(max-width: 719px) and (min-width: 480px) and (max-height: 639px)",
-    );
-    const mobileMq = window.matchMedia("(max-width: 719px)");
-    const sync = () => {
-      setDynamicMobile(dynamicMq.matches);
-      setMobileViewport(mobileMq.matches);
-    };
-    sync();
-    dynamicMq.addEventListener("change", sync);
-    mobileMq.addEventListener("change", sync);
-    onCleanup(() => {
-      dynamicMq.removeEventListener("change", sync);
-      mobileMq.removeEventListener("change", sync);
-    });
-  });
 
   /** Tall/narrow mobile loses the rail — TurnBar under GasRack (no phase chips). */
   const showFooterTurnBar = () =>
@@ -636,6 +620,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
               <Show when={starChessMode() && !ended() && dynamicMobile()}>
                 <MobileBanner
                   onBack={requestLeave}
+                  fixedResources
                   resources={
                     <Show when={!props.hideResources}>
                       <ResourceBar compact />

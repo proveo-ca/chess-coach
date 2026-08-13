@@ -172,13 +172,49 @@ top + board content + MoveList page budget > viewport
 
 ---
 
+## 5. Menu splash columns — by aspect, not width
+
+`MenuScreen` is the one screen that splits into columns, and the split is keyed
+on **aspect**, not width alone. Width alone (`--sm-up`) put tall 480–719px
+phones into two columns, which is wrong: they have height to spare and no
+horizontal room.
+
+| Band | Columns | Why |
+|---|---|---|
+| `--desktop` (≥720) | **2** — form left, destinations right | Room for both |
+| `--dynamic-mobile` (480–719 × ≤639) | **2** | Landscape: one column would not fit the height |
+| everything else below 720 | **1** | Portrait: height to stack, no width to split |
+
+Implementation: `SplashScreen.module.css` gates the grid on
+`@media (--desktop), (--dynamic-mobile)` scoped by `:has(.menu-options)`;
+`MenuScreen.module.css` places the items in it under the same query. Narrow
+**and** short (`< 480 × ≤ 639`) stays single column and compacts instead — cat
+scaled to 0.75, tighter row/gap rhythm. In the dynamic band the splash title is
+clipped to a11y-only and Selena speaks it from a `ChatBubble` at her right.
+
+**StarChess parity.** `apps/starchess` `ChessMenuMockup` is a facsimile of this
+screen and must match it at all three profiles (Storybook `Screens/Menu` ·
+Coach `--default` vs StarChess `--star-chess`, viewports Desktop 1280×900 ·
+Mobile 390×844 · Dynamic 560×420). Two Coach details the mock has to reproduce
+by hand, since it doesn't share the stylesheets:
+
+- Below 480px Coach shrinks its **root font** to `0.85rem` / `line-height: 1.2`
+  (`apps/ui/src/index.css`). StarChess keeps a 16px root, so the mock re-applies
+  the 0.85 factor to its own rem values (px and em values scale in neither).
+- The bubble's position comes from `ChatBubble`'s pop-in animation: it fills
+  forwards on `transform: scale(1)`, overriding `.coach-line`'s
+  `translateY(-50%)`, so the bubble hangs from Selena's midline. The mock copies
+  the animation to land in the same place.
+
+---
+
 ## Breakpoint cheat-sheet
 
 | Token | CSS / JS | Role |
 |---|---|---|
 | `--desktop` / `DESKTOP_MQ` | `min-width: 720px` | Sidebar visible; fixed 480px board (prefer this token) |
 | `--mobile` / `MOBILE_MQ` | `max-width: 719px` | Exclusive complement of `--desktop` |
-| `--sm-up` | `min-width: 480px` | Slightly larger type / spacing |
+| `--sm-up` | `min-width: 480px` | Slightly larger type / spacing. **Not** a layout switch — see §5 |
 | `--tall-mobile` / `TALL_MOBILE_MQ` | mobile + `min-height: 640px` | Hero `CoachAvatar`; Analysis `MobileBanner` at top; drawer floats top-right on non-toolbar bars |
 | `--short-mobile` / `SHORT_MOBILE_MQ` | mobile + `max-height: 639px` | Clumped gaps; Coach compact avatar; Analysis `MobileBanner` stays at top; shared `--board-chrome-inline` L/R gutter |
 | `--dynamic-mobile` / `DYNAMIC_MOBILE_MQ` | mobile + `min-width: 480px` + `max-height: 639px` | Fused `MobileBanner`+`MobileSidebar` row (`[data-testid=mobile-fuse]`); Coach avatar + captures at 0.75; board cap 320px |

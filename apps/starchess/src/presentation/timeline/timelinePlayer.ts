@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/starchess/animation-pipeline.md, _spec/apps/starchess/core/turn/playback-interpreter.puml
+// SPEC: _spec/apps/starchess/timeline/overview.puml, _spec/apps/starchess/timeline/cue-projection.puml, _spec/apps/starchess/timeline/cue-playback.puml, _spec/apps/starchess/timeline/cue-lanes.puml, _spec/apps/starchess/animation-pipeline.md, _spec/apps/starchess/core/turn/playback-interpreter.puml
 import type { EndScTurnResult, ResolveAttack, ResolveEvent, ResolveMove, StarChessColor, StarChessPiece } from "@chess-coach/starchess-core";
 import { placementToMap, mapToPlacement } from "@chess-coach/starchess-core";
 import type { Square } from "chess.js";
@@ -33,7 +33,8 @@ import {
 } from "~/presentation/specials/queenTacticalJump";
 import { gasDropCornerFor } from "~/presentation/animations/gasDrop";
 import { rookModeAt } from "~/presentation/board/rookMode";
-import type { TimelineCallbacks, TimelineCue } from "~/types/match";
+import type { CueLane, TimelineCallbacks, TimelineCue } from "~/types/match";
+import { BOARD_RUNG, withLane } from "~/presentation/timeline/cueLanes";
 import type { Scheduler } from "~/types/ports";
 
 export type { TimelineCallbacks } from "~/types/match";
@@ -79,6 +80,29 @@ const moveCue = (
   ...(opts?.stim ? { stim: true } : {}),
 });
 
+const arrivalMineCues = (
+  at: Square,
+  mineColor: StarChessColor,
+  unit: { type: StarChessPiece; color: StarChessColor },
+  nextId: () => number,
+): TimelineCue[] => [
+  {
+    kind: "death",
+    id: `armm${nextId()}`,
+    piece: "n",
+    color: mineColor,
+    at,
+    mine: true,
+  },
+  {
+    kind: "death",
+    id: `armd${nextId()}`,
+    piece: unit.type,
+    color: unit.color,
+    at,
+  },
+];
+
 const relocatePlacement = (placement: string, from: Square, to: Square): string => {
   const map = placementToMap(placement);
   const piece = map.get(from);
@@ -94,7 +118,6 @@ const withoutSquare = (placement: string, at: Square): string => {
   return mapToPlacement(map);
 };
 
-/** Stamp a unit onto a square (promo land under a deploy cue). */
 const withPieceAt = (
   placement: string,
   at: Square,
@@ -105,11 +128,6 @@ const withPieceAt = (
   return mapToPlacement(map);
 };
 
-/**
- * HP before animated kingShots — undo chips that afterPending already applied
- * (begin / pending checks) so the hull stays pristine until frag impact.
- * Classical chips live only in `next` and are applied at frag without undoing.
- */
 const livesBeforeAnimatedShots = (
   result: EndScTurnResult,
 ): EndScTurnResult["next"]["kingLives"] => {
@@ -125,11 +143,6 @@ const livesBeforeAnimatedShots = (
   return lives;
 };
 
-/**
- * Project EndScTurnResult into a cue timeline.
- * Order: B gas drops → B gas-steps → Charon / Tactical Jump → spawn deploys →
- * phase-1 attacks/deaths → classical → path-reveal → F gas drops → F steps → promo.
- */
 export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] => {
   const cues: TimelineCue[] = [];
   let n = 0;
@@ -141,7 +154,6 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
   for (const ev of result.events) {
     if (!ev.from) continue;
     if (ev.phase !== "specialBefore" && ev.phase !== "specialAfter") continue;
-    // One absorb per actor square (2-gas specials still get a single drop).
     const key = `${ev.phase}:${ev.from}`;
     if (seenGas.has(key)) continue;
     seenGas.add(key);
@@ -159,7 +171,6 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
 
   for (const m of result.bMoves) cues.push(moveCue(m, `b${n++}`, { stim: true }));
 
-  // B specials that need VFX before afterB locks (Charon missiles / Jump trail).
   for (const ev of result.events) {
     if (ev.phase !== "specialBefore") continue;
     if (ev.kind === "bishopSnipe" && ev.from && ev.to) {
@@ -183,6 +194,11 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
         });
       }
     }
+    if (ev.kind === "pawnDouble" && ev.to && ev.mineColor && ev.victim) {
+      cues.push(
+        ...arrivalMineCues(ev.to, ev.mineColor, ev.victim, () => n++),
+      );
+    }
     if (ev.kind === "queenWarp" && ev.from && ev.to) {
       cues.push({
         kind: "move",
@@ -193,13 +209,28 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
         to: ev.to,
         queenJump: true,
       });
+      if (ev.mineColor) {
+        cues.push({
+          kind: "death",
+          id: `qjm${n++}`,
+          piece: "n",
+          color: ev.mineColor,
+          at: ev.to,
+          mine: true,
+        });
+        if (ev.victim) {
+          cues.push({
+            kind: "death",
+            id: `qjd${n++}`,
+            piece: ev.victim.type,
+            color: ev.victim.color,
+            at: ev.to,
+          });
+        }
+      }
     }
   }
 
-  // Command Center / put spawns: pieces that appear on afterB without a matching leave.
-  // Skip units that do not survive the turn — deploy VFX must not play on a corpse.
-  // Exception: a spawn that crushed an enemy still deploys (the crush death plays
-  // mid-drop) even when the deployed unit dies later the same turn.
   const sieged = result.afterB.siegedRooks ?? [];
   const finalMap = placementToMap(result.next.placement);
   const crushVictim = new Map<string, ResolveEvent["victim"]>();
@@ -226,7 +257,6 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
       at: d.at,
     });
     if (crush) {
-      // Enemy collapses ~100ms into the drop (before the unit lands).
       crushDeaths.push({
         kind: "death",
         id: `crush${n++}`,
@@ -239,10 +269,37 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
       });
     }
   }
-  cues.push(...crushDeaths);
+  const minedDeploys: TimelineCue[] = [];
+  for (const ev of result.events) {
+    if (ev.kind !== "spawn" || !ev.to || !ev.mineColor || !ev.unit) continue;
+    cues.push({
+      kind: "deploy",
+      id: `spawn-mine${n++}`,
+      piece: ev.unit,
+      color: ev.color,
+      at: ev.to,
+    });
+    if (ev.victim) {
+      crushDeaths.push({
+        kind: "death",
+        id: `crush${n++}`,
+        piece: ev.victim.type,
+        color: ev.victim.color,
+        at: ev.to,
+        ...(ev.victim.type === "r" ? { rookMode: rookModeAt(ev.to, sieged) } : {}),
+      });
+    }
+    minedDeploys.push(
+      ...arrivalMineCues(
+        ev.to,
+        ev.mineColor,
+        { type: ev.unit, color: ev.color },
+        () => n++,
+      ),
+    );
+  }
+  cues.push(...crushDeaths, ...minedDeploys);
 
-  // Phase 1 — simultaneous attacks, then simultaneous deaths (not interleaved).
-  // moveCollision captures belong after moves — never phase-1.
   const phase1Attacks: TimelineCue[] = [];
   const phase1Deaths: TimelineCue[] = [];
   for (const a of result.resolved.attacks) {
@@ -265,13 +322,12 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
       phase1Deaths.push({
         kind: "death",
         id: `m${n++}`,
-        piece: a.piece,
-        color: a.color,
+        piece: "n",
+        color: a.mineColor,
         at: a.to,
         mine: true,
       });
     }
-    // Lethal kingShot — DeathAnimation collapse (not a static ruins snap).
     if (a.kind === "kingShot" && a.livesAfter === 0) {
       phase1Deaths.push({
         kind: "death",
@@ -286,7 +342,6 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
 
   for (const m of result.resolved.moves) cues.push(moveCue(m, `c${n++}`));
 
-  // Move-phase fog / path collisions — deaths after classical land (no attack cue).
   for (const a of result.resolved.moveCollisions) {
     if (a.kind === "capture" && a.victim) {
       cues.push({
@@ -311,9 +366,6 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
     }
   }
 
-  // Phase-2 walk-over / chase mine triggers — after land, before path-reveal.
-  // Chase: missile from wake square → impact, then boom. Walk-over: boom only.
-  // Promotion onto a hostile mine dies here (no promo walk-off).
   for (const a of result.resolved.mineTriggers) {
     if (a.kind !== "mineBlast") continue;
     if (a.chaseFrom != null) {
@@ -325,7 +377,6 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
         to: a.to,
       });
     }
-    // Mine boom (hull hidden) — always; walk-over / chase also shreds the victim.
     cues.push({
       kind: "death",
       id: `mtm${n++}`,
@@ -345,9 +396,6 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
     }
   }
 
-  // Phase 3 — fog path-discovery. Intention slides to the discovery square,
-  // then attacks (king on the way ⇒ kingShot). Must not look like a post-move
-  // standing-check chip. Kept as per-approach chains (sequential).
   for (const a of result.resolved.pathRevealAttacks) {
     if (a.kind === "kingShot") {
       const origin = a.pathRevealFrom;
@@ -414,10 +462,46 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
     }
   }
 
+  for (const a of result.resolved.pathRevealMineTriggers) {
+    if (a.kind !== "mineBlast") continue;
+    if (a.chaseFrom != null) {
+      cues.push({
+        kind: "mineMissile",
+        id: `prmm${n++}`,
+        color: a.mineColor,
+        from: a.chaseFrom,
+        to: a.to,
+      });
+    }
+    cues.push({
+      kind: "death",
+      id: `prm${n++}`,
+      piece: "n",
+      color: a.mineColor,
+      at: a.to,
+      mine: true,
+      ...(a.chaseFrom != null ? { spentAt: a.chaseFrom } : {}),
+    });
+    if (a.victim) {
+      cues.push({
+        kind: "death",
+        id: `prv${n++}`,
+        piece: a.victim.piece,
+        color: a.victim.color,
+        at: a.to,
+        ...(a.victim.piece === "r" ? { rookMode: rookModeAt(a.to, sieged) } : {}),
+      });
+    }
+  }
+
   cues.push(...fGas);
   for (const m of result.fMoves) cues.push(moveCue(m, `f${n++}`, { stim: true }));
+  for (const ev of result.events) {
+    if (ev.phase !== "specialAfter" || ev.kind !== "pawnDouble") continue;
+    if (!ev.to || !ev.mineColor || !ev.victim) continue;
+    cues.push(...arrivalMineCues(ev.to, ev.mineColor, ev.victim, () => n++));
+  }
   for (const p of result.resolved.promotions) {
-    // Pawn walks one square off the board edge, then the unit deploys.
     cues.push({
       kind: "move",
       id: `pw${n++}`,
@@ -434,15 +518,13 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
       at: p.at,
     });
   }
-  return cues;
+  return cues.map(withLane);
 };
 
 const cueDuration = (cue: TimelineCue): number => {
   switch (cue.kind) {
     case "move":
       if (cue.queenJump) return TACTICAL_JUMP_TRAVEL_MS + TACTICAL_JUMP_APPEAR_MS;
-      // Knights use L-path timing (half per-square rate) — matches MoveAnimation.
-      // Stim gas-steps use STIM_MOVE_SQUARE_MS (100ms).
       return cue.piece === "n"
         ? pieceMoveDurationMs(cue.from, cue.to, "n")
         : moveDurationMs(cue.from, cue.to, { stim: !!cue.stim });
@@ -459,13 +541,8 @@ const cueDuration = (cue: TimelineCue): number => {
   }
 };
 
-/**
- * Crush deaths are joined to their deploy batch; duration covers the whole
- * mid-drop collapse window (starts {@link CRUSH_DEATH_MS} into the deploy).
- */
 const crushDurationMs = (): number => CRUSH_DEATH_MS + DEATH_MS;
 
-/** Per-weapon kill→death / king-chip meeting point (see impactTiming.ts). */
 const attackImpactMs = (a: { anim?: string; piece: string }): number => {
   const anim =
     (a.anim as AttackAnimKind | undefined) ??
@@ -474,7 +551,6 @@ const attackImpactMs = (a: { anim?: string; piece: string }): number => {
   return impactMsFor(anim);
 };
 
-/** Initial knight facing map (long leg). Empty when no knights in the wave. */
 const knightLeg0 = (moves: readonly { id: string; piece: string }[]): Record<string, 0 | 1> => {
   const out: Record<string, 0 | 1> = {};
   for (const m of moves) {
@@ -483,57 +559,39 @@ const knightLeg0 = (moves: readonly { id: string; piece: string }[]): Record<str
   return out;
 };
 
-/** Spawn-batch deploy ids use the `spawn-` prefix from deployDiff. */
-const isSpawnDeploy = (cue: TimelineCue): boolean =>
-  cue.kind === "deploy" && cue.id.startsWith("spawn-");
+const inLane = (cue: TimelineCue, ...lanes: readonly string[]): boolean =>
+  lanes.includes(cue.lane ?? "");
 
-/** Crushed-occupant death — plays mid-deploy (~100ms in), joined to its spawn. */
+const isSpawnDeploy = (cue: TimelineCue): boolean =>
+  cue.kind === "deploy" && inLane(cue, "deploy");
+
 const isCrushDeath = (cue: TimelineCue): boolean =>
-  cue.kind === "death" && cue.id.startsWith("crush");
+  cue.kind === "death" && inLane(cue, "crush");
 
 const isGasDrop = (cue: TimelineCue): boolean => cue.kind === "gasDrop";
 
-/** Phase-1 attacks (not fog path-reveal `pra*` / Charon `ch*`). */
 const isPhase1Attack = (cue: TimelineCue): boolean =>
-  cue.kind === "attack" && !cue.id.startsWith("pra") && !cue.id.startsWith("ch");
+  cue.kind === "attack" && inLane(cue, "phase1Attack");
 
-/** Phase-1 deaths (not path-reveal / Charon / post-move mine / move-collision). */
 const isPhase1Death = (cue: TimelineCue): boolean =>
-  cue.kind === "death" &&
-  !cue.id.startsWith("prdth") &&
-  !cue.id.startsWith("chd") &&
-  !cue.id.startsWith("mt") &&
-  !cue.id.startsWith("mc");
+  cue.kind === "death" && inLane(cue, "phase1Death");
 
-/** Post-move fog / path collision deaths — after classical land. */
 const isMoveCollisionDeath = (cue: TimelineCue): boolean =>
-  cue.kind === "death" && cue.id.startsWith("mc");
+  cue.kind === "death" && inLane(cue, "collision");
 
-/** Post-move mineTriggers (walk-over / chase boom) — after classical land. */
 const isMineTriggerDeath = (cue: TimelineCue): boolean =>
-  cue.kind === "death" && cue.id.startsWith("mt");
+  cue.kind === "death" && inLane(cue, "mine");
 
-/** Chase missile before mineTrigger boom. */
 const isMineMissile = (cue: TimelineCue): boolean => cue.kind === "mineMissile";
 
-/**
- * Simultaneous move waves: B gas-steps, classical C, or F gas-steps.
- * Path-reveal (`pr*`), promo walk-off (`pw*`), and Tactical Jump (`qj*`) stay sequential.
- */
-const isSimulMoveWave = (cue: TimelineCue): boolean => {
-  if (cue.kind !== "move") return false;
-  if (cue.queenJump) return false;
-  if (cue.id.startsWith("pr") || cue.id.startsWith("pw") || cue.id.startsWith("qj")) {
-    return false;
-  }
-  return true;
-};
+const isSimulMoveWave = (cue: TimelineCue): boolean =>
+  cue.kind === "move" && !cue.queenJump && inLane(cue, "move");
 
 const isPromoWalk = (cue: TimelineCue): boolean =>
-  cue.kind === "move" && cue.id.startsWith("pw");
+  cue.kind === "move" && inLane(cue, "promoWalk");
 
 const isPromoDeploy = (cue: TimelineCue): boolean =>
-  cue.kind === "deploy" && cue.id.startsWith("pd");
+  cue.kind === "deploy" && inLane(cue, "promoDeploy");
 
 const takeWhile = (
   cues: readonly TimelineCue[],
@@ -549,20 +607,12 @@ const takeWhile = (
   return { batch, next: i };
 };
 
-/**
- * Play projected cues with an injected scheduler. Commits final board on done.
- * Same-rank opposing actions share one window (checks/attacks together; deaths
-  * overlap at FRAG_FLIGHT_MS; then moves) — mirrors engine resolve event order.
- * KingShot HP lands at frag impact so {@link KingDamageOverlay} boom syncs to the hit.
- */
 export const playTimeline = (
   result: EndScTurnResult,
   scheduler: Scheduler,
   cb: TimelineCallbacks,
   opts?: {
-    /** Override projected cues (tutorial resolve waves). */
     cues?: TimelineCue[];
-    /** When false, skip applying `result.next` on completion (mid-wave). */
     finalize?: boolean;
   },
 ): (() => void) => {
@@ -573,7 +623,6 @@ export const playTimeline = (
   let displayPlacement = result.afterPending.placement;
   let displayLives = livesBeforeAnimatedShots(result);
   let afterBApplied = false;
-  /** Green aura squares — stamped on gas absorb, migrates with hull moves. */
   const usedSquares = new Set<Square>();
   const commitUsed = (): { specialsUsed: Square[] } => ({
     specialsUsed: [...usedSquares].sort() as Square[],
@@ -599,7 +648,6 @@ export const playTimeline = (
   };
 
   let afterAttackCommitted = false;
-  /** Stamp afterAttack placement/lives without necessarily clearing attack overlays. */
   const stampAfterAttackBoard = (overlay: {
     hidden?: readonly Square[];
     playingIds?: readonly string[];
@@ -626,96 +674,94 @@ export const playTimeline = (
     stampAfterAttackBoard({ hidden: [], playingIds: [], attackDying: {} });
   };
 
+  type StepBeat = { at: number; run: () => void };
+
+  type CueHandler = (cue: TimelineCue, index: number) => void;
+
+  const runStep = (step: {
+    begin?: () => void;
+    beats?: readonly StepBeat[];
+    durationMs: number;
+    end?: () => void;
+    next: number;
+  }) => {
+    step.begin?.();
+    for (const beat of step.beats ?? []) {
+      const timer = scheduler.delay(beat.at, () => {
+        if (cancelled) return;
+        beat.run();
+      });
+      cancels.push(timer);
+    }
+    const done = scheduler.delay(step.durationMs, () => {
+      if (cancelled) return;
+      step.end?.();
+      run(step.next);
+    });
+    cancels.push(done);
+  };
+
   cb.onStart(cues, result.afterPending.placement);
 
-  const run = (index: number) => {
-    if (cancelled) return;
-    if (index >= cues.length) {
-      if (finalize) {
-        cb.onCommit({
-          placement: result.next.placement,
-          kingLives: result.next.kingLives,
-          mines: result.next.mines,
-          siegedRooks: result.next.siegedRooks,
-          specialsUsed: result.next.specialsUsed ?? [],
-          hidden: [],
-          moveProgress: {},
-          moveLeg: {},
-          playingIds: [],
-          // Leave jumpTrails mounted — CSS fade outlives resolve / onDone.
-        });
-      } else if (!afterAttackCommitted && cues.some((c) => c.kind === "attack" || c.kind === "death")) {
-        commitAfterAttack();
-      } else if (!afterBApplied && cues.some((c) => c.kind === "gasDrop" || c.kind === "deploy" || (c.kind === "move" && (c.stim || c.queenJump)))) {
-        applyAfterB();
-      }
-      cb.onDone();
-      return;
+  const handleGasWindow: CueHandler = (cue, index) => {
+    const gasTaken = takeWhile(cues, index, isGasDrop);
+    const drops = gasTaken.batch as Extract<TimelineCue, { kind: "gasDrop" }>[];
+    let deploys: Extract<TimelineCue, { kind: "deploy" }>[] = [];
+    let crushes: Extract<TimelineCue, { kind: "death" }>[] = [];
+    let next = gasTaken.next;
+    if (next < cues.length && isSpawnDeploy(cues[next]!)) {
+      const depTaken = takeWhile(cues, next, isSpawnDeploy);
+      deploys = depTaken.batch as Extract<TimelineCue, { kind: "deploy" }>[];
+      next = depTaken.next;
     }
-
-    const cue = cues[index]!;
-
-    // Gas absorbs (+ optional spawn deploys in the same window).
-    // CC canister on the king and unit drop start together so deploy is not
-    // clipped by a trailing attack when gas finishes first.
-    if (isGasDrop(cue)) {
-      const gasTaken = takeWhile(cues, index, isGasDrop);
-      const drops = gasTaken.batch as Extract<TimelineCue, { kind: "gasDrop" }>[];
-      let deploys: Extract<TimelineCue, { kind: "deploy" }>[] = [];
-      let crushes: Extract<TimelineCue, { kind: "death" }>[] = [];
-      let next = gasTaken.next;
-      if (next < cues.length && isSpawnDeploy(cues[next]!)) {
-        const depTaken = takeWhile(cues, next, isSpawnDeploy);
-        deploys = depTaken.batch as Extract<TimelineCue, { kind: "deploy" }>[];
-        next = depTaken.next;
-      }
-      if (next < cues.length && isCrushDeath(cues[next]!)) {
-        const crushTaken = takeWhile(cues, next, isCrushDeath);
-        crushes = crushTaken.batch as Extract<TimelineCue, { kind: "death" }>[];
-        next = crushTaken.next;
-      }
-      const initialPlayingIds = [
-        ...drops.map((c) => c.id),
-        ...deploys.map((c) => c.id),
-      ];
-      const fullPlayingIds = [
-        ...initialPlayingIds,
-        ...crushes.map((c) => c.id),
-      ];
-      if (deploys.length > 0) {
-        applyAfterB({
-          hidden: deploys.map((c) => c.at),
-          playingIds: initialPlayingIds,
-        });
-      } else {
-        cb.onCommit({
-          hidden: [],
-          playingIds: initialPlayingIds,
-          moveProgress: {},
-          moveLeg: {},
-        });
-      }
-      // Crushed occupants collapse ~100ms into the drop — start their death VFX
-      // while the deploy still plays (ids stay mounted; overlays key by id).
-      if (crushes.length > 0) {
-        const crushStart = scheduler.delay(CRUSH_DEATH_MS, () => {
-          if (cancelled) return;
-          cb.onCommit({
-            hidden: deploys.map((c) => c.at),
-            playingIds: fullPlayingIds,
-            moveProgress: {},
-            moveLeg: {},
-          });
-        });
-        cancels.push(crushStart);
-      }
-      const waitMs = Math.max(
+    if (next < cues.length && isCrushDeath(cues[next]!)) {
+      const crushTaken = takeWhile(cues, next, isCrushDeath);
+      crushes = crushTaken.batch as Extract<TimelineCue, { kind: "death" }>[];
+      next = crushTaken.next;
+    }
+    const initialPlayingIds = [
+      ...drops.map((c) => c.id),
+      ...deploys.map((c) => c.id),
+    ];
+    const fullPlayingIds = [
+      ...initialPlayingIds,
+      ...crushes.map((c) => c.id),
+    ];
+    if (deploys.length > 0) {
+      applyAfterB({
+        hidden: deploys.map((c) => c.at),
+        playingIds: initialPlayingIds,
+      });
+    } else {
+      cb.onCommit({
+        hidden: [],
+        playingIds: initialPlayingIds,
+        moveProgress: {},
+        moveLeg: {},
+      });
+    }
+    return runStep({
+      beats:
+        crushes.length > 0
+          ? [
+              {
+                at: CRUSH_DEATH_MS,
+                run: () =>
+                  cb.onCommit({
+                    hidden: deploys.map((c) => c.at),
+                    playingIds: fullPlayingIds,
+                    moveProgress: {},
+                    moveLeg: {},
+                  }),
+              },
+            ]
+          : [],
+      durationMs: Math.max(
         GAS_DROP_MS,
         deploys.length > 0 ? DEPLOY_MS : 0,
         crushes.length > 0 ? crushDurationMs() : 0,
-      );
-      const wait = scheduler.delay(waitMs, () => {
-        if (cancelled) return;
+      ),
+      end: () => {
         for (const d of drops) usedSquares.add(d.at);
         cb.onCommit({
           hidden: [],
@@ -724,196 +770,183 @@ export const playTimeline = (
           moveLeg: {},
           ...commitUsed(),
         });
-        run(next);
-      });
-      cancels.push(wait);
-      return;
+      },
+      next,
+    });
+  };
+  const handleDeployWindow: CueHandler = (cue, index) => {
+    const { batch, next } = takeWhile(cues, index, isSpawnDeploy);
+    const deploys = batch as Extract<TimelineCue, { kind: "deploy" }>[];
+    let crushes: Extract<TimelineCue, { kind: "death" }>[] = [];
+    let afterIdx = next;
+    if (afterIdx < cues.length && isCrushDeath(cues[afterIdx]!)) {
+      const crushTaken = takeWhile(cues, afterIdx, isCrushDeath);
+      crushes = crushTaken.batch as Extract<TimelineCue, { kind: "death" }>[];
+      afterIdx = crushTaken.next;
     }
-
-    // Spawn deploys without a preceding gas drop (edge / auto-deploy).
-    if (isSpawnDeploy(cue)) {
-      const { batch, next } = takeWhile(cues, index, isSpawnDeploy);
-      const deploys = batch as Extract<TimelineCue, { kind: "deploy" }>[];
-      let crushes: Extract<TimelineCue, { kind: "death" }>[] = [];
-      let afterIdx = next;
-      if (afterIdx < cues.length && isCrushDeath(cues[afterIdx]!)) {
-        const crushTaken = takeWhile(cues, afterIdx, isCrushDeath);
-        crushes = crushTaken.batch as Extract<TimelineCue, { kind: "death" }>[];
-        afterIdx = crushTaken.next;
-      }
-      const initialPlayingIds = deploys.map((c) => c.id);
-      const fullPlayingIds = [
-        ...initialPlayingIds,
-        ...crushes.map((c) => c.id),
-      ];
-      applyAfterB({
-        hidden: deploys.map((c) => c.at),
-        playingIds: initialPlayingIds,
-      });
-      if (crushes.length > 0) {
-        const crushStart = scheduler.delay(CRUSH_DEATH_MS, () => {
-          if (cancelled) return;
-          cb.onCommit({
-            hidden: deploys.map((c) => c.at),
-            playingIds: fullPlayingIds,
-            moveProgress: {},
-            moveLeg: {},
-          });
-        });
-        cancels.push(crushStart);
-      }
-      const waitMs = Math.max(
+    const initialPlayingIds = deploys.map((c) => c.id);
+    const fullPlayingIds = [
+      ...initialPlayingIds,
+      ...crushes.map((c) => c.id),
+    ];
+    applyAfterB({
+      hidden: deploys.map((c) => c.at),
+      playingIds: initialPlayingIds,
+    });
+    return runStep({
+      beats:
+        crushes.length > 0
+          ? [
+              {
+                at: CRUSH_DEATH_MS,
+                run: () =>
+                  cb.onCommit({
+                    hidden: deploys.map((c) => c.at),
+                    playingIds: fullPlayingIds,
+                    moveProgress: {},
+                    moveLeg: {},
+                  }),
+              },
+            ]
+          : [],
+      durationMs: Math.max(
         DEPLOY_MS,
         crushes.length > 0 ? crushDurationMs() : 0,
-      );
-      const wait = scheduler.delay(waitMs, () => {
-        if (cancelled) return;
-        cb.onCommit({ hidden: [], playingIds: [], moveProgress: {}, moveLeg: {} });
-        run(afterIdx);
-      });
-      cancels.push(wait);
-      return;
+      ),
+      end: () =>
+        cb.onCommit({ hidden: [], playingIds: [], moveProgress: {}, moveLeg: {} }),
+      next: afterIdx,
+    });
+  };
+  const handlePhase1Wave: CueHandler = (cue, index) => {
+    if (!afterBApplied) applyAfterB();
+    const { batch, next } = takeWhile(cues, index, isPhase1Attack);
+    const attacks = batch as Extract<TimelineCue, { kind: "attack" }>[];
+    let deaths: Extract<TimelineCue, { kind: "death" }>[] = [];
+    let afterIdx = next;
+    if (next < cues.length && isPhase1Death(cues[next]!)) {
+      const taken = takeWhile(cues, next, isPhase1Death);
+      deaths = taken.batch as Extract<TimelineCue, { kind: "death" }>[];
+      afterIdx = taken.next;
     }
 
-    // Phase-1 attacks — opposing shots in one window. Deaths overlap at the
-    // max per-weapon impactMsFor so impact meets victim collapse (wave sync).
-    if (isPhase1Attack(cue)) {
-      if (!afterBApplied) applyAfterB();
-      const { batch, next } = takeWhile(cues, index, isPhase1Attack);
-      const attacks = batch as Extract<TimelineCue, { kind: "attack" }>[];
-      let deaths: Extract<TimelineCue, { kind: "death" }>[] = [];
-      let afterIdx = next;
-      if (next < cues.length && isPhase1Death(cues[next]!)) {
-        const taken = takeWhile(cues, next, isPhase1Death);
-        deaths = taken.batch as Extract<TimelineCue, { kind: "death" }>[];
-        afterIdx = taken.next;
-      }
+    const attackIds = attacks.map((c) => c.id);
+    const deathIds = deaths.map((c) => c.id);
+    const attackHidden = attacks.map((c) => c.from);
+    const deathHidden = deaths.map((c) => c.at);
+    const batchImpactMs = Math.max(...attacks.map(attackImpactMs));
 
-      const attackIds = attacks.map((c) => c.id);
-      const deathIds = deaths.map((c) => c.id);
-      const attackHidden = attacks.map((c) => c.from);
-      const deathHidden = deaths.map((c) => c.at);
-      // Max of batch — all deaths in the wave still sync.
-      const batchImpactMs = Math.max(...attacks.map(attackImpactMs));
+    cb.onCommit({
+      hidden: attackHidden,
+      playingIds: attackIds,
+      moveProgress: {},
+      moveLeg: {},
+    });
 
-      cb.onCommit({
-        hidden: attackHidden,
-        playingIds: attackIds,
-        moveProgress: {},
-        moveLeg: {},
-      });
-
-      for (const atk of attacks) {
-        if (!atk.kingShot) continue;
-        const shot = atk.kingShot;
-        const impact = scheduler.delay(attackImpactMs(atk), () => {
-          if (cancelled) return;
-          displayLives = { ...displayLives, [shot.target]: shot.livesAfter };
-          cb.onCommit({ kingLives: { ...displayLives } });
-        });
-        cancels.push(impact);
-      }
-
-      if (deaths.length > 0) {
-        // Reciprocal fire: attacker dies on their own square — suppress hull
-        // so DeathAnimation owns the cell. Keep flags
-        // until the attack wave ends so hulls do not flash back.
-        const dying: Record<string, boolean> = {};
-        for (const a of attacks) {
-          if (deaths.some((d) => d.at === a.from)) dying[a.id] = true;
-        }
-
-        const deathStart = scheduler.delay(batchImpactMs, () => {
-          if (cancelled) return;
-          cb.onCommit({
-            hidden: [...attackHidden, ...deathHidden],
-            playingIds: [...attackIds, ...deathIds],
-            attackDying: dying,
-            moveProgress: {},
-            moveLeg: {},
-          });
-        });
-        cancels.push(deathStart);
-
-        const deathDone = scheduler.delay(batchImpactMs + DEATH_MS, () => {
-          if (cancelled) return;
-          // Deaths finished — drop death cues and stamp afterAttack board so
-          // victims leave the fen, but keep attacks (and dying flags) until
-          // ATTACK_MS. Clearing playingIds here truncated the attack window.
-          stampAfterAttackBoard({
-            hidden: attackHidden,
-            playingIds: attackIds,
-            attackDying: dying,
-          });
-        });
-        cancels.push(deathDone);
-      }
-
-      const phaseDoneAt =
-        deaths.length > 0
-          ? Math.max(ATTACK_MS, batchImpactMs + DEATH_MS)
-          : ATTACK_MS;
-      const phaseDone = scheduler.delay(phaseDoneAt, () => {
+    for (const atk of attacks) {
+      if (!atk.kingShot) continue;
+      const shot = atk.kingShot;
+      const impact = scheduler.delay(attackImpactMs(atk), () => {
         if (cancelled) return;
-        if (afterAttackCommitted) {
-          cb.onCommit({
-            hidden: [],
-            playingIds: [],
-            attackDying: {},
-            moveProgress: {},
-            moveLeg: {},
-          });
-        } else {
-          commitAfterAttack();
-        }
-        run(afterIdx);
+        displayLives = { ...displayLives, [shot.target]: shot.livesAfter };
+        cb.onCommit({ kingLives: { ...displayLives } });
       });
-      cancels.push(phaseDone);
-      return;
+      cancels.push(impact);
     }
 
-    // Phase-1 deaths without a preceding attack wave (fallback).
-    if (isPhase1Death(cue)) {
-      if (!afterBApplied) applyAfterB();
-      const { batch, next } = takeWhile(cues, index, isPhase1Death);
-      const deaths = batch as Extract<TimelineCue, { kind: "death" }>[];
-      cb.onCommit({
-        hidden: deaths.map((c) => c.at),
-        playingIds: deaths.map((c) => c.id),
-        moveProgress: {}, moveLeg: {},
-      });
-      const wait = scheduler.delay(DEATH_MS, () => {
+    if (deaths.length > 0) {
+      const dying: Record<string, boolean> = {};
+      for (const a of attacks) {
+        if (deaths.some((d) => d.at === a.from)) dying[a.id] = true;
+      }
+
+      const spentMines = deaths.filter((d) => d.mine).map((d) => d.at);
+      const deathStart = scheduler.delay(batchImpactMs, () => {
         if (cancelled) return;
+        cb.onCommit({
+          hidden: [...attackHidden, ...deathHidden],
+          playingIds: [...attackIds, ...deathIds],
+          attackDying: dying,
+          ...(spentMines.length ? { spentMines } : {}),
+          moveProgress: {},
+          moveLeg: {},
+        });
+      });
+      cancels.push(deathStart);
+
+      const deathDone = scheduler.delay(batchImpactMs + DEATH_MS, () => {
+        if (cancelled) return;
+        stampAfterAttackBoard({
+          hidden: attackHidden,
+          playingIds: attackIds,
+          attackDying: dying,
+        });
+      });
+      cancels.push(deathDone);
+    }
+
+    const phaseDoneAt =
+      deaths.length > 0
+        ? Math.max(ATTACK_MS, batchImpactMs + DEATH_MS)
+        : ATTACK_MS;
+    const phaseDone = scheduler.delay(phaseDoneAt, () => {
+      if (cancelled) return;
+      if (afterAttackCommitted) {
+        cb.onCommit({
+          hidden: [],
+          playingIds: [],
+          attackDying: {},
+          moveProgress: {},
+          moveLeg: {},
+        });
+      } else {
         commitAfterAttack();
-        run(next);
-      });
-      cancels.push(wait);
-      return;
-    }
-
-    // Chase missile — after land, before boom (lift + launch = MINE_MISSILE_MS).
-    if (isMineMissile(cue)) {
-      if (!afterBApplied) applyAfterB();
-      const { batch, next } = takeWhile(cues, index, isMineMissile);
-      const missiles = batch as Extract<TimelineCue, { kind: "mineMissile" }>[];
-      const trails = missiles
-        .filter((m) => m.from !== m.to)
-        .map((m) => ({ id: `${m.id}-trail`, from: m.from, to: m.to }));
-      const spent = [
-        ...new Set(missiles.map((m) => m.from)),
-      ] as Square[];
-      cb.onCommit({
-        // Keep wake mine in snap until boom; spentMines hides the board glyph.
-        mines: result.resolved.afterAttack.mines,
-        spentMines: spent,
-        mineMissileTrails: trails,
-        playingIds: missiles.map((c) => c.id),
-        hidden: [],
-        moveProgress: {},
-        moveLeg: {},
-      });
-      const wait = scheduler.delay(MINE_MISSILE_MS, () => {
-        if (cancelled) return;
+      }
+      run(afterIdx);
+    });
+    cancels.push(phaseDone);
+  };
+  const handlePhase1Deaths: CueHandler = (cue, index) => {
+    if (!afterBApplied) applyAfterB();
+    const { batch, next } = takeWhile(cues, index, isPhase1Death);
+    const deaths = batch as Extract<TimelineCue, { kind: "death" }>[];
+    return runStep({
+      begin: () =>
+        cb.onCommit({
+          hidden: deaths.map((c) => c.at),
+          playingIds: deaths.map((c) => c.id),
+          moveProgress: {}, moveLeg: {},
+        }),
+      durationMs: DEATH_MS,
+      end: commitAfterAttack,
+      next,
+    });
+  };
+  const handleMineMissile: CueHandler = (cue, index) => {
+    if (!afterBApplied) applyAfterB();
+    const { batch, next } = takeWhile(cues, index, isMineMissile);
+    const missiles = batch as Extract<TimelineCue, { kind: "mineMissile" }>[];
+    const trails = missiles
+      .filter((m) => m.from !== m.to)
+      .map((m) => ({ id: `${m.id}-trail`, from: m.from, to: m.to }));
+    const spent = [
+      ...new Set(missiles.map((m) => m.from)),
+    ] as Square[];
+    const missileMines = missiles.every((m) => m.board === "afterMove")
+      ? result.resolved.afterMove.mines
+      : result.resolved.afterAttack.mines;
+    cb.onCommit({
+      mines: missileMines,
+      spentMines: spent,
+      mineMissileTrails: trails,
+      playingIds: missiles.map((c) => c.id),
+      hidden: [],
+      moveProgress: {},
+      moveLeg: {},
+    });
+    return runStep({
+      durationMs: MINE_MISSILE_MS,
+      end: () => {
         cb.onCommit({
           playingIds: [],
           spentMines: spent,
@@ -922,29 +955,28 @@ export const playTimeline = (
           moveLeg: {},
         });
         const clearTrails = scheduler.delay(MINE_TRAIL_MS, () => {
-            if (cancelled) return;
-            cb.onCommit({ mineMissileTrails: [] });
-          });
+          if (cancelled) return;
+          cb.onCommit({ mineMissileTrails: [] });
+        });
         cancels.push(clearTrails);
-        run(next);
-      });
-      cancels.push(wait);
-      return;
-    }
-
-    // Post-move fog / path collision deaths — after classical land, before mines.
-    if (isMoveCollisionDeath(cue)) {
-      if (!afterBApplied) applyAfterB();
-      const { batch, next } = takeWhile(cues, index, isMoveCollisionDeath);
-      const deaths = batch as Extract<TimelineCue, { kind: "death" }>[];
-      cb.onCommit({
-        hidden: deaths.map((c) => c.at),
-        playingIds: deaths.map((c) => c.id),
-        moveProgress: {},
-        moveLeg: {},
-      });
-      const wait = scheduler.delay(DEATH_MS, () => {
-        if (cancelled) return;
+      },
+      next,
+    });
+  };
+  const handleCollisionDeaths: CueHandler = (cue, index) => {
+    if (!afterBApplied) applyAfterB();
+    const { batch, next } = takeWhile(cues, index, isMoveCollisionDeath);
+    const deaths = batch as Extract<TimelineCue, { kind: "death" }>[];
+    return runStep({
+      begin: () =>
+        cb.onCommit({
+          hidden: deaths.map((c) => c.at),
+          playingIds: deaths.map((c) => c.id),
+          moveProgress: {},
+          moveLeg: {},
+        }),
+      durationMs: DEATH_MS,
+      end: () => {
         for (const d of deaths) {
           displayPlacement = withoutSquare(displayPlacement, d.at);
         }
@@ -955,28 +987,33 @@ export const playTimeline = (
           moveProgress: {},
           moveLeg: {},
         });
-        run(next);
-      });
-      cancels.push(wait);
-      return;
-    }
-
-    // Post-move mineTriggers — land already applied; boom + victim shred, clear mine.
-    if (isMineTriggerDeath(cue)) {
-      if (!afterBApplied) applyAfterB();
-      const { batch, next } = takeWhile(cues, index, isMineTriggerDeath);
-      const deaths = batch as Extract<TimelineCue, { kind: "death" }>[];
-      const spentExtra = deaths.filter((d) => d.mine).map((d) => d.at);
-      cb.onCommit({
-        mines: result.resolved.afterMove.mines,
-        spentMines: spentExtra,
-        hidden: deaths.map((c) => c.at),
-        playingIds: deaths.map((c) => c.id),
-        moveProgress: {},
-        moveLeg: {},
-      });
-      const wait = scheduler.delay(DEATH_MS, () => {
-        if (cancelled) return;
+      },
+      next,
+    });
+  };
+  const handleMineDeaths: CueHandler = (cue, index) => {
+    if (!afterBApplied) applyAfterB();
+    const { batch, next } = takeWhile(cues, index, isMineTriggerDeath);
+    const deaths = batch as Extract<TimelineCue, { kind: "death" }>[];
+    const spentExtra = [
+      ...new Set(
+        deaths
+          .filter((d) => d.mine)
+          .flatMap((d) => (d.spentAt ? [d.at, d.spentAt] : [d.at])),
+      ),
+    ] as Square[];
+    return runStep({
+      begin: () =>
+        cb.onCommit({
+          mines: result.resolved.afterMove.mines,
+          spentMines: spentExtra,
+          hidden: deaths.map((c) => c.at),
+          playingIds: deaths.map((c) => c.id),
+          moveProgress: {},
+          moveLeg: {},
+        }),
+      durationMs: DEATH_MS,
+      end: () => {
         for (const d of deaths) {
           displayPlacement = withoutSquare(displayPlacement, d.at);
         }
@@ -989,36 +1026,46 @@ export const playTimeline = (
           moveProgress: {},
           moveLeg: {},
         });
-        run(next);
-      });
-      cancels.push(wait);
-      return;
-    }
-
-    // Simultaneous move wave (B gas / classical C / F) — opposing sides together.
-    if (isSimulMoveWave(cue)) {
-      if (!afterBApplied && !cue.id.startsWith("b")) applyAfterB();
-      const prefix = cue.id.replace(/\d+$/, "");
-      const { batch, next } = takeWhile(
-        cues,
-        index,
-        (c) => isSimulMoveWave(c) && c.id.replace(/\d+$/, "") === prefix,
-      );
-      const moves = batch as Extract<TimelineCue, { kind: "move" }>[];
-      const hidden = moves.map((c) => c.from);
-      const ids = moves.map((c) => c.id);
-      const progress0 = Object.fromEntries(ids.map((id) => [id, 0 as const]));
-      const progress1 = Object.fromEntries(ids.map((id) => [id, 1 as const]));
-      const leg0 = knightLeg0(moves);
-      let legState: Record<string, 0 | 1> = { ...leg0 };
+      },
+      next,
+    });
+  };
+  const handleMoveWave: CueHandler = (cue, index) => {
+    if (!afterBApplied && cue.board !== "preAfterB") applyAfterB();
+    const group = cue.group;
+    const { batch, next } = takeWhile(
+      cues,
+      index,
+      (c) => isSimulMoveWave(c) && c.group === group,
+    );
+    const moves = batch as Extract<TimelineCue, { kind: "move" }>[];
+    const hidden = moves.map((c) => c.from);
+    const ids = moves.map((c) => c.id);
+    const progress0 = Object.fromEntries(ids.map((id) => [id, 0 as const]));
+    const progress1 = Object.fromEntries(ids.map((id) => [id, 1 as const]));
+    const leg0 = knightLeg0(moves);
+    let legState: Record<string, 0 | 1> = { ...leg0 };
+    cb.onCommit({
+      hidden,
+      playingIds: ids,
+      moveProgress: progress0,
+      moveLeg: leg0,
+    });
+    const kick = scheduler.delay(0, () => {
+      if (cancelled) return;
       cb.onCommit({
         hidden,
         playingIds: ids,
-        moveProgress: progress0,
-        moveLeg: leg0,
+        moveProgress: progress1,
+        moveLeg: { ...legState },
       });
-      const kick = scheduler.delay(0, () => {
+    });
+    cancels.push(kick);
+    for (const m of moves) {
+      if (m.piece !== "n") continue;
+      const elbow = scheduler.delay(knightElbowMs(m.from, m.to), () => {
         if (cancelled) return;
+        legState = { ...legState, [m.id]: 1 };
         cb.onCommit({
           hidden,
           playingIds: ids,
@@ -1026,24 +1073,11 @@ export const playTimeline = (
           moveLeg: { ...legState },
         });
       });
-      cancels.push(kick);
-      for (const m of moves) {
-        if (m.piece !== "n") continue;
-        const elbow = scheduler.delay(knightElbowMs(m.from, m.to), () => {
-          if (cancelled) return;
-          legState = { ...legState, [m.id]: 1 };
-          cb.onCommit({
-            hidden,
-            playingIds: ids,
-            moveProgress: progress1,
-            moveLeg: { ...legState },
-          });
-        });
-        cancels.push(elbow);
-      }
-      const batchMs = Math.max(1, ...moves.map((c) => cueDuration(c)));
-      const wait = scheduler.delay(batchMs, () => {
-        if (cancelled) return;
+      cancels.push(elbow);
+    }
+    return runStep({
+      durationMs: Math.max(1, ...moves.map((c) => cueDuration(c))),
+      end: () => {
         for (const m of moves) {
           if (isBoardSquare(m.to)) {
             displayPlacement = relocatePlacement(displayPlacement, m.from, m.to);
@@ -1057,40 +1091,37 @@ export const playTimeline = (
           moveProgress: {}, moveLeg: {},
           ...commitUsed(),
         });
-        run(next);
-      });
-      cancels.push(wait);
-      return;
-    }
-
-    // Parallel promo walk-offs, then (separately) promo deploys.
-    if (isPromoWalk(cue)) {
-      if (!afterBApplied) applyAfterB();
-      const { batch, next } = takeWhile(cues, index, isPromoWalk);
-      const walks = batch as Extract<TimelineCue, { kind: "move" }>[];
-      const hidden = walks.map((c) => c.from);
-      const ids = walks.map((c) => c.id);
-      const progress0 = Object.fromEntries(ids.map((id) => [id, 0 as const]));
-      const progress1 = Object.fromEntries(ids.map((id) => [id, 1 as const]));
+      },
+      next,
+    });
+  };
+  const handlePromoWalks: CueHandler = (cue, index) => {
+    if (!afterBApplied) applyAfterB();
+    const { batch, next } = takeWhile(cues, index, isPromoWalk);
+    const walks = batch as Extract<TimelineCue, { kind: "move" }>[];
+    const hidden = walks.map((c) => c.from);
+    const ids = walks.map((c) => c.id);
+    const progress0 = Object.fromEntries(ids.map((id) => [id, 0 as const]));
+    const progress1 = Object.fromEntries(ids.map((id) => [id, 1 as const]));
+    cb.onCommit({
+      hidden,
+      playingIds: ids,
+      moveProgress: progress0,
+      moveLeg: {},
+    });
+    const kick = scheduler.delay(0, () => {
+      if (cancelled) return;
       cb.onCommit({
         hidden,
         playingIds: ids,
-        moveProgress: progress0,
+        moveProgress: progress1,
         moveLeg: {},
       });
-      const kick = scheduler.delay(0, () => {
-        if (cancelled) return;
-        cb.onCommit({
-          hidden,
-          playingIds: ids,
-          moveProgress: progress1,
-          moveLeg: {},
-        });
-      });
-      cancels.push(kick);
-      const batchMs = Math.max(...walks.map((c) => cueDuration(c)));
-      const wait = scheduler.delay(batchMs, () => {
-        if (cancelled) return;
+    });
+    cancels.push(kick);
+    return runStep({
+      durationMs: Math.max(...walks.map((c) => cueDuration(c))),
+      end: () => {
         for (const m of walks) {
           displayPlacement = withoutSquare(displayPlacement, m.from);
           usedSquares.delete(m.from);
@@ -1102,62 +1133,40 @@ export const playTimeline = (
           moveProgress: {}, moveLeg: {},
           ...commitUsed(),
         });
-        run(next);
+      },
+      next,
+    });
+  };
+  const handlePromoDeploys: CueHandler = (cue, index) => {
+    if (!afterBApplied) applyAfterB();
+    const { batch, next } = takeWhile(cues, index, isPromoDeploy);
+    const deploys = batch as Extract<TimelineCue, { kind: "deploy" }>[];
+    for (const d of deploys) {
+      displayPlacement = withPieceAt(displayPlacement, d.at, {
+        type: d.piece as StarChessPiece,
+        color: d.color,
       });
-      cancels.push(wait);
-      return;
     }
+    cb.onCommit({
+      placement: displayPlacement,
+      hidden: deploys.map((c) => c.at),
+      playingIds: deploys.map((c) => c.id),
+      moveProgress: {}, moveLeg: {},
+    });
+    return runStep({
+      durationMs: DEPLOY_MS,
+      end: () =>
+        cb.onCommit({ hidden: [], playingIds: [], moveProgress: {}, moveLeg: {} }),
+      next,
+    });
+  };
 
-    if (isPromoDeploy(cue)) {
-      if (!afterBApplied) applyAfterB();
-      const { batch, next } = takeWhile(cues, index, isPromoDeploy);
-      const deploys = batch as Extract<TimelineCue, { kind: "deploy" }>[];
-      // Place promoted units now so useAutoDeploy does not see a late spawn
-      // after TIMELINE_DONE (pawn leave ≠ queen arrive).
-      for (const d of deploys) {
-        displayPlacement = withPieceAt(displayPlacement, d.at, {
-          type: d.piece as StarChessPiece,
-          color: d.color,
-        });
-      }
-      cb.onCommit({
-        placement: displayPlacement,
-        hidden: deploys.map((c) => c.at),
-        playingIds: deploys.map((c) => c.id),
-        moveProgress: {}, moveLeg: {},
-      });
-      const wait = scheduler.delay(DEPLOY_MS, () => {
-        if (cancelled) return;
-        cb.onCommit({ hidden: [], playingIds: [], moveProgress: {}, moveLeg: {} });
-        run(next);
-      });
-      cancels.push(wait);
-      return;
-    }
+  const handleSequential: CueHandler = (cue, index) => {
 
-    // Path-reveal chains and any remaining single cues — sequential.
-    // Charon / Jump / gas drops play on the pre-B board — do not lock afterB yet.
-    const preAfterBSpecial =
-      cue.id.startsWith("ch") ||
-      cue.id.startsWith("chd") ||
-      cue.id.startsWith("qj") ||
-      cue.id.startsWith("gd") ||
-      cue.kind === "gasDrop" ||
-      (cue.kind === "move" && !!cue.queenJump);
-    if (!afterBApplied && cue.kind !== "move" && !preAfterBSpecial) {
-      applyAfterB();
-    }
-    if (
-      !afterBApplied &&
-      cue.kind === "move" &&
-      !cue.id.startsWith("b") &&
-      !cue.queenJump
-    ) {
+    if (!afterBApplied && BOARD_RUNG[cue.board ?? "afterMove"] > BOARD_RUNG.preAfterB) {
       applyAfterB();
     }
 
-    // Lethal kingShot on sequential chains (path-reveal `pra*` / Charon `ch*`):
-    // crumple at frag impact with the hit — not after full ATTACK_MS (ruins flash).
     if (cue.kind === "attack" && cue.kingShot && index + 1 < cues.length) {
       const follow = cues[index + 1]!;
       if (
@@ -1215,7 +1224,6 @@ export const playTimeline = (
       }
     }
 
-    // Tactical Jump — hull travel + trails (not MoveAnimation slide).
     if (cue.kind === "move" && cue.queenJump) {
       const trail = { id: `${cue.id}-trail`, from: cue.from, to: cue.to };
       cb.onCommit({
@@ -1253,7 +1261,6 @@ export const playTimeline = (
         },
       );
       cancels.push(hullDone);
-      // Fire-and-forget: trail CSS is 1000ms; do not block onDone / cancel with resolve.
       scheduler.delay(TACTICAL_JUMP_TRAIL_MS, () => {
         cb.onCommit({ jumpTrails: [] });
       });
@@ -1320,8 +1327,10 @@ export const playTimeline = (
       cancels.push(impact);
     }
 
-    const wait = scheduler.delay(cueDuration(cue), () => {
-      if (cancelled) return;
+    return runStep({
+      durationMs: cueDuration(cue),
+      next: index + 1,
+      end: () => {
       if (cue.kind === "move" && isBoardSquare(cue.to)) {
         displayPlacement = relocatePlacement(displayPlacement, cue.from, cue.to);
         migrateUsed(cue.from, cue.to);
@@ -1334,7 +1343,6 @@ export const playTimeline = (
           ...commitUsed(),
         });
       } else if (cue.kind === "death") {
-        // Vacate so the corpse does not flash back between death VFX and occupy.
         displayPlacement = withoutSquare(displayPlacement, cue.at);
         usedSquares.delete(cue.at);
         cb.onCommit({
@@ -1353,9 +1361,51 @@ export const playTimeline = (
           moveLeg: {},
         });
       }
-      run(index + 1);
+      },
     });
-    cancels.push(wait);
+  
+  };
+
+  const HANDLERS: Partial<Record<CueLane, CueHandler>> = {
+    gasDrop: handleGasWindow,
+    deploy: handleDeployWindow,
+    phase1Attack: handlePhase1Wave,
+    phase1Death: handlePhase1Deaths,
+    mineMissile: handleMineMissile,
+    collision: handleCollisionDeaths,
+    mine: handleMineDeaths,
+    move: handleMoveWave,
+    promoWalk: handlePromoWalks,
+    promoDeploy: handlePromoDeploys,
+  };
+
+  const run = (index: number) => {
+    if (cancelled) return;
+    if (index >= cues.length) {
+      if (finalize) {
+        cb.onCommit({
+          placement: result.next.placement,
+          kingLives: result.next.kingLives,
+          mines: result.next.mines,
+          siegedRooks: result.next.siegedRooks,
+          specialsUsed: result.next.specialsUsed ?? [],
+          hidden: [],
+          moveProgress: {},
+          moveLeg: {},
+          playingIds: [],
+        });
+      } else if (!afterAttackCommitted && cues.some((c) => c.kind === "attack" || c.kind === "death")) {
+        commitAfterAttack();
+      } else if (!afterBApplied && cues.some((c) => c.kind === "gasDrop" || c.kind === "deploy" || (c.kind === "move" && (c.stim || c.queenJump)))) {
+        applyAfterB();
+      }
+      cb.onDone();
+      return;
+    }
+
+    const cue = cues[index]!;
+    const handle = HANDLERS[cue.lane ?? "move"] ?? handleSequential;
+    handle(cue, index);
   };
 
   cb.onCommit({

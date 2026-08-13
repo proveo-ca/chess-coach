@@ -375,6 +375,69 @@ describe("timelinePlayer", () => {
     ).toBe(true);
   });
 
+  it("plays boom + hull when a gas step lands on a hostile mine", () => {
+    let snap = parseScFen(
+      "SCFEN|4k3/8/8/8/8/8/4P3/4K3|21|33|P|G:33:33|Q:w:;b:|M:w:;b:e3",
+    );
+    snap = addScAction({
+      snapshot: snap,
+      action: { timing: "B", kind: "pawnDouble", color: "w", from: "e2", to: "e3" },
+    }).snapshot;
+    const cues = projectResolveTimeline(endScTurn(snap, { skipTurnStartChecks: true }));
+    // The marine still hops, then the mine goes off under it.
+    const step = cues.findIndex((c) => c.kind === "move" && c.to === "e3");
+    const boom = cues.findIndex((c) => c.id.startsWith("armm") && c.at === "e3");
+    const hull = cues.findIndex(
+      (c) => c.kind === "death" && c.id.startsWith("armd") && c.piece === "p",
+    );
+    expect(step).toBeGreaterThanOrEqual(0);
+    expect(boom).toBeGreaterThan(step);
+    expect(hull).toBeGreaterThan(boom);
+  });
+
+  it("plays deploy + boom when a drop lands on a hostile mine", () => {
+    let snap = parseScFen(
+      "SCFEN|4k3/8/8/8/8/8/8/4K3|21|33|P|G:33:33|Q:w:;b:|M:w:;b:d2",
+    );
+    snap = addScAction({
+      snapshot: snap,
+      action: { timing: "B", kind: "spawn", color: "w", from: "e1", to: "d2", unit: "p" },
+    }).snapshot;
+    const cues = projectResolveTimeline(endScTurn(snap, { skipTurnStartChecks: true }));
+    const deploy = cues.findIndex((c) => c.kind === "deploy" && c.at === "d2");
+    const boom = cues.findIndex((c) => c.id.startsWith("armm") && c.at === "d2");
+    expect(deploy).toBeGreaterThanOrEqual(0);
+    expect(boom).toBeGreaterThan(deploy);
+    expect(
+      cues.some((c) => c.kind === "death" && c.id.startsWith("armd") && c.at === "d2"),
+    ).toBe(true);
+  });
+
+  it("plays chase missile + boom when a fog approach crosses a mine", () => {
+    // Tank a1→a8 discovers the marine on a6, shoots, then the mine on a3
+    // chases it onto the landing tile.
+    let snap = parseScFen(
+      "SCFEN|4k3/8/p7/8/8/8/8/R3K3|0|33|P|G:11:11|Q:w:;b:|M:w:;b:a3",
+    );
+    snap = addScAction({
+      snapshot: snap,
+      action: { timing: "C", kind: "classical", color: "w", from: "a1", to: "a8" },
+    }).snapshot;
+    const cues = projectResolveTimeline(endScTurn(snap, { skipTurnStartChecks: true }));
+    const shot = cues.findIndex((c) => c.kind === "attack" && c.id.startsWith("pra"));
+    const missile = cues.findIndex(
+      (c) => c.kind === "mineMissile" && c.from === "a3" && c.to === "a6",
+    );
+    const boom = cues.findIndex((c) => c.id.startsWith("prm") && c.kind === "death");
+    const hull = cues.findIndex(
+      (c) => c.kind === "death" && c.id.startsWith("prv") && c.piece === "r",
+    );
+    expect(shot).toBeGreaterThanOrEqual(0);
+    expect(missile).toBeGreaterThan(shot);
+    expect(boom).toBeGreaterThan(missile);
+    expect(hull).toBeGreaterThan(boom);
+  });
+
   it("skips spawn deploy when the unit dies the same turn", () => {
     // White spawns a pawn on e2; black rook on e8 finds it mid-ray (path-reveal).
     let snap = parseScFen(

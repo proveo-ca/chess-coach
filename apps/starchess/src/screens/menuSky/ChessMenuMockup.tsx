@@ -34,12 +34,17 @@ const SHARDS: readonly string[] = [
   "M200 26 L280 15 L280 41 L150 41 Z",
 ];
 
+/** Coach shows the rating as the difficulty label (settingsStore.DIFFICULTY_OPTIONS). */
+const DIFFICULTY_LABEL = "1100 elo";
+
 type ShatterBtn = {
   id: string;
   label: string;
   primary?: boolean;
   disabled?: boolean;
   credits?: boolean;
+  /** Half of the fused Play control — squares off the shared seam. */
+  split?: "action" | "select";
 };
 
 const ShatterableButton: Component<{
@@ -55,6 +60,7 @@ const ShatterableButton: Component<{
     }}
     style={{ "--shatter-i": String(props.index) }}
     data-mock-btn={props.btn.id}
+    data-split={props.btn.split}
   >
     <Show
       when={!props.shatter}
@@ -87,6 +93,7 @@ const ShatterableButton: Component<{
           [styles.menuBtnPrimary]: !!props.btn.primary,
           [styles.menuBtnDisabled]: !!props.btn.disabled,
           [styles.menuBtnCredits]: !!props.btn.credits,
+          [styles.splitAction]: props.btn.split === "action",
         }}
         role="img"
         aria-label={props.btn.label}
@@ -125,6 +132,11 @@ export const ChessMenuMockup: Component<ChessMenuMockupProps> = (props) => {
       >
         <div class={styles.avatarSlot} data-testid="chess-menu-avatar">
           <CoachAvatar identity={props.identity ?? "selena"} emotion="happy" />
+          {/* Coach hides the title in the dynamic band and lets Selena say the
+              line from a ChatBubble instead — mirrored here (CSS-gated). */}
+          <span class={styles.coachLine} aria-hidden="true">
+            Wanna play Chess?
+          </span>
         </div>
 
         <div
@@ -150,23 +162,27 @@ export const ChessMenuMockup: Component<ChessMenuMockupProps> = (props) => {
         </div>
 
         <div class={styles.menuOptions}>
-          <div class={styles.selenaRow}>
+          {/* Coach fuses Play + difficulty into one SplitButton: 2fr action,
+              1fr select, sharing a seam. */}
+          <div class={styles.splitRow}>
             <ShatterableButton
-              btn={{ id: "play", label: "Play with Selena", primary: true }}
+              btn={{ id: "play", label: "Play with Selena", primary: true, split: "action" }}
               shatter={props.shatter}
               index={0}
             />
-            <Show when={!props.shatter}>
-              <span class={styles.select} data-mock-btn="diff">
-                Intermediate (1100)
+            <Show
+              when={!props.shatter}
+              fallback={
+                <ShatterableButton
+                  btn={{ id: "diff", label: DIFFICULTY_LABEL, split: "select" }}
+                  shatter
+                  index={1}
+                />
+              }
+            >
+              <span class={`${styles.select} ${styles.splitSelect}`} data-mock-btn="diff">
+                {DIFFICULTY_LABEL}
               </span>
-            </Show>
-            <Show when={props.shatter}>
-              <ShatterableButton
-                btn={{ id: "diff", label: "Intermediate (1100)" }}
-                shatter
-                index={1}
-              />
             </Show>
           </div>
 

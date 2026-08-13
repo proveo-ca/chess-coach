@@ -3,7 +3,10 @@
   grid-auto-flow: column;
   grid-auto-columns: minmax(0, 1fr);
   background: var(--panel-bg);
-  border-radius: 20px;
+  border-radius: var(--border-radius-md);
+  /* Track owns the shared control height; the chips stretch inside its padding. */
+  box-sizing: border-box;
+  height: var(--control-height);
   padding: 4px;
   gap: 4px;
 }
@@ -11,9 +14,11 @@
 .color-selector button {
   background: transparent;
   border: none;
+  min-height: 0;
   color: var(--text-muted);
   padding: 6px 16px;
-  border-radius: 16px;
+  /* Concentric with the track: outer radius less the 4px padding. */
+  border-radius: calc(var(--border-radius-md) - 4px);
   font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.2s;

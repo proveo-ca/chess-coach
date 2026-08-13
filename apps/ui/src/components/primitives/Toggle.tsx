@@ -7,11 +7,12 @@ interface ToggleProps {
   checked: boolean;
   onChange: (checked: boolean) => void;
   label?: string;
+  class?: string;
 }
 
 export const Toggle: Component<ToggleProps> = (props) => {
   return (
-    <div class={styles["toggle-container"]}>
+    <div class={clsx(styles["toggle-container"], props.class)}>
       {props.label && <span class={styles["toggle-label"]}>{props.label}</span>}
       <label class={styles.switch}>
         <input

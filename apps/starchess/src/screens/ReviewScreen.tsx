@@ -1,12 +1,14 @@
-// SPEC: _spec/apps/starchess/deployment.puml, _spec/apps/starchess/menu-flow.puml, _spec/apps/starchess/architecture/screen-entities.puml
+// SPEC: _spec/apps/starchess/deployment.puml, _spec/apps/starchess/menu-flow.puml, _spec/apps/starchess/screens.puml, _spec/apps/starchess/architecture/screen-entities.puml
 /**
  * Match history list + DualNav replay — `/review` and `/review/:id`.
  * List chrome mirrors Coach Review: Playing as + date (no First move, no title).
+ * Dynamic band: a MobileBanner owns Back + compact filters instead.
  */
 import { A, useNavigate, useParams } from "@solidjs/router";
 import { For, Show, createMemo, type Component } from "solid-js";
 
 import { MatchHistoryFilters } from "~/components/atoms/MatchHistoryFilters";
+import { MobileBanner } from "~/components/atoms/MobileBanner";
 import { Screen } from "~/components/primitives/Screen";
 import { ScreenBackNav } from "~/components/primitives/ScreenBackNav";
 import { ReviewDemoScreen } from "~/demos/ReviewDemoScreen";
@@ -86,7 +88,7 @@ const MatchList: Component<{
 
 const ReviewListShell: Component<{ activeId?: string }> = (props) => {
   const filters = useMatchHistoryFilters();
-  const historyFilters = () => (
+  const historyFilters = (compact?: boolean) => (
     <MatchHistoryFilters
       colorFilter={filters.colorFilter()}
       setColorFilter={filters.setColorFilter}
@@ -95,13 +97,24 @@ const ReviewListShell: Component<{ activeId?: string }> = (props) => {
       currentDateLabel={filters.currentDateLabel()}
       goToPrev={filters.goToPrev}
       goToNext={filters.goToNext}
+      compact={compact}
     />
   );
 
   return (
     <LiveMatchShell world="eclipse" testId="starchess-review">
       <Screen>
-        <Screen.SidebarInset>
+        {/* Dynamic-only chrome (CSS-gated): Back + filters in one full-bleed
+            strip, same as /single and the review detail. The in-flow chrome
+            below stands down there — it overflows the top track at 420px. */}
+        <MobileBanner
+          href="/"
+          resources={
+            <div class={styles.bannerFilters}>{historyFilters(true)}</div>
+          }
+          data-testid="review-list-banner"
+        />
+        <Screen.SidebarInset class={styles.listChrome}>
           <div class="desktop-only">
             <ScreenBackNav href="/" data-testid="review-back-menu">
               {historyFilters()}

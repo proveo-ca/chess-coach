@@ -125,3 +125,20 @@
   min-width: 3rem;
   text-align: center;
 }
+
+/*
+ * MobileBanner density (`compact`) — last so it wins over `.filters` /
+ * `.page-nav` above. The strip is a single ~40px row, so the "Playing as"
+ * caption and the page divider stand down; swatches + date pager carry it.
+ */
+.compact {
+  margin-bottom: 0;
+  padding-inline: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+  flex-wrap: nowrap;
+}
+
+.compact .label {
+  display: none;
+}

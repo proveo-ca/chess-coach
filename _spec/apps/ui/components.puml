@@ -75,7 +75,15 @@ package "Screens  [src/screens/]" {
   note right of MenuScreen
     identity selector (Human | Cat | Dog | Rat)
     routes to: /selena · /analysis · /review · /lan
-    composition: CoachAvatar · MenuButton ×5
+    composition: CoachAvatar · SplitButton (play + elo) ·
+    MenuButton ×4 · ChatBubble (dynamic band only)
+    layout: two columns by **aspect** — ``--desktop`` and
+    ``--dynamic-mobile`` (form left, destinations right);
+    portrait mobile is a single column at any width below
+    720px. Narrow **and** short (< 480 × < 640) keeps the
+    single column but compacts it (scaled cat, tighter gaps).
+    Dynamic band clips the splash title and Selena says
+    it from a bubble floating at her right instead.
   end note
 
   rectangle "LanScreen" as LanScreen
@@ -363,6 +371,13 @@ package "Components  [src/components/]" {
         desktop float inset matches CoachPanel
     end note
     rectangle "NewGamePanel"   as NewGamePanel
+    note right of NewGamePanel
+      PlayerNameField · ColorSelector · identity Select ·
+      "i'm lost" Toggle · SplitButton (Start + elo).
+      Difficulty copy comes from
+      ``settingsStore.DIFFICULTY_OPTIONS`` — the only
+      difficulty list, shared with MenuScreen.
+    end note
     rectangle "Settings"       as Settings
     rectangle "PlayerNameField" as PlayerNameField
     note right of PlayerNameField
@@ -448,6 +463,16 @@ package "Components  [src/components/]" {
   ' Primitives = presentational, props-driven shared kit (was components/common/).
   package "Primitives  [components/primitives/]" {
     rectangle "Button / IconButton / MenuButton" as Buttons
+    rectangle "SplitButton"        as SplitButton
+    note right of SplitButton
+      Action fused with a select that qualifies it —
+      ``2fr`` button + ``1fr`` select sharing a seam
+      (``--split-ratio`` overrides). Stays two controls:
+      the action does not open the options. Width is the
+      consumer's (fills a grid cell, shrink-wraps in a
+      row). Both difficulty pickers use it:
+      MenuScreen "Play with Selena" · NewGamePanel "Start".
+    end note
     rectangle "ChevronNav / ScreenBackNav" as ChevronNav
     rectangle "Select / Toggle / Label / Input"  as Inputs
     rectangle "Divider / ProgressBar"            as Utility
@@ -469,6 +494,12 @@ package "Components  [src/components/]" {
       shared splash shell: centered content + avatar
       slot + title (optional `wide` column). Composed by
       MenuScreen, LanScreen lobby and LoadingOverlay.
+      The menu's two-column grid is scoped here by
+      ``:has(.menu-options)`` and gated on
+      ``(--desktop), (--dynamic-mobile)``, tuned per band via
+      ``--splash-gap`` / ``--splash-width`` /
+      ``--splash-avatar-space`` / ``--splash-span``;
+      lobby and overlay stay single-column.
     end note
     rectangle "Screen"             as Screen
     note right of Screen

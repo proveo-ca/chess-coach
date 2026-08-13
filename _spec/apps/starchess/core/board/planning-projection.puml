@@ -27,6 +27,7 @@ package "Dispatch" {
 
 package "Board queries (public core)" {
   component "scMovesFrom · spawnKingAnchor\nadjacentSquares · getSideVision\ncollectLegalKingChecks · costs" as BQ <<db>>
+  component "rewriteClassicalAfterB\npawnSingleTarget\n(pure stack folding)" as FOLD <<db>>
 }
 
 BASE ARROW_MAIN IN : board host
@@ -38,6 +39,7 @@ IN ARROW_MAIN BQ : dests / fog policy
 OCC ARROW_MAIN ROOK
 OV ARROW_MAIN ROOK
 OV ARROW_MAIN FOG : check rings
+OV ARROW_MAIN FOLD : stack endpoints
 OCC ARROW_OPTIONAL BQ
 OV ARROW_OPTIONAL BQ
 ECO ARROW_OPTIONAL BQ : income / unit / gas
@@ -50,9 +52,27 @@ note bottom
   Deploy intent grants **no** vision; End resolves the unit first.
   Under player fog: pawn front-diagonals stay attack intents without a
   visible victim; intent attack/move rings paint **above** fog (enemies stay hidden).
+  A pawn diagonal rings whether or not the target holds a fogged enemy — ringing
+  only the empty ones would mark occupancy by omission.
+  A marine **front** step never rings and never projects a capture: marines only
+  attack their diagonals, so a unit ahead blocks the advance and a mine ahead
+  takes the marine with it (resolve.puml). The move ghost still paints — under
+  fog the player does not know the step is blocked — and the projection
+  truncates the marine before the blocker instead of walking it through.
+  King-check rings are gated on the viewer's **current** vision: a projected
+  check (post-queue placement) never rings a king the viewer cannot see yet,
+  or the ring would confirm its square at intent time.
   Intent: policy → hook → pure overlays.
   Fog gate: ""targetVisibleGate"" / ""pieceVisibleToViewer"" (one predicate family).
   U: specialsUsed is **not** a fog pierce.
+  A special stacked with a same-vector classical resolves as **one** longer
+  advance, and the queue never records the composed square. Ghosts paint the
+  classical leg on the raw ""C.to"" and the gas leg on the folded endpoint —
+  ""rewriteClassicalAfterB"" (gas-then-move) or ""pawnSingleTarget"" from the
+  post-C square (move-then-gas). A declined fold (blocked landing / outside
+  the double-step band) means the C fizzles: the ghost stays on ""B.to"".
+  **Allowed:** the pure folding helpers above — never re-derive the vector by
+  hand, the guards are the contract.
   **Forbidden:** endScTurn / resolveTurn / addScAction from projections.
 end note
 @enduml

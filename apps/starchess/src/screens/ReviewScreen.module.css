@@ -1,3 +1,23 @@
+/* Banner filters row (dynamic): swatches left, date pager right, one line. */
+.bannerFilters {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  min-width: 0;
+}
+
+/*
+ * Dynamic: MobileBanner owns Back + filters, so the in-flow chrome stands down
+ * — its min-content height overflows the top track and collides with the list.
+ */
+@media (max-width: 719px) and (min-width: 480px) and (max-height: 639px) {
+  .listChrome {
+    display: none;
+  }
+}
+
 .listPane {
   display: flex;
   flex-direction: column;

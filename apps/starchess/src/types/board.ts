@@ -28,6 +28,13 @@ export type IntentGhost = {
   color: StarChessColor;
   piece: PieceSymbol;
   rookMode?: RookMode;
+  /**
+   * Reached by a vespene-powered special (gas step / warp) rather than by the
+   * classical leg — a stacked marine paints a plain move ghost on the classical
+   * square and a gas ghost on the endpoint. Absent on classical and deploy
+   * ghosts.
+   */
+  via?: "gas";
 };
 
 export type IntentCanister = {

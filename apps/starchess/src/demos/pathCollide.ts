@@ -19,7 +19,7 @@ export const PATH_COLLIDE_START_SCFEN =
 
 export type PathCollideStep = {
   caption: string;
-  /** Both sides’ actions for one parallel turn (N specials all B|F + ≤1 classical each). */
+  /** Both sides’ actions for one parallel turn (N specials B and/or F + ≤1 classical each). */
   actions: readonly ScActionInput[];
 };
 

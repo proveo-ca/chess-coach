@@ -33,6 +33,13 @@ export const BLUNDER_LABEL_BY_DIFFICULTY: Record<Difficulty, string> = {
   expert: "an inaccuracy",
 };
 
+/** Difficulty picker copy — the rating is the choice, so it is the label. */
+export const DIFFICULTY_OPTIONS: { value: Difficulty; label: string }[] = [
+  { value: "intermediate", label: "1100 elo" },
+  { value: "advanced", label: "1600 elo" },
+  { value: "expert", label: "2200 elo" },
+];
+
 export const IDENTITY_TO_PIECE_SET: Record<PlayerIdentity, PieceSet> = {
   Human: "cburnett",
   Cat: "selena",

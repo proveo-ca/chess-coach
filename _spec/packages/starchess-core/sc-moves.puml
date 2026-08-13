@@ -12,7 +12,7 @@ package "packages/starchess-core — SC RULES" {
   component "board/moves.ts\nscMovesFrom / scMovesFor / isScMoveShape\nauthoritative SC classical legality" as SCM <<app>>
   component "board/placement.ts\nattacksSquare + clearRay — piece geometry" as BRD <<app>>
   component "board/siege.ts\nisRookSiegedAfterB — siege truth after queued B" as SIEGE <<app>>
-  component "board/mines.ts\nspider mines — advisory only" as MIN <<app>>
+  component "board/mines.ts\nspider mines — targets, not occupancy" as MIN <<app>>
   component "board/vision.ts\nsieged rook 9x9 grid vs tank 5x5 rectangle" as VIS <<db>>
   component "rules/validation.ts\nassertClassicalBaseline — opt-in geometry" as VAL <<error>>
 }
@@ -31,7 +31,7 @@ cloud "chess.js\nNOT authoritative for StarChess\n(Square type only)" as CJS <<c
 
 SCM ARROW_MAIN     BRD   : leap + ray geometry
 SCM ARROW_OPTIONAL SIEGE : siege state after queued B
-SCM ARROW_OPTIONAL MIN   : hostileMineOnTo flag
+SCM ARROW_OPTIONAL MIN   : hostileMineOnTo — marine diagonal\n+ sieged-tank target on an empty mined tile
 SCM ARROW_OPTIONAL VIS   : siege footprint authority
 
 INPUT ARROW_MAIN     SCM : destinations via ""scMovesFrom""
@@ -125,8 +125,18 @@ title StarChess · scMoves — rule table
 note as RULES
   <size:14>**SC classical legality, per piece**</size>
   ====
-  **pawn** — single push empty; free classical double from start rank
-  (mid+to empty); diagonal enemy capture; **no en passant**;
+  **pawn** — single push empty; free classical double from the double-step
+  band (mid+to empty); diagonal enemy capture **or hostile mine** (the marine
+  attacks the mine — see **mines** below); **no en passant**;
+  // Marines attack **only** on the front diagonals. The generator therefore
+  // never emits a push onto an occupied square — and where **fog** hides the
+  // occupant, the intent is still queueable but resolves as a **block**, not a
+  // capture: the marine truncates before the blocker (resolve.puml).
+  // Band = ""canPawnDoubleStep"" — start rank **and behind it** (rank ≤2 white,
+  // ≥7 black), so a marine deployed on its own back rank keeps the double.
+  // Sole owner of the rule: movegen, ""isScMoveShape"" and
+  // ""rewriteClassicalAfterB"" all read it, or the board offers a double the
+  // resolver refuses to land.
   // Promotes on last rank. Gas ""pawnDouble"" is +1 forward (any rank),
   // including onto last rank when a promotion choice is set; may stack with classical.
   ----
@@ -135,7 +145,7 @@ note as RULES
   ----
   **bishop, rook, queen** — rays inclusive of first enemy, exclusive of ally.
   ----
-  **SIEGED rook** — Chebyshev ≤ 4 captures only, ""firesInPlace"";
+  **SIEGED rook** — Chebyshev ≤ 4 captures **and hostile mines**, ""firesInPlace"";
   vision footprint from ""vision.ts"" (9×9 vs tank 5×5).
   ----
   **ally on to** — never emitted.
@@ -143,7 +153,11 @@ note as RULES
   **enemy KING on to** — emitted with ""dropsAtResolve""; resolver drops
   (burns C). UI/brain filter; validation accepts (fog path-discovery).
   ----
-  **mines** — ""hostileMineOnTo"" advisory only.
+  **mines** — a hostile mine is a **target**: ""hostileMineOnTo"" is advisory for
+  units that already reach the tile, and **legality-bearing** for the two shapes
+  that exist only because of it — marine front diagonal onto an empty mined tile,
+  and sieged-tank fire at one. Pass ""opts.mines"" or the board hides both.
+  Resolve (attack → clear → occupy, walk-over death, chase): resolve.puml.
   ----
   **fog** — not filtered in generator; occupancy is a caller parameter.
 end note

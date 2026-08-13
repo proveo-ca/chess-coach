@@ -20,6 +20,7 @@ import {
   pieceAtQueuedSquare,
 } from "~/presentation/board/occupancyForQueuedMoves";
 import { occupancyForViewerMoves } from "~/presentation/board/occupancyForViewerMoves";
+import { minesVisibleToViewer } from "~/presentation/board/fogVisibility";
 import { legalDestsWithFogPawnAttacks } from "~/presentation/board/pawnFogAttackDests";
 import { rookModeForSieged } from "~/presentation/board/rookMode";
 import { useBoardVision } from "~/presentation/combat/hooks/useIntentOverlays";
@@ -282,11 +283,22 @@ export const useBoardInput = (
       null;
 
     const fogOccult = playerFogOccultsMoves(vision());
+    // Mines make two shapes legal that occupancy alone does not: a marine front
+    // diagonal and sieged-tank fire onto an empty mined tile (both attack it).
+    // Fogged hostile mines are dropped — offering the square would leak them.
+    const mines = minesVisibleToViewer(
+      snap.placement,
+      state.viewer,
+      snap.mines,
+      fogOccult,
+      { siegedRooks },
+    );
     const destsFor = (from: Square, p: NonNullable<typeof piece>) => {
       const map = mapFor(from);
-      const classical = scMovesFrom(map, from, p.color, { siegedRooks }).map(
-        (m) => m.to,
-      );
+      const classical = scMovesFrom(map, from, p.color, {
+        siegedRooks,
+        mines,
+      }).map((m) => m.to);
       return legalDestsWithFogPawnAttacks(classical, from, p, map, fogOccult);
     };
 
@@ -327,9 +339,10 @@ export const useBoardInput = (
       null;
     if (!mover) return;
     const map = mapFor(selected);
-    const move = scMovesFrom(map, selected, mover.color, { siegedRooks }).find(
-      (m) => m.to === square,
-    );
+    const move = scMovesFrom(map, selected, mover.color, {
+      siegedRooks,
+      mines,
+    }).find((m) => m.to === square);
 
     const lastRank = mover.color === "w" ? 8 : 1;
     const needsPromo =

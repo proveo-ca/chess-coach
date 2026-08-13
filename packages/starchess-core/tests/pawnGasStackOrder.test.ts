@@ -1,7 +1,9 @@
 /**
  * Pawn gas stack order-independence: move-then-gas and gas-then-move MUST
- * resolve to the same square. Non-start ranks advance 2 squares (1 classical +
- * 1 gas); start-rank pawns advance 3 (classical double + gas, classic chess).
+ * resolve to the same square. Ranks outside the double-step band advance 2
+ * squares (1 classical + 1 gas); inside it they advance 3 (classical double +
+ * gas). The band covers the start rank and the marine's own back rank, which a
+ * Command Center deploy can reach.
  * // SPEC: _spec/packages/starchess-core/turn-queue-sequence.puml
  */
 import { describe, expect, it } from "vitest";
@@ -131,6 +133,34 @@ describe("pawn gas stack — order independence", () => {
     ]);
     expect(byGasMove.square).toBe("e4");
   });
+
+  it.each([
+    // Deployed behind the king — the Command Center ring reaches d1/d8.
+    ["white back rank", "3PK3", "4k3", "w", "d1", "d2", "d3", "d4"],
+    ["black back rank", "3pk3", "4K3", "b", "d8", "d7", "d6", "d5"],
+  ] as const)(
+    "%s marine stacks to 3 squares like the start rank",
+    (_label, home, far8, color, pawn, mid, dbl, expected) => {
+      const rows =
+        color === "w"
+          ? [far8, "8", "8", "8", "8", "8", "8", home]
+          : [home, "8", "8", "8", "8", "8", "8", far8];
+      const placement = rows.join("/");
+
+      const byGasMove = resolveOn(placement, color, [
+        { timing: "B", from: pawn, to: mid },
+        { timing: "C", from: pawn, to: dbl },
+      ]);
+      const byMoveGas = resolveOn(placement, color, [
+        { timing: "C", from: pawn, to: dbl },
+        { timing: "F", from: pawn, to: mid },
+      ]);
+
+      expect(byGasMove.square).toBe(expected);
+      expect(byMoveGas.square).toBe(expected);
+      expect(byMoveGas.placement).toBe(byGasMove.placement);
+    },
+  );
 
   it("non-start-rank 2-rank C fizzles after B — never rewritten, never throws", () => {
     // A 2-rank C only exists from the start rank; elsewhere it was never a

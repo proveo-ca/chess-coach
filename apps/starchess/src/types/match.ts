@@ -36,7 +36,31 @@ export type TargetingState =
       color: StarChessColor;
     };
 
-export type TimelineCue =
+export type CueLane =
+  | "gasDrop"
+  | "bSpecial"
+  | "deploy"
+  | "crush"
+  | "phase1Attack"
+  | "phase1Death"
+  | "move"
+  | "collision"
+  | "mineMissile"
+  | "mine"
+  | "approach"
+  | "promoWalk"
+  | "promoDeploy";
+
+export type CueBoard = "preAfterB" | "afterB" | "afterAttack" | "afterMove";
+
+export type CueRouting = {
+  lane?: CueLane;
+  board?: CueBoard;
+  group?: string;
+};
+
+export type TimelineCue = CueRouting &
+  (
   | {
       kind: "move";
       id: string;
@@ -70,6 +94,11 @@ export type TimelineCue =
       color: StarChessColor;
       at: Square;
       mine?: boolean;
+      /**
+       * Mine glyph square to hide while this boom plays — a chase blows up on
+       * the landing tile, so the burrowed glyph it left behind is elsewhere.
+       */
+      spentAt?: Square;
       rookMode?: "siege" | "tank";
     }
   | {
@@ -94,7 +123,8 @@ export type TimelineCue =
       color: StarChessColor;
       from: Square;
       to: Square;
-    };
+    }
+  );
 
 export type TimelineState = {
   active: boolean;

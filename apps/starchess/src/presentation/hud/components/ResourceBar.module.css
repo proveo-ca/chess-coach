@@ -96,7 +96,12 @@
   font-size: 0.78rem;
 }
 
-/* MobileBanner sets its own width. */
+/*
+ * Fixed here too (narrower than the 18rem default — 11px type, tighter gaps):
+ * content is ~9.5rem, so 12rem holds the widest bank / supply digits without
+ * the strip stretching across the banner. The banner's turn column takes the
+ * slack, so End Turn + timer stay pinned right as the numbers change.
+ */
 .bar.compact {
-  width: auto;
+  width: 12rem;
 }

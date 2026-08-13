@@ -1,0 +1,74 @@
+@startuml mine-contact
+' SPEC: _spec/packages/starchess-core/mine-contact.puml
+' purpose: board/mine-contact.ts — the single spider-mine rules table every
+' caller in the engine (and the Adjutant) asks. Authority: this is shipped.
+!include ../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess Core · Mine contact — one table, every caller
+
+package "board/mine-contact.ts" {
+  component "mineContact({ mines, color, piece, squares, mode })\n→ inert | cleared(at, mineColor)\n     | detonated(at, mineColor, chaseFrom?)" as MC <<app>>
+  component "withoutMine(mines, hit)\nspends ""chaseFrom"" when the wake was mid-path" as WM <<db>>
+  component "hostileMineOn(mines, color, at)\nplain predicate — legality / AI avoidance" as HM <<db>>
+}
+
+package "callers" {
+  component "resolve-turn.ts\nclearOnCapture · attack-clear · relocate walk\napproachMineContact (phase 3)" as RT <<app>>
+  component "submit-turn.ts\napplyArrivalMine — gas step · deploy · jump" as SUB <<app>>
+  component "board/moves.ts\nhostileMineOnTo (legality + UI affordance)" as MV <<app>>
+  component "ai/adjutant.ts\nnever step / drop / jump onto a mine it sees" as AI <<host>>
+}
+
+RT ARROW_MAIN MC
+RT ARROW_MAIN WM
+RT ARROW_OPTIONAL HM : marine diagonal target test
+SUB ARROW_MAIN MC
+SUB ARROW_MAIN WM
+AI ARROW_MAIN HM
+MV ARROW_OPTIONAL HM
+
+note right of MC
+  **The table.** ""squares"" is the contact list **in walk order** — the last
+  entry is the tile the unit ends on:
+
+  | mode | who asks | outcome |
+  | ""attack"" | a unit that fires at the tile (incl. every capture) | mine dies, mover lives → ""cleared"" |
+  | ""walk"" | classical move / fog approach (ray + landing tile) | both die → ""detonated"" |
+  | ""arrive"" | gas step · deploy · Tactical Jump | both die → ""detonated"" |
+
+  **Kings are inert in every mode** — they neither trigger nor clear, so the
+  immunity is stated once instead of at each call site. Allied mines never
+  match. An empty ""squares"" list is ""inert"".
+
+  ""detonated.at"" is always the **landing** tile: a mine woken mid-path chases
+  the mover and blows there, reporting the wake tile as ""chaseFrom"" (which is
+  also the mine ""withoutMine"" spends).
+end note
+
+note bottom
+  **What consolidating it fixed.** The same question used to be answered at
+  fourteen ""mineAt"" reads in ""resolve-turn.ts"" plus a private copy in
+  ""submit-turn.ts"" and three guards in the Adjutant. The halves drifted: gas
+  steps, deploys and fog approaches silently skipped the rule until the arrival
+  work landed (see ""mineContactRoutes.test.ts"").
+
+  **Two deliberate corrections came with the table:**
+  * a move that crosses **and** lands on mines now trips the **first** one it
+    touches (ordered walk) — previously the landing tile was checked first;
+  * a **king capturing** onto a mined tile no longer clears the mine, matching
+    the immunity rule stated everywhere else.
+
+  **The other two consolidations shipped with it:**
+  * ""board/ray-scan.ts"" — the two duplicated ray walks in ""resolveTurn"" are
+    one ""scanRay"" + one shared ""takeRayContact"" (""ray-scan.puml"");
+  * ""endScTurn"" has a **single exit** (""finish(...)"") and an event log that
+    owns ""ev-<n>"" sequencing — the three hand-written ""EndScTurnResult""
+    literals and eleven ""events.push"" sites are gone.
+  Together: ""resolve-turn.ts"" 1223 → ~890 lines, ""submit-turn.ts"" 1045 → ~848,
+  with no test moved.
+
+end note
+@enduml

@@ -92,6 +92,40 @@ describe("pawnGasArm", () => {
     ).toBe(false);
   });
 
+  it("arms a special before and after the same classical (B → C → F)", () => {
+    // Nb4, Re4, Pe2 — two 1-gas specials fit in G:22.
+    const store = createMatchStore({
+      initial: createMatchStateFromScfen(
+        "SCFEN|4k3/8/8/8/1N2R3/8/4P3/4K3|11|33|P|G:22:22|Q:w:;b:",
+        3,
+      ),
+    });
+    const timing = () => specialTimingFor(store.state().liveSnapshot.queue, "w");
+    expect(timing()).toBe("B");
+    expect(
+      tryQueue(
+        store,
+        { timing: timing(), kind: "knightMine", color: "w", from: "b4", to: "b4" },
+        "mine",
+      ),
+    ).toBe(true);
+    store.dispatch({
+      type: "QUEUE_ACTION",
+      action: { timing: "C", kind: "classical", color: "w", from: "e2", to: "e3" },
+    });
+    expect(timing()).toBe("F");
+    expect(
+      tryQueue(
+        store,
+        { timing: timing(), kind: "rookSiege", color: "w", from: "e4" },
+        "siege",
+      ),
+    ).toBe(true);
+    expect(
+      store.state().liveSnapshot.queue?.actions.map((a) => a.timing),
+    ).toEqual(["B", "C", "F"]);
+  });
+
   it("move-then-gas convert peels C and arms B + promotion", () => {
     const store = createMatchStore({
       initial: createMatchStateFromScfen(

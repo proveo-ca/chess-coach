@@ -1,10 +1,18 @@
+/* Two rows: the four settings across the top, Start under them. */
 .new-game-panel {
   padding: var(--spacing-sm) var(--spacing-md);
   border-radius: var(--border-radius-md);
-  display: flex;
-  gap: var(--spacing-md);
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  /* Start sits well clear of the settings above it. */
+  gap: calc(var(--spacing-md) * 3) var(--spacing-md);
   align-items: center;
   justify-content: center;
+}
+
+.start-split {
+  grid-column: 1 / -1;
+  justify-self: center;
 }
 
 /* Stack the New Game menu vertically on mobile/tablet devices. The board nav
@@ -15,6 +23,8 @@
   .new-game-panel {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
+    /* One control per row here, so the wide layout's row gap would be dead air. */
+    gap: var(--spacing-md);
     align-items: stretch;
   }
 
@@ -25,13 +35,9 @@
   }
 }
 
-.start-btn {
-  background-color: var(--primary-color);
-  color: var(--surface-color);
-  font-weight: 600;
-}
+/* Start is a `SplitButton primary`, so the primary fill comes from Button. */
 
-.start-btn:hover:not(:disabled) {
-  background-color: var(--primary-hover);
-  color: var(--surface-color);
+/* Stacked with the inputs, so the label starts where their text does. */
+.lost-toggle {
+  padding-inline: var(--control-inset-inline);
 }

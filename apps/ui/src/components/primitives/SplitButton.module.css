@@ -1,0 +1,41 @@
+/* Width is the consumer's call — fills a grid cell, shrink-wraps in a row. */
+.split {
+  display: grid;
+  grid-template-columns: var(--split-ratio, 2fr 1fr);
+}
+
+/* One frame for the pair: same width and colour on every edge, seam included.
+   Scoped under `.split` to outrank the primary button's transparent border. */
+.split .action,
+.split .select {
+  box-sizing: border-box;
+  /* Exact, not a floor: both halves are single-line, and their own padding
+     would otherwise put the pair a fraction above every other control. */
+  height: var(--control-height);
+  border: 1px solid var(--border-color);
+}
+
+/* Square off the seam so the pair reads as one control. */
+.split .action {
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+}
+
+.split .select {
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+  /* Overlap the action's edge so the seam is one line, not two. */
+  margin-inline-start: -1px;
+  /* Right padding also reserves the chevron's room: in a shrink-wrapped row the
+     track sizes to max-content, so anything less puts it against the label. */
+  padding-inline: 0.6em 1.9em;
+  background-position: right 0.55em center;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+/* Hover lifts the whole frame, so it never goes two-tone mid-control. */
+.split:hover .action:not(:disabled),
+.split:hover .select:not(:disabled) {
+  border-color: var(--primary-hover);
+}

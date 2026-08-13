@@ -1,0 +1,75 @@
+@startuml cue-playback
+' SPEC: _spec/apps/starchess/timeline/cue-playback.puml
+' purpose: playTimeline dispatch — how the head of the cue queue picks a
+' handler, what each handler commits, and when the board ladder advances.
+!include ../../../themes/proveo.puml
+
+skinparam defaultTextAlignment left
+
+title StarChess · ""playTimeline"" — dispatch and commit semantics
+
+start
+:commit the ""afterPending"" board + pre-shot king HP;
+note right
+  ""livesBeforeAnimatedShots"" **undoes** the chips ""afterPending"" already
+  applied, so a king hull stays pristine until frag impact. Only turn-open
+  chips are undone — classical chips live in ""next"" and land at impact
+  without an undo.
+end note
+if (no cues?) then (yes)
+  :apply ""afterB"", commit ""next"", done;
+  stop
+endif
+
+repeat :read cue at ""index"", ""takeWhile"" its batch;
+
+  if (gas drop?) then (yes)
+    :absorb window — pull an adjacent deploy batch and its crush deaths\ninto the **same** window so a trailing attack cannot clip the drop;
+    :crush deaths start ~""CRUSH_DEATH_MS"" into the deploy (mid-drop\ncollapse), window = max(gas, deploy, crush);
+    :stamp ""U:"" aura squares on completion;
+  elseif (spawn deploy?) then (yes)
+    :same shape without the canister (auto-deploy / edge cases);
+  elseif (phase-1 attack?) then (yes)
+    :one window for **both** sides' shots; deaths overlap at the max\nper-weapon ""attackImpactMs"" so impact meets collapse;
+    :kingShot HP lands at that impact (the damage boom syncs to the hit);
+    :reciprocal fire → ""attackDying"" suppresses the attacker hull so the\ndeath animation owns the square; flags held until the wave ends so\nhulls cannot flash back;
+    :mine cleared by an attack → ""spentMines"" hides the glyph as the boom\nstarts (the mine stays in the snapshot until ""afterAttack"");
+    :deaths done → stamp ""afterAttack"" but keep the attack cues mounted\nuntil ""ATTACK_MS"" (clearing early truncates the shot);
+  elseif (phase-1 death, no attack ahead of it?) then (yes)
+    :fallback window, then stamp ""afterAttack"";
+  elseif (chase missile?) then (yes)
+    :trails + ""spentMines"" for the wake tile; the mine snapshot comes from\n""cue.board"" — ""afterMove"" for a phase-3 chase, ""afterAttack"" otherwise;
+    :trails outlive the cue (CSS fade cleared later, fire-and-forget);
+  elseif (move-collision death?) then (yes)
+    :death window, then vacate the square in ""displayPlacement"";
+  elseif (mine-trigger death — phase 2 **and** phase-3 approach?) then (yes)
+    :commit the ""afterMove"" mine snapshot + ""spentMines"" for the boom tile\n(plus the wake tile a chase left behind), then vacate;
+  elseif (simultaneous move wave?) then (yes)
+    :group by ""cue.group"" — B gas steps, classical, F steps each form one\nwave; opposing sides move together;
+    :progress 0 → 1 on the next frame drives the slide; knights flip their\nleg at the elbow; window = slowest cue in the batch;
+  elseif (promo walk-off / promo deploy?) then (yes)
+    :walk-offs in parallel (square vacated at the end), then deploys —\npromoted units are placed **before** the deploy animation so nothing\ndownstream sees a late spawn after ""TIMELINE_DONE"";
+  else (sequential tail)
+    :approach chains, Tactical Jump, arrival blasts and any leftover cue\nplay one at a time;
+    :a lethal kingShot immediately followed by its king death is fused —\nthe king crumples at frag impact instead of after the full shot;
+    :Tactical Jump owns its own travel + trail timing (never a slide);
+    :any death vacates its square on completion so a corpse cannot flash\nback between the death VFX and an occupy that follows;
+  endif
+
+  :advance the board ladder **lazily**: a cue whose ""cue.board"" is past\n""preAfterB"" applies ""afterB""; nothing re-applies a rung;
+
+repeat while (more cues?) is (yes)
+->no;
+:finalize → commit ""next"" (placement, HP, mines, siege, ""U:"") and ""onDone"".\nWith ""finalize: false"" (mid-wave tutorial) stop at the last rung reached;
+note right
+  **Cancellation contract:** every scheduled callback is registered in
+  ""cancels"" and every callback re-checks the ""cancelled"" flag before it
+  commits. The returned disposer flips the flag and drains the list. A handler
+  that schedules work without registering it leaks a commit past teardown —
+  the one rule that must survive any refactor of this file.
+
+  **The scheduler is injected** (""Scheduler"" port), so tests drive the whole
+  timeline deterministically with a fake clock — no real timers, no flake.
+end note
+stop
+@enduml

@@ -507,7 +507,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
       {
         id: "combat-chain",
         title: "Combat Chain",
-        comment: "In StarChess, turns are simultaneous, with 3 phases:\n 1. Checks \n2. Intents: Players queue actions \n3. Resolve: The actions simultaneously.",
+        comment: "We're now observers of a past combat. \nReplay it with the arrows on the top. \nNotice how turns are simultaneous!",
         emotion: "idle",
         completeWhen: {
           kind: "typewriter",
@@ -520,7 +520,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               kind: "reviewPhase",
               phase: "check",
             },
-            comment: "Check phase — turn-open shots before anyone queues intent.",
+            comment: "Check phase: Turn-open shots before anyone queues intent.",
             emotion: "shocked",
           },
           {
@@ -528,7 +528,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               kind: "reviewPhase",
               phase: "intent",
             },
-            comment: "Intent ghosts are promises. Nothing moves until Resolve.",
+            comment: "Intent: ghosts are promises. Nothing moves until next phase.",
             emotion: "watching",
           },
           {
@@ -536,14 +536,14 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               kind: "reviewPhase",
               phase: "resolve",
             },
-            comment: "Resolve in the following order: \n1. (Gas) Specials \n2. Attacks \n3. Moves \n4. (Gas) Specials",
+            comment: "Resolve: in the following order: \n1. (Gas) Specials \n2. Attacks \n3. Moves \n4. (Gas) Specials",
             emotion: "scanning",
           },
           {
             when: {
               kind: "timelineActive",
             },
-            comment: "VFX is the contract — attacks die before occupies land.",
+            comment: "A classical Chess capture is split in attack/move. \nOnly survivors move.",
             emotion: "thinking",
           },
         ],
@@ -557,7 +557,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
       {
         id: "king-hunt",
         title: "King Hunt",
-        comment: "A Command Center crumbles when being checked 3 times.",
+        comment: "We're observing live combat! \nA Command Center crumbles after 3 attacks.",
         emotion: "watching",
         completeWhen: {
           kind: "scfen",
@@ -614,7 +614,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               kind: "scfen",
               re: /B=spawn:/,
             },
-            comment: "Attach the Mecha!",
+            comment: "Attack the Mecha!",
             emotion: "watching",
           },
           {
