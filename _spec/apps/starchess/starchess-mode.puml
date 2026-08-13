@@ -40,12 +40,13 @@ note bottom
   Costs from the MODE economy — most specials **1** gas;
   Charon **2**, Jump **3**.
   **Spider Mine combat:** a lit hostile mine is a **clickable target** — the
-  attacker clears it and occupies (red intent ring, mine boom, no death);
-  walking in (marine forward step, fogged tile) or crossing one mid-slide
-  (path-chase) kills the mover. A **Tactical Jump** may land on a mined tile
-  (mines are not occupancy) but the jump does not attack — a hostile mine takes
-  the BattleShip with it. Ignores allies + enemy kings
-  (""mines.ts"" + ""resolveTurn"" + ""submit-turn"" queenWarp).
+  attacker clears it and occupies (red intent ring, mine boom, no death).
+  **Everything else that reaches the tile dies on it:** walking in (marine
+  forward step, fogged tile), crossing one mid-move (slide **or** marine double
+  step → path-chase), a fog approach that walks over or onto it, and any
+  non-attack **arrival** — gas step, Command Center deploy, Tactical Jump
+  (mines are not occupancy, so the tile stays a legal landing). Ignores allies
+  + enemy kings (""mines.ts"" + ""resolveTurn"" + ""submit-turn"" ""applyArrivalMine"").
   Live UI → ""apps/starchess"" (""/starchess/""); Coach keeps
   ""features/nerd"" + ""StarChessRedirect"" only.
   ====

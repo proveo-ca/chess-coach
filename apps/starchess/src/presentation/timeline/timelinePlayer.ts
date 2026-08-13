@@ -79,6 +79,34 @@ const moveCue = (
   ...(opts?.stim ? { stim: true } : {}),
 });
 
+/**
+ * A non-attack arrival onto a hostile mine — gas step, Command Center deploy,
+ * Tactical Jump. The mine goes off first, then the unit it took; both play on
+ * the board the arrival landed on (`arm*` ids keep them off the phase-1 wave).
+ */
+const arrivalMineCues = (
+  at: Square,
+  mineColor: StarChessColor,
+  unit: { type: StarChessPiece; color: StarChessColor },
+  nextId: () => number,
+): TimelineCue[] => [
+  {
+    kind: "death",
+    id: `armm${nextId()}`,
+    piece: "n",
+    color: mineColor,
+    at,
+    mine: true,
+  },
+  {
+    kind: "death",
+    id: `armd${nextId()}`,
+    piece: unit.type,
+    color: unit.color,
+    at,
+  },
+];
+
 const relocatePlacement = (placement: string, from: Square, to: Square): string => {
   const map = placementToMap(placement);
   const piece = map.get(from);
@@ -183,6 +211,13 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
         });
       }
     }
+    // Gas step onto a hostile mine — the marine already hopped (bMoves above),
+    // now the mine takes it.
+    if (ev.kind === "pawnDouble" && ev.to && ev.mineColor && ev.victim) {
+      cues.push(
+        ...arrivalMineCues(ev.to, ev.mineColor, ev.victim, () => n++),
+      );
+    }
     if (ev.kind === "queenWarp" && ev.from && ev.to) {
       cues.push({
         kind: "move",
@@ -261,7 +296,39 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
       });
     }
   }
-  cues.push(...crushDeaths);
+  // A drop onto a hostile mine never reaches afterB, so the placement diff
+  // above cannot see it: draw the deploy (and any crush under it) from the
+  // event, then blow the fresh unit up with the mine.
+  const minedDeploys: TimelineCue[] = [];
+  for (const ev of result.events) {
+    if (ev.kind !== "spawn" || !ev.to || !ev.mineColor || !ev.unit) continue;
+    cues.push({
+      kind: "deploy",
+      id: `spawn-mine${n++}`,
+      piece: ev.unit,
+      color: ev.color,
+      at: ev.to,
+    });
+    if (ev.victim) {
+      crushDeaths.push({
+        kind: "death",
+        id: `crush${n++}`,
+        piece: ev.victim.type,
+        color: ev.victim.color,
+        at: ev.to,
+        ...(ev.victim.type === "r" ? { rookMode: rookModeAt(ev.to, sieged) } : {}),
+      });
+    }
+    minedDeploys.push(
+      ...arrivalMineCues(
+        ev.to,
+        ev.mineColor,
+        { type: ev.unit, color: ev.color },
+        () => n++,
+      ),
+    );
+  }
+  cues.push(...crushDeaths, ...minedDeploys);
 
   // Phase 1 — simultaneous attacks, then simultaneous deaths (not interleaved).
   // moveCollision captures belong after moves — never phase-1.
@@ -438,8 +505,49 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
     }
   }
 
+  // A fog approach walks its ray like any other move — a mine on it takes the
+  // mover after the shot lands. Chase missile first, then boom, then the hull
+  // (`prm*` / `prv*` ride the phase-2 mineTrigger handlers).
+  for (const a of result.resolved.pathRevealMineTriggers) {
+    if (a.kind !== "mineBlast") continue;
+    if (a.chaseFrom != null) {
+      cues.push({
+        kind: "mineMissile",
+        id: `prmm${n++}`,
+        color: a.mineColor,
+        from: a.chaseFrom,
+        to: a.to,
+      });
+    }
+    cues.push({
+      kind: "death",
+      id: `prm${n++}`,
+      piece: "n",
+      color: a.mineColor,
+      at: a.to,
+      mine: true,
+      ...(a.chaseFrom != null ? { spentAt: a.chaseFrom } : {}),
+    });
+    if (a.victim) {
+      cues.push({
+        kind: "death",
+        id: `prv${n++}`,
+        piece: a.victim.piece,
+        color: a.victim.color,
+        at: a.to,
+        ...(a.victim.piece === "r" ? { rookMode: rookModeAt(a.to, sieged) } : {}),
+      });
+    }
+  }
+
   cues.push(...fGas);
   for (const m of result.fMoves) cues.push(moveCue(m, `f${n++}`, { stim: true }));
+  // F gas step onto a hostile mine — same boom, after the post-classical hop.
+  for (const ev of result.events) {
+    if (ev.phase !== "specialAfter" || ev.kind !== "pawnDouble") continue;
+    if (!ev.to || !ev.mineColor || !ev.victim) continue;
+    cues.push(...arrivalMineCues(ev.to, ev.mineColor, ev.victim, () => n++));
+  }
   for (const p of result.resolved.promotions) {
     // Pawn walks one square off the board edge, then the unit deploys.
     cues.push({
@@ -531,15 +639,26 @@ const isPhase1Death = (cue: TimelineCue): boolean =>
   !cue.id.startsWith("chd") &&
   !cue.id.startsWith("qj") &&
   !cue.id.startsWith("mt") &&
-  !cue.id.startsWith("mc");
+  !cue.id.startsWith("mc") &&
+  // arm* = gas-step / deploy arrival blast; prm* / prv* = fog-approach blast.
+  !cue.id.startsWith("arm") &&
+  !cue.id.startsWith("prm") &&
+  !cue.id.startsWith("prv");
 
 /** Post-move fog / path collision deaths — after classical land. */
 const isMoveCollisionDeath = (cue: TimelineCue): boolean =>
   cue.kind === "death" && cue.id.startsWith("mc");
 
-/** Post-move mineTriggers (walk-over / chase boom) — after classical land. */
+/**
+ * Mine booms that play on the post-move board: phase-2 walk-over / chase
+ * (`mt*`) and the fog-approach blast that follows a phase-3 shot (`prm*` boom,
+ * `prv*` hull). Both read their mine snapshot from `afterMove`.
+ */
 const isMineTriggerDeath = (cue: TimelineCue): boolean =>
-  cue.kind === "death" && cue.id.startsWith("mt");
+  cue.kind === "death" &&
+  (cue.id.startsWith("mt") ||
+    cue.id.startsWith("prm") ||
+    cue.id.startsWith("prv"));
 
 /** Chase missile before mineTrigger boom. */
 const isMineMissile = (cue: TimelineCue): boolean => cue.kind === "mineMissile";
@@ -934,9 +1053,14 @@ export const playTimeline = (
       const spent = [
         ...new Set(missiles.map((m) => m.from)),
       ] as Square[];
+      // Phase-3 chases fire after the move phase — their mine is still armed in
+      // `afterMove`, while phase-2 wake mines are only in `afterAttack`.
+      const missileMines = missiles.every((m) => m.id.startsWith("prmm"))
+        ? result.resolved.afterMove.mines
+        : result.resolved.afterAttack.mines;
       cb.onCommit({
         // Keep wake mine in snap until boom; spentMines hides the board glyph.
-        mines: result.resolved.afterAttack.mines,
+        mines: missileMines,
         spentMines: spent,
         mineMissileTrails: trails,
         playingIds: missiles.map((c) => c.id),
@@ -998,7 +1122,13 @@ export const playTimeline = (
       if (!afterBApplied) applyAfterB();
       const { batch, next } = takeWhile(cues, index, isMineTriggerDeath);
       const deaths = batch as Extract<TimelineCue, { kind: "death" }>[];
-      const spentExtra = deaths.filter((d) => d.mine).map((d) => d.at);
+      const spentExtra = [
+        ...new Set(
+          deaths
+            .filter((d) => d.mine)
+            .flatMap((d) => (d.spentAt ? [d.at, d.spentAt] : [d.at])),
+        ),
+      ] as Square[];
       cb.onCommit({
         mines: result.resolved.afterMove.mines,
         spentMines: spentExtra,
@@ -1174,6 +1304,9 @@ export const playTimeline = (
       cue.id.startsWith("chd") ||
       // qj / qjm / qjd — jump hull, mine boom, and the BattleShip it took out.
       cue.id.startsWith("qj") ||
+      // arm* — gas-step / deploy arrival blast: the mine and the unit it took
+      // are both still on the pre-afterB board.
+      cue.id.startsWith("arm") ||
       cue.id.startsWith("gd") ||
       cue.kind === "gasDrop" ||
       (cue.kind === "move" && !!cue.queenJump);

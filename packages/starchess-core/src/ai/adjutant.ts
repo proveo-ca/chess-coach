@@ -662,7 +662,13 @@ const sideSpecials = (
   const needBishop = ownBishops === 0;
   const wantBishops = needBishop || enemyQueenVisible;
   const knightsFull = ownKnights >= MAX_KNIGHTS;
-  const adjacent = neighbors(king).filter((at) => !map.has(at));
+  // Mined tiles are legal drops, but a deploy is no attack — a hostile mine
+  // takes the fresh unit on arrival (same rule as the Tactical Jump below).
+  const adjacent = neighbors(king).filter((at) => {
+    if (map.has(at)) return false;
+    const m = mineAt(snap.mines, at);
+    return !m || m.color === us;
+  });
   for (const unit of ["p", "n", "b", "r", "q"] as const) {
     if (UNIT_COST[unit] > bank) continue;
     if (unit === "n" && knightsFull) continue;
@@ -712,6 +718,9 @@ const sideSpecials = (
     if (piece.color !== us || piece.type !== "p") continue;
     const to = pawnSingleTarget(from, us);
     if (!to || map.has(to)) continue;
+    // A gas step walks onto the tile — a hostile mine there kills the marine.
+    const stepMine = mineAt(snap.mines, to);
+    if (stepMine && stepMine.color !== us) continue;
     const promotion = isLastRank(rankOf(to), us) ? ("q" as const) : undefined;
     let score = center * centerScore(to) + promoteRank * promoteProgress(rankOf(to), us);
     score += nearPromoteRush(rankOf(from), rankOf(to), us);

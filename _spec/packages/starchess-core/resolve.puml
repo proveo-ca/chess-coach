@@ -30,12 +30,20 @@ endif
 :Apply rank **B** specials — white then black\n— spawn / mine / warp / siege;\n**Presentation:** gas absorb VFX — canister drops\nfrom the top of the actor square — left / mid / right —\ninto the unit; green special-used aura eases in;
 
 note right
-  **Tactical Jump × mine:** mines are **never occupancy**, so a mined tile is
-  always a legal landing (""tacticalJumpTargets"" only drops occupied squares).
-  The jump **teleports, it never attacks**: a **hostile** mine detonates on
-  arrival — BattleShip and mine both die (event carries ""mineColor"" + the hull
-  as ""victim""; cues ""qj"" hull → ""qjm"" boom → ""qjd"" wreck, all pre-""afterB"").
-  An **allied** mine stays armed and inert under the hull.
+  **Arrivals × mine** (""applyArrivalMine"") — mines are **never occupancy**, so a
+  mined tile is always a legal landing (""tacticalJumpTargets"" only drops occupied
+  squares). None of these **attack** the tile, so a **hostile** mine detonates on
+  arrival — mine and arriving unit both die; an **allied** mine stays armed and
+  inert underfoot:
+  * **Tactical Jump** — the jump teleports; BattleShip and mine both die
+    (cues ""qj"" hull → ""qjm"" boom → ""qjd"" wreck, all pre-""afterB"");
+  * **gas step** (""pawnDouble"", B **and** F) — the marine hops, then the mine
+    takes it; a last-rank step dies **without promoting**;
+  * **deploy** (""spawn"") — the drop plays, then the fresh unit dies with the
+    mine; a crushed occupant still reports as ""victim"" (one tile, two deaths).
+  Events carry ""mineColor"" + the dead hull as ""victim"" (a mined ""spawn"" names
+  its unit in ""unit""); cues ""armm"" boom → ""armd"" wreck.
+  The Adjutant never queues a step / drop onto a mine it can see.
 end note
 
 :Rank **C** — classical for both sides against\nthe same start board — ""resolveTurn"";
@@ -50,7 +58,10 @@ note right
   the intent stays a quiet step and the mine takes the mover in phase 2:
   * marine forward step onto a mine → **both die**, promotion cancelled;
   * mine still **fogged** at contact → walk-over death (never a chosen target);
-  * mine **crossed mid-slide** → chase wake → both die at the landing tile;
+  * mine **crossed mid-slide** → chase wake → both die at the landing tile.
+    Marines walk, so a **front double step** wakes a mine on its intermediate
+    exactly like a slide (""pathContactSquares"" — only leaping Hoverbikes and
+    immune kings are exempt);
   * **kings** are immune — they neither trigger nor clear a mine;
   * **allied** mines are inert underfoot (no friendly fire).
 end note
@@ -86,6 +97,19 @@ endif
 :Phase 2 **move** — survivors relocate; collisions\nresolved against the post-attack board; a target\n**still fogged at contact** → move collision\n— capture/occupy, no attack cue (never a\n**marine front step** — that blocks + truncates);\n**same-square race** (two movers land on one tile)\n→ **both die**, square empty, no attack cue;
 
 :Phase 3 **fog approach** — path-reveal shots slide\n""pathRevealFrom"" → discovery square → attack;\n**King HP mid-resolve** only here: fog intent finds a\nhidden king on the path — ""pathReveal"" kingShot.\nVisible kings already paid at turn open — no second chip.\n**fizzle unless** the attacker still occupies\n""pathRevealFrom"" — died in phases 1–2 / square\nre-occupied by a phase-2 mover / sieged — rooks\nnever relocate — and ""to"" holds the exact\nin-the-way victim;
+
+note right
+  **Approach × mine.** A fog approach **walks** its ray — origin → discovery →
+  landing tile (""to"" for a capture, ""stopAt"" for a kingShot) — so a **hostile**
+  mine anywhere on that walk takes the mover, and the approach never *clears*
+  one (it chose a unit, not the tile). The shot already fired, so the capture /
+  HP chip **stands** and the mover dies on its landing tile:
+  * mine **mid-walk** → chase wake → ""chaseFrom"" (missile then boom);
+  * mine on the **landing tile** → plain walk-over boom;
+  * **allied** mines stay inert, **kings** stay immune.
+  Blasts land in ""pathRevealMineTriggers"" (cues ""prmm"" missile → ""prm"" boom →
+  ""prv"" wreck, replayed off the ""afterMove"" mine snapshot).
+end note
 
 :Apply rank **F** specials — white then black\n— post-move siege / late drops;\n**Presentation:** same gas absorb drop + aura as B;
 
@@ -133,8 +157,10 @@ note right
   ""pathRevealAttacks"" holds **only attacks that fired**.
   ""resolveTurn"" returns ""attacks"" (phase 1),
   ""moves"" / ""mineTriggers"" / ""moveCollisions"" (phase 2),
-  ""pathRevealAttacks"" (phase 3), and the snapshots ""afterMove""
-  (post-phase-2) and ""afterAll"" (post-phase-3).
+  ""pathRevealAttacks"" + ""pathRevealMineTriggers"" (phase 3), and the
+  snapshots ""afterMove"" (post-phase-2) and ""afterAll"" (post-phase-3).
+  ""applyPathRevealAttack"" leaves mines armed — the walk-contact check that
+  spends them lives in the phase-3 loop next to it.
   **King shots:** ""collectLegalKingChecks"" + ""applyPendingKingShots""
   via ""beginScTurn"" at turn open (before intent). The **only** mid-resolve
   king HP is fog path-discovery (""applyPathRevealKingShot""): intent into

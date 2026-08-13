@@ -70,6 +70,11 @@ export type TimelineCue =
       color: StarChessColor;
       at: Square;
       mine?: boolean;
+      /**
+       * Mine glyph square to hide while this boom plays — a chase blows up on
+       * the landing tile, so the burrowed glyph it left behind is elsewhere.
+       */
+      spentAt?: Square;
       rookMode?: "siege" | "tank";
     }
   | {

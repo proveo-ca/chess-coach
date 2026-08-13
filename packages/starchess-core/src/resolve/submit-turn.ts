@@ -64,16 +64,23 @@ export type ResolveEvent = {
   /**
    * Present for `spawn` events whose target held an enemy at application time
    * — the deploy crushed the occupant (presentation draws the death at the drop).
-   * Also set on a `queenWarp` that landed on a hostile mine: the BattleShip is
-   * the victim of its own jump (see {@link ResolveEvent.mineColor}).
+   * Also the unit a mine took on a `queenWarp` / `pawnDouble` arrival: the hull
+   * is the victim of its own jump / step (see {@link ResolveEvent.mineColor}).
+   * A mined `spawn` keeps the crush here and reports its dead unit as
+   * {@link ResolveEvent.unit} — one tile, two deaths.
    */
   victim?: { type: StarChessPiece; color: StarChessColor };
   /**
-   * Owner of a spider mine detonated by this special — a `queenWarp` landing on
-   * a hostile mine. The jump is a teleport, not an attack: mine and BattleShip
-   * both die (allied mines stay armed and inert).
+   * Owner of a spider mine detonated by this special — any arrival that is not
+   * an attack: `queenWarp`, a `pawnDouble` gas step, or a `spawn` deploy. The
+   * mine and the arriving unit both die; allied mines stay armed and inert.
    */
   mineColor?: StarChessColor;
+  /**
+   * Deployed unit type — present on every `spawn` event. With `mineColor` set
+   * it is also the unit the mine destroyed on the drop.
+   */
+  unit?: StarChessPiece;
 };
 
 export type EndScTurnResult = {
@@ -255,6 +262,7 @@ export const beginScTurn = (snapshot: ScFenSnapshot): BeginScTurnResult => {
       pathRevealAttacks: [],
       afterAll: board,
       mineTriggers: [],
+      pathRevealMineTriggers: [],
       moveCollisions: [],
       promotions: [],
       pendingKingShotsArmed: [],
@@ -307,6 +315,39 @@ const placeUnit = (placement: string, at: Square, piece: ScPiece): string => {
   return mapToPlacement(map);
 };
 
+type ArrivalMine = {
+  placement: string;
+  mines: ScMine[];
+  victim?: { type: StarChessPiece; color: StarChessColor };
+  mineColor?: StarChessColor;
+};
+
+/**
+ * A special that **arrives** on a tile — gas step, deploy, Tactical Jump. None
+ * of them attack the square, so a hostile spider mine detonates on contact:
+ * mine and arriving unit both die (mines are never occupancy, so the tile was
+ * always a legal landing). Allied mines stay armed and inert underfoot.
+ * // SPEC: _spec/packages/starchess-core/resolve.puml
+ */
+const applyArrivalMine = (
+  placement: string,
+  mines: ScMine[],
+  at: Square,
+  color: StarChessColor,
+  arriving: ScPiece,
+): ArrivalMine => {
+  const m = mineAt(mines, at);
+  if (!m || m.color === color) return { placement, mines };
+  const board = placementToMap(placement);
+  board.delete(at);
+  return {
+    placement: mapToPlacement(board),
+    mines: mines.filter((x) => x.at !== at),
+    victim: { type: arriving.type, color: arriving.color },
+    mineColor: m.color,
+  };
+};
+
 const applySpecial = (
   placement: string,
   mines: ScMine[],
@@ -331,39 +372,45 @@ const applySpecial = (
       // not disturb the landing tile (or detonate a mine sitting on it).
       const hull = placementToMap(placement).get(action.from);
       if (!hull || hull.color !== action.color) return { placement, mines };
+      // Mines are never occupancy, so a mined tile is always a legal landing —
+      // an allied mine keeps the hull safe, a hostile one takes it with the mine.
       const landed = relocate(placement, action.from, action.to);
-      // Mines are never occupancy, so a mined tile is always a legal landing.
-      // A hostile mine still detonates on arrival — the jump teleports, it does
-      // not attack: BattleShip and mine both die. Allied mines stay armed.
-      const m = mineAt(mines, action.to);
-      if (!m || m.color === action.color) return { placement: landed, mines };
-      const board = placementToMap(landed);
-      board.delete(action.to);
-      return {
-        placement: mapToPlacement(board),
-        mines: mines.filter((x) => x.at !== action.to),
-        victim: { type: hull.type, color: hull.color },
-        mineColor: m.color,
-      };
+      return applyArrivalMine(landed, mines, action.to, action.color, hull);
     }
     case "pawnDouble": {
       if (!action.to) return { placement, mines };
-      return { placement: relocate(placement, action.from, action.to), mines };
+      const marine = placementToMap(placement).get(action.from);
+      const stepped = relocate(placement, action.from, action.to);
+      // A gas step walks onto the tile — it never attacks it, so a hostile mine
+      // takes the marine exactly like a classical front step (allied mines stay
+      // inert). Death here also cancels the promotion the caller would deploy.
+      if (!marine) return { placement: stepped, mines };
+      return applyArrivalMine(stepped, mines, action.to, action.color, marine);
     }
     case "spawn": {
       if (!action.to || !action.unit) return { placement, mines };
       // Capture the occupant before the overwrite — an enemy there is crushed.
       const occupant = placementToMap(placement).get(action.to);
-      return {
-        placement: placeUnit(placement, action.to, {
-          type: action.unit,
-          color: action.color,
-        }),
-        mines,
-        ...(occupant && occupant.color !== action.color
+      const deployed = { type: action.unit, color: action.color };
+      const landed = placeUnit(placement, action.to, deployed);
+      const crush =
+        occupant && occupant.color !== action.color
           ? { victim: { type: occupant.type, color: occupant.color } }
-          : {}),
-      };
+          : {};
+      // The drop arrives on the tile like any other landing: a hostile mine
+      // detonates and takes the deployed unit with it. `victim` stays the
+      // crushed occupant — the unit the mine took is `action.unit`, carried on
+      // the event, so a crush + mine on one tile still reports both deaths.
+      const blast = applyArrivalMine(landed, mines, action.to, action.color, deployed);
+      if (blast.mineColor) {
+        return {
+          placement: blast.placement,
+          mines: blast.mines,
+          mineColor: blast.mineColor,
+          ...crush,
+        };
+      }
+      return { placement: landed, mines, ...crush };
     }
     case "knightMine": {
       const at = action.to ?? action.from;
@@ -628,6 +675,7 @@ export const endScTurn = (
         pathRevealAttacks: [],
         afterAll: terminalBoard,
         mineTriggers: [],
+        pathRevealMineTriggers: [],
         moveCollisions: [],
         promotions: [],
         pendingKingShotsArmed: [],
@@ -677,7 +725,9 @@ export const endScTurn = (
         to: a.to,
       });
       const lastRank = a.color === "w" ? 8 : 1;
-      if (Number(a.to[1]) === lastRank && a.promotion) {
+      // A marine that stepped onto a hostile mine died on arrival — nothing
+      // left to promote (same rule as the classical front step).
+      if (Number(a.to[1]) === lastRank && a.promotion && !applied.mineColor) {
         applied.placement = placeUnit(applied.placement, a.to, {
           type: a.promotion,
           color: a.color,
@@ -695,6 +745,7 @@ export const endScTurn = (
     const bEv = eventFor("specialBefore", a, `ev-${eventSeq++}`);
     events.push({
       ...bEv,
+      ...(a.kind === "spawn" && a.unit ? { unit: a.unit } : {}),
       ...(applied.victim ? { victim: applied.victim } : {}),
       ...(applied.mineColor ? { mineColor: applied.mineColor } : {}),
     });
@@ -880,10 +931,20 @@ export const endScTurn = (
       // Recompute +1 from the post-C square; fizzle if blocked / off-board.
       const to = pawnSingleTarget(at, a.color);
       if (!to || boardAfter.has(to)) continue;
-      placement = relocate(placement, at, to);
+      // Same walk-on contact as the B gas step: a hostile mine on the landing
+      // tile kills the marine (and cancels the promotion behind it).
+      const stepped = applyArrivalMine(
+        relocate(placement, at, to),
+        mines,
+        to,
+        a.color,
+        actor,
+      );
+      placement = stepped.placement;
+      mines = stepped.mines;
       fMoves.push({ piece: "p", color: a.color, from: at, to });
       const lastRank = a.color === "w" ? 8 : 1;
-      if (Number(to[1]) === lastRank && a.promotion) {
+      if (Number(to[1]) === lastRank && a.promotion && !stepped.mineColor) {
         placement = placeUnit(placement, to, {
           type: a.promotion,
           color: a.color,
@@ -895,7 +956,11 @@ export const endScTurn = (
           unit: a.promotion,
         });
       }
-      events.push(eventFor("specialAfter", { ...rewritten, to }, `ev-${eventSeq++}`));
+      events.push({
+        ...eventFor("specialAfter", { ...rewritten, to }, `ev-${eventSeq++}`),
+        ...(stepped.victim ? { victim: stepped.victim } : {}),
+        ...(stepped.mineColor ? { mineColor: stepped.mineColor } : {}),
+      });
       continue;
     }
 
@@ -905,6 +970,7 @@ export const endScTurn = (
     const fEv = eventFor("specialAfter", rewritten, `ev-${eventSeq++}`);
     events.push({
       ...fEv,
+      ...(a.kind === "spawn" && a.unit ? { unit: a.unit } : {}),
       ...(applied.victim ? { victim: applied.victim } : {}),
       ...(applied.mineColor ? { mineColor: applied.mineColor } : {}),
     });

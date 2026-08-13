@@ -154,6 +154,12 @@ export type ResolveTurnResult = {
   };
   /** Mine + unit explosions during the move phase. */
   mineTriggers: ResolveAttack[];
+  /**
+   * Mines tripped by a phase-3 fog approach — the approach walks like any other
+   * move, so a hostile mine on its path or its landing tile takes the mover.
+   * Whatever the approach already fired (capture / HP chip) stands.
+   */
+  pathRevealMineTriggers: ResolveAttack[];
   /** Fog / path move collisions: capture/occupy (or fogged kingShot). */
   moveCollisions: ResolveAttack[];
   /**
@@ -210,15 +216,16 @@ export const applyPathRevealAttack = (
   if (!occ || occ.color !== a.victim.color || occ.type !== a.victim.piece) {
     return { ...snap, fired: false };
   }
-  let mines = [...snap.mines];
   map.delete(a.pathRevealFrom);
   map.delete(a.to);
-  const m = mineAt(mines, a.to);
-  if (m && m.color !== a.color) mines = mines.filter((x) => x.at !== a.to);
   map.set(a.to, actor);
+  // Mines are left armed here: a fog approach never *chose* the tile, so it
+  // never clears it. The walk (this ray plus the landing tile) is checked for
+  // hostile mines by the caller — `pathRevealMineTriggers` in `resolveTurn`,
+  // replayed the same way by the UI.
   return {
     placement: mapToPlacement(map),
-    mines,
+    mines: [...snap.mines],
     kingLives: snap.kingLives ? { ...snap.kingLives } : undefined,
     fired: true,
   };
@@ -288,6 +295,42 @@ const attacksOwnDest = (
   if (type === "k") return false;
   if (type === "p") return from[0] !== to[0];
   return true;
+};
+
+/** A fog approach — the two shot kinds that carry `pathRevealFrom`. */
+type ResolveApproach = Exclude<ResolveAttack, { kind: "mineBlast" }>;
+
+/**
+ * Squares a phase-3 approach physically walks: the ray intermediates plus the
+ * tile it ends on — `to` for a capture (it occupies), `stopAt` for a kingShot
+ * (it never enters the king square). The origin is excluded; the mover was
+ * already standing there when the mine was planted.
+ */
+const approachWalk = (a: ResolveApproach): Square[] => {
+  if (!a.pathRevealFrom) return [];
+  const origin = a.pathRevealFrom;
+  const landing = a.kind === "kingShot" ? (a.stopAt ?? origin) : a.to;
+  if (landing === origin) return [];
+  return [...rayBetween(origin, landing), landing];
+};
+
+/**
+ * First hostile mine a fired approach walked into. Kings are immune; allied
+ * mines stay inert underfoot exactly as they do in the move phase.
+ */
+const approachMineContact = (
+  a: ResolveApproach,
+  mines: readonly ScMine[],
+): { at: Square; landing: Square; mine: ScMine } | null => {
+  if (a.piece === "k") return null;
+  const walk = approachWalk(a);
+  const landing = walk[walk.length - 1];
+  if (!landing) return null;
+  for (const s of walk) {
+    const m = mineAt(mines, s);
+    if (m && m.color !== a.color) return { at: s, landing, mine: m };
+  }
+  return null;
 };
 
 /** Square immediately before `blocker` on the ray from `from` (or null). */
@@ -1085,10 +1128,38 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
   // contains only attacks that actually fired.
   // King HP mid-resolve is only fog path-discovery onto a hidden king.
   const pathRevealAttacks: ResolveAttack[] = [];
+  const pathRevealMineTriggers: ResolveAttack[] = [];
   let phase3: PathRevealSnap & { kingLives: Record<StarChessColor, number> } = {
     placement: afterMove.placement,
     mines: [...mines],
     kingLives: { ...lives },
+  };
+  /**
+   * A fired approach walked its ray — a hostile mine on it takes the mover on
+   * the tile it stopped on (chase from `chaseFrom` when the wake was mid-path,
+   * plain walk-over when the mine sat on the landing tile). The shot itself
+   * already happened, so the capture / HP chip stands.
+   */
+  const applyApproachMine = (a: ResolveApproach) => {
+    const trip = approachMineContact(a, phase3.mines);
+    if (!trip) return;
+    const board = placementToMap(phase3.placement);
+    board.delete(trip.landing);
+    phase3 = {
+      placement: mapToPlacement(board),
+      mines: phase3.mines.filter((m) => m.at !== trip.at),
+      kingLives: { ...phase3.kingLives },
+    };
+    pathRevealMineTriggers.push({
+      kind: "mineBlast",
+      piece: a.piece,
+      color: a.color,
+      from: a.pathRevealFrom!,
+      to: trip.landing,
+      mineColor: trip.mine.color,
+      victim: { piece: a.piece, color: a.color },
+      ...(trip.at !== trip.landing ? { chaseFrom: trip.at } : {}),
+    });
   };
   for (const a of pathRevealPending) {
     if (a.kind !== "capture" && a.kind !== "kingShot") continue;
@@ -1104,6 +1175,7 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
         kingLives: { ...phase3.kingLives },
       };
       pathRevealAttacks.push(a);
+      applyApproachMine(a);
       continue;
     }
     const applied = applyPathRevealKingShot(phase3, a);
@@ -1115,10 +1187,9 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
     };
     lives.w = applied.kingLives.w;
     lives.b = applied.kingLives.b;
-    pathRevealAttacks.push({
-      ...a,
-      livesAfter: applied.kingLives[a.target],
-    });
+    const fired = { ...a, livesAfter: applied.kingLives[a.target] };
+    pathRevealAttacks.push(fired);
+    applyApproachMine(fired);
   }
 
   // Phase 4 — promotions for pawns that survived attack/move/mines.
@@ -1137,6 +1208,7 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
     afterAttack,
     moves,
     mineTriggers,
+    pathRevealMineTriggers,
     moveCollisions,
     pathRevealAttacks,
     promotions,
