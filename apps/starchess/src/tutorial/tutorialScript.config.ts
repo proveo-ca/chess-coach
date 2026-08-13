@@ -557,7 +557,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
       {
         id: "king-hunt",
         title: "King Hunt",
-        comment: "We're observing live combat! \nA Command Center crumbles after 3 attacks.",
+        comment: "We're observing a Command Center in the run! \nIt will crumble after 3 attacks.",
         emotion: "watching",
         completeWhen: {
           kind: "scfen",
@@ -577,7 +577,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               kind: "scfen",
               re: /SCFEN\|[^|]+\|\d+\|1[0-3]\|/,
             },
-            comment: "Another hit and it's done",
+            comment: "This guy would have fared better deploying units...",
             emotion: "thinking",
           },
           {
