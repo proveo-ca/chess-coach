@@ -1,6 +1,6 @@
 /**
  * Tutorial completion flag — localStorage `starchess_tutorial_cleared`.
- * Default `false` until Go Home on King Hunt (live) win, or a future flow
+ * Default `false` until Go Home on King Attack #3 win, or a future flow
  * marks the tutorial cleared.
  * // SPEC: _spec/apps/starchess/menu-flow.puml
  */
@@ -23,11 +23,11 @@ export const setTutorialCleared = (cleared: boolean): void => {
   }
 };
 
-/** King Hunt (live) final — offer complete modal when enemy CC dies and uncleared. */
+/** King Attack #3 final — offer complete modal when enemy CC dies and uncleared. */
 export const shouldOfferTutorialComplete = (input: {
   tutorial: boolean;
   phase: string;
-  /** Black king lives when the human plays White (king-hunt-live). */
+  /** Black king lives when the human plays White (king-attack-3). */
   enemyKingLives: number;
   cleared: boolean;
 }): boolean =>

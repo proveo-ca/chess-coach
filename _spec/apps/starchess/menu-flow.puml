@@ -20,7 +20,7 @@ package "apps/starchess" {
   component "navigate /review" as NAVR <<async>>
   component "StarChessSingleScreen\nMatchStore + LiveMatchShell\nStarChessScreen turnChrome=sidebar\nAdjutant = opposite of team" as LIVE <<app>>
   component "StarChessTutorialScreen\n/tutorial/:section/:story\n(TUTORIAL_SCRIPT ids)\nKerrigan header · HOME-only\ne.g. /tutorial/fog/king" as TUT <<app>>
-  component "TutorialCompleteConfirm\nking-hunt-live enemy HP=0\nwhen tutorialCleared=false" as TUTDONE <<app>>
+  component "TutorialCompleteConfirm\nking-attack-3 enemy HP=0\nwhen tutorialCleared=false" as TUTDONE <<app>>
   component "localStorage\nstarchess_tutorial_cleared" as TUTFLAG <<db>>
   component "ExitGameConfirm\nHome during planning/targeting/resolving" as EXIT <<error>>
   component "gameOver → matchHistory\nMatchResultModal\nVICTORY|DEFEAT (+DRAW)" as END <<db>>
@@ -42,7 +42,7 @@ NAVR ARROW_MAIN REV
 LIVE ARROW_ERROR EXIT : Home
 EXIT ARROW_OPTIONAL MENU : Leave confirmed
 TUT ARROW_OPTIONAL MENU : Home
-TUT ARROW_MAIN TUTDONE : king-hunt-live win\n+ uncleared
+TUT ARROW_MAIN TUTDONE : king-attack-3 win\n+ uncleared
 TUTDONE ARROW_MAIN TUTFLAG : Go Home → cleared=true
 TUTDONE ARROW_MAIN MENU : Go Home
 LIVE ARROW_MAIN END : gameOver
@@ -95,7 +95,7 @@ note bottom
   so the lesson is the slow-motion version of the Review screen it introduces.
   The bespoke ``TutorialTypewriterNav`` transcript is gone; the phase readout
   between the arrows replaces it.
-  ``starchess_tutorial_cleared`` (default false): King Hunt (live) enemy
+  ``starchess_tutorial_cleared`` (default false): King Attack #3 enemy
   HP=0 opens ``TutorialCompleteConfirm`` when still false —
   Go Home sets cleared=true and returns to menu.
   Deployment / PWA: ``deployment.puml``. HUD: ``screens.puml``.

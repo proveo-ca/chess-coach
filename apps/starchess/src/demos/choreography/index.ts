@@ -6,6 +6,7 @@
  */
 import type { Component } from "solid-js";
 
+import { useKingAttackTankCounter } from "~/demos/choreography/useKingAttackTankCounter";
 import { useKingDefenseOpening } from "~/demos/choreography/useKingDefenseOpening";
 import { useKingDefenseIIChecks } from "~/demos/choreography/useKingDefenseIIChecks";
 import { useKingHuntGraduation } from "~/demos/choreography/useKingHuntGraduation";
@@ -38,5 +39,6 @@ export type LessonChoreography = (
 export const CHOREOGRAPHY = {
   kingDefenseOpening: useKingDefenseOpening,
   kingDefenseIIChecks: useKingDefenseIIChecks,
+  kingAttackTankCounter: useKingAttackTankCounter,
   kingHuntGraduation: useKingHuntGraduation,
 } satisfies Record<LessonChoreographyId, LessonChoreography>;
