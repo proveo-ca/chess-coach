@@ -38,7 +38,7 @@ package "catalog (source of truth)" {
   class TutorialScriptConfig <<db>> {
     tutorial/tutorialScript.config.ts
     --
-    19 live lessons
+    20 live lessons
     seed · chrome · hints · gates · docs
   }
 
@@ -66,6 +66,7 @@ package "live hosts" {
     --
     kingDefenseOpening
     kingDefenseIIChecks
+    kingAttackTankCounter
     kingHuntGraduation
   }
 

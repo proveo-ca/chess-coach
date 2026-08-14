@@ -788,8 +788,147 @@ export const TUTORIAL_SCRIPT_CONFIG = [
         ],
       },
       {
-        id: "king-hunt-live",
-        title: "King Hunt (live)",
+        id: "king-attack-1",
+        title: "King Attack #1",
+        board: {
+          scfen: "SCFEN|kn1Q4/prp5/8/8/3n4/8/5P1P/1R4KB|11|32|P|G:20:22|B:4:6|Q:w:;b:C=b8d7,B=knightMine:b8:b8,B=knightMine:d4:d4|S:b1b7",
+          stored: 4,
+          endTurnAfterQueue: "first",
+          choreography: "kingAttackTankCounter",
+          /**
+           * Timer off on purpose. Turn-open refills gas, and this seed's black
+           * gas is already spent on its queued mines — so an armed timer would
+           * fire `TURN_OPEN` on mount, move the SCFEN off its baseline, and
+           * `holdTutorialLine` would retire the opening line before it is read.
+           */
+          armTimer: false,
+          docs: "Enemy CC on a8 (HP 2) is smothered by a7/b7/b8, and b7 is the choke point every remaining line shares. Black's own queued turn opens rank 8 for free: nb8→d7 leaves the back rank and uncovers the fogged Qd8. One shot supplies the rest — Rb1 siege-fires b7 (without vacating), which simultaneously clears the h1-a8 diagonal for the x-raying Bh1. Two checkers at the turn-12 open take HP 2 to 0. Leave b7 alive and only the Ship connects (2→1); `kingAttackTankCounter` then deploys a Siege Tank onto b8 and shoots the Ship, which `restartWhen` reads as a retry.",
+        },
+        comment: "Aim your tank at b7. \nUnleash your army's fury!",
+        emotion: "thinking",
+        completeWhen: {
+          kind: "scfen",
+          re: /SCFEN\|[^|]+\|\d+\|[0-3]0\|/,
+        },
+        restartWhen: {
+          kind: "scfen",
+          re: /SCFEN\|[^|Q]*\|/,
+        },
+        reactions: [
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|Q]*\|/,
+            },
+            comment: "Bruh",
+            emotion: "watching",
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|\d+\|[0-3]1\|/,
+            },
+            comment: "Sniped. \nThe fog concealed your ship!",
+            emotion: "happy",
+          },
+        ],
+        hints: [
+          {
+            squares: [
+              "b7",
+            ],
+          },
+        ],
+      },
+      {
+        id: "king-attack-2",
+        title: "King Attack #2",
+        board: {
+          scfen: "SCFEN|8/7Q/8/4p3/3bkn2/8/5R2/7K|21|33|P|G:33:33|B:0:3|Q:w:;b:|S:f2",
+          stored: 0,
+          opponent: "adjutant",
+          docs: "A BattleShip and a dug-in Siege Tank against a four-unit escort. Turn 21 = tier-3 gas, so Tactical Jump (3 vespene) is affordable every turn — the whole point of the lesson. Qh7 already bears on the ke4 diagonal, so the opening turn chips it 3→2 for free; the adjutant answers by deploying and shooting at the ship, so one that sits still dies early. Rf2 is immobile but owns the f-file and rank 2, which covers the nf4 flank and the approach to Kh1. White holds 0 minerals and cannot deploy: keep re-checking the Command Center from a fresh angle, and jump out when the escort closes.",
+        },
+        comment: "Juke this army with your ship! \nGas it up to escape danger.",
+        emotion: "happy",
+        completeWhen: {
+          kind: "scfen",
+          re: /SCFEN\|[^|]+\|\d+\|[0-3]0\|/,
+        },
+        restartWhen: {
+          kind: "scfen",
+          re: /SCFEN\|[^|Q]*\|/,
+        },
+        reactions: [
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|Q]*\|/,
+            },
+            comment: "Bruh",
+            emotion: "watching",
+          },
+          {
+            /**
+             * Losing the Command Center is not the lesson's retry gate, so
+             * nothing would remount it — offer the CTA the way King Attack #3
+             * does, or the player is stranded on a terminal board.
+             */
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|\d+\|0[0-3]\|/,
+            },
+            comment: "They went around your ship and took the base. \nGive it another run.",
+            emotion: "shocked",
+            action: {
+              kind: "retryLesson",
+              label: "Retry lesson",
+            },
+          },
+          {
+            /**
+             * Tactical Jump confirmed on the opening turn — the wire carries
+             * `B=queenWarp:` and the turn field still reads 21. Point at the
+             * flank the dug-in tank already covers.
+             */
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|21\|.*queenWarp:/,
+            },
+            comment: "Your tank can take out that Hoverbike",
+            emotion: "thinking",
+          },
+          {
+            /**
+             * Catch-all, and it has to exist. Qh7 already checks ke4, so the
+             * turn-open resolve runs on mount — `holdTutorialLine` sees
+             * `timelineActive` and retires the opening line before it is read,
+             * leaving an empty bubble. Same copy as `comment` on purpose: the
+             * intro still feeds the objective, this keeps it on screen.
+             */
+            when: {
+              kind: "scfen",
+              re: /^SCFEN\|/,
+            },
+            comment: "Juke this army with your ship! \nGas it up to escape danger.",
+            emotion: "happy",
+          },
+        ],
+        hints: [
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|21\|.*queenWarp:/,
+            },
+            squares: [
+              "f4",
+            ],
+          },
+        ],
+      },
+      {
+        id: "king-attack-3",
+        title: "King Attack #3",
         board: {
           scfen: "SCFEN|8/8/8/8/4k3/5P2/6P1/4N1BK|0|33|P|G:11:11|Q:w:;b:",
           stored: 1,

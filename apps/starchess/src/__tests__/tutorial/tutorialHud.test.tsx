@@ -17,7 +17,7 @@ const renderLesson = (props: Partial<Parameters<typeof LiveLessonHost>[0]>) => {
       <Route
         path="*"
         component={() => (
-          <LiveLessonHost board={lessonBoard("king", "king-hunt-live")} {...props} />
+          <LiveLessonHost board={lessonBoard("king", "king-attack-3")} {...props} />
         )}
       />
     </MemoryRouter>
@@ -53,7 +53,7 @@ describe("tutorial guide bubble", () => {
   });
 });
 
-describe("king-hunt-live tutorial HUD", () => {
+describe("king-attack-3 tutorial HUD", () => {
   it("final lesson renders the full match HUD like /single", () => {
     renderLesson({
       tutorial: true,

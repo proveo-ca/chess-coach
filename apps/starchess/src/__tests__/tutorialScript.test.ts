@@ -1,8 +1,10 @@
 import {
   addScAction,
+  adjutant,
   beginScTurn,
   endScTurn,
   formatScFen,
+  collectLegalKingChecks,
   getSideVision,
   getUnitVision,
   parseScFen,
@@ -100,9 +102,9 @@ describe("tutorialScript", () => {
     "shouldHaveDeployed",
     "enemyDown",
   );
-  const KING_HUNT_LIVE = namedReactions(
+  const KING_ATTACK_3 = namedReactions(
     "king",
-    "king-hunt-live",
+    "king-attack-3",
     "ownCcDead",
     "enemyDown",
     "stopEnemyPawns",
@@ -123,14 +125,16 @@ describe("tutorialScript", () => {
     expect(TUTORIAL_SCRIPT[0]!.stories).toHaveLength(8);
     expect(TUTORIAL_SCRIPT[1]!.stories).toHaveLength(6);
     expect(TUTORIAL_SCRIPT[2]!.stories).toHaveLength(1);
-    expect(TUTORIAL_SCRIPT[3]!.stories).toHaveLength(6);
+    expect(TUTORIAL_SCRIPT[3]!.stories).toHaveLength(8);
     expect(TUTORIAL_SCRIPT[3]!.stories.map((s) => s.id)).toEqual([
       "king-hunt",
       "king-defense",
       "king-defense-2",
       "king-defense-3",
       "king-defense-4",
-      "king-hunt-live",
+      "king-attack-1",
+      "king-attack-2",
+      "king-attack-3",
     ]);
   });
 
@@ -138,8 +142,8 @@ describe("tutorialScript", () => {
     expect(tutorialPath("fog", "king")).toBe("/tutorial/fog/king");
     expect(tutorialPath("specials", "marine")).toBe("/tutorial/specials/marine");
     expect(tutorialPath("resolve")).toBe("/tutorial/resolve/combat-chain");
-    expect(tutorialPath("king", "king-hunt-live")).toBe(
-      "/tutorial/king/king-hunt-live",
+    expect(tutorialPath("king", "king-attack-3")).toBe(
+      "/tutorial/king/king-attack-3",
     );
   });
 
@@ -422,32 +426,32 @@ describe("tutorialScript", () => {
     ).toBe(true);
   });
 
-  it("gates king-hunt-live intro + intent tip to display turn 1", () => {
+  it("gates king-attack-3 intro + intent tip to display turn 1", () => {
     expectIntro(
       resolveTutorialLine({
         stageId: "king",
-        storyId: "king-hunt-live",
+        storyId: "king-attack-3",
         turn: 1,
       }),
       "king",
-      "king-hunt-live",
+      "king-attack-3",
     );
     expectReaction(
       resolveTutorialLine({
         stageId: "king",
-        storyId: "king-hunt-live",
+        storyId: "king-attack-3",
         turn: 1,
         reviewPhase: "intent",
       }),
-      KING_HUNT_LIVE.intentTipTurn1,
+      KING_ATTACK_3.intentTipTurn1,
     );
     expectReaction(
       resolveTutorialLine({
         stageId: "king",
-        storyId: "king-hunt-live",
+        storyId: "king-attack-3",
         turn: 2,
       }),
-      KING_HUNT_LIVE.minesTipTurn2,
+      KING_ATTACK_3.minesTipTurn2,
     );
   });
 
@@ -478,25 +482,25 @@ describe("tutorialScript", () => {
     expectReaction(
       resolveTutorialLine({
         stageId: "king",
-        storyId: "king-hunt-live",
+        storyId: "king-attack-3",
         scfen: allyDead,
       }),
-      KING_HUNT_LIVE.ownCcDead,
+      KING_ATTACK_3.ownCcDead,
     );
-    expect(KING_HUNT_LIVE.ownCcDead.action).toMatchObject({
+    expect(KING_ATTACK_3.ownCcDead.action).toMatchObject({
       kind: "retryLesson",
     });
     expectReaction(
       resolveTutorialLine({
         stageId: "king",
-        storyId: "king-hunt-live",
+        storyId: "king-attack-3",
         scfen: enemyDead,
       }),
-      KING_HUNT_LIVE.enemyDown,
+      KING_ATTACK_3.enemyDown,
     );
   });
 
-  it("fires king-hunt-live tips for enemy pawns and Marine on rank 5", () => {
+  it("fires king-attack-3 tips for enemy pawns and Marine on rank 5", () => {
     const twoEnemyPawns = "SCFEN|8/1p1p4/8/4k3/8/8/8/7K|2|33|P|G:11:11|Q:w:;b:";
     const oneEnemyPawn = "SCFEN|8/1p6/8/4k3/8/8/8/7K|2|33|P|G:11:11|Q:w:;b:";
     const marineRank5Hp3 = "SCFEN|8/8/8/4k1P1/8/8/8/7K|2|33|P|G:11:11|Q:w:;b:";
@@ -505,14 +509,14 @@ describe("tutorialScript", () => {
     const lineFor = (scfen: string) =>
       resolveTutorialLine({
         stageId: "king",
-        storyId: "king-hunt-live",
+        storyId: "king-attack-3",
         scfen,
       });
-    expectReaction(lineFor(twoEnemyPawns), KING_HUNT_LIVE.stopEnemyPawns);
-    expectIntro(lineFor(oneEnemyPawn), "king", "king-hunt-live");
-    expectReaction(lineFor(marineRank5Hp3), KING_HUNT_LIVE.pushMarine);
-    expectReaction(lineFor(marineRank5Hp1), KING_HUNT_LIVE.oneMoreHit);
-    expectIntro(lineFor(marineRank4Hp3), "king", "king-hunt-live");
+    expectReaction(lineFor(twoEnemyPawns), KING_ATTACK_3.stopEnemyPawns);
+    expectIntro(lineFor(oneEnemyPawn), "king", "king-attack-3");
+    expectReaction(lineFor(marineRank5Hp3), KING_ATTACK_3.pushMarine);
+    expectReaction(lineFor(marineRank5Hp1), KING_ATTACK_3.oneMoreHit);
+    expectIntro(lineFor(marineRank4Hp3), "king", "king-attack-3");
   });
 
   it("handles king-defense-2 script completeWhen and coach reactions", () => {
@@ -576,7 +580,7 @@ describe("tutorialScript", () => {
    * HP. A hand-authored literal would keep passing after a resolve-order change.
    */
   const playLesson = (
-    storyId: "king-defense-3" | "king-defense-4",
+    storyId: "king-defense-3" | "king-defense-4" | "king-attack-1",
     actions: readonly ScActionInput[],
   ): { afterResolve: string; afterNextTurnOpen: string } => {
     const seed = refillTurnGas(parseScFen(lessonBoard("king", storyId).scfen));
@@ -752,6 +756,209 @@ describe("tutorialScript", () => {
         stageId: "king",
         storyId: "king-defense-4",
         scfen: idle.afterNextTurnOpen,
+      }),
+      r.ownCcDead,
+    );
+  });
+
+  /**
+   * King Attack #1 is a two-turn kill, and every step of it is geometry the
+   * config cannot state: the enemy CC on a8 has exactly three lines in (rank 8,
+   * the a-file, the h1–a8 diagonal) and *black's own* queued turn opens two of
+   * them. Pin the whole arc against the engine — a resolve-order or vision
+   * change that costs a checker turns this lesson into a dead end, and only the
+   * HP arithmetic would show it.
+   */
+  it("king-attack-1 kills the HP-2 CC with two checkers at the turn-12 open", () => {
+    const r = namedReactions("king", "king-attack-1", "shipDown", "halfHit");
+    const story = storyOf("king", "king-attack-1");
+    const seed = lessonBoard("king", "king-attack-1").scfen;
+    const seedSnap = parseScFen(seed);
+
+    // Seed must be inert: no gate fires, and turn-open chips nobody.
+    expect(matchesTutorialCompleteWhen(story.completeWhen, seed)).toBe(false);
+    expect(matchesTutorialCompleteWhen(story.restartWhen, seed)).toBe(false);
+    expect(beginScTurn(seedSnap).changed).toBe(false);
+    expect(resolveTutorialHints(story.hints, seed)).toEqual(["b7"]);
+
+    // White must be able to *see* a8 or `collectLegalKingChecks` never fires —
+    // only the back-rank ship reaches that far, so this is load-bearing.
+    expect(getSideVision(seedSnap.placement, "w").litSquares.has("a8")).toBe(true);
+    expect(
+      collectLegalKingChecks(seedSnap.placement).filter((c) => c.color === "w"),
+    ).toEqual([]);
+
+    // Solve: one shot. Rb1 siege-fires b7 without vacating, which clears the
+    // choke point the h1-a8 diagonal shares with everything else.
+    const solved = playLesson("king-attack-1", [
+      { timing: "C", kind: "classical", color: "w", from: "b1", to: "b7" },
+    ]);
+    const opened = parseScFen(solved.afterNextTurnOpen);
+    expect(
+      collectLegalKingChecks(parseScFen(solved.afterResolve).placement)
+        .filter((c) => c.color === "w")
+        .map((c) => `${c.piece}${c.from}`),
+    ).toEqual(["qd8", "bh1"]);
+    // Two checkers vs HP 2 — dead at the open, before Black plans turn 12.
+    expect(opened.kingLives).toEqual({ w: 3, b: 0 });
+    expect(opened.phase).toBe("O");
+    expect(matchesTutorialCompleteWhen(story.completeWhen, solved.afterNextTurnOpen))
+      .toBe(true);
+    expect(matchesTutorialCompleteWhen(story.restartWhen, solved.afterNextTurnOpen))
+      .toBe(false);
+
+    // Leaving b7 alive costs the mecha: Black's own hoverbike still uncovers the
+    // ship, so one checker lands and the CC survives on 1 — the branch where the
+    // `kingAttackTankCounter` counterattack gets to happen at all.
+    const idle = playLesson("king-attack-1", []);
+    const survived = parseScFen(idle.afterNextTurnOpen);
+    expect(
+      collectLegalKingChecks(parseScFen(idle.afterResolve).placement)
+        .filter((c) => c.color === "w")
+        .map((c) => `${c.piece}${c.from}`),
+    ).toEqual(["qd8"]);
+    expect(survived.kingLives).toEqual({ w: 3, b: 1 });
+    expect(survived.phase).toBe("P");
+    expectReaction(
+      resolveTutorialLine({
+        stageId: "king",
+        storyId: "king-attack-1",
+        scfen: idle.afterNextTurnOpen,
+      }),
+      r.halfHit,
+    );
+
+    // Black's turn 12 (what the choreography queues): deploy a tank onto the
+    // square its hoverbike left, and shoot the BattleShip. Attacks resolve
+    // before moves, so the ship cannot be walked out of it — `restartWhen`
+    // fires and the player is sent back to turn 11.
+    let counter = refillTurnGas(survived);
+    for (const action of [
+      { timing: "B", kind: "spawn", color: "b", from: "a8", to: "b8", unit: "r" },
+      { timing: "C", kind: "classical", color: "b", from: "b8", to: "d8" },
+    ] as ScActionInput[]) {
+      counter = addScAction({ snapshot: counter, action }).snapshot;
+    }
+    const lost = endScTurn(counter, { skipTurnStartChecks: true }).next;
+    const shipLost = formatScFen(lost);
+    // `Q` still appears in the wire as the queue marker — only the placement
+    // says whether the BattleShip lived, which is what `restartWhen` reads.
+    expect(lost.placement).not.toMatch(/Q/);
+    expect(matchesTutorialCompleteWhen(story.restartWhen, shipLost)).toBe(true);
+    expectReaction(
+      resolveTutorialLine({
+        stageId: "king",
+        storyId: "king-attack-1",
+        scfen: shipLost,
+      }),
+      r.shipDown,
+    );
+  });
+
+  /**
+   * King Attack #2 hands the player one BattleShip, no minerals, and a live
+   * adjutant. Two facts carry the lesson and neither is visible in the config:
+   * Qh7 already bears on ke4 (so the opening turn chips for free and the player
+   * learns what re-checking is worth), and the adjutant answers a stationary
+   * ship by deploying onto f5 and shooting h7 — that punish is why "juke" and
+   * the tier-3 Tactical Jump budget are the lesson.
+   */
+  it("king-attack-2 opens on a free check and is punished for standing still", () => {
+    const r = namedReactions(
+      "king",
+      "king-attack-2",
+      "shipDown",
+      "ownCcDead",
+      "tankCanKillHoverbike",
+      "jukeTip",
+    );
+    const story = storyOf("king", "king-attack-2");
+    const board = lessonBoard("king", "king-attack-2");
+    const seed = board.scfen;
+    const snap = parseScFen(seed);
+
+    expect(board.opponent).toBe("adjutant");
+    // No minerals for White: the ship is the whole army, so it cannot trade.
+    expect(snap.stored).toEqual({ w: 0, b: 3 });
+    // Tier-3 turn, or Tactical Jump (3 vespene) is unaffordable and the
+    // "gas it up" half of the coach line is a lie.
+    expect(snap.gasIncome).toEqual({ w: 3, b: 3 });
+    expect(matchesTutorialCompleteWhen(story.completeWhen, seed)).toBe(false);
+    expect(matchesTutorialCompleteWhen(story.restartWhen, seed)).toBe(false);
+    // The opening check resolves on mount, so `holdTutorialLine` retires the
+    // intro — the catch-all reaction is what actually reaches the bubble, and
+    // it has to carry the same line or the lesson ships with no instructions.
+    expect(r.jukeTip.comment).toBe(story.comment);
+    expectReaction(
+      resolveTutorialLine({
+        stageId: "king",
+        storyId: "king-attack-2",
+        scfen: seed,
+      }),
+      r.jukeTip,
+    );
+
+    // Standing check on the long diagonal — the opening turn costs Black 1 HP.
+    const opened = beginScTurn(snap);
+    expect(
+      collectLegalKingChecks(snap.placement).map((c) => `${c.piece}${c.from}`),
+    ).toEqual(["qh7"]);
+    expect(opened.next.kingLives).toEqual({ w: 3, b: 2 });
+
+    // The adjutant's reply: deploy onto f5 and shoot the ship where it sits.
+    const reply = adjutant(opened.next, { color: "b", storedFor: () => 3 });
+    const queued = reply.snapshot.queue?.actions ?? [];
+    expect(queued.some((a) => a.timing === "B" && a.kind === "spawn")).toBe(true);
+    expect(
+      queued.some((a) => a.timing === "C" && a.to === "h7"),
+      "adjutant must punish a ship left on h7",
+    ).toBe(true);
+
+    // Confirming the Tactical Jump on turn 21 hands the bubble to the tank tip
+    // and rings the hoverbike. Both halves are load-bearing: the turn field
+    // scopes it to the opening turn, `queenWarp:` to a *confirmed* jump.
+    const warpQueued =
+      "SCFEN|8/7Q/8/4p3/3bkn2/8/5R2/7K|21|32|P|G:03:33|B:0:3|Q:w:B=queenWarp:h7:d7;b:|S:f2";
+    expectReaction(
+      resolveTutorialLine({
+        stageId: "king",
+        storyId: "king-attack-2",
+        scfen: warpQueued,
+      }),
+      r.tankCanKillHoverbike,
+    );
+    expect(resolveTutorialHints(story.hints, warpQueued)).toEqual(["f4"]);
+    // Same jump a turn later is no longer the opening tip, and an unqueued
+    // board never rings anything.
+    expect(resolveTutorialHints(story.hints, seed)).toEqual([]);
+    expect(
+      resolveTutorialLine({
+        stageId: "king",
+        storyId: "king-attack-2",
+        scfen: warpQueued.replace("|21|", "|22|"),
+      }).comment,
+    ).toBe(r.jukeTip.comment);
+
+    // Losing the ship restarts; losing the CC only ever offers a manual retry,
+    // so that reaction has to carry the CTA or the board is a dead end.
+    const shipGone = "SCFEN|8/8/8/4p3/3bkn2/8/8/7K|22|33|P|G:33:33|B:0:3|Q:w:;b:";
+    expect(matchesTutorialCompleteWhen(story.restartWhen, shipGone)).toBe(true);
+    expectReaction(
+      resolveTutorialLine({
+        stageId: "king",
+        storyId: "king-attack-2",
+        scfen: shipGone,
+      }),
+      r.shipDown,
+    );
+    expect(r.ownCcDead.action).toMatchObject({ kind: "retryLesson" });
+    const ccGone = "SCFEN|8/7Q/8/4p3/3bkn2/8/8/8|22|03|P|G:33:33|B:0:3|Q:w:;b:";
+    expect(matchesTutorialCompleteWhen(story.restartWhen, ccGone)).toBe(false);
+    expectReaction(
+      resolveTutorialLine({
+        stageId: "king",
+        storyId: "king-attack-2",
+        scfen: ccGone,
       }),
       r.ownCcDead,
     );

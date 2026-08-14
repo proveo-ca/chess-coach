@@ -9,7 +9,7 @@ import { lessonStory, sampleStory } from "~/stories/project";
 
 /**
  * Stories mount SCFEN demos / fixtures only — no queue / resolve logic here.
- * Non-live = DualNav observer review. Live = King Hunt (live) + Vermeer (live).
+ * Non-live = DualNav observer review. Live = King Attack #3 + Vermeer (live).
  * GasDeploy specials live under StarChess/Special Moves.
  */
 const meta = {
@@ -19,7 +19,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Review DualNav demos + live seeds. Combat Chain / King Hunt / Promotion = observer DualNav. King Hunt (live) uses ResourceBar / TurnBarSidebar / GasDeploy; Vermeer (live) uses ResourceBar / TurnBar / GasDeploy. Both use an adjutant. Every board mounts on Screen grid.",
+          "Review DualNav demos + live seeds. Combat Chain / King Hunt / Promotion = observer DualNav. King Attack #3 uses ResourceBar / TurnBarSidebar / GasDeploy; Vermeer (live) uses ResourceBar / TurnBar / GasDeploy. Both use an adjutant. Every board mounts on Screen grid.",
       },
     },
   },
@@ -55,9 +55,9 @@ export const KingHunt: Story = {
   render: () => <KingHuntDemo />,
 };
 
-export const KingHuntLive: Story = {
-  ...lessonStory("king", "king-hunt-live", { shell: "eclipse", turnChrome: "sidebar" }),
-  name: "King Hunt (live)",
+export const KingAttack3: Story = {
+  ...lessonStory("king", "king-attack-3", { shell: "eclipse", turnChrome: "sidebar" }),
+  name: "King Attack #3",
   parameters: {
     layout: "fullscreen",
     docs: {

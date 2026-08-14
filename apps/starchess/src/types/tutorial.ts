@@ -73,6 +73,7 @@ export type LiveLessonBoard = {
 export type LessonChoreographyId =
   | "kingDefenseOpening"
   | "kingDefenseIIChecks"
+  | "kingAttackTankCounter"
   | "kingHuntGraduation";
 
 /** Board hint step — first matching entry wins (SCFEN `when`, else fallback). */
