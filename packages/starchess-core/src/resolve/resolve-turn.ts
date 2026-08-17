@@ -386,12 +386,10 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
       case "drop":
         return;
       case "quiet":
-        quiets.push(
-          out.to ? { color: plan.color, from: plan.from, to: out.to } : plan,
-        );
+        quiets.push(out.to ? { ...plan, to: out.to } : plan);
         return;
       case "occupy":
-        occupy.push({ color: plan.color, from: plan.from, to: out.to });
+        occupy.push({ ...plan, to: out.to });
         return;
       case "capture": {
         const hit: ResolveAttack = {
@@ -407,7 +405,7 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
         (out.fogged ? moveCollisions : attacks).push(hit);
         deadSquares.add(out.at);
         clearOnCapture(out.at, plan.color, actor.type);
-        occupy.push({ color: plan.color, from: plan.from, to: out.at });
+        occupy.push({ ...plan, to: out.at });
         return;
       }
       case "mineClear":

@@ -43,6 +43,59 @@ describe("last-rank promotion (classical)", () => {
 
 
 
+  /**
+   * Diagonal capture onto the last rank. The quiet push above kept its
+   * promotion because the resolver forwarded the plan by reference; the capture
+   * bucket used to rebuild the plan literal and drop the choice, so the marine
+   * took the piece and stayed a marine.
+   */
+  it("capturing onto the last rank promotes too", () => {
+    const start = parseScFen(
+      "SCFEN|k4r2/4P3/8/8/8/8/8/4K3|1|33|P|G:11:11|Q:w:;b:",
+    );
+    const queued = addScAction({
+      snapshot: start,
+      action: {
+        timing: "C",
+        kind: "classical",
+        color: "w",
+        from: "e7",
+        to: "f8",
+        promotion: "q",
+      },
+    }).snapshot;
+    const r = endScTurn(queued);
+    expect(r.resolved.promotions).toEqual([
+      { color: "w", from: "e7", at: "f8", unit: "q" },
+    ]);
+    expect(placementToMap(r.next.placement).get("f8")).toEqual({
+      type: "q",
+      color: "w",
+    });
+  });
+
+  it("honours a non-queen choice on a last-rank capture", () => {
+    const start = parseScFen(
+      "SCFEN|k4r2/4P3/8/8/8/8/8/4K3|1|33|P|G:11:11|Q:w:;b:",
+    );
+    const queued = addScAction({
+      snapshot: start,
+      action: {
+        timing: "C",
+        kind: "classical",
+        color: "w",
+        from: "e7",
+        to: "f8",
+        promotion: "n",
+      },
+    }).snapshot;
+    const r = endScTurn(queued);
+    expect(placementToMap(r.next.placement).get("f8")).toEqual({
+      type: "n",
+      color: "w",
+    });
+  });
+
   it("rejects classical last-rank without a promotion choice", () => {
     const snap = parseScFen(
       "SCFEN|k7/4P3/8/8/8/8/8/4K3|1|33|P|G:11:11|Q:w:;b:",
@@ -61,7 +114,21 @@ describe("last-rank promotion (classical)", () => {
     ).toThrow(/promotion/i);
   });
 
-
-
-  /** `demos/attackMine` — DualNav "attack mine then occupy" package. */
+  it("rejects a last-rank capture without a promotion choice", () => {
+    const snap = parseScFen(
+      "SCFEN|k4r2/4P3/8/8/8/8/8/4K3|1|33|P|G:11:11|Q:w:;b:",
+    );
+    expect(() =>
+      addScAction({
+        snapshot: snap,
+        action: {
+          timing: "C",
+          kind: "classical",
+          color: "w",
+          from: "e7",
+          to: "f8",
+        },
+      }),
+    ).toThrow(/promotion/i);
+  });
 });

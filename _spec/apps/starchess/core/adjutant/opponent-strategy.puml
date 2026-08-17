@@ -13,7 +13,27 @@ package "App trigger" {
 }
 
 package "Strategy" {
-  component "ai/adjutant.ts\nplan search · scoring" as AI <<app>>
+  component "ai/adjutant.ts\norchestrator only" as AI <<app>>
+
+  package "ai/context" {
+    component "buildAdjutantCtx\nSCFEN → input variables" as CTX <<app>>
+    component "vision · kingIntel · tactical\nmaterial · mines · pawns · geometry" as CTXP <<app>>
+    component "posture\nexpand / seek / hunt → weights" as POST <<app>>
+  }
+
+  package "ai/strategies" {
+    component "checks" as S1 <<app>>
+    component "captures" as S2 <<app>>
+    component "threats" as S3 <<app>>
+    component "survival" as S4 <<app>>
+    component "mapControl\n(+ promotion)" as S5 <<app>>
+    component "economy\n(deploy mix)" as S6 <<app>>
+  }
+
+  package "ai/plans" {
+    component "stacks\nsame-turn B+C composition" as PL <<app>>
+    component "simulate\nclearsCheck guard" as SIM <<app>>
+  }
 }
 
 package "Reads" {
@@ -29,15 +49,26 @@ package "Document" {
 }
 
 TRIG ARROW_MAIN AI : snap in (opposite side)
-AI ARROW_OPTIONAL BQ : evaluate candidates
+AI ARROW_MAIN CTX : build once per turn
+CTX ARROW_OPTIONAL CTXP : derive intel
+CTX ARROW_OPTIONAL POST : resolve posture → weights
+CTXP ARROW_OPTIONAL BQ : evaluate board
+AI ARROW_MAIN S5 : generate + score\n(ctx read-only)
+S5 -[hidden]- S1
+AI ARROW_MAIN PL : compose B+C packages
+AI ARROW_MAIN SIM : guard every plan
 AI ARROW_MAIN Q : commit chosen plan
 Q ARROW_MAIN SNAP : gated write
 TRIG ARROW_OPTIONAL SNAP : APPLY_SNAPSHOT / store merge\n(one clock — no bypass reduce rules)
 
 note bottom
   **Pattern:** Strategy → Command.
+  **Turn shape:** context → posture weights → strategies
+  (generate + score) → plans → guard → rank → commit.
   **Allowed:** adjutant → addScAction (same gates as human).
   **Forbidden:** adjutant → resolve-turn or raw Q: string edits.
   **Forbidden:** a second legality stack in the app for AI moves.
+  **Forbidden:** a strategy that reads the snapshot directly, mutates
+  the context, or branches on posture — weights are the only dial.
 end note
 @enduml
