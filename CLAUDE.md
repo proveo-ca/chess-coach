@@ -45,6 +45,7 @@ When you add, rename, or remove a component, hook, store, or service:
 | `_spec/apps/starchess/demos.puml` | Canonical demos + shipped vs pending |
 | `_spec/apps/starchess/starchess-mode.puml` | Product / UX mode (economy, specials, HUD) |
 | `_spec/apps/starchess/animation-pipeline.md` | `playTimeline` → `TIMELINE_*` MatchStore → AnimationStage |
+| `_spec/apps/starchess/vfx-guarantees.md` | **VFX guarantee roster** — every combat-VFX promise ↔ its e2e test (`apps/e2e/tests/vfx/`), observation method, known gaps |
 | `_spec/apps/starchess/roadmap.md` | Spec remediation roadmap |
 | `_spec/packages/starchess-core/*` | Live StarChess rules: SCFEN wire/queue, resolve, turn queue, sc-moves |
 | `_spec/packages/starchess-core/overview.puml` | Resolve engine **module interior**: every function in `resolve-turn.ts` / `submit-turn.ts`, the snapshot ladder, the invariants that throw |
