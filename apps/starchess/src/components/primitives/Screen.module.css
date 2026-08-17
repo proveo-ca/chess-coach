@@ -169,6 +169,10 @@
   box-sizing: border-box;
   min-height: 0;
   grid-row: 3;
+  /* Containing block for footer-scoped overlays (GasRack's cancel hint). Anchored
+     here rather than to the viewport, a hint cannot reach row 2 — the board row
+     is structurally out of reach instead of merely avoided by measurement. */
+  position: relative;
 }
 
 h1 {

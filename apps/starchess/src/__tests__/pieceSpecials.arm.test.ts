@@ -34,7 +34,7 @@ describe("armPieceSpecial", () => {
     ).toBe(false);
   });
 
-  it("marks specialsUsed on armed and skips on free/pending/false", () => {
+  it("marks specialsUsed on armed and skips on pending/false", () => {
     const s = store();
     expect(
       armPieceSpecial(s, { square: "b1", piece: "n" }, { n: () => false }),
@@ -43,9 +43,6 @@ describe("armPieceSpecial", () => {
       armPieceSpecial(s, { square: "b1", piece: "n" }, { n: () => "pending" }),
     ).toBe(true);
     expect(s.state().specialsUsed.has("b1")).toBe(false);
-    expect(
-      armPieceSpecial(s, { square: "b1", piece: "n" }, { n: () => "free" }),
-    ).toBe(true);
     expect(
       armPieceSpecial(s, { square: "b1", piece: "n" }, { n: () => "armed" }),
     ).toBe(true);

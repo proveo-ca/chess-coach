@@ -5,19 +5,28 @@
  */
 import { placementToMap } from "@chess-coach/starchess-core";
 import type { PieceSymbol, Square } from "chess.js";
-import { For, Show, createSignal, onCleanup, type Component } from "solid-js";
+import {
+  For,
+  Show,
+  createEffect,
+  createMemo,
+  createSignal,
+  onCleanup,
+  type Component,
+} from "solid-js";
 import { Portal } from "solid-js/web";
 
 import {
-  canPawnDoubleFree,
   classicFenForViewer,
   energyRemaining,
   hasUsedSpecialThisTurn,
   viewerColor,
 } from "~/app/matchEconomy";
 import { useMatchStore } from "~/app/MatchStoreContext";
+import { ChatBubble } from "~/components/primitives/ChatBubble";
 import { VespeneIcon } from "~/components/primitives/icons";
 import { SpecialPreview } from "~/components/primitives/SpecialPreview";
+import { useIsDesktopClient } from "~/hooks/useIsDesktopClient";
 import { SPECIAL_ENERGY_COST } from "~/presentation/constants";
 import styles from "~/presentation/hud/components/GasRack.module.css";
 import { specialCopyFor } from "~/presentation/hud/specialCopy";
@@ -66,7 +75,19 @@ export const GasRack: Component<GasDeployProps> = (props) => {
 
   const [drag, setDrag] = createSignal<DragState | null>(null);
   const [hover, setHover] = createSignal<HoverState | null>(null);
+  /**
+   * In-flow rack → the hint is a footer-region overlay. The dynamic band's rack
+   * is portaled to a viewport-fixed dock with no such ancestor, so that one
+   * anchors to the dock instead (there is no footer band to sit in).
+   */
+  const [inFooterRegion, setInFooterRegion] = createSignal(true);
+  /**
+   * Only a client that plausibly *has* an Esc key is told about one; every other
+   * device gets the drop-outside half, which is true everywhere.
+   */
+  const desktopClient = useIsDesktopClient();
   let circleEl: HTMLButtonElement | undefined;
+  let dockEl: HTMLDivElement | undefined;
   let returnTimer: number | undefined;
 
   /** Canisters visually lifted with the drag (2 while hovering a 2-gas unit). */
@@ -94,6 +115,19 @@ export const GasRack: Component<GasDeployProps> = (props) => {
 
   onCleanup(clearReturnTimer);
 
+  /**
+   * Which anchor applies. Read per lift rather than at mount: the band can flip
+   * between the in-flow rack and the floating dock while the screen is open.
+   */
+  const measureHintAnchor = () => {
+    setInFooterRegion(!!dockEl?.closest('[data-region="bottom"]'));
+  };
+
+  const cancelHint = () =>
+    desktopClient()
+      ? "Press Esc — or drop outside the board — to cancel"
+      : "Drop your gas outside of the board to cancel";
+
   const squareUnder = (clientX: number, clientY: number): Square | null => {
     const el = document.elementFromPoint(clientX, clientY);
     const sq = el?.closest?.("[data-square]")?.getAttribute("data-square");
@@ -108,7 +142,17 @@ export const GasRack: Component<GasDeployProps> = (props) => {
     }
     const state = store.shell();
     const color = viewerColor(store);
-    const map = placementToMap(state.liveSnapshot.placement);
+    let map: ReturnType<typeof placementToMap>;
+    try {
+      map = placementToMap(state.liveSnapshot.placement);
+    } catch {
+      // Timeline commits publish intermediate placements that `placementToMap`
+      // rejects (same guard `LiveLessonHost` keeps on forced rook mode). A drop
+      // that lands in that window must read as "no unit here" — throwing out of
+      // the gesture is what used to strand the lift mid-air.
+      setHover(null);
+      return null;
+    }
     const queue = state.liveSnapshot.queue?.actions ?? [];
     const myClassical = queue.filter(
       (a) => a.timing === "C" && a.kind === "classical" && a.color === color,
@@ -177,20 +221,120 @@ export const GasRack: Component<GasDeployProps> = (props) => {
     returnTimer = window.setTimeout(finishCancel, 240);
   };
 
+  /**
+   * One live lift = one set of `window` listeners.
+   *
+   * The release deliberately does **not** hang off the button. `setPointerCapture`
+   * is a nice-to-have — it keeps squares from hovering under the travelling
+   * canister — but it is not load-bearing: capture can be lost (element
+   * re-render, browser quirk, a release the button never sees), and when it was
+   * the only route the terminal event took, the lift stranded with
+   * `returning: false`. Ghost frozen to the screen, hint still up, and
+   * `onPointerDown` bailing on `drag()` for every retry until a reload.
+   *
+   * Keyed on the pointer id alone (`dragSession`) so travelling coordinates do
+   * not re-subscribe on every move.
+   */
+  const dragSession = createMemo(() => {
+    const d = drag();
+    return d && !d.returning ? d.pointerId : null;
+  });
+
+  createEffect(() => {
+    const pointerId = dragSession();
+    if (pointerId == null) return;
+
+    const releaseCapture = () => {
+      try {
+        circleEl?.releasePointerCapture(pointerId);
+      } catch {
+        /* never captured, or already released */
+      }
+    };
+    /** Retire the lift wherever it currently is — the canister flies home. */
+    const bail = () => {
+      const d = drag();
+      if (!d || d.returning) return;
+      releaseCapture();
+      beginReturn(d.x, d.y);
+    };
+
+    const onMove = (e: PointerEvent) => {
+      if (e.pointerId !== pointerId) return;
+      const d = drag();
+      if (!d || d.returning) return;
+      // Mouse moving with no button held = the release happened somewhere we
+      // never heard about (outside the window, over browser chrome). Recover.
+      if (e.pointerType === "mouse" && e.buttons === 0) {
+        bail();
+        return;
+      }
+      setDrag({ ...d, x: e.clientX, y: e.clientY });
+      resolveHover(e.clientX, e.clientY);
+    };
+
+    const onUp = (e: PointerEvent) => {
+      if (e.pointerId !== pointerId) return;
+      const d = drag();
+      if (!d || d.returning) return;
+      releaseCapture();
+      commitOrCancel(e.clientX, e.clientY);
+    };
+
+    const onPointerCancelEvent = (e: PointerEvent) => {
+      if (e.pointerId !== pointerId) return;
+      bail();
+    };
+
+    /** Esc is the desktop half of the cancel contract (touch drops outside). */
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      e.preventDefault();
+      bail();
+    };
+
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
+    window.addEventListener("pointercancel", onPointerCancelEvent);
+    window.addEventListener("keydown", onKeyDown);
+    // Focus loss (alt-tab, devtools, OS switcher) never sends a release.
+    window.addEventListener("blur", bail);
+    onCleanup(() => {
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onPointerCancelEvent);
+      window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("blur", bail);
+    });
+  });
+
+  /**
+   * Decide the drop. Every read here runs against a board that may be mid-commit,
+   * so the whole decision is fail-safe: anything unexpected degrades to the miss
+   * path (canister flies home) instead of escaping the pointer handler, which
+   * would leave `drag()` set with `returning: false` — ghost stuck to the screen
+   * and `onPointerDown` refusing every retry.
+   */
   const commitOrCancel = (clientX: number, clientY: number) => {
-    const over = resolveHover(clientX, clientY);
-    const copy = over ? specialCopyFor(over.piece) : null;
-    const freeClassical = !!over && over.piece === "p" && canPawnDoubleFree(store, over.square);
-    const cost = over ? gasCostFor(over.piece) : SPECIAL_ENERGY_COST;
-    const canArm =
-      over &&
-      copy?.deployable &&
-      (freeClassical ||
-        (!hasUsedSpecialThisTurn(store, over.square) && energyRemaining(store) >= cost));
-    if (canArm && over) {
-      const target = { square: over.square, piece: over.piece };
+    let target: GasDeployTarget | null = null;
+    try {
+      const over = resolveHover(clientX, clientY);
+      const copy = over ? specialCopyFor(over.piece) : null;
+      const cost = over ? gasCostFor(over.piece) : SPECIAL_ENERGY_COST;
+      const canArm =
+        over &&
+        copy?.deployable &&
+        !hasUsedSpecialThisTurn(store, over.square) &&
+        energyRemaining(store) >= cost;
+      if (canArm && over) target = { square: over.square, piece: over.piece };
+    } catch {
+      target = null;
+    }
+    if (target) {
       setDrag(null);
       setHover(null);
+        // Outside the guard on purpose — arming owns its own failures, and by here
+      // the lift is already retired, so a throw cannot strand anything.
       props.onDeploy?.(target);
       return;
     }
@@ -201,7 +345,13 @@ export const GasRack: Component<GasDeployProps> = (props) => {
     if (e.button !== 0) return;
     if (gas() <= 0 || drag()) return;
     e.preventDefault();
-    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    // Best-effort only: the lift's terminal events come from `window`, so losing
+    // this capture costs a little hover polish, never the drop.
+    try {
+      (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    } catch {
+      /* capture refused — window listeners still carry the gesture */
+    }
     clearReturnTimer();
     setDrag({
       pointerId: e.pointerId,
@@ -209,46 +359,14 @@ export const GasRack: Component<GasDeployProps> = (props) => {
       y: e.clientY,
       returning: false,
     });
+    measureHintAnchor();
     resolveHover(e.clientX, e.clientY);
-  };
-
-  const onPointerMove = (e: PointerEvent) => {
-    const d = drag();
-    if (!d || d.returning || d.pointerId !== e.pointerId) return;
-    setDrag({ ...d, x: e.clientX, y: e.clientY });
-    resolveHover(e.clientX, e.clientY);
-  };
-
-  const onPointerUp = (e: PointerEvent) => {
-    const d = drag();
-    if (!d || d.returning || d.pointerId !== e.pointerId) return;
-    try {
-      (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
-    } catch {
-      /* already released */
-    }
-    commitOrCancel(e.clientX, e.clientY);
-  };
-
-  const onPointerCancel = (e: PointerEvent) => {
-    const d = drag();
-    if (!d || d.returning) return;
-    beginReturn(d.x, d.y);
-    void e;
   };
 
   const hoverCopy = () => {
     const h = hover();
     if (!h) return null;
     const base = specialCopyFor(h.piece);
-    if (h.piece === "p" && canPawnDoubleFree(store, h.square)) {
-      return {
-        ...base,
-        name: "Double Step (free)",
-        description: "Classical double — canister unused, no gas spent.",
-        deployable: true,
-      };
-    }
     if (hasUsedSpecialThisTurn(store, h.square)) {
       return {
         ...base,
@@ -274,6 +392,9 @@ export const GasRack: Component<GasDeployProps> = (props) => {
 
   return (
     <div
+      ref={(el) => {
+        dockEl = el;
+      }}
       class={`${styles.dock}${props.compact ? ` ${styles.compact}` : ""}${props.class ? ` ${props.class}` : ""}`}
       data-testid="gas-deploy"
       role="group"
@@ -295,9 +416,6 @@ export const GasRack: Component<GasDeployProps> = (props) => {
           }
           disabled={gas() <= 0 && !drag()}
           onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
-          onPointerUp={onPointerUp}
-          onPointerCancel={onPointerCancel}
         >
           <Show when={dockCount() > 0}>
             <span class={`${styles.canister} ${styles.readyCanister}`} aria-hidden="true">
@@ -306,6 +424,18 @@ export const GasRack: Component<GasDeployProps> = (props) => {
           </Show>
         </button>
       </div>
+
+      <Show when={!!drag() && !drag()!.returning}>
+        <div
+          class={styles.cancelHint}
+          classList={{ [styles.cancelHintFloating]: !inFooterRegion() }}
+          data-testid="gas-cancel-hint"
+        >
+          <ChatBubble testId="gas-cancel-hint-bubble" class={styles.cancelHintBubble}>
+            {cancelHint()}
+          </ChatBubble>
+        </div>
+      </Show>
 
       <div class={styles.oval} aria-hidden="true">
         <div class={styles.track}>

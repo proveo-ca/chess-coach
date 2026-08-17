@@ -6,7 +6,6 @@
 import {
   MAX_DEPLOYED_MATERIAL,
   MAX_STORED_MATERIAL,
-  canClassicalPawnDouble,
   deployedMaterialFromPlacement,
   energyForTurn,
   incomeForTurn,
@@ -216,14 +215,6 @@ export const hasUsedSpecialThisTurn = (store: MatchStore, square: Square) =>
 export const classicFenForViewer = (store: MatchStore) => {
   const snap = readDisplayedSnapshot(store);
   return toClassicFen(snap.placement, viewerColor(store), 0, Math.max(1, snap.turn));
-};
-
-export const canPawnDoubleFree = (store: MatchStore, square: Square) => {
-  try {
-    return canClassicalPawnDouble(readDisplayedSnapshot(store).placement, square);
-  } catch {
-    return false;
-  }
 };
 
 export const currentQueue = (store: MatchStore) =>

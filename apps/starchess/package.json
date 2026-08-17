@@ -25,6 +25,7 @@
     "deploy": "npm run build && wrangler deploy"
   },
   "dependencies": {
+    "@chess-coach/client-platform": "workspace:*",
     "@chess-coach/starchess-core": "workspace:*",
     "@solidjs/router": "^0.16.1",
     "chess.js": "^1.4.0",

@@ -203,6 +203,8 @@ export type TutorialScriptContext = {
   turn?: number;
   /** Live targeting kind (`bishopSnipe`, …). */
   targetingKind?: string | null;
+  /** Turn-open checks have landed — see {@link holdTutorialLine}. */
+  turnStartChecksApplied?: boolean;
 };
 
 /** Pick the most specific Selena line for the current board/store context. */
@@ -265,7 +267,7 @@ export const holdTutorialLine = (
   raw: TutorialLine,
   ctx: Pick<
     TutorialScriptContext,
-    "scfen" | "timelineActive" | "reviewPhase"
+    "scfen" | "timelineActive" | "reviewPhase" | "turnStartChecksApplied"
   >,
 ): { hold: TutorialLineHold; line: TutorialLine } => {
   let h =
@@ -274,11 +276,33 @@ export const holdTutorialLine = (
       : {
           lessonKey,
           baselineScfen: undefined,
+          checksApplied: undefined,
           introDone: false,
           sticky: undefined,
         };
 
   if (ctx.scfen && h.baselineScfen == null) {
+    h = { ...h, baselineScfen: ctx.scfen };
+  }
+
+  /*
+   * Turn-open is engine bookkeeping, not a player move: it refills gas and
+   * applies standing check damage, so on a seed whose gas is mid-turn (black's
+   * spent on a queued mine, say) the very act of arming the planning timer
+   * moves the SCFEN off the seed on mount. Re-baseline on the false→true flip
+   * so that edit does not read as "the player acted" and retire the opening
+   * line unread. Only while the intro is still live — later turns re-open too,
+   * and by then a reaction is sticky and must not be re-armed.
+   */
+  const checksJustApplied =
+    ctx.turnStartChecksApplied === true && h.checksApplied !== true;
+  // Track `undefined` too. A host that reports and then stops (a narration
+  // reset publishes `{}`) must clear the latch rather than strand it on `true`,
+  // which would swallow the next real flip.
+  if (h.checksApplied !== ctx.turnStartChecksApplied) {
+    h = { ...h, checksApplied: ctx.turnStartChecksApplied };
+  }
+  if (checksJustApplied && !h.introDone && ctx.scfen) {
     h = { ...h, baselineScfen: ctx.scfen };
   }
 

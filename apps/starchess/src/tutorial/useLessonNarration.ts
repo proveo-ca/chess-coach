@@ -32,6 +32,7 @@ export const useLessonNarration = (
       }),
       timelineActive: s.timeline.active,
       scfen: formatScFen(snap),
+      turnStartChecksApplied: s.turnStartChecksApplied,
       queue: (snap.queue?.actions ?? []).map((a) => ({
         timing: a.timing,
         kind: a.kind,

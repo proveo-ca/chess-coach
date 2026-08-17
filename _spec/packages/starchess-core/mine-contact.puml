@@ -48,6 +48,22 @@ note right of MC
   also the mine ""withoutMine"" spends).
 end note
 
+note as N_BLOCK
+  **Mines are never blockers.** Check geometry (""attacksSquare"" via
+  ""collectLegalKingChecks"") and ""firstBlockerOnRay"" — the pre-collected
+  ""H:"" shot path in ""applyPendingKingShots"" — read the **placement map**
+  only. A mine on a check ray therefore neither stops the shot nor is spent by
+  it: this table is the **only** exit a mine has.
+
+  An interposed **piece** on that same tile does both: it eats the shot
+  (""collision"") and, being captured on a mined tile, clears the mine
+  (""attack"" mode above). Pinned by ""src/__tests__/mine/mineChecks.test.ts"";
+  the tutorial lesson ""king/king-attack-1"" plants c6 on the h1-a8 diagonal so
+  the product board carries the same case.
+end note
+
+MC .. N_BLOCK
+
 note bottom
   **What consolidating it fixed.** The same question used to be answered at
   fourteen ""mineAt"" reads in ""resolve-turn.ts"" plus a private copy in

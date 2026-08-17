@@ -15,7 +15,7 @@ const BY_TYPE: Record<PieceSymbol, SpecialCopy> = {
     unit: "Marine",
     name: "Extra Step",
     description:
-      "Gas moves 1 extra square forward. Start-rank classical doubles are free (no gas).",
+      "Gas moves 1 extra square forward. Once per turn.",
     deployable: true,
   },
   n: {

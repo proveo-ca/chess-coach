@@ -53,9 +53,9 @@ const nextSeq = (snap: ScFenSnapshot): number => {
 };
 
 /**
- * Append one planning action. Assigns `seq`, enforces MODE budget
- * (≤1 classical; any number of specials, freely before (B) and/or after (F)
- * that classical) and gas cost for specials.
+ * Append one planning action. Assigns `seq`, enforces MODE budget (≤1 classical;
+ * one special per unit, before (B) or after (F) that classical) and gas cost for
+ * specials.
  */
 export const addScAction = (input: {
   snapshot: ScFenSnapshot;
@@ -87,8 +87,17 @@ export const addScAction = (input: {
       );
     }
   } else {
-    // No timing gate: specials may sit before (B) and/or after (F) the side's
-    // classical in the same turn — only gas limits how many.
+    // No timing gate: a special may sit before (B) or after (F) the side's
+    // classical. But one unit gets one special per turn — `assertQueueShape` is
+    // the backstop (it guards the wire too); this pre-check is what gives the
+    // caller a typed refusal instead of a bare shape error. `from` identifies the
+    // unit for both timings — an F records the pre-classical square.
+    if (side.some((a) => a.timing !== "C" && a.from === action.from)) {
+      throw new AddScActionError(
+        "SC_QUEUE_SHAPE",
+        `unit on ${action.from} already used its special this turn`,
+      );
+    }
     const cost = specialGasCost(action.kind);
     if (snap.gas[action.color] < cost) {
       throw new AddScActionError(

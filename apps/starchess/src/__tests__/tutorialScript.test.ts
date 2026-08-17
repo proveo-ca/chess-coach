@@ -9,6 +9,7 @@ import {
   getUnitVision,
   parseScFen,
   placementToMap,
+  rayBetween,
   refillTurnGas,
   scMovesFrom,
   type ScActionInput,
@@ -27,6 +28,7 @@ import {
   resolveTutorialLine,
   resolveTutorialStoryId,
   tutorialPath,
+  tutorialStage,
   tutorialStory,
 } from "~/tutorial/tutorialScript";
 import type { TutorialLine, TutorialSectionId } from "~/types/tutorial";
@@ -345,6 +347,121 @@ describe("tutorialScript", () => {
       { scfen: seed, reviewPhase: "intent" },
     );
     expectReaction(step.line, FOG_BISHOP.pawnBlocks);
+  });
+
+  it("holdTutorialLine keeps the intro across turn-open bookkeeping", () => {
+    // Turn-open refills gas and applies standing check damage, so on a seed
+    // whose gas is mid-turn the SCFEN moves on mount with no player input.
+    // king/king-attack-1 is that seed: Black's gas reads 0, spent on its queued
+    // mine, and turn-open puts it back to 2. Arming the planning timer used to
+    // retire the opening line unread, which is why the timer was disabled here.
+    const seed = lessonBoard("king", "king-attack-1").scfen;
+    const seedSnap = parseScFen(seed);
+    const openedSnap = beginScTurn(seedSnap).next;
+    // The wire the narration store publishes once turn-open lands. Note it is
+    // not re-parseable: `refillTurnGas` hands Black back gas its queued mine
+    // already spent, so the string trips `assertQueueGas`. That is the rules
+    // engine's business — what matters here is that the wire *moved*.
+    const opened = formatScFen(openedSnap);
+    expect(seedSnap.gas).toEqual({ w: 2, b: 0 });
+    expect(openedSnap.gas).toEqual({ w: 2, b: 2 });
+    expect(opened).not.toBe(seed);
+
+    const key = "king|king-attack-1";
+    const lineFor = (scfen: string) =>
+      resolveTutorialLine({
+        stageId: "king",
+        storyId: "king-attack-1",
+        scfen,
+      });
+
+    // Mount: the pre-turn-open seed is the baseline, intro on screen.
+    let step = holdTutorialLine(
+      { lessonKey: "", introDone: false },
+      key,
+      lineFor(seed),
+      { scfen: seed, turnStartChecksApplied: false },
+    );
+    expectIntro(step.line, "king", "king-attack-1");
+
+    // Turn-open lands: the SCFEN moved, but no one played a move — the line
+    // must survive, and the opened board becomes the new baseline.
+    step = holdTutorialLine(step.hold, key, lineFor(opened), {
+      scfen: opened,
+      turnStartChecksApplied: true,
+    });
+    expectIntro(step.line, "king", "king-attack-1");
+    expect(step.hold.baselineScfen).toBe(opened);
+
+    // Queueing an actual action moves the board for real, and that still
+    // retires the intro — the re-baseline must not swallow a player's move.
+    const played = formatScFen(
+      addScAction({
+        snapshot: openedSnap,
+        action: {
+          timing: "C",
+          kind: "classical",
+          color: "w",
+          from: "g1",
+          to: "f1",
+        } satisfies ScActionInput,
+      }).snapshot,
+    );
+    expect(played).not.toBe(opened);
+    step = holdTutorialLine(step.hold, key, lineFor(opened), {
+      scfen: played,
+      turnStartChecksApplied: true,
+    });
+    expect(step.hold.introDone).toBe(true);
+    expect(step.line.comment).toBe("");
+
+    // A later turn re-opens too. That flip must NOT re-baseline: the intro is
+    // spent, and reviving it would bounce the bubble back to the opening line.
+    const revived = holdTutorialLine(step.hold, key, lineFor(opened), {
+      scfen: played,
+      turnStartChecksApplied: false,
+    });
+    const reopened = holdTutorialLine(revived.hold, key, lineFor(opened), {
+      scfen: played,
+      turnStartChecksApplied: true,
+    });
+    expect(reopened.hold.baselineScfen).toBe(opened);
+    expect(reopened.line.comment).toBe("");
+  });
+
+  it("no-ops for hosts that do not report turn-open", () => {
+    // The review / typewriter hosts publish narration without the flag. They
+    // must keep the pre-existing "any SCFEN move retires the intro" behavior.
+    const seed = lessonBoard("king", "king-attack-1").scfen;
+    const key = "king|king-attack-1";
+    const line = resolveTutorialLine({
+      stageId: "king",
+      storyId: "king-attack-1",
+      scfen: seed,
+    });
+
+    const mounted = holdTutorialLine({ lessonKey: "", introDone: false }, key, line, {
+      scfen: seed,
+    });
+    expect(mounted.hold.checksApplied).toBeUndefined();
+    expectIntro(mounted.line, "king", "king-attack-1");
+
+    const moved = holdTutorialLine(mounted.hold, key, line, {
+      scfen: seed.replace("|G:20:22|", "|G:21:22|"),
+    });
+    expect(moved.hold.introDone).toBe(true);
+    expect(moved.line.comment).toBe("");
+  });
+
+  it("arms the planning timer on every King lesson", () => {
+    // Stage 4 teaches under clock pressure — a lesson with `armTimer: false`
+    // leaves the sidebar gauge parked at 0, which reads as a broken timer.
+    const king = tutorialStage("king");
+    expect(
+      king.stories
+        .filter((s) => s.board?.armTimer === false)
+        .map((s) => s.id),
+    ).toEqual([]);
   });
 
   it("marks fog/knight hops e6 then g5 from SCFEN hints", () => {
@@ -910,7 +1027,13 @@ describe("tutorialScript", () => {
    * HP arithmetic would show it.
    */
   it("king-attack-1 kills the HP-2 CC with two checkers at the turn-12 open", () => {
-    const r = namedReactions("king", "king-attack-1", "shipDown", "halfHit");
+    const r = namedReactions(
+      "king",
+      "king-attack-1",
+      "shipDown",
+      "stackedDamage",
+      "halfHit",
+    );
     const story = storyOf("king", "king-attack-1");
     const seed = lessonBoard("king", "king-attack-1").scfen;
     const seedSnap = parseScFen(seed);
@@ -920,6 +1043,20 @@ describe("tutorialScript", () => {
     expect(matchesTutorialCompleteWhen(story.restartWhen, seed)).toBe(false);
     expect(beginScTurn(seedSnap).changed).toBe(false);
     expect(resolveTutorialHints(story.hints, seed)).toEqual(["b7"]);
+
+    // Seed furniture the geometry below leans on: a Marine (not a tank) on the
+    // b7 choke point, a dug-in enemy tank on a2, and enemy mines on c6/d4.
+    // c6 sits *on* the h1-a8 diagonal — mines are not FEN pieces, so the
+    // Bishop's line must read straight through it (core: mine/mineChecks).
+    const seedMap = placementToMap(seedSnap.placement);
+    expect(seedMap.get("b7")).toEqual({ type: "p", color: "b" });
+    expect(seedMap.get("a2")).toEqual({ type: "r", color: "b" });
+    expect(seedSnap.siegedRooks).toEqual(["a2", "b1"]);
+    expect(seedSnap.mines).toEqual([
+      { color: "b", at: "c6" },
+      { color: "b", at: "d4" },
+    ]);
+    expect(rayBetween("h1", "a8")).toContain("c6");
 
     // White must be able to *see* a8 or `collectLegalKingChecks` never fires —
     // only the back-rank ship reaches that far, so this is load-bearing.
@@ -939,6 +1076,11 @@ describe("tutorialScript", () => {
         .filter((c) => c.color === "w")
         .map((c) => `${c.piece}${c.from}`),
     ).toEqual(["qd8", "bh1"]);
+    // The Bishop shot through the c6 mine: the mine neither blocked the line
+    // nor was spent by it (only a capture *on* the tile spends a mine).
+    expect(parseScFen(solved.afterResolve).mines).toEqual(
+      expect.arrayContaining([{ color: "b", at: "c6" }]),
+    );
     // Two checkers vs HP 2 — dead at the open, before Black plans turn 12.
     expect(opened.kingLives).toEqual({ w: 3, b: 0 });
     expect(opened.phase).toBe("O");
@@ -946,6 +1088,17 @@ describe("tutorialScript", () => {
       .toBe(true);
     expect(matchesTutorialCompleteWhen(story.restartWhen, solved.afterNextTurnOpen))
       .toBe(false);
+    // "Stacked damage!" is the line for *two* checkers, so it must land on the
+    // same board `completeWhen` fires on — that is the line the success bubble
+    // shows next to `Next lesson →`.
+    expectReaction(
+      resolveTutorialLine({
+        stageId: "king",
+        storyId: "king-attack-1",
+        scfen: solved.afterNextTurnOpen,
+      }),
+      r.stackedDamage,
+    );
 
     // Leaving b7 alive costs the mecha: Black's own hoverbike still uncovers the
     // ship, so one checker lands and the CC survives on 1 — the branch where the
@@ -967,6 +1120,8 @@ describe("tutorialScript", () => {
       }),
       r.halfHit,
     );
+    // ...and it is *not* the stacked line: one checker connected, not two.
+    expect(r.halfHit.comment).not.toBe(r.stackedDamage.comment);
 
     // Black's turn 12 (what the choreography queues): deploy a tank onto the
     // square its hoverbike left, and shoot the BattleShip. Attacks resolve

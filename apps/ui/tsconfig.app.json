@@ -10,7 +10,8 @@
 
     "paths": {
       "~/*": ["./src/*"],
-      "@chess-coach/engine-core": ["../../packages/engine-core/src/index.ts"]
+      "@chess-coach/engine-core": ["../../packages/engine-core/src/index.ts"],
+      "@chess-coach/client-platform": ["../../packages/client-platform/src/index.ts"]
     },
 
     /* Bundler mode */

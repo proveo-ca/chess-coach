@@ -82,6 +82,8 @@ grid-template-rows: minmax(0, auto) 1fr minmax(0, auto);
 2. **Top second** — Back / avatar / MobileBanner / tool bars / opponent captures; on mobile packs to the **end** (near the board). Captures are a board-width strip (`max-width: var(--board-size)`), **top-left** aligned (`OpponentCaptures`).
 3. **Bottom last** — player captures / CoachPanel / EngineDepth `BoardControls` bar; collapses on §4 float **only when the float source is in the footer** (CoachPanel). Review MoveList floats from the top without collapsing the footer. When docked on mobile packs to the **start** (near the board). Player captures share the same board-width strip, **bottom-right** aligned (`PlayerCaptures`) — desktop footer `align-items: center` must not shrink-wrap the strip or `flex-end` is a no-op.
 
+4. **Row-scoped overlays** — `.footer` (`data-region=bottom`) is `position: relative`, so a footer overlay that wants to float (StarChess `gas-cancel-hint`) anchors to **row 3** rather than the viewport, and cannot reach row 2. Prefer this over measuring the board and positioning `fixed`: the board is then out of reach by construction, at any breakpoint, with no JS. Requires every element between the region and the overlay to stay `position: static`.
+
 ---
 
 ## 3. Coach Avatar ↔ Chessboard overlap ≤ 50%

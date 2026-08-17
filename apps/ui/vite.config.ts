@@ -169,6 +169,9 @@ export default defineConfig({
       "@chess-coach/engine-core": fileURLToPath(
         new URL("../../packages/engine-core/src/index.ts", import.meta.url),
       ),
+      "@chess-coach/client-platform": fileURLToPath(
+        new URL("../../packages/client-platform/src/index.ts", import.meta.url),
+      ),
     },
   },
   server: {
