@@ -7,6 +7,7 @@ import type { Square } from "chess.js";
 
 import { LiveStarChessBoard } from "~/presentation/board/components/LiveStarChessBoard";
 import type { BoardSkin, PieceSet, VisionMode } from "~/types/board";
+import type { TutorialBoardArrow } from "~/types/tutorial";
 
 export type LiveBoardBindingProps = {
   fog?: boolean;
@@ -14,6 +15,7 @@ export type LiveBoardBindingProps = {
   variant?: BoardSkin;
   pieceSet?: PieceSet;
   hintSquares?: readonly Square[];
+  hintArrows?: readonly TutorialBoardArrow[];
 };
 
 export const LiveBoardBinding: Component<LiveBoardBindingProps> = (props) => (
@@ -23,5 +25,6 @@ export const LiveBoardBinding: Component<LiveBoardBindingProps> = (props) => (
     variant={props.variant}
     pieceSet={props.pieceSet}
     hintSquares={props.hintSquares}
+    hintArrows={props.hintArrows}
   />
 );

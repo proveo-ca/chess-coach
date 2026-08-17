@@ -71,7 +71,17 @@ note bottom
   The mockup must match Coach ``MenuScreen`` box-for-box at Desktop / Mobile /
   Dynamic — two columns on desktop **and** dynamic, one on portrait mobile,
   plus Coach's sub-480 root-font scale and the dynamic-band chat bubble.
+  That includes Coach's ``isNerd`` shortcut: **Play StarChess** under the fused
+  Play control, column 1, in ``--sc-menu-neon``. The mock reads the flag through
+  ``store/nerdFlag`` (read-only — Coach owns the key) and reads it once, since
+  Coach sets it before the full-page hop.
   Contract + the two hand-copied Coach details: ``_spec/apps/ui/responsiveness/rules.md`` §5.
+  **Board hints** — one ``hints`` step wins per beat (first matching ``when``,
+  else the unconditional entry) and carries both ``squares`` (destination rings)
+  and ``arrows`` (lines drawn square-to-square, e.g. the ``king-attack-1`` h1-a8
+  x-ray and the Ship's d8-a8 shot). Arrows paint above the fog veil on purpose —
+  the lines a lesson draws usually run *through* fog. Purely presentational: the
+  board never checks the line is legal or unobstructed.
   Tutorial → ``/tutorial/:section/:story`` (ids from ``TUTORIAL_SCRIPT``,
   e.g. ``/tutorial/fog/king`` · ``/tutorial/specials/marine``).
   Bare ``/tutorial`` canonicalizes to the first Fog story.
@@ -88,7 +98,10 @@ note bottom
   wait. Failure offers Retry and keeps its line.
   Every live lesson must carry a ``completeWhen`` — a lesson without one is a
   dead end (guarded by ``tutorial/tutorialLessons.test.tsx``).
-  **Stage 3 (Turn Resolution)** wears ``/review/:id`` chrome: ``‹ Back`` +
+  **Stage 3 (Turn Resolution)** owns both observer replays —
+  ``combat-chain`` (COMBAT_HISTORY) then ``king-hunt`` (KING_HISTORY), keyed on
+  story so switching remounts the timeline. Stage 4 is live boards only.
+  It wears ``/review/:id`` chrome: ``‹ Back`` +
   ``ReviewTurnNav`` arrows above the board, turn/phase in the rail
   (``hideDualNav``). The arrows step one **phase** (Check → Intent → Resolve)
   rather than a whole turn — ``playReviewTurn`` plays a turn straight through,

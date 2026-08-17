@@ -96,7 +96,7 @@ describe("tutorialScript", () => {
   const FOG_KNIGHT = namedReactions("fog", "knight", "sawIt", "moveToG5");
   const FOG_BISHOP = namedReactions("fog", "bishop", "kingOnFire", "pawnBlocks");
   const KING_HUNT = namedReactions(
-    "king",
+    "resolve",
     "king-hunt",
     "checked",
     "shouldHaveDeployed",
@@ -124,10 +124,13 @@ describe("tutorialScript", () => {
     ]);
     expect(TUTORIAL_SCRIPT[0]!.stories).toHaveLength(8);
     expect(TUTORIAL_SCRIPT[1]!.stories).toHaveLength(6);
-    expect(TUTORIAL_SCRIPT[2]!.stories).toHaveLength(1);
-    expect(TUTORIAL_SCRIPT[3]!.stories).toHaveLength(8);
-    expect(TUTORIAL_SCRIPT[3]!.stories.map((s) => s.id)).toEqual([
+    expect(TUTORIAL_SCRIPT[2]!.stories).toHaveLength(2);
+    expect(TUTORIAL_SCRIPT[2]!.stories.map((s) => s.id)).toEqual([
+      "combat-chain",
       "king-hunt",
+    ]);
+    expect(TUTORIAL_SCRIPT[3]!.stories).toHaveLength(7);
+    expect(TUTORIAL_SCRIPT[3]!.stories.map((s) => s.id)).toEqual([
       "king-defense",
       "king-defense-2",
       "king-defense-3",
@@ -280,16 +283,17 @@ describe("tutorialScript", () => {
     );
   });
 
-  it("overrides with chess-skin reaction on fog stories", () => {
-    const r = namedReactions("fog", "mine", "chessSkin");
-    expectReaction(
-      resolveTutorialLine({
-        stageId: "fog",
-        storyId: "mine",
-        chessSkin: true,
-      }),
-      r.chessSkin,
-    );
+  it("keeps the story's own line when the skin flips to Chess", () => {
+    // Fog lessons play the skin toggle themselves on open (TutorialScreen's
+    // demo), so a skin-keyed reaction would fire on every load and bury the
+    // lesson's instruction. No fog story carries one.
+    for (const storyId of ["king", "mine"] as const) {
+      expectIntro(
+        resolveTutorialLine({ stageId: "fog", storyId, chessSkin: true }),
+        "fog",
+        storyId,
+      );
+    }
   });
 
   it("fires the fog/pawn 7th-rank promote tease via SCFEN regex", () => {
@@ -350,7 +354,8 @@ describe("tutorialScript", () => {
     // Live resolve encodes Ng5 as `6N1` (not `5N2`).
     const onG5 = "SCFEN|7k/7p/8/6N1/8/8/8/K7|2|33|P|G:00:11|Q:w:;b:";
     expect(resolveTutorialHints(hints, start)).toEqual(["e6"]);
-    expect(resolveTutorialHints(hints, onE6)).toEqual(["g5"]);
+    // On e6 the line also points at the corner the hop is about to reveal.
+    expect(resolveTutorialHints(hints, onE6)).toEqual(["g5", "h8"]);
     expect(resolveTutorialHints(hints, onG5)).toEqual([]);
     expectReaction(
       resolveTutorialLine({ stageId: "fog", storyId: "knight", scfen: onE6 }),
@@ -362,8 +367,105 @@ describe("tutorialScript", () => {
     );
   });
 
+  it("separates specials/mecha arming from the queued snipe", () => {
+    const r = namedReactions(
+      "specials",
+      "mecha",
+      "shootsUpDown",
+      "snipeQueued",
+      "arming",
+    );
+    const seed = lessonBoard("specials", "mecha").scfen;
+    const line = (ctx: { scfen?: string; targetingKind?: string | null }) =>
+      resolveTutorialLine({ stageId: "specials", storyId: "mecha", ...ctx });
+
+    // 1 — seed, nothing armed: the opener asks for the two canisters.
+    expectIntro(line({ scfen: seed }), "specials", "mecha");
+
+    // 2 — gas landed, no target picked. This lives only in UI targeting state,
+    //     never in SCFEN, so the board still reads as the seed.
+    expectReaction(line({ scfen: seed, targetingKind: "bishopSnipe" }), r.arming);
+
+    // 3 — target clicked: the snipe is on the queue and targeting has cleared.
+    const queued =
+      "SCFEN|k6q/8/4P3/4p3/3B4/8/8/K7|11|33|P|G:02:22|Q:w:B=bishopSnipe:d4:h8;b:";
+    expectReaction(line({ scfen: queued }), r.snipeQueued);
+
+    // A different armed special must not borrow the Mecha's line.
+    expectIntro(line({ scfen: seed, targetingKind: "queenWarp" }), "specials", "mecha");
+
+    // Success is unchanged — the Mecha capturing the Marine on e5.
+    const complete = storyOf("specials", "mecha").completeWhen;
+    expect(matchesTutorialCompleteWhen(complete, seed)).toBe(false);
+    expect(
+      matchesTutorialCompleteWhen(
+        complete,
+        "SCFEN|k7/8/4P3/4B3/8/8/8/K7|12|33|P|G:02:22|Q:w:;b:",
+      ),
+    ).toBe(true);
+  });
+
+  it("walks specials/hoverbike through its four beats across two turns", () => {
+    const r = namedReactions(
+      "specials",
+      "hoverbike",
+      "gasThenMove",
+      "newTurnMove",
+      "mineQueued",
+      "gasStillNeeded",
+    );
+    const t1 = "SCFEN|4k3/8/8/8/3N4/8/8/4K3|1|33|P|G:11:11|Q:w:";
+    const t2 = "SCFEN|4k3/8/8/8/4N3/8/8/4K3|2|33|P|G:11:11|M:w:d4|Q:w:";
+    const line = (scfen: string) =>
+      resolveTutorialLine({ stageId: "specials", storyId: "hoverbike", scfen });
+
+    // 1 — seed: the opener asks for gas.
+    expectIntro(line(`${t1};b:`), "specials", "hoverbike");
+    // 2 — gas queued on turn 1.
+    expectReaction(line(`${t1}B=knightMine:d4:d4;b:`), r.mineQueued);
+    // 3 — turn 2 opens: move first this time.
+    expectReaction(line(`${t2};b:`), r.newTurnMove);
+    // 4 — move queued on turn 2: now the canister.
+    expectReaction(line(`${t2}C=e4f6;b:`), r.gasThenMove);
+
+    // Off-script orders still coach rather than going silent.
+    expectReaction(line(`${t1}C=d4e6;b:`), r.gasStillNeeded);
+    expectReaction(line(`${t2}B=knightMine:e4:e4;b:`), r.newTurnMove);
+
+    // Success stays "two mines resolved", and one mine is not enough.
+    const complete = storyOf("specials", "hoverbike").completeWhen;
+    expect(matchesTutorialCompleteWhen(complete, `${t2};b:`)).toBe(false);
+    expect(
+      matchesTutorialCompleteWhen(
+        complete,
+        "SCFEN|4k3/8/8/8/8/5N2/8/4K3|3|33|P|G:11:11|M:w:d4e4|Q:w:;b:",
+      ),
+    ).toBe(true);
+  });
+
+  it("defers King Damage on specials/cc only when the ENEMY CC is chipped", () => {
+    const r = namedReactions("specials", "cc", "kingDamageLater");
+    const at = (lives: string) =>
+      `SCFEN|r6k/8/8/8/3K4/8/8/7R|2|${lives}|P|G:01:11|Q:w:;b:`;
+    // SCFEN lives field is `<white><black>` — black is the enemy here.
+    for (const lives of ["32", "22"]) {
+      expectReaction(
+        resolveTutorialLine({ stageId: "specials", storyId: "cc", scfen: at(lives) }),
+        r.kingDamageLater,
+      );
+    }
+    // Untouched enemy, our own CC chipped, or enemy already past 2: no line.
+    for (const lives of ["33", "23", "31"]) {
+      expectIntro(
+        resolveTutorialLine({ stageId: "specials", storyId: "cc", scfen: at(lives) }),
+        "specials",
+        "cc",
+      );
+    }
+  });
+
   it("fires specials/marine cheer when gas is queued before or after move", () => {
-    const r = namedReactions("specials", "marine", "gasQueued");
+    const r = namedReactions("specials", "marine", "gasQueued", "moveQueued");
     const gasOnly =
       "SCFEN|7k/8/8/8/8/4P3/3P4/4K3|1|33|P|G:01:11|Q:w:B=pawnDouble:d2:d3;b:";
     const gasThenMove =
@@ -382,11 +484,22 @@ describe("tutorialScript", () => {
         r.gasQueued,
       );
     }
-    expectIntro(
+    // Step 2 of the lesson: the move is queued, the canister is not — the line
+    // asks for the gas rather than falling back to the opener.
+    expectReaction(
       resolveTutorialLine({
         stageId: "specials",
         storyId: "marine",
         scfen: moveOnly,
+      }),
+      r.moveQueued,
+    );
+    // A King move is not a Marine move — step 2 must not fire on it.
+    expectIntro(
+      resolveTutorialLine({
+        stageId: "specials",
+        storyId: "marine",
+        scfen: "SCFEN|7k/8/8/8/8/4P3/3P4/4K3|1|33|P|G:11:11|Q:w:C=e1e2;b:",
       }),
       "specials",
       "marine",
@@ -461,21 +574,21 @@ describe("tutorialScript", () => {
     const allyDead = "SCFEN|k7/8/6r1/2n5/2K5/8/7b/8|3|03|P|G:11:11|Q:w:;b:";
     const enemyDead = "SCFEN|8/8/8/2N5/4k3/8/7B/7K|2|30|P|G:11:11|Q:w:;b:";
     expectReaction(
-      resolveTutorialLine({ stageId: "king", storyId: "king-hunt", scfen: at2 }),
+      resolveTutorialLine({ stageId: "resolve", storyId: "king-hunt", scfen: at2 }),
       KING_HUNT.checked,
     );
     expectReaction(
-      resolveTutorialLine({ stageId: "king", storyId: "king-hunt", scfen: at1 }),
+      resolveTutorialLine({ stageId: "resolve", storyId: "king-hunt", scfen: at1 }),
       KING_HUNT.shouldHaveDeployed,
     );
     // Observer lesson: an ally CC dying has no line of its own, so the intro holds.
     expectIntro(
       resolveTutorialLine({
-        stageId: "king",
+        stageId: "resolve",
         storyId: "king-hunt",
         scfen: allyDead,
       }),
-      "king",
+      "resolve",
       "king-hunt",
     );
     // Live lesson: the same board offers a retry CTA instead.
@@ -517,6 +630,33 @@ describe("tutorialScript", () => {
     expectReaction(lineFor(marineRank5Hp3), KING_ATTACK_3.pushMarine);
     expectReaction(lineFor(marineRank5Hp1), KING_ATTACK_3.oneMoreHit);
     expectIntro(lineFor(marineRank4Hp3), "king", "king-attack-3");
+  });
+
+  it("holds the king-defense CC warning only while the Mecha is alive", () => {
+    const r = namedReactions(
+      "king",
+      "king-defense",
+      "mechaDown",
+      "attackTheMecha",
+      "ccUnderAttack",
+    );
+    const lineFor = (scfen: string) =>
+      resolveTutorialLine({ stageId: "king", storyId: "king-defense", scfen });
+    // Mecha on h2, CC checked down to 2 HP — the advice is actionable.
+    const checkedMechaAlive =
+      "SCFEN|7k/8/8/8/8/8/7b/4K3|1|23|P|G:11:11|B:3:3|Q:w:;b:";
+    // Same 2 HP, Mecha crushed: the panic line would tell the player to do what
+    // they just did, so the win line retires it (reactions stick — only another
+    // reaction can replace one).
+    const checkedMechaDead =
+      "SCFEN|7k/8/8/8/8/8/7P/4K3|1|23|P|G:11:11|B:3:3|Q:w:;b:";
+
+    expectReaction(lineFor(checkedMechaAlive), r.ccUnderAttack);
+    expectReaction(lineFor(checkedMechaDead), r.mechaDown);
+    // A queued spawn still reads as the attack cue while the Mecha stands.
+    const spawnQueued =
+      "SCFEN|7k/8/8/8/8/8/7b/4K3|1|23|P|G:11:11|B:2:3|Q:w:B=spawn:e1:f2:p;b:";
+    expectReaction(lineFor(spawnQueued), r.attackTheMecha);
   });
 
   it("handles king-defense-2 script completeWhen and coach reactions", () => {

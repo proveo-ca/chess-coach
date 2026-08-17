@@ -14,8 +14,10 @@ import { squareBoxStyle } from "~/presentation/animations/boardGeom";
 import styles from "~/presentation/animations/components/kingDamageOverlay.module.css";
 import { HIT_BOOM_MS } from "~/presentation/animations/kingDamage";
 import { DeathKing } from "~/presentation/animations/pieces/components/DeathKing";
+import { pieceUrl } from "~/presentation/board/pieceUrl";
 import { MOVE_MS } from "~/presentation/constants";
 import type { KingDamageCue, KingDamageState } from "~/presentation/types";
+import type { PieceSet } from "~/types/board";
 
 export type { KingDamageCue };
 
@@ -23,6 +25,11 @@ export type KingDamageOverlayProps = {
   cues: readonly KingDamageCue[];
   boardWidth: number;
   boardHeight: number;
+  /**
+   * `cburnett` = fog tutorial Chess skin only (see TutorialScreen). Presentation
+   * prop — HP still comes from `kingLives`, the skin only picks the glyph.
+   */
+  pieceSet?: PieceSet;
 };
 
 type SlotProps = {
@@ -33,11 +40,21 @@ type SlotProps = {
   impactSeq?: number;
   boardWidth: number;
   boardHeight: number;
+  pieceSet?: PieceSet;
   /** Shared across remounts so filtering fire off/on does not re-boom. */
   lastPlayedBoomSeq: Map<string, number>;
 };
 
 const isFire = (d: KingDamageState) => d === "smallFire" || d === "bigFire";
+
+/**
+ * Chess skin has no burning Command Center to draw — same flattening the rook
+ * glyph does for tank/siege, so a damaged CC reads as the classic King.
+ * Only the fire states (HP 1–2); `destroyed` keeps the StarChess rubble, which
+ * is a death animation rather than a piece.
+ */
+const isChessKing = (props: SlotProps) =>
+  props.pieceSet === "cburnett" && isFire(props.damage);
 
 /**
  * One king hull: boom only when `impactSeq` advances past the last played hit
@@ -82,13 +99,26 @@ const KingDamageSlot = (props: SlotProps) => {
       data-king-hit-phase={phase()}
       data-king-id={props.id}
       data-king-impact-seq={props.impactSeq ?? 0}
+      data-king-glyph={isChessKing(props) ? "cburnett" : "nerd"}
     >
       <div class={styles.pieceFace}>
-        <DeathKing
-          damage={props.damage}
-          seed={props.seed}
-          color={props.id === "b" ? "b" : "w"}
-        />
+        <Show
+          when={isChessKing(props)}
+          fallback={
+            <DeathKing
+              damage={props.damage}
+              seed={props.seed}
+              color={props.id === "b" ? "b" : "w"}
+            />
+          }
+        >
+          <img
+            class={styles.chessKing}
+            src={pieceUrl(props.id === "b" ? "b" : "w", "k", "cburnett")}
+            alt=""
+            draggable={false}
+          />
+        </Show>
       </div>
       <Show when={phase() === "boom"}>
         <div
@@ -141,6 +171,7 @@ export const KingDamageOverlay = (props: KingDamageOverlayProps): JSX.Element =>
               impactSeq={cue().impactSeq}
               boardWidth={props.boardWidth}
               boardHeight={props.boardHeight}
+              pieceSet={props.pieceSet}
               lastPlayedBoomSeq={lastPlayedBoomSeq}
             />
           );

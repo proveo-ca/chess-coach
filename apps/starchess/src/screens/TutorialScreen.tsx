@@ -63,6 +63,22 @@ export type { TutorialSectionId } from "~/types/tutorial";
 
 const SECTIONS = TUTORIAL_SCRIPT.map((s) => ({ id: s.id, label: s.label }));
 
+/**
+ * Fog lessons open by *showing* the claim they make — the pieces move the same
+ * as Chess. Two seconds in, the skin flips to Chess; it holds there the same
+ * two seconds, then flips back, so the equivalence reads without the player
+ * hunting for the toggle.
+ */
+const SKIN_DEMO_START_MS = 2000;
+const SKIN_DEMO_HOLD_MS = 2000;
+
+/**
+ * Hints wait out that demo rather than compete with it — a board lighting up
+ * mid-skin-swap reads as part of the swap. Non-fog lessons run no demo, so
+ * theirs land immediately.
+ */
+const HINT_DELAY_MS = SKIN_DEMO_START_MS + SKIN_DEMO_HOLD_MS;
+
 const COMBAT_HISTORY = buildReviewHistory({
   start: COMBAT_CHAIN_PLY_SC[0]!,
   steps: COMBAT_CHAIN_STEPS,
@@ -133,6 +149,8 @@ const SkinToggle: Component<{
 const FogSection: Component<{
   lessonId: string;
   chessMode: boolean;
+  /** Held back until the skin demo has finished — see HINT_DELAY_MS. */
+  showHints: boolean;
   coachEmotion: ReturnType<typeof resolveTutorialLine>["emotion"];
   guideBubble: JSX.Element;
   header: JSX.Element;
@@ -157,7 +175,7 @@ const FogSection: Component<{
         header={props.header}
         guideBubble={props.guideBubble}
         footerExtra={props.footer}
-        boardHints={tutorialStory("fog", id)?.hints}
+        boardHints={props.showHints ? tutorialStory("fog", id)?.hints : undefined}
       />
     )}
   </Show>
@@ -172,6 +190,49 @@ export const TutorialScreen: Component = () => {
   );
   const [chessMode, setChessMode] = createSignal(false);
   const [lessonEpoch, setLessonEpoch] = createSignal(0);
+
+  /** Gated by the skin demo — see HINT_DELAY_MS. */
+  const [hintsReady, setHintsReady] = createSignal(false);
+
+  /**
+   * Chess → StarChess round trip, once per fog lesson. Re-armed per story /
+   * retry so every fog lesson gets it, and cancelled the moment the player
+   * works the toggle themselves — it plays *for* the hand on the toggle, never
+   * against it. Cancelling releases the hints early rather than stranding them.
+   */
+  let skinDemo: ReturnType<typeof setTimeout>[] = [];
+  const clearSkinDemo = () => {
+    skinDemo.forEach(clearTimeout);
+    skinDemo = [];
+  };
+  onCleanup(clearSkinDemo);
+
+  createEffect(() => {
+    const sec = section();
+    // Read so a new story — or a retry of this one — re-arms the demo.
+    void storyId();
+    void lessonEpoch();
+    clearSkinDemo();
+    if (sec !== "fog") {
+      setHintsReady(true);
+      return;
+    }
+    setHintsReady(false);
+    skinDemo.push(
+      setTimeout(() => setChessMode(true), SKIN_DEMO_START_MS),
+      setTimeout(() => {
+        setChessMode(false);
+        setHintsReady(true);
+      }, HINT_DELAY_MS),
+    );
+  });
+
+  /** Player-driven skin change — retires the demo for this lesson. */
+  const selectSkin = (chess: boolean) => {
+    clearSkinDemo();
+    setHintsReady(true);
+    setChessMode(chess);
+  };
 
   // Canonicalize `/tutorial` · `/tutorial/fog` · aliases → `/tutorial/:section/:story`.
   createEffect(() => {
@@ -489,7 +550,7 @@ export const TutorialScreen: Component = () => {
 
   const fogFooter = () =>
     withFooter(
-      <SkinToggle chess={chessMode()} onChange={setChessMode} />,
+      <SkinToggle chess={chessMode()} onChange={selectSkin} />,
     );
 
   const specialFooter = () => withFooter();
@@ -505,6 +566,7 @@ export const TutorialScreen: Component = () => {
           <FogSection
             lessonId={storyId()}
             chessMode={chessMode()}
+            showHints={hintsReady()}
             coachEmotion={line().emotion}
             guideBubble={guideBubble()}
             header={fogCoachHeader()}
@@ -535,52 +597,46 @@ export const TutorialScreen: Component = () => {
           </Show>
         </Match>
         <Match when={section() === "resolve"}>
-          <TutorialReviewHost
-            history={COMBAT_HISTORY}
-            reviewLabel="Combat chain"
-            visionMode="observer"
-            fog={false}
-            variant="eclipse"
-            turnChrome="sidebar"
-            onHome={goHome}
-            coachEmotion={line().emotion}
-            guideBubble={guideBubble()}
-            footerExtra={resolveFooter()}
-          />
-        </Match>
-        <Match when={section() === "king"}>
-          <Show when={`${storyId()}#${lessonEpoch()}`} keyed>
-            {(key) => {
-              const id = key.split("#")[0]!;
-              if (tutorialStory("king", id)?.board) {
-                return (
-                  <LiveLessonHost
-                    board={lessonBoard("king", id)}
-                    tutorial
-                    narrate
-                    turnChrome="sidebar"
-                    onExitToMenu={goHome}
-                    coachEmotion={line().emotion}
-                    header={kingCoachHeader()}
-                    guideBubble={guideBubble()}
-                    footerExtra={kingFooter()}
-                    boardHints={tutorialStory("king", id)?.hints}
-                  />
-                );
-              }
+          {/* Two replays, one host — keyed so switching story remounts the
+              review timeline instead of seeking the old one. */}
+          <Show when={storyId()} keyed>
+            {(id) => {
+              const hunt = id === "king-hunt";
               return (
                 <TutorialReviewHost
-                  history={KING_HISTORY}
-                  reviewLabel="King hunt"
+                  history={hunt ? KING_HISTORY : COMBAT_HISTORY}
+                  reviewLabel={hunt ? "King hunt" : "Combat chain"}
                   visionMode="observer"
                   fog={false}
                   variant="eclipse"
                   turnChrome="sidebar"
                   onHome={goHome}
                   coachEmotion={line().emotion}
+                  guideBubble={guideBubble()}
+                  footerExtra={resolveFooter()}
+                />
+              );
+            }}
+          </Show>
+        </Match>
+        <Match when={section() === "king"}>
+          <Show when={`${storyId()}#${lessonEpoch()}`} keyed>
+            {(key) => {
+              // Every King Damage lesson is a live board since `king-hunt`
+              // moved to Turn Resolution — that stage owns both replays now.
+              const id = key.split("#")[0]!;
+              return (
+                <LiveLessonHost
+                  board={lessonBoard("king", id)}
+                  tutorial
+                  narrate
+                  turnChrome="sidebar"
+                  onExitToMenu={goHome}
+                  coachEmotion={line().emotion}
                   header={kingCoachHeader()}
                   guideBubble={guideBubble()}
                   footerExtra={kingFooter()}
+                  boardHints={tutorialStory("king", id)?.hints}
                 />
               );
             }}

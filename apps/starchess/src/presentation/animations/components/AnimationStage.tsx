@@ -34,6 +34,7 @@ import type {
   VisionMode,
 } from "~/types/board";
 import type { ReviewTurnPhase } from "~/types/review";
+import type { TutorialBoardArrow } from "~/types/tutorial";
 
 const NO_ARMED: Square[] = [];
 const NO_GAS_ABSORB: ReadonlySet<Square> = new Set();
@@ -79,6 +80,8 @@ export type AnimationStageProps = {
   legalDests?: readonly Square[];
   /** Tutorial destination rings (independent of legal-move chrome). */
   hintSquares?: readonly Square[];
+  /** Tutorial hint lines drawn square-to-square. */
+  hintArrows?: readonly TutorialBoardArrow[];
   onSquareClick?: (square: Square) => void;
   /** Combat VFX cues — single bag for the Composite overlay root. */
   combat?: CombatCueFrame;
@@ -222,6 +225,7 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
         selected={props.selected}
         legalDests={props.legalDests}
         hintSquares={props.hintSquares}
+        hintArrows={props.hintArrows}
         onSquareClick={props.onSquareClick}
         hideSquares={hidden()}
         moveCues={combatFrame().moveCues}

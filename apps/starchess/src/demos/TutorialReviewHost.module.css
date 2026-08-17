@@ -65,14 +65,33 @@
   }
 }
 
+/* Fill the chrome track (see BaseScreen `.headerSlot`): the review chrome still
+   starts at the track top, and the guide bubble's dock floor becomes the
+   board's top edge instead of the chrome's bottom. */
 @media (max-width: 719px) {
   .headerSlot {
-    margin-bottom: auto;
+    height: 100%;
   }
 }
 
 @media (max-width: 719px) and (min-width: 480px) and (max-height: 639px) {
   .reviewChrome {
     display: none;
+  }
+}
+
+/*
+ * Guide bubble. Unlike the lesson hosts, this header has no desktop coach —
+ * the top band is the review arrows — so "beside Kerrigan" would park the line
+ * on top of the ‹ › it is talking about. Park it right of the board instead,
+ * width bounded by the gutter that is actually there.
+ */
+@media (min-width: 720px) {
+  .headerSlot :global(.tutorial-guide-bubble) {
+    left: calc(100% + 1rem);
+    width: min(
+      22rem,
+      calc(50vw - var(--board-size) / 2 + var(--sidebar-width) / 2 - 2rem)
+    );
   }
 }

@@ -58,6 +58,8 @@ const CLASSICAL_SPECS = [
   "**/lan-multiplayer.spec.ts",
   "**/mating-net-exit.spec.ts",
   "**/mating-sequence.spec.ts",
+  // Starts on the Coach menu (/chess/) — the StarChess target has no Coach app.
+  "**/nerd-mode.spec.ts",
   "**/pwa-offline.spec.ts",
   "**/responsiveness.spec.ts",
   "**/review*.spec.ts",
@@ -72,6 +74,10 @@ const STARCHESS_SPECS = [
   "**/starchess-gas-used.spec.ts",
   "**/starchess-gas-step.spec.ts",
   "**/starchess-fog-path.spec.ts",
+  // Needs the StarChess baseURL + Storybook (:6007), started for that target only.
+  "**/starchess-collision.spec.ts",
+  // Combat VFX guarantee suite (tests/vfx) — StarChess overlays only.
+  "**/vfx-*.spec.ts",
 ];
 
 export function targetConfig(): TargetConfig {

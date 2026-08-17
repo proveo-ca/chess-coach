@@ -42,6 +42,13 @@ partition "Classify — an ordered rule list, first match wins" {
     ""attacks"", because a single ""fogged"" flag picks the list. Dual-listing is
     no longer expressible.
 
+    **Buckets carry the plan, not a copy of three fields.** Every bucket write
+    spreads the plan and overrides ""to"" — a rebuilt ""{color, from, to}"" literal
+    silently drops ""promotion"", which is how a last-rank **capture** used to
+    land a marine on rank 8 and leave it a marine while the quiet push (pushed
+    by reference) promoted fine. Rule 2's truncated step is the one deliberate
+    drop, and it drops the whole step, not just the choice.
+
     ""pathRevealSteps"" does not test vision from ""from"", so a target already
     lit can still report steps > 0. Path discovery therefore needs **fogged at
     start** *and* lit while walking — otherwise a visible target would wrongly

@@ -3,13 +3,15 @@ import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { MenuScreen } from "~/screens/MenuScreen";
 import { setShowCredits } from "~/store/coachStore";
 import { setDifficulty, setPlayerIdentity, setPlayerName } from "~/store/settingsStore";
-import { setNerdModeUnlocked } from "~/features/nerd/identity";
+import { setIsNerd, setNerdModeUnlocked } from "~/features/nerd/identity";
 
-const seedMenu = (creditsOpen = false) => {
+/** `isNerd` is persisted, so every story states it — else one leaks into the next. */
+const seedMenu = (creditsOpen = false, nerd = false) => {
   setPlayerName("Alex");
   setPlayerIdentity("Human");
   setDifficulty("intermediate");
   setNerdModeUnlocked(false);
+  setIsNerd(nerd);
   setShowCredits(creditsOpen);
 };
 
@@ -36,6 +38,15 @@ export const Default: Story = {
 export const CreditsOpen: Story = {
   render: () => {
     seedMenu(true);
+    return <MenuScreen />;
+  },
+};
+
+/** `isNerd` — StarChess shortcut under Play with Selena, in that app's neon. */
+export const Nerd: Story = {
+  name: "Nerd (Play StarChess)",
+  render: () => {
+    seedMenu(false, true);
     return <MenuScreen />;
   },
 };

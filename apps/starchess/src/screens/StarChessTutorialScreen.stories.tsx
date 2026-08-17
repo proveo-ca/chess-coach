@@ -1,7 +1,12 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
+import { createSignal, type JSX } from "solid-js";
 
+import { TutorialHudLabels } from "~/components/features/TutorialHudLabels";
+import { PromotionModal } from "~/components/primitives/PromotionModal";
+import { DeployModal } from "~/presentation/hud/components/DeployModal";
 import { TutorialScreen } from "~/screens/TutorialScreen.tsx";
-import { tutorialPath } from "~/tutorial/tutorialScript";
+import { WithMatchStore } from "~/stories/project";
+import { lessonBoard, tutorialPath } from "~/tutorial/tutorialScript";
 
 const meta = {
   title: "Screens/Tutorial",
@@ -47,4 +52,65 @@ export const King: Story = {
   name: "King Damage",
   parameters: { route: tutorialPath("king") },
   render: () => <TutorialScreen />,
+};
+
+/**
+ * Both pickers open on a lesson board, so the tutorial-only naming layer is
+ * reviewable without playing to the beat that raises them. `Modal` positions
+ * itself absolutely, hence the sized relative host.
+ */
+const PickerStage = (props: { children: JSX.Element }): JSX.Element => (
+  <WithMatchStore board={lessonBoard("specials", "cc")}>
+    <div
+      style={{
+        position: "relative",
+        width: "30rem",
+        height: "24rem",
+        margin: "3rem auto",
+      }}
+    >
+      {props.children}
+      <TutorialHudLabels enabled />
+    </div>
+  </WithMatchStore>
+);
+
+/** Command Center picker — unit names + ResourceBar strip names. */
+export const DeployLabels: Story = {
+  name: "Deploy unit · labels",
+  parameters: { layout: "centered" },
+  render: () => {
+    const [pending, setPending] = createSignal<{ color: "w" } | null>({ color: "w" });
+    return (
+      <PickerStage>
+        <DeployModal
+          pending={pending()}
+          onSelect={() => setPending(null)}
+          onCancel={() => setPending(null)}
+        />
+      </PickerStage>
+    );
+  },
+};
+
+/** Last-rank picker — same unit names, no ResourceBar. */
+export const PromotionLabels: Story = {
+  name: "Promote Marine · labels",
+  parameters: { layout: "centered" },
+  render: () => {
+    const [pending, setPending] = createSignal<{
+      color: "w";
+      from: "a7";
+      to: "a8";
+    } | null>({ color: "w", from: "a7", to: "a8" });
+    return (
+      <PickerStage>
+        <PromotionModal
+          pending={pending()}
+          onSelect={() => setPending(null)}
+          onCancel={() => setPending(null)}
+        />
+      </PickerStage>
+    );
+  },
 };

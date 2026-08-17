@@ -17,7 +17,10 @@ import { useMatchStore } from "~/app/MatchStoreContext";
 import { canSubmit, readDisplayedSnapshot } from "~/app/selectors";
 import { AnimationStage } from "~/presentation/animations/components/AnimationStage";
 import type { CombatCueFrame } from "~/presentation/animations/combatCueFrame";
-import { kingDamageCuesFromBoard } from "~/presentation/animations/kingDamage";
+import {
+  kingDamageCuesFromBoard,
+  visibleKingDamageCues,
+} from "~/presentation/animations/kingDamage";
 import { deriveVisualFrame } from "~/presentation/animations/visualFrame";
 import { pieceVisibleToViewer } from "~/presentation/board/fogVisibility";
 import { useBoardInput } from "~/presentation/board/hooks/useBoardInput";
@@ -27,6 +30,7 @@ import { useBoardVision, useIntentOverlays } from "~/presentation/combat/hooks/u
 import { liveMatchPhase } from "~/presentation/hud/liveMatchPhase";
 import { LIVE_CAPABILITIES, capabilities, setCapabilities } from "~/store/capabilitiesStore";
 import type { BoardSkin, PieceSet, VisionMode } from "~/types/board";
+import type { TutorialBoardArrow } from "~/types/tutorial";
 import type { KingDamageCue } from "~/types/cues";
 import type { ReviewTurnPhase } from "~/types/review";
 
@@ -37,6 +41,8 @@ export const LiveStarChessBoard: Component<{
   pieceSet?: PieceSet;
   /** Tutorial / coach destination rings. */
   hintSquares?: readonly Square[];
+  /** Tutorial hint lines drawn square-to-square. */
+  hintArrows?: readonly TutorialBoardArrow[];
 }> = (props) => {
   const store = useMatchStore();
   const visionOverrides = () => ({
@@ -142,15 +148,13 @@ export const LiveStarChessBoard: Component<{
   });
 
   const visibleKingDamage = createMemo(() => {
-    const atk = attackFrom();
     const dying = dyingKingKeys();
-    return kingDamage().filter(
-      (c) =>
-        c.damage !== "pristine" &&
-        !atk.has(c.at) &&
-        !dying.ats.has(c.at) &&
-        !dying.colors.has(c.id),
-    );
+    return visibleKingDamageCues(kingDamage(), {
+      attackFrom: attackFrom(),
+      dyingAt: dying.ats,
+      dyingColors: dying.colors,
+      isVisible: pieceFxVisible,
+    });
   });
 
   const armedBishops = createMemo((): Square[] => {
@@ -255,6 +259,7 @@ export const LiveStarChessBoard: Component<{
         selected={interactive() ? state().selected : null}
         legalDests={interactive() ? state().legalDests : []}
         hintSquares={props.hintSquares}
+        hintArrows={props.hintArrows}
         onSquareClick={interactive() ? onSquareClick : undefined}
         combat={combatFrame()}
         spentMines={combat.spentMines()}

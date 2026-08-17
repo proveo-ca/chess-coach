@@ -243,11 +243,15 @@
 /*
  * Mobile: the chrome track bottom-packs, so the slot holding the nav band must
  * pin to the top — otherwise `‹ Back` sits at a different Y on every screen
- * depending on how tall that screen's chrome happens to be.
+ * depending on how tall that screen's chrome happens to be. Filling the track
+ * does that (no free space left for `justify-content: flex-end` to spend) and
+ * also makes this box's floor the *board's* top edge rather than the avatar's
+ * bottom, which is what the guide bubble docks against — `margin-bottom: auto`
+ * left the line stranded mid-gutter, an avatar's height above the board.
  */
 @media (max-width: 719px) {
   .headerSlot {
-    margin-bottom: auto;
+    height: 100%;
   }
 }
 

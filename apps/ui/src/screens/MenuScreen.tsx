@@ -1,7 +1,7 @@
-// SPEC: _spec/apps/ui/components.puml
+// SPEC: _spec/apps/ui/components.puml, _spec/apps/starchess/deployment.puml
 
 import { useNavigate } from "@solidjs/router";
-import type { Component } from "solid-js";
+import { Show, type Component } from "solid-js";
 
 import { CoachAvatar } from "~/components/atoms/CoachAvatar";
 import { Credits } from "~/components/atoms/Credits";
@@ -23,7 +23,8 @@ import {
   setDifficulty,
   setPlayerIdentity,
 } from "~/store/settingsStore";
-import { identityOptions } from "~/features/nerd/identity";
+import { goStarChess } from "~/features/nerd/goStarChess";
+import { identityOptions, isNerd } from "~/features/nerd/identity";
 import type { PlayerIdentity } from "~/types/settings";
 
 const COACH_LINE = "Wanna play Chess?";
@@ -75,6 +76,16 @@ export const MenuScreen: Component = () => {
         >
           Play with Selena
         </SplitButton>
+        {/* Nerds keep the shortcut once found — see features/nerd/identity. */}
+        <Show when={isNerd()}>
+          <MenuButton
+            class={styles["starchess-btn"]}
+            data-testid="menu-play-starchess"
+            onClick={() => goStarChess()}
+          >
+            Play StarChess
+          </MenuButton>
+        </Show>
         <MenuButton onClick={() => navigate("/analysis")}>Solo Analysis</MenuButton>
         <MenuButton onClick={() => navigate("/review")} disabled={gameHistory().length === 0}>
           Review

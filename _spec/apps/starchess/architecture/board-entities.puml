@@ -104,6 +104,7 @@ package "hooks" {
   class useAutoDeploy <<app>>
   class deriveVisualFrame <<app>>
   class kingDamageCuesFromBoard <<app>>
+  class visibleKingDamageCues <<app>>
   class liveMatchPhase <<app>>
   class pieceVisibleToViewer <<app>>
 
@@ -161,6 +162,8 @@ LiveStarChessBoard ..> useCombatOverlays
 LiveStarChessBoard ..> useAutoDeploy
 LiveStarChessBoard ..> deriveVisualFrame
 LiveStarChessBoard ..> kingDamageCuesFromBoard
+LiveStarChessBoard ..> visibleKingDamageCues
+visibleKingDamageCues ..> pieceVisibleToViewer : fog gate
 LiveStarChessBoard ..> liveMatchPhase
 LiveStarChessBoard ..> pieceVisibleToViewer : fog-gates VFX
 LiveStarChessBoard ..> MatchStore

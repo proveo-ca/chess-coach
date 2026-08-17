@@ -1,4 +1,6 @@
-/* Float ChatBubble over board ranks 7–8 without shifting Screen header. */
+/* Dock the ChatBubble beside (desktop) or over Kerrigan (tall mobile) without
+   shifting the Screen header. Only the cramped bands still float over the board.
+   // SPEC: _spec/apps/ui/responsiveness/rules.md */
 
 :global([data-region="top"]:has(.tutorial-guide-bubble)) {
   overflow: visible;
@@ -17,7 +19,6 @@
   gap: 0.25rem;
   width: min(22rem, 92%);
   max-height: calc(var(--board-size) / 4);
-  pointer-events: auto;
 }
 
 .bubble {
@@ -84,6 +85,63 @@
   color: var(--sc-menu-neon, #7dff6a);
 }
 
+/*
+ * Desktop: Kerrigan speaks sideways. The line sits beside her head in the top
+ * region instead of over ranks 7–8 — near enough to read as hers, and clear of
+ * the board because it never leaves that band.
+ */
+@media (min-width: 720px) {
+  /* Wide viewports put the line past `.app-container`'s max-width box. html /
+     body still own the viewport clip (§1b), so dropping this one cannot add
+     page scroll. */
+  :global(.screen-root:has(.tutorial-guide-bubble)) {
+    overflow: visible;
+  }
+
+  .dock {
+    /* Top of the chrome track, one rail-width clear of Kerrigan's head — the
+       anchor's 50% is the board centre, which is also hers. */
+    top: 0;
+    left: calc(50% + var(--sidebar-width));
+    transform: none;
+    /* Same ceiling as the float, floored by the room left of the viewport edge. */
+    width: min(22rem, calc(50vw - var(--sidebar-width) - 2rem));
+  }
+
+  /* The band it may grow into: past this the line scrolls rather than reach
+     rank 8. Matches the top grid track, which is sized off the avatar. */
+  .dock,
+  .bubble {
+    max-height: var(--avatar-height);
+  }
+}
+
+/*
+ * Tall mobile: no gutter to park in, so the line docks *upward* from the chrome
+ * track's floor — it sits right above rank 8, close enough to the board to read
+ * as being about it, and grows toward Kerrigan rather than over the board.
+ * Capped to the track it grows into so a long line scrolls instead of reaching
+ * `‹ Back`. The offset keeps it off the board's dashed frame, which paints a few
+ * pixels above the board row.
+ */
+@media (max-width: 719px) and (min-height: 640px) {
+  .dock {
+    top: auto;
+    bottom: 0.5rem;
+  }
+
+  /* Absolute, not `100%`: the anchor's own height is auto, so a percentage cap
+     would resolve to `none` and a long line would grow back over rank 8. One
+     avatar's worth is what "blocks the Coach" means — past that the line
+     scrolls in place. */
+  .dock,
+  .bubble {
+    max-height: var(--avatar-height);
+  }
+}
+
+/* Dynamic (short landscape): too little of either axis to dodge the board —
+   keep the centred float and just widen it. */
 @media (max-width: 719px) and (min-width: 480px) and (max-height: 639px) {
   .dock {
     width: min(26rem, calc(100vw - 2rem));
@@ -144,4 +202,18 @@
   to {
     stroke-dashoffset: 0;
   }
+}
+
+/*
+ * The line is passive chrome: it must never eat a click meant for what it
+ * overlaps (review arrows, board squares). Only its own controls take input.
+ */
+.dock,
+.bubble {
+  pointer-events: none;
+}
+
+.dismiss,
+.action {
+  pointer-events: auto;
 }

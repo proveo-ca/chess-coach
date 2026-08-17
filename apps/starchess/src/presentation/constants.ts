@@ -65,8 +65,15 @@ export const MOVE_SQUARE_MS = 200;
  */
 export const STIM_MOVE_SQUARE_MS = MOVE_SQUARE_MS / 2;
 
-/** Siege Tank pack ↔ unpack (CSS `--siege-toggle-ms`). */
-export const SIEGE_TOGGLE_MS = 480;
+/**
+ * Siege Tank pack ↔ unpack (CSS `--siege-toggle-ms`) — the whole staggered
+ * plate sequence fits in this window. Same 250ms beat every other unit state
+ * change uses ({@link MINE_DEPLOY_MS}, {@link FRAG_FLIGHT_MS}); at the old 480
+ * the tank visibly lagged the pieces around it.
+ *
+ * Sole declaration — `presentation/pieces/rookAim` re-exports this one.
+ */
+export const SIEGE_TOGGLE_MS = 250;
 
 /** Single-square travel (king flee cover, 1-step default). */
 export const MOVE_MS = MOVE_SQUARE_MS;

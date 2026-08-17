@@ -32,7 +32,7 @@ import { displayPlayerName } from "~/utils/playerName";
 import { isCheckOnlyResolve } from "~/presentation/hud/isCheckOnlyResolve";
 import { MatchBoardHost } from "~/presentation/hud/components/MatchBoardHost";
 import { ResourceBar } from "~/presentation/hud/components/ResourceBar";
-import { ReviewTurnNav } from "~/components/primitives/ReviewTurnNav";
+import { ReviewTurnNav } from "~/components/atoms/ReviewTurnNav";
 import { TurnBarSidebar } from "~/presentation/hud/components/TurnBarSidebar";
 import { TUTORIAL_CAPABILITIES, setCapabilities } from "~/store/capabilitiesStore";
 import {

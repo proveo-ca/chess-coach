@@ -27,20 +27,20 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           armTimer: false,
           docs: "Kd4 live. Queue Kd4\u2192e5, End \u2014 slide + progressive fog.",
         },
-        comment: "The pieces move the same as Chess! Except now the pieces have vision.",
+        comment: "StarChess units move like Chess pieces. \n...But the board has fog. \n\nTry moving your King, watch the fog follow.",
         emotion: "watching",
+        // Turn counter off 0 — the board only leaves turn 0 once a queued move
+        // has resolved, and the lone white King is the only thing that can
+        // queue one. So this is "any King move, judged after resolve".
         completeWhen: {
           kind: "scfen",
           re: /SCFEN\|[^|]+\|[1-9]/,
         },
-        reactions: [
+        hints: [
           {
-            when: {
-              kind: "chessSkin",
-              chess: true,
-            },
-            comment: "Classic board, classic pieces for your reference.",
-            emotion: "watching",
+            squares: [
+              "c3",
+            ],
           },
         ],
       },
@@ -48,11 +48,13 @@ export const TUTORIAL_SCRIPT_CONFIG = [
         id: "pawn",
         title: "Pawn",
         board: {
-          scfen: "SCFEN|7k/8/8/8/3P4/8/8/K7|0|33|P|G:11:11|Q:w:;b:",
+          // Kc3, where the previous lesson's hint sends him \u2014 the pawn lesson
+          // picks the King up where the King lesson left him.
+          scfen: "SCFEN|7k/8/8/8/3P4/2K5/8/8|0|33|P|G:11:11|Q:w:;b:",
           stored: 4,
           endTurnAfterQueue: "first",
           armTimer: false,
-          docs: "Pd4 + Ka1 cumulative vision. Queue Pd4\u2192d5, End.",
+          docs: "Pd4 + Kc3 cumulative vision. Queue Pd4\u2192d5, End.",
         },
         comment: "With each piece having vision, slowly the fog of war clears.",
         emotion: "idle",
@@ -88,7 +90,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           armTimer: false,
           docs: "Nd4 live. Queue Nd4\u2192e6, End \u2014 L-path + fog.",
         },
-        comment: "The Knight now rides a Hoverbike! As it moves, it clears the fog, pay close attention!",
+        comment: "The Knight now rides a Hoverbike! As it moves, it clears the fog.",
         emotion: "watching",
         completeWhen: {
           kind: "scfen",
@@ -108,7 +110,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               kind: "scfen",
               re: /SCFEN\|(?:[^/]*\/){2}4N3/,
             },
-            comment: "Now move to g5",
+            comment: "Now move to g5. \nPay attention to the h8 corner!",
             emotion: "watching",
           },
         ],
@@ -127,6 +129,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             },
             squares: [
               "g5",
+              "h8",
             ],
           },
           {
@@ -158,7 +161,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               kind: "scfen",
               re: /SCFEN\|7k\/6B1\/.*\|32\|/,
             },
-            comment: "...Did you just set that King on fire?",
+            comment: "...Did you just set that King on fire? \n\nI'll explain that later.",
             emotion: "thinking",
           },
           {
@@ -226,9 +229,12 @@ export const TUTORIAL_SCRIPT_CONFIG = [
         },
         comment: "This is the immobile rook mode; it has the biggest range. \nIt reveals the entire board when in the center!",
         emotion: "scanning",
+        // Fewer than the seed's four black pawns still standing — a shell
+        // landed. The siege rook cannot slide and `endTurnAfterQueue: "first"`
+        // ends on the one action, so any resolve here is exactly one kill.
         completeWhen: {
           kind: "scfen",
-          re: /SCFEN\|[^|p]*\|/,
+          re: /SCFEN\|(?!(?:[^|]*p){4})/,
         },
         reactions: [
           {
@@ -243,7 +249,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             when: {
               kind: "timelineActive",
             },
-            comment: "Boom + smoke on impact. Siege never slides — only shells.",
+            comment: "That's OP!",
             emotion: "shocked",
           },
         ],
@@ -275,7 +281,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           armTimer: false,
           docs: "Qd4 live. Queue Qd4\u2192d6, End \u2014 slide + fog.",
         },
-        comment: "And finally, the Queen.",
+        comment: "And finally, the Queen. \n\nMost mobile, vision only bested by the immobile tank.",
         emotion: "watching",
         completeWhen: {
           kind: "scfen",
@@ -299,16 +305,6 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           section: "specials",
           label: "See Specials",
         },
-        reactions: [
-          {
-            when: {
-              kind: "chessSkin",
-              chess: true,
-            },
-            comment: "Even on wood, that mine is a one-square lantern.",
-            emotion: "watching",
-          },
-        ],
         completeWhen: {
           kind: "scfen",
           re: /SCFEN\|[^|]+\|[1-9]/,
@@ -330,7 +326,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           armTimer: false,
           docs: "d2 can classical-double for free (canister unused). Gas on a pawn queues a 1-square StarChess step \u00b7 End to resolve.",
         },
-        comment: "See that gas canister in the bottom? Drag and drop it into a Marine. \nTry stacking a 2 pawn move with gas!",
+        comment: "Order a Marine to move.",
         emotion: "idle",
         completeWhen: {
           kind: "queue",
@@ -345,6 +341,17 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             },
             comment: "Oh, yeah!",
             emotion: "watching",
+          },
+          {
+            // Step 2 — a classical move queued from a Marine square (d2 / e3 on
+            // this seed); the King on e1 cannot match. First match wins, so once
+            // gas is queued the cheer above takes over.
+            when: {
+              kind: "scfen",
+              re: /Q:w:[^;]*C=[de][23]/,
+            },
+            comment: "You just queued an intent! \nIt looks like a ghost. \n\nSee that gas canister in the bottom? Drag and drop it into that transparent Marine.",
+            emotion: "idle",
           },
         ],
       },
@@ -364,6 +371,19 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           kind: "queue",
           specialKind: "spawn",
         },
+        reactions: [
+          {
+            // SCFEN field 3 is `<white lives><black lives>` (codec.ts) — the
+            // second digit alone, so a chip to *our* Command Center does not
+            // fire this. Black is the enemy here; the viewer is white.
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|[^|]+\|\d2\|/,
+            },
+            comment: "I'll explain attacks and King Damage later.",
+            emotion: "watching",
+          },
+        ],
       },
       {
         id: "hoverbike",
@@ -375,12 +395,62 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           armTimer: false,
           docs: "Drag gas onto the knight to queue a Spider Mine on its square \u00b7 End to drop. Stack order: gas then move, or move then gas.",
         },
-        comment: "Use gas on a Hoverbike to deploy a mine. You can deploy the mine before or after moving!",
+        comment: "Drop a gas canister on that Hoverbike.",
         emotion: "scanning",
+        // Two mines on the board (`M:w:` holds a square per mine).
         completeWhen: {
           kind: "scfen",
           re: /M:w:(?:[a-h][1-8]){2}/,
         },
+        /*
+         * Four beats across two turns — gas *then* move, then move *then* gas —
+         * so the lesson shows the order does not matter. First match wins, so
+         * these run most-specific first. Turn is SCFEN field 2.
+         *
+         * The second-turn prompt is pinned to turn `2` rather than "any turn but
+         * the first": it announces the new turn, so repeating it on 3 and 4 (a
+         * mine landing on a square that already held one leaves the objective
+         * unmet) reads like the lesson restarting. Those later turns fall through
+         * to the queued-intent beat above, or hold the last line — `holdTutorialLine`
+         * keeps the previous reaction sticky rather than going quiet.
+         */
+        reactions: [
+          {
+            when: {
+              kind: "scfen",
+              re: /^(?=SCFEN\|[^|]+\|(?!1\|)\d+\|)(?=.*Q:w:[^;]*C=)/,
+            },
+            comment: "Now drop the gas canister on that transparent Hoverbike, it describes where will it be after moving; and let the turn finish.",
+            emotion: "watching",
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /^SCFEN\|[^|]+\|2\|/,
+            },
+            comment: "New turn, new mine.\nMove your Hoverbike",
+            emotion: "scanning",
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /^(?=SCFEN\|[^|]+\|1\|)(?=.*[BF]=knightMine:)/,
+            },
+            comment: "You have queued a mine intent! \nNow move and let the turn finish",
+            emotion: "happy",
+          },
+          {
+            // Off-script: moved before gassing on turn 1. Without this the
+            // bubble goes silent (holdTutorialLine will not revive an intro
+            // once the player has acted), so restate the ask.
+            when: {
+              kind: "scfen",
+              re: /^(?=SCFEN\|[^|]+\|1\|)(?=.*Q:w:[^;]*C=)/,
+            },
+            comment: "Drop a gas canister on that Hoverbike.",
+            emotion: "scanning",
+          },
+        ],
       },
       {
         id: "mecha",
@@ -408,19 +478,24 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             emotion: "happy",
           },
           {
+            // Snipe is on the queue — targeting has already cleared, so this
+            // and the arming beat below are mutually exclusive.
             when: {
               kind: "scfen",
               re: /bishopSnipe:/,
             },
-            comment: "Plan to attack that marine too!",
+            comment:
+              "You still have the classical Chess move/capture available. Order your Mecha to capture that Marine and let the turn finish.",
             emotion: "watching",
           },
           {
+            // Gas landed, no target picked yet — live UI targeting state, which
+            // never reaches SCFEN. `targetingKind` is what makes it trackable.
             when: {
               kind: "targeting",
               targetingKind: "bishopSnipe",
             },
-            comment: "Now plan to attack that ship!",
+            comment: "Now aim the ship to complete your intention!",
             emotion: "scanning",
           },
         ],
@@ -451,7 +526,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           armTimer: false,
           docs: "Tactical Jump costs 3 vespene: drag onto the BattleShip to arm targeting, click a highlighted visible empty square, then End to resolve.",
         },
-        comment: "The BattleShip can teleport anywhere in the map in an instant. \nGassing it takes all 3 canisters.",
+        comment: "The BattleShip can teleport anywhere visible in the map in an instant. \nGassing it takes all 3 canisters.",
         emotion: "watching",
         completeWhen: {
           kind: "scfen",
@@ -548,12 +623,6 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           },
         ],
       },
-    ],
-  },
-  {
-    id: "king",
-    label: "King Damage",
-    stories: [
       {
         id: "king-hunt",
         title: "King Hunt",
@@ -590,6 +659,12 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           },
         ],
       },
+    ],
+  },
+  {
+    id: "king",
+    label: "King Damage",
+    stories: [
       {
         id: "king-defense",
         title: "King Defense",
@@ -609,6 +684,18 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           re: /SCFEN\|[^|]+\|\d+\|0[0-3]\|/,
         },
         reactions: [
+          // Mecha gone (no `b` in the placement) — the Command Center is no
+          // longer under attack, so the panic line below must not ride out the
+          // win. First, because reactions stick: only another reaction retires
+          // the one before it.
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|b]*\|/,
+            },
+            comment: "Mecha down. Your Command Center holds.",
+            emotion: "happy",
+          },
           {
             when: {
               kind: "scfen",
@@ -618,9 +705,11 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             emotion: "watching",
           },
           {
+            // CC down to 2 HP *while the Mecha is still alive* — the `b` is what
+            // makes "deploy a Marine to save it" actionable advice.
             when: {
               kind: "scfen",
-              re: /SCFEN\|[^|]+\|\d+\|2[0-3]\|/,
+              re: /SCFEN\|[^|]*b[^|]*\|\d+\|2[0-3]\|/,
             },
             comment: "Your Command Center is under attack! \nDeploy a Marine to save it.",
             emotion: "shocked",
@@ -667,7 +756,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               kind: "scfen",
               re: /spawn:[^:;]*:g2/,
             },
-            comment: "Now, queue an attack on that ship with your Command Center",
+            comment: "Now, queue an attack on that ship with either your Command Center or Mecha.",
             emotion: "watching",
           },
           {
@@ -804,7 +893,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           armTimer: false,
           docs: "Enemy CC on a8 (HP 2) is smothered by a7/b7/b8, and b7 is the choke point every remaining line shares. Black's own queued turn opens rank 8 for free: nb8→d7 leaves the back rank and uncovers the fogged Qd8. One shot supplies the rest — Rb1 siege-fires b7 (without vacating), which simultaneously clears the h1-a8 diagonal for the x-raying Bh1. Two checkers at the turn-12 open take HP 2 to 0. Leave b7 alive and only the Ship connects (2→1); `kingAttackTankCounter` then deploys a Siege Tank onto b8 and shoots the Ship, which `restartWhen` reads as a retry.",
         },
-        comment: "Aim your tank at b7. \nUnleash your army's fury!",
+        comment: "Your Ship and Mecha are concealed by the fog! \n\n Aim your tank at b7 to open the line for your Mecha,",
         emotion: "thinking",
         completeWhen: {
           kind: "scfen",
@@ -828,14 +917,24 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               kind: "scfen",
               re: /SCFEN\|[^|]+\|\d+\|[0-3]1\|/,
             },
-            comment: "Sniped. \nThe fog concealed your ship!",
+            comment: "Multiple attackers stack damage!",
             emotion: "happy",
           },
         ],
+        /*
+         * The tank's target, plus the two lines that take the a8 CC from HP 2
+         * to 0: the Ship's rank-8 shot once nb8→d7 vacates the back rank, and
+         * the Bishop's h1-a8 diagonal once the tank clears b7. Both lines run
+         * *through* fog, which is why a ring alone could not make the point.
+         */
         hints: [
           {
             squares: [
               "b7",
+            ],
+            arrows: [
+              { from: "h1", to: "a8" },
+              { from: "d8", to: "a8" },
             ],
           },
         ],

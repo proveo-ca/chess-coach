@@ -1,7 +1,7 @@
 /* Siege Tank pack ↔ unpack — driven by `data-rook-mode`. */
 
 .root {
-  --siege-toggle-ms: 480ms;
+  --siege-toggle-ms: 250ms;
   overflow: visible;
 }
 
