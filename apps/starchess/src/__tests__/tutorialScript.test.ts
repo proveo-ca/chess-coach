@@ -632,6 +632,33 @@ describe("tutorialScript", () => {
     expectIntro(lineFor(marineRank4Hp3), "king", "king-attack-3");
   });
 
+  it("holds the king-defense CC warning only while the Mecha is alive", () => {
+    const r = namedReactions(
+      "king",
+      "king-defense",
+      "mechaDown",
+      "attackTheMecha",
+      "ccUnderAttack",
+    );
+    const lineFor = (scfen: string) =>
+      resolveTutorialLine({ stageId: "king", storyId: "king-defense", scfen });
+    // Mecha on h2, CC checked down to 2 HP — the advice is actionable.
+    const checkedMechaAlive =
+      "SCFEN|7k/8/8/8/8/8/7b/4K3|1|23|P|G:11:11|B:3:3|Q:w:;b:";
+    // Same 2 HP, Mecha crushed: the panic line would tell the player to do what
+    // they just did, so the win line retires it (reactions stick — only another
+    // reaction can replace one).
+    const checkedMechaDead =
+      "SCFEN|7k/8/8/8/8/8/7P/4K3|1|23|P|G:11:11|B:3:3|Q:w:;b:";
+
+    expectReaction(lineFor(checkedMechaAlive), r.ccUnderAttack);
+    expectReaction(lineFor(checkedMechaDead), r.mechaDown);
+    // A queued spawn still reads as the attack cue while the Mecha stands.
+    const spawnQueued =
+      "SCFEN|7k/8/8/8/8/8/7b/4K3|1|23|P|G:11:11|B:2:3|Q:w:B=spawn:e1:f2:p;b:";
+    expectReaction(lineFor(spawnQueued), r.attackTheMecha);
+  });
+
   it("handles king-defense-2 script completeWhen and coach reactions", () => {
     const r = namedReactions(
       "king",

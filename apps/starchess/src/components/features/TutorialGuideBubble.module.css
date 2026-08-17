@@ -118,13 +118,16 @@
 
 /*
  * Tall mobile: no gutter to park in, so the line docks *upward* from the chrome
- * track's floor — it covers Kerrigan, never the board. Capped to the track it
- * grows into so a long line scrolls instead of reaching `‹ Back`.
+ * track's floor — it sits right above rank 8, close enough to the board to read
+ * as being about it, and grows toward Kerrigan rather than over the board.
+ * Capped to the track it grows into so a long line scrolls instead of reaching
+ * `‹ Back`. The offset keeps it off the board's dashed frame, which paints a few
+ * pixels above the board row.
  */
 @media (max-width: 719px) and (min-height: 640px) {
   .dock {
     top: auto;
-    bottom: 0;
+    bottom: 0.5rem;
   }
 
   /* Absolute, not `100%`: the anchor's own height is auto, so a percentage cap

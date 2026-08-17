@@ -684,6 +684,18 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           re: /SCFEN\|[^|]+\|\d+\|0[0-3]\|/,
         },
         reactions: [
+          // Mecha gone (no `b` in the placement) — the Command Center is no
+          // longer under attack, so the panic line below must not ride out the
+          // win. First, because reactions stick: only another reaction retires
+          // the one before it.
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|b]*\|/,
+            },
+            comment: "Mecha down. Your Command Center holds.",
+            emotion: "happy",
+          },
           {
             when: {
               kind: "scfen",
@@ -693,9 +705,11 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             emotion: "watching",
           },
           {
+            // CC down to 2 HP *while the Mecha is still alive* — the `b` is what
+            // makes "deploy a Marine to save it" actionable advice.
             when: {
               kind: "scfen",
-              re: /SCFEN\|[^|]+\|\d+\|2[0-3]\|/,
+              re: /SCFEN\|[^|]*b[^|]*\|\d+\|2[0-3]\|/,
             },
             comment: "Your Command Center is under attack! \nDeploy a Marine to save it.",
             emotion: "shocked",
@@ -879,7 +893,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           armTimer: false,
           docs: "Enemy CC on a8 (HP 2) is smothered by a7/b7/b8, and b7 is the choke point every remaining line shares. Black's own queued turn opens rank 8 for free: nb8→d7 leaves the back rank and uncovers the fogged Qd8. One shot supplies the rest — Rb1 siege-fires b7 (without vacating), which simultaneously clears the h1-a8 diagonal for the x-raying Bh1. Two checkers at the turn-12 open take HP 2 to 0. Leave b7 alive and only the Ship connects (2→1); `kingAttackTankCounter` then deploys a Siege Tank onto b8 and shoots the Ship, which `restartWhen` reads as a retry.",
         },
-        comment: "Your Ship is concealed in the fog! \n\n Aim your tank at b7 and unleash your army's fury!",
+        comment: "Your Ship and Mecha are concealed by the fog! \n\n Aim your tank at b7 to open the line for your Mecha,",
         emotion: "thinking",
         completeWhen: {
           kind: "scfen",

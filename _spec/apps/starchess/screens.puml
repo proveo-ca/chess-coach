@@ -76,7 +76,12 @@ note bottom
   compact TurnBar;
   ``/review/:id`` Back · dual ResourceBars (arrows move to the dock);
   ``/review`` Back · compact ``MatchHistoryFilters`` (swatches + date pager,
-  no "Playing as" caption) — ``MobileBanner href`` keeps link navigation.
+  no "Playing as" caption) — ``MobileBanner href`` keeps link navigation;
+  ``/tutorial`` Back · compact TurnBar (live lessons; ``turnChrome="none"`` ones
+  carry Back alone) and **no** ResourceBar — the coach header collapses in this
+  band, and the rail / footer TurnBar are both off, so the strip is the only
+  place Back and End Turn have. Replay lessons get theirs from
+  ``TutorialReviewHost`` (Back · ``ReviewTurnNav`` + phase label).
   Bottom-right dock is the one floating-control slot: GasRack when live,
   ``ReviewTurnNav`` ‹ › when reviewing (same rack fill / border).
   **Tutorial** ``/tutorial/:section/:story`` (``TUTORIAL_SCRIPT`` anchors):
@@ -95,7 +100,12 @@ note bottom
   covered. ``TutorialReviewHost`` overrides desktop to park it right of the
   board: that header has no desktop coach, only the review ‹ › it would sit on.
   desktop (≥720) docks it one rail-width right of her head; tall mobile
-  (≤719 × ≥640) docks it *upward* from the chrome track floor so it covers her.
+  (≤719 × ≥640) docks it *upward* from the chrome track floor, so it lands just
+  above rank 8 — close enough to the board to read as being about it — and grows
+  toward Kerrigan rather than over the board. The track floor is the board's top
+  edge only because ``BaseScreen`` / ``TutorialReviewHost`` ``.headerSlot`` fills
+  the track on mobile (chrome still packs to its top); an auto bottom margin left
+  the line stranded an avatar's height above the board.
   Both cap at ``--avatar-height`` — the band they grow into — and scroll past
   that. Short / dynamic mobile alone keeps the centred float over ranks 7–8:
   neither axis has the room to dodge the board there.

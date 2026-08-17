@@ -105,6 +105,13 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
   const mobileViewport = useMediaQuery(MOBILE_MQ);
   let boardHost: HTMLDivElement | undefined;
 
+  /**
+   * Coach-header shell (lesson chrome: avatar band + guide bubble) instead of
+   * the `/single` top pane. The final lesson (`fullMatchHud`) opts back out.
+   */
+  const coachHeader = () =>
+    (props.header != null || props.tutorial) && !props.fullMatchHud;
+
   /** Tall/narrow mobile loses the rail — TurnBar under GasRack (no phase chips). */
   const showFooterTurnBar = () =>
     starChessMode() &&
@@ -612,8 +619,33 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
         />
       </Show>
 
+      {/*
+        Dynamic band owns the top strip. The coach header collapses to nothing
+        there (its avatar is `desktop-only` / `mobile-hero`), and the rail and
+        footer TurnBar are both off, so without this a lesson has no `‹ Back`
+        and no End Turn. Same move `TutorialReviewHost` makes for the replays —
+        a direct `Screen` child so the strip resolves full-bleed against the
+        viewport, not against the inset chrome pane. Resources stay out: the
+        tutorial shows no ResourceBar in any other band either.
+      */}
+      <Show when={coachHeader() && starChessMode() && !ended() && dynamicMobile()}>
+        <MobileBanner
+          onBack={props.onExitToMenu}
+          turn={
+            <Show when={!turnHidden()}>
+              <TurnBar
+                compact
+                autoStart={false}
+                resolveOnEnd={false}
+                onEnd={() => store.submitTurn("end")}
+              />
+            </Show>
+          }
+        />
+      </Show>
+
       <Show
-        when={(props.header != null || props.tutorial) && !props.fullMatchHud}
+        when={coachHeader()}
         fallback={
           <Screen.SidebarInset class={styles.topPane}>
             <Show when={props.guideBubble}>

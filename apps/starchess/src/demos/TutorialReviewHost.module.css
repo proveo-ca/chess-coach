@@ -65,9 +65,12 @@
   }
 }
 
+/* Fill the chrome track (see BaseScreen `.headerSlot`): the review chrome still
+   starts at the track top, and the guide bubble's dock floor becomes the
+   board's top edge instead of the chrome's bottom. */
 @media (max-width: 719px) {
   .headerSlot {
-    margin-bottom: auto;
+    height: 100%;
   }
 }
 
