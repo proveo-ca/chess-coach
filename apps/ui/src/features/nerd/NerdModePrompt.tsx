@@ -3,8 +3,10 @@ import type { Component } from "solid-js";
 
 import { Modal } from "~/components/atoms/Modal";
 import { Button } from "~/components/primitives/Button";
+import { goStarChess } from "~/features/nerd/goStarChess";
 import {
   nerdModeUnlocked,
+  setIsNerd,
   setNerdModeUnlocked,
 } from "~/features/nerd/identity";
 import { playerNameCommitTick } from "~/features/nerd/nameCommit";
@@ -51,15 +53,11 @@ export const NerdModePrompt: Component<NerdModePromptProps> = (props) => {
           primary
           onClick={() => {
             props.onAccept?.();
+            // Either answer identifies a nerd, so both leave the Menu shortcut
+            // behind — this one just also takes the trip now.
+            setIsNerd(true);
             setOpen(false);
-            const { search, hash } = window.location;
-            try {
-              // Consumed by apps/starchess MenuArrival / menuEntrance.
-              sessionStorage.setItem("starchess_from_chess", "1");
-            } catch {
-              /* ignore */
-            }
-            window.location.assign(`/starchess/${search}${hash}`);
+            goStarChess();
           }}
         >
           yes
@@ -67,6 +65,7 @@ export const NerdModePrompt: Component<NerdModePromptProps> = (props) => {
         <Button
           onClick={() => {
             setNerdModeUnlocked(true);
+            setIsNerd(true);
             setPlayerIdentity("Nerd");
             setOpen(false);
           }}

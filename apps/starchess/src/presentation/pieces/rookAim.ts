@@ -24,4 +24,9 @@ export const svgPivotAroundAniso = (
 ): string =>
   `translate(${cx} ${cy}) scale(${1 / sx} ${1 / sy}) rotate(${deg}) scale(${sx} ${sy}) translate(${-cx} ${-cy})`;
 
-export const SIEGE_TOGGLE_MS = 480;
+/**
+ * Re-export, not a second copy: this module is `InlineRook`'s one import, and
+ * the duplicate that used to live here silently drifted from the canonical
+ * value in `presentation/constants`.
+ */
+export { SIEGE_TOGGLE_MS } from "~/presentation/constants";

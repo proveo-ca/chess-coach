@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { createSignal } from "solid-js";
 
+import { TutorialHudLabels } from "~/components/features/TutorialHudLabels";
 import { DeployModal } from "~/presentation/hud/components/DeployModal";
 import { WithMatchStore } from "~/stories/project";
 import { lessonBoard } from "~/tutorial/tutorialScript";
@@ -42,6 +43,9 @@ export const Open: StoryObj = {
             onSelect={() => setPending(null)}
             onCancel={() => setPending(null)}
           />
+          {/* Tutorial chrome, shown here so the naming layer is reviewable
+              without walking to the Command Center lesson. */}
+          <TutorialHudLabels enabled />
         </div>
       </WithMatchStore>
     );

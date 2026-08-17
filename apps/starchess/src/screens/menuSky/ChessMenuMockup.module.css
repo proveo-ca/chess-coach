@@ -375,6 +375,20 @@
   opacity: 0.4;
 }
 
+/*
+ * Coach's `isNerd` shortcut (apps/ui MenuScreen `.starchess-btn`) — the one
+ * control the mock paints in this app's neon instead of Coach chrome, so the
+ * value comes from our own token rather than a `--mock-*` one.
+ */
+.menuBtnStarchess {
+  border-color: var(--sc-menu-neon, #7dff6a);
+  color: var(--sc-menu-neon, #7dff6a);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-shadow: 0 0 8px color-mix(in srgb, var(--sc-menu-neon, #7dff6a) 45%, transparent);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--sc-menu-neon, #7dff6a) 22%, transparent);
+}
+
 .menuBtnCredits {
   width: auto;
   margin-top: 0;
@@ -472,6 +486,12 @@
   .menuOptions > .btnHost,
   .comingSoon {
     grid-column: 2;
+  }
+
+  /* Stays under the Play control when the splash splits — column 2 is the
+     Coach modes, and this is the way out of them (same as apps/ui). */
+  .menuOptions > .btnHostStarchess {
+    grid-column: 1;
   }
 
   .btnHostCredits {

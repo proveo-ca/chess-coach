@@ -76,10 +76,21 @@ export type LessonChoreographyId =
   | "kingAttackTankCounter"
   | "kingHuntGraduation";
 
+/**
+ * Hint line drawn square-to-square — for a claim a ring cannot make, like the
+ * long diagonal a piece x-rays down. Purely presentational; the board does not
+ * check that the line is legal or unobstructed.
+ */
+export type TutorialBoardArrow = {
+  from: Square;
+  to: Square;
+};
+
 /** Board hint step — first matching entry wins (SCFEN `when`, else fallback). */
 export type TutorialBoardHint = {
   when?: { kind: "scfen"; re: RegExp };
-  squares: readonly Square[];
+  squares?: readonly Square[];
+  arrows?: readonly TutorialBoardArrow[];
 };
 
 /** Auto-advance to next lesson when live intent / board matches. */

@@ -22,6 +22,7 @@ import styles from "~/app/BaseScreen.module.css";
 import { CoachAvatar } from "~/components/atoms/CoachAvatar";
 import { MobileBanner } from "~/components/atoms/MobileBanner";
 import { ExitGameConfirm } from "~/components/features/ExitGameConfirm";
+import { TutorialHudLabels } from "~/components/features/TutorialHudLabels";
 import { useMediaQuery } from "~/hooks/useMediaQuery";
 import { DYNAMIC_MOBILE_MQ, MOBILE_MQ } from "~/utils/breakpoints";
 import { Label } from "~/components/primitives/Label";
@@ -37,7 +38,7 @@ import { DeployModal } from "~/presentation/hud/components/DeployModal";
 import { liveMatchPhase } from "~/presentation/hud/liveMatchPhase";
 import { MatchBoardHost } from "~/presentation/hud/components/MatchBoardHost";
 import { ResourceBar } from "~/presentation/hud/components/ResourceBar";
-import { ReviewTurnNav } from "~/components/primitives/ReviewTurnNav";
+import { ReviewTurnNav } from "~/components/atoms/ReviewTurnNav";
 import { TurnBar } from "~/presentation/hud/components/TurnBar";
 import { TurnBarSidebar } from "~/presentation/hud/components/TurnBarSidebar";
 import { pawnGasArm, specialTimingFor, tryQueue } from "~/presentation/specials/pawnGasArm";
@@ -47,6 +48,7 @@ import { resetReviewVisionFilter, reviewVisionFilter } from "~/store/reviewVisio
 import type { BoardSkin, PieceSet } from "~/types/board";
 import type { PromotionPiece } from "~/types/chess";
 import type { KerriganEmotion } from "~/types/coach";
+import type { TutorialBoardArrow } from "~/types/tutorial";
 
 export type AutoQueueOpponentResult = {
   snapshot: ScFenSnapshot;
@@ -79,6 +81,7 @@ export type StarChessScreenProps = {
   header?: import("solid-js").JSX.Element;
   footerExtra?: import("solid-js").JSX.Element;
   hintSquares?: readonly Square[];
+  hintArrows?: readonly TutorialBoardArrow[];
 };
 
 type OverlayBox = { top: number; left: number; width: number; height: number };
@@ -597,6 +600,9 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
 
   return (
     <Screen>
+      {/* Names the deploy / promotion tiles and the ResourceBar strips — the
+          labelled components stay unaware, see TutorialHudLabels. */}
+      <TutorialHudLabels enabled={!!props.tutorial} />
       <Show when={starChessMode()}>
         <span
           data-testid="king-lives"
@@ -705,6 +711,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
               variant={variant()}
               pieceSet={props.pieceSet}
               hintSquares={props.hintSquares}
+              hintArrows={props.hintArrows}
             />
             <Show when={starChessMode() && overlayBox()}>
               {(box) => (

@@ -1,6 +1,8 @@
+// SPEC: _spec/apps/starchess/screens.puml, _spec/apps/ui/responsiveness/rules.md
 /**
- * Floating dismissible Selena line — ChatBubble over board ranks 7–8.
- * Out of document flow so the CoachScreen header avatar stays put.
+ * Floating dismissible Selena line — a ChatBubble docked out of document flow
+ * so the CoachScreen header avatar stays put. Where it docks is band-dependent
+ * (gutter · over Kerrigan · over ranks 7–8); the stylesheet owns that call.
  */
 import { Show, createSignal, type Component } from "solid-js";
 

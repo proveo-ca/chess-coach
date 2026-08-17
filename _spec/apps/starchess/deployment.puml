@@ -21,15 +21,19 @@ package "StarChess shell" {
 
 package "Coach compatibility" {
   component "/chess/starchess\n→ /starchess/ + search/hash\nStarChessRedirect" as R <<app>>
-  component "NerdModePrompt\nLevenshtein on name **blur/commit**\nyes → /starchess/\nkeep classic → Nerd identity" as N <<app>>
+  component "NerdModePrompt\nLevenshtein on name **blur/commit**\nyes → /starchess/\nkeep classic → Nerd identity\neither answer → **isNerd**" as N <<app>>
+  component "MenuScreen\n**isNerd** → Play StarChess\n(neon green, under Play with Selena)" as M <<app>>
+  component "goStarChess(assign|replace)\nsole hop: stamps starchess_from_chess,\nkeeps search + hash" as G <<app>>
 }
 
 V --> P
 V --> J
 W --> J
 C --> R
-R ..> W : external navigate
-N ..> W : location.assign
+R ..> G : replace
+N ..> G : assign
+M ..> G : assign
+G ..> W : external navigate
 
 note bottom of V
   SPA routes (Router base ``/starchess``):

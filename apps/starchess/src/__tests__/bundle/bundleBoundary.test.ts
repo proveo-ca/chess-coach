@@ -98,4 +98,39 @@ describe("apps/starchess boundary", () => {
     }
     expect(offenders).toEqual([]);
   });
+
+  /**
+   * `cburnett` is the fog tutorial's Chess skin and nothing else. Exactly one
+   * place may *choose* it; everywhere else only reads `pieceSet` to pick a
+   * glyph, and that reading stays in presentation. Otherwise the skin drifts
+   * into being a board / rules concept.
+   */
+  it("cburnett is chosen only by the fog tutorial, and read only by presentation", () => {
+    const chooses = /pieceSet=\{[^\n]*["']cburnett["']/;
+    const names = /["']cburnett["']/;
+    const choosers = new Set<string>();
+    const readers = new Set<string>();
+    for (const file of walk(SRC)) {
+      if (file.includes(join("src", "__tests__"))) continue;
+      const rel = file.slice(SRC.length + 1);
+      for (const line of readFileSync(file, "utf8").split("\n")) {
+        if (!names.test(line)) continue;
+        (chooses.test(line) ? choosers : readers).add(rel);
+      }
+    }
+
+    expect([...choosers]).toEqual([join("screens", "TutorialScreen.tsx")]);
+    // Glyph switches + the PieceSet union itself — no app / store / core reader.
+    expect([...readers].sort()).toEqual([
+      join("presentation", "animations", "components", "kingDamageOverlay.tsx"),
+      join("presentation", "board", "components", "RookGlyph.tsx"),
+      join("types", "board.ts"),
+    ]);
+
+    const core = join(SRC, "..", "..", "..", "packages", "starchess-core", "src");
+    const inCore = walk(core).filter((f) =>
+      readFileSync(f, "utf8").includes("cburnett"),
+    );
+    expect(inCore).toEqual([]);
+  });
 });

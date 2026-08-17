@@ -21,7 +21,7 @@ import { createMatchStateFromReviewHistory } from "~/app/reviewHistory";
 import { displayedSnapshot } from "~/app/selectors";
 import { CoachAvatar } from "~/components/atoms/CoachAvatar";
 import { MobileBanner } from "~/components/atoms/MobileBanner";
-import { ReviewTurnNav } from "~/components/primitives/ReviewTurnNav";
+import { ReviewTurnNav } from "~/components/atoms/ReviewTurnNav";
 import { Screen } from "~/components/primitives/Screen";
 import { ScreenBackNav } from "~/components/primitives/ScreenBackNav";
 import styles from "~/demos/TutorialReviewHost.module.css";
@@ -316,7 +316,11 @@ const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
               class={styles.reviewNav}
               data-testid="tutorial-review-back"
             >
+              {/* Keys bind here, not on the banner copy above — both render at
+                  once (the banner is CSS-gated, not unmounted), and two
+                  listeners would step twice per press. */}
               <ReviewTurnNav
+                keyboard
                 onBack={goPrev}
                 onForward={() => void goNext()}
                 backDisabled={beatIndex() <= 0 || busy()}

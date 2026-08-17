@@ -22,6 +22,7 @@ import {
   RANKS,
   isLightSquare,
 } from "~/presentation/board/components/StarChessSquare";
+import type { TutorialBoardArrow } from "~/types/tutorial";
 import {
   mapWithMovePathOccupancy,
   getVisionDisplayCells,
@@ -79,6 +80,8 @@ export type StarChessBoardProps = {
   legalDests?: readonly Square[];
   /** Tutorial destination rings. */
   hintSquares?: readonly Square[];
+  /** Tutorial hint lines drawn square-to-square (attack / x-ray lines). */
+  hintArrows?: readonly TutorialBoardArrow[];
   onSquareClick?: (square: Square) => void;
   /**
    * Hide board glyphs on these squares (combat / king-damage overlays own them).
@@ -105,6 +108,7 @@ export type StarChessBoardProps = {
 
 export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
   const maskId = createUniqueId();
+  const hintHeadId = createUniqueId();
   const viewer = () => props.viewer ?? "w";
   const variant = (): BoardSkin => props.variant ?? "eclipse";
   const pieceSet = (): PieceSet => props.pieceSet ?? "nerd";
@@ -208,6 +212,42 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
     usePlayerFog() ? getVisionDisplayCells(fog().litSquares, FILES, RANKS) : [],
   );
   const fogPaths = createMemo(() => getVisionFogHolePaths(litCells()));
+
+  /**
+   * Hint lines in the shared 0–8 board space, trimmed clear of both piece
+   * glyphs so the line reads as pointing *between* squares rather than through
+   * them. Same FILES/RANKS projection the fog overlay uses, so a line cannot
+   * drift from the grid it annotates.
+   */
+  const hintLines = createMemo(() => {
+    const centre = (sq: Square) => {
+      const col = FILES.indexOf(sq[0] as (typeof FILES)[number]);
+      const row = RANKS.indexOf(sq[1] as (typeof RANKS)[number]);
+      return col < 0 || row < 0 ? null : { x: col + 0.5, y: row + 0.5 };
+    };
+    // Half a square clear at the tail, a little more at the head so the
+    // arrowhead lands on the target's edge instead of on top of it.
+    const TAIL = 0.34;
+    const HEAD = 0.46;
+    return (props.hintArrows ?? []).flatMap((a) => {
+      const from = centre(a.from);
+      const to = centre(a.to);
+      if (!from || !to) return [];
+      const dx = to.x - from.x;
+      const dy = to.y - from.y;
+      const len = Math.hypot(dx, dy);
+      if (len === 0) return [];
+      const ux = dx / len;
+      const uy = dy / len;
+      return [{
+        key: `${a.from}${a.to}`,
+        x1: from.x + ux * TAIL,
+        y1: from.y + uy * TAIL,
+        x2: to.x - ux * HEAD,
+        y2: to.y - uy * HEAD,
+      }];
+    });
+  });
 
   const dualVision = createMemo(() => {
     if (!isObserver()) return null;
@@ -319,6 +359,44 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
                   <For each={observerPathsB()}>{(d) => <path d={d} />}</For>
                 </g>
               </Show>
+            </svg>
+          </Show>
+          <Show when={hintLines().length > 0}>
+            <svg
+              class={styles["hint-arrow-overlay"]}
+              viewBox="0 0 8 8"
+              preserveAspectRatio="none"
+              data-testid="board-hint-arrows"
+              aria-hidden
+            >
+              <defs>
+                {/* `markerUnits="strokeWidth"` keeps the head proportional to
+                    the line, so one marker serves every board size. */}
+                <marker
+                  id={hintHeadId}
+                  viewBox="0 0 10 10"
+                  refX="8"
+                  refY="5"
+                  markerWidth="4"
+                  markerHeight="4"
+                  markerUnits="strokeWidth"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M0 1 L9 5 L0 9 Z" fill="currentColor" />
+                </marker>
+              </defs>
+              <For each={hintLines()}>
+                {(l) => (
+                  <line
+                    data-hint-arrow={l.key}
+                    x1={l.x1}
+                    y1={l.y1}
+                    x2={l.x2}
+                    y2={l.y2}
+                    marker-end={`url(#${hintHeadId})`}
+                  />
+                )}
+              </For>
             </svg>
           </Show>
           <For each={RANKS}>

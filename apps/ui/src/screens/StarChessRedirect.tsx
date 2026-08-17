@@ -4,16 +4,10 @@
  */
 import { onMount, type Component } from "solid-js";
 
+import { goStarChess } from "~/features/nerd/goStarChess";
+
 export const StarChessRedirect: Component = () => {
-  onMount(() => {
-    const { search, hash } = window.location;
-    try {
-      sessionStorage.setItem("starchess_from_chess", "1");
-    } catch {
-      /* ignore */
-    }
-    window.location.replace(`/starchess/${search}${hash}`);
-  });
+  onMount(() => goStarChess("replace"));
   return (
     <p style={{ margin: "2rem", "text-align": "center" }}>
       Opening StarChess…

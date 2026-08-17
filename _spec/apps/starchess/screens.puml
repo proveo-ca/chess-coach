@@ -82,8 +82,33 @@ note bottom
   **Tutorial** ``/tutorial/:section/:story`` (``TUTORIAL_SCRIPT`` anchors):
   CoachScreen-shaped Kerrigan header; HOME-only SideRailTools (``homeOnly``);
   no ResourceBars; fog Chess|StarChess skin toggle;
+  **Fog skin demo** — each fog lesson plays the toggle itself: Chess at 1s,
+  back to StarChess at 3s, so "same moves as Chess" is shown, not just claimed.
+  Board hints hold until it ends (3s); non-fog lessons have no demo, so theirs
+  land at once. Working the toggle by hand cancels the demo and releases the
+  hints early — it never fights the player's hand.
   resolve ``combat-chain`` shows ``TurnBarSidebar`` phase chips (DualNav off);
   resolve/king footer is typewriter turn/phase nav (‹ Turn · Check · Intent · Resolve ›).
+  **Guide bubble placement** (``TutorialGuideBubble``) — the line never takes a
+  click meant for what it overlaps (``pointer-events`` only on its × and CTA),
+  and stays in the top region beside / over Kerrigan, so the board is never
+  covered. ``TutorialReviewHost`` overrides desktop to park it right of the
+  board: that header has no desktop coach, only the review ‹ › it would sit on.
+  desktop (≥720) docks it one rail-width right of her head; tall mobile
+  (≤719 × ≥640) docks it *upward* from the chrome track floor so it covers her.
+  Both cap at ``--avatar-height`` — the band they grow into — and scroll past
+  that. Short / dynamic mobile alone keeps the centred float over ranks 7–8:
+  neither axis has the room to dodge the board there.
+  **Chess skin** (``cburnett``) — chosen only by ``TutorialScreen`` (fog stage),
+  read only by presentation glyph switches: ``RookGlyph`` flattens tank/siege,
+  ``kingDamageOverlay`` flattens a burning Command Center (HP 1–2) to the classic
+  King. Never a rules concept — asserted in ``__tests__/bundle/bundleBoundary``.
+  Fire cues pass the same fog gate as every other cue layer, so an unseen
+  burning CC never marks its square (``__tests__/fog/kingDamageFog``).
+  **Tutorial-only labels** (``TutorialHudLabels``) — names the deploy /
+  promotion tiles (``specialCopyFor``) and the three ResourceBar strips.
+  Anchors are found by test id and measured into a portal, so ``DeployModal`` /
+  ``PromotionModal`` / ``ResourceBar`` carry no tutorial branch.
   **Full-match exception:** final lesson ``king-attack-3`` (``fullMatchHud``)
   renders the ``/single``-style top pane — Home + matchTitle + ResourceBar +
   status line — with no coach header / mobile hero; guide bubble docks below

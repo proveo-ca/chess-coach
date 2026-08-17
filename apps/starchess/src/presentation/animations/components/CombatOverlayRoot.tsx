@@ -74,6 +74,7 @@ export const CombatOverlayRoot: Component<CombatOverlayRootProps> = (props) => {
         cues={c().kingDamage ?? NO_KING_DAMAGE}
         boardWidth={w()}
         boardHeight={h()}
+        pieceSet={props.pieceSet}
       />
       <GasDropAnimation
         cues={c().gasDropCues ?? NO_GAS_DROPS}

@@ -11,6 +11,7 @@ import { For, Show, type Component } from "solid-js";
 import { CoachAvatar } from "~/components/atoms/CoachAvatar";
 import type { CoachIdentity } from "~/types/coach";
 import styles from "~/screens/menuSky/ChessMenuMockup.module.css";
+import { isNerd } from "~/store/nerdFlag";
 import { playerName } from "~/store/settingsStore";
 
 export type ChessMenuMockupProps = {
@@ -43,6 +44,8 @@ type ShatterBtn = {
   primary?: boolean;
   disabled?: boolean;
   credits?: boolean;
+  /** Coach's `isNerd` shortcut — StarChess neon, and column 1 when split. */
+  starchess?: boolean;
   /** Half of the fused Play control — squares off the shared seam. */
   split?: "action" | "select";
 };
@@ -56,6 +59,7 @@ const ShatterableButton: Component<{
     class={styles.btnHost}
     classList={{
       [styles.btnHostCredits]: !!props.btn.credits,
+      [styles.btnHostStarchess]: !!props.btn.starchess,
       [styles.btnShatter]: props.shatter,
     }}
     style={{ "--shatter-i": String(props.index) }}
@@ -93,6 +97,7 @@ const ShatterableButton: Component<{
           [styles.menuBtnPrimary]: !!props.btn.primary,
           [styles.menuBtnDisabled]: !!props.btn.disabled,
           [styles.menuBtnCredits]: !!props.btn.credits,
+          [styles.menuBtnStarchess]: !!props.btn.starchess,
           [styles.splitAction]: props.btn.split === "action",
         }}
         role="img"
@@ -109,6 +114,12 @@ const ShatterableButton: Component<{
  */
 export const ChessMenuMockup: Component<ChessMenuMockupProps> = (props) => {
   const chromeHidden = (): boolean => !!props.fadeChrome;
+  /*
+   * Read once: Coach sets `isNerd` before the full-page hop into StarChess, so
+   * it cannot flip while the arrival plays. The mock shows the menu the player
+   * actually left — with the shortcut if they had earned it.
+   */
+  const nerd = isNerd();
 
   return (
     <div
@@ -186,25 +197,34 @@ export const ChessMenuMockup: Component<ChessMenuMockupProps> = (props) => {
             </Show>
           </div>
 
+          {/* Sits under the fused Play control in both columns, like Coach. */}
+          <Show when={nerd}>
+            <ShatterableButton
+              btn={{ id: "starchess", label: "Play StarChess", starchess: true }}
+              shatter={props.shatter}
+              index={2}
+            />
+          </Show>
+
           <ShatterableButton
             btn={{ id: "solo", label: "Solo Analysis" }}
-            shatter={props.shatter}
-            index={2}
-          />
-          <ShatterableButton
-            btn={{ id: "review", label: "Review", disabled: true }}
             shatter={props.shatter}
             index={3}
           />
           <ShatterableButton
-            btn={{ id: "lan", label: "Play LAN" }}
+            btn={{ id: "review", label: "Review", disabled: true }}
             shatter={props.shatter}
             index={4}
           />
           <ShatterableButton
-            btn={{ id: "learn", label: "Learn to Play", disabled: true }}
+            btn={{ id: "lan", label: "Play LAN" }}
             shatter={props.shatter}
             index={5}
+          />
+          <ShatterableButton
+            btn={{ id: "learn", label: "Learn to Play", disabled: true }}
+            shatter={props.shatter}
+            index={6}
           />
           <Show when={!props.shatter}>
             <span class={styles.comingSoon}>Coming soon!</span>
@@ -214,7 +234,7 @@ export const ChessMenuMockup: Component<ChessMenuMockupProps> = (props) => {
         <ShatterableButton
           btn={{ id: "credits", label: "Credits", credits: true }}
           shatter={props.shatter}
-          index={6}
+          index={7}
         />
       </div>
     </div>

@@ -35,6 +35,13 @@
   overflow: visible;
 }
 
+/* Chess skin (fog tutorial only) — flat King img fills the same face box. */
+.chessKing {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
 /* Brief central flash at death start */
 .boomFlash {
   position: absolute;

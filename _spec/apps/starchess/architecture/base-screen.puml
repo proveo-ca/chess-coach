@@ -19,7 +19,7 @@ class BaseScreen <<app>> {
   tutorial? fullMatchHud? hideResources? hideGas?
   endTurnAfterQueue? coachEmotion?
   header? guideBubble? footerExtra?
-  hintSquares?
+  hintSquares? hintArrows?
 }
 
 class MatchBoardHost <<host>> {
@@ -43,8 +43,9 @@ class PromotionModal <<app>> {
   components/primitives/PromotionModal.tsx
 }
 class ReviewTurnNav <<app>> {
-  components/primitives/ReviewTurnNav.tsx
-  pure shell
+  components/atoms/ReviewTurnNav.tsx
+  ‹ › + slot; owns **keyboard** ← / →
+  (opt-in: `keyboard`, one per screen)
 }
 
 note as N_PROPS
@@ -77,8 +78,13 @@ BaseScreen *-- ReviewTurnNav
 
 note bottom
   **HUD vs shell:** match chrome (ResourceBar, GasRack, TurnBar*) lives under
-  ""presentation/hud/"". Pure layout shells (ReviewTurnNav, PromotionModal)
-  live under ""components/primitives/"".
+  ""presentation/hud/"". Pure layout shells (PromotionModal) live under
+  ""components/primitives/"". ``ReviewTurnNav`` sits in ""components/atoms/"":
+  it binds ← / → to its own arrows, so a keypress and a click are the same
+  call with the same disabled guard — a side effect, which the
+  ``pure-primitive`` lint rule keeps out of ""primitives/"". Opt in with
+  ``keyboard`` on exactly **one** instance per screen; hosts that draw the nav
+  twice (banner + header) would otherwise step twice per press.
   Naming: piece set id remains ""nerd"" (""public/pieces/nerd/"").
   Product chrome uses ""starchess-*"" testids — not ""nerd-*"".
 end note

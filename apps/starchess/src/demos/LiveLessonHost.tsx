@@ -27,7 +27,7 @@ import { CHOREOGRAPHY } from "~/demos/choreography";
 import { clearSiegedRooks, setRookMode } from "~/presentation/animations/rookModeStore";
 import { LiveMatchShell } from "~/screens/LiveMatchShell";
 import { TUTORIAL_CAPABILITIES, setCapabilities } from "~/store/capabilitiesStore";
-import { resolveTutorialHints } from "~/tutorial/tutorialScript";
+import { resolveTutorialArrows, resolveTutorialHints } from "~/tutorial/tutorialScript";
 import { useLessonNarration } from "~/tutorial/useLessonNarration";
 import type { MatchState, MatchStore } from "~/types/match";
 import type { LiveLessonHostProps } from "~/types/lesson";
@@ -99,6 +99,12 @@ const LiveLessonInner: Component<LiveLessonHostProps> = (props) => {
     return resolveTutorialHints(props.boardHints, formatScFen(snap));
   });
 
+  const hintArrows = createMemo(() => {
+    if (!interactive()) return [];
+    const snap = displayedSnapshot(store.state());
+    return resolveTutorialArrows(props.boardHints, formatScFen(snap));
+  });
+
   const Overlay = choreography.Overlay;
 
   return (
@@ -124,6 +130,7 @@ const LiveLessonInner: Component<LiveLessonHostProps> = (props) => {
           interactive() ? props.board.endTurnAfterQueue : undefined
         }
         hintSquares={hintSquares()}
+        hintArrows={hintArrows()}
         autoQueueOpponent={
           props.board.opponent === "adjutant"
             ? (snap) =>

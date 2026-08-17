@@ -8,6 +8,7 @@ import { TUTORIAL_SCRIPT_CONFIG } from "~/tutorial/tutorialScript.config";
 import type { KerriganEmotion } from "~/types/coach";
 import type {
   LiveLessonBoard,
+  TutorialBoardArrow,
   TutorialBoardHint,
   TutorialCompleteWhen,
   TutorialLine,
@@ -19,6 +20,7 @@ import type { ReviewTurnPhase } from "~/types/review";
 
 export type {
   LiveLessonBoard,
+  TutorialBoardArrow,
   TutorialBoardHint,
   TutorialCompleteWhen,
   TutorialLine,
@@ -312,19 +314,35 @@ export const holdTutorialLine = (
 };
 
 /** First matching board-hint step for the live SCFEN (empty = clear marks). */
+/**
+ * The hint step in force — first entry whose `when` matches, else the first
+ * unconditional one. Squares and arrows come from the *same* step so a lesson
+ * cannot show a ring from one beat and a line from another.
+ */
+const matchTutorialHint = (
+  hints: readonly TutorialBoardHint[] | undefined,
+  scfen: string | undefined,
+): TutorialBoardHint | undefined => {
+  if (!hints?.length) return undefined;
+  for (const h of hints) {
+    if (!h.when) return h;
+    if (h.when.kind === "scfen" && scfen != null && h.when.re.test(scfen)) {
+      return h;
+    }
+  }
+  return undefined;
+};
+
 export const resolveTutorialHints = (
   hints: readonly TutorialBoardHint[] | undefined,
   scfen: string | undefined,
-): Square[] => {
-  if (!hints?.length) return [];
-  for (const h of hints) {
-    if (!h.when) return [...h.squares];
-    if (h.when.kind === "scfen" && scfen != null && h.when.re.test(scfen)) {
-      return [...h.squares];
-    }
-  }
-  return [];
-};
+): Square[] => [...(matchTutorialHint(hints, scfen)?.squares ?? [])];
+
+/** Hint lines for the step in force — see {@link resolveTutorialHints}. */
+export const resolveTutorialArrows = (
+  hints: readonly TutorialBoardHint[] | undefined,
+  scfen: string | undefined,
+): TutorialBoardArrow[] => [...(matchTutorialHint(hints, scfen)?.arrows ?? [])];
 
 /** Live narration fields used by {@link matchesTutorialCompleteWhen}. */
 export type TutorialCompleteContext = {

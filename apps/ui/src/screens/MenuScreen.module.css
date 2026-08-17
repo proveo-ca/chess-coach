@@ -45,6 +45,29 @@
   width: 100%;
 }
 
+/*
+ * StarChess shortcut — carries that app's neon green (apps/starchess
+ * `--sc-menu-neon`) so it reads as the door out of Chess rather than another
+ * Coach mode. Coach's theme has no such token; this is the only place it lands.
+ */
+.starchess-btn {
+  --sc-menu-neon: #7dff6a;
+
+  border-color: var(--sc-menu-neon);
+  color: var(--sc-menu-neon);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-shadow: 0 0 8px color-mix(in srgb, var(--sc-menu-neon) 45%, transparent);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--sc-menu-neon) 22%, transparent);
+}
+
+.starchess-btn:hover:not(:disabled),
+.starchess-btn:focus-visible {
+  border-color: var(--sc-menu-neon);
+  background-color: color-mix(in srgb, var(--sc-menu-neon) 14%, transparent);
+  box-shadow: 0 0 16px color-mix(in srgb, var(--sc-menu-neon) 38%, transparent);
+}
+
 .coach-intro {
   position: relative;
   display: flex;
@@ -75,6 +98,12 @@
   .menu-options > button,
   .coming-soon {
     grid-column: 2;
+  }
+
+  /* Stays under Play with Selena when the splash splits — the right column is
+     the Coach modes, and this is the way out of them. */
+  .menu-options > .starchess-btn {
+    grid-column: 1;
   }
 
   .credits-btn {
