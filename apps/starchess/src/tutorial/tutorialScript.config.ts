@@ -324,7 +324,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           stored: 4,
           endTurnAfterQueue: "moveAndSpecial",
           armTimer: false,
-          docs: "d2 can classical-double for free (canister unused). Gas on a pawn queues a 1-square StarChess step \u00b7 End to resolve.",
+          docs: "d2 can advance 2 squares classically with no canister spent. Gas on a pawn queues a 1-square StarChess step \u00b7 End to resolve.",
         },
         comment: "Order a Marine to move.",
         emotion: "idle",
@@ -848,7 +848,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           endTurnAfterQueue: "first",
           docs: "Command Center on h1 at HP 1, guarded by Nf1 + Pg1. The hoverbike is the only unit whose vision reaches re2 — and e2 is off its move graph, so spotting is all it can do. Black has the tank pre-queued e2→h2, one square from the CC. Order Be5→h2: two movers land on the same tile in the move phase, so both die — the mecha trades itself for the tank.",
         },
-        comment: "Your hoverbike found a tank... \nOrder your mecha to h2 to cause a collision.",
+        comment: "Your Hoverbike found a Tank... \nOrder either your Hoverbike or Mecha to h2 to cause a collision.",
         emotion: "thinking",
         completeWhen: {
           kind: "scfen",
@@ -880,21 +880,21 @@ export const TUTORIAL_SCRIPT_CONFIG = [
         id: "king-attack-1",
         title: "King Attack #1",
         board: {
-          scfen: "SCFEN|kn1Q4/prp5/8/8/3n4/8/5P1P/1R4KB|11|32|P|G:20:22|B:4:6|Q:w:;b:C=b8d7,B=knightMine:b8:b8,B=knightMine:d4:d4|S:b1b7",
+          scfen: "SCFEN|kn1Q4/ppp5/8/8/3n4/8/r4P1P/1R4KB|11|32|P|G:20:22|B:4:6|Q:w:;b:C=b8d7,B=knightMine:b8:b8|S:a2b1|M:w:;b:c6d4",
           stored: 4,
           endTurnAfterQueue: "first",
           choreography: "kingAttackTankCounter",
-          /**
-           * Timer off on purpose. Turn-open refills gas, and this seed's black
-           * gas is already spent on its queued mines — so an armed timer would
-           * fire `TURN_OPEN` on mount, move the SCFEN off its baseline, and
-           * `holdTutorialLine` would retire the opening line before it is read.
+          /*
+           * Timer on, like every other King lesson. This seed's black gas reads
+           * 0 (spent on its queued mine), so turn-open refills it and moves the
+           * SCFEN off the seed on mount — which used to retire the opening line
+           * unread, and was why the timer was disabled here. `holdTutorialLine`
+           * now re-baselines when turn-open checks land, so the line survives.
            */
-          armTimer: false,
-          docs: "Enemy CC on a8 (HP 2) is smothered by a7/b7/b8, and b7 is the choke point every remaining line shares. Black's own queued turn opens rank 8 for free: nb8→d7 leaves the back rank and uncovers the fogged Qd8. One shot supplies the rest — Rb1 siege-fires b7 (without vacating), which simultaneously clears the h1-a8 diagonal for the x-raying Bh1. Two checkers at the turn-12 open take HP 2 to 0. Leave b7 alive and only the Ship connects (2→1); `kingAttackTankCounter` then deploys a Siege Tank onto b8 and shoots the Ship, which `restartWhen` reads as a retry.",
+          docs: "Enemy CC on a8 (HP 2) is smothered by a7/b7/b8, and b7 is the choke point every remaining line shares. Black's own queued turn opens rank 8 for free: nb8→d7 leaves the back rank and uncovers the fogged Qd8. One shot supplies the rest — Rb1 siege-fires b7 (without vacating), which simultaneously clears the h1-a8 diagonal for the x-raying Bh1. Two checkers at the turn-12 open take HP 2 to 0. Leave b7 alive and only the Ship connects (2→1); `kingAttackTankCounter` then deploys a Siege Tank onto b8 and shoots the Ship, which `restartWhen` reads as a retry. The choke point is a **Marine** — the enemy tank is dug in on a2 instead, where its rank-2 ray stops at the f2 marine and never reaches Kg1. Enemy mines sit on c6 and d4 (black's third lands on b8 from its own queued `knightMine`, which is the side's cap): c6 is planted *on* the h1-a8 diagonal on purpose — mines are not FEN pieces, so they neither block the Bishop's check nor get spent by it (`starchess-core` `mine/mineChecks.test.ts`).",
         },
-        comment: "Your Ship and Mecha are concealed by the fog! \n\n Aim your tank at b7 to open the line for your Mecha,",
-        emotion: "thinking",
+        comment: "Your Ship and Mecha are concealed by the fog! \n\n Aim your tank at b7 to open the line for your Mecha.",
+        emotion: "watching--left",
         completeWhen: {
           kind: "scfen",
           re: /SCFEN\|[^|]+\|\d+\|[0-3]0\|/,
@@ -913,12 +913,32 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             emotion: "watching",
           },
           {
+            /**
+             * HP 0 — *both* checkers connected in the same pass, which is the
+             * only outcome "stacked" describes. This is `completeWhen`'s gate
+             * too: the line lands on the completing board, so the success
+             * bubble inherits it (see `bubbleMessage` in TutorialScreen).
+             */
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|\d+\|[0-3]0\|/,
+            },
+            comment: "Stacked damage!",
+            emotion: "happy",
+          },
+          {
+            /**
+             * HP 1 — only the Ship connected. Keeps this beat voiced: once the
+             * board has moved off its baseline `holdTutorialLine` will not
+             * revive the opening line, so with no reaction here the bubble goes
+             * empty until the counterattack takes the Ship.
+             */
             when: {
               kind: "scfen",
               re: /SCFEN\|[^|]+\|\d+\|[0-3]1\|/,
             },
-            comment: "Multiple attackers stack damage!",
-            emotion: "happy",
+            comment: "One attacker only. \nClear b7 so your Mecha fires too. \n\nIf your Ship dies, the Mecha will lose vision!",
+            emotion: "thinking",
           },
         ],
         /*

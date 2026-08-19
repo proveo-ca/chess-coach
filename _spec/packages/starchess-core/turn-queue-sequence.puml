@@ -77,8 +77,9 @@ end
 
 note over ES
   The same side may hold **B and F specials in one turn** — nothing forbids
-  acting before *and* after its own classical. ≤1 C per side is the only
-  shape rule (""assertQueueShape""); gas caps the special count.
+  acting before *and* after its own classical, on *different* units. The shape
+  rules (""assertQueueShape"") are **≤1 C per side** and **one special per
+  unit** (keyed on ""from""); gas caps the special count on top of that.
   F actor squares are resolved post-C, so a B relocate, the C and a late
   F drop all compose on the square the unit actually ends on.
 end note

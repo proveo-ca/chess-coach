@@ -8,7 +8,6 @@ import {
 
 import {
   OPENING_STORED_MATERIAL,
-  canPawnDoubleFree,
   classicFenForViewer,
   currentQueue,
   deployedMaterial,
@@ -85,26 +84,11 @@ describe("matchEconomy integration", () => {
     expect(deployedMaterial(store)).toBeGreaterThan(0);
     expect(hasUsedSpecialThisTurn(store, "e2")).toBe(false);
     expect(classicFenForViewer(store)).toContain("K");
-    expect(canPawnDoubleFree(store, "e2")).toBe(true);
-    expect(canPawnDoubleFree(store, "e1")).toBe(false);
     expect(currentQueue(store)).toEqual([]);
     expect(turnDeadlineAt(store)).toBeNull();
     expect(turnSecondsRemaining(store, Date.now())).toBe(0);
     store.dispatch({ type: "SET_DEADLINE", at: Date.now() + 5000 });
     expect(turnSecondsRemaining(store, Date.now())).toBeGreaterThan(0);
-  });
-
-  it("offers the free double to a marine deployed behind the king", () => {
-    // The HUD reads this to decide between "Double Step (free)" and charging a
-    // canister. It used to probe through chess.js, which rejects the whole
-    // placement when a pawn sits on an edge row.
-    const store = createMatchStore({
-      initial: createMatchStateFromScfen(
-        "SCFEN|4k3/8/8/8/8/8/8/3PK3|1|33|P|G:11:11|Q:w:;b:",
-        5,
-      ),
-    });
-    expect(canPawnDoubleFree(store, "d1")).toBe(true);
   });
 
   it("reconstruct prefers snap.stored when present mid-history", () => {

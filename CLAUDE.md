@@ -56,6 +56,7 @@ When you add, rename, or remove a component, hook, store, or service:
 | `_spec/apps/starchess/timeline/cue-projection.puml` | `projectResolveTimeline` emission order (the cue list **is** the script) |
 | `_spec/apps/starchess/timeline/cue-playback.puml` | `playTimeline` dispatch, commit semantics, cancellation contract |
 | `_spec/apps/starchess/timeline/cue-lanes.puml` | `cueLanes.ts` routing registry — lanes / board rungs that replaced id-prefix parsing |
+| `_spec/packages/client-platform/entities.puml` | `@chess-coach/client-platform`: one client-device table (UA + UA-CH + iPadOS touch tell) shared by `apps/ui` and `apps/starchess`; `isDesktopClient` needs pointer **and** UA to agree before any keyboard copy |
 | `_spec/packages/engine-core/entities.puml` | `@chess-coach/engine-core` API: shared prompt/classification/commentary exports and their two consumers |
 | `_spec/packages/engine-core/ui-engine-parity.md` | Bun backend ⇄ `apps/ui/src/engine` parity map (prompt logic shared via `@chess-coach/engine-core`) |
 
@@ -65,6 +66,12 @@ When you add, rename, or remove a component, hook, store, or service:
 - **Dual distribution**: `runtimeMode === 'desktop'` uses `HttpCoachService` (the Bun server, `apps/server`); `runtimeMode === 'web-*'` uses `WebWorkerCoachService` (in-browser workers).
 - **Shared orchestration core**: the behaviour-defining prompt / classification / commentary logic lives in `packages/engine-core` (`@chess-coach/engine-core`) and is imported by **both** the Bun server (`apps/server`) and the browser engine (`apps/ui/src/engine`) — one implementation, behavior pinned by `_spec/apps/server/behavior.md`.
 - **Coach decoupling**: `useMoveExecutor` owns game mechanics and emits `lastHumanMoveInfo` / `lastAIMoveInfo` signals. `useCoachBehavior` reacts to those signals and owns all advice/emotion logic — do not add coach actions back into `useMoveExecutor`.
+- **Device class**: never sniff the user agent in an app. `@chess-coach/client-platform`
+  owns it (`detectClientDevice` / `resolveClientOS`), and copy that names a **key**
+  must go through `isDesktopClient`, which requires `(pointer: fine) and (hover: hover)`
+  *and* a non-mobile UA — either alone misfires on tablets and mouse-equipped phones.
+  In `apps/starchess` use the `useIsDesktopClient()` hook. Note this is the *device*
+  axis, unrelated to `runtimeMode === 'desktop'` (which is a distribution mode).
 - **Capabilities pattern**: each screen sets `ScreenCapabilities` on mount (`capabilitiesStore`); hooks and components read specific flags rather than branching on a screen name.
 - **Spider mines**: every mine decision in `starchess-core` goes through
   `board/mine-contact.ts` (`mineContact` / `withoutMine` / `hostileMineOn`) —

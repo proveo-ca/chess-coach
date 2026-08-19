@@ -419,6 +419,7 @@ export const TutorialScreen: Component = () => {
       scfen: n.scfen,
       turn: n.turn,
       targetingKind: n.targetingKind,
+      turnStartChecksApplied: n.turnStartChecksApplied,
     };
     const raw = resolveTutorialLine(ctx);
     const next = holdTutorialLine(

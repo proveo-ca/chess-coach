@@ -24,6 +24,7 @@
     "build-storybook": "storybook build -o storybook-static"
   },
   "dependencies": {
+    "@chess-coach/client-platform": "workspace:*",
     "@mlc-ai/web-llm": "^0.2.82",
     "@solidjs/router": "^0.16.1",
     "chess.js": "^1.4.0",

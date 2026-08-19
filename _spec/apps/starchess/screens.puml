@@ -65,6 +65,33 @@ note bottom
   ``max-height: 639px`` (dynamic / short — height only, not width).
   GasDeploy floats bottom-right on the same short height (footer spacer collapses);
   idle ``Plan your turn`` status line is hidden then too.
+  **Backing out of a gas lift** (``GasRack`` + ``BaseScreen``) — one contract,
+  two affordances, and the lift says which: **Esc** while a canister is up
+  (desktop), **drop clear of the board** anywhere (the only exit touch has).
+  Both take the miss path — canister flies home, then ``onCancel``. The
+  ``gas-cancel-hint`` ChatBubble rides the lift **inside the Screen's bottom
+  row**: ``.footer`` is ``position: relative`` and every element down to
+  ``GasRack .dock`` is static, so the bubble's containing block *is* row 3 and
+  row 2 (the board) is out of reach **structurally**, not by measurement. It
+  pins to the bottom of that row, over the rack the canister came from. No JS
+  anchoring at all — earlier viewport-fixed versions clipped first the coach
+  line, then the board.
+  One exception, and it is a layout fact rather than a choice: in the dynamic
+  band the rack is portaled into a viewport-fixed dock with **no** bottom-row
+  ancestor (``dockEl.closest('[data-region=\"bottom\"]')`` is null → the
+  ``cancelHintFloating`` variant). That band's board fills the viewport and the
+  dock already floats over it, so the hint sits beside the rack along the bottom
+  edge — the strip the dock itself claims — instead of mid-board.
+  Which copy shows is ``isDesktopClient`` (``@chess-coach/client-platform``):
+  the **Esc** half is named only when a fine pointer *and* a non-mobile UA agree —
+  see ``_spec/packages/client-platform/entities.puml``.
+  Esc also disarms an **armed special**: board-click targeting (Charon ·
+  Tactical Jump · the deploy square pick) has no dismiss chrome of its own, and
+  a ``pendingPromotion`` the resolve timeline has hidden makes ``onSquareClick``
+  a no-op — so without Esc the board swallows clicks with nothing on screen to
+  explain why. Modals keep owning their own Escape (``Modal`` is dismissible),
+  so the handler stands down while one is open.
+  Pinned by ``apps/e2e/tests/starchess/starchess-gas-cancel.spec.ts``.
   **Review / gameOver:** ``ReviewTurnNav`` (green ‹ ›) flanks dual ResourceBars
   in the top row; rail keeps Turn/Phase chips + Home (no stacked DualNav).
   Review detail also shows result + matchup Labels above DualNav.

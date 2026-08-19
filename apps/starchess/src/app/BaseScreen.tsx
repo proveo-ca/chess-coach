@@ -485,7 +485,6 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
   onMount(() => {
     if (props.tutorial) setCapabilities(TUTORIAL_CAPABILITIES);
     const onKey = (e: KeyboardEvent) => {
-      if (store.shell().phase !== "gameOver") return;
       const t = e.target as HTMLElement | null;
       if (
         t &&
@@ -497,6 +496,33 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
         return;
       }
       if (e.metaKey || e.ctrlKey || e.altKey) return;
+      /**
+       * Escape backs out of an armed special. Modals own their own Escape
+       * (`Modal` is dismissible), so this only covers the states that have **no**
+       * dismiss affordance: board-click targeting (Charon / Tactical Jump / the
+       * deploy square pick) and a picker the resolve timeline has hidden —
+       * `pendingPromotion` makes `onSquareClick` a no-op, so without this the
+       * board swallows every click with nothing on screen to explain why.
+       */
+      if (e.key === "Escape") {
+        if (exitOpen() || modalPending() || promotionPending()) return;
+        const s = store.shell();
+        if (s.targeting || spawnPhase() !== "idle") {
+          e.preventDefault();
+          onCancelSpawn();
+          store.dispatch({
+            type: "QUEUE_REJECT",
+            message: "Cancelled — canister returned",
+          });
+          return;
+        }
+        if (s.pendingPromotion) {
+          e.preventDefault();
+          store.dispatch({ type: "CLEAR_PENDING_PROMOTION" });
+        }
+        return;
+      }
+      if (store.shell().phase !== "gameOver") return;
       if (e.key === "ArrowLeft") {
         e.preventDefault();
         store.reviewBack();

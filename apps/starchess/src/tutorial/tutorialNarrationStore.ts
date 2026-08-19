@@ -17,6 +17,14 @@ export type TutorialNarrationState = {
   timelineActive?: boolean;
   /** Live `formatScFen` for script `scfen` reactions. */
   scfen?: string;
+  /**
+   * Whether turn-open checks have landed on the live board. Turn-open is engine
+   * bookkeeping (gas refill, check damage) that moves the SCFEN with no player
+   * input — `holdTutorialLine` needs it to tell that apart from a real action.
+   * Three-valued: `undefined` means this host does not run a live planning turn
+   * (the review / typewriter hosts), and `holdTutorialLine` then no-ops.
+   */
+  turnStartChecksApplied?: boolean;
   /** 1-based planning ordinal (`snap.turn + 1`; seed turn 0 → 1). */
   turn?: number;
   /** Live SCFEN queue actions (intent) — preferred over wire regex for stacks. */

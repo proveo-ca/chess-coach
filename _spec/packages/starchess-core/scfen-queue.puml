@@ -1,6 +1,6 @@
 @startuml scfen-queue
 ' SPEC: _spec/packages/starchess-core/scfen-queue.puml
-' purpose: Queue ABNF, per-side shape (≤1 C + N specials, B and/or F), resolve order B < C < F then w then b.
+' purpose: Queue ABNF, per-side shape (≤1 C + one special per unit, B and/or F), resolve order B < C < F then w then b.
 !include ../../themes/proveo.puml
 
 skinparam packageStyle rectangle
@@ -17,7 +17,7 @@ package "ABNF" {
 }
 
 package "Shape & order" {
-  component "Per side: ≤1 classical + N specials\n**before and/or after** it (B and F may mix)" as SHAPE <<async>>
+  component "Per side: ≤1 classical + **one special per unit**\n**before and/or after** it (B and F may mix)" as SHAPE <<async>>
   component "Resolve rank: B < C < F" as RANK <<app>>
   component "Then white, then black" as WB <<app>>
 }
@@ -42,8 +42,9 @@ end note
 note right of SQ
   ""sideQueue = side ':' [ action *( ',' action ) ]""
   ""action    = special / classical""
-  Order is free — the only shape rule is **≤1 classical per side**.
-  Specials may precede the C, follow it, or both:
+  Order is free — the shape rules are **≤1 classical per side** and
+  **one special per unit**. Specials may precede the C, follow it, or both,
+  as long as each is a different unit:
   ""w:B=knightMine:b4:b4,C=e2e3,F=rookSiege:e4"" is legal.
 end note
 
@@ -62,9 +63,9 @@ note right of KD
 end note
 
 note bottom
-  Ordering rule: **≤1 C per side**; specials are unlimited in count and
-  timing — **B and/or F**, so a side may act before *and* after its own
-  classical in one turn (gas is the only budget).
+  Ordering rules: **≤1 C per side** and **one special per unit** (keyed on
+  ""from""). Timing is free — **B and/or F** — so a side may act before *and*
+  after its own classical in one turn, on different units (gas budgets the rest).
   Resolve rank **B < C < F**, then **w then b**.
   F specials rewrite actor square to the unit's post-C position
   (move-then-gas lands on the destination).

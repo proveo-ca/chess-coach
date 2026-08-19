@@ -219,3 +219,48 @@
     animation-duration: 1ms;
   }
 }
+
+/*
+ * "How to cancel" line — a **footer-region** overlay for the length of a lift.
+ *
+ * Absolute against `Screen`'s bottom row (`.footer` is the nearest positioned
+ * ancestor; every element between it and here is static), so row 2 — the board —
+ * is out of reach structurally rather than by measurement. Pinned to the bottom
+ * of that row so it reads under the board, not across it.
+ *
+ * Transient chrome: never eat the pointer, or `elementFromPoint` would resolve
+ * the hint instead of the square under the canister.
+ */
+.cancelHint {
+  position: absolute;
+  bottom: 0.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 95;
+  display: flex;
+  justify-content: center;
+  width: max-content;
+  max-width: min(20rem, 92vw);
+  pointer-events: none;
+}
+
+/*
+ * Dynamic band: the rack is portaled into a viewport-fixed dock, so there is no
+ * footer row to sit in — and at that height the board fills the viewport, so the
+ * dock itself already floats over it. The hint therefore sits *beside* the rack,
+ * opening leftward along the bottom edge: the same strip the dock already claims,
+ * instead of the middle of the board.
+ */
+.cancelHintFloating {
+  bottom: 0;
+  left: auto;
+  right: calc(100% + 0.5rem);
+  transform: none;
+  max-width: min(16rem, 70vw);
+}
+
+.cancelHintBubble {
+  font-size: 0.85rem;
+  padding: 0.5rem 0.85rem;
+  max-width: none;
+}

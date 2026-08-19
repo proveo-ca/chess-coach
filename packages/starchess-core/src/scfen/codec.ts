@@ -307,9 +307,29 @@ export const assertQueueShape = (actions: readonly ScAction[]): void => {
         { code: "SC_QUEUE_SHAPE" as const },
       );
     }
-    // Specials are unconstrained in count *and* timing: a side may stack them
-    // before (B) and/or after (F) its classical in the same turn. Gas is the
-    // only budget; ≤1 C is the only shape rule.
+    /*
+     * One special per unit per turn. A side may still special several *different*
+     * units, and may still put a special before (B) or after (F) its classical —
+     * what it may not do is give one unit two of them.
+     *
+     * `from` is the unit's identity for both timings: an F on a unit that also
+     * moves this turn records the *pre*-classical square and resolves on the
+     * post-C one (see `queueMultiSpecial` "F specials resolve on post-C square"),
+     * so B and F on one unit share a key without tracking the move.
+     */
+    const specialed = new Set<string>();
+    for (const a of side) {
+      if (a.timing === "C") continue;
+      if (specialed.has(a.from)) {
+        throw Object.assign(
+          new Error(
+            `SCFEN queue: one special per unit (${color} stacks two on ${a.from})`,
+          ),
+          { code: "SC_QUEUE_SHAPE" as const },
+        );
+      }
+      specialed.add(a.from);
+    }
   }
 };
 

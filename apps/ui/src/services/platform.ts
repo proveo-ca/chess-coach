@@ -1,13 +1,16 @@
-// SPEC: _spec/apps/ui/multiplayer.puml
+// SPEC: _spec/apps/ui/multiplayer.puml, _spec/packages/client-platform/entities.puml
+import { detectClientDevice } from "@chess-coach/client-platform";
+
 import type { OS, PlatformInfo } from "~/types/multiplayer";
 
 /**
- * Best-effort client platform detection, used to tailor the Tailscale
- * onboarding steps (download link + install docs) on the LanScreen.
+ * Tailscale onboarding copy for the detected client — download link + install
+ * docs on the LanScreen.
  *
  * This is presentation-only: we never gate functionality on it, we just point
- * the user at the right install instructions. We prefer the structured
- * `navigator.userAgentData` when present and fall back to a UA-string sniff.
+ * the user at the right install instructions. *Which* device this is comes from
+ * `@chess-coach/client-platform` (one UA table for both apps); everything below
+ * is the Tailscale-specific mapping, which is this app's business alone.
  */
 const DOWNLOAD_BASE = "https://tailscale.com/download";
 
@@ -38,41 +41,9 @@ const INSTALL_DOCS: Record<OS, string> = {
   unknown: DOWNLOAD_BASE,
 };
 
-interface UADataLike {
-  platform?: string;
-  mobile?: boolean;
-}
-
-/** Resolve the OS from a UA string (lower-cased) and an optional UA-Client-Hints platform. */
-function resolveOS(ua: string, hintPlatform: string): OS {
-  const p = hintPlatform.toLowerCase();
-  // iPadOS 13+ reports a desktop Safari UA; treat touch-capable "Macintosh" as iOS.
-  const iPadOS =
-    /macintosh/.test(ua) && typeof navigator !== "undefined" && navigator.maxTouchPoints > 1;
-  if (/android/.test(ua) || p === "android") return "android";
-  if (/iphone|ipad|ipod/.test(ua) || iPadOS) return "ios";
-  if (/windows|win32|win64/.test(ua) || p === "windows") return "windows";
-  if (/mac os x|macintosh/.test(ua) || p === "macos") return "macos";
-  if (/linux|x11|cros/.test(ua) || p === "linux" || p === "chrome os") return "linux";
-  return "unknown";
-}
-
 export function detectPlatform(): PlatformInfo {
-  if (typeof navigator === "undefined") {
-    return {
-      os: "unknown",
-      isMobile: false,
-      label: OS_LABEL.unknown,
-      downloadUrl: DOWNLOAD_BASE,
-      installDocsUrl: INSTALL_DOCS.unknown,
-    };
-  }
-
-  const uaData = (navigator as Navigator & { userAgentData?: UADataLike }).userAgentData;
-  const ua = navigator.userAgent.toLowerCase();
-  const os = resolveOS(ua, uaData?.platform ?? "");
-  const isMobile = uaData?.mobile ?? (os === "ios" || os === "android");
-
+  // `ClientOS` and this app's `OS` are the same union — the lib is the source.
+  const { os, isMobile }: { os: OS; isMobile: boolean } = detectClientDevice();
   return {
     os,
     isMobile,

@@ -59,6 +59,9 @@ export default defineConfig({
       "@chess-coach/starchess-core": fileURLToPath(
         new URL("../../packages/starchess-core/src/index.ts", import.meta.url),
       ),
+      "@chess-coach/client-platform": fileURLToPath(
+        new URL("../../packages/client-platform/src/index.ts", import.meta.url),
+      ),
     },
   },
   server: {

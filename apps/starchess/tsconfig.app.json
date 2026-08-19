@@ -10,7 +10,8 @@
 
     "paths": {
       "~/*": ["./src/*"],
-      "@chess-coach/starchess-core": ["../../packages/starchess-core/src/index.ts"]
+      "@chess-coach/starchess-core": ["../../packages/starchess-core/src/index.ts"],
+      "@chess-coach/client-platform": ["../../packages/client-platform/src/index.ts"]
     },
 
     /* Bundler mode */

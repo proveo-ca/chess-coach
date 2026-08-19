@@ -289,9 +289,9 @@ export const scMovesFor = (
 };
 
 /**
- * Free classical double available from `square` — drives the "Double Step
- * (free)" affordance, so the player is not asked to spend a canister on a step
- * the board already grants.
+ * Classical 2-square advance available from `square` — drives the HUD's "Extra
+ * Step" no-canister affordance, so the player is not asked to spend a canister
+ * on a step the board already grants.
  *
  * Derived from the generator rather than probed through chess.js: chess.js
  * rejects a placement with a marine on the edge rows outright ("some pawns are

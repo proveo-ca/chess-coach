@@ -136,6 +136,8 @@ export type TutorialLineHold = {
   lessonKey: string;
   /** First live SCFEN seen for this lesson (seed). */
   baselineScfen?: string;
+  /** Last `turnStartChecksApplied` seen — the flip re-baselines the seed. */
+  checksApplied?: boolean;
   /** Intro already retired (user acted or a reaction fired). */
   introDone: boolean;
   /** Last reaction line to keep when no when-clause matches. */

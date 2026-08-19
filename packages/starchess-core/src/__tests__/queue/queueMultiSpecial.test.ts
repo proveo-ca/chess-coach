@@ -59,6 +59,32 @@ describe("queue — multiple specials (B and/or F)", () => {
     expect(parseScFen(formatScFen(snap)).queue?.actions).toEqual(snap.queue?.actions);
   });
 
+  it("refuses a second special on the same unit", () => {
+    // One special per unit per turn — the engine, not the HUD, is the authority.
+    let snap = start();
+    snap = addScAction({
+      snapshot: snap,
+      action: { timing: "B", kind: "knightMine", color: "w", from: "b4", to: "b4" },
+    }).snapshot;
+    expect(() =>
+      addScAction({
+        snapshot: snap,
+        action: { timing: "F", kind: "knightMine", color: "w", from: "b4", to: "b4" },
+      }),
+    ).toThrow(/already used its special/);
+    // Gas was never charged for the refused action.
+    expect(snap.gas.w).toBe(1);
+  });
+
+  it("refuses a stacked-unit queue on the wire too", () => {
+    // Same rule reading SCFEN — a hand-written or replayed wire cannot smuggle it in.
+    expect(() =>
+      parseScFen(
+        "SCFEN|4k3/8/8/8/1N2R3/8/4P3/4K3|11|33|P|G:02:22|Q:w:B=knightMine:b4:b4,F=knightMine:b4:b4;b:",
+      ),
+    ).toThrow(/one special per unit/);
+  });
+
   it("allows two F specials after classical", () => {
     let snap = start();
     snap = addScAction({
