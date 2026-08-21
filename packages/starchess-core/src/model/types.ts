@@ -142,6 +142,16 @@ export type ClassicalPlan = {
   to: Square;
   /** Pawn promotion choice when `to` is the last rank. */
   promotion?: SpawnPiece;
+  /**
+   * Marine Extra Step legs sharing this walk. The two hops are one walk for
+   * mine contact, so a mine woken on either leg waits for the real destination.
+   * `extraStepFrom` — gas-then-move: the marine reached `from` on its Extra
+   * Step this turn, so `from` is still a live contact tile.
+   * `extraStepTo` — move-then-gas: an Extra Step carries it past `to`, so this
+   * leg is not the landing and the arrival check owns the contact list.
+   */
+  extraStepFrom?: Square;
+  extraStepTo?: Square;
 };
 
 export type PlayerEconomy = {

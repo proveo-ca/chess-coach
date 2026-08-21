@@ -61,8 +61,11 @@ note right
   * mine **crossed mid-slide** → chase wake → both die at the landing tile.
     Marines walk, so a **front double step** wakes a mine on its intermediate
     exactly like a slide (""pathContactSquares"" — only leaping Hoverbikes and
-    immune kings are exempt);
-  * **kings** are immune — they neither trigger nor clear a mine;
+    kings skip the ray). An **Extra Step** extends that walk by one hop, so the
+    wake chases onto the marine's real destination whichever way the queue was
+    ordered (""mine-contact.puml"" · one walk per marine);
+  * a **king** never trades: its contact is an attack in every mode, so it
+    clears the tile and moves in (""mine-contact.puml"");
   * **allied** mines are inert underfoot (no friendly fire).
 end note
 
@@ -106,7 +109,8 @@ note right
   HP chip **stands** and the mover dies on its landing tile:
   * mine **mid-walk** → chase wake → ""chaseFrom"" (missile then boom);
   * mine on the **landing tile** → plain walk-over boom;
-  * **allied** mines stay inert, **kings** stay immune.
+  * **allied** mines stay inert. A king never reaches here at all — kings
+    leap, so they never slide into fog.
   Blasts land in ""pathRevealMineTriggers"" (cues ""prmm"" missile → ""prm"" boom →
   ""prv"" wreck, replayed off the ""afterMove"" mine snapshot).
 end note

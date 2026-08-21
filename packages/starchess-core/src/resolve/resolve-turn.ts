@@ -205,7 +205,6 @@ const attacksOwnDest = (
   from: Square,
   to: Square,
 ): boolean => {
-  if (type === "k") return false;
   if (type === "p") return from[0] !== to[0];
   return true;
 };
@@ -763,13 +762,23 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
       clearOnCapture(dest, plan.color, piece.type);
     }
 
-    const trip = mineContact({
-      mines,
-      color: plan.color,
-      piece: piece.type,
-      squares: [...pathContactSquares(plan.from, dest, piece.type), dest],
-      mode: "walk",
-    });
+    // One walk per marine. A queued Extra Step means `dest` is not the landing
+    // tile, so the arrival check in phase 4 owns this contact list; a spent one
+    // means the marine is standing on a tile it only reached this turn, so that
+    // tile is still live. Either way the mine waits for the real destination.
+    const trip: MineContact = plan.extraStepTo
+      ? { kind: "inert" }
+      : mineContact({
+          mines,
+          color: plan.color,
+          piece: piece.type,
+          squares: [
+            ...(plan.extraStepFrom ? [plan.extraStepFrom] : []),
+            ...pathContactSquares(plan.from, dest, piece.type),
+            dest,
+          ],
+          mode: "walk",
+        });
 
     board.delete(plan.from);
     board.set(dest, piece);

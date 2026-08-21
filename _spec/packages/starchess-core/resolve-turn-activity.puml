@@ -29,7 +29,7 @@ partition "Classify — an ordered rule list, first match wins" {
     | 5 | ""marineDiagonalEmpty"" | marine diagonal onto an empty tile — capture-only, unless a **visible** hostile mine is the target |
     | 6 | ""midPathPrecedence"" | slider aimed at an enemy: a unit met **on the ray** always beats the further target (""Re1→e8"" with ""pe7"" + ""re8"" takes the pawn). Ally ⇒ quiet truncate; a **king** passes to rule 9 |
     | 7 | ""targetOnDestination"" | enemy on ""to"" — visible ⇒ phase-1 attack · lights mid-walk ⇒ phase-3 approach · still fogged ⇒ move collision (sieged rooks fizzle: they never relocate, so they never contact a fogged square) |
-    | 8 | ""minedEmptyDestination"" | empty ""to"" with a hostile mine — ""attacksOwnDest"" + visible + reachable ⇒ attack-clear (a sieged tank fires without vacating), else quiet so phase 2 takes the mover |
+    | 8 | ""minedEmptyDestination"" | empty ""to"" with a hostile mine — ""attacksOwnDest"" + visible + reachable ⇒ attack-clear (a sieged tank fires without vacating), else quiet so phase 2 takes the mover. ""attacksOwnDest"" now admits the **king**: it shoots the tile and moves in, so "walking over" a mine is attack/move (""mine-contact.puml""), and a king always sees its own destination so it never falls through to the quiet path |
     | 9 | ""slideIntoFog"" | slider into an empty ""to"" — first enemy that is (or becomes) visible on the ray. A king only chips via fog discovery, otherwise the slide stops short |
     | 10 | ""quietFallthrough"" | nothing claimed it |
   end note
@@ -64,8 +64,11 @@ partition "Phase 2 — move (""relocate"", occupy list then quiets)" {
   :skip movers that died in phase 1, and sieged rooks (never relocate);
   :quiet slides truncate on the first blocker — enemy blocker is\ncaptured, ally / king blocker stops the slide one square short;
   :destination still held by an enemy → capture + occupy, **unless**\nanother mover already landed there this phase\n(""destinationsWritten"") → **both die**, tile empty, no cue;
-  :""mineContact"" over ""[…pathContactSquares, dest]"" (mode **walk**) —
-one ordered scan answers chase **and** walk-over;
+  :""mineContact"" over ""[extraStepFrom?, …pathContactSquares, dest]""
+(mode **walk**) — one ordered scan answers chase **and** walk-over.
+A plan carrying ""extraStepTo"" **stands down**: its landing is one hop
+further, so the phase-4 arrival owns the contact list
+(""mine-contact.puml"" · one walk per marine);
   :land the mover, stamp ""destinationsWritten"", defer promotion;
   :""detonated"" → blast at the landing tile, mover dies, no promotion\nand no occupy left behind; ""chaseFrom"" set when the mine was woken\nmid-path (the first mine touched wins);
   :→ **afterMove** snapshot;

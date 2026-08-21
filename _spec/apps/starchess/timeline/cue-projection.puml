@@ -15,7 +15,7 @@ start
 
 partition "B specials that need the pre-afterB board" {
   :**Charon** ""ch"" shot + ""chd"" victim read from the ""afterPending"" map;
-  :**gas step onto a hostile mine** → ""armm"" boom + ""armd"" hull\n(the marine already hopped above, now the mine takes it);
+  :**gas step onto a hostile mine** → ""armm"" boom + ""armd"" hull\n(the marine already hopped above, now the mine takes it) —\nonly when the step **ends** the walk; a marine whose classical leg\ncarries it on hands the mine to phase 3 instead\n(""mine-contact.puml"" · one walk per marine);
   :**Tactical Jump** ""qj"" hull travel, then ""qjm"" boom + ""qjd"" wreck\nwhen the landing tile was mined;
 }
 
@@ -50,7 +50,7 @@ partition "phase-3 fog approaches (sequential chains, one per approach)" {
   :approach that walked into a mine → ""prmm"" missile (chase only),\n""prm"" boom, ""prv"" hull;
 }
 
-:**F** gas drops, then ""f"" gas steps, then any F arrival blast;
+:**F** gas drops, then ""f"" gas steps, then any F arrival blast —\n""farmx"" missile (a mine the classical leg **held** for this hop chases here),\nthen ""farmm"" boom + ""farmd"" hull, all on the ""afterMove"" rung;
 :**promotions** — ""pw"" walk-off one square past the edge, then ""pd"" deploy;
 note right
   **Why the order is load-bearing:** the interpreter is a single forward walk

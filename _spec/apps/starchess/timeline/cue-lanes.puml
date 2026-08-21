@@ -41,6 +41,17 @@ note right of REG
   Prefixes are matched longest-first, so ""prm"" / ""prmm"" / ""prv"" and
   ""mt"" / ""mtm"" cannot shadow each other. Ids keep their historic spelling —
   they are React keys and overlay handles now, nothing routes on them.
+
+  **Arrival-mine cues carry the phase in the prefix**, because the same
+  ""arrivalMineCues"" projector serves both ends of the resolve:
+  | prefix | asked by | lane | board |
+  | ""armx"" / ""armm"" / ""armd"" | ""B"" gas step · mined deploy | ""bSpecial"" | ""preAfterB"" |
+  | ""farmx"" | ""F"" held mine's chase missile | ""mineMissile"" | ""afterMove"" |
+  | ""farmm"" / ""farmd"" | ""F"" Extra Step · F-rank spawn arrival | ""arrivalBlast"" | ""afterMove"" |
+  A held mine detonates on the marine's *real* destination, so its cues have to
+  sit past the stim move on the ""afterMove"" rung — stamping them ""arm*"" would
+  send a phase-4 boom back to rung 0. ""farm*"" beats the bare ""f"" move prefix by
+  the longest-first rule. See ""../../../packages/starchess-core/mine-contact.puml"".
 end note
 
 note bottom

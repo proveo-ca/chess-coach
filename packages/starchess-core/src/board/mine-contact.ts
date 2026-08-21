@@ -31,12 +31,16 @@ export const mineContact = ({
   squares,
   mode,
 }: MineContactQuery): MineContact => {
-  if (piece === "k" || squares.length === 0) return { kind: "inert" };
+  if (squares.length === 0) return { kind: "inert" };
   const landing = squares[squares.length - 1]!;
   for (const at of squares) {
     const m = mineAt(mines, at);
     if (!m || m.color === color) continue;
-    if (mode === "attack") return { kind: "cleared", at, mineColor: m.color };
+    // A king never trades with a mine: it shoots the tile and moves in, so its
+    // contact is an attack in every mode ("walking over" reads as attack/move).
+    if (mode === "attack" || piece === "k") {
+      return { kind: "cleared", at, mineColor: m.color };
+    }
     return {
       kind: "detonated",
       at: landing,

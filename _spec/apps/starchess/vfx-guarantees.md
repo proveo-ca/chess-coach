@@ -54,6 +54,7 @@ style).
 | V30 | No paint-animating keyframe actually **runs** under the combat root (allowlist aside) — checked on a knight frag, the densest weapon | same | `vfx-paint-budget.spec.ts` |
 | V31 | `.board-phase-ring` fades opacity-only (colours snap) | `timeline-vfx-density.puml` (phase ring) | `vfx-paint-budget.spec.ts` |
 | V32 | The ring — not a container repaint — carries the resolve state (`data-phase`) | same | `vfx-paint-budget.spec.ts` |
+| V34 | A mine held back by a Marine Extra Step chases the marine to its destination — the stim move lands *before* the boom (`famx`/`famm`/`famd` on the `afterMove` rung) | `mine-contact.puml` (one walk per marine), `cue-lanes.puml` (arrival-mine prefixes) | `vfx-cue-coverage.spec.ts` |
 
 Pinned allowlist for V29/V30: `fragShockwave` (border-colour, accepted P2 in
 `timeline-perf.puml`) and `sc-hint-pulse` (tutorial hint ring, board chrome).

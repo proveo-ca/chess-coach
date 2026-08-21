@@ -120,6 +120,96 @@ describe("gas steps arm mines", () => {
   });
 });
 
+/**
+ * An Extra Step makes the marine's turn two hops, and the two hops are **one
+ * walk**: a mine woken on the first hop chases and blows on the tile the marine
+ * comes to rest on, the same way a mid-slide wake chases a rook. Queue order
+ * must not change the outcome — gas-then-move and move-then-gas agree.
+ */
+describe("Extra Step is one walk — the mine waits for the destination", () => {
+  it("move-then-gas: mine on the classical hop chases to the Extra Step tile", () => {
+    // C e2→e3 crosses the mined e3, then the gas step carries it to e4.
+    const r = resolve(
+      "SCFEN|4k3/8/8/8/8/8/4P3/4K3|21|33|P|G:33:33|Q:w:;b:|M:w:;b:e3",
+      [classical("w", "e2", "e3"), gasStep("F", "w", "e2", "e3")],
+    );
+    // The marine finishes its walk before the mine takes it.
+    expect(r.fMoves).toEqual([{ piece: "p", color: "w", from: "e3", to: "e4" }]);
+    expect(specialBlast(r, "pawnDouble", "e4")).toEqual(
+      expect.objectContaining({
+        mineColor: "b",
+        victim: { type: "p", color: "w" },
+        chaseFrom: "e3",
+      }),
+    );
+    expect(pieceAt(r, "e3")).toBeUndefined();
+    expect(pieceAt(r, "e4")).toBeUndefined();
+    expect(mineOn(r, "e3")).toBeUndefined();
+  });
+
+  it("gas-then-move: mine on the Extra Step hop chases to the classical tile", () => {
+    // B e2→e3 lands on the mine; the rewritten classical carries it to e4.
+    const r = resolve(
+      "SCFEN|4k3/8/8/8/8/8/4P3/4K3|21|33|P|G:33:33|Q:w:;b:|M:w:;b:e3",
+      [gasStep("B", "w", "e2", "e3"), classical("w", "e2", "e3")],
+    );
+    // The move phase reports the blast, so the marine walks e3→e4 first.
+    expect(r.resolved.moves).toEqual([
+      { piece: "p", color: "w", from: "e3", to: "e4" },
+    ]);
+    expect(r.resolved.mineTriggers).toEqual([
+      expect.objectContaining({
+        kind: "mineBlast",
+        to: "e4",
+        chaseFrom: "e3",
+        mineColor: "b",
+        victim: { piece: "p", color: "w" },
+      }),
+    ]);
+    expect(pieceAt(r, "e3")).toBeUndefined();
+    expect(pieceAt(r, "e4")).toBeUndefined();
+    expect(mineOn(r, "e3")).toBeUndefined();
+  });
+
+  it("gas step ALONE still ends on its own tile — mine fires there", () => {
+    // No classical to hand the walk on to, so e3 *is* the destination.
+    const r = resolve(
+      "SCFEN|4k3/8/8/8/8/8/4P3/4K3|21|33|P|G:33:33|Q:w:;b:|M:w:;b:e3",
+      [gasStep("B", "w", "e2", "e3")],
+    );
+    expect(specialBlast(r, "pawnDouble", "e3")).toEqual(
+      expect.objectContaining({ mineColor: "b", victim: { type: "p", color: "w" } }),
+    );
+    expect(pieceAt(r, "e3")).toBeUndefined();
+    expect(mineOn(r, "e3")).toBeUndefined();
+  });
+
+  it("blocked Extra Step ends the walk short — the held mine fires there", () => {
+    // C e2→e3 crosses the mined e3; an ally on e4 refuses the Extra Step, so
+    // the marine comes to rest on e3 and the mine it woke takes it there.
+    const r = resolve(
+      "SCFEN|4k3/8/8/8/4R3/8/4P3/4K3|21|33|P|G:33:33|Q:w:;b:|M:w:;b:e3",
+      [classical("w", "e2", "e3"), gasStep("F", "w", "e2", "e3")],
+    );
+    expect(r.fMoves).toEqual([]);
+    expect(specialBlast(r, "pawnDouble", "e3")).toEqual(
+      expect.objectContaining({ mineColor: "b", victim: { type: "p", color: "w" } }),
+    );
+    expect(pieceAt(r, "e3")).toBeUndefined();
+    expect(mineOn(r, "e3")).toBeUndefined();
+  });
+
+  it("ally mine under an Extra Step stays inert on both hops", () => {
+    const r = resolve(
+      "SCFEN|4k3/8/8/8/8/8/4P3/4K3|21|33|P|G:33:33|Q:w:;b:|M:w:e3;b:",
+      [classical("w", "e2", "e3"), gasStep("F", "w", "e2", "e3")],
+    );
+    assertNoMineEvent(r);
+    expect(pieceAt(r, "e4")).toEqual({ type: "p", color: "w" });
+    expect(mineOn(r, "e3")).toEqual({ color: "w", at: "e3" });
+  });
+});
+
 describe("deploys arm mines", () => {
   it("Command Center deploy onto a hostile mine — unit and mine both die", () => {
     const r = resolve(

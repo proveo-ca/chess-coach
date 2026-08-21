@@ -85,24 +85,42 @@ const arrivalMineCues = (
   mineColor: StarChessColor,
   unit: { type: StarChessPiece; color: StarChessColor },
   nextId: () => number,
-  idPrefix = "arm",
-): TimelineCue[] => [
-  {
-    kind: "death",
-    id: `${idPrefix}m${nextId()}`,
-    piece: "n",
-    color: mineColor,
-    at,
-    mine: true,
-  },
-  {
-    kind: "death",
-    id: `${idPrefix}d${nextId()}`,
-    piece: unit.type,
-    color: unit.color,
-    at,
-  },
-];
+  opts?: { prefix?: string; chaseFrom?: Square },
+): TimelineCue[] => {
+  const p = opts?.prefix ?? "arm";
+  const chaseFrom = opts?.chaseFrom;
+  return [
+    // A held mine chases the marine onto its Extra Step tile, so the missile
+    // flies from the wake square the same way a mid-slide chase does.
+    ...(chaseFrom
+      ? [
+          {
+            kind: "mineMissile" as const,
+            id: `${p}x${nextId()}`,
+            color: mineColor,
+            from: chaseFrom,
+            to: at,
+          },
+        ]
+      : []),
+    {
+      kind: "death",
+      id: `${p}m${nextId()}`,
+      piece: "n",
+      color: mineColor,
+      at,
+      mine: true,
+      ...(chaseFrom ? { spentAt: chaseFrom } : {}),
+    },
+    {
+      kind: "death",
+      id: `${p}d${nextId()}`,
+      piece: unit.type,
+      color: unit.color,
+      at,
+    },
+  ];
+};
 
 const relocatePlacement = (placement: string, from: Square, to: Square): string => {
   const map = placementToMap(placement);
@@ -508,8 +526,12 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
   for (const ev of result.events) {
     if (ev.phase !== "specialAfter" || ev.kind !== "pawnDouble") continue;
     if (!ev.to || !ev.mineColor || !ev.victim) continue;
+    // `farm*`, not `arm*`: these play after the stim move on the afterMove rung.
     cues.push(
-      ...arrivalMineCues(ev.to, ev.mineColor, ev.victim, () => n++, "farm"),
+      ...arrivalMineCues(ev.to, ev.mineColor, ev.victim, () => n++, {
+        prefix: "farm",
+        ...(ev.chaseFrom ? { chaseFrom: ev.chaseFrom } : {}),
+      }),
     );
   }
   // F-rank spawn deploys: a drop ordered after combat projects here — after
@@ -548,7 +570,7 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
           ev.mineColor,
           { type: ev.unit, color: ev.color },
           () => n++,
-          "farm",
+          { prefix: "farm" },
         ),
       );
     }

@@ -24,6 +24,7 @@ describe("cueLanes routing", () => {
     ["ch0", "bSpecial"],
     ["chd0", "bSpecial"],
     ["qj0", "bSpecial"],
+    ["armx0", "bSpecial"],
     ["armm0", "bSpecial"],
     ["armd0", "bSpecial"],
     ["spawn-r-e2-0", "deploy"],
@@ -31,6 +32,7 @@ describe("cueLanes routing", () => {
     ["spawn-f0", "deploy"],
     ["crush0", "crush"],
     ["fcrush0", "crush"],
+    ["farmx0", "mineMissile"],
     ["farmm0", "arrivalBlast"],
     ["farmd0", "arrivalBlast"],
     ["a0", "phase1Attack"],
@@ -1634,5 +1636,40 @@ describe("timelinePlayer", () => {
     expect(spentLog.some((s) => Array.isArray(s) && s.includes("a4"))).toBe(true);
     expect(trailLog.some((t) => Array.isArray(t) && t.length > 0)).toBe(true);
     while (jobs.length) jobs.shift()!.fn();
+  });
+  /**
+   * A mine held back by the Extra Step blows on the marine's real destination,
+   * so its cues must sit *after* the stim move and on the `afterMove` rung —
+   * `farm*`, never the `arm*` (preAfterB) stamps the B phase uses.
+   * // SPEC: _spec/packages/starchess-core/mine-contact.puml
+   */
+  it("projects a held Extra Step mine after the stim move on the afterMove rung", () => {
+    let snap = parseScFen(
+      "SCFEN|4k3/8/8/8/8/8/4P3/4K3|21|33|P|G:33:33|Q:w:;b:|M:w:;b:e3",
+    );
+    snap = addScAction({
+      snapshot: snap,
+      action: { timing: "C", kind: "classical", color: "w", from: "e2", to: "e3" },
+    }).snapshot;
+    snap = addScAction({
+      snapshot: snap,
+      action: { timing: "F", kind: "pawnDouble", color: "w", from: "e2", to: "e3" },
+    }).snapshot;
+    const cues = projectResolveTimeline(endScTurn(snap, { skipTurnStartChecks: true }));
+
+    const stim = cues.findIndex((c) => c.kind === "move" && c.from === "e3" && c.to === "e4");
+    const missile = cues.findIndex((c) => c.kind === "mineMissile");
+    const mineDeath = cues.findIndex((c) => c.kind === "death" && "mine" in c && c.mine);
+    expect(stim).toBeGreaterThanOrEqual(0);
+    expect(missile).toBeGreaterThan(stim);
+    expect(mineDeath).toBeGreaterThan(missile);
+
+    const chase = cues[missile]!;
+    expect(chase).toMatchObject({ from: "e3", to: "e4", lane: "mineMissile", board: "afterMove" });
+    expect(cues[mineDeath]).toMatchObject({ at: "e4", spentAt: "e3", board: "afterMove" });
+    // The marine dies on the tile it actually walked to.
+    expect(
+      cues.some((c) => c.kind === "death" && c.piece === "p" && c.at === "e4"),
+    ).toBe(true);
   });
 });

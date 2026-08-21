@@ -42,12 +42,14 @@ partition "endScTurn — the End pass" {
   :**2 · rank B specials** — white then black, queue order within a side;
   :""rookSiege"" toggles the flag set only (placement untouched);
   :""applySpecial"" → snipe · warp · **gas step** · **deploy** · mine drop;
-  :warp / gas step / deploy end in ""applyArrivalMine"": a hostile mine on\nthe landing tile detonates (mine + arriving unit die, event carries\n""mineColor"" + ""victim"" / ""unit""); an allied mine stays inert;
+  :warp / gas step / deploy end in ""applyArrivalMine(squares)"": the last\nentry is the tile the unit rests on, so a hostile mine anywhere on that\nwalk detonates there (event carries ""mineColor"" + ""victim"" / ""unit"",\nplus ""chaseFrom"" when the mine was woken earlier on the walk);\nan allied mine stays inert;
   :a gas step that died on a mine leaves ""bMoves"" (it did hop) but\n**cancels its promotion** — nothing left to deploy;
-  :→ **afterB** snapshot (placement · mines · siegedRooks);
+  :**hold** a gas step's arrival mine when a C is queued on the same\nmarine: only the rewrite knows whether the walk is handed on, so its\n""specialBefore"" event is *collected*, not logged (""mine-contact.puml"");
 
   :**3 · rank C classical** — post-B vision for attack fog;
   :""rewriteClassicalAfterB"": a C sharing ""from"" with a B relocate is\nre-based onto the square the stack actually reaches;
+  :**settle the held gas steps** against the rewrite — handed on ⇒ leave the\nmine armed and tag the plan ""extraStepFrom""; not handed on ⇒ blow it on\nthe marine's own tile. Then flush the collected B events, so ""ev-<n>""\nstays in queue order;
+  :→ **afterB** snapshot (placement · mines · siegedRooks);
   :throw if a surviving pawn's last-rank C carries no promotion;
   :""resolveTurn(...)"" → phases 1–4;
   :stamp events: attacks → moves → mineTriggers → moveCollisions →\npathRevealAttacks (semantic cue order, ids ""ev-<n>"" in sequence);
@@ -60,7 +62,7 @@ partition "endScTurn — the End pass" {
   :**4 · rank F specials** — post-move siege / late drops;
   :actor square = first candidate still holding one of our units\n(""a.from"" → rewritten C ""to"" / ""from"" → original C ""to"" / ""from"")\nso fire-in-place, quiet relocate and gas-ride all land;
   :""knightMine"" re-bases its drop onto that post-move square;
-  :F gas step recomputes +1 from the post-C square, fizzles if blocked,\nand takes the same arrival-mine contact as the B step;
+  :F gas step recomputes +1 from the post-C square and takes the arrival-mine\ncontact over **both** hops (""[at, to]""), so a mine the classical leg held\nback chases onto the Extra Step tile. Blocked / off-board ⇒ the step fizzles\nand the held mine fires on ""at"" — the walk ends where it really ends;
 
   :**invariants — throw, never repair:** mine cap per side, exactly one\nking per side in the final placement;
   :stamp ""U:"" (""collectSpecialsUsed"") — gas-spend squares, migrated\nthrough B moves / warps / rewritten C / F moves, minus promotion\nlandings (a deployed unit is new, not the gas carrier);
@@ -78,7 +80,9 @@ partition "endScTurn — the End pass" {
 
   **Event vocabulary** (""ResolveEvent""): ""victim"" = the unit a deploy crushed,
   or the hull a mine took on a warp / gas step; ""mineColor"" = the mine owner
-  for any **arrival** blast; ""unit"" = the deployed type on every ""spawn"" (with
+  for any **arrival** blast; ""chaseFrom"" = the wake tile when that mine chased
+  the unit off an earlier hop (the timeline draws the missile from it);
+  ""unit"" = the deployed type on every ""spawn"" (with
   ""mineColor"" set it is also the unit the mine destroyed — one tile, two
   deaths, both reported).
   end note
