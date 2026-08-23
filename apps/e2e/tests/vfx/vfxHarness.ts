@@ -60,10 +60,23 @@ export const settledPiece = (page: Page, square: string, glyph: string) => {
   );
 };
 
+/** Clear the one-time milestone broadcast when deep-linking into turns 1/11/21. */
+export const dismissTurnBonus = async (page: Page) => {
+  const bubble = page.getByTestId("turn-bonus-bubble");
+  const shown = await bubble
+    .waitFor({ state: "visible", timeout: 1_000 })
+    .then(() => true)
+    .catch(() => false);
+  if (!shown) return;
+  await bubble.click();
+  await expect(page.getByTestId("turn-bonus-bubble")).toBeHidden({ timeout: 2_000 });
+};
+
 /** Canonical deep link: baseURL is `/starchess/`. */
 export const gotoScfen = async (page: Page, scfen: string) => {
   await page.goto(`single?scfen=${encodeURIComponent(scfen)}`);
   await expect(page.getByTestId("starchess-board-chrome")).toBeVisible({ timeout: 20_000 });
+  await dismissTurnBonus(page);
   await expect(page.locator(`${ROOT}`)).toHaveCount(1, { timeout: 10_000 });
 };
 

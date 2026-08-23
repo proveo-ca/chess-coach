@@ -16,6 +16,16 @@ const DEPLOY_BOARD =
 const gotoScfen = async (page: Page, scfen: string) => {
   await page.goto(`single?scfen=${encodeURIComponent(scfen)}`);
   await expect(page.getByTestId("starchess-board-chrome")).toBeVisible({ timeout: 20_000 });
+  // These boards deep-link into Turn 11 — clear its broadcast first.
+  const bubble = page.getByTestId("turn-bonus-bubble");
+  const shown = await bubble
+    .waitFor({ state: "visible", timeout: 1_000 })
+    .then(() => true)
+    .catch(() => false);
+  if (shown) {
+    await bubble.click();
+    await expect(page.getByTestId("turn-bonus-bubble")).toBeHidden({ timeout: 2_000 });
+  }
 };
 
 const rack = (page: Page) => page.getByTestId("gas-deploy").locator("button").first();

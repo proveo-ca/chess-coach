@@ -189,6 +189,7 @@ const LiveMatchSession: Component<{
     stored: { w: economies.w.stored, b: economies.b.stored },
   };
   const store = createMatchStore({
+    turnBonuses: true,
     initial: {
       ...seeded,
       viewer: props.team,

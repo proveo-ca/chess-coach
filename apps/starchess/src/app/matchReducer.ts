@@ -129,6 +129,8 @@ const seedFromSnap = (snap: ScFenSnapshot, stored: number): MatchState => {
     legalDests: [],
     pendingPromotion: null,
     turnStartChecksApplied: false,
+    turnBonus: null,
+    lastAnnouncedBonusTurn: 0,
   };
 };
 
@@ -377,6 +379,7 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
           legalDests: [],
           pendingPromotion: null,
           deadlineAt: null,
+          turnBonus: null,
           lastResolve: result,
           statusText: action.reason === "timeout" ? "Time — resolving…" : "Resolving…",
         };
@@ -774,10 +777,24 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
       return { ...state, playerColor: action.playerColor };
     case "SET_DEADLINE":
       return { ...state, deadlineAt: action.at };
+    case "SHOW_TURN_BONUS": {
+      if (state.phase !== "planning" && state.phase !== "targeting") return state;
+      if (action.bonus.turn <= state.lastAnnouncedBonusTurn) return state;
+      return {
+        ...state,
+        turnBonus: action.bonus,
+        lastAnnouncedBonusTurn: action.bonus.turn,
+      };
+    }
+    case "HIDE_TURN_BONUS": {
+      if (!state.turnBonus) return state;
+      return { ...state, turnBonus: null };
+    }
     case "CANCEL_EFFECTS":
       return {
         ...state,
         deadlineAt: null,
+        turnBonus: null,
         timeline: emptyTimeline(),
         targeting: null,
         selected: null,

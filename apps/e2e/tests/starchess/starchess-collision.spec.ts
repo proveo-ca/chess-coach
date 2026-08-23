@@ -129,6 +129,16 @@ test.describe("StarChess collision races (live seed smoke)", () => {
     await expect(page.getByTestId("starchess-board-chrome")).toBeVisible({
       timeout: 20_000,
     });
+    // Raw turn 1 is a milestone — clear its broadcast before ending the turn.
+    const bonus = page.getByTestId("turn-bonus-bubble");
+    const shown = await bonus
+      .waitFor({ state: "visible", timeout: 500 })
+      .then(() => true)
+      .catch(() => false);
+    if (shown) {
+      await bonus.click();
+      await expect(bonus).toBeHidden({ timeout: 2_000 });
+    }
     await page.getByTestId("turn-end").click();
     await expect(
       page.locator(

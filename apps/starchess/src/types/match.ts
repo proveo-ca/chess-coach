@@ -190,6 +190,14 @@ export type TimelineCallbacks = {
   onDone: () => void;
 };
 
+// SPEC: _spec/apps/starchess/core/turn/turn-bonus-broadcast.puml
+export type TurnBonus = {
+  turn: number;
+  minerals: number;
+  gas: number;
+  seconds: number;
+};
+
 export type MatchState = {
   phase: MatchPhase;
   liveSnapshot: ScFenSnapshot;
@@ -231,6 +239,8 @@ export type MatchState = {
    * planning window. `SUBMIT_TURN` then skips re-applying those checks.
    */
   turnStartChecksApplied: boolean;
+  turnBonus: TurnBonus | null;
+  lastAnnouncedBonusTurn: number;
 };
 
 export type MatchAction =
@@ -301,6 +311,8 @@ export type MatchAction =
   | { type: "SET_VIEWER"; viewer: ViewerColor }
   | { type: "SET_PLAYER_COLOR"; playerColor: ViewerColor }
   | { type: "SET_DEADLINE"; at: number | null }
+  | { type: "SHOW_TURN_BONUS"; bonus: TurnBonus }
+  | { type: "HIDE_TURN_BONUS" }
   | { type: "SPEND_STORED"; color: StarChessColor; amount: number }
   | { type: "REFUND_STORED"; color: StarChessColor; amount: number }
   | { type: "CANCEL_EFFECTS" };
@@ -344,5 +356,6 @@ export type MatchStore = {
   ) => Promise<void>;
   /** Full resolve timeline (check-only ply or unpartitioned End). */
   playReviewResolve: (result: EndScTurnResult) => Promise<void>;
+  dismissTurnBonus: () => void;
   cancelEffects: () => void;
 };
