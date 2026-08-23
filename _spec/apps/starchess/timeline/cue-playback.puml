@@ -29,6 +29,7 @@ repeat :read cue at ""index"", ""takeWhile"" its batch;
     :stamp ""U:"" aura squares on completion;
   elseif (spawn deploy?) then (yes)
     :same shape without the canister (auto-deploy / edge cases);
+    :**late windows** (F wave, after moves/attacks mutated placement)\npatch the board **forward** (""commitDeployBoard"") — re-applying\n""afterB"" would rewind relocates and resurrect the dead;
   elseif (phase-1 attack?) then (yes)
     :one window for **both** sides' shots; deaths overlap at the max\nper-weapon ""attackImpactMs"" so impact meets collapse;
     :kingShot HP lands at that impact (the damage boom syncs to the hit);

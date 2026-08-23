@@ -41,9 +41,14 @@ export const splitResolveWaves = (result: EndScTurnResult): ResolveWave[] => {
 
   let seenClassicalMove = false;
   for (const cue of cues) {
-    // Crush deaths are joined to their spawn deploy (same drop window) — keep
-    // them in the deploy's wave bucket rather than treating them as attacks.
-    if (cue.kind === "death" && cue.id.startsWith("crush")) {
+    // Crush deaths + arrival blasts are joined to their spawn deploy (same
+    // drop window) — keep them in the deploy's wave bucket rather than
+    // treating them as attacks. Lane-based: fcrush/farmm/farmd ride the same
+    // lanes as their B-rank siblings.
+    if (
+      cue.kind === "death" &&
+      (cue.lane === "crush" || cue.lane === "arrivalBlast")
+    ) {
       buckets[seenClassicalMove ? "specialAfter" : "specialBefore"].push(cue);
       continue;
     }

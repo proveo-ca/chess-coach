@@ -21,10 +21,11 @@ partition "B specials that need the pre-afterB board" {
 
 partition "deploys" {
   :diff ""afterPending"" ▸ ""afterB"" for units that appeared;
-  :**skip** a deploy whose unit does not survive the turn —\ndrop VFX must not play on a corpse …;
-  :… **unless** it crushed an occupant: the crush death plays mid-drop,\nso the deploy still reads even if the unit dies later;
+  :**always** emit the drop — even when the spawned unit dies later in\nthe turn, or captures-and-occupies / walks off the landing square;\nthe drop reads before anything kills it (deploys precede phase 1);
+  :a drop that **crushed** an occupant pairs with the crush death\n(played mid-drop by the interpreter);
   :a drop that died **on arrival** never reaches ""afterB"", so the diff\ncannot see it — synthesise ""spawn-mine"" deploy + ""crush"" (if any)\n+ ""armm"" / ""armd"" straight from the event;
   :emit deploys, then all ""crush"" deaths, then the arrival blasts;
+  :**F-rank spawns** project in the F block instead (""spawn-f"" /\n""fcrush"" / ""farmm"" / ""farmd"") — a post-attack deploy must not\nplay ahead of the attack/move waves that precede it;
 }
 
 partition "phase 1" {

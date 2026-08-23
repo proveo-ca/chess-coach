@@ -33,7 +33,8 @@ PLAY ARROW_MAIN RUNG : advance to ""cue.board""
 PLAY ARROW_MAIN PRED
 
 note right of REG
-  **Lanes** — ""gasDrop"" · ""bSpecial"" · ""deploy"" · ""crush"" · ""phase1Attack"" ·
+  **Lanes** — ""gasDrop"" · ""bSpecial"" · ""deploy"" · ""crush"" ·
+  ""arrivalBlast"" · ""phase1Attack"" ·
   ""phase1Death"" · ""move"" · ""collision"" · ""mineMissile"" · ""mine"" ·
   ""approach"" · ""promoWalk"" · ""promoDeploy"".
 
