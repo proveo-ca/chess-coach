@@ -85,10 +85,11 @@ const arrivalMineCues = (
   mineColor: StarChessColor,
   unit: { type: StarChessPiece; color: StarChessColor },
   nextId: () => number,
+  idPrefix = "arm",
 ): TimelineCue[] => [
   {
     kind: "death",
-    id: `armm${nextId()}`,
+    id: `${idPrefix}m${nextId()}`,
     piece: "n",
     color: mineColor,
     at,
@@ -96,7 +97,7 @@ const arrivalMineCues = (
   },
   {
     kind: "death",
-    id: `armd${nextId()}`,
+    id: `${idPrefix}d${nextId()}`,
     piece: unit.type,
     color: unit.color,
     at,
@@ -232,11 +233,14 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
   }
 
   const sieged = result.afterB.siegedRooks ?? [];
-  const finalMap = placementToMap(result.next.placement);
   const crushVictim = new Map<string, ResolveEvent["victim"]>();
+  // F-rank spawns must not be emitted by the B diff below — they project in
+  // the F block (after fMoves) so a post-attack deploy never plays early.
+  const specialAfterSpawns = new Set<string>();
   for (const ev of result.events) {
-    if (ev.kind !== "spawn" || !ev.to || !ev.victim) continue;
-    crushVictim.set(`${ev.color}:${ev.to}`, ev.victim);
+    if (ev.kind !== "spawn" || !ev.to) continue;
+    if (ev.victim) crushVictim.set(`${ev.color}:${ev.to}`, ev.victim);
+    if (ev.phase === "specialAfter") specialAfterSpawns.add(`${ev.color}:${ev.to}`);
   }
   const crushDeaths: TimelineCue[] = [];
   for (const d of deployCuesForPlacementDiff(
@@ -244,11 +248,8 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
     result.afterB.placement,
     "spawn",
   )) {
+    if (specialAfterSpawns.has(`${d.color}:${d.at}`)) continue;
     const crush = crushVictim.get(`${d.color}:${d.at}`);
-    const still = finalMap.get(d.at);
-    if (!crush && (!still || still.type !== d.piece || still.color !== d.color)) {
-      continue;
-    }
     cues.push({
       kind: "deploy",
       id: d.id,
@@ -271,7 +272,15 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
   }
   const minedDeploys: TimelineCue[] = [];
   for (const ev of result.events) {
-    if (ev.kind !== "spawn" || !ev.to || !ev.mineColor || !ev.unit) continue;
+    if (
+      ev.kind !== "spawn" ||
+      ev.phase !== "specialBefore" ||
+      !ev.to ||
+      !ev.mineColor ||
+      !ev.unit
+    ) {
+      continue;
+    }
     cues.push({
       kind: "deploy",
       id: `spawn-mine${n++}`,
@@ -499,8 +508,52 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
   for (const ev of result.events) {
     if (ev.phase !== "specialAfter" || ev.kind !== "pawnDouble") continue;
     if (!ev.to || !ev.mineColor || !ev.victim) continue;
-    cues.push(...arrivalMineCues(ev.to, ev.mineColor, ev.victim, () => n++));
+    cues.push(
+      ...arrivalMineCues(ev.to, ev.mineColor, ev.victim, () => n++, "farm"),
+    );
   }
+  // F-rank spawn deploys: a drop ordered after combat projects here — after
+  // attacks and moves — never skipped, never ahead of the wave that precedes
+  // it. Layout mirrors the B block: deploys → crush deaths → arrival blasts,
+  // so the deploy window can absorb its crush deaths contiguously.
+  const fDeploys: TimelineCue[] = [];
+  const fCrushes: TimelineCue[] = [];
+  const fBlasts: TimelineCue[] = [];
+  for (const ev of result.events) {
+    if (ev.phase !== "specialAfter" || ev.kind !== "spawn") continue;
+    if (!ev.to || !ev.unit) continue;
+    fDeploys.push({
+      kind: "deploy",
+      id: `spawn-f${n++}`,
+      piece: ev.unit,
+      color: ev.color,
+      at: ev.to,
+    });
+    if (ev.victim) {
+      fCrushes.push({
+        kind: "death",
+        id: `fcrush${n++}`,
+        piece: ev.victim.type,
+        color: ev.victim.color,
+        at: ev.to,
+        ...(ev.victim.type === "r"
+          ? { rookMode: rookModeAt(ev.to, sieged) }
+          : {}),
+      });
+    }
+    if (ev.mineColor) {
+      fBlasts.push(
+        ...arrivalMineCues(
+          ev.to,
+          ev.mineColor,
+          { type: ev.unit, color: ev.color },
+          () => n++,
+          "farm",
+        ),
+      );
+    }
+  }
+  cues.push(...fDeploys, ...fCrushes, ...fBlasts);
   for (const p of result.resolved.promotions) {
     cues.push({
       kind: "move",
@@ -648,6 +701,36 @@ export const playTimeline = (
   };
 
   let afterAttackCommitted = false;
+  /**
+   * A late deploy window (F wave, after moves/attacks mutated
+   * `displayPlacement`) must patch the board forward — `applyAfterB` would
+   * rewind placement to the post-B board and resurrect moved/killed units.
+   * Re-applying is only safe while placement still equals `afterB`.
+   */
+  const commitDeployBoard = (
+    deploys: readonly Extract<TimelineCue, { kind: "deploy" }>[],
+    playingIds: readonly string[],
+  ): void => {
+    const hidden = deploys.map((c) => c.at);
+    if (!afterBApplied || displayPlacement === result.afterB.placement) {
+      applyAfterB({ hidden, playingIds });
+      return;
+    }
+    for (const d of deploys) {
+      displayPlacement = withPieceAt(displayPlacement, d.at, {
+        type: d.piece as StarChessPiece,
+        color: d.color,
+      });
+    }
+    cb.onCommit({
+      placement: displayPlacement,
+      hidden,
+      playingIds,
+      moveProgress: {},
+      moveLeg: {},
+    });
+  };
+
   const stampAfterAttackBoard = (overlay: {
     hidden?: readonly Square[];
     playingIds?: readonly string[];
@@ -728,10 +811,7 @@ export const playTimeline = (
       ...crushes.map((c) => c.id),
     ];
     if (deploys.length > 0) {
-      applyAfterB({
-        hidden: deploys.map((c) => c.at),
-        playingIds: initialPlayingIds,
-      });
+      commitDeployBoard(deploys, initialPlayingIds);
     } else {
       cb.onCommit({
         hidden: [],
@@ -789,10 +869,7 @@ export const playTimeline = (
       ...initialPlayingIds,
       ...crushes.map((c) => c.id),
     ];
-    applyAfterB({
-      hidden: deploys.map((c) => c.at),
-      playingIds: initialPlayingIds,
-    });
+    commitDeployBoard(deploys, initialPlayingIds);
     return runStep({
       beats:
         crushes.length > 0

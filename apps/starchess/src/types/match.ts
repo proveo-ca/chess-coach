@@ -41,6 +41,7 @@ export type CueLane =
   | "bSpecial"
   | "deploy"
   | "crush"
+  | "arrivalBlast"
   | "phase1Attack"
   | "phase1Death"
   | "move"

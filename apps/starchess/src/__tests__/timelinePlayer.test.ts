@@ -12,6 +12,47 @@ import {
   playTimeline,
   projectResolveTimeline,
 } from "~/presentation/timeline/timelinePlayer";
+import { splitResolveWaves } from "~/presentation/timeline/resolveWaves";
+import { laneFor } from "~/presentation/timeline/cueLanes";
+
+describe("cueLanes routing", () => {
+  // Every emitted id shape must route to its intended lane — a future prefix
+  // rename can silently steal lanes, so pin the whole table.
+  const cases: Array<[string, string]> = [
+    ["gd0", "gasDrop"],
+    ["b0", "move"],
+    ["ch0", "bSpecial"],
+    ["chd0", "bSpecial"],
+    ["qj0", "bSpecial"],
+    ["armm0", "bSpecial"],
+    ["armd0", "bSpecial"],
+    ["spawn-r-e2-0", "deploy"],
+    ["spawn-mine0", "deploy"],
+    ["spawn-f0", "deploy"],
+    ["crush0", "crush"],
+    ["fcrush0", "crush"],
+    ["farmm0", "arrivalBlast"],
+    ["farmd0", "arrivalBlast"],
+    ["a0", "phase1Attack"],
+    ["d0", "phase1Death"],
+    ["dk0", "phase1Death"],
+    ["m0", "phase1Death"],
+    ["c0", "move"],
+    ["mc0", "collision"],
+    ["mm0", "mineMissile"],
+    ["mt0", "mine"],
+    ["prd0", "approach"],
+    ["pro0", "approach"],
+    ["f0", "move"],
+    ["pw0", "promoWalk"],
+    ["pd0", "promoDeploy"],
+  ];
+  for (const [id, lane] of cases) {
+    it(`routes ${id} → ${lane}`, () => {
+      expect(laneFor(id).lane).toBe(lane);
+    });
+  }
+});
 
 describe("timelinePlayer", () => {
   it("projects B-only pawnDouble as a move cue", () => {
@@ -442,7 +483,7 @@ describe("timelinePlayer", () => {
     expect(hull).toBeGreaterThan(boom);
   });
 
-  it("skips spawn deploy when the unit dies the same turn", () => {
+  it("plays spawn deploy even when the unit dies later the same turn", () => {
     // White spawns a pawn on e2; black rook on e8 finds it mid-ray (path-reveal).
     let snap = parseScFen(
       "SCFEN|4rk2/8/8/8/8/8/8/4K3|1|33|P|G:11:11|Q:w:;b:",
@@ -478,7 +519,279 @@ describe("timelinePlayer", () => {
       color: "b",
     });
     const cues = projectResolveTimeline(result);
-    expect(cues.some((c) => c.kind === "deploy" && c.at === "e2")).toBe(false);
+    // The drop always plays; the killing shot lands after it.
+    const deploy = cues.findIndex((c) => c.kind === "deploy" && c.at === "e2");
+    const death = cues.findIndex((c) => c.kind === "death" && c.at === "e2");
+    expect(deploy).toBeGreaterThanOrEqual(0);
+    expect(death).toBeGreaterThan(deploy);
+  });
+
+  it("keeps the deploy cue when the spawned unit captures and occupies", () => {
+    // White spawns a pawn on e2, then C captures the knight on d3.
+    let snap = parseScFen(
+      "SCFEN|4k3/8/8/8/8/3n4/8/4K3|1|33|P|G:11:11|Q:w:;b:",
+    );
+    snap = addScAction({
+      snapshot: snap,
+      action: {
+        timing: "B",
+        kind: "spawn",
+        color: "w",
+        from: "e1",
+        to: "e2",
+        unit: "p",
+      },
+    }).snapshot;
+    snap = addScAction({
+      snapshot: snap,
+      action: {
+        timing: "C",
+        kind: "classical",
+        color: "w",
+        from: "e2",
+        to: "d3",
+      },
+    }).snapshot;
+    const result = endScTurn(snap, { skipTurnStartChecks: true });
+    expect(placementToMap(result.next.placement).get("d3")).toMatchObject({
+      type: "p",
+      color: "w",
+    });
+    const cues = projectResolveTimeline(result);
+    const deploy = cues.findIndex((c) => c.kind === "deploy" && c.at === "e2");
+    const attack = cues.findIndex((c) => c.kind === "attack" && c.to === "d3");
+    expect(deploy).toBeGreaterThanOrEqual(0);
+    expect(attack).toBeGreaterThan(deploy);
+  });
+
+  it("keeps the deploy cue when the spawned unit moves away", () => {
+    // White spawns a pawn on e2, then C walks it to e3.
+    let snap = parseScFen(
+      "SCFEN|4k3/8/8/8/8/8/8/4K3|1|33|P|G:11:11|Q:w:;b:",
+    );
+    snap = addScAction({
+      snapshot: snap,
+      action: {
+        timing: "B",
+        kind: "spawn",
+        color: "w",
+        from: "e1",
+        to: "e2",
+        unit: "p",
+      },
+    }).snapshot;
+    snap = addScAction({
+      snapshot: snap,
+      action: {
+        timing: "C",
+        kind: "classical",
+        color: "w",
+        from: "e2",
+        to: "e3",
+      },
+    }).snapshot;
+    const result = endScTurn(snap, { skipTurnStartChecks: true });
+    const cues = projectResolveTimeline(result);
+    const deploy = cues.findIndex((c) => c.kind === "deploy" && c.at === "e2");
+    const move = cues.findIndex(
+      (c) => c.kind === "move" && !c.stim && c.from === "e2" && c.to === "e3",
+    );
+    expect(deploy).toBeGreaterThanOrEqual(0);
+    expect(move).toBeGreaterThan(deploy);
+  });
+
+  it("projects an F-rank spawn deploy after attacks and moves", () => {
+    // White moves first (C), then drops a pawn (F) — the deploy plays last.
+    let snap = parseScFen(
+      "SCFEN|4k3/8/8/8/8/8/P7/4K3|1|33|P|G:11:11|Q:w:;b:",
+    );
+    snap = addScAction({
+      snapshot: snap,
+      action: {
+        timing: "C",
+        kind: "classical",
+        color: "w",
+        from: "a2",
+        to: "a3",
+      },
+    }).snapshot;
+    snap = addScAction({
+      snapshot: snap,
+      action: {
+        timing: "F",
+        kind: "spawn",
+        color: "w",
+        from: "e1",
+        to: "e2",
+        unit: "p",
+      },
+    }).snapshot;
+    const result = endScTurn(snap, { skipTurnStartChecks: true });
+    const cues = projectResolveTimeline(result);
+    const deploy = cues.find((c) => c.kind === "deploy" && c.at === "e2");
+    expect(deploy).toBeDefined();
+    expect(deploy!.id.startsWith("spawn-f")).toBe(true);
+    expect(deploy!.lane).toBe("deploy");
+    expect(deploy!.board).toBe("afterMove");
+    const move = cues.findIndex(
+      (c) => c.kind === "move" && !c.stim && c.to === "a3",
+    );
+    const deployIdx = cues.findIndex((c) => c.id === deploy!.id);
+    expect(deployIdx).toBeGreaterThan(move);
+  });
+
+  it("plays F-rank deploy + boom when the late drop lands on a hostile mine", () => {
+    let snap = parseScFen(
+      "SCFEN|4k3/8/8/8/8/8/8/4K3|21|33|P|G:33:33|Q:w:;b:|M:w:;b:e2",
+    );
+    snap = addScAction({
+      snapshot: snap,
+      action: { timing: "F", kind: "spawn", color: "w", from: "e1", to: "e2", unit: "p" },
+    }).snapshot;
+    const cues = projectResolveTimeline(endScTurn(snap, { skipTurnStartChecks: true }));
+    const deploy = cues.findIndex(
+      (c) => c.kind === "deploy" && c.id.startsWith("spawn-f"),
+    );
+    const boom = cues.findIndex(
+      (c) => c.kind === "death" && c.id.startsWith("farmm") && c.at === "e2",
+    );
+    const hull = cues.findIndex(
+      (c) => c.kind === "death" && c.id.startsWith("farmd") && c.at === "e2",
+    );
+    expect(deploy).toBeGreaterThanOrEqual(0);
+    expect(boom).toBeGreaterThan(deploy);
+    expect(hull).toBeGreaterThan(boom);
+  });
+
+  it("an F-rank deploy window never rewinds placement committed by earlier waves", () => {
+    // C moves a2→a3, F deploys on e2. While the deploy window plays, the
+    // moved pawn must stay on a3 (applyAfterB rewind would resurrect it on a2).
+    let snap = parseScFen(
+      "SCFEN|4k3/8/8/8/8/8/P7/4K3|1|33|P|G:11:11|Q:w:;b:",
+    );
+    snap = addScAction({
+      snapshot: snap,
+      action: {
+        timing: "C",
+        kind: "classical",
+        color: "w",
+        from: "a2",
+        to: "a3",
+      },
+    }).snapshot;
+    snap = addScAction({
+      snapshot: snap,
+      action: {
+        timing: "F",
+        kind: "spawn",
+        color: "w",
+        from: "e1",
+        to: "e2",
+        unit: "p",
+      },
+    }).snapshot;
+    const result = endScTurn(snap, { skipTurnStartChecks: true });
+    const jobs: { ms: number; fn: () => void }[] = [];
+    const scheduler = {
+      delay: (ms: number, fn: () => void) => {
+        jobs.push({ ms, fn });
+        return () => {};
+      },
+    };
+    type Patch = { placement?: string; playingIds?: readonly string[] };
+    const patches: Patch[] = [];
+    playTimeline(result, scheduler, {
+      onStart: () => {},
+      onCommit: (patch) => patches.push(patch),
+      onDone: () => {},
+    });
+    for (let i = 0; i < 80 && jobs.length > 0; i++) {
+      const batch = jobs.splice(0, jobs.length);
+      for (const j of batch) j.fn();
+    }
+    const deployStart = patches.findIndex((p) =>
+      (p.playingIds ?? []).some((id) => id.startsWith("spawn-f")),
+    );
+    expect(deployStart).toBeGreaterThanOrEqual(0);
+    const board = placementToMap(patches[deployStart]!.placement!);
+    // The classical relocate survives into the deploy window…
+    expect(board.get("a3")).toMatchObject({ type: "p", color: "w" });
+    expect(board.has("a2")).toBe(false);
+    // …and the deployed hull is placed forward, not by an afterB rewind.
+    expect(board.get("e2")).toMatchObject({ type: "p", color: "w" });
+    expect(patches.at(-1)!.placement).toBe(result.next.placement);
+  });
+
+  it("plays an F-rank deploy and its crush death after attacks and moves", () => {
+    // White moves a2→a3 (C), then late-drops a pawn onto the knight on e2 (F).
+    let snap = parseScFen(
+      "SCFEN|4k3/8/8/8/8/8/P3n3/4K3|1|33|P|G:11:11|Q:w:;b:",
+    );
+    snap = addScAction({
+      snapshot: snap,
+      action: {
+        timing: "C",
+        kind: "classical",
+        color: "w",
+        from: "a2",
+        to: "a3",
+      },
+    }).snapshot;
+    snap = addScAction({
+      snapshot: snap,
+      action: {
+        timing: "F",
+        kind: "spawn",
+        color: "w",
+        from: "e1",
+        to: "e2",
+        unit: "p",
+      },
+    }).snapshot;
+    const result = endScTurn(snap, { skipTurnStartChecks: true });
+    const cues = projectResolveTimeline(result);
+    const move = cues.findIndex(
+      (c) => c.kind === "move" && !c.stim && c.to === "a3",
+    );
+    const deploy = cues.findIndex(
+      (c) => c.kind === "deploy" && c.id.startsWith("spawn-f"),
+    );
+    const crush = cues.findIndex(
+      (c) => c.kind === "death" && c.id.startsWith("fcrush") && c.at === "e2",
+    );
+    expect(move).toBeGreaterThanOrEqual(0);
+    expect(deploy).toBeGreaterThan(move);
+    expect(crush).toBe(deploy + 1);
+    // Wave bucketing: deploy AND crush land in specialAfter together.
+    const waves = splitResolveWaves(result);
+    const afterWave = waves.find((w) => w.id === "specialAfter")!;
+    expect(afterWave.cues.some((c) => c.kind === "deploy")).toBe(true);
+    expect(afterWave.cues.some((c) => c.id.startsWith("fcrush"))).toBe(true);
+  });
+
+  it("projects an F-rank pawnDouble mine blast with farmm/farmd ids", () => {
+    let snap = parseScFen(
+      "SCFEN|4k3/8/8/8/8/8/4P3/4K3|21|33|P|G:33:33|Q:w:;b:|M:w:;b:e3",
+    );
+    snap = addScAction({
+      snapshot: snap,
+      action: {
+        timing: "F",
+        kind: "pawnDouble",
+        color: "w",
+        from: "e2",
+        to: "e3",
+      },
+    }).snapshot;
+    const cues = projectResolveTimeline(endScTurn(snap, { skipTurnStartChecks: true }));
+    const boom = cues.findIndex(
+      (c) => c.kind === "death" && c.id.startsWith("farmm") && c.at === "e3",
+    );
+    const hull = cues.findIndex(
+      (c) => c.kind === "death" && c.id.startsWith("farmd") && c.piece === "p",
+    );
+    expect(boom).toBeGreaterThanOrEqual(0);
+    expect(hull).toBe(boom + 1);
   });
 
   it("playTimeline advances with injected scheduler", () => {
