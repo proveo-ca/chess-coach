@@ -1,0 +1,50 @@
+@startuml turn-bonus-broadcast
+' SPEC: _spec/apps/starchess/core/turn/turn-bonus-broadcast.puml
+' purpose: Milestone-turn broadcast — the planning clock arms only after the bubble dismisses.
+!include ../../../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess · Turn bonus broadcast (turns 1 · 11 · 21 …)
+
+package "Presenters" {
+  component "BaseScreen auto-arm effect\nTurnBarSidebar onMount" as ARM <<host>>
+  component "TurnBonusBubble\nresource bar inert while up" as UI <<host>>
+  component "TurnBar / CountdownRing polls" as POLL <<host>>
+}
+
+package "Broadcast policy + store" {
+  component "turnBonusPolicy\nturnBonusFor(turn)" as POL <<app>>
+  component "MatchStoreContext\narmTimer seam · dismissTurnBonus" as SEAM <<async>>
+  component "scheduler.delay(3000ms)\nauto-dismiss" as SCHED <<async>>
+  component "matchReducer" as RED <<async>>
+  component "turnBonus · lastAnnouncedBonusTurn" as ST <<db>>
+}
+
+ARM ARROW_MAIN SEAM : armTimer()
+SEAM ARROW_MAIN POL : milestone?
+POL ARROW_OPTIONAL SEAM : "null — arm directly"
+SEAM ARROW_MAIN RED : SHOW_TURN_BONUS
+RED ARROW_MAIN ST : set turnBonus · mark
+ST ARROW_MAIN UI : "shell().turnBonus"
+SEAM ARROW_QUEUE SCHED : schedule auto path
+SCHED ARROW_QUEUE SEAM : fire → dismiss
+UI ARROW_MAIN SEAM : click-to-skip → dismissTurnBonus()
+SEAM ARROW_MAIN RED : HIDE_TURN_BONUS
+RED ARROW_MAIN ST : clear turnBonus
+SEAM ARROW_OPTIONAL RED : re-arm → SET_DEADLINE
+POLL ARROW_OPTIONAL RED : "deadlineAt == null → early-return"
+
+note bottom
+  **Invariants**
+  * The planning clock counts only after dismissal: ""deadlineAt"" stays ""null""
+  while the bubble is up — both TurnBar polls and the timeout scheduler
+  early-return, and ""submitTurn"" refuses mid-broadcast.
+  * Re-entrant ""armTimer()"" calls are no-ops while ""turnBonus"" is set.
+  * Each milestone broadcasts once per match (""lastAnnouncedBonusTurn"" mark).
+  * Live single-player only — stores opt in via ""createMatchStore({turnBonuses:true})"";
+  tutorial / review / demos never broadcast.
+  * Displayed tier follows HUD numbering: ""max(1, rawTurn)"" (engine starts at 0).
+end note
+@enduml

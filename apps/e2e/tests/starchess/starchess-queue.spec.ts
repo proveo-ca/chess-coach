@@ -3,6 +3,16 @@ import { expect, test } from "@playwright/test";
 const gotoScfen = async (page: import("@playwright/test").Page, scfen: string) => {
   await page.goto(`single?scfen=${encodeURIComponent(scfen)}`);
   await expect(page.getByTestId("starchess-board-chrome")).toBeVisible({ timeout: 20_000 });
+  // Deep links can seat a milestone turn — clear its broadcast first.
+  const bubble = page.getByTestId("turn-bonus-bubble");
+  const shown = await bubble
+    .waitFor({ state: "visible", timeout: 500 })
+    .then(() => true)
+    .catch(() => false);
+  if (shown) {
+    await bubble.click();
+    await expect(page.getByTestId("turn-bonus-bubble")).toBeHidden({ timeout: 2_000 });
+  }
 };
 
 test.describe("StarChess queue edit + gas pawn", () => {

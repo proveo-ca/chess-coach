@@ -22,6 +22,7 @@ import styles from "~/app/BaseScreen.module.css";
 import { CoachAvatar } from "~/components/atoms/CoachAvatar";
 import { MobileBanner } from "~/components/atoms/MobileBanner";
 import { ExitGameConfirm } from "~/components/features/ExitGameConfirm";
+import { TurnBonusBubble } from "~/components/features/TurnBonusBubble";
 import { TutorialHudLabels } from "~/components/features/TutorialHudLabels";
 import { useMediaQuery } from "~/hooks/useMediaQuery";
 import { DYNAMIC_MOBILE_MQ, MOBILE_MQ } from "~/utils/breakpoints";
@@ -972,6 +973,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
         onClose={() => setExitOpen(false)}
         onConfirm={confirmLeave}
       />
+      <TurnBonusBubble />
     </Screen>
   );
 };

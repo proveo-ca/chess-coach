@@ -1,4 +1,5 @@
 // SPEC: _spec/apps/starchess/architecture/board-entities.puml
+import { Show } from "solid-js";
 import type { Component } from "solid-js";
 
 interface IconProps {
@@ -365,5 +366,35 @@ export const SupplyIcon: Component<IconProps> = (props) => {
         fill="none"
       />
     </svg>
+  );
+};
+
+/** Stopwatch (static turn timer) — `value` renders the count beside the dial. */
+export const TimerIcon: Component<IconProps & { value?: number | string }> = (
+  props,
+) => {
+  const s = () => props.size ?? 18;
+  return (
+    <span
+      aria-hidden="true"
+      style={{
+        display: "inline-flex",
+        "align-items": "center",
+        gap: "0.2rem",
+        "font-size": `${Math.round(s() * 0.8)}px`,
+        "font-weight": "700",
+        "line-height": "1",
+      }}
+    >
+      <svg width={s()} height={s()} viewBox="0 0 18 18" fill="none">
+        <circle cx="9" cy="10" r="6" stroke="currentColor" stroke-width="1.4" />
+        <path d="M9 7v3l2 2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+        <path d="M7 1.8h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+        <path d="M9 1.8V4" stroke="currentColor" stroke-width="1.4" />
+      </svg>
+      <Show when={props.value != null}>
+        <span>{props.value}</span>
+      </Show>
+    </span>
   );
 };

@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/starchess/match-store.puml, _spec/apps/starchess/animation-pipeline.md, _spec/apps/starchess/core/turn/playback-interpreter.puml, _spec/apps/starchess/core/engine-boundary.puml, _spec/apps/starchess/architecture/timeline-perf.puml
+// SPEC: _spec/apps/starchess/match-store.puml, _spec/apps/starchess/animation-pipeline.md, _spec/apps/starchess/core/turn/playback-interpreter.puml, _spec/apps/starchess/core/turn/turn-bonus-broadcast.puml, _spec/apps/starchess/core/engine-boundary.puml, _spec/apps/starchess/architecture/timeline-perf.puml
 /**
  * Match store — Solid signal + reducer; timeline / timer / DualNav review runners.
  */
@@ -36,6 +36,7 @@ import { bindTimeline } from "~/presentation/timeline/timelineCommitGate";
 import {
   playResolveWave,
 } from "~/presentation/timeline/playResolveWave";
+import { TURN_BONUS_BROADCAST_MS, turnBonusFor } from "~/app/turnBonusPolicy";
 import type { ResolveWaveId } from "~/types/tutorial";
 
 export type { MatchStore };
@@ -97,10 +98,12 @@ export const createMatchStore = (opts?: {
    * immediate scheduler — arming would microtask-loop timeout → End forever.
    */
   autoArmTimer?: boolean;
+  turnBonuses?: boolean;
 }): MatchStore => {
   const clock = opts?.clock ?? browserClock;
   const scheduler = opts?.scheduler ?? browserScheduler;
   const autoArmTimer = opts?.autoArmTimer !== false;
+  const turnBonusesEnabled = opts?.turnBonuses === true;
   const initial = opts?.initial ?? createInitialMatchState();
   const [shell, setShell] = createSignal<MatchShell>(toShell(initial));
   const [timeline, setTimeline] = createSignal<TimelineState>(initial.timeline);
@@ -111,6 +114,7 @@ export const createMatchStore = (opts?: {
   >(null);
   let cancelTimeline: (() => void) | null = null;
   let cancelTimer: (() => void) | null = null;
+  let cancelBonusDelay: (() => void) | null = null;
   let cancelReviewTurn: (() => void) | null = null;
   let reviewBusy = false;
   /** Settled index when the in-flight one-arrow turn began. */
@@ -151,8 +155,18 @@ export const createMatchStore = (opts?: {
     cancelTimeline = null;
     cancelTimer?.();
     cancelTimer = null;
+    cancelBonusDelay?.();
+    cancelBonusDelay = null;
     clearReviewIntent();
     dispatch({ type: "CANCEL_EFFECTS" });
+  };
+
+  const dismissTurnBonus = () => {
+    cancelBonusDelay?.();
+    cancelBonusDelay = null;
+    if (!state().turnBonus) return;
+    dispatch({ type: "HIDE_TURN_BONUS" });
+    armTimer();
   };
 
   const armTimer = () => {
@@ -163,6 +177,19 @@ export const createMatchStore = (opts?: {
     if (!s.turnStartChecksApplied) {
       ensureTurnOpenChecks({ armTimer: true });
       return;
+    }
+    if (turnBonusesEnabled) {
+      if (s.turnBonus) return;
+      const bonus = turnBonusFor(s.liveSnapshot.turn);
+      if (bonus && s.lastAnnouncedBonusTurn < bonus.turn) {
+        dispatch({ type: "SHOW_TURN_BONUS", bonus });
+        cancelBonusDelay?.();
+        cancelBonusDelay = scheduler.delay(TURN_BONUS_BROADCAST_MS, () => {
+          cancelBonusDelay = null;
+          dismissTurnBonus();
+        });
+        return;
+      }
     }
     const timeoutMs = turnTimeoutMsForTurn(s.liveSnapshot.turn);
     const at = clock.now() + timeoutMs;
@@ -209,6 +236,7 @@ export const createMatchStore = (opts?: {
     cancelTimer = null;
     const before = state();
     if (before.phase !== "planning" && before.phase !== "targeting") return;
+    if (before.turnBonus) return;
     if (!before.turnStartChecksApplied) {
       ensureTurnOpenChecks();
       // If checks are animating, defer submit until planning re-opens.
@@ -369,6 +397,7 @@ export const createMatchStore = (opts?: {
     reviewSetPhase,
     playReviewResolveWave,
     playReviewResolve,
+    dismissTurnBonus,
     cancelEffects,
   };
 };

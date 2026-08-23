@@ -74,6 +74,7 @@ const STARCHESS_SPECS = [
   "**/starchess-gas-used.spec.ts",
   "**/starchess-gas-step.spec.ts",
   "**/starchess-fog-path.spec.ts",
+  "**/starchess-turn-bonus.spec.ts",
   // Needs the StarChess baseURL + Storybook (:6007), started for that target only.
   "**/starchess-collision.spec.ts",
   // Combat VFX guarantee suite (tests/vfx) — StarChess overlays only.
