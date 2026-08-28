@@ -4,9 +4,9 @@ import {
   ROOK_FRAME_SCALE,
   ROOK_REST_AIM_DEG,
   svgPivotAroundAniso,
-} from "~/presentation/animations/attackAnim";
+} from "~/presentation/pieces/geometry";
 import { Shard } from "~/presentation/animations/pieces/components/Shard";
-import { ROOK_CONTENT_SCALE } from "~/presentation/animations/pieces/components/InlineRook";
+import { ROOK_CONTENT_SCALE } from "~/presentation/pieces/InlineRook";
 import {
   INK_BLACK,
   INK_DARK_GRAY,
@@ -14,7 +14,7 @@ import {
   PIECE_FRAME,
   TEAM_PRIMARY,
   type PieceColor,
-} from "~/presentation/animations/teamColors";
+} from "~/presentation/pieces/teamColors";
 import type { RookMode } from "~/presentation/types";
 
 type DeathRookProps = {
@@ -42,7 +42,7 @@ export const DeathRook: Component<DeathRookProps> = (props) => {
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45" aria-hidden="true" overflow="visible">
       <g transform={PIECE_FRAME.R}>
         <g transform={`translate(22.5 22.5) scale(${ROOK_CONTENT_SCALE}) translate(-22.5 -22.5)`}>
-          <g stroke="#222" stroke-linecap="round" stroke-linejoin="round" stroke-width="1">
+          <g stroke="#222" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6">
             <Show
               when={mode() === "siege"}
               fallback={

@@ -1,7 +1,7 @@
 import { For, type Component } from "solid-js";
 
 import { Shard } from "~/presentation/animations/pieces/components/Shard";
-import { TEAM_PRIMARY, type PieceColor } from "~/presentation/animations/teamColors";
+import { TEAM_PRIMARY, type PieceColor } from "~/presentation/pieces/teamColors";
 import {
   MINE_LEG_COUNT,
   legPath,

@@ -1,6 +1,6 @@
 import type { Square } from "chess.js";
 
-import type { PieceColor } from "~/presentation/animations/teamColors";
+import type { PieceColor } from "~/presentation/pieces/teamColors";
 
 export type {
   AttackCue,

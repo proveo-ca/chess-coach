@@ -12,12 +12,12 @@ import {
 } from "~/presentation/animations/deployAnim";
 import styles from "~/presentation/animations/components/DeployAnimation.module.css";
 import { squareBoxStyle } from "~/presentation/animations/boardGeom";
-import { InlineBishop } from "~/presentation/animations/pieces/components/InlineBishop";
-import { InlineKnight } from "~/presentation/animations/pieces/components/InlineKnight";
-import { InlinePawn } from "~/presentation/animations/pieces/components/InlinePawn";
-import { InlineQueen } from "~/presentation/animations/pieces/components/InlineQueen";
-import { InlineRook } from "~/presentation/animations/pieces/components/InlineRook";
-import { teamTintStyle, type PieceColor } from "~/presentation/animations/teamColors";
+import { InlineBishop } from "~/presentation/pieces/InlineBishop";
+import { InlineKnight } from "~/presentation/pieces/InlineKnight";
+import { InlinePawn } from "~/presentation/pieces/InlinePawn";
+import { InlineQueen } from "~/presentation/pieces/InlineQueen";
+import { InlineRook } from "~/presentation/pieces/InlineRook";
+import { teamTintStyle, type PieceColor } from "~/presentation/pieces/teamColors";
 import type { StarChessPiece, DeployCue } from "~/presentation/types";
 
 const NO_SPECIAL_USED: ReadonlySet<Square> = new Set();

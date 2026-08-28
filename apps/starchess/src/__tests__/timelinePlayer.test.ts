@@ -201,6 +201,72 @@ describe("timelinePlayer", () => {
     });
   });
 
+  it("keeps the marine on the square until its promo deploy plays (gas promote)", () => {
+    // A gas step onto the last rank promotes inside `submit-turn`, which writes
+    // the promoted unit straight into `afterB`. The board must not reveal it
+    // there: the promo walk-off + deploy cues are what introduce it, so showing
+    // it on the afterB rung deploys the unit, yanks it away for the walk-off,
+    // then deploys it a second time.
+    let snap = parseScFen(
+      "SCFEN|k7/4P3/8/8/8/8/8/4K3|11|33|P|G:22:22|Q:w:;b:",
+    );
+    snap = addScAction({
+      snapshot: snap,
+      action: {
+        timing: "B",
+        kind: "pawnDouble",
+        color: "w",
+        from: "e7",
+        to: "e8",
+        promotion: "q",
+      },
+    }).snapshot;
+    const result = endScTurn(snap);
+
+    // Core is right to promote — the unit is a queen for everything after B.
+    expect(result.resolved.promotions).toEqual([
+      expect.objectContaining({ at: "e8", unit: "q", color: "w" }),
+    ]);
+    expect(placementToMap(result.afterB.placement).get("e8")).toMatchObject({
+      type: "q",
+    });
+
+    type Job = { ms: number; fn: () => void };
+    const jobs: Job[] = [];
+    const scheduler = {
+      delay: (ms: number, fn: () => void) => {
+        jobs.push({ ms, fn });
+        return () => undefined;
+      },
+    };
+    const placements: string[] = [];
+    playTimeline(result, scheduler, {
+      onStart: () => undefined,
+      onCommit: (patch) => {
+        if (patch.placement) placements.push(patch.placement);
+      },
+      onDone: () => undefined,
+    });
+
+    while (jobs.length) jobs.shift()!.fn();
+
+    const onE8 = placements.map((pl) => placementToMap(pl).get("e8")?.type);
+    // The marine occupies e8 once the gas step lands...
+    const marineAt = onE8.indexOf("p");
+    expect(marineAt).toBeGreaterThanOrEqual(0);
+    // ...the walk-off vacates it...
+    const vacatedAt = onE8.indexOf(undefined, marineAt);
+    expect(vacatedAt).toBeGreaterThan(marineAt);
+    // ...and only then does the queen arrive, exactly once and last.
+    const queenAt = onE8.indexOf("q");
+    expect(queenAt).toBeGreaterThan(vacatedAt);
+    expect(onE8.slice(0, vacatedAt)).not.toContain("q");
+    expect(placementToMap(placements.at(-1)!).get("e8")).toMatchObject({
+      type: "q",
+      color: "w",
+    });
+  });
+
   it("places the promoted unit when deploy starts (no late auto-deploy surprise)", () => {
     let snap = parseScFen(
       "SCFEN|k7/4P3/8/8/8/8/8/4K3|1|33|P|G:11:11|Q:w:;b:",

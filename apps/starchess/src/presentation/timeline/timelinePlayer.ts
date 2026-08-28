@@ -747,6 +747,19 @@ export const playTimeline = (
   let cancelled = false;
   const cancels: Array<() => void> = [];
   let displayPlacement = result.afterPending.placement;
+  const afterBDisplay = ((): string => {
+    const promos = result.resolved.promotions;
+    if (promos.length === 0) return result.afterB.placement;
+    const map = placementToMap(result.afterB.placement);
+    let rolled = false;
+    for (const promo of promos) {
+      const landed = map.get(promo.at);
+      if (!landed || landed.color !== promo.color || landed.type !== promo.unit) continue;
+      map.set(promo.at, { type: "p", color: promo.color });
+      rolled = true;
+    }
+    return rolled ? mapToPlacement(map) : result.afterB.placement;
+  })();
   let displayLives = livesBeforeAnimatedShots(result);
   let afterBApplied = false;
   const usedSquares = new Set<Square>();
@@ -761,9 +774,9 @@ export const playTimeline = (
 
   const applyAfterB = (extra?: { hidden?: readonly Square[]; playingIds?: readonly string[] }) => {
     afterBApplied = true;
-    displayPlacement = result.afterB.placement;
+    displayPlacement = afterBDisplay;
     cb.onCommit({
-      placement: result.afterB.placement,
+      placement: afterBDisplay,
       mines: result.afterB.mines,
       siegedRooks: result.afterB.siegedRooks,
       kingLives: { ...displayLives },
@@ -785,7 +798,7 @@ export const playTimeline = (
     playingIds: readonly string[],
   ): void => {
     const hidden = deploys.map((c) => c.at);
-    if (!afterBApplied || displayPlacement === result.afterB.placement) {
+    if (!afterBApplied || displayPlacement === afterBDisplay) {
       applyAfterB({ hidden, playingIds });
       return;
     }

@@ -13,7 +13,7 @@ import { DeathQueen } from "~/presentation/animations/pieces/components/DeathQue
 import { DeathRook } from "~/presentation/animations/pieces/components/DeathRook";
 import { squareBoxStyle } from "~/presentation/animations/boardGeom";
 import { rookModeAt } from "~/presentation/animations/rookModeStore";
-import { teamTintStyle, type PieceColor } from "~/presentation/animations/teamColors";
+import { teamTintStyle, type PieceColor } from "~/presentation/pieces/teamColors";
 import type { StarChessPiece, DeathCue } from "~/presentation/animations/types";
 
 const NO_SPECIAL_USED: ReadonlySet<Square> = new Set();

@@ -2,7 +2,7 @@ import type { Component } from "solid-js";
 
 import {
   TEAM_PRIMARY,
-  type PieceColor, PIECE_FRAME } from "~/presentation/animations/teamColors";
+  type PieceColor, PIECE_FRAME } from "~/presentation/pieces/teamColors";
 import { Shard } from "~/presentation/animations/pieces/components/Shard";
 
 type DeathBishopProps = {
@@ -44,7 +44,7 @@ export const DeathBishop: Component<DeathBishopProps> = (props) => {
           <rect x="22.5" y="0" width="22.5" height="45" />
         </clipPath>
       </defs>
-      <g stroke="#222" stroke-linecap="round" stroke-linejoin="round" stroke-width="1">
+      <g stroke="#222" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
         <Shard index={0} seed={seed()}>
           <ellipse fill={team()} cx="12" cy="40" rx="5" ry="2.5" />
           <line x1="14" y1="38" x2="18" y2="28" stroke-width="1" />

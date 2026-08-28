@@ -3,6 +3,7 @@
  * // SPEC: _spec/apps/ui/responsiveness/rules.md
  */
 @import "./specialUsedAura.css";
+@import "./unitPose.css";
 
 *,
 *::before,

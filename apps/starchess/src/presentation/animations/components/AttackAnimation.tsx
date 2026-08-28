@@ -6,8 +6,6 @@ import {
   ANIM_BY_PIECE,
   ATTACK_MS,
   FRAG_FLIGHT_MS,
-  KING_REST_AIM_DEG,
-  ROOK_REST_AIM_DEG,
   attackFaceFor,
   cellSize,
   centeredBoxStyle,
@@ -15,6 +13,7 @@ import {
   screenAimDeg,
   squareBoxStyle,
 } from "~/presentation/animations/attackAnim";
+import { KING_REST_AIM_DEG, ROOK_REST_AIM_DEG } from "~/presentation/pieces/geometry";
 import styles from "~/presentation/animations/components/AttackAnimation.module.css";
 import {
   BISHOP_CHARON,
@@ -22,7 +21,7 @@ import {
   charonVolleyStyle,
 } from "~/presentation/animations/bishopCharon";
 import { fragFlightMsCss } from "~/presentation/animations/impactTiming";
-import { teamTintStyle } from "~/presentation/animations/teamColors";
+import { teamTintStyle } from "~/presentation/pieces/teamColors";
 import {
   aimPoseFor,
   aimTransformCss,
@@ -32,12 +31,12 @@ import {
   squareAt,
   squareCenterPx,
 } from "~/presentation/animations/attackVectors";
-import { InlineBishop } from "~/presentation/animations/pieces/components/InlineBishop";
-import { InlineKing } from "~/presentation/animations/pieces/components/InlineKing";
-import { InlineKnight } from "~/presentation/animations/pieces/components/InlineKnight";
-import { InlinePawn } from "~/presentation/animations/pieces/components/InlinePawn";
-import { InlineQueen } from "~/presentation/animations/pieces/components/InlineQueen";
-import { InlineRook } from "~/presentation/animations/pieces/components/InlineRook";
+import { InlineBishop } from "~/presentation/pieces/InlineBishop";
+import { InlineKing } from "~/presentation/pieces/InlineKing";
+import { InlineKnight } from "~/presentation/pieces/InlineKnight";
+import { InlinePawn } from "~/presentation/pieces/InlinePawn";
+import { InlineQueen } from "~/presentation/pieces/InlineQueen";
+import { InlineRook } from "~/presentation/pieces/InlineRook";
 import {
   QUEEN_AIM_WRAP_SCALE,
   QUEEN_LASER_MUZZLE_X,
@@ -120,7 +119,7 @@ const attackNode = (
       // Hull + laser share aim on `.aimWrap` (see `queenAimWrapStyle`).
       return (
         <div classList={faceClass()}>
-          <InlineQueen color={cue.color} />
+          <InlineQueen color={cue.color} aiming />
         </div>
       );
     case "k":

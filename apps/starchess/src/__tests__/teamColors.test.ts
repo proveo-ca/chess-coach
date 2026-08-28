@@ -4,7 +4,7 @@ import {
   TEAM_PRIMARY,
   TEAM_RGB,
   teamTintStyle,
-} from "~/presentation/animations/teamColors";
+} from "~/presentation/pieces/teamColors";
 
 /** `#a22` and `#aa2222` are the same colour — TEAM_PRIMARY uses both forms. */
 const hexToRgb = (hex: string): string => {

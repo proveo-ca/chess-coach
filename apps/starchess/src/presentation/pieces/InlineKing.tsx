@@ -1,14 +1,14 @@
 import { For, createMemo, createUniqueId, type Component } from "solid-js";
 
-import { KING_REST_AIM_DEG, svgPivotLocal } from "~/presentation/animations/attackAnim";
-import { FireColumn, pickFireSpots } from "~/presentation/animations/pieces/components/kingFire";
-import { TwinBattery, TWIN_BATTERY_SCALE_KING } from "~/presentation/animations/pieces/components/TwinBattery";
-import styles from "~/presentation/animations/pieces/components/InlineKing.module.css";
+import { KING_REST_AIM_DEG, svgPivotLocal } from "~/presentation/pieces/geometry";
+import { FireColumn, pickFireSpots } from "~/presentation/pieces/kingFire";
+import { TwinBattery, TWIN_BATTERY_SCALE_KING } from "~/presentation/pieces/TwinBattery";
+import styles from "~/presentation/pieces/InlineKing.module.css";
 import {
   PIECE_FRAME,
   TEAM_PRIMARY,
   type PieceColor,
-} from "~/presentation/animations/teamColors";
+} from "~/presentation/pieces/teamColors";
 import type { KingDamageState } from "~/presentation/types";
 
 type InlineKingProps = {
@@ -64,7 +64,7 @@ export const InlineKing: Component<InlineKingProps> = (props) => {
             <stop offset="1" stop-color="#2a2826" stop-opacity="0" />
           </radialGradient>
         </defs>
-        <g stroke="#222" stroke-linecap="round" stroke-linejoin="round" stroke-width="1">
+        <g stroke="#222" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.35">
           <ellipse cx="22.5" cy="28.8" rx="19" ry="13.7" fill="#555" />
           <ellipse cx="22.5" cy="35.5" rx="15.8" ry="7.5" fill={team()} />
           <ellipse cx="8.5" cy="27" rx="5.8" ry="8.3" fill={team()} />

@@ -39,6 +39,22 @@
   transition: transform 90ms ease-out;
 }
 
+/*
+ * Queen slide settle. The hull's own normalize unwinds inside InlineQueen; this
+ * unwinds the travel aim its parent applies, over the same window, so the two
+ * land together on the resting bow-down silhouette. Without it the ship snaps
+ * the instant the overlay hands the square back to the board glyph.
+ */
+.settleFace {
+  transition: transform var(--settle-ms, 260ms) cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .settleFace {
+    transition: none;
+  }
+}
+
 @keyframes knightLMove {
   /* Distance-proportional: 2 squares then 1 → elbow at ~67%. */
   0% {

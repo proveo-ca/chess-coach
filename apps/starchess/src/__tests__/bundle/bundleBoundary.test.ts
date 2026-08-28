@@ -123,7 +123,7 @@ describe("apps/starchess boundary", () => {
     // Glyph switches + the PieceSet union itself — no app / store / core reader.
     expect([...readers].sort()).toEqual([
       join("presentation", "animations", "components", "kingDamageOverlay.tsx"),
-      join("presentation", "board", "components", "RookGlyph.tsx"),
+      join("presentation", "board", "components", "PieceGlyph.tsx"),
       join("types", "board.ts"),
     ]);
 
@@ -132,5 +132,45 @@ describe("apps/starchess boundary", () => {
       readFileSync(f, "utf8").includes("cburnett"),
     );
     expect(inCore).toEqual([]);
+  });
+
+  /**
+   * `public/pieces/` is tutorial-only art. Product units are inline components
+   * from `presentation/pieces/`, so a static asset may be reached from exactly
+   * two glyph switches — and on both, only the `cburnett` branch resolves.
+   *
+   * This is what stops the board and the combat overlay drifting apart: when a
+   * resting unit is a traced SVG and the animating one is a component, an edit
+   * to either is invisible on the other half of the frame.
+   */
+  it("pieceUrl is reachable only from the two cburnett glyph switches", () => {
+    const allowed = [
+      join("presentation", "board", "components", "PieceGlyph.tsx"),
+      join("presentation", "animations", "components", "kingDamageOverlay.tsx"),
+      join("presentation", "board", "pieceUrl.ts"),
+    ].sort();
+
+    const importers = new Set<string>();
+    for (const file of walk(SRC)) {
+      if (file.includes(join("src", "__tests__"))) continue;
+      const rel = file.slice(SRC.length + 1);
+      for (const line of readFileSync(file, "utf8").split("\n")) {
+        if (!line.includes("import")) continue;
+        if (/from ["'][^"']*board\/pieceUrl["']/.test(line)) importers.add(rel);
+      }
+    }
+    expect([...importers].sort()).toEqual(allowed.filter((f) => !f.endsWith("pieceUrl.ts")));
+
+    // No one hand-rolls the asset path around the switch either.
+    const handRolled: string[] = [];
+    for (const file of walk(SRC)) {
+      if (file.includes(join("src", "__tests__"))) continue;
+      const rel = file.slice(SRC.length + 1);
+      for (const line of readFileSync(file, "utf8").split("\n")) {
+        if (line.trimStart().startsWith("*") || line.trimStart().startsWith("//")) continue;
+        if (/pieces\/(?:nerd|cburnett)\//.test(line)) handRolled.push(`${rel}: ${line.trim()}`);
+      }
+    }
+    expect(handRolled).toEqual([]);
   });
 });

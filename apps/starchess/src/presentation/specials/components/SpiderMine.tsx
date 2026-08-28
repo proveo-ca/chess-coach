@@ -6,7 +6,7 @@ import styles from "~/presentation/specials/components/SpiderMine.module.css";
 import {
   TEAM_PRIMARY,
   type PieceColor,
-} from "~/presentation/animations/teamColors";
+} from "~/presentation/pieces/teamColors";
 import {
   MINE_LEG_COUNT,
   legPath,
