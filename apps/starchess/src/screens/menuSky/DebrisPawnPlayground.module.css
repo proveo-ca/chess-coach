@@ -93,7 +93,13 @@
   opacity: 0 !important;
 }
 
-.invisible :global([data-square] > span),
+/*
+ * Square chrome only. `:not([data-piece])` matters: units render as a
+ * `<span data-piece>` directly inside the square (`PieceGlyph`), so a bare
+ * `[data-square] > span` blanks every resting marine and the parked Ship —
+ * which is exactly the window this playground exists to show.
+ */
+.invisible :global([data-square] > span:not([data-piece])),
 .invisible :global([data-board-grid] > svg),
 .invisible :global(.fog-overlay),
 .invisible :global(.observer-vision-overlay) {

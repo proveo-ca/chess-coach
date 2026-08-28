@@ -73,6 +73,19 @@ When you add, rename, or remove a component, hook, store, or service:
   In `apps/starchess` use the `useIsDesktopClient()` hook. Note this is the *device*
   axis, unrelated to `runtimeMode === 'desktop'` (which is a distribution mode).
 - **Capabilities pattern**: each screen sets `ScreenCapabilities` on mount (`capabilitiesStore`); hooks and components read specific flags rather than branching on a screen name.
+- **Piece art**: `apps/starchess/public/pieces` holds **cburnett only**. Every
+  product board — live match, review, demos, deploy/promotion pickers — renders
+  the inline units in `presentation/pieces/` through the single `PieceGlyph`
+  dispatcher; a static asset is reachable on exactly one branch, `cburnett`,
+  whose sole entry point is `TutorialScreen`'s fog skin toggle. Never add a
+  `pieceUrl` caller or a hand-rolled `pieces/<set>/` path —
+  `__tests__/bundle/bundleBoundary.test.ts` fails the build if you do. The
+  traced reference art lives in `apps/ui/public/pieces/nerd/`; a unit's **rest**
+  pose must match it (same `PIECE_FRAME` nest, same main stroke, no aim
+  normalize), and aiming applies its normalize as a CSS transform so a mover can
+  settle back over `SETTLE_MS` before the overlay hands the square back.
+  `presentation/pieces/` sits *below* `presentation/animations/` — animations
+  import down into it, never the reverse.
 - **Spider mines**: every mine decision in `starchess-core` goes through
   `board/mine-contact.ts` (`mineContact` / `withoutMine` / `hostileMineOn`) —
   never hand-roll a `mineAt(...)` + colour test. See `_spec/packages/starchess-core/mine-contact.puml`.

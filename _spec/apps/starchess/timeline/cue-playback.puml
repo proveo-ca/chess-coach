@@ -60,6 +60,25 @@ repeat :read cue at ""index"", ""takeWhile"" its batch;
   endif
 
   :advance the board ladder **lazily**: a cue whose ""cue.board"" is past\n""preAfterB"" applies ""afterB""; nothing re-applies a rung;
+  note right
+    ""afterB"" is committed as ""afterBDisplay"" — the same board with every
+    ""resolved.promotions"" square **rewound to a marine**.
+
+    A gas promotion resolves inside ""submit-turn"" (""applyGasPromotion"" and
+    the F-step path), which writes the promoted unit straight into ""afterB"".
+    Showing that rung verbatim deploys the unit, then the promo walk-off
+    yanks it away, then the promo deploy plays it again — one promotion,
+    two deploys.
+
+    Core stays right: everything after B must treat the square as a queen.
+    Only the **display** board rewinds, and only per-square where ""afterB""
+    actually holds that promotion's unit — a blanket rewrite would plant a
+    phantom pawn on a *classical* promotion's destination, where the pawn
+    has not moved yet at B.
+
+    With no promotions it returns ""afterB.placement"" itself, preserving the
+    object identity ""commitDeployBoard"" branches on.
+  end note
 
   note right
     **Every lane that plays a ""mine: true"" death owes ""spentMines""**

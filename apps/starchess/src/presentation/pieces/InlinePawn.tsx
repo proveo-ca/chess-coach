@@ -46,7 +46,7 @@ const PIVOT_TOP_LEFT = { cx: 13, cy: 18.5 };
 const PIVOT_TOP_RIGHT = { cx: 32, cy: 18.5 };
 
 /**
- * Marine aligned with `public/pieces/nerd/wP.svg` (same translate/scale + body).
+ * Marine aligned with `apps/ui/public/pieces/nerd/wP.svg` (same translate/scale + body).
  */
 export const InlinePawn: Component<InlinePawnProps> = (props) => {
   const color = () => props.color ?? "w";

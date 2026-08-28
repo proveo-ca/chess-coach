@@ -11,13 +11,31 @@ hide empty members
 
 title StarChess · Board presentation entities\n(current)
 
+note as BOUNDARY
+  **apps/starchess/public/pieces holds cburnett only.**
+  Product boards — live match, review, demos, deploy and
+  promotion pickers — render the inline units. A static asset
+  is reachable on exactly one branch, `cburnett`, whose sole
+  entry point is TutorialScreen's fog-lesson skin toggle.
+  Guarded by __tests__/bundle/bundleBoundary.test.ts:
+  pieceUrl is importable only from PieceGlyph and
+  kingDamageOverlay, and no hand-rolled asset path may appear.
+end note
+
 package "leaves" {
 
-  class RookGlyph <<app>>
+  class PieceGlyph <<app>> {
+    one unit on a square
+    nerd -> Inline* (presentation/pieces)
+    cburnett -> pieceUrl <img>
+    stamps data-piece on both
+  }
   class SpiderMine <<app>>
-  class InlineBishop <<app>>
   class VespeneIcon <<app>>
-  class pieceUrl <<app>>
+  class pieceUrl <<app>> {
+    cburnett assets only
+    nerd art is inline, not fetched
+  }
   class fogProjection <<app>>
   class rookMode <<app>>
   class StarChessSquare <<app>>
@@ -117,16 +135,46 @@ package "geometry / local stores" {
   class boardGeom <<app>>
 }
 
+package "presentation/pieces (units)" {
+
+  class units <<app>> {
+    InlinePawn / InlineKnight / InlineBishop
+    InlineRook / InlineQueen / InlineKing
+    TwinBattery · kingFire
+    geometry.ts — pivots, rest aims, AimPose
+    teamColors.ts — swatches, PIECE_FRAME
+  }
+
+  note bottom of units
+    Sits **below** presentation/animations: the same unit draws
+    a resting square and a combat cue, so animations/ imports
+    down into here and never the reverse.
+
+    Rest pose == apps/ui/public/pieces/nerd/*.svg — same
+    PIECE_FRAME nest, same main stroke, no aim normalize.
+    Aiming applies that normalize as a CSS transform
+    (`styles/unitPose.css` .sc-unit-pose) so a mover can
+    **settle** back to rest over SETTLE_MS before the overlay
+    hands the square to PieceGlyph; a CSS transition cannot
+    span that unmount.
+  end note
+
+}
+
 package "app state (external)" {
   class MatchStore <<db>>
   class capabilitiesStore <<db>>
 }
 
-StarChessBoard *-- RookGlyph
+StarChessBoard *-- PieceGlyph
 StarChessBoard *-- SpiderMine
-StarChessBoard *-- InlineBishop
 StarChessBoard *-- VespeneIcon
-StarChessBoard ..> pieceUrl
+PieceGlyph *-- units
+PieceGlyph ..> pieceUrl : cburnett branch only
+DeployModal ..> PieceGlyph
+PromotionModal ..> PieceGlyph
+MoveAnimation ..> PieceGlyph : rook mover
+kingDamageOverlay ..> pieceUrl : cburnett king
 StarChessBoard ..> fogProjection
 StarChessBoard ..> rookMode
 StarChessBoard ..> StarChessSquare

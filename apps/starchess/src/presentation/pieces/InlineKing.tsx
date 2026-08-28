@@ -22,7 +22,7 @@ type InlineKingProps = {
 };
 
 /**
- * Experimental Command Center — matches `public/pieces/nerd/*K.svg` fills.
+ * Experimental Command Center — matches `apps/ui/public/pieces/nerd/*K.svg` fills.
  * Base stays static; only the top dual cannons rotate to aim.
  */
 export const InlineKing: Component<InlineKingProps> = (props) => {

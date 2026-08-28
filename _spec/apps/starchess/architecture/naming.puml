@@ -10,9 +10,9 @@ title StarChess · Naming — piece art (app only)
 
 package "product default (apps/starchess presentation)" {
   component "PieceSet = 'nerd'" as NERD <<app>>
-  component "Inline* SVG units\n(InlineRook, …)" as INLINE <<app>>
-  component "public/pieces/nerd/*.svg" as SVG <<db>>
-  component "pieceUrl(..., 'nerd')" as URL <<app>>
+  component "Inline* SVG units\npresentation/pieces/*" as INLINE <<app>>
+  component "PieceGlyph\n(only reader of pieceUrl)" as GLYPH <<app>>
+  component "apps/ui/public/pieces/nerd/*.svg\nreference art — NOT shipped here" as SVG <<db>>
 }
 
 package "tutorial fog Chess skin ONLY" {
@@ -31,10 +31,11 @@ package "deprecated product names" {
 }
 
 NERD ARROW_MAIN INLINE
-NERD ARROW_MAIN SVG
-URL ARROW_MAIN SVG
+GLYPH ARROW_MAIN INLINE : nerd branch
+INLINE ARROW_OPTIONAL SVG : traced from\n(rest pose parity)
 TUT ARROW_OPTIONAL CB : sole entry
 CB ARROW_MAIN CBSVG
+GLYPH ARROW_OPTIONAL CBSVG : cburnett branch\nvia pieceUrl
 CORE ARROW_ERROR CB : never support
 CORE ARROW_ERROR NERD : art stays in app
 OLD ARROW_ERROR NERD : chrome naming
@@ -43,6 +44,10 @@ note bottom
   **Product** = ""nerd"" + inline units forever.
   **cburnett** exists only so one fog-tutorial section can look like classic chess.
   Do **not** add PieceSet, skins, or SVG paths to ""@chess-coach/starchess-core"".
+  ""apps/starchess/public/pieces"" holds **cburnett only** — the nerd assets
+  were deleted once every product board moved to the inline units. The traced
+  reference art survives in ""apps/ui/public/pieces/nerd/"", which apps/ui still
+  renders for its Nerd identity skin.
   Rules/resolve stay piece-symbol + color only.
 end note
 @enduml
