@@ -1,12 +1,12 @@
 import type { Component } from "solid-js";
 
-import { svgPivotAround, svgPivotLocal } from "~/presentation/animations/attackAnim";
+import { svgPivotAround, svgPivotLocal } from "~/presentation/pieces/geometry";
 import {
   TEAM_PRIMARY,
   TEAM_SHADOW,
   PIECE_FRAME,
   type PieceColor,
-} from "~/presentation/animations/teamColors";
+} from "~/presentation/pieces/teamColors";
 
 type InlinePawnProps = {
   color?: PieceColor;
@@ -46,7 +46,7 @@ const PIVOT_TOP_LEFT = { cx: 13, cy: 18.5 };
 const PIVOT_TOP_RIGHT = { cx: 32, cy: 18.5 };
 
 /**
- * Marine aligned with `public/pieces/nerd/wP.svg` (same translate/scale + body).
+ * Marine aligned with `apps/ui/public/pieces/nerd/wP.svg` (same translate/scale + body).
  */
 export const InlinePawn: Component<InlinePawnProps> = (props) => {
   const color = () => props.color ?? "w";
@@ -66,7 +66,7 @@ export const InlinePawn: Component<InlinePawnProps> = (props) => {
         stroke="#222"
         stroke-linecap="round"
         stroke-linejoin="round"
-        stroke-width="1"
+        stroke-width="2"
         transform="translate(2.25,2.25) scale(0.9)"
       >
         <ellipse

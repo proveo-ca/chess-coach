@@ -1,0 +1,35 @@
+/**
+ * Rest ↔ aim orientation for the inline units — global, not a CSS module,
+ * because two components share it (`InlineKnight`, `InlineQueen`) and a module
+ * may only be imported by its own component.
+ *
+ * The shipping silhouettes in `apps/ui/public/pieces/nerd/` ARE the rest pose,
+ * so at rest these groups carry no transform at all — that is what keeps a unit
+ * sitting on its square identical to the art players already know.
+ *
+ * Aiming needs each unit's muzzle on local +x, which costs a rotation (and, for
+ * the hoverbike, a mirror as well). That normalization is an inline `transform`,
+ * so dropping it *transitions* the unit back into its resting silhouette rather
+ * than snapping. A mover therefore settles into rest before the combat overlay
+ * hands the square back to the board glyph — a CSS transition cannot span that
+ * unmount, so the two must already agree by the time it happens.
+ *
+ * `transform-box: view-box` puts the origin in viewBox units, so `22.5 22.5` is
+ * the centre — the same pivot every SVG-attribute transform in these components
+ * uses. Note this must sit on a group with no `transform` *attribute*: a CSS
+ * transform replaces the attribute outright rather than composing with it.
+ *
+ * The hoverbike's rest↔aim delta is a reflection, not a rotation, so its tween
+ * passes through a flattened frame and reads as a bank/roll — deliberate.
+ */
+.sc-unit-pose {
+  transform-box: view-box;
+  transform-origin: 22.5px 22.5px;
+  transition: transform var(--settle-ms, 260ms) cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sc-unit-pose {
+    transition: none;
+  }
+}

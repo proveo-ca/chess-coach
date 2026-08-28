@@ -1,9 +1,9 @@
 import { For, createMemo, createUniqueId, type Component, type JSX } from "solid-js";
 
 import { rubbleSettleStyle } from "~/presentation/animations/deathAnim";
-import { FireColumn, pickFireSpots } from "~/presentation/animations/pieces/components/kingFire";
+import { FireColumn, pickFireSpots } from "~/presentation/pieces/kingFire";
 import styles from "~/presentation/animations/pieces/components/DeathKing.module.css";
-import { TEAM_PRIMARY, type PieceColor, PIECE_FRAME } from "~/presentation/animations/teamColors";
+import { TEAM_PRIMARY, type PieceColor, PIECE_FRAME } from "~/presentation/pieces/teamColors";
 import type { KingDamageState } from "~/presentation/types";
 
 type DeathKingProps = {
@@ -79,7 +79,7 @@ export const DeathKing: Component<DeathKingProps> = (props) => {
           <stop offset="1" stop-color="#2a2826" stop-opacity="0" />
         </radialGradient>
       </defs>
-      <g stroke="#222" stroke-linecap="round" stroke-linejoin="round" stroke-width="1">
+      <g stroke="#222" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.35">
         {wrap(0, <ellipse cx="22.5" cy="28.8" rx="19" ry="13.7" fill="#555" />)}
         {wrap(1, <ellipse cx="22.5" cy="35.5" rx="15.8" ry="7.5" fill={TEAM_PRIMARY[color()]} />)}
         {wrap(

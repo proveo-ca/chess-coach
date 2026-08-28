@@ -49,6 +49,8 @@ export type ResolveEvent = {
   kind?: ScAction["kind"];
   victim?: { type: StarChessPiece; color: StarChessColor };
   mineColor?: StarChessColor;
+  /** Wake tile of a mine that chased the arriving unit to `to`. */
+  chaseFrom?: Square;
   unit?: StarChessPiece;
 };
 
@@ -256,12 +258,18 @@ type ArrivalMine = {
   mines: ScMine[];
   victim?: { type: StarChessPiece; color: StarChessColor };
   mineColor?: StarChessColor;
+  chaseFrom?: Square;
 };
 
+/**
+ * `squares` is the arriving unit's walk this turn in order — the last entry is
+ * the tile it comes to rest on. A marine mid-Extra-Step passes its previous hop
+ * so a mine woken there chases it here instead of stopping it short.
+ */
 const applyArrivalMine = (
   placement: string,
   mines: ScMine[],
-  at: Square,
+  squares: readonly Square[],
   color: StarChessColor,
   arriving: ScPiece,
 ): ArrivalMine => {
@@ -269,17 +277,18 @@ const applyArrivalMine = (
     mines,
     color,
     piece: arriving.type,
-    squares: [at],
+    squares,
     mode: "arrive",
   });
   if (hit.kind !== "detonated") return { placement, mines };
   const board = placementToMap(placement);
-  board.delete(at);
+  board.delete(hit.at);
   return {
     placement: mapToPlacement(board),
     mines: withoutMine(mines, hit),
     victim: { type: arriving.type, color: arriving.color },
     mineColor: hit.mineColor,
+    ...(hit.chaseFrom ? { chaseFrom: hit.chaseFrom } : {}),
   };
 };
 
@@ -306,14 +315,14 @@ const applySpecial = (
       const hull = placementToMap(placement).get(action.from);
       if (!hull || hull.color !== action.color) return { placement, mines };
       const landed = relocate(placement, action.from, action.to);
-      return applyArrivalMine(landed, mines, action.to, action.color, hull);
+      return applyArrivalMine(landed, mines, [action.to], action.color, hull);
     }
     case "pawnDouble": {
       if (!action.to) return { placement, mines };
       const marine = placementToMap(placement).get(action.from);
       const stepped = relocate(placement, action.from, action.to);
       if (!marine) return { placement: stepped, mines };
-      return applyArrivalMine(stepped, mines, action.to, action.color, marine);
+      return applyArrivalMine(stepped, mines, [action.to], action.color, marine);
     }
     case "spawn": {
       if (!action.to || !action.unit) return { placement, mines };
@@ -324,7 +333,7 @@ const applySpecial = (
         occupant && occupant.color !== action.color
           ? { victim: { type: occupant.type, color: occupant.color } }
           : {};
-      const blast = applyArrivalMine(landed, mines, action.to, action.color, deployed);
+      const blast = applyArrivalMine(landed, mines, [action.to], action.color, deployed);
       if (blast.mineColor) {
         return {
           placement: blast.placement,
@@ -372,6 +381,44 @@ const classicalFor = (
     from: c.from,
     to: c.to,
     ...(c.promotion ? { promotion: c.promotion } : {}),
+  };
+};
+
+/** The queued Extra Step on this marine, if the queue holds one. */
+const extraStepFor = (
+  actions: readonly ScAction[],
+  color: PieceColor,
+  timing: "B" | "F",
+  at: Square,
+): Extract<ScAction, { timing: "B" | "F" }> | undefined =>
+  actions.find(
+    (a): a is Extract<ScAction, { timing: "B" | "F" }> =>
+      a.timing === timing &&
+      a.kind === "pawnDouble" &&
+      a.color === color &&
+      (timing === "B" ? a.to === at : a.from === at),
+  );
+
+/**
+ * Tag a classical plan with the Extra Step legs that share its walk, so the
+ * mine table sees one walk instead of two independent arrivals.
+ *
+ * Gas-then-move is read off the *rewrite*, never re-derived: a `B` gas step
+ * whose `to` is the rewritten plan's `from` is the leg that put the marine
+ * there (`rewriteClassicalAfterB` is the sole owner of that pairing).
+ */
+const withExtraStepLegs = (
+  plan: ClassicalPlan | null,
+  actions: readonly ScAction[],
+): ClassicalPlan | null => {
+  if (!plan) return plan;
+  const before = extraStepFor(actions, plan.color, "B", plan.from);
+  const after = extraStepFor(actions, plan.color, "F", plan.from);
+  const to = after ? pawnSingleTarget(plan.to, plan.color) : null;
+  return {
+    ...plan,
+    ...(before ? { extraStepFrom: plan.from } : {}),
+    ...(to ? { extraStepTo: to } : {}),
   };
 };
 
@@ -623,44 +670,99 @@ export const endScTurn = (
     });
   }
 
+  /**
+   * `specialBefore` events are collected, not logged, because a gas step whose
+   * marine keeps walking cannot know its own mine outcome until the classical
+   * rewrite has spoken. Flushing the list afterwards keeps `ev-<n>` in queue
+   * order while the held step gets to fill in its blast.
+   */
+  type BeforeEvent = { action: ScAction; extra: Partial<ResolveEvent> };
+  const beforeEvents: BeforeEvent[] = [];
+  /** Marines mid-Extra-Step: their mine waits for the classical leg to land. */
+  const heldExtraSteps: {
+    at: Square;
+    action: Extract<ScAction, { timing: "B" | "F" }>;
+    event: BeforeEvent;
+  }[] = [];
+
+  /** Last-rank gas step promotes only if the marine survived the arrival. */
+  const applyGasPromotion = (
+    a: Extract<ScAction, { timing: "B" | "F" }>,
+    at: Square,
+    survived: boolean,
+  ) => {
+    const lastRank = a.color === "w" ? 8 : 1;
+    if (!survived || Number(at[1]) !== lastRank || !a.promotion) return;
+    placement = placeUnit(placement, at, { type: a.promotion, color: a.color });
+    gasPromotions.push({ color: a.color, from: a.from, at, unit: a.promotion });
+  };
+
   for (const a of byTiming(actions, "B")) {
     if (a.timing !== "B") continue;
     if (a.kind === "rookSiege") {
       if (toggleRookSiege(placement, sieged, a.color, a.from)) {
         siegedThisTurn.push(a.from);
-        log.special("specialBefore", a);
+        beforeEvents.push({ action: a, extra: {} });
       }
       continue;
     }
-    const applied = applySpecial(placement, mines, a, ignoreAttacksOn);
-    if (a.kind === "pawnDouble" && a.to && applied.placement !== placement) {
-      bMoves.push({
-        piece: "p",
-        color: a.color,
-        from: a.from,
-        to: a.to,
-      });
-      const lastRank = a.color === "w" ? 8 : 1;
-      if (Number(a.to[1]) === lastRank && a.promotion && !applied.mineColor) {
-        applied.placement = placeUnit(applied.placement, a.to, {
-          type: a.promotion,
-          color: a.color,
-        });
-        gasPromotions.push({
-          color: a.color,
-          from: a.from,
-          at: a.to,
-          unit: a.promotion,
-        });
-      }
-    }
+    // A classical queued on this same marine may carry it past the gas step, so
+    // hold the arrival mine until `rewriteClassicalAfterB` says whether the walk
+    // really ends here. Every other B special resolves its mine immediately.
+    const held =
+      a.kind === "pawnDouble" &&
+      !!a.to &&
+      actions.some(
+        (c) => c.timing === "C" && c.color === a.color && c.from === a.from,
+      );
+    const applied = held
+      ? { placement: relocate(placement, a.from, a.to!), mines }
+      : applySpecial(placement, mines, a, ignoreAttacksOn);
+    const event: BeforeEvent = { action: a, extra: {} };
+    const stepped =
+      a.kind === "pawnDouble" && !!a.to && applied.placement !== placement;
     placement = applied.placement;
     mines = applied.mines;
-    log.special("specialBefore", a, {
+    if (stepped) {
+      bMoves.push({ piece: "p", color: a.color, from: a.from, to: a.to! });
+      if (held) {
+        heldExtraSteps.push({ at: a.to!, action: a, event });
+      } else {
+        applyGasPromotion(a, a.to!, !applied.mineColor);
+      }
+    }
+    event.extra = {
       ...(a.kind === "spawn" && a.unit ? { unit: a.unit } : {}),
       ...(applied.victim ? { victim: applied.victim } : {}),
       ...(applied.mineColor ? { mineColor: applied.mineColor } : {}),
-    });
+    };
+    beforeEvents.push(event);
+  }
+
+  // The rewrite is the authority on whether a held gas step hands its walk on;
+  // it only reads occupancy of the *continuation* tile, which no held blast can
+  // change, so asking it before the blast lands is exact rather than a guess.
+  const actionsAfterB = rewriteClassicalAfterB(actions, placement);
+  for (const step of heldExtraSteps) {
+    const { at, action } = step;
+    const continues = actionsAfterB.some(
+      (c) => c.timing === "C" && c.color === action.color && c.from === at,
+    );
+    if (continues) continue;
+    const marine = placementToMap(placement).get(at);
+    if (!marine) continue;
+    const blast = applyArrivalMine(placement, mines, [at], action.color, marine);
+    placement = blast.placement;
+    mines = blast.mines;
+    step.event.extra = {
+      ...step.event.extra,
+      ...(blast.victim ? { victim: blast.victim } : {}),
+      ...(blast.mineColor ? { mineColor: blast.mineColor } : {}),
+    };
+    applyGasPromotion(action, at, !blast.mineColor);
+  }
+  for (const { action, extra } of beforeEvents) {
+    log.special("specialBefore", action, extra);
   }
 
   const afterB = {
@@ -677,7 +779,6 @@ export const endScTurn = (
     return v.litSquares.has(square) || v.revealedPieces.has(square);
   };
 
-  const actionsAfterB = rewriteClassicalAfterB(actions, placement);
   {
     const boardAfterB = placementToMap(placement);
     for (const a of actionsAfterB) {
@@ -692,8 +793,8 @@ export const endScTurn = (
       }
     }
   }
-  const white = classicalFor(actionsAfterB, "w");
-  const black = classicalFor(actionsAfterB, "b");
+  const white = withExtraStepLegs(classicalFor(actionsAfterB, "w"), actions);
+  const black = withExtraStepLegs(classicalFor(actionsAfterB, "b"), actions);
   const classical = resolveTurn({
     placement,
     kingLives,
@@ -764,11 +865,24 @@ export const endScTurn = (
     if (a.kind === "pawnDouble") {
       if (actor.type !== "p") continue;
       const to = pawnSingleTarget(at, a.color);
-      if (!to || boardAfter.has(to)) continue;
+      if (!to || boardAfter.has(to)) {
+        // The Extra Step never lands, so `at` *is* the destination: a mine the
+        // classical leg held back for this hop has to fire here instead.
+        const held = applyArrivalMine(placement, mines, [at], a.color, actor);
+        placement = held.placement;
+        mines = held.mines;
+        if (held.mineColor) {
+          log.special("specialAfter", { ...rewritten, to: at }, {
+            ...(held.victim ? { victim: held.victim } : {}),
+            mineColor: held.mineColor,
+          });
+        }
+        continue;
+      }
       const stepped = applyArrivalMine(
         relocate(placement, at, to),
         mines,
-        to,
+        [at, to],
         a.color,
         actor,
       );
@@ -791,6 +905,7 @@ export const endScTurn = (
       log.special("specialAfter", { ...rewritten, to }, {
         ...(stepped.victim ? { victim: stepped.victim } : {}),
         ...(stepped.mineColor ? { mineColor: stepped.mineColor } : {}),
+        ...(stepped.chaseFrom ? { chaseFrom: stepped.chaseFrom } : {}),
       });
       continue;
     }

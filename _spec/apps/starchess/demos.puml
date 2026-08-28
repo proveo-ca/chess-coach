@@ -17,6 +17,8 @@ package "Canonical demos" {
   component "GasDeploy specials\nstory: starchess-special-moves--*\n+ features-turn-chrome--gas-deploy\n+ features-gasdeploy--*\n""LiveLessonHost"" + catalog\n(""lessonStory('specials', id)"")" as D5 <<app>>
   component "Fog-edge Bishop / Rook tank\nstory: starchess-fog-of-war-and-move-animations--bishop\n(+ King/Pawn/Knight/Queen/Rook tank|siege)\nmove into fog → capture/occupy blocker" as D4 <<app>>
   component "Spider Mines\nstory: starchess-spider-mines--*\npath collide · ally mine · attack mine\n+ Promotion × mine (core mine/minePathContact.test)\nFog vision: starchess-fog-of-war-and-move-animations--spider-mine" as D6 <<app>>
+  component "Attack Animations\nstory: starchess-attack-animations--*\none weapon per unit, cycling every legal vector from d4\n""AttackBoardDemo"" + ""attackVectorsFor"" (store-free ""attackCues"")" as D8 <<app>>
+  component "Death Animations\nstory: starchess-death-animations--*\none death per unit on d4, looping idle → dying → gone;\nSiege Tank shows tank c4 + siege e4 together;\n**Spider Mine** rides an SCFEN snapshot (mines are not\nin a placement) and darkens its glyph via ""spentMines""\n""DeathBoardDemo"" (store-free ""deathCues"")" as D9 <<app>>
   component "Collision races\nstory: starchess-collision--*\npath block · ally truncate · same-square bishops\nknight speed (gas pawn + bishop 1/2/3)\ncore: collisionRaces.test · e2e: starchess-collision" as D7 <<app>>
 }
 

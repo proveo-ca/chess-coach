@@ -100,16 +100,17 @@
   margin-left: -9px;
   margin-top: -4px;
   border-radius: 4px;
+  /* Canister livery — the stripes are the owner's paint. */
   background: linear-gradient(
     90deg,
     #ffffff 0%,
     #ffffff 18%,
-    #3b7dd8 18%,
-    #3b7dd8 30%,
+    var(--team-tint, #3b7dd8) 18%,
+    var(--team-tint, #3b7dd8) 30%,
     #ffffff 30%,
     #ffffff 70%,
-    #3b7dd8 70%,
-    #3b7dd8 82%,
+    var(--team-tint, #3b7dd8) 70%,
+    var(--team-tint, #3b7dd8) 82%,
     #ffffff 82%,
     #ffffff 100%
   );
@@ -117,7 +118,7 @@
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.95),
     inset 0 -1px 0 rgba(180, 188, 198, 0.45),
-    0 0 4px rgba(59, 125, 216, 0.35);
+    0 0 4px rgba(var(--team-rgb, 59, 125, 216), 0.35);
   transform-style: preserve-3d;
   animation: fragCylinderSpin var(--frag-flight-ms) linear 1 forwards;
 }
@@ -137,13 +138,13 @@
     #ffffff 0%,
     #d0d5dc 18%,
     #8b93a0 36%,
-    #3b7dd8 52%,
-    rgba(59, 125, 216, 0.4) 68%,
+    var(--team-tint, #3b7dd8) 52%,
+    rgba(var(--team-rgb, 59, 125, 216), 0.4) 68%,
     transparent 76%
   );
   box-shadow:
     0 0 0 1px rgba(180, 188, 198, 0.75),
-    0 0 5px rgba(59, 125, 216, 0.7),
+    0 0 5px rgba(var(--team-rgb, 59, 125, 216), 0.7),
     0 0 9px rgba(140, 148, 160, 0.5);
   opacity: 0;
   transform: scale(0.2);
@@ -164,7 +165,7 @@
   margin-left: -4px;
   margin-top: -4px;
   border-radius: 50%;
-  border: 1.5px solid rgba(59, 125, 216, 0.9);
+  border: 1.5px solid rgba(var(--team-rgb, 59, 125, 216), 0.9);
   box-shadow: 0 0 0 0.5px rgba(160, 168, 176, 0.55);
   opacity: 0;
   transform: scale(0.4);
@@ -180,11 +181,17 @@
   height: 7px;
   margin-top: -3.5px;
   border-radius: 1px;
-  background: linear-gradient(90deg, #ffffff 0%, #b8e0ff 35%, #4aa8ff 100%);
-  border: 1px solid #e8f6ff;
+  /* Beam: white muzzle end, player's swatch at the tip. */
+  background: linear-gradient(
+    90deg,
+    #ffffff 0%,
+    color-mix(in srgb, var(--team-tint, #3b7dd8) 35%, #fff) 35%,
+    color-mix(in srgb, var(--team-tint, #3b7dd8) 85%, #fff) 100%
+  );
+  border: 1px solid color-mix(in srgb, var(--team-tint, #3b7dd8) 12%, #fff);
   box-shadow:
     0 0 2px #ffffff,
-    0 0 6px rgba(94, 182, 255, 0.9);
+    0 0 6px rgba(var(--team-rgb, 59, 125, 216), 0.9);
   transform-origin: left center;
   z-index: 4;
   animation: laserTravel var(--attack-ms) linear 1 forwards;
@@ -195,6 +202,8 @@
   pointer-events: none;
   overflow: visible;
   z-index: 38;
+  --laser-ray: color-mix(in srgb, var(--team-tint, #3b7dd8) 62%, #fff);
+  --laser-ray-pale: color-mix(in srgb, var(--team-tint, #3b7dd8) 10%, #fff);
   animation: laserStarBurst var(--attack-ms) linear 1 forwards;
 }
 
@@ -202,18 +211,24 @@
   position: absolute;
   inset: 28%;
   border-radius: 50%;
-  background: radial-gradient(circle, #ffffff 0%, #c8ecff 40%, #4aa8ff 70%, transparent 78%);
+  background: radial-gradient(
+    circle,
+    #ffffff 0%,
+    color-mix(in srgb, var(--team-tint, #3b7dd8) 28%, #fff) 40%,
+    color-mix(in srgb, var(--team-tint, #3b7dd8) 85%, #fff) 70%,
+    transparent 78%
+  );
   box-shadow:
     0 0 8px rgba(255, 255, 255, 0.95),
-    0 0 16px rgba(74, 168, 255, 0.85);
+    0 0 16px rgba(var(--team-rgb, 59, 125, 216), 0.85);
 }
 
 .laserStarRays {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(90deg, transparent 46%, #ffffff 49%, #7ec8ff 50%, #ffffff 51%, transparent 54%),
-    linear-gradient(0deg, transparent 46%, #ffffff 49%, #7ec8ff 50%, #ffffff 51%, transparent 54%);
+    linear-gradient(90deg, transparent 46%, #ffffff 49%, var(--laser-ray) 50%, #ffffff 51%, transparent 54%),
+    linear-gradient(0deg, transparent 46%, #ffffff 49%, var(--laser-ray) 50%, #ffffff 51%, transparent 54%);
   /* Glow via box-shadow on parent impact — avoid live drop-shadow filter. */
   opacity: 0.98;
 }
@@ -223,8 +238,8 @@
   inset: 12%;
   transform: rotate(45deg);
   background:
-    linear-gradient(90deg, transparent 47%, #e8f7ff 49.5%, #69bdff 50%, #e8f7ff 50.5%, transparent 53%),
-    linear-gradient(0deg, transparent 47%, #e8f7ff 49.5%, #69bdff 50%, #e8f7ff 50.5%, transparent 53%);
+    linear-gradient(90deg, transparent 47%, var(--laser-ray-pale) 49.5%, var(--laser-ray) 50%, var(--laser-ray-pale) 50.5%, transparent 53%),
+    linear-gradient(0deg, transparent 47%, var(--laser-ray-pale) 49.5%, var(--laser-ray) 50%, var(--laser-ray-pale) 50.5%, transparent 53%);
   opacity: 0.9;
 }
 
@@ -459,7 +474,7 @@
   8% {
     opacity: 0.95;
     transform: scale(0.45);
-    border-color: rgba(59, 125, 216, 0.95);
+    border-color: rgba(var(--team-rgb, 59, 125, 216), 0.95);
   }
   28% {
     opacity: 0.75;
@@ -469,7 +484,7 @@
   86% {
     opacity: 0.55;
     transform: scale(0.9);
-    border-color: rgba(59, 125, 216, 0.55);
+    border-color: rgba(var(--team-rgb, 59, 125, 216), 0.55);
   }
   93% {
     opacity: 0.35;

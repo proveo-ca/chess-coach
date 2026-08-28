@@ -1,12 +1,21 @@
 // SPEC: _spec/apps/starchess/architecture/board-entities.puml
-import { For, Show, createMemo, type Component, type JSX } from "solid-js";
+import {
+  For,
+  Show,
+  createEffect,
+  createMemo,
+  createSignal,
+  onCleanup,
+  type Component,
+  type JSX,
+} from "solid-js";
 import type { Square } from "chess.js";
 
+import { attackFaceFor } from "~/presentation/animations/attackAnim";
 import {
-  attackFaceFor,
   KING_REST_AIM_DEG,
   ROOK_REST_AIM_DEG,
-} from "~/presentation/animations/attackAnim";
+} from "~/presentation/pieces/geometry";
 import {
   aimPoseFor,
   aimTransformCss,
@@ -19,15 +28,15 @@ import {
 import { squareBoxStyle, vecBetween } from "~/presentation/animations/boardGeom";
 import styles from "~/presentation/animations/components/MoveAnimation.module.css";
 import { moveDurationMs, moveTravelSquares } from "~/presentation/animations/moveTiming";
-import { InlineBishop, type BishopCrank } from "~/presentation/animations/pieces/components/InlineBishop";
-import { InlineKing } from "~/presentation/animations/pieces/components/InlineKing";
-import { InlineKnight } from "~/presentation/animations/pieces/components/InlineKnight";
-import { InlinePawn } from "~/presentation/animations/pieces/components/InlinePawn";
-import { InlineQueen } from "~/presentation/animations/pieces/components/InlineQueen";
+import { InlineBishop, type BishopCrank } from "~/presentation/pieces/InlineBishop";
+import { InlineKing } from "~/presentation/pieces/InlineKing";
+import { InlineKnight } from "~/presentation/pieces/InlineKnight";
+import { InlinePawn } from "~/presentation/pieces/InlinePawn";
+import { InlineQueen } from "~/presentation/pieces/InlineQueen";
 import type { MoveCue } from "~/presentation/animations/types";
 import { rookModeAt } from "~/presentation/animations/rookModeStore";
-import { RookGlyph } from "~/presentation/board/components/RookGlyph";
-import { MOVE_SQUARE_MS, STIM_MOVE_SQUARE_MS } from "~/presentation/constants";
+import { PieceGlyph } from "~/presentation/board/components/PieceGlyph";
+import { MOVE_SQUARE_MS, SETTLE_MS, STIM_MOVE_SQUARE_MS } from "~/presentation/constants";
 
 const NO_SPECIAL_USED: ReadonlySet<Square> = new Set();
 
@@ -83,7 +92,16 @@ const moverNode = (m: MoveCue, opts?: { armed?: boolean }): JSX.Element => {
     case "q":
       return <InlineQueen color={m.color} />;
     case "k":
-      return <InlineKing color={m.color} aimDeg={KING_REST_AIM_DEG} />;
+      // `seed` matches the damage overlay's, so the flames do not jump when
+      // the persistent slot takes the hull back at the end of the slide.
+      return (
+        <InlineKing
+          color={m.color}
+          aimDeg={KING_REST_AIM_DEG}
+          damage={m.damage}
+          seed={m.seed}
+        />
+      );
     default:
       // Pawn: helmet when walking up the board, glass visor when walking down
       // (same camera rule as attackFaceFor — red/black g8→g6 stays front).
@@ -186,6 +204,9 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
     data-starchess-move-layer
     style={{
       inset: "0",
+      // Inherited by every mover, so the hull normalize in `styles/unitPose.css`
+      // and the parent travel aim settle over one shared window.
+      "--settle-ms": `${SETTLE_MS}ms`,
     }}
   >
     <For each={ids()}>
@@ -196,6 +217,23 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
         const travelMs = () =>
           moveDurationMs(m.from, m.to, m.piece, { stim: !!m.stim });
         const gas = () => hullUsed(m);
+        /**
+         * Units whose art is normalized for aiming (hoverbike, battleship) must
+         * be back in their resting silhouette *before* this mover unmounts and
+         * the board glyph takes the square — a CSS transition cannot span that
+         * hand-off. Releasing the aim one settle-window short of touchdown lets
+         * the rotation land with the slide instead of snapping after it.
+         */
+        const [settling, setSettling] = createSignal(false);
+        createEffect(() => {
+          if (!started()) {
+            setSettling(false);
+            return;
+          }
+          const releaseAt = Math.max(0, travelMs() - SETTLE_MS);
+          const t = setTimeout(() => setSettling(true), releaseAt);
+          onCleanup(() => clearTimeout(t));
+        });
 
         if (m.piece === "n") {
           const legs = () => knightLegVecs(vec());
@@ -225,7 +263,7 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
                     class={`${styles.pieceFace} ${styles.moverFace}`}
                     classList={{ ["sc-special-used"]: gas() }}
                   >
-                    <InlineKnight color={m.color} aimPose={pose()} />
+                    <InlineKnight color={m.color} aimPose={settling() ? undefined : pose()} />
                   </div>
                 </div>
               }
@@ -245,7 +283,7 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
                   class={`${styles.pieceFace} ${styles.moverFace}`}
                   classList={{ ["sc-special-used"]: gas() }}
                 >
-                  <InlineKnight color={m.color} aimPose={pose()} />
+                  <InlineKnight color={m.color} aimPose={settling() ? undefined : pose()} />
                 </div>
               </div>
             </Show>
@@ -330,11 +368,15 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
               data-special-used={gas() ? "true" : undefined}
             >
               <div
-                class={`${styles.pieceFace} ${styles.moverFace}`}
+                class={`${styles.pieceFace} ${styles.settleFace}`}
                 classList={{ ["sc-special-used"]: gas() }}
-                style={{ transform: aimTransformCss(aimPoseFor(vec())) }}
+                style={
+                  settling()
+                    ? {}
+                    : { transform: aimTransformCss(aimPoseFor(vec())) }
+                }
               >
-                <InlineQueen color={m.color} />
+                <InlineQueen color={m.color} aiming={!settling()} />
               </div>
             </div>
           );
@@ -367,8 +409,9 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
                     : undefined
                 }
               >
-                <RookGlyph
+                <PieceGlyph
                   color={m.color}
+                  type="r"
                   pieceSet={set}
                   mode={mode}
                   aimDeg={set === "nerd" ? ROOK_REST_AIM_DEG : undefined}

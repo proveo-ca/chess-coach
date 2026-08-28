@@ -32,11 +32,9 @@ import {
   type MoveVisionCue,
 } from "~/presentation/board/fogProjection";
 import { rookModeAt, rookModeForSieged } from "~/presentation/board/rookMode";
-import { pieceUrl } from "~/presentation/board/pieceUrl";
-import { RookGlyph } from "~/presentation/board/components/RookGlyph";
+import { PieceGlyph } from "~/presentation/board/components/PieceGlyph";
 import { visionStrategyFor } from "~/presentation/board/vision/VisionStrategy";
-import { TEAM_PRIMARY } from "~/presentation/animations/teamColors";
-import { InlineBishop } from "~/presentation/animations/pieces/components/InlineBishop";
+import { TEAM_PRIMARY } from "~/presentation/pieces/teamColors";
 import { SpiderMine } from "~/presentation/specials/components/SpiderMine";
 import { VespeneIcon } from "~/components/primitives/icons";
 import { MOVE_SQUARE_MS } from "~/presentation/constants";
@@ -112,7 +110,6 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
   const viewer = () => props.viewer ?? "w";
   const variant = (): BoardSkin => props.variant ?? "eclipse";
   const pieceSet = (): PieceSet => props.pieceSet ?? "nerd";
-  const useInlineUnits = () => pieceSet() === "nerd";
   const strategy = () => visionStrategyFor(props.visionMode);
   const isObserver = () => strategy().isObserver;
   /** Player fog veil — off in observer mode or when fog=false. */
@@ -502,61 +499,22 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
                         )}
                       </Show>
                       <Show when={visiblePiece()}>
-                        {(p) => {
-                          if (p().type === "r") {
-                            return (
-                              <RookGlyph
-                                color={p().color}
-                                pieceSet={pieceSet()}
-                                mode={rookMode()}
-                                class={clsx(
-                                  styles.piece,
-                                  gasUsedAura() && styles.pieceSpecialUsed,
-                                )}
-                                alt={`${p().color} r`}
-                                data-special-used={
-                                  gasUsedAura() ? "true" : undefined
-                                }
-                              />
-                            );
-                          }
-                          if (
-                            useInlineUnits() &&
-                            p().type === "b" &&
-                            armedBishops().has(square)
-                          ) {
-                            return (
-                              <div
-                                class={clsx(
-                                  styles.piece,
-                                  gasUsedAura() && styles.pieceSpecialUsed,
-                                )}
-                                data-piece-inline="b"
-                                data-special-used={gasUsedAura() ? "true" : undefined}
-                                data-charon-armed="true"
-                              >
-                                <InlineBishop
-                                  color={p().color}
-                                  face="front"
-                                  armed
-                                  armAnim={armAnimBishops().has(square)}
-                                />
-                              </div>
-                            );
-                          }
-                          return (
-                            <img
-                              class={clsx(
-                                styles.piece,
-                                gasUsedAura() && styles.pieceSpecialUsed,
-                              )}
-                              src={pieceUrl(p().color, p().type, pieceSet())}
-                              alt={`${p().color} ${p().type}`}
-                              data-special-used={gasUsedAura() ? "true" : undefined}
-                              draggable={false}
-                            />
-                          );
-                        }}
+                        {(p) => (
+                          <PieceGlyph
+                            color={p().color}
+                            type={p().type}
+                            pieceSet={pieceSet()}
+                            mode={rookMode()}
+                            armed={armedBishops().has(square)}
+                            armAnim={armAnimBishops().has(square)}
+                            class={clsx(
+                              styles.piece,
+                              gasUsedAura() && styles.pieceSpecialUsed,
+                            )}
+                            alt={`${p().color} ${p().type}`}
+                            data-special-used={gasUsedAura() ? "true" : undefined}
+                          />
+                        )}
                       </Show>
                       <Show when={canister()}>
                         {(c) => (
@@ -587,29 +545,14 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
                             data-intent-gas={
                               g().via === "gas" ? "true" : undefined
                             }
-                            data-piece-inline={
-                              g().piece === "r" && pieceSet() === "nerd"
-                                ? "r"
-                                : undefined
-                            }
                             aria-hidden="true"
                           >
-                            <Show
-                              when={g().piece === "r"}
-                              fallback={
-                                <img
-                                  src={pieceUrl(g().color, g().piece, pieceSet())}
-                                  alt=""
-                                  draggable={false}
-                                />
-                              }
-                            >
-                              <RookGlyph
-                                color={g().color}
-                                pieceSet={pieceSet()}
-                                mode={g().rookMode ?? "tank"}
-                              />
-                            </Show>
+                            <PieceGlyph
+                              color={g().color}
+                              type={g().piece}
+                              pieceSet={pieceSet()}
+                              mode={g().rookMode ?? "tank"}
+                            />
                           </div>
                         )}
                       </Show>

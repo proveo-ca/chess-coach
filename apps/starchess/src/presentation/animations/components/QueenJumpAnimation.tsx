@@ -14,7 +14,7 @@ import {
   squareCenterPx,
 } from "~/presentation/animations/attackVectors";
 import { vecBetween } from "~/presentation/animations/boardGeom";
-import { InlineQueen } from "~/presentation/animations/pieces/components/InlineQueen";
+import { InlineQueen } from "~/presentation/pieces/InlineQueen";
 import styles from "~/presentation/animations/components/QueenJumpAnimation.module.css";
 import type { MoveCue } from "~/presentation/animations/types";
 import {
@@ -111,7 +111,7 @@ export const QueenJumpAnimation: Component<QueenJumpAnimationProps> = (props) =>
               data-jump-deg={g().deg}
             >
               <div class={styles.jumpHull}>
-                <InlineQueen color={cue.color} />
+                <InlineQueen color={cue.color} aiming />
               </div>
             </div>
             <BoardFx

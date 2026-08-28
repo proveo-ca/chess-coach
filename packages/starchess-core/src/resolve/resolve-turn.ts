@@ -41,6 +41,12 @@ export type ResolveAttack =
       from: Square;
       to: Square;
       victim: { piece: ScPiece["type"]; color: StarChessColor };
+      /**
+       * A hostile mine on the target tile, cleared by this same shot. The wreck
+       * needs a cue of its own — `Rxe5` onto a mined e5 kills two things, and
+       * without this the mine leaves the board with no death VFX.
+       */
+      mineColor?: StarChessColor;
       dies?: boolean;
       occupies?: boolean;
       collision?: boolean;
@@ -205,7 +211,6 @@ const attacksOwnDest = (
   from: Square,
   to: Square,
 ): boolean => {
-  if (type === "k") return false;
   if (type === "p") return from[0] !== to[0];
   return true;
 };
@@ -229,7 +234,10 @@ const approachMineContact = (
     color: a.color,
     piece: a.piece,
     squares: approachWalk(a),
-    mode: "walk",
+    // A capture fires at the tile it lands on — the blocking unit is what
+    // stopped the ray. A `kingShot` stops *short* and shoots from range, so the
+    // tile it settles on was never fired upon and stays part of the walk.
+    mode: a.kind === "capture" ? "walkThenAttack" : "walk",
   });
 
 const squareBeforeOnRay = (from: Square, blocker: Square): Square | null => {
@@ -256,13 +264,19 @@ export const applyPendingKingShots = (input: {
   };
   let mines: ScMine[] = [...(input.mines ?? [])];
   const attacks: ResolveAttack[] = [];
+  /**
+   * A capture lands on the target tile, so a mine sitting there goes with it.
+   * Returns the mine's colour so the caller can stamp its attack — attack mode
+   * only ever clears (never detonates), so there is nothing else to report.
+   */
   const clearOnCapture = (
     at: Square,
     color: StarChessColor,
     piece: ScPiece["type"],
-  ) => {
+  ): StarChessColor | undefined => {
     const hit = mineContact({ mines, color, piece, squares: [at], mode: "attack" });
     mines = withoutMine(mines, hit);
+    return hit.kind === "cleared" ? hit.mineColor : undefined;
   };
 
   const ordered = [...input.pending].sort((a, b) => {
@@ -280,6 +294,8 @@ export const applyPendingKingShots = (input: {
     const blocker = leaps ? null : firstBlockerOnRay(map, shot.from, shot.to);
     if (blocker) {
       const victim = map.get(blocker)!;
+      map.delete(blocker);
+      const mineColor = clearOnCapture(blocker, shot.color, actor.type);
       attacks.push({
         kind: "capture",
         piece: actor.type,
@@ -289,9 +305,8 @@ export const applyPendingKingShots = (input: {
         victim: { piece: victim.type, color: victim.color },
         occupies: false,
         collision: true,
+        ...(mineColor ? { mineColor } : {}),
       });
-      map.delete(blocker);
-      clearOnCapture(blocker, shot.color, actor.type);
       continue;
     }
 
@@ -336,13 +351,19 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
   const pendingKingShotsArmed: ScPendingKingShot[] = [];
   const pathRevealPending: ResolveAttack[] = [];
   const destinationsWritten = new Set<Square>();
+  /**
+   * A capture lands on the target tile, so a mine sitting there goes with it.
+   * Returns the mine's colour so the caller can stamp its attack — attack mode
+   * only ever clears (never detonates), so there is nothing else to report.
+   */
   const clearOnCapture = (
     at: Square,
     color: StarChessColor,
     piece: ScPiece["type"],
-  ) => {
+  ): StarChessColor | undefined => {
     const hit = mineContact({ mines, color, piece, squares: [at], mode: "attack" });
     mines = withoutMine(mines, hit);
+    return hit.kind === "cleared" ? hit.mineColor : undefined;
   };
 
   const scanFor = (plan: ClassicalPlan) =>
@@ -392,6 +413,7 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
         occupy.push({ ...plan, to: out.to });
         return;
       case "capture": {
+        const mineColor = clearOnCapture(out.at, plan.color, actor.type);
         const hit: ResolveAttack = {
           kind: "capture",
           piece: actor.type,
@@ -400,11 +422,11 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
           to: out.at,
           victim: { piece: out.victim.type, color: out.victim.color },
           occupies: true,
+          ...(mineColor ? { mineColor } : {}),
           ...(out.fogged ? { collision: true, moveCollision: true } : {}),
         };
         (out.fogged ? moveCollisions : attacks).push(hit);
         deadSquares.add(out.at);
-        clearOnCapture(out.at, plan.color, actor.type);
         occupy.push({ ...plan, to: out.at });
         return;
       }
@@ -748,6 +770,8 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
         });
         return;
       }
+      board.delete(dest);
+      const collisionMine = clearOnCapture(dest, plan.color, piece.type);
       moveCollisions.push({
         kind: "capture",
         piece: piece.type,
@@ -758,18 +782,27 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
         occupies: true,
         collision: true,
         moveCollision: true,
+        ...(collisionMine ? { mineColor: collisionMine } : {}),
       });
-      board.delete(dest);
-      clearOnCapture(dest, plan.color, piece.type);
     }
 
-    const trip = mineContact({
-      mines,
-      color: plan.color,
-      piece: piece.type,
-      squares: [...pathContactSquares(plan.from, dest, piece.type), dest],
-      mode: "walk",
-    });
+    // One walk per marine. A queued Extra Step means `dest` is not the landing
+    // tile, so the arrival check in phase 4 owns this contact list; a spent one
+    // means the marine is standing on a tile it only reached this turn, so that
+    // tile is still live. Either way the mine waits for the real destination.
+    const trip: MineContact = plan.extraStepTo
+      ? { kind: "inert" }
+      : mineContact({
+          mines,
+          color: plan.color,
+          piece: piece.type,
+          squares: [
+            ...(plan.extraStepFrom ? [plan.extraStepFrom] : []),
+            ...pathContactSquares(plan.from, dest, piece.type),
+            dest,
+          ],
+          mode: "walk",
+        });
 
     board.delete(plan.from);
     board.set(dest, piece);
@@ -828,9 +861,19 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
     mines: [...mines],
     kingLives: { ...lives },
   };
-  const applyApproachMine = (a: ResolveApproach) => {
+  /**
+   * Phase-3 approach contact. Returns the colour of a mine the shot **cleared**,
+   * for the caller to stamp on its attack; a mine the approach walked into is
+   * pushed as a trigger here instead and takes the mover with it.
+   */
+  const applyApproachMine = (a: ResolveApproach): StarChessColor | undefined => {
     const trip = approachMineContact(a, phase3.mines);
-    if (trip.kind !== "detonated") return;
+    if (trip.kind === "inert") return undefined;
+    if (trip.kind === "cleared") {
+      // Fired upon, so the mover lands alive and only the mine is spent.
+      phase3 = { ...phase3, mines: withoutMine(phase3.mines, trip) };
+      return trip.mineColor;
+    }
     const board = placementToMap(phase3.placement);
     board.delete(trip.at);
     phase3 = {
@@ -848,6 +891,7 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
       victim: { piece: a.piece, color: a.color },
       ...(trip.chaseFrom ? { chaseFrom: trip.chaseFrom } : {}),
     });
+    return undefined;
   };
   for (const a of pathRevealPending) {
     if (a.kind !== "capture" && a.kind !== "kingShot") continue;
@@ -862,8 +906,8 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
         mines: [...applied.mines],
         kingLives: { ...phase3.kingLives },
       };
-      pathRevealAttacks.push(a);
-      applyApproachMine(a);
+      const approachMine = applyApproachMine(a);
+      pathRevealAttacks.push(approachMine ? { ...a, mineColor: approachMine } : a);
       continue;
     }
     const applied = applyPathRevealKingShot(phase3, a);
@@ -876,8 +920,8 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
     lives.w = applied.kingLives.w;
     lives.b = applied.kingLives.b;
     const fired = { ...a, livesAfter: applied.kingLives[a.target] };
-    pathRevealAttacks.push(fired);
     applyApproachMine(fired);
+    pathRevealAttacks.push(fired);
   }
 
   const promoBoard = placementToMap(phase3.placement);

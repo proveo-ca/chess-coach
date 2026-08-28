@@ -122,4 +122,28 @@ test.describe("VFX · cue coverage", () => {
       page.locator("[data-king-damage='smallFire'], [data-king-damage='bigFire']").first(),
     ).toBeVisible({ timeout: 15_000 });
   });
+
+  /**
+   * V34 — a mine held back by a Marine Extra Step chases the marine onto its
+   * real destination. The stim move has to *land* before the boom, so the cues
+   * are `farmx`/`farmm`/`farmd` on the `afterMove` rung, not the B-phase `arm*`.
+   * Rule: `_spec/packages/starchess-core/mine-contact.puml` (one walk per marine).
+   */
+  test("V34 a held Extra Step mine chases the marine to its destination", async ({
+    page,
+  }) => {
+    // C e2→e3 crosses the mined e3; the Extra Step carries it on to e4.
+    await gotoScfen(
+      page,
+      "SCFEN|4k3/8/8/8/8/8/4P3/4K3|21|33|P|G:23:33|Q:w:C=e2e3,F=pawnDouble:e2:e3;b:|M:w:;b:e3",
+    );
+    const watch = await recordResolve(page);
+
+    expect(watch.ever).toContain("move");
+    expect(watch.ever).toContain("mineMissile");
+    expect(watch.ever).toContain("death");
+    // Nothing is left standing on either hop, and the mine is spent.
+    await expect(settledPiece(page, "e3", "w p")).toHaveCount(0, { timeout: 15_000 });
+    await expect(settledPiece(page, "e4", "w p")).toHaveCount(0, { timeout: 15_000 });
+  });
 });

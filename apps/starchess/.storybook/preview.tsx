@@ -54,6 +54,7 @@ const preview: Preview = {
             "Board",
             "Engine",
             "Fog of War and Move Animations",
+            "Attack Animations",
             "Special Moves",
             "Spider Mines",
             "*",

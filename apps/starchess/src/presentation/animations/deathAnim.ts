@@ -23,6 +23,16 @@ export const FEN_BY_PIECE: Record<DeathPiece, string> = {
   k: "7k/8/8/8/3K4/8/8/8 w - - 0 1",
 };
 
+/**
+ * A hostile mine on {@link ORIGIN}. Mines live in the SCFEN `M:` field, not the
+ * placement, so the mine demo needs a snapshot the way the unit demos need a
+ * FEN. Black's mine on White's board, so the wreck is the enemy colour.
+ */
+export const SCFEN_MINE = "SCFEN|7k/8/8/8/8/8/8/K7|0|33|P|G:11:11|M:w:;b:d4|Q:w:;b:";
+
+/** Same board with the mine spent — the demo's `gone` phase. */
+export const SCFEN_MINE_GONE = "SCFEN|7k/8/8/8/8/8/8/K7|0|33|P|G:11:11|M:w:;b:|Q:w:;b:";
+
 /** Stable hash → scatter seed so each death cue id flies differently. */
 export const scatterSeedFromId = (id: string): number => {
   let h = 2166136261;

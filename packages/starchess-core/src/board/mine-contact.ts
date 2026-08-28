@@ -4,7 +4,13 @@ import type { Square } from "chess.js";
 import { mineAt } from "./mines";
 import type { ScMine, StarChessColor, StarChessPiece } from "../model/types";
 
-export type MineContactMode = "attack" | "walk" | "arrive";
+/**
+ * `walkThenAttack` is a walk whose **last** tile is fired upon: a fog approach
+ * that captures. The blocking unit is what stopped the ray, so the shot lands
+ * on that tile and takes the mine under it — anything the approach merely
+ * crossed on the way still detonates.
+ */
+export type MineContactMode = "attack" | "walk" | "arrive" | "walkThenAttack";
 
 export type MineContact =
   | { kind: "inert" }
@@ -31,12 +37,18 @@ export const mineContact = ({
   squares,
   mode,
 }: MineContactQuery): MineContact => {
-  if (piece === "k" || squares.length === 0) return { kind: "inert" };
+  if (squares.length === 0) return { kind: "inert" };
   const landing = squares[squares.length - 1]!;
   for (const at of squares) {
     const m = mineAt(mines, at);
     if (!m || m.color === color) continue;
-    if (mode === "attack") return { kind: "cleared", at, mineColor: m.color };
+    // A king never trades with a mine: it shoots the tile and moves in, so its
+    // contact is an attack in every mode ("walking over" reads as attack/move).
+    const firedUpon =
+      mode === "attack" || (mode === "walkThenAttack" && at === landing);
+    if (firedUpon || piece === "k") {
+      return { kind: "cleared", at, mineColor: m.color };
+    }
     return {
       kind: "detonated",
       at: landing,

@@ -38,6 +38,9 @@ importers:
 
   apps/starchess:
     dependencies:
+      '@chess-coach/client-platform':
+        specifier: workspace:*
+        version: link:../../packages/client-platform
       '@chess-coach/starchess-core':
         specifier: workspace:*
         version: link:../../packages/starchess-core
@@ -117,6 +120,9 @@ importers:
 
   apps/ui:
     dependencies:
+      '@chess-coach/client-platform':
+        specifier: workspace:*
+        version: link:../../packages/client-platform
       '@mlc-ai/web-llm':
         specifier: ^0.2.82
         version: 0.2.84
@@ -208,6 +214,8 @@ importers:
       wrangler:
         specifier: ^4.85.0
         version: 4.118.0
+
+  packages/client-platform: {}
 
   packages/engine-core: {}
 

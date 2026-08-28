@@ -85,24 +85,42 @@ const arrivalMineCues = (
   mineColor: StarChessColor,
   unit: { type: StarChessPiece; color: StarChessColor },
   nextId: () => number,
-  idPrefix = "arm",
-): TimelineCue[] => [
-  {
-    kind: "death",
-    id: `${idPrefix}m${nextId()}`,
-    piece: "n",
-    color: mineColor,
-    at,
-    mine: true,
-  },
-  {
-    kind: "death",
-    id: `${idPrefix}d${nextId()}`,
-    piece: unit.type,
-    color: unit.color,
-    at,
-  },
-];
+  opts?: { prefix?: string; chaseFrom?: Square },
+): TimelineCue[] => {
+  const p = opts?.prefix ?? "arm";
+  const chaseFrom = opts?.chaseFrom;
+  return [
+    // A held mine chases the marine onto its Extra Step tile, so the missile
+    // flies from the wake square the same way a mid-slide chase does.
+    ...(chaseFrom
+      ? [
+          {
+            kind: "mineMissile" as const,
+            id: `${p}x${nextId()}`,
+            color: mineColor,
+            from: chaseFrom,
+            to: at,
+          },
+        ]
+      : []),
+    {
+      kind: "death",
+      id: `${p}m${nextId()}`,
+      piece: "n",
+      color: mineColor,
+      at,
+      mine: true,
+      ...(chaseFrom ? { spentAt: chaseFrom } : {}),
+    },
+    {
+      kind: "death",
+      id: `${p}d${nextId()}`,
+      piece: unit.type,
+      color: unit.color,
+      at,
+    },
+  ];
+};
 
 const relocatePlacement = (placement: string, from: Square, to: Square): string => {
   const map = placementToMap(placement);
@@ -327,6 +345,18 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
           : {}),
       });
     }
+    // A capture onto a mined tile clears the mine with the same shot — both
+    // wrecks play, side by side in the one death window.
+    if (a.kind === "capture" && a.mineColor) {
+      phase1Deaths.push({
+        kind: "death",
+        id: `m${n++}`,
+        piece: "n",
+        color: a.mineColor,
+        at: a.to,
+        mine: true,
+      });
+    }
     if (a.kind === "mineBlast") {
       phase1Deaths.push({
         kind: "death",
@@ -363,6 +393,16 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
           ? { rookMode: rookModeAt(a.to, sieged) }
           : {}),
       });
+      if (a.mineColor) {
+        cues.push({
+          kind: "death",
+          id: `mcm${n++}`,
+          piece: "n",
+          color: a.mineColor,
+          at: a.to,
+          mine: true,
+        });
+      }
     } else if (a.kind === "mineBlast") {
       cues.push({
         kind: "death",
@@ -465,6 +505,18 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
             : {}),
         });
       }
+      // The shot that took the blocker took the mine under it — same tile, its
+      // own wreck, before the occupy slide brings the survivor in.
+      if (a.mineColor) {
+        cues.push({
+          kind: "death",
+          id: `prdm${n++}`,
+          piece: "n",
+          color: a.mineColor,
+          at: a.to,
+          mine: true,
+        });
+      }
       if (a.occupies) {
         cues.push(moveCue({ piece: a.piece, color: a.color, from: a.from, to: a.to }, `pro${n++}`));
       }
@@ -508,8 +560,12 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
   for (const ev of result.events) {
     if (ev.phase !== "specialAfter" || ev.kind !== "pawnDouble") continue;
     if (!ev.to || !ev.mineColor || !ev.victim) continue;
+    // `farm*`, not `arm*`: these play after the stim move on the afterMove rung.
     cues.push(
-      ...arrivalMineCues(ev.to, ev.mineColor, ev.victim, () => n++, "farm"),
+      ...arrivalMineCues(ev.to, ev.mineColor, ev.victim, () => n++, {
+        prefix: "farm",
+        ...(ev.chaseFrom ? { chaseFrom: ev.chaseFrom } : {}),
+      }),
     );
   }
   // F-rank spawn deploys: a drop ordered after combat projects here — after
@@ -548,7 +604,7 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
           ev.mineColor,
           { type: ev.unit, color: ev.color },
           () => n++,
-          "farm",
+          { prefix: "farm" },
         ),
       );
     }
@@ -637,6 +693,23 @@ const isMineTriggerDeath = (cue: TimelineCue): boolean =>
 
 const isMineMissile = (cue: TimelineCue): boolean => cue.kind === "mineMissile";
 
+/**
+ * Squares whose mine glyph must go dark while its wreck plays. The death layer's
+ * `hidden` covers piece glyphs only — `StarChessBoard.showMine()` reads
+ * `spentMines`, so a lane that skips this draws an intact mine underneath its
+ * own explosion. `spentAt` is the wake square a chasing mine launched from.
+ */
+const spentMineSquares = (
+  deaths: readonly Extract<TimelineCue, { kind: "death" }>[],
+): Square[] =>
+  [
+    ...new Set(
+      deaths
+        .filter((d) => d.mine)
+        .flatMap((d) => (d.spentAt ? [d.at, d.spentAt] : [d.at])),
+    ),
+  ] as Square[];
+
 const isSimulMoveWave = (cue: TimelineCue): boolean =>
   cue.kind === "move" && !cue.queenJump && inLane(cue, "move");
 
@@ -674,6 +747,19 @@ export const playTimeline = (
   let cancelled = false;
   const cancels: Array<() => void> = [];
   let displayPlacement = result.afterPending.placement;
+  const afterBDisplay = ((): string => {
+    const promos = result.resolved.promotions;
+    if (promos.length === 0) return result.afterB.placement;
+    const map = placementToMap(result.afterB.placement);
+    let rolled = false;
+    for (const promo of promos) {
+      const landed = map.get(promo.at);
+      if (!landed || landed.color !== promo.color || landed.type !== promo.unit) continue;
+      map.set(promo.at, { type: "p", color: promo.color });
+      rolled = true;
+    }
+    return rolled ? mapToPlacement(map) : result.afterB.placement;
+  })();
   let displayLives = livesBeforeAnimatedShots(result);
   let afterBApplied = false;
   const usedSquares = new Set<Square>();
@@ -688,9 +774,9 @@ export const playTimeline = (
 
   const applyAfterB = (extra?: { hidden?: readonly Square[]; playingIds?: readonly string[] }) => {
     afterBApplied = true;
-    displayPlacement = result.afterB.placement;
+    displayPlacement = afterBDisplay;
     cb.onCommit({
-      placement: result.afterB.placement,
+      placement: afterBDisplay,
       mines: result.afterB.mines,
       siegedRooks: result.afterB.siegedRooks,
       kingLives: { ...displayLives },
@@ -712,7 +798,7 @@ export const playTimeline = (
     playingIds: readonly string[],
   ): void => {
     const hidden = deploys.map((c) => c.at);
-    if (!afterBApplied || displayPlacement === result.afterB.placement) {
+    if (!afterBApplied || displayPlacement === afterBDisplay) {
       applyAfterB({ hidden, playingIds });
       return;
     }
@@ -937,7 +1023,7 @@ export const playTimeline = (
         if (deaths.some((d) => d.at === a.from)) dying[a.id] = true;
       }
 
-      const spentMines = deaths.filter((d) => d.mine).map((d) => d.at);
+      const spentMines = spentMineSquares(deaths);
       const deathStart = scheduler.delay(batchImpactMs, () => {
         if (cancelled) return;
         cb.onCommit({
@@ -1044,11 +1130,13 @@ export const playTimeline = (
     if (!afterBApplied) applyAfterB();
     const { batch, next } = takeWhile(cues, index, isMoveCollisionDeath);
     const deaths = batch as Extract<TimelineCue, { kind: "death" }>[];
+    const spent = spentMineSquares(deaths);
     return runStep({
       begin: () =>
         cb.onCommit({
           hidden: deaths.map((c) => c.at),
           playingIds: deaths.map((c) => c.id),
+          ...(spent.length ? { spentMines: spent } : {}),
           moveProgress: {},
           moveLeg: {},
         }),
@@ -1072,13 +1160,7 @@ export const playTimeline = (
     if (!afterBApplied) applyAfterB();
     const { batch, next } = takeWhile(cues, index, isMineTriggerDeath);
     const deaths = batch as Extract<TimelineCue, { kind: "death" }>[];
-    const spentExtra = [
-      ...new Set(
-        deaths
-          .filter((d) => d.mine)
-          .flatMap((d) => (d.spentAt ? [d.at, d.spentAt] : [d.at])),
-      ),
-    ] as Square[];
+    const spentExtra = spentMineSquares(deaths);
     return runStep({
       begin: () =>
         cb.onCommit({
@@ -1349,6 +1431,9 @@ export const playTimeline = (
     if (cue.kind === "attack") hidden.push(cue.from);
     if (cue.kind === "deploy") hidden.push(cue.at);
     if (cue.kind === "death") hidden.push(cue.at);
+    // bSpecial / arrivalBlast rungs land here — `armm` / `qjm` / `farmm` are
+    // mine deaths with no batching handler of their own.
+    const spent = cue.kind === "death" ? spentMineSquares([cue]) : [];
 
     if (cue.kind === "move") {
       const leg0 = knightLeg0([cue]);
@@ -1386,6 +1471,7 @@ export const playTimeline = (
       cb.onCommit({
         hidden,
         playingIds: [cue.id],
+        ...(spent.length ? { spentMines: spent } : {}),
         moveProgress: {},
         moveLeg: {},
       });

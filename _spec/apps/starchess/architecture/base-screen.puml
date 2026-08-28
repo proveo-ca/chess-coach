@@ -85,7 +85,8 @@ note bottom
   ``pure-primitive`` lint rule keeps out of ""primitives/"". Opt in with
   ``keyboard`` on exactly **one** instance per screen; hosts that draw the nav
   twice (banner + header) would otherwise step twice per press.
-  Naming: piece set id remains ""nerd"" (""public/pieces/nerd/"").
+  Naming: piece set id remains ""nerd"" — now an inline unit set
+  (""presentation/pieces/""), not an asset directory.
   Product chrome uses ""starchess-*"" testids — not ""nerd-*"".
 end note
 

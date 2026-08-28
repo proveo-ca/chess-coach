@@ -1,7 +1,8 @@
 /**
  * Command Center deploy picker — ResourceBar + marine-first grid.
  * Affordability reads MatchStore minerals / deploy cap / remaining vespene.
- * Siege Tank uses {@link InlineRook} tank mode (not static siege `*R.svg`).
+ * Every choice is the inline unit via {@link PieceGlyph}; the Siege Tank shows
+ * tank mode rather than its siege rest pose.
  */
 import type { Component } from "solid-js";
 import { For, Show } from "solid-js";
@@ -16,8 +17,7 @@ import {
   storedMaterial,
 } from "~/app/matchEconomy";
 import { SPECIAL_ENERGY_COST, UNIT_COST } from "~/presentation/constants";
-import { InlineRook } from "~/presentation/pieces/InlineRook";
-import { pieceUrl } from "~/presentation/board/pieceUrl";
+import { PieceGlyph } from "~/presentation/board/components/PieceGlyph";
 import { ResourceBar } from "~/presentation/hud/components/ResourceBar";
 import styles from "~/presentation/hud/components/DeployModal.module.css";
 
@@ -73,20 +73,13 @@ export const DeployModal: Component<DeployModalProps> = (props) => {
                       data-spawn-piece={piece}
                       data-cost={UNIT_COST[piece]}
                     >
-                      <Show
-                        when={piece === "r"}
-                        fallback={
-                          <img
-                            src={pieceUrl(pending().color, piece)}
-                            alt=""
-                            class={styles.pieceImg}
-                          />
-                        }
-                      >
-                        <span class={styles.pieceImg} data-piece-inline="r" aria-hidden="true">
-                          <InlineRook color={pending().color} mode="tank" />
-                        </span>
-                      </Show>
+                      <PieceGlyph
+                        color={pending().color}
+                        type={piece}
+                        pieceSet="nerd"
+                        mode="tank"
+                        class={styles.pieceImg}
+                      />
                       <span class={styles.cost}>{UNIT_COST[piece]}</span>
                     </button>
                   );

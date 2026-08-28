@@ -38,10 +38,35 @@ note right of MC
   | ""attack"" | a unit that fires at the tile (incl. every capture) | mine dies, mover lives → ""cleared"" |
   | ""walk"" | classical move / fog approach (ray + landing tile) | both die → ""detonated"" |
   | ""arrive"" | gas step · deploy · Tactical Jump | both die → ""detonated"" |
+  | ""walkThenAttack"" | phase-3 fog approach that **captures** | crossed tiles walk, the landing is fired upon |
 
-  **Kings are inert in every mode** — they neither trigger nor clear, so the
-  immunity is stated once instead of at each call site. Allied mines never
-  match. An empty ""squares"" list is ""inert"".
+  **A king never trades with a mine.** Its contact is an ""attack"" in *every*
+  mode, so the rule is stated once here instead of at each call site:
+  * capturing a unit on a mined tile takes **both** the unit and the mine;
+  * "walking over" a mine is an **attack/move** — the Command Center shoots the
+    tile (""mineBlast"" + ""occupy"", via ""minedEmptyDestination"") and lands.
+  **A blocker draws the shot; a mine never blocks.** That is why the landing tile
+  of a capturing fog approach is ""attack"", not ""walk"": the unit standing there is
+  what stopped the ray, so the shot lands on that tile and takes the mine under
+  it, and the approaching unit occupies alive. Fog changes who *knew*, never who
+  fired at what. Only tiles the approach **crossed** still detonate (that is the
+  chase, with ""chaseFrom""). A ""kingShot"" approach stops *short* and fires from
+  range, so the tile it settles on was never fired upon and stays a walk.
+
+  **A capture reports the mine it took with it.** ""clearOnCapture"" returns the
+  cleared colour and the caller stamps ""mineColor"" on its ""capture"" attack, so
+  the timeline can bury two things on one tile: ""Rxe5"" onto a mined e5 projects
+  the victim's death **and** a ""mine: true"" death beside it (""m"" in phase 1,
+  ""prdm"" on an approach chain). Dropping that field is how the mine used to
+  leave the board with no wreck — it applies to every capturer, not just the
+  king (whose row above is the same rule).
+
+  A king therefore never appears in ""detonated"". No mine survives under one
+  either, and that holds **structurally**: a king lights its own 1-radius
+  neighbourhood, so ""visible0"" is always true for its destination and it always
+  reaches rule 8 (""minedEmptyDestination"") instead of the quiet path — and it
+  leaps, so it is never the mover of a fog approach.
+  Allied mines never match. An empty ""squares"" list is ""inert"".
 
   ""detonated.at"" is always the **landing** tile: a mine woken mid-path chases
   the mover and blows there, reporting the wake tile as ""chaseFrom"" (which is
@@ -62,6 +87,33 @@ note as N_BLOCK
   the product board carries the same case.
 end note
 
+note as N_EXTRA_STEP
+  **One walk per marine.** A Marine Extra Step makes the turn two hops, and the
+  mine table is asked **once**, with the tile the marine comes to rest on as the
+  landing — so a mine woken on the first hop *chases* onto the second exactly
+  like a mid-slide wake. **Queue order cannot change the outcome:**
+
+  | queue | first hop | second hop | who asks the table |
+  | move-then-gas (""F"") | classical (phase 3) | Extra Step (phase 4) | phase 4 arrival, ""squares: [at, to]"" |
+  | gas-then-move (""B"") | Extra Step (phase 1) | rewritten classical (phase 3) | phase 3 walk, ""squares: [extraStepFrom, …, dest]"" |
+
+  Carried on ""ClassicalPlan"": ""extraStepTo"" makes phase 3 stand down (this is
+  not the landing); ""extraStepFrom"" adds the tile the marine only reached this
+  turn back onto the walk.
+
+  ""endScTurn"" therefore **holds** a ""B"" gas step's arrival mine and collects
+  its ""specialBefore"" event instead of logging it, because only
+  ""rewriteClassicalAfterB"" can say whether the walk is handed on. The rewrite
+  reads occupancy of the *continuation* tile, which a held blast can never
+  change, so asking it first is exact rather than a guess; the event list is
+  flushed straight after, keeping ""ev-<n>"" in queue order.
+
+  **The walk still ends where it really ends.** A gas step with no classical to
+  hand off to, or an Extra Step the board refuses (occupied / off-board), fires
+  the held mine on the marine's actual resting tile.
+end note
+
+MC .. N_EXTRA_STEP
 MC .. N_BLOCK
 
 note bottom
@@ -74,8 +126,10 @@ note bottom
   **Two deliberate corrections came with the table:**
   * a move that crosses **and** lands on mines now trips the **first** one it
     touches (ordered walk) — previously the landing tile was checked first;
-  * a **king capturing** onto a mined tile no longer clears the mine, matching
-    the immunity rule stated everywhere else.
+  * king contact became an **attack in every mode** (see the table): capturing
+    onto a mined tile takes the mine with the unit, and stepping onto one is
+    ""mineBlast"" + occupy. The blanket ""piece === 'k'"" ⇒ ""inert"" short-circuit
+    is gone; king *survival* is now expressed as "kings only ever ""cleared""".
 
   **The other two consolidations shipped with it:**
   * ""board/ray-scan.ts"" — the two duplicated ray walks in ""resolveTurn"" are

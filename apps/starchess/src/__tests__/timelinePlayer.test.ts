@@ -24,6 +24,7 @@ describe("cueLanes routing", () => {
     ["ch0", "bSpecial"],
     ["chd0", "bSpecial"],
     ["qj0", "bSpecial"],
+    ["armx0", "bSpecial"],
     ["armm0", "bSpecial"],
     ["armd0", "bSpecial"],
     ["spawn-r-e2-0", "deploy"],
@@ -31,6 +32,7 @@ describe("cueLanes routing", () => {
     ["spawn-f0", "deploy"],
     ["crush0", "crush"],
     ["fcrush0", "crush"],
+    ["farmx0", "mineMissile"],
     ["farmm0", "arrivalBlast"],
     ["farmd0", "arrivalBlast"],
     ["a0", "phase1Attack"],
@@ -42,6 +44,7 @@ describe("cueLanes routing", () => {
     ["mm0", "mineMissile"],
     ["mt0", "mine"],
     ["prd0", "approach"],
+    ["prdm0", "approach"],
     ["pro0", "approach"],
     ["f0", "move"],
     ["pw0", "promoWalk"],
@@ -192,6 +195,72 @@ describe("timelinePlayer", () => {
     // After walk-off: e8 vacated before final queen.
     const vacated = placements.some((p) => !placementToMap(p).has("e8"));
     expect(vacated).toBe(true);
+    expect(placementToMap(placements.at(-1)!).get("e8")).toMatchObject({
+      type: "q",
+      color: "w",
+    });
+  });
+
+  it("keeps the marine on the square until its promo deploy plays (gas promote)", () => {
+    // A gas step onto the last rank promotes inside `submit-turn`, which writes
+    // the promoted unit straight into `afterB`. The board must not reveal it
+    // there: the promo walk-off + deploy cues are what introduce it, so showing
+    // it on the afterB rung deploys the unit, yanks it away for the walk-off,
+    // then deploys it a second time.
+    let snap = parseScFen(
+      "SCFEN|k7/4P3/8/8/8/8/8/4K3|11|33|P|G:22:22|Q:w:;b:",
+    );
+    snap = addScAction({
+      snapshot: snap,
+      action: {
+        timing: "B",
+        kind: "pawnDouble",
+        color: "w",
+        from: "e7",
+        to: "e8",
+        promotion: "q",
+      },
+    }).snapshot;
+    const result = endScTurn(snap);
+
+    // Core is right to promote — the unit is a queen for everything after B.
+    expect(result.resolved.promotions).toEqual([
+      expect.objectContaining({ at: "e8", unit: "q", color: "w" }),
+    ]);
+    expect(placementToMap(result.afterB.placement).get("e8")).toMatchObject({
+      type: "q",
+    });
+
+    type Job = { ms: number; fn: () => void };
+    const jobs: Job[] = [];
+    const scheduler = {
+      delay: (ms: number, fn: () => void) => {
+        jobs.push({ ms, fn });
+        return () => undefined;
+      },
+    };
+    const placements: string[] = [];
+    playTimeline(result, scheduler, {
+      onStart: () => undefined,
+      onCommit: (patch) => {
+        if (patch.placement) placements.push(patch.placement);
+      },
+      onDone: () => undefined,
+    });
+
+    while (jobs.length) jobs.shift()!.fn();
+
+    const onE8 = placements.map((pl) => placementToMap(pl).get("e8")?.type);
+    // The marine occupies e8 once the gas step lands...
+    const marineAt = onE8.indexOf("p");
+    expect(marineAt).toBeGreaterThanOrEqual(0);
+    // ...the walk-off vacates it...
+    const vacatedAt = onE8.indexOf(undefined, marineAt);
+    expect(vacatedAt).toBeGreaterThan(marineAt);
+    // ...and only then does the queen arrive, exactly once and last.
+    const queenAt = onE8.indexOf("q");
+    expect(queenAt).toBeGreaterThan(vacatedAt);
+    expect(onE8.slice(0, vacatedAt)).not.toContain("q");
     expect(placementToMap(placements.at(-1)!).get("e8")).toMatchObject({
       type: "q",
       color: "w",
@@ -1634,5 +1703,209 @@ describe("timelinePlayer", () => {
     expect(spentLog.some((s) => Array.isArray(s) && s.includes("a4"))).toBe(true);
     expect(trailLog.some((t) => Array.isArray(t) && t.length > 0)).toBe(true);
     while (jobs.length) jobs.shift()!.fn();
+  });
+  /**
+   * A mine held back by the Extra Step blows on the marine's real destination,
+   * so its cues must sit *after* the stim move and on the `afterMove` rung —
+   * `farm*`, never the `arm*` (preAfterB) stamps the B phase uses.
+   * // SPEC: _spec/packages/starchess-core/mine-contact.puml
+   */
+  it("projects a held Extra Step mine after the stim move on the afterMove rung", () => {
+    let snap = parseScFen(
+      "SCFEN|4k3/8/8/8/8/8/4P3/4K3|21|33|P|G:33:33|Q:w:;b:|M:w:;b:e3",
+    );
+    snap = addScAction({
+      snapshot: snap,
+      action: { timing: "C", kind: "classical", color: "w", from: "e2", to: "e3" },
+    }).snapshot;
+    snap = addScAction({
+      snapshot: snap,
+      action: { timing: "F", kind: "pawnDouble", color: "w", from: "e2", to: "e3" },
+    }).snapshot;
+    const cues = projectResolveTimeline(endScTurn(snap, { skipTurnStartChecks: true }));
+
+    const stim = cues.findIndex((c) => c.kind === "move" && c.from === "e3" && c.to === "e4");
+    const missile = cues.findIndex((c) => c.kind === "mineMissile");
+    const mineDeath = cues.findIndex((c) => c.kind === "death" && "mine" in c && c.mine);
+    expect(stim).toBeGreaterThanOrEqual(0);
+    expect(missile).toBeGreaterThan(stim);
+    expect(mineDeath).toBeGreaterThan(missile);
+
+    const chase = cues[missile]!;
+    expect(chase).toMatchObject({ from: "e3", to: "e4", lane: "mineMissile", board: "afterMove" });
+    expect(cues[mineDeath]).toMatchObject({ at: "e4", spentAt: "e3", board: "afterMove" });
+    // The marine dies on the tile it actually walked to.
+    expect(
+      cues.some((c) => c.kind === "death" && c.piece === "p" && c.at === "e4"),
+    ).toBe(true);
+  });
+});
+
+/**
+ * A mine that dies plays a wreck on its square (`DeathMine`), and the board's
+ * `showMine()` reads `spentMines` — not the death layer's `hidden`, which only
+ * covers piece glyphs. Miss the commit on any lane that carries a mine death and
+ * an intact mine sits under its own explosion.
+ * // SPEC: _spec/apps/starchess/timeline/cue-playback.puml
+ */
+describe("timelinePlayer · mine wreck hides its glyph", () => {
+  const SCENARIOS = [
+    {
+      // The `AttackMine` story case: Nd1→c3 clears c3 (phase1Death lane).
+      name: "shot out by an attack",
+      at: "c3",
+      scfen: "SCFEN|7k/8/8/8/8/8/8/3NK3|0|33|P|G:11:11|M:b:c3|Q:w:;b:",
+      action: { timing: "C", kind: "classical", color: "w", from: "d1", to: "c3" },
+    },
+    {
+      // Gas step onto a hostile mine — `armm` on the bSpecial rung, which has
+      // no batching handler and falls through to the sequential one.
+      name: "stepped on during a gas step",
+      at: "e3",
+      scfen: "SCFEN|4k3/8/8/8/8/8/4P3/4K3|21|33|P|G:33:33|Q:w:;b:|M:w:;b:e3",
+      action: { timing: "B", kind: "pawnDouble", color: "w", from: "e2", to: "e3" },
+    },
+  ] as const;
+
+  const resolveOf = (s: (typeof SCENARIOS)[number]) =>
+    endScTurn(
+      addScAction({ snapshot: parseScFen(s.scfen), action: s.action }).snapshot,
+      { skipTurnStartChecks: true },
+    );
+
+  for (const scenario of SCENARIOS) {
+    it(`projects a mine death when ${scenario.name}`, () => {
+      const boom = projectResolveTimeline(resolveOf(scenario)).find(
+        (c) => c.kind === "death" && "mine" in c && c.mine,
+      );
+      expect(boom).toMatchObject({ at: scenario.at, piece: "n" });
+    });
+
+    it(`darkens the glyph for the wreck when ${scenario.name}`, () => {
+      const jobs: Array<{ ms: number; fn: () => void }> = [];
+      const spentAt: Array<readonly string[] | undefined> = [];
+      playTimeline(
+        resolveOf(scenario),
+        {
+          delay: (ms: number, fn: () => void) => {
+            jobs.push({ ms, fn });
+            return () => undefined;
+          },
+        },
+        {
+          onStart: () => undefined,
+          onCommit: (c) => spentAt.push(c.spentMines),
+          onDone: () => undefined,
+        },
+      );
+      while (jobs.length) jobs.shift()!.fn();
+
+      const firstSpent = spentAt.findIndex((s) => s?.includes(scenario.at));
+      expect(firstSpent).toBeGreaterThanOrEqual(0);
+      // Never re-lit afterwards: `undefined` keeps the prior list, so only an
+      // explicit list missing the square flashes the intact glyph back.
+      const relit = spentAt
+        .slice(firstSpent + 1)
+        .filter((s) => s !== undefined && !s.includes(scenario.at));
+      expect(relit).toEqual([]);
+    });
+  }
+});
+
+/**
+ * `Rxe5` onto an e5 holding both a unit and a mine: one shot, two things
+ * destroyed. `clearOnCapture` used to swallow the mine — it left `mines` with no
+ * trace on the attack, so only the unit got a cue.
+ * // SPEC: _spec/packages/starchess-core/mine-contact.puml
+ */
+describe("timelinePlayer · capture onto a mined tile", () => {
+  // Adjacent, so e5 is in sight: a fogged target takes the path-reveal route
+  // instead, where the mine already had its own `prm` cue.
+  const rookTakesMinedKnight = () =>
+    endScTurn(
+      addScAction({
+        snapshot: parseScFen(
+          "SCFEN|4k3/8/8/4n3/4R3/8/8/4K3|0|33|P|G:11:11|Q:w:;b:|M:w:;b:e5",
+        ),
+        action: { timing: "C", kind: "classical", color: "w", from: "e4", to: "e5" },
+      }).snapshot,
+      { skipTurnStartChecks: true },
+    );
+
+  it("buries the unit and the mine it stood on, both on e5", () => {
+    const deaths = projectResolveTimeline(rookTakesMinedKnight()).filter(
+      (c) => c.kind === "death" && c.at === "e5",
+    );
+    expect(deaths).toHaveLength(2);
+    // The Hoverbike that was standing there, and the mine under it.
+    expect(deaths.filter((c) => "mine" in c && c.mine)).toHaveLength(1);
+    expect(deaths.filter((c) => !("mine" in c) || !c.mine)).toMatchObject([
+      { piece: "n", color: "b" },
+    ]);
+  });
+
+  it("does the same through fog, and the attacker lands alive", () => {
+    // e1→e5 across an empty board: the Hoverbike is fogged at that range, so
+    // this resolves as a phase-3 approach. The Hoverbike is still a **blocker**
+    // (a mine never blocks), so it draws the shot, and that one shot takes the
+    // mine under it — the tank walks in alive.
+    const r = endScTurn(
+      addScAction({
+        snapshot: parseScFen(
+          "SCFEN|4k3/8/8/4n3/8/8/8/4RK3|0|33|P|G:11:11|Q:w:;b:|M:w:;b:e5",
+        ),
+        action: { timing: "C", kind: "classical", color: "w", from: "e1", to: "e5" },
+      }).snapshot,
+      { skipTurnStartChecks: true },
+    );
+
+    // No trigger took the attacker with it.
+    expect(r.resolved.pathRevealMineTriggers).toEqual([]);
+    expect(placementToMap(r.next.placement).get("e5")).toEqual({
+      type: "r",
+      color: "w",
+    });
+
+    const cues = projectResolveTimeline(r);
+    const deaths = cues.filter((c) => c.kind === "death" && c.at === "e5");
+    expect(deaths).toHaveLength(2);
+    expect(deaths.filter((c) => "mine" in c && c.mine)).toHaveLength(1);
+    // The wreck lands before the occupy slide brings the survivor in.
+    const mineIdx = cues.findIndex((c) => "mine" in c && c.mine);
+    const occupy = cues.findIndex((c) => c.id.startsWith("pro"));
+    expect(mineIdx).toBeGreaterThan(-1);
+    expect(occupy).toBeGreaterThan(mineIdx);
+  });
+
+  it("plays both wrecks in one window and darkens the mine glyph", () => {
+    const jobs: Array<{ ms: number; fn: () => void }> = [];
+    const commits: Array<{
+      playingIds?: readonly string[];
+      spentMines?: readonly string[];
+    }> = [];
+    playTimeline(
+      rookTakesMinedKnight(),
+      {
+        delay: (ms: number, fn: () => void) => {
+          jobs.push({ ms, fn });
+          return () => undefined;
+        },
+      },
+      {
+        onStart: () => undefined,
+        onCommit: (c) =>
+          commits.push({ playingIds: c.playingIds, spentMines: c.spentMines }),
+        onDone: () => undefined,
+      },
+    );
+    while (jobs.length) jobs.shift()!.fn();
+
+    // Same death window: both ids play together, not one after the other.
+    const together = commits.some((c) => {
+      const ids = c.playingIds ?? [];
+      return ids.some((i) => i.startsWith("d")) && ids.some((i) => i.startsWith("m"));
+    });
+    expect(together).toBe(true);
+    expect(commits.some((c) => c.spentMines?.includes("e5"))).toBe(true);
   });
 });

@@ -1,14 +1,13 @@
 /**
  * Pawn / marine last-rank picker — q / r / b / n.
- * Ported from apps/ui PromotionModal; assets via {@link pieceUrl} (nerd set).
+ * Ported from apps/ui PromotionModal; units via {@link PieceGlyph} (inline art).
  */
 import type { Component } from "solid-js";
 import { For, Show } from "solid-js";
 import type { PendingPromotion, PromotionPiece } from "~/types/chess";
 import { Modal } from "~/components/atoms/Modal";
 import styles from "~/components/primitives/PromotionModal.module.css";
-import { pieceUrl } from "~/presentation/board/pieceUrl";
-import { InlineRook } from "~/presentation/pieces/InlineRook";
+import { PieceGlyph } from "~/presentation/board/components/PieceGlyph";
 
 export type { PendingPromotion, PromotionPiece };
 
@@ -42,20 +41,13 @@ export const PromotionModal: Component<PromotionModalProps> = (props) => {
                   aria-label={`Promote to ${piece}`}
                   data-promo-piece={piece}
                 >
-                  <Show
-                    when={piece === "r"}
-                    fallback={
-                      <img
-                        src={pieceUrl(pending().color, piece)}
-                        alt=""
-                        class={styles.pieceImg}
-                      />
-                    }
-                  >
-                    <span class={styles.pieceImg} data-piece-inline="r" aria-hidden="true">
-                      <InlineRook color={pending().color} mode="tank" />
-                    </span>
-                  </Show>
+                  <PieceGlyph
+                    color={pending().color}
+                    type={piece}
+                    pieceSet="nerd"
+                    mode="tank"
+                    class={styles.pieceImg}
+                  />
                 </button>
               )}
             </For>

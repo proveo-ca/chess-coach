@@ -1,6 +1,6 @@
 import type { Component } from "solid-js";
 
-import { ROOK_REST_AIM_DEG, ROOK_FRAME_SCALE, svgPivotAroundAniso, SIEGE_TOGGLE_MS } from "~/presentation/pieces/rookAim";
+import { ROOK_REST_AIM_DEG, ROOK_FRAME_SCALE, svgPivotAroundAniso, SIEGE_TOGGLE_MS } from "~/presentation/pieces/geometry";
 import styles from "~/presentation/pieces/InlineRook.module.css";
 import { TwinBattery, TWIN_BATTERY_SCALE_ROOK } from "~/presentation/pieces/TwinBattery";
 import {
@@ -26,7 +26,7 @@ type InlineRookProps = {
    * Tank ↔ siege — store-backed via {@link rookModeAt} / sieged SCFEN `S:`.
    * Siege: ea839cb wedge armor + filled white twins. Tank: squared hull + treads + TwinBattery.
    * Defaults to **tank**. Chess/`cburnett` skin never uses this component — both
-   * modes map to the classic rook via {@link RookGlyph}.
+   * modes map to the classic rook via {@link PieceGlyph}.
    */
   mode?: RookMode;
 };
@@ -45,7 +45,7 @@ const PIVOT = { x: 22.5, y: 23.5 };
 /** Content scale inside {@link PIECE_FRAME.R} — hull size, not barrel crop. */
 export const ROOK_CONTENT_SCALE = 1.28;
 
-const ROOK_STROKE = 1;
+const ROOK_STROKE = 1.6;
 
 const RX = 2.2;
 const RX_TURRET = 1;
@@ -212,7 +212,7 @@ const Turret: Component<{ team: string }> = (props) => (
 );
 
 /**
- * Siege Tank — siege rest matches `public/pieces/nerd/*R.svg`; tank chassis unchanged.
+ * Siege Tank — siege rest matches `apps/ui/public/pieces/nerd/*R.svg`; tank chassis unchanged.
  * Turret deck spins 180° on toggle; armor plates stagger independently.
  */
 export const InlineRook: Component<InlineRookProps> = (props) => {

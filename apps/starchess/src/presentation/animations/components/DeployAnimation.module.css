@@ -140,9 +140,15 @@
   height: 62%;
 }
 
+/* Hoverbike air jet — hot white core over the player's swatch. */
 .thrustAir {
-  background: radial-gradient(ellipse at center top, #e8f6ff 0%, #7ec8ff 45%, transparent 72%);
-  box-shadow: 0 0 8px #9ad4ff;
+  background: radial-gradient(
+    ellipse at center top,
+    color-mix(in srgb, var(--team-tint, #3b7dd8) 18%, #fff) 0%,
+    color-mix(in srgb, var(--team-tint, #3b7dd8) 62%, #fff) 45%,
+    transparent 72%
+  );
+  box-shadow: 0 0 8px color-mix(in srgb, var(--team-tint, #3b7dd8) 45%, #fff);
 }
 
 .thrustFuel {
@@ -153,11 +159,11 @@
 .thrustTeam {
   background: radial-gradient(
     ellipse at center top,
-    color-mix(in srgb, var(--thrust-team, #3b7dd8) 85%, #fff) 0%,
-    var(--thrust-team, #3b7dd8) 48%,
+    color-mix(in srgb, var(--team-tint, #3b7dd8) 85%, #fff) 0%,
+    var(--team-tint, #3b7dd8) 48%,
     transparent 75%
   );
-  box-shadow: 0 0 8px var(--thrust-team, #3b7dd8);
+  box-shadow: 0 0 8px var(--team-tint, #3b7dd8);
 }
 
 /* Thrust only during the 300ms landing window (40–100%). */

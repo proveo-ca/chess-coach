@@ -58,7 +58,9 @@ const fingerprint = (container: HTMLElement): string => {
     (id) => container.querySelector(`[data-testid="${id}"]`) != null,
   );
   const squares = container.querySelectorAll("[data-square]").length;
-  const pieces = container.querySelectorAll("[data-square] img").length;
+  // `data-piece` is skin-independent: inline units (nerd) and the cburnett
+  // `<img>` both carry it, so this count survives a piece-set swap.
+  const pieces = container.querySelectorAll("[data-square] [data-piece]").length;
   return [`squares=${squares}`, `pieces=${pieces}`, ...chrome].join(",");
 };
 

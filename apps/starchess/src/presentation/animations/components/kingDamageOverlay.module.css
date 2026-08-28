@@ -15,7 +15,11 @@
   overflow: visible;
 }
 
-/* Damaged king hull — slides with the piece (no pristine <img> clone). */
+/*
+ * Damaged king hull. A live king move is owned by the move layer's hull (it
+ * carries `damage` + `seed`); this transition covers the `at` changes nothing
+ * animates — placement commits, turn seek, a flee that lands between waves.
+ */
 .kingDamageSlot {
   transition: left var(--move-ms, 550ms) ease-in-out, top var(--move-ms, 550ms) ease-in-out;
   z-index: 6;

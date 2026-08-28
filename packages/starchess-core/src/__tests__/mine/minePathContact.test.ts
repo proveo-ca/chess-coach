@@ -5,7 +5,8 @@
  *  - walking onto one — marine forward step, or a mine still fogged at contact —
  *    kills the mover with the mine,
  *  - crossing one mid-slide wakes it (chase) and kills the mover,
- *  - allies and kings never arm a mine.
+ *  - allied mines never arm; a king never trades — its contact is an attack in
+ *    every mode, so it clears the tile and moves in.
  *
  * Special-phase routes (gas step, deploy, Tactical Jump, fog approach) live in
  * `mineContactRoutes.test.ts` — this file is the classical pass only.
@@ -242,21 +243,56 @@ describe("spider mine hit — enemy unit + mine both dead", () => {
     });
   });
 
-  it("king steps onto hostile mine — immune (king and mine both remain)", () => {
+  it("king steps onto hostile mine — attack/move (mine dies, king lands)", () => {
     const r = resolveClassical(
       "SCFEN|4k3/8/8/8/8/8/8/4K3|0|33|P|G:11:11|Q:w:;b:|M:w:;b:e2",
       "e1",
       "e2",
     );
+    // The Command Center shoots the tile and moves in — never a trade.
+    expect(r.resolved.attacks).toEqual([
+      {
+        kind: "mineBlast",
+        piece: "k",
+        color: "w",
+        from: "e1",
+        to: "e2",
+        mineColor: "b",
+      },
+    ]);
     expect(r.resolved.mineTriggers).toEqual([]);
-    expect(r.resolved.attacks).toEqual([]);
     expect(placementToMap(r.next.placement).get("e2")).toEqual({
       type: "k",
       color: "w",
     });
-    expect(r.next.mines).toEqual(
-      expect.arrayContaining([expect.objectContaining({ at: "e2", color: "b" })]),
+    expect(r.next.mines ?? []).toEqual([]);
+  });
+
+  it("king captures a unit standing on a mine — unit and mine both die", () => {
+    const r = resolveClassical(
+      "SCFEN|4k3/8/8/8/8/8/4p3/4K3|0|33|P|G:11:11|Q:w:;b:|M:w:;b:e2",
+      "e1",
+      "e2",
     );
+    // `mineColor` is what tells the timeline a second wreck belongs on this
+    // tile: one shot, two deaths (the victim and the mine it was standing on).
+    expect(r.resolved.attacks).toEqual([
+      {
+        kind: "capture",
+        piece: "k",
+        color: "w",
+        from: "e1",
+        to: "e2",
+        victim: { piece: "p", color: "b" },
+        occupies: true,
+        mineColor: "b",
+      },
+    ]);
+    expect(placementToMap(r.next.placement).get("e2")).toEqual({
+      type: "k",
+      color: "w",
+    });
+    expect(r.next.mines ?? []).toEqual([]);
   });
 
   it("ally sliding over own mine — inert (unit and mine both remain)", () => {

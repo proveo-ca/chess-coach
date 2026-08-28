@@ -1,13 +1,13 @@
 // SPEC: _spec/apps/starchess/architecture/board-entities.puml
 import { createEffect, createSignal, onCleanup, type Component, type JSX } from "solid-js";
 
-import { svgPivotLocal } from "~/presentation/animations/attackAnim";
+import { svgPivotLocal } from "~/presentation/pieces/geometry";
 import {
   INK_BLACK,
   TEAM_PRIMARY,
   type PieceColor,
   PIECE_FRAME,
-} from "~/presentation/animations/teamColors";
+} from "~/presentation/pieces/teamColors";
 
 /** Quiet-move wheel crank — feet trace full circles about the hip. */
 export type BishopCrank = {
@@ -389,7 +389,7 @@ export const InlineBishop: Component<InlineBishopProps> = (props) => {
       data-charon-arm-anim={armAnim() ? "true" : undefined}
     >
       <g transform={PIECE_FRAME.B}>
-        <g stroke="#222" stroke-linecap="round" stroke-linejoin="round" stroke-width="1">
+        <g stroke="#222" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
           {/* Legs under cockpit so the hull always occludes the hip joints. */}
           <g data-part="body">
             {mechaLeg("left")}

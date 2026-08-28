@@ -54,6 +54,29 @@ style).
 | V30 | No paint-animating keyframe actually **runs** under the combat root (allowlist aside) — checked on a knight frag, the densest weapon | same | `vfx-paint-budget.spec.ts` |
 | V31 | `.board-phase-ring` fades opacity-only (colours snap) | `timeline-vfx-density.puml` (phase ring) | `vfx-paint-budget.spec.ts` |
 | V32 | The ring — not a container repaint — carries the resolve state (`data-phase`) | same | `vfx-paint-budget.spec.ts` |
+| V34 | A mine held back by a Marine Extra Step chases the marine to its destination — the stim move lands *before* the boom (`farmx`/`farmm`/`farmd` on the `afterMove` rung) | `mine-contact.puml` (one walk per marine), `cue-lanes.puml` (arrival-mine prefixes) | `vfx-cue-coverage.spec.ts` |
+| V35 | A damaged Command Center **keeps burning while it walks** — `visibleKingDamageCues` drops that side (`movingColors`), the move hull carries `damage` + `seed` instead, so the slide never flashes a pristine CC and no second hull draws over it | `kingDamage.ts` (`movingColors` gate, `withKingFire`), `board-entities.puml` | **unit only — see gaps** |
+| V36 | A damaged Command Center **keeps burning while it shoots** — the `attackFrom` gate already dropped the slot, so the shot hull carries `damage` + `seed` through the hatch / battery CSS | `kingDamage.ts` (`attackFrom` gate, `withKingFire`) | **unit only — see gaps** |
+| V37 | A **shot-out spider mine leaves a wreck** — `DeathMine` breaks up visibly on its own tile (crown, pods, four legs) with the Hoverbike frag boom fired in place, and `spentMines` darkens the intact glyph for the window so it never draws under its own explosion | `cue-playback.puml` (mine-death lanes owe `spentMines`), `board-entities.puml` | **unit only — see gaps** |
+
+| V38 | A capture onto a **mined** tile buries **both** — `Rxe5` on an e5 holding a unit and a mine plays the victim's wreck and the mine's, with the glyph darkened; visible captures pair them in one phase-1 window, a fogged approach pairs `prdm` with `prdth` before the occupy slide, and the attacker lands alive either way | `mine-contact.puml` (a blocker draws the shot; a capture reports its mine), `cue-projection.puml` | **unit only — see gaps** |
+| V39 | VFX that is a unit's **own** ordnance carries its player's swatch — Hoverbike deploy jet + frag boom, Ship laser, mine-wreck boom — and two sides firing in one window keep their tints apart | `board-entities.puml` (`teamTintStyle`) | **unit only — see gaps** |
+
+### V37 — why the mine wreck needs its own tuning
+
+A mine is the smallest thing on the board: its art fills barely half its own
+viewBox, so a wrecked part is 4–7px on a 55px tile. Three shared defaults each
+erase a wreck that size, and all three were observed doing exactly that
+(Chromium, `starchess-death-animations--spider-mine`, 6× device scale):
+
+| Shared default | What it does to a 4px part | Mine override |
+|---|---|---|
+| `.boomFlash` at `inset: 12%` | an opaque gradient over 88% of the tile hides the whole wreck | `inset: 30%` (as the Marine and Command Center already pull theirs in) |
+| `shardFly`'s `cubic-bezier(0.15, 0.75, 0.2, 1)` | front-loaded: 12% into the window a part has travelled 70% and faded to ~0.3 — fine on a 12px Hoverbike chunk, invisible on a mine leg | `mineShardFly`, opaque through the first half, gentler curve |
+| default `distScale: 1` | parts clear the tile before they can be read | `PART_FLIGHT = 0.42` — the scatter stays on its own square |
+
+The frag boom is a fourth: it is positioned and the wreck's `svg` is not, so it
+always paints on top and has to stay brief and translucent.
 
 Pinned allowlist for V29/V30: `fragShockwave` (border-colour, accepted P2 in
 `timeline-perf.puml`) and `sc-hint-pulse` (tutorial hint ring, board chrome).
@@ -99,6 +122,24 @@ seq per slot instead of resetting on every re-run.
 
 ## Known gaps
 
+* **V35–V39 have no e2e pin.** The offending frames last one cue (a king move is
+  200ms, a death `DEATH_MS`), and the sampler records cue *kinds*, layer identity
+  and king hit phases — not a hull's `data-king-damage`, `data-death-glyph`, or
+  whether a mine glyph is still drawn under a wreck. Pinning them in CI needs
+  `vfxHarness.ts` to sample those attributes off the move / attack / death layers
+  and `[data-spider-mine]`. Until then they are held by unit tests:
+  `__tests__/MoveAnimation.test.tsx` and `__tests__/AttackAnimation.test.tsx`
+  (each hull paints its cue's damage state) over `__tests__/kingDamage.test.ts`
+  (`visibleKingDamageCues · travelling king` for the layer handoff, `withKingFire`
+  for the dressing that replaces it); `__tests__/DeathAnimation.test.tsx` (the
+  wreck is the mine, is shard-built, and carries the frag boom) over
+  `__tests__/timelinePlayer.test.ts` (`mine wreck hides its glyph` — both the
+  batched phase-1 lane and the sequential rung, and `capture onto a mined tile`
+  for V38's paired wrecks); and for V39, `__tests__/teamColors.test.ts` (the two
+  spellings of a swatch stay in step) over the three layer suites
+  (`DeployAnimation` / `AttackAnimation` / `DeathAnimation`), which assert the
+  tint reaches each cue element and that two sides in one window keep theirs
+  apart.
 * V26–V28 are **ceilings**, not cap proofs: no deterministic live seed produces
   more than 3 same-kind cues, so they fail only if a cap is dropped *and* a
   scene gets dense. The cap math itself is pinned by

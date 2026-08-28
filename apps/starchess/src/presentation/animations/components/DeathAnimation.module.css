@@ -282,3 +282,170 @@
   filter: saturate(0.55) brightness(0.9);
   inset: 18%;
 }
+
+/*
+ * A mine is the smallest thing on the board — the shared flash at ""inset: 12%""
+ * covers 88% of the tile and swallows the whole wreck, the way the Marine and
+ * the Command Center already pull theirs in. Tuck it to the middle so the crown
+ * and legs read through the boom instead of behind it.
+ */
+.dying[data-death-mine="true"] .boomFlash {
+  inset: 30%;
+}
+
+.dying[data-death-mine="true"] .boomRing {
+  inset: 26%;
+}
+
+/*
+ * ""shardFly"" is tuned for a hull: its curve is front-loaded, so 12% into the
+ * window a part has already travelled 70% and faded to ~0.3 opacity. That reads
+ * fine on a 12px chunk of Hoverbike and not at all on a 4px mine leg — the
+ * wreck appears to blink out. Hold the parts opaque through the first half and
+ * let them drift, so the break-up is legible on a 55px tile.
+ */
+.dying[data-death-mine="true"] :global([data-shard]) {
+  animation: mineShardFly var(--death-ms) cubic-bezier(0.25, 0.6, 0.35, 1) 1 forwards;
+}
+
+@keyframes mineShardFly {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+  14% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0deg) scale(1.06);
+  }
+  58% {
+    opacity: 0.95;
+    transform: translate(calc(var(--dx, 40px) * 0.5), calc(var(--dy, -40px) * 0.5))
+      rotate(calc(var(--spin, 180deg) * 0.5)) scale(0.92);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--dx, 40px), var(--dy, -40px)) rotate(var(--spin, 180deg))
+      scale(0.72);
+  }
+}
+
+/* ── Mine wreck: hoverbike frag boom, fired in place ─────────────────
+ * The mine is Hoverbike ordnance, so it detonates with the bike's own
+ * signature: `fragExplode` / `fragShockwave` from AttackAnimation.module.css.
+ * Re-declared here because CSS-module keyframes are file-scoped — the shape is
+ * copied, the flight delay is not (the frag lands on impact; the mine *is* the
+ * impact). Both keyframes stay transform + opacity only, so the V29/V30 paint
+ * budget holds without joining the allowlist: the ring's border colour is
+ * static and only its scale/opacity move.
+ *
+ * **It must not curtain the wreck.** The frag is positioned, the wreck's ""svg""
+ * is not, so the frag always paints on top — it therefore has to behave like
+ * ""boomFlash"": small, translucent at peak, and finished inside the first half
+ * of the window so the shards are visible flying out. A full-window opaque
+ * fireball reads as the mine blipping away with no death animation at all.
+ */
+.mineFrag {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 6;
+}
+
+.mineFragCore {
+  position: absolute;
+  width: 34%;
+  height: 34%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    #ffffff 0%,
+    #d0d5dc 18%,
+    #8b93a0 36%,
+    var(--team-tint, #3b7dd8) 52%,
+    rgba(var(--team-rgb, 59, 125, 216), 0.4) 68%,
+    transparent 76%
+  );
+  box-shadow:
+    0 0 0 1px rgba(180, 188, 198, 0.75),
+    0 0 5px rgba(var(--team-rgb, 59, 125, 216), 0.7),
+    0 0 9px rgba(140, 148, 160, 0.5);
+  opacity: 0;
+  transform: scale(0.15);
+  animation: mineFragExplode var(--death-ms) ease-in-out 1 forwards;
+}
+
+.mineFragRing {
+  position: absolute;
+  width: 26%;
+  height: 26%;
+  border-radius: 50%;
+  border: 1.5px solid rgba(var(--team-rgb, 59, 125, 216), 0.9);
+  box-shadow: 0 0 0 0.5px rgba(160, 168, 176, 0.55);
+  opacity: 0;
+  transform: scale(0.25);
+  animation: mineFragRing var(--death-ms) ease-in-out 1 forwards;
+}
+
+/*
+ * Double pulse — the frag's tell that it is cluster ordnance, not one bang —
+ * compressed into the opening of the window and capped below full opacity, so
+ * the wreck reads *through* it and the scatter owns the rest of the death.
+ */
+@keyframes mineFragExplode {
+  0% {
+    opacity: 0;
+    transform: scale(0.15);
+  }
+  4% {
+    opacity: 0.9;
+    transform: scale(0.4);
+  }
+  14% {
+    opacity: 0.8;
+    transform: scale(1.15);
+  }
+  24% {
+    opacity: 0.7;
+    transform: scale(0.6);
+  }
+  34% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  45%,
+  100% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+}
+
+@keyframes mineFragRing {
+  0% {
+    opacity: 0;
+    transform: scale(0.25);
+  }
+  4% {
+    opacity: 0.85;
+    transform: scale(0.45);
+  }
+  16% {
+    opacity: 0.6;
+    transform: scale(1.5);
+  }
+  30% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  40% {
+    opacity: 0.25;
+    transform: scale(1.7);
+  }
+  50%,
+  100% {
+    opacity: 0;
+    transform: scale(2.1);
+  }
+}

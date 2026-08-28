@@ -1,5 +1,5 @@
 // SPEC: _spec/apps/starchess/architecture/board-entities.puml
-import { For, createMemo, type Component, type JSX } from "solid-js";
+import { For, Show, createMemo, type Component, type JSX } from "solid-js";
 import type { Square } from "chess.js";
 
 import { DEATH_MS, scatterSeedFromId } from "~/presentation/animations/deathAnim";
@@ -7,12 +7,13 @@ import styles from "~/presentation/animations/components/DeathAnimation.module.c
 import { DeathBishop } from "~/presentation/animations/pieces/components/DeathBishop";
 import { DeathKing } from "~/presentation/animations/pieces/components/DeathKing";
 import { DeathKnight } from "~/presentation/animations/pieces/components/DeathKnight";
+import { DeathMine } from "~/presentation/animations/pieces/components/DeathMine";
 import { DeathPawn } from "~/presentation/animations/pieces/components/DeathPawn";
 import { DeathQueen } from "~/presentation/animations/pieces/components/DeathQueen";
 import { DeathRook } from "~/presentation/animations/pieces/components/DeathRook";
 import { squareBoxStyle } from "~/presentation/animations/boardGeom";
 import { rookModeAt } from "~/presentation/animations/rookModeStore";
-import type { PieceColor } from "~/presentation/animations/teamColors";
+import { teamTintStyle, type PieceColor } from "~/presentation/pieces/teamColors";
 import type { StarChessPiece, DeathCue } from "~/presentation/animations/types";
 
 const NO_SPECIAL_USED: ReadonlySet<Square> = new Set();
@@ -23,6 +24,9 @@ const deathNode = (
   seed: number,
   cue: DeathCue,
 ): JSX.Element => {
+  // A mine death cue carries `piece: "n"` — the hoverbike that laid it owns the
+  // colour, not the silhouette. Without this branch the wreck is a bike.
+  if (cue.mine) return <DeathMine color={color} seed={seed} />;
   switch (piece) {
     case "p":
       return <DeathPawn color={color} seed={seed} />;
@@ -108,7 +112,10 @@ export const DeathAnimation: Component<DeathAnimationProps> = (props) => {
               [styles.dyingDrama]: mineDeath() || (!pawnDeath() && !kingDeath()),
               [styles.dyingKing]: kingDeath(),
             }}
-            style={squareBoxStyle(cue().at, props.boardWidth, props.boardHeight)}
+            style={{
+              ...squareBoxStyle(cue().at, props.boardWidth, props.boardHeight),
+              ...teamTintStyle(cue().color),
+            }}
             data-square={cue().at}
             data-death-phase="dying"
             data-death-mine={mineDeath() ? "true" : undefined}
@@ -116,9 +123,20 @@ export const DeathAnimation: Component<DeathAnimationProps> = (props) => {
             data-scatter-seed={String(seed())}
           >
             <div class={styles.pieceFace} classList={{ ["sc-special-used"]: gas() }}>
-              {!mineDeath() && deathNode(cue().piece, cue().color, seed(), cue())}
+              {deathNode(cue().piece, cue().color, seed(), cue())}
               <div class={styles.boomFlash} aria-hidden="true" />
               <div class={styles.boomRing} aria-hidden="true" />
+              {/*
+                A mine is hoverbike ordnance, so it goes off like the bike's frag
+                does: the same double-pulse fireball and ring the attack layer
+                flies to a target, fired in place with no flight delay.
+              */}
+              <Show when={mineDeath()}>
+                <div class={styles.mineFrag} data-part="mine-frag" aria-hidden="true">
+                  <div class={styles.mineFragCore} />
+                  <div class={styles.mineFragRing} />
+                </div>
+              </Show>
             </div>
           </div>
         );

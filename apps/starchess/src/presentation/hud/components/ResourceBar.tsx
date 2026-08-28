@@ -25,7 +25,7 @@ import { clampPlayerName } from "~/utils/playerName";
 import { readDisplayedSnapshot } from "~/app/selectors";
 import { MineralsIcon, SupplyIcon, VespeneIcon } from "~/components/primitives/icons";
 import { TeamFrame } from "~/components/primitives/TeamFrame";
-import { TEAM_PRIMARY } from "~/presentation/animations/teamColors";
+import { TEAM_PRIMARY } from "~/presentation/pieces/teamColors";
 import styles from "~/presentation/hud/components/ResourceBar.module.css";
 
 export type ResourceBarProps = {

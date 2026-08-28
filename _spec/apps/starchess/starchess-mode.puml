@@ -45,8 +45,12 @@ note bottom
   forward step, fogged tile), crossing one mid-move (slide **or** marine double
   step → path-chase), a fog approach that walks over or onto it, and any
   non-attack **arrival** — gas step, Command Center deploy, Tactical Jump
-  (mines are not occupancy, so the tile stays a legal landing). Ignores allies
-  + enemy kings (""mines.ts"" + ""resolveTurn"" + ""submit-turn"" ""applyArrivalMine"").
+  (mines are not occupancy, so the tile stays a legal landing). A **Marine
+  Extra Step** is one walk with its move, so the mine waits for the marine's
+  real destination. Ignores allies; a **Command Center never trades** — it
+  shoots the tile and moves in, taking any unit standing there with the mine
+  (""mines.ts"" + ""resolveTurn"" + ""submit-turn"" ""applyArrivalMine"", table in
+  ""../../packages/starchess-core/mine-contact.puml"").
   Live UI → ""apps/starchess"" (""/starchess/""); Coach keeps
   ""features/nerd"" + ""StarChessRedirect"" only.
   ====

@@ -4,19 +4,22 @@ export {
   FRAG_FLIGHT_MS,
   ANIM_BY_PIECE,
   IDLE_FRONT_MS,
-  ROOK_REST_AIM_DEG,
-  KING_REST_AIM_DEG,
-  ROOK_FRAME_SCALE,
   screenAimDeg,
   attackFaceFor,
-  svgPivotAround,
-  svgPivotAroundAniso,
-  svgPivotLocal,
   cellSize,
   centeredBoxStyle,
   groundedBoxStyle,
   muzzleOffsetPx,
 } from "~/presentation/animations/attackAnim";
+/** Unit geometry lives a layer down — see `presentation/pieces/geometry.ts`. */
+export {
+  ROOK_REST_AIM_DEG,
+  KING_REST_AIM_DEG,
+  ROOK_FRAME_SCALE,
+  svgPivotAround,
+  svgPivotAroundAniso,
+  svgPivotLocal,
+} from "~/presentation/pieces/geometry";
 export type { DemoPiece, BoardBox, AttackAnimKind } from "~/presentation/animations/attackAnim";
 export {
   squareAt,
@@ -33,7 +36,7 @@ export {
 } from "~/presentation/animations/attackVectors";
 export type { AttackVec, AimPose } from "~/presentation/animations/attackVectors";
 export * from "~/presentation/animations/deathAnim";
-export * from "~/presentation/animations/teamColors";
+export * from "~/presentation/pieces/teamColors";
 export * from "~/presentation/animations/types";
 export * from "~/presentation/animations/kingDamage";
 export { KingDamageOverlay } from "~/presentation/animations/components/kingDamageOverlay";

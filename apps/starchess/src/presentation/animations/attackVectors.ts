@@ -1,6 +1,7 @@
 import type { Square } from "chess.js";
 
 import type { DemoPiece } from "~/presentation/animations/attackAnim";
+import type { AimPose } from "~/presentation/pieces/geometry";
 
 export type { DemoPiece } from "~/presentation/animations/attackAnim";
 
@@ -93,12 +94,8 @@ export const attackVectorsFor = (
  */
 export const AIM_FORWARD_DEG = 0;
 
-export type AimPose = {
-  /** Horizontal mirror so legs stay down when the target is on the left. */
-  mirrorX: boolean;
-  /** CSS rotate after mirror — muzzle (+x) points at the target. */
-  rotateDeg: number;
-};
+/** Canonical definition is a layer down, with the rest of the pose geometry. */
+export type { AimPose } from "~/presentation/pieces/geometry";
 
 const normalizeDeg = (deg: number): number =>
   ((((deg + 180) % 360) + 360) % 360) - 180;

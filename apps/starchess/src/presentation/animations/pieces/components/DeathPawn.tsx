@@ -4,7 +4,7 @@ import {
   TEAM_PRIMARY,
   type PieceColor,
   PIECE_FRAME,
-} from "~/presentation/animations/teamColors";
+} from "~/presentation/pieces/teamColors";
 import { Shard } from "~/presentation/animations/pieces/components/Shard";
 
 type DeathPawnProps = {
@@ -27,7 +27,7 @@ export const DeathPawn: Component<DeathPawnProps> = (props) => {
           stroke="#222"
           stroke-linecap="round"
           stroke-linejoin="round"
-          stroke-width="1"
+          stroke-width="2"
           transform="translate(2.25,2.25) scale(0.9)"
         >
           <Shard index={0} seed={seed()} distScale={0.55}>

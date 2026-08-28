@@ -11,13 +11,31 @@ hide empty members
 
 title StarChess · Board presentation entities\n(current)
 
+note as BOUNDARY
+  **apps/starchess/public/pieces holds cburnett only.**
+  Product boards — live match, review, demos, deploy and
+  promotion pickers — render the inline units. A static asset
+  is reachable on exactly one branch, `cburnett`, whose sole
+  entry point is TutorialScreen's fog-lesson skin toggle.
+  Guarded by __tests__/bundle/bundleBoundary.test.ts:
+  pieceUrl is importable only from PieceGlyph and
+  kingDamageOverlay, and no hand-rolled asset path may appear.
+end note
+
 package "leaves" {
 
-  class RookGlyph <<app>>
+  class PieceGlyph <<app>> {
+    one unit on a square
+    nerd -> Inline* (presentation/pieces)
+    cburnett -> pieceUrl <img>
+    stamps data-piece on both
+  }
   class SpiderMine <<app>>
-  class InlineBishop <<app>>
   class VespeneIcon <<app>>
-  class pieceUrl <<app>>
+  class pieceUrl <<app>> {
+    cburnett assets only
+    nerd art is inline, not fetched
+  }
   class fogProjection <<app>>
   class rookMode <<app>>
   class StarChessSquare <<app>>
@@ -103,8 +121,10 @@ package "hooks" {
   class useCombatOverlays <<app>>
   class useAutoDeploy <<app>>
   class deriveVisualFrame <<app>>
+  class teamTintStyle <<app>>
   class kingDamageCuesFromBoard <<app>>
   class visibleKingDamageCues <<app>>
+  class withKingFire <<app>>
   class liveMatchPhase <<app>>
   class pieceVisibleToViewer <<app>>
 
@@ -115,16 +135,46 @@ package "geometry / local stores" {
   class boardGeom <<app>>
 }
 
+package "presentation/pieces (units)" {
+
+  class units <<app>> {
+    InlinePawn / InlineKnight / InlineBishop
+    InlineRook / InlineQueen / InlineKing
+    TwinBattery · kingFire
+    geometry.ts — pivots, rest aims, AimPose
+    teamColors.ts — swatches, PIECE_FRAME
+  }
+
+  note bottom of units
+    Sits **below** presentation/animations: the same unit draws
+    a resting square and a combat cue, so animations/ imports
+    down into here and never the reverse.
+
+    Rest pose == apps/ui/public/pieces/nerd/*.svg — same
+    PIECE_FRAME nest, same main stroke, no aim normalize.
+    Aiming applies that normalize as a CSS transform
+    (`styles/unitPose.css` .sc-unit-pose) so a mover can
+    **settle** back to rest over SETTLE_MS before the overlay
+    hands the square to PieceGlyph; a CSS transition cannot
+    span that unmount.
+  end note
+
+}
+
 package "app state (external)" {
   class MatchStore <<db>>
   class capabilitiesStore <<db>>
 }
 
-StarChessBoard *-- RookGlyph
+StarChessBoard *-- PieceGlyph
 StarChessBoard *-- SpiderMine
-StarChessBoard *-- InlineBishop
 StarChessBoard *-- VespeneIcon
-StarChessBoard ..> pieceUrl
+PieceGlyph *-- units
+PieceGlyph ..> pieceUrl : cburnett branch only
+DeployModal ..> PieceGlyph
+PromotionModal ..> PieceGlyph
+MoveAnimation ..> PieceGlyph : rook mover
+kingDamageOverlay ..> pieceUrl : cburnett king
 StarChessBoard ..> fogProjection
 StarChessBoard ..> rookMode
 StarChessBoard ..> StarChessSquare
@@ -144,6 +194,7 @@ CombatOverlayRoot *-- KingDamageOverlay
 CombatOverlayRoot *-- GasDropAnimation
 CombatOverlayRoot *-- AttackAnimation
 CombatOverlayRoot *-- DeathAnimation
+DeathAnimation ..> SpiderMine : wreck mirrors this silhouette
 CombatOverlayRoot *-- MoveAnimation
 CombatOverlayRoot *-- QueenJumpAnimation
 CombatOverlayRoot *-- MineMissileAnimation
@@ -163,11 +214,45 @@ LiveStarChessBoard ..> useAutoDeploy
 LiveStarChessBoard ..> deriveVisualFrame
 LiveStarChessBoard ..> kingDamageCuesFromBoard
 LiveStarChessBoard ..> visibleKingDamageCues
+LiveStarChessBoard ..> withKingFire : dresses king hulls
 visibleKingDamageCues ..> pieceVisibleToViewer : fog gate
 LiveStarChessBoard ..> liveMatchPhase
 LiveStarChessBoard ..> pieceVisibleToViewer : fog-gates VFX
 LiveStarChessBoard ..> MatchStore
 LiveStarChessBoard ..> capabilitiesStore : LIVE_CAPABILITIES on mount
+
+note right of teamTintStyle
+  **Whose colour is it?** VFX that paints the *unit's own* ordnance — a
+  Hoverbike's deploy jet and frag boom, a Ship's laser, a mine wreck's boom —
+  reads ""--team-tint"" (hex, for ""color-mix"") and ""--team-rgb"" (triplet, for
+  ""rgba"") with the white swatch as the CSS fallback. Fire and smoke stay fire
+  and smoke: the tank's fuel plume and the shared death ""boomFlash"" are not
+  team colours.
+
+  It must sit on the **cue element**, never a layer root — a phase-1 window
+  plays both sides' shots at once, so one tint per layer paints black's
+  ordnance blue. Custom properties inherit, so a cue's slot covers its
+  descendants (the Ship's laser pulse rides its hull slot).
+end note
+
+note bottom of DeathAnimation
+  **A mine death draws the mine.** The cue carries ""piece = n"" — the
+  Hoverbike that laid it owns the colour, not the shape — so ""deathNode""
+  branches on ""cue.mine"" first and renders ""DeathMine"" (SpiderMine's own
+  coordinates, shard-wrapped for the ""dyingDrama"" scatter) plus the bike's
+  frag boom in place. Before that branch a shot-out mine had no hull at all:
+  it vanished behind the generic ""boomFlash"".
+end note
+
+note right of withKingFire
+  **One CC, one hull.** ""visibleKingDamageCues"" drops the persistent fire slot
+  for a king whose square an attack owns (""attackFrom"") or whose side is mid-move
+  (""movingColors""), so the animating layer owes that king its fire:
+  ""withKingFire"" copies ""damage"" + ""seed"" onto the ""AttackCue"" / ""MoveCue"".
+  Skip either half and the CC reads full HP for the length of the cue — skip the
+  gate instead and two hulls draw it, fire (z 35) over mover (z 30).
+  Shared ""seed"" keeps the flame spots from jumping at the handoff.
+end note
 
 note bottom
   StarChessBoard + VisionStrategy · CombatOverlayRoot + CombatCueFrame.
