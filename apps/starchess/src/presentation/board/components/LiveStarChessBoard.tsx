@@ -20,6 +20,7 @@ import type { CombatCueFrame } from "~/presentation/animations/combatCueFrame";
 import {
   kingDamageCuesFromBoard,
   visibleKingDamageCues,
+  withKingFire,
 } from "~/presentation/animations/kingDamage";
 import { deriveVisualFrame } from "~/presentation/animations/visualFrame";
 import { pieceVisibleToViewer } from "~/presentation/board/fogVisibility";
@@ -133,8 +134,15 @@ export const LiveStarChessBoard: Component<{
       .filter((c) => pieceFxVisible(c.at, c.color));
   });
 
+  /**
+   * A shooting king burns on its own hull: `attackFrom` below drops the
+   * persistent slot so the hatch / battery CSS can play, which leaves this cue
+   * as the only thing drawing that CC for the length of the shot.
+   */
+  const attackCues = createMemo(() => withKingFire(combat.attackCues(), kingDamage()));
+
   /** Attack hull owns the square — drop fire overlay so hatch/battery CSS can play. */
-  const attackFrom = createMemo(() => new Set(combat.attackCues().map((c) => c.from)));
+  const attackFrom = createMemo(() => new Set(attackCues().map((c) => c.from)));
 
   /** Lethal king crumple owns the square — suppress static destroyed rubble. */
   const dyingKingKeys = createMemo(() => {
@@ -147,12 +155,30 @@ export const LiveStarChessBoard: Component<{
     return { ats, colors };
   });
 
+  /**
+   * A damaged king travels as its own burning hull. `handleMoveWave` flips
+   * `moveProgress` a frame before it commits the relocated placement, so the
+   * fire cue's `at` still reads `from` for the whole slide — hand the mover the
+   * HP state and let `visibleKingDamage` drop that side's slot instead.
+   */
+  const moveCues = createMemo(() =>
+    withKingFire(combat.moveCues().filter((c) => moverFxVisible(c)), kingDamage()),
+  );
+
+  /** Sides whose king is a live move hull — that hull paints the fire. */
+  const movingKingColors = createMemo((): ReadonlySet<string> => {
+    const out = new Set<string>();
+    for (const c of moveCues()) if (c.piece === "k") out.add(c.color);
+    return out;
+  });
+
   const visibleKingDamage = createMemo(() => {
     const dying = dyingKingKeys();
     return visibleKingDamageCues(kingDamage(), {
       attackFrom: attackFrom(),
       dyingAt: dying.ats,
       dyingColors: dying.colors,
+      movingColors: movingKingColors(),
       isVisible: pieceFxVisible,
     });
   });
@@ -193,7 +219,6 @@ export const LiveStarChessBoard: Component<{
     return new Set(cues.map((c) => c.at));
   });
 
-  const moveCues = createMemo(() => combat.moveCues().filter((c) => moverFxVisible(c)));
   const jumpCues = createMemo(() => combat.jumpCues().filter((c) => moverFxVisible(c)));
 
   /**
@@ -203,7 +228,7 @@ export const LiveStarChessBoard: Component<{
    */
   const hideSquares = createMemo((): ReadonlySet<Square> => {
     const frame = deriveVisualFrame({
-      attackCues: combat.attackCues(),
+      attackCues: attackCues(),
       attackDying: combat.attackDying(),
       deathCues: combat.deathCues(),
       moveCues: moveCues(),
@@ -221,7 +246,7 @@ export const LiveStarChessBoard: Component<{
   const state = () => store.shell();
 
   const combatFrame = createMemo((): CombatCueFrame => ({
-    attackCues: combat.attackCues(),
+    attackCues: attackCues(),
     attackDying: combat.attackDying(),
     deathCues: combat.deathCues(),
     moveCues: moveCues(),

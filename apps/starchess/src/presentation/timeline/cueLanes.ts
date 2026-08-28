@@ -34,6 +34,7 @@ const REGISTRY: readonly LaneEntry[] = [
   { prefix: "mt", lane: "mine", board: "afterMove" },
   { prefix: "prd", lane: "approach", board: "afterMove" },
   { prefix: "prdth", lane: "approach", board: "afterMove" },
+  { prefix: "prdm", lane: "approach", board: "afterMove" },
   { prefix: "prs", lane: "approach", board: "afterMove" },
   { prefix: "pro", lane: "approach", board: "afterMove" },
   { prefix: "prmm", lane: "mineMissile", board: "afterMove" },

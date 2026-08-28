@@ -38,12 +38,29 @@ note right of MC
   | ""attack"" | a unit that fires at the tile (incl. every capture) | mine dies, mover lives → ""cleared"" |
   | ""walk"" | classical move / fog approach (ray + landing tile) | both die → ""detonated"" |
   | ""arrive"" | gas step · deploy · Tactical Jump | both die → ""detonated"" |
+  | ""walkThenAttack"" | phase-3 fog approach that **captures** | crossed tiles walk, the landing is fired upon |
 
   **A king never trades with a mine.** Its contact is an ""attack"" in *every*
   mode, so the rule is stated once here instead of at each call site:
   * capturing a unit on a mined tile takes **both** the unit and the mine;
   * "walking over" a mine is an **attack/move** — the Command Center shoots the
     tile (""mineBlast"" + ""occupy"", via ""minedEmptyDestination"") and lands.
+  **A blocker draws the shot; a mine never blocks.** That is why the landing tile
+  of a capturing fog approach is ""attack"", not ""walk"": the unit standing there is
+  what stopped the ray, so the shot lands on that tile and takes the mine under
+  it, and the approaching unit occupies alive. Fog changes who *knew*, never who
+  fired at what. Only tiles the approach **crossed** still detonate (that is the
+  chase, with ""chaseFrom""). A ""kingShot"" approach stops *short* and fires from
+  range, so the tile it settles on was never fired upon and stays a walk.
+
+  **A capture reports the mine it took with it.** ""clearOnCapture"" returns the
+  cleared colour and the caller stamps ""mineColor"" on its ""capture"" attack, so
+  the timeline can bury two things on one tile: ""Rxe5"" onto a mined e5 projects
+  the victim's death **and** a ""mine: true"" death beside it (""m"" in phase 1,
+  ""prdm"" on an approach chain). Dropping that field is how the mine used to
+  leave the board with no wreck — it applies to every capturer, not just the
+  king (whose row above is the same rule).
+
   A king therefore never appears in ""detonated"". No mine survives under one
   either, and that holds **structurally**: a king lights its own 1-radius
   neighbourhood, so ""visible0"" is always true for its destination and it always

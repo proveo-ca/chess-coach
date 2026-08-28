@@ -43,6 +43,7 @@ repeat :read cue at ""index"", ""takeWhile"" its batch;
     :trails outlive the cue (CSS fade cleared later, fire-and-forget);
   elseif (move-collision death?) then (yes)
     :death window, then vacate the square in ""displayPlacement"";
+    :a mine among them takes ""spentMines"" too — this lane's ""mineBlast""\nbranch has no producer today, kept honest rather than exercised;
   elseif (mine-trigger death — phase 2 **and** phase-3 approach?) then (yes)
     :commit the ""afterMove"" mine snapshot + ""spentMines"" for the boom tile\n(plus the wake tile a chase left behind), then vacate;
   elseif (simultaneous move wave?) then (yes)
@@ -52,12 +53,22 @@ repeat :read cue at ""index"", ""takeWhile"" its batch;
     :walk-offs in parallel (square vacated at the end), then deploys —\npromoted units are placed **before** the deploy animation so nothing\ndownstream sees a late spawn after ""TIMELINE_DONE"";
   else (sequential tail)
     :approach chains, Tactical Jump, arrival blasts and any leftover cue\nplay one at a time;
+    :a mine death here — ""armm"" / ""qjm"" / ""farmm"", the rungs with no\nbatching handler of their own — takes ""spentMines"" for its tile;
     :a lethal kingShot immediately followed by its king death is fused —\nthe king crumples at frag impact instead of after the full shot;
     :Tactical Jump owns its own travel + trail timing (never a slide);
     :any death vacates its square on completion so a corpse cannot flash\nback between the death VFX and an occupy that follows;
   endif
 
   :advance the board ladder **lazily**: a cue whose ""cue.board"" is past\n""preAfterB"" applies ""afterB""; nothing re-applies a rung;
+
+  note right
+    **Every lane that plays a ""mine: true"" death owes ""spentMines""**
+    (""spentMineSquares""). ""hidden"" gates piece glyphs only; the mine glyph is
+    gated by ""StarChessBoard.showMine()"", which reads ""spentMines"" — so a lane
+    that forgets it leaves an intact mine drawn **under** its own wreck.
+    Omitting the field on a commit means *keep* (""withSquareList""), so one
+    commit at boom start covers the window; the list resets with the resolve.
+  end note
 
 repeat while (more cues?) is (yes)
 ->no;

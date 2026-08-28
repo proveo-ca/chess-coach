@@ -17,7 +17,7 @@ import { InlineKnight } from "~/presentation/animations/pieces/components/Inline
 import { InlinePawn } from "~/presentation/animations/pieces/components/InlinePawn";
 import { InlineQueen } from "~/presentation/animations/pieces/components/InlineQueen";
 import { InlineRook } from "~/presentation/animations/pieces/components/InlineRook";
-import { TEAM_PRIMARY, type PieceColor } from "~/presentation/animations/teamColors";
+import { teamTintStyle, type PieceColor } from "~/presentation/animations/teamColors";
 import type { StarChessPiece, DeployCue } from "~/presentation/types";
 
 const NO_SPECIAL_USED: ReadonlySet<Square> = new Set();
@@ -95,9 +95,9 @@ export const DeployAnimation: Component<DeployAnimationProps> = (props) => {
             }}
             style={{
               ...squareBoxStyle(cue.at, props.boardWidth, props.boardHeight),
-              ...(thrust === "team"
-                ? { "--thrust-team": TEAM_PRIMARY[cue.color] }
-                : {}),
+              // Every thrust reads the tint — the Hoverbike's air jet was blue
+              // for both players because only `team` used to set it.
+              ...teamTintStyle(cue.color),
             }}
             data-deploy-piece={cue.piece}
             data-deploy-kind={kind}

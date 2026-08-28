@@ -274,6 +274,8 @@ describe("spider mine hit — enemy unit + mine both dead", () => {
       "e1",
       "e2",
     );
+    // `mineColor` is what tells the timeline a second wreck belongs on this
+    // tile: one shot, two deaths (the victim and the mine it was standing on).
     expect(r.resolved.attacks).toEqual([
       {
         kind: "capture",
@@ -283,6 +285,7 @@ describe("spider mine hit — enemy unit + mine both dead", () => {
         to: "e2",
         victim: { piece: "p", color: "b" },
         occupies: true,
+        mineColor: "b",
       },
     ]);
     expect(placementToMap(r.next.placement).get("e2")).toEqual({

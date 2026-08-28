@@ -17,6 +17,12 @@ export type {
 
 export type KingDamageState = "pristine" | "smallFire" | "bigFire" | "destroyed";
 
+/**
+ * What a death demo can bury. A spider mine is not a unit — no FEN letter, no
+ * square in the placement — so it rides an SCFEN snapshot instead of a FEN.
+ */
+export type DeathSubject = StarChessPiece | "mine";
+
 export type AttackAnimKind =
   | "pawnRifle"
   | "knightFrag"
@@ -57,6 +63,13 @@ export type MoveCue = {
   queenJump?: boolean;
   /** Pawn gas-step (pawnDouble) — stim travel + hop rate. */
   stim?: boolean;
+  /**
+   * King only: the travelling hull burns for itself. Without these the mover
+   * paints a pristine CC while the persistent fire slot is still parked on
+   * `from`, so a damaged king reads as full HP for the whole slide.
+   */
+  damage?: KingDamageState;
+  seed?: number;
 };
 
 export type DeployCue = {

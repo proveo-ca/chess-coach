@@ -307,25 +307,26 @@ describe("phase-3 fog approaches arm mines", () => {
     expect(mineOn(r, "a3")).toBeUndefined();
   });
 
-  it("fog-discovery capture lands on a mined tile — capture stands, mine takes the attacker", () => {
+  it("fog-discovery capture on a mined tile — the shot takes unit and mine, attacker lands", () => {
+    // The marine is a **blocker**, so it is what stops the ray and draws the
+    // shot; a mine never blocks. One shot on that tile therefore takes both, and
+    // the tank walks in alive — fog changes nothing about who fired at what.
     const r = resolve(
       "SCFEN|4k3/8/p7/8/8/8/8/R3K3|0|33|P|G:11:11|Q:w:;b:|M:w:;b:a6",
       [classical("w", "a1", "a8")],
     );
     expect(r.resolved.pathRevealAttacks).toEqual([
-      expect.objectContaining({ kind: "capture", to: "a6", victim: { piece: "p", color: "b" } }),
-    ]);
-    expect(r.resolved.pathRevealMineTriggers).toEqual([
       expect.objectContaining({
-        kind: "mineBlast",
+        kind: "capture",
         to: "a6",
+        victim: { piece: "p", color: "b" },
+        // What tells the timeline to draw a second wreck on a6.
         mineColor: "b",
-        victim: { piece: "r", color: "w" },
       }),
     ]);
-    // Walk-over on the landing tile — no chase missile.
-    expect(r.resolved.pathRevealMineTriggers[0]).not.toHaveProperty("chaseFrom");
-    expect(pieceAt(r, "a6")).toBeUndefined();
+    expect(r.resolved.pathRevealMineTriggers).toEqual([]);
+    expect(pieceAt(r, "a6")).toEqual({ type: "r", color: "w" });
+    expect(pieceAt(r, "a1")).toBeUndefined();
     expect(mineOn(r, "a6")).toBeUndefined();
   });
 

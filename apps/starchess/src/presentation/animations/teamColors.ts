@@ -16,6 +16,30 @@ export const TEAM_PRIMARY: Record<PieceColor, string> = {
   b: "#a22",
 };
 
+/**
+ * Same swatch as {@link TEAM_PRIMARY}, as an `r, g, b` triplet — VFX that needs
+ * a translucent team tint writes `rgba(var(--team-rgb), 0.4)`.
+ */
+export const TEAM_RGB: Record<PieceColor, string> = {
+  w: "59, 125, 216",
+  b: "170, 34, 34",
+};
+
+/**
+ * The team-tint contract for VFX. Set it on any cue element whose *own* colour
+ * belongs to the player — a Hoverbike's deploy flame and frag boom, a Ship's
+ * laser — then read `--team-tint` / `--team-rgb` in that layer's CSS with the
+ * white swatch as the fallback.
+ *
+ * It must sit on the cue element, never the layer root: a phase-1 window plays
+ * both sides' shots at once, so one tint per layer would paint black's ordnance
+ * blue. Custom properties inherit, so a cue's slot covers its descendants.
+ */
+export const teamTintStyle = (color: PieceColor): Record<string, string> => ({
+  "--team-tint": TEAM_PRIMARY[color],
+  "--team-rgb": TEAM_RGB[color],
+});
+
 export const TEAM_SHADOW: Record<PieceColor, string> = {
   w: "#222",
   b: "#222",

@@ -22,6 +22,7 @@ import {
   charonVolleyStyle,
 } from "~/presentation/animations/bishopCharon";
 import { fragFlightMsCss } from "~/presentation/animations/impactTiming";
+import { teamTintStyle } from "~/presentation/animations/teamColors";
 import {
   aimPoseFor,
   aimTransformCss,
@@ -305,7 +306,10 @@ export const AttackAnimation: Component<AttackAnimationProps> = (props) => {
               <Show when={cue().piece === "q"}>
                 <BoardFx
                   class={styles.laserStar}
-                  style={laserStarStyle(cue(), props.boardWidth, props.boardHeight)!}
+                  style={{
+                    ...laserStarStyle(cue(), props.boardWidth, props.boardHeight)!,
+                    ...teamTintStyle(cue().color),
+                  }}
                 >
                   <div class={styles.laserStarRays} />
                   <div class={styles.laserStarRaysDiag} />
@@ -348,6 +352,8 @@ export const AttackAnimation: Component<AttackAnimationProps> = (props) => {
                   classList={{ [styles[`anim-${anim()}`]]: true }}
                   style={{
                     ...squareBoxStyle(cue().from, props.boardWidth, props.boardHeight),
+                    // Inherited by the hull and the Ship's laser pulse inside it.
+                    ...teamTintStyle(cue().color),
                     // Per-weapon impact; board overlay keeps default FRAG_FLIGHT_MS.
                     "--frag-flight-ms": fragFlightMsCss(anim()),
                     ...(anim() === BISHOP_CHARON
@@ -380,7 +386,10 @@ export const AttackAnimation: Component<AttackAnimationProps> = (props) => {
               <Show when={cue().piece === "n"}>
                 <div
                   class={styles.fragL}
-                  style={fragLStyle(cue(), props.boardWidth, props.boardHeight) ?? undefined}
+                  style={{
+                    ...fragLStyle(cue(), props.boardWidth, props.boardHeight),
+                    ...teamTintStyle(cue().color),
+                  }}
                   aria-hidden="true"
                 >
                   <div class={styles.fragCylinder} />

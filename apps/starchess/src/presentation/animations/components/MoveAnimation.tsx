@@ -83,7 +83,16 @@ const moverNode = (m: MoveCue, opts?: { armed?: boolean }): JSX.Element => {
     case "q":
       return <InlineQueen color={m.color} />;
     case "k":
-      return <InlineKing color={m.color} aimDeg={KING_REST_AIM_DEG} />;
+      // `seed` matches the damage overlay's, so the flames do not jump when
+      // the persistent slot takes the hull back at the end of the slide.
+      return (
+        <InlineKing
+          color={m.color}
+          aimDeg={KING_REST_AIM_DEG}
+          damage={m.damage}
+          seed={m.seed}
+        />
+      );
     default:
       // Pawn: helmet when walking up the board, glass visor when walking down
       // (same camera rule as attackFaceFor — red/black g8→g6 stays front).

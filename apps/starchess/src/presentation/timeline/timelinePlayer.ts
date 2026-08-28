@@ -345,6 +345,18 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
           : {}),
       });
     }
+    // A capture onto a mined tile clears the mine with the same shot — both
+    // wrecks play, side by side in the one death window.
+    if (a.kind === "capture" && a.mineColor) {
+      phase1Deaths.push({
+        kind: "death",
+        id: `m${n++}`,
+        piece: "n",
+        color: a.mineColor,
+        at: a.to,
+        mine: true,
+      });
+    }
     if (a.kind === "mineBlast") {
       phase1Deaths.push({
         kind: "death",
@@ -381,6 +393,16 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
           ? { rookMode: rookModeAt(a.to, sieged) }
           : {}),
       });
+      if (a.mineColor) {
+        cues.push({
+          kind: "death",
+          id: `mcm${n++}`,
+          piece: "n",
+          color: a.mineColor,
+          at: a.to,
+          mine: true,
+        });
+      }
     } else if (a.kind === "mineBlast") {
       cues.push({
         kind: "death",
@@ -481,6 +503,18 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
           ...(a.victim.piece === "r"
             ? { rookMode: rookModeAt(a.to, sieged) }
             : {}),
+        });
+      }
+      // The shot that took the blocker took the mine under it — same tile, its
+      // own wreck, before the occupy slide brings the survivor in.
+      if (a.mineColor) {
+        cues.push({
+          kind: "death",
+          id: `prdm${n++}`,
+          piece: "n",
+          color: a.mineColor,
+          at: a.to,
+          mine: true,
         });
       }
       if (a.occupies) {
@@ -658,6 +692,23 @@ const isMineTriggerDeath = (cue: TimelineCue): boolean =>
   cue.kind === "death" && inLane(cue, "mine");
 
 const isMineMissile = (cue: TimelineCue): boolean => cue.kind === "mineMissile";
+
+/**
+ * Squares whose mine glyph must go dark while its wreck plays. The death layer's
+ * `hidden` covers piece glyphs only — `StarChessBoard.showMine()` reads
+ * `spentMines`, so a lane that skips this draws an intact mine underneath its
+ * own explosion. `spentAt` is the wake square a chasing mine launched from.
+ */
+const spentMineSquares = (
+  deaths: readonly Extract<TimelineCue, { kind: "death" }>[],
+): Square[] =>
+  [
+    ...new Set(
+      deaths
+        .filter((d) => d.mine)
+        .flatMap((d) => (d.spentAt ? [d.at, d.spentAt] : [d.at])),
+    ),
+  ] as Square[];
 
 const isSimulMoveWave = (cue: TimelineCue): boolean =>
   cue.kind === "move" && !cue.queenJump && inLane(cue, "move");
@@ -959,7 +1010,7 @@ export const playTimeline = (
         if (deaths.some((d) => d.at === a.from)) dying[a.id] = true;
       }
 
-      const spentMines = deaths.filter((d) => d.mine).map((d) => d.at);
+      const spentMines = spentMineSquares(deaths);
       const deathStart = scheduler.delay(batchImpactMs, () => {
         if (cancelled) return;
         cb.onCommit({
@@ -1066,11 +1117,13 @@ export const playTimeline = (
     if (!afterBApplied) applyAfterB();
     const { batch, next } = takeWhile(cues, index, isMoveCollisionDeath);
     const deaths = batch as Extract<TimelineCue, { kind: "death" }>[];
+    const spent = spentMineSquares(deaths);
     return runStep({
       begin: () =>
         cb.onCommit({
           hidden: deaths.map((c) => c.at),
           playingIds: deaths.map((c) => c.id),
+          ...(spent.length ? { spentMines: spent } : {}),
           moveProgress: {},
           moveLeg: {},
         }),
@@ -1094,13 +1147,7 @@ export const playTimeline = (
     if (!afterBApplied) applyAfterB();
     const { batch, next } = takeWhile(cues, index, isMineTriggerDeath);
     const deaths = batch as Extract<TimelineCue, { kind: "death" }>[];
-    const spentExtra = [
-      ...new Set(
-        deaths
-          .filter((d) => d.mine)
-          .flatMap((d) => (d.spentAt ? [d.at, d.spentAt] : [d.at])),
-      ),
-    ] as Square[];
+    const spentExtra = spentMineSquares(deaths);
     return runStep({
       begin: () =>
         cb.onCommit({
@@ -1371,6 +1418,9 @@ export const playTimeline = (
     if (cue.kind === "attack") hidden.push(cue.from);
     if (cue.kind === "deploy") hidden.push(cue.at);
     if (cue.kind === "death") hidden.push(cue.at);
+    // bSpecial / arrivalBlast rungs land here — `armm` / `qjm` / `farmm` are
+    // mine deaths with no batching handler of their own.
+    const spent = cue.kind === "death" ? spentMineSquares([cue]) : [];
 
     if (cue.kind === "move") {
       const leg0 = knightLeg0([cue]);
@@ -1408,6 +1458,7 @@ export const playTimeline = (
       cb.onCommit({
         hidden,
         playingIds: [cue.id],
+        ...(spent.length ? { spentMines: spent } : {}),
         moveProgress: {},
         moveLeg: {},
       });

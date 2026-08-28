@@ -20,6 +20,7 @@ const noFog = {
   attackFrom: NONE,
   dyingAt: NONE,
   dyingColors: NONE,
+  movingColors: NONE,
   isVisible: () => true,
 };
 
