@@ -204,6 +204,13 @@ export type MatchState = {
   liveSnapshot: ScFenSnapshot;
   economies: Record<StarChessColor, PlayerEconomy>;
   /**
+   * Minerals moved stored→deployed during the current planning window
+   * (SPEND_STORED on spawn queue − REFUND_STORED / spawn-removal refunds).
+   * Reset at each turn open; REMOVE_ACTION refunds only up to this so seeded
+   * or imported queued spawns never inflate the bank.
+   */
+  planningMineralSpend: Record<StarChessColor, number>;
+  /**
    * Whose fog / input seat is active (live play = human; review VISION may
    * temporarily switch to the Adjutant color).
    */

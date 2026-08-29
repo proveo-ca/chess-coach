@@ -73,7 +73,9 @@ note bottom
   * Fog-first movegen / adjutant (live remains viewer fog;
     DualNav review = observer dual-vision).
   ----
-  **Queue edit:** TurnBar / TurnBarSidebar chips → remove + gas refund.
+  **Queue edit:** TurnBar / TurnBarSidebar chips → remove + gas + Command-Center
+  deploy mineral refund (spawn paid this window returns stored↔deployed per UNIT_COST,
+  refund never exceeds this window's spend).
   Opponent: ""packages/starchess-core/ai/adjutant.ts"" (opposite of team).
 end note
 @enduml

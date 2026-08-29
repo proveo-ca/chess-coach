@@ -32,6 +32,91 @@ describe("matchReducer action surface", () => {
     expect(stuck.liveSnapshot.queue?.actions ?? []).toHaveLength(0);
   });
 
+  it("REMOVE_ACTION refunds Command-Center deploy minerals", () => {
+    let s = load("SCFEN|4k3/8/8/8/8/8/4P3/4K3|11|33|P|G:22:22|Q:w:;b:");
+    s = { ...s, economies: { w: { stored: 4, deployed: 0 }, b: { stored: 4, deployed: 0 } } };
+    // Mirror the board-input spawn flow: spend minerals, then queue the spawn.
+    s = matchReducer(s, { type: "SPEND_STORED", color: "w", amount: 3 });
+    expect(s.planningMineralSpend.w).toBe(3);
+    s = matchReducer(s, {
+      type: "QUEUE_ACTION",
+      action: {
+        timing: "B",
+        kind: "spawn",
+        color: "w",
+        from: "e1",
+        to: "d1",
+        unit: "b",
+      },
+    });
+    expect(s.economies.w.stored).toBe(1);
+    expect(s.economies.w.deployed).toBe(3);
+    const seq = s.liveSnapshot.queue!.actions[0]!.seq;
+    s = matchReducer(s, { type: "REMOVE_ACTION", seq });
+    expect(s.liveSnapshot.queue?.actions ?? []).toHaveLength(0);
+    expect(s.economies.w.stored).toBe(4);
+    expect(s.economies.w.deployed).toBe(0);
+    expect(s.planningMineralSpend.w).toBe(0);
+    // Removing a non-spawn action never touches the bank.
+    const again = matchReducer(s, { type: "REMOVE_ACTION", seq: 999 });
+    expect(again.economies.w.stored).toBe(4);
+  });
+
+  it("REMOVE_ACTION does not refund a seed-imported queued spawn", () => {
+    // A deep-link seed carries the spawn on the queue but never debited the
+    // bank — refunding it would inflate the bank.
+    let s = load(
+      "SCFEN|4k3/8/8/8/8/8/4P3/4K3|1|33|P|G:01:11|Q:w:B=spawn:e1:d1:p;b:",
+    );
+    const seq = s.liveSnapshot.queue!.actions[0]!.seq;
+    expect(s.economies.w.stored).toBe(3);
+    s = matchReducer(s, { type: "REMOVE_ACTION", seq });
+    expect(s.liveSnapshot.queue?.actions ?? []).toHaveLength(0);
+    expect(s.economies.w.stored).toBe(3);
+  });
+
+  it("refunds never cross colors or inflate the bank (ledger is per-side)", () => {
+    // Seed queues an UNPAID white deploy p (e1→d1) while the black side spends
+    // and queues its own bishop deploy. Removing the white spawn must not pull
+    // from black's ledger, and black's own removal must refund fully.
+    let s = load(
+      "SCFEN|4k3/8/8/8/8/8/4P3/4K3|1|33|P|G:01:11|B:4:4|Q:w:B=spawn:e1:d1:p;b:",
+    );
+    const whiteSeq = s.liveSnapshot.queue!.actions[0]!.seq;
+    s = matchReducer(s, { type: "SPEND_STORED", color: "b", amount: 3 });
+    s = matchReducer(s, {
+      type: "QUEUE_ACTION",
+      action: {
+        timing: "B",
+        kind: "spawn",
+        color: "b",
+        from: "e8",
+        to: "d8",
+        unit: "b",
+      },
+    });
+    expect(s.economies.b.stored).toBe(1);
+    const blackSeq = s.liveSnapshot.queue!.actions[1]!.seq;
+
+    s = matchReducer(s, { type: "REMOVE_ACTION", seq: whiteSeq });
+    expect(s.economies.w.stored).toBe(4);
+    expect(s.economies.b.stored).toBe(1);
+
+    s = matchReducer(s, { type: "REMOVE_ACTION", seq: blackSeq });
+    expect(s.economies.b.stored).toBe(4);
+    expect(s.economies.b.deployed).toBe(0);
+    expect(s.planningMineralSpend.b).toBe(0);
+  });
+
+  it("TURN_OPEN resets the mineral-spend ledger for the next window", () => {
+    let s = load();
+    s = matchReducer(s, { type: "SPEND_STORED", color: "w", amount: 2 });
+    expect(s.planningMineralSpend.w).toBe(2);
+    s = matchReducer(s, { type: "TURN_OPEN" });
+    expect(s.planningMineralSpend.w).toBe(0);
+    expect(s.planningMineralSpend.b).toBe(0);
+  });
+
   it("OPEN_* targeting, CANCEL, MARK, APPLY_SNAPSHOT", () => {
     let s = load();
     s = matchReducer(s, { type: "OPEN_SPAWN", unit: "n", color: "w" });
