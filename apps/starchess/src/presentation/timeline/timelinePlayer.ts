@@ -25,6 +25,7 @@ import {
   CRUSH_DEATH_MS,
   MINE_MISSILE_MS,
   MINE_TRAIL_MS,
+  SETTLE_MS,
 } from "~/presentation/constants";
 import {
   TACTICAL_JUMP_APPEAR_MS,
@@ -1235,7 +1236,11 @@ export const playTimeline = (
       cancels.push(elbow);
     }
     return runStep({
-      durationMs: Math.max(1, ...moves.map((c) => cueDuration(c))),
+      durationMs:
+        Math.max(1, ...moves.map((c) => cueDuration(c))) +
+        // Hoverbike / battleship settle into rest at touchdown; the mover must
+        // stay mounted for the unwind transition to complete before hand-off.
+        (moves.some((c) => c.piece === "n" || c.piece === "q") ? SETTLE_MS : 0),
       end: () => {
         for (const m of moves) {
           if (isBoardSquare(m.to)) {
@@ -1491,7 +1496,14 @@ export const playTimeline = (
     }
 
     return runStep({
-      durationMs: cueDuration(cue),
+      durationMs:
+        cueDuration(cue) +
+        // Hoverbike / battleship settle into rest at touchdown; the mover must
+        // stay mounted for the unwind transition to complete before hand-off
+        // (approach-lane queen slides land here, not in the wave handler).
+        (cue.kind === "move" && (cue.piece === "n" || cue.piece === "q")
+          ? SETTLE_MS
+          : 0),
       next: index + 1,
       end: () => {
       if (cue.kind === "move" && isBoardSquare(cue.to)) {

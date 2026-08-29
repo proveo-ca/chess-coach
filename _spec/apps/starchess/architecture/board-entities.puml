@@ -153,10 +153,11 @@ package "presentation/pieces (units)" {
     Rest pose == apps/ui/public/pieces/nerd/*.svg — same
     PIECE_FRAME nest, same main stroke, no aim normalize.
     Aiming applies that normalize as a CSS transform
-    (`styles/unitPose.css` .sc-unit-pose) so a mover can
-    **settle** back to rest over SETTLE_MS before the overlay
-    hands the square to PieceGlyph; a CSS transition cannot
-    span that unmount.
+    (`styles/unitPose.css` .sc-unit-pose) so a mover settles
+    back to rest over SETTLE_MS **at touchdown**; the move wave
+    holds the mover one SETTLE_MS past arrival so the unwind
+    finishes before the overlay hands the square to PieceGlyph
+    (a CSS transition cannot span that unmount).
   end note
 
 }

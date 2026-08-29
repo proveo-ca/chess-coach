@@ -14,6 +14,7 @@ import {
 } from "~/presentation/timeline/timelinePlayer";
 import { splitResolveWaves } from "~/presentation/timeline/resolveWaves";
 import { laneFor } from "~/presentation/timeline/cueLanes";
+import { SETTLE_MS } from "~/presentation/constants";
 
 describe("cueLanes routing", () => {
   // Every emitted id shape must route to its intended lane — a future prefix
@@ -1273,6 +1274,49 @@ describe("timelinePlayer", () => {
     expect(elbow).toBeTruthy();
     elbow!.fn();
     expect(legLog.some((l) => l[knightId] === 1)).toBe(true);
+
+    while (jobs.length) jobs.shift()!.fn();
+  });
+
+  it("holds a knight move one settle window past touchdown for the idle unwind", () => {
+    let snap = parseScFen(
+      "SCFEN|4k3/8/8/8/8/8/8/1N2K3|0|33|P|G:11:11|Q:w:;b:",
+    );
+    snap = addScAction({
+      snapshot: snap,
+      action: {
+        timing: "C",
+        kind: "classical",
+        color: "w",
+        from: "b1",
+        to: "c3",
+      },
+    }).snapshot;
+    const result = endScTurn(snap, { skipTurnStartChecks: true });
+
+    type Job = { ms: number; fn: () => void };
+    const jobs: Job[] = [];
+    const scheduler = {
+      delay: (ms: number, fn: () => void) => {
+        jobs.push({ ms, fn });
+        return () => undefined;
+      },
+    };
+    const moves = new Set<string>();
+    playTimeline(result, scheduler, {
+      onStart: () => undefined,
+      onCommit: (patch) => {
+        if (patch.playingIds) for (const id of patch.playingIds) moves.add(id);
+      },
+      onDone: () => undefined,
+    });
+
+    // Knight travel = 3 squares × 100 = 300; settle hold extends the wave to 560.
+    const moveId = [...moves].find((id) => id.startsWith("c"));
+    expect(moveId).toBeTruthy();
+    // The elbow beat stays at 200 (facing flip), the wave end lands on 560.
+    expect(jobs.some((j) => j.ms === 200)).toBe(true);
+    expect(jobs.some((j) => j.ms === 300 + SETTLE_MS)).toBe(true);
 
     while (jobs.length) jobs.shift()!.fn();
   });

@@ -221,8 +221,11 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
          * Units whose art is normalized for aiming (hoverbike, battleship) must
          * be back in their resting silhouette *before* this mover unmounts and
          * the board glyph takes the square — a CSS transition cannot span that
-         * hand-off. Releasing the aim one settle-window short of touchdown lets
-         * the rotation land with the slide instead of snapping after it.
+         * hand-off. The aim is released **at touchdown** (not a settle-window
+         * early), so the unwind only starts once the hull is parked on `to`. The
+         * move wave's duration is extended by {@link SETTLE_MS} for these pieces
+         * (`timelinePlayer` handleMoveWave), keeping the mover mounted long
+         * enough for the transition to complete before the overlay unmounts.
          */
         const [settling, setSettling] = createSignal(false);
         createEffect(() => {
@@ -230,7 +233,7 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
             setSettling(false);
             return;
           }
-          const releaseAt = Math.max(0, travelMs() - SETTLE_MS);
+          const releaseAt = Math.max(0, travelMs());
           const t = setTimeout(() => setSettling(true), releaseAt);
           onCleanup(() => clearTimeout(t));
         });
