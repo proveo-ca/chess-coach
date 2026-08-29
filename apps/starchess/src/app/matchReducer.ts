@@ -107,6 +107,7 @@ const seedFromSnap = (snap: ScFenSnapshot, stored: number): MatchState => {
     phase: outcome ? "gameOver" : "planning",
     liveSnapshot: stamped,
     economies,
+    planningMineralSpend: { w: 0, b: 0 },
     viewer: "w",
     playerColor: "w",
     deadlineAt: null,
@@ -233,9 +234,38 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
         });
         const specialsUsed = new Set(state.specialsUsed);
         if (removed.timing !== "C") specialsUsed.delete(removed.from);
+        // Cancelling a Command-Center deploy returns the minerals invested in
+        // it this planning window only — seeded/deep-link spawns never spent a
+        // bank, so issuing them a refund would inflate the bank. Gas refunds
+        // live in core removeScAction.
+        let economies = state.economies;
+        let planningMineralSpend = state.planningMineralSpend;
+        if (removed.kind === "spawn" && removed.unit != null) {
+          const refund = Math.min(
+            UNIT_COST[removed.unit],
+            planningMineralSpend[removed.color],
+          );
+          if (refund > 0) {
+            const eco = economies[removed.color];
+            economies = {
+              ...economies,
+              [removed.color]: {
+                stored: Math.min(MAX_STORED_MATERIAL, eco.stored + refund),
+                deployed: Math.max(0, eco.deployed - refund),
+              },
+            };
+            planningMineralSpend = {
+              ...planningMineralSpend,
+              [removed.color]:
+                planningMineralSpend[removed.color] - refund,
+            };
+          }
+        }
         return {
           ...state,
-          liveSnapshot: stampSnapStored(snapshot, state.economies),
+          liveSnapshot: stampSnapStored(snapshot, economies),
+          economies,
+          planningMineralSpend,
           specialsUsed,
           statusText: "Action removed",
         };
@@ -316,6 +346,10 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
       return {
         ...state,
         economies,
+        planningMineralSpend: {
+          ...state.planningMineralSpend,
+          [action.color]: state.planningMineralSpend[action.color] + action.amount,
+        },
         liveSnapshot: stampSnapStored(state.liveSnapshot, economies),
       };
     }
@@ -331,6 +365,13 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
       return {
         ...state,
         economies,
+        planningMineralSpend: {
+          ...state.planningMineralSpend,
+          [action.color]: Math.max(
+            0,
+            state.planningMineralSpend[action.color] - action.amount,
+          ),
+        },
         liveSnapshot: stampSnapStored(state.liveSnapshot, economies),
       };
     }
@@ -412,7 +453,8 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
           stripUsed(refillTurnGas(s.liveSnapshot)),
           s.economies,
         );
-        return { ...s, liveSnapshot: live };
+        // New planning window — the mineral-spend ledger restarts.
+        return { ...s, liveSnapshot: live, planningMineralSpend: { w: 0, b: 0 } };
       };
       try {
         const begun = beginScTurn(state.liveSnapshot);
