@@ -48,7 +48,7 @@ repeat :read cue at ""index"", ""takeWhile"" its batch;
     :commit the ""afterMove"" mine snapshot + ""spentMines"" for the boom tile\n(plus the wake tile a chase left behind), then vacate;
   elseif (simultaneous move wave?) then (yes)
     :group by ""cue.group"" — B gas steps, classical, F steps each form one\nwave; opposing sides move together;
-    :progress 0 → 1 on the next frame drives the slide; knights flip their\nleg at the elbow; window = slowest cue in the batch;
+    :progress 0 → 1 on the next frame drives the slide; knights flip their\nleg at the elbow; a hoverbike/battleship wave is held one SETTLE_MS\npast touchdown so the aim→rest unwind lands before hand-off;\nwindow = slowest cue in the batch + that settle hold;
   elseif (promo walk-off / promo deploy?) then (yes)
     :walk-offs in parallel (square vacated at the end), then deploys —\npromoted units are placed **before** the deploy animation so nothing\ndownstream sees a late spawn after ""TIMELINE_DONE"";
   else (sequential tail)
