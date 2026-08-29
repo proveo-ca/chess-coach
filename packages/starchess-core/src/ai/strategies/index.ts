@@ -5,7 +5,7 @@
  * Registry order is the tie-break order — plans proposed earlier win an exact
  * score tie, because the final ranking sort is stable.
  *
- * // SPEC: _spec/apps/starchess/core/adjutant/opponent-strategy.puml
+ * // SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
  */
 
 import { specialGasCost } from "../../scfen";

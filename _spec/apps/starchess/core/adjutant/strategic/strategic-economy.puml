@@ -1,0 +1,50 @@
+@startuml strategic-economy
+' SPEC: _spec/apps/starchess/core/adjutant/strategic/strategic-economy.puml
+' purpose: ADJUTANT (SCRIPT STRATEGIC) — Command Center economy reacts to the known-vs-seen dials.
+!include ../../../../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess · Strategic economy — deploy dials on known-vs-seen
+
+package "Inputs" {
+  database "kvs\nknown · scouted · captured" as KVS <<db>>
+  component "bank · unit mix · king proximity" as BANK <<db>>
+  component "kingThreatened" as HOT <<app>>
+}
+
+package "Strategic economy" {
+  component "strategies/economy.ts\ndeploys()" as ECO <<app>>
+  package "Dials" {
+    component "QUEEN_FINISH 3200\nwinning ∧ gap = 0 ∧ bank ≥ 9" as SHIP <<app>>
+    component "HIDDEN_GUARD 1450\ngap > 0 (cheese window)" as GUARD <<app>>
+    component "skip p/n\nwinning ∧ gap = 0 ∧ bank < 9" as SAVE <<app>>
+  }
+}
+
+package "Deploy choice" {
+  database "Command Center\nB: spawn unit" as DROP <<db>>
+}
+
+KVS ARROW_MAIN ECO : gap = known − (scouted − captured)
+BANK ARROW_OPTIONAL ECO : deployPolicy (naive)
+HOT ARROW_OPTIONAL ECO : survival outranks saving
+ECO ARROW_OPTIONAL SHIP : close the game
+ECO ARROW_OPTIONAL GUARD : rook guard vs unseen
+ECO ARROW_OPTIONAL SAVE : bank toward a ship
+SHIP ARROW_MAIN DROP : drop ""q"" at King perimeter
+GUARD ARROW_MAIN DROP : rook / shore pawns
+SAVE ARROW_MAIN DROP : wait (no light drops)
+
+note bottom
+  **Rules, in priority order:**
+  * ""kingThreatened"" — survival dials dominate (unchanged from naive).
+  * ""gap > 0"" — hidden enemy material (promotion runner / cheese):
+    defense outranks saving; rook guard ""HIDDEN_GUARD""; ship rush cancelled.
+  * ""winning ∧ gap = 0"" — our board + captures exceed what the enemy
+    knows: rush the BattleShip once the bank pays for a queen
+    (""QUEEN_FINISH"") and skip pawn / hoverbike drops that delay it.
+  * otherwise — naive deploy mix, unchanged.
+end note
+@enduml

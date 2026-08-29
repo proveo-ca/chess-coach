@@ -10,7 +10,7 @@
  * every input comes from {@link AdjutantCtx}, and the posture-dependent dials
  * arrive pre-resolved in `ctx.weights`.
  *
- * // SPEC: _spec/apps/starchess/core/adjutant/opponent-strategy.puml
+ * // SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
  */
 
 import type { AdjutantCtx, Candidate, MoveEval } from "../context";

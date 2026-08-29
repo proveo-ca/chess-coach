@@ -1,0 +1,52 @@
+@startuml index
+' SPEC: _spec/packages/starchess-arena/index.puml
+' purpose: StarChess script-arena spec map (packages/starchess-arena).
+!include ../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess Arena · Spec Map (_spec/packages/starchess-arena)
+
+package "_spec/packages/starchess-arena" {
+  component "arena.puml\nheadless match runner (PLANNED)" as ARENA <<app>>
+}
+
+package "packages/starchess-arena/src" {
+  component "run/runMatch.ts" as RUN <<app>>
+  component "players/{naive,strategic,kvs}.ts" as PL <<app>>
+  component "feed/types.ts\nEngineFeed contract" as FEED <<host>>
+  component "record/record.ts" as REC <<app>>
+  component "compare/compare.ts" as CMP <<app>>
+  component "cli/main.ts" as CLI <<app>>
+}
+
+package "packages/starchess-core/src (shared)" {
+  component "replay/{fen,record}.ts · rules/economy.ts (PLANNED)" as CORE <<app>>
+}
+
+package "apps/server (Bun)" {
+  component "src/feed/*\nStarChessFeed · pool (PLANNED)" as FEEDIMPL <<app>>
+}
+
+package "apps/starchess" {
+  component "replay-import.puml\n?game= / ?scfens= replay (PLANNED)" as REPLAY <<app>>
+}
+
+ARENA ARROW_MAIN RUN
+ARENA ARROW_MAIN PL
+ARENA ARROW_MAIN REC
+ARENA ARROW_OPTIONAL CMP
+ARENA ARROW_MAIN CLI : consumes
+PL ARROW_OPTIONAL FEED : implements
+REC ARROW_OPTIONAL REPLAY : replayed by
+CORE ARROW_MAIN RUN : income · projector · record
+FEEDIMPL ARROW_MAIN FEED : implements
+CLI ARROW_OPTIONAL FEEDIMPL : --engine runs
+
+note bottom
+  All source anchors currently PLANNED — attach """
+  // SPEC:"" refs when Phase-1/2/3 implementation lands.
+  Arena package must stay DOM/worker/fetch-free.
+end note
+@enduml

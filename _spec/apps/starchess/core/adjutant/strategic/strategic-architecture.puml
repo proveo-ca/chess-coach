@@ -1,0 +1,59 @@
+@startuml strategic-architecture
+' SPEC: _spec/apps/starchess/core/adjutant/strategic/strategic-architecture.puml
+' purpose: ADJUTANT (SCRIPT STRATEGIC) — orchestrator layers on the naive base + known-vs-seen dials.
+!include ../../../../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess · Adjutant difficulty: ADJUTANT (SCRIPT STRATEGIC) — architecture
+
+package "App trigger" {
+  component "LiveLessonHost / MatchStore\nautoQueueOpponent" as TRIG <<host>>
+  database "host-threaded kvs\nacross turns" as KVS <<db>>
+}
+
+package "Strategic" {
+  component "ai/strategic/orchestrator.ts" as STRAT <<app>>
+  component "ai/strategic/context.ts\nbuildStrategicCtx" as CTX <<app>>
+  component "ai/strategic/intel.ts\nknown-vs-seen model" as INTEL <<app>>
+  package "ai/strategic/strategies" {
+    component "economy\nStrategicStrategy" as SSE <<app>>
+  }
+}
+
+package "Naive base (unchanged)" {
+  component "ai/context · ai/strategies · ai/plans\nbuildAdjutantCtx + naive concerns" as BASE <<app>>
+}
+
+package "Command (same as human)" {
+  component "addScAction\nqueue-action + validation" as Q <<async>>
+  database "ScFenSnapshot Q:" as SNAP <<db>>
+}
+
+TRIG ARROW_MAIN STRAT : snap in (opposite side) + storedFor
+TRIG ARROW_OPTIONAL KVS : kvs via ctx (absent → estimate)
+STRAT ARROW_MAIN CTX : build once per turn
+CTX ARROW_MAIN BASE : buildAdjutantCtx (read-only)
+CTX ARROW_OPTIONAL INTEL : estimateKnownVsSeen\nwhen kvs absent
+CTX ARROW_MAIN INTEL : cheesePromotion · winning\nfrom kvs
+STRAT ARROW_MAIN SSE : generate deploys (economy)
+SSE ARROW_OPTIONAL BASE : reuse constants + deployPolicy
+STRAT ARROW_MAIN BASE : score classical moves\n(delegation, concerns land later)
+STRAT ARROW_MAIN Q : commit chosen plan
+Q ARROW_MAIN SNAP : gated write
+TRIG ARROW_OPTIONAL SNAP : APPLY_SNAPSHOT / store merge\n(one clock — no bypass reduce rules)
+
+note bottom
+  **Pattern:** Strategy → Command; same turn shape as naive.
+  **Layering:** strategic = naive context + strategies, plus the
+  known-vs-seen dials (""kvs"" / ""cheesePromotion"" / ""winning"").
+  **Delegation:** while strategic categories (mapControl · captures ·
+  survival · checks · threats) are still rolling out, classical-move
+  scores come from the naive concern set; each category layers in.
+  **Planned (not yet wired):** async Stockfish enhancer (""apps/ui/src/engine"" +
+  off-main-thread worker) plus periodic ""knownForTurn""/gap persistence.
+  **Forbidden:** the pure core calling the engine, mutating the context,
+  or bypassing ""addScAction"" gates.
+end note
+@enduml

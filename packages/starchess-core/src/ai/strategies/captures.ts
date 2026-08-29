@@ -6,7 +6,7 @@
  * gap; down-trades stay barely tempting so they only win when another concern
  * (survival, checks) is already paying for the move.
  *
- * // SPEC: _spec/apps/starchess/core/adjutant/opponent-strategy.puml
+ * // SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
  */
 
 import { charonTargetQueenFromPlacement } from "../../rules/specials/bishopCharon";

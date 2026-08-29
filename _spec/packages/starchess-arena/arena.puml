@@ -1,0 +1,65 @@
+@startuml arena
+' SPEC: _spec/packages/starchess-arena/arena.puml
+' purpose: HEADLESS SCRIPT ARENA — adjutant scripts play each other via the pure SCFEN engine; games recorded for replay.
+' status: PLANNED — anchors to packages/starchess-arena/src/** on implementation.
+!include ../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess · Script Arena — pure-engine match runner
+
+package "packages/starchess-arena (pure, node/bun)" {
+  component "runMatch\nbeginScTurn / endScTurn loop" as RUN <<app>>
+  component "cli/main.ts\n--pairing --seeds --out" as CLI <<app>>
+  package "players" {
+    component "naive.ts\nadjutant() sync" as PW <<app>>
+    component "strategic.ts\nstrategicAdjutant() + feed" as PS <<app>>
+    component "kvs.ts\narena-owned accumulator" as KVS <<app>>
+  }
+  component "record.ts\nscfens + resolves" as REC <<app>>
+  component "compare.ts\nsummarize → scoreboard" as CMP <<app>>
+  component "feed/types.ts\nEngineFeed contract" as FEED <<host>>
+}
+
+package "packages/starchess-core (pure SCFEN engine)" {
+  component "beginScTurn · endScTurn\naddScAction · scOutcome" as CORE <<app>>
+  component "adjutant / strategicAdjutant\ndeterministic scripts" as AI <<app>>
+}
+
+package "node service (Bun)" {
+  component "StarChessFeed\n+ pool (implements EngineFeed)" as IMPL <<app>>
+}
+
+database "arena records\nJSONL files" as STORE <<db>>
+
+RUN ARROW_MAIN CORE : beginScTurn → plan → endScTurn (per turn)
+CLI ARROW_MAIN RUN : seeds · pairing · out dir
+RUN ARROW_MAIN PS : plan(snap, {color, kvs})
+RUN ARROW_MAIN PW : plan(snap, {color})
+PS ARROW_OPTIONAL KVS : thread known-vs-seen
+PS ARROW_OPTIONAL FEED : evaluate FEN projections
+FEED ARROW_MAIN IMPL : getEvaluation (bounded movetime)
+AI ARROW_MAIN CORE : commit through addScAction only
+RUN ARROW_MAIN REC : { scfen, resolve } per settled ply
+REC ARROW_MAIN STORE : write record
+RUN ARROW_OPTIONAL CMP : summarize(runs)
+
+note bottom
+  **Loop:** ""beginScTurn"" (sole turn-open owner; chip plies recorded with
+  ""beginScTurn.next"") → per side ""script(snap)"" (fixed ""[w, b]"" order)
+  → ""endScTurn({skipTurnStartChecks})"" → stored income → next turn.
+  **Recording rule:** the settled ply is ""{ scfen: normalizeSnapGas(resolve.next),
+  resolve }"" — never the pre-resolve snapshot — so ""resolves[i]"" produced
+  ""scfens[i+1]"" exactly as the app replay expects.
+  **Owned by the arena:** mineral bank ({w,b}) and per-side ""KnownVsSeen"".
+  **Illegality is impossible by construction:** scripts commit via the core's
+  ""addScAction"" gate; the engine only rescues candidate *scores*.
+  **Termination:** ""maxTurns"" cap → draw by stall; both-null rejected;
+  ""endScTurn"" throw → run marked aborted, never a crash.
+  **Determinism:** ""engine:false"" + fixed ""mapSeed"" → equal scfens+resolves
+  payloads (metadata excluded). The recorded resolves are authoritative for
+  replay (replay never re-runs stockfish).
+  **Status:** PLANNED — files land with Phase-1 of the arena plan.
+end note
+@enduml

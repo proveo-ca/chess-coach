@@ -5,7 +5,7 @@
  * this object and nothing else — if a strategy needs a new board fact, it is
  * derived here rather than recomputed inside the scoring pass.
  *
- * // SPEC: _spec/apps/starchess/core/adjutant/opponent-strategy.puml
+ * // SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
  */
 
 import type { Square } from "chess.js";

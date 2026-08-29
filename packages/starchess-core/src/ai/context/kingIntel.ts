@@ -8,7 +8,7 @@
  *  3. Deployed non-pawns — Command Center drops beside the King.
  * With no cues, fall back to enemy home (`e2` / `e7`).
  *
- * // SPEC: _spec/apps/starchess/core/adjutant/opponent-strategy.puml
+ * // SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
  */
 
 import type { Square } from "chess.js";

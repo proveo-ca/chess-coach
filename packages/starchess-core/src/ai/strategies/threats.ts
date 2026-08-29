@@ -6,7 +6,7 @@
  * BattleShip) or checks (the enemy King). What is left is the quiet mistake of
  * parking a unit on a square the enemy already covers.
  *
- * // SPEC: _spec/apps/starchess/core/adjutant/opponent-strategy.puml
+ * // SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
  */
 
 import type { AdjutantCtx, MoveEval } from "../context";

@@ -5,7 +5,7 @@
  * concern proposed with a move another concern scored, so it belongs to the
  * orchestration layer that can see both.
  *
- * // SPEC: _spec/apps/starchess/core/adjutant/opponent-strategy.puml
+ * // SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
  */
 
 import type { Square } from "chess.js";

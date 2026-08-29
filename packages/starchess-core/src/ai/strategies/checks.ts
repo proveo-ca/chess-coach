@@ -9,7 +9,7 @@
  * A classical move onto the King square is dropped by the resolver, so every
  * term here rewards establishing a ray from the landing square instead.
  *
- * // SPEC: _spec/apps/starchess/core/adjutant/opponent-strategy.puml
+ * // SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
  */
 
 import { attacksSquare, isSquareAttackedBy } from "../../board/placement";

@@ -9,7 +9,7 @@
  *  - skip light drops entirely once the bank can pay for a Tank or better,
  *    unless the King is hot (survival buys time) or we still owe a Mecha.
  *
- * // SPEC: _spec/apps/starchess/core/adjutant/opponent-strategy.puml
+ * // SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
  */
 
 import { isSquareAttackedBy } from "../../board/placement";

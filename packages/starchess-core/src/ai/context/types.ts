@@ -5,7 +5,7 @@
  * The context is built once per planning turn (see `context/index.ts`) and is
  * read-only from there on: strategies may not mutate it.
  *
- * // SPEC: _spec/apps/starchess/core/adjutant/opponent-strategy.puml
+ * // SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
  */
 
 import type { Square } from "chess.js";

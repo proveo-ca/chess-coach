@@ -2,7 +2,7 @@
  * Board geometry and square-shape questions the Adjutant asks every turn.
  * Pure functions over a placement map — no snapshot, no strategy opinions.
  *
- * // SPEC: _spec/apps/starchess/core/adjutant/opponent-strategy.puml
+ * // SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
  */
 
 import type { Square } from "chess.js";

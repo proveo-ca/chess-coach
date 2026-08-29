@@ -4,7 +4,7 @@
  * 3) whether any enemy unit can check our King in one move ·
  * 4) squares of those checkers / future checkers.
  *
- * // SPEC: _spec/apps/starchess/core/adjutant/opponent-strategy.puml
+ * // SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
  */
 
 import type { Square } from "chess.js";

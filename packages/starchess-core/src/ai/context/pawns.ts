@@ -1,7 +1,7 @@
 /**
  * Marine (pawn) structure questions: promotion distance and file congestion.
  *
- * // SPEC: _spec/apps/starchess/core/adjutant/opponent-strategy.puml
+ * // SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
  */
 
 import type { Square } from "chess.js";

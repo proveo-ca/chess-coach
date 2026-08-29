@@ -3,7 +3,7 @@
  * Observations only — the deploy *policy* built on top lives in
  * `strategies/economy.ts`.
  *
- * // SPEC: _spec/apps/starchess/core/adjutant/opponent-strategy.puml
+ * // SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
  */
 
 import type { Square } from "chess.js";

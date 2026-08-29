@@ -199,3 +199,20 @@ export {
   type AdjutantResult,
   type AdjutantContext,
 } from "./ai/adjutant";
+
+export {
+  strategicAdjutant,
+  buildStrategicCtx,
+  seedKnownVsSeen,
+  knownForTurn,
+  combineKnownVsSeen,
+  estimateKnownVsSeen,
+  detectCheesePromotion,
+  hasHiddenMaterial,
+  hiddenMaterial,
+  isWinning,
+  type StrategicResult,
+  type StrategicCtx,
+  type StrategicAdjutantContext,
+  type KnownVsSeen,
+} from "./ai/strategic";

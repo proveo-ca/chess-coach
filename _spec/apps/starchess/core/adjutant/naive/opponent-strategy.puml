@@ -1,12 +1,12 @@
-@startuml opponent-strategy
-' SPEC: _spec/apps/starchess/core/adjutant/opponent-strategy.puml
-' purpose: Strategy — full-turn plan search; commits only through addScAction.
-!include ../../../../themes/proveo.puml
+@startuml opponent-strategy-naive
+' SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
+' purpose: ADJUTANT (SCRIPT NAIVE) — deterministic plan search; commits only through addScAction.
+!include ../../../../../themes/proveo.puml
 
 skinparam packageStyle rectangle
 skinparam defaultTextAlignment left
 
-title StarChess · Opponent strategy (plan)
+title StarChess · Adjutant difficulty: ADJUTANT (SCRIPT NAIVE) — opponent strategy (plan)
 
 package "App trigger" {
   component "BaseScreen / MatchStore\nautoQueueOpponent" as TRIG <<host>>

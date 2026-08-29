@@ -1,7 +1,7 @@
 /**
  * Spider Mine siting and hub occupancy — the map-control read of the board.
  *
- * // SPEC: _spec/apps/starchess/core/adjutant/opponent-strategy.puml
+ * // SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
  */
 
 import type { Square } from "chess.js";
