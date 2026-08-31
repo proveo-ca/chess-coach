@@ -82,3 +82,43 @@ describe("matchSessionStore", () => {
     clearMatchSession();
   });
 });
+
+describe("the resume blob remembers the opponent script", () => {
+  afterEach(() => localStorage.clear());
+
+  const blobFor = (opponent?: "naive" | "strategic") =>
+    matchSessionFromState(createInitialMatchState(), "eclipse", {
+      id: "sc-1",
+      startedAt: "2026-01-01T00:00:00.000Z",
+      opponent,
+    });
+
+  it("round-trips the script", () => {
+    saveMatchSession(blobFor("strategic"));
+    expect(loadMatchSession()?.opponent).toBe("strategic");
+  });
+
+  it("stays absent when none is supplied", () => {
+    saveMatchSession(blobFor());
+    expect(loadMatchSession()?.opponent).toBeUndefined();
+  });
+
+  it("still loads blobs written before the field existed", () => {
+    // v stays 1 — the field is additive, so old sessions must survive a reload
+    // rather than being discarded mid-match.
+    const { opponent: _drop, ...legacy } = blobFor("strategic");
+    localStorage.setItem(MATCH_SESSION_KEY, JSON.stringify(legacy));
+    const loaded = loadMatchSession();
+    expect(loaded).not.toBeNull();
+    expect(loaded?.opponent).toBeUndefined();
+    expect(loaded?.scfen.startsWith("SCFEN|")).toBe(true);
+  });
+
+  it("drops an unrecognised script instead of failing the whole resume", () => {
+    const blob = { ...blobFor("naive"), opponent: "wildcard" };
+    localStorage.setItem(MATCH_SESSION_KEY, JSON.stringify(blob));
+    const loaded = loadMatchSession();
+    expect(loaded).not.toBeNull();
+    expect(loaded?.opponent).toBeUndefined();
+  });
+});

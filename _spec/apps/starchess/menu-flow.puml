@@ -64,6 +64,11 @@ note bottom
   ``StarChessGameRecord``: records saved before the select shipped carry none
   and keep reading as the unqualified ``Adjutant``. ``arenaPlayers`` still wins
   for imported arena games, which name both sides.
+  The resume blob carries it too (``MatchSessionBlob.opponent``, still ``v: 1``
+  — additive and optional), so a bare ``/single`` with a live session resumes on
+  the right script. Resolution order: ``?opponent=`` wins, else the blob, else
+  ``naive``. A session whose script disagrees is **not** resumed — that is a
+  different game, not the same one on a different opponent.
   Live gameOver → ``matchHistory`` + ``MatchResultModal``
   (``VICTORY`` / ``DEFEAT`` / ``DRAW``): **Another Game** remounts
   ``/single?map=&team=&opponent=``; **Replay** → ``/review/:id`` DualNav.

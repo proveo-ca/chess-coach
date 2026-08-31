@@ -57,10 +57,6 @@ const parseMap = (raw: string | string[] | undefined): BoardVariant => {
 const parseTeam = (raw: string | string[] | undefined): StarChessColor =>
   asOne(raw) === "b" ? "b" : "w";
 
-const parseOpponent = (raw: string | string[] | undefined): AdjutantKind => {
-  const v = asOne(raw);
-  return isAdjutantKind(v) ? v : "naive";
-};
 
 type MatchBootstrap = {
   matchId: string;
@@ -74,6 +70,7 @@ type MatchBootstrap = {
 const bootstrapMatch = (
   map: BoardVariant,
   team: StarChessColor,
+  opponent: AdjutantKind,
   opts: { rematch: boolean },
 ): MatchBootstrap => {
   if (opts.rematch) {
@@ -89,11 +86,14 @@ const bootstrapMatch = (
   // Route separation: /single owns ?scfen= (singular) — /review owns ?game=/?scfens=.
   const queryScfen = readScfenQuery(browserLocation.search());
   const session = loadMatchSession();
+  // A session for a different script is a different game — never resume it
+  // onto the wrong opponent. Blobs predating the field resume as naive.
   const resume =
     !queryScfen &&
     session &&
     session.map === map &&
-    session.playerColor === team
+    session.playerColor === team &&
+    (session.opponent ?? "naive") === opponent
       ? session
       : null;
 
@@ -146,6 +146,7 @@ const MatchInner: Component<{
       matchSessionFromState(s, props.boardVariant, {
         id: props.matchId,
         startedAt: props.startedAt,
+        opponent: props.opponent,
       }),
     );
   });
@@ -207,7 +208,7 @@ const LiveMatchSession: Component<{
   onExitToMenu: () => void;
   onMatchFinished: (id: string, result: StarChessMatchResult) => void;
 }> = (props) => {
-  const boot = bootstrapMatch(props.map, props.team, {
+  const boot = bootstrapMatch(props.map, props.team, props.opponent, {
     rematch: props.epoch > 0,
   });
   const seeded = createMatchStateFromScfen(boot.scfen, boot.storedW);
@@ -263,7 +264,12 @@ export const SingleScreen: Component = () => {
 
   const map = () => parseMap(params.map);
   const team = () => parseTeam(params.team);
-  const opponent = () => parseOpponent(params.opponent);
+  // URL wins; a bare /single with a live session resumes on its script.
+  const opponent = (): AdjutantKind => {
+    const fromUrl = asOne(params.opponent);
+    if (isAdjutantKind(fromUrl)) return fromUrl;
+    return loadMatchSession()?.opponent ?? "naive";
+  };
 
   const exitToMenu = () => {
     clearMatchSession();
