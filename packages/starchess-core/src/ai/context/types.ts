@@ -143,6 +143,8 @@ export type AdjutantCtx = {
   /** Our side already has a Spider Mine on the d4–e5 hub. */
   hubMineTaken: boolean;
   storedFor: (color: PieceColor) => number;
+  /** Ahead on the known-vs-seen ledger. Strategic only; absent under naive. */
+  winning?: boolean;
 };
 
 /**

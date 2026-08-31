@@ -33,15 +33,15 @@ export const countType = (
  * ledger. Never the source of truth — the host bank gates the actual debit.
  */
 export const estimateStoredFor =
-  (snap: ScFenSnapshot, us: PieceColor) =>
-  (_color: PieceColor): number => {
+  (snap: ScFenSnapshot, _us: PieceColor) =>
+  (color: PieceColor): number => {
     let stored = 1;
     for (let turn = 2; turn <= snap.turn; turn += 1) {
       stored += incomeForTurn(turn);
     }
     let deployed = 0;
     for (const piece of placementToMap(snap.placement).values()) {
-      if (piece.color === us) deployed += 1;
+      if (piece.color === color) deployed += 1;
     }
     return Math.min(
       MAX_STORED_MATERIAL,

@@ -10,10 +10,10 @@
 
 import type { Square } from "chess.js";
 
-import { attacksSquare, isSquareAttackedBy, parseSquare } from "../../board/placement";
+import { attacksSquare, isSquareAttackedBy } from "../../board/placement";
 import { hostileMineOn } from "../../board/mine-contact";
 import type { AdjutantCtx, Candidate, MoveEval } from "../context";
-import { FILES, centerScore, isSafeSquare, rankOf } from "../context";
+import { FILES, centerScore, chebyshev, isSafeSquare, rankOf } from "../context";
 import { asCandidate, type Strategy } from "./types";
 
 /** Absolute — never posture-scaled. */
@@ -33,28 +33,19 @@ export const BACKRANK_ESCAPE = 4_500;
 export const DEFEND_UNIT = 1_800;
 /** Visible enemy battleship — prefer safe Command Center (CC) moves / flee over hanging. */
 export const QUEEN_THREAT_KING = 1_500;
+/** Tactical Jump that lands the BattleShip onto, or beside, the enemy Command Center (CC). */
+export const QUEEN_WARP_CHECK_CC = 2_000;
 
-const hasCcIntel = (ctx: AdjutantCtx): ctx is AdjutantCtx & { ccIntel: { focus: Square } } =>
-  "ccIntel" in ctx;
-const hasIntel = (ctx: AdjutantCtx): ctx is AdjutantCtx & { intel: { focus: Square } } =>
-  "intel" in ctx;
-
-const getCCFocus = (ctx: AdjutantCtx): Square | null => {
-  if (hasCcIntel(ctx) && ctx.ccIntel?.focus) return ctx.ccIntel.focus;
-  if (hasIntel(ctx) && ctx.intel?.focus) return ctx.intel.focus;
-  return null;
-};
-
-/** Tactical Jump — prioritise escaping fire to a safe square, and for strategic, warping to check the guessed CC when 1-away or clear line. */
+/** Tactical Jump — prioritise escaping fire to a safe square, then closing on the enemy Command Center (CC). */
 const queenWarps = (ctx: AdjutantCtx): Candidate[] => {
-  const { map, snap, us, enemy, weights } = ctx;
+  const { map, snap, us, enemy, enemyKing, weights } = ctx;
   const out: Candidate[] = [];
-  const ccFocus = getCCFocus(ctx);
-  const visible = ctx.vision.litSquares;
 
   for (const [from, piece] of map) {
     if (piece.color !== us || piece.type !== "q") continue;
     const underFire = isSquareAttackedBy(map, from, enemy);
+    const probe = new Map(map);
+    probe.delete(from);
     for (let f = 0; f < 8; f += 1) {
       for (let r = 1; r <= 8; r += 1) {
         const to = `${FILES[f]}${r}` as Square;
@@ -70,24 +61,11 @@ const queenWarps = (ctx: AdjutantCtx): Candidate[] => {
         } else if (isSafeSquare(map, to, enemy)) {
           score += weights.trade;
         }
-        // Battleship warp to check guessed CC when 1-away or clear line from visible square
-        if (ccFocus) {
-          const isOneAway = Math.max(Math.abs(to.charCodeAt(0) - ccFocus.charCodeAt(0)), Math.abs(Number(to[1]) - Number(ccFocus[1]))) === 1;
-          let clearLine = false;
-          for (const vs of visible) {
-            if (vs === ccFocus) continue;
-            const tmp = new Map(map);
-            // Use attacksSquare ray check: does Battleship at `to` attack ccFocus with clear line?
-            // For check, we need the board after warp (with Battleship at `to`)
-            tmp.delete(from);
-            tmp.set(to, { type: "q", color: us });
-            if (attacksSquare(tmp, to, ccFocus)) { clearLine = true; break; }
-            if (attacksSquare(map, vs, ccFocus)) { clearLine = true; break; }
-          }
-          if (isOneAway || clearLine) {
-            // Deploying/warping the Battleship near the guessed CC to check — high bonus to end sooner
-            score += 2000;
-          }
+        if (enemyKing) {
+          probe.set(to, { type: "q", color: us });
+          const checks = attacksSquare(probe, to, enemyKing);
+          probe.delete(to);
+          if (checks || chebyshev(to, enemyKing) === 1) score += QUEEN_WARP_CHECK_CC;
         }
         out.push(
           asCandidate({ timing: "B", kind: "queenWarp", color: us, from, to }, score),
@@ -151,13 +129,9 @@ const score = (ev: MoveEval, ctx: AdjutantCtx): number => {
     }
   }
 
-  // Cheap command center (CC)-centred shelter: a square adjacent to the Command Center (CC) keeps him protected.
-  if (piece.type === "p") {
-    const { file: kFile, rank: kRank } = parseSquare(king);
-    const { file, rank } = parseSquare(move.to);
-    if (Math.abs(file - kFile) <= 1 && Math.abs(rank - kRank) <= 1) {
-      s += weights.trade;
-    }
+  // Cheap Command Center (CC)-centred shelter: a square beside the CC keeps a Marine protected.
+  if (piece.type === "p" && chebyshev(move.to, king) <= 1) {
+    s += weights.trade;
   }
 
   return s;

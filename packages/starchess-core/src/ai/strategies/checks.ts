@@ -1,15 +1,8 @@
 /**
  * Checks — putting the enemy Command Center under fire and closing on it.
  *
- * Two of these terms deliberately ignore fog (`enemyKing` without a visibility
- * test): the sneak-check and the Mecha ray use the same omniscience capture
- * scoring already has. The posture-scaled `attackKing` / `chaseKing` terms do
- * require a *visible* Command Center (CC) — they are the hunt-posture offensive.
- *
- * A classical move onto the Command Center (CC) square is dropped by the resolver, so every
- * term here rewards establishing a ray from the landing square instead.
- *
  * // SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
+ * // SPEC: _spec/apps/starchess/core/adjutant/cc-focus.puml
  */
 
 import { attacksSquare, isSquareAttackedBy } from "../../board/placement";
@@ -17,11 +10,10 @@ import type { AdjutantCtx, MoveEval } from "../context";
 import { chebyshev } from "../context";
 import type { Strategy } from "./types";
 
-/**
- * Hoverbike lands a check on a square the enemy does not cover (sneak).
- * Below equal-material trades (always take those); above quiet hops.
- */
+/** Hoverbike lands a check on a square the enemy does not cover (sneak). */
 export const SNEAK_KNIGHT_CHECK = 2_000;
+/** Marine that lands a check on the Command Center (CC). */
+export const PAWN_CHECK_CC = 1_500;
 
 const score = (ev: MoveEval, ctx: AdjutantCtx): number => {
   const { move, piece, isKingMove } = ev;
@@ -50,13 +42,12 @@ const score = (ev: MoveEval, ctx: AdjutantCtx): number => {
     s += diagonal;
   }
 
-  // Marine that checks the CC — e.g. pawn on c2/d2 checking e1 after capture, must outrank e2
   if (
     piece.type === "p" &&
     enemyKing &&
     attacksSquare(ev.after(), move.to, enemyKing)
   ) {
-    s += 1_500;
+    s += PAWN_CHECK_CC;
   }
 
   // Enemy-Command Center (CC) pressure — posture-scaled (0 unless hunt).
