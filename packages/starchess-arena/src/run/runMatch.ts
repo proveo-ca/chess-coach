@@ -34,6 +34,11 @@ import {
   formatScFen,
   MAX_GAME_TURNS,
   mulberry32,
+  seedCcIntelForOpening,
+  seedKvsForOpening,
+  updateCcIntelForSnap,
+  updateKvsForSnap,
+  type KvsState,
   normalizeSnapGas,
   parseScFen,
   scOutcome,
@@ -43,8 +48,6 @@ import {
 } from "@chess-coach/starchess-core";
 
 import type { EngineFeed } from "../feed/types";
-import { seedCcIntelForOpening, updateCcIntelForSnap } from "../players/ccIntel";
-import { seedKvsForOpening, updateKvsForSnap, type KvsState } from "../players/kvs";
 import type { Players, ScriptPlayer, SideContext } from "../players/types";
 import { STAR_STARTING_SCFEN } from "../seeds";
 import { debitSpend, grantStoredIncome, seedBankForOpening, type Bank } from "./bank";
@@ -126,7 +129,7 @@ export const runMatch = async (options: ArenaRunOptions): Promise<ArenaRun> => {
   let snap = snap0;
   let bank = seedBankForOpening(snap);
   let kvs = seedKvsForOpening(snap);
-  let ccIntel = seedCcIntelForOpening(snap);
+  let ccIntel = seedCcIntelForOpening();
 
   const scfens: string[] = [formatScFen(normalizeSnapGas(snap))];
   const resolves: EndScTurnResult[] = [];

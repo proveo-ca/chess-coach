@@ -247,4 +247,10 @@ export {
   type StrategicCtx,
   type StrategicAdjutantContext,
   type KnownVsSeen,
+  seedCcIntelForOpening,
+  updateCcIntelForSnap,
+  seedKvsForOpening,
+  updateKvsForSnap,
+  type CcIntelState,
+  type KvsState,
 } from "./ai/strategic";

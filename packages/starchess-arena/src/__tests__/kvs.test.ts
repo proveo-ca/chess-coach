@@ -14,7 +14,7 @@ import {
 import {
   seedKvsForOpening,
   updateKvsForSnap,
-} from "../players/kvs";
+} from "@chess-coach/starchess-core";
 import { STAR_STARTING_SCFEN } from "../seeds";
 
 const OPEN = parseScFen(STAR_STARTING_SCFEN);

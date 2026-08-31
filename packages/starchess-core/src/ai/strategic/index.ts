@@ -32,6 +32,14 @@ export {
 } from "./deployLookahead";
 export { getCCBestGuess, emptyCCIntel, type CCIntel } from "../context/ccIntel";
 export {
+  seedCcIntelForOpening,
+  updateCcIntelForSnap,
+  seedKvsForOpening,
+  updateKvsForSnap,
+  type CcIntelState,
+  type KvsState,
+} from "./tracking";
+export {
   seedKnownVsSeen,
   knownForTurn,
   combineKnownVsSeen,

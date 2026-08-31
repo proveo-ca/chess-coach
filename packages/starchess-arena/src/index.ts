@@ -20,7 +20,14 @@ export {
   type Bank,
 } from "./run/bank";
 
-export { seedKvsForOpening, updateKvsForSnap, type KvsState } from "./players/kvs";
+export {
+  seedKvsForOpening,
+  updateKvsForSnap,
+  seedCcIntelForOpening,
+  updateCcIntelForSnap,
+  type KvsState,
+  type CcIntelState,
+} from "@chess-coach/starchess-core";
 export type { SideContext, ScriptPlan, ScriptPlayer, Players } from "./players/types";
 export { naiveScript, NAIVE_SCRIPT_NAME } from "./players/naive";
 export { strategicScript, STRATEGIC_SCRIPT_NAME } from "./players/strategic";
