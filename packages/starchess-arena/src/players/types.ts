@@ -10,10 +10,8 @@
  * // SPEC: _spec/packages/starchess-arena/arena.puml
  */
 
-import type { Square } from "chess.js";
-
 import type { CCIntel } from "@chess-coach/starchess-core";
-import type { KnownVsSeen, PieceColor, ScFenSnapshot } from "@chess-coach/starchess-core";
+import type { KnownVsSeen, PieceColor, ScFenSnapshot, Square } from "@chess-coach/starchess-core";
 
 export type { PieceColor, ScFenSnapshot, KnownVsSeen, CCIntel };
 

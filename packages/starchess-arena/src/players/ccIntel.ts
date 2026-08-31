@@ -15,16 +15,14 @@
  * // SPEC: _spec/packages/starchess-arena/arena.puml
  */
 
-import type { Square } from "chess.js";
-
 import {
   emptyCCIntel,
   getCCBestGuess,
   placementToMap,
   type CCIntel,
-  type PieceColor,
   type ScFenSnapshot,
   type ScPiece,
+  type Square,
 } from "@chess-coach/starchess-core";
 import { getSideVision } from "@chess-coach/starchess-core";
 
@@ -34,7 +32,7 @@ export type CcIntelState = {
   perSide: { w: CCIntel; b: CCIntel };
 };
 
-export const seedCcIntelForOpening = (opening: ScFenSnapshot): CcIntelState => ({
+export const seedCcIntelForOpening = (_opening: ScFenSnapshot): CcIntelState => ({
   perSide: {
     w: emptyCCIntel("b"),
     b: emptyCCIntel("w"),

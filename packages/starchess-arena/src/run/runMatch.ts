@@ -42,7 +42,7 @@ import {
 } from "@chess-coach/starchess-core";
 
 import type { EngineFeed } from "../feed/types";
-import { seedCcIntelForOpening, updateCcIntelForSnap, type CcIntelState } from "../players/ccIntel";
+import { seedCcIntelForOpening, updateCcIntelForSnap } from "../players/ccIntel";
 import { seedKvsForOpening, updateKvsForSnap, type KvsState } from "../players/kvs";
 import type { Players, ScriptPlayer, SideContext } from "../players/types";
 import { STAR_STARTING_SCFEN } from "../seeds";

@@ -29,7 +29,13 @@ const noopFeed = (suggestions: EngineSuggestion[]): EngineFeed => ({
 describe("foldSuggestion", () => {
   it("negates cp from engine perspective to our rank", () => {
     expect(foldSuggestion(50, 200, null)).toBe(50 - 2); // engine +2cp → we -2
-    expect(foldSuggestion(50, -300, null)).toBe(50 + 3);
+    expect(foldSuggestion(50, -100, null)).toBe(50 + 1); // engine -1cp → we +1
+  });
+
+  it("caps cp at ±200 so a single heavy unit cannot outweigh horizon bonuses", () => {
+    // ±200 (2 marines) is the clamp — see `foldSuggestion` in players/strategic.ts.
+    expect(foldSuggestion(50, -300, null)).toBe(50 + 2);
+    expect(foldSuggestion(50, 900, null)).toBe(50 - 2);
   });
 
   it("treats opponent-mates-us as a disaster and we-mate as a win", () => {
