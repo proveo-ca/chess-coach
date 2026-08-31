@@ -24,11 +24,11 @@ import { chebyshev } from "../../context";
 import type { StrategicCtx } from "../context";
 import type { StrategicStrategy } from "./types";
 
-const SNEAK_KNIGHT_CHECK_GUESS = 2_000;
-const ATTACK_KING_GUESS = 3_500;
+const SNEAK_KNIGHT_CHECK_GUESS = 6_000;
+const ATTACK_KING_GUESS = 5_000;
 const CHASE_KING_GUESS = 450;
 
-export const SNEAK_KNIGHT_CHECK = 2_000;
+export const SNEAK_KNIGHT_CHECK = 6_000;
 
 const score = (ev: MoveEval, ctx: StrategicCtx): number => {
   const { move, piece, isKingMove } = ev;
@@ -43,13 +43,14 @@ const score = (ev: MoveEval, ctx: StrategicCtx): number => {
   const guessStrength = intel.strength;
 
   // Sneak check: hoverbike lands checking the (real or guessed) Command Center (CC) on a square the enemy does not cover.
+  // Must outrank mapControl (e2 5104 vs c2 102) so c2+check beats e2, even when c2 is attacked but protected
   if (piece.type === "n" && targetKing && move.to !== targetKing) {
     const after = ev.after();
     if (attacksSquare(after, move.to, targetKing)) {
       if (!isSquareAttackedBy(after, move.to, enemy)) {
         s += isGuess ? SNEAK_KNIGHT_CHECK_GUESS * (guessStrength > 0 ? 1 : 0.5) : SNEAK_KNIGHT_CHECK;
       } else if (tactical.friendlyProtects(move.to)) {
-        s += (isGuess ? SNEAK_KNIGHT_CHECK_GUESS : SNEAK_KNIGHT_CHECK) * 0.25;
+        s += (isGuess ? SNEAK_KNIGHT_CHECK_GUESS : SNEAK_KNIGHT_CHECK) * 0.9;
       } else {
         s -= attackedPenalty;
       }
@@ -61,9 +62,9 @@ const score = (ev: MoveEval, ctx: StrategicCtx): number => {
     s += isGuess ? diagonal * 0.6 : diagonal;
   }
 
-  // Marine that checks the (real or guessed) CC — e.g. c2 pawn checking e1 after capture, prefer over e2 non-check
+  // Marine that checks the (real or guessed) CC — e.g. c2 pawn checking e1 after capture, must outrank e2
   if (piece.type === "p" && targetKing && attacksSquare(ev.after(), move.to, targetKing)) {
-    s += isGuess ? 1_200 : 1_500;
+    s += 6_000;
   }
 
   // Enemy-Command Center (CC) pressure — posture-scaled. Fire on real Command Center (CC) when visible,

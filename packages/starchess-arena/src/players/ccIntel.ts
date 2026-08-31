@@ -15,6 +15,8 @@
  * // SPEC: _spec/packages/starchess-arena/arena.puml
  */
 
+import type { Square } from "chess.js";
+
 import {
   emptyCCIntel,
   getCCBestGuess,
@@ -22,6 +24,7 @@ import {
   type CCIntel,
   type PieceColor,
   type ScFenSnapshot,
+  type ScPiece,
 } from "@chess-coach/starchess-core";
 import { getSideVision } from "@chess-coach/starchess-core";
 
@@ -52,9 +55,9 @@ export const updateCcIntelForSnap = (
     const vision = getSideVision(snap.placement, side);
     perSide[side] = getCCBestGuess(
       state.perSide[side],
-      map as unknown as Map<import("chess.js").Square, import("@chess-coach/starchess-core").ScPiece>,
-      vision.litSquares as unknown as ReadonlySet<import("chess.js").Square>,
-      vision.revealedPieces as unknown as ReadonlySet<import("chess.js").Square>,
+      map as unknown as Map<Square, ScPiece>,
+      vision.litSquares as unknown as ReadonlySet<Square>,
+      vision.revealedPieces as unknown as ReadonlySet<Square>,
       null,
       enemy as any,
     );

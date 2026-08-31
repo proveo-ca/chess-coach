@@ -9,9 +9,15 @@
  * // SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
  */
 
+import type { Square } from "chess.js";
+
 import { charonTargetQueenFromPlacement } from "../../rules/specials/bishopCharon";
 import { UNIT_COST } from "../../rules/constants";
+import { attacksSquare, type ScPiece } from "../../board/placement";
+import { hostileMineOn } from "../../board/mine-contact";
+import { neighbors } from "../context";
 import type { AdjutantCtx, Candidate, MoveEval } from "../context";
+import type { StrategicCtx } from "../strategic/context";
 import { asCandidate, type Strategy } from "./types";
 
 /** Equal-material capture when in range — always take the trade. */
@@ -42,6 +48,56 @@ const charonStrikes = (ctx: AdjutantCtx): Candidate[] => {
   return out;
 };
 
+/**
+ * Can the defender use gas to deploy a Marine/Hoverbike adjacent to their CC
+ * that would recapture `target`? If so, `target` is gas-defended, not truly undefended.
+ */
+const canGasDeployDefend = (
+  ctx: AdjutantCtx,
+  target: Square,
+): boolean => {
+  const defender = ctx.enemy;
+  const snap = ctx.snap;
+  const map = ctx.map;
+  const defenderGas = snap.gas?.[defender] ?? 0;
+  if (defenderGas < 1) return false;
+  let defenderCC: Square | null = null;
+  for (const [sq, p] of map) if (p.type === "k" && p.color === defender) { defenderCC = sq; break; }
+  if (!defenderCC) return false;
+  for (const at of neighbors(defenderCC)) {
+    if (map.has(at) || hostileMineOn(snap.mines, defender, at)) continue;
+    const tmpP = new Map(map);
+    tmpP.set(at, { type: "p", color: defender });
+    if (attacksSquare(tmpP, at, target)) return true;
+    const tmpN = new Map(map);
+    tmpN.set(at, { type: "n", color: defender });
+    if (attacksSquare(tmpN, at, target)) return true;
+  }
+  return false;
+};
+
+const hasCcIntel = (ctx: AdjutantCtx): ctx is StrategicCtx =>
+  "ccIntel" in ctx;
+
+const hasIntel = (ctx: AdjutantCtx): ctx is AdjutantCtx & { intel: { focus: Square } } =>
+  "intel" in ctx;
+
+const getCCFocus = (ctx: AdjutantCtx): Square | null => {
+  if (hasCcIntel(ctx) && ctx.ccIntel?.focus) return ctx.ccIntel.focus;
+  if (hasIntel(ctx) && ctx.intel?.focus) return ctx.intel.focus;
+  return ctx.enemyKing;
+};
+
+const isStrategicCtx = (ctx: AdjutantCtx): ctx is StrategicCtx =>
+  "kvs" in ctx && "winning" in ctx;
+
+const attacksCCAfterMove = (ev: MoveEval, ctx: AdjutantCtx): boolean => {
+  const after = ev.after();
+  const cc = getCCFocus(ctx);
+  if (!cc) return false;
+  return attacksSquare(after, ev.move.to, cc);
+};
+
 const score = (ev: MoveEval, ctx: AdjutantCtx): number => {
   const { move, piece, isKingMove } = ev;
   if (isKingMove || !move.capture) return 0;
@@ -53,11 +109,21 @@ const score = (ev: MoveEval, ctx: AdjutantCtx): number => {
   const victimValue = UNIT_COST[move.capture.type];
   const attackerValue = UNIT_COST[piece.type];
 
+  const isGasDefended = canGasDeployDefend(ctx, move.to);
+  const attacksCC = attacksCCAfterMove(ev, ctx);
+  const ccFocus = getCCFocus(ctx);
+  const isAdjacentToCC = ccFocus ? Math.max(Math.abs(move.to.charCodeAt(0) - ccFocus.charCodeAt(0)), Math.abs(Number(move.to[1]) - Number(ccFocus[1]))) === 1 : false;
+  const isBestDefense = isAdjacentToCC; // any square adjacent to CC has best defense (CC attacks it, gas can reinforce)
+  const isSacrificeForCC = (isGasDefended || isBestDefense) && attacksCC;
+  const isWinningForCC = isStrategicCtx(ctx) ? ctx.winning : false;
+
   if (move.capture.type === "p") {
-    const undefended = !tactical.enemyAttacks(move.to);
+    const undefended = !tactical.enemyAttacks(move.to) && !isGasDefended && !isBestDefense;
     if (undefended) s += HUNT_UNDEFENDED_PAWN;
     else if (material.congested) s += HUNT_UNDEFENDED_PAWN * 0.35;
     if (material.congested && piece.type === "p") s += PAWN_TRADE;
+    if (isSacrificeForCC && isWinningForCC) s += 1_800; // bottom-tier sacrifice, only worth when ahead to check/damage CC
+    else if (isSacrificeForCC) s += 400; // small bonus even when not winning, but not as good as c2 check
   }
 
   if (victimValue === attackerValue) {

@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import type { Page } from "@playwright/test";
 
 /**
  * Review /:id mobile chrome — MobileBanner [‹ Back][matchup][menu] + Share
@@ -34,7 +35,7 @@ const fixture = {
   inProgress: null,
 };
 
-async function seedAndOpen(page: import("@playwright/test").Page) {
+async function seedAndOpen(page: Page) {
   await page.goto("/");
   await page.evaluate((payload) => {
     localStorage.clear();

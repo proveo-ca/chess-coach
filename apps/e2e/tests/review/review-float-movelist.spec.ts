@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import type { Page } from "@playwright/test";
 
 /**
  * Review /:id §4 floating move list on short (dynamic) viewports.
@@ -70,7 +71,7 @@ const midgameFixture = {
 };
 
 async function seedAndOpen(
-  page: import("@playwright/test").Page,
+  page: Page,
   payload: typeof fixture | typeof midgameFixture = fixture,
   id: string = FIXTURE_ID,
 ) {

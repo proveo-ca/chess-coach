@@ -64,7 +64,7 @@ const deploys = (ctx: StrategicCtx): Candidate[] => {
   const horizonSeq = bestDeploySequence(ctx, 5);
   const horizonBank = projectedBank(material.bank, snap.turn, 5);
 
-  const isOpenFile = (sq: Square, m: Map<Square, ScPiece>): boolean => {
+  const _isOpenFile = (sq: Square, m: Map<Square, ScPiece>): boolean => {
     const file = sq[0];
     for (const [s, p] of m) if (s[0] === file && p.type === "p") return false;
     return true;

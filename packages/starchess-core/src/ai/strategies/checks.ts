@@ -50,7 +50,7 @@ const score = (ev: MoveEval, ctx: AdjutantCtx): number => {
     s += diagonal;
   }
 
-  // Marine that checks the CC — e.g. pawn on c2/d2 checking e1 after capture, high bonus to prefer c2 check over e2 non-check
+  // Marine that checks the CC — e.g. pawn on c2/d2 checking e1 after capture, must outrank e2
   if (
     piece.type === "p" &&
     enemyKing &&

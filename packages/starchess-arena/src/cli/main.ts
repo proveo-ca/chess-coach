@@ -11,6 +11,7 @@
  */
 
 import fs from "node:fs";
+import type { EngineFeed } from "../feed/types";
 import path from "node:path";
 
 import { MAX_GAME_TURNS } from "@chess-coach/starchess-core";
@@ -94,7 +95,7 @@ const parseArgs = (argv: string[]): CliOptions => {
 
 const buildPairing = (
   pairing: CliOptions["pairing"],
-  feed: import("../feed/types").EngineFeed | null,
+  feed: EngineFeed | null,
 ): { w: ScriptPlayer; b: ScriptPlayer } => {
   const w =
     pairing === "naive:naive" || pairing === "naive:strategic"
@@ -116,7 +117,7 @@ export const main = async (argv: string[]): Promise<number> => {
     return 2;
   }
 
-  let feed: import("../feed/types").EngineFeed | null = null;
+  let feed: EngineFeed | null = null;
   let stopFeed: (() => void) | null = null;
   if (opts.engine) {
     const movetime = opts.movetimeMs > 0 ? opts.movetimeMs : 50;

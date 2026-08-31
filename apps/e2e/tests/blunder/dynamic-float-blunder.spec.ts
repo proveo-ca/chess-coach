@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import type { Page } from "@playwright/test";
 
 /**
  * §4 floating CoachPanel + blunder detection on a short (dynamic) viewport.
@@ -16,7 +17,7 @@ const BLUNDER_GAME = {
   startingFen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
 };
 
-async function seedCoachGame(page: import("@playwright/test").Page) {
+async function seedCoachGame(page: Page) {
   await page.goto("/");
   await page.evaluate((game) => {
     localStorage.clear();

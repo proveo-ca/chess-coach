@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import type { Page } from "@playwright/test";
 
 /**
  * Collision races — DualNav demos on starchess Storybook (:6007).
@@ -9,7 +10,7 @@ const story = (id: string) =>
   `http://127.0.0.1:6007/iframe.html?id=${id}&viewMode=story`;
 
 /** Settled unit only — excludes intent ghosts (`data-intent-dest`). */
-const pieceAt = (page: import("@playwright/test").Page, sq: string, alt: string) => {
+const pieceAt = (page: Page, sq: string, alt: string) => {
   const [, type] = alt.split(" ");
   const root = `[data-board-grid] [data-square='${sq}']`;
   return page.locator(
@@ -18,7 +19,7 @@ const pieceAt = (page: import("@playwright/test").Page, sq: string, alt: string)
 };
 
 /** Advance DualNav: Start → Intent → Resolve; wait for intent ghosts to clear. */
-const playResolve = async (page: import("@playwright/test").Page) => {
+const playResolve = async (page: Page) => {
   await page.locator("#storybook-root").click({ position: { x: 24, y: 24 } });
   await page.keyboard.press("ArrowRight");
   await page.waitForTimeout(500);

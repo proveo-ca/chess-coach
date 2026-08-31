@@ -34,12 +34,22 @@ export const DEFEND_UNIT = 1_800;
 /** Visible enemy battleship — prefer safe Command Center (CC) moves / flee over hanging. */
 export const QUEEN_THREAT_KING = 1_500;
 
+const hasCcIntel = (ctx: AdjutantCtx): ctx is AdjutantCtx & { ccIntel: { focus: Square } } =>
+  "ccIntel" in ctx;
+const hasIntel = (ctx: AdjutantCtx): ctx is AdjutantCtx & { intel: { focus: Square } } =>
+  "intel" in ctx;
+
+const getCCFocus = (ctx: AdjutantCtx): Square | null => {
+  if (hasCcIntel(ctx) && ctx.ccIntel?.focus) return ctx.ccIntel.focus;
+  if (hasIntel(ctx) && ctx.intel?.focus) return ctx.intel.focus;
+  return null;
+};
+
 /** Tactical Jump — prioritise escaping fire to a safe square, and for strategic, warping to check the guessed CC when 1-away or clear line. */
 const queenWarps = (ctx: AdjutantCtx): Candidate[] => {
   const { map, snap, us, enemy, weights } = ctx;
   const out: Candidate[] = [];
-  // Strategic CC guess (CCIntel) — if present, use its focus for check bonus
-  const ccFocus = (ctx as unknown as { ccIntel?: { focus: Square } }).ccIntel?.focus ?? (ctx as unknown as { intel?: { focus: Square } }).intel?.focus ?? null;
+  const ccFocus = getCCFocus(ctx);
   const visible = ctx.vision.litSquares;
 
   for (const [from, piece] of map) {

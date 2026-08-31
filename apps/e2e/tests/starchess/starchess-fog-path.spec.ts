@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import type { Page } from "@playwright/test";
 
 /**
  * Progressive path fog — bishop fog-edge lesson on starchess Storybook (:6007).
@@ -15,7 +16,7 @@ import { expect, test } from "@playwright/test";
 const BISHOP_STORY =
   "http://127.0.0.1:6007/iframe.html?id=starchess-fog-of-war-and-move-animations--bishop&viewMode=story";
 
-const fogOf = async (page: import("@playwright/test").Page, sq: string) =>
+const fogOf = async (page: Page, sq: string) =>
   page.locator(`[data-board-grid] [data-square="${sq}"]`).getAttribute("data-fog");
 
 test.describe("StarChess fog path reveal (bishop)", () => {
