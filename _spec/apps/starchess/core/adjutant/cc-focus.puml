@@ -1,0 +1,156 @@
+@startuml cc-focus
+' SPEC: _spec/apps/starchess/core/adjutant/cc-focus.puml
+' purpose: Which square the Adjutant aims at when the enemy Command Center is
+' fogged — the decided fog-honest-strategic / omniscient-naive split, the
+' isGuess bug it replaced, and the two open defects that survive it.
+' covers: packages/starchess-core/src/ai/strategies/checks.ts
+' covers: packages/starchess-core/src/ai/strategic/strategies/checks.ts
+' covers: packages/starchess-core/src/ai/context/ccIntel.ts
+' covers: packages/starchess-core/src/ai/context/kingIntel.ts
+' see also: weight-ladder.puml (the values these blocks add)
+' see also: strategic/strategic-architecture.puml (where the ctx is built)
+' see also: _spec/packages/starchess-arena/arena.puml (the arena drop, below)
+!include ../../../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess · Adjutant CC targeting — fog-honest strategic, omniscient naive
+
+package "what the context offers" {
+  component "ctx.enemyKing\nfindKing(map, enemy)\n**never fog-filtered** — the true square" as EK <<db>>
+  component "ctx.vision.enemyKingVisible\nthe only fog tell" as VIS <<db>>
+  component "ctx.intel : KingIntel\ngatherKingIntel — **this turn's**\ncue centroid + strength" as INTEL <<db>>
+  component "ctx.ccIntel : CCIntel\ngetCCBestGuess — **cross-ply**\nposterior + excluded set" as CCI <<db>>
+}
+
+package "naive — omniscient" {
+  component "ai/strategies/checks.ts\nreads ctx.enemyKing directly" as NCHK <<app>>
+}
+
+package "strategic — fog-honest" {
+  component "ai/strategic/strategies/checks.ts\nisGuess = !vision.enemyKingVisible\ntargetKing = isGuess ? intel.focus : enemyKing" as SCHK <<app>>
+  component "ai/strategic/strategies/economy.ts\nSHIP_WARP_READY reads ctx.ccIntel.focus" as SECO <<app>>
+}
+
+EK ARROW_MAIN NCHK : every per-type check bonus
+VIS ARROW_OPTIONAL NCHK : gates only attackKing / chaseKing
+VIS ARROW_MAIN SCHK : decides guess vs seen
+INTEL ARROW_MAIN SCHK : focus + strength when fogged
+EK ARROW_OPTIONAL SCHK : only on the **seen** branch
+CCI ARROW_MAIN SECO : the posterior's **only** consumer
+CCI -[#CB2000,dashed]-> SCHK : **not read** — see open defect 1
+
+note right of SCHK
+  **The decided contract: fog-honest strategic, omniscient naive.** The
+  strategic layer scores the *guess* whenever the Command Center is not
+  visible, so its numbers describe what the Adjutant can actually know. The
+  naive layer keeps its documented omniscience and reads the real
+  ""enemyKing"", because it is the weaker script by design and a second fog
+  model there would buy nothing.
+
+  **One resolution, then every term.** ""targetKing"" is chosen once at the top
+  of ""score"" and every block downstream aims at it — sneak Hoverbike, Mecha
+  diagonal, Marine check, ""attackWeight"", ""chaseWeight"". No term may reach
+  past it to ""enemyKing"" while fogged; that is the whole invariant, and it is
+  what makes the ""_GUESS"" constants mean something.
+end note
+
+note as N_TABLE
+  **Which square, and on what evidence:**
+
+  | layer | fogged CC | visible CC | evidence used |
+  | naive ""strategies/checks.ts"" | the **true** square | the true square | ""enemyKing"" — omniscient, documented and kept |
+  | naive posture terms (""attackKing"" / ""chaseKing"") | not scored | scored | explicitly gated on ""vision.enemyKingVisible"" |
+  | strategic ""strategic/strategies/checks.ts"" | ""intel.focus"" (this turn's centroid) | ""enemyKing"" | ""vision.enemyKingVisible"" |
+  | strategic economy ship bonus | ""ccIntel.focus"" (posterior) | ""ccIntel.focus"" | probe exclusions accumulated across plies |
+
+  So the strategic layer aims at **two different guesses** depending on which
+  strategy is asking: ""checks"" uses the one-turn centroid, ""economy"" uses the
+  cross-ply posterior. Only the posterior can learn from a Hoverbike probe
+  that proved a square empty.
+end note
+
+note as N_BUG
+  **The bug this replaced: ""isGuess"" was always false.** The predicate used to
+  be ""enemyKing == null"", but ""enemyKing"" is ""findKing(map, enemy)"" at
+  ""ai/context/index.ts:56"" and is never fog-filtered — it is ""null"" only when
+  the enemy Command Center has left the board, which is game over. So the
+  guess branch never executed in a live position.
+
+  **What that cost.** Every ""_GUESS"" weight was dead code, and the headline
+  retune that introduced them therefore never ran: the strategic Adjutant was
+  silently playing the seen-CC numbers against a Command Center it could not
+  see. Reading the constants told you the opposite, which is exactly why the
+  fix is load-bearing rather than cosmetic.
+
+  **Two renames came with it.** The strategic ""SNEAK_KNIGHT_CHECK"" export
+  collided with the naive one of the same name and is now
+  ""SNEAK_KNIGHT_CHECK_SEEN""; the Marine weight split into
+  ""PAWN_CHECK_CC_GUESS"" / ""PAWN_CHECK_CC_SEEN"" (both 6_000 — the tuning is
+  deliberately unchanged, only the plumbing moved).
+end note
+
+SCHK .. N_TABLE
+SCHK .. N_BUG
+
+note as N_OPEN
+  <color:#CB2000>**OPEN — not fixed on this branch.**</color>
+
+  <color:#1A7F37>**CLOSED — the posterior now survives a ply, in both hosts.**</color>
+  The folds are one module, ""ai/strategic/tracking.ts"" in the **core**:
+  ""seedCcIntelForOpening"" / ""updateCcIntelForSnap"" and their ""kvs"" twins.
+  The arena runner threads them per settled ply; ""SingleScreen"" folds once per
+  turn for the ``strategic`` opponent. They used to live in
+  ""packages/starchess-arena/src/players/{ccIntel,kvs}.ts"", where the app could
+  not reach them — the arena forwarded ""ccIntel"" into ""SideContext"" but the
+  player dropped it, so ""excluded"" and ""dist"" restarted from the home prior
+  every turn and a probe that proved ""e8"" empty was forgotten immediately.
+  Moving the fold into the core and forwarding it fixed both halves at once.
+
+  **Open defect 2 — a Marine check is scored twice.**
+  In ""strategic/strategies/checks.ts"" the Marine block and the ""attackWeight""
+  block share a predicate, so a Marine that checks a square other than the CC
+  itself collects both. Worse, ""attackWeight"" is ""ATTACK_KING_GUESS"" (a flat
+  5_000) on the guess branch but the posture-scaled ""attackKing"" on the seen
+  branch — and a guess implies posture is never ""hunt"", where ""attackKing"" is
+  the only non-zero value. Effective totals therefore invert the guess/seen
+  invariant the constants satisfy:
+
+  | case | posture | total |
+  | Marine check on a **guessed** CC | ""seek"" / ""expand"" | 6_000 + 5_000 = **11_000** |
+  | Marine check on a **seen** CC, hub held | ""hunt"" | 6_000 + 3_500 = **9_500** |
+  | Marine check on a **seen** CC, no hub | ""expand"" | 6_000 + 0 = **6_000** |
+
+  ""weightOrdering.test.ts"" passes because it compares the raw constants
+  (6_000 ≤ 6_000); it cannot see the sum. **Not fixed on this branch.**
+
+  The Mecha diagonal block overlaps ""attackWeight"" the same way, but that
+  stacking is documented as intentional in the naive layer ("worth a second
+  diagonal's weight"), so it is listed here as shape, not as a defect.
+
+  **Open defect 3 — the enemy mineral bank leaks past the fog.**
+  ""deployCovers"" documents that a fog-honest caller must pass an *estimated*
+  enemy bank, because the figure decides which units the enemy could deploy.
+  ""ai/strategies/captures.ts"" passes ""ctx.storedFor(enemy)"" — the host's real
+  bank — which is correct for the omniscient naive build. But the strategic
+  build keeps ""captures"" in ""NAIVE_WITHOUT_CHECKS"", so the fog-honest script
+  reads the true enemy bank through it and bypasses the ""kvs"" ledger whose
+  whole job is estimating hidden enemy material. The CC *square* is fog-honest;
+  the enemy *economy* is not. **Not fixed on this branch.**
+end note
+
+SCHK .. N_OPEN
+
+note bottom
+  **Reading order for a retune.** ""vision.enemyKingVisible"" decides the
+  branch, ""intel.strength > 0"" decides whether a guess is scored at all, and
+  ""posture"" decides whether the seen branch has any pressure term. All three
+  must be held fixed before a weight change can be read as an improvement.
+
+  **Forbidden:** a strategy that recomputes its own fog model, resolves a
+  second target square, or reads ""enemyKing"" after ""targetKing"" has been
+  chosen. Values live in ""weight-ladder.puml""; this diagram owns only *which
+  square* they are aimed at.
+end note
+@enduml

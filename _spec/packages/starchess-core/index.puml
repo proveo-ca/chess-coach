@@ -32,6 +32,7 @@ package "packages/starchess-core/src" {
   component "board/deploy-reach.ts\nthe one deploy-reach table" as DRS <<db>>
   component "board/ray-scan.ts" as RAYS <<db>>
   component "ai/adjutant.ts\n+ ai/strategic/** (strategic script)" as AI <<app>>
+  component "ai/strategic/tracking.ts\ncross-ply CCIntel + KnownVsSeen folds —\none owner, threaded by the app AND the arena" as SCTRACK <<db>>
   component "replay/{fen.ts,record.ts}" as RPL <<app>>
   component "rules/economy.ts" as ECO <<app>>
 }

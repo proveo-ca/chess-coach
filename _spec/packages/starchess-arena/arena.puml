@@ -20,8 +20,8 @@ package "packages/starchess-arena (pure, node/bun)" {
   package "players" {
     component "naive.ts\nadjutant() sync" as PW <<app>>
     component "strategic.ts\nstrategicAdjutant() + feed" as PS <<app>>
-    component "kvs.ts\narena-owned accumulator" as KVS <<app>>
-    component "ccIntel.ts\nseedCcIntelForOpening ·\nupdateCcIntelForSnap" as CCI <<app>>
+    component "core ai/strategic/tracking.ts\nseedKvsForOpening ·\nupdateKvsForSnap" as KVS <<engine>>
+    component "core ai/strategic/tracking.ts\nseedCcIntelForOpening ·\nupdateCcIntelForSnap" as CCI <<engine>>
   }
   component "record.ts\nscfens + resolves" as REC <<app>>
   component "compare.ts\nsummarize → scoreboard" as CMP <<app>>

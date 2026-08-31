@@ -14,11 +14,11 @@ package "apps/starchess" {
   component "StarChessMenuRoute\n/ (Router base /starchess)" as MENU <<app>>
   component "StarChessMenuScreen\n+ MenuSky / MenuArrival" as UI <<app>>
   component "ChessMenuMockup\nglass · shatter SVGs" as MOCK <<async>>
-  component "NewGamePanel\nMAP · TEAM · Adjutant(Script) · START" as SETUP <<app>>
-  component "navigate /single?map=&team=" as NAV <<async>>
+  component "NewGamePanel\nMAP · TEAM · OPPONENT · START" as SETUP <<app>>
+  component "navigate /single?map=&team=&opponent=" as NAV <<async>>
   component "navigate /tutorial" as NAVT <<async>>
   component "navigate /review" as NAVR <<async>>
-  component "StarChessSingleScreen\nMatchStore + LiveMatchShell\nStarChessScreen turnChrome=sidebar\nAdjutant = opposite of team" as LIVE <<app>>
+  component "StarChessSingleScreen\nMatchStore + LiveMatchShell\nStarChessScreen turnChrome=sidebar\nAdjutant = opposite of team\nscript = ?opponent (naive|strategic)" as LIVE <<app>>
   component "StarChessTutorialScreen\n/tutorial/:section/:story\n(TUTORIAL_SCRIPT ids)\nKerrigan header · HOME-only\ne.g. /tutorial/fog/king" as TUT <<app>>
   component "TutorialCompleteConfirm\nking-attack-3 enemy HP=0\nwhen tutorialCleared=false" as TUTDONE <<app>>
   component "localStorage\nstarchess_tutorial_cleared" as TUTFLAG <<db>>
@@ -52,9 +52,16 @@ RESULT ARROW_MAIN REV : Replay\nreplace /review/:id
 
 note bottom
   Multiplayer **MenuAnchor** stays ``disabled`` + ``Coming Soon``.
+  **Opponent** picks the Adjutant script: ``naive`` (engine rules only) or
+  ``strategic`` (engine rules + vision + tactics). It rides the URL as
+  ``?opponent=``, so refresh-resume and **Another Game** keep the choice, and
+  an unknown value falls back to ``naive``. For ``strategic`` the screen folds
+  ``ccIntel`` / ``kvs`` forward once per turn through core's
+  ``ai/strategic/tracking.ts`` — the same folds the arena runner uses — so the
+  CC posterior accumulates in live play. See ``core/adjutant/cc-focus.puml``.
   Live gameOver → ``matchHistory`` + ``MatchResultModal``
   (``VICTORY`` / ``DEFEAT`` / ``DRAW``): **Another Game** remounts
-  ``/single?map=&team=``; **Replay** → ``/review/:id`` DualNav.
+  ``/single?map=&team=&opponent=``; **Replay** → ``/review/:id`` DualNav.
   Review list remains at ``/review``: ``MatchHistoryFilters``
   (Playing as Blue/Red + date pages; no First move; no Review title) via
   ``useMatchHistoryFilters`` · ``‹ Back`` only. On the dynamic band a

@@ -1,0 +1,185 @@
+@startuml weight-ladder
+' SPEC: _spec/apps/starchess/core/adjutant/weight-ladder.puml
+' purpose: The Adjutant's scoring ladder — every named weight, its value, its
+' tier, and which of the ordering invariants is actually enforced by a test.
+' covers: packages/starchess-core/src/ai/strategies/survival.ts
+' covers: packages/starchess-core/src/ai/strategies/captures.ts
+' covers: packages/starchess-core/src/ai/strategies/checks.ts
+' covers: packages/starchess-core/src/ai/strategies/mapControl.ts
+' covers: packages/starchess-core/src/ai/strategies/economy.ts
+' covers: packages/starchess-core/src/ai/context/posture.ts
+' covers: packages/starchess-core/src/ai/strategic/strategies/checks.ts
+' covers: packages/starchess-core/src/ai/strategic/strategies/threats.ts
+' covers: packages/starchess-core/src/ai/strategic/deployLookahead.ts
+' covers: packages/starchess-core/src/__tests__/tactics/weightOrdering.test.ts
+' see also: cc-focus.puml (which square the CC weights aim at)
+' see also: strategic/strategic-economy.puml (the economy dials in context)
+!include ../../../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess · Adjutant weight ladder — one roster, one enforcing test
+
+package "tiers, high to low" {
+  component "**absolute survival**\nnever posture-scaled\n13_500 … 1_500" as T1 <<app>>
+  component "**Command Center pressure**\nstrategic checks + promotion rush\n6_000 … 450" as T2 <<app>>
+  component "**material**\ncaptures / trades\n2_500 … 400" as T3 <<app>>
+  component "**economy dials**\ndeploy mix + horizon\n3_500 … 600" as T4 <<app>>
+  component "**posture weights**\nthe only contextual dial\n3_500 … 0" as T5 <<db>>
+}
+
+component "__tests__/tactics/weightOrdering.test.ts\n10 cases — the whole enforcement" as TEST <<async>>
+
+T1 -[hidden]- T2
+T2 -[hidden]- T3
+T3 -[hidden]- T4
+T4 -[hidden]- T5
+
+TEST ARROW_MAIN T1 : 3 cases
+TEST ARROW_MAIN T2 : 4 cases
+TEST ARROW_MAIN T3 : 3 cases
+TEST -[#CB2000,dashed]-> T4 : **no case** — unenforced
+TEST -[#CB2000,dashed]-> T5 : **no case** — unenforced
+
+note right of T1
+  **Tier 1 — absolute survival** (""ai/strategies/survival.ts""):
+
+  | weight | value | fires on |
+  | ""DEPLOY_ATTACK_SURVIVAL"" | 13_500 (""KING_SAFETY + 3_500"") | deploy a unit, then take the checker with it |
+  | ""KING_SAFETY"" | 10_000 | CC move to / from a safe square (signed) |
+  | ""QUEEN_ESCAPE"" | 8_000 | Battleship under fire reaches safety |
+  | ""BACKRANK_ESCAPE"" | 4_500 | threatened CC steps off its back rank |
+  | ""QUEEN_WARP_CHECK_CC"" | 2_000 | Tactical Jump onto or beside the enemy CC |
+  | ""DEFEND_UNIT"" | 1_800 | ordinary unit flees fire to safety |
+  | ""QUEEN_THREAT_KING"" | 1_500 | enemy Battleship visible — CC prefers safety |
+
+  These are the only weights the orchestrator never scales by posture, which
+  is why the ladder is written from here down rather than from the top score.
+end note
+
+note as N_T2
+  **Tier 2 — Command Center pressure.** Strategic
+  (""ai/strategic/strategies/checks.ts"") replaces the naive pair wholesale;
+  ""cc-focus.puml"" owns *which square* each one aims at:
+
+  | weight | value | branch |
+  | ""SNEAK_KNIGHT_CHECK_GUESS"" | 6_000 | fogged CC, ×0.5 when ""intel.strength == 0"" |
+  | ""SNEAK_KNIGHT_CHECK_SEEN"" | 6_000 | visible CC |
+  | ""PAWN_CHECK_CC_GUESS"" | 6_000 | fogged CC |
+  | ""PAWN_CHECK_CC_SEEN"" | 6_000 | visible CC |
+  | ""ATTACK_KING_GUESS"" | 5_000 | fogged CC, flat — replaces posture ""attackKing"" |
+  | ""CHASE_KING_GUESS"" | 450 | fogged CC — equals hunt's ""chaseKing"", so chase is fog-neutral |
+  | ""NEAR_PROMOTE_RUSH"" | 6_000 | ""ai/strategies/mapControl.ts"" — a Marine two steps from promotion |
+
+  **Naive keeps its own, deliberately weaker pair** (""ai/strategies/checks.ts""):
+  ""SNEAK_KNIGHT_CHECK"" 2_000 and ""PAWN_CHECK_CC"" 1_500. The strategic script
+  is the one that is supposed to drive at the Command Center, so the gap is
+  the difficulty setting rather than an oversight.
+end note
+
+note as N_T34
+  **Tier 3 — material** (""ai/strategies/captures.ts""):
+
+  | weight | value | fires on |
+  | ""CHARON_COMBO"" | 2_500 | Charon strike, then a second unit acts the same turn |
+  | ""EQUAL_TRADE_ATTACK"" | 2_400 | equal-material capture in range |
+  | ""SAC_FOR_CC_WINNING"" | 1_800 | give a unit to keep the enemy CC under fire, while ahead |
+  | ""HUNT_UNDEFENDED_PAWN"" | 950 | take a Marine no unit **and no deploy** covers |
+  | ""PAWN_TRADE"" | 750 | Marine-for-Marine while congested |
+  | ""SAC_FOR_CC"" | 400 | the same sacrifice while only level |
+
+  ""undefended"" is decided by ""deploy-reach.puml"", not by unit attacks alone —
+  a square the enemy could recapture with a deploy is defended.
+
+  **Tier 4 — economy dials.** Naive (""ai/strategies/economy.ts""):
+  ""BISHOP_VS_QUEEN"" 3_500 · ""BISHOP_FIRST"" 2_200 · ""ROOK_AFTER_KNIGHTS"" 900 ·
+  ""MAX_KNIGHTS"" 2 (a cap, not a weight). Strategic
+  (""ai/strategic/strategies/economy.ts""): ""QUEEN_FINISH"" 3_200 ·
+  ""HIDDEN_GUARD"" 1_450 · ""SHIP_WARP_READY"" 800, plus ""SHIP_HORIZON_BONUS"" 600
+  over ""HORIZON"" 5 from ""deployLookahead.ts"".
+end note
+
+note as N_T5
+  **Tier 5 — posture weights** (""ai/context/posture.ts""). The only contextual
+  dial; a strategy reads them and never branches on the posture name:
+
+  | weight | expand | seek | hunt |
+  | ""siegeHub"" | 1_200 | 950 | 180 |
+  | ""mapControl"" | 800 | 480 | 140 |
+  | ""diagonal"" | 400 | 360 | 280 |
+  | ""promoteRank"" | 0 | 60 | 100 |
+  | ""promotionBonus"" | 0 | 420 | 700 |
+  | ""attackKing"" | 0 | 0 | 3_500 |
+  | ""chaseKing"" | 0 | 0 | 450 |
+  | ""seekFocus"" | 0 | 700 | 0 |
+  | ""center"" | 50 | 30 | 25 |
+  | ""trade"" | 100 | 100 | 120 |
+  | ""attackedPenalty"" | 400 | 400 | 400 |
+
+  ""hunt"" requires a visible enemy CC, so ""attackKing"" and ""chaseKing"" are
+  **structurally zero** on any turn the CC is fogged. A guess branch therefore
+  never competes with them, which is why ""ATTACK_KING_GUESS"" exists as a flat
+  constant instead of a posture row.
+end note
+
+T2 .. N_T2
+T3 .. N_T34
+T5 .. N_T5
+
+note bottom of TEST
+  **The ladder is a sum, not a selection.** The orchestrator adds every
+  strategy's score for a move, so an ordering between two constants only
+  decides the outcome when nothing else contributes. Two weights that stack on
+  one move can beat a higher tier, which is how the Marine double-count in
+  ""cc-focus.puml"" inverts an invariant this file's test still passes.
+
+  **The ten enforced invariants.** They used to be prose beside the constants
+  ("must outrank mapControl (e2 5104 vs c2 102)"), where nothing checked them
+  and a retune could silently invert them:
+
+  | # | invariant |
+  | 1 | every tier-2/3 weight < ""KING_SAFETY"" (12 constants swept) |
+  | 2 | ""DEPLOY_ATTACK_SURVIVAL"" > ""KING_SAFETY"" > ""BACKRANK_ESCAPE"" |
+  | 3 | ""QUEEN_ESCAPE"" > ""DEFEND_UNIT"" and > ""QUEEN_THREAT_KING"" |
+  | 4 | ""PAWN_CHECK_CC_GUESS"" ≥ ""NEAR_PROMOTE_RUSH"" — the old comment's claim |
+  | 5 | both sneak weights > ""EQUAL_TRADE_ATTACK"" |
+  | 6 | ""SNEAK_KNIGHT_CHECK_SEEN"" > naive ""SNEAK_KNIGHT_CHECK"" |
+  | 7 | ""SAC_FOR_CC_WINNING"" < ""EQUAL_TRADE_ATTACK"" |
+  | 8 | ""SAC_FOR_CC"" < ""SAC_FOR_CC_WINNING"" |
+  | 9 | ""SAC_FOR_CC"" < ""HUNT_UNDEFENDED_PAWN"" |
+  | 10 | every guess weight ≤ its seen twin |
+
+  Invariant 4 is the tightest in the ladder: 6_000 ≥ 6_000 holds by equality,
+  so any cut to the Marine check breaks it immediately. That is deliberate —
+  the point of the case is that a check must never lose to a quiet promotion
+  square. It runs in ""pnpm ci"" through ""test:packages"".
+end note
+
+note as N_GAPS
+  **What no test pins.** Tiers 4 and 5 have no ordering case at all, so a
+  deploy dial may drift past a survival weight without anything failing.
+  ""KNIGHT_1_MOVE_BLOCK"" 800 and ""KNIGHT_1_MOVE_KING_STEP"" 600 in
+  ""ai/strategic/strategies/threats.ts"" are module-private and cannot be
+  asserted from outside at all.
+
+  **The rule those two weights encode.** An enemy Hoverbike standing on
+  ""tactical.checkThreatSquares"" will deliver check next turn unless we move the
+  Command Center or put something in the way, so strategic ""threats"" rewards
+  acting a turn early rather than waiting to be checked. A Hoverbike cannot be
+  blocked on a ray, so the only real interposition is a unit that lands adjacent
+  to our own CC and can take it — which is why the reward tests CC adjacency
+  rather than ray membership. Both weights are held **below** the offensive
+  check tier on purpose: a defensive nudge must never outbid a real check.
+
+  <color:#CB2000>**OPEN**</color> — ""KNIGHT_1_MOVE_KING_STEP"" is **dead**.
+  ""threats.ts"" returns 0 on ""isKingMove"" at the top of ""score"", so the
+  ""isKingMove"" branch further down can never run. The CC-step half of the rule
+  above is therefore unimplemented, while the interpose half does fire. The
+  comment that claimed the balance held quoted 3_000 / 5_000 for the offensive
+  weights, which have since become 6_000 / 5_000 — the ordering survived the
+  retune, but nothing checked that it did.
+end note
+
+TEST .. N_GAPS
+@enduml

@@ -133,6 +133,14 @@ When you add, rename, or remove a component, hook, store, or service:
   gate a fog branch on `enemyKing == null` — it is null only when the game is
   over, which is the bug that made every `_GUESS` weight dead code. See
   `_spec/apps/starchess/core/adjutant/cc-focus.puml`.
+- **Adjutant cross-ply state**: the CC posterior (`CCIntel`) and the
+  known-vs-seen ledger (`KnownVsSeen`) are folded forward by
+  `ai/strategic/tracking.ts` in **starchess-core** — one owner, threaded by
+  both hosts (`SingleScreen` for live play, `run/runMatch.ts` for the arena).
+  These folds used to live in `packages/starchess-arena/src/players/`, where the
+  app could not reach them and the arena's own player dropped them. Never
+  re-implement a fold in a host: a per-host copy is what made the posterior
+  restart from the home prior every turn.
 - **Adjutant weights**: the scoring strategies are *summed*, so what decides a
   move is the tier ordering, not the magnitudes. Assert an ordering claim in
   `__tests__/tactics/weightOrdering.test.ts` — never in a comment beside the

@@ -7,7 +7,15 @@
  * (Another Game = rematch same map/team · Replay = `/review/:id`).
  */
 import { useNavigate, useSearchParams } from "@solidjs/router";
-import { adjutant } from "@chess-coach/starchess-core";
+import {
+  adjutant,
+  seedCcIntelForOpening,
+  seedKvsForOpening,
+  strategicAdjutant,
+  updateCcIntelForSnap,
+  updateKvsForSnap,
+} from "@chess-coach/starchess-core";
+import type { CcIntelState, KvsState, ScFenSnapshot } from "@chess-coach/starchess-core";
 import type { StarChessColor } from "@chess-coach/starchess-core";
 import { Show, createEffect, createSignal, onCleanup, type Component } from "solid-js";
 
@@ -33,6 +41,7 @@ import {
 import { playerName } from "~/store/settingsStore";
 import type { BoardVariant } from "~/types/board";
 import type { StarChessMatchResult } from "~/types/review";
+import { isAdjutantKind, type AdjutantKind } from "~/types/newGame";
 import { LIVE_ADJUTANT_MATCH_TITLE } from "~/utils/matchTitle";
 
 const MAPS: readonly BoardVariant[] = ["eclipse", "butter", "vermeer"];
@@ -47,6 +56,11 @@ const parseMap = (raw: string | string[] | undefined): BoardVariant => {
 
 const parseTeam = (raw: string | string[] | undefined): StarChessColor =>
   asOne(raw) === "b" ? "b" : "w";
+
+const parseOpponent = (raw: string | string[] | undefined): AdjutantKind => {
+  const v = asOne(raw);
+  return isAdjutantKind(v) ? v : "naive";
+};
 
 type MatchBootstrap = {
   matchId: string;
@@ -95,6 +109,7 @@ const bootstrapMatch = (
 const MatchInner: Component<{
   boardVariant: BoardVariant;
   team: StarChessColor;
+  opponent: AdjutantKind;
   matchId: string;
   startedAt: string;
   onExitToMenu: () => void;
@@ -103,6 +118,20 @@ const MatchInner: Component<{
   const store = useMatchStore();
   const opponentColor = (): StarChessColor => (props.team === "w" ? "b" : "w");
   let historySaved = false;
+
+  // Cross-ply strategic state, folded once per turn (core owns the folds — the
+  // arena threads the same two).
+  let ccIntel: CcIntelState = seedCcIntelForOpening();
+  let kvs: KvsState | null = null;
+  let foldedTurn = -1;
+
+  const foldTracking = (snap: ScFenSnapshot) => {
+    if (!kvs) kvs = seedKvsForOpening(snap);
+    if (snap.turn === foldedTurn) return;
+    foldedTurn = snap.turn;
+    ccIntel = updateCcIntelForSnap(ccIntel, snap);
+    kvs = updateKvsForSnap(kvs, snap);
+  };
 
   // Keep SCFEN + playerColor warm in localStorage while this match is live.
   createEffect(() => {
@@ -152,12 +181,18 @@ const MatchInner: Component<{
       turnChrome="sidebar"
       matchTitle={LIVE_ADJUTANT_MATCH_TITLE}
       onExitToMenu={props.onExitToMenu}
-      autoQueueOpponent={(snap) =>
-        adjutant(snap, {
-          color: opponentColor(),
-          storedFor: (color) => store.state().economies[color].stored,
-        })
-      }
+      autoQueueOpponent={(snap) => {
+        const color = opponentColor();
+        const storedFor = (c: StarChessColor) => store.state().economies[c].stored;
+        if (props.opponent !== "strategic") return adjutant(snap, { color, storedFor });
+        foldTracking(snap);
+        return strategicAdjutant(snap, {
+          color,
+          storedFor,
+          kvs: kvs?.perSide[color],
+          ccIntel: ccIntel.perSide[color],
+        });
+      }}
     />
   );
 };
@@ -167,6 +202,7 @@ const LiveMatchSession: Component<{
   epoch: number;
   map: BoardVariant;
   team: StarChessColor;
+  opponent: AdjutantKind;
   onExitToMenu: () => void;
   onMatchFinished: (id: string, result: StarChessMatchResult) => void;
 }> = (props) => {
@@ -206,6 +242,7 @@ const LiveMatchSession: Component<{
       <MatchInner
         boardVariant={props.map}
         team={props.team}
+        opponent={props.opponent}
         matchId={boot.matchId}
         startedAt={boot.startedAt}
         onExitToMenu={props.onExitToMenu}
@@ -225,6 +262,7 @@ export const SingleScreen: Component = () => {
 
   const map = () => parseMap(params.map);
   const team = () => parseTeam(params.team);
+  const opponent = () => parseOpponent(params.opponent);
 
   const exitToMenu = () => {
     clearMatchSession();
@@ -246,6 +284,7 @@ export const SingleScreen: Component = () => {
     const q = new URLSearchParams();
     q.set("map", map());
     q.set("team", team());
+    q.set("opponent", opponent());
     navigate(`/single?${q.toString()}`, { replace: true });
     setMatchEpoch((n) => n + 1);
   };
@@ -259,7 +298,7 @@ export const SingleScreen: Component = () => {
 
   return (
     <LiveMatchShell world={map()} testId="starchess-app">
-      <Show when={`${map()}-${team()}-${matchEpoch()}`} keyed>
+      <Show when={`${map()}-${team()}-${opponent()}-${matchEpoch()}`} keyed>
         {(key) => {
           const epoch = Number(key.slice(key.lastIndexOf("-") + 1));
           return (
@@ -267,6 +306,7 @@ export const SingleScreen: Component = () => {
               epoch={epoch}
               map={map()}
               team={team()}
+              opponent={opponent()}
               onExitToMenu={exitToMenu}
               onMatchFinished={onMatchFinished}
             />
