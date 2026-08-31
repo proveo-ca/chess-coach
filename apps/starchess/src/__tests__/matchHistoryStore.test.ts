@@ -95,3 +95,36 @@ describe("matchHistoryStore", () => {
     expect(pack.settledSnapshots[0]!.gas.w).toBeLessThanOrEqual(2);
   });
 });
+
+describe("records remember which Adjutant script played", () => {
+  const finished = () => {
+    const base = createInitialMatchState();
+    return {
+      ...base,
+      playerColor: "b" as const,
+      outcome: { winner: "b" as const },
+      settledSnapshots: [base.liveSnapshot],
+      settledResolves: [],
+    };
+  };
+
+  it("stores the opponent when the screen supplies it", () => {
+    const record = recordFromMatchState(finished(), {
+      id: "sc-strategic",
+      startedAt: "2026-01-01T00:00:00.000Z",
+      map: "eclipse",
+      opponent: "strategic",
+    });
+    expect(record?.opponent).toBe("strategic");
+  });
+
+  it("leaves it absent when no opponent is supplied", () => {
+    // Keeps every other caller (tutorial hosts, demos) writing the old shape.
+    const record = recordFromMatchState(finished(), {
+      id: "sc-plain",
+      startedAt: "2026-01-01T00:00:00.000Z",
+      map: "eclipse",
+    });
+    expect(record?.opponent).toBeUndefined();
+  });
+});

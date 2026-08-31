@@ -160,6 +160,7 @@ const MatchInner: Component<{
       startedAt: props.startedAt,
       map: props.boardVariant,
       playerName: playerName(),
+      opponent: props.opponent,
     });
     if (!record || !result) return;
     historySaved = true;

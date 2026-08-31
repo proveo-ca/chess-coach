@@ -59,6 +59,11 @@ note bottom
   ``ccIntel`` / ``kvs`` forward once per turn through core's
   ``ai/strategic/tracking.ts`` — the same folds the arena runner uses — so the
   CC posterior accumulates in live play. See ``core/adjutant/cc-focus.puml``.
+  The choice is also written to the match record (``opponent``), so Review and
+  the history list name the script that played. It is **optional** on
+  ``StarChessGameRecord``: records saved before the select shipped carry none
+  and keep reading as the unqualified ``Adjutant``. ``arenaPlayers`` still wins
+  for imported arena games, which name both sides.
   Live gameOver → ``matchHistory`` + ``MatchResultModal``
   (``VICTORY`` / ``DEFEAT`` / ``DRAW``): **Another Game** remounts
   ``/single?map=&team=&opponent=``; **Replay** → ``/review/:id`` DualNav.

@@ -51,5 +51,7 @@ export const formatMatchLabel = (g: StarChessGameRecord): string => {
   }
   const player = displayPlayerName(g.playerName);
   const opponentColor: StarChessColor = g.playerColor === "w" ? "b" : "w";
-  return `${player} (${colorWord(g.playerColor)}) vs Adjutant (${colorWord(opponentColor)})`;
+  // Records written before the opponent was selectable carry no script.
+  const opponent = g.opponent ? adjutantKindLabel(g.opponent) : "Adjutant";
+  return `${player} (${colorWord(g.playerColor)}) vs ${opponent} (${colorWord(opponentColor)})`;
 };

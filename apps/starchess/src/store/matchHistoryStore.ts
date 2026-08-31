@@ -14,6 +14,7 @@ import {
 import { createPersistedStore } from "~/store/createPersistedStore";
 import type { BoardVariant } from "~/types/board";
 import type { MatchState } from "~/types/match";
+import type { AdjutantKind } from "~/types/newGame";
 import type {
   StarChessGameRecord,
   StarChessMatchResult,
@@ -63,6 +64,7 @@ export const recordFromMatchState = (
     startedAt: string;
     map: BoardVariant;
     playerName?: string;
+    opponent?: AdjutantKind;
   },
 ): StarChessGameRecord | null => {
   const result = resultForPlayer(match);
@@ -80,6 +82,7 @@ export const recordFromMatchState = (
     playerColor: match.playerColor,
     // Records outlive the settings value — clamp on the way in.
     playerName: clampPlayerName(opts.playerName),
+    opponent: opts.opponent,
     scfens: snaps.map((s) => formatScFen(normalizeSnapGas(s))),
     resolves: [...match.settledResolves],
   };

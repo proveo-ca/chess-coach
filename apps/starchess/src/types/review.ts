@@ -4,6 +4,7 @@
 import type { EndScTurnResult, ScFenSnapshot, StarChessColor } from "@chess-coach/starchess-core";
 
 import type { BoardVariant } from "~/types/board";
+import type { AdjutantKind } from "~/types/newGame";
 
 export type ReviewTurnPhase =
   /** Settled idle (turn start or Final). */
@@ -43,6 +44,11 @@ export type StarChessGameRecord = {
   playerName?: string;
   /** For arena imports, preserve both sides' script ids for display (max 2 lines). */
   arenaPlayers?: { w: string; b: string };
+  /**
+   * Which Adjutant script played the opponent. Absent on records written before
+   * the opponent was selectable — those read as the unqualified "Adjutant".
+   */
+  opponent?: AdjutantKind;
   /** Settled DualNav plies as SCFEN strings. */
   scfens: string[];
   /** Resolve that produced scfens[i+1] from scfens[i]. */
