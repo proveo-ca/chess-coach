@@ -13,7 +13,9 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "paths": {
-      "@chess-coach/engine-core": ["../../packages/engine-core/src/index.ts"]
+      "@chess-coach/engine-core": ["../../packages/engine-core/src/index.ts"],
+      "@chess-coach/starchess-core": ["../../packages/starchess-core/src/index.ts"],
+      "@chess-coach/starchess-arena": ["../../packages/starchess-arena/src/index.ts"]
     }
   },
   "include": ["src"]

@@ -29,7 +29,7 @@ export const countType = (
 /**
  * Deterministic bank estimate for snap-only callers (the live story passes the
  * real store via `ctx.storedFor`). Mirrors the story's 1-mineral start + income,
- * then subtracts one mineral per deployed unit beyond the King as a rough spend
+ * then subtracts one mineral per deployed unit beyond the Command Center (CC) as a rough spend
  * ledger. Never the source of truth — the host bank gates the actual debit.
  */
 export const estimateStoredFor =

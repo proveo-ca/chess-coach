@@ -1,13 +1,14 @@
+// SPEC: _spec/apps/starchess/replay-import.puml
 /**
  * Finished StarChess matches — DualNav replay packages in localStorage.
  * Coach uses chess_coach_game_history; this key is StarChess-only.
+ * Single owner for decode is packages/starchess-core/src/replay/record.ts
+ * (historyFromRecord / validateArenaRecord) — this module re-exports it.
  */
 import {
   formatScFen,
   normalizeSnapGas,
-  parseScFen,
-  type EndScTurnResult,
-  type ScFenSnapshot,
+  type ArenaGameRecord,
 } from "@chess-coach/starchess-core";
 
 import { createPersistedStore } from "~/store/createPersistedStore";
@@ -20,6 +21,10 @@ import type {
 import { clampPlayerName } from "~/utils/playerName";
 
 export type { StarChessGameRecord, StarChessMatchResult };
+export type { ArenaGameRecord };
+
+/** Shared CoreChamp decode — {scfens, resolves} → DualNav settled plies. */
+export { historyFromRecord, validateArenaRecord } from "@chess-coach/starchess-core";
 
 export const MATCH_HISTORY_KEY = "starchess_match_history";
 
@@ -85,16 +90,28 @@ export const addMatchRecord = (record: StarChessGameRecord): void => {
   setState("games", [record, ...without].slice(0, MAX_GAMES));
 };
 
-/** Rebuild DualNav snaps from a persisted record. */
-export const historyFromRecord = (
-  record: StarChessGameRecord,
-): { settledSnapshots: ScFenSnapshot[]; settledResolves: EndScTurnResult[] } => {
-  // repairGas: legacy plies may have turn advanced without restamping G: income.
-  const settledSnapshots = record.scfens.map((s) =>
-    parseScFen(s, { repairGas: true }),
-  );
-  return {
-    settledSnapshots,
-    settledResolves: record.resolves,
+/**
+ * Arena import → local history. Adapts ArenaGameRecord to StarChessGameRecord
+ * for list display; both satisfy historyFromRecord structurally.
+ */
+export const addArenaRecord = (record: ArenaGameRecord): StarChessGameRecord => {
+  const winner = record.outcome.winner;
+  const playerColor = "w" as const;
+  let result: StarChessMatchResult = "draw";
+  if (record.outcome.draw) result = "draw";
+  else if (winner === playerColor) result = "win";
+  else if (winner) result = "loss";
+  const adapted: StarChessGameRecord = {
+    id: record.id,
+    startedAt: record.startedAt,
+    endedAt: record.endedAt,
+    result,
+    map: (record.map as StarChessGameRecord["map"]) ?? "eclipse",
+    playerColor,
+    arenaPlayers: { w: record.players.w, b: record.players.b },
+    scfens: record.scfens,
+    resolves: record.resolves as StarChessGameRecord["resolves"],
   };
+  addMatchRecord(adapted);
+  return adapted;
 };

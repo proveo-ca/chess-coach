@@ -2,7 +2,7 @@
  * Plan simulation — what the board looks like after a candidate resolves.
  *
  * Used for exactly one question the strategies cannot answer on their own:
- * does this plan leave our King off every chip-capable ray?
+ * does this plan leave our Command Center (CC) off every chip-capable ray?
  *
  * // SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
  */
@@ -38,7 +38,7 @@ const simulateAction = (
     return next;
   }
   if (action.kind === "bishopSnipe") {
-    // Charon removes the target queen — which may be the checker.
+    // Charon removes the target battleship — which may be the checker.
     next.delete(to);
     return next;
   }
@@ -48,12 +48,12 @@ const simulateAction = (
     action.kind === "queenWarp"
   ) {
     const piece = next.get(from);
-    // A classical move onto a king square is dropped: the mover stays put.
+    // A classical move onto a command center (CC) square is dropped: the mover stays put.
     if (!piece || (action.kind === "classical" && next.get(to)?.type === "k")) {
       return next;
     }
-    // A sieged rook fires without relocating (the resolver refuses to move it),
-    // so the victim dies but the rook keeps blocking its own square.
+    // A sieged tank fires without relocating (the resolver refuses to move it),
+    // so the victim dies but the tank keeps blocking its own square.
     if (piece.type === "r" && sieged.has(from)) {
       next.delete(to);
       return next;
@@ -69,7 +69,7 @@ const simulateAction = (
 /**
  * Apply a candidate plan in resolve order.
  *
- * Pawn/queen stacks (B+C on the same vector) relocate twice — mid, then far.
+ * Marine/battleship stacks (B+C on the same vector) relocate twice — mid, then far.
  * That folding is `rewriteClassicalAfterB`'s job, and the simulation borrows it
  * verbatim so a plan we score can never land somewhere the resolver would not
  * put it (the rewrite also declines on a blocked landing and outside the
@@ -93,7 +93,7 @@ export const simulatePlan = (
   return next;
 };
 
-/** True when the plan leaves our King off every chip-capable attack ray. */
+/** True when the plan leaves our Command Center (CC) off every chip-capable attack ray. */
 export const clearsCheck = (
   map: Map<Square, ScPiece>,
   actions: readonly ScActionInput[],

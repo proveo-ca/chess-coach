@@ -1,5 +1,9 @@
 // SPEC: _spec/apps/server/components.puml
 import { createFetchHandler } from "./app.ts";
+import { ArenaRecordStore } from "./arena/ArenaRecordStore.ts";
+import { ArenaService } from "./arena/ArenaService.ts";
+import { StarChessEnginePool } from "./arena/StarChessEnginePool.ts";
+import { StarChessFeed } from "./arena/StarChessFeed.ts";
 import { EngineBridge } from "./EngineBridge.ts";
 import { Mutex } from "./http.ts";
 import { OllamaLlmClient } from "./LlmClient.ts";
@@ -18,13 +22,25 @@ const llmClient = new OllamaLlmClient();
 const orchestrator = new Orchestrator(stateManager, engineBridge, llmClient);
 const mutex = new Mutex();
 
+// Script Arena (Phase 2): pool-backed feed + in-memory record store. The pool
+// is opt-in only via STARCHESS_ARENA_ENGINES (engines are heavy subprocesses);
+// a zero pool is not created here — the feed defaults off unless enabled.
+const arenaService =
+  Number(process.env.STARCHESS_ARENA_ENGINES ?? "0") > 0
+    ? (() => {
+        const pool = new StarChessEnginePool();
+        const feed = new StarChessFeed(pool);
+        return new ArenaService(new ArenaRecordStore(), feed);
+      })()
+    : undefined;
+
 await engineBridge.start();
 
 Bun.serve({
   hostname: HOST,
   port: PORT,
   idleTimeout: 255, // long-lived LLM streams
-  fetch: createFetchHandler({ orchestrator, stateManager, mutex }),
+  fetch: createFetchHandler({ orchestrator, stateManager, mutex, arenaService }),
 });
 
 const publicHost =

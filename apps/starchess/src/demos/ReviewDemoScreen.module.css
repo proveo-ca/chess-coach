@@ -101,12 +101,8 @@
     max-width: none;
   }
 
-  /* Scoped from this screen — ResourceBar owns its own stylesheet. */
-  .dualResources :global([data-testid="resource-bar-name"]) {
-    display: none;
-  }
-
-  .dualResources :global([data-testid="resource-bar"]) {
+  /* Compact density — ResourceBar compact prop handles name + width */
+  .dualResources :global(.compact) {
     width: auto;
     min-width: 0;
     flex: 1 1 0;

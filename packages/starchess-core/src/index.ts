@@ -35,6 +35,7 @@ export {
   KING_MAX_LIVES,
   MAX_STORED_MATERIAL,
   MAX_DEPLOYED_MATERIAL,
+  MAX_GAME_TURNS,
   TURN_TIMEOUT_MS,
   UNIT_COST,
   incomeForTurn,
@@ -50,6 +51,8 @@ export {
   placementFromFen,
   deployedMaterialFromFen,
   deployedMaterialFromMap,
+  applyStoredIncome,
+  OPENING_STORED_MATERIAL,
 } from "./rules/economy";
 
 export type { ScPiece } from "./board/placement";
@@ -174,12 +177,32 @@ export {
   classicFenFromSc,
 } from "./scfen";
 
-export type { ScFenValidation, ScFenReplayResult } from "./replay/validate-history";
+export type {
+  ScFenValidation,
+  ScFenReplayResult,
+} from "./replay/validate-history";
 export {
   replayScFen,
   replayScFenHistory,
   validateScFenHistory,
 } from "./replay/validate-history";
+
+export type { FenProjection } from "./replay/fen";
+export { scfenToFen } from "./replay/fen";
+
+export type {
+  ArenaGameRecord,
+  ArenaOutcome,
+  ArenaRecordStatus,
+  ArenaRunSummary,
+} from "./replay/record";
+export {
+  historyFromRecord,
+  makeArenaRecordId,
+  recordFromRun,
+  validateArenaRecord,
+  type ArenaRecordValidation,
+} from "./replay/record";
 
 export type { SideVision, NerdVision, PathVisionOpts, VisionBoard } from "./board/vision";
 export {
@@ -202,7 +225,12 @@ export {
 
 export {
   strategicAdjutant,
+  strategicCandidates,
+  applyCandidate,
   buildStrategicCtx,
+  getCCBestGuess,
+  emptyCCIntel,
+  type CCIntel,
   seedKnownVsSeen,
   knownForTurn,
   combineKnownVsSeen,
@@ -212,6 +240,8 @@ export {
   hiddenMaterial,
   isWinning,
   type StrategicResult,
+  type StrategicCandidatesResult,
+  type Candidate,
   type StrategicCtx,
   type StrategicAdjutantContext,
   type KnownVsSeen,

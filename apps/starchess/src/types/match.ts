@@ -218,8 +218,10 @@ export type MatchState = {
   /**
    * Human’s chosen team for this match — stable across review vision toggles.
    * SideRailTools labels: You = playerColor, Adjutant = opposite.
+   * For arena imports, both sides are bots — show script ids instead.
    */
   playerColor: ViewerColor;
+  arenaPlayers?: { w: string; b: string };
   deadlineAt: number | null;
   targeting: TargetingState;
   specialsUsed: ReadonlySet<Square>;

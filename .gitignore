@@ -122,3 +122,6 @@ out-tsc/
 
 # Hero GIF capture scratch
 apps/e2e/.hero-capture/
+
+# Arena headless runs (wiped on every arena:* run)
+apps/starchess/arena-results/

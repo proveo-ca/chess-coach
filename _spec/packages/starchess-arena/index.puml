@@ -9,7 +9,7 @@ skinparam defaultTextAlignment left
 title StarChess Arena · Spec Map (_spec/packages/starchess-arena)
 
 package "_spec/packages/starchess-arena" {
-  component "arena.puml\nheadless match runner (PLANNED)" as ARENA <<app>>
+  component "arena.puml\nheadless match runner" as ARENA <<app>>
 }
 
 package "packages/starchess-arena/src" {
@@ -22,15 +22,15 @@ package "packages/starchess-arena/src" {
 }
 
 package "packages/starchess-core/src (shared)" {
-  component "replay/{fen,record}.ts · rules/economy.ts (PLANNED)" as CORE <<app>>
+  component "replay/{fen,record}.ts · rules/economy.ts" as CORE <<app>>
 }
 
 package "apps/server (Bun)" {
-  component "src/feed/*\nStarChessFeed · pool (PLANNED)" as FEEDIMPL <<app>>
+  component "src/arena/*\nStarChessFeed · pool" as FEEDIMPL <<app>>
 }
 
 package "apps/starchess" {
-  component "replay-import.puml\n?game= / ?scfens= replay (PLANNED)" as REPLAY <<app>>
+  component "replay-import.puml\n?game= / ?scfens= replay" as REPLAY <<app>>
 }
 
 ARENA ARROW_MAIN RUN
@@ -45,8 +45,7 @@ FEEDIMPL ARROW_MAIN FEED : implements
 CLI ARROW_OPTIONAL FEEDIMPL : --engine runs
 
 note bottom
-  All source anchors currently PLANNED — attach """
-  // SPEC:"" refs when Phase-1/2/3 implementation lands.
-  Arena package must stay DOM/worker/fetch-free.
+  Arena package stays DOM/worker/fetch-free. ""// SPEC:"" refs live in the
+  source files that realize each spec.
 end note
 @enduml

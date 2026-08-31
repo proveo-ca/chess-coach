@@ -12,14 +12,16 @@ package "Inputs" {
   database "kvs\nknown · scouted · captured" as KVS <<db>>
   component "bank · unit mix · king proximity" as BANK <<db>>
   component "kingThreatened" as HOT <<app>>
+  component "turn · income tiers → horizon 5\nprojectedBank(bank, turn, 5)" as HORIZON <<app>>
 }
 
 package "Strategic economy" {
   component "strategies/economy.ts\ndeploys()" as ECO <<app>>
+  component "deployLookahead.ts\nbestDeploySequence(horizon:5)\np+p+q vs n+b+r on budget 11" as LOOK <<app>>
   package "Dials" {
     component "QUEEN_FINISH 3200\nwinning ∧ gap = 0 ∧ bank ≥ 9" as SHIP <<app>>
     component "HIDDEN_GUARD 1450\ngap > 0 (cheese window)" as GUARD <<app>>
-    component "skip p/n\nwinning ∧ gap = 0 ∧ bank < 9" as SAVE <<app>>
+    component "skip p/n\nwinning ∧ gap = 0 ∧ bank < 9 ∧ horizonBank ≥ 9" as SAVE <<app>>
   }
 }
 
@@ -29,10 +31,13 @@ package "Deploy choice" {
 
 KVS ARROW_MAIN ECO : gap = known − (scouted − captured)
 BANK ARROW_OPTIONAL ECO : deployPolicy (naive)
+HORIZON ARROW_MAIN ECO : budget over 5 turns
 HOT ARROW_OPTIONAL ECO : survival outranks saving
+ECO ARROW_MAIN LOOK : score sequences on projected budget
 ECO ARROW_OPTIONAL SHIP : close the game
 ECO ARROW_OPTIONAL GUARD : rook guard vs unseen
-ECO ARROW_OPTIONAL SAVE : bank toward a ship
+ECO ARROW_OPTIONAL SAVE : bank toward a ship within horizon
+LOOK ARROW_MAIN DROP : first unit of best sequence
 SHIP ARROW_MAIN DROP : drop ""q"" at King perimeter
 GUARD ARROW_MAIN DROP : rook / shore pawns
 SAVE ARROW_MAIN DROP : wait (no light drops)
@@ -44,7 +49,14 @@ note bottom
     defense outranks saving; rook guard ""HIDDEN_GUARD""; ship rush cancelled.
   * ""winning ∧ gap = 0"" — our board + captures exceed what the enemy
     knows: rush the BattleShip once the bank pays for a queen
-    (""QUEEN_FINISH"") and skip pawn / hoverbike drops that delay it.
+    (""QUEEN_FINISH"") and skip pawn / hoverbike drops that delay it —
+    saving only when the ship is reachable within 5 turns
+    (""horizonBank ≥ 9"").
+  * **Deploy budget over 5:** projects stored minerals after 5 turns of
+    income (capped 12) and scores sequences e.g. ""p+p+q"" (1+1+9=11) vs
+    ""n+b+r"" (3+3+5=11) when projected budget is 11 in 3 turns; the
+    immediate deploy is the first unit of the best horizon sequence
+    (discounted, horizon-aligned bonus).
   * otherwise — naive deploy mix, unchanged.
 end note
 @enduml

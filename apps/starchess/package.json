@@ -22,7 +22,12 @@
     "preview": "npm run build && wrangler dev",
     "preview:debug": "VITE_STARC_DEBUG=1 npm run build && VITE_STARC_DEBUG=1 wrangler dev",
     "deploy:dry-run": "npm run build && wrangler deploy --dry-run",
-    "deploy": "npm run build && wrangler deploy"
+    "deploy": "npm run build && wrangler deploy",
+    "arena:clean": "rm -rf ./arena-results",
+    "arena": "bash -c 'pnpm run arena:clean && mkdir -p ./arena-results && OUT=\"$PWD/arena-results\" && ./scripts/arena.sh --pairing naive:strategic --seeds 10 --out \"$OUT\" \"$@\"' bash",
+    "arena:naive": "bash -c 'pnpm run arena:clean && mkdir -p ./arena-results && OUT=\"$PWD/arena-results\" && ./scripts/arena.sh --pairing naive:naive --seeds 10 --out \"$OUT\" \"$@\"' bash",
+    "arena:strategic": "bash -c 'pnpm run arena:clean && mkdir -p ./arena-results && OUT=\"$PWD/arena-results\" && ./scripts/arena.sh --pairing strategic:strategic --seeds 10 --out \"$OUT\" \"$@\"' bash",
+    "arena:all": "bash -c 'pnpm run arena:clean && mkdir -p ./arena-results && OUT=\"$PWD/arena-results\" && ./scripts/arena.sh --pairing naive:strategic --seeds 10 --out \"$OUT\" && ./scripts/arena.sh --pairing naive:naive --seeds 2 --out \"$OUT\" && ./scripts/arena.sh --pairing strategic:strategic --seeds 2 --out \"$OUT\"' bash"
   },
   "dependencies": {
     "@chess-coach/client-platform": "workspace:*",
@@ -32,6 +37,9 @@
     "clsx": "^2.1.1",
     "solid-js": "^1.9.12",
     "unique-names-generator": "^4.7.1"
+  },
+  "engines": {
+    "node": ">=22"
   },
   "devDependencies": {
     "@solidjs/testing-library": "^0.8.10",

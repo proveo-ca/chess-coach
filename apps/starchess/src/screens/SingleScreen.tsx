@@ -72,6 +72,7 @@ const bootstrapMatch = (
     };
   }
 
+  // Route separation: /single owns ?scfen= (singular) — /review owns ?game=/?scfens=.
   const queryScfen = readScfenQuery(browserLocation.search());
   const session = loadMatchSession();
   const resume =

@@ -25,6 +25,8 @@ package "packages/starchess-core/src" {
   component "outcome.ts" as OUT <<app>>
   component "board/{placement,mines,vision,siege}.ts" as BRD <<db>>
   component "ai/adjutant.ts" as AI <<app>>
+  component "replay/{fen.ts,record.ts}" as RPL <<app>>
+  component "rules/economy.ts" as ECO <<app>>
 }
 
 package "UI (apps/starchess)" {
@@ -43,6 +45,9 @@ SEQ ARROW_MAIN RT
 MOVES ARROW_MAIN SCM
 MOVES ARROW_OPTIONAL BRD
 MOVES ARROW_OPTIONAL AI
+RPL ARROW_OPTIONAL WIRE : settle scfens → resolves → history
+SUB ARROW_OPTIONAL ECO : income after endScTurn
+RPL ARROW_OPTIONAL UI : ReviewScreen · arena replay
 SEQ ARROW_OPTIONAL UI : MatchStore End
 MOVES ARROW_OPTIONAL UI : useBoardInput
 

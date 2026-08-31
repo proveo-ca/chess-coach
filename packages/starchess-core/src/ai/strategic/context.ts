@@ -2,11 +2,11 @@
  * Strategic context assembly — the naive planning context plus the
  * known-vs-seen intel the strategic economy weighs.
  *
- * Builds on `buildAdjutantCtx` unchanged (vision · tactical · posture · King
+ * Builds on `buildAdjutantCtx` unchanged (vision · tactical · posture · Command Center (CC)
  * intel · material are all shared), then layers the strategic dials:
  *   - `kvs`            — the known-vs-seen accumulator (host-threaded, or a
  *                        deterministic one-turn estimate for snap-only callers)
- *   - `cheesePromotion`— hidden enemy material worth at least a pawn in
+ *   - `cheesePromotion`— hidden enemy material worth at least a marine in
  *                        mid-game (the promotion-rush / "cheese" window)
  *   - `winning`        — our board plus captured exceeds what the enemy knows
  *
@@ -19,6 +19,8 @@
 import type { AdjutantCtx, AdjutantContext } from "../context";
 import { buildAdjutantCtx } from "../context";
 import type { ScFenSnapshot } from "../../model/types";
+import type { Square } from "chess.js";
+import { getCCBestGuess, type CCIntel, emptyCCIntel } from "../context/ccIntel";
 import {
   boardValue,
   detectCheesePromotion,
@@ -39,6 +41,9 @@ export type StrategicAdjutantContext = AdjutantContext & {
    * snap-only callers, who get a deterministic one-turn estimate instead.
    */
   kvs?: KnownVsSeen;
+  /** CC search state — the host threads the previous `CCIntel` and the last Hoverbike probe. */
+  ccIntel?: CCIntel | null;
+  lastCCProbe?: { to: Square; empty: boolean } | null;
 };
 
 /** The full strategic planning context handed to strategic strategies. */
@@ -46,6 +51,7 @@ export type StrategicCtx = AdjutantCtx & {
   kvs: KnownVsSeen;
   cheesePromotion: boolean;
   winning: boolean;
+  ccIntel: CCIntel;
 };
 
 /** Sum of enemy unit value currently visible (lit or revealed) this turn. */
@@ -80,10 +86,19 @@ export const buildStrategicCtx = (
 
   const kvs: KnownVsSeen =
     ctx?.kvs ?? estimateKnownVsSeen(revealedEnemyValue(base), base.snap.turn);
+  const ccIntel = getCCBestGuess(
+    ctx?.ccIntel ?? emptyCCIntel(base.enemy),
+    base.map,
+    base.vision.litSquares,
+    base.vision.revealedPieces,
+    ctx?.lastCCProbe ?? null,
+    base.enemy,
+  );
 
   return {
     ...base,
     kvs,
+    ccIntel,
     cheesePromotion: detectCheesePromotion(kvs, base.snap.turn),
     winning: isWinning(countedForUs(base, kvs), kvs.known),
   };

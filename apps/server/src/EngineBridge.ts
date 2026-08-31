@@ -32,7 +32,7 @@ export class EngineBridge implements IEngineBridge {
   }
 
   getEvaluation(fen: string, depth = 15): Promise<EvalResult> {
-    return this.stockfish.getEvaluation(fen, depth);
+    return this.stockfish.getEvaluation(fen, { depth });
   }
 
   checkLegality(fen: string, move: string): Promise<boolean> {

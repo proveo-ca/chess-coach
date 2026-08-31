@@ -2,7 +2,7 @@
  * Map control — territory, and the Marine advance that converts it.
  *
  * Covers the centre pull, the d4–e5 siege hub, Spider Mine siting, Mecha
- * diagonals, the fogged-King search vector, and promotion (rank progress plus
+ * diagonals, the fogged-Command Center (CC) search vector, and promotion (rank progress plus
  * the ≤2-step rush): a Marine walking up the board *is* territory being taken,
  * so it is weighed on the same scale rather than as a separate concern.
  *
@@ -28,13 +28,13 @@ import {
 import { asCandidate, type Strategy } from "./types";
 
 /**
- * Pawn ≤2 steps from last rank — rush promote (gas+move when needed).
- * Below King/queen survival; above equal trades / hunt checks.
+ * Marine ≤2 steps from last rank — rush promote (gas+move when needed).
+ * Below Command Center (CC)/battleship survival; above equal trades / hunt checks.
  */
 export const NEAR_PROMOTE_RUSH = 6_000;
 
 /**
- * Absolute rush when a pawn starts ≤2 steps from promotion and this move
+ * Absolute rush when a marine starts ≤2 steps from promotion and this move
  * advances (gas+classical two-step or classical finish).
  */
 export const nearPromoteRush = (
@@ -118,7 +118,7 @@ const minePlants = (ctx: AdjutantCtx): Candidate[] => {
 
 /**
  * Siege toggle (1 gas). Prefer packing on the d4–e5 hub for map control;
- * unpack only under fire. In seek, pack when 9×9 would cover the King focus.
+ * unpack only under fire. In seek, pack when 9×9 would cover the Command Center (CC) focus.
  */
 const siegeToggles = (ctx: AdjutantCtx): Candidate[] => {
   const { map, us, enemy, sieged, weights, intel } = ctx;
@@ -177,7 +177,7 @@ const score = (ev: MoveEval, ctx: AdjutantCtx): number => {
     trade,
   } = weights;
 
-  // The centre pull applies to every mover, King included.
+  // The centre pull applies to every mover, Command Center (CC) included.
   let s = center * centerScore(move.to);
   if (isKingMove) return s;
 
@@ -185,7 +185,7 @@ const score = (ev: MoveEval, ctx: AdjutantCtx): number => {
     s += promoteRank * promoteProgress(rankOf(move.to), us);
     if (isLastRank(rankOf(move.to), us)) s += promotionBonus;
     s += nearPromoteRush(rankOf(move.from), rankOf(move.to), us);
-    // Congested — quiet pawn advances are less useful than trades / clears.
+    // Congested — quiet marine advances are less useful than trades / clears.
     if (material.congested && !move.capture) s -= trade * 0.5;
   }
 
@@ -205,7 +205,7 @@ const score = (ev: MoveEval, ctx: AdjutantCtx): number => {
     s += siegeHub * 0.75;
   }
 
-  // Seek a fogged King — close on deploy / pawn-clump focus (intel).
+  // Seek a fogged Command Center (CC) — close on deploy / marine-clump focus (intel).
   if (seekFocus > 0) {
     const before = chebyshev(move.from, intel.focus);
     const after = chebyshev(move.to, intel.focus);

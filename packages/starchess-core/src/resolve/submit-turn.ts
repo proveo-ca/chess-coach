@@ -329,10 +329,10 @@ const applySpecial = (
       const occupant = placementToMap(placement).get(action.to);
       const deployed = { type: action.unit, color: action.color };
       const landed = placeUnit(placement, action.to, deployed);
-      const crush =
-        occupant && occupant.color !== action.color
-          ? { victim: { type: occupant.type, color: occupant.color } }
-          : {};
+      // Deploy over ally is allowed — ally shows death as if enemy, deployed survives
+      const crush = occupant
+        ? { victim: { type: occupant.type, color: occupant.color } }
+        : {};
       const blast = applyArrivalMine(landed, mines, [action.to], action.color, deployed);
       if (blast.mineColor) {
         return {

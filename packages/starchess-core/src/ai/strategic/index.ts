@@ -17,9 +17,20 @@
  */
 
 export { strategicAdjutant } from "./orchestrator";
-export type { StrategicResult } from "./orchestrator";
+export type { StrategicResult, StrategicCandidatesResult } from "./orchestrator";
+export { strategicCandidates, applyCandidate } from "./orchestrator";
 export { buildStrategicCtx } from "./context";
 export type { StrategicCtx, StrategicAdjutantContext } from "./context";
+export type { Candidate } from "../context";
+export {
+  projectedBank,
+  bestDeploySequence,
+  isUnitInBestSequence,
+  HORIZON,
+  SHIP_HORIZON_BONUS,
+  type DeploySequence,
+} from "./deployLookahead";
+export { getCCBestGuess, emptyCCIntel, type CCIntel } from "../context/ccIntel";
 export {
   seedKnownVsSeen,
   knownForTurn,

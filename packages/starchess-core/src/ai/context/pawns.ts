@@ -1,5 +1,5 @@
 /**
- * Marine (pawn) structure questions: promotion distance and file congestion.
+ * Marine (marine) structure questions: promotion distance and file congestion.
  *
  * // SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
  */
@@ -10,9 +10,9 @@ import { parseSquare, type ScPiece } from "../../board/placement";
 import type { PieceColor } from "../../model/types";
 
 /**
- * Pawn congestion — density in a file window, not total army size.
- * Congested when ≥{@link CLUSTER_PAWNS} of our pawns sit in any
- * {@link CLUSTER_FILES} consecutive files (e.g. 7 pawns across c–e).
+ * Marine congestion — density in a file window, not total army size.
+ * Congested when ≥{@link CLUSTER_PAWNS} of our marines sit in any
+ * {@link CLUSTER_FILES} consecutive files (e.g. 7 marines across c–e).
  */
 export const CLUSTER_FILES = 3;
 export const CLUSTER_PAWNS = 7;
@@ -30,8 +30,8 @@ export const isLastRank = (rank: number, us: PieceColor): boolean =>
   us === "b" ? rank === 1 : rank === 8;
 
 /**
- * True when our pawns form a dense file cluster — ≥{@link CLUSTER_PAWNS}
- * pawns inside any window of {@link CLUSTER_FILES} consecutive files.
+ * True when our marines form a dense file cluster — ≥{@link CLUSTER_PAWNS}
+ * marines inside any window of {@link CLUSTER_FILES} consecutive files.
  */
 export const isPawnClustered = (
   map: Map<Square, ScPiece>,

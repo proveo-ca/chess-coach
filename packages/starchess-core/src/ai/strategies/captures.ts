@@ -16,14 +16,14 @@ import { asCandidate, type Strategy } from "./types";
 
 /** Equal-material capture when in range — always take the trade. */
 export const EQUAL_TRADE_ATTACK = 2_400;
-/** Congested / always: take an undefended enemy pawn. */
+/** Congested / always: take an undefended enemy marine. */
 export const HUNT_UNDEFENDED_PAWN = 950;
-/** Congested: trade pawn-for-pawn to clear clutter. */
+/** Congested: trade marine-for-marine to clear clutter. */
 export const PAWN_TRADE = 750;
 /** Charon (B) then a second unit still strikes in the same turn. */
 export const CHARON_COMBO = 2_500;
 
-/** Charon missiles at a unique diagonal enemy queen (2 gas). */
+/** Charon missiles at a unique diagonal enemy battleship (2 gas). */
 const charonStrikes = (ctx: AdjutantCtx): Candidate[] => {
   const { map, snap, us, weights } = ctx;
   const out: Candidate[] = [];

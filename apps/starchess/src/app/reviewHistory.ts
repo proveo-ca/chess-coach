@@ -113,7 +113,7 @@ export const buildReviewHistory = (args: BuildReviewHistoryArgs): ReviewHistory 
 
 export const createMatchStateFromReviewHistory = (
   history: Pick<ReviewHistory, "settledSnapshots" | "settledResolves">,
-  opts?: { stored?: number; playerColor?: StarChessColor },
+  opts?: { stored?: number; playerColor?: StarChessColor; arenaPlayers?: { w: string; b: string } },
 ): MatchState => {
   const stored = opts?.stored ?? OPENING_STORED_MATERIAL;
   const playerColor = opts?.playerColor ?? "w";
@@ -140,6 +140,7 @@ export const createMatchStateFromReviewHistory = (
     },
     viewer: playerColor,
     playerColor,
+    ...(opts?.arenaPlayers ? { arenaPlayers: opts.arenaPlayers } : {}),
     deadlineAt: null,
     targeting: null,
     specialsUsed: new Set(),

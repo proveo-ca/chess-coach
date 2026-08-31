@@ -105,3 +105,141 @@
   font-size: 0.75rem;
   color: #9aa3ad;
 }
+
+/* Arena library */
+.arenaLibrary {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border: 1px solid #2a343e;
+  border-radius: 0.35rem;
+  background: #0b1319;
+}
+
+.arenaLibrary--dragOver {
+  border-color: #7cff4a;
+  background: #0f1f14;
+}
+
+.arenaTitle {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #e8eaed;
+}
+
+.arenaHint {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #9aa3ad;
+  line-height: 1.4;
+}
+
+.arenaFileRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.arenaFileButton {
+  display: inline-block;
+  padding: 0.35rem 0.6rem;
+  border: 1px solid #3a4550;
+  border-radius: 0.25rem;
+  background: #141e26;
+  color: #e8eaed;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.arenaFileButton:hover {
+  border-color: #7cff4a;
+}
+
+.arenaSuccess {
+  font-size: 0.75rem;
+  color: #7cff4a;
+}
+
+.arenaError {
+  font-size: 0.75rem;
+  color: #c44;
+}
+
+.arenaLoading,
+.arenaEmpty,
+.arenaUnreachable {
+  font-size: 0.75rem;
+  color: #9aa3ad;
+}
+
+.arenaErrorBox {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: #c44;
+}
+
+.arenaList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.arenaTile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid #2a343e;
+  border-radius: 0.25rem;
+  background: #0e151c;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.arenaTile:hover {
+  border-color: #7cff4a;
+}
+
+.arenaTileId {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #e8eaed;
+  word-break: break-all;
+}
+
+.arenaTileMeta {
+  font-size: 0.7rem;
+  color: #9aa3ad;
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.errorText {
+  color: #c44;
+}
+
+.errorPadded {
+  color: #c44;
+  padding: 1rem;
+}
+
+.metaClamp {
+  white-space: normal;
+  word-break: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

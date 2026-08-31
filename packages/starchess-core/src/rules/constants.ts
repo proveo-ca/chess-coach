@@ -3,6 +3,7 @@
 export const KING_MAX_LIVES = 3;
 export const MAX_STORED_MATERIAL = 12;
 export const MAX_DEPLOYED_MATERIAL = 50;
+export const MAX_GAME_TURNS = 45;
 
 /**
  * Planning turn length — base clock for animation fractions and for income

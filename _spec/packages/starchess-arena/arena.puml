@@ -1,7 +1,7 @@
 @startuml arena
 ' SPEC: _spec/packages/starchess-arena/arena.puml
-' purpose: HEADLESS SCRIPT ARENA — adjutant scripts play each other via the pure SCFEN engine; games recorded for replay.
-' status: PLANNED — anchors to packages/starchess-arena/src/** on implementation.
+' HEADLESS SCRIPT ARENA — adjutant scripts play each other via the pure SCFEN engine; games recorded for replay.
+' anchored to packages/starchess-arena/src/** and the core replay/economy files.
 !include ../../themes/proveo.puml
 
 skinparam packageStyle rectangle
@@ -20,28 +20,36 @@ package "packages/starchess-arena (pure, node/bun)" {
   component "record.ts\nscfens + resolves" as REC <<app>>
   component "compare.ts\nsummarize → scoreboard" as CMP <<app>>
   component "feed/types.ts\nEngineFeed contract" as FEED <<host>>
+  component "run/bank.ts\nmineral ledger" as BANK <<db>>
 }
 
 package "packages/starchess-core (pure SCFEN engine)" {
   component "beginScTurn · endScTurn\naddScAction · scOutcome" as CORE <<app>>
   component "adjutant / strategicAdjutant\ndeterministic scripts" as AI <<app>>
+  component "rules/economy.ts\napplyStoredIncome · OPENING_STORED_MATERIAL" as ECO <<app>>
+  component "replay/record.ts\nArenaGameRecord · historyFromRecord" as RCRD <<app>>
+  component "replay/fen.ts\nSCFEN → classical-FEN projector" as RFT <<app>>
 }
 
 package "node service (Bun)" {
   component "StarChessFeed\n+ pool (implements EngineFeed)" as IMPL <<app>>
 }
 
-database "arena records\nJSONL files" as STORE <<db>>
+database "arena records\nin-memory capped (50)" as STORE <<db>>
 
 RUN ARROW_MAIN CORE : beginScTurn → plan → endScTurn (per turn)
+RUN ARROW_OPTIONAL BANK : seed · grantStoredIncome · debitSpend
+BANK ARROW_MAIN ECO : applyStoredIncome
+RUN ARROW_MAIN REC : { scfen, resolve } per settled ply
+REC ARROW_MAIN RCRD : recordFromRun → shared schema
 CLI ARROW_MAIN RUN : seeds · pairing · out dir
 RUN ARROW_MAIN PS : plan(snap, {color, kvs})
 RUN ARROW_MAIN PW : plan(snap, {color})
 PS ARROW_OPTIONAL KVS : thread known-vs-seen
 PS ARROW_OPTIONAL FEED : evaluate FEN projections
 FEED ARROW_MAIN IMPL : getEvaluation (bounded movetime)
+PS ARROW_OPTIONAL RFT : project classical FEN
 AI ARROW_MAIN CORE : commit through addScAction only
-RUN ARROW_MAIN REC : { scfen, resolve } per settled ply
 REC ARROW_MAIN STORE : write record
 RUN ARROW_OPTIONAL CMP : summarize(runs)
 
@@ -60,6 +68,15 @@ note bottom
   **Determinism:** ""engine:false"" + fixed ""mapSeed"" → equal scfens+resolves
   payloads (metadata excluded). The recorded resolves are authoritative for
   replay (replay never re-runs stockfish).
-  **Status:** PLANNED — files land with Phase-1 of the arena plan.
+  **Gas refill:** no-chip turns advance to the gas-refilled turn-open snap
+  (app parity: ""begun?.next ?? refillTurnGas(cur)"") so scripts plan with a
+  real gas budget — the economy dials engage, not classical-only chess.
+  `strategic.ts` is async and rescues candidate scores from an `EngineFeed`
+  when a budget is attached; node ""StarChessFeed + pool + record store +
+  routes"" live in _spec/apps/server/starchess-arena-feed.puml.
+  **Web import:** file → localStorage + `?game=` + `?scfens=` validate before
+  `historyFromRecord` → `ReviewDemoScreen` (_spec/apps/starchess/replay-import.puml).
+  **Deploy horizon 5:** strategic economy projects bank 5 turns and scores
+  `p+p+q` vs `n+b+r` at projected 11 to pick the Command Center drop.
 end note
 @enduml

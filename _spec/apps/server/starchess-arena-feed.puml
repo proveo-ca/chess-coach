@@ -1,7 +1,7 @@
 @startuml starchess-arena-feed
 ' SPEC: _spec/apps/server/starchess-arena-feed.puml
-' purpose: NODE SERVICE (Bun) — stockfish feed for the arena; the adjutant runs outside the browser.
-' status: PLANNED — anchors to apps/server/src/feed/** + routes on implementation.
+' NODE SERVICE (Bun) — stockfish feed for the arena; the adjutant runs outside the browser.
+' anchors to apps/server/src/arena/** + routes in apps/server/src/app.ts.
 !include ../../themes/proveo.puml
 
 skinparam packageStyle rectangle
@@ -15,9 +15,10 @@ package "packages/starchess-arena (pure)" {
 
 package "apps/server (Bun)" {
   component "app.ts / http.ts router\ncors + validation" as ROUTER <<app>>
+  component "ArenaService\npairings × seeds → runMatch" as SVC <<app>>
   component "StarChessFeed\nimplements EngineFeed" as FEED <<app>>
-  component "StarChessEnginePool\nN procs · serial" as POOL <<app>>
-  component "record store\nJSONL / bun:sqlite" as STORE <<db>>
+  component "StarChessEnginePool\nN procs · parallel fan-out" as POOL <<app>>
+  component "record store\nin-memory capped (50)" as STORE <<db>>
 }
 
 package "callers" {
@@ -35,17 +36,18 @@ package "orchestration (as today)" {
 
 cloud "native stockfish\nbinary" as FISH <<cloud>>
 
-CALL ARROW_MAIN ROUTER : POST /starchess/arena/runs · GET /games, /games/:id
-ROUTER ARROW_MAIN ARENA : invoke runMatch (pool-bounded)
-ROUTER ARROW_MAIN FEED : batch candidate projections
-FEED ARROW_MAIN PROJ : ScFenSnapshot → FEN (lossy, classical-only)
+CALL ARROW_MAIN ROUTER : POST /starchess/arena/runs · GET /runs, /runs/:id
+ROUTER ARROW_MAIN SVC : validate + cap pairings/seeds
+SVC ARROW_MAIN ARENA : invoke runMatch (pool-bounded)
+ARENA ARROW_MAIN FEED : batch candidate projections
+ARENA ARROW_MAIN PROJ : ScFenSnapshot → FEN (lossy, classical-only)
 FEED ARROW_MAIN POOL : position fen … ; go movetime N
 POOL ARROW_MAIN SF
 SF ARROW_MAIN UCI
 UCI ARROW_CLOUD FISH : spawn + uci handshake
 FISH ARROW_CLOUD UCI : score cp / score mate
-FEED ARROW_OPTIONAL ROUTER : evals {cp, mate} or timedOut
-ROUTER ARROW_MAIN STORE : persist ArenaGameRecord
+FEED ARROW_OPTIONAL ARENA : suggestions {cp, mateIn} or timedOut
+SVC ARROW_MAIN STORE : persist ArenaGameRecord
 ARENA ARROW_OPTIONAL STORE : read records (replay scoreboard)
 
 note bottom
@@ -66,10 +68,16 @@ note bottom
   **Budgets:** per-query ""movetime"" + absolute ""readUntil"" timeout; on
   overrun the feed returns the evals it has with ""timedOut:true"" and the
   strategic script falls back to its deterministic ranking.
-  **CORP:** arena GETs set ""Cross-Origin-Resource-Policy: cross-origin"" or
-  the COEP-isolated web app can't read them (ACAO alone insufficient).
+  **CORP:** when the web app imports arena GETs cross-origin,
+  responses must set ""Cross-Origin-Resource-Policy: cross-origin"" — COEP
+  require-corp blocks the read today (ACAO alone insufficient).
   **Legality is never delegated:** stockfish only adjusts candidate scores;
   the core's ""addScAction"" gate stays authoritative.
-  **Status:** PLANNED — Phase-2 of the arena plan.
+  **Web import:** file → localStorage + `?game=` server fetch + `?scfens=`
+  short fixture all validate via `validateArenaRecord` before
+  `historyFromRecord` → `ReviewDemoScreen`.
+  **Deploy budget over 5:** strategic economy projects stored minerals 5 turns
+  and scores sequences e.g. `p+p+q` (1+1+9=11) vs `n+b+r` (3+3+5=11) when
+  projected budget is 11, steering the immediate Command Center drop.
 end note
 @enduml

@@ -41,6 +41,8 @@ export type StarChessGameRecord = {
   map: BoardVariant;
   playerColor: StarChessColor;
   playerName?: string;
+  /** For arena imports, preserve both sides' script ids for display (max 2 lines). */
+  arenaPlayers?: { w: string; b: string };
   /** Settled DualNav plies as SCFEN strings. */
   scfens: string[];
   /** Resolve that produced scfens[i+1] from scfens[i]. */

@@ -37,7 +37,7 @@ export { WEIGHTS, resolvePosture } from "./posture";
 export { buildVisionIntel } from "./vision";
 
 /**
- * Build the planning context, or `null` when the board has no King for us
+ * Build the planning context, or `null` when the board has no Command Center (CC) for us
  * (nothing to plan for — the caller returns the snapshot untouched).
  */
 export const buildAdjutantCtx = (
@@ -66,7 +66,7 @@ export const buildAdjutantCtx = (
     enemy,
     king,
     enemyKing,
-    // An adjacent enemy King counts: face-to-face kings chip each other.
+    // An adjacent enemy Command Center (CC) counts: face-to-face command centers (CCs) chip each other.
     kingThreatened: isSquareAttackedBy(map, king, enemy),
     sieged,
     gas: snap.gas[us],

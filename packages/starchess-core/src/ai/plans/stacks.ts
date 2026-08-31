@@ -10,7 +10,7 @@
 
 import type { Square } from "chess.js";
 
-import { isSquareAttackedBy, type ScPiece } from "../../board/placement";
+import { isSquareAttackedBy, parseSquare, type ScPiece } from "../../board/placement";
 import { scMovesFor, type ScMove } from "../../board/moves";
 import { UNIT_COST } from "../../rules/constants";
 import { specialGasCost } from "../../scfen";
@@ -22,7 +22,7 @@ import { CHARON_COMBO, EQUAL_TRADE_ATTACK } from "../strategies/captures";
 import { DEPLOY_ATTACK_SURVIVAL, QUEEN_ESCAPE } from "../strategies/survival";
 import { scoreMove } from "../strategies";
 
-/** Classical candidates from the shared SC movegen (filter king-square traps). */
+/** Classical candidates from the shared SC movegen (filter command center (CC)-square traps). */
 export const sideMoves = (ctx: AdjutantCtx): Move[] =>
   scMovesFor(ctx.map, ctx.us, { siegedRooks: ctx.sieged })
     .filter((m: ScMove) => !m.dropsAtResolve)
@@ -35,9 +35,9 @@ export const sideMoves = (ctx: AdjutantCtx): Move[] =>
     }));
 
 /**
- * Gas canister + same-forward classical on a pawn (UI stack form).
+ * Gas canister + same-forward classical on a marine (UI stack form).
  * `endScTurn.rewriteClassicalAfterB` expands B from→mid + C from→mid into
- * C mid→far, so the pawn resolves two steps ahead. Skip when a free classical
+ * C mid→far, so the marine resolves two steps ahead. Skip when a free classical
  * double to `far` already exists.
  */
 export const pawnGasStacks = (
@@ -65,6 +65,28 @@ export const pawnGasStacks = (
       capture: null,
       ...(promotion ? { promotion } : {}),
     };
+    let score = scoreMove(synthetic, ctx) + weights.trade;
+    // Marine gas + attack: if the doubly-stepped marine at `far` attacks a higher-value
+    // enemy piece, boost to knock it out (e.g. pawnDouble to d4 then capture e5 tank)
+    const pawnAtFarAttacksHigher = (() => {
+      const dir = us === "w" ? 1 : -1;
+      const { file, rank } = parseSquare(far);
+      const attackRanks = [rank + dir];
+      const attackFiles = [file - 1, file + 1];
+      for (const af of attackFiles) {
+        for (const ar of attackRanks) {
+          const sq = `${String.fromCharCode(96 + af)}${ar}` as Square;
+          const victim = map.get(sq);
+          if (victim && victim.color === ctx.enemy && UNIT_COST[victim.type] > UNIT_COST.p) {
+            return victim;
+          }
+        }
+      }
+      return null;
+    })();
+    if (pawnAtFarAttacksHigher) {
+      score += weights.trade * (1 + UNIT_COST[pawnAtFarAttacksHigher.type] - UNIT_COST.p);
+    }
     out.push({
       actions: [
         { timing: "B", kind: "pawnDouble", color: us, from, to: mid },
@@ -79,7 +101,7 @@ export const pawnGasStacks = (
       ],
       // Two-step stack beats a lone gas step; near-promote rush (≤2 steps)
       // lands via scoreMove on the far square. Extra trade tie-break.
-      score: scoreMove(synthetic, ctx) + weights.trade,
+      score,
     });
   }
   return out;
@@ -89,7 +111,7 @@ export const pawnGasStacks = (
  * Command Center spawn (B) + any classical (C) in the same turn.
  * Planning validates each action on the pre-B board, so a classical `to` that
  * equals the spawn square must be dropped — after B that tile is occupied by
- * our own unit and the King (or other mover) would bounce / no-op.
+ * our own unit and the Command Center (CC) (or other mover) would bounce / no-op.
  */
 export const spawnStacks = (
   specials: readonly Candidate[],
@@ -120,7 +142,7 @@ export const spawnStacks = (
 /**
  * Spawn (B) then classical (C) **from the newly deployed unit**.
  * Validation accepts C.from === spawn.to once B is queued — this is the
- * deploy+attack survival line (e.g. drop a rook that takes the back-rank checker).
+ * deploy+attack survival line (e.g. drop a tank that takes the back-rank checker).
  */
 export const spawnCaptureStacks = (
   specials: readonly Candidate[],
@@ -151,7 +173,7 @@ export const spawnCaptureStacks = (
 
       let score = spawn.score + trade * (1 + UNIT_COST[m.capture.type]);
       // Deploy+attack survival — only when taking a unit that is checking us now
-      // (not a distant one-ply threat; that is King back-rank escape's job).
+      // (not a distant one-ply threat; that is Command Center (CC) back-rank escape's job).
       const takesChecker = tactical.checkers.has(m.to);
       const equalOrBetter =
         UNIT_COST[m.capture.type] >= UNIT_COST[spawnAction.unit];

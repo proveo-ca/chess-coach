@@ -1,18 +1,18 @@
 /**
- * Adjutant — deterministic StarChess opponent planner (King Hunt / Single Player).
+ * Adjutant — deterministic StarChess opponent planner (Command Center (CC) Hunt / Single Player).
  * Feeds the live `autoQueueOpponent` slot (pure; no Solid / store deps).
  *
  * This file orchestrates and nothing else. One planning turn is:
  *
  *  1. `context/` reads the SCFEN into every input variable the planner uses —
- *     fog vision, King intel, tactical attack maps, supply, hub control.
+ *     fog vision, Command Center (CC) intel, tactical attack maps, supply, hub control.
  *  2. `resolvePosture` picks expand / seek / hunt, which selects the contextual
  *     weight set the strategies are scored against.
  *  3. `strategies/` propose plans (deploys, gas specials, escapes) and score
  *     every classical move. Each strategy owns one concern: checks, captures,
  *     threats, survival, map control, economy.
  *  4. `plans/` composes same-turn B+C packages from those pieces.
- *  5. Every plan is guarded against leaving our King on a chip-capable ray,
+ *  5. Every plan is guarded against leaving our Command Center (CC) on a chip-capable ray,
  *     ranked, and committed through the SCFEN appenders.
  *
  * Color-agnostic: plays `ctx.color` (default `"b"` for backward compatibility).
@@ -83,8 +83,8 @@ export const adjutant = (
   ];
 
   /**
-   * Protect the King above all, as a single uniform rule: any plan that leaves
-   * the King on a chip-capable ray is crushed by KING_SAFETY. This covers all
+   * Protect the Command Center (CC) above all, as a single uniform rule: any plan that leaves
+   * the Command Center (CC) on a chip-capable ray is crushed by KING_SAFETY. This covers all
    * three cases at once — fleeing a real check, interposing / capturing the
    * checker, and (in the quiet case) not self-exposing a pinned piece, which
    * raw `attacksSquare` cannot see because it ignores absolute pins.

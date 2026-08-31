@@ -92,7 +92,7 @@ export const hiddenMaterial = (kvs: KnownVsSeen): number => kvs.gap;
 /**
  * A one-turn deterministic estimate when no host accumulator is threaded
  * (snap-only callers). Sees only what the current board reveals, then grows
- * scouted by one "unseen" pawn's worth when the ledger says more should exist —
+ * scouted by one "unseen" marine's worth when the ledger says more should exist —
  * a conservative stand-in for the host's cross-turn accumulation.
  */
 export const estimateKnownVsSeen = (
@@ -105,11 +105,11 @@ export const estimateKnownVsSeen = (
   return combineKnownVsSeen(known, scouted, captured);
 };
 
-/** True when the enemy holds hidden material worth at least a pawn. */
+/** True when the enemy holds hidden material worth at least a marine. */
 export const hasHiddenMaterial = (kvs: KnownVsSeen): boolean => kvs.gap >= 1;
 
 /**
- * Cheese-promotion window: the enemy has unaccounted material (a hidden pawn
+ * Cheese-promotion window: the enemy has unaccounted material (a hidden marine
  * advancing to our back rank) during mid-game — the turn range where income
  * accelerates (turn 11+ adds +2/turn) and hidden runners become decisive.
  * This is the primitive later passes refine into per-file blockades.

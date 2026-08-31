@@ -5,7 +5,8 @@
  */
 import {
   MAX_DEPLOYED_MATERIAL,
-  MAX_STORED_MATERIAL,
+  OPENING_STORED_MATERIAL,
+  applyStoredIncome,
   deployedMaterialFromPlacement,
   energyForTurn,
   incomeForTurn,
@@ -22,21 +23,13 @@ import type { MatchStore } from "~/app/MatchStoreContext";
 import { readDisplayedSnapshot } from "~/app/selectors";
 import { isCheckOnlyResolve } from "~/presentation/hud/isCheckOnlyResolve";
 
-/** Single-player / review opening Command Center bank (both sides). */
-export const OPENING_STORED_MATERIAL = 3;
+export { OPENING_STORED_MATERIAL };
 
 /** Sole owner for mineral income on turn advance (live + review history). */
 export const applyTurnIncome = (
   bank: { w: number; b: number },
   turn: number,
-): { w: number; b: number } => {
-  const amount = incomeForTurn(Math.max(1, turn));
-  if (amount <= 0) return bank;
-  return {
-    w: Math.min(MAX_STORED_MATERIAL, bank.w + amount),
-    b: Math.min(MAX_STORED_MATERIAL, bank.b + amount),
-  };
-};
+): { w: number; b: number } => applyStoredIncome(bank, turn);
 
 /**
  * Legacy snaps without SCFEN `B:` — opening bank + income by turn.

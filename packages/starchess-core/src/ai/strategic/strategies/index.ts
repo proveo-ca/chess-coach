@@ -17,16 +17,18 @@ import type { Candidate, Move, MoveEval } from "../../context";
 import type { StrategicCtx } from "../context";
 import { evaluateMove } from "../../context";
 import { STRATEGIES as NAIVE_STRATEGIES } from "../../strategies";
+import { checks } from "./checks";
 import { economy } from "./economy";
+import { threats } from "./threats";
 import type { StrategicStrategy } from "./types";
 
-export { economy };
+export { checks, economy, threats };
 export * from "./economy";
 export { asCandidate, type StrategyId } from "./types";
 export type { StrategicStrategy } from "./types";
 
-/** Deploys lead (mirrors naive tie-break order). */
-export const STRATEGIES: readonly StrategicStrategy[] = [economy];
+/** Deploys lead, then 1-move check threat (especially Hoverbike), then check — mirrors naive. */
+export const STRATEGIES: readonly StrategicStrategy[] = [economy, threats, checks];
 
 /**
  * Every B-timing plan the strategic strategies propose, gas-filtered.
@@ -51,7 +53,9 @@ export const generateCandidates = (ctx: StrategicCtx): Candidate[] => {
  * `StrategicCtx`). Strategic `score` layers in as each category is upgraded.
  */
 type ScoreSource = { score?: (ev: MoveEval, ctx: StrategicCtx) => number };
-const SCORE_SOURCES: readonly ScoreSource[] = [...STRATEGIES, ...NAIVE_STRATEGIES];
+// Strategic checks/threats replace naive ones (which need visible Command Center (CC)) — avoid double-count
+const NAIVE_WITHOUT_CHECKS = NAIVE_STRATEGIES.filter((s) => s.id !== "checks" && s.id !== "threats");
+const SCORE_SOURCES: readonly ScoreSource[] = [...STRATEGIES, ...NAIVE_WITHOUT_CHECKS];
 
 export const scoreMove = (move: Move, ctx: StrategicCtx): number => {
   const ev = evaluateMove(move, ctx);

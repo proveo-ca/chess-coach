@@ -34,16 +34,30 @@ export class StockfishEngine {
     return this.driver.isRunning;
   }
 
-  async getEvaluation(fen: string, depth = 15): Promise<EvalResult> {
+  async getEvaluation(
+    fen: string,
+    opts: { depth?: number; movetimeMs?: number } = {},
+  ): Promise<EvalResult> {
+    const { depth = 15, movetimeMs } = opts;
     this.driver.send(`position fen ${fen}`);
-    this.driver.send(`go depth ${depth}`);
+    // A wall-clock budget (`go movetime N`) when given; otherwise fixed-depth
+    // search (backward compatible with every existing caller).
+    this.driver.send(movetimeMs ? `go movetime ${movetimeMs}` : `go depth ${depth}`);
 
     let bestMove = "";
     let cp = 0;
     let isMate = false;
     let mateIn = 0;
 
-    const lines = await this.driver.readUntil("bestmove", this.defaultTimeoutMs);
+    let lines: string[];
+    try {
+      lines = await this.driver.readUntil("bestmove", this.defaultTimeoutMs);
+    } finally {
+      // A timed-out / partial eval must not poison the next query: drop any
+      // lines that arrive after this `bestmove`/timeout before the caller
+      // issues another `go`.
+      this.driver.clearLineQueue();
+    }
     for (const line of lines) {
       if (line.includes("score cp")) {
         const m = line.match(/score cp (-?\d+)/);

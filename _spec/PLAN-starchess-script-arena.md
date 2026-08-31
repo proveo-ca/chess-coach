@@ -1,7 +1,8 @@
 # PLAN — StarChess Script Arena: scripts play each other, recorded & replayable
 
-Status: **PLANNED** (no source changes yet — this file + the three `.puml` beside it are the
-design that precedes implementation).
+Status: **Phase 0 + Phase 1 IMPLEMENTED** — core economy/fen/record single-owner (Phase 0) and the
+arena package runner/record/CLI (Phase 1) are done and verified; the server stockfish feed
+(Phase 2) and web replay-import (Phase 3) remain PLANNED.
 
 Author: opencode lead. Reviewers: architect/spec-keeper/adversarial-reviewer (read-only).
 
@@ -154,22 +155,30 @@ simply: *core + arena package have zero DOM/worker/fetch dependencies*.
 ### Web app replay/import `apps/starchess`
 
 - Swap `historyFromRecord` to the shared core `replay/record.ts` implementation.
+- **File upload → localStorage (recommended offline channel, zero network):** import record JSON via
+  `<input type="file">`/drag-and-drop → `FileReader.readAsText` → `JSON.parse` → schema-validate →
+  push into the existing `matchHistoryStore` (`starchess_match_history`, MAX_GAMES 100). A record is
+  ~15–30 KB; thousands fit the ~5 MB quota before existing trim applies. Because there's no HTTP, this
+  side-steps `CORP`/`COEP` and URL-length entirely. Caveat: localStorage is per-origin and erasable —
+  file export↔import *is* the portable round-trip.
 - Extend deep-link import (today `?scfen=` single position on the **single route**,
   `adapters/browser/index.ts:22-32`):
-  - `?game=<arenaId>` (primary) — fetch `GET /starchess/arena/games/:id` from the node service,
-    `historyFromRecord` → `createMatchStateFromReviewHistory(...)` (`reviewHistory.ts:114`) → store →
-    `ReviewDemoScreen`. **Review route consumes `?game=`; the single route keeps `?scfen=` (singular)** —
-    the two spellings are similar, so the plan keeps them on separate routes and no route accepts both.
+  - `?game=<arenaId>` (primary for sharing) — fetch `GET /starchess/arena/games/:id` from the node
+    service, `historyFromRecord` → `createMatchStateFromReviewHistory(...)` (`reviewHistory.ts:114`) →
+    store → `ReviewDemoScreen`. **Review route consumes `?game=`; the single route keeps `?scfen=`
+    (singular)** — the two spellings are similar, so the plan keeps them on separate routes and no
+    route accepts both.
   - `?scfens=` (plural) — **scoped to short games only**: a full 50-turn game is ~5–10 KB URL-encoded
     (each SCFEN ~100–150 chars), which blows past common URL limits. Keep it for test fixtures/short
-    skirmishes; production import is `?game=`.
-  - **Import validation:** pasted record JSON / decoded lists must be schema-validated before
-    `historyFromRecord` — `parseScFen` throws on malformed SCFEN (`codec.ts:458-557`), so a bad import
-    must surface a UI error, not an unhandled throw.
-- `ReviewScreen` (`/review`) gains an **Arena library** section: fetch `GET /starchess/arena/games`,
-  list records, click → same replay host. This introduces **async/loading/error states** the current
-  synchronous localStorage read (`ReviewScreen.tsx:199`) lacks — plan the list with a loading skeleton
-  and a "service unreachable" fallback (hide the section, keep local history).
+    skirmishes; production import is `?game=` or file upload.
+  - **Import validation (shared by all channels):** record JSON / decoded lists must be schema-validated
+    before `historyFromRecord` — `parseScFen` throws on malformed SCFEN (`codec.ts:458-557`), so a bad
+    import must surface a UI error, not an unhandled throw.
+- `ReviewScreen` (`/review`) gains an **Arena library** section: file-input (above) plus `GET
+  /starchess/arena/games` when the service is reachable, list records, click → same replay host. This
+  introduces **async/loading/error states** the current synchronous localStorage read
+  (`ReviewScreen.tsx:199`) lacks — plan with a loading skeleton and a "service unreachable" fallback
+  (hide the server list, keep local history + file import alive).
 - e2e (Playwright): replay a recorded arena game via the deep link and assert the final board matches
   the recorded terminal SCFEN; list+opening in ReviewScreen.
 
@@ -211,8 +220,9 @@ replay never re-runs stockfish and stays faithful.
 3. **Engine lookahead shape**: async advisory via `EngineFeed` with deterministic fallback
    (recommended, and matches the existing "async advisory + sync fallback" architecture note) —
    confirm we fold it into the strategic mapControl pass rather than a separate service.
-4. **Web import channels**: HTTP fetch from the node service (`?game=`) **and** offline URL-embedded
-   SCFENs (`?scfens=`) — both, or one?
+4. **Web import channels**: **file upload → localStorage (new, recommended — fully offline, sidesteps
+   CORP/COEP and URL limits)**, deep-link `?game=` for sharing, and `?scfens=` for short games. Ship all
+   three, or file-upload + `?game=` only?
 
 ## Suggested implementation phases
 
@@ -234,6 +244,7 @@ replay never re-runs stockfish and stays faithful.
 
 Spec diagrams: `_spec/packages/starchess-arena/arena.puml`,
 `_spec/apps/server/starchess-arena-feed.puml`, `_spec/apps/starchess/replay-import.puml`.
-These are plan-stage diagrams; their `// SPEC:` anchors attach to the source files listed above once
-implemented (marked `status: PLANNED` until then, per spec-keeper convention). Cross-ref: this plan
+`arena.puml` is IMPLEMENTED with its `// SPEC:` anchors attached to the phase-1 source files; the
+feed and replay-import diagrams are plan-stage, anchored on implementation (marked
+`status: PLANNED` until then, per spec-keeper convention). Cross-ref: this plan
 implements `/app/PLAN.md` Phase B (Headless match harness).
