@@ -1,6 +1,14 @@
 @startuml strategic-architecture
 ' SPEC: _spec/apps/starchess/core/adjutant/strategic/strategic-architecture.puml
-' purpose: ADJUTANT (SCRIPT STRATEGIC) — orchestrator layers on the naive base + known-vs-seen dials.
+' purpose: ADJUTANT (SCRIPT STRATEGIC) — orchestrator layers on the naive base
+' plus the known-vs-seen dials; which concerns are shipped and which naive
+' concerns they substitute for.
+' covers: packages/starchess-core/src/ai/strategic/**
+' covers: packages/starchess-core/src/ai/context/index.ts
+' covers: packages/starchess-core/src/__tests__/strategic/**
+' see also: ../cc-focus.puml (which square the check weights aim at)
+' see also: ../weight-ladder.puml (every value, and what a test pins)
+' see also: strategic-economy.puml (the deploy dials in detail)
 !include ../../../../../themes/proveo.puml
 
 skinparam packageStyle rectangle
@@ -8,22 +16,28 @@ skinparam defaultTextAlignment left
 
 title StarChess · Adjutant difficulty: ADJUTANT (SCRIPT STRATEGIC) — architecture
 
-package "App trigger" {
-  component "LiveLessonHost / MatchStore\nautoQueueOpponent" as TRIG <<host>>
+package "callers (the only ones)" {
+  component "packages/starchess-arena\nplayers/strategic.ts\n**the sole live caller**" as ARENA <<host>>
   database "host-threaded kvs\nacross turns" as KVS <<db>>
+  database "host-threaded ccIntel\nacross turns" as CCIN <<db>>
 }
 
 package "Strategic" {
-  component "ai/strategic/orchestrator.ts" as STRAT <<app>>
+  component "ai/strategic/orchestrator.ts\nstrategicCandidates · strategicAdjutant" as STRAT <<app>>
   component "ai/strategic/context.ts\nbuildStrategicCtx" as CTX <<app>>
   component "ai/strategic/intel.ts\nknown-vs-seen model" as INTEL <<app>>
+  component "ai/context/ccIntel.ts\ngetCCBestGuess — CC posterior" as CCI <<app>>
+  component "ai/strategic/deployLookahead.ts\nhorizon 5 budget projection" as LOOK <<app>>
   package "ai/strategic/strategies" {
-    component "economy\nStrategicStrategy" as SSE <<app>>
+    component "economy\n**shipped**" as SSE <<app>>
+    component "threats\n**shipped**" as SST <<app>>
+    component "checks\n**shipped**" as SSC <<app>>
   }
 }
 
-package "Naive base (unchanged)" {
-  component "ai/context · ai/strategies · ai/plans\nbuildAdjutantCtx + naive concerns" as BASE <<app>>
+package "Naive base (unchanged — and now truly so)" {
+  component "ai/context · ai/plans\nbuildAdjutantCtx + posture weights" as BASE <<app>>
+  component "ai/strategies\nmapControl · captures · survival\n+ checks · threats (**substituted out**)" as NSTRAT <<app>>
 }
 
 package "Command (same as human)" {
@@ -31,29 +45,91 @@ package "Command (same as human)" {
   database "ScFenSnapshot Q:" as SNAP <<db>>
 }
 
-TRIG ARROW_MAIN STRAT : snap in (opposite side) + storedFor
-TRIG ARROW_OPTIONAL KVS : kvs via ctx (absent → estimate)
+ARENA ARROW_MAIN STRAT : snap in (opposite side) + storedFor
+ARENA ARROW_OPTIONAL KVS : kvs via ctx (absent → estimate)
+ARENA -[#CB2000,dashed]-> CCIN : threaded into SideContext,\n**dropped** before adjCtx
 STRAT ARROW_MAIN CTX : build once per turn
 CTX ARROW_MAIN BASE : buildAdjutantCtx (read-only)
 CTX ARROW_OPTIONAL INTEL : estimateKnownVsSeen\nwhen kvs absent
 CTX ARROW_MAIN INTEL : cheesePromotion · winning\nfrom kvs
+CTX ARROW_MAIN CCI : ccIntel from prior + vision + probe
 STRAT ARROW_MAIN SSE : generate deploys (economy)
-SSE ARROW_OPTIONAL BASE : reuse constants + deployPolicy
-STRAT ARROW_MAIN BASE : score classical moves\n(delegation, concerns land later)
+SSE ARROW_MAIN LOOK : bestDeploySequence(5)
+SSE ARROW_OPTIONAL NSTRAT : reuse constants + deployPolicy
+STRAT ARROW_MAIN SST : score (threats)
+STRAT ARROW_MAIN SSC : score (checks)
+STRAT ARROW_MAIN NSTRAT : score classical moves\nvia NAIVE_WITHOUT_CHECKS
 STRAT ARROW_MAIN Q : commit chosen plan
 Q ARROW_MAIN SNAP : gated write
-TRIG ARROW_OPTIONAL SNAP : APPLY_SNAPSHOT / store merge\n(one clock — no bypass reduce rules)
 
-note bottom
+note bottom of STRAT
   **Pattern:** Strategy → Command; same turn shape as naive.
-  **Layering:** strategic = naive context + strategies, plus the
-  known-vs-seen dials (""kvs"" / ""cheesePromotion"" / ""winning"").
-  **Delegation:** while strategic categories (mapControl · captures ·
-  survival · checks · threats) are still rolling out, classical-move
-  scores come from the naive concern set; each category layers in.
-  **Planned (not yet wired):** async Stockfish enhancer (""apps/ui/src/engine"" +
-  off-main-thread worker) plus periodic ""knownForTurn""/gap persistence.
-  **Forbidden:** the pure core calling the engine, mutating the context,
-  or bypassing ""addScAction"" gates.
+  **Layering:** strategic = naive context + naive strategies, plus the
+  known-vs-seen dials (""kvs"" / ""cheesePromotion"" / ""winning"") and the CC
+  posterior (""ccIntel"").
+  **Registry order is the tie-break order** — ""[economy, threats, checks]"",
+  economy first exactly as in naive; the final ranking sort is stable, so a
+  plan proposed earlier wins an exact score tie.
+  **Forbidden:** the pure core calling the engine, mutating the context, or
+  bypassing ""addScAction"" gates.
 end note
+
+note as N_SUBST
+  **The substitution — ""NAIVE_WITHOUT_CHECKS"".** Classical-move scoring sums
+  every source in ""SCORE_SOURCES"", and three strategic concerns are shipped,
+  so the naive twins of two of them are filtered out
+  (""strategic/strategies/index.ts:57""):
+
+  | concern | strategic | naive | scored by |
+  | ""economy"" | shipped | kept | **both** — strategic generates deploys, naive constants are reused |
+  | ""threats"" | shipped | **filtered out** | strategic only |
+  | ""checks"" | shipped | **filtered out** | strategic only |
+  | ""mapControl"" | not written | kept | naive only |
+  | ""captures"" | not written | kept | naive only |
+  | ""survival"" | not written | kept | naive only |
+
+  The filter is what makes the fog contract enforceable: if both ""checks""
+  strategies scored the same move, an omniscient naive weight would be added
+  to a fog-honest strategic one and the guess branch would stop meaning
+  anything. See ""../cc-focus.puml"".
+end note
+
+note as N_INVERSION
+  **The import inversion is gone, so "Naive base (unchanged)" is true again.**
+  ""ai/strategies/captures.ts"" used to import ""../strategic/context"" for a
+  private deploy-defence predicate, which made the naive layer depend upward
+  on the strategic one and quietly broke the layering this diagram claims.
+
+  The predicate moved to ""board/deploy-reach.ts"", where both layers may read
+  it, and the narrowing helpers it needed (""hasCcIntel"" · ""isStrategicCtx"")
+  are deleted. The one field naive still wants is ""ctx.winning"", now an
+  optional on ""AdjutantCtx"" that the strategic context populates and the naive
+  build simply leaves absent — a declared hole rather than an ""in"" check on a
+  type the layer is not supposed to know.
+end note
+
+STRAT .. N_SUBST
+STRAT .. N_INVERSION
+
+note as N_OPEN
+  <color:#CB2000>**OPEN — not fixed on this branch.**</color>
+
+  **No app consumer.** ""strategicAdjutant"" is called only by
+  ""packages/starchess-arena"" and by the core's own tests. The live product
+  (""SingleScreen"" and ""LiveLessonHost"", both via ""autoQueueOpponent"") passes
+  the **naive** ""adjutant"". Any claim that a player meets this script in
+  ""/single"" today is wrong.
+
+  **The CC posterior is discarded per turn.** ""runMatch.ts:168"" threads
+  ""ccIntel"" into ""SideContext"", but ""players/strategic.ts:85"" builds ""adjCtx""
+  without it, so ""buildStrategicCtx"" falls back to ""emptyCCIntel"" every ply.
+  Detail and consequences in ""../cc-focus.puml"".
+
+  **Planned, still unwired here:** periodic ""knownForTurn"" / gap persistence.
+  The async engine enhancer *is* wired, but in the arena rather than in core —
+  ""players/strategic.ts"" rescues candidate *scores* from an ""EngineFeed"" and
+  never lets it decide legality (""_spec/packages/starchess-arena/arena.puml"").
+end note
+
+STRAT .. N_OPEN
 @enduml

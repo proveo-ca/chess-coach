@@ -1,0 +1,128 @@
+@startuml deploy-reach
+' SPEC: _spec/packages/starchess-core/deploy-reach.puml
+' purpose: board/deploy-reach.ts — the single deploy-reach table. Answers
+' "can this side land a deploy that attacks X" with a proof, not a heuristic.
+' Authority: shipped; one case per table row in deploy-reach.test.ts.
+' The occupancy rule's authority is the validator, not this table — see
+' rules/specials/adjacent.ts + rules/validation.ts.
+' covers: packages/starchess-core/src/board/deploy-reach.ts
+' covers: packages/starchess-core/src/__tests__/deploy-reach.test.ts
+' see also: mine-contact.puml (the arrive row this table reuses)
+' see also: _spec/apps/starchess/core/adjutant/weight-ladder.puml (the caller)
+!include ../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess Core · Deploy reach — one table, every caller
+
+package "board/deploy-reach.ts" {
+  component "deployTargets(q)\n→ Square[] — legal landings" as DT <<app>>
+  component "deployableUnits(minerals)\n→ affordable subset of DEPLOYABLE_UNITS" as DU <<db>>
+  component "deployCovers(q, target)\n→ boolean — exhaustive; a false is a proof" as DC <<app>>
+}
+
+package "reads (pure)" {
+  component "board/placement.ts\nattacksSquare · parseSquare · sq" as PL <<db>>
+  component "board/mine-contact.ts\nhostileMineOn" as MC <<db>>
+  component "rules/constants.ts\nSPECIAL_ENERGY_COST 1 · UNIT_COST" as K <<db>>
+}
+
+package "callers" {
+  component "ai/strategies/captures.ts\ndeployDefends — POST-move board,\nenemy side, snap.gasIncome[enemy],\nctx.storedFor(enemy)" as CAP <<app>>
+}
+
+DC ARROW_MAIN DT
+DC ARROW_MAIN DU
+DT ARROW_MAIN MC : drop mined landings
+DT ARROW_MAIN K : gas gate
+DU ARROW_MAIN K : UNIT_COST
+DC ARROW_MAIN PL : attacksSquare on a probe map
+CAP ARROW_MAIN DC
+
+note right of DT
+  **The table.** Every rule a Command Center deploy obeys, once:
+
+  | rule | encoded as | why |
+  | **gas** | ""gas < SPECIAL_ENERGY_COST"" ⇒ no landings | a deploy **is** the ""spawn"" special (""rules/specials/registry.ts:14"", cost 1) |
+  | **Command Center** | ""cc == null"" ⇒ no landings | no CC, no ring |
+  | **landings** | the CC 1-ring, board-clipped (≤8 tiles) | deploys arrive adjacent to the CC |
+  | **hostile mine** | ring tile dropped when ""hostileMineOn(mines, color, at)"" | arrival detonates — the ""arrive"" row of ""mine-contact.puml"" |
+  | **allied mine** | tile **kept** | allied mines never match; they stay inert underfoot |
+  | **occupancy** | a **partial** filter — empty ⇒ kept · enemy non-King ⇒ kept (the deploy crushes it) · own colour ⇒ dropped · **any** King ⇒ dropped | mirrors the validator, which is the authority: ""rules/specials/adjacent.ts"" ""spawnKingAnchor"" builds ""allyOccupied"" as own colour ∪ **every** King, and ""rules/validation.ts"" ""assertSpecialLegal"" throws ""spawn square occupied by ally"" on it. An enemy Command Center may not be crushed; face-to-face CCs are a reachable position, so the enemy ring can hold **our own** CC |
+  | **crush landing** | ""at === target"" short-circuits true on its own branch | ""attacksSquare"" is false for ""from === to"", so the most direct recapture there is — landing on the victim — is invisible to the geometry test and needs its own case |
+  | **units** | ""UNIT_COST[u] <= minerals"" over ""p n b r q"" (1·3·3·5·9) | the mineral gate is the **banked** total, never gas |
+  | **Marine rank** | ""p"" refused on rank 1 and rank 8 | a Marine may not be deployed onto a promotion rank |
+  | **geometry** | ""attacksSquare"" from the landing on a probe map | sliders see real blockers; each probe writes and restores one square |
+
+  The two gates are **independent**: gas buys the action, minerals buy the
+  unit. A full bank with no gas reaches nothing, and one gas canister with an
+  empty bank reaches nothing either.
+end note
+
+note bottom of DC
+  **A ""false"" is a proof.** The question this table answers is "can the
+  opponent capture here", and the product answer must be a 100% deterministic
+  yes — so the search is exhaustive over every landing square and every
+  affordable unit. Callers gate material decisions on it: a square some deploy
+  can recapture on is not undefended, and a heuristic that guessed low would
+  hand away free units.
+
+  **The caller owns the board, not the rule.** ""captures.ts"" asks on the
+  **POST-move** occupancy, for the **enemy** side, with the enemy's gas income
+  and banked minerals — because the recapture happens after our move lands.
+  Passing the pre-move map is the one way to get a wrong answer out of a
+  correct table.
+end note
+
+note as N_NONGOAL
+  **Non-goal — this is not "should I deploy to capture".** Two different
+  questions share the word *deploy* and must not be conflated:
+
+  | question | owner | shape of the answer |
+  | can the **opponent** recapture on X? | this table | a deterministic boolean; a ""false"" is a proof |
+  | should **I** deploy onto X to crush it? | the direct-spawn-crush term in ""ai/strategic/strategies/economy.ts"" ""deploys"" | a *score* traded off against every other deploy |
+
+  The second is a preference and stays a weight. Routing it through this
+  table would turn a tunable bias into a hard rule, and routing the first
+  through ""economy.ts"" would make a proof depend on posture weights.
+end note
+
+note as N_HISTORY
+  **What consolidating it fixed.** The same question used to be answered by a
+  private ""canGasDeployDefend"" inside ""ai/strategies/captures.ts"" that
+  simulated Marine drops only. A Tank or Battleship the enemy could plainly
+  afford therefore recaptured for free while the Adjutant scored the square as
+  undefended — the case ""sees a slider recapture a Marine-only model would
+  miss"" pins it.
+
+  Extracting it also removed the reason ""captures.ts"" imported from
+  ""ai/strategic/context"": the predicate needed strategic-only intel, so the
+  naive layer reached **up** into the strategic one. That import inversion is
+  gone, and ""deploy-reach.ts"" sits in ""board/"" where both layers may read it.
+end note
+
+note as N_NOMEMO
+  **No memo, on purpose:** the answer depends on
+  each candidate's POST-move occupancy, and no
+  two candidates produce the same board. A memo
+  keyed on the square would return one
+  candidate's verdict for another's position.
+end note
+
+DC .. N_NONGOAL
+DC .. N_HISTORY
+DC .. N_NOMEMO
+
+note bottom
+  **Enforcement.** ""src/__tests__/deploy-reach.test.ts"" carries one case per
+  row above, including the two the old model got wrong (sliders, crush
+  landings) and the four that are easy to invert: allied mines stay, hostile
+  mines go, an enemy occupant is kept while our own is dropped, and **no**
+  King square is ever a landing. It runs in ""pnpm ci"" via ""test:packages"".
+
+  **Determinism.** No randomness, no posture, no weights — same query, same
+  answer, on any platform. That is what lets a caller treat the boolean as a
+  fact about the position rather than as an opinion about the position.
+end note
+@enduml

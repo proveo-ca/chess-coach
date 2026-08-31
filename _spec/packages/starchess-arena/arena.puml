@@ -2,6 +2,11 @@
 ' SPEC: _spec/packages/starchess-arena/arena.puml
 ' HEADLESS SCRIPT ARENA — adjutant scripts play each other via the pure SCFEN engine; games recorded for replay.
 ' anchored to packages/starchess-arena/src/** and the core replay/economy files.
+' covers: packages/starchess-arena/src/**
+' covers: packages/starchess-core/src/replay/**
+' covers: packages/starchess-core/src/rules/economy.ts
+' see also: _spec/apps/starchess/core/adjutant/cc-focus.puml (the ccIntel drop)
+' see also: _spec/apps/starchess/core/adjutant/strategic/strategic-architecture.puml
 !include ../../themes/proveo.puml
 
 skinparam packageStyle rectangle
@@ -16,6 +21,7 @@ package "packages/starchess-arena (pure, node/bun)" {
     component "naive.ts\nadjutant() sync" as PW <<app>>
     component "strategic.ts\nstrategicAdjutant() + feed" as PS <<app>>
     component "kvs.ts\narena-owned accumulator" as KVS <<app>>
+    component "ccIntel.ts\nseedCcIntelForOpening ·\nupdateCcIntelForSnap" as CCI <<app>>
   }
   component "record.ts\nscfens + resolves" as REC <<app>>
   component "compare.ts\nsummarize → scoreboard" as CMP <<app>>
@@ -46,6 +52,8 @@ CLI ARROW_MAIN RUN : seeds · pairing · out dir
 RUN ARROW_MAIN PS : plan(snap, {color, kvs})
 RUN ARROW_MAIN PW : plan(snap, {color})
 PS ARROW_OPTIONAL KVS : thread known-vs-seen
+RUN ARROW_MAIN CCI : seed + update every settled ply
+CCI -[#CB2000,dashed]-> PS : reaches SideContext,\n**never reaches adjCtx**
 PS ARROW_OPTIONAL FEED : evaluate FEN projections
 FEED ARROW_MAIN IMPL : getEvaluation (bounded movetime)
 PS ARROW_OPTIONAL RFT : project classical FEN
@@ -79,4 +87,50 @@ note bottom
   **Deploy horizon 5:** strategic economy projects bank 5 turns and scores
   `p+p+q` vs `n+b+r` at projected 11 to pick the Command Center drop.
 end note
+
+note as N_ROOKCAP
+  **Why the engine may not boost every tank drop.** ""foldSuggestion"" folds a
+  Stockfish ""cp"" into a candidate's deterministic score, capped at ±200 so one
+  evaluation cannot outweigh the horizon bonuses the economy dials produce. A
+  tank deploy gets a second, harder guard: when its landing file already holds
+  a Marine, the engine suggestion is dropped entirely and the deterministic
+  score stands.
+
+  The reason is a known Stockfish bias — it over-values a rook on a file that
+  classical chess would call open, and the SCFEN projection hides the StarChess
+  reasons that file is worthless. The open-file test is a **coarse** placement
+  scan, deliberately: it only has to de-prefer a blocked file, never to be
+  exact, and a wrong answer costs a ranking nudge rather than a legal move.
+
+  **A ""mateIn"" is absolute, a ""cp"" is advisory.** The perspective flips after
+  our candidate, so a positive ""mateIn"" means the opponent mates us and earns
+  ""-MATE_PENALTY"" outright. A ""timedOut"" suggestion is discarded — a partial
+  evaluation never ranks anything.
+
+  **Boosts are keyed by ""origIndex"", not by list position.** Candidates whose
+  projection is ineligible are skipped, so the scored subset is sparser than the
+  ranked list. Keying the boost map by the candidate's original index is what
+  stops a skip from shifting a suggestion onto a neighbouring candidate, which
+  would silently hand one move another move's engine score.
+end note
+
+note as N_OPEN
+  <color:#CB2000>**OPEN — not fixed on this branch.**</color>
+
+  **The strategic player discards the CC posterior.** ""runMatch.ts"" seeds
+  ""ccIntel"" at line 123, refreshes it after every chip (142) and every settled
+  ply (188), and hands ""ccIntel.perSide[color]"" to the player at line 168. But
+  ""players/strategic.ts:85"" builds ""adjCtx"" as ""{ color, storedFor, kvs }"",
+  so ""buildStrategicCtx"" falls back to ""emptyCCIntel(enemy)"" every turn.
+
+  Consequence: the ""excluded"" set never accumulates, and a Hoverbike probe
+  that proved a square empty is forgotten before the next ply. Arena results
+  therefore measure a script whose CC search restarts each turn — which is
+  **not** the script the strategic diagrams describe. Both paths are affected,
+  plain and feed, because both use the same ""adjCtx"". Detail in
+  ""_spec/apps/starchess/core/adjutant/cc-focus.puml"".
+end note
+
+PS .. N_ROOKCAP
+PS .. N_OPEN
 @enduml

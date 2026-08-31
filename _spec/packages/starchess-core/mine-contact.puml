@@ -2,6 +2,9 @@
 ' SPEC: _spec/packages/starchess-core/mine-contact.puml
 ' purpose: board/mine-contact.ts — the single spider-mine rules table every
 ' caller in the engine (and the Adjutant) asks. Authority: this is shipped.
+' covers: packages/starchess-core/src/board/mine-contact.ts
+' covers: packages/starchess-core/src/__tests__/mine/**
+' see also: deploy-reach.puml (reuses the arrive row for deploy landings)
 !include ../../themes/proveo.puml
 
 skinparam packageStyle rectangle
@@ -20,6 +23,7 @@ package "callers" {
   component "submit-turn.ts\napplyArrivalMine — gas step · deploy · jump" as SUB <<app>>
   component "board/moves.ts\nhostileMineOnTo (legality + UI affordance)" as MV <<app>>
   component "ai/adjutant.ts\nnever step / drop / jump onto a mine it sees" as AI <<host>>
+  component "board/deploy-reach.ts\ndeployTargets — drop mined landings" as DR <<app>>
 }
 
 RT ARROW_MAIN MC
@@ -29,6 +33,7 @@ SUB ARROW_MAIN MC
 SUB ARROW_MAIN WM
 AI ARROW_MAIN HM
 MV ARROW_OPTIONAL HM
+DR ARROW_MAIN HM : a landing under a hostile mine is no landing
 
 note right of MC
   **The table.** ""squares"" is the contact list **in walk order** — the last
@@ -140,5 +145,10 @@ note bottom
   Together: ""resolve-turn.ts"" 1223 → ~890 lines, ""submit-turn.ts"" 1045 → ~848,
   with no test moved.
 
+  **A fourth consolidation followed the same shape.** ""board/deploy-reach.ts""
+  replaced a private, Marine-only deploy simulation inside
+  ""ai/strategies/captures.ts"", and it reuses ""hostileMineOn"" here rather than
+  re-deriving which landings a mine denies. Its own rule table is in
+  ""deploy-reach.puml""; the row it borrows is ""arrive"".
 end note
 @enduml

@@ -1,6 +1,14 @@
 @startuml opponent-strategy-naive
 ' SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
-' purpose: ADJUTANT (SCRIPT NAIVE) — deterministic plan search; commits only through addScAction.
+' purpose: ADJUTANT (SCRIPT NAIVE) — deterministic plan search; commits only
+' through addScAction. The shipped script behind /single and the tutorial.
+' covers: packages/starchess-core/src/ai/adjutant.ts
+' covers: packages/starchess-core/src/ai/context/**
+' covers: packages/starchess-core/src/ai/strategies/**
+' covers: packages/starchess-core/src/ai/plans/**
+' see also: ../cc-focus.puml (the omniscience contract, decided)
+' see also: ../weight-ladder.puml (every naive weight and its tier)
+' see also: _spec/packages/starchess-core/deploy-reach.puml (undefended)
 !include ../../../../../themes/proveo.puml
 
 skinparam packageStyle rectangle
@@ -38,6 +46,8 @@ package "Strategy" {
 
 package "Reads" {
   component "board-queries\nvision · moves · mines · adjacent" as BQ <<db>>
+  component "board/deploy-reach.ts\ndeployCovers — is it really undefended?" as DR <<db>>
+  component "board/mine-contact.ts\nhostileMineOn — never step on a mine" as MC <<db>>
 }
 
 package "Command (same as human)" {
@@ -70,5 +80,43 @@ note bottom
   **Forbidden:** a second legality stack in the app for AI moves.
   **Forbidden:** a strategy that reads the snapshot directly, mutates
   the context, or branches on posture — weights are the only dial.
+  **Forbidden:** importing from ""ai/strategic/**"" — this layer is below it.
 end note
+
+note as N_OMNI
+  **The naive script is omniscient about the Command Center, on purpose.**
+  ""ctx.enemyKing"" is ""findKing(map, enemy)"" and is never fog-filtered, so the
+  per-type check bonuses (""SNEAK_KNIGHT_CHECK"" 2_000, ""PAWN_CHECK_CC"" 1_500,
+  the Mecha ""diagonal"", ""QUEEN_WARP_CHECK_CC"" 2_000) aim at the real square
+  whether or not the script can see it. That is the decided contract, not a
+  defect: this is the weaker difficulty, and the fog-honest treatment belongs
+  to the strategic script.
+
+  **Two terms are still fog-gated:** ""attackKing"" and ""chaseKing"" test
+  ""vision.enemyKingVisible"" explicitly. The gate is close to redundant —
+  ""resolvePosture"" only returns ""hunt"" when the CC is visible, and those are
+  the only postures where either weight is non-zero — but it is cheap and it
+  documents which two terms were meant to depend on sight. Full split in
+  ""../cc-focus.puml"".
+end note
+
+note as N_UNDEFENDED
+  **"Undefended" now means undefended against a deploy too.** ""captures.ts""
+  asks ""deployCovers"" on the **POST-move** board, for the enemy side, with
+  ""snap.gasIncome[enemy]"" and ""ctx.storedFor(enemy)"": a Marine the enemy can
+  recapture by dropping a unit off its Command Center is not free, so
+  ""HUNT_UNDEFENDED_PAWN"" stays off.
+
+  That predicate used to be a private, Marine-only ""canGasDeployDefend"" that
+  imported from ""ai/strategic/context"" — the one place this layer reached
+  upward. It now lives in ""board/deploy-reach.ts"", below both layers, and the
+  only strategic field naive reads is the optional ""ctx.winning"", which the
+  naive build simply leaves absent.
+end note
+
+AI .. N_OMNI
+S2 .. N_UNDEFENDED
+S2 ARROW_OPTIONAL DR : deployCovers (POST-move, enemy)
+S4 ARROW_OPTIONAL MC : never jump onto a mine
+S5 ARROW_OPTIONAL MC : never drop / step onto a mine
 @enduml

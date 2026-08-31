@@ -1,0 +1,112 @@
+{
+  "version": 1,
+  "specs": [
+    {
+      "spec": "_spec/packages/starchess-core/deploy-reach.puml",
+      "covers": [
+        "packages/starchess-core/src/board/deploy-reach.ts",
+        "packages/starchess-core/src/__tests__/deploy-reach.test.ts"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/packages/starchess-core/mine-contact.puml",
+      "covers": [
+        "packages/starchess-core/src/board/mine-contact.ts",
+        "packages/starchess-core/src/__tests__/mine/**"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/packages/starchess-core/index.puml",
+      "covers": [
+        "packages/starchess-core/src/index.ts"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/apps/starchess/core/adjutant/cc-focus.puml",
+      "covers": [
+        "packages/starchess-core/src/ai/strategies/checks.ts",
+        "packages/starchess-core/src/ai/strategic/strategies/checks.ts",
+        "packages/starchess-core/src/ai/context/ccIntel.ts",
+        "packages/starchess-core/src/ai/context/kingIntel.ts"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/apps/starchess/core/adjutant/weight-ladder.puml",
+      "covers": [
+        "packages/starchess-core/src/ai/strategies/survival.ts",
+        "packages/starchess-core/src/ai/strategies/captures.ts",
+        "packages/starchess-core/src/ai/strategies/checks.ts",
+        "packages/starchess-core/src/ai/strategies/mapControl.ts",
+        "packages/starchess-core/src/ai/strategies/economy.ts",
+        "packages/starchess-core/src/ai/context/posture.ts",
+        "packages/starchess-core/src/ai/strategic/strategies/checks.ts",
+        "packages/starchess-core/src/ai/strategic/strategies/threats.ts",
+        "packages/starchess-core/src/ai/strategic/deployLookahead.ts",
+        "packages/starchess-core/src/__tests__/tactics/weightOrdering.test.ts"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml",
+      "covers": [
+        "packages/starchess-core/src/ai/adjutant.ts",
+        "packages/starchess-core/src/ai/context/**",
+        "packages/starchess-core/src/ai/strategies/**",
+        "packages/starchess-core/src/ai/plans/**"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/apps/starchess/core/adjutant/strategic/strategic-architecture.puml",
+      "covers": [
+        "packages/starchess-core/src/ai/strategic/**",
+        "packages/starchess-core/src/ai/context/index.ts",
+        "packages/starchess-core/src/__tests__/strategic/**"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/apps/starchess/core/adjutant/strategic/strategic-economy.puml",
+      "covers": [
+        "packages/starchess-core/src/ai/strategic/strategies/economy.ts",
+        "packages/starchess-core/src/ai/strategic/deployLookahead.ts",
+        "packages/starchess-core/src/ai/strategies/economy.ts",
+        "packages/starchess-core/src/__tests__/strategic/economy.test.ts"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/packages/starchess-arena/arena.puml",
+      "covers": [
+        "packages/starchess-arena/src/**",
+        "packages/starchess-core/src/replay/**",
+        "packages/starchess-core/src/rules/economy.ts"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/packages/starchess-arena/index.puml",
+      "covers": [
+        "packages/starchess-arena/src/index.ts"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/apps/starchess/core/index.puml",
+      "covers": [],
+      "fingerprint": null
+    }
+  ],
+  "unresolved": [
+    {
+      "spec": "_spec/apps/starchess/turn-input-sequence.puml",
+      "citedBy": [
+        "apps/starchess/src/presentation/specials/pawnGasArm.ts"
+      ]
+    }
+  ]
+}

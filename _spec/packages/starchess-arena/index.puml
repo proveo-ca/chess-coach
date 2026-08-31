@@ -1,6 +1,8 @@
 @startuml index
 ' SPEC: _spec/packages/starchess-arena/index.puml
 ' purpose: StarChess script-arena spec map (packages/starchess-arena).
+' covers: packages/starchess-arena/src/index.ts
+' see also: arena.puml (the runner itself)
 !include ../../themes/proveo.puml
 
 skinparam packageStyle rectangle
@@ -14,7 +16,7 @@ package "_spec/packages/starchess-arena" {
 
 package "packages/starchess-arena/src" {
   component "run/runMatch.ts" as RUN <<app>>
-  component "players/{naive,strategic,kvs}.ts" as PL <<app>>
+  component "players/{naive,strategic,kvs,ccIntel}.ts" as PL <<app>>
   component "feed/types.ts\nEngineFeed contract" as FEED <<host>>
   component "record/record.ts" as REC <<app>>
   component "compare/compare.ts" as CMP <<app>>
@@ -47,5 +49,11 @@ CLI ARROW_OPTIONAL FEEDIMPL : --engine runs
 note bottom
   Arena package stays DOM/worker/fetch-free. ""// SPEC:"" refs live in the
   source files that realize each spec.
+
+  **What the arena measures is a spec question, not just a runner question.**
+  The scripts it pits against each other are specified under
+  ""_spec/apps/starchess/core/adjutant/"", so a per-side input the player forgets
+  to forward changes the result without changing either script. One such gap is
+  live today — ""ccIntel"" — and ""arena.puml"" records it against the exact lines.
 end note
 @enduml
