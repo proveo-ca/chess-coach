@@ -6,6 +6,8 @@ import { describe, expect, it } from "vitest";
 import type { StarChessGameRecord } from "~/types/review";
 import {
   LIVE_ADJUTANT_MATCH_TITLE,
+  adjutantKindLabel,
+  liveAdjutantMatchTitle,
   formatMatchLabel,
   formatMatchResultTitle,
 } from "~/utils/matchTitle";
@@ -36,5 +38,19 @@ describe("matchTitle", () => {
 
   it("exports the live Single Player Adjutant title", () => {
     expect(LIVE_ADJUTANT_MATCH_TITLE).toBe("Game vs Adjutant (Script)");
+  });
+});
+
+describe("live match title names the chosen opponent", () => {
+  it("distinguishes the two Adjutant scripts", () => {
+    expect(liveAdjutantMatchTitle("naive")).toBe("Game vs Adjutant (Script)");
+    expect(liveAdjutantMatchTitle("strategic")).toBe("Game vs Adjutant (Strategic)");
+  });
+
+  it("matches the labels the New Game modal offers", () => {
+    // The modal's <option> text and the in-game header must agree, or picking
+    // "Adjutant (Strategic)" appears to start a Script game.
+    expect(adjutantKindLabel("naive")).toBe("Adjutant (Script)");
+    expect(adjutantKindLabel("strategic")).toBe("Adjutant (Strategic)");
   });
 });

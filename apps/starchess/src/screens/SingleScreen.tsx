@@ -42,7 +42,7 @@ import { playerName } from "~/store/settingsStore";
 import type { BoardVariant } from "~/types/board";
 import type { StarChessMatchResult } from "~/types/review";
 import { isAdjutantKind, type AdjutantKind } from "~/types/newGame";
-import { LIVE_ADJUTANT_MATCH_TITLE } from "~/utils/matchTitle";
+import { liveAdjutantMatchTitle } from "~/utils/matchTitle";
 
 const MAPS: readonly BoardVariant[] = ["eclipse", "butter", "vermeer"];
 
@@ -179,7 +179,7 @@ const MatchInner: Component<{
       starChessMode
       armTimer
       turnChrome="sidebar"
-      matchTitle={LIVE_ADJUTANT_MATCH_TITLE}
+      matchTitle={liveAdjutantMatchTitle(props.opponent)}
       onExitToMenu={props.onExitToMenu}
       autoQueueOpponent={(snap) => {
         const color = opponentColor();
