@@ -138,6 +138,7 @@ export const main = async (argv: string[]): Promise<number> => {
       feed,
       movetimeMs: opts.engine ? (opts.movetimeMs > 0 ? opts.movetimeMs : 50) : 0,
       maxTurns: MAX_GAME_TURNS,
+      seed: i,
     });
     const record = recordFromRun(run);
     records.push(record);

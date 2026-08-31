@@ -10,7 +10,7 @@
  * // SPEC: _spec/packages/starchess-arena/arena.puml
  */
 
-import type { CCIntel } from "@chess-coach/starchess-core";
+import type { CCIntel, Rng } from "@chess-coach/starchess-core";
 import type { KnownVsSeen, PieceColor, ScFenSnapshot, Square } from "@chess-coach/starchess-core";
 
 export type { PieceColor, ScFenSnapshot, KnownVsSeen, CCIntel };
@@ -36,6 +36,8 @@ export type SideContext = {
    * and records it in `meta.engine`.
    */
   movetimeMs?: number;
+  /** Runner-owned opening tie-break randomness. */
+  rng?: Rng;
 };
 
 /** A script's decision for the open window. */

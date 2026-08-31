@@ -33,6 +33,7 @@ import {
   endScTurn,
   formatScFen,
   MAX_GAME_TURNS,
+  mulberry32,
   normalizeSnapGas,
   parseScFen,
   scOutcome,
@@ -69,6 +70,8 @@ export type ArenaRunOptions = {
   movetimeMs?: number;
   /** Settled-turn cap before a stall draw (default 200). */
   maxTurns?: number;
+  /** Opening tie-break seed; equal seeds replay a game exactly (default 0). */
+  seed?: number;
   /** Board-variant / skin passthrough for the web replay host. */
   map?: string;
   variant?: string;
@@ -108,9 +111,12 @@ export const runMatch = async (options: ArenaRunOptions): Promise<ArenaRun> => {
     feed = null,
     movetimeMs = 0,
     maxTurns = DEFAULT_MAX_TURNS,
+    seed = 0,
     map,
     variant,
   } = options;
+
+  const rngs = { w: mulberry32(seed), b: mulberry32(~seed) } as const;
 
   if (players.w === null && players.b === null) {
     throw new Error("runMatch: at least one side must be a script");
@@ -168,6 +174,7 @@ export const runMatch = async (options: ArenaRunOptions): Promise<ArenaRun> => {
           ccIntel: ccIntel.perSide[color],
           // 0 when no feed/budget — keeps the run deterministic.
           movetimeMs: feed && movetimeMs > 0 ? movetimeMs : 0,
+          rng: rngs[color],
         };
         const plan = await script.play(snap, ctx);
         snap = plan.snapshot;

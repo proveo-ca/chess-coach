@@ -223,6 +223,8 @@ export {
   type AdjutantContext,
 } from "./ai/adjutant";
 
+export { DEFAULT_RNG, mulberry32, type Rng } from "./ai/context/rng";
+
 export {
   strategicAdjutant,
   strategicCandidates,

@@ -92,7 +92,10 @@ const deploys = (ctx: AdjutantCtx): Candidate[] => {
         // Heavier piece → higher score (q=9, r=5 ≫ p=1).
         trade * (1 + UNIT_COST[unit]);
       // Survival first — do not force bishop-before-rook while the King is hot.
-      if (needBishop && unit === "b" && !kingThreatened) score += BISHOP_FIRST;
+      // Turn 1 leaves Hoverbike and Mecha level so the open stays probabilistic.
+      if (needBishop && unit === "b" && !kingThreatened && snap.turn > 1) {
+        score += BISHOP_FIRST;
+      }
       if (vision.enemyQueenVisible && unit === "b" && !kingThreatened) {
         score += BISHOP_VS_QUEEN;
       }
@@ -101,6 +104,9 @@ const deploys = (ctx: AdjutantCtx): Candidate[] => {
       if (kingThreatened && unit === "r") score += trade * 4;
       if (kingThreatened) score += trade;
       if (isSquareAttackedBy(map, to, enemy)) score -= attackedPenalty;
+      if (snap.turn <= 1 && (unit === "n" || unit === "b")) {
+        score += (ctx.rng() - 0.5) * 0.5;
+      }
 
       out.push(
         asCandidate(

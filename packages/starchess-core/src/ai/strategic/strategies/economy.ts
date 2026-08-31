@@ -21,9 +21,7 @@
  * // SPEC: _spec/apps/starchess/core/adjutant/strategic/strategic-economy.puml
  */
 
-import type { Square } from "chess.js";
-
-import { attacksSquare, isSquareAttackedBy, type ScPiece } from "../../../board/placement";
+import { attacksSquare, isSquareAttackedBy } from "../../../board/placement";
 import { hostileMineOn } from "../../../board/mine-contact";
 import { UNIT_COST } from "../../../rules/constants";
 import type { StrategicCtx } from "../context";
@@ -34,7 +32,7 @@ import {
   SHIP_HORIZON_BONUS,
 } from "../deployLookahead";
 import type { Candidate } from "../../context";
-import { centerScore, neighbors, promoteProgress, rankOf } from "../../context";
+import { centerScore, chebyshev, neighbors, promoteProgress, rankOf } from "../../context";
 import {
   MAX_KNIGHTS,
   ROOK_AFTER_KNIGHTS,
@@ -49,6 +47,8 @@ import { asCandidate } from "./types";
 export const MAX_KNIGHTS_S = MAX_KNIGHTS;
 /** Tank-biased guard when the enemy holds hidden material (cheese window). */
 export const HIDDEN_GUARD = 1_450;
+/** Extra on a BattleShip deploy when the CC guess is already within warp reach. */
+export const SHIP_WARP_READY = 800;
 /** BattleShip rush when winning: deploy q the moment the bank allows. */
 export const QUEEN_FINISH = 3_200;
 
@@ -64,12 +64,6 @@ const deploys = (ctx: StrategicCtx): Candidate[] => {
   const horizonSeq = bestDeploySequence(ctx, 5);
   const horizonBank = projectedBank(material.bank, snap.turn, 5);
 
-  const _isOpenFile = (sq: Square, m: Map<Square, ScPiece>): boolean => {
-    const file = sq[0];
-    for (const [s, p] of m) if (s[0] === file && p.type === "p") return false;
-    return true;
-  };
-  // Deploy may land on empty, ally or enemy (crush) — all show deploy survives
   const adjacent = neighbors(king).filter(
     (at) => !hostileMineOn(snap.mines, us, at),
   );
@@ -126,21 +120,14 @@ const deploys = (ctx: StrategicCtx): Candidate[] => {
       const ccOneAwayOrClearLine = (() => {
         const focus = ctx.ccIntel?.focus;
         if (!focus) return false;
-        const visible = ctx.vision.litSquares;
-        // Check if guessed CC is 1-away from any visible square, or in clear line from any visible square
-        for (const vs of visible) {
+        for (const vs of ctx.vision.litSquares) {
           if (vs === focus) continue;
-          const isOneAway = Math.max(Math.abs(vs.charCodeAt(0) - focus.charCodeAt(0)), Math.abs(Number(vs[1]) - Number(focus[1]))) === 1;
-          if (isOneAway) return true;
+          if (chebyshev(vs, focus) === 1) return true;
           if (attacksSquare(map, vs, focus)) return true;
         }
         return false;
       })();
-      if (ccOneAwayOrClearLine && unit === "q") score += SHIP_HORIZON_BONUS + 800;
-      // Horizon-aligned: boost units that are part of the 5-turn best composition
-      // (e.g. p+p+q vs n+b+r when projected 11). First unit of the sequence
-      // gets extra to steer immediate deploy toward the long-horizon plan.
-      // Gate tank part of horizon on open file — don't push tanks on closed files (keep for horizon, but not for immediate defense)
+      if (ccOneAwayOrClearLine && unit === "q") score += SHIP_HORIZON_BONUS + SHIP_WARP_READY;
       if (isUnitInBestSequence(unit, horizonSeq)) {
         score += SHIP_HORIZON_BONUS * 0.5;
         if (horizonSeq?.units[0] === unit) score += SHIP_HORIZON_BONUS * 0.5;
@@ -154,7 +141,7 @@ const deploys = (ctx: StrategicCtx): Candidate[] => {
         score += trade * (1 + UNIT_COST[occ.type]);
       }
       if (snap.turn <= 1 && (unit === "n" || unit === "b")) {
-        score += (Math.random() - 0.5) * 0.5;
+        score += (ctx.rng() - 0.5) * 0.5;
       }
 
       out.push(

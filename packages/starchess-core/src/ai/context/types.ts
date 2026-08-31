@@ -11,6 +11,7 @@
 import type { Square } from "chess.js";
 
 import type { ScPiece } from "../../board/placement";
+import type { Rng } from "./rng";
 import type {
   PieceColor,
   ScActionInput,
@@ -33,6 +34,8 @@ export type AdjutantContext = {
    * snap-only callers still see spawn affordability.
    */
   storedFor?: (color: PieceColor) => number;
+  /** Opening tie-break randomness; defaults to `Math.random`. */
+  rng?: Rng;
 };
 
 /** One classical move candidate from the shared SC movegen. */
@@ -143,6 +146,8 @@ export type AdjutantCtx = {
   /** Our side already has a Spider Mine on the d4–e5 hub. */
   hubMineTaken: boolean;
   storedFor: (color: PieceColor) => number;
+  /** Resolved opening tie-break randomness. */
+  rng: Rng;
   /** Ahead on the known-vs-seen ledger. Strategic only; absent under naive. */
   winning?: boolean;
 };

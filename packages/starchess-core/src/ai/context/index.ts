@@ -18,6 +18,7 @@ import {
 } from "../../board/placement";
 import type { PieceColor, ScFenSnapshot } from "../../model/types";
 import { cloneWithMove, enemyOf } from "./geometry";
+import { DEFAULT_RNG } from "./rng";
 import { gatherKingIntel } from "./kingIntel";
 import { buildMaterialIntel, estimateStoredFor } from "./material";
 import { hasHubPresence, hubMineTaken } from "./mines";
@@ -27,6 +28,7 @@ import type { AdjutantContext, AdjutantCtx, Move, MoveEval } from "./types";
 import { buildVisionIntel } from "./vision";
 
 export * from "./types";
+export * from "./rng";
 export * from "./geometry";
 export * from "./pawns";
 export * from "./mines";
@@ -79,6 +81,7 @@ export const buildAdjutantCtx = (
     hubHeld,
     hubMineTaken: hubMineTaken(snap, us),
     storedFor,
+    rng: ctx?.rng ?? DEFAULT_RNG,
   };
 };
 

@@ -28,6 +28,7 @@ export const naiveScript = (overrides: Partial<ScriptPlayer> = {}): ScriptPlayer
     const ctxOut: AdjutantContext = {
       color: ctx.color,
       storedFor: (color) => ctx.bank[color],
+      rng: ctx.rng,
     };
     const result = adjutant(snap, ctxOut);
     return {
