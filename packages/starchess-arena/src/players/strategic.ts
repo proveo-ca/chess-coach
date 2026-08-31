@@ -82,10 +82,13 @@ export const strategicScript = (
     name,
     // Async: engine lookahead is a wall-clock await when a feed is attached.
     async play(snap: ScFenSnapshot, ctx: SideContext) {
-      const adjCtx = {
+      const adjCtx: StrategicAdjutantContext = {
         color: ctx.color,
         storedFor: (color: "w" | "b") => ctx.bank[color],
         kvs: ctx.kvs,
+        ccIntel: ctx.ccIntel,
+        lastCCProbe: ctx.lastCCProbe,
+        rng: ctx.rng,
       };
 
       // No engine budget → the plain deterministic path (mirror-determinism).
@@ -142,21 +145,11 @@ const playWithFeed = async (
     { movetimeMs: ctx.movetimeMs! },
   );
 
-  // Key by the candidate's original index so a skipped/illegal candidate never
-  // inherits a foreign engine score (skip shifts no longer misattribute).
-  // Cap rooks not on open files — Stockfish over-values closed-file rooks
+  /** Coarse open-file test — no pawn of either colour on the landing file. */
   const isOpenFileFor = (to: string, snap: ScFenSnapshot): boolean => {
     const file = to[0];
-    // Check placement string for any pawn on same file
     const placement = snap.placement;
-    // Quick check: if any pawn exists on that file in the current map, not open
-    // Use the snap's placement directly: look for pawns on that file
-    // For simplicity, treat as open if no pawn on that file in the FEN
-    // A more precise check would parse the board, but this heuristic is enough
-    // to de-prefer rooks on blocked files.
     const boardFiles = placement.split("/").map((rank) => rank.replace(/\d/g, (n) => "1".repeat(Number(n))));
-    // Count pawns on that file: if any 'p' or 'P' on that file, not open
-    // This is a coarse check — if the file has any pawn, rook is not on open line
     let hasPawn = false;
     for (const rank of boardFiles) {
       let f = 0;
