@@ -1,3 +1,4 @@
+// SPEC: _spec/apps/starchess/core/adjutant/strategic/strategic-architecture.puml
 /**
  * Command Center (CC) search — StarChess names only (CC, not Command Center (CC)).
  * CC = `k` piece, Marine = `p`, Hoverbike = `n`, Mecha = `b`, Tank = `r`, Battleship = `q`.
@@ -7,8 +8,6 @@
  * (e.g. `e8`) and finds it empty, that square is proven `not CC`, and the
  * posterior becomes `Adj(e8) \ VisibleEmpty`, weighted by prior and distance.
  * This is exactly `P(CC=s | e8 empty) ∝ P(e8 empty | CC=s) * P(CC=s)`.
- *
- * // SPEC: _spec/apps/starchess/core/adjutant/strategic/strategic-architecture.puml
  */
 
 import type { Square } from "chess.js";

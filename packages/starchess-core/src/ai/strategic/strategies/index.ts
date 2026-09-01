@@ -1,7 +1,6 @@
+// SPEC: _spec/apps/starchess/core/adjutant/strategic/strategic-architecture.puml
 /**
  * Strategic strategy registry and the two aggregate passes the orchestrator runs.
- *
- * // SPEC: _spec/apps/starchess/core/adjutant/strategic/strategic-architecture.puml
  */
 
 import { specialGasCost } from "../../../scfen";
@@ -10,21 +9,27 @@ import type { Candidate, Move, MoveEval } from "../../context";
 import type { StrategicCtx } from "../context";
 import { evaluateMove } from "../../context";
 import { STRATEGIES as NAIVE_STRATEGIES } from "../../strategies";
+import { attackers } from "./attackers";
 import { captures } from "./captures";
 import { checks } from "./checks";
 import { economy } from "./economy";
+import { runners } from "./runners";
 import { survival } from "./survival";
 import { threats } from "./threats";
 import type { StrategicStrategy } from "./types";
 
-export { captures, checks, economy, survival, threats };
+export { attackers, captures, checks, economy, runners, survival, threats };
 export * from "./economy";
-export { asCandidate, type StrategyId } from "./types";
+export * from "./runners";
+export * from "./attackers";
+export { asCandidate, type StrategyId, type StrategicOnlyId } from "./types";
 export type { StrategicStrategy } from "./types";
 
 /** Registry order is the tie-break order for an exact score tie. */
 export const STRATEGIES: readonly StrategicStrategy[] = [
   economy,
+  attackers,
+  runners,
   captures,
   survival,
   threats,

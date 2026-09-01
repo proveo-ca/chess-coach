@@ -9,6 +9,8 @@
 ' see also: ../cc-focus.puml (which square the check weights aim at)
 ' see also: ../weight-ladder.puml (every value, and what a test pins)
 ' see also: strategic-economy.puml (the deploy dials in detail)
+' see also: promotion-defense.puml (the enemy promotion race, in detail)
+' see also: cc-retaliation.puml (the debt a shot on our own CC creates)
 !include ../../../../../themes/proveo.puml
 
 skinparam packageStyle rectangle
@@ -17,19 +19,25 @@ skinparam defaultTextAlignment left
 title StarChess · Adjutant difficulty: ADJUTANT (SCRIPT STRATEGIC) — architecture
 
 package "callers (the only ones)" {
-  component "packages/starchess-arena\nplayers/strategic.ts\n**the sole live caller**" as ARENA <<host>>
+  component "packages/starchess-arena\nplayers/strategic.ts\nheadless arena" as ARENA <<host>>
+  component "apps/starchess\nscreens/SingleScreen.tsx\nopponent === ""strategic""" as APP <<host>>
   database "host-threaded kvs\nacross turns" as KVS <<db>>
   database "host-threaded ccIntel\nacross turns" as CCIN <<db>>
+  database "host-threaded runnerMemory\nacross turns" as RMEM <<db>>
+  database "host-threaded attackerMemory\nacross turns" as AMEM <<db>>
 }
 
 package "Strategic" {
   component "ai/strategic/orchestrator.ts\nstrategicCandidates · strategicAdjutant" as STRAT <<app>>
   component "ai/strategic/context.ts\nbuildStrategicCtx" as CTX <<app>>
   component "ai/strategic/intel.ts\nknown-vs-seen model" as INTEL <<app>>
+  component "ai/strategic/runners.ts\nenemy promotion runners:\nfog-honest scan + ghost memory" as RUNI <<app>>
   component "ai/context/ccIntel.ts\ngetCCBestGuess — CC posterior" as CCI <<app>>
   component "ai/strategic/deployLookahead.ts\nhorizon 5 budget projection" as LOOK <<app>>
   package "ai/strategic/strategies" {
     component "economy\n**shipped**" as SSE <<app>>
+    component "attackers\n**shipped** — no naive twin" as SSA <<app>>
+    component "runners\n**shipped** — no naive twin" as SSR <<app>>
     component "threats\n**shipped**" as SST <<app>>
     component "checks\n**shipped**" as SSC <<app>>
   }
@@ -46,13 +54,25 @@ package "Command (same as human)" {
 }
 
 ARENA ARROW_MAIN STRAT : snap in (opposite side) + storedFor
+APP ARROW_MAIN STRAT : snap in (opponent side) + storedFor
 ARENA ARROW_OPTIONAL KVS : kvs via ctx (absent → estimate)
-ARENA -[#CB2000,dashed]-> CCIN : threaded into SideContext,\n**dropped** before adjCtx
+ARENA ARROW_MAIN CCIN : ccIntel via SideContext → adjCtx
+ARENA ARROW_MAIN RMEM : runnerMemory, same route
+ARENA ARROW_MAIN AMEM : attackerMemory, same route
+APP ARROW_MAIN AMEM : settledResolves cursor
+APP ARROW_MAIN KVS : foldTracking, once per turn
+APP ARROW_MAIN CCIN : foldTracking, once per turn
+APP ARROW_MAIN RMEM : foldTracking, once per turn
 STRAT ARROW_MAIN CTX : build once per turn
 CTX ARROW_MAIN BASE : buildAdjutantCtx (read-only)
 CTX ARROW_OPTIONAL INTEL : estimateKnownVsSeen\nwhen kvs absent
 CTX ARROW_MAIN INTEL : cheesePromotion · winning\nfrom kvs
 CTX ARROW_MAIN CCI : ccIntel from prior + vision + probe
+CTX ARROW_MAIN RUNI : scanEnemyRunners (fog-honest)\n+ seek damp while one is urgent
+RMEM ARROW_OPTIONAL RUNI : ghosts merged in as unseen runners
+STRAT ARROW_MAIN SSA : score (attackers)
+STRAT ARROW_MAIN SSR : score (runners)
+SSE ARROW_OPTIONAL RUNI : runnerDeployValue on the deploy ring
 STRAT ARROW_MAIN SSE : generate deploys (economy)
 SSE ARROW_MAIN LOOK : bestDeploySequence(5)
 SSE ARROW_OPTIONAL NSTRAT : reuse constants + deployPolicy
@@ -67,7 +87,8 @@ note bottom of STRAT
   **Layering:** strategic = naive context + naive strategies, plus the
   known-vs-seen dials (""kvs"" / ""cheesePromotion"" / ""winning"") and the CC
   posterior (""ccIntel"").
-  **Registry order is the tie-break order** — ""[economy, threats, checks]"",
+  **Registry order is the tie-break order** — ""[economy, attackers, runners,
+  captures, survival, threats, checks]"",
   economy first exactly as in naive; the final ranking sort is stable, so a
   plan proposed earlier wins an exact score tie.
   **Forbidden:** the pure core calling the engine, mutating the context, or
@@ -75,18 +96,27 @@ note bottom of STRAT
 end note
 
 note as N_SUBST
-  **The substitution — ""NAIVE_WITHOUT_CHECKS"".** Classical-move scoring sums
-  every source in ""SCORE_SOURCES"", and three strategic concerns are shipped,
-  so the naive twins of two of them are filtered out
-  (""strategic/strategies/index.ts:57""):
+  **The substitution — ""NAIVE_NOT_OVERRIDDEN"".** Classical-move scoring sums
+  every source in ""SCORE_SOURCES"" = the seven strategic strategies plus the
+  naive ones whose ""id"" no strategic strategy claims — which today leaves
+  ""mapControl"" alone (""strategic/strategies/index.ts""):
 
   | concern | strategic | naive | scored by |
   | ""economy"" | shipped | kept | **both** — strategic generates deploys, naive constants are reused |
+  | ""attackers"" | shipped | **none exists** | strategic only — the id lives in ""StrategicOnlyId"" |
+  | ""runners"" | shipped | **none exists** | strategic only — the id lives in ""StrategicOnlyId"" |
   | ""threats"" | shipped | **filtered out** | strategic only |
   | ""checks"" | shipped | **filtered out** | strategic only |
+  | ""captures"" | shipped | **filtered out** | strategic only |
+  | ""survival"" | shipped (generate) | **filtered out** | strategic only — it reuses the naive ""score"" |
   | ""mapControl"" | not written | kept | naive only |
-  | ""captures"" | not written | kept | naive only |
-  | ""survival"" | not written | kept | naive only |
+
+  ""StrategicOnlyId"" = ""runners | attackers"" — the two concerns with no naive
+  counterpart at all, declared there rather than widening the naive
+  ""StrategyId"" with an id the naive registry can never carry. The naive script
+  reads promotion distance only about *our* marines (""NEAR_PROMOTE_RUSH""), so
+  an enemy runner is invisible to it (""promotion-defense.puml""), and it keeps
+  no record of who shot its Command Center (""cc-retaliation.puml"").
 
   The filter is what makes the fog contract enforceable: if both ""checks""
   strategies scored the same move, an omniscient naive weight would be added
@@ -112,18 +142,26 @@ STRAT .. N_SUBST
 STRAT .. N_INVERSION
 
 note as N_OPEN
-  <color:#CB2000>**OPEN — not fixed on this branch.**</color>
+  <color:#1A7F37>**RESOLVED — the script has an app consumer, and both hosts
+  now thread all four folds.**</color> ""SingleScreen.tsx"" picks
+  ""strategicAdjutant"" when the New Game modal's opponent is ""strategic"" and
+  hands it ""kvs"" · ""ccIntel"" · ""runnerMemory"" · ""attackerMemory"". The first two
+  come from ""foldTracking"" off the planning snapshot; the last two run off a
+  ""settledResolves"" cursor, which is one fold per settled ply and the better
+  cadence (""promotion-defense.puml""). The arena folds all four at its chip and
+  settle points (""run/runMatch.ts""), and ""players/strategic.ts"" forwards every
+  one of them into ""adjCtx"" — the ""ccIntel"" drop these diagrams used to record
+  is fixed. The folds are one module, ""ai/strategic/tracking.ts"", in the core.
 
-  **No app consumer.** ""strategicAdjutant"" is called only by
-  ""packages/starchess-arena"" and by the core's own tests. The live product
-  (""SingleScreen"" and ""LiveLessonHost"", both via ""autoQueueOpponent"") passes
-  the **naive** ""adjutant"". Any claim that a player meets this script in
-  ""/single"" today is wrong.
-
-  **The CC posterior is discarded per turn.** ""runMatch.ts:168"" threads
-  ""ccIntel"" into ""SideContext"", but ""players/strategic.ts:85"" builds ""adjCtx""
-  without it, so ""buildStrategicCtx"" falls back to ""emptyCCIntel"" every ply.
-  Detail and consequences in ""../cc-focus.puml"".
+  <color:#CB2000>**OPEN — the Hoverbike probe channel is never fed.**</color>
+  ""buildStrategicCtx"" and ""updateCcIntelForSnap"" both accept a
+  ""lastProbe / lastCCProbe"" ("we sent a bike to ""e8"" and it was empty"), and
+  ""players/strategic.ts:90"" forwards it — but **nothing anywhere writes one**:
+  ""runMatch.ts"" builds ""SideContext"" without it and calls
+  ""updateCcIntelForSnap(state, snap)"" with no probe argument, and
+  ""SingleScreen"" does the same. So ""excluded"" grows only from what vision
+  proves, and the half of the posterior that learns from a failed probe is
+  dead in both hosts.
 
   **Planned, still unwired here:** periodic ""knownForTurn"" / gap persistence.
   The async engine enhancer *is* wired, but in the arena rather than in core —

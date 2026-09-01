@@ -1,11 +1,10 @@
+// SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
 /**
  * The strategy registry, and the two aggregate passes the orchestrator runs:
  * collect every proposed plan, and score every classical move.
  *
  * Registry order is the tie-break order — plans proposed earlier win an exact
  * score tie, because the final ranking sort is stable.
- *
- * // SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
  */
 
 import { specialGasCost } from "../../scfen";

@@ -1,11 +1,16 @@
+// SPEC: _spec/apps/starchess/core/adjutant/cc-focus.puml, _spec/apps/starchess/core/adjutant/strategic/promotion-defense.puml, _spec/apps/starchess/core/adjutant/strategic/cc-retaliation.puml
 /**
- * Cross-ply strategic state — the CC search posterior and the known-vs-seen
- * material account, folded forward one settled ply at a time.
+ * Cross-ply strategic state — the CC search posterior, the known-vs-seen
+ * material account, the enemy-runner memory and the retaliation record, folded
+ * forward one settled ply at a time.
  *
  * Both hosts (the live app and the headless arena) thread these, so they live
  * here rather than in either one. Pure input/output: the host owns the value.
  *
- * // SPEC: _spec/apps/starchess/core/adjutant/cc-focus.puml
+ * Two of the four folds accept a {@link ResolveWitness} — the settled resolve's
+ * own account of the ply, fog-gated in `witness.ts`. A host that has the
+ * `EndScTurnResult` should always pass it: without it, a marine that only flew
+ * through our vision and a shot fired from the dark both go unrecorded.
  */
 
 import type { Square } from "chess.js";
@@ -17,6 +22,16 @@ import { UNIT_COST } from "../../rules/constants";
 import type { PieceColor, ScFenSnapshot } from "../../model/types";
 import { emptyCCIntel, getCCBestGuess, type CCIntel } from "../context/ccIntel";
 import { combineKnownVsSeen, knownForTurn, type KnownVsSeen } from "./intel";
+import { emptyRunnerMemory, foldRunnerMemory, type RunnerMemory } from "./runners";
+import {
+  emptyAttackerMemory,
+  foldAttackerMemory,
+  type AttackerMemory,
+} from "./attackers";
+import { witnessFromEndTurn, type ResolveWitness } from "./witness";
+
+export { witnessFromEndTurn };
+export type { ResolveWitness };
 
 const SIDES = ["w", "b"] as const;
 
@@ -55,6 +70,62 @@ export const updateCcIntelForSnap = (
       lastProbe?.[side] ?? null,
       other(side),
     );
+  }
+  return { perSide };
+};
+
+/* ── Command Center retaliation ──────────────────────────────────────────── */
+
+/** Each side's record of who fired on its own Command Center. */
+export type AttackerMemoryState = {
+  perSide: { w: AttackerMemory; b: AttackerMemory };
+};
+
+export const seedAttackerMemory = (): AttackerMemoryState => ({
+  perSide: { w: emptyAttackerMemory(), b: emptyAttackerMemory() },
+});
+
+/**
+ * Fold one settled ply into each side's retaliation record. `witness` carries
+ * the resolve's own account of the ply — without it a shot that landed out of
+ * sight is never recorded, which is the whole point of the channel.
+ */
+export const updateAttackersForSnap = (
+  state: AttackerMemoryState,
+  snap: ScFenSnapshot,
+  witness?: ResolveWitness | null,
+): AttackerMemoryState => {
+  const perSide = { ...state.perSide };
+  for (const side of SIDES) {
+    perSide[side] = foldAttackerMemory(state.perSide[side], snap, side, witness);
+  }
+  return { perSide };
+};
+
+/* ── Enemy-runner memory ─────────────────────────────────────────────────── */
+
+/** Each side's memory of the *other* side's promotion runners. */
+export type RunnerMemoryState = {
+  perSide: { w: RunnerMemory; b: RunnerMemory };
+};
+
+export const seedRunnerMemory = (): RunnerMemoryState => ({
+  perSide: { w: emptyRunnerMemory(), b: emptyRunnerMemory() },
+});
+
+/**
+ * Fold one settled snapshot into each side's runner memory. Call exactly once
+ * per recorded ply, in order — the fold is a one-turn propagation, so a skipped
+ * ply lets a ghost fall a rank behind the marine it is tracking.
+ */
+export const updateRunnersForSnap = (
+  state: RunnerMemoryState,
+  snap: ScFenSnapshot,
+  witness?: ResolveWitness | null,
+): RunnerMemoryState => {
+  const perSide = { ...state.perSide };
+  for (const side of SIDES) {
+    perSide[side] = foldRunnerMemory(state.perSide[side], snap, side, witness);
   }
   return { perSide };
 };

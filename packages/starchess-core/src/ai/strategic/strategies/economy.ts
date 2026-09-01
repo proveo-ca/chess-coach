@@ -1,3 +1,4 @@
+// SPEC: _spec/apps/starchess/core/adjutant/strategic/strategic-economy.puml, _spec/apps/starchess/core/adjutant/strategic/promotion-defense.puml
 /**
  * Economy (STRATEGIC) — what the Command Center deploys, reacting to the
  * known-vs-seen material model the naive economy cannot see.
@@ -15,10 +16,16 @@
  *    enemy has hidden material, defense outranks saving: prefer the guard
  *    drops (tank commands a neighbouring square; marines shore the shelter) and
  *    cancel the battleship-finish saving spree.
+ *  - **runners** — the *seen* half of the same worry (`../runners.ts`). Our
+ *    deploy ring is our own last ranks, which is precisely where an enemy
+ *    marine promotes, so a drop is often the only answer that arrives in time:
+ *    onto a runner we can see it crushes it, in front of one it blocks it. An
+ *    *urgent* runner — `isUrgentRunner`: unobstructed, within two turns, and
+ *    believed (confidence ≥ 0.5) — counts as `defending` (no saving spree,
+ *    `RUNNER_GUARD` tank on) and, when its path crosses the ring, buys back the
+ *    light drops the heavy-unit preference would have skipped.
  *  - **kingThreatened** — unchanged from naive: survival always outranks
  *    economy (the absolute survival weights still dominate elsewhere).
- *
- * // SPEC: _spec/apps/starchess/core/adjutant/strategic/strategic-economy.puml
  */
 
 import { attacksSquare, isSquareAttackedBy } from "../../../board/placement";
@@ -40,6 +47,9 @@ import {
   BISHOP_VS_QUEEN,
   deployPolicy,
 } from "../../strategies/economy";
+import { isUrgentRunner } from "../runners";
+import { avengeDeployValue } from "./attackers";
+import { runnerDeployValue } from "./runners";
 import type { StrategicStrategy, } from "./types";
 import { asCandidate } from "./types";
 
@@ -47,6 +57,12 @@ import { asCandidate } from "./types";
 export const MAX_KNIGHTS_S = MAX_KNIGHTS;
 /** Tank-biased guard when the enemy holds hidden material (cheese window). */
 export const HIDDEN_GUARD = 1_450;
+/**
+ * The same shape of guard for a runner we can actually account for. A separate
+ * constant on purpose: the two fire on different evidence, and a retune of the
+ * cheese window must not silently retune the promotion defense.
+ */
+export const RUNNER_GUARD = 1_450;
 /** Extra on a BattleShip deploy when the CC guess is already within warp reach. */
 export const SHIP_WARP_READY = 800;
 /** BattleShip rush when winning: deploy q the moment the bank allows. */
@@ -68,6 +84,17 @@ const deploys = (ctx: StrategicCtx): Candidate[] => {
     (at) => !hostileMineOn(snap.mines, us, at),
   );
 
+  // A visible runner within two turns of promoting is a defensive emergency on
+  // the same footing as hidden material: it cancels the ship-saving spree and
+  // earns the guard tank. When its path crosses the deploy ring — which is our
+  // own last ranks, exactly where it is heading — a cheap body is a real answer,
+  // so the heavy-unit preference gives way the way it does for a hot CC.
+  const urgentRunners = ctx.runners.filter(isUrgentRunner);
+  const runnerOnDeployRing = urgentRunners.some(
+    (r) => adjacent.includes(r.at) || r.path.some((s) => adjacent.includes(s)),
+  );
+  const defending = hidden || urgentRunners.length > 0;
+
   for (const unit of ["p", "n", "b", "r", "q"] as const) {
     if (UNIT_COST[unit] > material.bank) continue;
     if (unit === "n" && knightsFull) continue;
@@ -77,6 +104,7 @@ const deploys = (ctx: StrategicCtx): Candidate[] => {
     if (
       preferHeavy &&
       !kingThreatened &&
+      !runnerOnDeployRing &&
       UNIT_COST[unit] < UNIT_COST.r &&
       !(wantBishops && unit === "b")
     ) {
@@ -86,12 +114,13 @@ const deploys = (ctx: StrategicCtx): Candidate[] => {
     if (knightsFull && preferHeavy && unit !== "r" && unit !== "q" && unit !== "b") {
       continue;
     }
-    // STRATEGIC: winning + nothing hidden → save light drops toward a ship.
-    // Defense (command center (CC) hot / enemy hidden) always cancels the saving spree.
+    // STRATEGIC: winning + nothing to defend → save light drops toward a ship.
+    // Defense (command center (CC) hot / enemy hidden / a runner on the board)
+    // always cancels the saving spree.
     // Horizon-aware: only save when the ship is reachable within 5 turns.
     if (
       winning &&
-      !hidden &&
+      !defending &&
       !kingThreatened &&
       material.bank < UNIT_COST.q &&
       horizonBank >= UNIT_COST.q &&
@@ -112,10 +141,14 @@ const deploys = (ctx: StrategicCtx): Candidate[] => {
         score += BISHOP_VS_QUEEN;
       }
       if (knightsFull && unit === "r") score += ROOK_AFTER_KNIGHTS;
-      // STRATEGIC: cheesy hidden material → tank guard on the Command Center (CC)'s perimeter
-      if (hidden && unit === "r") score += HIDDEN_GUARD;
-      // STRATEGIC: winning with nothing hidden → the ship closes the game.
-      if (winning && !hidden && unit === "q") score += QUEEN_FINISH;
+      // STRATEGIC: cheesy hidden material, or a runner we can account for →
+      // tank guard on the Command Center (CC)'s perimeter
+      if (unit === "r") {
+        if (hidden) score += HIDDEN_GUARD;
+        else if (urgentRunners.length > 0) score += RUNNER_GUARD;
+      }
+      // STRATEGIC: winning with nothing to defend → the ship closes the game.
+      if (winning && !defending && unit === "q") score += QUEEN_FINISH;
       // CC guess is 1-away or in clear line from a visible square → ship + warp to check
       const ccOneAwayOrClearLine = (() => {
         const focus = ctx.ccIntel?.focus;
@@ -132,6 +165,14 @@ const deploys = (ctx: StrategicCtx): Candidate[] => {
         score += SHIP_HORIZON_BONUS * 0.5;
         if (horizonSeq?.units[0] === unit) score += SHIP_HORIZON_BONUS * 0.5;
       }
+      // STRATEGIC: a visible runner promotes on *our* back rank, which is the
+      // deploy ring — so a drop is often the only answer that arrives in time,
+      // and one onto the runner's own square crushes it.
+      score += runnerDeployValue(ctx.runners, to);
+      // STRATEGIC: "however possible" includes dropping a unit on top of the
+      // shooter — a Command Center that was fired on can answer with its own
+      // ring, and the crush needs no line of attack.
+      score += avengeDeployValue(ctx, to, UNIT_COST[unit]);
       if (kingThreatened && unit === "r") score += trade * 4;
       if (kingThreatened) score += trade;
       if (isSquareAttackedBy(map, to, enemy)) score -= attackedPenalty;

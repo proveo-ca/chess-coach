@@ -1,11 +1,10 @@
+// SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
 /**
  * Assembles every input variable the Adjutant reads from one SCFEN snapshot.
  *
  * Built once per planning turn, then treated as read-only. Strategies receive
  * this object and nothing else — if a strategy needs a new board fact, it is
  * derived here rather than recomputed inside the scoring pass.
- *
- * // SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
  */
 
 import type { Square } from "chess.js";

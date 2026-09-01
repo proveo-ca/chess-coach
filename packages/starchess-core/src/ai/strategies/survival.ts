@@ -1,11 +1,10 @@
+// SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
 /**
  * Survival — keeping the Command Center (and the BattleShip) alive.
  *
  * Owns the absolute weights: nothing the other strategies can offer outranks
  * a Command Center (CC) that stays off a chip-capable ray. Also owns the Tactical Jump escape
  * and the "walk out of fire" defence for ordinary units.
- *
- * // SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
  */
 
 import type { Square } from "chess.js";

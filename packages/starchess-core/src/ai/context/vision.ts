@@ -1,8 +1,7 @@
+// SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
 /**
  * Fog read: what our side can see this turn, and which enemy heavies are lit.
  * An unreadable board degrades to fighting blind rather than crashing the host.
- *
- * // SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
  */
 
 import type { Square } from "chess.js";

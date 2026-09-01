@@ -1,3 +1,4 @@
+// SPEC: _spec/apps/starchess/core/adjutant/strategic/strategic-architecture.puml
 /**
  * Known-vs-seen economy intel — the strategic Adjutant's material model.
  *
@@ -22,8 +23,6 @@
  * Pure / stateless: the accumulator lives on the host (threaded in the
  * `AdjutantContext`, matching the `storedFor` convention) and snap-only callers
  * fall back to a deterministic one-turn estimate.
- *
- * // SPEC: _spec/apps/starchess/core/adjutant/strategic/strategic-architecture.puml
  */
 
 import type { Square } from "chess.js";

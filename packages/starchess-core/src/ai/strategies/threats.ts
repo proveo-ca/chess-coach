@@ -1,3 +1,4 @@
+// SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
 /**
  * Threats — not hanging our own units.
  *
@@ -5,8 +6,6 @@
  * "am I in danger" question is either survival (the Command Center (CC) and a savable
  * BattleShip) or checks (the enemy Command Center (CC)). What is left is the quiet mistake of
  * parking a unit on a square the enemy already covers.
- *
- * // SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
  */
 
 import type { AdjutantCtx, MoveEval } from "../context";

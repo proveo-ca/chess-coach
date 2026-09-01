@@ -1,7 +1,6 @@
+// SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
 /**
  * Marine (marine) structure questions: promotion distance and file congestion.
- *
- * // SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
  */
 
 import type { Square } from "chess.js";
@@ -20,6 +19,18 @@ export const CLUSTER_PAWNS = 7;
 /** Progress toward our promotion rank (higher = closer). */
 export const promoteProgress = (rank: number, us: PieceColor): number =>
   us === "b" ? 8 - rank : rank - 1;
+
+/**
+ * A marine covers two ranks in one turn: the gas step lands in rank B and its
+ * classical in rank C (`plans/stacks.ts` composes the pair). Both directions of
+ * the promotion race are read in turns rather than squares, so the fact lives
+ * here with the distance helpers rather than in either reader.
+ */
+export const RUNNER_RANKS_PER_TURN = 2;
+
+/** Turns a marine needs to reach its promotion rank from `steps` squares out. */
+export const turnsToPromote = (steps: number): number =>
+  Math.ceil(steps / RUNNER_RANKS_PER_TURN);
 
 /** Squares remaining until our last rank (0 = already there). */
 export const stepsToPromotion = (rank: number, us: PieceColor): number =>

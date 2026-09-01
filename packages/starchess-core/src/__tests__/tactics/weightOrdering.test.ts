@@ -30,6 +30,15 @@ import {
 } from "../../ai/strategies/survival";
 import { NEAR_PROMOTE_RUSH } from "../../ai/strategies/mapControl";
 import {
+  RUNNER_STOP_CRITICAL,
+  RUNNER_STOP_SERIOUS,
+  RUNNER_STOP_WATCH,
+} from "../../ai/strategic/strategies/runners";
+import {
+  AVENGE_CC_SHOT,
+  AVENGE_THRIFT,
+} from "../../ai/strategic/strategies/attackers";
+import {
   ATTACK_KING_GUESS,
   CHASE_KING_GUESS,
   PAWN_CHECK_CC_GUESS,
@@ -53,6 +62,8 @@ describe("survival dominates", () => {
       NEAR_PROMOTE_RUSH,
       ATTACK_KING_GUESS,
       CHASE_KING_GUESS,
+      RUNNER_STOP_CRITICAL,
+      RUNNER_STOP_SERIOUS,
     ]) {
       expect(w).toBeLessThan(KING_SAFETY);
     }
@@ -116,6 +127,71 @@ describe("giving up material for Command Center pressure is bottom-tier", () => 
 
   it("never outranks simply taking a free Marine while level", () => {
     expect(SAC_FOR_CC).toBeLessThan(HUNT_UNDEFENDED_PAWN);
+  });
+});
+
+describe("the Command Center's own debts", () => {
+  /**
+   * Firing on a Command Center names the shooter, and the standing instruction
+   * is to take it. The weight sits directly under `KING_SAFETY` — keeping the
+   * CC out of fire still outranks avenging it, a live checker is still
+   * survival's business through `DEPLOY_ATTACK_SURVIVAL`, and everything below
+   * loses to the debt.
+   */
+  it("retaliation ranks under the Command Center's own safety", () => {
+    expect(AVENGE_CC_SHOT).toBeLessThan(KING_SAFETY);
+    expect(AVENGE_CC_SHOT).toBeLessThan(DEPLOY_ATTACK_SURVIVAL);
+  });
+
+  it("...and over every other concern the turn can offer", () => {
+    for (const w of [
+      RUNNER_STOP_CRITICAL,
+      PAWN_CHECK_CC_SEEN,
+      SNEAK_KNIGHT_CHECK_SEEN,
+      ATTACK_KING_GUESS,
+      EQUAL_TRADE_ATTACK,
+      QUEEN_ESCAPE,
+    ]) {
+      expect(AVENGE_CC_SHOT).toBeGreaterThan(w);
+    }
+  });
+
+  it("thrift picks the cheapest answer without ever refusing the job", () => {
+    // Even spending a BattleShip, the debt still outranks the tier below it.
+    expect(AVENGE_CC_SHOT - AVENGE_THRIFT * 9).toBeGreaterThan(RUNNER_STOP_CRITICAL);
+  });
+});
+
+describe("an enemy runner sits between the check tier and the guess", () => {
+  /**
+   * The ordering the promotion-defense module is built on. A marine covers two
+   * ranks a turn, so "one turn out" is the last turn on which any answer
+   * exists — it therefore outranks a check we could repeat next turn, while
+   * "two turns out" only has to beat speculation (`ATTACK_KING_GUESS` aims at a
+   * *guessed* square) and ordinary material.
+   */
+  it("the last-chance tier outranks a check on the Command Center", () => {
+    expect(RUNNER_STOP_CRITICAL).toBeGreaterThan(PAWN_CHECK_CC_SEEN);
+    expect(RUNNER_STOP_CRITICAL).toBeGreaterThan(SNEAK_KNIGHT_CHECK_SEEN);
+  });
+
+  it("but never outranks saving the BattleShip, let alone the Command Center", () => {
+    expect(RUNNER_STOP_CRITICAL).toBeLessThan(QUEEN_ESCAPE);
+  });
+
+  it("a runner two turns out beats aiming at a guessed Command Center", () => {
+    expect(RUNNER_STOP_SERIOUS).toBeGreaterThan(ATTACK_KING_GUESS);
+    expect(RUNNER_STOP_SERIOUS).toBeGreaterThan(EQUAL_TRADE_ATTACK);
+  });
+
+  it("...and still loses to a real check on it", () => {
+    expect(RUNNER_STOP_SERIOUS).toBeLessThan(PAWN_CHECK_CC_GUESS);
+    expect(RUNNER_STOP_SERIOUS).toBeLessThan(SNEAK_KNIGHT_CHECK_GUESS);
+  });
+
+  it("a runner still far off is a tie-break, not a plan", () => {
+    expect(RUNNER_STOP_WATCH).toBeLessThan(HUNT_UNDEFENDED_PAWN);
+    expect(RUNNER_STOP_WATCH).toBeLessThan(RUNNER_STOP_SERIOUS);
   });
 });
 

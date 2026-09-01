@@ -1,3 +1,4 @@
+// SPEC: _spec/apps/starchess/starchess-mode.puml, _spec/apps/starchess/demos.puml, _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
 /**
  * Adjutant — deterministic StarChess opponent planner (Command Center (CC) Hunt / Single Player).
  * Feeds the live `autoQueueOpponent` slot (pure; no Solid / store deps).
@@ -17,8 +18,6 @@
  *
  * Color-agnostic: plays `ctx.color` (default `"b"` for backward compatibility).
  * Deterministic.
- *
- * // SPEC: _spec/apps/starchess/starchess-mode.puml, _spec/apps/starchess/demos.puml, _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
  */
 
 import { addScAction, AddScActionError } from "../commands/queue-action";

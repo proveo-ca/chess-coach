@@ -1,3 +1,4 @@
+// SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
 /**
  * Posture resolution and the contextual weight table.
  *
@@ -8,8 +9,6 @@
  *
  * These weights are the only dial the orchestrator turns: strategies read them
  * from the context and never hard-code a posture branch of their own.
- *
- * // SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
  */
 
 import type { Posture, StrategyWeights } from "./types";

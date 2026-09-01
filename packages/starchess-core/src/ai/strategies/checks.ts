@@ -1,8 +1,6 @@
+// SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml, _spec/apps/starchess/core/adjutant/cc-focus.puml
 /**
  * Checks — putting the enemy Command Center under fire and closing on it.
- *
- * // SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
- * // SPEC: _spec/apps/starchess/core/adjutant/cc-focus.puml
  */
 
 import { attacksSquare, isSquareAttackedBy } from "../../board/placement";

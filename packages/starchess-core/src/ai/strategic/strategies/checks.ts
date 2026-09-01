@@ -1,9 +1,7 @@
+// SPEC: _spec/apps/starchess/core/adjutant/strategic/strategic-architecture.puml, _spec/apps/starchess/core/adjutant/cc-focus.puml
 /**
  * Checks — strategic version, which scores the guessed Command Center (CC)
  * while the real one is fogged.
- *
- * // SPEC: _spec/apps/starchess/core/adjutant/strategic/strategic-architecture.puml
- * // SPEC: _spec/apps/starchess/core/adjutant/cc-focus.puml
  */
 
 import { attacksSquare, isSquareAttackedBy } from "../../../board/placement";

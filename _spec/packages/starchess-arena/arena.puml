@@ -22,6 +22,9 @@ package "packages/starchess-arena (pure, node/bun)" {
     component "strategic.ts\nstrategicAdjutant() + feed" as PS <<app>>
     component "core ai/strategic/tracking.ts\nseedKvsForOpening ·\nupdateKvsForSnap" as KVS <<engine>>
     component "core ai/strategic/tracking.ts\nseedCcIntelForOpening ·\nupdateCcIntelForSnap" as CCI <<engine>>
+    component "core ai/strategic/tracking.ts\nseedRunnerMemory ·\nupdateRunnersForSnap" as RMEM <<engine>>
+    component "core ai/strategic/tracking.ts\nseedAttackerMemory ·\nupdateAttackersForSnap" as AMEM <<engine>>
+    component "core ai/strategic/witness.ts\nwitnessFromEndTurn(esr)\nchip **and** settle" as WIT <<engine>>
   }
   component "record.ts\nscfens + resolves" as REC <<app>>
   component "compare.ts\nsummarize → scoreboard" as CMP <<app>>
@@ -49,11 +52,18 @@ BANK ARROW_MAIN ECO : applyStoredIncome
 RUN ARROW_MAIN REC : { scfen, resolve } per settled ply
 REC ARROW_MAIN RCRD : recordFromRun → shared schema
 CLI ARROW_MAIN RUN : seeds · pairing · out dir
-RUN ARROW_MAIN PS : plan(snap, {color, kvs})
+RUN ARROW_MAIN PS : plan(snap, {color, kvs, ccIntel,\nrunnerMemory, attackerMemory})
 RUN ARROW_MAIN PW : plan(snap, {color})
 PS ARROW_OPTIONAL KVS : thread known-vs-seen
 RUN ARROW_MAIN CCI : seed + update every settled ply
-CCI -[#CB2000,dashed]-> PS : reaches SideContext,\n**never reaches adjCtx**
+RUN ARROW_MAIN RMEM : seed + update every settled ply
+RUN ARROW_MAIN AMEM : seed + update every settled ply
+RUN ARROW_MAIN WIT : the ply's own account, per fold point
+WIT ARROW_MAIN RMEM : crossings (fog-gated)
+WIT ARROW_MAIN AMEM : kingShot (no gate needed)
+CCI ARROW_MAIN PS : SideContext → adjCtx
+RMEM ARROW_MAIN PS : SideContext → adjCtx
+AMEM ARROW_MAIN PS : SideContext → adjCtx
 PS ARROW_OPTIONAL FEED : evaluate FEN projections
 FEED ARROW_MAIN IMPL : getEvaluation (bounded movetime)
 PS ARROW_OPTIONAL RFT : project classical FEN
@@ -115,19 +125,26 @@ note as N_ROOKCAP
 end note
 
 note as N_OPEN
-  <color:#CB2000>**OPEN — not fixed on this branch.**</color>
+  <color:#1A7F37>**CLOSED — the player forwards every cross-ply fold.**</color>
+  ""runMatch.ts"" seeds four states, refreshes all four after every chip ply and
+  every settled ply, and hands their ""perSide[color]"" values to the player.
+  ""players/strategic.ts"" now puts all four on ""adjCtx"", so
+  ""buildStrategicCtx"" no longer falls back to ""emptyCCIntel(enemy)"" each turn.
+  The arena and the app therefore measure the same script.
 
-  **The strategic player discards the CC posterior.** ""runMatch.ts"" seeds
-  ""ccIntel"" at line 123, refreshes it after every chip (142) and every settled
-  ply (188), and hands ""ccIntel.perSide[color]"" to the player at line 168. But
-  ""players/strategic.ts:85"" builds ""adjCtx"" as ""{ color, storedFor, kvs }"",
-  so ""buildStrategicCtx"" falls back to ""emptyCCIntel(enemy)"" every turn.
+  The two witness-fed folds (""runnerMemory"", ""attackerMemory"") take a
+  ""ResolveWitness"" built from the ply's own ""EndScTurnResult"" — at the chip
+  point that is ""opened.asResolve"", at the settle point ""esr"". Passing the
+  witness is not optional in spirit: without it a marine that only flew through
+  a lit square, and a shot fired from the dark, are both simply lost, so an
+  arena run would measure a blinder script than ""/single"" plays against.
 
-  Consequence: the ""excluded"" set never accumulates, and a Hoverbike probe
-  that proved a square empty is forgotten before the next ply. Arena results
-  therefore measure a script whose CC search restarts each turn — which is
-  **not** the script the strategic diagrams describe. Both paths are affected,
-  plain and feed, because both use the same ""adjCtx"". Detail in
+  <color:#CB2000>**OPEN — ""lastCCProbe"" is never populated.**</color> The
+  player forwards ""ctx.lastCCProbe"" (line 90), but ""SideContext"" is built
+  without it (174-186) and ""updateCcIntelForSnap"" is called with no probe
+  argument, so the posterior's "a Hoverbike proved this square empty" channel
+  is dead. It is dead in the app host too, so it is a **shared** gap rather
+  than an arena-only defect. Detail in
   ""_spec/apps/starchess/core/adjutant/cc-focus.puml"".
 end note
 

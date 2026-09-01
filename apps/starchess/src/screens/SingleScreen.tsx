@@ -11,11 +11,22 @@ import {
   adjutant,
   seedCcIntelForOpening,
   seedKvsForOpening,
+  seedAttackerMemory,
+  seedRunnerMemory,
   strategicAdjutant,
+  updateAttackersForSnap,
   updateCcIntelForSnap,
   updateKvsForSnap,
+  updateRunnersForSnap,
+  witnessFromEndTurn,
 } from "@chess-coach/starchess-core";
-import type { CcIntelState, KvsState, ScFenSnapshot } from "@chess-coach/starchess-core";
+import type {
+  AttackerMemoryState,
+  CcIntelState,
+  KvsState,
+  RunnerMemoryState,
+  ScFenSnapshot,
+} from "@chess-coach/starchess-core";
 import type { StarChessColor } from "@chess-coach/starchess-core";
 import { Show, createEffect, createSignal, onCleanup, type Component } from "solid-js";
 
@@ -120,10 +131,13 @@ const MatchInner: Component<{
   let historySaved = false;
 
   // Cross-ply strategic state, folded once per turn (core owns the folds — the
-  // arena threads the same two).
+  // arena threads the same four).
   let ccIntel: CcIntelState = seedCcIntelForOpening();
   let kvs: KvsState | null = null;
+  let runnerMemory: RunnerMemoryState = seedRunnerMemory();
+  let attackerMemory: AttackerMemoryState = seedAttackerMemory();
   let foldedTurn = -1;
+  let foldedResolves = 0;
 
   const foldTracking = (snap: ScFenSnapshot) => {
     if (!kvs) kvs = seedKvsForOpening(snap);
@@ -132,6 +146,35 @@ const MatchInner: Component<{
     ccIntel = updateCcIntelForSnap(ccIntel, snap);
     kvs = updateKvsForSnap(kvs, snap);
   };
+
+  /**
+   * The two folds that read the resolve's own account of a ply — a marine that
+   * only flew through our vision, and a shot fired from the dark — run off
+   * `settledResolves`, which the reducer appends to exactly once per settled
+   * ply (turn-open chip plies included). A cursor drains it so a re-render can
+   * never fold the same ply twice, and the arena folds at the same two points.
+   *
+   * Declared *before* `<BaseScreen>` so it is created first and therefore runs
+   * before the effect that asks the Adjutant to plan: a fold that landed after
+   * would leave the opponent planning one ply behind its own memory. Keep it
+   * here if this component is ever reorganised.
+   */
+  createEffect(() => {
+    const settled = store.shell().settledResolves;
+    if (settled.length <= foldedResolves) return;
+    if (props.opponent !== "strategic") {
+      // Nothing reads these memories under the naive script; skip the work
+      // rather than folding two vision passes per side per ply for no one.
+      foldedResolves = settled.length;
+      return;
+    }
+    for (const esr of settled.slice(foldedResolves)) {
+      const witness = witnessFromEndTurn(esr);
+      runnerMemory = updateRunnersForSnap(runnerMemory, esr.next, witness);
+      attackerMemory = updateAttackersForSnap(attackerMemory, esr.next, witness);
+    }
+    foldedResolves = settled.length;
+  });
 
   // Keep SCFEN + playerColor warm in localStorage while this match is live.
   createEffect(() => {
@@ -193,6 +236,8 @@ const MatchInner: Component<{
           storedFor,
           kvs: kvs?.perSide[color],
           ccIntel: ccIntel.perSide[color],
+          runnerMemory: runnerMemory.perSide[color],
+          attackerMemory: attackerMemory.perSide[color],
         });
       }}
     />

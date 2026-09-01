@@ -1,3 +1,4 @@
+// SPEC: _spec/apps/starchess/core/adjutant/strategic/strategic-economy.puml
 /**
  * Deploy lookahead over a 5-turn horizon — budget-aware sequence scoring.
  *
@@ -12,8 +13,6 @@
  * projected budget is 11 in 3 turns (marine+marine+ship vs hoverbike+mecha+tank).
  *
  * Deterministic, pure, no I/O.
- *
- * // SPEC: _spec/apps/starchess/core/adjutant/strategic/strategic-economy.puml
  */
 
 import { UNIT_COST, MAX_STORED_MATERIAL, incomeForTurn } from "../../rules/constants";

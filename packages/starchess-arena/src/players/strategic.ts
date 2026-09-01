@@ -88,6 +88,8 @@ export const strategicScript = (
         kvs: ctx.kvs,
         ccIntel: ctx.ccIntel,
         lastCCProbe: ctx.lastCCProbe,
+        runnerMemory: ctx.runnerMemory,
+        attackerMemory: ctx.attackerMemory,
         rng: ctx.rng,
       };
 

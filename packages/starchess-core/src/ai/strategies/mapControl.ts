@@ -1,3 +1,4 @@
+// SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
 /**
  * Map control — territory, and the Marine advance that converts it.
  *
@@ -5,8 +6,6 @@
  * diagonals, the fogged-Command Center (CC) search vector, and promotion (rank progress plus
  * the ≤2-step rush): a Marine walking up the board *is* territory being taken,
  * so it is weighed on the same scale rather than as a separate concern.
- *
- * // SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
  */
 
 import { findKing, isSquareAttackedBy } from "../../board/placement";

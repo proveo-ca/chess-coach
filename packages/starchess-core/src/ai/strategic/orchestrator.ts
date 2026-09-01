@@ -1,3 +1,4 @@
+// SPEC: _spec/apps/starchess/core/adjutant/strategic/strategic-architecture.puml
 /**
  * Adjutant (SCRIPT STRATEGIC) — orchestrator for the strategic difficulty.
  *
@@ -16,8 +17,6 @@
  * Deterministic. Returns the input snapshot untouched in the same situations
  * as naive (not our planning phase, our side already queued, no Command Center (CC), or
  * nothing scored).
- *
- * // SPEC: _spec/apps/starchess/core/adjutant/strategic/strategic-architecture.puml
  */
 
 import { addScAction, AddScActionError } from "../../commands/queue-action";

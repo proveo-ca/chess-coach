@@ -1,8 +1,6 @@
+// SPEC: _spec/apps/starchess/core/adjutant/strategic/strategic-architecture.puml, _spec/apps/starchess/core/adjutant/cc-focus.puml
 /**
  * Captures — strategic version, fog-honest about where the Command Center is.
- *
- * // SPEC: _spec/apps/starchess/core/adjutant/strategic/strategic-architecture.puml
- * // SPEC: _spec/apps/starchess/core/adjutant/cc-focus.puml
  */
 
 import type { Square } from "chess.js";

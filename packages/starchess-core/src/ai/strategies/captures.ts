@@ -1,3 +1,4 @@
+// SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
 /**
  * Captures — taking material, and the Charon strike that removes a BattleShip
  * without moving the Mecha.
@@ -5,8 +6,6 @@
  * Trade policy: equal material is always worth taking; up-trades scale with the
  * gap; down-trades stay barely tempting so they only win when another concern
  * (survival, checks) is already paying for the move.
- *
- * // SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
  */
 
 import { charonTargetQueenFromPlacement } from "../../rules/specials/bishopCharon";

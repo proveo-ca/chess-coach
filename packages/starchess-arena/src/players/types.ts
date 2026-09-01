@@ -10,10 +10,10 @@
  * // SPEC: _spec/packages/starchess-arena/arena.puml
  */
 
-import type { CCIntel, Rng } from "@chess-coach/starchess-core";
+import type { AttackerMemory, CCIntel, RunnerMemory, Rng } from "@chess-coach/starchess-core";
 import type { KnownVsSeen, PieceColor, ScFenSnapshot, Square } from "@chess-coach/starchess-core";
 
-export type { PieceColor, ScFenSnapshot, KnownVsSeen, CCIntel };
+export type { PieceColor, ScFenSnapshot, KnownVsSeen, CCIntel, RunnerMemory, AttackerMemory };
 
 /** Per-call planning context for one side, one open planning window. */
 export type SideContext = {
@@ -30,6 +30,10 @@ export type SideContext = {
   /** CC search state — the host threads the previous CCIntel and last Hoverbike probe. */
   ccIntel?: CCIntel | null;
   lastCCProbe?: { to: Square; empty: boolean } | null;
+  /** Memory of enemy marines that ran past this side's vision. */
+  runnerMemory?: RunnerMemory | null;
+  /** Who fired on this side's Command Center, and from where. */
+  attackerMemory?: AttackerMemory | null;
   /**
    * Wall-clock engine budget for this planning window (0 = engine off /
    * deterministic even when a feed is attached). The runner owns the budget

@@ -1,8 +1,6 @@
+// SPEC: _spec/apps/starchess/core/adjutant/strategic/strategic-architecture.puml, _spec/apps/starchess/core/adjutant/weight-ladder.puml
 /**
  * Threats — strategic version, aware of a check one move before it lands.
- *
- * // SPEC: _spec/apps/starchess/core/adjutant/strategic/strategic-architecture.puml
- * // SPEC: _spec/apps/starchess/core/adjutant/weight-ladder.puml
  */
 
 import { chebyshev } from "../../context";

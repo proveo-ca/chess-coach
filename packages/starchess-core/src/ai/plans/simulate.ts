@@ -1,10 +1,9 @@
+// SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
 /**
  * Plan simulation — what the board looks like after a candidate resolves.
  *
  * Used for exactly one question the strategies cannot answer on their own:
  * does this plan leave our Command Center (CC) off every chip-capable ray?
- *
- * // SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
  */
 
 import type { Square } from "chess.js";

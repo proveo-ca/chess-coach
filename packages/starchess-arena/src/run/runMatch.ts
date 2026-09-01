@@ -36,8 +36,13 @@ import {
   mulberry32,
   seedCcIntelForOpening,
   seedKvsForOpening,
+  seedAttackerMemory,
+  seedRunnerMemory,
+  updateAttackersForSnap,
   updateCcIntelForSnap,
   updateKvsForSnap,
+  updateRunnersForSnap,
+  witnessFromEndTurn,
   type KvsState,
   normalizeSnapGas,
   parseScFen,
@@ -130,6 +135,8 @@ export const runMatch = async (options: ArenaRunOptions): Promise<ArenaRun> => {
   let bank = seedBankForOpening(snap);
   let kvs = seedKvsForOpening(snap);
   let ccIntel = seedCcIntelForOpening();
+  let runnerMemory = seedRunnerMemory();
+  let attackerMemory = seedAttackerMemory();
 
   const scfens: string[] = [formatScFen(normalizeSnapGas(snap))];
   const resolves: EndScTurnResult[] = [];
@@ -149,6 +156,10 @@ export const runMatch = async (options: ArenaRunOptions): Promise<ArenaRun> => {
         bankTrail.push({ ...bank });
         kvs = updateKvsForSnap(kvs, postChip);
         ccIntel = updateCcIntelForSnap(ccIntel, postChip);
+        // The chip's own account of itself: a turn-open shot names its shooter.
+        const chipWitness = witnessFromEndTurn(opened.asResolve);
+        runnerMemory = updateRunnersForSnap(runnerMemory, postChip, chipWitness);
+        attackerMemory = updateAttackersForSnap(attackerMemory, postChip, chipWitness);
         snap = postChip;
         outcome = scOutcome(snap);
         if (outcome !== null) {
@@ -175,6 +186,8 @@ export const runMatch = async (options: ArenaRunOptions): Promise<ArenaRun> => {
           bank,
           kvs: kvs.perSide[color],
           ccIntel: ccIntel.perSide[color],
+          runnerMemory: runnerMemory.perSide[color],
+          attackerMemory: attackerMemory.perSide[color],
           // 0 when no feed/budget — keeps the run deterministic.
           movetimeMs: feed && movetimeMs > 0 ? movetimeMs : 0,
           rng: rngs[color],
@@ -196,6 +209,9 @@ export const runMatch = async (options: ArenaRunOptions): Promise<ArenaRun> => {
       bankTrail.push({ ...bank });
       kvs = updateKvsForSnap(kvs, esr.next);
       ccIntel = updateCcIntelForSnap(ccIntel, esr.next);
+      const witness = witnessFromEndTurn(esr);
+      runnerMemory = updateRunnersForSnap(runnerMemory, esr.next, witness);
+      attackerMemory = updateAttackersForSnap(attackerMemory, esr.next, witness);
       snap = esr.next;
 
       outcome = scOutcome(snap);

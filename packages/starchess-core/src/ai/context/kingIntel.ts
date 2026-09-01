@@ -1,3 +1,4 @@
+// SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
 /**
  * Infer a Command Center (CC)-search focus from fog-visible enemy units only.
  * Hints (strong → weak):
@@ -7,8 +8,6 @@
  *  2. Marine clumps — dense shelter reinforces those files.
  *  3. Deployed non-marines — Command Center drops beside the Command Center (CC).
  * With no cues, fall back to enemy home (`e2` / `e7`).
- *
- * // SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
  */
 
 import type { Square } from "chess.js";

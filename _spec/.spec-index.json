@@ -29,7 +29,9 @@
       "covers": [
         "packages/starchess-core/src/ai/strategies/checks.ts",
         "packages/starchess-core/src/ai/strategic/strategies/checks.ts",
+        "packages/starchess-core/src/ai/strategic/strategies/captures.ts",
         "packages/starchess-core/src/ai/context/ccIntel.ts",
+        "packages/starchess-core/src/ai/strategic/tracking.ts",
         "packages/starchess-core/src/ai/context/kingIntel.ts"
       ],
       "fingerprint": null
@@ -44,6 +46,8 @@
         "packages/starchess-core/src/ai/strategies/economy.ts",
         "packages/starchess-core/src/ai/context/posture.ts",
         "packages/starchess-core/src/ai/strategic/strategies/checks.ts",
+        "packages/starchess-core/src/ai/strategic/strategies/runners.ts",
+        "packages/starchess-core/src/ai/strategic/strategies/attackers.ts",
         "packages/starchess-core/src/ai/strategic/strategies/threats.ts",
         "packages/starchess-core/src/ai/strategic/deployLookahead.ts",
         "packages/starchess-core/src/__tests__/tactics/weightOrdering.test.ts"
@@ -66,6 +70,39 @@
         "packages/starchess-core/src/ai/strategic/**",
         "packages/starchess-core/src/ai/context/index.ts",
         "packages/starchess-core/src/__tests__/strategic/**"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/apps/starchess/core/adjutant/strategic/promotion-defense.puml",
+      "covers": [
+        "packages/starchess-core/src/ai/strategic/runners.ts",
+        "packages/starchess-core/src/ai/strategic/strategies/runners.ts",
+        "packages/starchess-core/src/ai/strategic/context.ts",
+        "packages/starchess-core/src/ai/strategic/strategies/economy.ts",
+        "packages/starchess-core/src/ai/strategic/tracking.ts",
+        "packages/starchess-core/src/ai/strategic/witness.ts",
+        "packages/starchess-core/src/ai/context/pawns.ts",
+        "packages/starchess-core/src/__tests__/strategic/runners.test.ts",
+        "packages/starchess-core/src/__tests__/strategic/runnerMemory.test.ts",
+        "packages/starchess-core/src/__tests__/strategic/witness.test.ts",
+        "packages/starchess-arena/src/run/runMatch.ts",
+        "apps/starchess/src/screens/SingleScreen.tsx"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/apps/starchess/core/adjutant/strategic/cc-retaliation.puml",
+      "covers": [
+        "packages/starchess-core/src/ai/strategic/attackers.ts",
+        "packages/starchess-core/src/ai/strategic/strategies/attackers.ts",
+        "packages/starchess-core/src/ai/strategic/witness.ts",
+        "packages/starchess-core/src/ai/strategic/tracking.ts",
+        "packages/starchess-core/src/ai/strategic/strategies/economy.ts",
+        "packages/starchess-core/src/__tests__/strategic/attackers.test.ts",
+        "packages/starchess-core/src/__tests__/strategic/witness.test.ts",
+        "packages/starchess-arena/src/run/runMatch.ts",
+        "apps/starchess/src/screens/SingleScreen.tsx"
       ],
       "fingerprint": null
     },

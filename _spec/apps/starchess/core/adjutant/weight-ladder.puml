@@ -9,10 +9,14 @@
 ' covers: packages/starchess-core/src/ai/strategies/economy.ts
 ' covers: packages/starchess-core/src/ai/context/posture.ts
 ' covers: packages/starchess-core/src/ai/strategic/strategies/checks.ts
+' covers: packages/starchess-core/src/ai/strategic/strategies/runners.ts
+' covers: packages/starchess-core/src/ai/strategic/strategies/attackers.ts
 ' covers: packages/starchess-core/src/ai/strategic/strategies/threats.ts
 ' covers: packages/starchess-core/src/ai/strategic/deployLookahead.ts
 ' covers: packages/starchess-core/src/__tests__/tactics/weightOrdering.test.ts
 ' see also: cc-focus.puml (which square the CC weights aim at)
+' see also: strategic/promotion-defense.puml (the runner tiers in context)
+' see also: strategic/cc-retaliation.puml (the retaliation tier in context)
 ' see also: strategic/strategic-economy.puml (the economy dials in context)
 !include ../../../../themes/proveo.puml
 
@@ -23,21 +27,27 @@ title StarChess · Adjutant weight ladder — one roster, one enforcing test
 
 package "tiers, high to low" {
   component "**absolute survival**\nnever posture-scaled\n13_500 … 1_500" as T1 <<app>>
+  component "**retaliation**\ntake what shot the CC\n9_000 (−40 × cost)" as T12 <<app>>
+  component "**promotion race**\nstop an enemy runner\n7_000 … 600" as T15 <<app>>
   component "**Command Center pressure**\nstrategic checks + promotion rush\n6_000 … 450" as T2 <<app>>
   component "**material**\ncaptures / trades\n2_500 … 400" as T3 <<app>>
   component "**economy dials**\ndeploy mix + horizon\n3_500 … 600" as T4 <<app>>
   component "**posture weights**\nthe only contextual dial\n3_500 … 0" as T5 <<db>>
 }
 
-component "__tests__/tactics/weightOrdering.test.ts\n10 cases — the whole enforcement" as TEST <<async>>
+component "__tests__/tactics/weightOrdering.test.ts\n19 cases — the whole enforcement" as TEST <<async>>
 
-T1 -[hidden]- T2
+T1 -[hidden]- T12
+T12 -[hidden]- T15
+T15 -[hidden]- T2
 T2 -[hidden]- T3
 T3 -[hidden]- T4
 T4 -[hidden]- T5
 
 TEST ARROW_MAIN T1 : 3 cases
-TEST ARROW_MAIN T2 : 4 cases
+TEST ARROW_MAIN T12 : 3 cases
+TEST ARROW_MAIN T15 : 5 cases
+TEST ARROW_MAIN T2 : 5 cases
 TEST ARROW_MAIN T3 : 3 cases
 TEST -[#CB2000,dashed]-> T4 : **no case** — unenforced
 TEST -[#CB2000,dashed]-> T5 : **no case** — unenforced
@@ -78,6 +88,56 @@ note as N_T2
   the difficulty setting rather than an oversight.
 end note
 
+note as N_T12
+  **Tier 1.2 — retaliation** (""ai/strategic/strategies/attackers.ts""),
+  strategic only. Full model in ""strategic/cc-retaliation.puml"":
+
+  | weight | value | fires on |
+  | ""AVENGE_CC_SHOT"" | 9_000 | a **capture** landing on a square something fired on our CC from |
+  | ""AVENGE_THRIFT"" | 40 | × the answering unit's ""UNIT_COST"", subtracted |
+
+  **It interleaves with tier 1 rather than sitting under it.** 9_000 is below
+  ""KING_SAFETY"" 10_000 and ""DEPLOY_ATTACK_SURVIVAL"" 13_500, but *above*
+  ""QUEEN_ESCAPE"" 8_000 — so the debt outbids saving the BattleShip, which the
+  promotion race deliberately does not (invariant 12). Thrift only chooses
+  *with what*: at 40 × 9 a BattleShip answer still keeps 8_640, above the tier
+  below, so no unit can price itself out of the job.
+
+  The deploy crush collects the same debt through ""avengeDeployValue"", which is
+  why it is not a tier-4 dial — but it subtracts ""(trade + AVENGE_THRIFT) ×
+  cost"", because the deploy loop's own ""trade × (1 + cost)"" otherwise out-runs
+  a 40/cost thrift and makes the ring answer with the dearest unit it can
+  afford. A thrift term on the deploy path must always be read against that
+  slope (""strategic/cc-retaliation.puml"").
+end note
+
+note as N_T15
+  **Tier 1.5 — the promotion race**
+  (""ai/strategic/strategies/runners.ts""), strategic only; no naive twin
+  exists, because naive reads promotion distance about *our* marines only.
+  Full model in ""strategic/promotion-defense.puml"":
+
+  | weight | value | fires on |
+  | ""RUNNER_STOP_CRITICAL"" | 7_000 | enemy marine 1–2 squares out — it promotes on their next turn |
+  | ""RUNNER_STOP_SERIOUS"" | 5_500 | 3–4 squares out — one turn of slack left |
+  | ""RUNNER_STOP_WATCH"" | 600 | 5–6 squares out — a tie-break |
+
+  The tier is multiplied by an **answer share** (capture 1 — 0.8 on a runner we
+  only remember · block 0.8 · sidestep ×0.5 · hanging 0.3 · cover 0.35 ·
+  abandon −0.8, waived when the blocker is fleeing fire), damped to 0.25
+  while something already contains the runner, and scaled by the ghost's
+  confidence when the runner is only remembered rather than seen
+  (""runnerStake"" — see ""strategic/promotion-defense.puml"").
+  ""RUNNER_SEEK_DAMP"" 0.25 is not
+  a score but a **dial on tier 5**: while an urgent runner is on the board,
+  ""buildStrategicCtx"" cuts ""seekFocus"", which is the one posture weight that
+  multiplies per square and would otherwise out-bank any flat constant here.
+
+  Placement between tiers 1 and 2 is the deliberate claim: the last turn on
+  which a promotion can be stopped outranks a check we could repeat, but never
+  outranks saving the BattleShip or the Command Center.
+end note
+
 note as N_T34
   **Tier 3 — material** (""ai/strategies/captures.ts""):
 
@@ -96,8 +156,11 @@ note as N_T34
   ""BISHOP_VS_QUEEN"" 3_500 · ""BISHOP_FIRST"" 2_200 · ""ROOK_AFTER_KNIGHTS"" 900 ·
   ""MAX_KNIGHTS"" 2 (a cap, not a weight). Strategic
   (""ai/strategic/strategies/economy.ts""): ""QUEEN_FINISH"" 3_200 ·
-  ""HIDDEN_GUARD"" 1_450 · ""SHIP_WARP_READY"" 800, plus ""SHIP_HORIZON_BONUS"" 600
-  over ""HORIZON"" 5 from ""deployLookahead.ts"".
+  ""HIDDEN_GUARD"" 1_450 · ""RUNNER_GUARD"" 1_450 · ""SHIP_WARP_READY"" 800, plus
+  ""SHIP_HORIZON_BONUS"" 600 over ""HORIZON"" 5 from ""deployLookahead.ts"". The two
+  guards are equal today and deliberately separate: they fire on different
+  evidence (hidden material vs a runner we can account for), and the tank
+  collects one or the other, never both.
 end note
 
 note as N_T5
@@ -123,6 +186,8 @@ note as N_T5
   constant instead of a posture row.
 end note
 
+T12 .. N_T12
+T15 .. N_T15
 T2 .. N_T2
 T3 .. N_T34
 T5 .. N_T5
@@ -132,14 +197,17 @@ note bottom of TEST
   strategy's score for a move, so an ordering between two constants only
   decides the outcome when nothing else contributes. Two weights that stack on
   one move can beat a higher tier, which is how the Marine double-count in
-  ""cc-focus.puml"" inverts an invariant this file's test still passes.
+  ""cc-focus.puml"" inverts an invariant this file's test still passes — twice
+  over now: that stack is 11_000 effective, so it also outbids tier 1.2
+  retaliation at 9_000 (""strategic/cc-retaliation.puml"" records the exception).
 
-  **The ten enforced invariants.** They used to be prose beside the constants
+  **The eighteen enforced invariants**, over 19 cases — invariant 4 is asserted
+  twice, once stacked and once bare. They used to be prose beside the constants
   ("must outrank mapControl (e2 5104 vs c2 102)"), where nothing checked them
   and a retune could silently invert them:
 
   | # | invariant |
-  | 1 | every tier-2/3 weight < ""KING_SAFETY"" (12 constants swept) |
+  | 1 | every tier-1.5/2/3 weight < ""KING_SAFETY"" (14 constants swept) |
   | 2 | ""DEPLOY_ATTACK_SURVIVAL"" > ""KING_SAFETY"" > ""BACKRANK_ESCAPE"" |
   | 3 | ""QUEEN_ESCAPE"" > ""DEFEND_UNIT"" and > ""QUEEN_THREAT_KING"" |
   | 4 | ""PAWN_CHECK_CC_GUESS"" ≥ ""NEAR_PROMOTE_RUSH"" — the old comment's claim |
@@ -149,6 +217,14 @@ note bottom of TEST
   | 8 | ""SAC_FOR_CC"" < ""SAC_FOR_CC_WINNING"" |
   | 9 | ""SAC_FOR_CC"" < ""HUNT_UNDEFENDED_PAWN"" |
   | 10 | every guess weight ≤ its seen twin |
+  | 11 | ""RUNNER_STOP_CRITICAL"" > both *seen* check weights — the last chance to stop a promotion beats a repeatable check |
+  | 12 | ""RUNNER_STOP_CRITICAL"" < ""QUEEN_ESCAPE"" — and so below all of tier 1 |
+  | 13 | ""RUNNER_STOP_SERIOUS"" > ""ATTACK_KING_GUESS"" and > ""EQUAL_TRADE_ATTACK"" — a real runner beats speculation and beats ordinary material |
+  | 14 | ""RUNNER_STOP_SERIOUS"" < both *guess* check weights — a real check still wins the turn |
+  | 15 | ""RUNNER_STOP_WATCH"" < ""HUNT_UNDEFENDED_PAWN"" — a distant runner is a tie-break, not a plan |
+  | 16 | ""AVENGE_CC_SHOT"" < ""KING_SAFETY"" and < ""DEPLOY_ATTACK_SURVIVAL"" — the CC's own safety outranks avenging it |
+  | 17 | ""AVENGE_CC_SHOT"" > every other concern the turn offers (6 constants swept, ""QUEEN_ESCAPE"" included) |
+  | 18 | ""AVENGE_CC_SHOT"" − ""AVENGE_THRIFT"" × 9 > ""RUNNER_STOP_CRITICAL"" — even spending a BattleShip, thrift never refuses the job |
 
   Invariant 4 is the tightest in the ladder: 6_000 ≥ 6_000 holds by equality,
   so any cut to the Marine check breaks it immediately. That is deliberate —

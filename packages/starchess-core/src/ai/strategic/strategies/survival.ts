@@ -1,9 +1,7 @@
+// SPEC: _spec/apps/starchess/core/adjutant/strategic/strategic-architecture.puml, _spec/apps/starchess/core/adjutant/cc-focus.puml
 /**
  * Survival — strategic version. Only the Tactical Jump differs from naive: it
  * aims at the fogged Command Center guess rather than the true square.
- *
- * // SPEC: _spec/apps/starchess/core/adjutant/strategic/strategic-architecture.puml
- * // SPEC: _spec/apps/starchess/core/adjutant/cc-focus.puml
  */
 
 import type { Square } from "chess.js";

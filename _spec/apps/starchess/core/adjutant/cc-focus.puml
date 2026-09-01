@@ -5,11 +5,14 @@
 ' isGuess bug it replaced, and the two open defects that survive it.
 ' covers: packages/starchess-core/src/ai/strategies/checks.ts
 ' covers: packages/starchess-core/src/ai/strategic/strategies/checks.ts
+' covers: packages/starchess-core/src/ai/strategic/strategies/captures.ts
 ' covers: packages/starchess-core/src/ai/context/ccIntel.ts
+' covers: packages/starchess-core/src/ai/strategic/tracking.ts
 ' covers: packages/starchess-core/src/ai/context/kingIntel.ts
 ' see also: weight-ladder.puml (the values these blocks add)
 ' see also: strategic/strategic-architecture.puml (where the ctx is built)
-' see also: _spec/packages/starchess-arena/arena.puml (the arena drop, below)
+' see also: strategic/promotion-defense.puml (the same fog rule, for runners)
+' see also: _spec/packages/starchess-arena/arena.puml (the arena's threading)
 !include ../../../../themes/proveo.puml
 
 skinparam packageStyle rectangle
@@ -31,6 +34,7 @@ package "naive — omniscient" {
 package "strategic — fog-honest" {
   component "ai/strategic/strategies/checks.ts\nisGuess = !vision.enemyKingVisible\ntargetKing = isGuess ? intel.focus : enemyKing" as SCHK <<app>>
   component "ai/strategic/strategies/economy.ts\nSHIP_WARP_READY reads ctx.ccIntel.focus" as SECO <<app>>
+  component "ai/strategic/strategies/captures.ts\ntargetCC = isGuess ? ccIntel.focus : enemyKing\n+ enemyBankCeiling(turn) — no real-bank read" as SCAP <<app>>
 }
 
 EK ARROW_MAIN NCHK : every per-type check bonus
@@ -38,8 +42,9 @@ VIS ARROW_OPTIONAL NCHK : gates only attackKing / chaseKing
 VIS ARROW_MAIN SCHK : decides guess vs seen
 INTEL ARROW_MAIN SCHK : focus + strength when fogged
 EK ARROW_OPTIONAL SCHK : only on the **seen** branch
-CCI ARROW_MAIN SECO : the posterior's **only** consumer
-CCI -[#CB2000,dashed]-> SCHK : **not read** — see open defect 1
+CCI ARROW_MAIN SECO : posterior consumer 1 — the warp bonus
+CCI ARROW_MAIN SCAP : posterior consumer 2 — the sac-for-CC target
+CCI -[#CB2000,dashed]-> SCHK : **not read** — checks aims at the\none-turn centroid instead (see the table)
 
 note right of SCHK
   **The decided contract: fog-honest strategic, omniscient naive.** The
@@ -63,12 +68,14 @@ note as N_TABLE
   | naive ""strategies/checks.ts"" | the **true** square | the true square | ""enemyKing"" — omniscient, documented and kept |
   | naive posture terms (""attackKing"" / ""chaseKing"") | not scored | scored | explicitly gated on ""vision.enemyKingVisible"" |
   | strategic ""strategic/strategies/checks.ts"" | ""intel.focus"" (this turn's centroid) | ""enemyKing"" | ""vision.enemyKingVisible"" |
-  | strategic economy ship bonus | ""ccIntel.focus"" (posterior) | ""ccIntel.focus"" | probe exclusions accumulated across plies |
+  | strategic ""strategic/strategies/captures.ts"" | ""ccIntel.focus"" (posterior) | ""enemyKing"" | ""vision.enemyKingVisible"" |
+  | strategic economy ship bonus | ""ccIntel.focus"" (posterior) | ""ccIntel.focus"" | exclusions accumulated across plies |
 
   So the strategic layer aims at **two different guesses** depending on which
-  strategy is asking: ""checks"" uses the one-turn centroid, ""economy"" uses the
-  cross-ply posterior. Only the posterior can learn from a Hoverbike probe
-  that proved a square empty.
+  strategy is asking: ""checks"" uses the one-turn centroid, ""captures"" and
+  ""economy"" use the cross-ply posterior. Only the posterior *could* learn from
+  a Hoverbike probe that proved a square empty — and no host feeds it one; see
+  the open defect below.
 end note
 
 note as N_BUG
@@ -99,7 +106,8 @@ note as N_OPEN
 
   <color:#1A7F37>**CLOSED — the posterior now survives a ply, in both hosts.**</color>
   The folds are one module, ""ai/strategic/tracking.ts"" in the **core**:
-  ""seedCcIntelForOpening"" / ""updateCcIntelForSnap"" and their ""kvs"" twins.
+  ""seedCcIntelForOpening"" / ""updateCcIntelForSnap"" and their ""kvs"" and
+  runner-memory twins. ""players/strategic.ts:85-93"" forwards all three.
   The arena runner threads them per settled ply; ""SingleScreen"" folds once per
   turn for the ``strategic`` opponent. They used to live in
   ""packages/starchess-arena/src/players/{ccIntel,kvs}.ts"", where the app could
@@ -125,19 +133,45 @@ note as N_OPEN
   ""weightOrdering.test.ts"" passes because it compares the raw constants
   (6_000 ≤ 6_000); it cannot see the sum. **Not fixed on this branch.**
 
+  The 11_000 total now inverts a second ordering: it outbids
+  ""AVENGE_CC_SHOT"" 9_000, so the one exception to "take whatever shot our
+  Command Center" is this stack. ""strategic/cc-retaliation.puml"" records it as
+  that concern's open note and points the fix back here — raising the
+  retaliation constant over 11_000 would put it above ""KING_SAFETY"".
+
   The Mecha diagonal block overlaps ""attackWeight"" the same way, but that
   stacking is documented as intentional in the naive layer ("worth a second
   diagonal's weight"), so it is listed here as shape, not as a defect.
 
-  **Open defect 3 — the enemy mineral bank leaks past the fog.**
+  <color:#1A7F37>**CLOSED — the enemy mineral bank no longer leaks.**</color>
   ""deployCovers"" documents that a fog-honest caller must pass an *estimated*
   enemy bank, because the figure decides which units the enemy could deploy.
-  ""ai/strategies/captures.ts"" passes ""ctx.storedFor(enemy)"" — the host's real
-  bank — which is correct for the omniscient naive build. But the strategic
-  build keeps ""captures"" in ""NAIVE_WITHOUT_CHECKS"", so the fog-honest script
-  reads the true enemy bank through it and bypasses the ""kvs"" ledger whose
-  whole job is estimating hidden enemy material. The CC *square* is fog-honest;
-  the enemy *economy* is not. **Not fixed on this branch.**
+  ""ai/strategies/captures.ts:72"" passes ""ctx.storedFor(enemy) +
+  incomeForTurn(...)"" — the host's real bank — which is correct for the
+  omniscient naive build. The strategic build no longer reaches it: it ships
+  its own ""strategic/strategies/captures.ts"" under the same ""captures"" id, so
+  the naive one is filtered out of ""SCORE_SOURCES"" entirely, and the strategic
+  one derives ""enemyBankCeiling(turn + 1)"" from the public income ledger
+  alone — an over-estimate, so a defended square is never mistaken for a free
+  one. The CC *square* and the enemy *economy* are now both fog-honest here.
+
+  <color:#CB2000>**Open defect 4 — the posterior folds on thinner vision than
+  the planner.**</color> ""ai/context/vision.ts:27"" and the runner fold
+  (""ai/strategic/runners.ts:345"") both ask ""getSideVision"" with
+  ""{ mines, rookModeFor: sieged ? "siege" : "tank" }"". ""tracking.ts:50""
+  (""updateCcIntelForSnap"") and ""tracking.ts:111"" (""visibleEnemyValue"") ask for
+  neither, so a sieged tank's 9×9 cone and our own mine tiles are dark to the
+  CC posterior and to the ""kvs"" scouted figure while being lit for everything
+  else. The posterior therefore fails to exclude squares the planner can see
+  are empty, and ""scouted"" undercounts. Pre-existing; **not fixed on this
+  branch**.
+
+  **The probe channel is dead in both hosts.** ""getCCBestGuess"" takes a
+  ""lastProbe"" ("a Hoverbike went to ""e8"" and found it empty") and
+  ""players/strategic.ts:90"" forwards ""ctx.lastCCProbe"" — but nothing writes
+  one: ""runMatch.ts"" leaves it off ""SideContext"" and calls
+  ""updateCcIntelForSnap(state, snap)"" with no probe, and ""SingleScreen"" does
+  the same. ""excluded"" therefore grows only from what vision already proves.
 end note
 
 SCHK .. N_OPEN
