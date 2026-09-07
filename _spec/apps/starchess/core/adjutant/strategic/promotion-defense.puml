@@ -142,6 +142,14 @@ note as N_ANSWERS
   occupied. An urgent runner also counts as ""defending"" — no ship-saving spree,
   ""RUNNER_GUARD"" tank on — and, when its square or path touches the ring, buys
   back the light drops ""preferHeavy"" would skip.
+
+  **Ally-occupied ring squares are legal answers too** (the Command Center may
+  crush its own non-king units; kings are skipped at generation). The deploy
+  loop prices the victim (mirror of the enemy-crush bonus), so
+  ""runnerDeployValue"" on an ally ""at"" / ""front"" / path square nets the
+  answer minus the ally — and a square holding some runner's last blocker
+  carries the abandon charge and never shields elsewhere (""ALLY_UPGRADE"" /
+  ""ALLY_SHIELD_PAWN"" / ""ALLY_SHIELD_SHIP"" in ""strategies/economy.ts"").
 end note
 
 note as N_MEMORY

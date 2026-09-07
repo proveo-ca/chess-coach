@@ -1,4 +1,6 @@
 import { expect, test } from "@playwright/test";
+
+import { settledPieceAt } from "./helpers";
 import type { Page } from "@playwright/test";
 
 /** Canonical deep link: baseURL is `/starchess/`. */
@@ -28,19 +30,39 @@ test.describe("StarChess gas-step animation", () => {
     const scfen =
       "SCFEN|4k3/8/8/8/8/8/4P3/4K3|11|33|P|G:12:22|Q:w:B=pawnDouble:e2:e3;b:";
     await gotoScfen(page, scfen);
-    await expect(page.locator("[data-square='e2'] img[alt='w p']")).toBeVisible();
+    await expect(settledPieceAt(page, "e2", "w p")).toBeVisible();
 
     await page.getByTestId("turn-end").click();
 
     // While the gas-step animates, a move overlay is present (from→to slide).
-    await expect(page.locator("[data-move-id][data-move-piece='p']")).toBeVisible({
-      timeout: 5_000,
-    });
+    // The stim hop lasts ~80ms — far below polling granularity — so watch for
+    // its insertion in-page instead of polling for visibility.
+    const sawMoveCue = await page.evaluate(
+      () =>
+        new Promise<boolean>((resolve) => {
+          const sel = "[data-move-id][data-move-piece='p']";
+          if (document.querySelector(sel)) {
+            resolve(true);
+            return;
+          }
+          const done = (v: boolean) => {
+            obs.disconnect();
+            window.clearTimeout(t);
+            resolve(v);
+          };
+          const obs = new MutationObserver(() => {
+            if (document.querySelector(sel)) done(true);
+          });
+          obs.observe(document.body, { childList: true, subtree: true });
+          const t = window.setTimeout(() => done(false), 8_000);
+        }),
+    );
+    expect(sawMoveCue).toBe(true);
 
     // Settled: pawn left e2 and occupies e3 (no silent teleport skip).
-    await expect(page.locator("[data-square='e3'] img[alt='w p']")).toBeVisible({
+    await expect(settledPieceAt(page, "e3", "w p")).toBeVisible({
       timeout: 15_000,
     });
-    await expect(page.locator("[data-square='e2'] img[alt='w p']")).toHaveCount(0);
+    await expect(settledPieceAt(page, "e2", "w p")).toHaveCount(0);
   });
 });

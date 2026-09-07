@@ -133,6 +133,20 @@ note as N_T15
   ""buildStrategicCtx"" cuts ""seekFocus"", which is the one posture weight that
   multiplies per square and would otherwise out-bank any flat constant here.
 
+  **Ally crush dials** (""ai/strategic/strategies/economy.ts"" deploy loop) —
+  the Command Center may replace its own non-king ring units, so the victim is
+  priced (mirror of the enemy-crush bonus) and only defense outbids an empty
+  square:
+
+  | weight | value | fires on |
+  | ""ALLY_UPGRADE"" | 500 | ring full + defending + heavier guard replaces the cheapest ally in place |
+  | ""ALLY_SHIELD_PAWN"" | 800 | fresh cover from the crush square onto a lit, threatened own near-promotion pawn (cheap victim, sole blockers exempt) |
+  | ""ALLY_SHIELD_SHIP"" | 1_200 | same cover onto a lit, threatened own ship |
+
+  Each dial — and their sum — sits below ""RUNNER_STOP_SERIOUS"": only
+  ""runnerDeployValue"" itself (already laddered) can lift an ally-crush into
+  the runner tiers, never the dials alone.
+
   Placement between tiers 1 and 2 is the deliberate claim: the last turn on
   which a promotion can be stopped outranks a check we could repeat, but never
   outranks saving the BattleShip or the Command Center.
@@ -225,6 +239,8 @@ note bottom of TEST
   | 16 | ""AVENGE_CC_SHOT"" < ""KING_SAFETY"" and < ""DEPLOY_ATTACK_SURVIVAL"" — the CC's own safety outranks avenging it |
   | 17 | ""AVENGE_CC_SHOT"" > every other concern the turn offers (6 constants swept, ""QUEEN_ESCAPE"" included) |
   | 18 | ""AVENGE_CC_SHOT"" − ""AVENGE_THRIFT"" × 9 > ""RUNNER_STOP_CRITICAL"" — even spending a BattleShip, thrift never refuses the job |
+  | 19 | ""ALLY_UPGRADE"" / ""ALLY_SHIELD_PAWN"" / ""ALLY_SHIELD_SHIP"" each < ""RUNNER_STOP_SERIOUS"", and ""ALLY_SHIELD_SHIP"" + ""ALLY_UPGRADE"" < ""RUNNER_STOP_SERIOUS"" — ally-crush dials nudge, never outbid a real runner tier |
+  | 20 | ""ALLY_SHIELD_SHIP"" + ""ALLY_UPGRADE"" < ""RUNNER_STOP_CRITICAL"" and ""ALLY_SHIELD_SHIP"" < ""AVENGE_CC_SHOT"" — ally dials alone never reach the last-chance tier or retaliation |
 
   Invariant 4 is the tightest in the ladder: 6_000 ≥ 6_000 holds by equality,
   so any cut to the Marine check breaks it immediately. That is deliberate —

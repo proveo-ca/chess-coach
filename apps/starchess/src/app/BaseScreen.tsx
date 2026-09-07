@@ -1,13 +1,6 @@
 // SPEC: _spec/apps/ui/responsiveness/rules.md, _spec/apps/starchess/screens.puml, _spec/apps/starchess/architecture/screen-entities.puml, _spec/apps/starchess/architecture/base-screen.puml, _spec/apps/starchess/core/board/planning-projection.puml, _spec/apps/starchess/core/engine-boundary.puml
 import {
-  UNIT_COST,
-  adjacentSquares,
-  charonTargetQueenFromPlacement,
-  findKing,
-  placementToMap,
-  spawnKingAnchor,
   type ScFenSnapshot,
-  type SpawnPiece,
   type StarChessColor,
 } from "@chess-coach/starchess-core";
 import type { Square } from "chess.js";
@@ -15,7 +8,7 @@ import { For, Show, createEffect, createMemo, createSignal, onCleanup, onMount }
 import type { Component } from "solid-js";
 import { Portal } from "solid-js/web";
 
-import { storedMaterial, viewerColor } from "~/app/matchEconomy";
+import { viewerColor } from "~/app/matchEconomy";
 import { useMatchStore } from "~/app/MatchStoreContext";
 import { canSubmit, outcomeLabel, readDisplayedSnapshot } from "~/app/selectors";
 import styles from "~/app/BaseScreen.module.css";
@@ -42,8 +35,13 @@ import { ResourceBar } from "~/presentation/hud/components/ResourceBar";
 import { ReviewTurnNav } from "~/components/atoms/ReviewTurnNav";
 import { TurnBar } from "~/presentation/hud/components/TurnBar";
 import { TurnBarSidebar } from "~/presentation/hud/components/TurnBarSidebar";
-import { pawnGasArm, specialTimingFor, tryQueue } from "~/presentation/specials/pawnGasArm";
-import { tacticalJumpTargets } from "~/presentation/specials/queenTacticalJump";
+import { specialTimingFor, tryQueue } from "~/presentation/specials/queue";
+import { createKingDeploy } from "~/presentation/specials/arms/kingDeploy";
+import { marineGasArm } from "~/presentation/specials/arms/marineGas";
+import { rookSiegeArm } from "~/presentation/specials/arms/rookSiege";
+import { knightMineArm } from "~/presentation/specials/arms/knightMine";
+import { bishopSnipeArm } from "~/presentation/specials/arms/bishopSnipe";
+import { queenJumpArm } from "~/presentation/specials/arms/queenJump";
 import { TUTORIAL_CAPABILITIES, setCapabilities } from "~/store/capabilitiesStore";
 import { resetReviewVisionFilter, reviewVisionFilter } from "~/store/reviewVisionStore";
 import type { BoardSkin, PieceSet } from "~/types/board";
@@ -98,8 +96,6 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
   const turnInSidebar = () => turnChrome() === "sidebar";
   const turnHidden = () => turnChrome() === "none";
 
-  const [spawnUnit, setSpawnUnit] = createSignal<SpawnPiece | null>(null);
-  const [spawnPhase, setSpawnPhase] = createSignal<"idle" | "modal" | "pick">("idle");
   const [overlayBox, setOverlayBox] = createSignal<OverlayBox | null>(null);
   const [exitOpen, setExitOpen] = createSignal(false);
   const dynamicMobile = useMediaQuery(DYNAMIC_MOBILE_MQ);
@@ -141,23 +137,14 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
     props.onExitToMenu?.();
   };
 
-  const activeKingSq = createMemo((): Square | null => {
-    const s = snap();
-    return findKing(placementToMap(s.placement), viewerColor(store));
-  });
-
-  const spawnAnchor = createMemo(() => {
-    const color = viewerColor(store);
-    const timing = specialTimingFor(snap().queue, color);
-    return spawnKingAnchor(snap(), color, timing);
-  });
-
-  const spawnAdjacent = createMemo(() => {
-    if (spawnPhase() !== "pick") return [] as Square[];
-    const { king, allyOccupied } = spawnAnchor();
-    if (!king) return [] as Square[];
-    return adjacentSquares(king, allyOccupied);
-  });
+  // King deploy flow lives in `presentation/specials/arms/kingDeploy.ts`.
+  // `syncOverlay` is a hoisted function declaration below, so the open
+  // callback can bind it even though the hook is created here (memos evaluate
+  // eagerly and must see a ready hook).
+  const afterOpen = () => requestAnimationFrame(() => requestAnimationFrame(syncOverlay));
+  const kd = createKingDeploy(store, snap, { onAfterOpen: afterOpen });
+  const spawnPhase = kd.spawnPhase;
+  const spawnAdjacent = kd.spawnAdjacent;
 
   const specialTargetSquares = createMemo((): Square[] => {
     const t = store.shell().targeting;
@@ -220,7 +207,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
     store.dispatch({ type: "CLEAR_PENDING_PROMOTION" });
   };
 
-  const syncOverlay = () => {
+  function syncOverlay() {
     const host = boardHost;
     if (!host) return;
     const el = findBoardGrid(host);
@@ -233,149 +220,29 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
       width: el.clientWidth,
       height: el.clientHeight,
     });
-  };
+  }
 
   const { onGasDeploy } = usePieceSpecialArm({
-    k: () => {
-      if (!activeKingSq()) {
-        store.dispatch({ type: "QUEUE_REJECT", message: "No command center on the board" });
-        return false;
-      }
-      setSpawnUnit(null);
-      setSpawnPhase("modal");
-      store.dispatch({
-        type: "QUEUE_REJECT",
-        message: `Pick a unit to deploy · minerals ${storedMaterial(store)}`,
-      });
-      return "pending"; // open modal; mark used only after spawn commits
-    },
-    r: (ctx) => {
-      const color = viewerColor(store);
-      const timing = specialTimingFor(snap().queue, color);
-      return tryQueue(
-        store,
-        { timing, kind: "rookSiege", color, from: ctx.square },
-        `Siege Tank toggle queued on ${ctx.square} · End to resolve`,
-      )
-        ? "armed"
-        : false;
-    },
-    n: (ctx) => {
-      const color = viewerColor(store);
-      const timing = specialTimingFor(snap().queue, color);
-      return tryQueue(
-        store,
-        { timing, kind: "knightMine", color, from: ctx.square, to: ctx.square },
-        `Spider Mine queued on ${ctx.square} · End to resolve`,
-      )
-        ? "armed"
-        : false;
-    },
-    p: (ctx) => pawnGasArm(store, snap(), ctx),
-    b: (ctx) => {
-      const color = viewerColor(store);
-      const queen = charonTargetQueenFromPlacement(snap().placement, ctx.square);
-      if (!queen) {
-        store.dispatch({
-          type: "QUEUE_REJECT",
-          message: "Charon Booster Missiles needs exactly one enemy queen on a diagonal",
-        });
-        return false;
-      }
-      setSpawnPhase("idle");
-      setSpawnUnit(null);
-      store.dispatch({
-        type: "OPEN_BISHOP_SNIPE",
-        color,
-        from: ctx.square,
-        to: queen,
-      });
-      requestAnimationFrame(() => requestAnimationFrame(syncOverlay));
-      return "pending";
-    },
-    q: (ctx) => {
-      const color = viewerColor(store);
-      const targets = tacticalJumpTargets(snap().placement, ctx.square, color, {
+    k: () => kd.openDeployModal(),
+    r: (ctx) => rookSiegeArm(store, snap(), ctx),
+    n: (ctx) => knightMineArm(store, snap(), ctx),
+    p: (ctx) => marineGasArm(store, snap(), ctx),
+    b: (ctx) =>
+      bishopSnipeArm(store, snap(), ctx, {
+        resetSpawn: kd.resetSpawn,
+        onAfterOpen: afterOpen,
+      }),
+    q: (ctx) =>
+      queenJumpArm(store, snap(), ctx, {
+        resetSpawn: kd.resetSpawn,
+        onAfterOpen: afterOpen,
         rookModeFor: rookModeForSieged(store.shell().siegedRooks),
-      });
-      if (targets.length === 0) {
-        store.dispatch({
-          type: "QUEUE_REJECT",
-          message: "Tactical Jump needs a visible empty square",
-        });
-        return false;
-      }
-      setSpawnPhase("idle");
-      setSpawnUnit(null);
-      store.dispatch({
-        type: "OPEN_QUEEN_WARP",
-        color,
-        from: ctx.square,
-        targets,
-      });
-      requestAnimationFrame(() => requestAnimationFrame(syncOverlay));
-      return "pending";
-    },
+      }),
   });
 
-  const onSelectSpawnUnit = (piece: SpawnPiece) => {
-    const cost = UNIT_COST[piece];
-    if (storedMaterial(store) < cost) {
-      store.dispatch({
-        type: "QUEUE_REJECT",
-        message: `Need ${cost} minerals (have ${storedMaterial(store)})`,
-      });
-      return;
-    }
-    setSpawnUnit(piece);
-    setSpawnPhase("pick");
-    store.dispatch({
-      type: "QUEUE_REJECT",
-      message: `Tap an adjacent empty square to deploy ${piece.toUpperCase()}`,
-    });
-    store.dispatch({
-      type: "OPEN_SPAWN",
-      color: viewerColor(store),
-      unit: piece,
-    });
-    requestAnimationFrame(() => requestAnimationFrame(syncOverlay));
-  };
-
-  const onCancelSpawn = () => {
-    setSpawnPhase("idle");
-    setSpawnUnit(null);
-    store.dispatch({ type: "CANCEL_TARGET" });
-  };
-
-  const deploySpawnAt = (to: Square) => {
-    const unit = spawnUnit();
-    const from = activeKingSq();
-    const color = viewerColor(store);
-    if (!unit || !from) return;
-    const cost = UNIT_COST[unit];
-    const before = store.shell().economies[color].stored;
-    store.dispatch({ type: "SPEND_STORED", color, amount: cost });
-    if (store.shell().economies[color].stored === before) {
-      store.dispatch({
-        type: "QUEUE_REJECT",
-        message: `Need ${cost} minerals (have ${storedMaterial(store)})`,
-      });
-      return;
-    }
-    const timing = specialTimingFor(snap().queue, color);
-    const ok = tryQueue(
-      store,
-      { timing, kind: "spawn", color, from, to, unit },
-      `Deploy ${unit.toUpperCase()} → ${to} queued · End to drop`,
-    );
-    if (!ok) {
-      store.dispatch({ type: "REFUND_STORED", color, amount: cost });
-      return;
-    }
-    store.dispatch({ type: "MARK_SPECIAL_USED", square: from });
-    setSpawnPhase("idle");
-    setSpawnUnit(null);
-  };
+  const onSelectSpawnUnit = kd.onSelectSpawnUnit;
+  const onCancelSpawn = kd.onCancelSpawn;
+  const deploySpawnAt = kd.deploySpawnAt;
 
   const commitBishopSnipe = (to: Square) => {
     const t = store.shell().targeting;
@@ -883,9 +750,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
               <GasRack
                 onDeploy={onGasDeploy}
                 onCancel={() => {
-                  setSpawnPhase("idle");
-                  setSpawnUnit(null);
-                  store.dispatch({ type: "CANCEL_TARGET" });
+                  onCancelSpawn();
                   store.dispatch({
                     type: "QUEUE_REJECT",
                     message: "Cancelled — canister returned",
@@ -956,9 +821,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
             <GasRack
               onDeploy={onGasDeploy}
               onCancel={() => {
-                setSpawnPhase("idle");
-                setSpawnUnit(null);
-                store.dispatch({ type: "CANCEL_TARGET" });
+                onCancelSpawn();
                 store.dispatch({
                   type: "QUEUE_REJECT",
                   message: "Cancelled — canister returned",

@@ -327,9 +327,14 @@ const applySpecial = (
     case "spawn": {
       if (!action.to || !action.unit) return { placement, mines };
       const occupant = placementToMap(placement).get(action.to);
+      // Kings are never crushable (validation rejects them); defense in depth
+      // so a bypassed queue can never delete a king via deploy.
+      if (occupant?.type === "k") {
+        throw new Error(`spawn cannot crush king on ${action.to}`);
+      }
       const deployed = { type: action.unit, color: action.color };
       const landed = placeUnit(placement, action.to, deployed);
-      // Deploy over ally is allowed — ally shows death as if enemy, deployed survives
+      // Deploy over ally or enemy non-kings — victim shows death, deployed survives
       const crush = occupant
         ? { victim: { type: occupant.type, color: occupant.color } }
         : {};

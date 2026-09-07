@@ -39,6 +39,11 @@ import {
   AVENGE_THRIFT,
 } from "../../ai/strategic/strategies/attackers";
 import {
+  ALLY_SHIELD_PAWN,
+  ALLY_SHIELD_SHIP,
+  ALLY_UPGRADE,
+} from "../../ai/strategic/strategies/economy";
+import {
   ATTACK_KING_GUESS,
   CHASE_KING_GUESS,
   PAWN_CHECK_CC_GUESS,
@@ -192,6 +197,30 @@ describe("an enemy runner sits between the check tier and the guess", () => {
   it("a runner still far off is a tie-break, not a plan", () => {
     expect(RUNNER_STOP_WATCH).toBeLessThan(HUNT_UNDEFENDED_PAWN);
     expect(RUNNER_STOP_WATCH).toBeLessThan(RUNNER_STOP_SERIOUS);
+  });
+});
+
+describe("ally-crush dials never outbid a real runner tier or retaliation", () => {
+  /**
+   * Deploying over our own ring units is priced below every tier that answers
+   * a seen threat: the dials only ever *nudge* an already-runner-relevant or
+   * shielding drop past an empty square, and their sum stays under
+   * RUNNER_STOP_SERIOUS — only `runnerDeployValue` itself (already laddered)
+   * can lift an ally-crush into those tiers.
+   */
+  it("each dial sits below the serious runner tier", () => {
+    for (const w of [ALLY_UPGRADE, ALLY_SHIELD_PAWN, ALLY_SHIELD_SHIP]) {
+      expect(w).toBeLessThan(RUNNER_STOP_SERIOUS);
+    }
+  });
+
+  it("...below retaliation, and combined still below the serious tier", () => {
+    expect(ALLY_SHIELD_SHIP).toBeLessThan(AVENGE_CC_SHOT);
+    expect(ALLY_SHIELD_SHIP + ALLY_UPGRADE).toBeLessThan(RUNNER_STOP_SERIOUS);
+  });
+
+  it("...and the ally dials alone never reach the last-chance tier", () => {
+    expect(ALLY_SHIELD_SHIP + ALLY_UPGRADE).toBeLessThan(RUNNER_STOP_CRITICAL);
   });
 });
 

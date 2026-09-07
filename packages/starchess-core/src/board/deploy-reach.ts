@@ -44,7 +44,9 @@ export const deployTargets = (q: DeployReachQuery): Square[] => {
     if (hostileMineOn(q.mines, q.color, at)) return false;
     const occupant = q.map.get(at);
     if (!occupant) return true;
-    return occupant.color !== q.color && occupant.type !== "k";
+    // Ally and enemy non-kings are crushable (deployed replaces occupant).
+    // Kings are never crushable.
+    return occupant.type !== "k";
   });
 };
 

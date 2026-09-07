@@ -123,11 +123,11 @@ note as N_LANDINGS
   <color:#CB2000>**OPEN — four derivations of one rule.**</color>
   "Which ring squares may a deploy land on" is answered in four places, and
   only the first matches the validator (""rules/specials/adjacent.ts"" +
-  ""rules/validation.ts"": own colour blocked, **any** King blocked, an enemy
-  non-King crushed):
+  ""rules/validation.ts"": only King squares blocked, ally and enemy
+  non-Kings crushed):
 
   | site | filter | own colour | enemy non-King | enemy CC | verdict |
-  | ""board/deploy-reach.ts"" ""deployTargets"" | colour + King test | blocked | **kept** | blocked | correct |
+  | ""board/deploy-reach.ts"" ""deployTargets"" | King test only | **kept** (non-King) | **kept** | blocked | correct |
   | ""ai/strategies/economy.ts"" ""deploys"" (naive) | ""!map.has(at)"" | blocked | **blocked** | blocked | too strict |
   | ""ai/strategic/strategies/economy.ts"" ""deploys"" | mine only | **kept** | kept | **kept** | too loose |
   | ""ai/strategic/deployLookahead.ts"" ""bestScoreForUnit"" | ""!map.has(at)"" | blocked | **blocked** | blocked | too strict |
@@ -143,8 +143,8 @@ note as N_LANDINGS
   The strategic generator's ring filter tests hostile mines and nothing else,
   so it is the "too loose" row above by omission rather than by intent. The
   binding statement of the rule is the validator; the executable one is
-  ""src/__tests__/deploy-reach.test.ts"", at the cases "keeps an enemy occupant
-  (the deploy crushes it) but drops our own" and "drops every King square — an
+  ""src/__tests__/deploy-reach.test.ts"", at the cases "keeps enemy and ally
+  occupants (either crushes, victim recorded)" and "drops every King square — an
   enemy Command Center cannot be crushed". **Not fixed on this branch.**
 end note
 

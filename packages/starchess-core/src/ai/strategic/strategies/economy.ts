@@ -28,7 +28,9 @@
  *    economy (the absolute survival weights still dominate elsewhere).
  */
 
-import { attacksSquare, isSquareAttackedBy } from "../../../board/placement";
+import type { Square } from "chess.js";
+
+import { attacksSquare, isSquareAttackedBy, type ScPiece } from "../../../board/placement";
 import { hostileMineOn } from "../../../board/mine-contact";
 import { UNIT_COST } from "../../../rules/constants";
 import type { StrategicCtx } from "../context";
@@ -47,7 +49,8 @@ import {
   BISHOP_VS_QUEEN,
   deployPolicy,
 } from "../../strategies/economy";
-import { isUrgentRunner } from "../runners";
+import { isSoleBlocker, isUrgentRunner } from "../runners";
+import { RUNNER_ABANDON_SHARE, runnerStake } from "./runners";
 import { avengeDeployValue } from "./attackers";
 import { runnerDeployValue } from "./runners";
 import type { StrategicStrategy, } from "./types";
@@ -67,6 +70,64 @@ export const RUNNER_GUARD = 1_450;
 export const SHIP_WARP_READY = 800;
 /** BattleShip rush when winning: deploy q the moment the bank allows. */
 export const QUEEN_FINISH = 3_200;
+/**
+ * Ally-crush dials — deploying over our OWN ring units is legal, so the
+ * scorer must price the victim (mirror of the enemy-crush bonus below) and
+ * only outbid an empty square for defense:
+ *  - ring full + defending + heavier guard replaces the cheapest ally in place;
+ *  - a fresh unit that newly covers a lit, threatened own near-promotion pawn / ship.
+ * Ladder: each (and their sum) sits below RUNNER_STOP_SERIOUS (5_500) —
+ * asserted in `__tests__/tactics/weightOrdering.test.ts`.
+ */
+export const ALLY_UPGRADE = 500;
+export const ALLY_SHIELD_PAWN = 800;
+export const ALLY_SHIELD_SHIP = 1_200;
+
+/** Steps an own pawn needs to promote (for the near-promotion shield). */
+const stepsToPromotion = (at: Square, us: StrategicCtx["us"]): number =>
+  us === "w" ? 8 - rankOf(at) : rankOf(at) - 1;
+
+/**
+ * What replacing the ally on `to` with `unit` is worth as a shield for our
+ * high-value units. Max-one bonus, and 0 unless every gate holds:
+ * defending posture, cheap victim (never eat a tank/ship to "shield"), the
+ * square is not some runner's last blocker (shielding elsewhere must not hand
+ * a race back), a lit and enemy-attacked own ship or near-promotion pawn
+ * elsewhere, and the fresh unit actually covering it from `to` (read off a
+ * post-crush map clone).
+ *
+ * Fog note: like the existing `attackedPenalty` and runner-flee reads, the
+ * threat/coverage maps below are ground truth — honesty comes from the gates
+ * (own lit unit under real attack; ring-local answer), never from pretending
+ * the map is a belief state. The response uses no attacker identity or square.
+ */
+export const allyShieldValue = (
+  ctx: StrategicCtx,
+  to: Square,
+  unit: "p" | "n" | "b" | "r" | "q",
+  occ: ScPiece | undefined,
+  defending: boolean,
+): number => {
+  if (!defending) return 0;
+  if (!occ || occ.color !== ctx.us) return 0;
+  if (UNIT_COST[occ.type] > 3) return 0;
+  if (ctx.runners.some((r) => isSoleBlocker(r, to))) return 0;
+  const { map, us, vision, tactical } = ctx;
+  let best = 0;
+  for (const [sq, hv] of map) {
+    if (hv.color !== us || sq === to) continue;
+    const isShip = hv.type === "q";
+    const isNearPawn = hv.type === "p" && stepsToPromotion(sq, us) <= 2;
+    if (!isShip && !isNearPawn) continue;
+    if (!tactical.enemyAttacks(sq)) continue;
+    if (!vision.litSquares.has(sq)) continue;
+    const post = new Map(map);
+    post.set(to, { type: unit, color: us });
+    if (!attacksSquare(post, to, sq)) continue;
+    best = Math.max(best, isShip ? ALLY_SHIELD_SHIP : ALLY_SHIELD_PAWN);
+  }
+  return best;
+};
 
 const deploys = (ctx: StrategicCtx): Candidate[] => {
   const { map, snap, us, enemy, king, kingThreatened, material, vision, weights, kvs, cheesePromotion, winning } =
@@ -94,6 +155,9 @@ const deploys = (ctx: StrategicCtx): Candidate[] => {
     (r) => adjacent.includes(r.at) || r.path.some((s) => adjacent.includes(s)),
   );
   const defending = hidden || urgentRunners.length > 0;
+  // No empty mine-free ring square left: the only drops left are crushes.
+  const ringFull = adjacent.every((sq) => map.has(sq));
+  const defendingPlus = defending || kingThreatened;
 
   for (const unit of ["p", "n", "b", "r", "q"] as const) {
     if (UNIT_COST[unit] > material.bank) continue;
@@ -131,6 +195,10 @@ const deploys = (ctx: StrategicCtx): Candidate[] => {
 
     for (const to of adjacent) {
       if (unit === "p" && (rankOf(to) === 1 || rankOf(to) === 8)) continue;
+      const occ = map.get(to);
+      // Kings are never crushable — generation-side hygiene only;
+      // `addScAction` validation stays the sole legality authority.
+      if (occ?.type === "k") continue;
       let score =
         center * centerScore(to) +
         promoteRank * promoteProgress(rankOf(to), us) +
@@ -177,9 +245,23 @@ const deploys = (ctx: StrategicCtx): Candidate[] => {
       if (kingThreatened) score += trade;
       if (isSquareAttackedBy(map, to, enemy)) score -= attackedPenalty;
       // Direct spawn crush on enemy — capture higher material
-      const occ = map.get(to);
       if (occ && occ.color === enemy) {
         score += trade * (1 + UNIT_COST[occ.type]);
+      }
+      // Ally crush mirror — the victim is real material, price it, or every
+      // ring body is a free lunch. Defensive bonuses below may still outbid.
+      if (occ && occ.color === us) {
+        score -= trade * (1 + UNIT_COST[occ.type]);
+        // Replacing the last blocker is leaving, not answering (cf. runners).
+        for (const r of ctx.runners) {
+          if (isSoleBlocker(r, to)) score -= runnerStake(r) * RUNNER_ABANDON_SHARE;
+        }
+        // Ring full + defending: upgrade the cheapest ally in place.
+        if (ringFull && defendingPlus && UNIT_COST[unit] > UNIT_COST[occ.type]) {
+          score += ALLY_UPGRADE;
+        }
+        // Fresh cover on a lit, threatened own near-promotion pawn / ship.
+        score += allyShieldValue(ctx, to, unit, occ, defendingPlus);
       }
       if (snap.turn <= 1 && (unit === "n" || unit === "b")) {
         score += (ctx.rng() - 0.5) * 0.5;

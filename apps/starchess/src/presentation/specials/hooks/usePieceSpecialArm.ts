@@ -1,4 +1,4 @@
-import type { GasDeployTarget } from "~/types/specials";
+import type { GasDeployTarget } from "~/presentation/specials/types";
 import {
   armPieceSpecial,
   type PieceSpecialArmHandlers,

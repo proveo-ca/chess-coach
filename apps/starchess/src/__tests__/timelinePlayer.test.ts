@@ -456,6 +456,73 @@ describe("timelinePlayer", () => {
     });
   });
 
+  it("projects deploy and crush death cues when spawning onto an ally unit", () => {
+    // White spawns a marine on e2, replacing white rook on e2.
+    let snap = parseScFen(
+      "SCFEN|4k3/8/8/8/8/8/4R3/4K3|1|33|P|G:11:11|Q:w:;b:",
+    );
+    snap = addScAction({
+      snapshot: snap,
+      action: {
+        timing: "B",
+        kind: "spawn",
+        color: "w",
+        from: "e1",
+        to: "e2",
+        unit: "p",
+      },
+    }).snapshot;
+    const result = endScTurn(snap, { skipTurnStartChecks: true });
+    const cues = projectResolveTimeline(result);
+    expect(cues.find((c) => c.kind === "deploy" && c.at === "e2")).toMatchObject({
+      kind: "deploy",
+      piece: "p",
+      color: "w",
+      at: "e2",
+    });
+    expect(
+      cues.find((c) => c.kind === "death" && c.id.startsWith("crush") && c.at === "e2"),
+    ).toMatchObject({
+      kind: "death",
+      piece: "r",
+      color: "w",
+      at: "e2",
+    });
+  });
+
+  it("projects deploy and death cues for same-type ally replace (diff-identical)", () => {
+    // White pawn on e2 replaced by deployed white pawn — placement unchanged,
+    // so the diff emits nothing; cues must come from the crush event.
+    let snap = parseScFen(
+      "SCFEN|4k3/8/8/8/8/8/4P3/4K3|1|33|P|G:11:11|Q:w:;b:",
+    );
+    snap = addScAction({
+      snapshot: snap,
+      action: {
+        timing: "B",
+        kind: "spawn",
+        color: "w",
+        from: "e1",
+        to: "e2",
+        unit: "p",
+      },
+    }).snapshot;
+    const result = endScTurn(snap, { skipTurnStartChecks: true });
+    expect(
+      result.events.find((ev) => ev.kind === "spawn"),
+    ).toMatchObject({ victim: { type: "p", color: "w" } });
+    const cues = projectResolveTimeline(result);
+    expect(cues.find((c) => c.kind === "deploy" && c.at === "e2")).toMatchObject({
+      kind: "deploy",
+      piece: "p",
+      color: "w",
+      at: "e2",
+    });
+    expect(
+      cues.find((c) => c.kind === "death" && c.id.startsWith("crush") && c.at === "e2"),
+    ).toMatchObject({ piece: "p", color: "w", at: "e2" });
+  });
+
   it("plays deploy and crush death cues even when the spawned unit dies later the same turn", () => {
     // White spawns marine on e2 (crushing black knight e2 in B).
     // A black spider mine on e2 detonates, killing the spawned marine.

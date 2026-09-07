@@ -45,16 +45,14 @@ describe("deployTargets", () => {
     expect(deployTargets(query({ cc: null }))).toEqual([]);
   });
 
-  it("keeps an enemy occupant (the deploy crushes it) but drops our own", () => {
+  it("keeps enemy and ally occupants (the deploy replaces either) but drops kings", () => {
     // The authority is `rules/specials/adjacent.ts` + `rules/validation.ts`:
-    // "Enemy-occupied targets are legal (the deploy crushes the occupant); only
-    // own-color squares are blocked." A comment in strategic economy claiming
-    // "empty, ally or enemy" is wrong — the validator throws on an ally.
+    // any non-king occupant crushes (deployed replaces occupant, victim recorded).
     const map = bare();
     map.set("d2", { type: "p", color: "b" } satisfies ScPiece);
     map.set("f2", { type: "p", color: "w" } satisfies ScPiece);
     expect(deployTargets(query({ map }))).toContain("d2");
-    expect(deployTargets(query({ map }))).not.toContain("f2");
+    expect(deployTargets(query({ map }))).toContain("f2");
   });
 
   it("drops every King square — an enemy Command Center cannot be crushed", () => {

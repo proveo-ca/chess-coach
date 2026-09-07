@@ -262,6 +262,7 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
     if (ev.phase === "specialAfter") specialAfterSpawns.add(`${ev.color}:${ev.to}`);
   }
   const crushDeaths: TimelineCue[] = [];
+  const emittedDeploys = new Set<string>();
   for (const d of deployCuesForPlacementDiff(
     result.afterPending.placement,
     result.afterB.placement,
@@ -276,6 +277,7 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
       color: d.color,
       at: d.at,
     });
+    emittedDeploys.add(`${d.color}:${d.at}`);
     if (crush) {
       crushDeaths.push({
         kind: "death",
@@ -288,6 +290,32 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
           : {}),
       });
     }
+  }
+  // Same-type same-color replace (e.g. pawn onto pawn) leaves placement
+  // identical, so the diff above emits nothing — project deploy + death from
+  // the crush event itself. Mined spawns are handled by the event-driven mined
+  // block below; F spawns by the F block.
+  for (const ev of result.events) {
+    if (ev.kind !== "spawn" || ev.phase !== "specialBefore") continue;
+    if (!ev.to || !ev.unit || !ev.victim || ev.mineColor) continue;
+    const key = `${ev.color}:${ev.to}`;
+    if (emittedDeploys.has(key)) continue;
+    cues.push({
+      kind: "deploy",
+      id: `spawn-crush${n++}`,
+      piece: ev.unit,
+      color: ev.color,
+      at: ev.to,
+    });
+    emittedDeploys.add(key);
+    crushDeaths.push({
+      kind: "death",
+      id: `crush${n++}`,
+      piece: ev.victim.type,
+      color: ev.victim.color,
+      at: ev.to,
+      ...(ev.victim.type === "r" ? { rookMode: rookModeAt(ev.to, sieged) } : {}),
+    });
   }
   const minedDeploys: TimelineCue[] = [];
   for (const ev of result.events) {
