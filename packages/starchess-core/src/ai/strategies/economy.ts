@@ -90,9 +90,12 @@ export const deployCapturesBigThreat = (
 };
 
 /**
- * True iff this bishop deploy must be suppressed. Projects counts first: a
- * crush-replaced own bishop is net-zero, never a 3rd. The total cap is
- * absolute; the per-color cap admits only the big-threat capture.
+ * True iff this bishop deploy must be suppressed. Projects counts first.
+ * (The crush-replace netting below is defense in depth: naive rings are
+ * empty-only and strategic generation skips same-type ally crushes, so no
+ * caller currently reaches it with an own bishop on `to`.)
+ * The total cap is absolute; the per-color cap admits only the big-threat
+ * capture.
  */
 export const isBishopDeployCapped = (
   map: Map<Square, ScPiece>,
@@ -177,8 +180,8 @@ const deploys = (ctx: AdjutantCtx): Candidate[] => {
 
     for (const to of adjacent) {
       if (unit === "p" && (rankOf(to) === 1 || rankOf(to) === 8)) continue;
-      // Mecha pile-up gate (naive rings are empty-only; the helper reads
-      // occupancy itself, so crush-replace nets out with no caller math).
+      // Mecha pile-up gate (naive rings are empty-only, so `to` is vacant here;
+      // the helper's crush-netting branch is unreachable defense in depth).
       if (unit === "b" && isBishopDeployCapped(map, us, to, () => true)) {
         continue;
       }

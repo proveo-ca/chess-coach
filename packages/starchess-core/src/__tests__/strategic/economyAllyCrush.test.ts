@@ -8,8 +8,8 @@
  */
 import { describe, expect, it } from "vitest";
 
-import { parseScFen, UNIT_COST } from "../../index";
-import { strategicAdjutant } from "../../ai/strategic";
+import { parseScFen, placementToMap, UNIT_COST } from "../../index";
+import { strategicAdjutant, strategicCandidates } from "../../ai/strategic";
 import { combineKnownVsSeen, seedKnownVsSeen } from "../../ai/strategic/intel";
 import type { ScAction } from "../../index";
 
@@ -154,5 +154,75 @@ describe("strategic ally-crush deploys", () => {
       kvs: combineKnownVsSeen(9, 2, 0),
     });
     expect(spawns.every((a) => a.to !== "d2")).toBe(true);
+  });
+});
+
+describe("same-type crush census", () => {
+  /**
+   * A same-type ally replace is an identical board minus bank + gas, so
+   * generation skips it outright (all types, not just marines). This battery
+   * plays the strategic adjutant across quiet / runner-pressure / hot-CC /
+   * ring-full / winning / bank-starved postures for both colors and asserts no
+   * committed spawn — and no generated single — replaces an ally with its own
+   * type. Per-row commit expectations keep quiet rows from passing vacuously;
+   * the bank-starved full ring expects no spawn at all (gas correctly unspent
+   * rather than burned on an identical board).
+   */
+  const BATTERY: {
+    scfen: string;
+    color: "w" | "b";
+    stored: number;
+    kvs: Parameters<typeof spawnsFor>[1]["kvs"];
+    expectSpawn: boolean;
+  }[] = [
+    // Quiet, own marine on ring, empties available.
+    { scfen: "SCFEN|4k3/3p4/8/8/8/8/8/4K3|10|33|P|G:11:11|Q:w:;b:", color: "b", stored: 12, kvs: seedKnownVsSeen(), expectSpawn: true },
+    // Runner pressure, double-blocked (white to move).
+    { scfen: "SCFEN|4k3/8/8/8/8/3p4/3PR3/3RK3|10|33|P|G:11:11|Q:w:;b:", color: "w", stored: 12, kvs: seedKnownVsSeen(), expectSpawn: true },
+    // Runner pressure mirrored (black to move).
+    { scfen: "SCFEN|3rk3/3p4/3P4/8/8/8/8/4K3|10|33|P|G:11:11|Q:w:;b:", color: "b", stored: 12, kvs: seedKnownVsSeen(), expectSpawn: true },
+    // Hot CC with a marine on the ring.
+    { scfen: "SCFEN|k3r3/8/8/8/8/8/3P4/4K3|10|33|P|G:11:11|Q:w:;b:", color: "w", stored: 12, kvs: seedKnownVsSeen(), expectSpawn: true },
+    // Ring full of marines, quiet.
+    { scfen: "SCFEN|4k3/8/8/8/8/8/3PPP2/3PKP2|10|33|P|G:11:11|Q:w:;b:", color: "w", stored: 12, kvs: seedKnownVsSeen(), expectSpawn: true },
+    // Ring full of marines, hidden-material defense.
+    { scfen: "SCFEN|4k3/8/8/8/8/8/3PPP2/3PKP2|10|33|P|G:11:11|Q:w:;b:", color: "w", stored: 12, kvs: combineKnownVsSeen(9, 2, 0), expectSpawn: true },
+    // Winning with marines sheltering the king.
+    { scfen: "SCFEN|4k3/8/8/8/8/8/3PP3/4K3|10|33|P|G:11:11|Q:w:;b:", color: "w", stored: 12, kvs: combineKnownVsSeen(12, 27, 15), expectSpawn: true },
+    // Shield path: own ship c3 threatened, own marine d2 covering it, bank for
+    // marines only — the shield bonus must not buy a same-type replace.
+    { scfen: "SCFEN|4k3/8/8/8/1b6/2Q5/3P4/4K3|10|33|P|G:11:11|Q:w:;b:", color: "w", stored: 1, kvs: combineKnownVsSeen(9, 2, 0), expectSpawn: true },
+    // Ring full, bank for marines only: nothing worth deploying — hold gas.
+    { scfen: "SCFEN|4k3/8/8/8/8/8/3PPP2/3PKP2|10|33|P|G:11:11|Q:w:;b:", color: "w", stored: 1, kvs: seedKnownVsSeen(), expectSpawn: false },
+  ];
+
+  it("commits and generates zero same-type ally crushes across the battery", () => {
+    let sameType = 0;
+    for (const spot of BATTERY) {
+      const before = placementToMap(parseScFen(spot.scfen).placement);
+      const spawns = spawnsFor(spot.scfen, spot);
+      expect(spawns.length > 0).toBe(spot.expectSpawn);
+      for (const a of spawns) {
+        const occ = before.get(a.to!);
+        if (a.unit !== undefined && occ?.type === a.unit && occ.color === spot.color) {
+          sameType += 1;
+        }
+      }
+      // Generation level: no emitted single replaces an ally with its own type.
+      const listed = strategicCandidates(parseScFen(spot.scfen), {
+        color: spot.color,
+        storedFor: () => spot.stored,
+        kvs: spot.kvs,
+      });
+      for (const c of listed?.candidates ?? []) {
+        const [first] = c.actions;
+        if (!first || first.kind !== "spawn" || first.timing !== "B" || !first.to) continue;
+        const occ = before.get(first.to);
+        if (first.unit !== undefined && occ?.type === first.unit && occ.color === spot.color) {
+          sameType += 1;
+        }
+      }
+    }
+    expect(sameType).toBe(0);
   });
 });

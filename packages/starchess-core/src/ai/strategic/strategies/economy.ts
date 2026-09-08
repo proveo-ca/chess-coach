@@ -113,6 +113,9 @@ export const allyShieldValue = (
 ): number => {
   if (!defending) return 0;
   if (!occ || occ.color !== ctx.us) return 0;
+  // Same-type replace covers exactly what the standing unit covers — no shield
+  // is gained (generation skips these too; this guards future callers).
+  if (occ.type === unit) return 0;
   if (UNIT_COST[occ.type] > 3) return 0;
   if (ctx.runners.some((r) => isSoleBlocker(r, to))) return 0;
   const { map, us, vision, tactical } = ctx;
@@ -200,6 +203,15 @@ const deploys = (ctx: StrategicCtx): Candidate[] => {
     for (const to of adjacent) {
       if (unit === "p" && (rankOf(to) === 1 || rankOf(to) === 8)) continue;
       const occ = map.get(to);
+      // Same-type ally replace is never useful: the fresh unit stands where an
+      // identical one stood (same coverage, same moves — the old one could
+      // have acted itself), so it burns bank + gas for an identical board.
+      // Considered and rejected: re-packing a sieged tank (the 1-gas siege
+      // toggle dominates: no bank, same tempo) and bank-cap relief (no
+      // bank-pressure scoring exists to spend it on; gas is the binding
+      // constraint). Skip at generation; enemy same-type crushes are
+      // captures (kept).
+      if (occ && occ.color === us && occ.type === unit) continue;
       // Our own body already standing on a runner square answers it — swapping
       // it for a fresh unit re-buys the same blockade while eating the victim
       // and the gas, so the runner answer pays nothing on ally-held squares
