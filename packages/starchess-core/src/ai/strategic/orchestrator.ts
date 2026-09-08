@@ -29,6 +29,7 @@ import {
   sideMoves,
   spawnCaptureStacks,
   spawnStacks,
+  charonForwardStacks,
   specialClassicalStacks,
 } from "../plans/stacks";
 import { asCandidate, generateCandidates, scoreMove } from "./strategies";
@@ -87,6 +88,14 @@ export const strategicCandidates = (
     ...spawnStacks(specials, moveCandidates),
     ...spawnCaptureStacks(specials, c),
     ...specialClassicalStacks(specials, moveCandidates, c),
+    ...charonForwardStacks(
+      specials.filter((s) => {
+        const a = s.actions[0];
+        return !!a && a.timing === "F" && a.kind === "bishopSnipe";
+      }),
+      moveCandidates,
+      c,
+    ),
   ];
 
   /**
@@ -95,7 +104,12 @@ export const strategicCandidates = (
    * check, interposing / capturing the checker, and quiet self-exposure via
    * absolute pins.
    */
-  const guarded = [...specials, ...stacks, ...moveCandidates].map((cand) =>
+  /**
+   * F-timing singles (Charon teleport-guesses) commit only inside C+F stacks —
+   * same lone-F exclusion as the naive orchestrator.
+   */
+  const committable = specials.filter((s) => s.actions[0]?.timing !== "F");
+  const guarded = [...committable, ...stacks, ...moveCandidates].map((cand) =>
     clearsCheck(c.map, cand.actions, c.sieged, c.us, c.enemy)
       ? cand
       : { ...cand, score: cand.score - KING_SAFETY },

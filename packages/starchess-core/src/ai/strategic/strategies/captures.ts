@@ -7,7 +7,11 @@ import type { Square } from "chess.js";
 
 import { attacksSquare } from "../../../board/placement";
 import { deployCovers } from "../../../board/deploy-reach";
-import { charonTargetQueenFromPlacement } from "../../../rules/specials/bishopCharon";
+import {
+  charonDiagonalSquares,
+  charonStrikeTarget,
+  charonTargetShips,
+} from "../../../rules/specials/mechaCharon";
 import {
   incomeForTurn,
   MAX_STORED_MATERIAL,
@@ -16,12 +20,18 @@ import {
 import { chebyshev } from "../../context";
 import type { Candidate, MoveEval } from "../../context";
 import {
-  CHARON_COMBO,
+  CHARON_GUESS,
+  CHARON_GUESS_HIT_RATE,
+  CHARON_INSTA,
+  CHARON_MAX_GUESSES_PER_SHIP,
+  CHARON_MAX_GUESSES_TOTAL,
   EQUAL_TRADE_ATTACK,
   HUNT_UNDEFENDED_PAWN,
   PAWN_TRADE,
   SAC_FOR_CC,
   SAC_FOR_CC_WINNING,
+  enemyCanJump,
+  predictEnemyWarpDestinations,
 } from "../../strategies/captures";
 import type { StrategicCtx } from "../context";
 import { asCandidate } from "./types";
@@ -39,18 +49,50 @@ const enemyBankCeiling = (turn: number): number => {
 };
 
 const charonStrikes = (ctx: StrategicCtx): Candidate[] => {
-  const { map, snap, us, weights } = ctx;
+  const { map, snap, us, enemy, weights } = ctx;
   const out: Candidate[] = [];
+  const base = weights.trade * (1 + UNIT_COST.q - UNIT_COST.b);
+
+  if (!enemyCanJump(snap, enemy)) {
+    for (const [from, piece] of map) {
+      if (piece.color !== us || piece.type !== "b") continue;
+      for (const target of charonTargetShips(map, from)) {
+        out.push(
+          asCandidate(
+            { timing: "B", kind: "bishopSnipe", color: us, from, to: target },
+            base + CHARON_INSTA,
+          ),
+        );
+      }
+    }
+    return out;
+  }
+
+  let total = 0;
   for (const [from, piece] of map) {
     if (piece.color !== us || piece.type !== "b") continue;
-    const target = charonTargetQueenFromPlacement(snap.placement, from);
-    if (!target) continue;
-    out.push(
-      asCandidate(
-        { timing: "B", kind: "bishopSnipe", color: us, from, to: target },
-        weights.trade * (1 + UNIT_COST.q - UNIT_COST.b) + CHARON_COMBO * 0.35,
-      ),
-    );
+    const diagonals = new Set(charonDiagonalSquares(map, from));
+    for (const [shipSq, shipPiece] of map) {
+      if (shipPiece.color !== enemy || shipPiece.type !== "q") continue;
+      let perShip = 0;
+      for (const dest of predictEnemyWarpDestinations(ctx, shipSq)) {
+        if (perShip >= CHARON_MAX_GUESSES_PER_SHIP) break;
+        if (total >= CHARON_MAX_GUESSES_TOTAL) return out;
+        if (!diagonals.has(dest)) continue;
+        const probe = new Map(map);
+        probe.delete(shipSq);
+        probe.set(dest, { type: "q", color: enemy });
+        if (charonStrikeTarget(probe, from, dest, us) !== dest) continue;
+        perShip += 1;
+        total += 1;
+        out.push(
+          asCandidate(
+            { timing: "F", kind: "bishopSnipe", color: us, from, to: dest },
+            base + CHARON_GUESS * CHARON_GUESS_HIT_RATE,
+          ),
+        );
+      }
+    }
   }
   return out;
 };

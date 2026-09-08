@@ -198,7 +198,7 @@ export const useBoardInput = (
 
     if (state.targeting?.kind === "bishopSnipe") {
       const t = state.targeting;
-      if (square !== t.to) return;
+      if (!t.targets.includes(square)) return;
       const timing = specialTimingFor(state.liveSnapshot.queue, t.color);
       const before = store.state().liveSnapshot;
       store.dispatch({
@@ -208,14 +208,14 @@ export const useBoardInput = (
           kind: "bishopSnipe",
           color: t.color,
           from: t.from,
-          to: t.to,
+          to: square,
         },
       });
       if (store.state().liveSnapshot === before) return;
       store.dispatch({ type: "MARK_SPECIAL_USED", square: t.from });
       store.dispatch({
         type: "QUEUE_REJECT",
-        message: `Charon Booster Missiles ${t.from}→${t.to} queued · End to fire`,
+        message: `Charon Booster Missiles ${t.from}→${square} queued · End to fire`,
       });
       return;
     }

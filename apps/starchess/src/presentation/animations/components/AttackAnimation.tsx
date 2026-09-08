@@ -16,10 +16,10 @@ import {
 import { KING_REST_AIM_DEG, ROOK_REST_AIM_DEG } from "~/presentation/pieces/geometry";
 import styles from "~/presentation/animations/components/AttackAnimation.module.css";
 import {
-  BISHOP_CHARON,
+  MECHA_CHARON,
   charonImpactStyle,
   charonVolleyStyle,
-} from "~/presentation/animations/bishopCharon";
+} from "~/presentation/animations/mechaCharon";
 import { fragFlightMsCss } from "~/presentation/animations/impactTiming";
 import { teamTintStyle } from "~/presentation/pieces/teamColors";
 import {
@@ -243,8 +243,8 @@ export const AttackAnimation: Component<AttackAnimationProps> = (props) => {
     return g instanceof Set ? g : new Set(g);
   };
   const hullUsed = (cue: AttackCue, anim: string) =>
-    anim === BISHOP_CHARON || used().has(cue.from);
-  const isCharon = (anim: string) => anim === BISHOP_CHARON;
+    anim === MECHA_CHARON || used().has(cue.from);
+  const isCharon = (anim: string) => anim === MECHA_CHARON;
 
   const ids = createMemo(() => props.cues.map((c) => c.id));
   const byId = createMemo(() => {
@@ -316,7 +316,7 @@ export const AttackAnimation: Component<AttackAnimationProps> = (props) => {
                 </BoardFx>
               </Show>
 
-              <Show when={anim() === BISHOP_CHARON}>
+              <Show when={anim() === MECHA_CHARON}>
                 <BoardFx
                   class={styles.charonVolley}
                   style={charonVolleyStyle(cue(), props.boardWidth, props.boardHeight)}
@@ -332,12 +332,14 @@ export const AttackAnimation: Component<AttackAnimationProps> = (props) => {
                     </div>
                   </div>
                 </BoardFx>
-                <BoardFx
-                  class={styles.charonImpact}
-                  style={charonImpactStyle(cue(), props.boardWidth, props.boardHeight)}
-                >
-                  <div class={styles.charonImpactCore} />
-                </BoardFx>
+                <Show when={!cue().fizzle}>
+                  <BoardFx
+                    class={styles.charonImpact}
+                    style={charonImpactStyle(cue(), props.boardWidth, props.boardHeight)}
+                  >
+                    <div class={styles.charonImpactCore} />
+                  </BoardFx>
+                </Show>
               </Show>
 
               {/*
@@ -355,7 +357,7 @@ export const AttackAnimation: Component<AttackAnimationProps> = (props) => {
                     ...teamTintStyle(cue().color),
                     // Per-weapon impact; board overlay keeps default FRAG_FLIGHT_MS.
                     "--frag-flight-ms": fragFlightMsCss(anim()),
-                    ...(anim() === BISHOP_CHARON
+                    ...(anim() === MECHA_CHARON
                       ? { "--attack-ms": `${FRAG_FLIGHT_MS}ms` }
                       : {}),
                   }}

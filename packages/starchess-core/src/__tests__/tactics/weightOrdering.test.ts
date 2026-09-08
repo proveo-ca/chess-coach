@@ -12,6 +12,9 @@ import { describe, expect, it } from "vitest";
 
 import {
   CHARON_COMBO,
+  CHARON_GUESS,
+  CHARON_GUESS_HIT_RATE,
+  CHARON_INSTA,
   EQUAL_TRADE_ATTACK,
   HUNT_UNDEFENDED_PAWN,
   PAWN_TRADE,
@@ -57,6 +60,8 @@ describe("survival dominates", () => {
     for (const w of [
       EQUAL_TRADE_ATTACK,
       CHARON_COMBO,
+      CHARON_INSTA,
+      CHARON_GUESS,
       HUNT_UNDEFENDED_PAWN,
       PAWN_TRADE,
       SAC_FOR_CC,
@@ -82,6 +87,18 @@ describe("survival dominates", () => {
   it("saving the BattleShip outranks saving an ordinary unit", () => {
     expect(QUEEN_ESCAPE).toBeGreaterThan(DEFEND_UNIT);
     expect(QUEEN_THREAT_KING).toBeLessThan(QUEEN_ESCAPE);
+  });
+
+  it("insta-target tops the Charon ladder, hotter guesses stay mid-tier", () => {
+    // Effective terms: every Charon single carries base = trade*7, so pin the
+    // ordering with an explicit trade floor rather than bare constants — a
+    // trade retune must not silently invert the hunt tiers.
+    const TRADE_FLOOR = 100;
+    const base = TRADE_FLOOR * (1 + 9 - 3);
+    expect(base + CHARON_INSTA).toBeGreaterThan(base + CHARON_COMBO);
+    expect(base + CHARON_GUESS * CHARON_GUESS_HIT_RATE).toBeLessThan(QUEEN_ESCAPE);
+    expect(base + CHARON_GUESS * CHARON_GUESS_HIT_RATE).toBeGreaterThan(SAC_FOR_CC);
+    expect(CHARON_INSTA).toBeLessThan(BACKRANK_ESCAPE);
   });
 });
 

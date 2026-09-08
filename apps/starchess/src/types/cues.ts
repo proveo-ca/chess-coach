@@ -42,6 +42,8 @@ export type AttackCue = {
   damage?: KingDamageState;
   seed?: number;
   rookMode?: RookMode;
+  /** Charon fizzle — no ship at resolve: missiles fly the full ray off-board, no impact burst. */
+  fizzle?: boolean;
 };
 
 export type DeathCue = {

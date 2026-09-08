@@ -56,5 +56,8 @@ export const SPECIAL_ENERGY_COST = 1;
 /** Charon Booster Missiles (bishopSnipe) gas cost. */
 export const CHARON_GAS_COST = 2;
 
+/** StarChess alias of {@link CHARON_GAS_COST} — prefer in new code. */
+export const MECHA_CHARON_GAS_COST = CHARON_GAS_COST;
+
 /** BattleShip Tactical Jump (queenWarp) gas cost — 3 canisters (tier-3 income). */
 export const QUEEN_WARP_GAS_COST = 3;

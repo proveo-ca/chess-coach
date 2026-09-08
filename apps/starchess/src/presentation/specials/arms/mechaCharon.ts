@@ -1,13 +1,15 @@
-// SPEC: _spec/apps/starchess/turn-input-sequence.puml
+// SPEC: _spec/specials/mecha-charon.puml
 /**
- * Mecha arm — open Charon Booster Missiles targeting on the unique diagonal
- * enemy queen (`OPEN_BISHOP_SNIPE`; commit happens on board click).
+ * Mecha arm — open Charon Booster Missiles targeting on every Mecha diagonal
+ * square (`OPEN_BISHOP_SNIPE`; commit happens on board click — highlight all,
+ * click-to-pick). Free aim: any FEN-legal diagonal is selectable; shots that
+ * meet no first-ship fizzle off the board at resolve.
  * (Moved from `app/BaseScreen.tsx` gas-deploy handlers.)
  */
 import type { PieceSymbol, Square } from "chess.js";
 
 import {
-  charonTargetQueenFromPlacement,
+  charonDiagonalSquaresFromPlacement,
   type ScFenSnapshot,
 } from "@chess-coach/starchess-core";
 
@@ -15,7 +17,7 @@ import { viewerColor } from "~/app/matchEconomy";
 import type { MatchStore } from "~/types/match";
 import type { ArmResult } from "~/presentation/specials/types";
 
-export const bishopSnipeArm = (
+export const mechaCharonArm = (
   store: MatchStore,
   snap: ScFenSnapshot,
   ctx: { square: Square; piece: PieceSymbol },
@@ -23,20 +25,14 @@ export const bishopSnipeArm = (
 ): ArmResult | boolean => {
   if (ctx.piece !== "b") return false;
   const color = viewerColor(store);
-  const queen = charonTargetQueenFromPlacement(snap.placement, ctx.square);
-  if (!queen) {
-    store.dispatch({
-      type: "QUEUE_REJECT",
-      message: "Charon Booster Missiles needs exactly one enemy queen on a diagonal",
-    });
-    return false;
-  }
+  // Free aim always offers squares on 8x8 (a Mecha owns 7–13 diagonals).
+  const targets = charonDiagonalSquaresFromPlacement(snap.placement, ctx.square);
   opts?.resetSpawn?.();
   store.dispatch({
     type: "OPEN_BISHOP_SNIPE",
     color,
     from: ctx.square,
-    to: queen,
+    targets,
   });
   opts?.onAfterOpen?.();
   return "pending";

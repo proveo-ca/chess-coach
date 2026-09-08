@@ -210,6 +210,72 @@ export const spawnCaptureStacks = (
 };
 
 /**
+ * True when `mid` lies strictly between `from` and `to` on their diagonal.
+ * Own classical landing there would screen (or occupy) the Charon aim.
+ */
+const screensCharonAim = (from: Square, to: Square, mid: Square): boolean => {
+  if (mid === from || mid === to) return mid === to;
+  const a = parseSquare(from);
+  const b = parseSquare(to);
+  const m = parseSquare(mid);
+  const df = Math.sign(b.file - a.file);
+  const dr = Math.sign(b.rank - a.rank);
+  if (df === 0 || dr === 0) return false;
+  if (Math.abs(b.file - a.file) !== Math.abs(b.rank - a.rank)) return false;
+  if (Math.abs(m.file - a.file) !== Math.abs(m.rank - a.rank)) return false;
+  if (Math.sign(m.file - a.file) !== df || Math.sign(m.rank - a.rank) !== dr) {
+    return false;
+  }
+  return Math.abs(m.file - a.file) < Math.abs(b.file - a.file);
+};
+
+/**
+ * Classical partners paired per F guess — bounds C+F fan-out (guesses are
+ * capped upstream; moves are not). The hunt should accompany sane development,
+ * so partners come from the top of the scored move list.
+ */
+const CHARON_MAX_STACK_PARTNERS = 16;
+
+/**
+ * Second-phase Charon: F teleport-guess + classical in the same turn.
+ * The mecha stays put (`C.from !== F.from` keeps `from` stable across the
+ * classical, so queue-time validation and resolve agree). Drops pairs where
+ * our own classical would move the mecha or occupy/screen the aim square
+ * (landing on the firing mecha is never a legal classical anyway). Gas is
+ * checked once (F Charon costs 2; the classical is free); scores add (the
+ * guess discount is already inside the F single — no CHARON_COMBO on top).
+ */
+export const charonForwardStacks = (
+  fGuesses: readonly Candidate[],
+  moveCandidates: readonly Candidate[],
+  ctx: AdjutantCtx,
+): Candidate[] => {
+  const { gas } = ctx;
+  if (specialGasCost("bishopSnipe") > gas) return [];
+  const partners = [...moveCandidates]
+    .filter((m) => {
+      const c = m.actions[0];
+      return !!c && c.timing === "C" && c.kind === "classical";
+    })
+    .sort((a, b) => b.score - a.score)
+    .slice(0, CHARON_MAX_STACK_PARTNERS);
+  const out: Candidate[] = [];
+
+  for (const guess of fGuesses) {
+    const f = guess.actions[0];
+    if (!f || f.timing !== "F" || f.kind !== "bishopSnipe" || !f.to) continue;
+    for (const move of partners) {
+      const c = move.actions[0];
+      if (!c || c.timing !== "C" || c.kind !== "classical") continue;
+      if (c.from === f.from || c.to === f.from) continue;
+      if (c.to === f.to || screensCharonAim(f.from, f.to, c.to)) continue;
+      out.push({ actions: [c, f], score: guess.score + move.score });
+    }
+  }
+  return out;
+};
+
+/**
  * Same-turn gas special (B) + classical (C).
  * Charon burns 2 gas then a second unit still strikes; Hoverbike mines then hops;
  * threatened BattleShip warps then another unit develops.
@@ -237,6 +303,10 @@ export const specialClassicalStacks = (
       let score = special.score + move.score;
       if (b.kind === "bishopSnipe") {
         // The Mecha stays put after Charon, so any second classical is fine.
+        // The certainty premium already lives in the B single (CHARON_INSTA);
+        // this combo prices the extra tempo only — effective stack order is
+        // guarded by clearsCheck like every other stack, so no safety tier
+        // is bypassed by the sum.
         score += CHARON_COMBO;
         if (c.to && map.get(c.to)?.color === enemy) score += weights.trade * 2;
       }

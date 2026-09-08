@@ -73,7 +73,7 @@ export type {
 export { PAWN_RIFLE } from "~/presentation/animations/pawnRifle";
 export { KNIGHT_FRAG } from "~/presentation/animations/knightFrag";
 export { BISHOP_GATLINGS } from "~/presentation/animations/bishopGatlings";
-export { BISHOP_CHARON } from "~/presentation/animations/bishopCharon";
+export { MECHA_CHARON } from "~/presentation/animations/mechaCharon";
 export { ROOK_BATTERY } from "~/presentation/animations/rookBattery";
 export { QUEEN_LASER } from "~/presentation/animations/queenLaser";
 export { KING_DUAL_CANNON } from "~/presentation/animations/kingDualCannon";

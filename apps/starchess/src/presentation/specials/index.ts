@@ -20,5 +20,5 @@ export * from "~/presentation/specials/arms/CCDeploy";
 export * from "~/presentation/specials/arms/marineGas";
 export * from "~/presentation/specials/arms/tankSiege";
 export * from "~/presentation/specials/arms/hoverbikeMine";
-export * from "~/presentation/specials/arms/bishopSnipe";
+export * from "~/presentation/specials/arms/mechaCharon";
 export * from "~/presentation/specials/arms/shipJump";

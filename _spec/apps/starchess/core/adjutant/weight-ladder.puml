@@ -156,10 +156,12 @@ note as N_T34
   **Tier 3 — material** (""ai/strategies/captures.ts""):
 
   | weight | value | fires on |
+  | ""CHARON_INSTA"" | 3_200 | pre-jump B insta-kill at a first-ship (near-guaranteed) |
   | ""CHARON_COMBO"" | 2_500 | Charon strike, then a second unit acts the same turn |
   | ""EQUAL_TRADE_ATTACK"" | 2_400 | equal-material capture in range |
   | ""SAC_FOR_CC_WINNING"" | 1_800 | give a unit to keep the enemy CC under fire, while ahead |
   | ""HUNT_UNDEFENDED_PAWN"" | 950 | take a Marine no unit **and no deploy** covers |
+  | ""CHARON_GUESS × HIT_RATE"" | 800 eff. | F teleport-guess at a predicted jump square (discounted) |
   | ""PAWN_TRADE"" | 750 | Marine-for-Marine while congested |
   | ""SAC_FOR_CC"" | 400 | the same sacrifice while only level |
 

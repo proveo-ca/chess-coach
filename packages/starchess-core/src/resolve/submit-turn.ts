@@ -16,7 +16,7 @@ import {
   minesFor,
 } from "../board/mines";
 import { mineContact, withoutMine } from "../board/mine-contact";
-import { placementAfterCharon } from "../rules/specials/bishopCharon";
+import { charonStrikeTarget, placementAfterMechaCharon } from "../rules/specials/mechaCharon";
 import {
   canPawnDoubleStep,
   pawnSingleTarget,
@@ -307,7 +307,19 @@ const applySpecial = (
   switch (kind) {
     case "bishopSnipe": {
       if (!action.to) return { placement, mines };
-      return { placement: placementAfterCharon(placement, action.to), mines };
+      // Fire-and-forget: paid gas resolves from the queued square even when
+      // the Mecha is gone. Kill iff the aim is the first ship on its ray for
+      // the action's side; anything else fizzles off-board. The event still
+      // logs so the timeline plays the volley / fizzle.
+      const board = placementToMap(placement);
+      const kill = charonStrikeTarget(board, action.from, action.to, action.color);
+      if (!kill) return { placement, mines };
+      const victim = board.get(kill)!;
+      return {
+        placement: placementAfterMechaCharon(placement, kill),
+        mines,
+        victim: { type: victim.type, color: victim.color },
+      };
     }
     case "queenWarp": {
       if (!action.to) return { placement, mines };
@@ -845,13 +857,26 @@ export const endScTurn = (
     const candidates: Square[] = [a.from];
     if (rewrittenC) candidates.push(rewrittenC.to, rewrittenC.from);
     if (origC) candidates.push(origC.to, origC.from);
-    const at =
-      candidates.find((s) => {
-        const p = boardAfter.get(s);
-        return !!p && p.color === a.color;
-      }) ?? a.from;
+    // Move-then-gas only rewrites the origin when the unit's OWN classical
+    // moved it (C.from === F.from). Otherwise the F special stays on its
+    // arming square — borrowing another unit's post-move square would teleport
+    // mines/steps/shots onto units that never armed them.
+    const ownMove =
+      rewrittenC && rewrittenC.from === a.from
+        ? rewrittenC
+        : origC && origC.from === a.from
+          ? origC
+          : null;
+    const at = ownMove
+      ? (candidates.find((s) => {
+          const p = boardAfter.get(s);
+          return !!p && p.color === a.color;
+        }) ?? a.from)
+      : a.from;
     const actor = boardAfter.get(at);
-    if (!actor || actor.color !== a.color) continue;
+    // Fire-and-forget Charon resolves from the queued square even with no
+    // live Mecha; every other F special needs its actor.
+    if ((!actor || actor.color !== a.color) && a.kind !== "bishopSnipe") continue;
 
     const rewritten: ScAction =
       a.kind === "knightMine"
@@ -859,7 +884,7 @@ export const endScTurn = (
         : { ...a, from: at };
 
     if (a.kind === "rookSiege") {
-      if (actor.type !== "r") continue;
+      if (!actor || actor.type !== "r") continue;
       if (toggleRookSiege(placement, sieged, a.color, at)) {
         siegedThisTurn.push(at);
         log.special("specialAfter", rewritten);
@@ -868,7 +893,7 @@ export const endScTurn = (
     }
 
     if (a.kind === "pawnDouble") {
-      if (actor.type !== "p") continue;
+      if (!actor || actor.type !== "p") continue;
       const to = pawnSingleTarget(at, a.color);
       if (!to || boardAfter.has(to)) {
         // The Extra Step never lands, so `at` *is* the destination: a mine the

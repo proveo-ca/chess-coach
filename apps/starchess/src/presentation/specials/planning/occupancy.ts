@@ -10,6 +10,7 @@
  */
 import type { Square } from "chess.js";
 import {
+  charonStrikeTarget,
   isRookSiegedAfterB,
   type ScAction,
   type ScFenSnapshot,
@@ -48,7 +49,32 @@ export const applyViewerBOccupancy = (
       out.set(a.to, piece);
       continue;
     }
-    // rookSiege / bishopSnipe / knightMine — occupancy unchanged
+    // rookSiege / knightMine — occupancy unchanged (bishopSnipe kills
+    // project after the loop via applyViewerBCharonKills, in seq order
+    // against the relocated board, mirroring resolve).
+  }
+  return applyViewerBCharonKills(out, actions, viewer);
+};
+
+/**
+ * B Charon kills resolve before the classical — clear victims so C planning
+ * does not treat them as blockers. Fizzles leave occupancy untouched.
+ * Evaluated in queue order on the evolving board (mirrors resolve).
+ */
+export const applyViewerBCharonKills = (
+  map: Map<Square, ScPiece>,
+  actions: readonly ScAction[] | undefined,
+  viewer: StarChessColor,
+): Map<Square, ScPiece> => {
+  const out = new Map(map);
+  const bs = (actions ?? [])
+    .filter((a) => a.timing === "B" && a.color === viewer && a.kind === "bishopSnipe")
+    .slice()
+    .sort((a, b) => a.seq - b.seq);
+  for (const a of bs) {
+    if (a.kind !== "bishopSnipe" || !a.to) continue;
+    // Viewer side, mirroring fire-and-forget resolve exactly.
+    if (charonStrikeTarget(out, a.from, a.to, a.color)) out.delete(a.to);
   }
   return out;
 };
@@ -150,7 +176,12 @@ export const occupancyForQueuedMoves = (
   const actions = snap.queue?.actions;
 
   // Fog visibility without spawn ghosts (deploy does not pierce fog).
-  const visionBase = applyViewerBRelocates(new Map(raw), actions, viewer);
+  // B Charon victims are already dead for C planning (resolve order B < C).
+  const visionBase = applyViewerBCharonKills(
+    applyViewerBRelocates(new Map(raw), actions, viewer),
+    actions,
+    viewer,
+  );
   const fogFiltered = occupancyForViewerMoves(visionBase, viewer, fog, {
     rookModeFor: rookModeForSieged(siegedRooks),
   });

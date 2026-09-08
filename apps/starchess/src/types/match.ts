@@ -26,7 +26,7 @@ export type TargetingState =
   | {
       kind: "bishopSnipe";
       from: Square;
-      to: Square;
+      targets: readonly Square[];
       color: StarChessColor;
     }
   | {
@@ -83,10 +83,12 @@ export type TimelineCue = CueRouting &
       to: Square;
       /** When set, HP chips at frag impact (live king-damage boom). */
       kingShot?: { target: StarChessColor; livesAfter: number };
-      /** Override ANIM_BY_PIECE (e.g. bishopCharon). */
+      /** Override ANIM_BY_PIECE (e.g. bishopCharon — wire-frozen cue id). */
       anim?: AttackAnimKind;
       /** Siege Tank mode for rookBattery VFX (from afterB siegedRooks). */
       rookMode?: "siege" | "tank";
+      /** Charon fizzle — no ship at resolve: missiles fly the full ray off-board, no impact burst. */
+      fizzle?: boolean;
     }
   | {
       kind: "death";
@@ -268,7 +270,7 @@ export type MatchAction =
       type: "OPEN_BISHOP_SNIPE";
       color: StarChessColor;
       from: Square;
-      to: Square;
+      targets: readonly Square[];
     }
   | {
       type: "OPEN_QUEEN_WARP";

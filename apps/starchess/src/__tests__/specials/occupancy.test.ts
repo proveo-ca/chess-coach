@@ -37,6 +37,18 @@ describe("occupancyForQueuedMoves", () => {
     expect(dests).toContain("e4");
   });
 
+  it("B Charon kill clears the victim for classical planning", () => {
+    const snap = parseScFen(
+      "SCFEN|k6q/8/8/8/3B4/8/8/4K3|11|33|P|G:02:22|Q:w:B=bishopSnipe:d4:h8;b:",
+    );
+    const raw = placementToMap(snap.placement);
+    expect(raw.has("h8")).toBe(true);
+    const { map } = occupancyForQueuedMoves(raw, "w", false, snap);
+    expect(map.has("h8")).toBe(false);
+    // The firing Mecha stays put in the projection.
+    expect(map.get("d4")).toEqual({ type: "b", color: "w" });
+  });
+
   it("unsiege unlocks quiet rook moves", () => {
     const snap = parseScFen(
       "SCFEN|4k3/8/8/8/2R5/8/8/4K3|1|33|P|G:01:11|S:c4|B:3:3|Q:w:B=rookSiege:c4;b:",

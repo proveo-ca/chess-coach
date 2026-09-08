@@ -11,7 +11,7 @@ import { addScAction } from "@chess-coach/starchess-core";
 import { createMatchStateFromScfen } from "~/app/matchReducer";
 import { createMatchStore } from "~/app/MatchStoreContext";
 import { rookModeForSieged } from "~/presentation/board/rookMode";
-import { bishopSnipeArm } from "~/presentation/specials/arms/bishopSnipe";
+import { mechaCharonArm } from "~/presentation/specials/arms/mechaCharon";
 import { hoverbikeMineArm } from "~/presentation/specials/arms/hoverbikeMine";
 import { shipJumpArm } from "~/presentation/specials/arms/shipJump";
 import { tankSiegeArm } from "~/presentation/specials/arms/tankSiege";
@@ -62,32 +62,66 @@ describe("hoverbikeMineArm", () => {
   });
 });
 
-describe("bishopSnipeArm", () => {
-  it("rejects when no unique diagonal queen exists", () => {
+describe("mechaCharonArm", () => {
+  it("opens targeting on all diagonals when no ship sits on them", () => {
     const store = makeStore("SCFEN|4k3/8/8/8/8/8/8/2B1K3|1|33|P|G:11:11|Q:w:;b:");
-    expect(bishopSnipeArm(store, snapOf(store), { square: "c1", piece: "b" })).toBe(false);
-    expect(store.shell().targeting).toBeNull();
+    expect(mechaCharonArm(store, snapOf(store), { square: "c1", piece: "b" })).toBe(
+      "pending",
+    );
+    expect(store.shell().targeting).toMatchObject({
+      kind: "bishopSnipe",
+      from: "c1",
+    });
+    const t = store.shell().targeting;
+    expect(t && "targets" in t && [...t.targets].sort()).toEqual([
+      "a3",
+      "b2",
+      "d2",
+      "e3",
+      "f4",
+      "g5",
+      "h6",
+    ]);
   });
 
-  it("opens targeting on the diagonal queen", () => {
+  it("opens targeting even when an allied ship screens the ray", () => {
+    // White mecha c1; white ship e3 screens black ship h6 — free aim still
+    // offers every diagonal square; the screened shot fizzles at resolve.
+    const store = makeStore(
+      "SCFEN|4k3/8/7q/8/8/4Q3/8/2B1K3|1|33|P|G:11:11|Q:w:;b:",
+    );
+    expect(mechaCharonArm(store, snapOf(store), { square: "c1", piece: "b" })).toBe(
+      "pending",
+    );
+    const t = store.shell().targeting;
+    expect(t && "targets" in t && [...t.targets].sort()).toEqual([
+      "a3",
+      "b2",
+      "d2",
+      "e3",
+      "f4",
+      "g5",
+      "h6",
+    ]);
+  });
+
+  it("opens targeting with ship squares included", () => {
     const store = makeStore(
       "SCFEN|4k3/8/7q/8/8/8/8/2B1K3|1|33|P|G:11:11|Q:w:;b:",
     );
     let reset = 0;
     let opened = 0;
     expect(
-      bishopSnipeArm(store, snapOf(store), { square: "c1", piece: "b" }, {
+      mechaCharonArm(store, snapOf(store), { square: "c1", piece: "b" }, {
         resetSpawn: () => { reset += 1; },
         onAfterOpen: () => { opened += 1; },
       }),
     ).toBe("pending");
     expect(reset).toBe(1);
     expect(opened).toBe(1);
-    expect(store.shell().targeting).toMatchObject({
-      kind: "bishopSnipe",
-      from: "c1",
-      to: "h6",
-    });
+    const t = store.shell().targeting;
+    expect(t).toMatchObject({ kind: "bishopSnipe", from: "c1" });
+    expect(t && "targets" in t && t.targets).toContain("h6");
   });
 });
 

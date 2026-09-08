@@ -28,7 +28,7 @@ const BY_TYPE: Record<PieceSymbol, SpecialCopy> = {
     unit: "Mecha",
     name: "Charon Booster Missiles",
     description:
-      "Arm for 2 gas, then click the revealed enemy queen on a diagonal — twin homing missiles ignore blockers.",
+      "Arm for 2 gas, then click any diagonal square — missiles detonate on the first ship in path, else fly off-board.",
     deployable: true,
     gasCost: 2,
   },
@@ -42,7 +42,7 @@ const BY_TYPE: Record<PieceSymbol, SpecialCopy> = {
     unit: "BattleShip",
     name: "Tactical Jump",
     description:
-      "Arm for 3 gas, then click a visible empty square — teleport through blockers and ignore attacks on the queen.",
+      "Arm for 3 gas, then click a visible empty square — teleport through blockers and ignore attacks on the BattleShip.",
     deployable: true,
     gasCost: 3,
   },

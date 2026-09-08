@@ -34,6 +34,7 @@ import {
   sideMoves,
   spawnCaptureStacks,
   spawnStacks,
+  charonForwardStacks,
   specialClassicalStacks,
 } from "./plans/stacks";
 import { asCandidate, generateCandidates, scoreMove } from "./strategies";
@@ -79,6 +80,14 @@ export const adjutant = (
     ...spawnStacks(specials, moveCandidates),
     ...spawnCaptureStacks(specials, c),
     ...specialClassicalStacks(specials, moveCandidates, c),
+    ...charonForwardStacks(
+      specials.filter((s) => {
+        const a = s.actions[0];
+        return !!a && a.timing === "F" && a.kind === "bishopSnipe";
+      }),
+      moveCandidates,
+      c,
+    ),
   ];
 
   /**
@@ -88,7 +97,13 @@ export const adjutant = (
    * checker, and (in the quiet case) not self-exposing a pinned piece, which
    * raw `attacksSquare` cannot see because it ignores absolute pins.
    */
-  const guarded = [...specials, ...stacks, ...moveCandidates].map((cand) =>
+  /**
+   * F-timing singles (Charon teleport-guesses) commit only inside C+F stacks
+   * below — a lone F would strand the free classical leg, so keep them out of
+   * the commit pool while still feeding the composer.
+   */
+  const committable = specials.filter((s) => s.actions[0]?.timing !== "F");
+  const guarded = [...committable, ...stacks, ...moveCandidates].map((cand) =>
     clearsCheck(c.map, cand.actions, c.sieged, c.us, c.enemy)
       ? cand
       : { ...cand, score: cand.score - KING_SAFETY },

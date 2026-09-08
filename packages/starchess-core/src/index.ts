@@ -43,6 +43,7 @@ export {
   turnTimeoutMsForTurn,
   SPECIAL_ENERGY_COST,
   CHARON_GAS_COST,
+  MECHA_CHARON_GAS_COST,
   QUEEN_WARP_GAS_COST,
 } from "./rules/constants";
 
@@ -94,10 +95,14 @@ export {
 export { adjacentSquares, spawnKingAnchor } from "./rules/specials/adjacent";
 
 export {
-  charonTargetQueen,
-  charonTargetQueenFromPlacement,
-  placementAfterCharon,
-} from "./rules/specials/bishopCharon";
+  charonDiagonalSquares,
+  charonDiagonalSquaresFromPlacement,
+  charonStrikeTarget,
+  charonTargetShips,
+  charonTargetShipsFromPlacement,
+  charonRayEdge,
+  placementAfterMechaCharon,
+} from "./rules/specials/mechaCharon";
 
 export {
   SPECIAL_REGISTRY,

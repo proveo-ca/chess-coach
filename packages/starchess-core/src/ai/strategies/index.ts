@@ -33,8 +33,9 @@ export const STRATEGIES: readonly Strategy[] = [
 ];
 
 /**
- * Every B-timing plan the strategies propose, filtered to what this turn's gas
- * budget can actually pay for.
+ * Every B/F-timing plan the strategies propose, filtered to what this turn's
+ * gas budget can actually pay for (first-action cost — Charon guesses ride
+ * C+F stacks whose classical leg is free).
  */
 export const generateCandidates = (ctx: AdjutantCtx): Candidate[] => {
   const out: Candidate[] = [];

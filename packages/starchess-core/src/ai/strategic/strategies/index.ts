@@ -37,7 +37,8 @@ export const STRATEGIES: readonly StrategicStrategy[] = [
 ];
 
 /**
- * Every B-timing plan the strategic strategies propose, gas-filtered.
+ * Every B/F-timing plan the strategic strategies propose, gas-filtered
+ * (first-action cost — Charon guesses ride C+F stacks).
  */
 export const generateCandidates = (ctx: StrategicCtx): Candidate[] => {
   const out: Candidate[] = [];

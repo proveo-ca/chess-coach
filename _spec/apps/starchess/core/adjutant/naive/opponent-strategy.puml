@@ -40,7 +40,7 @@ package "Strategy" {
   }
 
   package "ai/plans" {
-    component "stacks\nsame-turn B+C composition" as PL <<app>>
+    component "stacks\nB+C + C+F (charonForwardStacks)" as PL <<app>>
     component "simulate\nclearsCheck guard" as SIM <<app>>
   }
 }
@@ -82,6 +82,11 @@ note bottom
   **Forbidden:** a strategy that reads the snapshot directly, mutates
   the context, or branches on posture — weights are the only dial.
   **Forbidden:** importing from ""ai/strategic/**"" — this layer is below it.
+  **Charon hunt (two-mode):** ""captures.ts"" proposes B insta-kills while
+  ""enemyCanJump"" (enemy gasIncome < 3) is false, else F teleport-guesses at
+  top-3 mirrored warp predictions (free-aim diagonal + strike verified);
+  ""charonForwardStacks"" pairs each F with a classical that neither moves
+  the mecha nor occupies/screens the aim. Strategic twin mirrors both modes.
 end note
 
 note as N_OMNI

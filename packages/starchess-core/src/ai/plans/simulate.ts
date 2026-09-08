@@ -15,6 +15,7 @@ import {
   type ScPiece,
 } from "../../board/placement";
 import { rewriteClassicalAfterB } from "../../resolve/submit-turn";
+import { charonStrikeTarget } from "../../rules/specials/mechaCharon";
 import type { PieceColor, ScAction, ScActionInput } from "../../model/types";
 
 /**
@@ -37,7 +38,9 @@ const simulateAction = (
     return next;
   }
   if (action.kind === "bishopSnipe") {
-    // Charon removes the target battleship — which may be the checker.
+    // Charon removes the aimed ship when it is the first ship on its ray —
+    // which may be the checker. Fire-and-forget like the resolver.
+    if (!charonStrikeTarget(next, action.from, to, action.color)) return next;
     next.delete(to);
     return next;
   }

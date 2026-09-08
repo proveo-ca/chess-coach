@@ -20,7 +20,7 @@ package "Goals (vs classical chess)" {
 package "Specials (product)" {
   component "Pawn — gas step (pawnDouble)\n+1 forward; stacks with classical" as S1 <<app>>
   component "Knight — Spider Mine (knightMine)\nM: overlay; cap 3 / side" as S2 <<app>>
-  component "Bishop — Charon (bishopSnipe)\n2 gas; ignore blockers" as S3 <<app>>
+  component "Mecha — Charon (bishopSnipe)\n2 gas; free aim any diagonal\nfirst ship detonates, else fizzle off-board" as S3 <<app>>
   component "Rook — Siege toggle (rookSiege)\ntank ↔ siege vision / mobility" as S4 <<app>>
   component "Queen — Tactical Jump (queenWarp)\n3 gas; visible empty square" as S5 <<app>>
   component "King — Spawn\nadjacent deploy; can collide\nwith king-shots; a deploy on the enemy\nking's ring stacks a 2nd checker" as S6 <<app>>

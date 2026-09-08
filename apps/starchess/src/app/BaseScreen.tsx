@@ -40,7 +40,7 @@ import { createCCDeploy } from "~/presentation/specials/arms/CCDeploy";
 import { marineGasArm } from "~/presentation/specials/arms/marineGas";
 import { tankSiegeArm } from "~/presentation/specials/arms/tankSiege";
 import { hoverbikeMineArm } from "~/presentation/specials/arms/hoverbikeMine";
-import { bishopSnipeArm } from "~/presentation/specials/arms/bishopSnipe";
+import { mechaCharonArm } from "~/presentation/specials/arms/mechaCharon";
 import { shipJumpArm } from "~/presentation/specials/arms/shipJump";
 import { TUTORIAL_CAPABILITIES, setCapabilities } from "~/store/capabilitiesStore";
 import { resetReviewVisionFilter, reviewVisionFilter } from "~/store/reviewVisionStore";
@@ -149,7 +149,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
   const specialTargetSquares = createMemo((): Square[] => {
     const t = store.shell().targeting;
     if (!t) return [];
-    if (t.kind === "bishopSnipe") return [t.to];
+    if (t.kind === "bishopSnipe") return [...t.targets];
     if (t.kind === "queenWarp") return [...t.targets];
     return [];
   });
@@ -228,7 +228,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
     n: (ctx) => hoverbikeMineArm(store, snap(), ctx),
     p: (ctx) => marineGasArm(store, snap(), ctx),
     b: (ctx) =>
-      bishopSnipeArm(store, snap(), ctx, {
+      mechaCharonArm(store, snap(), ctx, {
         resetSpawn: ccd.resetSpawn,
         onAfterOpen: afterOpen,
       }),
@@ -246,12 +246,12 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
 
   const commitBishopSnipe = (to: Square) => {
     const t = store.shell().targeting;
-    if (!t || t.kind !== "bishopSnipe" || t.to !== to) return;
+    if (!t || t.kind !== "bishopSnipe" || !t.targets.includes(to)) return;
     const timing = specialTimingFor(snap().queue, t.color);
     const ok = tryQueue(
       store,
-      { timing, kind: "bishopSnipe", color: t.color, from: t.from, to: t.to },
-      `Charon Booster Missiles ${t.from}→${t.to} queued · End to fire`,
+      { timing, kind: "bishopSnipe", color: t.color, from: t.from, to },
+      `Charon Booster Missiles ${t.from}→${to} queued · End to fire`,
     );
     if (ok) store.dispatch({ type: "MARK_SPECIAL_USED", square: t.from });
   };
