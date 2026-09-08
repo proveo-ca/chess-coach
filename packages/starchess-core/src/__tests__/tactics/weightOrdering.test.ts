@@ -222,8 +222,9 @@ describe("ally-crush dials never outbid a real runner tier or retaliation", () =
    * Deploying over our own ring units is priced below every tier that answers
    * a seen threat: the dials only ever *nudge* an already-runner-relevant or
    * shielding drop past an empty square, and their sum stays under
-   * RUNNER_STOP_SERIOUS — only `runnerDeployValue` itself (already laddered)
-   * can lift an ally-crush into those tiers.
+   * RUNNER_STOP_SERIOUS. The runner answer itself pays nothing on ally-held
+   * squares (the standing body already blockades), so nothing lifts an
+   * ally-crush into the runner tiers — crushes top out at the dials below.
    */
   it("each dial sits below the serious runner tier", () => {
     for (const w of [ALLY_UPGRADE, ALLY_SHIELD_PAWN, ALLY_SHIELD_SHIP]) {

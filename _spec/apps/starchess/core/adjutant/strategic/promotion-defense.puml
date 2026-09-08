@@ -145,10 +145,12 @@ note as N_ANSWERS
 
   **Ally-occupied ring squares are legal answers too** (the Command Center may
   crush its own non-king units; kings are skipped at generation). The deploy
-  loop prices the victim (mirror of the enemy-crush bonus), so
-  ""runnerDeployValue"" on an ally ""at"" / ""front"" / path square nets the
-  answer minus the ally — and a square holding some runner's last blocker
-  carries the abandon charge and never shields elsewhere (""ALLY_UPGRADE"" /
+  loop prices the victim (mirror of the enemy-crush bonus), but the runner
+  answer itself pays **nothing** on ally-held squares — the standing body
+  already blockades it, so re-buying the square would be pure victim + gas
+  (the seen-crush / remembered-block shares above apply to non-ally squares
+  only). A square holding some runner's last blocker carries the abandon
+  charge and never shields elsewhere (""ALLY_UPGRADE"" /
   ""ALLY_SHIELD_PAWN"" / ""ALLY_SHIELD_SHIP"" in ""strategies/economy.ts"").
 end note
 

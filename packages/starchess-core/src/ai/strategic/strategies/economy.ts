@@ -77,6 +77,8 @@ export const QUEEN_FINISH = 3_200;
  * only outbid an empty square for defense:
  *  - ring full + defending + heavier guard replaces the cheapest ally in place;
  *  - a fresh unit that newly covers a lit, threatened own near-promotion pawn / ship.
+ *  - never for a runner answer on an ally-held square: the standing body
+ *    already blockades it, so re-buying the square is pure victim + gas.
  * Ladder: each (and their sum) sits below RUNNER_STOP_SERIOUS (5_500) —
  * asserted in `__tests__/tactics/weightOrdering.test.ts`.
  */
@@ -156,8 +158,9 @@ const deploys = (ctx: StrategicCtx): Candidate[] => {
     (r) => adjacent.includes(r.at) || r.path.some((s) => adjacent.includes(s)),
   );
   const defending = hidden || urgentRunners.length > 0;
-  // No empty mine-free ring square left: the only drops left are crushes.
-  const ringFull = adjacent.every((sq) => map.has(sq));
+  // No usable ring square left: the only drops left are crushes (non-vacuous —
+  // a mined-out ring is no ring at all, not a full one).
+  const ringFull = adjacent.length > 0 && adjacent.every((sq) => map.has(sq));
   const defendingPlus = defending || kingThreatened;
 
   for (const unit of ["p", "n", "b", "r", "q"] as const) {
@@ -197,6 +200,11 @@ const deploys = (ctx: StrategicCtx): Candidate[] => {
     for (const to of adjacent) {
       if (unit === "p" && (rankOf(to) === 1 || rankOf(to) === 8)) continue;
       const occ = map.get(to);
+      // Our own body already standing on a runner square answers it — swapping
+      // it for a fresh unit re-buys the same blockade while eating the victim
+      // and the gas, so the runner answer pays nothing on ally-held squares
+      // (victim pricing + sole-blocker abandon below still apply).
+      const allyHeld = occ?.color === us;
       // Kings are never crushable — generation-side hygiene only;
       // `addScAction` validation stays the sole legality authority.
       if (occ?.type === "k") continue;
@@ -245,8 +253,9 @@ const deploys = (ctx: StrategicCtx): Candidate[] => {
       }
       // STRATEGIC: a visible runner promotes on *our* back rank, which is the
       // deploy ring — so a drop is often the only answer that arrives in time,
-      // and one onto the runner's own square crushes it.
-      score += runnerDeployValue(ctx.runners, to);
+      // and one onto the runner's own square crushes it. Never on ally-held
+      // squares (see allyHeld above): the standing body already answers.
+      if (!allyHeld) score += runnerDeployValue(ctx.runners, to);
       // STRATEGIC: "however possible" includes dropping a unit on top of the
       // shooter — a Command Center that was fired on can answer with its own
       // ring, and the crush needs no line of attack.

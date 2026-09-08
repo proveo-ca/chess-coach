@@ -118,6 +118,34 @@ describe("strategic ally-crush deploys", () => {
     expect(spawns.every((a) => a.to !== "d2")).toBe(true);
   });
 
+  it("never replaces a non-sole blocker to re-buy the same blockade", () => {
+    // Black runner d3 is contained (not passed) behind our pawn d2 AND our
+    // rook d1: neither is the sole blocker, so the abandon charge stays
+    // holstered — but the runner answer must not pay out on ally-held squares
+    // either, or the Command Center eats its own pawn to drop a ship onto an
+    // already-answered square.
+    const spawns = spawnsFor("SCFEN|4k3/8/8/8/8/3p4/3PR3/3RK3|10|33|P|G:11:11|Q:w:;b:", {
+      color: "w",
+      stored: 12,
+      kvs: seedKnownVsSeen(),
+    });
+    expect(spawns.length).toBeGreaterThan(0);
+    // Empty ring squares (f1/f2) outbid every crush; both blockers stand.
+    expect(spawns.every((a) => a.to !== "d2" && a.to !== "d1")).toBe(true);
+  });
+
+  it("still crushes an enemy runner standing on the ring", () => {
+    // Black pawn d2 sits on our ring (and checks the king): the runner answer
+    // pays on enemy-held squares — suppression applies to ally-held only.
+    const spawns = spawnsFor("SCFEN|4k3/8/8/8/8/8/3p4/4K3|10|33|P|G:11:11|Q:w:;b:", {
+      color: "w",
+      stored: 12,
+      kvs: seedKnownVsSeen(),
+    });
+    expect(spawns.length).toBeGreaterThan(0);
+    expect(spawns.some((a) => a.to === "d2")).toBe(true);
+  });
+
   it("leaves the same guard alone when the ship is safe", () => {
     // Same board minus the attacker: no threat, no shield, empty preferred.
     const spawns = spawnsFor("SCFEN|4k3/8/8/8/3Q4/8/3P4/4K3|10|33|P|G:11:11|Q:w:;b:", {
