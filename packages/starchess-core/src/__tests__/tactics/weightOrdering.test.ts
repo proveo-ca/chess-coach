@@ -21,8 +21,7 @@ import {
   SAC_FOR_CC,
   SAC_FOR_CC_WINNING,
 } from "../../ai/strategies/captures";
-import { PAWN_CHECK_CC, SNEAK_KNIGHT_CHECK } from "../../ai/strategies/checks";
-import {
+import { PAWN_CHECK_CC, SNEAK_KNIGHT_CHECK } from "../../ai/strategies/checks";import {
   BACKRANK_ESCAPE,
   DEFEND_UNIT,
   DEPLOY_ATTACK_SURVIVAL,
@@ -89,8 +88,7 @@ describe("survival dominates", () => {
     expect(QUEEN_THREAT_KING).toBeLessThan(QUEEN_ESCAPE);
   });
 
-  it("insta-target tops the Charon ladder, hotter guesses stay mid-tier", () => {
-    // Effective terms: every Charon single carries base = trade*7, so pin the
+  it("insta-target tops the Charon ladder, hotter guesses stay mid-tier", () => {    // Effective terms: every Charon single carries base = trade*7, so pin the
     // ordering with an explicit trade floor rather than bare constants — a
     // trade retune must not silently invert the hunt tiers.
     const TRADE_FLOOR = 100;
@@ -246,5 +244,15 @@ describe("a fogged guess is never scored above a seen Command Center", () => {
   it("holds for every guess/seen pair", () => {
     expect(SNEAK_KNIGHT_CHECK_GUESS).toBeLessThanOrEqual(SNEAK_KNIGHT_CHECK_SEEN);
     expect(PAWN_CHECK_CC_GUESS).toBeLessThanOrEqual(PAWN_CHECK_CC_SEEN);
+  });
+
+  it("except the deliberate hot-chase exception (single-step still subordinate)", () => {
+    // Arena-tuned: guess chase 2_500 drags units into vision of the true king
+    // (naive:strategic 10-0 line); the naive pair it inverts stays frozen —
+    // pin both sides so neither drifts silently.
+    expect(CHASE_KING_GUESS).toBeGreaterThan(1_000);
+    expect(CHASE_KING_GUESS).toBeLessThan(AVENGE_CC_SHOT);
+    expect(SNEAK_KNIGHT_CHECK).toBe(2_000);
+    expect(PAWN_CHECK_CC).toBe(1_500);
   });
 });

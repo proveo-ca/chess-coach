@@ -12,7 +12,16 @@ import type { StrategicStrategy } from "./types";
 
 export const SNEAK_KNIGHT_CHECK_GUESS = 6_000;
 export const ATTACK_KING_GUESS = 5_000;
-export const CHASE_KING_GUESS = 450;
+/**
+ * Closing weight on the guessed CC (× chebyshev delta, up to ×7 = 17_500).
+ * Deliberately hotter than hunt `chaseKing` 450: closing on the guess drags
+ * units into vision range of the true king — the arena 10-0 line depends on
+ * it. Knife-edge: 2_000 draws level, 4_000 suicides into the guess (verified
+ * naive:strategic ×10 ×3 runs). Effective sums intentionally outbid
+ * retaliation/serious tiers on long closes; the clearsCheck plan guard (not
+ * the ladder) is what keeps the king safe — see weight-ladder.puml.
+ */
+export const CHASE_KING_GUESS = 2_500;
 
 /** Sneak check on a *seen* Command Center (CC). Distinct from the naive weight of the same shape. */
 export const SNEAK_KNIGHT_CHECK_SEEN = 6_000;

@@ -29,7 +29,7 @@ package "tiers, high to low" {
   component "**absolute survival**\nnever posture-scaled\n13_500 … 1_500" as T1 <<app>>
   component "**retaliation**\ntake what shot the CC\n9_000 (−40 × cost)" as T12 <<app>>
   component "**promotion race**\nstop an enemy runner\n7_000 … 600" as T15 <<app>>
-  component "**Command Center pressure**\nstrategic checks + promotion rush\n6_000 … 450" as T2 <<app>>
+  component "**Command Center pressure**\nstrategic checks + promotion rush\n6_000 … 2_500" as T2 <<app>>
   component "**material**\ncaptures / trades\n2_500 … 400" as T3 <<app>>
   component "**economy dials**\ndeploy mix + horizon\n3_500 … 600" as T4 <<app>>
   component "**posture weights**\nthe only contextual dial\n3_500 … 0" as T5 <<db>>
@@ -79,7 +79,7 @@ note as N_T2
   | ""PAWN_CHECK_CC_GUESS"" | 6_000 | fogged CC |
   | ""PAWN_CHECK_CC_SEEN"" | 6_000 | visible CC |
   | ""ATTACK_KING_GUESS"" | 5_000 | fogged CC, flat — replaces posture ""attackKing"" |
-  | ""CHASE_KING_GUESS"" | 450 | fogged CC — equals hunt's ""chaseKing"", so chase is fog-neutral |
+  | ""CHASE_KING_GUESS"" | 2_500 | fogged CC — deliberately hotter than hunt's ""chaseKing"" (450): closing on the guess drags units into vision range of the true king, which the arena 10-0 line depends on |
   | ""NEAR_PROMOTE_RUSH"" | 6_000 | ""ai/strategies/mapControl.ts"" — a Marine two steps from promotion |
 
   **Naive keeps its own, deliberately weaker pair** (""ai/strategies/checks.ts""):
@@ -216,6 +216,9 @@ note bottom of TEST
   ""cc-focus.puml"" inverts an invariant this file's test still passes — twice
   over now: that stack is 11_000 effective, so it also outbids tier 1.2
   retaliation at 9_000 (""strategic/cc-retaliation.puml"" records the exception).
+  The hot guess-chase (2_500 × delta) stacks a third time on the same moves;
+  the clearsCheck plan guard, not this ladder, is what keeps such sums from
+  walking the Command Center into fire.
 
   **The eighteen enforced invariants**, over 19 cases — invariant 4 is asserted
   twice, once stacked and once bare. They used to be prose beside the constants

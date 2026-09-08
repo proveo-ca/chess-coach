@@ -165,8 +165,10 @@ note as N_OPEN
 
   A **stacked** check on the enemy Command Center still outbids retaliation:
   ""PAWN_CHECK_CC_GUESS"" 6_000 and ""ATTACK_KING_GUESS"" 5_000 both fire on one
-  Marine move, for 11_000 effective against this weight's 9_000. So the
-  instruction holds on every ordinary turn but loses to that one stack.
+  Marine move, for 11_000 effective against this weight's 9_000 — and a
+  same-move close adds ""CHASE_KING_GUESS"" 2_500 × delta on top (13_500 at
+  delta 1). So the instruction holds on every ordinary turn but loses to
+  those stacks.
 
   The stack is the double-count ""../cc-focus.puml"" records as **open defect
   2** — two blocks sharing a predicate — and the fix belongs there. Raising

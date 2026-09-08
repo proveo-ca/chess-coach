@@ -139,6 +139,12 @@ note as N_OPEN
   that concern's open note and points the fix back here — raising the
   retaliation constant over 11_000 would put it above ""KING_SAFETY"".
 
+  The same move can also stack ""CHASE_KING_GUESS"" 2_500 × chebyshev delta
+  (up to ×7 = 17_500): a delta-1 close makes 13_500, a long queen close up to
+  28_500 — both clearing tier 1 and tier 1.2 outright. Same verdict as the
+  double-count: accepted (arena 10-0 ×3 depends on hot chase), guarded by the
+  clearsCheck plan rule rather than the ladder.
+
   The Mecha diagonal block overlaps ""attackWeight"" the same way, but that
   stacking is documented as intentional in the naive layer ("worth a second
   diagonal's weight"), so it is listed here as shape, not as a defect.
