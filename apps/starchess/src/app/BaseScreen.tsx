@@ -36,12 +36,12 @@ import { ReviewTurnNav } from "~/components/atoms/ReviewTurnNav";
 import { TurnBar } from "~/presentation/hud/components/TurnBar";
 import { TurnBarSidebar } from "~/presentation/hud/components/TurnBarSidebar";
 import { specialTimingFor, tryQueue } from "~/presentation/specials/queue";
-import { createKingDeploy } from "~/presentation/specials/arms/kingDeploy";
+import { createCCDeploy } from "~/presentation/specials/arms/CCDeploy";
 import { marineGasArm } from "~/presentation/specials/arms/marineGas";
-import { rookSiegeArm } from "~/presentation/specials/arms/rookSiege";
-import { knightMineArm } from "~/presentation/specials/arms/knightMine";
+import { tankSiegeArm } from "~/presentation/specials/arms/tankSiege";
+import { hoverbikeMineArm } from "~/presentation/specials/arms/hoverbikeMine";
 import { bishopSnipeArm } from "~/presentation/specials/arms/bishopSnipe";
-import { queenJumpArm } from "~/presentation/specials/arms/queenJump";
+import { shipJumpArm } from "~/presentation/specials/arms/shipJump";
 import { TUTORIAL_CAPABILITIES, setCapabilities } from "~/store/capabilitiesStore";
 import { resetReviewVisionFilter, reviewVisionFilter } from "~/store/reviewVisionStore";
 import type { BoardSkin, PieceSet } from "~/types/board";
@@ -137,14 +137,14 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
     props.onExitToMenu?.();
   };
 
-  // King deploy flow lives in `presentation/specials/arms/kingDeploy.ts`.
+  // King deploy flow lives in `presentation/specials/arms/CCDeploy.ts`.
   // `syncOverlay` is a hoisted function declaration below, so the open
   // callback can bind it even though the hook is created here (memos evaluate
   // eagerly and must see a ready hook).
   const afterOpen = () => requestAnimationFrame(() => requestAnimationFrame(syncOverlay));
-  const kd = createKingDeploy(store, snap, { onAfterOpen: afterOpen });
-  const spawnPhase = kd.spawnPhase;
-  const spawnAdjacent = kd.spawnAdjacent;
+  const ccd = createCCDeploy(store, snap, { onAfterOpen: afterOpen });
+  const spawnPhase = ccd.spawnPhase;
+  const spawnAdjacent = ccd.spawnAdjacent;
 
   const specialTargetSquares = createMemo((): Square[] => {
     const t = store.shell().targeting;
@@ -223,26 +223,26 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
   }
 
   const { onGasDeploy } = usePieceSpecialArm({
-    k: () => kd.openDeployModal(),
-    r: (ctx) => rookSiegeArm(store, snap(), ctx),
-    n: (ctx) => knightMineArm(store, snap(), ctx),
+    k: () => ccd.openDeployModal(),
+    r: (ctx) => tankSiegeArm(store, snap(), ctx),
+    n: (ctx) => hoverbikeMineArm(store, snap(), ctx),
     p: (ctx) => marineGasArm(store, snap(), ctx),
     b: (ctx) =>
       bishopSnipeArm(store, snap(), ctx, {
-        resetSpawn: kd.resetSpawn,
+        resetSpawn: ccd.resetSpawn,
         onAfterOpen: afterOpen,
       }),
     q: (ctx) =>
-      queenJumpArm(store, snap(), ctx, {
-        resetSpawn: kd.resetSpawn,
+      shipJumpArm(store, snap(), ctx, {
+        resetSpawn: ccd.resetSpawn,
         onAfterOpen: afterOpen,
         rookModeFor: rookModeForSieged(store.shell().siegedRooks),
       }),
   });
 
-  const onSelectSpawnUnit = kd.onSelectSpawnUnit;
-  const onCancelSpawn = kd.onCancelSpawn;
-  const deploySpawnAt = kd.deploySpawnAt;
+  const onSelectSpawnUnit = ccd.onSelectSpawnUnit;
+  const onCancelSpawn = ccd.onCancelSpawn;
+  const deploySpawnAt = ccd.deploySpawnAt;
 
   const commitBishopSnipe = (to: Square) => {
     const t = store.shell().targeting;
@@ -348,6 +348,19 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
     void spawnPhase();
     void store.shell().targeting;
     requestAnimationFrame(() => requestAnimationFrame(syncOverlay));
+  });
+
+  // A board-click spawn commit (useBoardInput) queues without touching this
+  // hook — but absence is racy here (signals flush before the external match
+  // store notifies), so sync on positive evidence instead: once our spawn is
+  // queued, the pick overlay's job is done.
+  createEffect(() => {
+    if (ccd.spawnPhase() !== "pick") return;
+    const color = viewerColor(store);
+    const queued = snap().queue?.actions.some(
+      (a) => a.color === color && a.timing !== "C" && a.kind === "spawn",
+    );
+    if (queued) ccd.resetSpawn();
   });
 
   onMount(() => {

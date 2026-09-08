@@ -11,12 +11,14 @@ export {
   type PieceSpecialArmHandlers,
   type PieceSpecialDef,
 } from "~/presentation/specials/pieceSpecials";
-export { pawnGasArm } from "~/presentation/specials/pawnGasArm";
-export * from "~/presentation/specials/queenTacticalJump";
+export * from "~/presentation/specials/shipTacticalJump";
+export * from "~/presentation/specials/spiderMineLegs";
+export * from "~/presentation/specials/hooks/usePieceSpecialArm";
+export * from "~/presentation/specials/planning/occupancy";
 export * from "~/presentation/specials/deployTargets";
-export * from "~/presentation/specials/arms/kingDeploy";
+export * from "~/presentation/specials/arms/CCDeploy";
 export * from "~/presentation/specials/arms/marineGas";
-export * from "~/presentation/specials/arms/rookSiege";
-export * from "~/presentation/specials/arms/knightMine";
+export * from "~/presentation/specials/arms/tankSiege";
+export * from "~/presentation/specials/arms/hoverbikeMine";
 export * from "~/presentation/specials/arms/bishopSnipe";
-export * from "~/presentation/specials/arms/queenJump";
+export * from "~/presentation/specials/arms/shipJump";

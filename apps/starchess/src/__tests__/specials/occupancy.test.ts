@@ -8,7 +8,7 @@ import {
 import {
   occupancyForQueuedMoves,
   pieceAtQueuedSquare,
-} from "~/presentation/board/occupancyForQueuedMoves";
+} from "~/presentation/specials/planning/occupancy";
 
 describe("occupancyForQueuedMoves", () => {
   it("selects about-to-deploy pawn and offers forward dests", () => {

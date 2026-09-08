@@ -48,6 +48,7 @@ import {
   BISHOP_FIRST,
   BISHOP_VS_QUEEN,
   deployPolicy,
+  isBishopDeployCapped,
 } from "../../strategies/economy";
 import { isSoleBlocker, isUrgentRunner } from "../runners";
 import { RUNNER_ABANDON_SHARE, runnerStake } from "./runners";
@@ -199,6 +200,15 @@ const deploys = (ctx: StrategicCtx): Candidate[] => {
       // Kings are never crushable — generation-side hygiene only;
       // `addScAction` validation stays the sole legality authority.
       if (occ?.type === "k") continue;
+      // Mecha pile-up gate (fog-honest: the exception needs a lit victim).
+      if (
+        unit === "b" &&
+        isBishopDeployCapped(map, us, to, (sq) =>
+          vision.litSquares.has(sq) || vision.revealedPieces.has(sq),
+        )
+      ) {
+        continue;
+      }
       let score =
         center * centerScore(to) +
         promoteRank * promoteProgress(rankOf(to), us) +

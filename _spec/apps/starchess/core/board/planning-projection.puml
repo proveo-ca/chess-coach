@@ -14,7 +14,7 @@ package "Live chrome" {
 }
 
 package "Intent projections (stacked, single owner each)" {
-  component "occupancyForQueuedMoves\n→ occupancyForViewerMoves" as OCC <<app>>
+  component "specials/planning/occupancy\n(occupancyForQueuedMoves → occupancyForViewerMoves)" as OCC <<app>>
   component "intentOverlays.ts\npolicy → hook → pure" as OV <<app>>
   component "rookModeForSieged\nshared siege helper" as ROOK <<db>>
   component "fogVisibility.ts\ntargetVisibleGate · pieceVisible" as FOG <<db>>

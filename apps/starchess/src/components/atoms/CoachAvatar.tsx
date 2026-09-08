@@ -1,5 +1,5 @@
 /**
- * Selena / Selena Kerrigan — classic coach cat, optional Ghost sniper helm.
+ * Selena / Selena — classic coach cat, optional Ghost sniper helm.
  * `identity="selena"` matches apps/ui CoachAvatar (no helm). Switching to
  * kerrigan drops the helm onto her forehead (500ms) with a happy bounce;
  * switching back lifts it toward the top-middle while she watches it leave.
@@ -167,7 +167,7 @@ export const CoachAvatar: Component<CoachAvatarProps> = (props) => {
         helmPhase() === "dropping" && styles.helmDropping,
         helmPhase() === "lifting" && styles.helmLifting,
       )}
-      aria-label={identity() === "selena" ? "Selena" : "Selena Kerrigan"}
+      aria-label={identity() === "selena" ? "Selena" : "Selena"}
     >
       <div class={clsx(styles.ear, styles["ear--left"])} />
       <div class={clsx(styles.ear, styles["ear--right"])} />

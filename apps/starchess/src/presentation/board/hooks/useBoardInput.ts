@@ -3,13 +3,13 @@ import type { Square } from "chess.js";
 import { createMemo } from "solid-js";
 import {
   UNIT_COST,
-  adjacentSquares,
   placementToMap,
   scMovesFrom,
-  spawnKingAnchor,
   type ScFenSnapshot,
   type StarChessColor,
 } from "@chess-coach/starchess-core";
+import { ccDeployTargets } from "~/presentation/specials/deployTargets";
+import { specialTimingFor } from "~/presentation/specials/queue";
 
 import { playerFogOccultsMoves } from "~/app/intentOverlayPolicy";
 import { useMatchStore } from "~/app/MatchStoreContext";
@@ -18,7 +18,7 @@ import {
   isViewerBRelocateOrigin,
   occupancyForQueuedMoves,
   pieceAtQueuedSquare,
-} from "~/presentation/board/occupancyForQueuedMoves";
+} from "~/presentation/specials/planning/occupancy";
 import { occupancyForViewerMoves } from "~/presentation/board/occupancyForViewerMoves";
 import { minesVisibleToViewer } from "~/presentation/board/fogVisibility";
 import { legalDestsWithFogPawnAttacks } from "~/presentation/board/pawnFogAttackDests";
@@ -166,18 +166,11 @@ export const useBoardInput = (
         ([, p]) => p.type === "k" && p.color === color,
       )?.[0];
       if (!kingSq) return;
-      const timing = state.liveSnapshot.queue?.actions.some(
-        (a) => a.color === color && a.timing === "C",
-      )
-        ? "F"
-        : "B";
-      // Enemy-occupied squares stay deployable (crush) — only ally squares block.
-      const { king: anchor, allyOccupied } = spawnKingAnchor(
-        state.liveSnapshot,
-        color,
-        timing,
-      );
-      if (!anchor || !adjacentSquares(anchor, allyOccupied).includes(square)) {
+      const timing = specialTimingFor(state.liveSnapshot.queue, color);
+      // Ally and enemy non-king squares are deployable (crush replaces the
+      // occupant); kings never are. Single owner: specials/deployTargets.
+      const { king: anchor, targets } = ccDeployTargets(state.liveSnapshot, color);
+      if (!anchor || !targets.includes(square)) {
         return;
       }
       const cost = UNIT_COST[unit];
@@ -206,11 +199,7 @@ export const useBoardInput = (
     if (state.targeting?.kind === "bishopSnipe") {
       const t = state.targeting;
       if (square !== t.to) return;
-      const timing = state.liveSnapshot.queue?.actions.some(
-        (a) => a.color === t.color && a.timing === "C",
-      )
-        ? "F"
-        : "B";
+      const timing = specialTimingFor(state.liveSnapshot.queue, t.color);
       const before = store.state().liveSnapshot;
       store.dispatch({
         type: "QUEUE_ACTION",
@@ -234,11 +223,7 @@ export const useBoardInput = (
     if (state.targeting?.kind === "queenWarp") {
       const t = state.targeting;
       if (!t.targets.includes(square)) return;
-      const timing = state.liveSnapshot.queue?.actions.some(
-        (a) => a.color === t.color && a.timing === "C",
-      )
-        ? "F"
-        : "B";
+      const timing = specialTimingFor(state.liveSnapshot.queue, t.color);
       const before = store.state().liveSnapshot;
       store.dispatch({
         type: "QUEUE_ACTION",

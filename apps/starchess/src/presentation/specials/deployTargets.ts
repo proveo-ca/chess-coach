@@ -18,7 +18,7 @@ import {
 
 import { specialTimingFor } from "~/presentation/specials/queue";
 
-export const kingDeployTargets = (
+export const ccDeployTargets = (
   snap: ScFenSnapshot,
   color: StarChessColor,
 ): { king: Square | null; targets: Square[] } => {

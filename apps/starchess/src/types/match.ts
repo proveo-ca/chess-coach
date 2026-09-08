@@ -69,8 +69,8 @@ export type TimelineCue = CueRouting &
       color: StarChessColor;
       from: Square;
       to: Square;
-      /** BattleShip Tactical Jump — QueenJumpAnimation, not a hull slide. */
-      queenJump?: boolean;
+      /** BattleShip Tactical Jump — ShipJumpAnimation, not a hull slide. */
+      shipJump?: boolean;
       /** Pawn gas-step (B/F pawnDouble) — stim square + hop timing. */
       stim?: boolean;
     }

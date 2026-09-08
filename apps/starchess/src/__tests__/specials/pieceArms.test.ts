@@ -12,9 +12,9 @@ import { createMatchStateFromScfen } from "~/app/matchReducer";
 import { createMatchStore } from "~/app/MatchStoreContext";
 import { rookModeForSieged } from "~/presentation/board/rookMode";
 import { bishopSnipeArm } from "~/presentation/specials/arms/bishopSnipe";
-import { knightMineArm } from "~/presentation/specials/arms/knightMine";
-import { queenJumpArm } from "~/presentation/specials/arms/queenJump";
-import { rookSiegeArm } from "~/presentation/specials/arms/rookSiege";
+import { hoverbikeMineArm } from "~/presentation/specials/arms/hoverbikeMine";
+import { shipJumpArm } from "~/presentation/specials/arms/shipJump";
+import { tankSiegeArm } from "~/presentation/specials/arms/tankSiege";
 import type { MatchStore } from "~/types/match";
 
 const makeStore = (fen: string): MatchStore =>
@@ -22,10 +22,10 @@ const makeStore = (fen: string): MatchStore =>
 
 const snapOf = (store: MatchStore) => store.state().liveSnapshot;
 
-describe("rookSiegeArm", () => {
+describe("tankSiegeArm", () => {
   it("queues the siege toggle", () => {
     const store = makeStore("SCFEN|4k3/8/8/8/8/8/8/R3K3|1|33|P|G:11:11|Q:w:;b:");
-    expect(rookSiegeArm(store, snapOf(store), { square: "a1", piece: "r" })).toBe("armed");
+    expect(tankSiegeArm(store, snapOf(store), { square: "a1", piece: "r" })).toBe("armed");
     expect(snapOf(store).queue?.actions).toMatchObject([
       { timing: "B", kind: "rookSiege", color: "w", from: "a1" },
     ]);
@@ -33,7 +33,7 @@ describe("rookSiegeArm", () => {
 
   it("rejects a mismatched piece without queueing", () => {
     const store = makeStore("SCFEN|4k3/8/8/8/8/8/8/R3K3|1|33|P|G:11:11|Q:w:;b:");
-    expect(rookSiegeArm(store, snapOf(store), { square: "a1", piece: "q" })).toBe(false);
+    expect(tankSiegeArm(store, snapOf(store), { square: "a1", piece: "q" })).toBe(false);
     expect(snapOf(store).queue?.actions ?? []).toHaveLength(0);
   });
 
@@ -44,7 +44,7 @@ describe("rookSiegeArm", () => {
       action: { timing: "C", kind: "classical", color: "w", from: "e2", to: "e3" },
     });
     store.dispatch({ type: "APPLY_SNAPSHOT", snapshot: queued.snapshot });
-    expect(rookSiegeArm(store, snapOf(store), { square: "a1", piece: "r" })).toBe("armed");
+    expect(tankSiegeArm(store, snapOf(store), { square: "a1", piece: "r" })).toBe("armed");
     expect(snapOf(store).queue?.actions).toMatchObject([
       { timing: "C", kind: "classical", color: "w", from: "e2", to: "e3" },
       { timing: "F", kind: "rookSiege", color: "w", from: "a1" },
@@ -52,10 +52,10 @@ describe("rookSiegeArm", () => {
   });
 });
 
-describe("knightMineArm", () => {
+describe("hoverbikeMineArm", () => {
   it("queues the mine on its own square", () => {
     const store = makeStore("SCFEN|4k3/8/8/8/8/8/8/1N2K3|1|33|P|G:11:11|Q:w:;b:");
-    expect(knightMineArm(store, snapOf(store), { square: "b1", piece: "n" })).toBe("armed");
+    expect(hoverbikeMineArm(store, snapOf(store), { square: "b1", piece: "n" })).toBe("armed");
     expect(snapOf(store).queue?.actions).toMatchObject([
       { timing: "B", kind: "knightMine", color: "w", from: "b1", to: "b1" },
     ]);
@@ -91,7 +91,7 @@ describe("bishopSnipeArm", () => {
   });
 });
 
-describe("queenJumpArm", () => {
+describe("shipJumpArm", () => {
   const vision = (store: MatchStore) => ({
     rookModeFor: rookModeForSieged(store.shell().siegedRooks),
   });
@@ -99,7 +99,7 @@ describe("queenJumpArm", () => {
   it("rejects a mismatched piece on a queen square", () => {
     const store = makeStore("SCFEN|4k3/8/8/8/8/8/8/3QK3|1|33|P|G:11:11|Q:w:;b:");
     expect(
-      queenJumpArm(store, snapOf(store), { square: "d1", piece: "k" }, vision(store)),
+      shipJumpArm(store, snapOf(store), { square: "d1", piece: "k" }, vision(store)),
     ).toBe(false);
     expect(store.shell().targeting).toBeNull();
   });
@@ -107,7 +107,7 @@ describe("queenJumpArm", () => {
   it("rejects a queen piece on a non-queen square", () => {
     const store = makeStore("SCFEN|4k3/8/8/8/8/8/8/3QK3|1|33|P|G:11:11|Q:w:;b:");
     expect(
-      queenJumpArm(store, snapOf(store), { square: "e1", piece: "q" }, vision(store)),
+      shipJumpArm(store, snapOf(store), { square: "e1", piece: "q" }, vision(store)),
     ).toBe(false);
     expect(store.shell().targeting).toBeNull();
   });
@@ -115,7 +115,7 @@ describe("queenJumpArm", () => {
   it("opens targeting over visible empty squares", () => {
     const store = makeStore("SCFEN|4k3/8/8/8/8/8/8/3QK3|1|33|P|G:11:11|Q:w:;b:");
     expect(
-      queenJumpArm(store, snapOf(store), { square: "d1", piece: "q" }, vision(store)),
+      shipJumpArm(store, snapOf(store), { square: "d1", piece: "q" }, vision(store)),
     ).toBe("pending");
     const t = store.shell().targeting;
     expect(t?.kind).toBe("queenWarp");

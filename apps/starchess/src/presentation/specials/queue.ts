@@ -1,6 +1,6 @@
 /**
  * Shared special queue helpers — timing + single-commit used by every arm.
- * Extracted from `pawnGasArm.ts` so all arms share one owner.
+ * (Split out of the original marine arm; its shim was deleted in plan phase 5.)
  * // SPEC: _spec/apps/starchess/turn-input-sequence.puml
  */
 import type { Square } from "chess.js";

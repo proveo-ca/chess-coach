@@ -166,7 +166,7 @@ export const MenuScreen: Component<StarChessMenuScreenProps> = (props) => {
             data-testid="starchess-menu-guide-dock"
           >
             <ChatBubble testId="starchess-menu-bubble" class={styles.guideBubble}>
-              I'm Selena Kerrigan, assigned to guide you through the stars!
+              I'm Selena, assigned to guide you through the stars!
             </ChatBubble>
           </div>
         </div>

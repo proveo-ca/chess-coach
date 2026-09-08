@@ -2,6 +2,11 @@
 /**
  * Planning occupancy after viewer B intents — spawn / gas / warp / siege toggle.
  * Board input uses this so classical can be queued from post-B squares.
+ * Owned by `presentation/specials` (moved from `presentation/board/`, whose
+ * shim was deleted in plan phase 5).
+ * Still reads `board/occupancyForViewerMoves` + `board/rookMode` — the fog
+ * filter is the other half of this same projection, so it moves with it (or
+ * not at all) in a later phase; do not split one without the other.
  */
 import type { Square } from "chess.js";
 import {

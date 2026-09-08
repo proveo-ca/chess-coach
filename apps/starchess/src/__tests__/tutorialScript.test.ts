@@ -40,7 +40,7 @@ import {
 import {
   occupancyForQueuedMoves,
   pieceAtQueuedSquare,
-} from "~/presentation/board/occupancyForQueuedMoves";
+} from "~/presentation/specials/planning/occupancy";
 
 const storyOf = (stageId: TutorialSectionId, storyId: string) => {
   const story = tutorialStory(stageId, storyId);

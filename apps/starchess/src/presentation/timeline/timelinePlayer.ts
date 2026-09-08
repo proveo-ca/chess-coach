@@ -31,7 +31,7 @@ import {
   TACTICAL_JUMP_APPEAR_MS,
   TACTICAL_JUMP_TRAIL_MS,
   TACTICAL_JUMP_TRAVEL_MS,
-} from "~/presentation/specials/queenTacticalJump";
+} from "~/presentation/specials/shipTacticalJump";
 import { gasDropCornerFor } from "~/presentation/animations/gasDrop";
 import { rookModeAt } from "~/presentation/board/rookMode";
 import type { CueLane, TimelineCallbacks, TimelineCue } from "~/types/match";
@@ -227,7 +227,7 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
         color: ev.color,
         from: ev.from,
         to: ev.to,
-        queenJump: true,
+        shipJump: true,
       });
       if (ev.mineColor) {
         cues.push({
@@ -662,7 +662,7 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
 const cueDuration = (cue: TimelineCue): number => {
   switch (cue.kind) {
     case "move":
-      if (cue.queenJump) return TACTICAL_JUMP_TRAVEL_MS + TACTICAL_JUMP_APPEAR_MS;
+      if (cue.shipJump) return TACTICAL_JUMP_TRAVEL_MS + TACTICAL_JUMP_APPEAR_MS;
       return cue.piece === "n"
         ? pieceMoveDurationMs(cue.from, cue.to, "n")
         : moveDurationMs(cue.from, cue.to, { stim: !!cue.stim });
@@ -740,7 +740,7 @@ const spentMineSquares = (
   ] as Square[];
 
 const isSimulMoveWave = (cue: TimelineCue): boolean =>
-  cue.kind === "move" && !cue.queenJump && inLane(cue, "move");
+  cue.kind === "move" && !cue.shipJump && inLane(cue, "move");
 
 const isPromoWalk = (cue: TimelineCue): boolean =>
   cue.kind === "move" && inLane(cue, "promoWalk");
@@ -1416,7 +1416,7 @@ export const playTimeline = (
       }
     }
 
-    if (cue.kind === "move" && cue.queenJump) {
+    if (cue.kind === "move" && cue.shipJump) {
       const trail = { id: `${cue.id}-trail`, from: cue.from, to: cue.to };
       cb.onCommit({
         hidden: [cue.from, cue.to],
@@ -1599,7 +1599,7 @@ export const playTimeline = (
         });
       } else if (!afterAttackCommitted && cues.some((c) => c.kind === "attack" || c.kind === "death")) {
         commitAfterAttack();
-      } else if (!afterBApplied && cues.some((c) => c.kind === "gasDrop" || c.kind === "deploy" || (c.kind === "move" && (c.stim || c.queenJump)))) {
+      } else if (!afterBApplied && cues.some((c) => c.kind === "gasDrop" || c.kind === "deploy" || (c.kind === "move" && (c.stim || c.shipJump)))) {
         applyAfterB();
       }
       cb.onDone();

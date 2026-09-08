@@ -29,10 +29,8 @@ import { SpecialPreview } from "~/components/primitives/SpecialPreview";
 import { useIsDesktopClient } from "~/hooks/useIsDesktopClient";
 import { SPECIAL_ENERGY_COST } from "~/presentation/constants";
 import styles from "~/presentation/hud/components/GasRack.module.css";
-import { specialCopyFor } from "~/presentation/hud/specialCopy";
-import type { GasDeployTarget } from "~/types/specials";
-
-export type { GasDeployTarget };
+import { specialCopyFor } from "~/presentation/specials/copy";
+import type { GasDeployTarget } from "~/presentation/specials/types";
 
 type GasDeployProps = {
   /**

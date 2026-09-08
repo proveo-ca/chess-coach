@@ -117,7 +117,7 @@ package "AFTER · Facade + Composite + Parameter Object" as AFTER {
   class AttackAnimation <<app>>
   class DeathAnimation <<app>>
   class MoveAnimation <<app>>
-  class QueenJumpAnimation <<app>>
+  class ShipJumpAnimation <<app>>
   class MineMissileAnimation <<app>>
   class DeployAnimation <<app>>
 
@@ -145,7 +145,7 @@ package "AFTER · Facade + Composite + Parameter Object" as AFTER {
   CombatOverlayRoot *-- AttackAnimation
   CombatOverlayRoot *-- DeathAnimation
   CombatOverlayRoot *-- MoveAnimation
-  CombatOverlayRoot *-- QueenJumpAnimation
+  CombatOverlayRoot *-- ShipJumpAnimation
   CombatOverlayRoot *-- MineMissileAnimation
   CombatOverlayRoot *-- DeployAnimation
 }

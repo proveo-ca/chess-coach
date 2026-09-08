@@ -60,7 +60,7 @@ export type MoveCue = {
   from: Square;
   to: Square;
   rookMode?: RookMode;
-  queenJump?: boolean;
+  shipJump?: boolean;
   /** Pawn gas-step (pawnDouble) — stim travel + hop rate. */
   stim?: boolean;
   /**
@@ -80,7 +80,7 @@ export type DeployCue = {
   rookMode?: RookMode;
 };
 
-export type QueenJumpTrail = {
+export type ShipJumpTrail = {
   id: string;
   from: Square;
   to: Square;

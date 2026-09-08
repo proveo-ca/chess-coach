@@ -20,7 +20,7 @@ import {
   MINE_MISSILE_MS,
   MINE_TRAIL_MS,
 } from "~/presentation/constants";
-import type { MineMissileCue, QueenJumpTrail } from "~/presentation/types";
+import type { MineMissileCue, ShipJumpTrail } from "~/presentation/types";
 
 type BoardFxProps = {
   class: string;
@@ -50,7 +50,7 @@ export type MineMissileAnimationProps = {
   /** Self-missile hulls (chaseFrom → detonation square). */
   cues: readonly MineMissileCue[];
   /** Single green thruster trails (queen/battleship palette). */
-  trails: readonly QueenJumpTrail[];
+  trails: readonly ShipJumpTrail[];
   boardWidth: number;
   boardHeight: number;
 };

@@ -48,7 +48,7 @@ export { CombatOverlayRoot } from "~/presentation/animations/components/CombatOv
 export { AttackAnimation } from "~/presentation/animations/components/AttackAnimation";
 export { DeathAnimation } from "~/presentation/animations/components/DeathAnimation";
 export { MoveAnimation } from "~/presentation/animations/components/MoveAnimation";
-export { QueenJumpAnimation } from "~/presentation/animations/components/QueenJumpAnimation";
+export { ShipJumpAnimation } from "~/presentation/animations/components/ShipJumpAnimation";
 export { MineMissileAnimation } from "~/presentation/animations/components/MineMissileAnimation";
 export { AttackBoardDemo } from "~/presentation/animations/components/AttackBoardDemo";
 export { DeathBoardDemo } from "~/presentation/animations/components/DeathBoardDemo";

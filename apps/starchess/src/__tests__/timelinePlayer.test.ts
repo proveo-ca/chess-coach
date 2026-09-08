@@ -1424,7 +1424,7 @@ describe("timelinePlayer", () => {
     }).snapshot;
     const jump = endScTurn(jumpSnap, { skipTurnStartChecks: true });
     const jumpCues = projectResolveTimeline(jump);
-    expect(jumpCues.some((c) => c.kind === "move" && c.queenJump && c.to === "a3")).toBe(
+    expect(jumpCues.some((c) => c.kind === "move" && c.shipJump && c.to === "a3")).toBe(
       true,
     );
   });

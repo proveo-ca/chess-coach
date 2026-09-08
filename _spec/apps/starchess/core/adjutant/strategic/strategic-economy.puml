@@ -9,6 +9,7 @@
 ' see also: promotion-defense.puml (the runner tiers the deploy dial multiplies)
 ' see also: ../cc-focus.puml (whose CC guess the warp bonus reads)
 ' see also: _spec/packages/starchess-core/deploy-reach.puml (the non-goal split)
+' see also: ../naive/opponent-strategy.puml (shared Mecha gate, always-visible twin)
 !include ../../../../../themes/proveo.puml
 
 skinparam packageStyle rectangle
@@ -164,4 +165,23 @@ ECO .. N_WARP
 ECO .. N_CRUSH
 ECO .. N_LANDINGS
 ECO .. N_DEAD
+
+note as N_BISHOP_CAPS
+  Strategic imports shared Mecha gate where
+  same-color bishops share diagonals, capping
+  at four total and two per color (a1 dark parity).
+  Total four stays absolute and crush-replaced
+  own bishop nets out before per-color test.
+end note
+
+note as N_BISHOP_FOG
+  Per-color two still needs big-threat crush
+  or classical queen/rook take, but victim must
+  read lit or revealed. Knight, bishop and pawn
+  takes still fail with Charon excluded, preserving
+  visibility honesty, ladder untouched.
+end note
+
+ECO .. N_BISHOP_CAPS
+ECO .. N_BISHOP_FOG
 @enduml

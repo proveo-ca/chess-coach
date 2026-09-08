@@ -30,7 +30,7 @@ import {
   type StarChessColor,
 } from "@chess-coach/starchess-core";
 
-import { pieceAtQueuedSquare } from "~/presentation/board/occupancyForQueuedMoves";
+import { pieceAtQueuedSquare } from "~/presentation/specials/planning/occupancy";
 import {
   isSquareVisibleToSide,
   pieceVisibleToViewer,

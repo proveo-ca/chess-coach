@@ -10,10 +10,10 @@ import type { RookMode, ScFenSnapshot } from "@chess-coach/starchess-core";
 
 import { viewerColor } from "~/app/matchEconomy";
 import type { MatchStore } from "~/types/match";
-import { tacticalJumpTargets } from "~/presentation/specials/queenTacticalJump";
+import { tacticalJumpTargets } from "~/presentation/specials/shipTacticalJump";
 import type { ArmResult } from "~/presentation/specials/types";
 
-export const queenJumpArm = (
+export const shipJumpArm = (
   store: MatchStore,
   snap: ScFenSnapshot,
   ctx: { square: Square; piece: PieceSymbol },

@@ -17,12 +17,12 @@ import {
 
 import { storedMaterial, viewerColor } from "~/app/matchEconomy";
 import type { MatchStore } from "~/types/match";
-import { kingDeployTargets } from "~/presentation/specials/deployTargets";
+import { ccDeployTargets } from "~/presentation/specials/deployTargets";
 import { specialTimingFor, tryQueue } from "~/presentation/specials/queue";
 
 export type SpawnPhase = "idle" | "modal" | "pick";
 
-export const createKingDeploy = (
+export const createCCDeploy = (
   store: MatchStore,
   snap: () => ScFenSnapshot,
   opts?: { onAfterOpen?: () => void },
@@ -32,7 +32,7 @@ export const createKingDeploy = (
 
   // Raw-placement king: the spawn `from` must name the square holding the king
   // in the unresolved placement (engine validates the actor there). Deliberately
-  // NOT the F-projected anchor from `kingDeployTargets` — after a classical
+  // NOT the F-projected anchor from `ccDeployTargets` — after a classical
   // king move that square is empty until End.
   const activeKingSq = (): Square | null =>
     findKing(placementToMap(snap().placement), viewerColor(store));
@@ -40,7 +40,7 @@ export const createKingDeploy = (
   /** Ring targets for the pick step (empty while not picking). */
   const spawnAdjacent = (): Square[] => {
     if (spawnPhase() !== "pick") return [];
-    return kingDeployTargets(snap(), viewerColor(store)).targets;
+    return ccDeployTargets(snap(), viewerColor(store)).targets;
   };
 
   /** Gas-drop arm for the king — opens the deploy modal. */
@@ -100,7 +100,7 @@ export const createKingDeploy = (
     if (!unit || !from) return;
     // Stale/off-ring clicks (e.g. ring moved under the pick overlay) are
     // rejected before spending — the engine remains the authority via tryQueue.
-    if (!kingDeployTargets(snap(), color).targets.includes(to)) {
+    if (!ccDeployTargets(snap(), color).targets.includes(to)) {
       store.dispatch({
         type: "QUEUE_REJECT",
         message: `Cannot deploy on ${to} — outside the command-center ring`,

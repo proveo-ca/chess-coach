@@ -9,6 +9,7 @@
 ' see also: ../cc-focus.puml (the omniscience contract, decided)
 ' see also: ../weight-ladder.puml (every naive weight and its tier)
 ' see also: _spec/packages/starchess-core/deploy-reach.puml (undefended)
+' see also: ../strategic/strategic-economy.puml (shared Mecha gate, fog-gated twin)
 !include ../../../../../themes/proveo.puml
 
 skinparam packageStyle rectangle
@@ -119,4 +120,23 @@ S2 .. N_UNDEFENDED
 S2 ARROW_OPTIONAL DR : deployCovers (POST-move, enemy)
 S4 ARROW_OPTIONAL MC : never jump onto a mine
 S5 ARROW_OPTIONAL MC : never drop / step onto a mine
+
+note as N_BISHOP_CAPS
+  Same-color bishops share diagonals, so the
+  helper caps Mecha at four total and two per
+  square color (a1 dark parity). Total four is
+  absolute while per-color two still admits a
+  big-threat capture, crush-replace nets out first.
+end note
+
+note as N_BISHOP_TAKE
+  Per-color two admits only a big-threat take where
+  fresh bishop crushes queen or rook on square or
+  captures one classically. Knight, bishop, pawn
+  takes never qualify; Charon fails since fresh
+  deploy spent special, always-visible, ladder kept.
+end note
+
+S6 .. N_BISHOP_CAPS
+S6 .. N_BISHOP_TAKE
 @enduml

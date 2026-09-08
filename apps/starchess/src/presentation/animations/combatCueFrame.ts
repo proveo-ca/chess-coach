@@ -10,7 +10,7 @@ import type {
   KingDamageCue,
   MineMissileCue,
   MoveCue,
-  QueenJumpTrail,
+  ShipJumpTrail,
 } from "~/presentation/types";
 
 export type CombatCueFrame = {
@@ -21,9 +21,9 @@ export type CombatCueFrame = {
   moveProgress?: Readonly<Record<string, 0 | 1>>;
   moveLeg?: Record<string, 0 | 1>;
   jumpCues?: readonly MoveCue[];
-  jumpTrails?: readonly QueenJumpTrail[];
+  jumpTrails?: readonly ShipJumpTrail[];
   mineMissiles?: readonly MineMissileCue[];
-  mineMissileTrails?: readonly QueenJumpTrail[];
+  mineMissileTrails?: readonly ShipJumpTrail[];
   deployCues?: readonly DeployCue[];
   gasDropCues?: readonly GasDropCue[];
   kingDamage?: readonly KingDamageCue[];

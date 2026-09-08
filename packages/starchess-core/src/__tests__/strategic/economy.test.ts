@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
 
 import { parseScFen } from "../../index";
-import { strategicAdjutant } from "../../ai/strategic";
+import { buildStrategicCtx, strategicAdjutant } from "../../ai/strategic";
 import { combineKnownVsSeen, seedKnownVsSeen } from "../../ai/strategic/intel";
+import { economy as strategicEconomy } from "../../ai/strategic/strategies/economy";
+import { squareColor } from "../../ai/strategies/economy";
 
 const openSnap = (turn = 10) =>
   parseScFen(
@@ -53,6 +55,58 @@ describe("strategic economy (known-vs-seen dials)", () => {
     const actions = plan.snapshot.queue?.actions.filter((a) => a.color === "b") ?? [];
     const spawns = actions.filter((a) => a.kind === "spawn");
     expect(spawns.every((a) => a.unit !== "q")).toBe(true);
+  });
+
+  it("caps same-color mechas at two at plan level", () => {
+    // Black dark pair b6 + d4; any bishop drop must land light.
+    const snap = parseScFen("SCFEN|4k3/8/1b6/8/3b4/8/8/4K3|10|33|P|G:11:11|Q:w:;b:");
+    const plan = strategicAdjutant(snap, {
+      color: "b",
+      storedFor: () => 12,
+      kvs: seedKnownVsSeen(),
+    });
+    const bishops = (plan.snapshot.queue?.actions ?? []).filter(
+      (a) => a.color === "b" && a.kind === "spawn" && (a as { unit?: string }).unit === "b",
+    );
+    for (const b of bishops) {
+      expect(squareColor((b as { to: Parameters<typeof squareColor>[0] }).to)).toBe("light");
+    }
+  });
+
+  it("caps total mechas at four at plan level", () => {
+    // b6 + d4 dark, a4 + g2 light.
+    const snap = parseScFen("SCFEN|4k3/8/1b6/8/b2b4/8/6b1/4K3|10|33|P|G:11:11|Q:w:;b:");
+    const plan = strategicAdjutant(snap, {
+      color: "b",
+      storedFor: () => 12,
+      kvs: seedKnownVsSeen(),
+    });
+    const bishops = (plan.snapshot.queue?.actions ?? []).filter(
+      (a) => a.color === "b" && a.kind === "spawn" && (a as { unit?: string }).unit === "b",
+    );
+    expect(bishops).toHaveLength(0);
+  });
+
+  it("keeps the instant queen-capture bishop in the candidate pool", () => {
+    // Dark pair complete, but a bishop dropped on e7 takes the queen on c5:
+    // the per-color gate admits exactly that square.
+    const build = (placement: string) => {
+      const ctx = buildStrategicCtx(parseScFen(placement), {
+        color: "b",
+        storedFor: () => 3,
+        kvs: seedKnownVsSeen(),
+      });
+      if (!ctx) throw new Error("no ctx");
+      return strategicEconomy
+        .generate!(ctx)
+        .map((c) => c.actions[0])
+        .filter((a) => a.kind === "spawn" && (a as { unit?: string }).unit === "b")
+        .map((a) => (a as { to?: string }).to);
+    };
+    const withQueen = build("SCFEN|4k3/8/1b6/2Q5/3b4/8/8/4K3|10|33|P|G:11:11|Q:w:;b:");
+    expect(withQueen).toContain("e7");
+    const calm = build("SCFEN|4k3/8/1b6/8/3b4/8/8/4K3|10|33|P|G:11:11|Q:w:;b:");
+    expect(calm.filter((to) => to != null && squareColor(to as never) === "dark")).toEqual([]);
   });
 
   it("uses a host-threaded accumulator when provided and seeds otherwise", () => {

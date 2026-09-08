@@ -1,7 +1,6 @@
 // SPEC: _spec/apps/starchess/turn-input-sequence.puml
 /**
  * Marine gas drop arm — the pawn `pawnDouble` handler.
- * (Moved from `presentation/specials/pawnGasArm.ts`, which re-exports it.)
  */
 import type { PieceSymbol, Square } from "chess.js";
 

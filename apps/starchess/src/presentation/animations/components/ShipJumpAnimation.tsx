@@ -15,14 +15,14 @@ import {
 } from "~/presentation/animations/attackVectors";
 import { vecBetween } from "~/presentation/animations/boardGeom";
 import { InlineQueen } from "~/presentation/pieces/InlineQueen";
-import styles from "~/presentation/animations/components/QueenJumpAnimation.module.css";
+import styles from "~/presentation/animations/components/ShipJumpAnimation.module.css";
 import type { MoveCue } from "~/presentation/animations/types";
 import {
   TACTICAL_JUMP_APPEAR_MS,
   TACTICAL_JUMP_TRAIL_MS,
   TACTICAL_JUMP_TRAVEL_MS,
-} from "~/presentation/specials/queenTacticalJump";
-import type { QueenJumpTrail } from "~/presentation/types";
+} from "~/presentation/specials/shipTacticalJump";
+import type { ShipJumpTrail } from "~/presentation/types";
 
 type BoardFxProps = {
   class: string;
@@ -48,11 +48,11 @@ const jumpGeom = (from: Square, to: Square, boardWidth: number, boardHeight: num
   };
 };
 
-export type QueenJumpAnimationProps = {
+export type ShipJumpAnimationProps = {
   /** Active teleport hull/appear cues (0–250ms); also own fx-hidden squares. */
   cues: MoveCue[];
   /** Long-lived green thruster trails (1000ms); do not hide board pieces. */
-  trails: QueenJumpTrail[];
+  trails: ShipJumpTrail[];
   boardWidth: number;
   boardHeight: number;
 };
@@ -61,7 +61,7 @@ export type QueenJumpAnimationProps = {
  * BattleShip Tactical Jump — 200ms stretched-thin light travel, 50ms appear
  * burst on the destination, and 1000ms fading twin thruster trails.
  */
-export const QueenJumpAnimation: Component<QueenJumpAnimationProps> = (props) => (
+export const ShipJumpAnimation: Component<ShipJumpAnimationProps> = (props) => (
   <div
     class={styles.boardOverlay}
     data-starchess-jump-layer
