@@ -45,16 +45,20 @@ export const spawnKingAnchor = (
   const map = placementToMap(snap.placement);
   let king = findKing(map, color);
   const occupied = new Set(map.keys());
-  // Own-color squares and all Kings block deploy (cannot crush an enemy King).
+  // Kings block deploy (own center + enemy adjacent are never crushable).
+  // Ally non-kings are crushable: deployed unit replaces the occupant.
   const allyOccupied = new Set<Square>();
   for (const [sq, p] of map) {
-    if (p.color === color || p.type === "k") allyOccupied.add(sq);
+    if (p.type === "k") allyOccupied.add(sq);
   }
   if (!king) return { king: null, occupied, allyOccupied };
   if (timing !== "F") return { king, occupied, allyOccupied };
 
   // Project same-side classical relocates (and B gas/warp) onto occupancy.
   // F spawns after B+C at resolve — vacated origins are legal deploy targets.
+  // allyOccupied tracks king squares only (kings never crushable): B arms move
+  // pawns/queens or deploy non-kings, so they never touch it; only a classical
+  // king move carries the block with it.
   const actions = snap.queue?.actions ?? [];
   for (const a of actions) {
     if (a.color !== color) continue;
@@ -66,20 +70,19 @@ export const spawnKingAnchor = (
       ) {
         occupied.delete(a.from);
         occupied.add(a.to);
-        allyOccupied.delete(a.from);
-        allyOccupied.add(a.to);
       } else if (a.kind === "spawn" && a.to) {
         occupied.add(a.to);
-        allyOccupied.add(a.to);
       }
       continue;
     }
     if (a.timing !== "C" || a.kind !== "classical") continue;
     occupied.delete(a.from);
     occupied.add(a.to);
-    allyOccupied.delete(a.from);
-    allyOccupied.add(a.to);
-    if (a.from === king) king = a.to;
+    if (a.from === king) {
+      allyOccupied.delete(a.from);
+      allyOccupied.add(a.to);
+      king = a.to;
+    }
   }
   return { king, occupied, allyOccupied };
 };

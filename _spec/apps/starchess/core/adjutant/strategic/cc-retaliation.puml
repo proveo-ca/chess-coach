@@ -1,0 +1,213 @@
+@startuml cc-retaliation
+' SPEC: _spec/apps/starchess/core/adjutant/strategic/cc-retaliation.puml
+' purpose: ADJUTANT (SCRIPT STRATEGIC) — the debt a shot on the Command Center
+' creates: the one evidence channel fog cannot cover, the wanted-list that
+' carries it, and the capture-only weight that collects it.
+' covers: packages/starchess-core/src/ai/strategic/attackers.ts
+' covers: packages/starchess-core/src/ai/strategic/strategies/attackers.ts
+' covers: packages/starchess-core/src/ai/strategic/witness.ts
+' covers: packages/starchess-core/src/ai/strategic/tracking.ts
+' covers: packages/starchess-core/src/ai/strategic/strategies/economy.ts
+' covers: packages/starchess-core/src/__tests__/strategic/attackers.test.ts
+' covers: packages/starchess-core/src/__tests__/strategic/witness.test.ts
+' covers: packages/starchess-arena/src/run/runMatch.ts
+' covers: apps/starchess/src/screens/SingleScreen.tsx
+' see also: promotion-defense.puml (the other witness reader, and the ghost memory)
+' see also: ../weight-ladder.puml (where 9_000 sits, and what a test pins)
+' see also: ../cc-focus.puml (open defect 2 — the stack that still outbids this)
+!include ../../../../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess · Adjutant (SCRIPT STRATEGIC) — Command Center retaliation
+
+package "evidence (from the resolve, not the board)" {
+  component "ai/strategic/witness.ts\nccAttackers(witness, side, turn)" as WIT <<app>>
+  database "ResolveWitness\nplacement · mines · siegedRooks\nmoves · attacks" as WOBJ <<db>>
+}
+
+package "cross-ply memory (one fold per settled ply)" {
+  component "ai/strategic/tracking.ts\nseedAttackerMemory · updateAttackersForSnap" as TRACK <<app>>
+  component "ai/strategic/attackers.ts\nfoldAttackerMemory · wantedAt" as FOLD <<app>>
+  database "AttackerMemory\nattackers: CCAttacker[]\nturn — bookkeeping, not a gate" as MEM <<db>>
+}
+
+package "hosts (thread it, never re-implement it)" {
+  component "arena run/runMatch.ts\nwitnessFromEndTurn at chip + settle" as HOSTB <<host>>
+  component "SingleScreen.tsx\ndrains settledResolves\nvia a foldedResolves cursor" as HOSTA <<host>>
+}
+
+package "scoring" {
+  component "strategies/attackers.ts\nAVENGE_CC_SHOT · AVENGE_THRIFT\nscore(ev) — capture only" as SS <<app>>
+  component "strategies/economy.ts\navengeDeployValue(ctx, to, cost)\ncrush — thrift out-runs the trade slope" as SE <<app>>
+}
+
+component "ai/strategic/context.ts\nbuildStrategicCtx →\nctx.ccAttackers" as CTX <<app>>
+component "__tests__/strategic/attackers.test.ts\n5 cases + witness.test.ts (4 of its 8)" as TEST <<async>>
+
+HOSTA ARROW_MAIN WOBJ : witnessFromEndTurn(esr)
+HOSTB ARROW_MAIN WOBJ : witnessFromEndTurn(esr)
+WOBJ ARROW_MAIN WIT
+WOBJ ARROW_MAIN TRACK : per settled ply
+TRACK ARROW_MAIN FOLD : per side
+WIT ARROW_MAIN FOLD : whoever hit us this ply
+FOLD ARROW_MAIN MEM
+MEM ARROW_MAIN CTX : attackerMemory.attackers
+CTX ARROW_MAIN SS : ctx.ccAttackers
+CTX ARROW_MAIN SE : same list, deploy path
+TEST ARROW_MAIN SS
+TEST ARROW_MAIN FOLD
+
+note right of WIT
+  **The rule.** Firing on a Command Center reveals the shooter, and the
+  strategic Adjutant then takes that unit however it can.
+
+  **Why this channel needs no fog gate.** Everything else ""witness.ts"" reports
+  is gated, because the resolve payload is emitted with no viewer at all. This
+  one is honest as it stands: a Command Center that takes a hit **knows** it
+  took one, and in StarChess the shot carries its own ""from"". So
+  ""kind: "kingShot" && target === side"" is read straight, and a unit that fires
+  out of total darkness has named its own square. Firing is the price of hiding.
+
+  The per-viewer half still holds: ""ccAttackers(witness, "w")"" on a payload
+  where black was shot returns nothing. Only the side that was hit learns
+  anything.
+
+  **Which square the shot names: where the shooter *rests*.** Both readers
+  resolve it through ""shotOrigin"" = ""stopAt ?? from"". For an ordinary
+  ""kingShot"" those are the same square. For a **path-reveal** one ""from"" is
+  ""contact.discovery"", a tile the slider merely passed through mid-ray, while
+  ""stopAt"" is where it comes to rest (""resolve/resolve-turn.ts"", the
+  ""approach"" outcome). Billing the discovery square would put the wanted mark
+  on a tile the shooter never stands on: ""stillThere"" would fail the moment it
+  was lit, and any answer aimed there would hit nothing.
+end note
+
+note as N_MEM
+  **A fact with an expiry, not a posterior.** The runner ghost is a *spread* of
+  squares because a marine moves every turn (""promotion-defense.puml""). A
+  shooter is remembered as a **point**, because the only useful question is "is
+  it still standing where it fired, and can we take it" — a spread would answer
+  a question nobody asks and would pull units toward squares we merely suspect.
+
+  ""CCAttacker"" is ""{ at, piece, turn }"". Per fold:
+
+  | evidence | effect |
+  | a fresh ""kingShot"" this ply | added, dated ""snap.turn"", deduped by square — and it replaces any older record there |
+  | the square is lit and the **same piece type** stands on it | kept: still the unit that fired |
+  | the square is lit and holds anything else, or nothing | dropped: proof the shooter left, so the debt is void |
+  | the square is dark | kept — darkness proves nothing, and the clock alone decides |
+  | ""ATTACKER_MEMORY_TURNS"" 3 elapsed | aged out: long enough to bring an answer from across the board, short enough that a square it has certainly left stops pulling |
+
+  **Identity, not just colour** — and this is what ""CCAttacker.piece"" is for; it
+  was a recorded-but-unread field until the check used it. A BattleShip that
+  chips the Command Center and warps away, leaving a marine behind on the
+  square, otherwise passes its debt to whoever stands there next: 9_000 aimed
+  at a 1-value unit.
+
+  **No repeat guard, and none is wanted.** <color:#CB2000>""beginScTurn"" does
+  not advance the clock</color>, so a turn-open chip carries the same turn
+  number as the settle before it. A ""snap.turn === prior.turn"" guard therefore
+  discarded the chip's evidence outright — and a turn-open chip is the single
+  most common way a Command Center is ever shot, so the main path of this whole
+  channel was dead for every ply after the first. The fold has no guard now:
+  aging is per record (""snap.turn − a.turn""), so folding one turn twice is
+  simply idempotent. ""AttackerMemory.turn"" is bookkeeping, not a gate. The
+  runner fold keeps a guard, but only over its forward walk and decay
+  (""promotion-defense.puml"").
+end note
+
+note as N_WEIGHT
+  **The weight, and why it sits there.** ""AVENGE_CC_SHOT"" 9_000 is below
+  ""KING_SAFETY"" 10_000 and ""DEPLOY_ATTACK_SURVIVAL"" 13_500 — keeping the
+  Command Center out of fire still outranks avenging it — and above everything
+  the turn can otherwise offer: ""RUNNER_STOP_CRITICAL"" 7_000, both seen check
+  weights 6_000, ""ATTACK_KING_GUESS"" 5_000, and every trade.
+
+  ""AVENGE_THRIFT"" 40 × the answering unit's ""UNIT_COST"" chooses *with what*,
+  never *whether*: a marine (1) keeps 8_960, a BattleShip (9) still keeps
+  8_640, which is above the tier below. So the cheapest unit that can reach the
+  shooter takes the job, and no unit ever refuses it.
+
+  **Capture only.** ""score"" pays on ""move.capture"" landing on the wanted
+  square and on nothing else — no chase term, no positional pull. A wanted
+  square we cannot actually strike must not warp the rest of the plan. The CC
+  itself scores 0 here (""isKingMove""), because walking the Command Center into
+  fire to collect a debt is survival's call, not this concern's.
+
+  **The deploy crush pays the same debt, by a different sum.**
+  ""strategies/economy.ts"" adds ""avengeDeployValue(ctx, to, UNIT_COST[unit])"" on
+  every ring square, so a shooter inside our own deploy ring can be answered
+  with a body dropped on top of it — no line of attack required. That is what
+  "however possible" means. Two corrections the move path does not need:
+
+  | correction | why |
+  | subtract ""(trade + AVENGE_THRIFT) × cost"", not ""AVENGE_THRIFT × cost"" | the deploy loop already pays ""trade × (1 + cost)"" for spending big, so a plain 40/cost thrift was **out-run by that +100/cost slope** and the ring answered with the dearest unit it could afford — the exact opposite of what thrift is for |
+  | require an enemy actually standing on ""to"" | a crush needs something to crush; the record can outlive the shooter, and every ring square is inside our own CC's 3×3 so that occupancy is ours to read. Paying for a drop onto an empty tile just burns minerals |
+end note
+
+note as N_SCOPE
+  **Which shooter this is for.** The one that fired and is **no longer in
+  line**. A shooter still delivering check is survival's business:
+  ""DEPLOY_ATTACK_SURVIVAL"" 13_500 already outbids everything to take a live
+  checker, and it does not need a memory to find it — the checker is, by
+  definition, visible to the CC it is checking.
+
+  This concern covers the gap after that: the unit that hit us from the dark
+  and then had nothing further to say. Without the memory it is a square we
+  cannot see holding a unit we have no reason to think about.
+end note
+
+note as N_OPEN
+  <color:#CB2000>**OPEN — "however possible" has one exception, and it is not
+  this file's to fix.**</color>
+
+  A **stacked** check on the enemy Command Center still outbids retaliation:
+  ""PAWN_CHECK_CC_GUESS"" 6_000 and ""ATTACK_KING_GUESS"" 5_000 both fire on one
+  Marine move, for 11_000 effective against this weight's 9_000 — and a
+  same-move close adds ""CHASE_KING_GUESS"" 2_500 × delta on top (13_500 at
+  delta 1). So the instruction holds on every ordinary turn but loses to
+  those stacks.
+
+  The stack is the double-count ""../cc-focus.puml"" records as **open defect
+  2** — two blocks sharing a predicate — and the fix belongs there. Raising
+  ""AVENGE_CC_SHOT"" over 11_000 would put it above ""KING_SAFETY"", trading a
+  rare mis-ordering for a Command Center that walks into fire to collect a
+  debt. ""weightOrdering.test.ts"" compares the raw constants and cannot see the
+  sum, which is exactly the blind spot ""../weight-ladder.puml"" names.
+
+  <color:#CB2000>**OPEN — a resumed match forgets every debt.**</color> Resume
+  rebuilds from a single SCFEN, so ""settledResolves"" is empty and this record
+  (with the other three memories) restarts at the opening prior. Same note in
+  ""promotion-defense.puml"".
+end note
+
+WIT .. N_MEM
+MEM .. N_SCOPE
+SS .. N_WEIGHT
+SS .. N_OPEN
+
+note bottom of TEST
+  ""attackers.test.ts"" pins the behaviour end to end in **5 cases**: the plan
+  really takes the shooter, the score fires only on the wanted square and only
+  for a capture, the deploy crush answers a shooter inside the ring, thrift
+  prefers the cheaper answer — checked on the deploy path **after adding the
+  loop's own ""trade × (1 + cost)"" back**, which is the only way that case can
+  see the inversion it guards — and a deploy onto a wanted-but-empty square
+  paying nothing.
+
+  ""witness.test.ts"" drives a **real** ""beginScTurn"" chip for three of its four
+  retaliation cases: the shot recorded through complete darkness, the same shot
+  recorded **although the settle already folded that turn** (the clock trap,
+  asserted inline), and the record surviving while the square stays dark but
+  dropped the ply a Hoverbike lights it and finds it empty.
+
+  The fourth is deliberately a **unit** case over a hand-built
+  ""ResolveWitness"" (""kingShot"" with ""from: d4"" / ""stopAt: d5"", record expected
+  on ""d5""): the engine-driven cases prove the *gate*, this one pins the *field
+  resolution*, and staging a real slide-into-fog king shot would have buried
+  what it checks. Ladder orderings live in
+  ""__tests__/tactics/weightOrdering.test.ts"" (3 of its 19 cases).
+end note
+@enduml

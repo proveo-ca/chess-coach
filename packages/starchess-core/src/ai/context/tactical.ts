@@ -1,10 +1,9 @@
+// SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
 /**
  * Build attack predicates + one-ply enemy check threats.
  * 1) squares attacked by enemy · 2) squares protected by us ·
- * 3) whether any enemy unit can check our King in one move ·
+ * 3) whether any enemy unit can check our Command Center (CC) in one move ·
  * 4) squares of those checkers / future checkers.
- *
- * // SPEC: _spec/apps/starchess/core/adjutant/opponent-strategy.puml
  */
 
 import type { Square } from "chess.js";

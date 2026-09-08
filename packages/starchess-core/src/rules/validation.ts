@@ -8,7 +8,7 @@
 import type { Square } from "chess.js";
 
 import { placementToMap } from "../board/placement";
-import { charonTargetQueenFromPlacement } from "./specials/bishopCharon";
+import { charonDiagonalSquares } from "./specials/mechaCharon";
 import { minesFor, MAX_MINES_PER_SIDE, mineAt } from "../board/mines";
 import { isRookSiegedAfterB } from "../board/siege";
 import { hasExactKingPair } from "../scfen/codec";
@@ -157,10 +157,10 @@ export const assertSpecialLegal = (
         action.timing,
       );
       if (!king) throw new ScValidateError("SC_SPECIAL", "king missing");
-      // Enemy-occupied targets are legal (the deploy crushes the occupant);
-      // only own-color squares are blocked.
+      // Occupied targets are legal (the deploy crushes the occupant and
+      // records it as victim); only king-occupied squares are blocked.
       if (allyOccupied.has(action.to)) {
-        throw new ScValidateError("SC_SPECIAL", "spawn square occupied by ally");
+        throw new ScValidateError("SC_SPECIAL", "spawn square occupied by king");
       }
       const kf = king.charCodeAt(0);
       const kr = Number(king[1]);
@@ -173,14 +173,38 @@ export const assertSpecialLegal = (
     }
     case "bishopSnipe": {
       if (actor.type !== "b") {
-        throw new ScValidateError("SC_SPECIAL", "Charon requires bishop");
+        throw new ScValidateError("SC_SPECIAL", "Charon requires mecha");
       }
       if (!action.to) {
-        throw new ScValidateError("SC_SPECIAL", "Charon needs target");
+        throw new ScValidateError("SC_SPECIAL", "Charon needs aim square");
       }
-      const legal = charonTargetQueenFromPlacement(snap.placement, action.from);
-      if (legal !== action.to) {
-        throw new ScValidateError("SC_SPECIAL", "Charon target not unique diagonal queen");
+      // Free aim: any on-board Mecha diagonal is queueable. Whether the shot
+      // kills (first ship on the ray) or fizzles off-board is resolve's call.
+      // F after a same-mecha classical fires from the post-move square, so
+      // validate the diagonal from there (project the C onto a map copy).
+      let origin = action.from;
+      let originMap = map;
+      if (action.timing === "F") {
+        const c = (snap.queue?.actions ?? []).find(
+          (a) =>
+            a.timing === "C" &&
+            a.kind === "classical" &&
+            a.color === action.color &&
+            a.from === action.from,
+        );
+        if (c && c.timing === "C") {
+          const projected = new Map(map);
+          const mecha = projected.get(action.from);
+          if (mecha) {
+            projected.delete(action.from);
+            projected.set(c.to, mecha);
+          }
+          origin = c.to;
+          originMap = projected;
+        }
+      }
+      if (!charonDiagonalSquares(originMap, origin).includes(action.to)) {
+        throw new ScValidateError("SC_SPECIAL", "Charon aim must be on a Mecha diagonal");
       }
       break;
     }

@@ -1,11 +1,37 @@
 /**
- * StarChess economy helpers — board-derived deploy cost, energy tiers.
+ * StarChess economy helpers — board-derived deploy cost, energy tiers,
+ * stored-material income (the Command Center mineral bank).
+ *
+ * `applyStoredIncome` / `OPENING_STORED_MATERIAL` are the single owner for the
+ * host mineral bank (shared by BRIDGE apps/starchess and the script arena).
+ *
+ * // SPEC: _spec/packages/starchess-arena/arena.puml
  */
 
 import type { Square } from "../model/square";
 import type { StarChessColor } from "../model/types";
 import { placementToMap, type ScPiece } from "../board/placement";
-import { UNIT_COST } from "./constants";
+import { MAX_STORED_MATERIAL, UNIT_COST, incomeForTurn } from "./constants";
+
+/** Single-player / review opening Command Center bank (both sides). */
+export const OPENING_STORED_MATERIAL = 3;
+
+/**
+ * Mineral income on turn advance — the stored bank's sole income owner.
+ * Applies the turn tier (`incomeForTurn`) and caps at `MAX_STORED_MATERIAL`.
+ * Turn 0 (demo seeds) uses the turn-1 tier.
+ */
+export const applyStoredIncome = (
+  bank: Record<StarChessColor, number>,
+  turn: number,
+): Record<StarChessColor, number> => {
+  const amount = incomeForTurn(Math.max(1, turn));
+  if (amount <= 0) return bank;
+  return {
+    w: Math.min(MAX_STORED_MATERIAL, bank.w + amount),
+    b: Math.min(MAX_STORED_MATERIAL, bank.b + amount),
+  };
+};
 
 /** Sum of `UNIT_COST` for every piece of `color` on the placement. */
 export const deployedMaterialFromPlacement = (

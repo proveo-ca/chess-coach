@@ -1,4 +1,7 @@
 import { expect, test } from "@playwright/test";
+import type { Page } from "@playwright/test";
+
+import { settledPieceAt } from "./helpers";
 
 /**
  * Collision races — DualNav demos on starchess Storybook (:6007).
@@ -9,7 +12,7 @@ const story = (id: string) =>
   `http://127.0.0.1:6007/iframe.html?id=${id}&viewMode=story`;
 
 /** Settled unit only — excludes intent ghosts (`data-intent-dest`). */
-const pieceAt = (page: import("@playwright/test").Page, sq: string, alt: string) => {
+const pieceAt = (page: Page, sq: string, alt: string) => {
   const [, type] = alt.split(" ");
   const root = `[data-board-grid] [data-square='${sq}']`;
   return page.locator(
@@ -18,7 +21,7 @@ const pieceAt = (page: import("@playwright/test").Page, sq: string, alt: string)
 };
 
 /** Advance DualNav: Start → Intent → Resolve; wait for intent ghosts to clear. */
-const playResolve = async (page: import("@playwright/test").Page) => {
+const playResolve = async (page: Page) => {
   await page.locator("#storybook-root").click({ position: { x: 24, y: 24 } });
   await page.keyboard.press("ArrowRight");
   await page.waitForTimeout(500);
@@ -61,7 +64,7 @@ test.describe("StarChess collision races (DualNav demos)", () => {
     await playResolve(page);
 
     await expect(pieceAt(page, "e6", "w r")).toBeVisible({ timeout: 15_000 });
-    await expect(page.locator("[data-board-grid] [data-square='e7'] img[alt='w p']")).toBeVisible();
+    await expect(pieceAt(page, "e7", "w p")).toBeVisible();
     await expect(pieceAt(page, "e8", "b r")).toBeVisible();
   });
 
@@ -98,15 +101,11 @@ test.describe("StarChess collision races (DualNav demos)", () => {
     });
     await playResolve(page);
 
-    await expect(page.locator("[data-board-grid] [data-square='e5'] img[alt='w p']")).toBeVisible({
+    await expect(settledPieceAt(page, "e5", "w p")).toBeVisible({
       timeout: 15_000,
     });
-    await expect(page.locator("[data-board-grid] [data-square='e4'] img[alt='b n']")).toHaveCount(
-      0,
-    );
-    await expect(page.locator("[data-board-grid] [data-square='e4'] img[alt='w b']")).toHaveCount(
-      0,
-    );
+    await expect(settledPieceAt(page, "e4", "b n")).toHaveCount(0);
+    await expect(settledPieceAt(page, "e4", "w b")).toHaveCount(0);
   });
 });
 

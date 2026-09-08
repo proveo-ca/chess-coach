@@ -1,8 +1,7 @@
+// SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
 /**
  * Board geometry and square-shape questions the Adjutant asks every turn.
  * Pure functions over a placement map — no snapshot, no strategy opinions.
- *
- * // SPEC: _spec/apps/starchess/core/adjutant/opponent-strategy.puml
  */
 
 import type { Square } from "chess.js";
@@ -71,7 +70,7 @@ export const isSafeSquare = (
   enemy: PieceColor,
 ): boolean => !map.has(at) && !isSquareAttackedBy(map, at, enemy);
 
-/** Occupancy after one classical move, honouring fire-in-place siege rooks. */
+/** Occupancy after one classical move, honouring fire-in-place siege tanks. */
 export const cloneWithMove = (
   map: Map<Square, ScPiece>,
   move: Move,
@@ -80,7 +79,7 @@ export const cloneWithMove = (
   const next = new Map(map);
   const piece = next.get(move.from);
   if (!piece) return next;
-  // A sieged rook fires in place — the resolver will not relocate it.
+  // A sieged tank fires in place — the resolver will not relocate it.
   if (move.firesInPlace || (piece.type === "r" && sieged?.has(move.from))) {
     next.delete(move.to);
     return next;

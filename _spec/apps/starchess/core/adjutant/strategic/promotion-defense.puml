@@ -1,0 +1,382 @@
+@startuml promotion-defense
+' SPEC: _spec/apps/starchess/core/adjutant/strategic/promotion-defense.puml
+' purpose: ADJUTANT (SCRIPT STRATEGIC) — the *enemy* promotion race: how a
+' visible runner is read (turns, not squares), what counts as an answer, and
+' where the tier sits in the ladder.
+' covers: packages/starchess-core/src/ai/strategic/runners.ts
+' covers: packages/starchess-core/src/ai/strategic/strategies/runners.ts
+' covers: packages/starchess-core/src/ai/strategic/context.ts
+' covers: packages/starchess-core/src/ai/strategic/strategies/economy.ts
+' covers: packages/starchess-core/src/ai/strategic/tracking.ts
+' covers: packages/starchess-core/src/ai/strategic/witness.ts
+' covers: packages/starchess-core/src/ai/context/pawns.ts
+' covers: packages/starchess-core/src/__tests__/strategic/runners.test.ts
+' covers: packages/starchess-core/src/__tests__/strategic/runnerMemory.test.ts
+' covers: packages/starchess-core/src/__tests__/strategic/witness.test.ts
+' covers: packages/starchess-arena/src/run/runMatch.ts
+' covers: apps/starchess/src/screens/SingleScreen.tsx
+' see also: ../weight-ladder.puml (every value, and what a test pins)
+' see also: strategic-architecture.puml (where this concern sits in the set)
+' see also: ../cc-focus.puml (the same fog-honesty rule, for the CC)
+' see also: cc-retaliation.puml (the witness's other reader — the ungated one)
+!include ../../../../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess · Adjutant (SCRIPT STRATEGIC) — promotion defense
+
+package "cross-ply memory (one fold per settled ply)" {
+  component "ai/strategic/witness.ts\nwitnessFromEndTurn · runnerCrossings\nthe fog gate on the resolve payload" as WIT <<app>>
+  component "ai/strategic/tracking.ts\nseedRunnerMemory · updateRunnersForSnap" as TRACK <<app>>
+  component "ai/strategic/runners.ts\nfoldRunnerMemory · advanceGhost\nturn-guarded · one sighting, one ghost" as FOLD <<app>>
+  database "RunnerMemory\nghosts: RunnerGhost[]\nourUnits: {at, type}[]\nturn — the repeat-fold guard" as MEM <<db>>
+}
+
+package "hosts (thread it, never re-implement it)" {
+  component "SingleScreen.tsx\nfoldTracking(snap) for kvs / ccIntel\n+ a settledResolves cursor for the witness" as HOSTA <<host>>
+  component "arena run/runMatch.ts\nwitnessFromEndTurn at chip + settle" as HOSTB <<host>>
+}
+
+package "intel (once per turn)" {
+  component "ai/strategic/runners.ts\nscanEnemyRunners · turnsToPromote\nisUrgentRunner · isSoleBlocker" as SCAN <<app>>
+  database "ctx.runners: EnemyRunner[]\nat · steps · turns · path · front\npromoteAt · blockedBy · passed\nseen · confidence · possible" as RUN <<db>>
+}
+
+HOSTA ARROW_MAIN WIT : witnessFromEndTurn(esr)
+HOSTB ARROW_MAIN WIT : witnessFromEndTurn(esr)
+HOSTA ARROW_MAIN TRACK
+HOSTB ARROW_MAIN TRACK
+WIT ARROW_OPTIONAL FOLD : crossings — the fly-by channel
+TRACK ARROW_MAIN FOLD : per side, per ply
+FOLD ARROW_MAIN MEM
+MEM ARROW_MAIN SCAN : ghosts merged in as unseen runners
+
+package "scoring" {
+  component "strategies/runners.ts\nscore(ev) — capture · block · cover · abandon" as SS <<app>>
+  component "strategies/economy.ts\nrunnerDeployValue(to) — max, not sum\nRUNNER_GUARD · defending\n· runnerOnDeployRing gates" as SE <<app>>
+}
+
+component "ai/strategic/context.ts\nbuildStrategicCtx" as CTX <<app>>
+component "__tests__/strategic/runners.test.ts\n12 cases" as TEST <<async>>
+
+CTX ARROW_MAIN SCAN : fog-honest scan of the map
+SCAN ARROW_MAIN RUN
+CTX ARROW_MAIN RUN : frozen onto the context
+RUN ARROW_MAIN SS : one tier per runner
+RUN ARROW_MAIN SE : a drop is often the only answer in time
+TEST ARROW_MAIN SS
+TEST ARROW_MAIN SCAN
+
+note right of SCAN
+  **Turns, not squares.** A marine covers **two** ranks in one turn — the gas
+  step lands in rank B and its classical in rank C
+  (""plans/stacks.ts · pawnGasStacks""). The fact itself lives in
+  ""ai/context/pawns.ts"" as ""RUNNER_RANKS_PER_TURN"" / ""turnsToPromote"", because
+  both ""runners.ts"" and ""witness.ts"" need it and either importing the other
+  would close a cycle; ""runners.ts"" re-exports both, so no caller moved. So:
+
+  | steps out | turns | tier |
+  | 1–2 | 1 | ""RUNNER_STOP_CRITICAL"" 7_000 |
+  | 3–4 | 2 | ""RUNNER_STOP_SERIOUS"" 5_500 |
+  | 5–6 | 3 | ""RUNNER_STOP_WATCH"" 600 |
+  | 7+ | 4+ | not a runner — off the list |
+
+  The **three-squares-out case is the one this module was written for**: it is
+  two turns from a BattleShip on our back rank, and by the time it stands two
+  squares out the answer already has to be on the board.
+
+  **Fog-honest**, by the same rule as ""cc-focus.puml"": a marine counts only on
+  a lit or revealed square. The *hidden* half of the same worry belongs to the
+  known-vs-seen ledger (""intel.ts · cheesePromotion""), which answers with a
+  guard deploy rather than a blockade on a square we cannot see.
+
+  **Contained ≠ answered, and containment must be *known*.** ""blockedBy"" counts
+  a path square only on evidence we are entitled to: **our own unit** there
+  (fog or not — our own board is never a guess), **any occupant on a lit or
+  revealed square**, or **our own mine** it would walk onto
+  (""board/mine-contact.ts""). An enemy unit parked in the dark is **not** a
+  blockade: believing in one we cannot see damps the urgency to a quarter and
+  is exactly how a runner walks in. This is the module's sharpest fog claim,
+  and the reason ""blockedBy"" cannot be a plain ""map.has(s)"".
+
+  A runner that *is* contained keeps ""RUNNER_CONTAINED_SHARE"" 0.25 of its
+  tier, because the thing containing it can move.
+end note
+
+note as N_ANSWERS
+  **The answers, and what each is worth** (share × tier):
+
+  | answer | share | why |
+  | capture the runner | ""RUNNER_CAPTURE_SHARE"" 1 | the only permanent one — and only a move whose victim really **is** a marine on ""at"" counts, since a remembered runner's square may hold anything |
+  | blockade its ""front"" | ""RUNNER_BLOCK_SHARE"" 0.8 | a marine never shoots forward, so a body stops it dead — but only a mover that **arrives** (""!firesInPlace && move.to === front"") |
+  | ...with a sidestep open | ×""RUNNER_SIDESTEP_SHARE"" 0.5 | one of our units on its capture diagonals is a ladder past the blockade |
+  | ...blocker hanging | ""RUNNER_HANGING_SHARE"" 0.3 | asked on the POST-move board: enemy attacks ""front"", we do not defend it |
+  | cover ""front"" from where we land | ""RUNNER_COVER_SHARE"" 0.35 | it costs the runner a unit, not the race |
+  | walk the sole blocker off | −""RUNNER_ABANDON_SHARE"" 0.8 | leaving re-releases it — **unless** the move lands on another path square, or the blocker is fleeing fire |
+
+  **A sieged tank never answers by standing.** It fires without leaving its
+  square, so it can shoot a runner but can never *become* the body in front of
+  one: the block credit tests ""move.to"", while cover tests the square it
+  actually occupies afterwards (""move.from"" when ""firesInPlace""). A classical
+  move only scores cover of the **blockade** square; only a **deploy** scores
+  an arbitrary square on the path.
+
+  **Fleeing is not abandoning.** When ""tactical.enemyAttacks(move.from)"" and
+  ""ev.destSafe()"", the charge is skipped: a blocker the enemy is about to take
+  stops being a blocker either way, and survival owns that call. Without the
+  exemption the 7_000-point charge pinned a doomed unit to its square.
+
+  The charge is measured on ""runnerStake"" — the tier scaled by confidence, but
+  **not** by ""RUNNER_CONTAINED_SHARE"" — rather than on ""runnerUrgency"": the
+  urgency is damped *because* our own unit is the blocker, so charging the
+  damped number would make walking away nearly free.
+
+  **Deploys** (""strategies/economy.ts"") reuse the shares through
+  ""runnerDeployValue"", over every runner on the context, ghosts included — but
+  return the **best single answer, not the sum**: one body settles one square,
+  so two runners sharing a path can no longer stack a ring square past the tier
+  ceiling. A drop onto a runner we can **see** crushes it
+  (""board/deploy-reach.ts"" landing rule); onto a *remembered* one it pays only
+  ""RUNNER_BLOCK_SHARE"", because that tile is far more often empty than
+  occupied. An urgent runner also counts as ""defending"" — no ship-saving spree,
+  ""RUNNER_GUARD"" tank on — and, when its square or path touches the ring, buys
+  back the light drops ""preferHeavy"" would skip.
+
+  **Ally-occupied ring squares are legal answers too** (the Command Center may
+  crush its own non-king units; kings are skipped at generation). The deploy
+  loop prices the victim (mirror of the enemy-crush bonus), but the runner
+  answer itself pays **nothing** on ally-held squares — the standing body
+  already blockades it, so re-buying the square would be pure victim + gas
+  (the seen-crush / remembered-block shares above apply to non-ally squares
+  only). A square holding some runner's last blocker carries the abandon
+  charge and never shields elsewhere (""ALLY_UPGRADE"" /
+  ""ALLY_SHIELD_PAWN"" / ""ALLY_SHIELD_SHIP"" in ""strategies/economy.ts"").
+end note
+
+note as N_MEMORY
+  **Remembering the marine that ran by.** A unit that only *slides through* a
+  lit square is gone by the time the next settled snapshot is read, so a scan
+  of the board can never see it. The memory is the answer, and it is folded
+  exactly like the CC posterior and the known-vs-seen ledger — in core, one
+  fold per settled ply, threaded by both hosts (never re-implemented in one).
+
+  **Two ways in.** A ghost is seeded either by a **departure** (a square we can
+  see, that we saw a marine on, now empty) or by a **crossing** the witness
+  reports (below). Both then advance and reconcile identically.
+
+  **One turn, one propagation — but every ply, its evidence.**
+  <color:#CB2000>""beginScTurn"" does **not** advance the clock</color>: a
+  turn-open chip ply carries the *same* turn number as the settle before it.
+  So ""propagate = snap.turn !== prior.turn"" gates only the forward walk
+  (""reach"" 0 instead of ""RUNNER_RANKS_PER_TURN"") and the confidence decay.
+  Sightings, crossings and pruning run on **every** ply.
+
+  An earlier draft returned ""prior"" untouched on a repeated turn. That did not
+  deduplicate anything — it discarded the chip ply's entire account of itself,
+  and a turn-open chip is the most common way a Command Center is ever shot, so
+  it silently killed the retaliation channel's main path
+  (""cc-retaliation.puml""). An empty memory still starts at turn **−1**, so the
+  first fold of turn 0 propagates.
+
+  The fold asks ""getSideVision"" with the **same options the planner uses**
+  (""{ mines, rookModeFor: sieged ? "siege" : "tank" }"", per
+  ""ai/context/vision.ts""), so a marine our own siege cone is looking at cannot
+  be forgotten by a fold that asked for less light.
+
+  A ""RunnerGhost"" is ""{ seenAt, seenTurn, possible[], confidence }"". Per ply,
+  ""advanceGhost"" takes each square it could be on and adds: **stood still**,
+  **+1 rank**, **+2 ranks** (the gas stack) — never through a visible occupant,
+  never through one of ours whether we can see it or not, and never *past* one
+  of our own mines, which kill a marine that walks onto them — plus any
+  **forward diagonal where one of ours was actually lost**. Then it prunes:
+
+  | evidence | effect |
+  | a lit square with no marine on it | that square is out — this is what makes a *departure* legible |
+  | a visible occupant in the way | the walk stops there |
+  | one of our own units on the square | out, fog or no fog — our own board is never a guess |
+  | our own mine on the walk | the walk stops there, for the same reason |
+  | the promotion rank | dropped — it is a BattleShip now, the ledger's problem |
+  | a sighting this ghost could have reached | the ghost **is** that marine and retires into the fresh sighting — **at most one ghost per sighting** |
+  | a sighting some *other* ghost already absorbed | not a match: this ghost merely learns somebody else stands there, and prunes that square |
+  | nothing left in the set | dropped: captured, promoted, or never there |
+
+  The one-to-one rule is what keeps two records from describing one marine.
+  Both entry paths go through the one ""carry()"" helper, so a **crossing also
+  supersedes any ghost whose set it overlaps** — it is the same marine, seen
+  again. Deduplicating a crossing against settled sightings alone left last
+  turn's ghost *and* this turn's crossing on the books, doubling both the tier
+  and the deploy value. Its read-side twin is in ""scanEnemyRunners"": a ghost is
+  placed on its first **unclaimed** possible square rather than dropped when
+  its worst case is already spoken for.
+
+  Confidence starts at 1 and is multiplied by ""RUNNER_MEMORY_DECAY"" 0.7 each
+  silent ply, dropping through ""RUNNER_MEMORY_FLOOR"" 0.2 after ~5 — and it
+  **scales every share** (""runnerStake""), so a remembered runner is always
+  worth less than a seen one and a faint one is worth almost nothing.
+  ""RUNNER_URGENT_CONFIDENCE"" 0.5 is the bar a ghost must clear before it may
+  cancel the economy's plans or damp the seek dial.
+
+  **The one thing credited without vision** is our own loss — and it is a
+  *loss*, not a departure. ""RunnerMemory.ourUnits"" holds our previous squares
+  **with their types**, and a vacated square counts as a capture diagonal only
+  when that type's count actually dropped between folds. A knight that merely
+  hopped off a runner's diagonal leaves its square empty too; crediting that as
+  a capture invented an advance the enemy never made, and the invented square
+  is the most advanced one, so it became the ghost's head and drove the tier.
+  Widening the set is **not** automatically safe: the head of the set is what
+  the scan reads.
+end note
+
+note as N_SEEK
+  **Why the seek dial is damped, not out-bid.** ""seekFocus"" is the one posture
+  weight that *multiplies*: ""mapControl"" pays it per square closed toward the
+  CC guess, times a cue of up to 3, so a tank strolling four squares down the
+  board banks more than any flat weight in the ladder. Rather than inflate a
+  constant until it wins that race, ""buildStrategicCtx"" damps the dial to
+  ""RUNNER_SEEK_DAMP"" 0.25 while an urgent runner is on the board — searching
+  for a Command Center we may not find this turn is precisely the concern that
+  can wait. The damp is a **multiplier** on the posture value, not a
+  replacement: ""seek"" 700 becomes 175, ""expand"" and ""hunt"" are already 0. It
+  lives in the **context**, so strategies keep reading ""ctx.weights"" and never
+  branch on the runner themselves.
+end note
+
+note as N_WITNESS
+  <color:#1A7F37>**CLOSED — the fly-by is now readable (layer B).**</color> A
+  marine that crosses a lit square mid-turn and lands in fog leaves no trace on
+  any two settled boards. The resolve knows, so the resolve is asked — through
+  a gate, because the payload is emitted with **no viewer**, and handing it
+  over raw is the omniscience ""../cc-focus.puml"" forbids.
+
+  ""ai/strategic/witness.ts"" is that gate. Hosts hand in a ""ResolveWitness""
+  (""{ placement, mines, siegedRooks, moves, attacks }""), never a raw engine
+  payload, and there is exactly **one** adapter — ""witnessFromEndTurn"" — because
+  a turn-open chip ply also builds a whole ""EndScTurnResult"".
+
+  **It carries the whole ply, not the classical slice.** ""moves"" is
+  ""bMoves + resolved.moves + fMoves"": a marine that advances by **gas step
+  alone** crosses our light exactly like a classical mover, and dropping the B
+  phase blinded the channel to half of the two-ranks-a-turn advance it exists
+  to catch. ""attacks"" likewise adds ""moveCollisions"" and both mine-trigger
+  lists — the latter is how we learn our own mine did the work.
+
+  ""runnerCrossings(witness, side)"" gates every enemy marine move:
+
+  | step | rule |
+  | whose fog | read from ""esr.afterB.placement"" — the board we were watching **from** when the turn began, with the planner's own ""{ mines, rookModeFor }"" bag |
+  | what counts | any square of ""[from, ...rayBetween(from,to), to]"" that was lit or revealed |
+  | the origin, extra | granted when ""isMoverVisibleToSide"" says firing gave it away — a shot's origin is ""stopAt ?? from"", because a slider that discovers its target mid-ray fires from the discovery square and comes to **rest** elsewhere |
+  | what is reported | the **most advanced** square we actually watched it occupy, plus a ""residual"" — never where the move ended |
+
+  **The residual is the correction that keeps the ghost honest.** The move is
+  already over when we fold, so advancing a crossing a full turn would place
+  the marine a rank beyond anywhere it could be. ""residual =
+  RUNNER_RANKS_PER_TURN − travelled"", where ""travelled"" is ""dist(origin, at)""
+  when we watched it leave, and **1** otherwise — an unwatched origin means
+  ""at"" is a square it passed *through*, so a rank is already spent. Nothing
+  here consults ""move.to"": that is the payload's knowledge, not ours.
+
+  ""foldRunnerMemory"" seeds a ghost at the crossing square, walks it by exactly
+  that residual, and reconciles it like any other ghost. Two further prunes
+  apply on the way in: ""ourMarineKills"" — our own shot or our own mine, both
+  ours to know — drops a marine we destroyed this ply rather than remembering
+  it at large, and the crossing supersedes any ghost it overlaps (above). A
+  marine that flew through our light and landed in the dark is therefore
+  remembered, which is the case this note used to list as missing.
+
+  **"Firing reveals the shooter" is a rule this slice asserts, not one it
+  borrows.** ""board/vision.ts isMoverVisibleToSide"" existed but had no caller
+  outside the barrel; this channel is now its only one. So the precedent is
+  ours to keep consistent — if the UI ever grows a second reveal gate, these
+  two must agree or the script and the board will disagree about what a player
+  was allowed to see.
+
+  The same witness carries the *other* honest channel, a shot on our Command
+  Center, which needs no gate at all: ""strategic/cc-retaliation.puml"".
+end note
+
+note as N_CADENCE
+  **Two cadences in the app host, and the witness gets the better one.**
+  ""foldTracking"" folds ""kvs"" and ""ccIntel"" off the *planning* snapshot, guarded
+  by ""foldedTurn"" — an approximation, since a turn is not a ply.
+
+  The witness folds run off ""store.shell().settledResolves"", which the reducer
+  appends to exactly once per settled ply (""matchReducer.ts:549"" and "":769""),
+  chip plies included — the same two points the arena folds at. A
+  ""foldedResolves"" cursor drains it, so a re-render can never fold a ply twice.
+  That cursor is the only thing preventing a double fold: the fold's own
+  ""propagate"" test is a per-*turn* guard and two plies of one turn both count.
+
+  Two placement rules, both load-bearing:
+  * the effect is declared **above** ""<BaseScreen>"", so it is created first and
+    runs before the effect that asks the Adjutant to plan — otherwise the
+    opponent plans one ply behind its own memory;
+  * it advances the cursor and returns when the opponent is not the strategic
+    script. Nothing reads these memories under naive, and folding them would be
+    two vision passes per side per ply for no reader.
+
+  <color:#CB2000>**OPEN — a resumed match starts blind.**</color> The resume
+  path rebuilds state from a single SCFEN, so ""settledResolves"" is empty and
+  all four memories come back at the opening prior: the ghosts, the wanted
+  list, the posterior and the ledger are gone. Nothing in the blob carries
+  them, and a resumed game is a stated goal of this branch. **Not fixed.**
+end note
+
+note as N_NONGOALS
+  **Deliberate non-goals.**
+  - **King moves score 0 here.** The Command Center stepping in front of a
+    runner is survival's call; this concern never bids the CC into a blockade.
+  - **No candidate generation.** Every answer is either a classical move the
+    orchestrator already generates or a deploy ""economy"" already proposes.
+  - **Stacks are scored by the naive ""scoreMove""** (""plans/stacks.ts"" imports
+    ""../strategies""), so a runner answer that only exists as a B+C stack does
+    not see these weights. Pre-existing, and unchanged here.
+  - **Our own promotion race is untouched** — ""NEAR_PROMOTE_RUSH"" in
+    ""ai/strategies/mapControl.ts"" still reads only *our* marines, and still
+    only within 2 steps.
+end note
+
+SCAN .. N_ANSWERS
+MEM .. N_MEMORY
+CTX .. N_SEEK
+SS .. N_NONGOALS
+HOSTA .. N_CADENCE
+FOLD .. N_WITNESS
+
+note bottom of TEST
+  ""__tests__/strategic/runnerMemory.test.ts"" pins the fold in **11 cases**: a
+  marine kept after it steps out of sight (bounded by two ranks), the ghost
+  read at its worst-case square, collapse back to a sighting, the decay to
+  nothing, capture credit through fog, **a unit that merely moved crediting
+  nothing**, **the chip-ply guard** (the same turn folded twice changes
+  nothing), **two ghosts and one marine** (one absorbs, one survives),
+  promotion dropping the ghost, a guard deploy driven by memory alone — and
+  that a marine we *never saw* leaves no ghost however many plies it walks.
+
+  ""__tests__/strategic/runners.test.ts"" pins **12 cases**: the turns table and
+  the watch horizon, contained-vs-passed, the capture / block / abandon scores,
+  a whole ""fog honesty"" describe (an enemy blocker in the dark does **not**
+  contain the runner, while a *seen* blocker and any unit of ours do), and two
+  end-to-end plans — taking a runner two turns out instead of aiming at the CC
+  guess, and deploying a blocker on ""f7"". That fixture is deliberate: ""f7"" is
+  the **worst** ring square by ordinary deploy scoring (the centre pull favours
+  ""d7"" / ""e7""), and the same board with the runner removed must **not** drop
+  there — the control that fails if the deploy term is deleted. The tier
+  ordering itself is pinned in ""__tests__/tactics/weightOrdering.test.ts""
+  (see ""../weight-ladder.puml"").
+
+  ""__tests__/strategic/witness.test.ts"" pins the gate in **8 cases**, seven of
+  them driven through the real engine rather than hand-built payloads: a
+  genuine double-step settled through ""endScTurn"" reporting the furthest square
+  we watched **and its residual**, the per-viewer gate (the mover's own side
+  learns nothing), a path entirely in the dark reporting nothing at all, the
+  memory getting a ghost the settled board alone could not produce — and four
+  retaliation cases (""cc-retaliation.puml""), one of which asserts
+  ""chip.next.turn === settle.next.turn"" inline so the clock trap stays visible
+  to the next reader.
+
+  ""runnerMemory.test.ts"" holds the fold's own version of that trap, now named
+  "advances once per turn, not once per ply".
+end note
+@enduml

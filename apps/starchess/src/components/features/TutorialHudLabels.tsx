@@ -14,7 +14,7 @@ import { Portal } from "solid-js/web";
 
 import { ChatBubble } from "~/components/primitives/ChatBubble";
 import styles from "~/components/features/TutorialHudLabels.module.css";
-import { specialCopyFor } from "~/presentation/hud/specialCopy";
+import { specialCopyFor } from "~/presentation/specials/copy";
 
 /** Unit pickers — one attribute each, both keyed by piece symbol. */
 const PICKERS = [

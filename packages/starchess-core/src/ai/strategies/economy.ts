@@ -1,3 +1,4 @@
+// SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
 /**
  * Economy — what the Command Center deploys, and in what order.
  *
@@ -8,12 +9,18 @@
  *  - cap Hoverbikes at {@link MAX_KNIGHTS} and prefer Siege Tanks after,
  *  - skip light drops entirely once the bank can pay for a Tank or better,
  *    unless the King is hot (survival buys time) or we still owe a Mecha.
- *
- * // SPEC: _spec/apps/starchess/core/adjutant/opponent-strategy.puml
  */
 
-import { isSquareAttackedBy } from "../../board/placement";
+import type { Square } from "chess.js";
+
+import {
+  attacksSquare,
+  isSquareAttackedBy,
+  parseSquare,
+  type ScPiece,
+} from "../../board/placement";
 import { hostileMineOn } from "../../board/mine-contact";
+import type { StarChessColor } from "../../model/types";
 import { UNIT_COST } from "../../rules/constants";
 import type { AdjutantCtx, Candidate } from "../context";
 import { centerScore, neighbors, promoteProgress, rankOf } from "../context";
@@ -21,6 +28,93 @@ import { asCandidate, type Strategy } from "./types";
 
 /** Cap Hoverbikes — after this many knights, prefer rook deploys. */
 export const MAX_KNIGHTS = 2;
+/**
+ * Mecha (bishop) deploy caps — same-colored bishops see the same diagonals,
+ * so the 3rd on a color is redundant, and a 5th bishop anywhere never earns
+ * its bank + gas. Gates, not scores: the ladder is untouched.
+ */
+export const MAX_BISHOPS_TOTAL = 4;
+export const MAX_BISHOPS_PER_COLOR = 2;
+
+export type SquareColor = "dark" | "light";
+
+/** a1 is dark: file (a=0) + rank parity decides. */
+export const squareColor = (sq: Square): SquareColor => {
+  const { file, rank } = parseSquare(sq);
+  return (file + rank) % 2 === 1 ? "dark" : "light";
+};
+
+/** Own bishops split by square color, plus the total. */
+export const countBishopsByColor = (
+  map: Map<Square, ScPiece>,
+  us: StarChessColor,
+): { dark: number; light: number; total: number } => {
+  const out = { dark: 0, light: 0, total: 0 };
+  for (const [sq, p] of map) {
+    if (p.color !== us || p.type !== "b") continue;
+    out.total += 1;
+    out[squareColor(sq)] += 1;
+  }
+  return out;
+};
+
+/**
+ * True iff a post-deploy bishop on `to` takes a *visible* enemy queen or rook
+ * this turn — either by crushing one standing on `to` itself, or classically
+ * from the landing square (via a spawn+capture stack). Queen/rook only: takes
+ * at these values repay bank + gas, while knight/bishop/pawn takes do not.
+ * Charon is not such an answer — `assertSpecialLegal` demands the
+ * sniper exist pre-turn, and a fresh deploy spent its unit's special — so
+ * only crush + classical captures count.
+ */
+export const deployCapturesBigThreat = (
+  map: Map<Square, ScPiece>,
+  us: StarChessColor,
+  to: Square,
+  isVisible: (sq: Square) => boolean,
+): boolean => {
+  const occ = map.get(to);
+  // Direct crush of a visible queen/rook on the landing square.
+  if (occ && occ.color !== us && (occ.type === "q" || occ.type === "r")) {
+    return isVisible(to);
+  }
+  const after = new Map(map);
+  after.delete(to);
+  after.set(to, { type: "b", color: us });
+  for (const [sq, p] of after) {
+    if (p.color === us || (p.type !== "q" && p.type !== "r")) continue;
+    if (!isVisible(sq)) continue;
+    if (attacksSquare(after, to, sq)) return true;
+  }
+  return false;
+};
+
+/**
+ * True iff this bishop deploy must be suppressed. Projects counts first.
+ * (The crush-replace netting below is defense in depth: naive rings are
+ * empty-only and strategic generation skips same-type ally crushes, so no
+ * caller currently reaches it with an own bishop on `to`.)
+ * The total cap is absolute; the per-color cap admits only the big-threat
+ * capture.
+ */
+export const isBishopDeployCapped = (
+  map: Map<Square, ScPiece>,
+  us: StarChessColor,
+  to: Square,
+  isVisible: (sq: Square) => boolean,
+): boolean => {
+  const c = countBishopsByColor(map, us);
+  const occ = map.get(to);
+  if (occ?.color === us && occ.type === "b") {
+    c.total -= 1;
+    c[squareColor(to)] -= 1;
+  }
+  if (c.total >= MAX_BISHOPS_TOTAL) return true;
+  if (c[squareColor(to)] >= MAX_BISHOPS_PER_COLOR) {
+    return !deployCapturesBigThreat(map, us, to, isVisible);
+  }
+  return false;
+};
 /** Bonus to spawn rook once we already have {@link MAX_KNIGHTS} knights. */
 export const ROOK_AFTER_KNIGHTS = 900;
 /** Ensure ≥1 bishop before stacking rooks/queens (Charon / diagonals). */
@@ -86,13 +180,21 @@ const deploys = (ctx: AdjutantCtx): Candidate[] => {
 
     for (const to of adjacent) {
       if (unit === "p" && (rankOf(to) === 1 || rankOf(to) === 8)) continue;
+      // Mecha pile-up gate (naive rings are empty-only, so `to` is vacant here;
+      // the helper's crush-netting branch is unreachable defense in depth).
+      if (unit === "b" && isBishopDeployCapped(map, us, to, () => true)) {
+        continue;
+      }
       let score =
         center * centerScore(to) +
         promoteRank * promoteProgress(rankOf(to), us) +
         // Heavier piece → higher score (q=9, r=5 ≫ p=1).
         trade * (1 + UNIT_COST[unit]);
       // Survival first — do not force bishop-before-rook while the King is hot.
-      if (needBishop && unit === "b" && !kingThreatened) score += BISHOP_FIRST;
+      // Turn 1 leaves Hoverbike and Mecha level so the open stays probabilistic.
+      if (needBishop && unit === "b" && !kingThreatened && snap.turn > 1) {
+        score += BISHOP_FIRST;
+      }
       if (vision.enemyQueenVisible && unit === "b" && !kingThreatened) {
         score += BISHOP_VS_QUEEN;
       }
@@ -101,6 +203,9 @@ const deploys = (ctx: AdjutantCtx): Candidate[] => {
       if (kingThreatened && unit === "r") score += trade * 4;
       if (kingThreatened) score += trade;
       if (isSquareAttackedBy(map, to, enemy)) score -= attackedPenalty;
+      if (snap.turn <= 1 && (unit === "n" || unit === "b")) {
+        score += (ctx.rng() - 0.5) * 0.5;
+      }
 
       out.push(
         asCandidate(

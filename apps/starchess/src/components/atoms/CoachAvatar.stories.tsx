@@ -7,7 +7,7 @@ import {
 import type { CoachIdentity, KerriganEmotion } from "~/types/coach";
 
 /**
- * Selena Kerrigan — Ghost sniper helm on the classic coach cat.
+ * Selena — Ghost sniper helm on the classic coach cat.
  * Dark gray helmet only (no mouth muzzle); large left + twin right green scopes.
  */
 const meta = {
@@ -18,7 +18,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Selena (classic coach cat) or Selena Kerrigan (Ghost helm). Toggle identity to drop/lift the helm (500ms). Emotion `scanning` slides the visor over her eyes.",
+          "Selena (classic coach cat) or Selena (Ghost helm). Toggle identity to drop/lift the helm (500ms). Emotion `scanning` slides the visor over her eyes.",
       },
     },
   },
@@ -70,7 +70,7 @@ export const Idle: Story = {
     docs: {
       description: {
         story:
-          "Starts as Selena (UI cat, no Ghost gear). Toggle to Selena Kerrigan to drop the helm (happy bounce); toggle back to lift it away while she watches upward.",
+          "Starts as Selena (UI cat, no Ghost gear). Toggle to Selena to drop the helm (happy bounce); toggle back to lift it away while she watches upward.",
       },
     },
   },
@@ -115,7 +115,7 @@ export const Idle: Story = {
             opacity: busy() ? "0.65" : "1",
           }}
         >
-          {identity() === "kerrigan" ? "Selena Kerrigan" : "Selena"}
+          {identity() === "kerrigan" ? "Selena" : "Selena"}
         </button>
       </div>
     );
@@ -123,17 +123,17 @@ export const Idle: Story = {
 };
 
 export const Watching: Story = {
-  name: "Selena Kerrigan · Watching",
+  name: "Selena · Watching",
   args: { emotion: "watching", identity: "kerrigan" },
 };
 
 export const Thinking: Story = {
-  name: "Selena Kerrigan · Thinking",
+  name: "Selena · Thinking",
   args: { emotion: "thinking", identity: "kerrigan" },
 };
 
 export const Scanning: Story = {
-  name: "Selena Kerrigan · Scanning",
+  name: "Selena · Scanning",
   parameters: {
     docs: {
       description: {
@@ -172,26 +172,26 @@ export const Scanning: Story = {
 };
 
 export const Happy: Story = {
-  name: "Selena Kerrigan · Happy",
+  name: "Selena · Happy",
   args: { emotion: "happy", identity: "kerrigan" },
 };
 
 export const Shocked: Story = {
-  name: "Selena Kerrigan · Shocked",
+  name: "Selena · Shocked",
   args: { emotion: "shocked", identity: "kerrigan" },
 };
 
 export const Sleepy: Story = {
-  name: "Selena Kerrigan · Sleepy",
+  name: "Selena · Sleepy",
   args: { emotion: "sleepy", identity: "kerrigan" },
 };
 
 export const Sleeping: Story = {
-  name: "Selena Kerrigan · Sleeping",
+  name: "Selena · Sleeping",
   args: { sleeping: true, identity: "kerrigan" },
 };
 
 export const Compact: Story = {
-  name: "Selena Kerrigan · Compact",
+  name: "Selena · Compact",
   args: { emotion: "idle", compact: true, identity: "kerrigan" },
 };

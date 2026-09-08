@@ -22,7 +22,7 @@ import type {
   GasDropCue,
   MineMissileCue,
   MoveCue,
-  QueenJumpTrail,
+  ShipJumpTrail,
 } from "~/types/cues";
 
 type CueOf<K extends TimelineCue["kind"]> = Extract<TimelineCue, { kind: K }>;
@@ -89,7 +89,7 @@ export const useCombatOverlays = (store: MatchStore) => {
   const emptyProgress: Record<string, 0 | 1> = {};
   const emptyLeg: Record<string, 0 | 1> = {};
   const emptyDying: Record<string, boolean> = {};
-  const emptyTrails: QueenJumpTrail[] = [];
+  const emptyTrails: ShipJumpTrail[] = [];
   const emptyGas: GasDropCue[] = [];
   const emptyMissiles: MineMissileCue[] = [];
   const emptySpent: Square[] = [];
@@ -123,7 +123,7 @@ export const useCombatOverlays = (store: MatchStore) => {
     const key = `hull:${cap()}:${all.map((c) => c.id).join(",")}`;
     if (key === lastHullKey) return lastHull;
     lastHullKey = key;
-    lastHull = [...capCues(all.filter((c) => !c.queenJump), cap())] as MoveCue[];
+    lastHull = [...capCues(all.filter((c) => !c.shipJump), cap())] as MoveCue[];
     return lastHull;
   });
 
@@ -134,7 +134,7 @@ export const useCombatOverlays = (store: MatchStore) => {
     const key = `jump:${cap()}:${all.map((c) => c.id).join(",")}`;
     if (key === lastJumpKey) return lastJump;
     lastJumpKey = key;
-    lastJump = [...capCues(all.filter((c) => !!c.queenJump), cap())] as MoveCue[];
+    lastJump = [...capCues(all.filter((c) => !!c.shipJump), cap())] as MoveCue[];
     return lastJump;
   });
 

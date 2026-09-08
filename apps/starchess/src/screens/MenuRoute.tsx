@@ -37,6 +37,7 @@ export const MenuRoute: Component<RouteSectionProps> = () => {
     const q = new URLSearchParams({
       map: opts.map,
       team: opts.team,
+      opponent: opts.opponent,
     });
     navigate(`/single?${q.toString()}`);
   };

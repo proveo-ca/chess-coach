@@ -26,7 +26,7 @@ export type TargetingState =
   | {
       kind: "bishopSnipe";
       from: Square;
-      to: Square;
+      targets: readonly Square[];
       color: StarChessColor;
     }
   | {
@@ -69,8 +69,8 @@ export type TimelineCue = CueRouting &
       color: StarChessColor;
       from: Square;
       to: Square;
-      /** BattleShip Tactical Jump — QueenJumpAnimation, not a hull slide. */
-      queenJump?: boolean;
+      /** BattleShip Tactical Jump — ShipJumpAnimation, not a hull slide. */
+      shipJump?: boolean;
       /** Pawn gas-step (B/F pawnDouble) — stim square + hop timing. */
       stim?: boolean;
     }
@@ -83,10 +83,12 @@ export type TimelineCue = CueRouting &
       to: Square;
       /** When set, HP chips at frag impact (live king-damage boom). */
       kingShot?: { target: StarChessColor; livesAfter: number };
-      /** Override ANIM_BY_PIECE (e.g. bishopCharon). */
+      /** Override ANIM_BY_PIECE (e.g. bishopCharon — wire-frozen cue id). */
       anim?: AttackAnimKind;
       /** Siege Tank mode for rookBattery VFX (from afterB siegedRooks). */
       rookMode?: "siege" | "tank";
+      /** Charon fizzle — no ship at resolve: missiles fly the full ray off-board, no impact burst. */
+      fizzle?: boolean;
     }
   | {
       kind: "death";
@@ -218,8 +220,10 @@ export type MatchState = {
   /**
    * Human’s chosen team for this match — stable across review vision toggles.
    * SideRailTools labels: You = playerColor, Adjutant = opposite.
+   * For arena imports, both sides are bots — show script ids instead.
    */
   playerColor: ViewerColor;
+  arenaPlayers?: { w: string; b: string };
   deadlineAt: number | null;
   targeting: TargetingState;
   specialsUsed: ReadonlySet<Square>;
@@ -266,7 +270,7 @@ export type MatchAction =
       type: "OPEN_BISHOP_SNIPE";
       color: StarChessColor;
       from: Square;
-      to: Square;
+      targets: readonly Square[];
     }
   | {
       type: "OPEN_QUEEN_WARP";

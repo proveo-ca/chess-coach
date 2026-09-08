@@ -1,6 +1,9 @@
 import { expect, test } from "@playwright/test";
+import type { Page } from "@playwright/test";
 
-const gotoScfen = async (page: import("@playwright/test").Page, scfen: string) => {
+import { settledPieceAt } from "./helpers";
+
+const gotoScfen = async (page: Page, scfen: string) => {
   await page.goto(`single?scfen=${encodeURIComponent(scfen)}`);
   await expect(page.getByTestId("starchess-board-chrome")).toBeVisible({ timeout: 20_000 });
   // Deep links can seat a milestone turn — clear its broadcast first.
@@ -54,11 +57,11 @@ test.describe("StarChess queue edit + gas pawn", () => {
       "SCFEN|4k3/8/8/8/8/8/4P3/4K3|11|33|P|G:12:22|Q:w:B=pawnDouble:e2:e3,C=e2e3;b:";
     await gotoScfen(page, scfen);
     await page.getByTestId("turn-end").click();
-    await expect(page.locator("[data-square='e4'] img[alt='w p']")).toBeVisible({
+    await expect(settledPieceAt(page, "e4", "w p")).toBeVisible({
       timeout: 15_000,
     });
-    await expect(page.locator("[data-square='e2'] img[alt='w p']")).toHaveCount(0);
-    await expect(page.locator("[data-square='e3'] img[alt='w p']")).toHaveCount(0);
+    await expect(settledPieceAt(page, "e2", "w p")).toHaveCount(0);
+    await expect(settledPieceAt(page, "e3", "w p")).toHaveCount(0);
   });
 
   test("classical then pawnDouble gas End advances two ranks", async ({ page }) => {
@@ -66,7 +69,7 @@ test.describe("StarChess queue edit + gas pawn", () => {
       "SCFEN|4k3/8/8/8/8/8/4P3/4K3|11|33|P|G:12:22|Q:w:C=e2e3,F=pawnDouble:e2:e3;b:";
     await gotoScfen(page, scfen);
     await page.getByTestId("turn-end").click();
-    await expect(page.locator("[data-square='e4'] img[alt='w p']")).toBeVisible({
+    await expect(settledPieceAt(page, "e4", "w p")).toBeVisible({
       timeout: 15_000,
     });
   });
@@ -82,7 +85,7 @@ test.describe("StarChess queue edit + gas pawn", () => {
       timeout: 3_000,
     });
     await page.getByTestId("turn-end").click();
-    await expect(page.locator("[data-square='e4'] img[alt='w p']")).toBeVisible({
+    await expect(settledPieceAt(page, "e4", "w p")).toBeVisible({
       timeout: 15_000,
     });
   });

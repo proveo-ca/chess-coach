@@ -22,7 +22,7 @@ import {
 import { minesVisibleToViewer } from "~/presentation/board/fogVisibility";
 import { intentOverlaysFromQueue } from "~/presentation/combat/intentOverlays";
 import { projectResolveTimeline } from "~/presentation/timeline/timelinePlayer";
-import { tacticalJumpTargets } from "~/presentation/specials/queenTacticalJump";
+import { tacticalJumpTargets } from "~/presentation/specials/shipTacticalJump";
 
 const MINE_B = (at: string): ScMine => ({ color: "b", at: at as never });
 
@@ -105,7 +105,7 @@ describe("resolve timeline cues", () => {
     );
     const cues = projectResolveTimeline(result);
     const ids = cues.map((c) => c.id);
-    const jump = cues.findIndex((c) => c.kind === "move" && c.queenJump);
+    const jump = cues.findIndex((c) => c.kind === "move" && c.shipJump);
     const mineBoom = cues.findIndex((c) => c.kind === "death" && c.mine);
     const hull = cues.findIndex((c) => c.kind === "death" && c.piece === "q");
     expect(jump).toBeGreaterThanOrEqual(0);

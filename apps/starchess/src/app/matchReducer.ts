@@ -289,10 +289,10 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
         targeting: {
           kind: "bishopSnipe",
           from: action.from,
-          to: action.to,
+          targets: action.targets,
           color: action.color,
         },
-        statusText: `Charon Booster Missiles armed — click the queen on ${action.to}`,
+        statusText: `Charon Booster Missiles armed — click a diagonal square`,
       };
     case "OPEN_QUEEN_WARP":
       if (state.phase !== "planning" && state.phase !== "targeting") return state;

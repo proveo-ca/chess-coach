@@ -27,7 +27,7 @@ import {
   TACTICAL_JUMP_APPEAR_MS,
   TACTICAL_JUMP_TRAIL_MS,
   TACTICAL_JUMP_TRAVEL_MS,
-} from "~/presentation/specials/queenTacticalJump";
+} from "~/presentation/specials/shipTacticalJump";
 import { GAS_DROP_MS } from "~/presentation/constants";
 import type {
   AttackCue,
@@ -35,7 +35,7 @@ import type {
   DeployCue,
   GasDropCue,
   MoveCue,
-  QueenJumpTrail,
+  ShipJumpTrail,
 } from "~/types/cues";
 import styles from "~/screens/menuSky/DebrisPawnPlayground.module.css";
 
@@ -89,7 +89,7 @@ export const DebrisPawnPlayground: Component<DebrisPawnPlaygroundProps> = (props
   const [gasDropCues, setGasDropCues] = createSignal<GasDropCue[]>([]);
   const [gasAbsorb, setGasAbsorb] = createSignal<Square[]>([]);
   const [jumpCues, setJumpCues] = createSignal<MoveCue[]>([]);
-  const [jumpTrails, setJumpTrails] = createSignal<QueenJumpTrail[]>([]);
+  const [jumpTrails, setJumpTrails] = createSignal<ShipJumpTrail[]>([]);
   const [hide, setHide] = createSignal<Square[]>([]);
 
   const timers: number[] = [];
@@ -305,7 +305,7 @@ export const DebrisPawnPlayground: Component<DebrisPawnPlaygroundProps> = (props
           color: "w",
           from: SQ.bluePromo,
           to: SQ.jumpTo,
-          queenJump: true,
+          shipJump: true,
         },
       ]);
       setJumpTrails([{ id: jumpId, from: SQ.bluePromo, to: SQ.jumpTo }]);

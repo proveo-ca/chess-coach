@@ -246,7 +246,7 @@ This is AlphaZero-shaped **only if** self-play + MCTS/beam over plans + neural p
 |---|---|---|
 | **S — Strategy catalog** | Each tactic named + tested; posture table documented | New behaviour = new strategy, not a magic constant |
 | **A — Freeze the heuristic** | Feature list documented; candidate gen complete; vs-human smoke on `/single` | Heuristic still preferred default difficulty |
-| **B — Headless match harness** | Batch runner: map × seed → SCFEN trajectory + minerals + outcome | 1k games / hour on CI machine |
+| **B — Headless match harness** | Batch runner: map × seed → SCFEN trajectory + minerals + outcome (heads-up: the plan in `_spec/PLAN-starchess-script-arena.md` covers exactly this — scripts vs scripts, records, replay) | 1k games / hour on CI machine |
 | **C — Imitation / value fit** | Train scorer on Adjutant plans + outcomes; plug into `adjutantLearned` | ≥ heuristic win-rate vs random; ≤ 5% Elo drop vs frozen Adjutant when imitating |
 | **D — Self-play league** | Checkpoint pool; Elo ladder; store replays | Learner beats Adjutant-v0 at >55% over N games |
 | **E — Policy/value net** | Masked plan head + value; optional shallow search | Ships as “Hard”; Easy remains heuristic |

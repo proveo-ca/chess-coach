@@ -8,7 +8,7 @@ import type {
   KingDamageCue,
   MineMissileCue,
   MoveCue,
-  QueenJumpTrail,
+  ShipJumpTrail,
 } from "~/types/cues";
 
 export type ChasingMineCue = { at: Square; legMs: number[] };
@@ -31,7 +31,7 @@ export type CombatFxState = {
   kingDamage: KingDamageCue[];
   chasingMines: ChasingMineCue[];
   mineMissiles: MineMissileCue[];
-  mineMissileTrails: QueenJumpTrail[];
+  mineMissileTrails: ShipJumpTrail[];
   spentMines: Square[];
 };
 

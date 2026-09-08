@@ -1,15 +1,14 @@
+// SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
 /**
  * Posture resolution and the contextual weight table.
  *
  * Postures recompute every turn from hub control + fog intel:
  *  - expand — no hub yet → map control (siege / mines / diagonals)
- *  - seek   — hub held, enemy King fogged → find the King from hints
- *  - hunt   — hub held + enemy King visible → attack King is #1 (aggressive)
+ *  - seek   — hub held, enemy Command Center (CC) fogged → find the Command Center (CC) from hints
+ *  - hunt   — hub held + enemy Command Center (CC) visible → attack Command Center (CC) is #1 (aggressive)
  *
  * These weights are the only dial the orchestrator turns: strategies read them
  * from the context and never hard-code a posture branch of their own.
- *
- * // SPEC: _spec/apps/starchess/core/adjutant/opponent-strategy.puml
  */
 
 import type { Posture, StrategyWeights } from "./types";
@@ -30,8 +29,8 @@ export const WEIGHTS: Record<Posture, StrategyWeights> = {
     attackedPenalty: 400,
   },
   /**
-   * Hub held, King fogged — find the King. Promote is secondary to scouting
-   * toward deploy / pawn-file cues (and siege vision that would reveal them).
+   * Hub held, Command Center (CC) fogged — find the Command Center (CC). Promote is secondary to scouting
+   * toward deploy / marine-file cues (and siege vision that would reveal them).
    */
   seek: {
     siegeHub: 950,
@@ -46,7 +45,7 @@ export const WEIGHTS: Record<Posture, StrategyWeights> = {
     trade: 100,
     attackedPenalty: 400,
   },
-  /** Hub held + King visible — aggressive: attack King outranks promote/control. */
+  /** Hub held + Command Center (CC) visible — aggressive: attack Command Center (CC) outranks promote/control. */
   hunt: {
     siegeHub: 180,
     mapControl: 140,

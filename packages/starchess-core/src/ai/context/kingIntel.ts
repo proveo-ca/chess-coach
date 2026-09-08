@@ -1,14 +1,13 @@
+// SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
 /**
- * Infer a King-search focus from fog-visible enemy units only.
+ * Infer a Command Center (CC)-search focus from fog-visible enemy units only.
  * Hints (strong → weak):
- *  1. Pawn **files** — the King deployed Marines nearby, so each visible
- *     pawn's file is a corridor back toward the enemy home band
+ *  1. Marine **files** — the Command Center (CC) deployed Marines nearby, so each visible
+ *     marine's file is a corridor back toward the enemy home band
  *     (ranks 1–2 if enemy is white, ranks 7–8 if enemy is black).
- *  2. Pawn clumps — dense shelter reinforces those files.
- *  3. Deployed non-pawns — Command Center drops beside the King.
+ *  2. Marine clumps — dense shelter reinforces those files.
+ *  3. Deployed non-marines — Command Center drops beside the Command Center (CC).
  * With no cues, fall back to enemy home (`e2` / `e7`).
- *
- * // SPEC: _spec/apps/starchess/core/adjutant/opponent-strategy.puml
  */
 
 import type { Square } from "chess.js";
@@ -34,12 +33,13 @@ export const gatherKingIntel = (
     }
   }
 
-  const defaultFocus: Square = enemy === "w" ? "e2" : "e7";
+  // Opposite home: if we are w, enemy b lives on e8; if we are b, enemy w on e1 — start there, then scout
+  const defaultFocus: Square = enemy === "w" ? "e1" : "e8";
   if (visible.length === 0) {
     return { focus: defaultFocus, strength: 0 };
   }
 
-  /** Visible pawns within a 2-square box of `square` (clump density). */
+  /** Visible marines within a 2-square box of `square` (clump density). */
   const pawnNeighbours = (square: Square): number => {
     let n = 0;
     for (const other of visible) {
@@ -50,7 +50,7 @@ export const gatherKingIntel = (
     return n;
   };
 
-  // File histogram of visible pawns — King deploy corridors.
+  // File histogram of visible marines — Command Center (CC) deploy corridors.
   const pawnFiles = new Map<number, number>();
   for (const { square, piece } of visible) {
     if (piece.type !== "p") continue;
@@ -65,7 +65,7 @@ export const gatherKingIntel = (
   let sumRank = 0;
   let mass = 0;
 
-  // Primary: each pawn file pulls hard toward the enemy home band on that file.
+  // Primary: each marine file pulls hard toward the enemy home band on that file.
   const homeRank = enemy === "w" ? 2 : 7;
   for (const [file, density] of pawnFiles) {
     const fileW = 8 + density * 4;
@@ -78,10 +78,10 @@ export const gatherKingIntel = (
     const { file, rank } = parseSquare(square);
     let w: number;
     if (piece.type === "p") {
-      // Secondary: current pawn square (advance / clump position).
+      // Secondary: current marine square (advance / clump position).
       w = 1.5 + pawnNeighbours(square) * 2;
     } else {
-      // Deployed unit — spawn was adjacent to King; back-rank bias for enemy home.
+      // Deployed unit — spawn was adjacent to Command Center (CC); back-rank bias for enemy home.
       w = 4 + UNIT_COST[piece.type];
       if (enemy === "w" ? rank <= 3 : rank >= 6) w += 3;
     }

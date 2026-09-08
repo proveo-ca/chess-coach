@@ -48,7 +48,7 @@ export { CombatOverlayRoot } from "~/presentation/animations/components/CombatOv
 export { AttackAnimation } from "~/presentation/animations/components/AttackAnimation";
 export { DeathAnimation } from "~/presentation/animations/components/DeathAnimation";
 export { MoveAnimation } from "~/presentation/animations/components/MoveAnimation";
-export { QueenJumpAnimation } from "~/presentation/animations/components/QueenJumpAnimation";
+export { ShipJumpAnimation } from "~/presentation/animations/components/ShipJumpAnimation";
 export { MineMissileAnimation } from "~/presentation/animations/components/MineMissileAnimation";
 export { AttackBoardDemo } from "~/presentation/animations/components/AttackBoardDemo";
 export { DeathBoardDemo } from "~/presentation/animations/components/DeathBoardDemo";
@@ -73,7 +73,7 @@ export type {
 export { PAWN_RIFLE } from "~/presentation/animations/pawnRifle";
 export { KNIGHT_FRAG } from "~/presentation/animations/knightFrag";
 export { BISHOP_GATLINGS } from "~/presentation/animations/bishopGatlings";
-export { BISHOP_CHARON } from "~/presentation/animations/bishopCharon";
+export { MECHA_CHARON } from "~/presentation/animations/mechaCharon";
 export { ROOK_BATTERY } from "~/presentation/animations/rookBattery";
 export { QUEEN_LASER } from "~/presentation/animations/queenLaser";
 export { KING_DUAL_CANNON } from "~/presentation/animations/kingDualCannon";

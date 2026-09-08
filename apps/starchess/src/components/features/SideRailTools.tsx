@@ -10,6 +10,8 @@ import { For, Show, createMemo, createSignal } from "solid-js";
 
 import { useMatchStore } from "~/app/MatchStoreContext";
 import { VisionSwatch } from "~/components/atoms/VisionSwatch";
+import { formatScriptLabel } from "~/utils/matchTitle";
+import type { MatchState } from "~/types/match";
 import { ExitGameConfirm } from "~/components/features/ExitGameConfirm";
 import styles from "~/components/features/SideRailTools.module.css";
 import { Divider } from "~/components/primitives/Divider";
@@ -51,10 +53,35 @@ export const SideRailTools: Component<SideRailToolsProps> = (props) => {
   const reviewing = () => store.state().phase === "gameOver";
 
   const playerColor = () => store.state().playerColor;
+  const arenaPlayers = () =>
+    (store.state() as MatchState & { arenaPlayers?: { w: string; b: string } }).arenaPlayers;
 
   const visionOptions = createMemo((): VisionOption[] => {
     const you = playerColor();
     const adj = opposite(you);
+    const ap = arenaPlayers();
+    if (ap) {
+      return [
+        {
+          value: "both",
+          label: "Both",
+          swatch: "both",
+          aria: "Both — full board",
+        },
+        {
+          value: you,
+          label: formatScriptLabel(ap[you]),
+          swatch: you,
+          aria: `${formatScriptLabel(ap[you])} — ${you === "w" ? "blue" : "red"} vision`,
+        },
+        {
+          value: adj,
+          label: formatScriptLabel(ap[adj]),
+          swatch: adj,
+          aria: `${formatScriptLabel(ap[adj])} — ${adj === "w" ? "blue" : "red"} vision`,
+        },
+      ];
+    }
     return [
       {
         value: "both",

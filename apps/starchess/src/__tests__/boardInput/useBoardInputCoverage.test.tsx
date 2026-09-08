@@ -117,9 +117,9 @@ describe("useBoardInput — spawn targeting", () => {
 });
 
 describe("useBoardInput — bishop snipe targeting", () => {
-  it("queues B Charon on the exact queen square and marks the bishop", () => {
+  it("queues B Charon on a picked ship square and marks the bishop", () => {
     const store = makeStore(SNIPE_BOARD, 12, "22", 11);
-    store.dispatch({ type: "OPEN_BISHOP_SNIPE", from: "b2", to: "g7", color: "w" });
+    store.dispatch({ type: "OPEN_BISHOP_SNIPE", from: "b2", targets: ["g7"], color: "w" });
     expect(store.state().phase).toBe("targeting");
 
     mountInput(store).onSquareClick("g7");
@@ -138,7 +138,7 @@ describe("useBoardInput — bishop snipe targeting", () => {
 
   it("ignores clicks on non-target squares", () => {
     const store = makeStore(SNIPE_BOARD, 12, "22", 11);
-    store.dispatch({ type: "OPEN_BISHOP_SNIPE", from: "b2", to: "g7", color: "w" });
+    store.dispatch({ type: "OPEN_BISHOP_SNIPE", from: "b2", targets: ["g7"], color: "w" });
 
     mountInput(store).onSquareClick("h7");
 

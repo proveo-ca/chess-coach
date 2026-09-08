@@ -42,6 +42,8 @@ export type AttackCue = {
   damage?: KingDamageState;
   seed?: number;
   rookMode?: RookMode;
+  /** Charon fizzle — no ship at resolve: missiles fly the full ray off-board, no impact burst. */
+  fizzle?: boolean;
 };
 
 export type DeathCue = {
@@ -60,7 +62,7 @@ export type MoveCue = {
   from: Square;
   to: Square;
   rookMode?: RookMode;
-  queenJump?: boolean;
+  shipJump?: boolean;
   /** Pawn gas-step (pawnDouble) — stim travel + hop rate. */
   stim?: boolean;
   /**
@@ -80,7 +82,7 @@ export type DeployCue = {
   rookMode?: RookMode;
 };
 
-export type QueenJumpTrail = {
+export type ShipJumpTrail = {
   id: string;
   from: Square;
   to: Square;

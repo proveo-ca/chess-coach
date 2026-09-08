@@ -1,11 +1,10 @@
+// SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
 /**
  * The strategy registry, and the two aggregate passes the orchestrator runs:
  * collect every proposed plan, and score every classical move.
  *
  * Registry order is the tie-break order — plans proposed earlier win an exact
  * score tie, because the final ranking sort is stable.
- *
- * // SPEC: _spec/apps/starchess/core/adjutant/opponent-strategy.puml
  */
 
 import { specialGasCost } from "../../scfen";
@@ -34,8 +33,9 @@ export const STRATEGIES: readonly Strategy[] = [
 ];
 
 /**
- * Every B-timing plan the strategies propose, filtered to what this turn's gas
- * budget can actually pay for.
+ * Every B/F-timing plan the strategies propose, filtered to what this turn's
+ * gas budget can actually pay for (first-action cost — Charon guesses ride
+ * C+F stacks whose classical leg is free).
  */
 export const generateCandidates = (ctx: AdjutantCtx): Candidate[] => {
   const out: Candidate[] = [];

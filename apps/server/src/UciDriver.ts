@@ -117,6 +117,17 @@ export class UciDriver {
     }
   }
 
+  /**
+   * Discard every queued but unsent stdout line. The engine feed queries
+   * multiple positions serially against one process; without draining, a
+   * straggler `bestmove` from a timed-out query could be misattributed to the
+   * next one. Callers that stop listening at `bestmove` but may still receive
+   * late lines should drain before issuing the next `go`.
+   */
+  clearLineQueue(): void {
+    this.queue = [];
+  }
+
   async readUntil(stopToken: string, timeoutMs: number = this.defaultTimeoutMs): Promise<string[]> {
     const lines: string[] = [];
     const deadline = Date.now() + timeoutMs;

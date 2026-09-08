@@ -13,7 +13,7 @@ import { createMatchStateFromScfen } from "~/app/matchReducer";
 import { createMatchStore, MatchStoreProvider } from "~/app/MatchStoreContext";
 import { useBoardInput } from "~/presentation/board/hooks/useBoardInput";
 import { armPieceSpecial } from "~/presentation/specials/pieceSpecials";
-import { pawnGasArm } from "~/presentation/specials/pawnGasArm";
+import { marineGasArm } from "~/presentation/specials/arms/marineGas";
 import type { MatchStore } from "~/types/match";
 
 /** Black king a8, white king e1 — e-file pawn paths stay clear. */
@@ -38,7 +38,7 @@ const dropGas = (store: MatchStore, square: Square): void => {
   armPieceSpecial(
     store,
     { square, piece: "p" },
-    { p: (ctx) => pawnGasArm(store, store.state().liveSnapshot, ctx) },
+    { p: (ctx) => marineGasArm(store, store.state().liveSnapshot, ctx) },
   );
 };
 

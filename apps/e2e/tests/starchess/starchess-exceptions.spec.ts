@@ -1,7 +1,8 @@
 import { expect, test } from "@playwright/test";
+import type { Page } from "@playwright/test";
 
 /** Canonical deep link: baseURL is `/starchess/`. */
-const gotoScfen = async (page: import("@playwright/test").Page, scfen: string) => {
+const gotoScfen = async (page: Page, scfen: string) => {
   await page.goto(`single?scfen=${encodeURIComponent(scfen)}`);
   await expect(page.getByTestId("starchess-board-chrome")).toBeVisible({ timeout: 20_000 });
   // Deep links can seat a milestone turn — clear its broadcast first.
@@ -16,7 +17,7 @@ const gotoScfen = async (page: import("@playwright/test").Page, scfen: string) =
   }
 };
 
-const kingLives = (page: import("@playwright/test").Page) =>
+const kingLives = (page: Page) =>
   page.getByTestId("king-lives");
 
 test.describe("StarChess SCFEN exceptions", () => {

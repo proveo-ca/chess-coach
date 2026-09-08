@@ -1,5 +1,5 @@
 /* =========================================
-   Selena Kerrigan — cat face + Ghost sniper helm
+   Selena — cat face + Ghost sniper helm
    Helmet: dark gray brow→eye band only (no mouth muzzle).
    ========================================= */
 
@@ -422,7 +422,7 @@
 }
 
 /* =========================================
-   Identity — Selena ↔ Selena Kerrigan helm ferry
+   Identity — Selena ↔ Selena helm ferry
    Drop / lift each last 500ms (see CoachAvatar.tsx HELM_MS).
    Helm stays fully opaque in flight — only transform ferries it.
    ========================================= */

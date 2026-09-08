@@ -11,7 +11,7 @@ import { DeployAnimation } from "~/presentation/animations/components/DeployAnim
 import { GasDropAnimation } from "~/presentation/animations/components/GasDropAnimation";
 import { MoveAnimation } from "~/presentation/animations/components/MoveAnimation";
 import { MineMissileAnimation } from "~/presentation/animations/components/MineMissileAnimation";
-import { QueenJumpAnimation } from "~/presentation/animations/components/QueenJumpAnimation";
+import { ShipJumpAnimation } from "~/presentation/animations/components/ShipJumpAnimation";
 import { KingDamageOverlay } from "~/presentation/animations/components/kingDamageOverlay";
 import type { CombatCueFrame } from "~/presentation/animations/combatCueFrame";
 import {
@@ -26,7 +26,7 @@ import type {
   KingDamageCue,
   MineMissileCue,
   MoveCue,
-  QueenJumpTrail,
+  ShipJumpTrail,
 } from "~/presentation/types";
 import type { PieceSet } from "~/types/board";
 
@@ -35,7 +35,7 @@ const NO_DEATHS: DeathCue[] = [];
 const NO_MOVES: MoveCue[] = [];
 const NO_DEPLOYS: DeployCue[] = [];
 const NO_KING_DAMAGE: KingDamageCue[] = [];
-const NO_JUMP_TRAILS: QueenJumpTrail[] = [];
+const NO_JUMP_TRAILS: ShipJumpTrail[] = [];
 const NO_GAS_DROPS: GasDropCue[] = [];
 const NO_MINE_MISSILES: MineMissileCue[] = [];
 const NO_MOVE_PROGRESS: Record<string, 0 | 1> = {};
@@ -103,9 +103,9 @@ export const CombatOverlayRoot: Component<CombatOverlayRootProps> = (props) => {
         boardWidth={w()}
         boardHeight={h()}
       />
-      <QueenJumpAnimation
+      <ShipJumpAnimation
         cues={(c().jumpCues as MoveCue[] | undefined) ?? NO_MOVES}
-        trails={(c().jumpTrails as QueenJumpTrail[] | undefined) ?? NO_JUMP_TRAILS}
+        trails={(c().jumpTrails as ShipJumpTrail[] | undefined) ?? NO_JUMP_TRAILS}
         boardWidth={w()}
         boardHeight={h()}
       />

@@ -1,5 +1,5 @@
 /**
- * StarChess single-player setup — MAP / TEAM / locked Adjutant / START.
+ * StarChess single-player setup — MAP / TEAM / OPPONENT / START.
  */
 import type { StarChessColor } from "@chess-coach/starchess-core";
 import { For, createSignal, type Component } from "solid-js";
@@ -12,7 +12,7 @@ import { PlayerNameField } from "~/components/features/PlayerNameField";
 import { Button } from "~/components/primitives/Button";
 import { Select } from "~/components/primitives/Select";
 import type { BoardVariant } from "~/types/board";
-import type { NewGameOptions } from "~/types/newGame";
+import type { AdjutantKind, NewGameOptions } from "~/types/newGame";
 
 const MAPS: readonly BoardVariant[] = ["eclipse", "butter", "vermeer"];
 
@@ -25,9 +25,10 @@ export type NewGamePanelProps = {
 export const NewGamePanel: Component<NewGamePanelProps> = (props) => {
   const [map, setMap] = createSignal<BoardVariant>("eclipse");
   const [team, setTeam] = createSignal<StarChessColor>("w");
+  const [opponent, setOpponent] = createSignal<AdjutantKind>("naive");
 
   const start = () => {
-    props.onStart({ map: map(), team: team() });
+    props.onStart({ map: map(), team: team(), opponent: opponent() });
   };
 
   return (
@@ -91,12 +92,13 @@ export const NewGamePanel: Component<NewGamePanelProps> = (props) => {
           <Select
             class={styles.opponent}
             variant="neon"
-            value="adjutant"
-            disabled
+            value={opponent()}
+            onChange={(e) => setOpponent(e.currentTarget.value as AdjutantKind)}
             aria-label="Opponent"
             data-testid="new-game-opponent"
           >
-            <option value="adjutant">Adjutant (Script)</option>
+            <option value="naive">Adjutant (Script)</option>
+            <option value="strategic">Adjutant (Strategic)</option>
           </Select>
         </section>
 

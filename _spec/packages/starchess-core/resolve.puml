@@ -40,7 +40,7 @@ note right
   * **gas step** (""pawnDouble"", B **and** F) — the marine hops, then the mine
     takes it; a last-rank step dies **without promoting**;
   * **deploy** (""spawn"") — the drop plays, then the fresh unit dies with the
-    mine; a crushed occupant still reports as ""victim"" (one tile, two deaths).
+    mine; a crushed ally or enemy occupant still reports as ""victim"" (one tile, two deaths).
   Events carry ""mineColor"" + the dead hull as ""victim"" (a mined ""spawn"" names
   its unit in ""unit""); cues ""armm"" boom → ""armd"" wreck.
   The Adjutant never queues a step / drop onto a mine it can see.

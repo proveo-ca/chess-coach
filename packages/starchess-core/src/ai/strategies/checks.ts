@@ -1,15 +1,6 @@
+// SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml, _spec/apps/starchess/core/adjutant/cc-focus.puml
 /**
  * Checks — putting the enemy Command Center under fire and closing on it.
- *
- * Two of these terms deliberately ignore fog (`enemyKing` without a visibility
- * test): the sneak-check and the Mecha ray use the same omniscience capture
- * scoring already has. The posture-scaled `attackKing` / `chaseKing` terms do
- * require a *visible* King — they are the hunt-posture offensive.
- *
- * A classical move onto the King square is dropped by the resolver, so every
- * term here rewards establishing a ray from the landing square instead.
- *
- * // SPEC: _spec/apps/starchess/core/adjutant/opponent-strategy.puml
  */
 
 import { attacksSquare, isSquareAttackedBy } from "../../board/placement";
@@ -17,11 +8,10 @@ import type { AdjutantCtx, MoveEval } from "../context";
 import { chebyshev } from "../context";
 import type { Strategy } from "./types";
 
-/**
- * Knight lands a check on a square the enemy does not cover (sneak).
- * Below equal-material trades (always take those); above quiet hops.
- */
+/** Hoverbike lands a check on a square the enemy does not cover (sneak). */
 export const SNEAK_KNIGHT_CHECK = 2_000;
+/** Marine that lands a check on the Command Center (CC). */
+export const PAWN_CHECK_CC = 1_500;
 
 const score = (ev: MoveEval, ctx: AdjutantCtx): number => {
   const { move, piece, isKingMove } = ev;
@@ -31,7 +21,7 @@ const score = (ev: MoveEval, ctx: AdjutantCtx): number => {
   const { attackKing, chaseKing, diagonal, attackedPenalty } = weights;
   let s = 0;
 
-  // Sneak check: land checking the King on a square the enemy does not cover.
+  // Sneak check: land checking the Command Center (CC) on a square the enemy does not cover.
   if (piece.type === "n" && enemyKing && move.to !== enemyKing) {
     const after = ev.after();
     if (attacksSquare(after, move.to, enemyKing)) {
@@ -41,7 +31,7 @@ const score = (ev: MoveEval, ctx: AdjutantCtx): number => {
     }
   }
 
-  // Mecha ray that bites the King — worth a second diagonal's weight.
+  // Mecha ray that bites the Command Center (CC) — worth a second diagonal's weight.
   if (
     piece.type === "b" &&
     enemyKing &&
@@ -50,7 +40,15 @@ const score = (ev: MoveEval, ctx: AdjutantCtx): number => {
     s += diagonal;
   }
 
-  // Enemy-King pressure — posture-scaled (0 unless hunt).
+  if (
+    piece.type === "p" &&
+    enemyKing &&
+    attacksSquare(ev.after(), move.to, enemyKing)
+  ) {
+    s += PAWN_CHECK_CC;
+  }
+
+  // Enemy-Command Center (CC) pressure — posture-scaled (0 unless hunt).
   if (
     attackKing > 0 &&
     enemyKing &&
@@ -61,7 +59,7 @@ const score = (ev: MoveEval, ctx: AdjutantCtx): number => {
     s += attackKing;
   }
 
-  // Chase a visible King (hunt) — close Chebyshev distance.
+  // Chase a visible Command Center (CC) (hunt) — close Chebyshev distance.
   if (
     chaseKing > 0 &&
     enemyKing &&

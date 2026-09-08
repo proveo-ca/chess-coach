@@ -72,7 +72,7 @@ package "vfx overlays" {
   class AttackAnimation <<app>>
   class DeathAnimation <<app>>
   class MoveAnimation <<app>>
-  class QueenJumpAnimation <<app>>
+  class ShipJumpAnimation <<app>>
   class MineMissileAnimation <<app>>
   class DeployAnimation <<app>>
   class vfxPerf <<app>>
@@ -197,7 +197,7 @@ CombatOverlayRoot *-- AttackAnimation
 CombatOverlayRoot *-- DeathAnimation
 DeathAnimation ..> SpiderMine : wreck mirrors this silhouette
 CombatOverlayRoot *-- MoveAnimation
-CombatOverlayRoot *-- QueenJumpAnimation
+CombatOverlayRoot *-- ShipJumpAnimation
 CombatOverlayRoot *-- MineMissileAnimation
 CombatOverlayRoot *-- DeployAnimation
 

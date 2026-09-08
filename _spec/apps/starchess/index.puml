@@ -18,6 +18,7 @@ package "_spec/apps/starchess" {
   component "architecture/timeline-perf\nshipped + compositor relief" as TPERF <<async>>
   component "core/\nturn · board · adjutant · scfen\nengine-boundary (interaction plan)" as COREPLAN <<app>>
   component "demos.puml / starchess-mode.puml" as DEMO <<app>>
+  component "replay-import.puml\n?game= / ?scfens= arena replay" as RIMP <<app>>
   component "roadmap.md\nremediation + timeline perf track" as ROAD <<db>>
 }
 
@@ -52,6 +53,7 @@ DEP ARROW_MAIN RSINGLE
 DEP ARROW_MAIN RREV
 RULES ARROW_OPTIONAL RINPUT : legality / End
 DEMO ARROW_OPTIONAL RSCREEN
+RIMP ARROW_MAIN RREV : arena records → replay host
 ROAD ARROW_OPTIONAL RULES
 ROAD ARROW_OPTIONAL TPERF
 

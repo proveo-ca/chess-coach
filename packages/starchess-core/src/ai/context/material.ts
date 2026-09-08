@@ -1,9 +1,8 @@
+// SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
 /**
  * Supply read: what we have on the board and what the bank can pay for.
  * Observations only — the deploy *policy* built on top lives in
  * `strategies/economy.ts`.
- *
- * // SPEC: _spec/apps/starchess/core/adjutant/opponent-strategy.puml
  */
 
 import type { Square } from "chess.js";
@@ -29,19 +28,19 @@ export const countType = (
 /**
  * Deterministic bank estimate for snap-only callers (the live story passes the
  * real store via `ctx.storedFor`). Mirrors the story's 1-mineral start + income,
- * then subtracts one mineral per deployed unit beyond the King as a rough spend
+ * then subtracts one mineral per deployed unit beyond the Command Center (CC) as a rough spend
  * ledger. Never the source of truth — the host bank gates the actual debit.
  */
 export const estimateStoredFor =
-  (snap: ScFenSnapshot, us: PieceColor) =>
-  (_color: PieceColor): number => {
+  (snap: ScFenSnapshot, _us: PieceColor) =>
+  (color: PieceColor): number => {
     let stored = 1;
     for (let turn = 2; turn <= snap.turn; turn += 1) {
       stored += incomeForTurn(turn);
     }
     let deployed = 0;
     for (const piece of placementToMap(snap.placement).values()) {
-      if (piece.color === us) deployed += 1;
+      if (piece.color === color) deployed += 1;
     }
     return Math.min(
       MAX_STORED_MATERIAL,

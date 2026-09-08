@@ -7,6 +7,7 @@ import {
   placementToMap,
   UNIT_COST,
 } from "../index";
+import { squareColor } from "../ai/strategies/economy";
 
 describe("adjutant", () => {
   it("stacks pawn gas + classical as two steps ahead (not a lone gas step)", () => {
@@ -473,5 +474,51 @@ describe("adjutant", () => {
         (a) => a.kind === "classical" && a.from === "e8" && a.to === "e7",
       ),
     ).toBe(true);
+  });
+});
+
+describe("adjutant mecha deploy caps", () => {
+  // Black CC e8; dark-square bishops b6 + d4. A visible queen on a5 drives
+  // mecha demand (BISHOP_VS_QUEEN) but sits on no dark-ring diagonal, so the
+  // per-color cap must hold: any bishop drop lands light.
+  const DARK_PAIR = "SCFEN|4k3/8/1b6/Q7/3b4/8/8/4K3|5|33|P|G:11:11|B:0:12|Q:w:;b:";
+
+  const blackSpawns = (scfen: string) => {
+    const plan = adjutant(parseScFen(scfen), { storedFor: () => 12 });
+    return (plan.snapshot.queue?.actions ?? []).filter(
+      (a) => a.color === "b" && a.kind === "spawn",
+    );
+  };
+
+  it("caps same-color mechas at two", () => {
+    const bishops = blackSpawns(DARK_PAIR).filter(
+      (a) => (a as { unit?: string }).unit === "b",
+    );
+    expect(bishops.length).toBeGreaterThan(0);
+    for (const b of bishops) {
+      expect(squareColor((b as { to: Parameters<typeof squareColor>[0] }).to)).toBe("light");
+    }
+  });
+
+  it("caps total mechas at four even with a queen in sight", () => {
+    // b6 + d4 dark, a4 + g2 light.
+    const spawns = blackSpawns(
+      "SCFEN|4k3/8/1b6/8/b2b4/8/6b1/4K3|5|33|P|G:11:11|B:0:12|Q:w:;b:",
+    );
+    expect(spawns.some((a) => (a as { unit?: string }).unit === "b")).toBe(false);
+  });
+
+  it("admits the dark-square bishop that instantly answers the queen", () => {
+    // Light ring squares held by own pawns, dark pair complete — but a bishop
+    // dropped on e7 takes the queen on c5, so the exception admits exactly
+    // that square (and it is queued).
+    const spawns = blackSpawns(
+      "SCFEN|4k3/3p1p2/1b6/2Q5/3b4/8/8/4K3|5|33|P|G:11:11|B:0:3|Q:w:;b:",
+    );
+    const bishops = spawns.filter((a) => (a as { unit?: string }).unit === "b");
+    expect(bishops.length).toBeGreaterThan(0);
+    for (const b of bishops) {
+      expect((b as { to?: string }).to).toBe("e7");
+    }
   });
 });

@@ -18,7 +18,7 @@ import { intentOverlaysFromQueue } from "~/presentation/combat/intentOverlays";
 import {
   occupancyForQueuedMoves,
   pieceAtQueuedSquare,
-} from "~/presentation/board/occupancyForQueuedMoves";
+} from "~/presentation/specials/planning/occupancy";
 import {
   legalDestsWithFogPawnAttacks,
   pawnFogAttackDests,

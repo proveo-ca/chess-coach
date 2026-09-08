@@ -10,20 +10,21 @@ import {
 } from "../../index.ts";
 
 describe("crush spawn (deploy onto enemy)", () => {
-  it("allyOccupied excludes enemy squares", () => {
-    // White K e1, black k d1 adjacent, white rook a1.
+  it("allyOccupied blocks only kings (ally and enemy non-kings crushable)", () => {
+    // White K e1, black n d1 adjacent, white R d2 adjacent.
     const snap = parseScFen(
-      "SCFEN|4k3/8/8/8/8/8/8/R2nK3|1|33|P|G:11:11|Q:w:;b:",
+      "SCFEN|4k3/8/8/8/8/8/3R4/3nK3|1|33|P|G:11:11|Q:w:;b:",
     );
     const { king, occupied, allyOccupied } = spawnKingAnchor(snap, "w", "B");
     expect(king).toBe("e1");
-    expect(occupied.has("d1")).toBe(true); // any unit blocks the ring...
-    expect(allyOccupied.has("d1")).toBe(false); // ...but enemy squares stay deployable
-    expect(allyOccupied.has("a1")).toBe(true);
+    expect(occupied.has("d1")).toBe(true); // any unit blocks the raw ring...
+    expect(allyOccupied.has("d1")).toBe(false); // ...but enemy non-king stays deployable
+    expect(allyOccupied.has("d2")).toBe(false); // ally non-king is now deployable (replaced)
+    expect(allyOccupied.has("e1")).toBe(true); // own king blocks
     expect(allyOccupied.has("e2")).toBe(false);
   });
 
-  it("validation allows spawn onto an enemy square and rejects ally squares or enemy King", () => {
+  it("validation allows spawn onto an enemy or ally square and rejects any King", () => {
     const snap = parseScFen(
       "SCFEN|4k3/8/8/8/8/8/8/R2nK3|1|33|P|G:11:11|Q:w:;b:",
     );
@@ -37,16 +38,19 @@ describe("crush spawn (deploy onto enemy)", () => {
         unit: "p",
       }),
     ).not.toThrow();
+    const allySnap = parseScFen(
+      "SCFEN|4k3/8/8/8/8/8/3R4/4K3|1|33|P|G:11:11|Q:w:;b:",
+    );
     expect(() =>
-      assertActionDeep(snap, {
+      assertActionDeep(allySnap, {
         timing: "B",
         kind: "spawn",
         color: "w",
         from: "e1",
-        to: "a1", // own rook — blocked
+        to: "d2", // own rook — legal ally crush (replaced)
         unit: "p",
       }),
-    ).toThrow(ScValidateError);
+    ).not.toThrow();
 
     // Adjacent enemy King must also be blocked
     const kingSnap = parseScFen(
@@ -112,6 +116,80 @@ describe("crush spawn (deploy onto enemy)", () => {
       victim: { type: "n", color: "b" },
     });
     expect(result.next.placement.split("/")[6]).toContain("P");
+  });
+
+  it("endScTurn replaces an ally occupant and records the ally victim", () => {
+    let snap = parseScFen(
+      "SCFEN|4k3/8/8/8/8/8/3R4/4K3|1|33|P|G:11:11|Q:w:;b:",
+    );
+    snap = addScAction({
+      snapshot: snap,
+      action: {
+        timing: "B",
+        kind: "spawn",
+        color: "w",
+        from: "e1",
+        to: "d2", // own rook — replaced by deployed marine
+        unit: "p",
+      },
+    }).snapshot;
+    const result = endScTurn(snap, { skipTurnStartChecks: true });
+    expect(result.afterB.placement).toBe("4k3/8/8/8/8/8/3P4/4K3");
+    const spawn = result.events.find(
+      (ev) => ev.kind === "spawn" && ev.phase === "specialBefore",
+    );
+    expect(spawn).toBeDefined();
+    expect(spawn!.victim).toEqual({ type: "r", color: "w" });
+  });
+
+  it("F spawn replaces an ally occupant after classical resolves", () => {
+    let snap = parseScFen(
+      "SCFEN|4k3/8/8/8/8/8/3R4/4K3|1|33|P|G:11:11|B:3:3|Q:w:;b:",
+    );
+    snap = addScAction({
+      snapshot: snap,
+      action: {
+        timing: "F",
+        kind: "spawn",
+        color: "w",
+        from: "e1",
+        to: "d2", // own rook d2, adjacent to king e1
+        unit: "n",
+      },
+    }).snapshot;
+    const result = endScTurn(snap, { skipTurnStartChecks: true });
+    expect(result.events.find((ev) => ev.kind === "spawn")).toMatchObject({
+      phase: "specialAfter",
+      victim: { type: "r", color: "w" },
+      unit: "n",
+    });
+    expect(result.next.placement.split("/")[6]).toContain("N");
+  });
+
+  it("mined ally deploy records both crush victim and mine blast", () => {
+    let snap = parseScFen(
+      "SCFEN|4k3/8/8/8/8/8/3R4/4K3|1|33|P|G:11:11|Q:w:;b:",
+    );
+    snap = { ...snap, mines: [{ at: "d2", color: "b" }] };
+    snap = addScAction({
+      snapshot: snap,
+      action: {
+        timing: "B",
+        kind: "spawn",
+        color: "w",
+        from: "e1",
+        to: "d2",
+        unit: "p",
+      },
+    }).snapshot;
+    const result = endScTurn(snap, { skipTurnStartChecks: true });
+    const spawn = result.events.find(
+      (ev) => ev.kind === "spawn" && ev.phase === "specialBefore",
+    );
+    expect(spawn).toMatchObject({
+      victim: { type: "r", color: "w" },
+      mineColor: "b",
+    });
   });
 
   it("spawn onto an empty adjacent square carries no victim", () => {

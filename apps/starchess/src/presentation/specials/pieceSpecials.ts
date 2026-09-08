@@ -2,8 +2,8 @@ import type { PieceSymbol, Square } from "chess.js";
 
 import type { MatchStore } from "~/types/match";
 import { hasUsedSpecialThisTurn } from "~/app/matchEconomy";
-import type { GasDeployTarget } from "~/types/specials";
-import { specialCopyFor, type SpecialCopy } from "~/presentation/hud/specialCopy";
+import type { GasDeployTarget, ArmResult } from "~/presentation/specials/types";
+import { specialCopyFor, type SpecialCopy } from "~/presentation/specials/copy";
 import type { ScSpecialKind } from "@chess-coach/starchess-core";
 
 /**
@@ -15,9 +15,6 @@ export type PieceSpecialDef = {
   kind: ScSpecialKind | null;
   copy: SpecialCopy;
 };
-
-/** Handler outcome — `pending` skips specials-used marking until it queues. */
-export type ArmResult = false | "armed" | "pending";
 
 const DEFS: Record<PieceSymbol, PieceSpecialDef> = {
   p: { piece: "p", kind: "pawnDouble", copy: specialCopyFor("p") },

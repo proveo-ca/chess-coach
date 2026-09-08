@@ -125,7 +125,7 @@ describe("matchReducer action surface", () => {
     s = matchReducer(s, {
       type: "OPEN_BISHOP_SNIPE",
       from: "c1",
-      to: "c8",
+      targets: ["b2", "d2"],
       color: "w",
     });
     expect(s.targeting?.kind).toBe("bishopSnipe");

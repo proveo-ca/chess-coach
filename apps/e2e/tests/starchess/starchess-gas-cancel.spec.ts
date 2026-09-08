@@ -1,5 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 
+import { settledPieceAt } from "./helpers";
+
 /**
  * Backing out of a gas lift. Two affordances, one contract: Esc on desktop,
  * drop-outside-the-board everywhere (the only one a touch device has), with the
@@ -73,7 +75,7 @@ test.describe("StarChess gas deploy — cancelling a lift", () => {
 
     // Nothing armed, nothing queued, marine untouched.
     await expect(page.getByTestId("turn-queue")).toHaveText(queueBefore ?? "");
-    await expect(page.locator("[data-square='e2'] img[alt='w p']")).toBeVisible();
+    await expect(settledPieceAt(page, "e2", "w p")).toBeVisible();
   });
 
   test("dropping outside the board cancels", async ({ page }) => {

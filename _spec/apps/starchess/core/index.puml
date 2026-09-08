@@ -26,7 +26,10 @@ package "core/board" {
 }
 
 package "core/adjutant" {
-  component "adjutant/opponent-strategy.puml" as AI <<app>>
+  component "adjutant/naive/opponent-strategy.puml\nADJUTANT (SCRIPT NAIVE)" as AI <<app>>
+  component "adjutant/strategic/strategic-architecture.puml\n+\nstrategic-economy.puml\nADJUTANT (SCRIPT STRATEGIC)" as AI2 <<app>>
+  component "adjutant/cc-focus.puml\nwhich square the CC weights aim at" as AI3 <<app>>
+  component "adjutant/weight-ladder.puml\nevery weight · every enforced ordering" as AI4 <<app>>
 }
 
 component "engine-boundary.puml" as BOUND <<host>>
@@ -43,6 +46,9 @@ SM ARROW_MAIN FAC
 FAC ARROW_QUEUE PLAY : EndScTurnResult
 PLAY ARROW_MAIN SM : TIMELINE_*
 AI ARROW_MAIN CMD
+AI3 ARROW_OPTIONAL AI : omniscient branch
+AI3 ARROW_OPTIONAL AI2 : fog-honest branch
+AI4 ARROW_OPTIONAL AI3 : the values behind each branch
 PLAN ARROW_MAIN SM : QUEUE_ACTION
 BOUND ARROW_CLOUD SM : public API only
 
@@ -59,7 +65,10 @@ note bottom
   | Timeline bind | bindTimeline(dispatch) | 4× callback paste |
   | Turn open | TURN_OPEN → beginScTurn | store calling beginScTurn |
   | Fog visibility | fogVisibility.ts | parallel lit/revealed forks |
-  Enforced: __tests__/bundle/bundleBoundary.test.ts (ACL + no presentation engine writes).
+  | Deploy reach | board/deploy-reach.ts | a private per-caller deploy sim |
+  | CC target square | targetKing in strategic checks | a second fog model in a strategy |
+  Enforced: __tests__/bundle/bundleBoundary.test.ts (ACL + no presentation engine writes);
+  __tests__/tactics/weightOrdering.test.ts (scoring tier order); __tests__/deploy-reach.test.ts.
   Intentional soft dual: UI fogged scMovesFrom + core soft queue (resolve owns collisions).
   Coverage floor: 75% four-axis on gated .ts surface.
 end note

@@ -1,14 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import {
-  pawnGasArm,
-  specialTimingFor,
-  tryQueue,
-} from "~/presentation/specials/pawnGasArm";
+import { marineGasArm } from "~/presentation/specials/arms/marineGas";
+import { specialTimingFor, tryQueue } from "~/presentation/specials/queue";
 import { createMatchStore } from "~/app/MatchStoreContext";
 import { createMatchStateFromScfen } from "~/app/matchReducer";
 
-describe("pawnGasArm", () => {
+describe("marineGasArm", () => {
   it("specialTimingFor switches B→F after classical", () => {
     expect(specialTimingFor(undefined, "w")).toBe("B");
     expect(specialTimingFor({ actions: [] }, "w")).toBe("B");
@@ -31,7 +28,7 @@ describe("pawnGasArm", () => {
     ).toBe("F");
   });
 
-  it("tryQueue and pawnGasArm happy path", () => {
+  it("tryQueue and marineGasArm happy path", () => {
     const store = createMatchStore({
       initial: createMatchStateFromScfen(
         "SCFEN|4k3/8/8/8/8/8/4P3/4K3|11|33|P|G:22:22|Q:w:;b:",
@@ -53,7 +50,7 @@ describe("pawnGasArm", () => {
       ),
     });
     expect(
-      pawnGasArm(store2, store2.state().liveSnapshot, {
+      marineGasArm(store2, store2.state().liveSnapshot, {
         square: "e2",
         piece: "p",
       }),
@@ -68,7 +65,7 @@ describe("pawnGasArm", () => {
       ),
     });
     expect(
-      pawnGasArm(store, store.state().liveSnapshot, {
+      marineGasArm(store, store.state().liveSnapshot, {
         square: "e7",
         piece: "p",
       }),
@@ -85,7 +82,7 @@ describe("pawnGasArm", () => {
     });
     // no pawn — use a1 as nonsense
     expect(
-      pawnGasArm(store, store.state().liveSnapshot, {
+      marineGasArm(store, store.state().liveSnapshot, {
         square: "a8",
         piece: "p",
       }),
@@ -145,7 +142,7 @@ describe("pawnGasArm", () => {
     });
     const snap = store.state().liveSnapshot;
     expect(
-      pawnGasArm(store, snap, { square: "h6", piece: "p" }),
+      marineGasArm(store, snap, { square: "h6", piece: "p" }),
     ).toBe("armed");
     expect(store.state().pendingPromotion).toBeTruthy();
   });

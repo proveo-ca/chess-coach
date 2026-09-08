@@ -1,6 +1,6 @@
 // SPEC: _spec/apps/starchess/timeline/overview.puml, _spec/apps/starchess/timeline/cue-projection.puml, _spec/apps/starchess/timeline/cue-playback.puml, _spec/apps/starchess/timeline/cue-lanes.puml, _spec/apps/starchess/animation-pipeline.md, _spec/apps/starchess/core/turn/playback-interpreter.puml
 import type { EndScTurnResult, ResolveAttack, ResolveEvent, ResolveMove, StarChessColor, StarChessPiece } from "@chess-coach/starchess-core";
-import { placementToMap, mapToPlacement } from "@chess-coach/starchess-core";
+import { placementToMap, mapToPlacement, charonRayEdge } from "@chess-coach/starchess-core";
 import type { Square } from "chess.js";
 
 import { ANIM_BY_PIECE } from "~/presentation/animations/attackAnim";
@@ -9,7 +9,7 @@ import {
   knightElbowMs,
   moveDurationMs as pieceMoveDurationMs,
 } from "~/presentation/animations/moveTiming";
-import { BISHOP_CHARON } from "~/presentation/animations/bishopCharon";
+import { MECHA_CHARON } from "~/presentation/animations/mechaCharon";
 import { impactMsFor } from "~/presentation/animations/impactTiming";
 import { deployCuesForPlacementDiff } from "~/presentation/timeline/deployDiff";
 import {
@@ -31,7 +31,7 @@ import {
   TACTICAL_JUMP_APPEAR_MS,
   TACTICAL_JUMP_TRAIL_MS,
   TACTICAL_JUMP_TRAVEL_MS,
-} from "~/presentation/specials/queenTacticalJump";
+} from "~/presentation/specials/shipTacticalJump";
 import { gasDropCornerFor } from "~/presentation/animations/gasDrop";
 import { rookModeAt } from "~/presentation/board/rookMode";
 import type { CueLane, TimelineCallbacks, TimelineCue } from "~/types/match";
@@ -167,7 +167,6 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
   const cues: TimelineCue[] = [];
   let n = 0;
 
-  const pendingMap = placementToMap(result.afterPending.placement);
   const bGas: TimelineCue[] = [];
   const fGas: TimelineCue[] = [];
   const seenGas = new Set<string>();
@@ -194,16 +193,21 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
   for (const ev of result.events) {
     if (ev.phase !== "specialBefore") continue;
     if (ev.kind === "bishopSnipe" && ev.from && ev.to) {
+      // ev.victim is authoritative (resolve returns it on kills only) —
+      // never fall back to board lookup, which would fabricate deaths for
+      // occupied fizzles (screened ship, marine, ally on the aim square).
+      const victim = ev.victim;
+      const fizzle = !victim;
       cues.push({
         kind: "attack",
         id: `ch${n++}`,
         piece: "b",
         color: ev.color,
         from: ev.from,
-        to: ev.to,
-        anim: BISHOP_CHARON,
+        to: fizzle ? charonRayEdge(ev.from, ev.to) : ev.to,
+        anim: MECHA_CHARON,
+        ...(fizzle ? { fizzle: true as const } : {}),
       });
-      const victim = pendingMap.get(ev.to);
       if (victim) {
         cues.push({
           kind: "death",
@@ -227,7 +231,7 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
         color: ev.color,
         from: ev.from,
         to: ev.to,
-        queenJump: true,
+        shipJump: true,
       });
       if (ev.mineColor) {
         cues.push({
@@ -262,6 +266,7 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
     if (ev.phase === "specialAfter") specialAfterSpawns.add(`${ev.color}:${ev.to}`);
   }
   const crushDeaths: TimelineCue[] = [];
+  const emittedDeploys = new Set<string>();
   for (const d of deployCuesForPlacementDiff(
     result.afterPending.placement,
     result.afterB.placement,
@@ -276,6 +281,7 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
       color: d.color,
       at: d.at,
     });
+    emittedDeploys.add(`${d.color}:${d.at}`);
     if (crush) {
       crushDeaths.push({
         kind: "death",
@@ -288,6 +294,32 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
           : {}),
       });
     }
+  }
+  // Same-type same-color replace (e.g. pawn onto pawn) leaves placement
+  // identical, so the diff above emits nothing — project deploy + death from
+  // the crush event itself. Mined spawns are handled by the event-driven mined
+  // block below; F spawns by the F block.
+  for (const ev of result.events) {
+    if (ev.kind !== "spawn" || ev.phase !== "specialBefore") continue;
+    if (!ev.to || !ev.unit || !ev.victim || ev.mineColor) continue;
+    const key = `${ev.color}:${ev.to}`;
+    if (emittedDeploys.has(key)) continue;
+    cues.push({
+      kind: "deploy",
+      id: `spawn-crush${n++}`,
+      piece: ev.unit,
+      color: ev.color,
+      at: ev.to,
+    });
+    emittedDeploys.add(key);
+    crushDeaths.push({
+      kind: "death",
+      id: `crush${n++}`,
+      piece: ev.victim.type,
+      color: ev.victim.color,
+      at: ev.to,
+      ...(ev.victim.type === "r" ? { rookMode: rookModeAt(ev.to, sieged) } : {}),
+    });
   }
   const minedDeploys: TimelineCue[] = [];
   for (const ev of result.events) {
@@ -558,6 +590,32 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
 
   cues.push(...fGas);
   for (const m of result.fMoves) cues.push(moveCue(m, `f${n++}`, { stim: true }));
+  // F-rank Charon (2nd gas phase): same volley as B, plus the off-board
+  // fizzle flight when the queued ship drifted before resolve.
+  for (const ev of result.events) {
+    if (ev.phase !== "specialAfter" || ev.kind !== "bishopSnipe") continue;
+    if (!ev.from || !ev.to) continue;
+    const fizzle = !ev.victim;
+    cues.push({
+      kind: "attack",
+      id: `chf${n++}`,
+      piece: "b",
+      color: ev.color,
+      from: ev.from,
+      to: fizzle ? charonRayEdge(ev.from, ev.to) : ev.to,
+      anim: MECHA_CHARON,
+      ...(fizzle ? { fizzle: true as const } : {}),
+    });
+    if (ev.victim) {
+      cues.push({
+        kind: "death",
+        id: `chfd${n++}`,
+        piece: ev.victim.type,
+        color: ev.victim.color,
+        at: ev.to,
+      });
+    }
+  }
   for (const ev of result.events) {
     if (ev.phase !== "specialAfter" || ev.kind !== "pawnDouble") continue;
     if (!ev.to || !ev.mineColor || !ev.victim) continue;
@@ -634,12 +692,12 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
 const cueDuration = (cue: TimelineCue): number => {
   switch (cue.kind) {
     case "move":
-      if (cue.queenJump) return TACTICAL_JUMP_TRAVEL_MS + TACTICAL_JUMP_APPEAR_MS;
+      if (cue.shipJump) return TACTICAL_JUMP_TRAVEL_MS + TACTICAL_JUMP_APPEAR_MS;
       return cue.piece === "n"
         ? pieceMoveDurationMs(cue.from, cue.to, "n")
         : moveDurationMs(cue.from, cue.to, { stim: !!cue.stim });
     case "attack":
-      return cue.anim === BISHOP_CHARON ? FRAG_FLIGHT_MS : ATTACK_MS;
+      return cue.anim === MECHA_CHARON ? FRAG_FLIGHT_MS : ATTACK_MS;
     case "death":
       return DEATH_MS;
     case "deploy":
@@ -712,7 +770,7 @@ const spentMineSquares = (
   ] as Square[];
 
 const isSimulMoveWave = (cue: TimelineCue): boolean =>
-  cue.kind === "move" && !cue.queenJump && inLane(cue, "move");
+  cue.kind === "move" && !cue.shipJump && inLane(cue, "move");
 
 const isPromoWalk = (cue: TimelineCue): boolean =>
   cue.kind === "move" && inLane(cue, "promoWalk");
@@ -1388,7 +1446,7 @@ export const playTimeline = (
       }
     }
 
-    if (cue.kind === "move" && cue.queenJump) {
+    if (cue.kind === "move" && cue.shipJump) {
       const trail = { id: `${cue.id}-trail`, from: cue.from, to: cue.to };
       cb.onCommit({
         hidden: [cue.from, cue.to],
@@ -1571,7 +1629,7 @@ export const playTimeline = (
         });
       } else if (!afterAttackCommitted && cues.some((c) => c.kind === "attack" || c.kind === "death")) {
         commitAfterAttack();
-      } else if (!afterBApplied && cues.some((c) => c.kind === "gasDrop" || c.kind === "deploy" || (c.kind === "move" && (c.stim || c.queenJump)))) {
+      } else if (!afterBApplied && cues.some((c) => c.kind === "gasDrop" || c.kind === "deploy" || (c.kind === "move" && (c.stim || c.shipJump)))) {
         applyAfterB();
       }
       cb.onDone();

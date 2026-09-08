@@ -29,6 +29,7 @@ import { clearSiegedRooks, setRookMode } from "~/presentation/animations/rookMod
 import { MobileBanner } from "~/components/atoms/MobileBanner";
 import { LiveBoardBinding } from "~/presentation/board/components/LiveBoardBinding";
 import { displayPlayerName } from "~/utils/playerName";
+import { formatScriptLabel } from "~/utils/matchTitle";
 import { isCheckOnlyResolve } from "~/presentation/hud/isCheckOnlyResolve";
 import { MatchBoardHost } from "~/presentation/hud/components/MatchBoardHost";
 import { ResourceBar } from "~/presentation/hud/components/ResourceBar";
@@ -70,6 +71,8 @@ export type ReviewDemoScreenProps = {
   playerColor?: StarChessColor;
   /** Shown at the left of the player's ResourceBar. */
   playerName?: string;
+  /** For arena imports, show both scripts with correct Blue/Red mapping. */
+  arenaPlayers?: { w: string; b: string };
   /** Side-rail Home — SPA navigate (review routes). */
   onHome?: () => void;
   /** Hide dual ResourceBars (tutorial). */
@@ -198,10 +201,14 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
     return f === "both" || f === "b";
   };
 
-  const sideName = (color: StarChessColor): string =>
-    color === (props.playerColor ?? "w")
+  const sideName = (color: StarChessColor): string => {
+    if (props.arenaPlayers) {
+      return formatScriptLabel(props.arenaPlayers[color]);
+    }
+    return color === (props.playerColor ?? "w")
       ? displayPlayerName(props.playerName)
       : "Adjutant";
+  };
 
   const dualResourceBars = () => (
     <div
@@ -346,6 +353,7 @@ export const ReviewDemoScreen: Component<ReviewDemoScreenProps> = (props) => {
   const store = createMatchStore({
     initial: createMatchStateFromReviewHistory(props.history, {
       playerColor: props.playerColor ?? "w",
+      ...(props.arenaPlayers ? { arenaPlayers: props.arenaPlayers } : {}),
     }),
     autoArmTimer: false,
   });
@@ -362,6 +370,8 @@ export const ReviewDemoScreen: Component<ReviewDemoScreenProps> = (props) => {
         pieceSet={props.pieceSet}
         rookTank={props.rookTank}
         playerColor={props.playerColor}
+        playerName={props.playerName}
+        arenaPlayers={props.arenaPlayers}
         onHome={props.onHome}
         hideResources={props.hideResources}
         hideDualNav={props.hideDualNav}

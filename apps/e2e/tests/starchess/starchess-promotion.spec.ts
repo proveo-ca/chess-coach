@@ -1,7 +1,10 @@
 import { expect, test } from "@playwright/test";
+import type { Page } from "@playwright/test";
+
+import { settledPieceAt } from "./helpers";
 
 /** Canonical deep link: baseURL is `/starchess/`. */
-const gotoScfen = async (page: import("@playwright/test").Page, scfen: string) => {
+const gotoScfen = async (page: Page, scfen: string) => {
   await page.goto(`single?scfen=${encodeURIComponent(scfen)}`);
   await expect(page.getByTestId("starchess-board-chrome")).toBeVisible({ timeout: 20_000 });
   // Deep links can seat a milestone turn — clear its broadcast first.
@@ -49,9 +52,9 @@ test.describe("StarChess promotion vs spider mine", () => {
       "SCFEN|k7/4P3/8/8/8/8/8/4K3|1|33|P|G:11:11|Q:w:C=e7e8q;b:";
     await gotoScfen(page, scfen);
     await page.getByTestId("turn-end").click();
-    await expect(page.locator("[data-square='e8'] img[alt='w q']")).toBeVisible({
+    await expect(settledPieceAt(page, "e8", "w q")).toBeVisible({
       timeout: 15_000,
     });
-    await expect(page.locator("[data-square='e7'] img[alt='w p']")).toHaveCount(0);
+    await expect(settledPieceAt(page, "e7", "w p")).toHaveCount(0);
   });
 });

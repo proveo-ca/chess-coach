@@ -6,7 +6,7 @@ export type {
   AttackCue,
   DeathCue,
   MoveCue,
-  QueenJumpTrail,
+  ShipJumpTrail,
   MineMissileCue,
   KingDamageState,
   RookMode,

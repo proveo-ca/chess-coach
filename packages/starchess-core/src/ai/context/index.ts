@@ -1,11 +1,10 @@
+// SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
 /**
  * Assembles every input variable the Adjutant reads from one SCFEN snapshot.
  *
  * Built once per planning turn, then treated as read-only. Strategies receive
  * this object and nothing else — if a strategy needs a new board fact, it is
  * derived here rather than recomputed inside the scoring pass.
- *
- * // SPEC: _spec/apps/starchess/core/adjutant/opponent-strategy.puml
  */
 
 import type { Square } from "chess.js";
@@ -18,6 +17,7 @@ import {
 } from "../../board/placement";
 import type { PieceColor, ScFenSnapshot } from "../../model/types";
 import { cloneWithMove, enemyOf } from "./geometry";
+import { DEFAULT_RNG } from "./rng";
 import { gatherKingIntel } from "./kingIntel";
 import { buildMaterialIntel, estimateStoredFor } from "./material";
 import { hasHubPresence, hubMineTaken } from "./mines";
@@ -27,6 +27,7 @@ import type { AdjutantContext, AdjutantCtx, Move, MoveEval } from "./types";
 import { buildVisionIntel } from "./vision";
 
 export * from "./types";
+export * from "./rng";
 export * from "./geometry";
 export * from "./pawns";
 export * from "./mines";
@@ -37,7 +38,7 @@ export { WEIGHTS, resolvePosture } from "./posture";
 export { buildVisionIntel } from "./vision";
 
 /**
- * Build the planning context, or `null` when the board has no King for us
+ * Build the planning context, or `null` when the board has no Command Center (CC) for us
  * (nothing to plan for — the caller returns the snapshot untouched).
  */
 export const buildAdjutantCtx = (
@@ -66,7 +67,7 @@ export const buildAdjutantCtx = (
     enemy,
     king,
     enemyKing,
-    // An adjacent enemy King counts: face-to-face kings chip each other.
+    // An adjacent enemy Command Center (CC) counts: face-to-face command centers (CCs) chip each other.
     kingThreatened: isSquareAttackedBy(map, king, enemy),
     sieged,
     gas: snap.gas[us],
@@ -79,6 +80,7 @@ export const buildAdjutantCtx = (
     hubHeld,
     hubMineTaken: hubMineTaken(snap, us),
     storedFor,
+    rng: ctx?.rng ?? DEFAULT_RNG,
   };
 };
 

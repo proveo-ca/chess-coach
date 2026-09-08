@@ -1,19 +1,18 @@
+// SPEC: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
 /**
  * Survival — keeping the Command Center (and the BattleShip) alive.
  *
  * Owns the absolute weights: nothing the other strategies can offer outranks
- * a King that stays off a chip-capable ray. Also owns the Tactical Jump escape
+ * a Command Center (CC) that stays off a chip-capable ray. Also owns the Tactical Jump escape
  * and the "walk out of fire" defence for ordinary units.
- *
- * // SPEC: _spec/apps/starchess/core/adjutant/opponent-strategy.puml
  */
 
 import type { Square } from "chess.js";
 
-import { isSquareAttackedBy, parseSquare } from "../../board/placement";
+import { attacksSquare, isSquareAttackedBy } from "../../board/placement";
 import { hostileMineOn } from "../../board/mine-contact";
 import type { AdjutantCtx, Candidate, MoveEval } from "../context";
-import { FILES, centerScore, isSafeSquare, rankOf } from "../context";
+import { FILES, centerScore, chebyshev, isSafeSquare, rankOf } from "../context";
 import { asCandidate, type Strategy } from "./types";
 
 /** Absolute — never posture-scaled. */
@@ -21,27 +20,31 @@ export const KING_SAFETY = 10_000;
 export const QUEEN_ESCAPE = 8_000;
 /**
  * Spawn a unit then capture the back-rank / checking threat with that same unit.
- * Above mere King flee — material win + survival (deploy + attack).
+ * Above mere Command Center (CC) flee — material win + survival (deploy + attack).
  */
 export const DEPLOY_ATTACK_SURVIVAL = KING_SAFETY + 3_500;
 /**
- * Step the King off its back rank when a file-rook (or similar) threatens check.
+ * Step the Command Center (CC) off its back rank when a file-tank (or similar) threatens check.
  * Below deploy+attack; above quiet development.
  */
 export const BACKRANK_ESCAPE = 4_500;
-/** Flee a threatened non-queen to a safe square (defend). */
+/** Flee a threatened non-battleship to a safe square (defend). */
 export const DEFEND_UNIT = 1_800;
-/** Visible enemy queen — prefer safe King moves / flee over hanging. */
+/** Visible enemy battleship — prefer safe Command Center (CC) moves / flee over hanging. */
 export const QUEEN_THREAT_KING = 1_500;
+/** Tactical Jump that lands the BattleShip onto, or beside, the enemy Command Center (CC). */
+export const QUEEN_WARP_CHECK_CC = 2_000;
 
-/** Tactical Jump — prioritise escaping fire to a safe square. */
+/** Tactical Jump — prioritise escaping fire to a safe square, then closing on the enemy Command Center (CC). */
 const queenWarps = (ctx: AdjutantCtx): Candidate[] => {
-  const { map, snap, us, enemy, weights } = ctx;
+  const { map, snap, us, enemy, enemyKing, weights } = ctx;
   const out: Candidate[] = [];
 
   for (const [from, piece] of map) {
     if (piece.color !== us || piece.type !== "q") continue;
     const underFire = isSquareAttackedBy(map, from, enemy);
+    const probe = new Map(map);
+    probe.delete(from);
     for (let f = 0; f < 8; f += 1) {
       for (let r = 1; r <= 8; r += 1) {
         const to = `${FILES[f]}${r}` as Square;
@@ -56,6 +59,12 @@ const queenWarps = (ctx: AdjutantCtx): Candidate[] => {
             : -QUEEN_ESCAPE * 0.5;
         } else if (isSafeSquare(map, to, enemy)) {
           score += weights.trade;
+        }
+        if (enemyKing) {
+          probe.set(to, { type: "q", color: us });
+          const checks = attacksSquare(probe, to, enemyKing);
+          probe.delete(to);
+          if (checks || chebyshev(to, enemyKing) === 1) score += QUEEN_WARP_CHECK_CC;
         }
         out.push(
           asCandidate({ timing: "B", kind: "queenWarp", color: us, from, to }, score),
@@ -72,18 +81,24 @@ const score = (ev: MoveEval, ctx: AdjutantCtx): number => {
   let s = 0;
 
   if (isKingMove) {
-    // Evaluate the destination on the POST-move board: the King itself can be
+    // Evaluate the destination on the POST-move board: the Command Center (CC) itself can be
     // the piece blocking the checking ray, so sliding along that ray looks safe
     // on the pre-move map but stays in check.
     const destSafe = ev.destSafe();
     if (kingThreatened) {
-      s += KING_SAFETY * (destSafe ? 1 : -1);
+      // Repositioning, not capturing — capturing with the Command Center (CC) when threatened
+      // is demoted; the preferred defense is deploying adjacent to eliminate.
+      if (move.capture) {
+        s += destSafe ? KING_SAFETY * 0.3 : -KING_SAFETY;
+      } else {
+        s += KING_SAFETY * (destSafe ? 1 : -1);
+      }
     } else if (!destSafe) {
-      // No intrinsic value in strolling an unthreatened King: an idle bonus here
+      // No intrinsic value in strolling an unthreatened Command Center (CC): an idle bonus here
       // would outrank every real action. Only punish walking into fire.
       s -= KING_SAFETY;
     }
-    // Visible enemy queen — protect the King (flee to safety / avoid hang).
+    // Visible enemy battleship — protect the Command Center (CC) (flee to safety / avoid hang).
     if (vision.enemyQueenVisible) {
       s += destSafe
         ? QUEEN_THREAT_KING * (kingThreatened ? 2 : 1)
@@ -105,7 +120,7 @@ const score = (ev: MoveEval, ctx: AdjutantCtx): number => {
   // Engagement — already in range of an enemy unit: attack vs defend.
   if (tactical.enemyAttacks(move.from)) {
     if (ev.destSafe()) {
-      // Queen that can be saved — defend (classical flee; warp scored above).
+      // Battleship that can be saved — defend (classical flee; warp scored above).
       s += piece.type === "q" ? QUEEN_ESCAPE * 0.4 : DEFEND_UNIT;
     } else if (!move.capture) {
       // Walking from fire into fire — worse than hanging still.
@@ -113,13 +128,9 @@ const score = (ev: MoveEval, ctx: AdjutantCtx): number => {
     }
   }
 
-  // Cheap king-centred shelter: a square adjacent to the King keeps him protected.
-  if (piece.type === "p") {
-    const { file: kFile, rank: kRank } = parseSquare(king);
-    const { file, rank } = parseSquare(move.to);
-    if (Math.abs(file - kFile) <= 1 && Math.abs(rank - kRank) <= 1) {
-      s += weights.trade;
-    }
+  // Cheap Command Center (CC)-centred shelter: a square beside the CC keeps a Marine protected.
+  if (piece.type === "p" && chebyshev(move.to, king) <= 1) {
+    s += weights.trade;
   }
 
   return s;

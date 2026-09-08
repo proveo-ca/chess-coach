@@ -3,6 +3,7 @@
 export const KING_MAX_LIVES = 3;
 export const MAX_STORED_MATERIAL = 12;
 export const MAX_DEPLOYED_MATERIAL = 50;
+export const MAX_GAME_TURNS = 45;
 
 /**
  * Planning turn length — base clock for animation fractions and for income
@@ -54,6 +55,9 @@ export const SPECIAL_ENERGY_COST = 1;
 
 /** Charon Booster Missiles (bishopSnipe) gas cost. */
 export const CHARON_GAS_COST = 2;
+
+/** StarChess alias of {@link CHARON_GAS_COST} — prefer in new code. */
+export const MECHA_CHARON_GAS_COST = CHARON_GAS_COST;
 
 /** BattleShip Tactical Jump (queenWarp) gas cost — 3 canisters (tier-3 income). */
 export const QUEEN_WARP_GAS_COST = 3;

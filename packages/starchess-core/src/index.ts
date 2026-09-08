@@ -35,6 +35,7 @@ export {
   KING_MAX_LIVES,
   MAX_STORED_MATERIAL,
   MAX_DEPLOYED_MATERIAL,
+  MAX_GAME_TURNS,
   TURN_TIMEOUT_MS,
   UNIT_COST,
   incomeForTurn,
@@ -42,6 +43,7 @@ export {
   turnTimeoutMsForTurn,
   SPECIAL_ENERGY_COST,
   CHARON_GAS_COST,
+  MECHA_CHARON_GAS_COST,
   QUEEN_WARP_GAS_COST,
 } from "./rules/constants";
 
@@ -50,6 +52,8 @@ export {
   placementFromFen,
   deployedMaterialFromFen,
   deployedMaterialFromMap,
+  applyStoredIncome,
+  OPENING_STORED_MATERIAL,
 } from "./rules/economy";
 
 export type { ScPiece } from "./board/placement";
@@ -91,10 +95,14 @@ export {
 export { adjacentSquares, spawnKingAnchor } from "./rules/specials/adjacent";
 
 export {
-  charonTargetQueen,
-  charonTargetQueenFromPlacement,
-  placementAfterCharon,
-} from "./rules/specials/bishopCharon";
+  charonDiagonalSquares,
+  charonDiagonalSquaresFromPlacement,
+  charonStrikeTarget,
+  charonTargetShips,
+  charonTargetShipsFromPlacement,
+  charonRayEdge,
+  placementAfterMechaCharon,
+} from "./rules/specials/mechaCharon";
 
 export {
   SPECIAL_REGISTRY,
@@ -174,12 +182,32 @@ export {
   classicFenFromSc,
 } from "./scfen";
 
-export type { ScFenValidation, ScFenReplayResult } from "./replay/validate-history";
+export type {
+  ScFenValidation,
+  ScFenReplayResult,
+} from "./replay/validate-history";
 export {
   replayScFen,
   replayScFenHistory,
   validateScFenHistory,
 } from "./replay/validate-history";
+
+export type { FenProjection } from "./replay/fen";
+export { scfenToFen } from "./replay/fen";
+
+export type {
+  ArenaGameRecord,
+  ArenaOutcome,
+  ArenaRecordStatus,
+  ArenaRunSummary,
+} from "./replay/record";
+export {
+  historyFromRecord,
+  makeArenaRecordId,
+  recordFromRun,
+  validateArenaRecord,
+  type ArenaRecordValidation,
+} from "./replay/record";
 
 export type { SideVision, NerdVision, PathVisionOpts, VisionBoard } from "./board/vision";
 export {
@@ -199,3 +227,51 @@ export {
   type AdjutantResult,
   type AdjutantContext,
 } from "./ai/adjutant";
+
+export { DEFAULT_RNG, mulberry32, type Rng } from "./ai/context/rng";
+
+export {
+  strategicAdjutant,
+  strategicCandidates,
+  applyCandidate,
+  buildStrategicCtx,
+  getCCBestGuess,
+  emptyCCIntel,
+  type CCIntel,
+  seedKnownVsSeen,
+  knownForTurn,
+  combineKnownVsSeen,
+  estimateKnownVsSeen,
+  detectCheesePromotion,
+  hasHiddenMaterial,
+  hiddenMaterial,
+  isWinning,
+  type StrategicResult,
+  type StrategicCandidatesResult,
+  type Candidate,
+  type StrategicCtx,
+  type StrategicAdjutantContext,
+  type KnownVsSeen,
+  seedCcIntelForOpening,
+  updateCcIntelForSnap,
+  seedKvsForOpening,
+  updateKvsForSnap,
+  type CcIntelState,
+  type KvsState,
+  seedRunnerMemory,
+  updateRunnersForSnap,
+  seedAttackerMemory,
+  updateAttackersForSnap,
+  witnessFromEndTurn,
+  scanEnemyRunners,
+  foldRunnerMemory,
+  emptyRunnerMemory,
+  type RunnerMemoryState,
+  type RunnerMemory,
+  type RunnerGhost,
+  type EnemyRunner,
+  type AttackerMemoryState,
+  type AttackerMemory,
+  type CCAttacker,
+  type ResolveWitness,
+} from "./ai/strategic";

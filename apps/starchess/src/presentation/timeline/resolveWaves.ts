@@ -52,7 +52,7 @@ export const splitResolveWaves = (result: EndScTurnResult): ResolveWave[] => {
       buckets[seenClassicalMove ? "specialAfter" : "specialBefore"].push(cue);
       continue;
     }
-    if (cue.kind === "move" && !cue.queenJump && !cue.stim) {
+    if (cue.kind === "move" && !cue.shipJump && !cue.stim) {
       seenClassicalMove = true;
       buckets.move.push(cue);
       continue;
@@ -88,7 +88,7 @@ export const splitResolveWaves = (result: EndScTurnResult): ResolveWave[] => {
       buckets.specialBefore.push(cue);
       continue;
     }
-    if (cue.kind === "move" && (cue.stim || cue.queenJump)) {
+    if (cue.kind === "move" && (cue.stim || cue.shipJump)) {
       buckets.specialBefore.push(cue);
       continue;
     }
