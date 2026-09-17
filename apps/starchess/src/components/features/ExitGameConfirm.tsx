@@ -1,3 +1,4 @@
+// SPEC: _spec/apps/starchess/menu-flow.puml, _spec/_plans/forfeit-as-loss.puml
 /**
  * Confirm leaving a live StarChess match — NeonModal + neon Buttons.
  */

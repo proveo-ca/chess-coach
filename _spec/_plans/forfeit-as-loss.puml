@@ -1,0 +1,83 @@
+@startuml
+!include ../themes/proveo.puml
+skinparam noteTextAlignment left
+' SPEC: _spec/_plans/forfeit-as-loss.puml
+' purpose: StarChess Leave Match writes a loss — not a void, not a draw
+' status: proposed 2026-09-17, not implemented; product = StarChess
+' covers: apps/starchess/src/components/features/ExitGameConfirm.tsx
+'         apps/starchess/src/screens/SingleScreen.tsx
+'         apps/starchess/src/store/matchHistoryStore.ts
+'         apps/starchess/src/store/matchSessionStore.ts
+' live spec: _spec/apps/starchess/menu-flow.puml
+'   draw cap that must stay distinct .... _spec/_plans/turn-45-draw-stop.puml
+'   analytics that will ingest the result _spec/_plans/chess-analytics.puml
+'   export that must copy the same enum . _spec/_plans/game-export-localstorage.puml
+' Notes are capped at 5 lines x 50 columns; one idea per anchor.
+'
+' ── WHAT THE LINE ITEM SETTLES ─────────────────────────────────────────────
+' Leave during a live /single match is an OUTCOME write. The leaving player
+' loses; the Adjutant wins. ""resultForPlayer"" / ""recordFromMatchState""
+' already know win|loss|draw — they are never called on Home today.
+'
+' ── WHAT IT DOES NOT SETTLE ────────────────────────────────────────────────
+'   Coach resign (already a loss in apps/ui)
+'   timeout vs leave as separate reasons
+'   tutorial HOME (TutorialScreen.goHome)
+'   folding this into ""scOutcome"" (HP / turn-45 only)
+title PLANNED — StarChess leave writes a loss;\nprogress-lost is a void
+
+component "ExitGameConfirm\nLeave Match" as QUIT <<error>>
+component "SingleScreen.exitToMenu" as EXIT <<app>>
+component "recordFromMatchState\nresultForPlayer" as REC <<app>>
+database "starchess_match_history" as HIST <<db>>
+database "starchess_match_session" as SES <<db>>
+component "scOutcome\nHP · MAX_GAME_TURNS" as ENG <<app>>
+component "**void the match**\nprogress will be lost" as VOID <<error>>
+
+QUIT ARROW_MAIN EXIT
+EXIT ARROW_ERROR VOID : today · ""clearMatchSession""
+EXIT ARROW_OPTIONAL REC : this plan
+REC ARROW_MAIN HIST : result = 'loss'
+REC ARROW_MAIN SES : then clear
+ENG ARROW_OPTIONAL HIST : engine terminals only
+
+note bottom of VOID
+  **Home today drops the resume blob
+  and writes no row.** Ratings and
+  analytics cannot recover an unwritten
+  loss after ""onCleanup"" runs.
+end note
+
+note bottom of REC
+  **One writer: the same functions the
+  gameOver effect already uses.** Set
+  a conceding outcome, then persist.
+  Do not invent a second enum.
+end note
+
+note right of ENG
+  **""scOutcome"" stays HP and the turn
+  cap.** Leave is an app verb on
+  ""ExitGameConfirm"", not a resolver
+  terminal.
+end note
+
+legend bottom
+  **The order to do it in**
+  ==
+  **1. Confirm today's void.** ""exitToMenu"" and
+  ""MatchInner onCleanup"" only call ""clearMatchSession"".
+  Coach ""resign"" is out of scope.
+  --
+  **2. Map leave → loss in one place.** Conceding
+  side loses, Adjutant wins, reason may stay
+  leave/forfeit for replay copy.
+  ==
+  **3. Point history at that write.** Export and
+  analytics read ""StarChessGameRecord.result"".
+  Turn-45 stays ""scOutcome""; do not fold it in.
+  --
+  **Left open**: timeout vs leave; tutorial HOME;
+  whether copy says resign, quit, or forfeit.
+end legend
+@enduml

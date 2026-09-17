@@ -1,0 +1,38 @@
+@startuml
+!include ../themes/proveo.puml
+skinparam noteTextAlignment left
+' SPEC: _spec/_plans/tutorial-interactive-siege.puml
+' purpose: siege is already taught as gated live lessons — not a film
+' status: OUTDATED — shipped runner; product = StarChess
+' covers: apps/starchess/src/tutorial/tutorialScript.config.ts
+'         apps/starchess/src/screens/TutorialScreen.tsx
+' live spec: _spec/apps/starchess/architecture/storybook-projection.puml
+'            _spec/apps/starchess/menu-flow.puml
+' Notes are capped at 5 lines x 50 columns; one idea per anchor.
+title OUTDATED — tutorial is already a gated match;\ndo not build a second siege mode
+
+component "TUTORIAL_SCRIPT_CONFIG" as CFG <<app>>
+component "TutorialScreen\nlive engine + gates" as RUN <<app>>
+component "rook-siege · tank\nlessons" as SIEGE <<app>>
+component "**a film of a siege**" as SLIDE <<error>>
+
+CFG ARROW_MAIN RUN
+RUN ARROW_MAIN SIEGE
+SLIDE ARROW_ERROR RUN
+
+note bottom of RUN
+  **The player already issues legal
+  actions against live rules.**
+  completeWhen / restartWhen gate
+  the beat; there is no siege mode
+  flag to invent.
+end note
+
+legend bottom
+  **Do not implement this file.**
+  ==
+  Diff ""tutorialScript.config.ts""
+  before adding a lesson. Do not
+  wait on a siege-line type.
+end legend
+@enduml

@@ -1,3 +1,4 @@
+// SPEC: _spec/apps/android/distribution.puml, _spec/apps/android/webrtc-p2p.puml, _spec/_plans/android-p2p-wiring.puml
 package ca.proveo.chess.android
 
 import android.webkit.JavascriptInterface

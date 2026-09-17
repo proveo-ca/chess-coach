@@ -1,4 +1,4 @@
-// SPEC: _spec/distribution.puml, _spec/apps/android/webrtc-p2p.puml
+// SPEC: _spec/distribution.puml, _spec/apps/android/webrtc-p2p.puml, _spec/_plans/android-p2p-wiring.puml
 // Bridge to the embedded Go thin-server on Android (apps/android). In the
 // Android WebView the shell injects `window.ChessNative` (MoveBridge.kt) and
 // pushes peer events to `window.__chessNative`. Everywhere else this is inert

@@ -1,0 +1,41 @@
+@startuml
+!include ../themes/proveo.puml
+skinparam noteTextAlignment left
+' SPEC: _spec/_plans/tutorial-siege-lines.puml
+' purpose: there is no placed siege-line type — siege is a tank mode
+' status: OUTDATED — withdrawn (invented object); product = StarChess
+' covers: packages/starchess-core/src/board/siege.ts
+'         apps/starchess/src/presentation/specials/arms/tankSiege.ts
+' live spec: _spec/specials/index.puml
+'            _spec/packages/starchess-core/scfen-wire.puml
+' Notes are capped at 5 lines x 50 columns; one idea per anchor.
+'
+' Backlog "siege lines" decoded as a drawable structure. Live: ""rookSiege""
+' toggles packed vs sieged vision/mobility. A painted overlay of a line
+' the engine does not store would desync the tutorial — so would inventing
+' a line type to match the title.
+title OUTDATED — no siege-line object;\nrookSiege is a tank mode toggle
+
+component "siegedRooks / rookSiege" as MODE <<app>>
+component "tutorial rook-siege\n+ specials tank" as BEAT <<app>>
+component "**placed line type**\nengine has none" as LINE <<error>>
+
+MODE ARROW_MAIN BEAT
+LINE ARROW_ERROR MODE : do not add
+
+note bottom of LINE
+  **Do not teach the player to draw a
+  line, and do not add a line store
+  so the backlog title looks true.**
+  Placement vs severance is not a
+  StarChess verb.
+end note
+
+legend bottom
+  **Do not implement this file.**
+  ==
+  Open ""board/siege.ts"" and the
+  rook-siege lesson. Ships do not
+  wait on a line type.
+end legend
+@enduml

@@ -1,0 +1,46 @@
+@startuml
+!include ../themes/proveo.puml
+skinparam noteTextAlignment left
+' SPEC: _spec/_plans/chess-user-journey.puml
+' purpose: enter → play → result is already specified per product
+' status: OUTDATED — shipped paths; do not mix Coach and StarChess
+' covers: apps/starchess/src/screens/MenuRoute.tsx
+'         apps/starchess/src/screens/SingleScreen.tsx
+' live spec: _spec/apps/starchess/menu-flow.puml
+'            _spec/apps/ui/state-machine.puml
+' remaining verb on this path .......... _spec/_plans/forfeit-as-loss.puml
+' Notes are capped at 5 lines x 50 columns; one idea per anchor.
+title OUTDATED — StarChess path is menu-flow.puml;\norphan-screen work is not a new app
+
+component "Menu → NewGamePanel\n→ /single" as IN <<app>>
+component "MatchResultModal\nwin · loss · draw" as END <<app>>
+component "ExitGameConfirm\nstill a void" as LEAVE <<error>>
+component "**orphan screen**" as ORPH <<error>>
+
+IN ARROW_MAIN END
+END ARROW_OPTIONAL IN : Another Game
+LEAVE ARROW_ERROR IN : today drops progress
+ORPH ARROW_ERROR IN : live path has edges
+
+note bottom of IN
+  **""menu-flow.puml"" already lists
+  map · team · opponent · rematch ·
+  replay.** Coach screens live under
+  ""apps/ui"" state-machine. This file
+  does not own either.
+end note
+
+note right of LEAVE
+  **The missing verb is leave-as-loss,
+  not a journey rewrite.** See
+  forfeit-as-loss.puml.
+end note
+
+legend bottom
+  **Do not implement this file.**
+  ==
+  Open the live spec for the product
+  you are changing. Do not restyle
+  primitives to paper over leave.
+end legend
+@enduml

@@ -1,3 +1,4 @@
+// SPEC: _spec/_plans/forfeit-as-loss.puml
 /**
  * Persist live StarChess match for refresh resume — SCFEN + map + human team +
  * opponent script.

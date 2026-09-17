@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/starchess/replay-import.puml
+// SPEC: _spec/apps/starchess/replay-import.puml, _spec/_plans/game-export-localstorage.puml, _spec/_plans/chess-analytics.puml
 /**
  * Finished StarChess matches — DualNav replay packages in localStorage.
  * Coach uses chess_coach_game_history; this key is StarChess-only.

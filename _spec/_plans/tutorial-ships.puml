@@ -1,0 +1,33 @@
+@startuml
+!include ../themes/proveo.puml
+skinparam noteTextAlignment left
+' SPEC: _spec/_plans/tutorial-ships.puml
+' purpose: BattleShip is already a taught unit — specials/ship
+' status: OUTDATED — shipped; product = StarChess
+' covers: apps/starchess/src/tutorial/tutorialScript.config.ts
+' live spec: _spec/specials/index.puml
+'            _spec/apps/starchess/starchess-mode.puml
+' Notes are capped at 5 lines x 50 columns; one idea per anchor.
+title OUTDATED — BattleShip lesson already issues\nlive orders; not a hull caption
+
+component "tutorial specials/ship" as BEAT <<app>>
+component "queenWarp\nTactical Jump" as VERB <<app>>
+component "**flavour slide**" as SLIDE <<error>>
+
+BEAT ARROW_MAIN VERB
+SLIDE ARROW_ERROR BEAT
+
+note bottom of BEAT
+  **The ship lesson already queues a
+  live BattleShip special.** Contact
+  with a fictional siege line is not
+  a dependency.
+end note
+
+legend bottom
+  **Do not implement this file.**
+  ==
+  Diff ""TUTORIAL_SCRIPT_CONFIG"" id
+  ""ship"" before adding verbs.
+end legend
+@enduml
