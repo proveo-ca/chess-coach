@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/starchess/menu-flow.puml, _spec/apps/starchess/screens.puml, _spec/apps/starchess/deployment.puml, _spec/apps/starchess/architecture/screen-entities.puml
+// SPEC: _spec/apps/starchess/menu-flow.puml, _spec/apps/starchess/screens.puml, _spec/apps/starchess/deployment.puml, _spec/apps/starchess/architecture/screen-entities.puml, _spec/_plans/forfeit-as-loss.puml
 /**
  * Single-player match — `/starchess/single?map=&team=` (+ optional `scfen=`).
  * Adjutant script always plays the opposite of `team` (White or Black).

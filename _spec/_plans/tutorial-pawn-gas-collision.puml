@@ -1,0 +1,38 @@
+@startuml
+!include ../themes/proveo.puml
+skinparam noteTextAlignment left
+' SPEC: _spec/_plans/tutorial-pawn-gas-collision.puml
+' purpose: ally-tank-vs-mecha gas fixture is not the live collision beat
+' status: OUTDATED — withdrawn as specified; product = StarChess
+' covers: apps/starchess/src/tutorial/tutorialScript.config.ts
+'         packages/starchess-core/src/rules/specials/pawnDouble.ts
+' live spec: _spec/packages/starchess-core/mine-contact.puml
+' Notes are capped at 5 lines x 50 columns; one idea per anchor.
+'
+' Live collision lesson is king-defense-4: mecha vs enemy tank, same-square
+' move-phase trade — not friendly-fire gas. Marine gas is specials/marine.
+' Teaching the backlog pair against yesterday's rule would fight the engine.
+title OUTDATED — do not shoot ally-tank gas\nas a new siege-runner fixture
+
+component "specials/marine\nlive pawnDouble" as GAS <<app>>
+component "king-defense-4\nmecha × enemy tank" as HIT <<app>>
+component "**ally tank vs mecha gas**\nnot a live beat" as PAIR <<error>>
+
+GAS ARROW_OPTIONAL HIT : different lessons
+PAIR ARROW_ERROR GAS : do not add as written
+
+note bottom of PAIR
+  **A new gas-collision beat must name
+  the live occupants and the live
+  rule after measuring resolve, not
+  the backlog pair.**
+end note
+
+legend bottom
+  **Do not implement this file.**
+  ==
+  Diff ""tutorialScript.config.ts"".
+  Pin collision in core before any
+  new caption.
+end legend
+@enduml

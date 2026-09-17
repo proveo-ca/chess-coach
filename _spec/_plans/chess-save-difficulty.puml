@@ -1,0 +1,47 @@
+@startuml
+!include ../themes/proveo.puml
+skinparam noteTextAlignment left
+' SPEC: _spec/_plans/chess-save-difficulty.puml
+' purpose: Coach difficulty already persists — StarChess opponent is not this enum
+' status: OUTDATED — shipped for Coach; product split
+' covers: apps/ui/src/store/settingsStore.ts
+' live spec: _spec/apps/ui/entities.puml
+' Notes are capped at 5 lines x 50 columns; one idea per anchor.
+'
+' Coach ""difficulty"" (intermediate / advanced / expert) lives in
+' ""chess_coach_settings_state"" via ""createPersistedStore"". StarChess
+' opponent script is naive|strategic on the URL + session blob, not a
+' second elo picker. NewGamePanel resetting to naive is not this item.
+title OUTDATED — Coach difficulty already restores;\ndo not add a parallel StarChess elo key
+
+component "settingsStore.difficulty" as PICK <<app>>
+database "chess_coach_settings_state" as KEY <<db>>
+component "StarChess opponent\nnaive | strategic" as OPP <<app>>
+component "**in-memory only**" as MEM <<error>>
+component "**a second difficulty enum**" as FORK <<error>>
+
+PICK ARROW_MAIN KEY
+KEY ARROW_MAIN PICK : restore on enter
+MEM ARROW_ERROR KEY : shipped anti-goal
+OPP ARROW_ERROR FORK : different product
+
+note bottom of KEY
+  **Refresh already restores the Coach
+  picker.** Export of Coach games is
+  ""gameShare.ts"", not this plan.
+end note
+
+note right of OPP
+  **Do not store Adjutant script in
+  the Coach difficulty key.** Resume
+  / rematch already copy ""?opponent="".
+end note
+
+legend bottom
+  **Do not implement this file.**
+  ==
+  Group analytics on
+  ""StarChessGameRecord.opponent"",
+  not on Coach elo.
+end legend
+@enduml

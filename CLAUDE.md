@@ -36,6 +36,7 @@ When you add, rename, or remove a component, hook, store, or service:
 | `_spec/apps/server/behavior.md` | **Backend behavioral contract** — 100% of the Bun backend orchestration behavior (source of truth for web parity) |
 | `_spec/apps/android/distribution.puml` | Android distribution topology: embedded thin server + WASM WebView + P2P (proposed; `apps/android` is WIP) |
 | `_spec/apps/android/webrtc-p2p.puml` | P2P multiplayer signaling + move-exchange sequence (proposed; `apps/android` is WIP) |
+| `_spec/_plans/android-p2p-wiring.puml` | **PLANNED** — remaining Coach Android wiring from feat-android: `LanScreen` → `P2PClient` / `ChessNative`; Go thin server stays host-only |
 | `_spec/apps/starchess/deployment.puml` | Standalone StarChess scoped PWA + Worker (`/starchess/`); Coach `/chess/starchess` redirect |
 | `_spec/apps/starchess/index.puml` | Live StarChess UI/PWA spec map |
 | `_spec/apps/starchess/screens.puml` | Live Screen HUD: ResourceBar / TurnBarSidebar / DualNav / ExitGameConfirm |
@@ -80,6 +81,7 @@ When you add, rename, or remove a component, hook, store, or service:
 | `_spec/packages/starchess-arena/arena.puml` | **Headless script arena** — `beginScTurn`/`endScTurn` loop, arena-owned bank + the three core folds (`KnownVsSeen` · `CCIntel` · `RunnerMemory`), recording rule, determinism guarantee, optional `EngineFeed` rescue |
 | `_spec/apps/server/starchess-arena-feed.puml` | Bun-side `StarChessFeed` + pool + record store + routes behind `EngineFeed` |
 | `_spec/PLAN-starchess-script-arena.md` | Script-arena plan (partly shipped — keep until its open phases land) |
+| `_spec/_plans/backlog-line-items.puml` | Backlog map (2026-09-17 retargeted): remaining StarChess leave/export/analytics + Coach Android `P2PClient` wiring vs shipped/withdrawn children; live map is `_spec/apps/starchess/index.puml` |
 | `_spec/_plans/PLAN-ml-adjutant.md` | **ML Adjutant plan** (PLANNED) — the `ml/` workspace as a third script beside naive/strategic: Elo ladder, fog-filtered observation + action vectorisation, parallel self-play + determinization, and a native SCFEN `cp` evaluator that retires Stockfish |
 | `_spec/packages/client-platform/entities.puml` | `@chess-coach/client-platform`: one client-device table (UA + UA-CH + iPadOS touch tell) shared by `apps/ui` and `apps/starchess`; `isDesktopClient` needs pointer **and** UA to agree before any keyboard copy |
 | `_spec/packages/engine-core/entities.puml` | `@chess-coach/engine-core` API: shared prompt/classification/commentary exports and their two consumers |

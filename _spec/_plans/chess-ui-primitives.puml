@@ -1,0 +1,37 @@
+@startuml
+!include ../themes/proveo.puml
+skinparam noteTextAlignment left
+' SPEC: _spec/_plans/chess-ui-primitives.puml
+' purpose: both products already have primitive kits — do not extract a third
+' status: OUTDATED — shipped kits; do not mix Coach and StarChess
+' covers: apps/starchess/src/components/primitives/
+'         apps/starchess/src/presentation/hud/
+'         apps/ui/src/components/primitives/
+' live spec: _spec/apps/starchess/screens.puml
+'            _spec/apps/ui/components.puml
+' Notes are capped at 5 lines x 50 columns; one idea per anchor.
+title OUTDATED — primitive kits already exist;\njourney work does not restyle a second board
+
+component "starchess primitives\nButton · NeonModal · HUD" as SC <<app>>
+component "apps/ui primitives\nCoach screens" as UI <<app>>
+component "**a third chess kit**" as FORK <<error>>
+
+SC ARROW_ERROR FORK
+UI ARROW_ERROR FORK
+
+note bottom of FORK
+  **StarChess layout contract is CSS
+  classes + compact props, not a new
+  design system.** Coach keeps its
+  own kit. One plan must not restyle
+  both products.
+end note
+
+legend bottom
+  **Do not implement this file.**
+  ==
+  New widgets extend the product kit
+  they belong to. Analytics may add
+  a prop, not a look.
+end legend
+@enduml

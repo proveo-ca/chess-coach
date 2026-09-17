@@ -1,0 +1,86 @@
+@startuml
+!include ../themes/proveo.puml
+skinparam noteTextAlignment left
+' SPEC: _spec/_plans/android-p2p-wiring.puml
+' purpose: Coach Android P2P — LanScreen consumes P2PClient; the Go server stays thin
+' status: proposed 2026-09-17, not implemented; product = Coach Android
+' covers: apps/ui/src/services/p2p.ts
+'         apps/ui/src/screens/LanScreen.tsx
+'         apps/android/app/src/main/java/ca/proveo/chess/android/MoveBridge.kt
+'         apps/android/gomobile/thinserver/
+' live spec: _spec/distribution.puml
+'            _spec/apps/android/distribution.puml
+'            _spec/apps/android/webrtc-p2p.puml
+' ref: origin/feat-android (scaffold + remaining UI integration)
+' Notes are capped at 5 lines x 50 columns; one idea per anchor.
+'
+' ── WHAT THE LINE ITEM SETTLES ─────────────────────────────────────────────
+' Topology is already specified. The gap is WIRING: when
+' ""isP2PAvailable()"", pair and relay through ""P2PClient"" /
+' ""window.ChessNative"", and set ""capabilities().aiOpponent"" false
+' so Maia does not answer a human peer.
+'
+' ── WHAT IT DOES NOT SETTLE ────────────────────────────────────────────────
+'   WebRTC vs Tailscale (already in distribution.puml)
+'   embedding Stockfish or WebLLM in the Go server
+'   StarChess on Android
+title PLANNED — LanScreen wires P2PClient;\nthe Go server stays a thin host
+
+node "apps/android\nServerService · thinserver" as GO <<host>>
+component "MoveBridge\nwindow.ChessNative" as BR <<host>>
+component "apps/ui P2PClient\nservices/p2p.ts" as P2P <<app>>
+component "LanScreen today\npeer.ts · signaling" as LAN <<app>>
+component "capabilities\naiOpponent = false" as CAP <<app>>
+component "**Go runs Stockfish**\nor a second pairing UI" as FORK <<error>>
+
+GO ARROW_MAIN BR : loopback UI + tsnet
+BR ARROW_MAIN P2P : injected bridge
+LAN ARROW_OPTIONAL P2P : this plan when available
+P2P ARROW_MAIN CAP : disable Maia reply
+LAN ARROW_ERROR FORK : if it bypasses the bridge
+GO ARROW_ERROR FORK : if the host becomes a coach
+
+note bottom of LAN
+  **""LanScreen"" today owns browser LAN
+  (""HostHubTransport""), not Android.**
+  ""P2PClient"" is store-agnostic and
+  unused. feat-android names this gap.
+end note
+
+note bottom of GO
+  **The embedded server is a thin host:
+  static web-full, COOP/COEP, session,
+  tailnet WSS.** It is not
+  ""apps/server"" and not Maia.
+end note
+
+note right of FORK
+  **A second pairing surface that still
+  calls Maia teaches the wrong opponent.**
+  One path: native bridge → game store
+  ""addMoveSan"", AI reply off.
+end note
+
+legend bottom
+  **The order to do it in**
+  ==
+  **1. Keep the live topology.** Read
+  ""_spec/apps/android/distribution.puml""
+  and ""webrtc-p2p.puml"". Do not redraw
+  them in this file.
+  --
+  **2. Wire the existing screen.** When
+  ""isP2PAvailable()"", ""LanScreen"" (or
+  the LAN entry) uses ""P2PClient"":
+  host/join, ""onPeerMove"" → ""addMoveSan"",
+  ""aiOpponent === false"".
+  ==
+  **3. Validate on a device.** feat-android
+  APK assemble is not runtime proof.
+  WebGPU commentary stays optional.
+  --
+  **Left open**: Headscale vs auth keys;
+  whether a dedicated Android pair screen
+  replaces LAN chrome.
+end legend
+@enduml
