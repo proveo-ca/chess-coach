@@ -9,7 +9,7 @@ skinparam noteTextAlignment left
 ' live spec: _spec/apps/starchess/architecture/storybook-projection.puml
 '            _spec/apps/starchess/menu-flow.puml
 ' Notes are capped at 5 lines x 50 columns; one idea per anchor.
-title Focused siege — keep d4 alive;\nkill h4 → d1 → a2 → d7 to 1 pawn
+title Focused siege — keep d4 alive;\nkill h4 → d1 → d7 to 1 pawn
 
 component "TUTORIAL_SCRIPT_CONFIG\nfog/rook-siege" as CFG <<app>>
 component "siegeFocusCounter\nlesson choreography" as CHOREO <<app>>
@@ -18,7 +18,7 @@ component "**lose d4**\nno siege tank" as LOSE <<error>>
 
 CFG ARROW_MAIN RUN
 CHOREO ARROW_QUEUE RUN : black intents
-RUN ARROW_MAIN CHOREO : d2→d1, a4→a2
+RUN ARROW_MAIN CHOREO : h4 stack, d2 fallback
 LOSE ARROW_ERROR RUN : restartWhen S:d4
 
 note bottom of RUN
@@ -29,9 +29,9 @@ note bottom of RUN
 end note
 
 note bottom of CHOREO
-  **Black promotes d2→d1 ship, then**
-  pressures c1 (never d4 outright).
-  Deterministic per turn; lesson only.
+  **Black stacks h4 while it lives;**
+  d2 promotion is fallback only.
+  Ship pressures c1, never d4 outright.
   Generic adjutant stays untouched.
 end note
 

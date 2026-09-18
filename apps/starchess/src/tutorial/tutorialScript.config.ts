@@ -249,7 +249,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               kind: "scfen",
               re: /SCFEN\|[^|p]*\|/,
             },
-            comment: "Sieged on d4 — start with h4, then d1, a2, d7. One pawn left wins.",
+            comment: "Sieged on d4 — start with h4, then d1, then d7. One pawn left wins.",
             emotion: "happy",
           },
         ],
@@ -269,7 +269,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               re: /SCFEN\|[^|]+\|2\|/,
             },
             squares: [
-              "a2",
+              "d7",
             ],
           },
           {
