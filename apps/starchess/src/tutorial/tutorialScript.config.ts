@@ -897,12 +897,12 @@ export const TUTORIAL_SCRIPT_CONFIG = [
         id: "king-defense-5",
         title: "Pawn Gas Defense",
         board: {
-          scfen: "SCFEN|7k/8/8/8/1b6/8/2PR4/3K4|1|33|P|G:11:11|Q:w:;b:|S:d2",
+          scfen: "SCFEN|7k/8/8/8/1b6/8/2PR4/3K4|11|33|P|G:22:22|Q:w:;b:|S:d2",
           stored: 2,
           endTurnAfterQueue: "moveAndSpecial",
           choreography: "pawnGasDefenseCounter",
           objective: "Hold d1 — block c3, unsiege d2, leave to e2",
-          docs: "White Kd1 + sieged Rd2 + Pc2 vs Bb4 + Kh8. Black B b4→d2 queued once on T1. Gas pawn c2→c3 (single step) blocks, gas unsiege d2, then R d2→e2. Win R e2 + K d1; fail R/K missing.",
+          docs: "White Kd1 + sieged Rd2 + Pc2 vs Bb4 + Kh8. Black B b4→d2 queued once on T11. Gas pawn c2→c3 (single step) blocks, gas unsiege d2, then R d2→e2. Win R e2 + K d1; fail R/K missing.",
         },
         comment: "That Mecha eyes d2! Gas your pawn to c3, unsiege d2, and slip the tank to e2!",
         emotion: "shocked",
@@ -929,6 +929,22 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               re: /SCFEN\|[^|K]*\||SCFEN\|[^|R]*\|/,
             },
             comment: "Bruh",
+            emotion: "watching",
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /[BF]=rookSiege:d2/,
+            },
+            comment: "Now move your tank out of danger!",
+            emotion: "watching",
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /[BF]=pawnDouble:c2/,
+            },
+            comment: "Now, unsiege your tank by dropping a gas canister on it.",
             emotion: "watching",
           },
         ],

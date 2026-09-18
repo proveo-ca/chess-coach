@@ -1,6 +1,6 @@
 // SPEC: _spec/apps/starchess/architecture/storybook-projection.puml
 /**
- * Pawn Gas Defense — enemy B b4→d2 once on T1 P-phase.
+ * Pawn Gas Defense — enemy B b4→d2 once on T11 P-phase.
  * Seed Q stays empty; generic adjutant untouched.
  */
 import { createEffect } from "solid-js";
@@ -10,7 +10,7 @@ import type { Square } from "chess.js";
 import type { ChoreographyResult } from "~/demos/choreography";
 import type { MatchStore } from "~/types/match";
 
-const COUNTER_TURN = 1;
+const COUNTER_TURN = 11;
 const FROM: Square = "b4";
 const TO: Square = "d2";
 
