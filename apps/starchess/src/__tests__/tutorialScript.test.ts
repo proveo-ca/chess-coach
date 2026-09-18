@@ -131,12 +131,14 @@ describe("tutorialScript", () => {
       "combat-chain",
       "king-hunt",
     ]);
-    expect(TUTORIAL_SCRIPT[3]!.stories).toHaveLength(7);
+    expect(TUTORIAL_SCRIPT[3]!.stories).toHaveLength(9);
     expect(TUTORIAL_SCRIPT[3]!.stories.map((s) => s.id)).toEqual([
       "king-defense",
       "king-defense-2",
       "king-defense-3",
       "king-defense-4",
+      "king-defense-5",
+      "king-defense-6",
       "king-attack-1",
       "king-attack-2",
       "king-attack-3",

@@ -2,37 +2,47 @@
 !include ../themes/proveo.puml
 skinparam noteTextAlignment left
 ' SPEC: _spec/_plans/tutorial-pawn-gas-collision.puml
-' purpose: ally-tank-vs-mecha gas fixture is not the live collision beat
-' status: OUTDATED — withdrawn as specified; product = StarChess
+' purpose: defensive evacuation — block c3, unsiege d2, leave
+' status: ACTIVE — focused drill; product = StarChess
 ' covers: apps/starchess/src/tutorial/tutorialScript.config.ts
-'         packages/starchess-core/src/rules/specials/pawnDouble.ts
+'         apps/starchess/src/demos/choreography/usePawnGasDefenseCounter.ts
 ' live spec: _spec/packages/starchess-core/mine-contact.puml
+'            _spec/apps/starchess/architecture/storybook-projection.puml
 ' Notes are capped at 5 lines x 50 columns; one idea per anchor.
 '
-' Live collision lesson is king-defense-4: mecha vs enemy tank, same-square
-' move-phase trade — not friendly-fire gas. Marine gas is specials/marine.
-' Teaching the backlog pair against yesterday's rule would fight the engine.
-title OUTDATED — do not shoot ally-tank gas\nas a new siege-runner fixture
+' Seed: White K d1, R d2 sieged (S:d2), P c2; Black
+' B b4, K h8. Both gas grant a single step, never
+' a double. Enemy B b4→d2 is choreographed once.
+title Defensive gas — hold d1;\nblock c3, unsiege d2 to e2
 
-component "specials/marine\nlive pawnDouble" as GAS <<app>>
-component "king-defense-4\nmecha × enemy tank" as HIT <<app>>
-component "**ally tank vs mecha gas**\nnot a live beat" as PAIR <<error>>
+component "lesson config\nCC d1 · R d2 · P c2" as CFG <<app>>
+component "pawnGasDefenseCounter\nB b4→d2 once" as CHOREO <<app>>
+component "TutorialScreen\nlive engine + gates" as RUN <<app>>
+component "**tank or CC lost**\nR/K missing" as LOSE <<error>>
 
-GAS ARROW_OPTIONAL HIT : different lessons
-PAIR ARROW_ERROR GAS : do not add as written
+CFG ARROW_MAIN RUN
+CHOREO ARROW_QUEUE RUN : B b4→d2
+LOSE ARROW_ERROR RUN : restartWhen R/K gone
 
-note bottom of PAIR
-  **A new gas-collision beat must name
-  the live occupants and the live
-  rule after measuring resolve, not
-  the backlog pair.**
+note bottom of RUN
+  **Keep CC d1 alive; evacuate d2 to e2.**
+  Gas pawn c2→c3, gas unsiege d2, then
+  move R d2→e2. Both gas are single
+  steps. Hints narrow: c3, then e2.
+end note
+
+note bottom of CHOREO
+  **Enemy queues B b4→d2 once on T1.**
+  Deterministic per turn; lesson only.
+  Generic adjutant stays untouched.
+  Seed Q stays empty for this hook.
 end note
 
 legend bottom
-  **Do not implement this file.**
+  **Implement this file.**
   ==
   Diff ""tutorialScript.config.ts"".
-  Pin collision in core before any
-  new caption.
+  Win R off d2 + K d1; fail R/K gone,
+  never S absence alone.
 end legend
 @enduml

@@ -74,7 +74,10 @@ export type LessonChoreographyId =
   | "kingDefenseOpening"
   | "kingDefenseIIChecks"
   | "kingAttackTankCounter"
-  | "kingHuntGraduation";
+  | "kingHuntGraduation"
+  | "siegeFocusCounter"
+  | "pawnGasDefenseCounter"
+  | "shipSnipeCounter";
 
 /**
  * Hint line drawn square-to-square — for a claim a ring cannot make, like the

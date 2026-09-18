@@ -77,6 +77,8 @@ describe("Storybook projection", () => {
       "king/king-defense-2",
       "king/king-defense-3",
       "king/king-defense-4",
+      "king/king-defense-5",
+      "king/king-defense-6",
       "king/king-attack-1",
       "king/king-attack-2",
     ]);

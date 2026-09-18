@@ -10,6 +10,9 @@ import { useKingAttackTankCounter } from "~/demos/choreography/useKingAttackTank
 import { useKingDefenseOpening } from "~/demos/choreography/useKingDefenseOpening";
 import { useKingDefenseIIChecks } from "~/demos/choreography/useKingDefenseIIChecks";
 import { useKingHuntGraduation } from "~/demos/choreography/useKingHuntGraduation";
+import { usePawnGasDefenseCounter } from "~/demos/choreography/usePawnGasDefenseCounter";
+import { useShipSnipeCounter } from "~/demos/choreography/useShipSnipeCounter";
+import { useSiegeFocusCounter } from "~/demos/choreography/useSiegeFocusCounter";
 import type { MatchStore } from "~/types/match";
 import type { LessonChoreographyId } from "~/types/tutorial";
 
@@ -41,4 +44,7 @@ export const CHOREOGRAPHY = {
   kingDefenseIIChecks: useKingDefenseIIChecks,
   kingAttackTankCounter: useKingAttackTankCounter,
   kingHuntGraduation: useKingHuntGraduation,
+  siegeFocusCounter: useSiegeFocusCounter,
+  pawnGasDefenseCounter: usePawnGasDefenseCounter,
+  shipSnipeCounter: useShipSnipeCounter,
 } satisfies Record<LessonChoreographyId, LessonChoreography>;
