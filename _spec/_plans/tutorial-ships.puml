@@ -15,7 +15,7 @@ skinparam noteTextAlignment left
 ' then F snipe g2→f1 in the 2nd gas phase.
 title Catch post-jump — snipe f1;\nMecha e4 to g2, ship dies on f1
 
-component "lesson config\nCC h1 · Be4 · Ph2 · Qd5" as CFG <<app>>
+component "lesson config\nCC h1 · Be4 · Ph2 · Ne1\nbBf2 spots f1" as CFG <<app>>
 component "shipSnipeCounter\nB warp d5→f1" as CHOREO <<app>>
 component "TutorialScreen\nlive engine + gates" as RUN <<app>>
 component "**CC lost**\nally HP 0" as LOSE <<error>>
