@@ -123,6 +123,95 @@ describe("mechaCharonArm", () => {
     expect(t).toMatchObject({ kind: "bishopSnipe", from: "c1" });
     expect(t && "targets" in t && t.targets).toContain("h6");
   });
+
+  it("offers post-move diagonals when its own classical is queued", () => {
+    // King-defense-6 geometry (with the h2 marine aboard): Be4→g2
+    // queued, so f1 (on g2's diagonal but not e4's) must be pickable
+    // for the F snipe.
+    const store = makeStore("SCFEN|7k/8/8/3q4/4B3/8/7P/7K|21|13|P|G:33:33|Q:w:;b:");
+    const queued = addScAction({
+      snapshot: snapOf(store),
+      action: { timing: "C", kind: "classical", color: "w", from: "e4", to: "g2" },
+    });
+    store.dispatch({ type: "APPLY_SNAPSHOT", snapshot: queued.snapshot });
+    expect(mechaCharonArm(store, snapOf(store), { square: "e4", piece: "b" })).toBe(
+      "pending",
+    );
+    const t = store.shell().targeting;
+    // `from` stays the arming square; only the offered targets project.
+    expect(t).toMatchObject({ kind: "bishopSnipe", from: "e4" });
+    expect(t && "targets" in t && t.targets).toContain("f1");
+  });
+
+  it("offers current diagonals without a queued classical", () => {
+    const store = makeStore("SCFEN|7k/8/8/3q4/4B3/8/8/7K|21|13|P|G:33:33|Q:w:;b:");
+    expect(mechaCharonArm(store, snapOf(store), { square: "e4", piece: "b" })).toBe(
+      "pending",
+    );
+    const t = store.shell().targeting;
+    expect(t && "targets" in t && [...t.targets].sort()).toEqual([
+      "a8",
+      "b1",
+      "b7",
+      "c2",
+      "c6",
+      "d3",
+      "d5",
+      "f3",
+      "f5",
+      "g2",
+      "g6",
+      "h1",
+      "h7",
+    ]);
+    expect(t && "targets" in t && t.targets).not.toContain("f1");
+  });
+
+  it("ignores a classical queued from another square", () => {
+    // Borrowing another unit's post-move square would teleport the shot:
+    // offers stay byte-identical to the unqueued diagonals.
+    const store = makeStore("SCFEN|7k/8/8/3q4/4B3/8/8/7K|21|13|P|G:33:33|Q:w:;b:");
+    const queued = addScAction({
+      snapshot: snapOf(store),
+      action: { timing: "C", kind: "classical", color: "w", from: "h1", to: "g1" },
+    });
+    store.dispatch({ type: "APPLY_SNAPSHOT", snapshot: queued.snapshot });
+    expect(mechaCharonArm(store, snapOf(store), { square: "e4", piece: "b" })).toBe(
+      "pending",
+    );
+    const t = store.shell().targeting;
+    expect(t).toMatchObject({ kind: "bishopSnipe", from: "e4" });
+    expect(t && "targets" in t && [...t.targets].sort()).toEqual([
+      "a8",
+      "b1",
+      "b7",
+      "c2",
+      "c6",
+      "d3",
+      "d5",
+      "f3",
+      "f5",
+      "g2",
+      "g6",
+      "h1",
+      "h7",
+    ]);
+  });
+
+  it("ignores an enemy classical on the wire", () => {
+    const store = makeStore("SCFEN|7k/8/8/3q4/4B3/8/8/7K|21|13|P|G:33:33|Q:w:;b:");
+    const queued = addScAction({
+      snapshot: snapOf(store),
+      action: { timing: "C", kind: "classical", color: "b", from: "d5", to: "d4" },
+    });
+    store.dispatch({ type: "APPLY_SNAPSHOT", snapshot: queued.snapshot });
+    expect(mechaCharonArm(store, snapOf(store), { square: "e4", piece: "b" })).toBe(
+      "pending",
+    );
+    const t = store.shell().targeting;
+    expect(t).toMatchObject({ kind: "bishopSnipe", from: "e4" });
+    expect(t && "targets" in t && t.targets).not.toContain("f1");
+  });
 });
 
 describe("shipJumpArm", () => {

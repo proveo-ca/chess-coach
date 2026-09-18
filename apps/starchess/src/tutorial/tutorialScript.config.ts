@@ -981,14 +981,14 @@ export const TUTORIAL_SCRIPT_CONFIG = [
         id: "king-defense-6",
         title: "Ship Snipe Defense",
         board: {
-          scfen: "SCFEN|7k/8/8/3q4/4B3/8/8/7K|21|13|P|G:33:33|Q:w:;b:",
+          scfen: "SCFEN|7k/8/8/3q4/4B3/8/7P/7K|21|13|P|G:33:33|Q:w:;b:",
           stored: 0,
           endTurnAfterQueue: "moveAndSpecial",
           choreography: "shipSnipeCounter",
           objective: "Catch the jump: Be4 to g2, then snipe f1 after it lands.",
-          docs: "Ally CC h1 at HP 1 with g1/f1 free. Enemy ship warps to f1 in B phase. Move Be4→g2, then F snipe g2→f1 in the 2nd gas phase to catch it post-jump.",
+          docs: "Ally CC h1 at HP 1 with g1/f1 free. Enemy ship warps to f1 in B phase. Move Be4→g2, then F snipe g2→f1 in the 2nd gas phase to catch it post-jump. White marine h2 holds the flank.",
         },
-        comment: "That ship is jumping to f1 for your base! Slide your Mecha to g2 and snipe f1 after it lands.",
+        comment: "That ship is jumping to f1 for your base! Move your Mecha to g2 first.",
         emotion: "shocked",
         completeWhen: {
           kind: "scfen",
@@ -999,14 +999,6 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           re: /SCFEN\|[^|]+\|\d+\|0[0-3]\|/,
         },
         reactions: [
-          {
-            when: {
-              kind: "scfen",
-              re: /queenWarp:/,
-            },
-            comment: "Lightspeed — she is on f1. Shoot her off it!",
-            emotion: "shocked",
-          },
           {
             when: {
               kind: "scfen",
@@ -1031,6 +1023,30 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             comment: "Aim f1 — she lands there.",
             emotion: "scanning",
           },
+          {
+            when: {
+              kind: "scfen",
+              re: /bishopSnipe:/,
+            },
+            comment: "Locked on f1 — End to fire!",
+            emotion: "happy",
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /Q:w:[^;]*C=e4g2/,
+            },
+            comment: "G2 locked. Queue an intent to throw the missiles at f1.",
+            emotion: "scanning",
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /queenWarp:/,
+            },
+            comment: "Lightspeed — she is on f1. Shoot her off it!",
+            emotion: "shocked",
+          },
         ],
         hints: [
           {
@@ -1040,6 +1056,18 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             },
             squares: [
               "f1",
+            ],
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /Q:w:[^;]*C=e4g2/,
+            },
+            squares: [
+              "f1",
+            ],
+            arrows: [
+              { from: "g2", to: "f1" },
             ],
           },
           {
