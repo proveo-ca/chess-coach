@@ -61,6 +61,7 @@ style).
 
 | V38 | A capture onto a **mined** tile buries **both** — `Rxe5` on an e5 holding a unit and a mine plays the victim's wreck and the mine's, with the glyph darkened; visible captures pair them in one phase-1 window, a fogged approach pairs `prdm` with `prdth` before the occupy slide, and the attacker lands alive either way | `mine-contact.puml` (a blocker draws the shot; a capture reports its mine), `cue-projection.puml` | **unit only — see gaps** |
 | V39 | VFX that is a unit's **own** ordnance carries its player's swatch — Hoverbike deploy jet + frag boom, Ship laser, mine-wreck boom — and two sides firing in one window keep their tints apart | `board-entities.puml` (`teamTintStyle`) | **unit only — see gaps** |
+| V40 | A spawn **crush** layers the deploy hull **above** the victim's death boom on the shared square — co-present cues, same tile, `Deploy z37 > Death z35`, topmost hit-test is the deploy layer | `composite-vfx-stack.puml` (Deploy DOM-last ≈ topmost; explicit z under `isolate`) | `vfx-crush-compose.spec.ts` |
 
 ### V37 — why the mine wreck needs its own tuning
 
