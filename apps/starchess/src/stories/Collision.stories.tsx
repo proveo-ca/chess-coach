@@ -7,6 +7,7 @@ import {
   COLLISION_SAME_SQUARE_SCENARIO,
 } from "~/demos/collisionRaces";
 import { ReviewScreen } from "~/screens/ReviewScreen";
+import { CrushBoardDemo } from "~/presentation/animations/components/CrushBoardDemo";
 import { recordFromScenario, seedMatchHistory } from "~/stories/project";
 import type { FogEdgeScenario } from "~/types/demos";
 
@@ -88,3 +89,24 @@ export const KnightSpeed = storyOf(
   },
   "Knight speed · gas pawn + bishop",
 );
+
+/**
+ * Ally deploy-crush · white Marine drops onto black Hoverbike (d4).
+ * Store-free `AnimationStage` loop: idle → deploy at t0 + crush death at
+ * +100ms → landed. Deploy hull must paint above the death boom
+ * (Deploy z37 > Death z35) — layered compose, never switching clips.
+ * // SPEC: _spec/apps/starchess/architecture/composite-vfx-stack.puml
+ */
+export const DeployCrushEnemy: Story = {
+  name: "Deploy crush · ally Marine vs enemy Hoverbike",
+  parameters: {
+    layout: "fullscreen",
+    docs: {
+      description: {
+        story:
+          "Loop · white pawn deploys onto black knight d4 · death starts 100ms into the 500ms drop · assert deploy hull above death boom via ffmpeg.",
+      },
+    },
+  },
+  render: () => <CrushBoardDemo />,
+};

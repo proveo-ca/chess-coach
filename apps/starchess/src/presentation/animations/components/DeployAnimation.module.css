@@ -2,7 +2,9 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  z-index: 26;
+  /* Crush compose: deploy hull above the death boom on a shared square
+     (Death z35, Attack z36); below jump/missile trails (z44). */
+  z-index: 37;
   overflow: visible;
   contain: layout style;
   isolation: isolate;
