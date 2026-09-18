@@ -29,7 +29,6 @@ package "remaining — Coach Android" as ANDR <<host>> {
 package "shipped / withdrawn — do not redo" as DONE <<db>> {
   component "pawnDouble B occupy\npawn-first-phase-gas-move.puml" as GAS <<app>>
   component "MAX_GAME_TURNS HP cap\nturn-45-draw-stop.puml" as T45 <<app>>
-  component "crush deploy+death cues\ndeploy-death-animation-layers.puml" as ANIM <<app>>
   component "TUTORIAL_SCRIPT_CONFIG\ntutorial-*.puml" as TUT <<app>>
   component "menu-flow + primitives\nchess-user-journey · chess-ui-primitives" as JOUR <<app>>
   component "settingsStore.difficulty\nchess-save-difficulty.puml" as DIFF <<app>>

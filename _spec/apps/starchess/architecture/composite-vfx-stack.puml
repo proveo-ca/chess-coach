@@ -121,6 +121,17 @@ package "AFTER · Facade + Composite + Parameter Object" as AFTER {
   class MineMissileAnimation <<app>>
   class DeployAnimation <<app>>
 
+  note as N_CRUSH
+    **Crush compose:** spawn crush shares one
+    square — Deploy z37 paints above Death
+    z35 (below jump/missile z44). Explicit
+    z implements DOM-last intent: each root
+    is `isolate`, so DOM order alone
+    does not stack layers. Pinned by V40.
+  end note
+
+  N_CRUSH .. DeployAnimation
+
   note as N_AFTER
     **Patterns:** Facade · Composite · Parameter Object.
     Perf: cue-only updates invalidate Composite,
