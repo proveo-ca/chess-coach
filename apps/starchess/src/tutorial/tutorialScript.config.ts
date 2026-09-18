@@ -252,13 +252,6 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             comment: "Sieged on d4 — start with h4, then d1, a2, d7. One pawn left wins.",
             emotion: "happy",
           },
-          {
-            when: {
-              kind: "timelineActive",
-            },
-            comment: "That's OP!",
-            emotion: "shocked",
-          },
         ],
         hints: [
           {
