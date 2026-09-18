@@ -981,7 +981,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
         id: "king-defense-6",
         title: "Ship Snipe Defense",
         board: {
-          scfen: "SCFEN|7k/8/8/3q4/4B3/8/5b1P/4NK2|21|13|P|G:33:33|Q:w:;b:",
+          scfen: "SCFEN|7k/8/8/3q4/4B3/8/5b1P/4N2K|21|13|P|G:33:33|Q:w:;b:",
           stored: 0,
           endTurnAfterQueue: "moveAndSpecial",
           choreography: "shipSnipeCounter",
