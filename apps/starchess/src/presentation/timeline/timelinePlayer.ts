@@ -1296,9 +1296,10 @@ export const playTimeline = (
     return runStep({
       durationMs:
         Math.max(1, ...moves.map((c) => cueDuration(c))) +
-        // Hoverbike / battleship settle into rest at touchdown; the mover must
-        // stay mounted for the unwind transition to complete before hand-off.
-        (moves.some((c) => c.piece === "n" || c.piece === "q") ? SETTLE_MS : 0),
+        // Hoverbike / battleship / siege tank settle into rest at touchdown;
+        // the mover must stay mounted for the unwind transition to complete
+        // before hand-off.
+        (moves.some((c) => c.piece === "n" || c.piece === "q" || c.piece === "r") ? SETTLE_MS : 0),
       end: () => {
         for (const m of moves) {
           if (isBoardSquare(m.to)) {
