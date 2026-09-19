@@ -78,8 +78,7 @@ export type LessonChoreographyId =
   | "siegeFocusCounter"
   | "pawnGasDefenseCounter"
   | "shipSnipeCounter"
-  | "mineRa1Counter"
-  | "marineFirstTurnEnd";
+  | "mineRa1Counter";
 
 /**
  * Hint line drawn square-to-square — for a claim a ring cannot make, like the

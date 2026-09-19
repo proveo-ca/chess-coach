@@ -583,8 +583,15 @@ describe("tutorialScript", () => {
     }
   });
 
-  it("walks specials/marine through move, slip-away, and ghost beats", () => {
-    const r = namedReactions("specials", "marine", "gasGhost", "slipAway");
+  it("walks specials/marine through move+gas, then gas+ghost across two turns", () => {
+    const r = namedReactions(
+      "specials",
+      "marine",
+      "gasGhost",
+      "gasCheer",
+      "slipAway",
+      "moveQueued",
+    );
     const t1 = "SCFEN|7k/8/8/8/8/4P3/3P4/4K3|1|33|P|G:11:11|Q:w:";
     const t2 = "SCFEN|7k/8/8/8/3P4/4P3/8/4K3|2|33|P|G:11:11|Q:w:";
     const line = (scfen: string) =>
@@ -594,16 +601,19 @@ describe("tutorialScript", () => {
     // 1 — seed: move first, d4 ring; the queued classical holds the opener.
     expectIntro(line(`${t1};b:`), "specials", "marine");
     expect(hints(`${t1};b:`)).toEqual(["d4"]);
-    expectIntro(line(`${t1}C=d2d4;b:`), "specials", "marine");
+    expectReaction(line(`${t1}C=d2d4;b:`), r.moveQueued);
     expect(hints(`${t1}C=d2d4;b:`)).toEqual(["d4"]);
+    // Gas on turn 1 cheers without leaving the window.
+    expectReaction(line(`${t1}B=pawnDouble:d2:d3;b:`), r.gasCheer);
+    expectReaction(line(`${t1}C=d2d4,F=pawnDouble:d2:d3;b:`), r.gasCheer);
     // 2 — second window: the slip-away teach, e3 ring.
     expectReaction(line(`${t2};b:`), r.slipAway);
     expect(hints(`${t2};b:`)).toEqual(["e3"]);
     // Gas queued on e3 — the ghost beat wins over the turn beat, e5 ring.
     expectReaction(line(`${t2}B=pawnDouble:e3:e4;b:`), r.gasGhost);
     expect(hints(`${t2}B=pawnDouble:e3:e4;b:`)).toEqual(["e5"]);
-    // Off-script gas on turn 1 still coaches the ghost beat.
-    expectReaction(line(`${t1}B=pawnDouble:d2:d3;b:`), r.gasGhost);
+    // Off-script classical on turn 2 restates the gas ask.
+    expectReaction(line(`${t2}C=e3e4;b:`), r.slipAway);
     // A King move is not a Marine move — no beat fires on it.
     expectIntro(
       resolveTutorialLine({
@@ -614,22 +624,19 @@ describe("tutorialScript", () => {
       "specials",
       "marine",
     );
-    // Completion still needs the classical stacked with the gas.
+    // The lesson ends on the third window, not on a stacked queue.
     const complete = storyOf("specials", "marine").completeWhen;
     expect(
-      matchesTutorialCompleteWhen(complete, {
-        scfen: `${t2};b:`,
-        queue: [{ timing: "B", kind: "pawnDouble", color: "w" }],
-      }),
+      matchesTutorialCompleteWhen(
+        complete,
+        "SCFEN|7k/8/8/8/3P4/4P3/8/4K3|2|33|P|G:11:11|Q:w:B=pawnDouble:e3:e4,C=e4e5;b:",
+      ),
     ).toBe(false);
     expect(
-      matchesTutorialCompleteWhen(complete, {
-        scfen: `${t2};b:`,
-        queue: [
-          { timing: "B", kind: "pawnDouble", color: "w" },
-          { timing: "C", kind: "classical", color: "w" },
-        ],
-      }),
+      matchesTutorialCompleteWhen(
+        complete,
+        "SCFEN|7k/8/8/8/8/4P3/3P4/4K3|3|33|P|G:11:11|Q:w:;b:",
+      ),
     ).toBe(true);
   });
 

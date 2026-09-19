@@ -407,30 +407,38 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           stored: 4,
           endTurnAfterQueue: "moveAndSpecial",
           armTimer: false,
-          choreography: "marineFirstTurnEnd",
-          docs: "Turn 1: queue d2\u2192d4 classical with no canister spent. Turn 2: drop gas on a Marine for the Extra Step slip-away, then click the gas-ghost and queue a classical follow-up \u00b7 End to resolve.",
+          docs: "Turn 1: move, then gas (order matters not). Turn 2: gas first for the slip-away, then move off the ghost \u00b7 End to resolve.",
         },
         comment: "Order a Marine to move.",
         emotion: "idle",
         completeWhen: {
-          kind: "queue",
-          classical: true,
-          specialKind: "pawnDouble",
+          kind: "scfen",
+          re: /SCFEN\|[^|]+\|(?:[3-9]|\d\d+)\|/,
         },
         /*
-         * Three beats across two turns — move first, then gas, then move off
-         * the ghost. First match wins, so these run most-specific first. The
-         * seed opens on SCFEN turn 1, so the second window is turn field `2`.
+         * Four beats across two turns — turn 1 moves then gasses, turn 2
+         * gasses then moves off the ghost. First match wins, so these run
+         * most-specific first. The seed opens on SCFEN turn 1, so the second
+         * window is turn field `2` and the lesson ends on field `3`.
          */
         reactions: [
           {
-            // Gas intent queued — the transparent ghost marks where the Marine
+            // Turn-2 gas queued — the transparent ghost marks where the Marine
             // lands after the Extra Step; the follow-up classical starts there.
             when: {
               kind: "scfen",
-              re: /[BF]=pawnDouble:/,
+              re: /^(?=SCFEN\|[^|]+\|2\|)(?=.*[BF]=pawnDouble:)/,
             },
             comment: "Now click that gas-ghost Marine and queue a move intent",
+            emotion: "watching",
+          },
+          {
+            // Turn-1 gas queued, before or after the move.
+            when: {
+              kind: "scfen",
+              re: /^(?=SCFEN\|[^|]+\|1\|)(?=.*[BF]=pawnDouble:)/,
+            },
+            comment: "Oh, yeah!",
             emotion: "watching",
           },
           {
@@ -442,12 +450,23 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             comment: "Now the slipping away technique, drop a gas canister in your Marine",
             emotion: "scanning",
           },
+          {
+            // Turn-1 classical queued from a Marine square (d2 / e3 on this
+            // seed); the King on e1 cannot match. First match wins, so once
+            // gas is queued the cheer above takes over.
+            when: {
+              kind: "scfen",
+              re: /^(?=SCFEN\|[^|]+\|1\|)(?=.*Q:w:[^;]*C=[de][23])/,
+            },
+            comment: "You just queued an intent! \nIt looks like a ghost. \n\nSee that gas canister in the bottom? Drag and drop it into that transparent Marine.",
+            emotion: "idle",
+          },
         ],
         hints: [
           {
             when: {
               kind: "scfen",
-              re: /[BF]=pawnDouble:/,
+              re: /^(?=SCFEN\|[^|]+\|2\|)(?=.*[BF]=pawnDouble:)/,
             },
             squares: [
               "e5",
