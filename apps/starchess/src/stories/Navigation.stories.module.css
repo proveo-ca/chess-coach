@@ -68,6 +68,42 @@
 }
 
 /*
+ * Mirrors BaseScreen.liveDualResources: live viewer + adjutant bars stacked
+ * in the top column (full bars, like the old single strip).
+ */
+.liveDualResources {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/*
+ * Mirrors BaseScreen.liveDualCompact: stacked compact viewer + adjutant bars
+ * stretching the dynamic banner slot (doubled class beats `.bar.compact`
+ * fixed width outright, like production).
+ */
+.liveDualCompact {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+div.liveDualCompact.liveDualCompact > * {
+  width: 100%;
+  max-width: 100%;
+  flex: 0 1 auto;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/*
  * Mirrors ReviewDemoScreen.dualResources: wrapping centered pair of named
  * ResourceBars between the review turn arrows (side-by-side on desktop,
  * stacked on narrow phones).

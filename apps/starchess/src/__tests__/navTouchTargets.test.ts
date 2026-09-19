@@ -170,6 +170,7 @@ describe("nav touch targets (static CSS contract)", () => {
       expect(text, `${sel} mirror shell`).toMatch(new RegExp(`\\${sel}\\s*\\{`));
     }
     expect(text, "dual pair wraps centered").toMatch(/justify-content:\s*center/);
+    expect(text, "live dual compact shell").toMatch(/\.liveDualCompact\s*\{/);
     expect(
       mediaHas(
         text,
@@ -178,5 +179,16 @@ describe("nav touch targets (static CSS contract)", () => {
       ),
       "dual pair holds side-by-side in the dynamic band",
     ).toBe(true);
+  });
+
+  it("live chrome renders both economies (viewer + adjutant)", () => {
+    const base = readFileSync(join(SRC, "app/BaseScreen.tsx"), "utf8");
+    expect(base, "live dual wrapper").toContain("liveDualResources");
+    expect(base, "dynamic dual wrapper").toContain("liveDualCompact");
+    // Viewer first (broadcast inert + first-match selectors), adjutant second.
+    const viewerAt = base.indexOf('name={displayPlayerName(playerName())}');
+    const adjutantAt = base.indexOf('name="Adjutant"');
+    expect(viewerAt, "viewer bar present").toBeGreaterThan(-1);
+    expect(adjutantAt, "adjutant bar present").toBeGreaterThan(viewerAt);
   });
 });

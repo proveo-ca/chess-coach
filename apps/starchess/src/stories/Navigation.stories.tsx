@@ -68,7 +68,10 @@ export const SingleTopChrome: Story = {
             <div class={styles.turnFill}>
               <TurnBar autoStart={false} resolveOnEnd={false} onEnd={() => undefined} />
             </div>
-            <ResourceBar color="w" name="Alexandra the Great!!" />
+            <div class={styles.liveDualResources} role="group" aria-label="Both sides resources">
+              <ResourceBar color="w" name="Alexandra the Great!!" />
+              <ResourceBar color="b" name="Adjutant" />
+            </div>
           </div>
         </ScreenBackNav>
       </div>
@@ -85,7 +88,7 @@ export const SingleDynamicBanner: Story = {
     docs: {
       description: {
         story:
-          "Dynamic viewport (560×420). Fixed-width compact resources; slack sits left of End Turn. The live strip shows the viewer economy only — no opponent bar by design.",
+          "Dynamic viewport (560×420). Fixed-width compact resources — viewer plus adjutant stacked; slack sits left of End Turn.",
       },
     },
   },
@@ -94,7 +97,12 @@ export const SingleDynamicBanner: Story = {
       <MobileBanner
         onBack={() => undefined}
         fixedResources
-        resources={<ResourceBar compact />}
+        resources={
+          <div class={styles.liveDualCompact} role="group" aria-label="Both sides resources">
+            <ResourceBar compact color="w" />
+            <ResourceBar compact color="b" />
+          </div>
+        }
         turn={<TurnBar compact autoStart={false} resolveOnEnd={false} onEnd={() => undefined} />}
       />
     </WithMatchStore>

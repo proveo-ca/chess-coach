@@ -58,6 +58,44 @@
 }
 
 /*
+ * Live dual economies (viewer + adjutant) stack in the top column on
+ * desktop / tall mobile — same full bars as the old single strip.
+ */
+.liveDualResources {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/*
+ * Live dual economies in the dynamic banner strip: stacked compact bars that
+ * stretch the slot. The strip grows taller (absolute overlay, no sibling
+ * reflow) instead of squeezing the bars unreadably narrow side-by-side.
+ */
+.liveDualCompact {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/* Doubled class beats `.bar.compact` fixed width outright (0,2,1 over 0,2,0)
+   instead of relying on bundle order. */
+div.liveDualCompact.liveDualCompact > * {
+  width: 100%;
+  max-width: 100%;
+  flex: 0 1 auto;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/*
  * Narrow phones: the single-player top ResourceBar fills the band so the
  * two-row wrap (name row 1, strips row 2) has room instead of overflowing X.
  * Ended-game dual bars stay fixed 12rem (`.bar.compact` outranks this at

@@ -69,7 +69,10 @@ test.describe("StarChess turn bonus broadcast", () => {
     expect(squareLive).toBe(true);
 
     // Only the resource bar is blocked while the broadcast runs.
-    const bar = page.getByTestId("resource-bar");
+    // Live chrome renders viewer + adjutant bars — the broadcast inerts the viewer (first) bar.
+    const bar = page.getByTestId("resource-bar").first();
+    await expect(bar).toHaveAttribute("data-team", "w");
+    await expect(page.getByTestId("resource-bar").nth(1)).toHaveAttribute("data-team", "b");
     await expect(bar).toHaveAttribute("inert", "");
 
     // Clock not counting during broadcast — nothing armed yet…
@@ -115,7 +118,7 @@ test.describe("StarChess turn bonus broadcast", () => {
       await expect(
         b.locator("[title='Planning clock this turn']"),
       ).toHaveText(`${seconds}s`);
-      await expect(page.getByTestId("resource-bar")).toHaveAttribute("inert", "");
+      await expect(page.getByTestId("resource-bar").first()).toHaveAttribute("inert", "");
 
       // Click-to-skip — dismiss well inside the 3000ms window.
       await b.click();
@@ -123,10 +126,10 @@ test.describe("StarChess turn bonus broadcast", () => {
 
       // The skipped window arms at the full new tier duration.
       await expectRingArmed(page, Number(seconds));
-      await expect(page.getByTestId("resource-bar")).not.toHaveAttribute("inert");
+      await expect(page.getByTestId("resource-bar").first()).not.toHaveAttribute("inert");
 
       // Income tier landed in the resource bar readout.
-      await expect(page.getByTestId("resource-bar")).toHaveAttribute(
+      await expect(page.getByTestId("resource-bar").first()).toHaveAttribute(
         "data-turn",
         String(turn),
         { timeout: 5_000 },
