@@ -307,7 +307,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           armTimer: false,
           docs: "Black tank dug in on a7, sighted on white Pa2 with Ka1 behind; black mecha c2 spots. Queue Qd4xa7, End.",
         },
-        comment: "That tank is sighted down the a-file \\u2014 a2 falls next, then your King!\\nOnly your Queen reaches a7. Take it!",
+        comment: "The Queen has maximum mobility. Capture the threat in a7.",
         emotion: "shocked",
         completeWhen: {
           kind: "scfen",
@@ -319,7 +319,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               kind: "scfen",
               re: /SCFEN\|[^|r]*\|/,
             },
-            comment: "Tank silenced \\u2014 a2 and your King breathe again.",
+            comment: "No more threats!",
             emotion: "happy",
           },
         ],
