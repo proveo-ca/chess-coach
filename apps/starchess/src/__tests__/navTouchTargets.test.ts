@@ -166,8 +166,7 @@ describe("nav touch targets (static CSS contract)", () => {
 
   it("Navigation story shells mirror production layout (no inline styles)", () => {
     const text = css(join(SRC, "stories/Navigation.stories.module.css"));
-    for (const sel of [".topChrome", ".turnFill", ".dualResources", ".bannerFilters"]) {
-      expect(text, `${sel} mirror shell`).toMatch(new RegExp(`\\${sel}\\s*\\{`));
+    for (const sel of [".topChrome", ".turnFill", ".liveDualResources", ".dualResources", ".bannerFilters"]) {      expect(text, `${sel} mirror shell`).toMatch(new RegExp(`\\${sel}\\s*\\{`));
     }
     expect(text, "dual pair wraps centered").toMatch(/justify-content:\s*center/);
     expect(text, "live dual compact shell").toMatch(/\.liveDualCompact\s*\{/);
@@ -186,9 +185,21 @@ describe("nav touch targets (static CSS contract)", () => {
     expect(base, "live dual wrapper").toContain("liveDualResources");
     expect(base, "dynamic dual wrapper").toContain("liveDualCompact");
     // Viewer first (broadcast inert + first-match selectors), adjutant second.
-    const viewerAt = base.indexOf('name={displayPlayerName(playerName())}');
+    const viewerAt = base.indexOf("name={displayPlayerName(playerName())}");
     const adjutantAt = base.indexOf('name="Adjutant"');
     expect(viewerAt, "viewer bar present").toBeGreaterThan(-1);
     expect(adjutantAt, "adjutant bar present").toBeGreaterThan(viewerAt);
+    // Mobile bars stay one row ([name][strips]) via compact density.
+    expect(base, "live bars compact on mobile").toContain("compact={mobileViewport()}");
+  });
+
+  it("top section rows: nav band first, chrome stack after (never nested)", () => {
+    const base = readFileSync(join(SRC, "app/BaseScreen.tsx"), "utf8");
+    const navClose = base.indexOf("</ScreenBackNav>", base.indexOf("live-back"));
+    const chromeOpen = base.indexOf("styles.topChrome", navClose);
+    expect(navClose, "nav band closes").toBeGreaterThan(-1);
+    expect(chromeOpen, "chrome stack follows the nav band as its own rows").toBeGreaterThan(
+      navClose,
+    );
   });
 });

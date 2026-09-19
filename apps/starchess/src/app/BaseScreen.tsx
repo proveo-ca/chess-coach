@@ -465,7 +465,8 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
    * Live economies, both sides: the viewer bar plus the adjutant bar, so a
    * glance covers the whole match (frames carry the team colours; names tell
    * whose is whose since either side can be the player). The enemy numbers
-   * are exact — no fog on your own top chrome.
+   * are exact — no fog on your own top chrome. Mobile renders compact so
+   * each bar stays one row ([name][strips]); desktop keeps the full bars.
    */
   const liveColors = (): { viewer: StarChessColor; enemy: StarChessColor } => {
     const viewer = viewerColor(store);
@@ -488,11 +489,13 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
           fallback={
             <div class={styles.liveDualResources} role="group" aria-label="Both sides resources">
               <ResourceBar
+                compact={mobileViewport()}
                 class={styles.topResourceBar}
                 color={liveColors().viewer}
                 name={displayPlayerName(playerName())}
               />
               <ResourceBar
+                compact={mobileViewport()}
                 class={styles.topResourceBar}
                 color={liveColors().enemy}
                 name="Adjutant"
@@ -617,6 +620,12 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
                   }
                 />
               </Show>
+              {/*
+                Top section rows: the nav band owns Row 1 (`‹ Back` + title)
+                and the chrome stack follows as its own rows below — the
+                resource bars never share the nav grid track, so a long name
+                or a second bar cannot squeeze `‹ Back` or overflow X.
+              */}
               <div
                 class={styles.topNavRow}
                 classList={{ [styles.dynamicHide]: starChessMode() && !ended() && dynamicMobile() }}
@@ -629,10 +638,10 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
                       </Label>
                     </div>
                   </Show>
-                  <div class={styles.topChrome} data-testid="starchess-board-chrome">
-                    {topChrome()}
-                  </div>
                 </ScreenBackNav>
+                <div class={styles.topChrome} data-testid="starchess-board-chrome">
+                  {topChrome()}
+                </div>
               </div>
             </Show>
           </Screen.SidebarInset>

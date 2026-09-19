@@ -13,6 +13,8 @@ import { ResourceBar } from "~/presentation/hud/components/ResourceBar";
 import { TurnBar } from "~/presentation/hud/components/TurnBar";
 import { StaticScfenBoard } from "~/presentation/board/components/StaticScfenBoard";
 import { WithMatchStore } from "~/stories/project";
+import { useMediaQuery } from "~/hooks/useMediaQuery";
+import { MOBILE_MQ } from "~/utils/breakpoints";
 import styles from "~/stories/Navigation.stories.module.css";
 
 /**
@@ -41,7 +43,7 @@ export default meta;
 type Story = StoryObj;
 
 const phoneDocs =
-  "Narrow-phone case: use the Mobile viewport (390×844). The player name sits on row 1 with the minerals / vespene / supply strips on row 2 — no X-overflow.";
+  "Narrow-phone case: use the Mobile viewport (390×844). Nav row first (`‹ Back` + title), then one single-row bar per side — no X-overflow.";
 
 // Static mirror of TutorialScreen SECTIONS (labels only — kept local so this
 // module stays side-effect free for Storybook's static index extraction).
@@ -52,7 +54,7 @@ const TUTORIAL_SECTIONS = [
   { id: "king", label: "King Damage" },
 ];
 
-/** Single-player top chrome (`BaseScreen.topChrome`): TurnBar over the named bar, one rectangle. */
+/** Single-player top section: nav row (`‹ Back` + title), then TurnBar, then one row per resource bar. */
 export const SingleTopChrome: Story = {
   name: "Single player · top chrome",
   parameters: {
@@ -60,23 +62,28 @@ export const SingleTopChrome: Story = {
     viewport: { defaultViewport: "mobile" },
     docs: { description: { story: phoneDocs } },
   },
-  render: () => (
-    <WithMatchStore board={FULL_ARMY_SAMPLE}>
-      <div class={styles.pad}>
-        <ScreenBackNav onBack={() => undefined} data-testid="live-back">
+  render: () => {
+    // Mirrors BaseScreen: compact density on mobile keeps every bar one row.
+    const mobile = useMediaQuery(MOBILE_MQ);
+    return (
+      <WithMatchStore board={FULL_ARMY_SAMPLE}>
+        <div class={styles.pad}>
+          <ScreenBackNav onBack={() => undefined} data-testid="live-back">
+            <span class={styles.titleHint}>Game vs Adjutant (Script)</span>
+          </ScreenBackNav>
           <div class={styles.topChrome} data-testid="starchess-board-chrome">
             <div class={styles.turnFill}>
               <TurnBar autoStart={false} resolveOnEnd={false} onEnd={() => undefined} />
             </div>
             <div class={styles.liveDualResources} role="group" aria-label="Both sides resources">
-              <ResourceBar color="w" name="Alexandra the Great!!" />
-              <ResourceBar color="b" name="Adjutant" />
+              <ResourceBar compact={mobile()} color="w" name="Alexandra the Great!!" />
+              <ResourceBar compact={mobile()} color="b" name="Adjutant" />
             </div>
           </div>
-        </ScreenBackNav>
-      </div>
-    </WithMatchStore>
-  ),
+        </div>
+      </WithMatchStore>
+    );
+  },
 };
 
 /** Single-player dynamic strip: Back · compact viewer resources · compact turn. */
