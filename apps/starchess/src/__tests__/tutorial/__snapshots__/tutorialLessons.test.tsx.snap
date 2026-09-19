@@ -6,7 +6,7 @@ exports[`tutorial lesson catalog > 'fog'/'king' > mounts with a board and a stab
 
 exports[`tutorial lesson catalog > 'fog'/'knight' > mounts with a board and a stable chrome fingerprint 1`] = `"squares=64,pieces=2,chessboard,starchess-gas-deploy,starchess-side-rail,tutorial-header,tutorial-footer-nav"`;
 
-exports[`tutorial lesson catalog > 'fog'/'mine' > mounts with a board and a stable chrome fingerprint 1`] = `"squares=64,pieces=4,chessboard,starchess-gas-deploy,starchess-side-rail,tutorial-header,tutorial-footer-nav"`;
+exports[`tutorial lesson catalog > 'fog'/'mine' > mounts with a board and a stable chrome fingerprint 1`] = `"squares=64,pieces=5,chessboard,starchess-gas-deploy,starchess-side-rail,tutorial-header,tutorial-footer-nav"`;
 
 exports[`tutorial lesson catalog > 'fog'/'pawn' > mounts with a board and a stable chrome fingerprint 1`] = `"squares=64,pieces=2,chessboard,starchess-gas-deploy,starchess-side-rail,tutorial-header,tutorial-footer-nav"`;
 
