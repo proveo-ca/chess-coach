@@ -9,7 +9,9 @@
 import type { PieceSymbol, Square } from "chess.js";
 
 import {
+  charonDiagonalSquares,
   charonDiagonalSquaresFromPlacement,
+  placementToMap,
   type ScFenSnapshot,
 } from "@chess-coach/starchess-core";
 
@@ -25,8 +27,34 @@ export const mechaCharonArm = (
 ): ArmResult | boolean => {
   if (ctx.piece !== "b") return false;
   const color = viewerColor(store);
-  // Free aim always offers squares on 8x8 (a Mecha owns 7–13 diagonals).
-  const targets = charonDiagonalSquaresFromPlacement(snap.placement, ctx.square);
+  // F after a same-mecha classical fires from the post-move square
+  // (mirrors validation's projection rule exactly: same color, same
+  // from, classical C): offer that square's diagonals so a move +
+  // missile intent to the Mecha's future location is pickable.
+  // Anything else offers today's squares, unchanged. `from` below
+  // stays the arming square in both branches. Note the commit path
+  // derives F timing from the same queue state, so arm, commit, and
+  // validation always agree — no separate timing gate here.
+  let targets: Square[];
+  const queuedMove = (snap.queue?.actions ?? []).find(
+    (a) =>
+      a.timing === "C" &&
+      a.kind === "classical" &&
+      a.color === color &&
+      a.from === ctx.square,
+  );
+  if (queuedMove?.to) {
+    const map = placementToMap(snap.placement);
+    const mecha = map.get(ctx.square);
+    if (mecha) {
+      map.delete(ctx.square);
+      map.set(queuedMove.to, mecha);
+    }
+    targets = charonDiagonalSquares(map, queuedMove.to);
+  } else {
+    // Free aim always offers squares on 8x8 (a Mecha owns 7–13 diagonals).
+    targets = charonDiagonalSquaresFromPlacement(snap.placement, ctx.square);
+  }
   opts?.resetSpawn?.();
   store.dispatch({
     type: "OPEN_BISHOP_SNIPE",

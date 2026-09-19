@@ -564,16 +564,26 @@ export const TutorialScreen: Component = () => {
     <LiveMatchShell world="eclipse" testId="starchess-tutorial">
       <Switch>
         <Match when={section() === "fog"}>
-          <FogSection
-            lessonId={storyId()}
-            chessMode={chessMode()}
-            showHints={hintsReady()}
-            coachEmotion={line().emotion}
-            guideBubble={guideBubble()}
-            header={fogCoachHeader()}
-            footer={fogFooter()}
-            onHome={goHome}
-          />
+          <Show when={`${storyId()}#${lessonEpoch()}`} keyed>
+            {(key) => {
+              // Keyed on retry epoch (like specials/king) so Retry
+              // remounts the seed SCFEN instead of keeping the
+              // failed board.
+              const id = key.split("#")[0]!;
+              return (
+                <FogSection
+                  lessonId={id}
+                  chessMode={chessMode()}
+                  showHints={hintsReady()}
+                  coachEmotion={line().emotion}
+                  guideBubble={guideBubble()}
+                  header={fogCoachHeader()}
+                  footer={fogFooter()}
+                  onHome={goHome}
+                />
+              );
+            }}
+          </Show>
         </Match>
         <Match when={section() === "specials"}>
           <Show when={`${storyId()}#${lessonEpoch()}`} keyed>

@@ -10,7 +10,7 @@ exports[`tutorial lesson catalog > 'fog'/'mine' > mounts with a board and a stab
 
 exports[`tutorial lesson catalog > 'fog'/'pawn' > mounts with a board and a stable chrome fingerprint 1`] = `"squares=64,pieces=2,chessboard,starchess-gas-deploy,starchess-side-rail,tutorial-header,tutorial-footer-nav"`;
 
-exports[`tutorial lesson catalog > 'fog'/'queen' > mounts with a board and a stable chrome fingerprint 1`] = `"squares=64,pieces=2,chessboard,starchess-gas-deploy,starchess-side-rail,tutorial-header,tutorial-footer-nav"`;
+exports[`tutorial lesson catalog > 'fog'/'queen' > mounts with a board and a stable chrome fingerprint 1`] = `"squares=64,pieces=8,chessboard,starchess-gas-deploy,starchess-side-rail,tutorial-header,tutorial-footer-nav"`;
 
 exports[`tutorial lesson catalog > 'fog'/'rook-siege' > mounts with a board and a stable chrome fingerprint 1`] = `"squares=64,pieces=7,chessboard,starchess-gas-deploy,starchess-side-rail,tutorial-header,tutorial-footer-nav"`;
 
@@ -29,6 +29,10 @@ exports[`tutorial lesson catalog > 'king'/'king-defense-2' > mounts with a board
 exports[`tutorial lesson catalog > 'king'/'king-defense-3' > mounts with a board and a stable chrome fingerprint 1`] = `"squares=64,pieces=4,chessboard,turn-end,starchess-gas-deploy,starchess-side-rail,tutorial-header,tutorial-footer-nav"`;
 
 exports[`tutorial lesson catalog > 'king'/'king-defense-4' > mounts with a board and a stable chrome fingerprint 1`] = `"squares=64,pieces=4,chessboard,turn-end,starchess-gas-deploy,starchess-side-rail,tutorial-header,tutorial-footer-nav"`;
+
+exports[`tutorial lesson catalog > 'king'/'king-defense-5' > mounts with a board and a stable chrome fingerprint 1`] = `"squares=64,pieces=4,chessboard,turn-end,starchess-gas-deploy,starchess-side-rail,tutorial-header,tutorial-footer-nav"`;
+
+exports[`tutorial lesson catalog > 'king'/'king-defense-6' > mounts with a board and a stable chrome fingerprint 1`] = `"squares=64,pieces=5,chessboard,turn-end,starchess-gas-deploy,starchess-side-rail,tutorial-header,tutorial-footer-nav"`;
 
 exports[`tutorial lesson catalog > 'specials'/'cc' > mounts with a board and a stable chrome fingerprint 1`] = `"squares=64,pieces=2,chessboard,starchess-gas-deploy,starchess-side-rail,tutorial-header,tutorial-footer-nav"`;
 

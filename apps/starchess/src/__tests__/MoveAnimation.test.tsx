@@ -53,3 +53,37 @@ describe("MoveAnimation · king hull", () => {
     }
   });
 });
+
+/**
+ * Move facing is rotation-only: mirror flips read papery mid-slide, so
+ * queen/rook movers must never emit `scaleX` (knight keeps its baked-in
+ * mirror — its rest silhouette depends on it).
+ */
+describe("MoveAnimation · travel facing", () => {
+  const faceTransform = (cue: MoveCue): string => {
+    const el = mover([cue]);
+    const face = el.firstElementChild as HTMLElement | null;
+    return face?.style.transform ?? "";
+  };
+
+  it("rotates the queen along travel with no mirror", () => {
+    // West slide used to be scaleX(-1) + tilt; now a pure half-turn
+    // (atan2 yields -180° here — visually identical to +180°).
+    expect(faceTransform({ ...KING_MOVE, id: "f0", piece: "q", from: "e4", to: "c4" })).toBe(
+      "rotate(-180deg)",
+    );
+    // North slide: bow follows travel, still no mirror.
+    expect(faceTransform({ ...KING_MOVE, id: "f0", piece: "q", from: "e2", to: "e4" })).toBe(
+      "rotate(-90deg)",
+    );
+  });
+
+  it("half-turns the rook on rank travel, rests on file travel", () => {
+    expect(faceTransform({ ...KING_MOVE, id: "f0", piece: "r", from: "a1", to: "h1" })).toBe(
+      "rotate(180deg)",
+    );
+    expect(faceTransform({ ...KING_MOVE, id: "f0", piece: "r", from: "a1", to: "a8" })).toBe(
+      "rotate(0deg)",
+    );
+  });
+});

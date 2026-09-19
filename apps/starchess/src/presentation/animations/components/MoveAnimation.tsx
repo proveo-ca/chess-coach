@@ -244,6 +244,8 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
           const pose = () => {
             const { leg1, leg2 } = legs();
             // Always face the active travel leg (long → short); destination vec if no L.
+            // Mirror kept for hoverbike: its rest silhouette bakes scale(-1,1)
+            // in (NOSE_TO_PLUS_X), so rotation-only needs art rework.
             if (!hasL()) return aimPoseFor(vec());
             return aimPoseFor((props.leg?.[m.id] ?? 0) === 1 ? leg2 : leg1);
           };
@@ -376,7 +378,9 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
                 style={
                   settling()
                     ? {}
-                    : { transform: aimTransformCss(aimPoseFor(vec())) }
+                    // Bow is normalized to +x while aiming: rotate it along
+                    // travel. Rotation only — never mirrored (papery).
+                    : { transform: `rotate(${screenAngleDeg(vec())}deg)` }
                 }
               >
                 <InlineQueen color={m.color} aiming={!settling()} />
@@ -386,7 +390,9 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
         }
 
         if (m.piece === "r") {
-          // Rank: rest silhouette. File: mirror only (no 90° tip — hull is ¾ front).
+          // File travel (up/down): rest silhouette. Rank travel: half-turn
+          // in place (no 90° tip — hull is ¾ front — and no mirror: it
+          // reads papery mid-slide). Releases at touchdown like queen.
           // cburnett: classic rook for tank *or* siege. nerd: InlineRook at live mode.
           const mode = rookModeAt(m.from);
           const set = props.pieceSet ?? "nerd";
@@ -408,7 +414,9 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
                 classList={{ ["sc-special-used"]: gas() }}
                 style={
                   set === "nerd"
-                    ? { transform: aimTransformCss(rookTravelPose(vec())) }
+                    ? settling()
+                      ? {}
+                      : { transform: aimTransformCss(rookTravelPose(vec())) }
                     : undefined
                 }
               >

@@ -225,16 +225,23 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           rookMode: "siege",
           endTurnAfterQueue: "first",
           armTimer: false,
+          objective: "Keep your siege tank on d4 alive — reduce the enemy to 1 pawn.",
+          choreography: "siegeFocusCounter",
           docs: "Siege rook on d4 \u2014 immobile 9\u00d79 vision. Explore fog; siege HE when you capture adjacent.",
         },
-        comment: "This is the immobile rook mode; it has the biggest range. \nIt reveals the entire board when in the center!",
+        comment: "Sieged on d4 — you own the cross. \nStart with h4, keep d4 alive, cut them to one pawn!",
         emotion: "scanning",
-        // Fewer than the seed's four black pawns still standing — a shell
-        // landed. The siege rook cannot slide and `endTurnAfterQueue: "first"`
-        // ends on the one action, so any resolve here is exactly one kill.
+        // Win when at most one black pawn remains — the d2
+        // promotion 4→3 alone must not win. Lose when S:d4 is
+        // gone. `endTurnAfterQueue: "first"` ends on one action,
+        // so the player kills one highlighted pawn per turn.
         completeWhen: {
           kind: "scfen",
-          re: /SCFEN\|(?!(?:[^|]*p){4})/,
+          re: /SCFEN\|(?!(?:[^|]*p){2})/,
+        },
+        restartWhen: {
+          kind: "scfen",
+          re: /^(?!.*\|S:[^|]*d4)/,
         },
         reactions: [
           {
@@ -242,14 +249,15 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               kind: "scfen",
               re: /SCFEN\|[^|p]*\|/,
             },
-            comment: "Four shells, four kills — siege owns the cross.",
+            comment: "Sieged on d4 — start with h4, then d2, d1, then d7. One pawn left wins.",
             emotion: "happy",
           },
           {
             when: {
-              kind: "timelineActive",
+              kind: "scfen",
+              re: /SCFEN\|[^|]*q[^|]*\|/,
             },
-            comment: "That's OP!",
+            comment: "It slipped away!",
             emotion: "shocked",
           },
         ],
@@ -257,15 +265,32 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /SCFEN\|[^|p]*\|/,
+              re: /SCFEN\|[^|]+\|(?:[3-9]|\d\d+)\|/,
             },
-            squares: [],
+            squares: [
+              "d7",
+            ],
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|2\|/,
+            },
+            squares: [
+              "d1",
+            ],
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|1\|/,
+            },
+            squares: [
+              "d2",
+            ],
           },
           {
             squares: [
-              "a4",
-              "d2",
-              "d7",
               "h4",
             ],
           },
@@ -275,18 +300,39 @@ export const TUTORIAL_SCRIPT_CONFIG = [
         id: "queen",
         title: "Queen",
         board: {
-          scfen: "SCFEN|7k/8/8/8/3Q4/8/8/K7|0|33|P|G:11:11|Q:w:;b:",
+          scfen: "SCFEN|7k/r4ppp/8/8/3Q4/8/PPb5/K7|0|33|P|G:11:11|Q:w:;b:|S:a7",
           stored: 4,
+          rookMode: "siege",
           endTurnAfterQueue: "first",
           armTimer: false,
-          docs: "Qd4 live. Queue Qd4\u2192d6, End \u2014 slide + fog.",
+          docs: "Black tank dug in on a7, sighted on white Pa2 with Ka1 behind; black mecha c2 spots. Queue Qd4xa7, End.",
         },
-        comment: "And finally, the Queen. \n\nMost mobile, vision only bested by the immobile tank.",
-        emotion: "watching",
+        comment: "That tank is sighted down the a-file \\u2014 a2 falls next, then your King!\\nOnly your Queen reaches a7. Take it!",
+        emotion: "shocked",
         completeWhen: {
           kind: "scfen",
-          re: /SCFEN\|[^|]+\|[1-9]/,
+          re: /SCFEN\|[^|r]*\|/,
         },
+        reactions: [
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|r]*\|/,
+            },
+            comment: "Tank silenced \\u2014 a2 and your King breathe again.",
+            emotion: "happy",
+          },
+        ],
+        hints: [
+          {
+            squares: [
+              "a7",
+            ],
+            arrows: [
+              { from: "d4", to: "a7" },
+            ],
+          },
+        ],
       },
       {
         id: "mine",
@@ -872,6 +918,195 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             squares: [
               "h2",
+            ],
+          },
+        ],
+      },
+      {
+        id: "king-defense-5",
+        title: "Pawn Gas Defense",
+        board: {
+          scfen: "SCFEN|7k/8/8/8/1b6/8/2PR4/3K4|11|33|P|G:22:22|Q:w:;b:|S:d2",
+          stored: 2,
+          endTurnAfterQueue: "moveAndSpecial",
+          choreography: "pawnGasDefenseCounter",
+          objective: "Hold d1 — block c3, unsiege d2, leave to e2",
+          docs: "White Kd1 + sieged Rd2 + Pc2 vs Bb4 + Kh8. Black B b4→d2 queued once on T11. Gas pawn c2→c3 (single step) blocks, gas unsiege d2, then R d2→e2. Win R e2 + K d1; fail R/K missing.",
+        },
+        comment: "That Mecha eyes d2! Gas your pawn to c3, unsiege d2, and slip the tank to e2!",
+        emotion: "shocked",
+        completeWhen: {
+          kind: "scfen",
+          re: /SCFEN\|[^|]*4R3\/3K4\|/,
+        },
+        restartWhen: {
+          kind: "scfen",
+          re: /SCFEN\|[^|K]*\||SCFEN\|[^|R]*\|/,
+        },
+        reactions: [
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]*4R3\/3K4\|/,
+            },
+            comment: "Evacuated! d1 holds.",
+            emotion: "happy",
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|K]*\||SCFEN\|[^|R]*\|/,
+            },
+            comment: "Bruh",
+            emotion: "watching",
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /[BF]=rookSiege:d2/,
+            },
+            comment: "Now move your tank out of danger!",
+            emotion: "watching",
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /[BF]=pawnDouble:c2/,
+            },
+            comment: "Now, unsiege your tank by dropping a gas canister on it.",
+            emotion: "watching",
+          },
+        ],
+        hints: [
+          {
+            when: {
+              kind: "scfen",
+              re: /[BF]=rookSiege:d2/,
+            },
+            squares: [
+              "e2",
+            ],
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /[BF]=pawnDouble:c2/,
+            },
+            squares: [
+              "d2",
+            ],
+          },
+          {
+            squares: [
+              "c3",
+            ],
+            arrows: [
+              { from: "b4", to: "d2" },
+            ],
+          },
+        ],
+      },
+      {
+        id: "king-defense-6",
+        title: "Ship Snipe Defense",
+        board: {
+          scfen: "SCFEN|7k/8/8/3q4/4B3/8/5b1P/4N2K|21|13|P|G:33:33|Q:w:;b:",
+          stored: 0,
+          endTurnAfterQueue: "moveAndSpecial",
+          choreography: "shipSnipeCounter",
+          objective: "Catch the jump: Be4 to g2, then snipe f1 after it lands.",
+          docs: "Ally CC h1 at HP 1 with g1/f1 free. Enemy ship warps to f1 in B phase. Move Be4→g2, then F snipe g2→f1 in the 2nd gas phase to catch it post-jump. White marine h2 holds the flank; ally hoverbike e1 screens the base. Enemy mecha f2 spots the jump square.",
+        },
+        comment: "That ship is jumping to f1 for your base! Move your Mecha to g2 first.",
+        emotion: "shocked",
+        completeWhen: {
+          kind: "scfen",
+          re: /SCFEN\|[^|qQ]*\|/,
+        },
+        restartWhen: {
+          kind: "scfen",
+          re: /SCFEN\|[^|]+\|\d+\|0[0-3]\|/,
+        },
+        reactions: [
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|qQ]*\|/,
+            },
+            comment: "Caught post-jump! h1 holds.",
+            emotion: "happy",
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|\d+\|0[0-3]\|/,
+            },
+            comment: "Bruh",
+            emotion: "watching",
+          },
+          {
+            when: {
+              kind: "targeting",
+              targetingKind: "bishopSnipe",
+            },
+            comment: "Aim f1 — she lands there.",
+            emotion: "scanning",
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /bishopSnipe:/,
+            },
+            comment: "Locked on f1 — End to fire!",
+            emotion: "happy",
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /Q:w:[^;]*C=e4g2/,
+            },
+            comment: "G2 locked. Queue an intent to throw the missiles at f1.",
+            emotion: "scanning",
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /queenWarp:/,
+            },
+            comment: "Lightspeed — she is on f1. Shoot her off it!",
+            emotion: "shocked",
+          },
+        ],
+        hints: [
+          {
+            when: {
+              kind: "scfen",
+              re: /bishopSnipe:/,
+            },
+            squares: [
+              "f1",
+            ],
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /Q:w:[^;]*C=e4g2/,
+            },
+            squares: [
+              "f1",
+            ],
+            arrows: [
+              { from: "g2", to: "f1" },
+            ],
+          },
+          {
+            squares: [
+              "f1",
+              "g2",
+            ],
+            arrows: [
+              { from: "e4", to: "g2" },
+              { from: "g2", to: "f1" },
             ],
           },
         ],

@@ -2,32 +2,49 @@
 !include ../themes/proveo.puml
 skinparam noteTextAlignment left
 ' SPEC: _spec/_plans/tutorial-ships.puml
-' purpose: BattleShip is already a taught unit — specials/ship
-' status: OUTDATED — shipped; product = StarChess
+' purpose: punish the jump — F snipe catches ship on f1
+' status: ACTIVE — high-value drill; product = StarChess
 ' covers: apps/starchess/src/tutorial/tutorialScript.config.ts
+'         apps/starchess/src/demos/choreography/useShipSnipeCounter.ts
 ' live spec: _spec/specials/index.puml
 '            _spec/apps/starchess/starchess-mode.puml
 ' Notes are capped at 5 lines x 50 columns; one idea per anchor.
-title OUTDATED — BattleShip lesson already issues\nlive orders; not a hull caption
+'
+' Ally CC h1 HP 1 with g1/f1 free. Enemy ship
+' warps to f1 in B phase; player Mecha e4→g2
+' then F snipe g2→f1 in the 2nd gas phase.
+title Catch post-jump — snipe f1;\nMecha e4 to g2, ship dies on f1
 
-component "tutorial specials/ship" as BEAT <<app>>
-component "queenWarp\nTactical Jump" as VERB <<app>>
-component "**flavour slide**" as SLIDE <<error>>
+component "lesson config\nCC h1 · Be4 · Ph2 · Ne1\nbBf2 spots f1" as CFG <<app>>
+component "shipSnipeCounter\nB warp d5→f1" as CHOREO <<app>>
+component "TutorialScreen\nlive engine + gates" as RUN <<app>>
+component "**CC lost**\nally HP 0" as LOSE <<error>>
 
-BEAT ARROW_MAIN VERB
-SLIDE ARROW_ERROR BEAT
+CFG ARROW_MAIN RUN
+CHOREO ARROW_QUEUE RUN : B warp to f1
+RUN ARROW_MAIN CHOREO : C e4→g2 + F snipe
+LOSE ARROW_ERROR RUN : restartWhen 0x lives
 
-note bottom of BEAT
-  **The ship lesson already queues a
-  live BattleShip special.** Contact
-  with a fictional siege line is not
-  a dependency.
+note bottom of RUN
+  **F snipe fires after the warp lands.**
+  B warp lands first, F snipe kills it.
+  Win when no ship remains; fail when
+  ally CC falls. Hints: f1, then g2.
+  Marine h2 holds the flank.
+end note
+
+note bottom of CHOREO
+  **Enemy warps d5→f1 once on T21.**
+  Tier-3 gas affords warp 3 + snipe 2.
+  Deterministic per turn; lesson only.
+  Generic adjutant stays untouched.
 end note
 
 legend bottom
-  **Do not implement this file.**
+  **Implement this file.**
   ==
   Diff ""TUTORIAL_SCRIPT_CONFIG"" id
-  ""ship"" before adding verbs.
+  ""king-defense-6"" before new verbs.
+  Win no-q; fail ally lives 0.
 end legend
 @enduml

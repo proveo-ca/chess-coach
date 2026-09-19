@@ -3,8 +3,8 @@ import { PIECE_FRAME, TEAM_PRIMARY, type PieceColor } from "~/presentation/piece
 type InlineQueenProps = {
   color?: PieceColor;
   /**
-   * Set by callers that put `aimTransformCss` on the parent (attack laser, jump
-   * travel, queen slide): the hull normalizes so the laser muzzle sits on local
+   * Set by callers that put `aimTransformCss` on the parent (attack laser,
+   * jump travel): the hull normalizes so the laser muzzle sits on local
    * +x. Leave unset on a resting board — that pose is the shipping art.
    */
   aiming?: boolean;
