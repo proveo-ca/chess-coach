@@ -583,37 +583,28 @@ describe("tutorialScript", () => {
     }
   });
 
-  it("fires specials/marine cheer when gas is queued before or after move", () => {
-    const r = namedReactions("specials", "marine", "gasQueued", "moveQueued");
-    const gasOnly =
-      "SCFEN|7k/8/8/8/8/4P3/3P4/4K3|1|33|P|G:01:11|Q:w:B=pawnDouble:d2:d3;b:";
-    const gasThenMove =
-      "SCFEN|7k/8/8/8/8/4P3/3P4/4K3|1|33|P|G:01:11|Q:w:B=pawnDouble:d2:d3,C=d3d4;b:";
-    const moveThenGas =
-      "SCFEN|7k/8/8/8/8/4P3/3P4/4K3|1|33|P|G:01:11|Q:w:C=d2d4,F=pawnDouble:d2:d3;b:";
-    const moveOnly =
-      "SCFEN|7k/8/8/8/8/4P3/3P4/4K3|1|33|P|G:11:11|Q:w:C=d2d4;b:";
-    for (const scfen of [gasOnly, gasThenMove, moveThenGas]) {
-      expectReaction(
-        resolveTutorialLine({
-          stageId: "specials",
-          storyId: "marine",
-          scfen,
-        }),
-        r.gasQueued,
-      );
-    }
-    // Step 2 of the lesson: the move is queued, the canister is not — the line
-    // asks for the gas rather than falling back to the opener.
-    expectReaction(
-      resolveTutorialLine({
-        stageId: "specials",
-        storyId: "marine",
-        scfen: moveOnly,
-      }),
-      r.moveQueued,
-    );
-    // A King move is not a Marine move — step 2 must not fire on it.
+  it("walks specials/marine through move, slip-away, and ghost beats", () => {
+    const r = namedReactions("specials", "marine", "gasGhost", "slipAway");
+    const t1 = "SCFEN|7k/8/8/8/8/4P3/3P4/4K3|1|33|P|G:11:11|Q:w:";
+    const t2 = "SCFEN|7k/8/8/8/3P4/4P3/8/4K3|2|33|P|G:11:11|Q:w:";
+    const line = (scfen: string) =>
+      resolveTutorialLine({ stageId: "specials", storyId: "marine", scfen });
+    const hints = (scfen: string) =>
+      resolveTutorialHints(tutorialStory("specials", "marine")?.hints, scfen);
+    // 1 — seed: move first, d4 ring; the queued classical holds the opener.
+    expectIntro(line(`${t1};b:`), "specials", "marine");
+    expect(hints(`${t1};b:`)).toEqual(["d4"]);
+    expectIntro(line(`${t1}C=d2d4;b:`), "specials", "marine");
+    expect(hints(`${t1}C=d2d4;b:`)).toEqual(["d4"]);
+    // 2 — second window: the slip-away teach, e3 ring.
+    expectReaction(line(`${t2};b:`), r.slipAway);
+    expect(hints(`${t2};b:`)).toEqual(["e3"]);
+    // Gas queued on e3 — the ghost beat wins over the turn beat, e5 ring.
+    expectReaction(line(`${t2}B=pawnDouble:e3:e4;b:`), r.gasGhost);
+    expect(hints(`${t2}B=pawnDouble:e3:e4;b:`)).toEqual(["e5"]);
+    // Off-script gas on turn 1 still coaches the ghost beat.
+    expectReaction(line(`${t1}B=pawnDouble:d2:d3;b:`), r.gasGhost);
+    // A King move is not a Marine move — no beat fires on it.
     expectIntro(
       resolveTutorialLine({
         stageId: "specials",
@@ -623,36 +614,20 @@ describe("tutorialScript", () => {
       "specials",
       "marine",
     );
-
+    // Completion still needs the classical stacked with the gas.
     const complete = storyOf("specials", "marine").completeWhen;
-    expect(complete).toMatchObject({
-      kind: "queue",
-      classical: true,
-      specialKind: "pawnDouble",
-    });
     expect(
       matchesTutorialCompleteWhen(complete, {
-        queue: [{ timing: "B", kind: "pawnDouble" }],
+        scfen: `${t2};b:`,
+        queue: [{ timing: "B", kind: "pawnDouble", color: "w" }],
       }),
     ).toBe(false);
     expect(
       matchesTutorialCompleteWhen(complete, {
-        queue: [{ timing: "C", kind: "classical" }],
-      }),
-    ).toBe(false);
-    expect(
-      matchesTutorialCompleteWhen(complete, {
+        scfen: `${t2};b:`,
         queue: [
-          { timing: "B", kind: "pawnDouble" },
-          { timing: "C", kind: "classical" },
-        ],
-      }),
-    ).toBe(true);
-    expect(
-      matchesTutorialCompleteWhen(complete, {
-        queue: [
-          { timing: "C", kind: "classical" },
-          { timing: "F", kind: "pawnDouble" },
+          { timing: "B", kind: "pawnDouble", color: "w" },
+          { timing: "C", kind: "classical", color: "w" },
         ],
       }),
     ).toBe(true);

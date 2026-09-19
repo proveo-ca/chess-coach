@@ -10,6 +10,7 @@ import { useKingAttackTankCounter } from "~/demos/choreography/useKingAttackTank
 import { useKingDefenseOpening } from "~/demos/choreography/useKingDefenseOpening";
 import { useKingDefenseIIChecks } from "~/demos/choreography/useKingDefenseIIChecks";
 import { useKingHuntGraduation } from "~/demos/choreography/useKingHuntGraduation";
+import { useMarineFirstTurnEnd } from "~/demos/choreography/useMarineFirstTurnEnd";
 import { useMineRa1Counter } from "~/demos/choreography/useMineRa1Counter";
 import { usePawnGasDefenseCounter } from "~/demos/choreography/usePawnGasDefenseCounter";
 import { useShipSnipeCounter } from "~/demos/choreography/useShipSnipeCounter";
@@ -49,4 +50,5 @@ export const CHOREOGRAPHY = {
   pawnGasDefenseCounter: usePawnGasDefenseCounter,
   shipSnipeCounter: useShipSnipeCounter,
   mineRa1Counter: useMineRa1Counter,
+  marineFirstTurnEnd: useMarineFirstTurnEnd,
 } satisfies Record<LessonChoreographyId, LessonChoreography>;

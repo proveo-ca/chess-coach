@@ -407,7 +407,8 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           stored: 4,
           endTurnAfterQueue: "moveAndSpecial",
           armTimer: false,
-          docs: "d2 can advance 2 squares classically with no canister spent. Gas on a pawn queues a 1-square StarChess step \u00b7 End to resolve.",
+          choreography: "marineFirstTurnEnd",
+          docs: "Turn 1: queue d2\u2192d4 classical with no canister spent. Turn 2: drop gas on a Marine for the Extra Step slip-away, then click the gas-ghost and queue a classical follow-up \u00b7 End to resolve.",
         },
         comment: "Order a Marine to move.",
         emotion: "idle",
@@ -416,25 +417,62 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           classical: true,
           specialKind: "pawnDouble",
         },
+        /*
+         * Three beats across two turns — move first, then gas, then move off
+         * the ghost. First match wins, so these run most-specific first. The
+         * seed opens on SCFEN turn 1, so the second window is turn field `2`.
+         */
         reactions: [
+          {
+            // Gas intent queued — the transparent ghost marks where the Marine
+            // lands after the Extra Step; the follow-up classical starts there.
+            when: {
+              kind: "scfen",
+              re: /[BF]=pawnDouble:/,
+            },
+            comment: "Now click that gas-ghost Marine and queue a move intent",
+            emotion: "watching",
+          },
+          {
+            // Second planning window, no gas yet — teach the slip-away.
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|2\|/,
+            },
+            comment: "Now the slipping away technique, drop a gas canister in your Marine",
+            emotion: "scanning",
+          },
+        ],
+        hints: [
           {
             when: {
               kind: "scfen",
               re: /[BF]=pawnDouble:/,
             },
-            comment: "Oh, yeah!",
-            emotion: "watching",
+            squares: [
+              "e5",
+            ],
           },
           {
-            // Step 2 — a classical move queued from a Marine square (d2 / e3 on
-            // this seed); the King on e1 cannot match. First match wins, so once
-            // gas is queued the cheer above takes over.
             when: {
               kind: "scfen",
-              re: /Q:w:[^;]*C=[de][23]/,
+              re: /SCFEN\|[^|]+\|2\|/,
             },
-            comment: "You just queued an intent! \nIt looks like a ghost. \n\nSee that gas canister in the bottom? Drag and drop it into that transparent Marine.",
-            emotion: "idle",
+            squares: [
+              "e3",
+            ],
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|1\|/,
+            },
+            squares: [
+              "d4",
+            ],
+          },
+          {
+            squares: [],
           },
         ],
       },
