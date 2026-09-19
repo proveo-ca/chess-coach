@@ -144,3 +144,15 @@
     font-size: 0.62rem;
   }
 }
+
+/*
+ * Mobile touch target — section crumbs must clear 40px tall, on the
+ * canonical 719px mobile token like the other nav arrows. The footer grows
+ * to fit; do not shrink this back to save vertical space.
+ */
+@media (max-width: 719px) {
+  .crumb {
+    min-height: 40px;
+    box-sizing: border-box;
+  }
+}

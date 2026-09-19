@@ -58,3 +58,16 @@
   color: var(--sc-guide-green, #3ecf8e);
   font-weight: 700;
 }
+
+/*
+ * Mobile touch target — turn arrows must clear 40×40px. Desktop keeps the
+ * slim text-button look; only the small-viewport hit area grows.
+ */
+@media (max-width: 719px) {
+  .btn {
+    min-width: 40px;
+    min-height: 40px;
+    box-sizing: border-box;
+    padding: 0.5rem 0.6rem;
+  }
+}

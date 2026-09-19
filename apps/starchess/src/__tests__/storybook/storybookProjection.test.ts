@@ -22,7 +22,7 @@ const walk = (dir: string): string[] => {
   return out;
 };
 
-const isStory = (file: string) => file.endsWith(".stories.tsx");
+const isStory = (file: string) => /\.stories\.tsx?$/.test(file);
 
 describe("Storybook projection", () => {
   it("no non-story source imports from ~/stories/", () => {
@@ -46,7 +46,7 @@ describe("Storybook projection", () => {
     for (const file of walk(SRC)) {
       if (!isStory(file)) continue;
       for (const [i, line] of readFileSync(file, "utf8").split("\n").entries()) {
-        if (line.includes('"SCFEN|')) {
+        if (/["'`]SCFEN\|/.test(line)) {
           offenders.push(`${file.slice(SRC.length + 1)}:${i + 1}`);
         }
       }

@@ -76,6 +76,8 @@ const preview: Preview = {
             "Tutorial",
             "Review",
           ],
+          "Navigation",
+          ["Chrome", "*"],
           "Features",
           ["Credits", "GasDeploy", "Side Rail Tools", "Turn Chrome", "*"],
           "Atoms",

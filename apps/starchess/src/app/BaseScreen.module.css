@@ -57,6 +57,17 @@
   min-width: 0;
 }
 
+/*
+ * Narrow phones: the single-player top ResourceBar fills the band so the
+ * two-row wrap (name row 1, strips row 2) has room instead of overflowing X.
+ */
+@media (max-width: 560px) {
+  .topResourceBar {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
 /* Same title stack as ReviewDemoScreen matchup — LiveMatchShell dark HUD. */
 .matchTitle {
   display: flex;
