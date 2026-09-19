@@ -5,8 +5,8 @@
  * Priority each turn: while the h4 pawn lives, stack it gas + move
  * (C plus F pawnDouble, rewriting to a double step — the pawn stays
  * on its square through the attack phase, so the hint stays killable).
- * Promoting d2→d1 is the fallback once h4 falls: B-gas promotion lands
- * pre-attack, so the ship is killable on d1 the same turn. Later the
+ * Promoting d2→d1 is the fallback once h4 falls: B-gas slips
+ * away pre-attack and the ship is answered on d1 next turn. Later the
  * ship pressures c1 (never d4 — an instant Qxd4 would fail the lesson),
  * else the d7 pawn advances the same C+F stack. Best-effort, never throws.
  */
@@ -70,8 +70,8 @@ export const useSiegeFocusCounter = (store: MatchStore): ChoreographyResult => {
       }
       const d2 = map.get("d2");
       if (d2?.type === "p" && d2.color === "b" && !map.has("d1")) {
-        // Fallback promotion: B-gas lands pre-attack (killable on d1
-        // the same turn); C alone would land in the move phase.
+        // Fallback promotion: B-gas slips away pre-attack (killable
+        // on d1 after it lands); C alone would land in the move phase.
         try {
           store.dispatch({
             type: "QUEUE_ACTION",
