@@ -12,7 +12,6 @@ import { FULL_ARMY_SAMPLE } from "~/demos/samples";
 import { ResourceBar } from "~/presentation/hud/components/ResourceBar";
 import { TurnBar } from "~/presentation/hud/components/TurnBar";
 import { WithMatchStore } from "~/stories/project";
-import { TUTORIAL_SCRIPT } from "~/tutorial/tutorialScript";
 
 /**
  * Navigation chrome as it ships in tutorials, single player, and review —
@@ -40,7 +39,14 @@ type Story = StoryObj;
 const phoneDocs =
   "Narrow-phone case: use the Mobile viewport (390×844). The player name sits on row 1 with the minerals / vespene / supply strips on row 2 — no X-overflow.";
 
-const TUTORIAL_SECTIONS = TUTORIAL_SCRIPT.map((s) => ({ id: s.id, label: s.label }));
+// Static mirror of TutorialScreen SECTIONS (labels only — kept local so this
+// module stays side-effect free for Storybook's static index extraction).
+const TUTORIAL_SECTIONS = [
+  { id: "fog", label: "Fog of War" },
+  { id: "specials", label: "Special Moves" },
+  { id: "resolve", label: "Turn Resolution" },
+  { id: "king", label: "King Damage" },
+];
 
 /** Single-player top chrome (`BaseScreen.topChrome`): title + TurnBar + named ResourceBar. */
 export const SingleTopChrome: Story = {
@@ -178,7 +184,7 @@ export const TutorialCoachHeader: Story = {
       </ScreenBackNav>
       <Breadcrumb
         items={[...TUTORIAL_SECTIONS]}
-        current={TUTORIAL_SECTIONS[0]?.id ?? "fog"}
+        current="fog"
         onSelect={() => undefined}
         aria-label="Tutorial sections"
         data-testid="tutorial-breadcrumb"
