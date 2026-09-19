@@ -41,7 +41,7 @@ export default meta;
 type Story = StoryObj;
 
 const phoneDocs =
-  "Narrow-phone case: use the Mobile viewport (390×844). Nav row first (`‹ Back` + title), then one full-width single-row bar per side on phones (content-sized on desktop) — no X-overflow.";
+  "Narrow-phone case: use the Mobile viewport (390×844). Nav row first (`‹ Back` + title), then one fixed-strip single-row bar per side on phones (content-sized on desktop) — no X-overflow.";
 
 // Static mirror of TutorialScreen SECTIONS (labels only — kept local so this
 // module stays side-effect free for Storybook's static index extraction).
@@ -52,7 +52,7 @@ const TUTORIAL_SECTIONS = [
   { id: "king", label: "King Damage" },
 ];
 
-/** Single-player top section: nav row (`‹ Back` + title), then TurnBar, then one full-width row per resource bar. */
+/** Single-player top section: nav row (`‹ Back` + title), then TurnBar, then the viewer bar. */
 export const SingleTopChrome: Story = {
   name: "Single player · top chrome",
   parameters: {
@@ -66,15 +66,12 @@ export const SingleTopChrome: Story = {
         <ScreenBackNav onBack={() => undefined} data-testid="live-back">
           <span class={styles.titleHint}>Game vs Adjutant (Script)</span>
         </ScreenBackNav>
-        <div class={styles.topChrome} data-testid="starchess-board-chrome">
-          <div class={styles.turnFill}>
-            <TurnBar autoStart={false} resolveOnEnd={false} onEnd={() => undefined} />
-          </div>
-            <div class={styles.liveDualResources} role="group" aria-label="Both sides resources">
-              <ResourceBar class={styles.liveBar} color="w" name="Alexandra the Great!!" />
-              <ResourceBar class={styles.liveBar} color="b" name="Adjutant" />
+          <div class={styles.topChrome} data-testid="starchess-board-chrome">
+            <div class={styles.turnFill}>
+              <TurnBar autoStart={false} resolveOnEnd={false} onEnd={() => undefined} />
             </div>
-        </div>
+            <ResourceBar class={styles.liveBar} color="w" />
+          </div>
       </div>
     </WithMatchStore>
   ),
@@ -89,7 +86,7 @@ export const SingleDynamicBanner: Story = {
     docs: {
       description: {
         story:
-          "Dynamic viewport (560×420). Names stand down; viewer plus adjutant share the strip side-by-side flexed; slack sits left of End Turn.",
+          "Dynamic viewport (560×420). Fixed-width compact viewer resources; slack sits left of End Turn.",
       },
     },
   },
@@ -98,12 +95,7 @@ export const SingleDynamicBanner: Story = {
       <MobileBanner
         onBack={() => undefined}
         fixedResources
-        resources={
-          <div class={styles.liveDualCompact} role="group" aria-label="Both sides resources">
-            <ResourceBar compact color="w" />
-            <ResourceBar compact color="b" />
-          </div>
-        }
+        resources={<ResourceBar compact color="w" />}
         turn={<TurnBar compact autoStart={false} resolveOnEnd={false} onEnd={() => undefined} />}
       />
     </WithMatchStore>

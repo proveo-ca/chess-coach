@@ -104,17 +104,12 @@ describe("nav touch targets (static CSS contract)", () => {
     );
   });
 
-  it("single-player ResourceBars stay single-row full-width on phones", () => {
-    // No forced name-over-strips wrap: each live bar is one flex row
-    // ([name][strips]) filling its own row in the top section.
+  it("single-player live bar is one row filling its own band row", () => {
+    // No forced name-over-strips wrap and no dual wrappers on live chrome:
+    // the viewer bar is one flex row ([name][strips]) in its own top-section
+    // row below the nav band. Dual bars ship on review only.
     const bar = css(join(SRC, "presentation/hud/components/ResourceBar.module.css"));
     expect(bar, "no name-own-row wrap rule").not.toContain("flex: 1 1 100%");
-    const base = css(join(SRC, "app/BaseScreen.module.css"));
-    expect(
-      mediaHas(base, "(max-width: 719px)", ".liveDualResources.liveDualResources > *"),
-      "live rows fill the band",
-    ).toBe(true);
-    expect(mediaHas(base, "(max-width: 719px)", "width: 100%"), "full width").toBe(true);
   });
 
   it("desktop silhouettes stay tight (no 40px floor outside mobile)", () => {
@@ -162,22 +157,21 @@ describe("nav touch targets (static CSS contract)", () => {
 
   it("Navigation story shells mirror production layout (no inline styles)", () => {
     const text = css(join(SRC, "stories/Navigation.stories.module.css"));
-    for (const sel of [".topChrome", ".turnFill", ".liveDualResources", ".dualResources", ".bannerFilters"]) {      expect(text, `${sel} mirror shell`).toMatch(new RegExp(`\\${sel}\\s*\\{`));
+    for (const sel of [".topChrome", ".turnFill", ".dualResources", ".bannerFilters"]) {
+      expect(text, `${sel} mirror shell`).toMatch(new RegExp(`\\${sel}\\s*{`));
     }
     expect(text, "dual pair wraps centered").toMatch(/justify-content:\s*center/);
-    expect(text, "live dual compact shell").toMatch(/\.liveDualCompact\s*\{/);
-    expect(text, "live bar width mirror").toMatch(/\.liveBar\.liveBar\s*\{/);
-    expect(text, "live bar fit-content desktop").toMatch(/width:\s*fit-content/);
+    expect(text, "story live bar mirror").toMatch(/\.liveBar\.liveBar\s*\{/);
+    expect(
+      mediaHas(text, "(min-width: 720px)", ".topChrome .liveBar"),
+      "story live bar fit-content on desktop",
+    ).toBe(true);
     expect(
       mediaBlocks(css(join(SRC, "app/BaseScreen.module.css")), "(min-width: 720px)").some(
-        (block) => block.includes(".topChrome .topResourceBar"),
+        (block) =>
+          block.includes(".topChrome .topResourceBar") && block.includes("width: fit-content"),
       ),
       "desktop fit-content lives in the min-width:720 band",
-    ).toBe(true);
-    expect(text, "live bar fit-content desktop").toMatch(/width:\s*fit-content/);
-    expect(
-      mediaHas(text, "(max-width: 719px)", ".liveBar.liveBar"),
-      "live bar full row on phones",
     ).toBe(true);
     expect(
       mediaHas(
@@ -189,25 +183,19 @@ describe("nav touch targets (static CSS contract)", () => {
     ).toBe(true);
   });
 
-  it("live chrome renders both economies (viewer + adjutant)", () => {
+  it("live chrome renders the viewer bar only (dual bars are review-only)", () => {
     const base = readFileSync(join(SRC, "app/BaseScreen.tsx"), "utf8");
-    expect(base, "live dual wrapper").toContain("liveDualResources");
-    expect(base, "dynamic dual wrapper").toContain("liveDualCompact");
-    // Viewer first (broadcast inert + first-match selectors), adjutant second.
-    const viewerAt = base.indexOf("name={displayPlayerName(playerName())}");
-    const adjutantAt = base.indexOf('name="Adjutant"');
-    expect(viewerAt, "viewer bar present").toBeGreaterThan(-1);
-    expect(adjutantAt, "adjutant bar present").toBeGreaterThan(viewerAt);
-    // Mobile bars stay one row ([name][strips]) via full-width flex, not compact.
-    expect(base, "live bars full (no mobile compact)").not.toContain("compact={mobileViewport()}");
+    expect(base, "no live dual wrapper").not.toContain("liveDualResources");
+    expect(base, "no live dual compact").not.toContain("liveDualCompact");
+    expect(base, "no mobile compact on live bars").not.toContain("compact={mobileViewport()}");
   });
 
-  it("top section rows: nav band first, chrome stack after (never nested)", () => {
+  it("top section rows: nav band first, chrome stack after", () => {
     const base = readFileSync(join(SRC, "app/BaseScreen.tsx"), "utf8");
     const navClose = base.indexOf("</ScreenBackNav>", base.indexOf("live-back"));
     const chromeOpen = base.indexOf("styles.topChrome", navClose);
     expect(navClose, "nav band closes").toBeGreaterThan(-1);
-    expect(chromeOpen, "chrome stack follows the nav band as its own rows").toBeGreaterThan(
+    expect(chromeOpen, "chrome stack follows the nav band as sibling rows").toBeGreaterThan(
       navClose,
     );
   });

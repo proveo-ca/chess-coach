@@ -58,9 +58,9 @@
 }
 
 /*
- * Desktop: live bars shrink to content (deterministic 0,3,0 over both
- * single-class rules — no bundle-order tie). Mobile + dynamic have their own
- * width rules below; ended compact bars are excluded.
+ * Desktop: live bar shrinks to content (deterministic 0,3,0 over both
+ * single-class rules — no bundle-order tie). Ended compact bars excluded.
+ * Phones lock the classic fixed strip (same specificity, own band).
  */
 @media (min-width: 720px) {
   .topChrome .topResourceBar:not(.compact) {
@@ -68,68 +68,9 @@
   }
 }
 
-/*
- * Live dual economies (viewer + adjutant) stack in the top column on
- * desktop / tall mobile — same full bars as the old single strip.
- */
-.liveDualResources {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  width: 100%;
-  min-width: 0;
-  box-sizing: border-box;
-}
-
-/*
- * Phones: each live bar fills its row (name + strips breathing, no cramped
- * compact) instead of shrinking to content width. Doubled class beats
- * `.bar` / `.topResourceBar` outright (0,2,0 over 0,1,0).
- */
 @media (max-width: 719px) {
-  .liveDualResources.liveDualResources > * {
-    width: 100%;
-  }
-}
-
-/*
- * Live dual economies in the dynamic banner strip: stacked compact bars that
- * stretch the slot. The strip grows taller (absolute overlay, no sibling
- * reflow) instead of squeezing the bars unreadably narrow side-by-side.
- */
-.liveDualCompact {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  width: 100%;
-  min-width: 0;
-  box-sizing: border-box;
-}
-
-/* Doubled class beats `.bar.compact` fixed width outright (0,2,1 over 0,2,0)
-   instead of relying on bundle order. */
-div.liveDualCompact.liveDualCompact > * {
-  width: 100%;
-  max-width: 100%;
-  flex: 0 1 auto;
-  min-width: 0;
-  box-sizing: border-box;
-}
-
-/*
- * Dynamic band: names stand down, so both bars sit side-by-side sharing the
- * strip. Mirrors the review treatment (frames carry the teams).
- */
-@media (max-width: 719px) and (min-width: 480px) and (max-height: 639px) {
-  div.liveDualCompact.liveDualCompact {
-    flex-direction: row;
-  }
-
-  div.liveDualCompact.liveDualCompact > * {
-    width: auto;
-    flex: 1 1 0;
-    min-width: 0;
+  .topChrome .topResourceBar:not(.compact) {
+    width: 18rem;
   }
 }
 

@@ -44,8 +44,6 @@ import { mechaCharonArm } from "~/presentation/specials/arms/mechaCharon";
 import { shipJumpArm } from "~/presentation/specials/arms/shipJump";
 import { TUTORIAL_CAPABILITIES, setCapabilities } from "~/store/capabilitiesStore";
 import { resetReviewVisionFilter, reviewVisionFilter } from "~/store/reviewVisionStore";
-import { playerName } from "~/store/settingsStore";
-import { displayPlayerName } from "~/utils/playerName";
 import type { BoardSkin, PieceSet } from "~/types/board";
 import type { PromotionPiece } from "~/types/chess";
 import type { KerriganEmotion } from "~/types/coach";
@@ -462,17 +460,9 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
   };
 
   /**
-   * Live economies, both sides: the viewer bar plus the adjutant bar, so a
-   * glance covers the whole match (frames carry the team colours; names tell
-   * whose is whose since either side can be the player). The enemy numbers
-   * are exact — no fog on your own top chrome. Full bars at every viewport
-   * (one row each); mobile fills the band instead of shrinking to compact.
+   * Live economy: viewer bar only — the adjutant side stays hidden outside
+   * review. Dual bars ship on review detail / ended games, never live.
    */
-  const liveColors = (): { viewer: StarChessColor; enemy: StarChessColor } => {
-    const viewer = viewerColor(store);
-    return { viewer, enemy: viewer === "w" ? "b" : "w" };
-  };
-
   const topChrome = () => (
     <>
       <Show when={starChessMode() && !turnInSidebar() && !turnHidden() && !ended()}>
@@ -486,20 +476,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
       <Show when={starChessMode() && !props.hideResources}>
         <Show
           when={ended()}
-          fallback={
-            <div class={styles.liveDualResources} role="group" aria-label="Both sides resources">
-              <ResourceBar
-                class={styles.topResourceBar}
-                color={liveColors().viewer}
-                name={displayPlayerName(playerName())}
-              />
-              <ResourceBar
-                class={styles.topResourceBar}
-                color={liveColors().enemy}
-                name="Adjutant"
-              />
-            </div>
-          }
+          fallback={<ResourceBar class={styles.topResourceBar} />}
         >
           <ReviewTurnNav
             onBack={() => store.reviewBack()}
@@ -606,22 +583,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
                   fixedResources
                   resources={
                     <Show when={!props.hideResources}>
-                      {/*
-                        Dynamic strip: names stand down (frames carry the
-                        teams) so both bars sit side-by-side in 560px.
-                      */}
-                      <div class={styles.liveDualCompact} role="group" aria-label="Both sides resources">
-                        <ResourceBar
-                          compact
-                          color={liveColors().viewer}
-                          name={dynamicMobile() ? undefined : displayPlayerName(playerName())}
-                        />
-                        <ResourceBar
-                          compact
-                          color={liveColors().enemy}
-                          name={dynamicMobile() ? undefined : "Adjutant"}
-                        />
-                      </div>
+                      <ResourceBar compact />
                     </Show>
                   }
                   turn={
