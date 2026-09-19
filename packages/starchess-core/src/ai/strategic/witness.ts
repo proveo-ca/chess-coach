@@ -124,7 +124,8 @@ export const ourMarineKills = (
 ): Set<Square> => {
   const out = new Set<Square>();
   for (const a of witness.attacks ?? []) {
-    const victim = a.kind === "kingShot" ? null : a.victim;
+    const victim =
+      a.kind === "capture" ? a.victim : a.kind === "mineBlast" ? (a.victim ?? null) : null;
     if (!victim || victim.piece !== "p" || victim.color === side) continue;
     const ours = a.color === side || (a.kind === "mineBlast" && a.mineColor === side);
     if (ours) out.add(a.to);

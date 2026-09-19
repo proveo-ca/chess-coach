@@ -198,5 +198,17 @@ describe("nav touch targets (static CSS contract)", () => {
       "detail turn nav follows as its own row",
     ).toBeGreaterThan(navClose);
   });
+
+  it("bar-first order lives in DOM, not CSS (keyboard/SR match the visual)", () => {
+    const base = readFileSync(join(SRC, "app/BaseScreen.tsx"), "utf8");
+    expect(base, "barFirst conditional").toContain("const barFirst");
+    expect(base, "desktop renders turn before bars").toContain("fallback={<>{topTurnBar()}{topResources()}</>}");
+    for (const file of [
+      join(SRC, "app/BaseScreen.module.css"),
+      join(SRC, "stories/Navigation.stories.module.css"),
+    ]) {
+      expect(css(file), `${file} has no order swaps`).not.toMatch(/order:\s*[12];/);
+    }
+  });
 });
 

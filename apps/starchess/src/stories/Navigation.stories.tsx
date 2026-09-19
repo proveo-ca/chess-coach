@@ -1,6 +1,6 @@
 // SPEC: _spec/apps/starchess/navigation-chrome.md
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
-import { createSignal } from "solid-js";
+import { createSignal, Show } from "solid-js";
 
 import { Breadcrumb } from "~/components/primitives/Breadcrumb";
 import { ChevronNav } from "~/components/primitives/ChevronNav";
@@ -15,7 +15,7 @@ import { TurnBar } from "~/presentation/hud/components/TurnBar";
 import { StaticScfenBoard } from "~/presentation/board/components/StaticScfenBoard";
 import { WithMatchStore } from "~/stories/project";
 import { useMediaQuery } from "~/hooks/useMediaQuery";
-import { DYNAMIC_MOBILE_MQ } from "~/utils/breakpoints";
+import { DYNAMIC_MOBILE_MQ, MOBILE_MQ } from "~/utils/breakpoints";
 import styles from "~/stories/Navigation.stories.module.css";
 
 const meta = {
@@ -53,22 +53,37 @@ export const SingleTopChrome: Story = {
       },
     },
   },
-  render: () => (
-    <WithMatchStore board={FULL_ARMY_SAMPLE}>
-      <div class={styles.pad}>
-        <ScreenBackNav onBack={() => undefined} data-testid="live-back">
-          <span class={styles.titleHint}>Game vs Adjutant (Script)</span>
-        </ScreenBackNav>          <div class={styles.topChrome} data-testid="starchess-board-chrome">
-            <div class={styles.turnFill}>
-              <TurnBar autoStart={false} resolveOnEnd={false} onEnd={() => undefined} />
-            </div>
-            <ResourceBar class={styles.liveBar} color="w" />
-          </div>
+  render: () => {
+    const mobile = useMediaQuery(MOBILE_MQ);
+    const dynamic = useMediaQuery(DYNAMIC_MOBILE_MQ);
+    const barFirst = () => mobile() && !dynamic();
+    const Bar = () => <ResourceBar class={styles.liveBar} color="w" />;
+    const Turn = () => (
+      <div class={styles.turnFill}>
+        <TurnBar
+          compact={mobile()}
+          autoStart={false}
+          resolveOnEnd={false}
+          onEnd={() => undefined}
+        />
       </div>
-    </WithMatchStore>
-  ),
+    );
+    return (
+      <WithMatchStore board={FULL_ARMY_SAMPLE}>
+        <div class={styles.pad}>
+          <ScreenBackNav onBack={() => undefined} data-testid="live-back">
+            <span class={styles.titleHint}>Game vs Adjutant (Script)</span>
+          </ScreenBackNav>
+          <div class={styles.topChrome} data-testid="starchess-board-chrome">
+            <Show when={barFirst()} fallback={<><Turn /><Bar /></>}>
+              <Bar /><Turn />
+            </Show>
+          </div>
+        </div>
+      </WithMatchStore>
+    );
+  },
 };
-
 export const SingleDynamicBanner: Story = {
   name: "Single player · dynamic banner",
   parameters: {

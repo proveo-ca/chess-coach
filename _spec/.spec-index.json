@@ -136,6 +136,31 @@
       "spec": "_spec/apps/starchess/core/index.puml",
       "covers": [],
       "fingerprint": null
+    },
+    {
+      "spec": "_spec/packages/starchess-core/sc-moves.puml",
+      "covers": [
+        "packages/starchess-core/src/board/moves.ts",
+        "packages/starchess-core/src/rules/validation.ts",
+        "packages/starchess-core/src/__tests__/rook/**"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/packages/starchess-core/resolve.puml",
+      "covers": [
+        "packages/starchess-core/src/resolve/resolve-turn.ts",
+        "packages/starchess-core/src/__tests__/rook/**"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/packages/starchess-core/resolve-turn-activity.puml",
+      "covers": [
+        "packages/starchess-core/src/resolve/resolve-turn.ts",
+        "packages/starchess-core/src/__tests__/rook/**"
+      ],
+      "fingerprint": null
     }
   ],
   "unresolved": [

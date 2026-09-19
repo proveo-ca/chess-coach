@@ -52,16 +52,6 @@
   box-sizing: border-box;
 }
 
-@media (max-width: 719px) {
-  .topChrome > .turnFill {
-    order: 2;
-  }
-
-  .topChrome > .liveBar {
-    order: 1;
-  }
-}
-
 .liveBar.liveBar {
   width: 18rem;
   max-width: 100%;

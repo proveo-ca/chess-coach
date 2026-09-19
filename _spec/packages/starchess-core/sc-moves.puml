@@ -1,6 +1,9 @@
 @startuml sc-moves-layers
 ' SPEC: _spec/packages/starchess-core/sc-moves.puml
 ' purpose: SC-native classical move generator — board/moves.ts, consumers, MatchStore seam.
+' covers: packages/starchess-core/src/board/moves.ts
+' covers: packages/starchess-core/src/rules/validation.ts
+' covers: packages/starchess-core/src/__tests__/rook/**
 !include ../../themes/proveo.puml
 
 skinparam packageStyle rectangle
@@ -31,7 +34,7 @@ cloud "chess.js\nNOT authoritative for StarChess\n(Square type only)" as CJS <<c
 
 SCM ARROW_MAIN     BRD   : leap + ray geometry
 SCM ARROW_OPTIONAL SIEGE : siege state after queued B
-SCM ARROW_OPTIONAL MIN   : hostileMineOnTo — marine diagonal\n+ sieged-tank target on an empty mined tile
+SCM ARROW_OPTIONAL MIN   : hostileMineOnTo — marine diagonal only\n(sieged cross always emitted; mine clears in place)
 SCM ARROW_OPTIONAL VIS   : siege footprint authority
 
 INPUT ARROW_MAIN     SCM : destinations via ""scMovesFrom""
@@ -145,8 +148,14 @@ note as RULES
   ----
   **bishop, rook, queen** — rays inclusive of first enemy, exclusive of ally.
   ----
-  **SIEGED rook** — Chebyshev ≤ 4 captures **and hostile mines**, ""firesInPlace"";
-  vision footprint from ""vision.ts"" (9×9 vs tank 5×5).
+  **SIEGED rook** — every square on the cross (same file/rank),
+  blockers ignored, own-occupied excluded — ""firesInPlace"";
+  enemy-occupied carries that victim, empties carry ""capture: null""
+  (resolve shells them — ""shelling"", no death, no occupy;
+  no diagonal / area fire). A hostile mine on an empty ray
+  square clears in place (mines are not occupancy, so the
+  ray runs through it). Vision footprint from ""vision.ts""
+  (9×9 vs tank 5×5).
   ----
   **ally on to** — never emitted.
   ----
@@ -154,9 +163,10 @@ note as RULES
   (burns C). UI/brain filter; validation accepts (fog path-discovery).
   ----
   **mines** — a hostile mine is a **target**: ""hostileMineOnTo"" is advisory for
-  units that already reach the tile, and **legality-bearing** for the two shapes
-  that exist only because of it — marine front diagonal onto an empty mined tile,
-  and sieged-tank fire at one. Pass ""opts.mines"" or the board hides both.
+  units that already reach the tile, and **legality-bearing** only for the marine
+  front diagonal onto an empty mined tile. Sieged cross squares are always
+  emitted (an empty mined square clears in place). Pass ""opts.mines"" or the
+  board hides the marine shape.
   Resolve (attack → clear → occupy, walk-over death, chase): resolve.puml.
   ----
   **fog** — not filtered in generator; occupancy is a caller parameter.

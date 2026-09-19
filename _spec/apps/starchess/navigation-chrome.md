@@ -176,6 +176,9 @@ it asserts media-rule presence, selector presence, ordering, and absence
   `min-height`/`min-width` outside a media block.
 - Rows ordering: `</ScreenBackNav>` (`live-back`, `review-detail-back`)
   precedes the chrome-stack open (`styles.topChrome`, `<ReviewTurnNav`).
+- DOM bar-first order: `BaseScreen.tsx` `barFirst()` present with desktop
+  fallback `{topTurnBar()}{topResources()}`; neither `BaseScreen.module.css`
+  nor `Navigation.stories.module.css` contains an `order: 1/2` swap.
 - Projection / mirror guards: story shells present (`.topChrome`,
   `.turnFill`, `.dualResources`, `.bannerFilters`, doubled
   `.liveBar.liveBar`, `justify-content: center`), desktop fit-content band,
@@ -201,3 +204,22 @@ cross-component stylesheet imports. Shared production components
 never imported. Do not add inline styles or cross-imports to work around
 a mirror gap — fix the mirror selectors (`.topChrome`, `.turnFill`,
 `.dualResources`, `.bannerFilters`, doubled `.liveBar`) instead.
+
+## 9. TurnBar on top for tall-mobile sidebar, DOM order, lazy story wrappers
+
+Supersedes §5's `order: 1/2` swap (rules deleted from both stylesheets);
+§5's viewport pinning (which story covers which viewport) still holds.
+
+- Tall-mobile sidebar (`BaseScreen.tsx` `showTopTurnBar()`): no rail, so
+  `TurnBar` renders in `topChrome` under the resource bar, `compact` when
+  `turnInSidebar()`. One End instance per branch — the footer keeps only
+  the coach-header copy (`showFooterTurnBar()`, tutorials), which never
+  renders `topChrome`. The two predicates are mutually exclusive.
+- Bar-first in DOM (`barFirst()` = phone except dynamic): `topChrome()`
+  renders resources then turn, so keyboard / screen-reader order matches
+  the visual — never CSS `order`. Desktop keeps TurnBar first via the
+  `Show` fallback (`{topTurnBar()}{topResources()}`).
+- Story mirror (`SingleTopChrome`): local `Bar` / `Turn` wrapper components
+  around the same `Show when={barFirst()}`, not hoisted JSX values. Hoisted
+  JSX evaluates eagerly outside `MatchStoreProvider` and crashes TurnBar's
+  `useMatchStore`; component children stay lazy as getters.

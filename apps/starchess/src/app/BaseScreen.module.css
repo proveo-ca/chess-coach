@@ -32,16 +32,6 @@
   width: 100%;
 }
 
-@media (max-width: 719px) {
-  .topChrome > .topTurnBar {
-    order: 2;
-  }
-
-  .topChrome > .topResourceBar {
-    order: 1;
-  }
-}
-
 .topTurnBar {
   width: 100%;
   max-width: var(--board-size);

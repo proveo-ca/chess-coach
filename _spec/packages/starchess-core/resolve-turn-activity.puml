@@ -2,6 +2,8 @@
 ' SPEC: _spec/packages/starchess-core/resolve-turn-activity.puml
 ' purpose: resolveTurn control flow — how one classical plan is classified into a
 ' bucket, and what each phase then does with those buckets.
+' covers: packages/starchess-core/src/resolve/resolve-turn.ts
+' covers: packages/starchess-core/src/__tests__/rook/**
 !include ../../themes/proveo.puml
 
 skinparam defaultTextAlignment left
@@ -31,12 +33,13 @@ partition "Classify — an ordered rule list, first match wins" {
     | 7 | ""targetOnDestination"" | enemy on ""to"" — visible ⇒ phase-1 attack · lights mid-walk ⇒ phase-3 approach · still fogged ⇒ move collision (sieged rooks fizzle: they never relocate, so they never contact a fogged square) |
     | 8 | ""minedEmptyDestination"" | empty ""to"" with a hostile mine — ""attacksOwnDest"" + visible + reachable ⇒ attack-clear (a sieged tank fires without vacating), else quiet so phase 2 takes the mover. ""attacksOwnDest"" now admits the **king**: it shoots the tile and moves in, so "walking over" a mine is attack/move (""mine-contact.puml""), and a king always sees its own destination so it never falls through to the quiet path |
     | 9 | ""slideIntoFog"" | slider into an empty ""to"" — first enemy that is (or becomes) visible on the ray. A king only chips via fog discovery, otherwise the slide stops short |
-    | 10 | ""quietFallthrough"" | nothing claimed it |
+    | 10 | ""siegedEmptyShelling"" | sieged rook, empty ""to"" on the cross, clear ray, visible — victimless ""shelling"" at ""to"" (no death, no occupy, never relocates). Ally/king contact holds fire (drop); fogged stays quiet (never relocates) |
+    | 11 | ""quietFallthrough"" | nothing claimed it |
   end note
 
   note right
     **Outcomes, not mutations.** A rule returns ""drop"" · ""quiet"" · ""occupy"" ·
-    ""capture(fogged?)"" · ""mineClear"" · ""approach"" — and ""applyOutcome"" owns
+    ""capture(fogged?)"" · ""mineClear"" · ""shelling"" · ""approach"" — and ""applyOutcome"" owns
     every bucket write. One consequence is structural rather than remembered:
     a **fogged** capture can only reach ""moveCollisions"" and a visible one only
     ""attacks"", because a single ""fogged"" flag picks the list. Dual-listing is
