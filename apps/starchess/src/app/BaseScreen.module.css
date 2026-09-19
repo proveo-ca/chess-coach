@@ -58,6 +58,17 @@
 }
 
 /*
+ * Desktop: live bars shrink to content (deterministic 0,3,0 over both
+ * single-class rules — no bundle-order tie). Mobile + dynamic have their own
+ * width rules below; ended compact bars are excluded.
+ */
+@media (min-width: 720px) {
+  .topChrome .topResourceBar:not(.compact) {
+    width: fit-content;
+  }
+}
+
+/*
  * Live dual economies (viewer + adjutant) stack in the top column on
  * desktop / tall mobile — same full bars as the old single strip.
  */
@@ -69,6 +80,17 @@
   width: 100%;
   min-width: 0;
   box-sizing: border-box;
+}
+
+/*
+ * Phones: each live bar fills its row (name + strips breathing, no cramped
+ * compact) instead of shrinking to content width. Doubled class beats
+ * `.bar` / `.topResourceBar` outright (0,2,0 over 0,1,0).
+ */
+@media (max-width: 719px) {
+  .liveDualResources.liveDualResources > * {
+    width: 100%;
+  }
 }
 
 /*
@@ -96,16 +118,18 @@ div.liveDualCompact.liveDualCompact > * {
 }
 
 /*
- * Narrow phones: the single-player top ResourceBar fills the band so the
- * two-row wrap (name row 1, strips row 2) has room instead of overflowing X.
- * Ended-game dual bars stay fixed 12rem (`.bar.compact` outranks this at
- * 0,2,0) and stack via `.dualResources` wrap — that is the approved mobile
- * treatment, not an overflow.
+ * Dynamic band: names stand down, so both bars sit side-by-side sharing the
+ * strip. Mirrors the review treatment (frames carry the teams).
  */
-@media (max-width: 560px) {
-  .topResourceBar {
-    width: 100%;
-    max-width: 100%;
+@media (max-width: 719px) and (min-width: 480px) and (max-height: 639px) {
+  div.liveDualCompact.liveDualCompact {
+    flex-direction: row;
+  }
+
+  div.liveDualCompact.liveDualCompact > * {
+    width: auto;
+    flex: 1 1 0;
+    min-width: 0;
   }
 }
 

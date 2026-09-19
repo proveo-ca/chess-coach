@@ -81,18 +81,30 @@
   box-sizing: border-box;
 }
 
+/* Phones: each bar fills its row. Mirrors BaseScreen.liveDualResources. */
+@media (max-width: 719px) {
+  .liveDualResources.liveDualResources > * {
+    width: 100%;
+  }
+}
+
 /*
- * Mirrors BaseScreen.liveDualResources: live viewer + adjutant bars stacked
- * in the top column (full bars, like the old single strip).
+ * Mirrors the production live bar width path (BaseScreen topChrome rules):
+ * shrink-to-content on desktop, full row on phones. Doubled class beats
+ * `.bar` outright (0,2,0 over 0,1,0). Keeps the audit honest about the
+ * fit-content vs fixed-width rendering.
  */
-.liveDualResources {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  width: 100%;
+.liveBar.liveBar {
+  width: fit-content;
+  max-width: 100%;
   min-width: 0;
   box-sizing: border-box;
+}
+
+@media (max-width: 719px) {
+  .liveBar.liveBar {
+    width: 100%;
+  }
 }
 
 /*
@@ -118,6 +130,22 @@ div.liveDualCompact.liveDualCompact > * {
 }
 
 /*
+ * Dynamic band: names stand down, both bars share the strip side-by-side.
+ * Mirrors BaseScreen.liveDualCompact.
+ */
+@media (max-width: 719px) and (min-width: 480px) and (max-height: 639px) {
+  div.liveDualCompact.liveDualCompact {
+    flex-direction: row;
+  }
+
+  div.liveDualCompact.liveDualCompact > * {
+    width: auto;
+    flex: 1 1 0;
+    min-width: 0;
+  }
+}
+
+/*
  * Mirrors ReviewDemoScreen.dualResources: wrapping centered pair of named
  * ResourceBars between the review turn arrows (side-by-side on desktop,
  * stacked on narrow phones).
@@ -130,7 +158,6 @@ div.liveDualCompact.liveDualCompact > * {
   gap: 8px;
   width: fit-content;
   max-width: 100%;
-  margin-inline: auto;
   box-sizing: border-box;
 }
 

@@ -104,21 +104,17 @@ describe("nav touch targets (static CSS contract)", () => {
     );
   });
 
-  it("single-player ResourceBar wraps name-over-strips under 560px (compact excluded)", () => {
-    const text = css(join(SRC, "presentation/hud/components/ResourceBar.module.css"));
-    expect(mediaHas(text, "(max-width: 560px)", ".bar:not(.compact)"), "two-row rule").toBe(true);
-    expect(mediaHas(text, "(max-width: 560px)", "flex-wrap: wrap"), "wrap").toBe(true);
-    expect(mediaHas(text, "(max-width: 560px)", "flex: 1 1 100%"), "name row").toBe(true);
-    // The dynamic-band banner strip stays content-sized.
-    const compactAt = text.indexOf(".bar.compact");
-    expect(compactAt, ".bar.compact intact").toBeGreaterThan(-1);
-    expect(text.indexOf("width: 12rem", compactAt), "compact width intact").toBeGreaterThan(-1);
-  });
-
-  it("BaseScreen top ResourceBar fills narrow phones instead of overflowing X", () => {
-    const text = css(join(SRC, "app/BaseScreen.module.css"));
-    expect(mediaHas(text, "(max-width: 560px)", ".topResourceBar"), "top bar rule").toBe(true);
-    expect(mediaHas(text, "(max-width: 560px)", "width: 100%"), "full width").toBe(true);
+  it("single-player ResourceBars stay single-row full-width on phones", () => {
+    // No forced name-over-strips wrap: each live bar is one flex row
+    // ([name][strips]) filling its own row in the top section.
+    const bar = css(join(SRC, "presentation/hud/components/ResourceBar.module.css"));
+    expect(bar, "no name-own-row wrap rule").not.toContain("flex: 1 1 100%");
+    const base = css(join(SRC, "app/BaseScreen.module.css"));
+    expect(
+      mediaHas(base, "(max-width: 719px)", ".liveDualResources.liveDualResources > *"),
+      "live rows fill the band",
+    ).toBe(true);
+    expect(mediaHas(base, "(max-width: 719px)", "width: 100%"), "full width").toBe(true);
   });
 
   it("desktop silhouettes stay tight (no 40px floor outside mobile)", () => {
@@ -170,6 +166,19 @@ describe("nav touch targets (static CSS contract)", () => {
     }
     expect(text, "dual pair wraps centered").toMatch(/justify-content:\s*center/);
     expect(text, "live dual compact shell").toMatch(/\.liveDualCompact\s*\{/);
+    expect(text, "live bar width mirror").toMatch(/\.liveBar\.liveBar\s*\{/);
+    expect(text, "live bar fit-content desktop").toMatch(/width:\s*fit-content/);
+    expect(
+      mediaBlocks(css(join(SRC, "app/BaseScreen.module.css")), "(min-width: 720px)").some(
+        (block) => block.includes(".topChrome .topResourceBar"),
+      ),
+      "desktop fit-content lives in the min-width:720 band",
+    ).toBe(true);
+    expect(text, "live bar fit-content desktop").toMatch(/width:\s*fit-content/);
+    expect(
+      mediaHas(text, "(max-width: 719px)", ".liveBar.liveBar"),
+      "live bar full row on phones",
+    ).toBe(true);
     expect(
       mediaHas(
         text,
@@ -189,8 +198,8 @@ describe("nav touch targets (static CSS contract)", () => {
     const adjutantAt = base.indexOf('name="Adjutant"');
     expect(viewerAt, "viewer bar present").toBeGreaterThan(-1);
     expect(adjutantAt, "adjutant bar present").toBeGreaterThan(viewerAt);
-    // Mobile bars stay one row ([name][strips]) via compact density.
-    expect(base, "live bars compact on mobile").toContain("compact={mobileViewport()}");
+    // Mobile bars stay one row ([name][strips]) via full-width flex, not compact.
+    expect(base, "live bars full (no mobile compact)").not.toContain("compact={mobileViewport()}");
   });
 
   it("top section rows: nav band first, chrome stack after (never nested)", () => {

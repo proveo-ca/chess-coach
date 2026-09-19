@@ -465,8 +465,8 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
    * Live economies, both sides: the viewer bar plus the adjutant bar, so a
    * glance covers the whole match (frames carry the team colours; names tell
    * whose is whose since either side can be the player). The enemy numbers
-   * are exact — no fog on your own top chrome. Mobile renders compact so
-   * each bar stays one row ([name][strips]); desktop keeps the full bars.
+   * are exact — no fog on your own top chrome. Full bars at every viewport
+   * (one row each); mobile fills the band instead of shrinking to compact.
    */
   const liveColors = (): { viewer: StarChessColor; enemy: StarChessColor } => {
     const viewer = viewerColor(store);
@@ -489,13 +489,11 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
           fallback={
             <div class={styles.liveDualResources} role="group" aria-label="Both sides resources">
               <ResourceBar
-                compact={mobileViewport()}
                 class={styles.topResourceBar}
                 color={liveColors().viewer}
                 name={displayPlayerName(playerName())}
               />
               <ResourceBar
-                compact={mobileViewport()}
                 class={styles.topResourceBar}
                 color={liveColors().enemy}
                 name="Adjutant"
@@ -594,7 +592,13 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
             </Show>
             <Show
               when={props.onExitToMenu}
-              fallback={<div class={styles.topChrome} data-testid="starchess-board-chrome">{topChrome()}</div>}
+              fallback={
+                <div class={styles.topNavRow}>
+                  {/* No dynamicHide: no MobileBanner replacement here, so the
+                      in-flow chrome is the only chrome in the dynamic band. */}
+                  <div class={styles.topChrome} data-testid="starchess-board-chrome">{topChrome()}</div>
+                </div>
+              }
             >
               <Show when={starChessMode() && !ended() && dynamicMobile()}>
                 <MobileBanner
@@ -602,9 +606,21 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
                   fixedResources
                   resources={
                     <Show when={!props.hideResources}>
+                      {/*
+                        Dynamic strip: names stand down (frames carry the
+                        teams) so both bars sit side-by-side in 560px.
+                      */}
                       <div class={styles.liveDualCompact} role="group" aria-label="Both sides resources">
-                        <ResourceBar compact color={liveColors().viewer} />
-                        <ResourceBar compact color={liveColors().enemy} />
+                        <ResourceBar
+                          compact
+                          color={liveColors().viewer}
+                          name={dynamicMobile() ? undefined : displayPlayerName(playerName())}
+                        />
+                        <ResourceBar
+                          compact
+                          color={liveColors().enemy}
+                          name={dynamicMobile() ? undefined : "Adjutant"}
+                        />
                       </div>
                     </Show>
                   }

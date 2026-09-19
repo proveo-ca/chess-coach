@@ -18,6 +18,7 @@
   align-items: center;
   gap: 6px;
   flex: 0 1 auto;
+  min-width: 0;
   color: var(--text-color, #e8eaed);
   font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
   font-size: 14px;
@@ -104,26 +105,4 @@
  */
 .bar.compact {
   width: 12rem;
-}
-
-/*
- * Narrow phones (single-player top banner): the side name moves to its own
- * first row and the three resource strips flow on the second row, so the bar
- * never overflows X. Compact (MobileBanner dynamic strip) is excluded — that
- * strip is content-sized and the banner grid owns its width.
- */
-@media (max-width: 560px) {
-  .bar:not(.compact) {
-    width: 100%;
-    max-width: 100%;
-    flex-wrap: wrap;
-    gap: 6px 10px;
-  }
-
-  .bar:not(.compact) .name {
-    flex: 1 1 100%;
-    width: auto;
-    max-width: none;
-    font-size: 0.8rem;
-  }
 }
