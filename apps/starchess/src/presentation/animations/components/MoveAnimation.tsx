@@ -18,9 +18,7 @@ import {
 } from "~/presentation/pieces/geometry";
 import {
   aimPoseFor,
-  aimTransformCss,
   knightLegVecs,
-  rookTravelPose,
   screenAngleDeg,
   squareAt,
   type AttackVec,
@@ -390,9 +388,13 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
         }
 
         if (m.piece === "r") {
-          // File travel (up/down): rest silhouette. Rank travel: half-turn
-          // in place (no 90° tip — hull is ¾ front — and no mirror: it
-          // reads papery mid-slide). Releases at touchdown like queen.
+          // Hull is a fixed ¾ front silhouette — the root never rotates or
+          // mirrors (rotate(180°) puts the tracks on top; scaleX reads
+          // papery). Only the turret yaws, along travel while sliding, back
+          // to rest at touchdown for a seamless hand-off to the board glyph.
+          // The touchdown swap snaps (turret aim is an SVG attribute with no
+          // CSS transition) — same trade-off as AttackAnimation's mount swap,
+          // and less jarring than a mid-slide flip.
           // cburnett: classic rook for tank *or* siege. nerd: InlineRook at live mode.
           const mode = rookModeAt(m.from);
           const set = props.pieceSet ?? "nerd";
@@ -412,20 +414,19 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
               <div
                 class={`${styles.pieceFace} ${styles.moverFace}`}
                 classList={{ ["sc-special-used"]: gas() }}
-                style={
-                  set === "nerd"
-                    ? settling()
-                      ? {}
-                      : { transform: aimTransformCss(rookTravelPose(vec())) }
-                    : undefined
-                }
               >
                 <PieceGlyph
                   color={m.color}
                   type="r"
                   pieceSet={set}
                   mode={mode}
-                  aimDeg={set === "nerd" ? ROOK_REST_AIM_DEG : undefined}
+                  aimDeg={
+                    set === "nerd"
+                      ? settling()
+                        ? ROOK_REST_AIM_DEG
+                        : screenAngleDeg(vec())
+                      : undefined
+                  }
                 />
               </div>
             </div>
