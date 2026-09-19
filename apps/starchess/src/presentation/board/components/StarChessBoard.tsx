@@ -4,7 +4,7 @@
  * Vision via VisionStrategy (player fog | observer dual borders).
  * Presentation CSS matches apps/ui StarChessBoardView + StarChessSquare at 3bed049.
  */
-import { For, Show, createEffect, createMemo, createSignal, createUniqueId, onCleanup } from "solid-js";
+import { For, Show, createEffect, createMemo, createSignal, createUniqueId, onCleanup, onMount } from "solid-js";
 import type { Component } from "solid-js";
 import type { Square } from "chess.js";
 import clsx from "clsx";
@@ -37,6 +37,7 @@ import { visionStrategyFor } from "~/presentation/board/vision/VisionStrategy";
 import { TEAM_PRIMARY } from "~/presentation/pieces/teamColors";
 import { SpiderMine } from "~/presentation/specials/components/SpiderMine";
 import { VespeneIcon } from "~/components/primitives/icons";
+import { MoveAnimation } from "~/presentation/animations/components/MoveAnimation";
 import { MOVE_SQUARE_MS } from "~/presentation/constants";
 import type { MoveCue } from "~/types/cues";
 import styles from "~/presentation/board/components/StarChessBoard.module.css";
@@ -89,10 +90,13 @@ export type StarChessBoardProps = {
   /** Active move slides — progressive path fog while `moveProgress[id] === 1`. */
   moveCues?: readonly MoveCue[];
   moveProgress?: Readonly<Record<string, 0 | 1>>;
+  /** Knight L-path facing (0 = long leg, 1 = short leg) by cue id. */
+  moveLeg?: Record<string, 0 | 1>;
   /**
    * Enemy movers with a fogged origin whose path crosses viewer vision —
-   * relocated along their slide in the *render* map so the veil reveals them
-   * tile-by-tile on lit squares (their overlay hull is suppressed).
+   * rendered as smooth hulls *under* the fog veil (z below the veil's lit-cell
+   * holes), so they appear the moment they cross a lit square and are veiled
+   * over dark ones. Their above-the-veil overlay hull is suppressed.
    */
   veilMoveCueIds?: ReadonlySet<string>;
   /** Hide mine glyphs after boom / while missile overlay owns them. */
@@ -212,34 +216,35 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
   });
 
   /**
-   * Render occupancy with veil-reveal movers relocated along their slide:
-   * the enemy hull appears on its current path square, and `hidePiece` /
-   * `revealed` (the same fog predicates that gate every other piece) show it
-   * only while that square is lit — visible the moment it enters vision,
-   * hidden the moment it leaves. Own movers are not relocated: their smooth
-   * overlay hull owns the slide.
+   * Veil-reveal movers — enemy hulls with a fogged origin whose path crosses
+   * viewer vision. Rendered through the same {@link MoveAnimation} hulls as
+   * any other mover, but inside a stacking context *below* the fog veil
+   * (`.veilMoveLayer` z=2 < veil z=5): the veil's lit-cell holes show the
+   * hull only while it crosses lit squares — visible the moment it enters
+   * vision, veiled the moment it leaves, sliding smoothly the whole way.
    */
-  const renderMap = createMemo(() => {
-    void moveVisionTick();
+  const veilMoveCues = createMemo(() => {
     const ids = props.veilMoveCueIds;
-    if (!ids || ids.size === 0) return map();
-    const prog = props.moveProgress ?? {};
-    const relocating: MoveVisionCue[] = [];
-    for (const c of props.moveCues ?? []) {
-      if (!ids.has(c.id) || prog[c.id] !== 1) continue;
-      const startedAt = moveVisionStartedAt.get(c.id);
-      if (startedAt == null) continue;
-      relocating.push({
-        id: c.id,
-        from: c.from,
-        to: c.to,
-        piece: c.piece,
-        startedAt,
-        stim: c.stim,
-      });
-    }
-    if (relocating.length === 0) return map();
-    return mapWithMovePathOccupancy(map(), relocating, performance.now());
+    if (!ids || ids.size === 0) return [];
+    return (props.moveCues ?? []).filter((c) => ids.has(c.id));
+  });
+
+  /** Grid box in px — MoveAnimation positions its hulls from these. */
+  let gridEl: HTMLDivElement | undefined;
+  const [gridPx, setGridPx] = createSignal({ w: 0, h: 0 });
+  onMount(() => {
+    const el = gridEl;
+    if (!el) return;
+    const measure = () => {
+      const w = el.clientWidth;
+      const h = el.clientHeight;
+      if (w <= 0 || h <= 0) return;
+      setGridPx((prev) => (prev.w === w && prev.h === h ? prev : { w, h }));
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    onCleanup(() => ro.disconnect());
   });
 
   const litCells = createMemo(() =>
@@ -316,6 +321,9 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
       >
         <div class={styles["board-phase-ring"]} aria-hidden="true" />
         <div
+          ref={(el) => {
+            gridEl = el;
+          }}
           data-board-grid
           data-vision-mode={isObserver() ? "observer" : "player"}
           class={clsx(
@@ -438,9 +446,7 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
               <For each={FILES}>
                 {(file) => {
                   const square = `${file}${rank}` as Square;
-                  // renderMap, not map: veil-reveal enemy movers render at
-                  // their mid-slide square so the fog predicates reveal them.
-                  const piece = () => renderMap().get(square) ?? null;
+                  const piece = () => map().get(square) ?? null;
                   const isLight = () => isLightSquare(file, rank);
                   const isFogged = () =>
                     !usePlayerFog() ? false : !fog().litSquares.has(square);
@@ -601,6 +607,22 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
               </For>
             )}
           </For>
+          {/* Veil-reveal enemy movers — same MoveAnimation hulls as any other
+              piece, inside a stacking context below the fog veil (z=2 < 5), so
+              the veil's lit-cell holes reveal the slide and dark squares eat
+              it. z-index isolates the hulls' own z=30 inside this context. */}
+          <Show when={veilMoveCues().length > 0 && gridPx().w > 0}>
+            <div class={styles["veil-move-layer"]} aria-hidden="true">
+              <MoveAnimation
+                cues={veilMoveCues()}
+                progress={props.moveProgress ?? {}}
+                leg={props.moveLeg}
+                pieceSet={pieceSet()}
+                boardWidth={gridPx().w}
+                boardHeight={gridPx().h}
+              />
+            </div>
+          </Show>
           {/* Board-level labels — sibling of squares/fog so theme cell z-index
               (e.g. vermeer spill) cannot trap ranks/files under the veil. */}
           <div class={styles["coordinate-layer"]} aria-hidden="true">

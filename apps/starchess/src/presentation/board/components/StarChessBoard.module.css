@@ -766,6 +766,20 @@
   box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.45);
 }
 
+/*
+ * Veil-reveal enemy movers. The z-index both places this layer below the
+ * board fog veil (z=5) and *creates the stacking context* that contains
+ * MoveAnimation's own z=30 hulls — without it the hulls would pierce the
+ * veil. The veil's lit-cell holes show the slide; dark squares eat it.
+ */
+.veil-move-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+}
+
 /* =========================================
    Pieces
    ========================================= */
