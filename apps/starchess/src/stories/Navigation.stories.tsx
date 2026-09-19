@@ -13,6 +13,8 @@ import { ResourceBar } from "~/presentation/hud/components/ResourceBar";
 import { TurnBar } from "~/presentation/hud/components/TurnBar";
 import { StaticScfenBoard } from "~/presentation/board/components/StaticScfenBoard";
 import { WithMatchStore } from "~/stories/project";
+import { useMediaQuery } from "~/hooks/useMediaQuery";
+import { DYNAMIC_MOBILE_MQ } from "~/utils/breakpoints";
 import styles from "~/stories/Navigation.stories.module.css";
 
 /**
@@ -112,22 +114,39 @@ export const ReviewDualNav: Story = {
     docs: {
       description: {
         story:
-          "Green ‹ › stay 40×40px with the dual compact bars between them. Desktop + dynamic: side-by-side. Mobile: stacked. Dynamic: arrows dock bottom-right (see review detail).",
+          "Green ‹ › stay 40×40px with the dual bars between them. Desktop: side-by-side named. Mobile: stacked named. Dynamic: compact nameless, arrows dock bottom-right (see review detail).",
       },
     },
   },
-  render: () => (
-    <WithMatchStore board={FULL_ARMY_SAMPLE}>
-      <div class={styles.pad}>
-        <ReviewTurnNav onBack={() => undefined} onForward={() => undefined}>
-          <div class={styles.dualResources} role="group" aria-label="Both sides resources">
-            <ResourceBar compact color="w" snapshot={undefined} name="Alex" />
-            <ResourceBar compact color="b" snapshot={undefined} name="Sam" />
-          </div>
-        </ReviewTurnNav>
-      </div>
-    </WithMatchStore>
-  ),
+  render: () => {
+    // Mirrors ReviewDemoScreen: compact + nameless in the dynamic band.
+    const dynamic = useMediaQuery(DYNAMIC_MOBILE_MQ);
+    return (
+      <WithMatchStore board={FULL_ARMY_SAMPLE}>
+        <div class={styles.pad}>
+          <ScreenBackNav onBack={() => undefined} data-testid="review-detail-back">
+            <span class={styles.titleHint}>Win (Blue)</span>
+          </ScreenBackNav>
+          <ReviewTurnNav onBack={() => undefined} onForward={() => undefined}>
+            <div class={styles.dualResources} role="group" aria-label="Both sides resources">
+              <ResourceBar
+                compact={dynamic()}
+                color="w"
+                snapshot={undefined}
+                name={dynamic() ? undefined : "Alex"}
+              />
+              <ResourceBar
+                compact={dynamic()}
+                color="b"
+                snapshot={undefined}
+                name={dynamic() ? undefined : "Sam"}
+              />
+            </div>
+          </ReviewTurnNav>
+        </div>
+      </WithMatchStore>
+    );
+  },
 };
 
 /** Review list in-flow chrome (desktop / tall mobile): link Back + full filters. */

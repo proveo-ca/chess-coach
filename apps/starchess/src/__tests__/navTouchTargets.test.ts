@@ -199,4 +199,17 @@ describe("nav touch targets (static CSS contract)", () => {
       navClose,
     );
   });
+
+  it("review dual bars go compact and nameless in the dynamic band", () => {
+    const demo = readFileSync(join(SRC, "demos/ReviewDemoScreen.tsx"), "utf8");
+    expect(demo, "dual bars compact in dynamic").toContain("compact={dynamicMobile()}");
+    expect(demo, "names stand down in dynamic").toContain("name={dynamicMobile() ? undefined");
+    // Rows split holds here too: turn nav follows the nav band, never nested.
+    const navClose = demo.indexOf("</ScreenBackNav>", demo.indexOf("review-detail-back"));
+    expect(navClose, "detail nav band closes").toBeGreaterThan(-1);
+    expect(
+      demo.indexOf("<ReviewTurnNav", navClose),
+      "detail turn nav follows as its own row",
+    ).toBeGreaterThan(navClose);
+  });
 });

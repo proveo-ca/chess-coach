@@ -223,13 +223,24 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
       }
     >
       {/* The frame carries the team colour, so the name replaces the
-          "X (Blue) vs Y (Red)" title line. Compact: the pair must sit
-          side-by-side between the turn arrows on desktop and dynamic. */}
+          "X (Blue) vs Y (Red)" title line. Dynamic band: names stand down
+          (frames carry the teams) and compact density keeps both bars
+          legible side-by-side in 560px. */}
       <Show when={showWhiteResources()}>
-        <ResourceBar compact color="w" snapshot={snap()} name={sideName("w")} />
+        <ResourceBar
+          compact={dynamicMobile()}
+          color="w"
+          snapshot={snap()}
+          name={dynamicMobile() ? undefined : sideName("w")}
+        />
       </Show>
       <Show when={showBlackResources()}>
-        <ResourceBar compact color="b" snapshot={snap()} name={sideName("b")} />
+        <ResourceBar
+          compact={dynamicMobile()}
+          color="b"
+          snapshot={snap()}
+          name={dynamicMobile() ? undefined : sideName("b")}
+        />
       </Show>
     </div>
   );
@@ -252,6 +263,11 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
         when={props.header}
         fallback={
           <Screen.SidebarInset class={styles.topPane}>
+            {/*
+              Top section rows: the nav band owns Row 1 (`‹ Back` + title) and
+              the turn nav follows as its own row below — the dual bars never
+              share the nav grid track, so the side floors cannot squeeze them.
+            */}
             <ScreenBackNav
               onBack={() => props.onHome?.()}
               data-testid="review-detail-back"
@@ -272,19 +288,19 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
                   </div>
                 )}
               </Show>
-              <Show when={!props.hideResources}>
-                <Show when={!props.hideDualNav} fallback={dualResourceBars()}>
-                  <ReviewTurnNav
-                    onBack={() => store.reviewBack()}
-                    onForward={() => store.reviewForward()}
-                    backDisabled={reviewNavDisabled().back}
-                    forwardDisabled={reviewNavDisabled().forward}
-                  >
-                    {dualResourceBars()}
-                  </ReviewTurnNav>
-                </Show>
-              </Show>
             </ScreenBackNav>
+            <Show when={!props.hideResources}>
+              <Show when={!props.hideDualNav} fallback={dualResourceBars()}>
+                <ReviewTurnNav
+                  onBack={() => store.reviewBack()}
+                  onForward={() => store.reviewForward()}
+                  backDisabled={reviewNavDisabled().back}
+                  forwardDisabled={reviewNavDisabled().forward}
+                >
+                  {dualResourceBars()}
+                </ReviewTurnNav>
+              </Show>
+            </Show>
           </Screen.SidebarInset>
         }
       >
