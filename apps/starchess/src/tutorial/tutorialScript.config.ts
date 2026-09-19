@@ -373,13 +373,6 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /SCFEN\|[^|]+\|2\|/,
-            },
-            squares: [],
-          },
-          {
-            when: {
-              kind: "scfen",
               re: /SCFEN\|[^|]+\|1\|/,
             },
             squares: [
@@ -387,9 +380,16 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             ],
           },
           {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|0\|/,
+            },
             squares: [
               "e4",
             ],
+          },
+          {
+            squares: [],
           },
         ],
       },

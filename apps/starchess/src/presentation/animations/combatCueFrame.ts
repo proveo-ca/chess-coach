@@ -20,6 +20,13 @@ export type CombatCueFrame = {
   moveCues?: readonly MoveCue[];
   moveProgress?: Readonly<Record<string, 0 | 1>>;
   moveLeg?: Record<string, 0 | 1>;
+  /**
+   * Enemy movers with a fogged origin whose path crosses the viewer's vision.
+   * The board renders them *under* the fog veil (revealed tile-by-tile on lit
+   * squares); CombatOverlayRoot suppresses their hulls so they never paint
+   * above the veil.
+   */
+  veilMoveCueIds?: ReadonlySet<string>;
   jumpCues?: readonly MoveCue[];
   jumpTrails?: readonly ShipJumpTrail[];
   mineMissiles?: readonly MineMissileCue[];

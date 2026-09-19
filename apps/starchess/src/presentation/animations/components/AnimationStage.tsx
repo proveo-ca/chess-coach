@@ -230,6 +230,7 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
         hideSquares={hidden()}
         moveCues={combatFrame().moveCues}
         moveProgress={combatFrame().moveProgress}
+        veilMoveCueIds={combatFrame().veilMoveCueIds}
         spentMines={props.spentMines ?? NO_SPENT}
         armedBishops={props.armedBishops ?? NO_ARMED}
         armAnimBishops={props.armAnimBishops ?? NO_ARMED}

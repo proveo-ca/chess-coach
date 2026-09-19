@@ -39,6 +39,7 @@ const NO_JUMP_TRAILS: ShipJumpTrail[] = [];
 const NO_GAS_DROPS: GasDropCue[] = [];
 const NO_MINE_MISSILES: MineMissileCue[] = [];
 const NO_MOVE_PROGRESS: Record<string, 0 | 1> = {};
+const NO_VEIL_IDS: ReadonlySet<string> = new Set();
 
 export type CombatOverlayRootProps = {
   box: { top: number; left: number; w: number; h: number };
@@ -51,6 +52,8 @@ export const CombatOverlayRoot: Component<CombatOverlayRootProps> = (props) => {
   const c = () => props.cues;
   const w = () => props.box.w;
   const h = () => props.box.h;
+  /** Enemy veil-reveal movers — hull suppressed (board renders them under fog). */
+  const veilIds = () => c().veilMoveCueIds ?? NO_VEIL_IDS;
 
   return (
     <div
@@ -95,7 +98,7 @@ export const CombatOverlayRoot: Component<CombatOverlayRootProps> = (props) => {
         boardHeight={h()}
       />
       <MoveAnimation
-        cues={c().moveCues ?? NO_MOVES}
+        cues={veilIds().size > 0 ? (c().moveCues ?? NO_MOVES).filter((m) => !veilIds().has(m.id)) : c().moveCues ?? NO_MOVES}
         progress={c().moveProgress ?? NO_MOVE_PROGRESS}
         leg={c().moveLeg}
         specialUsedSquares={props.specialUsedSquares}

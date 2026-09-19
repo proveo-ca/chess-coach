@@ -89,6 +89,12 @@ export type StarChessBoardProps = {
   /** Active move slides — progressive path fog while `moveProgress[id] === 1`. */
   moveCues?: readonly MoveCue[];
   moveProgress?: Readonly<Record<string, 0 | 1>>;
+  /**
+   * Enemy movers with a fogged origin whose path crosses viewer vision —
+   * relocated along their slide in the *render* map so the veil reveals them
+   * tile-by-tile on lit squares (their overlay hull is suppressed).
+   */
+  veilMoveCueIds?: ReadonlySet<string>;
   /** Hide mine glyphs after boom / while missile overlay owns them. */
   spentMines?: readonly Square[];
   /** Wake / chase — legs out on these squares. */
@@ -203,6 +209,37 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
       rookModeFor: rookModeForSieged(sieged()),
       mines: props.snapshot.mines,
     });
+  });
+
+  /**
+   * Render occupancy with veil-reveal movers relocated along their slide:
+   * the enemy hull appears on its current path square, and `hidePiece` /
+   * `revealed` (the same fog predicates that gate every other piece) show it
+   * only while that square is lit — visible the moment it enters vision,
+   * hidden the moment it leaves. Own movers are not relocated: their smooth
+   * overlay hull owns the slide.
+   */
+  const renderMap = createMemo(() => {
+    void moveVisionTick();
+    const ids = props.veilMoveCueIds;
+    if (!ids || ids.size === 0) return map();
+    const prog = props.moveProgress ?? {};
+    const relocating: MoveVisionCue[] = [];
+    for (const c of props.moveCues ?? []) {
+      if (!ids.has(c.id) || prog[c.id] !== 1) continue;
+      const startedAt = moveVisionStartedAt.get(c.id);
+      if (startedAt == null) continue;
+      relocating.push({
+        id: c.id,
+        from: c.from,
+        to: c.to,
+        piece: c.piece,
+        startedAt,
+        stim: c.stim,
+      });
+    }
+    if (relocating.length === 0) return map();
+    return mapWithMovePathOccupancy(map(), relocating, performance.now());
   });
 
   const litCells = createMemo(() =>
@@ -401,7 +438,9 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
               <For each={FILES}>
                 {(file) => {
                   const square = `${file}${rank}` as Square;
-                  const piece = () => map().get(square) ?? null;
+                  // renderMap, not map: veil-reveal enemy movers render at
+                  // their mid-slide square so the fog predicates reveal them.
+                  const piece = () => renderMap().get(square) ?? null;
                   const isLight = () => isLightSquare(file, rank);
                   const isFogged = () =>
                     !usePlayerFog() ? false : !fog().litSquares.has(square);
