@@ -1,3 +1,4 @@
+// SPEC: _spec/apps/starchess/navigation-chrome.md
 import {
   deployedMaterialFromPlacement,
   energyForTurn,

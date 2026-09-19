@@ -1,11 +1,4 @@
-/*
- * Story-owned layout shells for Navigation/Chrome. Each class mirrors a
- * production rule named below — stories may not import other components'
- * stylesheets (own-css-module), so the mirror lives here. If a story and its
- * production screen ever disagree, fix the source, never this file silently.
- */
-
-/* Story padding / stacks (replaces one-off inline styles). */
+/* // SPEC: _spec/apps/starchess/navigation-chrome.md */
 .pad {
   padding: 0.75rem;
   box-sizing: border-box;
@@ -37,10 +30,6 @@
   font-size: 0.9rem;
 }
 
-/*
- * Mirrors BaseScreen.topChrome: centered column stacking TurnBar over the
- * named ResourceBar in the single-player top band.
- */
 .topChrome {
   display: flex;
   flex-direction: column;
@@ -50,11 +39,6 @@
   box-sizing: border-box;
 }
 
-/*
- * Mirrors BaseScreen.topTurnBar width behavior: the TurnBar root shrink-wraps
- * its content, so the story pins it full-width to share one rectangle with
- * the ResourceBar below, exactly like the live band.
- */
 .turnFill {
   width: 100%;
   min-width: 0;
@@ -68,10 +52,16 @@
   box-sizing: border-box;
 }
 
-/*
- * Mirrors the production live width path: fixed 18rem strip on phones,
- * shrink-to-content on desktop (doubled class beats `.bar` outright).
- */
+@media (max-width: 719px) {
+  .topChrome > .turnFill {
+    order: 2;
+  }
+
+  .topChrome > .liveBar {
+    order: 1;
+  }
+}
+
 .liveBar.liveBar {
   width: 18rem;
   max-width: 100%;
@@ -85,11 +75,6 @@
   }
 }
 
-/*
- * Mirrors ReviewDemoScreen.dualResources: wrapping centered pair of named
- * ResourceBars between the review turn arrows (side-by-side on desktop,
- * stacked on narrow phones).
- */
 .dualResources {
   display: flex;
   flex-wrap: wrap;
@@ -101,10 +86,6 @@
   box-sizing: border-box;
 }
 
-/*
- * Dynamic band: no room to stack — the pair sits side-by-side (compact bars
- * fit without squeezing). Mirrors ReviewDemoScreen.dualResources.
- */
 @media (max-width: 719px) and (min-width: 480px) and (max-height: 639px) {
   .dualResources {
     flex-wrap: nowrap;
@@ -119,10 +100,6 @@
   }
 }
 
-/*
- * Mirrors ReviewScreen.bannerFilters: swatches left, date pager right on the
- * dynamic MobileBanner strip.
- */
 .bannerFilters {
   display: flex;
   align-items: center;
@@ -132,3 +109,4 @@
   min-width: 0;
   box-sizing: border-box;
 }
+

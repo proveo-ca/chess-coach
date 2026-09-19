@@ -1,13 +1,4 @@
-/**
- * Navigation touch targets + single-player overflow guards.
- *
- * jsdom cannot measure layout (no hit testing, media queries unevaluated),
- * so this asserts the static contract instead: mobile-only rules that clear
- * 40×40px on every arrow used to navigate, the ResourceBar name-over-strips
- * wrap, and no data-testid selectors in touched stylesheets (mirrors
- * `npm run check:css-layout`). Real pixels are covered by the
- * Navigation/Chrome stories at the Mobile 390×844 viewport.
- */
+// SPEC: _spec/apps/starchess/navigation-chrome.md
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -17,7 +8,6 @@ const UI = join(SRC, "..", "..", "ui", "src");
 
 const css = (path: string): string => readFileSync(path, "utf8");
 
-/** All `@media <query>` block bodies in the file (without the opener). */
 const mediaBlocks = (text: string, query: string): string[] => {
   const out: string[] = [];
   const opener = `@media ${query} {`;
@@ -25,7 +15,7 @@ const mediaBlocks = (text: string, query: string): string[] => {
   while (true) {
     const at = text.indexOf(opener, from);
     if (at < 0) return out;
-    // Block ends at the next @media opener or EOF (these files nest one level).
+
     const next = text.indexOf("@media", at + opener.length);
     out.push(text.slice(at + opener.length, next < 0 ? undefined : next));
     from = next < 0 ? text.length : next;
@@ -33,11 +23,9 @@ const mediaBlocks = (text: string, query: string): string[] => {
   }
 };
 
-/** Snippet must appear *inside* a `@media <query>` block, not just after it. */
 const mediaHas = (text: string, query: string, snippet: string): boolean =>
   mediaBlocks(text, query).some((block) => block.includes(snippet));
 
-/** CSS with every `@media … { … }` block stripped (brace-matched). */
 const desktopCss = (text: string): string => {
   let out = "";
   let i = 0;
@@ -105,9 +93,7 @@ describe("nav touch targets (static CSS contract)", () => {
   });
 
   it("single-player live bar is one row filling its own band row", () => {
-    // No forced name-over-strips wrap and no dual wrappers on live chrome:
-    // the viewer bar is one flex row ([name][strips]) in its own top-section
-    // row below the nav band. Dual bars ship on review only.
+
     const bar = css(join(SRC, "presentation/hud/components/ResourceBar.module.css"));
     expect(bar, "no name-own-row wrap rule").not.toContain("flex: 1 1 100%");
   });
@@ -204,7 +190,7 @@ describe("nav touch targets (static CSS contract)", () => {
     const demo = readFileSync(join(SRC, "demos/ReviewDemoScreen.tsx"), "utf8");
     expect(demo, "dual bars compact in dynamic").toContain("compact={dynamicMobile()}");
     expect(demo, "names stand down in dynamic").toContain("name={dynamicMobile() ? undefined");
-    // Rows split holds here too: turn nav follows the nav band, never nested.
+
     const navClose = demo.indexOf("</ScreenBackNav>", demo.indexOf("review-detail-back"));
     expect(navClose, "detail nav band closes").toBeGreaterThan(-1);
     expect(
@@ -213,3 +199,4 @@ describe("nav touch targets (static CSS contract)", () => {
     ).toBeGreaterThan(navClose);
   });
 });
+

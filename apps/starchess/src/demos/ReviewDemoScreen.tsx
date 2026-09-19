@@ -1,8 +1,5 @@
-// SPEC: _spec/apps/starchess/screens.puml, _spec/apps/starchess/architecture/screen-entities.puml
-/**
- * Store-backed DualNav review host — top ReviewTurnNav + LiveStarChessBoard.
- * Scenario packages supply history; MatchStore owns seek / playback / VFX timeline.
- */
+// SPEC: _spec/apps/starchess/screens.puml, _spec/apps/starchess/architecture/screen-entities.puml, _spec/apps/starchess/navigation-chrome.md
+
 import { placementToMap, type StarChessColor } from "@chess-coach/starchess-core";
 import type { Square } from "chess.js";
 import {
@@ -45,43 +42,42 @@ import { resetTutorialNarration, setTutorialNarration } from "~/tutorial/tutoria
 import type { BoardSkin, PieceSet, VisionMode } from "~/types/board";
 import type { ReviewHistory, StarChessMatchResult } from "~/types/review";
 
-/** Coach-style Review detail title stack (result + matchup). */
 export type ReviewMatchTitle = {
-  /** e.g. "Win (Blue)" */
+
   resultLine: string;
-  /** win / loss / draw — colors the result Label */
+
   result: StarChessMatchResult;
-  /** e.g. "Alex (Blue) vs Adjutant (Red)" */
+
   matchup: string;
 };
 
 export type ReviewDemoScreenProps = {
   history: ReviewHistory;
-  /** Prefix for footer caption (e.g. "Combat chain"). */
+
   reviewLabel?: string;
-  /** Optional result + matchup above DualNav (SPA `/review/:id`). */
+
   matchTitle?: ReviewMatchTitle;
   visionMode?: VisionMode;
   fog?: boolean;
   variant?: BoardSkin;
   pieceSet?: PieceSet;
-  /** Force all rooks to tank mode (fog-edge rook story). */
+
   rookTank?: boolean;
-  /** Human team for You / Adjutant vision labels. */
+
   playerColor?: StarChessColor;
-  /** Shown at the left of the player's ResourceBar. */
+
   playerName?: string;
-  /** For arena imports, show both scripts with correct Blue/Red mapping. */
+
   arenaPlayers?: { w: string; b: string };
-  /** Side-rail Home — SPA navigate (review routes). */
+
   onHome?: () => void;
-  /** Hide dual ResourceBars (tutorial). */
+
   hideResources?: boolean;
-  /** Hide top ReviewTurnNav + rail turn chrome (tutorial steppers own advance). */
+
   hideDualNav?: boolean;
-  /** Tutorial HOME-only sidebar chrome. */
+
   tutorial?: boolean;
-  /** Replaces SidebarInset when set (tutorial avatar header). */
+
   header?: JSX.Element;
   footerExtra?: JSX.Element;
 };
@@ -102,14 +98,14 @@ const syncRookModes = (
       if (piece.type === "r") setRookMode(sq as Square, "tank");
     }
   } catch {
-    /* invalid placement — ignore */
+
   }
 };
 
 const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
   const store = useMatchStore();
   const snap = createMemo(() => displayedSnapshot(store.state()));
-  /** Dynamic band: turn arrows leave the banner and float bottom-right (gas rack parity). */
+
   const dynamicMobile = useMediaQuery(DYNAMIC_MOBILE_MQ);
 
   const reviewBusy = () =>
@@ -163,7 +159,6 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
   onMount(() => {
     if (props.tutorial) setCapabilities(TUTORIAL_CAPABILITIES);
 
-    // Seed review vision: observer demos → BOTH; player fog demos → white vision.
     if (props.visionMode === "player" || props.fog === true) {
       setReviewVisionFilter("w");
       store.dispatch({ type: "SET_VIEWER", viewer: "w" });
@@ -222,10 +217,7 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
             : "Red side resources"
       }
     >
-      {/* The frame carries the team colour, so the name replaces the
-          "X (Blue) vs Y (Red)" title line. Dynamic band: names stand down
-          (frames carry the teams) and compact density keeps both bars
-          legible side-by-side in 560px. */}
+
       <Show when={showWhiteResources()}>
         <ResourceBar
           compact={dynamicMobile()}
@@ -252,9 +244,7 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
 
   return (
     <Screen>
-      {/* Dynamic-only chrome (CSS-gated): banner + board, nothing else.
-          Turn arrows are not a banner slot here — they float bottom-right
-          (portaled dock below), so the ResourceBars own the whole strip. */}
+
       <MobileBanner
         onBack={() => props.onHome?.()}
         resources={dualResourceBars()}
@@ -263,11 +253,7 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
         when={props.header}
         fallback={
           <Screen.SidebarInset class={styles.topPane}>
-            {/*
-              Top section rows: the nav band owns Row 1 (`‹ Back` + title) and
-              the turn nav follows as its own row below — the dual bars never
-              share the nav grid track, so the side floors cannot squeeze them.
-            */}
+
             <ScreenBackNav
               onBack={() => props.onHome?.()}
               data-testid="review-detail-back"
@@ -342,9 +328,7 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
           </p>
         </div>
       </Screen.Footer>
-      {/* Dynamic band: the strip has no room for ‹ › beside the ResourceBars,
-          so they dock bottom-right like the live GasRack. Portaled because the
-          dock must pin to the viewport, not the Screen grid. */}
+
       <Show when={dynamicMobile() && !props.hideDualNav}>
         <Portal>
           <div
@@ -399,3 +383,4 @@ export const ReviewDemoScreen: Component<ReviewDemoScreenProps> = (props) => {
     </MatchStoreProvider>
   );
 };
+

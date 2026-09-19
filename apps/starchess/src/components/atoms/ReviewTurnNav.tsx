@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/starchess/screens.puml
+// SPEC: _spec/apps/starchess/screens.puml, _spec/apps/starchess/navigation-chrome.md
 /**
  * Pure shell: green ‹ › flanking children (typically dual ResourceBars).
  * Domain wiring stays in BaseScreen / ReviewDemoScreen.

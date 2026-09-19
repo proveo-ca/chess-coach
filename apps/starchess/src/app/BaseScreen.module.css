@@ -1,18 +1,9 @@
-/**
- * StarChess play layout — compose Screen regions like apps/ui CoachScreen.
- * Do not size chrome to --board-size or otherwise override Screen tracks.
- */
-
-/* Anchor for tutorial guide bubble (absolute under header → ranks 7–8). */
+/* // SPEC: _spec/apps/starchess/navigation-chrome.md */
 .headerSlot {
   position: relative;
   width: 100%;
 }
 
-/* Full-HUD top pane: pin the guide bubble to the pane bottom edge so it
-   floats over board ranks 7–8 (dock top:100% of this 0-height slot) without
-   covering the ResourceBar. Width is the *content* box (sidebar padding
-   excluded) so the dock centers over the board like the ResourceBar above it. */
 .hudGuideSlot {
   position: absolute;
   bottom: 0;
@@ -21,8 +12,6 @@
   height: 0;
 }
 
-/* Flush Resource / TurnBar to the board inside the top Screen row.
-   SidebarInset pads --sidebar-width on the right — center children on the board. */
 .topPane {
   position: relative;
   display: flex;
@@ -43,7 +32,16 @@
   width: 100%;
 }
 
-/* Classes passed into TurnBar / ResourceBar roots from topChrome(). */
+@media (max-width: 719px) {
+  .topChrome > .topTurnBar {
+    order: 2;
+  }
+
+  .topChrome > .topResourceBar {
+    order: 1;
+  }
+}
+
 .topTurnBar {
   width: 100%;
   max-width: var(--board-size);
@@ -57,11 +55,6 @@
   min-width: 0;
 }
 
-/*
- * Desktop: live bar shrinks to content (deterministic 0,3,0 over both
- * single-class rules — no bundle-order tie). Ended compact bars excluded.
- * Phones lock the classic fixed strip (same specificity, own band).
- */
 @media (min-width: 720px) {
   .topChrome .topResourceBar:not(.compact) {
     width: fit-content;
@@ -74,7 +67,6 @@
   }
 }
 
-/* Same title stack as ReviewDemoScreen matchup — LiveMatchShell dark HUD. */
 .matchTitle {
   display: flex;
   flex-direction: column;
@@ -84,7 +76,6 @@
   text-align: center;
 }
 
-/* Short / dynamic — height only (not width); free vertical space above ResourceBar. */
 @media (max-height: 639px) {
   .matchTitle {
     display: none;
@@ -106,10 +97,6 @@
   max-width: 100%;
 }
 
-/*
- * Dynamic band: no room to stack — the ended-game pair holds side-by-side
- * (compact bars flex to fill). Mirrors ReviewDemoScreen.dualResources.
- */
 @media (max-width: 719px) and (min-width: 480px) and (max-height: 639px) {
   .dualResources {
     flex-wrap: nowrap;
@@ -124,7 +111,6 @@
   }
 }
 
-/* Board footprint — same as apps/ui ChessBoard. */
 .boardHost {
   position: relative;
   width: var(--board-size);
@@ -180,7 +166,6 @@
   min-height: 3.75rem;
 }
 
-/* Tall mobile (sidebar chrome lost with rail) — full TurnBar under GasRack. */
 .footerTurnBar {
   width: 100%;
   max-width: var(--board-size);
@@ -188,7 +173,6 @@
   box-sizing: border-box;
 }
 
-/* Short / dynamic — rack is position:fixed; drop the footer spacer. */
 @media (max-height: 639px) {
   .gasDock {
     min-height: 0;
@@ -203,7 +187,6 @@
   box-sizing: border-box;
 }
 
-/* Short / dynamic — height only; drop idle "Plan your turn" to reclaim footer space. */
 @media (max-height: 639px) {
   .statusLine[data-idle-plan="true"] {
     display: none;
@@ -218,13 +201,10 @@
   font-size: 0.85rem;
 }
 
-/* Live shell play layer + Screen root — layout classes, not testids. */
 :global(.starchess-play .screen-root) {
   background: transparent;
 }
 
-/* Live dynamic (560×420 band): MobileBanner owns Back/resources/turn
-   (compact TurnBar = last queue chip + End + timer). Gas floats bottom-right. */
 @media (max-width: 719px) and (min-width: 480px) and (max-height: 639px) {
   .dynamicHide {
     display: none !important;
@@ -236,15 +216,12 @@
     height: auto;
   }
 
-  /* Gas corner dock is portaled; reveal only in this band. */
   .gasDockDynamic,
   :global(.gas-dock-dynamic) {
     display: block;
   }
 }
 
-/* Portaled gas host — hidden outside dynamic so desktop/tall keep footer rack only.
-   Re-pin LiveMatchShell dark tokens so rack fill/border match in-flow (not Storybook light). */
 .gasDockDynamic,
 :global(.gas-dock-dynamic) {
   display: none;
@@ -263,40 +240,21 @@
   --border-color: #444;
 }
 
-/*
- * The top region is a column flex with `align-items: center`, so an unstyled
- * wrapper shrink-wraps and pulls `‹ Back` off the board's left edge. Stretch
- * it so ScreenBackNav spans the full board width.
- */
 .topNavRow {
   width: 100%;
-  /* The wrapper is the flex item, so the pin has to live here — the band's own
-     `margin-bottom: auto` cannot escape it. */
+
   margin-bottom: auto;
 }
 
-/*
- * Mobile: the chrome track bottom-packs, so the slot holding the nav band must
- * pin to the top — otherwise `‹ Back` sits at a different Y on every screen
- * depending on how tall that screen's chrome happens to be. Filling the track
- * does that (no free space left for `justify-content: flex-end` to spend) and
- * also makes this box's floor the *board's* top edge rather than the avatar's
- * bottom, which is what the guide bubble docks against — `margin-bottom: auto`
- * left the line stranded mid-gutter, an avatar's height above the board.
- */
 @media (max-width: 719px) {
   .headerSlot {
     height: 100%;
   }
 }
 
-/*
- * Dynamic: the banner is `position: absolute` and must resolve against the
- * viewport box, not this pane — `position: relative` here would scope it to
- * the board column and it would render inset instead of full-bleed.
- */
 @media (max-width: 719px) and (min-width: 480px) and (max-height: 639px) {
   .topPane {
     position: static;
   }
 }
+

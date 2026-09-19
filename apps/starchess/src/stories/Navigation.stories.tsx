@@ -1,3 +1,4 @@
+// SPEC: _spec/apps/starchess/navigation-chrome.md
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { createSignal } from "solid-js";
 
@@ -17,15 +18,6 @@ import { useMediaQuery } from "~/hooks/useMediaQuery";
 import { DYNAMIC_MOBILE_MQ } from "~/utils/breakpoints";
 import styles from "~/stories/Navigation.stories.module.css";
 
-/**
- * Navigation chrome as it ships in tutorials, single player, and review —
- * one folder to audit the 40×40px mobile touch targets and the single-player
- * top-banner overflow in the same place. Switch the viewport toolbar between
- * Desktop 1280×900, Mobile 390×844, and Dynamic 560×420.
- * Layout shells live in `Navigation.stories.module.css` (each mirrors the
- * production class named above it). Boards come from `demos/samples.ts`
- * (projection only, no SCFEN literals).
- */
 const meta = {
   title: "Navigation/Chrome",
   parameters: {
@@ -42,11 +34,6 @@ const meta = {
 export default meta;
 type Story = StoryObj;
 
-const phoneDocs =
-  "Narrow-phone case: use the Mobile viewport (390×844). Nav row first (`‹ Back` + title), then one fixed-strip single-row bar per side on phones (content-sized on desktop) — no X-overflow.";
-
-// Static mirror of TutorialScreen SECTIONS (labels only — kept local so this
-// module stays side-effect free for Storybook's static index extraction).
 const TUTORIAL_SECTIONS = [
   { id: "fog", label: "Fog of War" },
   { id: "specials", label: "Special Moves" },
@@ -54,21 +41,24 @@ const TUTORIAL_SECTIONS = [
   { id: "king", label: "King Damage" },
 ];
 
-/** Single-player top section: nav row (`‹ Back` + title), then TurnBar, then the viewer bar. */
 export const SingleTopChrome: Story = {
   name: "Single player · top chrome",
   parameters: {
     route: "/single?map=eclipse&team=w",
     viewport: { defaultViewport: "mobile" },
-    docs: { description: { story: phoneDocs } },
+    docs: {
+      description: {
+        story:
+          "Bar-mode top chrome (demos/tutorials — Single ships the sidebar rail, so its own top slot holds the bar alone). Narrow-phone case: nav row first, then one fixed-strip single-row bar — bars never overflow X.",
+      },
+    },
   },
   render: () => (
     <WithMatchStore board={FULL_ARMY_SAMPLE}>
       <div class={styles.pad}>
         <ScreenBackNav onBack={() => undefined} data-testid="live-back">
           <span class={styles.titleHint}>Game vs Adjutant (Script)</span>
-        </ScreenBackNav>
-          <div class={styles.topChrome} data-testid="starchess-board-chrome">
+        </ScreenBackNav>          <div class={styles.topChrome} data-testid="starchess-board-chrome">
             <div class={styles.turnFill}>
               <TurnBar autoStart={false} resolveOnEnd={false} onEnd={() => undefined} />
             </div>
@@ -79,7 +69,6 @@ export const SingleTopChrome: Story = {
   ),
 };
 
-/** Single-player dynamic strip: Back · compact viewer resources · compact turn. */
 export const SingleDynamicBanner: Story = {
   name: "Single player · dynamic banner",
   parameters: {
@@ -104,12 +93,10 @@ export const SingleDynamicBanner: Story = {
   ),
 };
 
-/** Review detail: turn arrows flanking the dual named ResourceBars. */
 export const ReviewDualNav: Story = {
   name: "Review · dual turn nav",
   parameters: {
-    // Desktop shows the production side-by-side pair; narrow phones stack
-    // (approved — vertical space is free), dynamic docks the arrows.
+
     viewport: { defaultViewport: "desktop" },
     docs: {
       description: {
@@ -119,7 +106,7 @@ export const ReviewDualNav: Story = {
     },
   },
   render: () => {
-    // Mirrors ReviewDemoScreen: compact + nameless in the dynamic band.
+
     const dynamic = useMediaQuery(DYNAMIC_MOBILE_MQ);
     return (
       <WithMatchStore board={FULL_ARMY_SAMPLE}>
@@ -149,7 +136,6 @@ export const ReviewDualNav: Story = {
   },
 };
 
-/** Review list in-flow chrome (desktop / tall mobile): link Back + full filters. */
 export const ReviewListChrome: Story = {
   name: "Review · list chrome",
   parameters: {
@@ -163,7 +149,7 @@ export const ReviewListChrome: Story = {
   },
   render: () => {
     const [color, setColor] = createSignal<"w" | "b">("w");
-    // The pager appends "(page / total)" itself — keep the label date-only.
+
     return (
       <WithMatchStore board={FULL_ARMY_SAMPLE}>
         <div class={styles.stack}>
@@ -185,11 +171,10 @@ export const ReviewListChrome: Story = {
   },
 };
 
-/** Review list dynamic strip: banner Back + compact filters (banner owns the band). */
 export const ReviewListBanner: Story = {
   name: "Review · list banner",
   parameters: {
-    // The MobileBanner strip only renders in the dynamic band (560×420).
+
     viewport: { defaultViewport: "dynamic" },
     docs: {
       description: {
@@ -223,7 +208,6 @@ export const ReviewListBanner: Story = {
   },
 };
 
-/** Tutorial lesson header + section breadcrumb footer, over an Eclipse board. */
 export const TutorialCoachHeader: Story = {
   name: "Tutorials · coach header + sections",
   parameters: {
@@ -258,7 +242,6 @@ export const TutorialCoachHeader: Story = {
   ),
 };
 
-/** Isolated arrow audit: review ‹ › beside text chevron navs. */
 export const TurnArrowsIsolated: Story = {
   name: "Arrows · isolated audit",
   parameters: {
@@ -285,3 +268,4 @@ export const TurnArrowsIsolated: Story = {
     </WithMatchStore>
   ),
 };
+
