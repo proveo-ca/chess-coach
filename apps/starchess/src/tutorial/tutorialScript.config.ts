@@ -338,23 +338,60 @@ export const TUTORIAL_SCRIPT_CONFIG = [
         id: "mine",
         title: "Spider Mine",
         board: {
-          scfen: "SCFEN|7k/8/8/8/8/8/8/4K3|0|33|P|G:11:11|M:w:a4|Q:w:;b:",
+          scfen: "SCFEN|r6k/8/8/8/8/8/3PPP2/4K3|0|33|P|G:11:11|Q:w:;b:|M:w:;b:c3e4",
           stored: 4,
           endTurnAfterQueue: "first",
           armTimer: false,
-          docs: "Live `M:w:a4` \u2014 mine lights only its own square under player fog.",
+          choreography: "mineRa1Counter",
+          docs: "Marines d2/e2/f2 vs black mines c3/e4 + tank a8. Walk e2-e4, attack c3, then black Ra1 reveals fog mine.",
         },
-        comment: "Hoverbikes can plant mines; they can only see their own squares. How? Let me show you!",
+        comment: "See what happens if a piece walks over that mine",
         emotion: "happy",
-        action: {
-          kind: "goSection",
-          section: "specials",
-          label: "See Specials",
-        },
         completeWhen: {
           kind: "scfen",
-          re: /SCFEN\|[^|]+\|[1-9]/,
+          re: /SCFEN\|[^|]+\|(?:[3-9]|\d\d+)\|/,
         },
+        reactions: [
+          {
+            when: {
+              kind: "turn",
+              turn: 3,
+            },
+            comment: "See what happens when exploring the fog uncovers a mine",
+            emotion: "watching",
+          },
+          {
+            when: {
+              kind: "turn",
+              turn: 2,
+            },
+            comment: "Mines can be targetted for attack",
+            emotion: "watching",
+          },
+        ],
+        hints: [
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|2\|/,
+            },
+            squares: [],
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|1\|/,
+            },
+            squares: [
+              "c3",
+            ],
+          },
+          {
+            squares: [
+              "e4",
+            ],
+          },
+        ],
       },
     ],
   },
