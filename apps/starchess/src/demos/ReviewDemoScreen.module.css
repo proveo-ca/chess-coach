@@ -101,9 +101,11 @@
     max-width: none;
   }
 
-  /* Compact density — ResourceBar compact prop handles name + width */
-  .dualResources :global(.compact) {
-    width: auto;
+  /* Compact density — ResourceBar compact prop handles name + width.
+     Sizing rides on flex-basis, not width: `.bar.compact` keeps its fixed
+     12rem (same specificity ties resolve by bundle order either way), while
+     `flex: 1 1 0` + `min-width: 0` share the strip deterministically. */
+  .dualResources > :global(.compact) {
     min-width: 0;
     flex: 1 1 0;
   }

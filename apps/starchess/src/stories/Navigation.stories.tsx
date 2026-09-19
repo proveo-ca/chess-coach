@@ -8,17 +8,21 @@ import { CoachAvatar } from "~/components/atoms/CoachAvatar";
 import { MatchHistoryFilters } from "~/components/atoms/MatchHistoryFilters";
 import { MobileBanner } from "~/components/atoms/MobileBanner";
 import { ReviewTurnNav } from "~/components/atoms/ReviewTurnNav";
-import { FULL_ARMY_SAMPLE } from "~/demos/samples";
+import { FULL_ARMY_SAMPLE, OPEN_BOARD_SAMPLE } from "~/demos/samples";
 import { ResourceBar } from "~/presentation/hud/components/ResourceBar";
 import { TurnBar } from "~/presentation/hud/components/TurnBar";
+import { StaticScfenBoard } from "~/presentation/board/components/StaticScfenBoard";
 import { WithMatchStore } from "~/stories/project";
+import styles from "~/stories/Navigation.stories.module.css";
 
 /**
  * Navigation chrome as it ships in tutorials, single player, and review —
  * one folder to audit the 40×40px mobile touch targets and the single-player
  * top-banner overflow in the same place. Switch the viewport toolbar between
  * Desktop 1280×900, Mobile 390×844, and Dynamic 560×420.
- * Boards come from `demos/samples.ts` (projection only, no SCFEN literals).
+ * Layout shells live in `Navigation.stories.module.css` (each mirrors the
+ * production class named above it). Boards come from `demos/samples.ts`
+ * (projection only, no SCFEN literals).
  */
 const meta = {
   title: "Navigation/Chrome",
@@ -48,7 +52,7 @@ const TUTORIAL_SECTIONS = [
   { id: "king", label: "King Damage" },
 ];
 
-/** Single-player top chrome (`BaseScreen.topChrome`): title + TurnBar + named ResourceBar. */
+/** Single-player top chrome (`BaseScreen.topChrome`): TurnBar over the named bar, one rectangle. */
 export const SingleTopChrome: Story = {
   name: "Single player · top chrome",
   parameters: {
@@ -58,20 +62,12 @@ export const SingleTopChrome: Story = {
   },
   render: () => (
     <WithMatchStore board={FULL_ARMY_SAMPLE}>
-      <div style={{ padding: "0.75rem" }}>
+      <div class={styles.pad}>
         <ScreenBackNav onBack={() => undefined} data-testid="live-back">
-          {/* Same stack as BaseScreen.topChrome (column, centered): TurnBar over the named bar. */}
-          <div
-            style={{
-              display: "flex",
-              "flex-direction": "column",
-              "align-items": "center",
-              gap: "0.5rem",
-              width: "100%",
-            }}
-            data-testid="starchess-board-chrome"
-          >
-            <TurnBar autoStart={false} resolveOnEnd={false} onEnd={() => undefined} />
+          <div class={styles.topChrome} data-testid="starchess-board-chrome">
+            <div class={styles.turnFill}>
+              <TurnBar autoStart={false} resolveOnEnd={false} onEnd={() => undefined} />
+            </div>
             <ResourceBar color="w" name="Alexandra the Great!!" />
           </div>
         </ScreenBackNav>
@@ -80,7 +76,7 @@ export const SingleTopChrome: Story = {
   ),
 };
 
-/** Single-player dynamic strip: Back · compact resources · compact turn. */
+/** Single-player dynamic strip: Back · compact viewer resources · compact turn. */
 export const SingleDynamicBanner: Story = {
   name: "Single player · dynamic banner",
   parameters: {
@@ -88,7 +84,8 @@ export const SingleDynamicBanner: Story = {
     viewport: { defaultViewport: "dynamic" },
     docs: {
       description: {
-        story: "Dynamic viewport (560×420). Fixed-width compact resources; slack sits left of End Turn.",
+        story:
+          "Dynamic viewport (560×420). Fixed-width compact resources; slack sits left of End Turn. The live strip shows the viewer economy only — no opponent bar by design.",
       },
     },
   },
@@ -104,84 +101,132 @@ export const SingleDynamicBanner: Story = {
   ),
 };
 
-/** Review detail: turn arrows flanking dual named ResourceBars. */
+/** Review detail: turn arrows flanking the dual named ResourceBars. */
 export const ReviewDualNav: Story = {
   name: "Review · dual turn nav",
   parameters: {
-    viewport: { defaultViewport: "mobile" },
+    // Desktop shows the production side-by-side pair; narrow phones stack
+    // (approved — vertical space is free), dynamic docks the arrows.
+    viewport: { defaultViewport: "desktop" },
     docs: {
       description: {
-        story: "Green ‹ › stay 40×40px on mobile with dual bars wrapping between them.",
+        story:
+          "Green ‹ › stay 40×40px with the dual compact bars between them. Desktop + dynamic: side-by-side. Mobile: stacked. Dynamic: arrows dock bottom-right (see review detail).",
       },
     },
   },
   render: () => (
     <WithMatchStore board={FULL_ARMY_SAMPLE}>
-      <div style={{ padding: "0.75rem" }}>
+      <div class={styles.pad}>
         <ReviewTurnNav onBack={() => undefined} onForward={() => undefined}>
-          <ResourceBar color="w" snapshot={undefined} name="Alex" />
-          <ResourceBar color="b" snapshot={undefined} name="Sam" />
+          <div class={styles.dualResources} role="group" aria-label="Both sides resources">
+            <ResourceBar compact color="w" snapshot={undefined} name="Alex" />
+            <ResourceBar compact color="b" snapshot={undefined} name="Sam" />
+          </div>
         </ReviewTurnNav>
       </div>
     </WithMatchStore>
   ),
 };
 
-/** Review list: link Back + Playing-as / date pager + banner back variant. */
+/** Review list in-flow chrome (desktop / tall mobile): link Back + full filters. */
 export const ReviewListChrome: Story = {
   name: "Review · list chrome",
   parameters: {
-    // The MobileBanner strip only renders in the dynamic band (560×420).
-    viewport: { defaultViewport: "dynamic" },
+    viewport: { defaultViewport: "mobile" },
     docs: {
-      description: { story: "Pager ‹ › and banner Back clear 40×40px (Dynamic 560×420 band)." },
+      description: {
+        story:
+          "In-flow list chrome: link Back plus Playing-as / date pager at 40×40px. The dynamic band hides this in favor of the banner (next story).",
+      },
     },
   },
   render: () => {
     const [color, setColor] = createSignal<"w" | "b">("w");
     // The pager appends "(page / total)" itself — keep the label date-only.
-    const filters = (compact?: boolean) => (
-      <MatchHistoryFilters
-        compact={compact}
-        colorFilter={color()}
-        setColorFilter={setColor}
-        totalPages={3}
-        activePage={0}
-        currentDateLabel="Aug 11, 2026"
-        goToPrev={() => undefined}
-        goToNext={() => undefined}
-      />
-    );
     return (
       <WithMatchStore board={FULL_ARMY_SAMPLE}>
-        <div style={{ display: "flex", "flex-direction": "column", gap: "0.75rem", padding: "0.75rem" }}>
+        <div class={styles.stack}>
           <ScreenBackNav href="/" data-testid="review-back">
-            <span style={{ opacity: 0.8, "font-size": "0.9rem" }}>Win (White)</span>
+            <span class={styles.titleHint}>Win (White)</span>
           </ScreenBackNav>
-          {filters()}
-          <MobileBanner href="/" resources={filters(true)} />
+          <MatchHistoryFilters
+            colorFilter={color()}
+            setColorFilter={setColor}
+            totalPages={3}
+            activePage={0}
+            currentDateLabel="Aug 11, 2026"
+            goToPrev={() => undefined}
+            goToNext={() => undefined}
+          />
         </div>
       </WithMatchStore>
     );
   },
 };
 
-/** Tutorial lesson header + section breadcrumb footer. */
+/** Review list dynamic strip: banner Back + compact filters (banner owns the band). */
+export const ReviewListBanner: Story = {
+  name: "Review · list banner",
+  parameters: {
+    // The MobileBanner strip only renders in the dynamic band (560×420).
+    viewport: { defaultViewport: "dynamic" },
+    docs: {
+      description: {
+        story: "Dynamic band: Back plus swatches-left / pager-right, each clearing 40×40px.",
+      },
+    },
+  },
+  render: () => {
+    const [color, setColor] = createSignal<"w" | "b">("w");
+    return (
+      <WithMatchStore board={FULL_ARMY_SAMPLE}>
+        <MobileBanner
+          href="/"
+          resources={
+            <div class={styles.bannerFilters}>
+              <MatchHistoryFilters
+                compact
+                colorFilter={color()}
+                setColorFilter={setColor}
+                totalPages={3}
+                activePage={0}
+                currentDateLabel="Aug 11, 2026"
+                goToPrev={() => undefined}
+                goToNext={() => undefined}
+              />
+            </div>
+          }
+        />
+      </WithMatchStore>
+    );
+  },
+};
+
+/** Tutorial lesson header + section breadcrumb footer, over an Eclipse board. */
 export const TutorialCoachHeader: Story = {
   name: "Tutorials · coach header + sections",
   parameters: {
     viewport: { defaultViewport: "mobile" },
     docs: {
       description: {
-        story: "‹ Back beside Kerrigan; section crumbs clear 40px tall on mobile (footer grows to fit).",
+        story:
+          "‹ Back beside Kerrigan over the lesson board; section crumbs clear 40px tall on mobile (footer grows to fit).",
       },
     },
   },
   render: () => (
-    <div style={{ display: "flex", "flex-direction": "column", gap: "0.75rem", padding: "0.75rem" }}>
+    <div class={styles.stack}>
       <ScreenBackNav onBack={() => undefined} data-testid="tutorial-fog-coach-nav">
         <CoachAvatar identity="kerrigan" emotion="idle" />
       </ScreenBackNav>
+      <StaticScfenBoard
+        scfen={OPEN_BOARD_SAMPLE.scfen}
+        boardVariant="eclipse"
+        fog={false}
+        visionMode="observer"
+        caption="Fog of War · King — lesson board"
+      />
       <Breadcrumb
         items={[...TUTORIAL_SECTIONS]}
         current="fog"
@@ -206,9 +251,9 @@ export const TurnArrowsIsolated: Story = {
   },
   render: () => (
     <WithMatchStore board={FULL_ARMY_SAMPLE}>
-      <div style={{ display: "flex", "align-items": "center", gap: "1rem", padding: "1rem" }}>
+      <div class={styles.auditRow}>
         <ReviewTurnNav onBack={() => undefined} onForward={() => undefined}>
-          <span style={{ opacity: 0.8, "font-size": "0.8rem" }}>turn</span>
+          <span class={styles.hint}>turn</span>
         </ReviewTurnNav>
         <ChevronNav direction="back" onClick={() => undefined} aria-label="Back">
           Back

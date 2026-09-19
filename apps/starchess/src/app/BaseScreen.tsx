@@ -493,6 +493,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
             >
               <Show when={showWhiteResources()}>
                 <ResourceBar
+                  compact
                   class={styles.topResourceBar}
                   color="w"
                   snapshot={readDisplayedSnapshot(store)}
@@ -500,6 +501,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
               </Show>
               <Show when={showBlackResources()}>
                 <ResourceBar
+                  compact
                   class={styles.topResourceBar}
                   color="b"
                   snapshot={readDisplayedSnapshot(store)}

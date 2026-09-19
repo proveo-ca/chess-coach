@@ -148,8 +148,8 @@ describe("nav touch targets (static CSS contract)", () => {
     expect(a.length, "starchess has a 719 block").toBeGreaterThan(0);
     expect(a, "ui copy drifted from starchess copy").toBe(b);
   });
-
-  it("touched stylesheets never select via data-testid (css-layout contract)", () => {    const files = [
+  it("touched stylesheets never select via data-testid (css-layout contract)", () => {
+    const files = [
       join(SRC, "components/primitives/ChevronNav.module.css"),
       join(UI, "components/primitives/ChevronNav.module.css"),
       join(SRC, "components/atoms/ReviewTurnNav.module.css"),
@@ -157,9 +157,26 @@ describe("nav touch targets (static CSS contract)", () => {
       join(SRC, "components/primitives/Breadcrumb.module.css"),
       join(SRC, "presentation/hud/components/ResourceBar.module.css"),
       join(SRC, "app/BaseScreen.module.css"),
+      join(SRC, "stories/Navigation.stories.module.css"),
     ];
     for (const file of files) {
       expect(css(file), `${file} must not style via data-testid`).not.toMatch(/data-testid/);
     }
+  });
+
+  it("Navigation story shells mirror production layout (no inline styles)", () => {
+    const text = css(join(SRC, "stories/Navigation.stories.module.css"));
+    for (const sel of [".topChrome", ".turnFill", ".dualResources", ".bannerFilters"]) {
+      expect(text, `${sel} mirror shell`).toMatch(new RegExp(`\\${sel}\\s*\\{`));
+    }
+    expect(text, "dual pair wraps centered").toMatch(/justify-content:\s*center/);
+    expect(
+      mediaHas(
+        text,
+        "(max-width: 719px) and (min-width: 480px) and (max-height: 639px)",
+        "flex-wrap: nowrap",
+      ),
+      "dual pair holds side-by-side in the dynamic band",
+    ).toBe(true);
   });
 });

@@ -60,6 +60,9 @@
 /*
  * Narrow phones: the single-player top ResourceBar fills the band so the
  * two-row wrap (name row 1, strips row 2) has room instead of overflowing X.
+ * Ended-game dual bars stay fixed 12rem (`.bar.compact` outranks this at
+ * 0,2,0) and stack via `.dualResources` wrap — that is the approved mobile
+ * treatment, not an overflow.
  */
 @media (max-width: 560px) {
   .topResourceBar {
@@ -98,6 +101,24 @@
   gap: 8px;
   width: fit-content;
   max-width: 100%;
+}
+
+/*
+ * Dynamic band: no room to stack — the ended-game pair holds side-by-side
+ * (compact bars flex to fill). Mirrors ReviewDemoScreen.dualResources.
+ */
+@media (max-width: 719px) and (min-width: 480px) and (max-height: 639px) {
+  .dualResources {
+    flex-wrap: nowrap;
+    gap: 6px;
+    width: 100%;
+    max-width: none;
+  }
+
+  .dualResources > * {
+    flex: 1 1 0;
+    min-width: 0;
+  }
 }
 
 /* Board footprint — same as apps/ui ChessBoard. */

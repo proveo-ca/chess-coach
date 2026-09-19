@@ -223,12 +223,13 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
       }
     >
       {/* The frame carries the team colour, so the name replaces the
-          "X (Blue) vs Y (Red)" title line. */}
+          "X (Blue) vs Y (Red)" title line. Compact: the pair must sit
+          side-by-side between the turn arrows on desktop and dynamic. */}
       <Show when={showWhiteResources()}>
-        <ResourceBar color="w" snapshot={snap()} name={sideName("w")} />
+        <ResourceBar compact color="w" snapshot={snap()} name={sideName("w")} />
       </Show>
       <Show when={showBlackResources()}>
-        <ResourceBar color="b" snapshot={snap()} name={sideName("b")} />
+        <ResourceBar compact color="b" snapshot={snap()} name={sideName("b")} />
       </Show>
     </div>
   );
