@@ -267,12 +267,22 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
   }
   const crushDeaths: TimelineCue[] = [];
   const emittedDeploys = new Set<string>();
+  // B-gas promotions already materialize the promoted unit in afterB, and the
+  // promotions block below walks the marine off then deploys it exactly once —
+  // the diff deploy here would play a second, premature arrival.
+  const afterBMap = placementToMap(result.afterB.placement);
+  const gasPromoAt = new Set(
+    result.resolved.promotions
+      .filter((p) => afterBMap.get(p.at)?.type === p.unit)
+      .map((p) => p.at),
+  );
   for (const d of deployCuesForPlacementDiff(
     result.afterPending.placement,
     result.afterB.placement,
     "spawn",
   )) {
     if (specialAfterSpawns.has(`${d.color}:${d.at}`)) continue;
+    if (gasPromoAt.has(d.at)) continue;
     const crush = crushVictim.get(`${d.color}:${d.at}`);
     cues.push({
       kind: "deploy",
