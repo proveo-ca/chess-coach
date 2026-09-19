@@ -300,35 +300,36 @@ export const TUTORIAL_SCRIPT_CONFIG = [
         id: "queen",
         title: "Queen",
         board: {
-          scfen: "SCFEN|7k/8/8/8/3Q4/8/1p6/K7|0|33|P|G:11:11|Q:w:;b:",
+          scfen: "SCFEN|7k/r4ppp/8/8/3Q4/8/PPb5/K7|0|33|P|G:11:11|Q:w:;b:|S:a7",
           stored: 4,
+          rookMode: "siege",
           endTurnAfterQueue: "first",
           armTimer: false,
-          docs: "Qd4 + Ka1 vs Pb2 eyeing a1. Queue Qd4\\u2192b2, End \\u2014 diagonal capture + fog.",
+          docs: "Black tank dug in on a7, sighted on white Pa2 with Ka1 behind; black mecha c2 spots. Queue Qd4xa7, End.",
         },
-        comment: "Your King is exposed \\u2014 that pawn eyes a1!\\nThe Queen defends in every direction she attacks.",
+        comment: "That tank is sighted down the a-file \\u2014 a2 falls next, then your King!\\nOnly your Queen reaches a7. Take it!",
         emotion: "shocked",
         completeWhen: {
           kind: "scfen",
-          re: /SCFEN\|[^|p]*\|/,
+          re: /SCFEN\|[^|r]*\|/,
         },
         reactions: [
           {
             when: {
               kind: "scfen",
-              re: /SCFEN\|[^|p]*\|/,
+              re: /SCFEN\|[^|r]*\|/,
             },
-            comment: "Saved! She defends in every direction she attacks. Kings will need this - you'll see.",
+            comment: "Tank silenced \\u2014 a2 and your King breathe again.",
             emotion: "happy",
           },
         ],
         hints: [
           {
             squares: [
-              "b2",
+              "a7",
             ],
             arrows: [
-              { from: "d4", to: "b2" },
+              { from: "d4", to: "a7" },
             ],
           },
         ],
