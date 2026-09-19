@@ -300,18 +300,38 @@ export const TUTORIAL_SCRIPT_CONFIG = [
         id: "queen",
         title: "Queen",
         board: {
-          scfen: "SCFEN|7k/8/8/8/3Q4/8/8/K7|0|33|P|G:11:11|Q:w:;b:",
+          scfen: "SCFEN|7k/8/8/8/3Q4/8/1p6/K7|0|33|P|G:11:11|Q:w:;b:",
           stored: 4,
           endTurnAfterQueue: "first",
           armTimer: false,
-          docs: "Qd4 live. Queue Qd4\u2192d6, End \u2014 slide + fog.",
+          docs: "Qd4 + Ka1 vs Pb2 eyeing a1. Queue Qd4\\u2192b2, End \\u2014 diagonal capture + fog.",
         },
-        comment: "And finally, the Queen. \n\nMost mobile, vision only bested by the immobile tank.",
-        emotion: "watching",
+        comment: "Your King is exposed \\u2014 that pawn eyes a1!\\nThe Queen defends in every direction she attacks.",
+        emotion: "shocked",
         completeWhen: {
           kind: "scfen",
-          re: /SCFEN\|[^|]+\|[1-9]/,
+          re: /SCFEN\|[^|p]*\|/,
         },
+        reactions: [
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|p]*\|/,
+            },
+            comment: "Saved! She defends in every direction she attacks. Kings will need this - you'll see.",
+            emotion: "happy",
+          },
+        ],
+        hints: [
+          {
+            squares: [
+              "b2",
+            ],
+            arrows: [
+              { from: "d4", to: "b2" },
+            ],
+          },
+        ],
       },
       {
         id: "mine",
