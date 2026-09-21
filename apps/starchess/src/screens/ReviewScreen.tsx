@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/starchess/deployment.puml, _spec/apps/starchess/menu-flow.puml, _spec/apps/starchess/screens.puml, _spec/apps/starchess/architecture/screen-entities.puml, _spec/apps/starchess/replay-import.puml
+// SPEC: _spec/apps/starchess/deployment.puml, _spec/apps/starchess/menu-flow.puml, _spec/apps/starchess/screens.puml, _spec/apps/starchess/architecture/screen-entities.puml, _spec/apps/starchess/replay-import.puml, _spec/_plans/game-export-localstorage.puml
 /**
  * Match history list + DualNav replay — `/review` and `/review/:id`.
  * List chrome mirrors Coach Review: Playing as + date (no First move, no title).
@@ -27,8 +27,10 @@ import { LiveMatchShell } from "~/screens/LiveMatchShell";
 import styles from "~/screens/ReviewScreen.module.css";
 import {
   addArenaRecord,
+  addMatchRecord,
   getMatchById,
   historyFromRecord,
+  matchHistory,
 } from "~/store/matchHistoryStore";
 import type { StarChessGameRecord } from "~/types/review";
 import { clampPlayerName } from "~/utils/playerName";
@@ -45,6 +47,11 @@ import {
   fetchArenaRecord,
   parseArenaFileText,
 } from "~/app/arenaImport";
+import {
+  buildHistoryExport,
+  downloadHistoryExport,
+  extractExportedGames,
+} from "~/app/historyExport";
 import type { ArenaListItem } from "~/types/arena";
 
 const formatDate = (iso: string): string => {
@@ -135,6 +142,22 @@ const ArenaLibrary: Component = () => {
   const [importMessage, setImportMessage] = createSignal<string | null>(null);
   const [importError, setImportError] = createSignal<string | null>(null);
   const [dragOver, setDragOver] = createSignal(false);
+  const historyCount = createMemo(() => matchHistory().length);
+
+  const handleExport = () => {
+    const games = matchHistory();
+    if (games.length === 0) return;
+    try {
+      downloadHistoryExport(buildHistoryExport(games));
+      setImportError(null);
+      setImportMessage(
+        `Exported ${games.length} game${games.length === 1 ? "" : "s"}`,
+      );
+    } catch (e) {
+      setImportMessage(null);
+      setImportError(e instanceof Error ? e.message : "Export failed");
+    }
+  };
 
   const loadArenaList = async () => {
     setLibraryState({ phase: "loading" });
@@ -182,6 +205,15 @@ const ArenaLibrary: Component = () => {
     }
     const imported: string[] = [];
     let lastError: string | null = null;
+    const addExported = (item: unknown): boolean => {
+      const games = extractExportedGames(item);
+      if (!games) return false;
+      for (const g of games) {
+        addMatchRecord(g);
+        imported.push(g.id);
+      }
+      return true;
+    };
     for (const txt of allTexts) {
       // Also support a JSON array of records
       let parsed: unknown;
@@ -197,10 +229,12 @@ const ArenaLibrary: Component = () => {
           if (v.ok) {
             const adapted = addArenaRecord(v.record);
             imported.push(adapted.id);
-          } else {
+          } else if (!addExported(item)) {
             lastError = v.error;
           }
         }
+      } else if (addExported(parsed)) {
+        continue;
       } else {
         const v = parseArenaFileText(txt);
         if (v.ok) {
@@ -286,7 +320,8 @@ const ArenaLibrary: Component = () => {
       <h3 class={styles.arenaTitle}>Arena Library</h3>
       <p class={styles.arenaHint}>
         Import a recorded arena game via file or server. Drag &amp; drop a JSON
-        file here, or use the file picker.
+        file here, or use the file picker. Export downloads the local history
+        as one JSON file.
       </p>
       <div class={styles.arenaFileRow}>
         <label class={styles.arenaFileLabel} data-testid="arena-file-label">
@@ -302,6 +337,15 @@ const ArenaLibrary: Component = () => {
             Choose arena JSON
           </span>
         </label>
+        <button
+          type="button"
+          class={styles.arenaFileButton}
+          data-testid="history-export-button"
+          disabled={historyCount() === 0}
+          onClick={handleExport}
+        >
+          Export history JSON
+        </button>
         <Show when={importMessage()}>
           <span class={styles.arenaSuccess} data-testid="arena-import-success">
             {importMessage()}
