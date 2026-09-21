@@ -1,6 +1,8 @@
 import { expect, test } from "@playwright/test";
 import type { Page } from "@playwright/test";
 
+import { settledPieceAt } from "./helpers";
+
 /** Canonical deep link: baseURL is `/starchess/`. */
 const gotoScfen = async (page: Page, scfen: string) => {
   await page.goto(`single?scfen=${encodeURIComponent(scfen)}`);
@@ -52,17 +54,22 @@ test.describe("StarChess SCFEN exceptions", () => {
     await expect(kingLives(page)).toHaveAttribute("data-w", "3");
   });
 
-  test("sieged tank shows no quiet relocate destinations", async ({ page }) => {
-    // Sieged rook c4, empty board around — artillery only fires on enemies.
+  test("sieged tank offers fire missions, never quiet relocates", async ({ page }) => {
+    // Sieged rook c4, empty board around — the whole cross highlights, but
+    // every mission fires in place: after End the tank is still on c4.
     const scfen =
       "SCFEN|4k3/8/8/8/2R5/8/8/4K3|1|33|P|G:11:11|S:c4|Q:w:;b:";
     await gotoScfen(page, scfen);
     await page.locator("[data-square='c4']").click();
-    // CSS-module class contains "valid-move" (not bare "valid", which matches "invalid").
-    await expect(page.locator('[data-square="c5"][class*="valid-move"]')).toHaveCount(0, {
+    // Cross squares highlight as legal fire-mission destinations.
+    await expect(page.locator('[data-square="c5"][data-legal="c5"]')).toHaveCount(1, {
       timeout: 3_000,
     });
-    await expect(page.locator('[data-square][class*="valid-move"]')).toHaveCount(0);
+    // Queue one and resolve: the tank fires from c4, never relocates to c5.
+    await page.locator('[data-square="c5"]').click();
+    await page.getByTestId("turn-end").click();
+    await expect(settledPieceAt(page, "c4", "w r")).toBeVisible({ timeout: 15_000 });
+    await expect(settledPieceAt(page, "c5", "w r")).toHaveCount(0);
   });
 
   test("sieged tank fire stays on origin after End", async ({ page }) => {

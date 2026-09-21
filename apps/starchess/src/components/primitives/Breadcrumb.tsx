@@ -1,3 +1,4 @@
+// SPEC: _spec/apps/starchess/navigation-chrome.md
 /**
  * Horizontal stage breadcrumb — clickable trail for multi-step flows (tutorial).
  */

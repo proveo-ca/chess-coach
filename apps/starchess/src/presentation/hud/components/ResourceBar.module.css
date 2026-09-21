@@ -1,3 +1,4 @@
+/* // SPEC: _spec/apps/starchess/navigation-chrome.md */
 /*
  * Fixed width, not `fit-content`: the two review bars must read as a matched
  * pair regardless of name length or digit count, and a stable width is what
@@ -18,6 +19,7 @@
   align-items: center;
   gap: 6px;
   flex: 0 1 auto;
+  min-width: 0;
   color: var(--text-color, #e8eaed);
   font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
   font-size: 14px;

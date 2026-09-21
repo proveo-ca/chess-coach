@@ -95,15 +95,20 @@ export const assertClassicalBaseline = (
   // Intent unsiege unlocks relocate; attacks on enemy squares stay legal (no occupy).
   // A hostile mine on the destination is an attack too — the turret clears it
   // in place (resolve.puml), so it must not read as a blocked relocate.
+  // Like a regular piece attacking an empty square, the tank may shell any
+  // square on its cross — resolve walks the ray (first blocker intercepts).
   if (
     piece.type === "r" &&
     isRookSiegedAfterB(action.from, snap.siegedRooks, snap.queue?.actions)
   ) {
     const destPiece = map.get(action.to);
     const destMine = mineAt(snap.mines, action.to);
+    const onCross =
+      action.from[0] === action.to[0] || action.from[1] === action.to[1];
     const isEnemyAttack =
       (!!destPiece && destPiece.color !== action.color) ||
-      (!destPiece && !!destMine && destMine.color !== action.color);
+      (!destPiece && !!destMine && destMine.color !== action.color) ||
+      (!destPiece && !destMine && onCross);
     if (!isEnemyAttack) {
       throw new ScValidateError(
         "SC_SPECIAL",

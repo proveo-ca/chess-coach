@@ -76,6 +76,18 @@ export type ResolveAttack =
       mineColor: StarChessColor;
       victim?: { piece: ScPiece["type"]; color: StarChessColor };
       chaseFrom?: Square;
+    }
+  | {
+      /**
+       * Siege Tank shelling empty ground: no victim, no relocate — the HE
+       * impact still plays at `to` to resolve the fire intent. Timeline
+       * renders the attack cue with no death cue.
+       */
+      kind: "shelling";
+      piece: ScPiece["type"];
+      color: StarChessColor;
+      from: Square;
+      to: Square;
     };
 
 export type ResolveMove = {
@@ -215,7 +227,7 @@ const attacksOwnDest = (
   return true;
 };
 
-type ResolveApproach = Exclude<ResolveAttack, { kind: "mineBlast" }>;
+type ResolveApproach = Exclude<ResolveAttack, { kind: "mineBlast" } | { kind: "shelling" }>;
 
 const approachWalk = (a: ResolveApproach): Square[] => {
   if (!a.pathRevealFrom) return [];
@@ -394,6 +406,7 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
     | { kind: "occupy"; to: Square }
     | { kind: "capture"; at: Square; victim: ScPiece; fogged?: boolean }
     | { kind: "mineClear"; at: Square; mineColor: StarChessColor }
+    | { kind: "shelling"; at: Square }
     | { kind: "approach"; shot: ResolveAttack };
 
   type PlanRule = {
@@ -441,6 +454,15 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
         });
         mines = mines.filter((m) => m.at !== out.at);
         if (!ctx.siegedRook) occupy.push(plan);
+        return;
+      case "shelling":
+        attacks.push({
+          kind: "shelling",
+          piece: actor.type,
+          color: plan.color,
+          from: plan.from,
+          to: out.at,
+        });
         return;
       case "approach":
         pathRevealPending.push(out.shot);
@@ -611,6 +633,12 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
           mode: "attack",
         });
         if (armed.kind !== "cleared") return null;
+        // Sieged fire through a blocker intercepts upstream — fall through
+        // so slideIntoFog collides instead of quietly swallowing the shot
+        // (the mine stays armed: the blast never reaches it).
+        if (ctx.siegedRook && !ctx.leaps && firstBlockerOnRay(start, plan.from, plan.to)) {
+          return null;
+        }
         if (!visible0 && ctx.siegedRook) return { kind: "drop" };
         const reachable =
           ctx.leaps || !firstBlockerOnRay(start, plan.from, plan.to);
@@ -648,6 +676,22 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
         return contact.stopBefore && contact.stopBefore !== plan.from
           ? { kind: "occupy", to: contact.stopBefore }
           : { kind: "drop" };
+      },
+    },
+    {
+      name: "siegedEmptyShelling",
+      match: (ctx) => {
+        const { plan, target, visible0 } = ctx;
+        // Siege-only: regular pieces relocate onto empty squares (quiet).
+        if (!ctx.siegedRook || target) return null;
+        // Cross geometry only — defense in depth, resolve trusts plans.
+        if (plan.from[0] !== plan.to[0] && plan.from[1] !== plan.to[1]) return null;
+        // Anything in the way holds fire: visible enemies already collided
+        // upstream (slideIntoFog); allies and kings never eat a shell.
+        if (ctx.scan().contact) return { kind: "drop" };
+        // Fog fizzle preserved — no confirmed target, no explosion.
+        if (!visible0) return null;
+        return { kind: "shelling", at: plan.to };
       },
     },
     { name: "quietFallthrough", match: () => ({ kind: "quiet" }) },

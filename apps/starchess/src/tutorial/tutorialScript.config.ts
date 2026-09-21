@@ -227,7 +227,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           armTimer: false,
           objective: "Keep your siege tank on d4 alive — reduce the enemy to 1 pawn.",
           choreography: "siegeFocusCounter",
-          docs: "Siege rook on d4 \u2014 immobile 9\u00d79 vision. Explore fog; siege HE when you capture adjacent.",
+          docs: "Siege rook on d4 \u2014 immobile 9\u00d79 vision. Fire any square on the cross: empty ground still takes HE, and the first unit in the way intercepts.",
         },
         comment: "Sieged on d4 — you own the cross. \nStart with h4, keep d4 alive, cut them to one pawn!",
         emotion: "scanning",
@@ -307,7 +307,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           armTimer: false,
           docs: "Black tank dug in on a7, sighted on white Pa2 with Ka1 behind; black mecha c2 spots. Queue Qd4xa7, End.",
         },
-        comment: "That tank is sighted down the a-file \\u2014 a2 falls next, then your King!\\nOnly your Queen reaches a7. Take it!",
+        comment: "The Queen has maximum mobility. Capture the threat in a7.",
         emotion: "shocked",
         completeWhen: {
           kind: "scfen",
@@ -319,7 +319,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               kind: "scfen",
               re: /SCFEN\|[^|r]*\|/,
             },
-            comment: "Tank silenced \\u2014 a2 and your King breathe again.",
+            comment: "No more threats!",
             emotion: "happy",
           },
         ],
@@ -338,23 +338,60 @@ export const TUTORIAL_SCRIPT_CONFIG = [
         id: "mine",
         title: "Spider Mine",
         board: {
-          scfen: "SCFEN|7k/8/8/8/8/8/8/4K3|0|33|P|G:11:11|M:w:a4|Q:w:;b:",
+          scfen: "SCFEN|r6k/8/8/8/8/8/1N1PPP2/4K3|0|33|P|G:11:11|Q:w:;b:|M:w:a4;b:c3e4",
           stored: 4,
           endTurnAfterQueue: "first",
           armTimer: false,
-          docs: "Live `M:w:a4` \u2014 mine lights only its own square under player fog.",
+          choreography: "mineRa1Counter",
+          docs: "Marines d2/e2/f2 + hoverbike b2 for vision, white mine a4 vs black mines c3/e4 + tank a8. Walk e2-e4, attack c3, then turn 3 auto-ends as black Ra1 trips the a4 mine.",
         },
-        comment: "Hoverbikes can plant mines; they can only see their own squares. How? Let me show you!",
+        comment: "See what happens if a piece walks over that mine",
         emotion: "happy",
-        action: {
-          kind: "goSection",
-          section: "specials",
-          label: "See Specials",
-        },
         completeWhen: {
           kind: "scfen",
-          re: /SCFEN\|[^|]+\|[1-9]/,
+          re: /SCFEN\|[^|]+\|(?:[3-9]|\d\d+)\|/,
         },
+        reactions: [
+          {
+            when: {
+              kind: "turn",
+              turn: 3,
+            },
+            comment: "See what happens when exploring the fog uncovers a mine",
+            emotion: "watching",
+          },
+          {
+            when: {
+              kind: "turn",
+              turn: 2,
+            },
+            comment: "Mines can be targetted for attack",
+            emotion: "watching",
+          },
+        ],
+        hints: [
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|1\|/,
+            },
+            squares: [
+              "c3",
+            ],
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|0\|/,
+            },
+            squares: [
+              "e4",
+            ],
+          },
+          {
+            squares: [],
+          },
+        ],
       },
     ],
   },
@@ -370,34 +407,91 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           stored: 4,
           endTurnAfterQueue: "moveAndSpecial",
           armTimer: false,
-          docs: "d2 can advance 2 squares classically with no canister spent. Gas on a pawn queues a 1-square StarChess step \u00b7 End to resolve.",
+          docs: "Turn 1: move, then gas (order matters not). Turn 2: gas first for the slip-away, then move off the ghost \u00b7 End to resolve.",
         },
         comment: "Order a Marine to move.",
         emotion: "idle",
         completeWhen: {
-          kind: "queue",
-          classical: true,
-          specialKind: "pawnDouble",
+          kind: "scfen",
+          re: /SCFEN\|[^|]+\|(?:[3-9]|\d\d+)\|/,
         },
+        /*
+         * Four beats across two turns — turn 1 moves then gasses, turn 2
+         * gasses then moves off the ghost. First match wins, so these run
+         * most-specific first. The seed opens on SCFEN turn 1, so the second
+         * window is turn field `2` and the lesson ends on field `3`.
+         */
         reactions: [
           {
+            // Turn-2 gas queued — the transparent ghost marks where the Marine
+            // lands after the Extra Step; the follow-up classical starts there.
             when: {
               kind: "scfen",
-              re: /[BF]=pawnDouble:/,
+              re: /^(?=SCFEN\|[^|]+\|2\|)(?=.*[BF]=pawnDouble:)/,
+            },
+            comment: "Now click that gas-ghost Marine and queue a move intent",
+            emotion: "watching",
+          },
+          {
+            // Turn-1 gas queued, before or after the move.
+            when: {
+              kind: "scfen",
+              re: /^(?=SCFEN\|[^|]+\|1\|)(?=.*[BF]=pawnDouble:)/,
             },
             comment: "Oh, yeah!",
             emotion: "watching",
           },
           {
-            // Step 2 — a classical move queued from a Marine square (d2 / e3 on
-            // this seed); the King on e1 cannot match. First match wins, so once
+            // Second planning window, no gas yet — teach the slip-away.
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|2\|/,
+            },
+            comment: "Now the slipping away technique, drop a gas canister in your Marine",
+            emotion: "scanning",
+          },
+          {
+            // Turn-1 classical queued from a Marine square (d2 / e3 on this
+            // seed); the King on e1 cannot match. First match wins, so once
             // gas is queued the cheer above takes over.
             when: {
               kind: "scfen",
-              re: /Q:w:[^;]*C=[de][23]/,
+              re: /^(?=SCFEN\|[^|]+\|1\|)(?=.*Q:w:[^;]*C=[de][23])/,
             },
             comment: "You just queued an intent! \nIt looks like a ghost. \n\nSee that gas canister in the bottom? Drag and drop it into that transparent Marine.",
             emotion: "idle",
+          },
+        ],
+        hints: [
+          {
+            when: {
+              kind: "scfen",
+              re: /^(?=SCFEN\|[^|]+\|2\|)(?=.*[BF]=pawnDouble:)/,
+            },
+            squares: [
+              "e5",
+            ],
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|2\|/,
+            },
+            squares: [
+              "e3",
+            ],
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|1\|/,
+            },
+            squares: [
+              "d4",
+            ],
+          },
+          {
+            squares: [],
           },
         ],
       },

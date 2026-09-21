@@ -7,6 +7,7 @@
  */
 import {
   placementToMap,
+  rayBetween,
   type StarChessColor,
 } from "@chess-coach/starchess-core";
 import type { Square } from "chess.js";
@@ -23,7 +24,10 @@ import {
   withKingFire,
 } from "~/presentation/animations/kingDamage";
 import { deriveVisualFrame } from "~/presentation/animations/visualFrame";
-import { pieceVisibleToViewer } from "~/presentation/board/fogVisibility";
+import {
+  pieceVisibleToViewer,
+  targetVisibleGate,
+} from "~/presentation/board/fogVisibility";
 import { useBoardInput } from "~/presentation/board/hooks/useBoardInput";
 import { useAutoDeploy } from "~/presentation/board/hooks/useAutoDeploy";
 import { useCombatOverlays } from "~/presentation/combat/hooks/useCombatOverlays";
@@ -85,6 +89,12 @@ export const LiveStarChessBoard: Component<{
 
   const fogOpts = () => ({ siegedRooks: snap().siegedRooks ?? [] });
 
+  /** Vision opts with mines — own mines light their tile, same as the veil. */
+  const fogVisionOpts = () => ({
+    ...fogOpts(),
+    mines: [...(snap().mines ?? [])],
+  });
+
   const pieceFxVisible = (at: Square, color: StarChessColor) => {
     if (!gateFx()) return true;
     return pieceVisibleToViewer(
@@ -109,6 +119,29 @@ export const LiveStarChessBoard: Component<{
       )
     );
   };
+
+  /**
+   * Enemy movers whose origin is fogged but whose path crosses the viewer's
+   * vision (lit ∪ revealed — same predicate the veil renders with). They stay
+   * in the frame's moveCues (fog relocation + hide squares) but their overlay
+   * hull is suppressed: StarChessBoard renders them *under* the veil, revealed
+   * tile-by-tile as they cross lit squares. Without this the whole cue used to
+   * be dropped, so a fog-origin mover crossing vision was never seen — only
+   * its missile/death popped over the dark.
+   */
+  const veilMoveIds = createMemo((): ReadonlySet<string> => {
+    if (!gateFx()) return new Set();
+    const viewer = store.shell().viewer;
+    const gate = targetVisibleGate(snap().placement, fogVisionOpts());
+    const out = new Set<string>();
+    for (const m of combat.moveCues()) {
+      if (m.color === viewer) continue;
+      if (moverFxVisible(m)) continue;
+      const path = [m.from, ...rayBetween(m.from, m.to), m.to];
+      if (path.some((sq) => gate(viewer, sq))) out.add(m.id);
+    }
+    return out;
+  });
 
   // Persist fire overlays for both kings from HP (turn-open checks + path reveal).
   createEffect(() => {
@@ -162,7 +195,12 @@ export const LiveStarChessBoard: Component<{
    * HP state and let `visibleKingDamage` drop that side's slot instead.
    */
   const moveCues = createMemo(() =>
-    withKingFire(combat.moveCues().filter((c) => moverFxVisible(c)), kingDamage()),
+    withKingFire(
+      combat
+        .moveCues()
+        .filter((c) => moverFxVisible(c) || veilMoveIds().has(c.id)),
+      kingDamage(),
+    ),
   );
 
   /** Sides whose king is a live move hull — that hull paints the fire. */
@@ -252,6 +290,7 @@ export const LiveStarChessBoard: Component<{
     moveCues: moveCues(),
     moveProgress: combat.moveProgress(),
     moveLeg: combat.moveLeg(),
+    veilMoveCueIds: veilMoveIds(),
     jumpCues: jumpCues(),
     jumpTrails: combat.jumpTrails(),
     mineMissiles: combat.mineMissiles(),

@@ -1,3 +1,4 @@
+/* // SPEC: _spec/apps/starchess/navigation-chrome.md */
 /* Review list: Playing as + date pagination (Coach GameHistoryFilters parity, no First move). */
 
 .filters {
@@ -24,6 +25,17 @@
 
   .colorName {
     display: none;
+  }
+
+  /*
+   * Mobile touch target — date page arrows must clear 40×40px. Desktop keeps
+   * the slim pager look; only the small-viewport hit area grows.
+   */
+  .page-btn {
+    min-width: 40px;
+    min-height: 40px;
+    box-sizing: border-box;
+    padding: 0.5rem 0.6rem;
   }
 }
 

@@ -69,6 +69,7 @@ describe("king-attack-3 tutorial HUD", () => {
     expect(screen.getByTestId("live-match-title").textContent).toContain(
       LIVE_ADJUTANT_MATCH_TITLE,
     );
+    // Live chrome shows the viewer bar only (dual bars are review-only).
     expect(screen.getByTestId("resource-bar")).not.toBeNull();
     expect(screen.getByTestId("turn-bar-sidebar")).not.toBeNull();
     expect(screen.getByTestId("turn-end")).not.toBeNull();

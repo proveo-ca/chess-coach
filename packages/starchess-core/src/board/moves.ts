@@ -182,8 +182,11 @@ const pawnMoves = (
 };
 
 /**
- * Sieged rook: classic rook attacks only (same file or rank, blocked by
- * occupancy) — captures fire in place (no relocate). No diagonal / area fire.
+ * Sieged rook: any square on the cross (same file or rank) is a fire
+ * mission — captures fire in place (no relocate), and empty squares take a
+ * shelling in place, exactly like a regular piece attacking an empty square.
+ * Blockers do NOT filter the list: resolve walks the ray and the first piece
+ * in the way intercepts (collision rules). No diagonal / area fire.
  * A hostile mine on an empty ray square is a target too: the turret clears it
  * without relocating (mines are not occupancy, so the ray runs through them).
  */
@@ -196,11 +199,10 @@ const siegedRookMoves = (
 ): void => {
   for (const to of ALL_SQUARES) {
     if (to === from) continue;
-    // Rook geometry via placement attacks (rays stop at first piece).
-    if (!attacksSquare(map, from, to)) continue;
+    // Cross geometry only — blockers ignored here, resolve intercepts.
+    if (to[0] !== from[0] && to[1] !== from[1]) continue;
     const occ = map.get(to);
     if (occ && occ.color === color) continue;
-    if (!occ && !hostileMine(mines, to, color)) continue;
     pushMove(
       out,
       {
@@ -208,7 +210,7 @@ const siegedRookMoves = (
         to,
         piece: "r",
         color,
-        capture: occ ?? null,
+        capture: occ && occ.color !== color ? occ : null,
         firesInPlace: true,
       },
       mines,

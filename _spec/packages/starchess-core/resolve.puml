@@ -1,6 +1,8 @@
 @startuml resolve
 ' SPEC: _spec/packages/starchess-core/resolve.puml
 ' purpose: Rank-major resolve — turn-open king-checks (before intent) → End: B → C → F.
+' covers: packages/starchess-core/src/resolve/resolve-turn.ts
+' covers: packages/starchess-core/src/__tests__/rook/**
 !include ../../themes/proveo.puml
 
 title StarChess · Resolve — 3 phases: attack → move → fog approach
@@ -94,7 +96,11 @@ if (attack hits a piece?) then (yes)
 elseif (attack hits a visible hostile **mine**?) then (yes)
   :""mineBlast"" in ""attacks"" — the **mine** dies (no victim);\nattacker **occupies** the tile — a sieged tank clears it\nwithout relocating (""firesInPlace"");
 else (no)
-  :No direct hit — quiet intent defers to phase 2;
+  if (sieged rook shells empty cross?\nempty ""to"" on file/rank, clear ray, visible) then (yes)
+    :""shelling"" in ""attacks"" — victimless HE at ""to"";\nno death, no occupy, tank holds (""firesInPlace"");\nclear ray only — mid-ray enemy captured upstream,\nally/king contact holds fire, fogged stays quiet;
+  else (no)
+    :No direct hit — quiet intent defers to phase 2;
+  endif
 endif
 
 :Phase 2 **move** — survivors relocate; collisions\nresolved against the post-attack board; a target\n**still fogged at contact** → move collision\n— capture/occupy, no attack cue (never a\n**marine front step** — that blocks + truncates);\n**same-square race** (two movers land on one tile)\n→ **both die**, square empty, no attack cue;

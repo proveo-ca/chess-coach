@@ -119,6 +119,12 @@ export const aimPoseFor = (vec: AttackVec): AimPose => {
  * Rest art reads leftish (guns ≈ −135°); a half-turn faces right.
  * Mirror is forbidden here (it reads papery mid-slide): rotation only,
  * so `mirrorX` is always false and callers never emit `scaleX(-1)`.
+ *
+ * @deprecated Do not apply this to the mover root: rotating the root flips
+ * the hull upside down (tracks on top). The root must stay unrotated and only
+ * the turret yaws (see the `r` branch of `MoveAnimation`, which aims the
+ * turret along travel via `screenAngleDeg` instead). Kept exported so the
+ * `animations/index.ts` barrel does not break external importers.
  */
 export const rookTravelPose = (vec: AttackVec): AimPose => {
   if (vec.df === 0) return { mirrorX: false, rotateDeg: 0 };

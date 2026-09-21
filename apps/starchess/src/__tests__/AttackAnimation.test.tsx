@@ -84,3 +84,21 @@ describe("AttackAnimation · team tint", () => {
     ).toEqual(new Set(["#3b7dd8", "#a22"]));
   });
 });
+
+/**
+ * Siege shelling (empty ground) has no victim and emits no death cue — the
+ * HE fireball must still play off the attack cue alone, or vacated squares
+ * resolve silently.
+ */
+describe("AttackAnimation · siege shelling", () => {
+  it("plays the HE impact for a victimless siege shot", () => {
+    const { container } = render(() => (
+      <AttackAnimation
+        cues={[{ id: "a0", piece: "r", color: "w", from: "d4", to: "d2", rookMode: "siege" }]}
+        boardWidth={400}
+        boardHeight={400}
+      />
+    ));
+    expect(container.querySelector('[class*="rookImpact"]')).not.toBeNull();
+  });
+});

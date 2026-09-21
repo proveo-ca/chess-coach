@@ -11,7 +11,7 @@ import "~/styles/index.css";
 
 /**
  * Match apps/ui Storybook: viewports + theme toolbar + Screen responsiveness tokens.
- * // SPEC: _spec/apps/ui/responsiveness/rules.md
+ * // SPEC: _spec/apps/ui/responsiveness/rules.md, _spec/apps/starchess/navigation-chrome.md
  */
 const viewports = {
   desktop: {
@@ -76,6 +76,8 @@ const preview: Preview = {
             "Tutorial",
             "Review",
           ],
+          "Navigation",
+          ["Chrome", "*"],
           "Features",
           ["Credits", "GasDeploy", "Side Rail Tools", "Turn Chrome", "*"],
           "Atoms",

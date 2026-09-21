@@ -268,6 +268,38 @@ describe("timelinePlayer", () => {
     });
   });
 
+  it("emits a single deploy for a B-gas promotion (no B-diff double)", () => {
+    // The promoted unit is already in afterB, so the B placement diff wants to
+    // deploy it — but the promotions block walks the marine off and deploys it
+    // there. Both firing reads as deploy → marine back → deploy again.
+    let snap = parseScFen(
+      "SCFEN|k7/4P3/8/8/8/8/8/4K3|11|33|P|G:22:22|Q:w:;b:",
+    );
+    snap = addScAction({
+      snapshot: snap,
+      action: {
+        timing: "B",
+        kind: "pawnDouble",
+        color: "w",
+        from: "e7",
+        to: "e8",
+        promotion: "q",
+      },
+    }).snapshot;
+    const result = endScTurn(snap);
+    const cues = projectResolveTimeline(result);
+    const deploys = cues.filter((c) => c.kind === "deploy" && c.at === "e8");
+    expect(deploys).toHaveLength(1);
+    expect(deploys[0]).toMatchObject({ piece: "q", color: "w" });
+    // Walk-off still precedes the one deploy: marine lands, walks away, unit arrives.
+    const walkIdx = cues.findIndex(
+      (c) => c.kind === "move" && c.id.startsWith("pw") && c.from === "e8",
+    );
+    const deployIdx = cues.findIndex((c) => c.kind === "deploy" && c.at === "e8");
+    expect(walkIdx).toBeGreaterThanOrEqual(0);
+    expect(deployIdx).toBeGreaterThan(walkIdx);
+  });
+
   it("places the promoted unit when deploy starts (no late auto-deploy surprise)", () => {
     let snap = parseScFen(
       "SCFEN|k7/4P3/8/8/8/8/8/4K3|1|33|P|G:11:11|Q:w:;b:",

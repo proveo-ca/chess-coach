@@ -2,7 +2,7 @@
  * Review list chrome: Playing as (Blue / Red) + date pagination.
  * First-move filter is Coach-only (StarChess has no opening SAN).
  * `compact` is the MobileBanner density (dynamic band).
- * // SPEC: _spec/apps/starchess/menu-flow.puml, _spec/apps/starchess/screens.puml
+ * // SPEC: _spec/apps/starchess/menu-flow.puml, _spec/apps/starchess/screens.puml, _spec/apps/starchess/navigation-chrome.md
  */
 import { Show } from "solid-js";
 import type { Component } from "solid-js";

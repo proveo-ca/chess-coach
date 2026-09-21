@@ -28,13 +28,31 @@ describe("legal dests onto a mined tile", () => {
       siegedRooks: ["a1"],
       mines: [MINE_B("a4")],
     });
-    expect(moves).toEqual([
+    // The mined tile clears in place — alongside every other cross square,
+    // which the tank may shell like a regular piece attacking empty ground.
+    expect(moves).toContainEqual(
       expect.objectContaining({
         to: "a4",
         firesInPlace: true,
         capture: null,
         hostileMineOnTo: true,
       }),
+    );
+    expect(moves.map((m) => m.to).sort()).toEqual([
+      "a2",
+      "a3",
+      "a4",
+      "a5",
+      "a6",
+      "a7",
+      "a8",
+      "b1",
+      "c1",
+      "d1",
+      "f1",
+      "g1",
+      "h1",
     ]);
+    expect(moves.every((m) => m.firesInPlace)).toBe(true);
   });
 });

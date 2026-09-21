@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/ui/responsiveness/rules.md, _spec/apps/starchess/screens.puml, _spec/apps/starchess/architecture/screen-entities.puml, _spec/apps/starchess/architecture/base-screen.puml, _spec/apps/starchess/core/board/planning-projection.puml, _spec/apps/starchess/core/engine-boundary.puml
+// SPEC: _spec/apps/ui/responsiveness/rules.md, _spec/apps/starchess/screens.puml, _spec/apps/starchess/architecture/screen-entities.puml, _spec/apps/starchess/architecture/base-screen.puml, _spec/apps/starchess/core/board/planning-projection.puml, _spec/apps/starchess/core/engine-boundary.puml, _spec/apps/starchess/navigation-chrome.md
 import {
   type ScFenSnapshot,
   type StarChessColor,
@@ -109,14 +109,25 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
   const coachHeader = () =>
     (props.header != null || props.tutorial) && !props.fullMatchHud;
 
-  /** Tall/narrow mobile loses the rail — TurnBar under GasRack (no phase chips). */
+  /** Tall/narrow mobile loses the rail — TurnBar moves to the top chrome,
+      compact under the resource bar (single End instance, never doubled).
+      The footer keeps its own copy for the coach-header branch, which never
+      renders topChrome — the two branches are mutually exclusive. */
+  const showTopTurnBar = () =>
+    starChessMode() &&
+    !turnHidden() &&
+    !ended() &&
+    (!turnInSidebar() || (mobileViewport() && !dynamicMobile()));
+
+  /** Coach-header branch only (tutorials): topChrome never renders there. */
   const showFooterTurnBar = () =>
     starChessMode() &&
     !ended() &&
     !turnHidden() &&
     turnInSidebar() &&
     mobileViewport() &&
-    !dynamicMobile();
+    !dynamicMobile() &&
+    coachHeader();
 
   const liveMatch = () => {
     const phase = store.shell().phase;
@@ -459,55 +470,81 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
     return f === "both" || f === "b";
   };
 
-  const topChrome = () => (
-    <>
-      <Show when={starChessMode() && !turnInSidebar() && !turnHidden() && !ended()}>
-        <TurnBar
-          class={styles.topTurnBar}
-          autoStart={false}
-          resolveOnEnd={false}
-          onEnd={() => store.submitTurn("end")}
-        />
-      </Show>
-      <Show when={starChessMode() && !props.hideResources}>
-        <Show when={ended()} fallback={<ResourceBar class={styles.topResourceBar} />}>
-          <ReviewTurnNav
-            onBack={() => store.reviewBack()}
-            onForward={() => store.reviewForward()}
-            backDisabled={reviewBusy() || store.shell().reviewIndex <= 0}
-            forwardDisabled={
-              reviewBusy() ||
-              store.shell().reviewIndex >= store.shell().settledSnapshots.length - 1
+  /**
+   * Live economy: viewer bar only — the adjutant side stays hidden outside
+   * review. Dual bars ship on review detail / ended games, never live.
+   */
+  /**
+   * Phones read bar first, TurnBar underneath — in DOM order, so keyboard
+   * and screen-reader order match the visual (a CSS `order` swap would lie
+   * to both). Desktop keeps TurnBar on top.
+   */
+  const barFirst = () => mobileViewport() && !dynamicMobile();
+
+  const topTurnBar = () => (
+    <Show when={showTopTurnBar()}>
+      <TurnBar
+        compact={turnInSidebar()}
+        class={styles.topTurnBar}
+        autoStart={false}
+        resolveOnEnd={false}
+        onEnd={() => store.submitTurn("end")}
+      />
+    </Show>
+  );
+
+  const topResources = () => (
+    <Show when={starChessMode() && !props.hideResources}>
+      <Show
+        when={ended()}
+        fallback={<ResourceBar class={styles.topResourceBar} />}
+      >
+        <ReviewTurnNav
+          onBack={() => store.reviewBack()}
+          onForward={() => store.reviewForward()}
+          backDisabled={reviewBusy() || store.shell().reviewIndex <= 0}
+          forwardDisabled={
+            reviewBusy() ||
+            store.shell().reviewIndex >= store.shell().settledSnapshots.length - 1
+          }
+        >
+          <div
+            class={styles.dualResources}
+            role="group"
+            aria-label={
+              reviewVisionFilter() === "both"
+                ? "Both sides resources"
+                : reviewVisionFilter() === "w"
+                  ? "Blue side resources"
+                  : "Red side resources"
             }
           >
-            <div
-              class={styles.dualResources}
-              role="group"
-              aria-label={
-                reviewVisionFilter() === "both"
-                  ? "Both sides resources"
-                  : reviewVisionFilter() === "w"
-                    ? "Blue side resources"
-                    : "Red side resources"
-              }
-            >
-              <Show when={showWhiteResources()}>
-                <ResourceBar
-                  class={styles.topResourceBar}
-                  color="w"
-                  snapshot={readDisplayedSnapshot(store)}
-                />
-              </Show>
-              <Show when={showBlackResources()}>
-                <ResourceBar
-                  class={styles.topResourceBar}
-                  color="b"
-                  snapshot={readDisplayedSnapshot(store)}
-                />
-              </Show>
-            </div>
-          </ReviewTurnNav>
-        </Show>
+            <Show when={showWhiteResources()}>
+              <ResourceBar
+                compact
+                class={styles.topResourceBar}
+                color="w"
+                snapshot={readDisplayedSnapshot(store)}
+              />
+            </Show>
+            <Show when={showBlackResources()}>
+              <ResourceBar
+                compact
+                class={styles.topResourceBar}
+                color="b"
+                snapshot={readDisplayedSnapshot(store)}
+              />
+            </Show>
+          </div>
+        </ReviewTurnNav>
+      </Show>
+    </Show>
+  );
+
+  const topChrome = () => (
+    <>
+      <Show when={barFirst()} fallback={<>{topTurnBar()}{topResources()}</>}>
+        {topResources()}{topTurnBar()}
       </Show>
     </>
   );
@@ -560,7 +597,13 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
             </Show>
             <Show
               when={props.onExitToMenu}
-              fallback={<div class={styles.topChrome} data-testid="starchess-board-chrome">{topChrome()}</div>}
+              fallback={
+                <div class={styles.topNavRow}>
+                  {/* No dynamicHide: no MobileBanner replacement here, so the
+                      in-flow chrome is the only chrome in the dynamic band. */}
+                  <div class={styles.topChrome} data-testid="starchess-board-chrome">{topChrome()}</div>
+                </div>
+              }
             >
               <Show when={starChessMode() && !ended() && dynamicMobile()}>
                 <MobileBanner
@@ -583,6 +626,12 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
                   }
                 />
               </Show>
+              {/*
+                Top section rows: the nav band owns Row 1 (`‹ Back` + title)
+                and the chrome stack follows as its own rows below — the
+                resource bars never share the nav grid track, so a long name
+                or a second bar cannot squeeze `‹ Back` or overflow X.
+              */}
               <div
                 class={styles.topNavRow}
                 classList={{ [styles.dynamicHide]: starChessMode() && !ended() && dynamicMobile() }}
@@ -595,10 +644,10 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
                       </Label>
                     </div>
                   </Show>
-                  <div class={styles.topChrome} data-testid="starchess-board-chrome">
-                    {topChrome()}
-                  </div>
                 </ScreenBackNav>
+                <div class={styles.topChrome} data-testid="starchess-board-chrome">
+                  {topChrome()}
+                </div>
               </div>
             </Show>
           </Screen.SidebarInset>

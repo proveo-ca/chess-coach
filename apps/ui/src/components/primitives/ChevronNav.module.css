@@ -1,3 +1,4 @@
+/* // SPEC: _spec/apps/starchess/navigation-chrome.md */
 .nav {
   display: inline-flex;
   align-items: center;
@@ -43,4 +44,17 @@
 
 .forward {
   justify-content: flex-end;
+}
+
+/*
+ * Mobile touch target — nav arrows must clear 40×40px. Mirrors the
+ * starchess ChevronNav rule; desktop keeps the tight text-button silhouette.
+ */
+@media (max-width: 719px) {
+  .nav {
+    min-width: 40px;
+    min-height: 40px;
+    box-sizing: border-box;
+    padding: 0.55rem 0.5rem;
+  }
 }

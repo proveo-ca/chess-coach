@@ -1,7 +1,7 @@
 /**
  * Text chevron nav — `‹ Back` (leading) or `Share ›` (trailing).
  * Shared leave / forward chrome (tutorial · review · live top panel).
- * // SPEC: _spec/apps/starchess/menu-flow.puml
+ * // SPEC: _spec/apps/starchess/menu-flow.puml, _spec/apps/starchess/navigation-chrome.md
  */
 import { A } from "@solidjs/router";
 import clsx from "clsx";

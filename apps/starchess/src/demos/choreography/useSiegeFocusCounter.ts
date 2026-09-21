@@ -6,9 +6,12 @@
  * (C plus F pawnDouble, rewriting to a double step — the pawn stays
  * on its square through the attack phase, so the hint stays killable).
  * Promoting d2→d1 is the fallback once h4 falls: B-gas slips
- * away pre-attack and the ship is answered on d1 next turn. Later the
- * ship pressures c1 (never d4 — an instant Qxd4 would fail the lesson),
- * else the d7 pawn advances the same C+F stack. Best-effort, never throws.
+ * away pre-attack (the tank intent on d2 still resolves — HE shells the
+ * vacated square) and the ship is answered on d1 next turn. Later the
+ * ship pressures c1 (never d4 — an instant Qxd4 would fail the lesson).
+ * The d7 pawn likewise slips with 1st-phase gas to d6: the tank intent on
+ * d7 collides with the interceptor by the collision rules (explosion on
+ * d6, never reaching d7). Best-effort, never throws.
  */
 import { createEffect } from "solid-js";
 import { placementToMap } from "@chess-coach/starchess-core";
@@ -122,7 +125,18 @@ export const useSiegeFocusCounter = (store: MatchStore): ChoreographyResult => {
       }
       const d7 = map.get("d7");
       if (d7?.type === "p" && d7.color === "b") {
-        if (queueGasMove(store, "d7", "d6")) queuedTurn = snap.turn;
+        // 1st-phase gas slips to d6 pre-attack (no promotion off last rank):
+        // a tank intent on d7 intercepts at d6 by the collision rules.
+        // Falls back to the old C+F stack when the gas step is illegal.
+        try {
+          store.dispatch({
+            type: "QUEUE_ACTION",
+            action: { timing: "B", kind: "pawnDouble", color: "b", from: "d7", to: "d6" },
+          });
+          queuedTurn = snap.turn;
+        } catch {
+          if (queueGasMove(store, "d7", "d6")) queuedTurn = snap.turn;
+        }
         return;
       }
       queuedTurn = snap.turn;
