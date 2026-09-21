@@ -69,6 +69,10 @@ export const splitResolveWaves = (result: EndScTurnResult): ResolveWave[] => {
       buckets.specialAfter.push(cue);
       continue;
     }
+    if (cue.kind === "attack" && cue.anim && seenClassicalMove) {
+      buckets.specialAfter.push(cue);
+      continue;
+    }
     if (cue.kind === "attack" && cue.anim) {
       buckets.specialBefore.push(cue);
       continue;
@@ -84,8 +88,19 @@ export const splitResolveWaves = (result: EndScTurnResult): ResolveWave[] => {
         continue;
       }
     }
+    if (cue.kind === "death" && buckets.specialAfter.length) {
+      const last = buckets.specialAfter[buckets.specialAfter.length - 1];
+      if (last?.kind === "attack" && last.anim) {
+        buckets.specialAfter.push(cue);
+        continue;
+      }
+    }
     if (cue.kind === "gasDrop" || cue.kind === "deploy") {
       buckets.specialBefore.push(cue);
+      continue;
+    }
+    if (cue.kind === "move" && cue.shipJump && seenClassicalMove) {
+      buckets.specialAfter.push(cue);
       continue;
     }
     if (cue.kind === "move" && (cue.stim || cue.shipJump)) {

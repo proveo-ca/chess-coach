@@ -2,6 +2,7 @@
 ' SPEC: _spec/apps/starchess/timeline/cue-playback.puml
 ' purpose: playTimeline dispatch — how the head of the cue queue picks a
 ' handler, what each handler commits, and when the board ladder advances.
+' covers: apps/starchess/src/__tests__/timelinePlayer.test.ts
 !include ../../../themes/proveo.puml
 
 skinparam defaultTextAlignment left
@@ -97,10 +98,25 @@ note right
   ""cancels"" and every callback re-checks the ""cancelled"" flag before it
   commits. The returned disposer flips the flag and drains the list. A handler
   that schedules work without registering it leaks a commit past teardown —
-  the one rule that must survive any refactor of this file.
+   the one rule that must survive any refactor of this file.
 
-  **The scheduler is injected** (""Scheduler"" port), so tests drive the whole
-  timeline deterministically with a fake clock — no real timers, no flake.
+   **The scheduler is injected** (""Scheduler"" port), so tests drive the whole
+   timeline deterministically with a fake clock — no real timers, no flake.
+ end note
+
+' N_ATTACK_DYING: reciprocal fire suppresses attacker hull on at==from
+note right
+  Reciprocal fire suppresses the attacker
+  hull exactly when death.at matches the
+  attack.from square. Flags persist until
+  the attack wave clears, never flicker.
+end note
+
+' N_JUMP_TRAIL: Jump trails linger 1000ms past hull clear
+note right
+  Tactical Jump trails persist 1000ms past
+  hull collapse for the CSS fade. onDone
+  fires at hull clear, never waits fade.
 end note
 stop
 @enduml

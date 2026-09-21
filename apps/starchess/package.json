@@ -24,6 +24,7 @@
     "deploy:dry-run": "npm run build && wrangler deploy --dry-run",
     "deploy": "npm run build && wrangler deploy",
     "arena:clean": "rm -rf ./arena-results",
+    "stress:vfx": "node scripts/vfx-stress.mjs",
     "arena": "bash -c 'pnpm run arena:clean && mkdir -p ./arena-results && OUT=\"$PWD/arena-results\" && ./scripts/arena.sh --pairing naive:strategic --seeds 10 --out \"$OUT\" \"$@\"' bash",
     "arena:naive": "bash -c 'pnpm run arena:clean && mkdir -p ./arena-results && OUT=\"$PWD/arena-results\" && ./scripts/arena.sh --pairing naive:naive --seeds 10 --out \"$OUT\" \"$@\"' bash",
     "arena:strategic": "bash -c 'pnpm run arena:clean && mkdir -p ./arena-results && OUT=\"$PWD/arena-results\" && ./scripts/arena.sh --pairing strategic:strategic --seeds 10 --out \"$OUT\" \"$@\"' bash",

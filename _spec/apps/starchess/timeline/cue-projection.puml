@@ -2,6 +2,7 @@
 ' SPEC: _spec/apps/starchess/timeline/cue-projection.puml
 ' purpose: projectResolveTimeline emission order — the cue list is the script,
 ' so the order below *is* the animation.
+' covers: apps/starchess/src/__tests__/timelinePlayer.test.ts
 !include ../../../themes/proveo.puml
 
 skinparam defaultTextAlignment left
@@ -67,8 +68,34 @@ note right
   **Never re-derive rules here.** Everything drawn comes from a list the engine
   already stamped (""attacks"", ""moves"", ""mineTriggers"", ""moveCollisions"",
   ""pathRevealAttacks"", ""pathRevealMineTriggers"", ""promotions"", ""events"").
-  If a cue cannot be built from the result, the engine is missing a field —
-  add it there, not a second rules pass here.
+   If a cue cannot be built from the result, the engine is missing a field —
+   add it there, not a second rules pass here.
+ end note
+
+' N_PROMO_MINE: classical promotion detonating on hostile mine
+note right
+  A classical promotion detonating on a
+  hostile mine projects move, mine boom,
+  hull in order. The resolver suppresses
+  the promotion pair for a dead marine.
+end note
+
+' N_SAME_TYPE: same-type substitution synthesises deploy+crush from event
+note right
+  A same-type occupant substitution emits
+  no placement diff because the board is
+  unchanged. Deploy and crush synthesise
+  solely from the crush event, not diff.
+end note
+
+' N_F_SPECIAL_PARITY: every B cue family has an F twin on the afterMove rung
+note right
+  Jumps project travel plus arrival blast
+  in both phases: B reads qj/qjm/qjd on
+  preAfterB, F reads qjf/qjfm/qjfd on
+  afterMove. Charon volleys pair ch/chd
+  with chf/chfd the same way, so waves
+  never play a second-gas special early.
 end note
 stop
 @enduml

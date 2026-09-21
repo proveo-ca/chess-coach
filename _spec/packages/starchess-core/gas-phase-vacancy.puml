@@ -1,0 +1,131 @@
+@startuml gas-phase-vacancy
+' SPEC: _spec/packages/starchess-core/gas-phase-vacancy.puml
+' purpose: phase-aware vacancy (binding refinement) — only Marine pawnDouble + BattleShip queenWarp vacate; transit vs origin matrix + canonical chains.
+' covers: packages/starchess-core/src/resolve/submit-turn.ts
+' covers: packages/starchess-core/src/resolve/resolve-turn.ts
+' covers: packages/starchess-core/src/rules/validation.ts
+' covers: packages/starchess-core/src/board/moves.ts
+' covers: apps/starchess/src/presentation/specials/planning/occupancy.ts
+' covers: apps/starchess/src/presentation/combat/intentOverlays.ts
+' see also: _spec/packages/starchess-core/resolve.puml
+' see also: _spec/packages/starchess-core/resolve-turn-activity.puml
+' see also: _spec/packages/starchess-core/sc-moves.puml
+' see also: _spec/apps/starchess/core/board/planning-projection.puml
+' see also: _spec/packages/starchess-core/turn-queue-sequence.puml
+' see also: _spec/packages/starchess-core/mine-contact.puml
+!include ../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess Core · Gas-phase vacancy (required)
+
+package "packages/starchess-core — order + rules" {
+  component "resolve/submit-turn.ts\nendScTurn — order owner" as SUB <<app>>
+  component "resolve/resolve-turn.ts\nRULES + relocate" as RES <<app>>
+  component "rules/validation.ts\nassertClassicalBaseline" as VAL <<error>>
+  component "board/moves.ts\nscMovesFrom" as MOV <<app>>
+  database "placement map\nstart board" as MAP <<db>>
+}
+
+package "apps/starchess — planning chrome" {
+  component "presentation/specials/planning\noccupancyForQueuedMoves" as OCC <<app>>
+  component "presentation/combat\nintentOverlaysFromQueue" as OV <<app>>
+}
+
+SUB ARROW_MAIN RES : B < C < F rank order
+SUB ARROW_MAIN VAL : queue + placement
+VAL ARROW_ERROR RES : ally aim rejected today
+VAL ARROW_OPTIONAL MAP : reads live placement
+RES ARROW_MAIN MAP : ordered relocate
+MOV ARROW_OPTIONAL OCC : reads projected map
+OCC ARROW_MAIN OV : ghosts paint vacancy
+OV ARROW_OPTIONAL RES : never resolves
+
+note as N_ORDER
+  Turn order remains exclusively
+  owned by ""endScTurn"" sequencing.
+  Preliminary checks open, B combat
+  precedes C, and F concludes last.
+end note
+N_ORDER .. SUB
+
+note as N_VACATE
+  Only Marine pawnDouble advance
+  relinquishes origin with gas, as
+  does BattleShip queenWarp transit.
+  Spawn crushes arrival instead, and
+  mine, siege, snipe never vacate.
+end note
+N_VACATE .. RES
+
+note as N_CURRENT
+  B departure origin becomes FREE
+  for both C and F later landings.
+  Validation consults projection, not
+  live placement, for ally occupancy.
+end note
+N_CURRENT .. VAL
+
+note as N_TRANSIT
+  B arrival plus rewritten C origin
+  counts as transit, never vacancy.
+  C landing there stays BLOCKED, as
+  transit evaluation precedes origin
+  departure permission instead.
+end note
+N_TRANSIT .. VAL
+
+note as N_MOVE_GAS
+  Rewritten C departure frees origin
+  for later F arrival in mirror.
+  F departure itself stays terminal,
+  chaining only toward later F in one
+  sequence, never toward prior phases.
+end note
+N_MOVE_GAS .. RES
+
+note as N_ORDERING
+  B chain applies heads first under
+  departure ordering, never overwrite.
+  Consequently e2 to e3 plus e3 to e4
+  both commit same phase, each arrival
+  pursuing its vacater sequentially.
+end note
+N_ORDERING .. SUB
+
+note as N_WARP
+  BattleShip warp departure frees its
+  origin for later phases likewise.
+  Warp arrival onto holdout remains
+  rejected, since movement never
+  crushes through resident pieces.
+end note
+N_WARP .. RES
+
+note as N_CANON_AB
+  Canonical B e2 to e3 plus rewritten
+  C e3 to e4 onward chains advance.
+  Command Center e1 to e2 lands validated
+  vacant, while e1 to e3 disqualifies
+  since transit precludes entry sequentially.
+end note
+N_CANON_AB .. RES
+
+note as N_CANON_CD
+  Move plus gas mirrors advance with
+  C e2 to e3 then F e3 to e4 onward.
+  Warp origin frees symmetrically, yet
+  warp arrival onto holdout remains
+  rejected since relocation crushes no residents.
+end note
+N_CANON_CD .. RES
+
+note as N_PROJ
+  Planning projection paints post-B
+  vacancy as selectable destination.
+  Ghosts follow folded queue order, yet
+  only resolve owns collision outcomes.
+end note
+N_PROJ .. OV
+@enduml

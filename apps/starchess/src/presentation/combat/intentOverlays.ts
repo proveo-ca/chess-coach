@@ -11,7 +11,7 @@
  * King-check rings are gated on the viewer's **current** vision — a projected
  * check never paints on a king the viewer cannot see yet (fog leak at intent).
  *
- * // SPEC: _spec/apps/starchess/core/board/planning-projection.puml
+ * // SPEC: _spec/apps/starchess/core/board/planning-projection.puml, _spec/packages/starchess-core/gas-phase-vacancy.puml
  */
 import type { PieceSymbol, Square } from "chess.js";
 import {

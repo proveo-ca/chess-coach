@@ -600,6 +600,38 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
 
   cues.push(...fGas);
   for (const m of result.fMoves) cues.push(moveCue(m, `f${n++}`, { stim: true }));
+  for (const ev of result.events) {
+    if (ev.phase !== "specialAfter" || ev.kind !== "queenWarp") continue;
+    if (!ev.from || !ev.to) continue;
+    cues.push({
+      kind: "move",
+      id: `qjf${n++}`,
+      piece: "q",
+      color: ev.color,
+      from: ev.from,
+      to: ev.to,
+      shipJump: true,
+    });
+    if (ev.mineColor) {
+      cues.push({
+        kind: "death",
+        id: `qjfm${n++}`,
+        piece: "n",
+        color: ev.mineColor,
+        at: ev.to,
+        mine: true,
+      });
+      if (ev.victim) {
+        cues.push({
+          kind: "death",
+          id: `qjfd${n++}`,
+          piece: ev.victim.type,
+          color: ev.victim.color,
+          at: ev.to,
+        });
+      }
+    }
+  }
   // F-rank Charon (2nd gas phase): same volley as B, plus the off-board
   // fizzle flight when the queued ship drifted before resolve.
   for (const ev of result.events) {

@@ -1,0 +1,62 @@
+@startuml match-state
+' SPEC: _spec/apps/starchess/core/turn/match-state.puml
+' purpose: MatchState / MatchAction contracts in types/match.ts — planning
+' spend caps, viewer seats, settle history, and timeline patch discipline.
+' covers: apps/starchess/src/types/match.ts
+' see also: ../turn-bonus-broadcast.puml (milestone bubble clock gate)
+' see also: ../../match-store.puml (store shell and reducer wiring)
+!include ../../../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess · Match state contracts (types/match.ts)
+
+package "Planning window" {
+  component "planningMineralSpend\nstored-to-deployed per color" as SPEND <<db>>
+  component "TURN_OPEN\nsole beginScTurn path" as OPEN <<async>>
+  component "pendingPromotion\ntimeout defaults queen" as PROMO <<db>>
+}
+
+package "Seats and history" {
+  component "viewer vs playerColor\nlive seat vs stable team" as SEAT <<db>>
+  component "settledSnapshots + resolves\nresolves = snaps - 1" as SETTLE <<db>>
+  component "turnStartChecksApplied\nSUBMIT skips re-checks" as CHECKS <<db>>
+}
+
+package "Timeline patch discipline" {
+  component "TimelineCommitPatch\nforward display only" as PATCH <<db>>
+  component "specialsUsed aura\nattackDying hold" as AURA <<app>>
+  component "display* overlays\nnever rewrite liveSnapshot" as DISP <<app>>
+  component "MatchShell || timeline\ndual-signal store" as SHELL <<app>>
+}
+
+OPEN ARROW_MAIN CHECKS : mark applied
+SPEND ARROW_OPTIONAL OPEN : reset each open
+PATCH ARROW_MAIN DISP : placement/lives/mines
+AURA ARROW_MAIN PATCH : gas stamps persist
+SHELL ARROW_MAIN PATCH : hot-path split
+
+note as N_SPEND
+  REMOVE_ACTION refunds only up to tracked
+  spend, so seeded or imported queued
+  spawns never inflate the mineral bank.
+  Counter resets at each turn open.
+end note
+N_SPEND .. SPEND
+
+note as N_SEAT
+  Viewer is the active fog seat and may
+  flip for review vision. PlayerColor is
+  stable team identity for HUD labels.
+end note
+N_SEAT .. SEAT
+
+note as N_PATCH
+  SOFT_DONE clears active for next wave
+  but keeps overlays for partial board.
+  REVIEW_PLAY replays stored resolve with
+  phase pinned at gameOver throughout.
+end note
+N_PATCH .. PATCH
+@enduml

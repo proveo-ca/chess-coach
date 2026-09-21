@@ -161,14 +161,17 @@ export const KingDamageOverlay = (props: KingDamageOverlayProps): JSX.Element =>
     >
       <For each={ids()}>
         {(id) => {
-          const cue = () => byId().get(id)!;
+          const cue = createMemo((prev: KingDamageCue | undefined) =>
+            byId().get(id) ?? prev,
+          );
+          const c = () => cue()!;
           return (
             <KingDamageSlot
               id={id}
-              at={cue().at}
-              damage={cue().damage}
-              seed={cue().seed}
-              impactSeq={cue().impactSeq}
+              at={c().at}
+              damage={c().damage}
+              seed={c().seed}
+              impactSeq={c().impactSeq}
               boardWidth={props.boardWidth}
               boardHeight={props.boardHeight}
               pieceSet={props.pieceSet}

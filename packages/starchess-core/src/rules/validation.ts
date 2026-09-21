@@ -2,7 +2,7 @@
  * Deep SCFEN validators — SC_BASELINE_FEN + SC_SPECIAL.
  * chess.js FEN load is never the oracle (sc-moves.puml).
  *
- * // SPEC: _spec/packages/starchess-core/sc-moves.puml, _spec/packages/starchess-core/scfen-queue.puml
+ * // SPEC: _spec/packages/starchess-core/sc-moves.puml, _spec/packages/starchess-core/scfen-queue.puml, _spec/packages/starchess-core/gas-phase-vacancy.puml
  */
 
 import type { Square } from "chess.js";
@@ -14,7 +14,7 @@ import { isRookSiegedAfterB } from "../board/siege";
 import { hasExactKingPair } from "../scfen/codec";
 import { spawnKingAnchor } from "./specials/adjacent";
 import { pawnSingleTarget } from "./specials/pawnDouble";
-import type { ScAction, ScActionInput, ScFenSnapshot } from "../model/types";
+import type { ScAction, ScActionInput, ScFenSnapshot, StarChessColor } from "../model/types";
 
 export class ScValidateError extends Error {
   readonly code: "SC_BASELINE_FEN" | "SC_SPECIAL";
@@ -24,6 +24,32 @@ export class ScValidateError extends Error {
     this.name = "ScValidateError";
   }
 }
+
+export type ClassicalVacancy = {
+  bOrigins: ReadonlySet<Square>;
+  transit: ReadonlySet<Square>;
+  gasPairs: ReadonlySet<string>;
+};
+
+export const gasPairKey = (from: Square, to: Square): string => `${from}:${to}`;
+
+export const classifyClassicalVacancy = (
+  actions: readonly ScAction[] | undefined,
+  color: StarChessColor,
+): ClassicalVacancy => {
+  const bOrigins = new Set<Square>();
+  const transit = new Set<Square>();
+  const gasPairs = new Set<string>();
+  for (const a of actions ?? []) {
+    if (a.timing !== "B" || a.color !== color) continue;
+    if (a.kind !== "pawnDouble" && a.kind !== "queenWarp") continue;
+    if (!a.to) continue;
+    bOrigins.add(a.from);
+    transit.add(a.to);
+    gasPairs.add(gasPairKey(a.from, a.to));
+  }
+  return { bOrigins, transit, gasPairs };
+};
 
 /** SCFEN placement invariants — not chess.js FEN validation. */
 export const assertBaselineFen = (snap: ScFenSnapshot): void => {
@@ -50,7 +76,16 @@ export const assertBaselineFen = (snap: ScFenSnapshot): void => {
 export const assertClassicalBaseline = (
   snap: ScFenSnapshot,
   action: Extract<ScAction, { timing: "C" }>,
+  vacancy?: ClassicalVacancy,
 ): void => {
+  const v = vacancy ?? classifyClassicalVacancy(snap.queue?.actions, action.color);
+  const pairedGas = v.gasPairs.has(gasPairKey(action.from, action.to));
+  if (!pairedGas && v.transit.has(action.to)) {
+    throw new ScValidateError(
+      "SC_BASELINE_FEN",
+      `cannot classical-target transit ${action.to}`,
+    );
+  }
   const map = placementToMap(snap.placement);
   let piece = map.get(action.from);
   // Same-turn B relocates/spawns the actor onto `from` before classical.
@@ -119,7 +154,7 @@ export const assertClassicalBaseline = (
   // Allow empty or enemy-occupied destinations (incl. king for fog path intents).
   // Allies are never classical targets — mines ignore allies (no friendly-fire).
   const dest = map.get(action.to);
-  if (dest && dest.color === action.color) {
+  if (dest && dest.color === action.color && !v.bOrigins.has(action.to)) {
     throw new ScValidateError(
       "SC_BASELINE_FEN",
       `cannot classical-target ally on ${action.to}`,
@@ -275,6 +310,14 @@ export const assertSpecialLegal = (
         const c = (snap.queue?.actions ?? []).find(
           (a) => a.timing === "C" && a.color === action.color && a.from === action.from,
         );
+        const chainHead = (snap.queue?.actions ?? []).some(
+          (a) =>
+            a.timing === "B" &&
+            a.kind === "pawnDouble" &&
+            a.color === action.color &&
+            a.from === action.to,
+        );
+        if (action.timing === "B" && chainHead) return;
         if (!(action.timing === "F" && c && c.timing === "C" && c.to === action.to)) {
           throw new ScValidateError("SC_SPECIAL", "pawnDouble blocked");
         }

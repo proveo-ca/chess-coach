@@ -10,6 +10,18 @@
       "fingerprint": null
     },
     {
+      "spec": "_spec/packages/starchess-core/gas-phase-vacancy.puml",
+      "covers": [
+        "packages/starchess-core/src/resolve/submit-turn.ts",
+        "packages/starchess-core/src/resolve/resolve-turn.ts",
+        "packages/starchess-core/src/rules/validation.ts",
+        "packages/starchess-core/src/board/moves.ts",
+        "apps/starchess/src/presentation/specials/planning/occupancy.ts",
+        "apps/starchess/src/presentation/combat/intentOverlays.ts"
+      ],
+      "fingerprint": null
+    },
+    {
       "spec": "_spec/packages/starchess-core/mine-contact.puml",
       "covers": [
         "packages/starchess-core/src/board/mine-contact.ts",
@@ -150,6 +162,7 @@
       "spec": "_spec/packages/starchess-core/resolve.puml",
       "covers": [
         "packages/starchess-core/src/resolve/resolve-turn.ts",
+        "packages/starchess-core/src/resolve/submit-turn.ts",
         "packages/starchess-core/src/__tests__/rook/**"
       ],
       "fingerprint": null
@@ -158,7 +171,78 @@
       "spec": "_spec/packages/starchess-core/resolve-turn-activity.puml",
       "covers": [
         "packages/starchess-core/src/resolve/resolve-turn.ts",
-        "packages/starchess-core/src/__tests__/rook/**"
+        "packages/starchess-core/src/__tests__/rook/**",
+        "packages/starchess-core/src/__tests__/collision/fogVacatedTarget.test.ts"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/apps/starchess/tutorial/coach-line.puml",
+      "covers": [
+        "apps/starchess/src/tutorial/tutorialScript.config.ts",
+        "apps/starchess/src/screens/TutorialScreen.tsx",
+        "apps/starchess/src/__tests__/tutorialScript.test.ts"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/apps/starchess/tutorial/lesson-gates.puml",
+      "covers": [
+        "apps/starchess/src/tutorial/tutorialScript.config.ts",
+        "apps/starchess/src/screens/TutorialScreen.tsx",
+        "apps/starchess/src/__tests__/tutorialScript.test.ts"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/apps/starchess/timeline/cue-projection.puml",
+      "covers": [
+        "apps/starchess/src/__tests__/timelinePlayer.test.ts"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/apps/starchess/timeline/cue-playback.puml",
+      "covers": [
+        "apps/starchess/src/__tests__/timelinePlayer.test.ts"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/apps/starchess/core/board/planning-projection.puml",
+      "covers": [
+        "apps/starchess/src/presentation/combat/intentOverlays.ts",
+        "apps/starchess/src/presentation/specials/planning/occupancy.ts"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/apps/starchess/core/turn/match-state.puml",
+      "covers": [
+        "apps/starchess/src/types/match.ts"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/apps/starchess/tutorial-line-resolution.puml",
+      "covers": [
+        "apps/starchess/src/tutorial/tutorialScript.ts"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/apps/starchess/board-rendering.puml",
+      "covers": [
+        "apps/starchess/src/presentation/board/components/StarChessBoard.tsx",
+        "apps/starchess/src/presentation/board/components/StarChessBoard.module.css"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/apps/starchess/gas-deploy.puml",
+      "covers": [
+        "apps/starchess/src/presentation/hud/components/GasRack.tsx",
+        "apps/starchess/src/presentation/hud/components/GasRack.module.css"
       ],
       "fingerprint": null
     }

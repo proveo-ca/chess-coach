@@ -1,4 +1,4 @@
-// SPEC: _spec/packages/starchess-core/resolve.puml, _spec/packages/starchess-core/overview.puml, _spec/packages/starchess-core/submit-turn-activity.puml, _spec/packages/starchess-core/mine-contact.puml, _spec/packages/starchess-core/turn-queue-sequence.puml, _spec/apps/starchess/core/turn/turn-facade.puml
+// SPEC: _spec/packages/starchess-core/resolve.puml, _spec/packages/starchess-core/overview.puml, _spec/packages/starchess-core/submit-turn-activity.puml, _spec/packages/starchess-core/mine-contact.puml, _spec/packages/starchess-core/turn-queue-sequence.puml, _spec/apps/starchess/core/turn/turn-facade.puml, _spec/packages/starchess-core/gas-phase-vacancy.puml
 import type { Square } from "chess.js";
 
 import {
@@ -238,6 +238,31 @@ const byTiming = (actions: readonly ScAction[], timing: "B" | "C" | "F") =>
       return a.seq - b.seq;
     });
 
+export const orderBHeadsFirst = (
+  actions: readonly ScAction[],
+): ScAction[] => {
+  const ordered: ScAction[] = [];
+  const pending = [...actions].sort((a, b) => a.seq - b.seq);
+  while (pending.length) {
+    const heads = new Set(
+      pending
+        .filter(
+          (a) => (a.kind === "pawnDouble" || a.kind === "queenWarp") && !!a.to,
+        )
+        .map((a) => a.from),
+    );
+    const idx = pending.findIndex((a) => {
+      if ((a.kind !== "pawnDouble" && a.kind !== "queenWarp") || !a.to)
+        return true;
+      const others = new Set(heads);
+      others.delete(a.from);
+      return ![...others].some((from) => from === a.to);
+    });
+    ordered.push(idx >= 0 ? pending.splice(idx, 1)[0]! : pending.shift()!);
+  }
+  return ordered;
+};
+
 const relocate = (placement: string, from: Square, to: Square): string => {
   const map = placementToMap(placement);
   const piece = map.get(from);
@@ -446,6 +471,8 @@ const collectSpecialsUsed = (
   bMoves: readonly { from: Square; to: Square }[],
   fMoves: readonly { from: Square; to: Square }[],
   promotions: readonly { at: Square }[] = [],
+  warped: readonly { from: Square; to: Square }[] = [],
+  fWarped: readonly { from: Square; to: Square }[] = [],
 ): Square[] => {
   const used = new Set<Square>();
   for (const a of actions) {
@@ -457,13 +484,12 @@ const collectSpecialsUsed = (
     used.add(to);
   };
   for (const m of bMoves) migrate(m.from, m.to);
-  for (const a of actions) {
-    if (a.timing === "B" && a.kind === "queenWarp" && a.to) migrate(a.from, a.to);
-  }
+  for (const m of warped) migrate(m.from, m.to);
   for (const a of actionsAfterB) {
     if (a.timing === "C") migrate(a.from, a.to);
   }
   for (const m of fMoves) migrate(m.from, m.to);
+  for (const m of fWarped) migrate(m.from, m.to);
   for (const p of promotions) used.delete(p.at);
   const map = placementToMap(finalPlacement);
   return [...used].filter((sq) => map.has(sq)).sort();
@@ -556,6 +582,8 @@ export const endScTurn = (
   const sieged = new Set(snapshot.siegedRooks ?? []);
   const bMoves: ResolveMove[] = [];
   const fMoves: ResolveMove[] = [];
+  const warped: { from: Square; to: Square }[] = [];
+  const fWarped: { from: Square; to: Square }[] = [];
   const gasPromotions: ResolvePromotion[] = [];
 
   const log = {
@@ -694,7 +722,7 @@ export const endScTurn = (
    * order while the held step gets to fill in its blast.
    */
   type BeforeEvent = { action: ScAction; extra: Partial<ResolveEvent> };
-  const beforeEvents: BeforeEvent[] = [];
+  const extrasBySeq = new Map<number, BeforeEvent>();
   /** Marines mid-Extra-Step: their mine waits for the classical leg to land. */
   const heldExtraSteps: {
     at: Square;
@@ -714,46 +742,64 @@ export const endScTurn = (
     gasPromotions.push({ color: a.color, from: a.from, at, unit: a.promotion });
   };
 
-  for (const a of byTiming(actions, "B")) {
-    if (a.timing !== "B") continue;
-    if (a.kind === "rookSiege") {
-      if (toggleRookSiege(placement, sieged, a.color, a.from)) {
-        siegedThisTurn.push(a.from);
-        beforeEvents.push({ action: a, extra: {} });
+  for (const color of ["w", "b"] as const) {
+    const group = byTiming(actions, "B").filter((a) => a.color === color);
+    const ordered = orderBHeadsFirst(group);
+    for (const a of ordered) {
+      if (a.timing !== "B") continue;
+      if (a.kind === "rookSiege") {
+        if (toggleRookSiege(placement, sieged, a.color, a.from)) {
+          siegedThisTurn.push(a.from);
+          extrasBySeq.set(a.seq, { action: a, extra: {} });
+        }
+        continue;
       }
-      continue;
-    }
-    // A classical queued on this same marine may carry it past the gas step, so
-    // hold the arrival mine until `rewriteClassicalAfterB` says whether the walk
-    // really ends here. Every other B special resolves its mine immediately.
-    const held =
-      a.kind === "pawnDouble" &&
-      !!a.to &&
-      actions.some(
-        (c) => c.timing === "C" && c.color === a.color && c.from === a.from,
-      );
-    const applied = held
-      ? { placement: relocate(placement, a.from, a.to!), mines }
-      : applySpecial(placement, mines, a, ignoreAttacksOn);
-    const event: BeforeEvent = { action: a, extra: {} };
-    const stepped =
-      a.kind === "pawnDouble" && !!a.to && applied.placement !== placement;
-    placement = applied.placement;
-    mines = applied.mines;
-    if (stepped) {
-      bMoves.push({ piece: "p", color: a.color, from: a.from, to: a.to! });
-      if (held) {
-        heldExtraSteps.push({ at: a.to!, action: a, event });
-      } else {
-        applyGasPromotion(a, a.to!, !applied.mineColor);
+      const allyBlocked =
+        (a.kind === "pawnDouble" || a.kind === "queenWarp") &&
+        !!a.to &&
+        (() => {
+          const dest = placementToMap(placement).get(a.to!);
+          return !!dest && dest.color === a.color;
+        })();
+      const held =
+        !allyBlocked &&
+        a.kind === "pawnDouble" &&
+        !!a.to &&
+        actions.some(
+          (c) => c.timing === "C" && c.color === a.color && c.from === a.from,
+        );
+      const applied = allyBlocked
+        ? { placement, mines }
+        : held
+          ? { placement: relocate(placement, a.from, a.to!), mines }
+          : applySpecial(placement, mines, a, ignoreAttacksOn);
+      const event: BeforeEvent = { action: a, extra: {} };
+      const relocated = applied.placement !== placement;
+      const stepped =
+        !allyBlocked &&
+        a.kind === "pawnDouble" &&
+        !!a.to &&
+        relocated;
+      placement = applied.placement;
+      mines = applied.mines;
+      if (!allyBlocked && a.kind === "queenWarp" && !!a.to && relocated) {
+        warped.push({ from: a.from, to: a.to });
       }
+      if (stepped) {
+        bMoves.push({ piece: "p", color: a.color, from: a.from, to: a.to! });
+        if (held) {
+          heldExtraSteps.push({ at: a.to!, action: a, event });
+        } else {
+          applyGasPromotion(a, a.to!, !applied.mineColor);
+        }
+      }
+      event.extra = {
+        ...(a.kind === "spawn" && a.unit ? { unit: a.unit } : {}),
+        ...(applied.victim ? { victim: applied.victim } : {}),
+        ...(applied.mineColor ? { mineColor: applied.mineColor } : {}),
+      };
+      extrasBySeq.set(a.seq, event);
     }
-    event.extra = {
-      ...(a.kind === "spawn" && a.unit ? { unit: a.unit } : {}),
-      ...(applied.victim ? { victim: applied.victim } : {}),
-      ...(applied.mineColor ? { mineColor: applied.mineColor } : {}),
-    };
-    beforeEvents.push(event);
   }
 
   // The rewrite is the authority on whether a held gas step hands its walk on;
@@ -778,8 +824,9 @@ export const endScTurn = (
     };
     applyGasPromotion(action, at, !blast.mineColor);
   }
-  for (const { action, extra } of beforeEvents) {
-    log.special("specialBefore", action, extra);
+  for (const a of byTiming(actions, "B")) {
+    const event = extrasBySeq.get(a.seq);
+    if (event) log.special("specialBefore", event.action, event.extra);
   }
 
   const afterB = {
@@ -941,6 +988,13 @@ export const endScTurn = (
     }
 
     const applied = applySpecial(placement, mines, rewritten, ignoreAttacksOn);
+    if (
+      a.kind === "queenWarp" &&
+      rewritten.to &&
+      applied.placement !== placement
+    ) {
+      fWarped.push({ from: rewritten.from, to: rewritten.to });
+    }
     placement = applied.placement;
     mines = applied.mines;
     log.special("specialAfter", rewritten, {
@@ -988,6 +1042,8 @@ export const endScTurn = (
       bMoves,
       fMoves,
       resolved.promotions,
+      warped,
+      fWarped,
     ),
   });
 };

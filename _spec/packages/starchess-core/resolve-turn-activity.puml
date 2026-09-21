@@ -4,6 +4,7 @@
 ' bucket, and what each phase then does with those buckets.
 ' covers: packages/starchess-core/src/resolve/resolve-turn.ts
 ' covers: packages/starchess-core/src/__tests__/rook/**
+' see also: _spec/packages/starchess-core/gas-phase-vacancy.puml
 !include ../../themes/proveo.puml
 
 skinparam defaultTextAlignment left
@@ -57,6 +58,13 @@ partition "Classify — an ordered rule list, first match wins" {
     start** *and* lit while walking — otherwise a visible target would wrongly
     defer to a phase-3 approach.
   end note
+
+  note right
+    A fogged capture or approach whose
+    START-board victim departs via its
+    own queued plan never books the
+    kill. The plan parks on "delayed".
+  end note
 }
 
 partition "Phase 1 — attack" {
@@ -81,6 +89,13 @@ partition "Phase 3 — fog approaches" {
   :fizzle gates (in order): sieged origin · origin re-occupied by a\nphase-2 mover · attacker no longer on ""pathRevealFrom"" ·\n""to"" no longer holds the exact discovered victim;
   :fired → ""pathRevealAttacks"" (the only mid-resolve king HP chip);
   :the approach **walked** its ray — ""mineContact"" over that walk takes\nthe mover on its landing tile → ""pathRevealMineTriggers"".\nThe shot already fired, so capture / HP chip stand;
+}
+
+partition "Delayed landings — fogged aims whose victim vacated" {
+  :sync ""mines"" to the phase-3 epoch, order the pair so a plan\nlanding on the other's origin runs second (mutual swap lands both);
+  :skip fired approaches (""firedFrom""), dead or moved actors,\nand destinations a phase-3 actor now owns (fizzle);
+  :a destination holding a ghost the snapshot lost is cleared,\nthen ""relocate"" with occupy trust — victim still home means\na single move-phase collision, never a second kill;
+  :mirror the landing onto the phase-3 snapshot (move / blast /\ncollision, ""chaseFrom""-aware mine filter) → **afterMove** snapshot;
 }
 
 partition "Phase 4 — promotion" {

@@ -229,7 +229,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           choreography: "siegeFocusCounter",
           docs: "Siege rook on d4 \u2014 immobile 9\u00d79 vision. Fire any square on the cross: empty ground still takes HE, and the first unit in the way intercepts.",
         },
-        comment: "Sieged on d4 — you own the cross. \nStart with h4, keep d4 alive, cut them to one pawn!",
+        comment: "The rook has 2 modes, mobile and immobile. \n\n Prevent pawns from promoting!",
         emotion: "scanning",
         // Win when at most one black pawn remains — the d2
         // promotion 4→3 alone must not win. Lose when S:d4 is
