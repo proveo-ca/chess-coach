@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import {
   addScAction,
+  addScMove,
   beginScTurn,
   endScTurn,
   parseScFen,
@@ -24,7 +25,12 @@ describe("cueLanes routing", () => {
     ["b0", "move"],
     ["ch0", "bSpecial"],
     ["chd0", "bSpecial"],
+    ["chf0", "bSpecial"],
+    ["chfd0", "bSpecial"],
     ["qj0", "bSpecial"],
+    ["qjf0", "bSpecial"],
+    ["qjfm0", "arrivalBlast"],
+    ["qjfd0", "arrivalBlast"],
     ["armx0", "bSpecial"],
     ["armm0", "bSpecial"],
     ["armd0", "bSpecial"],
@@ -1459,6 +1465,83 @@ describe("timelinePlayer", () => {
     expect(jumpCues.some((c) => c.kind === "move" && c.shipJump && c.to === "a3")).toBe(
       true,
     );
+  });
+
+  it("projects F-rank Tactical Jump travel from the post-move square into specialAfter", () => {
+    let snap = parseScFen("SCFEN|7k/8/8/8/8/8/8/Q6K|21|33|P|G:33:33|Q:w:;b:");
+    snap = addScMove(snap, { color: "w", from: "a1", to: "a2" });
+    snap = addScAction({
+      snapshot: snap,
+      action: {
+        timing: "F",
+        kind: "queenWarp",
+        color: "w",
+        from: "a1",
+        to: "a5",
+      },
+    }).snapshot;
+    const result = endScTurn(snap, { skipTurnStartChecks: true });
+    expect(result.next.placement).toBe("7k/8/8/Q7/8/8/8/7K");
+    const cues = projectResolveTimeline(result);
+    const travel = cues.find(
+      (c) => c.kind === "move" && c.shipJump && c.id.startsWith("qjf"),
+    );
+    expect(travel).toMatchObject({ from: "a2", to: "a5" });
+    expect(laneFor(travel!.id).board).toBe("afterMove");
+    const waves = splitResolveWaves(result);
+    const afterWave = waves.find((w) => w.id === "specialAfter")!;
+    expect(afterWave.cues.map((c) => c.id)).toContain(travel!.id);
+    expect(result.next.specialsUsed).toContain("a5");
+    expect(result.next.specialsUsed).not.toContain("a2");
+  });
+
+  it("projects F-rank Charon volley and kill into specialAfter", () => {
+    let snap = parseScFen("SCFEN|k6q/8/8/8/3B4/8/8/4K3|21|33|P|G:33:33|Q:w:;b:");
+    snap = addScMove(snap, { color: "w", from: "d4", to: "e5" });
+    snap = addScAction({
+      snapshot: snap,
+      action: {
+        timing: "F",
+        kind: "bishopSnipe",
+        color: "w",
+        from: "d4",
+        to: "h8",
+      },
+    }).snapshot;
+    const result = endScTurn(snap, { skipTurnStartChecks: true });
+    const waves = splitResolveWaves(result);
+    const afterWave = waves.find((w) => w.id === "specialAfter")!;
+    const ids = afterWave.cues.map((c) => c.id);
+    expect(ids.some((id) => id.startsWith("chf"))).toBe(true);
+    expect(ids.some((id) => id.startsWith("chfd"))).toBe(true);
+    const beforeWave = waves.find((w) => w.id === "specialBefore");
+    expect(
+      beforeWave?.cues.some((c) => c.id.startsWith("chf")) ?? false,
+    ).toBe(false);
+  });
+
+  it("projects F-rank Tactical Jump arrival blast on a mined landing", () => {
+    let snap = parseScFen(
+      "SCFEN|7k/8/8/8/8/8/8/Q6K|21|33|P|G:33:33|Q:w:;b:|M:w:;b:a5",
+    );
+    snap = addScMove(snap, { color: "w", from: "a1", to: "a2" });
+    snap = addScAction({
+      snapshot: snap,
+      action: {
+        timing: "F",
+        kind: "queenWarp",
+        color: "w",
+        from: "a1",
+        to: "a5",
+      },
+    }).snapshot;
+    const result = endScTurn(snap, { skipTurnStartChecks: true });
+    const cues = projectResolveTimeline(result);
+    const ids = cues.map((c) => c.id);
+    expect(ids.filter((id) => id.startsWith("qjf"))).toHaveLength(3);
+    expect(
+      cues.some((c) => c.kind === "death" && c.mine && c.at === "a5"),
+    ).toBe(true);
   });
 
   it("keeps Tactical Jump trails for 1000ms without blocking onDone", () => {

@@ -87,5 +87,15 @@ note right
   unchanged. Deploy and crush synthesise
   solely from the crush event, not diff.
 end note
+
+' N_F_SPECIAL_PARITY: every B cue family has an F twin on the afterMove rung
+note right
+  Jumps project travel plus arrival blast
+  in both phases: B reads qj/qjm/qjd on
+  preAfterB, F reads qjf/qjfm/qjfd on
+  afterMove. Charon volleys pair ch/chd
+  with chf/chfd the same way, so waves
+  never play a second-gas special early.
+end note
 stop
 @enduml

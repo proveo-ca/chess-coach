@@ -472,6 +472,7 @@ const collectSpecialsUsed = (
   fMoves: readonly { from: Square; to: Square }[],
   promotions: readonly { at: Square }[] = [],
   warped: readonly { from: Square; to: Square }[] = [],
+  fWarped: readonly { from: Square; to: Square }[] = [],
 ): Square[] => {
   const used = new Set<Square>();
   for (const a of actions) {
@@ -488,6 +489,7 @@ const collectSpecialsUsed = (
     if (a.timing === "C") migrate(a.from, a.to);
   }
   for (const m of fMoves) migrate(m.from, m.to);
+  for (const m of fWarped) migrate(m.from, m.to);
   for (const p of promotions) used.delete(p.at);
   const map = placementToMap(finalPlacement);
   return [...used].filter((sq) => map.has(sq)).sort();
@@ -581,6 +583,7 @@ export const endScTurn = (
   const bMoves: ResolveMove[] = [];
   const fMoves: ResolveMove[] = [];
   const warped: { from: Square; to: Square }[] = [];
+  const fWarped: { from: Square; to: Square }[] = [];
   const gasPromotions: ResolvePromotion[] = [];
 
   const log = {
@@ -985,6 +988,13 @@ export const endScTurn = (
     }
 
     const applied = applySpecial(placement, mines, rewritten, ignoreAttacksOn);
+    if (
+      a.kind === "queenWarp" &&
+      rewritten.to &&
+      applied.placement !== placement
+    ) {
+      fWarped.push({ from: rewritten.from, to: rewritten.to });
+    }
     placement = applied.placement;
     mines = applied.mines;
     log.special("specialAfter", rewritten, {
@@ -1033,6 +1043,7 @@ export const endScTurn = (
       fMoves,
       resolved.promotions,
       warped,
+      fWarped,
     ),
   });
 };
