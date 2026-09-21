@@ -1,0 +1,93 @@
+@startuml tutorial-line-resolution
+' purpose: Tutorial coach-line pipeline — deep-link
+'   canonicalization, first-match reaction pick,
+'   intro hold with turn-open re-baseline, and
+'   settled-board auto-advance gates.
+' covers: apps/starchess/src/tutorial/tutorialScript.ts
+' related: _spec/apps/starchess/menu-flow.puml
+' related: _spec/apps/starchess/architecture/storybook-projection.puml
+' related: _spec/apps/starchess/tutorial/coach-line.puml
+' related: _spec/apps/starchess/tutorial/lesson-gates.puml
+!include ../../themes/proveo.puml
+
+title StarChess · Tutorial line resolution
+
+actor Player
+participant "TutorialScreen" as SCREEN <<app>>
+participant "tutorialScript.ts" as RESOLVER <<app>>
+database "tutorialScript.config.ts" as CATALOG <<db>>
+participant "Live lesson board" as BOARD <<app>>
+
+== Deep link ==
+Player ARROW_MAIN SCREEN : open /tutorial/<section>/<story>
+SCREEN ARROW_MAIN RESOLVER : parseTutorialSection(raw)
+RESOLVER ARROW_MAIN RESOLVER : fold aliases, default fog
+SCREEN ARROW_MAIN RESOLVER : resolveTutorialStoryId\n(first-story fallback)
+RESOLVER ARROW_MAIN CATALOG : tutorialStage /\ntutorialStory lookup
+RESOLVER ARROW_ERROR SCREEN : lessonBoard throws\non unknown id
+
+== Coach line per frame ==
+BOARD ARROW_MAIN SCREEN : scfen · phase · targeting
+SCREEN ARROW_MAIN RESOLVER : resolveTutorialLine(ctx)
+RESOLVER ARROW_MAIN RESOLVER : first matching\nreaction wins
+RESOLVER ARROW_OPTIONAL SCREEN : story intro fallback
+SCREEN ARROW_MAIN RESOLVER : holdTutorialLine(hold,\nkey, raw, ctx)
+RESOLVER ARROW_MAIN RESOLVER : baseline, re-baseline,\nsticky-or-silence
+
+== Auto-advance on a settled board ==
+BOARD ARROW_QUEUE SCREEN : timeline idle + live scfen
+SCREEN ARROW_MAIN RESOLVER : matchesTutorialCompleteWhen
+RESOLVER ARROW_OPTIONAL SCREEN : scfen | queue | typewriter
+SCREEN ARROW_MAIN SCREEN : ending hold, success\nbubble, auto-advance
+
+' N_PRECEDENCE:
+note over RESOLVER
+  First matching reaction wins, judged in
+  declaration order from reviewPhase down
+  to targeting; narrow scfen beats precede
+  broad turn beats. Unmatched contexts fall
+  back to the story introduction comment.
+end note
+
+' N_REBASE:
+note over RESOLVER
+  Turn-open bookkeeping refills gas and
+  settles pending check damage, displacing
+  scfen from the seed on mount. The hold
+  re-baselines on check application and
+  tracks undefined so resets release it.
+end note
+
+' N_STICKY:
+note over RESOLVER
+  Reaction lines latch sticky and retire the
+  introduction; later board motion replays the
+  reaction. Motion with no stored reaction
+  yields silence, never a revived introduction.
+end note
+
+' N_GATES:
+note over RESOLVER
+  Auto-advance judges only settled boards,
+  matching scfen, queue, or typewriter beats.
+  Elapsed gates never evaluate live; the screen
+  timer owns them, and seeds never satisfy
+  their own gate.
+end note
+
+note over CATALOG
+  Unknown lesson identifiers throw at lookup
+  so mistyped stories surface instead of
+  mounting empty boards. Section aliases
+  canonicalize, with fog as the default section.
+end note
+
+note over SCREEN
+  One advance delay serves every lesson,
+  because the countdown affords navigation
+  rather than carrying content. Closing lines
+  hold at prose pace between 1.2 and 4
+  seconds; absent lines skip the hold.
+end note
+
+@enduml

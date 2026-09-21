@@ -4,6 +4,7 @@
 ' bucket, and what each phase then does with those buckets.
 ' covers: packages/starchess-core/src/resolve/resolve-turn.ts
 ' covers: packages/starchess-core/src/__tests__/rook/**
+' see also: _spec/packages/starchess-core/gas-phase-vacancy.puml
 !include ../../themes/proveo.puml
 
 skinparam defaultTextAlignment left
@@ -56,6 +57,14 @@ partition "Classify — an ordered rule list, first match wins" {
     lit can still report steps > 0. Path discovery therefore needs **fogged at
     start** *and* lit while walking — otherwise a visible target would wrongly
     defer to a phase-3 approach.
+  end note
+
+  note right
+    Rule 4 drops ally-occupied aims
+    unless the occupant vacates via
+    its own queued departure. Later
+    phases land only after the mover
+    relinquishes occupancy first.
   end note
 }
 

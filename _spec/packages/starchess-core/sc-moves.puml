@@ -4,6 +4,7 @@
 ' covers: packages/starchess-core/src/board/moves.ts
 ' covers: packages/starchess-core/src/rules/validation.ts
 ' covers: packages/starchess-core/src/__tests__/rook/**
+' see also: _spec/packages/starchess-core/gas-phase-vacancy.puml
 !include ../../themes/proveo.puml
 
 skinparam packageStyle rectangle
@@ -52,8 +53,16 @@ note right of SCM
   * ""isScMoveShape(piece, from, to) : boolean"" — shape-only;
     ignores path blockers so fog path-discovery stays queueable.
   ----
-  ""ScMoveOptions.siegedRooks"" — resolved **after** queued B
-  via ""isRookSiegedAfterB"", **never** raw ""snap.siegedRooks"".
+   ""ScMoveOptions.siegedRooks"" — resolved **after** queued B
+   via ""isRookSiegedAfterB"", **never** raw ""snap.siegedRooks"".
+end note
+
+note bottom of SCM
+  Movegen omits ally-occupied aims;
+  post-B projection reinstates the
+  squares a B departure vacates.
+  Validation must read the same
+  projected occupancy, not live.
 end note
 
 note bottom of STORE

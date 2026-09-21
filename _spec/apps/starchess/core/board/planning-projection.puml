@@ -1,6 +1,9 @@
 @startuml planning-projection
 ' SPEC: _spec/apps/starchess/core/board/planning-projection.puml
 ' purpose: Projection — intent-time view models; clicks become commands, never resolve.
+' covers: apps/starchess/src/presentation/combat/intentOverlays.ts
+' covers: apps/starchess/src/presentation/specials/planning/occupancy.ts
+' see also: _spec/packages/starchess-core/gas-phase-vacancy.puml
 !include ../../../../themes/proveo.puml
 
 skinparam packageStyle rectangle
@@ -71,9 +74,33 @@ note bottom
   ""rewriteClassicalAfterB"" (gas-then-move) or ""pawnSingleTarget"" from the
   post-C square (move-then-gas). A declined fold (blocked landing / outside
   the double-step band) means the C fizzles: the ghost stays on ""B.to"".
-  **Allowed:** the pure folding helpers above — never re-derive the vector by
-  hand, the guards are the contract.
-  **Forbidden:** endScTurn / resolveTurn / addScAction from projections.
+   **Allowed:** the pure folding helpers above — never re-derive the vector by
+   hand, the guards are the contract.
+   **Forbidden:** endScTurn / resolveTurn / addScAction from projections.
+ end note
+
+note as N_CANISTER
+  Spawn badges ride the deploy square so a
+  drop reads with-gas versus a pure move.
+  Relocates badge both live actor square
+  and folded endpoint via vespene arrival.
 end note
+N_CANISTER .. OV
+
+note as N_PROJECTION_GUARD
+  Classical after deploy resolves actor via
+  post-B occupancy, never live placement.
+  Opponent queue never enters projection;
+  observers without viewer keep all rings.
+end note
+N_PROJECTION_GUARD .. OV
+
+note as N_VACANCY_GAP
+  Vacated origins paint selectable
+  destinations with gas badges on
+  both endpoints. Collision truth
+  stays in resolve, never projection.
+end note
+N_VACANCY_GAP .. OCC
 @enduml
 

@@ -2,7 +2,9 @@
 ' SPEC: _spec/packages/starchess-core/resolve.puml
 ' purpose: Rank-major resolve — turn-open king-checks (before intent) → End: B → C → F.
 ' covers: packages/starchess-core/src/resolve/resolve-turn.ts
+' covers: packages/starchess-core/src/resolve/submit-turn.ts
 ' covers: packages/starchess-core/src/__tests__/rook/**
+' see also: _spec/packages/starchess-core/gas-phase-vacancy.puml
 !include ../../themes/proveo.puml
 
 title StarChess · Resolve — 3 phases: attack → move → fog approach
@@ -49,6 +51,14 @@ note right
 end note
 
 :Rank **C** — classical for both sides against\nthe same start board — ""resolveTurn"";
+
+note right
+  A B relocate that departs
+  relinquishes its origin for all
+  subsequent landings this turn.
+  Ordered resolve retires the mover
+  before recording any arrival.
+end note
 
 :Phase 1 **attack** — direct attacks on targets visible\nfrom the start board — attack → death → occupy;
 

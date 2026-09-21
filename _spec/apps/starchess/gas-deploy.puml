@@ -1,0 +1,80 @@
+@startuml gas-deploy
+' purpose: GasRack drag lifecycle — cost display,
+'   ghost targeting, fail-safe miss path, cancel
+'   contract, and compact density.
+' covers: apps/starchess/src/presentation/hud/components/GasRack.tsx
+' covers: apps/starchess/src/presentation/hud/components/GasRack.module.css
+' related: _spec/apps/starchess/screens.puml
+' related: _spec/apps/starchess/architecture/base-screen.puml
+!include ../../themes/proveo.puml
+
+title StarChess · Gas deploy drag lifecycle
+
+actor Player
+participant "GasRack.tsx" as RACK <<app>>
+database "MatchStore +\nmatchEconomy" as STORE <<db>>
+participant "Live lesson board" as BOARD <<app>>
+
+== Lift ==
+Player ARROW_MAIN RACK : press canister
+RACK ARROW_MAIN STORE : read gas + placement
+RACK ARROW_MAIN RACK : anchor hint per lift\n(window listeners on)
+
+== Hover ==
+Player ARROW_MAIN RACK : travel over squares
+RACK ARROW_MAIN BOARD : elementFromPoint\n[data-square]
+RACK ARROW_MAIN STORE : resolve unit · cost · copy
+RACK ARROW_OPTIONAL Player : preview + lifted buddies
+
+== Drop ==
+Player ARROW_MAIN RACK : release / Esc / blur
+RACK ARROW_MAIN STORE : commitOrCancel\n(fail-safe to miss)
+STORE ARROW_MAIN RACK : deploy target | null
+RACK ARROW_MAIN BOARD : onDeploy(target)
+RACK ARROW_ERROR RACK : fly home 240 ms,\nthen onCancel
+
+' N_COST:
+note over RACK
+  Dropping a canister never spends gas; the
+  armed special commits the cost when its action
+  queues. Each unit declares its own price,
+  defaulting to one, so heavy weapons lift
+  additional canisters.
+end note
+
+' N_SAFE:
+note over RACK
+  Pointer capture is dispensable polish; window
+  listeners carry every lift, because lost capture
+  once stranded ghosts mid-screen. Unexpected
+  board states degrade to the miss path, which
+  flies the canister home.
+end note
+
+' N_TARGET:
+note over RACK
+  Deploys land on the unit that will occupy
+  the square, queuing gas on its origin rather
+  than its ghost. Vacated origins and unreadable
+  mid-commit boards read as empty, sending the
+  canister home.
+end note
+
+' N_HINT:
+note over RACK
+  The cancel hint anchors per lift, because the
+  rack migrates between the footer region and
+  the floating dock mid-session. Desktop clients
+  name the escape key; touch clients keep only
+  the drop-clear alternative.
+end note
+
+note over RACK
+  Two reserve slots plus the ready canister
+  fix capacity at three, with stable nodes so
+  slides animate. Lifting advances the visible
+  queue while drag counts reproduce the hovered
+  unit price.
+end note
+
+@enduml

@@ -1,0 +1,97 @@
+@startuml board-rendering
+' purpose: StarChessBoard paint contracts — frame,
+'   phase ring, fog z-stack, hint/coordinate layers,
+'   intent chrome, terrain themes, and glyph states.
+' covers: apps/starchess/src/presentation/board/components/StarChessBoard.tsx
+' covers: apps/starchess/src/presentation/board/components/StarChessBoard.module.css
+' related: _spec/apps/starchess/architecture/board-entities.puml
+' related: _spec/apps/starchess/architecture/strategy-starchess-board.puml
+' related: _spec/apps/starchess/menu-flow.puml
+!include ../../themes/proveo.puml
+
+title StarChess · Board rendering contracts
+
+component "StarChessBoard.tsx\nsnapshot grid · VisionStrategy pick" as BOARD <<app>>
+component "StarChessBoard.module.css\npaint order · overlays · themes" as CSS <<app>>
+component "VisionStrategy\nplayer fog | observer dual" as VISION <<app>>
+component "fogProjection\ncells · holes · borders" as FOG <<app>>
+component "PieceGlyph\nnerd inline | cburnett img" as GLYPH <<app>>
+
+BOARD ARROW_MAIN VISION : strategy pick
+BOARD ARROW_MAIN FOG : cells / holes / borders
+BOARD ARROW_MAIN GLYPH : unit per square
+BOARD ARROW_MAIN CSS : class + data attributes
+
+note as N_FRAME
+  Padding plus background builds the frame so
+  coordinate labels remain inside the playable
+  grid; a box-model border consumed the bottom
+  file row. The outer keeps overflow visible
+  for the phase outline; the grid clips walk-offs.
+end note
+
+note as N_RING
+  Phase colors snap instantly while only
+  opacity fades, keeping changes on the
+  compositor instead of repainting the board
+  outline. The ring matches TurnBar chip tones.
+end note
+
+note as N_HINT
+  Hint arrows ride above the fog veil
+  because lesson lines usually address fogged
+  squares. Intent chrome, legal rings, and
+  destination indicators lift whole squares
+  above the veil so guidance remains legible.
+end note
+
+note as N_VEIL
+  Enemy movers with fogged origins render
+  beneath the veil, appearing smoothly only
+  while crossing lit squares. Their layer forms
+  a stacking context that confines animation
+  hulls, which would otherwise pierce the veil.
+end note
+
+note as N_COORD
+  Rank and file labels live on a board-level
+  layer above pieces and fog so theme stacking
+  can never bury them. Outlined white lettering
+  remains legible across lit and fogged tiles,
+  because fog never dims the label plane.
+end note
+
+note as N_GATE
+  Concealed enemy units never leak through
+  intent rings, canister badges, or aura marks;
+  those marks paint while the unit stays hidden.
+  Mines appear only on lit squares, and burning
+  damage cues obey the same visibility gate.
+end note
+
+note as N_GRASS
+  Wildgrass dark tiles overflow onto stone
+  paths, so color lives on a ragged overlay
+  beneath the pieces. Seven staggered rotations
+  keep texture varied without disturbing
+  interaction overlays.
+end note
+
+note as N_CSS
+  Board chrome selects structural square
+  attributes, never test identifiers, so test
+  hooks stay out of stylesheets. Density travels
+  through compact and class properties into
+  each heads-up display module.
+end note
+
+N_FRAME .. CSS
+N_RING .. CSS
+N_HINT .. CSS
+N_VEIL .. BOARD
+N_COORD .. CSS
+N_GATE .. BOARD
+N_GRASS .. CSS
+N_CSS .. CSS
+
+@enduml
