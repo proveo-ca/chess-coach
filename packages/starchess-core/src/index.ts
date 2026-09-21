@@ -124,6 +124,9 @@ export {
   assertClassicalBaseline,
   assertSpecialLegal,
   assertActionDeep,
+  classifyClassicalVacancy,
+  gasPairKey,
+  type ClassicalVacancy,
 } from "./rules/validation";
 
 export {
@@ -159,6 +162,7 @@ export {
   beginScTurn,
   refillTurnGas,
   rewriteClassicalAfterB,
+  orderBHeadsFirst,
 } from "./resolve/submit-turn";
 
 export {

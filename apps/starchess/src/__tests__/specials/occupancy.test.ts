@@ -66,4 +66,17 @@ describe("occupancyForQueuedMoves", () => {
     expect(dests.length).toBeGreaterThan(0);
     expect(dests).toContain("c5");
   });
+
+  it("B chain projects vacated origin empty and transit occupied", () => {
+    const snap = parseScFen(
+      "SCFEN|4k3/8/8/8/8/4P3/2PPPP2/4K3|11|33|P|G:02:22|Q:w:B=pawnDouble:e2:e3,B=pawnDouble:e3:e4;b:",
+    );
+    const raw = placementToMap(snap.placement);
+    const { map, siegedRooks } = occupancyForQueuedMoves(raw, "w", false, snap);
+    expect(map.has("e2")).toBe(false);
+    expect(map.get("e3")).toEqual({ type: "p", color: "w" });
+    expect(map.get("e4")).toEqual({ type: "p", color: "w" });
+    const dests = scMovesFrom(map, "e1", "w", { siegedRooks }).map((m) => m.to);
+    expect(dests).toContain("e2");
+  });
 });

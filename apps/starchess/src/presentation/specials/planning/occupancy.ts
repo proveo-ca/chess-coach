@@ -1,4 +1,4 @@
-// SPEC: _spec/packages/starchess-core/sc-moves.puml, _spec/apps/starchess/starchess-mode.puml, _spec/apps/starchess/core/board/planning-projection.puml
+// SPEC: _spec/packages/starchess-core/sc-moves.puml, _spec/apps/starchess/starchess-mode.puml, _spec/apps/starchess/core/board/planning-projection.puml, _spec/packages/starchess-core/gas-phase-vacancy.puml
 /**
  * Planning occupancy after viewer B intents — spawn / gas / warp / siege toggle.
  * Board input uses this so classical can be queued from post-B squares.
@@ -12,6 +12,7 @@ import type { Square } from "chess.js";
 import {
   charonStrikeTarget,
   isRookSiegedAfterB,
+  orderBHeadsFirst,
   type ScAction,
   type ScFenSnapshot,
   type ScPiece,
@@ -28,12 +29,11 @@ export const applyViewerBOccupancy = (
   viewer: StarChessColor,
 ): Map<Square, ScPiece> => {
   const out = new Map(map);
-  const bs = (actions ?? [])
-    .filter((a) => a.timing === "B" && a.color === viewer)
-    .slice()
-    .sort((a, b) => a.seq - b.seq);
+  const ordered = orderBHeadsFirst(
+    (actions ?? []).filter((a) => a.timing === "B" && a.color === viewer),
+  );
 
-  for (const a of bs) {
+  for (const a of ordered) {
     if (a.kind === "spawn" && a.to && a.unit) {
       out.set(a.to, { type: a.unit, color: a.color });
       continue;
@@ -115,12 +115,11 @@ export const applyViewerBRelocates = (
   viewer: StarChessColor,
 ): Map<Square, ScPiece> => {
   const out = new Map(map);
-  const bs = (actions ?? [])
-    .filter((a) => a.timing === "B" && a.color === viewer)
-    .slice()
-    .sort((a, b) => a.seq - b.seq);
+  const orderedRelocates = orderBHeadsFirst(
+    (actions ?? []).filter((a) => a.timing === "B" && a.color === viewer),
+  );
 
-  for (const a of bs) {
+  for (const a of orderedRelocates) {
     if (
       (a.kind === "pawnDouble" || a.kind === "queenWarp") &&
       a.to &&
@@ -147,6 +146,7 @@ export const applyViewerBSpawns = (
     .filter((a) => a.timing === "B" && a.color === viewer && a.kind === "spawn")
     .slice()
     .sort((a, b) => a.seq - b.seq);
+
   for (const a of bs) {
     if (a.kind !== "spawn" || !a.to || !a.unit) continue;
     out.set(a.to, { type: a.unit, color: a.color });

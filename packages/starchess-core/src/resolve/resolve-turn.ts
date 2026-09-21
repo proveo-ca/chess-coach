@@ -1,4 +1,4 @@
-// SPEC: _spec/packages/starchess-core/resolve.puml, _spec/packages/starchess-core/overview.puml, _spec/packages/starchess-core/resolve-turn-activity.puml, _spec/packages/starchess-core/mine-contact.puml, _spec/apps/starchess/core/turn/resolve-pipeline.puml
+// SPEC: _spec/packages/starchess-core/resolve.puml, _spec/packages/starchess-core/overview.puml, _spec/packages/starchess-core/resolve-turn-activity.puml, _spec/packages/starchess-core/mine-contact.puml, _spec/apps/starchess/core/turn/resolve-pipeline.puml, _spec/packages/starchess-core/gas-phase-vacancy.puml
 import type { Square } from "chess.js";
 
 import {
