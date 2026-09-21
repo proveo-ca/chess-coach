@@ -171,7 +171,8 @@
       "spec": "_spec/packages/starchess-core/resolve-turn-activity.puml",
       "covers": [
         "packages/starchess-core/src/resolve/resolve-turn.ts",
-        "packages/starchess-core/src/__tests__/rook/**"
+        "packages/starchess-core/src/__tests__/rook/**",
+        "packages/starchess-core/src/__tests__/collision/fogVacatedTarget.test.ts"
       ],
       "fingerprint": null
     },
@@ -195,12 +196,16 @@
     },
     {
       "spec": "_spec/apps/starchess/timeline/cue-projection.puml",
-      "covers": ["apps/starchess/src/__tests__/timelinePlayer.test.ts"],
+      "covers": [
+        "apps/starchess/src/__tests__/timelinePlayer.test.ts"
+      ],
       "fingerprint": null
     },
     {
       "spec": "_spec/apps/starchess/timeline/cue-playback.puml",
-      "covers": ["apps/starchess/src/__tests__/timelinePlayer.test.ts"],
+      "covers": [
+        "apps/starchess/src/__tests__/timelinePlayer.test.ts"
+      ],
       "fingerprint": null
     },
     {
@@ -213,7 +218,9 @@
     },
     {
       "spec": "_spec/apps/starchess/core/turn/match-state.puml",
-      "covers": ["apps/starchess/src/types/match.ts"],
+      "covers": [
+        "apps/starchess/src/types/match.ts"
+      ],
       "fingerprint": null
     },
     {
