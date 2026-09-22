@@ -1448,7 +1448,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /SCFEN\|(?:[^/]*\/){5}(?:5|4(?:[A-Za-z]|1)|(?:[A-Za-z]|1)4|32|23|3(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1)3(?:[A-Za-z]|1)|(?:[A-Za-z]|1){2}3|22(?:[A-Za-z]|1)|2(?:[A-Za-z]|1)2|(?:[A-Za-z]|1)22|2(?:[A-Za-z]|1){3}|(?:[A-Za-z]|1)2(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1){2}2(?:[A-Za-z]|1)|(?:[A-Za-z]|1){3}2|(?:[A-Za-z]|1){5})p/,
+              re: /SCFEN\|(?!.*Q:w:[^;]*(?:C=[a-h][1-8]f3|[BF]=[A-Za-z]+:[a-h][1-8]:f3))(?:[^/]*\/){5}(?:5|4(?:[A-Za-z]|1)|(?:[A-Za-z]|1)4|32|23|3(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1)3(?:[A-Za-z]|1)|(?:[A-Za-z]|1){2}3|22(?:[A-Za-z]|1)|2(?:[A-Za-z]|1)2|(?:[A-Za-z]|1)22|2(?:[A-Za-z]|1){3}|(?:[A-Za-z]|1)2(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1){2}2(?:[A-Za-z]|1)|(?:[A-Za-z]|1){3}2|(?:[A-Za-z]|1){5})p/,
             },
             comment: "Stop that Marine from promoting!",
             emotion: "shocked",
@@ -1456,7 +1456,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /SCFEN\|(?:[^/p]*\/){5}[^|]*p/,
+              re: /SCFEN\|(?!(?:[^/]*\/){5}(?:5|4(?:[A-Za-z]|1)|(?:[A-Za-z]|1)4|32|23|3(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1)3(?:[A-Za-z]|1)|(?:[A-Za-z]|1){2}3|22(?:[A-Za-z]|1)|2(?:[A-Za-z]|1)2|(?:[A-Za-z]|1)22|2(?:[A-Za-z]|1){3}|(?:[A-Za-z]|1)2(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1){2}2(?:[A-Za-z]|1)|(?:[A-Za-z]|1){3}2|(?:[A-Za-z]|1){5})p)(?:[^/p]*\/){5}[^|]*p/,
             },
             comment: "Stop that Marine from promoting!",
             emotion: "shocked",
@@ -1464,7 +1464,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /SCFEN\|(?:[^/]*\/){7}[^\/|]*?q(?=(?:[A-Za-z]|1)[\/|])/,
+              re: /SCFEN\|(?!.*Q:w:[^;]*(?:C=[a-h][1-8]g1|[BF]=[A-Za-z]+:[a-h][1-8]:g1))(?:[^/]*\/){7}[^\/|]*?q(?=(?:[A-Za-z]|1)[\/|])/,
             },
             comment: "Crush that BattleShip by deploying any unit on it!",
             emotion: "scanning",
@@ -1472,7 +1472,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /SCFEN\|(?:[^/]*\/){7}(?:4|3(?:[A-Za-z]|1)|(?:[A-Za-z]|1)3|22|2(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1)2(?:[A-Za-z]|1)|(?:[A-Za-z]|1){2}2|(?:[A-Za-z]|1){4})q/,
+              re: /SCFEN\|(?!.*Q:w:[^;]*(?:C=[a-h][1-8]e1|[BF]=[A-Za-z]+:[a-h][1-8]:e1))(?:[^/]*\/){7}(?:4|3(?:[A-Za-z]|1)|(?:[A-Za-z]|1)3|22|2(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1)2(?:[A-Za-z]|1)|(?:[A-Za-z]|1){2}2|(?:[A-Za-z]|1){4})q/,
             },
             comment: "Enemy BattleShip on e1 — drop a Hoverbike on g2, then attack it!",
             emotion: "shocked"
@@ -1480,7 +1480,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /SCFEN\|(?:[^/]*\/){7}(?:5|4(?:[A-Za-z]|1)|(?:[A-Za-z]|1)4|32|23|3(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1)3(?:[A-Za-z]|1)|(?:[A-Za-z]|1){2}3|22(?:[A-Za-z]|1)|2(?:[A-Za-z]|1)2|(?:[A-Za-z]|1)22|2(?:[A-Za-z]|1){3}|(?:[A-Za-z]|1)2(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1){2}2(?:[A-Za-z]|1)|(?:[A-Za-z]|1){3}2|(?:[A-Za-z]|1){5})q/,
+              re: /SCFEN\|(?!.*Q:w:[^;]*(?:C=[a-h][1-8]f1|[BF]=[A-Za-z]+:[a-h][1-8]:f1))(?:[^/]*\/){7}(?:5|4(?:[A-Za-z]|1)|(?:[A-Za-z]|1)4|32|23|3(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1)3(?:[A-Za-z]|1)|(?:[A-Za-z]|1){2}3|22(?:[A-Za-z]|1)|2(?:[A-Za-z]|1)2|(?:[A-Za-z]|1)22|2(?:[A-Za-z]|1){3}|(?:[A-Za-z]|1)2(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1){2}2(?:[A-Za-z]|1)|(?:[A-Za-z]|1){3}2|(?:[A-Za-z]|1){5})q/,
             },
             comment: "Enemy BattleShip on f1 — drop a Hoverbike on h2, then attack it!",
             emotion: "shocked"
@@ -1503,7 +1503,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /SCFEN\|(?:[^/]*\/){6}[^\/|]*P(?=[\/|])[^|]*\|(?:[1-9][0-9]*\|[^|]*\|[^|]*\|G:0|[^|]*\|[^|]*\|[^|]*\|G:[1-9][^|]*\|[^|]*C=h2h[34])/,
+              re: /SCFEN\|(?:[^/]*\/){6}[^\/|]*P(?=[\/|])[^|]*\|[^|]*\|[^|]*\|[^|]*\|G:[1-9][^|]*\|[^|]*C=h2h[34]/,
             },
             comment: "Remember Gas gives you an extra step!",
           },
@@ -1531,14 +1531,14 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /SCFEN\|(?:[^/]*\/)[^\/|]*P(?=[\/|])/,
+              re: /SCFEN\|(?:[^/]*\/)[^\/|]*P(?=[\/|])[^|]*\|[^|]*\|[^|]*\|[^|]*\|G:[1-9]/,
             },
             comment: "Promote it with Gas!",
           },
           {
             when: {
               kind: "scfen",
-              re: /SCFEN\|(?:[^/]*\/){7}[^\/|]*?(?:[2-8]|[0-9]1|[0-9][A-Za-z]|[A-Za-z][2-8])(?=[\/|])/,
+              re: /SCFEN\|(?!.*Q:w:[^;]*(?:C=[a-h][1-8]g1|[BF]=[A-Za-z]+:[a-h][1-8]:g1))(?:[^/]*\/){7}[^\/|]*?(?:[2-8]|[0-9]1|[0-9][A-Za-z]|[A-Za-z][2-8])(?=[\/|])/,
             },
             comment: "Deploy a guard in g1 with Gas, then push your Marine!",
           },
@@ -1567,6 +1567,14 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           },
           {
             when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|[^|]*\|[^|]*\|[^|]*\|[^|]*\|Q:w:(?!;)/,
+            },
+            comment: "Review your queued orders, then End Turn.",
+            emotion: "watching",
+          },
+          {
+            when: {
               kind: "reviewPhase",
               phase: "intent",
               turn: 1,
@@ -1576,8 +1584,8 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           },
           {
             when: {
-              kind: "turn",
-              turn: 2,
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|1\|[^|]*\|[^|]*\|G:[1-9]/,
             },
             comment: "Deploy a mine",
             emotion: "watching",
@@ -1596,7 +1604,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /SCFEN\|(?:[^/]*\/){5}(?:5|4(?:[A-Za-z]|1)|(?:[A-Za-z]|1)4|32|23|3(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1)3(?:[A-Za-z]|1)|(?:[A-Za-z]|1){2}3|22(?:[A-Za-z]|1)|2(?:[A-Za-z]|1)2|(?:[A-Za-z]|1)22|2(?:[A-Za-z]|1){3}|(?:[A-Za-z]|1)2(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1){2}2(?:[A-Za-z]|1)|(?:[A-Za-z]|1){3}2|(?:[A-Za-z]|1){5})p/,
+              re: /SCFEN\|(?!.*Q:w:[^;]*(?:C=[a-h][1-8]f3|[BF]=[A-Za-z]+:[a-h][1-8]:f3))(?:[^/]*\/){5}(?:5|4(?:[A-Za-z]|1)|(?:[A-Za-z]|1)4|32|23|3(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1)3(?:[A-Za-z]|1)|(?:[A-Za-z]|1){2}3|22(?:[A-Za-z]|1)|2(?:[A-Za-z]|1)2|(?:[A-Za-z]|1)22|2(?:[A-Za-z]|1){3}|(?:[A-Za-z]|1)2(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1){2}2(?:[A-Za-z]|1)|(?:[A-Za-z]|1){3}2|(?:[A-Za-z]|1){5})p/,
             },
             squares: [
               "f3",
@@ -1605,7 +1613,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /SCFEN\|(?:[^/]*\/){7}[^\/|]*?q(?=(?:[A-Za-z]|1)[\/|])/,
+              re: /SCFEN\|(?!.*Q:w:[^;]*(?:C=[a-h][1-8]g1|[BF]=[A-Za-z]+:[a-h][1-8]:g1))(?:[^/]*\/){7}[^\/|]*?q(?=(?:[A-Za-z]|1)[\/|])/,
             },
             squares: [
               "g1",
@@ -1614,7 +1622,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /SCFEN\|(?:[^/]*\/){7}(?:4|3(?:[A-Za-z]|1)|(?:[A-Za-z]|1)3|22|2(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1)2(?:[A-Za-z]|1)|(?:[A-Za-z]|1){2}2|(?:[A-Za-z]|1){4})q/,
+              re: /SCFEN\|(?!.*Q:w:[^;]*(?:C=[a-h][1-8]e1|[BF]=[A-Za-z]+:[a-h][1-8]:e1))(?:[^/]*\/){7}(?:4|3(?:[A-Za-z]|1)|(?:[A-Za-z]|1)3|22|2(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1)2(?:[A-Za-z]|1)|(?:[A-Za-z]|1){2}2|(?:[A-Za-z]|1){4})q/,
             },
             squares: [
               "g2",
@@ -1624,7 +1632,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /SCFEN\|(?:[^/]*\/){7}(?:5|4(?:[A-Za-z]|1)|(?:[A-Za-z]|1)4|32|23|3(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1)3(?:[A-Za-z]|1)|(?:[A-Za-z]|1){2}3|22(?:[A-Za-z]|1)|2(?:[A-Za-z]|1)2|(?:[A-Za-z]|1)22|2(?:[A-Za-z]|1){3}|(?:[A-Za-z]|1)2(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1){2}2(?:[A-Za-z]|1)|(?:[A-Za-z]|1){3}2|(?:[A-Za-z]|1){5})q/,
+              re: /SCFEN\|(?!.*Q:w:[^;]*(?:C=[a-h][1-8]f1|[BF]=[A-Za-z]+:[a-h][1-8]:f1))(?:[^/]*\/){7}(?:5|4(?:[A-Za-z]|1)|(?:[A-Za-z]|1)4|32|23|3(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1)3(?:[A-Za-z]|1)|(?:[A-Za-z]|1){2}3|22(?:[A-Za-z]|1)|2(?:[A-Za-z]|1)2|(?:[A-Za-z]|1)22|2(?:[A-Za-z]|1){3}|(?:[A-Za-z]|1)2(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1){2}2(?:[A-Za-z]|1)|(?:[A-Za-z]|1){3}2|(?:[A-Za-z]|1){5})q/,
             },
             squares: [
               "h2",
@@ -1688,7 +1696,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /SCFEN\|(?:[^/]*\/)[^\/|]*P(?=[\/|])/,
+              re: /SCFEN\|(?:[^/]*\/)[^\/|]*P(?=[\/|])[^|]*\|[^|]*\|[^|]*\|[^|]*\|G:[1-9]/,
             },
             squares: [
               "h7",
@@ -1697,7 +1705,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /SCFEN\|(?:[^/]*\/){7}[^\/|]*?(?:[2-8]|[0-9]1|[0-9][A-Za-z]|[A-Za-z][2-8])(?=[\/|])/,
+              re: /SCFEN\|(?!.*Q:w:[^;]*(?:C=[a-h][1-8]g1|[BF]=[A-Za-z]+:[a-h][1-8]:g1))(?:[^/]*\/){7}[^\/|]*?(?:[2-8]|[0-9]1|[0-9][A-Za-z]|[A-Za-z][2-8])(?=[\/|])/,
             },
             squares: [
               "g1",

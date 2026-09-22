@@ -126,6 +126,7 @@ describe("tutorialScript", () => {
     "checked",
     "oneMoreHit",
     "centralize",
+    "queuedReview",
     "intentTipTurn1",
     "minesTipTurn2",
   );
@@ -676,9 +677,18 @@ describe("tutorialScript", () => {
       resolveTutorialLine({
         stageId: "king",
         storyId: "king-attack-3",
-        turn: 2,
+        scfen: "SCFEN|8/8/8/8/4k3/5P2/6P1/4N1BK|1|33|P|G:11:11|Q:w:;b:",
       }),
       KING_ATTACK_3.minesTipTurn2,
+    );
+    expectIntro(
+      resolveTutorialLine({
+        stageId: "king",
+        storyId: "king-attack-3",
+        scfen: "SCFEN|8/8/8/8/4k3/5P2/6P1/4N1BK|1|33|P|G:01:11|Q:w:;b:",
+      }),
+      "king",
+      "king-attack-3",
     );
   });
 
@@ -760,21 +770,33 @@ describe("tutorialScript", () => {
       "SCFEN|8/8/8/8/4k3/5p2/6P1/4N1BK|1|33|P|G:11:11|Q:w:C=g2f3;b:";
     expectReaction(lineFor(f3attack), KING_ATTACK_3.attackF3Queued);
     expect(resolveTutorialHints(story.hints, f3attack)).toEqual(["g2"]);
+    const f3bikeAttack =
+      "SCFEN|8/8/8/8/4k3/5p2/6P1/4N1BK|1|33|P|G:11:11|Q:w:C=e1f3;b:";
+    expectReaction(lineFor(f3bikeAttack), KING_ATTACK_3.queuedReview);
+    expect(resolveTutorialHints(story.hints, f3bikeAttack)).toEqual(["c2"]);
     const promoRank2 =
       "SCFEN|8/8/8/8/4k3/5P2/4p2/4N1BK|1|33|P|G:11:11|Q:w:;b:";
     expectReaction(lineFor(promoRank2), KING_ATTACK_3.promoThreat);
     expect(resolveTutorialHints(story.hints, promoRank2)).toEqual(["c2"]);
     const gasQueuedNoThreat =
       "SCFEN|8/8/8/8/4k3/5P2/6P1/4N1BK|1|33|P|G:11:11|Q:w:B=pawnDouble:h2:h3;b:";
-    expectIntro(lineFor(gasQueuedNoThreat), "king", "king-attack-3");
+    expectReaction(lineFor(gasQueuedNoThreat), KING_ATTACK_3.queuedReview);
     const g1ship =
       "SCFEN|8/8/8/8/4k3/5P2/6P1/4N1qK|1|33|P|G:11:11|Q:w:;b:";
     expectReaction(lineFor(g1ship), KING_ATTACK_3.g1Ship);
     expect(resolveTutorialHints(story.hints, g1ship)).toEqual(["g1"]);
+    const g1crush =
+      "SCFEN|8/8/8/8/4k3/5P2/6P1/4N1qK|1|33|P|G:11:11|Q:w:B=spawn:h1:g1:n;b:";
+    expectReaction(lineFor(g1crush), KING_ATTACK_3.queuedReview);
+    expect(resolveTutorialHints(story.hints, g1crush)).toEqual(["c2"]);
     const e1ship =
       "SCFEN|8/8/8/8/4k3/5P2/6P1/4q1BK|1|33|P|G:11:11|Q:w:;b:";
     expectReaction(lineFor(e1ship), KING_ATTACK_3.e1Ship);
     expect(resolveTutorialHints(story.hints, e1ship)).toEqual(["g2", "e1"]);
+    const e1handled =
+      "SCFEN|8/8/8/8/4k3/5P2/6P1/4q1BK|1|33|P|G:11:11|Q:w:C=g2e1;b:";
+    expectReaction(lineFor(e1handled), KING_ATTACK_3.queuedReview);
+    expect(resolveTutorialHints(story.hints, e1handled)).toEqual(["c2"]);
     const f1ship =
       "SCFEN|8/8/8/8/4k3/5P2/6P1/4NqBK|1|33|P|G:11:11|Q:w:;b:";
     expectReaction(lineFor(f1ship), KING_ATTACK_3.f1Ship);
@@ -792,8 +814,7 @@ describe("tutorialScript", () => {
     expect(resolveTutorialHints(story.hints, h2)).toEqual(["h4"]);
     const h2gas =
       "SCFEN|8/8/8/8/4k3/5P2/7P/4N1BK|1|33|P|G:01:11|Q:w:;b:";
-    expectReaction(lineFor(h2gas), KING_ATTACK_3.gasReminder);
-    expect(resolveTutorialHints(story.hints, h2gas)).toEqual(["h4"]);
+    expectIntro(lineFor(h2gas), "king", "king-attack-3");
     const h2queued =
       "SCFEN|8/8/8/8/4k3/5P2/7P/4N1BK|0|33|P|G:11:11|Q:w:C=h2h3;b:";
     expectReaction(lineFor(h2queued), KING_ATTACK_3.gasReminder);
@@ -804,7 +825,7 @@ describe("tutorialScript", () => {
     expect(resolveTutorialHints(story.hints, h3)).toEqual(["h5"]);
     const h3queued =
       "SCFEN|8/8/8/8/4k3/7P/6P1/4N1BK|1|33|P|G:11:11|Q:w:C=h3h4;b:";
-    expectIntro(lineFor(h3queued), "king", "king-attack-3");
+    expectReaction(lineFor(h3queued), KING_ATTACK_3.queuedReview);
     expect(resolveTutorialHints(story.hints, h3queued)).toEqual(["c2"]);
     const h4 =
       "SCFEN|8/8/8/8/7P/5P2/6P1/4N1BK|1|33|P|G:11:11|Q:w:;b:";
@@ -812,20 +833,31 @@ describe("tutorialScript", () => {
     expect(resolveTutorialHints(story.hints, h4)).toEqual(["h6"]);
     const h4queued =
       "SCFEN|8/8/8/8/7P/5P2/6P1/4N1BK|1|33|P|G:11:11|Q:w:C=h4h5;b:";
-    expectIntro(lineFor(h4queued), "king", "king-attack-3");
+    expectReaction(lineFor(h4queued), KING_ATTACK_3.queuedReview);
     expect(resolveTutorialHints(story.hints, h4queued)).toEqual(["c2"]);
     const h6 =
       "SCFEN|8/8/7P/8/4k3/5P2/6P1/4N1BK|1|33|P|G:11:11|Q:w:;b:";
-    expectIntro(lineFor(h6), "king", "king-attack-3");
+    expectReaction(lineFor(h6), KING_ATTACK_3.minesTipTurn2);
     expect(resolveTutorialHints(story.hints, h6)).toEqual(["c2"]);
     const h7 =
       "SCFEN|8/7P/8/8/4k3/5P2/6P1/4N1BK|1|33|P|G:11:11|Q:w:;b:";
     expectReaction(lineFor(h7), KING_ATTACK_3.pushH7);
     expect(resolveTutorialHints(story.hints, h7)).toEqual(["h7"]);
+    const h7spent =
+      "SCFEN|8/7P/8/8/4k3/5P2/6P1/4N1BK|1|33|P|G:01:11|Q:w:;b:";
+    expectIntro(lineFor(h7spent), "king", "king-attack-3");
     const guard =
       "SCFEN|8/8/8/8/4k3/5P2/6P1/4N3|1|33|P|G:11:11|Q:w:;b:";
     expectReaction(lineFor(guard), KING_ATTACK_3.guardG1);
     expect(resolveTutorialHints(story.hints, guard)).toEqual(["g1"]);
+    const guardQueued =
+      "SCFEN|8/8/8/8/4k3/5P2/6P1/4N3|1|33|P|G:11:11|Q:w:B=spawn:h1:g1:n;b:";
+    expectReaction(lineFor(guardQueued), KING_ATTACK_3.queuedReview);
+    expect(resolveTutorialHints(story.hints, guardQueued)).toEqual(["c2"]);
+    const planQueued =
+      "SCFEN|8/8/8/8/4k3/5P2/6P1/4N1BK|1|33|P|G:11:11|Q:w:C=e1c2;b:";
+    expectReaction(lineFor(planQueued), KING_ATTACK_3.queuedReview);
+    expect(resolveTutorialHints(story.hints, planQueued)).toEqual(["c2"]);
     const centralized =
       "SCFEN|8/8/8/8/4k3/5P2/6P1/4N1BK|0|33|P|G:01:11|Q:w:;b:";
     expectReaction(lineFor(centralized), KING_ATTACK_3.centralize);
