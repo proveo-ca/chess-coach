@@ -1456,6 +1456,14 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
+              re: /SCFEN\|(?:[^/p]*\/){5}[^|]*p/,
+            },
+            comment: "Stop that Marine from promoting!",
+            emotion: "shocked",
+          },
+          {
+            when: {
+              kind: "scfen",
               re: /SCFEN\|(?:[^/]*\/){7}[^\/|]*?q(?=(?:[A-Za-z]|1)[\/|])/,
             },
             comment: "Crush that BattleShip by deploying any unit on it!",
@@ -1507,14 +1515,14 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /SCFEN\|(?:[^/]*\/){5}[^\/|]*P(?=[\/|])/,
+              re: /SCFEN\|(?!.*C=h[1-8])(?:[^/]*\/){5}[^\/|]*P(?=[\/|])/,
             },
             comment: "Keep pushing your Marine!",
           },
           {
             when: {
               kind: "scfen",
-              re: /SCFEN\|(?:[^/]*\/){4}[^\/|]*P(?=[\/|])/,
+              re: /SCFEN\|(?!.*C=h[1-8])(?:[^/]*\/){4}[^\/|]*P(?=[\/|])/,
             },
             comment: "Keep pushing your Marine!",
           },
@@ -1651,7 +1659,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /SCFEN\|(?:[^/]*\/){5}[^\/|]*P(?=[\/|])/,
+              re: /SCFEN\|(?!.*C=h[1-8])(?:[^/]*\/){5}[^\/|]*P(?=[\/|])/,
             },
             squares: [
               "h5",
@@ -1660,7 +1668,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /SCFEN\|(?:[^/]*\/){4}[^\/|]*P(?=[\/|])/,
+              re: /SCFEN\|(?!.*C=h[1-8])(?:[^/]*\/){4}[^\/|]*P(?=[\/|])/,
             },
             squares: [
               "h6",

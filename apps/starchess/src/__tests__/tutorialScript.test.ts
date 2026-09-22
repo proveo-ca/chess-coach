@@ -111,6 +111,7 @@ describe("tutorialScript", () => {
     "enemyDown",
     "attackF3Queued",
     "f3Marine",
+    "promoThreat",
     "g1Ship",
     "e1Ship",
     "f1Ship",
@@ -759,6 +760,13 @@ describe("tutorialScript", () => {
       "SCFEN|8/8/8/8/4k3/5p2/6P1/4N1BK|1|33|P|G:11:11|Q:w:C=g2f3;b:";
     expectReaction(lineFor(f3attack), KING_ATTACK_3.attackF3Queued);
     expect(resolveTutorialHints(story.hints, f3attack)).toEqual(["g2"]);
+    const promoRank2 =
+      "SCFEN|8/8/8/8/4k3/5P2/4p2/4N1BK|1|33|P|G:11:11|Q:w:;b:";
+    expectReaction(lineFor(promoRank2), KING_ATTACK_3.promoThreat);
+    expect(resolveTutorialHints(story.hints, promoRank2)).toEqual(["c2"]);
+    const gasQueuedNoThreat =
+      "SCFEN|8/8/8/8/4k3/5P2/6P1/4N1BK|1|33|P|G:11:11|Q:w:B=pawnDouble:h2:h3;b:";
+    expectIntro(lineFor(gasQueuedNoThreat), "king", "king-attack-3");
     const g1ship =
       "SCFEN|8/8/8/8/4k3/5P2/6P1/4N1qK|1|33|P|G:11:11|Q:w:;b:";
     expectReaction(lineFor(g1ship), KING_ATTACK_3.g1Ship);
@@ -794,10 +802,18 @@ describe("tutorialScript", () => {
       "SCFEN|8/8/8/8/4k3/7P/6P1/4N1BK|1|33|P|G:11:11|Q:w:;b:";
     expectReaction(lineFor(h3), KING_ATTACK_3.pushH3);
     expect(resolveTutorialHints(story.hints, h3)).toEqual(["h5"]);
+    const h3queued =
+      "SCFEN|8/8/8/8/4k3/7P/6P1/4N1BK|1|33|P|G:11:11|Q:w:C=h3h4;b:";
+    expectIntro(lineFor(h3queued), "king", "king-attack-3");
+    expect(resolveTutorialHints(story.hints, h3queued)).toEqual(["c2"]);
     const h4 =
       "SCFEN|8/8/8/8/7P/5P2/6P1/4N1BK|1|33|P|G:11:11|Q:w:;b:";
     expectReaction(lineFor(h4), KING_ATTACK_3.pushH4);
     expect(resolveTutorialHints(story.hints, h4)).toEqual(["h6"]);
+    const h4queued =
+      "SCFEN|8/8/8/8/7P/5P2/6P1/4N1BK|1|33|P|G:11:11|Q:w:C=h4h5;b:";
+    expectIntro(lineFor(h4queued), "king", "king-attack-3");
+    expect(resolveTutorialHints(story.hints, h4queued)).toEqual(["c2"]);
     const h6 =
       "SCFEN|8/8/7P/8/4k3/5P2/6P1/4N1BK|1|33|P|G:11:11|Q:w:;b:";
     expectIntro(lineFor(h6), "king", "king-attack-3");
