@@ -1493,7 +1493,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /SCFEN\|(?:[^/]*\/){6}[^\/|]*P(?=[\/|])[^|]*\|[^|]*\|[^|]*\|[^|]*\|G:[1-9][^|]*\|[^|]*C=h2h4/,
+              re: /SCFEN\|(?:[^/]*\/){6}[^\/|]*P(?=[\/|])[^|]*\|(?:[1-9][0-9]*\|[^|]*\|[^|]*\|G:0|[^|]*\|[^|]*\|[^|]*\|G:[1-9][^|]*\|[^|]*C=h2h[34])/,
             },
             comment: "Remember Gas gives you an extra step!",
           },
@@ -1503,13 +1503,6 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               re: /SCFEN\|(?:[^/]*\/){6}[^\/|]*P(?=[\/|])[^|]*\|[^|]*\|[^|]*\|[^|]*\|G:[1-9]/,
             },
             comment: "Keep pushing your Marine!",
-          },
-          {
-            when: {
-              kind: "scfen",
-              re: /SCFEN\|(?:[^/]*\/){6}[^\/|]*P(?=[\/|])[^|]*\|[1-9][0-9]*\|[^|]*\|[^|]*\|G:0/,
-            },
-            comment: "Remember Gas gives you an extra step!",
           },
           {
             when: {
@@ -1524,14 +1517,6 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               re: /SCFEN\|(?:[^/]*\/){4}[^\/|]*P(?=[\/|])/,
             },
             comment: "Keep pushing your Marine!",
-          },
-          {
-            when: {
-              kind: "scfen",
-              re: /SCFEN\|(?:[^/]*\/){2}[^\/|]*P(?=[\/|])/,
-            },
-            comment: "Yes, keep pushing your Marine. \nRemember Gas gives you an extra step!",
-            emotion: "happy",
           },
           {
             when: {
@@ -1688,15 +1673,6 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             },
             squares: [
               "h5",
-            ],
-          },
-          {
-            when: {
-              kind: "scfen",
-              re: /SCFEN\|(?:[^/]*\/){2}[^\/|]*P(?=[\/|])/,
-            },
-            squares: [
-              "h6",
             ],
           },
           {
