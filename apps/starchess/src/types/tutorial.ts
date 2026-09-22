@@ -118,7 +118,10 @@ export type TutorialBoardHint = {
     | { kind: "scfen"; re: RegExp; phases?: readonly ReviewTurnPhase[] }
     | { kind: "reviewPhase"; phase: ReviewTurnPhase; /** 1-based planning ordinal. */ turn?: number }
     | TutorialCoversWhen
-    | TutorialTrajectoryWhen;
+    | TutorialTrajectoryWhen
+    | TutorialBackrankWhen
+    | TutorialMechaDiagonalWhen
+    | TutorialGasMarineWhen;
   /** Guide-green rings. */
   squares?: readonly Square[];
   /** Alert-red rings. Same step as `squares`; both paint together. */
@@ -157,6 +160,30 @@ export type TutorialTrajectoryWhen = {
   kind: "trajectory";
   from: Square;
   to: Square;
+};
+
+/**
+ * g1 guard. The back rank is empty of allies and an enemy has a higher file
+ * than every ally — a piece already on the back rank is the guard itself.
+ */
+export type TutorialBackrankWhen = { kind: "backrankGuard" };
+
+/**
+ * Mecha on the g2–a8 diagonal. Requires the classical Attack/Move to still
+ * be open; `phases` limits it to queueing.
+ */
+export type TutorialMechaDiagonalWhen = {
+  kind: "mechaDiagonal";
+  phases?: readonly ReviewTurnPhase[];
+};
+
+/**
+ * Classical move is queued and gas remains — drop it on the marine being pushed.
+ * The highlighted square is that marine, not a square listed here.
+ */
+export type TutorialGasMarineWhen = {
+  kind: "gasOnMarine";
+  phases?: readonly ReviewTurnPhase[];
 };
 
 /** Auto-advance to next lesson when live intent / board matches. */

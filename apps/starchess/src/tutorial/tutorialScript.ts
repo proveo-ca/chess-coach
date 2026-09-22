@@ -5,18 +5,26 @@
 import type { Square } from "chess.js";
 
 import { TUTORIAL_SCRIPT_CONFIG } from "~/tutorial/tutorialScript.config";
+import {
+  gasMarineSquare,
+  g1GuardNeeded,
+  mechaDiagonalOpen,
+} from "~/tutorial/lessonTactics";
 import type { KerriganEmotion } from "~/types/coach";
 import type {
   AlertLatch,
   AttackTrajectory,
   LiveLessonBoard,
   SquareCovers,
+  TutorialBackrankWhen,
   TutorialBoardArrow,
   TutorialBoardHint,
   TutorialCompleteWhen,
   TutorialCoversWhen,
+  TutorialGasMarineWhen,
   TutorialLine,
   TutorialLineHold,
+  TutorialMechaDiagonalWhen,
   TutorialTrajectoryWhen,
   TutorialReactionAction,
   TutorialSectionId,
@@ -54,7 +62,10 @@ export type TutorialReactionWhen =
   /** Live tactics cover the square with one of these kinds. */
   | TutorialCoversWhen
   /** Live tactics hold an open staging post against the enemy CC. */
-  | TutorialTrajectoryWhen;
+  | TutorialTrajectoryWhen
+  | TutorialBackrankWhen
+  | TutorialMechaDiagonalWhen
+  | TutorialGasMarineWhen;
 
 export type TutorialReaction = {
   when: TutorialReactionWhen;
@@ -282,6 +293,15 @@ export const resolveTutorialLine = (ctx: TutorialScriptContext): TutorialLine =>
     if (w.kind === "trajectory" && ctx.trajectories?.some((t) => t.from === w.from && t.to === w.to)) {
       return reactionLine(r);
     }
+    if (w.kind === "backrankGuard" && ctx.scfen && g1GuardNeeded(ctx.scfen)) {
+      return reactionLine(r);
+    }
+    if (w.kind === "mechaDiagonal" && ctx.scfen && phaseAllows(w.phases, ctx.reviewPhase) && mechaDiagonalOpen(ctx.scfen)) {
+      return reactionLine(r);
+    }
+    if (w.kind === "gasOnMarine" && ctx.scfen && phaseAllows(w.phases, ctx.reviewPhase) && gasMarineSquare(ctx.scfen)) {
+      return reactionLine(r);
+    }
   }
 
   return {
@@ -417,9 +437,33 @@ const matchTutorialHint = (
         return h;
       }
     }
+    if (h.when.kind === "backrankGuard" && scfen && g1GuardNeeded(scfen)) {
+      return h;
+    }
+    if (
+      h.when.kind === "mechaDiagonal" &&
+      scfen &&
+      phaseAllows(h.when.phases, query?.reviewPhase) &&
+      mechaDiagonalOpen(scfen)
+    ) {
+      return h;
+    }
+    if (
+      h.when.kind === "gasOnMarine" &&
+      scfen &&
+      phaseAllows(h.when.phases, query?.reviewPhase) &&
+      gasMarineSquare(scfen)
+    ) {
+      return { ...h, squares: [gasMarineSquare(scfen)!] };
+    }
   }
   return undefined;
 };
+
+const phaseAllows = (
+  phases: readonly ReviewTurnPhase[] | undefined,
+  phase: ReviewTurnPhase | undefined,
+): boolean => !phases || (!!phase && phases.includes(phase));
 
 export const resolveTutorialHints = (
   hints: readonly TutorialBoardHint[] | undefined,
