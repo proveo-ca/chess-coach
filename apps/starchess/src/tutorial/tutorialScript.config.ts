@@ -1458,6 +1458,16 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             transient: true,
           },
           {
+            when: { kind: "promotionChoice", phases: ["intent"] },
+            comment: "Choose your promotion wisely: \nBattleShip, risk getting sniped \nTank, worse but harder to hit",
+            emotion: "thinking",
+          },
+          {
+            when: { kind: "mechaThreat", phases: ["intent"] },
+            comment: "Threat that Command Center with your Mecha",
+            emotion: "thinking",
+          },
+          {
             // g2×f3 frees a Command Center deploy square. A Mecha costs 3
             // minerals and looks down g2–a8; another Marine does not. The
             // classical Attack/Move still has to be open — this is the move
@@ -1531,6 +1541,11 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             comment: "Your Mecha already covers g1 — take it, no deploy needed!",
           },
           {
+            // Open Attack/Move, BattleShip or Tank on h8, and no defensive threat.
+            when: { kind: "chargeH8", phases: ["intent"] },
+            comment: "Go get 'em!",
+          },
+          {
             when: { kind: "trajectory", from: "g2", to: "d5" },
             comment: "You have 3 minerals — deploy a Mecha on g2, then take d5!",
           },
@@ -1580,11 +1595,6 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             comment: "I saw the Command Center moving to d5, Hoverbike on b4.",
           },
           {
-            // Offense: the promoted piece is on h8 and nothing urgent is defending.
-            when: { kind: "chargeH8", phases: ["intent"] },
-            comment: "Go get 'em!",
-          },
-          {
             when: { kind: "tankSiege", phases: ["intent"] },
             comment: "Now turn it to siege mode for bigger range",
             emotion: "scanning",
@@ -1625,11 +1635,6 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){4}[^\/|]*P(?=[\/|])/,
             },
             comment: "Keep pushing your Marine!",
-          },
-          {
-            when: { kind: "promotionChoice", phases: ["intent"] },
-            comment: "Choose your promotion wisely: \nBattleShip, risk getting sniped \nTank, worse but harder to hit",
-            emotion: "thinking",
           },
           {
             when: { kind: "backrankGuard" },
@@ -1709,6 +1714,13 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             alertSquares: ["d5"],
           },
           {
+            when: { kind: "promotionChoice", phases: ["intent"] },
+          },
+          {
+            when: { kind: "mechaThreat", phases: ["intent"] },
+            arrows: [{ from: "g2", to: "a8" }],
+          },
+          {
             when: { kind: "mechaDiagonal", phases: ["intent"] },
             squares: [
               "g2",
@@ -1772,6 +1784,13 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: { kind: "covers", square: "g1", kinds: ["b"] },
             squares: ["g1"],
+          },
+          {
+            when: { kind: "chargeH8", phases: ["intent"] },
+            arrows: [
+              { from: "h8", to: "h5" },
+              { from: "h5", to: "d5", tone: "alert" },
+            ],
           },
           {
             when: { kind: "trajectory", from: "g2", to: "d5" },
@@ -1845,13 +1864,6 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             ],
           },
           {
-            when: { kind: "chargeH8", phases: ["intent"] },
-            arrows: [
-              { from: "h8", to: "h5" },
-              { from: "h5", to: "d5", tone: "alert" },
-            ],
-          },
-          {
             when: { kind: "tankSiege", phases: ["intent"] },
             squares: ["h5"],
           },
@@ -1897,12 +1909,6 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             },
             squares: [
               "h5",
-            ],
-          },
-          {
-            when: { kind: "promotionChoice", phases: ["intent"] },
-            squares: [
-              "h7",
             ],
           },
           {

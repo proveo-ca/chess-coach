@@ -121,6 +121,7 @@ export type TutorialBoardHint = {
     | TutorialTrajectoryWhen
     | TutorialBackrankWhen
     | TutorialMechaDiagonalWhen
+    | TutorialMechaThreatWhen
     | TutorialGasMarineWhen
     | TutorialForwardDeployWhen
     | TutorialPromotionWhen
@@ -181,6 +182,12 @@ export type TutorialMechaDiagonalWhen = {
   phases?: readonly ReviewTurnPhase[];
 };
 
+/** Mecha already on g2, Attack/Move still open. */
+export type TutorialMechaThreatWhen = {
+  kind: "mechaThreat";
+  phases?: readonly ReviewTurnPhase[];
+};
+
 /**
  * Classical move is queued and gas remains — drop it on the marine being pushed.
  * The highlighted square is that marine, not a square listed here.
@@ -200,13 +207,13 @@ export type TutorialForwardDeployWhen = {
   phases?: readonly ReviewTurnPhase[];
 };
 
-/** Marine on h7 can promote this turn and has not chosen a piece yet. */
+/** Marine on h6 or h7 can promote this turn and has not chosen a piece yet. */
 export type TutorialPromotionWhen = {
   kind: "promotionChoice";
   phases?: readonly ReviewTurnPhase[];
 };
 
-/** BattleShip or Tank on h8 while attacking is the preferred plan. */
+/** BattleShip or Tank on h8, Attack/Move open, and nothing urgent is defending. */
 export type TutorialChargeWhen = {
   kind: "chargeH8";
   phases?: readonly ReviewTurnPhase[];

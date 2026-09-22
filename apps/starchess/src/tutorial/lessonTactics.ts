@@ -111,6 +111,19 @@ export const g1GuardNeeded = (scfen: string, viewer: StarChessColor = "w"): bool
 };
 
 /**
+ * A Mecha already stands on g2 and the Attack/Move is still open, so the
+ * coaching beat is to aim that piece at the Command Center.
+ */
+export const mechaThreatOpen = (scfen: string, viewer: StarChessColor = "w"): boolean => {
+  if (viewer !== "w") return false;
+  if (/C=/.test(whiteQueue(scfen))) return false;
+  const map = placementMap(scfen);
+  if (!map) return false;
+  const piece = map.get("g2");
+  return !!piece && piece.color === viewer && piece.type === "b";
+};
+
+/**
  * Mecha on g2–a8. The g2 marine can still spend the classical Attack/Move
  * (nothing queued on `C`), and the bank can afford the Mecha that replaces it.
  */
@@ -273,17 +286,22 @@ export const offensePreferred = (scfen: string, viewer: StarChessColor = "w"): b
   return true;
 };
 
-/** White pawn on h7 can still promote this turn, and has not chosen a piece. */
-export const promotionChoiceOpen = (scfen: string, viewer: StarChessColor = "w"): boolean => {
-  if (viewer !== "w") return false;
+/** White pawn on h6 or h7 can still promote this turn, and has not chosen a piece. */
+export const promotionChoiceOpen = (
+  scfen: string,
+  viewer: StarChessColor = "w",
+): Square | null => {
+  if (viewer !== "w") return null;
   const map = placementMap(scfen);
-  if (!map) return false;
-  const pawn = map.get("h7");
-  if (!pawn || pawn.color !== viewer || pawn.type !== "p") return false;
+  if (!map) return null;
   const queue = whiteQueue(scfen);
-  if (/C=h7h8|[BF]=pawnDouble:h7/.test(queue)) return false;
-  if (whiteGas(scfen) >= 1) return true;
-  return !/C=/.test(queue);
+  for (const sq of ["h7", "h6"] as const) {
+    const pawn = map.get(sq);
+    if (!pawn || pawn.color !== viewer || pawn.type !== "p") continue;
+    if (new RegExp(`C=${sq}|[BF]=pawnDouble:${sq}`).test(queue)) continue;
+    if (whiteGas(scfen) >= 1 || !/C=/.test(queue)) return sq;
+  }
+  return null;
 };
 
 /**

@@ -116,6 +116,8 @@ describe("tutorialScript", () => {
     "enemyDown",
     "shipSniped",
     "ccMoved",
+    "promotionChoice",
+    "mechaThreat",
     "attackF3Queued",
     "f3Marine",
     "promoThreat",
@@ -131,6 +133,7 @@ describe("tutorialScript", () => {
     "g1k",
     "g1r",
     "g1b",
+    "goGetEm",
     "deployMecha",
     "mineC2",
     "b4attack",
@@ -138,14 +141,12 @@ describe("tutorialScript", () => {
     "e1Ship",
     "f1Ship",
     "d5b4spot",
-    "goGetEm",
     "tankSiege",
     "deployG2",
     "gasReminder",
     "pushH2",
     "pushH3",
     "pushH4",
-    "promotionChoice",
     "guardG1",
     "oneMoreCheck",
     "checked",
@@ -1038,8 +1039,8 @@ describe("tutorialScript", () => {
     expect(resolveTutorialHints(story.hints, h4queued, undefined, undefined, intent)).toEqual(["h4"]);
     const h6 =
       "SCFEN|8/8/7P/8/4k3/5P2/6P1/4N1BK|1|33|P|G:11:11|Q:w:;b:";
-    expectReaction(lineFor(h6), KING_ATTACK_3.minesTipTurn2);
-    expect(resolveTutorialHints(story.hints, h6)).toEqual(["c2"]);
+    expectReaction(lineFor(h6), KING_ATTACK_3.promotionChoice);
+    expect(resolveTutorialHints(story.hints, h6, undefined, undefined, intent)).toEqual(["h6"]);
     const h7 =
       "SCFEN|8/7P/8/8/4k3/5P2/6P1/4N1BK|1|33|P|G:11:11|Q:w:;b:";
     expectReaction(lineFor(h7), KING_ATTACK_3.promotionChoice);
@@ -1118,6 +1119,36 @@ describe("tutorialScript", () => {
     expect(resolveTutorialArrows(story.hints, charge, undefined, undefined, intent)).toEqual([
       { from: "h8", to: "h5" },
       { from: "h5", to: "d5", tone: "alert" },
+    ]);
+    const chargeOverDeploy =
+      "SCFEN|7Q/8/8/3k4/8/8/8/4N1BK|12|33|P|G:11:11|B:3:3|Q:w:;b:";
+    const chargeTraj = availableTrajectories(chargeOverDeploy, "w");
+    expect(chargeTraj).toEqual([{ key: "deploy-b-g2-d5", from: "g2", to: "d5" }]);
+    expectReaction(
+      resolveTutorialLine({
+        stageId: "king",
+        storyId: "king-attack-3",
+        scfen: chargeOverDeploy,
+        reviewPhase: "intent",
+        trajectories: chargeTraj,
+      }),
+      KING_ATTACK_3.goGetEm,
+    );
+    expect(
+      resolveTutorialArrows(story.hints, chargeOverDeploy, undefined, chargeTraj, intent),
+    ).toEqual([
+      { from: "h8", to: "h5" },
+      { from: "h5", to: "d5", tone: "alert" },
+    ]);
+    const mechaOnG2 =
+      "SCFEN|8/8/8/8/4k3/8/6B1/4N1BK|1|33|P|G:11:11|Q:w:;b:";
+    expectReaction(lineFor(mechaOnG2), KING_ATTACK_3.mechaThreat);
+    expect(KING_ATTACK_3.mechaThreat.comment).toBe(
+      "Threat that Command Center with your Mecha",
+    );
+    expect(KING_ATTACK_3.mechaThreat.emotion).toBe("thinking");
+    expect(resolveTutorialArrows(story.hints, mechaOnG2, undefined, undefined, intent)).toEqual([
+      { from: "g2", to: "a8" },
     ]);
     expect(
       resolveTutorialArrows(story.hints, charge, undefined, undefined, { reviewPhase: "resolve" }),

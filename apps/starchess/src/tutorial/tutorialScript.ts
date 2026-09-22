@@ -11,6 +11,7 @@ import {
   gasMarineSquare,
   g1GuardNeeded,
   mechaDiagonalOpen,
+  mechaThreatOpen,
   promotionChoiceOpen,
   tankSiegeOnH5,
 } from "~/tutorial/lessonTactics";
@@ -32,6 +33,7 @@ import type {
   TutorialLine,
   TutorialLineHold,
   TutorialMechaDiagonalWhen,
+  TutorialMechaThreatWhen,
   TutorialPromotionWhen,
   TutorialTankSiegeWhen,
   TutorialTrajectoryWhen,
@@ -74,6 +76,7 @@ export type TutorialReactionWhen =
   | TutorialTrajectoryWhen
   | TutorialBackrankWhen
   | TutorialMechaDiagonalWhen
+  | TutorialMechaThreatWhen
   | TutorialGasMarineWhen
   | TutorialForwardDeployWhen
   | TutorialPromotionWhen
@@ -316,6 +319,9 @@ export const resolveTutorialLine = (ctx: TutorialScriptContext): TutorialLine =>
     if (w.kind === "mechaDiagonal" && ctx.scfen && phaseAllows(w.phases, ctx.reviewPhase) && mechaDiagonalOpen(ctx.scfen)) {
       return reactionLine(r);
     }
+    if (w.kind === "mechaThreat" && ctx.scfen && phaseAllows(w.phases, ctx.reviewPhase) && mechaThreatOpen(ctx.scfen)) {
+      return reactionLine(r);
+    }
     if (w.kind === "gasOnMarine" && ctx.scfen && phaseAllows(w.phases, ctx.reviewPhase) && gasMarineSquare(ctx.scfen)) {
       return reactionLine(r);
     }
@@ -501,6 +507,14 @@ const matchTutorialHint = (
       return h;
     }
     if (
+      h.when.kind === "mechaThreat" &&
+      scfen &&
+      phaseAllows(h.when.phases, query?.reviewPhase) &&
+      mechaThreatOpen(scfen)
+    ) {
+      return h;
+    }
+    if (
       h.when.kind === "gasOnMarine" &&
       scfen &&
       phaseAllows(h.when.phases, query?.reviewPhase) &&
@@ -516,13 +530,9 @@ const matchTutorialHint = (
     ) {
       return h;
     }
-    if (
-      h.when.kind === "promotionChoice" &&
-      scfen &&
-      phaseAllows(h.when.phases, query?.reviewPhase) &&
-      promotionChoiceOpen(scfen)
-    ) {
-      return h;
+    if (h.when.kind === "promotionChoice" && scfen && phaseAllows(h.when.phases, query?.reviewPhase)) {
+      const square = promotionChoiceOpen(scfen);
+      if (square) return { ...h, squares: [square] };
     }
     if (
       h.when.kind === "chargeH8" &&
