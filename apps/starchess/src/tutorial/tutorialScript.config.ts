@@ -1440,7 +1440,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /SCFEN\|[^|]+\|[^|]*\|[^|]*\|[^|]*\|[^|]*\|[^|]*C=g2f3/,
+              re: /SCFEN\|(?=.*\|Q:w:[^;]*C=g2f3)/,
             },
             comment: "Your Marine will vacate g2 after attacking, deploy another Marine in g2",
             emotion: "thinking",
@@ -1503,7 +1503,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /SCFEN\|(?:[^/]*\/){6}[^\/|]*P(?=[\/|])[^|]*\|[^|]*\|[^|]*\|[^|]*\|G:[1-9][^|]*\|[^|]*C=h2h[34]/,
+              re: /SCFEN\|(?:[^/]*\/){6}[^\/|]*P(?=[\/|])[^|]*\|[^|]*\|[^|]*\|[^|]*\|G:[1-9](?=.*\|Q:w:[^;]*C=h2h[34])/,
             },
             comment: "Remember Gas gives you an extra step!",
           },
@@ -1568,7 +1568,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /SCFEN\|[^|]+\|[^|]*\|[^|]*\|[^|]*\|[^|]*\|Q:w:(?!;)/,
+              re: /SCFEN\|[^|]+\|[^|]*\|[^|]*\|[^|]*\|(?=.*\|Q:w:(?!;))/,
             },
             comment: "Review your queued orders, then End Turn.",
             emotion: "watching",
@@ -1595,7 +1595,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /SCFEN\|[^|]+\|[^|]*\|[^|]*\|[^|]*\|[^|]*\|[^|]*C=g2f3/,
+              re: /SCFEN\|[^|]+\|[^|]*\|[^|]*\|[^|]*\|(?=.*\|Q:w:[^;]*C=g2f3)/,
             },
             squares: [
               "g2",
