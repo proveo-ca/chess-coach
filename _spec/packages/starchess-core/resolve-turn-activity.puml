@@ -27,7 +27,7 @@ partition "Classify — an ordered rule list, first match wins" {
     | # | rule | claims when |
     | 1 | ""jumpImmunity"" | enemy queen listed in ""ignoreAttacksOn"" — a jumping BattleShip is untouchable this turn |
     | 2 | ""marineFrontStep"" | marine, same file: the whole path is walked and the **first occupant blocks** — quiet step onto the last empty square, or stay put. Never a victim, never a discovery, whatever the fog says; a truncated step drops its ""promotion"" |
-    | 3 | ""enemyKingSquare"" | enemy king on ""to"" — never arms deferred HP (checks are implicit at turn open). A **hidden blocker** that lights mid-walk still becomes a phase-3 occupy |
+    | 3 | ""enemyKingSquare"" | enemy king on ""to"" — never arms deferred HP (checks are implicit at turn open). A non-king enemy on the ray is taken: visible ⇒ phase-1 capture, still fogged ⇒ move collision, lights mid-walk ⇒ phase-3 approach. An ally, a king, or a clear ray fizzles — the slider never occupies the king |
     | 4 | ""allyOccupied"" | own unit on ""to"" |
     | 5 | ""marineDiagonalEmpty"" | marine diagonal onto an empty tile — capture-only, unless a **visible** hostile mine is the target |
     | 6 | ""midPathPrecedence"" | slider aimed at an enemy: a unit met **on the ray** always beats the further target (""Re1→e8"" with ""pe7"" + ""re8"" takes the pawn). Ally ⇒ quiet truncate; a **king** passes to rule 9 |

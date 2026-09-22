@@ -594,23 +594,31 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
           : firstBlockerOnRay(start, plan.from, plan.to);
         if (!blocker) return { kind: "drop" };
         const victim = start.get(blocker)!;
+        if (victim.color === plan.color || victim.type === "k") return { kind: "drop" };
         const startVisible = canSee(plan.color, blocker);
         const reveal = leaps ? null : revealTo(ctx, blocker);
-        if (startVisible || reveal == null || reveal <= 0) return { kind: "drop" };
-        const mids = rayBetween(plan.from, plan.to);
+        if (!startVisible && reveal != null && reveal > 0) {
+          const mids = rayBetween(plan.from, plan.to);
+          return {
+            kind: "approach",
+            shot: {
+              kind: "capture",
+              piece: actor.type,
+              color: plan.color,
+              from: mids[reveal - 1]!,
+              to: blocker,
+              victim: { piece: victim.type, color: victim.color },
+              occupies: true,
+              pathRevealFrom: plan.from,
+              pathRevealSteps: reveal,
+            },
+          };
+        }
         return {
-          kind: "approach",
-          shot: {
-            kind: "capture",
-            piece: actor.type,
-            color: plan.color,
-            from: mids[reveal - 1]!,
-            to: blocker,
-            victim: { piece: victim.type, color: victim.color },
-            occupies: true,
-            pathRevealFrom: plan.from,
-            pathRevealSteps: reveal,
-          },
+          kind: "capture",
+          at: blocker,
+          victim,
+          ...(!startVisible ? { fogged: true as const } : {}),
         };
       },
     },
