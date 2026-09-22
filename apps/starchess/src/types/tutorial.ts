@@ -121,7 +121,12 @@ export type TutorialBoardHint = {
     | TutorialTrajectoryWhen
     | TutorialBackrankWhen
     | TutorialMechaDiagonalWhen
-    | TutorialGasMarineWhen;
+    | TutorialGasMarineWhen
+    | TutorialForwardDeployWhen
+    | TutorialG2ReplacementWhen
+    | TutorialPromotionWhen
+    | TutorialChargeWhen
+    | TutorialTankSiegeWhen;
   /** Guide-green rings. */
   squares?: readonly Square[];
   /** Alert-red rings. Same step as `squares`; both paint together. */
@@ -185,6 +190,50 @@ export type TutorialGasMarineWhen = {
   kind: "gasOnMarine";
   phases?: readonly ReviewTurnPhase[];
 };
+
+/**
+ * Deploy on g2, then h2, ahead of gassing the marine. The matcher returns the
+ * one square this beat should name.
+ */
+export type TutorialForwardDeployWhen = {
+  kind: "forwardDeploy";
+  square: Square;
+  phases?: readonly ReviewTurnPhase[];
+};
+
+/**
+ * Marine on h2, attacker still on g2. Gas replaces that attacker; the Move
+ * stays the h2 double step. `open` is before the Move is queued.
+ */
+export type TutorialG2ReplacementWhen = {
+  kind: "g2Replacement";
+  phases?: readonly ReviewTurnPhase[];
+  move: "open" | "queued";
+};
+
+/** Marine on h7 can promote this turn and has not chosen a piece yet. */
+export type TutorialPromotionWhen = {
+  kind: "promotionChoice";
+  phases?: readonly ReviewTurnPhase[];
+};
+
+/** BattleShip or Tank on h8 while attacking is the preferred plan. */
+export type TutorialChargeWhen = {
+  kind: "chargeH8";
+  phases?: readonly ReviewTurnPhase[];
+};
+
+/** Packed Tank on h5 with gas left. */
+export type TutorialTankSiegeWhen = {
+  kind: "tankSiege";
+  phases?: readonly ReviewTurnPhase[];
+};
+
+/**
+ * White BattleShip was on h8 and is gone. Armed while it stands there; `sniped`
+ * stays up through the resolve that removes it.
+ */
+export type QueenWatch = { onH8: boolean; sniped: boolean };
 
 /** Auto-advance to next lesson when live intent / board matches. */
 export type TutorialCompleteWhen =

@@ -36,6 +36,8 @@ export type TutorialNarrationState = {
   covers?: SquareCovers;
   /** Open staging posts against the enemy Command Center. */
   trajectories?: AttackTrajectory[];
+  /** White BattleShip was lost on h8 during the resolve now playing. */
+  shipSniped?: boolean;
   /** Tutorial typewriter cursor (Turn Resolution steppers). */
   typewriterTurn?: number;
   typewriterBeat?: "turn" | "check" | "intent" | "resolve";

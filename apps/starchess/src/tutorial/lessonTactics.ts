@@ -1,7 +1,11 @@
 // SPEC: _spec/apps/starchess/menu-flow.puml
 import {
   attacksSquare,
+  findKing,
+  hostileMineOn,
+  parseMinesExtra,
   placementToMap,
+  UNIT_COST,
   type ScPiece,
   type StarChessColor,
 } from "@chess-coach/starchess-core";
@@ -65,7 +69,8 @@ const whiteQueue = (scfen: string): string => {
 const whiteGas = (scfen: string): number => {
   const field = scfen.split("|").find((part) => part.startsWith("G:"));
   if (!field) return 0;
-  const n = Number(field.split(":")[1]);
+  // `G:wb:WB` packs one digit per side, so `G:21:22` is white remaining 2.
+  const n = Number((field.split(":")[1] ?? "")[0]);
   return Number.isFinite(n) ? n : 0;
 };
 
@@ -129,7 +134,10 @@ export const gasMarineSquare = (scfen: string, viewer: StarChessColor = "w"): Sq
   if (viewer !== "w") return null;
   if (whiteGas(scfen) < 1) return null;
   const queue = whiteQueue(scfen);
-  if (!/C=/.test(queue) || /[BF]=/.test(queue)) return null;
+  if (!/C=/.test(queue)) return null;
+  // A spawn is the forward deploy, not the marine. Any other gas action already
+  // spends the canister this beat is about.
+  if (/[BF]=(?!spawn\b)[A-Za-z]/.test(queue)) return null;
   const map = placementMap(scfen);
   if (!map) return null;
   const from = /C=([a-h][1-8])/.exec(queue)?.[1] as Square | undefined;
@@ -152,6 +160,214 @@ export const gasMarineSquare = (scfen: string, viewer: StarChessColor = "w"): Sq
     }
   }
   return best ?? (moverIsPawn ? from! : null);
+};
+
+/** g2 first, then h2 — the two forward drops beside a Command Center on h1. */
+const FORWARD_DEPLOYS: readonly Square[] = ["g2", "h2"];
+
+const minesOf = (scfen: string) =>
+  parseMinesExtra(scfen.split("|").find((part) => part.startsWith("M:")));
+
+const squareNamed = (raw: string | undefined): Square | null =>
+  raw && /^[a-h][1-8]$/.test(raw) ? (raw as Square) : null;
+
+/**
+ * Squares our queued move or gas-step leaves, minus squares something of ours
+ * lands on. An F deploy can use a square the classical move just vacated.
+ */
+const deployVacancies = (
+  queue: string,
+): { vacated: Set<Square>; landed: Set<Square>; spawned: Set<Square> } => {
+  const vacated = new Set<Square>();
+  const landed = new Set<Square>();
+  const spawned = new Set<Square>();
+  const classical = /C=([a-h][1-8])([a-h][1-8])/.exec(queue);
+  const from = squareNamed(classical?.[1]);
+  const to = squareNamed(classical?.[2]);
+  if (from && to) {
+    vacated.add(from);
+    landed.add(to);
+  }
+  for (const step of queue.matchAll(/[BF]=(?:pawnDouble|queenWarp):([a-h][1-8]):([a-h][1-8])/g)) {
+    const left = squareNamed(step[1]);
+    const arrived = squareNamed(step[2]);
+    if (left) vacated.add(left);
+    if (arrived) landed.add(arrived);
+  }
+  for (const spawn of queue.matchAll(/[BF]=spawn:[a-h][1-8]:([a-h][1-8])/g)) {
+    const at = squareNamed(spawn[1]);
+    if (at) spawned.add(at);
+  }
+  for (const sq of landed) vacated.delete(sq);
+  return { vacated, landed, spawned };
+};
+
+const kingAfterMove = (
+  map: Map<Square, ScPiece>,
+  queue: string,
+  viewer: StarChessColor,
+): Square | null => {
+  let king = findKing(map, viewer);
+  const classical = /C=([a-h][1-8])([a-h][1-8])/.exec(queue);
+  const from = squareNamed(classical?.[1]);
+  const to = squareNamed(classical?.[2]);
+  if (king && from === king && to) king = to;
+  return king;
+};
+
+const adjacentTo = (king: Square, sq: Square): boolean => {
+  const df = Math.abs(king.charCodeAt(0) - sq.charCodeAt(0));
+  const dr = Math.abs(Number(king[1]) - Number(sq[1]));
+  return df <= 1 && dr <= 1 && (df !== 0 || dr !== 0);
+};
+
+/**
+ * Next forward deploy, g2 before h2. Beats gassing the marine that just moved:
+ * with two gas, the first call is one square and the next call (after that
+ * spawn is queued) is the other. Needs the Attack/Move already queued so the
+ * push line still owns an open classical slot.
+ */
+export const forwardDeploySquare = (
+  scfen: string,
+  viewer: StarChessColor = "w",
+): Square | null => {
+  if (viewer !== "w") return null;
+  if (whiteGas(scfen) < 1) return null;
+  if ((storedMinerals(scfen, viewer) ?? 0) < UNIT_COST.p) return null;
+  const queue = whiteQueue(scfen);
+  if (!/C=/.test(queue)) return null;
+  const map = placementMap(scfen);
+  if (!map) return null;
+  const king = kingAfterMove(map, queue, viewer);
+  if (!king) return null;
+  const { vacated, landed, spawned } = deployVacancies(queue);
+  const mines = minesOf(scfen);
+  for (const sq of FORWARD_DEPLOYS) {
+    if (spawned.has(sq) || landed.has(sq) || hostileMineOn(mines, viewer, sq)) continue;
+    if (!adjacentTo(king, sq)) continue;
+    const occ = map.get(sq);
+    if (occ && !vacated.has(sq)) continue;
+    if (occ?.type === "k") continue;
+    return sq;
+  }
+  return null;
+};
+
+/**
+ * Gas-deploy a Marine onto g2, in place of the attacker that stands there,
+ * while a Marine on h2 still has the classical Move. That Move is a double
+ * step (h2–h4), which is the better spend. `open` means the Move is free;
+ * `queued` means it is already the h2 step.
+ */
+export const g2Replacement = (
+  scfen: string,
+  viewer: StarChessColor = "w",
+): "open" | "queued" | null => {
+  if (viewer !== "w") return null;
+  if (whiteGas(scfen) < 1) return null;
+  if ((storedMinerals(scfen, viewer) ?? 0) < UNIT_COST.p) return null;
+  if (g1GuardNeeded(scfen, viewer)) return null;
+  const map = placementMap(scfen);
+  if (!map) return null;
+  const onH2 = map.get("h2");
+  const onG2 = map.get("g2");
+  if (onH2?.color !== viewer || onH2.type !== "p") return null;
+  if (onG2?.color !== viewer || onG2.type !== "p") return null;
+  for (const sq of ["e1", "f1", "g1"] as const) {
+    const occ = map.get(sq);
+    if (occ && occ.color !== viewer && (occ.type === "q" || occ.type === "r")) return null;
+  }
+  const queue = whiteQueue(scfen);
+  if (/[BF]=spawn:[a-h][1-8]:g2/.test(queue) || /C=g2/.test(queue)) return null;
+  const king = findKing(map, viewer);
+  if (!king || !adjacentTo(king, "g2")) return null;
+  if (hostileMineOn(minesOf(scfen), viewer, "g2")) return null;
+  if (!/C=/.test(queue)) return "open";
+  if (/C=h2h[34]/.test(queue)) return "queued";
+  return null;
+};
+
+/**
+ * Attack toward the last-seen Command Center. The g1 guard is defense, and so
+ * is an enemy marine already on the last three ranks or a heavy piece sitting
+ * on our back rank.
+ */
+export const offensePreferred = (scfen: string, viewer: StarChessColor = "w"): boolean => {
+  if (g1GuardNeeded(scfen, viewer)) return false;
+  const map = placementMap(scfen);
+  if (!map) return false;
+  const enemy = viewer === "w" ? "b" : "w";
+  const back = viewer === "w" ? 1 : 8;
+  const urgent = viewer === "w" ? 3 : 6;
+  for (const [sq, piece] of map) {
+    if (piece.color !== enemy) continue;
+    const rank = Number(sq[1]);
+    if (piece.type === "p" && (viewer === "w" ? rank <= urgent : rank >= urgent)) return false;
+    if ((piece.type === "q" || piece.type === "r") && rank === back) return false;
+  }
+  return true;
+};
+
+/** White pawn on h7 can still promote this turn, and has not chosen a piece. */
+export const promotionChoiceOpen = (scfen: string, viewer: StarChessColor = "w"): boolean => {
+  if (viewer !== "w") return false;
+  const map = placementMap(scfen);
+  if (!map) return false;
+  const pawn = map.get("h7");
+  if (!pawn || pawn.color !== viewer || pawn.type !== "p") return false;
+  const queue = whiteQueue(scfen);
+  if (/C=h7h8|[BF]=pawnDouble:h7/.test(queue)) return false;
+  if (whiteGas(scfen) >= 1) return true;
+  return !/C=/.test(queue);
+};
+
+/**
+ * Promoted BattleShip or Tank on h8, the Attack/Move is still open, and the
+ * attack is the coaching choice.
+ */
+export const chargeFromH8 = (scfen: string, viewer: StarChessColor = "w"): boolean => {
+  if (viewer !== "w" || !offensePreferred(scfen, viewer)) return false;
+  if (/C=/.test(whiteQueue(scfen))) return false;
+  const map = placementMap(scfen);
+  if (!map) return false;
+  const piece = map.get("h8");
+  return !!piece && piece.color === viewer && (piece.type === "q" || piece.type === "r");
+};
+
+/** Packed Tank on h5 with a gas canister left and siege not already queued. */
+export const tankSiegeOnH5 = (scfen: string, viewer: StarChessColor = "w"): boolean => {
+  if (viewer !== "w" || whiteGas(scfen) < 1) return false;
+  const map = placementMap(scfen);
+  if (!map) return false;
+  const piece = map.get("h5");
+  if (!piece || piece.color !== viewer || piece.type !== "r") return false;
+  if (/[BF]=rookSiege:h5/.test(whiteQueue(scfen))) return false;
+  const siege = scfen.split("|").find((part) => part.startsWith("S:"));
+  if (!siege) return true;
+  const body = siege.slice(2);
+  for (let i = 0; i + 1 < body.length; i += 2) {
+    if (body.slice(i, i + 2) === "h5") return false;
+  }
+  return true;
+};
+
+/**
+ * Where the white BattleShip is. `null` when the placement cannot be read, so
+ * a mid-animation frame does not look like the ship just died.
+ */
+export const whiteQueenAtH8 = (
+  scfen: string,
+): { onH8: boolean; alive: boolean } | null => {
+  const map = placementMap(scfen);
+  if (!map) return null;
+  let onH8 = false;
+  let alive = false;
+  for (const [sq, piece] of map) {
+    if (piece.color !== "w" || piece.type !== "q") continue;
+    alive = true;
+    if (sq === "h8") onH8 = true;
+  }
+  return { onH8, alive };
 };
 
 const storedMinerals = (scfen: string, viewer: StarChessColor): number | null => {

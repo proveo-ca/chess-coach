@@ -26,6 +26,7 @@ import {
   parseTutorialSection,
   resolveTutorialArrows,
   nextAlertLatch,
+  nextQueenWatch,
   resolveTutorialAlertSquares,
   resolveTutorialHints,
   resolveTutorialLine,
@@ -113,7 +114,10 @@ describe("tutorialScript", () => {
     "king-attack-3",
     "ownCcDead",
     "enemyDown",
+    "shipSniped",
     "ccMoved",
+    "replaceG2",
+    "replaceG2Queued",
     "attackF3Queued",
     "f3Marine",
     "promoThreat",
@@ -136,11 +140,15 @@ describe("tutorialScript", () => {
     "e1Ship",
     "f1Ship",
     "d5b4spot",
+    "goGetEm",
+    "tankSiege",
+    "deployG2",
+    "deployH2",
     "gasReminder",
     "pushH2",
     "pushH3",
     "pushH4",
-    "pushH7",
+    "promotionChoice",
     "guardG1",
     "oneMoreCheck",
     "checked",
@@ -867,11 +875,11 @@ describe("tutorialScript", () => {
     expectReaction(lineFor(mechaReady, "resolve"), KING_ATTACK_3.f3Marine);
     const f3attack =
       "SCFEN|8/8/8/8/4k3/5p2/6P1/4N1BK|1|33|P|G:11:11|B:3:3|Q:w:C=g2f3;b:";
-    expectReaction(lineFor(f3attack), KING_ATTACK_3.gasOnMarine);
+    expectReaction(lineFor(f3attack), KING_ATTACK_3.deployG2);
     expect(resolveTutorialHints(story.hints, f3attack, undefined, undefined, intent)).toEqual(["g2"]);
     const f3short =
       "SCFEN|8/8/8/8/4k3/5p2/6P1/4N1BK|1|33|P|G:11:11|B:2:3|Q:w:C=g2f3;b:";
-    expectReaction(lineFor(f3short), KING_ATTACK_3.gasOnMarine);
+    expectReaction(lineFor(f3short), KING_ATTACK_3.deployG2);
     expect(resolveTutorialHints(story.hints, f3short, undefined, undefined, intent)).toEqual(["g2"]);
     expect(resolveTutorialAlertSquares(story.hints, f3short)).toEqual([]);
     expect(resolveTutorialArrows(story.hints, f3attack, undefined, undefined, intent)).toEqual([]);
@@ -891,7 +899,7 @@ describe("tutorialScript", () => {
         } satisfies ScActionInput,
       }).snapshot,
     );
-    expectReaction(lineFor(f3live), KING_ATTACK_3.gasOnMarine);
+    expectReaction(lineFor(f3live), KING_ATTACK_3.deployG2);
     expect(resolveTutorialArrows(story.hints, f3live, undefined, undefined, intent)).toEqual([]);
     const f3bikeAttack =
       "SCFEN|8/8/8/8/4k3/5p2/6P1/4N1BK|1|33|P|G:11:11|B:0:3|Q:w:C=e1f3;b:";
@@ -971,6 +979,25 @@ describe("tutorialScript", () => {
     const h2 =
       "SCFEN|8/8/8/8/4k3/5P2/7P/4N1BK|1|33|P|G:11:11|Q:w:;b:";
     expectReaction(lineFor(h2), KING_ATTACK_3.pushH2);
+    const h2AndG2 =
+      "SCFEN|8/8/8/8/4k3/5P2/6PP/4N1BK|1|33|P|G:11:11|B:1:3|Q:w:;b:";
+    expectReaction(lineFor(h2AndG2), KING_ATTACK_3.replaceG2);
+    expect(resolveTutorialHints(story.hints, h2AndG2, undefined, undefined, intent)).toEqual(["g2"]);
+    expect(resolveTutorialArrows(story.hints, h2AndG2, undefined, undefined, intent)).toEqual([
+      { from: "h2", to: "h4" },
+    ]);
+    const h2DoubleQueued =
+      "SCFEN|8/8/8/8/4k3/5P2/6PP/4N1BK|1|33|P|G:11:11|B:1:3|Q:w:C=h2h4;b:";
+    expectReaction(lineFor(h2DoubleQueued), KING_ATTACK_3.replaceG2Queued);
+    expect(resolveTutorialHints(story.hints, h2DoubleQueued, undefined, undefined, intent)).toEqual([
+      "g2",
+    ]);
+    expect(resolveTutorialArrows(story.hints, h2DoubleQueued, undefined, undefined, intent)).toEqual(
+      [],
+    );
+    const h2Replaced =
+      "SCFEN|8/8/8/8/4k3/5P2/6PP/4N1BK|1|33|P|G:01:11|B:0:3|Q:w:B=spawn:h1:g2:p;b:";
+    expectReaction(lineFor(h2Replaced), KING_ATTACK_3.pushH2);
     expectReaction(lineFor(h2, "resolve"), KING_ATTACK_3.minesTipTurn2);
     expect(resolveTutorialHints(story.hints, h2, undefined, undefined, intent)).toEqual(["h4"]);
     const h2gas =
@@ -1002,11 +1029,15 @@ describe("tutorialScript", () => {
     expect(resolveTutorialHints(story.hints, h6)).toEqual(["c2"]);
     const h7 =
       "SCFEN|8/7P/8/8/4k3/5P2/6P1/4N1BK|1|33|P|G:11:11|Q:w:;b:";
-    expectReaction(lineFor(h7), KING_ATTACK_3.pushH7);
-    expect(resolveTutorialHints(story.hints, h7)).toEqual(["h7"]);
+    expectReaction(lineFor(h7), KING_ATTACK_3.promotionChoice);
+    expect(KING_ATTACK_3.promotionChoice.comment).toBe(
+      "Choose your promotion wisely: \nBattleShip, risk getting sniped \nTank, worse but harder to hit",
+    );
+    expect(KING_ATTACK_3.promotionChoice.emotion).toBe("thinking");
+    expect(resolveTutorialHints(story.hints, h7, undefined, undefined, intent)).toEqual(["h7"]);
     const h7spent =
       "SCFEN|8/7P/8/8/4k3/5P2/6P1/4N1BK|1|33|P|G:01:11|Q:w:;b:";
-    expectIntro(lineFor(h7spent), "king", "king-attack-3");
+    expectReaction(lineFor(h7spent), KING_ATTACK_3.promotionChoice);
     const allyOnBackRank =
       "SCFEN|8/8/8/8/8/8/3p4/5N2|1|33|P|G:11:11|Q:w:;b:";
     expectReaction(lineFor(allyOnBackRank), KING_ATTACK_3.promoThreat);
@@ -1034,6 +1065,102 @@ describe("tutorialScript", () => {
       "SCFEN|8/8/8/8/4k3/5P2/6P1/4N1BK|0|33|P|G:01:11|B:0:3|Q:w:;b:";
     expectReaction(lineFor(centralized), KING_ATTACK_3.centralize);
     expect(resolveTutorialHints(story.hints, centralized)).toEqual(["c2"]);
+  });
+
+  it("spends two gas on g2 then h2 before the marine, and coaches the promotion", () => {
+    const story = storyOf("king", "king-attack-3");
+    const intent = { reviewPhase: "intent" as const };
+    const lineFor = (scfen: string, reviewPhase: "intent" | "resolve" = "intent") =>
+      resolveTutorialLine({
+        stageId: "king",
+        storyId: "king-attack-3",
+        scfen,
+        reviewPhase,
+      });
+    const bothOpen =
+      "SCFEN|8/8/8/8/4k3/5P2/8/4N1BK|12|33|P|G:21:22|B:2:2|Q:w:C=e1c2;b:";
+    expectReaction(lineFor(bothOpen), KING_ATTACK_3.deployG2);
+    expect(resolveTutorialHints(story.hints, bothOpen, undefined, undefined, intent)).toEqual([
+      "g2",
+    ]);
+    const g2Queued =
+      "SCFEN|8/8/8/8/4k3/5P2/8/4N1BK|12|33|P|G:11:22|B:1:2|Q:w:C=e1c2,F=spawn:h1:g2:p;b:";
+    expectReaction(lineFor(g2Queued), KING_ATTACK_3.deployH2);
+    expect(resolveTutorialHints(story.hints, g2Queued, undefined, undefined, intent)).toEqual([
+      "h2",
+    ]);
+    const broke =
+      "SCFEN|8/8/8/8/4k3/5P2/8/4N1BK|12|33|P|G:21:22|B:0:2|Q:w:C=e1c2;b:";
+    expectReaction(lineFor(broke), KING_ATTACK_3.gasOnMarine);
+    const leftover =
+      "SCFEN|8/8/8/8/4k3/5P2/7P/4N1BK|12|33|P|G:11:22|B:1:2|Q:w:C=e1c2,F=spawn:h1:g2:p;b:";
+    expectReaction(lineFor(leftover), KING_ATTACK_3.gasOnMarine);
+    expect(resolveTutorialHints(story.hints, leftover, undefined, undefined, intent)).toEqual([
+      "f3",
+    ]);
+    const charge =
+      "SCFEN|7Q/8/8/3k4/8/8/8/4N1BK|12|33|P|G:11:11|Q:w:;b:";
+    expectReaction(lineFor(charge), KING_ATTACK_3.goGetEm);
+    expect(KING_ATTACK_3.goGetEm.comment).toBe("Go get 'em!");
+    expect(resolveTutorialArrows(story.hints, charge, undefined, undefined, intent)).toEqual([
+      { from: "h8", to: "h5" },
+      { from: "h5", to: "d5", tone: "alert" },
+    ]);
+    expect(
+      resolveTutorialArrows(story.hints, charge, undefined, undefined, { reviewPhase: "resolve" }),
+    ).toEqual([]);
+    const tankOnH8 =
+      "SCFEN|7R/8/8/3k4/8/8/8/4N1BK|12|33|P|G:11:11|Q:w:;b:";
+    expectReaction(lineFor(tankOnH8), KING_ATTACK_3.goGetEm);
+    const chargeQueued =
+      "SCFEN|7Q/8/8/3k4/8/8/8/4N1BK|12|33|P|G:11:11|B:0:2|Q:w:C=e1c2;b:";
+    expectReaction(lineFor(chargeQueued), KING_ATTACK_3.queuedReview);
+    const closePawn =
+      "SCFEN|7Q/8/8/3k4/8/5p2/8/4N1BK|12|33|P|G:11:11|Q:w:;b:";
+    expectReaction(lineFor(closePawn), KING_ATTACK_3.f3Marine);
+    const backRankShip =
+      "SCFEN|7Q/8/8/3k4/8/8/8/4q1BK|12|33|P|G:11:11|Q:w:;b:";
+    expectReaction(lineFor(backRankShip), KING_ATTACK_3.e1Ship);
+    const tank =
+      "SCFEN|8/8/8/3k3R/8/8/8/4N1BK|12|33|P|G:11:11|Q:w:;b:";
+    expectReaction(lineFor(tank), KING_ATTACK_3.tankSiege);
+    expect(KING_ATTACK_3.tankSiege.comment).toBe(
+      "Now turn it to siege mode for bigger range",
+    );
+    expect(KING_ATTACK_3.tankSiege.emotion).toBe("scanning");
+    expect(resolveTutorialHints(story.hints, tank, undefined, undefined, intent)).toEqual(["h5"]);
+    const sieged =
+      "SCFEN|8/8/8/3k3R/8/8/8/4N1BK|12|33|P|G:11:11|Q:w:;b:|S:h5";
+    expect(lineFor(sieged).comment).not.toBe(KING_ATTACK_3.tankSiege.comment);
+    const tankDry =
+      "SCFEN|8/8/8/3k3R/8/8/8/4N1BK|12|33|P|G:01:11|Q:w:;b:";
+    expect(lineFor(tankDry).comment).not.toBe(KING_ATTACK_3.tankSiege.comment);
+    expectReaction(
+      resolveTutorialLine({
+        stageId: "king",
+        storyId: "king-attack-3",
+        scfen: charge,
+        reviewPhase: "resolve",
+        shipSniped: true,
+      }),
+      KING_ATTACK_3.shipSniped,
+    );
+    expect(KING_ATTACK_3.shipSniped.transient).toBe(true);
+    let watch = nextQueenWatch(
+      { onH8: false, sniped: false },
+      { onH8: true, alive: true, reviewPhase: "intent" },
+    );
+    watch = nextQueenWatch(watch, { onH8: false, alive: true, reviewPhase: "intent" });
+    expect(watch).toEqual({ onH8: false, sniped: false });
+    watch = nextQueenWatch(
+      { onH8: true, sniped: false },
+      { onH8: false, alive: false, reviewPhase: "resolve" },
+    );
+    expect(watch.sniped).toBe(true);
+    watch = nextQueenWatch(watch, { onH8: false, alive: false, reviewPhase: "resolve" });
+    expect(watch.sniped).toBe(true);
+    watch = nextQueenWatch(watch, { onH8: false, alive: false, reviewPhase: "intent" });
+    expect(watch).toEqual({ onH8: false, sniped: false });
   });
 
   it("fires king-attack-3 take-it lines when a unit already covers the ship", () => {

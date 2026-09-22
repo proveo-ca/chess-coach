@@ -422,6 +422,7 @@ export const TutorialScreen: Component = () => {
       turn: n.turn,
       targetingKind: n.targetingKind,
       turnStartChecksApplied: n.turnStartChecksApplied,
+      shipSniped: n.shipSniped,
     };
     const raw = resolveTutorialLine(ctx);
     const next = holdTutorialLine(

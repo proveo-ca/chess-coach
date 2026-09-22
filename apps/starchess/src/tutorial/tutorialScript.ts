@@ -6,25 +6,36 @@ import type { Square } from "chess.js";
 
 import { TUTORIAL_SCRIPT_CONFIG } from "~/tutorial/tutorialScript.config";
 import {
+  chargeFromH8,
+  forwardDeploySquare,
+  g2Replacement,
   gasMarineSquare,
   g1GuardNeeded,
   mechaDiagonalOpen,
+  promotionChoiceOpen,
+  tankSiegeOnH5,
 } from "~/tutorial/lessonTactics";
 import type { KerriganEmotion } from "~/types/coach";
 import type {
   AlertLatch,
   AttackTrajectory,
   LiveLessonBoard,
+  QueenWatch,
   SquareCovers,
   TutorialBackrankWhen,
   TutorialBoardArrow,
   TutorialBoardHint,
+  TutorialChargeWhen,
   TutorialCompleteWhen,
   TutorialCoversWhen,
+  TutorialForwardDeployWhen,
+  TutorialG2ReplacementWhen,
   TutorialGasMarineWhen,
   TutorialLine,
   TutorialLineHold,
   TutorialMechaDiagonalWhen,
+  TutorialPromotionWhen,
+  TutorialTankSiegeWhen,
   TutorialTrajectoryWhen,
   TutorialReactionAction,
   TutorialSectionId,
@@ -65,7 +76,14 @@ export type TutorialReactionWhen =
   | TutorialTrajectoryWhen
   | TutorialBackrankWhen
   | TutorialMechaDiagonalWhen
-  | TutorialGasMarineWhen;
+  | TutorialGasMarineWhen
+  | TutorialForwardDeployWhen
+  | TutorialG2ReplacementWhen
+  | TutorialPromotionWhen
+  | TutorialChargeWhen
+  | TutorialTankSiegeWhen
+  /** BattleShip that was standing on h8 is gone during resolve. */
+  | { kind: "shipSniped" };
 
 export type TutorialReaction = {
   when: TutorialReactionWhen;
@@ -235,6 +253,8 @@ export type TutorialScriptContext = {
   trajectories?: AttackTrajectory[];
   /** Turn-open checks have landed — see {@link holdTutorialLine}. */
   turnStartChecksApplied?: boolean;
+  /** White BattleShip was lost on h8 during this resolve. */
+  shipSniped?: boolean;
 };
 
 /** Pick the most specific Selena line for the current board/store context. */
@@ -300,6 +320,49 @@ export const resolveTutorialLine = (ctx: TutorialScriptContext): TutorialLine =>
       return reactionLine(r);
     }
     if (w.kind === "gasOnMarine" && ctx.scfen && phaseAllows(w.phases, ctx.reviewPhase) && gasMarineSquare(ctx.scfen)) {
+      return reactionLine(r);
+    }
+    if (
+      w.kind === "forwardDeploy" &&
+      ctx.scfen &&
+      phaseAllows(w.phases, ctx.reviewPhase) &&
+      forwardDeploySquare(ctx.scfen) === w.square
+    ) {
+      return reactionLine(r);
+    }
+    if (
+      w.kind === "g2Replacement" &&
+      ctx.scfen &&
+      phaseAllows(w.phases, ctx.reviewPhase) &&
+      g2Replacement(ctx.scfen) === w.move
+    ) {
+      return reactionLine(r);
+    }
+    if (
+      w.kind === "promotionChoice" &&
+      ctx.scfen &&
+      phaseAllows(w.phases, ctx.reviewPhase) &&
+      promotionChoiceOpen(ctx.scfen)
+    ) {
+      return reactionLine(r);
+    }
+    if (
+      w.kind === "chargeH8" &&
+      ctx.scfen &&
+      phaseAllows(w.phases, ctx.reviewPhase) &&
+      chargeFromH8(ctx.scfen)
+    ) {
+      return reactionLine(r);
+    }
+    if (
+      w.kind === "tankSiege" &&
+      ctx.scfen &&
+      phaseAllows(w.phases, ctx.reviewPhase) &&
+      tankSiegeOnH5(ctx.scfen)
+    ) {
+      return reactionLine(r);
+    }
+    if (w.kind === "shipSniped" && ctx.shipSniped) {
       return reactionLine(r);
     }
   }
@@ -456,6 +519,46 @@ const matchTutorialHint = (
     ) {
       return { ...h, squares: [gasMarineSquare(scfen)!] };
     }
+    if (
+      h.when.kind === "forwardDeploy" &&
+      scfen &&
+      phaseAllows(h.when.phases, query?.reviewPhase) &&
+      forwardDeploySquare(scfen) === h.when.square
+    ) {
+      return h;
+    }
+    if (
+      h.when.kind === "g2Replacement" &&
+      scfen &&
+      phaseAllows(h.when.phases, query?.reviewPhase) &&
+      g2Replacement(scfen) === h.when.move
+    ) {
+      return h;
+    }
+    if (
+      h.when.kind === "promotionChoice" &&
+      scfen &&
+      phaseAllows(h.when.phases, query?.reviewPhase) &&
+      promotionChoiceOpen(scfen)
+    ) {
+      return h;
+    }
+    if (
+      h.when.kind === "chargeH8" &&
+      scfen &&
+      phaseAllows(h.when.phases, query?.reviewPhase) &&
+      chargeFromH8(scfen)
+    ) {
+      return h;
+    }
+    if (
+      h.when.kind === "tankSiege" &&
+      scfen &&
+      phaseAllows(h.when.phases, query?.reviewPhase) &&
+      tankSiegeOnH5(scfen)
+    ) {
+      return h;
+    }
   }
   return undefined;
 };
@@ -506,6 +609,19 @@ export const nextAlertLatch = (
     return { squares: [kingAt], kingAt };
   }
   return prev;
+};
+
+/** Remember a white BattleShip on h8, and call the resolve that removes it. */
+export const nextQueenWatch = (
+  prev: QueenWatch,
+  input: { onH8: boolean; alive: boolean; reviewPhase?: ReviewTurnPhase },
+): QueenWatch => {
+  if (input.onH8) return { onH8: true, sniped: false };
+  if (input.alive) return { onH8: false, sniped: false };
+  if (input.reviewPhase === "resolve" && (prev.onH8 || prev.sniped)) {
+    return { onH8: false, sniped: true };
+  }
+  return { onH8: false, sniped: false };
 };
 
 /** Alert-red rings for the step in force — sibling of {@link resolveTutorialHints}. */

@@ -1442,6 +1442,12 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             emotion: "happy",
           },
           {
+            when: { kind: "shipSniped" },
+            comment: "Sniped!",
+            emotion: "shocked",
+            transient: true,
+          },
+          {
             when: {
               kind: "reviewPhase",
               phase: "resolve",
@@ -1450,6 +1456,17 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             comment: "Enemy Command Center moved, I saw where!",
             emotion: "thinking",
             transient: true,
+          },
+          {
+            // h2's Move is a free double step. Gas replaces the g2 attacker
+            // so that Move is not spent on a one-square attack.
+            when: { kind: "g2Replacement", phases: ["intent"], move: "open" },
+            comment: "Deploy a Marine on g2 with Gas, replacing the attacker. Your Move on h2 is a double step.",
+            emotion: "thinking",
+          },
+          {
+            when: { kind: "g2Replacement", phases: ["intent"], move: "queued" },
+            comment: "Deploy a Marine on g2 with Gas, replacing the attacker.",
           },
           {
             // g2×f3 frees a Command Center deploy square. A Mecha costs 3
@@ -1574,6 +1591,26 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             comment: "I saw the Command Center moving to d5, Hoverbike on b4.",
           },
           {
+            // Offense: the promoted piece is on h8 and nothing urgent is defending.
+            when: { kind: "chargeH8", phases: ["intent"] },
+            comment: "Go get 'em!",
+          },
+          {
+            when: { kind: "tankSiege", phases: ["intent"] },
+            comment: "Now turn it to siege mode for bigger range",
+            emotion: "scanning",
+          },
+          {
+            // Two gas canisters deploy g2, then h2. One canister deploys the first
+            // open square. Either way this spends gas before the marine does.
+            when: { kind: "forwardDeploy", square: "g2", phases: ["intent"] },
+            comment: "Deploy a unit on g2 with Gas",
+          },
+          {
+            when: { kind: "forwardDeploy", square: "h2", phases: ["intent"] },
+            comment: "Deploy a unit on h2 with Gas",
+          },
+          {
             when: {
               kind: "scfen",
               phases: ["intent"],
@@ -1606,11 +1643,9 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             comment: "Keep pushing your Marine!",
           },
           {
-            when: {
-              kind: "scfen",
-              re: /SCFEN\|(?:[^/]*\/)[^\/|]*P(?=[\/|])[^|]*\|[^|]*\|[^|]*\|[^|]*\|G:[1-9]/,
-            },
-            comment: "Promote it with Gas!",
+            when: { kind: "promotionChoice", phases: ["intent"] },
+            comment: "Choose your promotion wisely: \nBattleShip, risk getting sniped \nTank, worse but harder to hit",
+            emotion: "thinking",
           },
           {
             when: { kind: "backrankGuard" },
@@ -1688,6 +1723,15 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               turn: 1,
             },
             alertSquares: ["d5"],
+          },
+          {
+            when: { kind: "g2Replacement", phases: ["intent"], move: "open" },
+            squares: ["g2"],
+            arrows: [{ from: "h2", to: "h4" }],
+          },
+          {
+            when: { kind: "g2Replacement", phases: ["intent"], move: "queued" },
+            squares: ["g2"],
           },
           {
             when: { kind: "mechaDiagonal", phases: ["intent"] },
@@ -1826,6 +1870,25 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             ],
           },
           {
+            when: { kind: "chargeH8", phases: ["intent"] },
+            arrows: [
+              { from: "h8", to: "h5" },
+              { from: "h5", to: "d5", tone: "alert" },
+            ],
+          },
+          {
+            when: { kind: "tankSiege", phases: ["intent"] },
+            squares: ["h5"],
+          },
+          {
+            when: { kind: "forwardDeploy", square: "g2", phases: ["intent"] },
+            squares: ["g2"],
+          },
+          {
+            when: { kind: "forwardDeploy", square: "h2", phases: ["intent"] },
+            squares: ["h2"],
+          },
+          {
             when: {
               kind: "scfen",
               phases: ["intent"],
@@ -1865,10 +1928,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             ],
           },
           {
-            when: {
-              kind: "scfen",
-              re: /SCFEN\|(?:[^/]*\/)[^\/|]*P(?=[\/|])[^|]*\|[^|]*\|[^|]*\|[^|]*\|G:[1-9]/,
-            },
+            when: { kind: "promotionChoice", phases: ["intent"] },
             squares: [
               "h7",
             ],

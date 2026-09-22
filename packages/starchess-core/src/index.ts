@@ -85,6 +85,8 @@ export {
   assertMineCap,
 } from "./board/mines";
 
+export { hostileMineOn } from "./board/mine-contact";
+
 export { isRookSiegedAfterB, rookModeAfterB } from "./board/siege";
 
 export {
