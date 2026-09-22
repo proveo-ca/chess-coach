@@ -109,12 +109,14 @@ describe("tutorialScript", () => {
     "king-attack-3",
     "ownCcDead",
     "enemyDown",
+    "attackF3Queued",
     "f3Marine",
     "g1Ship",
     "e1Ship",
     "f1Ship",
     "oneMoreCheck",
     "d5b4spot",
+    "gasReminderQueued",
     "pushH2",
     "gasReminder",
     "pushH3",
@@ -759,6 +761,10 @@ describe("tutorialScript", () => {
       "SCFEN|8/8/8/8/4k3/5p2/6P1/4N1BK|1|33|P|G:11:11|Q:w:;b:";
     expectReaction(lineFor(f3), KING_ATTACK_3.f3Marine);
     expect(resolveTutorialHints(story.hints, f3)).toEqual(["f3"]);
+    const f3attack =
+      "SCFEN|8/8/8/8/4k3/5p2/6P1/4N1BK|1|33|P|G:11:11|Q:w:C=g2f3;b:";
+    expectReaction(lineFor(f3attack), KING_ATTACK_3.attackF3Queued);
+    expect(resolveTutorialHints(story.hints, f3attack)).toEqual(["g2"]);
     const g1ship =
       "SCFEN|8/8/8/8/4k3/5P2/6P1/4N1qK|1|33|P|G:11:11|Q:w:;b:";
     expectReaction(lineFor(g1ship), KING_ATTACK_3.g1Ship);
@@ -786,6 +792,10 @@ describe("tutorialScript", () => {
       "SCFEN|8/8/8/8/4k3/5P2/7P/4N1BK|1|33|P|G:01:11|Q:w:;b:";
     expectReaction(lineFor(h2gas), KING_ATTACK_3.gasReminder);
     expect(resolveTutorialHints(story.hints, h2gas)).toEqual(["h4"]);
+    const h2queued =
+      "SCFEN|8/8/8/8/4k3/5P2/7P/4N1BK|0|33|P|G:11:11|Q:w:C=h2h4;b:";
+    expectReaction(lineFor(h2queued), KING_ATTACK_3.gasReminderQueued);
+    expect(resolveTutorialHints(story.hints, h2queued)).toEqual(["h4"]);
     const h3 =
       "SCFEN|8/8/8/8/4k3/7P/6P1/4N1BK|1|33|P|G:11:11|Q:w:;b:";
     expectReaction(lineFor(h3), KING_ATTACK_3.pushH3);

@@ -1440,6 +1440,14 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
+              re: /SCFEN\|[^|]+\|[^|]*\|[^|]*\|[^|]*\|[^|]*\|[^|]*C=g2f3/,
+            },
+            comment: "Your Marine will vacate g2 after attacking, deploy another Marine in g2",
+            emotion: "thinking",
+          },
+          {
+            when: {
+              kind: "scfen",
               re: /SCFEN\|(?:[^/]*\/){5}(?:5|4(?:[A-Za-z]|1)|(?:[A-Za-z]|1)4|32|23|3(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1)3(?:[A-Za-z]|1)|(?:[A-Za-z]|1){2}3|22(?:[A-Za-z]|1)|2(?:[A-Za-z]|1)2|(?:[A-Za-z]|1)22|2(?:[A-Za-z]|1){3}|(?:[A-Za-z]|1)2(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1){2}2(?:[A-Za-z]|1)|(?:[A-Za-z]|1){3}2|(?:[A-Za-z]|1){5})p/,
             },
             comment: "Stop that Marine from promoting!",
@@ -1481,6 +1489,13 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               re: /SCFEN\|(?:[^/]*\/){3}(?:3|2(?:[A-Za-z]|1)|(?:[A-Za-z]|1)2|(?:[A-Za-z]|1){3})k[^\/|]*\/(?:1|[A-Za-z])n/,
             },
             comment: "I saw the Command Center moving to d5, Hoverbike on b4.",
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|(?:[^/]*\/){6}[^\/|]*P(?=[\/|])[^|]*\|[^|]*\|[^|]*\|[^|]*\|G:[1-9][^|]*\|[^|]*C=h2h4/,
+            },
+            comment: "Remember Gas gives you an extra step!",
           },
           {
             when: {
@@ -1590,6 +1605,15 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           },
         ],
         hints: [
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|[^|]*\|[^|]*\|[^|]*\|[^|]*\|[^|]*C=g2f3/,
+            },
+            squares: [
+              "g2",
+            ],
+          },
           {
             when: {
               kind: "scfen",
