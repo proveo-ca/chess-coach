@@ -8,7 +8,6 @@ import { TUTORIAL_SCRIPT_CONFIG } from "~/tutorial/tutorialScript.config";
 import {
   chargeFromH8,
   forwardDeploySquare,
-  g2Replacement,
   gasMarineSquare,
   g1GuardNeeded,
   mechaDiagonalOpen,
@@ -29,7 +28,6 @@ import type {
   TutorialCompleteWhen,
   TutorialCoversWhen,
   TutorialForwardDeployWhen,
-  TutorialG2ReplacementWhen,
   TutorialGasMarineWhen,
   TutorialLine,
   TutorialLineHold,
@@ -78,7 +76,6 @@ export type TutorialReactionWhen =
   | TutorialMechaDiagonalWhen
   | TutorialGasMarineWhen
   | TutorialForwardDeployWhen
-  | TutorialG2ReplacementWhen
   | TutorialPromotionWhen
   | TutorialChargeWhen
   | TutorialTankSiegeWhen
@@ -331,14 +328,6 @@ export const resolveTutorialLine = (ctx: TutorialScriptContext): TutorialLine =>
       return reactionLine(r);
     }
     if (
-      w.kind === "g2Replacement" &&
-      ctx.scfen &&
-      phaseAllows(w.phases, ctx.reviewPhase) &&
-      g2Replacement(ctx.scfen) === w.move
-    ) {
-      return reactionLine(r);
-    }
-    if (
       w.kind === "promotionChoice" &&
       ctx.scfen &&
       phaseAllows(w.phases, ctx.reviewPhase) &&
@@ -524,14 +513,6 @@ const matchTutorialHint = (
       scfen &&
       phaseAllows(h.when.phases, query?.reviewPhase) &&
       forwardDeploySquare(scfen) === h.when.square
-    ) {
-      return h;
-    }
-    if (
-      h.when.kind === "g2Replacement" &&
-      scfen &&
-      phaseAllows(h.when.phases, query?.reviewPhase) &&
-      g2Replacement(scfen) === h.when.move
     ) {
       return h;
     }

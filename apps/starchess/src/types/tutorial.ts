@@ -123,7 +123,6 @@ export type TutorialBoardHint = {
     | TutorialMechaDiagonalWhen
     | TutorialGasMarineWhen
     | TutorialForwardDeployWhen
-    | TutorialG2ReplacementWhen
     | TutorialPromotionWhen
     | TutorialChargeWhen
     | TutorialTankSiegeWhen;
@@ -192,23 +191,13 @@ export type TutorialGasMarineWhen = {
 };
 
 /**
- * Deploy on g2, then h2, ahead of gassing the marine. The matcher returns the
- * one square this beat should name.
+ * Deploy on empty g2, ahead of gassing the marine. Empty h2 is not a target.
+ * The matcher returns the one square this beat should name.
  */
 export type TutorialForwardDeployWhen = {
   kind: "forwardDeploy";
   square: Square;
   phases?: readonly ReviewTurnPhase[];
-};
-
-/**
- * Marine on h2, attacker still on g2. Gas replaces that attacker; the Move
- * stays the h2 double step. `open` is before the Move is queued.
- */
-export type TutorialG2ReplacementWhen = {
-  kind: "g2Replacement";
-  phases?: readonly ReviewTurnPhase[];
-  move: "open" | "queued";
 };
 
 /** Marine on h7 can promote this turn and has not chosen a piece yet. */

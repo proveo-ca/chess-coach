@@ -1458,16 +1458,6 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             transient: true,
           },
           {
-            // One action: gas-deploy on g2. Only while that marine actually captures.
-            // The h2 double step is its own later beat.
-            when: { kind: "g2Replacement", phases: ["intent"], move: "open" },
-            comment: "Deploy a Marine on g2 with Gas",
-          },
-          {
-            when: { kind: "g2Replacement", phases: ["intent"], move: "queued" },
-            comment: "Deploy a Marine on g2 with Gas",
-          },
-          {
             // g2×f3 frees a Command Center deploy square. A Mecha costs 3
             // minerals and looks down g2–a8; another Marine does not. The
             // classical Attack/Move still has to be open — this is the move
@@ -1479,7 +1469,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /SCFEN\|(?!.*Q:w:[^;]*(?:C=[a-h][1-8]f3|[BF]=[A-Za-z]+:[a-h][1-8]:f3))(?:[^/]*\/){5}(?:5|4(?:[A-Za-z]|1)|(?:[A-Za-z]|1)4|32|23|3(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1)3(?:[A-Za-z]|1)|(?:[A-Za-z]|1){2}3|22(?:[A-Za-z]|1)|2(?:[A-Za-z]|1)2|(?:[A-Za-z]|1)22|2(?:[A-Za-z]|1){3}|(?:[A-Za-z]|1)2(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1){2}2(?:[A-Za-z]|1)|(?:[A-Za-z]|1){3}2|(?:[A-Za-z]|1){5})p/,
+              re: /SCFEN\|(?!.*Q:w:[^;]*(?:C=[a-h][1-8]f3|C=h2h[34]|[BF]=[A-Za-z]+:[a-h][1-8]:f3))(?:[^/]*\/){5}(?:5|4(?:[A-Za-z]|1)|(?:[A-Za-z]|1)4|32|23|3(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1)3(?:[A-Za-z]|1)|(?:[A-Za-z]|1){2}3|22(?:[A-Za-z]|1)|2(?:[A-Za-z]|1)2|(?:[A-Za-z]|1)22|2(?:[A-Za-z]|1){3}|(?:[A-Za-z]|1)2(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1){2}2(?:[A-Za-z]|1)|(?:[A-Za-z]|1){3}2|(?:[A-Za-z]|1){5})p/,
             },
             comment: "Stop that Marine from promoting!",
             emotion: "shocked",
@@ -1600,14 +1590,9 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             emotion: "scanning",
           },
           {
-            // Two gas canisters deploy g2, then h2. One canister deploys the first
-            // open square. Either way this spends gas before the marine does.
+            // Empty g2 takes a gas deploy. Empty h2 stays empty so the h-file marine can be pushed.
             when: { kind: "forwardDeploy", square: "g2", phases: ["intent"] },
             comment: "Deploy a unit on g2 with Gas",
-          },
-          {
-            when: { kind: "forwardDeploy", square: "h2", phases: ["intent"] },
-            comment: "Deploy a unit on h2 with Gas",
           },
           {
             when: {
@@ -1724,14 +1709,6 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             alertSquares: ["d5"],
           },
           {
-            when: { kind: "g2Replacement", phases: ["intent"], move: "open" },
-            squares: ["g2"],
-          },
-          {
-            when: { kind: "g2Replacement", phases: ["intent"], move: "queued" },
-            squares: ["g2"],
-          },
-          {
             when: { kind: "mechaDiagonal", phases: ["intent"] },
             squares: [
               "g2",
@@ -1741,7 +1718,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /SCFEN\|(?!.*Q:w:[^;]*(?:C=[a-h][1-8]f3|[BF]=[A-Za-z]+:[a-h][1-8]:f3))(?:[^/]*\/){5}(?:5|4(?:[A-Za-z]|1)|(?:[A-Za-z]|1)4|32|23|3(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1)3(?:[A-Za-z]|1)|(?:[A-Za-z]|1){2}3|22(?:[A-Za-z]|1)|2(?:[A-Za-z]|1)2|(?:[A-Za-z]|1)22|2(?:[A-Za-z]|1){3}|(?:[A-Za-z]|1)2(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1){2}2(?:[A-Za-z]|1)|(?:[A-Za-z]|1){3}2|(?:[A-Za-z]|1){5})p/,
+              re: /SCFEN\|(?!.*Q:w:[^;]*(?:C=[a-h][1-8]f3|C=h2h[34]|[BF]=[A-Za-z]+:[a-h][1-8]:f3))(?:[^/]*\/){5}(?:5|4(?:[A-Za-z]|1)|(?:[A-Za-z]|1)4|32|23|3(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1)3(?:[A-Za-z]|1)|(?:[A-Za-z]|1){2}3|22(?:[A-Za-z]|1)|2(?:[A-Za-z]|1)2|(?:[A-Za-z]|1)22|2(?:[A-Za-z]|1){3}|(?:[A-Za-z]|1)2(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1){2}2(?:[A-Za-z]|1)|(?:[A-Za-z]|1){3}2|(?:[A-Za-z]|1){5})p/,
             },
             squares: [
               "f3",
@@ -1881,10 +1858,6 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: { kind: "forwardDeploy", square: "g2", phases: ["intent"] },
             squares: ["g2"],
-          },
-          {
-            when: { kind: "forwardDeploy", square: "h2", phases: ["intent"] },
-            squares: ["h2"],
           },
           {
             when: {

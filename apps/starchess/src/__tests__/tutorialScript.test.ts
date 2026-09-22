@@ -116,8 +116,6 @@ describe("tutorialScript", () => {
     "enemyDown",
     "shipSniped",
     "ccMoved",
-    "replaceG2",
-    "replaceG2Queued",
     "attackF3Queued",
     "f3Marine",
     "promoThreat",
@@ -143,7 +141,6 @@ describe("tutorialScript", () => {
     "goGetEm",
     "tankSiege",
     "deployG2",
-    "deployH2",
     "gasReminder",
     "pushH2",
     "pushH3",
@@ -989,18 +986,21 @@ describe("tutorialScript", () => {
     ]);
     const h2Attacker =
       "SCFEN|8/8/8/8/4k3/5p2/6PP/4N1BK|1|33|P|G:11:11|B:1:3|Q:w:;b:";
-    expectReaction(lineFor(h2Attacker), KING_ATTACK_3.replaceG2);
-    expect(KING_ATTACK_3.replaceG2.comment).toBe("Deploy a Marine on g2 with Gas");
+    expectReaction(lineFor(h2Attacker), KING_ATTACK_3.f3Marine);
     expect(resolveTutorialHints(story.hints, h2Attacker, undefined, undefined, intent)).toEqual([
-      "g2",
+      "f3",
     ]);
-    expect(resolveTutorialArrows(story.hints, h2Attacker, undefined, undefined, intent)).toEqual([]);
+    expect(resolveTutorialArrows(story.hints, h2Attacker, undefined, undefined, intent)).toEqual([
+      { from: "g2", to: "f3" },
+    ]);
     const h2DoubleQueued =
       "SCFEN|8/8/8/8/4k3/5p2/6PP/4N1BK|1|33|P|G:11:11|B:1:3|Q:w:C=h2h4;b:";
-    expectReaction(lineFor(h2DoubleQueued), KING_ATTACK_3.replaceG2Queued);
-    expect(KING_ATTACK_3.replaceG2Queued.comment).toBe("Deploy a Marine on g2 with Gas");
+    expectReaction(lineFor(h2DoubleQueued), KING_ATTACK_3.gasReminder);
+    expect(KING_ATTACK_3.gasReminder.comment).toBe(
+      "Keep pushing your Marine by dropping gas on it",
+    );
     expect(resolveTutorialHints(story.hints, h2DoubleQueued, undefined, undefined, intent)).toEqual([
-      "g2",
+      "h2",
     ]);
     expect(resolveTutorialArrows(story.hints, h2DoubleQueued, undefined, undefined, intent)).toEqual(
       [],
@@ -1080,7 +1080,7 @@ describe("tutorialScript", () => {
     expect(resolveTutorialHints(story.hints, centralized)).toEqual(["c2"]);
   });
 
-  it("spends two gas on g2 then h2 before the marine, and coaches the promotion", () => {
+  it("spends gas on empty g2 then the marine, leaving h2 empty, and coaches the promotion", () => {
     const story = storyOf("king", "king-attack-3");
     const intent = { reviewPhase: "intent" as const };
     const lineFor = (scfen: string, reviewPhase: "intent" | "resolve" = "intent") =>
@@ -1098,9 +1098,9 @@ describe("tutorialScript", () => {
     ]);
     const g2Queued =
       "SCFEN|8/8/8/8/4k3/5P2/8/4N1BK|12|33|P|G:11:22|B:1:2|Q:w:C=e1c2,F=spawn:h1:g2:p;b:";
-    expectReaction(lineFor(g2Queued), KING_ATTACK_3.deployH2);
+    expectReaction(lineFor(g2Queued), KING_ATTACK_3.gasOnMarine);
     expect(resolveTutorialHints(story.hints, g2Queued, undefined, undefined, intent)).toEqual([
-      "h2",
+      "f3",
     ]);
     const broke =
       "SCFEN|8/8/8/8/4k3/5P2/8/4N1BK|12|33|P|G:21:22|B:0:2|Q:w:C=e1c2;b:";

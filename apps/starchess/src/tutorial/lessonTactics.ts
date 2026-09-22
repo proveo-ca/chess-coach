@@ -162,8 +162,8 @@ export const gasMarineSquare = (scfen: string, viewer: StarChessColor = "w"): Sq
   return best ?? (moverIsPawn ? from! : null);
 };
 
-/** g2 first, then h2 — the two forward drops beside a Command Center on h1. */
-const FORWARD_DEPLOYS: readonly Square[] = ["g2", "h2"];
+/** Empty g2, beside a Command Center on h1. Empty h2 stays empty — the h-file push outranks a deploy there. */
+const FORWARD_DEPLOYS: readonly Square[] = ["g2"];
 
 const minesOf = (scfen: string) =>
   parseMinesExtra(scfen.split("|").find((part) => part.startsWith("M:")));
@@ -215,27 +215,6 @@ const kingAfterMove = (
   return king;
 };
 
-/** A marine is an attacker only when it captures an enemy on a forward diagonal. */
-const pawnAttacksEnemy = (
-  map: Map<Square, ScPiece>,
-  from: Square,
-  viewer: StarChessColor,
-): boolean => {
-  const file = from.charCodeAt(0);
-  const rank = Number(from[1]);
-  const dir = viewer === "w" ? 1 : -1;
-  for (const df of [-1, 1]) {
-    const f = file + df;
-    const r = rank + dir;
-    if (f < 97 || f > 104 || r < 1 || r > 8) continue;
-    const to = `${String.fromCharCode(f)}${r}` as Square;
-    const occ = map.get(to);
-    if (!occ || occ.color === viewer) continue;
-    if (attacksSquare(map, from, to)) return true;
-  }
-  return false;
-};
-
 const adjacentTo = (king: Square, sq: Square): boolean => {
   const df = Math.abs(king.charCodeAt(0) - sq.charCodeAt(0));
   const dr = Math.abs(Number(king[1]) - Number(sq[1]));
@@ -243,10 +222,9 @@ const adjacentTo = (king: Square, sq: Square): boolean => {
 };
 
 /**
- * Next forward deploy, g2 before h2. Beats gassing the marine that just moved:
- * with two gas, the first call is one square and the next call (after that
- * spawn is queued) is the other. Needs the Attack/Move already queued so the
- * push line still owns an open classical slot.
+ * Deploy on empty g2 once the Attack/Move is queued, ahead of gassing the
+ * marine. Empty h2 is left empty so that gas can push the h-file marine.
+ * A square an ally still occupies is not a target — that deploy would crush it.
  */
 export const forwardDeploySquare = (
   scfen: string,
@@ -271,41 +249,6 @@ export const forwardDeploySquare = (
     if (occ?.type === "k") continue;
     return sq;
   }
-  return null;
-};
-
-/**
- * Gas-deploy a Marine onto g2, in place of the attacker that stands there,
- * while a Marine on h2 still has the classical Move. That Move is a double
- * step (h2–h4), which is the better spend. `open` means the Move is free;
- * `queued` means it is already the h2 step.
- */
-export const g2Replacement = (
-  scfen: string,
-  viewer: StarChessColor = "w",
-): "open" | "queued" | null => {
-  if (viewer !== "w") return null;
-  if (whiteGas(scfen) < 1) return null;
-  if ((storedMinerals(scfen, viewer) ?? 0) < UNIT_COST.p) return null;
-  if (g1GuardNeeded(scfen, viewer)) return null;
-  const map = placementMap(scfen);
-  if (!map) return null;
-  const onH2 = map.get("h2");
-  const onG2 = map.get("g2");
-  if (onH2?.color !== viewer || onH2.type !== "p") return null;
-  if (onG2?.color !== viewer || onG2.type !== "p") return null;
-  if (!pawnAttacksEnemy(map, "g2", viewer)) return null;
-  for (const sq of ["e1", "f1", "g1"] as const) {
-    const occ = map.get(sq);
-    if (occ && occ.color !== viewer && (occ.type === "q" || occ.type === "r")) return null;
-  }
-  const queue = whiteQueue(scfen);
-  if (/[BF]=spawn:[a-h][1-8]:g2/.test(queue) || /C=g2/.test(queue)) return null;
-  const king = findKing(map, viewer);
-  if (!king || !adjacentTo(king, "g2")) return null;
-  if (hostileMineOn(minesOf(scfen), viewer, "g2")) return null;
-  if (!/C=/.test(queue)) return "open";
-  if (/C=h2h[34]/.test(queue)) return "queued";
   return null;
 };
 
