@@ -1438,11 +1438,13 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             emotion: "happy",
           },
           {
+            // g2×f3 frees a Command Center deploy square. A Mecha there looks
+            // down g2–a8; another Marine does not. The hint arrow is that ray.
             when: {
               kind: "scfen",
               re: /SCFEN\|(?=.*\|Q:w:[^;]*C=g2f3)/,
             },
-            comment: "Your Marine will vacate g2 after attacking, deploy another Marine in g2",
+            comment: "Your Marine will vacate g2 after attacking, deploy a Mecha there instead of a Marine",
             emotion: "thinking",
           },
           {
@@ -1663,11 +1665,12 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /SCFEN\|[^|]+\|[^|]*\|[^|]*\|[^|]*\|(?=.*\|Q:w:[^;]*C=g2f3)/,
+              re: /SCFEN\|(?=.*\|Q:w:[^;]*C=g2f3)/,
             },
             squares: [
               "g2",
             ],
+            arrows: [{ from: "g2", to: "a8" }],
           },
           {
             when: {

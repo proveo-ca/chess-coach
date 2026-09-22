@@ -787,6 +787,29 @@ describe("tutorialScript", () => {
       "SCFEN|8/8/8/8/4k3/5p2/6P1/4N1BK|1|33|P|G:11:11|B:0:3|Q:w:C=g2f3;b:";
     expectReaction(lineFor(f3attack), KING_ATTACK_3.attackF3Queued);
     expect(resolveTutorialHints(story.hints, f3attack)).toEqual(["g2"]);
+    expect(resolveTutorialArrows(story.hints, f3attack)).toEqual([
+      { from: "g2", to: "a8" },
+    ]);
+    // The live encoder, not a hand-built wire: queueing g2×f3 must be the
+    // same beat the bubble and the arrow both read.
+    const f3live = formatScFen(
+      addScAction({
+        snapshot: parseScFen(
+          "SCFEN|8/8/8/8/4k3/5p2/6P1/4N1BK|1|33|P|G:11:11|B:3:3|Q:w:;b:",
+        ),
+        action: {
+          timing: "C",
+          kind: "classical",
+          color: "w",
+          from: "g2",
+          to: "f3",
+        } satisfies ScActionInput,
+      }).snapshot,
+    );
+    expectReaction(lineFor(f3live), KING_ATTACK_3.attackF3Queued);
+    expect(resolveTutorialArrows(story.hints, f3live)).toEqual([
+      { from: "g2", to: "a8" },
+    ]);
     const f3bikeAttack =
       "SCFEN|8/8/8/8/4k3/5p2/6P1/4N1BK|1|33|P|G:11:11|B:0:3|Q:w:C=e1f3;b:";
     expectReaction(lineFor(f3bikeAttack), KING_ATTACK_3.queuedReview);
