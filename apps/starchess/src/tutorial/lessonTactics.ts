@@ -215,6 +215,27 @@ const kingAfterMove = (
   return king;
 };
 
+/** A marine is an attacker only when it captures an enemy on a forward diagonal. */
+const pawnAttacksEnemy = (
+  map: Map<Square, ScPiece>,
+  from: Square,
+  viewer: StarChessColor,
+): boolean => {
+  const file = from.charCodeAt(0);
+  const rank = Number(from[1]);
+  const dir = viewer === "w" ? 1 : -1;
+  for (const df of [-1, 1]) {
+    const f = file + df;
+    const r = rank + dir;
+    if (f < 97 || f > 104 || r < 1 || r > 8) continue;
+    const to = `${String.fromCharCode(f)}${r}` as Square;
+    const occ = map.get(to);
+    if (!occ || occ.color === viewer) continue;
+    if (attacksSquare(map, from, to)) return true;
+  }
+  return false;
+};
+
 const adjacentTo = (king: Square, sq: Square): boolean => {
   const df = Math.abs(king.charCodeAt(0) - sq.charCodeAt(0));
   const dr = Math.abs(Number(king[1]) - Number(sq[1]));
@@ -273,6 +294,7 @@ export const g2Replacement = (
   const onG2 = map.get("g2");
   if (onH2?.color !== viewer || onH2.type !== "p") return null;
   if (onG2?.color !== viewer || onG2.type !== "p") return null;
+  if (!pawnAttacksEnemy(map, "g2", viewer)) return null;
   for (const sq of ["e1", "f1", "g1"] as const) {
     const occ = map.get(sq);
     if (occ && occ.color !== viewer && (occ.type === "q" || occ.type === "r")) return null;

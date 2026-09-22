@@ -1458,15 +1458,14 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             transient: true,
           },
           {
-            // h2's Move is a free double step. Gas replaces the g2 attacker
-            // so that Move is not spent on a one-square attack.
+            // One action: gas-deploy on g2. Only while that marine actually captures.
+            // The h2 double step is its own later beat.
             when: { kind: "g2Replacement", phases: ["intent"], move: "open" },
-            comment: "Deploy a Marine on g2 with Gas, replacing the attacker. Your Move on h2 is a double step.",
-            emotion: "thinking",
+            comment: "Deploy a Marine on g2 with Gas",
           },
           {
             when: { kind: "g2Replacement", phases: ["intent"], move: "queued" },
-            comment: "Deploy a Marine on g2 with Gas, replacing the attacker.",
+            comment: "Deploy a Marine on g2 with Gas",
           },
           {
             // g2×f3 frees a Command Center deploy square. A Mecha costs 3
@@ -1624,7 +1623,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               phases: ["intent"],
               re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){6}[^\/|]*P(?=[\/|])/,
             },
-            comment: "Keep pushing your Marine!",
+            comment: "Move your Marine from h2 to h4.",
           },
           {
             when: {
@@ -1727,7 +1726,6 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: { kind: "g2Replacement", phases: ["intent"], move: "open" },
             squares: ["g2"],
-            arrows: [{ from: "h2", to: "h4" }],
           },
           {
             when: { kind: "g2Replacement", phases: ["intent"], move: "queued" },
@@ -1897,6 +1895,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "h4",
             ],
+            arrows: [{ from: "h2", to: "h4" }],
           },
           {
             when: {

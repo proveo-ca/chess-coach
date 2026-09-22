@@ -981,14 +981,24 @@ describe("tutorialScript", () => {
     expectReaction(lineFor(h2), KING_ATTACK_3.pushH2);
     const h2AndG2 =
       "SCFEN|8/8/8/8/4k3/5P2/6PP/4N1BK|1|33|P|G:11:11|B:1:3|Q:w:;b:";
-    expectReaction(lineFor(h2AndG2), KING_ATTACK_3.replaceG2);
-    expect(resolveTutorialHints(story.hints, h2AndG2, undefined, undefined, intent)).toEqual(["g2"]);
+    expectReaction(lineFor(h2AndG2), KING_ATTACK_3.pushH2);
+    expect(KING_ATTACK_3.pushH2.comment).toBe("Move your Marine from h2 to h4.");
+    expect(resolveTutorialHints(story.hints, h2AndG2, undefined, undefined, intent)).toEqual(["h4"]);
     expect(resolveTutorialArrows(story.hints, h2AndG2, undefined, undefined, intent)).toEqual([
       { from: "h2", to: "h4" },
     ]);
+    const h2Attacker =
+      "SCFEN|8/8/8/8/4k3/5p2/6PP/4N1BK|1|33|P|G:11:11|B:1:3|Q:w:;b:";
+    expectReaction(lineFor(h2Attacker), KING_ATTACK_3.replaceG2);
+    expect(KING_ATTACK_3.replaceG2.comment).toBe("Deploy a Marine on g2 with Gas");
+    expect(resolveTutorialHints(story.hints, h2Attacker, undefined, undefined, intent)).toEqual([
+      "g2",
+    ]);
+    expect(resolveTutorialArrows(story.hints, h2Attacker, undefined, undefined, intent)).toEqual([]);
     const h2DoubleQueued =
-      "SCFEN|8/8/8/8/4k3/5P2/6PP/4N1BK|1|33|P|G:11:11|B:1:3|Q:w:C=h2h4;b:";
+      "SCFEN|8/8/8/8/4k3/5p2/6PP/4N1BK|1|33|P|G:11:11|B:1:3|Q:w:C=h2h4;b:";
     expectReaction(lineFor(h2DoubleQueued), KING_ATTACK_3.replaceG2Queued);
+    expect(KING_ATTACK_3.replaceG2Queued.comment).toBe("Deploy a Marine on g2 with Gas");
     expect(resolveTutorialHints(story.hints, h2DoubleQueued, undefined, undefined, intent)).toEqual([
       "g2",
     ]);
@@ -1000,6 +1010,9 @@ describe("tutorialScript", () => {
     expectReaction(lineFor(h2Replaced), KING_ATTACK_3.pushH2);
     expectReaction(lineFor(h2, "resolve"), KING_ATTACK_3.minesTipTurn2);
     expect(resolveTutorialHints(story.hints, h2, undefined, undefined, intent)).toEqual(["h4"]);
+    expect(resolveTutorialArrows(story.hints, h2, undefined, undefined, intent)).toEqual([
+      { from: "h2", to: "h4" },
+    ]);
     const h2gas =
       "SCFEN|8/8/8/8/4k3/5P2/7P/4N1BK|1|33|P|G:01:11|Q:w:;b:";
     expectReaction(lineFor(h2gas), KING_ATTACK_3.pushH2);
