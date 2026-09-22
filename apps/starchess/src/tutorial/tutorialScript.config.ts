@@ -1474,14 +1474,16 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               kind: "scfen",
               re: /SCFEN\|(?:[^/]*\/){7}(?:4|3(?:[A-Za-z]|1)|(?:[A-Za-z]|1)3|22|2(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1)2(?:[A-Za-z]|1)|(?:[A-Za-z]|1){2}2|(?:[A-Za-z]|1){4})q/,
             },
-            comment: "Enemy BattleShip on e1 — drop a Hoverbike on g2, then take it!",
+            comment: "Enemy BattleShip on e1 — drop a Hoverbike on g2, then attack it!",
+            emotion: "shocked"
           },
           {
             when: {
               kind: "scfen",
               re: /SCFEN\|(?:[^/]*\/){7}(?:5|4(?:[A-Za-z]|1)|(?:[A-Za-z]|1)4|32|23|3(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1)3(?:[A-Za-z]|1)|(?:[A-Za-z]|1){2}3|22(?:[A-Za-z]|1)|2(?:[A-Za-z]|1)2|(?:[A-Za-z]|1)22|2(?:[A-Za-z]|1){3}|(?:[A-Za-z]|1)2(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1){2}2(?:[A-Za-z]|1)|(?:[A-Za-z]|1){3}2|(?:[A-Za-z]|1){5})q/,
             },
-            comment: "Enemy BattleShip on f1 — drop a Hoverbike on h2, then take it!",
+            comment: "Enemy BattleShip on f1 — drop a Hoverbike on h2, then attack it!",
+            emotion: "shocked"
           },
           {
             when: {
