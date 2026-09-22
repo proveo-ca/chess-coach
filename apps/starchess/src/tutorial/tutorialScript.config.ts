@@ -86,6 +86,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
         board: {
           scfen: "SCFEN|7k/7p/8/8/3N4/8/8/K7|0|33|P|G:11:11|Q:w:;b:",
           stored: 4,
+          alertLatch: "sticky",
           endTurnAfterQueue: "first",
           armTimer: false,
           docs: "Nd4 live. Queue Nd4\u2192e6, End \u2014 L-path + fog.",
@@ -1409,6 +1410,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
         board: {
           scfen: "SCFEN|8/8/8/8/4k3/5P2/6P1/4N1BK|0|33|P|G:11:11|Q:w:;b:",
           stored: 1,
+          alertLatch: "king",
           opponent: "adjutant",
           choreography: "kingHuntGraduation",
         },

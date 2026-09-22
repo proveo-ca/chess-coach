@@ -25,6 +25,7 @@ import {
   matchesTutorialCompleteWhen,
   parseTutorialSection,
   resolveTutorialArrows,
+  nextAlertLatch,
   resolveTutorialAlertSquares,
   resolveTutorialHints,
   resolveTutorialLine,
@@ -737,6 +738,43 @@ describe("tutorialScript", () => {
         turn: 1,
       }),
     ).toEqual([]);
+  });
+
+  it("keeps a fog alert after the beat that set it", () => {
+    let latch = nextAlertLatch({ squares: [] }, ["h8"]);
+    expect(latch.squares).toEqual(["h8"]);
+    latch = nextAlertLatch(latch, []);
+    expect(latch.squares).toEqual(["h8"]);
+  });
+
+  it("moves a king-attack alert only when the Command Center is seen", () => {
+    let latch = nextAlertLatch({ squares: [] }, ["d5"], {
+      followKing: true,
+      kingAt: "e4",
+      kingVisible: false,
+    });
+    expect(latch.squares).toEqual(["d5"]);
+    expect(latch.kingAt).toBe("d5");
+    // Still-fogged destination: the ring stays on the last sighting.
+    latch = nextAlertLatch(latch, [], {
+      followKing: true,
+      kingAt: "c5",
+      kingVisible: false,
+    });
+    expect(latch.squares).toEqual(["d5"]);
+    // A visible origin during the scripted sighting does not pull the ring back.
+    const held = nextAlertLatch(latch, ["d5"], {
+      followKing: true,
+      kingAt: "e4",
+      kingVisible: true,
+    });
+    expect(held.squares).toEqual(["d5"]);
+    latch = nextAlertLatch(latch, [], {
+      followKing: true,
+      kingAt: "c5",
+      kingVisible: true,
+    });
+    expect(latch.squares).toEqual(["c5"]);
   });
 
   it("fires king-hunt lines from white/black kingLives digits in SCFEN", () => {

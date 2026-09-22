@@ -129,6 +129,21 @@
   stroke: #cb2000;
 }
 
+/* Last-seen ring. Drawn in the arrow overlay so it stays readable on a
+   fogged tile instead of lifting that tile out of the veil. */
+.hint-alert-ring {
+  stroke: #cb2000;
+  fill: none;
+  stroke-width: 0.08;
+  animation: sc-alert-ring-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes sc-alert-ring-pulse {
+  0%,
+  100% { stroke-opacity: 1; }
+  50% { stroke-opacity: 0.72; }
+}
+
 /* DualNav observer: per-player getSideVision strokes (no fog veil). */
 .observer-vision-overlay {
   position: absolute;
@@ -650,20 +665,16 @@
   box-sizing: border-box;
 }
 
-/* Tutorial path hint — guide green, or alert red for a last-seen / danger square.
-   Uses box-shadow; ::before/::after are taken. Under player fog, [data-hint]
-   lifts the square above the SVG veil (z=7). */
-.square.hint-highlight,
-.square.hint-alert {
+/* Tutorial path hint — guide green. Uses box-shadow; ::before/::after are taken.
+   Under player fog, [data-hint] lifts the square above the SVG veil (z=7).
+   Alert rings are not lifted: they paint in .hint-arrow-overlay so the tile
+   stays fogged. */
+.square.hint-highlight {
   --sc-hint: var(--sc-guide-green, #3ecf8e);
   box-shadow:
     inset 0 0 0 clamp(2px, 0.7vw, 4px) var(--sc-hint),
     0 0 14px color-mix(in srgb, var(--sc-hint) 55%, transparent);
   animation: sc-hint-pulse 1.6s ease-in-out infinite;
-}
-
-.square.hint-alert {
-  --sc-hint: #cb2000;
 }
 
 @keyframes sc-hint-pulse {

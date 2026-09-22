@@ -7,6 +7,7 @@ import type { Square } from "chess.js";
 import { TUTORIAL_SCRIPT_CONFIG } from "~/tutorial/tutorialScript.config";
 import type { KerriganEmotion } from "~/types/coach";
 import type {
+  AlertLatch,
   AttackTrajectory,
   LiveLessonBoard,
   SquareCovers,
@@ -427,6 +428,41 @@ export const resolveTutorialHints = (
   trajectories?: AttackTrajectory[],
   query?: TutorialHintQuery,
 ): Square[] => [...(matchTutorialHint(hints, scfen, covers, trajectories, query)?.squares ?? [])];
+
+/**
+ * Keep alert rings up through later beats. A `followKing` lesson (king-attack-3)
+ * moves the ring only when the Command Center is seen on a different square —
+ * a fogged king does not count, so a dark move cannot relocate the mark.
+ */
+export const nextAlertLatch = (
+  prev: AlertLatch,
+  scripted: readonly Square[],
+  opts?: { followKing?: boolean; kingAt?: Square; kingVisible?: boolean },
+): AlertLatch => {
+  if (scripted.length > 0) {
+    const same =
+      scripted.length === prev.squares.length &&
+      scripted.every((sq, i) => sq === prev.squares[i]);
+    if (same) return prev;
+    // The scripted square is the sighting. The live king may still be on the
+    // square it left, and must not pull the ring back there.
+    return {
+      squares: [...scripted],
+      ...(opts?.followKing ? { kingAt: scripted[0] } : {}),
+    };
+  }
+  if (!opts?.followKing) return prev;
+  const kingAt = opts.kingAt;
+  if (
+    opts.kingVisible &&
+    kingAt &&
+    prev.squares.length > 0 &&
+    kingAt !== prev.squares[0]
+  ) {
+    return { squares: [kingAt], kingAt };
+  }
+  return prev;
+};
 
 /** Alert-red rings for the step in force — sibling of {@link resolveTutorialHints}. */
 export const resolveTutorialAlertSquares = (

@@ -69,6 +69,22 @@ export type LiveLessonBoard = {
    * terminal condition. Resolved through the `demos/choreography/` registry.
    */
   choreography?: LessonChoreographyId;
+  /**
+   * Alert rings stick after the beat that introduced them, so fog and later
+   * hints do not clear a last-seen square. `king` also moves the ring when
+   * the enemy Command Center is seen on a new square.
+   */
+  alertLatch?: "sticky" | "king";
+};
+
+/**
+ * Latched alert rings. Empty `squares` means the lesson has not marked one yet.
+ * `kingAt` is the square the ring was last pinned to, so a still-visible origin
+ * cannot pull a scripted sighting backwards.
+ */
+export type AlertLatch = {
+  squares: Square[];
+  kingAt?: Square;
 };
 
 /** Lessons whose behavior is more than config. Registry: `demos/choreography/`. */

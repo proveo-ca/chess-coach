@@ -317,6 +317,18 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
     });
   });
 
+  /** Alert rings live in the arrow overlay (above the fog veil) so a last-seen
+   * square stays marked without lifting the tile out of the fog. */
+  const alertRings = createMemo(() =>
+    (props.hintAlertSquares ?? []).flatMap((sq) => {
+      const col = FILES.indexOf(sq[0] as (typeof FILES)[number]);
+      const row = RANKS.indexOf(sq[1] as (typeof RANKS)[number]);
+      if (col < 0 || row < 0) return [];
+      const inset = 0.07;
+      return [{ key: sq, x: col + inset, y: row + inset, size: 1 - inset * 2 }];
+    }),
+  );
+
   const dualVision = createMemo(() => {
     if (!isObserver()) return null;
     return observerVisionFromSnap(props.snapshot, {
@@ -432,7 +444,7 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
               </Show>
             </svg>
           </Show>
-          <Show when={hintLines().length > 0}>
+          <Show when={hintLines().length > 0 || alertRings().length > 0}>
             <svg
               class={styles["hint-arrow-overlay"]}
               viewBox="0 0 8 8"
@@ -468,6 +480,18 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
                   <path d="M0 1 L9 5 L0 9 Z" fill="#cb2000" />
                 </marker>
               </defs>
+              <For each={alertRings()}>
+                {(r) => (
+                  <rect
+                    data-hint-alert={r.key}
+                    class={styles["hint-alert-ring"]}
+                    x={r.x}
+                    y={r.y}
+                    width={r.size}
+                    height={r.size}
+                  />
+                )}
+              </For>
               <For each={hintLines()}>
                 {(l) => (
                   <polyline
@@ -506,9 +530,7 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
                     rookModeAt(square, sieged());
                   const isSelected = () => props.selected === square;
                   const isLegal = () => props.legalDests?.includes(square) ?? false;
-                  const isAlert = () => props.hintAlertSquares?.includes(square) ?? false;
-                  const isHint = () =>
-                    isAlert() || (props.hintSquares?.includes(square) ?? false);
+                  const isHint = () => props.hintSquares?.includes(square) ?? false;
                   const gasUsedAura = () => {
                     // Resolve absorb — green eases onto the unit with the canister drop
                     // (LiveStarChessBoard already fog-gates gasDrop / absorb squares).
@@ -553,8 +575,7 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
                         isLight() ? styles.light : styles.dark,
                         isSelected() && styles.selected,
                         isLegal() && styles["advice-highlight"],
-                        isAlert() && styles["hint-alert"],
-                        !isAlert() && isHint() && styles["hint-highlight"],
+                        isHint() && styles["hint-highlight"],
                       )}
                       data-square={square}
                       data-hint={isHint() ? square : undefined}
