@@ -1510,11 +1510,22 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             comment: "Your Mecha already covers g1 — take it, no deploy needed!",
           },
           {
+            when: { kind: "trajectory", from: "g2", to: "d5" },
+            comment: "You have 3 minerals — deploy a Mecha on g2, then take d5!",
+          },
+          {
             when: {
               kind: "scfen",
-              re: /SCFEN\|(?:[^/]*\/){3}(?:3|2(?:[A-Za-z]|1)|(?:[A-Za-z]|1)2|(?:[A-Za-z]|1){3})k[^\/|]*\/(?:[^/]*\/){2}(?:2|(?:[A-Za-z]|1){2})N/,
+              re: /SCFEN\|(?:[^/]*\/){3}(?:3|2(?:[A-Za-z]|1)|(?:[A-Za-z]|1)2|(?:[A-Za-z]|1){3})k[^\/|]*\/(?:[^/]*\/){2}(?:2|(?:[A-Za-z]|1){2})N(?!.*Q:w:[^;]*[BF]=knightMine:c2:)/,
             },
-            comment: "Deploy a mine first, then ride the Hoverbike to b4 — it attacks the enemy Command Center!",
+            comment: "Deploy a mine in c2 to discourage Marines from promoting",
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|(?:[^/]*\/){3}(?:3|2(?:[A-Za-z]|1)|(?:[A-Za-z]|1)2|(?:[A-Za-z]|1){3})k[^\/|]*\/(?:[^/]*\/){2}(?:2|(?:[A-Za-z]|1){2})N(?=.*Q:w:[^;]*[BF]=knightMine:c2:)/,
+            },
+            comment: "Ride the Hoverbike to b4 — it attacks the enemy Command Center!",
           },
           {
             when: {
@@ -1597,6 +1608,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             },
             comment: "Yes! 1 more check!",
             emotion: "happy",
+            transient: true,
           },
           {
             when: {
@@ -1715,11 +1727,23 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: ["g1"],
           },
           {
+            when: { kind: "trajectory", from: "g2", to: "d5" },
+            squares: ["g2", "d5"],
+            arrows: [{ from: "g2", to: "d5" }],
+          },
+          {
             when: {
               kind: "scfen",
-              re: /SCFEN\|(?:[^/]*\/){3}(?:3|2(?:[A-Za-z]|1)|(?:[A-Za-z]|1)2|(?:[A-Za-z]|1){3})k[^\/|]*\/(?:[^/]*\/){2}(?:2|(?:[A-Za-z]|1){2})N/,
+              re: /SCFEN\|(?:[^/]*\/){3}(?:3|2(?:[A-Za-z]|1)|(?:[A-Za-z]|1)2|(?:[A-Za-z]|1){3})k[^\/|]*\/(?:[^/]*\/){2}(?:2|(?:[A-Za-z]|1){2})N(?!.*Q:w:[^;]*[BF]=knightMine:c2:)/,
             },
-            squares: ["c2", "b4"],
+            squares: ["c2"],
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|(?:[^/]*\/){3}(?:3|2(?:[A-Za-z]|1)|(?:[A-Za-z]|1)2|(?:[A-Za-z]|1){3})k[^\/|]*\/(?:[^/]*\/){2}(?:2|(?:[A-Za-z]|1){2})N(?=.*Q:w:[^;]*[BF]=knightMine:c2:)/,
+            },
+            squares: ["b4"],
           },
           {
             when: {
@@ -1821,6 +1845,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "g1",
             ],
+            arrows: [{ from: "a1", to: "h1" }],
           },
           {
             when: {

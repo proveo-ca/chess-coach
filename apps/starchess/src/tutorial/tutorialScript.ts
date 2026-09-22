@@ -7,6 +7,7 @@ import type { Square } from "chess.js";
 import { TUTORIAL_SCRIPT_CONFIG } from "~/tutorial/tutorialScript.config";
 import type { KerriganEmotion } from "~/types/coach";
 import type {
+  AttackTrajectory,
   LiveLessonBoard,
   SquareCovers,
   TutorialBoardArrow,
@@ -15,12 +16,14 @@ import type {
   TutorialCoversWhen,
   TutorialLine,
   TutorialLineHold,
+  TutorialTrajectoryWhen,
   TutorialReactionAction,
   TutorialSectionId,
 } from "~/types/tutorial";
 import type { ReviewTurnPhase } from "~/types/review";
 
 export type {
+  AttackTrajectory,
   LiveLessonBoard,
   SquareCovers,
   TutorialBoardArrow,
@@ -29,6 +32,7 @@ export type {
   TutorialCoversWhen,
   TutorialLine,
   TutorialLineHold,
+  TutorialTrajectoryWhen,
   TutorialReactionAction,
   TutorialSectionId,
 } from "~/types/tutorial";
@@ -47,7 +51,9 @@ export type TutorialReactionWhen =
   /** Live targeting mode (e.g. Charon armed → `bishopSnipe`). */
   | { kind: "targeting"; targetingKind: string }
   /** Live tactics cover the square with one of these kinds. */
-  | TutorialCoversWhen;
+  | TutorialCoversWhen
+  /** Live tactics hold an open staging post against the enemy CC. */
+  | TutorialTrajectoryWhen;
 
 export type TutorialReaction = {
   when: TutorialReactionWhen;
@@ -55,6 +61,8 @@ export type TutorialReaction = {
   emotion?: KerriganEmotion;
   /** Optional in-bubble CTA (e.g. retry after ally CC dies). */
   action?: TutorialReactionAction;
+  /** Momentary beat — shown while matched, never latched as the sticky line. */
+  transient?: boolean;
 };
 
 export type TutorialStoryScript = {
@@ -211,6 +219,8 @@ export type TutorialScriptContext = {
   targetingKind?: string | null;
   /** Enemy-occupied watch squares mapped to their current coverers. */
   covers?: SquareCovers;
+  /** Open staging posts against the enemy Command Center. */
+  trajectories?: AttackTrajectory[];
   /** Turn-open checks have landed — see {@link holdTutorialLine}. */
   turnStartChecksApplied?: boolean;
 };
@@ -231,6 +241,7 @@ export const resolveTutorialLine = (ctx: TutorialScriptContext): TutorialLine =>
     comment: r.comment,
     emotion: r.emotion ?? story.emotion,
     ...(r.action ? { action: r.action } : {}),
+    ...(r.transient ? { transient: true as const } : {}),
     source: "reaction",
   });
 
@@ -266,6 +277,9 @@ export const resolveTutorialLine = (ctx: TutorialScriptContext): TutorialLine =>
       if (list.some((c) => !w.kinds || w.kinds.includes(c.kind))) {
         return reactionLine(r);
       }
+    }
+    if (w.kind === "trajectory" && ctx.trajectories?.some((t) => t.from === w.from && t.to === w.to)) {
+      return reactionLine(r);
     }
   }
 
@@ -333,6 +347,9 @@ export const holdTutorialLine = (
   const acted = scfenMoved || phaseActed;
 
   if (raw.source === "reaction") {
+    // Transient beats comment on a moment (damage flash) without becoming
+    // guidance state — show while matched, latch nothing.
+    if (raw.transient) return { hold: h, line: raw };
     h = { ...h, introDone: true, sticky: raw };
     return { hold: h, line: raw };
   }
@@ -363,6 +380,7 @@ const matchTutorialHint = (
   hints: readonly TutorialBoardHint[] | undefined,
   scfen: string | undefined,
   covers?: SquareCovers,
+  trajectories?: AttackTrajectory[],
 ): TutorialBoardHint | undefined => {
   if (!hints?.length) return undefined;
   for (const h of hints) {
@@ -377,6 +395,12 @@ const matchTutorialHint = (
         return h;
       }
     }
+    if (h.when.kind === "trajectory" && trajectories) {
+      const when = h.when;
+      if (trajectories.some((t) => t.from === when.from && t.to === when.to)) {
+        return h;
+      }
+    }
   }
   return undefined;
 };
@@ -385,14 +409,16 @@ export const resolveTutorialHints = (
   hints: readonly TutorialBoardHint[] | undefined,
   scfen: string | undefined,
   covers?: SquareCovers,
-): Square[] => [...(matchTutorialHint(hints, scfen, covers)?.squares ?? [])];
+  trajectories?: AttackTrajectory[],
+): Square[] => [...(matchTutorialHint(hints, scfen, covers, trajectories)?.squares ?? [])];
 
 /** Hint lines for the step in force — see {@link resolveTutorialHints}. */
 export const resolveTutorialArrows = (
   hints: readonly TutorialBoardHint[] | undefined,
   scfen: string | undefined,
   covers?: SquareCovers,
-): TutorialBoardArrow[] => [...(matchTutorialHint(hints, scfen, covers)?.arrows ?? [])];
+  trajectories?: AttackTrajectory[],
+): TutorialBoardArrow[] => [...(matchTutorialHint(hints, scfen, covers, trajectories)?.arrows ?? [])];
 
 /** Live narration fields used by {@link matchesTutorialCompleteWhen}. */
 export type TutorialCompleteContext = {

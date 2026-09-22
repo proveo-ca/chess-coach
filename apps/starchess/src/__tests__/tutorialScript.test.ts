@@ -24,6 +24,7 @@ import {
   lessonEndMessageMs,
   matchesTutorialCompleteWhen,
   parseTutorialSection,
+  resolveTutorialArrows,
   resolveTutorialHints,
   resolveTutorialLine,
   resolveTutorialStoryId,
@@ -31,7 +32,7 @@ import {
   tutorialStage,
   tutorialStory,
 } from "~/tutorial/tutorialScript";
-import { coveredEnemyShips } from "~/tutorial/lessonTactics";
+import { availableTrajectories, coveredEnemyShips } from "~/tutorial/lessonTactics";
 import type { TutorialLine, TutorialSectionId } from "~/types/tutorial";
 import {
   FOG_MOVE_KING_START_SCFEN,
@@ -125,6 +126,8 @@ describe("tutorialScript", () => {
     "g1k",
     "g1r",
     "g1b",
+    "deployMecha",
+    "mineC2",
     "b4attack",
     "g1Ship",
     "e1Ship",
@@ -836,6 +839,21 @@ describe("tutorialScript", () => {
       KING_ATTACK_3.oneMoreCheck,
     );
     expectReaction(lineFor(hp1), KING_ATTACK_3.minesTipTurn2);
+    const cheerHold = holdTutorialLine(
+      { lessonKey: "", introDone: false },
+      "king|king-attack-3",
+      resolveTutorialLine({
+        stageId: "king",
+        storyId: "king-attack-3",
+        scfen: hp1,
+        reviewPhase: "check",
+      }),
+      { scfen: hp1, reviewPhase: "check" },
+    );
+    expect(cheerHold.line.comment).toBe(KING_ATTACK_3.oneMoreCheck.comment);
+    expect(cheerHold.line.transient).toBe(true);
+    expect(cheerHold.hold.sticky).toBeUndefined();
+    expect(cheerHold.hold.introDone).toBe(false);
     const spot =
       "SCFEN|8/8/8/3k4/1n6/5P2/6P1/4N1BK|1|33|P|G:11:11|Q:w:;b:";
     expectReaction(lineFor(spot), KING_ATTACK_3.d5b4spot);
@@ -882,6 +900,9 @@ describe("tutorialScript", () => {
       "SCFEN|8/8/8/8/4k3/5P2/6P1/4N3|1|33|P|G:11:11|Q:w:;b:";
     expectReaction(lineFor(guard), KING_ATTACK_3.guardG1);
     expect(resolveTutorialHints(story.hints, guard)).toEqual(["g1"]);
+    expect(resolveTutorialArrows(story.hints, guard)).toEqual([
+      { from: "a1", to: "h1" },
+    ]);
     const guardQueued =
       "SCFEN|8/8/8/8/4k3/5P2/6P1/4N3|1|33|P|G:11:11|B:0:3|Q:w:B=spawn:h1:g1:n;b:";
     expectReaction(lineFor(guardQueued), KING_ATTACK_3.queuedReview);
@@ -941,18 +962,61 @@ describe("tutorialScript", () => {
     check("8/8/8/8/4k3/5P2/2n4/4q1BK", KING_ATTACK_3.e1Ship, ["g2", "e1"]);
     const b4post =
       "SCFEN|8/8/8/3k4/8/5P2/2N3P1/4N1BK|1|33|P|G:11:11|Q:w:;b:";
-    expectReaction(lineFor(b4post), KING_ATTACK_3.b4attack);
-    expect(resolveTutorialHints(story.hints, b4post)).toEqual(["c2", "b4"]);
+    expectReaction(lineFor(b4post), KING_ATTACK_3.mineC2);
+    expect(resolveTutorialHints(story.hints, b4post)).toEqual(["c2"]);
     const b4contested =
       "SCFEN|8/8/8/3k4/1n6/5P2/2N3P1/4N1BK|1|33|P|G:11:11|Q:w:;b:";
-    expectReaction(lineFor(b4contested), KING_ATTACK_3.b4attack);
-    expect(resolveTutorialHints(story.hints, b4contested)).toEqual(["c2", "b4"]);
+    expectReaction(lineFor(b4contested), KING_ATTACK_3.mineC2);
+    expect(resolveTutorialHints(story.hints, b4contested)).toEqual(["c2"]);
+    const b4mined =
+      "SCFEN|8/8/8/3k4/8/5P2/2N3P1/4N1BK|1|33|P|G:01:11|B:0:3|Q:w:B=knightMine:c2:c3;b:";
+    expectReaction(lineFor(b4mined), KING_ATTACK_3.b4attack);
+    expect(resolveTutorialHints(story.hints, b4mined)).toEqual(["b4"]);
     const b4noCc =
       "SCFEN|8/8/8/8/4k3/5P2/2N3P1/4N1BK|1|33|P|G:11:11|Q:w:;b:";
     expectReaction(lineFor(b4noCc), KING_ATTACK_3.minesTipTurn2);
     const b4noBike =
       "SCFEN|8/8/8/3k4/8/5P2/6P1/4N1BK|1|33|P|G:11:11|Q:w:;b:";
     expectReaction(lineFor(b4noBike), KING_ATTACK_3.minesTipTurn2);
+  });
+
+  it("prefers the funded g2 Mecha diagonal over the mine-first post", () => {
+    const story = storyOf("king", "king-attack-3");
+    const traj = (placement: string, bank: string) => {
+      const scfen = `SCFEN|${placement}|1|33|P|G:11:11|${bank}|Q:w:;b:`;
+      return { scfen, trajectories: availableTrajectories(scfen, "w") };
+    };
+    const funded = traj("8/8/8/3k4/8/5P2/2N4P/4N1BK", "B:3:3");
+    expect(funded.trajectories).toEqual([{ key: "deploy-b-g2-d5", from: "g2", to: "d5" }]);
+    expectReaction(
+      resolveTutorialLine({
+        stageId: "king",
+        storyId: "king-attack-3",
+        scfen: funded.scfen,
+        trajectories: funded.trajectories,
+      }),
+      KING_ATTACK_3.deployMecha,
+    );
+    expect(
+      resolveTutorialHints(story.hints, funded.scfen, undefined, funded.trajectories),
+    ).toEqual(["g2", "d5"]);
+    expect(
+      resolveTutorialArrows(story.hints, funded.scfen, undefined, funded.trajectories),
+    ).toEqual([{ from: "g2", to: "d5" }]);
+    const broke = traj("8/8/8/3k4/8/5P2/2N3P1/4N1BK", "B:2:3");
+    expect(broke.trajectories).toEqual([]);
+    expectReaction(
+      resolveTutorialLine({
+        stageId: "king",
+        storyId: "king-attack-3",
+        scfen: broke.scfen,
+        trajectories: broke.trajectories,
+      }),
+      KING_ATTACK_3.mineC2,
+    );
+    expect(
+      resolveTutorialHints(story.hints, broke.scfen, undefined, broke.trajectories),
+    ).toEqual(["c2"]);
   });
 
   it("holds the king-defense CC warning only while the Mecha is alive", () => {

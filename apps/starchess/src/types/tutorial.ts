@@ -93,7 +93,7 @@ export type TutorialBoardArrow = {
 
 /** Board hint step — first matching entry wins (SCFEN `when`, else fallback). */
 export type TutorialBoardHint = {
-  when?: { kind: "scfen"; re: RegExp } | TutorialCoversWhen;
+  when?: { kind: "scfen"; re: RegExp } | TutorialCoversWhen | TutorialTrajectoryWhen;
   squares?: readonly Square[];
   arrows?: readonly TutorialBoardArrow[];
 };
@@ -112,6 +112,23 @@ export type TutorialCoversWhen = {
   kind: "covers";
   square: Square;
   kinds?: readonly ScPiece["type"][];
+};
+
+/** Staging post against the enemy Command Center (deploy or ride target). */
+export type AttackTrajectory = {
+  /** Stable key for tests/debug (e.g. "deploy-b-g2-d5"). */
+  key: string;
+  /** Square to stage on — the drop or ride destination. */
+  from: Square;
+  /** Enemy Command Center square the staging attacks. */
+  to: Square;
+};
+
+/** Live tactics beat — fires when the staging post is available. */
+export type TutorialTrajectoryWhen = {
+  kind: "trajectory";
+  from: Square;
+  to: Square;
 };
 
 /** Auto-advance to next lesson when live intent / board matches. */
@@ -147,6 +164,8 @@ export type TutorialLine = {
   action?: TutorialReactionAction;
   /** `intro` = story.comment fallback; `reaction` = when-clause hit. */
   source: "intro" | "reaction";
+  /** Momentary beat — shown while matched, never latched as the sticky line. */
+  transient?: boolean;
 };
 
 /**

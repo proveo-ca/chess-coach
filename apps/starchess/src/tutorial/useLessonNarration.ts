@@ -9,7 +9,7 @@ import { createEffect, onCleanup } from "solid-js";
 
 import { displayedSnapshot } from "~/app/selectors";
 import { liveMatchPhase } from "~/presentation/hud/liveMatchPhase";
-import { coveredEnemyShips } from "~/tutorial/lessonTactics";
+import { availableTrajectories, coveredEnemyShips } from "~/tutorial/lessonTactics";
 import {
   resetTutorialNarration,
   setTutorialNarration,
@@ -35,6 +35,7 @@ export const useLessonNarration = (
       timelineActive: s.timeline.active,
       scfen,
       covers: coveredEnemyShips(scfen, s.viewer),
+      trajectories: availableTrajectories(scfen, s.viewer),
       turnStartChecksApplied: s.turnStartChecksApplied,
       queue: (snap.queue?.actions ?? []).map((a) => ({
         timing: a.timing,
