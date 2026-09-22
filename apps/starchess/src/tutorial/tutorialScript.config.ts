@@ -1372,6 +1372,33 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               "f4",
             ],
           },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|21\|.*\|G:0/,
+            },
+            squares: [
+              "f4",
+            ],
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|21\|/,
+            },
+            squares: [
+              "g2",
+            ],
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]*Q[^|]*\|22\|[1-9][1-9]\|/,
+            },
+            squares: [
+              "c2",
+            ],
+          },
         ],
       },
       {
@@ -1383,7 +1410,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           opponent: "adjutant",
           choreography: "kingHuntGraduation",
         },
-        comment: "The enemy King is overextended. \nPunish it!",
+        comment: "The enemy is overextended. \nPunish it!. \nDeploy a Marine.",
         emotion: "happy",
         completeWhen: {
           kind: "scfen",
@@ -1413,10 +1440,105 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
+              re: /SCFEN\|(?:[^/]*\/){5}(?:5|4(?:[A-Za-z]|1)|(?:[A-Za-z]|1)4|32|23|3(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1)3(?:[A-Za-z]|1)|(?:[A-Za-z]|1){2}3|22(?:[A-Za-z]|1)|2(?:[A-Za-z]|1)2|(?:[A-Za-z]|1)22|2(?:[A-Za-z]|1){3}|(?:[A-Za-z]|1)2(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1){2}2(?:[A-Za-z]|1)|(?:[A-Za-z]|1){3}2|(?:[A-Za-z]|1){5})p/,
+            },
+            comment: "Stop that Marine from promoting!",
+            emotion: "shocked",
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|(?:[^/]*\/){7}[^\/|]*?q(?=(?:[A-Za-z]|1)[\/|])/,
+            },
+            comment: "Crush that BattleShip by deploying any unit on it!",
+            emotion: "scanning",
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|(?:[^/]*\/){7}(?:4|3(?:[A-Za-z]|1)|(?:[A-Za-z]|1)3|22|2(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1)2(?:[A-Za-z]|1)|(?:[A-Za-z]|1){2}2|(?:[A-Za-z]|1){4})q/,
+            },
+            comment: "Enemy BattleShip on e1 — drop a Hoverbike on g2, then take it!",
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|(?:[^/]*\/){7}(?:5|4(?:[A-Za-z]|1)|(?:[A-Za-z]|1)4|32|23|3(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1)3(?:[A-Za-z]|1)|(?:[A-Za-z]|1){2}3|22(?:[A-Za-z]|1)|2(?:[A-Za-z]|1)2|(?:[A-Za-z]|1)22|2(?:[A-Za-z]|1){3}|(?:[A-Za-z]|1)2(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1){2}2(?:[A-Za-z]|1)|(?:[A-Za-z]|1){3}2|(?:[A-Za-z]|1){5})q/,
+            },
+            comment: "Enemy BattleShip on f1 — drop a Hoverbike on h2, then take it!",
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|\d+\|[0-3]1\|/,
+            },
+            comment: "Yes! 1 more check!",
+            emotion: "happy",
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|(?:[^/]*\/){3}(?:3|2(?:[A-Za-z]|1)|(?:[A-Za-z]|1)2|(?:[A-Za-z]|1){3})k[^\/|]*\/(?:1|[A-Za-z])n/,
+            },
+            comment: "I saw the Command Center moving to d5, Hoverbike on b4.",
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|(?:[^/]*\/){6}[^\/|]*P(?=[\/|])[^|]*\|[^|]*\|[^|]*\|[^|]*\|G:[1-9]/,
+            },
+            comment: "Keep pushing your Marine!",
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|(?:[^/]*\/){6}[^\/|]*P(?=[\/|])[^|]*\|[1-9][0-9]*\|[^|]*\|[^|]*\|G:0/,
+            },
+            comment: "Remember Gas gives you an extra step!",
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|(?:[^/]*\/){5}[^\/|]*P(?=[\/|])/,
+            },
+            comment: "Keep pushing your Marine!",
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|(?:[^/]*\/){4}[^\/|]*P(?=[\/|])/,
+            },
+            comment: "Keep pushing your Marine!",
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|(?:[^/]*\/){2}[^\/|]*P(?=[\/|])/,
+            },
+            comment: "Yes, keep pushing your Marine. \nRemember Gas gives you an extra step!",
+            emotion: "happy",
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|(?:[^/]*\/)[^\/|]*P(?=[\/|])/,
+            },
+            comment: "Promote it with Gas!",
+          },
+          {
+            when: {
+              kind: "scfen",
               re: /SCFEN\|(?:[^|p]*p){2}[^|]*\|/,
             },
             comment: "Stop the enemy pawns! \nKeep a guard in g1 for your Command Center.",
             emotion: "shocked",
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|(?:[^/]*\/){7}[^\/|]*?(?:[2-8]|[0-9]1|[0-9][A-Za-z]|[A-Za-z][2-8])(?=[\/|])/,
+            },
+            comment: "Deploy a guard in g1 with Gas, then push your Marine!",
           },
           {
             when: {
@@ -1444,11 +1566,18 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           },
           {
             when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|0\|[^|]*\|[^|]*\|G:0/,
+            },
+            comment: "Centralize your Hoverbike",
+          },
+          {
+            when: {
               kind: "reviewPhase",
               phase: "intent",
               turn: 1,
             },
-            comment: "The enemy King is overextended. \nPunish it!. \nDeploy more units.",
+            comment: "The enemy is overextended. \nPunish it!. \nDeploy a Marine.",
             emotion: "watching",
           },
           {
@@ -1456,11 +1585,139 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               kind: "turn",
               turn: 2,
             },
-            comment: "Prioritize planting mines with your hoverbike!",
+            comment: "Deploy a mine",
             emotion: "watching",
           },
         ],
         hints: [
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|(?:[^/]*\/){5}(?:5|4(?:[A-Za-z]|1)|(?:[A-Za-z]|1)4|32|23|3(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1)3(?:[A-Za-z]|1)|(?:[A-Za-z]|1){2}3|22(?:[A-Za-z]|1)|2(?:[A-Za-z]|1)2|(?:[A-Za-z]|1)22|2(?:[A-Za-z]|1){3}|(?:[A-Za-z]|1)2(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1){2}2(?:[A-Za-z]|1)|(?:[A-Za-z]|1){3}2|(?:[A-Za-z]|1){5})p/,
+            },
+            squares: [
+              "f3",
+            ],
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|(?:[^/]*\/){7}[^\/|]*?q(?=(?:[A-Za-z]|1)[\/|])/,
+            },
+            squares: [
+              "g1",
+            ],
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|(?:[^/]*\/){7}(?:4|3(?:[A-Za-z]|1)|(?:[A-Za-z]|1)3|22|2(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1)2(?:[A-Za-z]|1)|(?:[A-Za-z]|1){2}2|(?:[A-Za-z]|1){4})q/,
+            },
+            squares: [
+              "g2",
+              "e1",
+            ],
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|(?:[^/]*\/){7}(?:5|4(?:[A-Za-z]|1)|(?:[A-Za-z]|1)4|32|23|3(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1)3(?:[A-Za-z]|1)|(?:[A-Za-z]|1){2}3|22(?:[A-Za-z]|1)|2(?:[A-Za-z]|1)2|(?:[A-Za-z]|1)22|2(?:[A-Za-z]|1){3}|(?:[A-Za-z]|1)2(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1){2}2(?:[A-Za-z]|1)|(?:[A-Za-z]|1){3}2|(?:[A-Za-z]|1){5})q/,
+            },
+            squares: [
+              "h2",
+              "f1",
+            ],
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|(?:[^/]*\/){3}(?:3|2(?:[A-Za-z]|1)|(?:[A-Za-z]|1)2|(?:[A-Za-z]|1){3})k[^\/|]*\/(?:1|[A-Za-z])n/,
+            },
+            squares: [
+              "b4",
+            ],
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|(?:[^/]*\/){6}[^\/|]*P(?=[\/|])[^|]*\|[1-9][0-9]*\|[^|]*\|[^|]*\|G:0/,
+            },
+            squares: [
+              "h4",
+            ],
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|(?:[^/]*\/){6}[^\/|]*P(?=[\/|])[^|]*\|[^|]*\|[^|]*\|[^|]*\|G:[1-9]/,
+            },
+            squares: [
+              "h4",
+            ],
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|(?:[^/]*\/){5}[^\/|]*P(?=[\/|])/,
+            },
+            squares: [
+              "h5",
+            ],
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|(?:[^/]*\/){4}[^\/|]*P(?=[\/|])/,
+            },
+            squares: [
+              "h6",
+            ],
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|(?:[^/]*\/){3}[^\/|]*P(?=[\/|])/,
+            },
+            squares: [
+              "h5",
+            ],
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|(?:[^/]*\/){2}[^\/|]*P(?=[\/|])/,
+            },
+            squares: [
+              "h6",
+            ],
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|(?:[^/]*\/)[^\/|]*P(?=[\/|])/,
+            },
+            squares: [
+              "h7",
+            ],
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|(?:[^/]*\/){7}[^\/|]*?(?:[2-8]|[0-9]1|[0-9][A-Za-z]|[A-Za-z][2-8])(?=[\/|])/,
+            },
+            squares: [
+              "g1",
+            ],
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|0\|[^|]*\|[^|]*\|G:0/,
+            },
+            squares: [
+              "c2",
+            ],
+          },
           {
             when: {
               kind: "scfen",

@@ -109,10 +109,24 @@ describe("tutorialScript", () => {
     "king-attack-3",
     "ownCcDead",
     "enemyDown",
+    "f3Marine",
+    "g1Ship",
+    "e1Ship",
+    "f1Ship",
+    "oneMoreCheck",
+    "d5b4spot",
+    "pushH2",
+    "gasReminder",
+    "pushH3",
+    "pushH4",
+    "pushH6",
+    "pushH7",
     "stopEnemyPawns",
+    "guardG1",
     "pushMarine",
     "checked",
     "oneMoreHit",
+    "centralize",
     "intentTipTurn1",
     "minesTipTurn2",
   );
@@ -717,9 +731,9 @@ describe("tutorialScript", () => {
   it("fires king-attack-3 tips for enemy pawns and Marine on rank 5", () => {
     const twoEnemyPawns = "SCFEN|8/1p1p4/8/4k3/8/8/8/7K|2|33|P|G:11:11|Q:w:;b:";
     const oneEnemyPawn = "SCFEN|8/1p6/8/4k3/8/8/8/7K|2|33|P|G:11:11|Q:w:;b:";
-    const marineRank5Hp3 = "SCFEN|8/8/8/4k1P1/8/8/8/7K|2|33|P|G:11:11|Q:w:;b:";
-    const marineRank5Hp1 = "SCFEN|8/8/8/4k1P1/8/8/8/7K|2|13|P|G:11:11|Q:w:;b:";
-    const marineRank4Hp3 = "SCFEN|8/8/8/4k3/6P1/8/8/7K|2|33|P|G:11:11|Q:w:;b:";
+    const marineRank5Hp3 = "SCFEN|8/8/8/4k1P1/8/8/8/6BK|2|33|P|G:11:11|Q:w:;b:";
+    const marineRank5Hp1 = "SCFEN|8/8/8/4k1P1/8/8/8/6BK|2|13|P|G:11:11|Q:w:;b:";
+    const marineRank4Hp3 = "SCFEN|8/8/8/4k3/6P1/8/8/6BK|2|33|P|G:11:11|Q:w:;b:";
     const lineFor = (scfen: string) =>
       resolveTutorialLine({
         stageId: "king",
@@ -727,10 +741,75 @@ describe("tutorialScript", () => {
         scfen,
       });
     expectReaction(lineFor(twoEnemyPawns), KING_ATTACK_3.stopEnemyPawns);
-    expectIntro(lineFor(oneEnemyPawn), "king", "king-attack-3");
+    expectReaction(lineFor(oneEnemyPawn), KING_ATTACK_3.guardG1);
     expectReaction(lineFor(marineRank5Hp3), KING_ATTACK_3.pushMarine);
     expectReaction(lineFor(marineRank5Hp1), KING_ATTACK_3.oneMoreHit);
     expectIntro(lineFor(marineRank4Hp3), "king", "king-attack-3");
+  });
+
+  it("fires king-attack-3 threat lines with matching rings", () => {
+    const story = storyOf("king", "king-attack-3");
+    const lineFor = (scfen: string) =>
+      resolveTutorialLine({
+        stageId: "king",
+        storyId: "king-attack-3",
+        scfen,
+      });
+    const f3 =
+      "SCFEN|8/8/8/8/4k3/5p2/6P1/4N1BK|1|33|P|G:11:11|Q:w:;b:";
+    expectReaction(lineFor(f3), KING_ATTACK_3.f3Marine);
+    expect(resolveTutorialHints(story.hints, f3)).toEqual(["f3"]);
+    const g1ship =
+      "SCFEN|8/8/8/8/4k3/5P2/6P1/4N1qK|1|33|P|G:11:11|Q:w:;b:";
+    expectReaction(lineFor(g1ship), KING_ATTACK_3.g1Ship);
+    expect(resolveTutorialHints(story.hints, g1ship)).toEqual(["g1"]);
+    const e1ship =
+      "SCFEN|8/8/8/8/4k3/5P2/6P1/4q1BK|1|33|P|G:11:11|Q:w:;b:";
+    expectReaction(lineFor(e1ship), KING_ATTACK_3.e1Ship);
+    expect(resolveTutorialHints(story.hints, e1ship)).toEqual(["g2", "e1"]);
+    const f1ship =
+      "SCFEN|8/8/8/8/4k3/5P2/6P1/4NqBK|1|33|P|G:11:11|Q:w:;b:";
+    expectReaction(lineFor(f1ship), KING_ATTACK_3.f1Ship);
+    expect(resolveTutorialHints(story.hints, f1ship)).toEqual(["h2", "f1"]);
+    const hp1 =
+      "SCFEN|8/8/8/8/4k3/5P2/6P1/4N1BK|1|31|P|G:11:11|Q:w:;b:";
+    expectReaction(lineFor(hp1), KING_ATTACK_3.oneMoreCheck);
+    const spot =
+      "SCFEN|8/8/8/3k4/1n6/5P2/6P1/4N1BK|1|33|P|G:11:11|Q:w:;b:";
+    expectReaction(lineFor(spot), KING_ATTACK_3.d5b4spot);
+    expect(resolveTutorialHints(story.hints, spot)).toEqual(["b4"]);
+    const h2 =
+      "SCFEN|8/8/8/8/4k3/5P2/7P/4N1BK|1|33|P|G:11:11|Q:w:;b:";
+    expectReaction(lineFor(h2), KING_ATTACK_3.pushH2);
+    expect(resolveTutorialHints(story.hints, h2)).toEqual(["h4"]);
+    const h2gas =
+      "SCFEN|8/8/8/8/4k3/5P2/7P/4N1BK|1|33|P|G:01:11|Q:w:;b:";
+    expectReaction(lineFor(h2gas), KING_ATTACK_3.gasReminder);
+    expect(resolveTutorialHints(story.hints, h2gas)).toEqual(["h4"]);
+    const h3 =
+      "SCFEN|8/8/8/8/4k3/7P/6P1/4N1BK|1|33|P|G:11:11|Q:w:;b:";
+    expectReaction(lineFor(h3), KING_ATTACK_3.pushH3);
+    expect(resolveTutorialHints(story.hints, h3)).toEqual(["h5"]);
+    const h4 =
+      "SCFEN|8/8/8/8/7P/5P2/6P1/4N1BK|1|33|P|G:11:11|Q:w:;b:";
+    expectReaction(lineFor(h4), KING_ATTACK_3.pushH4);
+    expect(resolveTutorialHints(story.hints, h4)).toEqual(["h6"]);
+    const h6 =
+      "SCFEN|8/8/7P/8/4k3/5P2/6P1/4N1BK|1|33|P|G:11:11|Q:w:;b:";
+    expectReaction(lineFor(h6), KING_ATTACK_3.pushH6);
+    expect(resolveTutorialHints(story.hints, h6)).toEqual(["h6"]);
+    const h7 =
+      "SCFEN|8/7P/8/8/4k3/5P2/6P1/4N1BK|1|33|P|G:11:11|Q:w:;b:";
+    expectReaction(lineFor(h7), KING_ATTACK_3.pushH7);
+    expect(resolveTutorialHints(story.hints, h7)).toEqual(["h7"]);
+    const guard =
+      "SCFEN|8/8/8/8/4k3/5P2/6P1/4N3|1|33|P|G:11:11|Q:w:;b:";
+    expectReaction(lineFor(guard), KING_ATTACK_3.guardG1);
+    expect(resolveTutorialHints(story.hints, guard)).toEqual(["g1"]);
+    const centralized =
+      "SCFEN|8/8/8/8/4k3/5P2/6P1/4N1BK|0|33|P|G:01:11|Q:w:;b:";
+    expectReaction(lineFor(centralized), KING_ATTACK_3.centralize);
+    expect(resolveTutorialHints(story.hints, centralized)).toEqual(["c2"]);
   });
 
   it("holds the king-defense CC warning only while the Mecha is alive", () => {
@@ -1207,9 +1286,16 @@ describe("tutorialScript", () => {
       r.tankCanKillHoverbike,
     );
     expect(resolveTutorialHints(story.hints, warpQueued)).toEqual(["f4"]);
-    // Same jump a turn later is no longer the opening tip, and an unqueued
-    // board never rings anything.
-    expect(resolveTutorialHints(story.hints, seed)).toEqual([]);
+    const gasSet =
+      "SCFEN|8/7Q/8/4p3/3bkn2/8/5R2/7K|21|32|P|G:03:33|B:0:3|Q:w:;b:|S:f2";
+    expect(resolveTutorialHints(story.hints, gasSet)).toEqual(["f4"]);
+    expect(resolveTutorialHints(story.hints, seed)).toEqual(["g2"]);
+    expect(resolveTutorialHints(story.hints, seed.replace("|33|", "|32|"))).toEqual([
+      "g2",
+    ]);
+    expect(
+      resolveTutorialHints(story.hints, warpQueued.replace("|21|", "|22|")),
+    ).toEqual(["c2"]);
     expect(
       resolveTutorialLine({
         stageId: "king",
@@ -1231,6 +1317,7 @@ describe("tutorialScript", () => {
       r.shipDown,
     );
     expect(r.ownCcDead.action).toMatchObject({ kind: "retryLesson" });
+    expect(resolveTutorialHints(story.hints, shipGone)).toEqual([]);
     const ccGone = "SCFEN|8/7Q/8/4p3/3bkn2/8/8/8|22|03|P|G:33:33|B:0:3|Q:w:;b:";
     expect(matchesTutorialCompleteWhen(story.restartWhen, ccGone)).toBe(false);
     expectReaction(
@@ -1241,6 +1328,7 @@ describe("tutorialScript", () => {
       }),
       r.ownCcDead,
     );
+    expect(resolveTutorialHints(story.hints, ccGone)).toEqual([]);
   });
 
   it("grants a closing line reading time, and none when there is no line", () => {
