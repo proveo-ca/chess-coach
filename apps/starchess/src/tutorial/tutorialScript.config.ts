@@ -129,6 +129,8 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             },
             squares: [
               "g5",
+            ],
+            alertSquares: [
               "h8",
             ],
           },
@@ -1438,11 +1440,21 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             emotion: "happy",
           },
           {
-            // g2×f3 frees a Command Center deploy square. A Mecha there looks
-            // down g2–a8; another Marine does not. The hint arrow is that ray.
+            when: {
+              kind: "reviewPhase",
+              phase: "resolve",
+              turn: 1,
+            },
+            comment: "Enemy Command Center moved, I saw where!",
+            emotion: "thinking",
+            transient: true,
+          },
+          {
+            // g2×f3 frees a Command Center deploy square. A Mecha costs 3
+            // minerals and looks down g2–a8; another Marine does not.
             when: {
               kind: "scfen",
-              re: /SCFEN\|(?=.*\|Q:w:[^;]*C=g2f3)/,
+              re: /SCFEN\|(?=.*\|B:(?:[3-9]|[1-9]\d+):)(?=.*\|Q:w:[^;]*C=g2f3)/,
             },
             comment: "Your Marine will vacate g2 after attacking, deploy a Mecha there instead of a Marine",
             emotion: "thinking",
@@ -1664,8 +1676,16 @@ export const TUTORIAL_SCRIPT_CONFIG = [
         hints: [
           {
             when: {
+              kind: "reviewPhase",
+              phase: "resolve",
+              turn: 1,
+            },
+            alertSquares: ["d5"],
+          },
+          {
+            when: {
               kind: "scfen",
-              re: /SCFEN\|(?=.*\|Q:w:[^;]*C=g2f3)/,
+              re: /SCFEN\|(?=.*\|B:(?:[3-9]|[1-9]\d+):)(?=.*\|Q:w:[^;]*C=g2f3)/,
             },
             squares: [
               "g2",
@@ -1740,6 +1760,20 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               re: /SCFEN\|(?:[^/]*\/){3}(?:3|2(?:[A-Za-z]|1)|(?:[A-Za-z]|1)2|(?:[A-Za-z]|1){3})k[^\/|]*\/(?:[^/]*\/){2}(?:2|(?:[A-Za-z]|1){2})N(?!.*Q:w:[^;]*[BF]=knightMine:c2:)/,
             },
             squares: ["c2"],
+          },
+          {
+            // Intent only: the ride is still being queued. Resolve keeps the
+            // b4 ring from the step below and drops the L arrows.
+            when: {
+              kind: "scfen",
+              phases: ["intent"],
+              re: /SCFEN\|(?:[^/]*\/){3}(?:3|2(?:[A-Za-z]|1)|(?:[A-Za-z]|1)2|(?:[A-Za-z]|1){3})k[^\/|]*\/(?:[^/]*\/){2}(?:2|(?:[A-Za-z]|1){2})N(?=.*Q:w:[^;]*[BF]=knightMine:c2:)/,
+            },
+            squares: ["b4"],
+            arrows: [
+              { from: "c2", to: "b4", via: "c4" },
+              { from: "b4", to: "d5", via: "d4", tone: "alert" },
+            ],
           },
           {
             when: {

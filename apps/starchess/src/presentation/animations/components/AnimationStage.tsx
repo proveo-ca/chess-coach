@@ -80,6 +80,8 @@ export type AnimationStageProps = {
   legalDests?: readonly Square[];
   /** Tutorial destination rings (independent of legal-move chrome). */
   hintSquares?: readonly Square[];
+  /** Tutorial rings drawn in alert red. */
+  hintAlertSquares?: readonly Square[];
   /** Tutorial hint lines drawn square-to-square. */
   hintArrows?: readonly TutorialBoardArrow[];
   onSquareClick?: (square: Square) => void;
@@ -225,6 +227,7 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
         selected={props.selected}
         legalDests={props.legalDests}
         hintSquares={props.hintSquares}
+        hintAlertSquares={props.hintAlertSquares}
         hintArrows={props.hintArrows}
         onSquareClick={props.onSquareClick}
         hideSquares={hidden()}

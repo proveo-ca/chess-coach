@@ -5,6 +5,7 @@ import type { Square } from "chess.js";
 
 import type { ScPiece } from "@chess-coach/starchess-core";
 import type { KerriganEmotion } from "~/types/coach";
+import type { ReviewTurnPhase } from "~/types/review";
 
 export type TutorialSectionId = "fog" | "specials" | "resolve" | "king";
 
@@ -89,12 +90,23 @@ export type LessonChoreographyId =
 export type TutorialBoardArrow = {
   from: Square;
   to: Square;
+  /** Elbow of an L path (a knight hop). Straight when omitted. */
+  via?: Square;
+  /** Alert red. Omitted arrows stay guide green. */
+  tone?: "alert";
 };
 
 /** Board hint step — first matching entry wins (SCFEN `when`, else fallback). */
 export type TutorialBoardHint = {
-  when?: { kind: "scfen"; re: RegExp } | TutorialCoversWhen | TutorialTrajectoryWhen;
+  when?:
+    | { kind: "scfen"; re: RegExp; phases?: readonly ReviewTurnPhase[] }
+    | { kind: "reviewPhase"; phase: ReviewTurnPhase; /** 1-based planning ordinal. */ turn?: number }
+    | TutorialCoversWhen
+    | TutorialTrajectoryWhen;
+  /** Guide-green rings. */
   squares?: readonly Square[];
+  /** Alert-red rings. Same step as `squares`; both paint together. */
+  alertSquares?: readonly Square[];
   arrows?: readonly TutorialBoardArrow[];
 };
 

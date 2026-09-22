@@ -376,16 +376,31 @@ export const holdTutorialLine = (
  * unconditional one. Squares and arrows come from the *same* step so a lesson
  * cannot show a ring from one beat and a line from another.
  */
+/** Phase/turn the board is showing — review-phase hint steps read this. */
+export type TutorialHintQuery = {
+  reviewPhase?: ReviewTurnPhase;
+  /** 1-based planning ordinal (`snap.turn + 1`). */
+  turn?: number;
+};
+
 const matchTutorialHint = (
   hints: readonly TutorialBoardHint[] | undefined,
   scfen: string | undefined,
   covers?: SquareCovers,
   trajectories?: AttackTrajectory[],
+  query?: TutorialHintQuery,
 ): TutorialBoardHint | undefined => {
   if (!hints?.length) return undefined;
   for (const h of hints) {
     if (!h.when) return h;
+    if (h.when.kind === "reviewPhase") {
+      if (query?.reviewPhase !== h.when.phase) continue;
+      if (h.when.turn != null && query.turn !== h.when.turn) continue;
+      return h;
+    }
     if (h.when.kind === "scfen" && scfen != null && h.when.re.test(scfen)) {
+      const phases = h.when.phases;
+      if (phases && (!query?.reviewPhase || !phases.includes(query.reviewPhase))) continue;
       return h;
     }
     if (h.when.kind === "covers" && covers) {
@@ -410,7 +425,19 @@ export const resolveTutorialHints = (
   scfen: string | undefined,
   covers?: SquareCovers,
   trajectories?: AttackTrajectory[],
-): Square[] => [...(matchTutorialHint(hints, scfen, covers, trajectories)?.squares ?? [])];
+  query?: TutorialHintQuery,
+): Square[] => [...(matchTutorialHint(hints, scfen, covers, trajectories, query)?.squares ?? [])];
+
+/** Alert-red rings for the step in force — sibling of {@link resolveTutorialHints}. */
+export const resolveTutorialAlertSquares = (
+  hints: readonly TutorialBoardHint[] | undefined,
+  scfen: string | undefined,
+  covers?: SquareCovers,
+  trajectories?: AttackTrajectory[],
+  query?: TutorialHintQuery,
+): Square[] => [
+  ...(matchTutorialHint(hints, scfen, covers, trajectories, query)?.alertSquares ?? []),
+];
 
 /** Hint lines for the step in force — see {@link resolveTutorialHints}. */
 export const resolveTutorialArrows = (
@@ -418,7 +445,10 @@ export const resolveTutorialArrows = (
   scfen: string | undefined,
   covers?: SquareCovers,
   trajectories?: AttackTrajectory[],
-): TutorialBoardArrow[] => [...(matchTutorialHint(hints, scfen, covers, trajectories)?.arrows ?? [])];
+  query?: TutorialHintQuery,
+): TutorialBoardArrow[] => [
+  ...(matchTutorialHint(hints, scfen, covers, trajectories, query)?.arrows ?? []),
+];
 
 /** Live narration fields used by {@link matchesTutorialCompleteWhen}. */
 export type TutorialCompleteContext = {
