@@ -1543,25 +1543,9 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /SCFEN\|(?:[^|p]*p){2}[^|]*\|/,
-            },
-            comment: "Stop the enemy pawns! \nKeep a guard in g1 for your Command Center.",
-            emotion: "shocked",
-          },
-          {
-            when: {
-              kind: "scfen",
               re: /SCFEN\|(?:[^/]*\/){7}[^\/|]*?(?:[2-8]|[0-9]1|[0-9][A-Za-z]|[A-Za-z][2-8])(?=[\/|])/,
             },
             comment: "Deploy a guard in g1 with Gas, then push your Marine!",
-          },
-          {
-            when: {
-              kind: "scfen",
-              re: /SCFEN\|(?:[^/]*\/){3}[^/]*P[^|]*\|\d+\|[23][0-3]\|/,
-            },
-            comment: "Yes, keep pushing your Marine. \nRemember Gas gives you an extra step!",
-            emotion: "happy",
           },
           {
             when: {
@@ -1592,7 +1576,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               phase: "intent",
               turn: 1,
             },
-            comment: "The enemy is overextended. \nPunish it!. \nDeploy a Marine.",
+            comment: "The enemy is overextended. Punish it!. \n\nDeploy a Marine.",
             emotion: "watching",
           },
           {
