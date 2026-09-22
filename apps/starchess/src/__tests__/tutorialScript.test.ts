@@ -817,7 +817,25 @@ describe("tutorialScript", () => {
     expect(resolveTutorialHints(story.hints, f1ship)).toEqual(["h2", "f1"]);
     const hp1 =
       "SCFEN|8/8/8/8/4k3/5P2/6P1/4N1BK|1|31|P|G:11:11|Q:w:;b:";
-    expectReaction(lineFor(hp1), KING_ATTACK_3.oneMoreCheck);
+    expectReaction(
+      resolveTutorialLine({
+        stageId: "king",
+        storyId: "king-attack-3",
+        scfen: hp1,
+        reviewPhase: "check",
+      }),
+      KING_ATTACK_3.oneMoreCheck,
+    );
+    expectReaction(
+      resolveTutorialLine({
+        stageId: "king",
+        storyId: "king-attack-3",
+        scfen: hp1,
+        reviewPhase: "resolve",
+      }),
+      KING_ATTACK_3.oneMoreCheck,
+    );
+    expectReaction(lineFor(hp1), KING_ATTACK_3.minesTipTurn2);
     const spot =
       "SCFEN|8/8/8/3k4/1n6/5P2/6P1/4N1BK|1|33|P|G:11:11|Q:w:;b:";
     expectReaction(lineFor(spot), KING_ATTACK_3.d5b4spot);
@@ -924,11 +942,11 @@ describe("tutorialScript", () => {
     const b4post =
       "SCFEN|8/8/8/3k4/8/5P2/2N3P1/4N1BK|1|33|P|G:11:11|Q:w:;b:";
     expectReaction(lineFor(b4post), KING_ATTACK_3.b4attack);
-    expect(resolveTutorialHints(story.hints, b4post)).toEqual(["b4"]);
+    expect(resolveTutorialHints(story.hints, b4post)).toEqual(["c2", "b4"]);
     const b4contested =
       "SCFEN|8/8/8/3k4/1n6/5P2/2N3P1/4N1BK|1|33|P|G:11:11|Q:w:;b:";
     expectReaction(lineFor(b4contested), KING_ATTACK_3.b4attack);
-    expect(resolveTutorialHints(story.hints, b4contested)).toEqual(["b4"]);
+    expect(resolveTutorialHints(story.hints, b4contested)).toEqual(["c2", "b4"]);
     const b4noCc =
       "SCFEN|8/8/8/8/4k3/5P2/2N3P1/4N1BK|1|33|P|G:11:11|Q:w:;b:";
     expectReaction(lineFor(b4noCc), KING_ATTACK_3.minesTipTurn2);

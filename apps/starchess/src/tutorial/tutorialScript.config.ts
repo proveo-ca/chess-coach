@@ -1410,7 +1410,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           opponent: "adjutant",
           choreography: "kingHuntGraduation",
         },
-        comment: "The enemy is overextended. \nPunish it!. \nDeploy a Marine.",
+        comment: "Remember to use your Gas and your Move each turn",
         emotion: "happy",
         completeWhen: {
           kind: "scfen",
@@ -1514,7 +1514,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               kind: "scfen",
               re: /SCFEN\|(?:[^/]*\/){3}(?:3|2(?:[A-Za-z]|1)|(?:[A-Za-z]|1)2|(?:[A-Za-z]|1){3})k[^\/|]*\/(?:[^/]*\/){2}(?:2|(?:[A-Za-z]|1){2})N/,
             },
-            comment: "Ride the Hoverbike to b4 — it hits d5 and defends our Command Center!",
+            comment: "Deploy a mine first, then ride the Hoverbike to b4 — it attacks the enemy Command Center!",
           },
           {
             when: {
@@ -1593,6 +1593,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             when: {
               kind: "scfen",
               re: /SCFEN\|[^|]+\|\d+\|[0-3]1\|/,
+              phases: ["check", "resolve"],
             },
             comment: "Yes! 1 more check!",
             emotion: "happy",
@@ -1718,7 +1719,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               kind: "scfen",
               re: /SCFEN\|(?:[^/]*\/){3}(?:3|2(?:[A-Za-z]|1)|(?:[A-Za-z]|1)2|(?:[A-Za-z]|1){3})k[^\/|]*\/(?:[^/]*\/){2}(?:2|(?:[A-Za-z]|1){2})N/,
             },
-            squares: ["b4"],
+            squares: ["c2", "b4"],
           },
           {
             when: {

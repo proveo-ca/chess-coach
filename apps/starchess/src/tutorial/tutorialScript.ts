@@ -41,7 +41,7 @@ export type TutorialReactionWhen =
   /** Fog section Chess skin toggle. */
   | { kind: "chessSkin"; chess: boolean }
   /** Live board SCFEN matches this pattern. */
-  | { kind: "scfen"; re: RegExp }
+  | { kind: "scfen"; re: RegExp; phases?: readonly ReviewTurnPhase[] }
   /** 1-based planning ordinal (`snap.turn + 1`; seed turn 0 → 1). */
   | { kind: "turn"; turn: number }
   /** Live targeting mode (e.g. Charon armed → `bishopSnipe`). */
@@ -247,6 +247,8 @@ export const resolveTutorialLine = (ctx: TutorialScriptContext): TutorialLine =>
       return reactionLine(r);
     }
     if (w.kind === "scfen" && ctx.scfen != null && w.re.test(ctx.scfen)) {
+      const phase = ctx.reviewPhase;
+      if (w.phases && (!phase || !w.phases.includes(phase))) continue;
       return reactionLine(r);
     }
     if (w.kind === "turn" && ctx.turn === w.turn) {
