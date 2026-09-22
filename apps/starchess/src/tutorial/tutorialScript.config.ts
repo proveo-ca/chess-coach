@@ -249,7 +249,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               kind: "scfen",
               re: /SCFEN\|[^|p]*\|/,
             },
-            comment: "Sieged on d4 — start with h4, then d2, d1, then d7. One pawn left wins.",
+            comment: "The rook has 2 modes, mobile and immobile. \n\n Prevent pawns from promoting!",
             emotion: "happy",
           },
           {
@@ -833,7 +833,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               kind: "scfen",
               re: /SCFEN\|[^|b]*\|/,
             },
-            comment: "Mecha down. Your Command Center holds.",
+            comment: "Mecha down!",
             emotion: "happy",
           },
           {
@@ -904,7 +904,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               kind: "scfen",
               re: /SCFEN\|[^|]+\|11\|1[0-3]\|/,
             },
-            comment: "Cornered! Crush the enemy mecha by deploying a Marine onto its square.",
+            comment: "Cornered! \n\nCrush the enemy mecha by deploying a Marine onto its square.",
             emotion: "shocked",
           },
         ],
@@ -1027,7 +1027,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           objective: "Hold d1 — block c3, unsiege d2, leave to e2",
           docs: "White Kd1 + sieged Rd2 + Pc2 vs Bb4 + Kh8. Black B b4→d2 queued once on T11. Gas pawn c2→c3 (single step) blocks, gas unsiege d2, then R d2→e2. Win R e2 + K d1; fail R/K missing.",
         },
-        comment: "That Mecha eyes d2! Gas your pawn to c3, unsiege d2, and slip the tank to e2!",
+        comment: "That Mecha is gonna get your Tank! \n\nGas your Marine to body-block!",
         emotion: "shocked",
         completeWhen: {
           kind: "scfen",
@@ -1043,7 +1043,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               kind: "scfen",
               re: /SCFEN\|[^|]*4R3\/3K4\|/,
             },
-            comment: "Evacuated! d1 holds.",
+            comment: "Evacuated!",
             emotion: "happy",
           },
           {
@@ -1127,7 +1127,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               kind: "scfen",
               re: /SCFEN\|[^|qQ]*\|/,
             },
-            comment: "Caught post-jump! h1 holds.",
+            comment: "Lightspeed blunder!",
             emotion: "happy",
           },
           {
@@ -1143,7 +1143,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               kind: "targeting",
               targetingKind: "bishopSnipe",
             },
-            comment: "Aim f1 — she lands there.",
+            comment: "Target f1. \n\nSneaky BattleShip will arrive to flying missiles.",
             emotion: "scanning",
           },
           {
@@ -1151,7 +1151,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               kind: "scfen",
               re: /bishopSnipe:/,
             },
-            comment: "Locked on f1 — End to fire!",
+            comment: "Locked on f1, end your turn!",
             emotion: "happy",
           },
           {
@@ -1159,7 +1159,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               kind: "scfen",
               re: /Q:w:[^;]*C=e4g2/,
             },
-            comment: "G2 locked. Queue an intent to throw the missiles at f1.",
+            comment: "Now gas the Mecha ghost.",
             emotion: "scanning",
           },
           {
@@ -1167,8 +1167,8 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               kind: "scfen",
               re: /queenWarp:/,
             },
-            comment: "Lightspeed — she is on f1. Shoot her off it!",
-            emotion: "shocked",
+            comment: "I doubt the opponent wants to trade their BattleShip for your Mecha... \n\nMove your Mecha to g2.",
+            emotion: "thinking",
           },
         ],
         hints: [
