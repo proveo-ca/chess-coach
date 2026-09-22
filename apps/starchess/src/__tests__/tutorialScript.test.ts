@@ -113,7 +113,6 @@ describe("tutorialScript", () => {
     "attackF3Queued",
     "f3Marine",
     "promoThreat",
-    "oneMoreCheck",
     "e1n",
     "e1k",
     "e1r",
@@ -126,6 +125,7 @@ describe("tutorialScript", () => {
     "g1k",
     "g1r",
     "g1b",
+    "b4attack",
     "g1Ship",
     "e1Ship",
     "f1Ship",
@@ -136,6 +136,7 @@ describe("tutorialScript", () => {
     "pushH4",
     "pushH7",
     "guardG1",
+    "oneMoreCheck",
     "checked",
     "oneMoreHit",
     "centralize",
@@ -879,6 +880,12 @@ describe("tutorialScript", () => {
 
   it("fires king-attack-3 take-it lines when a unit already covers the ship", () => {
     const story = storyOf("king", "king-attack-3");
+    const lineFor = (scfen: string) =>
+      resolveTutorialLine({
+        stageId: "king",
+        storyId: "king-attack-3",
+        scfen,
+      });
     const both = (placement: string) => {
       const scfen = `SCFEN|${placement}|1|33|P|G:11:11|Q:w:;b:`;
       const covers = coveredEnemyShips(scfen, "w");
@@ -914,6 +921,20 @@ describe("tutorialScript", () => {
     check("8/8/8/8/4k3/K4P2/6P1/5Rq1", KING_ATTACK_3.g1r, ["g1"]);
     check("8/8/8/8/4k3/K4P2/5BP1/4N1q1", KING_ATTACK_3.g1b, ["g1"]);
     check("8/8/8/8/4k3/5P2/2n4/4q1BK", KING_ATTACK_3.e1Ship, ["g2", "e1"]);
+    const b4post =
+      "SCFEN|8/8/8/3k4/8/5P2/2N3P1/4N1BK|1|33|P|G:11:11|Q:w:;b:";
+    expectReaction(lineFor(b4post), KING_ATTACK_3.b4attack);
+    expect(resolveTutorialHints(story.hints, b4post)).toEqual(["b4"]);
+    const b4contested =
+      "SCFEN|8/8/8/3k4/1n6/5P2/2N3P1/4N1BK|1|33|P|G:11:11|Q:w:;b:";
+    expectReaction(lineFor(b4contested), KING_ATTACK_3.b4attack);
+    expect(resolveTutorialHints(story.hints, b4contested)).toEqual(["b4"]);
+    const b4noCc =
+      "SCFEN|8/8/8/8/4k3/5P2/2N3P1/4N1BK|1|33|P|G:11:11|Q:w:;b:";
+    expectReaction(lineFor(b4noCc), KING_ATTACK_3.minesTipTurn2);
+    const b4noBike =
+      "SCFEN|8/8/8/3k4/8/5P2/6P1/4N1BK|1|33|P|G:11:11|Q:w:;b:";
+    expectReaction(lineFor(b4noBike), KING_ATTACK_3.minesTipTurn2);
   });
 
   it("holds the king-defense CC warning only while the Mecha is alive", () => {

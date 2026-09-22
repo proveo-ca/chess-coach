@@ -1462,14 +1462,6 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             emotion: "shocked",
           },
           {
-            when: {
-              kind: "scfen",
-              re: /SCFEN\|[^|]+\|\d+\|[0-3]1\|/,
-            },
-            comment: "Yes! 1 more check!",
-            emotion: "happy",
-          },
-          {
             when: { kind: "covers", square: "e1", kinds: ["n"] },
             comment: "Your Hoverbike already reaches e1 — take it, no deploy needed!",
           },
@@ -1516,6 +1508,13 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: { kind: "covers", square: "g1", kinds: ["b"] },
             comment: "Your Mecha already covers g1 — take it, no deploy needed!",
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|(?:[^/]*\/){3}(?:3|2(?:[A-Za-z]|1)|(?:[A-Za-z]|1)2|(?:[A-Za-z]|1){3})k[^\/|]*\/(?:[^/]*\/){2}(?:2|(?:[A-Za-z]|1){2})N/,
+            },
+            comment: "Ride the Hoverbike to b4 — it hits d5 and defends our Command Center!",
           },
           {
             when: {
@@ -1589,6 +1588,14 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               re: /SCFEN\|(?!.*Q:w:[^;]*(?:C=[a-h][1-8]g1|[BF]=[A-Za-z]+:[a-h][1-8]:g1))(?:[^/]*\/){7}[^\/|]*?(?:[2-8]|[0-9]1|[0-9][A-Za-z]|[A-Za-z][2-8])(?=[\/|])/,
             },
             comment: "Deploy a guard in g1 with Gas, then push your Marine!",
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|\d+\|[0-3]1\|/,
+            },
+            comment: "Yes! 1 more check!",
+            emotion: "happy",
           },
           {
             when: {
@@ -1705,6 +1712,13 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: { kind: "covers", square: "g1", kinds: ["b"] },
             squares: ["g1"],
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|(?:[^/]*\/){3}(?:3|2(?:[A-Za-z]|1)|(?:[A-Za-z]|1)2|(?:[A-Za-z]|1){3})k[^\/|]*\/(?:[^/]*\/){2}(?:2|(?:[A-Za-z]|1){2})N/,
+            },
+            squares: ["b4"],
           },
           {
             when: {
