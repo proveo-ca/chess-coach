@@ -28,6 +28,7 @@ import { clearSiegedRooks, setRookMode } from "~/presentation/animations/rookMod
 import { LiveMatchShell } from "~/screens/LiveMatchShell";
 import { TUTORIAL_CAPABILITIES, setCapabilities } from "~/store/capabilitiesStore";
 import { resolveTutorialArrows, resolveTutorialHints } from "~/tutorial/tutorialScript";
+import { coveredEnemyShips } from "~/tutorial/lessonTactics";
 import { useLessonNarration } from "~/tutorial/useLessonNarration";
 import type { MatchState, MatchStore } from "~/types/match";
 import type { LiveLessonHostProps } from "~/types/lesson";
@@ -96,13 +97,23 @@ const LiveLessonInner: Component<LiveLessonHostProps> = (props) => {
   const hintSquares = createMemo(() => {
     if (!interactive()) return [];
     const snap = displayedSnapshot(store.state());
-    return resolveTutorialHints(props.boardHints, formatScFen(snap));
+    const scfen = formatScFen(snap);
+    return resolveTutorialHints(
+      props.boardHints,
+      scfen,
+      coveredEnemyShips(scfen, store.state().viewer),
+    );
   });
 
   const hintArrows = createMemo(() => {
     if (!interactive()) return [];
     const snap = displayedSnapshot(store.state());
-    return resolveTutorialArrows(props.boardHints, formatScFen(snap));
+    const scfen = formatScFen(snap);
+    return resolveTutorialArrows(
+      props.boardHints,
+      scfen,
+      coveredEnemyShips(scfen, store.state().viewer),
+    );
   });
 
   const Overlay = choreography.Overlay;

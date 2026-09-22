@@ -417,6 +417,7 @@ export const TutorialScreen: Component = () => {
       reviewPhase: n.reviewPhase,
       timelineActive: n.timelineActive,
       scfen: n.scfen,
+      covers: n.covers,
       turn: n.turn,
       targetingKind: n.targetingKind,
       turnStartChecksApplied: n.turnStartChecksApplied,

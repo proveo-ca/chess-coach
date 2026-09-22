@@ -3,6 +3,7 @@
 
 import type { Square } from "chess.js";
 
+import type { ScPiece } from "@chess-coach/starchess-core";
 import type { KerriganEmotion } from "~/types/coach";
 
 export type TutorialSectionId = "fog" | "specials" | "resolve" | "king";
@@ -92,9 +93,25 @@ export type TutorialBoardArrow = {
 
 /** Board hint step — first matching entry wins (SCFEN `when`, else fallback). */
 export type TutorialBoardHint = {
-  when?: { kind: "scfen"; re: RegExp };
+  when?: { kind: "scfen"; re: RegExp } | TutorialCoversWhen;
   squares?: readonly Square[];
   arrows?: readonly TutorialBoardArrow[];
+};
+
+/** One viewer-side unit covering a square, via core attack geometry. */
+export type SquareCoverer = {
+  from: Square;
+  kind: ScPiece["type"];
+};
+
+/** Enemy-occupied watch squares mapped to their current coverers. */
+export type SquareCovers = Partial<Record<Square, SquareCoverer[]>>;
+
+/** Live tactics beat — fires when listed kinds cover the square. */
+export type TutorialCoversWhen = {
+  kind: "covers";
+  square: Square;
+  kinds?: readonly ScPiece["type"][];
 };
 
 /** Auto-advance to next lesson when live intent / board matches. */

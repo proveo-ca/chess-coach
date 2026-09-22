@@ -8,9 +8,11 @@ import { TUTORIAL_SCRIPT_CONFIG } from "~/tutorial/tutorialScript.config";
 import type { KerriganEmotion } from "~/types/coach";
 import type {
   LiveLessonBoard,
+  SquareCovers,
   TutorialBoardArrow,
   TutorialBoardHint,
   TutorialCompleteWhen,
+  TutorialCoversWhen,
   TutorialLine,
   TutorialLineHold,
   TutorialReactionAction,
@@ -20,9 +22,11 @@ import type { ReviewTurnPhase } from "~/types/review";
 
 export type {
   LiveLessonBoard,
+  SquareCovers,
   TutorialBoardArrow,
   TutorialBoardHint,
   TutorialCompleteWhen,
+  TutorialCoversWhen,
   TutorialLine,
   TutorialLineHold,
   TutorialReactionAction,
@@ -41,7 +45,9 @@ export type TutorialReactionWhen =
   /** 1-based planning ordinal (`snap.turn + 1`; seed turn 0 → 1). */
   | { kind: "turn"; turn: number }
   /** Live targeting mode (e.g. Charon armed → `bishopSnipe`). */
-  | { kind: "targeting"; targetingKind: string };
+  | { kind: "targeting"; targetingKind: string }
+  /** Live tactics cover the square with one of these kinds. */
+  | TutorialCoversWhen;
 
 export type TutorialReaction = {
   when: TutorialReactionWhen;
@@ -203,6 +209,8 @@ export type TutorialScriptContext = {
   turn?: number;
   /** Live targeting kind (`bishopSnipe`, …). */
   targetingKind?: string | null;
+  /** Enemy-occupied watch squares mapped to their current coverers. */
+  covers?: SquareCovers;
   /** Turn-open checks have landed — see {@link holdTutorialLine}. */
   turnStartChecksApplied?: boolean;
 };
@@ -250,6 +258,12 @@ export const resolveTutorialLine = (ctx: TutorialScriptContext): TutorialLine =>
       ctx.targetingKind === w.targetingKind
     ) {
       return reactionLine(r);
+    }
+    if (w.kind === "covers" && ctx.covers) {
+      const list = ctx.covers[w.square] ?? [];
+      if (list.some((c) => !w.kinds || w.kinds.includes(c.kind))) {
+        return reactionLine(r);
+      }
     }
   }
 
@@ -346,12 +360,20 @@ export const holdTutorialLine = (
 const matchTutorialHint = (
   hints: readonly TutorialBoardHint[] | undefined,
   scfen: string | undefined,
+  covers?: SquareCovers,
 ): TutorialBoardHint | undefined => {
   if (!hints?.length) return undefined;
   for (const h of hints) {
     if (!h.when) return h;
     if (h.when.kind === "scfen" && scfen != null && h.when.re.test(scfen)) {
       return h;
+    }
+    if (h.when.kind === "covers" && covers) {
+      const when = h.when;
+      const list = covers[when.square] ?? [];
+      if (list.some((c) => !when.kinds || when.kinds.includes(c.kind))) {
+        return h;
+      }
     }
   }
   return undefined;
@@ -360,13 +382,15 @@ const matchTutorialHint = (
 export const resolveTutorialHints = (
   hints: readonly TutorialBoardHint[] | undefined,
   scfen: string | undefined,
-): Square[] => [...(matchTutorialHint(hints, scfen)?.squares ?? [])];
+  covers?: SquareCovers,
+): Square[] => [...(matchTutorialHint(hints, scfen, covers)?.squares ?? [])];
 
 /** Hint lines for the step in force — see {@link resolveTutorialHints}. */
 export const resolveTutorialArrows = (
   hints: readonly TutorialBoardHint[] | undefined,
   scfen: string | undefined,
-): TutorialBoardArrow[] => [...(matchTutorialHint(hints, scfen)?.arrows ?? [])];
+  covers?: SquareCovers,
+): TutorialBoardArrow[] => [...(matchTutorialHint(hints, scfen, covers)?.arrows ?? [])];
 
 /** Live narration fields used by {@link matchesTutorialCompleteWhen}. */
 export type TutorialCompleteContext = {

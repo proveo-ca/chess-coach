@@ -31,6 +31,7 @@ import {
   tutorialStage,
   tutorialStory,
 } from "~/tutorial/tutorialScript";
+import { coveredEnemyShips } from "~/tutorial/lessonTactics";
 import type { TutorialLine, TutorialSectionId } from "~/types/tutorial";
 import {
   FOG_MOVE_KING_START_SCFEN,
@@ -112,10 +113,22 @@ describe("tutorialScript", () => {
     "attackF3Queued",
     "f3Marine",
     "promoThreat",
+    "oneMoreCheck",
+    "e1n",
+    "e1k",
+    "e1r",
+    "e1b",
+    "f1n",
+    "f1k",
+    "f1r",
+    "f1b",
+    "g1n",
+    "g1k",
+    "g1r",
+    "g1b",
     "g1Ship",
     "e1Ship",
     "f1Ship",
-    "oneMoreCheck",
     "d5b4spot",
     "gasReminder",
     "pushH2",
@@ -782,11 +795,11 @@ describe("tutorialScript", () => {
       "SCFEN|8/8/8/8/4k3/5P2/6P1/4N1BK|1|33|P|G:11:11|B:0:3|Q:w:B=pawnDouble:h2:h3;b:";
     expectReaction(lineFor(gasQueuedNoThreat), KING_ATTACK_3.queuedReview);
     const g1ship =
-      "SCFEN|8/8/8/8/4k3/5P2/6P1/4N1qK|1|33|P|G:11:11|Q:w:;b:";
+      "SCFEN|8/8/8/8/4k3/K4P2/6P1/4N1q1|1|33|P|G:11:11|Q:w:;b:";
     expectReaction(lineFor(g1ship), KING_ATTACK_3.g1Ship);
     expect(resolveTutorialHints(story.hints, g1ship)).toEqual(["g1"]);
     const g1crush =
-      "SCFEN|8/8/8/8/4k3/5P2/6P1/4N1qK|1|33|P|G:11:11|B:0:3|Q:w:B=spawn:h1:g1:n;b:";
+      "SCFEN|8/8/8/8/4k3/K4P2/6P1/4N1q1|1|33|P|G:11:11|B:0:3|Q:w:B=spawn:h1:g1:n;b:";
     expectReaction(lineFor(g1crush), KING_ATTACK_3.queuedReview);
     expect(resolveTutorialHints(story.hints, g1crush)).toEqual(["c2"]);
     const e1ship =
@@ -862,6 +875,45 @@ describe("tutorialScript", () => {
       "SCFEN|8/8/8/8/4k3/5P2/6P1/4N1BK|0|33|P|G:01:11|B:0:3|Q:w:;b:";
     expectReaction(lineFor(centralized), KING_ATTACK_3.centralize);
     expect(resolveTutorialHints(story.hints, centralized)).toEqual(["c2"]);
+  });
+
+  it("fires king-attack-3 take-it lines when a unit already covers the ship", () => {
+    const story = storyOf("king", "king-attack-3");
+    const both = (placement: string) => {
+      const scfen = `SCFEN|${placement}|1|33|P|G:11:11|Q:w:;b:`;
+      const covers = coveredEnemyShips(scfen, "w");
+      return { scfen, covers };
+    };
+    const check = (
+      placement: string,
+      reaction: (typeof KING_ATTACK_3)[keyof typeof KING_ATTACK_3],
+      ring: string[],
+    ) => {
+      const { scfen, covers } = both(placement);
+      expectReaction(
+        resolveTutorialLine({
+          stageId: "king",
+          storyId: "king-attack-3",
+          scfen,
+          covers,
+        }),
+        reaction,
+      );
+      expect(resolveTutorialHints(story.hints, scfen, covers)).toEqual(ring);
+    };
+    check("8/8/8/8/4k3/5P2/2N3P1/4q1BK", KING_ATTACK_3.e1n, ["e1"]);
+    check("8/8/8/8/4k3/5P2/6P1/3Kq1B1", KING_ATTACK_3.e1k, ["e1"]);
+    check("8/8/8/8/4k3/5P2/4R1P1/4q1BK", KING_ATTACK_3.e1r, ["e1"]);
+    check("8/8/8/8/4k3/5P2/3B2P1/4q1BK", KING_ATTACK_3.e1b, ["e1"]);
+    check("8/8/8/8/4k3/5P2/6PN/4NqBK", KING_ATTACK_3.f1n, ["f1"]);
+    check("8/8/8/8/4k3/5P2/4K1P1/4NqBK", KING_ATTACK_3.f1k, ["f1"]);
+    check("8/8/8/8/4k3/5P2/5R2/4NqBK", KING_ATTACK_3.f1r, ["f1"]);
+    check("8/8/8/8/4k3/5P2/4B1P1/4NqBK", KING_ATTACK_3.f1b, ["f1"]);
+    check("8/8/8/8/4k3/K4P2/4N1P1/4N1q1", KING_ATTACK_3.g1n, ["g1"]);
+    check("8/8/8/8/4k3/5P2/6P1/4N1qK", KING_ATTACK_3.g1k, ["g1"]);
+    check("8/8/8/8/4k3/K4P2/6P1/5Rq1", KING_ATTACK_3.g1r, ["g1"]);
+    check("8/8/8/8/4k3/K4P2/5BP1/4N1q1", KING_ATTACK_3.g1b, ["g1"]);
+    check("8/8/8/8/4k3/5P2/2n4/4q1BK", KING_ATTACK_3.e1Ship, ["g2", "e1"]);
   });
 
   it("holds the king-defense CC warning only while the Mecha is alive", () => {

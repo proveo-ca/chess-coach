@@ -1464,6 +1464,62 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
+              re: /SCFEN\|[^|]+\|\d+\|[0-3]1\|/,
+            },
+            comment: "Yes! 1 more check!",
+            emotion: "happy",
+          },
+          {
+            when: { kind: "covers", square: "e1", kinds: ["n"] },
+            comment: "Your Hoverbike already reaches e1 — take it, no deploy needed!",
+          },
+          {
+            when: { kind: "covers", square: "e1", kinds: ["k"] },
+            comment: "Your Command Center already covers e1 — take it, no deploy needed!",
+          },
+          {
+            when: { kind: "covers", square: "e1", kinds: ["r"] },
+            comment: "Your Tank already covers e1 — take it, no deploy needed!",
+          },
+          {
+            when: { kind: "covers", square: "e1", kinds: ["b"] },
+            comment: "Your Mecha already covers e1 — take it, no deploy needed!",
+          },
+          {
+            when: { kind: "covers", square: "f1", kinds: ["n"] },
+            comment: "Your Hoverbike already reaches f1 — take it, no deploy needed!",
+          },
+          {
+            when: { kind: "covers", square: "f1", kinds: ["k"] },
+            comment: "Your Command Center already covers f1 — take it, no deploy needed!",
+          },
+          {
+            when: { kind: "covers", square: "f1", kinds: ["r"] },
+            comment: "Your Tank already covers f1 — take it, no deploy needed!",
+          },
+          {
+            when: { kind: "covers", square: "f1", kinds: ["b"] },
+            comment: "Your Mecha already covers f1 — take it, no deploy needed!",
+          },
+          {
+            when: { kind: "covers", square: "g1", kinds: ["n"] },
+            comment: "Your Hoverbike already reaches g1 — take it, no deploy needed!",
+          },
+          {
+            when: { kind: "covers", square: "g1", kinds: ["k"] },
+            comment: "Your Command Center already covers g1 — take it, no deploy needed!",
+          },
+          {
+            when: { kind: "covers", square: "g1", kinds: ["r"] },
+            comment: "Your Tank already covers g1 — take it, no deploy needed!",
+          },
+          {
+            when: { kind: "covers", square: "g1", kinds: ["b"] },
+            comment: "Your Mecha already covers g1 — take it, no deploy needed!",
+          },
+          {
+            when: {
+              kind: "scfen",
               re: /SCFEN\|(?!.*Q:w:[^;]*(?:C=[a-h][1-8]g1|[BF]=[A-Za-z]+:[a-h][1-8]:g1))(?:[^/]*\/){7}[^\/|]*?q(?=(?:[A-Za-z]|1)[\/|])/,
             },
             comment: "Crush that BattleShip by deploying any unit on it!",
@@ -1484,14 +1540,6 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             },
             comment: "Enemy BattleShip on f1 — drop a Hoverbike on h2, then attack it!",
             emotion: "shocked"
-          },
-          {
-            when: {
-              kind: "scfen",
-              re: /SCFEN\|[^|]+\|\d+\|[0-3]1\|/,
-            },
-            comment: "Yes! 1 more check!",
-            emotion: "happy",
           },
           {
             when: {
@@ -1609,6 +1657,54 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "f3",
             ],
+          },
+          {
+            when: { kind: "covers", square: "e1", kinds: ["n"] },
+            squares: ["e1"],
+          },
+          {
+            when: { kind: "covers", square: "e1", kinds: ["k"] },
+            squares: ["e1"],
+          },
+          {
+            when: { kind: "covers", square: "e1", kinds: ["r"] },
+            squares: ["e1"],
+          },
+          {
+            when: { kind: "covers", square: "e1", kinds: ["b"] },
+            squares: ["e1"],
+          },
+          {
+            when: { kind: "covers", square: "f1", kinds: ["n"] },
+            squares: ["f1"],
+          },
+          {
+            when: { kind: "covers", square: "f1", kinds: ["k"] },
+            squares: ["f1"],
+          },
+          {
+            when: { kind: "covers", square: "f1", kinds: ["r"] },
+            squares: ["f1"],
+          },
+          {
+            when: { kind: "covers", square: "f1", kinds: ["b"] },
+            squares: ["f1"],
+          },
+          {
+            when: { kind: "covers", square: "g1", kinds: ["n"] },
+            squares: ["g1"],
+          },
+          {
+            when: { kind: "covers", square: "g1", kinds: ["k"] },
+            squares: ["g1"],
+          },
+          {
+            when: { kind: "covers", square: "g1", kinds: ["r"] },
+            squares: ["g1"],
+          },
+          {
+            when: { kind: "covers", square: "g1", kinds: ["b"] },
+            squares: ["g1"],
           },
           {
             when: {

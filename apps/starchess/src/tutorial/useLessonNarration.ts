@@ -9,6 +9,7 @@ import { createEffect, onCleanup } from "solid-js";
 
 import { displayedSnapshot } from "~/app/selectors";
 import { liveMatchPhase } from "~/presentation/hud/liveMatchPhase";
+import { coveredEnemyShips } from "~/tutorial/lessonTactics";
 import {
   resetTutorialNarration,
   setTutorialNarration,
@@ -23,6 +24,7 @@ export const useLessonNarration = (
     if (!enabled()) return;
     const s = store.state();
     const snap = displayedSnapshot(s);
+    const scfen = formatScFen(snap);
     setTutorialNarration({
       reviewPhase: liveMatchPhase({
         phase: s.phase,
@@ -31,7 +33,8 @@ export const useLessonNarration = (
         pendingPromotion: !!s.pendingPromotion,
       }),
       timelineActive: s.timeline.active,
-      scfen: formatScFen(snap),
+      scfen,
+      covers: coveredEnemyShips(scfen, s.viewer),
       turnStartChecksApplied: s.turnStartChecksApplied,
       queue: (snap.queue?.actions ?? []).map((a) => ({
         timing: a.timing,
