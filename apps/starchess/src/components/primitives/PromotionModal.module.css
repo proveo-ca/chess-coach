@@ -30,6 +30,14 @@
   outline: none;
 }
 
+.choiceLabel {
+  margin-top: 2px;
+  font-size: 11px;
+  line-height: 1.2;
+  text-align: center;
+  color: var(--text-strong, #fff);
+}
+
 .pieceImg {
   display: grid;
   place-items: center;

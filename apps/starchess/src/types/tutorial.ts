@@ -127,6 +127,11 @@ export type TutorialBoardHint = {
     | TutorialPromotionWhen
     | TutorialChargeWhen
     | TutorialTankSiegeWhen;
+  /**
+   * Fill `squares` and `arrows` from the live stopper → runner pair. The step
+   * is skipped when no enemy Marine on the last three ranks needs stopping.
+   */
+  stopRunner?: boolean;
   /** Guide-green rings. */
   squares?: readonly Square[];
   /** Alert-red rings. Same step as `squares`; both paint together. */

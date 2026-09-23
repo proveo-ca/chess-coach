@@ -148,4 +148,64 @@ describe("gas + last-rank promotion contract", () => {
     expect(r.next.specialsUsed ?? []).not.toContain("e8");
   });
 
+  it("gas-only tank choice deploys a tank, not a battleship", () => {
+    let snap = parseScFen(
+      "SCFEN|k7/4P3/8/8/8/8/8/4K3|1|33|P|G:11:11|Q:w:;b:",
+    );
+    snap = addScAction({
+      snapshot: snap,
+      action: {
+        timing: "B",
+        kind: "pawnDouble",
+        color: "w",
+        from: "e7",
+        to: "e8",
+        promotion: "r",
+      },
+    }).snapshot;
+    const r = endScTurn(snap);
+    expect(r.resolved.promotions).toEqual([
+      expect.objectContaining({ at: "e8", unit: "r", color: "w" }),
+    ]);
+    expect(placementToMap(r.next.placement).get("e8")).toEqual({
+      type: "r",
+      color: "w",
+    });
+  });
+
+  it("B+C tank choice rewrites onto the last rank as a tank", () => {
+    let snap = parseScFen(
+      "SCFEN|k7/8/4P3/8/8/8/8/4K3|1|33|P|G:11:11|Q:w:;b:",
+    );
+    snap = addScAction({
+      snapshot: snap,
+      action: {
+        timing: "B",
+        kind: "pawnDouble",
+        color: "w",
+        from: "e6",
+        to: "e7",
+      },
+    }).snapshot;
+    snap = addScAction({
+      snapshot: snap,
+      action: {
+        timing: "C",
+        kind: "classical",
+        color: "w",
+        from: "e6",
+        to: "e7",
+        promotion: "r",
+      },
+    }).snapshot;
+    const r = endScTurn(snap);
+    expect(r.resolved.promotions).toEqual([
+      expect.objectContaining({ at: "e8", unit: "r", color: "w" }),
+    ]);
+    expect(placementToMap(r.next.placement).get("e8")).toEqual({
+      type: "r",
+      color: "w",
+    });
+  });
+
 });

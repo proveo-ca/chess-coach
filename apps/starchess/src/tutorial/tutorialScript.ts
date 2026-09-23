@@ -8,11 +8,13 @@ import { TUTORIAL_SCRIPT_CONFIG } from "~/tutorial/tutorialScript.config";
 import {
   chargeFromH8,
   forwardDeploySquare,
+  g2DeployName,
   gasMarineSquare,
   g1GuardNeeded,
   mechaDiagonalOpen,
   mechaThreatOpen,
   promotionChoiceOpen,
+  runnerStop,
   tankSiegeOnH5,
 } from "~/tutorial/lessonTactics";
 import type { KerriganEmotion } from "~/types/coach";
@@ -323,7 +325,11 @@ export const resolveTutorialLine = (ctx: TutorialScriptContext): TutorialLine =>
       return reactionLine(r);
     }
     if (w.kind === "gasOnMarine" && ctx.scfen && phaseAllows(w.phases, ctx.reviewPhase) && gasMarineSquare(ctx.scfen)) {
-      return reactionLine(r);
+      const sq = gasMarineSquare(ctx.scfen)!;
+      return {
+        ...reactionLine(r),
+        comment: `Keep pushing your ${sq[0]}-file Marine by dropping gas on it`,
+      };
     }
     if (
       w.kind === "forwardDeploy" &&
@@ -331,7 +337,10 @@ export const resolveTutorialLine = (ctx: TutorialScriptContext): TutorialLine =>
       phaseAllows(w.phases, ctx.reviewPhase) &&
       forwardDeploySquare(ctx.scfen) === w.square
     ) {
-      return reactionLine(r);
+      return {
+        ...reactionLine(r),
+        comment: `Deploy a ${g2DeployName(ctx.scfen)} on g2 with Gas`,
+      };
     }
     if (
       w.kind === "promotionChoice" &&
@@ -480,6 +489,15 @@ const matchTutorialHint = (
     if (h.when.kind === "scfen" && scfen != null && h.when.re.test(scfen)) {
       const phases = h.when.phases;
       if (phases && (!query?.reviewPhase || !phases.includes(query.reviewPhase))) continue;
+      if (h.stopRunner) {
+        const stop = runnerStop(scfen);
+        if (!stop) continue;
+        return {
+          ...h,
+          squares: [stop.to],
+          arrows: [{ from: stop.from, to: stop.to }],
+        };
+      }
       return h;
     }
     if (h.when.kind === "covers" && covers) {

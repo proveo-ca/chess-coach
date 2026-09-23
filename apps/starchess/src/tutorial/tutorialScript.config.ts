@@ -1477,6 +1477,12 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             emotion: "thinking",
           },
           {
+            // Open Attack/Move, BattleShip or Tank on h8. A nearby Marine does
+            // not hide the charge — the arrows are the coaching.
+            when: { kind: "chargeH8", phases: ["intent"] },
+            comment: "Go get 'em!",
+          },
+          {
             when: {
               kind: "scfen",
               re: /SCFEN\|(?!.*Q:w:[^;]*(?:C=[a-h][1-8]f3|C=h2h[34]|[BF]=[A-Za-z]+:[a-h][1-8]:f3))(?:[^/]*\/){5}(?:5|4(?:[A-Za-z]|1)|(?:[A-Za-z]|1)4|32|23|3(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1)3(?:[A-Za-z]|1)|(?:[A-Za-z]|1){2}3|22(?:[A-Za-z]|1)|2(?:[A-Za-z]|1)2|(?:[A-Za-z]|1)22|2(?:[A-Za-z]|1){3}|(?:[A-Za-z]|1)2(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1){2}2(?:[A-Za-z]|1)|(?:[A-Za-z]|1){3}2|(?:[A-Za-z]|1){5})p/,
@@ -1541,11 +1547,6 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             comment: "Your Mecha already covers g1 — take it, no deploy needed!",
           },
           {
-            // Open Attack/Move, BattleShip or Tank on h8, and no defensive threat.
-            when: { kind: "chargeH8", phases: ["intent"] },
-            comment: "Go get 'em!",
-          },
-          {
             when: { kind: "trajectory", from: "g2", to: "d5" },
             comment: "You have 3 minerals — deploy a Mecha on g2, then take d5!",
           },
@@ -1602,7 +1603,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             // Empty g2 takes a gas deploy. Empty h2 stays empty so the h-file marine can be pushed.
             when: { kind: "forwardDeploy", square: "g2", phases: ["intent"] },
-            comment: "Deploy a unit on g2 with Gas",
+            comment: "Deploy a Marine on g2 with Gas",
           },
           {
             when: {
@@ -1610,7 +1611,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               phases: ["intent"],
               re: /SCFEN\|(?:[^/]*\/){6}[^\/|]*P(?=[\/|])[^|]*\|[^|]*\|[^|]*\|[^|]*\|G:[1-9](?=.*\|Q:w:[^;]*C=h2h[34])/,
             },
-            comment: "Keep pushing your Marine by dropping gas on it",
+            comment: "Keep pushing your h-file Marine by dropping gas on it",
           },
           {
             when: {
@@ -1618,7 +1619,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               phases: ["intent"],
               re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){6}[^\/|]*P(?=[\/|])/,
             },
-            comment: "Move your Marine from h2 to h4.",
+            comment: "Move your h-file Marine from h2 to h4.",
           },
           {
             when: {
@@ -1626,7 +1627,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               phases: ["intent"],
               re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){5}[^\/|]*P(?=[\/|])/,
             },
-            comment: "Keep pushing your Marine!",
+            comment: "Keep pushing your h-file Marine on h3!",
           },
           {
             when: {
@@ -1634,7 +1635,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               phases: ["intent"],
               re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){4}[^\/|]*P(?=[\/|])/,
             },
-            comment: "Keep pushing your Marine!",
+            comment: "Keep pushing your h-file Marine on h4!",
           },
           {
             when: { kind: "backrankGuard" },
@@ -1676,7 +1677,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             // Move is spent, gas is not — the other half of the turn.
             when: { kind: "gasOnMarine", phases: ["intent"] },
-            comment: "Keep pushing your Marine by dropping gas on it",
+            comment: "Keep pushing your h-file Marine by dropping gas on it",
           },
           {
             when: {
@@ -1728,14 +1729,29 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             arrows: [{ from: "g2", to: "a8" }],
           },
           {
+            when: { kind: "chargeH8", phases: ["intent"] },
+            arrows: [
+              { from: "h8", to: "h5" },
+              { from: "h5", to: "d5", tone: "alert" },
+            ],
+          },
+          {
             when: {
               kind: "scfen",
               re: /SCFEN\|(?!.*Q:w:[^;]*(?:C=[a-h][1-8]f3|C=h2h[34]|[BF]=[A-Za-z]+:[a-h][1-8]:f3))(?:[^/]*\/){5}(?:5|4(?:[A-Za-z]|1)|(?:[A-Za-z]|1)4|32|23|3(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1)3(?:[A-Za-z]|1)|(?:[A-Za-z]|1){2}3|22(?:[A-Za-z]|1)|2(?:[A-Za-z]|1)2|(?:[A-Za-z]|1)22|2(?:[A-Za-z]|1){3}|(?:[A-Za-z]|1)2(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1){2}2(?:[A-Za-z]|1)|(?:[A-Za-z]|1){3}2|(?:[A-Za-z]|1){5})p/,
             },
+            stopRunner: true,
             squares: [
               "f3",
             ],
             arrows: [{ from: "g2", to: "f3" }],
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|(?!(?:[^/]*\/){5}(?:5|4(?:[A-Za-z]|1)|(?:[A-Za-z]|1)4|32|23|3(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1)3(?:[A-Za-z]|1)|(?:[A-Za-z]|1){2}3|22(?:[A-Za-z]|1)|2(?:[A-Za-z]|1)2|(?:[A-Za-z]|1)22|2(?:[A-Za-z]|1){3}|(?:[A-Za-z]|1)2(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1){2}2(?:[A-Za-z]|1)|(?:[A-Za-z]|1){3}2|(?:[A-Za-z]|1){5})p)(?:[^/p]*\/){5}[^|]*p/,
+            },
+            stopRunner: true,
           },
           {
             when: { kind: "covers", square: "e1", kinds: ["n"] },
@@ -1784,13 +1800,6 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: { kind: "covers", square: "g1", kinds: ["b"] },
             squares: ["g1"],
-          },
-          {
-            when: { kind: "chargeH8", phases: ["intent"] },
-            arrows: [
-              { from: "h8", to: "h5" },
-              { from: "h5", to: "d5", tone: "alert" },
-            ],
           },
           {
             when: { kind: "trajectory", from: "g2", to: "d5" },
@@ -1878,7 +1887,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){6}[^\/|]*P(?=[\/|])/,
             },
             squares: [
-              "h4",
+              "h2",
             ],
             arrows: [{ from: "h2", to: "h4" }],
           },
@@ -1889,8 +1898,9 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){5}[^\/|]*P(?=[\/|])/,
             },
             squares: [
-              "h5",
+              "h3",
             ],
+            arrows: [{ from: "h3", to: "h5" }],
           },
           {
             when: {
@@ -1899,8 +1909,9 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){4}[^\/|]*P(?=[\/|])/,
             },
             squares: [
-              "h6",
+              "h4",
             ],
+            arrows: [{ from: "h4", to: "h6" }],
           },
           {
             when: {

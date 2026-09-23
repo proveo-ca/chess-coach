@@ -339,6 +339,80 @@ describe("intentOverlaysFromQueue", () => {
       expect(out.destinations).toHaveLength(2);
     });
 
+    it("paints a tank on the last rank when the stack chose one", () => {
+      const actions: ScAction[] = [
+        {
+          timing: "B",
+          kind: "pawnDouble",
+          color: "w",
+          from: "e6",
+          to: "e7",
+          seq: 0,
+        },
+        {
+          timing: "C",
+          kind: "classical",
+          color: "w",
+          from: "e6",
+          to: "e7",
+          promotion: "r",
+          seq: 1,
+        },
+      ];
+      const out = intentOverlaysFromQueue(actions, {
+        placement: "8/8/4P3/8/8/8/8/4K2k",
+        viewer: "w",
+      });
+      expect(out.destinations).toEqual(
+        expect.arrayContaining([
+          { at: "e7", color: "w", piece: "p" },
+          { at: "e8", color: "w", piece: "r", via: "gas", rookMode: "tank" },
+        ]),
+      );
+    });
+
+    it("paints a gas-only tank promotion on the last rank", () => {
+      const actions: ScAction[] = [
+        {
+          timing: "B",
+          kind: "pawnDouble",
+          color: "w",
+          from: "e7",
+          to: "e8",
+          promotion: "r",
+          seq: 0,
+        },
+      ];
+      const out = intentOverlaysFromQueue(actions, {
+        placement: "k7/4P3/8/8/8/8/8/4K3",
+        viewer: "w",
+      });
+      expect(out.destinations).toEqual([
+        { at: "e8", color: "w", piece: "r", via: "gas", rookMode: "tank" },
+      ]);
+    });
+
+    it("paints a classical tank promotion on the last rank", () => {
+      const actions: ScAction[] = [
+        {
+          timing: "C",
+          kind: "classical",
+          color: "w",
+          from: "e7",
+          to: "e8",
+          promotion: "r",
+          seq: 0,
+        },
+      ];
+      const out = intentOverlaysFromQueue(actions, {
+        placement: "k7/4P3/8/8/8/8/8/4K3",
+        viewer: "w",
+      });
+      expect(out.destinations).toEqual([
+        { at: "e8", color: "w", piece: "r", rookMode: "tank" },
+      ]);
+    });
+
     it("move then gas: C e2→e4 + F e2→e3 lands e5", () => {
       // F is a placeholder for pre-move geometry — the resolver recomputes +1
       // from the classical landing.

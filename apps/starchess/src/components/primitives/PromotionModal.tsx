@@ -17,7 +17,12 @@ interface PromotionModalProps {
   onCancel: () => void;
 }
 
-const CHOICES: PromotionPiece[] = ["q", "r", "b", "n"];
+const CHOICES: readonly { piece: PromotionPiece; label: string }[] = [
+  { piece: "q", label: "BattleShip" },
+  { piece: "r", label: "Tank" },
+  { piece: "b", label: "Mecha" },
+  { piece: "n", label: "Hoverbike" },
+];
 
 export const PromotionModal: Component<PromotionModalProps> = (props) => {
   return (
@@ -33,21 +38,22 @@ export const PromotionModal: Component<PromotionModalProps> = (props) => {
         {(pending) => (
           <div class={styles.choices} data-testid="promotion-modal">
             <For each={CHOICES}>
-              {(piece) => (
+              {(choice) => (
                 <button
                   type="button"
                   class={styles.choice}
-                  onClick={() => props.onSelect(piece)}
-                  aria-label={`Promote to ${piece}`}
-                  data-promo-piece={piece}
+                  onClick={() => props.onSelect(choice.piece)}
+                  aria-label={`Promote to ${choice.label}`}
+                  data-promo-piece={choice.piece}
                 >
                   <PieceGlyph
                     color={pending().color}
-                    type={piece}
+                    type={choice.piece}
                     pieceSet="nerd"
                     mode="tank"
                     class={styles.pieceImg}
                   />
+                  <span class={styles.choiceLabel}>{choice.label}</span>
                 </button>
               )}
             </For>

@@ -209,6 +209,35 @@ const stackEndpoints = (
   return out;
 };
 
+const lastRankFor = (color: StarChessColor): "8" | "1" => (color === "w" ? "8" : "1");
+
+const actionPromotion = (a: ScAction): PieceSymbol | undefined =>
+  "promotion" in a && a.promotion ? a.promotion : undefined;
+
+/**
+ * The picker choice, painted only on the last-rank landing. A gas stack's
+ * mid-square stays the marine; the paired classical promotion rides the gas
+ * endpoint. Occupancy is unchanged — the square is still a marine until resolve.
+ */
+const promotionAt = (
+  a: ScAction,
+  at: Square,
+  queue: readonly ScAction[],
+): PieceSymbol | undefined => {
+  if (at[1] !== lastRankFor(a.color)) return undefined;
+  const own = actionPromotion(a);
+  if (own) return own;
+  const paired = queue.find(
+    (q) =>
+      q !== a &&
+      q.timing === "C" &&
+      q.kind === "classical" &&
+      q.color === a.color &&
+      q.from === a.from,
+  );
+  return paired ? actionPromotion(paired) : undefined;
+};
+
 /**
  * Map planning `Q:` → destination ghosts + canister badges + red check rings.
  */
@@ -238,15 +267,21 @@ export const intentOverlaysFromQueue = (
         ? pieceAtQueuedSquare(map, a.from, a.color, queue)?.type
         : undefined;
       if (!piece) continue;
+      const promoted = promotionAt(a, a.to, queue);
+      const ghost: PieceSymbol = promoted ?? piece;
       const key = `${a.color}:${a.to}`;
       if (!seenDest.has(key)) {
         seenDest.add(key);
         destinations.push({
           at: a.to,
           color: a.color,
-          piece,
-          ...(piece === "r"
-            ? { rookMode: rookModeAfterB(a.from, opts?.siegedRooks, queue) as RookMode }
+          piece: ghost,
+          ...(ghost === "r"
+            ? {
+                rookMode: (promoted
+                  ? "tank"
+                  : rookModeAfterB(a.from, opts?.siegedRooks, queue)) as RookMode,
+              }
             : {}),
         });
       }
@@ -303,9 +338,11 @@ export const intentOverlaysFromQueue = (
       pushCanister(canisters, seenCan, dest, a.color);
     }
     if (!dest || dest === a.from) continue;
-    const piece: PieceSymbol | undefined =
+    const standing: PieceSymbol | undefined =
       isSpawn && a.unit ? a.unit : map?.get(a.from)?.type;
-    if (!piece) continue;
+    if (!standing) continue;
+    const promoted = isSpawn ? undefined : promotionAt(a, dest, queue);
+    const piece: PieceSymbol = promoted ?? standing;
     const key = `${a.color}:${dest}`;
     if (seenDest.has(key)) continue;
     seenDest.add(key);
@@ -316,7 +353,7 @@ export const intentOverlaysFromQueue = (
       ...(isSpawn ? {} : { via: "gas" as const }),
       ...(piece === "r"
         ? {
-            rookMode: (isSpawn
+            rookMode: (isSpawn || promoted
               ? "tank"
               : rookModeAfterB(a.from, opts?.siegedRooks, queue)) as RookMode,
           }
