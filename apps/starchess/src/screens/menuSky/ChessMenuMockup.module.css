@@ -528,7 +528,7 @@
     line-height: 1.2;
   }
 
-  .avatarSlot :global([data-testid="coach-avatar"]) {
+  .avatarSlot :global(.coach-avatar) {
     height: 5.1rem;
     width: 5.763rem;
     margin-top: 1.7rem;
@@ -590,7 +590,7 @@
  * above. Must stay after that block — same specificity, later wins.
  */
 @media (max-width: 479px) and (max-height: 639px) {
-  .avatarSlot :global([data-testid="coach-avatar"]) {
+  .avatarSlot :global(.coach-avatar) {
     margin-top: 0;
     transform: scale(0.75);
     transform-origin: top center;

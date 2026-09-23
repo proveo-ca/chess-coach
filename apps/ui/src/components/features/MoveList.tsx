@@ -346,7 +346,7 @@ export const MoveList: Component<Props> = (props) => {
           wrapperRef = el;
         }}
         class={`${styles.wrapper} mobile-nav-clear`}
-        classList={{ [styles.floating]: floating() }}
+        classList={{ [styles.floating]: floating(), "floating-move-list": floating() }}
         aria-label="Move list"
         data-testid={floating() ? "floating-move-list" : "move-list"}
         data-analysis-loading={analysisSignal().loading ? "true" : "false"}

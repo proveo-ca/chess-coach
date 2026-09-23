@@ -37,7 +37,8 @@
     "chess.js": "^1.4.0",
     "clsx": "^2.1.1",
     "solid-js": "^1.9.12",
-    "unique-names-generator": "^4.7.1"
+    "unique-names-generator": "^4.7.1",
+    "@chess-coach/ui-web": "workspace:*"
   },
   "engines": {
     "node": ">=22"

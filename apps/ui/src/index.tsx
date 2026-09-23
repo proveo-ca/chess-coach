@@ -1,4 +1,6 @@
-import { Route, Router } from "@solidjs/router";
+// SPEC: _spec/_plans/chess-ui-primitives.puml
+import { UiProvider } from "@chess-coach/ui-web/provider";
+import { A, Route, Router } from "@solidjs/router";
 /* @refresh reload */
 import { render } from "solid-js/web";
 
@@ -37,15 +39,17 @@ if (
 
 render(
   () => (
-    <Router base={base} root={App}>
-      <Route path="/" component={MenuScreen} />
-      <Route path="/selena" component={CoachScreen} />
-      <Route path="/analysis" component={AnalysisScreen} />
-      <Route path="/review" component={ReviewScreen} />
-      <Route path="/review/:id" component={ReviewScreen} />
-      <Route path="/lan" component={LanScreen} />
-      <Route path="/starchess" component={StarChessRedirect} />
-    </Router>
+    <UiProvider product="chess" Link={A}>
+      <Router base={base} root={App}>
+        <Route path="/" component={MenuScreen} />
+        <Route path="/selena" component={CoachScreen} />
+        <Route path="/analysis" component={AnalysisScreen} />
+        <Route path="/review" component={ReviewScreen} />
+        <Route path="/review/:id" component={ReviewScreen} />
+        <Route path="/lan" component={LanScreen} />
+        <Route path="/starchess" component={StarChessRedirect} />
+      </Router>
+    </UiProvider>
   ),
   root!,
 );

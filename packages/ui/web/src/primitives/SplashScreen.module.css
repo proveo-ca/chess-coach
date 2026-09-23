@@ -1,0 +1,101 @@
+.splash-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--bg-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  color: var(--text-color);
+}
+
+.splash-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  margin: 0 auto;
+}
+
+/* Wider column for content-heavy splashes (e.g. LanScreen's lobby checklist).
+   Tracks the checklist's own min(30rem, 92vw) sizing so it never overflows. */
+.splash-content--wide {
+  width: min(92vw, 33rem);
+  max-width: 33rem;
+}
+
+/* Full-bleed banner: 100vw child of a centered ~92vw flex column is already
+   viewport-centered — no left/translate breakout (that overshoots left). */
+@media (max-width: 719px) {
+  .splash-content > :global(.mobile-banner),
+  .splash-content--wide > :global(.mobile-banner) {
+    width: 100vw;
+    max-width: 100vw;
+    position: relative;
+    left: auto;
+    right: auto;
+    transform: none;
+    margin-bottom: 0.75rem;
+    box-sizing: border-box;
+    flex-shrink: 0;
+  }
+}
+
+.splash-avatar-wrapper {
+  grid-column: var(--splash-span, auto);
+  margin-block: var(--splash-avatar-space, 1.5rem);
+  margin-inline: auto;
+}
+
+.splash-title {
+  grid-column: var(--splash-span, auto);
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+/* Two-column menu splash — by **aspect**, not width alone: desktop, plus the
+   short-and-wide `dynamic` band (560×420), where one column would not fit the
+   height. Portrait mobile — any width below `--desktop` with room to stack —
+   keeps this flex column. `:has` keeps the loading / lobby splashes single. */
+@media (min-width: 720px), (max-width: 719px) and (min-width: 480px) and (max-height: 639px) {
+  .splash-content:has(:global(.menu-options)) {
+    --splash-span: 1 / -1;
+    --splash-avatar-space: 0 0.25rem;
+    --splash-gap: 0.5rem 1.5rem;
+    --splash-width: 34rem;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    /* dense: the right column's items come last in DOM order. */
+    grid-auto-flow: row dense;
+    align-content: start;
+    gap: var(--splash-gap);
+    width: min(92vw, var(--splash-width));
+    max-width: var(--splash-width);
+  }
+}
+
+@media (min-width: 720px) {
+  .splash-content:has(:global(.menu-options)) {
+    --splash-avatar-space: 1rem 0.5rem;
+    --splash-gap: 1rem 2.5rem;
+    --splash-width: 40rem;
+  }
+}
+
+/* Selena says the line in this band, so the heading stays for a11y only. */
+@media (max-width: 719px) and (min-width: 480px) and (max-height: 639px) {
+  .splash-content:has(:global(.menu-options)) .splash-title {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+}

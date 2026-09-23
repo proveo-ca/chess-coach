@@ -1,4 +1,5 @@
-// SPEC: _spec/apps/starchess/deployment.puml
+// SPEC: _spec/_plans/chess-ui-primitives.puml, _spec/apps/starchess/deployment.puml
+import { UiProvider } from "@chess-coach/ui-web/provider";
 /**
  * StarChess router entry — menu `/`, live `/single`, replays `/review` + `/review/:id`,
  * tutorial `/tutorial` · `/tutorial/:section` · `/tutorial/:section/:story`
@@ -6,7 +7,7 @@
  * Vite base is `/starchess/` → http://localhost:5175/starchess/tutorial/fog/king
  * Perf debug: `npm run dev:debug` · `?debug=perf` · localStorage starchess_debug=perf
  */
-import { Route, Router } from "@solidjs/router";
+import { A, Route, Router } from "@solidjs/router";
 import { render } from "solid-js/web";
 
 import { initPerfDebug } from "~/debug/perfMonitor";
@@ -26,19 +27,18 @@ if (!root) {
 
 render(
   () => (
-    <Router base="/starchess">
-      <Route path="/" component={MenuRoute} />
-      <Route path="/single" component={SingleScreen} />
-      <Route path="/review" component={ReviewScreen} />
-      <Route path="/review/:id" component={ReviewScreen} />
-      <Route path="/tutorial" component={TutorialScreen} />
-      <Route path="/tutorial/:section" component={TutorialScreen} />
-      <Route
-        path="/tutorial/:section/:story"
-        component={TutorialScreen}
-      />
-      <Route path="/*" component={MenuRoute} />
-    </Router>
+    <UiProvider product="starchess" Link={A}>
+      <Router base="/starchess">
+        <Route path="/" component={MenuRoute} />
+        <Route path="/single" component={SingleScreen} />
+        <Route path="/review" component={ReviewScreen} />
+        <Route path="/review/:id" component={ReviewScreen} />
+        <Route path="/tutorial" component={TutorialScreen} />
+        <Route path="/tutorial/:section" component={TutorialScreen} />
+        <Route path="/tutorial/:section/:story" component={TutorialScreen} />
+        <Route path="/*" component={MenuRoute} />
+      </Router>
+    </UiProvider>
   ),
   root,
 );

@@ -1,0 +1,16 @@
+{
+  "name": "ui-web-primitives",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "packages/ui/web/src",
+  "targets": {
+    "storybook": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm storybook",
+        "cwd": "packages/ui/web"
+      }
+    }
+  },
+  "tags": ["type:ui", "scope:shared"]
+}

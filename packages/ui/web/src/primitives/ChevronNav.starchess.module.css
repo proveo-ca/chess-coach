@@ -1,0 +1,56 @@
+.nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0.35rem 0.15rem;
+  border: none;
+  background: transparent;
+  color: var(--text-color, #e8eaed);
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.nav:hover {
+  color: var(--sc-menu-neon, #7dff6a);
+}
+
+.nav:focus-visible {
+  outline: 2px solid var(--sc-guide-green, #3ecf8e);
+  outline-offset: 2px;
+  border-radius: 0.25rem;
+}
+
+.chevron {
+  font-size: 1.25em;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--sc-guide-green, #3ecf8e);
+}
+
+.label {
+  line-height: 1;
+}
+
+.back {
+  justify-content: flex-start;
+}
+
+.forward {
+  justify-content: flex-end;
+}
+
+@media (max-width: 719px) {
+  .nav {
+    min-width: 40px;
+    min-height: 40px;
+    box-sizing: border-box;
+    padding: 0.55rem 0.5rem;
+  }
+}

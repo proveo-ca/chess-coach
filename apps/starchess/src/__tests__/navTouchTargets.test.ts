@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 const SRC = join(import.meta.dirname, "..");
-const UI = join(SRC, "..", "..", "ui", "src");
+const SHARED = join(SRC, "..", "..", "..", "packages", "ui", "web", "src");
 
 const css = (path: string): string => readFileSync(path, "utf8");
 
@@ -52,8 +52,8 @@ const desktopCss = (text: string): string => {
 describe("nav touch targets (static CSS contract)", () => {
   it("ChevronNav clears 40×40px on mobile in both apps (kept in sync)", () => {
     for (const file of [
-      join(SRC, "components/primitives/ChevronNav.module.css"),
-      join(UI, "components/primitives/ChevronNav.module.css"),
+      join(SHARED, "primitives/ChevronNav.starchess.module.css"),
+      join(SHARED, "primitives/ChevronNav.chess.module.css"),
     ]) {
       const text = css(file);
       expect(mediaHas(text, "(max-width: 719px)", ".nav"), `${file} mobile 40px rule`).toBe(true);
@@ -69,12 +69,12 @@ describe("nav touch targets (static CSS contract)", () => {
   });
 
   it("review turn arrows + list pager clear 40×40px on mobile", () => {
-    const turn = css(join(SRC, "components/atoms/ReviewTurnNav.module.css"));
+    const turn = css(join(SHARED, "atoms/ReviewTurnNav.module.css"));
     expect(mediaHas(turn, "(max-width: 719px)", ".btn"), "turn .btn rule").toBe(true);
     expect(mediaHas(turn, "(max-width: 719px)", "min-height: 40px"), "turn min-height").toBe(true);
     expect(mediaHas(turn, "(max-width: 719px)", "min-width: 40px"), "turn min-width").toBe(true);
 
-    const filters = css(join(SRC, "components/atoms/MatchHistoryFilters.module.css"));
+    const filters = css(join(SHARED, "atoms/MatchHistoryFilters.module.css"));
     expect(mediaHas(filters, "(max-width: 719px)", ".page-btn"), "pager rule").toBe(true);
     expect(mediaHas(filters, "(max-width: 719px)", "min-height: 40px"), "pager min-height").toBe(
       true,
@@ -85,7 +85,7 @@ describe("nav touch targets (static CSS contract)", () => {
   });
 
   it("tutorial breadcrumb crumbs clear 40px tall on mobile", () => {
-    const text = css(join(SRC, "components/primitives/Breadcrumb.module.css"));
+    const text = css(join(SHARED, "primitives/Breadcrumb.module.css"));
     expect(mediaHas(text, "(max-width: 719px)", ".crumb"), "crumb rule").toBe(true);
     expect(mediaHas(text, "(max-width: 719px)", "min-height: 40px"), "crumb min-height").toBe(
       true,
@@ -100,11 +100,11 @@ describe("nav touch targets (static CSS contract)", () => {
 
   it("desktop silhouettes stay tight (no 40px floor outside mobile)", () => {
     const files = [
-      join(SRC, "components/primitives/ChevronNav.module.css"),
-      join(UI, "components/primitives/ChevronNav.module.css"),
-      join(SRC, "components/atoms/ReviewTurnNav.module.css"),
-      join(SRC, "components/atoms/MatchHistoryFilters.module.css"),
-      join(SRC, "components/primitives/Breadcrumb.module.css"),
+      join(SHARED, "primitives/ChevronNav.starchess.module.css"),
+      join(SHARED, "primitives/ChevronNav.chess.module.css"),
+      join(SHARED, "atoms/ReviewTurnNav.module.css"),
+      join(SHARED, "atoms/MatchHistoryFilters.module.css"),
+      join(SHARED, "primitives/Breadcrumb.module.css"),
     ];
     for (const file of files) {
       const base = desktopCss(css(file));
@@ -115,11 +115,11 @@ describe("nav touch targets (static CSS contract)", () => {
 
   it("both ChevronNav copies carry the identical mobile rule", () => {
     const a = mediaBlocks(
-      css(join(SRC, "components/primitives/ChevronNav.module.css")),
+      css(join(SHARED, "primitives/ChevronNav.starchess.module.css")),
       "(max-width: 719px)",
     ).join("\n");
     const b = mediaBlocks(
-      css(join(UI, "components/primitives/ChevronNav.module.css")),
+      css(join(SHARED, "primitives/ChevronNav.chess.module.css")),
       "(max-width: 719px)",
     ).join("\n");
     expect(a.length, "starchess has a 719 block").toBeGreaterThan(0);
@@ -127,11 +127,11 @@ describe("nav touch targets (static CSS contract)", () => {
   });
   it("touched stylesheets never select via data-testid (css-layout contract)", () => {
     const files = [
-      join(SRC, "components/primitives/ChevronNav.module.css"),
-      join(UI, "components/primitives/ChevronNav.module.css"),
-      join(SRC, "components/atoms/ReviewTurnNav.module.css"),
-      join(SRC, "components/atoms/MatchHistoryFilters.module.css"),
-      join(SRC, "components/primitives/Breadcrumb.module.css"),
+      join(SHARED, "primitives/ChevronNav.starchess.module.css"),
+      join(SHARED, "primitives/ChevronNav.chess.module.css"),
+      join(SHARED, "atoms/ReviewTurnNav.module.css"),
+      join(SHARED, "atoms/MatchHistoryFilters.module.css"),
+      join(SHARED, "primitives/Breadcrumb.module.css"),
       join(SRC, "presentation/hud/components/ResourceBar.module.css"),
       join(SRC, "app/BaseScreen.module.css"),
       join(SRC, "stories/Navigation.stories.module.css"),

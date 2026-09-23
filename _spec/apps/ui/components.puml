@@ -395,6 +395,12 @@ package "Components  [src/components/]" {
 
   ' Atoms = single responsibility wired to state (store/hook/effect), minimal JSX.
   package "Atoms  [components/atoms/]" {
+    note as SharedWebAtoms
+      Visual atoms and primitive implementations live in
+      packages/ui/web. App paths retain compatibility exports.
+      Store-bound atoms, assets and navigation policy stay here.
+      UiProvider supplies the chess skin and router Link.
+    end note
     rectangle "ChessSquare"     as ChessSquare
     rectangle "ChessBoardArrow" as ChessBoardArrow
     rectangle "CapturedPieces"  as CapturedPieces
@@ -461,7 +467,7 @@ package "Components  [src/components/]" {
   }
 
   ' Primitives = presentational, props-driven shared kit (was components/common/).
-  package "Primitives  [components/primitives/]" {
+  package "Primitives  [packages/ui/web; app compatibility exports]" {
     rectangle "Button / IconButton / MenuButton" as Buttons
     rectangle "SplitButton"        as SplitButton
     note right of SplitButton
@@ -799,7 +805,7 @@ GameShare    ..> PolyglotZobrist : id re-derive on decode
 ' LAYOUT
 ' ══════════════════════════════════════════════════════════════
 "Features  [components/features/]" -[hidden]down- "Atoms  [components/atoms/]"
-"Atoms  [components/atoms/]" -[hidden]down- "Primitives  [components/primitives/]"
+"Atoms  [components/atoms/]" -[hidden]down- "Primitives  [packages/ui/web; app compatibility exports]"
 
 "Screens  [src/screens/]" -[hidden] "Capabilities  [capabilitiesStore.ts]"
 "Capabilities  [capabilitiesStore.ts]" -[hidden]down-- "Components  [src/components/]"
