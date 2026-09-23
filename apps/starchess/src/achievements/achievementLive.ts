@@ -93,6 +93,11 @@ const loadCareer = (): CareerFile => {
   }
 };
 
+export const careerAchievementLevels = (): { beat: number; beat100: number } => {
+  const career = loadCareer();
+  return { beat: career.beat, beat100: career.beat100 };
+};
+
 const saveCareer = (career: CareerFile): void => {
   try {
     localStorage?.setItem(CAREER_KEY, JSON.stringify(career));

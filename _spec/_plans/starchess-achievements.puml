@@ -31,20 +31,21 @@ skinparam noteTextAlignment left
 '      Continue then opens MatchResultModal (Another Game / Replay).
 '      Zero new ids skips straight to MatchResultModal.
 '
-' The gallery is one card per shortId (12 families). Each card is
-' max-width 12rem and holds a 60x60 SVG, a title (max 25), and a
-' description (max 75). Each glyph is public/achievements/<shortId>.svg.
-' The material paints that file. Not a piece under public/pieces.
+' The gallery is 12 cards, one per shortId. Desktop lays them
+' three across, using the desktop width. An obtained card reads
+' "Obtained (Level N)" and fills N of 5 bars. Its glyph uses that
+' level's material. A missing card is dimmed, bars empty, and is
+' not a link. Not a piece under public/pieces.
 '
-' Clicking an unlocked card navigates to /review/:id for the witness
-' game and closes the modal. A locked card is visible, dimmed, and
-' is not a link. The card shows the title and the description.
+' Clicking an obtained card navigates to /review/:id for the witness
+' game and closes the modal. A higher level replaces the lower id.
+' The card shows that highest level, not a row per level.
 '
-' One AchievementsModal. Gallery mode: every card, NeonModal close,
-' contentClass width min(40rem, calc(100vw - 2rem)) so auto-fill can
-' place 12rem cards. Do not widen .panel--md / .panel--lg. Fresh mode:
-' only the new cards, dismissible false, no overlay close, one
-' Continue button (variant neon). Fresh title: New achievements.
+' One AchievementsModal. Gallery mode: 12 cards, NeonModal close.
+' On desktop the sheet is min(56rem, calc(100vw - 4rem)). Do not
+' widen .panel--md / .panel--lg. Fresh mode: only the new cards,
+' dismissible false, no overlay close, one Continue button
+' (variant neon). Fresh title: New achievements.
 '
 ' ── TYPE ───────────────────────────────────────────────────────────────────
 ' Achievement.id = "<level>-<type>-<shortId>"
@@ -155,11 +156,11 @@ note right of BTN
 end note
 
 note bottom of GAL
-  **One card per shortId. Icon is
-  60 by 60, card at most 12rem.**
-  Title max 25, description max 75.
-  "Beat the Adjutant" stays put.
-  The level names who fell.
+  **Twelve cards, three across
+  on desktop.** Obtained reads
+  "Obtained (Level N)" and fills
+  N of 5 bars. Missing stays dim
+  and does not open a game.
 end note
 
 note bottom of NEW

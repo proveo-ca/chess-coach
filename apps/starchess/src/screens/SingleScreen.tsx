@@ -43,6 +43,7 @@ import { createMatchStateFromScfen } from "~/app/matchReducer";
 import { BaseScreen } from "~/app/BaseScreen.tsx";
 import { MatchResultModal } from "~/components/features/MatchResultModal";
 import { NewAchievementsModal } from "~/components/features/NewAchievementsModal";
+import { noteAchievementUnlocks } from "~/store/achievementStore";
 import { LiveMatchShell } from "~/screens/LiveMatchShell";
 import { STAR_STARTING_SCFEN } from "~/app/seeds";
 import {
@@ -367,6 +368,7 @@ export const SingleScreen: Component = () => {
   ) => {
     setFinishedId(id);
     setResult(matchResult);
+    noteAchievementUnlocks(id, fresh);
     if (fresh.length > 0) {
       setEarned([...fresh]);
       setEarnedOpen(true);

@@ -17,6 +17,7 @@ import {
   type Component,
 } from "solid-js";
 
+import { AchievementsModal } from "~/components/features/AchievementsModal";
 import { MatchHistoryFilters } from "~/components/atoms/MatchHistoryFilters";
 import { MobileBanner } from "~/components/atoms/MobileBanner";
 import { Screen } from "~/components/primitives/Screen";
@@ -142,6 +143,7 @@ const ArenaLibrary: Component = () => {
   const [importMessage, setImportMessage] = createSignal<string | null>(null);
   const [importError, setImportError] = createSignal<string | null>(null);
   const [dragOver, setDragOver] = createSignal(false);
+  const [galleryOpen, setGalleryOpen] = createSignal(false);
   const historyCount = createMemo(() => matchHistory().length);
 
   const handleExport = () => {
@@ -306,6 +308,7 @@ const ArenaLibrary: Component = () => {
   };
 
   return (
+    <>
     <div
       class={styles.arenaLibrary}
       data-testid="arena-library"
@@ -345,6 +348,14 @@ const ArenaLibrary: Component = () => {
           onClick={handleExport}
         >
           Export history JSON
+        </button>
+        <button
+          type="button"
+          class={styles.arenaFileButton}
+          data-testid="achievements-open"
+          onClick={() => setGalleryOpen(true)}
+        >
+          Achievements
         </button>
         <Show when={importMessage()}>
           <span class={styles.arenaSuccess} data-testid="arena-import-success">
@@ -417,6 +428,15 @@ const ArenaLibrary: Component = () => {
         </Show>
       </Show>
     </div>
+    <AchievementsModal
+      open={galleryOpen()}
+      onClose={() => setGalleryOpen(false)}
+      onOpenGame={(id) => {
+        setGalleryOpen(false);
+        navigate(`/review/${id}`);
+      }}
+    />
+    </>
   );
 };
 
