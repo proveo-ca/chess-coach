@@ -1,2 +1,4 @@
 <!-- Eliminate BattleShips using a Mecha in a game -->
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" width="60" height="60"><circle cx="30" cy="30" r="16" fill="none" stroke="#000" stroke-width="4"/><path fill="#000" d="M28 4h4v14h-4zm0 38h4v14h-4zM4 28h14v4H4zm38 0h14v4H42z"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" width="60" height="60" fill="#000">
+  <path fill-rule="evenodd" d="M32 6V12A18 18 0 0 1 48 28H54V32H48A18 18 0 0 1 32 48V54H28V48A18 18 0 0 1 12 32H6V28H12A18 18 0 0 1 28 12V6ZM28 16A14 14 0 0 0 16 28H22V32H16A14 14 0 0 0 28 44V38H32V44A14 14 0 0 0 44 32H38V28H44A14 14 0 0 0 32 16V22H28Z"/>
+</svg>

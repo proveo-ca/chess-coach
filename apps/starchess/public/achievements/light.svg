@@ -1,14 +1,5 @@
 <!-- Capture enemy units at a 3x3 radius around your Command Center -->
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" width="60" height="60">
-  <g fill="#000">
-    <circle cx="30" cy="30" r="10"/>
-    <polygon points="46,33 46,27 56,27 56,33"/>
-    <polygon points="33,46 27,46 27,56 33,56"/>
-    <polygon points="14,27 14,33 4,33 4,27"/>
-    <polygon points="33,14 27,14 27,4 33,4"/>
-    <polygon points="39.19,43.44 43.44,39.19 50.51,46.26 46.26,50.51"/>
-    <polygon points="16.56,39.19 20.81,43.44 13.74,50.51 9.49,46.26"/>
-    <polygon points="20.81,16.56 16.56,20.81 9.49,13.74 13.74,9.49"/>
-    <polygon points="43.44,20.81 39.19,16.56 46.26,9.49 50.51,13.74"/>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" width="60" height="60" fill="#000">
+  <circle cx="30" cy="30" r="10"/>
+  <path d="M27 6H33V15H27ZM27 45H33V54H27ZM6 27H15V33H6ZM45 27H54V33H45ZM11 15L15 11L22 18L18 22ZM38 42L42 38L49 45L45 49ZM11 45L18 38L22 42L15 49ZM38 18L45 11L49 15L42 22Z"/>
 </svg>

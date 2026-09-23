@@ -1,2 +1,5 @@
 <!-- A Marine intercepts an attack and dies -->
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" width="60" height="60"><circle cx="30" cy="28" r="14" fill="#000"/><path fill="#000" d="M18 8h8l4 12 4-12h8L34 24H26z"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" width="60" height="60" fill="#000">
+  <path d="M11 6H23L29 20C24 20 20 22 17 25ZM37 6H49L43 25C40 22 36 20 31 20Z"/>
+  <path fill-rule="evenodd" d="M46 38A16 16 0 1 1 14 38A16 16 0 1 1 46 38ZM30 27L27 34L20 35L25 40L24 47L30 43L36 47L35 40L40 35L33 34Z"/>
+</svg>

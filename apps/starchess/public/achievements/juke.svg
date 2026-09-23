@@ -1,2 +1,4 @@
 <!-- Use the BattleShip's jump in consecutive turns -->
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" width="60" height="60"><path fill="#000" d="M8 44c16-4 20-28 36-32l-2 10 12-14-14 2 8-2C28 12 20 36 6 42z"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" width="60" height="60" fill="#000">
+  <path d="M6 29L15 23L25 36C33 25 43 14 55 8C45 20 35 34 27 51Q26 53 24 51Z"/>
+</svg>

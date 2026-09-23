@@ -1,7 +1,4 @@
 <!-- Beat the Adjutant 100 times -->
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" width="60" height="60">
-  <g fill="#000">
-    <path d="M11 48C10 36 10 26 12 19C10 15 9 10 14 7C19 3 28 2 35 5C37 7 36 13 35 17C34 21 38 23 43 25C52 20 59 26 59 37C59 47 54 55 43 57C30 59 17 57 12 52C9 49 10 48 11 48Z"/>
-    <ellipse cx="36" cy="9" rx="6.2" ry="4.4" transform="rotate(-16 36 9)"/>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" width="60" height="60" fill="#000">
+  <path fill-rule="evenodd" d="M11 8Q11 5 14 5H26Q29 5 30 8L32 15Q33 18 30 20L26 22L28 31C31 25 37 23 43 25C51 26 55 33 55 42C55 51 46 55 33 55H22C10 55 5 49 5 41C5 33 8 25 11 19ZM13 23C10 30 9 36 9 41C9 47 14 51 22 51H27V47H22C16 47 13 45 13 41C13 36 15 29 17 24ZM30 33L33 36C37 31 43 31 47 36L50 33C44 26 36 26 30 33ZM31 44V48C39 49 47 46 50 40L47 38C44 43 39 45 31 44ZM15 11V15H26V11Z"/>
 </svg>
