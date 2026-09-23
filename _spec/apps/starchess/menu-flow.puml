@@ -53,7 +53,10 @@ RESULT ARROW_MAIN REV : Replay\nreplace /review/:id
 note bottom
   Multiplayer **MenuAnchor** stays ``disabled`` + ``Coming Soon``.
   **Opponent** picks the Adjutant script: ``naive`` (engine rules only) or
-  ``strategic`` (engine rules + vision + tactics). It rides the URL as
+  ``strategic`` (engine rules + vision + tactics). The Single Player modal
+  restores the last choice from ``starchess_setup`` — a fresh open shows that
+  script, not a hardcoded naive default. That key is not Coach ``difficulty``.
+  The choice rides the URL as
   ``?opponent=``, so refresh-resume and **Another Game** keep the choice, and
   an unknown value falls back to ``naive``. For ``strategic`` the screen folds
   ``ccIntel`` / ``kvs`` forward once per turn through core's

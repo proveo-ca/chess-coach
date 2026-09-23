@@ -2,17 +2,21 @@
 !include ../themes/proveo.puml
 skinparam noteTextAlignment left
 ' SPEC: _spec/_plans/chess-save-difficulty.puml
-' purpose: Coach difficulty already persists — StarChess opponent is not this enum
-' status: OUTDATED — shipped for Coach; product split
+' purpose: Coach difficulty stays in its key; the Single Player modal
+'          restores the last Adjutant script from its own key
+' status: Coach elo shipped; StarChess modal restore is starchess_setup
 ' covers: apps/ui/src/store/settingsStore.ts
+'         apps/starchess/src/store/newGameSetupStore.ts
+'         apps/starchess/src/components/features/NewGamePanel.tsx
 ' live spec: _spec/apps/ui/entities.puml
+'            _spec/apps/starchess/menu-flow.puml
 ' Notes are capped at 5 lines x 50 columns; one idea per anchor.
 '
 ' Coach ""difficulty"" (intermediate / advanced / expert) lives in
-' ""chess_coach_settings_state"" via ""createPersistedStore"". StarChess
-' opponent script is naive|strategic on the URL + session blob, not a
-' second elo picker. NewGamePanel resetting to naive is not this item.
-title OUTDATED — Coach difficulty already restores;\ndo not add a parallel StarChess elo key
+' ""chess_coach_settings_state"" via ""createPersistedStore"". The Single
+' Player modal's Opponent select is naive|strategic in ""starchess_setup"".
+' Do not write that script into ""settingsStore.difficulty"".
+title Coach elo stays in its key;\nStarChess modal restores its script
 
 component "settingsStore.difficulty" as PICK <<app>>
 database "chess_coach_settings_state" as KEY <<db>>
@@ -32,16 +36,19 @@ note bottom of KEY
 end note
 
 note right of OPP
-  **Do not store Adjutant script in
-  the Coach difficulty key.** Resume
-  / rematch already copy ""?opponent="".
+  **The Single Player modal reads
+  ""starchess_setup"", not Coach
+  difficulty.** A fresh open shows
+  the last Adjutant script. The
+  match URL still uses ""?opponent="".
 end note
 
 legend bottom
-  **Do not implement this file.**
+  **Coach elo stays in its key.**
   ==
-  Group analytics on
-  ""StarChessGameRecord.opponent"",
-  not on Coach elo.
+  The Opponent select restores from
+  ""starchess_setup"". Do not write
+  naive|strategic into
+  ""settingsStore.difficulty"".
 end legend
 @enduml

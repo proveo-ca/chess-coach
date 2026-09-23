@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/starchess/menu-flow.puml, _spec/apps/starchess/screens.puml, _spec/apps/starchess/deployment.puml, _spec/apps/starchess/architecture/screen-entities.puml, _spec/_plans/forfeit-as-loss.puml
+// SPEC: _spec/apps/starchess/menu-flow.puml, _spec/apps/starchess/screens.puml, _spec/apps/starchess/deployment.puml, _spec/apps/starchess/architecture/screen-entities.puml, _spec/_plans/forfeit-as-loss.puml, _spec/_plans/starchess-achievements.puml
 /**
  * Single-player match — `/starchess/single?map=&team=` (+ optional `scfen=`).
  * Adjutant script always plays the opposite of `team` (White or Black).
@@ -31,10 +31,19 @@ import type { StarChessColor } from "@chess-coach/starchess-core";
 import { Show, createEffect, createSignal, onCleanup, type Component } from "solid-js";
 
 import { browserLocation, readScfenQuery } from "~/adapters/browser";
+import {
+  ensureAchievementLive,
+  finalizeAchievementLive,
+  noteSettledPlies,
+  achievementCursor,
+  resetAchievementLive,
+} from "~/achievements/achievementLive";
 import { createMatchStore, MatchStoreProvider, useMatchStore } from "~/app/MatchStoreContext";
 import { createMatchStateFromScfen } from "~/app/matchReducer";
 import { BaseScreen } from "~/app/BaseScreen.tsx";
 import { MatchResultModal } from "~/components/features/MatchResultModal";
+import { NewAchievementsModal } from "~/components/features/NewAchievementsModal";
+import { noteAchievementUnlocks } from "~/store/achievementStore";
 import { LiveMatchShell } from "~/screens/LiveMatchShell";
 import { STAR_STARTING_SCFEN } from "~/app/seeds";
 import {
@@ -51,6 +60,7 @@ import {
 } from "~/store/matchSessionStore";
 import { playerName } from "~/store/settingsStore";
 import type { BoardVariant } from "~/types/board";
+import type { AchievementBubble } from "~/types/achievements";
 import type { StarChessMatchResult } from "~/types/review";
 import { isAdjutantKind, type AdjutantKind } from "~/types/newGame";
 import { liveAdjutantMatchTitle } from "~/utils/matchTitle";
@@ -124,7 +134,7 @@ const MatchInner: Component<{
   matchId: string;
   startedAt: string;
   onExitToMenu: () => void;
-  onMatchFinished: (id: string, result: StarChessMatchResult) => void;
+  onMatchFinished: (id: string, result: StarChessMatchResult, earned: readonly AchievementBubble[]) => void;
 }> = (props) => {
   const store = useMatchStore();
   const opponentColor = (): StarChessColor => (props.team === "w" ? "b" : "w");
@@ -195,6 +205,33 @@ const MatchInner: Component<{
   });
 
   // Terminal → persist DualNav package, then offer rematch / replay.
+  // Achievement folds run first (declared above) so game end only finalizes.
+  createEffect(() => {
+    const shell = store.shell();
+    const opening = shell.settledSnapshots[0];
+    if (!opening) return;
+    ensureAchievementLive(props.matchId, props.team, opening);
+    const settled = shell.settledResolves;
+    const cursor = achievementCursor();
+    if (settled.length <= cursor) return;
+    noteSettledPlies(
+      settled.slice(cursor).map((esr, offset) => ({
+        turn: esr.next.turn,
+        placement: esr.next.placement,
+        beforePlacement: shell.settledSnapshots[cursor + offset]?.placement,
+        siegedRooks: esr.next.siegedRooks,
+        kingLives: esr.next.kingLives,
+        mines: esr.next.mines,
+        events: esr.events,
+        attacks: esr.resolved?.attacks,
+        moves: esr.resolved?.moves,
+        mineTriggers: esr.resolved?.mineTriggers,
+        promotions: esr.resolved?.promotions,
+      })),
+    );
+  });
+
+  // Terminal → persist DualNav package, then offer rematch / replay.
   createEffect(() => {
     const s = store.state();
     if (s.phase !== "gameOver" || historySaved) return;
@@ -208,14 +245,15 @@ const MatchInner: Component<{
     });
     if (!record || !result) return;
     historySaved = true;
+    const earned = finalizeAchievementLive(result, props.opponent);
     addMatchRecord(record);
     clearMatchSession();
-    props.onMatchFinished(props.matchId, result);
+    props.onMatchFinished(props.matchId, result, earned);
   });
 
   onCleanup(() => {
-    // Leaving via Home / route change — drop the resume blob.
     clearMatchSession();
+    resetAchievementLive();
   });
 
   return (
@@ -251,7 +289,7 @@ const LiveMatchSession: Component<{
   team: StarChessColor;
   opponent: AdjutantKind;
   onExitToMenu: () => void;
-  onMatchFinished: (id: string, result: StarChessMatchResult) => void;
+  onMatchFinished: (id: string, result: StarChessMatchResult, earned: readonly AchievementBubble[]) => void;
 }> = (props) => {
   const boot = bootstrapMatch(props.map, props.team, props.opponent, {
     rematch: props.epoch > 0,
@@ -304,6 +342,8 @@ export const SingleScreen: Component = () => {
   const [params] = useSearchParams();
   const [matchEpoch, setMatchEpoch] = createSignal(0);
   const [resultOpen, setResultOpen] = createSignal(false);
+  const [earnedOpen, setEarnedOpen] = createSignal(false);
+  const [earned, setEarned] = createSignal<AchievementBubble[]>([]);
   const [result, setResult] = createSignal<StarChessMatchResult | null>(null);
   const [finishedId, setFinishedId] = createSignal<string | null>(null);
 
@@ -321,14 +361,26 @@ export const SingleScreen: Component = () => {
     navigate("/");
   };
 
-  const onMatchFinished = (id: string, matchResult: StarChessMatchResult) => {
+  const onMatchFinished = (
+    id: string,
+    matchResult: StarChessMatchResult,
+    fresh: readonly AchievementBubble[],
+  ) => {
     setFinishedId(id);
     setResult(matchResult);
+    noteAchievementUnlocks(id, fresh);
+    if (fresh.length > 0) {
+      setEarned([...fresh]);
+      setEarnedOpen(true);
+      return;
+    }
     setResultOpen(true);
   };
 
   const onAnotherGame = () => {
     setResultOpen(false);
+    setEarnedOpen(false);
+    setEarned([]);
     setResult(null);
     setFinishedId(null);
     clearMatchSession();
@@ -345,6 +397,7 @@ export const SingleScreen: Component = () => {
     const id = finishedId();
     if (!id) return;
     setResultOpen(false);
+    setEarnedOpen(false);
     navigate(`/review/${id}`, { replace: true });
   };
 
@@ -365,6 +418,14 @@ export const SingleScreen: Component = () => {
           );
         }}
       </Show>
+      <NewAchievementsModal
+        open={earnedOpen()}
+        earned={earned()}
+        onContinue={() => {
+          setEarnedOpen(false);
+          setResultOpen(true);
+        }}
+      />
       <MatchResultModal
         open={resultOpen()}
         result={result()}

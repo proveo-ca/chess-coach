@@ -19,6 +19,7 @@ package "remaining — StarChess" as SC <<app>> {
   component "leave writes a loss\nforfeit-as-loss.puml" as FORF <<app>>
   component "file copy of history\ngame-export-localstorage.puml" as EX <<app>>
   component "read-model tallies\nchess-analytics.puml" as AN <<app>>
+  component "trophy gallery\nstarchess-achievements.puml" as ACH <<app>>
 }
 
 package "remaining — Coach Android" as ANDR <<host>> {
@@ -42,8 +43,8 @@ P2P ARROW_MAIN GO : " ""ChessNative"" / tsnet "
 note bottom of SC
   **StarChess remaining work is outcome,
   then a file copy, then a read model.**
-  Engine terminals already live in
-  ""scOutcome""; leave is still a void.
+  Achievements are a parallel slice.
+  Leave is still a void today.
 end note
 
 note bottom of ANDR
@@ -70,6 +71,7 @@ legend bottom
   **StarChess:** forfeit-as-loss → export copy of
   ""starchess_match_history"" → analytics tallies
   over ""StarChessGameRecord.result"".
+  Achievements can land beside that chain.
   ==
   **Do not:** invent siege lines, a turn-21 prep
   levy, a turn-45 draw rule, or a sandbox cluster.

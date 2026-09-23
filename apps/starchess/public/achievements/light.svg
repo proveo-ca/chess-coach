@@ -1,0 +1,5 @@
+<!-- Capture enemy units at a 3x3 radius around your Command Center -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" width="60" height="60" fill="#000">
+  <circle cx="30" cy="30" r="10"/>
+  <path d="M27 6H33V15H27ZM27 45H33V54H27ZM6 27H15V33H6ZM45 27H54V33H45ZM11 15L15 11L22 18L18 22ZM38 42L42 38L49 45L45 49ZM11 45L18 38L22 42L15 49ZM38 18L45 11L49 15L42 22Z"/>
+</svg>
