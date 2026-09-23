@@ -36,7 +36,7 @@ import { bindTimeline } from "~/presentation/timeline/timelineCommitGate";
 import {
   playResolveWave,
 } from "~/presentation/timeline/playResolveWave";
-import { TURN_BONUS_BROADCAST_MS, turnBonusFor } from "~/app/turnBonusPolicy";
+import { turnBonusFor } from "~/app/turnBonusPolicy";
 import type { ResolveWaveId } from "~/types/tutorial";
 
 export type { MatchStore };
@@ -114,7 +114,6 @@ export const createMatchStore = (opts?: {
   >(null);
   let cancelTimeline: (() => void) | null = null;
   let cancelTimer: (() => void) | null = null;
-  let cancelBonusDelay: (() => void) | null = null;
   let cancelReviewTurn: (() => void) | null = null;
   let reviewBusy = false;
   /** Settled index when the in-flight one-arrow turn began. */
@@ -155,18 +154,13 @@ export const createMatchStore = (opts?: {
     cancelTimeline = null;
     cancelTimer?.();
     cancelTimer = null;
-    cancelBonusDelay?.();
-    cancelBonusDelay = null;
     clearReviewIntent();
     dispatch({ type: "CANCEL_EFFECTS" });
   };
 
   const dismissTurnBonus = () => {
-    cancelBonusDelay?.();
-    cancelBonusDelay = null;
     if (!state().turnBonus) return;
     dispatch({ type: "HIDE_TURN_BONUS" });
-    armTimer();
   };
 
   const armTimer = () => {
@@ -179,16 +173,9 @@ export const createMatchStore = (opts?: {
       return;
     }
     if (turnBonusesEnabled) {
-      if (s.turnBonus) return;
       const bonus = turnBonusFor(s.liveSnapshot.turn);
       if (bonus && s.lastAnnouncedBonusTurn < bonus.turn) {
         dispatch({ type: "SHOW_TURN_BONUS", bonus });
-        cancelBonusDelay?.();
-        cancelBonusDelay = scheduler.delay(TURN_BONUS_BROADCAST_MS, () => {
-          cancelBonusDelay = null;
-          dismissTurnBonus();
-        });
-        return;
       }
     }
     const timeoutMs = turnTimeoutMsForTurn(s.liveSnapshot.turn);
@@ -236,7 +223,6 @@ export const createMatchStore = (opts?: {
     cancelTimer = null;
     const before = state();
     if (before.phase !== "planning" && before.phase !== "targeting") return;
-    if (before.turnBonus) return;
     // The clock must not pick a BattleShip while the promotion modal is open.
     // A click on Tank would otherwise lose the race and resolve as queen.
     if (reason === "timeout" && before.pendingPromotion) {

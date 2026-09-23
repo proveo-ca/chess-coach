@@ -3,6 +3,7 @@ import { expect, test } from "@playwright/test";
 import {
   clearStorage,
   gotoScfen,
+  settledPiece,
   startVfxWatch,
   waitForVfxIdle,
 } from "./vfxHarness";
@@ -98,9 +99,7 @@ test.describe("VFX · crush compose", () => {
     expect(watch.deployPieces).toContain("p");
 
     // Settled: Marine holds d1, the knight is gone.
-    await expect(
-      page.locator("[data-square='d1'] img[alt='w p']"),
-    ).toBeVisible({ timeout: 15_000 });
-    await expect(page.locator("[data-square='d1'] img[alt='b n']")).toHaveCount(0);
+    await expect(settledPiece(page, "d1", "w p")).toBeVisible({ timeout: 15_000 });
+    await expect(settledPiece(page, "d1", "b n")).toHaveCount(0);
   });
 });

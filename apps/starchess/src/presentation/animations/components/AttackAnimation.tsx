@@ -1,5 +1,5 @@
 // SPEC: _spec/apps/starchess/architecture/board-entities.puml
-import { For, Show, createMemo, type Component, type JSX } from "solid-js";
+import { For, Show, createMemo, untrack, type Component, type JSX } from "solid-js";
 import type { Square } from "chess.js";
 
 import {
@@ -60,20 +60,25 @@ const BoardFx: Component<BoardFxProps> = (props) => (
   </div>
 );
 
+/**
+ * Built once per cue id: a re-emitted cue object (e.g. the king's `damage`
+ * flipping at impact) must update props in place — rebuilding the hull
+ * restarts every CSS timeline and the attack plays twice.
+ */
 const attackNode = (
-  cue: AttackCue,
-  opts?: { specialUsed?: boolean; charon?: boolean },
+  live: () => AttackCue,
+  opts: { specialUsed: () => boolean; charon: () => boolean },
 ): JSX.Element => {
+  const cue = untrack(live);
   const vec = vecBetween(cue.from, cue.to);
   const deg = screenAngleDeg(vec);
   const face = attackFaceFor(cue.piece, vec);
-  const specialUsed = !!opts?.specialUsed;
-  const charon = !!opts?.charon;
+  const charon = opts.charon;
   // Charon pods stay up whenever this unit spent gas this turn (U: / absorb).
-  const armed = specialUsed || charon;
+  const armed = () => opts.specialUsed() || charon();
   const faceClass = () => ({
     [styles.pieceFace]: true,
-    ["sc-special-used"]: specialUsed,
+    ["sc-special-used"]: opts.specialUsed(),
   });
   switch (cue.piece) {
     case "p":
@@ -98,10 +103,10 @@ const attackNode = (
             face={face}
             gunDeg={deg}
             /* Charon volley: idle gatling faces so shoulder pods stay readable. */
-            aiming={!charon}
-            armed={armed}
-            launcherDeg={charon ? deg : undefined}
-            launcherCapsVisible={!charon}
+            aiming={!charon()}
+            armed={armed()}
+            launcherDeg={charon() ? deg : undefined}
+            launcherCapsVisible={!charon()}
           />
         </div>
       );
@@ -111,7 +116,7 @@ const attackNode = (
           <InlineRook
             color={cue.color}
             aimDeg={screenAimDeg(true, deg, ROOK_REST_AIM_DEG)}
-            mode={cue.rookMode ?? rookModeAt(cue.from)}
+            mode={live().rookMode ?? rookModeAt(cue.from)}
           />
         </div>
       );
@@ -128,8 +133,8 @@ const attackNode = (
           <InlineKing
             color={cue.color}
             aimDeg={screenAimDeg(true, deg, KING_REST_AIM_DEG)}
-            damage={cue.damage}
-            seed={cue.seed}
+            damage={live().damage}
+            seed={live().seed}
           />
         </div>
       );
@@ -369,9 +374,9 @@ export const AttackAnimation: Component<AttackAnimationProps> = (props) => {
                   }
                 >
                   <div class={styles.aimWrap} style={queenAimWrapStyle(cue())}>
-                    {attackNode(cue(), {
-                      specialUsed: hullUsed(cue(), anim()),
-                      charon: isCharon(anim()),
+                    {attackNode(cue, {
+                      specialUsed: () => hullUsed(cue(), anim()),
+                      charon: () => isCharon(anim()),
                     })}
                     <Show when={cue().piece === "q"}>
                       <div

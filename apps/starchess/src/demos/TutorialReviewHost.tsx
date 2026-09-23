@@ -34,6 +34,7 @@ import { TurnBarSidebar } from "~/presentation/hud/components/TurnBarSidebar";
 import { splitResolveWaves } from "~/presentation/timeline/resolveWaves";
 import { TUTORIAL_CAPABILITIES, setCapabilities } from "~/store/capabilitiesStore";
 import { resetReviewVisionFilter, setReviewVisionFilter } from "~/store/reviewVisionStore";
+import { intentArrows } from "~/tutorial/lessonTactics";
 import { resetTutorialNarration, setTutorialNarration } from "~/tutorial/tutorialNarrationStore";
 import {
   boardIndexForBeat,
@@ -89,6 +90,8 @@ export type TutorialReviewHostProps = {
   footerExtra?: JSX.Element;
   /** Show review TurnBarSidebar (turn + phase chips; DualNav hidden). */
   turnChrome?: "sidebar" | "none";
+  /** Draw every queued intent as an arrow on the Intent beat (checks in red). */
+  intentArrows?: boolean;
 };
 
 const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
@@ -112,6 +115,12 @@ const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
     }
     return turn || reviewTurnNumber();
   };
+
+  const arrows = createMemo(() => {
+    if (!props.intentArrows || store.reviewPhase() !== "intent") return [];
+    const actions = store.reviewIntentActions();
+    return actions ? intentArrows(snap().placement, actions) : [];
+  });
 
   const beatLabel = () => labelForBeat(beats()[beatIndex()], beatTurn());
 
@@ -346,6 +355,7 @@ const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
               pieceSet={props.pieceSet}
               fog={props.fog}
               visionMode={props.visionMode}
+              hintArrows={arrows()}
             />
           </MatchBoardHost.BoardHost>
         </MatchBoardHost.BoardColumn>

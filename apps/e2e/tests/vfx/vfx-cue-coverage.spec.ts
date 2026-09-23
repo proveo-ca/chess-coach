@@ -83,7 +83,13 @@ test.describe("VFX · cue coverage", () => {
   });
 
   test("V16 Tactical Jump uses the jump layer and its trail — never a slide", async ({ page }) => {
-    await gotoScfen(page, "SCFEN|k6b/8/8/8/8/8/8/Q6K|21|33|P|G:03:33|Q:w:B=queenWarp:a1:d4;b:");
+    // Black is pre-queued (a Marine deploy — deploy layer, not move) so the
+    // Adjutant stays out: its king step would slide through the move layer and
+    // an h8 bishop snipes the queen on d4 before it settles.
+    await gotoScfen(
+      page,
+      "SCFEN|k7/8/8/8/8/8/8/Q6K|21|33|P|G:02:33|B:3:3|Q:w:B=queenWarp:a1:d4;b:B=spawn:a8:b8:p",
+    );
     const watch = await recordResolve(page);
 
     expect(watch.ever).toContain("jump");

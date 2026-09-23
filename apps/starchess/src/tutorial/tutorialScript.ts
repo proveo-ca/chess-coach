@@ -6,15 +6,19 @@ import type { Square } from "chess.js";
 
 import { TUTORIAL_SCRIPT_CONFIG } from "~/tutorial/tutorialScript.config";
 import {
+  boardConditionHolds,
   chargeFromH8,
   forwardDeploySquare,
   g2DeployName,
   gasMarineSquare,
   g1GuardNeeded,
+  isBoardCondition,
+  mineGuard,
   mechaDiagonalOpen,
   mechaThreatOpen,
   promotionChoiceOpen,
   runnerStop,
+  shipJuke,
   tankSiegeOnH5,
   tankSiegeSquare,
   whiteQueenSquare,
@@ -27,6 +31,7 @@ import type {
   QueenWatch,
   SquareCovers,
   TutorialBackrankWhen,
+  TutorialBoardCondition,
   TutorialBoardArrow,
   TutorialBoardHint,
   TutorialChargeWhen,
@@ -38,6 +43,7 @@ import type {
   TutorialLineHold,
   TutorialMechaDiagonalWhen,
   TutorialMechaThreatWhen,
+  TutorialMineGuardWhen,
   TutorialPromotionWhen,
   TutorialStopRunnerWhen,
   TutorialTankSiegeWhen,
@@ -88,6 +94,9 @@ export type TutorialReactionWhen =
   | TutorialChargeWhen
   | TutorialTankSiegeWhen
   | TutorialStopRunnerWhen
+  | TutorialMineGuardWhen
+  /** Command Center HP, units gone, or units on named squares. */
+  | TutorialBoardCondition
   /** BattleShip that was standing on h8 is gone during resolve. */
   | { kind: "shipSniped" };
 
@@ -113,6 +122,8 @@ export type TutorialStoryScript = {
   reactions?: readonly TutorialReaction[];
   /** Optional destination rings on the live board. */
   hints?: readonly TutorialBoardHint[];
+  /** Replay lessons: draw queued intents as arrows on the Intent beat. */
+  intentArrows?: boolean;
   /**
    * Seed + board chrome for live lessons. Sole owner of the lesson catalog —
    * screens and Storybook both read it from here.
@@ -285,6 +296,12 @@ export const resolveTutorialLine = (ctx: TutorialScriptContext): TutorialLine =>
 
   for (const r of reactions) {
     const w = r.when;
+    if (isBoardCondition(w)) {
+      if (ctx.scfen && phaseAllows(w.phases, ctx.reviewPhase) && boardConditionHolds(w, ctx.scfen)) {
+        return reactionLine(r);
+      }
+      continue;
+    }
     if (w.kind === "reviewPhase" && ctx.reviewPhase === w.phase) {
       if (w.turn != null && ctx.turn !== w.turn) continue;
       return reactionLine(r);
@@ -364,6 +381,14 @@ export const resolveTutorialLine = (ctx: TutorialScriptContext): TutorialLine =>
     }
     if (w.kind === "stopRunner" && ctx.scfen && runnerStop(ctx.scfen)) {
       return reactionLine(r);
+    }
+    if (w.kind === "mineGuard" && ctx.scfen) {
+      const guard = mineGuard(ctx.scfen);
+      if (!guard) continue;
+      return {
+        ...reactionLine(r),
+        comment: `1 unit guarding ${guard.files} promoting files!`,
+      };
     }
     if (
       w.kind === "tankSiege" &&
@@ -465,17 +490,19 @@ export const holdTutorialLine = (
   return { hold: h, line: raw };
 };
 
-/** First matching board-hint step for the live SCFEN (empty = clear marks). */
-/**
- * The hint step in force — first entry whose `when` matches, else the first
- * unconditional one. Squares and arrows come from the *same* step so a lesson
- * cannot show a ring from one beat and a line from another.
- */
-/** Phase/turn the board is showing — review-phase hint steps read this. */
-export type TutorialHintQuery = {
-  reviewPhase?: ReviewTurnPhase;
-  /** 1-based planning ordinal (`snap.turn + 1`). */
-  turn?: number;
+/** The board state hint steps read — the board half of {@link TutorialScriptContext}. */
+export type TutorialHintContext = Pick<
+  TutorialScriptContext,
+  "scfen" | "covers" | "trajectories" | "reviewPhase" | "turn"
+>;
+
+/** What the board paints for the step in force. Empty arrays clear the marks. */
+export type TutorialHintMarks = {
+  /** Guide-green rings. */
+  squares: Square[];
+  /** Alert-red rings. */
+  alertSquares: Square[];
+  arrows: TutorialBoardArrow[];
 };
 
 /** Juke arrows leave from the BattleShip's current square, not the seed square. */
@@ -492,22 +519,25 @@ const queenOrigin = (hint: TutorialBoardHint, scfen: string): TutorialBoardHint 
 
 const matchTutorialHint = (
   hints: readonly TutorialBoardHint[] | undefined,
-  scfen: string | undefined,
-  covers?: SquareCovers,
-  trajectories?: AttackTrajectory[],
-  query?: TutorialHintQuery,
+  { scfen, covers, trajectories, reviewPhase, turn }: TutorialHintContext,
 ): TutorialBoardHint | undefined => {
   if (!hints?.length) return undefined;
   for (const h of hints) {
     if (!h.when) return h;
+    if (isBoardCondition(h.when)) {
+      if (scfen && phaseAllows(h.when.phases, reviewPhase) && boardConditionHolds(h.when, scfen)) {
+        return h;
+      }
+      continue;
+    }
     if (h.when.kind === "reviewPhase") {
-      if (query?.reviewPhase !== h.when.phase) continue;
-      if (h.when.turn != null && query.turn !== h.when.turn) continue;
+      if (reviewPhase !== h.when.phase) continue;
+      if (h.when.turn != null && turn !== h.when.turn) continue;
       return h;
     }
     if (h.when.kind === "scfen" && scfen != null && h.when.re.test(scfen)) {
       const phases = h.when.phases;
-      if (phases && (!query?.reviewPhase || !phases.includes(query.reviewPhase))) continue;
+      if (!phaseAllows(phases, reviewPhase)) continue;
       return h.fromQueen ? queenOrigin(h, scfen) : h;
     }
     if (h.when.kind === "stopRunner" && scfen) {
@@ -518,6 +548,16 @@ const matchTutorialHint = (
         squares: [stop.to],
         arrows: [{ from: stop.from, to: stop.to }],
       };
+    }
+    if (h.when.kind === "shipJuke" && scfen) {
+      const juke = shipJuke(scfen);
+      if (!juke) continue;
+      return { ...h, squares: [juke.to], arrows: [juke] };
+    }
+    if (h.when.kind === "mineGuard" && scfen) {
+      const guard = mineGuard(scfen);
+      if (!guard) continue;
+      return { ...h, squares: guard.mines, arrows: guard.hops };
     }
     if (h.when.kind === "covers" && covers) {
       const when = h.when;
@@ -538,7 +578,7 @@ const matchTutorialHint = (
     if (
       h.when.kind === "mechaDiagonal" &&
       scfen &&
-      phaseAllows(h.when.phases, query?.reviewPhase) &&
+      phaseAllows(h.when.phases, reviewPhase) &&
       mechaDiagonalOpen(scfen)
     ) {
       return h;
@@ -546,7 +586,7 @@ const matchTutorialHint = (
     if (
       h.when.kind === "mechaThreat" &&
       scfen &&
-      phaseAllows(h.when.phases, query?.reviewPhase) &&
+      phaseAllows(h.when.phases, reviewPhase) &&
       mechaThreatOpen(scfen)
     ) {
       return h;
@@ -554,7 +594,7 @@ const matchTutorialHint = (
     if (
       h.when.kind === "gasOnMarine" &&
       scfen &&
-      phaseAllows(h.when.phases, query?.reviewPhase) &&
+      phaseAllows(h.when.phases, reviewPhase) &&
       gasMarineSquare(scfen)
     ) {
       return { ...h, squares: [gasMarineSquare(scfen)!] };
@@ -562,19 +602,19 @@ const matchTutorialHint = (
     if (
       h.when.kind === "forwardDeploy" &&
       scfen &&
-      phaseAllows(h.when.phases, query?.reviewPhase) &&
+      phaseAllows(h.when.phases, reviewPhase) &&
       forwardDeploySquare(scfen) === h.when.square
     ) {
       return h;
     }
-    if (h.when.kind === "promotionChoice" && scfen && phaseAllows(h.when.phases, query?.reviewPhase)) {
+    if (h.when.kind === "promotionChoice" && scfen && phaseAllows(h.when.phases, reviewPhase)) {
       const square = promotionChoiceOpen(scfen);
       if (square) return { ...h, squares: [square] };
     }
     if (
       h.when.kind === "chargeH8" &&
       scfen &&
-      phaseAllows(h.when.phases, query?.reviewPhase) &&
+      phaseAllows(h.when.phases, reviewPhase) &&
       chargeFromH8(scfen)
     ) {
       return h;
@@ -582,7 +622,7 @@ const matchTutorialHint = (
     if (
       h.when.kind === "tankSiege" &&
       scfen &&
-      phaseAllows(h.when.phases, query?.reviewPhase) &&
+      phaseAllows(h.when.phases, reviewPhase) &&
       tankSiegeOnH5(scfen)
     ) {
       return { ...h, squares: [tankSiegeSquare(scfen)!] };
@@ -596,13 +636,22 @@ const phaseAllows = (
   phase: ReviewTurnPhase | undefined,
 ): boolean => !phases || (!!phase && phases.includes(phase));
 
-export const resolveTutorialHints = (
+/**
+ * The hint step in force — first entry whose `when` matches, else the first
+ * unconditional one. Rings, alert rings and arrows all come from that *one*
+ * step, so a lesson cannot show a ring from one beat and a line from another.
+ */
+export const resolveTutorialHint = (
   hints: readonly TutorialBoardHint[] | undefined,
-  scfen: string | undefined,
-  covers?: SquareCovers,
-  trajectories?: AttackTrajectory[],
-  query?: TutorialHintQuery,
-): Square[] => [...(matchTutorialHint(hints, scfen, covers, trajectories, query)?.squares ?? [])];
+  ctx: TutorialHintContext,
+): TutorialHintMarks => {
+  const step = matchTutorialHint(hints, ctx);
+  return {
+    squares: [...(step?.squares ?? [])],
+    alertSquares: [...(step?.alertSquares ?? [])],
+    arrows: [...(step?.arrows ?? [])],
+  };
+};
 
 /**
  * Keep alert rings up through later beats. A `followKing` lesson (king-attack-3)
@@ -652,28 +701,6 @@ export const nextQueenWatch = (
   return { onH8: false, sniped: false };
 };
 
-/** Alert-red rings for the step in force — sibling of {@link resolveTutorialHints}. */
-export const resolveTutorialAlertSquares = (
-  hints: readonly TutorialBoardHint[] | undefined,
-  scfen: string | undefined,
-  covers?: SquareCovers,
-  trajectories?: AttackTrajectory[],
-  query?: TutorialHintQuery,
-): Square[] => [
-  ...(matchTutorialHint(hints, scfen, covers, trajectories, query)?.alertSquares ?? []),
-];
-
-/** Hint lines for the step in force — see {@link resolveTutorialHints}. */
-export const resolveTutorialArrows = (
-  hints: readonly TutorialBoardHint[] | undefined,
-  scfen: string | undefined,
-  covers?: SquareCovers,
-  trajectories?: AttackTrajectory[],
-  query?: TutorialHintQuery,
-): TutorialBoardArrow[] => [
-  ...(matchTutorialHint(hints, scfen, covers, trajectories, query)?.arrows ?? []),
-];
-
 /** Live narration fields used by {@link matchesTutorialCompleteWhen}. */
 export type TutorialCompleteContext = {
   scfen?: string;
@@ -694,6 +721,9 @@ export const matchesTutorialCompleteWhen = (
   const twBeat = typeof ctx === "string" ? undefined : ctx.typewriterBeat;
   if (when.kind === "scfen") {
     return scfen != null && when.re.test(scfen);
+  }
+  if (isBoardCondition(when)) {
+    return scfen != null && boardConditionHolds(when, scfen);
   }
   if (when.kind === "queue") {
     const q = queue ?? [];

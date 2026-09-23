@@ -1,6 +1,6 @@
 /*
- * Milestone-turn broadcast — bubble anchored over the board, nothing locked
- * but the resource bar (set inert by the component while the bubble shows).
+ * Milestone-turn broadcast — bubble anchored over the board for the whole
+ * planning window; nothing is locked and the clock runs underneath it.
  */
 .slot {
   position: fixed;

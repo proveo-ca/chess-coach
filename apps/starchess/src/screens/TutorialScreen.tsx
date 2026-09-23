@@ -628,6 +628,7 @@ export const TutorialScreen: Component = () => {
                   coachEmotion={line().emotion}
                   guideBubble={guideBubble()}
                   footerExtra={resolveFooter()}
+                  intentArrows={tutorialStory("resolve", id)?.intentArrows}
                 />
               );
             }}

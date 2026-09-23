@@ -6,6 +6,7 @@ import {
   attackersOfSquare,
   availableTrajectories,
   coveredEnemyShips,
+  boardConditionHolds,
 } from "~/tutorial/lessonTactics";
 
 describe("attackersOfSquare", () => {
@@ -98,5 +99,39 @@ describe("availableTrajectories", () => {
       availableTrajectories("SCFEN|8/8/8/3k4/8/5P2/2N4P/4N1BK|1|33|P|G:11:11|Q:w:;b:", "w"),
     ).toEqual([]);
     expect(availableTrajectories("SCFEN|nope|1|33", "w")).toEqual([]);
+  });
+});
+
+describe("boardConditionHolds", () => {
+  const at = (placement: string, lives = "33", queue = "") =>
+    `SCFEN|${placement}|1|${lives}|P|G:11:11|Q:w:${queue};b:`;
+
+  it("reads Command Center HP per side, White first", () => {
+    expect(boardConditionHolds({ kind: "lives", own: 0 }, at("8/8/8/8/8/8/8/8", "02"))).toBe(true);
+    expect(boardConditionHolds({ kind: "lives", own: 0 }, at("8/8/8/8/8/8/8/8", "20"))).toBe(false);
+    expect(boardConditionHolds({ kind: "lives", enemy: 1 }, at("8/8/8/8/8/8/8/8", "31"))).toBe(true);
+  });
+
+  it("calls a unit lost only when no listed letter is left", () => {
+    expect(boardConditionHolds({ kind: "lost", pieces: ["Q"] }, at("k7/8/8/8/8/8/8/7K"))).toBe(true);
+    expect(boardConditionHolds({ kind: "lost", pieces: ["q", "Q"] }, at("k7/8/8/8/8/8/8/q6K"))).toBe(
+      false,
+    );
+  });
+
+  it("matches units on squares by colour, and qualifies by White's queue", () => {
+    const d5c2 = "8/8/8/3k4/8/8/2N5/7K";
+    const when = { kind: "board", at: { d5: "k", c2: "N" } } as const;
+    expect(boardConditionHolds(when, at(d5c2))).toBe(true);
+    // Colour matters: a White King on d5 is not the enemy Command Center.
+    expect(boardConditionHolds(when, at("8/8/8/3K4/8/8/2N5/8"))).toBe(false);
+    const mine = { kind: "knightMine", from: "c2" } as const;
+    expect(boardConditionHolds({ ...when, queued: mine }, at(d5c2, "33", "B=knightMine:c2:c2"))).toBe(true);
+    expect(boardConditionHolds({ ...when, notQueued: mine }, at(d5c2, "33", "B=knightMine:c2:c2"))).toBe(
+      false,
+    );
+    const g1 = { kind: "board", at: { g1: "q" }, notQueuedOnto: "g1" } as const;
+    expect(boardConditionHolds(g1, at("8/8/8/8/8/8/6P1/6qK"))).toBe(true);
+    expect(boardConditionHolds(g1, at("8/8/8/8/8/8/6P1/6qK", "33", "C=h1g1"))).toBe(false);
   });
 });

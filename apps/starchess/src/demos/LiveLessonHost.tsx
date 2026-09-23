@@ -29,12 +29,7 @@ import { CHOREOGRAPHY } from "~/demos/choreography";
 import { clearSiegedRooks, setRookMode } from "~/presentation/animations/rookModeStore";
 import { LiveMatchShell } from "~/screens/LiveMatchShell";
 import { TUTORIAL_CAPABILITIES, setCapabilities } from "~/store/capabilitiesStore";
-import {
-  nextAlertLatch,
-  resolveTutorialAlertSquares,
-  resolveTutorialArrows,
-  resolveTutorialHints,
-} from "~/tutorial/tutorialScript";
+import { nextAlertLatch, resolveTutorialHint } from "~/tutorial/tutorialScript";
 import type { AlertLatch } from "~/types/tutorial";
 import { availableTrajectories, coveredEnemyShips } from "~/tutorial/lessonTactics";
 import { useLessonNarration } from "~/tutorial/useLessonNarration";
@@ -102,42 +97,27 @@ const LiveLessonInner: Component<LiveLessonHostProps> = (props) => {
 
   const interactive = () => choreography.interactive?.() ?? true;
 
-  const hintQuery = createMemo(() => {
+  const hintScfen = createMemo(() => formatScFen(displayedSnapshot(store.state())));
+
+  const hintMarks = createMemo(() => {
     const s = store.state();
-    const snap = displayedSnapshot(s);
-    const scfen = formatScFen(snap);
-    return {
+    const scfen = hintScfen();
+    return resolveTutorialHint(props.boardHints, {
       scfen,
       covers: coveredEnemyShips(scfen, s.viewer),
       trajectories: availableTrajectories(scfen, s.viewer),
-      query: {
-        reviewPhase: liveMatchPhase({
-          phase: s.phase,
-          lastResolve: s.lastResolve,
-          timelineActive: s.timeline.active,
-          pendingPromotion: !!s.pendingPromotion,
-        }),
-        turn: snap.turn + 1,
-      },
-    };
+      reviewPhase: liveMatchPhase({
+        phase: s.phase,
+        lastResolve: s.lastResolve,
+        timelineActive: s.timeline.active,
+        pendingPromotion: !!s.pendingPromotion,
+      }),
+      turn: displayedSnapshot(s).turn + 1,
+    });
   });
 
-  const hintSquares = createMemo(() => {
-    if (!interactive()) return [];
-    const q = hintQuery();
-    return resolveTutorialHints(props.boardHints, q.scfen, q.covers, q.trajectories, q.query);
-  });
-
-  const scriptedAlerts = createMemo(() => {
-    const q = hintQuery();
-    return resolveTutorialAlertSquares(
-      props.boardHints,
-      q.scfen,
-      q.covers,
-      q.trajectories,
-      q.query,
-    );
-  });
+  const hintSquares = () => (interactive() ? hintMarks().squares : []);
+  const scriptedAlerts = () => hintMarks().alertSquares;
 
   const [alertLatch, setAlertLatch] = createSignal<AlertLatch>({ squares: [] });
 
@@ -147,7 +127,7 @@ const LiveLessonInner: Component<LiveLessonHostProps> = (props) => {
     let kingAt: Square | undefined;
     let kingVisible = false;
     if (followKing) {
-      const placement = hintQuery().scfen.split("|")[1];
+      const placement = hintScfen().split("|")[1];
       if (placement) {
         try {
           const map = placementToMap(placement);
@@ -177,11 +157,7 @@ const LiveLessonInner: Component<LiveLessonHostProps> = (props) => {
     return props.board.alertLatch ? alertLatch().squares : scriptedAlerts();
   });
 
-  const hintArrows = createMemo(() => {
-    if (!interactive()) return [];
-    const q = hintQuery();
-    return resolveTutorialArrows(props.boardHints, q.scfen, q.covers, q.trajectories, q.query);
-  });
+  const hintArrows = () => (interactive() ? hintMarks().arrows : []);
 
   const Overlay = choreography.Overlay;
 

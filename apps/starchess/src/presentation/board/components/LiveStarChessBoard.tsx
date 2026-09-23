@@ -165,9 +165,9 @@ export const LiveStarChessBoard: Component<{
     const dying = new Set(combat.deathCues().map((c) => c.at));
     const seen = new Set(fromTimeline.map((c) => c.at));
     const extra = autoDeployCues().filter((c) => !seen.has(c.at) && !dying.has(c.at));
-    return [...fromTimeline, ...extra]
-      .filter((c) => !dying.has(c.at))
-      .filter((c) => pieceFxVisible(c.at, c.color));
+    // A timeline deploy on a dying square is a crush — the hull composes above
+    // the victim's boom (V40). Only board-diff extras yield to a death.
+    return [...fromTimeline, ...extra].filter((c) => pieceFxVisible(c.at, c.color));
   });
 
   /**

@@ -3,7 +3,7 @@
 
 import type { Square } from "chess.js";
 
-import type { ScPiece } from "@chess-coach/starchess-core";
+import type { ScPiece, ScSpecialKind } from "@chess-coach/starchess-core";
 import type { KerriganEmotion } from "~/types/coach";
 import type { ReviewTurnPhase } from "~/types/review";
 
@@ -127,7 +127,10 @@ export type TutorialBoardHint = {
     | TutorialPromotionWhen
     | TutorialChargeWhen
     | TutorialTankSiegeWhen
-    | TutorialStopRunnerWhen;
+    | TutorialStopRunnerWhen
+    | TutorialMineGuardWhen
+    | TutorialShipJukeWhen
+    | TutorialBoardCondition;
   /**
    * Rewrite arrow origins to the viewer's BattleShip. The destination stays
    * the square named on the arrow.
@@ -238,10 +241,67 @@ export type TutorialTankSiegeWhen = {
 export type TutorialStopRunnerWhen = { kind: "stopRunner" };
 
 /**
+ * Two or more of our Spider Mines are down beside the Hoverbike that laid
+ * them. The hint rings the mines and draws the Hoverbike's hops; the line
+ * names how many files that one unit guards.
+ */
+export type TutorialMineGuardWhen = { kind: "mineGuard" };
+
+/**
+ * The BattleShip's next Tactical Jump, read from where it stands now: a lit,
+ * empty, unattacked landing, preferring one that re-checks the enemy
+ * Command Center. The hint's ring and arrow are computed, not listed.
+ */
+export type TutorialShipJukeWhen = { kind: "shipJuke" };
+
+/**
  * White BattleShip was on h8 and is gone. Armed while it stands there; `sniped`
  * stays up through the resolve that removes it.
  */
 export type QueenWatch = { onH8: boolean; sniped: boolean };
+
+/** SCFEN piece letter: White upper-case, Black lower-case. */
+export type ScfenPieceLetter = "K" | "Q" | "R" | "B" | "N" | "P" | "k" | "q" | "r" | "b" | "n" | "p";
+
+/**
+ * Command Center HP, read from the SCFEN lives field. The tutorial always
+ * plays White, so `own` is White's and `enemy` Black's. An omitted side
+ * matches any HP.
+ */
+export type TutorialLivesWhen = {
+  kind: "lives";
+  own?: number;
+  enemy?: number;
+  phases?: readonly ReviewTurnPhase[];
+};
+
+/** None of these units is left anywhere on the board. */
+export type TutorialLostWhen = {
+  kind: "lost";
+  pieces: readonly ScfenPieceLetter[];
+  phases?: readonly ReviewTurnPhase[];
+};
+
+/** A White special of this kind, queued from this square. */
+export type QueuedSpecial = { kind: ScSpecialKind; from: Square };
+
+/** Units standing on named squares, optionally qualified by White's queue. */
+export type TutorialBoardWhen = {
+  kind: "board";
+  /** Every listed square holds exactly this unit. */
+  at: Partial<Record<Square, ScfenPieceLetter>>;
+  queued?: QueuedSpecial;
+  notQueued?: QueuedSpecial;
+  /** No White action (classical or special) lands on this square. */
+  notQueuedOnto?: Square;
+  phases?: readonly ReviewTurnPhase[];
+};
+
+/**
+ * Named board conditions — what a hand-built SCFEN regex used to spell out.
+ * Valid in reactions, hints, `completeWhen` and `restartWhen` alike.
+ */
+export type TutorialBoardCondition = TutorialLivesWhen | TutorialLostWhen | TutorialBoardWhen;
 
 /** Auto-advance to next lesson when live intent / board matches. */
 export type TutorialCompleteWhen =
@@ -249,6 +309,7 @@ export type TutorialCompleteWhen =
       kind: "scfen";
       re: RegExp;
     }
+  | TutorialBoardCondition
   | {
       /** Live intent queue — classical + special stack (gas↔move, etc.). */
       kind: "queue";

@@ -12,7 +12,6 @@ import {
 import styles from "~/components/features/TurnBonusBubble.module.css";
 
 const BOARD_ANCHOR = '[data-testid="starchess-board-chrome"]';
-const RESOURCE_BAR = '[data-testid="resource-bar"]';
 
 export const TurnBonusBubble: Component = () => {
   const store = useMatchStore();
@@ -31,14 +30,9 @@ export const TurnBonusBubble: Component = () => {
 
   createEffect(() => {
     if (!store.shell().turnBonus) return;
-    const bar = document.querySelector(RESOURCE_BAR);
-    bar?.setAttribute("inert", "");
     trackBoard();
     window.addEventListener("resize", trackBoard);
-    onCleanup(() => {
-      bar?.removeAttribute("inert");
-      window.removeEventListener("resize", trackBoard);
-    });
+    onCleanup(() => window.removeEventListener("resize", trackBoard));
   });
 
   return (
@@ -62,7 +56,7 @@ export const TurnBonusBubble: Component = () => {
             testId="turn-bonus-bubble"
             label={
               `Turn ${bonus().turn} — +${bonus().minerals} minerals ` +
-              `+${bonus().gas} gas, ${bonus().seconds}s clock. Activate to continue.`
+              `+${bonus().gas} gas, ${bonus().seconds}s clock. Activate to dismiss.`
             }
             onClick={dismiss}
           >

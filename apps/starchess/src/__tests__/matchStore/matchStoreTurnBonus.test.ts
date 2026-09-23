@@ -1,12 +1,11 @@
 /**
- * Milestone broadcast seam — the planning clock arms only after the Turn
- * 1 / 11 / 21 bubble is dismissed, and re-entrant armTimer calls (BaseScreen
- * auto-arm effect, TurnBarSidebar onMount) cannot arm underneath the bubble.
+ * Milestone broadcast seam — the Turn 1 / 11 / 21 bubble rides the whole
+ * planning window: the clock arms immediately underneath it, submits go
+ * through, and the bubble clears when the turn ends (or on click).
  */
 import { describe, expect, it } from "vitest";
 
 import { createMatchStore } from "~/app/MatchStoreContext";
-import { TURN_BONUS_BROADCAST_MS } from "~/app/turnBonusPolicy";
 import type { Clock, Scheduler } from "~/types/ports";
 
 const FixedClock = (t = 0): Clock => ({ now: () => t });
@@ -41,7 +40,7 @@ const MID_BOARD =
   "SCFEN|4k3/8/8/8/8/8/4P3/4K3|5|33|P|G:11:11|B:8:8|Q:w:;b:";
 
 describe("createMatchStore turnBonuses", () => {
-  it("broadcasts Turn 1 and keeps the clock unarmed until dismissed", () => {
+  it("broadcasts Turn 1 and arms the clock underneath it", () => {
     const s1 = ManualScheduler();
     const store = createMatchStore({
       clock: FixedClock(1000),
@@ -52,23 +51,19 @@ describe("createMatchStore turnBonuses", () => {
 
     store.armTimer();
 
-    const bonus = store.shell().turnBonus;
-    expect(bonus).toEqual({ turn: 1, minerals: 1, gas: 1, seconds: 10 });
-    expect(store.shell().deadlineAt).toBeNull();
-    expect(s1.pendingCount()).toBe(1);
-
-    // Re-entrant arms (BaseScreen auto-arm effect) must not stack or sneak a deadline.
-    store.armTimer();
-    store.armTimer();
-    expect(store.shell().deadlineAt).toBeNull();
-    expect(s1.pendingCount()).toBe(1);
-
-    s1.fire(TURN_BONUS_BROADCAST_MS);
-    expect(store.shell().turnBonus).toBeNull();
+    expect(store.shell().turnBonus).toEqual({ turn: 1, minerals: 1, gas: 1, seconds: 10 });
     expect(store.shell().deadlineAt).toBe(1000 + 10_000);
+    // Only the planning timeout — no auto-dismiss job.
+    expect(s1.pendingCount()).toBe(1);
+
+    // Re-entrant arms (BaseScreen auto-arm effect) keep the bubble, never stack jobs.
+    store.armTimer();
+    store.armTimer();
+    expect(store.shell().turnBonus?.turn).toBe(1);
+    expect(s1.pendingCount()).toBe(1);
   });
 
-  it("click-to-skip cancels the pending auto-dismiss and arms immediately", () => {
+  it("the bubble stays up for the whole planning window", () => {
     const s1 = ManualScheduler();
     const store = createMatchStore({
       clock: FixedClock(0),
@@ -76,19 +71,64 @@ describe("createMatchStore turnBonuses", () => {
       turnBonuses: true,
     });
     store.dispatch({ type: "LOAD_SCFEN", scfen: BONUS_BOARD });
-
     store.armTimer();
+
+    s1.fire(3000); // the old broadcast window — nothing scheduled there
     expect(store.shell().turnBonus?.turn).toBe(1);
+    expect(store.state().phase).toBe("planning");
+  });
+
+  it("click-to-skip hides the bubble and leaves the running clock alone", () => {
+    const s1 = ManualScheduler();
+    const store = createMatchStore({
+      clock: FixedClock(0),
+      scheduler: s1.scheduler,
+      turnBonuses: true,
+    });
+    store.dispatch({ type: "LOAD_SCFEN", scfen: BONUS_BOARD });
+    store.armTimer();
 
     store.dismissTurnBonus();
 
     expect(store.shell().turnBonus).toBeNull();
     expect(store.shell().deadlineAt).toBe(10_000);
-    // Auto-dismiss no longer pending — only the armed timeout remains.
     expect(s1.pendingCount()).toBe(1);
     // Idempotent — double clicks are harmless.
     store.dismissTurnBonus();
     expect(store.shell().deadlineAt).toBe(10_000);
+  });
+
+  it("ending the turn clears the bubble", () => {
+    const s1 = ManualScheduler();
+    const store = createMatchStore({
+      clock: FixedClock(0),
+      scheduler: s1.scheduler,
+      turnBonuses: true,
+    });
+    store.dispatch({ type: "LOAD_SCFEN", scfen: BONUS_BOARD });
+    store.armTimer();
+    expect(store.state().turnBonus?.turn).toBe(1);
+
+    store.submitTurn("end");
+
+    expect(store.state().phase).toBe("resolving");
+    expect(store.state().turnBonus).toBeNull();
+  });
+
+  it("the planning timeout also clears the bubble", () => {
+    const s1 = ManualScheduler();
+    const store = createMatchStore({
+      clock: FixedClock(0),
+      scheduler: s1.scheduler,
+      turnBonuses: true,
+    });
+    store.dispatch({ type: "LOAD_SCFEN", scfen: BONUS_BOARD });
+    store.armTimer();
+
+    s1.fire(10_000);
+
+    expect(store.state().phase).toBe("resolving");
+    expect(store.state().turnBonus).toBeNull();
   });
 
   it("broadcasts each milestone once per match", () => {
@@ -102,7 +142,7 @@ describe("createMatchStore turnBonuses", () => {
 
     store.armTimer();
     expect(store.shell().turnBonus?.turn).toBe(1);
-    s1.fire(TURN_BONUS_BROADCAST_MS); // dismissed → clock armed
+    store.dismissTurnBonus();
 
     // Post-resolve re-arm on the same displayed tier (raw turn 0 → 1) must
     // not broadcast Turn 1 twice.
@@ -145,7 +185,7 @@ describe("createMatchStore turnBonuses", () => {
     expect(store.shell().deadlineAt).toBe(10_000);
   });
 
-  it("reducer guards: SHOW rejected off planning, HIDE idempotent, submit clears", () => {
+  it("reducer guards: SHOW rejected off planning", () => {
     const s1 = ManualScheduler();
     const store = createMatchStore({
       clock: FixedClock(0),
@@ -153,21 +193,9 @@ describe("createMatchStore turnBonuses", () => {
       turnBonuses: true,
     });
     store.dispatch({ type: "LOAD_SCFEN", scfen: BONUS_BOARD });
-    store.armTimer();
-    expect(store.state().turnBonus?.turn).toBe(1);
-
-    // Submits are refused mid-broadcast — the turn waits for dismissal.
-    store.submitTurn("end");
-    expect(store.state().phase).toBe("planning");
-    expect(store.state().turnBonus?.turn).toBe(1);
-
-    // HIDE twice is harmless.
-    store.dismissTurnBonus();
-    expect(store.state().turnBonus).toBeNull();
-
-    // SHOW during resolving / gameOver is rejected by the phase guard.
     store.dispatch({ type: "SUBMIT_TURN", reason: "end" });
     expect(store.state().phase).toBe("resolving");
+
     store.dispatch({
       type: "SHOW_TURN_BONUS",
       bonus: { turn: 11, minerals: 2, gas: 2, seconds: 15 },

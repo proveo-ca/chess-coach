@@ -128,6 +128,10 @@ package "AFTER · Facade + Composite + Parameter Object" as AFTER {
     z implements DOM-last intent: each root
     is `isolate`, so DOM order alone
     does not stack layers. Pinned by V40.
+    ""LiveStarChessBoard.deployCues"" must keep
+    a **timeline** deploy on a dying square
+    (that co-presence *is* the crush); only
+    board-diff auto-deploy extras yield to a death.
   end note
 
   N_CRUSH .. DeployAnimation
