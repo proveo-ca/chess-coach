@@ -13,5 +13,5 @@
   // Scoped to the target-orchestration infra. The specs in tests/ are executed
   // by Playwright (esbuild, no type-check) and predate any tsconfig; bringing
   // them under tsc is a separate cleanup (a few stale @ts-expect-error directives).
-  "include": ["target.ts", "global-setup.ts", "playwright.config.ts"]
+  "include": ["target.ts", "global-setup.ts", "playwright.config.ts", "primitives.config.ts", "tests/primitives/**/*.ts"]
 }

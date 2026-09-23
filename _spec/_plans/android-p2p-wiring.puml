@@ -10,8 +10,8 @@ skinparam noteTextAlignment left
 ' reference: _spec/apps/android/webrtc-p2p.puml
  title PLANNED — native Android screens; shared domain and P2P contracts
 
-package "Proposed UI layout — likely, not an existing directory map" {
-  component "apps/ui/web\nBrowser screens" as WEB <<app>>
+package "Web composition and proposed native presentation" {
+  component "apps/ui\nBrowser screens using packages/ui/web" as WEB <<app>>
   component "apps/ui/android\nNative Android screens" as NATIVE <<app>>
 }
 component "Shared domain contracts\ncommands · state · capabilities" as DOMAIN <<app>>
@@ -35,9 +35,9 @@ note bottom of NATIVE
 end note
 
 note bottom of WEB
-  **Likely split: apps/ui/web and /android.**
-  Confirm build boundaries before moving files.
-  Preserve product-specific presentation kits.
+  **Shared web kit: packages/ui/web.**
+  apps/ui/android remains a likely native location.
+  Native UI shares domain contracts, not web views.
   StarChess directory placement remains open.
   This plan does not relocate source files.
 end note

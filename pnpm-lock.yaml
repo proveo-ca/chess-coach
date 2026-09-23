@@ -51,6 +51,9 @@ importers:
       '@chess-coach/starchess-core':
         specifier: workspace:*
         version: link:../../packages/starchess-core
+      '@chess-coach/ui-web':
+        specifier: workspace:*
+        version: link:../../packages/ui/web
       '@solidjs/router':
         specifier: ^0.16.1
         version: 0.16.3(solid-js@1.9.14)
@@ -130,6 +133,9 @@ importers:
       '@chess-coach/client-platform':
         specifier: workspace:*
         version: link:../../packages/client-platform
+      '@chess-coach/ui-web':
+        specifier: workspace:*
+        version: link:../../packages/ui/web
       '@mlc-ai/web-llm':
         specifier: ^0.2.82
         version: 0.2.84
@@ -145,9 +151,6 @@ importers:
       lz-string:
         specifier: ^1.5.0
         version: 1.5.0
-      qrcode:
-        specifier: ^1.5.4
-        version: 1.5.4
       solid-js:
         specifier: ^1.9.12
         version: 1.9.14
@@ -173,9 +176,6 @@ importers:
       '@types/node':
         specifier: ^24.12.2
         version: 24.13.3
-      '@types/qrcode':
-        specifier: ^1.5.6
-        version: 1.5.6
       '@typescript/native-preview':
         specifier: ^7.0.0-dev.20260428.1
         version: 7.0.0-dev.20260707.2
@@ -253,6 +253,64 @@ importers:
       typescript:
         specifier: ~5.9.3
         version: 5.9.3
+      vitest:
+        specifier: ^4.1.5
+        version: 4.1.10(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(jsdom@28.1.0)(vite@7.3.6(@types/node@24.13.3)(terser@5.49.2)(tsx@4.23.12)(yaml@2.9.0))
+
+  packages/ui/web:
+    dependencies:
+      clsx:
+        specifier: ^2.1.1
+        version: 2.1.1
+      qrcode:
+        specifier: ^1.5.4
+        version: 1.5.4
+    devDependencies:
+      '@solidjs/testing-library':
+        specifier: ^0.8.10
+        version: 0.8.10(@solidjs/router@0.16.3(solid-js@1.9.14))(solid-js@1.9.14)
+      '@storybook/addon-a11y':
+        specifier: ^10.5.4
+        version: 10.5.6(storybook@10.5.6(@types/react@19.2.18)(react@19.2.8))
+      '@storybook/addon-docs':
+        specifier: ^10.5.4
+        version: 10.5.6(@types/react@19.2.18)(esbuild@0.28.1)(rollup@4.62.4)(storybook@10.5.6(@types/react@19.2.18)(react@19.2.8))(vite@7.3.6(@types/node@24.13.3)(terser@5.49.2)(tsx@4.23.12)(yaml@2.9.0))
+      '@testing-library/jest-dom':
+        specifier: ^6.9.1
+        version: 6.9.1
+      '@types/node':
+        specifier: ^24.12.2
+        version: 24.13.3
+      '@types/qrcode':
+        specifier: ^1.5.6
+        version: 1.5.6
+      '@typescript/native-preview':
+        specifier: ^7.0.0-dev.20260428.1
+        version: 7.0.0-dev.20260707.2
+      jsdom:
+        specifier: ^28.1.0
+        version: 28.1.0
+      oxlint:
+        specifier: ^1.62.0
+        version: 1.77.0
+      solid-js:
+        specifier: ^1.9.12
+        version: 1.9.14
+      storybook:
+        specifier: ^10.5.4
+        version: 10.5.6(@types/react@19.2.18)(react@19.2.8)
+      storybook-solidjs-vite:
+        specifier: ^10.6.0
+        version: 10.6.0(esbuild@0.28.1)(rollup@4.62.4)(solid-js@1.9.14)(storybook@10.5.6(@types/react@19.2.18)(react@19.2.8))(typescript@5.9.3)(vite-plugin-solid@2.11.14(@testing-library/jest-dom@6.9.1)(solid-js@1.9.14)(vite@7.3.6(@types/node@24.13.3)(terser@5.49.2)(tsx@4.23.12)(yaml@2.9.0)))(vite@7.3.6(@types/node@24.13.3)(terser@5.49.2)(tsx@4.23.12)(yaml@2.9.0))
+      typescript:
+        specifier: ~5.9.3
+        version: 5.9.3
+      vite:
+        specifier: ^7.3.2
+        version: 7.3.6(@types/node@24.13.3)(terser@5.49.2)(tsx@4.23.12)(yaml@2.9.0)
+      vite-plugin-solid:
+        specifier: ^2.11.12
+        version: 2.11.14(@testing-library/jest-dom@6.9.1)(solid-js@1.9.14)(vite@7.3.6(@types/node@24.13.3)(terser@5.49.2)(tsx@4.23.12)(yaml@2.9.0))
       vitest:
         specifier: ^4.1.5
         version: 4.1.10(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(jsdom@28.1.0)(vite@7.3.6(@types/node@24.13.3)(terser@5.49.2)(tsx@4.23.12)(yaml@2.9.0))

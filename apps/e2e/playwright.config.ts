@@ -17,7 +17,7 @@ export default defineConfig({
     headless: true,
   },
   webServer: t.webServer,
-  testIgnore: t.testIgnore,
+  testIgnore: [...t.testIgnore, "**/primitives/**"],
   projects: t.projects,
   metadata: { target: TARGET },
 });

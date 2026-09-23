@@ -8,7 +8,8 @@
     "test:desktop": "E2E_TARGET=desktop npx playwright test",
     "test:starchess": "E2E_TARGET=starchess npx playwright test --project=chromium",
     "test:docker": "docker compose -f ../../compose.yml run --rm e2e",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test:primitives": "playwright test --config primitives.config.ts"
   },
   "devDependencies": {
     "@playwright/test": "^1.59.1",

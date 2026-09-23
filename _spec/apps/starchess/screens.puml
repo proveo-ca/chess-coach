@@ -8,7 +8,7 @@ skinparam defaultTextAlignment left
 
 title StarChess · Screen HUD (apps/starchess)
 
-package "Screen grid\n(top · board · footer)\nrows: minmax(0,auto) · auto · minmax(0,auto)\n(= apps/ui Screen)" {
+package "Screen grid\n(top · board · footer)\nrows: minmax(0,auto) · auto · minmax(0,auto)\n(packages/ui/web Screen; starchess variant)" {
   component "SidebarInset (top)\nResourceBar (live viewer)\nor ReviewTurnNav ‹ ResourceBars ›\n(review)" as TOP <<app>>
   component "BoardArea\nBoardColumn + side rail" as MID <<app>>
   component "Footer\nGasDeploy (live) · status / outcome" as BOT <<app>>
@@ -27,12 +27,12 @@ package "Shared BoardSideRail\n(single aside + geometry + responsive hiding)" {
 }
 
 package "Dynamic band chrome\n(mobile · min-width 480px · max-height 639px)\nDYNAMIC_MOBILE_MQ — utils/breakpoints.ts + hooks/useMediaQuery.ts" {
-  component "MobileBanner\natoms/MobileBanner\nBack (onBack or href) · resources · turn" as BANNER <<app>>
+  component "MobileBanner\npackages/ui/web StarChessMobileBanner\nBack (onBack or href) · resources · turn" as BANNER <<app>>
   component "Floating docks (fixed bottom-right)\nGasRack (live) · ReviewTurnNav ‹ › (review)\nportaled — pin to viewport, not the grid" as DOCK <<app>>
 }
 
 package "Menu modals (NeonModal atom)" {
-  component "NeonModal\natoms/NeonModal" as NEON <<app>>
+  component "NeonModal\npackages/ui/web/atoms/NeonModal" as NEON <<app>>
   component "Credits / NewGamePanel /\nExitGameConfirm (features)" as MENU <<app>>
 }
 

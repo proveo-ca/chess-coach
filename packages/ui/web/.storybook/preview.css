@@ -1,0 +1,94 @@
+:root {
+  color-scheme: dark;
+  font-family: system-ui, sans-serif;
+  color: #dedede;
+  background: #242424;
+  --white-rgb: 255, 255, 255;
+  --shadow-rgb: 0, 0, 0;
+  --primary-rgb: 118, 179, 225;
+  --white: #fff;
+  --primary-color: #76b3e1;
+  --primary-hover: #646cff;
+  --bg-color: #242424;
+  --surface-color: #1a1a1a;
+  --surface-hover: #333;
+  --panel-bg: #202020;
+  --text: #dedede;
+  --text-color: #dedede;
+  --text-muted: #aaa;
+  --text-strong: #eee;
+  --border-color: #444;
+  --border-radius-md: 8px;
+  --control-height: 40px;
+  --font-family: system-ui, sans-serif;
+  --spacing-md: 1rem;
+  --toggle-off-bg: #555;
+  --app-max-width: 1200px;
+  --board-size: min(70vw, 440px);
+  --square-size: calc(var(--board-size) / 8);
+  --avatar-height: 80px;
+  --sidebar-width: 220px;
+  --mobile-banner-height: 48px;
+  --animation-base-duration: 1s;
+  --eval-bar-bg: #111;
+  --eval-bar-border: #222244;
+  --eval-white-from: #f0f0ff;
+  --eval-white-mid: #c8c8ff;
+  --eval-white-to: #a0a0ff;
+  --eval-black-from: #1a1a2e;
+  --eval-black-mid: #0f0f1f;
+  --eval-black-to: #080814;
+  --overlay-opacity: 0.33;
+  --beam-color-start: #a0e0ff;
+  --beam-color-peak: #fff;
+  --beam-color-end: #a0e0ff;
+  --beam-glow: rgba(120, 180, 255, 0.25);
+  --beam-bg-inner: rgba(20, 20, 60, 0.4);
+  --beam-bg-outer: rgba(0, 0, 0, 0.92);
+  --matrix-color: #00ff41;
+  --matrix-bright: #bbffbb;
+  --sc-menu-neon: #b9f85d;
+  --sc-menu-neon-dim: #86a647;
+  --sc-menu-glow: #8cff0044;
+  --piece-side-white: #eee;
+  --piece-side-black: #333;
+}
+body {
+  margin: 0;
+}
+.fixture {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+}
+.fixture-column {
+  display: grid;
+  gap: 1rem;
+  max-width: 640px;
+}
+.fixture-frame {
+  position: relative;
+  min-height: 300px;
+  width: min(90vw, 600px);
+}
+
+.fixture-board {
+  display: grid;
+  place-items: center;
+  width: var(--board-size);
+  height: var(--board-size);
+  background: #44515d;
+}
+.fixture-sidebar {
+  width: var(--sidebar-width);
+  padding-top: 1rem;
+}
+@media (max-width: 719px) {
+  .fixture-sidebar {
+    display: none;
+  }
+}
+
+.fixture-eval { position: relative; margin-left: 2rem; height: 220px; width: 32px; --board-size: 220px; }

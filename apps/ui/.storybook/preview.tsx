@@ -1,15 +1,17 @@
-import { MemoryRouter, Route, createMemoryHistory } from "@solidjs/router";
+// SPEC: _spec/_plans/chess-ui-primitives.puml
+import { UiProvider } from "@chess-coach/ui-web/provider";
+import { A, MemoryRouter, Route, createMemoryHistory } from "@solidjs/router";
 import type { Preview } from "storybook-solidjs-vite";
 
+import { installStorybookBrowserMocks } from "~/storybook/browserMocks";
+import "~/theme.css";
+import "~/index.css";
+import { resetStoryState, type StoryState } from "~/storybook/storyState";
 import {
   applyStorybookTheme,
   readStorybookTheme,
   storybookThemeGlobalTypes,
 } from "~/storybookApplyTheme";
-import "~/theme.css";
-import "~/index.css";
-import { installStorybookBrowserMocks } from "~/storybook/browserMocks";
-import { resetStoryState, type StoryState } from "~/storybook/storyState";
 
 installStorybookBrowserMocks();
 
@@ -49,10 +51,12 @@ const preview: Preview = {
       history.set({ value: parameters.route ?? "/" });
 
       return (
-        <MemoryRouter history={history}>
-          <Route path="/review/:id" component={Story} />
-          <Route path="*" component={Story} />
-        </MemoryRouter>
+        <UiProvider product="chess" Link={A}>
+          <MemoryRouter history={history}>
+            <Route path="/review/:id" component={Story} />
+            <Route path="*" component={Story} />
+          </MemoryRouter>
+        </UiProvider>
       );
     },
   ],

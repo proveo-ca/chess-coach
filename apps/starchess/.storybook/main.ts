@@ -1,3 +1,4 @@
+// SPEC: _spec/_plans/chess-ui-primitives.puml
 import { fileURLToPath } from "node:url";
 
 import type { StorybookConfig } from "storybook-solidjs-vite";
@@ -14,7 +15,7 @@ const config = {
   },
   staticDirs: [{ from: "../public", to: "/starchess" }],
   viteFinal: async (baseConfig) => {
-    return mergeConfig(baseConfig, {
+    const storybookConfig = mergeConfig(baseConfig, {
       resolve: {
         dedupe: ["solid-js", "chess.js"],
         alias: [
@@ -29,6 +30,11 @@ const config = {
         ],
       },
     });
+    storybookConfig.plugins = storybookConfig.plugins?.flat(4).filter((plugin) => {
+      if (!plugin || typeof plugin !== "object" || !("name" in plugin)) return true;
+      return !String(plugin.name).startsWith("vite-plugin-pwa");
+    });
+    return storybookConfig;
   },
 } satisfies StorybookConfig;
 

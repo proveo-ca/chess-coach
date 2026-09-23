@@ -1,5 +1,7 @@
+// SPEC: _spec/_plans/chess-ui-primitives.puml
+import { UiProvider } from "@chess-coach/ui-web/provider";
+import { A, MemoryRouter, Route, createMemoryHistory } from "@solidjs/router";
 import type { Preview } from "storybook-solidjs-vite";
-import { MemoryRouter, Route, createMemoryHistory } from "@solidjs/router";
 
 import {
   applyStorybookTheme,
@@ -81,7 +83,15 @@ const preview: Preview = {
           "Features",
           ["Credits", "GasDeploy", "Side Rail Tools", "Turn Chrome", "*"],
           "Atoms",
-          ["CoachAvatar", "ColorSwatch", "DeployModal", "MatchHistoryFilters", "Modal", "NeonModal", "*"],
+          [
+            "CoachAvatar",
+            "ColorSwatch",
+            "DeployModal",
+            "MatchHistoryFilters",
+            "Modal",
+            "NeonModal",
+            "*",
+          ],
           "Primitives",
           [
             "Breadcrumb",
@@ -114,13 +124,15 @@ const preview: Preview = {
       const history = createMemoryHistory();
       history.set({ value: parameters.route ?? "/" });
       return (
-        <MemoryRouter history={history}>
-          <Route path="/review/:id" component={Story} />
-          <Route path="/tutorial/:section/:story" component={Story} />
-          <Route path="/tutorial/:section" component={Story} />
-          <Route path="/single" component={Story} />
-          <Route path="*" component={Story} />
-        </MemoryRouter>
+        <UiProvider product="starchess" Link={A}>
+          <MemoryRouter history={history}>
+            <Route path="/review/:id" component={Story} />
+            <Route path="/tutorial/:section/:story" component={Story} />
+            <Route path="/tutorial/:section" component={Story} />
+            <Route path="/single" component={Story} />
+            <Route path="*" component={Story} />
+          </MemoryRouter>
+        </UiProvider>
       );
     },
   ],
