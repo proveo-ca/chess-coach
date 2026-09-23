@@ -167,7 +167,7 @@ threads (they are the model's belief input, not just the script's).
 
 **Browser budget.** Inference must fit the live turn (10s cap at income tier 1, but sub-second for
 feel) inside the PWA — model size, WebGPU availability and a worker path are the constraints, and
-`apps/ui`'s `EnginePool` scheduler is the precedent for keeping heavy work off the main thread.
+`apps/chess`'s `EnginePool` scheduler is the precedent for keeping heavy work off the main thread.
 
 ---
 

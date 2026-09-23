@@ -1,5 +1,5 @@
 @startuml chess-coach-ui
-' SPEC: _spec/apps/ui/components.puml
+' SPEC: _spec/apps/chess/components.puml
 !includeurl https://raw.githubusercontent.com/proveo-ca/identity/refs/heads/main/proveo.iuml
 
 skinparam defaultTextAlignment left

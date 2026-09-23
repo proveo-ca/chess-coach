@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/ui/components.puml
+// SPEC: _spec/apps/chess/components.puml
 import { onCleanup, onMount } from "solid-js";
 
 import { useTravelMode } from "~/hooks/useTravelMode";

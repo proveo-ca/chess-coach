@@ -1,6 +1,6 @@
 /* Dock the ChatBubble beside (desktop) or over Kerrigan (tall mobile) without
    shifting the Screen header. Only the cramped bands still float over the board.
-   // SPEC: _spec/apps/ui/responsiveness/rules.md */
+   // SPEC: _spec/apps/chess/responsiveness/rules.md */
 
 :global([data-region="top"]:has(.tutorial-guide-bubble)) {
   overflow: visible;

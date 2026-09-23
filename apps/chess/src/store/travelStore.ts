@@ -1,6 +1,6 @@
 import { createStore } from "solid-js/store";
 
-// SPEC: _spec/apps/ui/components.puml
+// SPEC: _spec/apps/chess/components.puml
 import type { MoveSquares } from "~/types/game";
 
 type TravelState = {

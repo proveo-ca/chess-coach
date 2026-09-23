@@ -2,7 +2,7 @@
 /**
  * Snapshot-driven StarChess board — eclipse/butter/vermeer (default eclipse).
  * Vision via VisionStrategy (player fog | observer dual borders).
- * Presentation CSS matches apps/ui StarChessBoardView + StarChessSquare at 3bed049.
+ * Presentation CSS matches apps/chess StarChessBoardView + StarChessSquare at 3bed049.
  */
 import { For, Show, createEffect, createMemo, createSignal, createUniqueId, onCleanup, onMount } from "solid-js";
 import type { Component } from "solid-js";

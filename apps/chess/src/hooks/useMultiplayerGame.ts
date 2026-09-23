@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/ui/multiplayer.puml
+// SPEC: _spec/apps/chess/multiplayer.puml
 import { createEffect, createSignal, onCleanup } from "solid-js";
 
 import { addMoveSan, currentFen, game, loadFen, setViewIndex } from "~/store/gameStore";

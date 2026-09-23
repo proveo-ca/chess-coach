@@ -6,7 +6,7 @@ import type { BoardVariant } from "~/types/board";
 /**
  * Terrain gallery — each story mounts MapScreen (Screen grid).
  * Variants: eclipse | butter | vermeer (default eclipse).
- * // SPEC: _spec/apps/ui/responsiveness/rules.md
+ * // SPEC: _spec/apps/chess/responsiveness/rules.md
  */
 const meta = {
   title: "StarChess/Maps",

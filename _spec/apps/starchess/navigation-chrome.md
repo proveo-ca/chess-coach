@@ -36,7 +36,7 @@ Companion diagrams (logic, not rationale):
 `_spec/apps/starchess/screens.puml` (Screen HUD regions),
 `_spec/apps/starchess/architecture/base-screen.puml` (BaseScreen props),
 `_spec/apps/starchess/architecture/screen-entities.puml`,
-`_spec/apps/ui/responsiveness/rules.md` (viewport contract),
+`_spec/apps/chess/responsiveness/rules.md` (viewport contract),
 `_spec/apps/starchess/architecture/storybook-projection.puml` (projection rule).
 
 ---
@@ -48,7 +48,7 @@ No `data-testid` selectors in any touched stylesheet (css-layout contract).
 
 | Control | Mobile rule | Desktop |
 |---|---|---|
-| `ChevronNav` `.nav` (starchess + `apps/ui` copies) | `(max-width: 719px)` → `min-width: 40px` + `min-height: 40px` | no 40px floor |
+| `ChevronNav` `.nav` (starchess + `apps/chess` copies) | `(max-width: 719px)` → `min-width: 40px` + `min-height: 40px` | no 40px floor |
 | `ReviewTurnNav` `.btn` (review ‹ ›) | `(max-width: 719px)` → `min-width: 40px` + `min-height: 40px` | no 40px floor |
 | `MatchHistoryFilters` `.page-btn` (date pager) | `(max-width: 719px)` block → `min-width: 40px` + `min-height: 40px` | slim pager, no 40px floor |
 | `Breadcrumb` `.crumb` (tutorial sections) | `(max-width: 719px)` → `min-height: 40px` only (no min-width); footer grows to fit, never shrunk to save space | no 40px floor |

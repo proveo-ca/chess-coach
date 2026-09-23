@@ -277,7 +277,7 @@
 
 /* Dynamic fuse: bar cells hoist into [data-fuse-root] beside banner.
    Left-tool fan-out stays on `.bar > div:nth-of-type(*)` (do not override order).
-   SPEC: _spec/apps/ui/responsiveness/rules.md */
+   SPEC: _spec/apps/chess/responsiveness/rules.md */
 @media (--dynamic-mobile) {
   :global([data-fuse-root]) > .bar:not(.timeline) {
     display: contents;

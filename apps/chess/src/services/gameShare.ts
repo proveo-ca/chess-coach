@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/ui/components.puml
+// SPEC: _spec/apps/chess/components.puml
 import { Chess } from "chess.js";
 import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from "lz-string";
 

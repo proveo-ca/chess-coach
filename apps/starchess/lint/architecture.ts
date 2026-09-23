@@ -1,6 +1,6 @@
 /**
  * Local oxlint plugin enforcing StarChess component architecture.
- * Ported from apps/ui/lint/architecture.ts; wired via oxlint.config.ts `jsPlugins`.
+ * Ported from apps/chess/lint/architecture.ts; wired via oxlint.config.ts `jsPlugins`.
  *
  *   proveo-starchess/pure-primitive          — primitives/ must be presentational
  *   proveo-starchess/route-target-in-screens — <Route> targets must live in screens/

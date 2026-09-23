@@ -1,5 +1,5 @@
 @startuml chess-coach-entities
-' SPEC: _spec/apps/ui/entities.puml
+' SPEC: _spec/apps/chess/entities.puml
 !includeurl https://raw.githubusercontent.com/proveo-ca/identity/refs/heads/main/proveo.iuml
 
 skinparam defaultTextAlignment left

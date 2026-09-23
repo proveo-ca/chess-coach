@@ -4,7 +4,7 @@ import type { Page } from "@playwright/test";
 /**
  * Progressive path fog — bishop fog-edge lesson on starchess Storybook (:6007).
  * Asserts g7 lights while the bishop is still walking (move layer active), not only
- * after the final occupy commit — matches apps/ui StarChessBoardView path vision.
+ * after the final occupy commit — matches apps/chess StarChessBoardView path vision.
  *
  * The story is a **live** lesson projection (`lessonStory("fog", "bishop")`, see
  * `FogOfWar.stories.tsx`): queue Bd4→h8 by clicking, `endTurnAfterQueue: "first"`

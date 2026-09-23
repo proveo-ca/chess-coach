@@ -7,7 +7,7 @@ COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
 COPY packages packages
 COPY apps/e2e/package.json apps/e2e/
 COPY apps/starchess/package.json apps/starchess/
-COPY apps/chess/package.json apps/chess/
+COPY apps/chess/package.json apps/chess/package-lock.json* apps/chess/
 
 RUN pnpm install --frozen-lockfile --filter chess-coach-e2e --filter chess-coach-ui... --filter @chess-coach/starchess...
 

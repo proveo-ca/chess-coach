@@ -1,5 +1,5 @@
 @startuml ui-responsiveness-layout
-' SPEC: _spec/apps/ui/responsiveness/layout.puml
+' SPEC: _spec/apps/chess/responsiveness/layout.puml
 !includeurl https://raw.githubusercontent.com/proveo-ca/identity/refs/heads/main/proveo.iuml
 
 skinparam defaultTextAlignment left

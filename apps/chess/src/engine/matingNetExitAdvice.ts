@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/ui/blunder-detection.puml
+// SPEC: _spec/apps/chess/blunder-detection.puml
 
 /** Semantic CP loss for exiting a forced mate (distinct from generic thresholds). */
 export const MATING_NET_EXIT_CP = -9000;

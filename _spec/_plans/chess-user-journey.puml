@@ -7,7 +7,7 @@ skinparam noteTextAlignment left
 ' covers: apps/starchess/src/screens/MenuRoute.tsx
 '         apps/starchess/src/screens/SingleScreen.tsx
 ' live spec: _spec/apps/starchess/menu-flow.puml
-'            _spec/apps/ui/state-machine.puml
+'            _spec/apps/chess/state-machine.puml
 ' remaining verb on this path .......... _spec/_plans/forfeit-as-loss.puml
 ' Notes are capped at 5 lines x 50 columns; one idea per anchor.
 title OUTDATED — StarChess path is menu-flow.puml;\norphan-screen work is not a new app
@@ -26,7 +26,7 @@ note bottom of IN
   **""menu-flow.puml"" already lists
   map · team · opponent · rematch ·
   replay.** Coach screens live under
-  ""apps/ui"" state-machine. This file
+  ""apps/chess"" state-machine. This file
   does not own either.
 end note
 

@@ -2,7 +2,7 @@
 /**
  * Live match board — snapshot from match store + combat VFX from timeline.
  * Variants: eclipse | butter | vermeer.
- * Deploy drops: timeline cues + occupancy auto-deploy (apps/ui parity).
+ * Deploy drops: timeline cues + occupancy auto-deploy (apps/chess parity).
  * Intent / fog ownership: {@link useIntentOverlays} / {@link useBoardVision}.
  */
 import {

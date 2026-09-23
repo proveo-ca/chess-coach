@@ -7,7 +7,7 @@ import { accumulateStream } from "~/services/streamUtils";
 import { clearPendingTravel, setHoverAdvice, setHoverEmotion } from "~/store/coachStore";
 import { currentFen } from "~/store/gameStore";
 import { startTravel } from "~/store/travelStore";
-// SPEC: _spec/apps/ui/components.puml
+// SPEC: _spec/apps/chess/components.puml
 import type { MoveSquares } from "~/types/game";
 
 /**

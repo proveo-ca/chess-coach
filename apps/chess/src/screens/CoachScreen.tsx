@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/ui/components.puml
+// SPEC: _spec/apps/chess/components.puml
 import { createSignal, onMount } from "solid-js";
 import type { Component } from "solid-js";
 

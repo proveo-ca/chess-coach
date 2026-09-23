@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/ui/multiplayer.puml
+// SPEC: _spec/apps/chess/multiplayer.puml
 import type { Chess, Color } from "chess.js";
 import { Show, type Component } from "solid-js";
 

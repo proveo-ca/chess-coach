@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/ui/components.puml
+// SPEC: _spec/apps/chess/components.puml
 import { createEffect, createRoot, createSignal } from "solid-js";
 import { createStore } from "solid-js/store";
 

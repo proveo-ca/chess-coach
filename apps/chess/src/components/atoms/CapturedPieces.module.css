@@ -1,4 +1,4 @@
-/* SPEC: _spec/apps/ui/responsiveness/rules.md
+/* SPEC: _spec/apps/chess/responsiveness/rules.md
    Board-width strip in top/footer regions so --left / --right align to the
    board edges (not a shrink-wrapped centered chip). Desktop footer uses
    align-items:center — without width:100% + max-width, flex-end is a no-op.

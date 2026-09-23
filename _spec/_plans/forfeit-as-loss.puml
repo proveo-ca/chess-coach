@@ -20,7 +20,7 @@ skinparam noteTextAlignment left
 ' already know win|loss|draw — they are never called on Home today.
 '
 ' ── WHAT IT DOES NOT SETTLE ────────────────────────────────────────────────
-'   Coach resign (already a loss in apps/ui)
+'   Coach resign (already a loss in apps/chess)
 '   timeout vs leave as separate reasons
 '   tutorial HOME (TutorialScreen.goHome)
 '   folding this into ""scOutcome"" (HP / turn-45 only)

@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/ui/components.puml
+// SPEC: _spec/apps/chess/components.puml
 export class UciDriver {
   private worker: Worker;
   private messageQueue: string[] = [];

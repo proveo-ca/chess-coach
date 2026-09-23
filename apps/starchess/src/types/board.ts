@@ -10,7 +10,7 @@ export type BoardSkin = BoardVariant | "classic";
  * App presentation only — never in `@chess-coach/starchess-core`.
  * - `nerd` — product default; drawn entirely by the inline units in
  *   `presentation/pieces/`. This app ships no `nerd` assets: the traced
- *   reference art lives in `apps/ui/public/pieces/nerd/`, where apps/ui
+ *   reference art lives in `apps/chess/public/pieces/nerd/`, where apps/chess
  *   still renders it for the Nerd identity skin.
  * - `cburnett` — **tutorial fog Chess-mode skin only** (flat Lichess SVGs).
  *   Not a second product mode; do not grow core/rules around it.

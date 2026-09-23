@@ -1,5 +1,5 @@
 @startuml chess-coach-multiplayer-sequence
-' SPEC: _spec/apps/ui/multiplayer-sequence.puml
+' SPEC: _spec/apps/chess/multiplayer-sequence.puml
 !includeurl https://raw.githubusercontent.com/proveo-ca/identity/refs/heads/main/proveo.iuml
 
 actor "Player 1\n(host)" as W

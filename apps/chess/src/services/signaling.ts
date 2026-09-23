@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/ui/multiplayer.puml
+// SPEC: _spec/apps/chess/multiplayer.puml
 import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from "lz-string";
 
 import type { SignalKind, SignalPayload } from "~/types/multiplayer";

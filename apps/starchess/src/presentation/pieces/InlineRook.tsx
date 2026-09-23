@@ -212,7 +212,7 @@ const Turret: Component<{ team: string }> = (props) => (
 );
 
 /**
- * Siege Tank — siege rest matches `apps/ui/public/pieces/nerd/*R.svg`; tank chassis unchanged.
+ * Siege Tank — siege rest matches `apps/chess/public/pieces/nerd/*R.svg`; tank chassis unchanged.
  * Turret deck spins 180° on toggle; armor plates stagger independently.
  */
 export const InlineRook: Component<InlineRookProps> = (props) => {

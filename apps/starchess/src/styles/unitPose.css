@@ -3,7 +3,7 @@
  * because two components share it (`InlineKnight`, `InlineQueen`) and a module
  * may only be imported by its own component.
  *
- * The shipping silhouettes in `apps/ui/public/pieces/nerd/` ARE the rest pose,
+ * The shipping silhouettes in `apps/chess/public/pieces/nerd/` ARE the rest pose,
  * so at rest these groups carry no transform at all — that is what keeps a unit
  * sitting on its square identical to the art players already know.
  *

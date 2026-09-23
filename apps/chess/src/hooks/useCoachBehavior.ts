@@ -14,7 +14,7 @@ import {
   thinkingPhrases,
 } from "~/store/coachStore";
 import { playerIdentity } from "~/store/settingsStore";
-// SPEC: _spec/apps/ui/components.puml
+// SPEC: _spec/apps/chess/components.puml
 import type { PlayerIdentity } from "~/types/settings";
 import { logger } from "~/utils/logger";
 

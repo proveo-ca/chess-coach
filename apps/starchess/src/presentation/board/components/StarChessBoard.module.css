@@ -8,7 +8,7 @@
 }
 
 .chessboard-container {
-  /* Same footprint as apps/ui ChessBoard (--board-size square). */
+  /* Same footprint as apps/chess ChessBoard (--board-size square). */
   box-sizing: border-box;
   width: var(--board-size);
   height: var(--board-size);

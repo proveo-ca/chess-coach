@@ -2,7 +2,7 @@ import { defineConfig } from "@playwright/test";
 import { TARGET, targetConfig } from "./target";
 
 // The SAME specs in ./tests run against multiple "targets" — wirings of the
-// identical apps/ui. `E2E_TARGET` selects one (default web-no-llm); each target
+// identical apps/chess. `E2E_TARGET` selects one (default web-no-llm); each target
 // supplies its own baseURL, web servers, browser projects and ignore list. See
 // ./target.ts for the matrix and ./global-setup.ts for the desktop LLM preflight.
 const t = targetConfig();

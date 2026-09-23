@@ -12,7 +12,7 @@ package "product default (apps/starchess presentation)" {
   component "PieceSet = 'nerd'" as NERD <<app>>
   component "Inline* SVG units\npresentation/pieces/*" as INLINE <<app>>
   component "PieceGlyph\n(only reader of pieceUrl)" as GLYPH <<app>>
-  component "apps/ui/public/pieces/nerd/*.svg\nreference art — NOT shipped here" as SVG <<db>>
+  component "apps/chess/public/pieces/nerd/*.svg\nreference art — NOT shipped here" as SVG <<db>>
 }
 
 package "tutorial fog Chess skin ONLY" {
@@ -46,7 +46,7 @@ note bottom
   Do **not** add PieceSet, skins, or SVG paths to ""@chess-coach/starchess-core"".
   ""apps/starchess/public/pieces"" holds **cburnett only** — the nerd assets
   were deleted once every product board moved to the inline units. The traced
-  reference art survives in ""apps/ui/public/pieces/nerd/"", which apps/ui still
+  reference art survives in ""apps/chess/public/pieces/nerd/"", which apps/chess still
   renders for its Nerd identity skin.
   Rules/resolve stay piece-symbol + color only.
 end note

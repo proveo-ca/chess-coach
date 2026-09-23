@@ -1,15 +1,15 @@
 # UI Responsiveness Contract
 
-Living contract for how `apps/ui` fits the Chessboard + sideboard into constrained
+Living contract for how `apps/chess` fits the Chessboard + sideboard into constrained
 viewports. Implementation lives primarily in:
 
-- `apps/ui/src/components/primitives/Screen.module.css` (root `display: grid`)
-- `apps/ui/src/components/primitives/Screen.tsx` (`data-region`, `data-footer-float`)
-- `apps/ui/src/components/features/CoachPanel.tsx` (§4 floating advice)
-- `apps/ui/src/components/features/MoveList.tsx` (§4 floating move strip on Review /:id)
-- `apps/ui/src/store/viewportLayoutStore.ts`
-- `apps/ui/src/theme.css` (`--board-size`, `--sidebar-width`, `--avatar-height`, breakpoints)
-- `apps/ui/src/components/features/MobileSidebar.module.css` (mobile avatar overflow)
+- `packages/ui/web/src/primitives/Screen.chess.module.css` (root `display: grid`)
+- `packages/ui/web/src/primitives/Screen.tsx` (`data-region`, `data-footer-float`)
+- `apps/chess/src/components/features/CoachPanel.tsx` (§4 floating advice)
+- `apps/chess/src/components/features/MoveList.tsx` (§4 floating move strip on Review /:id)
+- `apps/chess/src/store/viewportLayoutStore.ts`
+- `apps/chess/src/theme.css` (`--board-size`, `--sidebar-width`, `--avatar-height`, breakpoints)
+- `apps/chess/src/components/features/MobileSidebar.module.css` (mobile avatar overflow)
 
 Visual evidence: [`screenshots.md`](./screenshots.md).  
 Grid priority diagram: [`layout.puml`](./layout.puml).  
@@ -112,7 +112,7 @@ When `top + board-column content + in-flow footer budget > viewport`, the bottom
 row collapses (`data-footer-float="true"`) and content floats over the board
 instead. **Measure `data-board-column` content height**, not the stretched middle
 `1fr` grid track — otherwise tall mobile always floats. Helper:
-`apps/ui/src/utils/footerFloatMeasure.ts`.
+`apps/chess/src/utils/footerFloatMeasure.ts`.
 
 Tall mobile (e.g. 390×844) docks CoachPanel / MoveList when the budget fits;
 short dynamic (e.g. 480×480) still floats.
@@ -201,7 +201,7 @@ Mobile 390×844 · Dynamic 560×420). Two Coach details the mock has to reproduc
 by hand, since it doesn't share the stylesheets:
 
 - Below 480px Coach shrinks its **root font** to `0.85rem` / `line-height: 1.2`
-  (`apps/ui/src/index.css`). StarChess keeps a 16px root, so the mock re-applies
+  (`apps/chess/src/index.css`). StarChess keeps a 16px root, so the mock re-applies
   the 0.85 factor to its own rem values (px and em values scale in neither).
 - The bubble's position comes from `ChatBubble`'s pop-in animation: it fills
   forwards on `transform: scale(1)`, overriding `.coach-line`'s

@@ -4,7 +4,7 @@ import type { Page } from "@playwright/test";
 /**
  * §4 floating CoachPanel + blunder detection on a short (dynamic) viewport.
  *
- * Responsiveness contract: `_spec/apps/ui/responsiveness/rules.md` §4.
+ * Responsiveness contract: `_spec/apps/chess/responsiveness/rules.md` §4.
  * Blunder hover: same Qxf7 setup as coach.spec.ts — white queen on h5,
  * hovering f7 must surface "blunder" inside `data-testid=floating-advice`
  * (the real CoachPanel, not an in-flow footer).

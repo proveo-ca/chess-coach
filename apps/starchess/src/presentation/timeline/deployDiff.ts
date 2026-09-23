@@ -1,6 +1,6 @@
 /**
  * Diff placement strings → Command Center / put deploy cues (not relocates).
- * Mirrors apps/ui `deployCuesForBoardDiff`.
+ * Mirrors apps/chess `deployCuesForBoardDiff`.
  */
 import type { Square } from "chess.js";
 import { placementToMap, type StarChessPiece } from "@chess-coach/starchess-core";

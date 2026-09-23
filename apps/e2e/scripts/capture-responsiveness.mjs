@@ -1,5 +1,5 @@
 /**
- * One-shot HEAD screenshot capture for _spec/apps/ui/responsiveness/screenshots/.
+ * One-shot HEAD screenshot capture for _spec/apps/chess/responsiveness/screenshots/.
  */
 import { chromium } from "@playwright/test";
 import fs from "node:fs";
@@ -7,7 +7,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..");
-const OUT = path.join(ROOT, "_spec/apps/ui/responsiveness/screenshots");
+const OUT = path.join(ROOT, "_spec/apps/chess/responsiveness/screenshots");
 const BASE = process.env.BASE_URL ?? "http://127.0.0.1:5173/chess";
 const CHROME =
   process.env.CHROME_PATH ??

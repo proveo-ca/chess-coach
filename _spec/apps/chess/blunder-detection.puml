@@ -1,5 +1,5 @@
 @startuml chess-coach-ui-blunder-detection
-' SPEC: _spec/apps/ui/blunder-detection.puml
+' SPEC: _spec/apps/chess/blunder-detection.puml
 !includeurl https://raw.githubusercontent.com/proveo-ca/identity/refs/heads/main/proveo.iuml
 
 skinparam defaultTextAlignment left

@@ -1,5 +1,5 @@
 @startuml chess-coach-ui-state-machine
-' SPEC: _spec/apps/ui/state-machine.puml
+' SPEC: _spec/apps/chess/state-machine.puml
 !includeurl https://raw.githubusercontent.com/proveo-ca/identity/refs/heads/main/proveo.iuml
 
 skinparam defaultTextAlignment left

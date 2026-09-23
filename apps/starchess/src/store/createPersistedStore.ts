@@ -3,7 +3,7 @@ import { type SetStoreFunction, createStore } from "solid-js/store";
 
 /**
  * Solid store mirrored to `localStorage` under `key`.
- * Same pattern as Coach `apps/ui` — shared origin shares the blob.
+ * Same pattern as Coach `apps/chess` — shared origin shares the blob.
  */
 export function createPersistedStore<T extends object>(
   key: string,

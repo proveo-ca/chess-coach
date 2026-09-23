@@ -1,8 +1,8 @@
 /**
- * StarChess design tokens — mirrors apps/ui `theme.css` (tokens + breakpoints).
+ * StarChess design tokens — mirrors apps/chess `theme.css` (tokens + breakpoints).
  * Layout classes (not testids): .screen-root · .mobile-banner · .starchess-play ·
  * .starchess-menu · .coach-avatar · .chessboard · .mobile-hero
- * // SPEC: _spec/apps/ui/responsiveness/rules.md
+ * // SPEC: _spec/apps/chess/responsiveness/rules.md
  */
 
 :root {

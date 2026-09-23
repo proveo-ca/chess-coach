@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/ui/entities.puml
+// SPEC: _spec/apps/chess/entities.puml
 import { createEffect } from "solid-js";
 import type { Accessor } from "solid-js";
 

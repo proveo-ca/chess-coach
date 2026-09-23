@@ -1,4 +1,4 @@
-/* Host — board footprint matches apps/ui ChessBoard (--board-size). */
+/* Host — board footprint matches apps/chess ChessBoard (--board-size). */
 .host {
   position: relative;
   display: block;

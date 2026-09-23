@@ -55,7 +55,7 @@ TOOLS ARROW_ERROR TOOLS : Leave Match modal
 MENU ARROW_MAIN NEON
 
 note bottom
-  **Layout** matches ``apps/ui`` ``Screen`` (content-sized rows; desktop
+  **Layout** matches ``apps/chess`` ``Screen`` (content-sized rows; desktop
   header ``min-height: calc(--avatar-height + 1rem)`` for captures). BoardArea = BoardColumn +
   ``BoardSideRail`` (``--sidebar-width`` only — no board-height lock).
   ``ReviewDemoScreen``, ``StarChessScreen``, and ``TutorialReviewHost`` supply

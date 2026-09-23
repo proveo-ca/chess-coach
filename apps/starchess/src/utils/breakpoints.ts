@@ -1,6 +1,6 @@
-// SPEC: _spec/apps/ui/responsiveness/rules.md, _spec/apps/starchess/screens.puml
+// SPEC: _spec/apps/chess/responsiveness/rules.md, _spec/apps/starchess/screens.puml
 /**
- * Shared viewport media queries — mirrors `apps/ui/src/utils/breakpoints.ts`
+ * Shared viewport media queries — mirrors `apps/chess/src/utils/breakpoints.ts`
  * and the `@media` bands in `theme.css` / the Screen stylesheets. One string
  * per band so JS gates (portaled docks, banner chrome) cannot drift from CSS.
  */

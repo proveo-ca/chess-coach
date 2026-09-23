@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/ui/components.puml
+// SPEC: _spec/apps/chess/components.puml
 /// <reference lib="webworker" />
 
 let lc0Ready = false;

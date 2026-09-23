@@ -2,7 +2,7 @@
  * Home, vision, and flip tools rendered inside BoardSideRail.
  * Live Home asks for confirmation before leaving; review exposes vision radios.
  * // SPEC: _spec/apps/starchess/screens.puml
- * // SPEC: _spec/apps/ui/responsiveness/rules.md
+ * // SPEC: _spec/apps/chess/responsiveness/rules.md
  */
 import type { StarChessColor } from "@chess-coach/starchess-core";
 import type { Component } from "solid-js";

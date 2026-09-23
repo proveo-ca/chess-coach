@@ -1,6 +1,6 @@
 /**
  * StarChess main menu — static StarCraft-inspired spatial layout.
- * Coach avatar uses the same splash slot metrics as apps/ui MenuScreen
+ * Coach avatar uses the same splash slot metrics as apps/chess MenuScreen
  * (SplashScreen avatar wrapper) so Chess ↔ StarChess never shifts her.
  * Menu anchors map Brood War main-menu positions (viewport %).
  *
@@ -147,7 +147,7 @@ export const MenuScreen: Component<StarChessMenuScreenProps> = (props) => {
       </div>
 
       {/*
-        Same splash column as apps/ui SplashScreen / MenuScreen — avatar box
+        Same splash column as apps/chess SplashScreen / MenuScreen — avatar box
         must stay pixel-identical across Chess ↔ StarChess.
       */}
       <div class={`menu-splash-slot ${styles.splashContent}`} data-testid="menu-splash-slot">

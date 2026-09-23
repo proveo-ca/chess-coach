@@ -112,7 +112,7 @@ STATUS ..> ROUTER : "Timeout→504, bad JSON→400,\nelse→500 (ErrorResponse)"
 note top of CORE
   The behaviour-defining prompt logic is shared
   verbatim between this server and the browser
-  engine (apps/ui/src/engine) — one tested impl.
+  engine (apps/chess/src/engine) — one tested impl.
   See _spec/apps/server/behavior.md + _spec/packages/engine-core/ui-engine-parity.md.
 end note
 

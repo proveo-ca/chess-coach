@@ -1,4 +1,4 @@
-/* SPEC: _spec/apps/ui/responsiveness/rules.md */
+/* SPEC: _spec/apps/chess/responsiveness/rules.md */
 
 /* Tall / narrow mobile chrome — FEN below banner + captures + footer bar.
    Top region is flex-end (hug board); `.mobile-banner` margin-bottom:auto

@@ -10,7 +10,7 @@ import { useMoveListPagination } from "~/hooks/useMoveListPagination";
 import { currentIndex, fenHistory, reviewAnalysisMode, setViewIndex } from "~/store/gameStore";
 import { blunderThresholdCp } from "~/store/settingsStore";
 import { footerFloat } from "~/store/viewportLayoutStore";
-// SPEC: _spec/apps/ui/components.puml, _spec/apps/ui/responsiveness/rules.md
+// SPEC: _spec/apps/chess/components.puml, _spec/apps/chess/responsiveness/rules.md
 import type { AnnotationTag, GameAnalysis, MoveRow } from "~/types/analysis";
 import type { GameRecord, MoveRecord } from "~/types/game";
 import { DESKTOP_MQ } from "~/utils/breakpoints";

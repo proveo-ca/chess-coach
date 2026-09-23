@@ -1,5 +1,5 @@
 /**
- * Read-only view of Coach's `isNerd` (apps/ui `features/nerd/identity`) — the
+ * Read-only view of Coach's `isNerd` (apps/chess `features/nerd/identity`) — the
  * shared origin shares the blob, same as `chess_coach_settings_state`.
  *
  * StarChess never writes it: the flag is Coach's to set, and the only thing on

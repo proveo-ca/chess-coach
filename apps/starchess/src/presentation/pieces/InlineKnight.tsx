@@ -15,7 +15,7 @@ type InlineKnightProps = {
 /**
  * Hoverbike nose → local +x. The art is drawn nose-up-right, so normalizing it
  * costs a mirror *and* 40°; the rest pose is simply this transform's absence,
- * which is what makes it match `apps/ui/public/pieces/nerd/*N.svg`.
+ * which is what makes it match `apps/chess/public/pieces/nerd/*N.svg`.
  */
 const NOSE_TO_PLUS_X = "scale(-1, 1) rotate(40deg)";
 

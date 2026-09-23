@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/ui/components.puml
+// SPEC: _spec/apps/chess/components.puml
 import { createSignal, createEffect, onCleanup } from "solid-js";
 
 export function usePresence(show: () => boolean, exitMs = 200) {

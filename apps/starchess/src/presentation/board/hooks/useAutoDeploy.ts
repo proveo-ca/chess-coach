@@ -2,7 +2,7 @@
 /**
  * Auto-deploy: when a unit appears on the board without relocating from
  * another square, fire a DeployCue and hide the square until DEPLOY_MS ends.
- * Mirrors apps/ui `useAutoDeploy` — Command Center / put drops without a
+ * Mirrors apps/chess `useAutoDeploy` — Command Center / put drops without a
  * matching leave still animate even if the timeline projector misses them.
  */
 import type { Square } from "chess.js";

@@ -1,10 +1,10 @@
-/* SPEC: _spec/apps/ui/responsiveness/rules.md */
+/* SPEC: _spec/apps/chess/responsiveness/rules.md */
 
 /* Tall mobile: hero CoachAvatar floats over MobileBanner (z-index), then
    BoardControls hug the board. Hidden on desktop (Header owns the avatar via
    ScreenBackNav) and on short / dynamic (compact stays in BoardControls fuse).
    Always mounted — visibility is CSS-only so the avatar does not remount.
-   SPEC: _spec/apps/ui/responsiveness/rules.md */
+   SPEC: _spec/apps/chess/responsiveness/rules.md */
 .mobileHero {
   display: none;
 }

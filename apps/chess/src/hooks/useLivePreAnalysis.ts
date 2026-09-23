@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/ui/components.puml
+// SPEC: _spec/apps/chess/components.puml
 import { createEffect, on, onCleanup } from "solid-js";
 
 import { analyzeGameToCache } from "~/hooks/useGameAnalysis";

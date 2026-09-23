@@ -1,6 +1,6 @@
 /**
  * Pawn / marine last-rank picker — q / r / b / n.
- * Ported from apps/ui PromotionModal; units via {@link PieceGlyph} (inline art).
+ * Ported from apps/chess PromotionModal; units via {@link PieceGlyph} (inline art).
  */
 import type { Component } from "solid-js";
 import { For, Show } from "solid-js";

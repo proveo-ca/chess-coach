@@ -10,7 +10,7 @@ import {
 
 /**
  * Stories mount SCFEN demos only — no queue / resolve / combat logic here.
- * Restored from apps/ui `SpiderMines.stories` @ 4340996; DualNav via FogEdgeDemo.
+ * Restored from apps/chess `SpiderMines.stories` @ 4340996; DualNav via FogEdgeDemo.
  * Mine fog vision lives under Fog of War and Move Animations.
  * Promotion × mine mirrors `packages/starchess-core/src/__tests__/mine/minePathContact.test.ts`.
  * // SPEC: _spec/apps/starchess/demos.puml

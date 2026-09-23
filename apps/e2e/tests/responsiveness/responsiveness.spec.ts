@@ -1,7 +1,7 @@
 /**
- * Responsiveness contract — see _spec/apps/ui/responsiveness/rules.md
+ * Responsiveness contract — see _spec/apps/chess/responsiveness/rules.md
  *
- * Captures HEAD screenshots into _spec/apps/ui/responsiveness/screenshots/
+ * Captures HEAD screenshots into _spec/apps/chess/responsiveness/screenshots/
  * and asserts: no page scroll, board min width, CoachAvatar overlap ≤ 50%,
  * §4 floating advice on Coach, and §4b floating move list on Review /:id.
  */
@@ -12,7 +12,7 @@ import path from "node:path";
 // ESM loader hits `require is not defined` with fileURLToPath here).
 const SPEC_SHOTS = path.resolve(
   process.cwd(),
-  "../../_spec/apps/ui/responsiveness/screenshots",
+  "../../_spec/apps/chess/responsiveness/screenshots",
 );
 
 const REVIEW_ID = "spec-shot-review-0001";

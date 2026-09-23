@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/ui/responsiveness/rules.md
+// SPEC: _spec/apps/chess/responsiveness/rules.md
 /**
  * Shared viewport media queries — keep in sync with `theme.css` `@custom-media`
  * (`--desktop` = min-width 720px). Prefer the 720 desktop token; mobile is the

@@ -150,7 +150,7 @@ package "presentation/pieces (units)" {
     a resting square and a combat cue, so animations/ imports
     down into here and never the reverse.
 
-    Rest pose == apps/ui/public/pieces/nerd/*.svg — same
+    Rest pose == apps/chess/public/pieces/nerd/*.svg — same
     PIECE_FRAME nest, same main stroke, no aim normalize.
     Aiming applies that normalize as a CSS transform
     (`styles/unitPose.css` .sc-unit-pose) so a mover settles

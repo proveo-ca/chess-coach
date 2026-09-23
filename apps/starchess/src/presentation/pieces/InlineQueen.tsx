@@ -19,7 +19,7 @@ const BOW_TO_PLUS_X = "rotate(-90deg)";
 
 /**
  * Experimental BattleShip. Shipping art is bow-down and that is now the rest
- * pose — it matches `apps/ui/public/pieces/nerd/*Q.svg` exactly. Aiming rotates
+ * pose — it matches `apps/chess/public/pieces/nerd/*Q.svg` exactly. Aiming rotates
  * the framed glyph so the laser muzzle stays on local +x.
  */
 export function InlineQueen(props: InlineQueenProps) {

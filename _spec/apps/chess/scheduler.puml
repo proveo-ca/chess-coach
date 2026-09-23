@@ -1,5 +1,5 @@
 @startuml chess-coach-ui-scheduler
-' SPEC: _spec/apps/ui/scheduler.puml
+' SPEC: _spec/apps/chess/scheduler.puml
 !includeurl https://raw.githubusercontent.com/proveo-ca/identity/refs/heads/main/proveo.iuml
 
 skinparam defaultTextAlignment left

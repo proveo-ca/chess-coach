@@ -95,7 +95,7 @@ note bottom
   Play control, column 1, in ``--sc-menu-neon``. The mock reads the flag through
   ``store/nerdFlag`` (read-only — Coach owns the key) and reads it once, since
   Coach sets it before the full-page hop.
-  Contract + the two hand-copied Coach details: ``_spec/apps/ui/responsiveness/rules.md`` §5.
+  Contract + the two hand-copied Coach details: ``_spec/apps/chess/responsiveness/rules.md`` §5.
   **Board hints** — one ``hints`` step wins per beat (first matching ``when``,
   else the unconditional entry) and carries both ``squares`` (destination rings)
   and ``arrows`` (lines drawn square-to-square, e.g. the ``king-attack-1`` h1-a8

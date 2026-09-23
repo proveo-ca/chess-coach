@@ -1,6 +1,6 @@
 /**
  * Per-screen capability descriptor for StarChess.
- * Adapted from apps/ui `ScreenCapabilities` — only flags that StarChess chrome
+ * Adapted from apps/chess `ScreenCapabilities` — only flags that StarChess chrome
  * and board input actually branch on (no coach/engine/LLM affordances).
  */
 export type ScreenCapabilities = {

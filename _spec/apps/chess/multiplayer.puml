@@ -1,5 +1,5 @@
 @startuml chess-coach-multiplayer
-' SPEC: _spec/apps/ui/multiplayer.puml
+' SPEC: _spec/apps/chess/multiplayer.puml
 !includeurl https://raw.githubusercontent.com/proveo-ca/identity/refs/heads/main/proveo.iuml
 skinparam componentStyle rectangle
 

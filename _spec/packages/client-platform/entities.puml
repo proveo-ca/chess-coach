@@ -17,7 +17,7 @@ package "packages/client-platform (framework-free)" {
 }
 
 package "consumers" {
-  component "apps/ui services/platform.ts\ndetectPlatform() → PlatformInfo\n(Tailscale label · download · docs)" as UI <<app>>
+  component "apps/chess services/platform.ts\ndetectPlatform() → PlatformInfo\n(Tailscale label · download · docs)" as UI <<app>>
   component "apps/starchess hooks/useIsDesktopClient.ts\nuseMediaQuery(DESKTOP_POINTER_MQ) + device" as SC <<app>>
   component "GasRack cancel hint\nEsc copy vs drop-outside copy" as GAS <<async>>
 }

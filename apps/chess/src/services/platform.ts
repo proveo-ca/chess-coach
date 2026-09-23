@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/ui/multiplayer.puml, _spec/packages/client-platform/entities.puml
+// SPEC: _spec/apps/chess/multiplayer.puml, _spec/packages/client-platform/entities.puml
 import { detectClientDevice } from "@chess-coach/client-platform";
 
 import type { OS, PlatformInfo } from "~/types/multiplayer";
