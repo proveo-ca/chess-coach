@@ -1,0 +1,4 @@
+<!-- Have full vision of the board for consecutive turns -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" width="60" height="60">
+  <path fill="#000" fill-rule="evenodd" d="M4 30c8-12 16-18 26-18s18 6 26 18c-8 12-16 18-26 18S12 42 4 30zM30 24a6 6 0 1 0 0 12 6 6 0 1 0 0-12z"/>
+</svg>

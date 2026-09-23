@@ -1,0 +1,4 @@
+<!-- Win a game in 20, 16, 13, 11, or 9 turns or less -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" width="60" height="60">
+  <path fill="#000" fill-rule="evenodd" d="M8 46 30 8l22 38zM26 28a4 4 0 1 0 0 8 4 4 0 1 0 0-8zM36 34a3.2 3.2 0 1 0 0 6.4 3.2 3.2 0 1 0 0-6.4zM20 36a2.4 2.4 0 1 0 0 4.8 2.4 2.4 0 1 0 0-4.8zM31 18a2 2 0 1 0 0 4 2 2 0 1 0 0-4z"/>
+</svg>

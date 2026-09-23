@@ -12,7 +12,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Single Player setup: MAP (Eclipse / Butter / Vermeer), TEAM (Blue / Red), locked Adjutant (Script), START.",
+          "Single Player setup: MAP (Eclipse / Butter / Vermeer), TEAM (Blue / Red), Opponent (last Adjutant script), START.",
       },
     },
   },

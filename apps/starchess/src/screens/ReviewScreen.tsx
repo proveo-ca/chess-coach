@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/starchess/deployment.puml, _spec/apps/starchess/menu-flow.puml, _spec/apps/starchess/screens.puml, _spec/apps/starchess/architecture/screen-entities.puml, _spec/apps/starchess/replay-import.puml, _spec/_plans/game-export-localstorage.puml
+// SPEC: _spec/apps/starchess/deployment.puml, _spec/apps/starchess/menu-flow.puml, _spec/apps/starchess/screens.puml, _spec/apps/starchess/architecture/screen-entities.puml, _spec/apps/starchess/replay-import.puml, _spec/_plans/game-export-localstorage.puml, _spec/_plans/starchess-achievements.puml
 /**
  * Match history list + DualNav replay — `/review` and `/review/:id`.
  * List chrome mirrors Coach Review: Playing as + date (no First move, no title).

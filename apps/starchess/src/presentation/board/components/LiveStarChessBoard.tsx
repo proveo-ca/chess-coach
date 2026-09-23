@@ -15,6 +15,7 @@ import type { Component } from "solid-js";
 import { createEffect, createMemo, createSignal, onMount } from "solid-js";
 
 import { useMatchStore } from "~/app/MatchStoreContext";
+import { achievementBubbles } from "~/achievements/achievementLive";
 import { canSubmit, readDisplayedSnapshot } from "~/app/selectors";
 import { AnimationStage } from "~/presentation/animations/components/AnimationStage";
 import type { CombatCueFrame } from "~/presentation/animations/combatCueFrame";
@@ -334,6 +335,7 @@ export const LiveStarChessBoard: Component<{
         armedBishops={armedBishops()}
         armAnimBishops={armAnimBishops()}
         hideSquares={hideSquares()}
+        achievementBubbles={achievementBubbles()}
       />
     </div>
   );

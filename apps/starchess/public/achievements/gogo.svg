@@ -1,0 +1,11 @@
+<!-- Promote Marines in a game -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" width="60" height="60">
+  <g fill="#000">
+    <g transform="translate(18 44) rotate(-14)">
+      <path d="M-7 0C-9-8-4-14 0-14C4-14 9-8 7 0L6 6L8 8L8 16C8 19-8 19-8 16L-8 8L-6 6Z"/>
+    </g>
+    <g transform="translate(40 22) rotate(12)">
+      <path d="M-7 0C-9-8-4-14 0-14C4-14 9-8 7 0L6 6L8 8L8 16C8 19-8 19-8 16L-8 8L-6 6Z"/>
+    </g>
+  </g>
+</svg>

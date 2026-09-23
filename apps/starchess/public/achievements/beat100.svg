@@ -1,0 +1,7 @@
+<!-- Beat the Adjutant 100 times -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" width="60" height="60">
+  <g fill="#000">
+    <path d="M11 48C10 36 10 26 12 19C10 15 9 10 14 7C19 3 28 2 35 5C37 7 36 13 35 17C34 21 38 23 43 25C52 20 59 26 59 37C59 47 54 55 43 57C30 59 17 57 12 52C9 49 10 48 11 48Z"/>
+    <ellipse cx="36" cy="9" rx="6.2" ry="4.4" transform="rotate(-16 36 9)"/>
+  </g>
+</svg>

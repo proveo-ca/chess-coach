@@ -17,6 +17,8 @@ import type { Square } from "chess.js";
 
 import { parseScFen, type ScFenSnapshot } from "@chess-coach/starchess-core";
 
+import type { AchievementBubble } from "~/types/achievements";
+import { AchievementBubbles } from "~/components/features/AchievementBubbles";
 import { CombatOverlayRoot } from "~/presentation/animations/components/CombatOverlayRoot";
 import {
   type CombatCueFrame,
@@ -97,6 +99,8 @@ export type AnimationStageProps = {
   hideSquares?: ReadonlySet<Square> | readonly Square[];
   /** Hide mine glyphs after boom / while missile owns the square. */
   spentMines?: readonly Square[];
+  /** Live achievement bubbles lifted off origin squares. */
+  achievementBubbles?: readonly AchievementBubble[];
 };
 
 type OverlayBox = { top: number; left: number; w: number; h: number };
@@ -172,7 +176,8 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
   });
 
   createEffect(() => {
-    if (!hasFx() || measured()) return;
+    if (measured()) return;
+    if (!hasFx() && (props.achievementBubbles?.length ?? 0) === 0) return;
     measure();
     requestAnimationFrame(measure);
   });
@@ -247,6 +252,26 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
           specialUsedSquares={specialUsedSquares()}
           pieceSet={props.pieceSet}
         />
+        <Show when={(props.achievementBubbles?.length ?? 0) > 0}>
+          <div
+            style={{
+              position: "absolute",
+              top: `${box().top}px`,
+              left: `${box().left}px`,
+              width: `${box().w}px`,
+              height: `${box().h}px`,
+              "pointer-events": "none",
+              "z-index": "40",
+              overflow: "visible",
+            }}
+          >
+            <AchievementBubbles
+              bubbles={props.achievementBubbles ?? []}
+              boardWidth={box().w}
+              boardHeight={box().h}
+            />
+          </div>
+        </Show>
       </Show>
     </div>
   );

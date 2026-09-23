@@ -1,5 +1,7 @@
+// SPEC: _spec/apps/starchess/menu-flow.puml
 /**
  * StarChess single-player setup — MAP / TEAM / OPPONENT / START.
+ * Opponent restores from starchess_setup, not Coach difficulty.
  */
 import type { StarChessColor } from "@chess-coach/starchess-core";
 import { For, createSignal, type Component } from "solid-js";
@@ -11,8 +13,9 @@ import styles from "~/components/features/NewGamePanel.module.css";
 import { PlayerNameField } from "~/components/features/PlayerNameField";
 import { Button } from "~/components/primitives/Button";
 import { Select } from "~/components/primitives/Select";
+import { savedOpponent, setSavedOpponent } from "~/store/newGameSetupStore";
 import type { BoardVariant } from "~/types/board";
-import type { AdjutantKind, NewGameOptions } from "~/types/newGame";
+import { isAdjutantKind, type AdjutantKind, type NewGameOptions } from "~/types/newGame";
 
 const MAPS: readonly BoardVariant[] = ["eclipse", "butter", "vermeer"];
 
@@ -25,7 +28,13 @@ export type NewGamePanelProps = {
 export const NewGamePanel: Component<NewGamePanelProps> = (props) => {
   const [map, setMap] = createSignal<BoardVariant>("eclipse");
   const [team, setTeam] = createSignal<StarChessColor>("w");
-  const [opponent, setOpponent] = createSignal<AdjutantKind>("naive");
+  const [opponent, setOpponent] = createSignal<AdjutantKind>(savedOpponent());
+
+  const chooseOpponent = (kind: string) => {
+    if (!isAdjutantKind(kind)) return;
+    setOpponent(kind);
+    setSavedOpponent(kind);
+  };
 
   const start = () => {
     props.onStart({ map: map(), team: team(), opponent: opponent() });
@@ -93,7 +102,7 @@ export const NewGamePanel: Component<NewGamePanelProps> = (props) => {
             class={styles.opponent}
             variant="neon"
             value={opponent()}
-            onChange={(e) => setOpponent(e.currentTarget.value as AdjutantKind)}
+            onChange={(e) => chooseOpponent(e.currentTarget.value)}
             aria-label="Opponent"
             data-testid="new-game-opponent"
           >
