@@ -2,6 +2,16 @@
   "version": 1,
   "specs": [
     {
+      "spec": "_spec/apps/e2e/nx-compose.puml",
+      "covers": [
+        "package.json",
+        "apps/chess/project.json",
+        "apps/starchess/project.json",
+        "compose.yml"
+      ],
+      "fingerprint": null
+    },
+    {
       "spec": "_spec/packages/starchess-core/deploy-reach.puml",
       "covers": [
         "packages/starchess-core/src/board/deploy-reach.ts",

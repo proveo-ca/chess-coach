@@ -35,4 +35,3 @@ Thumbs.db
 *.key
 **/*.pem
 **/*.key
-/apps/starchess/src/screens/ReviewScreen.module.css

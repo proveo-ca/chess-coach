@@ -23,7 +23,7 @@ export default defineConfig({
     },
     {
       command: "pnpm dev:web-no-llm:vite",
-      cwd: "../ui",
+      cwd: "../chess",
       url: "http://127.0.0.1:5173/chess/",
       reuseExistingServer: !process.env.CI,
       timeout: 60_000,

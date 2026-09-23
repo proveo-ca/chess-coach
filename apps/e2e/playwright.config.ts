@@ -11,6 +11,7 @@ export default defineConfig({
   testDir: "./tests",
   timeout: 120_000,
   retries: 0,
+  workers: process.env.CI ? 2 : undefined,
   globalSetup: "./global-setup.ts",
   use: {
     baseURL: t.baseURL,

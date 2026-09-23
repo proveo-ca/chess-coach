@@ -1,7 +1,7 @@
 // Resolves the e2e "target" — which app/wiring is under test.
 //
 //   web-no-llm (default): Classical Chess Coach UI + in-browser engine workers
-//                         (apps/ui), vite (:5173) + StarChess vite (:5175) for
+//                         (apps/chess), vite (:5173) + StarChess vite (:5175) for
 //                         /starchess proxy + wrangler PWA preview (:8787).
 //   desktop:              UI built in desktop mode (HttpCoachService) talking to
 //                         the Bun server (apps/server) over HTTP.
@@ -19,7 +19,7 @@ export const TARGET: Target = (process.env.E2E_TARGET as Target) || "web-no-llm"
 export const IS_DESKTOP = TARGET === "desktop";
 export const IS_STARCHESS = TARGET === "starchess";
 
-const WEIGHTS_DIR = process.env.MAIA_WEIGHTS_DIR ?? "../ui/public/web-engine";
+const WEIGHTS_DIR = process.env.MAIA_WEIGHTS_DIR ?? "../chess/public/web-engine";
 
 export const LLM = {
   baseUrl: process.env.LLM_BASE_URL ?? process.env.OLLAMA_BASE_URL ?? "http://localhost:11434/v1",
@@ -67,20 +67,7 @@ const CLASSICAL_SPECS = [
 ];
 
 /** Standalone StarChess specs — ignored on classical Coach targets. */
-const STARCHESS_SPECS = [
-  "**/starchess-queue.spec.ts",
-  "**/starchess-exceptions.spec.ts",
-  "**/starchess-promotion.spec.ts",
-  "**/starchess-gas-used.spec.ts",
-  "**/starchess-gas-step.spec.ts",
-  "**/starchess-fog-path.spec.ts",
-  "**/starchess-turn-bonus.spec.ts",
-  "**/starchess-achievements.spec.ts",
-  // Needs the StarChess baseURL + Storybook (:6007), started for that target only.
-  "**/starchess-collision.spec.ts",
-  // Combat VFX guarantee suite (tests/vfx) — StarChess overlays only.
-  "**/vfx-*.spec.ts",
-];
+const STARCHESS_SPECS = ["**/starchess/**", "**/vfx/**"];
 
 export function targetConfig(): TargetConfig {
   if (IS_STARCHESS) {
@@ -129,7 +116,7 @@ export function targetConfig(): TargetConfig {
         },
         {
           command: "npm run dev:desktop -- --port 5174",
-          cwd: "../ui",
+          cwd: "../chess",
           url: "http://localhost:5174/chess/",
           reuseExistingServer: !process.env.CI,
           timeout: 60_000,
@@ -147,7 +134,7 @@ export function targetConfig(): TargetConfig {
     webServer: [
       {
         command: "npm run dev:web-no-llm:vite",
-        cwd: "../ui",
+        cwd: "../chess",
         url: "http://127.0.0.1:5173/chess/",
         reuseExistingServer: !process.env.CI,
         timeout: 30_000,
@@ -162,7 +149,7 @@ export function targetConfig(): TargetConfig {
       },
       {
         command: "npm run preview",
-        cwd: "../ui",
+        cwd: "../chess",
         url: "http://127.0.0.1:8787/chess/",
         reuseExistingServer: !process.env.CI,
         timeout: 180_000,

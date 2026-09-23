@@ -2,20 +2,28 @@
   "name": "ui",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
-  "sourceRoot": "apps/ui/src",
+  "sourceRoot": "apps/chess/src",
   "targets": {
     "dev": {
       "executor": "nx:run-commands",
       "options": {
         "command": "npm run dev:web-no-llm:vite",
-        "cwd": "apps/ui"
+        "cwd": "apps/chess"
       }
     },
     "storybook": {
       "executor": "nx:run-commands",
       "options": {
         "command": "npm run storybook -- --ci",
-        "cwd": "apps/ui"
+        "cwd": "apps/chess"
+      }
+    },
+    "e2e": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "options": {
+        "command": "docker compose run --build --rm e2e-chess",
+        "cwd": "."
       }
     }
   },
