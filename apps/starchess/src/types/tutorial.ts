@@ -3,7 +3,9 @@
 
 import type { Square } from "chess.js";
 
+import type { ScPiece } from "@chess-coach/starchess-core";
 import type { KerriganEmotion } from "~/types/coach";
+import type { ReviewTurnPhase } from "~/types/review";
 
 export type TutorialSectionId = "fog" | "specials" | "resolve" | "king";
 
@@ -67,6 +69,22 @@ export type LiveLessonBoard = {
    * terminal condition. Resolved through the `demos/choreography/` registry.
    */
   choreography?: LessonChoreographyId;
+  /**
+   * Alert rings stick after the beat that introduced them, so fog and later
+   * hints do not clear a last-seen square. `king` also moves the ring when
+   * the enemy Command Center is seen on a new square.
+   */
+  alertLatch?: "sticky" | "king";
+};
+
+/**
+ * Latched alert rings. Empty `squares` means the lesson has not marked one yet.
+ * `kingAt` is the square the ring was last pinned to, so a still-visible origin
+ * cannot pull a scripted sighting backwards.
+ */
+export type AlertLatch = {
+  squares: Square[];
+  kingAt?: Square;
 };
 
 /** Lessons whose behavior is more than config. Registry: `demos/choreography/`. */
@@ -88,14 +106,130 @@ export type LessonChoreographyId =
 export type TutorialBoardArrow = {
   from: Square;
   to: Square;
+  /** Elbow of an L path (a knight hop). Straight when omitted. */
+  via?: Square;
+  /** Alert red. Omitted arrows stay guide green. */
+  tone?: "alert";
 };
 
 /** Board hint step — first matching entry wins (SCFEN `when`, else fallback). */
 export type TutorialBoardHint = {
-  when?: { kind: "scfen"; re: RegExp };
+  when?:
+    | { kind: "scfen"; re: RegExp; phases?: readonly ReviewTurnPhase[] }
+    | { kind: "reviewPhase"; phase: ReviewTurnPhase; /** 1-based planning ordinal. */ turn?: number }
+    | TutorialCoversWhen
+    | TutorialTrajectoryWhen
+    | TutorialBackrankWhen
+    | TutorialMechaDiagonalWhen
+    | TutorialMechaThreatWhen
+    | TutorialGasMarineWhen
+    | TutorialForwardDeployWhen
+    | TutorialPromotionWhen
+    | TutorialChargeWhen
+    | TutorialTankSiegeWhen;
+  /** Guide-green rings. */
   squares?: readonly Square[];
+  /** Alert-red rings. Same step as `squares`; both paint together. */
+  alertSquares?: readonly Square[];
   arrows?: readonly TutorialBoardArrow[];
 };
+
+/** One viewer-side unit covering a square, via core attack geometry. */
+export type SquareCoverer = {
+  from: Square;
+  kind: ScPiece["type"];
+};
+
+/** Enemy-occupied watch squares mapped to their current coverers. */
+export type SquareCovers = Partial<Record<Square, SquareCoverer[]>>;
+
+/** Live tactics beat — fires when listed kinds cover the square. */
+export type TutorialCoversWhen = {
+  kind: "covers";
+  square: Square;
+  kinds?: readonly ScPiece["type"][];
+};
+
+/** Staging post against the enemy Command Center (deploy or ride target). */
+export type AttackTrajectory = {
+  /** Stable key for tests/debug (e.g. "deploy-b-g2-d5"). */
+  key: string;
+  /** Square to stage on — the drop or ride destination. */
+  from: Square;
+  /** Enemy Command Center square the staging attacks. */
+  to: Square;
+};
+
+/** Live tactics beat — fires when the staging post is available. */
+export type TutorialTrajectoryWhen = {
+  kind: "trajectory";
+  from: Square;
+  to: Square;
+};
+
+/**
+ * g1 guard. The back rank is empty of allies and an enemy has a higher file
+ * than every ally — a piece already on the back rank is the guard itself.
+ */
+export type TutorialBackrankWhen = { kind: "backrankGuard" };
+
+/**
+ * Mecha on the g2–a8 diagonal. Requires the classical Attack/Move to still
+ * be open; `phases` limits it to queueing.
+ */
+export type TutorialMechaDiagonalWhen = {
+  kind: "mechaDiagonal";
+  phases?: readonly ReviewTurnPhase[];
+};
+
+/** Mecha already on g2, Attack/Move still open. */
+export type TutorialMechaThreatWhen = {
+  kind: "mechaThreat";
+  phases?: readonly ReviewTurnPhase[];
+};
+
+/**
+ * Classical move is queued and gas remains — drop it on the marine being pushed.
+ * The highlighted square is that marine, not a square listed here.
+ */
+export type TutorialGasMarineWhen = {
+  kind: "gasOnMarine";
+  phases?: readonly ReviewTurnPhase[];
+};
+
+/**
+ * Deploy on empty g2, ahead of gassing the marine. Empty h2 is not a target.
+ * The matcher returns the one square this beat should name.
+ */
+export type TutorialForwardDeployWhen = {
+  kind: "forwardDeploy";
+  square: Square;
+  phases?: readonly ReviewTurnPhase[];
+};
+
+/** Marine on h6 or h7 can promote this turn and has not chosen a piece yet. */
+export type TutorialPromotionWhen = {
+  kind: "promotionChoice";
+  phases?: readonly ReviewTurnPhase[];
+};
+
+/** BattleShip or Tank on h8, Attack/Move open, and nothing urgent is defending. */
+export type TutorialChargeWhen = {
+  kind: "chargeH8";
+  phases?: readonly ReviewTurnPhase[];
+};
+
+/** Packed Tank on h5 with gas left. */
+export type TutorialTankSiegeWhen = {
+  kind: "tankSiege";
+  phases?: readonly ReviewTurnPhase[];
+};
+
+/**
+ * White BattleShip was on h8 and is gone. Armed while it stands there; `sniped`
+ * stays up through the resolve that removes it.
+ */
+export type QueenWatch = { onH8: boolean; sniped: boolean };
 
 /** Auto-advance to next lesson when live intent / board matches. */
 export type TutorialCompleteWhen =
@@ -130,6 +264,8 @@ export type TutorialLine = {
   action?: TutorialReactionAction;
   /** `intro` = story.comment fallback; `reaction` = when-clause hit. */
   source: "intro" | "reaction";
+  /** Momentary beat — shown while matched, never latched as the sticky line. */
+  transient?: boolean;
 };
 
 /**

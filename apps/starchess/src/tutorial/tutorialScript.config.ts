@@ -86,6 +86,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
         board: {
           scfen: "SCFEN|7k/7p/8/8/3N4/8/8/K7|0|33|P|G:11:11|Q:w:;b:",
           stored: 4,
+          alertLatch: "sticky",
           endTurnAfterQueue: "first",
           armTimer: false,
           docs: "Nd4 live. Queue Nd4\u2192e6, End \u2014 L-path + fog.",
@@ -129,6 +130,8 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             },
             squares: [
               "g5",
+            ],
+            alertSquares: [
               "h8",
             ],
           },
@@ -249,7 +252,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               kind: "scfen",
               re: /SCFEN\|[^|p]*\|/,
             },
-            comment: "Sieged on d4 — start with h4, then d2, d1, then d7. One pawn left wins.",
+            comment: "The rook has 2 modes, mobile and immobile. \n\n Prevent pawns from promoting!",
             emotion: "happy",
           },
           {
@@ -833,7 +836,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               kind: "scfen",
               re: /SCFEN\|[^|b]*\|/,
             },
-            comment: "Mecha down. Your Command Center holds.",
+            comment: "Mecha down!",
             emotion: "happy",
           },
           {
@@ -904,7 +907,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               kind: "scfen",
               re: /SCFEN\|[^|]+\|11\|1[0-3]\|/,
             },
-            comment: "Cornered! Crush the enemy mecha by deploying a Marine onto its square.",
+            comment: "Cornered! \n\nCrush the enemy mecha by deploying a Marine onto its square.",
             emotion: "shocked",
           },
         ],
@@ -1027,7 +1030,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           objective: "Hold d1 — block c3, unsiege d2, leave to e2",
           docs: "White Kd1 + sieged Rd2 + Pc2 vs Bb4 + Kh8. Black B b4→d2 queued once on T11. Gas pawn c2→c3 (single step) blocks, gas unsiege d2, then R d2→e2. Win R e2 + K d1; fail R/K missing.",
         },
-        comment: "That Mecha eyes d2! Gas your pawn to c3, unsiege d2, and slip the tank to e2!",
+        comment: "That Mecha is gonna get your Tank! \n\nGas your Marine to body-block!",
         emotion: "shocked",
         completeWhen: {
           kind: "scfen",
@@ -1043,7 +1046,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               kind: "scfen",
               re: /SCFEN\|[^|]*4R3\/3K4\|/,
             },
-            comment: "Evacuated! d1 holds.",
+            comment: "Evacuated!",
             emotion: "happy",
           },
           {
@@ -1127,7 +1130,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               kind: "scfen",
               re: /SCFEN\|[^|qQ]*\|/,
             },
-            comment: "Caught post-jump! h1 holds.",
+            comment: "Lightspeed blunder!",
             emotion: "happy",
           },
           {
@@ -1143,7 +1146,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               kind: "targeting",
               targetingKind: "bishopSnipe",
             },
-            comment: "Aim f1 — she lands there.",
+            comment: "Target f1. \n\nSneaky BattleShip will arrive to flying missiles.",
             emotion: "scanning",
           },
           {
@@ -1151,7 +1154,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               kind: "scfen",
               re: /bishopSnipe:/,
             },
-            comment: "Locked on f1 — End to fire!",
+            comment: "Locked on f1, end your turn!",
             emotion: "happy",
           },
           {
@@ -1159,7 +1162,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               kind: "scfen",
               re: /Q:w:[^;]*C=e4g2/,
             },
-            comment: "G2 locked. Queue an intent to throw the missiles at f1.",
+            comment: "Now gas the Mecha ghost.",
             emotion: "scanning",
           },
           {
@@ -1167,8 +1170,8 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               kind: "scfen",
               re: /queenWarp:/,
             },
-            comment: "Lightspeed — she is on f1. Shoot her off it!",
-            emotion: "shocked",
+            comment: "I doubt the opponent wants to trade their BattleShip for your Mecha... \n\nMove your Mecha to g2.",
+            emotion: "thinking",
           },
         ],
         hints: [
@@ -1372,6 +1375,33 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               "f4",
             ],
           },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|21\|.*\|G:0/,
+            },
+            squares: [
+              "f4",
+            ],
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|21\|/,
+            },
+            squares: [
+              "g2",
+            ],
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]*Q[^|]*\|22\|[1-9][1-9]\|/,
+            },
+            squares: [
+              "c2",
+            ],
+          },
         ],
       },
       {
@@ -1380,10 +1410,11 @@ export const TUTORIAL_SCRIPT_CONFIG = [
         board: {
           scfen: "SCFEN|8/8/8/8/4k3/5P2/6P1/4N1BK|0|33|P|G:11:11|Q:w:;b:",
           stored: 1,
+          alertLatch: "king",
           opponent: "adjutant",
           choreography: "kingHuntGraduation",
         },
-        comment: "The enemy King is overextended. \nPunish it!",
+        comment: "Remember to use your Gas and your Move each turn",
         emotion: "happy",
         completeWhen: {
           kind: "scfen",
@@ -1411,20 +1442,213 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             emotion: "happy",
           },
           {
+            when: { kind: "shipSniped" },
+            comment: "Sniped!",
+            emotion: "shocked",
+            transient: true,
+          },
+          {
+            when: {
+              kind: "reviewPhase",
+              phase: "resolve",
+              turn: 1,
+            },
+            comment: "Enemy Command Center moved, I saw where!",
+            emotion: "thinking",
+            transient: true,
+          },
+          {
+            when: { kind: "promotionChoice", phases: ["intent"] },
+            comment: "Choose your promotion wisely: \nBattleShip, risk getting sniped \nTank, worse but harder to hit",
+            emotion: "thinking",
+          },
+          {
+            when: { kind: "mechaThreat", phases: ["intent"] },
+            comment: "Threat that Command Center with your Mecha",
+            emotion: "thinking",
+          },
+          {
+            // g2×f3 frees a Command Center deploy square. A Mecha costs 3
+            // minerals and looks down g2–a8; another Marine does not. The
+            // classical Attack/Move still has to be open — this is the move
+            // that vacates g2.
+            when: { kind: "mechaDiagonal", phases: ["intent"] },
+            comment: "Your Marine will vacate g2 after attacking, deploy a Mecha there instead of a Marine",
+            emotion: "thinking",
+          },
+          {
             when: {
               kind: "scfen",
-              re: /SCFEN\|(?:[^|p]*p){2}[^|]*\|/,
+              re: /SCFEN\|(?!.*Q:w:[^;]*(?:C=[a-h][1-8]f3|C=h2h[34]|[BF]=[A-Za-z]+:[a-h][1-8]:f3))(?:[^/]*\/){5}(?:5|4(?:[A-Za-z]|1)|(?:[A-Za-z]|1)4|32|23|3(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1)3(?:[A-Za-z]|1)|(?:[A-Za-z]|1){2}3|22(?:[A-Za-z]|1)|2(?:[A-Za-z]|1)2|(?:[A-Za-z]|1)22|2(?:[A-Za-z]|1){3}|(?:[A-Za-z]|1)2(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1){2}2(?:[A-Za-z]|1)|(?:[A-Za-z]|1){3}2|(?:[A-Za-z]|1){5})p/,
             },
-            comment: "Stop the enemy pawns! \nKeep a guard in g1 for your Command Center.",
+            comment: "Stop that Marine from promoting!",
             emotion: "shocked",
           },
           {
             when: {
               kind: "scfen",
-              re: /SCFEN\|(?:[^/]*\/){3}[^/]*P[^|]*\|\d+\|[23][0-3]\|/,
+              re: /SCFEN\|(?!(?:[^/]*\/){5}(?:5|4(?:[A-Za-z]|1)|(?:[A-Za-z]|1)4|32|23|3(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1)3(?:[A-Za-z]|1)|(?:[A-Za-z]|1){2}3|22(?:[A-Za-z]|1)|2(?:[A-Za-z]|1)2|(?:[A-Za-z]|1)22|2(?:[A-Za-z]|1){3}|(?:[A-Za-z]|1)2(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1){2}2(?:[A-Za-z]|1)|(?:[A-Za-z]|1){3}2|(?:[A-Za-z]|1){5})p)(?:[^/p]*\/){5}[^|]*p/,
             },
-            comment: "Yes, keep pushing your Marine. \nRemember Gas gives you an extra step!",
+            comment: "Stop that Marine from promoting!",
+            emotion: "shocked",
+          },
+          {
+            when: { kind: "covers", square: "e1", kinds: ["n"] },
+            comment: "Your Hoverbike already reaches e1 — take it, no deploy needed!",
+          },
+          {
+            when: { kind: "covers", square: "e1", kinds: ["k"] },
+            comment: "Your Command Center already covers e1 — take it, no deploy needed!",
+          },
+          {
+            when: { kind: "covers", square: "e1", kinds: ["r"] },
+            comment: "Your Tank already covers e1 — take it, no deploy needed!",
+          },
+          {
+            when: { kind: "covers", square: "e1", kinds: ["b"] },
+            comment: "Your Mecha already covers e1 — take it, no deploy needed!",
+          },
+          {
+            when: { kind: "covers", square: "f1", kinds: ["n"] },
+            comment: "Your Hoverbike already reaches f1 — take it, no deploy needed!",
+          },
+          {
+            when: { kind: "covers", square: "f1", kinds: ["k"] },
+            comment: "Your Command Center already covers f1 — take it, no deploy needed!",
+          },
+          {
+            when: { kind: "covers", square: "f1", kinds: ["r"] },
+            comment: "Your Tank already covers f1 — take it, no deploy needed!",
+          },
+          {
+            when: { kind: "covers", square: "f1", kinds: ["b"] },
+            comment: "Your Mecha already covers f1 — take it, no deploy needed!",
+          },
+          {
+            when: { kind: "covers", square: "g1", kinds: ["n"] },
+            comment: "Your Hoverbike already reaches g1 — take it, no deploy needed!",
+          },
+          {
+            when: { kind: "covers", square: "g1", kinds: ["k"] },
+            comment: "Your Command Center already covers g1 — take it, no deploy needed!",
+          },
+          {
+            when: { kind: "covers", square: "g1", kinds: ["r"] },
+            comment: "Your Tank already covers g1 — take it, no deploy needed!",
+          },
+          {
+            when: { kind: "covers", square: "g1", kinds: ["b"] },
+            comment: "Your Mecha already covers g1 — take it, no deploy needed!",
+          },
+          {
+            // Open Attack/Move, BattleShip or Tank on h8, and no defensive threat.
+            when: { kind: "chargeH8", phases: ["intent"] },
+            comment: "Go get 'em!",
+          },
+          {
+            when: { kind: "trajectory", from: "g2", to: "d5" },
+            comment: "You have 3 minerals — deploy a Mecha on g2, then take d5!",
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|(?:[^/]*\/){3}(?:3|2(?:[A-Za-z]|1)|(?:[A-Za-z]|1)2|(?:[A-Za-z]|1){3})k[^\/|]*\/(?:[^/]*\/){2}(?:2|(?:[A-Za-z]|1){2})N(?!.*Q:w:[^;]*[BF]=knightMine:c2:)/,
+            },
+            comment: "Deploy a mine in c2 to discourage Marines from promoting",
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|(?:[^/]*\/){3}(?:3|2(?:[A-Za-z]|1)|(?:[A-Za-z]|1)2|(?:[A-Za-z]|1){3})k[^\/|]*\/(?:[^/]*\/){2}(?:2|(?:[A-Za-z]|1){2})N(?=.*Q:w:[^;]*[BF]=knightMine:c2:)/,
+            },
+            comment: "Ride the Hoverbike to b4 — it attacks the enemy Command Center!",
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|(?!.*Q:w:[^;]*(?:C=[a-h][1-8]g1|[BF]=[A-Za-z]+:[a-h][1-8]:g1))(?:[^/]*\/){7}[^\/|]*?q(?=(?:[A-Za-z]|1)[\/|])/,
+            },
+            comment: "Crush that BattleShip by deploying any unit on it!",
+            emotion: "scanning",
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|(?!.*Q:w:[^;]*(?:C=[a-h][1-8]e1|[BF]=[A-Za-z]+:[a-h][1-8]:e1))(?:[^/]*\/){7}(?:4|3(?:[A-Za-z]|1)|(?:[A-Za-z]|1)3|22|2(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1)2(?:[A-Za-z]|1)|(?:[A-Za-z]|1){2}2|(?:[A-Za-z]|1){4})q/,
+            },
+            comment: "Enemy BattleShip on e1 — drop a Hoverbike on g2, then attack it!",
+            emotion: "shocked"
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|(?!.*Q:w:[^;]*(?:C=[a-h][1-8]f1|[BF]=[A-Za-z]+:[a-h][1-8]:f1))(?:[^/]*\/){7}(?:5|4(?:[A-Za-z]|1)|(?:[A-Za-z]|1)4|32|23|3(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1)3(?:[A-Za-z]|1)|(?:[A-Za-z]|1){2}3|22(?:[A-Za-z]|1)|2(?:[A-Za-z]|1)2|(?:[A-Za-z]|1)22|2(?:[A-Za-z]|1){3}|(?:[A-Za-z]|1)2(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1){2}2(?:[A-Za-z]|1)|(?:[A-Za-z]|1){3}2|(?:[A-Za-z]|1){5})q/,
+            },
+            comment: "Enemy BattleShip on f1 — drop a Hoverbike on h2, then attack it!",
+            emotion: "shocked"
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|(?:[^/]*\/){3}(?:3|2(?:[A-Za-z]|1)|(?:[A-Za-z]|1)2|(?:[A-Za-z]|1){3})k[^\/|]*\/(?:1|[A-Za-z])n/,
+            },
+            comment: "I saw the Command Center moving to d5, Hoverbike on b4.",
+          },
+          {
+            when: { kind: "tankSiege", phases: ["intent"] },
+            comment: "Now turn it to siege mode for bigger range",
+            emotion: "scanning",
+          },
+          {
+            // Empty g2 takes a gas deploy. Empty h2 stays empty so the h-file marine can be pushed.
+            when: { kind: "forwardDeploy", square: "g2", phases: ["intent"] },
+            comment: "Deploy a unit on g2 with Gas",
+          },
+          {
+            when: {
+              kind: "scfen",
+              phases: ["intent"],
+              re: /SCFEN\|(?:[^/]*\/){6}[^\/|]*P(?=[\/|])[^|]*\|[^|]*\|[^|]*\|[^|]*\|G:[1-9](?=.*\|Q:w:[^;]*C=h2h[34])/,
+            },
+            comment: "Keep pushing your Marine by dropping gas on it",
+          },
+          {
+            when: {
+              kind: "scfen",
+              phases: ["intent"],
+              re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){6}[^\/|]*P(?=[\/|])/,
+            },
+            comment: "Move your Marine from h2 to h4.",
+          },
+          {
+            when: {
+              kind: "scfen",
+              phases: ["intent"],
+              re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){5}[^\/|]*P(?=[\/|])/,
+            },
+            comment: "Keep pushing your Marine!",
+          },
+          {
+            when: {
+              kind: "scfen",
+              phases: ["intent"],
+              re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){4}[^\/|]*P(?=[\/|])/,
+            },
+            comment: "Keep pushing your Marine!",
+          },
+          {
+            when: { kind: "backrankGuard" },
+            comment: "Deploy a guard in g1 with Gas, then push your Marine!",
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|\d+\|[0-3]1\|/,
+              phases: ["check", "resolve"],
+            },
+            comment: "Yes! 1 more check!",
             emotion: "happy",
+            transient: true,
           },
           {
             when: {
@@ -1444,23 +1668,268 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           },
           {
             when: {
-              kind: "reviewPhase",
-              phase: "intent",
-              turn: 1,
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|0\|[^|]*\|[^|]*\|G:0/,
             },
-            comment: "The enemy King is overextended. \nPunish it!. \nDeploy more units.",
+            comment: "Centralize your Hoverbike",
+          },
+          {
+            // Move is spent, gas is not — the other half of the turn.
+            when: { kind: "gasOnMarine", phases: ["intent"] },
+            comment: "Keep pushing your Marine by dropping gas on it",
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|[^|]*\|[^|]*\|[^|]*\|(?=.*\|Q:w:(?!;))/,
+            },
+            comment: "Review your queued orders, then End Turn.",
             emotion: "watching",
           },
           {
             when: {
-              kind: "turn",
-              turn: 2,
+              kind: "reviewPhase",
+              phase: "intent",
+              turn: 1,
             },
-            comment: "Prioritize planting mines with your hoverbike!",
+            comment: "The enemy is overextended. Punish it!. \n\nDeploy a Marine.",
+            emotion: "watching",
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|1\|[^|]*\|[^|]*\|G:[1-9]/,
+            },
+            comment: "Deploy a mine",
             emotion: "watching",
           },
         ],
         hints: [
+          {
+            when: {
+              kind: "reviewPhase",
+              phase: "resolve",
+              turn: 1,
+            },
+            alertSquares: ["d5"],
+          },
+          {
+            when: { kind: "promotionChoice", phases: ["intent"] },
+          },
+          {
+            when: { kind: "mechaThreat", phases: ["intent"] },
+            arrows: [{ from: "g2", to: "a8" }],
+          },
+          {
+            when: { kind: "mechaDiagonal", phases: ["intent"] },
+            squares: [
+              "g2",
+            ],
+            arrows: [{ from: "g2", to: "a8" }],
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|(?!.*Q:w:[^;]*(?:C=[a-h][1-8]f3|C=h2h[34]|[BF]=[A-Za-z]+:[a-h][1-8]:f3))(?:[^/]*\/){5}(?:5|4(?:[A-Za-z]|1)|(?:[A-Za-z]|1)4|32|23|3(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1)3(?:[A-Za-z]|1)|(?:[A-Za-z]|1){2}3|22(?:[A-Za-z]|1)|2(?:[A-Za-z]|1)2|(?:[A-Za-z]|1)22|2(?:[A-Za-z]|1){3}|(?:[A-Za-z]|1)2(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1){2}2(?:[A-Za-z]|1)|(?:[A-Za-z]|1){3}2|(?:[A-Za-z]|1){5})p/,
+            },
+            squares: [
+              "f3",
+            ],
+            arrows: [{ from: "g2", to: "f3" }],
+          },
+          {
+            when: { kind: "covers", square: "e1", kinds: ["n"] },
+            squares: ["e1"],
+          },
+          {
+            when: { kind: "covers", square: "e1", kinds: ["k"] },
+            squares: ["e1"],
+          },
+          {
+            when: { kind: "covers", square: "e1", kinds: ["r"] },
+            squares: ["e1"],
+          },
+          {
+            when: { kind: "covers", square: "e1", kinds: ["b"] },
+            squares: ["e1"],
+          },
+          {
+            when: { kind: "covers", square: "f1", kinds: ["n"] },
+            squares: ["f1"],
+          },
+          {
+            when: { kind: "covers", square: "f1", kinds: ["k"] },
+            squares: ["f1"],
+          },
+          {
+            when: { kind: "covers", square: "f1", kinds: ["r"] },
+            squares: ["f1"],
+          },
+          {
+            when: { kind: "covers", square: "f1", kinds: ["b"] },
+            squares: ["f1"],
+          },
+          {
+            when: { kind: "covers", square: "g1", kinds: ["n"] },
+            squares: ["g1"],
+          },
+          {
+            when: { kind: "covers", square: "g1", kinds: ["k"] },
+            squares: ["g1"],
+          },
+          {
+            when: { kind: "covers", square: "g1", kinds: ["r"] },
+            squares: ["g1"],
+          },
+          {
+            when: { kind: "covers", square: "g1", kinds: ["b"] },
+            squares: ["g1"],
+          },
+          {
+            when: { kind: "chargeH8", phases: ["intent"] },
+            arrows: [
+              { from: "h8", to: "h5" },
+              { from: "h5", to: "d5", tone: "alert" },
+            ],
+          },
+          {
+            when: { kind: "trajectory", from: "g2", to: "d5" },
+            squares: ["g2", "d5"],
+            arrows: [{ from: "g2", to: "d5" }],
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|(?:[^/]*\/){3}(?:3|2(?:[A-Za-z]|1)|(?:[A-Za-z]|1)2|(?:[A-Za-z]|1){3})k[^\/|]*\/(?:[^/]*\/){2}(?:2|(?:[A-Za-z]|1){2})N(?!.*Q:w:[^;]*[BF]=knightMine:c2:)/,
+            },
+            squares: ["c2"],
+          },
+          {
+            // Intent only: the ride is still being queued. Resolve keeps the
+            // b4 ring from the step below and drops the L arrows.
+            when: {
+              kind: "scfen",
+              phases: ["intent"],
+              re: /SCFEN\|(?:[^/]*\/){3}(?:3|2(?:[A-Za-z]|1)|(?:[A-Za-z]|1)2|(?:[A-Za-z]|1){3})k[^\/|]*\/(?:[^/]*\/){2}(?:2|(?:[A-Za-z]|1){2})N(?=.*Q:w:[^;]*[BF]=knightMine:c2:)/,
+            },
+            squares: ["b4"],
+            arrows: [
+              { from: "c2", to: "b4", via: "c4" },
+              { from: "b4", to: "d5", via: "d4", tone: "alert" },
+            ],
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|(?:[^/]*\/){3}(?:3|2(?:[A-Za-z]|1)|(?:[A-Za-z]|1)2|(?:[A-Za-z]|1){3})k[^\/|]*\/(?:[^/]*\/){2}(?:2|(?:[A-Za-z]|1){2})N(?=.*Q:w:[^;]*[BF]=knightMine:c2:)/,
+            },
+            squares: ["b4"],
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|(?!.*Q:w:[^;]*(?:C=[a-h][1-8]g1|[BF]=[A-Za-z]+:[a-h][1-8]:g1))(?:[^/]*\/){7}[^\/|]*?q(?=(?:[A-Za-z]|1)[\/|])/,
+            },
+            squares: [
+              "g1",
+            ],
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|(?!.*Q:w:[^;]*(?:C=[a-h][1-8]e1|[BF]=[A-Za-z]+:[a-h][1-8]:e1))(?:[^/]*\/){7}(?:4|3(?:[A-Za-z]|1)|(?:[A-Za-z]|1)3|22|2(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1)2(?:[A-Za-z]|1)|(?:[A-Za-z]|1){2}2|(?:[A-Za-z]|1){4})q/,
+            },
+            squares: [
+              "g2",
+              "e1",
+            ],
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|(?!.*Q:w:[^;]*(?:C=[a-h][1-8]f1|[BF]=[A-Za-z]+:[a-h][1-8]:f1))(?:[^/]*\/){7}(?:5|4(?:[A-Za-z]|1)|(?:[A-Za-z]|1)4|32|23|3(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1)3(?:[A-Za-z]|1)|(?:[A-Za-z]|1){2}3|22(?:[A-Za-z]|1)|2(?:[A-Za-z]|1)2|(?:[A-Za-z]|1)22|2(?:[A-Za-z]|1){3}|(?:[A-Za-z]|1)2(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1){2}2(?:[A-Za-z]|1)|(?:[A-Za-z]|1){3}2|(?:[A-Za-z]|1){5})q/,
+            },
+            squares: [
+              "h2",
+              "f1",
+            ],
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|(?:[^/]*\/){3}(?:3|2(?:[A-Za-z]|1)|(?:[A-Za-z]|1)2|(?:[A-Za-z]|1){3})k[^\/|]*\/(?:1|[A-Za-z])n/,
+            },
+            squares: [
+              "b4",
+            ],
+          },
+          {
+            when: { kind: "tankSiege", phases: ["intent"] },
+            squares: ["h5"],
+          },
+          {
+            when: { kind: "forwardDeploy", square: "g2", phases: ["intent"] },
+            squares: ["g2"],
+          },
+          {
+            when: {
+              kind: "scfen",
+              phases: ["intent"],
+              re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){6}[^\/|]*P(?=[\/|])/,
+            },
+            squares: [
+              "h4",
+            ],
+            arrows: [{ from: "h2", to: "h4" }],
+          },
+          {
+            when: {
+              kind: "scfen",
+              phases: ["intent"],
+              re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){5}[^\/|]*P(?=[\/|])/,
+            },
+            squares: [
+              "h5",
+            ],
+          },
+          {
+            when: {
+              kind: "scfen",
+              phases: ["intent"],
+              re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){4}[^\/|]*P(?=[\/|])/,
+            },
+            squares: [
+              "h6",
+            ],
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|(?:[^/]*\/){3}[^\/|]*P(?=[\/|])/,
+            },
+            squares: [
+              "h5",
+            ],
+          },
+          {
+            when: { kind: "backrankGuard" },
+            squares: [
+              "g1",
+            ],
+            arrows: [{ from: "a1", to: "h1" }],
+          },
+          {
+            when: { kind: "gasOnMarine", phases: ["intent"] },
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|0\|[^|]*\|[^|]*\|G:0/,
+            },
+            squares: [
+              "c2",
+            ],
+          },
           {
             when: {
               kind: "scfen",

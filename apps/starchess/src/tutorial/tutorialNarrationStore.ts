@@ -4,6 +4,7 @@
 import { createSignal } from "solid-js";
 
 import type { ReviewTurnPhase } from "~/types/review";
+import type { AttackTrajectory, SquareCovers } from "~/types/tutorial";
 
 /** Compact live intent queue entry for completeWhen / reactions. */
 export type TutorialQueueAction = {
@@ -31,6 +32,12 @@ export type TutorialNarrationState = {
   queue?: readonly TutorialQueueAction[];
   /** Live targeting mode (`bishopSnipe`, `queenWarp`, `spawn`, …). */
   targetingKind?: string | null;
+  /** Enemy-occupied watch squares mapped to their current coverers. */
+  covers?: SquareCovers;
+  /** Open staging posts against the enemy Command Center. */
+  trajectories?: AttackTrajectory[];
+  /** White BattleShip was lost on h8 during the resolve now playing. */
+  shipSniped?: boolean;
   /** Tutorial typewriter cursor (Turn Resolution steppers). */
   typewriterTurn?: number;
   typewriterBeat?: "turn" | "check" | "intent" | "resolve";

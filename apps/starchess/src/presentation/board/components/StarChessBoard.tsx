@@ -77,8 +77,10 @@ export type StarChessBoardProps = {
   intentChecks?: readonly IntentCheck[];
   selected?: Square | null;
   legalDests?: readonly Square[];
-  /** Tutorial destination rings. */
+  /** Tutorial destination rings (guide green). */
   hintSquares?: readonly Square[];
+  /** Tutorial destination rings drawn in alert red. */
+  hintAlertSquares?: readonly Square[];
   /** Tutorial hint lines drawn square-to-square (attack / x-ray lines). */
   hintArrows?: readonly TutorialBoardArrow[];
   onSquareClick?: (square: Square) => void;
@@ -117,6 +119,7 @@ export type StarChessBoardProps = {
 export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
   const maskId = createUniqueId();
   const hintHeadId = createUniqueId();
+  const hintHeadAlertId = createUniqueId();
   const viewer = () => props.viewer ?? "w";
   const variant = (): BoardSkin => props.variant ?? "eclipse";
   const pieceSet = (): PieceSet => props.pieceSet ?? "nerd";
@@ -268,25 +271,63 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
     // arrowhead lands on the target's edge instead of on top of it.
     const TAIL = 0.34;
     const HEAD = 0.46;
+    const pull = (
+      start: { x: number; y: number },
+      end: { x: number; y: number },
+      tail: number,
+      head: number,
+    ) => {
+      const dx = end.x - start.x;
+      const dy = end.y - start.y;
+      const len = Math.hypot(dx, dy);
+      if (len === 0) return null;
+      const ux = dx / len;
+      const uy = dy / len;
+      return {
+        x1: start.x + ux * tail,
+        y1: start.y + uy * tail,
+        x2: end.x - ux * head,
+        y2: end.y - uy * head,
+      };
+    };
     return (props.hintArrows ?? []).flatMap((a) => {
       const from = centre(a.from);
       const to = centre(a.to);
       if (!from || !to) return [];
-      const dx = to.x - from.x;
-      const dy = to.y - from.y;
-      const len = Math.hypot(dx, dy);
-      if (len === 0) return [];
-      const ux = dx / len;
-      const uy = dy / len;
+      const tone = a.tone === "alert" ? "alert" : "guide";
+      const via = a.via ? centre(a.via) : null;
+      if (a.via) {
+        if (!via) return [];
+        const out = pull(from, via, TAIL, 0);
+        const into = pull(via, to, 0, HEAD);
+        if (!out || !into) return [];
+        return [{
+          key: `${a.from}${a.to}`,
+          tone,
+          points: `${out.x1},${out.y1} ${via.x},${via.y} ${into.x2},${into.y2}`,
+        }];
+      }
+      const straight = pull(from, to, TAIL, HEAD);
+      if (!straight) return [];
       return [{
         key: `${a.from}${a.to}`,
-        x1: from.x + ux * TAIL,
-        y1: from.y + uy * TAIL,
-        x2: to.x - ux * HEAD,
-        y2: to.y - uy * HEAD,
+        tone,
+        points: `${straight.x1},${straight.y1} ${straight.x2},${straight.y2}`,
       }];
     });
   });
+
+  /** Alert rings live in the arrow overlay (above the fog veil) so a last-seen
+   * square stays marked without lifting the tile out of the fog. */
+  const alertRings = createMemo(() =>
+    (props.hintAlertSquares ?? []).flatMap((sq) => {
+      const col = FILES.indexOf(sq[0] as (typeof FILES)[number]);
+      const row = RANKS.indexOf(sq[1] as (typeof RANKS)[number]);
+      if (col < 0 || row < 0) return [];
+      const inset = 0.07;
+      return [{ key: sq, x: col + inset, y: row + inset, size: 1 - inset * 2 }];
+    }),
+  );
 
   const dualVision = createMemo(() => {
     if (!isObserver()) return null;
@@ -403,7 +444,7 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
               </Show>
             </svg>
           </Show>
-          <Show when={hintLines().length > 0}>
+          <Show when={hintLines().length > 0 || alertRings().length > 0}>
             <svg
               class={styles["hint-arrow-overlay"]}
               viewBox="0 0 8 8"
@@ -426,16 +467,38 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
                 >
                   <path d="M0 1 L9 5 L0 9 Z" fill="currentColor" />
                 </marker>
+                <marker
+                  id={hintHeadAlertId}
+                  viewBox="0 0 10 10"
+                  refX="8"
+                  refY="5"
+                  markerWidth="4"
+                  markerHeight="4"
+                  markerUnits="strokeWidth"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M0 1 L9 5 L0 9 Z" fill="#cb2000" />
+                </marker>
               </defs>
+              <For each={alertRings()}>
+                {(r) => (
+                  <rect
+                    data-hint-alert={r.key}
+                    class={styles["hint-alert-ring"]}
+                    x={r.x}
+                    y={r.y}
+                    width={r.size}
+                    height={r.size}
+                  />
+                )}
+              </For>
               <For each={hintLines()}>
                 {(l) => (
-                  <line
+                  <polyline
                     data-hint-arrow={l.key}
-                    x1={l.x1}
-                    y1={l.y1}
-                    x2={l.x2}
-                    y2={l.y2}
-                    marker-end={`url(#${hintHeadId})`}
+                    class={l.tone === "alert" ? styles["hint-arrow-alert"] : undefined}
+                    points={l.points}
+                    marker-end={`url(#${l.tone === "alert" ? hintHeadAlertId : hintHeadId})`}
                   />
                 )}
               </For>

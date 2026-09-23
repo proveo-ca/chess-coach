@@ -8,11 +8,12 @@
  * imperative store choreography; config lives on `board`, choreography behind
  * `board.choreography` — see `demos/choreography/`.
  */
-import { adjutant, formatScFen, placementToMap } from "@chess-coach/starchess-core";
+import { adjutant, formatScFen, getSideVision, placementToMap } from "@chess-coach/starchess-core";
 import type { Square } from "chess.js";
 import {
   createEffect,
   createMemo,
+  createSignal,
   onCleanup,
   onMount,
   untrack,
@@ -22,12 +23,20 @@ import {
 import { createMatchStore, MatchStoreProvider, useMatchStore } from "~/app/MatchStoreContext";
 import { createMatchStateFromScfen } from "~/app/matchReducer";
 import { displayedSnapshot } from "~/app/selectors";
+import { liveMatchPhase } from "~/presentation/hud/liveMatchPhase";
 import { BaseScreen } from "~/app/BaseScreen.tsx";
 import { CHOREOGRAPHY } from "~/demos/choreography";
 import { clearSiegedRooks, setRookMode } from "~/presentation/animations/rookModeStore";
 import { LiveMatchShell } from "~/screens/LiveMatchShell";
 import { TUTORIAL_CAPABILITIES, setCapabilities } from "~/store/capabilitiesStore";
-import { resolveTutorialArrows, resolveTutorialHints } from "~/tutorial/tutorialScript";
+import {
+  nextAlertLatch,
+  resolveTutorialAlertSquares,
+  resolveTutorialArrows,
+  resolveTutorialHints,
+} from "~/tutorial/tutorialScript";
+import type { AlertLatch } from "~/types/tutorial";
+import { availableTrajectories, coveredEnemyShips } from "~/tutorial/lessonTactics";
 import { useLessonNarration } from "~/tutorial/useLessonNarration";
 import type { MatchState, MatchStore } from "~/types/match";
 import type { LiveLessonHostProps } from "~/types/lesson";
@@ -93,16 +102,85 @@ const LiveLessonInner: Component<LiveLessonHostProps> = (props) => {
 
   const interactive = () => choreography.interactive?.() ?? true;
 
+  const hintQuery = createMemo(() => {
+    const s = store.state();
+    const snap = displayedSnapshot(s);
+    const scfen = formatScFen(snap);
+    return {
+      scfen,
+      covers: coveredEnemyShips(scfen, s.viewer),
+      trajectories: availableTrajectories(scfen, s.viewer),
+      query: {
+        reviewPhase: liveMatchPhase({
+          phase: s.phase,
+          lastResolve: s.lastResolve,
+          timelineActive: s.timeline.active,
+          pendingPromotion: !!s.pendingPromotion,
+        }),
+        turn: snap.turn + 1,
+      },
+    };
+  });
+
   const hintSquares = createMemo(() => {
     if (!interactive()) return [];
-    const snap = displayedSnapshot(store.state());
-    return resolveTutorialHints(props.boardHints, formatScFen(snap));
+    const q = hintQuery();
+    return resolveTutorialHints(props.boardHints, q.scfen, q.covers, q.trajectories, q.query);
+  });
+
+  const scriptedAlerts = createMemo(() => {
+    const q = hintQuery();
+    return resolveTutorialAlertSquares(
+      props.boardHints,
+      q.scfen,
+      q.covers,
+      q.trajectories,
+      q.query,
+    );
+  });
+
+  const [alertLatch, setAlertLatch] = createSignal<AlertLatch>({ squares: [] });
+
+  createEffect(() => {
+    const scripted = scriptedAlerts();
+    const followKing = props.board.alertLatch === "king";
+    let kingAt: Square | undefined;
+    let kingVisible = false;
+    if (followKing) {
+      const placement = hintQuery().scfen.split("|")[1];
+      if (placement) {
+        try {
+          const map = placementToMap(placement);
+          const viewer = store.state().viewer;
+          const enemy = viewer === "w" ? "b" : "w";
+          for (const [sq, piece] of map) {
+            if (piece.type === "k" && piece.color === enemy) kingAt = sq;
+          }
+          if (kingAt) {
+            const vision = getSideVision(map, viewer);
+            kingVisible =
+              vision.litSquares.has(kingAt) || vision.revealedPieces.has(kingAt);
+          }
+        } catch {
+          // A mid-animation placement can be unreadable for a frame.
+        }
+      }
+    }
+    if (!props.board.alertLatch) return;
+    setAlertLatch((prev) =>
+      nextAlertLatch(prev, scripted, { followKing, kingAt, kingVisible }),
+    );
+  });
+
+  const hintAlertSquares = createMemo(() => {
+    if (!interactive()) return [];
+    return props.board.alertLatch ? alertLatch().squares : scriptedAlerts();
   });
 
   const hintArrows = createMemo(() => {
     if (!interactive()) return [];
-    const snap = displayedSnapshot(store.state());
-    return resolveTutorialArrows(props.boardHints, formatScFen(snap));
+    const q = hintQuery();
+    return resolveTutorialArrows(props.boardHints, q.scfen, q.covers, q.trajectories, q.query);
   });
 
   const Overlay = choreography.Overlay;
@@ -130,6 +208,7 @@ const LiveLessonInner: Component<LiveLessonHostProps> = (props) => {
           interactive() ? props.board.endTurnAfterQueue : undefined
         }
         hintSquares={hintSquares()}
+        hintAlertSquares={hintAlertSquares()}
         hintArrows={hintArrows()}
         autoQueueOpponent={
           props.board.opponent === "adjutant"

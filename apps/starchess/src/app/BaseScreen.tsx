@@ -80,6 +80,7 @@ export type StarChessScreenProps = {
   header?: import("solid-js").JSX.Element;
   footerExtra?: import("solid-js").JSX.Element;
   hintSquares?: readonly Square[];
+  hintAlertSquares?: readonly Square[];
   hintArrows?: readonly TutorialBoardArrow[];
 };
 
@@ -699,6 +700,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
               variant={variant()}
               pieceSet={props.pieceSet}
               hintSquares={props.hintSquares}
+              hintAlertSquares={props.hintAlertSquares}
               hintArrows={props.hintArrows}
             />
             <Show when={starChessMode() && overlayBox()}>

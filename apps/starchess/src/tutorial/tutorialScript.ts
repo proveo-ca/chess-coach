@@ -5,26 +5,54 @@
 import type { Square } from "chess.js";
 
 import { TUTORIAL_SCRIPT_CONFIG } from "~/tutorial/tutorialScript.config";
+import {
+  chargeFromH8,
+  forwardDeploySquare,
+  gasMarineSquare,
+  g1GuardNeeded,
+  mechaDiagonalOpen,
+  mechaThreatOpen,
+  promotionChoiceOpen,
+  tankSiegeOnH5,
+} from "~/tutorial/lessonTactics";
 import type { KerriganEmotion } from "~/types/coach";
 import type {
+  AlertLatch,
+  AttackTrajectory,
   LiveLessonBoard,
+  QueenWatch,
+  SquareCovers,
+  TutorialBackrankWhen,
   TutorialBoardArrow,
   TutorialBoardHint,
+  TutorialChargeWhen,
   TutorialCompleteWhen,
+  TutorialCoversWhen,
+  TutorialForwardDeployWhen,
+  TutorialGasMarineWhen,
   TutorialLine,
   TutorialLineHold,
+  TutorialMechaDiagonalWhen,
+  TutorialMechaThreatWhen,
+  TutorialPromotionWhen,
+  TutorialTankSiegeWhen,
+  TutorialTrajectoryWhen,
   TutorialReactionAction,
   TutorialSectionId,
 } from "~/types/tutorial";
 import type { ReviewTurnPhase } from "~/types/review";
 
 export type {
+  AttackTrajectory,
   LiveLessonBoard,
+  SquareCovers,
   TutorialBoardArrow,
   TutorialBoardHint,
   TutorialCompleteWhen,
+  TutorialCoversWhen,
   TutorialLine,
   TutorialLineHold,
+  TutorialTrajectoryWhen,
   TutorialReactionAction,
   TutorialSectionId,
 } from "~/types/tutorial";
@@ -37,11 +65,25 @@ export type TutorialReactionWhen =
   /** Fog section Chess skin toggle. */
   | { kind: "chessSkin"; chess: boolean }
   /** Live board SCFEN matches this pattern. */
-  | { kind: "scfen"; re: RegExp }
+  | { kind: "scfen"; re: RegExp; phases?: readonly ReviewTurnPhase[] }
   /** 1-based planning ordinal (`snap.turn + 1`; seed turn 0 → 1). */
   | { kind: "turn"; turn: number }
   /** Live targeting mode (e.g. Charon armed → `bishopSnipe`). */
-  | { kind: "targeting"; targetingKind: string };
+  | { kind: "targeting"; targetingKind: string }
+  /** Live tactics cover the square with one of these kinds. */
+  | TutorialCoversWhen
+  /** Live tactics hold an open staging post against the enemy CC. */
+  | TutorialTrajectoryWhen
+  | TutorialBackrankWhen
+  | TutorialMechaDiagonalWhen
+  | TutorialMechaThreatWhen
+  | TutorialGasMarineWhen
+  | TutorialForwardDeployWhen
+  | TutorialPromotionWhen
+  | TutorialChargeWhen
+  | TutorialTankSiegeWhen
+  /** BattleShip that was standing on h8 is gone during resolve. */
+  | { kind: "shipSniped" };
 
 export type TutorialReaction = {
   when: TutorialReactionWhen;
@@ -49,6 +91,8 @@ export type TutorialReaction = {
   emotion?: KerriganEmotion;
   /** Optional in-bubble CTA (e.g. retry after ally CC dies). */
   action?: TutorialReactionAction;
+  /** Momentary beat — shown while matched, never latched as the sticky line. */
+  transient?: boolean;
 };
 
 export type TutorialStoryScript = {
@@ -203,8 +247,14 @@ export type TutorialScriptContext = {
   turn?: number;
   /** Live targeting kind (`bishopSnipe`, …). */
   targetingKind?: string | null;
+  /** Enemy-occupied watch squares mapped to their current coverers. */
+  covers?: SquareCovers;
+  /** Open staging posts against the enemy Command Center. */
+  trajectories?: AttackTrajectory[];
   /** Turn-open checks have landed — see {@link holdTutorialLine}. */
   turnStartChecksApplied?: boolean;
+  /** White BattleShip was lost on h8 during this resolve. */
+  shipSniped?: boolean;
 };
 
 /** Pick the most specific Selena line for the current board/store context. */
@@ -223,6 +273,7 @@ export const resolveTutorialLine = (ctx: TutorialScriptContext): TutorialLine =>
     comment: r.comment,
     emotion: r.emotion ?? story.emotion,
     ...(r.action ? { action: r.action } : {}),
+    ...(r.transient ? { transient: true as const } : {}),
     source: "reaction",
   });
 
@@ -239,6 +290,8 @@ export const resolveTutorialLine = (ctx: TutorialScriptContext): TutorialLine =>
       return reactionLine(r);
     }
     if (w.kind === "scfen" && ctx.scfen != null && w.re.test(ctx.scfen)) {
+      const phase = ctx.reviewPhase;
+      if (w.phases && (!phase || !w.phases.includes(phase))) continue;
       return reactionLine(r);
     }
     if (w.kind === "turn" && ctx.turn === w.turn) {
@@ -249,6 +302,62 @@ export const resolveTutorialLine = (ctx: TutorialScriptContext): TutorialLine =>
       ctx.targetingKind != null &&
       ctx.targetingKind === w.targetingKind
     ) {
+      return reactionLine(r);
+    }
+    if (w.kind === "covers" && ctx.covers) {
+      const list = ctx.covers[w.square] ?? [];
+      if (list.some((c) => !w.kinds || w.kinds.includes(c.kind))) {
+        return reactionLine(r);
+      }
+    }
+    if (w.kind === "trajectory" && ctx.trajectories?.some((t) => t.from === w.from && t.to === w.to)) {
+      return reactionLine(r);
+    }
+    if (w.kind === "backrankGuard" && ctx.scfen && g1GuardNeeded(ctx.scfen)) {
+      return reactionLine(r);
+    }
+    if (w.kind === "mechaDiagonal" && ctx.scfen && phaseAllows(w.phases, ctx.reviewPhase) && mechaDiagonalOpen(ctx.scfen)) {
+      return reactionLine(r);
+    }
+    if (w.kind === "mechaThreat" && ctx.scfen && phaseAllows(w.phases, ctx.reviewPhase) && mechaThreatOpen(ctx.scfen)) {
+      return reactionLine(r);
+    }
+    if (w.kind === "gasOnMarine" && ctx.scfen && phaseAllows(w.phases, ctx.reviewPhase) && gasMarineSquare(ctx.scfen)) {
+      return reactionLine(r);
+    }
+    if (
+      w.kind === "forwardDeploy" &&
+      ctx.scfen &&
+      phaseAllows(w.phases, ctx.reviewPhase) &&
+      forwardDeploySquare(ctx.scfen) === w.square
+    ) {
+      return reactionLine(r);
+    }
+    if (
+      w.kind === "promotionChoice" &&
+      ctx.scfen &&
+      phaseAllows(w.phases, ctx.reviewPhase) &&
+      promotionChoiceOpen(ctx.scfen)
+    ) {
+      return reactionLine(r);
+    }
+    if (
+      w.kind === "chargeH8" &&
+      ctx.scfen &&
+      phaseAllows(w.phases, ctx.reviewPhase) &&
+      chargeFromH8(ctx.scfen)
+    ) {
+      return reactionLine(r);
+    }
+    if (
+      w.kind === "tankSiege" &&
+      ctx.scfen &&
+      phaseAllows(w.phases, ctx.reviewPhase) &&
+      tankSiegeOnH5(ctx.scfen)
+    ) {
+      return reactionLine(r);
+    }
+    if (w.kind === "shipSniped" && ctx.shipSniped) {
       return reactionLine(r);
     }
   }
@@ -317,6 +426,9 @@ export const holdTutorialLine = (
   const acted = scfenMoved || phaseActed;
 
   if (raw.source === "reaction") {
+    // Transient beats comment on a moment (damage flash) without becoming
+    // guidance state — show while matched, latch nothing.
+    if (raw.transient) return { hold: h, line: raw };
     h = { ...h, introDone: true, sticky: raw };
     return { hold: h, line: raw };
   }
@@ -343,30 +455,187 @@ export const holdTutorialLine = (
  * unconditional one. Squares and arrows come from the *same* step so a lesson
  * cannot show a ring from one beat and a line from another.
  */
+/** Phase/turn the board is showing — review-phase hint steps read this. */
+export type TutorialHintQuery = {
+  reviewPhase?: ReviewTurnPhase;
+  /** 1-based planning ordinal (`snap.turn + 1`). */
+  turn?: number;
+};
+
 const matchTutorialHint = (
   hints: readonly TutorialBoardHint[] | undefined,
   scfen: string | undefined,
+  covers?: SquareCovers,
+  trajectories?: AttackTrajectory[],
+  query?: TutorialHintQuery,
 ): TutorialBoardHint | undefined => {
   if (!hints?.length) return undefined;
   for (const h of hints) {
     if (!h.when) return h;
+    if (h.when.kind === "reviewPhase") {
+      if (query?.reviewPhase !== h.when.phase) continue;
+      if (h.when.turn != null && query.turn !== h.when.turn) continue;
+      return h;
+    }
     if (h.when.kind === "scfen" && scfen != null && h.when.re.test(scfen)) {
+      const phases = h.when.phases;
+      if (phases && (!query?.reviewPhase || !phases.includes(query.reviewPhase))) continue;
+      return h;
+    }
+    if (h.when.kind === "covers" && covers) {
+      const when = h.when;
+      const list = covers[when.square] ?? [];
+      if (list.some((c) => !when.kinds || when.kinds.includes(c.kind))) {
+        return h;
+      }
+    }
+    if (h.when.kind === "trajectory" && trajectories) {
+      const when = h.when;
+      if (trajectories.some((t) => t.from === when.from && t.to === when.to)) {
+        return h;
+      }
+    }
+    if (h.when.kind === "backrankGuard" && scfen && g1GuardNeeded(scfen)) {
+      return h;
+    }
+    if (
+      h.when.kind === "mechaDiagonal" &&
+      scfen &&
+      phaseAllows(h.when.phases, query?.reviewPhase) &&
+      mechaDiagonalOpen(scfen)
+    ) {
+      return h;
+    }
+    if (
+      h.when.kind === "mechaThreat" &&
+      scfen &&
+      phaseAllows(h.when.phases, query?.reviewPhase) &&
+      mechaThreatOpen(scfen)
+    ) {
+      return h;
+    }
+    if (
+      h.when.kind === "gasOnMarine" &&
+      scfen &&
+      phaseAllows(h.when.phases, query?.reviewPhase) &&
+      gasMarineSquare(scfen)
+    ) {
+      return { ...h, squares: [gasMarineSquare(scfen)!] };
+    }
+    if (
+      h.when.kind === "forwardDeploy" &&
+      scfen &&
+      phaseAllows(h.when.phases, query?.reviewPhase) &&
+      forwardDeploySquare(scfen) === h.when.square
+    ) {
+      return h;
+    }
+    if (h.when.kind === "promotionChoice" && scfen && phaseAllows(h.when.phases, query?.reviewPhase)) {
+      const square = promotionChoiceOpen(scfen);
+      if (square) return { ...h, squares: [square] };
+    }
+    if (
+      h.when.kind === "chargeH8" &&
+      scfen &&
+      phaseAllows(h.when.phases, query?.reviewPhase) &&
+      chargeFromH8(scfen)
+    ) {
+      return h;
+    }
+    if (
+      h.when.kind === "tankSiege" &&
+      scfen &&
+      phaseAllows(h.when.phases, query?.reviewPhase) &&
+      tankSiegeOnH5(scfen)
+    ) {
       return h;
     }
   }
   return undefined;
 };
 
+const phaseAllows = (
+  phases: readonly ReviewTurnPhase[] | undefined,
+  phase: ReviewTurnPhase | undefined,
+): boolean => !phases || (!!phase && phases.includes(phase));
+
 export const resolveTutorialHints = (
   hints: readonly TutorialBoardHint[] | undefined,
   scfen: string | undefined,
-): Square[] => [...(matchTutorialHint(hints, scfen)?.squares ?? [])];
+  covers?: SquareCovers,
+  trajectories?: AttackTrajectory[],
+  query?: TutorialHintQuery,
+): Square[] => [...(matchTutorialHint(hints, scfen, covers, trajectories, query)?.squares ?? [])];
+
+/**
+ * Keep alert rings up through later beats. A `followKing` lesson (king-attack-3)
+ * moves the ring only when the Command Center is seen on a different square —
+ * a fogged king does not count, so a dark move cannot relocate the mark.
+ */
+export const nextAlertLatch = (
+  prev: AlertLatch,
+  scripted: readonly Square[],
+  opts?: { followKing?: boolean; kingAt?: Square; kingVisible?: boolean },
+): AlertLatch => {
+  if (scripted.length > 0) {
+    const same =
+      scripted.length === prev.squares.length &&
+      scripted.every((sq, i) => sq === prev.squares[i]);
+    if (same) return prev;
+    // The scripted square is the sighting. The live king may still be on the
+    // square it left, and must not pull the ring back there.
+    return {
+      squares: [...scripted],
+      ...(opts?.followKing ? { kingAt: scripted[0] } : {}),
+    };
+  }
+  if (!opts?.followKing) return prev;
+  const kingAt = opts.kingAt;
+  if (
+    opts.kingVisible &&
+    kingAt &&
+    prev.squares.length > 0 &&
+    kingAt !== prev.squares[0]
+  ) {
+    return { squares: [kingAt], kingAt };
+  }
+  return prev;
+};
+
+/** Remember a white BattleShip on h8, and call the resolve that removes it. */
+export const nextQueenWatch = (
+  prev: QueenWatch,
+  input: { onH8: boolean; alive: boolean; reviewPhase?: ReviewTurnPhase },
+): QueenWatch => {
+  if (input.onH8) return { onH8: true, sniped: false };
+  if (input.alive) return { onH8: false, sniped: false };
+  if (input.reviewPhase === "resolve" && (prev.onH8 || prev.sniped)) {
+    return { onH8: false, sniped: true };
+  }
+  return { onH8: false, sniped: false };
+};
+
+/** Alert-red rings for the step in force — sibling of {@link resolveTutorialHints}. */
+export const resolveTutorialAlertSquares = (
+  hints: readonly TutorialBoardHint[] | undefined,
+  scfen: string | undefined,
+  covers?: SquareCovers,
+  trajectories?: AttackTrajectory[],
+  query?: TutorialHintQuery,
+): Square[] => [
+  ...(matchTutorialHint(hints, scfen, covers, trajectories, query)?.alertSquares ?? []),
+];
 
 /** Hint lines for the step in force — see {@link resolveTutorialHints}. */
 export const resolveTutorialArrows = (
   hints: readonly TutorialBoardHint[] | undefined,
   scfen: string | undefined,
-): TutorialBoardArrow[] => [...(matchTutorialHint(hints, scfen)?.arrows ?? [])];
+  covers?: SquareCovers,
+  trajectories?: AttackTrajectory[],
+  query?: TutorialHintQuery,
+): TutorialBoardArrow[] => [
+  ...(matchTutorialHint(hints, scfen, covers, trajectories, query)?.arrows ?? []),
+];
 
 /** Live narration fields used by {@link matchesTutorialCompleteWhen}. */
 export type TutorialCompleteContext = {

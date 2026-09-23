@@ -19,7 +19,7 @@ class BaseScreen <<app>> {
   tutorial? fullMatchHud? hideResources? hideGas?
   endTurnAfterQueue? coachEmotion?
   header? guideBubble? footerExtra?
-  hintSquares? hintArrows?
+  hintSquares? hintAlertSquares? hintArrows?
 }
 
 class MatchBoardHost <<host>> {
