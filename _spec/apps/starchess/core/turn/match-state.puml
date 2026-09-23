@@ -15,7 +15,7 @@ title StarChess · Match state contracts (types/match.ts)
 package "Planning window" {
   component "planningMineralSpend\nstored-to-deployed per color" as SPEND <<db>>
   component "TURN_OPEN\nsole beginScTurn path" as OPEN <<async>>
-  component "pendingPromotion\ntimeout defaults queen" as PROMO <<db>>
+  component "pendingPromotion\nEnd defaults queen\ntimeout waits for the pick" as PROMO <<db>>
 }
 
 package "Seats and history" {

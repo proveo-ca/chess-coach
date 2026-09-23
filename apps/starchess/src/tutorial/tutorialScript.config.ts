@@ -41,6 +41,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "c3",
             ],
+            arrows: [{ from: "d4", to: "c3" }],
           },
         ],
       },
@@ -77,6 +78,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "d8",
             ],
+            arrows: [{ from: "d4", to: "d8" }],
           },
         ],
       },
@@ -134,11 +136,13 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             alertSquares: [
               "h8",
             ],
+            arrows: [{ from: "e6", to: "g5", via: "g6" }],
           },
           {
             squares: [
               "e6",
             ],
+            arrows: [{ from: "d4", to: "e6", via: "d6" }],
           },
         ],
       },
@@ -181,6 +185,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "h8",
             ],
+            arrows: [{ from: "d4", to: "h8" }],
           },
         ],
       },
@@ -216,6 +221,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "d8",
             ],
+            arrows: [{ from: "d4", to: "d8" }],
           },
         ],
       },
@@ -273,6 +279,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "d7",
             ],
+            arrows: [{ from: "d4", to: "d7" }],
           },
           {
             when: {
@@ -282,6 +289,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "d1",
             ],
+            arrows: [{ from: "d4", to: "d1" }],
           },
           {
             when: {
@@ -291,11 +299,13 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "d2",
             ],
+            arrows: [{ from: "d4", to: "d2" }],
           },
           {
             squares: [
               "h4",
             ],
+            arrows: [{ from: "d4", to: "h4" }],
           },
         ],
       },
@@ -381,6 +391,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "c3",
             ],
+            arrows: [{ from: "d2", to: "c3" }],
           },
           {
             when: {
@@ -390,6 +401,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "e4",
             ],
+            arrows: [{ from: "e2", to: "e4" }],
           },
           {
             squares: [],
@@ -474,6 +486,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "e5",
             ],
+            arrows: [{ from: "e4", to: "e5" }],
           },
           {
             when: {
@@ -492,6 +505,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "d4",
             ],
+            arrows: [{ from: "d2", to: "d4" }],
           },
           {
             squares: [],
@@ -651,11 +665,13 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "e5",
             ],
+            arrows: [{ from: "d4", to: "e5" }],
           },
           {
             squares: [
               "h8",
             ],
+            arrows: [{ from: "d4", to: "h8" }],
           },
         ],
       },
@@ -867,11 +883,13 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "g3",
             ],
+            arrows: [{ from: "f2", to: "g3" }],
           },
           {
             squares: [
               "f2",
             ],
+            arrows: [{ from: "e1", to: "f2" }],
           },
         ],
       },
@@ -920,11 +938,16 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "h2",
             ],
+            arrows: [
+              { from: "g1", to: "h2" },
+              { from: "h1", to: "h2" },
+            ],
           },
           {
             squares: [
               "g2",
             ],
+            arrows: [{ from: "h1", to: "g2" }],
           },
         ],
       },
@@ -974,6 +997,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "e4",
             ],
+            arrows: [{ from: "f3", to: "e4" }],
           },
           {
             squares: [
@@ -1015,6 +1039,10 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             squares: [
               "h2",
+            ],
+            arrows: [
+              { from: "e5", to: "h2" },
+              { from: "f1", to: "h2", via: "f2" },
             ],
           },
         ],
@@ -1083,6 +1111,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "e2",
             ],
+            arrows: [{ from: "d2", to: "e2" }],
           },
           {
             when: {
@@ -1098,6 +1127,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               "c3",
             ],
             arrows: [
+              { from: "c2", to: "c3" },
               { from: "b4", to: "d2" },
             ],
           },
@@ -1183,6 +1213,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "f1",
             ],
+            arrows: [{ from: "g2", to: "f1" }],
           },
           {
             when: {
@@ -1285,6 +1316,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               "b7",
             ],
             arrows: [
+              { from: "b1", to: "b7" },
               { from: "h1", to: "a8" },
               { from: "d8", to: "a8" },
             ],
@@ -1374,6 +1406,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "f4",
             ],
+            arrows: [{ from: "f2", to: "f4" }],
           },
           {
             when: {
@@ -1383,6 +1416,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "f4",
             ],
+            arrows: [{ from: "f2", to: "f4" }],
           },
           {
             when: {
@@ -1392,6 +1426,8 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "g2",
             ],
+            fromQueen: true,
+            arrows: [{ from: "h7", to: "g2" }],
           },
           {
             when: {
@@ -1401,6 +1437,8 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "c2",
             ],
+            fromQueen: true,
+            arrows: [{ from: "h7", to: "c2" }],
           },
         ],
       },
@@ -1477,18 +1515,15 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             emotion: "thinking",
           },
           {
-            when: {
-              kind: "scfen",
-              re: /SCFEN\|(?!.*Q:w:[^;]*(?:C=[a-h][1-8]f3|C=h2h[34]|[BF]=[A-Za-z]+:[a-h][1-8]:f3))(?:[^/]*\/){5}(?:5|4(?:[A-Za-z]|1)|(?:[A-Za-z]|1)4|32|23|3(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1)3(?:[A-Za-z]|1)|(?:[A-Za-z]|1){2}3|22(?:[A-Za-z]|1)|2(?:[A-Za-z]|1)2|(?:[A-Za-z]|1)22|2(?:[A-Za-z]|1){3}|(?:[A-Za-z]|1)2(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1){2}2(?:[A-Za-z]|1)|(?:[A-Za-z]|1){3}2|(?:[A-Za-z]|1){5})p/,
-            },
-            comment: "Stop that Marine from promoting!",
-            emotion: "shocked",
+            // Open Attack/Move, BattleShip or Tank on h8. A nearby Marine does
+            // not hide the charge — the arrows are the coaching.
+            when: { kind: "chargeH8", phases: ["intent"] },
+            comment: "Go get 'em!",
           },
           {
-            when: {
-              kind: "scfen",
-              re: /SCFEN\|(?!(?:[^/]*\/){5}(?:5|4(?:[A-Za-z]|1)|(?:[A-Za-z]|1)4|32|23|3(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1)3(?:[A-Za-z]|1)|(?:[A-Za-z]|1){2}3|22(?:[A-Za-z]|1)|2(?:[A-Za-z]|1)2|(?:[A-Za-z]|1)22|2(?:[A-Za-z]|1){3}|(?:[A-Za-z]|1)2(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1){2}2(?:[A-Za-z]|1)|(?:[A-Za-z]|1){3}2|(?:[A-Za-z]|1){5})p)(?:[^/p]*\/){5}[^|]*p/,
-            },
+            // One beat for every enemy Marine on the last three ranks. The
+            // arrow is the unit that stops it; a queued stop yields the next one.
+            when: { kind: "stopRunner" },
             comment: "Stop that Marine from promoting!",
             emotion: "shocked",
           },
@@ -1541,11 +1576,6 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             comment: "Your Mecha already covers g1 — take it, no deploy needed!",
           },
           {
-            // Open Attack/Move, BattleShip or Tank on h8, and no defensive threat.
-            when: { kind: "chargeH8", phases: ["intent"] },
-            comment: "Go get 'em!",
-          },
-          {
             when: { kind: "trajectory", from: "g2", to: "d5" },
             comment: "You have 3 minerals — deploy a Mecha on g2, then take d5!",
           },
@@ -1596,13 +1626,13 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           },
           {
             when: { kind: "tankSiege", phases: ["intent"] },
-            comment: "Now turn it to siege mode for bigger range",
+            comment: "Drop Gas on it to siege for bigger range",
             emotion: "scanning",
           },
           {
             // Empty g2 takes a gas deploy. Empty h2 stays empty so the h-file marine can be pushed.
             when: { kind: "forwardDeploy", square: "g2", phases: ["intent"] },
-            comment: "Deploy a unit on g2 with Gas",
+            comment: "Deploy a Marine on g2 with Gas",
           },
           {
             when: {
@@ -1610,7 +1640,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               phases: ["intent"],
               re: /SCFEN\|(?:[^/]*\/){6}[^\/|]*P(?=[\/|])[^|]*\|[^|]*\|[^|]*\|[^|]*\|G:[1-9](?=.*\|Q:w:[^;]*C=h2h[34])/,
             },
-            comment: "Keep pushing your Marine by dropping gas on it",
+            comment: "Keep pushing your h-file Marine by dropping gas on it",
           },
           {
             when: {
@@ -1618,7 +1648,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               phases: ["intent"],
               re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){6}[^\/|]*P(?=[\/|])/,
             },
-            comment: "Move your Marine from h2 to h4.",
+            comment: "Move your h-file Marine from h2 to h4.",
           },
           {
             when: {
@@ -1626,7 +1656,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               phases: ["intent"],
               re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){5}[^\/|]*P(?=[\/|])/,
             },
-            comment: "Keep pushing your Marine!",
+            comment: "Keep pushing your h-file Marine on h3!",
           },
           {
             when: {
@@ -1634,7 +1664,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               phases: ["intent"],
               re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){4}[^\/|]*P(?=[\/|])/,
             },
-            comment: "Keep pushing your Marine!",
+            comment: "Keep pushing your h-file Marine on h4!",
           },
           {
             when: { kind: "backrankGuard" },
@@ -1676,7 +1706,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             // Move is spent, gas is not — the other half of the turn.
             when: { kind: "gasOnMarine", phases: ["intent"] },
-            comment: "Keep pushing your Marine by dropping gas on it",
+            comment: "Keep pushing your h-file Marine by dropping gas on it",
           },
           {
             when: {
@@ -1728,14 +1758,14 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             arrows: [{ from: "g2", to: "a8" }],
           },
           {
-            when: {
-              kind: "scfen",
-              re: /SCFEN\|(?!.*Q:w:[^;]*(?:C=[a-h][1-8]f3|C=h2h[34]|[BF]=[A-Za-z]+:[a-h][1-8]:f3))(?:[^/]*\/){5}(?:5|4(?:[A-Za-z]|1)|(?:[A-Za-z]|1)4|32|23|3(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1)3(?:[A-Za-z]|1)|(?:[A-Za-z]|1){2}3|22(?:[A-Za-z]|1)|2(?:[A-Za-z]|1)2|(?:[A-Za-z]|1)22|2(?:[A-Za-z]|1){3}|(?:[A-Za-z]|1)2(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1){2}2(?:[A-Za-z]|1)|(?:[A-Za-z]|1){3}2|(?:[A-Za-z]|1){5})p/,
-            },
-            squares: [
-              "f3",
+            when: { kind: "chargeH8", phases: ["intent"] },
+            arrows: [
+              { from: "h8", to: "d8" },
+              { from: "d8", to: "d5", tone: "alert" },
             ],
-            arrows: [{ from: "g2", to: "f3" }],
+          },
+          {
+            when: { kind: "stopRunner" },
           },
           {
             when: { kind: "covers", square: "e1", kinds: ["n"] },
@@ -1784,13 +1814,6 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: { kind: "covers", square: "g1", kinds: ["b"] },
             squares: ["g1"],
-          },
-          {
-            when: { kind: "chargeH8", phases: ["intent"] },
-            arrows: [
-              { from: "h8", to: "h5" },
-              { from: "h5", to: "d5", tone: "alert" },
-            ],
           },
           {
             when: { kind: "trajectory", from: "g2", to: "d5" },
@@ -1843,6 +1866,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               "g2",
               "e1",
             ],
+            arrows: [{ from: "g2", to: "e1", via: "e2" }],
           },
           {
             when: {
@@ -1853,6 +1877,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               "h2",
               "f1",
             ],
+            arrows: [{ from: "h2", to: "f1", via: "f2" }],
           },
           {
             when: {
@@ -1878,7 +1903,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){6}[^\/|]*P(?=[\/|])/,
             },
             squares: [
-              "h4",
+              "h2",
             ],
             arrows: [{ from: "h2", to: "h4" }],
           },
@@ -1889,8 +1914,9 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){5}[^\/|]*P(?=[\/|])/,
             },
             squares: [
-              "h5",
+              "h3",
             ],
+            arrows: [{ from: "h3", to: "h5" }],
           },
           {
             when: {
@@ -1899,8 +1925,9 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){4}[^\/|]*P(?=[\/|])/,
             },
             squares: [
-              "h6",
+              "h4",
             ],
+            arrows: [{ from: "h4", to: "h6" }],
           },
           {
             when: {

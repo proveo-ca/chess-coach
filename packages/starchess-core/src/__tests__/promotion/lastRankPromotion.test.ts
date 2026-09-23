@@ -74,6 +74,31 @@ describe("last-rank promotion (classical)", () => {
     });
   });
 
+  it("honours a tank choice on a quiet last-rank step", () => {
+    const start = parseScFen(
+      "SCFEN|k7/4P3/8/8/8/8/8/4K3|1|33|P|G:11:11|Q:w:;b:",
+    );
+    const queued = addScAction({
+      snapshot: start,
+      action: {
+        timing: "C",
+        kind: "classical",
+        color: "w",
+        from: "e7",
+        to: "e8",
+        promotion: "r",
+      },
+    }).snapshot;
+    const r = endScTurn(queued);
+    expect(r.resolved.promotions).toEqual([
+      { color: "w", from: "e7", at: "e8", unit: "r" },
+    ]);
+    expect(placementToMap(r.next.placement).get("e8")).toEqual({
+      type: "r",
+      color: "w",
+    });
+  });
+
   it("honours a non-queen choice on a last-rank capture", () => {
     const start = parseScFen(
       "SCFEN|k4r2/4P3/8/8/8/8/8/4K3|1|33|P|G:11:11|Q:w:;b:",

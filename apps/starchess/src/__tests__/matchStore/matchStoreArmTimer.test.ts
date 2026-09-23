@@ -61,4 +61,27 @@ describe("createMatchStore autoArmTimer", () => {
     expect(s.liveSnapshot.placement).toContain("Q");
     expect(s.deadlineAt).toBeNull();
   });
+
+  it("does not stamp a battleship when the clock fires with the picker open", () => {
+    const store = createMatchStore({
+      clock: FixedClock(1_000_000),
+      scheduler: ImmediateScheduler,
+      autoArmTimer: false,
+    });
+    store.dispatch({
+      type: "LOAD_SCFEN",
+      scfen: PROMOTION_CLEAN_SCFEN,
+      stored: 12,
+    });
+    const before = store.state().liveSnapshot.placement;
+    store.dispatch({
+      type: "SET_PENDING_PROMOTION",
+      pending: { color: "w", from: "e7", to: "e8" },
+    });
+    store.submitTurn("timeout");
+    const s = store.state();
+    expect(s.pendingPromotion).toEqual({ color: "w", from: "e7", to: "e8" });
+    expect(s.phase).toBe("targeting");
+    expect(s.liveSnapshot.placement).toBe(before);
+  });
 });

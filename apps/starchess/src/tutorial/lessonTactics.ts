@@ -265,27 +265,6 @@ export const forwardDeploySquare = (
   return null;
 };
 
-/**
- * Attack toward the last-seen Command Center. The g1 guard is defense, and so
- * is an enemy marine already on the last three ranks or a heavy piece sitting
- * on our back rank.
- */
-export const offensePreferred = (scfen: string, viewer: StarChessColor = "w"): boolean => {
-  if (g1GuardNeeded(scfen, viewer)) return false;
-  const map = placementMap(scfen);
-  if (!map) return false;
-  const enemy = viewer === "w" ? "b" : "w";
-  const back = viewer === "w" ? 1 : 8;
-  const urgent = viewer === "w" ? 3 : 6;
-  for (const [sq, piece] of map) {
-    if (piece.color !== enemy) continue;
-    const rank = Number(sq[1]);
-    if (piece.type === "p" && (viewer === "w" ? rank <= urgent : rank >= urgent)) return false;
-    if ((piece.type === "q" || piece.type === "r") && rank === back) return false;
-  }
-  return true;
-};
-
 /** White pawn on h6 or h7 can still promote this turn, and has not chosen a piece. */
 export const promotionChoiceOpen = (
   scfen: string,
@@ -305,33 +284,179 @@ export const promotionChoiceOpen = (
 };
 
 /**
- * Promoted BattleShip or Tank on h8, the Attack/Move is still open, and the
- * attack is the coaching choice.
+ * Promoted BattleShip or Tank on h8, the Attack/Move is still open, and no
+ * enemy heavy is already on our back rank. A nearby enemy Marine does not
+ * hide this beat — the charge arrows are how the player is shown the shot.
  */
 export const chargeFromH8 = (scfen: string, viewer: StarChessColor = "w"): boolean => {
-  if (viewer !== "w" || !offensePreferred(scfen, viewer)) return false;
+  if (viewer !== "w") return false;
   if (/C=/.test(whiteQueue(scfen))) return false;
+  if (g1GuardNeeded(scfen, viewer)) return false;
   const map = placementMap(scfen);
   if (!map) return false;
   const piece = map.get("h8");
-  return !!piece && piece.color === viewer && (piece.type === "q" || piece.type === "r");
-};
-
-/** Packed Tank on h5 with a gas canister left and siege not already queued. */
-export const tankSiegeOnH5 = (scfen: string, viewer: StarChessColor = "w"): boolean => {
-  if (viewer !== "w" || whiteGas(scfen) < 1) return false;
-  const map = placementMap(scfen);
-  if (!map) return false;
-  const piece = map.get("h5");
-  if (!piece || piece.color !== viewer || piece.type !== "r") return false;
-  if (/[BF]=rookSiege:h5/.test(whiteQueue(scfen))) return false;
-  const siege = scfen.split("|").find((part) => part.startsWith("S:"));
-  if (!siege) return true;
-  const body = siege.slice(2);
-  for (let i = 0; i + 1 < body.length; i += 2) {
-    if (body.slice(i, i + 2) === "h5") return false;
+  if (!piece || piece.color !== viewer || (piece.type !== "q" && piece.type !== "r")) {
+    return false;
+  }
+  const back = viewer === "w" ? "1" : "8";
+  const enemy = viewer === "w" ? "b" : "w";
+  for (const [sq, occ] of map) {
+    if (occ.color !== enemy) continue;
+    if ((occ.type === "q" || occ.type === "r") && sq[1] === back) return false;
   }
   return true;
+};
+
+const G2_DIAGONAL: readonly Square[] = ["f3", "e4", "d5", "c6", "b7", "a8"];
+const G2_KNIGHT: readonly Square[] = ["e1", "e3", "f4", "h4", "c1", "c3"];
+
+/**
+ * Which unit the g2 gas-deploy beat should name. A Mecha when one eyes the
+ * enemy Command Center (or another heavy) down g2–a8; a Hoverbike when a
+ * knight leap from g2 is the contact instead; a Marine when 3 minerals
+ * aren't banked.
+ */
+export const g2DeployName = (
+  scfen: string,
+  viewer: StarChessColor = "w",
+): "Marine" | "Hoverbike" | "Mecha" => {
+  if ((storedMinerals(scfen, viewer) ?? 0) < UNIT_COST.b) return "Marine";
+  const map = placementMap(scfen);
+  if (!map) return "Mecha";
+  const enemy = viewer === "w" ? "b" : "w";
+  const heavyThere = (squares: readonly Square[]) =>
+    squares.some((sq) => {
+      const piece = map.get(sq);
+      return (
+        !!piece &&
+        piece.color === enemy &&
+        (piece.type === "k" || piece.type === "q" || piece.type === "r")
+      );
+    });
+  if (heavyThere(G2_DIAGONAL)) return "Mecha";
+  if (heavyThere(G2_KNIGHT)) return "Hoverbike";
+  return "Mecha";
+};
+
+const queuedOnto = (queue: string, square: Square): boolean =>
+  new RegExp(`C=[a-h][1-8]${square}|[BF]=[A-Za-z]+:[a-h][1-8]:${square}`).test(queue);
+
+/**
+ * Arrow from the unit that stops an enemy Marine to that Marine. Any file on
+ * the last three ranks counts; the most advanced one wins, and a stop already
+ * queued yields the next Marine. The h-file push stays the open beat against
+ * the f3 Marine. A unit that already attacks it wins, otherwise the nearest
+ * friendly unit, and the Command Center when nothing else is left — the line
+ * never asks the player to stop a Marine with no arrow.
+ */
+export const runnerStop = (
+  scfen: string,
+  viewer: StarChessColor = "w",
+): { from: Square; to: Square } | null => {
+  if (viewer !== "w") return null;
+  const map = placementMap(scfen);
+  if (!map) return null;
+  const queue = whiteQueue(scfen);
+  const pushingH = /C=h2h[34]/.test(queue);
+  const runners: Square[] = [];
+  for (const [sq, piece] of map) {
+    if (piece.color !== "b" || piece.type !== "p") continue;
+    if (Number(sq[1]) > 3) continue;
+    if (pushingH && sq === "f3") continue;
+    if (queuedOnto(queue, sq)) continue;
+    runners.push(sq);
+  }
+  if (runners.length === 0) return null;
+  runners.sort(
+    (a, b) => Number(a[1]) - Number(b[1]) || a.charCodeAt(0) - b.charCodeAt(0),
+  );
+  const runner = runners[0]!;
+  const prefer = (type: ScPiece["type"]) =>
+    type === "p" ? 0 : type === "n" ? 1 : type === "b" ? 2 : type === "r" ? 3 : 4;
+  const attackers: Square[] = [];
+  for (const [sq, piece] of map) {
+    if (piece.color !== viewer || piece.type === "k") continue;
+    if (attacksSquare(map, sq, runner)) attackers.push(sq);
+  }
+  const allies = [...map.entries()]
+    .filter(([, piece]) => piece.color === viewer && piece.type !== "k")
+    .map(([sq]) => sq);
+  const kings = [...map.entries()]
+    .filter(([, piece]) => piece.color === viewer && piece.type === "k")
+    .map(([sq]) => sq);
+  const pool = attackers.length > 0 ? attackers : allies.length > 0 ? allies : kings;
+  if (pool.length === 0) return null;
+  const dist = (sq: Square) =>
+    Math.max(
+      Math.abs(sq.charCodeAt(0) - runner.charCodeAt(0)),
+      Math.abs(Number(sq[1]) - Number(runner[1])),
+    );
+  pool.sort((a, b) => {
+    if (attackers.length > 0) {
+      const byType = prefer(map.get(a)!.type) - prefer(map.get(b)!.type);
+      if (byType !== 0) return byType;
+    }
+    const byDist = dist(a) - dist(b);
+    if (byDist !== 0) return byDist;
+    return b.charCodeAt(0) - a.charCodeAt(0);
+  });
+  return { from: pool[0]!, to: runner };
+};
+
+const squareSieged = (scfen: string, square: Square): boolean => {
+  const siege = scfen.split("|").find((part) => part.startsWith("S:"));
+  if (!siege) return false;
+  const body = siege.slice(2);
+  for (let i = 0; i + 1 < body.length; i += 2) {
+    if (body.slice(i, i + 2) === square) return true;
+  }
+  return false;
+};
+
+const tankReadyToSiege = (
+  map: Map<Square, ScPiece>,
+  square: Square,
+  viewer: StarChessColor,
+  scfen: string,
+  queue: string,
+): boolean => {
+  const piece = map.get(square);
+  if (!piece || piece.color !== viewer || piece.type !== "r") return false;
+  if (new RegExp(`[BF]=rookSiege:${square}`).test(queue)) return false;
+  return !squareSieged(scfen, square);
+};
+
+/**
+ * Where to drop Gas to siege a Tank. A queued slide onto d8 or h5 highlights
+ * the Tank where it still stands. A Tank already on h5 highlights that square.
+ * `null` when there is no gas, the piece is not a Tank, or siege is already on.
+ */
+export const tankSiegeSquare = (scfen: string, viewer: StarChessColor = "w"): Square | null => {
+  if (viewer !== "w" || whiteGas(scfen) < 1) return null;
+  const map = placementMap(scfen);
+  if (!map) return null;
+  const queue = whiteQueue(scfen);
+  const classical = /C=([a-h][1-8])([a-h][1-8])/.exec(queue);
+  if (classical && (classical[2] === "d8" || classical[2] === "h5")) {
+    const from = classical[1] as Square;
+    if (tankReadyToSiege(map, from, viewer, scfen, queue)) return from;
+  }
+  if (tankReadyToSiege(map, "h5", viewer, scfen, queue)) return "h5";
+  return null;
+};
+
+/** A Tank can still be sieged with Gas this intent. */
+export const tankSiegeOnH5 = (scfen: string, viewer: StarChessColor = "w"): boolean =>
+  tankSiegeSquare(scfen, viewer) != null;
+
+/** Square of the viewer's BattleShip, wherever it jumped to. */
+export const whiteQueenSquare = (scfen: string, viewer: StarChessColor = "w"): Square | null => {
+  const map = placementMap(scfen);
+  if (!map) return null;
+  for (const [sq, piece] of map) {
+    if (piece.color === viewer && piece.type === "q") return sq;
+  }
+  return null;
 };
 
 /**

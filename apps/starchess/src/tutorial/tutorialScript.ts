@@ -8,12 +8,16 @@ import { TUTORIAL_SCRIPT_CONFIG } from "~/tutorial/tutorialScript.config";
 import {
   chargeFromH8,
   forwardDeploySquare,
+  g2DeployName,
   gasMarineSquare,
   g1GuardNeeded,
   mechaDiagonalOpen,
   mechaThreatOpen,
   promotionChoiceOpen,
+  runnerStop,
   tankSiegeOnH5,
+  tankSiegeSquare,
+  whiteQueenSquare,
 } from "~/tutorial/lessonTactics";
 import type { KerriganEmotion } from "~/types/coach";
 import type {
@@ -35,6 +39,7 @@ import type {
   TutorialMechaDiagonalWhen,
   TutorialMechaThreatWhen,
   TutorialPromotionWhen,
+  TutorialStopRunnerWhen,
   TutorialTankSiegeWhen,
   TutorialTrajectoryWhen,
   TutorialReactionAction,
@@ -82,6 +87,7 @@ export type TutorialReactionWhen =
   | TutorialPromotionWhen
   | TutorialChargeWhen
   | TutorialTankSiegeWhen
+  | TutorialStopRunnerWhen
   /** BattleShip that was standing on h8 is gone during resolve. */
   | { kind: "shipSniped" };
 
@@ -323,7 +329,11 @@ export const resolveTutorialLine = (ctx: TutorialScriptContext): TutorialLine =>
       return reactionLine(r);
     }
     if (w.kind === "gasOnMarine" && ctx.scfen && phaseAllows(w.phases, ctx.reviewPhase) && gasMarineSquare(ctx.scfen)) {
-      return reactionLine(r);
+      const sq = gasMarineSquare(ctx.scfen)!;
+      return {
+        ...reactionLine(r),
+        comment: `Keep pushing your ${sq[0]}-file Marine by dropping gas on it`,
+      };
     }
     if (
       w.kind === "forwardDeploy" &&
@@ -331,7 +341,10 @@ export const resolveTutorialLine = (ctx: TutorialScriptContext): TutorialLine =>
       phaseAllows(w.phases, ctx.reviewPhase) &&
       forwardDeploySquare(ctx.scfen) === w.square
     ) {
-      return reactionLine(r);
+      return {
+        ...reactionLine(r),
+        comment: `Deploy a ${g2DeployName(ctx.scfen)} on g2 with Gas`,
+      };
     }
     if (
       w.kind === "promotionChoice" &&
@@ -347,6 +360,9 @@ export const resolveTutorialLine = (ctx: TutorialScriptContext): TutorialLine =>
       phaseAllows(w.phases, ctx.reviewPhase) &&
       chargeFromH8(ctx.scfen)
     ) {
+      return reactionLine(r);
+    }
+    if (w.kind === "stopRunner" && ctx.scfen && runnerStop(ctx.scfen)) {
       return reactionLine(r);
     }
     if (
@@ -462,6 +478,18 @@ export type TutorialHintQuery = {
   turn?: number;
 };
 
+/** Juke arrows leave from the BattleShip's current square, not the seed square. */
+const queenOrigin = (hint: TutorialBoardHint, scfen: string): TutorialBoardHint => {
+  const from = whiteQueenSquare(scfen);
+  if (!from || !hint.arrows) return { ...hint, arrows: [] };
+  return {
+    ...hint,
+    arrows: hint.arrows.flatMap((arrow) =>
+      arrow.to === from ? [] : [{ ...arrow, from }],
+    ),
+  };
+};
+
 const matchTutorialHint = (
   hints: readonly TutorialBoardHint[] | undefined,
   scfen: string | undefined,
@@ -480,7 +508,16 @@ const matchTutorialHint = (
     if (h.when.kind === "scfen" && scfen != null && h.when.re.test(scfen)) {
       const phases = h.when.phases;
       if (phases && (!query?.reviewPhase || !phases.includes(query.reviewPhase))) continue;
-      return h;
+      return h.fromQueen ? queenOrigin(h, scfen) : h;
+    }
+    if (h.when.kind === "stopRunner" && scfen) {
+      const stop = runnerStop(scfen);
+      if (!stop) continue;
+      return {
+        ...h,
+        squares: [stop.to],
+        arrows: [{ from: stop.from, to: stop.to }],
+      };
     }
     if (h.when.kind === "covers" && covers) {
       const when = h.when;
@@ -548,7 +585,7 @@ const matchTutorialHint = (
       phaseAllows(h.when.phases, query?.reviewPhase) &&
       tankSiegeOnH5(scfen)
     ) {
-      return h;
+      return { ...h, squares: [tankSiegeSquare(scfen)!] };
     }
   }
   return undefined;

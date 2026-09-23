@@ -126,7 +126,13 @@ export type TutorialBoardHint = {
     | TutorialForwardDeployWhen
     | TutorialPromotionWhen
     | TutorialChargeWhen
-    | TutorialTankSiegeWhen;
+    | TutorialTankSiegeWhen
+    | TutorialStopRunnerWhen;
+  /**
+   * Rewrite arrow origins to the viewer's BattleShip. The destination stays
+   * the square named on the arrow.
+   */
+  fromQueen?: boolean;
   /** Guide-green rings. */
   squares?: readonly Square[];
   /** Alert-red rings. Same step as `squares`; both paint together. */
@@ -224,6 +230,12 @@ export type TutorialTankSiegeWhen = {
   kind: "tankSiege";
   phases?: readonly ReviewTurnPhase[];
 };
+
+/**
+ * An enemy Marine on the last three ranks still needs stopping. One beat for
+ * every file — the board arrow is the stopper, not a second regex.
+ */
+export type TutorialStopRunnerWhen = { kind: "stopRunner" };
 
 /**
  * White BattleShip was on h8 and is gone. Armed while it stands there; `sniped`

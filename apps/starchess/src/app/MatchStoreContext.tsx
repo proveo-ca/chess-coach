@@ -237,6 +237,12 @@ export const createMatchStore = (opts?: {
     const before = state();
     if (before.phase !== "planning" && before.phase !== "targeting") return;
     if (before.turnBonus) return;
+    // The clock must not pick a BattleShip while the promotion modal is open.
+    // A click on Tank would otherwise lose the race and resolve as queen.
+    if (reason === "timeout" && before.pendingPromotion) {
+      armTimer();
+      return;
+    }
     if (!before.turnStartChecksApplied) {
       ensureTurnOpenChecks();
       // If checks are animating, defer submit until planning re-opens.
