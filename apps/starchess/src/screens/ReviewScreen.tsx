@@ -18,9 +18,9 @@ import {
 } from "solid-js";
 
 import { AchievementsModal } from "~/components/features/AchievementsModal";
-import { MatchHistoryFilters } from "~/components/atoms/MatchHistoryFilters";
-import { MobileBanner } from "~/components/atoms/MobileBanner";
-import { Screen } from "~/components/primitives/Screen";
+import { MatchHistoryFilters } from "@chess-coach/ui-web/atoms/MatchHistoryFilters";
+import { StarChessMobileBanner as MobileBanner } from "@chess-coach/ui-web/atoms/StarChessMobileBanner";
+import { Screen } from "@chess-coach/ui-web/primitives/Screen";
 import { ScreenBackNav } from "~/components/primitives/ScreenBackNav";
 import { ReviewDemoScreen } from "~/demos/ReviewDemoScreen";
 import { useMatchHistoryFilters } from "~/hooks/useMatchHistoryFilters";

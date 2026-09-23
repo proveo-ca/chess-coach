@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
 import { MobileSidebar } from "~/components/features/MobileSidebar";
-import { IconButton } from "~/components/primitives/IconButton";
-import { HamburgerIcon, HintIcon, SearchIcon } from "~/components/primitives/icons";
+import { IconButton } from "@chess-coach/ui-web/primitives/IconButton";
+import { HamburgerIcon, HintIcon, SearchIcon } from "@chess-coach/ui-web/primitives/icons";
 
 const controls = (
   <>

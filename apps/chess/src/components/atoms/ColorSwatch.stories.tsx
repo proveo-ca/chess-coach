@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { ColorSwatch } from "~/components/atoms/ColorSwatch";
+import { ColorSwatch } from "@chess-coach/ui-web/atoms/ColorSwatch";
 
 const meta = {
   title: "Atoms/ColorSwatch",

@@ -3,12 +3,12 @@ import { Show, createEffect, createSignal, onCleanup } from "solid-js";
 import type { Component } from "solid-js";
 
 import { useMatchStore } from "~/app/MatchStoreContext";
-import { ChatBubble } from "~/components/primitives/ChatBubble";
+import { ChatBubble } from "@chess-coach/ui-web/primitives/ChatBubble";
 import {
   MineralsIcon,
   TimerIcon,
   VespeneIcon,
-} from "~/components/primitives/icons";
+} from "@chess-coach/ui-web/primitives/icons";
 import styles from "~/components/features/TurnBonusBubble.module.css";
 
 const BOARD_ANCHOR = '[data-testid="starchess-board-chrome"]';

@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { createSignal } from "solid-js";
 
 import { CoachAvatar } from "~/components/atoms/CoachAvatar";
-import { Breadcrumb } from "~/components/primitives/Breadcrumb";
+import { Breadcrumb } from "@chess-coach/ui-web/primitives/Breadcrumb";
 
 const TUTORIAL_STAGES = [
   { id: "fog", label: "Fog of War" },

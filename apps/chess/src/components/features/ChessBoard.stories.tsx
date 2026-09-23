@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
 import { ChessBoard } from "~/components/features/ChessBoard";
-import { Button } from "~/components/primitives/Button";
+import { Button } from "@chess-coach/ui-web/primitives/Button";
 import { setStorybookCapabilities } from "~/screens/storybookCapabilities";
 import { LAN_PLAYER_CAPABILITIES } from "~/store/capabilitiesStore";
 import { addMoveSan, resetGame } from "~/store/gameStore";

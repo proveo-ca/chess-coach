@@ -24,8 +24,8 @@ import {
 import { MatchStoreContext } from "~/app/MatchStoreContext";
 import { clampPlayerName } from "~/utils/playerName";
 import { readDisplayedSnapshot } from "~/app/selectors";
-import { MineralsIcon, SupplyIcon, VespeneIcon } from "~/components/primitives/icons";
-import { TeamFrame } from "~/components/primitives/TeamFrame";
+import { MineralsIcon, SupplyIcon, VespeneIcon } from "@chess-coach/ui-web/primitives/icons";
+import { TeamFrame } from "@chess-coach/ui-web/primitives/TeamFrame";
 import { TEAM_PRIMARY } from "~/presentation/pieces/teamColors";
 import styles from "~/presentation/hud/components/ResourceBar.module.css";
 

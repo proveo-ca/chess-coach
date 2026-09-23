@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { ChevronNav } from "~/components/primitives/ChevronNav";
-import { PanelTitle } from "~/components/primitives/PanelTitle";
+import { ChevronNav } from "@chess-coach/ui-web/primitives/ChevronNav";
+import { PanelTitle } from "@chess-coach/ui-web/primitives/PanelTitle";
 import { ScreenBackNav } from "~/components/primitives/ScreenBackNav";
 
 const meta = {

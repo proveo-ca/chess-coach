@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { SpecialPreview } from "~/components/primitives/SpecialPreview";
+import { SpecialPreview } from "@chess-coach/ui-web/primitives/SpecialPreview";
 
 const meta = {
   title: "Primitives/SpecialPreview",

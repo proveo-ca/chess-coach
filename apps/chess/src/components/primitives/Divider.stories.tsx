@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { Divider } from "~/components/primitives/Divider";
+import { Divider } from "@chess-coach/ui-web/primitives/Divider";
 
 const meta = {
   title: "Primitives/Divider",

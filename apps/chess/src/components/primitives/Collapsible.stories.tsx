@@ -1,7 +1,7 @@
 import { createSignal } from "solid-js";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { Collapsible } from "~/components/primitives/Collapsible";
+import { Collapsible } from "@chess-coach/ui-web/primitives/Collapsible";
 
 const meta = {
   title: "Primitives/Collapsible",

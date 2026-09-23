@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { SplashScreen } from "~/components/primitives/SplashScreen";
+import { SplashScreen } from "@chess-coach/ui-web/primitives/SplashScreen";
 
 const avatar = (
   <div

@@ -21,7 +21,7 @@ import {
   clearSiegedRooks,
   setRookMode,
 } from "~/presentation/animations/rookModeStore";
-import { Screen } from "~/components/primitives/Screen";
+import { Screen } from "@chess-coach/ui-web/primitives/Screen";
 import type { AttackCue, RookMode } from "~/presentation/types";
 
 const ORIGIN: Square = "d4";

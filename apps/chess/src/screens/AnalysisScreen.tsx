@@ -7,21 +7,21 @@ import { DebugControls } from "~/components/atoms/DebugControls";
 import { EngineDepth } from "~/components/atoms/EngineDepth";
 import { FenLoader } from "~/components/atoms/FenLoader";
 import { MobileBanner } from "~/components/atoms/MobileBanner";
-import { Modal } from "~/components/atoms/Modal";
+import { Modal } from "@chess-coach/ui-web/atoms/Modal";
 import { BoardControls } from "~/components/features/BoardControls";
 import { ChessBoard } from "~/components/features/ChessBoard";
 import { MobileDrawer, openMobileDrawer } from "~/components/features/MobileDrawer";
 import { MobileSidebar } from "~/components/features/MobileSidebar";
 import { Sidebar } from "~/components/features/Sidebar";
-import { DualNavButton } from "~/components/primitives/DualNavButton";
-import { IconButton } from "~/components/primitives/IconButton";
-import { Label } from "~/components/primitives/Label";
+import { DualNavButton } from "@chess-coach/ui-web/primitives/DualNavButton";
+import { IconButton } from "@chess-coach/ui-web/primitives/IconButton";
+import { Label } from "@chess-coach/ui-web/primitives/Label";
 import {
   FlipBoardIcon,
   LoadFenIcon,
   PlusCircleIcon,
-} from "~/components/primitives/icons";
-import { Screen } from "~/components/primitives/Screen";
+} from "@chess-coach/ui-web/primitives/icons";
+import { Screen } from "@chess-coach/ui-web/primitives/Screen";
 import { ScreenBackNav } from "~/components/primitives/ScreenBackNav";
 import { useGameControls } from "~/hooks/useGameControls";
 import styles from "~/screens/AnalysisScreen.module.css";

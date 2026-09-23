@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { Modal } from "~/components/atoms/Modal";
-import { Button } from "~/components/primitives/Button";
+import { Modal } from "@chess-coach/ui-web/atoms/Modal";
+import { Button } from "@chess-coach/ui-web/primitives/Button";
 
 const meta = {
   title: "Atoms/Modal",

@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { ColorSwatch } from "~/components/atoms/ColorSwatch";
-import { SelectCard } from "~/components/atoms/SelectCard";
-import { Button } from "~/components/primitives/Button";
+import { ColorSwatch } from "@chess-coach/ui-web/atoms/ColorSwatch";
+import { SelectCard } from "@chess-coach/ui-web/atoms/SelectCard";
+import { Button } from "@chess-coach/ui-web/primitives/Button";
 
 const meta = {
   title: "Atoms/SelectCard",

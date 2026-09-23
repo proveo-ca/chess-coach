@@ -1,7 +1,7 @@
 import { createSignal } from "solid-js";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { Toggle } from "~/components/primitives/Toggle";
+import { Toggle } from "@chess-coach/ui-web/primitives/Toggle";
 
 const meta = {
   title: "Primitives/Toggle",

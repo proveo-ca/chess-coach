@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { CountdownRing } from "~/components/primitives/CountdownRing";
+import { CountdownRing } from "@chess-coach/ui-web/primitives/CountdownRing";
 
 const meta = {
   title: "Primitives/CountdownRing",

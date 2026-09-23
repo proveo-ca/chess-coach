@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { IconButton } from "~/components/primitives/IconButton";
-import { CogIcon, FlipBoardIcon, HintIcon } from "~/components/primitives/icons";
+import { IconButton } from "@chess-coach/ui-web/primitives/IconButton";
+import { CogIcon, FlipBoardIcon, HintIcon } from "@chess-coach/ui-web/primitives/icons";
 
 const meta = {
   title: "Primitives/IconButton",

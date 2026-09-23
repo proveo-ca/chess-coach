@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { NeonModal } from "~/components/atoms/NeonModal";
+import { NeonModal } from "@chess-coach/ui-web/atoms/NeonModal";
 
 const meta = {
   title: "Atoms/NeonModal",

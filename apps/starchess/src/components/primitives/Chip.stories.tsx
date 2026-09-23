@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { Chip } from "~/components/primitives/Chip";
+import { Chip } from "@chess-coach/ui-web/primitives/Chip";
 
 const meta = {
   title: "Primitives/Chip",

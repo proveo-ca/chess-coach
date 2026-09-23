@@ -3,7 +3,7 @@ import type { Chess, Color } from "chess.js";
 import { Show, type Component } from "solid-js";
 
 import styles from "~/components/features/DrawBubbles.module.css";
-import { ChatBubble } from "~/components/primitives/ChatBubble";
+import { ChatBubble } from "@chess-coach/ui-web/primitives/ChatBubble";
 import { usePresence } from "~/hooks/usePresence";
 import { game } from "~/store/gameStore";
 import { draw } from "~/store/roomStore";

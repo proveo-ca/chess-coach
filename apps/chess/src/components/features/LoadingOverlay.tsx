@@ -1,8 +1,8 @@
 import { type Component, createEffect, createSignal, Show } from "solid-js";
 
 import { CoachAvatar } from "~/components/atoms/CoachAvatar";
-import { ProgressBar } from "~/components/primitives/ProgressBar";
-import { SplashScreen } from "~/components/primitives/SplashScreen";
+import { ProgressBar } from "@chess-coach/ui-web/primitives/ProgressBar";
+import { SplashScreen } from "@chess-coach/ui-web/primitives/SplashScreen";
 import { isAppReady, llmLoadingText, llmProgress } from "~/store/coachStore";
 
 export const LoadingOverlay: Component = () => {

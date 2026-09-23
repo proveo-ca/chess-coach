@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
 import { BoardControls } from "~/components/features/BoardControls";
-import { CoachEmotionIcon } from "~/components/primitives/CoachEmotionIcon";
+import { CoachEmotionIcon } from "@chess-coach/ui-web/primitives/CoachEmotionIcon";
 import { setStorybookCapabilities } from "~/screens/storybookCapabilities";
 import { COACH_CAPABILITIES } from "~/store/capabilitiesStore";
 import { addMoveSan, resetGame } from "~/store/gameStore";

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { Select } from "~/components/primitives/Select";
+import { Select } from "@chess-coach/ui-web/primitives/Select";
 
 const options = (
   <>

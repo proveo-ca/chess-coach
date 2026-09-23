@@ -1,7 +1,7 @@
 import { createSignal } from "solid-js";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { ColorSelector } from "~/components/primitives/ColorSelector";
+import { ColorSelector } from "@chess-coach/ui-web/primitives/ColorSelector";
 
 const meta = {
   title: "Primitives/ColorSelector",

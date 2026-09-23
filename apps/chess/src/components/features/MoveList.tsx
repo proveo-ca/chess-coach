@@ -2,8 +2,8 @@ import { For, Show, createEffect, createMemo, createSignal, on, onCleanup, onMou
 import type { Component } from "solid-js";
 
 import styles from "~/components/features/MoveList.module.css";
-import { CoachEmotionIcon } from "~/components/primitives/CoachEmotionIcon";
-import { ChevronLeftIcon, ChevronRightIcon, HintIcon } from "~/components/primitives/icons";
+import { CoachEmotionIcon } from "@chess-coach/ui-web/primitives/CoachEmotionIcon";
+import { ChevronLeftIcon, ChevronRightIcon, HintIcon } from "@chess-coach/ui-web/primitives/icons";
 import { formatCp, pairMovesIntoRows, resolveAnnotations } from "~/engine/moveAnnotations";
 import { useGameAnalysis } from "~/hooks/useGameAnalysis";
 import { useMoveListPagination } from "~/hooks/useMoveListPagination";

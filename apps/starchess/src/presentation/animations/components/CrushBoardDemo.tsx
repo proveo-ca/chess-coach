@@ -10,7 +10,7 @@ import { AnimationStage } from "~/presentation/animations/components/AnimationSt
 import styles from "~/presentation/animations/components/CrushBoardDemo.module.css";
 import { CRUSH_DEATH_MS, DEPLOY_MS } from "~/presentation/constants";
 import { DEATH_MS, HOLD_MS, IDLE_MS, ORIGIN } from "~/presentation/animations/deathAnim";
-import { Screen } from "~/components/primitives/Screen";
+import { Screen } from "@chess-coach/ui-web/primitives/Screen";
 import type { DeathCue, DeployCue } from "~/presentation/types";
 
 // SPEC: _spec/apps/starchess/architecture/composite-vfx-stack.puml, _spec/apps/starchess/vfx-guarantees.md

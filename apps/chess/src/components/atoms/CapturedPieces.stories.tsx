@@ -2,7 +2,7 @@ import { onCleanup } from "solid-js";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
 import { OpponentCaptures, PlayerCaptures } from "~/components/atoms/CapturedPieces";
-import { Screen } from "~/components/primitives/Screen";
+import { Screen } from "@chess-coach/ui-web/primitives/Screen";
 import { loadFen } from "~/store/gameStore";
 import { setActivePlayerColor } from "~/store/settingsStore";
 import { exitTravel } from "~/store/travelStore";

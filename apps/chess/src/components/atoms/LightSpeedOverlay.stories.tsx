@@ -1,7 +1,7 @@
 import { onCleanup } from "solid-js";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { LightSpeedOverlay } from "~/components/atoms/LightSpeedOverlay";
+import { LightSpeedOverlay } from "@chess-coach/ui-web/atoms/LightSpeedOverlay";
 
 const meta = {
   title: "Atoms/LightSpeedOverlay",

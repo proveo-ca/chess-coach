@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { TeamFrame } from "~/components/primitives/TeamFrame";
+import { TeamFrame } from "@chess-coach/ui-web/primitives/TeamFrame";
 
 const meta = {
   title: "Primitives/TeamFrame",

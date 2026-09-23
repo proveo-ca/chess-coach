@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { ProgressBar } from "~/components/primitives/ProgressBar";
+import { ProgressBar } from "@chess-coach/ui-web/primitives/ProgressBar";
 
 const meta = {
   title: "Primitives/ProgressBar",

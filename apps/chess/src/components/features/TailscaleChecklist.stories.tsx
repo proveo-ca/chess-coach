@@ -2,7 +2,7 @@ import { onCleanup, type Component } from "solid-js";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
 import { TailscaleChecklist } from "~/components/features/TailscaleChecklist";
-import { Button } from "~/components/primitives/Button";
+import { Button } from "@chess-coach/ui-web/primitives/Button";
 
 const LocalChecklistStory: Component = () => {
   const rtcDescriptor = Object.getOwnPropertyDescriptor(globalThis, "RTCPeerConnection");

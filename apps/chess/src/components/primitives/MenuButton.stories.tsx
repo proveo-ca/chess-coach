@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { MenuButton } from "~/components/primitives/MenuButton";
+import { MenuButton } from "@chess-coach/ui-web/primitives/MenuButton";
 
 const meta = {
   title: "Primitives/MenuButton",

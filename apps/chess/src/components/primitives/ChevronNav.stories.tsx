@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { ChevronNav } from "~/components/primitives/ChevronNav";
+import { ChevronNav } from "@chess-coach/ui-web/primitives/ChevronNav";
 
 const meta = {
   title: "Primitives/ChevronNav",

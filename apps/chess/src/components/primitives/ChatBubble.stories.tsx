@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { ChatBubble } from "~/components/primitives/ChatBubble";
+import { ChatBubble } from "@chess-coach/ui-web/primitives/ChatBubble";
 
 const meta = {
   title: "Primitives/ChatBubble",

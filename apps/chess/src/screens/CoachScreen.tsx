@@ -9,16 +9,16 @@ import {
   debugHistoryOverlay,
   debugLightSpeedOverlay,
 } from "~/components/atoms/DebugControls";
-import { LightSpeedOverlay } from "~/components/atoms/LightSpeedOverlay";
+import { LightSpeedOverlay } from "@chess-coach/ui-web/atoms/LightSpeedOverlay";
 import { MobileBanner } from "~/components/atoms/MobileBanner";
-import { Modal } from "~/components/atoms/Modal";
+import { Modal } from "@chess-coach/ui-web/atoms/Modal";
 import { BoardControls } from "~/components/features/BoardControls";
 import { ChessBoard } from "~/components/features/ChessBoard";
 import { CoachPanel } from "~/components/features/CoachPanel.tsx";
 import { MobileDrawer, openMobileDrawer } from "~/components/features/MobileDrawer";
 import { Sidebar } from "~/components/features/Sidebar";
-import { HistoryOverlay } from "~/components/primitives/HistoryOverlay";
-import { Screen } from "~/components/primitives/Screen";
+import { HistoryOverlay } from "@chess-coach/ui-web/primitives/HistoryOverlay";
+import { Screen } from "@chess-coach/ui-web/primitives/Screen";
 import { ScreenBackNav } from "~/components/primitives/ScreenBackNav";
 import { useGameRecorder } from "~/hooks/useGameRecorder";
 import { useLivePreAnalysis } from "~/hooks/useLivePreAnalysis";

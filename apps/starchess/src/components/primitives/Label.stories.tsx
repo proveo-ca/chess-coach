@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { Label } from "~/components/primitives/Label";
+import { Label } from "@chess-coach/ui-web/primitives/Label";
 
 const meta = {
   title: "Primitives/Label",

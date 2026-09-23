@@ -8,7 +8,7 @@ import type { Component } from "solid-js";
 import { For, Show } from "solid-js";
 import type { SpawnPiece, StarChessColor } from "@chess-coach/starchess-core";
 
-import { Modal } from "~/components/atoms/Modal";
+import { Modal } from "@chess-coach/ui-web/atoms/Modal";
 import { useMatchStore } from "~/app/MatchStoreContext";
 import {
   deployedMaterial,

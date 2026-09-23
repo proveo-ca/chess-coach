@@ -18,7 +18,7 @@ import {
   ShareIcon,
   SignalIcon,
   StarIcon,
-} from "~/components/primitives/icons";
+} from "@chess-coach/ui-web/primitives/icons";
 
 const icons = [
   ["Back arrow", BackArrowIcon],

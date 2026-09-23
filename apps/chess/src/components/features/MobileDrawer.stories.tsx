@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
 import { MobileDrawer, openMobileDrawer } from "~/components/features/MobileDrawer";
-import { IconButton } from "~/components/primitives/IconButton";
-import { HamburgerIcon } from "~/components/primitives/icons";
+import { IconButton } from "@chess-coach/ui-web/primitives/IconButton";
+import { HamburgerIcon } from "@chess-coach/ui-web/primitives/icons";
 import { setStorybookCapabilities } from "~/screens/storybookCapabilities";
 import { COACH_CAPABILITIES } from "~/store/capabilitiesStore";
 import { setShowCredits, setShowNewGame } from "~/store/coachStore";

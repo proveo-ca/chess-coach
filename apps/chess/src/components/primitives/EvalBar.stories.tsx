@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { EvalBar } from "~/components/primitives/EvalBar";
+import { EvalBar } from "@chess-coach/ui-web/primitives/EvalBar";
 
 const meta = {
   title: "Primitives/EvalBar",

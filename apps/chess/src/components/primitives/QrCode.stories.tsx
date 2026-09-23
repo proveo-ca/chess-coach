@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { QrCode } from "~/components/primitives/QrCode";
+import { QrCode } from "@chess-coach/ui-web/primitives/QrCode";
 
 const meta = {
   title: "Primitives/QrCode",

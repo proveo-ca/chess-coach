@@ -1,7 +1,7 @@
 import { createSignal } from "solid-js";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { GameHistoryFilters } from "~/components/atoms/GameHistoryFilters";
+import { GameHistoryFilters } from "@chess-coach/ui-web/atoms/GameHistoryFilters";
 
 const meta = {
   title: "Atoms/GameHistoryFilters",

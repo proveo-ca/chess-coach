@@ -6,7 +6,7 @@ import { createMemo, Show, type Component } from "solid-js";
 
 import { parseScFen } from "@chess-coach/starchess-core";
 
-import { Screen } from "~/components/primitives/Screen";
+import { Screen } from "@chess-coach/ui-web/primitives/Screen";
 import { AnimationStage } from "~/presentation/animations/components/AnimationStage";
 import styles from "~/presentation/animations/components/SpiderMineFogDemo.module.css";
 import type { BoardSkin, PieceSet } from "~/types/board";

@@ -43,7 +43,7 @@ class PromotionModal <<app>> {
   components/primitives/PromotionModal.tsx
 }
 class ReviewTurnNav <<app>> {
-  components/atoms/ReviewTurnNav.tsx
+  packages/ui/web/src/atoms/ReviewTurnNav.tsx
   ‹ › + slot; owns **keyboard** ← / →
   (opt-in: `keyboard`, one per screen)
 }
@@ -79,7 +79,8 @@ BaseScreen *-- ReviewTurnNav
 note bottom
   **HUD vs shell:** match chrome (ResourceBar, GasRack, TurnBar*) lives under
   ""presentation/hud/"". Pure layout shells (PromotionModal) live under
-  ""components/primitives/"". ``ReviewTurnNav`` sits in ""components/atoms/"":
+  ""components/primitives/"". ``ReviewTurnNav`` sits in
+  ""packages/ui/web/src/atoms/"":
   it binds ← / → to its own arrows, so a keypress and a click are the same
   call with the same disabled guard — a side effect, which the
   ``pure-primitive`` lint rule keeps out of ""primitives/"". Opt in with

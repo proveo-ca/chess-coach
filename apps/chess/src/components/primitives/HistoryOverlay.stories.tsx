@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { HistoryOverlay } from "~/components/primitives/HistoryOverlay";
+import { HistoryOverlay } from "@chess-coach/ui-web/primitives/HistoryOverlay";
 
 const meta = {
   title: "Primitives/HistoryOverlay",

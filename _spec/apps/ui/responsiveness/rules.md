@@ -3,8 +3,8 @@
 Living contract for how `apps/ui` fits the Chessboard + sideboard into constrained
 viewports. Implementation lives primarily in:
 
-- `apps/ui/src/components/primitives/Screen.module.css` (root `display: grid`)
-- `apps/ui/src/components/primitives/Screen.tsx` (`data-region`, `data-footer-float`)
+- `packages/ui/web/src/primitives/Screen.chess.module.css` (root `display: grid`)
+- `packages/ui/web/src/primitives/Screen.tsx` (`data-region`, `data-footer-float`)
 - `apps/ui/src/components/features/CoachPanel.tsx` (§4 floating advice)
 - `apps/ui/src/components/features/MoveList.tsx` (§4 floating move strip on Review /:id)
 - `apps/ui/src/store/viewportLayoutStore.ts`

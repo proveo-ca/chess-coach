@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { DualNavButton } from "~/components/primitives/DualNavButton";
+import { DualNavButton } from "@chess-coach/ui-web/primitives/DualNavButton";
 
 const meta = {
   title: "Primitives/DualNavButton",

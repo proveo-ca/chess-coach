@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { createSignal, type Component } from "solid-js";
 
-import { ColorSwatch } from "~/components/atoms/ColorSwatch";
-import { MatchHistoryFilters } from "~/components/atoms/MatchHistoryFilters";
+import { ColorSwatch } from "@chess-coach/ui-web/atoms/ColorSwatch";
+import { MatchHistoryFilters } from "@chess-coach/ui-web/atoms/MatchHistoryFilters";
 import type { StarChessColor } from "@chess-coach/starchess-core";
 
 const meta = {

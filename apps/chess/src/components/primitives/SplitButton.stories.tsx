@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { createSignal } from "solid-js";
 
-import { SplitButton } from "~/components/primitives/SplitButton";
+import { SplitButton } from "@chess-coach/ui-web/primitives/SplitButton";
 
 const ELO = [
   { value: "intermediate", label: "1100 elo" },

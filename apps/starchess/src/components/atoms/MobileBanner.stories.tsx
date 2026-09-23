@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { MobileBanner } from "~/components/atoms/MobileBanner";
-import { Button } from "~/components/primitives/Button";
-import { CountdownRing } from "~/components/primitives/CountdownRing";
+import { StarChessMobileBanner as MobileBanner } from "@chess-coach/ui-web/atoms/StarChessMobileBanner";
+import { Button } from "@chess-coach/ui-web/primitives/Button";
+import { CountdownRing } from "@chess-coach/ui-web/primitives/CountdownRing";
 
 /**
  * Dynamic strip — three slots (floating docks are bottom-right, outside it):

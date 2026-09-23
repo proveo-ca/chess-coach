@@ -2,7 +2,7 @@ import type { Color } from "chess.js";
 import { For, Show } from "solid-js";
 import type { Component } from "solid-js";
 
-import { Modal } from "~/components/atoms/Modal";
+import { Modal } from "@chess-coach/ui-web/atoms/Modal";
 import styles from "~/components/primitives/PromotionModal.module.css";
 import type { PromotionPiece } from "~/types/chess";
 import type { PieceSet } from "~/types/settings";

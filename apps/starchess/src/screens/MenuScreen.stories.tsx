@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { createSignal, type Component } from "solid-js";
 
-import { MenuAnchor } from "~/components/atoms/MenuAnchor";
-import { NetworkSignal } from "~/components/atoms/NetworkSignal";
+import { MenuAnchor } from "@chess-coach/ui-web/atoms/MenuAnchor";
+import { NetworkSignal } from "@chess-coach/ui-web/atoms/NetworkSignal";
 import { MenuBlackHole } from "~/screens/menuSky/MenuBlackHole";
 import { MenuDebris } from "~/screens/menuSky/MenuDebris";
 import { DebrisPawnPlayground } from "~/screens/menuSky/DebrisPawnPlayground";

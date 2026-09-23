@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
 import { GameOverBanner } from "~/components/features/GameOverBanner";
-import { Button } from "~/components/primitives/Button";
+import { Button } from "@chess-coach/ui-web/primitives/Button";
 
 const meta = {
   title: "Features/GameOverBanner",

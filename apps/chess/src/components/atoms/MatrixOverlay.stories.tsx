@@ -1,7 +1,7 @@
 import { onCleanup } from "solid-js";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { MatrixOverlay } from "~/components/atoms/MatrixOverlay";
+import { MatrixOverlay } from "@chess-coach/ui-web/atoms/MatrixOverlay";
 
 const meta = {
   title: "Atoms/MatrixOverlay",
