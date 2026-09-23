@@ -43,8 +43,9 @@ describe("resolveTutorialArrows", () => {
 describe("king-attack-1 hint lines", () => {
   const hints = tutorialStory("king", "king-attack-1")?.hints;
 
-  it("draws the Bishop x-ray and the Ship's rank-8 shot at a8", () => {
+  it("draws the Tank shot at b7, Bishop x-ray, and Ship's rank-8 shot at a8", () => {
     expect(resolveTutorialArrows(hints, undefined)).toEqual([
+      { from: "b1", to: "b7" },
       { from: "h1", to: "a8" },
       { from: "d8", to: "a8" },
     ]);
