@@ -1,37 +1,140 @@
 @startuml
-!include ../themes/proveo.puml
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
 skinparam noteTextAlignment left
 ' SPEC: _spec/_plans/chess-ui-primitives.puml
-' purpose: both products already have primitive kits — do not extract a third
-' status: OUTDATED — shipped kits; do not mix Coach and StarChess
-' covers: apps/starchess/src/components/primitives/
-'         apps/starchess/src/presentation/hud/
-'         apps/ui/src/components/primitives/
-' live spec: _spec/apps/starchess/screens.puml
-'            _spec/apps/ui/components.puml
-' Notes are capped at 5 lines x 50 columns; one idea per anchor.
-title OUTDATED — primitive kits already exist;\njourney work does not restyle a second board
+' status: PROPOSED — goals and contracts, not shipped behavior
+' scope: Android portability, shared analytics, maintainer handoff
+' covers: none — proposed contracts; source coverage starts at implementation
+ title PLANNED — Android alternatives and centralized player analytics
 
-component "starchess primitives\nButton · NeonModal · HUD" as SC <<app>>
-component "apps/ui primitives\nCoach screens" as UI <<app>>
-component "**a third chess kit**" as FORK <<error>>
+package "Existing product boundaries" {
+  component "apps/ui — /chess\nCoach primitive kit" as COACH <<app>>
+  component "apps/starchess — /starchess\nStarChess primitive kit" as STAR <<app>>
+}
 
-SC ARROW_ERROR FORK
-UI ARROW_ERROR FORK
+note bottom of COACH
+  **1. Enable native Android alternatives**
+  Keep each product's presentation kit.
+  Extract state / command contracts where needed.
+  Keep browser APIs behind platform adapters.
+  Do not create a third visual design system.
+end note
 
-note bottom of FORK
-  **StarChess layout contract is CSS
-  classes + compact props, not a new
-  design system.** Coach keeps its
-  own kit. One plan must not restyle
-  both products.
+note bottom of STAR
+  **Existing footholds**
+  StarChess: src/ports and adapters/browser.
+  packages/client-platform: device detection.
+  engine-core and starchess-core: audit reuse.
+  These do not establish Android compatibility.
+end note
+
+package "Proposed boundaries — implementation pending" {
+  component "Android presentation alternatives\n/chess and /starchess equivalents" as ANDROID <<app>>
+  component "Shared analytics contract\nproduct adapters + privacy gate" as EVENTS <<app>>
+  component "Delivery adapters\nweb beacon / native HTTP" as SEND <<async>>
+  component "Serverless collector\nprovider TBD" as COLLECT <<app>>
+  database "Bounded aggregate + dedup state\nTTL and hard capacity limit" as STATE <<db>>
+  component "Scheduled digest\nfixed maintainer recipient" as DIGEST <<async>>
+  cloud "Transactional email provider\nprovider TBD" as EMAIL <<cloud>>
+  actor "Maintainer" as OWNER
+}
+
+COACH ARROW_OPTIONAL EVENTS : proposed instrumentation
+STAR ARROW_OPTIONAL EVENTS : proposed instrumentation
+ANDROID ARROW_OPTIONAL EVENTS : same event semantics
+EVENTS ARROW_QUEUE SEND : permitted events only
+SEND ARROW_QUEUE COLLECT : bounded HTTPS batches
+COLLECT ARROW_MAIN STATE : validate / deduplicate / aggregate
+STATE ARROW_OPTIONAL DIGEST : scheduled summary
+DIGEST ARROW_CLOUD EMAIL : capped digest delivery
+EMAIL ARROW_CLOUD OWNER : player activity summary
+
+note left of ANDROID
+  **Android direction: native screens**
+  Share serializable domain contracts.
+  Preserve each product's rules and identity.
+  Spike TS runtime / bridge or domain port first.
+  Prove one playable flow in each product.
+end note
+
+note right of EVENTS
+  **2. Standardize analytics**
+  schemaVersion + event-name allowlist.
+  eventId, product, platform, appVersion, time.
+  Allowlisted per-event payload; shared meanings.
+  Initial events: session start, match finished.
+end note
+
+note left of EVENTS
+  Use product-owned persisted match outcomes.
+  Do not re-score games or equate result enums.
+  Keep product-specific payloads namespaced.
+  chess-analytics.puml owns local read models.
+  This plan owns collection and maintainer use.
+end note
+
+note bottom of EVENTS
+  Proposed default: collection disabled.
+  Opt-in controls all transports; revoke clears queue.
+  No names, email, board dumps or raw URLs.
+  No persistent player ID or fingerprint.
+  Session counts do not mean unique players.
+end note
+
+note left of SEND
+  Never block play; cap queue, age and batch size.
+  Beacon acceptance does not prove delivery.
+  Native uses HTTP, not navigator.sendBeacon.
+  Bound retry attempts; drop expired events.
+  Suspend / exit may lose unsent events.
+end note
+
+note right of COLLECT
+  Treat every client payload as untrusted.
+  Enforce schema, bytes, rates and global quotas.
+  CORS is not authentication or abuse prevention.
+  Keep email credentials only on the server.
+  Drop excess traffic; never activate paid fallback.
+end note
+
+note right of STATE
+  Deduplicate eventId within a bounded TTL.
+  Expire raw identifiers after aggregation.
+  Set retention and capacity before deployment.
+  Avoid payload / IP logging in app and provider.
+  Acceptance does not guarantee digest inclusion.
+end note
+
+note bottom of DIGEST
+  **3. Draft player-to-maintainer handoff**
+  Summarize product, version, event and outcome.
+  Send a capped digest, not one email per event.
+  Escape content; clients cannot select recipients.
+  Bound retries; duplicate / lost mail is possible.
+end note
+
+note bottom of EMAIL
+  **Zero cost is an unverified research target**
+  Verify ingest, storage, scheduler, email quotas.
+  Check sender/domain prerequisites and abuse costs.
+  Define volume budget and stop-at-limit behavior.
+  Select providers only after feasibility research.
 end note
 
 legend bottom
-  **Do not implement this file.**
-  ==
-  New widgets extend the product kit
-  they belong to. Analytics may add
-  a prop, not a look.
+  **Implementation sequence and verification gates — planned**
+  1. Inventory browser coupling in both products; spike Android runtime choices.
+     Gate: playable start / move / finish flow for each product on Android.
+  2. Define portable commands, state and analytics schema; add product adapters.
+     Gate: shared fixtures for results; reject unknown versions and payload fields.
+  3. Add opt-in web / native delivery adapters with bounded buffering.
+     Gate: disabled / revoked collection, offline, duplicate, overflow and exit cases.
+  4. Research zero-cost providers; implement collector, aggregation and digest.
+     Gate: malformed traffic, abuse quotas, TTL, email failures and fixed recipient.
+  5. Persist unit / integration / web E2E and Android smoke coverage before rollout.
+     Run affected typecheck / lint and StarChess check:css-layout for UI changes.
+     Link implementing source and tests to this plan when those files exist.
+  **Open decisions:** native runtime integration; providers; numeric quotas / TTL / digest cadence.
+  **Scope now:** plan update only; no deployment, credentials or analytics collection.
 end legend
 @enduml
