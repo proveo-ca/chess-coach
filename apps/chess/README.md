@@ -62,7 +62,7 @@ dimension:
 A separate **Theme** toolbar toggles Light / Dark (`data-theme` on
 `document.documentElement`), independent of the viewport profile.
 
-Keep stories beside their components as `*.stories.tsx`, give them an explicit
+Keep each `*.stories.tsx` in a `stories/` folder next to the component it covers, give them an explicit
 layer-prefixed title, and use `parameters.storyState` for deterministic store
 fixtures. Storybook replaces coach APIs, chess engines, Tailscale/WebRTC, and
 browser-only integrations with local mocks; starting it never requires the
