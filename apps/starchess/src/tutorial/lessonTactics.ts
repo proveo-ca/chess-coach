@@ -342,11 +342,12 @@ const queuedOnto = (queue: string, square: Square): boolean =>
   new RegExp(`C=[a-h][1-8]${square}|[BF]=[A-Za-z]+:[a-h][1-8]:${square}`).test(queue);
 
 /**
- * Arrow from the unit that stops an enemy Marine to that Marine. The most
- * advanced Marine on the last three ranks, skipped when a stop is already
- * queued or the h-file push is the open beat against the f3 Marine. A unit
- * that already attacks it wins; otherwise the nearest friendly unit, so the
- * line never asks the player to stop a Marine with no arrow.
+ * Arrow from the unit that stops an enemy Marine to that Marine. Any file on
+ * the last three ranks counts; the most advanced one wins, and a stop already
+ * queued yields the next Marine. The h-file push stays the open beat against
+ * the f3 Marine. A unit that already attacks it wins, otherwise the nearest
+ * friendly unit, and the Command Center when nothing else is left — the line
+ * never asks the player to stop a Marine with no arrow.
  */
 export const runnerStop = (
   scfen: string,
@@ -377,12 +378,13 @@ export const runnerStop = (
     if (piece.color !== viewer || piece.type === "k") continue;
     if (attacksSquare(map, sq, runner)) attackers.push(sq);
   }
-  const pool =
-    attackers.length > 0
-      ? attackers
-      : [...map.entries()]
-          .filter(([, piece]) => piece.color === viewer && piece.type !== "k")
-          .map(([sq]) => sq);
+  const allies = [...map.entries()]
+    .filter(([, piece]) => piece.color === viewer && piece.type !== "k")
+    .map(([sq]) => sq);
+  const kings = [...map.entries()]
+    .filter(([, piece]) => piece.color === viewer && piece.type === "k")
+    .map(([sq]) => sq);
+  const pool = attackers.length > 0 ? attackers : allies.length > 0 ? allies : kings;
   if (pool.length === 0) return null;
   const dist = (sq: Square) =>
     Math.max(
@@ -446,6 +448,16 @@ export const tankSiegeSquare = (scfen: string, viewer: StarChessColor = "w"): Sq
 /** A Tank can still be sieged with Gas this intent. */
 export const tankSiegeOnH5 = (scfen: string, viewer: StarChessColor = "w"): boolean =>
   tankSiegeSquare(scfen, viewer) != null;
+
+/** Square of the viewer's BattleShip, wherever it jumped to. */
+export const whiteQueenSquare = (scfen: string, viewer: StarChessColor = "w"): Square | null => {
+  const map = placementMap(scfen);
+  if (!map) return null;
+  for (const [sq, piece] of map) {
+    if (piece.color === viewer && piece.type === "q") return sq;
+  }
+  return null;
+};
 
 /**
  * Where the white BattleShip is. `null` when the placement cannot be read, so

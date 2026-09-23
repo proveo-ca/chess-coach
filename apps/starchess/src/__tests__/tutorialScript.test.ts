@@ -121,7 +121,6 @@ describe("tutorialScript", () => {
     "attackF3Queued",
     "goGetEm",
     "f3Marine",
-    "promoThreat",
     "e1n",
     "e1k",
     "e1r",
@@ -947,9 +946,14 @@ describe("tutorialScript", () => {
     ]);
     const promoRank2 =
       "SCFEN|8/8/8/8/4k3/5P2/4p2/4N1BK|1|33|P|G:11:11|Q:w:;b:";
-    expectReaction(lineFor(promoRank2), KING_ATTACK_3.promoThreat);
+    expectReaction(lineFor(promoRank2), KING_ATTACK_3.f3Marine);
     expect(resolveTutorialHints(story.hints, promoRank2)).toEqual(["e2"]);
     expect(resolveTutorialArrows(story.hints, promoRank2)).toEqual([{ from: "f3", to: "e2" }]);
+    const otherFile =
+      "SCFEN|8/8/8/p7/8/2p5/8/4K3|1|33|P|G:11:11|Q:w:;b:";
+    expectReaction(lineFor(otherFile), KING_ATTACK_3.f3Marine);
+    expect(resolveTutorialHints(story.hints, otherFile)).toEqual(["c3"]);
+    expect(resolveTutorialArrows(story.hints, otherFile)).toEqual([{ from: "e1", to: "c3" }]);
     const gasQueuedNoThreat =
       "SCFEN|8/8/8/8/4k3/5P2/6P1/4N1BK|1|33|P|G:11:11|B:0:3|Q:w:B=pawnDouble:h2:h3;b:";
     expectReaction(lineFor(gasQueuedNoThreat), KING_ATTACK_3.queuedReview);
@@ -1103,7 +1107,7 @@ describe("tutorialScript", () => {
     expectReaction(lineFor(h7spent), KING_ATTACK_3.promotionChoice);
     const allyOnBackRank =
       "SCFEN|8/8/8/8/8/8/3p4/5N2|1|33|P|G:11:11|Q:w:;b:";
-    expectReaction(lineFor(allyOnBackRank), KING_ATTACK_3.promoThreat);
+    expectReaction(lineFor(allyOnBackRank), KING_ATTACK_3.f3Marine);
     expect(resolveTutorialHints(story.hints, allyOnBackRank)).toEqual(["d2"]);
     expect(resolveTutorialArrows(story.hints, allyOnBackRank)).toEqual([{ from: "f1", to: "d2" }]);
     const enemyNotHigher =
@@ -1885,6 +1889,13 @@ describe("tutorialScript", () => {
       "SCFEN|8/7Q/8/4p3/3bkn2/8/5R2/7K|21|32|P|G:03:33|B:0:3|Q:w:;b:|S:f2";
     expect(resolveTutorialHints(story.hints, gasSet)).toEqual(["f4"]);
     expect(resolveTutorialHints(story.hints, seed)).toEqual(["g2"]);
+    expect(resolveTutorialArrows(story.hints, seed)).toEqual([{ from: "h7", to: "g2" }]);
+    const jumped =
+      "SCFEN|8/3Q4/8/4p3/3bkn2/8/5R2/7K|21|33|P|G:33:33|Q:w:;b:|S:f2";
+    expect(resolveTutorialArrows(story.hints, jumped)).toEqual([{ from: "d7", to: "g2" }]);
+    expect(resolveTutorialArrows(story.hints, jumped.replace("|21|", "|22|"))).toEqual([
+      { from: "d7", to: "c2" },
+    ]);
     expect(resolveTutorialHints(story.hints, seed.replace("|33|", "|32|"))).toEqual([
       "g2",
     ]);

@@ -1426,6 +1426,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "g2",
             ],
+            fromQueen: true,
             arrows: [{ from: "h7", to: "g2" }],
           },
           {
@@ -1436,6 +1437,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "c2",
             ],
+            fromQueen: true,
             arrows: [{ from: "h7", to: "c2" }],
           },
         ],
@@ -1519,18 +1521,9 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             comment: "Go get 'em!",
           },
           {
-            when: {
-              kind: "scfen",
-              re: /SCFEN\|(?!.*Q:w:[^;]*(?:C=[a-h][1-8]f3|C=h2h[34]|[BF]=[A-Za-z]+:[a-h][1-8]:f3))(?:[^/]*\/){5}(?:5|4(?:[A-Za-z]|1)|(?:[A-Za-z]|1)4|32|23|3(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1)3(?:[A-Za-z]|1)|(?:[A-Za-z]|1){2}3|22(?:[A-Za-z]|1)|2(?:[A-Za-z]|1)2|(?:[A-Za-z]|1)22|2(?:[A-Za-z]|1){3}|(?:[A-Za-z]|1)2(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1){2}2(?:[A-Za-z]|1)|(?:[A-Za-z]|1){3}2|(?:[A-Za-z]|1){5})p/,
-            },
-            comment: "Stop that Marine from promoting!",
-            emotion: "shocked",
-          },
-          {
-            when: {
-              kind: "scfen",
-              re: /SCFEN\|(?!(?:[^/]*\/){5}(?:5|4(?:[A-Za-z]|1)|(?:[A-Za-z]|1)4|32|23|3(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1)3(?:[A-Za-z]|1)|(?:[A-Za-z]|1){2}3|22(?:[A-Za-z]|1)|2(?:[A-Za-z]|1)2|(?:[A-Za-z]|1)22|2(?:[A-Za-z]|1){3}|(?:[A-Za-z]|1)2(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1){2}2(?:[A-Za-z]|1)|(?:[A-Za-z]|1){3}2|(?:[A-Za-z]|1){5})p)(?:[^/p]*\/){5}[^|]*p/,
-            },
+            // One beat for every enemy Marine on the last three ranks. The
+            // arrow is the unit that stops it; a queued stop yields the next one.
+            when: { kind: "stopRunner" },
             comment: "Stop that Marine from promoting!",
             emotion: "shocked",
           },
@@ -1772,22 +1765,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             ],
           },
           {
-            when: {
-              kind: "scfen",
-              re: /SCFEN\|(?!.*Q:w:[^;]*(?:C=[a-h][1-8]f3|C=h2h[34]|[BF]=[A-Za-z]+:[a-h][1-8]:f3))(?:[^/]*\/){5}(?:5|4(?:[A-Za-z]|1)|(?:[A-Za-z]|1)4|32|23|3(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1)3(?:[A-Za-z]|1)|(?:[A-Za-z]|1){2}3|22(?:[A-Za-z]|1)|2(?:[A-Za-z]|1)2|(?:[A-Za-z]|1)22|2(?:[A-Za-z]|1){3}|(?:[A-Za-z]|1)2(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1){2}2(?:[A-Za-z]|1)|(?:[A-Za-z]|1){3}2|(?:[A-Za-z]|1){5})p/,
-            },
-            stopRunner: true,
-            squares: [
-              "f3",
-            ],
-            arrows: [{ from: "g2", to: "f3" }],
-          },
-          {
-            when: {
-              kind: "scfen",
-              re: /SCFEN\|(?!(?:[^/]*\/){5}(?:5|4(?:[A-Za-z]|1)|(?:[A-Za-z]|1)4|32|23|3(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1)3(?:[A-Za-z]|1)|(?:[A-Za-z]|1){2}3|22(?:[A-Za-z]|1)|2(?:[A-Za-z]|1)2|(?:[A-Za-z]|1)22|2(?:[A-Za-z]|1){3}|(?:[A-Za-z]|1)2(?:[A-Za-z]|1){2}|(?:[A-Za-z]|1){2}2(?:[A-Za-z]|1)|(?:[A-Za-z]|1){3}2|(?:[A-Za-z]|1){5})p)(?:[^/p]*\/){5}[^|]*p/,
-            },
-            stopRunner: true,
+            when: { kind: "stopRunner" },
           },
           {
             when: { kind: "covers", square: "e1", kinds: ["n"] },
