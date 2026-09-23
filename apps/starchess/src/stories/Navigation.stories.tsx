@@ -2,13 +2,13 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { createSignal, Show } from "solid-js";
 
-import { Breadcrumb } from "~/components/primitives/Breadcrumb";
-import { ChevronNav } from "~/components/primitives/ChevronNav";
+import { Breadcrumb } from "@chess-coach/ui-web/primitives/Breadcrumb";
+import { ChevronNav } from "@chess-coach/ui-web/primitives/ChevronNav";
 import { ScreenBackNav } from "~/components/primitives/ScreenBackNav";
 import { CoachAvatar } from "~/components/atoms/CoachAvatar";
-import { MatchHistoryFilters } from "~/components/atoms/MatchHistoryFilters";
-import { MobileBanner } from "~/components/atoms/MobileBanner";
-import { ReviewTurnNav } from "~/components/atoms/ReviewTurnNav";
+import { MatchHistoryFilters } from "@chess-coach/ui-web/atoms/MatchHistoryFilters";
+import { StarChessMobileBanner as MobileBanner } from "@chess-coach/ui-web/atoms/StarChessMobileBanner";
+import { ReviewTurnNav } from "@chess-coach/ui-web/atoms/ReviewTurnNav";
 import { FULL_ARMY_SAMPLE, OPEN_BOARD_SAMPLE } from "~/demos/samples";
 import { ResourceBar } from "~/presentation/hud/components/ResourceBar";
 import { TurnBar } from "~/presentation/hud/components/TurnBar";

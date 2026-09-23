@@ -5,7 +5,7 @@
  */
 import type { Component, JSX, ParentComponent } from "solid-js";
 
-import { Screen } from "~/components/primitives/Screen";
+import { Screen } from "@chess-coach/ui-web/primitives/Screen";
 import { BoardSideRail } from "~/presentation/hud/components/BoardSideRail";
 
 type BoardHostProps = {

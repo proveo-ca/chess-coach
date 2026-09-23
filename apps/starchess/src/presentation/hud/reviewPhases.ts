@@ -2,7 +2,7 @@
  * Observer DualNav review — one arrow = one full turn; phase chip tracks progress.
  */
 import type { ReviewTurnPhase } from "~/types/review";
-import type { ChipTone } from "~/types/ui";
+import type { ChipTone } from "@chess-coach/ui-web/types/ui";
 
 export type { ReviewTurnPhase };
 

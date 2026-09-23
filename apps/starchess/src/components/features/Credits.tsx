@@ -3,7 +3,7 @@
  */
 import type { Component } from "solid-js";
 
-import { NeonModal } from "~/components/atoms/NeonModal";
+import { NeonModal } from "@chess-coach/ui-web/atoms/NeonModal";
 import styles from "~/components/features/Credits.module.css";
 
 type Props = {

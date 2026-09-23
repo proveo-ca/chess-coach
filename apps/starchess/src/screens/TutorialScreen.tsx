@@ -20,9 +20,9 @@ import {
 import { buildReviewHistory } from "~/app/reviewHistory";
 import { CoachAvatar } from "~/components/atoms/CoachAvatar";
 import { TutorialGuideBubble } from "~/components/features/TutorialGuideBubble";
-import { Breadcrumb } from "~/components/primitives/Breadcrumb";
+import { Breadcrumb } from "@chess-coach/ui-web/primitives/Breadcrumb";
 import { ScreenBackNav } from "~/components/primitives/ScreenBackNav";
-import { Toggle } from "~/components/primitives/Toggle";
+import { Toggle } from "@chess-coach/ui-web/primitives/Toggle";
 import {
   COMBAT_CHAIN_PLY_SC,
   COMBAT_CHAIN_STEPS,

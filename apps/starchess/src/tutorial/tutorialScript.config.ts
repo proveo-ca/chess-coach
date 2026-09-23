@@ -1582,21 +1582,21 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /SCFEN\|(?:[^/]*\/){3}(?:3|2(?:[A-Za-z]|1)|(?:[A-Za-z]|1)2|(?:[A-Za-z]|1){3})k[^\/|]*\/(?:[^/]*\/){2}(?:2|(?:[A-Za-z]|1){2})N(?!.*Q:w:[^;]*[BF]=knightMine:c2:)/,
+              re: /SCFEN\|(?:[^/]*\/){3}(?:3|2(?:[A-Za-z]|1)|(?:[A-Za-z]|1)2|(?:[A-Za-z]|1){3})k[^/|]*\/(?:[^/]*\/){2}(?:2|(?:[A-Za-z]|1){2})N(?!.*Q:w:[^;]*[BF]=knightMine:c2:)/,
             },
             comment: "Deploy a mine in c2 to discourage Marines from promoting",
           },
           {
             when: {
               kind: "scfen",
-              re: /SCFEN\|(?:[^/]*\/){3}(?:3|2(?:[A-Za-z]|1)|(?:[A-Za-z]|1)2|(?:[A-Za-z]|1){3})k[^\/|]*\/(?:[^/]*\/){2}(?:2|(?:[A-Za-z]|1){2})N(?=.*Q:w:[^;]*[BF]=knightMine:c2:)/,
+              re: /SCFEN\|(?:[^/]*\/){3}(?:3|2(?:[A-Za-z]|1)|(?:[A-Za-z]|1)2|(?:[A-Za-z]|1){3})k[^/|]*\/(?:[^/]*\/){2}(?:2|(?:[A-Za-z]|1){2})N(?=.*Q:w:[^;]*[BF]=knightMine:c2:)/,
             },
             comment: "Ride the Hoverbike to b4 — it attacks the enemy Command Center!",
           },
           {
             when: {
               kind: "scfen",
-              re: /SCFEN\|(?!.*Q:w:[^;]*(?:C=[a-h][1-8]g1|[BF]=[A-Za-z]+:[a-h][1-8]:g1))(?:[^/]*\/){7}[^\/|]*?q(?=(?:[A-Za-z]|1)[\/|])/,
+              re: /SCFEN\|(?!.*Q:w:[^;]*(?:C=[a-h][1-8]g1|[BF]=[A-Za-z]+:[a-h][1-8]:g1))(?:[^/]*\/){7}[^/|]*?q(?=(?:[A-Za-z]|1)[/|])/,
             },
             comment: "Crush that BattleShip by deploying any unit on it!",
             emotion: "scanning",
@@ -1620,7 +1620,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /SCFEN\|(?:[^/]*\/){3}(?:3|2(?:[A-Za-z]|1)|(?:[A-Za-z]|1)2|(?:[A-Za-z]|1){3})k[^\/|]*\/(?:1|[A-Za-z])n/,
+              re: /SCFEN\|(?:[^/]*\/){3}(?:3|2(?:[A-Za-z]|1)|(?:[A-Za-z]|1)2|(?:[A-Za-z]|1){3})k[^/|]*\/(?:1|[A-Za-z])n/,
             },
             comment: "I saw the Command Center moving to d5, Hoverbike on b4.",
           },
@@ -1638,7 +1638,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             when: {
               kind: "scfen",
               phases: ["intent"],
-              re: /SCFEN\|(?:[^/]*\/){6}[^\/|]*P(?=[\/|])[^|]*\|[^|]*\|[^|]*\|[^|]*\|G:[1-9](?=.*\|Q:w:[^;]*C=h2h[34])/,
+              re: /SCFEN\|(?:[^/]*\/){6}[^/|]*P(?=[/|])[^|]*\|[^|]*\|[^|]*\|[^|]*\|G:[1-9](?=.*\|Q:w:[^;]*C=h2h[34])/,
             },
             comment: "Keep pushing your h-file Marine by dropping gas on it",
           },
@@ -1646,7 +1646,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             when: {
               kind: "scfen",
               phases: ["intent"],
-              re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){6}[^\/|]*P(?=[\/|])/,
+              re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){6}[^/|]*P(?=[/|])/,
             },
             comment: "Move your h-file Marine from h2 to h4.",
           },
@@ -1654,7 +1654,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             when: {
               kind: "scfen",
               phases: ["intent"],
-              re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){5}[^\/|]*P(?=[\/|])/,
+              re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){5}[^/|]*P(?=[/|])/,
             },
             comment: "Keep pushing your h-file Marine on h3!",
           },
@@ -1662,7 +1662,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             when: {
               kind: "scfen",
               phases: ["intent"],
-              re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){4}[^\/|]*P(?=[\/|])/,
+              re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){4}[^/|]*P(?=[/|])/,
             },
             comment: "Keep pushing your h-file Marine on h4!",
           },
@@ -1823,7 +1823,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /SCFEN\|(?:[^/]*\/){3}(?:3|2(?:[A-Za-z]|1)|(?:[A-Za-z]|1)2|(?:[A-Za-z]|1){3})k[^\/|]*\/(?:[^/]*\/){2}(?:2|(?:[A-Za-z]|1){2})N(?!.*Q:w:[^;]*[BF]=knightMine:c2:)/,
+              re: /SCFEN\|(?:[^/]*\/){3}(?:3|2(?:[A-Za-z]|1)|(?:[A-Za-z]|1)2|(?:[A-Za-z]|1){3})k[^/|]*\/(?:[^/]*\/){2}(?:2|(?:[A-Za-z]|1){2})N(?!.*Q:w:[^;]*[BF]=knightMine:c2:)/,
             },
             squares: ["c2"],
           },
@@ -1833,7 +1833,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             when: {
               kind: "scfen",
               phases: ["intent"],
-              re: /SCFEN\|(?:[^/]*\/){3}(?:3|2(?:[A-Za-z]|1)|(?:[A-Za-z]|1)2|(?:[A-Za-z]|1){3})k[^\/|]*\/(?:[^/]*\/){2}(?:2|(?:[A-Za-z]|1){2})N(?=.*Q:w:[^;]*[BF]=knightMine:c2:)/,
+              re: /SCFEN\|(?:[^/]*\/){3}(?:3|2(?:[A-Za-z]|1)|(?:[A-Za-z]|1)2|(?:[A-Za-z]|1){3})k[^/|]*\/(?:[^/]*\/){2}(?:2|(?:[A-Za-z]|1){2})N(?=.*Q:w:[^;]*[BF]=knightMine:c2:)/,
             },
             squares: ["b4"],
             arrows: [
@@ -1844,14 +1844,14 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /SCFEN\|(?:[^/]*\/){3}(?:3|2(?:[A-Za-z]|1)|(?:[A-Za-z]|1)2|(?:[A-Za-z]|1){3})k[^\/|]*\/(?:[^/]*\/){2}(?:2|(?:[A-Za-z]|1){2})N(?=.*Q:w:[^;]*[BF]=knightMine:c2:)/,
+              re: /SCFEN\|(?:[^/]*\/){3}(?:3|2(?:[A-Za-z]|1)|(?:[A-Za-z]|1)2|(?:[A-Za-z]|1){3})k[^/|]*\/(?:[^/]*\/){2}(?:2|(?:[A-Za-z]|1){2})N(?=.*Q:w:[^;]*[BF]=knightMine:c2:)/,
             },
             squares: ["b4"],
           },
           {
             when: {
               kind: "scfen",
-              re: /SCFEN\|(?!.*Q:w:[^;]*(?:C=[a-h][1-8]g1|[BF]=[A-Za-z]+:[a-h][1-8]:g1))(?:[^/]*\/){7}[^\/|]*?q(?=(?:[A-Za-z]|1)[\/|])/,
+              re: /SCFEN\|(?!.*Q:w:[^;]*(?:C=[a-h][1-8]g1|[BF]=[A-Za-z]+:[a-h][1-8]:g1))(?:[^/]*\/){7}[^/|]*?q(?=(?:[A-Za-z]|1)[/|])/,
             },
             squares: [
               "g1",
@@ -1882,7 +1882,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /SCFEN\|(?:[^/]*\/){3}(?:3|2(?:[A-Za-z]|1)|(?:[A-Za-z]|1)2|(?:[A-Za-z]|1){3})k[^\/|]*\/(?:1|[A-Za-z])n/,
+              re: /SCFEN\|(?:[^/]*\/){3}(?:3|2(?:[A-Za-z]|1)|(?:[A-Za-z]|1)2|(?:[A-Za-z]|1){3})k[^/|]*\/(?:1|[A-Za-z])n/,
             },
             squares: [
               "b4",
@@ -1900,7 +1900,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             when: {
               kind: "scfen",
               phases: ["intent"],
-              re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){6}[^\/|]*P(?=[\/|])/,
+              re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){6}[^/|]*P(?=[/|])/,
             },
             squares: [
               "h2",
@@ -1911,7 +1911,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             when: {
               kind: "scfen",
               phases: ["intent"],
-              re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){5}[^\/|]*P(?=[\/|])/,
+              re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){5}[^/|]*P(?=[/|])/,
             },
             squares: [
               "h3",
@@ -1922,7 +1922,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             when: {
               kind: "scfen",
               phases: ["intent"],
-              re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){4}[^\/|]*P(?=[\/|])/,
+              re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){4}[^/|]*P(?=[/|])/,
             },
             squares: [
               "h4",
@@ -1932,7 +1932,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /SCFEN\|(?:[^/]*\/){3}[^\/|]*P(?=[\/|])/,
+              re: /SCFEN\|(?:[^/]*\/){3}[^/|]*P(?=[/|])/,
             },
             squares: [
               "h5",

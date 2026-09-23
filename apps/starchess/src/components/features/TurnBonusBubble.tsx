@@ -3,12 +3,12 @@ import { Show, createEffect, createSignal, onCleanup } from "solid-js";
 import type { Component } from "solid-js";
 
 import { useMatchStore } from "~/app/MatchStoreContext";
-import { ChatBubble } from "~/components/primitives/ChatBubble";
+import { ChatBubble } from "@chess-coach/ui-web/primitives/ChatBubble";
 import {
   MineralsIcon,
   TimerIcon,
   VespeneIcon,
-} from "~/components/primitives/icons";
+} from "@chess-coach/ui-web/primitives/icons";
 import styles from "~/components/features/TurnBonusBubble.module.css";
 
 const BOARD_ANCHOR = '[data-testid="starchess-board-chrome"]';
@@ -17,7 +17,6 @@ const RESOURCE_BAR = '[data-testid="resource-bar"]';
 export const TurnBonusBubble: Component = () => {
   const store = useMatchStore();
   const dismiss = () => store.dismissTurnBonus();
-  let slotEl: HTMLDivElement | undefined;
   const [pos, setPos] = createSignal<{ left: string; top: string } | null>(null);
 
   const trackBoard = () => {
@@ -48,7 +47,6 @@ export const TurnBonusBubble: Component = () => {
           class={`turn-bonus-slot ${styles.slot}`}
           role="status"
           aria-live="polite"
-          ref={slotEl}
           style={{
             ...(pos() ?? {
               left: `${window.innerWidth / 2}px`,

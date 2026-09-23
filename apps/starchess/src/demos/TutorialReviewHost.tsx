@@ -20,9 +20,9 @@ import { createMatchStore, MatchStoreProvider, useMatchStore } from "~/app/Match
 import { createMatchStateFromReviewHistory } from "~/app/reviewHistory";
 import { displayedSnapshot } from "~/app/selectors";
 import { CoachAvatar } from "~/components/atoms/CoachAvatar";
-import { MobileBanner } from "~/components/atoms/MobileBanner";
-import { ReviewTurnNav } from "~/components/atoms/ReviewTurnNav";
-import { Screen } from "~/components/primitives/Screen";
+import { StarChessMobileBanner as MobileBanner } from "@chess-coach/ui-web/atoms/StarChessMobileBanner";
+import { ReviewTurnNav } from "@chess-coach/ui-web/atoms/ReviewTurnNav";
+import { Screen } from "@chess-coach/ui-web/primitives/Screen";
 import { ScreenBackNav } from "~/components/primitives/ScreenBackNav";
 import styles from "~/demos/TutorialReviewHost.module.css";
 import { clearSiegedRooks, setRookMode } from "~/presentation/animations/rookModeStore";

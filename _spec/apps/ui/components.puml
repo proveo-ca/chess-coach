@@ -397,7 +397,7 @@ package "Components  [src/components/]" {
   package "Atoms  [components/atoms/]" {
     note as SharedWebAtoms
       Visual atoms and primitive implementations live in
-      packages/ui/web. App paths retain compatibility exports.
+      packages/ui/web. Callers import that package directly.
       Store-bound atoms, assets and navigation policy stay here.
       UiProvider supplies the chess skin and router Link.
     end note
@@ -459,15 +459,15 @@ package "Components  [src/components/]" {
     rectangle "ResignConfirm"   as ResignConfirm
     rectangle "Modal"           as Modal
     note right of Modal
-      reusable dialog — owns a focus-trap createEffect,
-      so it lives in atoms/ (not a pure primitive).
+      reusable dialog in packages/ui/web — owns a focus-trap
+      createEffect, so it is an atom, not a pure primitive.
     end note
     rectangle "MatrixOverlay"     as MatrixOverlay
     rectangle "LightSpeedOverlay" as LightSpeedOverlay
   }
 
   ' Primitives = presentational, props-driven shared kit (was components/common/).
-  package "Primitives  [packages/ui/web; app compatibility exports]" {
+  package "Primitives  [packages/ui/web]" {
     rectangle "Button / IconButton / MenuButton" as Buttons
     rectangle "SplitButton"        as SplitButton
     note right of SplitButton
@@ -805,7 +805,7 @@ GameShare    ..> PolyglotZobrist : id re-derive on decode
 ' LAYOUT
 ' ══════════════════════════════════════════════════════════════
 "Features  [components/features/]" -[hidden]down- "Atoms  [components/atoms/]"
-"Atoms  [components/atoms/]" -[hidden]down- "Primitives  [packages/ui/web; app compatibility exports]"
+"Atoms  [components/atoms/]" -[hidden]down- "Primitives  [packages/ui/web]"
 
 "Screens  [src/screens/]" -[hidden] "Capabilities  [capabilitiesStore.ts]"
 "Capabilities  [capabilitiesStore.ts]" -[hidden]down-- "Components  [src/components/]"

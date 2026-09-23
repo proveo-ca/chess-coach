@@ -36,7 +36,7 @@ import { PieceGlyph } from "~/presentation/board/components/PieceGlyph";
 import { visionStrategyFor } from "~/presentation/board/vision/VisionStrategy";
 import { TEAM_PRIMARY } from "~/presentation/pieces/teamColors";
 import { SpiderMine } from "~/presentation/specials/components/SpiderMine";
-import { VespeneIcon } from "~/components/primitives/icons";
+import { VespeneIcon } from "@chess-coach/ui-web/primitives/icons";
 import { MoveAnimation } from "~/presentation/animations/components/MoveAnimation";
 import { MOVE_SQUARE_MS } from "~/presentation/constants";
 import type { MoveCue } from "~/types/cues";

@@ -6,13 +6,13 @@
 import type { StarChessColor } from "@chess-coach/starchess-core";
 import { For, createSignal, type Component } from "solid-js";
 
-import { MapSwatch, mapLabel } from "~/components/atoms/MapSwatch";
-import { NeonModal } from "~/components/atoms/NeonModal";
-import { TeamSwatch } from "~/components/atoms/TeamSwatch";
+import { MapSwatch, mapLabel } from "@chess-coach/ui-web/atoms/MapSwatch";
+import { NeonModal } from "@chess-coach/ui-web/atoms/NeonModal";
+import { TeamSwatch } from "@chess-coach/ui-web/atoms/TeamSwatch";
 import styles from "~/components/features/NewGamePanel.module.css";
 import { PlayerNameField } from "~/components/features/PlayerNameField";
-import { Button } from "~/components/primitives/Button";
-import { Select } from "~/components/primitives/Select";
+import { Button } from "@chess-coach/ui-web/primitives/Button";
+import { Select } from "@chess-coach/ui-web/primitives/Select";
 import { savedOpponent, setSavedOpponent } from "~/store/newGameSetupStore";
 import type { BoardVariant } from "~/types/board";
 import { isAdjutantKind, type AdjutantKind, type NewGameOptions } from "~/types/newGame";

@@ -23,9 +23,9 @@ import {
   viewerColor,
 } from "~/app/matchEconomy";
 import { useMatchStore } from "~/app/MatchStoreContext";
-import { ChatBubble } from "~/components/primitives/ChatBubble";
-import { VespeneIcon } from "~/components/primitives/icons";
-import { SpecialPreview } from "~/components/primitives/SpecialPreview";
+import { ChatBubble } from "@chess-coach/ui-web/primitives/ChatBubble";
+import { VespeneIcon } from "@chess-coach/ui-web/primitives/icons";
+import { SpecialPreview } from "@chess-coach/ui-web/primitives/SpecialPreview";
 import { useIsDesktopClient } from "~/hooks/useIsDesktopClient";
 import { SPECIAL_ENERGY_COST } from "~/presentation/constants";
 import styles from "~/presentation/hud/components/GasRack.module.css";

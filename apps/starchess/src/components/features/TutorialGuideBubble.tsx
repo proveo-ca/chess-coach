@@ -6,7 +6,7 @@
  */
 import { Show, createSignal, type Component } from "solid-js";
 
-import { ChatBubble } from "~/components/primitives/ChatBubble";
+import { ChatBubble } from "@chess-coach/ui-web/primitives/ChatBubble";
 import styles from "~/components/features/TutorialGuideBubble.module.css";
 import type { TutorialReactionAction } from "~/types/tutorial";
 
