@@ -17,7 +17,6 @@ const RESOURCE_BAR = '[data-testid="resource-bar"]';
 export const TurnBonusBubble: Component = () => {
   const store = useMatchStore();
   const dismiss = () => store.dismissTurnBonus();
-  let slotEl: HTMLDivElement | undefined;
   const [pos, setPos] = createSignal<{ left: string; top: string } | null>(null);
 
   const trackBoard = () => {
@@ -48,7 +47,6 @@ export const TurnBonusBubble: Component = () => {
           class={`turn-bonus-slot ${styles.slot}`}
           role="status"
           aria-live="polite"
-          ref={slotEl}
           style={{
             ...(pos() ?? {
               left: `${window.innerWidth / 2}px`,
