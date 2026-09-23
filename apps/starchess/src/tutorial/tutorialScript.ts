@@ -16,6 +16,7 @@ import {
   promotionChoiceOpen,
   runnerStop,
   tankSiegeOnH5,
+  tankSiegeSquare,
 } from "~/tutorial/lessonTactics";
 import type { KerriganEmotion } from "~/types/coach";
 import type {
@@ -566,7 +567,7 @@ const matchTutorialHint = (
       phaseAllows(h.when.phases, query?.reviewPhase) &&
       tankSiegeOnH5(scfen)
     ) {
-      return h;
+      return { ...h, squares: [tankSiegeSquare(scfen)!] };
     }
   }
   return undefined;

@@ -401,22 +401,51 @@ export const runnerStop = (
   return { from: pool[0]!, to: runner };
 };
 
-/** Packed Tank on h5 with a gas canister left and siege not already queued. */
-export const tankSiegeOnH5 = (scfen: string, viewer: StarChessColor = "w"): boolean => {
-  if (viewer !== "w" || whiteGas(scfen) < 1) return false;
-  const map = placementMap(scfen);
-  if (!map) return false;
-  const piece = map.get("h5");
-  if (!piece || piece.color !== viewer || piece.type !== "r") return false;
-  if (/[BF]=rookSiege:h5/.test(whiteQueue(scfen))) return false;
+const squareSieged = (scfen: string, square: Square): boolean => {
   const siege = scfen.split("|").find((part) => part.startsWith("S:"));
-  if (!siege) return true;
+  if (!siege) return false;
   const body = siege.slice(2);
   for (let i = 0; i + 1 < body.length; i += 2) {
-    if (body.slice(i, i + 2) === "h5") return false;
+    if (body.slice(i, i + 2) === square) return true;
   }
-  return true;
+  return false;
 };
+
+const tankReadyToSiege = (
+  map: Map<Square, ScPiece>,
+  square: Square,
+  viewer: StarChessColor,
+  scfen: string,
+  queue: string,
+): boolean => {
+  const piece = map.get(square);
+  if (!piece || piece.color !== viewer || piece.type !== "r") return false;
+  if (new RegExp(`[BF]=rookSiege:${square}`).test(queue)) return false;
+  return !squareSieged(scfen, square);
+};
+
+/**
+ * Where to drop Gas to siege a Tank. A queued slide onto d8 or h5 highlights
+ * the Tank where it still stands. A Tank already on h5 highlights that square.
+ * `null` when there is no gas, the piece is not a Tank, or siege is already on.
+ */
+export const tankSiegeSquare = (scfen: string, viewer: StarChessColor = "w"): Square | null => {
+  if (viewer !== "w" || whiteGas(scfen) < 1) return null;
+  const map = placementMap(scfen);
+  if (!map) return null;
+  const queue = whiteQueue(scfen);
+  const classical = /C=([a-h][1-8])([a-h][1-8])/.exec(queue);
+  if (classical && (classical[2] === "d8" || classical[2] === "h5")) {
+    const from = classical[1] as Square;
+    if (tankReadyToSiege(map, from, viewer, scfen, queue)) return from;
+  }
+  if (tankReadyToSiege(map, "h5", viewer, scfen, queue)) return "h5";
+  return null;
+};
+
+/** A Tank can still be sieged with Gas this intent. */
+export const tankSiegeOnH5 = (scfen: string, viewer: StarChessColor = "w"): boolean =>
+  tankSiegeSquare(scfen, viewer) != null;
 
 /**
  * Where the white BattleShip is. `null` when the placement cannot be read, so

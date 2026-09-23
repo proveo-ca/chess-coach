@@ -41,6 +41,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "c3",
             ],
+            arrows: [{ from: "d4", to: "c3" }],
           },
         ],
       },
@@ -77,6 +78,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "d8",
             ],
+            arrows: [{ from: "d4", to: "d8" }],
           },
         ],
       },
@@ -134,11 +136,13 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             alertSquares: [
               "h8",
             ],
+            arrows: [{ from: "e6", to: "g5", via: "g6" }],
           },
           {
             squares: [
               "e6",
             ],
+            arrows: [{ from: "d4", to: "e6", via: "d6" }],
           },
         ],
       },
@@ -181,6 +185,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "h8",
             ],
+            arrows: [{ from: "d4", to: "h8" }],
           },
         ],
       },
@@ -216,6 +221,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "d8",
             ],
+            arrows: [{ from: "d4", to: "d8" }],
           },
         ],
       },
@@ -273,6 +279,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "d7",
             ],
+            arrows: [{ from: "d4", to: "d7" }],
           },
           {
             when: {
@@ -282,6 +289,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "d1",
             ],
+            arrows: [{ from: "d4", to: "d1" }],
           },
           {
             when: {
@@ -291,11 +299,13 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "d2",
             ],
+            arrows: [{ from: "d4", to: "d2" }],
           },
           {
             squares: [
               "h4",
             ],
+            arrows: [{ from: "d4", to: "h4" }],
           },
         ],
       },
@@ -381,6 +391,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "c3",
             ],
+            arrows: [{ from: "d2", to: "c3" }],
           },
           {
             when: {
@@ -390,6 +401,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "e4",
             ],
+            arrows: [{ from: "e2", to: "e4" }],
           },
           {
             squares: [],
@@ -474,6 +486,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "e5",
             ],
+            arrows: [{ from: "e4", to: "e5" }],
           },
           {
             when: {
@@ -492,6 +505,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "d4",
             ],
+            arrows: [{ from: "d2", to: "d4" }],
           },
           {
             squares: [],
@@ -651,11 +665,13 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "e5",
             ],
+            arrows: [{ from: "d4", to: "e5" }],
           },
           {
             squares: [
               "h8",
             ],
+            arrows: [{ from: "d4", to: "h8" }],
           },
         ],
       },
@@ -867,11 +883,13 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "g3",
             ],
+            arrows: [{ from: "f2", to: "g3" }],
           },
           {
             squares: [
               "f2",
             ],
+            arrows: [{ from: "e1", to: "f2" }],
           },
         ],
       },
@@ -920,11 +938,16 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "h2",
             ],
+            arrows: [
+              { from: "g1", to: "h2" },
+              { from: "h1", to: "h2" },
+            ],
           },
           {
             squares: [
               "g2",
             ],
+            arrows: [{ from: "h1", to: "g2" }],
           },
         ],
       },
@@ -974,6 +997,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "e4",
             ],
+            arrows: [{ from: "f3", to: "e4" }],
           },
           {
             squares: [
@@ -1015,6 +1039,10 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             squares: [
               "h2",
+            ],
+            arrows: [
+              { from: "e5", to: "h2" },
+              { from: "f1", to: "h2", via: "f2" },
             ],
           },
         ],
@@ -1083,6 +1111,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "e2",
             ],
+            arrows: [{ from: "d2", to: "e2" }],
           },
           {
             when: {
@@ -1098,6 +1127,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               "c3",
             ],
             arrows: [
+              { from: "c2", to: "c3" },
               { from: "b4", to: "d2" },
             ],
           },
@@ -1183,6 +1213,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "f1",
             ],
+            arrows: [{ from: "g2", to: "f1" }],
           },
           {
             when: {
@@ -1285,6 +1316,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               "b7",
             ],
             arrows: [
+              { from: "b1", to: "b7" },
               { from: "h1", to: "a8" },
               { from: "d8", to: "a8" },
             ],
@@ -1374,6 +1406,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "f4",
             ],
+            arrows: [{ from: "f2", to: "f4" }],
           },
           {
             when: {
@@ -1383,6 +1416,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "f4",
             ],
+            arrows: [{ from: "f2", to: "f4" }],
           },
           {
             when: {
@@ -1392,6 +1426,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "g2",
             ],
+            arrows: [{ from: "h7", to: "g2" }],
           },
           {
             when: {
@@ -1401,6 +1436,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "c2",
             ],
+            arrows: [{ from: "h7", to: "c2" }],
           },
         ],
       },
@@ -1597,7 +1633,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           },
           {
             when: { kind: "tankSiege", phases: ["intent"] },
-            comment: "Now turn it to siege mode for bigger range",
+            comment: "Drop Gas on it to siege for bigger range",
             emotion: "scanning",
           },
           {
@@ -1731,8 +1767,8 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: { kind: "chargeH8", phases: ["intent"] },
             arrows: [
-              { from: "h8", to: "h5" },
-              { from: "h5", to: "d5", tone: "alert" },
+              { from: "h8", to: "d8" },
+              { from: "d8", to: "d5", tone: "alert" },
             ],
           },
           {
@@ -1852,6 +1888,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               "g2",
               "e1",
             ],
+            arrows: [{ from: "g2", to: "e1", via: "e2" }],
           },
           {
             when: {
@@ -1862,6 +1899,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
               "h2",
               "f1",
             ],
+            arrows: [{ from: "h2", to: "f1", via: "f2" }],
           },
           {
             when: {
