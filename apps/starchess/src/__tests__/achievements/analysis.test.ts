@@ -41,6 +41,7 @@ describe("piece id", () => {
 });
 
 describe("foldTurn on one settled ply", () => {
+  // Reference case: proveo.ca/starchess/tutorial/king/king-defense-5
   it("awards Medal of Honor when a marine intercepts and dies", () => {
     const scfen =
       "SCFEN|7k/8/8/8/1b6/8/2PR4/3K4|11|33|P|G:12:22|S:d2|Q:w:B=stimStep:c2:c3;b:C=b4d2";
@@ -91,6 +92,16 @@ describe("foldTurn on one settled ply", () => {
     play(state, second);
     expect(state.mines).toBeGreaterThanOrEqual(2);
     expect(levelOf(state, "mines")).toBeGreaterThanOrEqual(2);
+  });
+
+  it("does not credit an opponent defusing a mine without a casualty", () => {
+    // A classical attack on an empty mined square clears the mine (`mineClear`)
+    // with no victim — distinct from a walk-in detonation (`mineTriggers`).
+    const scfen = "SCFEN|4k3/8/8/8/8/8/8/Q3K3|1|33|P|G:11:11|M:b:d4|Q:w:C=a1d4;b:";
+    const state = seedAnalysis(parseScFen(scfen), "b");
+    play(state, scfen);
+    expect(state.mines).toBe(0);
+    expect(levelOf(state, "mines")).toBe(0);
   });
 
   it("snipes two battleships", () => {

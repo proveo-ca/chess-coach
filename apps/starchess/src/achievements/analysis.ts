@@ -414,7 +414,7 @@ export const foldTurn = (state: AnalysisState, ply: FoldPly): AchievementBubble[
   specials("specialBefore");
 
   for (const atk of [...(ply.attacks ?? []), ...(ply.mineTriggers ?? [])]) {
-    if (atk.kind === "mineBlast" && atk.mineColor === player) {
+    if (atk.kind === "mineBlast" && atk.mineColor === player && atk.victim) {
       state.mines += 1;
       mineOrigin = { at: atk.to ?? atk.from };
     }
