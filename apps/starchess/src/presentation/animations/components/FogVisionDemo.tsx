@@ -7,7 +7,7 @@ import type { Square } from "chess.js";
 
 import { parseScFen, placementToMap } from "@chess-coach/starchess-core";
 
-import { Screen } from "~/components/primitives/Screen";
+import { Screen } from "@chess-coach/ui-web/primitives/Screen";
 import { AnimationStage } from "~/presentation/animations/components/AnimationStage";
 import styles from "~/presentation/animations/components/FogVisionDemo.module.css";
 import {

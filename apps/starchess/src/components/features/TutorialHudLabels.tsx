@@ -12,7 +12,7 @@ import type { PieceSymbol } from "chess.js";
 import { For, createSignal, onCleanup, onMount, type Component } from "solid-js";
 import { Portal } from "solid-js/web";
 
-import { ChatBubble } from "~/components/primitives/ChatBubble";
+import { ChatBubble } from "@chess-coach/ui-web/primitives/ChatBubble";
 import styles from "~/components/features/TutorialHudLabels.module.css";
 import { specialCopyFor } from "~/presentation/specials/copy";
 

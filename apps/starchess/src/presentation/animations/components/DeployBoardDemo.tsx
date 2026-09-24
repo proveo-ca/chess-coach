@@ -14,7 +14,7 @@ import {
 } from "~/presentation/animations/deployAnim";
 import styles from "~/presentation/animations/components/DeployBoardDemo.module.css";
 import { AnimationStage } from "~/presentation/animations/components/AnimationStage";
-import { Screen } from "~/components/primitives/Screen";
+import { Screen } from "@chess-coach/ui-web/primitives/Screen";
 import type { DeployCue } from "~/presentation/types";
 
 type DeployPhase = "idle" | "falling" | "landed";

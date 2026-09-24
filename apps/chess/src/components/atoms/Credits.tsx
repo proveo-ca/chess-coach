@@ -2,7 +2,7 @@ import { Show } from "solid-js";
 import type { Component } from "solid-js";
 
 import styles from "~/components/atoms/Credits.module.css";
-import { Modal } from "~/components/atoms/Modal";
+import { Modal } from "@chess-coach/ui-web/atoms/Modal";
 import { capabilities } from "~/store/capabilitiesStore";
 
 type Props = {

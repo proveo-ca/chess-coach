@@ -7,19 +7,19 @@ skinparam noteTextAlignment left
 ' covers: packages/ui/web/src/**
 '         packages/ui/web/.storybook/**
 '         packages/ui/web/scripts/check-boundary.mjs
-'         apps/ui/src/components/primitives/**
+'         apps/chess/src/components/primitives/**
 '         apps/starchess/src/components/primitives/**
 '         apps/e2e/tests/primitives/shared-ui.spec.ts
 title Shared web primitives — implemented boundary;\nAndroid and centralized analytics — follow-on goals
 
 package "Existing product boundaries" {
-  component "apps/ui — /chess\nChess composition + adapters" as COACH <<app>>
+  component "apps/chess — /chess\nChess composition + adapters" as COACH <<app>>
   component "apps/starchess — /starchess\nStarChess composition + adapters" as STAR <<app>>
 }
 
 note bottom of COACH
   Apps own stores, routing policy and assets.
-  Compatibility exports point to the shared kit.
+  Screens import @chess-coach/ui-web directly.
   Promotion and game-specific widgets stay local.
   Back navigation injects app-owned callbacks.
   Product variants preserve current appearance.

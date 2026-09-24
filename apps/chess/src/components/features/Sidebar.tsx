@@ -4,15 +4,15 @@ import { Show, createSignal } from "solid-js";
 import type { Component } from "solid-js";
 
 import { EngineDepth } from "~/components/atoms/EngineDepth";
-import { Modal } from "~/components/atoms/Modal";
+import { Modal } from "@chess-coach/ui-web/atoms/Modal";
 import { ResignConfirm } from "~/components/atoms/ResignConfirm";
 import { NewGamePanel } from "~/components/features/NewGamePanel";
 import { Settings } from "~/components/features/Settings";
 import styles from "~/components/features/Sidebar.module.css";
-import { CoachEmotionIcon } from "~/components/primitives/CoachEmotionIcon";
-import { Divider } from "~/components/primitives/Divider";
-import { DualNavButton } from "~/components/primitives/DualNavButton";
-import { IconButton } from "~/components/primitives/IconButton";
+import { CoachEmotionIcon } from "@chess-coach/ui-web/primitives/CoachEmotionIcon";
+import { Divider } from "@chess-coach/ui-web/primitives/Divider";
+import { DualNavButton } from "@chess-coach/ui-web/primitives/DualNavButton";
+import { IconButton } from "@chess-coach/ui-web/primitives/IconButton";
 import {
   BookIcon,
   CogIcon,
@@ -21,7 +21,7 @@ import {
   HintIcon,
   PlusCircleIcon,
   SearchIcon,
-} from "~/components/primitives/icons";
+} from "@chess-coach/ui-web/primitives/icons";
 import { useGameControls } from "~/hooks/useGameControls";
 import { useHintSparkle } from "~/hooks/useHintSparkle";
 import { capabilities } from "~/store/capabilitiesStore";

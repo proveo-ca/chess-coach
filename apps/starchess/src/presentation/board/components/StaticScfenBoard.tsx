@@ -8,7 +8,7 @@ import { createMemo } from "solid-js";
 
 import { parseScFen } from "@chess-coach/starchess-core";
 
-import { Screen } from "~/components/primitives/Screen";
+import { Screen } from "@chess-coach/ui-web/primitives/Screen";
 import { AnimationStage } from "~/presentation/animations/components/AnimationStage";
 import type { BoardVariant, VisionMode } from "~/types/board";
 

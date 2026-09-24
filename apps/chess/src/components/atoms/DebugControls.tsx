@@ -1,7 +1,7 @@
 import { Show, createSignal } from "solid-js";
 import type { Component } from "solid-js";
 
-import { Button } from "~/components/primitives/Button";
+import { Button } from "@chess-coach/ui-web/primitives/Button";
 import { setCoachEmotion } from "~/store/coachStore";
 
 const isDebug = import.meta.env.VITE_DEBUG === "true" || import.meta.env.MODE === "debug";

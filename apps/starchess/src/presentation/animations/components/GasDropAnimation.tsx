@@ -7,7 +7,7 @@ import { For, type Component } from "solid-js";
 import { GAS_DROP_MS } from "~/presentation/animations/gasDrop";
 import styles from "~/presentation/animations/components/GasDropAnimation.module.css";
 import { squareBoxStyle } from "~/presentation/animations/boardGeom";
-import { VespeneIcon } from "~/components/primitives/icons";
+import { VespeneIcon } from "@chess-coach/ui-web/primitives/icons";
 import type { GasDropCue } from "~/presentation/types";
 
 /** Same green as ResourceBar / GasDeploy rack — absorb is not team-tinted. */

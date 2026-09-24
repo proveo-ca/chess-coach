@@ -7,8 +7,8 @@ import { createMemo } from "solid-js";
 
 import { parseScFen } from "@chess-coach/starchess-core";
 
-import { Label } from "~/components/primitives/Label";
-import { Screen } from "~/components/primitives/Screen";
+import { Label } from "@chess-coach/ui-web/primitives/Label";
+import { Screen } from "@chess-coach/ui-web/primitives/Screen";
 import { AnimationStage } from "~/presentation/animations/components/AnimationStage";
 import type { BoardVariant } from "~/types/board";
 import { mapSample } from "~/demos/samples";

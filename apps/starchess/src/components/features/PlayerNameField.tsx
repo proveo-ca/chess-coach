@@ -4,8 +4,8 @@
 import type { Component } from "solid-js";
 
 import styles from "~/components/features/PlayerNameField.module.css";
-import { IconButton } from "~/components/primitives/IconButton";
-import { Input } from "~/components/primitives/Input";
+import { IconButton } from "@chess-coach/ui-web/primitives/IconButton";
+import { Input } from "@chess-coach/ui-web/primitives/Input";
 import { playerName, setPlayerName } from "~/store/settingsStore";
 import { PLAYER_NAME_MAX } from "~/utils/playerName";
 import { randomName } from "~/utils/randomName";

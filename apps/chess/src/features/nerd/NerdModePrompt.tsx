@@ -1,8 +1,8 @@
 import { createEffect, createSignal } from "solid-js";
 import type { Component } from "solid-js";
 
-import { Modal } from "~/components/atoms/Modal";
-import { Button } from "~/components/primitives/Button";
+import { Modal } from "@chess-coach/ui-web/atoms/Modal";
+import { Button } from "@chess-coach/ui-web/primitives/Button";
 import { goStarChess } from "~/features/nerd/goStarChess";
 import {
   nerdModeUnlocked,

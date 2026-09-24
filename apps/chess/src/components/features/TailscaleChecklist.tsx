@@ -2,9 +2,9 @@
 import { type JSX, Match, Show, Switch, createEffect, createSignal, onMount } from "solid-js";
 
 import styles from "~/components/features/TailscaleChecklist.module.css";
-import { Button } from "~/components/primitives/Button";
-import { Collapsible } from "~/components/primitives/Collapsible";
-import { Label } from "~/components/primitives/Label";
+import { Button } from "@chess-coach/ui-web/primitives/Button";
+import { Collapsible } from "@chess-coach/ui-web/primitives/Collapsible";
+import { Label } from "@chess-coach/ui-web/primitives/Label";
 import { detectPlatform } from "~/services/platform";
 import { probeTailnet } from "~/services/tailscale";
 import type { PlatformInfo, TailnetStatus } from "~/types/multiplayer";

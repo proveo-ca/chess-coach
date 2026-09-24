@@ -3,8 +3,8 @@ import { Show, createSignal } from "solid-js";
 import type { Component, JSX } from "solid-js";
 
 import styles from "~/components/atoms/FenLoader.module.css";
-import { Button } from "~/components/primitives/Button";
-import { Input } from "~/components/primitives/Input";
+import { Button } from "@chess-coach/ui-web/primitives/Button";
+import { Input } from "@chess-coach/ui-web/primitives/Input";
 import { loadFen } from "~/store/gameStore";
 
 const FEN_REGEX =

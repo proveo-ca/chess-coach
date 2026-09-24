@@ -3,9 +3,9 @@ import { For, type Component } from "solid-js";
 
 import { achievementsFor } from "~/achievements/catalog";
 import { ACHIEVEMENT_MATERIALS } from "~/achievements/types";
-import { NeonModal } from "~/components/atoms/NeonModal";
+import { NeonModal } from "@chess-coach/ui-web/atoms/NeonModal";
 import styles from "~/components/features/NewAchievementsModal.module.css";
-import { Button } from "~/components/primitives/Button";
+import { Button } from "@chess-coach/ui-web/primitives/Button";
 import type { AchievementBubble } from "~/types/achievements";
 
 export type NewAchievementsModalProps = {

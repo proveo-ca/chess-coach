@@ -4,9 +4,9 @@
  */
 import type { Component } from "solid-js";
 
-import { NeonModal } from "~/components/atoms/NeonModal";
+import { NeonModal } from "@chess-coach/ui-web/atoms/NeonModal";
 import styles from "~/components/features/TutorialCompleteConfirm.module.css";
-import { Button } from "~/components/primitives/Button";
+import { Button } from "@chess-coach/ui-web/primitives/Button";
 
 export type TutorialCompleteConfirmProps = {
   open: boolean;

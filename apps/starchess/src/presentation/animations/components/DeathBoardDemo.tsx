@@ -25,7 +25,7 @@ import {
   clearSiegedTanks,
   setTankMode,
 } from "~/presentation/animations/tankModeStore";
-import { Screen } from "~/components/primitives/Screen";
+import { Screen } from "@chess-coach/ui-web/primitives/Screen";
 import type { DeathCue } from "~/presentation/types";
 
 const NO_MINES: readonly Square[] = [];

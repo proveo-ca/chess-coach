@@ -2,7 +2,7 @@
 import { Show } from "solid-js";
 import type { Component, JSX } from "solid-js";
 
-import { Modal } from "~/components/atoms/Modal";
+import { Modal } from "@chess-coach/ui-web/atoms/Modal";
 import styles from "~/components/features/GameOverBanner.module.css";
 
 interface GameOverBannerProps {

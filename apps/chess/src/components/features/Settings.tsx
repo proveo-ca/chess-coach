@@ -1,12 +1,12 @@
 import { useNavigate } from "@solidjs/router";
 import type { Component } from "solid-js";
 
-import { Modal } from "~/components/atoms/Modal";
+import { Modal } from "@chess-coach/ui-web/atoms/Modal";
 import { PlayerNameField } from "~/components/features/PlayerNameField";
 import styles from "~/components/features/Settings.module.css";
-import { Button } from "~/components/primitives/Button";
-import { Select } from "~/components/primitives/Select";
-import { Toggle } from "~/components/primitives/Toggle";
+import { Button } from "@chess-coach/ui-web/primitives/Button";
+import { Select } from "@chess-coach/ui-web/primitives/Select";
+import { Toggle } from "@chess-coach/ui-web/primitives/Toggle";
 import { imLost, playerIdentity, setImLost, setPlayerIdentity } from "~/store/settingsStore";
 import { identityOptions } from "~/features/nerd/identity";
 import type { PlayerIdentity } from "~/types/settings";

@@ -2,7 +2,7 @@
 import { For, type Component } from "solid-js";
 
 import { ACHIEVEMENT_SHORT_IDS } from "~/achievements/catalog";
-import { NeonModal } from "~/components/atoms/NeonModal";
+import { NeonModal } from "@chess-coach/ui-web/atoms/NeonModal";
 import { AchievementCard } from "~/components/features/AchievementCard";
 import styles from "~/components/features/AchievementsModal.module.css";
 import { unlockedLevel, witnessGameId } from "~/store/achievementStore";

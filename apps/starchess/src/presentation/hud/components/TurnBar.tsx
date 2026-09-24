@@ -21,15 +21,15 @@ import {
 } from "~/app/matchEconomy";
 import { useMatchStore } from "~/app/MatchStoreContext";
 import { canSubmit, readDisplayedSnapshot } from "~/app/selectors";
-import { Button } from "~/components/primitives/Button";
-import { Chip } from "~/components/primitives/Chip";
-import { CountdownRing } from "~/components/primitives/CountdownRing";
-import { TeamFrame } from "~/components/primitives/TeamFrame";
+import { Button } from "@chess-coach/ui-web/primitives/Button";
+import { Chip } from "@chess-coach/ui-web/primitives/Chip";
+import { CountdownRing } from "@chess-coach/ui-web/primitives/CountdownRing";
+import { TeamFrame } from "@chess-coach/ui-web/primitives/TeamFrame";
 import { turnTimeoutMsForTurn } from "~/presentation/constants";
 import { liveMatchPhase, reviewPhaseLabel } from "~/presentation/hud/liveMatchPhase";
 import { reviewPhaseChipTone } from "~/presentation/hud/reviewPhases";
 import styles from "~/presentation/hud/components/TurnBar.module.css";
-import type { ChipTone } from "~/types/ui";
+import type { ChipTone } from "@chess-coach/ui-web/types/ui";
 
 export type TurnBarDensity = "default" | "compact" | "queueOnly";
 

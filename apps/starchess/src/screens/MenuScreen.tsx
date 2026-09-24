@@ -19,14 +19,14 @@ import { CoachAvatar } from "~/components/atoms/CoachAvatar";
 import type { CoachIdentity } from "~/types/coach";
 import type { StarChessMenuChrome } from "~/types/menu";
 import { Credits } from "~/components/features/Credits";
-import { MenuAnchor } from "~/components/atoms/MenuAnchor";
-import { NetworkSignal } from "~/components/atoms/NetworkSignal";
+import { MenuAnchor } from "@chess-coach/ui-web/atoms/MenuAnchor";
+import { NetworkSignal } from "@chess-coach/ui-web/atoms/NetworkSignal";
 import { FirstTimePrompt } from "~/components/features/FirstTimePrompt";
 import {
   NewGamePanel,
 } from "~/components/features/NewGamePanel";
-import { ChatBubble } from "~/components/primitives/ChatBubble";
-import { MenuTitle } from "~/components/primitives/MenuTitle";
+import { ChatBubble } from "@chess-coach/ui-web/primitives/ChatBubble";
+import { MenuTitle } from "@chess-coach/ui-web/primitives/MenuTitle";
 import { DebrisMarinePlayground } from "~/screens/menuSky/DebrisMarinePlayground";
 import { MenuBlackHole } from "~/screens/menuSky/MenuBlackHole";
 import { MenuMoon } from "~/screens/menuSky/MenuMoon";

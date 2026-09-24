@@ -2,10 +2,10 @@ import type { Component } from "solid-js";
 
 import styles from "~/components/features/NewGamePanel.module.css";
 import { PlayerNameField } from "~/components/features/PlayerNameField";
-import { ColorSelector } from "~/components/primitives/ColorSelector";
-import { Select } from "~/components/primitives/Select";
-import { SplitButton } from "~/components/primitives/SplitButton";
-import { Toggle } from "~/components/primitives/Toggle";
+import { ColorSelector } from "@chess-coach/ui-web/primitives/ColorSelector";
+import { Select } from "@chess-coach/ui-web/primitives/Select";
+import { SplitButton } from "@chess-coach/ui-web/primitives/SplitButton";
+import { Toggle } from "@chess-coach/ui-web/primitives/Toggle";
 import { setLastAIMoveInfo } from "~/hooks/useMoveExecutor";
 import { postMove, postNewGame } from "~/services/api";
 import { dispatchCoachEvent, setAdvice, setShowNewGame } from "~/store/coachStore";

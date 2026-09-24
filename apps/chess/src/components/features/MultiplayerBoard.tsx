@@ -6,7 +6,7 @@ import type { Component } from "solid-js";
 import { ChessSquare } from "~/components/atoms/ChessSquare";
 import { DrawBubbles } from "~/components/features/DrawBubbles";
 import styles from "~/components/features/MultiplayerBoard.module.css";
-import { EvalBar } from "~/components/primitives/EvalBar";
+import { EvalBar } from "@chess-coach/ui-web/primitives/EvalBar";
 import { PromotionModal } from "~/components/primitives/PromotionModal";
 import { useMultiplayerBoard } from "~/hooks/useMultiplayerBoard";
 import { capabilities } from "~/store/capabilitiesStore";

@@ -21,7 +21,7 @@ import {
   clearSiegedTanks,
   setTankMode,
 } from "~/presentation/animations/tankModeStore";
-import { Screen } from "~/components/primitives/Screen";
+import { Screen } from "@chess-coach/ui-web/primitives/Screen";
 import type { AttackCue, TankMode } from "~/presentation/types";
 
 const ORIGIN: Square = "d4";

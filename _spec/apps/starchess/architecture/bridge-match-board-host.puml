@@ -104,7 +104,7 @@ package "AFTER · Bridge via composition" as AFTER {
   }
 
   class ScreenPrim <<app>> {
-    components/primitives/Screen
+    packages/ui/web/src/primitives/Screen
     --
     layout regions unchanged
   }

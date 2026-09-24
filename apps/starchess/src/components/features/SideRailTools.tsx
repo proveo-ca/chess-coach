@@ -9,14 +9,14 @@ import type { Component } from "solid-js";
 import { For, Show, createMemo, createSignal } from "solid-js";
 
 import { useMatchStore } from "~/app/MatchStoreContext";
-import { VisionSwatch } from "~/components/atoms/VisionSwatch";
+import { VisionSwatch } from "@chess-coach/ui-web/atoms/VisionSwatch";
 import { formatScriptLabel } from "~/utils/matchTitle";
 import type { MatchState } from "~/types/match";
 import { ExitGameConfirm } from "~/components/features/ExitGameConfirm";
 import styles from "~/components/features/SideRailTools.module.css";
-import { Divider } from "~/components/primitives/Divider";
-import { IconButton } from "~/components/primitives/IconButton";
-import { BackArrowIcon, FlipBoardIcon } from "~/components/primitives/icons";
+import { Divider } from "@chess-coach/ui-web/primitives/Divider";
+import { IconButton } from "@chess-coach/ui-web/primitives/IconButton";
+import { BackArrowIcon, FlipBoardIcon } from "@chess-coach/ui-web/primitives/icons";
 import { capabilities } from "~/store/capabilitiesStore";
 import { reviewVisionFilter, setReviewVisionFilter } from "~/store/reviewVisionStore";
 import type { ReviewVisionFilter } from "~/types/board";

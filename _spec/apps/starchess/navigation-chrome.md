@@ -16,13 +16,13 @@ Implementation lives primarily in:
   detail `topPane`)
 - `apps/starchess/src/demos/ReviewDemoScreen.module.css` (`.dualResources`,
   `.navDockDynamic`, dynamic `.topPane` stand-down)
-- `apps/starchess/src/components/primitives/ChevronNav.tsx` +
-  `ChevronNav.module.css` (plus the `apps/ui` mirror copy)
-- `apps/starchess/src/components/atoms/ReviewTurnNav.tsx` +
+- `packages/ui/web/src/primitives/ChevronNav.tsx` +
+  `ChevronNav.starchess.module.css` / `ChevronNav.chess.module.css`
+- `packages/ui/web/src/atoms/ReviewTurnNav.tsx` +
   `ReviewTurnNav.module.css`
-- `apps/starchess/src/components/atoms/MatchHistoryFilters.tsx` +
+- `packages/ui/web/src/atoms/MatchHistoryFilters.tsx` +
   `MatchHistoryFilters.module.css` (review list pager)
-- `apps/starchess/src/components/primitives/Breadcrumb.tsx` +
+- `packages/ui/web/src/primitives/Breadcrumb.tsx` +
   `Breadcrumb.module.css` (tutorial section crumbs)
 - `apps/starchess/src/presentation/hud/components/ResourceBar.tsx` +
   `ResourceBar.module.css` (`.bar` 18rem, `.bar.compact` 12rem, `TeamFrame`)
