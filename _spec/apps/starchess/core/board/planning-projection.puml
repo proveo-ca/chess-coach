@@ -19,7 +19,7 @@ package "Live chrome" {
 package "Intent projections (stacked, single owner each)" {
   component "specials/planning/occupancy\n(occupancyForQueuedMoves → occupancyForViewerMoves)" as OCC <<app>>
   component "intentOverlays.ts\npolicy → hook → pure" as OV <<app>>
-  component "rookModeForSieged\nshared siege helper" as ROOK <<db>>
+  component "tankModeForSieged\nshared siege helper" as ROOK <<db>>
   component "fogVisibility.ts\ntargetVisibleGate · pieceVisible" as FOG <<db>>
   component "matchEconomy\napplyTurnIncome · display" as ECO <<db>>
 }
@@ -29,7 +29,7 @@ package "Dispatch" {
 }
 
 package "Board queries (public core)" {
-  component "scMovesFrom · spawnKingAnchor\nadjacentSquares · getSideVision\ncollectLegalKingChecks · costs" as BQ <<db>>
+  component "scMovesFrom · spawnCCAnchor\nadjacentSquares · getSideVision\ncollectLegalKingChecks · costs" as BQ <<db>>
   component "rewriteClassicalAfterB\npawnSingleTarget\n(pure stack folding)" as FOLD <<db>>
 }
 
@@ -71,7 +71,7 @@ note bottom
   A special stacked with a same-vector classical resolves as **one** longer
   advance, and the queue never records the composed square. Ghosts paint the
   classical leg on the raw ""C.to"" and the gas leg on the folded endpoint —
-  ""rewriteClassicalAfterB"" (gas-then-move) or ""pawnSingleTarget"" from the
+  ""rewriteClassicalAfterB"" (gas-then-move) or ""marineSingleTarget"" from the
   post-C square (move-then-gas). A declined fold (blocked landing / outside
   the double-step band) means the C fizzles: the ghost stays on ""B.to"".
    **Allowed:** the pure folding helpers above — never re-derive the vector by

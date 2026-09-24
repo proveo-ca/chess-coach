@@ -20,9 +20,9 @@ import {
   pieceAtQueuedSquare,
 } from "~/presentation/specials/planning/occupancy";
 import {
-  legalDestsWithFogPawnAttacks,
-  pawnFogAttackDests,
-} from "~/presentation/board/pawnFogAttackDests";
+  legalDestsWithFogMarineAttacks,
+  marineFogAttackDests,
+} from "~/presentation/board/marineFogAttackDests";
 
 const litKey = (v: { litSquares: ReadonlySet<string> }) =>
   [...v.litSquares].sort().join(",");
@@ -34,7 +34,7 @@ describe("deploy intent must not grant vision", () => {
       "SCFEN|4k3/8/8/8/8/8/8/4K3|1|33|P|G:01:11|B:3:3|Q:w:;b:",
     );
     const queued = parseScFen(
-      "SCFEN|4k3/8/8/8/8/8/8/4K3|1|33|P|G:01:11|B:3:3|Q:w:B=spawn:e1:d1:p,C=d1d2;b:",
+      "SCFEN|4k3/8/8/8/8/8/8/4K3|1|33|P|G:01:11|B:3:3|Q:w:B=deploy:e1:d1:p,C=d1d2;b:",
     );
     const v0 = getSideVision(bare.placement, "w");
     const v1 = getSideVision(queued.placement, "w");
@@ -52,16 +52,16 @@ describe("deploy intent must not grant vision", () => {
     withQueue = matchReducer(withQueue, {
       type: "LOAD_SCFEN",
       scfen:
-        "SCFEN|4k3/8/8/8/8/8/8/4K3|1|33|P|G:11:11|B:3:3|Q:w:B=spawn:e1:d1:p,C=d1c2;b:",
+        "SCFEN|4k3/8/8/8/8/8/8/4K3|1|33|P|G:11:11|B:3:3|Q:w:B=deploy:e1:d1:p,C=d1c2;b:",
     });
     expect(litKey(fogForViewer(withQueue))).toBe(litKey(fogForViewer(base)));
   });
 
   it("occupancyForQueuedMoves fog filter does not use spawn vision", () => {
-    // King a1 lights a1–b2 only. Black pawn c2 is outside king vision.
-    // Queued knight spawn on b1 would light c2 — must not for fog filter.
+    // Command Center a1 lights a1–b2 only. Black Marine c2 is outside Command Center vision.
+    // Queued Hoverbike spawn on b1 would light c2 — must not for fog filter.
     const snap = parseScFen(
-      "SCFEN|4k3/8/8/8/8/8/2p5/K7|1|33|P|G:01:11|B:3:3|Q:w:B=spawn:a1:b1:n;b:",
+      "SCFEN|4k3/8/8/8/8/8/2p5/K7|1|33|P|G:01:11|B:3:3|Q:w:B=deploy:a1:b1:n;b:",
     );
     const raw = placementToMap(snap.placement);
     expect(raw.get("c2")?.type).toBe("p");
@@ -72,9 +72,9 @@ describe("deploy intent must not grant vision", () => {
   });
 });
 
-describe("intent circles above fog / pawn diagonals", () => {
+describe("intent circles above fog / Marine diagonals", () => {
   it("rings capture dest even when target square is off resolved vision", () => {
-    // Bd2→c3 capture black pawn; board vision may fog c3 for other units.
+    // Bd2→c3 capture black Marine; board vision may fog c3 for other units.
     const actions = [
       {
         timing: "C" as const,
@@ -97,7 +97,7 @@ describe("intent circles above fog / pawn diagonals", () => {
     const actions = [
       {
         timing: "B" as const,
-        kind: "spawn" as const,
+        kind: "deploy" as const,
         color: "w" as const,
         from: "e1" as const,
         to: "d1" as const,
@@ -113,7 +113,7 @@ describe("intent circles above fog / pawn diagonals", () => {
         seq: 1,
       },
     ];
-    // c2 empty — pawn diagonal fog attack intent still gets a red ring.
+    // c2 empty — Marine diagonal fog attack intent still gets a red ring.
     const out = intentOverlaysFromQueue(actions, {
       placement: "4k3/8/8/8/8/8/8/4K3",
       viewer: "w",
@@ -128,14 +128,14 @@ describe("intent circles above fog / pawn diagonals", () => {
     expect(out.canisters).toEqual([{ at: "d1", color: "w" }]);
   });
 
-  it("rings a deploy-pawn diagonal onto a fogged enemy like an empty one", () => {
+  it("rings a deploy-marine diagonal onto a fogged enemy like an empty one", () => {
     // A deployed marine grants no vision, so its diagonal target stays fogged.
     // Ring presence must not track occupancy under the veil — a ring only on the
     // empty diagonal would mark the occupied one by omission.
     const actions = [
       {
         timing: "B" as const,
-        kind: "spawn" as const,
+        kind: "deploy" as const,
         color: "w" as const,
         from: "e1" as const,
         to: "d1" as const,
@@ -163,16 +163,16 @@ describe("intent circles above fog / pawn diagonals", () => {
     expect(hidden.checks).toEqual(empty.checks);
   });
 
-  it("pawnFogAttackDests offers diagonals without enemy", () => {
+  it("marineFogAttackDests offers diagonals without enemy", () => {
     const map = placementToMap("4k3/8/8/8/8/8/4P3/4K3");
-    expect(pawnFogAttackDests("e2", "w", map).sort()).toEqual(["d3", "f3"]);
+    expect(marineFogAttackDests("e2", "w", map).sort()).toEqual(["d3", "f3"]);
   });
 
-  it("legalDestsWithFogPawnAttacks merges empty diagonals under fog only", () => {
+  it("legalDestsWithFogMarineAttacks merges empty diagonals under fog only", () => {
     const map = placementToMap("4k3/8/8/8/8/8/4P3/4K3");
     const classical = scMovesFrom(map, "e2", "w").map((m) => m.to);
     expect(classical.sort()).toEqual(["e3", "e4"]);
-    const fogOn = legalDestsWithFogPawnAttacks(
+    const fogOn = legalDestsWithFogMarineAttacks(
       classical,
       "e2",
       { type: "p", color: "w" },
@@ -180,7 +180,7 @@ describe("intent circles above fog / pawn diagonals", () => {
       true,
     );
     expect(fogOn.sort()).toEqual(["d3", "e3", "e4", "f3"]);
-    const fogOff = legalDestsWithFogPawnAttacks(
+    const fogOff = legalDestsWithFogMarineAttacks(
       classical,
       "e2",
       { type: "p", color: "w" },
@@ -190,16 +190,16 @@ describe("intent circles above fog / pawn diagonals", () => {
     expect(fogOff.sort()).toEqual(["e3", "e4"]);
   });
 
-  it("select about-to-deploy pawn still offers forward dests after vision split", () => {
+  it("select about-to-deploy Marine still offers forward dests after vision split", () => {
     const snap = parseScFen(
-      "SCFEN|4k3/8/8/8/8/8/8/4K3|1|33|P|G:01:11|B:3:3|Q:w:B=spawn:e1:d1:p;b:",
+      "SCFEN|4k3/8/8/8/8/8/8/4K3|1|33|P|G:01:11|B:3:3|Q:w:B=deploy:e1:d1:p;b:",
     );
     const raw = placementToMap(snap.placement);
-    const { map, siegedRooks } = occupancyForQueuedMoves(raw, "w", true, snap);
+    const { map, siegedTanks } = occupancyForQueuedMoves(raw, "w", true, snap);
     const piece = pieceAtQueuedSquare(raw, "d1", "w", snap.queue?.actions);
     expect(piece).toEqual({ type: "p", color: "w" });
-    const classical = scMovesFrom(map, "d1", "w", { siegedRooks }).map((m) => m.to);
-    const dests = legalDestsWithFogPawnAttacks(
+    const classical = scMovesFrom(map, "d1", "w", { siegedTanks }).map((m) => m.to);
+    const dests = legalDestsWithFogMarineAttacks(
       classical,
       "d1",
       piece!,

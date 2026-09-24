@@ -64,8 +64,8 @@ test.describe("PWA · offline play", () => {
       timeout: 15_000,
     });
 
-    // ── 3. Play e5-equivalent: pick the best legal pawn push for white. ──
-    // After 1.e4 + Selena's reply, white's d-pawn push (d2-d4) is almost
+    // ── 3. Play e5-equivalent: pick the best legal Marine push for white. ──
+    // After 1.e4 + Selena's reply, white's d-Marine push (d2-d4) is almost
     // always legal regardless of what Selena chose. We use that as our
     // "play another move offline" assertion that AI moves still work.
     const fenAfterBlackFirst = new Chess();

@@ -5,7 +5,7 @@ import { MenuAnchor } from "~/components/atoms/MenuAnchor";
 import { NetworkSignal } from "~/components/atoms/NetworkSignal";
 import { MenuBlackHole } from "~/screens/menuSky/MenuBlackHole";
 import { MenuDebris } from "~/screens/menuSky/MenuDebris";
-import { DebrisPawnPlayground } from "~/screens/menuSky/DebrisPawnPlayground";
+import { DebrisMarinePlayground } from "~/screens/menuSky/DebrisMarinePlayground";
 import { MenuArrival } from "~/screens/menuSky/MenuArrival";
 import { MenuMoon } from "~/screens/menuSky/MenuMoon";
 import { MenuPlanet, type MenuWorldId } from "~/screens/menuSky/MenuPlanet";
@@ -124,7 +124,7 @@ export const Debris: Story = {
   render: () => (
     <MenuSkyStage label="Debris — 2×2 crop + 2rem gutter; exits to g5 / f5 leave the frame">
       <MenuDebris />
-      <DebrisPawnPlayground />
+      <DebrisMarinePlayground />
     </MenuSkyStage>
   ),
 };

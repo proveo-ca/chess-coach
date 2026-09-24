@@ -34,7 +34,7 @@ partition "phase 1" {
   :""moveCollision"" captures are **excluded** here: they belong after moves;
   :""mineBlast"" in ""attacks"" means a unit **cleared** the mine and lives —\nthe boom is drawn as the mine owner's hull (""m"");
   :a ""capture"" carrying ""mineColor"" took a unit **and** the mine it stood\non: the victim's ""d"" **and** a second ""m"" on the same tile, both in the\none death wave (""Rxe5"" onto a mined e5);
-  :a lethal ""kingShot"" gets a real death cue (""dk"") so the king collapses\ninstead of snapping to ruins;
+  :a lethal ""ccShot"" gets a real death cue (""dk"") so the king collapses\ninstead of snapping to ruins;
 }
 
 :**classical moves** (""c"") — one simultaneous wave;
@@ -47,8 +47,8 @@ partition "phase-2 mine triggers" {
 
 partition "phase-3 fog approaches (sequential chains, one per approach)" {
   :""prd"" approach slide (origin → discovery square) when they differ;
-  :""pra"" shot — ""kingShot"" carries the HP chip, ""prdth"" the victim /\nlethal king;
-  :kingShot → ""prs"" stop-short slide · capture → ""pro"" occupy slide;
+  :""pra"" shot — ""ccShot"" carries the HP chip, ""prdth"" the victim /\nlethal king;
+  :ccShot → ""prs"" stop-short slide · capture → ""pro"" occupy slide;
   :approach that **captured** onto a mine → ""prdm"" boom beside ""prdth"",\nbefore the ""pro"" occupy slide (the shot took both; the attacker lands);
   :approach that **crossed** a mine → ""prmm"" missile (chase only),\n""prm"" boom, ""prv"" hull — the mover dies with it;
 }

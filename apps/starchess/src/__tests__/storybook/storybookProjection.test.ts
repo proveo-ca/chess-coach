@@ -71,7 +71,7 @@ describe("Storybook projection", () => {
         if (!projected) missing.push(`${stage.id}/${story.id}`);
       }
     }
-    // King lessons ship inside `/tutorial` only; they need no standalone story.
+    // Command Center lessons ship inside `/tutorial` only; they need no standalone story.
     expect(missing).toEqual([
       "king/king-defense",
       "king/king-defense-2",

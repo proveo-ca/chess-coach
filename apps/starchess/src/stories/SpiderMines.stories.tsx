@@ -38,7 +38,7 @@ export const AttackPathCollide: Story = {
     docs: {
       description: {
         story:
-          "2 parallel SCFEN turns (8 actions): T1 Nb mine+c5 & spawn rook→a1; T2 Nb mine+e4 & Ra1→a8 chase-boom (siege F skipped).",
+          "2 parallel SCFEN turns (8 actions): T1 Nb mine+c5 & spawn Tank→a1; T2 Nb mine+e4 & Ra1→a8 chase-boom (siege F skipped).",
       },
     },
   },
@@ -51,7 +51,7 @@ export const AttackPathCollideAllyMine: Story = {
     docs: {
       description: {
         story:
-          "Sides flipped: T1 Nw mine+c5 & black spawn rook→a8; T2 Nw mine+e4 & ra8→a1 over ally a4 mine chase-boom (siege F skipped).",
+          "Sides flipped: T1 Nw mine+c5 & black spawn Tank→a8; T2 Nw mine+e4 & ra8→a1 over ally a4 mine chase-boom (siege F skipped).",
       },
     },
   },
@@ -64,7 +64,7 @@ export const AttackMine: Story = {
     docs: {
       description: {
         story:
-          "SCFEN classical Nd1→c3: engine attack clears the hostile mine, then occupy. DualNav / arrows. Same case as `promotionMine.test.ts` knight attack-clear.",
+          "SCFEN classical Nd1→c3: engine attack clears the hostile mine, then occupy. DualNav / arrows. Same case as `promotionMine.test.ts` Hoverbike attack-clear.",
       },
     },
   },
@@ -77,7 +77,7 @@ export const PromotionMine: Story = {
     docs: {
       description: {
         story:
-          "From `packages/starchess-core/src/__tests__/mine/minePathContact.test.ts`: Pe7→e8=Q onto black mine e8 — walk-over blast, no queen deploy.",
+          "From `packages/starchess-core/src/__tests__/mine/minePathContact.test.ts`: Pe7→e8=Q onto black mine e8 — walk-over blast, no BattleShip deploy.",
       },
     },
   },

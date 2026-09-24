@@ -56,13 +56,13 @@ note right of T1
   **Tier 1 — absolute survival** (""ai/strategies/survival.ts""):
 
   | weight | value | fires on |
-  | ""DEPLOY_ATTACK_SURVIVAL"" | 13_500 (""KING_SAFETY + 3_500"") | deploy a unit, then take the checker with it |
-  | ""KING_SAFETY"" | 10_000 | CC move to / from a safe square (signed) |
-  | ""QUEEN_ESCAPE"" | 8_000 | Battleship under fire reaches safety |
+  | ""DEPLOY_ATTACK_SURVIVAL"" | 13_500 (""CC_SAFETY + 3_500"") | deploy a unit, then take the checker with it |
+  | ""CC_SAFETY"" | 10_000 | CC move to / from a safe square (signed) |
+  | ""BATTLESHIP_ESCAPE"" | 8_000 | Battleship under fire reaches safety |
   | ""BACKRANK_ESCAPE"" | 4_500 | threatened CC steps off its back rank |
-  | ""QUEEN_WARP_CHECK_CC"" | 2_000 | Tactical Jump onto or beside the enemy CC |
+  | ""TACTICAL_JUMP_CHECK_CC"" | 2_000 | Tactical Jump onto or beside the enemy CC |
   | ""DEFEND_UNIT"" | 1_800 | ordinary unit flees fire to safety |
-  | ""QUEEN_THREAT_KING"" | 1_500 | enemy Battleship visible — CC prefers safety |
+  | ""BATTLESHIP_THREAT_CC"" | 1_500 | enemy Battleship visible — CC prefers safety |
 
   These are the only weights the orchestrator never scales by posture, which
   is why the ladder is written from here down rather than from the top score.
@@ -74,16 +74,16 @@ note as N_T2
   ""cc-focus.puml"" owns *which square* each one aims at:
 
   | weight | value | branch |
-  | ""SNEAK_KNIGHT_CHECK_GUESS"" | 6_000 | fogged CC, ×0.5 when ""intel.strength == 0"" |
-  | ""SNEAK_KNIGHT_CHECK_SEEN"" | 6_000 | visible CC |
-  | ""PAWN_CHECK_CC_GUESS"" | 6_000 | fogged CC |
-  | ""PAWN_CHECK_CC_SEEN"" | 6_000 | visible CC |
-  | ""ATTACK_KING_GUESS"" | 5_000 | fogged CC, flat — replaces posture ""attackKing"" |
-  | ""CHASE_KING_GUESS"" | 2_500 | fogged CC — deliberately hotter than hunt's ""chaseKing"" (450): closing on the guess drags units into vision range of the true king, which the arena 10-0 line depends on |
+  | ""SNEAK_HOVERBIKE_CHECK_GUESS"" | 6_000 | fogged CC, ×0.5 when ""intel.strength == 0"" |
+  | ""SNEAK_HOVERBIKE_CHECK_SEEN"" | 6_000 | visible CC |
+  | ""MARINE_CHECK_CC_GUESS"" | 6_000 | fogged CC |
+  | ""MARINE_CHECK_CC_SEEN"" | 6_000 | visible CC |
+  | ""ATTACK_CC_GUESS"" | 5_000 | fogged CC, flat — replaces posture ""attackCC"" |
+  | ""CHASE_CC_GUESS"" | 2_500 | fogged CC — deliberately hotter than hunt's ""chaseCC"" (450): closing on the guess drags units into vision range of the true king, which the arena 10-0 line depends on |
   | ""NEAR_PROMOTE_RUSH"" | 6_000 | ""ai/strategies/mapControl.ts"" — a Marine two steps from promotion |
 
   **Naive keeps its own, deliberately weaker pair** (""ai/strategies/checks.ts""):
-  ""SNEAK_KNIGHT_CHECK"" 2_000 and ""PAWN_CHECK_CC"" 1_500. The strategic script
+  ""SNEAK_HOVERBIKE_CHECK"" 2_000 and ""MARINE_CHECK_CC"" 1_500. The strategic script
   is the one that is supposed to drive at the Command Center, so the gap is
   the difficulty setting rather than an oversight.
 end note
@@ -97,8 +97,8 @@ note as N_T12
   | ""AVENGE_THRIFT"" | 40 | × the answering unit's ""UNIT_COST"", subtracted |
 
   **It interleaves with tier 1 rather than sitting under it.** 9_000 is below
-  ""KING_SAFETY"" 10_000 and ""DEPLOY_ATTACK_SURVIVAL"" 13_500, but *above*
-  ""QUEEN_ESCAPE"" 8_000 — so the debt outbids saving the BattleShip, which the
+  ""CC_SAFETY"" 10_000 and ""DEPLOY_ATTACK_SURVIVAL"" 13_500, but *above*
+  ""BATTLESHIP_ESCAPE"" 8_000 — so the debt outbids saving the BattleShip, which the
   promotion race deliberately does not (invariant 12). Thrift only chooses
   *with what*: at 40 × 9 a BattleShip answer still keeps 8_640, above the tier
   below, so no unit can price itself out of the job.
@@ -140,7 +140,7 @@ note as N_T15
 
   | weight | value | fires on |
   | ""ALLY_UPGRADE"" | 500 | ring full + defending + heavier guard replaces the cheapest ally in place |
-  | ""ALLY_SHIELD_PAWN"" | 800 | fresh cover from the crush square onto a lit, threatened own near-promotion pawn (cheap victim, sole blockers exempt) |
+  | ""ALLY_SHIELD_MARINE"" | 800 | fresh cover from the crush square onto a lit, threatened own near-promotion pawn (cheap victim, sole blockers exempt) |
   | ""ALLY_SHIELD_SHIP"" | 1_200 | same cover onto a lit, threatened own ship |
 
   Each dial — and their sum — sits below ""RUNNER_STOP_SERIOUS"": only
@@ -160,18 +160,18 @@ note as N_T34
   | ""CHARON_COMBO"" | 2_500 | Charon strike, then a second unit acts the same turn |
   | ""EQUAL_TRADE_ATTACK"" | 2_400 | equal-material capture in range |
   | ""SAC_FOR_CC_WINNING"" | 1_800 | give a unit to keep the enemy CC under fire, while ahead |
-  | ""HUNT_UNDEFENDED_PAWN"" | 950 | take a Marine no unit **and no deploy** covers |
+  | ""HUNT_UNDEFENDED_MARINE"" | 950 | take a Marine no unit **and no deploy** covers |
   | ""CHARON_GUESS × HIT_RATE"" | 800 eff. | F teleport-guess at a predicted jump square (discounted) |
-  | ""PAWN_TRADE"" | 750 | Marine-for-Marine while congested |
+  | ""MARINE_TRADE"" | 750 | Marine-for-Marine while congested |
   | ""SAC_FOR_CC"" | 400 | the same sacrifice while only level |
 
   ""undefended"" is decided by ""deploy-reach.puml"", not by unit attacks alone —
   a square the enemy could recapture with a deploy is defended.
 
   **Tier 4 — economy dials.** Naive (""ai/strategies/economy.ts""):
-  ""BISHOP_VS_QUEEN"" 3_500 · ""BISHOP_FIRST"" 2_200 · ""ROOK_AFTER_KNIGHTS"" 900 ·
-  ""MAX_KNIGHTS"" 2 (a cap, not a weight). Strategic
-  (""ai/strategic/strategies/economy.ts""): ""QUEEN_FINISH"" 3_200 ·
+  ""MECHA_VS_BATTLESHIP"" 3_500 · ""MECHA_FIRST"" 2_200 · ""TANK_AFTER_HOVERBIKES"" 900 ·
+  ""MAX_HOVERBIKES"" 2 (a cap, not a weight). Strategic
+  (""ai/strategic/strategies/economy.ts""): ""BATTLESHIP_FINISH"" 3_200 ·
   ""HIDDEN_GUARD"" 1_450 · ""RUNNER_GUARD"" 1_450 · ""SHIP_WARP_READY"" 800, plus
   ""SHIP_HORIZON_BONUS"" 600 over ""HORIZON"" 5 from ""deployLookahead.ts"". The two
   guards are equal today and deliberately separate: they fire on different
@@ -189,16 +189,16 @@ note as N_T5
   | ""diagonal"" | 400 | 360 | 280 |
   | ""promoteRank"" | 0 | 60 | 100 |
   | ""promotionBonus"" | 0 | 420 | 700 |
-  | ""attackKing"" | 0 | 0 | 3_500 |
-  | ""chaseKing"" | 0 | 0 | 450 |
+  | ""attackCC"" | 0 | 0 | 3_500 |
+  | ""chaseCC"" | 0 | 0 | 450 |
   | ""seekFocus"" | 0 | 700 | 0 |
   | ""center"" | 50 | 30 | 25 |
   | ""trade"" | 100 | 100 | 120 |
   | ""attackedPenalty"" | 400 | 400 | 400 |
 
-  ""hunt"" requires a visible enemy CC, so ""attackKing"" and ""chaseKing"" are
+  ""hunt"" requires a visible enemy CC, so ""attackCC"" and ""chaseCC"" are
   **structurally zero** on any turn the CC is fogged. A guess branch therefore
-  never competes with them, which is why ""ATTACK_KING_GUESS"" exists as a flat
+  never competes with them, which is why ""ATTACK_CC_GUESS"" exists as a flat
   constant instead of a posture row.
 end note
 
@@ -226,25 +226,25 @@ note bottom of TEST
   and a retune could silently invert them:
 
   | # | invariant |
-  | 1 | every tier-1.5/2/3 weight < ""KING_SAFETY"" (14 constants swept) |
-  | 2 | ""DEPLOY_ATTACK_SURVIVAL"" > ""KING_SAFETY"" > ""BACKRANK_ESCAPE"" |
-  | 3 | ""QUEEN_ESCAPE"" > ""DEFEND_UNIT"" and > ""QUEEN_THREAT_KING"" |
-  | 4 | ""PAWN_CHECK_CC_GUESS"" ≥ ""NEAR_PROMOTE_RUSH"" — the old comment's claim |
+  | 1 | every tier-1.5/2/3 weight < ""CC_SAFETY"" (14 constants swept) |
+  | 2 | ""DEPLOY_ATTACK_SURVIVAL"" > ""CC_SAFETY"" > ""BACKRANK_ESCAPE"" |
+  | 3 | ""BATTLESHIP_ESCAPE"" > ""DEFEND_UNIT"" and > ""BATTLESHIP_THREAT_CC"" |
+  | 4 | ""MARINE_CHECK_CC_GUESS"" ≥ ""NEAR_PROMOTE_RUSH"" — the old comment's claim |
   | 5 | both sneak weights > ""EQUAL_TRADE_ATTACK"" |
-  | 6 | ""SNEAK_KNIGHT_CHECK_SEEN"" > naive ""SNEAK_KNIGHT_CHECK"" |
+  | 6 | ""SNEAK_HOVERBIKE_CHECK_SEEN"" > naive ""SNEAK_HOVERBIKE_CHECK"" |
   | 7 | ""SAC_FOR_CC_WINNING"" < ""EQUAL_TRADE_ATTACK"" |
   | 8 | ""SAC_FOR_CC"" < ""SAC_FOR_CC_WINNING"" |
-  | 9 | ""SAC_FOR_CC"" < ""HUNT_UNDEFENDED_PAWN"" |
+  | 9 | ""SAC_FOR_CC"" < ""HUNT_UNDEFENDED_MARINE"" |
   | 10 | every guess weight ≤ its seen twin |
   | 11 | ""RUNNER_STOP_CRITICAL"" > both *seen* check weights — the last chance to stop a promotion beats a repeatable check |
-  | 12 | ""RUNNER_STOP_CRITICAL"" < ""QUEEN_ESCAPE"" — and so below all of tier 1 |
-  | 13 | ""RUNNER_STOP_SERIOUS"" > ""ATTACK_KING_GUESS"" and > ""EQUAL_TRADE_ATTACK"" — a real runner beats speculation and beats ordinary material |
+  | 12 | ""RUNNER_STOP_CRITICAL"" < ""BATTLESHIP_ESCAPE"" — and so below all of tier 1 |
+  | 13 | ""RUNNER_STOP_SERIOUS"" > ""ATTACK_CC_GUESS"" and > ""EQUAL_TRADE_ATTACK"" — a real runner beats speculation and beats ordinary material |
   | 14 | ""RUNNER_STOP_SERIOUS"" < both *guess* check weights — a real check still wins the turn |
-  | 15 | ""RUNNER_STOP_WATCH"" < ""HUNT_UNDEFENDED_PAWN"" — a distant runner is a tie-break, not a plan |
-  | 16 | ""AVENGE_CC_SHOT"" < ""KING_SAFETY"" and < ""DEPLOY_ATTACK_SURVIVAL"" — the CC's own safety outranks avenging it |
-  | 17 | ""AVENGE_CC_SHOT"" > every other concern the turn offers (6 constants swept, ""QUEEN_ESCAPE"" included) |
+  | 15 | ""RUNNER_STOP_WATCH"" < ""HUNT_UNDEFENDED_MARINE"" — a distant runner is a tie-break, not a plan |
+  | 16 | ""AVENGE_CC_SHOT"" < ""CC_SAFETY"" and < ""DEPLOY_ATTACK_SURVIVAL"" — the CC's own safety outranks avenging it |
+  | 17 | ""AVENGE_CC_SHOT"" > every other concern the turn offers (6 constants swept, ""BATTLESHIP_ESCAPE"" included) |
   | 18 | ""AVENGE_CC_SHOT"" − ""AVENGE_THRIFT"" × 9 > ""RUNNER_STOP_CRITICAL"" — even spending a BattleShip, thrift never refuses the job |
-  | 19 | ""ALLY_UPGRADE"" / ""ALLY_SHIELD_PAWN"" / ""ALLY_SHIELD_SHIP"" each < ""RUNNER_STOP_SERIOUS"", and ""ALLY_SHIELD_SHIP"" + ""ALLY_UPGRADE"" < ""RUNNER_STOP_SERIOUS"" — ally-crush dials nudge, never outbid a real runner tier |
+  | 19 | ""ALLY_UPGRADE"" / ""ALLY_SHIELD_MARINE"" / ""ALLY_SHIELD_SHIP"" each < ""RUNNER_STOP_SERIOUS"", and ""ALLY_SHIELD_SHIP"" + ""ALLY_UPGRADE"" < ""RUNNER_STOP_SERIOUS"" — ally-crush dials nudge, never outbid a real runner tier |
   | 20 | ""ALLY_SHIELD_SHIP"" + ""ALLY_UPGRADE"" < ""RUNNER_STOP_CRITICAL"" and ""ALLY_SHIELD_SHIP"" < ""AVENGE_CC_SHOT"" — ally dials alone never reach the last-chance tier or retaliation |
 
   Invariant 4 is the tightest in the ladder: 6_000 ≥ 6_000 holds by equality,
@@ -256,7 +256,7 @@ end note
 note as N_GAPS
   **What no test pins.** Tiers 4 and 5 have no ordering case at all, so a
   deploy dial may drift past a survival weight without anything failing.
-  ""KNIGHT_1_MOVE_BLOCK"" 800 and ""KNIGHT_1_MOVE_KING_STEP"" 600 in
+  ""HOVERBIKE_1_MOVE_BLOCK"" 800 and ""KNIGHT_1_MOVE_KING_STEP"" 600 in
   ""ai/strategic/strategies/threats.ts"" are module-private and cannot be
   asserted from outside at all.
 
@@ -270,8 +270,8 @@ note as N_GAPS
   check tier on purpose: a defensive nudge must never outbid a real check.
 
   <color:#CB2000>**OPEN**</color> — ""KNIGHT_1_MOVE_KING_STEP"" is **dead**.
-  ""threats.ts"" returns 0 on ""isKingMove"" at the top of ""score"", so the
-  ""isKingMove"" branch further down can never run. The CC-step half of the rule
+  ""threats.ts"" returns 0 on ""isCCMove"" at the top of ""score"", so the
+  ""isCCMove"" branch further down can never run. The CC-step half of the rule
   above is therefore unimplemented, while the interpose half does fire. The
   comment that claimed the balance held quoted 3_000 / 5_000 for the offensive
   weights, which have since become 6_000 / 5_000 — the ordering survived the

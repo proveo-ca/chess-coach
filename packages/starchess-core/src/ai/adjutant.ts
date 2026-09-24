@@ -30,7 +30,7 @@ import {
 } from "./context";
 import { clearsCheck } from "./plans/simulate";
 import {
-  pawnGasStacks,
+  marineGasStacks,
   sideMoves,
   spawnCaptureStacks,
   spawnStacks,
@@ -38,7 +38,7 @@ import {
   specialClassicalStacks,
 } from "./plans/stacks";
 import { asCandidate, generateCandidates, scoreMove } from "./strategies";
-import { KING_SAFETY } from "./strategies/survival";
+import { CC_SAFETY } from "./strategies/survival";
 
 export type { AdjutantContext, AdjutantResult };
 
@@ -76,14 +76,14 @@ export const adjutant = (
     ),
   );
   const stacks = [
-    ...pawnGasStacks(c, moves),
+    ...marineGasStacks(c, moves),
     ...spawnStacks(specials, moveCandidates),
     ...spawnCaptureStacks(specials, c),
     ...specialClassicalStacks(specials, moveCandidates, c),
     ...charonForwardStacks(
       specials.filter((s) => {
         const a = s.actions[0];
-        return !!a && a.timing === "F" && a.kind === "bishopSnipe";
+        return !!a && a.timing === "F" && a.kind === "charonMissiles";
       }),
       moveCandidates,
       c,
@@ -92,7 +92,7 @@ export const adjutant = (
 
   /**
    * Protect the Command Center (CC) above all, as a single uniform rule: any plan that leaves
-   * the Command Center (CC) on a chip-capable ray is crushed by KING_SAFETY. This covers all
+   * the Command Center (CC) on a chip-capable ray is crushed by CC_SAFETY. This covers all
    * three cases at once — fleeing a real check, interposing / capturing the
    * checker, and (in the quiet case) not self-exposing a pinned piece, which
    * raw `attacksSquare` cannot see because it ignores absolute pins.
@@ -106,7 +106,7 @@ export const adjutant = (
   const guarded = [...committable, ...stacks, ...moveCandidates].map((cand) =>
     clearsCheck(c.map, cand.actions, c.sieged, c.us, c.enemy)
       ? cand
-      : { ...cand, score: cand.score - KING_SAFETY },
+      : { ...cand, score: cand.score - CC_SAFETY },
   );
 
   // Specials / stacks lead the pool, so they win exact score ties.

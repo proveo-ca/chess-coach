@@ -108,8 +108,8 @@ export type FoldMove = { color?: string; from?: string; to?: string };
 export type FoldPly = {
   turn: number;
   placement: string;
-  siegedRooks?: readonly string[];
-  kingLives?: { w?: number; b?: number };
+  siegedTanks?: readonly string[];
+  ccLives?: { w?: number; b?: number };
   mines?: readonly { at: string; color: string }[];
   events?: readonly MeasuredEvent[];
   /** Board before this ply. Intercepts read the friend standing behind the marine. */
@@ -128,8 +128,8 @@ export const foldPlyFromResolve = (esr: EndScTurnResult, before?: string): FoldP
   turn: esr.next.turn,
   placement: esr.next.placement,
   beforePlacement: before,
-  siegedRooks: esr.next.siegedRooks,
-  kingLives: esr.next.kingLives,
+  siegedTanks: esr.next.siegedTanks,
+  ccLives: esr.next.ccLives,
   mines: esr.next.mines,
   events: esr.events,
   // Every list a capture can land in: a slider that runs into a fogged unit
@@ -155,16 +155,16 @@ const valueOf = (type: string | undefined): number => {
   return 0;
 };
 
-const near = (king: string, sq: string): boolean => {
-  if (sq.length < 2 || king.length < 2) return false;
+const near = (commandCenter: string, sq: string): boolean => {
+  if (sq.length < 2 || commandCenter.length < 2) return false;
   return (
-    Math.abs(king.charCodeAt(0) - sq.charCodeAt(0)) <= 1 &&
-    Math.abs(Number(king[1]) - Number(sq[1])) <= 1
+    Math.abs(commandCenter.charCodeAt(0) - sq.charCodeAt(0)) <= 1 &&
+    Math.abs(Number(commandCenter[1]) - Number(sq[1])) <= 1
   );
 };
 
 export const seedAnalysis = (
-  opening: { turn: number; placement: string; kingLives?: { w?: number; b?: number } },
+  opening: { turn: number; placement: string; ccLives?: { w?: number; b?: number } },
   player: StarChessColor,
 ): AnalysisState => {
   const at = new Map<string, string>();
@@ -189,7 +189,7 @@ export const seedAnalysis = (
     visionStreak: 0,
     bestVision: 0,
     lastVisionTurn: null,
-    startLives: opening.kingLives?.[player] ?? 3,
+    startLives: opening.ccLives?.[player] ?? 3,
     damaged: false,
     turn: opening.turn,
     lastPlacement: opening.placement,
@@ -239,7 +239,7 @@ const idAt = (state: AnalysisState, square: string, turn: number): string => {
   return id;
 };
 
-const kingSquare = (placement: string, color: StarChessColor): string | null => {
+const ccSquare = (placement: string, color: StarChessColor): string | null => {
   for (const [square, piece] of placementToMap(placement)) {
     if (piece.type === "k" && piece.color === color) return square;
   }
@@ -289,9 +289,9 @@ const protectsFriend = (
 
 /** What `color` sees on the board a ply settled into. */
 const plyVision = (ply: FoldPly, color: StarChessColor) => {
-  const sieged = new Set(ply.siegedRooks ?? []);
+  const sieged = new Set(ply.siegedTanks ?? []);
   return getSideVision(ply.placement, color, {
-    rookModeFor: (square: Square) => (sieged.has(square) ? "siege" : "tank"),
+    tankModeFor: (square: Square) => (sieged.has(square) ? "siege" : "tank"),
     mines: (ply.mines ?? []).map((mine) => ({
       at: mine.at as Square,
       color: mine.color as StarChessColor,
@@ -355,7 +355,7 @@ export const foldTurn = (state: AnalysisState, ply: FoldPly): AchievementBubble[
   let mechaOrigin: Spot | undefined;
   let lightOrigin: Spot | undefined;
   let jumpOrigin: Spot | undefined;
-  const king = kingSquare(ply.placement, player);
+  const commandCenter = ccSquare(ply.placement, player);
 
   const credit = (from: string, victimType: string | undefined, to: string | undefined) => {
     const piece = idAt(state, from, ply.turn);
@@ -365,7 +365,7 @@ export const foldTurn = (state: AnalysisState, ply: FoldPly): AchievementBubble[
     const total = opened + valueOf(victimType);
     state.material.set(piece, total);
     stonksOrigin = { id: piece, at: to };
-    if (to && king && near(king, to)) {
+    if (to && commandCenter && near(commandCenter, to)) {
       state.ccCaptures += 1;
       lightOrigin = { id: piece, at: to };
     }
@@ -387,22 +387,22 @@ export const foldTurn = (state: AnalysisState, ply: FoldPly): AchievementBubble[
     }
     if (ev.color !== player || !ev.from) return;
     const enemyVictim = ev.victim?.color != null && ev.victim.color !== player;
-    if (ev.kind === "spawn" && ev.unit && ev.to) {
+    if (ev.kind === "deploy" && ev.unit && ev.to) {
       state.at.set(ev.to, pieceId(ply.turn, ev.unit, ev.to));
       // A deploy that lands on an enemy crushes it — the new unit's capture.
       if (enemyVictim) credit(ev.to, ev.victim?.type, ev.to);
       return;
     }
     const piece = idAt(state, ev.from, ply.turn);
-    if (enemyVictim && (ev.kind === "bishopSnipe" || ev.kind === "pawnDouble")) {
+    if (enemyVictim && (ev.kind === "charonMissiles" || ev.kind === "stimStep")) {
       credit(ev.from, ev.victim?.type, ev.to);
-      if (ev.kind === "bishopSnipe" && ev.victim?.type === "q") {
+      if (ev.kind === "charonMissiles" && ev.victim?.type === "q") {
         state.mechaKills += 1;
         mechaOrigin = { id: piece, at: ev.from };
       }
     }
-    if (ev.kind === "queenWarp") jumpOrigin = { id: piece, at: ev.to };
-    if ((ev.kind === "pawnDouble" || ev.kind === "queenWarp") && ev.to && ev.to !== ev.from) {
+    if (ev.kind === "tacticalJump") jumpOrigin = { id: piece, at: ev.to };
+    if ((ev.kind === "stimStep" || ev.kind === "tacticalJump") && ev.to && ev.to !== ev.from) {
       state.at.delete(ev.from);
       state.at.set(ev.to, piece);
     }
@@ -475,7 +475,7 @@ export const foldTurn = (state: AnalysisState, ply: FoldPly): AchievementBubble[
   state.lastVisionTurn = visionNext.last;
   if (visionNext.streak > state.bestVision) state.bestVision = visionNext.streak;
 
-  const lives = ply.kingLives?.[player];
+  const lives = ply.ccLives?.[player];
   if (lives != null && lives < state.startLives) state.damaged = true;
   state.turn = ply.turn;
   state.lastPlacement = ply.placement;
@@ -493,7 +493,7 @@ export const foldTurn = (state: AnalysisState, ply: FoldPly): AchievementBubble[
   announce(state, "mecha", state.mechaKills, here(mechaOrigin), bubbles);
   announce(state, "light", state.ccCaptures, here(lightOrigin), bubbles);
   announce(state, "juke", state.bestJump, here(jumpOrigin), bubbles);
-  announce(state, "vision", state.bestVision, king ?? undefined, bubbles);
+  announce(state, "vision", state.bestVision, commandCenter ?? undefined, bubbles);
   return bubbles;
 };
 
@@ -506,7 +506,7 @@ export const finalizeAnalysis = (
   if (result !== "win") return [];
   const bubbles: AchievementBubble[] = [];
   const enemy: StarChessColor = state.player === "w" ? "b" : "w";
-  const origin = kingSquare(state.lastPlacement, enemy) ?? kingSquare(state.lastPlacement, state.player) ?? undefined;
+  const origin = ccSquare(state.lastPlacement, enemy) ?? ccSquare(state.lastPlacement, state.player) ?? undefined;
   announce(state, "cheese", state.turn, origin, bubbles);
   if (!state.damaged) {
     const tier = tierForOpponent(opponent);
@@ -578,7 +578,7 @@ export type GameAchievements = {
  * human's side), so Flawless can level.
  */
 export const foldGame = (
-  opening: { turn: number; placement: string; kingLives?: { w?: number; b?: number } },
+  opening: { turn: number; placement: string; ccLives?: { w?: number; b?: number } },
   plies: readonly FoldPly[],
   end?: { winner: StarChessColor | null; opponent?: Partial<Record<StarChessColor, string>> },
 ): GameAchievements => {

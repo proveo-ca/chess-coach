@@ -99,7 +99,7 @@ describe("golden — Combat Chain resolve", () => {
     const start: ScFenSnapshot = {
       placement: "4bk2/8/5n2/4p3/8/2R5/3P4/4K3",
       turn: 0,
-      kingLives: { w: 3, b: 3 },
+      ccLives: { w: 3, b: 3 },
       phase: "P",
       gas: { w: 1, b: 1 },
       gasIncome: { w: 1, b: 1 },
@@ -115,7 +115,7 @@ describe("golden — Combat Chain resolve", () => {
   });
 });
 
-describe("golden — pawnDouble gas-step events", () => {
+describe("golden — stimStep gas-step events", () => {
   const start = () =>
     parseScFen("SCFEN|4k3/8/8/8/8/8/4P3/4K3|11|33|P|G:22:22|Q:w:;b:");
 
@@ -123,21 +123,21 @@ describe("golden — pawnDouble gas-step events", () => {
     expect(() =>
       addScAction({
         snapshot: start(),
-        action: { timing: "B", kind: "pawnDouble", color: "w", from: "e2", to: "e4" },
+        action: { timing: "B", kind: "stimStep", color: "w", from: "e2", to: "e4" },
       }),
     ).toThrow(AddScActionError);
   });
 
-  it("B-only emits bMoves and lands pawn one rank up", () => {
+  it("B-only emits bMoves and lands Marine one rank up", () => {
     let snap = start();
     snap = addScAction({
       snapshot: snap,
-      action: { timing: "B", kind: "pawnDouble", color: "w", from: "e2", to: "e3" },
+      action: { timing: "B", kind: "stimStep", color: "w", from: "e2", to: "e3" },
     }).snapshot;
     const { next, bMoves } = endScTurn(snap);
     expect(bMoves).toEqual([{ piece: "p", color: "w", from: "e2", to: "e3" }]);
     expect(next.placement).toBe("4k3/8/8/8/8/4P3/8/4K3");
-    // Green aura square follows the gas-stepped pawn for the next planning window.
+    // Green aura square follows the gas-stepped Marine for the next planning window.
     expect(next.specialsUsed).toEqual(["e3"]);
   });
 
@@ -145,7 +145,7 @@ describe("golden — pawnDouble gas-step events", () => {
     let snap = start();
     snap = addScAction({
       snapshot: snap,
-      action: { timing: "B", kind: "pawnDouble", color: "w", from: "e2", to: "e3" },
+      action: { timing: "B", kind: "stimStep", color: "w", from: "e2", to: "e3" },
     }).snapshot;
     snap = addScAction({
       snapshot: snap,
@@ -166,7 +166,7 @@ describe("golden — pawnDouble gas-step events", () => {
 });
 
 describe("golden — scMoves", () => {
-  it("pawn start-rank double and promotion flag", () => {
+  it("Marine start-rank double and promotion flag", () => {
     expect(tos(scMovesFrom(placementToMap("8/8/8/8/8/8/4P3/4K3"), "e2", "w"))).toEqual([
       "e3",
       "e4",

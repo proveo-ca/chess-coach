@@ -7,7 +7,7 @@
  * is therefore blunt, and deliberately so — whatever else the turn offers, the
  * shooter comes off the board if it can be reached.
  *
- * The weight sits directly under `KING_SAFETY`: keeping the Command Center out
+ * The weight sits directly under `CC_SAFETY`: keeping the Command Center out
  * of fire still outranks avenging it, and everything else — the promotion race
  * included — does not. It is a *capture* weight and nothing else: no chasing,
  * no positional pull toward the square, because a wanted square we cannot
@@ -23,7 +23,7 @@ import { wantedAt } from "../attackers";
 import type { StrategicStrategy } from "./types";
 
 /**
- * Taking the unit that fired on our Command Center. Below `KING_SAFETY`
+ * Taking the unit that fired on our Command Center. Below `CC_SAFETY`
  * (10_000) so the CC's own safety still wins, above `RUNNER_STOP_CRITICAL`
  * (7_000) and every offensive weight, which is what "however possible" means:
  * it outbids a check, a promotion stop and any ordinary trade.
@@ -69,12 +69,12 @@ export const avengeDeployValue = (
 };
 
 const score = (ev: MoveEval, ctx: StrategicCtx): number => {
-  const { move, piece, isKingMove } = ev;
+  const { move, piece, isCCMove } = ev;
   if (ctx.ccAttackers.length === 0) return 0;
   // Only a capture settles the debt, and the Command Center is not the unit to
   // collect it with: survival owns where the CC stands, and this concern must
   // never bid it toward a shooter.
-  if (isKingMove || !move.capture) return 0;
+  if (isCCMove || !move.capture) return 0;
   return avengeValue(ctx, move.to, UNIT_COST[piece.type]);
 };
 

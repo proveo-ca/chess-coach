@@ -15,7 +15,7 @@ describe("gasStackPromotes", () => {
       snapshot: snap,
       action: {
         timing: "B",
-        kind: "pawnDouble",
+        kind: "stimStep",
         color: "w",
         from: "h6",
         to: "h7",
@@ -39,7 +39,7 @@ describe("gasStackPromotes", () => {
       snapshot: snap,
       action: {
         timing: "B",
-        kind: "pawnDouble",
+        kind: "stimStep",
         color: "w",
         from: "h5",
         to: "h6",

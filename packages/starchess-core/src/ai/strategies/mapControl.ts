@@ -8,10 +8,10 @@
  * so it is weighed on the same scale rather than as a separate concern.
  */
 
-import { findKing, isSquareAttackedBy } from "../../board/placement";
+import { findCC, isSquareAttackedBy } from "../../board/placement";
 import { hostileMineOn } from "../../board/mine-contact";
 import { MAX_MINES_PER_SIDE, mineAt, minesFor } from "../../board/mines";
-import { pawnSingleTarget } from "../../rules/specials/pawnDouble";
+import { marineSingleTarget } from "../../rules/specials/stimStep";
 import type { PieceColor } from "../../model/types";
 import type { AdjutantCtx, Candidate, MoveEval } from "../context";
 import {
@@ -65,7 +65,7 @@ const gasSteps = (ctx: AdjutantCtx): Candidate[] => {
 
   for (const [from, piece] of map) {
     if (piece.color !== us || piece.type !== "p") continue;
-    const to = pawnSingleTarget(from, us);
+    const to = marineSingleTarget(from, us);
     if (!to || map.has(to)) continue;
     // A gas step walks onto the tile — a hostile mine there kills the marine.
     if (hostileMineOn(snap.mines, us, to)) continue;
@@ -81,7 +81,7 @@ const gasSteps = (ctx: AdjutantCtx): Candidate[] => {
       asCandidate(
         {
           timing: "B",
-          kind: "pawnDouble",
+          kind: "stimStep",
           color: us,
           from,
           to,
@@ -107,7 +107,7 @@ const minePlants = (ctx: AdjutantCtx): Candidate[] => {
     if (site <= 0) continue;
     out.push(
       asCandidate(
-        { timing: "B", kind: "knightMine", color: us, from, to: from },
+        { timing: "B", kind: "spiderMine", color: us, from, to: from },
         weights.siegeHub * site + weights.trade,
       ),
     );
@@ -135,7 +135,7 @@ const siegeToggles = (ctx: AdjutantCtx): Candidate[] => {
       if (isSiegeHub(from)) score = Math.max(score, siegeHub);
       else score += mapControl * centerScore(from);
 
-      const ek = findKing(map, enemy);
+      const ek = findCC(map, enemy);
       if (ek) {
         // Tank vision ~5×5 (cheb≤2); siege 9×9 (cheb≤4).
         const cheb = chebyshev(from, ek);
@@ -150,7 +150,7 @@ const siegeToggles = (ctx: AdjutantCtx): Candidate[] => {
       }
     }
     out.push(
-      asCandidate({ timing: "B", kind: "rookSiege", color: us, from, to: from }, score),
+      asCandidate({ timing: "B", kind: "siegeMode", color: us, from, to: from }, score),
     );
   }
   return out;
@@ -163,7 +163,7 @@ const generate = (ctx: AdjutantCtx): Candidate[] => [
 ];
 
 const score = (ev: MoveEval, ctx: AdjutantCtx): number => {
-  const { move, piece, isKingMove } = ev;
+  const { move, piece, isCCMove } = ev;
   const { us, sieged, weights, intel, material, hubMineTaken } = ctx;
   const {
     center,
@@ -178,7 +178,7 @@ const score = (ev: MoveEval, ctx: AdjutantCtx): number => {
 
   // The centre pull applies to every mover, Command Center (CC) included.
   let s = center * centerScore(move.to);
-  if (isKingMove) return s;
+  if (isCCMove) return s;
 
   if (piece.type === "p") {
     s += promoteRank * promoteProgress(rankOf(move.to), us);

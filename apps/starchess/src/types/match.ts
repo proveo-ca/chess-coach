@@ -22,15 +22,15 @@ export type ViewerColor = StarChessColor;
 
 export type TargetingState =
   | null
-  | { kind: "spawn"; unit: SpawnPiece; color: StarChessColor }
+  | { kind: "deploy"; unit: SpawnPiece; color: StarChessColor }
   | {
-      kind: "bishopSnipe";
+      kind: "charonMissiles";
       from: Square;
       targets: readonly Square[];
       color: StarChessColor;
     }
   | {
-      kind: "queenWarp";
+      kind: "tacticalJump";
       from: Square;
       targets: readonly Square[];
       color: StarChessColor;
@@ -71,7 +71,7 @@ export type TimelineCue = CueRouting &
       to: Square;
       /** BattleShip Tactical Jump — ShipJumpAnimation, not a hull slide. */
       shipJump?: boolean;
-      /** Pawn gas-step (B/F pawnDouble) — stim square + hop timing. */
+      /** Marine gas-step (B/F stimStep) — stim square + hop timing. */
       stim?: boolean;
     }
   | {
@@ -81,12 +81,12 @@ export type TimelineCue = CueRouting &
       color: StarChessColor;
       from: Square;
       to: Square;
-      /** When set, HP chips at frag impact (live king-damage boom). */
-      kingShot?: { target: StarChessColor; livesAfter: number };
-      /** Override ANIM_BY_PIECE (e.g. bishopCharon — wire-frozen cue id). */
+      /** When set, HP chips at frag impact (live Command Center-damage boom). */
+      ccShot?: { target: StarChessColor; livesAfter: number };
+      /** Override ANIM_BY_PIECE (e.g. mechaCharon — wire-frozen cue id). */
       anim?: AttackAnimKind;
-      /** Siege Tank mode for rookBattery VFX (from afterB siegedRooks). */
-      rookMode?: "siege" | "tank";
+      /** Siege Tank mode for tankBattery VFX (from afterB siegedTanks). */
+      tankMode?: "siege" | "tank";
       /** Charon fizzle — no ship at resolve: missiles fly the full ray off-board, no impact burst. */
       fizzle?: boolean;
     }
@@ -102,7 +102,7 @@ export type TimelineCue = CueRouting &
        * the landing tile, so the burrowed glyph it left behind is elsewhere.
        */
       spentAt?: Square;
-      rookMode?: "siege" | "tank";
+      tankMode?: "siege" | "tank";
     }
   | {
       kind: "deploy";
@@ -143,7 +143,7 @@ export type TimelineState = {
   hiddenSquares: ReadonlySet<Square>;
   /** Move slide progress (0 = at from, 1 = sliding/at to). */
   moveProgress: Readonly<Record<string, 0 | 1>>;
-  /** Knight L-path facing: 0 = long leg, 1 = short leg (after elbow). */
+  /** Hoverbike L-path facing: 0 = long leg, 1 = short leg (after elbow). */
   moveLeg: Readonly<Record<string, 0 | 1>>;
   /** Tactical Jump thruster trails (outlive the hull cue). */
   jumpTrails: ReadonlyArray<{ id: string; from: Square; to: Square }>;
@@ -154,17 +154,17 @@ export type TimelineState = {
   /** Temporary placement overrides during resolve (mid-timeline commits). */
   displayPlacement: string | null;
   /** Review-replay overlays — never rewrite `liveSnapshot` while `gameOver`. */
-  displayKingLives: ScFenSnapshot["kingLives"] | null;
+  displayCCLives: ScFenSnapshot["ccLives"] | null;
   displayMines: ScFenSnapshot["mines"] | null;
-  displaySiegedRooks: readonly Square[] | null;
+  displaySiegedTanks: readonly Square[] | null;
 };
 
 /** Patch shape for TIMELINE_COMMIT / TimelineCallbacks.onCommit. */
 export type TimelineCommitPatch = {
   placement?: string;
-  kingLives?: EndScTurnResult["next"]["kingLives"];
+  ccLives?: EndScTurnResult["next"]["ccLives"];
   mines?: EndScTurnResult["next"]["mines"];
-  siegedRooks?: readonly Square[];
+  siegedTanks?: readonly Square[];
   /** In-resolve U: stamps — migrate with gas drops / moves for green aura. */
   specialsUsed?: readonly Square[];
   hidden?: readonly Square[];
@@ -176,7 +176,7 @@ export type TimelineCommitPatch = {
    */
   attackDying?: Record<string, boolean>;
   moveProgress?: Record<string, 0 | 1>;
-  /** Knight L facing — 0 long leg, 1 short leg after elbow. */
+  /** Hoverbike L facing — 0 long leg, 1 short leg after elbow. */
   moveLeg?: Record<string, 0 | 1>;
   /** Tactical Jump thruster trails (outlive hull cue). */
   jumpTrails?: ReadonlyArray<{ id: string; from: Square; to: Square }>;
@@ -227,7 +227,7 @@ export type MatchState = {
   deadlineAt: number | null;
   targeting: TargetingState;
   specialsUsed: ReadonlySet<Square>;
-  siegedRooks: ReadonlySet<Square>;
+  siegedTanks: ReadonlySet<Square>;
   timeline: TimelineState;
   outcome: ScOutcome | null;
   settledSnapshots: ScFenSnapshot[];
@@ -243,11 +243,11 @@ export type MatchState = {
   legalDests: readonly Square[];
   /**
    * Last-rank marine move awaiting {@link PromotionModal}.
-   * Timeout / End defaults the choice to queen (BattleShip).
+   * Timeout / End defaults the choice to BattleShip.
    */
   pendingPromotion: PendingPromotion | null;
   /**
-   * True after turn-open king-checks were applied (`beginScTurn`) for this
+   * True after turn-open Command Center-checks were applied (`beginScTurn`) for this
    * planning window. `SUBMIT_TURN` then skips re-applying those checks.
    */
   turnStartChecksApplied: boolean;
@@ -267,13 +267,13 @@ export type MatchAction =
   | { type: "REMOVE_ACTION"; seq: number }
   | { type: "OPEN_SPAWN"; color: StarChessColor; unit: SpawnPiece }
   | {
-      type: "OPEN_BISHOP_SNIPE";
+      type: "OPEN_MECHA_SNIPE";
       color: StarChessColor;
       from: Square;
       targets: readonly Square[];
     }
   | {
-      type: "OPEN_QUEEN_WARP";
+      type: "OPEN_BATTLESHIP_WARP";
       color: StarChessColor;
       from: Square;
       targets: readonly Square[];
@@ -296,9 +296,9 @@ export type MatchAction =
   | {
       type: "TIMELINE_COMMIT";
       placement?: string;
-      kingLives?: ScFenSnapshot["kingLives"];
+      ccLives?: ScFenSnapshot["ccLives"];
       mines?: ScFenSnapshot["mines"];
-      siegedRooks?: readonly Square[];
+      siegedTanks?: readonly Square[];
       /** In-resolve gas-used squares (green aura follows relocating units). */
       specialsUsed?: readonly Square[];
       hidden?: readonly Square[];
@@ -343,7 +343,7 @@ export type MatchStore = {
   dispatch: (action: MatchAction) => void;
   submitTurn: (reason?: "end" | "timeout") => void;
   armTimer: () => void;
-  /** Resolve turn-open king-checks before intent; then arm timer when requested. */
+  /** Resolve turn-open Command Center-checks before intent; then arm timer when requested. */
   ensureTurnOpenChecks: (opts?: { armTimer?: boolean }) => void;
   /**
    * Terminal DualNav — Back seeks previous turn start; Forward runs one full turn

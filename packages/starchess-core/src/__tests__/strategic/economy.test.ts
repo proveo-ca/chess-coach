@@ -11,7 +11,7 @@ const openSnap = (turn = 10) =>
     `SCFEN|4k3/8/8/8/8/8/8/4K3|${turn}|33|P|G:11:11|Q:w:;b:`,
   );
 
-// Board is empty except both kings, so:
+// Board is empty except both Command Centers, so:
 //   ourBoard = 0, countedForUs = ourBoard + captured.
 // winning ⇔ captured > known ⇔ captured > 12 on turn 10.
 // nothing hidden ⇔ gap ≤ 0 ⇔ scouted ≥ known + captured = 27.
@@ -26,12 +26,12 @@ describe("strategic economy (known-vs-seen dials)", () => {
       kvs: WINNING_CLEAN,
     });
     const actions = plan.snapshot.queue?.actions.filter((a) => a.color === "b") ?? [];
-    expect(actions.some((a) => a.kind === "spawn" && a.unit === "q")).toBe(true);
+    expect(actions.some((a) => a.kind === "deploy" && a.unit === "q")).toBe(true);
   });
 
   it("saves light drops while the bank gathers toward a ship", () => {
-    // Winning, nothing hidden, but the bank cannot pay for a queen yet —
-    // pawn / hoverbike drops are suppressed so the Command Center saves.
+    // Winning, nothing hidden, but the bank cannot pay for a BattleShip yet —
+    // Marine drops are suppressed so the Command Center saves.
     const snap = openSnap(10);
     const plan = strategicAdjutant(snap, {
       color: "b",
@@ -39,13 +39,13 @@ describe("strategic economy (known-vs-seen dials)", () => {
       kvs: WINNING_CLEAN,
     });
     const actions = plan.snapshot.queue?.actions.filter((a) => a.color === "b") ?? [];
-    const spawns = actions.filter((a) => a.kind === "spawn");
+    const spawns = actions.filter((a) => a.kind === "deploy");
     expect(spawns.every((a) => a.unit !== "p" && a.unit !== "n")).toBe(true);
   });
 
   it("reacts to hidden enemy material with defense, not a saving spree", () => {
     // gap positive (cheese window, turn ≥ 7) — defense outranks saving: it
-    // must never spend the bank toward a queen while hidden material exists.
+    // must never spend the bank toward a BattleShip while hidden material exists.
     const snap = openSnap(7);
     const plan = strategicAdjutant(snap, {
       color: "b",
@@ -53,22 +53,22 @@ describe("strategic economy (known-vs-seen dials)", () => {
       kvs: combineKnownVsSeen(9, 2, 0), // gap 7 → hidden
     });
     const actions = plan.snapshot.queue?.actions.filter((a) => a.color === "b") ?? [];
-    const spawns = actions.filter((a) => a.kind === "spawn");
+    const spawns = actions.filter((a) => a.kind === "deploy");
     expect(spawns.every((a) => a.unit !== "q")).toBe(true);
   });
 
   it("caps same-color mechas at two at plan level", () => {
-    // Black dark pair b6 + d4; any bishop drop must land light.
+    // Black dark pair b6 + d4; any Mecha drop must land light.
     const snap = parseScFen("SCFEN|4k3/8/1b6/8/3b4/8/8/4K3|10|33|P|G:11:11|Q:w:;b:");
     const plan = strategicAdjutant(snap, {
       color: "b",
       storedFor: () => 12,
       kvs: seedKnownVsSeen(),
     });
-    const bishops = (plan.snapshot.queue?.actions ?? []).filter(
-      (a) => a.color === "b" && a.kind === "spawn" && (a as { unit?: string }).unit === "b",
+    const mechas = (plan.snapshot.queue?.actions ?? []).filter(
+      (a) => a.color === "b" && a.kind === "deploy" && (a as { unit?: string }).unit === "b",
     );
-    for (const b of bishops) {
+    for (const b of mechas) {
       expect(squareColor((b as { to: Parameters<typeof squareColor>[0] }).to)).toBe("light");
     }
   });
@@ -81,14 +81,14 @@ describe("strategic economy (known-vs-seen dials)", () => {
       storedFor: () => 12,
       kvs: seedKnownVsSeen(),
     });
-    const bishops = (plan.snapshot.queue?.actions ?? []).filter(
-      (a) => a.color === "b" && a.kind === "spawn" && (a as { unit?: string }).unit === "b",
+    const mechas = (plan.snapshot.queue?.actions ?? []).filter(
+      (a) => a.color === "b" && a.kind === "deploy" && (a as { unit?: string }).unit === "b",
     );
-    expect(bishops).toHaveLength(0);
+    expect(mechas).toHaveLength(0);
   });
 
-  it("keeps the instant queen-capture bishop in the candidate pool", () => {
-    // Dark pair complete, but a bishop dropped on e7 takes the queen on c5:
+  it("keeps the instant BattleShip-capture Mecha in the candidate pool", () => {
+    // Dark pair complete, but a Mecha dropped on e7 takes the BattleShip on c5:
     // the per-color gate admits exactly that square.
     const build = (placement: string) => {
       const ctx = buildStrategicCtx(parseScFen(placement), {
@@ -100,11 +100,11 @@ describe("strategic economy (known-vs-seen dials)", () => {
       return strategicEconomy
         .generate!(ctx)
         .map((c) => c.actions[0])
-        .filter((a) => a.kind === "spawn" && (a as { unit?: string }).unit === "b")
+        .filter((a) => a.kind === "deploy" && (a as { unit?: string }).unit === "b")
         .map((a) => (a as { to?: string }).to);
     };
-    const withQueen = build("SCFEN|4k3/8/1b6/2Q5/3b4/8/8/4K3|10|33|P|G:11:11|Q:w:;b:");
-    expect(withQueen).toContain("e7");
+    const withBattleShip = build("SCFEN|4k3/8/1b6/2Q5/3b4/8/8/4K3|10|33|P|G:11:11|Q:w:;b:");
+    expect(withBattleShip).toContain("e7");
     const calm = build("SCFEN|4k3/8/1b6/8/3b4/8/8/4K3|10|33|P|G:11:11|Q:w:;b:");
     expect(calm.filter((to) => to != null && squareColor(to as never) === "dark")).toEqual([]);
   });
@@ -117,7 +117,7 @@ describe("strategic economy (known-vs-seen dials)", () => {
       kvs: WINNING_CLEAN,
     });
     expect(
-      threaded.snapshot.queue?.actions.some((a) => a.kind === "spawn"),
+      threaded.snapshot.queue?.actions.some((a) => a.kind === "deploy"),
     ).toBe(true);
 
     const seeded = strategicAdjutant(snap, {
@@ -125,7 +125,7 @@ describe("strategic economy (known-vs-seen dials)", () => {
       storedFor: () => 12,
       kvs: seedKnownVsSeen(),
     });
-    expect(seeded.snapshot.queue?.actions.some((a) => a.kind === "spawn")).toBe(
+    expect(seeded.snapshot.queue?.actions.some((a) => a.kind === "deploy")).toBe(
       true,
     );
   });

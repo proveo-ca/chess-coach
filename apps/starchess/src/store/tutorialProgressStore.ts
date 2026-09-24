@@ -1,6 +1,6 @@
 /**
  * Tutorial completion flag — localStorage `starchess_tutorial_cleared`.
- * Default `false` until Go Home on King Attack #3 win, or a future flow
+ * Default `false` until Go Home on Command Center Attack #3 win, or a future flow
  * marks the tutorial cleared.
  * // SPEC: _spec/apps/starchess/menu-flow.puml
  */
@@ -23,12 +23,12 @@ export const setTutorialCleared = (cleared: boolean): void => {
   }
 };
 
-/** King Attack #3 final — offer complete modal when enemy CC dies and uncleared. */
+/** Command Center Attack #3 final — offer complete modal when enemy CC dies and uncleared. */
 export const shouldOfferTutorialComplete = (input: {
   tutorial: boolean;
   phase: string;
-  /** Black king lives when the human plays White (king-attack-3). */
-  enemyKingLives: number;
+  /** Black Command Center lives when the human plays White (king-attack-3). */
+  enemyCCLives: number;
   cleared: boolean;
 }): boolean =>
-  input.tutorial && input.phase === "gameOver" && input.enemyKingLives === 0 && !input.cleared;
+  input.tutorial && input.phase === "gameOver" && input.enemyCCLives === 0 && !input.cleared;

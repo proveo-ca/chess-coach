@@ -26,7 +26,7 @@ describe("intentOverlaysFromQueue", () => {
       },
       {
         timing: "B",
-        kind: "spawn",
+        kind: "deploy",
         color: "b",
         from: "c5",
         to: "c4",
@@ -83,7 +83,7 @@ describe("intentOverlaysFromQueue", () => {
     const actions: ScAction[] = [
       {
         timing: "B",
-        kind: "pawnDouble",
+        kind: "stimStep",
         color: "w",
         from: "e2",
         to: "e3",
@@ -101,7 +101,7 @@ describe("intentOverlaysFromQueue", () => {
     ]);
   });
 
-  it("maps legal standing checks to red rings on the king square", () => {
+  it("maps legal standing checks to red rings on the Command Center square", () => {
     expect(
       intentOverlaysFromQueue([], {
         placement: "k7/5r2/8/2n5/4K3/8/7b/8",
@@ -154,9 +154,9 @@ describe("intentOverlaysFromQueue", () => {
     ).toEqual([{ at: "e5" }]);
   });
 
-  it("never rings a king the viewer cannot see yet (fog leak at intent)", () => {
+  it("never rings a Command Center the viewer cannot see yet (fog leak at intent)", () => {
     // Nc4→d6 would light *and* check Ke8 once it resolves, but at intent time
-    // e8 is still fogged — a ring there would confirm the hidden king.
+    // e8 is still fogged — a ring there would confirm the hidden Command Center.
     const actions: ScAction[] = [
       {
         timing: "C",
@@ -198,7 +198,7 @@ describe("intentOverlaysFromQueue", () => {
     const actions: ScAction[] = [
       {
         timing: "B",
-        kind: "spawn",
+        kind: "deploy",
         color: "w",
         from: "e1",
         to: "d1",
@@ -232,7 +232,7 @@ describe("intentOverlaysFromQueue", () => {
     const actions: ScAction[] = [
       {
         timing: "B",
-        kind: "pawnDouble",
+        kind: "stimStep",
         color: "w",
         from: "e2",
         to: "e3",
@@ -270,7 +270,7 @@ describe("intentOverlaysFromQueue", () => {
       const actions: ScAction[] = [
         {
           timing: "B",
-          kind: "pawnDouble",
+          kind: "stimStep",
           color: "w",
           from: "e2",
           to: "e3",
@@ -311,7 +311,7 @@ describe("intentOverlaysFromQueue", () => {
       const actions: ScAction[] = [
         {
           timing: "B",
-          kind: "pawnDouble",
+          kind: "stimStep",
           color: "w",
           from: "e6",
           to: "e7",
@@ -343,7 +343,7 @@ describe("intentOverlaysFromQueue", () => {
       const actions: ScAction[] = [
         {
           timing: "B",
-          kind: "pawnDouble",
+          kind: "stimStep",
           color: "w",
           from: "e6",
           to: "e7",
@@ -366,7 +366,7 @@ describe("intentOverlaysFromQueue", () => {
       expect(out.destinations).toEqual(
         expect.arrayContaining([
           { at: "e7", color: "w", piece: "p" },
-          { at: "e8", color: "w", piece: "r", via: "gas", rookMode: "tank" },
+          { at: "e8", color: "w", piece: "r", via: "gas", tankMode: "tank" },
         ]),
       );
     });
@@ -375,7 +375,7 @@ describe("intentOverlaysFromQueue", () => {
       const actions: ScAction[] = [
         {
           timing: "B",
-          kind: "pawnDouble",
+          kind: "stimStep",
           color: "w",
           from: "e7",
           to: "e8",
@@ -388,7 +388,7 @@ describe("intentOverlaysFromQueue", () => {
         viewer: "w",
       });
       expect(out.destinations).toEqual([
-        { at: "e8", color: "w", piece: "r", via: "gas", rookMode: "tank" },
+        { at: "e8", color: "w", piece: "r", via: "gas", tankMode: "tank" },
       ]);
     });
 
@@ -409,7 +409,7 @@ describe("intentOverlaysFromQueue", () => {
         viewer: "w",
       });
       expect(out.destinations).toEqual([
-        { at: "e8", color: "w", piece: "r", rookMode: "tank" },
+        { at: "e8", color: "w", piece: "r", tankMode: "tank" },
       ]);
     });
 
@@ -427,7 +427,7 @@ describe("intentOverlaysFromQueue", () => {
         },
         {
           timing: "F",
-          kind: "pawnDouble",
+          kind: "stimStep",
           color: "w",
           from: "e2",
           to: "e3",
@@ -448,12 +448,12 @@ describe("intentOverlaysFromQueue", () => {
     });
 
     it("blocked landing: rewrite is declined, gas ghost stays on B.to", () => {
-      // Enemy rook on e5 — core skips the rewrite so the classical fizzles and
+      // Enemy Tank on e5 — core skips the rewrite so the classical fizzles and
       // the marine parks on the gas step. Never paint e5.
       const actions: ScAction[] = [
         {
           timing: "B",
-          kind: "pawnDouble",
+          kind: "stimStep",
           color: "w",
           from: "e2",
           to: "e3",
@@ -480,11 +480,11 @@ describe("intentOverlaysFromQueue", () => {
       );
     });
 
-    it("queen warp + classical stack lands past the warp square", () => {
+    it("BattleShip warp + classical stack lands past the warp square", () => {
       const actions: ScAction[] = [
         {
           timing: "B",
-          kind: "queenWarp",
+          kind: "tacticalJump",
           color: "w",
           from: "d1",
           to: "d3",

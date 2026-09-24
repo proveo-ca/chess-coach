@@ -1,4 +1,4 @@
-import type { PieceColor, RookMode, StarChessPiece } from "@chess-coach/starchess-core";
+import type { PieceColor, TankMode, StarChessPiece } from "@chess-coach/starchess-core";
 /**
  * Presentation + cue types for StarChess animations.
  * Domain snapshots come from `@chess-coach/starchess-core`.
@@ -7,7 +7,7 @@ import type { Square } from "chess.js";
 
 export type {
   PieceColor,
-  RookMode,
+  TankMode,
   ScAction,
   ScActionInput,
   ScFenSnapshot,
@@ -15,7 +15,7 @@ export type {
   StarChessPiece,
 } from "@chess-coach/starchess-core";
 
-export type KingDamageState = "pristine" | "smallFire" | "bigFire" | "destroyed";
+export type CCDamageState = "pristine" | "smallFire" | "bigFire" | "destroyed";
 
 /**
  * What a death demo can bury. A spider mine is not a unit — no FEN letter, no
@@ -24,13 +24,13 @@ export type KingDamageState = "pristine" | "smallFire" | "bigFire" | "destroyed"
 export type DeathSubject = StarChessPiece | "mine";
 
 export type AttackAnimKind =
-  | "pawnRifle"
-  | "knightFrag"
-  | "bishopGatlings"
-  | "bishopCharon"
-  | "rookBattery"
-  | "queenLaser"
-  | "kingDualCannon";
+  | "marineRifle"
+  | "hoverbikeFrag"
+  | "mechaGatlings"
+  | "mechaCharon"
+  | "tankBattery"
+  | "battleShipLaser"
+  | "ccDualCannon";
 
 export type AttackCue = {
   id: string;
@@ -39,9 +39,9 @@ export type AttackCue = {
   from: Square;
   to: Square;
   anim?: AttackAnimKind;
-  damage?: KingDamageState;
+  damage?: CCDamageState;
   seed?: number;
-  rookMode?: RookMode;
+  tankMode?: TankMode;
   /** Charon fizzle — no ship at resolve: missiles fly the full ray off-board, no impact burst. */
   fizzle?: boolean;
 };
@@ -52,7 +52,7 @@ export type DeathCue = {
   color: PieceColor;
   at: Square;
   mine?: boolean;
-  rookMode?: RookMode;
+  tankMode?: TankMode;
 };
 
 export type MoveCue = {
@@ -61,16 +61,16 @@ export type MoveCue = {
   color: PieceColor;
   from: Square;
   to: Square;
-  rookMode?: RookMode;
+  tankMode?: TankMode;
   shipJump?: boolean;
-  /** Pawn gas-step (pawnDouble) — stim travel + hop rate. */
+  /** Marine gas-step (stimStep) — stim travel + hop rate. */
   stim?: boolean;
   /**
-   * King only: the travelling hull burns for itself. Without these the mover
+   * Command Center only: the travelling hull burns for itself. Without these the mover
    * paints a pristine CC while the persistent fire slot is still parked on
-   * `from`, so a damaged king reads as full HP for the whole slide.
+   * `from`, so a damaged Command Center reads as full HP for the whole slide.
    */
-  damage?: KingDamageState;
+  damage?: CCDamageState;
   seed?: number;
 };
 
@@ -79,7 +79,7 @@ export type DeployCue = {
   piece: StarChessPiece;
   color: PieceColor;
   at: Square;
-  rookMode?: RookMode;
+  tankMode?: TankMode;
 };
 
 export type ShipJumpTrail = {
@@ -95,19 +95,19 @@ export type MineMissileCue = {
   color: PieceColor;
 };
 
-export type KingDamageCue = {
-  /** Stable id so the slot survives square changes (king flee). */
+export type CCDamageCue = {
+  /** Stable id so the slot survives square changes (Command Center flee). */
   id: string;
   at: Square;
-  damage: KingDamageState;
+  damage: CCDamageState;
   /** Fire-spot RNG — keep stable across moves so flames don't jump. */
   seed?: number;
   /**
-   * Bumps only on a connecting king-shot. Overlay booms when this increases —
-   * not when SCFEN / turn-seek restores an already-damaged king.
+   * Bumps only on a connecting Command Center-shot. Overlay booms when this increases —
+   * not when SCFEN / turn-seek restores an already-damaged Command Center.
    */
   impactSeq?: number;
-  /** Side color for DeathKing hull tint (defaults from id when omitted). */
+  /** Side color for DeathCommandCenter hull tint (defaults from id when omitted). */
   color?: PieceColor;
 };
 

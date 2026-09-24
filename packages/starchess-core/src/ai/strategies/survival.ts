@@ -16,13 +16,13 @@ import { FILES, centerScore, chebyshev, isSafeSquare, rankOf } from "../context"
 import { asCandidate, type Strategy } from "./types";
 
 /** Absolute — never posture-scaled. */
-export const KING_SAFETY = 10_000;
-export const QUEEN_ESCAPE = 8_000;
+export const CC_SAFETY = 10_000;
+export const BATTLESHIP_ESCAPE = 8_000;
 /**
  * Spawn a unit then capture the back-rank / checking threat with that same unit.
  * Above mere Command Center (CC) flee — material win + survival (deploy + attack).
  */
-export const DEPLOY_ATTACK_SURVIVAL = KING_SAFETY + 3_500;
+export const DEPLOY_ATTACK_SURVIVAL = CC_SAFETY + 3_500;
 /**
  * Step the Command Center (CC) off its back rank when a file-tank (or similar) threatens check.
  * Below deploy+attack; above quiet development.
@@ -31,13 +31,13 @@ export const BACKRANK_ESCAPE = 4_500;
 /** Flee a threatened non-battleship to a safe square (defend). */
 export const DEFEND_UNIT = 1_800;
 /** Visible enemy battleship — prefer safe Command Center (CC) moves / flee over hanging. */
-export const QUEEN_THREAT_KING = 1_500;
+export const BATTLESHIP_THREAT_CC = 1_500;
 /** Tactical Jump that lands the BattleShip onto, or beside, the enemy Command Center (CC). */
-export const QUEEN_WARP_CHECK_CC = 2_000;
+export const TACTICAL_JUMP_CHECK_CC = 2_000;
 
 /** Tactical Jump — prioritise escaping fire to a safe square, then closing on the enemy Command Center (CC). */
-const queenWarps = (ctx: AdjutantCtx): Candidate[] => {
-  const { map, snap, us, enemy, enemyKing, weights } = ctx;
+const tacticalJumps = (ctx: AdjutantCtx): Candidate[] => {
+  const { map, snap, us, enemy, enemyCC, weights } = ctx;
   const out: Candidate[] = [];
 
   for (const [from, piece] of map) {
@@ -55,19 +55,19 @@ const queenWarps = (ctx: AdjutantCtx): Candidate[] => {
         let score = weights.center * centerScore(to);
         if (underFire) {
           score += isSafeSquare(map, to, enemy)
-            ? QUEEN_ESCAPE
-            : -QUEEN_ESCAPE * 0.5;
+            ? BATTLESHIP_ESCAPE
+            : -BATTLESHIP_ESCAPE * 0.5;
         } else if (isSafeSquare(map, to, enemy)) {
           score += weights.trade;
         }
-        if (enemyKing) {
+        if (enemyCC) {
           probe.set(to, { type: "q", color: us });
-          const checks = attacksSquare(probe, to, enemyKing);
+          const checks = attacksSquare(probe, to, enemyCC);
           probe.delete(to);
-          if (checks || chebyshev(to, enemyKing) === 1) score += QUEEN_WARP_CHECK_CC;
+          if (checks || chebyshev(to, enemyCC) === 1) score += TACTICAL_JUMP_CHECK_CC;
         }
         out.push(
-          asCandidate({ timing: "B", kind: "queenWarp", color: us, from, to }, score),
+          asCandidate({ timing: "B", kind: "tacticalJump", color: us, from, to }, score),
         );
       }
     }
@@ -76,38 +76,38 @@ const queenWarps = (ctx: AdjutantCtx): Candidate[] => {
 };
 
 const score = (ev: MoveEval, ctx: AdjutantCtx): number => {
-  const { move, piece, isKingMove } = ev;
-  const { king, kingThreatened, tactical, us, weights, vision } = ctx;
+  const { move, piece, isCCMove } = ev;
+  const { commandCenter, ccThreatened, tactical, us, weights, vision } = ctx;
   let s = 0;
 
-  if (isKingMove) {
+  if (isCCMove) {
     // Evaluate the destination on the POST-move board: the Command Center (CC) itself can be
     // the piece blocking the checking ray, so sliding along that ray looks safe
     // on the pre-move map but stays in check.
     const destSafe = ev.destSafe();
-    if (kingThreatened) {
+    if (ccThreatened) {
       // Repositioning, not capturing — capturing with the Command Center (CC) when threatened
       // is demoted; the preferred defense is deploying adjacent to eliminate.
       if (move.capture) {
-        s += destSafe ? KING_SAFETY * 0.3 : -KING_SAFETY;
+        s += destSafe ? CC_SAFETY * 0.3 : -CC_SAFETY;
       } else {
-        s += KING_SAFETY * (destSafe ? 1 : -1);
+        s += CC_SAFETY * (destSafe ? 1 : -1);
       }
     } else if (!destSafe) {
       // No intrinsic value in strolling an unthreatened Command Center (CC): an idle bonus here
       // would outrank every real action. Only punish walking into fire.
-      s -= KING_SAFETY;
+      s -= CC_SAFETY;
     }
     // Visible enemy battleship — protect the Command Center (CC) (flee to safety / avoid hang).
-    if (vision.enemyQueenVisible) {
+    if (vision.enemyBattleShipVisible) {
       s += destSafe
-        ? QUEEN_THREAT_KING * (kingThreatened ? 2 : 1)
-        : -QUEEN_THREAT_KING;
+        ? BATTLESHIP_THREAT_CC * (ccThreatened ? 2 : 1)
+        : -BATTLESHIP_THREAT_CC;
     }
     // Enemy can check next hop — prefer leaving the hot square / staying safe.
-    if (tactical.enemyThreatensCheck && destSafe) s += QUEEN_THREAT_KING * 0.35;
+    if (tactical.enemyThreatensCheck && destSafe) s += BATTLESHIP_THREAT_CC * 0.35;
     // Back-rank cheese: step to the rank in front (e.g. e8→e7) when threatened.
-    if (destSafe && (kingThreatened || tactical.enemyThreatensCheck)) {
+    if (destSafe && (ccThreatened || tactical.enemyThreatensCheck)) {
       const backRank = us === "b" ? 8 : 1;
       const frontRank = us === "b" ? 7 : 2;
       if (rankOf(move.from) === backRank && rankOf(move.to) === frontRank) {
@@ -121,7 +121,7 @@ const score = (ev: MoveEval, ctx: AdjutantCtx): number => {
   if (tactical.enemyAttacks(move.from)) {
     if (ev.destSafe()) {
       // Battleship that can be saved — defend (classical flee; warp scored above).
-      s += piece.type === "q" ? QUEEN_ESCAPE * 0.4 : DEFEND_UNIT;
+      s += piece.type === "q" ? BATTLESHIP_ESCAPE * 0.4 : DEFEND_UNIT;
     } else if (!move.capture) {
       // Walking from fire into fire — worse than hanging still.
       s -= DEFEND_UNIT * 0.5;
@@ -129,7 +129,7 @@ const score = (ev: MoveEval, ctx: AdjutantCtx): number => {
   }
 
   // Cheap Command Center (CC)-centred shelter: a square beside the CC keeps a Marine protected.
-  if (piece.type === "p" && chebyshev(move.to, king) <= 1) {
+  if (piece.type === "p" && chebyshev(move.to, commandCenter) <= 1) {
     s += weights.trade;
   }
 
@@ -138,6 +138,6 @@ const score = (ev: MoveEval, ctx: AdjutantCtx): number => {
 
 export const survival: Strategy = {
   id: "survival",
-  generate: queenWarps,
+  generate: tacticalJumps,
   score,
 };

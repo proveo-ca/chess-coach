@@ -1,19 +1,19 @@
 import type { PieceSymbol, Square } from "chess.js";
 
 import { vecBetween } from "~/presentation/animations/boardGeom";
-import { knightLegVecs, squareAt } from "~/presentation/animations/attackVectors";
+import { hoverbikeLegVecs, squareAt } from "~/presentation/animations/attackVectors";
 import { rayBetween } from "@chess-coach/starchess-core";
 import { MOVE_SQUARE_MS, STIM_MOVE_SQUARE_MS } from "~/presentation/constants";
 
-/** Knight is the only piece that travels at half the per-square rate. */
-export const knightSquareMs = (): number => MOVE_SQUARE_MS / 2;
+/** Hoverbike is the only piece that travels at half the per-square rate. */
+export const hoverbikeSquareMs = (): number => MOVE_SQUARE_MS / 2;
 
-/** Pawn gas-step stim — half classical travel (100ms / square). */
+/** Marine gas-step stim — half classical travel (100ms / square). */
 export const stimSquareMs = (): number => STIM_MOVE_SQUARE_MS;
 
 /**
  * Squares of travel for quiet-move VFX.
- * Sliders use Chebyshev; knights use L-path length (|df|+|dr| = 3).
+ * Sliders use Chebyshev; Hoverbikes use L-path length (|df|+|dr| = 3).
  */
 export const moveTravelSquares = (
   from: Square,
@@ -26,18 +26,18 @@ export const moveTravelSquares = (
 };
 
 export type MoveSquareMsOpts = {
-  /** Pawn / marine gas-step — {@link STIM_MOVE_SQUARE_MS}. */
+  /** Marine gas-step — {@link STIM_MOVE_SQUARE_MS}. */
   stim?: boolean;
 };
 
 const squareMsFor = (piece?: PieceSymbol, opts?: MoveSquareMsOpts): number => {
   if (opts?.stim) return stimSquareMs();
-  return piece === "n" ? knightSquareMs() : MOVE_SQUARE_MS;
+  return piece === "n" ? hoverbikeSquareMs() : MOVE_SQUARE_MS;
 };
 
 /**
  * Ordered occupancy squares for a quiet move (inclusive `from` → `to`).
- * Sliders follow the ray; knights follow the L (long leg → elbow → short);
+ * Sliders follow the ray; Hoverbikes follow the L (long leg → elbow → short);
  * leaps are `[from, to]`.
  */
 export const movePathSquares = (
@@ -47,7 +47,7 @@ export const movePathSquares = (
 ): Square[] => {
   if (from === to) return [from];
   if (piece === "n") {
-    const { leg1 } = knightLegVecs(vecBetween(from, to));
+    const { leg1 } = hoverbikeLegVecs(vecBetween(from, to));
     const elbow = squareAt(from, leg1);
     if (!elbow) return [from, to];
     return [from, ...rayBetween(from, elbow), elbow, ...rayBetween(elbow, to), to];
@@ -70,7 +70,7 @@ export const moveSquareAtElapsed = (
   return path[i]!;
 };
 
-/** Total slide / L-path duration: per-square ms × squares (knight / stim rates). */
+/** Total slide / L-path duration: per-square ms × squares (Hoverbike / stim rates). */
 export const moveDurationMs = (
   from: Square,
   to: Square,
@@ -79,10 +79,10 @@ export const moveDurationMs = (
 ): number => moveTravelSquares(from, to, piece) * squareMsFor(piece, opts);
 
 /**
- * Knight elbow (end of length-2 leg) — matches `knightLMove` 67% keyframe
+ * Hoverbike elbow (end of length-2 leg) — matches `hoverbikeLMove` 67% keyframe
  * when long=2 and short=1.
  */
-export const knightElbowMs = (from: Square, to: Square): number => {
+export const hoverbikeElbowMs = (from: Square, to: Square): number => {
   const { df, dr } = vecBetween(from, to);
-  return Math.max(Math.abs(df), Math.abs(dr)) * knightSquareMs();
+  return Math.max(Math.abs(df), Math.abs(dr)) * hoverbikeSquareMs();
 };

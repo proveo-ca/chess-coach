@@ -19,7 +19,7 @@ note as BOUNDARY
   entry point is TutorialScreen's fog-lesson skin toggle.
   Guarded by __tests__/bundle/bundleBoundary.test.ts:
   pieceUrl is importable only from PieceGlyph and
-  kingDamageOverlay, and no hand-rolled asset path may appear.
+  ccDamageOverlay, and no hand-rolled asset path may appear.
 end note
 
 package "leaves" {
@@ -37,7 +37,7 @@ package "leaves" {
     nerd art is inline, not fetched
   }
   class fogProjection <<app>>
-  class rookMode <<app>>
+  class tankMode <<app>>
   class StarChessSquare <<app>>
   class TEAM_PRIMARY <<app>>
 
@@ -67,7 +67,7 @@ package "vfx overlays" {
     Composite — stable layers
   }
 
-  class KingDamageOverlay <<app>>
+  class CCDamageOverlay <<app>>
   class GasDropAnimation <<app>>
   class AttackAnimation <<app>>
   class DeathAnimation <<app>>
@@ -122,25 +122,39 @@ package "hooks" {
   class useAutoDeploy <<app>>
   class deriveVisualFrame <<app>>
   class teamTintStyle <<app>>
-  class kingDamageCuesFromBoard <<app>>
+  class ccDamageCuesFromBoard <<app>>
   class visibleKingDamageCues <<app>>
-  class withKingFire <<app>>
+  class withCCFire <<app>>
   class liveMatchPhase <<app>>
   class pieceVisibleToViewer <<app>>
+  class charonArmed <<app>> {
+    queuedCharonSquares(queue, side?)
+    charonTrailSquares(resolve)
+    restingCharonSquares(resolve, U:)
+  }
+
+  note bottom of charonArmed
+    Sole owner of "which Mecha shows Charon launchers".
+    Launchers are the Mecha's **own** charonMissiles spend and
+    follow that unit — arming, a queued strike, the squares it
+    held mid-resolve, then its resting square until turn-open
+    clears U:. Never "gas was used on this square": U: and the
+    absorb squares drive the green special-used aura only.
+  end note
 
 }
 
 package "geometry / local stores" {
-  class rookModeStore <<db>>
+  class tankModeStore <<db>>
   class boardGeom <<app>>
 }
 
 package "presentation/pieces (units)" {
 
   class units <<app>> {
-    InlinePawn / InlineKnight / InlineBishop
+    InlinePawn / InlineKnight / InlineMecha
     InlineRook / InlineQueen / InlineKing
-    TwinBattery · kingFire
+    TwinBattery · ccFire
     geometry.ts — pivots, rest aims, AimPose
     teamColors.ts — swatches, PIECE_FRAME
   }
@@ -175,9 +189,9 @@ PieceGlyph ..> pieceUrl : cburnett branch only
 DeployModal ..> PieceGlyph
 PromotionModal ..> PieceGlyph
 MoveAnimation ..> PieceGlyph : rook mover
-kingDamageOverlay ..> pieceUrl : cburnett king
+ccDamageOverlay ..> pieceUrl : cburnett king
 StarChessBoard ..> fogProjection
-StarChessBoard ..> rookMode
+StarChessBoard ..> tankMode
 StarChessBoard ..> StarChessSquare
 StarChessBoard ..> TEAM_PRIMARY
 StarChessBoard ..> visionStrategyFor
@@ -188,10 +202,10 @@ ObserverDualVisionStrategy ..|> VisionStrategy
 AnimationStage *-- StarChessBoard
 AnimationStage *-- CombatOverlayRoot
 AnimationStage ..> boardGeom
-AnimationStage ..> rookModeStore
+AnimationStage ..> tankModeStore
 CombatOverlayRoot ..> CombatCueFrame
 CombatOverlayRoot ..> vfxPerf
-CombatOverlayRoot *-- KingDamageOverlay
+CombatOverlayRoot *-- CCDamageOverlay
 CombatOverlayRoot *-- GasDropAnimation
 CombatOverlayRoot *-- AttackAnimation
 CombatOverlayRoot *-- DeathAnimation
@@ -210,12 +224,13 @@ MapScreen *-- AnimationStage
 LiveStarChessBoard ..> useBoardVision
 LiveStarChessBoard ..> useIntentOverlays
 LiveStarChessBoard ..> useBoardInput
+LiveStarChessBoard ..> charonArmed : armedMechas · charonSquares
 LiveStarChessBoard ..> useCombatOverlays
 LiveStarChessBoard ..> useAutoDeploy
 LiveStarChessBoard ..> deriveVisualFrame
-LiveStarChessBoard ..> kingDamageCuesFromBoard
+LiveStarChessBoard ..> ccDamageCuesFromBoard
 LiveStarChessBoard ..> visibleKingDamageCues
-LiveStarChessBoard ..> withKingFire : dresses king hulls
+LiveStarChessBoard ..> withCCFire : dresses king hulls
 visibleKingDamageCues ..> pieceVisibleToViewer : fog gate
 LiveStarChessBoard ..> liveMatchPhase
 LiveStarChessBoard ..> pieceVisibleToViewer : fog-gates VFX
@@ -245,11 +260,11 @@ note bottom of DeathAnimation
   it vanished behind the generic ""boomFlash"".
 end note
 
-note right of withKingFire
+note right of withCCFire
   **One CC, one hull.** ""visibleKingDamageCues"" drops the persistent fire slot
   for a king whose square an attack owns (""attackFrom"") or whose side is mid-move
   (""movingColors""), so the animating layer owes that king its fire:
-  ""withKingFire"" copies ""damage"" + ""seed"" onto the ""AttackCue"" / ""MoveCue"".
+  ""withCCFire"" copies ""damage"" + ""seed"" onto the ""AttackCue"" / ""MoveCue"".
   Skip either half and the CC reads full HP for the length of the cue — skip the
   gate instead and two hulls draw it, fire (z 35) over mover (z 30).
   Shared ""seed"" keeps the flame spots from jumping at the handoff.

@@ -82,7 +82,7 @@ export function targetConfig(): TargetConfig {
           timeout: 60_000,
         },
         {
-          // Progressive fog DualNav stories (bishop / rook path reveal).
+          // Progressive fog DualNav stories (Mecha / Tank path reveal).
           command: "npm run storybook",
           cwd: "../starchess",
           url: "http://127.0.0.1:6007",

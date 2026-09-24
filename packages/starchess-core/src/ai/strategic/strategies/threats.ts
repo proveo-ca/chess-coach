@@ -9,11 +9,11 @@ import type { StrategicCtx } from "../context";
 import type { StrategicStrategy } from "./types";
 
 /** Interpose against a Hoverbike that checks next turn. Deliberately below the offensive tiers. */
-export const KNIGHT_1_MOVE_BLOCK = 800;
+export const HOVERBIKE_1_MOVE_BLOCK = 800;
 
 const score = (ev: MoveEval, ctx: StrategicCtx): number => {
-  const { move, isKingMove } = ev;
-  if (isKingMove || move.capture) return 0;
+  const { move, isCCMove } = ev;
+  if (isCCMove || move.capture) return 0;
 
   const { tactical, weights, map } = ctx;
   let s = 0;
@@ -27,7 +27,7 @@ const score = (ev: MoveEval, ctx: StrategicCtx): number => {
   // If we move to block that ray or step the Command Center (CC), reward.
   // `checkThreatSquares` are enemy squares that can check in one move (tactical.ts)
   // For hoverbikes, this is exactly the 1-move check threat the user flagged.
-  const isKnightThreat = (() => {
+  const isHoverbikeThreat = (() => {
     for (const sq of tactical.checkThreatSquares) {
       const p = map.get(sq);
       if (p && p.color === ctx.enemy && p.type === "n") return true;
@@ -35,8 +35,8 @@ const score = (ev: MoveEval, ctx: StrategicCtx): number => {
     return false;
   })();
 
-  if (isKnightThreat && chebyshev(move.to, ctx.king) <= 1) {
-    s += KNIGHT_1_MOVE_BLOCK;
+  if (isHoverbikeThreat && chebyshev(move.to, ctx.commandCenter) <= 1) {
+    s += HOVERBIKE_1_MOVE_BLOCK;
   }
 
   return s;

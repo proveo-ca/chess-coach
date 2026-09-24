@@ -10,7 +10,7 @@ import type { Square } from "chess.js";
 
 import {
   attacksSquare,
-  findKing,
+  findCC,
   isSquareAttackedBy,
   type ScPiece,
 } from "../../board/placement";
@@ -23,7 +23,7 @@ export const buildTacticalBoard = (
   map: Map<Square, ScPiece>,
   us: PieceColor,
   enemy: PieceColor,
-  ourKing: Square,
+  ourCC: Square,
   sieged: ReadonlySet<Square>,
 ): TacticalBoard => {
   const enemyAttacks = (sq: Square) => isSquareAttackedBy(map, sq, enemy);
@@ -34,14 +34,14 @@ export const buildTacticalBoard = (
   // Already checking us.
   for (const [sq, piece] of map) {
     if (piece.color !== enemy) continue;
-    if (attacksSquare(map, sq, ourKing)) {
+    if (attacksSquare(map, sq, ourCC)) {
       checkers.add(sq);
       checkThreatSquares.add(sq);
     }
   }
 
   let enemyThreatensCheck = checkers.size > 0;
-  for (const m of scMovesFor(map, enemy, { siegedRooks: sieged })) {
+  for (const m of scMovesFor(map, enemy, { siegedTanks: sieged })) {
     if (m.dropsAtResolve) continue;
     const after = cloneWithMove(
       map,
@@ -54,9 +54,9 @@ export const buildTacticalBoard = (
       },
       sieged,
     );
-    if (!findKing(after, us)) continue;
+    if (!findCC(after, us)) continue;
     const land = m.firesInPlace ? m.from : m.to;
-    if (attacksSquare(after, land, ourKing)) {
+    if (attacksSquare(after, land, ourCC)) {
       enemyThreatensCheck = true;
       checkThreatSquares.add(m.from);
     }

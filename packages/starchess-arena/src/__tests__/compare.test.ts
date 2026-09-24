@@ -63,9 +63,9 @@ describe("summarize", () => {
       "SCFEN|4k3/2p1pp2/8/8/8/8/2PPPP2/4K3|1|33|P|G:11:11|Q:w:;b:",
     ];
     const board = summarize([w]);
-    // Terminal board: white has 4 pawns + king; black has 3 pawns + king.
-    // deployedMaterialFromPlacement counts non-king units, so with UNIT_COST
-    // pawn = 1 this is 4 − 3 = a 1-point white margin.
+    // Terminal board: white has 4 Marines + Command Center; black has 3 Marines + Command Center.
+    // deployedMaterialFromPlacement counts non-Command Center units, so with UNIT_COST
+    // Marine = 1 this is 4 − 3 = a 1-point white margin.
     const naive = board.rows.find((r) => r.script === "naive")!;
     expect(naive.meanMaterialMargin).toBeCloseTo(1);
   });

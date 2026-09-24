@@ -224,7 +224,7 @@ export const createMatchStore = (opts?: {
     const before = state();
     if (before.phase !== "planning" && before.phase !== "targeting") return;
     // The clock must not pick a BattleShip while the promotion modal is open.
-    // A click on Tank would otherwise lose the race and resolve as queen.
+    // A click on Tank would otherwise lose the race and resolve as BattleShip.
     if (reason === "timeout" && before.pendingPromotion) {
       armTimer();
       return;
@@ -324,7 +324,7 @@ export const createMatchStore = (opts?: {
         const idx = state().reviewIndex;
         const result = state().settledResolves[idx];
         if (!result || isCheckOnlyResolve(result)) {
-          // Check-only terminal (king died on check) — already settled by playChecks.
+          // Check-only terminal (Command Center died on check) — already settled by playChecks.
           return;
         }
         await playOneResolve(result, dispatch, scheduler, setCancel);

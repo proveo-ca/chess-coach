@@ -8,7 +8,7 @@ import type { Square } from "chess.js";
 
 import { placementToMap, type ScPiece } from "./placement";
 import { rayBetween } from "./mines";
-import type { RookMode, StarChessColor } from "../model/types";
+import type { TankMode, StarChessColor } from "../model/types";
 
 const FILES = "abcdefgh";
 
@@ -89,14 +89,14 @@ export function visionMap(board: VisionBoard): Map<Square, ScPiece> {
  * Returns fog-cleared tiles and any pieces revealed through fog for one unit.
  * Vision is geometric: pieces do not block it.
  *
- * Rook (Siege Tank) vision depends on mode at `source`:
- * - `tank` (default): bishop-sized 5×5
+ * Siege Tank vision depends on mode at `source`:
+ * - `tank` (default): mecha-sized 5×5
  * - `siege`: 9×9 (immobile — enforced by the board, not here)
  */
 export function getUnitVision(
   board: VisionBoard,
   source: Square | null,
-  opts?: { rookModeFor?: (square: Square) => RookMode },
+  opts?: { tankModeFor?: (square: Square) => TankMode },
 ): SideVision {
   const map = visionMap(board);
   const litSquares = new Set<Square>();
@@ -141,7 +141,7 @@ export function getUnitVision(
     case "b":
       addRectangle(litSquares, sourceFile, sourceRank, 2);
       for (const [square, occ] of map) {
-        // Queen ping: show the unit through fog, but keep its tile darkened.
+        // BattleShip ping: show the unit through fog, but keep its tile darkened.
         if (occ.type === "q" && !litSquares.has(square)) {
           revealedPieces.add(square);
         }
@@ -149,8 +149,8 @@ export function getUnitVision(
       break;
 
     case "r": {
-      // Tank: 5×5 (same as bishop). Siege: 9×9.
-      const mode = opts?.rookModeFor?.(source) ?? "tank";
+      // Tank: 5×5 (same as Mecha). Siege: 9×9.
+      const mode = opts?.tankModeFor?.(source) ?? "tank";
       if (mode === "siege") {
         addSquareGrid(litSquares, sourceFile, sourceRank, 9);
       } else {
@@ -179,7 +179,7 @@ export function getSideVision(
   board: VisionBoard,
   color: StarChessColor,
   opts?: {
-    rookModeFor?: (square: Square) => RookMode;
+    tankModeFor?: (square: Square) => TankMode;
     mines?: readonly { at: Square; color: StarChessColor }[];
   },
 ): SideVision {
@@ -203,17 +203,17 @@ export function getSideVision(
   return { litSquares, revealedPieces };
 }
 
-/** Fog-cleared tiles only (excludes bishop queen-pings that stay under fog). */
+/** Fog-cleared tiles only (excludes Mecha battleship-pings that stay under fog). */
 export function getNerdVisibleSquares(
   board: VisionBoard,
   source: Square | null,
-  opts?: { rookModeFor?: (square: Square) => RookMode },
+  opts?: { tankModeFor?: (square: Square) => TankMode },
 ): ReadonlySet<Square> {
   return getUnitVision(board, source, opts).litSquares;
 }
 
 export type PathVisionOpts = {
-  rookModeFor?: (square: Square) => RookMode;
+  tankModeFor?: (square: Square) => TankMode;
   mines?: readonly { at: Square; color: StarChessColor }[];
 };
 
@@ -271,7 +271,7 @@ export function isPieceVisibleToSide(
   viewer: StarChessColor,
   square: Square,
   pieceColor: StarChessColor,
-  opts?: { rookModeFor?: (square: Square) => RookMode },
+  opts?: { tankModeFor?: (square: Square) => TankMode },
 ): boolean {
   if (pieceColor === viewer) return true;
   const { litSquares, revealedPieces } = getSideVision(board, viewer, opts);
@@ -287,7 +287,7 @@ export function isMoverVisibleToSide(
   viewer: StarChessColor,
   move: { from: Square; color: StarChessColor },
   revealedFrom: ReadonlySet<Square>,
-  opts?: { rookModeFor?: (square: Square) => RookMode },
+  opts?: { tankModeFor?: (square: Square) => TankMode },
 ): boolean {
   return (
     move.color === viewer ||

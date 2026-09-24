@@ -1,4 +1,4 @@
-import type { RookMode, StarChessColor } from "@chess-coach/starchess-core";
+import type { TankMode, StarChessColor } from "@chess-coach/starchess-core";
 import type { PieceSymbol, Square } from "chess.js";
 
 export type BoardVariant = "eclipse" | "butter" | "vermeer";
@@ -30,7 +30,7 @@ export type IntentGhost = {
   at: Square;
   color: StarChessColor;
   piece: PieceSymbol;
-  rookMode?: RookMode;
+  tankMode?: TankMode;
   /**
    * Reached by a vespene-powered special (gas step / warp) rather than by the
    * classical leg — a stacked marine paints a plain move ghost on the classical
@@ -45,7 +45,7 @@ export type IntentCanister = {
   color: StarChessColor;
 };
 
-/** Red dashed ring — pending king-check or queued capture/attack target. */
+/** Red dashed ring — pending Command Center-check or queued capture/attack target. */
 export type IntentCheck = {
   at: Square;
 };

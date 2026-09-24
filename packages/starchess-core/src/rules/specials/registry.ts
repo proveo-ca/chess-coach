@@ -2,7 +2,7 @@
  * Special-kind registry: gas cost and actor hint (wire kinds unchanged).
  */
 import type { ScSpecialKind, SpecialKind, StarChessPiece } from "../../model/types";
-import { MECHA_CHARON_GAS_COST, QUEEN_WARP_GAS_COST, SPECIAL_ENERGY_COST } from "../constants";
+import { MECHA_CHARON_GAS_COST, TACTICAL_JUMP_GAS_COST, SPECIAL_ENERGY_COST } from "../constants";
 
 export type SpecialRegistryEntry = {
   gasCost: number;
@@ -11,12 +11,12 @@ export type SpecialRegistryEntry = {
 };
 
 export const SPECIAL_REGISTRY: Record<ScSpecialKind, SpecialRegistryEntry> = {
-  spawn: { gasCost: SPECIAL_ENERGY_COST, actorHint: "k" },
-  pawnDouble: { gasCost: SPECIAL_ENERGY_COST, actorHint: "p" },
-  knightMine: { gasCost: SPECIAL_ENERGY_COST, actorHint: "n" },
-  bishopSnipe: { gasCost: MECHA_CHARON_GAS_COST, actorHint: "b" },
-  rookSiege: { gasCost: SPECIAL_ENERGY_COST, actorHint: "r" },
-  queenWarp: { gasCost: QUEEN_WARP_GAS_COST, actorHint: "q" },
+  deploy: { gasCost: SPECIAL_ENERGY_COST, actorHint: "k" },
+  stimStep: { gasCost: SPECIAL_ENERGY_COST, actorHint: "p" },
+  spiderMine: { gasCost: SPECIAL_ENERGY_COST, actorHint: "n" },
+  charonMissiles: { gasCost: MECHA_CHARON_GAS_COST, actorHint: "b" },
+  siegeMode: { gasCost: SPECIAL_ENERGY_COST, actorHint: "r" },
+  tacticalJump: { gasCost: TACTICAL_JUMP_GAS_COST, actorHint: "q" },
 };
 
 /** Gas burned when queueing a special (Charon = 2, Tactical Jump = 3). */

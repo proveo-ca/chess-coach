@@ -92,7 +92,7 @@
 }
 
 /*
- * Tank / battleship: end the free-fall still high, then a clear slow
+ * Tank: end the free-fall still high, then a clear slow
  * descent during the 300ms landing window (thrust reads under the hull).
  */
 .mechanoidHeavy .hull {

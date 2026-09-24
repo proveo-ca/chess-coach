@@ -31,7 +31,7 @@ export const useIntentOverlays = (store: MatchStore) => {
     const viewer = intentOverlayViewer(s.phase, s.viewer, filter);
     return intentOverlaysFromQueue(actions, {
       placement: snap.placement,
-      siegedRooks: snap.siegedRooks,
+      siegedTanks: snap.siegedTanks,
       mines: snap.mines,
       viewer,
     });

@@ -1,5 +1,5 @@
 /**
- * Static SCFEN fog vision sample — siege rook (immobile, 9×9).
+ * Static SCFEN fog vision sample — siege Tank (immobile, 9×9).
  * Always on Screen grid. Stories feed SCFEN only; no DualNav / combat.
  */
 import { createMemo, onCleanup, onMount, type Component } from "solid-js";
@@ -11,15 +11,15 @@ import { Screen } from "~/components/primitives/Screen";
 import { AnimationStage } from "~/presentation/animations/components/AnimationStage";
 import styles from "~/presentation/animations/components/FogVisionDemo.module.css";
 import {
-  clearSiegedRooks,
-  setRookMode,
-} from "~/presentation/animations/rookModeStore";
+  clearSiegedTanks,
+  setTankMode,
+} from "~/presentation/animations/tankModeStore";
 
 export type FogVisionDemoProps = {
   scfen: string;
   caption: string;
-  /** Apply rook mode to every rook in the snap (siege / tank). */
-  rookMode?: "siege" | "tank";
+  /** Apply Tank mode to every Tank in the snap (siege / tank). */
+  tankMode?: "siege" | "tank";
 };
 
 /**
@@ -28,25 +28,25 @@ export type FogVisionDemoProps = {
 export const FogVisionDemo: Component<FogVisionDemoProps> = (props) => {
   const snap = createMemo(() => parseScFen(props.scfen));
 
-  const applyRookModes = () => {
-    clearSiegedRooks();
-    if (!props.rookMode) return;
+  const applyTankModes = () => {
+    clearSiegedTanks();
+    if (!props.tankMode) return;
     const map = placementToMap(snap().placement);
     for (const [sq, piece] of map) {
-      if (piece.type === "r") setRookMode(sq as Square, props.rookMode);
+      if (piece.type === "r") setTankMode(sq as Square, props.tankMode);
     }
   };
 
   onMount(() => {
-    applyRookModes();
+    applyTankModes();
   });
 
   onCleanup(() => {
-    clearSiegedRooks();
+    clearSiegedTanks();
   });
 
   const sieged = createMemo((): Square[] => {
-    if (props.rookMode === "siege") {
+    if (props.tankMode === "siege") {
       const out: Square[] = [];
       const map = placementToMap(snap().placement);
       for (const [sq, piece] of map) {
@@ -54,7 +54,7 @@ export const FogVisionDemo: Component<FogVisionDemoProps> = (props) => {
       }
       return out;
     }
-    return [...(snap().siegedRooks ?? [])];
+    return [...(snap().siegedTanks ?? [])];
   });
 
   return (
@@ -64,7 +64,7 @@ export const FogVisionDemo: Component<FogVisionDemoProps> = (props) => {
         <Screen.BoardColumn>
           <div class={styles.host}>
             <AnimationStage
-              snapshot={{ ...snap(), siegedRooks: sieged() }}
+              snapshot={{ ...snap(), siegedTanks: sieged() }}
               viewer="w"
               fog
               variant="eclipse"

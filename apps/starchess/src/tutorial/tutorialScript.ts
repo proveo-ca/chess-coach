@@ -21,14 +21,14 @@ import {
   shipJuke,
   tankSiegeOnH5,
   tankSiegeSquare,
-  whiteQueenSquare,
+  whiteBattleShipSquare,
 } from "~/tutorial/lessonTactics";
 import type { KerriganEmotion } from "~/types/coach";
 import type {
   AlertLatch,
   AttackTrajectory,
   LiveLessonBoard,
-  QueenWatch,
+  BattleShipWatch,
   SquareCovers,
   TutorialBackrankWhen,
   TutorialBoardCondition,
@@ -79,7 +79,7 @@ export type TutorialReactionWhen =
   | { kind: "scfen"; re: RegExp; phases?: readonly ReviewTurnPhase[] }
   /** 1-based planning ordinal (`snap.turn + 1`; seed turn 0 → 1). */
   | { kind: "turn"; turn: number }
-  /** Live targeting mode (e.g. Charon armed → `bishopSnipe`). */
+  /** Live targeting mode (e.g. Charon armed → `charonMissiles`). */
   | { kind: "targeting"; targetingKind: string }
   /** Live tactics cover the square with one of these kinds. */
   | TutorialCoversWhen
@@ -210,7 +210,7 @@ export const parseTutorialSection = (
 ): TutorialSectionId => {
   if (raw === "specials" || raw === "special-moves") return "specials";
   if (raw === "resolve" || raw === "turn-resolution") return "resolve";
-  if (raw === "king" || raw === "king-damage") return "king";
+  if (raw === "king" || raw === "cc-damage") return "king";
   if (raw === "fog" || raw === "fog-of-war") return "fog";
   return "fog";
 };
@@ -262,7 +262,7 @@ export type TutorialScriptContext = {
   scfen?: string;
   /** 1-based planning ordinal (`snap.turn + 1`; seed turn 0 → 1). */
   turn?: number;
-  /** Live targeting kind (`bishopSnipe`, …). */
+  /** Live targeting kind (`charonMissiles`, …). */
   targetingKind?: string | null;
   /** Enemy-occupied watch squares mapped to their current coverers. */
   covers?: SquareCovers;
@@ -506,8 +506,8 @@ export type TutorialHintMarks = {
 };
 
 /** Juke arrows leave from the BattleShip's current square, not the seed square. */
-const queenOrigin = (hint: TutorialBoardHint, scfen: string): TutorialBoardHint => {
-  const from = whiteQueenSquare(scfen);
+const battleShipOrigin = (hint: TutorialBoardHint, scfen: string): TutorialBoardHint => {
+  const from = whiteBattleShipSquare(scfen);
   if (!from || !hint.arrows) return { ...hint, arrows: [] };
   return {
     ...hint,
@@ -538,7 +538,7 @@ const matchTutorialHint = (
     if (h.when.kind === "scfen" && scfen != null && h.when.re.test(scfen)) {
       const phases = h.when.phases;
       if (!phaseAllows(phases, reviewPhase)) continue;
-      return h.fromQueen ? queenOrigin(h, scfen) : h;
+      return h.fromBattleShip ? battleShipOrigin(h, scfen) : h;
     }
     if (h.when.kind === "stopRunner" && scfen) {
       const stop = runnerStop(scfen);
@@ -661,7 +661,7 @@ export const resolveTutorialHint = (
 export const nextAlertLatch = (
   prev: AlertLatch,
   scripted: readonly Square[],
-  opts?: { followKing?: boolean; kingAt?: Square; kingVisible?: boolean },
+  opts?: { followCC?: boolean; ccAt?: Square; ccVisible?: boolean },
 ): AlertLatch => {
   if (scripted.length > 0) {
     const same =
@@ -672,27 +672,27 @@ export const nextAlertLatch = (
     // square it left, and must not pull the ring back there.
     return {
       squares: [...scripted],
-      ...(opts?.followKing ? { kingAt: scripted[0] } : {}),
+      ...(opts?.followCC ? { ccAt: scripted[0] } : {}),
     };
   }
-  if (!opts?.followKing) return prev;
-  const kingAt = opts.kingAt;
+  if (!opts?.followCC) return prev;
+  const ccAt = opts.ccAt;
   if (
-    opts.kingVisible &&
-    kingAt &&
+    opts.ccVisible &&
+    ccAt &&
     prev.squares.length > 0 &&
-    kingAt !== prev.squares[0]
+    ccAt !== prev.squares[0]
   ) {
-    return { squares: [kingAt], kingAt };
+    return { squares: [ccAt], ccAt };
   }
   return prev;
 };
 
 /** Remember a white BattleShip on h8, and call the resolve that removes it. */
-export const nextQueenWatch = (
-  prev: QueenWatch,
+export const nextBattleShipWatch = (
+  prev: BattleShipWatch,
   input: { onH8: boolean; alive: boolean; reviewPhase?: ReviewTurnPhase },
-): QueenWatch => {
+): BattleShipWatch => {
   if (input.onH8) return { onH8: true, sniped: false };
   if (input.alive) return { onH8: false, sniped: false };
   if (input.reviewPhase === "resolve" && (prev.onH8 || prev.sniped)) {

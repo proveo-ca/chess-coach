@@ -11,20 +11,20 @@ import { hostileMineOn } from "../../../board/mine-contact";
 import { FILES, centerScore, chebyshev, isSafeSquare } from "../../context";
 import type { Candidate } from "../../context";
 import {
-  QUEEN_ESCAPE,
-  QUEEN_WARP_CHECK_CC,
+  BATTLESHIP_ESCAPE,
+  TACTICAL_JUMP_CHECK_CC,
   survival as naiveSurvival,
 } from "../../strategies/survival";
 import type { StrategicCtx } from "../context";
 import { asCandidate } from "./types";
 import type { StrategicStrategy } from "./types";
 
-const queenWarps = (ctx: StrategicCtx): Candidate[] => {
-  const { map, snap, us, enemy, enemyKing, weights, vision, ccIntel } = ctx;
+const tacticalJumps = (ctx: StrategicCtx): Candidate[] => {
+  const { map, snap, us, enemy, enemyCC, weights, vision, ccIntel } = ctx;
   const out: Candidate[] = [];
 
-  const isGuess = !vision.enemyKingVisible;
-  const targetCC: Square | null = isGuess ? ccIntel.focus : enemyKing;
+  const isGuess = !vision.enemyCCVisible;
+  const targetCC: Square | null = isGuess ? ccIntel.focus : enemyCC;
   const guessUsable = !isGuess || ccIntel.strength > 0;
 
   for (const [from, piece] of map) {
@@ -39,7 +39,7 @@ const queenWarps = (ctx: StrategicCtx): Candidate[] => {
         if (hostileMineOn(snap.mines, us, to)) continue;
         let score = weights.center * centerScore(to);
         if (underFire) {
-          score += isSafeSquare(map, to, enemy) ? QUEEN_ESCAPE : -QUEEN_ESCAPE * 0.5;
+          score += isSafeSquare(map, to, enemy) ? BATTLESHIP_ESCAPE : -BATTLESHIP_ESCAPE * 0.5;
         } else if (isSafeSquare(map, to, enemy)) {
           score += weights.trade;
         }
@@ -47,10 +47,10 @@ const queenWarps = (ctx: StrategicCtx): Candidate[] => {
           probe.set(to, { type: "q", color: us });
           const checks = attacksSquare(probe, to, targetCC);
           probe.delete(to);
-          if (checks || chebyshev(to, targetCC) === 1) score += QUEEN_WARP_CHECK_CC;
+          if (checks || chebyshev(to, targetCC) === 1) score += TACTICAL_JUMP_CHECK_CC;
         }
         out.push(
-          asCandidate({ timing: "B", kind: "queenWarp", color: us, from, to }, score),
+          asCandidate({ timing: "B", kind: "tacticalJump", color: us, from, to }, score),
         );
       }
     }
@@ -60,6 +60,6 @@ const queenWarps = (ctx: StrategicCtx): Candidate[] => {
 
 export const survival: StrategicStrategy = {
   id: "survival",
-  generate: queenWarps,
+  generate: tacticalJumps,
   score: naiveSurvival.score,
 };

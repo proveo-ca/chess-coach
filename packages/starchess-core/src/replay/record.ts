@@ -13,7 +13,7 @@
  * // SPEC: _spec/packages/starchess-arena/arena.puml, _spec/apps/starchess/replay-import.puml
  */
 
-import { parseScFen } from "../scfen";
+import { migrateLegacyNames, parseScFen } from "../scfen";
 import type { EndScTurnResult } from "../resolve/submit-turn";
 import type { ScFenSnapshot } from "../model/types";
 import type { ScOutcome } from "../outcome";
@@ -22,7 +22,7 @@ export type { EndScTurnResult, ScFenSnapshot };
 
 export type ArenaOutcome = ScOutcome;
 
-/** How a run ended — `finished` = a king hit zero; stall/abort are not wins. */
+/** How a run ended — `finished` = a Command Center hit zero; stall/abort are not wins. */
 export type ArenaRecordStatus = "finished" | "aborted" | "stall";
 
 /** One headless script-vs-script match, replayable by the web app. */
@@ -65,7 +65,8 @@ export const historyFromRecord = (
   );
   return {
     settledSnapshots,
-    settledResolves: [...record.resolves],
+    // Records written before the special kinds were renamed still load.
+    settledResolves: migrateLegacyNames([...record.resolves]),
   };
 };
 

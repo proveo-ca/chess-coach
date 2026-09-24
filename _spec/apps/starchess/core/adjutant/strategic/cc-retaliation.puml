@@ -24,7 +24,7 @@ title StarChess · Adjutant (SCRIPT STRATEGIC) — Command Center retaliation
 
 package "evidence (from the resolve, not the board)" {
   component "ai/strategic/witness.ts\nccAttackers(witness, side, turn)" as WIT <<app>>
-  database "ResolveWitness\nplacement · mines · siegedRooks\nmoves · attacks" as WOBJ <<db>>
+  database "ResolveWitness\nplacement · mines · siegedTanks\nmoves · attacks" as WOBJ <<db>>
 }
 
 package "cross-ply memory (one fold per settled ply)" {
@@ -67,7 +67,7 @@ note right of WIT
   is gated, because the resolve payload is emitted with no viewer at all. This
   one is honest as it stands: a Command Center that takes a hit **knows** it
   took one, and in StarChess the shot carries its own ""from"". So
-  ""kind: "kingShot" && target === side"" is read straight, and a unit that fires
+  ""kind: "ccShot" && target === side"" is read straight, and a unit that fires
   out of total darkness has named its own square. Firing is the price of hiding.
 
   The per-viewer half still holds: ""ccAttackers(witness, "w")"" on a payload
@@ -76,7 +76,7 @@ note right of WIT
 
   **Which square the shot names: where the shooter *rests*.** Both readers
   resolve it through ""shotOrigin"" = ""stopAt ?? from"". For an ordinary
-  ""kingShot"" those are the same square. For a **path-reveal** one ""from"" is
+  ""ccShot"" those are the same square. For a **path-reveal** one ""from"" is
   ""contact.discovery"", a tile the slider merely passed through mid-ray, while
   ""stopAt"" is where it comes to rest (""resolve/resolve-turn.ts"", the
   ""approach"" outcome). Billing the discovery square would put the wanted mark
@@ -94,7 +94,7 @@ note as N_MEM
   ""CCAttacker"" is ""{ at, piece, turn }"". Per fold:
 
   | evidence | effect |
-  | a fresh ""kingShot"" this ply | added, dated ""snap.turn"", deduped by square — and it replaces any older record there |
+  | a fresh ""ccShot"" this ply | added, dated ""snap.turn"", deduped by square — and it replaces any older record there |
   | the square is lit and the **same piece type** stands on it | kept: still the unit that fired |
   | the square is lit and holds anything else, or nothing | dropped: proof the shooter left, so the debt is void |
   | the square is dark | kept — darkness proves nothing, and the clock alone decides |
@@ -120,10 +120,10 @@ end note
 
 note as N_WEIGHT
   **The weight, and why it sits there.** ""AVENGE_CC_SHOT"" 9_000 is below
-  ""KING_SAFETY"" 10_000 and ""DEPLOY_ATTACK_SURVIVAL"" 13_500 — keeping the
+  ""CC_SAFETY"" 10_000 and ""DEPLOY_ATTACK_SURVIVAL"" 13_500 — keeping the
   Command Center out of fire still outranks avenging it — and above everything
   the turn can otherwise offer: ""RUNNER_STOP_CRITICAL"" 7_000, both seen check
-  weights 6_000, ""ATTACK_KING_GUESS"" 5_000, and every trade.
+  weights 6_000, ""ATTACK_CC_GUESS"" 5_000, and every trade.
 
   ""AVENGE_THRIFT"" 40 × the answering unit's ""UNIT_COST"" chooses *with what*,
   never *whether*: a marine (1) keeps 8_960, a BattleShip (9) still keeps
@@ -133,7 +133,7 @@ note as N_WEIGHT
   **Capture only.** ""score"" pays on ""move.capture"" landing on the wanted
   square and on nothing else — no chase term, no positional pull. A wanted
   square we cannot actually strike must not warp the rest of the plan. The CC
-  itself scores 0 here (""isKingMove""), because walking the Command Center into
+  itself scores 0 here (""isCCMove""), because walking the Command Center into
   fire to collect a debt is survival's call, not this concern's.
 
   **The deploy crush pays the same debt, by a different sum.**
@@ -164,15 +164,15 @@ note as N_OPEN
   this file's to fix.**</color>
 
   A **stacked** check on the enemy Command Center still outbids retaliation:
-  ""PAWN_CHECK_CC_GUESS"" 6_000 and ""ATTACK_KING_GUESS"" 5_000 both fire on one
+  ""MARINE_CHECK_CC_GUESS"" 6_000 and ""ATTACK_CC_GUESS"" 5_000 both fire on one
   Marine move, for 11_000 effective against this weight's 9_000 — and a
-  same-move close adds ""CHASE_KING_GUESS"" 2_500 × delta on top (13_500 at
+  same-move close adds ""CHASE_CC_GUESS"" 2_500 × delta on top (13_500 at
   delta 1). So the instruction holds on every ordinary turn but loses to
   those stacks.
 
   The stack is the double-count ""../cc-focus.puml"" records as **open defect
   2** — two blocks sharing a predicate — and the fix belongs there. Raising
-  ""AVENGE_CC_SHOT"" over 11_000 would put it above ""KING_SAFETY"", trading a
+  ""AVENGE_CC_SHOT"" over 11_000 would put it above ""CC_SAFETY"", trading a
   rare mis-ordering for a Command Center that walks into fire to collect a
   debt. ""weightOrdering.test.ts"" compares the raw constants and cannot see the
   sum, which is exactly the blind spot ""../weight-ladder.puml"" names.
@@ -204,7 +204,7 @@ note bottom of TEST
   dropped the ply a Hoverbike lights it and finds it empty.
 
   The fourth is deliberately a **unit** case over a hand-built
-  ""ResolveWitness"" (""kingShot"" with ""from: d4"" / ""stopAt: d5"", record expected
+  ""ResolveWitness"" (""ccShot"" with ""from: d4"" / ""stopAt: d5"", record expected
   on ""d5""): the engine-driven cases prove the *gate*, this one pins the *field
   resolution*, and staging a real slide-into-fog king shot would have buried
   what it checks. Ladder orderings live in

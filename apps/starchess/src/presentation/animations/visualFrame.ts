@@ -9,7 +9,7 @@ export type VisualOwnerKind =
   | "move"
   | "attack"
   | "jump"
-  | "kingDamage"
+  | "ccDamage"
   | "static";
 
 export type VisualFrameInput = {
@@ -19,11 +19,11 @@ export type VisualFrameInput = {
   moveCues?: readonly { id: string; from: Square; to: Square }[];
   jumpCues?: readonly { id: string; from: Square; to: Square }[];
   deployCues?: readonly { id: string; at: Square }[];
-  kingDamage?: readonly { id: string; at: Square }[];
+  ccDamage?: readonly { id: string; at: Square }[];
 };
 
 export type VisualFrame = {
-  /** Priority: death > deploy > move/jump > attack > kingDamage > static */
+  /** Priority: death > deploy > move/jump > attack > ccDamage > static */
   owners: ReadonlyMap<Square, { kind: VisualOwnerKind; cueId: string }>;
   hideSquares: ReadonlySet<Square>;
   /** Attack cue ids whose hull should be suppressed (dying or death owns from). */
@@ -61,7 +61,7 @@ export function deriveVisualFrame(input: VisualFrameInput): VisualFrame {
     claim(c.from, "attack", c.id);
   }
 
-  for (const c of input.kingDamage ?? []) claim(c.at, "kingDamage", c.id);
+  for (const c of input.ccDamage ?? []) claim(c.at, "ccDamage", c.id);
 
   const suppressedAttackIds = new Set<string>();
   for (const c of input.attackCues ?? []) {

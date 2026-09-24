@@ -15,8 +15,8 @@
   overflow: visible;
 }
 
-/* Damaged king hull — slides with the piece (no pristine <img> clone). */
-.kingDamageSlot {
+/* Damaged Command Center hull — slides with the piece (no pristine <img> clone). */
+.ccDamageSlot {
   transition: left var(--move-ms, 550ms) ease-in-out, top var(--move-ms, 550ms) ease-in-out;
   z-index: 6;
 }
@@ -66,8 +66,8 @@
   z-index: 4;
 }
 
-/* King HP hit — explosion flash over fire for HIT_BOOM_MS (= FRAG_FLIGHT_MS). */
-.kingHitBoom {
+/* Command Center HP hit — explosion flash over fire for HIT_BOOM_MS (= FRAG_FLIGHT_MS). */
+.ccHitBoom {
   position: absolute;
   inset: 0;
   overflow: visible;
@@ -76,7 +76,7 @@
   pointer-events: none;
 }
 
-.kingHitBoom .boomFlash {
+.ccHitBoom .boomFlash {
   animation: boomFlash var(--hit-boom-ms) ease-out 1 forwards;
   inset: 8%;
   background: radial-gradient(
@@ -89,7 +89,7 @@
   );
 }
 
-.kingHitBoom .boomRing {
+.ccHitBoom .boomRing {
   animation: boomRing var(--hit-boom-ms) ease-out 1 forwards;
   border-color: rgba(255, 180, 80, 0.95);
   box-shadow: 0 0 12px rgba(255, 120, 20, 0.65);
@@ -204,7 +204,7 @@
   }
 }
 
-/* King: parts drop into a rubble pile (stay visible — no outward shatter). */
+/* Command Center: parts drop into a rubble pile (stay visible — no outward shatter). */
 @keyframes rubbleCollapse {
   0% {
     opacity: 1;
@@ -231,54 +231,54 @@
   animation: boomRing var(--death-ms) ease-out 1 forwards;
 }
 
-.dyingPawn :global([data-part="bubble-ring"]) {
+.dyingMarine :global([data-part="bubble-ring"]) {
   transform-box: fill-box;
   transform-origin: center;
   animation: bubbleRingOut var(--death-ms) ease-out 1 forwards;
 }
 
-.dyingPawn :global([data-part="bubble-ring-outer"]) {
+.dyingMarine :global([data-part="bubble-ring-outer"]) {
   transform-box: fill-box;
   transform-origin: center;
   animation: bubbleRingOuterOut var(--death-ms) ease-out 1 forwards;
 }
 
-.dyingPawn :global([data-part="bubble-shine"]) {
+.dyingMarine :global([data-part="bubble-shine"]) {
   transform-box: fill-box;
   transform-origin: center;
   animation: bubbleShineOut var(--death-ms) ease-out 1 forwards;
 }
 
-.dyingPawn .boomFlash,
-.dyingPawn .boomRing {
+.dyingMarine .boomFlash,
+.dyingMarine .boomRing {
   filter: saturate(0.7) brightness(1.2);
   inset: 16%;
 }
 
 /* Marine body shreds with the bubble (was missing — SVG stayed after burst). */
-.dyingPawn :global([data-shard]) {
+.dyingMarine :global([data-shard]) {
   transform-box: fill-box;
   transform-origin: center;
   animation: shardFly var(--death-ms) cubic-bezier(0.15, 0.75, 0.2, 1) 1 forwards;
 }
 
-/* All pieces except king: shards fly outward */
+/* All pieces except Command Center: shards fly outward */
 .dyingDrama :global([data-shard]) {
   transform-box: fill-box;
   transform-origin: center;
   animation: shardFly var(--death-ms) cubic-bezier(0.15, 0.75, 0.2, 1) 1 forwards;
 }
 
-/* King death: rubble collapse downward */
-.dyingKing :global([data-rubble]) {
+/* Command Center death: rubble collapse downward */
+.dyingCC :global([data-rubble]) {
   transform-box: fill-box;
   transform-origin: center;
   animation: rubbleCollapse var(--death-ms) cubic-bezier(0.33, 0.05, 0.2, 1) 1 forwards;
 }
 
 /* Softer impact flash — collapse, not explosion */
-.dyingKing .boomFlash,
-.dyingKing .boomRing {
+.dyingCC .boomFlash,
+.dyingCC .boomRing {
   filter: saturate(0.55) brightness(0.9);
   inset: 18%;
 }

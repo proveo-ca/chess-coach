@@ -13,7 +13,7 @@ import type { ScAction } from "@chess-coach/starchess-core";
 
 const sampleQueue: ScAction[] = [
   { timing: "C", kind: "classical", color: "w", from: "e2", to: "e4", seq: 0 },
-  { timing: "B", kind: "pawnDouble", color: "b", from: "e7", to: "e5", seq: 1 },
+  { timing: "B", kind: "stimStep", color: "b", from: "e7", to: "e5", seq: 1 },
 ];
 
 describe("intentOverlayPolicy", () => {

@@ -30,11 +30,11 @@ const FOG: ProjectionChrome = {
   turnChrome: "sidebar",
 };
 
-export const King = lessonStory("fog", "king", FOG);
-export const Pawn = lessonStory("fog", "pawn", FOG);
-export const Knight = lessonStory("fog", "knight", FOG);
-export const Bishop = lessonStory("fog", "bishop", FOG);
-export const RookTankMode = lessonStory("fog", "rook-tank", FOG);
-export const RookSiegeMode = lessonStory("fog", "rook-siege", FOG);
-export const Queen = lessonStory("fog", "queen", FOG);
+export const CommandCenter = lessonStory("fog", "king", FOG);
+export const Marine = lessonStory("fog", "pawn", FOG);
+export const Hoverbike = lessonStory("fog", "knight", FOG);
+export const Mecha = lessonStory("fog", "bishop", FOG);
+export const PackedTankMode = lessonStory("fog", "rook-tank", FOG);
+export const SiegedTankMode = lessonStory("fog", "rook-siege", FOG);
+export const BattleShip = lessonStory("fog", "queen", FOG);
 export const SpiderMine = lessonStory("fog", "mine", FOG);

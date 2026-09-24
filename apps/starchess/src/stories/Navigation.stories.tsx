@@ -244,7 +244,7 @@ export const TutorialCoachHeader: Story = {
         boardVariant="eclipse"
         fog={false}
         visionMode="observer"
-        caption="Fog of War · King — lesson board"
+        caption="Fog of War · Command Center — lesson board"
       />
       <Breadcrumb
         items={[...TUTORIAL_SECTIONS]}

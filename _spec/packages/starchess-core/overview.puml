@@ -16,13 +16,13 @@ package "resolve/submit-turn.ts — facade (rank order)" {
   component "applySpecial(placement, mines, action)\nsnipe · warp · gas step · deploy · drop · siege" as SPECIAL <<async>>
   component "applyArrivalMine(placement, mines, at, color, unit)\n**one** non-attack arrival rule" as ARRIVE <<async>>
   component "collectSpecialsUsed(...)\nU: aura squares, migrated" as USED <<db>>
-  component "visionCheckGate / byTiming / eventFor\nclassicalFor · toggleRookSiege" as SUBHELP <<db>>
+  component "visionCheckGate / byTiming / eventFor\nclassicalFor · toggleTankSiege" as SUBHELP <<db>>
 }
 
 package "resolve/resolve-turn.ts — pipeline (phases)" {
   component "resolveTurn(input)\nRULES pipeline → 4 phases" as RT <<app>>
   component "relocate(plan, fromOccupyList)\nphase-2 closure over board/mines" as RELOC <<async>>
-  component "applyPendingKingShots(input)\nturn-open HP / blocker collision" as KSHOT <<app>>
+  component "applyPendingCCShots(input)\nturn-open HP / blocker collision" as KSHOT <<app>>
   component "applyPathRevealAttack(snap, a)\napplyPathRevealKingShot(snap, a)\nshared engine ⇄ UI replay" as PRAPPLY <<app>>
   component "RULES / applyOutcome / rayContactOutcome\napproachWalk · attacksOwnDest · leapsPiece\nplansOf · squareBeforeOnRay" as RTHELP <<db>>
 }

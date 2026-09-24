@@ -20,11 +20,11 @@ describe("queue — multiple specials (B and/or F)", () => {
     let snap = start();
     snap = addScAction({
       snapshot: snap,
-      action: { timing: "B", kind: "knightMine", color: "w", from: "b4", to: "b4" },
+      action: { timing: "B", kind: "spiderMine", color: "w", from: "b4", to: "b4" },
     }).snapshot;
     snap = addScAction({
       snapshot: snap,
-      action: { timing: "B", kind: "rookSiege", color: "w", from: "e4" },
+      action: { timing: "B", kind: "siegeMode", color: "w", from: "e4" },
     }).snapshot;
     expect(snap.queue?.actions.filter((a) => a.timing === "B")).toHaveLength(2);
     expect(snap.gas.w).toBe(0);
@@ -34,7 +34,7 @@ describe("queue — multiple specials (B and/or F)", () => {
     let snap = start();
     snap = addScAction({
       snapshot: snap,
-      action: { timing: "B", kind: "knightMine", color: "w", from: "b4", to: "b4" },
+      action: { timing: "B", kind: "spiderMine", color: "w", from: "b4", to: "b4" },
     }).snapshot;
     snap = addScAction({
       snapshot: snap,
@@ -48,13 +48,13 @@ describe("queue — multiple specials (B and/or F)", () => {
     }).snapshot;
     snap = addScAction({
       snapshot: snap,
-      action: { timing: "F", kind: "rookSiege", color: "w", from: "e4" },
+      action: { timing: "F", kind: "siegeMode", color: "w", from: "e4" },
     }).snapshot;
     expect(snap.queue?.actions.map((a) => a.timing)).toEqual(["B", "C", "F"]);
     expect(snap.gas.w).toBe(0);
     // Wire order is seq order — B before C before F round-trips unchanged.
     expect(formatScFen(snap)).toContain(
-      "Q:w:B=knightMine:b4:b4,C=e2e3,F=rookSiege:e4;b:",
+      "Q:w:B=spiderMine:b4:b4,C=e2e3,F=siegeMode:e4;b:",
     );
     expect(parseScFen(formatScFen(snap)).queue?.actions).toEqual(snap.queue?.actions);
   });
@@ -64,12 +64,12 @@ describe("queue — multiple specials (B and/or F)", () => {
     let snap = start();
     snap = addScAction({
       snapshot: snap,
-      action: { timing: "B", kind: "knightMine", color: "w", from: "b4", to: "b4" },
+      action: { timing: "B", kind: "spiderMine", color: "w", from: "b4", to: "b4" },
     }).snapshot;
     expect(() =>
       addScAction({
         snapshot: snap,
-        action: { timing: "F", kind: "knightMine", color: "w", from: "b4", to: "b4" },
+        action: { timing: "F", kind: "spiderMine", color: "w", from: "b4", to: "b4" },
       }),
     ).toThrow(/already used its special/);
     // Gas was never charged for the refused action.
@@ -80,7 +80,7 @@ describe("queue — multiple specials (B and/or F)", () => {
     // Same rule reading SCFEN — a hand-written or replayed wire cannot smuggle it in.
     expect(() =>
       parseScFen(
-        "SCFEN|4k3/8/8/8/1N2R3/8/4P3/4K3|11|33|P|G:02:22|Q:w:B=knightMine:b4:b4,F=knightMine:b4:b4;b:",
+        "SCFEN|4k3/8/8/8/1N2R3/8/4P3/4K3|11|33|P|G:02:22|Q:w:B=spiderMine:b4:b4,F=spiderMine:b4:b4;b:",
       ),
     ).toThrow(/one special per unit/);
   });
@@ -99,11 +99,11 @@ describe("queue — multiple specials (B and/or F)", () => {
     }).snapshot;
     snap = addScAction({
       snapshot: snap,
-      action: { timing: "F", kind: "knightMine", color: "w", from: "b4", to: "b4" },
+      action: { timing: "F", kind: "spiderMine", color: "w", from: "b4", to: "b4" },
     }).snapshot;
     snap = addScAction({
       snapshot: snap,
-      action: { timing: "F", kind: "rookSiege", color: "w", from: "e4" },
+      action: { timing: "F", kind: "siegeMode", color: "w", from: "e4" },
     }).snapshot;
     expect(snap.queue?.actions.filter((a) => a.timing === "F")).toHaveLength(2);
   });
@@ -115,7 +115,7 @@ describe("endScTurn — specials before and after one classical", () => {
     let snap = parseScFen("SCFEN|4k3/8/8/8/1N1R4/8/P7/4K3|11|33|P|G:22:22|Q:w:;b:");
     snap = addScAction({
       snapshot: snap,
-      action: { timing: "B", kind: "knightMine", color: "w", from: "b4", to: "b4" },
+      action: { timing: "B", kind: "spiderMine", color: "w", from: "b4", to: "b4" },
     }).snapshot;
     snap = addScAction({
       snapshot: snap,
@@ -123,13 +123,13 @@ describe("endScTurn — specials before and after one classical", () => {
     }).snapshot;
     snap = addScAction({
       snapshot: snap,
-      action: { timing: "F", kind: "rookSiege", color: "w", from: "d4" },
+      action: { timing: "F", kind: "siegeMode", color: "w", from: "d4" },
     }).snapshot;
 
     const r = endScTurn(snap, { skipTurnStartChecks: true });
     expect(r.next.mines).toEqual([{ color: "w", at: "b4" }]);
     expect(r.next.placement).toBe("4k3/8/8/8/1N1R4/P7/8/4K3");
-    expect(r.next.siegedRooks).toEqual(["d4"]);
+    expect(r.next.siegedTanks).toEqual(["d4"]);
     expect(
       r.events
         .filter((e) => e.phase !== "attack")
@@ -155,12 +155,12 @@ describe("endScTurn — F specials resolve on post-C square", () => {
     }).snapshot;
     snap = addScAction({
       snapshot: snap,
-      action: { timing: "F", kind: "knightMine", color: "w", from: "b1", to: "b1" },
+      action: { timing: "F", kind: "spiderMine", color: "w", from: "b1", to: "b1" },
     }).snapshot;
     const r = endScTurn(snap, { skipTurnStartChecks: true });
     expect(r.next.mines).toEqual([{ color: "w", at: "c3" }]);
     const gasEv = r.events.find(
-      (e) => e.phase === "specialAfter" && e.kind === "knightMine",
+      (e) => e.phase === "specialAfter" && e.kind === "spiderMine",
     );
     expect(gasEv?.from).toBe("c3");
     expect(gasEv?.to).toBe("c3");
@@ -182,7 +182,7 @@ describe("endScTurn — F specials resolve on post-C square", () => {
     }).snapshot;
     snap = addScAction({
       snapshot: snap,
-      action: { timing: "F", kind: "knightMine", color: "w", from: "b1", to: "b1" },
+      action: { timing: "F", kind: "spiderMine", color: "w", from: "b1", to: "b1" },
     }).snapshot;
     const r = endScTurn(snap, { skipTurnStartChecks: true });
     expect(r.next.mines).toEqual(
@@ -210,7 +210,7 @@ describe("endScTurn — F specials resolve on post-C square", () => {
     expect(() =>
       addScAction({
         snapshot: snap,
-        action: { timing: "F", kind: "knightMine", color: "w", from: "b1", to: "b1" },
+        action: { timing: "F", kind: "spiderMine", color: "w", from: "b1", to: "b1" },
       }),
     ).toThrow(/mine already/);
   });

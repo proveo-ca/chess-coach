@@ -44,7 +44,7 @@ UI ARROW_MAIN ES : ""endScTurn(snapshot, { skipTurnStartChecks })""
 ES ARROW_MAIN ES : resolve rank-major: B → C → F\n(+ king-checks unless skipped)\nw then b within each rank
 
 group 1 · turn-open legal king-checks (when not skipped)
-  ES ARROW_MAIN ES : white, then black\n""applyPendingKingShots"" + ""collectLegalKingChecks""
+  ES ARROW_MAIN ES : white, then black\n""applyPendingCCShots"" + ""collectLegalCCChecks""
   ES ARROW_ERROR ES : adjacent kings — **mutual** chip, **1 HP per checker**\n(a king left at 0 HP bails — no B/C/F)
 end
 
@@ -58,7 +58,7 @@ note over ES
   same square: B folds the C by its own vector, F recomputes +1 from the
   post-C square. The fold is **declined** when the composed landing is
   occupied or the C's 2-rank leg starts outside the double-step band
-  (""canPawnDoubleStep"") — the C then fizzles and the unit parks on the gas
+  (""canMarineDoubleStep"") — the C then fizzles and the unit parks on the gas
   step, mirroring a blocked F. ""rewriteClassicalAfterB"" is pure and public:
   planning projections and the adjutant's plan simulation reuse it rather than
   re-deriving the vector, so no consumer can disagree with this resolve.
@@ -87,7 +87,7 @@ end note
 == Next snap ==
 
 ES ARROW_MAIN FEN : new snapshot (turn+1, ""G:"" remaining 0,\nincome tier on gasIncome)
-ES ARROW_ERROR FEN : phase ""O"" when either ""kingLives"" side hits 0
+ES ARROW_ERROR FEN : phase ""O"" when either ""ccLives"" side hits 0
 FEN ARROW_OPTIONAL OUT : " ""scOutcome(snap)"" "
 FEN ARROW_QUEUE UI : cumulative fog (""board/vision.ts"")\n+ ""playTimeline"" presentation
 
@@ -99,7 +99,7 @@ end note
 
 note over OUT
   **Terminal outcome, derived from HP.** ""scOutcome(snap)"" reads
-  ""kingLives"" only: both at 0 → **draw**, exactly one at 0 → the other
+  ""ccLives"" only: both at 0 → **draw**, exactly one at 0 → the other
   side wins, otherwise ""null"". No persisted winner field, no SCFEN
   grammar change.
   A draw is reachable because **adjacent kings chip each other

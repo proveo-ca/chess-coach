@@ -16,8 +16,8 @@ export type FogEdgeScenario = {
   steps: readonly FogEdgeScenarioStep[];
   startCaption: string;
   queueStep: (snap: ScFenSnapshot, stepIndex: number) => ScFenSnapshot;
-  /** Force tank mode on all rooks (fog-edge rook story). */
-  rookTank?: boolean;
+  /** Force tank mode on all Tanks (fog-edge Tank story). */
+  packedTank?: boolean;
   /** Review label prefix (default "Fog edge"). */
   reviewLabel?: string;
   /**

@@ -12,7 +12,7 @@ skinparam defaultTextAlignment left
 title StarChess Core · ""resolveTurn"" — plan classification and phase run
 
 start
-:Read ""placement"" once (""start"" map), clamp ""kingLives"",\ncollect plans white-then-black (""plansOf"");
+:Read ""placement"" once (""start"" map), clamp ""ccLives"",\ncollect plans white-then-black (""plansOf"");
 :Buckets for this pass:\n""attacks"" · ""moveCollisions"" · ""occupy"" · ""quiets""\n""pathRevealPending"" · ""deadSquares"";
 
 partition "Classify — an ordered rule list, first match wins" {
@@ -104,12 +104,12 @@ partition "Phase 4 — promotion" {
 :return the four lists + the three snapshots;
 note right
   **Shared with the UI replay:** ""applyPathRevealAttack"" /
-  ""applyPathRevealKingShot"" are the single source of truth for the
+  ""applyPathRevealCCShot"" are the single source of truth for the
   board-state fizzles; the loop above pre-filters the two engine-context
   gates (siege, re-occupied origin) so the UI only ever replays fired
   approaches. Neither helper clears mines — the walk-contact check owns that.
 
-  **Do not "fix":** ""applyPendingKingShots"" gates firing on board occupancy
+  **Do not "fix":** ""applyPendingCCShots"" gates firing on board occupancy
   and target identity only, never on the shooter's own HP. A king already at
   0 in the same pass still returns fire — that is what makes equal-HP contact
   end 0/0 as a draw instead of a win for whoever is ordered first.

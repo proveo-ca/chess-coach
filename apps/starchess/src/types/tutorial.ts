@@ -43,8 +43,8 @@ export type LiveLessonBoard = {
   scfen: string;
   /** Starting minerals for the viewer (defaults per host). */
   stored?: number;
-  /** Force every rook into a mode the seed cannot express. */
-  rookMode?: "tank" | "siege";
+  /** Force every Tank into a mode the seed cannot express. */
+  tankMode?: "tank" | "siege";
   /** Auto-End threshold once the player has queued. */
   endTurnAfterQueue?: "first" | "moveAndSpecial";
   /** Script-driven opponent for live lessons. */
@@ -71,7 +71,7 @@ export type LiveLessonBoard = {
   choreography?: LessonChoreographyId;
   /**
    * Alert rings stick after the beat that introduced them, so fog and later
-   * hints do not clear a last-seen square. `king` also moves the ring when
+   * hints do not clear a last-seen square. `Command Center` also moves the ring when
    * the enemy Command Center is seen on a new square.
    */
   alertLatch?: "sticky" | "king";
@@ -84,7 +84,7 @@ export type LiveLessonBoard = {
  */
 export type AlertLatch = {
   squares: Square[];
-  kingAt?: Square;
+  ccAt?: Square;
 };
 
 /** Lessons whose behavior is more than config. Registry: `demos/choreography/`. */
@@ -106,7 +106,7 @@ export type LessonChoreographyId =
 export type TutorialBoardArrow = {
   from: Square;
   to: Square;
-  /** Elbow of an L path (a knight hop). Straight when omitted. */
+  /** Elbow of an L path (a Hoverbike hop). Straight when omitted. */
   via?: Square;
   /** Alert red. Omitted arrows stay guide green. */
   tone?: "alert";
@@ -135,7 +135,7 @@ export type TutorialBoardHint = {
    * Rewrite arrow origins to the viewer's BattleShip. The destination stays
    * the square named on the arrow.
    */
-  fromQueen?: boolean;
+  fromBattleShip?: boolean;
   /** Guide-green rings. */
   squares?: readonly Square[];
   /** Alert-red rings. Same step as `squares`; both paint together. */
@@ -258,7 +258,7 @@ export type TutorialShipJukeWhen = { kind: "shipJuke" };
  * White BattleShip was on h8 and is gone. Armed while it stands there; `sniped`
  * stays up through the resolve that removes it.
  */
-export type QueenWatch = { onH8: boolean; sniped: boolean };
+export type BattleShipWatch = { onH8: boolean; sniped: boolean };
 
 /** SCFEN piece letter: White upper-case, Black lower-case. */
 export type ScfenPieceLetter = "K" | "Q" | "R" | "B" | "N" | "P" | "k" | "q" | "r" | "b" | "n" | "p";
@@ -315,7 +315,7 @@ export type TutorialCompleteWhen =
       kind: "queue";
       /** Require a `C` classical action. */
       classical?: boolean;
-      /** Require this special kind on B or F (e.g. `pawnDouble`). */
+      /** Require this special kind on B or F (e.g. `stimStep`). */
       specialKind?: string;
     }
   | {

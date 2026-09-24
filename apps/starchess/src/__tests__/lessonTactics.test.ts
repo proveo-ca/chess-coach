@@ -125,9 +125,9 @@ describe("boardConditionHolds", () => {
     expect(boardConditionHolds(when, at(d5c2))).toBe(true);
     // Colour matters: a White King on d5 is not the enemy Command Center.
     expect(boardConditionHolds(when, at("8/8/8/3K4/8/8/2N5/8"))).toBe(false);
-    const mine = { kind: "knightMine", from: "c2" } as const;
-    expect(boardConditionHolds({ ...when, queued: mine }, at(d5c2, "33", "B=knightMine:c2:c2"))).toBe(true);
-    expect(boardConditionHolds({ ...when, notQueued: mine }, at(d5c2, "33", "B=knightMine:c2:c2"))).toBe(
+    const mine = { kind: "spiderMine", from: "c2" } as const;
+    expect(boardConditionHolds({ ...when, queued: mine }, at(d5c2, "33", "B=spiderMine:c2:c2"))).toBe(true);
+    expect(boardConditionHolds({ ...when, notQueued: mine }, at(d5c2, "33", "B=spiderMine:c2:c2"))).toBe(
       false,
     );
     const g1 = { kind: "board", at: { g1: "q" }, notQueuedOnto: "g1" } as const;

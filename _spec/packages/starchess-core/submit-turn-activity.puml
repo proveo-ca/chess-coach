@@ -11,7 +11,7 @@ title StarChess Core · ""beginScTurn"" / ""endScTurn"" — rank pipeline
 partition "beginScTurn — turn open, **before** players choose intent" {
   start
   :require phase **P**;
-  :fog-visible legal king-checks (""collectLegalKingChecks"")\n→ ""applyPendingKingShots"";
+  :fog-visible legal king-checks (""collectLegalCCChecks"")\n→ ""applyPendingCCShots"";
   if (nothing fired?) then (yes)
     :refill gas from income, clear ""U:"", keep the queue → return unchanged;
     stop
@@ -40,7 +40,7 @@ partition "endScTurn — the End pass" {
   endif
 
   :**2 · rank B specials** — white then black, queue order within a side;
-  :""rookSiege"" toggles the flag set only (placement untouched);
+  :""siegeMode"" toggles the flag set only (placement untouched);
   :""applySpecial"" → snipe · warp · **gas step** · **deploy** · mine drop;
   :warp / gas step / deploy end in ""applyArrivalMine(squares)"": the last\nentry is the tile the unit rests on, so a hostile mine anywhere on that\nwalk detonates there (event carries ""mineColor"" + ""victim"" / ""unit"",\nplus ""chaseFrom"" when the mine was woken earlier on the walk);\nan allied mine stays inert;
   :a gas step that died on a mine leaves ""bMoves"" (it did hop) but\n**cancels its promotion** — nothing left to deploy;
@@ -49,7 +49,7 @@ partition "endScTurn — the End pass" {
   :**3 · rank C classical** — post-B vision for attack fog;
   :""rewriteClassicalAfterB"": a C sharing ""from"" with a B relocate is\nre-based onto the square the stack actually reaches;
   :**settle the held gas steps** against the rewrite — handed on ⇒ leave the\nmine armed and tag the plan ""extraStepFrom""; not handed on ⇒ blow it on\nthe marine's own tile. Then flush the collected B events, so ""ev-<n>""\nstays in queue order;
-  :→ **afterB** snapshot (placement · mines · siegedRooks);
+  :→ **afterB** snapshot (placement · mines · siegedTanks);
   :throw if a surviving pawn's last-rank C carries no promotion;
   :""resolveTurn(...)"" → phases 1–4;
   :stamp events: attacks → moves → mineTriggers → moveCollisions →\npathRevealAttacks (semantic cue order, ids ""ev-<n>"" in sequence);
@@ -61,7 +61,7 @@ partition "endScTurn — the End pass" {
 
   :**4 · rank F specials** — post-move siege / late drops;
   :actor square = first candidate still holding one of our units\n(""a.from"" → rewritten C ""to"" / ""from"" → original C ""to"" / ""from"")\nso fire-in-place, quiet relocate and gas-ride all land;
-  :""knightMine"" re-bases its drop onto that post-move square;
+  :""spiderMine"" re-bases its drop onto that post-move square;
   :F gas step recomputes +1 from the post-C square and takes the arrival-mine\ncontact over **both** hops (""[at, to]""), so a mine the classical leg held\nback chases onto the Extra Step tile. Blocked / off-board ⇒ the step fizzles\nand the held mine fires on ""at"" — the walk ends where it really ends;
 
   :**invariants — throw, never repair:** mine cap per side, exactly one\nking per side in the final placement;
@@ -71,9 +71,9 @@ partition "endScTurn — the End pass" {
   **""rewriteClassicalAfterB"" is a published contract** (exported, pure):
   presentation paints intent ghosts with it and the Adjutant scores plans with
   it, so neither can diverge from the resolver. It rewrites only:
-  * ""pawnDouble"" — same-file **forward** C, one rank, or the start-rank
+  * ""stimStep"" — same-file **forward** C, one rank, or the start-rank
     classical double (""B e2→e3"" + ""C e2→e4"" ⇒ ""C e3→e5"");
-  * ""queenWarp"" — only the C that matches the warp step exactly.
+  * ""tacticalJump"" — only the C that matches the warp step exactly.
   A blocked final square skips the rewrite: gas-then-move must fizzle at the
   gas step exactly like move-then-gas fizzles at its post-C step. Captures and
   off-vector C are left alone — a pre-B C would have fizzled anyway.

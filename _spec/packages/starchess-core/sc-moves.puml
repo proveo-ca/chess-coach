@@ -53,8 +53,8 @@ note right of SCM
   * ""isScMoveShape(piece, from, to) : boolean"" — shape-only;
     ignores path blockers so fog path-discovery stays queueable.
   ----
-   ""ScMoveOptions.siegedRooks"" — resolved **after** queued B
-   via ""isRookSiegedAfterB"", **never** raw ""snap.siegedRooks"".
+   ""ScMoveOptions.siegedTanks"" — resolved **after** queued B
+   via ""isTankSiegedAfterB"", **never** raw ""snap.siegedTanks"".
 end note
 
 note bottom of SCM
@@ -120,7 +120,7 @@ STORE ARROW_MAIN QACT : ""addScAction""
 STORE ARROW_MAIN VIEW : snap + intent overlay re-render
 
 note over INPUT, STORE
-  Specials (spawn / Charon / Jump / siege / mine / pawnDouble) also
+  Specials (spawn / Charon / Jump / siege / mine / stimStep) also
   enter via ""QUEUE_ACTION"" from GasDeploy / targeting modes — same store.
   Queue shape: scfen-queue.puml. Resolve: resolve.puml.
 end note
@@ -144,12 +144,12 @@ note as RULES
   // never emits a push onto an occupied square — and where **fog** hides the
   // occupant, the intent is still queueable but resolves as a **block**, not a
   // capture: the marine truncates before the blocker (resolve.puml).
-  // Band = ""canPawnDoubleStep"" — start rank **and behind it** (rank ≤2 white,
+  // Band = ""canMarineDoubleStep"" — start rank **and behind it** (rank ≤2 white,
   // ≥7 black), so a marine deployed on its own back rank keeps the double.
   // Sole owner of the rule: movegen, ""isScMoveShape"" and
   // ""rewriteClassicalAfterB"" all read it, or the board offers a double the
   // resolver refuses to land.
-  // Promotes on last rank. Gas ""pawnDouble"" is +1 forward (any rank),
+  // Promotes on last rank. Gas ""stimStep"" is +1 forward (any rank),
   // including onto last rank when a promotion choice is set; may stack with classical.
   ----
   **knight, king** — leap via ""attacksSquare"". King: **no** self-check /

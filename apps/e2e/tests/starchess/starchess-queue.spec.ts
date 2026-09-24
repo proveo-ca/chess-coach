@@ -18,7 +18,7 @@ const gotoScfen = async (page: Page, scfen: string) => {
   }
 };
 
-test.describe("StarChess queue edit + gas pawn", () => {
+test.describe("StarChess queue edit + gas Marine", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("./");
     await page.evaluate(() => localStorage.clear());
@@ -37,24 +37,24 @@ test.describe("StarChess queue edit + gas pawn", () => {
   test("queue special shows B chip then X refunds gas", async ({ page }) => {
     // Tier-2 turn: rem 1 + spent 1 = income 2.
     const scfen =
-      "SCFEN|4k3/8/8/8/8/8/4P3/4K3|11|33|P|G:12:22|Q:w:B=pawnDouble:e2:e3;b:";
+      "SCFEN|4k3/8/8/8/8/8/4P3/4K3|11|33|P|G:12:22|Q:w:B=stimStep:e2:e3;b:";
     await gotoScfen(page, scfen);
     const queue = page.getByTestId("turn-queue");
-    await expect(queue).toContainText(/e2→e3|pawnDouble/i);
+    await expect(queue).toContainText(/e2→e3|stimStep/i);
     // Intent canister on the gas-armed unit (top-right badge).
     await expect(page.locator("[data-square='e2'][data-intent-canister]")).toBeVisible();
     await expect(page.locator("[data-square='e2'] .intentCanister, [data-square='e2'] [class*='intentCanister']")).toBeVisible();
     const chrome = page.getByTestId("starchess-board-chrome");
     await expect(chrome).toBeVisible();
     await page.getByTestId("queue-remove-0").click();
-    await expect(queue).not.toContainText(/pawnDouble/i);
+    await expect(queue).not.toContainText(/stimStep/i);
     await expect(page.locator("[data-square='e2'][data-intent-canister]")).toHaveCount(0);
   });
 
-  test("pawnDouble gas then classical End advances two ranks", async ({ page }) => {
+  test("stimStep gas then classical End advances two ranks", async ({ page }) => {
     // Pre-queued B+C: e2 gas→e3 then classical rewrite → e4 (rem 1 + spent 1).
     const scfen =
-      "SCFEN|4k3/8/8/8/8/8/4P3/4K3|11|33|P|G:12:22|Q:w:B=pawnDouble:e2:e3,C=e2e3;b:";
+      "SCFEN|4k3/8/8/8/8/8/4P3/4K3|11|33|P|G:12:22|Q:w:B=stimStep:e2:e3,C=e2e3;b:";
     await gotoScfen(page, scfen);
     await page.getByTestId("turn-end").click();
     await expect(settledPieceAt(page, "e4", "w p")).toBeVisible({
@@ -64,9 +64,9 @@ test.describe("StarChess queue edit + gas pawn", () => {
     await expect(settledPieceAt(page, "e3", "w p")).toHaveCount(0);
   });
 
-  test("classical then pawnDouble gas End advances two ranks", async ({ page }) => {
+  test("classical then stimStep gas End advances two ranks", async ({ page }) => {
     const scfen =
-      "SCFEN|4k3/8/8/8/8/8/4P3/4K3|11|33|P|G:12:22|Q:w:C=e2e3,F=pawnDouble:e2:e3;b:";
+      "SCFEN|4k3/8/8/8/8/8/4P3/4K3|11|33|P|G:12:22|Q:w:C=e2e3,F=stimStep:e2:e3;b:";
     await gotoScfen(page, scfen);
     await page.getByTestId("turn-end").click();
     await expect(settledPieceAt(page, "e4", "w p")).toBeVisible({
@@ -77,7 +77,7 @@ test.describe("StarChess queue edit + gas pawn", () => {
   test("board click queues C from gas landing then End", async ({ page }) => {
     // Gas e2→e3 queued; click e3 → e4 classical from post-B square.
     const scfen =
-      "SCFEN|4k3/8/8/8/8/8/4P3/4K3|1|33|P|G:01:11|B:3:3|Q:w:B=pawnDouble:e2:e3;b:";
+      "SCFEN|4k3/8/8/8/8/8/4P3/4K3|1|33|P|G:01:11|B:3:3|Q:w:B=stimStep:e2:e3;b:";
     await gotoScfen(page, scfen);
     await page.locator("[data-square='e3']").click();
     await page.locator("[data-square='e4']").click();

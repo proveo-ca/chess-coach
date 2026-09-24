@@ -47,14 +47,14 @@ export const firstBlockerOnRay = (
 
 /**
  * Squares a moving piece contacts for Spider Mine **chase** wakes (mid-path).
- * Destination walk-over (units that cannot attack `to`, e.g. pawn forward) is
+ * Destination walk-over (units that cannot attack `to`, e.g. Marine forward) is
  * handled after landing in `resolveTurn`; attack-clearable dest mines are
  * handled in the attack phase.
  *
  * Anything that **walks** contacts its intermediates — marines included: the
  * front double step already walks its path for blockers, so it cannot leap a
  * mine either. Hoverbikes leap (their move is not a ray, so `rayBetween` is
- * empty anyway) and kings are immune, filtered by the caller.
+ * empty anyway) and Command Centers are immune, filtered by the caller.
  */
 export const pathContactSquares = (
   from: Square,

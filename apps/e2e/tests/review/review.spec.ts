@@ -64,13 +64,13 @@ test.describe("Review screen", () => {
     const e4Ply = moveList.locator("[data-ply='0']");
     await expect(e4Ply.locator("[title='Hint used']").first()).toBeVisible();
 
-    // Clicking a ply jumps the board — Nf3 (ply 4) puts a white knight on f3.
+    // Clicking a ply jumps the board — Nf3 (ply 4) puts a white Hoverbike on f3.
     await moveList.locator("[data-ply='4']").click();
     await expect(page.locator("[data-square='f3']").locator("img[alt='w n']")).toBeVisible({
       timeout: 5_000,
     });
 
-    // Last ply (Nc6) puts a black knight on c6.
+    // Last ply (Nc6) puts a black Hoverbike on c6.
     await moveList.locator("[data-ply='5']").click();
     await expect(page.locator("[data-square='c6']").locator("img[alt='b n']")).toBeVisible({
       timeout: 5_000,

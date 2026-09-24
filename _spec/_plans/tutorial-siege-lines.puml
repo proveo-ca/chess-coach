@@ -14,7 +14,7 @@ skinparam noteTextAlignment left
 ' Notes are capped at 5 lines x 50 columns; one idea per anchor.
 '
 ' Siege lines are sieged-rook lines (S: field plus the
-' rookSiege packed-vs-sieged toggle), never a placed or
+' siegeMode packed-vs-sieged toggle), never a placed or
 ' drawn object. King-attack-4 guides the player into
 ' taking those lines for strong positions. King-attack-5
 ' will be a sample single-player game hinting common
@@ -23,7 +23,7 @@ title King Attack 4 — take siege lines;\nKing Attack 5 next: openings 3x3
 
 component "lesson config\nking-attack-4 lines" as CFG <<app>>
 component "TutorialScreen\nlive engine + gates" as RUN <<app>>
-component "siegedRooks / rookSiege\nstrong positions" as MODE <<app>>
+component "siegedTanks / siegeMode\nstrong positions" as MODE <<app>>
 component "king-attack-5 openings\n3 moves x 3 branches" as OPEN <<app>>
 component "**placed line type**\nengine has none" as LINE <<error>>
 

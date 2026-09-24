@@ -10,10 +10,10 @@ import type { Square } from "chess.js";
 import { placementToMap } from "../board/placement";
 import { charonDiagonalSquares } from "./specials/mechaCharon";
 import { minesFor, MAX_MINES_PER_SIDE, mineAt } from "../board/mines";
-import { isRookSiegedAfterB } from "../board/siege";
-import { hasExactKingPair } from "../scfen/codec";
-import { spawnKingAnchor } from "./specials/adjacent";
-import { pawnSingleTarget } from "./specials/pawnDouble";
+import { isTankSiegedAfterB } from "../board/siege";
+import { hasExactCCPair } from "../scfen/codec";
+import { spawnCCAnchor } from "./specials/adjacent";
+import { marineSingleTarget } from "./specials/stimStep";
 import type { ScAction, ScActionInput, ScFenSnapshot, StarChessColor } from "../model/types";
 
 export class ScValidateError extends Error {
@@ -42,7 +42,7 @@ export const classifyClassicalVacancy = (
   const gasPairs = new Set<string>();
   for (const a of actions ?? []) {
     if (a.timing !== "B" || a.color !== color) continue;
-    if (a.kind !== "pawnDouble" && a.kind !== "queenWarp") continue;
+    if (a.kind !== "stimStep" && a.kind !== "tacticalJump") continue;
     if (!a.to) continue;
     bOrigins.add(a.from);
     transit.add(a.to);
@@ -59,17 +59,17 @@ export const assertBaselineFen = (snap: ScFenSnapshot): void => {
       `bad placement ranks: ${snap.placement}`,
     );
   }
-  if (!hasExactKingPair(snap.placement)) {
+  if (!hasExactCCPair(snap.placement)) {
     throw new ScValidateError(
       "SC_BASELINE_FEN",
-      `placement needs exactly 1 king per side: ${snap.placement}`,
+      `placement needs exactly 1 Command Center per side: ${snap.placement}`,
     );
   }
 };
 
 /**
  * Soft classical probe for C actions: piece exists on `from`.
- * Destination may be empty, enemy-occupied, **or the enemy king** — fog of war
+ * Destination may be empty, enemy-occupied, **or the enemy Command Center** — fog of war
  * overrides classical FEN check / mate filters (scfen-queue.puml). Path blockers are
  * not rejected at queue time; resolve walks the ray.
  */
@@ -95,11 +95,11 @@ export const assertClassicalBaseline = (
         a.timing === "B" &&
         a.color === action.color &&
         a.to === action.from &&
-        (a.kind === "spawn" || a.kind === "pawnDouble" || a.kind === "queenWarp"),
+        (a.kind === "deploy" || a.kind === "stimStep" || a.kind === "tacticalJump"),
     );
-    if (b && b.timing === "B" && b.kind === "spawn" && b.unit) {
+    if (b && b.timing === "B" && b.kind === "deploy" && b.unit) {
       piece = { type: b.unit, color: action.color };
-    } else if (b && b.timing === "B" && (b.kind === "pawnDouble" || b.kind === "queenWarp")) {
+    } else if (b && b.timing === "B" && (b.kind === "stimStep" || b.kind === "tacticalJump")) {
       // Actor still lives on B.from in the planning placement.
       const origin = map.get(b.from);
       if (origin && origin.color === action.color) piece = origin;
@@ -113,7 +113,7 @@ export const assertClassicalBaseline = (
         a.timing === "B" &&
         a.color === action.color &&
         a.from === action.from &&
-        (a.kind === "pawnDouble" || a.kind === "queenWarp"),
+        (a.kind === "stimStep" || a.kind === "tacticalJump"),
     );
     if (bFrom) {
       const origin = map.get(action.from);
@@ -134,7 +134,7 @@ export const assertClassicalBaseline = (
   // square on its cross — resolve walks the ray (first blocker intercepts).
   if (
     piece.type === "r" &&
-    isRookSiegedAfterB(action.from, snap.siegedRooks, snap.queue?.actions)
+    isTankSiegedAfterB(action.from, snap.siegedTanks, snap.queue?.actions)
   ) {
     const destPiece = map.get(action.to);
     const destMine = mineAt(snap.mines, action.to);
@@ -147,11 +147,11 @@ export const assertClassicalBaseline = (
     if (!isEnemyAttack) {
       throw new ScValidateError(
         "SC_SPECIAL",
-        `sieged rook on ${action.from} cannot relocate`,
+        `sieged Tank on ${action.from} cannot relocate`,
       );
     }
   }
-  // Allow empty or enemy-occupied destinations (incl. king for fog path intents).
+  // Allow empty or enemy-occupied destinations (incl. Command Center for fog path intents).
   // Allies are never classical targets — mines ignore allies (no friendly-fire).
   const dest = map.get(action.to);
   if (dest && dest.color === action.color && !v.bOrigins.has(action.to)) {
@@ -183,35 +183,35 @@ export const assertSpecialLegal = (
   }
 
   switch (action.kind) {
-    case "spawn": {
+    case "deploy": {
       if (actor.type !== "k") {
-        throw new ScValidateError("SC_SPECIAL", "spawn requires king");
+        throw new ScValidateError("SC_SPECIAL", "spawn requires Command Center");
       }
       if (!action.to || !action.unit) {
         throw new ScValidateError("SC_SPECIAL", "spawn needs to + unit");
       }
-      // F = classical-then-gas: ring + empties are relative to the post-move king.
-      const { king, allyOccupied } = spawnKingAnchor(
+      // F = classical-then-gas: ring + empties are relative to the post-move Command Center.
+      const { commandCenter, allyOccupied } = spawnCCAnchor(
         snap,
         action.color,
         action.timing,
       );
-      if (!king) throw new ScValidateError("SC_SPECIAL", "king missing");
+      if (!commandCenter) throw new ScValidateError("SC_SPECIAL", "Command Center missing");
       // Occupied targets are legal (the deploy crushes the occupant and
-      // records it as victim); only king-occupied squares are blocked.
+      // records it as victim); only cc-occupied squares are blocked.
       if (allyOccupied.has(action.to)) {
-        throw new ScValidateError("SC_SPECIAL", "spawn square occupied by king");
+        throw new ScValidateError("SC_SPECIAL", "spawn square occupied by Command Center");
       }
-      const kf = king.charCodeAt(0);
-      const kr = Number(king[1]);
+      const kf = commandCenter.charCodeAt(0);
+      const kr = Number(commandCenter[1]);
       const tf = action.to.charCodeAt(0);
       const tr = Number(action.to[1]);
-      if (Math.abs(kf - tf) > 1 || Math.abs(kr - tr) > 1 || action.to === king) {
+      if (Math.abs(kf - tf) > 1 || Math.abs(kr - tr) > 1 || action.to === commandCenter) {
         throw new ScValidateError("SC_SPECIAL", "spawn not adjacent");
       }
       break;
     }
-    case "bishopSnipe": {
+    case "charonMissiles": {
       if (actor.type !== "b") {
         throw new ScValidateError("SC_SPECIAL", "Charon requires mecha");
       }
@@ -248,9 +248,9 @@ export const assertSpecialLegal = (
       }
       break;
     }
-    case "queenWarp": {
+    case "tacticalJump": {
       if (actor.type !== "q") {
-        throw new ScValidateError("SC_SPECIAL", "Jump requires queen");
+        throw new ScValidateError("SC_SPECIAL", "Jump requires BattleShip");
       }
       if (!action.to) {
         throw new ScValidateError("SC_SPECIAL", "Jump needs destination");
@@ -260,19 +260,19 @@ export const assertSpecialLegal = (
       }
       break;
     }
-    case "pawnDouble": {
+    case "stimStep": {
       if (actor.type !== "p") {
-        throw new ScValidateError("SC_SPECIAL", "pawnDouble requires pawn");
+        throw new ScValidateError("SC_SPECIAL", "stimStep requires Marine");
       }
       if (!action.to) {
-        throw new ScValidateError("SC_SPECIAL", "pawnDouble needs to");
+        throw new ScValidateError("SC_SPECIAL", "stimStep needs to");
       }
       // Gas step is +1 forward only (not classical start-rank double).
-      const expected = pawnSingleTarget(action.from, action.color);
+      const expected = marineSingleTarget(action.from, action.color);
       if (!expected || action.to !== expected) {
         throw new ScValidateError(
           "SC_SPECIAL",
-          `pawnDouble must step +1 to ${expected ?? "off-board"} (got ${action.to})`,
+          `stimStep must step +1 to ${expected ?? "off-board"} (got ${action.to})`,
         );
       }
       // Last-rank gas step must carry a promotion choice (picker / timeout default).
@@ -280,7 +280,7 @@ export const assertSpecialLegal = (
       if (Number(action.to[1]) === lastRank && !action.promotion) {
         throw new ScValidateError(
           "SC_SPECIAL",
-          "pawnDouble onto last rank needs promotion",
+          "stimStep onto last rank needs promotion",
         );
       }
       // Move-then-gas (F after C): post-C +1 must not be last rank either —
@@ -295,11 +295,11 @@ export const assertSpecialLegal = (
             a.from === action.from,
         );
         if (c && c.timing === "C") {
-          const land = pawnSingleTarget(c.to, action.color);
+          const land = marineSingleTarget(c.to, action.color);
           if (land && Number(land[1]) === lastRank) {
             throw new ScValidateError(
               "SC_SPECIAL",
-              "pawnDouble after move onto last rank needs gas-first + promotion",
+              "stimStep after move onto last rank needs gas-first + promotion",
             );
           }
         }
@@ -313,20 +313,20 @@ export const assertSpecialLegal = (
         const chainHead = (snap.queue?.actions ?? []).some(
           (a) =>
             a.timing === "B" &&
-            a.kind === "pawnDouble" &&
+            a.kind === "stimStep" &&
             a.color === action.color &&
             a.from === action.to,
         );
         if (action.timing === "B" && chainHead) return;
         if (!(action.timing === "F" && c && c.timing === "C" && c.to === action.to)) {
-          throw new ScValidateError("SC_SPECIAL", "pawnDouble blocked");
+          throw new ScValidateError("SC_SPECIAL", "stimStep blocked");
         }
       }
       break;
     }
-    case "knightMine": {
+    case "spiderMine": {
       if (actor.type !== "n") {
-        throw new ScValidateError("SC_SPECIAL", "mine requires knight");
+        throw new ScValidateError("SC_SPECIAL", "mine requires Hoverbike");
       }
       // F after same-piece C: drop lands on the post-move square (endScTurn
       // rewrite). Do not refuse because the origin already has a mine.
@@ -353,9 +353,9 @@ export const assertSpecialLegal = (
       }
       break;
     }
-    case "rookSiege": {
+    case "siegeMode": {
       if (actor.type !== "r") {
-        throw new ScValidateError("SC_SPECIAL", "siege requires rook");
+        throw new ScValidateError("SC_SPECIAL", "siege requires Tank");
       }
       break;
     }

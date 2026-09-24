@@ -11,7 +11,7 @@ import { AnimationStage } from "~/presentation/animations/components/AnimationSt
 import styles from "~/presentation/animations/components/SpiderMineFogDemo.module.css";
 import type { BoardSkin, PieceSet } from "~/types/board";
 
-/** Owner-side white mine on a4; king on e1 cannot see a4 without the mine. */
+/** Owner-side white mine on a4; Command Center on e1 cannot see a4 without the mine. */
 const FOG_MINE_SCFEN =
   "SCFEN|7k/8/8/8/8/8/8/4K3|0|33|P|G:11:11|M:w:a4|Q:w:;b:";
 

@@ -3,7 +3,7 @@ import { expect, test, type Page } from "@playwright/test";
 const STONKS =
   "SCFEN|4k3/8/8/3q4/2P5/8/8/4K3|1|33|P|G:11:11|Q:w:C=c4d5;b:";
 const MEDAL =
-  "SCFEN|7k/8/8/8/1b6/8/2PR4/3K4|11|33|P|G:12:22|S:d2|Q:w:B=pawnDouble:c2:c3;b:C=b4d2";
+  "SCFEN|7k/8/8/8/1b6/8/2PR4/3K4|11|33|P|G:12:22|S:d2|Q:w:B=stimStep:c2:c3;b:C=b4d2";
 const WIN =
   "SCFEN|4k3/4Q3/8/8/8/8/8/4K3|5|31|P|G:11:11|Q:w:C=e7e8;b:";
 
@@ -56,7 +56,7 @@ test.describe("live achievement bubbles", () => {
     await page.evaluate(() => localStorage.clear());
   });
 
-  test("Stonks reaches level 2 when a pawn takes a queen", async ({ page }) => {
+  test("Stonks reaches level 2 when a Marine takes a BattleShip", async ({ page }) => {
     await open(page, STONKS);
     await page.getByTestId("turn-end").click();
     await expect.poll(() => seen(page), { timeout: 20_000 }).toContain("stonks:2:c4");

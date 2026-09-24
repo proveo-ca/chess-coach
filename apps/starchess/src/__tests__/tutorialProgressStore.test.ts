@@ -45,7 +45,7 @@ describe("tutorialProgressStore", () => {
       shouldOfferTutorialComplete({
         tutorial: true,
         phase: "gameOver",
-        enemyKingLives: 0,
+        enemyCCLives: 0,
         cleared: false,
       }),
     ).toBe(true);
@@ -53,7 +53,7 @@ describe("tutorialProgressStore", () => {
       shouldOfferTutorialComplete({
         tutorial: true,
         phase: "gameOver",
-        enemyKingLives: 0,
+        enemyCCLives: 0,
         cleared: true,
       }),
     ).toBe(false);
@@ -61,7 +61,7 @@ describe("tutorialProgressStore", () => {
       shouldOfferTutorialComplete({
         tutorial: true,
         phase: "planning",
-        enemyKingLives: 0,
+        enemyCCLives: 0,
         cleared: false,
       }),
     ).toBe(false);
@@ -69,7 +69,7 @@ describe("tutorialProgressStore", () => {
       shouldOfferTutorialComplete({
         tutorial: true,
         phase: "gameOver",
-        enemyKingLives: 1,
+        enemyCCLives: 1,
         cleared: false,
       }),
     ).toBe(false);
@@ -77,7 +77,7 @@ describe("tutorialProgressStore", () => {
       shouldOfferTutorialComplete({
         tutorial: false,
         phase: "gameOver",
-        enemyKingLives: 0,
+        enemyCCLives: 0,
         cleared: false,
       }),
     ).toBe(false);

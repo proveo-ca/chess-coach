@@ -53,7 +53,7 @@ export const useKingAttackTankCounter = (store: MatchStore): ChoreographyResult 
       type: "QUEUE_ACTION",
       action: {
         timing: "B",
-        kind: "spawn",
+        kind: "deploy",
         color: "b",
         from: ENEMY_CC,
         to: DEPLOY_AT,

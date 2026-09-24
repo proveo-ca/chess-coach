@@ -66,9 +66,9 @@ export type StrategyWeights = {
   promoteRank: number;
   promotionBonus: number;
   /** Checking the visible enemy Command Center (CC) — #1 offensive in hunt. */
-  attackKing: number;
+  attackCC: number;
   /** Closing Chebyshev distance toward a visible enemy Command Center (CC). */
-  chaseKing: number;
+  chaseCC: number;
   /** Closing toward suspected Command Center (CC) focus (seek posture). */
   seekFocus: number;
   center: number;
@@ -77,7 +77,7 @@ export type StrategyWeights = {
 };
 
 /** Fog intel: where the hidden Command Center (CC) is likely, from what our side can see. */
-export type KingIntel = {
+export type CCFocusIntel = {
   /** Weighted centroid of visible enemy cues (or a weak home prior). */
   focus: Square;
   /** Cue mass — higher when deploys / marine clumps are clear. */
@@ -88,9 +88,9 @@ export type KingIntel = {
 export type VisionIntel = {
   litSquares: ReadonlySet<Square>;
   revealedPieces: ReadonlySet<Square>;
-  enemyKingVisible: boolean;
+  enemyCCVisible: boolean;
   /** Lit/revealed enemy battleship — drives mecha spam + Command Center (CC) safety. */
-  enemyQueenVisible: boolean;
+  enemyBattleShipVisible: boolean;
 };
 
 /** Per-turn attack / threat awareness for scoring. */
@@ -117,8 +117,8 @@ export type TacticalBoard = {
 export type MaterialIntel = {
   /** Stored minerals available to spend on deploys this turn. */
   bank: number;
-  ownBishops: number;
-  ownKnights: number;
+  ownMechas: number;
+  ownHoverbikes: number;
   /** Own marine clutter — trade / hunt undefended marines. */
   congested: boolean;
 };
@@ -129,15 +129,15 @@ export type AdjutantCtx = {
   map: Map<Square, ScPiece>;
   us: PieceColor;
   enemy: PieceColor;
-  king: Square;
-  enemyKing: Square | null;
-  kingThreatened: boolean;
+  commandCenter: Square;
+  enemyCC: Square | null;
+  ccThreatened: boolean;
   sieged: ReadonlySet<Square>;
   gas: number;
   posture: Posture;
   weights: StrategyWeights;
   vision: VisionIntel;
-  intel: KingIntel;
+  intel: CCFocusIntel;
   tactical: TacticalBoard;
   material: MaterialIntel;
   /** Our side already holds the d4–e5 hub. */
@@ -159,7 +159,7 @@ export type AdjutantCtx = {
 export type MoveEval = {
   move: Move;
   piece: ScPiece;
-  isKingMove: boolean;
+  isCCMove: boolean;
   /** Occupancy after this move resolves. */
   after: () => Map<Square, ScPiece>;
   /** Destination is not covered by the enemy on the POST-move board. */

@@ -9,7 +9,7 @@
  *
  * Loop invariants (recording parity with human games):
  *   1. `beginScTurn` chip plies are recorded immediately as their own settle
- *      (`{ scfen: post-chip, resolve: asResolve }`), including a terminal king
+ *      (`{ scfen: post-chip, resolve: asResolve }`), including a terminal Command Center
  *      chip (stop after recording it) — mirrors the app's BEGIN_CHECKS_DONE.
  *   2. Each settled ply records `endScTurn().next` — `resolves[i]` produces
  *      `scfens[i+1]`; `scfens[0]` is the opening.

@@ -9,24 +9,24 @@ import { chebyshev } from "../context";
 import type { Strategy } from "./types";
 
 /** Hoverbike lands a check on a square the enemy does not cover (sneak). */
-export const SNEAK_KNIGHT_CHECK = 2_000;
+export const SNEAK_HOVERBIKE_CHECK = 2_000;
 /** Marine that lands a check on the Command Center (CC). */
-export const PAWN_CHECK_CC = 1_500;
+export const MARINE_CHECK_CC = 1_500;
 
 const score = (ev: MoveEval, ctx: AdjutantCtx): number => {
-  const { move, piece, isKingMove } = ev;
-  if (isKingMove) return 0;
+  const { move, piece, isCCMove } = ev;
+  if (isCCMove) return 0;
 
-  const { enemyKing, enemy, tactical, weights, vision } = ctx;
-  const { attackKing, chaseKing, diagonal, attackedPenalty } = weights;
+  const { enemyCC, enemy, tactical, weights, vision } = ctx;
+  const { attackCC, chaseCC, diagonal, attackedPenalty } = weights;
   let s = 0;
 
   // Sneak check: land checking the Command Center (CC) on a square the enemy does not cover.
-  if (piece.type === "n" && enemyKing && move.to !== enemyKing) {
+  if (piece.type === "n" && enemyCC && move.to !== enemyCC) {
     const after = ev.after();
-    if (attacksSquare(after, move.to, enemyKing)) {
-      if (!isSquareAttackedBy(after, move.to, enemy)) s += SNEAK_KNIGHT_CHECK;
-      else if (tactical.friendlyProtects(move.to)) s += SNEAK_KNIGHT_CHECK * 0.25;
+    if (attacksSquare(after, move.to, enemyCC)) {
+      if (!isSquareAttackedBy(after, move.to, enemy)) s += SNEAK_HOVERBIKE_CHECK;
+      else if (tactical.friendlyProtects(move.to)) s += SNEAK_HOVERBIKE_CHECK * 0.25;
       else s -= attackedPenalty;
     }
   }
@@ -34,41 +34,41 @@ const score = (ev: MoveEval, ctx: AdjutantCtx): number => {
   // Mecha ray that bites the Command Center (CC) — worth a second diagonal's weight.
   if (
     piece.type === "b" &&
-    enemyKing &&
-    attacksSquare(ev.after(), move.to, enemyKing)
+    enemyCC &&
+    attacksSquare(ev.after(), move.to, enemyCC)
   ) {
     s += diagonal;
   }
 
   if (
     piece.type === "p" &&
-    enemyKing &&
-    attacksSquare(ev.after(), move.to, enemyKing)
+    enemyCC &&
+    attacksSquare(ev.after(), move.to, enemyCC)
   ) {
-    s += PAWN_CHECK_CC;
+    s += MARINE_CHECK_CC;
   }
 
   // Enemy-Command Center (CC) pressure — posture-scaled (0 unless hunt).
   if (
-    attackKing > 0 &&
-    enemyKing &&
-    vision.enemyKingVisible &&
-    move.to !== enemyKing &&
-    attacksSquare(ev.after(), move.to, enemyKing)
+    attackCC > 0 &&
+    enemyCC &&
+    vision.enemyCCVisible &&
+    move.to !== enemyCC &&
+    attacksSquare(ev.after(), move.to, enemyCC)
   ) {
-    s += attackKing;
+    s += attackCC;
   }
 
   // Chase a visible Command Center (CC) (hunt) — close Chebyshev distance.
   if (
-    chaseKing > 0 &&
-    enemyKing &&
-    vision.enemyKingVisible &&
-    move.to !== enemyKing
+    chaseCC > 0 &&
+    enemyCC &&
+    vision.enemyCCVisible &&
+    move.to !== enemyCC
   ) {
-    const before = chebyshev(move.from, enemyKing);
-    const after = chebyshev(move.to, enemyKing);
-    if (after < before) s += chaseKing * (before - after);
+    const before = chebyshev(move.from, enemyCC);
+    const after = chebyshev(move.to, enemyCC);
+    if (after < before) s += chaseCC * (before - after);
   }
 
   return s;

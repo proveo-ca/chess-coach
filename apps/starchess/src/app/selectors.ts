@@ -8,7 +8,7 @@ import type { Square } from "chess.js";
 
 import type { MatchState } from "~/app/matchTypes";
 import type { MatchShell, MatchStore, TimelineState } from "~/types/match";
-import { rookModeForSieged } from "~/presentation/board/rookMode";
+import { tankModeForSieged } from "~/presentation/board/tankMode";
 
 /** Pure: shell + timeline display* (not playingIds / progress / trails). */
 export const displayedSnapshotFrom = (
@@ -17,9 +17,9 @@ export const displayedSnapshotFrom = (
     TimelineState,
     | "active"
     | "displayPlacement"
-    | "displayKingLives"
+    | "displayCCLives"
     | "displayMines"
-    | "displaySiegedRooks"
+    | "displaySiegedTanks"
   >,
 ): ScFenSnapshot => {
   // Terminal review: settled cursor + optional in-flight timeline overlays.
@@ -31,11 +31,11 @@ export const displayedSnapshotFrom = (
         return {
           ...settled,
           placement: tl.displayPlacement ?? settled.placement,
-          kingLives: tl.displayKingLives ?? settled.kingLives,
+          ccLives: tl.displayCCLives ?? settled.ccLives,
           mines: tl.displayMines ?? settled.mines,
-          siegedRooks: tl.displaySiegedRooks
-            ? [...tl.displaySiegedRooks]
-            : settled.siegedRooks,
+          siegedTanks: tl.displaySiegedTanks
+            ? [...tl.displaySiegedTanks]
+            : settled.siegedTanks,
         };
       }
       return settled;
@@ -80,9 +80,9 @@ export const outcomeLabel = (state: MatchShell | MatchState): string | null => {
 
 export const fogForViewer = (state: MatchState) => {
   const snap = displayedSnapshot(state);
-  const sieged = new Set(snap.siegedRooks ?? [...state.siegedRooks]);
+  const sieged = new Set(snap.siegedTanks ?? [...state.siegedTanks]);
   return getSideVision(snap.placement, state.viewer, {
-    rookModeFor: rookModeForSieged(sieged),
+    tankModeFor: tankModeForSieged(sieged),
     mines: snap.mines,
   });
 };

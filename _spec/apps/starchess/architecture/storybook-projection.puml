@@ -114,7 +114,7 @@ package "AFTER · Storybook projects the source" as AFTER {
     useKingDefenseOpening
     useKingDefenseIIChecks
     useKingHuntGraduation
-    useForcedRookMode
+    useForcedTankMode
     useViewerGasOverride
   }
 

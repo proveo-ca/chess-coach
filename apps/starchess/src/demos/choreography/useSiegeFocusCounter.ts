@@ -3,7 +3,7 @@
  * Rook Siege focus counter — deterministic lesson-only black intents.
  * Seed turn 0: SCFEN|7k/3p4/8/8/p2R3p/8/3p4/K7|0|33|P|G:11:11|Q:w:;b:|S:d4
  * Priority each turn: while the h4 pawn lives, stack it gas + move
- * (C plus F pawnDouble, rewriting to a double step — the pawn stays
+ * (C plus F stimStep, rewriting to a double step — the pawn stays
  * on its square through the attack phase, so the hint stays killable).
  * Promoting d2→d1 is the fallback once h4 falls: B-gas slips
  * away pre-attack (the tank intent on d2 still resolves — HE shells the
@@ -21,7 +21,7 @@ import type { ChoreographyResult } from "~/demos/choreography";
 import type { MatchStore } from "~/types/match";
 
 /**
- * Queue a gas + move double-step (C classical plus F pawnDouble, which
+ * Queue a gas + move double-step (C classical plus F stimStep, which
  * rewrites to continue one more square). Returns true when the classical
  * leg landed; a failed F still leaves the single step. Never throws.
  */
@@ -41,7 +41,7 @@ const queueGasMove = (
   try {
     store.dispatch({
       type: "QUEUE_ACTION",
-      action: { timing: "F", kind: "pawnDouble", color: "b", from, to },
+      action: { timing: "F", kind: "stimStep", color: "b", from, to },
     });
   } catch {
     /* gas spent — C alone still steps */
@@ -80,7 +80,7 @@ export const useSiegeFocusCounter = (store: MatchStore): ChoreographyResult => {
             type: "QUEUE_ACTION",
             action: {
               timing: "B",
-              kind: "pawnDouble",
+              kind: "stimStep",
               color: "b",
               from: "d2",
               to: "d1",
@@ -131,7 +131,7 @@ export const useSiegeFocusCounter = (store: MatchStore): ChoreographyResult => {
         try {
           store.dispatch({
             type: "QUEUE_ACTION",
-            action: { timing: "B", kind: "pawnDouble", color: "b", from: "d7", to: "d6" },
+            action: { timing: "B", kind: "stimStep", color: "b", from: "d7", to: "d6" },
           });
           queuedTurn = snap.turn;
         } catch {

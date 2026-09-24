@@ -42,7 +42,7 @@ export const mineContact = ({
   for (const at of squares) {
     const m = mineAt(mines, at);
     if (!m || m.color === color) continue;
-    // A king never trades with a mine: it shoots the tile and moves in, so its
+    // A Command Center never trades with a mine: it shoots the tile and moves in, so its
     // contact is an attack in every mode ("walking over" reads as attack/move).
     const firedUpon =
       mode === "attack" || (mode === "walkThenAttack" && at === landing);

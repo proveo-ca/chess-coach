@@ -1,28 +1,28 @@
 /**
- * Effective Siege Tank mode after queued B `rookSiege` intents.
+ * Effective Siege Tank mode after queued B `siegeMode` intents.
  * Intent siege (enter) locks mobility before classical; intent unsiege unlocks it.
  */
 
 import type { Square } from "../model/square";
-import type { RookMode, ScAction } from "../model/types";
+import type { TankMode, ScAction } from "../model/types";
 
-/** Whether `from` is sieged after applying all B `rookSiege` toggles in `actions`. */
-export const isRookSiegedAfterB = (
+/** Whether `from` is sieged after applying all B `siegeMode` toggles in `actions`. */
+export const isTankSiegedAfterB = (
   from: Square,
-  siegedRooks: readonly Square[] | undefined,
+  siegedTanks: readonly Square[] | undefined,
   actions: readonly ScAction[] | undefined,
 ): boolean => {
-  let sieged = (siegedRooks ?? []).includes(from);
+  let sieged = (siegedTanks ?? []).includes(from);
   for (const a of actions ?? []) {
-    if (a.timing !== "B" || a.kind !== "rookSiege" || a.from !== from) continue;
+    if (a.timing !== "B" || a.kind !== "siegeMode" || a.from !== from) continue;
     sieged = !sieged;
   }
   return sieged;
 };
 
 /** Tank ↔ siege after B intents (destination ghost / mobility). */
-export const rookModeAfterB = (
+export const tankModeAfterB = (
   from: Square,
-  siegedRooks: readonly Square[] | undefined,
+  siegedTanks: readonly Square[] | undefined,
   actions: readonly ScAction[] | undefined,
-): RookMode => (isRookSiegedAfterB(from, siegedRooks, actions) ? "siege" : "tank");
+): TankMode => (isTankSiegedAfterB(from, siegedTanks, actions) ? "siege" : "tank");

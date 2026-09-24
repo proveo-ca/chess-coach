@@ -13,17 +13,17 @@ import { isSquareAttackedBy, parseSquare, type ScPiece } from "../../board/place
 import { scMovesFor, type ScMove } from "../../board/moves";
 import { UNIT_COST } from "../../rules/constants";
 import { specialGasCost } from "../../scfen";
-import { pawnSingleTarget } from "../../rules/specials/pawnDouble";
+import { marineSingleTarget } from "../../rules/specials/stimStep";
 import type { ScSpecialKind, SpawnPiece } from "../../model/types";
 import type { AdjutantCtx, Candidate, Move } from "../context";
 import { isLastRank, isSafeSquare, rankOf } from "../context";
 import { CHARON_COMBO, EQUAL_TRADE_ATTACK } from "../strategies/captures";
-import { DEPLOY_ATTACK_SURVIVAL, QUEEN_ESCAPE } from "../strategies/survival";
+import { DEPLOY_ATTACK_SURVIVAL, BATTLESHIP_ESCAPE } from "../strategies/survival";
 import { scoreMove } from "../strategies";
 
 /** Classical candidates from the shared SC movegen (filter command center (CC)-square traps). */
 export const sideMoves = (ctx: AdjutantCtx): Move[] =>
-  scMovesFor(ctx.map, ctx.us, { siegedRooks: ctx.sieged })
+  scMovesFor(ctx.map, ctx.us, { siegedTanks: ctx.sieged })
     .filter((m: ScMove) => !m.dropsAtResolve)
     .map((m) => ({
       from: m.from,
@@ -39,19 +39,19 @@ export const sideMoves = (ctx: AdjutantCtx): Move[] =>
  * C mid→far, so the marine resolves two steps ahead. Skip when a free classical
  * double to `far` already exists.
  */
-export const pawnGasStacks = (
+export const marineGasStacks = (
   ctx: AdjutantCtx,
   moves: readonly Move[],
 ): Candidate[] => {
   const { map, us, gas, weights } = ctx;
-  if (specialGasCost("pawnDouble") > gas) return [];
+  if (specialGasCost("stimStep") > gas) return [];
   const out: Candidate[] = [];
 
   for (const [from, piece] of map) {
     if (piece.color !== us || piece.type !== "p") continue;
-    const mid = pawnSingleTarget(from, us);
+    const mid = marineSingleTarget(from, us);
     if (!mid || map.has(mid) || isLastRank(rankOf(mid), us)) continue;
-    const far = pawnSingleTarget(mid, us);
+    const far = marineSingleTarget(mid, us);
     if (!far || map.has(far)) continue;
     if (moves.some((m) => m.from === from && m.to === far)) continue;
 
@@ -66,8 +66,8 @@ export const pawnGasStacks = (
     };
     let score = scoreMove(synthetic, ctx) + weights.trade;
     // Marine gas + attack: if the doubly-stepped marine at `far` attacks a higher-value
-    // enemy piece, boost to knock it out (e.g. pawnDouble to d4 then capture e5 tank)
-    const pawnAtFarAttacksHigher = (() => {
+    // enemy piece, boost to knock it out (e.g. stimStep to d4 then capture e5 tank)
+    const marineAtFarAttacksHigher = (() => {
       const dir = us === "w" ? 1 : -1;
       const { file, rank } = parseSquare(far);
       const attackRanks = [rank + dir];
@@ -83,12 +83,12 @@ export const pawnGasStacks = (
       }
       return null;
     })();
-    if (pawnAtFarAttacksHigher) {
-      score += weights.trade * (1 + UNIT_COST[pawnAtFarAttacksHigher.type] - UNIT_COST.p);
+    if (marineAtFarAttacksHigher) {
+      score += weights.trade * (1 + UNIT_COST[marineAtFarAttacksHigher.type] - UNIT_COST.p);
     }
     out.push({
       actions: [
-        { timing: "B", kind: "pawnDouble", color: us, from, to: mid },
+        { timing: "B", kind: "stimStep", color: us, from, to: mid },
         {
           timing: "C",
           kind: "classical",
@@ -119,7 +119,7 @@ export const spawnStacks = (
   const out: Candidate[] = [];
   for (const spawn of specials) {
     const spawnAction = spawn.actions[0];
-    if (!spawnAction || spawnAction.kind !== "spawn" || !spawnAction.to) continue;
+    if (!spawnAction || spawnAction.kind !== "deploy" || !spawnAction.to) continue;
     for (const move of moveCandidates) {
       const moveAction = move.actions[0];
       if (!moveAction || moveAction.timing !== "C" || moveAction.kind !== "classical") {
@@ -155,7 +155,7 @@ export const spawnCaptureStacks = (
     const spawnAction = spawn.actions[0];
     if (
       !spawnAction ||
-      spawnAction.kind !== "spawn" ||
+      spawnAction.kind !== "deploy" ||
       !spawnAction.to ||
       !spawnAction.unit
     ) {
@@ -165,7 +165,7 @@ export const spawnCaptureStacks = (
     after.set(spawnAction.to, { type: spawnAction.unit, color: us });
     const from = spawnAction.to;
 
-    for (const m of scMovesFor(after, us, { siegedRooks: sieged })) {
+    for (const m of scMovesFor(after, us, { siegedTanks: sieged })) {
       if (m.dropsAtResolve || m.from !== from) continue;
       // Deploy+attack is about capturing the threat / winning material.
       if (!m.capture || m.capture.color !== enemy) continue;
@@ -251,7 +251,7 @@ export const charonForwardStacks = (
   ctx: AdjutantCtx,
 ): Candidate[] => {
   const { gas } = ctx;
-  if (specialGasCost("bishopSnipe") > gas) return [];
+  if (specialGasCost("charonMissiles") > gas) return [];
   const partners = [...moveCandidates]
     .filter((m) => {
       const c = m.actions[0];
@@ -263,7 +263,7 @@ export const charonForwardStacks = (
 
   for (const guess of fGuesses) {
     const f = guess.actions[0];
-    if (!f || f.timing !== "F" || f.kind !== "bishopSnipe" || !f.to) continue;
+    if (!f || f.timing !== "F" || f.kind !== "charonMissiles" || !f.to) continue;
     for (const move of partners) {
       const c = move.actions[0];
       if (!c || c.timing !== "C" || c.kind !== "classical") continue;
@@ -291,17 +291,17 @@ export const specialClassicalStacks = (
   for (const special of specials) {
     const b = special.actions[0];
     if (!b || b.timing !== "B") continue;
-    if (b.kind === "spawn" || b.kind === "pawnDouble") continue;
+    if (b.kind === "deploy" || b.kind === "stimStep") continue;
     if (specialGasCost(b.kind as ScSpecialKind) > gas) continue;
 
     for (const move of moveCandidates) {
       const c = move.actions[0];
       if (!c || c.timing !== "C" || c.kind !== "classical") continue;
       // Cannot relocate a tank in the same breath as packing.
-      if (b.kind === "rookSiege" && c.from === b.from) continue;
+      if (b.kind === "siegeMode" && c.from === b.from) continue;
 
       let score = special.score + move.score;
-      if (b.kind === "bishopSnipe") {
+      if (b.kind === "charonMissiles") {
         // The Mecha stays put after Charon, so any second classical is fine.
         // The certainty premium already lives in the B single (CHARON_INSTA);
         // this combo prices the extra tempo only — effective stack order is
@@ -310,15 +310,15 @@ export const specialClassicalStacks = (
         score += CHARON_COMBO;
         if (c.to && map.get(c.to)?.color === enemy) score += weights.trade * 2;
       }
-      if (b.kind === "knightMine" && c.from === b.from) {
+      if (b.kind === "spiderMine" && c.from === b.from) {
         // Plant then leave — deny the Hoverbike sitting on its own mine tile.
         score += weights.mapControl;
       }
-      if (b.kind === "queenWarp") {
+      if (b.kind === "tacticalJump") {
         // A classical from the warped square is rewritten to the destination.
         const underFire = isSquareAttackedBy(map, b.from, enemy);
         if (underFire && b.to && isSafeSquare(map, b.to, enemy)) {
-          score += QUEEN_ESCAPE * 0.15;
+          score += BATTLESHIP_ESCAPE * 0.15;
         }
       }
 

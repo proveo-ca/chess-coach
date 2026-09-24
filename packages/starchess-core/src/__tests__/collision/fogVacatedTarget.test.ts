@@ -35,7 +35,7 @@ describe("fogged target that vacates same turn", () => {
     expect(r.resolved.moveCollisions).toEqual([]);
   });
 
-  it("approach fork: mid-walk reveal fizzles on the vacated square and the rook still lands", () => {
+  it("approach fork: mid-walk reveal fizzles on the vacated square and the Tank still lands", () => {
     let s = parseScFen("SCFEN|k6r/8/8/8/8/8/7R/4K3|1|33|P|G:11:11|Q:w:;b:");
     s = addScMove(s, { color: "w", from: "h2", to: "h8" });
     s = addScMove(s, { color: "b", from: "h8", to: "h7" });
@@ -96,9 +96,9 @@ describe("fogged target that vacates same turn", () => {
     s = addScMove(s, { color: "w", from: "h1", to: "h8" });
     s = addScMove(s, { color: "b", from: "h8", to: "h1" });
     const r = endScTurn(s, { skipTurnStartChecks: true });
-    const kings = r.next.placement;
-    expect(kings).toContain("K");
-    expect(kings).toContain("k");
+    const commandCenters = r.next.placement;
+    expect(commandCenters).toContain("K");
+    expect(commandCenters).toContain("k");
     const h8White = r.resolved.afterAll.placement.startsWith("k6R");
     const h1Black = r.resolved.afterAll.placement.endsWith("4K2r");
     expect(h8White !== h1Black).toBe(true);

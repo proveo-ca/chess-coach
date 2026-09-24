@@ -21,8 +21,8 @@ import {
 } from "~/presentation/specials/planning/occupancy";
 import { occupancyForViewerMoves } from "~/presentation/board/occupancyForViewerMoves";
 import { minesVisibleToViewer } from "~/presentation/board/fogVisibility";
-import { legalDestsWithFogPawnAttacks } from "~/presentation/board/pawnFogAttackDests";
-import { rookModeForSieged } from "~/presentation/board/rookMode";
+import { legalDestsWithFogMarineAttacks } from "~/presentation/board/marineFogAttackDests";
+import { tankModeForSieged } from "~/presentation/board/tankMode";
 import { useBoardVision } from "~/presentation/combat/hooks/useIntentOverlays";
 import type { VisionMode } from "~/types/board";
 import type { PromotionPiece } from "~/types/chess";
@@ -41,7 +41,7 @@ export const gasStackPromotes = (
   const b = (snap.queue?.actions ?? []).find(
     (a) =>
       a.timing === "B" &&
-      a.kind === "pawnDouble" &&
+      a.kind === "stimStep" &&
       a.color === color &&
       a.from === from &&
       a.to === to,
@@ -104,7 +104,7 @@ export const useBoardInput = (
       state.viewer,
       playerFogOccultsMoves(vision()),
       snap,
-      state.siegedRooks,
+      state.siegedTanks,
     );
   };
 
@@ -136,7 +136,7 @@ export const useBoardInput = (
         type: "QUEUE_ACTION",
         action: {
           timing: "B",
-          kind: "pawnDouble",
+          kind: "stimStep",
           color: pending.color,
           from: pending.from,
           to: pending.to,
@@ -158,18 +158,18 @@ export const useBoardInput = (
     if (!canSubmit(state)) return;
     if (state.pendingPromotion) return;
 
-    if (state.targeting?.kind === "spawn") {
+    if (state.targeting?.kind === "deploy") {
       const color = state.targeting.color;
       const unit = state.targeting.unit;
       const map = placementToMap(state.liveSnapshot.placement);
-      const kingSq = [...map.entries()].find(
+      const ccSq = [...map.entries()].find(
         ([, p]) => p.type === "k" && p.color === color,
       )?.[0];
-      if (!kingSq) return;
+      if (!ccSq) return;
       const timing = specialTimingFor(state.liveSnapshot.queue, color);
-      // Ally and enemy non-king squares are deployable (crush replaces the
-      // occupant); kings never are. Single owner: specials/deployTargets.
-      const { king: anchor, targets } = ccDeployTargets(state.liveSnapshot, color);
+      // Ally and enemy non-Command Center squares are deployable (crush replaces the
+      // occupant); Command Centers never are. Single owner: specials/deployTargets.
+      const { commandCenter: anchor, targets } = ccDeployTargets(state.liveSnapshot, color);
       if (!anchor || !targets.includes(square)) {
         return;
       }
@@ -181,9 +181,9 @@ export const useBoardInput = (
         type: "QUEUE_ACTION",
         action: {
           timing,
-          kind: "spawn",
+          kind: "deploy",
           color,
-          from: kingSq,
+          from: ccSq,
           to: square,
           unit,
         },
@@ -192,11 +192,11 @@ export const useBoardInput = (
         store.dispatch({ type: "REFUND_STORED", color, amount: cost });
         return;
       }
-      store.dispatch({ type: "MARK_SPECIAL_USED", square: kingSq });
+      store.dispatch({ type: "MARK_SPECIAL_USED", square: ccSq });
       return;
     }
 
-    if (state.targeting?.kind === "bishopSnipe") {
+    if (state.targeting?.kind === "charonMissiles") {
       const t = state.targeting;
       if (!t.targets.includes(square)) return;
       const timing = specialTimingFor(state.liveSnapshot.queue, t.color);
@@ -205,7 +205,7 @@ export const useBoardInput = (
         type: "QUEUE_ACTION",
         action: {
           timing,
-          kind: "bishopSnipe",
+          kind: "charonMissiles",
           color: t.color,
           from: t.from,
           to: square,
@@ -220,7 +220,7 @@ export const useBoardInput = (
       return;
     }
 
-    if (state.targeting?.kind === "queenWarp") {
+    if (state.targeting?.kind === "tacticalJump") {
       const t = state.targeting;
       if (!t.targets.includes(square)) return;
       const timing = specialTimingFor(state.liveSnapshot.queue, t.color);
@@ -229,7 +229,7 @@ export const useBoardInput = (
         type: "QUEUE_ACTION",
         action: {
           timing,
-          kind: "queenWarp",
+          kind: "tacticalJump",
           color: t.color,
           from: t.from,
           to: square,
@@ -248,7 +248,7 @@ export const useBoardInput = (
     const snap = displayedSnapshot(state);
     const raw = placementToMap(snap.placement);
     const actions = snap.queue?.actions;
-    const { map: postBMap, siegedRooks } = planningMoves(state);
+    const { map: postBMap, siegedTanks } = planningMoves(state);
     // Gas/warp origin: legal dests from pre-B occupancy (engine rewrite stack).
     // Landing / spawn: legal dests from post-B occupancy.
     const mapFor = (from: Square) => {
@@ -257,7 +257,7 @@ export const useBoardInput = (
           raw,
           state.viewer,
           playerFogOccultsMoves(vision()),
-          { rookModeFor: rookModeForSieged(siegedRooks) },
+          { tankModeFor: tankModeForSieged(siegedTanks) },
         );
       }
       return postBMap;
@@ -276,15 +276,15 @@ export const useBoardInput = (
       state.viewer,
       snap.mines,
       fogOccult,
-      { siegedRooks },
+      { siegedTanks },
     );
     const destsFor = (from: Square, p: NonNullable<typeof piece>) => {
       const map = mapFor(from);
       const classical = scMovesFrom(map, from, p.color, {
-        siegedRooks,
+        siegedTanks,
         mines,
       }).map((m) => m.to);
-      return legalDestsWithFogPawnAttacks(classical, from, p, map, fogOccult);
+      return legalDestsWithFogMarineAttacks(classical, from, p, map, fogOccult);
     };
 
     if (!selected) {
@@ -325,7 +325,7 @@ export const useBoardInput = (
     if (!mover) return;
     const map = mapFor(selected);
     const move = scMovesFrom(map, selected, mover.color, {
-      siegedRooks,
+      siegedTanks,
       mines,
     }).find((m) => m.to === square);
 

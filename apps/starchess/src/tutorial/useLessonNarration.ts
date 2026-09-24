@@ -9,20 +9,20 @@ import { createEffect, onCleanup } from "solid-js";
 
 import { displayedSnapshot } from "~/app/selectors";
 import { liveMatchPhase } from "~/presentation/hud/liveMatchPhase";
-import { availableTrajectories, coveredEnemyShips, whiteQueenAtH8 } from "~/tutorial/lessonTactics";
+import { availableTrajectories, coveredEnemyShips, whiteBattleShipAtH8 } from "~/tutorial/lessonTactics";
 import {
   resetTutorialNarration,
   setTutorialNarration,
 } from "~/tutorial/tutorialNarrationStore";
-import { nextQueenWatch } from "~/tutorial/tutorialScript";
+import { nextBattleShipWatch } from "~/tutorial/tutorialScript";
 import type { MatchStore } from "~/types/match";
-import type { QueenWatch } from "~/types/tutorial";
+import type { BattleShipWatch } from "~/types/tutorial";
 
 export const useLessonNarration = (
   store: MatchStore,
   enabled: () => boolean,
 ): void => {
-  let queenWatch: QueenWatch = { onH8: false, sniped: false };
+  let battleShipWatch: BattleShipWatch = { onH8: false, sniped: false };
   createEffect(() => {
     if (!enabled()) return;
     const s = store.state();
@@ -34,8 +34,8 @@ export const useLessonNarration = (
       timelineActive: s.timeline.active,
       pendingPromotion: !!s.pendingPromotion,
     });
-    const queen = whiteQueenAtH8(scfen);
-    if (queen) queenWatch = nextQueenWatch(queenWatch, { ...queen, reviewPhase });
+    const battleShip = whiteBattleShipAtH8(scfen);
+    if (battleShip) battleShipWatch = nextBattleShipWatch(battleShipWatch, { ...battleShip, reviewPhase });
     setTutorialNarration({
       reviewPhase,
       timelineActive: s.timeline.active,
@@ -49,7 +49,7 @@ export const useLessonNarration = (
         color: a.color,
       })),
       targetingKind: s.targeting?.kind ?? null,
-      shipSniped: queenWatch.sniped,
+      shipSniped: battleShipWatch.sniped,
       // Seed SCFEN uses turn 0 for the first planning window; +1 → 1-based
       // ordinal so turn-gated script lines fire on the right turn.
       turn: snap.turn + 1,

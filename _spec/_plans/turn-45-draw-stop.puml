@@ -11,7 +11,7 @@ skinparam noteTextAlignment left
 ' Notes are capped at 5 lines x 50 columns; one idea per anchor.
 '
 ' The backlog treated "game stopped? Turn 45 draw failed?" as a hang.
-' Live: ""scOutcome"" at ""turn >= 45"" compares ""kingLives"". That is the
+' Live: ""scOutcome"" at ""turn >= 45"" compares ""ccLives"". That is the
 ' engine cap. Inventing a second draw law would conceal it.
 title OUTDATED — turn 45 is the HP cap;\ndo not invent a draw rule
 

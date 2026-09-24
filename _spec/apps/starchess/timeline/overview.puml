@@ -18,13 +18,13 @@ package "projector — pure" {
 package "interpreter — scheduled" {
   component "playTimeline(result, scheduler, cb)\nHANDLERS[cue.lane] → runStep → run(next)" as PLAY <<async>>
   component "HANDLERS — one command per lane\ngas · deploy · phase1 wave / deaths\nmissile · collision · mine · move wave\npromo walk / deploy · sequential fallback" as PRED <<db>>
-  component "timing table\ncueDuration · attackImpactMs\ncrushDurationMs · knightElbowMs" as TIME <<db>>
+  component "timing table\ncueDuration · attackImpactMs\ncrushDurationMs · hoverbikeElbowMs" as TIME <<db>>
   component "board ladder\napplyAfterB · stampAfterAttackBoard\ndisplayPlacement · displayLives · usedSquares" as LADDER <<db>>
 }
 
 package "sinks" {
   component "TimelineCallbacks\nonStart · onCommit · onDone" as CB <<host>>
-  database "TimelineCommitPatch\nplacement · kingLives · mines · spentMines\nhidden · playingIds · moveProgress · moveLeg\njumpTrails · mineMissileTrails · attackDying" as PATCH <<db>>
+  database "TimelineCommitPatch\nplacement · ccLives · mines · spentMines\nhidden · playingIds · moveProgress · moveLeg\njumpTrails · mineMissileTrails · attackDying" as PATCH <<db>>
   component "matchReducer TIMELINE_*\n→ AnimationStage" as RED <<async>>
 }
 

@@ -91,15 +91,15 @@ end note
 
 note as N_OMNI
   **The naive script is omniscient about the Command Center, on purpose.**
-  ""ctx.enemyKing"" is ""findKing(map, enemy)"" and is never fog-filtered, so the
-  per-type check bonuses (""SNEAK_KNIGHT_CHECK"" 2_000, ""PAWN_CHECK_CC"" 1_500,
-  the Mecha ""diagonal"", ""QUEEN_WARP_CHECK_CC"" 2_000) aim at the real square
+  ""ctx.enemyCC"" is ""findCC(map, enemy)"" and is never fog-filtered, so the
+  per-type check bonuses (""SNEAK_HOVERBIKE_CHECK"" 2_000, ""MARINE_CHECK_CC"" 1_500,
+  the Mecha ""diagonal"", ""TACTICAL_JUMP_CHECK_CC"" 2_000) aim at the real square
   whether or not the script can see it. That is the decided contract, not a
   defect: this is the weaker difficulty, and the fog-honest treatment belongs
   to the strategic script.
 
-  **Two terms are still fog-gated:** ""attackKing"" and ""chaseKing"" test
-  ""vision.enemyKingVisible"" explicitly. The gate is close to redundant —
+  **Two terms are still fog-gated:** ""attackCC"" and ""chaseCC"" test
+  ""vision.enemyCCVisible"" explicitly. The gate is close to redundant —
   ""resolvePosture"" only returns ""hunt"" when the CC is visible, and those are
   the only postures where either weight is non-zero — but it is cheap and it
   documents which two terms were meant to depend on sight. Full split in
@@ -111,7 +111,7 @@ note as N_UNDEFENDED
   asks ""deployCovers"" on the **POST-move** board, for the enemy side, with
   ""snap.gasIncome[enemy]"" and ""ctx.storedFor(enemy)"": a Marine the enemy can
   recapture by dropping a unit off its Command Center is not free, so
-  ""HUNT_UNDEFENDED_PAWN"" stays off.
+  ""HUNT_UNDEFENDED_MARINE"" stays off.
 
   That predicate used to be a private, Marine-only ""canGasDeployDefend"" that
   imported from ""ai/strategic/context"" — the one place this layer reached

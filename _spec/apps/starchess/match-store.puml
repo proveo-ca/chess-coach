@@ -69,6 +69,6 @@ note bottom
   **Player fog intent:** ""useBoardInput"" occults unseen enemies for
   legal dests app-wide (live + tutorial) — resolve owns collisions.
   Turn lifecycle: ""turn-queue-sequence.puml"".
-  Income: ""applyTurnIncome""; rook mode: ""rookModeForSieged"".
+  Income: ""applyTurnIncome""; rook mode: ""tankModeForSieged"".
 end note
 @enduml

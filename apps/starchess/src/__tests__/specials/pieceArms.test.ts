@@ -10,7 +10,7 @@ import { addScAction } from "@chess-coach/starchess-core";
 
 import { createMatchStateFromScfen } from "~/app/matchReducer";
 import { createMatchStore } from "~/app/MatchStoreContext";
-import { rookModeForSieged } from "~/presentation/board/rookMode";
+import { tankModeForSieged } from "~/presentation/board/tankMode";
 import { mechaCharonArm } from "~/presentation/specials/arms/mechaCharon";
 import { hoverbikeMineArm } from "~/presentation/specials/arms/hoverbikeMine";
 import { shipJumpArm } from "~/presentation/specials/arms/shipJump";
@@ -27,7 +27,7 @@ describe("tankSiegeArm", () => {
     const store = makeStore("SCFEN|4k3/8/8/8/8/8/8/R3K3|1|33|P|G:11:11|Q:w:;b:");
     expect(tankSiegeArm(store, snapOf(store), { square: "a1", piece: "r" })).toBe("armed");
     expect(snapOf(store).queue?.actions).toMatchObject([
-      { timing: "B", kind: "rookSiege", color: "w", from: "a1" },
+      { timing: "B", kind: "siegeMode", color: "w", from: "a1" },
     ]);
   });
 
@@ -47,7 +47,7 @@ describe("tankSiegeArm", () => {
     expect(tankSiegeArm(store, snapOf(store), { square: "a1", piece: "r" })).toBe("armed");
     expect(snapOf(store).queue?.actions).toMatchObject([
       { timing: "C", kind: "classical", color: "w", from: "e2", to: "e3" },
-      { timing: "F", kind: "rookSiege", color: "w", from: "a1" },
+      { timing: "F", kind: "siegeMode", color: "w", from: "a1" },
     ]);
   });
 });
@@ -57,7 +57,7 @@ describe("hoverbikeMineArm", () => {
     const store = makeStore("SCFEN|4k3/8/8/8/8/8/8/1N2K3|1|33|P|G:11:11|Q:w:;b:");
     expect(hoverbikeMineArm(store, snapOf(store), { square: "b1", piece: "n" })).toBe("armed");
     expect(snapOf(store).queue?.actions).toMatchObject([
-      { timing: "B", kind: "knightMine", color: "w", from: "b1", to: "b1" },
+      { timing: "B", kind: "spiderMine", color: "w", from: "b1", to: "b1" },
     ]);
   });
 });
@@ -69,7 +69,7 @@ describe("mechaCharonArm", () => {
       "pending",
     );
     expect(store.shell().targeting).toMatchObject({
-      kind: "bishopSnipe",
+      kind: "charonMissiles",
       from: "c1",
     });
     const t = store.shell().targeting;
@@ -120,7 +120,7 @@ describe("mechaCharonArm", () => {
     expect(reset).toBe(1);
     expect(opened).toBe(1);
     const t = store.shell().targeting;
-    expect(t).toMatchObject({ kind: "bishopSnipe", from: "c1" });
+    expect(t).toMatchObject({ kind: "charonMissiles", from: "c1" });
     expect(t && "targets" in t && t.targets).toContain("h6");
   });
 
@@ -139,7 +139,7 @@ describe("mechaCharonArm", () => {
     );
     const t = store.shell().targeting;
     // `from` stays the arming square; only the offered targets project.
-    expect(t).toMatchObject({ kind: "bishopSnipe", from: "e4" });
+    expect(t).toMatchObject({ kind: "charonMissiles", from: "e4" });
     expect(t && "targets" in t && t.targets).toContain("f1");
   });
 
@@ -180,7 +180,7 @@ describe("mechaCharonArm", () => {
       "pending",
     );
     const t = store.shell().targeting;
-    expect(t).toMatchObject({ kind: "bishopSnipe", from: "e4" });
+    expect(t).toMatchObject({ kind: "charonMissiles", from: "e4" });
     expect(t && "targets" in t && [...t.targets].sort()).toEqual([
       "a8",
       "b1",
@@ -209,17 +209,17 @@ describe("mechaCharonArm", () => {
       "pending",
     );
     const t = store.shell().targeting;
-    expect(t).toMatchObject({ kind: "bishopSnipe", from: "e4" });
+    expect(t).toMatchObject({ kind: "charonMissiles", from: "e4" });
     expect(t && "targets" in t && t.targets).not.toContain("f1");
   });
 });
 
 describe("shipJumpArm", () => {
   const vision = (store: MatchStore) => ({
-    rookModeFor: rookModeForSieged(store.shell().siegedRooks),
+    tankModeFor: tankModeForSieged(store.shell().siegedTanks),
   });
 
-  it("rejects a mismatched piece on a queen square", () => {
+  it("rejects a mismatched piece on a BattleShip square", () => {
     const store = makeStore("SCFEN|4k3/8/8/8/8/8/8/3QK3|1|33|P|G:11:11|Q:w:;b:");
     expect(
       shipJumpArm(store, snapOf(store), { square: "d1", piece: "k" }, vision(store)),
@@ -227,7 +227,7 @@ describe("shipJumpArm", () => {
     expect(store.shell().targeting).toBeNull();
   });
 
-  it("rejects a queen piece on a non-queen square", () => {
+  it("rejects a BattleShip piece on a non-battleship square", () => {
     const store = makeStore("SCFEN|4k3/8/8/8/8/8/8/3QK3|1|33|P|G:11:11|Q:w:;b:");
     expect(
       shipJumpArm(store, snapOf(store), { square: "e1", piece: "q" }, vision(store)),
@@ -241,7 +241,7 @@ describe("shipJumpArm", () => {
       shipJumpArm(store, snapOf(store), { square: "d1", piece: "q" }, vision(store)),
     ).toBe("pending");
     const t = store.shell().targeting;
-    expect(t?.kind).toBe("queenWarp");
+    expect(t?.kind).toBe("tacticalJump");
     expect(t && "targets" in t && (t.targets as Square[]).length).toBeGreaterThan(0);
   });
 });

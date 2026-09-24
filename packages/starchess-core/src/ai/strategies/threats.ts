@@ -12,9 +12,9 @@ import type { AdjutantCtx, MoveEval } from "../context";
 import type { Strategy } from "./types";
 
 const score = (ev: MoveEval, ctx: AdjutantCtx): number => {
-  const { move, isKingMove } = ev;
+  const { move, isCCMove } = ev;
   // The Command Center (CC)'s own safety is survival's call, and a capture pays for itself.
-  if (isKingMove || move.capture) return 0;
+  if (isCCMove || move.capture) return 0;
 
   const { tactical, weights } = ctx;
   if (!tactical.enemyAttacks(move.to)) return 0;

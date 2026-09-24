@@ -42,7 +42,7 @@ describe("splitResolveWaves", () => {
     for (const w of waves) expect(w.cues.length).toBeGreaterThan(0);
   });
 
-  it("places B pawnDouble in specialBefore before classical move", () => {
+  it("places B stimStep in specialBefore before classical move", () => {
     let snap = parseScFen(
       "SCFEN|4k3/8/8/8/8/8/4P3/4K3|11|33|P|G:22:22|Q:w:;b:",
     );
@@ -50,7 +50,7 @@ describe("splitResolveWaves", () => {
       snapshot: snap,
       action: {
         timing: "B",
-        kind: "pawnDouble",
+        kind: "stimStep",
         color: "w",
         from: "e2",
         to: "e3",

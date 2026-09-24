@@ -1,14 +1,14 @@
 .boardOverlay {
   position: absolute;
   pointer-events: none;
-  /* Above king-damage fire (z 35) so hatch / battery attack VFX stay visible. */
+  /* Above cc-damage fire (z 35) so hatch / battery attack VFX stay visible. */
   z-index: 36;
   overflow: visible;
   contain: layout style;
   isolation: isolate;
   /* Shared with JS ATTACK_MS (= TURN_TIMEOUT_MS / 10). */
   --attack-ms: 1000ms;
-  /* Knight frag / impact (= ATTACK_MS / 4). JS FRAG_FLIGHT_MS / kill death delay. */
+  /* Hoverbike frag / impact (= ATTACK_MS / 4). JS FRAG_FLIGHT_MS / kill death delay. */
   --frag-flight-ms: 250ms;
 }
 
@@ -243,17 +243,17 @@
   opacity: 0.9;
 }
 
-.rookImpact {
+.tankImpact {
   position: absolute;
   pointer-events: none;
   overflow: visible;
   z-index: 36;
   transform-origin: center center;
-  animation: rookBlastBoom var(--attack-ms) ease-out 1 forwards;
+  animation: tankBlastBoom var(--attack-ms) ease-out 1 forwards;
 }
 
 /* Dark smoke billow — heavy gray/brown skirt around the fireball. */
-.rookImpactSmoke {
+.tankImpactSmoke {
   position: absolute;
   inset: -8%;
   border-radius: 48% 42% 55% 45% / 50% 46% 54% 48%;
@@ -263,11 +263,11 @@
     radial-gradient(ellipse at 50% 75%, rgba(55, 48, 40, 0.75) 0%, transparent 58%),
     radial-gradient(circle at 50% 50%, rgba(20, 18, 16, 0.55) 0%, transparent 70%);
   filter: blur(1.2px);
-  animation: rookSmokeExpand var(--attack-ms) ease-out 1 forwards;
+  animation: tankSmokeExpand var(--attack-ms) ease-out 1 forwards;
 }
 
 /* Turbulent orange/yellow fire shell. */
-.rookImpactFire {
+.tankImpactFire {
   position: absolute;
   inset: 12%;
   border-radius: 46% 54% 48% 52% / 50% 45% 55% 50%;
@@ -277,11 +277,11 @@
   box-shadow:
     0 0 14px rgba(255, 140, 20, 0.85),
     0 0 28px rgba(220, 60, 0, 0.55);
-  animation: rookFireRoil var(--attack-ms) linear 1 forwards;
+  animation: tankFireRoil var(--attack-ms) linear 1 forwards;
 }
 
 /* Blinding white-hot core. */
-.rookImpactCore {
+.tankImpactCore {
   position: absolute;
   inset: 32%;
   border-radius: 50%;
@@ -289,12 +289,12 @@
   box-shadow:
     0 0 10px rgba(255, 255, 255, 0.95),
     0 0 22px rgba(255, 200, 60, 0.9);
-  animation: rookCoreFlash var(--attack-ms) ease-out 1 forwards;
+  animation: tankCoreFlash var(--attack-ms) ease-out 1 forwards;
 }
 
 /* High-velocity ejecta streaks (white-hot fragments). */
-.rookImpactEjecta,
-.rookImpactEjectaDiag {
+.tankImpactEjecta,
+.tankImpactEjectaDiag {
   position: absolute;
   inset: -5%;
   background:
@@ -302,14 +302,14 @@
     linear-gradient(0deg, transparent 48%, #fff8e0 49.5%, #ffb040 50%, #fff8e0 50.5%, transparent 52%);
   /* Screen blend + existing fire box-shadow carry the glow (no drop-shadow). */
   mix-blend-mode: screen;
-  animation: rookEjectaBurst var(--attack-ms) ease-out 1 forwards;
+  animation: tankEjectaBurst var(--attack-ms) ease-out 1 forwards;
 }
 
-.rookImpactEjectaDiag {
+.tankImpactEjectaDiag {
   transform: rotate(28deg);
   inset: 5%;
   opacity: 0.85;
-  animation-name: rookEjectaBurstDiag;
+  animation-name: tankEjectaBurstDiag;
 }
 
 /* ── Keyframes ───────────────────────────────────────────────────── */
@@ -516,7 +516,7 @@
   }
 }
 
-/* Local −x kick for +x barrels (bishop / king). */
+/* Local −x kick for +x barrels (Mecha / Command Center). */
 @keyframes turretRecoilX {
   0%,
   100% {
@@ -557,7 +557,7 @@
   }
 }
 
-/* Rook rest barrels aim −135°; kick toward hull along that axis. */
+/* Tank rest barrels aim −135°; kick toward hull along that axis. */
 @keyframes batteryKick {
   0%,
   100% {
@@ -615,7 +615,7 @@
 }
 
 /* HE fireball: hard flash → turbulent expand → dark fade. */
-@keyframes rookBlastBoom {
+@keyframes tankBlastBoom {
   0% {
     opacity: 0;
     transform: scale(0.2);
@@ -638,7 +638,7 @@
   }
 }
 
-@keyframes rookSmokeExpand {
+@keyframes tankSmokeExpand {
   0% {
     opacity: 0;
     transform: scale(0.4);
@@ -657,7 +657,7 @@
   }
 }
 
-@keyframes rookFireRoil {
+@keyframes tankFireRoil {
   0% {
     opacity: 0;
     transform: scale(0.35) rotate(0deg);
@@ -680,7 +680,7 @@
   }
 }
 
-@keyframes rookCoreFlash {
+@keyframes tankCoreFlash {
   0% {
     opacity: 0;
     transform: scale(0.2);
@@ -703,7 +703,7 @@
   }
 }
 
-@keyframes rookEjectaBurst {
+@keyframes tankEjectaBurst {
   0%,
   4% {
     opacity: 0;
@@ -727,7 +727,7 @@
   }
 }
 
-@keyframes rookEjectaBurstDiag {
+@keyframes tankEjectaBurstDiag {
   0%,
   4% {
     opacity: 0;
@@ -840,69 +840,69 @@
 
 /* ── Per-cue bindings (single play; remount / class toggle restarts) ─ */
 
-.anim-pawnRifle :global([data-part="barrel"]) {
+.anim-marineRifle :global([data-part="barrel"]) {
   animation: recoilBurst var(--attack-ms) linear 1 forwards;
 }
 
-.anim-pawnRifle :global([data-part="muzzle-flash"]) {
+.anim-marineRifle :global([data-part="muzzle-flash"]) {
   animation: muzzleFlashBurst var(--attack-ms) linear 1 forwards;
   /* Flash grows from the muzzle (outer end of the +x barrel). */
   transform-origin: right center;
   transform-box: fill-box;
 }
 
-.anim-pawnRifle :global([data-part="body-shadow"]) {
+.anim-marineRifle :global([data-part="body-shadow"]) {
   animation: bodyShadowBurst var(--attack-ms) linear 1 forwards;
 }
 
-.anim-knightFrag :global([data-part="body"]) {
+.anim-hoverbikeFrag :global([data-part="body"]) {
   animation: throwPose var(--attack-ms) ease-in-out 1 forwards;
   transform-origin: 40% 60%;
 }
 
-.anim-bishopGatlings :global([data-part="gatling-hub"]),
-.anim-bishopGatlings :global([data-part="gatling-hub-far"]) {
+.anim-mechaGatlings :global([data-part="gatling-hub"]),
+.anim-mechaGatlings :global([data-part="gatling-hub-far"]) {
   animation: gatlingSpin 0.45s linear infinite;
 }
 
-.anim-bishopGatlings :global([data-part="gatling-recoil"]) {
+.anim-mechaGatlings :global([data-part="gatling-recoil"]) {
   animation: gatlingRecoil var(--attack-ms) linear 1 forwards;
 }
 
-.anim-bishopGatlings :global([data-part="gatling-flash-near"]),
-.anim-bishopGatlings :global([data-part="gatling-flash-far"]) {
+.anim-mechaGatlings :global([data-part="gatling-flash-near"]),
+.anim-mechaGatlings :global([data-part="gatling-flash-far"]) {
   animation: gatlingFlash 0.18s steps(2) infinite;
 }
 
-.anim-bishopGatlings :global([data-part="gatling-flash-far"]) {
+.anim-mechaGatlings :global([data-part="gatling-flash-far"]) {
   animation-delay: 0.09s;
 }
 
-/* Tank: king-style dual tubes — recoil + muzzle pulse, no HE blast. */
-.anim-rookBattery[data-rook-mode="tank"] :global([data-part="cannon-recoil"]),
-.originSlot[data-attack-anim="rookBattery"][data-rook-mode="tank"] :global([data-part="cannon-recoil"]) {
+/* Tank: cc-style dual tubes — recoil + muzzle pulse, no HE blast. */
+.anim-tankBattery[data-tank-mode="tank"] :global([data-part="cannon-recoil"]),
+.originSlot[data-attack-anim="tankBattery"][data-tank-mode="tank"] :global([data-part="cannon-recoil"]) {
   animation: turretRecoilX var(--attack-ms) ease-out 1 both;
 }
 
-.anim-rookBattery[data-rook-mode="tank"] :global([data-part="cannon-flash"]),
-.originSlot[data-attack-anim="rookBattery"][data-rook-mode="tank"] :global([data-part="cannon-flash"]) {
+.anim-tankBattery[data-tank-mode="tank"] :global([data-part="cannon-flash"]),
+.originSlot[data-attack-anim="tankBattery"][data-tank-mode="tank"] :global([data-part="cannon-flash"]) {
   animation: cannonPulse var(--attack-ms) ease-in-out 1 forwards;
 }
 
 /* Siege: +x shock recoil + muzzle blast/smoke + target HE impact. */
-.anim-rookBattery[data-rook-mode="siege"] :global([data-part="battery-recoil"]),
-.originSlot[data-attack-anim="rookBattery"][data-rook-mode="siege"] :global([data-part="battery-recoil"]) {
+.anim-tankBattery[data-tank-mode="siege"] :global([data-part="battery-recoil"]),
+.originSlot[data-attack-anim="tankBattery"][data-tank-mode="siege"] :global([data-part="battery-recoil"]) {
   animation: turretRecoilX calc(var(--attack-ms) / 3) ease-out 1 forwards;
 }
 
-.anim-rookBattery[data-rook-mode="siege"] :global([data-part="battery-blast"]),
-.originSlot[data-attack-anim="rookBattery"][data-rook-mode="siege"] :global([data-part="battery-blast"]) {
+.anim-tankBattery[data-tank-mode="siege"] :global([data-part="battery-blast"]),
+.originSlot[data-attack-anim="tankBattery"][data-tank-mode="siege"] :global([data-part="battery-blast"]) {
   animation: batteryBlast calc(var(--attack-ms) / 3) ease-out 1 forwards;
   transform-origin: center;
 }
 
-.anim-rookBattery[data-rook-mode="siege"] :global([data-part="battery-smoke"]),
-.originSlot[data-attack-anim="rookBattery"][data-rook-mode="siege"] :global([data-part="battery-smoke"]) {
+.anim-tankBattery[data-tank-mode="siege"] :global([data-part="battery-smoke"]),
+.originSlot[data-attack-anim="tankBattery"][data-tank-mode="siege"] :global([data-part="battery-smoke"]) {
   animation: batterySmoke calc(var(--attack-ms) / 3) ease-out 1 forwards;
   transform-origin: center;
   transform-box: fill-box;
@@ -914,49 +914,49 @@
  * hashed `anim-*` classList key is missing. Perspective is required for
  * rotateX on the SVG hat group to read as a lid flip.
  */
-.anim-kingDualCannon,
-.originSlot[data-attack-anim="kingDualCannon"] {
+.anim-ccDualCannon,
+.originSlot[data-attack-anim="ccDualCannon"] {
   perspective: 90px;
   transform-style: preserve-3d;
 }
 
-.anim-kingDualCannon .pieceFace,
-.anim-kingDualCannon .pieceFace svg,
-.originSlot[data-attack-anim="kingDualCannon"] .pieceFace,
-.originSlot[data-attack-anim="kingDualCannon"] .pieceFace svg {
+.anim-ccDualCannon .pieceFace,
+.anim-ccDualCannon .pieceFace svg,
+.originSlot[data-attack-anim="ccDualCannon"] .pieceFace,
+.originSlot[data-attack-anim="ccDualCannon"] .pieceFace svg {
   transform-style: preserve-3d;
   overflow: visible;
 }
 
-.anim-kingDualCannon :global([data-part="hat"]),
-.originSlot[data-attack-anim="kingDualCannon"] :global([data-part="hat"]) {
+.anim-ccDualCannon :global([data-part="hat"]),
+.originSlot[data-attack-anim="ccDualCannon"] :global([data-part="hat"]) {
   animation: hatFlip var(--attack-ms) ease-in-out 1 forwards;
   transform-origin: center bottom;
   transform-style: preserve-3d;
 }
 
-.anim-kingDualCannon :global([data-part="cannons"]),
-.originSlot[data-attack-anim="kingDualCannon"] :global([data-part="cannons"]) {
+.anim-ccDualCannon :global([data-part="cannons"]),
+.originSlot[data-attack-anim="ccDualCannon"] :global([data-part="cannons"]) {
   animation: cannonReveal var(--attack-ms) ease-in-out 1 forwards;
   transform-origin: left center;
 }
 
-.anim-kingDualCannon :global([data-part="cannon-recoil"]),
-.originSlot[data-attack-anim="kingDualCannon"] :global([data-part="cannon-recoil"]) {
+.anim-ccDualCannon :global([data-part="cannon-recoil"]),
+.originSlot[data-attack-anim="ccDualCannon"] :global([data-part="cannon-recoil"]) {
   /* Kick at FRAG_FLIGHT_MS — short window so the peak is the shot, not mid-attack. */
   animation: turretRecoilX var(--frag-flight-ms) ease-out 1 forwards;
   animation-delay: var(--frag-flight-ms);
 }
 
-.anim-kingDualCannon :global([data-part="cannon-flash"]),
-.originSlot[data-attack-anim="kingDualCannon"] :global([data-part="cannon-flash"]) {
+.anim-ccDualCannon :global([data-part="cannon-flash"]),
+.originSlot[data-attack-anim="ccDualCannon"] :global([data-part="cannon-flash"]) {
   animation: cannonPulse var(--attack-ms) ease-in-out 1 forwards;
 }
 
 /* ── Charon Booster Missiles: twin homing missiles (250ms per-cue --attack-ms) ─ */
 
-/* Cue hook for data-attack-anim="bishopCharon"; FX live on volley/impact. */
-.anim-bishopCharon {
+/* Cue hook for data-attack-anim="mechaCharon"; FX live on volley/impact. */
+.anim-mechaCharon {
   overflow: visible;
 }
 

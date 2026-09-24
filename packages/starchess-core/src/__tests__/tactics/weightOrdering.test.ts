@@ -16,19 +16,19 @@ import {
   CHARON_GUESS_HIT_RATE,
   CHARON_INSTA,
   EQUAL_TRADE_ATTACK,
-  HUNT_UNDEFENDED_PAWN,
-  PAWN_TRADE,
+  HUNT_UNDEFENDED_MARINE,
+  MARINE_TRADE,
   SAC_FOR_CC,
   SAC_FOR_CC_WINNING,
 } from "../../ai/strategies/captures";
-import { PAWN_CHECK_CC, SNEAK_KNIGHT_CHECK } from "../../ai/strategies/checks";import {
+import { MARINE_CHECK_CC, SNEAK_HOVERBIKE_CHECK } from "../../ai/strategies/checks";import {
   BACKRANK_ESCAPE,
   DEFEND_UNIT,
   DEPLOY_ATTACK_SURVIVAL,
-  KING_SAFETY,
-  QUEEN_ESCAPE,
-  QUEEN_THREAT_KING,
-  QUEEN_WARP_CHECK_CC,
+  CC_SAFETY,
+  BATTLESHIP_ESCAPE,
+  BATTLESHIP_THREAT_CC,
+  TACTICAL_JUMP_CHECK_CC,
 } from "../../ai/strategies/survival";
 import { NEAR_PROMOTE_RUSH } from "../../ai/strategies/mapControl";
 import {
@@ -41,17 +41,17 @@ import {
   AVENGE_THRIFT,
 } from "../../ai/strategic/strategies/attackers";
 import {
-  ALLY_SHIELD_PAWN,
+  ALLY_SHIELD_MARINE,
   ALLY_SHIELD_SHIP,
   ALLY_UPGRADE,
 } from "../../ai/strategic/strategies/economy";
 import {
-  ATTACK_KING_GUESS,
-  CHASE_KING_GUESS,
-  PAWN_CHECK_CC_GUESS,
-  PAWN_CHECK_CC_SEEN,
-  SNEAK_KNIGHT_CHECK_GUESS,
-  SNEAK_KNIGHT_CHECK_SEEN,
+  ATTACK_CC_GUESS,
+  CHASE_CC_GUESS,
+  MARINE_CHECK_CC_GUESS,
+  MARINE_CHECK_CC_SEEN,
+  SNEAK_HOVERBIKE_CHECK_GUESS,
+  SNEAK_HOVERBIKE_CHECK_SEEN,
 } from "../../ai/strategic/strategies/checks";
 
 describe("survival dominates", () => {
@@ -61,31 +61,31 @@ describe("survival dominates", () => {
       CHARON_COMBO,
       CHARON_INSTA,
       CHARON_GUESS,
-      HUNT_UNDEFENDED_PAWN,
-      PAWN_TRADE,
+      HUNT_UNDEFENDED_MARINE,
+      MARINE_TRADE,
       SAC_FOR_CC,
       SAC_FOR_CC_WINNING,
-      PAWN_CHECK_CC,
-      SNEAK_KNIGHT_CHECK,
-      QUEEN_WARP_CHECK_CC,
+      MARINE_CHECK_CC,
+      SNEAK_HOVERBIKE_CHECK,
+      TACTICAL_JUMP_CHECK_CC,
       NEAR_PROMOTE_RUSH,
-      ATTACK_KING_GUESS,
-      CHASE_KING_GUESS,
+      ATTACK_CC_GUESS,
+      CHASE_CC_GUESS,
       RUNNER_STOP_CRITICAL,
       RUNNER_STOP_SERIOUS,
     ]) {
-      expect(w).toBeLessThan(KING_SAFETY);
+      expect(w).toBeLessThan(CC_SAFETY);
     }
   });
 
   it("deploy+attack outranks a bare Command Center flee", () => {
-    expect(DEPLOY_ATTACK_SURVIVAL).toBeGreaterThan(KING_SAFETY);
+    expect(DEPLOY_ATTACK_SURVIVAL).toBeGreaterThan(CC_SAFETY);
     expect(BACKRANK_ESCAPE).toBeLessThan(DEPLOY_ATTACK_SURVIVAL);
   });
 
   it("saving the BattleShip outranks saving an ordinary unit", () => {
-    expect(QUEEN_ESCAPE).toBeGreaterThan(DEFEND_UNIT);
-    expect(QUEEN_THREAT_KING).toBeLessThan(QUEEN_ESCAPE);
+    expect(BATTLESHIP_ESCAPE).toBeGreaterThan(DEFEND_UNIT);
+    expect(BATTLESHIP_THREAT_CC).toBeLessThan(BATTLESHIP_ESCAPE);
   });
 
   it("insta-target tops the Charon ladder, hotter guesses stay mid-tier", () => {    // Effective terms: every Charon single carries base = trade*7, so pin the
@@ -94,7 +94,7 @@ describe("survival dominates", () => {
     const TRADE_FLOOR = 100;
     const base = TRADE_FLOOR * (1 + 9 - 3);
     expect(base + CHARON_INSTA).toBeGreaterThan(base + CHARON_COMBO);
-    expect(base + CHARON_GUESS * CHARON_GUESS_HIT_RATE).toBeLessThan(QUEEN_ESCAPE);
+    expect(base + CHARON_GUESS * CHARON_GUESS_HIT_RATE).toBeLessThan(BATTLESHIP_ESCAPE);
     expect(base + CHARON_GUESS * CHARON_GUESS_HIT_RATE).toBeGreaterThan(SAC_FOR_CC);
     expect(CHARON_INSTA).toBeLessThan(BACKRANK_ESCAPE);
   });
@@ -108,30 +108,30 @@ describe("Command Center pressure outranks map control", () => {
    * Asserted on the EFFECTIVE weight, not the bare constant. In
    * `strategic/strategies/checks.ts` a check stacks its per-piece block on top of
    * the `attackWeight` block — both test `attacksSquare(after, move.to,
-   * targetKing)` — so no piece-check constant is ever scored alone. A ladder
+   * targetCC)` — so no piece-check constant is ever scored alone. A ladder
    * built from bare constants would be false assurance.
    */
-  const effectiveGuessedPawnCheck = PAWN_CHECK_CC_GUESS + ATTACK_KING_GUESS;
+  const effectiveGuessedMarineCheck = MARINE_CHECK_CC_GUESS + ATTACK_CC_GUESS;
 
   it("a Marine check on the guessed CC outranks the promotion rush", () => {
-    expect(effectiveGuessedPawnCheck).toBeGreaterThan(NEAR_PROMOTE_RUSH);
+    expect(effectiveGuessedMarineCheck).toBeGreaterThan(NEAR_PROMOTE_RUSH);
   });
 
   it("even the un-stacked constant clears the rush, so the ordering survives de-stacking", () => {
     // Guards the follow-up question of whether the two blocks should be made
     // mutually exclusive: the invariant must hold either way.
-    expect(PAWN_CHECK_CC_GUESS).toBeGreaterThanOrEqual(NEAR_PROMOTE_RUSH);
+    expect(MARINE_CHECK_CC_GUESS).toBeGreaterThanOrEqual(NEAR_PROMOTE_RUSH);
   });
 
   it("a sneak check outranks an equal-material trade", () => {
-    expect(SNEAK_KNIGHT_CHECK_GUESS).toBeGreaterThan(EQUAL_TRADE_ATTACK);
-    expect(SNEAK_KNIGHT_CHECK_SEEN).toBeGreaterThan(EQUAL_TRADE_ATTACK);
+    expect(SNEAK_HOVERBIKE_CHECK_GUESS).toBeGreaterThan(EQUAL_TRADE_ATTACK);
+    expect(SNEAK_HOVERBIKE_CHECK_SEEN).toBeGreaterThan(EQUAL_TRADE_ATTACK);
   });
 
   it("the strategic sneak check is the stronger of the two builds", () => {
     // The naive weight is deliberately lower — the strategic Adjutant is the
     // one that is supposed to drive at the Command Center.
-    expect(SNEAK_KNIGHT_CHECK_SEEN).toBeGreaterThan(SNEAK_KNIGHT_CHECK);
+    expect(SNEAK_HOVERBIKE_CHECK_SEEN).toBeGreaterThan(SNEAK_HOVERBIKE_CHECK);
   });
 });
 
@@ -146,31 +146,31 @@ describe("giving up material for Command Center pressure is bottom-tier", () => 
   });
 
   it("never outranks simply taking a free Marine while level", () => {
-    expect(SAC_FOR_CC).toBeLessThan(HUNT_UNDEFENDED_PAWN);
+    expect(SAC_FOR_CC).toBeLessThan(HUNT_UNDEFENDED_MARINE);
   });
 });
 
 describe("the Command Center's own debts", () => {
   /**
    * Firing on a Command Center names the shooter, and the standing instruction
-   * is to take it. The weight sits directly under `KING_SAFETY` — keeping the
+   * is to take it. The weight sits directly under `CC_SAFETY` — keeping the
    * CC out of fire still outranks avenging it, a live checker is still
    * survival's business through `DEPLOY_ATTACK_SURVIVAL`, and everything below
    * loses to the debt.
    */
   it("retaliation ranks under the Command Center's own safety", () => {
-    expect(AVENGE_CC_SHOT).toBeLessThan(KING_SAFETY);
+    expect(AVENGE_CC_SHOT).toBeLessThan(CC_SAFETY);
     expect(AVENGE_CC_SHOT).toBeLessThan(DEPLOY_ATTACK_SURVIVAL);
   });
 
   it("...and over every other concern the turn can offer", () => {
     for (const w of [
       RUNNER_STOP_CRITICAL,
-      PAWN_CHECK_CC_SEEN,
-      SNEAK_KNIGHT_CHECK_SEEN,
-      ATTACK_KING_GUESS,
+      MARINE_CHECK_CC_SEEN,
+      SNEAK_HOVERBIKE_CHECK_SEEN,
+      ATTACK_CC_GUESS,
       EQUAL_TRADE_ATTACK,
-      QUEEN_ESCAPE,
+      BATTLESHIP_ESCAPE,
     ]) {
       expect(AVENGE_CC_SHOT).toBeGreaterThan(w);
     }
@@ -187,30 +187,30 @@ describe("an enemy runner sits between the check tier and the guess", () => {
    * The ordering the promotion-defense module is built on. A marine covers two
    * ranks a turn, so "one turn out" is the last turn on which any answer
    * exists — it therefore outranks a check we could repeat next turn, while
-   * "two turns out" only has to beat speculation (`ATTACK_KING_GUESS` aims at a
+   * "two turns out" only has to beat speculation (`ATTACK_CC_GUESS` aims at a
    * *guessed* square) and ordinary material.
    */
   it("the last-chance tier outranks a check on the Command Center", () => {
-    expect(RUNNER_STOP_CRITICAL).toBeGreaterThan(PAWN_CHECK_CC_SEEN);
-    expect(RUNNER_STOP_CRITICAL).toBeGreaterThan(SNEAK_KNIGHT_CHECK_SEEN);
+    expect(RUNNER_STOP_CRITICAL).toBeGreaterThan(MARINE_CHECK_CC_SEEN);
+    expect(RUNNER_STOP_CRITICAL).toBeGreaterThan(SNEAK_HOVERBIKE_CHECK_SEEN);
   });
 
   it("but never outranks saving the BattleShip, let alone the Command Center", () => {
-    expect(RUNNER_STOP_CRITICAL).toBeLessThan(QUEEN_ESCAPE);
+    expect(RUNNER_STOP_CRITICAL).toBeLessThan(BATTLESHIP_ESCAPE);
   });
 
   it("a runner two turns out beats aiming at a guessed Command Center", () => {
-    expect(RUNNER_STOP_SERIOUS).toBeGreaterThan(ATTACK_KING_GUESS);
+    expect(RUNNER_STOP_SERIOUS).toBeGreaterThan(ATTACK_CC_GUESS);
     expect(RUNNER_STOP_SERIOUS).toBeGreaterThan(EQUAL_TRADE_ATTACK);
   });
 
   it("...and still loses to a real check on it", () => {
-    expect(RUNNER_STOP_SERIOUS).toBeLessThan(PAWN_CHECK_CC_GUESS);
-    expect(RUNNER_STOP_SERIOUS).toBeLessThan(SNEAK_KNIGHT_CHECK_GUESS);
+    expect(RUNNER_STOP_SERIOUS).toBeLessThan(MARINE_CHECK_CC_GUESS);
+    expect(RUNNER_STOP_SERIOUS).toBeLessThan(SNEAK_HOVERBIKE_CHECK_GUESS);
   });
 
   it("a runner still far off is a tie-break, not a plan", () => {
-    expect(RUNNER_STOP_WATCH).toBeLessThan(HUNT_UNDEFENDED_PAWN);
+    expect(RUNNER_STOP_WATCH).toBeLessThan(HUNT_UNDEFENDED_MARINE);
     expect(RUNNER_STOP_WATCH).toBeLessThan(RUNNER_STOP_SERIOUS);
   });
 });
@@ -225,7 +225,7 @@ describe("ally-crush dials never outbid a real runner tier or retaliation", () =
    * ally-crush into the runner tiers — crushes top out at the dials below.
    */
   it("each dial sits below the serious runner tier", () => {
-    for (const w of [ALLY_UPGRADE, ALLY_SHIELD_PAWN, ALLY_SHIELD_SHIP]) {
+    for (const w of [ALLY_UPGRADE, ALLY_SHIELD_MARINE, ALLY_SHIELD_SHIP]) {
       expect(w).toBeLessThan(RUNNER_STOP_SERIOUS);
     }
   });
@@ -242,17 +242,17 @@ describe("ally-crush dials never outbid a real runner tier or retaliation", () =
 
 describe("a fogged guess is never scored above a seen Command Center", () => {
   it("holds for every guess/seen pair", () => {
-    expect(SNEAK_KNIGHT_CHECK_GUESS).toBeLessThanOrEqual(SNEAK_KNIGHT_CHECK_SEEN);
-    expect(PAWN_CHECK_CC_GUESS).toBeLessThanOrEqual(PAWN_CHECK_CC_SEEN);
+    expect(SNEAK_HOVERBIKE_CHECK_GUESS).toBeLessThanOrEqual(SNEAK_HOVERBIKE_CHECK_SEEN);
+    expect(MARINE_CHECK_CC_GUESS).toBeLessThanOrEqual(MARINE_CHECK_CC_SEEN);
   });
 
   it("except the deliberate hot-chase exception (single-step still subordinate)", () => {
-    // Arena-tuned: guess chase 2_500 drags units into vision of the true king
+    // Arena-tuned: guess chase 2_500 drags units into vision of the true Command Center
     // (naive:strategic 10-0 line); the naive pair it inverts stays frozen —
     // pin both sides so neither drifts silently.
-    expect(CHASE_KING_GUESS).toBeGreaterThan(1_000);
-    expect(CHASE_KING_GUESS).toBeLessThan(AVENGE_CC_SHOT);
-    expect(SNEAK_KNIGHT_CHECK).toBe(2_000);
-    expect(PAWN_CHECK_CC).toBe(1_500);
+    expect(CHASE_CC_GUESS).toBeGreaterThan(1_000);
+    expect(CHASE_CC_GUESS).toBeLessThan(AVENGE_CC_SHOT);
+    expect(SNEAK_HOVERBIKE_CHECK).toBe(2_000);
+    expect(MARINE_CHECK_CC).toBe(1_500);
   });
 });

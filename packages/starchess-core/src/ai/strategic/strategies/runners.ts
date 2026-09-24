@@ -43,7 +43,7 @@ export const RUNNER_STOP_CRITICAL = 7_000;
 
 /**
  * Two turns out (3–4 squares) — the case that started this module. Above
- * `ATTACK_KING_GUESS`, because aiming at a *guessed* Command Center square is
+ * `ATTACK_CC_GUESS`, because aiming at a *guessed* Command Center square is
  * speculation and a marine three squares out is not, and below the 6_000 check
  * weights, so an actual threat on the Command Center still wins the turn.
  */
@@ -139,9 +139,9 @@ export const runnerDeployValue = (
 };
 
 const score = (ev: MoveEval, ctx: StrategicCtx): number => {
-  const { move, isKingMove } = ev;
+  const { move, isCCMove } = ev;
   // The Command Center's own square is survival's call, never this concern's.
-  if (isKingMove) return 0;
+  if (isCCMove) return 0;
   const { runners } = ctx;
   if (runners.length === 0) return 0;
 

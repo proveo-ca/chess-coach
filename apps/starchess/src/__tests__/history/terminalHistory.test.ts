@@ -21,7 +21,7 @@ import type { ScFenSnapshot } from "@chess-coach/starchess-core";
 const baseSnap = (over: Partial<ScFenSnapshot> = {}): ScFenSnapshot => ({
   placement: "4k3/8/8/8/8/8/4P3/4K3",
   turn: 0,
-  kingLives: { w: 3, b: 3 },
+  ccLives: { w: 3, b: 3 },
   phase: "P",
   gas: { w: 1, b: 1 },
   gasIncome: { w: 1, b: 1 },
@@ -38,13 +38,13 @@ const terminalState = (): MatchState => {
     placement: "4k3/8/8/8/8/4P3/8/4K3",
     turn: 1,
     specialsUsed: ["e3"],
-    siegedRooks: [],
+    siegedTanks: [],
   });
   const end = baseSnap({
     placement: "4k3/8/8/8/8/8/8/4K3",
     turn: 2,
     phase: "O",
-    kingLives: { w: 3, b: 0 },
+    ccLives: { w: 3, b: 0 },
   });
   return {
     ...s,
@@ -105,7 +105,7 @@ describe("Phase 4 terminal history", () => {
       ...s,
       phase: "gameOver",
       outcome: { winner: "w" },
-      liveSnapshot: { ...s.liveSnapshot, phase: "O", kingLives: { w: 3, b: 0 } },
+      liveSnapshot: { ...s.liveSnapshot, phase: "O", ccLives: { w: 3, b: 0 } },
     };
     const afterEnd = matchReducer(s, { type: "SUBMIT_TURN", reason: "end" });
     const afterTimeout = matchReducer(s, { type: "SUBMIT_TURN", reason: "timeout" });
@@ -213,7 +213,7 @@ describe("Phase 4 terminal history", () => {
       ...s,
       phase: "gameOver",
       outcome: { winner: "w" },
-      liveSnapshot: { ...s.liveSnapshot, phase: "O", kingLives: { w: 3, b: 0 } },
+      liveSnapshot: { ...s.liveSnapshot, phase: "O", ccLives: { w: 3, b: 0 } },
       reviewIndex: 0,
       statusText: "Start",
     };
@@ -235,7 +235,7 @@ describe("Phase 4 terminal history", () => {
     s = matchReducer(s, {
       type: "TIMELINE_COMMIT",
       placement: result.next.placement,
-      kingLives: result.next.kingLives,
+      ccLives: result.next.ccLives,
     });
     expect(s.liveSnapshot).toEqual(live);
     expect(s.timeline.displayPlacement).toBe(result.next.placement);

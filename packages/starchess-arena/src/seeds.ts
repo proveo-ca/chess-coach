@@ -7,7 +7,7 @@
  * canonical seed alone; the curated corpus extends from here (`--seeds N`
  * winds through these deterministically — the engine/scripts carry no RNG).
  *
- * Ranks are 8→1; `0` = opening turn; `33` king lives; `P` planning phase;
+ * Ranks are 8→1; `0` = opening turn; `33` Command Center lives; `P` planning phase;
  * `B:` stored minerals; `Q:` empty queue.
  *
  * // SPEC: _spec/packages/starchess-arena/arena.puml

@@ -1,7 +1,7 @@
 // SPEC: _spec/apps/starchess/menu-flow.puml
 import {
   attacksSquare,
-  findKing,
+  findCC,
   getSideVision,
   hostileMineOn,
   parseMinesExtra,
@@ -155,20 +155,20 @@ export const gasMarineSquare = (scfen: string, viewer: StarChessColor = "w"): Sq
   if (!/C=/.test(queue)) return null;
   // A spawn is the forward deploy, not the marine. Any other gas action already
   // spends the canister this beat is about.
-  if (/[BF]=(?!spawn\b)[A-Za-z]/.test(queue)) return null;
+  if (/[BF]=(?!deploy\b)[A-Za-z]/.test(queue)) return null;
   const map = placementMap(scfen);
   if (!map) return null;
   const from = /C=([a-h][1-8])/.exec(queue)?.[1] as Square | undefined;
   const fromPiece = from ? map.get(from) : undefined;
-  const moverIsPawn = fromPiece?.color === viewer && fromPiece.type === "p";
+  const moverIsMarine = fromPiece?.color === viewer && fromPiece.type === "p";
   // The h-file push just spent its move — gas is the extra step on that marine.
-  if (moverIsPawn && from![0] === "h") return from!;
+  if (moverIsMarine && from![0] === "h") return from!;
   let best: Square | null = null;
   let bestRank = -1;
   let bestFile = -1;
   for (const [sq, piece] of map) {
     if (piece.color !== viewer || piece.type !== "p") continue;
-    if (moverIsPawn && sq === from) continue;
+    if (moverIsMarine && sq === from) continue;
     const rank = Number(sq[1]);
     const file = FILES.indexOf(sq[0]!);
     if (rank > bestRank || (rank === bestRank && file > bestFile)) {
@@ -177,7 +177,7 @@ export const gasMarineSquare = (scfen: string, viewer: StarChessColor = "w"): Sq
       bestFile = file;
     }
   }
-  return best ?? (moverIsPawn ? from! : null);
+  return best ?? (moverIsMarine ? from! : null);
 };
 
 /** Empty g2, beside a Command Center on h1. Empty h2 stays empty — the h-file push outranks a deploy there. */
@@ -206,13 +206,13 @@ const deployVacancies = (
     vacated.add(from);
     landed.add(to);
   }
-  for (const step of queue.matchAll(/[BF]=(?:pawnDouble|queenWarp):([a-h][1-8]):([a-h][1-8])/g)) {
+  for (const step of queue.matchAll(/[BF]=(?:stimStep|tacticalJump):([a-h][1-8]):([a-h][1-8])/g)) {
     const left = squareNamed(step[1]);
     const arrived = squareNamed(step[2]);
     if (left) vacated.add(left);
     if (arrived) landed.add(arrived);
   }
-  for (const spawn of queue.matchAll(/[BF]=spawn:[a-h][1-8]:([a-h][1-8])/g)) {
+  for (const spawn of queue.matchAll(/[BF]=deploy:[a-h][1-8]:([a-h][1-8])/g)) {
     const at = squareNamed(spawn[1]);
     if (at) spawned.add(at);
   }
@@ -220,22 +220,22 @@ const deployVacancies = (
   return { vacated, landed, spawned };
 };
 
-const kingAfterMove = (
+const ccAfterMove = (
   map: Map<Square, ScPiece>,
   queue: string,
   viewer: StarChessColor,
 ): Square | null => {
-  let king = findKing(map, viewer);
+  let commandCenter = findCC(map, viewer);
   const classical = /C=([a-h][1-8])([a-h][1-8])/.exec(queue);
   const from = squareNamed(classical?.[1]);
   const to = squareNamed(classical?.[2]);
-  if (king && from === king && to) king = to;
-  return king;
+  if (commandCenter && from === commandCenter && to) commandCenter = to;
+  return commandCenter;
 };
 
-const adjacentTo = (king: Square, sq: Square): boolean => {
-  const df = Math.abs(king.charCodeAt(0) - sq.charCodeAt(0));
-  const dr = Math.abs(Number(king[1]) - Number(sq[1]));
+const adjacentTo = (commandCenter: Square, sq: Square): boolean => {
+  const df = Math.abs(commandCenter.charCodeAt(0) - sq.charCodeAt(0));
+  const dr = Math.abs(Number(commandCenter[1]) - Number(sq[1]));
   return df <= 1 && dr <= 1 && (df !== 0 || dr !== 0);
 };
 
@@ -255,13 +255,13 @@ export const forwardDeploySquare = (
   if (!/C=/.test(queue)) return null;
   const map = placementMap(scfen);
   if (!map) return null;
-  const king = kingAfterMove(map, queue, viewer);
-  if (!king) return null;
+  const commandCenter = ccAfterMove(map, queue, viewer);
+  if (!commandCenter) return null;
   const { vacated, landed, spawned } = deployVacancies(queue);
   const mines = minesOf(scfen);
   for (const sq of FORWARD_DEPLOYS) {
     if (spawned.has(sq) || landed.has(sq) || hostileMineOn(mines, viewer, sq)) continue;
-    if (!adjacentTo(king, sq)) continue;
+    if (!adjacentTo(commandCenter, sq)) continue;
     const occ = map.get(sq);
     if (occ && !vacated.has(sq)) continue;
     if (occ?.type === "k") continue;
@@ -280,9 +280,9 @@ export const promotionChoiceOpen = (
   if (!map) return null;
   const queue = whiteQueue(scfen);
   for (const sq of ["h7", "h6"] as const) {
-    const pawn = map.get(sq);
-    if (!pawn || pawn.color !== viewer || pawn.type !== "p") continue;
-    if (new RegExp(`C=${sq}|[BF]=pawnDouble:${sq}`).test(queue)) continue;
+    const marine = map.get(sq);
+    if (!marine || marine.color !== viewer || marine.type !== "p") continue;
+    if (new RegExp(`C=${sq}|[BF]=stimStep:${sq}`).test(queue)) continue;
     if (whiteGas(scfen) >= 1 || !/C=/.test(queue)) return sq;
   }
   return null;
@@ -313,7 +313,7 @@ export const chargeFromH8 = (scfen: string, viewer: StarChessColor = "w"): boole
 };
 
 const G2_DIAGONAL: readonly Square[] = ["f3", "e4", "d5", "c6", "b7", "a8"];
-const G2_KNIGHT: readonly Square[] = ["e1", "e3", "f4", "h4", "c1", "c3"];
+const G2_HOVERBIKE: readonly Square[] = ["e1", "e3", "f4", "h4", "c1", "c3"];
 
 /**
  * Which unit the g2 gas-deploy beat should name. A Mecha when one eyes the
@@ -339,7 +339,7 @@ export const g2DeployName = (
       );
     });
   if (heavyThere(G2_DIAGONAL)) return "Mecha";
-  if (heavyThere(G2_KNIGHT)) return "Hoverbike";
+  if (heavyThere(G2_HOVERBIKE)) return "Hoverbike";
   return "Mecha";
 };
 
@@ -366,7 +366,7 @@ export const runnerStop = (
   const queue = whiteQueue(scfen);
   if (/C=/.test(queue)) return null;
   const vision = getSideVision(map, viewer, {
-    rookModeFor: (sq) => (squareSieged(scfen, sq) ? "siege" : "tank"),
+    tankModeFor: (sq) => (squareSieged(scfen, sq) ? "siege" : "tank"),
     mines: minesOf(scfen),
   });
   const runners: Square[] = [];
@@ -392,10 +392,10 @@ export const runnerStop = (
   const allies = [...map.entries()]
     .filter(([, piece]) => piece.color === viewer && piece.type !== "k")
     .map(([sq]) => sq);
-  const kings = [...map.entries()]
+  const commandCenters = [...map.entries()]
     .filter(([, piece]) => piece.color === viewer && piece.type === "k")
     .map(([sq]) => sq);
-  const pool = attackers.length > 0 ? attackers : allies.length > 0 ? allies : kings;
+  const pool = attackers.length > 0 ? attackers : allies.length > 0 ? allies : commandCenters;
   if (pool.length === 0) return null;
   const dist = (sq: Square) =>
     Math.max(
@@ -433,7 +433,7 @@ const tankReadyToSiege = (
 ): boolean => {
   const piece = map.get(square);
   if (!piece || piece.color !== viewer || piece.type !== "r") return false;
-  if (new RegExp(`[BF]=rookSiege:${square}`).test(queue)) return false;
+  if (new RegExp(`[BF]=siegeMode:${square}`).test(queue)) return false;
   return !squareSieged(scfen, square);
 };
 
@@ -461,7 +461,7 @@ export const tankSiegeOnH5 = (scfen: string, viewer: StarChessColor = "w"): bool
   tankSiegeSquare(scfen, viewer) != null;
 
 /** Square of the viewer's BattleShip, wherever it jumped to. */
-export const whiteQueenSquare = (scfen: string, viewer: StarChessColor = "w"): Square | null => {
+export const whiteBattleShipSquare = (scfen: string, viewer: StarChessColor = "w"): Square | null => {
   const map = placementMap(scfen);
   if (!map) return null;
   for (const [sq, piece] of map) {
@@ -474,7 +474,7 @@ export const whiteQueenSquare = (scfen: string, viewer: StarChessColor = "w"): S
  * Where the white BattleShip is. `null` when the placement cannot be read, so
  * a mid-animation frame does not look like the ship just died.
  */
-export const whiteQueenAtH8 = (
+export const whiteBattleShipAtH8 = (
   scfen: string,
 ): { onH8: boolean; alive: boolean } | null => {
   const map = placementMap(scfen);
@@ -546,7 +546,7 @@ export const availableTrajectories = (
 };
 
 /** Elbow of a knight hop, long leg first — the convention the hint arrows use. */
-export const knightVia = (from: Square, to: Square): Square | undefined => {
+export const hoverbikeVia = (from: Square, to: Square): Square | undefined => {
   const df = to.charCodeAt(0) - from.charCodeAt(0);
   const dr = Number(to[1]) - Number(from[1]);
   const adf = Math.abs(df);
@@ -556,7 +556,7 @@ export const knightVia = (from: Square, to: Square): Square | undefined => {
 };
 
 /** Intents that carry their unit to `to` — the rest aim at it (snipe, deploy). */
-const RELOCATES: ReadonlySet<ScAction["kind"]> = new Set(["classical", "queenWarp", "pawnDouble"]);
+const RELOCATES: ReadonlySet<ScAction["kind"]> = new Set(["classical", "tacticalJump", "stimStep"]);
 
 /**
  * One arrow per intent that travels (`from → to`), for replaying a past turn.
@@ -592,14 +592,14 @@ export const intentArrows = (
       }
       return false;
     }
-    const king = findKing(after, a.color === "w" ? "b" : "w");
-    return !!king && attacksSquare(after, a.to, king);
+    const commandCenter = findCC(after, a.color === "w" ? "b" : "w");
+    return !!commandCenter && attacksSquare(after, a.to, commandCenter);
   };
   const out: TutorialBoardArrow[] = [];
   for (const a of actions) {
     if (!a.to || a.to === a.from) continue;
     const moving = a as ScAction & { to: Square };
-    const via = map.get(a.from)?.type === "n" ? knightVia(a.from, a.to) : undefined;
+    const via = map.get(a.from)?.type === "n" ? hoverbikeVia(a.from, a.to) : undefined;
     out.push({
       from: a.from,
       to: a.to,
@@ -610,7 +610,7 @@ export const intentArrows = (
   return out;
 };
 
-const KNIGHT_HOPS: readonly (readonly [number, number])[] = [
+const HOVERBIKE_HOPS: readonly (readonly [number, number])[] = [
   [1, 2], [2, 1], [2, -1], [1, -2], [-1, -2], [-2, -1], [-2, 1], [-1, 2],
 ];
 
@@ -629,18 +629,18 @@ export const mineGuard = (
   if (mines.length < 2) return null;
   const map = placementMap(scfen);
   if (!map) return null;
-  const knight = [...map.entries()].find(
+  const hoverbike = [...map.entries()].find(
     ([, piece]) => piece.color === viewer && piece.type === "n",
   )?.[0];
-  if (!knight) return null;
+  if (!hoverbike) return null;
   const hops: TutorialBoardArrow[] = [];
-  for (const [df, dr] of KNIGHT_HOPS) {
-    const f = FILES.indexOf(knight[0]!) + df;
-    const r = Number(knight[1]) + dr;
+  for (const [df, dr] of HOVERBIKE_HOPS) {
+    const f = FILES.indexOf(hoverbike[0]!) + df;
+    const r = Number(hoverbike[1]) + dr;
     if (f < 0 || f > 7 || r < 1 || r > 8) continue;
     const to = `${FILES[f]}${r}` as Square;
     if (map.get(to)?.color === viewer) continue;
-    hops.push({ from: knight, to, via: knightVia(knight, to) });
+    hops.push({ from: hoverbike, to, via: hoverbikeVia(hoverbike, to) });
   }
   const files = new Set([...mines, ...hops.map((h) => h.to)].map((sq) => sq[0]));
   return { mines, hops, files: files.size };
@@ -669,17 +669,17 @@ export const shipJuke = (
   viewer: StarChessColor = "w",
 ): { from: Square; to: Square } | null => {
   if (viewer !== "w" || whiteGas(scfen) < WARP_GAS) return null;
-  if (/queenWarp:/.test(whiteQueue(scfen))) return null;
+  if (/tacticalJump:/.test(whiteQueue(scfen))) return null;
   const map = placementMap(scfen);
   if (!map) return null;
-  const from = whiteQueenSquare(scfen, viewer);
+  const from = whiteBattleShipSquare(scfen, viewer);
   if (!from) return null;
   const enemy = viewer === "w" ? "b" : "w";
-  const enemyKing = findKing(map, enemy);
+  const enemyCC = findCC(map, enemy);
   // Either Command Center gone: the game is over, nothing left to juke.
-  if (!enemyKing || !findKing(map, viewer)) return null;
+  if (!enemyCC || !findCC(map, viewer)) return null;
   const vision = getSideVision(map, viewer, {
-    rookModeFor: (sq) => (squareSieged(scfen, sq) ? "siege" : "tank"),
+    tankModeFor: (sq) => (squareSieged(scfen, sq) ? "siege" : "tank"),
     mines: minesOf(scfen),
   });
   const ship = map.get(from)!;
@@ -699,8 +699,8 @@ export const shipJuke = (
     if (attacked) continue;
     const cand = {
       to,
-      checks: attacksSquare(after, to, enemyKing),
-      far: chebyshev(to, enemyKing),
+      checks: attacksSquare(after, to, enemyCC),
+      far: chebyshev(to, enemyCC),
       near: chebyshev(to, from),
     };
     if (

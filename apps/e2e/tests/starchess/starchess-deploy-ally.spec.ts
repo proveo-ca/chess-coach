@@ -42,10 +42,10 @@ test.describe("StarChess deploy over ally", () => {
     await page.evaluate(() => localStorage.clear());
   });
 
-  test("CC deploys a hoverbike onto an ally pawn — e6 becomes the bike", async ({
+  test("CC deploys a hoverbike onto an ally Marine — e6 becomes the bike", async ({
     page,
   }) => {
-    // White CC e5, white pawn e6, banked minerals for the bike (cost 3).
+    // White CC e5, white Marine e6, banked minerals for the bike (cost 3).
     const scfen =
       "SCFEN|4k3/8/4P3/4K3/8/8/8/8|11|33|P|G:12:22|B:4:4|Q:w:;b:";
     await gotoScfen(page, scfen);
@@ -62,7 +62,7 @@ test.describe("StarChess deploy over ally", () => {
     await expect(allyTarget).toBeVisible({ timeout: 5_000 });
     await allyTarget.click();
 
-    // Deployed bike replaces the pawn on End.
+    // Deployed bike replaces the Marine on End.
     await page.getByTestId("turn-end").click();
     await expect(settledPieceAt(page, "e6", "w n")).toBeVisible({ timeout: 15_000 });
     await expect(settledPieceAt(page, "e6", "w p")).toHaveCount(0);

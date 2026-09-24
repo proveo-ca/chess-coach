@@ -4,7 +4,7 @@ export type SpecialCopy = {
   unit: string;
   name: string;
   description: string;
-  /** True when dropping gas on this unit commits a special (story: knight / king). */
+  /** True when dropping gas on this unit commits a special (story: Hoverbike / Command Center). */
   deployable: boolean;
   /** Vespene canisters required to arm (default = SPECIAL_ENERGY_COST). */
   gasCost?: number;

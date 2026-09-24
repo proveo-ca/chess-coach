@@ -1,5 +1,5 @@
 /**
- * Pawn / marine last-rank picker — q / r / b / n.
+ * Marine last-rank picker — q / r / b / n.
  * Ported from apps/chess PromotionModal; units via {@link PieceGlyph} (inline art).
  */
 import type { Component } from "solid-js";

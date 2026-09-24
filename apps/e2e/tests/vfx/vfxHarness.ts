@@ -18,7 +18,7 @@ export const BOARD_GRID = "[data-board-grid]";
 
 /** Layer roots in CombatOverlayRoot order — stable stack, never per-layer `Show`. */
 export const LAYER_ORDER = [
-  "data-starchess-king-damage-layer",
+  "data-starchess-cc-damage-layer",
   "data-starchess-gas-drop-layer",
   "data-starchess-attack-layer",
   "data-starchess-death-layer",
@@ -30,7 +30,7 @@ export const LAYER_ORDER = [
 
 /** One selector per VFX kind the Composite can play. */
 export const CUE = {
-  kingDamage: "[data-starchess-king-damage-layer] [data-king-damage]",
+  ccDamage: "[data-starchess-cc-damage-layer] [data-cc-damage]",
   gasDrop: "[data-starchess-gas-drop-layer] [data-gas-drop-id]",
   attack: "[data-starchess-attack-layer] [data-attack-anim]",
   death: "[data-starchess-death-layer] [data-death-phase]",
@@ -99,8 +99,8 @@ export type VfxWatch = {
   rootSwaps: number;
   /** Samples where a mover and the board both drew the same square. */
   doubleDraws: number;
-  /** Distinct `<kingId>:<hitPhase>` signatures seen in the king-damage layer. */
-  kingPhases: string[];
+  /** Distinct `<ccId>:<hitPhase>` signatures seen in the Command Center-damage layer. */
+  ccPhases: string[];
   /** Distinct `data-attack-anim` weapon kinds that played. */
   attackAnims: string[];
   /** Distinct `data-deploy-piece` units that dropped. */
@@ -147,7 +147,7 @@ export const startVfxWatch = async (page: Page) => {
         layerRemounts: 0,
         rootSwaps: 0,
         doubleDraws: 0,
-        kingPhases: [] as string[],
+        ccPhases: [] as string[],
         attackAnims: [] as string[],
         deployPieces: [] as string[],
         cueRemounts: {} as Record<string, number>,
@@ -174,7 +174,7 @@ export const startVfxWatch = async (page: Page) => {
         el.getAttribute("data-gas-drop-id") ??
         el.getAttribute("data-mine-missile") ??
         el.getAttribute("data-jump-trail-frame") ??
-        el.getAttribute("data-king-id") ??
+        el.getAttribute("data-cc-id") ??
         el.getAttribute("data-square") ??
         "?";
 
@@ -238,7 +238,7 @@ export const startVfxWatch = async (page: Page) => {
           if (els.length > 0) {
             // A burning hull is persistent presentation, not a transient cue —
             // it must not keep the recording "busy" forever.
-            if (kind !== "kingDamage") anyCue = true;
+            if (kind !== "ccDamage") anyCue = true;
             if (!state.ever.includes(kind)) state.ever.push(kind);
             if (els.length > state.max[kind]!) state.max[kind] = els.length;
           }
@@ -261,7 +261,7 @@ export const startVfxWatch = async (page: Page) => {
           }
         }
         // Hide ownership: while a mover owns a square the board must not draw it.
-        // Knights are exempt — their fallback pose flips `data-square` to the
+        // Hoverbikes are exempt — their fallback pose flips `data-square` to the
         // destination at the last leg, where a board commit is legitimate.
         for (const mover of document.querySelectorAll(
           `${cue.move}:not([data-move-piece='n'])`,
@@ -282,11 +282,11 @@ export const startVfxWatch = async (page: Page) => {
         }
 
         for (const slot of document.querySelectorAll(
-          "[data-starchess-king-damage-layer] [data-king-id]",
+          "[data-starchess-cc-damage-layer] [data-cc-id]",
         )) {
           push(
-            state.kingPhases,
-            `${slot.getAttribute("data-king-id")}:${slot.getAttribute("data-king-hit-phase")}`,
+            state.ccPhases,
+            `${slot.getAttribute("data-cc-id")}:${slot.getAttribute("data-cc-hit-phase")}`,
           );
         }
 

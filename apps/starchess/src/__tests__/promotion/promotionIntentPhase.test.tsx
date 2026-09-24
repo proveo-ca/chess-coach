@@ -2,7 +2,7 @@ import { render } from "@solidjs/testing-library";
 import type { Square } from "chess.js";
 import type { JSX } from "solid-js";
 /**
- * Intent-phase contract: pawn two squares from last rank + gas + classical
+ * Intent-phase contract: Marine two squares from last rank + gas + classical
  * MUST open PromotionModal (pendingPromotion) before End — never park a
  * marine on 8/1 without a picker.
  */
@@ -53,7 +53,7 @@ describe("promotion modal — two squares away (intent phase)", () => {
       type: "QUEUE_ACTION",
       action: {
         timing: "B",
-        kind: "pawnDouble",
+        kind: "stimStep",
         color: "w",
         from: "h6",
         to: "h7",
@@ -88,7 +88,7 @@ describe("promotion modal — two squares away (intent phase)", () => {
       type: "QUEUE_ACTION",
       action: {
         timing: "B",
-        kind: "pawnDouble",
+        kind: "stimStep",
         color: "w",
         from: "h6",
         to: "h7",
@@ -150,13 +150,13 @@ describe("promotion modal — two squares away (intent phase)", () => {
     const seq = store.state().liveSnapshot.queue!.actions[0]!.seq;
     expect(moveThenGasPromotes(store.state().liveSnapshot, "w", "h6", "h7")).toEqual({ seq });
 
-    // StarChessScreen pawn gas path when moveThenGasPromotes hits.
+    // StarChessScreen Marine gas path when moveThenGasPromotes hits.
     store.dispatch({ type: "REMOVE_ACTION", seq });
     store.dispatch({
       type: "QUEUE_ACTION",
       action: {
         timing: "B",
-        kind: "pawnDouble",
+        kind: "stimStep",
         color: "w",
         from: "h6",
         to: "h7",
@@ -204,7 +204,7 @@ describe("promotion modal — two squares away (intent phase)", () => {
       type: "QUEUE_ACTION",
       action: {
         timing: "B",
-        kind: "pawnDouble",
+        kind: "stimStep",
         color: "w",
         from: "h6",
         to: "h7",
@@ -234,7 +234,7 @@ describe("promotion modal — two squares away (intent phase)", () => {
     ]);
   });
 
-  it("End while modal is open still defaults to queen (timeout / skip picker)", () => {
+  it("End while modal is open still defaults to BattleShip (timeout / skip picker)", () => {
     const store = createMatchStore({
       initial: {
         ...createMatchStateFromScfen(TWO_FROM_PROMO, 1),
@@ -245,7 +245,7 @@ describe("promotion modal — two squares away (intent phase)", () => {
       type: "QUEUE_ACTION",
       action: {
         timing: "B",
-        kind: "pawnDouble",
+        kind: "stimStep",
         color: "w",
         from: "h6",
         to: "h7",
@@ -264,7 +264,7 @@ describe("promotion modal — two squares away (intent phase)", () => {
     ]);
   });
 
-  it("gas-only from approach rank: pending via=gas End deploys queen", () => {
+  it("gas-only from approach rank: pending via=gas End deploys BattleShip", () => {
     const onRank7 = "SCFEN|k7/7P/8/8/8/8/8/4K3|1|33|P|G:11:11|Q:w:;b:";
     const store = createMatchStore({
       initial: {

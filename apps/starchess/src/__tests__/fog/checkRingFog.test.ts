@@ -1,7 +1,7 @@
 /**
- * Check rings must never confirm a king the viewer cannot see yet.
+ * Check rings must never confirm a Command Center the viewer cannot see yet.
  * Drives the live wiring (matchReducer queue → intent policy → overlays), not
- * just the pure projection: a fogged king stays unringed at intent time.
+ * just the pure projection: a fogged Command Center stays unringed at intent time.
  */
 import { describe, expect, it } from "vitest";
 
@@ -20,7 +20,7 @@ const liveOverlays = (s: MatchState) => {
     intentOverlayActions(s.phase, s.viewer, "both", snap.queue?.actions, null),
     {
       placement: snap.placement,
-      siegedRooks: snap.siegedRooks,
+      siegedTanks: snap.siegedTanks,
       mines: snap.mines,
       viewer: intentOverlayViewer(s.phase, s.viewer, "both"),
     },
@@ -28,10 +28,10 @@ const liveOverlays = (s: MatchState) => {
 };
 
 describe("check rings under player fog", () => {
-  // Knight fog lesson geometry, one hop later: Nf4 sees d2–h6, so Kh8 and its
-  // pawn are dark. Nf4→g6 both lights *and* checks h8 once it resolves.
+  // Hoverbike fog lesson geometry, one hop later: Nf4 sees d2–h6, so Kh8 and its
+  // Marine are dark. Nf4→g6 both lights *and* checks h8 once it resolves.
   const scfen = "SCFEN|7k/7p/8/8/5N2/8/8/K7|0|33|P|G:11:11|Q:w:;b:";
-  const queueKnightHop = () => {
+  const queueHoverbikeHop = () => {
     const loaded = matchReducer(createInitialMatchState(), {
       type: "LOAD_SCFEN",
       scfen,
@@ -49,12 +49,12 @@ describe("check rings under player fog", () => {
   };
 
   it("queuing Nf4→g6 ghosts the hop without ringing the hidden Kh8", () => {
-    const out = liveOverlays(queueKnightHop());
+    const out = liveOverlays(queueHoverbikeHop());
     expect(out.destinations).toEqual([{ at: "g6", color: "w", piece: "n" }]);
     expect(out.checks).toEqual([]);
   });
 
-  it("rings the king once the viewer actually sees it", () => {
+  it("rings the Command Center once the viewer actually sees it", () => {
     // Same board with the hop resolved — Ng6 lights h8, so the ring is earned.
     const seen = matchReducer(createInitialMatchState(), {
       type: "LOAD_SCFEN",

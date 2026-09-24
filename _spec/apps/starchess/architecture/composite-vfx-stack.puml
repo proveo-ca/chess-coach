@@ -70,7 +70,7 @@ package "AFTER · Facade + Composite + Parameter Object" as AFTER {
     Parameter Object
     --
     attack/death/move/jump
-    mine/deploy/gas/kingDamage
+    mine/deploy/gas/ccDamage
     progress · leg · trails · dying
   }
 
@@ -112,7 +112,7 @@ package "AFTER · Facade + Composite + Parameter Object" as AFTER {
     contain: layout
   }
 
-  class KingDamageOverlay <<app>>
+  class CCDamageOverlay <<app>>
   class GasDropAnimation <<app>>
   class AttackAnimation <<app>>
   class DeathAnimation <<app>>
@@ -155,7 +155,7 @@ package "AFTER · Facade + Composite + Parameter Object" as AFTER {
   AnimationStage_A *-- CombatOverlayRoot : Facade→Composite
   OverlayMeasureHost ..> CombatOverlayRoot : box
   CombatOverlayRoot ..> CombatCueFrame : cues
-  CombatOverlayRoot *-- KingDamageOverlay
+  CombatOverlayRoot *-- CCDamageOverlay
   CombatOverlayRoot *-- GasDropAnimation
   CombatOverlayRoot *-- AttackAnimation
   CombatOverlayRoot *-- DeathAnimation

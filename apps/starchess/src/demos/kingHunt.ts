@@ -42,7 +42,7 @@ export const KING_HUNT_STEPS: readonly KingHuntStep[] = [
     caption: "0. Nc5+ · HP−1 · Kd5 & B siege g6 + Bh2→g1",
     actions: [
       { timing: "C", kind: "classical", color: "w", from: "e4", to: "d5" },
-      { timing: "B", kind: "rookSiege", color: "b", from: "g6" },
+      { timing: "B", kind: "siegeMode", color: "b", from: "g6" },
       { timing: "C", kind: "classical", color: "b", from: "h2", to: "g1" },
     ],
   },

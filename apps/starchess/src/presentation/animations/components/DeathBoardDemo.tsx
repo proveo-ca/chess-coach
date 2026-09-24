@@ -22,9 +22,9 @@ import {
 import type { DeathSubject } from "~/types/cues";
 import { AnimationStage } from "~/presentation/animations/components/AnimationStage";
 import {
-  clearSiegedRooks,
-  setRookMode,
-} from "~/presentation/animations/rookModeStore";
+  clearSiegedTanks,
+  setTankMode,
+} from "~/presentation/animations/tankModeStore";
 import { Screen } from "~/components/primitives/Screen";
 import type { DeathCue } from "~/presentation/types";
 
@@ -40,9 +40,9 @@ const FEN_GONE: Record<DeathPiece, string> = {
   k: "7k/8/8/8/8/8/8/8 w - - 0 1",
 };
 
-const ROOK_TANK_SQ: Square = "c4";
-const ROOK_SIEGE_SQ: Square = "e4";
-const FEN_ROOK_DUAL = "7k/8/8/8/2R1R3/8/8/K7 w - - 0 1";
+const PACKED_TANK_SQ: Square = "c4";
+const SIEGED_TANK_SQ: Square = "e4";
+const FEN_TANK_DUAL = "7k/8/8/8/2R1R3/8/8/K7 w - - 0 1";
 
 type DeathPhase = "idle" | "dying" | "gone";
 
@@ -56,7 +56,7 @@ export const DeathBoardDemo: Component<{ subject: DeathSubject }> = (props) => {
   let stepTimer = 0;
   let loopTimer = 0;
 
-  const idleFen = () => (unit() === "r" ? FEN_ROOK_DUAL : FEN_BY_PIECE[unit()]);
+  const idleFen = () => (unit() === "r" ? FEN_TANK_DUAL : FEN_BY_PIECE[unit()]);
 
   /**
    * A mine sits in the SCFEN `M:` field, so the mine demo hands
@@ -66,11 +66,11 @@ export const DeathBoardDemo: Component<{ subject: DeathSubject }> = (props) => {
   const mineSnapshot = (): ScFenSnapshot =>
     parseScFen(phase() === "idle" ? SCFEN_MINE : SCFEN_MINE_GONE);
 
-  const seedRookModes = () => {
-    clearSiegedRooks();
+  const seedTankModes = () => {
+    clearSiegedTanks();
     if (props.subject !== "r") return;
-    setRookMode(ROOK_TANK_SQ, "tank");
-    setRookMode(ROOK_SIEGE_SQ, "siege");
+    setTankMode(PACKED_TANK_SQ, "tank");
+    setTankMode(SIEGED_TANK_SQ, "siege");
   };
 
   const makeCues = (): DeathCue[] => {
@@ -81,8 +81,8 @@ export const DeathBoardDemo: Component<{ subject: DeathSubject }> = (props) => {
     }
     if (props.subject === "r") {
       return [
-        { id: "death-r-tank", piece: "r", color: "w", at: ROOK_TANK_SQ, rookMode: "tank" },
-        { id: "death-r-siege", piece: "r", color: "w", at: ROOK_SIEGE_SQ, rookMode: "siege" },
+        { id: "death-r-tank", piece: "r", color: "w", at: PACKED_TANK_SQ, tankMode: "tank" },
+        { id: "death-r-siege", piece: "r", color: "w", at: SIEGED_TANK_SQ, tankMode: "siege" },
       ];
     }
     return [
@@ -97,7 +97,7 @@ export const DeathBoardDemo: Component<{ subject: DeathSubject }> = (props) => {
 
   const runOnce = () => {
     window.clearTimeout(stepTimer);
-    seedRookModes();
+    seedTankModes();
     setPhase("idle");
     setCues([]);
     stepTimer = window.setTimeout(() => {
@@ -114,7 +114,7 @@ export const DeathBoardDemo: Component<{ subject: DeathSubject }> = (props) => {
   };
 
   onMount(() => {
-    seedRookModes();
+    seedTankModes();
     runOnce();
     loopTimer = window.setInterval(runOnce, IDLE_MS + DEATH_MS + HOLD_MS + 400);
     onCleanup(() => {
@@ -125,7 +125,7 @@ export const DeathBoardDemo: Component<{ subject: DeathSubject }> = (props) => {
 
   createEffect(() => {
     void props.subject;
-    seedRookModes();
+    seedTankModes();
     runOnce();
   });
 

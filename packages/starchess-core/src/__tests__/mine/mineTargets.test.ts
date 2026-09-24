@@ -25,7 +25,7 @@ describe("legal dests onto a mined tile", () => {
   it("sieged tank targets a hostile mine on its ray (fires in place)", () => {
     const map = placementToMap("4k3/8/8/8/8/8/8/R3K3");
     const moves = scMovesFrom(map, "a1", "w", {
-      siegedRooks: ["a1"],
+      siegedTanks: ["a1"],
       mines: [MINE_B("a4")],
     });
     // The mined tile clears in place — alongside every other cross square,

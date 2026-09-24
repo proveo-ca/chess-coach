@@ -216,7 +216,7 @@ export const finalizeAchievementLive = (
     const beat = careerLevel(wins, 1);
     const fifty = careerLevel(wins, CAREER_GOAL);
     const enemy = live.state.player === "w" ? "b" : "w";
-    const spot = bubbles[0]?.origin ?? placementKing(live.state.lastPlacement, enemy)[0];
+    const spot = bubbles[0]?.origin ?? placementCC(live.state.lastPlacement, enemy)[0];
     if (beat > career.beat && spot) {
       career.beat = beat;
       const bubble = mintBubble(live.state, "beat", beat, spot);
@@ -236,7 +236,7 @@ export const finalizeAchievementLive = (
   return bestPerBadge([...live.earned, ...bubbles]);
 };
 
-const placementKing = (placement: string, color: "w" | "b"): string[] => {
+const placementCC = (placement: string, color: "w" | "b"): string[] => {
   const rank = placement.split("/");
   const out: string[] = [];
   const files = "abcdefgh";

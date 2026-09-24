@@ -22,7 +22,7 @@ export const squareAt = (origin: Square, vec: AttackVec): Square | null => {
 export const screenAngleDeg = (vec: AttackVec): number =>
   (Math.atan2(-vec.dr, vec.df) * 180) / Math.PI;
 
-const knightOffsets: AttackVec[] = [
+const hoverbikeOffsets: AttackVec[] = [
   { df: 1, dr: 2 },
   { df: 2, dr: 1 },
   { df: 2, dr: -1 },
@@ -47,7 +47,7 @@ const orthoDirs: AttackVec[] = [
   { df: -1, dr: 0 },
 ];
 
-/** Eight surrounding squares (queen/king adjacent). */
+/** Eight surrounding squares (BattleShip/Command Center adjacent). */
 export const surround8: AttackVec[] = [
   { df: 0, dr: 1 },
   { df: 1, dr: 1 },
@@ -77,7 +77,7 @@ export const attackVectorsFor = (
       ]);
     }
     case "n":
-      return keep(knightOffsets);
+      return keep(hoverbikeOffsets);
     case "b":
       return keep(diagDirs);
     case "r":
@@ -103,7 +103,7 @@ const normalizeDeg = (deg: number): number =>
 /**
  * Aim without spinning the unit upside-down: keep head up / legs down, mirror
  * when the target is in the left half-plane, then tilt so +x meets the target.
- * Pawn example: diag-right = rotate(-45°); diag-left = scaleX(-1) rotate(-45°).
+ * Marine example: diag-right = rotate(-45°); diag-left = scaleX(-1) rotate(-45°).
  */
 export const aimPoseFor = (vec: AttackVec): AimPose => {
   const theta = screenAngleDeg(vec) - AIM_FORWARD_DEG;
@@ -126,7 +126,7 @@ export const aimPoseFor = (vec: AttackVec): AimPose => {
  * turret along travel via `screenAngleDeg` instead). Kept exported so the
  * `animations/index.ts` barrel does not break external importers.
  */
-export const rookTravelPose = (vec: AttackVec): AimPose => {
+export const tankTravelPose = (vec: AttackVec): AimPose => {
   if (vec.df === 0) return { mirrorX: false, rotateDeg: 0 };
   return { mirrorX: false, rotateDeg: vec.df > 0 ? 180 : 0 };
 };
@@ -137,26 +137,26 @@ export const aimTransformCss = (pose: AimPose): string => {
 };
 
 /**
- * Knight L waypoint: travel the length-2 leg first, then the length-1 leg.
+ * Hoverbike L waypoint: travel the length-2 leg first, then the length-1 leg.
  * Returns the elbow offset from the origin (not the final square).
  */
-export const knightElbowVec = (vec: AttackVec): AttackVec => {
+export const hoverbikeElbowVec = (vec: AttackVec): AttackVec => {
   if (Math.abs(vec.df) === 2 && Math.abs(vec.dr) === 1) return { df: vec.df, dr: 0 };
   if (Math.abs(vec.dr) === 2 && Math.abs(vec.df) === 1) return { df: 0, dr: vec.dr };
   return { df: 0, dr: 0 };
 };
 
-/** Long leg then short leg of a knight L (deltas along each segment). */
-export const knightLegVecs = (vec: AttackVec): { leg1: AttackVec; leg2: AttackVec } => {
-  const leg1 = knightElbowVec(vec);
+/** Long leg then short leg of a Hoverbike L (deltas along each segment). */
+export const hoverbikeLegVecs = (vec: AttackVec): { leg1: AttackVec; leg2: AttackVec } => {
+  const leg1 = hoverbikeElbowVec(vec);
   return { leg1, leg2: { df: vec.df - leg1.df, dr: vec.dr - leg1.dr } };
 };
 
 /**
- * Knight facing: one of the 4 diagonals in the target’s quadrant (not the
+ * Hoverbike facing: one of the 4 diagonals in the target’s quadrant (not the
  * orthogonal long-leg of the L).
  */
-export const knightAimDiagVec = (vec: AttackVec): AttackVec => ({
+export const hoverbikeAimDiagVec = (vec: AttackVec): AttackVec => ({
   df: Math.sign(vec.df) || 1,
   dr: Math.sign(vec.dr) || 1,
 });

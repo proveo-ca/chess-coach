@@ -8,34 +8,34 @@ export const TWIN_BATTERY_LEN = 10.5;
 export const TWIN_BATTERY_H = 3.2;
 
 /**
- * On-screen size equalizers — rook runs `PIECE_FRAME.R × ROOK_CONTENT_SCALE (1.3)`,
- * king only `PIECE_FRAME.K`. Scale each host so TwinBattery hits the midpoint.
+ * On-screen size equalizers — Tank runs `PIECE_FRAME.R × TANK_CONTENT_SCALE (1.3)`,
+ * Command Center only `PIECE_FRAME.K`. Scale each host so TwinBattery hits the midpoint.
  *
- *   rookEff ≈ √(0.8299×1.0503)×1.3 ≈ 1.213
- *   kingEff ≈ √(0.9169×1.1172) ≈ 1.012
+ *   tankEff ≈ √(0.8299×1.0503)×1.3 ≈ 1.213
+ *   ccEff ≈ √(0.9169×1.1172) ≈ 1.012
  *   mid ≈ 1.1125
  */
-export const TWIN_BATTERY_SCALE_ROOK = 0.917;
-export const TWIN_BATTERY_SCALE_KING = 1.099;
+export const TWIN_BATTERY_SCALE_TANK = 0.917;
+export const TWIN_BATTERY_SCALE_CC = 1.099;
 
 type TwinBatteryProps = {
   /** Team / player primary fill for the turret hull. */
   team: string;
   /**
-   * When false, omit the team turret block (e.g. {@link InlineRook} supplies
-   * its own rotating deck). Default true for {@link InlineKing}.
+   * When false, omit the team turret block (e.g. {@link InlineTank} supplies
+   * its own rotating deck). Default true for {@link InlineCommandCenter}.
    */
   showTurret?: boolean;
-  /** Vertical gap between the twin tubes (0 = abutted, king default). */
+  /** Vertical gap between the twin tubes (0 = abutted, Command Center default). */
   gap?: number;
 };
 
 /**
  * Shared Siege Tank (tank-mode) / Command Center dual battery.
  * Local +x = muzzle forward. Parent supplies pivot (`translate` + `rotate`)
- * and host scale ({@link TWIN_BATTERY_SCALE_ROOK} / {@link TWIN_BATTERY_SCALE_KING}).
+ * and host scale ({@link TWIN_BATTERY_SCALE_TANK} / {@link TWIN_BATTERY_SCALE_CC}).
  *
- * Exact same tube SVG on {@link InlineRook} tank face and {@link InlineKing}.
+ * Exact same tube SVG on {@link InlineTank} tank face and {@link InlineCommandCenter}.
  */
 export const TwinBattery: Component<TwinBatteryProps> = (props) => {
   const len = TWIN_BATTERY_LEN;

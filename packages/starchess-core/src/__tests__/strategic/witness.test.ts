@@ -92,7 +92,7 @@ describe("Command Center retaliation — the shot names the shooter", () => {
   it("records an attacker we could never have seen", () => {
     const chip = shotAtTheCC();
     expect(chip.attacks).toContainEqual(
-      expect.objectContaining({ kind: "kingShot", color: "w", from: "c8", target: "b" }),
+      expect.objectContaining({ kind: "ccShot", color: "w", from: "c8", target: "b" }),
     );
 
     const witness = witnessFromEndTurn(chip.asResolve!);
@@ -134,7 +134,7 @@ describe("Command Center retaliation — the shot names the shooter", () => {
       placement: "4k3/8/8/8/8/8/8/3RK3",
       attacks: [
         {
-          kind: "kingShot" as const,
+          kind: "ccShot" as const,
           piece: "r" as const,
           color: "w" as const,
           from: "d4" as const,

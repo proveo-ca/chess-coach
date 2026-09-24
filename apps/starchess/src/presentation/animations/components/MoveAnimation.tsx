@@ -13,12 +13,12 @@ import type { Square } from "chess.js";
 
 import { attackFaceFor } from "~/presentation/animations/attackAnim";
 import {
-  KING_REST_AIM_DEG,
-  ROOK_REST_AIM_DEG,
+  CC_REST_AIM_DEG,
+  TANK_REST_AIM_DEG,
 } from "~/presentation/pieces/geometry";
 import {
   aimPoseFor,
-  knightLegVecs,
+  hoverbikeLegVecs,
   screenAngleDeg,
   squareAt,
   type AttackVec,
@@ -26,13 +26,13 @@ import {
 import { squareBoxStyle, vecBetween } from "~/presentation/animations/boardGeom";
 import styles from "~/presentation/animations/components/MoveAnimation.module.css";
 import { moveDurationMs, moveTravelSquares } from "~/presentation/animations/moveTiming";
-import { InlineBishop, type BishopCrank } from "~/presentation/pieces/InlineBishop";
-import { InlineKing } from "~/presentation/pieces/InlineKing";
-import { InlineKnight } from "~/presentation/pieces/InlineKnight";
-import { InlinePawn } from "~/presentation/pieces/InlinePawn";
-import { InlineQueen } from "~/presentation/pieces/InlineQueen";
+import { InlineMecha, type MechaCrank } from "~/presentation/pieces/InlineMecha";
+import { InlineCommandCenter } from "~/presentation/pieces/InlineCommandCenter";
+import { InlineHoverbike } from "~/presentation/pieces/InlineHoverbike";
+import { InlineMarine } from "~/presentation/pieces/InlineMarine";
+import { InlineBattleShip } from "~/presentation/pieces/InlineBattleShip";
 import type { MoveCue } from "~/presentation/animations/types";
-import { rookModeAt } from "~/presentation/animations/rookModeStore";
+import { tankModeAt } from "~/presentation/animations/tankModeStore";
 import { PieceGlyph } from "~/presentation/board/components/PieceGlyph";
 import { MOVE_SQUARE_MS, SETTLE_MS, STIM_MOVE_SQUARE_MS } from "~/presentation/constants";
 
@@ -42,10 +42,15 @@ export type MoveAnimationProps = {
   cues: readonly MoveCue[];
   /** 0 = still on `from`, 1 = sliding / on `to`. */
   progress: Record<string, 0 | 1>;
-  /** Knight L-path facing: 0 = long leg, 1 = short leg (after elbow). */
+  /** Hoverbike L-path facing: 0 = long leg, 1 = short leg (after elbow). */
   leg?: Record<string, 0 | 1>;
   /** Squares with gas / U: — keep green aura on mover hulls. */
   specialUsedSquares?: ReadonlySet<Square> | readonly Square[];
+  /**
+   * Squares a Charon-firing Mecha held this resolve (`charonArmed.ts`). The
+   * launchers follow that unit only — gas on a square is the green aura, not this.
+   */
+  charonSquares?: ReadonlySet<Square>;
   /** Tutorial Chess skin — flat SVGs instead of Inline* hulls. */
   pieceSet?: import("~/types/board").PieceSet;
   boardWidth: number;
@@ -58,7 +63,7 @@ export type MoveAnimationProps = {
  * Stim gas-step: travel {@link STIM_MOVE_SQUARE_MS} (100ms) with **2×** hop
  * cycles packed into that window (50ms each) — stim look.
  */
-const pawnHopPlan = (from: MoveCue["from"], to: MoveCue["to"], stim?: boolean) => {
+const marineHopPlan = (from: MoveCue["from"], to: MoveCue["to"], stim?: boolean) => {
   const squares = moveTravelSquares(from, to, "p");
   if (stim) {
     return { hops: squares * 2, hopMs: STIM_MOVE_SQUARE_MS / 2 };
@@ -66,13 +71,13 @@ const pawnHopPlan = (from: MoveCue["from"], to: MoveCue["to"], stim?: boolean) =
   return { hops: squares, hopMs: MOVE_SQUARE_MS };
 };
 
-/** Bishop hull facing — same `face` + `gunDeg` as {@link AttackAnimation}. */
-const bishopMoverNode = (
+/** Mecha hull facing — same `face` + `gunDeg` as {@link AttackAnimation}. */
+const mechaMoverNode = (
   m: MoveCue,
   vec: AttackVec,
-  opts?: { crank?: BishopCrank; armed?: boolean },
+  opts?: { crank?: MechaCrank; armed?: boolean },
 ): JSX.Element => (
-  <InlineBishop
+  <InlineMecha
     color={m.color}
     face={attackFaceFor("b", vec)}
     gunDeg={screenAngleDeg(vec)}
@@ -84,27 +89,27 @@ const bishopMoverNode = (
 const moverNode = (m: MoveCue, opts?: { armed?: boolean }): JSX.Element => {
   switch (m.piece) {
     case "b":
-      return <InlineBishop color={m.color} face="front" armed={!!opts?.armed} />;
+      return <InlineMecha color={m.color} face="front" armed={!!opts?.armed} />;
     case "n":
-      return <InlineKnight color={m.color} />;
+      return <InlineHoverbike color={m.color} />;
     case "q":
-      return <InlineQueen color={m.color} />;
+      return <InlineBattleShip color={m.color} />;
     case "k":
       // `seed` matches the damage overlay's, so the flames do not jump when
       // the persistent slot takes the hull back at the end of the slide.
       return (
-        <InlineKing
+        <InlineCommandCenter
           color={m.color}
-          aimDeg={KING_REST_AIM_DEG}
+          aimDeg={CC_REST_AIM_DEG}
           damage={m.damage}
           seed={m.seed}
         />
       );
     default:
-      // Pawn: helmet when walking up the board, glass visor when walking down
+      // Marine: helmet when walking up the board, glass visor when walking down
       // (same camera rule as attackFaceFor — red/black g8→g6 stays front).
       return (
-        <InlinePawn
+        <InlineMarine
           color={m.color}
           face={attackFaceFor("p", vecBetween(m.from, m.to))}
         />
@@ -113,14 +118,14 @@ const moverNode = (m: MoveCue, opts?: { armed?: boolean }): JSX.Element => {
 };
 
 /** Origin box + L-path translate offsets (long leg → elbow → short leg). */
-const knightMoverStyle = (
+const hoverbikeMoverStyle = (
   from: MoveCue["from"],
   to: MoveCue["to"],
   boardWidth: number,
   boardHeight: number,
 ): Record<string, string> | null => {
   const vec = vecBetween(from, to);
-  const { leg1 } = knightLegVecs(vec);
+  const { leg1 } = hoverbikeLegVecs(vec);
   const elbowSq = squareAt(from, leg1);
   if (!elbowSq) return null;
   const origin = squareBoxStyle(from, boardWidth, boardHeight);
@@ -156,27 +161,27 @@ const slideMoverStyle = (
 };
 
 /**
- * Bishop foot aim (SVG y-down, 0° = +file/right).
+ * Mecha foot aim (SVG y-down, 0° = +file/right).
  * Locked diagonals per product note: top-left 45°, top-right 135°, then
  * continue around the compass (bottom-right 225°, bottom-left 315°).
  * Kept for callers / tests — walk VFX no longer aims feet independently
  * (steam-engine gait keeps feet rigid on the shin).
  */
-export const bishopFootAimDeg = (vec: AttackVec): number => {
+export const mechaFootAimDeg = (vec: AttackVec): number => {
   const df = Math.sign(vec.df);
   const dr = Math.sign(vec.dr);
   if (df < 0 && dr > 0) return 45; // top-left
   if (df > 0 && dr > 0) return 135; // top-right
   if (df > 0 && dr < 0) return 225; // bottom-right
   if (df < 0 && dr < 0) return 315; // bottom-left
-  // Ortho fallback (shouldn't appear on quiet bishop moves).
+  // Ortho fallback (shouldn't appear on quiet Mecha moves).
   return screenAngleDeg(vec);
 };
 
 /**
  * Quiet / occupy slide hulls. ChessBoard hides board `<img>` on `from`
- * while a cue is active (fxHidden). Knights use the L-path; pawns hop;
- * bishops steam-engine-walk on articulated legs (feet locked to shins).
+ * while a cue is active (fxHidden). Hoverbikes use the L-path; Marines hop;
+ * Mechas steam-engine-walk on articulated legs (feet locked to shins).
  * Hull travel is {@link MOVE_SQUARE_MS} per square (not a fixed total).
  * Rows key by cue.id so remapped cue objects do not remount / restart CSS.
  */
@@ -188,6 +193,8 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
   };
   const hullUsed = (m: MoveCue) =>
     !!m.stim || used().has(m.from) || used().has(m.to);
+  /** Launchers ride with the Mecha that fired Charon — never with gas on a square. */
+  const firedCharon = (m: MoveCue) => m.piece === "b" && !!props.charonSquares?.has(m.from);
 
   const ids = createMemo(() => props.cues.map((c) => c.id));
   const byId = createMemo(() => {
@@ -237,7 +244,7 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
         });
 
         if (m.piece === "n") {
-          const legs = () => knightLegVecs(vec());
+          const legs = () => hoverbikeLegVecs(vec());
           const hasL = () => squareAt(m.from, legs().leg1) != null;
           const pose = () => {
             const { leg1, leg2 } = legs();
@@ -266,16 +273,16 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
                     class={`${styles.pieceFace} ${styles.moverFace}`}
                     classList={{ ["sc-special-used"]: gas() }}
                   >
-                    <InlineKnight color={m.color} aimPose={settling() ? undefined : pose()} />
+                    <InlineHoverbike color={m.color} aimPose={settling() ? undefined : pose()} />
                   </div>
                 </div>
               }
             >
               <div
                 class={styles.mover}
-                classList={{ [styles.moverKnight]: started() }}
+                classList={{ [styles.moverHoverbike]: started() }}
                 style={{
-                  ...knightMoverStyle(m.from, m.to, props.boardWidth, props.boardHeight),
+                  ...hoverbikeMoverStyle(m.from, m.to, props.boardWidth, props.boardHeight),
                   "--move-ms": `${travelMs()}ms`,
                 }}
                 data-square={m.from}
@@ -286,7 +293,7 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
                   class={`${styles.pieceFace} ${styles.moverFace}`}
                   classList={{ ["sc-special-used"]: gas() }}
                 >
-                  <InlineKnight color={m.color} aimPose={settling() ? undefined : pose()} />
+                  <InlineHoverbike color={m.color} aimPose={settling() ? undefined : pose()} />
                 </div>
               </div>
             </Show>
@@ -294,18 +301,18 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
         }
 
         if (m.piece === "p") {
-          const { hops, hopMs } = pawnHopPlan(m.from, m.to, m.stim);
+          const { hops, hopMs } = marineHopPlan(m.from, m.to, m.stim);
           return (
             <div
               class={styles.mover}
               classList={{
-                [styles.moverPawn]: started(),
-                [styles.moverPawnStim]: started() && !!m.stim,
+                [styles.moverMarine]: started(),
+                [styles.moverMarineStim]: started() && !!m.stim,
               }}
               style={{
                 ...slideMoverStyle(m.from, m.to, props.boardWidth, props.boardHeight),
                 "--move-ms": `${travelMs()}ms`,
-                "--pawn-hop-ms": `${hopMs}ms`,
+                "--marine-hop-ms": `${hopMs}ms`,
                 "--hop-count": `${hops}`,
               }}
               data-square={m.from}
@@ -315,7 +322,7 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
               data-special-used={gas() ? "true" : undefined}
             >
               <div
-                class={`${styles.pieceFace} ${styles.pawnFace}`}
+                class={`${styles.pieceFace} ${styles.marineFace}`}
                 classList={{ ["sc-special-used"]: gas() }}
               >
                 {moverNode(m)}
@@ -333,7 +340,7 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
           return (
             <div
               class={styles.mover}
-              classList={{ [styles.moverBishop]: started() }}
+              classList={{ [styles.moverMecha]: started() }}
               style={{
                 ...slideMoverStyle(m.from, m.to, props.boardWidth, props.boardHeight),
                 "--move-ms": `${travelMs()}ms`,
@@ -344,12 +351,12 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
               data-special-used={gas() ? "true" : undefined}
             >
               <div
-                class={`${styles.pieceFace} ${styles.bishopFace}`}
+                class={`${styles.pieceFace} ${styles.mechaFace}`}
                 classList={{ ["sc-special-used"]: gas() }}
               >
-                {bishopMoverNode(m, vec(), {
+                {mechaMoverNode(m, vec(), {
                   crank: { stepMs, stepCount, sense },
-                  armed: gas(),
+                  armed: firedCharon(m),
                 })}
               </div>
             </div>
@@ -360,7 +367,7 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
           return (
             <div
               class={styles.mover}
-              classList={{ [styles.moverQueen]: started() }}
+              classList={{ [styles.moverBattleShip]: started() }}
               style={{
                 ...slideMoverStyle(m.from, m.to, props.boardWidth, props.boardHeight),
                 "--move-ms": `${travelMs()}ms`,
@@ -381,7 +388,7 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
                     : { transform: `rotate(${screenAngleDeg(vec())}deg)` }
                 }
               >
-                <InlineQueen color={m.color} aiming={!settling()} />
+                <InlineBattleShip color={m.color} aiming={!settling()} />
               </div>
             </div>
           );
@@ -395,13 +402,13 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
           // The touchdown swap snaps (turret aim is an SVG attribute with no
           // CSS transition) — same trade-off as AttackAnimation's mount swap,
           // and less jarring than a mid-slide flip.
-          // cburnett: classic rook for tank *or* siege. nerd: InlineRook at live mode.
-          const mode = rookModeAt(m.from);
+          // cburnett: classic Tank for tank *or* siege. nerd: InlineTank at live mode.
+          const mode = tankModeAt(m.from);
           const set = props.pieceSet ?? "nerd";
           return (
             <div
               class={styles.mover}
-              classList={{ [styles.moverRook]: started() }}
+              classList={{ [styles.moverTank]: started() }}
               style={{
                 ...slideMoverStyle(m.from, m.to, props.boardWidth, props.boardHeight),
                 "--move-ms": `${travelMs()}ms`,
@@ -423,7 +430,7 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
                   aimDeg={
                     set === "nerd"
                       ? settling()
-                        ? ROOK_REST_AIM_DEG
+                        ? TANK_REST_AIM_DEG
                         : screenAngleDeg(vec())
                       : undefined
                   }
@@ -446,7 +453,7 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
             data-special-used={gas() ? "true" : undefined}
           >
             <div class={styles.pieceFace} classList={{ ["sc-special-used"]: gas() }}>
-              {moverNode(m, { armed: gas() })}
+              {moverNode(m, { armed: firedCharon(m) })}
             </div>
           </div>
         );

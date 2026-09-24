@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
 import { attackVectorsFor } from "~/presentation/animations/attackVectors";
 import { AttackBoardDemo } from "~/presentation/animations/components/AttackBoardDemo";
-import type { RookMode, StarChessPiece } from "~/types/cues";
+import type { TankMode, StarChessPiece } from "~/types/cues";
 
 /**
  * One weapon per unit, cycling every legal attack direction from d4.
@@ -31,7 +31,7 @@ type Story = StoryObj;
 /** Project one unit's weapon; the direction count comes from the vector table. */
 const attackStory = (
   piece: StarChessPiece,
-  opts: { name: string; docs: string; rookMode?: RookMode },
+  opts: { name: string; docs: string; tankMode?: TankMode },
 ): Story => ({
   name: opts.name,
   parameters: {
@@ -42,46 +42,46 @@ const attackStory = (
       },
     },
   },
-  render: () => <AttackBoardDemo piece={piece} rookMode={opts.rookMode} />,
+  render: () => <AttackBoardDemo piece={piece} tankMode={opts.tankMode} />,
 });
 
-export const Pawn = attackStory("p", {
-  name: "Marine (pawn)",
+export const Marine = attackStory("p", {
+  name: "Marine",
   docs:
-    "`pawnRifle` on both capture diagonals, with a black marine on d6 firing back down the board — the face rule (helmet away, visor toward the camera) reads on both colors at once.",
+    "`marineRifle` on both capture diagonals, with a black marine on d6 firing back down the board — the face rule (helmet away, visor toward the camera) reads on both colors at once.",
 });
 
-export const Knight = attackStory("n", {
-  name: "Hoverbike (knight)",
+export const Hoverbike = attackStory("n", {
+  name: "Hoverbike",
   docs:
-    "`knightFrag`: the bike rides the long leg then the short leg of the L and lobs a frag, aimed along the diagonal of the target's quadrant.",
+    "`hoverbikeFrag`: the bike rides the long leg then the short leg of the L and lobs a frag, aimed along the diagonal of the target's quadrant.",
 });
 
-export const Bishop = attackStory("b", {
-  name: "Mecha (bishop)",
+export const Mecha = attackStory("b", {
+  name: "Mecha",
   docs:
-    "`bishopGatlings` on the 4 diagonals. Charon Booster Missiles are the gas special — StarChess/Special Moves → Mecha.",
+    "`mechaGatlings` on the 4 diagonals. Charon Booster Missiles are the gas special — StarChess/Special Moves → Mecha.",
 });
 
-export const RookTankMode = attackStory("r", {
-  name: "Siege Tank (rook) · tank mode",
-  docs: "`rookBattery` unpacked: the turret yaws to each orthogonal and fires.",
+export const PackedTankMode = attackStory("r", {
+  name: "Siege Tank (Tank) · tank mode",
+  docs: "`tankBattery` unpacked: the turret yaws to each orthogonal and fires.",
 });
 
-export const RookSiegeMode = attackStory("r", {
-  name: "Siege Tank (rook) · siege mode",
+export const SiegedTankMode = attackStory("r", {
+  name: "Siege Tank (Tank) · siege mode",
   docs:
-    "`rookBattery` packed: HE shell arcs onto the adjacent victim on d5, so the impact reads against a real target.",
-  rookMode: "siege",
+    "`tankBattery` packed: HE shell arcs onto the adjacent victim on d5, so the impact reads against a real target.",
+  tankMode: "siege",
 });
 
-export const Queen = attackStory("q", {
-  name: "BattleShip (queen)",
-  docs: "`queenLaser`: hull and beam share one aim wrap across all 8 surrounding squares.",
+export const BattleShip = attackStory("q", {
+  name: "BattleShip",
+  docs: "`battleShipLaser`: hull and beam share one aim wrap across all 8 surrounding squares.",
 });
 
-export const King = attackStory("k", {
-  name: "Command Center (king)",
+export const CommandCenter = attackStory("k", {
+  name: "Command Center (Command Center)",
   docs:
-    "`kingDualCannon`: twin batteries swing off their resting player-facing aim to each of the 8 surrounding squares.",
+    "`ccDualCannon`: twin batteries swing off their resting player-facing aim to each of the 8 surrounding squares.",
 });

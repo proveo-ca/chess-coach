@@ -28,8 +28,8 @@ const levelOf = (state: State, shortId: string) => state.announced[shortId] ?? 0
 
 describe("badge events the engine reports outside `attacks`", () => {
   it("credits a path-reveal capture to the slider that left, and follows it", () => {
-    // Ra1→a8 runs into a fogged pawn on a5: the capture lives only in
-    // `pathRevealAttacks`, `from` is where it spotted the pawn, and the rook
+    // Ra1→a8 runs into a fogged Marine on a5: the capture lives only in
+    // `pathRevealAttacks`, `from` is where it spotted the Marine, and the Tank
     // is in no move list.
     const first = "SCFEN|4k3/8/8/p7/8/8/8/R3K3|1|33|P|G:11:11|Q:w:C=a1a8;b:";
     const state = seedAnalysis(parseScFen(first), "w");
@@ -39,7 +39,7 @@ describe("badge events the engine reports outside `attacks`", () => {
     expect(state.material.get("1-r-a1")).toBe(UNIT_COST.p - UNIT_COST.r);
     expect(state.at.get("a5")).toBe("1-r-a1");
 
-    // The same rook takes a BattleShip next turn: one piece, one running total.
+    // The same Tank takes a BattleShip next turn: one piece, one running total.
     const second = `SCFEN|4k3/8/8/R7/q7/8/8/4K3|2|33|P|G:11:11|Q:w:C=a5a4;b:`;
     play(state, second);
     expect(state.material.get("1-r-a1")).toBe(UNIT_COST.p + UNIT_COST.q - UNIT_COST.r);
@@ -59,7 +59,7 @@ describe("badge events the engine reports outside `attacks`", () => {
   it("counts an enemy gas step onto our mine for Is that it?", () => {
     // A special-phase trip is only an event, coloured by the enemy mover.
     const scfen =
-      "SCFEN|4k3/8/4p3/8/8/8/8/4K3|1|33|P|G:10:11|M:w:e5|Q:w:;b:B=pawnDouble:e6:e5";
+      "SCFEN|4k3/8/4p3/8/8/8/8/4K3|1|33|P|G:10:11|M:w:e5|Q:w:;b:B=stimStep:e6:e5";
     const state = seedAnalysis(parseScFen(scfen), "w");
     const { result } = play(state, scfen);
     expect(result.resolved.mineTriggers).toEqual([]);
@@ -69,7 +69,7 @@ describe("badge events the engine reports outside `attacks`", () => {
 
   it("credits a deploy that crushes an enemy, for Stonks and Let there be Light", () => {
     const scfen =
-      "SCFEN|4k3/8/8/8/8/8/3q4/4K3|1|33|P|G:01:11|B:3:3|Q:w:B=spawn:e1:d2:p;b:";
+      "SCFEN|4k3/8/8/8/8/8/3q4/4K3|1|33|P|G:01:11|B:3:3|Q:w:B=deploy:e1:d2:p;b:";
     const state = seedAnalysis(parseScFen(scfen), "w");
     play(state, scfen);
     // A deploy's id is stamped with the turn it entered (the post-resolve turn).
@@ -81,7 +81,7 @@ describe("badge events the engine reports outside `attacks`", () => {
   });
 
   it("counts a Marine promoted by a gas step for GO GO GO", () => {
-    const scfen = "SCFEN|k7/3P4/8/8/8/8/8/4K3|1|33|P|G:01:11|Q:w:B=pawnDouble:d7:d8:q;b:";
+    const scfen = "SCFEN|k7/3P4/8/8/8/8/8/4K3|1|33|P|G:01:11|Q:w:B=stimStep:d7:d8:q;b:";
     const state = seedAnalysis(parseScFen(scfen), "w");
     play(state, scfen);
     expect(state.promotions).toBe(1);
@@ -96,10 +96,10 @@ describe("badge events the engine reports outside `attacks`", () => {
   });
 
   it("streaks BattleShip jumps on consecutive turns for Make it happen", () => {
-    const first = "SCFEN|4k3/8/8/8/8/8/8/Q3K3|21|33|P|G:03:33|Q:w:B=queenWarp:a1:a4;b:";
+    const first = "SCFEN|4k3/8/8/8/8/8/8/Q3K3|21|33|P|G:03:33|Q:w:B=tacticalJump:a1:a4;b:";
     const state = seedAnalysis(parseScFen(first), "w");
     const opened = play(state, first);
-    const second = `SCFEN|${opened.result.next.placement}|${opened.result.next.turn}|33|P|G:03:33|Q:w:B=queenWarp:a4:h4;b:`;
+    const second = `SCFEN|${opened.result.next.placement}|${opened.result.next.turn}|33|P|G:03:33|Q:w:B=tacticalJump:a4:h4;b:`;
     play(state, second);
     expect(state.bestJump).toBe(2);
     expect(levelOf(state, "juke")).toBe(1);
@@ -129,7 +129,7 @@ describe("Stonks scores one literal unit, not a unit type", () => {
 
   it("follows a Marine through move-then-gas, so its next capture is its own", () => {
     // C e2→e3, then the gas step fires after the move: e3→e4.
-    const first = "SCFEN|4k3/8/8/8/8/8/4P3/4K3|1|33|P|G:01:11|Q:w:C=e2e3,F=pawnDouble:e3:e4;b:";
+    const first = "SCFEN|4k3/8/8/8/8/8/4P3/4K3|1|33|P|G:01:11|Q:w:C=e2e3,F=stimStep:e3:e4;b:";
     const state = seedAnalysis(parseScFen(first), "w");
     const opened = play(state, first);
     expect(opened.result.next.placement).toBe("4k3/8/8/8/4P3/8/8/4K3");
@@ -140,7 +140,7 @@ describe("Stonks scores one literal unit, not a unit type", () => {
   });
 
   it("follows a Marine through gas-then-move", () => {
-    const first = "SCFEN|4k3/8/8/8/8/8/4P3/4K3|1|33|P|G:01:11|Q:w:B=pawnDouble:e2:e3,C=e3e4;b:";
+    const first = "SCFEN|4k3/8/8/8/8/8/4P3/4K3|1|33|P|G:01:11|Q:w:B=stimStep:e2:e3,C=e3e4;b:";
     const state = seedAnalysis(parseScFen(first), "w");
     play(state, first);
     expect(state.at.get("e4")).toBe("1-p-e2");
@@ -172,7 +172,7 @@ describe("a live match, start to finish", () => {
   });
 
   it("returns mid-game and end-of-game badges together on a win", () => {
-    // Turn 1: pawn takes a BattleShip (Stonks 2) while the Ship on e7 chips
+    // Turn 1: Marine takes a BattleShip (Stonks 2) while the Ship on e7 chips
     // the Command Center. Turn 2: the last check lands — a lethal check ends
     // the resolve, so the capture cannot share its turn. The dead Command
     // Center stays on the board, so the Human Training bubble has a square.
@@ -181,14 +181,14 @@ describe("a live match, start to finish", () => {
     ensureAchievementLive("full-match", "w", snap);
     const first = endScTurn(snap);
     const next = parseScFen(
-      `SCFEN|${first.next.placement}|${first.next.turn}|3${first.next.kingLives.b}|P|G:11:11|Q:w:;b:`,
+      `SCFEN|${first.next.placement}|${first.next.turn}|3${first.next.ccLives.b}|P|G:11:11|Q:w:;b:`,
     );
     const second = endScTurn(next);
     noteSettledPlies([
       foldPlyFromResolve(first, snap.placement),
       foldPlyFromResolve(second, next.placement),
     ]);
-    expect(second.next.kingLives.b).toBe(0);
+    expect(second.next.ccLives.b).toBe(0);
     expect(second.next.placement).toContain("k");
 
     const earned = finalizeAchievementLive("win", "naive", []);
@@ -206,7 +206,7 @@ describe("where a bubble rises, and whose it is", () => {
   it("rises from the achieving unit's square after the ply, not where it was born", () => {
     // e4 Marine takes d5's BattleShip, then gas-steps on to d6 in the same ply.
     const scfen =
-      "SCFEN|4k3/8/8/3q4/4P3/8/8/4K3|1|33|P|G:01:11|Q:w:C=e4d5,F=pawnDouble:d5:d6;b:";
+      "SCFEN|4k3/8/8/3q4/4P3/8/8/4K3|1|33|P|G:01:11|Q:w:C=e4d5,F=stimStep:d5:d6;b:";
     const state = seedAnalysis(parseScFen(scfen), "w");
     const { result, bubbles } = play(state, scfen);
     expect(result.next.placement).toBe("4k3/8/3P4/8/8/8/8/4K3");

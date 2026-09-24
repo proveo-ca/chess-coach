@@ -25,33 +25,33 @@ describe("scfenToFen", () => {
     expect(proj.ok && proj.fen.endsWith("0 5")).toBe(true);
   });
 
-  it("flags a spawn-promoted back-rank pawn (rank 8) as ineligible", () => {
+  it("flags a spawn-promoted back-rank Marine (rank 8) as ineligible", () => {
     const proj = scfenToFen(
       parseScFen("SCFEN|4kP2/8/8/8/8/8/8/4K3|3|33|P|G:11:11|Q:w:;b:"),
     );
-    expect(proj).toEqual({ ok: false, reason: "back-rank-pawn" });
+    expect(proj).toEqual({ ok: false, reason: "back-rank-marine" });
   });
 
-  it("flags a back-rank pawn on rank 1 as ineligible", () => {
+  it("flags a back-rank Marine on rank 1 as ineligible", () => {
     const proj = scfenToFen(
       parseScFen("SCFEN|4k3/8/8/8/8/8/8/4Kp2|3|33|P|G:11:11|Q:w:;b:"),
     );
-    expect(proj).toEqual({ ok: false, reason: "back-rank-pawn" });
+    expect(proj).toEqual({ ok: false, reason: "back-rank-marine" });
   });
 
-  it("allows a pawn on a mid-rank", () => {
+  it("allows a Marine on a mid-rank", () => {
     const proj = scfenToFen(
       parseScFen("SCFEN|4k3/8/8/8/4P3/8/8/4K3|3|33|P|G:11:11|Q:w:;b:"),
     );
     expect(proj.ok).toBe(true);
   });
 
-  it("rejects placements without the exact king pair", () => {
+  it("rejects placements without the exact Command Center pair", () => {
     // parseScFen itself rejects kingless placements, so build the snapshot by
     // structurally swapping a valid placement (covers programmatic snapshots).
     const snap = parseScFen(START);
     const kingless = scfenToFen({ ...snap, placement: "8/8/8/8/8/8/8/4K3" });
-    expect(kingless).toEqual({ ok: false, reason: "no-exact-king-pair" });
+    expect(kingless).toEqual({ ok: false, reason: "no-exact-cc-pair" });
   });
 
   it("drops SCFEN extras (stored / queue) from the projection", () => {

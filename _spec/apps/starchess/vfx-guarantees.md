@@ -45,7 +45,7 @@ style).
 | V21 | Jump and mine trails outlive their cue (fade past `TIMELINE_DONE`) | `timeline-perf.puml`, `cue-playback.puml` | `vfx-playback-integrity.spec.ts` |
 | V22 | While a mover owns a square the board does not draw it (`deriveVisualFrame` hide ownership) | `animation-pipeline.md` (square ownership) | `vfx-playback-integrity.spec.ts` |
 | V23 | Tutorial auto-End (`endTurnAfterQueue` → `endTurnLikeAClick`) still plays the move VFX | `animation-pipeline.md` (auto-End must not dispatch from an effect) | `vfx-playback-integrity.spec.ts` |
-| V24 | Fog tutorial burns a cburnett king (`data-king-glyph`), StarChess burns the CC hull | `kingDamageOverlay.tsx` | `vfx-playback-integrity.spec.ts` |
+| V24 | Fog tutorial burns a cburnett king (`data-king-glyph`), StarChess burns the CC hull | `ccDamageOverlay.tsx` | `vfx-playback-integrity.spec.ts` |
 | V25 | A burning king does not leak through fog (fire paints over the board) | `kingDamage.ts` (`visibleKingDamageCues`) | `vfx-playback-integrity.spec.ts` |
 | V26 | Live play never exceeds `VFX_CAP_DESKTOP` (8) same-kind cues | `timeline-vfx-density.puml` | `vfx-density-caps.spec.ts` |
 | V27 | Tight viewports never exceed `VFX_CAP_TIGHT` (4) | same | `vfx-density-caps.spec.ts` |
@@ -55,8 +55,8 @@ style).
 | V31 | `.board-phase-ring` fades opacity-only (colours snap) | `timeline-vfx-density.puml` (phase ring) | `vfx-paint-budget.spec.ts` |
 | V32 | The ring — not a container repaint — carries the resolve state (`data-phase`) | same | `vfx-paint-budget.spec.ts` |
 | V34 | A mine held back by a Marine Extra Step chases the marine to its destination — the stim move lands *before* the boom (`farmx`/`farmm`/`farmd` on the `afterMove` rung) | `mine-contact.puml` (one walk per marine), `cue-lanes.puml` (arrival-mine prefixes) | `vfx-cue-coverage.spec.ts` |
-| V35 | A damaged Command Center **keeps burning while it walks** — `visibleKingDamageCues` drops that side (`movingColors`), the move hull carries `damage` + `seed` instead, so the slide never flashes a pristine CC and no second hull draws over it | `kingDamage.ts` (`movingColors` gate, `withKingFire`), `board-entities.puml` | **unit only — see gaps** |
-| V36 | A damaged Command Center **keeps burning while it shoots** — the `attackFrom` gate already dropped the slot, so the shot hull carries `damage` + `seed` through the hatch / battery CSS | `kingDamage.ts` (`attackFrom` gate, `withKingFire`) | **unit only — see gaps** |
+| V35 | A damaged Command Center **keeps burning while it walks** — `visibleKingDamageCues` drops that side (`movingColors`), the move hull carries `damage` + `seed` instead, so the slide never flashes a pristine CC and no second hull draws over it | `kingDamage.ts` (`movingColors` gate, `withCCFire`), `board-entities.puml` | **unit only — see gaps** |
+| V36 | A damaged Command Center **keeps burning while it shoots** — the `attackFrom` gate already dropped the slot, so the shot hull carries `damage` + `seed` through the hatch / battery CSS | `kingDamage.ts` (`attackFrom` gate, `withCCFire`) | **unit only — see gaps** |
 | V37 | A **shot-out spider mine leaves a wreck** — `DeathMine` breaks up visibly on its own tile (crown, pods, four legs) with the Hoverbike frag boom fired in place, and `spentMines` darkens the intact glyph for the window so it never draws under its own explosion | `cue-playback.puml` (mine-death lanes owe `spentMines`), `board-entities.puml` | **unit only — see gaps** |
 
 | V38 | A capture onto a **mined** tile buries **both** — `Rxe5` on an e5 holding a unit and a mine plays the victim's wreck and the mine's, with the glyph darkened; visible captures pair them in one phase-1 window, a fogged approach pairs `prdm` with `prdth` before the occupy slide, and the attacker lands alive either way | `mine-contact.puml` (a blocker draws the shot; a capture reports its mine), `cue-projection.puml` | **unit only — see gaps** |
@@ -94,7 +94,7 @@ two in sync when the move layer changes.
 
 ## V18 — currently failing (king hit-boom never paints)
 
-`KingDamageSlot` (`presentation/animations/components/kingDamageOverlay.tsx`)
+`CCDamageSlot` (`presentation/animations/components/ccDamageOverlay.tsx`)
 starts at `phase: "fire"` and its `createEffect` plays the boom when
 `impactSeq` passes `lastPlayedBoomSeq`:
 
@@ -130,8 +130,8 @@ seq per slot instead of resetting on every re-run.
   `vfxHarness.ts` to sample those attributes off the move / attack / death layers
   and `[data-spider-mine]`. Until then they are held by unit tests:
   `__tests__/MoveAnimation.test.tsx` and `__tests__/AttackAnimation.test.tsx`
-  (each hull paints its cue's damage state) over `__tests__/kingDamage.test.ts`
-  (`visibleKingDamageCues · travelling king` for the layer handoff, `withKingFire`
+  (each hull paints its cue's damage state) over `__tests__/ccDamage.test.ts`
+  (`visibleKingDamageCues · travelling king` for the layer handoff, `withCCFire`
   for the dressing that replaces it); `__tests__/DeathAnimation.test.tsx` (the
   wreck is the mine, is shard-built, and carries the frag boom) over
   `__tests__/timelinePlayer.test.ts` (`mine wreck hides its glyph` — both the

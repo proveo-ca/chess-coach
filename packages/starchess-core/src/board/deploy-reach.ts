@@ -17,7 +17,7 @@ export type DeployReachQuery = {
   color: StarChessColor;
   /** Command Center of `color`; deploys land on its ring. */
   cc: Square | null;
-  /** Gas available for the `spawn` special. */
+  /** Gas available for the `deploy` special. */
   gas: number;
   /** Banked minerals, compared per unit against `UNIT_COST`. */
   minerals: number;
@@ -44,8 +44,8 @@ export const deployTargets = (q: DeployReachQuery): Square[] => {
     if (hostileMineOn(q.mines, q.color, at)) return false;
     const occupant = q.map.get(at);
     if (!occupant) return true;
-    // Ally and enemy non-kings are crushable (deployed replaces occupant).
-    // Kings are never crushable.
+    // Ally and enemy non-ccs are crushable (deployed replaces occupant).
+    // Command Centers are never crushable.
     return occupant.type !== "k";
   });
 };

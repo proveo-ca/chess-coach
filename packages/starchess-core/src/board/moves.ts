@@ -15,7 +15,7 @@ import {
   type ScPiece,
 } from "./placement";
 import { mineAt } from "./mines";
-import { canPawnDoubleStep } from "../rules/specials/pawnDouble";
+import { canMarineDoubleStep } from "../rules/specials/stimStep";
 import type { PieceColor, ScMine, SpawnPiece } from "../model/types";
 
 export type ScMove = {
@@ -27,15 +27,15 @@ export type ScMove = {
   promotes: boolean;
   /** Promotion target when `promotes` (caller may override via picker). */
   promotion?: SpawnPiece;
-  /** Sieged rook — capture on rook ray without relocating. */
+  /** Sieged Tank — capture on Tank ray without relocating. */
   firesInPlace: boolean;
   /**
-   * Enemy king on `to`. Resolver drops the plan (no relocate, no HP chip) —
+   * Enemy Command Center on `to`. Resolver drops the plan (no relocate, no HP chip) —
    * burns the side's one classical action. UI/brain filter; validation accepts
-   * (fog path-discovery en route to a king square still occupies).
+   * (fog path-discovery en route to a Command Center square still occupies).
    */
   dropsAtResolve: boolean;
-  isPawnDoubleStep: boolean;
+  isMarineDoubleStep: boolean;
   /**
    * Hostile spider mine on `to`. Advisory for pieces that already reach the
    * square; **legality-bearing** for the two shapes that only exist because a
@@ -48,17 +48,17 @@ export type ScMove = {
 
 export type ScMoveOptions = {
   /**
-   * Effective sieged-rook set **after** queued B `rookSiege` toggles
-   * (`rookSiegeMode.isRookSiegedAfterB`). Never raw `snap.siegedRooks`.
+   * Effective sieged-tank set **after** queued B `siegeMode` toggles
+   * (`board/siege.ts` `isTankSiegedAfterB`). Never raw `snap.siegedTanks`.
    */
-  siegedRooks?: ReadonlySet<Square> | readonly Square[];
+  siegedTanks?: ReadonlySet<Square> | readonly Square[];
   mines?: readonly ScMine[];
 };
 
 const FILES = "abcdefgh";
 
 const asSiegedSet = (
-  sieged: ScMoveOptions["siegedRooks"],
+  sieged: ScMoveOptions["siegedTanks"],
 ): ReadonlySet<Square> => {
   if (!sieged) return new Set();
   return sieged instanceof Set ? sieged : new Set(sieged);
@@ -88,12 +88,12 @@ const hostileMine = (
 
 const pushMove = (
   out: ScMove[],
-  base: Omit<ScMove, "hostileMineOnTo" | "promotes" | "isPawnDoubleStep" | "firesInPlace" | "dropsAtResolve"> &
+  base: Omit<ScMove, "hostileMineOnTo" | "promotes" | "isMarineDoubleStep" | "firesInPlace" | "dropsAtResolve"> &
     Partial<
       Pick<
         ScMove,
         | "promotes"
-        | "isPawnDoubleStep"
+        | "isMarineDoubleStep"
         | "firesInPlace"
         | "dropsAtResolve"
         | "promotion"
@@ -113,13 +113,13 @@ const pushMove = (
     ...(base.promotion ? { promotion: base.promotion } : {}),
     firesInPlace: base.firesInPlace ?? false,
     dropsAtResolve,
-    isPawnDoubleStep: base.isPawnDoubleStep ?? false,
+    isMarineDoubleStep: base.isMarineDoubleStep ?? false,
     hostileMineOnTo: hostileMine(mines, base.to, base.color),
   });
 };
 
-/** Pawn classical moves for one square. */
-const pawnMoves = (
+/** Marine classical moves for one square. */
+const marineMoves = (
   map: Map<Square, ScPiece>,
   from: Square,
   piece: ScPiece,
@@ -143,7 +143,7 @@ const pawnMoves = (
         capture: null,
         promotes,
         ...(promotes ? { promotion: "q" as SpawnPiece } : {}),
-        isPawnDoubleStep: doubleStep,
+        isMarineDoubleStep: doubleStep,
       },
       mines,
     );
@@ -151,7 +151,7 @@ const pawnMoves = (
 
   const fwd = sq(file, rank + dir);
   if (fwd) tryQuiet(fwd, false);
-  if (canPawnDoubleStep(from, piece.color) && fwd && !map.has(fwd)) {
+  if (canMarineDoubleStep(from, piece.color) && fwd && !map.has(fwd)) {
     const fwd2 = sq(file, rank + 2 * dir);
     if (fwd2) tryQuiet(fwd2, true);
   }
@@ -182,7 +182,7 @@ const pawnMoves = (
 };
 
 /**
- * Sieged rook: any square on the cross (same file or rank) is a fire
+ * Sieged Tank: any square on the cross (same file or rank) is a fire
  * mission — captures fire in place (no relocate), and empty squares take a
  * shelling in place, exactly like a regular piece attacking an empty square.
  * Blockers do NOT filter the list: resolve walks the ray and the first piece
@@ -190,7 +190,7 @@ const pawnMoves = (
  * A hostile mine on an empty ray square is a target too: the turret clears it
  * without relocating (mines are not occupancy, so the ray runs through them).
  */
-const siegedRookMoves = (
+const siegedTankMoves = (
   map: Map<Square, ScPiece>,
   from: Square,
   color: PieceColor,
@@ -218,7 +218,7 @@ const siegedRookMoves = (
   }
 };
 
-/** Knight / king / bishop / rook / queen via {@link attacksSquare}. */
+/** Hoverbike / Command Center / Mecha / Tank / BattleShip via {@link attacksSquare}. */
 const geometryMoves = (
   map: Map<Square, ScPiece>,
   from: Square,
@@ -258,17 +258,17 @@ export const scMovesFrom = (
 ): ScMove[] => {
   const piece = map.get(from);
   if (!piece || piece.color !== color) return [];
-  const sieged = asSiegedSet(opts?.siegedRooks);
+  const sieged = asSiegedSet(opts?.siegedTanks);
   const mines = opts?.mines;
   const out: ScMove[] = [];
 
   if (piece.type === "p") {
-    pawnMoves(map, from, piece, mines, out);
+    marineMoves(map, from, piece, mines, out);
     return out;
   }
 
   if (piece.type === "r" && sieged.has(from)) {
-    siegedRookMoves(map, from, color, mines, out);
+    siegedTankMoves(map, from, color, mines, out);
     return out;
   }
 
@@ -296,18 +296,18 @@ export const scMovesFor = (
  * on a step the board already grants.
  *
  * Derived from the generator rather than probed through chess.js: chess.js
- * rejects a placement with a marine on the edge rows outright ("some pawns are
+ * rejects a placement with a marine on the edge rows outright ("some Marines are
  * on the edge rows"), which is a legal StarChess position via a Command Center
  * deploy, and it has no notion of the widened rank band either way.
  */
-export const canClassicalPawnDouble = (
+export const canClassicalMarineDouble = (
   placement: string,
   square: Square,
 ): boolean => {
   const map = placementToMap(placement);
   const piece = map.get(square);
   if (!piece || piece.type !== "p") return false;
-  return scMovesFrom(map, square, piece.color).some((m) => m.isPawnDoubleStep);
+  return scMovesFrom(map, square, piece.color).some((m) => m.isMarineDoubleStep);
 };
 
 /**
@@ -341,7 +341,7 @@ export const isScMoveShape = (
       }
       const dir = color === "w" ? 1 : -1;
       if (adf === 0 && dr === dir) return true;
-      if (adf === 0 && dr === 2 * dir) return canPawnDoubleStep(from, color);
+      if (adf === 0 && dr === 2 * dir) return canMarineDoubleStep(from, color);
       return adf === 1 && dr === dir;
     }
     case "b":

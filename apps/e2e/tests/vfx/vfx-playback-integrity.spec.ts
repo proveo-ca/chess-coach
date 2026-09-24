@@ -23,7 +23,7 @@ import {
 
 const CAPTURE_SEED = "SCFEN|k3r3/4p3/8/8/8/8/8/K3R3|1|33|P|G:11:11|Q:w:C=e1e8;b:";
 const MOVE_SEED = "SCFEN|4k3/8/8/8/8/8/4P3/4K3|1|33|P|G:11:11|Q:w:C=e2e3;b:";
-const WARP_SEED = "SCFEN|k6b/8/8/8/8/8/8/Q6K|21|33|P|G:03:33|Q:w:B=queenWarp:a1:d4;b:";
+const WARP_SEED = "SCFEN|k6b/8/8/8/8/8/8/Q6K|21|33|P|G:03:33|Q:w:B=tacticalJump:a1:d4;b:";
 const MINE_SEED = "SCFEN|7k/8/8/8/8/8/8/R3K3|1|33|P|G:11:11|M:b:a4|Q:w:C=a1a8;b:";
 
 test.describe("VFX · playback integrity", () => {
@@ -37,7 +37,7 @@ test.describe("VFX · playback integrity", () => {
 
     expect(watch.ever).toContain("attack");
     expect(watch.ever).toContain("death");
-    // A replaced node restarts its CSS animation — "knight plays twice",
+    // A replaced node restarts its CSS animation — "Hoverbike plays twice",
     // "gatling loops", "hull flashes back". Zero replacements, always.
     expect(watch.cueRemounts).toEqual({});
   });
@@ -48,8 +48,8 @@ test.describe("VFX · playback integrity", () => {
     expect(watch.ever.length).toBeGreaterThan(0);
 
     for (const [kind, selector] of Object.entries(CUE)) {
-      // kingDamage is persistent presentation (a burning hull), not a cue.
-      if (kind === "kingDamage") continue;
+      // ccDamage is persistent presentation (a burning hull), not a cue.
+      if (kind === "ccDamage") continue;
       await expect(page.locator(selector), `${kind} left on screen`).toHaveCount(0, {
         timeout: 10_000,
       });
@@ -106,7 +106,7 @@ test.describe("VFX · playback integrity", () => {
     await expect(settledPiece(page, "g7", "w b")).toBeVisible({ timeout: 15_000 });
   });
 
-  test("V24 the fog tutorial burns a Chess king, StarChess burns the hull", async ({ page }) => {
+  test("V24 the fog tutorial burns a Chess Command Center, StarChess burns the hull", async ({ page }) => {
     await page.goto("tutorial/fog/bishop");
     await expect(page.locator("[data-board-grid] [data-square]").first()).toBeVisible({
       timeout: 20_000,
@@ -114,20 +114,20 @@ test.describe("VFX · playback integrity", () => {
     await page.locator("[data-square='d4']").click();
     await page.locator("[data-square='h8']").click();
 
-    // Bxg7 checks kh8 → the king takes a chip and starts burning.
-    const burning = page.locator("[data-king-damage='smallFire'], [data-king-damage='bigFire']");
+    // Bxg7 checks kh8 → the Command Center takes a chip and starts burning.
+    const burning = page.locator("[data-cc-damage='smallFire'], [data-cc-damage='bigFire']");
     await expect(burning.first()).toBeVisible({ timeout: 20_000 });
-    await expect(burning.first()).toHaveAttribute("data-king-glyph", "cburnett");
+    await expect(burning.first()).toHaveAttribute("data-cc-glyph", "cburnett");
 
     await clearStorage(page);
     await gotoScfen(page, "SCFEN|8/8/8/8/8/8/3k4/3K4|1|33|P|G:11:11|Q:w:;b:");
-    const hull = page.locator("[data-king-damage='smallFire'], [data-king-damage='bigFire']");
+    const hull = page.locator("[data-cc-damage='smallFire'], [data-cc-damage='bigFire']");
     await expect(hull.first()).toBeVisible({ timeout: 15_000 });
-    await expect(hull.first()).toHaveAttribute("data-king-glyph", "nerd");
+    await expect(hull.first()).toHaveAttribute("data-cc-glyph", "nerd");
   });
 
-  test("V25 a burning king does not leak through fog", async ({ page }) => {
-    // Black king on h8 at 1 HP, white king alone on a1 — h8 is unseen, so the
+  test("V25 a burning Command Center does not leak through fog", async ({ page }) => {
+    // Black Command Center on h8 at 1 HP, white Command Center alone on a1 — h8 is unseen, so the
     // fire (which paints over the board) must not announce the square.
     await gotoScfen(page, "SCFEN|7k/8/8/8/8/8/8/K7|1|31|P|G:11:11|Q:w:;b:");
 
@@ -136,8 +136,8 @@ test.describe("VFX · playback integrity", () => {
       "hidden",
       { timeout: 15_000 },
     );
-    await expect(page.locator("[data-king-damage][data-square='h8']")).toHaveCount(0);
+    await expect(page.locator("[data-cc-damage][data-square='h8']")).toHaveCount(0);
     // No burning black hull anywhere on the board while its square is unseen.
-    await expect(page.locator("[data-king-damage][data-king-id='b']")).toHaveCount(0);
+    await expect(page.locator("[data-cc-damage][data-cc-id='b']")).toHaveCount(0);
   });
 });

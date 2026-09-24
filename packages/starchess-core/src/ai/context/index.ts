@@ -10,7 +10,7 @@
 import type { Square } from "chess.js";
 
 import {
-  findKing,
+  findCC,
   isSquareAttackedBy,
   placementToMap,
   type ScPiece,
@@ -18,7 +18,7 @@ import {
 import type { PieceColor, ScFenSnapshot } from "../../model/types";
 import { cloneWithMove, enemyOf } from "./geometry";
 import { DEFAULT_RNG } from "./rng";
-import { gatherKingIntel } from "./kingIntel";
+import { gatherCCFocusIntel } from "./ccFocusIntel";
 import { buildMaterialIntel, estimateStoredFor } from "./material";
 import { hasHubPresence, hubMineTaken } from "./mines";
 import { WEIGHTS, resolvePosture } from "./posture";
@@ -29,10 +29,10 @@ import { buildVisionIntel } from "./vision";
 export * from "./types";
 export * from "./rng";
 export * from "./geometry";
-export * from "./pawns";
+export * from "./marines";
 export * from "./mines";
 export { countType, estimateStoredFor } from "./material";
-export { gatherKingIntel } from "./kingIntel";
+export { gatherCCFocusIntel } from "./ccFocusIntel";
 export { buildTacticalBoard } from "./tactical";
 export { WEIGHTS, resolvePosture } from "./posture";
 export { buildVisionIntel } from "./vision";
@@ -49,33 +49,33 @@ export const buildAdjutantCtx = (
   const enemy = enemyOf(us);
 
   const map = placementToMap(snap.placement);
-  const king = findKing(map, us);
-  if (!king) return null;
+  const commandCenter = findCC(map, us);
+  if (!commandCenter) return null;
 
   const storedFor = ctx?.storedFor ?? estimateStoredFor(snap, us);
-  const sieged: ReadonlySet<Square> = new Set(snap.siegedRooks ?? []);
-  const enemyKing = findKing(map, enemy);
+  const sieged: ReadonlySet<Square> = new Set(snap.siegedTanks ?? []);
+  const enemyCC = findCC(map, enemy);
 
-  const vision = buildVisionIntel(snap, map, us, enemy, enemyKing, sieged);
+  const vision = buildVisionIntel(snap, map, us, enemy, enemyCC, sieged);
   const hubHeld = hasHubPresence(map, us);
-  const posture = resolvePosture(hubHeld, vision.enemyKingVisible);
+  const posture = resolvePosture(hubHeld, vision.enemyCCVisible);
 
   return {
     snap,
     map,
     us,
     enemy,
-    king,
-    enemyKing,
+    commandCenter,
+    enemyCC,
     // An adjacent enemy Command Center (CC) counts: face-to-face command centers (CCs) chip each other.
-    kingThreatened: isSquareAttackedBy(map, king, enemy),
+    ccThreatened: isSquareAttackedBy(map, commandCenter, enemy),
     sieged,
     gas: snap.gas[us],
     posture,
     weights: WEIGHTS[posture],
     vision,
-    intel: gatherKingIntel(map, vision.litSquares, vision.revealedPieces, enemy),
-    tactical: buildTacticalBoard(map, us, enemy, king, sieged),
+    intel: gatherCCFocusIntel(map, vision.litSquares, vision.revealedPieces, enemy),
+    tactical: buildTacticalBoard(map, us, enemy, commandCenter, sieged),
     material: buildMaterialIntel(map, us, storedFor),
     hubHeld,
     hubMineTaken: hubMineTaken(snap, us),
@@ -102,5 +102,5 @@ export const evaluateMove = (
   const destSafe = () =>
     (safe ??= !isSquareAttackedBy(after(), move.to, ctx.enemy));
 
-  return { move, piece, isKingMove: piece.type === "k", after, destSafe };
+  return { move, piece, isCCMove: piece.type === "k", after, destSafe };
 };

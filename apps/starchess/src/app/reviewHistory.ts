@@ -83,7 +83,7 @@ export const buildReviewHistory = (args: BuildReviewHistoryArgs): ReviewHistory 
     const queued = args.queueStep(cur, i);
     // Spawn spends (B/F spawn) debit bank before End — keep SCFEN `B:` in sync.
     for (const a of queued.queue?.actions ?? []) {
-      if (a.kind === "spawn" && a.unit) {
+      if (a.kind === "deploy" && a.unit) {
         const cost = UNIT_COST[a.unit];
         const c = a.color;
         bank = {
@@ -144,7 +144,7 @@ export const createMatchStateFromReviewHistory = (
     deadlineAt: null,
     targeting: null,
     specialsUsed: new Set(),
-    siegedRooks: new Set(start.siegedRooks ?? []),
+    siegedTanks: new Set(start.siegedTanks ?? []),
     timeline: {
       active: false,
       cues: [],
@@ -157,9 +157,9 @@ export const createMatchStateFromReviewHistory = (
       mineMissileTrails: [],
       spentMines: [],
       displayPlacement: null,
-      displayKingLives: null,
+      displayCCLives: null,
       displayMines: null,
-      displaySiegedRooks: null,
+      displaySiegedTanks: null,
     },
     outcome,
     settledSnapshots: stampedSnaps,

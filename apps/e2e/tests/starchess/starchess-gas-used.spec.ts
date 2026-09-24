@@ -26,7 +26,7 @@ test.describe("StarChess gas-used fog (no pierce)", () => {
   test("enemy gas-spent unit stays fogged — no green ring leak", async ({
     page,
   }) => {
-    // Black knight on e5 spent gas (U:e5); white viewer must not see it.
+    // Black Hoverbike on e5 spent gas (U:e5); white viewer must not see it.
     const scfen =
       "SCFEN|4k3/8/8/4n3/8/8/8/4K3|1|33|P|G:11:11|U:e5|Q:w:;b:";
     await gotoScfen(page, scfen);

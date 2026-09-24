@@ -8,8 +8,8 @@ export type {
   MoveCue,
   ShipJumpTrail,
   MineMissileCue,
-  KingDamageState,
-  RookMode,
+  CCDamageState,
+  TankMode,
 } from "~/presentation/types";
 export type { StarChessPiece } from "~/presentation/types";
 

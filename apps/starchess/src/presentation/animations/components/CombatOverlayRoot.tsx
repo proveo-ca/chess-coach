@@ -12,7 +12,7 @@ import { GasDropAnimation } from "~/presentation/animations/components/GasDropAn
 import { MoveAnimation } from "~/presentation/animations/components/MoveAnimation";
 import { MineMissileAnimation } from "~/presentation/animations/components/MineMissileAnimation";
 import { ShipJumpAnimation } from "~/presentation/animations/components/ShipJumpAnimation";
-import { KingDamageOverlay } from "~/presentation/animations/components/kingDamageOverlay";
+import { CCDamageOverlay } from "~/presentation/animations/components/ccDamageOverlay";
 import type { CombatCueFrame } from "~/presentation/animations/combatCueFrame";
 import {
   overlayDevicePixelRatio,
@@ -23,7 +23,7 @@ import type {
   DeathCue,
   DeployCue,
   GasDropCue,
-  KingDamageCue,
+  CCDamageCue,
   MineMissileCue,
   MoveCue,
   ShipJumpTrail,
@@ -34,7 +34,7 @@ const NO_ATTACKS: AttackCue[] = [];
 const NO_DEATHS: DeathCue[] = [];
 const NO_MOVES: MoveCue[] = [];
 const NO_DEPLOYS: DeployCue[] = [];
-const NO_KING_DAMAGE: KingDamageCue[] = [];
+const NO_CC_DAMAGE: CCDamageCue[] = [];
 const NO_JUMP_TRAILS: ShipJumpTrail[] = [];
 const NO_GAS_DROPS: GasDropCue[] = [];
 const NO_MINE_MISSILES: MineMissileCue[] = [];
@@ -45,6 +45,7 @@ export type CombatOverlayRootProps = {
   box: { top: number; left: number; w: number; h: number };
   cues: CombatCueFrame;
   specialUsedSquares: ReadonlySet<Square>;
+  charonSquares?: ReadonlySet<Square>;
   pieceSet?: PieceSet;
 };
 
@@ -73,8 +74,8 @@ export const CombatOverlayRoot: Component<CombatOverlayRootProps> = (props) => {
       aria-hidden
     >
       {/* Stable layer stack — do not wrap each in Show (remounts restart CSS). */}
-      <KingDamageOverlay
-        cues={c().kingDamage ?? NO_KING_DAMAGE}
+      <CCDamageOverlay
+        cues={c().ccDamage ?? NO_CC_DAMAGE}
         boardWidth={w()}
         boardHeight={h()}
         pieceSet={props.pieceSet}
@@ -88,6 +89,7 @@ export const CombatOverlayRoot: Component<CombatOverlayRootProps> = (props) => {
         cues={c().attackCues ?? NO_ATTACKS}
         dyingIds={c().attackDying}
         specialUsedSquares={props.specialUsedSquares}
+        charonSquares={props.charonSquares}
         boardWidth={w()}
         boardHeight={h()}
       />
@@ -102,6 +104,7 @@ export const CombatOverlayRoot: Component<CombatOverlayRootProps> = (props) => {
         progress={c().moveProgress ?? NO_MOVE_PROGRESS}
         leg={c().moveLeg}
         specialUsedSquares={props.specialUsedSquares}
+        charonSquares={props.charonSquares}
         pieceSet={props.pieceSet}
         boardWidth={w()}
         boardHeight={h()}

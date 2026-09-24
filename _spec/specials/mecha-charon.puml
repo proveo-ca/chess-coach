@@ -21,13 +21,13 @@ package "apps/starchess — presentation" {
   component "animations/mechaCharon.ts\nsymbol MECHA_CHARON, value bishopCharon\ncue id + OPEN_BISHOP_SNIPE frozen\nfizzle: extended span, no impact burst" as VFX <<app>>
 }
 
-database "SCFEN Q:\nB/F=bishopSnipe:from:to\nwire kind frozen" as WIRE <<db>>
+database "SCFEN Q:\nB/F=charonMissiles:from:to\nwire kind frozen" as WIRE <<db>>
 
 RULE ARROW_MAIN VAL : diagonal set
 VAL ARROW_MAIN RES : queued aim
 RULE ARROW_MAIN AI : killable list
 ARM ARROW_MAIN RULE : diagonals via core index
-ARM ARROW_MAIN WIRE : queue B/F bishopSnipe
+ARM ARROW_MAIN WIRE : queue B/F charonMissiles
 RES ARROW_MAIN WIRE : placement delete on kill
 ARM ARROW_OPTIONAL VFX : attack + death / fizzle cues
 
@@ -59,12 +59,12 @@ note bottom
   charonTargetShips* + charonDiagonalSquares* + charonStrikeTarget +
   charonRayEdge (clean cut, no queen); placementAfterCharon →
   placementAfterMechaCharon; CHARON_GAS_COST + MECHA_CHARON_GAS_COST
-  alias; arms/bishopSnipe.ts → arms/mechaCharon.ts;
+  alias; arms/charonMissiles.ts → arms/mechaCharon.ts;
   bishopSnipeArm → mechaCharonArm; animations/bishopCharon.ts →
   animations/mechaCharon.ts; BISHOP_CHARON → MECHA_CHARON (string
   value ""bishopCharon"" frozen); copy [b] rewritten to free aim;
   queen → BattleShip in q copy.
-  SCFEN kind ""bishopSnipe"", store action ""OPEN_BISHOP_SNIPE"",
+  SCFEN kind ""charonMissiles"", store action ""OPEN_BISHOP_SNIPE"",
   VFX cue ""bishopCharon"" stay frozen for replay compat.
   ----
   **2nd gas phase (F) dynamics.** B evaluates on turn-open placement;
@@ -94,7 +94,7 @@ note bottom
   Presentation ""specials/pieceArms.test.ts"" (free-aim arm),
   ""boardInput/useBoardInputCoverage"" + ""matchReducer.actions""
   (targets list), ""timelinePlayer"" (B kill cues), ""tutorialScript""
-  (frozen bishopSnipe SCFEN). Full core + app suites green.
+  (frozen charonMissiles SCFEN). Full core + app suites green.
   ----
   **Adjutant hunt (two-mode, naive + strategic twin).**
   Gate ""enemyCanJump"" = enemy gasIncome ≥ 3 (never the turn number).

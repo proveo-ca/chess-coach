@@ -28,9 +28,9 @@ export const PATH_COLLIDE_STEPS: readonly PathCollideStep[] = [
     caption:
       "1. Nb a4 mine+→c5 · White spawn rook d1→a1",
     actions: [
-      { timing: "B", kind: "knightMine", color: "b", from: "a4", to: "a4" },
+      { timing: "B", kind: "spiderMine", color: "b", from: "a4", to: "a4" },
       { timing: "C", kind: "classical", color: "b", from: "a4", to: "c5" },
-      { timing: "B", kind: "spawn", color: "w", from: "e1", to: "d1", unit: "r" },
+      { timing: "B", kind: "deploy", color: "w", from: "e1", to: "d1", unit: "r" },
       { timing: "C", kind: "classical", color: "w", from: "d1", to: "a1" },
     ],
   },
@@ -38,10 +38,10 @@ export const PATH_COLLIDE_STEPS: readonly PathCollideStep[] = [
     caption:
       "2. Nb c5 mine+→e4 · Ra1→a8 (chase boom) + siege skipped",
     actions: [
-      { timing: "B", kind: "knightMine", color: "b", from: "c5", to: "c5" },
+      { timing: "B", kind: "spiderMine", color: "b", from: "c5", to: "c5" },
       { timing: "C", kind: "classical", color: "b", from: "c5", to: "e4" },
       { timing: "C", kind: "classical", color: "w", from: "a1", to: "a8" },
-      { timing: "F", kind: "rookSiege", color: "w", from: "a1" },
+      { timing: "F", kind: "siegeMode", color: "w", from: "a1" },
     ],
   },
 ];

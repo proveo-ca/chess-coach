@@ -18,14 +18,14 @@ import styles from "~/presentation/animations/components/AttackBoardDemo.module.
 import { attackVectorsFor, squareAt } from "~/presentation/animations/attackVectors";
 import { AnimationStage } from "~/presentation/animations/components/AnimationStage";
 import {
-  clearSiegedRooks,
-  setRookMode,
-} from "~/presentation/animations/rookModeStore";
+  clearSiegedTanks,
+  setTankMode,
+} from "~/presentation/animations/tankModeStore";
 import { Screen } from "~/components/primitives/Screen";
-import type { AttackCue, RookMode } from "~/presentation/types";
+import type { AttackCue, TankMode } from "~/presentation/types";
 
 const ORIGIN: Square = "d4";
-const OPPOSING_PAWN: Square = "d6";
+const OPPOSING_MARINE: Square = "d6";
 
 const FEN_BY_PIECE: Record<DemoPiece, string> = {
   p: "7k/8/3p4/8/3P4/8/8/K7 w - - 0 1",
@@ -39,7 +39,7 @@ const FEN_BY_PIECE: Record<DemoPiece, string> = {
 
 export const AttackBoardDemo: Component<{
   piece: DemoPiece;
-  rookMode?: RookMode;
+  tankMode?: TankMode;
   variant?: import("~/types/board").BoardSkin;
   pieceSet?: import("~/types/board").PieceSet;
   header?: import("solid-js").JSX.Element;
@@ -48,7 +48,7 @@ export const AttackBoardDemo: Component<{
 }> = (props) => {
   const vectors = createMemo(() => attackVectorsFor(props.piece, ORIGIN));
   const opposingVectors = createMemo(() =>
-    props.piece === "p" ? attackVectorsFor("p", OPPOSING_PAWN, "b") : [],
+    props.piece === "p" ? attackVectorsFor("p", OPPOSING_MARINE, "b") : [],
   );
   const [vecIndex, setVecIndex] = createSignal(0);
   const [cues, setCues] = createSignal<AttackCue[]>([]);
@@ -58,8 +58,8 @@ export const AttackBoardDemo: Component<{
   let cycleTimer = 0;
 
   const prepare = () => {
-    clearSiegedRooks();
-    if (props.piece === "r") setRookMode(ORIGIN, props.rookMode ?? "tank");
+    clearSiegedTanks();
+    if (props.piece === "r") setTankMode(ORIGIN, props.tankMode ?? "tank");
   };
 
   const targetSq = (origin: Square, list: ReturnType<typeof attackVectorsFor>) => {
@@ -81,22 +81,22 @@ export const AttackBoardDemo: Component<{
           color: "w",
           from: ORIGIN,
           to,
-          rookMode: props.rookMode,
+          tankMode: props.tankMode,
         });
         setHide([ORIGIN]);
       }
       const oppList = opposingVectors();
       if (oppList.length > 0) {
-        const oppTo = targetSq(OPPOSING_PAWN, oppList);
+        const oppTo = targetSq(OPPOSING_MARINE, oppList);
         if (oppTo) {
           next.push({
             id: `story-atk-p-opp-${vecIndex()}`,
             piece: "p",
             color: "b",
-            from: OPPOSING_PAWN,
+            from: OPPOSING_MARINE,
             to: oppTo,
           });
-          setHide((h) => [...h, OPPOSING_PAWN]);
+          setHide((h) => [...h, OPPOSING_MARINE]);
         }
       }
       setCues(next);
@@ -122,7 +122,7 @@ export const AttackBoardDemo: Component<{
 
   createEffect(() => {
     void props.piece;
-    void props.rookMode;
+    void props.tankMode;
     prepare();
     setVecIndex(0);
     armCycle();

@@ -67,7 +67,7 @@ export const shardFlightStyle = (
 };
 
 /**
- * King rubble settle pose — parts drop downward into a pile (not outward shatter).
+ * Command Center rubble settle pose — parts drop downward into a pile (not outward shatter).
  * CSS vars consumed by `rubbleCollapse` / static destroyed.
  */
 export const rubbleSettleStyle = (

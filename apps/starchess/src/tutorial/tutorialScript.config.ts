@@ -195,7 +195,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
         board: {
           scfen: "SCFEN|7k/3p4/8/8/3R4/8/8/K7|0|33|P|G:11:11|Q:w:;b:",
           stored: 4,
-          rookMode: "tank",
+          tankMode: "tank",
           endTurnAfterQueue: "first",
           armTimer: false,
           docs: "Tank Rd4\u2192d8 into fog. End: discover d7 \u2192 Rxd7.",
@@ -231,7 +231,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
         board: {
           scfen: "SCFEN|7k/3p4/8/8/p2R3p/8/3p4/K7|0|33|P|G:11:11|Q:w:;b:|S:d4",
           stored: 4,
-          rookMode: "siege",
+          tankMode: "siege",
           endTurnAfterQueue: "first",
           armTimer: false,
           objective: "Keep your siege tank on d4 alive — reduce the enemy to 1 pawn.",
@@ -312,7 +312,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
         board: {
           scfen: "SCFEN|7k/r4ppp/8/8/3Q4/8/PPb5/K7|0|33|P|G:11:11|Q:w:;b:|S:a7",
           stored: 4,
-          rookMode: "siege",
+          tankMode: "siege",
           endTurnAfterQueue: "first",
           armTimer: false,
           docs: "Black tank dug in on a7, sighted on white Pa2 with Ka1 behind; black mecha c2 spots. Queue Qd4xa7, End.",
@@ -433,7 +433,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             // lands after the Extra Step; the follow-up classical starts there.
             when: {
               kind: "scfen",
-              re: /^(?=SCFEN\|[^|]+\|2\|)(?=.*[BF]=pawnDouble:)/,
+              re: /^(?=SCFEN\|[^|]+\|2\|)(?=.*[BF]=stimStep:)/,
             },
             comment: "Now click that gas-ghost Marine and queue a move intent",
             emotion: "watching",
@@ -442,7 +442,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             // Turn-1 gas queued, before or after the move.
             when: {
               kind: "scfen",
-              re: /^(?=SCFEN\|[^|]+\|1\|)(?=.*[BF]=pawnDouble:)/,
+              re: /^(?=SCFEN\|[^|]+\|1\|)(?=.*[BF]=stimStep:)/,
             },
             comment: "Oh, yeah!",
             emotion: "watching",
@@ -472,7 +472,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /^(?=SCFEN\|[^|]+\|2\|)(?=.*[BF]=pawnDouble:)/,
+              re: /^(?=SCFEN\|[^|]+\|2\|)(?=.*[BF]=stimStep:)/,
             },
             squares: [
               "e5",
@@ -517,7 +517,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
         emotion: "watching",
         completeWhen: {
           kind: "queue",
-          specialKind: "spawn",
+          specialKind: "deploy",
         },
         reactions: [
           {
@@ -588,7 +588,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /^(?=SCFEN\|[^|]+\|1\|)(?=.*[BF]=knightMine:)/,
+              re: /^(?=SCFEN\|[^|]+\|1\|)(?=.*[BF]=spiderMine:)/,
             },
             comment: "You have queued a mine intent! \nNow move and let the turn finish",
             emotion: "happy",
@@ -660,7 +660,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             // and the arming beat below are mutually exclusive.
             when: {
               kind: "scfen",
-              re: /bishopSnipe:/,
+              re: /charonMissiles:/,
             },
             comment:
               "You still have the classical Chess move/capture available. Order your Mecha to capture that Marine and let the turn finish.",
@@ -671,7 +671,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             // never reaches SCFEN. `targetingKind` is what makes it trackable.
             when: {
               kind: "targeting",
-              targetingKind: "bishopSnipe",
+              targetingKind: "charonMissiles",
             },
             comment: "Now aim the ship to complete your intention!",
             emotion: "scanning",
@@ -681,7 +681,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /bishopSnipe:/,
+              re: /charonMissiles:/,
             },
             squares: [
               "e5",
@@ -700,7 +700,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
         id: "ship",
         title: "BattleShip",
         board: {
-          scfen: "SCFEN|k6b/8/8/8/8/8/8/Q6K|21|33|P|G:31:33|Q:w:;b:B=bishopSnipe:h8:a1",
+          scfen: "SCFEN|k6b/8/8/8/8/8/8/Q6K|21|33|P|G:31:33|Q:w:;b:B=charonMissiles:h8:a1",
           stored: 4,
           endTurnAfterQueue: "first",
           armTimer: false,
@@ -728,7 +728,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /queenWarp:/,
+              re: /tacticalJump:/,
             },
             comment: "Lightspeed escape!",
             emotion: "shocked",
@@ -750,7 +750,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
         completeWhen: {
           kind: "queue",
           classical: true,
-          specialKind: "rookSiege",
+          specialKind: "siegeMode",
         },
       },
     ],
@@ -860,7 +860,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /B=spawn:/,
+              re: /B=deploy:/,
             },
             comment: "Attack the Mecha!",
             emotion: "watching",
@@ -880,7 +880,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /spawn:[^:;]*:f2/,
+              re: /deploy:[^:;]*:f2/,
             },
             squares: [
               "g3",
@@ -911,7 +911,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /spawn:[^:;]*:g2/,
+              re: /deploy:[^:;]*:g2/,
             },
             comment: "Now, queue an attack on that ship with either your Command Center or Mecha.",
             emotion: "watching",
@@ -929,7 +929,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /spawn:[^:;]*:g2/,
+              re: /deploy:[^:;]*:g2/,
             },
             squares: [
               "h2",
@@ -954,7 +954,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           scfen: "SCFEN|k7/8/8/8/4n3/8/4PP1P/7K|1|13|P|G:11:11|Q:w:;b:C=e4f2",
           stored: 4,
           endTurnAfterQueue: "moveAndSpecial",
-          docs: "Command Center on h1 at HP 1. Black has ne4 pre-queued onto f2 — from there it checks h1 next turn open. Only line: gas the f2 marine (B=pawnDouble:f2:f3) then Pf3×e4 — the B step lands before the attack phase, so the marine shoots the hoverbike off e4 and black's plan never moves.",
+          docs: "Command Center on h1 at HP 1. Black has ne4 pre-queued onto f2 — from there it checks h1 next turn open. Only line: gas the f2 marine (B=stimStep:f2:f3) then Pf3×e4 — the B step lands before the attack phase, so the marine shoots the hoverbike off e4 and black's plan never moves.",
         },
         comment: "That hoverbike will end the game if it reaches f2. \nGas your marine in f2 and attack it before it can move!",
         emotion: "shocked",
@@ -969,7 +969,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /[BF]=pawnDouble:f2/,
+              re: /[BF]=stimStep:f2/,
             },
             comment: "Now shoot it off e4!",
             emotion: "watching",
@@ -979,7 +979,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /[BF]=pawnDouble:f2/,
+              re: /[BF]=stimStep:f2/,
             },
             squares: [
               "e4",
@@ -1066,7 +1066,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /[BF]=rookSiege:d2/,
+              re: /[BF]=siegeMode:d2/,
             },
             comment: "Now move your tank out of danger!",
             emotion: "watching",
@@ -1074,7 +1074,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /[BF]=pawnDouble:c2/,
+              re: /[BF]=stimStep:c2/,
             },
             comment: "Now, unsiege your tank by dropping a gas canister on it.",
             emotion: "watching",
@@ -1084,7 +1084,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /[BF]=rookSiege:d2/,
+              re: /[BF]=siegeMode:d2/,
             },
             squares: [
               "e2",
@@ -1094,7 +1094,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /[BF]=pawnDouble:c2/,
+              re: /[BF]=stimStep:c2/,
             },
             squares: [
               "d2",
@@ -1140,7 +1140,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "targeting",
-              targetingKind: "bishopSnipe",
+              targetingKind: "charonMissiles",
             },
             comment: "Target f1. \n\nSneaky BattleShip will arrive to flying missiles.",
             emotion: "scanning",
@@ -1148,7 +1148,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /bishopSnipe:/,
+              re: /charonMissiles:/,
             },
             comment: "Locked on f1, end your turn!",
             emotion: "happy",
@@ -1164,7 +1164,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /queenWarp:/,
+              re: /tacticalJump:/,
             },
             comment: "I doubt the opponent wants to trade their BattleShip for your Mecha... \n\nMove your Mecha to g2.",
             emotion: "thinking",
@@ -1174,7 +1174,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /bishopSnipe:/,
+              re: /charonMissiles:/,
             },
             squares: [
               "f1",
@@ -1209,7 +1209,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
         id: "king-attack-1",
         title: "King Attack #1",
         board: {
-          scfen: "SCFEN|kn1Q4/ppp5/8/8/3n4/8/r4P1P/1R4KB|11|32|P|G:20:22|B:4:6|Q:w:;b:C=b8d7,B=knightMine:b8:b8|S:a2b1|M:w:;b:c6d4",
+          scfen: "SCFEN|kn1Q4/ppp5/8/8/3n4/8/r4P1P/1R4KB|11|32|P|G:20:22|B:4:6|Q:w:;b:C=b8d7,B=spiderMine:b8:b8|S:a2b1|M:w:;b:c6d4",
           stored: 4,
           endTurnAfterQueue: "first",
           choreography: "kingAttackTankCounter",
@@ -1220,7 +1220,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
            * unread, and was why the timer was disabled here. `holdTutorialLine`
            * now re-baselines when turn-open checks land, so the line survives.
            */
-          docs: "Enemy CC on a8 (HP 2) is smothered by a7/b7/b8, and b7 is the choke point every remaining line shares. Black's own queued turn opens rank 8 for free: nb8→d7 leaves the back rank and uncovers the fogged Qd8. One shot supplies the rest — Rb1 siege-fires b7 (without vacating), which simultaneously clears the h1-a8 diagonal for the x-raying Bh1. Two checkers at the turn-12 open take HP 2 to 0. Leave b7 alive and only the Ship connects (2→1); `kingAttackTankCounter` then deploys a Siege Tank onto b8 and shoots the Ship, which `restartWhen` reads as a retry. The choke point is a **Marine** — the enemy tank is dug in on a2 instead, where its rank-2 ray stops at the f2 marine and never reaches Kg1. Enemy mines sit on c6 and d4 (black's third lands on b8 from its own queued `knightMine`, which is the side's cap): c6 is planted *on* the h1-a8 diagonal on purpose — mines are not FEN pieces, so they neither block the Bishop's check nor get spent by it (`starchess-core` `mine/mineChecks.test.ts`).",
+          docs: "Enemy CC on a8 (HP 2) is smothered by a7/b7/b8, and b7 is the choke point every remaining line shares. Black's own queued turn opens rank 8 for free: nb8→d7 leaves the back rank and uncovers the fogged Qd8. One shot supplies the rest — Rb1 siege-fires b7 (without vacating), which simultaneously clears the h1-a8 diagonal for the x-raying Bh1. Two checkers at the turn-12 open take HP 2 to 0. Leave b7 alive and only the Ship connects (2→1); `kingAttackTankCounter` then deploys a Siege Tank onto b8 and shoots the Ship, which `restartWhen` reads as a retry. The choke point is a **Marine** — the enemy tank is dug in on a2 instead, where its rank-2 ray stops at the f2 marine and never reaches Kg1. Enemy mines sit on c6 and d4 (black's third lands on b8 from its own queued `spiderMine`, which is the side's cap): c6 is planted *on* the h1-a8 diagonal on purpose — mines are not FEN pieces, so they neither block the Bishop's check nor get spent by it (`starchess-core` `mine/mineChecks.test.ts`).",
         },
         comment: "Your Ship and Mecha are concealed by the fog! \n\n Aim your tank at b7 to open the line for your Mecha.",
         emotion: "watching--left",
@@ -1315,7 +1315,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
              */
             when: {
               kind: "scfen",
-              re: /SCFEN\|[^|]+\|21\|(?!.*Q:w:[^;]*C=).*queenWarp:h7:d2/,
+              re: /SCFEN\|[^|]+\|21\|(?!.*Q:w:[^;]*C=).*tacticalJump:h7:d2/,
             },
             comment: "Now queue a move from d2 to c2 \nand take out that Mecha!",
             emotion: "thinking",
@@ -1323,12 +1323,12 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             /**
              * Tactical Jump confirmed anywhere else on the opening turn — the
-             * wire carries `B=queenWarp:` and the turn field still reads 21.
+             * wire carries `B=tacticalJump:` and the turn field still reads 21.
              * Point at the flank the dug-in tank already covers.
              */
             when: {
               kind: "scfen",
-              re: /SCFEN\|[^|]+\|21\|.*queenWarp:/,
+              re: /SCFEN\|[^|]+\|21\|.*tacticalJump:/,
             },
             comment: "Your tank can take out that Hoverbike",
             emotion: "thinking",
@@ -1353,7 +1353,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /SCFEN\|[^|]+\|21\|(?!.*Q:w:[^;]*C=).*queenWarp:h7:d2/,
+              re: /SCFEN\|[^|]+\|21\|(?!.*Q:w:[^;]*C=).*tacticalJump:h7:d2/,
             },
             squares: [
               "c2",
@@ -1364,13 +1364,13 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             // Jump and capture both queued — nothing left to point at.
             when: {
               kind: "scfen",
-              re: /SCFEN\|[^|]+\|21\|.*queenWarp:h7:d2/,
+              re: /SCFEN\|[^|]+\|21\|.*tacticalJump:h7:d2/,
             },
           },
           {
             when: {
               kind: "scfen",
-              re: /SCFEN\|[^|]+\|21\|.*queenWarp:/,
+              re: /SCFEN\|[^|]+\|21\|.*tacticalJump:/,
             },
             squares: [
               "f4",
@@ -1395,7 +1395,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             squares: [
               "d2",
             ],
-            fromQueen: true,
+            fromBattleShip: true,
             arrows: [{ from: "h7", to: "d2" }],
           },
           {
@@ -1534,11 +1534,11 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             comment: "You have 3 minerals — deploy a Mecha on g2, then take d5!",
           },
           {
-            when: { kind: "board", at: { d5: "k", c2: "N" }, notQueued: { kind: "knightMine", from: "c2" } },
+            when: { kind: "board", at: { d5: "k", c2: "N" }, notQueued: { kind: "spiderMine", from: "c2" } },
             comment: "Deploy a mine in c2 to discourage Marines from promoting",
           },
           {
-            when: { kind: "board", at: { d5: "k", c2: "N" }, queued: { kind: "knightMine", from: "c2" } },
+            when: { kind: "board", at: { d5: "k", c2: "N" }, queued: { kind: "spiderMine", from: "c2" } },
             comment: "Ride the Hoverbike to b4 — it attacks the enemy Command Center!",
           },
           {
@@ -1747,13 +1747,13 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             arrows: [{ from: "g2", to: "d5" }],
           },
           {
-            when: { kind: "board", at: { d5: "k", c2: "N" }, notQueued: { kind: "knightMine", from: "c2" } },
+            when: { kind: "board", at: { d5: "k", c2: "N" }, notQueued: { kind: "spiderMine", from: "c2" } },
             squares: ["c2"],
           },
           {
             // Intent only: the ride is still being queued. Resolve keeps the
             // b4 ring from the step below and drops the L arrows.
-            when: { kind: "board", at: { d5: "k", c2: "N" }, queued: { kind: "knightMine", from: "c2" }, phases: ["intent"] },
+            when: { kind: "board", at: { d5: "k", c2: "N" }, queued: { kind: "spiderMine", from: "c2" }, phases: ["intent"] },
             squares: ["b4"],
             arrows: [
               { from: "c2", to: "b4", via: "c4" },
@@ -1761,7 +1761,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             ],
           },
           {
-            when: { kind: "board", at: { d5: "k", c2: "N" }, queued: { kind: "knightMine", from: "c2" } },
+            when: { kind: "board", at: { d5: "k", c2: "N" }, queued: { kind: "spiderMine", from: "c2" } },
             squares: ["b4"],
           },
           {

@@ -1,11 +1,11 @@
 // SPEC: _spec/apps/starchess/turn-input-sequence.puml
 /**
- * Marine gas drop arm — the pawn `pawnDouble` handler.
+ * Marine gas drop arm — the Marine `stimStep` handler.
  */
 import type { PieceSymbol, Square } from "chess.js";
 
 import {
-  pawnSingleTarget,
+  marineSingleTarget,
   type ScFenSnapshot,
 } from "@chess-coach/starchess-core";
 
@@ -16,7 +16,7 @@ import { specialTimingFor, tryQueue } from "~/presentation/specials/queue";
 import type { ArmResult } from "~/presentation/specials/types";
 
 /**
- * Marine gas drop: queue the pawn gas step (B, or F when a classical is already
+ * Marine gas drop: queue the Marine gas step (B, or F when a classical is already
  * queued). Last-rank intents open the PromotionModal (gas-only promote, or
  * move-then-gas conversion that peels C and queues B first).
  * Returns `"armed"` / `"pending"` / false.
@@ -29,11 +29,11 @@ export const marineGasArm = (
   if (ctx.piece !== "p") return false;
   const color = viewerColor(store);
   const timing = specialTimingFor(snap.queue, color);
-  const to = pawnSingleTarget(ctx.square, color);
+  const to = marineSingleTarget(ctx.square, color);
   if (!to) {
     store.dispatch({
       type: "QUEUE_REJECT",
-      message: "Pawn cannot step forward off the board",
+      message: "Marine cannot step forward off the board",
     });
     return false;
   }
@@ -59,7 +59,7 @@ export const marineGasArm = (
     if (
       !tryQueue(
         store,
-        { timing: "B", kind: "pawnDouble", color, from: ctx.square, to },
+        { timing: "B", kind: "stimStep", color, from: ctx.square, to },
         `Gas step ${ctx.square}→${to} queued · pick promotion`,
       )
     ) {
@@ -73,7 +73,7 @@ export const marineGasArm = (
   }
   return tryQueue(
     store,
-    { timing, kind: "pawnDouble", color, from: ctx.square, to },
+    { timing, kind: "stimStep", color, from: ctx.square, to },
     `Gas step ${ctx.square}→${to} queued · End to resolve`,
   )
     ? "armed"

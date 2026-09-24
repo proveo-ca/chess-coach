@@ -24,7 +24,7 @@ import {
  */
 
 const CRUSH_SEED =
-  "SCFEN|4k3/8/8/8/8/8/8/R2nK3|1|33|P|G:01:11|B:3:3|Q:w:B=spawn:e1:d1:p;b:";
+  "SCFEN|4k3/8/8/8/8/8/8/R2nK3|1|33|P|G:01:11|B:3:3|Q:w:B=deploy:e1:d1:p;b:";
 
 test.describe("VFX · crush compose", () => {
   test.beforeEach(async ({ page }) => {
@@ -98,7 +98,7 @@ test.describe("VFX · crush compose", () => {
     expect(watch.ever).toContain("death");
     expect(watch.deployPieces).toContain("p");
 
-    // Settled: Marine holds d1, the knight is gone.
+    // Settled: Marine holds d1, the Hoverbike is gone.
     await expect(settledPiece(page, "d1", "w p")).toBeVisible({ timeout: 15_000 });
     await expect(settledPiece(page, "d1", "b n")).toHaveCount(0);
   });

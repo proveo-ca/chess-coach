@@ -117,7 +117,7 @@ const FAMILIES: readonly Family[] = [
     title: "Medal of Honor",
     difficulty: "impossible",
     type: "analysis",
-    // Marine Stim is the gas double-step (`pawnDouble`) used to save a unit.
+    // Marine Stim is the gas double-step (`stimStep`) used to save a unit.
     measure: { kind: "marineStimDefenses" },
     scale: "score",
     goal: "atLeast",

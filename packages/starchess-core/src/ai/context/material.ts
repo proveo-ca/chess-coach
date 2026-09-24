@@ -10,7 +10,7 @@ import type { Square } from "chess.js";
 import { placementToMap, type ScPiece } from "../../board/placement";
 import { MAX_STORED_MATERIAL, incomeForTurn } from "../../rules/constants";
 import type { PieceColor, ScFenSnapshot } from "../../model/types";
-import { isPawnClustered } from "./pawns";
+import { isMarineClustered } from "./marines";
 import type { MaterialIntel } from "./types";
 
 export const countType = (
@@ -54,7 +54,7 @@ export const buildMaterialIntel = (
   storedFor: (color: PieceColor) => number,
 ): MaterialIntel => ({
   bank: storedFor(us),
-  ownBishops: countType(map, us, "b"),
-  ownKnights: countType(map, us, "n"),
-  congested: isPawnClustered(map, us),
+  ownMechas: countType(map, us, "b"),
+  ownHoverbikes: countType(map, us, "n"),
+  congested: isMarineClustered(map, us),
 });

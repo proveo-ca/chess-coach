@@ -12,7 +12,7 @@ import clsx from "clsx";
 import {
   getSideVision,
   placementToMap,
-  type RookMode,
+  type TankMode,
   type ScFenSnapshot,
   type StarChessColor,
 } from "@chess-coach/starchess-core";
@@ -31,7 +31,7 @@ import {
   observerVisionFromSnap,
   type MoveVisionCue,
 } from "~/presentation/board/fogProjection";
-import { rookModeAt, rookModeForSieged } from "~/presentation/board/rookMode";
+import { tankModeAt, tankModeForSieged } from "~/presentation/board/tankMode";
 import { PieceGlyph } from "~/presentation/board/components/PieceGlyph";
 import { visionStrategyFor } from "~/presentation/board/vision/VisionStrategy";
 import { TEAM_PRIMARY } from "~/presentation/pieces/teamColors";
@@ -69,7 +69,7 @@ export type StarChessBoardProps = {
   pieceSet?: PieceSet;
   /** Phase frame border — matches TurnBar phase chip tones. */
   phase?: ReviewTurnPhase;
-  siegedRooks?: readonly Square[];
+  siegedTanks?: readonly Square[];
   intentGhosts?: readonly IntentGhost[];
   /** Queued special — ghost canister badge on the actor square. */
   intentCanisters?: readonly IntentCanister[];
@@ -85,14 +85,14 @@ export type StarChessBoardProps = {
   hintArrows?: readonly TutorialBoardArrow[];
   onSquareClick?: (square: Square) => void;
   /**
-   * Hide board glyphs on these squares (combat / king-damage overlays own them).
+   * Hide board glyphs on these squares (combat / Command Center-damage overlays own them).
    * Must not mutate placement — vision reads SCFEN occupancy, not chess.js FEN.
    */
   hideSquares?: ReadonlySet<Square> | readonly Square[];
   /** Active move slides — progressive path fog while `moveProgress[id] === 1`. */
   moveCues?: readonly MoveCue[];
   moveProgress?: Readonly<Record<string, 0 | 1>>;
-  /** Knight L-path facing (0 = long leg, 1 = short leg) by cue id. */
+  /** Hoverbike L-path facing (0 = long leg, 1 = short leg) by cue id. */
   moveLeg?: Record<string, 0 | 1>;
   /**
    * Enemy movers with a fogged origin whose path crosses viewer vision —
@@ -106,9 +106,9 @@ export type StarChessBoardProps = {
   /** Wake / chase — legs out on these squares. */
   chasingMines?: readonly Square[];
   /** Mecha squares with Charon launchers armed (inline SVG). */
-  armedBishops?: readonly Square[];
+  armedMechas?: readonly Square[];
   /** Shoulder-raise CSS only while arming (not for persistent U: pods). */
-  armAnimBishops?: readonly Square[];
+  armAnimMechas?: readonly Square[];
   /**
    * Gas special absorb — ease green aura onto the unit while the canister drops.
    * Lasts for the drop cue only; persistent green is snap `U:` / arm marks.
@@ -129,15 +129,15 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
   const usePlayerFog = () => strategy().usePlayerFog(props.fog);
   const map = createMemo(() => placementToMap(props.snapshot.placement));
   const sieged = createMemo(
-    () => new Set(props.siegedRooks ?? props.snapshot.siegedRooks ?? []),
+    () => new Set(props.siegedTanks ?? props.snapshot.siegedTanks ?? []),
   );
   const specialsUsed = createMemo(
     () => new Set(props.snapshot.specialsUsed ?? []),
   );
   const spentMines = createMemo(() => new Set(props.spentMines ?? []));
   const chasingMines = createMemo(() => new Set(props.chasingMines ?? []));
-  const armedBishops = createMemo(() => new Set(props.armedBishops ?? []));
-  const armAnimBishops = createMemo(() => new Set(props.armAnimBishops ?? []));
+  const armedMechas = createMemo(() => new Set(props.armedMechas ?? []));
+  const armAnimMechas = createMemo(() => new Set(props.armAnimMechas ?? []));
   const gasAbsorb = createMemo((): ReadonlySet<Square> => {
     const g = props.gasAbsorbSquares;
     if (!g) return new Set();
@@ -213,7 +213,7 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
         : baseMap;
     // U: specialsUsed is not a fog pierce — green aura paints only on lit units.
     return getSideVision(visionMap, viewer(), {
-      rookModeFor: rookModeForSieged(sieged()),
+      tankModeFor: tankModeForSieged(sieged()),
       mines: props.snapshot.mines,
     });
   });
@@ -332,7 +332,7 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
   const dualVision = createMemo(() => {
     if (!isObserver()) return null;
     return observerVisionFromSnap(props.snapshot, {
-      siegedRooks: props.siegedRooks ?? props.snapshot.siegedRooks,
+      siegedTanks: props.siegedTanks ?? props.snapshot.siegedTanks,
     });
   });
 
@@ -526,8 +526,8 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
                     return isFogged() && !!p && !hidePiece();
                   };
                   const visiblePiece = () => (hidePiece() ? null : piece());
-                  const rookMode = (): RookMode =>
-                    rookModeAt(square, sieged());
+                  const tankMode = (): TankMode =>
+                    tankModeAt(square, sieged());
                   const isSelected = () => props.selected === square;
                   const isLegal = () => props.legalDests?.includes(square) ?? false;
                   const isHint = () => props.hintSquares?.includes(square) ?? false;
@@ -612,9 +612,9 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
                             color={p().color}
                             type={p().type}
                             pieceSet={pieceSet()}
-                            mode={rookMode()}
-                            armed={armedBishops().has(square)}
-                            armAnim={armAnimBishops().has(square)}
+                            mode={tankMode()}
+                            armed={armedMechas().has(square)}
+                            armAnim={armAnimMechas().has(square)}
                             class={clsx(
                               styles.piece,
                               gasUsedAura() && styles.pieceSpecialUsed,
@@ -659,7 +659,7 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
                               color={g().color}
                               type={g().piece}
                               pieceSet={pieceSet()}
-                              mode={g().rookMode ?? "tank"}
+                              mode={g().tankMode ?? "tank"}
                             />
                           </div>
                         )}

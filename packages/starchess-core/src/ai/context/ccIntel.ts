@@ -3,7 +3,7 @@
  * Command Center (CC) search — StarChess names only (CC, not Command Center (CC)).
  * CC = `k` piece, Marine = `p`, Hoverbike = `n`, Mecha = `b`, Tank = `r`, Battleship = `q`.
  *
- * Wraps `gatherKingIntel` (fog-visible enemy units → focus) and adds the
+ * Wraps `gatherCCFocusIntel` (fog-visible enemy units → focus) and adds the
  * 1-move probe posterior: when a Hoverbike is sent to the guessed CC square
  * (e.g. `e8`) and finds it empty, that square is proven `not CC`, and the
  * posterior becomes `Adj(e8) \ VisibleEmpty`, weighted by prior and distance.
@@ -14,11 +14,11 @@ import type { Square } from "chess.js";
 
 import type { ScPiece } from "../../board/placement";
 import { FILES, chebyshev } from "./geometry";
-import { gatherKingIntel } from "./kingIntel";
+import { gatherCCFocusIntel } from "./ccFocusIntel";
 import type { PieceColor } from "../../model/types";
-import type { KingIntel } from "./types";
+import type { CCFocusIntel } from "./types";
 
-export type CCIntel = KingIntel & {
+export type CCIntel = CCFocusIntel & {
   /** Squares proven empty (lit empty + last Hoverbike probe that found empty). */
   excluded: ReadonlySet<Square>;
   /** Full posterior `P(CC=s)` over 64 squares (sums to 1 when strength>0). */
@@ -55,7 +55,7 @@ export const getCCBestGuess = (
   lastProbe: { to: Square; empty: boolean } | null,
   enemy: PieceColor,
 ): CCIntel => {
-  const base = gatherKingIntel(map, lit, revealed, enemy);
+  const base = gatherCCFocusIntel(map, lit, revealed, enemy);
   const excluded = new Set<Square>(prior?.excluded ?? []);
   // Any lit square that is empty and not occupied is proven not CC
   for (const sq of lit) {
@@ -70,7 +70,7 @@ export const getCCBestGuess = (
   if (excluded.has(focus)) {
     const candidates = ADJ(focus).filter((s) => !excluded.has(s));
     if (candidates.length > 0) {
-      // Weight by prior `gatherKingIntel` mass and inverse chebyshev distance to old focus
+      // Weight by prior `gatherCCFocusIntel` mass and inverse chebyshev distance to old focus
       let best: Square = candidates[0]!;
       let bestW = -1;
       for (const c of candidates) {

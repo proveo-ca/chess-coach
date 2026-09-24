@@ -27,7 +27,7 @@ import {
 } from "~/components/features/NewGamePanel";
 import { ChatBubble } from "~/components/primitives/ChatBubble";
 import { MenuTitle } from "~/components/primitives/MenuTitle";
-import { DebrisPawnPlayground } from "~/screens/menuSky/DebrisPawnPlayground";
+import { DebrisMarinePlayground } from "~/screens/menuSky/DebrisMarinePlayground";
 import { MenuBlackHole } from "~/screens/menuSky/MenuBlackHole";
 import { MenuMoon } from "~/screens/menuSky/MenuMoon";
 import { MenuPlanet, type MenuWorldId } from "~/screens/menuSky/MenuPlanet";
@@ -188,7 +188,7 @@ export const MenuScreen: Component<StarChessMenuScreenProps> = (props) => {
           label="Single Player"
           onActivate={requestSinglePlayer}
         >
-          <DebrisPawnPlayground embedded />
+          <DebrisMarinePlayground embedded />
         </MenuAnchor>
 
         <MenuAnchor

@@ -31,8 +31,8 @@ test.describe("VFX · cue coverage", () => {
     await expect(settledPiece(page, "e2", "w p")).toHaveCount(0);
   });
 
-  test("V11 pawn gas step plays the canister drop and the stim move", async ({ page }) => {
-    await gotoScfen(page, "SCFEN|4k3/8/8/8/8/8/4P3/4K3|11|33|P|G:12:22|Q:w:B=pawnDouble:e2:e3;b:");
+  test("V11 Marine gas step plays the canister drop and the stim move", async ({ page }) => {
+    await gotoScfen(page, "SCFEN|4k3/8/8/8/8/8/4P3/4K3|11|33|P|G:12:22|Q:w:B=stimStep:e2:e3;b:");
     const watch = await recordResolve(page);
 
     expect(watch.ever).toContain("gasDrop");
@@ -46,18 +46,18 @@ test.describe("VFX · cue coverage", () => {
 
     expect(watch.ever).toContain("attack");
     expect(watch.ever).toContain("death");
-    expect(watch.attackAnims).toEqual(["rookBattery"]);
+    expect(watch.attackAnims).toEqual(["tankBattery"]);
 
     await expect(settledPiece(page, "e7", "w r")).toBeVisible({ timeout: 15_000 });
     await expect(page.locator("[data-square='e7'] img[alt='b p']")).toHaveCount(0);
   });
 
-  test("V13 Charon snipe fires the bishop missile anim", async ({ page }) => {
-    await gotoScfen(page, "SCFEN|k6q/8/8/8/3B4/8/8/K7|11|33|P|G:02:22|Q:w:B=bishopSnipe:d4:h8;b:");
+  test("V13 Charon snipe fires the Mecha missile anim", async ({ page }) => {
+    await gotoScfen(page, "SCFEN|k6q/8/8/8/3B4/8/8/K7|11|33|P|G:02:22|Q:w:B=charonMissiles:d4:h8;b:");
     const watch = await recordResolve(page);
 
     expect(watch.ever).toContain("gasDrop");
-    expect(watch.attackAnims).toContain("bishopCharon");
+    expect(watch.attackAnims).toContain("mechaCharon");
     expect(watch.ever).toContain("death");
     await expect(page.locator("[data-square='h8'] img[alt='b q']")).toHaveCount(0, {
       timeout: 15_000,
@@ -74,7 +74,7 @@ test.describe("VFX · cue coverage", () => {
   });
 
   test("V15 spawn plays the canister drop and the deploy", async ({ page }) => {
-    await gotoScfen(page, "SCFEN|4k3/8/8/8/8/8/8/4K3|1|33|P|G:01:11|B:3:3|Q:w:B=spawn:e1:d1:p;b:");
+    await gotoScfen(page, "SCFEN|4k3/8/8/8/8/8/8/4K3|1|33|P|G:01:11|B:3:3|Q:w:B=deploy:e1:d1:p;b:");
     const watch = await recordResolve(page);
 
     expect(watch.ever).toContain("gasDrop");
@@ -84,11 +84,11 @@ test.describe("VFX · cue coverage", () => {
 
   test("V16 Tactical Jump uses the jump layer and its trail — never a slide", async ({ page }) => {
     // Black is pre-queued (a Marine deploy — deploy layer, not move) so the
-    // Adjutant stays out: its king step would slide through the move layer and
-    // an h8 bishop snipes the queen on d4 before it settles.
+    // Adjutant stays out: its Command Center step would slide through the move layer and
+    // an h8 Mecha snipes the BattleShip on d4 before it settles.
     await gotoScfen(
       page,
-      "SCFEN|k7/8/8/8/8/8/8/Q6K|21|33|P|G:02:33|B:3:3|Q:w:B=queenWarp:a1:d4;b:B=spawn:a8:b8:p",
+      "SCFEN|k7/8/8/8/8/8/8/Q6K|21|33|P|G:02:33|B:3:3|Q:w:B=tacticalJump:a1:d4;b:B=deploy:a8:b8:p",
     );
     const watch = await recordResolve(page);
 
@@ -109,23 +109,23 @@ test.describe("VFX · cue coverage", () => {
     expect(watch.ever).toContain("death");
   });
 
-  test("V18 a connecting king shot booms, then burns", async ({ page }) => {
+  test("V18 a connecting Command Center shot booms, then burns", async ({ page }) => {
     // Kd1 vs kd2 — turn-open mutual shots chip HP on mount and on every End.
     await gotoScfen(page, "SCFEN|8/8/8/8/8/8/3k4/3K4|1|33|P|G:11:11|Q:w:;b:");
-    await expect(page.getByTestId("king-lives")).toHaveAttribute("data-w", "2", {
+    await expect(page.getByTestId("cc-lives")).toHaveAttribute("data-w", "2", {
       timeout: 15_000,
     });
 
     const watch = await recordResolve(page, { idleMs: 500 });
 
-    expect(watch.ever).toContain("kingDamage");
+    expect(watch.ever).toContain("ccDamage");
     expect(watch.ever).toContain("attack");
-    expect(watch.attackAnims).toEqual(["kingDualCannon"]);
+    expect(watch.attackAnims).toEqual(["ccDualCannon"]);
     // The hit boom is 250ms — the sampler is the only reliable observer.
-    expect(watch.kingPhases.filter((phase) => phase.endsWith(":boom"))).not.toEqual([]);
+    expect(watch.ccPhases.filter((phase) => phase.endsWith(":boom"))).not.toEqual([]);
     // Fire persists after the boom — the hull keeps burning at 1–2 HP.
     await expect(
-      page.locator("[data-king-damage='smallFire'], [data-king-damage='bigFire']").first(),
+      page.locator("[data-cc-damage='smallFire'], [data-cc-damage='bigFire']").first(),
     ).toBeVisible({ timeout: 15_000 });
   });
 
@@ -141,7 +141,7 @@ test.describe("VFX · cue coverage", () => {
     // C e2→e3 crosses the mined e3; the Extra Step carries it on to e4.
     await gotoScfen(
       page,
-      "SCFEN|4k3/8/8/8/8/8/4P3/4K3|21|33|P|G:23:33|Q:w:C=e2e3,F=pawnDouble:e2:e3;b:|M:w:;b:e3",
+      "SCFEN|4k3/8/8/8/8/8/4P3/4K3|21|33|P|G:23:33|Q:w:C=e2e3,F=stimStep:e2:e3;b:|M:w:;b:e3",
     );
     const watch = await recordResolve(page);
 

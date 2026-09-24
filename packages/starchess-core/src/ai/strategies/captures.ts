@@ -15,7 +15,7 @@ import {
   charonStrikeTarget,
   charonTargetShips,
 } from "../../rules/specials/mechaCharon";
-import { QUEEN_WARP_GAS_COST, UNIT_COST, incomeForTurn } from "../../rules/constants";
+import { TACTICAL_JUMP_GAS_COST, UNIT_COST, incomeForTurn } from "../../rules/constants";
 import { attacksSquare, isSquareAttackedBy } from "../../board/placement";
 import { hostileMineOn } from "../../board/mine-contact";
 import { deployCovers } from "../../board/deploy-reach";
@@ -24,14 +24,14 @@ import { FILES, centerScore, isSafeSquare } from "../context";
 import type { AdjutantCtx, Candidate, MoveEval } from "../context";
 import type { PieceColor, ScFenSnapshot } from "../../model/types";
 import { asCandidate, type Strategy } from "./types";
-import { QUEEN_WARP_CHECK_CC } from "./survival";
+import { TACTICAL_JUMP_CHECK_CC } from "./survival";
 
 /** Equal-material capture when in range — always take the trade. */
 export const EQUAL_TRADE_ATTACK = 2_400;
 /** Congested / always: take an undefended enemy marine. */
-export const HUNT_UNDEFENDED_PAWN = 950;
+export const HUNT_UNDEFENDED_MARINE = 950;
 /** Congested: trade marine-for-marine to clear clutter. */
-export const PAWN_TRADE = 750;
+export const MARINE_TRADE = 750;
 /** Charon (B) then a second unit still strikes in the same turn. */
 export const CHARON_COMBO = 2_500;
 /** Insta-target bonus: pre-jump B kill is near-guaranteed (top material tier). */
@@ -54,7 +54,7 @@ export const SAC_FOR_CC = 400;
  * Jump costs 3 (tier-3 income, turn 21+ when normalized); gas never accumulates.
  */
 export const enemyCanJump = (snap: ScFenSnapshot, enemy: PieceColor): boolean =>
-  (snap.gasIncome[enemy] ?? 0) >= QUEEN_WARP_GAS_COST;
+  (snap.gasIncome[enemy] ?? 0) >= TACTICAL_JUMP_GAS_COST;
 
 /**
  * Where an enemy ship probably teleports: mirror of our own warp scoring from
@@ -67,7 +67,7 @@ export const predictEnemyWarpDestinations = (
   ctx: AdjutantCtx,
   ship: Square,
 ): Square[] => {
-  const { map, snap, us, enemy, king, weights } = ctx;
+  const { map, snap, us, enemy, commandCenter, weights } = ctx;
   const holder = map.get(ship);
   if (!holder || holder.type !== "q" || holder.color !== enemy) return [];
   const underFire = isSquareAttackedBy(map, ship, us);
@@ -79,19 +79,19 @@ export const predictEnemyWarpDestinations = (
       const to = `${FILES[f]}${r}` as Square;
       if (map.has(to)) continue;
       if (hostileMineOn(snap.mines, enemy, to)) continue;
-      // Landing safety on the board WITHOUT the queen: isSafeSquare couples
-      // emptiness with attack cover, so the queen must be off `to` first
-      // (attack rays from `to` are unaffected — the queen sits on `to`).
+      // Landing safety on the board WITHOUT the BattleShip: isSafeSquare couples
+      // emptiness with attack cover, so the BattleShip must be off `to` first
+      // (attack rays from `to` are unaffected — the BattleShip sits on `to`).
       probe.delete(to);
       const safe = isSafeSquare(probe, to, us);
       let s = weights.center * centerScore(to);
       if (underFire) s += safe ? weights.trade * 2 : -weights.trade * 2;
       else if (safe) s += weights.trade;
       probe.set(to, { type: "q", color: enemy });
-      const menacesKing =
-        attacksSquare(probe, to, king) || chebyshev(to, king) === 1;
+      const menacesCC =
+        attacksSquare(probe, to, commandCenter) || chebyshev(to, commandCenter) === 1;
       probe.delete(to);
-      if (menacesKing) s += QUEEN_WARP_CHECK_CC * 0.5;
+      if (menacesCC) s += TACTICAL_JUMP_CHECK_CC * 0.5;
       scored.push({ to, s });
     }
   }
@@ -117,7 +117,7 @@ const charonStrikes = (ctx: AdjutantCtx): Candidate[] => {
       for (const target of charonTargetShips(map, from)) {
         out.push(
           asCandidate(
-            { timing: "B", kind: "bishopSnipe", color: us, from, to: target },
+            { timing: "B", kind: "charonMissiles", color: us, from, to: target },
             base + CHARON_INSTA,
           ),
         );
@@ -151,7 +151,7 @@ const charonStrikes = (ctx: AdjutantCtx): Candidate[] => {
         total += 1;
         out.push(
           asCandidate(
-            { timing: "F", kind: "bishopSnipe", color: us, from, to: dest },
+            { timing: "F", kind: "charonMissiles", color: us, from, to: dest },
             base + CHARON_GUESS * CHARON_GUESS_HIT_RATE,
           ),
         );
@@ -162,10 +162,10 @@ const charonStrikes = (ctx: AdjutantCtx): Candidate[] => {
 };
 
 const score = (ev: MoveEval, ctx: AdjutantCtx): number => {
-  const { move, piece, isKingMove } = ev;
-  if (isKingMove || !move.capture) return 0;
+  const { move, piece, isCCMove } = ev;
+  if (isCCMove || !move.capture) return 0;
 
-  const { tactical, material, weights, enemy, enemyKing, snap } = ctx;
+  const { tactical, material, weights, enemy, enemyCC, snap } = ctx;
   const { trade } = weights;
   let s = 0;
 
@@ -179,21 +179,21 @@ const score = (ev: MoveEval, ctx: AdjutantCtx): number => {
         map: after,
         mines: snap.mines,
         color: enemy,
-        cc: enemyKing,
+        cc: enemyCC,
         gas: snap.gasIncome[enemy],
         minerals: ctx.storedFor(enemy) + incomeForTurn(snap.turn + 1),
       },
       move.to,
     );
-    const nearCC = enemyKing != null && chebyshev(move.to, enemyKing) === 1;
+    const nearCC = enemyCC != null && chebyshev(move.to, enemyCC) === 1;
     const keepsCCUnderFire =
-      enemyKing != null && attacksSquare(after, move.to, enemyKing);
+      enemyCC != null && attacksSquare(after, move.to, enemyCC);
     const givesUnitForCC = (deployDefends || nearCC) && keepsCCUnderFire;
 
     const undefended = !tactical.enemyAttacks(move.to) && !deployDefends && !nearCC;
-    if (undefended) s += HUNT_UNDEFENDED_PAWN;
-    else if (material.congested) s += HUNT_UNDEFENDED_PAWN * 0.35;
-    if (material.congested && piece.type === "p") s += PAWN_TRADE;
+    if (undefended) s += HUNT_UNDEFENDED_MARINE;
+    else if (material.congested) s += HUNT_UNDEFENDED_MARINE * 0.35;
+    if (material.congested && piece.type === "p") s += MARINE_TRADE;
     if (givesUnitForCC) s += ctx.winning ? SAC_FOR_CC_WINNING : SAC_FOR_CC;
   }
 

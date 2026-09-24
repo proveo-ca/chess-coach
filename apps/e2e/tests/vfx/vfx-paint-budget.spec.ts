@@ -16,12 +16,12 @@ import { ROOT, clearStorage, gotoScfen, recordResolveFor } from "./vfxHarness";
 
 /** Accepted paint-animating keyframes (hashed CSS-module names at runtime). */
 const PAINT_ALLOWLIST = [
-  /fragShockwave/, // P2 in timeline-perf.puml — knight frag ring border-color.
+  /fragShockwave/, // P2 in timeline-perf.puml — Hoverbike frag ring border-color.
   /sc-hint-pulse/, // Tutorial hint ring (board chrome, one square, not combat).
 ];
 
 const CAPTURE_SEED = "SCFEN|k3r3/4p3/8/8/8/8/8/K3R3|1|33|P|G:11:11|Q:w:C=e1e8;b:";
-const KNIGHT_SEED = "SCFEN|k7/8/1p6/8/2N5/8/8/K7|1|33|P|G:11:11|Q:w:C=c4b6;b:";
+const HOVERBIKE_SEED = "SCFEN|k7/8/1p6/8/2N5/8/8/K7|1|33|P|G:11:11|Q:w:C=c4b6;b:";
 
 /** Every `@keyframes` in the loaded stylesheets that animates a paint-only prop. */
 const paintAnimatingKeyframes = (page: Page) =>
@@ -76,8 +76,8 @@ test.describe("VFX · paint budget", () => {
   });
 
   test("V30 running overlay animations never repaint (allowlist aside)", async ({ page }) => {
-    // A knight capture runs frag + shockwave — the densest paint-risk weapon.
-    await gotoScfen(page, KNIGHT_SEED);
+    // A Hoverbike capture runs frag + shockwave — the densest paint-risk weapon.
+    await gotoScfen(page, HOVERBIKE_SEED);
 
     await page.evaluate((rootSel) => {
       const w = window as unknown as { __names?: string[]; __timer?: number };
@@ -97,7 +97,7 @@ test.describe("VFX · paint budget", () => {
     }, ROOT);
 
     const watch = await recordResolveFor(page, 4_000);
-    expect(watch.attackAnims, "knight frag never played").toContain("knightFrag");
+    expect(watch.attackAnims, "knight frag never played").toContain("hoverbikeFrag");
 
     const running = await page.evaluate(() => {
       const w = window as unknown as { __names?: string[]; __timer?: number };

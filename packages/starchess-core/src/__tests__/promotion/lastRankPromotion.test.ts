@@ -1,5 +1,5 @@
 /**
- * Last-rank promotion, classical pass: a pawn promotes only with a chosen unit.
+ * Last-rank promotion, classical pass: a Marine promotes only with a chosen unit.
  * Gas routes onto the last rank live in `gas/gasLastRank.test.ts`; mine contact
  * lives in `mine/`.
  */
@@ -13,7 +13,7 @@ import {
 } from "@chess-coach/starchess-core";
 
 describe("last-rank promotion (classical)", () => {
-  it("clean last-rank move promotes after landing as a pawn", () => {
+  it("clean last-rank move promotes after landing as a Marine", () => {
     const start = parseScFen(
       "SCFEN|k7/4P3/8/8/8/8/8/4K3|1|33|P|G:11:11|Q:w:;b:",
     );
@@ -99,7 +99,7 @@ describe("last-rank promotion (classical)", () => {
     });
   });
 
-  it("honours a non-queen choice on a last-rank capture", () => {
+  it("honours a non-BattleShip choice on a last-rank capture", () => {
     const start = parseScFen(
       "SCFEN|k4r2/4P3/8/8/8/8/8/4K3|1|33|P|G:11:11|Q:w:;b:",
     );

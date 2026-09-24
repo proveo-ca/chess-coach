@@ -7,28 +7,28 @@
  * in the animation layer without the board importing upward. `attackAnim.ts`
  * consumes this module; nothing here may import from `animations/`.
  *
- * It replaces the hand-extracted `rookAim.ts`, whose own docstring recorded the
+ * It replaces the hand-extracted `tankAim.ts`, whose own docstring recorded the
  * duplicate-constant drift that splitting these values caused before.
  */
 
 /** Resting twin-cannon aim for the siege tank (upper-left diagonal). */
-export const ROOK_REST_AIM_DEG = -135;
+export const TANK_REST_AIM_DEG = -135;
 
 /**
  * Anisotropic scale baked into `PIECE_FRAME.R` — turret yaw must conjugate
  * through this or `rotate(aim)` skews (siege tank looks tilted sideways).
  */
-export const ROOK_FRAME_SCALE = { sx: 0.8299, sy: 1.0503 } as const;
+export const TANK_FRAME_SCALE = { sx: 0.8299, sy: 1.0503 } as const;
 
-/** King idle cannons face the player (down the board). */
-export const KING_REST_AIM_DEG = 90;
+/** Command Center idle cannons face the player (down the board). */
+export const CC_REST_AIM_DEG = 90;
 
 /** SVG pivot: rotate `deg` around `(cx, cy)` with absolute-space children. */
 export const svgPivotAround = (cx: number, cy: number, deg: number): string =>
   `translate(${cx} ${cy}) rotate(${deg}) translate(${-cx} ${-cy})`;
 
 /**
- * Screen-space yaw under an anisotropic parent scale (e.g. rook PIECE_FRAME).
+ * Screen-space yaw under an anisotropic parent scale (e.g. Tank PIECE_FRAME).
  * Uses S⁻¹ R S so the turret rotates rigidly instead of shearing.
  */
 export const svgPivotAroundAniso = (
@@ -58,7 +58,7 @@ export type AimPose = {
 };
 
 /**
- * Re-export, not a second copy: the duplicate that used to live in `rookAim.ts`
+ * Re-export, not a second copy: the duplicate that used to live in `tankAim.ts`
  * silently drifted from the canonical value in `presentation/constants`.
  */
 export { SIEGE_TOGGLE_MS } from "~/presentation/constants";

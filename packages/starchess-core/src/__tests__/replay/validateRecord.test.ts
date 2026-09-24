@@ -36,7 +36,7 @@ const validRecord = (): ArenaGameRecord => ({
         pathRevealMineTriggers: [],
         moveCollisions: [],
         promotions: [],
-        pendingKingShotsArmed: [],
+        pendingCCShotsArmed: [],
       },
       next: null as never,
       ignoreAttacksOn: [],

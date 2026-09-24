@@ -35,7 +35,7 @@ export const CombatChain: Story = {
     docs: {
       description: {
         story:
-          "SCFEN + engine: each arrow = one turn = White & Black classical via addScAction → endScTurn. 1. d2-d4 & Be8-c6 · 2. d4xe5 & Nf6-e4 · 3. Rc3xc6 & Ne4xc3. Rook starts c3 (tank — siege cannot relocate). Captures = attack → death → occupy.",
+          "SCFEN + engine: each arrow = one turn = White & Black classical via addScAction → endScTurn. 1. d2-d4 & Be8-c6 · 2. d4xe5 & Nf6-e4 · 3. Rc3xc6 & Ne4xc3. Tank starts c3 (tank — siege cannot relocate). Captures = attack → death → occupy.",
       },
     },
   },
@@ -63,7 +63,7 @@ export const KingAttack3: Story = {
     docs: {
       description: {
         story:
-          "Ownership flipped vs King Hunt: White hunter (Kh1, Nc5, Bh2) vs black king e4. Adjutant auto-plays black. ResourceBar + shared BoardSideRail (live TurnBarSidebar + SideRailTools) + GasDeploy; eclipse board + combat VFX.",
+          "Ownership flipped vs King Hunt: White hunter (Kh1, Nc5, Bh2) vs black Command Center e4. Adjutant auto-plays black. ResourceBar + shared BoardSideRail (live TurnBarSidebar + SideRailTools) + GasDeploy; eclipse board + combat VFX.",
       },
     },
   },
@@ -72,7 +72,7 @@ export const KingAttack3: Story = {
 export const VermeerLive: Story = sampleStory(VERMEER_LIVE_SAMPLE, {
   name: "Vermeer (live)",
   docs:
-    "Classic live opening on Vermeer terrain: each side 1 king + 4 pawns (same SCFEN as Maps \u2192 Vermeer). You pick team via story controls; adjutant plays the opposite color. ResourceBar / TurnBar / GasDeploy + fog + combat VFX.",
+    "Classic live opening on Vermeer terrain: each side 1 Command Center + 4 Marines (same SCFEN as Maps \u2192 Vermeer). You pick team via story controls; adjutant plays the opposite color. ResourceBar / TurnBar / GasDeploy + fog + combat VFX.",
   boardVariant: "vermeer",
   shell: "vermeer",
 });

@@ -6,7 +6,7 @@ import type { AttackCue } from "~/types/cues";
 
 afterEach(cleanup);
 
-const KING_SHOT: AttackCue = {
+const CC_SHOT: AttackCue = {
   id: "a0",
   piece: "k",
   color: "w",
@@ -19,25 +19,25 @@ const damageOf = (cues: readonly AttackCue[]) => {
     <AttackAnimation cues={cues} boardWidth={400} boardHeight={400} />
   ));
   return container
-    .querySelector("[data-king-damage]")!
-    .getAttribute("data-king-damage");
+    .querySelector("[data-cc-damage]")!
+    .getAttribute("data-cc-damage");
 };
 
 /**
- * `visibleKingDamageCues` drops the persistent slot for a square an attack hull
+ * `visibleCCDamageCues` drops the persistent slot for a square an attack hull
  * owns (`attackFrom`), so the shot hull is the only thing drawing that CC —
- * a pristine hull there means the king goes full HP for the length of the shot.
+ * a pristine hull there means the Command Center goes full HP for the length of the shot.
  * // SPEC: _spec/apps/starchess/architecture/board-entities.puml
  */
-describe("AttackAnimation · king hull", () => {
+describe("AttackAnimation · Command Center hull", () => {
   it("burns at the cue's damage state instead of pristine", () => {
-    expect(damageOf([{ ...KING_SHOT, damage: "smallFire", seed: 0x77 }])).toBe(
+    expect(damageOf([{ ...CC_SHOT, damage: "smallFire", seed: 0x77 }])).toBe(
       "smallFire",
     );
   });
 
-  it("stays pristine for an undamaged king", () => {
-    expect(damageOf([KING_SHOT])).toBe("pristine");
+  it("stays pristine for an undamaged Command Center", () => {
+    expect(damageOf([CC_SHOT])).toBe("pristine");
   });
 });
 
@@ -94,11 +94,11 @@ describe("AttackAnimation · siege shelling", () => {
   it("plays the HE impact for a victimless siege shot", () => {
     const { container } = render(() => (
       <AttackAnimation
-        cues={[{ id: "a0", piece: "r", color: "w", from: "d4", to: "d2", rookMode: "siege" }]}
+        cues={[{ id: "a0", piece: "r", color: "w", from: "d4", to: "d2", tankMode: "siege" }]}
         boardWidth={400}
         boardHeight={400}
       />
     ));
-    expect(container.querySelector('[class*="rookImpact"]')).not.toBeNull();
+    expect(container.querySelector('[class*="tankImpact"]')).not.toBeNull();
   });
 });

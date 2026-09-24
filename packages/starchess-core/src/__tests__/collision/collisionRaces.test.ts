@@ -1,5 +1,5 @@
 /**
- * Collision races — mid-path block, same-square land, knight vs fleeing pawn.
+ * Collision races — mid-path block, same-square land, Hoverbike vs fleeing Marine.
  */
 import { describe, expect, it } from "vitest";
 
@@ -12,7 +12,7 @@ describe("collision: mid-path before destination", () => {
     );
     s = addScMove(s, { color: "w", from: "e1", to: "e8" });
     const r = endScTurn(s, { skipTurnStartChecks: true });
-    // Capture + occupy e7; black rook on e8 survives.
+    // Capture + occupy e7; black Tank on e8 survives.
     expect(r.next.placement).toBe("k3r3/4R3/8/8/8/8/8/K7");
     expect(r.resolved.pathRevealAttacks).toEqual([
       expect.objectContaining({
@@ -25,7 +25,7 @@ describe("collision: mid-path before destination", () => {
     expect(r.resolved.attacks).toEqual([]);
   });
 
-  it("ally pawn e7 truncates rook before e7 (no capture)", () => {
+  it("ally Marine e7 truncates Tank before e7 (no capture)", () => {
     let s = parseScFen(
       "SCFEN|k3r3/4P3/8/8/8/8/8/K3R3|1|33|P|G:11:11|Q:w:;b:",
     );
@@ -40,7 +40,7 @@ describe("collision: mid-path before destination", () => {
   });
 });
 
-describe("collision: same-square bishops", () => {
+describe("collision: same-square Mechas", () => {
   it("near white (1sq) vs far black (3sq) — both die, e5 empty", () => {
     let s = parseScFen(
       "SCFEN|1b2k3/8/8/8/3B4/8/8/4K3|1|33|P|G:11:11|Q:w:;b:",
@@ -83,29 +83,29 @@ describe("collision: same-square bishops", () => {
   });
 });
 
-describe("collision: knight speed vs gas pawn + bishop", () => {
+describe("collision: Hoverbike speed vs gas Marine + Mecha", () => {
   /**
-   * B gas flees pawn e4→e5; white bishop and black knight both classical to e4.
-   * Race onto vacated e4 — mutual annihilation; pawn safe on e5.
+   * B gas flees Marine e4→e5; white Mecha and black Hoverbike both classical to e4.
+   * Race onto vacated e4 — mutual annihilation; Marine safe on e5.
    */
   it.each([
     {
-      label: "bishop 1sq (d5)",
+      label: "Mecha 1sq (d5)",
       scfen:
-        // Pre-queued: rem already net of the 1-gas pawnDouble.
-        "SCFEN|4k3/8/3n4/3B4/4P3/8/8/4K3|1|33|P|G:01:11|Q:w:B=pawnDouble:e4:e5,C=d5e4;b:C=d6e4",
+        // Pre-queued: rem already net of the 1-gas stimStep.
+        "SCFEN|4k3/8/3n4/3B4/4P3/8/8/4K3|1|33|P|G:01:11|Q:w:B=stimStep:e4:e5,C=d5e4;b:C=d6e4",
     },
     {
-      label: "bishop 2sq (c6)",
+      label: "Mecha 2sq (c6)",
       scfen:
-        "SCFEN|4k3/8/2Bn4/8/4P3/8/8/4K3|1|33|P|G:01:11|Q:w:B=pawnDouble:e4:e5,C=c6e4;b:C=d6e4",
+        "SCFEN|4k3/8/2Bn4/8/4P3/8/8/4K3|1|33|P|G:01:11|Q:w:B=stimStep:e4:e5,C=c6e4;b:C=d6e4",
     },
     {
-      label: "bishop 3sq (b1)",
+      label: "Mecha 3sq (b1)",
       scfen:
-        "SCFEN|4k3/8/3n4/8/4P3/8/8/1B2K3|1|33|P|G:01:11|Q:w:B=pawnDouble:e4:e5,C=b1e4;b:C=d6e4",
+        "SCFEN|4k3/8/3n4/8/4P3/8/8/1B2K3|1|33|P|G:01:11|Q:w:B=stimStep:e4:e5,C=b1e4;b:C=d6e4",
     },
-  ] as const)("$label — both die on e4, pawn safe on e5", ({ scfen }) => {
+  ] as const)("$label — both die on e4, Marine safe on e5", ({ scfen }) => {
     const r = endScTurn(parseScFen(scfen), { skipTurnStartChecks: true });
     expect(r.next.placement).toBe("4k3/8/8/4P3/8/8/8/4K3");
     expect(r.resolved.moveCollisions).toHaveLength(2);

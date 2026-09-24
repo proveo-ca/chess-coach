@@ -5,7 +5,7 @@ import type {
   AttackCue,
   DeathCue,
   DeployCue,
-  KingDamageCue,
+  CCDamageCue,
   MineMissileCue,
   MoveCue,
   ShipJumpTrail,
@@ -15,7 +15,7 @@ export type ChasingMineCue = { at: Square; legMs: number[] };
 
 export type CombatCommit = {
   placement: string;
-  kingLives: Record<StarChessColor, number>;
+  ccLives: Record<StarChessColor, number>;
   phase: "A" | "M" | "P" | "O";
   mines: readonly ScMine[];
 };
@@ -28,7 +28,7 @@ export type CombatFxState = {
   moveProgress: Record<string, 0 | 1>;
   moveLeg: Record<string, 0 | 1>;
   deployCues: DeployCue[];
-  kingDamage: KingDamageCue[];
+  ccDamage: CCDamageCue[];
   chasingMines: ChasingMineCue[];
   mineMissiles: MineMissileCue[];
   mineMissileTrails: ShipJumpTrail[];
@@ -36,16 +36,16 @@ export type CombatFxState = {
 };
 
 export type PlayResolveOptions = {
-  /** Board before this resolve (for damaged-king overlay seeding). */
+  /** Board before this resolve (for damaged-Command Center overlay seeding). */
   startPlacement: string;
   /** Apply mid / final board snapshots (classic placement + lives). */
   commit: (snap: CombatCommit) => void;
-  /** Starting lives (before this resolve’s king-shots). */
+  /** Starting lives (before this resolve’s Command Center-shots). */
   livesBefore: Record<StarChessColor, number>;
   /** Viewer for fog-gated mover hulls. Omit → show all move hulls. */
   viewer?: StarChessColor;
   /** Post-B siege flags for mover fog parity. */
-  siegedRooks?: readonly Square[];
+  siegedTanks?: readonly Square[];
   onDone?: () => void;
 };
 

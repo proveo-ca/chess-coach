@@ -24,7 +24,7 @@
  *    believed (confidence ≥ 0.5) — counts as `defending` (no saving spree,
  *    `RUNNER_GUARD` tank on) and, when its path crosses the ring, buys back the
  *    light drops the heavy-unit preference would have skipped.
- *  - **kingThreatened** — unchanged from naive: survival always outranks
+ *  - **ccThreatened** — unchanged from naive: survival always outranks
  *    economy (the absolute survival weights still dominate elsewhere).
  */
 
@@ -43,12 +43,12 @@ import {
 import type { Candidate } from "../../context";
 import { centerScore, chebyshev, neighbors, promoteProgress, rankOf } from "../../context";
 import {
-  MAX_KNIGHTS,
-  ROOK_AFTER_KNIGHTS,
-  BISHOP_FIRST,
-  BISHOP_VS_QUEEN,
+  MAX_HOVERBIKES,
+  TANK_AFTER_HOVERBIKES,
+  MECHA_FIRST,
+  MECHA_VS_BATTLESHIP,
   deployPolicy,
-  isBishopDeployCapped,
+  isMechaDeployCapped,
 } from "../../strategies/economy";
 import { isSoleBlocker, isUrgentRunner } from "../runners";
 import { RUNNER_ABANDON_SHARE, runnerStake } from "./runners";
@@ -58,7 +58,7 @@ import type { StrategicStrategy, } from "./types";
 import { asCandidate } from "./types";
 
 /** Cap Hoverbikes — mirrors naive (prefer tank after this many hoverbikes). */
-export const MAX_KNIGHTS_S = MAX_KNIGHTS;
+export const MAX_HOVERBIKES_S = MAX_HOVERBIKES;
 /** Tank-biased guard when the enemy holds hidden material (cheese window). */
 export const HIDDEN_GUARD = 1_450;
 /**
@@ -70,23 +70,23 @@ export const RUNNER_GUARD = 1_450;
 /** Extra on a BattleShip deploy when the CC guess is already within warp reach. */
 export const SHIP_WARP_READY = 800;
 /** BattleShip rush when winning: deploy q the moment the bank allows. */
-export const QUEEN_FINISH = 3_200;
+export const BATTLESHIP_FINISH = 3_200;
 /**
  * Ally-crush dials — deploying over our OWN ring units is legal, so the
  * scorer must price the victim (mirror of the enemy-crush bonus below) and
  * only outbid an empty square for defense:
  *  - ring full + defending + heavier guard replaces the cheapest ally in place;
- *  - a fresh unit that newly covers a lit, threatened own near-promotion pawn / ship.
+ *  - a fresh unit that newly covers a lit, threatened own near-promotion Marine / ship.
  *  - never for a runner answer on an ally-held square: the standing body
  *    already blockades it, so re-buying the square is pure victim + gas.
  * Ladder: each (and their sum) sits below RUNNER_STOP_SERIOUS (5_500) —
  * asserted in `__tests__/tactics/weightOrdering.test.ts`.
  */
 export const ALLY_UPGRADE = 500;
-export const ALLY_SHIELD_PAWN = 800;
+export const ALLY_SHIELD_MARINE = 800;
 export const ALLY_SHIELD_SHIP = 1_200;
 
-/** Steps an own pawn needs to promote (for the near-promotion shield). */
+/** Steps an own Marine needs to promote (for the near-promotion shield). */
 const stepsToPromotion = (at: Square, us: StrategicCtx["us"]): number =>
   us === "w" ? 8 - rankOf(at) : rankOf(at) - 1;
 
@@ -95,7 +95,7 @@ const stepsToPromotion = (at: Square, us: StrategicCtx["us"]): number =>
  * high-value units. Max-one bonus, and 0 unless every gate holds:
  * defending posture, cheap victim (never eat a tank/ship to "shield"), the
  * square is not some runner's last blocker (shielding elsewhere must not hand
- * a race back), a lit and enemy-attacked own ship or near-promotion pawn
+ * a race back), a lit and enemy-attacked own ship or near-promotion Marine
  * elsewhere, and the fresh unit actually covering it from `to` (read off a
  * post-crush map clone).
  *
@@ -123,23 +123,23 @@ export const allyShieldValue = (
   for (const [sq, hv] of map) {
     if (hv.color !== us || sq === to) continue;
     const isShip = hv.type === "q";
-    const isNearPawn = hv.type === "p" && stepsToPromotion(sq, us) <= 2;
-    if (!isShip && !isNearPawn) continue;
+    const isNearMarine = hv.type === "p" && stepsToPromotion(sq, us) <= 2;
+    if (!isShip && !isNearMarine) continue;
     if (!tactical.enemyAttacks(sq)) continue;
     if (!vision.litSquares.has(sq)) continue;
     const post = new Map(map);
     post.set(to, { type: unit, color: us });
     if (!attacksSquare(post, to, sq)) continue;
-    best = Math.max(best, isShip ? ALLY_SHIELD_SHIP : ALLY_SHIELD_PAWN);
+    best = Math.max(best, isShip ? ALLY_SHIELD_SHIP : ALLY_SHIELD_MARINE);
   }
   return best;
 };
 
 const deploys = (ctx: StrategicCtx): Candidate[] => {
-  const { map, snap, us, enemy, king, kingThreatened, material, vision, weights, kvs, cheesePromotion, winning } =
+  const { map, snap, us, enemy, commandCenter, ccThreatened, material, vision, weights, kvs, cheesePromotion, winning } =
     ctx;
   const { center, promoteRank, trade, attackedPenalty } = weights;
-  const { preferHeavy, needBishop, wantBishops, knightsFull } = deployPolicy(ctx);
+  const { preferHeavy, needMecha, wantMechas, hoverbikesFull } = deployPolicy(ctx);
   const hidden = kvs.gap > 0 || cheesePromotion;
   const out: Candidate[] = [];
   // 5-turn deploy lookahead: projects budget and picks best composition (e.g.
@@ -147,7 +147,7 @@ const deploys = (ctx: StrategicCtx): Candidate[] => {
   const horizonSeq = bestDeploySequence(ctx, 5);
   const horizonBank = projectedBank(material.bank, snap.turn, 5);
 
-  const adjacent = neighbors(king).filter(
+  const adjacent = neighbors(commandCenter).filter(
     (at) => !hostileMineOn(snap.mines, us, at),
   );
 
@@ -164,25 +164,25 @@ const deploys = (ctx: StrategicCtx): Candidate[] => {
   // No usable ring square left: the only drops left are crushes (non-vacuous —
   // a mined-out ring is no ring at all, not a full one).
   const ringFull = adjacent.length > 0 && adjacent.every((sq) => map.has(sq));
-  const defendingPlus = defending || kingThreatened;
+  const defendingPlus = defending || ccThreatened;
 
   for (const unit of ["p", "n", "b", "r", "q"] as const) {
     if (UNIT_COST[unit] > material.bank) continue;
-    if (unit === "n" && knightsFull) continue;
+    if (unit === "n" && hoverbikesFull) continue;
     if (material.congested && unit === "p") continue;
     // Skip light drops when we can afford a tank+ (unless Command Center (CC) threatened, or
     // we still need mechas vs a visible enemy battleship).
     if (
       preferHeavy &&
-      !kingThreatened &&
+      !ccThreatened &&
       !runnerOnDeployRing &&
       UNIT_COST[unit] < UNIT_COST.r &&
-      !(wantBishops && unit === "b")
+      !(wantMechas && unit === "b")
     ) {
       continue;
     }
     // After 2 hoverbikes, prefer tank deploys over other mid-tier options.
-    if (knightsFull && preferHeavy && unit !== "r" && unit !== "q" && unit !== "b") {
+    if (hoverbikesFull && preferHeavy && unit !== "r" && unit !== "q" && unit !== "b") {
       continue;
     }
     // STRATEGIC: winning + nothing to defend → save light drops toward a ship.
@@ -192,7 +192,7 @@ const deploys = (ctx: StrategicCtx): Candidate[] => {
     if (
       winning &&
       !defending &&
-      !kingThreatened &&
+      !ccThreatened &&
       material.bank < UNIT_COST.q &&
       horizonBank >= UNIT_COST.q &&
       (unit === "p" || unit === "n")
@@ -217,13 +217,13 @@ const deploys = (ctx: StrategicCtx): Candidate[] => {
       // and the gas, so the runner answer pays nothing on ally-held squares
       // (victim pricing + sole-blocker abandon below still apply).
       const allyHeld = occ?.color === us;
-      // Kings are never crushable — generation-side hygiene only;
+      // Command Centers are never crushable — generation-side hygiene only;
       // `addScAction` validation stays the sole legality authority.
       if (occ?.type === "k") continue;
       // Mecha pile-up gate (fog-honest: the exception needs a lit victim).
       if (
         unit === "b" &&
-        isBishopDeployCapped(map, us, to, (sq) =>
+        isMechaDeployCapped(map, us, to, (sq) =>
           vision.litSquares.has(sq) || vision.revealedPieces.has(sq),
         )
       ) {
@@ -234,11 +234,11 @@ const deploys = (ctx: StrategicCtx): Candidate[] => {
         promoteRank * promoteProgress(rankOf(to), us) +
         trade * (1 + UNIT_COST[unit]);
       // Turn 1: hoverbike and mecha equal for probabilistic open
-      if (needBishop && unit === "b" && !kingThreatened && snap.turn > 1) score += BISHOP_FIRST;
-      if (vision.enemyQueenVisible && unit === "b" && !kingThreatened) {
-        score += BISHOP_VS_QUEEN;
+      if (needMecha && unit === "b" && !ccThreatened && snap.turn > 1) score += MECHA_FIRST;
+      if (vision.enemyBattleShipVisible && unit === "b" && !ccThreatened) {
+        score += MECHA_VS_BATTLESHIP;
       }
-      if (knightsFull && unit === "r") score += ROOK_AFTER_KNIGHTS;
+      if (hoverbikesFull && unit === "r") score += TANK_AFTER_HOVERBIKES;
       // STRATEGIC: cheesy hidden material, or a runner we can account for →
       // tank guard on the Command Center (CC)'s perimeter
       if (unit === "r") {
@@ -246,7 +246,7 @@ const deploys = (ctx: StrategicCtx): Candidate[] => {
         else if (urgentRunners.length > 0) score += RUNNER_GUARD;
       }
       // STRATEGIC: winning with nothing to defend → the ship closes the game.
-      if (winning && !defending && unit === "q") score += QUEEN_FINISH;
+      if (winning && !defending && unit === "q") score += BATTLESHIP_FINISH;
       // CC guess is 1-away or in clear line from a visible square → ship + warp to check
       const ccOneAwayOrClearLine = (() => {
         const focus = ctx.ccIntel?.focus;
@@ -272,8 +272,8 @@ const deploys = (ctx: StrategicCtx): Candidate[] => {
       // shooter — a Command Center that was fired on can answer with its own
       // ring, and the crush needs no line of attack.
       score += avengeDeployValue(ctx, to, UNIT_COST[unit]);
-      if (kingThreatened && unit === "r") score += trade * 4;
-      if (kingThreatened) score += trade;
+      if (ccThreatened && unit === "r") score += trade * 4;
+      if (ccThreatened) score += trade;
       if (isSquareAttackedBy(map, to, enemy)) score -= attackedPenalty;
       // Direct spawn crush on enemy — capture higher material
       if (occ && occ.color === enemy) {
@@ -291,7 +291,7 @@ const deploys = (ctx: StrategicCtx): Candidate[] => {
         if (ringFull && defendingPlus && UNIT_COST[unit] > UNIT_COST[occ.type]) {
           score += ALLY_UPGRADE;
         }
-        // Fresh cover on a lit, threatened own near-promotion pawn / ship.
+        // Fresh cover on a lit, threatened own near-promotion Marine / ship.
         score += allyShieldValue(ctx, to, unit, occ, defendingPlus);
       }
       if (snap.turn <= 1 && (unit === "n" || unit === "b")) {
@@ -300,7 +300,7 @@ const deploys = (ctx: StrategicCtx): Candidate[] => {
 
       out.push(
         asCandidate(
-          { timing: "B", kind: "spawn", color: us, from: king, to, unit },
+          { timing: "B", kind: "deploy", color: us, from: commandCenter, to, unit },
           score,
           UNIT_COST[unit],
         ),

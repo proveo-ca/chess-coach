@@ -45,7 +45,7 @@ point fix would be immediately rewritten.
 The CC/king absorbs fire: nothing behind it can be queued or hit (the king is
 cover, not a window).
 
-- Move-gen (`siegedRookMoves`): stop the cross at an enemy king — squares
+- Move-gen (`siegedTankMoves`): stop the cross at an enemy king — squares
   beyond it are not offered (mirrors the ally filter; the king square itself
   stays `dropsAtResolve`).
 - Validation (`assertClassicalBaseline`): reject sieged dests beyond an enemy
@@ -62,10 +62,10 @@ cover, not a window).
 ### B — Remove the "check" phase; CC/king attacks are no-capture attacks
 
 Attacking the CC/king never captures and never opens a pending-check turn:
-the king is damage-only (HP/kingLives), checks resolve inline as HP chip
-`kingShot`s in the attack phase of the same turn.
+the king is damage-only (HP/ccLives), checks resolve inline as HP chip
+`ccShot`s in the attack phase of the same turn.
 
-- Deletes the turn-open check ply (`applyPendingKingShots` as a separate
+- Deletes the turn-open check ply (`applyPendingCCShots` as a separate
   resolve), so `isCheckOnlyResolve` + DualNav check chaining + typewriter
   `hasCheck` + economy preview all simplify or disappear.
 - `midPathPrecedence` king-contact becomes a plain hold-fire (nothing needs
@@ -92,7 +92,7 @@ is still felt as friction after A lands.
 - Core: `siegedRookShelling.test.ts` new case — enemy behind enemy king holds
   fire (no capture, no shelling, tank in place); enemy behind enemy *non-king*
   still intercepts at the blocker (unchanged).
-- Move-gen: `siegedRookMoves.test.ts` — squares beyond an enemy king not
+- Move-gen: `siegedTankMoves.test.ts` — squares beyond an enemy king not
   listed; the king square itself still listed (`dropsAtResolve`).
 - Validation: raw `addScAction` beyond-king dest throws `SC_SPECIAL`.
 - Adjutant: `stacks.ts`-driven planner no longer queues through-king missions.

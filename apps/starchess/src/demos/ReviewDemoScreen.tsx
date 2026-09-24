@@ -27,7 +27,7 @@ import { Label } from "~/components/primitives/Label";
 import { Screen } from "~/components/primitives/Screen";
 import { ScreenBackNav } from "~/components/primitives/ScreenBackNav";
 import styles from "~/demos/ReviewDemoScreen.module.css";
-import { clearSiegedRooks, setRookMode } from "~/presentation/animations/rookModeStore";
+import { clearSiegedTanks, setTankMode } from "~/presentation/animations/tankModeStore";
 import { MobileBanner } from "~/components/atoms/MobileBanner";
 import { LiveBoardBinding } from "~/presentation/board/components/LiveBoardBinding";
 import { displayPlayerName } from "~/utils/playerName";
@@ -67,7 +67,7 @@ export type ReviewDemoScreenProps = {
   variant?: BoardSkin;
   pieceSet?: PieceSet;
 
-  rookTank?: boolean;
+  packedTank?: boolean;
 
   playerColor?: StarChessColor;
 
@@ -97,20 +97,20 @@ export type ReviewDemoScreenProps = {
   };
 };
 
-const syncRookModes = (
+const syncTankModes = (
   placement: string,
   sieged: readonly Square[] | undefined,
   forceTank: boolean | undefined,
 ) => {
-  clearSiegedRooks();
+  clearSiegedTanks();
   if (!forceTank) {
-    for (const sq of sieged ?? []) setRookMode(sq, "siege");
+    for (const sq of sieged ?? []) setTankMode(sq, "siege");
     return;
   }
   try {
     const map = placementToMap(placement);
     for (const [sq, piece] of map) {
-      if (piece.type === "r") setRookMode(sq as Square, "tank");
+      if (piece.type === "r") setTankMode(sq as Square, "tank");
     }
   } catch {
 
@@ -160,7 +160,7 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
 
   createEffect(() => {
     const s = snap();
-    syncRookModes(s.placement, s.siegedRooks, props.rookTank);
+    syncTankModes(s.placement, s.siegedTanks, props.packedTank);
   });
 
   createEffect(() => {
@@ -230,7 +230,7 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
     onCleanup(() => {
       window.removeEventListener("keydown", onKey);
       store.cancelEffects();
-      clearSiegedRooks();
+      clearSiegedTanks();
       resetReviewVisionFilter();
       if (props.tutorial) resetTutorialNarration();
     });
@@ -418,7 +418,7 @@ export const ReviewDemoScreen: Component<ReviewDemoScreenProps> = (props) => {
         fog={props.fog}
         variant={props.variant}
         pieceSet={props.pieceSet}
-        rookTank={props.rookTank}
+        packedTank={props.packedTank}
         playerColor={props.playerColor}
         playerName={props.playerName}
         arenaPlayers={props.arenaPlayers}

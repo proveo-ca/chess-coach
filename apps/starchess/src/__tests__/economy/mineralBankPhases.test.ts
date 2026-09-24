@@ -1,6 +1,6 @@
 /**
  * Integration: mineral bank through intent → resolve → income turns.
- * Bishop (3) then later marine (1); bank must not snap back during resolve.
+ * Mecha (3) then later marine (1); bank must not snap back during resolve.
  */
 import { describe, expect, it } from "vitest";
 import {
@@ -37,7 +37,7 @@ const endResolve = (store: MatchStore) => {
 };
 
 describe("mineral bank across phases", () => {
-  it("bishop spend stays 0 through resolve; income then marine spend", () => {
+  it("Mecha spend stays 0 through resolve; income then marine spend", () => {
     const store = createMatchStore({
       initial: createMatchStateFromScfen(STAR_STARTING_SCFEN, OPENING_STORED_MATERIAL),
       autoArmTimer: false,
@@ -54,7 +54,7 @@ describe("mineral bank across phases", () => {
       type: "QUEUE_ACTION",
       action: {
         timing: "B",
-        kind: "spawn",
+        kind: "deploy",
         color: "w",
         from: "e1",
         to: "d1",
@@ -87,10 +87,10 @@ describe("mineral bank across phases", () => {
     expect(store.state().economies.w.stored).toBe(1);
     expect(displayedSnapshot(store.state()).stored?.w).toBe(1);
 
-    const turnAfterBishop = store.state().liveSnapshot.turn;
+    const turnAfterMecha = store.state().liveSnapshot.turn;
     endResolve(store);
     const turnAfterIdle = store.state().liveSnapshot.turn;
-    if (turnAfterIdle > turnAfterBishop) {
+    if (turnAfterIdle > turnAfterMecha) {
       expect(bank(store)).toBe(2);
     } else {
       expect(bank(store)).toBe(1);
@@ -116,7 +116,7 @@ describe("mineral bank across phases", () => {
       type: "QUEUE_ACTION",
       action: {
         timing: "B",
-        kind: "spawn",
+        kind: "deploy",
         color: "w",
         from: "e1",
         to: "f1",
@@ -144,7 +144,7 @@ describe("mineral bank across phases", () => {
     );
     const history = buildReviewHistory({
       start,
-      steps: [{ caption: "deploy bishop" }],
+      steps: [{ caption: "deploy Mecha" }],
       startCaption: "start",
       includeTurnOpenChecks: false,
       queueStep: (snap) =>
@@ -152,7 +152,7 @@ describe("mineral bank across phases", () => {
           snapshot: snap,
           action: {
             timing: "B",
-            kind: "spawn",
+            kind: "deploy",
             color: "w",
             from: "e1",
             to: "d1",

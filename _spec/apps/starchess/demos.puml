@@ -28,7 +28,7 @@ package "Shipped (do not re-ticket)" {
   component "Queue actions — addScAction / addScMove /\nendScTurn\n""commands/queue-action.ts"" + ""resolve/submit-turn.ts""" as SH3 <<app>>
   component "Fog-aware classify + move collision\n""resolve/resolve-turn.ts"" + ""board/vision.ts"" via ""endScTurn""" as SH4 <<app>>
   component "Intent C= vs progressive path resolve\n""pathRevealSteps"" / ""pathRevealFrom""\nfog approach = phase-3 event: fires after moves;\nfizzle: attacker dead / origin re-occupied or sieged,\nor ""to"" lost the in-the-way victim\n""pathRevealAttacks"" = fired only" as SH5 <<app>>
-  component "King-shot ray / legal check\n""collectLegalKingChecks"" +\n""beginScTurn"" / ""applyPendingKingShots""\nat turn open (before intent);\nkings are legal checkers too" as SH6 <<app>>
+  component "King-shot ray / legal check\n""collectLegalCCChecks"" +\n""beginScTurn"" / ""applyPendingCCShots""\nat turn open (before intent);\nkings are legal checkers too" as SH6 <<app>>
   component "Implicit check → turn-open HP\n(""beginScTurn""); mid-resolve king HP only\nfog path-discovery; no king-aimed ""C=""" as SH7 <<app>>
   component "Spider Mines M:\n""board/mines.ts"" + ""resolve-turn""" as SH8 <<app>>
   component "Fog-edge DualNav\n""demos/fogEdge*.ts"" + ""FogEdgeDemo""\n(+ fogMoveSamples · FogOfWar stories)\nDualNav review demos (NerdCombat, PathCollide,\nPathCollideAllyMine, AttackMine, KingHunt): both\nplayers' intent overlays pre-resolve\n(""intentOverlays.ts"", no viewer);\nKing Hunt: **check → intent → resolve**;\nobserver dual-vision borders\n(""visionMode=observer"" — full board +\n""getSideVision"" w/b strokes, no fog veil);\nFog-of-war move stories use player fog veil" as SH9 <<app>>

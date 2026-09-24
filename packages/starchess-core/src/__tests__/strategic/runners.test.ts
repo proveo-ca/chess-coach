@@ -30,8 +30,8 @@ const snapOf = (placement: string, turn = 10) =>
  * file. Black sees it from either tank (5×5) and can take it with f5 or b5.
  * The temptation is everything else on the board: with the enemy Command Center
  * fogged, any tank move that lines up on the CC *guess* banks
- * `ATTACK_KING_GUESS` (5_000), which is what used to win these turns while the
- * runner walked in for a lone `HUNT_UNDEFENDED_PAWN` (950).
+ * `ATTACK_CC_GUESS` (5_000), which is what used to win these turns while the
+ * runner walked in for a lone `HUNT_UNDEFENDED_MARINE` (950).
  */
 const RUNNER_3_SEEN = "4k3/8/8/1r1P1r2/8/8/8/4K3";
 
@@ -136,7 +136,7 @@ describe("strategic adjutant answers a runner", () => {
         storedFor: () => 3,
       });
       return blackActions(plan.snapshot)
-        .filter((a) => a.kind === "spawn")
+        .filter((a) => a.kind === "deploy")
         .map((a) => a.to);
     };
 

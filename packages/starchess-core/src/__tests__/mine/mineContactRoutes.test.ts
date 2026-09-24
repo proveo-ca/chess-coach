@@ -7,7 +7,7 @@
  *
  * The contract is one line: **a hostile mine detonates the moment an enemy unit
  * arrives on it or crosses it, wherever that arrival comes from.** Allied mines
- * stay inert underfoot on every one of those routes, and kings stay immune.
+ * stay inert underfoot on every one of those routes, and Command Centers stay immune.
  * // SPEC: _spec/packages/starchess-core/resolve.puml
  */
 import { describe, expect, it } from "vitest";
@@ -39,7 +39,7 @@ const gasStep = (
   color: "w" | "b",
   from: string,
   to: string,
-): ScAction => ({ timing, kind: "pawnDouble", color, from, to }) as ScAction;
+): ScAction => ({ timing, kind: "stimStep", color, from, to }) as ScAction;
 
 const pieceAt = (r: Resolved, at: string) =>
   placementToMap(r.next.placement).get(at as never);
@@ -70,7 +70,7 @@ describe("gas steps arm mines", () => {
       "SCFEN|4k3/8/8/8/8/8/4P3/4K3|21|33|P|G:33:33|Q:w:;b:|M:w:;b:e3",
       [gasStep("B", "w", "e2", "e3")],
     );
-    expect(specialBlast(r, "pawnDouble", "e3")).toEqual(
+    expect(specialBlast(r, "stimStep", "e3")).toEqual(
       expect.objectContaining({
         mineColor: "b",
         victim: { type: "p", color: "w" },
@@ -87,7 +87,7 @@ describe("gas steps arm mines", () => {
       "SCFEN|4k3/8/8/8/8/8/4P3/4K3|21|33|P|G:33:33|Q:w:;b:|M:w:;b:e4",
       [classical("w", "e2", "e3"), gasStep("F", "w", "e2", "e3")],
     );
-    expect(specialBlast(r, "pawnDouble", "e4")).toEqual(
+    expect(specialBlast(r, "stimStep", "e4")).toEqual(
       expect.objectContaining({
         mineColor: "b",
         victim: { type: "p", color: "w" },
@@ -103,7 +103,7 @@ describe("gas steps arm mines", () => {
       "SCFEN|k7/4P3/8/8/8/8/8/4K3|21|33|P|G:33:33|Q:w:;b:|M:w:;b:e8",
       [{ ...gasStep("B", "w", "e7", "e8"), promotion: "q" } as ScAction],
     );
-    expect(specialBlast(r, "pawnDouble", "e8")).toBeDefined();
+    expect(specialBlast(r, "stimStep", "e8")).toBeDefined();
     expect(r.resolved.promotions).toEqual([]);
     expect(pieceAt(r, "e8")).toBeUndefined();
     expect(mineOn(r, "e8")).toBeUndefined();
@@ -123,7 +123,7 @@ describe("gas steps arm mines", () => {
 /**
  * An Extra Step makes the marine's turn two hops, and the two hops are **one
  * walk**: a mine woken on the first hop chases and blows on the tile the marine
- * comes to rest on, the same way a mid-slide wake chases a rook. Queue order
+ * comes to rest on, the same way a mid-slide wake chases a Tank. Queue order
  * must not change the outcome — gas-then-move and move-then-gas agree.
  */
 describe("Extra Step is one walk — the mine waits for the destination", () => {
@@ -135,7 +135,7 @@ describe("Extra Step is one walk — the mine waits for the destination", () => 
     );
     // The marine finishes its walk before the mine takes it.
     expect(r.fMoves).toEqual([{ piece: "p", color: "w", from: "e3", to: "e4" }]);
-    expect(specialBlast(r, "pawnDouble", "e4")).toEqual(
+    expect(specialBlast(r, "stimStep", "e4")).toEqual(
       expect.objectContaining({
         mineColor: "b",
         victim: { type: "p", color: "w" },
@@ -177,7 +177,7 @@ describe("Extra Step is one walk — the mine waits for the destination", () => 
       "SCFEN|4k3/8/8/8/8/8/4P3/4K3|21|33|P|G:33:33|Q:w:;b:|M:w:;b:e3",
       [gasStep("B", "w", "e2", "e3")],
     );
-    expect(specialBlast(r, "pawnDouble", "e3")).toEqual(
+    expect(specialBlast(r, "stimStep", "e3")).toEqual(
       expect.objectContaining({ mineColor: "b", victim: { type: "p", color: "w" } }),
     );
     expect(pieceAt(r, "e3")).toBeUndefined();
@@ -192,7 +192,7 @@ describe("Extra Step is one walk — the mine waits for the destination", () => 
       [classical("w", "e2", "e3"), gasStep("F", "w", "e2", "e3")],
     );
     expect(r.fMoves).toEqual([]);
-    expect(specialBlast(r, "pawnDouble", "e3")).toEqual(
+    expect(specialBlast(r, "stimStep", "e3")).toEqual(
       expect.objectContaining({ mineColor: "b", victim: { type: "p", color: "w" } }),
     );
     expect(pieceAt(r, "e3")).toBeUndefined();
@@ -214,11 +214,11 @@ describe("deploys arm mines", () => {
   it("Command Center deploy onto a hostile mine — unit and mine both die", () => {
     const r = resolve(
       "SCFEN|4k3/8/8/8/8/8/8/4K3|21|33|P|G:33:33|Q:w:;b:|M:w:;b:d2",
-      [{ timing: "B", kind: "spawn", color: "w", from: "e1", to: "d2", unit: "p" } as ScAction],
+      [{ timing: "B", kind: "deploy", color: "w", from: "e1", to: "d2", unit: "p" } as ScAction],
     );
     // `unit` names the deployed unit the mine took; `victim` stays reserved for
     // an occupant the drop crushed (none here).
-    expect(specialBlast(r, "spawn", "d2")).toEqual(
+    expect(specialBlast(r, "deploy", "d2")).toEqual(
       expect.objectContaining({ mineColor: "b", unit: "p" }),
     );
     expect(pieceAt(r, "d2")).toBeUndefined();
@@ -228,9 +228,9 @@ describe("deploys arm mines", () => {
   it("deploy that crushes an enemy AND lands on a mine — both deaths reported", () => {
     const r = resolve(
       "SCFEN|4k3/8/8/8/8/8/4n3/4K3|21|33|P|G:33:33|Q:w:;b:|M:w:;b:e2",
-      [{ timing: "B", kind: "spawn", color: "w", from: "e1", to: "e2", unit: "p" } as ScAction],
+      [{ timing: "B", kind: "deploy", color: "w", from: "e1", to: "e2", unit: "p" } as ScAction],
     );
-    expect(specialBlast(r, "spawn", "e2")).toEqual(
+    expect(specialBlast(r, "deploy", "e2")).toEqual(
       expect.objectContaining({
         mineColor: "b",
         unit: "p",
@@ -244,7 +244,7 @@ describe("deploys arm mines", () => {
   it("deploy onto an ALLIED mine — inert, unit lands", () => {
     const r = resolve(
       "SCFEN|4k3/8/8/8/8/8/8/4K3|21|33|P|G:33:33|Q:w:;b:|M:w:d2;b:",
-      [{ timing: "B", kind: "spawn", color: "w", from: "e1", to: "d2", unit: "p" } as ScAction],
+      [{ timing: "B", kind: "deploy", color: "w", from: "e1", to: "d2", unit: "p" } as ScAction],
     );
     assertNoMineEvent(r);
     expect(pieceAt(r, "d2")).toEqual({ type: "p", color: "w" });
@@ -256,7 +256,7 @@ describe("Tactical Jump — a mined tile stays a legal landing", () => {
   it("jumping onto an ALLIED mine — hull lands, mine stays armed", () => {
     const r = resolve(
       "SCFEN|4k3/8/8/8/8/8/8/Q3K3|21|33|P|G:33:33|Q:w:;b:|M:w:d4;b:",
-      [{ timing: "B", kind: "queenWarp", color: "w", from: "a1", to: "d4" } as ScAction],
+      [{ timing: "B", kind: "tacticalJump", color: "w", from: "a1", to: "d4" } as ScAction],
     );
     assertNoMineEvent(r);
     expect(pieceAt(r, "d4")).toEqual({ type: "q", color: "w" });
@@ -266,9 +266,9 @@ describe("Tactical Jump — a mined tile stays a legal landing", () => {
   it("jumping onto a HOSTILE mine — teleport is no attack, both die", () => {
     const r = resolve(
       "SCFEN|4k3/8/8/8/8/8/8/Q3K3|21|33|P|G:33:33|Q:w:;b:|M:w:;b:d4",
-      [{ timing: "B", kind: "queenWarp", color: "w", from: "a1", to: "d4" } as ScAction],
+      [{ timing: "B", kind: "tacticalJump", color: "w", from: "a1", to: "d4" } as ScAction],
     );
-    expect(specialBlast(r, "queenWarp", "d4")).toEqual(
+    expect(specialBlast(r, "tacticalJump", "d4")).toEqual(
       expect.objectContaining({
         mineColor: "b",
         victim: { type: "q", color: "w" },
@@ -330,12 +330,12 @@ describe("phase-3 fog approaches arm mines", () => {
     expect(mineOn(r, "a6")).toBeUndefined();
   });
 
-  it("kingShot stop square is mined — HP chip stands, mine takes the tank", () => {
+  it("ccShot stop square is mined — HP chip stands, mine takes the tank", () => {
     const r = resolve(
       "SCFEN|8/8/k7/8/8/8/8/R3K3|0|33|P|G:11:11|Q:w:;b:|M:w:;b:a5",
       [classical("w", "a1", "a8")],
     );
-    expect(r.next.kingLives).toEqual({ w: 3, b: 2 });
+    expect(r.next.ccLives).toEqual({ w: 3, b: 2 });
     expect(r.resolved.pathRevealMineTriggers).toEqual([
       expect.objectContaining({
         kind: "mineBlast",

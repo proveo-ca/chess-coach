@@ -6,35 +6,35 @@ import {
   assertActionDeep,
   endScTurn,
   parseScFen,
-  spawnKingAnchor,
+  spawnCCAnchor,
 } from "../../index.ts";
 
 describe("crush spawn (deploy onto enemy)", () => {
-  it("allyOccupied blocks only kings (ally and enemy non-kings crushable)", () => {
+  it("allyOccupied blocks only Command Centers (ally and enemy non-Command Centers crushable)", () => {
     // White K e1, black n d1 adjacent, white R d2 adjacent.
     const snap = parseScFen(
       "SCFEN|4k3/8/8/8/8/8/3R4/3nK3|1|33|P|G:11:11|Q:w:;b:",
     );
-    const { king, occupied, allyOccupied } = spawnKingAnchor(snap, "w", "B");
-    expect(king).toBe("e1");
+    const { commandCenter, occupied, allyOccupied } = spawnCCAnchor(snap, "w", "B");
+    expect(commandCenter).toBe("e1");
     expect(occupied.has("d1")).toBe(true); // any unit blocks the raw ring...
-    expect(allyOccupied.has("d1")).toBe(false); // ...but enemy non-king stays deployable
-    expect(allyOccupied.has("d2")).toBe(false); // ally non-king is now deployable (replaced)
-    expect(allyOccupied.has("e1")).toBe(true); // own king blocks
+    expect(allyOccupied.has("d1")).toBe(false); // ...but enemy non-Command Center stays deployable
+    expect(allyOccupied.has("d2")).toBe(false); // ally non-Command Center is now deployable (replaced)
+    expect(allyOccupied.has("e1")).toBe(true); // own Command Center blocks
     expect(allyOccupied.has("e2")).toBe(false);
   });
 
-  it("validation allows spawn onto an enemy or ally square and rejects any King", () => {
+  it("validation allows spawn onto an enemy or ally square and rejects any Command Center", () => {
     const snap = parseScFen(
       "SCFEN|4k3/8/8/8/8/8/8/R2nK3|1|33|P|G:11:11|Q:w:;b:",
     );
     expect(() =>
       assertActionDeep(snap, {
         timing: "B",
-        kind: "spawn",
+        kind: "deploy",
         color: "w",
         from: "e1",
-        to: "d1", // enemy knight — legal crush
+        to: "d1", // enemy Hoverbike — legal crush
         unit: "p",
       }),
     ).not.toThrow();
@@ -44,22 +44,22 @@ describe("crush spawn (deploy onto enemy)", () => {
     expect(() =>
       assertActionDeep(allySnap, {
         timing: "B",
-        kind: "spawn",
+        kind: "deploy",
         color: "w",
         from: "e1",
-        to: "d2", // own rook — legal ally crush (replaced)
+        to: "d2", // own Tank — legal ally crush (replaced)
         unit: "p",
       }),
     ).not.toThrow();
 
-    // Adjacent enemy King must also be blocked
-    const kingSnap = parseScFen(
+    // Adjacent enemy Command Center must also be blocked
+    const ccSnap = parseScFen(
       "SCFEN|8/8/8/8/8/8/4k3/4K3|1|33|P|G:11:11|Q:w:;b:",
     );
     expect(() =>
-      assertActionDeep(kingSnap, {
+      assertActionDeep(ccSnap, {
         timing: "B",
-        kind: "spawn",
+        kind: "deploy",
         color: "w",
         from: "e1",
         to: "e2",
@@ -76,7 +76,7 @@ describe("crush spawn (deploy onto enemy)", () => {
       snapshot: snap,
       action: {
         timing: "B",
-        kind: "spawn",
+        kind: "deploy",
         color: "w",
         from: "e1",
         to: "d1",
@@ -84,10 +84,10 @@ describe("crush spawn (deploy onto enemy)", () => {
       },
     }).snapshot;
     const result = endScTurn(snap, { skipTurnStartChecks: true });
-    // Marine landed on d1; enemy knight gone.
+    // Marine landed on d1; enemy Hoverbike gone.
     expect(result.afterB.placement).toBe("4k3/8/8/8/8/8/8/R2PK3");
     const spawn = result.events.find(
-      (ev) => ev.kind === "spawn" && ev.phase === "specialBefore",
+      (ev) => ev.kind === "deploy" && ev.phase === "specialBefore",
     );
     expect(spawn).toBeDefined();
     expect(spawn!.victim).toEqual({ type: "n", color: "b" });
@@ -103,15 +103,15 @@ describe("crush spawn (deploy onto enemy)", () => {
       snapshot: snap,
       action: {
         timing: "F",
-        kind: "spawn",
+        kind: "deploy",
         color: "w",
         from: "e1",
-        to: "d2", // enemy knight d2, adjacent to king e1
+        to: "d2", // enemy Hoverbike d2, adjacent to Command Center e1
         unit: "p",
       },
     }).snapshot;
     const result = endScTurn(snap, { skipTurnStartChecks: true });
-    expect(result.events.find((ev) => ev.kind === "spawn")).toMatchObject({
+    expect(result.events.find((ev) => ev.kind === "deploy")).toMatchObject({
       phase: "specialAfter",
       victim: { type: "n", color: "b" },
     });
@@ -126,17 +126,17 @@ describe("crush spawn (deploy onto enemy)", () => {
       snapshot: snap,
       action: {
         timing: "B",
-        kind: "spawn",
+        kind: "deploy",
         color: "w",
         from: "e1",
-        to: "d2", // own rook — replaced by deployed marine
+        to: "d2", // own Tank — replaced by deployed marine
         unit: "p",
       },
     }).snapshot;
     const result = endScTurn(snap, { skipTurnStartChecks: true });
     expect(result.afterB.placement).toBe("4k3/8/8/8/8/8/3P4/4K3");
     const spawn = result.events.find(
-      (ev) => ev.kind === "spawn" && ev.phase === "specialBefore",
+      (ev) => ev.kind === "deploy" && ev.phase === "specialBefore",
     );
     expect(spawn).toBeDefined();
     expect(spawn!.victim).toEqual({ type: "r", color: "w" });
@@ -150,15 +150,15 @@ describe("crush spawn (deploy onto enemy)", () => {
       snapshot: snap,
       action: {
         timing: "F",
-        kind: "spawn",
+        kind: "deploy",
         color: "w",
         from: "e1",
-        to: "d2", // own rook d2, adjacent to king e1
+        to: "d2", // own Tank d2, adjacent to Command Center e1
         unit: "n",
       },
     }).snapshot;
     const result = endScTurn(snap, { skipTurnStartChecks: true });
-    expect(result.events.find((ev) => ev.kind === "spawn")).toMatchObject({
+    expect(result.events.find((ev) => ev.kind === "deploy")).toMatchObject({
       phase: "specialAfter",
       victim: { type: "r", color: "w" },
       unit: "n",
@@ -175,7 +175,7 @@ describe("crush spawn (deploy onto enemy)", () => {
       snapshot: snap,
       action: {
         timing: "B",
-        kind: "spawn",
+        kind: "deploy",
         color: "w",
         from: "e1",
         to: "d2",
@@ -184,7 +184,7 @@ describe("crush spawn (deploy onto enemy)", () => {
     }).snapshot;
     const result = endScTurn(snap, { skipTurnStartChecks: true });
     const spawn = result.events.find(
-      (ev) => ev.kind === "spawn" && ev.phase === "specialBefore",
+      (ev) => ev.kind === "deploy" && ev.phase === "specialBefore",
     );
     expect(spawn).toMatchObject({
       victim: { type: "r", color: "w" },
@@ -200,7 +200,7 @@ describe("crush spawn (deploy onto enemy)", () => {
       snapshot: snap,
       action: {
         timing: "B",
-        kind: "spawn",
+        kind: "deploy",
         color: "w",
         from: "e1",
         to: "e2",
@@ -209,7 +209,7 @@ describe("crush spawn (deploy onto enemy)", () => {
     }).snapshot;
     const result = endScTurn(snap, { skipTurnStartChecks: true });
     const spawn = result.events.find(
-      (ev) => ev.kind === "spawn" && ev.phase === "specialBefore",
+      (ev) => ev.kind === "deploy" && ev.phase === "specialBefore",
     );
     expect(spawn!.victim).toBeUndefined();
   });

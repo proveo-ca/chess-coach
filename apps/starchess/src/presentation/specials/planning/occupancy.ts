@@ -4,14 +4,14 @@
  * Board input uses this so classical can be queued from post-B squares.
  * Owned by `presentation/specials` (moved from `presentation/board/`, whose
  * shim was deleted in plan phase 5).
- * Still reads `board/occupancyForViewerMoves` + `board/rookMode` — the fog
+ * Still reads `board/occupancyForViewerMoves` + `board/tankMode` — the fog
  * filter is the other half of this same projection, so it moves with it (or
  * not at all) in a later phase; do not split one without the other.
  */
 import type { Square } from "chess.js";
 import {
   charonStrikeTarget,
-  isRookSiegedAfterB,
+  isTankSiegedAfterB,
   orderBHeadsFirst,
   type ScAction,
   type ScFenSnapshot,
@@ -20,7 +20,7 @@ import {
 } from "@chess-coach/starchess-core";
 
 import { occupancyForViewerMoves } from "~/presentation/board/occupancyForViewerMoves";
-import { rookModeForSieged } from "~/presentation/board/rookMode";
+import { tankModeForSieged } from "~/presentation/board/tankMode";
 
 /** Apply one side's B specials onto a mutable occupancy map. */
 export const applyViewerBOccupancy = (
@@ -34,12 +34,12 @@ export const applyViewerBOccupancy = (
   );
 
   for (const a of ordered) {
-    if (a.kind === "spawn" && a.to && a.unit) {
+    if (a.kind === "deploy" && a.to && a.unit) {
       out.set(a.to, { type: a.unit, color: a.color });
       continue;
     }
     if (
-      (a.kind === "pawnDouble" || a.kind === "queenWarp") &&
+      (a.kind === "stimStep" || a.kind === "tacticalJump") &&
       a.to &&
       a.from
     ) {
@@ -49,7 +49,7 @@ export const applyViewerBOccupancy = (
       out.set(a.to, piece);
       continue;
     }
-    // rookSiege / knightMine — occupancy unchanged (bishopSnipe kills
+    // siegeMode / spiderMine — occupancy unchanged (charonMissiles kills
     // project after the loop via applyViewerBCharonKills, in seq order
     // against the relocated board, mirroring resolve).
   }
@@ -68,20 +68,20 @@ export const applyViewerBCharonKills = (
 ): Map<Square, ScPiece> => {
   const out = new Map(map);
   const bs = (actions ?? [])
-    .filter((a) => a.timing === "B" && a.color === viewer && a.kind === "bishopSnipe")
+    .filter((a) => a.timing === "B" && a.color === viewer && a.kind === "charonMissiles")
     .slice()
     .sort((a, b) => a.seq - b.seq);
   for (const a of bs) {
-    if (a.kind !== "bishopSnipe" || !a.to) continue;
+    if (a.kind !== "charonMissiles" || !a.to) continue;
     // Viewer side, mirroring fire-and-forget resolve exactly.
     if (charonStrikeTarget(out, a.from, a.to, a.color)) out.delete(a.to);
   }
   return out;
 };
 
-/** Sieged squares after viewer B `rookSiege` toggles (for scMovesFrom). */
-export const siegedRooksAfterViewerB = (
-  snap: Pick<ScFenSnapshot, "siegedRooks" | "queue">,
+/** Sieged squares after viewer B `siegeMode` toggles (for scMovesFrom). */
+export const siegedTanksAfterViewerB = (
+  snap: Pick<ScFenSnapshot, "siegedTanks" | "queue">,
   viewer: StarChessColor,
   baseSieged?: ReadonlySet<Square> | readonly Square[],
 ): Square[] => {
@@ -89,18 +89,18 @@ export const siegedRooksAfterViewerB = (
     ? baseSieged instanceof Set
       ? [...baseSieged]
       : [...baseSieged]
-    : [...(snap.siegedRooks ?? [])];
+    : [...(snap.siegedTanks ?? [])];
   const actions = snap.queue?.actions ?? [];
-  // Collect rook squares that might toggle (current sieged + B rookSiege froms).
+  // Collect Tank squares that might toggle (current sieged + B siegeMode froms).
   const candidates = new Set<Square>(base);
   for (const a of actions) {
-    if (a.timing === "B" && a.kind === "rookSiege" && a.color === viewer) {
+    if (a.timing === "B" && a.kind === "siegeMode" && a.color === viewer) {
       candidates.add(a.from);
     }
   }
   const out: Square[] = [];
   for (const sq of candidates) {
-    if (isRookSiegedAfterB(sq, base, actions)) out.push(sq);
+    if (isTankSiegedAfterB(sq, base, actions)) out.push(sq);
   }
   return out;
 };
@@ -121,7 +121,7 @@ export const applyViewerBRelocates = (
 
   for (const a of orderedRelocates) {
     if (
-      (a.kind === "pawnDouble" || a.kind === "queenWarp") &&
+      (a.kind === "stimStep" || a.kind === "tacticalJump") &&
       a.to &&
       a.from
     ) {
@@ -143,12 +143,12 @@ export const applyViewerBSpawns = (
 ): Map<Square, ScPiece> => {
   const out = new Map(map);
   const bs = (actions ?? [])
-    .filter((a) => a.timing === "B" && a.color === viewer && a.kind === "spawn")
+    .filter((a) => a.timing === "B" && a.color === viewer && a.kind === "deploy")
     .slice()
     .sort((a, b) => a.seq - b.seq);
 
   for (const a of bs) {
-    if (a.kind !== "spawn" || !a.to || !a.unit) continue;
+    if (a.kind !== "deploy" || !a.to || !a.unit) continue;
     out.set(a.to, { type: a.unit, color: a.color });
   }
   return out;
@@ -166,13 +166,13 @@ export const occupancyForQueuedMoves = (
   raw: ReadonlyMap<Square, ScPiece>,
   viewer: StarChessColor,
   fog: boolean,
-  snap: Pick<ScFenSnapshot, "siegedRooks" | "queue">,
+  snap: Pick<ScFenSnapshot, "siegedTanks" | "queue">,
   baseSieged?: ReadonlySet<Square> | readonly Square[],
 ): {
   map: Map<Square, ScPiece>;
-  siegedRooks: Square[];
+  siegedTanks: Square[];
 } => {
-  const siegedRooks = siegedRooksAfterViewerB(snap, viewer, baseSieged);
+  const siegedTanks = siegedTanksAfterViewerB(snap, viewer, baseSieged);
   const actions = snap.queue?.actions;
 
   // Fog visibility without spawn ghosts (deploy does not pierce fog).
@@ -183,11 +183,11 @@ export const occupancyForQueuedMoves = (
     viewer,
   );
   const fogFiltered = occupancyForViewerMoves(visionBase, viewer, fog, {
-    rookModeFor: rookModeForSieged(siegedRooks),
+    tankModeFor: tankModeForSieged(siegedTanks),
   });
   // Spawns after filter — selectable / move-gen origin, no vision grant.
   const map = applyViewerBSpawns(fogFiltered, actions, viewer);
-  return { map, siegedRooks };
+  return { map, siegedTanks };
 };
 
 /**
@@ -211,7 +211,7 @@ export const pieceAtQueuedSquare = (
       a.color === viewer &&
       a.from === square &&
       a.to &&
-      (a.kind === "pawnDouble" || a.kind === "queenWarp"),
+      (a.kind === "stimStep" || a.kind === "tacticalJump"),
   );
   if (reloc?.to) return projected.get(reloc.to) ?? raw.get(square) ?? null;
   return null;
@@ -229,5 +229,5 @@ export const isViewerBRelocateOrigin = (
       a.color === viewer &&
       a.from === square &&
       a.to &&
-      (a.kind === "pawnDouble" || a.kind === "queenWarp"),
+      (a.kind === "stimStep" || a.kind === "tacticalJump"),
   );

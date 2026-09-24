@@ -122,7 +122,7 @@ describe("apps/starchess boundary", () => {
     expect([...choosers]).toEqual([join("screens", "TutorialScreen.tsx")]);
     // Glyph switches + the PieceSet union itself — no app / store / core reader.
     expect([...readers].sort()).toEqual([
-      join("presentation", "animations", "components", "kingDamageOverlay.tsx"),
+      join("presentation", "animations", "components", "ccDamageOverlay.tsx"),
       join("presentation", "board", "components", "PieceGlyph.tsx"),
       join("types", "board.ts"),
     ]);
@@ -146,7 +146,7 @@ describe("apps/starchess boundary", () => {
   it("pieceUrl is reachable only from the two cburnett glyph switches", () => {
     const allowed = [
       join("presentation", "board", "components", "PieceGlyph.tsx"),
-      join("presentation", "animations", "components", "kingDamageOverlay.tsx"),
+      join("presentation", "animations", "components", "ccDamageOverlay.tsx"),
       join("presentation", "board", "pieceUrl.ts"),
     ].sort();
 

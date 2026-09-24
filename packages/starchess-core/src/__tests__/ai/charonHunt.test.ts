@@ -37,10 +37,10 @@ describe("charon hunt gate", () => {
     const actions = plan.snapshot.queue?.actions.filter((a) => a.color === "b") ?? [];
     expect(
       actions.some(
-        (a) => a.kind === "bishopSnipe" && a.timing === "B" && a.to === "h8",
+        (a) => a.kind === "charonMissiles" && a.timing === "B" && a.to === "h8",
       ),
     ).toBe(true);
-    expect(actions.some((a) => a.kind === "bishopSnipe" && a.timing === "F")).toBe(
+    expect(actions.some((a) => a.kind === "charonMissiles" && a.timing === "F")).toBe(
       false,
     );
   });
@@ -51,7 +51,7 @@ describe("mode A insta-target (pre-jump)", () => {
     const actions = blackActions(
       "SCFEN|5b1k/8/8/8/6n1/Q7/7p/4K3|11|33|P|G:22:22|Q:w:;b:",
     );
-    expect(actions.some((a) => a.kind === "bishopSnipe" && a.to === "a3")).toBe(
+    expect(actions.some((a) => a.kind === "charonMissiles" && a.to === "a3")).toBe(
       true,
     );
   });
@@ -67,7 +67,7 @@ describe("mode B teleport guess (2nd phase)", () => {
       `SCFEN|${BOARD}|21|33|P|G:33:33|Q:w:;b:`,
     );
     const guesses = actions.filter(
-      (a) => a.kind === "bishopSnipe" && a.timing === "F",
+      (a) => a.kind === "charonMissiles" && a.timing === "F",
     );
     expect(guesses).toMatchObject([{ from: "e4", to: "d5" }]);
     expect(actions.some((a) => a.timing === "C")).toBe(true);
@@ -97,7 +97,7 @@ describe("mode B teleport guess (2nd phase)", () => {
     const snap = parseScFen("SCFEN|k6Q/8/8/8/4b3/8/8/4K3|21|33|P|G:33:33|Q:w:;b:");
     const ctx = buildAdjutantCtx(snap, { color: "b" })!;
     const found = generateCandidates(ctx)
-      .filter((s) => s.actions[0]?.kind === "bishopSnipe")
+      .filter((s) => s.actions[0]?.kind === "charonMissiles")
       .map((s) => s.actions[0]?.to);
     expect(found).toEqual(["d5", "c6", "b7"]);
   });
@@ -107,7 +107,7 @@ describe("charonForwardStacks", () => {
   const snap = parseScFen("SCFEN|k6Q/8/8/8/4b3/8/8/4K3|21|33|P|G:33:33|Q:w:;b:");
   const ctx = buildAdjutantCtx(snap, { color: "b" })!;
   const guess = asCandidate(
-    { timing: "F", kind: "bishopSnipe", color: "b", from: "e4", to: "d5" },
+    { timing: "F", kind: "charonMissiles", color: "b", from: "e4", to: "d5" },
     1500,
   );
   const classical = (from: "a8" | "e4", to: "a7" | "d5" | "e5") =>
@@ -124,7 +124,7 @@ describe("charonForwardStacks", () => {
 
   it("drops pairs where our classical moves the mecha, occupies or screens the aim", () => {
     const longGuess = asCandidate(
-      { timing: "F", kind: "bishopSnipe", color: "b", from: "e4", to: "h7" },
+      { timing: "F", kind: "charonMissiles", color: "b", from: "e4", to: "h7" },
       1500,
     );
     const movers = [

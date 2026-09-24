@@ -11,21 +11,21 @@ import {
   type StarChessColor,
 } from "@chess-coach/starchess-core";
 
-import { rookModeForSieged } from "~/presentation/board/rookMode";
+import { tankModeForSieged } from "~/presentation/board/tankMode";
 
 export type FogVisionOpts = {
-  siegedRooks?: readonly Square[];
+  siegedTanks?: readonly Square[];
   mines?: readonly ScMine[];
 };
 
 const visionOpts = (opts?: FogVisionOpts) => ({
-  rookModeFor: rookModeForSieged(opts?.siegedRooks ?? []),
+  tankModeFor: tankModeForSieged(opts?.siegedTanks ?? []),
   mines: opts?.mines ? [...opts.mines] : undefined,
 });
 
 /**
  * Can `side` see `square` (lit or revealed)? Same rule as engine check fog.
- * Used by intent check rings via collectLegalKingChecks.isTargetVisible.
+ * Used by intent check rings via collectLegalCCChecks.isTargetVisible.
  */
 export const isSquareVisibleToSide = (
   placement: string,
@@ -37,7 +37,7 @@ export const isSquareVisibleToSide = (
   return v.litSquares.has(square) || v.revealedPieces.has(square);
 };
 
-/** Factory matching collectLegalKingChecks `isTargetVisible(color, square)`. */
+/** Factory matching collectLegalCCChecks `isTargetVisible(color, square)`. */
 export const targetVisibleGate = (placement: string, opts?: FogVisionOpts) => {
   const vo = visionOpts(opts);
   const visionW = getSideVision(placement, "w", vo);
@@ -69,7 +69,7 @@ export const minesVisibleToViewer = (
 };
 
 /**
- * Piece-on-square gate (occupancy / FX) — core isPieceVisibleToSide + shared rook mode.
+ * Piece-on-square gate (occupancy / FX) — core isPieceVisibleToSide + shared Tank mode.
  */
 export const pieceVisibleToViewer = (
   placement: string,

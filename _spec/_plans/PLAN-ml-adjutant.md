@@ -59,9 +59,9 @@ ml/
 | Candidate list without legality risk | `strategicCandidates` / `applyCandidate` (`packages/starchess-core/src/ai/strategic/orchestrator.ts:58,113`) |
 | Scoreboard to build Elo on | `summarize` (`packages/starchess-arena/src/compare/compare.ts`), records in `src/record/record.ts` |
 | Batch runner | CLI `--pairing naive:strategic --seeds N --out` (`packages/starchess-arena/src/cli/main.ts`) |
-| Fog, per side | `getSideVision(placement, side, {mines, rookModeFor})` (`packages/starchess-core/src/board/vision.ts:178`) |
+| Fog, per side | `getSideVision(placement, side, {mines, tankModeFor})` (`packages/starchess-core/src/board/vision.ts:178`) |
 | A belief state, already fog-honest | `ai/strategic/{runners,attackers,witness,intel}.ts` + `ai/context/ccIntel.ts`, folded by `ai/strategic/tracking.ts` |
-| Terminal reward | `scOutcome` (`packages/starchess-core/src/outcome.ts:15`), `MAX_GAME_TURNS` 45, `kingLives` |
+| Terminal reward | `scOutcome` (`packages/starchess-core/src/outcome.ts:15`), `MAX_GAME_TURNS` 45, `ccLives` |
 | App-side third opponent | `AdjutantKind` + `ADJUTANT_KINDS` (`apps/starchess/src/types/newGame.ts:6-8`), consumed at `apps/starchess/src/screens/SingleScreen.tsx` `autoQueueOpponent` |
 
 ---
@@ -140,7 +140,7 @@ across two runs with the same seed set.
 
 **Goal.** `evaluate(obs) → cp` on SCFEN's own terms, retiring the classical-FEN projection.
 
-**Why Stockfish has to go.** `scfenToFen` refuses `no-exact-king-pair` and `back-rank-pawn`
+**Why Stockfish has to go.** `scfenToFen` refuses `no-exact-cc-pair` and `back-rank-marine`
 (`packages/starchess-core/src/replay/fen.ts:27,41`) — and even when it succeeds it cannot express
 fog, mines, gas, siege mode, CC lives or the mineral bank. The strategic player is already patching
 around that: `cp` capped to ±200 and a perspective flip, both hand-tuned
