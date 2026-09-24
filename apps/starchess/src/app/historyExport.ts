@@ -1,5 +1,7 @@
-// SPEC: _spec/_plans/game-export-localstorage.puml, _spec/apps/starchess/replay-import.puml
+// SPEC: _spec/_plans/game-export-localstorage.puml, _spec/apps/starchess/replay-import.puml, _spec/packages/starchess-core/record-packing.puml
 // WHAT: history export envelope — copy stored records to one JSON file.
+import { unpackRecord } from "@chess-coach/starchess-core";
+
 import type { StarChessGameRecord } from "~/types/review";
 
 export const HISTORY_EXPORT_VERSION = 1;
@@ -11,17 +13,17 @@ export type HistoryExportEnvelope = {
 };
 
 // WHAT: copy stored records, preserve result/opponent/scfens/resolves.
+// The file is for people and other tools: resolves go out plain, not packed.
 export const buildHistoryExport = (
   games: readonly StarChessGameRecord[],
   now: string = new Date().toISOString(),
 ): HistoryExportEnvelope => ({
   version: HISTORY_EXPORT_VERSION,
   exportedAt: now,
-  games: games.map((g) => ({
-    ...g,
-    scfens: [...g.scfens],
-    resolves: [...g.resolves],
-  })),
+  games: games.map((g) => {
+    const plain = unpackRecord(g);
+    return { ...plain, scfens: [...plain.scfens], resolves: [...plain.resolves] };
+  }),
 });
 
 export const serializeHistoryExport = (
@@ -78,6 +80,12 @@ const isRecord = (value: unknown): value is StarChessGameRecord => {
   const resolves = r["resolves"];
   if (!Array.isArray(scfens) || scfens.length === 0) return false;
   if (!scfens.every((s) => typeof s === "string")) return false;
+  if (resolves === undefined) {
+    const packed = r["packed"] as { count?: unknown; data?: unknown } | undefined;
+    return (
+      typeof packed?.data === "string" && packed.count === scfens.length - 1
+    );
+  }
   if (!Array.isArray(resolves) || resolves.length !== scfens.length - 1) {
     return false;
   }

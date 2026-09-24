@@ -1,13 +1,17 @@
-// SPEC: _spec/apps/starchess/replay-import.puml, _spec/_plans/game-export-localstorage.puml, _spec/_plans/chess-analytics.puml, _spec/_plans/starchess-achievements.puml
+// SPEC: _spec/apps/starchess/replay-import.puml, _spec/_plans/game-export-localstorage.puml, _spec/_plans/chess-analytics.puml, _spec/_plans/starchess-achievements.puml, _spec/packages/starchess-core/record-packing.puml
 /**
  * Finished StarChess matches — DualNav replay packages in localStorage.
  * Coach uses chess_coach_game_history; this key is StarChess-only.
+ * Records are held and stored **packed** (core `packRecord`: resolves deflated,
+ * round trip verified) — a plain save is ~6× the size and filled the quota.
+ * Plain records from before are packed once, on load.
  * Single owner for decode is packages/starchess-core/src/replay/record.ts
  * (historyFromRecord / validateArenaRecord) — this module re-exports it.
  */
 import {
   formatScFen,
   normalizeSnapGas,
+  packRecord,
   type ArenaGameRecord,
 } from "@chess-coach/starchess-core";
 
@@ -38,6 +42,10 @@ const MAX_GAMES = 150;
 const [state, setState] = createPersistedStore<HistoryState>(MATCH_HISTORY_KEY, {
   games: [],
 });
+
+if (state.games.some((g) => g.resolves)) {
+  setState("games", (games) => games.map((g) => (g.resolves ? packRecord(g) : g)));
+}
 
 export const matchHistory = () => state.games;
 
@@ -90,7 +98,7 @@ export const recordFromMatchState = (
 
 export const addMatchRecord = (record: StarChessGameRecord): void => {
   const without = state.games.filter((g) => g.id !== record.id);
-  setState("games", [record, ...without].slice(0, MAX_GAMES));
+  setState("games", [packRecord(record), ...without].slice(0, MAX_GAMES));
 };
 
 /**

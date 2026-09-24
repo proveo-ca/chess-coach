@@ -10,10 +10,11 @@
  * Recording invariant: `resolves[i]` produced `scfens[i+1]` — the settled ply
  * records `resolve.next`, never the pre-resolve snapshot.
  *
- * // SPEC: _spec/packages/starchess-arena/arena.puml, _spec/apps/starchess/replay-import.puml
+ * // SPEC: _spec/packages/starchess-arena/arena.puml, _spec/apps/starchess/replay-import.puml, _spec/packages/starchess-core/record-packing.puml
  */
 
 import { migrateLegacyNames, parseScFen } from "../scfen";
+import { resolvesOf, unpackResolves, type PackedResolves, type ReplayPayload } from "./packed";
 import type { EndScTurnResult } from "../resolve/submit-turn";
 import type { ScFenSnapshot } from "../model/types";
 import type { ScOutcome } from "../outcome";
@@ -58,7 +59,7 @@ export type ArenaGameRecord = {
  * the app's existing replay host exactly.
  */
 export const historyFromRecord = (
-  record: { scfens: string[]; resolves: readonly EndScTurnResult[] },
+  record: ReplayPayload,
 ): { settledSnapshots: ScFenSnapshot[]; settledResolves: EndScTurnResult[] } => {
   const settledSnapshots = record.scfens.map((s) =>
     parseScFen(s, { repairGas: true }),
@@ -66,7 +67,7 @@ export const historyFromRecord = (
   return {
     settledSnapshots,
     // Records written before the special kinds were renamed still load.
-    settledResolves: migrateLegacyNames([...record.resolves]),
+    settledResolves: migrateLegacyNames([...resolvesOf(record)]),
   };
 };
 
@@ -178,9 +179,16 @@ export const validateArenaRecord = (value: unknown): ArenaRecordValidation => {
   }
 
   const scfens = r["scfens"];
-  const resolves = r["resolves"];
   if (!Array.isArray(scfens) || scfens.length === 0) {
     return { ok: false, error: "record.scfens must be a non-empty array" };
+  }
+  let resolves = r["resolves"];
+  if (resolves === undefined && r["packed"] !== undefined) {
+    try {
+      resolves = unpackResolves(scfens as string[], r["packed"] as PackedResolves);
+    } catch (e) {
+      return { ok: false, error: `record.packed: ${e instanceof Error ? e.message : "unreadable"}` };
+    }
   }
   if (!Array.isArray(resolves) || resolves.length !== scfens.length - 1) {
     return { ok: false, error: "record.resolves.length must equal record.scfens.length - 1" };
@@ -208,5 +216,6 @@ export const validateArenaRecord = (value: unknown): ArenaRecordValidation => {
     }
   }
 
-  return { ok: true, record: r as unknown as ArenaGameRecord };
+  const { packed: _packed, ...plain } = r;
+  return { ok: true, record: { ...plain, resolves } as unknown as ArenaGameRecord };
 };

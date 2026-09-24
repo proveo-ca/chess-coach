@@ -54,6 +54,7 @@ When you add, rename, or remove a component, hook, store, or service:
 | `_spec/packages/starchess-core/submit-turn-activity.puml` | `beginScTurn` / `endScTurn` rank pipeline: ordering, bail-outs, event vocabulary |
 | `_spec/packages/starchess-core/mine-contact.puml` | `board/mine-contact.ts` — the single spider-mine rules table (attack / walk / arrive) every caller asks |
 | `_spec/packages/starchess-core/deploy-reach.puml` | `board/deploy-reach.ts` — the single deploy-reach table; **a `false` is a proof**, and the explicit non-goal vs "should I deploy to capture" |
+| `_spec/packages/starchess-core/record-packing.puml` | `replay/packed.ts` — lossless storage codec for a record's resolves (verified deflate, `next` dropped only where rebuildable) + the per-ply SCSan (`Q:`) intent line; `matchHistoryStore` stores records packed |
 | `_spec/packages/starchess-core/move-timing.puml` | `board/move-timing.ts` — the one move-phase clock (Hoverbike 1 tick/square, rest 2): `timedMover` / `moverContact` decide collisions by who held the square first; the app's move VFX reads the same ticks |
 | `_spec/packages/starchess-core/ray-scan.puml` | `board/ray-scan.ts` — one `scanRay` + one `takeRayContact` replacing the duplicated ray walks |
 | `_spec/apps/starchess/timeline/overview.puml` | `timelinePlayer.ts` interior: projector + interpreter, cue lanes, board ladder |
@@ -132,6 +133,14 @@ When you add, rename, or remove a component, hook, store, or service:
   deploy-landing derivations in `ai/` still disagree with the validator; see
   `_spec/packages/starchess-core/deploy-reach.puml` and
   `_spec/apps/starchess/core/adjutant/strategic/strategic-economy.puml`.
+- **Saved games**: `starchess_match_history` holds records **packed** — core
+  `packRecord` deflates the resolves and proves the round trip before it
+  returns (a failed proof keeps the record plain). Read a stored record through
+  `historyFromRecord` / `resolvesOf` / `unpackRecord`, never `record.resolves`.
+  A resolve is the record of what happened under the rules of the day; never
+  replace stored resolves with a replay from `scfens` + `scsan` — the rules move
+  (the timed-collision rework changed outcomes), so SCSan is a log beside the
+  resolves, not a substitute. Export unpacks to plain JSON; import takes either.
 - **Move-phase collisions**: the move phase is simultaneous, so which of two
   movers hits the other is a matter of **time**, never plan order or colour.
   `resolveTurn`'s `moveWave` plans every landing against the same pre-wave board,
