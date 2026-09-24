@@ -47,7 +47,8 @@ describe("foldTurn on one settled ply", () => {
     const state = seedAnalysis(parseScFen(scfen), "w");
     const { bubbles } = play(state, scfen);
     expect(state.intercepts).toBe(1);
-    expect(bubbles.some((bubble) => bubble.shortId === "medal" && bubble.origin === "c2")).toBe(
+    // It rises where the Marine fell (c3, after its gas step), not its birth square.
+    expect(bubbles.some((bubble) => bubble.shortId === "medal" && bubble.origin === "c3")).toBe(
       true,
     );
   });
@@ -58,7 +59,8 @@ describe("foldTurn on one settled ply", () => {
     const { bubbles } = play(state, scfen);
     expect(state.material.get("1-p-c4")).toBe(8);
     expect(levelOf(state, "stonks")).toBe(2);
-    expect(bubbles.find((bubble) => bubble.shortId === "stonks")?.origin).toBe("c4");
+    // The pawn born on c4 now stands on d5 — that is where it rises.
+    expect(bubbles.find((bubble) => bubble.shortId === "stonks")?.origin).toBe("d5");
   });
 
   it("promotes two marines to GO GO GO level 2", () => {

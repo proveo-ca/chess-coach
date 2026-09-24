@@ -56,6 +56,8 @@ export const bubbleMotion = (
 };
 
 export type MeasuredEvent = {
+  /** Resolve wave: gas specials run `specialBefore` or `specialAfter` the classical leg. */
+  phase?: string;
   color?: string;
   from?: string;
   to?: string;
@@ -167,7 +169,9 @@ export const seedAnalysis = (
 ): AnalysisState => {
   const at = new Map<string, string>();
   for (const [square, piece] of placementToMap(opening.placement)) {
-    if (piece.color !== player || piece.type === "k") continue;
+    // The Command Center is an instance like any other: a capture it makes
+    // opens at its own cost (UNIT_COST.k), not as a free unknown.
+    if (piece.color !== player) continue;
     at.set(square, pieceId(opening.turn, piece.type, square));
   }
   return {
@@ -218,11 +222,12 @@ const announce = (
   const row = achievementsFor(shortId).find((item) => item.level === level);
   if (!row) return;
   bubbles.push({
-    id: `${shortId}-${level}-${state.seq++}`,
+    id: `${state.player}-${shortId}-${level}-${state.seq++}`,
     shortId,
     level: row.level,
     origin,
     icon: row.icon,
+    side: state.player,
   });
 };
 
@@ -282,6 +287,43 @@ const protectsFriend = (
   return false;
 };
 
+/** What `color` sees on the board a ply settled into. */
+const plyVision = (ply: FoldPly, color: StarChessColor) => {
+  const sieged = new Set(ply.siegedRooks ?? []);
+  return getSideVision(ply.placement, color, {
+    rookModeFor: (square: Square) => (sieged.has(square) ? "siege" : "tank"),
+    mines: (ply.mines ?? []).map((mine) => ({
+      at: mine.at as Square,
+      color: mine.color as StarChessColor,
+    })),
+  });
+};
+
+/**
+ * Whether `viewer` can see `square` after this ply. An opponent's bubble on a
+ * fogged square would give away the unit that earned it, so it never shows.
+ */
+export const plySeenBy = (ply: FoldPly, viewer: StarChessColor, square: string): boolean => {
+  const vision = plyVision(ply, viewer);
+  return vision.litSquares.has(square as Square) || vision.revealedPieces.has(square as Square);
+};
+
+/** A bubble's anchor: the achieving unit, else the square the event happened on. */
+type Spot = { id?: string; at?: string };
+
+/**
+ * The square a unit stands on now. An id stays on the square its unit last
+ * reached, so a unit that died mid-ply is found where it fell; one another
+ * unit has since displaced falls back to the event square.
+ */
+const spotSquare = (state: AnalysisState, spot: Spot | undefined): string | undefined => {
+  if (!spot) return undefined;
+  if (spot.id) {
+    for (const [square, id] of state.at) if (id === spot.id) return square;
+  }
+  return spot.at;
+};
+
 /**
  * The square a capturing unit stood on before this ply. A path reveal names it
  * outright; a collision reports the meeting square as `from`, so the shooter's
@@ -298,44 +340,22 @@ const shooterSquare = (atk: FoldAttack, moves: readonly FoldMove[] | undefined):
 
 /**
  * Fold one settled ply into `state`. Only this ply's events are read.
- * Returns bubbles for levels this ply newly reached, each rooted at a birth square.
+ * Returns bubbles for levels this ply newly reached, each rising from the
+ * achieving unit's square once the ply has settled.
  */
 export const foldTurn = (state: AnalysisState, ply: FoldPly): AchievementBubble[] => {
   const bubbles: AchievementBubble[] = [];
   const player = state.player;
-  let stonksOrigin: string | undefined;
-  let medalOrigin: string | undefined;
-  let promoOrigin: string | undefined;
-  let mineOrigin: string | undefined;
-  let mechaOrigin: string | undefined;
-  let lightOrigin: string | undefined;
-  let jumpOrigin: string | undefined;
+  // Where each badge's bubble rises: the achieving unit (by id, resolved to
+  // its square once the ply has settled) or, failing that, the event square.
+  let stonksOrigin: Spot | undefined;
+  let medalOrigin: Spot | undefined;
+  let promoOrigin: Spot | undefined;
+  let mineOrigin: Spot | undefined;
+  let mechaOrigin: Spot | undefined;
+  let lightOrigin: Spot | undefined;
+  let jumpOrigin: Spot | undefined;
   const king = kingSquare(ply.placement, player);
-
-  for (const ev of ply.events ?? []) {
-    // An enemy special (a gas step) onto our mine. Classical trips arrive in
-    // `mineTriggers` instead, and carry no `kind` here — never both.
-    if (
-      ev.color !== player &&
-      ev.kind != null &&
-      ev.mineColor === player &&
-      ev.victim?.color !== player
-    ) {
-      state.mines += 1;
-      mineOrigin = ev.to ?? ev.from;
-    }
-    if (ev.color !== player || !ev.from) continue;
-    const piece = idAt(state, ev.from, ply.turn);
-    if (ev.kind === "spawn" && ev.unit && ev.to) {
-      state.at.set(ev.to, pieceId(ply.turn, ev.unit, ev.to));
-      continue;
-    }
-    if (ev.kind === "queenWarp") jumpOrigin = originOf(piece);
-    if ((ev.kind === "pawnDouble" || ev.kind === "queenWarp") && ev.to && ev.to !== ev.from) {
-      state.at.delete(ev.from);
-      state.at.set(ev.to, piece);
-    }
-  }
 
   const credit = (from: string, victimType: string | undefined, to: string | undefined) => {
     const piece = idAt(state, from, ply.turn);
@@ -344,26 +364,67 @@ export const foldTurn = (state: AnalysisState, ply: FoldPly): AchievementBubble[
       : -valueOf(piece.split("-")[1]);
     const total = opened + valueOf(victimType);
     state.material.set(piece, total);
-    stonksOrigin = originOf(piece);
+    stonksOrigin = { id: piece, at: to };
     if (to && king && near(king, to)) {
       state.ccCaptures += 1;
-      lightOrigin = originOf(piece);
+      lightOrigin = { id: piece, at: to };
     }
     return piece;
   };
 
+  /**
+   * One gas special, applied where it happens in the resolve: a `specialBefore`
+   * runs on the board the classical leg starts from, a `specialAfter` on the
+   * board it left. Captures are credited before the unit relocates, so the
+   * instance that fired is the one that scores.
+   */
+  const special = (ev: MeasuredEvent) => {
+    // An enemy special (a gas step) onto our mine. Classical trips arrive in
+    // `mineTriggers` instead — never both.
+    if (ev.color !== player && ev.mineColor === player && ev.victim?.color !== player) {
+      state.mines += 1;
+      mineOrigin = { at: ev.to ?? ev.from };
+    }
+    if (ev.color !== player || !ev.from) return;
+    const enemyVictim = ev.victim?.color != null && ev.victim.color !== player;
+    if (ev.kind === "spawn" && ev.unit && ev.to) {
+      state.at.set(ev.to, pieceId(ply.turn, ev.unit, ev.to));
+      // A deploy that lands on an enemy crushes it — the new unit's capture.
+      if (enemyVictim) credit(ev.to, ev.victim?.type, ev.to);
+      return;
+    }
+    const piece = idAt(state, ev.from, ply.turn);
+    if (enemyVictim && (ev.kind === "bishopSnipe" || ev.kind === "pawnDouble")) {
+      credit(ev.from, ev.victim?.type, ev.to);
+      if (ev.kind === "bishopSnipe" && ev.victim?.type === "q") {
+        state.mechaKills += 1;
+        mechaOrigin = { id: piece, at: ev.from };
+      }
+    }
+    if (ev.kind === "queenWarp") jumpOrigin = { id: piece, at: ev.to };
+    if ((ev.kind === "pawnDouble" || ev.kind === "queenWarp") && ev.to && ev.to !== ev.from) {
+      state.at.delete(ev.from);
+      state.at.set(ev.to, piece);
+    }
+  };
+  const specials = (phase: string) => {
+    for (const ev of ply.events ?? []) if (ev.phase === phase) special(ev);
+  };
+
+  specials("specialBefore");
+
   for (const atk of [...(ply.attacks ?? []), ...(ply.mineTriggers ?? [])]) {
     if (atk.kind === "mineBlast" && atk.mineColor === player) {
       state.mines += 1;
-      mineOrigin = atk.to ?? atk.from;
+      mineOrigin = { at: atk.to ?? atk.from };
     }
     if (atk.kind !== "capture" || !atk.from || !atk.to) continue;
     if (atk.victim?.piece === "p" && atk.victim.color === player && atk.color !== player) {
       const behind = protectsFriend(ply.beforePlacement ?? ply.placement, atk.from, atk.to, player);
       if (behind) {
         state.intercepts += 1;
-        const id = state.at.get(atk.to);
-        medalOrigin = id ? originOf(id) : atk.to;
+        // The Marine died where it stood in the way.
+        medalOrigin = { at: atk.to };
       }
       continue;
     }
@@ -380,30 +441,6 @@ export const foldTurn = (state: AnalysisState, ply: FoldPly): AchievementBubble[
     }
   }
 
-  for (const ev of ply.events ?? []) {
-    if (ev.color !== player) continue;
-    if (ev.kind === "spawn" && ev.unit && ev.to) {
-      state.at.set(ev.to, pieceId(ply.turn, ev.unit, ev.to));
-      // A deploy that lands on an enemy crushes it — the new unit's capture.
-      if (ev.victim?.color != null && ev.victim.color !== player) {
-        credit(ev.to, ev.victim.type, ev.to);
-      }
-      continue;
-    }
-    const from = ev.from;
-    if (!from) continue;
-    const piece = idAt(state, from, ply.turn);
-    const enemyVictim = ev.victim?.color != null && ev.victim.color !== player;
-    if (enemyVictim && ev.kind === "bishopSnipe") {
-      credit(from, ev.victim?.type, ev.to);
-      if (ev.victim?.type === "q") {
-        state.mechaKills += 1;
-        mechaOrigin = originOf(piece);
-      }
-    }
-    if (ev.kind === "pawnDouble" && enemyVictim) credit(from, ev.victim?.type, ev.to);
-  }
-
   for (const mv of ply.moves ?? []) {
     if (mv.color !== player || !mv.from || !mv.to || mv.from === mv.to) continue;
     const piece = idAt(state, mv.from, ply.turn);
@@ -411,12 +448,13 @@ export const foldTurn = (state: AnalysisState, ply: FoldPly): AchievementBubble[
     state.at.set(mv.to, piece);
   }
 
+  specials("specialAfter");
+
   for (const promo of ply.promotions ?? []) {
     if (promo.color !== player) continue;
     state.promotions += 1;
     const square = promo.at ?? promo.from;
-    const id = square ? state.at.get(square) : undefined;
-    promoOrigin = id ? originOf(id) : square;
+    promoOrigin = { id: square ? state.at.get(square) : undefined, at: square };
   }
 
   if (jumpOrigin) {
@@ -426,14 +464,7 @@ export const foldTurn = (state: AnalysisState, ply: FoldPly): AchievementBubble[
     if (next.streak > state.bestJump) state.bestJump = next.streak;
   }
 
-  const sieged = new Set(ply.siegedRooks ?? []);
-  const vision = getSideVision(ply.placement, player, {
-    rookModeFor: (square: Square) => (sieged.has(square) ? "siege" : "tank"),
-    mines: (ply.mines ?? []).map((mine) => ({
-      at: mine.at as Square,
-      color: mine.color as StarChessColor,
-    })),
-  });
+  const vision = plyVision(ply, player);
   const visionNext = bumpStreak(
     vision.litSquares.size >= 64,
     ply.turn,
@@ -454,13 +485,14 @@ export const foldTurn = (state: AnalysisState, ply: FoldPly): AchievementBubble[
     if (value > bestMaterial) bestMaterial = value;
   }
 
-  announce(state, "stonks", bestMaterial, stonksOrigin, bubbles);
-  announce(state, "medal", state.intercepts, medalOrigin, bubbles);
-  announce(state, "gogo", state.promotions, promoOrigin, bubbles);
-  announce(state, "mines", state.mines, mineOrigin, bubbles);
-  announce(state, "mecha", state.mechaKills, mechaOrigin, bubbles);
-  announce(state, "light", state.ccCaptures, lightOrigin, bubbles);
-  announce(state, "juke", state.bestJump, jumpOrigin, bubbles);
+  const here = (spot: Spot | undefined) => spotSquare(state, spot);
+  announce(state, "stonks", bestMaterial, here(stonksOrigin), bubbles);
+  announce(state, "medal", state.intercepts, here(medalOrigin), bubbles);
+  announce(state, "gogo", state.promotions, here(promoOrigin), bubbles);
+  announce(state, "mines", state.mines, here(mineOrigin), bubbles);
+  announce(state, "mecha", state.mechaKills, here(mechaOrigin), bubbles);
+  announce(state, "light", state.ccCaptures, here(lightOrigin), bubbles);
+  announce(state, "juke", state.bestJump, here(jumpOrigin), bubbles);
   announce(state, "vision", state.bestVision, king ?? undefined, bubbles);
   return bubbles;
 };
@@ -486,11 +518,12 @@ export const finalizeAnalysis = (
         const row = achievementsFor("flawless").find((item) => item.level === level);
         if (row) {
           bubbles.push({
-            id: `flawless-${level}-${state.seq++}`,
+            id: `${state.player}-flawless-${level}-${state.seq++}`,
             shortId: "flawless",
             level,
             origin,
             icon: row.icon,
+            side: state.player,
           });
         }
       }
@@ -521,10 +554,44 @@ export const mintBubble = (
   const row = achievementsFor(shortId).find((item) => item.level === level);
   if (!row) return null;
   return {
-    id: `${shortId}-${level}-${state.seq++}`,
+    id: `${state.player}-${shortId}-${level}-${state.seq++}`,
     shortId,
     level: row.level,
     origin,
     icon: row.icon,
+    side: state.player,
   };
+};
+
+/** Every badge a whole match raised, per settled ply, for both sides. */
+export type GameAchievements = {
+  /** `perPly[i]` rises when settled resolve `i` finishes playing. */
+  perPly: AchievementBubble[][];
+  /** Win-gated levels, raised on the final board. */
+  final: AchievementBubble[];
+};
+
+/**
+ * Replay a finished match's tally for both colours — the Review screen's
+ * source. Pure: the same record always yields the same bubbles. `opponent`
+ * names the Adjutant tier each side beat, when it was one (live games: the
+ * human's side), so Flawless can level.
+ */
+export const foldGame = (
+  opening: { turn: number; placement: string; kingLives?: { w?: number; b?: number } },
+  plies: readonly FoldPly[],
+  end?: { winner: StarChessColor | null; opponent?: Partial<Record<StarChessColor, string>> },
+): GameAchievements => {
+  const sides = (["w", "b"] as const).map((color) => seedAnalysis(opening, color));
+  const perPly = plies.map((ply) => sides.flatMap((state) => foldTurn(state, ply)));
+  const final = end
+    ? sides.flatMap((state) =>
+        finalizeAnalysis(
+          state,
+          end.winner == null ? "draw" : end.winner === state.player ? "win" : "loss",
+          end.opponent?.[state.player],
+        ),
+      )
+    : [];
+  return { perPly, final };
 };

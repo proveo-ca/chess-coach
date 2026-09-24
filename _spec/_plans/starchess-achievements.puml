@@ -68,6 +68,14 @@ skinparam noteTextAlignment left
 ' SHIPPED: in-game (analysis/scfen score) levels announced mid-match are
 ' granted with the match record at game end, win, loss or draw
 ' (finalizeAchievementLive returns them). Leaving mid-match grants nothing.
+' SHIPPED: a bubble rises from the achieving unit's square once the ply has
+' settled (where it fell, if it died); board-level badges from a Command
+' Center. Every bubble carries its side. Live play keeps a second tally for
+' the Adjutant: its bubbles show only on squares the player can see (fog
+' never leaks a unit) and are never granted. Review folds the whole record
+' for both sides (foldGame) and raises each resolve's bubbles as it finishes
+' playing forward; any other seek clears them; a side's vision filter hides
+' the other side's unseen bubbles.
 '
 '   shortId   title                 type      levels
 '   beat      Human Training        count     1 win, easy, adjutant tier

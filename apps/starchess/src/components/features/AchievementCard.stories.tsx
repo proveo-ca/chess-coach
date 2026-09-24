@@ -94,6 +94,7 @@ export const NewAchievements: StoryObj<{ level: AchievementBubble["level"] }> = 
         shortId,
         level: args.level,
         origin: "e4",
+        side: "w" as const,
         icon: achievementsFor(shortId)[0]!.icon,
       }))}
     />

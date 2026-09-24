@@ -7,12 +7,13 @@ import { UNIT_COST, endScTurn, parseScFen } from "@chess-coach/starchess-core";
 import { beforeEach, describe, expect, it } from "vitest";
 
 import {
+  achievementBubbles,
   ensureAchievementLive,
   finalizeAchievementLive,
   noteSettledPlies,
   resetAchievementLive,
 } from "~/achievements/achievementLive";
-import { foldPlyFromResolve, foldTurn, seedAnalysis } from "~/achievements/analysis";
+import { foldGame, foldPlyFromResolve, foldTurn, seedAnalysis } from "~/achievements/analysis";
 
 type State = ReturnType<typeof seedAnalysis>;
 
@@ -105,6 +106,65 @@ describe("badge events the engine reports outside `attacks`", () => {
   });
 });
 
+/** Next turn's SCFEN from a resolve, with a fresh queue. */
+const nextTurn = (
+  result: ReturnType<typeof endScTurn>,
+  queue: string,
+  gas = "G:11:11",
+): string =>
+  `SCFEN|${result.next.placement}|${result.next.turn}|33|P|${gas}|Q:w:${queue};b:`;
+
+describe("Stonks scores one literal unit, not a unit type", () => {
+  it("keeps two Marines' captures apart", () => {
+    // Each Marine takes a Hoverbike: +2 apiece. Summed by type that would be
+    // +4 and reach level 1; per instance neither Marine clears 3.
+    const first = "SCFEN|4k3/8/8/8/8/1n3n2/P3P3/4K3|1|33|P|G:11:11|Q:w:C=a2b3;b:";
+    const state = seedAnalysis(parseScFen(first), "w");
+    const opened = play(state, first);
+    play(state, nextTurn(opened.result, "C=e2f3"));
+    expect(state.material.get("1-p-a2")).toBe(UNIT_COST.n - UNIT_COST.p);
+    expect(state.material.get("1-p-e2")).toBe(UNIT_COST.n - UNIT_COST.p);
+    expect(levelOf(state, "stonks")).toBe(0);
+  });
+
+  it("follows a Marine through move-then-gas, so its next capture is its own", () => {
+    // C e2→e3, then the gas step fires after the move: e3→e4.
+    const first = "SCFEN|4k3/8/8/8/8/8/4P3/4K3|1|33|P|G:01:11|Q:w:C=e2e3,F=pawnDouble:e3:e4;b:";
+    const state = seedAnalysis(parseScFen(first), "w");
+    const opened = play(state, first);
+    expect(opened.result.next.placement).toBe("4k3/8/8/8/4P3/8/8/4K3");
+    expect(state.at.get("e4")).toBe("1-p-e2");
+    const board = opened.result.next.placement.replace("8/8/8/4P3", "8/8/3q4/4P3");
+    play(state, `SCFEN|${board}|${opened.result.next.turn}|33|P|G:11:11|Q:w:C=e4d5;b:`);
+    expect(state.material.get("1-p-e2")).toBe(UNIT_COST.q - UNIT_COST.p);
+  });
+
+  it("follows a Marine through gas-then-move", () => {
+    const first = "SCFEN|4k3/8/8/8/8/8/4P3/4K3|1|33|P|G:01:11|Q:w:B=pawnDouble:e2:e3,C=e3e4;b:";
+    const state = seedAnalysis(parseScFen(first), "w");
+    play(state, first);
+    expect(state.at.get("e4")).toBe("1-p-e2");
+    expect(state.at.has("e3")).toBe(false);
+  });
+
+  it("opens a Command Center capture at the Command Center's own cost", () => {
+    const scfen = "SCFEN|4k3/8/8/8/8/8/3n4/4K3|1|33|P|G:11:11|Q:w:C=e1d2;b:";
+    const state = seedAnalysis(parseScFen(scfen), "w");
+    play(state, scfen);
+    expect(state.material.get("1-k-e1")).toBe(UNIT_COST.n - UNIT_COST.k);
+  });
+
+  it("keeps a promoted Marine's birth id and birth cost", () => {
+    const first = "SCFEN|k7/3P4/8/8/8/8/8/4K3|1|33|P|G:11:11|Q:w:C=d7d8q;b:";
+    const state = seedAnalysis(parseScFen(first), "w");
+    const opened = play(state, first);
+    const board = opened.result.next.placement.replace("/8/8/8/8/8/8/", "/8/8/8/8/8/3q4/");
+    play(state, `SCFEN|${board}|${opened.result.next.turn}|33|P|G:11:11|Q:w:C=d8d2;b:`);
+    // The BattleShip it became is still the Marine that cost 1.
+    expect(state.material.get("1-p-d7")).toBe(UNIT_COST.q - UNIT_COST.p);
+  });
+});
+
 describe("a live match, start to finish", () => {
   beforeEach(() => {
     localStorage.clear();
@@ -134,5 +194,67 @@ describe("a live match, start to finish", () => {
     const earned = finalizeAchievementLive("win", "naive", []);
     const badges = Object.fromEntries(earned.map((b) => [b.shortId, b.level]));
     expect(badges).toMatchObject({ stonks: 2, beat: 1, flawless: 1, cheese: 5 });
+  });
+});
+
+describe("where a bubble rises, and whose it is", () => {
+  beforeEach(() => {
+    localStorage.clear();
+    resetAchievementLive();
+  });
+
+  it("rises from the achieving unit's square after the ply, not where it was born", () => {
+    // e4 Marine takes d5's BattleShip, then gas-steps on to d6 in the same ply.
+    const scfen =
+      "SCFEN|4k3/8/8/3q4/4P3/8/8/4K3|1|33|P|G:01:11|Q:w:C=e4d5,F=pawnDouble:d5:d6;b:";
+    const state = seedAnalysis(parseScFen(scfen), "w");
+    const { result, bubbles } = play(state, scfen);
+    expect(result.next.placement).toBe("4k3/8/3P4/8/8/8/8/4K3");
+    expect(bubbles.find((bubble) => bubble.shortId === "stonks")).toMatchObject({
+      origin: "d6",
+      side: "w",
+    });
+  });
+
+  it("shows the Adjutant's bubble only on a square the player can see", () => {
+    // Black's b4 Marine takes the BattleShip on a3 (+8, Stonks 2). With only a
+    // Command Center on h1 the player cannot see a3 once the Ship is gone.
+    const fogged = "SCFEN|4k3/8/8/8/1p6/Q7/8/7K|1|33|P|G:11:11|Q:w:;b:C=b4a3";
+    const snap = parseScFen(fogged);
+    ensureAchievementLive("rival-fog", "w", snap);
+    const took = endScTurn(snap);
+    expect(took.next.placement).toBe("4k3/8/8/8/8/p7/8/7K");
+    noteSettledPlies([foldPlyFromResolve(took, snap.placement)]);
+    expect(achievementBubbles()).toEqual([]);
+
+    // A Tank on a1 watches the a-file: the same capture now shows, as Black's.
+    resetAchievementLive();
+    const seen = parseScFen("SCFEN|4k3/8/8/8/1p6/Q7/8/R6K|1|33|P|G:11:11|Q:w:;b:C=b4a3");
+    ensureAchievementLive("rival-seen", "w", seen);
+    noteSettledPlies([foldPlyFromResolve(endScTurn(seen), seen.placement)]);
+    expect(achievementBubbles()).toEqual([
+      expect.objectContaining({ shortId: "stonks", level: 2, origin: "a3", side: "b" }),
+    ]);
+    // Shown, never granted.
+    expect(finalizeAchievementLive("draw", "naive", [])).toEqual([]);
+  });
+
+  it("replays a whole match for both sides, with ids that never collide", () => {
+    const first = "SCFEN|4k3/8/8/3q4/2P5/8/8/4K3|1|33|P|G:11:11|Q:w:C=c4d5;b:";
+    const snap = parseScFen(first);
+    const r1 = endScTurn(snap);
+    const second = parseScFen(
+      `SCFEN|${r1.next.placement.replace("8/8/8/4K3", "8/1p6/Q7/4K3")}|${r1.next.turn}|33|P|G:11:11|Q:w:;b:C=b3a2`,
+    );
+    const r2 = endScTurn(second);
+    const game = foldGame(snap, [
+      foldPlyFromResolve(r1, snap.placement),
+      foldPlyFromResolve(r2, second.placement),
+    ]);
+    expect(game.perPly[0]).toEqual([expect.objectContaining({ shortId: "stonks", side: "w" })]);
+    expect(game.perPly[1]).toEqual([expect.objectContaining({ shortId: "stonks", side: "b" })]);
+    const ids = game.perPly.flat().map((bubble) => bubble.id);
+    expect(new Set(ids).size).toBe(ids.length);
+    expect(game.final).toEqual([]);
   });
 });

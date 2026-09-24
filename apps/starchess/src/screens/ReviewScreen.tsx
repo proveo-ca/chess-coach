@@ -493,6 +493,19 @@ const ReviewListShell: Component<{ activeId?: string }> = (props) => {
   );
 };
 
+/** Who won, and which Adjutant tier the human beat — the replay's end-of-game input. */
+const reviewAchievements = (record: StarChessGameRecord) => {
+  const player = record.playerColor;
+  const other = player === "w" ? "b" : "w";
+  const winner =
+    record.result === "win" ? player : record.result === "loss" ? other : null;
+  // Only a live game has a human side; an arena import is script vs script.
+  return {
+    winner,
+    opponent: !record.arenaPlayers && record.opponent ? { [player]: record.opponent } : undefined,
+  };
+};
+
 const ReviewDetail: Component<{ record: StarChessGameRecord }> = (props) => {
   const navigate = useNavigate();
   let pack: ReturnType<typeof historyFromRecord> | null = null;
@@ -542,6 +555,7 @@ const ReviewDetail: Component<{ record: StarChessGameRecord }> = (props) => {
         playerColor={props.record.playerColor}
         playerName={props.record.playerName}
         arenaPlayers={props.record.arenaPlayers}
+        achievements={reviewAchievements(props.record)}
         onHome={() => navigate("/review")}
       />
     </LiveMatchShell>

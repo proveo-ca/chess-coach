@@ -13,6 +13,11 @@ import {
 } from "solid-js";
 import { Portal } from "solid-js/web";
 
+import {
+  clearAchievementBubbles,
+  pushAchievementBubbles,
+} from "~/achievements/achievementLive";
+import { foldGame, foldPlyFromResolve, plySeenBy } from "~/achievements/analysis";
 import { createMatchStore, MatchStoreProvider, useMatchStore } from "~/app/MatchStoreContext";
 import { createMatchStateFromReviewHistory } from "~/app/reviewHistory";
 import { displayedSnapshot } from "~/app/selectors";
@@ -80,6 +85,16 @@ export type ReviewDemoScreenProps = {
 
   header?: JSX.Element;
   footerExtra?: JSX.Element;
+
+  /**
+   * Replay both sides' achievement bubbles as turns play forward. `winner`
+   * gates the end-of-game levels; `opponent` names the Adjutant tier a side
+   * beat (Flawless levels on it).
+   */
+  achievements?: {
+    winner: StarChessColor | null;
+    opponent?: Partial<Record<StarChessColor, string>>;
+  };
 };
 
 const syncRookModes = (
@@ -155,6 +170,40 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
       timelineActive: store.state().timeline.active,
     });
   });
+
+  // Achievements: the whole match is folded once; each forward step raises the
+  // bubbles of the resolve that just finished. Any other seek clears the board.
+  const plies = props.history.settledResolves.map((esr, i) =>
+    foldPlyFromResolve(esr, props.history.settledSnapshots[i]?.placement),
+  );
+  const opening = props.history.settledSnapshots[0];
+  const game =
+    props.achievements && opening ? foldGame(opening, plies, props.achievements) : null;
+  let shownIndex = store.state().reviewIndex;
+  createEffect(() => {
+    const index = store.state().reviewIndex;
+    if (!game || index === shownIndex) return;
+    const from = shownIndex;
+    shownIndex = index;
+    if (index !== from + 1) {
+      clearAchievementBubbles();
+      return;
+    }
+    const ply = plies[from];
+    const filter = reviewVisionFilter();
+    const last = index >= props.history.settledSnapshots.length - 1;
+    const raised = [...(game.perPly[from] ?? []), ...(last ? game.final : [])];
+    // A side's vision filter hides the other side's bubbles it could not see.
+    pushAchievementBubbles(
+      raised.filter(
+        (bubble) =>
+          filter === "both" ||
+          bubble.side === filter ||
+          (ply != null && plySeenBy(ply, filter, bubble.origin)),
+      ),
+    );
+  });
+  onCleanup(clearAchievementBubbles);
 
   onMount(() => {
     if (props.tutorial) setCapabilities(TUTORIAL_CAPABILITIES);

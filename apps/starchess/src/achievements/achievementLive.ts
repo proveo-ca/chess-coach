@@ -10,6 +10,7 @@ import {
   finalizeAnalysis,
   foldTurn,
   mintBubble,
+  plySeenBy,
   careerLevel,
   seedAnalysis,
   type AchievementBubble,
@@ -26,6 +27,8 @@ const [bubbles, setBubbles] = createSignal<AchievementBubble[]>([]);
 let live: {
   matchId: string;
   state: AnalysisState;
+  /** The opponent's tally. Its bubbles show on the board; nothing is granted. */
+  rival: AnalysisState;
   cursor: number;
   finalized: boolean;
   /** Levels announced mid-game. Granted with the match, win or lose. */
@@ -43,6 +46,11 @@ export const dismissAchievementBubble = (id: string): void => {
   setBubbles((prev) => prev.filter((bubble) => bubble.id !== id));
 };
 
+/** Drop every bubble on the board without touching a live tally (Review seeks). */
+export const clearAchievementBubbles = (): void => {
+  setBubbles([]);
+};
+
 export const resetAchievementLive = (): void => {
   live = null;
   setBubbles([]);
@@ -57,6 +65,7 @@ export const ensureAchievementLive = (
   live = {
     matchId,
     state: seedAnalysis(opening, player),
+    rival: seedAnalysis(opening, player === "w" ? "b" : "w"),
     cursor: 0,
     finalized: false,
     earned: [],
@@ -73,7 +82,11 @@ export const noteSettledPlies = (fresh: readonly FoldPly[]): void => {
   for (const ply of fresh) {
     const minted = foldTurn(live.state, ply);
     live.earned.push(...minted);
-    pushAchievementBubbles(minted);
+    // The opponent's bubble on a fogged square would reveal the unit behind it.
+    const rival = foldTurn(live.rival, ply).filter((bubble) =>
+      plySeenBy(ply, live!.state.player, bubble.origin),
+    );
+    pushAchievementBubbles([...minted, ...rival]);
   }
   live.cursor += fresh.length;
   if (typeof document !== "undefined") {
@@ -216,7 +229,10 @@ export const finalizeAchievementLive = (
     }
     saveCareer(career);
   }
-  pushAchievementBubbles(bubbles);
+  // The opponent's win-gated levels (Cheese) rise on the player's Command
+  // Center — always in sight — and are shown, never granted.
+  const rivalResult = result === "win" ? "loss" : result === "loss" ? "win" : "draw";
+  pushAchievementBubbles([...bubbles, ...finalizeAnalysis(live.rival, rivalResult, undefined)]);
   return bestPerBadge([...live.earned, ...bubbles]);
 };
 
