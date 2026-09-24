@@ -1574,7 +1574,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             when: {
               kind: "scfen",
               phases: ["intent"],
-              re: /SCFEN\|(?:[^/]*\/){6}[^\/|]*P(?=[\/|])[^|]*\|[^|]*\|[^|]*\|[^|]*\|G:[1-9](?=.*\|Q:w:[^;]*C=h2h[34])/,
+              re: /SCFEN\|(?:[^/]*\/){6}[^/|]*P(?=[/|])[^|]*\|[^|]*\|[^|]*\|[^|]*\|G:[1-9](?=.*\|Q:w:[^;]*C=h2h[34])/,
             },
             comment: "Keep pushing your h-file Marine by dropping gas on it",
           },
@@ -1582,7 +1582,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             when: {
               kind: "scfen",
               phases: ["intent"],
-              re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){6}[^\/|]*P(?=[\/|])/,
+              re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){6}[^/|]*P(?=[/|])/,
             },
             comment: "Move your h-file Marine from h2 to h4.",
           },
@@ -1590,7 +1590,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             when: {
               kind: "scfen",
               phases: ["intent"],
-              re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){5}[^\/|]*P(?=[\/|])/,
+              re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){5}[^/|]*P(?=[/|])/,
             },
             comment: "Keep pushing your h-file Marine on h3!",
           },
@@ -1598,7 +1598,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             when: {
               kind: "scfen",
               phases: ["intent"],
-              re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){4}[^\/|]*P(?=[\/|])/,
+              re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){4}[^/|]*P(?=[/|])/,
             },
             comment: "Keep pushing your h-file Marine on h4!",
           },
@@ -1804,7 +1804,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             when: {
               kind: "scfen",
               phases: ["intent"],
-              re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){6}[^\/|]*P(?=[\/|])/,
+              re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){6}[^/|]*P(?=[/|])/,
             },
             squares: [
               "h2",
@@ -1815,7 +1815,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             when: {
               kind: "scfen",
               phases: ["intent"],
-              re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){5}[^\/|]*P(?=[\/|])/,
+              re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){5}[^/|]*P(?=[/|])/,
             },
             squares: [
               "h3",
@@ -1826,7 +1826,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             when: {
               kind: "scfen",
               phases: ["intent"],
-              re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){4}[^\/|]*P(?=[\/|])/,
+              re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){4}[^/|]*P(?=[/|])/,
             },
             squares: [
               "h4",
@@ -1836,7 +1836,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           {
             when: {
               kind: "scfen",
-              re: /SCFEN\|(?:[^/]*\/){3}[^\/|]*P(?=[\/|])/,
+              re: /SCFEN\|(?:[^/]*\/){3}[^/|]*P(?=[/|])/,
             },
             squares: [
               "h5",

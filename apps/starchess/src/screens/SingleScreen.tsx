@@ -38,6 +38,7 @@ import {
   achievementCursor,
   resetAchievementLive,
 } from "~/achievements/achievementLive";
+import { foldPlyFromResolve } from "~/achievements/analysis";
 import { createMatchStore, MatchStoreProvider, useMatchStore } from "~/app/MatchStoreContext";
 import { createMatchStateFromScfen } from "~/app/matchReducer";
 import { BaseScreen } from "~/app/BaseScreen.tsx";
@@ -215,19 +216,9 @@ const MatchInner: Component<{
     const cursor = achievementCursor();
     if (settled.length <= cursor) return;
     noteSettledPlies(
-      settled.slice(cursor).map((esr, offset) => ({
-        turn: esr.next.turn,
-        placement: esr.next.placement,
-        beforePlacement: shell.settledSnapshots[cursor + offset]?.placement,
-        siegedRooks: esr.next.siegedRooks,
-        kingLives: esr.next.kingLives,
-        mines: esr.next.mines,
-        events: esr.events,
-        attacks: esr.resolved?.attacks,
-        moves: esr.resolved?.moves,
-        mineTriggers: esr.resolved?.mineTriggers,
-        promotions: esr.resolved?.promotions,
-      })),
+      settled.slice(cursor).map((esr, offset) =>
+        foldPlyFromResolve(esr, shell.settledSnapshots[cursor + offset]?.placement),
+      ),
     );
   });
 

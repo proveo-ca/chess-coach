@@ -10,6 +10,7 @@ import {
   UNIT_COST,
   getSideVision,
   placementToMap,
+  type EndScTurnResult,
   type StarChessColor,
 } from "@chess-coach/starchess-core";
 import type { Square } from "chess.js";
@@ -94,6 +95,10 @@ export type FoldAttack = {
   to?: string;
   victim?: { piece?: string; color?: string };
   mineColor?: string;
+  /** Path reveal: the square the slider left. `from` is where it spotted the target. */
+  pathRevealFrom?: string;
+  /** The shooter ends on `to` (it moved in). */
+  occupies?: boolean;
 };
 
 export type FoldMove = { color?: string; from?: string; to?: string };
@@ -112,6 +117,34 @@ export type FoldPly = {
   mineTriggers?: readonly FoldAttack[];
   promotions?: readonly { color?: string; from?: string; at?: string }[];
 };
+
+/**
+ * The one mapping from a settled resolve to the ply {@link foldTurn} reads.
+ * `before` is the board the resolve started from.
+ */
+export const foldPlyFromResolve = (esr: EndScTurnResult, before?: string): FoldPly => ({
+  turn: esr.next.turn,
+  placement: esr.next.placement,
+  beforePlacement: before,
+  siegedRooks: esr.next.siegedRooks,
+  kingLives: esr.next.kingLives,
+  mines: esr.next.mines,
+  events: esr.events,
+  // Every list a capture can land in: a slider that runs into a fogged unit
+  // (path reveal) and two units meeting on one square (collision) are captures
+  // too, and the engine does not repeat them in `attacks`.
+  attacks: [
+    ...(esr.resolved?.attacks ?? []),
+    ...(esr.resolved?.pathRevealAttacks ?? []),
+    ...(esr.resolved?.moveCollisions ?? []),
+  ],
+  moves: esr.resolved?.moves,
+  mineTriggers: [
+    ...(esr.resolved?.mineTriggers ?? []),
+    ...(esr.resolved?.pathRevealMineTriggers ?? []),
+  ],
+  promotions: esr.resolved?.promotions,
+});
 
 const valueOf = (type: string | undefined): number => {
   if (type === "k" || type === "p" || type === "n" || type === "b" || type === "r" || type === "q") {
@@ -250,6 +283,20 @@ const protectsFriend = (
 };
 
 /**
+ * The square a capturing unit stood on before this ply. A path reveal names it
+ * outright; a collision reports the meeting square as `from`, so the shooter's
+ * own move gives the origin back.
+ */
+const shooterSquare = (atk: FoldAttack, moves: readonly FoldMove[] | undefined): string => {
+  if (atk.pathRevealFrom) return atk.pathRevealFrom;
+  if (atk.from === atk.to) {
+    const move = moves?.find((mv) => mv.color === atk.color && mv.to === atk.to);
+    if (move?.from) return move.from;
+  }
+  return atk.from!;
+};
+
+/**
  * Fold one settled ply into `state`. Only this ply's events are read.
  * Returns bubbles for levels this ply newly reached, each rooted at a birth square.
  */
@@ -266,6 +313,17 @@ export const foldTurn = (state: AnalysisState, ply: FoldPly): AchievementBubble[
   const king = kingSquare(ply.placement, player);
 
   for (const ev of ply.events ?? []) {
+    // An enemy special (a gas step) onto our mine. Classical trips arrive in
+    // `mineTriggers` instead, and carry no `kind` here — never both.
+    if (
+      ev.color !== player &&
+      ev.kind != null &&
+      ev.mineColor === player &&
+      ev.victim?.color !== player
+    ) {
+      state.mines += 1;
+      mineOrigin = ev.to ?? ev.from;
+    }
     if (ev.color !== player || !ev.from) continue;
     const piece = idAt(state, ev.from, ply.turn);
     if (ev.kind === "spawn" && ev.unit && ev.to) {
@@ -311,13 +369,25 @@ export const foldTurn = (state: AnalysisState, ply: FoldPly): AchievementBubble[
     }
     if (atk.color !== player) continue;
     if (atk.victim?.color === player) continue;
-    credit(atk.from, atk.victim?.piece, atk.to);
+    credit(shooterSquare(atk, ply.moves), atk.victim?.piece, atk.to);
+    // A path-reveal slider is in no move list: carry its id to where it stopped.
+    if (atk.pathRevealFrom && atk.pathRevealFrom !== atk.from) {
+      const piece = state.at.get(atk.pathRevealFrom);
+      if (piece) {
+        state.at.delete(atk.pathRevealFrom);
+        state.at.set(atk.occupies ? atk.to : atk.from, piece);
+      }
+    }
   }
 
   for (const ev of ply.events ?? []) {
     if (ev.color !== player) continue;
     if (ev.kind === "spawn" && ev.unit && ev.to) {
       state.at.set(ev.to, pieceId(ply.turn, ev.unit, ev.to));
+      // A deploy that lands on an enemy crushes it — the new unit's capture.
+      if (ev.victim?.color != null && ev.victim.color !== player) {
+        credit(ev.to, ev.victim.type, ev.to);
+      }
       continue;
     }
     const from = ev.from;

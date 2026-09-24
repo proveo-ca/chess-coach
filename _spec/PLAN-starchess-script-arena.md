@@ -157,7 +157,7 @@ simply: *core + arena package have zero DOM/worker/fetch dependencies*.
 - Swap `historyFromRecord` to the shared core `replay/record.ts` implementation.
 - **File upload → localStorage (recommended offline channel, zero network):** import record JSON via
   `<input type="file">`/drag-and-drop → `FileReader.readAsText` → `JSON.parse` → schema-validate →
-  push into the existing `matchHistoryStore` (`starchess_match_history`, MAX_GAMES 100). A record is
+  push into the existing `matchHistoryStore` (`starchess_match_history`, MAX_GAMES 150). A record is
   ~15–30 KB; thousands fit the ~5 MB quota before existing trim applies. Because there's no HTTP, this
   side-steps `CORP`/`COEP` and URL-length entirely. Caveat: localStorage is per-origin and erasable —
   file export↔import *is* the portable round-trip.

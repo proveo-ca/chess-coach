@@ -62,7 +62,7 @@ export const tierForOpponent = (opponent: string | undefined): AdjutantTier | nu
 export type AchievementId = `${AchievementLevel}-${AchievementType}-${string}`;
 
 export type AchievementMeasure =
-  | { kind: "opponentWins"; count: 1 | 100 }
+  | { kind: "opponentWins"; count: 1 | 50 }
   | { kind: "flawlessWin" }
   | { kind: "winWithinTurns" }
   | { kind: "pieceMaterialSwing" }

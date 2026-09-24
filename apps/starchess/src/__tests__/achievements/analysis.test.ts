@@ -6,6 +6,7 @@ import {
   bubbleMotion,
   careerLevel,
   finalizeAnalysis,
+  foldPlyFromResolve,
   foldTurn,
   originOf,
   pieceId,
@@ -15,19 +16,7 @@ import {
 const play = (state: ReturnType<typeof seedAnalysis>, scfen: string) => {
   const snap = parseScFen(scfen);
   const result = endScTurn(snap);
-  const bubbles = foldTurn(state, {
-    turn: result.next.turn,
-    placement: result.next.placement,
-    beforePlacement: snap.placement,
-    siegedRooks: result.next.siegedRooks,
-    kingLives: result.next.kingLives,
-    mines: result.next.mines,
-    events: result.events,
-    attacks: result.resolved.attacks,
-    moves: result.resolved.moves,
-    mineTriggers: result.resolved.mineTriggers,
-    promotions: result.resolved.promotions,
-  });
+  const bubbles = foldTurn(state, foldPlyFromResolve(result, snap.placement));
   return { result, bubbles };
 };
 
@@ -127,11 +116,11 @@ describe("foldTurn on one settled ply", () => {
 });
 
 describe("career levels", () => {
-  it("maps one strategic win to level 2 and 100 wins to the hundred badge", () => {
+  it("maps one strategic win to level 2 and 50 wins to the career badge", () => {
     expect(careerLevel({ strategic: 1 }, 1)).toBe(2);
-    expect(careerLevel({ strategic: 1 }, 100)).toBe(0);
-    expect(careerLevel({ strategic: 100 }, 100)).toBe(2);
-    expect(careerLevel({ naive: 100 }, 100)).toBe(1);
+    expect(careerLevel({ strategic: 1 }, 50)).toBe(0);
+    expect(careerLevel({ strategic: 50 }, 50)).toBe(2);
+    expect(careerLevel({ naive: 50 }, 50)).toBe(1);
   });
 });
 
