@@ -93,6 +93,8 @@ export type AnalysisState = {
 export type FoldAttack = {
   kind?: string;
   color?: string;
+  /** The attacking piece's own type. Only `b`/`r`/`q` slide past `to`. */
+  piece?: string;
   from?: string;
   to?: string;
   victim?: { piece?: string; color?: string };
@@ -260,6 +262,9 @@ const bumpStreak = (
 
 const FILES = "abcdefgh";
 
+/** Mecha, Siege Tank, BattleShip — the only units whose ray extends past their target. */
+const SLIDING_PIECES = new Set(["b", "r", "q"]);
+
 const protectsFriend = (
   placement: string,
   from: string,
@@ -420,7 +425,10 @@ export const foldTurn = (state: AnalysisState, ply: FoldPly): AchievementBubble[
     }
     if (atk.kind !== "capture" || !atk.from || !atk.to) continue;
     if (atk.victim?.piece === "p" && atk.victim.color === player && atk.color !== player) {
-      const behind = protectsFriend(ply.beforePlacement ?? ply.placement, atk.from, atk.to, player);
+      const behind =
+        !!atk.piece &&
+        SLIDING_PIECES.has(atk.piece) &&
+        protectsFriend(ply.beforePlacement ?? ply.placement, atk.from, atk.to, player);
       if (behind) {
         state.intercepts += 1;
         // The Marine died where it stood in the way.

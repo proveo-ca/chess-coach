@@ -76,12 +76,20 @@ skinparam noteTextAlignment left
 ' for both sides (foldGame) and raises each resolve's bubbles as it finishes
 ' playing forward; any other seek clears them; a side's vision filter hides
 ' the other side's unseen bubbles.
+' FIXED: ReviewDemoScreen's outer component built `game` from `props.achievements`
+' but never forwarded that prop to the inner component that reads it — `game`
+' was always null, so review never raised a bubble (`achievements` prop wired
+' through in ReviewDemoScreen.tsx now).
 ' SHIPPED: mines counts a detonation only. An opponent defusing a mine
 ' (a ranged attack clears an empty mined square, no casualty) never counts.
 ' SHIPPED: medal counts a Marine whose own queued move or attack ends in
 ' its death to a gas/collision interaction, provided a non-pawn friendly
 ' unit stands behind it on the attacker's ray — the Marine took the hit
 ' meant for that unit. Canonical case: tutorial king-defense-5.
+' FIXED: medal required only that from/to/behind form one straight line —
+' any adjacent capture (King, another Marine) trivially satisfies that
+' geometry. The attacker must also be a slider (Mecha/Tank/BattleShip);
+' a King or Marine can never threaten past its own target.
 '
 '   shortId   title                 type      levels
 '   beat      Human Training        count     1 win, easy, adjutant tier

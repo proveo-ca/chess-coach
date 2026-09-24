@@ -428,6 +428,7 @@ export const ReviewDemoScreen: Component<ReviewDemoScreenProps> = (props) => {
         tutorial={props.tutorial}
         header={props.header}
         footerExtra={props.footerExtra}
+        achievements={props.achievements}
       />
     </MatchStoreProvider>
   );

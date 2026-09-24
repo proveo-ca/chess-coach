@@ -54,6 +54,22 @@ describe("foldTurn on one settled ply", () => {
     );
   });
 
+  it("does not credit a non-sliding attacker (King) as an interception", () => {
+    // c3 (black King) x d4 (white Marine) is one step; a Rook further out on
+    // the same diagonal (e5) was never actually threatened by that capture.
+    const state = seedAnalysis({ turn: 1, placement: "8/8/8/4R3/3P4/2k5/8/K7" }, "w");
+    const bubbles = foldTurn(state, {
+      turn: 2,
+      placement: "8/8/8/4R3/8/2k5/8/K7",
+      beforePlacement: "8/8/8/4R3/3P4/2k5/8/K7",
+      attacks: [
+        { kind: "capture", color: "b", piece: "k", from: "c3", to: "d4", victim: { piece: "p", color: "w" } },
+      ],
+    });
+    expect(state.intercepts).toBe(0);
+    expect(bubbles.some((bubble) => bubble.shortId === "medal")).toBe(false);
+  });
+
   it("counts a Marine that takes a BattleShip as Stonks level 2 and not level 3", () => {
     const scfen = "SCFEN|4k3/8/8/3q4/2P5/8/8/4K3|1|33|P|G:11:11|Q:w:C=c4d5;b:";
     const state = seedAnalysis(parseScFen(scfen), "w");
