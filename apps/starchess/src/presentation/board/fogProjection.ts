@@ -9,7 +9,7 @@ import {
 } from "@chess-coach/starchess-core";
 
 import { moveSquareAtElapsed } from "~/presentation/animations/moveTiming";
-import { rookModeForSieged } from "~/presentation/board/rookMode";
+import { tankModeForSieged } from "~/presentation/board/tankMode";
 
 export type MoveVisionCue = {
   id: string;
@@ -18,7 +18,7 @@ export type MoveVisionCue = {
   piece: PieceSymbol;
   /** When the slide CSS started (`progress === 1`). */
   startedAt: number;
-  /** Pawn gas-step — stim per-square ms for progressive fog. */
+  /** Marine gas-step — stim per-square ms for progressive fog. */
   stim?: boolean;
 };
 
@@ -71,11 +71,11 @@ export function mapWithMovePathOccupancy(
  */
 export const observerVisionFromSnap = (
   snap: ScFenSnapshot,
-  opts?: { siegedRooks?: readonly Square[] },
+  opts?: { siegedTanks?: readonly Square[] },
 ): { w: SideVision; b: SideVision } => {
-  const sieged = new Set(opts?.siegedRooks ?? snap.siegedRooks ?? []);
+  const sieged = new Set(opts?.siegedTanks ?? snap.siegedTanks ?? []);
   const visionOpts = {
-    rookModeFor: rookModeForSieged(sieged),
+    tankModeFor: tankModeForSieged(sieged),
     mines: snap.mines,
   };
   return {

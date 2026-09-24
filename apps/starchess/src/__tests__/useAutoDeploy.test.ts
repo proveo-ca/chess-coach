@@ -13,7 +13,7 @@ const at = (sq: Square, type: StarChessPiece, color: PieceColor = "w"): [Square,
 ];
 
 describe("deployCuesForBoardDiff", () => {
-  it("fires for Command Center rook/tank spawn (no matching leave)", () => {
+  it("fires for Command Center Tank spawn (no matching leave)", () => {
     const prev = new Map<Square, PieceAt>([at("e1", "k")]);
     const next = new Map<Square, PieceAt>([at("e1", "k"), at("e2", "r")]);
     const cues = deployCuesForBoardDiff(prev, next);
@@ -27,18 +27,18 @@ describe("deployCuesForBoardDiff", () => {
     expect(deployCuesForBoardDiff(prev, next)).toEqual([]);
   });
 
-  it("skips kings", () => {
+  it("skips Command Centers", () => {
     const prev = new Map<Square, PieceAt>();
     const next = new Map<Square, PieceAt>([at("e1", "k")]);
     expect(deployCuesForBoardDiff(prev, next)).toEqual([]);
   });
 
   it("does not treat a same-turn capture as a lasting deploy candidate", () => {
-    // Diff helper only sees one step; capture is prev has pawn → next empty.
+    // Diff helper only sees one step; capture is prev has Marine → next empty.
     // Guarding cancel belongs to useAutoDeploy occupancy watch — here we only
     // assert appearance-then-absence does not invent a relocate deploy.
-    const withPawn = new Map<Square, PieceAt>([at("e1", "k"), at("e2", "p")]);
+    const withMarine = new Map<Square, PieceAt>([at("e1", "k"), at("e2", "p")]);
     const empty = new Map<Square, PieceAt>([at("e1", "k")]);
-    expect(deployCuesForBoardDiff(withPawn, empty)).toEqual([]);
+    expect(deployCuesForBoardDiff(withMarine, empty)).toEqual([]);
   });
 });

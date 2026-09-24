@@ -2,11 +2,11 @@ import { describe, expect, it } from "vitest";
 import { placementToMap, scMovesFrom } from "@chess-coach/starchess-core";
 
 import { occupancyForViewerMoves } from "~/presentation/board/occupancyForViewerMoves";
-import { FOG_EDGE_BISHOP_START_SCFEN } from "~/demos/fogEdgeBishop";
+import { FOG_EDGE_MECHA_START_SCFEN } from "~/demos/fogEdgeMecha";
 
 describe("occupancyForViewerMoves", () => {
   it("lets Bd4 intent through fogged g7 so h8 is a legal dest", () => {
-    const placement = FOG_EDGE_BISHOP_START_SCFEN.split("|")[1]!;
+    const placement = FOG_EDGE_MECHA_START_SCFEN.split("|")[1]!;
     const full = placementToMap(placement);
     expect(full.get("g7")?.type).toBe("p");
     expect(full.get("h8")?.type).toBe("k");
@@ -26,7 +26,7 @@ describe("occupancyForViewerMoves", () => {
   });
 
   it("keeps visible blockers when fog is off", () => {
-    const placement = FOG_EDGE_BISHOP_START_SCFEN.split("|")[1]!;
+    const placement = FOG_EDGE_MECHA_START_SCFEN.split("|")[1]!;
     const full = placementToMap(placement);
     const same = occupancyForViewerMoves(full, "w", false);
     expect(same.get("g7")?.type).toBe("p");

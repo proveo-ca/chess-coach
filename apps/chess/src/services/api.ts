@@ -1,6 +1,6 @@
 import { resolveMode } from "~/services/runtimeMode";
 import { setLlmProgress } from "~/store/coachStore";
-// SPEC: _spec/apps/ui/components.puml
+// SPEC: _spec/apps/chess/components.puml
 import type { Difficulty } from "~/types/settings";
 
 const RUNTIME_MODE = resolveMode();

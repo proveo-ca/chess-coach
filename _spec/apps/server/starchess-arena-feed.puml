@@ -63,7 +63,7 @@ note bottom
   queue — a timed-out query's late ""bestmove"" would be misattributed to the
   next candidate. The feed drains the queue between queries.
   **Legality guard:** the core projector flags StarChess-legal-but-classically-
-  illegal positions (pawns on rank 1/8 via spawn/pawnDouble) as ineligible;
+  illegal positions (pawns on rank 1/8 via spawn/stimStep) as ineligible;
   the feed skips them instead of burning the timeout.
   **Budgets:** per-query ""movetime"" + absolute ""readUntil"" timeout; on
   overrun the feed returns the evals it has with ""timedOut:true"" and the

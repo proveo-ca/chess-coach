@@ -5,7 +5,7 @@
  *  - walking onto one — marine forward step, or a mine still fogged at contact —
  *    kills the mover with the mine,
  *  - crossing one mid-slide wakes it (chase) and kills the mover,
- *  - allied mines never arm; a king never trades — its contact is an attack in
+ *  - allied mines never arm; a Command Center never trades — its contact is an attack in
  *    every mode, so it clears the tile and moves in.
  *
  * Special-phase routes (gas step, deploy, Tactical Jump, fog approach) live in
@@ -243,7 +243,7 @@ describe("spider mine hit — enemy unit + mine both dead", () => {
     });
   });
 
-  it("king steps onto hostile mine — attack/move (mine dies, king lands)", () => {
+  it("Command Center steps onto hostile mine — attack/move (mine dies, Command Center lands)", () => {
     const r = resolveClassical(
       "SCFEN|4k3/8/8/8/8/8/8/4K3|0|33|P|G:11:11|Q:w:;b:|M:w:;b:e2",
       "e1",
@@ -268,7 +268,7 @@ describe("spider mine hit — enemy unit + mine both dead", () => {
     expect(r.next.mines ?? []).toEqual([]);
   });
 
-  it("king captures a unit standing on a mine — unit and mine both die", () => {
+  it("Command Center captures a unit standing on a mine — unit and mine both die", () => {
     const r = resolveClassical(
       "SCFEN|4k3/8/8/8/8/8/4p3/4K3|0|33|P|G:11:11|Q:w:;b:|M:w:;b:e2",
       "e1",
@@ -328,7 +328,7 @@ describe("spider mine hit — enemy unit + mine both dead", () => {
     );
   });
 
-  it("promoting onto enemy mine — pawn and mine both dead, no deploy", () => {
+  it("promoting onto enemy mine — Marine and mine both dead, no deploy", () => {
     const r = resolveClassical(
       "SCFEN|k7/4P3/8/8/8/8/8/4K3|1|33|P|G:11:11|M:b:e8|Q:w:;b:",
       "e7",
@@ -344,7 +344,7 @@ describe("spider mine hit — enemy unit + mine both dead", () => {
       color: "w",
       mineColor: "b",
     });
-    // A pawn cannot attack straight ahead: the mine takes it in the walk-over
+    // A Marine cannot attack straight ahead: the mine takes it in the walk-over
     // pass, so the move stands and nothing promotes behind the blast.
     expect(r.resolved.attacks.filter((a) => a.kind === "mineBlast")).toEqual([]);
     expect(r.resolved.moves).toEqual([

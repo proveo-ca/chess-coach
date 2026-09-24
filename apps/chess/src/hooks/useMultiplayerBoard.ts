@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/ui/components.puml
+// SPEC: _spec/apps/chess/components.puml
 import { Chess, type Color, type Square } from "chess.js";
 import { createEffect, createMemo, createSignal } from "solid-js";
 

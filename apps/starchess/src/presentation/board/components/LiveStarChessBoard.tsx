@@ -2,7 +2,7 @@
 /**
  * Live match board — snapshot from match store + combat VFX from timeline.
  * Variants: eclipse | butter | vermeer.
- * Deploy drops: timeline cues + occupancy auto-deploy (apps/ui parity).
+ * Deploy drops: timeline cues + occupancy auto-deploy (apps/chess parity).
  * Intent / fog ownership: {@link useIntentOverlays} / {@link useBoardVision}.
  */
 import {
@@ -20,10 +20,10 @@ import { canSubmit, readDisplayedSnapshot } from "~/app/selectors";
 import { AnimationStage } from "~/presentation/animations/components/AnimationStage";
 import type { CombatCueFrame } from "~/presentation/animations/combatCueFrame";
 import {
-  kingDamageCuesFromBoard,
-  visibleKingDamageCues,
-  withKingFire,
-} from "~/presentation/animations/kingDamage";
+  ccDamageCuesFromBoard,
+  visibleCCDamageCues,
+  withCCFire,
+} from "~/presentation/animations/ccDamage";
 import { deriveVisualFrame } from "~/presentation/animations/visualFrame";
 import {
   pieceVisibleToViewer,
@@ -35,9 +35,14 @@ import { useCombatOverlays } from "~/presentation/combat/hooks/useCombatOverlays
 import { useBoardVision, useIntentOverlays } from "~/presentation/combat/hooks/useIntentOverlays";
 import { liveMatchPhase } from "~/presentation/hud/liveMatchPhase";
 import { LIVE_CAPABILITIES, capabilities, setCapabilities } from "~/store/capabilitiesStore";
+import {
+  charonTrailSquares,
+  queuedCharonSquares,
+  restingCharonSquares,
+} from "~/presentation/board/charonArmed";
 import type { BoardSkin, PieceSet, VisionMode } from "~/types/board";
 import type { TutorialBoardArrow } from "~/types/tutorial";
-import type { KingDamageCue } from "~/types/cues";
+import type { CCDamageCue } from "~/types/cues";
 import type { ReviewTurnPhase } from "~/types/review";
 
 export const LiveStarChessBoard: Component<{
@@ -65,7 +70,7 @@ export const LiveStarChessBoard: Component<{
   const combat = useCombatOverlays(store);
   const overlays = useIntentOverlays(store);
   const snap = createMemo(() => readDisplayedSnapshot(store));
-  const [kingDamage, setKingDamage] = createSignal<KingDamageCue[]>([]);
+  const [ccDamage, setCCDamage] = createSignal<CCDamageCue[]>([]);
   const reviewing = () => store.shell().phase === "gameOver";
   const interactive = () => canSubmit(store.shell());
 
@@ -90,7 +95,7 @@ export const LiveStarChessBoard: Component<{
   /** Player fog gates combat VFX; DualNav / no-fog shows everything. */
   const gateFx = () => fog() && visionMode() === "player";
 
-  const fogOpts = () => ({ siegedRooks: snap().siegedRooks ?? [] });
+  const fogOpts = () => ({ siegedTanks: snap().siegedTanks ?? [] });
 
   /** Vision opts with mines — own mines light their tile, same as the veil. */
   const fogVisionOpts = () => ({
@@ -146,13 +151,13 @@ export const LiveStarChessBoard: Component<{
     return out;
   });
 
-  // Persist fire overlays for both kings from HP (turn-open checks + path reveal).
+  // Persist fire overlays for both Command Centers from HP (turn-open checks + path reveal).
   createEffect(() => {
     const s = snap();
-    void s.kingLives.w;
-    void s.kingLives.b;
+    void s.ccLives.w;
+    void s.ccLives.b;
     void s.placement;
-    setKingDamage((prev) => kingDamageCuesFromBoard(s.placement, s.kingLives, prev));
+    setCCDamage((prev) => ccDamageCuesFromBoard(s.placement, s.ccLives, prev));
   });
 
   const { autoDeployCues } = useAutoDeploy({
@@ -165,23 +170,23 @@ export const LiveStarChessBoard: Component<{
     const dying = new Set(combat.deathCues().map((c) => c.at));
     const seen = new Set(fromTimeline.map((c) => c.at));
     const extra = autoDeployCues().filter((c) => !seen.has(c.at) && !dying.has(c.at));
-    return [...fromTimeline, ...extra]
-      .filter((c) => !dying.has(c.at))
-      .filter((c) => pieceFxVisible(c.at, c.color));
+    // A timeline deploy on a dying square is a crush — the hull composes above
+    // the victim's boom (V40). Only board-diff extras yield to a death.
+    return [...fromTimeline, ...extra].filter((c) => pieceFxVisible(c.at, c.color));
   });
 
   /**
-   * A shooting king burns on its own hull: `attackFrom` below drops the
+   * A shooting Command Center burns on its own hull: `attackFrom` below drops the
    * persistent slot so the hatch / battery CSS can play, which leaves this cue
    * as the only thing drawing that CC for the length of the shot.
    */
-  const attackCues = createMemo(() => withKingFire(combat.attackCues(), kingDamage()));
+  const attackCues = createMemo(() => withCCFire(combat.attackCues(), ccDamage()));
 
   /** Attack hull owns the square — drop fire overlay so hatch/battery CSS can play. */
   const attackFrom = createMemo(() => new Set(attackCues().map((c) => c.from)));
 
-  /** Lethal king crumple owns the square — suppress static destroyed rubble. */
-  const dyingKingKeys = createMemo(() => {
+  /** Lethal Command Center crumple owns the square — suppress static destroyed rubble. */
+  const dyingCCKeys = createMemo(() => {
     const ats = new Set<string>();
     const colors = new Set<string>();
     for (const c of combat.deathCues()) {
@@ -192,54 +197,66 @@ export const LiveStarChessBoard: Component<{
   });
 
   /**
-   * A damaged king travels as its own burning hull. `handleMoveWave` flips
+   * A damaged Command Center travels as its own burning hull. `handleMoveWave` flips
    * `moveProgress` a frame before it commits the relocated placement, so the
    * fire cue's `at` still reads `from` for the whole slide — hand the mover the
-   * HP state and let `visibleKingDamage` drop that side's slot instead.
+   * HP state and let `visibleCCDamage` drop that side's slot instead.
    */
   const moveCues = createMemo(() =>
-    withKingFire(
+    withCCFire(
       combat
         .moveCues()
         .filter((c) => moverFxVisible(c) || veilMoveIds().has(c.id)),
-      kingDamage(),
+      ccDamage(),
     ),
   );
 
-  /** Sides whose king is a live move hull — that hull paints the fire. */
-  const movingKingColors = createMemo((): ReadonlySet<string> => {
+  /** Sides whose Command Center is a live move hull — that hull paints the fire. */
+  const movingCCColors = createMemo((): ReadonlySet<string> => {
     const out = new Set<string>();
     for (const c of moveCues()) if (c.piece === "k") out.add(c.color);
     return out;
   });
 
-  const visibleKingDamage = createMemo(() => {
-    const dying = dyingKingKeys();
-    return visibleKingDamageCues(kingDamage(), {
+  const visibleCCDamage = createMemo(() => {
+    const dying = dyingCCKeys();
+    return visibleCCDamageCues(ccDamage(), {
       attackFrom: attackFrom(),
       dyingAt: dying.ats,
       dyingColors: dying.colors,
-      movingColors: movingKingColors(),
+      movingColors: movingCCColors(),
       isVisible: pieceFxVisible,
     });
   });
 
-  const armedBishops = createMemo((): Square[] => {
+  /**
+   * Launchers are the Mecha's own Charon spend, never "gas was used on this
+   * square": arming now, a queued strike (own side while planning; both in
+   * review), and — until turn-open clears `U:` — the Mecha that fired.
+   */
+  const armedMechas = createMemo((): Square[] => {
+    const s = store.shell();
     const out = new Set<Square>();
-    const t = store.shell().targeting;
-    if (t?.kind === "bishopSnipe") out.add(t.from);
-    // Persist Charon launchers + green with U: / arm marks until turn-open checks.
-    const map = placementToMap(snap().placement);
-    for (const sq of snap().specialsUsed ?? []) {
-      if (map.get(sq)?.type === "b") out.add(sq);
+    if (s.targeting?.kind === "charonMissiles") out.add(s.targeting.from);
+    const reviewing = s.phase === "gameOver";
+    const queued = reviewing ? store.reviewIntentActions() : snap().queue?.actions;
+    for (const sq of queuedCharonSquares(queued ?? undefined, reviewing ? undefined : s.viewer)) {
+      out.add(sq);
+    }
+    const shown = reviewing ? s.reviewIndex : s.settledSnapshots.length - 1;
+    for (const sq of restingCharonSquares(s.settledResolves[shown - 1], snap().specialsUsed)) {
+      out.add(sq);
     }
     return [...out];
   });
 
+  /** Every square a firing Mecha held in the resolve on screen — mid-resolve hulls. */
+  const charonSquares = createMemo(() => charonTrailSquares(store.shell().lastResolve));
+
   /** Shoulder-raise anim only while arming — persistent U: keeps pods up quietly. */
-  const armAnimBishops = createMemo((): Square[] => {
+  const armAnimMechas = createMemo((): Square[] => {
     const t = store.shell().targeting;
-    return t?.kind === "bishopSnipe" ? [t.from] : [];
+    return t?.kind === "charonMissiles" ? [t.from] : [];
   });
 
   /** No canister / green absorb through fog for unseen enemy gas spends. */
@@ -264,7 +281,7 @@ export const LiveStarChessBoard: Component<{
 
   /**
    * combat.hideSquares already derives from cues + attackDying via
-   * deriveVisualFrame. Merge kingDamage + auto-deploy extras (timeline deploys
+   * deriveVisualFrame. Merge ccDamage + auto-deploy extras (timeline deploys
    * are already included; Set union is idempotent).
    */
   const hideSquares = createMemo((): ReadonlySet<Square> => {
@@ -275,7 +292,7 @@ export const LiveStarChessBoard: Component<{
       moveCues: moveCues(),
       jumpCues: jumpCues(),
       deployCues: deployCues(),
-      kingDamage: visibleKingDamage(),
+      ccDamage: visibleCCDamage(),
     });
     // Union with timeline-hidden so mid-window victim hides (deaths done,
     // board not yet committed) stay covered even without a live death cue.
@@ -300,7 +317,7 @@ export const LiveStarChessBoard: Component<{
     mineMissileTrails: combat.mineMissileTrails(),
     deployCues: deployCues(),
     gasDropCues: gasDropCues(),
-    kingDamage: visibleKingDamage(),
+    ccDamage: visibleCCDamage(),
   }));
 
   return (
@@ -332,8 +349,9 @@ export const LiveStarChessBoard: Component<{
         combat={combatFrame()}
         spentMines={combat.spentMines()}
         gasAbsorbSquares={gasAbsorbSquares()}
-        armedBishops={armedBishops()}
-        armAnimBishops={armAnimBishops()}
+        armedMechas={armedMechas()}
+        charonSquares={charonSquares()}
+        armAnimMechas={armAnimMechas()}
         hideSquares={hideSquares()}
         achievementBubbles={achievementBubbles()}
       />

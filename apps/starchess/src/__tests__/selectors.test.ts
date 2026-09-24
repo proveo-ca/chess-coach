@@ -56,15 +56,15 @@ describe("selectors", () => {
         ...s.timeline,
         active: true,
         displayPlacement: "4k3/8/8/8/8/4P2/8/4K3",
-        displayKingLives: { w: 2, b: 3 },
+        displayCCLives: { w: 2, b: 3 },
         displayMines: [],
-        displaySiegedRooks: ["a1"],
+        displaySiegedTanks: ["a1"],
       },
     };
     const d = displayedSnapshot(s);
     expect(d.placement).toBe("4k3/8/8/8/8/4P2/8/4K3");
-    expect(d.kingLives).toEqual({ w: 2, b: 3 });
-    expect(d.siegedRooks).toEqual(["a1"]);
+    expect(d.ccLives).toEqual({ w: 2, b: 3 });
+    expect(d.siegedTanks).toEqual(["a1"]);
     s = {
       ...s,
       timeline: { ...s.timeline, active: false, displayPlacement: null },

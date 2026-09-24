@@ -59,7 +59,7 @@ export const GasDeploy: StoryObj = {
     docs: {
       description: {
         story:
-          "Full army + GasDeploy: pawn / knight / bishop / rook / queen / king specials. Controls → gas (1–3). End to resolve queued actions.",
+          "Full army + GasDeploy: Marine / Hoverbike / Mecha / Tank / BattleShip / Command Center specials. Controls → gas (1–3). End to resolve queued actions.",
       },
     },
   },

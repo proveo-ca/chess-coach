@@ -106,7 +106,7 @@ note as N_NONGOAL
   **Non-goals:** changing cue math · impact timing · ""deriveVisualFrame"" priority ·
   second playback engine · component-owned rAF clocks · per-layer Show ·
   transition / @keyframes on paint-only props (outline-color · border-*-color ·
-  box-shadow) · Chip phase border · InlineBishop crank loop · fog-cull (rejected) ·
+  box-shadow) · Chip phase border · InlineMecha crank loop · fog-cull (rejected) ·
   full-app createStore path-proxy migration · WebGL rewrite (closed) ·
   DualNav UX · resolve rules · SCFEN wire changes.
 end note
@@ -140,7 +140,7 @@ note bottom
   review caps (capForDensity, VFX_CAP_REVIEW_*).
   **P2:** AttackAnimation fragShockwave border-color removal · .pieceSpecialUsed
   outline (30ms hotspot, accepted) · optional-FX drop.
-  **Deferred:** Chip phase border · InlineBishop crank loop.
+  **Deferred:** Chip phase border · InlineMecha crank loop.
   See ""timeline-vfx-density.puml"".
   **Invariant:** no per-layer Show · components never own the clock.
 end note

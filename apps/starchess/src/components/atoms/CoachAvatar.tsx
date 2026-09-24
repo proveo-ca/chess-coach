@@ -1,6 +1,6 @@
 /**
  * Selena / Selena — classic coach cat, optional Ghost sniper helm.
- * `identity="selena"` matches apps/ui CoachAvatar (no helm). Switching to
+ * `identity="selena"` matches apps/chess CoachAvatar (no helm). Switching to
  * kerrigan drops the helm onto her forehead (500ms) with a happy bounce;
  * switching back lifts it toward the top-middle while she watches it leave.
  * With no `emotion` prop, ambient-cycles idle ↔ scanning (scoped visor)

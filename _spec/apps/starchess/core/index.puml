@@ -60,13 +60,13 @@ note bottom
   | Classical phases | resolve-turn pipeline | playback re-resolve |
   | Playback | timelinePlayer | playResolve (deleted) |
   | Planning dests | occupancyForQueuedMoves → viewer | third occupancy fork |
-  | Rook siege mode | rookModeForSieged | inline siege?tank lambdas |
+  | Rook siege mode | tankModeForSieged | inline siege?tank lambdas |
   | Mineral income | applyTurnIncome | magic caps / copy loops |
   | Timeline bind | bindTimeline(dispatch) | 4× callback paste |
   | Turn open | TURN_OPEN → beginScTurn | store calling beginScTurn |
   | Fog visibility | fogVisibility.ts | parallel lit/revealed forks |
   | Deploy reach | board/deploy-reach.ts | a private per-caller deploy sim |
-  | CC target square | targetKing in strategic checks | a second fog model in a strategy |
+  | CC target square | targetCC in strategic checks | a second fog model in a strategy |
   Enforced: __tests__/bundle/bundleBoundary.test.ts (ACL + no presentation engine writes);
   __tests__/tactics/weightOrdering.test.ts (scoring tier order); __tests__/deploy-reach.test.ts.
   Intentional soft dual: UI fogged scMovesFrom + core soft queue (resolve owns collisions).

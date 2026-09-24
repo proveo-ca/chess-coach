@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/ui/responsiveness/rules.md, _spec/apps/starchess/architecture/board-entities.puml
+// SPEC: _spec/apps/chess/responsiveness/rules.md, _spec/apps/starchess/architecture/board-entities.puml
 /**
  * Terrain gallery board — Screen grid + static SCFEN (no match store).
  */

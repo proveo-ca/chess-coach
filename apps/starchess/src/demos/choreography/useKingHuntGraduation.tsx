@@ -25,12 +25,12 @@ export const useKingHuntGraduation = (
     if (!ctx.tutorial) return;
     const s = store.state();
     void s.phase;
-    void s.liveSnapshot.kingLives.b;
+    void s.liveSnapshot.ccLives.b;
     void s.outcome;
     if (offered) return;
     // Offer whenever the enemy CC dies in this run — even on a replay after
     // the player already cleared once. `cleared` only gates the menu.
-    const enemyDead = s.liveSnapshot.kingLives.b === 0;
+    const enemyDead = s.liveSnapshot.ccLives.b === 0;
     const over =
       s.phase === "gameOver" || s.liveSnapshot.phase === "O" || s.outcome != null;
     if (!enemyDead || !over) return;

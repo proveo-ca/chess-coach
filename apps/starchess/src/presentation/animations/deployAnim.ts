@@ -9,7 +9,7 @@ export type DeployKind = "humanoid" | "mechanoid";
 
 export type DeployPiece = Exclude<StarChessPiece, "k">;
 
-/** Pawn / bishop crouch-land; knight / rook / queen thrust-brake. */
+/** Marine / Mecha crouch-land; Hoverbike / Tank / BattleShip thrust-brake. */
 export const deployKindFor = (piece: PieceSymbol): DeployKind | null => {
   if (piece === "p" || piece === "b") return "humanoid";
   if (piece === "n" || piece === "r" || piece === "q") return "mechanoid";
@@ -24,7 +24,7 @@ export const MECHANOID_THRUST: Record<"n" | "r" | "q", "air" | "fuel" | "team"> 
 
 export const DEPLOY_ORIGIN: Square = "e2";
 
-/** Empty board with both kings (FEN-loadable) — target square vacant until deploy ends. */
+/** Empty board with both Command Centers (FEN-loadable) — target square vacant until deploy ends. */
 export const DEPLOY_FEN_EMPTY = "4k3/8/8/8/8/8/8/4K3 w - - 0 1";
 
 /** After animation — white unit on e2 (adjacent to the Command Center). */

@@ -7,8 +7,6 @@ import {
 
 import type { TurnBonus } from "~/types/match";
 
-export const TURN_BONUS_BROADCAST_MS = 3000;
-
 /** HUD numbering — the engine's raw counter starts at 0. */
 const displayedTurn = (turn: number): number => Math.max(1, turn);
 

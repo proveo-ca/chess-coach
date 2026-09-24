@@ -109,7 +109,7 @@
 }
 
 /*
- * Pixel-locked to apps/ui SplashScreen.module.css (.splash-content /
+ * Pixel-locked to apps/chess SplashScreen.module.css (.splash-content /
  * .splash-avatar-wrapper / .splash-title). Do not tweak margins/size here
  * without updating the Chess MenuScreen splash slot in lockstep.
  */

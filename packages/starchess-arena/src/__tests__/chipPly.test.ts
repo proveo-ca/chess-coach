@@ -1,8 +1,8 @@
 /**
- * Chip-ply coverage — `beginScTurn` king shots settle as their own recorded
- * ply (`{ scfen: post-chip, resolve: asResolve }`), including a terminal king
- * chip. Fixture: white bishop d7 aims at the black king e8 on a line the
- * bishop itself lights (so the target is revealed to white at turn-open).
+ * Chip-ply coverage — `beginScTurn` Command Center shots settle as their own recorded
+ * ply (`{ scfen: post-chip, resolve: asResolve }`), including a terminal Command Center
+ * chip. Fixture: white Mecha d7 aims at the black Command Center e8 on a line the
+ * Mecha itself lights (so the target is revealed to white at turn-open).
  */
 import { describe, expect, it } from "vitest";
 
@@ -16,18 +16,18 @@ import { naiveScript } from "../players/naive";
 import { recordFromRun } from "../record/record";
 import { runMatch } from "../run/runMatch";
 
-const BISHOP_LINE = "SCFEN|4k3/3B4/8/8/8/8/8/7K|";
+const MECHA_LINE = "SCFEN|4k3/3B4/8/8/8/8/8/7K|";
 
-/** lives=11 (1 per king) ⇒ the first turn-open chip is terminal (white won). */
-const LIVES_1 = `${BISHOP_LINE}0|11|P|G:11:11|B:3:3|Q:w:;b:`;
+/** lives=11 (1 per Command Center) ⇒ the first turn-open chip is terminal (white won). */
+const LIVES_1 = `${MECHA_LINE}0|11|P|G:11:11|B:3:3|Q:w:;b:`;
 /** lives=33 (max, like the canonical start) ⇒ chips can land in sequence. */
-const LIVES_5 = `${BISHOP_LINE}0|33|P|G:11:11|B:3:3|Q:w:;b:`;
+const LIVES_5 = `${MECHA_LINE}0|33|P|G:11:11|B:3:3|Q:w:;b:`;
 
 const chipEvent = (resolve: EndScTurnResult): boolean =>
   resolve.events.some((e) => e.phase === "attack" && e.id.startsWith("ev-begin"));
 
 describe("turn-open chip plies", () => {
-  it("records a terminal king chip as its own single ply", async () => {
+  it("records a terminal Command Center chip as its own single ply", async () => {
     const run = await runMatch({
       players: { w: naiveScript(), b: naiveScript() },
       opening: LIVES_1,
@@ -45,7 +45,7 @@ describe("turn-open chip plies", () => {
       opening: LIVES_5,
     });
 
-    // The first turn opens with the bishop d7 already aimed at the black king —
+    // The first turn opens with the Mecha d7 already aimed at the black Command Center —
     // resolves[0] must be the turn-open chip while the line is still clear.
     expect(run.plies.length).toBeGreaterThanOrEqual(1);
     expect(chipEvent(run.plies[0]!.resolve)).toBe(true);

@@ -4,7 +4,7 @@
  */
 
 export {
-  KING_MAX_LIVES,
+  CC_MAX_LIVES,
   MAX_STORED_MATERIAL,
   MAX_DEPLOYED_MATERIAL,
   TURN_TIMEOUT_MS,
@@ -24,7 +24,7 @@ import { TURN_TIMEOUT_MS } from "@chess-coach/starchess-core";
 export const ATTACK_MS = TURN_TIMEOUT_MS / 10;
 
 /**
- * Attack impact / frag land / king hit-boom (CSS `--frag-flight-ms`) —
+ * Attack impact / frag land / Command Center hit-boom (CSS `--frag-flight-ms`) —
  * 1/4 of an attack (= 1/40 of a turn). Kill-death delay aligns here.
  */
 export const FRAG_FLIGHT_MS = ATTACK_MS / 4;
@@ -54,13 +54,13 @@ export const DEATH_MS = ATTACK_MS / 2;
 
 /**
  * Quiet-move travel time per board square.
- * Total move duration = squares × this (Chebyshev for slides; L-length for knights).
+ * Total move duration = squares × this (Chebyshev for slides; L-length for Hoverbikes).
  * 200ms = prior 250ms × 1.25 speed.
  */
 export const MOVE_SQUARE_MS = 200;
 
 /**
- * Pawn / marine gas-step (stim) — half the classical per-square travel
+ * Marine gas-step (stim) — half the classical per-square travel
  * ({@link MOVE_SQUARE_MS} / 2 = 100ms) with a matching 2× hop gait.
  */
 export const STIM_MOVE_SQUARE_MS = MOVE_SQUARE_MS / 2;
@@ -75,16 +75,23 @@ export const STIM_MOVE_SQUARE_MS = MOVE_SQUARE_MS / 2;
 export const SETTLE_MS = 260;
 
 /**
+ * Hoverbike in-flight turn — rest → first leg at lift-off, and long leg → short
+ * leg at the elbow. Half a Hoverbike square ({@link MOVE_SQUARE_MS} / 4), so the
+ * short leg still flies nose-first; the landing unwind keeps {@link SETTLE_MS}.
+ */
+export const HOVERBIKE_TURN_MS = 90;
+
+/**
  * Siege Tank pack ↔ unpack (CSS `--siege-toggle-ms`) — the whole staggered
  * plate sequence fits in this window. Same 250ms beat every other unit state
  * change uses ({@link MINE_DEPLOY_MS}, {@link FRAG_FLIGHT_MS}); at the old 480
  * the tank visibly lagged the pieces around it.
  *
- * Sole declaration — `presentation/pieces/rookAim` re-exports this one.
+ * Sole declaration — `presentation/pieces/tankAim` re-exports this one.
  */
 export const SIEGE_TOGGLE_MS = 250;
 
-/** Single-square travel (king flee cover, 1-step default). */
+/** Single-square travel (Command Center flee cover, 1-step default). */
 export const MOVE_MS = MOVE_SQUARE_MS;
 
 /** Command Center deploy — total drop + landing. */

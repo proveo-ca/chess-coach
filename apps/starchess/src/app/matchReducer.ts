@@ -42,9 +42,9 @@ const emptyTimeline = (placement: string | null = null): TimelineState => ({
   mineMissileTrails: [],
   spentMines: [],
   displayPlacement: placement,
-  displayKingLives: null,
+  displayCCLives: null,
   displayMines: null,
-  displaySiegedRooks: null,
+  displaySiegedTanks: null,
 });
 
 const reviewStatus = (index: number, max: number): string => {
@@ -114,7 +114,7 @@ const seedFromSnap = (snap: ScFenSnapshot, stored: number): MatchState => {
     targeting: null,
     // Armed specials this planning window only — not snap `U:` (enemy fog pierce).
     specialsUsed: new Set(),
-    siegedRooks: new Set(snap.siegedRooks ?? []),
+    siegedTanks: new Set(snap.siegedTanks ?? []),
     timeline: emptyTimeline(),
     outcome,
     settledSnapshots: [stamped],
@@ -240,7 +240,7 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
         // live in core removeScAction.
         let economies = state.economies;
         let planningMineralSpend = state.planningMineralSpend;
-        if (removed.kind === "spawn" && removed.unit != null) {
+        if (removed.kind === "deploy" && removed.unit != null) {
           const refund = Math.min(
             UNIT_COST[removed.unit],
             planningMineralSpend[removed.color],
@@ -278,29 +278,29 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
       return {
         ...state,
         phase: "targeting",
-        targeting: { kind: "spawn", unit: action.unit, color: action.color },
+        targeting: { kind: "deploy", unit: action.unit, color: action.color },
         statusText: `Deploy ${action.unit}`,
       };
-    case "OPEN_BISHOP_SNIPE":
+    case "OPEN_MECHA_SNIPE":
       if (state.phase !== "planning" && state.phase !== "targeting") return state;
       return {
         ...state,
         phase: "targeting",
         targeting: {
-          kind: "bishopSnipe",
+          kind: "charonMissiles",
           from: action.from,
           targets: action.targets,
           color: action.color,
         },
         statusText: `Charon Booster Missiles armed — click a diagonal square`,
       };
-    case "OPEN_QUEEN_WARP":
+    case "OPEN_BATTLESHIP_WARP":
       if (state.phase !== "planning" && state.phase !== "targeting") return state;
       return {
         ...state,
         phase: "targeting",
         targeting: {
-          kind: "queenWarp",
+          kind: "tacticalJump",
           from: action.from,
           targets: action.targets,
           color: action.color,
@@ -326,7 +326,7 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
         ...state,
         phase: "planning",
         liveSnapshot: stampSnapStored(action.snapshot, state.economies),
-        siegedRooks: new Set(action.snapshot.siegedRooks ?? []),
+        siegedTanks: new Set(action.snapshot.siegedTanks ?? []),
         // Keep planning-window arm marks — never import snap `U:` (enemy aura).
         targeting: null,
         selected: null,
@@ -378,7 +378,7 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
     case "SUBMIT_TURN": {
       if (state.phase !== "planning" && state.phase !== "targeting") return state;
       let snap = state.liveSnapshot;
-      // Timeout / End with the picker open → default BattleShip (queen).
+      // Timeout / End with the picker open → default BattleShip.
       const pending = state.pendingPromotion;
       if (pending) {
         try {
@@ -388,7 +388,7 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
               pending.via === "gas"
                 ? {
                     timing: "B",
-                    kind: "pawnDouble",
+                    kind: "stimStep",
                     color: pending.color,
                     from: pending.from,
                     to: pending.to,
@@ -542,7 +542,7 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
         phase: outcome ? "gameOver" : "planning",
         liveSnapshot: next,
         turnStartChecksApplied: !outcome,
-        siegedRooks: new Set(next.siegedRooks ?? []),
+        siegedTanks: new Set(next.siegedTanks ?? []),
         timeline: emptyTimeline(),
         outcome,
         settledSnapshots: [...state.settledSnapshots, next],
@@ -578,9 +578,9 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
           mineMissileTrails: [...state.timeline.mineMissileTrails],
           spentMines: [],
           displayPlacement: action.placement,
-          displayKingLives: null,
+          displayCCLives: null,
           displayMines: null,
-          displaySiegedRooks: null,
+          displaySiegedTanks: null,
         },
       };
     case "TIMELINE_COMMIT": {
@@ -593,20 +593,20 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
       const jumpTrails = withTrails(tl.jumpTrails, action.jumpTrails);
       const mineMissileTrails = withTrails(tl.mineMissileTrails, action.mineMissileTrails);
       const spentMines = withSquareList(tl.spentMines, action.spentMines);
-      const siegedRooks = withSquareSet(state.siegedRooks, action.siegedRooks);
+      const siegedTanks = withSquareSet(state.siegedTanks, action.siegedTanks);
 
       if (state.phase === "gameOver") {
         // Review replay: board reads timeline overlays; never mutate live/outcome.
         const displayPlacement = action.placement ?? tl.displayPlacement;
-        const displayKingLives = action.kingLives ?? tl.displayKingLives;
+        const displayCCLives = action.ccLives ?? tl.displayCCLives;
         const displayMines = action.mines !== undefined ? action.mines : tl.displayMines;
-        const displaySiegedRooks =
-          action.siegedRooks !== undefined
-            ? withSquareList(tl.displaySiegedRooks ?? [], action.siegedRooks)
-            : tl.displaySiegedRooks;
+        const displaySiegedTanks =
+          action.siegedTanks !== undefined
+            ? withSquareList(tl.displaySiegedTanks ?? [], action.siegedTanks)
+            : tl.displaySiegedTanks;
         return {
           ...state,
-          siegedRooks,
+          siegedTanks,
           timeline: {
             ...tl,
             playingIds,
@@ -618,33 +618,33 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
             mineMissileTrails,
             spentMines,
             displayPlacement,
-            displayKingLives,
+            displayCCLives,
             displayMines,
-            displaySiegedRooks,
+            displaySiegedTanks,
           },
         };
       }
       const snap = state.liveSnapshot;
       const nextPlacement = action.placement ?? snap.placement;
-      const nextLives = action.kingLives ?? snap.kingLives;
+      const nextLives = action.ccLives ?? snap.ccLives;
       const nextMines = action.mines ?? snap.mines;
-      const nextSiegedList = action.siegedRooks
-        ? withSquareList(snap.siegedRooks ?? [], action.siegedRooks)
-        : (snap.siegedRooks ?? []);
+      const nextSiegedList = action.siegedTanks
+        ? withSquareList(snap.siegedTanks ?? [], action.siegedTanks)
+        : (snap.siegedTanks ?? []);
       const snapTouched =
         action.placement !== undefined ||
-        action.kingLives !== undefined ||
+        action.ccLives !== undefined ||
         action.mines !== undefined ||
-        action.siegedRooks !== undefined ||
+        action.siegedTanks !== undefined ||
         action.specialsUsed !== undefined;
       let liveSnapshot: ScFenSnapshot = snap;
       if (snapTouched) {
         liveSnapshot = {
           ...snap,
           placement: nextPlacement,
-          kingLives: nextLives,
+          ccLives: nextLives,
           mines: nextMines,
-          siegedRooks: nextSiegedList,
+          siegedTanks: nextSiegedList,
         };
         if (action.specialsUsed !== undefined) {
           if (action.specialsUsed.length > 0) {
@@ -658,7 +658,7 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
       return {
         ...state,
         liveSnapshot,
-        siegedRooks,
+        siegedTanks,
         timeline: {
           ...tl,
           playingIds,
@@ -670,9 +670,9 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
           mineMissileTrails,
           spentMines,
           displayPlacement: action.placement ?? tl.displayPlacement,
-          displayKingLives: null,
+          displayCCLives: null,
           displayMines: null,
-          displaySiegedRooks: null,
+          displaySiegedTanks: null,
         },
       };
     }
@@ -726,7 +726,7 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
           },
           // Arm marks are live-planning only — do not import snap `U:`.
           specialsUsed: new Set(),
-          siegedRooks: new Set(settled.siegedRooks ?? []),
+          siegedTanks: new Set(settled.siegedTanks ?? []),
           statusText: reviewStatus(nextIndex, max),
         };
       }
@@ -758,7 +758,7 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
         economies,
         // Fresh arm marks — snap `U:` carries green until turn-open checks.
         specialsUsed: new Set(),
-        siegedRooks: new Set(next.siegedRooks ?? []),
+        siegedTanks: new Set(next.siegedTanks ?? []),
         timeline: {
           ...emptyTimeline(),
           jumpTrails: lingeringJumpTrails,
@@ -804,7 +804,7 @@ export const matchReducer = (state: MatchState, action: MatchAction): MatchState
         economies,
         // Arm marks are live-planning only — do not import snap `U:`.
         specialsUsed: new Set(),
-        siegedRooks: new Set(settled.siegedRooks ?? []),
+        siegedTanks: new Set(settled.siegedTanks ?? []),
         timeline: emptyTimeline(),
         targeting: null,
         selected: null,

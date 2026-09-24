@@ -11,7 +11,7 @@ describe("gasRemainingFor", () => {
     expect(gasRemainingFor(snap, "w")).toBe(2);
     snap = addScAction({
       snapshot: snap,
-      action: { timing: "B", kind: "pawnDouble", color: "w", from: "e2", to: "e3" },
+      action: { timing: "B", kind: "stimStep", color: "w", from: "e2", to: "e3" },
     }).snapshot;
     expect(snap.gas.w).toBe(1);
     expect(gasRemainingFor(snap, "w")).toBe(1);
@@ -24,7 +24,7 @@ describe("gasRemainingFor", () => {
     const overlay: ScAction[] = [
       {
         timing: "B",
-        kind: "pawnDouble",
+        kind: "stimStep",
         color: "w",
         from: "e2",
         to: "e3",
@@ -41,7 +41,7 @@ describe("gasRemainingFor", () => {
     );
     snap = addScAction({
       snapshot: snap,
-      action: { timing: "B", kind: "pawnDouble", color: "w", from: "e2", to: "e3" },
+      action: { timing: "B", kind: "stimStep", color: "w", from: "e2", to: "e3" },
     }).snapshot;
     const overlay = snap.queue?.actions ?? [];
     expect(gasRemainingFor(snap, "w", overlay)).toBe(1);

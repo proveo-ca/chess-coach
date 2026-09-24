@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/starchess/screens.puml, _spec/apps/ui/responsiveness/rules.md
+// SPEC: _spec/apps/starchess/screens.puml, _spec/apps/chess/responsiveness/rules.md
 /**
  * Floating dismissible Selena line — a ChatBubble docked out of document flow
  * so the CoachScreen header avatar stays put. Where it docks is band-dependent

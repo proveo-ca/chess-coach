@@ -28,11 +28,11 @@
   overflow: visible;
 }
 
-/* Knight: L-path (long leg → elbow → short leg); hull faces travel direction. */
-.moverKnight {
+/* Hoverbike: L-path (long leg → elbow → short leg); hull faces travel direction. */
+.moverHoverbike {
   transition: none;
   will-change: transform;
-  animation: knightLMove var(--move-ms, 375ms) linear 1 forwards;
+  animation: hoverbikeLMove var(--move-ms, 375ms) linear 1 forwards;
 }
 
 .moverFace {
@@ -40,7 +40,36 @@
 }
 
 /*
- * Queen slide settle. The hull's own normalize unwinds inside InlineQueen; this
+ * Hoverbike touchdown: a short squash-and-stretch on the pad. A bike that flew
+ * right lands mirrored and snaps back to its left-facing rest here (a side
+ * change never tweens — see `styles/unitPose.css`), so the squash is what the
+ * eye reads instead of the snap. Bottom-anchored so it compresses onto the pad.
+ */
+.hoverbikeLanding {
+  transform-origin: 50% 90%;
+  animation: hoverbikeLand var(--settle-ms, 260ms) cubic-bezier(0.22, 0.61, 0.36, 1) 1;
+}
+
+@keyframes hoverbikeLand {
+  0% {
+    transform: scale(1.08, 0.84);
+  }
+  45% {
+    transform: scale(0.96, 1.05);
+  }
+  100% {
+    transform: scale(1, 1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hoverbikeLanding {
+    animation: none;
+  }
+}
+
+/*
+ * BattleShip slide settle. The hull's own normalize unwinds inside InlineBattleShip; this
  * unwinds the travel aim its parent applies, over the same window, so the two
  * land together on the resting bow-down silhouette. Without it the ship snaps
  * the instant the overlay hands the square back to the board glyph.
@@ -55,7 +84,7 @@
   }
 }
 
-@keyframes knightLMove {
+@keyframes hoverbikeLMove {
   /* Distance-proportional: 2 squares then 1 → elbow at ~67%. */
   0% {
     transform: translate(0, 0);
@@ -68,50 +97,50 @@
   }
 }
 
-/* ── Pawn / marine: springy hop while sliding to destination ─────────── */
+/* ── Marine: springy hop while sliding to destination ─────────── */
 
-.moverPawn {
+.moverMarine {
   transition: none;
   will-change: transform;
   animation: humanoidSlide var(--move-ms, 250ms) linear 1 forwards;
 }
 
-.moverPawn .pawnFace {
+.moverMarine .marineFace {
   transform-origin: center 70%;
-  animation-name: pawnTiltHop;
-  animation-duration: var(--pawn-hop-ms, 180ms);
+  animation-name: marineTiltHop;
+  animation-duration: var(--marine-hop-ms, 180ms);
   animation-timing-function: cubic-bezier(0.7, 0, 0.84, 0);
   animation-iteration-count: var(--hop-count, 3);
 }
 
-.moverPawn :global([data-part="leg-left"]),
-.moverPawn :global([data-part="leg-right"]) {
+.moverMarine :global([data-part="leg-left"]),
+.moverMarine :global([data-part="leg-right"]) {
   transform-box: fill-box;
   transform-origin: center top;
 }
 
-.moverPawn :global([data-part="leg-left"]) {
-  animation-name: pawnLegLeft;
-  animation-duration: var(--pawn-hop-ms, 180ms);
+.moverMarine :global([data-part="leg-left"]) {
+  animation-name: marineLegLeft;
+  animation-duration: var(--marine-hop-ms, 180ms);
   animation-timing-function: cubic-bezier(0.7, 0, 0.84, 0);
   animation-iteration-count: var(--hop-count, 3);
 }
 
-.moverPawn :global([data-part="leg-right"]) {
-  animation-name: pawnLegRight;
-  animation-duration: var(--pawn-hop-ms, 180ms);
+.moverMarine :global([data-part="leg-right"]) {
+  animation-name: marineLegRight;
+  animation-duration: var(--marine-hop-ms, 180ms);
   animation-timing-function: cubic-bezier(0.7, 0, 0.84, 0);
   animation-iteration-count: var(--hop-count, 3);
 }
 
 /* Gas-step stim — snappier lean (packed 2× hop cycles in half travel time). */
-.moverPawnStim .pawnFace {
-  animation-name: pawnTiltHopStim;
+.moverMarineStim .marineFace {
+  animation-name: marineTiltHopStim;
   animation-timing-function: cubic-bezier(0.55, 0, 0.9, 0);
 }
 
-.moverPawnStim :global([data-part="leg-left"]),
-.moverPawnStim :global([data-part="leg-right"]) {
+.moverMarineStim :global([data-part="leg-left"]),
+.moverMarineStim :global([data-part="leg-right"]) {
   animation-timing-function: cubic-bezier(0.55, 0, 0.9, 0);
 }
 
@@ -119,7 +148,7 @@
  * Tilt ≤20° to the right on an exponential-ish ease, then mirror left.
  * Left leg tucks up on the right-lean; right leg tucks on the left-lean.
  */
-@keyframes pawnTiltHop {
+@keyframes marineTiltHop {
   0% {
     transform: rotate(0deg);
   }
@@ -137,7 +166,7 @@
   }
 }
 
-@keyframes pawnTiltHopStim {
+@keyframes marineTiltHopStim {
   0% {
     transform: rotate(0deg);
   }
@@ -155,7 +184,7 @@
   }
 }
 
-@keyframes pawnLegLeft {
+@keyframes marineLegLeft {
   0%,
   50%,
   100% {
@@ -169,7 +198,7 @@
   }
 }
 
-@keyframes pawnLegRight {
+@keyframes marineLegRight {
   0%,
   50%,
   100% {
@@ -183,23 +212,23 @@
   }
 }
 
-/* ── Bishop / mecha: hull slide; leg crank is SVG animateTransform ──── */
+/* ── Mecha: hull slide; leg crank is SVG animateTransform ──── */
 
-.moverBishop {
+.moverMecha {
   transition: none;
   will-change: transform;
   animation: humanoidSlide var(--move-ms, 250ms) linear 1 forwards;
 }
 
-/* Queen / battleship: slide while hull faces travel (same aim as attack). */
-.moverQueen {
+/* BattleShip: slide while hull faces travel (same aim as attack). */
+.moverBattleShip {
   transition: none;
   will-change: transform;
   animation: humanoidSlide var(--move-ms, 250ms) linear 1 forwards;
 }
 
-/* Rook / Siege Tank (tank mode): slide while twin battery faces travel. */
-.moverRook {
+/* Siege Tank (tank mode): slide while twin battery faces travel. */
+.moverTank {
   transition: none;
   will-change: transform;
   animation: humanoidSlide var(--move-ms, 250ms) linear 1 forwards;
@@ -215,14 +244,14 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .moverKnight,
-  .moverPawn,
-  .moverBishop,
-  .moverQueen,
-  .moverRook,
-  .moverPawn .pawnFace,
-  .moverPawn :global([data-part="leg-left"]),
-  .moverPawn :global([data-part="leg-right"]) {
+  .moverHoverbike,
+  .moverMarine,
+  .moverMecha,
+  .moverBattleShip,
+  .moverTank,
+  .moverMarine .marineFace,
+  .moverMarine :global([data-part="leg-left"]),
+  .moverMarine :global([data-part="leg-right"]) {
     animation-duration: 1ms;
   }
 }

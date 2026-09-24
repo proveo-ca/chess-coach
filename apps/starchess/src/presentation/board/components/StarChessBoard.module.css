@@ -8,7 +8,7 @@
 }
 
 .chessboard-container {
-  /* Same footprint as apps/ui ChessBoard (--board-size square). */
+  /* Same footprint as apps/chess ChessBoard (--board-size square). */
   box-sizing: border-box;
   width: var(--board-size);
   height: var(--board-size);
@@ -159,7 +159,7 @@
 }
 
 /* Own pieces outside vision sit above the SVG fog; local .fog veils the tile.
-   Match img + inline SVG units (rook/bishop glyphs via .piece / data-piece-inline). */
+   Match img + inline SVG units (Tank/Mecha glyphs via .piece / data-piece-inline). */
 .chessboard--fog :global([data-fog="hidden"]:has(img)),
 .chessboard--fog :global([data-fog="hidden"]:has([data-piece-inline])),
 .chessboard--fog :global([data-fog="hidden"]):has(.piece) {
@@ -691,7 +691,7 @@
   }
 }
 
-/* Vespene ring for an armed special target (Charon Booster Missiles queen). */
+/* Vespene ring for an armed special target (Charon Booster Missiles BattleShip). */
 .square.special-target::after {
   content: "";
   width: 84%;
@@ -738,7 +738,7 @@
   display: block;
 }
 
-/* Pending king-check (`H:`) — attack resolves next End after B. */
+/* Pending cc-check (`H:`) — attack resolves next End after B. */
 .intentCheckRing {
   position: absolute;
   inset: 8%;

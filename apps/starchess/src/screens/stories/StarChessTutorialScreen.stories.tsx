@@ -48,7 +48,7 @@ export const Resolve: Story = {
 };
 
 /** King Damage · DualNav review. */
-export const King: Story = {
+export const CommandCenter: Story = {
   name: "King Damage",
   parameters: { route: tutorialPath("king") },
   render: () => <TutorialScreen />,

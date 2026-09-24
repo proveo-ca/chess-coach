@@ -1,6 +1,6 @@
-/** Caps, costs, timeout, income, king lives — StarChess v1 locked values. */
+/** Caps, costs, timeout, income, Command Center lives — StarChess v1 locked values. */
 
-export const KING_MAX_LIVES = 3;
+export const CC_MAX_LIVES = 3;
 export const MAX_STORED_MATERIAL = 12;
 export const MAX_DEPLOYED_MATERIAL = 50;
 export const MAX_GAME_TURNS = 45;
@@ -53,11 +53,11 @@ export const turnTimeoutMsForTurn = (turn: number): number => {
 /** Gas burned when queueing / committing one special this turn. */
 export const SPECIAL_ENERGY_COST = 1;
 
-/** Charon Booster Missiles (bishopSnipe) gas cost. */
+/** Charon Booster Missiles (charonMissiles) gas cost. */
 export const CHARON_GAS_COST = 2;
 
 /** StarChess alias of {@link CHARON_GAS_COST} — prefer in new code. */
 export const MECHA_CHARON_GAS_COST = CHARON_GAS_COST;
 
-/** BattleShip Tactical Jump (queenWarp) gas cost — 3 canisters (tier-3 income). */
-export const QUEEN_WARP_GAS_COST = 3;
+/** BattleShip Tactical Jump (tacticalJump) gas cost — 3 canisters (tier-3 income). */
+export const TACTICAL_JUMP_GAS_COST = 3;

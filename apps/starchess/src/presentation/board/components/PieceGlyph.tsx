@@ -14,15 +14,15 @@
  * remounting the match.
  */
 import { Match, Show, Switch, type Component, type JSX } from "solid-js";
-import type { RookMode, StarChessPiece } from "@chess-coach/starchess-core";
+import type { TankMode, StarChessPiece } from "@chess-coach/starchess-core";
 
 import { pieceUrl } from "~/presentation/board/pieceUrl";
-import { InlineBishop } from "~/presentation/pieces/InlineBishop";
-import { InlineKing } from "~/presentation/pieces/InlineKing";
-import { InlineKnight } from "~/presentation/pieces/InlineKnight";
-import { InlinePawn } from "~/presentation/pieces/InlinePawn";
-import { InlineQueen } from "~/presentation/pieces/InlineQueen";
-import { InlineRook } from "~/presentation/pieces/InlineRook";
+import { InlineMecha } from "~/presentation/pieces/InlineMecha";
+import { InlineCommandCenter } from "~/presentation/pieces/InlineCommandCenter";
+import { InlineHoverbike } from "~/presentation/pieces/InlineHoverbike";
+import { InlineMarine } from "~/presentation/pieces/InlineMarine";
+import { InlineBattleShip } from "~/presentation/pieces/InlineBattleShip";
+import { InlineTank } from "~/presentation/pieces/InlineTank";
 import type { PieceColor } from "~/presentation/pieces/teamColors";
 import type { PieceSet } from "~/types/board";
 
@@ -30,13 +30,13 @@ export type PieceGlyphProps = {
   color: PieceColor;
   type: StarChessPiece;
   pieceSet: PieceSet;
-  /** Rook only — ignored for cburnett, where both modes are the classic rook. */
-  mode?: RookMode;
-  /** Rook / king turret yaw. Omit for the resting pose. */
+  /** Tank only — ignored for cburnett, where both modes are the classic Tank. */
+  mode?: TankMode;
+  /** Tank / Command Center turret yaw. Omit for the resting pose. */
   aimDeg?: number;
-  /** Bishop only — Charon Booster Missiles armed (twin shoulder launchers up). */
+  /** Mecha only — Charon Booster Missiles armed (twin shoulder launchers up). */
   armed?: boolean;
-  /** Bishop only — play the pop-out on this render. */
+  /** Mecha only — play the pop-out on this render. */
   armAnim?: boolean;
   class?: string;
   alt?: string;
@@ -47,17 +47,17 @@ export type PieceGlyphProps = {
 /** The inline unit for a type, at rest unless the caller aims it. */
 const InlineUnit: Component<PieceGlyphProps> = (props) => (
   <Switch
-    fallback={<InlinePawn color={props.color} />}
+    fallback={<InlineMarine color={props.color} />}
   >
     <Match when={props.type === "r"}>
-      <InlineRook
+      <InlineTank
         color={props.color}
         mode={props.mode ?? "tank"}
         aimDeg={props.aimDeg}
       />
     </Match>
     <Match when={props.type === "b"}>
-      <InlineBishop
+      <InlineMecha
         color={props.color}
         face="front"
         armed={!!props.armed}
@@ -65,13 +65,13 @@ const InlineUnit: Component<PieceGlyphProps> = (props) => (
       />
     </Match>
     <Match when={props.type === "n"}>
-      <InlineKnight color={props.color} />
+      <InlineHoverbike color={props.color} />
     </Match>
     <Match when={props.type === "q"}>
-      <InlineQueen color={props.color} />
+      <InlineBattleShip color={props.color} />
     </Match>
     <Match when={props.type === "k"}>
-      <InlineKing color={props.color} aimDeg={props.aimDeg} />
+      <InlineCommandCenter color={props.color} aimDeg={props.aimDeg} />
     </Match>
   </Switch>
 );

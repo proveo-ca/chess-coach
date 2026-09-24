@@ -1,5 +1,5 @@
 import { UciDriver } from "~/engine/UciDriver";
-// SPEC: _spec/apps/ui/components.puml
+// SPEC: _spec/apps/chess/components.puml
 import type { Difficulty } from "~/types/settings";
 
 /**

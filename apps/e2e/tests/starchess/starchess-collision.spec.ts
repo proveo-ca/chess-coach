@@ -34,18 +34,18 @@ const playResolve = async (page: Page) => {
 test.describe("StarChess collision races (DualNav demos)", () => {
   test("path block: Re1→e8 discovers pe7 (not skip to re8)", async ({ page }) => {
     await page.goto(
-      story("starchess-collision--path-block-discovered-pawn"),
+      story("starchess-collision--path-block-discovered-marine"),
       { waitUntil: "networkidle" },
     );
     await expect(page.locator("[data-board-grid] [data-square]").first()).toBeVisible({
       timeout: 30_000,
     });
-    // Start: white rook e1.
+    // Start: white Tank e1.
     await expect(pieceAt(page, "e1", "w r")).toBeVisible();
 
     await playResolve(page);
 
-    // Rxe7 — discover pawn; destination black rook survives.
+    // Rxe7 — discover Marine; destination black Tank survives.
     await expect(pieceAt(page, "e7", "w r")).toBeVisible({ timeout: 15_000 });
     await expect(pieceAt(page, "e8", "b r")).toBeVisible();
     await expect(page.locator("[data-board-grid] [data-square='e7'] img[alt='b p']")).toHaveCount(
@@ -68,8 +68,8 @@ test.describe("StarChess collision races (DualNav demos)", () => {
     await expect(pieceAt(page, "e8", "b r")).toBeVisible();
   });
 
-  test("same square: race — both bishops die, e5 empty", async ({ page }) => {
-    await page.goto(story("starchess-collision--same-square-bishops"), {
+  test("same square: race — both Mechas die, e5 empty", async ({ page }) => {
+    await page.goto(story("starchess-collision--same-square-mechas"), {
       waitUntil: "networkidle",
     });
     await expect(page.locator("[data-board-grid] [data-square]").first()).toBeVisible({
@@ -92,8 +92,8 @@ test.describe("StarChess collision races (DualNav demos)", () => {
     );
   });
 
-  test("knight speed: gas flee + race — both die on e4, pawn on e5", async ({ page }) => {
-    await page.goto(story("starchess-collision--knight-speed"), {
+  test("Hoverbike speed: gas flee + race — both die on e4, Marine on e5", async ({ page }) => {
+    await page.goto(story("starchess-collision--hoverbike-speed"), {
       waitUntil: "networkidle",
     });
     await expect(page.locator("[data-board-grid] [data-square]").first()).toBeVisible({
@@ -111,7 +111,7 @@ test.describe("StarChess collision races (DualNav demos)", () => {
 
 /**
  * Live single seeds — assert white-visible outcomes only (adjutant may queue black).
- * Knight 1/2/3 distance parity covered in core collisionRaces.test.ts.
+ * Hoverbike 1/2/3 distance parity covered in core collisionRaces.test.ts.
  */
 test.describe("StarChess collision races (live seed smoke)", () => {
   test.beforeEach(async ({ page }) => {
@@ -119,7 +119,7 @@ test.describe("StarChess collision races (live seed smoke)", () => {
     await page.evaluate(() => localStorage.clear());
   });
 
-  test("live path-block seed: white rook ends on e7 after End", async ({ page }) => {
+  test("live path-block seed: white Tank ends on e7 after End", async ({ page }) => {
     await page.goto(
       `single?scfen=${encodeURIComponent(
         "SCFEN|k3r3/4p3/8/8/8/8/8/K3R3|1|33|P|G:11:11|Q:w:C=e1e8;b:",

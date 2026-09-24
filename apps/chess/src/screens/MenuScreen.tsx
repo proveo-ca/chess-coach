@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/ui/components.puml, _spec/apps/starchess/deployment.puml
+// SPEC: _spec/apps/chess/components.puml, _spec/apps/starchess/deployment.puml
 
 import { useNavigate } from "@solidjs/router";
 import { Show, type Component } from "solid-js";

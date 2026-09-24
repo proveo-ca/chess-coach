@@ -1,5 +1,5 @@
 // SPEC: _spec/apps/starchess/architecture/board-entities.puml
-import { For, Show, createMemo, type Component, type JSX } from "solid-js";
+import { For, Show, createMemo, untrack, type Component, type JSX } from "solid-js";
 import type { Square } from "chess.js";
 
 import {
@@ -13,7 +13,7 @@ import {
   screenAimDeg,
   squareBoxStyle,
 } from "~/presentation/animations/attackAnim";
-import { KING_REST_AIM_DEG, ROOK_REST_AIM_DEG } from "~/presentation/pieces/geometry";
+import { CC_REST_AIM_DEG, TANK_REST_AIM_DEG } from "~/presentation/pieces/geometry";
 import styles from "~/presentation/animations/components/AttackAnimation.module.css";
 import {
   MECHA_CHARON,
@@ -25,25 +25,25 @@ import { teamTintStyle } from "~/presentation/pieces/teamColors";
 import {
   aimPoseFor,
   aimTransformCss,
-  knightAimDiagVec,
-  knightElbowVec,
+  hoverbikeAimDiagVec,
+  hoverbikeElbowVec,
   screenAngleDeg,
   squareAt,
   squareCenterPx,
 } from "~/presentation/animations/attackVectors";
-import { InlineBishop } from "~/presentation/pieces/InlineBishop";
-import { InlineKing } from "~/presentation/pieces/InlineKing";
-import { InlineKnight } from "~/presentation/pieces/InlineKnight";
-import { InlinePawn } from "~/presentation/pieces/InlinePawn";
-import { InlineQueen } from "~/presentation/pieces/InlineQueen";
-import { InlineRook } from "~/presentation/pieces/InlineRook";
+import { InlineMecha } from "~/presentation/pieces/InlineMecha";
+import { InlineCommandCenter } from "~/presentation/pieces/InlineCommandCenter";
+import { InlineHoverbike } from "~/presentation/pieces/InlineHoverbike";
+import { InlineMarine } from "~/presentation/pieces/InlineMarine";
+import { InlineBattleShip } from "~/presentation/pieces/InlineBattleShip";
+import { InlineTank } from "~/presentation/pieces/InlineTank";
 import {
-  QUEEN_AIM_WRAP_SCALE,
-  QUEEN_LASER_MUZZLE_X,
-  QUEEN_PIECE_FACE_SCALE,
-} from "~/presentation/animations/queenLaser";
+  BATTLESHIP_AIM_WRAP_SCALE,
+  BATTLESHIP_LASER_MUZZLE_X,
+  BATTLESHIP_PIECE_FACE_SCALE,
+} from "~/presentation/animations/battleShipLaser";
 import type { AttackCue } from "~/presentation/animations/types";
-import { rookModeAt } from "~/presentation/animations/rookModeStore";
+import { tankModeAt } from "~/presentation/animations/tankModeStore";
 import { vecBetween } from "~/presentation/animations/boardGeom";
 
 const NO_SPECIAL_USED: ReadonlySet<Square> = new Set();
@@ -60,76 +60,81 @@ const BoardFx: Component<BoardFxProps> = (props) => (
   </div>
 );
 
+/**
+ * Built once per cue id: a re-emitted cue object (e.g. the Command Center's `damage`
+ * flipping at impact) must update props in place — rebuilding the hull
+ * restarts every CSS timeline and the attack plays twice.
+ */
 const attackNode = (
-  cue: AttackCue,
-  opts?: { specialUsed?: boolean; charon?: boolean },
+  live: () => AttackCue,
+  opts: { specialUsed: () => boolean; charon: () => boolean; fired: () => boolean },
 ): JSX.Element => {
+  const cue = untrack(live);
   const vec = vecBetween(cue.from, cue.to);
   const deg = screenAngleDeg(vec);
   const face = attackFaceFor(cue.piece, vec);
-  const specialUsed = !!opts?.specialUsed;
-  const charon = !!opts?.charon;
-  // Charon pods stay up whenever this unit spent gas this turn (U: / absorb).
-  const armed = specialUsed || charon;
+  const charon = opts.charon;
+  // Charon pods: the volley itself, or a Mecha that fired Charon this turn.
+  const armed = () => charon() || opts.fired();
   const faceClass = () => ({
     [styles.pieceFace]: true,
-    ["sc-special-used"]: specialUsed,
+    ["sc-special-used"]: opts.specialUsed(),
   });
   switch (cue.piece) {
     case "p":
       return (
         <div classList={faceClass()}>
-          <InlinePawn color={cue.color} face={face} aimDeg={deg} />
+          <InlineMarine color={cue.color} face={face} aimDeg={deg} />
         </div>
       );
     case "n": {
-      const pose = aimPoseFor(knightAimDiagVec(vec));
+      const pose = aimPoseFor(hoverbikeAimDiagVec(vec));
       return (
         <div classList={faceClass()}>
-          <InlineKnight color={cue.color} aimPose={pose} />
+          <InlineHoverbike color={cue.color} aimPose={pose} />
         </div>
       );
     }
     case "b":
       return (
         <div classList={faceClass()}>
-          <InlineBishop
+          <InlineMecha
             color={cue.color}
             face={face}
             gunDeg={deg}
             /* Charon volley: idle gatling faces so shoulder pods stay readable. */
-            aiming={!charon}
-            armed={armed}
-            launcherDeg={charon ? deg : undefined}
-            launcherCapsVisible={!charon}
+            aiming={!charon()}
+            armed={armed()}
+            launcherDeg={charon() ? deg : undefined}
+            launcherCapsVisible={!charon()}
           />
         </div>
       );
     case "r":
       return (
         <div classList={faceClass()}>
-          <InlineRook
+          <InlineTank
             color={cue.color}
-            aimDeg={screenAimDeg(true, deg, ROOK_REST_AIM_DEG)}
-            mode={cue.rookMode ?? rookModeAt(cue.from)}
+            aimDeg={screenAimDeg(true, deg, TANK_REST_AIM_DEG)}
+            mode={live().tankMode ?? tankModeAt(cue.from)}
           />
         </div>
       );
     case "q":
-      // Hull + laser share aim on `.aimWrap` (see `queenAimWrapStyle`).
+      // Hull + laser share aim on `.aimWrap` (see `battleShipAimWrapStyle`).
       return (
         <div classList={faceClass()}>
-          <InlineQueen color={cue.color} aiming />
+          <InlineBattleShip color={cue.color} aiming />
         </div>
       );
     case "k":
       return (
         <div classList={faceClass()}>
-          <InlineKing
+          <InlineCommandCenter
             color={cue.color}
-            aimDeg={screenAimDeg(true, deg, KING_REST_AIM_DEG)}
-            damage={cue.damage}
-            seed={cue.seed}
+            aimDeg={screenAimDeg(true, deg, CC_REST_AIM_DEG)}
+            damage={live().damage}
+            seed={live().seed}
           />
         </div>
       );
@@ -143,7 +148,7 @@ const fragLStyle = (
 ): Record<string, string> | null => {
   if (cue.piece !== "n") return null;
   const vec = vecBetween(cue.from, cue.to);
-  const elbowOff = knightElbowVec(vec);
+  const elbowOff = hoverbikeElbowVec(vec);
   const elbowSq = squareAt(cue.from, elbowOff);
   if (!elbowSq) return null;
 
@@ -151,7 +156,7 @@ const fragLStyle = (
   const o = squareCenterPx(cue.from, boardWidth, boardHeight);
   const e = squareCenterPx(elbowSq, boardWidth, boardHeight);
   const t = squareCenterPx(cue.to, boardWidth, boardHeight);
-  const pose = aimPoseFor(knightAimDiagVec(vec));
+  const pose = aimPoseFor(hoverbikeAimDiagVec(vec));
   const noseOff = muzzleOffsetPx(pose, cell * 0.45);
   const nose = { x: o.x + noseOff.x, y: o.y + noseOff.y };
 
@@ -165,7 +170,7 @@ const fragLStyle = (
   };
 };
 
-const rookImpactStyle = (
+const tankImpactStyle = (
   cue: AttackCue,
   boardWidth: number,
   boardHeight: number,
@@ -179,10 +184,10 @@ const rookImpactStyle = (
 };
 
 /**
- * Queen hull + laser bolt share this aim so the pulse travels toward `to`
+ * BattleShip hull + laser bolt share this aim so the pulse travels toward `to`
  * (bolt CSS is +x-local; without this it always flies right).
  */
-const queenAimWrapStyle = (cue: AttackCue): Record<string, string> | undefined => {
+const battleShipAimWrapStyle = (cue: AttackCue): Record<string, string> | undefined => {
   if (cue.piece !== "q") return undefined;
   return { transform: aimTransformCss(aimPoseFor(vecBetween(cue.from, cue.to))) };
 };
@@ -196,8 +201,8 @@ const laserStyle = (
   const { w: cell } = cellSize({ width: boardWidth, height: boardHeight });
   const vec = vecBetween(cue.from, cue.to);
   const dist = cell * Math.hypot(vec.df, vec.dr);
-  const facePx = cell * QUEEN_AIM_WRAP_SCALE * QUEEN_PIECE_FACE_SCALE;
-  const muzzleFromCenter = ((QUEEN_LASER_MUZZLE_X - 22.5) / 45) * facePx;
+  const facePx = cell * BATTLESHIP_AIM_WRAP_SCALE * BATTLESHIP_PIECE_FACE_SCALE;
+  const muzzleFromCenter = ((BATTLESHIP_LASER_MUZZLE_X - 22.5) / 45) * facePx;
   const span = Math.max(6, dist - muzzleFromCenter);
   const bolt = Math.max(14, span * 0.38);
   return {
@@ -226,6 +231,11 @@ export type AttackAnimationProps = {
   dyingIds?: Record<string, boolean>;
   /** Squares with gas / U: — keep green aura on attack hulls. */
   specialUsedSquares?: ReadonlySet<Square> | readonly Square[];
+  /**
+   * Squares a Charon-firing Mecha held this resolve (`charonArmed.ts`). The
+   * launchers follow that unit only — gas on a square is the green aura, not this.
+   */
+  charonSquares?: ReadonlySet<Square>;
   boardWidth: number;
   boardHeight: number;
   box?: { top: number; left: number };
@@ -233,7 +243,7 @@ export type AttackAnimationProps = {
 
 /**
  * StarChess attack VFX layer — one cue per attacking unit.
- * CSS hooks: `data-attack-anim="pawnRifle"` (etc.).
+ * CSS hooks: `data-attack-anim="marineRifle"` (etc.).
  */
 export const AttackAnimation: Component<AttackAnimationProps> = (props) => {
   const dying = (id: string) => !!props.dyingIds?.[id];
@@ -245,6 +255,8 @@ export const AttackAnimation: Component<AttackAnimationProps> = (props) => {
   const hullUsed = (cue: AttackCue, anim: string) =>
     anim === MECHA_CHARON || used().has(cue.from);
   const isCharon = (anim: string) => anim === MECHA_CHARON;
+  const firedCharon = (cue: AttackCue) =>
+    cue.piece === "b" && !!props.charonSquares?.has(cue.from);
 
   const ids = createMemo(() => props.cues.map((c) => c.id));
   const byId = createMemo(() => {
@@ -288,17 +300,17 @@ export const AttackAnimation: Component<AttackAnimationProps> = (props) => {
                 data-square={cue().to}
               />
 
-              {/* HE impact is siege-only — tank mode uses king-style muzzle flashes. */}
-              <Show when={cue().piece === "r" && (cue().rookMode ?? rookModeAt(cue().from)) === "siege"}>
+              {/* HE impact is siege-only — tank mode uses Command Center-style muzzle flashes. */}
+              <Show when={cue().piece === "r" && (cue().tankMode ?? tankModeAt(cue().from)) === "siege"}>
                 <BoardFx
-                  class={styles.rookImpact}
-                  style={rookImpactStyle(cue(), props.boardWidth, props.boardHeight)!}
+                  class={styles.tankImpact}
+                  style={tankImpactStyle(cue(), props.boardWidth, props.boardHeight)!}
                 >
-                  <div class={styles.rookImpactSmoke} />
-                  <div class={styles.rookImpactFire} />
-                  <div class={styles.rookImpactCore} />
-                  <div class={styles.rookImpactEjecta} />
-                  <div class={styles.rookImpactEjectaDiag} />
+                  <div class={styles.tankImpactSmoke} />
+                  <div class={styles.tankImpactFire} />
+                  <div class={styles.tankImpactCore} />
+                  <div class={styles.tankImpactEjecta} />
+                  <div class={styles.tankImpactEjectaDiag} />
                 </BoardFx>
               </Show>
 
@@ -364,14 +376,15 @@ export const AttackAnimation: Component<AttackAnimationProps> = (props) => {
                   data-square={cue().from}
                   data-attack-anim={anim()}
                   data-special-used={hullUsed(cue(), anim()) ? "true" : undefined}
-                  data-rook-mode={
-                    cue().piece === "r" ? (cue().rookMode ?? rookModeAt(cue().from)) : undefined
+                  data-tank-mode={
+                    cue().piece === "r" ? (cue().tankMode ?? tankModeAt(cue().from)) : undefined
                   }
                 >
-                  <div class={styles.aimWrap} style={queenAimWrapStyle(cue())}>
-                    {attackNode(cue(), {
-                      specialUsed: hullUsed(cue(), anim()),
-                      charon: isCharon(anim()),
+                  <div class={styles.aimWrap} style={battleShipAimWrapStyle(cue())}>
+                    {attackNode(cue, {
+                      specialUsed: () => hullUsed(cue(), anim()),
+                      charon: () => isCharon(anim()),
+                      fired: () => firedCharon(cue()),
                     })}
                     <Show when={cue().piece === "q"}>
                       <div

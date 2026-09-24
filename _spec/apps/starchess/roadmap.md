@@ -22,14 +22,14 @@ are done; polish items remain. Timeline perf is a separate track under
 | Item | Status |
 |---|---|
 | `_spec/packages/starchess-core/` — scfen-wire, scfen-queue, resolve, turn-queue-sequence, sc-moves, index | Done |
-| Retarget core + app `// SPEC:` off `_spec/apps/ui/starchess/*` | Done |
+| Retarget core + app `// SPEC:` off `_spec/apps/chess/starchess/*` | Done |
 | `sc-moves.puml` — `useBoardInput` + MatchStore (no Coach `BoardMoveProvider`) | Done |
 | `match-store.puml` under `_spec/apps/starchess/` | Done |
-| Product demos/mode live under `_spec/apps/starchess/`; `_spec/apps/ui/starchess/` removed | Done |
+| Product demos/mode live under `_spec/apps/starchess/`; `_spec/apps/chess/starchess/` removed | Done |
 
 ## Remaining polish
 
-1. ~~Optionally delete `_spec/apps/ui/starchess/` stubs~~ **Done** — directory removed (content lived in core + apps/starchess; stubs/PNGs had no unique value).
+1. ~~Optionally delete `_spec/apps/chess/starchess/` stubs~~ **Done** — directory removed (content lived in core + apps/starchess; stubs/PNGs had no unique value).
 2. Align `starchess-mode` UX package with sidebar chrome as product default.
 3. Extend demos inventory: `VermeerLiveTurnSidebar`, menu stories, review DualNav host.
 4. Mention StarChess in `_spec/summary.md` / top-level architecture if still silent.
@@ -53,5 +53,5 @@ pnpm --filter @chess-coach/starchess-core test
 pnpm --filter @chess-coach/starchess test
 plantuml -checkonly _spec/packages/starchess-core/*.puml _spec/apps/starchess/*.puml \
   _spec/apps/starchess/architecture/*.puml _spec/apps/starchess/core/turn/*.puml
-cd apps/ui && npm run lint && npm run test:int
+cd apps/chess && npm run lint && npm run test:int
 ```

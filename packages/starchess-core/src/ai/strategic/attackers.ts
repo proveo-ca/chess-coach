@@ -3,7 +3,7 @@
  * Who shot the Command Center — the one thing fog can never hide.
  *
  * A Command Center that takes a hit knows it took one, and in StarChess the
- * shot names its own origin square (`kingShot.from`). So an attacker that fires
+ * shot names its own origin square (`ccShot.from`). So an attacker that fires
  * out of complete darkness has told us exactly where it is: firing is the price
  * of hiding. This memory holds that square until the debt is settled.
  *
@@ -62,10 +62,10 @@ export const foldAttackerMemory = (
 ): AttackerMemory => {
   const enemy = enemyOf(side);
   const map = placementToMap(snap.placement);
-  const sieged: ReadonlySet<Square> = new Set(snap.siegedRooks ?? []);
+  const sieged: ReadonlySet<Square> = new Set(snap.siegedTanks ?? []);
   const { litSquares, revealedPieces } = getSideVision(snap.placement, side, {
     mines: snap.mines,
-    rookModeFor: (s) => (sieged.has(s) ? "siege" : "tank"),
+    tankModeFor: (s) => (sieged.has(s) ? "siege" : "tank"),
   });
   const visible = (at: Square) => litSquares.has(at) || revealedPieces.has(at);
   /**

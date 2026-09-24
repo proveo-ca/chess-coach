@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/ui/components.puml
+// SPEC: _spec/apps/chess/components.puml
 import type { Color, PieceSymbol, Square } from "chess.js";
 import { For, Show, createSignal } from "solid-js";
 import type { Component } from "solid-js";

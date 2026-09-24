@@ -18,6 +18,22 @@ const [state, setState] = createPersistedStore<UnlockFile>(ACHIEVEMENT_KEY, {
   unlocks: {},
 });
 
+/** `beat50` shipped as `beat100` (100 wins); carry old unlock ids over once. */
+const LEGACY_ID = /-beat100$/;
+if (Object.keys(state.unlocks).some((key) => LEGACY_ID.test(key))) {
+  setState(
+    "unlocks",
+    reconcile(
+      Object.fromEntries(
+        Object.entries(state.unlocks).map(([key, record]) => [
+          key.replace(LEGACY_ID, "-beat50"),
+          record,
+        ]),
+      ),
+    ),
+  );
+}
+
 export const noteAchievementUnlocks = (
   gameId: string,
   earned: readonly { shortId: string; level: 1 | 2 | 3 | 4 | 5 }[],
@@ -43,7 +59,7 @@ export const unlockedLevel = (shortId: string): number => {
   }
   const career = careerAchievementLevels();
   if (shortId === "beat") level = Math.max(level, career.beat);
-  if (shortId === "beat100") level = Math.max(level, career.beat100);
+  if (shortId === "beat50") level = Math.max(level, career.beat50);
   return level;
 };
 

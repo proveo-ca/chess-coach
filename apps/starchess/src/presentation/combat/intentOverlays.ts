@@ -3,28 +3,28 @@
  * from the live SCFEN queue (and DualNav intent phase).
  *
  * Red dashed rings (`checks`):
- * - fog-visible standing king-checks on the board (resolve at next turn open)
+ * - fog-visible standing Command Center-checks on the board (resolve at next turn open)
  * - checks that appear after applying queued classical moves (projected)
  * - capture/attack destinations (enemy on classical `to`), including a visible
  *   hostile spider mine there — the unit attacks the mine, it does not walk in
  *
- * King-check rings are gated on the viewer's **current** vision — a projected
- * check never paints on a king the viewer cannot see yet (fog leak at intent).
+ * Command Center-check rings are gated on the viewer's **current** vision — a projected
+ * check never paints on a Command Center the viewer cannot see yet (fog leak at intent).
  *
  * // SPEC: _spec/apps/starchess/core/board/planning-projection.puml, _spec/packages/starchess-core/gas-phase-vacancy.puml
  */
 import type { PieceSymbol, Square } from "chess.js";
 import {
-  collectLegalKingChecks,
+  collectLegalCCChecks,
   mapToPlacement,
   mineAt,
   parseSquare,
-  pawnSingleTarget,
+  marineSingleTarget,
   placementToMap,
   rayBetween,
   rewriteClassicalAfterB,
-  rookModeAfterB,
-  type RookMode,
+  tankModeAfterB,
+  type TankMode,
   type ScAction,
   type ScMine,
   type StarChessColor,
@@ -38,8 +38,8 @@ import {
 } from "~/presentation/board/fogVisibility";
 import type { IntentGhost } from "~/types/board";
 
-/** Pawn front-diagonal attack shape (fog attack intents need no visible victim). */
-const isPawnDiagonalAttack = (
+/** Marine front-diagonal attack shape (fog attack intents need no visible victim). */
+const isMarineDiagonalAttack = (
   from: Square,
   to: Square,
   color: StarChessColor,
@@ -82,7 +82,7 @@ export type IntentCanisterGhost = {
   color: StarChessColor;
 };
 
-/** Threatened square — red dashed ring (king check or capture intent). */
+/** Threatened square — red dashed ring (Command Center check or capture intent). */
 export type IntentCheckGhost = {
   at: Square;
 };
@@ -99,12 +99,12 @@ export type IntentOverlays = {
 
 export type IntentOverlayOpts = {
   placement?: string;
-  siegedRooks?: readonly Square[];
+  siegedTanks?: readonly Square[];
   mines?: readonly ScMine[];
   /**
    * Local player — only that side’s queue ghosts. Omit for DualNav / observers
    * (both intentions). Check rings stay global (threat is public once lit), but
-   * a king-check ring needs this viewer's *current* vision of that king.
+   * a Command Center-check ring needs this viewer's *current* vision of that Command Center.
    */
   viewer?: StarChessColor;
 };
@@ -120,7 +120,7 @@ const placementAfterClassicalQueue = (
     const actor = map.get(a.from);
     if (!actor || actor.color !== a.color) continue;
     const target = map.get(a.to);
-    // Engine never occupies the enemy king via classical `C=` — skip projection.
+    // Engine never occupies the enemy Command Center via classical `C=` — skip projection.
     if (target?.type === "k" && target.color !== actor.color) continue;
     // A marine front step that meets a unit is blocked, never a capture — it
     // truncates before the blocker, so the projection must not walk it through.
@@ -168,7 +168,7 @@ const pushCanister = (
  * - **gas/warp then move** — `rewriteClassicalAfterB` folds the legs together,
  *   so the landing is the *rewritten* C's `to`, not `B.to`.
  * - **move then gas** — the F step recomputes +1 from the post-classical
- *   square (see the `pawnDouble` F branch in core `submit-turn`), so `F.to` is
+ *   square (see the `stimStep` F branch in core `submit-turn`), so `F.to` is
  *   only a placeholder for the pre-move geometry.
  *
  * Both endpoints come from the same core helpers the resolver uses. Never
@@ -191,7 +191,7 @@ const stackEndpoints = (
 
   const afterC = placementToMap(placementAfterClassicalQueue(placement, queue));
   for (const a of queue) {
-    if (a.timing !== "F" || a.kind !== "pawnDouble") continue;
+    if (a.timing !== "F" || a.kind !== "stimStep") continue;
     const c = queue.find(
       (q) =>
         q.timing === "C" &&
@@ -202,7 +202,7 @@ const stackEndpoints = (
     if (!c || c.timing !== "C") continue;
     // Resolver fizzles a blocked / off-board F step and the unit parks on the
     // classical landing — no gas leg to paint.
-    const land = pawnSingleTarget(c.to, a.color);
+    const land = marineSingleTarget(c.to, a.color);
     if (!land || afterC.has(land)) continue;
     out.set(`${a.color}:${a.from}`, land);
   }
@@ -278,15 +278,15 @@ export const intentOverlaysFromQueue = (
           piece: ghost,
           ...(ghost === "r"
             ? {
-                rookMode: (promoted
+                tankMode: (promoted
                   ? "tank"
-                  : rookModeAfterB(a.from, opts?.siegedRooks, queue)) as RookMode,
+                  : tankModeAfterB(a.from, opts?.siegedTanks, queue)) as TankMode,
               }
             : {}),
         });
       }
       // Capture / attack intent — red ring. Never key red chrome off a fully
-      // fogged enemy (that would leak occupancy); pawn diagonals always ring
+      // fogged enemy (that would leak occupancy); Marine diagonals always ring
       // (attack shape, victim optional) — ringing only the *empty* ones would
       // leak the same occupancy by omission. Visible / revealed enemies still
       // ring and paint above the veil.
@@ -296,7 +296,7 @@ export const intentOverlaysFromQueue = (
       if (isMarineFrontStep(piece, a.from, a.to)) continue;
       const target = map?.get(a.to);
       const mineOnTo = mineAt(opts?.mines, a.to);
-      if (piece === "p" && isPawnDiagonalAttack(a.from, a.to, a.color)) {
+      if (piece === "p" && isMarineDiagonalAttack(a.from, a.to, a.color)) {
         pushCheck(checks, seenCheck, a.to);
       } else if (
         !target &&
@@ -306,7 +306,7 @@ export const intentOverlaysFromQueue = (
         (!viewer ||
           !opts?.placement ||
           isSquareVisibleToSide(opts.placement, viewer, a.to, {
-            siegedRooks: opts.siegedRooks,
+            siegedTanks: opts.siegedTanks,
             mines: opts.mines,
           }))
       ) {
@@ -318,7 +318,7 @@ export const intentOverlaysFromQueue = (
           !viewer ||
           !opts?.placement ||
           pieceVisibleToViewer(opts.placement, viewer, a.to, target.color, {
-            siegedRooks: opts.siegedRooks,
+            siegedTanks: opts.siegedTanks,
             mines: opts.mines,
           });
         if (known) pushCheck(checks, seenCheck, a.to);
@@ -326,12 +326,12 @@ export const intentOverlaysFromQueue = (
       continue;
     }
     // B / F specials — canister badge + destination ghost when relocating.
-    // Spawn: badge rides the deploy ghost (to), not the king — differentiates
+    // Spawn: badge rides the deploy ghost (to), not the Command Center — differentiates
     // deploy-with-gas vs pure classical move ghost (no canister).
     // Relocates: the unit rests on its stack endpoint (see stackEndpoints), and
     // the badge sits on both the live actor and that ghost — "this unit is
     // spending" plus "it arrives here by vespene, not by the classical leg".
-    const isSpawn = a.kind === "spawn";
+    const isSpawn = a.kind === "deploy";
     const dest = isSpawn ? a.to : (stackEnd.get(`${a.color}:${a.from}`) ?? a.to);
     pushCanister(canisters, seenCan, isSpawn && a.to ? a.to : a.from, a.color);
     if (!isSpawn && dest && dest !== a.from) {
@@ -353,9 +353,9 @@ export const intentOverlaysFromQueue = (
       ...(isSpawn ? {} : { via: "gas" as const }),
       ...(piece === "r"
         ? {
-            rookMode: (isSpawn || promoted
+            tankMode: (isSpawn || promoted
               ? "tank"
-              : rookModeAfterB(a.from, opts?.siegedRooks, queue)) as RookMode,
+              : tankModeAfterB(a.from, opts?.siegedTanks, queue)) as TankMode,
           }
         : {}),
     });
@@ -372,11 +372,11 @@ export const intentOverlaysFromQueue = (
     if (projectQueue.some((a) => a.timing === "C" && a.kind === "classical")) {
       placements.push(placementAfterClassicalQueue(opts.placement, projectQueue));
     }
-    const fogOpts = { siegedRooks: opts.siegedRooks, mines: opts.mines };
+    const fogOpts = { siegedTanks: opts.siegedTanks, mines: opts.mines };
     /**
-     * A check ring names a king's square, so it may only paint where the viewer
+     * A check ring names a Command Center's square, so it may only paint where the viewer
      * sees it *right now* — never on the projected board's vision. A queued move
-     * that would light and check a hidden king (a knight stepping beside it, a
+     * that would light and check a hidden Command Center (a Hoverbike stepping beside it, a
      * discovered ray) would otherwise confirm its position at intent time,
      * before the move ever resolves. Observers (no viewer) keep every ring.
      */
@@ -386,7 +386,7 @@ export const intentOverlaysFromQueue = (
         placement === opts.placement
           ? liveGate
           : targetVisibleGate(placement, fogOpts);
-      for (const shot of collectLegalKingChecks(placement, { isTargetVisible })) {
+      for (const shot of collectLegalCCChecks(placement, { isTargetVisible })) {
         if (viewer && !liveGate(viewer, shot.to)) continue;
         pushCheck(checks, seenCheck, shot.to);
       }

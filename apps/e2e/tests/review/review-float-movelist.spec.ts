@@ -3,7 +3,7 @@ import type { Page } from "@playwright/test";
 
 /**
  * Review /:id §4 floating move list on short (dynamic) viewports.
- * See _spec/apps/ui/responsiveness/rules.md §4b.
+ * See _spec/apps/chess/responsiveness/rules.md §4b.
  */
 const FIXTURE_ID = "test-review-float-0001";
 const FIXTURE_PGN = "1. e4 e5 2. d4 d5 3. Nf3 Nc6 4. Bb5 a6 5. Ba4 Nf6";

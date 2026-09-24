@@ -10,24 +10,24 @@ export type PieceColor = StarChessColor;
 export type StarChessPiece = "p" | "n" | "b" | "r" | "q" | "k";
 
 /** Siege Tank turret: mobile twin guns vs deployed shock cannon. */
-export type RookMode = "tank" | "siege";
+export type TankMode = "tank" | "siege";
 
 /** Planning / resolve phase codes used in SCFEN. */
 export type ScPhaseCode = "P" | "B" | "A" | "M" | "F" | "O";
 
-/** King spawn choices — pawn first, then promotional set. */
+/** Command Center spawn choices — Marine first, then promotional set. */
 export type SpawnPiece = "p" | "q" | "r" | "b" | "n";
 
 /** Queue timing codes written in SCFEN `Q:`. */
 export type ScActionTiming = "B" | "C" | "F";
 
 export type ScSpecialKind =
-  | "spawn"
-  | "pawnDouble"
-  | "knightMine"
-  | "bishopSnipe"
-  | "rookSiege"
-  | "queenWarp";
+  | "deploy"
+  | "stimStep"
+  | "spiderMine"
+  | "charonMissiles"
+  | "siegeMode"
+  | "tacticalJump";
 
 /** Alias of {@link ScSpecialKind} (legacy name). */
 export type SpecialKind = ScSpecialKind;
@@ -40,7 +40,7 @@ export type ScAction =
       from: Square;
       to?: Square;
       unit?: SpawnPiece;
-      /** Gas step onto last rank — Marine promotes on End (pawnDouble only). */
+      /** Gas step onto last rank — Marine promotes on End (stimStep only). */
       promotion?: SpawnPiece;
       seq: number;
     }
@@ -77,7 +77,7 @@ export type ScFenSnapshot = {
   /** Classic piece-placement ranks (FEN field 0). */
   placement: string;
   turn: number;
-  kingLives: Record<StarChessColor, number>;
+  ccLives: Record<StarChessColor, number>;
   phase: ScPhaseCode;
   /** Remaining vespene this planning turn (`G:` first pair). */
   gas: Record<StarChessColor, number>;
@@ -100,23 +100,23 @@ export type ScFenSnapshot = {
   mines?: readonly ScMine[];
   /**
    * Squares whose Siege Tank is unpacked (`|S:c3f7…`). Immobile until toggled
-   * back to tank via `rookSiege`. Absent / empty ⇒ all rooks tank-mode.
+   * back to tank via `siegeMode`. Absent / empty ⇒ all Tanks tank-mode.
    */
-  siegedRooks?: readonly Square[];
+  siegedTanks?: readonly Square[];
   /**
-   * Legacy deferred king-checks (`|H:…`). Parsed for round-trip only —
+   * Legacy deferred cc-checks (`|H:…`). Parsed for round-trip only —
    * `endScTurn` applies **legal** checks from board geometry instead.
    */
-  pendingKingShots?: readonly ScPendingKingShot[];
+  pendingCCShots?: readonly ScPendingCCShot[];
 };
 
-/** Armed king-check waiting for next-turn resolve (SCFEN `H:`). */
-export type ScPendingKingShot = {
+/** Armed cc-check waiting for next-turn resolve (SCFEN `H:`). */
+export type ScPendingCCShot = {
   /** Attacking side. */
   color: StarChessColor;
   piece: StarChessPiece;
   from: Square;
-  /** Intent square (enemy king when armed). */
+  /** Intent square (enemy Command Center when armed). */
   to: Square;
 };
 
@@ -140,7 +140,7 @@ export type ClassicalPlan = {
   color: StarChessColor;
   from: Square;
   to: Square;
-  /** Pawn promotion choice when `to` is the last rank. */
+  /** Marine promotion choice when `to` is the last rank. */
   promotion?: SpawnPiece;
   /**
    * Marine Extra Step legs sharing this walk. The two hops are one walk for

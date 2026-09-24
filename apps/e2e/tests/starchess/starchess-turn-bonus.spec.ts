@@ -1,11 +1,11 @@
 import { expect, test, type Page } from "@playwright/test";
 
 /**
- * Milestone-turn broadcast — Turn 1 / 11 / 21 pause the planning clock for a
- * 3000ms chat bubble over the middle of the Board announcing the new
- * income/gas/clock tier. The Board stays live; only the resource bar goes
- * inert until dismissal (auto or click-to-skip) — and submits are refused
- * mid-broadcast, so the turn cannot end under the bubble either way.
+ * Milestone-turn broadcast — Turn 1 / 11 / 21 float a chat bubble over the
+ * middle of the Board announcing the new income/gas/clock tier, for the whole
+ * planning window. Nothing is held: the clock arms underneath it, the board and
+ * resource bar stay live, and End goes through. The bubble clears when the turn
+ * ends, or earlier on click.
  */
 const START_BOARD =
   "SCFEN|4k3/8/8/8/8/8/4P3/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:";
@@ -39,12 +39,11 @@ const expectRingArmed = (page: Page, tierSeconds: number) =>
   );
 
 test.describe("StarChess turn bonus broadcast", () => {
-  test("Turn 1 broadcasts on game start and holds the clock", async ({ page }) => {
+  test("Turn 1 broadcasts on game start for the whole turn", async ({ page }) => {
     await gotoScfen(page, START_BOARD);
 
     const b = bubble(page);
     await expect(b).toBeVisible();
-    const shownAt = Date.now();
     await expect(b).toContainText("Turn 1");
     // Icon-led grant row — semantics live in titles, counts in text.
     await expect(b.locator("[title='Minerals income per turn']")).toHaveText("+1");
@@ -68,36 +67,28 @@ test.describe("StarChess turn bonus broadcast", () => {
     });
     expect(squareLive).toBe(true);
 
-    // Only the resource bar is blocked while the broadcast runs.
-    // Live chrome renders viewer + adjutant bars — the broadcast inerts the viewer (first) bar.
+    // Nothing is locked — the viewer's resource bar stays live under the bubble.
     const bar = page.getByTestId("resource-bar").first();
     await expect(bar).toHaveAttribute("data-team", "w");
-    await expect(page.getByTestId("resource-bar").nth(1)).toHaveAttribute("data-team", "b");
-    await expect(bar).toHaveAttribute("inert", "");
+    await expect(bar).not.toHaveAttribute("inert");
 
-    // Clock not counting during broadcast — nothing armed yet…
-    await expect(ring(page)).toHaveAttribute("data-seconds", "0");
-    // …and an End click mid-broadcast is refused by the store, not the DOM.
-    await page.getByTestId("turn-end").click();
-    await expect(b).toBeVisible();
-    await expect(ring(page)).toHaveAttribute("data-seconds", "0");
-
-    // Auto-dismiss after ~3000ms; only then does the full tier clock arm.
-    await expect(b).toBeHidden({ timeout: 6_000 });
-    const elapsed = Date.now() - shownAt;
-    expect(elapsed).toBeGreaterThanOrEqual(2_500);
-    expect(elapsed).toBeLessThan(5_500);
+    // The clock arms at the full tier immediately — no hold.
     await expectRingArmed(page, 10);
 
-    // Resource bar back with it.
-    await expect(bar).not.toHaveAttribute("inert");
+    // The bubble outlives the old 3s broadcast window…
+    await page.waitForTimeout(3_500);
+    await expect(b).toBeVisible();
+
+    // …and End goes through, clearing it with the turn.
+    await page.getByTestId("turn-end").click();
+    await expect(b).toBeHidden({ timeout: 2_000 });
   });
 
   for (const { seed, turn, grant, seconds } of [
     { seed: 10, turn: 11, grant: "+2 Minerals +2 Gas", seconds: "15" },
     { seed: 20, turn: 21, grant: "+3 Minerals +3 Gas", seconds: "22" },
   ] as const) {
-    test(`End into Turn ${turn} clicks through the ${grant} ${seconds}s broadcast`, async ({
+    test(`End into Turn ${turn} announces the ${grant} ${seconds}s tier`, async ({
       page,
     }) => {
       await gotoScfen(page, boardAt(seed));
@@ -107,7 +98,7 @@ test.describe("StarChess turn bonus broadcast", () => {
 
       await page.getByTestId("turn-end").click();
 
-      // Resolve plays out, then the milestone pauses the next planning window.
+      // Resolve plays out, then the milestone announces the next planning window.
       const b = bubble(page);
       await expect(b).toBeVisible({ timeout: 30_000 });
       await expect(b).toContainText(`Turn ${turn}`);
@@ -118,15 +109,14 @@ test.describe("StarChess turn bonus broadcast", () => {
       await expect(
         b.locator("[title='Planning clock this turn']"),
       ).toHaveText(`${seconds}s`);
-      await expect(page.getByTestId("resource-bar").first()).toHaveAttribute("inert", "");
+      await expect(page.getByTestId("resource-bar").first()).not.toHaveAttribute("inert");
 
-      // Click-to-skip — dismiss well inside the 3000ms window.
+      // The new tier clock runs underneath the bubble.
+      await expectRingArmed(page, Number(seconds));
+
+      // Click-to-skip hides it early.
       await b.click();
       await expect(b).toBeHidden({ timeout: 1_000 });
-
-      // The skipped window arms at the full new tier duration.
-      await expectRingArmed(page, Number(seconds));
-      await expect(page.getByTestId("resource-bar").first()).not.toHaveAttribute("inert");
 
       // Income tier landed in the resource bar readout.
       await expect(page.getByTestId("resource-bar").first()).toHaveAttribute(

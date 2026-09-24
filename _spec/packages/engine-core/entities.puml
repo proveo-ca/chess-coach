@@ -11,7 +11,7 @@ title Chess Coach · @chess-coach/engine-core\n(shared prompt / classification /
 ' ══════════════════════════════════════════════════════════════
 ' The behaviour-defining core shared VERBATIM by both backends:
 '   · apps/server  (Bun, native engines + Ollama)
-'   · apps/ui/src/engine  (browser workers + WebLLM)
+'   · apps/chess/src/engine  (browser workers + WebLLM)
 ' Behavior is pinned by _spec/apps/server/behavior.md §5; the
 ' consumer mapping lives in ui-engine-parity.md (same directory).
 ' ══════════════════════════════════════════════════════════════
@@ -73,7 +73,7 @@ package "@chess-coach/engine-core [packages/engine-core/src/]" {
 
 package "Consumers" {
   component "apps/server\nOrchestrator.ts" as SRV
-  component "apps/ui/src/engine\nOrchestrator.ts · config.ts" as WEB
+  component "apps/chess/src/engine\nOrchestrator.ts · config.ts" as WEB
 }
 
 SRV --> llmPromptFormat : imports (workspace dep)
@@ -86,7 +86,7 @@ end note
 
 note bottom of WEB
   Web-only additions (bestAltMatchesMove via uciMatchesSan,
-  text sanitizing, fallback commentary) stay in apps/ui —
+  text sanitizing, fallback commentary) stay in apps/chess —
   see ui-engine-parity.md.
 end note
 

@@ -29,7 +29,7 @@ export const FogEdgeDemo: Component<FogEdgeDemoProps> = (props) => {
       visionMode={s.visionMode ?? "observer"}
       fog={s.fog ?? (s.visionMode === "observer" ? false : true)}
       variant="eclipse"
-      rookTank={s.rookTank}
+      packedTank={s.packedTank}
     />
   );
 };

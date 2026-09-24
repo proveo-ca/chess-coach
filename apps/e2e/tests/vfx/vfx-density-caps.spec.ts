@@ -23,7 +23,7 @@ import {
  * is actually applied to the rendered overlay on each density path.
  */
 
-/** Busiest deterministic live seeds — mine chase (2 deaths) and a king duel. */
+/** Busiest deterministic live seeds — mine chase (2 deaths) and a Command Center duel. */
 const BUSY_SEEDS = [
   "SCFEN|7k/8/8/8/8/8/8/R3K3|1|33|P|G:11:11|M:b:a4|Q:w:C=a1a8;b:",
   "SCFEN|8/8/8/8/8/8/3k4/3K4|1|33|P|G:11:11|Q:w:;b:",

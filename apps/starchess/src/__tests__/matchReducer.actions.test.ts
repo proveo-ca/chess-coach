@@ -17,7 +17,7 @@ describe("matchReducer action surface", () => {
       type: "QUEUE_ACTION",
       action: {
         timing: "B",
-        kind: "pawnDouble",
+        kind: "stimStep",
         color: "w",
         from: "e2",
         to: "e3",
@@ -42,7 +42,7 @@ describe("matchReducer action surface", () => {
       type: "QUEUE_ACTION",
       action: {
         timing: "B",
-        kind: "spawn",
+        kind: "deploy",
         color: "w",
         from: "e1",
         to: "d1",
@@ -66,7 +66,7 @@ describe("matchReducer action surface", () => {
     // A deep-link seed carries the spawn on the queue but never debited the
     // bank — refunding it would inflate the bank.
     let s = load(
-      "SCFEN|4k3/8/8/8/8/8/4P3/4K3|1|33|P|G:01:11|Q:w:B=spawn:e1:d1:p;b:",
+      "SCFEN|4k3/8/8/8/8/8/4P3/4K3|1|33|P|G:01:11|Q:w:B=deploy:e1:d1:p;b:",
     );
     const seq = s.liveSnapshot.queue!.actions[0]!.seq;
     expect(s.economies.w.stored).toBe(3);
@@ -77,10 +77,10 @@ describe("matchReducer action surface", () => {
 
   it("refunds never cross colors or inflate the bank (ledger is per-side)", () => {
     // Seed queues an UNPAID white deploy p (e1→d1) while the black side spends
-    // and queues its own bishop deploy. Removing the white spawn must not pull
+    // and queues its own Mecha deploy. Removing the white spawn must not pull
     // from black's ledger, and black's own removal must refund fully.
     let s = load(
-      "SCFEN|4k3/8/8/8/8/8/4P3/4K3|1|33|P|G:01:11|B:4:4|Q:w:B=spawn:e1:d1:p;b:",
+      "SCFEN|4k3/8/8/8/8/8/4P3/4K3|1|33|P|G:01:11|B:4:4|Q:w:B=deploy:e1:d1:p;b:",
     );
     const whiteSeq = s.liveSnapshot.queue!.actions[0]!.seq;
     s = matchReducer(s, { type: "SPEND_STORED", color: "b", amount: 3 });
@@ -88,7 +88,7 @@ describe("matchReducer action surface", () => {
       type: "QUEUE_ACTION",
       action: {
         timing: "B",
-        kind: "spawn",
+        kind: "deploy",
         color: "b",
         from: "e8",
         to: "d8",
@@ -121,21 +121,21 @@ describe("matchReducer action surface", () => {
     let s = load();
     s = matchReducer(s, { type: "OPEN_SPAWN", unit: "n", color: "w" });
     expect(s.phase).toBe("targeting");
-    expect(s.targeting?.kind).toBe("spawn");
+    expect(s.targeting?.kind).toBe("deploy");
     s = matchReducer(s, {
-      type: "OPEN_BISHOP_SNIPE",
+      type: "OPEN_MECHA_SNIPE",
       from: "c1",
       targets: ["b2", "d2"],
       color: "w",
     });
-    expect(s.targeting?.kind).toBe("bishopSnipe");
+    expect(s.targeting?.kind).toBe("charonMissiles");
     s = matchReducer(s, {
-      type: "OPEN_QUEEN_WARP",
+      type: "OPEN_BATTLESHIP_WARP",
       from: "d1",
       targets: ["d4", "d5"],
       color: "w",
     });
-    expect(s.targeting?.kind).toBe("queenWarp");
+    expect(s.targeting?.kind).toBe("tacticalJump");
     s = matchReducer(s, { type: "CANCEL_TARGET" });
     expect(s.phase).toBe("planning");
     s = matchReducer(s, { type: "MARK_SPECIAL_USED", square: "e2" });
@@ -281,7 +281,7 @@ describe("matchReducer action surface", () => {
     s = matchReducer(s, {
       type: "TIMELINE_COMMIT",
       placement: "8/8/8/8/8/8/8/8",
-      kingLives: { w: 1, b: 1 },
+      ccLives: { w: 1, b: 1 },
       playingIds: ["a1"],
     });
     expect(s.liveSnapshot).toBe(liveRef);

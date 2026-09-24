@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/ui/components.puml
+// SPEC: _spec/apps/chess/components.puml
 import { Show, createSignal } from "solid-js";
 import type { Component, JSX } from "solid-js";
 

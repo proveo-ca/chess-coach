@@ -83,11 +83,11 @@ Depends only on `@chess-coach/starchess-core`. No DOM, no bun-specific APIs (the
 - `src/replay/fen.ts` — `scfenToFen(snap): string`. **The SCFEN→FEN projector** that lets stockfish
   consume StarChess positions (the crux of "adjutant works outside a browser").
   - Placement maps 1:1 — SCFEN already uses standard letters `p/n/b/r/q/k` (uppercase white).
-  - Drops SCFEN extras (`kingLives`, `gas`, `stored`, `mines`, `queue`, `siegedRooks`).
+  - Drops SCFEN extras (`ccLives`, `gas`, `stored`, `mines`, `queue`, `siegedTanks`).
   - Side-to-move `w`, halfmove 0, fullmove = `Math.max(1, turn)` (opening seed is `turn 0`; `0` is
     invalid FEN — mirror the guard at `codec.ts:581`).
   - **Legality guard (required):** stockfish rejects some *legal-in-StarChess* positions — pawns on
-    rank 1/8 come from the `spawn` special/`pawnDouble` promotions (`submit-turn.ts:327-346, 865-911`)
+    rank 1/8 come from the `deploy` special/`stimStep` promotions (`submit-turn.ts:327-346, 865-911`)
     and are invalid classical FEN. The projector must flag such snapshots `ineligible` so the feed
     **skips** them and the strategic script falls back to its deterministic ranking — never burning the
     engine budget on a position stockfish can't parse.
@@ -157,7 +157,7 @@ simply: *core + arena package have zero DOM/worker/fetch dependencies*.
 - Swap `historyFromRecord` to the shared core `replay/record.ts` implementation.
 - **File upload → localStorage (recommended offline channel, zero network):** import record JSON via
   `<input type="file">`/drag-and-drop → `FileReader.readAsText` → `JSON.parse` → schema-validate →
-  push into the existing `matchHistoryStore` (`starchess_match_history`, MAX_GAMES 100). A record is
+  push into the existing `matchHistoryStore` (`starchess_match_history`, MAX_GAMES 150). A record is
   ~15–30 KB; thousands fit the ~5 MB quota before existing trim applies. Because there's no HTTP, this
   side-steps `CORP`/`COEP` and URL-length entirely. Caveat: localStorage is per-origin and erasable —
   file export↔import *is* the portable round-trip.

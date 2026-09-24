@@ -11,8 +11,8 @@ skinparam noteTextAlignment left
  title PLANNED — native Android screens; shared domain and P2P contracts
 
 package "Web composition and proposed native presentation" {
-  component "apps/ui\nBrowser screens using packages/ui/web" as WEB <<app>>
-  component "apps/ui/android\nNative Android screens" as NATIVE <<app>>
+  component "apps/chess\nBrowser screens using packages/ui/web" as WEB <<app>>
+  component "apps/chess/android\nNative Android screens" as NATIVE <<app>>
 }
 component "Shared domain contracts\ncommands · state · capabilities" as DOMAIN <<app>>
 component "Native P2P adapter\nhost / join / peer moves" as P2P <<app>>
@@ -36,7 +36,7 @@ end note
 
 note bottom of WEB
   **Shared web kit: packages/ui/web.**
-  apps/ui/android remains a likely native location.
+  apps/chess/android remains a likely native location.
   Native UI shares domain contracts, not web views.
   StarChess directory placement remains open.
   This plan does not relocate source files.

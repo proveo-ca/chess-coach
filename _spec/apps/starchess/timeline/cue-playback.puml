@@ -33,7 +33,7 @@ repeat :read cue at ""index"", ""takeWhile"" its batch;
     :**late windows** (F wave, after moves/attacks mutated placement)\npatch the board **forward** (""commitDeployBoard"") — re-applying\n""afterB"" would rewind relocates and resurrect the dead;
   elseif (phase-1 attack?) then (yes)
     :one window for **both** sides' shots; deaths overlap at the max\nper-weapon ""attackImpactMs"" so impact meets collapse;
-    :kingShot HP lands at that impact (the damage boom syncs to the hit);
+    :ccShot HP lands at that impact (the damage boom syncs to the hit);
     :reciprocal fire → ""attackDying"" suppresses the attacker hull so the\ndeath animation owns the square; flags held until the wave ends so\nhulls cannot flash back;
     :mine cleared by an attack → ""spentMines"" hides the glyph as the boom\nstarts (the mine stays in the snapshot until ""afterAttack"");
     :deaths done → stamp ""afterAttack"" but keep the attack cues mounted\nuntil ""ATTACK_MS"" (clearing early truncates the shot);
@@ -55,7 +55,7 @@ repeat :read cue at ""index"", ""takeWhile"" its batch;
   else (sequential tail)
     :approach chains, Tactical Jump, arrival blasts and any leftover cue\nplay one at a time;
     :a mine death here — ""armm"" / ""qjm"" / ""farmm"", the rungs with no\nbatching handler of their own — takes ""spentMines"" for its tile;
-    :a lethal kingShot immediately followed by its king death is fused —\nthe king crumples at frag impact instead of after the full shot;
+    :a lethal ccShot immediately followed by its king death is fused —\nthe king crumples at frag impact instead of after the full shot;
     :Tactical Jump owns its own travel + trail timing (never a slide);
     :any death vacates its square on completion so a corpse cannot flash\nback between the death VFX and an occupy that follows;
   endif

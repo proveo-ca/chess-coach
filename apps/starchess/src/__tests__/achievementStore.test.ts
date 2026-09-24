@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { applyUnlocks } from "~/achievements/unlocks";
 
@@ -37,5 +37,20 @@ describe("achievement unlocks", () => {
       4,
     );
     expect(Object.keys(unlocks).sort()).toEqual(["1-analysis-medal", "2-analysis-stonks"]);
+  });
+});
+
+describe("beat100 → beat50 rename", () => {
+  it("carries a saved beat100 unlock, and its witness game, over to beat50", async () => {
+    localStorage.clear();
+    localStorage.setItem(
+      "starchess_achievements",
+      JSON.stringify({ unlocks: { "2-count-beat100": { gameId: "old-game", unlockedAt: 1 } } }),
+    );
+    vi.resetModules();
+    const store = await import("~/store/achievementStore");
+    expect(store.unlockedLevel("beat50")).toBe(2);
+    expect(store.witnessGameId("beat50")).toBe("old-game");
+    localStorage.clear();
   });
 });

@@ -50,8 +50,8 @@ export const placementToMap = (placement: string): Map<Square, ScPiece> => {
   return map;
 };
 
-/** Every rook / Siege Tank square in a placement (both colors). */
-export const rookSquaresInPlacement = (placement: string): Square[] => {
+/** Every Siege Tank square in a placement (both colors). */
+export const tankSquaresInPlacement = (placement: string): Square[] => {
   const out: Square[] = [];
   for (const [square, piece] of placementToMap(placement)) {
     if (piece.type === "r") out.push(square);
@@ -155,8 +155,8 @@ export const isSquareAttackedBy = (
   return false;
 };
 
-/** Find the king square for a color (null if missing). */
-export const findKing = (
+/** Find the Command Center square for a color (null if missing). */
+export const findCC = (
   map: Map<Square, ScPiece>,
   color: StarChessColor,
 ): Square | null => {
@@ -167,22 +167,22 @@ export const findKing = (
 };
 
 /**
- * Every unit that **legally** checks a king (clear geometry via {@link attacksSquare}).
- * Attack range is the piece’s geometry only (bishop/queen/rook rays are unlimited).
- * Fog limit is **side vision**: if any friendly unit lights the king (e.g. sieged
- * tank 9×9), every geometric checker of that side may chip — including a bishop
+ * Every unit that **legally** checks a Command Center (clear geometry via {@link attacksSquare}).
+ * Attack range is the piece’s geometry only (Mecha/BattleShip/Tank rays are unlimited).
+ * Fog limit is **side vision**: if any friendly unit lights the Command Center (e.g. sieged
+ * tank 9×9), every geometric checker of that side may chip — including a Mecha
  * whose own 5×5 would not cover the square.
  *
- * Kings are legal checkers too: two adjacent kings fight face-to-face, each
+ * Command Centers are legal checkers too: two adjacent Command Centers fight face-to-face, each
  * chipping the other every turn until one runs out of HP (or both reach 0 in the
  * same pass — a draw). Adjacency is therefore always **mutual**, and because a
- * king deploys its units ring-adjacent, a spawn next to the enemy king stacks a
+ * Command Center deploys its units ring-adjacent, a spawn next to the enemy Command Center stacks a
  * second checker for 2 HP/turn.
  */
-export const collectLegalKingChecks = (
+export const collectLegalCCChecks = (
   placement: string,
   opts?: {
-    /** Side can see the king (cumulative lit ∪ revealed). */
+    /** Side can see the Command Center (cumulative lit ∪ revealed). */
     isTargetVisible?: (color: StarChessColor, square: Square) => boolean;
   },
 ): {
@@ -200,15 +200,15 @@ export const collectLegalKingChecks = (
     from: Square;
     to: Square;
   }[] = [];
-  for (const kingColor of ["w", "b"] as const) {
-    const kingSq = findKing(map, kingColor);
-    if (!kingSq) continue;
-    const enemy: StarChessColor = kingColor === "w" ? "b" : "w";
-    if (!canSee(enemy, kingSq)) continue;
+  for (const ccColor of ["w", "b"] as const) {
+    const ccSq = findCC(map, ccColor);
+    if (!ccSq) continue;
+    const enemy: StarChessColor = ccColor === "w" ? "b" : "w";
+    if (!canSee(enemy, ccSq)) continue;
     for (const [from, piece] of map) {
       if (piece.color !== enemy) continue;
-      if (!attacksSquare(map, from, kingSq)) continue;
-      out.push({ color: enemy, piece: piece.type, from, to: kingSq });
+      if (!attacksSquare(map, from, ccSq)) continue;
+      out.push({ color: enemy, piece: piece.type, from, to: ccSq });
     }
   }
   out.sort((a, b) => {
@@ -219,14 +219,14 @@ export const collectLegalKingChecks = (
 };
 
 /**
- * Classic “in check” on occupancy (side’s king attacked). Independent of
+ * Classic “in check” on occupancy (side’s Command Center attacked). Independent of
  * side-to-move tricks in a FEN string.
  */
-export const isKingInCheck = (
+export const isCCInCheck = (
   map: Map<Square, ScPiece>,
   color: StarChessColor,
 ): boolean => {
-  const k = findKing(map, color);
+  const k = findCC(map, color);
   if (!k) return false;
   const enemy: StarChessColor = color === "w" ? "b" : "w";
   return isSquareAttackedBy(map, k, enemy);

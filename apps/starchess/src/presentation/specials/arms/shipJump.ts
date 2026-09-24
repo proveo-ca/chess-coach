@@ -1,12 +1,12 @@
 // SPEC: _spec/apps/starchess/turn-input-sequence.puml
 /**
  * BattleShip arm — open Tactical Jump targeting over visible empty squares
- * (`OPEN_QUEEN_WARP`; commit happens on board click).
+ * (`OPEN_BATTLESHIP_WARP`; commit happens on board click).
  * (Moved from `app/BaseScreen.tsx` gas-deploy handlers.)
  */
 import type { PieceSymbol, Square } from "chess.js";
 
-import type { RookMode, ScFenSnapshot } from "@chess-coach/starchess-core";
+import type { TankMode, ScFenSnapshot } from "@chess-coach/starchess-core";
 
 import { viewerColor } from "~/app/matchEconomy";
 import type { MatchStore } from "~/types/match";
@@ -21,13 +21,13 @@ export const shipJumpArm = (
     resetSpawn?: () => void;
     onAfterOpen?: () => void;
     /** Live vision mode lookup; defaults to all-tank (no siege). */
-    rookModeFor?: (sq: Square) => RookMode;
+    tankModeFor?: (sq: Square) => TankMode;
   },
 ): ArmResult | boolean => {
   if (ctx.piece !== "q") return false;
   const color = viewerColor(store);
   const targets = tacticalJumpTargets(snap.placement, ctx.square, color, {
-    rookModeFor: opts?.rookModeFor ?? (() => "tank" as RookMode),
+    tankModeFor: opts?.tankModeFor ?? (() => "tank" as TankMode),
   });
   if (targets.length === 0) {
     store.dispatch({
@@ -38,7 +38,7 @@ export const shipJumpArm = (
   }
   opts?.resetSpawn?.();
   store.dispatch({
-    type: "OPEN_QUEEN_WARP",
+    type: "OPEN_BATTLESHIP_WARP",
     color,
     from: ctx.square,
     targets,

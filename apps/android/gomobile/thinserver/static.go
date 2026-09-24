@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-// webroot holds the built `web-full` UI (apps/ui `dist/chess`), synced here at
+// webroot holds the built `web-full` UI (apps/chess `dist/chess`), synced here at
 // build time by the Gradle `syncWeb` task. A placeholder index.html keeps
 // `go build` working before the first sync.
 //

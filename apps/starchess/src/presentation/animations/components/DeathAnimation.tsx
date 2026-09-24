@@ -4,15 +4,15 @@ import type { Square } from "chess.js";
 
 import { DEATH_MS, scatterSeedFromId } from "~/presentation/animations/deathAnim";
 import styles from "~/presentation/animations/components/DeathAnimation.module.css";
-import { DeathBishop } from "~/presentation/animations/pieces/components/DeathBishop";
-import { DeathKing } from "~/presentation/animations/pieces/components/DeathKing";
-import { DeathKnight } from "~/presentation/animations/pieces/components/DeathKnight";
+import { DeathMecha } from "~/presentation/animations/pieces/components/DeathMecha";
+import { DeathCommandCenter } from "~/presentation/animations/pieces/components/DeathCommandCenter";
+import { DeathHoverbike } from "~/presentation/animations/pieces/components/DeathHoverbike";
 import { DeathMine } from "~/presentation/animations/pieces/components/DeathMine";
-import { DeathPawn } from "~/presentation/animations/pieces/components/DeathPawn";
-import { DeathQueen } from "~/presentation/animations/pieces/components/DeathQueen";
-import { DeathRook } from "~/presentation/animations/pieces/components/DeathRook";
+import { DeathMarine } from "~/presentation/animations/pieces/components/DeathMarine";
+import { DeathBattleShip } from "~/presentation/animations/pieces/components/DeathBattleShip";
+import { DeathTank } from "~/presentation/animations/pieces/components/DeathTank";
 import { squareBoxStyle } from "~/presentation/animations/boardGeom";
-import { rookModeAt } from "~/presentation/animations/rookModeStore";
+import { tankModeAt } from "~/presentation/animations/tankModeStore";
 import { teamTintStyle, type PieceColor } from "~/presentation/pieces/teamColors";
 import type { StarChessPiece, DeathCue } from "~/presentation/animations/types";
 
@@ -29,17 +29,17 @@ const deathNode = (
   if (cue.mine) return <DeathMine color={color} seed={seed} />;
   switch (piece) {
     case "p":
-      return <DeathPawn color={color} seed={seed} />;
+      return <DeathMarine color={color} seed={seed} />;
     case "n":
-      return <DeathKnight color={color} seed={seed} />;
+      return <DeathHoverbike color={color} seed={seed} />;
     case "b":
-      return <DeathBishop color={color} seed={seed} />;
+      return <DeathMecha color={color} seed={seed} />;
     case "r":
-      return <DeathRook color={color} seed={seed} mode={cue.rookMode ?? rookModeAt(cue.at)} />;
+      return <DeathTank color={color} seed={seed} mode={cue.tankMode ?? tankModeAt(cue.at)} />;
     case "q":
-      return <DeathQueen color={color} seed={seed} />;
+      return <DeathBattleShip color={color} seed={seed} />;
     case "k":
-      return <DeathKing color={color} seed={seed} damage="destroyed" collapse />;
+      return <DeathCommandCenter color={color} seed={seed} damage="destroyed" collapse />;
   }
 };
 
@@ -58,7 +58,7 @@ export type DeathAnimationProps = {
 
 /**
  * StarChess death VFX layer — every cue finishes in `DEATH_MS` (`ATTACK_MS / 2`).
- * Pawn: outward bubble + shred; king: rubble collapse; others: boom + shards.
+ * Marine: outward bubble + shred; Command Center: rubble collapse; others: boom + shards.
  * Rows key by cue.id so remapped cue objects do not remount / restart CSS.
  */
 export const DeathAnimation: Component<DeathAnimationProps> = (props) => {
@@ -99,8 +99,8 @@ export const DeathAnimation: Component<DeathAnimationProps> = (props) => {
       {(id) => {
         const cue = () => byId().get(id)!;
         const mineDeath = () => !!cue().mine;
-        const pawnDeath = () => !mineDeath() && cue().piece === "p";
-        const kingDeath = () => !mineDeath() && cue().piece === "k";
+        const marineDeath = () => !mineDeath() && cue().piece === "p";
+        const ccDeath = () => !mineDeath() && cue().piece === "k";
         const seed = () => scatterSeedFromId(id);
         const gas = () => used().has(cue().at);
         return (
@@ -108,9 +108,9 @@ export const DeathAnimation: Component<DeathAnimationProps> = (props) => {
             class={styles.originSlot}
             classList={{
               [styles.dying]: true,
-              [styles.dyingPawn]: pawnDeath(),
-              [styles.dyingDrama]: mineDeath() || (!pawnDeath() && !kingDeath()),
-              [styles.dyingKing]: kingDeath(),
+              [styles.dyingMarine]: marineDeath(),
+              [styles.dyingDrama]: mineDeath() || (!marineDeath() && !ccDeath()),
+              [styles.dyingCC]: ccDeath(),
             }}
             style={{
               ...squareBoxStyle(cue().at, props.boardWidth, props.boardHeight),

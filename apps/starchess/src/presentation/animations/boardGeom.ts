@@ -19,7 +19,7 @@ export const isBoardSquare = (sq: string): sq is Square =>
   /^[a-h][1-8]$/.test(sq);
 
 /**
- * One square beyond the promotion rank in the pawn’s forward direction.
+ * One square beyond the promotion rank in the Marine’s forward direction.
  * Virtual only — used by walk-off move VFX (not a legal chess square).
  */
 export const promoWalkOffTo = (at: Square, color: "w" | "b"): Square => {

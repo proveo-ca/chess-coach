@@ -32,7 +32,7 @@ note right
   its own order. Both now call ""scanRay"" and keep only their distinct tail:
   * **targeted intent** — ally ⇒ quiet truncate · king ⇒ fall through to the
     generic walk · enemy ⇒ ""takeRayContact"";
-  * **generic slide** — ally ⇒ quiet · king ⇒ fog kingShot or stop short ·
+  * **generic slide** — ally ⇒ quiet · king ⇒ fog ccShot or stop short ·
     enemy ⇒ ""takeRayContact"".
 
   ""takeRayContact"" is the shared classification the two loops used to spell out

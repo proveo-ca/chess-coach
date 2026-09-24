@@ -4,7 +4,7 @@ import { createEffect, on } from "solid-js";
 import type { Component } from "solid-js";
 
 import styles from "~/components/atoms/ChessSquare.module.css";
-// SPEC: _spec/apps/ui/components.puml
+// SPEC: _spec/apps/chess/components.puml
 import type { MoveSquares } from "~/types/game";
 import type { PieceSet } from "~/types/settings";
 

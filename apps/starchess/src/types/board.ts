@@ -1,4 +1,4 @@
-import type { RookMode, StarChessColor } from "@chess-coach/starchess-core";
+import type { TankMode, StarChessColor } from "@chess-coach/starchess-core";
 import type { PieceSymbol, Square } from "chess.js";
 
 export type BoardVariant = "eclipse" | "butter" | "vermeer";
@@ -10,7 +10,7 @@ export type BoardSkin = BoardVariant | "classic";
  * App presentation only — never in `@chess-coach/starchess-core`.
  * - `nerd` — product default; drawn entirely by the inline units in
  *   `presentation/pieces/`. This app ships no `nerd` assets: the traced
- *   reference art lives in `apps/ui/public/pieces/nerd/`, where apps/ui
+ *   reference art lives in `apps/chess/public/pieces/nerd/`, where apps/chess
  *   still renders it for the Nerd identity skin.
  * - `cburnett` — **tutorial fog Chess-mode skin only** (flat Lichess SVGs).
  *   Not a second product mode; do not grow core/rules around it.
@@ -30,7 +30,7 @@ export type IntentGhost = {
   at: Square;
   color: StarChessColor;
   piece: PieceSymbol;
-  rookMode?: RookMode;
+  tankMode?: TankMode;
   /**
    * Reached by a vespene-powered special (gas step / warp) rather than by the
    * classical leg — a stacked marine paints a plain move ghost on the classical
@@ -45,7 +45,7 @@ export type IntentCanister = {
   color: StarChessColor;
 };
 
-/** Red dashed ring — pending king-check or queued capture/attack target. */
+/** Red dashed ring — pending Command Center-check or queued capture/attack target. */
 export type IntentCheck = {
   at: Square;
 };

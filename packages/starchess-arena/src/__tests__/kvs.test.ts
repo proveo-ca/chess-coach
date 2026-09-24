@@ -19,8 +19,8 @@ import { STAR_STARTING_SCFEN } from "../seeds";
 
 const OPEN = parseScFen(STAR_STARTING_SCFEN);
 
-/** Opening board minus one black pawn (captured before the snap). */
-const BLACK_PAWN_DOWN =
+/** Opening board minus one black Marine (captured before the snap). */
+const BLACK_MARINE_DOWN =
   "SCFEN|4k3/2p1pp2/8/8/8/8/2PPPP2/4K3|1|33|P|G:11:11|Q:w:;b:";
 
 describe("kvs accumulation", () => {
@@ -37,9 +37,9 @@ describe("kvs accumulation", () => {
 
   it("adds the enemy deployed deficit to captured after a capture", () => {
     const kvs = seedKvsForOpening(OPEN);
-    const after = updateKvsForSnap(kvs, parseScFen(BLACK_PAWN_DOWN));
+    const after = updateKvsForSnap(kvs, parseScFen(BLACK_MARINE_DOWN));
 
-    // White's view of black: one black pawn removed this ply ⇒ +1 captured.
+    // White's view of black: one black Marine removed this ply ⇒ +1 captured.
     const whiteView = after.perSide.w;
     const expectedKnown = knownForTurn(1);
     expect(whiteView.captured).toBe(1);
@@ -49,7 +49,7 @@ describe("kvs accumulation", () => {
 
   it("stays deterministic and idempotent on repeated folds of the same snap", () => {
     const kvs = seedKvsForOpening(OPEN);
-    const snap = parseScFen(BLACK_PAWN_DOWN);
+    const snap = parseScFen(BLACK_MARINE_DOWN);
     const once = updateKvsForSnap(kvs, snap);
     const twice = updateKvsForSnap(once, snap);
     // Revisiting the same board neither sees nor captures more.

@@ -7,7 +7,7 @@
  *
  * Volatile on purpose — regenerate whenever the UI chrome drifts:
  *
- *   cd apps/ui && npm run dev:web-no-llm:vite
+ *   cd apps/chess && npm run dev:web-no-llm:vite
  *   cd apps/e2e && npm run capture:hero
  *
  * Requires ffmpeg on PATH (or set FFMPEG / FFMPEG_PATH).

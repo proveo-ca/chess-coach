@@ -9,7 +9,7 @@ import type { AdjutantKind } from "~/types/newGame";
 export type ReviewTurnPhase =
   /** Settled idle (turn start or Final). */
   | "start"
-  /** Turn-open king-checks animating. */
+  /** Turn-open Command Center-checks animating. */
   | "check"
   /** Intent ghosts / rings held before End. */
   | "intent"

@@ -45,9 +45,9 @@ describe("deployTargets", () => {
     expect(deployTargets(query({ cc: null }))).toEqual([]);
   });
 
-  it("keeps enemy and ally occupants (the deploy replaces either) but drops kings", () => {
+  it("keeps enemy and ally occupants (the deploy replaces either) but drops Command Centers", () => {
     // The authority is `rules/specials/adjacent.ts` + `rules/validation.ts`:
-    // any non-king occupant crushes (deployed replaces occupant, victim recorded).
+    // any non-Command Center occupant crushes (deployed replaces occupant, victim recorded).
     const map = bare();
     map.set("d2", { type: "p", color: "b" } satisfies ScPiece);
     map.set("f2", { type: "p", color: "w" } satisfies ScPiece);
@@ -55,7 +55,7 @@ describe("deployTargets", () => {
     expect(deployTargets(query({ map }))).toContain("f2");
   });
 
-  it("drops every King square — an enemy Command Center cannot be crushed", () => {
+  it("drops every Command Center square — an enemy Command Center cannot be crushed", () => {
     // Face-to-face Command Centers are reachable, so the enemy ring can hold ours.
     const map = placementToMap("8/8/8/8/8/8/4k3/4K3");
     // Black CC on e2, white CC on e1: e1 is on black's ring but may not be taken.

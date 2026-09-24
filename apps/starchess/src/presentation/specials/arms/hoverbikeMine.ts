@@ -1,6 +1,6 @@
 // SPEC: _spec/apps/starchess/turn-input-sequence.puml
 /**
- * Hoverbike arm — queue the `knightMine` drop on its own square.
+ * Hoverbike arm — queue the `spiderMine` drop on its own square.
  * (Moved from `app/BaseScreen.tsx` gas-deploy handlers.)
  */
 import type { PieceSymbol, Square } from "chess.js";
@@ -22,7 +22,7 @@ export const hoverbikeMineArm = (
   const timing = specialTimingFor(snap.queue, color);
   return tryQueue(
     store,
-    { timing, kind: "knightMine", color, from: ctx.square, to: ctx.square },
+    { timing, kind: "spiderMine", color, from: ctx.square, to: ctx.square },
     `Spider Mine queued on ${ctx.square} · End to resolve`,
   )
     ? "armed"

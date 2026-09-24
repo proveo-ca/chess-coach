@@ -25,7 +25,7 @@ import type { Candidate } from "../context";
 import { buildStrategicCtx, type StrategicAdjutantContext } from "./context";
 import { clearsCheck } from "../plans/simulate";
 import {
-  pawnGasStacks,
+  marineGasStacks,
   sideMoves,
   spawnCaptureStacks,
   spawnStacks,
@@ -33,7 +33,7 @@ import {
   specialClassicalStacks,
 } from "../plans/stacks";
 import { asCandidate, generateCandidates, scoreMove } from "./strategies";
-import { KING_SAFETY } from "../strategies/survival";
+import { CC_SAFETY } from "../strategies/survival";
 
 export type StrategicResult = {
   snapshot: ScFenSnapshot;
@@ -84,14 +84,14 @@ export const strategicCandidates = (
     ),
   );
   const stacks = [
-    ...pawnGasStacks(c, moves),
+    ...marineGasStacks(c, moves),
     ...spawnStacks(specials, moveCandidates),
     ...spawnCaptureStacks(specials, c),
     ...specialClassicalStacks(specials, moveCandidates, c),
     ...charonForwardStacks(
       specials.filter((s) => {
         const a = s.actions[0];
-        return !!a && a.timing === "F" && a.kind === "bishopSnipe";
+        return !!a && a.timing === "F" && a.kind === "charonMissiles";
       }),
       moveCandidates,
       c,
@@ -100,7 +100,7 @@ export const strategicCandidates = (
 
   /**
    * The same uniform Command Center (CC)-safety rule as naive: any plan that leaves the Command Center (CC)
-   * on a chip-capable ray is crushed by KING_SAFETY. Covers fleeing a real
+   * on a chip-capable ray is crushed by CC_SAFETY. Covers fleeing a real
    * check, interposing / capturing the checker, and quiet self-exposure via
    * absolute pins.
    */
@@ -112,7 +112,7 @@ export const strategicCandidates = (
   const guarded = [...committable, ...stacks, ...moveCandidates].map((cand) =>
     clearsCheck(c.map, cand.actions, c.sieged, c.us, c.enemy)
       ? cand
-      : { ...cand, score: cand.score - KING_SAFETY },
+      : { ...cand, score: cand.score - CC_SAFETY },
   );
 
   const ranked = [...guarded].sort((a, b) => b.score - a.score);

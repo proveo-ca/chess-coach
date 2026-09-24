@@ -1,6 +1,6 @@
 // SPEC: _spec/apps/starchess/architecture/storybook-projection.puml
 /**
- * Ship Snipe Counter — scripted black B queenWarp d5→f1 once on T21.
+ * Ship Snipe Counter — scripted black B tacticalJump d5→f1 once on T21.
  * F-vs-F cannot catch a warp (white sorts first inside a timing),
  * so the enemy warps in B (specialBefore) and the player's F snipe
  * (specialAfter) catches the ship after it lands. Generic adjutant
@@ -36,7 +36,7 @@ export const useShipSnipeCounter = (store: MatchStore): ChoreographyResult => {
       queued = true;
       store.dispatch({
         type: "QUEUE_ACTION",
-        action: { timing: "B", kind: "queenWarp", color: "b", from: FROM, to: TO },
+        action: { timing: "B", kind: "tacticalJump", color: "b", from: FROM, to: TO },
       });
     } catch {
       queued = false;

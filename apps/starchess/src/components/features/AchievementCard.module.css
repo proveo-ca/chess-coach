@@ -1,0 +1,70 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0.5rem;
+  border: 1px solid color-mix(in srgb, #7cff4a 35%, transparent);
+  background: color-mix(in srgb, #041208 80%, transparent);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: default;
+}
+
+.missing {
+  opacity: 0.45;
+}
+
+button.card {
+  cursor: pointer;
+}
+
+.icon {
+  width: 60px;
+  height: 60px;
+  flex: none;
+  background: var(--glyph);
+  mask-image: var(--glyph-url);
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+  -webkit-mask-image: var(--glyph-url);
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-size: contain;
+}
+
+.title,
+.description,
+.status {
+  margin: 0;
+}
+
+.title {
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.description,
+.status {
+  font-size: 0.7rem;
+  line-height: 1.3;
+}
+
+.meter {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.meter span {
+  flex: 0 1 1.1rem;
+  min-width: 0;
+  height: 0.35rem;
+  background: color-mix(in srgb, currentColor 25%, transparent);
+}
+
+.meter span.filled {
+  background: var(--glyph);
+}

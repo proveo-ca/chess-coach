@@ -25,10 +25,10 @@ test.describe("StarChess gas-step animation", () => {
     await page.evaluate(() => localStorage.clear());
   });
 
-  test("pawnDouble slides via move cue (no teleport)", async ({ page }) => {
+  test("stimStep slides via move cue (no teleport)", async ({ page }) => {
     // Pre-queued gas step e2→e3; End plays a move cue before occupying e3.
     const scfen =
-      "SCFEN|4k3/8/8/8/8/8/4P3/4K3|11|33|P|G:12:22|Q:w:B=pawnDouble:e2:e3;b:";
+      "SCFEN|4k3/8/8/8/8/8/4P3/4K3|11|33|P|G:12:22|Q:w:B=stimStep:e2:e3;b:";
     await gotoScfen(page, scfen);
     await expect(settledPieceAt(page, "e2", "w p")).toBeVisible();
 
@@ -59,7 +59,7 @@ test.describe("StarChess gas-step animation", () => {
     );
     expect(sawMoveCue).toBe(true);
 
-    // Settled: pawn left e2 and occupies e3 (no silent teleport skip).
+    // Settled: Marine left e2 and occupies e3 (no silent teleport skip).
     await expect(settledPieceAt(page, "e3", "w p")).toBeVisible({
       timeout: 15_000,
     });

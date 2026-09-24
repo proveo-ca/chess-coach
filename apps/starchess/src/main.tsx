@@ -8,13 +8,23 @@ import { UiProvider } from "@chess-coach/ui-web/provider";
  * Perf debug: `npm run dev:debug` · `?debug=perf` · localStorage starchess_debug=perf
  */
 import { A, Route, Router } from "@solidjs/router";
+import { lazy } from "solid-js";
 import { render } from "solid-js/web";
 
 import { initPerfDebug } from "~/debug/perfMonitor";
 import { MenuRoute } from "~/screens/MenuRoute.tsx";
-import { ReviewScreen } from "~/screens/ReviewScreen.tsx";
-import { SingleScreen } from "~/screens/SingleScreen.tsx";
-import { TutorialScreen } from "~/screens/TutorialScreen.tsx";
+
+// The menu is the landing page; every other screen is its own chunk, fetched
+// on first navigation (and precached by the service worker after that).
+const SingleScreen = lazy(() =>
+  import("~/screens/SingleScreen.tsx").then((m) => ({ default: m.SingleScreen })),
+);
+const ReviewScreen = lazy(() =>
+  import("~/screens/ReviewScreen.tsx").then((m) => ({ default: m.ReviewScreen })),
+);
+const TutorialScreen = lazy(() =>
+  import("~/screens/TutorialScreen.tsx").then((m) => ({ default: m.TutorialScreen })),
+);
 import "~/theme.css";
 import "~/styles/index.css";
 

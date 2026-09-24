@@ -25,7 +25,7 @@ import { ReviewTurnNav } from "@chess-coach/ui-web/atoms/ReviewTurnNav";
 import { Screen } from "@chess-coach/ui-web/primitives/Screen";
 import { ScreenBackNav } from "~/components/primitives/ScreenBackNav";
 import styles from "~/demos/TutorialReviewHost.module.css";
-import { clearSiegedRooks, setRookMode } from "~/presentation/animations/rookModeStore";
+import { clearSiegedTanks, setTankMode } from "~/presentation/animations/tankModeStore";
 import { LiveBoardBinding } from "~/presentation/board/components/LiveBoardBinding";
 
 import { isCheckOnlyResolve } from "~/presentation/hud/isCheckOnlyResolve";
@@ -34,6 +34,7 @@ import { TurnBarSidebar } from "~/presentation/hud/components/TurnBarSidebar";
 import { splitResolveWaves } from "~/presentation/timeline/resolveWaves";
 import { TUTORIAL_CAPABILITIES, setCapabilities } from "~/store/capabilitiesStore";
 import { resetReviewVisionFilter, setReviewVisionFilter } from "~/store/reviewVisionStore";
+import { intentArrows } from "~/tutorial/lessonTactics";
 import { resetTutorialNarration, setTutorialNarration } from "~/tutorial/tutorialNarrationStore";
 import {
   boardIndexForBeat,
@@ -46,20 +47,20 @@ import type { KerriganEmotion } from "~/types/coach";
 import type { ReviewHistory } from "~/types/review";
 import type { TypewriterBeat } from "~/types/tutorial";
 
-const syncRookModes = (
+const syncTankModes = (
   placement: string,
   sieged: readonly Square[] | undefined,
   forceTank: boolean | undefined,
 ) => {
-  clearSiegedRooks();
+  clearSiegedTanks();
   if (!forceTank) {
-    for (const sq of sieged ?? []) setRookMode(sq, "siege");
+    for (const sq of sieged ?? []) setTankMode(sq, "siege");
     return;
   }
   try {
     const map = placementToMap(placement);
     for (const [sq, piece] of map) {
-      if (piece.type === "r") setRookMode(sq as Square, "tank");
+      if (piece.type === "r") setTankMode(sq as Square, "tank");
     }
   } catch {
     /* ignore */
@@ -79,7 +80,7 @@ export type TutorialReviewHostProps = {
   fog?: boolean;
   variant?: BoardSkin;
   pieceSet?: PieceSet;
-  rookTank?: boolean;
+  packedTank?: boolean;
   playerColor?: StarChessColor;
   onHome?: () => void;
   /** CoachScreen-shaped desktop header avatar. */
@@ -89,6 +90,8 @@ export type TutorialReviewHostProps = {
   footerExtra?: JSX.Element;
   /** Show review TurnBarSidebar (turn + phase chips; DualNav hidden). */
   turnChrome?: "sidebar" | "none";
+  /** Draw every queued intent as an arrow on the Intent beat (checks in red). */
+  intentArrows?: boolean;
 };
 
 const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
@@ -113,6 +116,12 @@ const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
     return turn || reviewTurnNumber();
   };
 
+  const arrows = createMemo(() => {
+    if (!props.intentArrows || store.reviewPhase() !== "intent") return [];
+    const actions = store.reviewIntentActions();
+    return actions ? intentArrows(snap().placement, actions) : [];
+  });
+
   const beatLabel = () => labelForBeat(beats()[beatIndex()], beatTurn());
 
   const reviewTurnNumber = () => {
@@ -123,7 +132,7 @@ const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
 
   createEffect(() => {
     const s = snap();
-    syncRookModes(s.placement, s.siegedRooks, props.rookTank);
+    syncTankModes(s.placement, s.siegedTanks, props.packedTank);
   });
 
   createEffect(() => {
@@ -254,7 +263,7 @@ const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
     if (first) void playBeat(first);
     onCleanup(() => {
       store.cancelEffects();
-      clearSiegedRooks();
+      clearSiegedTanks();
       resetReviewVisionFilter();
       resetTutorialNarration();
     });
@@ -346,6 +355,7 @@ const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
               pieceSet={props.pieceSet}
               fog={props.fog}
               visionMode={props.visionMode}
+              hintArrows={arrows()}
             />
           </MatchBoardHost.BoardHost>
         </MatchBoardHost.BoardColumn>

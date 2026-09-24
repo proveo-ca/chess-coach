@@ -50,9 +50,9 @@ export const projectedBank = (
  * but without enqueuing — used to score horizon sequences.
  */
 const bestScoreForUnit = (unit: SpawnPiece, ctx: StrategicCtx): number => {
-  const { map, snap, us, enemy, king, kingThreatened, vision, weights } = ctx;
+  const { map, snap, us, enemy, commandCenter, ccThreatened, vision, weights } = ctx;
   const { center, promoteRank, trade, attackedPenalty } = weights;
-  const adjacent = neighbors(king).filter(
+  const adjacent = neighbors(commandCenter).filter(
     (at) => !map.has(at) && !hostileMineOn(snap.mines, us, at),
   );
   if (adjacent.length === 0) return Number.NEGATIVE_INFINITY;
@@ -65,7 +65,7 @@ const bestScoreForUnit = (unit: SpawnPiece, ctx: StrategicCtx): number => {
       trade * (1 + UNIT_COST[unit]);
     // Mirror economy bonuses (battleship finish, mecha vs battleship, etc.) lightly here
     // so horizon sequences reflect the same strategic dials.
-    if (vision.enemyQueenVisible && unit === "b" && !kingThreatened) score += 400;
+    if (vision.enemyBattleShipVisible && unit === "b" && !ccThreatened) score += 400;
     if (isSquareAttackedBy(map, to, enemy)) score -= attackedPenalty;
     if (score > best) best = score;
   }

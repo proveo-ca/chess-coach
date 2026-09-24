@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/ui/multiplayer.puml, _spec/_plans/android-p2p-wiring.puml
+// SPEC: _spec/apps/chess/multiplayer.puml, _spec/_plans/android-p2p-wiring.puml
 import { For, type Component, Show, createEffect, createSignal, onCleanup, onMount } from "solid-js";
 
 import { OpponentCaptures, PlayerCaptures } from "~/components/atoms/CapturedPieces";

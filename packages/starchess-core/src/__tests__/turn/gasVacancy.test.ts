@@ -25,7 +25,7 @@ const queueB = (
 ): ScFenSnapshot =>
   addScAction({
     snapshot: snap,
-    action: { timing: "B", kind: "pawnDouble", color: "w", from, to } as never,
+    action: { timing: "B", kind: "stimStep", color: "w", from, to } as never,
   }).snapshot;
 
 describe("gas-phase vacancy", () => {
@@ -77,7 +77,7 @@ describe("gas-phase vacancy", () => {
   it("B chain resolves heads-first regardless of seq order", () => {
     const snap = snapOf(CHAIN_SEED, "G:22:22", 11);
     const mk = (from: string, to: string, seq: number): ScAction =>
-      ({ timing: "B", kind: "pawnDouble", color: "w", from, to, seq }) as ScAction;
+      ({ timing: "B", kind: "stimStep", color: "w", from, to, seq }) as ScAction;
     const queued: ScFenSnapshot = {
       ...snap,
       queue: { actions: [mk("e2", "e3", 0), mk("e3", "e4", 1)] },
@@ -95,7 +95,7 @@ describe("gas-phase vacancy", () => {
       ...snap,
       queue: {
         actions: [
-          { timing: "B", kind: "pawnDouble", color: "w", from: "e2", to: "e3", seq: 0 } as ScAction,
+          { timing: "B", kind: "stimStep", color: "w", from: "e2", to: "e3", seq: 0 } as ScAction,
         ],
       },
     };
@@ -106,7 +106,7 @@ describe("gas-phase vacancy", () => {
     expect(result.bMoves).toHaveLength(0);
     const before = result.events.filter((e) => e.phase === "specialBefore");
     expect(before).toHaveLength(1);
-    expect(before[0]).toMatchObject({ kind: "pawnDouble", from: "e2", to: "e3" });
+    expect(before[0]).toMatchObject({ kind: "stimStep", from: "e2", to: "e3" });
   });
 
   it("move+gas vacates the classical origin for the F step", () => {
@@ -117,7 +117,7 @@ describe("gas-phase vacancy", () => {
     }).snapshot;
     snap = addScAction({
       snapshot: snap,
-      action: { timing: "F", kind: "pawnDouble", color: "w", from: "e2", to: "e3" } as never,
+      action: { timing: "F", kind: "stimStep", color: "w", from: "e2", to: "e3" } as never,
     }).snapshot;
     const result = endScTurn(snap);
     const map = placementToMap(result.next.placement);
@@ -128,9 +128,9 @@ describe("gas-phase vacancy", () => {
   it("non-vacating specials never free their origin", () => {
     const v = classifyClassicalVacancy(
       [
-        { timing: "B", kind: "knightMine", color: "w", from: "g1", seq: 0 },
-        { timing: "B", kind: "rookSiege", color: "w", from: "a1", seq: 1 },
-        { timing: "B", kind: "bishopSnipe", color: "w", from: "c1", to: "h6", seq: 2 },
+        { timing: "B", kind: "spiderMine", color: "w", from: "g1", seq: 0 },
+        { timing: "B", kind: "siegeMode", color: "w", from: "a1", seq: 1 },
+        { timing: "B", kind: "charonMissiles", color: "w", from: "c1", to: "h6", seq: 2 },
       ] as unknown as ScAction[],
       "w",
     );
@@ -142,7 +142,7 @@ describe("gas-phase vacancy", () => {
     let snap = snapOf(WARP_SEED, "G:33:33", 21);
     snap = addScAction({
       snapshot: snap,
-      action: { timing: "B", kind: "queenWarp", color: "w", from: "d1", to: "h5" } as never,
+      action: { timing: "B", kind: "tacticalJump", color: "w", from: "d1", to: "h5" } as never,
     }).snapshot;
     snap = addScAction({
       snapshot: snap,
@@ -155,7 +155,7 @@ describe("gas-phase vacancy", () => {
     expect(() =>
       addScAction({
         snapshot: snapOf(WARP_SEED, "G:33:33", 21),
-        action: { timing: "B", kind: "queenWarp", color: "w", from: "d1", to: "e1" } as never,
+        action: { timing: "B", kind: "tacticalJump", color: "w", from: "d1", to: "e1" } as never,
       }),
     ).toThrowError(AddScActionError);
   });

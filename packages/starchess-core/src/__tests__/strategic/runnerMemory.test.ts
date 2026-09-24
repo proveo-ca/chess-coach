@@ -181,7 +181,7 @@ describe("runner memory", () => {
         ...(memory ? { runnerMemory: memory } : {}),
       });
       return (plan.snapshot.queue?.actions ?? [])
-        .filter((a) => a.color === "b" && a.kind === "spawn")
+        .filter((a) => a.color === "b" && a.kind === "deploy")
         .map((a) => a.to);
     };
 

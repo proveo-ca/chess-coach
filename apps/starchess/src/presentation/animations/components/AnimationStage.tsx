@@ -25,7 +25,7 @@ import {
   EMPTY_COMBAT_CUE_FRAME,
 } from "~/presentation/animations/combatCueFrame";
 import { findBoardGrid } from "~/presentation/animations/boardGeom";
-import { siegedRooksList } from "~/presentation/animations/rookModeStore";
+import { siegedTanksList } from "~/presentation/animations/tankModeStore";
 import { StarChessBoard } from "~/presentation/board/components/StarChessBoard";
 import type {
   BoardSkin,
@@ -53,11 +53,11 @@ const fenToSnapshot = (fen: string, sieged: readonly Square[] = []): ScFenSnapsh
     return {
       placement,
       turn: 0,
-      kingLives: { w: 3, b: 3 },
+      ccLives: { w: 3, b: 3 },
       phase: "P",
       gas: { w: 1, b: 1 },
       gasIncome: { w: 1, b: 1 },
-      siegedRooks: [...sieged],
+      siegedTanks: [...sieged],
     };
   }
 };
@@ -92,9 +92,11 @@ export type AnimationStageProps = {
   /** Squares currently absorbing gas (piece green aura transition). */
   gasAbsorbSquares?: ReadonlySet<Square> | readonly Square[];
   /** Mecha squares with Charon launchers popped (arming pose). */
-  armedBishops?: readonly Square[];
+  armedMechas?: readonly Square[];
   /** Charon shoulder-raise anim — arming only. */
-  armAnimBishops?: readonly Square[];
+  armAnimMechas?: readonly Square[];
+  /** Squares a Charon-firing Mecha held in the resolve on screen (attack / move hulls). */
+  charonSquares?: ReadonlySet<Square>;
   /** Hide board pieces on these squares while VFX play. */
   hideSquares?: ReadonlySet<Square> | readonly Square[];
   /** Hide mine glyphs after boom / while missile owns the square. */
@@ -113,7 +115,7 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
   const snap = (): ScFenSnapshot => {
     if (props.snapshot) return props.snapshot;
     const fen = props.fen ?? "4k3/8/8/8/8/8/8/4K3 w - - 0 1";
-    return fenToSnapshot(fen, siegedRooksList());
+    return fenToSnapshot(fen, siegedTanksList());
   };
 
   const combatFrame = createMemo(
@@ -152,7 +154,7 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
       (c.mineMissileTrails?.length ?? 0) > 0 ||
       (c.gasDropCues?.length ?? 0) > 0 ||
       (c.deployCues?.length ?? 0) > 0 ||
-      (c.kingDamage?.length ?? 0) > 0
+      (c.ccDamage?.length ?? 0) > 0
     );
   };
 
@@ -225,7 +227,7 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
         variant={props.variant ?? "eclipse"}
         pieceSet={props.pieceSet}
         phase={props.phase}
-        siegedRooks={snap().siegedRooks ?? siegedRooksList()}
+        siegedTanks={snap().siegedTanks ?? siegedTanksList()}
         intentGhosts={props.intentGhosts}
         intentCanisters={props.intentCanisters}
         intentChecks={props.intentChecks}
@@ -241,8 +243,8 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
         moveLeg={combatFrame().moveLeg}
         veilMoveCueIds={combatFrame().veilMoveCueIds}
         spentMines={props.spentMines ?? NO_SPENT}
-        armedBishops={props.armedBishops ?? NO_ARMED}
-        armAnimBishops={props.armAnimBishops ?? NO_ARMED}
+        armedMechas={props.armedMechas ?? NO_ARMED}
+        armAnimMechas={props.armAnimMechas ?? NO_ARMED}
         gasAbsorbSquares={gasAbsorb()}
       />
       <Show when={overlayReady()}>
@@ -250,6 +252,7 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
           box={box()}
           cues={combatFrame()}
           specialUsedSquares={specialUsedSquares()}
+          charonSquares={props.charonSquares}
           pieceSet={props.pieceSet}
         />
         <Show when={(props.achievementBubbles?.length ?? 0) > 0}>

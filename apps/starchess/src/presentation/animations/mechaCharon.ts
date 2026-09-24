@@ -15,10 +15,10 @@ import type { AttackCue } from "~/presentation/types";
 
 /**
  * Mecha special attack cue id — Charon Booster Missiles (`data-attack-anim`).
- * String value `"bishopCharon"` is wire-frozen (VFX cue coverage e2e) —
+ * String value `"mechaCharon"` is wire-frozen (VFX cue coverage e2e) —
  * only the symbol moved to StarChess terms.
  */
-export const MECHA_CHARON = "bishopCharon" as const;
+export const MECHA_CHARON = "mechaCharon" as const;
 
 /**
  * Rotated origin-square volley frame: local +x points at the ship so the

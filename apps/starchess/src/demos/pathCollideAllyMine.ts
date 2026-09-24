@@ -28,9 +28,9 @@ export const PATH_COLLIDE_ALLY_MINE_STEPS: readonly PathCollideAllyMineStep[] = 
     caption:
       "1. Nw a4 mine+→c5 · Black spawn rook d8→a8",
     actions: [
-      { timing: "B", kind: "knightMine", color: "w", from: "a4", to: "a4" },
+      { timing: "B", kind: "spiderMine", color: "w", from: "a4", to: "a4" },
       { timing: "C", kind: "classical", color: "w", from: "a4", to: "c5" },
-      { timing: "B", kind: "spawn", color: "b", from: "e8", to: "d8", unit: "r" },
+      { timing: "B", kind: "deploy", color: "b", from: "e8", to: "d8", unit: "r" },
       { timing: "C", kind: "classical", color: "b", from: "d8", to: "a8" },
     ],
   },
@@ -38,10 +38,10 @@ export const PATH_COLLIDE_ALLY_MINE_STEPS: readonly PathCollideAllyMineStep[] = 
     caption:
       "2. Nw c5 mine+→e4 · ra8→a1 (chase boom) + siege skipped",
     actions: [
-      { timing: "B", kind: "knightMine", color: "w", from: "c5", to: "c5" },
+      { timing: "B", kind: "spiderMine", color: "w", from: "c5", to: "c5" },
       { timing: "C", kind: "classical", color: "w", from: "c5", to: "e4" },
       { timing: "C", kind: "classical", color: "b", from: "a8", to: "a1" },
-      { timing: "F", kind: "rookSiege", color: "b", from: "a8" },
+      { timing: "F", kind: "siegeMode", color: "b", from: "a8" },
     ],
   },
 ];

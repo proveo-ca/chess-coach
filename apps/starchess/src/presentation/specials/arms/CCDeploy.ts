@@ -1,6 +1,6 @@
 // SPEC: _spec/apps/starchess/core/board/board-queries.puml, _spec/apps/starchess/core/turn/command-queue.puml
 /**
- * Command Center deploy arm (king `spawn`) — owns the modal → pick → commit
+ * Command Center deploy arm (Command Center `deploy`) — owns the modal → pick → commit
  * flow extracted from `app/BaseScreen.tsx`. Board rendering (DeployModal,
  * target hit-slots) stays in the screen; this hook owns signals + queueing.
  */
@@ -8,7 +8,7 @@ import type { Square } from "chess.js";
 import { createSignal } from "solid-js";
 
 import {
-  findKing,
+  findCC,
   placementToMap,
   UNIT_COST,
   type ScFenSnapshot,
@@ -30,12 +30,12 @@ export const createCCDeploy = (
   const [spawnUnit, setSpawnUnit] = createSignal<SpawnPiece | null>(null);
   const [spawnPhase, setSpawnPhase] = createSignal<SpawnPhase>("idle");
 
-  // Raw-placement king: the spawn `from` must name the square holding the king
+  // Raw-placement Command Center: the spawn `from` must name the square holding the Command Center
   // in the unresolved placement (engine validates the actor there). Deliberately
   // NOT the F-projected anchor from `ccDeployTargets` — after a classical
-  // king move that square is empty until End.
-  const activeKingSq = (): Square | null =>
-    findKing(placementToMap(snap().placement), viewerColor(store));
+  // Command Center move that square is empty until End.
+  const activeCCSq = (): Square | null =>
+    findCC(placementToMap(snap().placement), viewerColor(store));
 
   /** Ring targets for the pick step (empty while not picking). */
   const spawnAdjacent = (): Square[] => {
@@ -43,9 +43,9 @@ export const createCCDeploy = (
     return ccDeployTargets(snap(), viewerColor(store)).targets;
   };
 
-  /** Gas-drop arm for the king — opens the deploy modal. */
+  /** Gas-drop arm for the Command Center — opens the deploy modal. */
   const openDeployModal = (): "pending" | false => {
-    if (!activeKingSq()) {
+    if (!activeCCSq()) {
       store.dispatch({ type: "QUEUE_REJECT", message: "No command center on the board" });
       return false;
     }
@@ -95,7 +95,7 @@ export const createCCDeploy = (
 
   const deploySpawnAt = (to: Square): void => {
     const unit = spawnUnit();
-    const from = activeKingSq();
+    const from = activeCCSq();
     const color = viewerColor(store);
     if (!unit || !from) return;
     // Stale/off-ring clicks (e.g. ring moved under the pick overlay) are
@@ -120,7 +120,7 @@ export const createCCDeploy = (
     const timing = specialTimingFor(snap().queue, color);
     const ok = tryQueue(
       store,
-      { timing, kind: "spawn", color, from, to, unit },
+      { timing, kind: "deploy", color, from, to, unit },
       `Deploy ${unit.toUpperCase()} → ${to} queued · End to drop`,
     );
     if (!ok) {

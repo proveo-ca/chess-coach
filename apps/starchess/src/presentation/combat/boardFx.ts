@@ -8,7 +8,7 @@ import type {
   AttackCue,
   DeathCue,
   DeployCue,
-  KingDamageCue,
+  CCDamageCue,
   MoveCue,
 } from "~/presentation/types";
 
@@ -19,7 +19,7 @@ export type CombatFxInput = {
   attacks?: readonly AttackCue[];
   deaths?: readonly DeathCue[];
   moves?: readonly MoveCue[];
-  kingDamage?: readonly KingDamageCue[];
+  ccDamage?: readonly CCDamageCue[];
   deploys?: readonly DeployCue[];
   fleeCover?: ReadonlySet<Square>;
 };
@@ -28,7 +28,7 @@ export const hasCombatFxInput = (fx: CombatFxInput): boolean =>
   (fx.attacks?.length ?? 0) > 0 ||
   (fx.deaths?.length ?? 0) > 0 ||
   (fx.moves?.length ?? 0) > 0 ||
-  (fx.kingDamage?.length ?? 0) > 0 ||
+  (fx.ccDamage?.length ?? 0) > 0 ||
   (fx.deploys?.length ?? 0) > 0 ||
   (fx.fleeCover?.size ?? 0) > 0;
 
@@ -48,7 +48,7 @@ export const buildFxHiddenSquares = (fx: CombatFxInput): ReadonlySet<Square> => 
     if (isBoardSquare(c.to)) hide.add(c.to);
   }
   for (const c of fx.deploys ?? []) hide.add(c.at);
-  for (const c of fx.kingDamage ?? []) hide.add(c.at);
+  for (const c of fx.ccDamage ?? []) hide.add(c.at);
   if (fx.fleeCover) for (const sq of fx.fleeCover) hide.add(sq);
   return hide;
 };

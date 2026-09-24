@@ -1,6 +1,6 @@
 @startuml gas-phase-vacancy
 ' SPEC: _spec/packages/starchess-core/gas-phase-vacancy.puml
-' purpose: phase-aware vacancy (binding refinement) — only Marine pawnDouble + BattleShip queenWarp vacate; transit vs origin matrix + canonical chains.
+' purpose: phase-aware vacancy (binding refinement) — only Marine stimStep + BattleShip tacticalJump vacate; transit vs origin matrix + canonical chains.
 ' covers: packages/starchess-core/src/resolve/submit-turn.ts
 ' covers: packages/starchess-core/src/resolve/resolve-turn.ts
 ' covers: packages/starchess-core/src/rules/validation.ts
@@ -51,9 +51,9 @@ end note
 N_ORDER .. SUB
 
 note as N_VACATE
-  Only Marine pawnDouble advance
+  Only Marine stimStep advance
   relinquishes origin with gas, as
-  does BattleShip queenWarp transit.
+  does BattleShip tacticalJump transit.
   Spawn crushes arrival instead, and
   mine, siege, snipe never vacate.
 end note

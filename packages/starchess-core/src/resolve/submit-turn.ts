@@ -2,7 +2,7 @@
 import type { Square } from "chess.js";
 
 import {
-  collectLegalKingChecks,
+  collectLegalCCChecks,
   mapToPlacement,
   parseSquare,
   placementToMap,
@@ -18,11 +18,11 @@ import {
 import { mineContact, withoutMine } from "../board/mine-contact";
 import { charonStrikeTarget, placementAfterMechaCharon } from "../rules/specials/mechaCharon";
 import {
-  canPawnDoubleStep,
-  pawnSingleTarget,
-} from "../rules/specials/pawnDouble";
+  canMarineDoubleStep,
+  marineSingleTarget,
+} from "../rules/specials/stimStep";
 import {
-  applyPendingKingShots,
+  applyPendingCCShots,
   resolveTurn,
   type ResolvePromotion,
   type ResolveTurnResult,
@@ -63,12 +63,12 @@ export type EndScTurnResult = {
   afterB: {
     placement: string;
     mines: ScMine[];
-    siegedRooks: readonly Square[];
+    siegedTanks: readonly Square[];
   };
   afterPending: {
     placement: string;
     mines: ScMine[];
-    kingLives: ScFenSnapshot["kingLives"];
+    ccLives: ScFenSnapshot["ccLives"];
   };
   bMoves: ResolveMove[];
   fMoves: ResolveMove[];
@@ -89,22 +89,22 @@ export type BeginScTurnResult = {
 
 const emptyBoard = (
   placement: string,
-  kingLives: ScFenSnapshot["kingLives"],
+  ccLives: ScFenSnapshot["ccLives"],
   mines: ScMine[],
 ): ResolveTurnResult["afterAttack"] => ({
   placement,
-  kingLives: { ...kingLives },
+  ccLives: { ...ccLives },
   mines: [...mines],
 });
 
 const visionCheckGate = (
   placement: string,
   mines: readonly ScMine[],
-  siegedRooks: readonly Square[] | undefined,
+  siegedTanks: readonly Square[] | undefined,
 ) => {
-  const sieged = new Set(siegedRooks ?? []);
-  const rookModeFor = (s: Square) => (sieged.has(s) ? "siege" : "tank");
-  const visionOpts0 = { mines: [...mines], rookModeFor };
+  const sieged = new Set(siegedTanks ?? []);
+  const tankModeFor = (s: Square) => (sieged.has(s) ? "siege" : "tank");
+  const visionOpts0 = { mines: [...mines], tankModeFor };
   const visionW0 = getSideVision(placement, "w", visionOpts0);
   const visionB0 = getSideVision(placement, "b", visionOpts0);
   return (color: PieceColor, square: Square) => {
@@ -127,12 +127,12 @@ export const beginScTurn = (snapshot: ScFenSnapshot): BeginScTurnResult => {
   const isCheckVisible = visionCheckGate(
     snapshot.placement,
     minesIn,
-    snapshot.siegedRooks,
+    snapshot.siegedTanks,
   );
-  const pendingApplied = applyPendingKingShots({
+  const pendingApplied = applyPendingCCShots({
     placement: snapshot.placement,
-    kingLives: snapshot.kingLives,
-    pending: collectLegalKingChecks(snapshot.placement, {
+    ccLives: snapshot.ccLives,
+    pending: collectLegalCCChecks(snapshot.placement, {
       isTargetVisible: isCheckVisible,
     }),
     mines: minesIn,
@@ -141,28 +141,28 @@ export const beginScTurn = (snapshot: ScFenSnapshot): BeginScTurnResult => {
   const afterPending = {
     placement: pendingApplied.placement,
     mines: [...pendingApplied.mines],
-    kingLives: { ...pendingApplied.kingLives },
+    ccLives: { ...pendingApplied.ccLives },
   };
   const changed = pendingApplied.attacks.length > 0;
   const terminal =
-    pendingApplied.kingLives.w === 0 || pendingApplied.kingLives.b === 0;
-  const sieged = [...(snapshot.siegedRooks ?? [])].sort();
+    pendingApplied.ccLives.w === 0 || pendingApplied.ccLives.b === 0;
+  const sieged = [...(snapshot.siegedTanks ?? [])].sort();
   const board = emptyBoard(
     afterPending.placement,
-    afterPending.kingLives,
+    afterPending.ccLives,
     afterPending.mines,
   );
 
   const next: ScFenSnapshot = {
     placement: afterPending.placement,
     turn: terminal ? snapshot.turn + 1 : snapshot.turn,
-    kingLives: { ...afterPending.kingLives },
+    ccLives: { ...afterPending.ccLives },
     phase: terminal ? "O" : "P",
     gas: { w: snapshot.gasIncome.w, b: snapshot.gasIncome.b },
     gasIncome: snapshot.gasIncome,
     queue: { actions: [] },
     ...(afterPending.mines.length ? { mines: afterPending.mines } : {}),
-    ...(sieged.length ? { siegedRooks: sieged } : {}),
+    ...(sieged.length ? { siegedTanks: sieged } : {}),
   };
 
   if (!changed) {
@@ -173,7 +173,7 @@ export const beginScTurn = (snapshot: ScFenSnapshot): BeginScTurnResult => {
       afterPending: {
         placement: snapshot.placement,
         mines: minesIn,
-        kingLives: { ...snapshot.kingLives },
+        ccLives: { ...snapshot.ccLives },
       },
       next: refillTurnGas({
         ...rest,
@@ -203,7 +203,7 @@ export const beginScTurn = (snapshot: ScFenSnapshot): BeginScTurnResult => {
       pathRevealMineTriggers: [],
       moveCollisions: [],
       promotions: [],
-      pendingKingShotsArmed: [],
+      pendingCCShotsArmed: [],
     },
     next,
     ignoreAttacksOn: [],
@@ -212,7 +212,7 @@ export const beginScTurn = (snapshot: ScFenSnapshot): BeginScTurnResult => {
     afterB: {
       placement: afterPending.placement,
       mines: afterPending.mines,
-      siegedRooks: sieged,
+      siegedTanks: sieged,
     },
     afterPending,
     bMoves: [],
@@ -247,12 +247,12 @@ export const orderBHeadsFirst = (
     const heads = new Set(
       pending
         .filter(
-          (a) => (a.kind === "pawnDouble" || a.kind === "queenWarp") && !!a.to,
+          (a) => (a.kind === "stimStep" || a.kind === "tacticalJump") && !!a.to,
         )
         .map((a) => a.from),
     );
     const idx = pending.findIndex((a) => {
-      if ((a.kind !== "pawnDouble" && a.kind !== "queenWarp") || !a.to)
+      if ((a.kind !== "stimStep" && a.kind !== "tacticalJump") || !a.to)
         return true;
       const others = new Set(heads);
       others.delete(a.from);
@@ -330,7 +330,7 @@ const applySpecial = (
 } => {
   const kind = action.kind as SpecialKind;
   switch (kind) {
-    case "bishopSnipe": {
+    case "charonMissiles": {
       if (!action.to) return { placement, mines };
       // Fire-and-forget: paid gas resolves from the queued square even when
       // the Mecha is gone. Kill iff the aim is the first ship on its ray for
@@ -346,7 +346,7 @@ const applySpecial = (
         victim: { type: victim.type, color: victim.color },
       };
     }
-    case "queenWarp": {
+    case "tacticalJump": {
       if (!action.to) return { placement, mines };
       ignoreAttacksOn.push(action.from);
       const hull = placementToMap(placement).get(action.from);
@@ -354,24 +354,24 @@ const applySpecial = (
       const landed = relocate(placement, action.from, action.to);
       return applyArrivalMine(landed, mines, [action.to], action.color, hull);
     }
-    case "pawnDouble": {
+    case "stimStep": {
       if (!action.to) return { placement, mines };
       const marine = placementToMap(placement).get(action.from);
       const stepped = relocate(placement, action.from, action.to);
       if (!marine) return { placement: stepped, mines };
       return applyArrivalMine(stepped, mines, [action.to], action.color, marine);
     }
-    case "spawn": {
+    case "deploy": {
       if (!action.to || !action.unit) return { placement, mines };
       const occupant = placementToMap(placement).get(action.to);
-      // Kings are never crushable (validation rejects them); defense in depth
-      // so a bypassed queue can never delete a king via deploy.
+      // Command Centers are never crushable (validation rejects them); defense in depth
+      // so a bypassed queue can never delete a Command Center via deploy.
       if (occupant?.type === "k") {
-        throw new Error(`spawn cannot crush king on ${action.to}`);
+        throw new Error(`spawn cannot crush Command Center on ${action.to}`);
       }
       const deployed = { type: action.unit, color: action.color };
       const landed = placeUnit(placement, action.to, deployed);
-      // Deploy over ally or enemy non-kings — victim shows death, deployed survives
+      // Deploy over ally or enemy non-ccs — victim shows death, deployed survives
       const crush = occupant
         ? { victim: { type: occupant.type, color: occupant.color } }
         : {};
@@ -386,20 +386,20 @@ const applySpecial = (
       }
       return { placement: landed, mines, ...crush };
     }
-    case "knightMine": {
+    case "spiderMine": {
       const at = action.to ?? action.from;
       const next = [...mines, { color: action.color, at }];
       assertMineCap(next, action.color);
       return { placement, mines: next };
     }
-    case "rookSiege":
+    case "siegeMode":
       return { placement, mines };
     default:
       return { placement, mines };
   }
 };
 
-const toggleRookSiege = (
+const toggleTankSiege = (
   placement: string,
   sieged: Set<Square>,
   color: PieceColor,
@@ -436,7 +436,7 @@ const extraStepFor = (
   actions.find(
     (a): a is Extract<ScAction, { timing: "B" | "F" }> =>
       a.timing === timing &&
-      a.kind === "pawnDouble" &&
+      a.kind === "stimStep" &&
       a.color === color &&
       (timing === "B" ? a.to === at : a.from === at),
   );
@@ -456,7 +456,7 @@ const withExtraStepLegs = (
   if (!plan) return plan;
   const before = extraStepFor(actions, plan.color, "B", plan.from);
   const after = extraStepFor(actions, plan.color, "F", plan.from);
-  const to = after ? pawnSingleTarget(plan.to, plan.color) : null;
+  const to = after ? marineSingleTarget(plan.to, plan.color) : null;
   return {
     ...plan,
     ...(before ? { extraStepFrom: plan.from } : {}),
@@ -515,7 +515,7 @@ export const rewriteClassicalAfterB = (
         a.color === c.color &&
         a.from === c.from &&
         a.to &&
-        (a.kind === "pawnDouble" || a.kind === "queenWarp"),
+        (a.kind === "stimStep" || a.kind === "tacticalJump"),
     );
     if (!b || !b.to) continue;
 
@@ -526,12 +526,12 @@ export const rewriteClassicalAfterB = (
     const newTo = shiftSquare(c.to, df, dr);
     if (!newTo) continue;
 
-    if (b.kind === "pawnDouble") {
+    if (b.kind === "stimStep") {
       const sameFile = c.from[0] === c.to[0];
       const ranks = Math.abs(Number(c.to[1]) - Number(c.from[1]));
       const forward =
         (Number(c.to[1]) - Number(c.from[1])) * (b.color === "w" ? 1 : -1) > 0;
-      const onStartRank = canPawnDoubleStep(c.from, b.color);
+      const onStartRank = canMarineDoubleStep(c.from, b.color);
       if (
         c.kind !== "classical" ||
         !sameFile ||
@@ -579,7 +579,7 @@ export const endScTurn = (
   let mines: ScMine[] = [...(snapshot.mines ?? [])];
   let eventSeq = 0;
   const siegedThisTurn: Square[] = [];
-  const sieged = new Set(snapshot.siegedRooks ?? []);
+  const sieged = new Set(snapshot.siegedTanks ?? []);
   const bMoves: ResolveMove[] = [];
   const fMoves: ResolveMove[] = [];
   const warped: { from: Square; to: Square }[] = [];
@@ -624,20 +624,20 @@ export const endScTurn = (
   }): EndScTurnResult => {
     const nextTurn = snapshot.turn + 1;
     const income = energyForTurn(Math.max(1, nextTurn));
-    const siegedRooks = [...sieged].sort();
-    const terminal = kingLives.w === 0 || kingLives.b === 0;
+    const siegedTanks = [...sieged].sort();
+    const terminal = ccLives.w === 0 || ccLives.b === 0;
     return {
       resolved: args.resolved,
       next: {
         placement,
         turn: nextTurn,
-        kingLives: { ...kingLives },
+        ccLives: { ...ccLives },
         phase: terminal ? "O" : "P",
         gas: { w: 0, b: 0 },
         gasIncome: { w: income, b: income },
         queue: { actions: [] },
         ...(mines.length ? { mines } : {}),
-        ...(siegedRooks.length ? { siegedRooks } : {}),
+        ...(siegedTanks.length ? { siegedTanks } : {}),
         ...(args.specialsUsed?.length
           ? { specialsUsed: [...args.specialsUsed] }
           : {}),
@@ -653,8 +653,8 @@ export const endScTurn = (
     };
   };
 
-  const rookModeFor = (sq: Square) => (sieged.has(sq) ? "siege" : "tank");
-  const visionOpts0 = { mines, rookModeFor };
+  const tankModeFor = (sq: Square) => (sieged.has(sq) ? "siege" : "tank");
+  const visionOpts0 = { mines, tankModeFor };
   const visionW0 = getSideVision(placement, "w", visionOpts0);
   const visionB0 = getSideVision(placement, "b", visionOpts0);
   const isCheckVisible = (color: PieceColor, square: Square) => {
@@ -666,31 +666,31 @@ export const endScTurn = (
     ? {
         placement,
         mines,
-        kingLives: { ...snapshot.kingLives },
-        attacks: [] as ReturnType<typeof applyPendingKingShots>["attacks"],
+        ccLives: { ...snapshot.ccLives },
+        attacks: [] as ReturnType<typeof applyPendingCCShots>["attacks"],
       }
-    : applyPendingKingShots({
+    : applyPendingCCShots({
         placement,
-        kingLives: snapshot.kingLives,
-        pending: collectLegalKingChecks(placement, {
+        ccLives: snapshot.ccLives,
+        pending: collectLegalCCChecks(placement, {
           isTargetVisible: isCheckVisible,
         }),
         mines,
       });
   placement = pendingApplied.placement;
   mines = pendingApplied.mines;
-  let kingLives = pendingApplied.kingLives;
+  let ccLives = pendingApplied.ccLives;
   const afterPending = {
     placement,
     mines: [...mines],
-    kingLives: { ...kingLives },
+    ccLives: { ...ccLives },
   };
   for (const atk of pendingApplied.attacks) log.shot(atk);
 
-  if (kingLives.w === 0 || kingLives.b === 0) {
+  if (ccLives.w === 0 || ccLives.b === 0) {
     const terminalBoard = {
       placement,
-      kingLives: { ...kingLives },
+      ccLives: { ...ccLives },
       mines: [...mines],
     };
     return finish({
@@ -705,12 +705,12 @@ export const endScTurn = (
         pathRevealMineTriggers: [],
         moveCollisions: [],
         promotions: [],
-        pendingKingShotsArmed: [],
+        pendingCCShotsArmed: [],
       },
       afterB: {
         placement,
         mines: [...mines],
-        siegedRooks: [...sieged].sort(),
+        siegedTanks: [...sieged].sort(),
       },
     });
   }
@@ -747,15 +747,15 @@ export const endScTurn = (
     const ordered = orderBHeadsFirst(group);
     for (const a of ordered) {
       if (a.timing !== "B") continue;
-      if (a.kind === "rookSiege") {
-        if (toggleRookSiege(placement, sieged, a.color, a.from)) {
+      if (a.kind === "siegeMode") {
+        if (toggleTankSiege(placement, sieged, a.color, a.from)) {
           siegedThisTurn.push(a.from);
           extrasBySeq.set(a.seq, { action: a, extra: {} });
         }
         continue;
       }
       const allyBlocked =
-        (a.kind === "pawnDouble" || a.kind === "queenWarp") &&
+        (a.kind === "stimStep" || a.kind === "tacticalJump") &&
         !!a.to &&
         (() => {
           const dest = placementToMap(placement).get(a.to!);
@@ -763,7 +763,7 @@ export const endScTurn = (
         })();
       const held =
         !allyBlocked &&
-        a.kind === "pawnDouble" &&
+        a.kind === "stimStep" &&
         !!a.to &&
         actions.some(
           (c) => c.timing === "C" && c.color === a.color && c.from === a.from,
@@ -777,12 +777,12 @@ export const endScTurn = (
       const relocated = applied.placement !== placement;
       const stepped =
         !allyBlocked &&
-        a.kind === "pawnDouble" &&
+        a.kind === "stimStep" &&
         !!a.to &&
         relocated;
       placement = applied.placement;
       mines = applied.mines;
-      if (!allyBlocked && a.kind === "queenWarp" && !!a.to && relocated) {
+      if (!allyBlocked && a.kind === "tacticalJump" && !!a.to && relocated) {
         warped.push({ from: a.from, to: a.to });
       }
       if (stepped) {
@@ -794,7 +794,7 @@ export const endScTurn = (
         }
       }
       event.extra = {
-        ...(a.kind === "spawn" && a.unit ? { unit: a.unit } : {}),
+        ...(a.kind === "deploy" && a.unit ? { unit: a.unit } : {}),
         ...(applied.victim ? { victim: applied.victim } : {}),
         ...(applied.mineColor ? { mineColor: applied.mineColor } : {}),
       };
@@ -832,10 +832,10 @@ export const endScTurn = (
   const afterB = {
     placement,
     mines: [...mines],
-    siegedRooks: [...sieged].sort() as Square[],
+    siegedTanks: [...sieged].sort() as Square[],
   };
 
-  const visionOpts = { mines, rookModeFor };
+  const visionOpts = { mines, tankModeFor };
   const visionW = getSideVision(placement, "w", visionOpts);
   const visionB = getSideVision(placement, "b", visionOpts);
   const isTargetVisible = (color: PieceColor, square: Square) => {
@@ -861,14 +861,14 @@ export const endScTurn = (
   const black = withExtraStepLegs(classicalFor(actionsAfterB, "b"), actions);
   const classical = resolveTurn({
     placement,
-    kingLives,
+    ccLives,
     white,
     black,
     ignoreAttacksOn,
     mines,
     isTargetVisible,
-    pathVisionOpts: { mines, rookModeFor },
-    siegedRooks: afterB.siegedRooks,
+    pathVisionOpts: { mines, tankModeFor },
+    siegedTanks: afterB.siegedTanks,
   });
 
   let resolved: ResolveTurnResult = {
@@ -885,14 +885,14 @@ export const endScTurn = (
 
   placement = resolved.afterAll.placement;
   mines = resolved.afterAll.mines;
-  kingLives = resolved.afterAll.kingLives;
+  ccLives = resolved.afterAll.ccLives;
 
   const boardAfterMove = placementToMap(placement);
   for (const sq of sieged) {
     if (boardAfterMove.get(sq)?.type !== "r") sieged.delete(sq);
   }
 
-  if (kingLives.w === 0 || kingLives.b === 0) {
+  if (ccLives.w === 0 || ccLives.b === 0) {
     return finish({ resolved, afterB, bMoves, queue: [...actions] });
   }
 
@@ -923,25 +923,25 @@ export const endScTurn = (
     const actor = boardAfter.get(at);
     // Fire-and-forget Charon resolves from the queued square even with no
     // live Mecha; every other F special needs its actor.
-    if ((!actor || actor.color !== a.color) && a.kind !== "bishopSnipe") continue;
+    if ((!actor || actor.color !== a.color) && a.kind !== "charonMissiles") continue;
 
     const rewritten: ScAction =
-      a.kind === "knightMine"
+      a.kind === "spiderMine"
         ? { ...a, from: at, to: at }
         : { ...a, from: at };
 
-    if (a.kind === "rookSiege") {
+    if (a.kind === "siegeMode") {
       if (!actor || actor.type !== "r") continue;
-      if (toggleRookSiege(placement, sieged, a.color, at)) {
+      if (toggleTankSiege(placement, sieged, a.color, at)) {
         siegedThisTurn.push(at);
         log.special("specialAfter", rewritten);
       }
       continue;
     }
 
-    if (a.kind === "pawnDouble") {
+    if (a.kind === "stimStep") {
       if (!actor || actor.type !== "p") continue;
-      const to = pawnSingleTarget(at, a.color);
+      const to = marineSingleTarget(at, a.color);
       if (!to || boardAfter.has(to)) {
         // The Extra Step never lands, so `at` *is* the destination: a mine the
         // classical leg held back for this hop has to fire here instead.
@@ -989,7 +989,7 @@ export const endScTurn = (
 
     const applied = applySpecial(placement, mines, rewritten, ignoreAttacksOn);
     if (
-      a.kind === "queenWarp" &&
+      a.kind === "tacticalJump" &&
       rewritten.to &&
       applied.placement !== placement
     ) {
@@ -998,7 +998,7 @@ export const endScTurn = (
     placement = applied.placement;
     mines = applied.mines;
     log.special("specialAfter", rewritten, {
-      ...(a.kind === "spawn" && a.unit ? { unit: a.unit } : {}),
+      ...(a.kind === "deploy" && a.unit ? { unit: a.unit } : {}),
       ...(applied.victim ? { victim: applied.victim } : {}),
       ...(applied.mineColor ? { mineColor: applied.mineColor } : {}),
     });
@@ -1024,7 +1024,7 @@ export const endScTurn = (
     }
     if (w !== 1 || b !== 1) {
       throw new Error(
-        `endScTurn: illegal king count (w=${w} b=${b}) after resolve: ${placement}`,
+        `endScTurn: illegal Command Center count (w=${w} b=${b}) after resolve: ${placement}`,
       );
     }
   }

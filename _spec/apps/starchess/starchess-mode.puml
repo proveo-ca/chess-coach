@@ -18,11 +18,11 @@ package "Goals (vs classical chess)" {
 }
 
 package "Specials (product)" {
-  component "Pawn — gas step (pawnDouble)\n+1 forward; stacks with classical" as S1 <<app>>
-  component "Knight — Spider Mine (knightMine)\nM: overlay; cap 3 / side" as S2 <<app>>
-  component "Mecha — Charon (bishopSnipe)\n2 gas; free aim any diagonal\nfirst ship detonates, else fizzle off-board" as S3 <<app>>
-  component "Rook — Siege toggle (rookSiege)\ntank ↔ siege vision / mobility" as S4 <<app>>
-  component "Queen — Tactical Jump (queenWarp)\n3 gas; visible empty square" as S5 <<app>>
+  component "Pawn — gas step (stimStep)\n+1 forward; stacks with classical" as S1 <<app>>
+  component "Knight — Spider Mine (spiderMine)\nM: overlay; cap 3 / side" as S2 <<app>>
+  component "Mecha — Charon (charonMissiles)\n2 gas; free aim any diagonal\nfirst ship detonates, else fizzle off-board" as S3 <<app>>
+  component "Rook — Siege toggle (siegeMode)\ntank ↔ siege vision / mobility" as S4 <<app>>
+  component "Queen — Tactical Jump (tacticalJump)\n3 gas; visible empty square" as S5 <<app>>
   component "King — Spawn\nadjacent deploy; can collide\nwith king-shots; a deploy on the enemy\nking's ring stacks a 2nd checker" as S6 <<app>>
 }
 
@@ -69,7 +69,7 @@ note bottom
   **Deferred product (engine ok / UI polish):**
   * Same-turn deploy-then-C / gas-then-C / unsiege-then-C via occupancyForQueuedMoves (core accepts
     C.from = spawn.to; board input projects B occupancy for selection).
-  * Siege tank/siege toggle UX clarity (""rookSiege"" + ""S:"" authoritative).
+  * Siege tank/siege toggle UX clarity (""siegeMode"" + ""S:"" authoritative).
   * Fog-first movegen / adjutant (live remains viewer fog;
     DualNav review = observer dual-vision).
   ----

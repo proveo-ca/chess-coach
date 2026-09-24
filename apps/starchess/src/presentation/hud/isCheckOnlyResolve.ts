@@ -3,13 +3,13 @@
  * no classical / B / F / path-reveal / spawn. Used to chain check+End in one DualNav arrow.
  *
  * Spawn-only (and other special-only) Ends must NOT match: they have empty `bMoves`
- * (only pawnDouble fills bMoves) but still spend minerals / place units.
+ * (only stimStep fills bMoves) but still spend minerals / place units.
  *
  * Only attacks that hit a unit count: a victimless siege `shelling` (HE on empty
  * ground) and a `mineBlast` that merely *cleared* a mine (no victim) are fire
  * missions, not checks — a sieged tank shelling an empty cross square must not
  * light the TurnBar check chip, chain DualNav plies, or narrate `hasCheck`.
- * Real check plies only ever emit `kingShot` or blocker-collision `capture`.
+ * Real check plies only ever emit `ccShot` or blocker-collision `capture`.
  */
 import type { EndScTurnResult } from "@chess-coach/starchess-core";
 

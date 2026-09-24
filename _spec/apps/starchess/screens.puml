@@ -55,7 +55,7 @@ TOOLS ARROW_ERROR TOOLS : Leave Match modal
 MENU ARROW_MAIN NEON
 
 note bottom
-  **Layout** matches ``apps/ui`` ``Screen`` (content-sized rows; desktop
+  **Layout** matches ``apps/chess`` ``Screen`` (content-sized rows; desktop
   header ``min-height: calc(--avatar-height + 1rem)`` for captures). BoardArea = BoardColumn +
   ``BoardSideRail`` (``--sidebar-width`` only — no board-height lock).
   ``ReviewDemoScreen``, ``StarChessScreen``, and ``TutorialReviewHost`` supply
@@ -138,10 +138,10 @@ note bottom
   neither axis has the room to dodge the board there.
   **Chess skin** (``cburnett``) — chosen only by ``TutorialScreen`` (fog stage),
   read only by presentation glyph switches: ``RookGlyph`` flattens tank/siege,
-  ``kingDamageOverlay`` flattens a burning Command Center (HP 1–2) to the classic
+  ``ccDamageOverlay`` flattens a burning Command Center (HP 1–2) to the classic
   King. Never a rules concept — asserted in ``__tests__/bundle/bundleBoundary``.
   Fire cues pass the same fog gate as every other cue layer, so an unseen
-  burning CC never marks its square (``__tests__/fog/kingDamageFog``).
+  burning CC never marks its square (``__tests__/fog/ccDamageFog``).
   **Tutorial-only labels** (``TutorialHudLabels``) — names the deploy /
   promotion tiles (``specialCopyFor``) and the three ResourceBar strips.
   Anchors are found by test id and measured into a portal, so ``DeployModal`` /

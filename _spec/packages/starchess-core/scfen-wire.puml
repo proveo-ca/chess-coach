@@ -33,7 +33,7 @@ note right of WIRE
   ""B:<w>:<b>"" = available minerals (Command Center bank).
   Deployed supply is still derived from placement.
   **Lives carry the outcome.** ""scOutcome(snap)"" (""outcome.ts"")
-  derives win / draw from ""kingLives"" alone — 0/0 (face-to-face
+  derives win / draw from ""ccLives"" alone — 0/0 (face-to-face
   kings, see resolve.puml) is a **draw**, one side at 0 is a win
   for the other. Phase ""O"" is terminal and **absorbing**.
   No winner field and no grammar change for the king duel.
@@ -55,7 +55,7 @@ end note
 
 note right of S
   Sieged rook squares (""S:c3f7"").
-  Unpacked tanks are **immobile** until ""rookSiege""
+  Unpacked tanks are **immobile** until ""siegeMode""
   toggles tank mode.
 end note
 

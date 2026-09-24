@@ -55,7 +55,7 @@ note right of MC
   what stopped the ray, so the shot lands on that tile and takes the mine under
   it, and the approaching unit occupies alive. Fog changes who *knew*, never who
   fired at what. Only tiles the approach **crossed** still detonate (that is the
-  chase, with ""chaseFrom""). A ""kingShot"" approach stops *short* and fires from
+  chase, with ""chaseFrom""). A ""ccShot"" approach stops *short* and fires from
   range, so the tile it settles on was never fired upon and stays a walk.
 
   **A capture reports the mine it took with it.** ""clearOnCapture"" returns the
@@ -80,8 +80,8 @@ end note
 
 note as N_BLOCK
   **Mines are never blockers.** Check geometry (""attacksSquare"" via
-  ""collectLegalKingChecks"") and ""firstBlockerOnRay"" — the pre-collected
-  ""H:"" shot path in ""applyPendingKingShots"" — read the **placement map**
+  ""collectLegalCCChecks"") and ""firstBlockerOnRay"" — the pre-collected
+  ""H:"" shot path in ""applyPendingCCShots"" — read the **placement map**
   only. A mine on a check ray therefore neither stops the shot nor is spent by
   it: this table is the **only** exit a mine has.
 

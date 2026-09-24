@@ -3,7 +3,7 @@ import { createEffect, on } from "solid-js";
 import { useHint } from "~/hooks/useHint";
 import { setAdviceArrow } from "~/store/coachStore";
 import { currentIndex, fenHistory } from "~/store/gameStore";
-// SPEC: _spec/apps/ui/components.puml
+// SPEC: _spec/apps/chess/components.puml
 import type { AnnotationTag } from "~/types/analysis";
 
 /**

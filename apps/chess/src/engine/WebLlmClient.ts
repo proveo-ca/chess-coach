@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/ui/components.puml
+// SPEC: _spec/apps/chess/components.puml
 import { CreateWebWorkerMLCEngine, type MLCEngineInterface, type AppConfig } from "@mlc-ai/web-llm";
 
 import { ENGINE_CONFIG } from "~/engine/config";

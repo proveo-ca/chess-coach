@@ -23,7 +23,7 @@ test.describe("Coach (web-no-llm)", () => {
     const e2 = page.locator("[data-square='e2']");
     await expect(e2.locator("img")).toBeVisible({ timeout: 15_000 });
 
-    // Select the e2 pawn — valid-move indicator confirms selection
+    // Select the e2 Marine — valid-move indicator confirms selection
     await e2.click();
     const e4 = page.locator("[data-square='e4']");
     await expect(e4).toHaveAttribute("class", /valid/, { timeout: 5_000 });
@@ -44,11 +44,11 @@ test.describe("Coach (web-no-llm)", () => {
 
   test("blunder detection: hovering Qxf7 flags the move as a blunder", async ({ page }) => {
     // Pre-load a position where 1.e4 e5 2.Qh5 Nc6 has been played.
-    // White queen on h5, white to move. Qxf7+ is a classic blunder —
-    // queen captures a pawn but the undefended queen is lost to Kxf7.
+    // White BattleShip on h5, white to move. Qxf7+ is a classic blunder —
+    // BattleShip captures a Marine but the undefended BattleShip is lost to Kxf7.
     //
-    // (Qc3 from the starting position isn't reachable by the queen in one move
-    // and c3→f7 isn't a queen line, so this uses the chess-sensible equivalent.)
+    // (Qc3 from the starting position isn't reachable by the BattleShip in one move
+    // and c3→f7 isn't a BattleShip line, so this uses the chess-sensible equivalent.)
     await page.goto("/");
     await page.evaluate(() => {
       localStorage.clear();
@@ -67,13 +67,13 @@ test.describe("Coach (web-no-llm)", () => {
     await page.getByText("Play with Selena").click();
     await expect(page).toHaveURL(/\/selena/);
 
-    // Confirm the pre-loaded position: white queen on h5, black knight on c6.
+    // Confirm the pre-loaded position: white BattleShip on h5, black Hoverbike on c6.
     const h5 = page.locator("[data-square='h5']");
     const c6 = page.locator("[data-square='c6']");
     await expect(h5.locator("img[alt='w q']")).toBeVisible({ timeout: 15_000 });
     await expect(c6.locator("img[alt='b n']")).toBeVisible();
 
-    // Tap the queen — f7 becomes a legal (capture) destination.
+    // Tap the BattleShip — f7 becomes a legal (capture) destination.
     await h5.click();
     const f7 = page.locator("[data-square='f7']");
     await expect(f7).toHaveAttribute("class", /capture/, { timeout: 5_000 });

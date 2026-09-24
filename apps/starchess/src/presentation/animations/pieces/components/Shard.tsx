@@ -5,7 +5,7 @@ import { shardFlightStyle } from "~/presentation/animations/deathAnim";
 type ShardProps = {
   index: number;
   seed: number;
-  /** Scale flight distance (pawn uses ~0.55 so the pop stays local). */
+  /** Scale flight distance (Marine uses ~0.55 so the pop stays local). */
   distScale?: number;
   children: JSX.Element;
 };

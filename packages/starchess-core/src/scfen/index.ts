@@ -2,15 +2,15 @@
  * SCFEN parse / format / queue codec (no turn resolve / replay).
  */
 export {
-  hasExactKingPair,
+  hasExactCCPair,
   specialGasCost,
   snapFromPlacement,
   formatSpecialsUsedExtra,
   parseSpecialsUsedExtra,
-  formatSiegedRooksExtra,
-  parseSiegedRooksExtra,
-  formatPendingKingShotsExtra,
-  parsePendingKingShotsExtra,
+  formatSiegedTanksExtra,
+  parseSiegedTanksExtra,
+  formatPendingCCShotsExtra,
+  parsePendingCCShotsExtra,
   formatQueueField,
   parseQueueField,
   assertQueueShape,
@@ -23,5 +23,11 @@ export {
   classicFenFromSc,
   toClassicFen,
 } from "./codec";
+export {
+  LEGACY_FIELD_NAMES,
+  LEGACY_SPECIAL_KINDS,
+  currentKind,
+  migrateLegacyNames,
+} from "./legacyKinds";
 
 export type { ScPhaseCode, ScFenSnapshot, ScAction, ScTurnQueue, ScFenError } from "../model/types";

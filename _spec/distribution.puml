@@ -13,7 +13,7 @@ title Chess Coach · Distribution\nUI + CoachService + shell · matrix · Androi
 
 package "The one idea — UI + CoachService + shell" as ONE {
 
-  class "SolidJS UI (apps/ui)" as UI <<app>> {
+  class "SolidJS UI (apps/chess)" as UI <<app>> {
     VITE_TARGET: web-no-llm · web-full · desktop
   }
 

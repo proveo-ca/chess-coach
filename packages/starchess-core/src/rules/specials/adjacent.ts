@@ -1,9 +1,9 @@
 // SPEC: _spec/apps/starchess/core/board/board-queries.puml, _spec/apps/starchess/core/turn/command-queue.puml
 import type { Square } from "../../model/square";
 import type { ScFenSnapshot, StarChessColor } from "../../model/types";
-import { findKing, placementToMap } from "../../board/placement";
+import { findCC, placementToMap } from "../../board/placement";
 
-/** Empty squares adjacent to `origin` (king spawn ring). */
+/** Empty squares adjacent to `origin` (Command Center spawn ring). */
 export const adjacentSquares = (
   origin: Square,
   occupied: ReadonlySet<Square>,
@@ -27,50 +27,50 @@ export const adjacentSquares = (
 /**
  * Command Center spawn ring anchor.
  *
- * - **B** (gas before classical): ring around the living king; raw planning
+ * - **B** (gas before classical): ring around the living Command Center; raw planning
  *   occupancy (B resolves before C — squares still full).
- * - **F** (classical then gas): ring around the **post-move** king when a
+ * - **F** (classical then gas): ring around the **post-move** Command Center when a
  *   same-side classical relocates it; **all** same-side classical vacates count
  *   as empty so a unit can move off a square then receive an F deploy there.
  */
-export const spawnKingAnchor = (
+export const spawnCCAnchor = (
   snap: ScFenSnapshot,
   color: StarChessColor,
   timing: "B" | "F",
 ): {
-  king: Square | null;
+  commandCenter: Square | null;
   occupied: ReadonlySet<Square>;
   allyOccupied: ReadonlySet<Square>;
 } => {
   const map = placementToMap(snap.placement);
-  let king = findKing(map, color);
+  let commandCenter = findCC(map, color);
   const occupied = new Set(map.keys());
-  // Kings block deploy (own center + enemy adjacent are never crushable).
-  // Ally non-kings are crushable: deployed unit replaces the occupant.
+  // Command Centers block deploy (own center + enemy adjacent are never crushable).
+  // Ally non-ccs are crushable: deployed unit replaces the occupant.
   const allyOccupied = new Set<Square>();
   for (const [sq, p] of map) {
     if (p.type === "k") allyOccupied.add(sq);
   }
-  if (!king) return { king: null, occupied, allyOccupied };
-  if (timing !== "F") return { king, occupied, allyOccupied };
+  if (!commandCenter) return { commandCenter: null, occupied, allyOccupied };
+  if (timing !== "F") return { commandCenter, occupied, allyOccupied };
 
   // Project same-side classical relocates (and B gas/warp) onto occupancy.
   // F spawns after B+C at resolve — vacated origins are legal deploy targets.
-  // allyOccupied tracks king squares only (kings never crushable): B arms move
-  // pawns/queens or deploy non-kings, so they never touch it; only a classical
-  // king move carries the block with it.
+  // allyOccupied tracks Command Center squares only (Command Centers never crushable): B arms move
+  // Marines/BattleShips or deploy non-ccs, so they never touch it; only a classical
+  // Command Center move carries the block with it.
   const actions = snap.queue?.actions ?? [];
   for (const a of actions) {
     if (a.color !== color) continue;
     if (a.timing === "B") {
       if (
-        (a.kind === "pawnDouble" || a.kind === "queenWarp") &&
+        (a.kind === "stimStep" || a.kind === "tacticalJump") &&
         a.from &&
         a.to
       ) {
         occupied.delete(a.from);
         occupied.add(a.to);
-      } else if (a.kind === "spawn" && a.to) {
+      } else if (a.kind === "deploy" && a.to) {
         occupied.add(a.to);
       }
       continue;
@@ -78,11 +78,11 @@ export const spawnKingAnchor = (
     if (a.timing !== "C" || a.kind !== "classical") continue;
     occupied.delete(a.from);
     occupied.add(a.to);
-    if (a.from === king) {
+    if (a.from === commandCenter) {
       allyOccupied.delete(a.from);
       allyOccupied.add(a.to);
-      king = a.to;
+      commandCenter = a.to;
     }
   }
-  return { king, occupied, allyOccupied };
+  return { commandCenter, occupied, allyOccupied };
 };

@@ -1,6 +1,6 @@
 /**
- * Global base styles. Design tokens live in `~/theme.css` (apps/ui pattern).
- * // SPEC: _spec/apps/ui/responsiveness/rules.md
+ * Global base styles. Design tokens live in `~/theme.css` (apps/chess pattern).
+ * // SPEC: _spec/apps/chess/responsiveness/rules.md
  */
 @import "./specialUsedAura.css";
 @import "./unitPose.css";

@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/ui/responsiveness/rules.md, _spec/apps/starchess/screens.puml, _spec/apps/starchess/architecture/screen-entities.puml, _spec/apps/starchess/architecture/base-screen.puml, _spec/apps/starchess/core/board/planning-projection.puml, _spec/apps/starchess/core/engine-boundary.puml, _spec/apps/starchess/navigation-chrome.md
+// SPEC: _spec/apps/chess/responsiveness/rules.md, _spec/apps/starchess/screens.puml, _spec/apps/starchess/architecture/screen-entities.puml, _spec/apps/starchess/architecture/base-screen.puml, _spec/apps/starchess/core/board/planning-projection.puml, _spec/apps/starchess/core/engine-boundary.puml, _spec/apps/starchess/navigation-chrome.md
 import {
   type ScFenSnapshot,
   type StarChessColor,
@@ -25,7 +25,7 @@ import { Screen } from "@chess-coach/ui-web/primitives/Screen";
 import { ScreenBackNav } from "~/components/primitives/ScreenBackNav";
 import { squareBoxStyle, findBoardGrid } from "~/presentation/animations/boardGeom";
 import { LiveBoardBinding } from "~/presentation/board/components/LiveBoardBinding";
-import { rookModeForSieged } from "~/presentation/board/rookMode";
+import { tankModeForSieged } from "~/presentation/board/tankMode";
 import { GasRack } from "~/presentation/hud/components/GasRack";
 import { usePieceSpecialArm } from "~/presentation/specials/hooks/usePieceSpecialArm";
 import { DeployModal } from "~/presentation/hud/components/DeployModal";
@@ -149,7 +149,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
     props.onExitToMenu?.();
   };
 
-  // King deploy flow lives in `presentation/specials/arms/CCDeploy.ts`.
+  // Command Center deploy flow lives in `presentation/specials/arms/CCDeploy.ts`.
   // `syncOverlay` is a hoisted function declaration below, so the open
   // callback can bind it even though the hook is created here (memos evaluate
   // eagerly and must see a ready hook).
@@ -161,8 +161,8 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
   const specialTargetSquares = createMemo((): Square[] => {
     const t = store.shell().targeting;
     if (!t) return [];
-    if (t.kind === "bishopSnipe") return [...t.targets];
-    if (t.kind === "queenWarp") return [...t.targets];
+    if (t.kind === "charonMissiles") return [...t.targets];
+    if (t.kind === "tacticalJump") return [...t.targets];
     return [];
   });
 
@@ -192,7 +192,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
         type: "QUEUE_ACTION",
         action: {
           timing: "B",
-          kind: "pawnDouble",
+          kind: "stimStep",
           color: pending.color,
           from: pending.from,
           to: pending.to,
@@ -248,7 +248,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
       shipJumpArm(store, snap(), ctx, {
         resetSpawn: ccd.resetSpawn,
         onAfterOpen: afterOpen,
-        rookModeFor: rookModeForSieged(store.shell().siegedRooks),
+        tankModeFor: tankModeForSieged(store.shell().siegedTanks),
       }),
   });
 
@@ -256,25 +256,25 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
   const onCancelSpawn = ccd.onCancelSpawn;
   const deploySpawnAt = ccd.deploySpawnAt;
 
-  const commitBishopSnipe = (to: Square) => {
+  const commitCharonMissiles = (to: Square) => {
     const t = store.shell().targeting;
-    if (!t || t.kind !== "bishopSnipe" || !t.targets.includes(to)) return;
+    if (!t || t.kind !== "charonMissiles" || !t.targets.includes(to)) return;
     const timing = specialTimingFor(snap().queue, t.color);
     const ok = tryQueue(
       store,
-      { timing, kind: "bishopSnipe", color: t.color, from: t.from, to },
+      { timing, kind: "charonMissiles", color: t.color, from: t.from, to },
       `Charon Booster Missiles ${t.from}→${to} queued · End to fire`,
     );
     if (ok) store.dispatch({ type: "MARK_SPECIAL_USED", square: t.from });
   };
 
-  const commitQueenWarp = (to: Square) => {
+  const commitTacticalJump = (to: Square) => {
     const t = store.shell().targeting;
-    if (!t || t.kind !== "queenWarp" || !t.targets.includes(to)) return;
+    if (!t || t.kind !== "tacticalJump" || !t.targets.includes(to)) return;
     const timing = specialTimingFor(snap().queue, t.color);
     const ok = tryQueue(
       store,
-      { timing, kind: "queenWarp", color: t.color, from: t.from, to },
+      { timing, kind: "tacticalJump", color: t.color, from: t.from, to },
       `Tactical Jump ${t.from}→${to} queued · End to resolve`,
     );
     if (ok) store.dispatch({ type: "MARK_SPECIAL_USED", square: t.from });
@@ -370,7 +370,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
     if (ccd.spawnPhase() !== "pick") return;
     const color = viewerColor(store);
     const queued = snap().queue?.actions.some(
-      (a) => a.color === color && a.timing !== "C" && a.kind === "spawn",
+      (a) => a.color === color && a.timing !== "C" && a.kind === "deploy",
     );
     if (queued) ccd.resetSpawn();
   });
@@ -557,9 +557,9 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
       <TutorialHudLabels enabled={!!props.tutorial} />
       <Show when={starChessMode()}>
         <span
-          data-testid="king-lives"
-          data-w={snap().kingLives.w}
-          data-b={snap().kingLives.b}
+          data-testid="cc-lives"
+          data-w={snap().ccLives.w}
+          data-b={snap().ccLives.b}
           hidden
         />
       </Show>
@@ -707,7 +707,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
               {(box) => (
                 <div
                   class={styles.boardOverlay}
-                  data-special="king-spawn"
+                  data-special="cc-spawn"
                   style={{
                     top: `${box().top}px`,
                     left: `${box().left}px`,
@@ -737,8 +737,8 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
                         data-special-target
                         onClick={() => {
                           const kind = store.shell().targeting?.kind;
-                          if (kind === "bishopSnipe") commitBishopSnipe(sq);
-                          else if (kind === "queenWarp") commitQueenWarp(sq);
+                          if (kind === "charonMissiles") commitCharonMissiles(sq);
+                          else if (kind === "tacticalJump") commitTacticalJump(sq);
                         }}
                       />
                     )}

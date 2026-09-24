@@ -9,7 +9,7 @@
 ' covers: packages/starchess-core/src/ai/strategic/strategies/economy.ts
 ' covers: packages/starchess-core/src/ai/strategic/tracking.ts
 ' covers: packages/starchess-core/src/ai/strategic/witness.ts
-' covers: packages/starchess-core/src/ai/context/pawns.ts
+' covers: packages/starchess-core/src/ai/context/marines.ts
 ' covers: packages/starchess-core/src/__tests__/strategic/runners.test.ts
 ' covers: packages/starchess-core/src/__tests__/strategic/runnerMemory.test.ts
 ' covers: packages/starchess-core/src/__tests__/strategic/witness.test.ts
@@ -71,8 +71,8 @@ TEST ARROW_MAIN SCAN
 note right of SCAN
   **Turns, not squares.** A marine covers **two** ranks in one turn — the gas
   step lands in rank B and its classical in rank C
-  (""plans/stacks.ts · pawnGasStacks""). The fact itself lives in
-  ""ai/context/pawns.ts"" as ""RUNNER_RANKS_PER_TURN"" / ""turnsToPromote"", because
+  (""plans/stacks.ts · marineGasStacks""). The fact itself lives in
+  ""ai/context/marines.ts"" as ""RUNNER_RANKS_PER_TURN"" / ""turnsToPromote"", because
   both ""runners.ts"" and ""witness.ts"" need it and either importing the other
   would close a cycle; ""runners.ts"" re-exports both, so no caller moved. So:
 
@@ -151,7 +151,7 @@ note as N_ANSWERS
   (the seen-crush / remembered-block shares above apply to non-ally squares
   only). A square holding some runner's last blocker carries the abandon
   charge and never shields elsewhere (""ALLY_UPGRADE"" /
-  ""ALLY_SHIELD_PAWN"" / ""ALLY_SHIELD_SHIP"" in ""strategies/economy.ts"").
+  ""ALLY_SHIELD_MARINE"" / ""ALLY_SHIELD_SHIP"" in ""strategies/economy.ts"").
 end note
 
 note as N_MEMORY
@@ -180,7 +180,7 @@ note as N_MEMORY
   first fold of turn 0 propagates.
 
   The fold asks ""getSideVision"" with the **same options the planner uses**
-  (""{ mines, rookModeFor: sieged ? "siege" : "tank" }"", per
+  (""{ mines, tankModeFor: sieged ? "siege" : "tank" }"", per
   ""ai/context/vision.ts""), so a marine our own siege cone is looking at cannot
   be forgotten by a fold that asked for less light.
 
@@ -250,7 +250,7 @@ note as N_WITNESS
   over raw is the omniscience ""../cc-focus.puml"" forbids.
 
   ""ai/strategic/witness.ts"" is that gate. Hosts hand in a ""ResolveWitness""
-  (""{ placement, mines, siegedRooks, moves, attacks }""), never a raw engine
+  (""{ placement, mines, siegedTanks, moves, attacks }""), never a raw engine
   payload, and there is exactly **one** adapter — ""witnessFromEndTurn"" — because
   a turn-open chip ply also builds a whole ""EndScTurnResult"".
 
@@ -264,7 +264,7 @@ note as N_WITNESS
   ""runnerCrossings(witness, side)"" gates every enemy marine move:
 
   | step | rule |
-  | whose fog | read from ""esr.afterB.placement"" — the board we were watching **from** when the turn began, with the planner's own ""{ mines, rookModeFor }"" bag |
+  | whose fog | read from ""esr.afterB.placement"" — the board we were watching **from** when the turn began, with the planner's own ""{ mines, tankModeFor }"" bag |
   | what counts | any square of ""[from, ...rayBetween(from,to), to]"" that was lit or revealed |
   | the origin, extra | granted when ""isMoverVisibleToSide"" says firing gave it away — a shot's origin is ""stopAt ?? from"", because a slider that discovers its target mid-ray fires from the discovery square and comes to **rest** elsewhere |
   | what is reported | the **most advanced** square we actually watched it occupy, plus a ""residual"" — never where the move ended |

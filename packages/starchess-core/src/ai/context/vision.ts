@@ -16,34 +16,34 @@ export const buildVisionIntel = (
   map: Map<Square, ScPiece>,
   us: PieceColor,
   enemy: PieceColor,
-  enemyKing: Square | null,
+  enemyCC: Square | null,
   sieged: ReadonlySet<Square>,
 ): VisionIntel => {
   let litSquares: ReadonlySet<Square> = new Set();
   let revealedPieces: ReadonlySet<Square> = new Set();
-  let enemyKingVisible = false;
+  let enemyCCVisible = false;
 
   try {
     const vision = getSideVision(map, us, {
       mines: snap.mines,
-      rookModeFor: (s) => (sieged.has(s) ? "siege" : "tank"),
+      tankModeFor: (s) => (sieged.has(s) ? "siege" : "tank"),
     });
     litSquares = vision.litSquares;
     revealedPieces = vision.revealedPieces;
-    enemyKingVisible =
-      !!enemyKing && (litSquares.has(enemyKing) || revealedPieces.has(enemyKing));
+    enemyCCVisible =
+      !!enemyCC && (litSquares.has(enemyCC) || revealedPieces.has(enemyCC));
   } catch {
-    enemyKingVisible = false;
+    enemyCCVisible = false;
   }
 
-  let enemyQueenVisible = false;
+  let enemyBattleShipVisible = false;
   for (const [sq, piece] of map) {
     if (piece.color !== enemy || piece.type !== "q") continue;
     if (litSquares.has(sq) || revealedPieces.has(sq)) {
-      enemyQueenVisible = true;
+      enemyBattleShipVisible = true;
       break;
     }
   }
 
-  return { litSquares, revealedPieces, enemyKingVisible, enemyQueenVisible };
+  return { litSquares, revealedPieces, enemyCCVisible, enemyBattleShipVisible };
 };

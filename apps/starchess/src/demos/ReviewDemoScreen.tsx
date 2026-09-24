@@ -13,6 +13,11 @@ import {
 } from "solid-js";
 import { Portal } from "solid-js/web";
 
+import {
+  clearAchievementBubbles,
+  pushAchievementBubbles,
+} from "~/achievements/achievementLive";
+import { foldGame, foldPlyFromResolve, plySeenBy } from "~/achievements/analysis";
 import { createMatchStore, MatchStoreProvider, useMatchStore } from "~/app/MatchStoreContext";
 import { createMatchStateFromReviewHistory } from "~/app/reviewHistory";
 import { displayedSnapshot } from "~/app/selectors";
@@ -22,7 +27,7 @@ import { Label } from "@chess-coach/ui-web/primitives/Label";
 import { Screen } from "@chess-coach/ui-web/primitives/Screen";
 import { ScreenBackNav } from "~/components/primitives/ScreenBackNav";
 import styles from "~/demos/ReviewDemoScreen.module.css";
-import { clearSiegedRooks, setRookMode } from "~/presentation/animations/rookModeStore";
+import { clearSiegedTanks, setTankMode } from "~/presentation/animations/tankModeStore";
 import { StarChessMobileBanner as MobileBanner } from "@chess-coach/ui-web/atoms/StarChessMobileBanner";
 import { LiveBoardBinding } from "~/presentation/board/components/LiveBoardBinding";
 import { displayPlayerName } from "~/utils/playerName";
@@ -62,7 +67,7 @@ export type ReviewDemoScreenProps = {
   variant?: BoardSkin;
   pieceSet?: PieceSet;
 
-  rookTank?: boolean;
+  packedTank?: boolean;
 
   playerColor?: StarChessColor;
 
@@ -80,22 +85,32 @@ export type ReviewDemoScreenProps = {
 
   header?: JSX.Element;
   footerExtra?: JSX.Element;
+
+  /**
+   * Replay both sides' achievement bubbles as turns play forward. `winner`
+   * gates the end-of-game levels; `opponent` names the Adjutant tier a side
+   * beat (Flawless levels on it).
+   */
+  achievements?: {
+    winner: StarChessColor | null;
+    opponent?: Partial<Record<StarChessColor, string>>;
+  };
 };
 
-const syncRookModes = (
+const syncTankModes = (
   placement: string,
   sieged: readonly Square[] | undefined,
   forceTank: boolean | undefined,
 ) => {
-  clearSiegedRooks();
+  clearSiegedTanks();
   if (!forceTank) {
-    for (const sq of sieged ?? []) setRookMode(sq, "siege");
+    for (const sq of sieged ?? []) setTankMode(sq, "siege");
     return;
   }
   try {
     const map = placementToMap(placement);
     for (const [sq, piece] of map) {
-      if (piece.type === "r") setRookMode(sq as Square, "tank");
+      if (piece.type === "r") setTankMode(sq as Square, "tank");
     }
   } catch {
 
@@ -145,7 +160,7 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
 
   createEffect(() => {
     const s = snap();
-    syncRookModes(s.placement, s.siegedRooks, props.rookTank);
+    syncTankModes(s.placement, s.siegedTanks, props.packedTank);
   });
 
   createEffect(() => {
@@ -155,6 +170,40 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
       timelineActive: store.state().timeline.active,
     });
   });
+
+  // Achievements: the whole match is folded once; each forward step raises the
+  // bubbles of the resolve that just finished. Any other seek clears the board.
+  const plies = props.history.settledResolves.map((esr, i) =>
+    foldPlyFromResolve(esr, props.history.settledSnapshots[i]?.placement),
+  );
+  const opening = props.history.settledSnapshots[0];
+  const game =
+    props.achievements && opening ? foldGame(opening, plies, props.achievements) : null;
+  let shownIndex = store.state().reviewIndex;
+  createEffect(() => {
+    const index = store.state().reviewIndex;
+    if (!game || index === shownIndex) return;
+    const from = shownIndex;
+    shownIndex = index;
+    if (index !== from + 1) {
+      clearAchievementBubbles();
+      return;
+    }
+    const ply = plies[from];
+    const filter = reviewVisionFilter();
+    const last = index >= props.history.settledSnapshots.length - 1;
+    const raised = [...(game.perPly[from] ?? []), ...(last ? game.final : [])];
+    // A side's vision filter hides the other side's bubbles it could not see.
+    pushAchievementBubbles(
+      raised.filter(
+        (bubble) =>
+          filter === "both" ||
+          bubble.side === filter ||
+          (ply != null && plySeenBy(ply, filter, bubble.origin)),
+      ),
+    );
+  });
+  onCleanup(clearAchievementBubbles);
 
   onMount(() => {
     if (props.tutorial) setCapabilities(TUTORIAL_CAPABILITIES);
@@ -181,7 +230,7 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
     onCleanup(() => {
       window.removeEventListener("keydown", onKey);
       store.cancelEffects();
-      clearSiegedRooks();
+      clearSiegedTanks();
       resetReviewVisionFilter();
       if (props.tutorial) resetTutorialNarration();
     });
@@ -369,7 +418,7 @@ export const ReviewDemoScreen: Component<ReviewDemoScreenProps> = (props) => {
         fog={props.fog}
         variant={props.variant}
         pieceSet={props.pieceSet}
-        rookTank={props.rookTank}
+        packedTank={props.packedTank}
         playerColor={props.playerColor}
         playerName={props.playerName}
         arenaPlayers={props.arenaPlayers}

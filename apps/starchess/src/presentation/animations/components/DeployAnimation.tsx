@@ -12,11 +12,11 @@ import {
 } from "~/presentation/animations/deployAnim";
 import styles from "~/presentation/animations/components/DeployAnimation.module.css";
 import { squareBoxStyle } from "~/presentation/animations/boardGeom";
-import { InlineBishop } from "~/presentation/pieces/InlineBishop";
-import { InlineKnight } from "~/presentation/pieces/InlineKnight";
-import { InlinePawn } from "~/presentation/pieces/InlinePawn";
-import { InlineQueen } from "~/presentation/pieces/InlineQueen";
-import { InlineRook } from "~/presentation/pieces/InlineRook";
+import { InlineMecha } from "~/presentation/pieces/InlineMecha";
+import { InlineHoverbike } from "~/presentation/pieces/InlineHoverbike";
+import { InlineMarine } from "~/presentation/pieces/InlineMarine";
+import { InlineBattleShip } from "~/presentation/pieces/InlineBattleShip";
+import { InlineTank } from "~/presentation/pieces/InlineTank";
 import { teamTintStyle, type PieceColor } from "~/presentation/pieces/teamColors";
 import type { StarChessPiece, DeployCue } from "~/presentation/types";
 
@@ -25,15 +25,15 @@ const NO_SPECIAL_USED: ReadonlySet<Square> = new Set();
 const hull = (piece: StarChessPiece, color: PieceColor): JSX.Element | null => {
   switch (piece) {
     case "p":
-      return <InlinePawn color={color} face="back" />;
+      return <InlineMarine color={color} face="back" />;
     case "b":
-      return <InlineBishop color={color} face="back" />;
+      return <InlineMecha color={color} face="back" />;
     case "n":
-      return <InlineKnight color={color} />;
+      return <InlineHoverbike color={color} />;
     case "r":
-      return <InlineRook color={color} />;
+      return <InlineTank color={color} />;
     case "q":
-      return <InlineQueen color={color} />;
+      return <InlineBattleShip color={color} />;
     default:
       return null;
   }

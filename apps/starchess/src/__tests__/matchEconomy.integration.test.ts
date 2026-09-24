@@ -59,7 +59,7 @@ describe("matchEconomy integration", () => {
       snapshot: snap,
       action: {
         timing: "B",
-        kind: "spawn",
+        kind: "deploy",
         color: "w",
         from: "e1",
         to: "d1",

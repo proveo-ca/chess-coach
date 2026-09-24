@@ -7,7 +7,7 @@ import type {
   DeathCue,
   DeployCue,
   GasDropCue,
-  KingDamageCue,
+  CCDamageCue,
   MineMissileCue,
   MoveCue,
   ShipJumpTrail,
@@ -33,7 +33,7 @@ export type CombatCueFrame = {
   mineMissileTrails?: readonly ShipJumpTrail[];
   deployCues?: readonly DeployCue[];
   gasDropCues?: readonly GasDropCue[];
-  kingDamage?: readonly KingDamageCue[];
+  ccDamage?: readonly CCDamageCue[];
 };
 
 export const EMPTY_COMBAT_CUE_FRAME: CombatCueFrame = {};

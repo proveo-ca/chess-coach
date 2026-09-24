@@ -17,7 +17,7 @@ import { getExpectedReviewId, hasRecordedReview } from "~/store/gameHistoryStore
 import { currentIndex, fenHistory, game, isResigned, startingFen } from "~/store/gameStore";
 import { activePlayerColor, opponentPieceSet, playerPieceSet } from "~/store/settingsStore";
 import { isTravelling } from "~/store/travelStore";
-// SPEC: _spec/apps/ui/components.puml
+// SPEC: _spec/apps/chess/components.puml
 import type { MoveSquares } from "~/types/game";
 
 const FILES = ["a", "b", "c", "d", "e", "f", "g", "h"];

@@ -65,13 +65,13 @@ describe("cueLanes routing", () => {
 });
 
 describe("timelinePlayer", () => {
-  it("projects B-only pawnDouble as a move cue", () => {
+  it("projects B-only stimStep as a move cue", () => {
     let snap = parseScFen(
       "SCFEN|4k3/8/8/8/8/8/4P3/4K3|11|33|P|G:22:22|Q:w:;b:",
     );
     snap = addScAction({
       snapshot: snap,
-      action: { timing: "B", kind: "pawnDouble", color: "w", from: "e2", to: "e3" },
+      action: { timing: "B", kind: "stimStep", color: "w", from: "e2", to: "e3" },
     }).snapshot;
     const result = endScTurn(snap);
     const cues = projectResolveTimeline(result);
@@ -88,7 +88,7 @@ describe("timelinePlayer", () => {
     );
     snap = addScAction({
       snapshot: snap,
-      action: { timing: "B", kind: "pawnDouble", color: "w", from: "e2", to: "e3" },
+      action: { timing: "B", kind: "stimStep", color: "w", from: "e2", to: "e3" },
     }).snapshot;
     snap = addScAction({
       snapshot: snap,
@@ -157,7 +157,7 @@ describe("timelinePlayer", () => {
     expect(cues.some((c) => c.kind === "deploy" && c.piece === "q")).toBe(true);
   });
 
-  it("promo walk-off vacates e8 after classical lands the pawn (no ghost)", () => {
+  it("promo walk-off vacates e8 after classical lands the Marine (no ghost)", () => {
     let snap = parseScFen(
       "SCFEN|k7/4P3/8/8/8/8/8/4K3|1|33|P|G:11:11|Q:w:;b:",
     );
@@ -192,14 +192,14 @@ describe("timelinePlayer", () => {
     });
     while (jobs.length) jobs.shift()!.fn();
 
-    // After classical land: pawn on e8 (not still on e7).
-    const withPawnOnE8 = placements.some((p) => {
+    // After classical land: Marine on e8 (not still on e7).
+    const withMarineOnE8 = placements.some((p) => {
       const map = placementToMap(p);
       const e8 = map.get("e8");
       return e8?.type === "p" && e8.color === "w" && !map.has("e7");
     });
-    expect(withPawnOnE8).toBe(true);
-    // After walk-off: e8 vacated before final queen.
+    expect(withMarineOnE8).toBe(true);
+    // After walk-off: e8 vacated before final BattleShip.
     const vacated = placements.some((p) => !placementToMap(p).has("e8"));
     expect(vacated).toBe(true);
     expect(placementToMap(placements.at(-1)!).get("e8")).toMatchObject({
@@ -221,7 +221,7 @@ describe("timelinePlayer", () => {
       snapshot: snap,
       action: {
         timing: "B",
-        kind: "pawnDouble",
+        kind: "stimStep",
         color: "w",
         from: "e7",
         to: "e8",
@@ -230,7 +230,7 @@ describe("timelinePlayer", () => {
     }).snapshot;
     const result = endScTurn(snap);
 
-    // Core is right to promote — the unit is a queen for everything after B.
+    // Core is right to promote — the unit is a BattleShip for everything after B.
     expect(result.resolved.promotions).toEqual([
       expect.objectContaining({ at: "e8", unit: "q", color: "w" }),
     ]);
@@ -264,9 +264,9 @@ describe("timelinePlayer", () => {
     // ...the walk-off vacates it...
     const vacatedAt = onE8.indexOf(undefined, marineAt);
     expect(vacatedAt).toBeGreaterThan(marineAt);
-    // ...and only then does the queen arrive, exactly once and last.
-    const queenAt = onE8.indexOf("q");
-    expect(queenAt).toBeGreaterThan(vacatedAt);
+    // ...and only then does the BattleShip arrive, exactly once and last.
+    const battleShipAt = onE8.indexOf("q");
+    expect(battleShipAt).toBeGreaterThan(vacatedAt);
     expect(onE8.slice(0, vacatedAt)).not.toContain("q");
     expect(placementToMap(placements.at(-1)!).get("e8")).toMatchObject({
       type: "q",
@@ -285,7 +285,7 @@ describe("timelinePlayer", () => {
       snapshot: snap,
       action: {
         timing: "B",
-        kind: "pawnDouble",
+        kind: "stimStep",
         color: "w",
         from: "e7",
         to: "e8",
@@ -440,7 +440,7 @@ describe("timelinePlayer", () => {
       snapshot: snap,
       action: {
         timing: "B",
-        kind: "spawn",
+        kind: "deploy",
         color: "w",
         from: "e1",
         to: "e2",
@@ -459,7 +459,7 @@ describe("timelinePlayer", () => {
   });
 
   it("projects deploy and crush death cues when spawning onto an enemy unit", () => {
-    // White spawns a marine on e2, crushing black knight on e2.
+    // White spawns a marine on e2, crushing black Hoverbike on e2.
     let snap = parseScFen(
       "SCFEN|4k3/8/8/8/8/8/4n3/4K3|1|33|P|G:11:11|Q:w:;b:",
     );
@@ -467,7 +467,7 @@ describe("timelinePlayer", () => {
       snapshot: snap,
       action: {
         timing: "B",
-        kind: "spawn",
+        kind: "deploy",
         color: "w",
         from: "e1",
         to: "e2",
@@ -495,7 +495,7 @@ describe("timelinePlayer", () => {
   });
 
   it("projects deploy and crush death cues when spawning onto an ally unit", () => {
-    // White spawns a marine on e2, replacing white rook on e2.
+    // White spawns a marine on e2, replacing white Tank on e2.
     let snap = parseScFen(
       "SCFEN|4k3/8/8/8/8/8/4R3/4K3|1|33|P|G:11:11|Q:w:;b:",
     );
@@ -503,7 +503,7 @@ describe("timelinePlayer", () => {
       snapshot: snap,
       action: {
         timing: "B",
-        kind: "spawn",
+        kind: "deploy",
         color: "w",
         from: "e1",
         to: "e2",
@@ -529,7 +529,7 @@ describe("timelinePlayer", () => {
   });
 
   it("projects deploy and death cues for same-type ally replace (diff-identical)", () => {
-    // White pawn on e2 replaced by deployed white pawn — placement unchanged,
+    // White Marine on e2 replaced by deployed white Marine — placement unchanged,
     // so the diff emits nothing; cues must come from the crush event.
     let snap = parseScFen(
       "SCFEN|4k3/8/8/8/8/8/4P3/4K3|1|33|P|G:11:11|Q:w:;b:",
@@ -538,7 +538,7 @@ describe("timelinePlayer", () => {
       snapshot: snap,
       action: {
         timing: "B",
-        kind: "spawn",
+        kind: "deploy",
         color: "w",
         from: "e1",
         to: "e2",
@@ -547,7 +547,7 @@ describe("timelinePlayer", () => {
     }).snapshot;
     const result = endScTurn(snap, { skipTurnStartChecks: true });
     expect(
-      result.events.find((ev) => ev.kind === "spawn"),
+      result.events.find((ev) => ev.kind === "deploy"),
     ).toMatchObject({ victim: { type: "p", color: "w" } });
     const cues = projectResolveTimeline(result);
     expect(cues.find((c) => c.kind === "deploy" && c.at === "e2")).toMatchObject({
@@ -562,7 +562,7 @@ describe("timelinePlayer", () => {
   });
 
   it("plays deploy and crush death cues even when the spawned unit dies later the same turn", () => {
-    // White spawns marine on e2 (crushing black knight e2 in B).
+    // White spawns marine on e2 (crushing black Hoverbike e2 in B).
     // A black spider mine on e2 detonates, killing the spawned marine.
     let snap = parseScFen(
       "SCFEN|4k3/8/8/8/8/8/4n3/4K3|1|33|P|G:11:11|Q:w:;b:",
@@ -575,7 +575,7 @@ describe("timelinePlayer", () => {
       snapshot: snap,
       action: {
         timing: "B",
-        kind: "spawn",
+        kind: "deploy",
         color: "w",
         from: "e1",
         to: "e2",
@@ -597,7 +597,7 @@ describe("timelinePlayer", () => {
     );
     snap = addScAction({
       snapshot: snap,
-      action: { timing: "B", kind: "pawnDouble", color: "w", from: "e2", to: "e3" },
+      action: { timing: "B", kind: "stimStep", color: "w", from: "e2", to: "e3" },
     }).snapshot;
     const cues = projectResolveTimeline(endScTurn(snap, { skipTurnStartChecks: true }));
     // The marine still hops, then the mine goes off under it.
@@ -619,7 +619,7 @@ describe("timelinePlayer", () => {
     );
     snap = addScAction({
       snapshot: snap,
-      action: { timing: "B", kind: "spawn", color: "w", from: "e1", to: "d2", unit: "p" },
+      action: { timing: "B", kind: "deploy", color: "w", from: "e1", to: "d2", unit: "p" },
     }).snapshot;
     const cues = projectResolveTimeline(endScTurn(snap, { skipTurnStartChecks: true }));
     const deploy = cues.findIndex((c) => c.kind === "deploy" && c.at === "d2");
@@ -659,7 +659,7 @@ describe("timelinePlayer", () => {
   });
 
   it("plays spawn deploy even when the unit dies later the same turn", () => {
-    // White spawns a pawn on e2; black rook on e8 finds it mid-ray (path-reveal).
+    // White spawns a Marine on e2; black Tank on e8 finds it mid-ray (path-reveal).
     let snap = parseScFen(
       "SCFEN|4rk2/8/8/8/8/8/8/4K3|1|33|P|G:11:11|Q:w:;b:",
     );
@@ -667,7 +667,7 @@ describe("timelinePlayer", () => {
       snapshot: snap,
       action: {
         timing: "B",
-        kind: "spawn",
+        kind: "deploy",
         color: "w",
         from: "e1",
         to: "e2",
@@ -702,7 +702,7 @@ describe("timelinePlayer", () => {
   });
 
   it("keeps the deploy cue when the spawned unit captures and occupies", () => {
-    // White spawns a pawn on e2, then C captures the knight on d3.
+    // White spawns a Marine on e2, then C captures the Hoverbike on d3.
     let snap = parseScFen(
       "SCFEN|4k3/8/8/8/8/3n4/8/4K3|1|33|P|G:11:11|Q:w:;b:",
     );
@@ -710,7 +710,7 @@ describe("timelinePlayer", () => {
       snapshot: snap,
       action: {
         timing: "B",
-        kind: "spawn",
+        kind: "deploy",
         color: "w",
         from: "e1",
         to: "e2",
@@ -740,7 +740,7 @@ describe("timelinePlayer", () => {
   });
 
   it("keeps the deploy cue when the spawned unit moves away", () => {
-    // White spawns a pawn on e2, then C walks it to e3.
+    // White spawns a Marine on e2, then C walks it to e3.
     let snap = parseScFen(
       "SCFEN|4k3/8/8/8/8/8/8/4K3|1|33|P|G:11:11|Q:w:;b:",
     );
@@ -748,7 +748,7 @@ describe("timelinePlayer", () => {
       snapshot: snap,
       action: {
         timing: "B",
-        kind: "spawn",
+        kind: "deploy",
         color: "w",
         from: "e1",
         to: "e2",
@@ -776,7 +776,7 @@ describe("timelinePlayer", () => {
   });
 
   it("projects an F-rank spawn deploy after attacks and moves", () => {
-    // White moves first (C), then drops a pawn (F) — the deploy plays last.
+    // White moves first (C), then drops a Marine (F) — the deploy plays last.
     let snap = parseScFen(
       "SCFEN|4k3/8/8/8/8/8/P7/4K3|1|33|P|G:11:11|Q:w:;b:",
     );
@@ -794,7 +794,7 @@ describe("timelinePlayer", () => {
       snapshot: snap,
       action: {
         timing: "F",
-        kind: "spawn",
+        kind: "deploy",
         color: "w",
         from: "e1",
         to: "e2",
@@ -821,7 +821,7 @@ describe("timelinePlayer", () => {
     );
     snap = addScAction({
       snapshot: snap,
-      action: { timing: "F", kind: "spawn", color: "w", from: "e1", to: "e2", unit: "p" },
+      action: { timing: "F", kind: "deploy", color: "w", from: "e1", to: "e2", unit: "p" },
     }).snapshot;
     const cues = projectResolveTimeline(endScTurn(snap, { skipTurnStartChecks: true }));
     const deploy = cues.findIndex(
@@ -840,7 +840,7 @@ describe("timelinePlayer", () => {
 
   it("an F-rank deploy window never rewinds placement committed by earlier waves", () => {
     // C moves a2→a3, F deploys on e2. While the deploy window plays, the
-    // moved pawn must stay on a3 (applyAfterB rewind would resurrect it on a2).
+    // moved Marine must stay on a3 (applyAfterB rewind would resurrect it on a2).
     let snap = parseScFen(
       "SCFEN|4k3/8/8/8/8/8/P7/4K3|1|33|P|G:11:11|Q:w:;b:",
     );
@@ -858,7 +858,7 @@ describe("timelinePlayer", () => {
       snapshot: snap,
       action: {
         timing: "F",
-        kind: "spawn",
+        kind: "deploy",
         color: "w",
         from: "e1",
         to: "e2",
@@ -898,7 +898,7 @@ describe("timelinePlayer", () => {
   });
 
   it("plays an F-rank deploy and its crush death after attacks and moves", () => {
-    // White moves a2→a3 (C), then late-drops a pawn onto the knight on e2 (F).
+    // White moves a2→a3 (C), then late-drops a Marine onto the Hoverbike on e2 (F).
     let snap = parseScFen(
       "SCFEN|4k3/8/8/8/8/8/P3n3/4K3|1|33|P|G:11:11|Q:w:;b:",
     );
@@ -916,7 +916,7 @@ describe("timelinePlayer", () => {
       snapshot: snap,
       action: {
         timing: "F",
-        kind: "spawn",
+        kind: "deploy",
         color: "w",
         from: "e1",
         to: "e2",
@@ -944,7 +944,7 @@ describe("timelinePlayer", () => {
     expect(afterWave.cues.some((c) => c.id.startsWith("fcrush"))).toBe(true);
   });
 
-  it("projects an F-rank pawnDouble mine blast with farmm/farmd ids", () => {
+  it("projects an F-rank stimStep mine blast with farmm/farmd ids", () => {
     let snap = parseScFen(
       "SCFEN|4k3/8/8/8/8/8/4P3/4K3|21|33|P|G:33:33|Q:w:;b:|M:w:;b:e3",
     );
@@ -952,7 +952,7 @@ describe("timelinePlayer", () => {
       snapshot: snap,
       action: {
         timing: "F",
-        kind: "pawnDouble",
+        kind: "stimStep",
         color: "w",
         from: "e2",
         to: "e3",
@@ -975,7 +975,7 @@ describe("timelinePlayer", () => {
     );
     snap = addScAction({
       snapshot: snap,
-      action: { timing: "B", kind: "pawnDouble", color: "w", from: "e2", to: "e3" },
+      action: { timing: "B", kind: "stimStep", color: "w", from: "e2", to: "e3" },
     }).snapshot;
     const result = endScTurn(snap);
     const queue: Array<() => void> = [];
@@ -995,7 +995,7 @@ describe("timelinePlayer", () => {
     expect(onDone).toHaveBeenCalled();
   });
 
-  it("defers kingShot HP until frag impact", () => {
+  it("defers ccShot HP until frag impact", () => {
     const snap = parseScFen(
       "SCFEN|8/8/8/2N5/4k3/8/7B/7K|0|33|P|G:11:11|Q:w:;b:",
     );
@@ -1011,7 +1011,7 @@ describe("timelinePlayer", () => {
       kind: "attack",
       from: "c5",
       to: "e4",
-      kingShot: { target: "b" },
+      ccShot: { target: "b" },
     });
 
     type Job = { ms: number; fn: () => void };
@@ -1026,7 +1026,7 @@ describe("timelinePlayer", () => {
     playTimeline(result, scheduler, {
       onStart: () => undefined,
       onCommit: (patch) => {
-        if (patch.kingLives) livesLog.push({ ...patch.kingLives });
+        if (patch.ccLives) livesLog.push({ ...patch.ccLives });
       },
       onDone: () => undefined,
     });
@@ -1106,7 +1106,7 @@ describe("timelinePlayer", () => {
     expect(playingLogs[0]?.some((id) => id.startsWith("a"))).toBe(true);
     expect(playingLogs[0]?.some((id) => id.startsWith("d"))).toBe(false);
 
-    // Rook HE impact ≈ 22% of ATTACK_MS (220ms) — death joins while attack plays.
+    // Tank HE impact ≈ 22% of ATTACK_MS (220ms) — death joins while attack plays.
     const atImpact = jobs.filter((j) => j.ms === 220);
     expect(atImpact.length).toBeGreaterThan(0);
     for (const j of atImpact) j.fn();
@@ -1155,7 +1155,7 @@ describe("timelinePlayer", () => {
       onDone: () => undefined,
     });
 
-    // Rook HE: impact 220, deathDone 720, phaseDone ATTACK_MS 1000.
+    // Tank HE: impact 220, deathDone 720, phaseDone ATTACK_MS 1000.
     jobs.sort((a, b) => a.ms - b.ms);
     let sawAttacksAfterDeath = false;
     for (const j of jobs) {
@@ -1173,7 +1173,7 @@ describe("timelinePlayer", () => {
   });
 
   it("sets attackDying at impact when death.at matches attack.from", () => {
-    // Mutual diagonal pawn fire — each attacker dies on their own square.
+    // Mutual diagonal Marine fire — each attacker dies on their own square.
     let snap = parseScFen(
       "SCFEN|4k3/8/8/3p4/4P3/8/8/4K3|0|33|P|G:11:11|Q:w:;b:",
     );
@@ -1223,7 +1223,7 @@ describe("timelinePlayer", () => {
     const attacks = cues.filter((c) => c.kind === "attack");
     expect(attacks.length).toBe(2);
 
-    // Pawn rifle impact = 250ms.
+    // Marine rifle impact = 250ms.
     const atImpact = jobs.filter((j) => j.ms === 250);
     expect(atImpact.length).toBeGreaterThan(0);
     for (const j of atImpact) j.fn();
@@ -1333,7 +1333,7 @@ describe("timelinePlayer", () => {
     while (jobs.length) jobs.shift()!.fn();
   });
 
-  it("flips knight moveLeg to short-leg facing at the L elbow", () => {
+  it("flips Hoverbike moveLeg to short-leg facing at the L elbow", () => {
     let snap = parseScFen(
       "SCFEN|4k3/8/8/8/8/8/8/1N2K3|0|33|P|G:11:11|Q:w:;b:",
     );
@@ -1371,19 +1371,19 @@ describe("timelinePlayer", () => {
 
     expect(legLog.length).toBeGreaterThan(0);
     const first = legLog[0]!;
-    const knightId = Object.keys(first)[0]!;
-    expect(first[knightId]).toBe(0);
+    const hoverbikeId = Object.keys(first)[0]!;
+    expect(first[hoverbikeId]).toBe(0);
 
-    // Flush until elbow (long leg = 2 × knightSquareMs = 200).
+    // Flush until elbow (long leg = 2 × hoverbikeSquareMs = 200).
     const elbow = jobs.find((j) => j.ms === 200);
     expect(elbow).toBeTruthy();
     elbow!.fn();
-    expect(legLog.some((l) => l[knightId] === 1)).toBe(true);
+    expect(legLog.some((l) => l[hoverbikeId] === 1)).toBe(true);
 
     while (jobs.length) jobs.shift()!.fn();
   });
 
-  it("holds a knight move one settle window past touchdown for the idle unwind", () => {
+  it("holds a Hoverbike move one settle window past touchdown for the idle unwind", () => {
     let snap = parseScFen(
       "SCFEN|4k3/8/8/8/8/8/8/1N2K3|0|33|P|G:11:11|Q:w:;b:",
     );
@@ -1416,7 +1416,7 @@ describe("timelinePlayer", () => {
       onDone: () => undefined,
     });
 
-    // Knight travel = 3 squares × 100 = 300; settle hold extends the wave to 560.
+    // Hoverbike travel = 3 squares × 100 = 300; settle hold extends the wave to 560.
     const moveId = [...moves].find((id) => id.startsWith("c"));
     expect(moveId).toBeTruthy();
     // The elbow beat stays at 200 (facing flip), the wave end lands on 560.
@@ -1434,7 +1434,7 @@ describe("timelinePlayer", () => {
       snapshot: snap,
       action: {
         timing: "B",
-        kind: "bishopSnipe",
+        kind: "charonMissiles",
         color: "w",
         from: "d4",
         to: "h8",
@@ -1442,7 +1442,7 @@ describe("timelinePlayer", () => {
     }).snapshot;
     const charon = endScTurn(snap, { skipTurnStartChecks: true });
     const charonCues = projectResolveTimeline(charon);
-    expect(charonCues.some((c) => c.kind === "attack" && c.anim === "bishopCharon")).toBe(
+    expect(charonCues.some((c) => c.kind === "attack" && c.anim === "mechaCharon")).toBe(
       true,
     );
     expect(charonCues.some((c) => c.kind === "death" && c.at === "h8")).toBe(true);
@@ -1454,7 +1454,7 @@ describe("timelinePlayer", () => {
       snapshot: jumpSnap,
       action: {
         timing: "B",
-        kind: "queenWarp",
+        kind: "tacticalJump",
         color: "w",
         from: "a1",
         to: "a3",
@@ -1474,7 +1474,7 @@ describe("timelinePlayer", () => {
       snapshot: snap,
       action: {
         timing: "F",
-        kind: "queenWarp",
+        kind: "tacticalJump",
         color: "w",
         from: "a1",
         to: "a5",
@@ -1502,7 +1502,7 @@ describe("timelinePlayer", () => {
       snapshot: snap,
       action: {
         timing: "F",
-        kind: "bishopSnipe",
+        kind: "charonMissiles",
         color: "w",
         from: "d4",
         to: "h8",
@@ -1529,7 +1529,7 @@ describe("timelinePlayer", () => {
       snapshot: snap,
       action: {
         timing: "F",
-        kind: "queenWarp",
+        kind: "tacticalJump",
         color: "w",
         from: "a1",
         to: "a5",
@@ -1552,7 +1552,7 @@ describe("timelinePlayer", () => {
       snapshot: jumpSnap,
       action: {
         timing: "B",
-        kind: "queenWarp",
+        kind: "tacticalJump",
         color: "w",
         from: "a1",
         to: "a3",
@@ -1609,7 +1609,7 @@ describe("timelinePlayer", () => {
     );
     snap = addScAction({
       snapshot: snap,
-      action: { timing: "B", kind: "pawnDouble", color: "w", from: "e2", to: "e3" },
+      action: { timing: "B", kind: "stimStep", color: "w", from: "e2", to: "e3" },
     }).snapshot;
     const result = endScTurn(snap, { skipTurnStartChecks: true });
     const cues = projectResolveTimeline(result);
@@ -1664,13 +1664,13 @@ describe("timelinePlayer", () => {
 
     while (jobs.length) jobs.shift()!.fn();
 
-    // Final board has no black pawn; a mid commit must have vacated it.
+    // Final board has no black Marine; a mid commit must have vacated it.
     expect(result.next.placement.includes("p")).toBe(false);
     expect(placements.some((p) => !p.includes("p"))).toBe(true);
   });
 
-  it("projects fog path-reveal kingShot as approach → shot → stop (not post-move chip)", () => {
-    // Ba1→h8; black king on e5 starts outside bishop+king vision, lights mid-ray.
+  it("projects fog path-reveal ccShot as approach → shot → stop (not post-move chip)", () => {
+    // Ba1→h8; black Command Center on e5 starts outside Mecha+Command Center vision, lights mid-ray.
     let snap = parseScFen(
       "SCFEN|8/8/8/4k3/8/8/8/B6K|0|33|P|G:11:11|Q:w:;b:",
     );
@@ -1688,14 +1688,14 @@ describe("timelinePlayer", () => {
     expect(result.resolved.pathRevealAttacks).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          kind: "kingShot",
+          kind: "ccShot",
           piece: "b",
           pathRevealFrom: "a1",
           to: "e5",
         }),
       ]),
     );
-    expect(result.next.kingLives.b).toBe(2);
+    expect(result.next.ccLives.b).toBe(2);
 
     const cues = projectResolveTimeline(result);
     const pathIds = cues.filter((c) => c.id.startsWith("pr")).map((c) => c.kind);
@@ -1711,7 +1711,7 @@ describe("timelinePlayer", () => {
     expect(shot).toMatchObject({
       kind: "attack",
       to: "e5",
-      kingShot: { target: "b", livesAfter: 2 },
+      ccShot: { target: "b", livesAfter: 2 },
     });
     const stop = cues.find((c) => c.id.startsWith("prs"));
     expect(stop).toMatchObject({ kind: "move", piece: "b" });
@@ -1728,7 +1728,7 @@ describe("timelinePlayer", () => {
     playTimeline(result, scheduler, {
       onStart: () => undefined,
       onCommit: (patch) => {
-        if (patch.kingLives) livesLog.push({ ...patch.kingLives });
+        if (patch.ccLives) livesLog.push({ ...patch.ccLives });
       },
       onDone: () => undefined,
     });
@@ -1740,7 +1740,7 @@ describe("timelinePlayer", () => {
     expect(livesLog.some((l) => l.b === 2)).toBe(true);
   });
 
-  it("path-reveal lethal kingShot projects death and starts crumple at frag impact", () => {
+  it("path-reveal lethal ccShot projects death and starts crumple at frag impact", () => {
     let snap = parseScFen(
       "SCFEN|8/8/8/4k3/8/8/8/B6K|0|31|P|G:11:11|Q:w:;b:",
     );
@@ -1757,7 +1757,7 @@ describe("timelinePlayer", () => {
     const result = endScTurn(snap, { skipTurnStartChecks: true });
     expect(
       result.resolved.pathRevealAttacks.some(
-        (a) => a.kind === "kingShot" && a.livesAfter === 0,
+        (a) => a.kind === "ccShot" && a.livesAfter === 0,
       ),
     ).toBe(true);
 
@@ -1808,7 +1808,7 @@ describe("timelinePlayer", () => {
     }).snapshot;
     snap = addScAction({
       snapshot: snap,
-      action: { timing: "F", kind: "knightMine", color: "w", from: "b1", to: "b1" },
+      action: { timing: "F", kind: "spiderMine", color: "w", from: "b1", to: "b1" },
     }).snapshot;
     const result = endScTurn(snap, { skipTurnStartChecks: true });
     const cues = projectResolveTimeline(result);
@@ -1816,7 +1816,7 @@ describe("timelinePlayer", () => {
     expect(drop).toMatchObject({ kind: "gasDrop", at: "c3" });
   });
 
-  it("stamps siege rookMode on phase-1 attack cues from afterB", () => {
+  it("stamps siege tankMode on phase-1 attack cues from afterB", () => {
     let snap = parseScFen(
       "SCFEN|7k/5p2/8/8/5R2/8/8/K7|0|33|P|G:11:11|Q:w:;b:|S:f4",
     );
@@ -1834,11 +1834,11 @@ describe("timelinePlayer", () => {
     expect(result.resolved.attacks.some((a) => a.kind === "capture")).toBe(true);
     const cues = projectResolveTimeline(result);
     const atk = cues.find((c) => c.kind === "attack" && c.from === "f4");
-    expect(atk).toMatchObject({ kind: "attack", rookMode: "siege" });
+    expect(atk).toMatchObject({ kind: "attack", tankMode: "siege" });
   });
 
-  it("projects a death cue for lethal kingShot (command center collapse)", () => {
-    // Standing check: knight threatens black king at 1 HP → lethal kingShot.
+  it("projects a death cue for lethal ccShot (command center collapse)", () => {
+    // Standing check: Hoverbike threatens black Command Center at 1 HP → lethal ccShot.
     const snap = parseScFen(
       "SCFEN|8/8/8/2N5/4k3/8/7B/7K|0|31|P|G:11:11|Q:w:;b:",
     );
@@ -1846,7 +1846,7 @@ describe("timelinePlayer", () => {
     expect(begun.asResolve).toBeTruthy();
     const result = begun.asResolve!;
     const lethal = result.resolved.attacks.find(
-      (a) => a.kind === "kingShot" && a.livesAfter === 0,
+      (a) => a.kind === "ccShot" && a.livesAfter === 0,
     );
     expect(lethal).toBeTruthy();
     const cues = projectResolveTimeline(result);
@@ -1856,7 +1856,7 @@ describe("timelinePlayer", () => {
   });
 
   it("projects chase mineMissile before boom (path-collide wake)", () => {
-    // Mine on a4; rook walks a1→a8 and wakes it — chaseFrom a4 → impact a8.
+    // Mine on a4; Tank walks a1→a8 and wakes it — chaseFrom a4 → impact a8.
     let snap = parseScFen(
       "SCFEN|7k/8/8/8/8/8/8/R3K3|0|33|P|G:11:11|M:b:a4|Q:w:;b:",
     );
@@ -1946,7 +1946,7 @@ describe("timelinePlayer", () => {
     }).snapshot;
     snap = addScAction({
       snapshot: snap,
-      action: { timing: "F", kind: "pawnDouble", color: "w", from: "e2", to: "e3" },
+      action: { timing: "F", kind: "stimStep", color: "w", from: "e2", to: "e3" },
     }).snapshot;
     const cues = projectResolveTimeline(endScTurn(snap, { skipTurnStartChecks: true }));
 
@@ -1989,7 +1989,7 @@ describe("timelinePlayer · mine wreck hides its glyph", () => {
       name: "stepped on during a gas step",
       at: "e3",
       scfen: "SCFEN|4k3/8/8/8/8/8/4P3/4K3|21|33|P|G:33:33|Q:w:;b:|M:w:;b:e3",
-      action: { timing: "B", kind: "pawnDouble", color: "w", from: "e2", to: "e3" },
+      action: { timing: "B", kind: "stimStep", color: "w", from: "e2", to: "e3" },
     },
   ] as const;
 
@@ -2047,7 +2047,7 @@ describe("timelinePlayer · mine wreck hides its glyph", () => {
 describe("timelinePlayer · capture onto a mined tile", () => {
   // Adjacent, so e5 is in sight: a fogged target takes the path-reveal route
   // instead, where the mine already had its own `prm` cue.
-  const rookTakesMinedKnight = () =>
+  const tankTakesMinedHoverbike = () =>
     endScTurn(
       addScAction({
         snapshot: parseScFen(
@@ -2059,7 +2059,7 @@ describe("timelinePlayer · capture onto a mined tile", () => {
     );
 
   it("buries the unit and the mine it stood on, both on e5", () => {
-    const deaths = projectResolveTimeline(rookTakesMinedKnight()).filter(
+    const deaths = projectResolveTimeline(tankTakesMinedHoverbike()).filter(
       (c) => c.kind === "death" && c.at === "e5",
     );
     expect(deaths).toHaveLength(2);
@@ -2110,7 +2110,7 @@ describe("timelinePlayer · capture onto a mined tile", () => {
       spentMines?: readonly string[];
     }> = [];
     playTimeline(
-      rookTakesMinedKnight(),
+      tankTakesMinedHoverbike(),
       {
         delay: (ms: number, fn: () => void) => {
           jobs.push({ ms, fn });

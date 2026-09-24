@@ -10,7 +10,7 @@ export type {
   StarChessColor,
   PieceColor,
   StarChessPiece,
-  RookMode,
+  TankMode,
   ScPhaseCode,
   SpawnPiece,
   ScActionTiming,
@@ -22,7 +22,7 @@ export type {
   ScTurnQueue,
   ScMine,
   ScFenSnapshot,
-  ScPendingKingShot,
+  ScPendingCCShot,
   ScFenErrorCode,
   ScFenError,
   ClassicalPlan,
@@ -32,7 +32,7 @@ export type {
 export { scOutcome, type ScOutcome } from "./outcome";
 
 export {
-  KING_MAX_LIVES,
+  CC_MAX_LIVES,
   MAX_STORED_MATERIAL,
   MAX_DEPLOYED_MATERIAL,
   MAX_GAME_TURNS,
@@ -44,7 +44,7 @@ export {
   SPECIAL_ENERGY_COST,
   CHARON_GAS_COST,
   MECHA_CHARON_GAS_COST,
-  QUEEN_WARP_GAS_COST,
+  TACTICAL_JUMP_GAS_COST,
 } from "./rules/constants";
 
 export {
@@ -61,13 +61,13 @@ export {
   sq,
   parseSquare,
   placementToMap,
-  rookSquaresInPlacement,
+  tankSquaresInPlacement,
   mapToPlacement,
   attacksSquare,
   isSquareAttackedBy,
-  findKing,
-  collectLegalKingChecks,
-  isKingInCheck,
+  findCC,
+  collectLegalCCChecks,
+  isCCInCheck,
   classicFenFromPlacement,
 } from "./board/placement";
 
@@ -87,14 +87,26 @@ export {
 
 export { hostileMineOn } from "./board/mine-contact";
 
-export { isRookSiegedAfterB, rookModeAfterB } from "./board/siege";
+export {
+  squareTicks,
+  movesAirborne,
+  travelSquares,
+  travelTicks,
+  timedMover,
+  moverContact,
+  type TimedMover,
+  type TimedStep,
+  type MoverContact,
+} from "./board/move-timing";
+
+export { isTankSiegedAfterB, tankModeAfterB } from "./board/siege";
 
 export {
-  pawnSingleTarget,
-  canPawnDoubleStep,
-} from "./rules/specials/pawnDouble";
+  marineSingleTarget,
+  canMarineDoubleStep,
+} from "./rules/specials/stimStep";
 
-export { adjacentSquares, spawnKingAnchor } from "./rules/specials/adjacent";
+export { adjacentSquares, spawnCCAnchor } from "./rules/specials/adjacent";
 
 export {
   charonDiagonalSquares,
@@ -117,7 +129,7 @@ export {
   scMovesFrom,
   scMovesFor,
   isScMoveShape,
-  canClassicalPawnDouble,
+  canClassicalMarineDouble,
 } from "./board/moves";
 
 export {
@@ -153,8 +165,8 @@ export type {
 } from "./resolve/resolve-turn";
 export {
   applyPathRevealAttack,
-  applyPathRevealKingShot,
-  applyPendingKingShots,
+  applyPathRevealCCShot,
+  applyPendingCCShots,
   resolveTurn,
 } from "./resolve/resolve-turn";
 
@@ -168,14 +180,14 @@ export {
 } from "./resolve/submit-turn";
 
 export {
-  hasExactKingPair,
+  hasExactCCPair,
   snapFromPlacement,
   formatSpecialsUsedExtra,
   parseSpecialsUsedExtra,
-  formatSiegedRooksExtra,
-  parseSiegedRooksExtra,
-  formatPendingKingShotsExtra,
-  parsePendingKingShotsExtra,
+  formatSiegedTanksExtra,
+  parseSiegedTanksExtra,
+  formatPendingCCShotsExtra,
+  parsePendingCCShotsExtra,
   formatQueueField,
   parseQueueField,
   assertQueueShape,
@@ -184,6 +196,10 @@ export {
   normalizeSnapGas,
   formatScFen,
   parseScFen,
+  LEGACY_FIELD_NAMES,
+  LEGACY_SPECIAL_KINDS,
+  currentKind,
+  migrateLegacyNames,
   validateScFen,
   classicFenFromSc,
 } from "./scfen";

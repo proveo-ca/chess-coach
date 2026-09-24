@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/ui/components.puml
+// SPEC: _spec/apps/chess/components.puml
 import type { Component } from "solid-js";
 
 import styles from "~/components/atoms/EngineDepth.module.css";

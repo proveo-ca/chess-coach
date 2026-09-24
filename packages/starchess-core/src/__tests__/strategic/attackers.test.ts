@@ -84,7 +84,7 @@ describe("Command Center retaliation", () => {
       storedFor: () => 3,
       attackerMemory: wanted("d7"),
     });
-    const spawns = blackActions(plan.snapshot).filter((a) => a.kind === "spawn");
+    const spawns = blackActions(plan.snapshot).filter((a) => a.kind === "deploy");
     expect(spawns.map((a) => a.to)).toContain("d7");
   });
 

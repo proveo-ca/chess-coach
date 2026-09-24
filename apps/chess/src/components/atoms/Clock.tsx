@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/ui/components.puml
+// SPEC: _spec/apps/chess/components.puml
 import { Show, createEffect, createSignal, onCleanup } from "solid-js";
 import type { Component } from "solid-js";
 

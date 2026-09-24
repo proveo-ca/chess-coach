@@ -6,7 +6,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const distDir = path.resolve(__dirname, "../dist/starchess");
 
 const FORBIDDEN = [
-  "apps/ui",
+  "apps/chess",
   "gameStore",
   "coachStore",
   "EnginePool",

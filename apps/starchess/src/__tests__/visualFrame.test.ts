@@ -26,7 +26,7 @@ describe("deriveVisualFrame", () => {
     expect(frame.hideSquares.has("d2")).toBe(true);
   });
 
-  it("priority: death > deploy > move > attack > kingDamage", () => {
+  it("priority: death > deploy > move > attack > ccDamage", () => {
     const frame = deriveVisualFrame({
       deathCues: [{ id: "d1", at: "a1" }],
       deployCues: [
@@ -35,7 +35,7 @@ describe("deriveVisualFrame", () => {
       ],
       moveCues: [{ id: "m1", from: "b1", to: "b2" }],
       attackCues: [{ id: "a1", from: "c1", to: "c2" }],
-      kingDamage: [
+      ccDamage: [
         { id: "w", at: "c1" },
         { id: "b", at: "e8" },
       ],
@@ -44,7 +44,7 @@ describe("deriveVisualFrame", () => {
     expect(frame.owners.get("b1")?.kind).toBe("deploy");
     expect(frame.owners.get("b2")?.kind).toBe("move");
     expect(frame.owners.get("c1")?.kind).toBe("attack");
-    expect(frame.owners.get("e8")?.kind).toBe("kingDamage");
+    expect(frame.owners.get("e8")?.kind).toBe("ccDamage");
   });
 
   it("move skips virtual walk-off destinations; jump owns from+to", () => {

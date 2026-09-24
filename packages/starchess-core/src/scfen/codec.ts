@@ -20,11 +20,12 @@ import type {
   ScAction,
   ScFenError,
   ScFenSnapshot,
-  ScPendingKingShot,
+  ScPendingCCShot,
   ScTurnQueue,
   SpawnPiece,
 } from "../model/types";
 import { specialGasCost } from "../rules/specials/registry";
+import { currentKind } from "./legacyKinds";
 
 export type { ScPhaseCode, ScFenSnapshot, ScAction, ScTurnQueue, ScFenError };
 export { toClassicFen, specialGasCost };
@@ -33,7 +34,7 @@ export { toClassicFen, specialGasCost };
  * Exactly one white `K` and one black `k` in placement — SCFEN invariant.
  * (`includes("K") && includes("k")` is too weak: it allows `KKk` / duplicates.)
  */
-export const hasExactKingPair = (placement: string): boolean => {
+export const hasExactCCPair = (placement: string): boolean => {
   let w = 0;
   let b = 0;
   for (const ch of placement) {
@@ -46,12 +47,12 @@ export const hasExactKingPair = (placement: string): boolean => {
 const PHASE_OK = new Set<ScPhaseCode>(["P", "B", "A", "M", "F", "O"]);
 const SQ_RE = /^[a-h][1-8]$/;
 const SPECIAL_KINDS = new Set<ScSpecialKind>([
-  "spawn",
-  "pawnDouble",
-  "knightMine",
-  "bishopSnipe",
-  "rookSiege",
-  "queenWarp",
+  "deploy",
+  "stimStep",
+  "spiderMine",
+  "charonMissiles",
+  "siegeMode",
+  "tacticalJump",
 ]);
 const PROMOS = new Set<SpawnPiece>(["q", "r", "b", "n"]);
 const UNITS = new Set<SpawnPiece>(["p", "q", "r", "b", "n"]);
@@ -62,13 +63,13 @@ const UNITS = new Set<SpawnPiece>(["p", "q", "r", "b", "n"]);
 export const snapFromPlacement = (
   placement: string,
   turn = 1,
-  kingLives: ScFenSnapshot["kingLives"] = { w: 3, b: 3 },
+  ccLives: ScFenSnapshot["ccLives"] = { w: 3, b: 3 },
 ): ScFenSnapshot => {
   const income = energyForTurn(Math.max(1, turn));
   return {
     placement,
     turn,
-    kingLives: { ...kingLives },
+    ccLives: { ...ccLives },
     phase: "P",
     gas: { w: income, b: income },
     gasIncome: { w: income, b: income },
@@ -96,8 +97,8 @@ export const parseSpecialsUsedExtra = (extra: string | undefined): Square[] => {
   return out;
 };
 
-/** Pack sieged-rook squares for the SCFEN `S:` extras field. */
-export const formatSiegedRooksExtra = (squares: readonly Square[]): string | null => {
+/** Pack sieged-tank squares for the SCFEN `S:` extras field. */
+export const formatSiegedTanksExtra = (squares: readonly Square[]): string | null => {
   if (squares.length === 0) return null;
   const uniq = [...new Set(squares)].filter((s) => SQ_RE.test(s)).sort();
   if (uniq.length === 0) return null;
@@ -105,7 +106,7 @@ export const formatSiegedRooksExtra = (squares: readonly Square[]): string | nul
 };
 
 /** Parse `S:c3f7…` sieged Siege Tank squares. */
-export const parseSiegedRooksExtra = (extra: string | undefined): Square[] => {
+export const parseSiegedTanksExtra = (extra: string | undefined): Square[] => {
   if (!extra || !extra.startsWith("S:")) return [];
   const body = extra.slice(2);
   const out: Square[] = [];
@@ -118,9 +119,9 @@ export const parseSiegedRooksExtra = (extra: string | undefined): Square[] => {
 
 const PIECE_OK = new Set(["p", "n", "b", "r", "q", "k"]);
 
-/** Pack pending king-checks for the SCFEN `H:` extras field. */
-export const formatPendingKingShotsExtra = (
-  shots: readonly ScPendingKingShot[],
+/** Pack pending cc-checks for the SCFEN `H:` extras field. */
+export const formatPendingCCShotsExtra = (
+  shots: readonly ScPendingCCShot[],
 ): string | null => {
   if (shots.length === 0) return null;
   const parts = shots.map((s) => `${s.color}:${s.piece}:${s.from}${s.to}`);
@@ -130,13 +131,13 @@ export const formatPendingKingShotsExtra = (
 /**
  * Parse `H:b:n:c5e4` (`;`-separated hits). Attacker color, piece, from+to.
  */
-export const parsePendingKingShotsExtra = (
+export const parsePendingCCShotsExtra = (
   extra: string | undefined,
-): ScPendingKingShot[] => {
+): ScPendingCCShot[] => {
   if (!extra || !extra.startsWith("H:")) return [];
   const body = extra.slice(2);
   if (!body) return [];
-  const out: ScPendingKingShot[] = [];
+  const out: ScPendingCCShot[] = [];
   for (const part of body.split(";")) {
     const m = /^([wb]):([pnbrqk]):([a-h][1-8])([a-h][1-8])$/.exec(part);
     if (!m) {
@@ -148,7 +149,7 @@ export const parsePendingKingShotsExtra = (
     }
     out.push({
       color: m[1] as PieceColor,
-      piece: piece as ScPendingKingShot["piece"],
+      piece: piece as ScPendingCCShot["piece"],
       from: m[3] as Square,
       to: m[4] as Square,
     });
@@ -186,7 +187,7 @@ const formatAction = (a: ScAction): string => {
   const to = a.to ? `:${a.to}` : "";
   const unit = a.unit ? `:${a.unit}` : "";
   const promo =
-    a.kind === "pawnDouble" && a.promotion && !a.unit ? `:${a.promotion}` : "";
+    a.kind === "stimStep" && a.promotion && !a.unit ? `:${a.promotion}` : "";
   return `${a.timing}=${a.kind}:${a.from}${to}${unit}${promo}`;
 };
 
@@ -230,7 +231,8 @@ const parseOneAction = (raw: string, color: PieceColor, seq: number): ScAction =
     throw Object.assign(new Error(`Invalid SCFEN action: ${raw}`), { code: "SC_QUEUE_SHAPE" });
   }
   const timing = m[1] as "B" | "F";
-  const kind = m[2] as ScSpecialKind;
+  // Older saves wrote the chess names (`mechaSnipe`, `spawn`, …).
+  const kind = currentKind(m[2]!) as ScSpecialKind;
   if (!SPECIAL_KINDS.has(kind)) {
     throw Object.assign(new Error(`Unknown SCFEN special kind: ${kind}`), { code: "SC_QUEUE_SHAPE" });
   }
@@ -240,7 +242,7 @@ const parseOneAction = (raw: string, color: PieceColor, seq: number): ScAction =
   if (pieceRaw && !UNITS.has(pieceRaw)) {
     throw Object.assign(new Error(`Invalid SCFEN unit: ${pieceRaw}`), { code: "SC_QUEUE_SHAPE" });
   }
-  if (kind === "pawnDouble" && pieceRaw) {
+  if (kind === "stimStep" && pieceRaw) {
     return {
       timing,
       kind,
@@ -424,23 +426,23 @@ export const formatScFen = (snap: ScFenSnapshot): string => {
   const {
     placement,
     turn,
-    kingLives,
+    ccLives,
     phase,
     specialsUsed,
     queue,
     mines,
-    siegedRooks,
-    pendingKingShots,
+    siegedTanks,
+    pendingCCShots,
     stored,
   } = snap;
-  let s = `SCFEN|${placement}|${turn}|${kingLives.w}${kingLives.b}|${phase}|${formatGasField(snap)}`;
+  let s = `SCFEN|${placement}|${turn}|${ccLives.w}${ccLives.b}|${phase}|${formatGasField(snap)}`;
   if (stored) s += `|${formatStoredField(stored)}`;
   if (queue) s += `|${formatQueueField(queue)}`;
   const used = formatSpecialsUsedExtra(specialsUsed ?? []);
   if (used) s += `|${used}`;
-  const siegeField = formatSiegedRooksExtra(siegedRooks ?? []);
+  const siegeField = formatSiegedTanksExtra(siegedTanks ?? []);
   if (siegeField) s += `|${siegeField}`;
-  const hits = formatPendingKingShotsExtra(pendingKingShots ?? []);
+  const hits = formatPendingCCShotsExtra(pendingCCShots ?? []);
   if (hits) s += `|${hits}`;
   const mineField = formatMinesExtra(mines ?? []);
   if (mineField) s += `|${mineField}`;
@@ -480,10 +482,10 @@ export const parseScFen = (raw: string, opts?: ParseScFenOptions): ScFenSnapshot
       code: "SC_PLACEMENT",
     });
   }
-  if (!hasExactKingPair(placement)) {
+  if (!hasExactCCPair(placement)) {
     throw Object.assign(
       new Error(
-        `Invalid SCFEN placement (need exactly 1 king per player): ${placement}`,
+        `Invalid SCFEN placement (need exactly 1 Command Center per player): ${placement}`,
       ),
       { code: "SC_PLACEMENT" },
     );
@@ -521,31 +523,31 @@ export const parseScFen = (raw: string, opts?: ParseScFenOptions): ScFenSnapshot
     });
   }
   const specialsUsed = parseSpecialsUsedExtra(usedField);
-  const siegedRooks = parseSiegedRooksExtra(siegeField);
-  const pendingKingShots = parsePendingKingShotsExtra(hitsField);
+  const siegedTanks = parseSiegedTanksExtra(siegeField);
+  const pendingCCShots = parsePendingCCShotsExtra(hitsField);
   const mines = parseMinesExtra(minesField);
   for (const color of ["w", "b"] as const) assertMineCap(mines, color);
   const snap: ScFenSnapshot = {
     placement,
     turn,
-    kingLives: { w: Number(lives[0]), b: Number(lives[1]) },
+    ccLives: { w: Number(lives[0]), b: Number(lives[1]) },
     phase,
     gas,
     gasIncome,
     ...(stored ? { stored } : {}),
     ...(queue ? { queue } : {}),
     ...(specialsUsed.length ? { specialsUsed } : {}),
-    ...(siegedRooks.length ? { siegedRooks } : {}),
-    ...(pendingKingShots.length ? { pendingKingShots } : {}),
+    ...(siegedTanks.length ? { siegedTanks } : {}),
+    ...(pendingCCShots.length ? { pendingCCShots } : {}),
     ...(mines.length ? { mines } : {}),
   };
-  // A destroyed King ends the match: the turn bails out in the check phase, so a
+  // A destroyed Command Center ends the match: the turn bails out in the check phase, so a
   // 0-HP side can never sit in a playable snapshot. Reject authored / corrupted
-  // input that would let a dead King keep fighting.
-  if ((snap.kingLives.w === 0 || snap.kingLives.b === 0) && phase !== "O") {
+  // input that would let a dead Command Center keep fighting.
+  if ((snap.ccLives.w === 0 || snap.ccLives.b === 0) && phase !== "O") {
     throw Object.assign(
       new Error(
-        `Invalid SCFEN: king at 0 HP requires phase O (got ${phase}, lives ${lives})`,
+        `Invalid SCFEN: Command Center at 0 HP requires phase O (got ${phase}, lives ${lives})`,
       ),
       { code: "SC_SCHEMA" },
     );

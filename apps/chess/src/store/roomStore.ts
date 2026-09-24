@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/ui/multiplayer.puml
+// SPEC: _spec/apps/chess/multiplayer.puml
 import { createSignal } from "solid-js";
 
 import type {

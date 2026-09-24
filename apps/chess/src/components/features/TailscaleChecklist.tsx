@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/ui/multiplayer.puml
+// SPEC: _spec/apps/chess/multiplayer.puml
 import { type JSX, Match, Show, Switch, createEffect, createSignal, onMount } from "solid-js";
 
 import styles from "~/components/features/TailscaleChecklist.module.css";

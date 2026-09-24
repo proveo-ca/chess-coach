@@ -1,11 +1,11 @@
 /*
- * Chess MenuScreen facsimile — tokens + spacing mirrored from apps/ui
+ * Chess MenuScreen facsimile — tokens + spacing mirrored from apps/chess
  * MenuScreen / SplashScreen / Button / MenuButton / Select / Input / PlayerNameField.
  * Coach light/dark via `data-theme` / prefers-color-scheme (not StarChess chrome).
  */
 
 .root {
-  /* Coach MenuScreen dark tokens (apps/ui theme.css :root). */
+  /* Coach MenuScreen dark tokens (apps/chess theme.css :root). */
   --mock-bg: #242424;
   --mock-surface: #1a1a1a;
   --mock-text: rgba(255, 255, 255, 0.87);
@@ -13,7 +13,7 @@
   --mock-border: #444;
   --mock-primary: rgb(118, 179, 225);
   --mock-radius: 8px;
-  /* apps/ui theme.css --control-height */
+  /* apps/chess theme.css --control-height */
   --mock-control-h: 40px;
   --mock-font: system-ui, Avenir, Helvetica, Arial, sans-serif;
   --mock-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='rgba(255,255,255,0.87)' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
@@ -29,11 +29,11 @@
   letter-spacing: normal;
   line-height: 1.5;
   font-weight: 400;
-  /* Match apps/ui Screen #root text-align on splash. */
+  /* Match apps/chess Screen #root text-align on splash. */
   text-align: center;
 }
 
-/* Coach light MenuScreen — same values as apps/ui theme.css light block. */
+/* Coach light MenuScreen — same values as apps/chess theme.css light block. */
 @media (prefers-color-scheme: light) {
   :global(html:not([data-theme="dark"])) .root {
     --mock-bg: #ffffff;
@@ -100,7 +100,7 @@
   opacity: 0;
 }
 
-/* apps/ui SplashScreen.module.css .splash-content */
+/* apps/chess SplashScreen.module.css .splash-content */
 .splashContent {
   position: relative;
   z-index: 1;
@@ -117,7 +117,7 @@
   pointer-events: none;
 }
 
-/* apps/ui .splash-avatar-wrapper + MenuScreen .coach-intro (the bubble anchor).
+/* apps/chess .splash-avatar-wrapper + MenuScreen .coach-intro (the bubble anchor).
    Flex, like `.coach-intro`: a block box would let the cat's 2rem top margin
    collapse out of it, shifting the anchor the bubble centres on. */
 .avatarSlot {
@@ -129,7 +129,7 @@
   flex-shrink: 0;
 }
 
-/* apps/ui ChatBubble + MenuScreen .coach-line — off until the dynamic band,
+/* apps/chess ChatBubble + MenuScreen .coach-line — off until the dynamic band,
    which is where Coach drops the title in favour of the spoken line. */
 .coachLine {
   display: none;
@@ -187,7 +187,7 @@
   transform: translateY(-0.4rem);
 }
 
-/* apps/ui .splash-title — browser h2 keeps ~0.83em top margin. */
+/* apps/chess .splash-title — browser h2 keeps ~0.83em top margin. */
 .title {
   margin: 0.83em 0 1.5rem;
   font-size: 1.5rem;
@@ -197,7 +197,7 @@
   font-family: var(--mock-font);
 }
 
-/* apps/ui MenuScreen.module.css .identity-row */
+/* apps/chess MenuScreen.module.css .identity-row */
 .identityRow {
   display: flex;
   align-items: center;
@@ -287,7 +287,7 @@
   line-height: 1;
 }
 
-/* apps/ui MenuScreen .menu-options */
+/* apps/chess MenuScreen .menu-options */
 .menuOptions {
   display: flex;
   flex-direction: column;
@@ -376,7 +376,7 @@
 }
 
 /*
- * Coach's `isNerd` shortcut (apps/ui MenuScreen `.starchess-btn`) — the one
+ * Coach's `isNerd` shortcut (apps/chess MenuScreen `.starchess-btn`) — the one
  * control the mock paints in this app's neon instead of Coach chrome, so the
  * value comes from our own token rather than a `--mock-*` one.
  */
@@ -440,7 +440,7 @@
  * where one column would not fit the height. Form left, destinations right,
  * Credits spanning. `contents` on the wrappers is what lets the fused Play
  * control sit in column 1 while the buttons it is grouped with go to column 2 —
- * same trick as apps/ui. Portrait mobile keeps one column, so the mock does too.
+ * same trick as apps/chess. Portrait mobile keeps one column, so the mock does too.
  */
 @media (min-width: 720px),
   (max-width: 719px) and (min-width: 480px) and (max-height: 639px) {
@@ -489,7 +489,7 @@
   }
 
   /* Stays under the Play control when the splash splits — column 2 is the
-     Coach modes, and this is the way out of them (same as apps/ui). */
+     Coach modes, and this is the way out of them (same as apps/chess). */
   .menuOptions > .btnHostStarchess {
     grid-column: 1;
   }
@@ -514,7 +514,7 @@
 }
 
 /*
- * Below 480px Coach shrinks its ROOT font to 0.85rem (apps/ui index.css), so
+ * Below 480px Coach shrinks its ROOT font to 0.85rem (apps/chess index.css), so
  * every rem in its menu — type, gaps, the cat — comes out 15% smaller. StarChess
  * keeps a 16px root for its own chrome, so the mock re-applies that factor to
  * its own rem values instead. `em` values (control padding) already track their
@@ -611,7 +611,7 @@
 }
 
 /* Dynamic band: Coach clips the title for a11y only and floats the line beside
- * Selena (apps/ui SplashScreen `--dynamic-mobile` + MenuScreen `.coach-line`).
+ * Selena (apps/chess SplashScreen `--dynamic-mobile` + MenuScreen `.coach-line`).
  */
 @media (max-width: 719px) and (min-width: 480px) and (max-height: 639px) {
   .title {

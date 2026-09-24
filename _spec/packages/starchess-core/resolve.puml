@@ -13,7 +13,7 @@ start
 
 :Take planning snap — turn N is open;
 
-:**Turn-open legal king-checks** — ""beginScTurn"" — fog-visible, implicit,\nwhite then black — ""applyPendingKingShots"".\nResolved **before** players choose intent. A unit that\nbreaks contact later this turn already paid a **parting shot**;
+:**Turn-open legal king-checks** — ""beginScTurn"" — fog-visible, implicit,\nwhite then black — ""applyPendingCCShots"".\nResolved **before** players choose intent. A unit that\nbreaks contact later this turn already paid a **parting shot**;
 
 if (the two kings are adjacent?) then (yes)
   :**King duel** — a king is a legal checker of the enemy king.\nThe collector loops **both** king colours independently, so\ncontact is always **mutual**. Damage is **per checker**: every\nunit checking a king costs it 1 HP, so N checkers = N HP.\nKings leap — ""leapsPiece"" — never the blocker / collision\nbranch: adjacency always chips, nothing is captured, the\nplacement is untouched;
@@ -41,7 +41,7 @@ note right
   inert underfoot:
   * **Tactical Jump** — the jump teleports; BattleShip and mine both die
     (cues ""qj"" hull → ""qjm"" boom → ""qjd"" wreck, all pre-""afterB"");
-  * **gas step** (""pawnDouble"", B **and** F) — the marine hops, then the mine
+  * **gas step** (""stimStep"", B **and** F) — the marine hops, then the mine
     takes it; a last-rank step dies **without promoting**;
   * **deploy** (""spawn"") — the drop plays, then the fresh unit dies with the
     mine; a crushed ally or enemy occupant still reports as ""victim"" (one tile, two deaths).
@@ -113,13 +113,13 @@ else (no)
   endif
 endif
 
-:Phase 2 **move** — survivors relocate; collisions\nresolved against the post-attack board; a target\n**still fogged at contact** → move collision\n— capture/occupy, no attack cue (never a\n**marine front step** — that blocks + truncates);\n**same-square race** (two movers land on one tile)\n→ **both die**, square empty, no attack cue;
+:Phase 2 **move** — survivors relocate; collisions\nresolved against the post-attack board; a target\n**still fogged at contact** → move collision\n— capture/occupy, no attack cue (never a\n**marine front step** — that blocks + truncates);\n**timed race** (""move-timing.puml""): movers meet where\none reaches a square the other holds — parked, same\ntick, or head-on → **both die** there, no attack cue;\ncolour and plan order never decide it;
 
-:Phase 3 **fog approach** — path-reveal shots slide\n""pathRevealFrom"" → discovery square → attack;\n**King HP mid-resolve** only here: fog intent finds a\nhidden king on the path — ""pathReveal"" kingShot.\nVisible kings already paid at turn open — no second chip.\n**fizzle unless** the attacker still occupies\n""pathRevealFrom"" — died in phases 1–2 / square\nre-occupied by a phase-2 mover / sieged — rooks\nnever relocate — and ""to"" holds the exact\nin-the-way victim;
+:Phase 3 **fog approach** — path-reveal shots slide\n""pathRevealFrom"" → discovery square → attack;\n**King HP mid-resolve** only here: fog intent finds a\nhidden king on the path — ""pathReveal"" ccShot.\nVisible kings already paid at turn open — no second chip.\n**fizzle unless** the attacker still occupies\n""pathRevealFrom"" — died in phases 1–2 / square\nre-occupied by a phase-2 mover / sieged — rooks\nnever relocate — and ""to"" holds the exact\nin-the-way victim;
 
 note right
   **Approach × mine.** A fog approach **walks** its ray — origin → discovery →
-  landing tile (""to"" for a capture, ""stopAt"" for a kingShot) — so a **hostile**
+  landing tile (""to"" for a capture, ""stopAt"" for a ccShot) — so a **hostile**
   mine anywhere on that walk takes the mover, and the approach never *clears*
   one (it chose a unit, not the tile). The shot already fired, so the capture /
   HP chip **stands** and the mover dies on its landing tile:
@@ -136,7 +136,7 @@ end note
 if (either king at 0 HP after all ranks?) then (yes)
   :Next snap phase **O** — terminal and **absorbing**;
   :""endScTurn"" throws on a non-P snapshot;
-  :""scOutcome"" from kingLives — 0/0 draw, else win;
+  :""scOutcome"" from ccLives — 0/0 draw, else win;
 else (no)
   :Next snap phase **P** — play continues;
 endif
@@ -161,7 +161,7 @@ note right
   discovery square, then attacks, applied **after** moves. An approach
   **fizzles** when the attacker no longer occupies ""pathRevealFrom""
   (died in phases 1–2, or its square was re-occupied by a phase-2 mover
-  — ""destinationsWritten""), when the origin is sieged (""siegedRooks""
+  — ""destinationsWritten""), when the origin is sieged (""siegedTanks""
   — rooks never relocate), or when ""to"" no longer holds the exact
   in-the-way victim (""a.victim"" color+type): empty, a converging
   same-side ally, or a different enemy not in the way — never captured.
@@ -170,7 +170,7 @@ note right
   are not attacked; visible targets still die to the turret.
   ""applyPathRevealAttack(snap, a)"" is the shared source of truth for the
   board-state fizzles (attacker still on ""pathRevealFrom"", exact victim on
-  ""to""); the engine loop pre-filters the siege (""siegedRooks"") and
+  ""to""); the engine loop pre-filters the siege (""siegedTanks"") and
   origin-re-occupation (""destinationsWritten"") gates before the attack is
   listed, and the UI replay (""playTimeline"" / MatchStore ""TIMELINE_*"")
   replays only that fired list, so
@@ -181,15 +181,15 @@ note right
   snapshots ""afterMove"" (post-phase-2) and ""afterAll"" (post-phase-3).
   ""applyPathRevealAttack"" leaves mines armed — the walk-contact check that
   spends them lives in the phase-3 loop next to it.
-  **King shots:** ""collectLegalKingChecks"" + ""applyPendingKingShots""
+  **King shots:** ""collectLegalCCChecks"" + ""applyPendingCCShots""
   via ""beginScTurn"" at turn open (before intent). The **only** mid-resolve
-  king HP is fog path-discovery (""applyPathRevealKingShot""): intent into
+  king HP is fog path-discovery (""applyPathRevealCCShot""): intent into
   fog finds a hidden king on the ray. Live ""endScTurn"" skips re-application
   of turn-open checks (""skipTurnStartChecks""); atomic replay may still run
   checks inside ""endScTurn"". No king-aimed ""C="".
   ====
   **King duel — two adjacent kings fight face-to-face.**
-  ""collectLegalKingChecks"" does **not** exclude king-type attackers, so a
+  ""collectLegalCCChecks"" does **not** exclude king-type attackers, so a
   king is a legal implicit checker of the enemy king. The collector loops
   both king colours independently, so contact is always **mutual**.
   Damage is **per checking unit**, not capped per turn: every unit that
@@ -232,7 +232,7 @@ note right
   ""scOutcome(snap)"" (""outcome.ts"") returns ""{winner:'w'}"" /
   ""{winner:'b'}"" for a win, ""{winner:null,draw:true}"" for a draw, or
   ""null"" while play continues — derived purely from
-  ""kingLives"". HP is the single source of truth, so there is no
+  ""ccLives"". HP is the single source of truth, so there is no
   persisted winner field and **no SCFEN grammar change**
   (wire grammar unchanged; ""O"" was already a valid phase code).
   Covered by core unit tests under ""packages/starchess-core""

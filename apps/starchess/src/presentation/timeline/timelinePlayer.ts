@@ -6,7 +6,7 @@ import type { Square } from "chess.js";
 import { ANIM_BY_PIECE } from "~/presentation/animations/attackAnim";
 import { promoWalkOffTo, isBoardSquare } from "~/presentation/animations/boardGeom";
 import {
-  knightElbowMs,
+  hoverbikeElbowMs,
   moveDurationMs as pieceMoveDurationMs,
 } from "~/presentation/animations/moveTiming";
 import { MECHA_CHARON } from "~/presentation/animations/mechaCharon";
@@ -33,7 +33,7 @@ import {
   TACTICAL_JUMP_TRAVEL_MS,
 } from "~/presentation/specials/shipTacticalJump";
 import { gasDropCornerFor } from "~/presentation/animations/gasDrop";
-import { rookModeAt } from "~/presentation/board/rookMode";
+import { tankModeAt } from "~/presentation/board/tankMode";
 import type { CueLane, TimelineCallbacks, TimelineCue } from "~/types/match";
 import { BOARD_RUNG, withLane } from "~/presentation/timeline/cueLanes";
 import type { Scheduler } from "~/types/ports";
@@ -43,12 +43,12 @@ export type { TimelineCallbacks } from "~/types/match";
 const attackCue = (
   a: ResolveAttack,
   id: string,
-  siegedRooks: readonly Square[],
+  siegedTanks: readonly Square[],
 ): TimelineCue | null => {
-  if (a.kind === "kingShot" && a.moveCollision) return null;
+  if (a.kind === "ccShot" && a.moveCollision) return null;
   if ("moveCollision" in a && a.moveCollision && a.kind === "capture") return null;
-  const rookMode =
-    a.piece === "r" ? rookModeAt(a.from, siegedRooks) : undefined;
+  const tankMode =
+    a.piece === "r" ? tankModeAt(a.from, siegedTanks) : undefined;
   const base = {
     kind: "attack" as const,
     id,
@@ -56,12 +56,12 @@ const attackCue = (
     color: a.color,
     from: a.from,
     to: a.to,
-    ...(rookMode ? { rookMode } : {}),
+    ...(tankMode ? { tankMode } : {}),
   };
-  if (a.kind === "kingShot") {
+  if (a.kind === "ccShot") {
     return {
       ...base,
-      kingShot: { target: a.target, livesAfter: a.livesAfter },
+      ccShot: { target: a.target, livesAfter: a.livesAfter },
     };
   }
   return base;
@@ -150,14 +150,14 @@ const withPieceAt = (
 
 const livesBeforeAnimatedShots = (
   result: EndScTurnResult,
-): EndScTurnResult["next"]["kingLives"] => {
-  const lives = { ...result.afterPending.kingLives };
+): EndScTurnResult["next"]["ccLives"] => {
+  const lives = { ...result.afterPending.ccLives };
   const pendingOnly =
-    result.next.kingLives.w === result.afterPending.kingLives.w &&
-    result.next.kingLives.b === result.afterPending.kingLives.b;
+    result.next.ccLives.w === result.afterPending.ccLives.w &&
+    result.next.ccLives.b === result.afterPending.ccLives.b;
   if (!pendingOnly) return lives;
   for (const a of result.resolved.attacks) {
-    if (a.kind !== "kingShot" || a.moveCollision) continue;
+    if (a.kind !== "ccShot" || a.moveCollision) continue;
     lives[a.target] = lives[a.target] + 1;
   }
   return lives;
@@ -192,7 +192,7 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
 
   for (const ev of result.events) {
     if (ev.phase !== "specialBefore") continue;
-    if (ev.kind === "bishopSnipe" && ev.from && ev.to) {
+    if (ev.kind === "charonMissiles" && ev.from && ev.to) {
       // ev.victim is authoritative (resolve returns it on kills only) —
       // never fall back to board lookup, which would fabricate deaths for
       // occupied fizzles (screened ship, marine, ally on the aim square).
@@ -218,12 +218,12 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
         });
       }
     }
-    if (ev.kind === "pawnDouble" && ev.to && ev.mineColor && ev.victim) {
+    if (ev.kind === "stimStep" && ev.to && ev.mineColor && ev.victim) {
       cues.push(
         ...arrivalMineCues(ev.to, ev.mineColor, ev.victim, () => n++),
       );
     }
-    if (ev.kind === "queenWarp" && ev.from && ev.to) {
+    if (ev.kind === "tacticalJump" && ev.from && ev.to) {
       cues.push({
         kind: "move",
         id: `qj${n++}`,
@@ -255,13 +255,13 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
     }
   }
 
-  const sieged = result.afterB.siegedRooks ?? [];
+  const sieged = result.afterB.siegedTanks ?? [];
   const crushVictim = new Map<string, ResolveEvent["victim"]>();
   // F-rank spawns must not be emitted by the B diff below — they project in
   // the F block (after fMoves) so a post-attack deploy never plays early.
   const specialAfterSpawns = new Set<string>();
   for (const ev of result.events) {
-    if (ev.kind !== "spawn" || !ev.to) continue;
+    if (ev.kind !== "deploy" || !ev.to) continue;
     if (ev.victim) crushVictim.set(`${ev.color}:${ev.to}`, ev.victim);
     if (ev.phase === "specialAfter") specialAfterSpawns.add(`${ev.color}:${ev.to}`);
   }
@@ -300,17 +300,17 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
         color: crush.color,
         at: d.at,
         ...(crush.type === "r"
-          ? { rookMode: rookModeAt(d.at, sieged) }
+          ? { tankMode: tankModeAt(d.at, sieged) }
           : {}),
       });
     }
   }
-  // Same-type same-color replace (e.g. pawn onto pawn) leaves placement
+  // Same-type same-color replace (e.g. Marine onto Marine) leaves placement
   // identical, so the diff above emits nothing — project deploy + death from
   // the crush event itself. Mined spawns are handled by the event-driven mined
   // block below; F spawns by the F block.
   for (const ev of result.events) {
-    if (ev.kind !== "spawn" || ev.phase !== "specialBefore") continue;
+    if (ev.kind !== "deploy" || ev.phase !== "specialBefore") continue;
     if (!ev.to || !ev.unit || !ev.victim || ev.mineColor) continue;
     const key = `${ev.color}:${ev.to}`;
     if (emittedDeploys.has(key)) continue;
@@ -328,13 +328,13 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
       piece: ev.victim.type,
       color: ev.victim.color,
       at: ev.to,
-      ...(ev.victim.type === "r" ? { rookMode: rookModeAt(ev.to, sieged) } : {}),
+      ...(ev.victim.type === "r" ? { tankMode: tankModeAt(ev.to, sieged) } : {}),
     });
   }
   const minedDeploys: TimelineCue[] = [];
   for (const ev of result.events) {
     if (
-      ev.kind !== "spawn" ||
+      ev.kind !== "deploy" ||
       ev.phase !== "specialBefore" ||
       !ev.to ||
       !ev.mineColor ||
@@ -356,7 +356,7 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
         piece: ev.victim.type,
         color: ev.victim.color,
         at: ev.to,
-        ...(ev.victim.type === "r" ? { rookMode: rookModeAt(ev.to, sieged) } : {}),
+        ...(ev.victim.type === "r" ? { tankMode: tankModeAt(ev.to, sieged) } : {}),
       });
     }
     minedDeploys.push(
@@ -384,7 +384,7 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
         color: a.victim.color,
         at: a.to,
         ...(a.victim.piece === "r"
-          ? { rookMode: rookModeAt(a.to, sieged) }
+          ? { tankMode: tankModeAt(a.to, sieged) }
           : {}),
       });
     }
@@ -410,7 +410,7 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
         mine: true,
       });
     }
-    if (a.kind === "kingShot" && a.livesAfter === 0) {
+    if (a.kind === "ccShot" && a.livesAfter === 0) {
       phase1Deaths.push({
         kind: "death",
         id: `dk${n++}`,
@@ -433,7 +433,7 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
         color: a.victim.color,
         at: a.to,
         ...(a.victim.piece === "r"
-          ? { rookMode: rookModeAt(a.to, sieged) }
+          ? { tankMode: tankModeAt(a.to, sieged) }
           : {}),
       });
       if (a.mineColor) {
@@ -489,7 +489,7 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
   }
 
   for (const a of result.resolved.pathRevealAttacks) {
-    if (a.kind === "kingShot") {
+    if (a.kind === "ccShot") {
       const origin = a.pathRevealFrom;
       if (!origin) continue;
       const stopAt = a.stopAt ?? a.from;
@@ -505,9 +505,9 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
         color: a.color,
         from: a.from,
         to: a.to,
-        kingShot: { target: a.target, livesAfter: a.livesAfter },
+        ccShot: { target: a.target, livesAfter: a.livesAfter },
         ...(a.piece === "r"
-          ? { rookMode: rookModeAt(a.from, sieged) }
+          ? { tankMode: tankModeAt(a.from, sieged) }
           : {}),
       });
       if (a.livesAfter === 0) {
@@ -544,7 +544,7 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
           color: a.victim.color,
           at: a.to,
           ...(a.victim.piece === "r"
-            ? { rookMode: rookModeAt(a.to, sieged) }
+            ? { tankMode: tankModeAt(a.to, sieged) }
             : {}),
         });
       }
@@ -593,7 +593,7 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
         piece: a.victim.piece,
         color: a.victim.color,
         at: a.to,
-        ...(a.victim.piece === "r" ? { rookMode: rookModeAt(a.to, sieged) } : {}),
+        ...(a.victim.piece === "r" ? { tankMode: tankModeAt(a.to, sieged) } : {}),
       });
     }
   }
@@ -601,7 +601,7 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
   cues.push(...fGas);
   for (const m of result.fMoves) cues.push(moveCue(m, `f${n++}`, { stim: true }));
   for (const ev of result.events) {
-    if (ev.phase !== "specialAfter" || ev.kind !== "queenWarp") continue;
+    if (ev.phase !== "specialAfter" || ev.kind !== "tacticalJump") continue;
     if (!ev.from || !ev.to) continue;
     cues.push({
       kind: "move",
@@ -635,7 +635,7 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
   // F-rank Charon (2nd gas phase): same volley as B, plus the off-board
   // fizzle flight when the queued ship drifted before resolve.
   for (const ev of result.events) {
-    if (ev.phase !== "specialAfter" || ev.kind !== "bishopSnipe") continue;
+    if (ev.phase !== "specialAfter" || ev.kind !== "charonMissiles") continue;
     if (!ev.from || !ev.to) continue;
     const fizzle = !ev.victim;
     cues.push({
@@ -659,7 +659,7 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
     }
   }
   for (const ev of result.events) {
-    if (ev.phase !== "specialAfter" || ev.kind !== "pawnDouble") continue;
+    if (ev.phase !== "specialAfter" || ev.kind !== "stimStep") continue;
     if (!ev.to || !ev.mineColor || !ev.victim) continue;
     // `farm*`, not `arm*`: these play after the stim move on the afterMove rung.
     cues.push(
@@ -677,7 +677,7 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
   const fCrushes: TimelineCue[] = [];
   const fBlasts: TimelineCue[] = [];
   for (const ev of result.events) {
-    if (ev.phase !== "specialAfter" || ev.kind !== "spawn") continue;
+    if (ev.phase !== "specialAfter" || ev.kind !== "deploy") continue;
     if (!ev.to || !ev.unit) continue;
     fDeploys.push({
       kind: "deploy",
@@ -694,7 +694,7 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
         color: ev.victim.color,
         at: ev.to,
         ...(ev.victim.type === "r"
-          ? { rookMode: rookModeAt(ev.to, sieged) }
+          ? { tankMode: tankModeAt(ev.to, sieged) }
           : {}),
       });
     }
@@ -757,11 +757,11 @@ const attackImpactMs = (a: { anim?: string; piece: string }): number => {
   const anim =
     (a.anim as AttackAnimKind | undefined) ??
     ANIM_BY_PIECE[a.piece as keyof typeof ANIM_BY_PIECE] ??
-    "pawnRifle";
+    "marineRifle";
   return impactMsFor(anim);
 };
 
-const knightLeg0 = (moves: readonly { id: string; piece: string }[]): Record<string, 0 | 1> => {
+const hoverbikeLeg0 = (moves: readonly { id: string; piece: string }[]): Record<string, 0 | 1> => {
   const out: Record<string, 0 | 1> = {};
   for (const m of moves) {
     if (m.piece === "n") out[m.id] = 0;
@@ -879,8 +879,8 @@ export const playTimeline = (
     cb.onCommit({
       placement: afterBDisplay,
       mines: result.afterB.mines,
-      siegedRooks: result.afterB.siegedRooks,
-      kingLives: { ...displayLives },
+      siegedTanks: result.afterB.siegedTanks,
+      ccLives: { ...displayLives },
       hidden: extra?.hidden ?? [],
       playingIds: extra?.playingIds ?? [],
       moveProgress: {}, moveLeg: {},
@@ -924,11 +924,11 @@ export const playTimeline = (
     attackDying?: Record<string, boolean>;
   } = {}) => {
     displayPlacement = result.resolved.afterAttack.placement;
-    displayLives = { ...result.resolved.afterAttack.kingLives };
+    displayLives = { ...result.resolved.afterAttack.ccLives };
     afterAttackCommitted = true;
     cb.onCommit({
       placement: displayPlacement,
-      kingLives: { ...displayLives },
+      ccLives: { ...displayLives },
       mines: result.resolved.afterAttack.mines,
       hidden: overlay.hidden ?? [],
       playingIds: overlay.playingIds ?? [],
@@ -1108,12 +1108,12 @@ export const playTimeline = (
     });
 
     for (const atk of attacks) {
-      if (!atk.kingShot) continue;
-      const shot = atk.kingShot;
+      if (!atk.ccShot) continue;
+      const shot = atk.ccShot;
       const impact = scheduler.delay(attackImpactMs(atk), () => {
         if (cancelled) return;
         displayLives = { ...displayLives, [shot.target]: shot.livesAfter };
-        cb.onCommit({ kingLives: { ...displayLives } });
+        cb.onCommit({ ccLives: { ...displayLives } });
       });
       cancels.push(impact);
     }
@@ -1303,7 +1303,7 @@ export const playTimeline = (
     const ids = moves.map((c) => c.id);
     const progress0 = Object.fromEntries(ids.map((id) => [id, 0 as const]));
     const progress1 = Object.fromEntries(ids.map((id) => [id, 1 as const]));
-    const leg0 = knightLeg0(moves);
+    const leg0 = hoverbikeLeg0(moves);
     let legState: Record<string, 0 | 1> = { ...leg0 };
     cb.onCommit({
       hidden,
@@ -1323,7 +1323,7 @@ export const playTimeline = (
     cancels.push(kick);
     for (const m of moves) {
       if (m.piece !== "n") continue;
-      const elbow = scheduler.delay(knightElbowMs(m.from, m.to), () => {
+      const elbow = scheduler.delay(hoverbikeElbowMs(m.from, m.to), () => {
         if (cancelled) return;
         legState = { ...legState, [m.id]: 1 };
         cb.onCommit({
@@ -1338,7 +1338,7 @@ export const playTimeline = (
     return runStep({
       durationMs:
         Math.max(1, ...moves.map((c) => cueDuration(c))) +
-        // Hoverbike / battleship / siege tank settle into rest at touchdown;
+        // Hoverbike / siege tank settle into rest at touchdown;
         // the mover must stay mounted for the unwind transition to complete
         // before hand-off.
         (moves.some((c) => c.piece === "n" || c.piece === "q" || c.piece === "r") ? SETTLE_MS : 0),
@@ -1432,7 +1432,7 @@ export const playTimeline = (
       applyAfterB();
     }
 
-    if (cue.kind === "attack" && cue.kingShot && index + 1 < cues.length) {
+    if (cue.kind === "attack" && cue.ccShot && index + 1 < cues.length) {
       const follow = cues[index + 1]!;
       if (
         follow.kind === "death" &&
@@ -1441,7 +1441,7 @@ export const playTimeline = (
       ) {
         const attack = cue;
         const death = follow;
-        const shot = attack.kingShot!;
+        const shot = attack.ccShot!;
         const impactAt = attackImpactMs(attack);
         const attackHidden = [attack.from];
         const deathHidden = [death.at];
@@ -1455,7 +1455,7 @@ export const playTimeline = (
           if (cancelled) return;
           displayLives = { ...displayLives, [shot.target]: shot.livesAfter };
           cb.onCommit({
-            kingLives: { ...displayLives },
+            ccLives: { ...displayLives },
             hidden: [...attackHidden, ...deathHidden],
             playingIds: [attack.id, death.id],
             moveProgress: {},
@@ -1542,7 +1542,7 @@ export const playTimeline = (
     const spent = cue.kind === "death" ? spentMineSquares([cue]) : [];
 
     if (cue.kind === "move") {
-      const leg0 = knightLeg0([cue]);
+      const leg0 = hoverbikeLeg0([cue]);
       let legState: Record<string, 0 | 1> = { ...leg0 };
       cb.onCommit({
         hidden,
@@ -1561,7 +1561,7 @@ export const playTimeline = (
       });
       cancels.push(kick);
       if (cue.piece === "n") {
-        const elbow = scheduler.delay(knightElbowMs(cue.from, cue.to), () => {
+        const elbow = scheduler.delay(hoverbikeElbowMs(cue.from, cue.to), () => {
           if (cancelled) return;
           legState = { ...legState, [cue.id]: 1 };
           cb.onCommit({
@@ -1583,15 +1583,15 @@ export const playTimeline = (
       });
     }
 
-    if (cue.kind === "attack" && cue.kingShot) {
-      const shot = cue.kingShot;
+    if (cue.kind === "attack" && cue.ccShot) {
+      const shot = cue.ccShot;
       const impact = scheduler.delay(attackImpactMs(cue), () => {
         if (cancelled) return;
         displayLives = {
           ...displayLives,
           [shot.target]: shot.livesAfter,
         };
-        cb.onCommit({ kingLives: { ...displayLives } });
+        cb.onCommit({ ccLives: { ...displayLives } });
       });
       cancels.push(impact);
     }
@@ -1599,9 +1599,9 @@ export const playTimeline = (
     return runStep({
       durationMs:
         cueDuration(cue) +
-        // Hoverbike / battleship settle into rest at touchdown; the mover must
+        // Hoverbike settle into rest at touchdown; the mover must
         // stay mounted for the unwind transition to complete before hand-off
-        // (approach-lane queen slides land here, not in the wave handler).
+        // (approach-lane BattleShip slides land here, not in the wave handler).
         (cue.kind === "move" && (cue.piece === "n" || cue.piece === "q")
           ? SETTLE_MS
           : 0),
@@ -1661,9 +1661,9 @@ export const playTimeline = (
       if (finalize) {
         cb.onCommit({
           placement: result.next.placement,
-          kingLives: result.next.kingLives,
+          ccLives: result.next.ccLives,
           mines: result.next.mines,
-          siegedRooks: result.next.siegedRooks,
+          siegedTanks: result.next.siegedTanks,
           specialsUsed: result.next.specialsUsed ?? [],
           hidden: [],
           moveProgress: {},
@@ -1687,7 +1687,7 @@ export const playTimeline = (
   cb.onCommit({
     placement: result.afterPending.placement,
     mines: result.afterPending.mines,
-    kingLives: { ...displayLives },
+    ccLives: { ...displayLives },
     hidden: [],
     playingIds: [],
     moveProgress: {}, moveLeg: {},
@@ -1698,9 +1698,9 @@ export const playTimeline = (
     const wait = scheduler.delay(0, () => {
       cb.onCommit({
         placement: result.next.placement,
-        kingLives: result.next.kingLives,
+        ccLives: result.next.ccLives,
         mines: result.next.mines,
-        siegedRooks: result.next.siegedRooks,
+        siegedTanks: result.next.siegedTanks,
         hidden: [],
         playingIds: [],
       });

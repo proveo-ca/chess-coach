@@ -17,12 +17,12 @@ export type PieceSpecialDef = {
 };
 
 const DEFS: Record<PieceSymbol, PieceSpecialDef> = {
-  p: { piece: "p", kind: "pawnDouble", copy: specialCopyFor("p") },
-  n: { piece: "n", kind: "knightMine", copy: specialCopyFor("n") },
-  b: { piece: "b", kind: "bishopSnipe", copy: specialCopyFor("b") },
-  r: { piece: "r", kind: "rookSiege", copy: specialCopyFor("r") },
-  q: { piece: "q", kind: "queenWarp", copy: specialCopyFor("q") },
-  k: { piece: "k", kind: "spawn", copy: specialCopyFor("k") },
+  p: { piece: "p", kind: "stimStep", copy: specialCopyFor("p") },
+  n: { piece: "n", kind: "spiderMine", copy: specialCopyFor("n") },
+  b: { piece: "b", kind: "charonMissiles", copy: specialCopyFor("b") },
+  r: { piece: "r", kind: "siegeMode", copy: specialCopyFor("r") },
+  q: { piece: "q", kind: "tacticalJump", copy: specialCopyFor("q") },
+  k: { piece: "k", kind: "deploy", copy: specialCopyFor("k") },
 };
 
 export const pieceSpecialDef = (piece: PieceSymbol): PieceSpecialDef => DEFS[piece];

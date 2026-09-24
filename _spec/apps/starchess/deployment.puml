@@ -58,7 +58,7 @@ end note
 
 note bottom of W
   **Root deploy (both workers):** ``npm run deploy:web-no-llm``
-    → ``apps/ui`` (``chess`` /chess) then ``apps/starchess`` (``starchess`` /starchess).
+    → ``apps/chess`` (``chess`` /chess) then ``apps/starchess`` (``starchess`` /starchess).
   **StarChess only:** ``npm run deploy:starchess``
   **Dry-run:** pnpm --filter @chess-coach/starchess deploy:dry-run
   **Do not** treat dry-run as production deploy.

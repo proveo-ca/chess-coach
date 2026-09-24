@@ -49,7 +49,7 @@ const missileGeom = (from: Square, to: Square, boardWidth: number, boardHeight: 
 export type MineMissileAnimationProps = {
   /** Self-missile hulls (chaseFrom → detonation square). */
   cues: readonly MineMissileCue[];
-  /** Single green thruster trails (queen/battleship palette). */
+  /** Single green thruster trails (BattleShip palette). */
   trails: readonly ShipJumpTrail[];
   boardWidth: number;
   boardHeight: number;

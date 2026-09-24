@@ -14,7 +14,7 @@ import {
   squareCenterPx,
 } from "~/presentation/animations/attackVectors";
 import { vecBetween } from "~/presentation/animations/boardGeom";
-import { InlineQueen } from "~/presentation/pieces/InlineQueen";
+import { InlineBattleShip } from "~/presentation/pieces/InlineBattleShip";
 import styles from "~/presentation/animations/components/ShipJumpAnimation.module.css";
 import type { MoveCue } from "~/presentation/animations/types";
 import {
@@ -111,7 +111,7 @@ export const ShipJumpAnimation: Component<ShipJumpAnimationProps> = (props) => (
               data-jump-deg={g().deg}
             >
               <div class={styles.jumpHull}>
-                <InlineQueen color={cue.color} aiming />
+                <InlineBattleShip color={cue.color} aiming />
               </div>
             </div>
             <BoardFx

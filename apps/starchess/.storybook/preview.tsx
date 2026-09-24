@@ -12,8 +12,8 @@ import "~/theme.css";
 import "~/styles/index.css";
 
 /**
- * Match apps/ui Storybook: viewports + theme toolbar + Screen responsiveness tokens.
- * // SPEC: _spec/apps/ui/responsiveness/rules.md, _spec/apps/starchess/navigation-chrome.md
+ * Match apps/chess Storybook: viewports + theme toolbar + Screen responsiveness tokens.
+ * // SPEC: _spec/apps/chess/responsiveness/rules.md, _spec/apps/starchess/navigation-chrome.md
  */
 const viewports = {
   desktop: {

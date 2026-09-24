@@ -1,5 +1,5 @@
 /**
- * Congrats after King Hunt (live) win — mark tutorial cleared and return home.
+ * Congrats after Command Center Hunt (live) win — mark tutorial cleared and return home.
  * // SPEC: _spec/apps/starchess/menu-flow.puml
  */
 import type { Component } from "solid-js";

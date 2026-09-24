@@ -21,8 +21,8 @@ export const WEIGHTS: Record<Posture, StrategyWeights> = {
     diagonal: 400,
     promoteRank: 0,
     promotionBonus: 0,
-    attackKing: 0,
-    chaseKing: 0,
+    attackCC: 0,
+    chaseCC: 0,
     seekFocus: 0,
     center: 50,
     trade: 100,
@@ -38,8 +38,8 @@ export const WEIGHTS: Record<Posture, StrategyWeights> = {
     diagonal: 360,
     promoteRank: 60,
     promotionBonus: 420,
-    attackKing: 0,
-    chaseKing: 0,
+    attackCC: 0,
+    chaseCC: 0,
     seekFocus: 700,
     center: 30,
     trade: 100,
@@ -52,8 +52,8 @@ export const WEIGHTS: Record<Posture, StrategyWeights> = {
     diagonal: 280,
     promoteRank: 100,
     promotionBonus: 700,
-    attackKing: 3_500,
-    chaseKing: 450,
+    attackCC: 3_500,
+    chaseCC: 450,
     seekFocus: 0,
     center: 25,
     trade: 120,
@@ -63,9 +63,9 @@ export const WEIGHTS: Record<Posture, StrategyWeights> = {
 
 export const resolvePosture = (
   hubHeld: boolean,
-  enemyKingVisible: boolean,
+  enemyCCVisible: boolean,
 ): Posture => {
   if (!hubHeld) return "expand";
-  if (enemyKingVisible) return "hunt";
+  if (enemyCCVisible) return "hunt";
   return "seek";
 };

@@ -9,7 +9,7 @@
 import type { Square } from "chess.js";
 import {
   isPieceVisibleToSide,
-  type RookMode,
+  type TankMode,
   type ScPiece,
   type StarChessColor,
 } from "@chess-coach/starchess-core";
@@ -23,7 +23,7 @@ export const occupancyForViewerMoves = (
   map: ReadonlyMap<Square, ScPiece>,
   viewer: StarChessColor,
   fog: boolean,
-  opts?: { rookModeFor?: (square: Square) => RookMode },
+  opts?: { tankModeFor?: (square: Square) => TankMode },
 ): Map<Square, ScPiece> => {
   if (!fog) return new Map(map);
   const out = new Map<Square, ScPiece>();

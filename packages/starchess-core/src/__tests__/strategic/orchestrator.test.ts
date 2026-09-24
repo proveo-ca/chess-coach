@@ -5,13 +5,13 @@ import { strategicAdjutant } from "../../ai/strategic";
 import { combineKnownVsSeen } from "../../ai/strategic/intel";
 
 describe("strategicAdjutant orchestrator", () => {
-  it("stacks Command Center spawn + King classical in the same turn", () => {
+  it("stacks Command Center spawn + Command Center classical in the same turn", () => {
     const snap = parseScFen(
       "SCFEN|4k3/8/8/8/8/8/8/4K3|5|33|P|G:11:11|Q:w:;b:",
     );
     const plan = strategicAdjutant(snap, { storedFor: () => 12 });
     const actions = plan.snapshot.queue?.actions.filter((a) => a.color === "b") ?? [];
-    expect(actions.some((a) => a.kind === "spawn" && a.timing === "B")).toBe(true);
+    expect(actions.some((a) => a.kind === "deploy" && a.timing === "B")).toBe(true);
     expect(
       actions.some(
         (a) => a.timing === "C" && a.kind === "classical" && a.from === "e8",
@@ -19,16 +19,16 @@ describe("strategicAdjutant orchestrator", () => {
     ).toBe(true);
     expect(plan.spendMinerals).toEqual({ color: "b", amount: expect.any(Number) });
 
-    const spawnTo = actions.find((a) => a.kind === "spawn")?.to;
-    const kingTo = actions.find((a) => a.timing === "C")?.to;
+    const spawnTo = actions.find((a) => a.kind === "deploy")?.to;
+    const ccTo = actions.find((a) => a.timing === "C")?.to;
     expect(spawnTo).toBeTruthy();
-    expect(kingTo).toBeTruthy();
-    expect(kingTo).not.toBe(spawnTo);
+    expect(ccTo).toBeTruthy();
+    expect(ccTo).not.toBe(spawnTo);
 
     const resolved = endScTurn(plan.snapshot, { skipTurnStartChecks: true });
     const map = placementToMap(resolved.next.placement);
     expect(map.get(spawnTo!)).toMatchObject({ color: "b" });
-    expect(map.get(kingTo!)).toEqual({ type: "k", color: "b" });
+    expect(map.get(ccTo!)).toEqual({ type: "k", color: "b" });
     expect(map.get("e8")).toBeUndefined();
   });
 
@@ -59,7 +59,7 @@ describe("strategicAdjutant orchestrator", () => {
   });
 
   it("threads the host known-vs-seen accumulator through decisions", () => {
-    // Winning + rich → the queen-finish deploy; the exact scatter of the spawn
+    // Winning + rich → the BattleShip-finish deploy; the exact scatter of the spawn
     // differs from a losing/locked account because the weight table changes.
     const snap = parseScFen(
       "SCFEN|4k3/8/8/8/8/8/8/4K3|10|33|P|G:11:11|Q:w:;b:",
@@ -78,7 +78,7 @@ describe("strategicAdjutant orchestrator", () => {
     expect(winning).toEqual(expected);
 
     const spawnsWinning =
-      winning.snapshot.queue?.actions.filter((a) => a.kind === "spawn") ?? [];
+      winning.snapshot.queue?.actions.filter((a) => a.kind === "deploy") ?? [];
     expect(spawnsWinning.some((a) => a.unit === "q")).toBe(true);
   });
 });

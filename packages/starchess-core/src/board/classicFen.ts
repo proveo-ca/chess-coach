@@ -1,6 +1,6 @@
 import type { StarChessColor } from "../model/types";
 
-/** Classic FEN for ChessBoard / chess.js load (always both kings in placement). */
+/** Classic FEN for ChessBoard / chess.js load (always both Command Centers in placement). */
 export const toClassicFen = (
   placement: string,
   sideToMove: StarChessColor = "w",

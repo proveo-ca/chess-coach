@@ -4,8 +4,8 @@
  *
  * Important: return the same cue object refs from `timeline.cues` while a cue
  * is playing. Remapping into new objects on every TIMELINE_COMMIT remounts
- * Solid `<For>` rows and restarts CSS attack animations (knight/hoverbike
- * “plays twice”, bishop gatling looks like a loop).
+ * Solid `<For>` rows and restarts CSS attack animations (Hoverbike
+ * “plays twice”, Mecha gatling looks like a loop).
  *
  * Memos also cache by playing-id key so idle ticks reuse the prior array.
  */
@@ -200,7 +200,7 @@ export const useCombatOverlays = (store: MatchStore) => {
   /**
    * Prefer ownership from playing cues + attackDying when combat overlays are
    * present; otherwise fall back to timeline.hiddenSquares.
-   * LiveStarChessBoard still merges kingDamage + auto-deploy extras.
+   * LiveStarChessBoard still merges ccDamage + auto-deploy extras.
    */
   const hideSquares = createMemo((): ReadonlySet<Square> => {
     const attacks = attackCues();

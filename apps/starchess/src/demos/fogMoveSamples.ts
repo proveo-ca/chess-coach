@@ -18,11 +18,11 @@ import type { FogEdgeScenario } from "~/types/demos";
  * Four black pawns on the siege file + rank (one per side):
  *   d7 N, d2 S, a4 W (board edge), h4 E (board edge).
  */
-export const FOG_SIEGE_ROOK_SCFEN =
+export const FOG_SIEGE_TANK_SCFEN =
   "SCFEN|7k/3p4/8/8/p2R3p/8/3p4/K7|0|33|P|G:11:11|Q:w:;b:";
 
 /** Siege rook on d4 (immobile 9×9) — live lesson seed. */
-export const FOG_SIEGE_LIVE_SCFEN = `${FOG_SIEGE_ROOK_SCFEN}|S:d4`;
+export const FOG_SIEGE_LIVE_SCFEN = `${FOG_SIEGE_TANK_SCFEN}|S:d4`;
 
 /** Own-square mine vision — live player fog. */
 export const FOG_MINE_LIVE_SCFEN =

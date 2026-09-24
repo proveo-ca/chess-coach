@@ -43,16 +43,16 @@ const settle = (scfen: string) =>
   });
 
 /** Knight on g5 — fog/knight's `completeWhen` *and* its "Did you see that?!". */
-const KNIGHT_G5 = "SCFEN|7k/7p/8/6N1/8/8/8/K7|1|33|P|G:11:11|Q:w:;b:";
+const HOVERBIKE_G5 = "SCFEN|7k/7p/8/6N1/8/8/8/K7|1|33|P|G:11:11|Q:w:;b:";
 /** King moved off the seed — fog/king completes with nothing left to say. */
-const KING_MOVED = "SCFEN|7k/7p/8/4K3/8/8/8/8|1|33|P|G:11:11|Q:w:;b:";
+const CC_MOVED = "SCFEN|7k/7p/8/4K3/8/8/8/8|1|33|P|G:11:11|Q:w:;b:";
 
 describe("objective-complete hold", () => {
   it("reads the closing line before the modal takes the bubble", () => {
     vi.useFakeTimers();
     renderLesson("fog", "knight");
 
-    settle(KNIGHT_G5);
+    settle(HOVERBIKE_G5);
 
     // Objective is met, but the line that landed with it holds the bubble:
     // no badge, no CTA, and no countdown border (nothing is armed yet).
@@ -75,7 +75,7 @@ describe("objective-complete hold", () => {
     vi.useFakeTimers();
     renderLesson("fog", "king");
 
-    settle(KING_MOVED);
+    settle(CC_MOVED);
 
     // The intro is retired once the board moves and no reaction matches, so
     // there is no line to read — the modal takes the bubble on the same beat.

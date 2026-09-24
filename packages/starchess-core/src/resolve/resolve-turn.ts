@@ -1,4 +1,4 @@
-// SPEC: _spec/packages/starchess-core/resolve.puml, _spec/packages/starchess-core/overview.puml, _spec/packages/starchess-core/resolve-turn-activity.puml, _spec/packages/starchess-core/mine-contact.puml, _spec/apps/starchess/core/turn/resolve-pipeline.puml, _spec/packages/starchess-core/gas-phase-vacancy.puml
+// SPEC: _spec/packages/starchess-core/resolve.puml, _spec/packages/starchess-core/overview.puml, _spec/packages/starchess-core/resolve-turn-activity.puml, _spec/packages/starchess-core/mine-contact.puml, _spec/apps/starchess/core/turn/resolve-pipeline.puml, _spec/packages/starchess-core/gas-phase-vacancy.puml, _spec/packages/starchess-core/move-timing.puml
 import type { Square } from "chess.js";
 
 import {
@@ -16,12 +16,13 @@ import {
 import type { StarChessColor } from "../model/types";
 import type {
   ClassicalPlan,
-  RookMode,
+  TankMode,
   ScMine,
-  ScPendingKingShot,
+  ScPendingCCShot,
   SpawnPiece,
 } from "../model/types";
 import { scanRay, type RayContact } from "../board/ray-scan";
+import { moverContact, timedMover, type MoverContact } from "../board/move-timing";
 import { pathRevealSteps } from "../board/vision";
 
 export type { ClassicalPlan };
@@ -55,7 +56,7 @@ export type ResolveAttack =
       pathRevealSteps?: number;
     }
   | {
-      kind: "kingShot";
+      kind: "ccShot";
       piece: ScPiece["type"];
       color: StarChessColor;
       from: Square;
@@ -99,43 +100,43 @@ export type ResolveMove = {
 
 export type ResolveTurnInput = {
   placement: string;
-  kingLives: Record<StarChessColor, number>;
+  ccLives: Record<StarChessColor, number>;
   white: ClassicalPlan | null;
   black: ClassicalPlan | null;
   ignoreAttacksOn?: readonly Square[];
   mines?: readonly ScMine[];
   isTargetVisible?: (color: StarChessColor, square: Square) => boolean;
   pathVisionOpts?: {
-    rookModeFor?: (square: Square) => RookMode;
+    tankModeFor?: (square: Square) => TankMode;
     mines?: readonly ScMine[];
   };
-  siegedRooks?: readonly Square[];
+  siegedTanks?: readonly Square[];
 };
 
 export type ResolveTurnResult = {
   attacks: ResolveAttack[];
   afterAttack: {
     placement: string;
-    kingLives: Record<StarChessColor, number>;
+    ccLives: Record<StarChessColor, number>;
     mines: ScMine[];
   };
   moves: ResolveMove[];
   afterMove: {
     placement: string;
-    kingLives: Record<StarChessColor, number>;
+    ccLives: Record<StarChessColor, number>;
     mines: ScMine[];
   };
   pathRevealAttacks: ResolveAttack[];
   afterAll: {
     placement: string;
-    kingLives: Record<StarChessColor, number>;
+    ccLives: Record<StarChessColor, number>;
     mines: ScMine[];
   };
   mineTriggers: ResolveAttack[];
   pathRevealMineTriggers: ResolveAttack[];
   moveCollisions: ResolveAttack[];
   promotions: ResolvePromotion[];
-  pendingKingShotsArmed: ScPendingKingShot[];
+  pendingCCShotsArmed: ScPendingCCShot[];
 };
 
 const clampLives = (n: number) => Math.max(0, Math.min(3, Math.floor(n)));
@@ -143,7 +144,7 @@ const clampLives = (n: number) => Math.max(0, Math.min(3, Math.floor(n)));
 export type PathRevealSnap = {
   placement: string;
   mines: readonly ScMine[];
-  kingLives?: Record<StarChessColor, number>;
+  ccLives?: Record<StarChessColor, number>;
 };
 
 export type PathRevealApply = PathRevealSnap & { fired: boolean };
@@ -168,43 +169,43 @@ export const applyPathRevealAttack = (
   return {
     placement: mapToPlacement(map),
     mines: [...snap.mines],
-    kingLives: snap.kingLives ? { ...snap.kingLives } : undefined,
+    ccLives: snap.ccLives ? { ...snap.ccLives } : undefined,
     fired: true,
   };
 };
 
-export const applyPathRevealKingShot = (
-  snap: PathRevealSnap & { kingLives: Record<StarChessColor, number> },
-  a: Extract<ResolveAttack, { kind: "kingShot" }>,
-): PathRevealApply & { kingLives: Record<StarChessColor, number> } => {
+export const applyPathRevealCCShot = (
+  snap: PathRevealSnap & { ccLives: Record<StarChessColor, number> },
+  a: Extract<ResolveAttack, { kind: "ccShot" }>,
+): PathRevealApply & { ccLives: Record<StarChessColor, number> } => {
   if (!a.pathRevealFrom || a.stopAt == null) {
-    return { ...snap, kingLives: { ...snap.kingLives }, fired: false };
+    return { ...snap, ccLives: { ...snap.ccLives }, fired: false };
   }
   const map = placementToMap(snap.placement);
   const actor = map.get(a.pathRevealFrom);
   if (!actor || actor.color !== a.color || actor.type !== a.piece) {
-    return { ...snap, kingLives: { ...snap.kingLives }, fired: false };
+    return { ...snap, ccLives: { ...snap.ccLives }, fired: false };
   }
-  const king = map.get(a.to);
-  if (!king || king.type !== "k" || king.color === a.color) {
-    return { ...snap, kingLives: { ...snap.kingLives }, fired: false };
+  const commandCenter = map.get(a.to);
+  if (!commandCenter || commandCenter.type !== "k" || commandCenter.color === a.color) {
+    return { ...snap, ccLives: { ...snap.ccLives }, fired: false };
   }
   if (a.stopAt !== a.pathRevealFrom) {
     if (map.has(a.stopAt)) {
-      return { ...snap, kingLives: { ...snap.kingLives }, fired: false };
+      return { ...snap, ccLives: { ...snap.ccLives }, fired: false };
     }
     map.delete(a.pathRevealFrom);
     map.set(a.stopAt, actor);
   }
-  const kingLives = {
-    w: clampLives(snap.kingLives.w),
-    b: clampLives(snap.kingLives.b),
+  const ccLives = {
+    w: clampLives(snap.ccLives.w),
+    b: clampLives(snap.ccLives.b),
   };
-  kingLives[a.target] = clampLives(kingLives[a.target] - 1);
+  ccLives[a.target] = clampLives(ccLives[a.target] - 1);
   return {
     placement: mapToPlacement(map),
     mines: [...snap.mines],
-    kingLives,
+    ccLives,
     fired: true,
   };
 };
@@ -232,7 +233,7 @@ type ResolveApproach = Exclude<ResolveAttack, { kind: "mineBlast" } | { kind: "s
 const approachWalk = (a: ResolveApproach): Square[] => {
   if (!a.pathRevealFrom) return [];
   const origin = a.pathRevealFrom;
-  const landing = a.kind === "kingShot" ? (a.stopAt ?? origin) : a.to;
+  const landing = a.kind === "ccShot" ? (a.stopAt ?? origin) : a.to;
   if (landing === origin) return [];
   return [...rayBetween(origin, landing), landing];
 };
@@ -247,7 +248,7 @@ const approachMineContact = (
     piece: a.piece,
     squares: approachWalk(a),
     // A capture fires at the tile it lands on — the blocking unit is what
-    // stopped the ray. A `kingShot` stops *short* and shoots from range, so the
+    // stopped the ray. A `ccShot` stops *short* and shoots from range, so the
     // tile it settles on was never fired upon and stays part of the walk.
     mode: a.kind === "capture" ? "walkThenAttack" : "walk",
   });
@@ -258,21 +259,21 @@ const squareBeforeOnRay = (from: Square, blocker: Square): Square | null => {
   return null;
 };
 
-export const applyPendingKingShots = (input: {
+export const applyPendingCCShots = (input: {
   placement: string;
-  kingLives: Record<StarChessColor, number>;
-  pending: readonly ScPendingKingShot[];
+  ccLives: Record<StarChessColor, number>;
+  pending: readonly ScPendingCCShot[];
   mines?: readonly ScMine[];
 }): {
   placement: string;
-  kingLives: Record<StarChessColor, number>;
+  ccLives: Record<StarChessColor, number>;
   mines: ScMine[];
   attacks: ResolveAttack[];
 } => {
   const map = placementToMap(input.placement);
   const lives = {
-    w: clampLives(input.kingLives.w),
-    b: clampLives(input.kingLives.b),
+    w: clampLives(input.ccLives.w),
+    b: clampLives(input.ccLives.b),
   };
   let mines: ScMine[] = [...(input.mines ?? [])];
   const attacks: ResolveAttack[] = [];
@@ -326,7 +327,7 @@ export const applyPendingKingShots = (input: {
     const livesAfter = clampLives(lives[hit] - 1);
     lives[hit] = livesAfter;
     attacks.push({
-      kind: "kingShot",
+      kind: "ccShot",
       piece: actor.type,
       color: shot.color,
       from: shot.from,
@@ -338,7 +339,7 @@ export const applyPendingKingShots = (input: {
 
   return {
     placement: mapToPlacement(map),
-    kingLives: lives,
+    ccLives: lives,
     mines,
     attacks,
   };
@@ -392,8 +393,8 @@ export const clearDepartedGhost = (
 export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
   const start = placementToMap(input.placement);
   const lives = {
-    w: clampLives(input.kingLives.w),
-    b: clampLives(input.kingLives.b),
+    w: clampLives(input.ccLives.w),
+    b: clampLives(input.ccLives.b),
   };
   const plans = plansOf(input);
   const ignoreAttacksOn = new Set<Square>(input.ignoreAttacksOn ?? []);
@@ -406,7 +407,7 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
   const occupy: ClassicalPlan[] = [];
   const quiets: ClassicalPlan[] = [];
   const delayed: ClassicalPlan[] = [];
-  const pendingKingShotsArmed: ScPendingKingShot[] = [];
+  const pendingCCShotsArmed: ScPendingCCShot[] = [];
   const pathRevealPending: ResolveAttack[] = [];
   const destinationsWritten = new Set<Square>();
   /**
@@ -442,7 +443,7 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
     visible0: boolean;
     leaps: boolean;
     siegedFrom: boolean;
-    siegedRook: boolean;
+    siegedTank: boolean;
     scan: () => ReturnType<typeof scanFor>;
   };
 
@@ -503,7 +504,7 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
           mineColor: out.mineColor,
         });
         mines = mines.filter((m) => m.at !== out.at);
-        if (!ctx.siegedRook) occupy.push(plan);
+        if (!ctx.siegedTank) occupy.push(plan);
         return;
       case "shelling":
         attacks.push({
@@ -516,7 +517,7 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
         return;
       case "approach":
         pathRevealPending.push(out.shot);
-        if (out.shot.kind === "capture" || out.shot.kind === "kingShot") {
+        if (out.shot.kind === "capture" || out.shot.kind === "ccShot") {
           delayed.push(plan);
         }
         return;
@@ -583,7 +584,7 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
       },
     },
     {
-      name: "enemyKingSquare",
+      name: "enemyCCSquare",
       match: (ctx) => {
         const { plan, actor, target, leaps } = ctx;
         if (!target || target.color === plan.color || target.type !== "k") {
@@ -658,7 +659,7 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
         const revealSteps = !visible0 && !leaps ? revealTo(ctx, plan.to) : null;
         const lightsUp = revealSteps != null && revealSteps > 0;
         if (!visible0 && !lightsUp) {
-          if (ctx.siegedRook) return { kind: "drop" };
+          if (ctx.siegedTank) return { kind: "drop" };
           return { kind: "capture", at: plan.to, victim: target, fogged: true };
         }
         if (lightsUp) {
@@ -697,10 +698,10 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
         // Sieged fire through a blocker intercepts upstream — fall through
         // so slideIntoFog collides instead of quietly swallowing the shot
         // (the mine stays armed: the blast never reaches it).
-        if (ctx.siegedRook && !ctx.leaps && firstBlockerOnRay(start, plan.from, plan.to)) {
+        if (ctx.siegedTank && !ctx.leaps && firstBlockerOnRay(start, plan.from, plan.to)) {
           return null;
         }
-        if (!visible0 && ctx.siegedRook) return { kind: "drop" };
+        if (!visible0 && ctx.siegedTank) return { kind: "drop" };
         const reachable =
           ctx.leaps || !firstBlockerOnRay(start, plan.from, plan.to);
         if (visible0 && reachable && attacksOwnDest(actor.type, plan.from, plan.to)) {
@@ -721,7 +722,7 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
           return {
             kind: "approach",
             shot: {
-              kind: "kingShot",
+              kind: "ccShot",
               piece: actor.type,
               color: plan.color,
               from: contact.discovery!,
@@ -744,11 +745,11 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
       match: (ctx) => {
         const { plan, target, visible0 } = ctx;
         // Siege-only: regular pieces relocate onto empty squares (quiet).
-        if (!ctx.siegedRook || target) return null;
+        if (!ctx.siegedTank || target) return null;
         // Cross geometry only — defense in depth, resolve trusts plans.
         if (plan.from[0] !== plan.to[0] && plan.from[1] !== plan.to[1]) return null;
         // Anything in the way holds fire: visible enemies already collided
-        // upstream (slideIntoFog); allies and kings never eat a shell.
+        // upstream (slideIntoFog); allies and Command Centers never eat a shell.
         if (ctx.scan().contact) return { kind: "drop" };
         // Fog fizzle preserved — no confirmed target, no explosion.
         if (!visible0) return null;
@@ -763,7 +764,7 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
     if (!actor || actor.color !== plan.color) continue;
 
     let scanned: ReturnType<typeof scanFor> | null = null;
-    const siegedFrom = !!input.siegedRooks?.includes(plan.from);
+    const siegedFrom = !!input.siegedTanks?.includes(plan.from);
     const ctx: PlanContext = {
       plan,
       actor,
@@ -771,7 +772,7 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
       visible0: canSee(plan.color, plan.to),
       leaps: leapsPiece(actor.type),
       siegedFrom,
-      siegedRook: siegedFrom && actor.type === "r",
+      siegedTank: siegedFrom && actor.type === "r",
       scan: () => (scanned ??= scanFor(plan)),
     };
 
@@ -788,7 +789,7 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
 
   const afterAttack = {
     placement: mapToPlacement(mid),
-    kingLives: { ...lives },
+    ccLives: { ...lives },
     mines: [...mines],
   };
 
@@ -798,15 +799,21 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
   const moversDead = new Set<Square>();
   const pendingPromos: ResolvePromotion[] = [];
 
-  const relocate = (plan: ClassicalPlan, mode: RelocateMode) => {
-    if (deadSquares.has(plan.from) || moversDead.has(plan.from)) return;
+  type Landing = {
+    plan: ClassicalPlan;
+    piece: ScPiece;
+    dest: Square;
+  };
+
+  const planLanding = (plan: ClassicalPlan, mode: RelocateMode): Landing | null => {
+    if (deadSquares.has(plan.from) || moversDead.has(plan.from)) return null;
     const piece = board.get(plan.from);
-    if (!piece || piece.color !== plan.color) return;
+    if (!piece || piece.color !== plan.color) return null;
     if (
       piece.type === "r" &&
-      (input.siegedRooks ?? []).includes(plan.from)
+      (input.siegedTanks ?? []).includes(plan.from)
     ) {
-      return;
+      return null;
     }
 
     let dest = plan.to;
@@ -817,13 +824,13 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
         const blocking = board.get(blocker)!;
         if (blocking.type === "k") {
           const before = squareBeforeOnRay(plan.from, blocker);
-          if (!before || before === plan.from) return;
+          if (!before || before === plan.from) return null;
           dest = before;
         } else if (blocking.color !== plan.color) {
           dest = blocker;
         } else {
           const before = squareBeforeOnRay(plan.from, blocker);
-          if (!before || before === plan.from) return;
+          if (!before || before === plan.from) return null;
           dest = before;
         }
       }
@@ -833,14 +840,36 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
     if (occ?.type === "k") {
       if (occ.color === plan.color) {
         const before = squareBeforeOnRay(plan.from, dest);
-        if (!before || before === plan.from) return;
+        if (!before || before === plan.from) return null;
         dest = before;
       } else {
         const before = squareBeforeOnRay(plan.from, dest);
-        if (!before || before === plan.from || board.get(before)) return;
+        if (!before || before === plan.from || board.get(before)) return null;
         dest = before;
       }
-    } else if (occ && occ.color !== plan.color) {
+    }
+    return { plan, piece, dest };
+  };
+
+  const walkContact = ({ plan, piece, dest }: Landing): MineContact =>
+    plan.extraStepTo
+      ? { kind: "inert" }
+      : mineContact({
+          mines,
+          color: plan.color,
+          piece: piece.type,
+          squares: [
+            ...(plan.extraStepFrom ? [plan.extraStepFrom] : []),
+            ...pathContactSquares(plan.from, dest, piece.type),
+            dest,
+          ],
+          mode: "walk",
+        });
+
+  const land = (landing: Landing) => {
+    const { plan, piece, dest } = landing;
+    const occ = board.get(dest);
+    if (occ && occ.color !== plan.color && occ.type !== "k") {
       if (destinationsWritten.has(dest)) {
         moveCollisions.push({
           kind: "capture",
@@ -891,23 +920,7 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
       });
     }
 
-    // One walk per marine. A queued Extra Step means `dest` is not the landing
-    // tile, so the arrival check in phase 4 owns this contact list; a spent one
-    // means the marine is standing on a tile it only reached this turn, so that
-    // tile is still live. Either way the mine waits for the real destination.
-    const trip: MineContact = plan.extraStepTo
-      ? { kind: "inert" }
-      : mineContact({
-          mines,
-          color: plan.color,
-          piece: piece.type,
-          squares: [
-            ...(plan.extraStepFrom ? [plan.extraStepFrom] : []),
-            ...pathContactSquares(plan.from, dest, piece.type),
-            dest,
-          ],
-          mode: "walk",
-        });
+    const trip = walkContact(landing);
 
     board.delete(plan.from);
     board.set(dest, piece);
@@ -950,16 +963,123 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
     }
   };
 
-  for (const plan of occupy) relocate(plan, "occupy");
-  for (const plan of quiets) relocate(plan, "quiet");
+  const relocate = (plan: ClassicalPlan, mode: RelocateMode) => {
+    const landing = planLanding(plan, mode);
+    if (landing) land(landing);
+  };
+
+  const scheduleOf = (l: Landing) =>
+    timedMover(l.plan.from, l.dest, l.piece.type, {
+      diesOnLanding: walkContact(l).kind === "detonated",
+    });
+
+  const stopShortOf = (l: Landing, at: Square): Landing | null => {
+    if (leapsPiece(l.piece.type)) return null;
+    const before = squareBeforeOnRay(l.plan.from, at);
+    return before ? { ...l, dest: before } : null;
+  };
+
+  const collide = (a: Landing, b: Landing, contact: MoverContact) => {
+    const [rammer, held] = contact.first === "a" ? [b, a] : [a, b];
+    const at = contact.at;
+    moveCollisions.push(
+      {
+        kind: "capture",
+        piece: rammer.piece.type,
+        color: rammer.plan.color,
+        from: rammer.plan.from,
+        to: at,
+        victim: { piece: held.piece.type, color: held.plan.color },
+        occupies: false,
+        collision: true,
+        moveCollision: true,
+      },
+      {
+        kind: "capture",
+        piece: held.piece.type,
+        color: held.plan.color,
+        from: contact.first === "both" ? held.plan.from : at,
+        to: at,
+        victim: { piece: rammer.piece.type, color: rammer.plan.color },
+        occupies: false,
+        collision: true,
+        moveCollision: true,
+      },
+    );
+    for (const l of [a, b]) {
+      board.delete(l.plan.from);
+      moves.push({ piece: l.piece.type, color: l.plan.color, from: l.plan.from, to: at });
+    }
+  };
+
+  const ccTakes = (cc: Landing, other: Landing, at: Square) => {
+    const mineColor = clearOnCapture(at, cc.plan.color, cc.piece.type);
+    moveCollisions.push({
+      kind: "capture",
+      piece: cc.piece.type,
+      color: cc.plan.color,
+      from: cc.plan.from,
+      to: at,
+      victim: { piece: other.piece.type, color: other.plan.color },
+      occupies: true,
+      collision: true,
+      moveCollision: true,
+      ...(mineColor ? { mineColor } : {}),
+    });
+    board.delete(other.plan.from);
+    moves.push({
+      piece: other.piece.type,
+      color: other.plan.color,
+      from: other.plan.from,
+      to: at,
+    });
+    land(cc);
+  };
+
+  const moveWave = (wave: readonly (readonly [ClassicalPlan, RelocateMode])[]) => {
+    const landings = wave
+      .map(([plan, mode]) => planLanding(plan, mode))
+      .filter((l): l is Landing => l != null);
+    const [a, b] = landings;
+    const contact =
+      a && b && landings.length === 2 && a.plan.color !== b.plan.color
+        ? moverContact(scheduleOf(a), scheduleOf(b))
+        : null;
+    if (!a || !b || !contact) {
+      for (const l of landings) land(l);
+      return;
+    }
+    const aCC = a.piece.type === "k";
+    const bCC = b.piece.type === "k";
+    if (aCC && bCC) return;
+    if (!aCC && !bCC) {
+      collide(a, b, contact);
+      return;
+    }
+    const [cc, other, ccFirst] = aCC
+      ? [a, b, contact.first === "a"]
+      : [b, a, contact.first === "b"];
+    if (!ccFirst) {
+      ccTakes(cc, other, contact.at);
+      return;
+    }
+    land(cc);
+    const short = stopShortOf(other, contact.at);
+    if (short && short.dest !== short.plan.from) land(short);
+  };
+
+  moveWave([
+    ...occupy.map((plan) => [plan, "occupy"] as const),
+    ...quiets.map((plan) => [plan, "quiet"] as const),
+  ]);
 
   const pathRevealAttacks: ResolveAttack[] = [];
   const pathRevealMineTriggers: ResolveAttack[] = [];
   const firedFrom = new Set<Square>();
-  let phase3: PathRevealSnap & { kingLives: Record<StarChessColor, number> } = {
+  let phase3: PathRevealSnap & { ccLives: Record<StarChessColor, number> } = {
     placement: mapToPlacement(board),
     mines: [...mines],
-    kingLives: { ...lives },
+    ccLives: { ...lives },
   };
   /**
    * Phase-3 approach contact. Returns the colour of a mine the shot **cleared**,
@@ -979,7 +1099,7 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
     phase3 = {
       placement: mapToPlacement(board),
       mines: withoutMine(phase3.mines, trip),
-      kingLives: { ...phase3.kingLives },
+      ccLives: { ...phase3.ccLives },
     };
     pathRevealMineTriggers.push({
       kind: "mineBlast",
@@ -994,9 +1114,9 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
     return undefined;
   };
   for (const a of pathRevealPending) {
-    if (a.kind !== "capture" && a.kind !== "kingShot") continue;
+    if (a.kind !== "capture" && a.kind !== "ccShot") continue;
     if (!a.pathRevealFrom) continue;
-    if ((input.siegedRooks ?? []).includes(a.pathRevealFrom)) continue;
+    if ((input.siegedTanks ?? []).includes(a.pathRevealFrom)) continue;
     if (destinationsWritten.has(a.pathRevealFrom)) continue;
     if (a.kind === "capture") {
       const applied = applyPathRevealAttack(phase3, a);
@@ -1005,22 +1125,22 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
       phase3 = {
         placement: applied.placement,
         mines: [...applied.mines],
-        kingLives: { ...phase3.kingLives },
+        ccLives: { ...phase3.ccLives },
       };
       const approachMine = applyApproachMine(a);
       pathRevealAttacks.push(approachMine ? { ...a, mineColor: approachMine } : a);
       continue;
     }
-    const applied = applyPathRevealKingShot(phase3, a);
+    const applied = applyPathRevealCCShot(phase3, a);
     if (!applied.fired) continue;
     phase3 = {
       placement: applied.placement,
       mines: [...applied.mines],
-      kingLives: { ...applied.kingLives },
+      ccLives: { ...applied.ccLives },
     };
-    lives.w = applied.kingLives.w;
-    lives.b = applied.kingLives.b;
-    const fired = { ...a, livesAfter: applied.kingLives[a.target] };
+    lives.w = applied.ccLives.w;
+    lives.b = applied.ccLives.b;
+    const fired = { ...a, livesAfter: applied.ccLives[a.target] };
     applyApproachMine(fired);
     pathRevealAttacks.push(fired);
   }
@@ -1138,7 +1258,7 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
 
   const afterMove = {
     placement: mapToPlacement(board),
-    kingLives: { ...lives },
+    ccLives: { ...lives },
     mines: [...mines],
   };
 
@@ -1164,9 +1284,9 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
     afterMove,
     afterAll: {
       placement: mapToPlacement(promoBoard),
-      kingLives: { ...lives },
+      ccLives: { ...lives },
       mines: [...phase3.mines],
     },
-    pendingKingShotsArmed,
+    pendingCCShotsArmed,
   };
 };

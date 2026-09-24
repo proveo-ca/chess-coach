@@ -8,7 +8,7 @@ import {
 } from "../../index";
 
 describe("gas + last-rank promotion contract", () => {
-  it("rejects move-then-gas (F) that would park a pawn on the last rank", () => {
+  it("rejects move-then-gas (F) that would park a Marine on the last rank", () => {
     let snap = parseScFen(
       "SCFEN|k7/8/4P3/8/8/8/8/4K3|1|33|P|G:11:11|Q:w:;b:",
     );
@@ -27,7 +27,7 @@ describe("gas + last-rank promotion contract", () => {
         snapshot: snap,
         action: {
           timing: "F",
-          kind: "pawnDouble",
+          kind: "stimStep",
           color: "w",
           from: "e6",
           to: "e7",
@@ -44,7 +44,7 @@ describe("gas + last-rank promotion contract", () => {
       snapshot: snap,
       action: {
         timing: "B",
-        kind: "pawnDouble",
+        kind: "stimStep",
         color: "w",
         from: "e6",
         to: "e7",
@@ -71,7 +71,7 @@ describe("gas + last-rank promotion contract", () => {
       snapshot: snap,
       action: {
         timing: "B",
-        kind: "pawnDouble",
+        kind: "stimStep",
         color: "w",
         from: "e6",
         to: "e7",
@@ -109,7 +109,7 @@ describe("gas + last-rank promotion contract", () => {
         snapshot: snap,
         action: {
           timing: "B",
-          kind: "pawnDouble",
+          kind: "stimStep",
           color: "w",
           from: "e7",
           to: "e8",
@@ -126,7 +126,7 @@ describe("gas + last-rank promotion contract", () => {
       snapshot: snap,
       action: {
         timing: "B",
-        kind: "pawnDouble",
+        kind: "stimStep",
         color: "w",
         from: "e7",
         to: "e8",
@@ -156,7 +156,7 @@ describe("gas + last-rank promotion contract", () => {
       snapshot: snap,
       action: {
         timing: "B",
-        kind: "pawnDouble",
+        kind: "stimStep",
         color: "w",
         from: "e7",
         to: "e8",
@@ -181,7 +181,7 @@ describe("gas + last-rank promotion contract", () => {
       snapshot: snap,
       action: {
         timing: "B",
-        kind: "pawnDouble",
+        kind: "stimStep",
         color: "w",
         from: "e6",
         to: "e7",

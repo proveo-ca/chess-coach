@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/ui/components.puml
+// SPEC: _spec/apps/chess/components.puml
 import { WebWorkerMLCEngineHandler } from "@mlc-ai/web-llm";
 
 // --- ULTIMATE DEBUG INTERCEPTOR ---

@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/ui/components.puml
+// SPEC: _spec/apps/chess/components.puml
 /// <reference lib="webworker" />
 import { type LlmClient, NoopLlmClient } from "~/engine/LlmClient";
 import { Orchestrator, type LlmDebugEvent } from "~/engine/Orchestrator";

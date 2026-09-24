@@ -19,7 +19,7 @@ package "Core — Facade" {
 
 package "Core — Pipeline (internal)" {
   component "resolve/resolve-turn.ts\nresolveTurn" as RT <<app>>
-  component "applyPendingKingShots\ncollectLegalKingChecks" as KING <<app>>
+  component "applyPendingCCShots\ncollectLegalKingChecks" as KING <<app>>
   component "specials B/F apply\nspawn · mine · warp · siege" as SP <<async>>
 }
 

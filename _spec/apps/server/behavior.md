@@ -9,7 +9,7 @@
 > `@chess-coach/engine-core`.)
 >
 > The web distribution runs the same loop in the browser under
-> `apps/ui/src/engine/` and shares `engine-core`. The intended contract is **1:1 behavior**. Divergences
+> `apps/chess/src/engine/` and shares `engine-core`. The intended contract is **1:1 behavior**. Divergences
 > and the parity checklist live in [`ui-engine-parity.md`](./ui-engine-parity.md).
 > The visual workflow is in [`orchestration.puml`](./orchestration.puml); the
 > component breakdown is in [`components.puml`](./components.puml).
@@ -29,7 +29,7 @@ SolidJS UI ──HTTP/JSON──▶ Bun server (apps/server)
                               ├─ Orchestrator ─┬─ EngineBridge ─┬─ StockfishEngine (Bun.spawn → native stockfish)
                               │                │                └─ MaiaEngine (Bun.spawn → lc0 + maia weights)
                               │                └─ OllamaLlmClient (OpenAI-compatible HTTP → Ollama)
-                              └─ @chess-coach/engine-core (shared prompt logic, also used by apps/ui)
+                              └─ @chess-coach/engine-core (shared prompt logic, also used by apps/chess)
 ```
 
 The Bun server serves the UI, terminates HTTP, and runs the orchestrator
@@ -116,7 +116,7 @@ Concurrency rules (`apps/server/src/http.ts`):
 
 ---
 
-## 4. Orchestration algorithms (`apps/server/src/Orchestrator.ts`; mirrored by `apps/ui`)
+## 4. Orchestration algorithms (`apps/server/src/Orchestrator.ts`; mirrored by `apps/chess`)
 
 ### 4.1 `executeTurn(humanMove, difficulty) → TurnResult(fen, move, advice="")`
 

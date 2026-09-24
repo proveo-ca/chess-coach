@@ -9,12 +9,12 @@ export type { AttackAnimKind } from "~/presentation/types";
 export type DemoPiece = "p" | "n" | "b" | "r" | "q" | "k";
 
 export const ANIM_BY_PIECE: Record<DemoPiece, AttackAnimKind> = {
-  p: "pawnRifle",
-  n: "knightFrag",
-  b: "bishopGatlings",
-  r: "rookBattery",
-  q: "queenLaser",
-  k: "kingDualCannon",
+  p: "marineRifle",
+  n: "hoverbikeFrag",
+  b: "mechaGatlings",
+  r: "tankBattery",
+  q: "battleShipLaser",
+  k: "ccDualCannon",
 };
 
 /** Stand still facing the player before each attack — one attack window. */
@@ -27,10 +27,10 @@ export const screenAimDeg = (active: boolean, aimDeg: number, restDeg: number): 
   active ? aimDeg : restDeg;
 
 /**
- * Which silhouette to show for pawn/bishop attack or quiet travel
+ * Which silhouette to show for Marine/Mecha attack or quiet travel
  * (camera-relative, white at bottom).
  *
- * - Pawn / bishop: team rear (`back` / helmet) when moving or firing up the
+ * - Marine / Mecha: team rear (`back` / helmet) when moving or firing up the
  *   board (`dr > 0`); front glass visor when moving or firing down (`dr ≤ 0`).
  *   Same rule for both colors — opposing units keep the glass toward the
  *   camera when they walk/shoot toward the player (do not reuse white’s
@@ -82,7 +82,7 @@ export const centeredBoxStyle = (
   "margin-top": `${-height / 2}px`,
 });
 
-/** Ground-anchored box (e.g. rook impact rising from square bottom). */
+/** Ground-anchored box (e.g. Tank impact rising from square bottom). */
 export const groundedBoxStyle = (
   c: { x: number; y: number },
   width: number,

@@ -60,8 +60,8 @@ export const foldSuggestion = (
     return mateIn > 0 ? -MATE_PENALTY : MATE_PENALTY;
   }
   if (cp == null) return score;
-  // Cap Stockfish cp to ±200 (2 pawns) so a single rook on a closed file
-  // doesn't outweigh Mecha/Ship horizon bonuses (QUEEN_FINISH etc.)
+  // Cap Stockfish cp to ±200 (2 pawns) so a single Tank on a closed file
+  // doesn't outweigh Mecha/Ship horizon bonuses (BATTLESHIP_FINISH etc.)
   const capped = Math.max(-200, Math.min(200, cp));
   return score - capped / 100;
 };
@@ -147,32 +147,32 @@ const playWithFeed = async (
     { movetimeMs: ctx.movetimeMs! },
   );
 
-  /** Coarse open-file test — no pawn of either colour on the landing file. */
+  /** Coarse open-file test — no Marine of either colour on the landing file. */
   const isOpenFileFor = (to: string, snap: ScFenSnapshot): boolean => {
     const file = to[0];
     const placement = snap.placement;
     const boardFiles = placement.split("/").map((rank) => rank.replace(/\d/g, (n) => "1".repeat(Number(n))));
-    let hasPawn = false;
+    let hasMarine = false;
     for (const rank of boardFiles) {
       let f = 0;
       for (const ch of rank) {
         const fileChar = String.fromCharCode(97 + f);
-        if (fileChar === file && (ch === "p" || ch === "P")) hasPawn = true;
+        if (fileChar === file && (ch === "p" || ch === "P")) hasMarine = true;
         f += 1;
       }
     }
-    return !hasPawn;
+    return !hasMarine;
   };
   const boost = new Map<number, number>();
   for (let i = 0; i < suggestions.length && i < scored.length; i += 1) {
     const s = suggestions[i]!;
     if (!s || s.timedOut) continue;
     const cand = scored[i]!.candidate;
-    // If this candidate is a rook deploy not on an open file, don't let Stockfish
+    // If this candidate is a Tank deploy not on an open file, don't let Stockfish
     // over-boost it — cap to deterministic score (ignore engine cp for that case)
-    const rookSpawn = cand.actions.find((a) => a.kind === "spawn" && (a as { unit?: string }).unit === "r");
-    if (rookSpawn && !isOpenFileFor((rookSpawn as { to: string }).to, snap)) {
-      // Keep deterministic score for closed-file rooks
+    const tankSpawn = cand.actions.find((a) => a.kind === "deploy" && (a as { unit?: string }).unit === "r");
+    if (tankSpawn && !isOpenFileFor((tankSpawn as { to: string }).to, snap)) {
+      // Keep deterministic score for closed-file Tanks
       continue;
     }
     boost.set(scored[i]!.origIndex, foldSuggestion(cand.score, s.cp, s.mateIn));

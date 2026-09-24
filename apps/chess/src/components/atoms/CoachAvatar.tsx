@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/ui/components.puml, _spec/apps/ui/responsiveness/rules.md
+// SPEC: _spec/apps/chess/components.puml, _spec/apps/chess/responsiveness/rules.md
 import clsx from "clsx";
 import type { Component } from "solid-js";
 

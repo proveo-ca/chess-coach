@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/ui/components.puml
+// SPEC: _spec/apps/chess/components.puml
 import { DEFAULT_STOCKFISH_WORKER_URL } from "~/engine/StockfishEngine";
 import type { EvalResult, PositionEval } from "~/types/analysis";
 import { parseStockfishMessage } from "~/utils/stockfishParser";

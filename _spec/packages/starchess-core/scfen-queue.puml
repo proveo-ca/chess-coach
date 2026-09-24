@@ -13,7 +13,7 @@ package "ABNF" {
   component "sideQueue\nside \":\" [action *(\",\" action)]\naction = special / classical\n(wire order = seq order)" as SQ <<async>>
   component "special\n(\"B\" / \"F\") \"=\" kind \":\" from\n[\":\" to [\":\" unit]]" as SP <<app>>
   component "classical\n\"C=\" from to [promotion]" as CL <<app>>
-  component "kind\nspawn / pawnDouble / knightMine /\nbishopSnipe / rookSiege / queenWarp" as KD <<db>>
+  component "kind\nspawn / stimStep / spiderMine /\nbishopSnipe / siegeMode / tacticalJump" as KD <<db>>
 }
 
 package "Shape & order" {
@@ -45,7 +45,7 @@ note right of SQ
   Order is free — the shape rules are **≤1 classical per side** and
   **one special per unit**. Specials may precede the C, follow it, or both,
   as long as each is a different unit:
-  ""w:B=knightMine:b4:b4,C=e2e3,F=rookSiege:e4"" is legal.
+  ""w:B=spiderMine:b4:b4,C=e2e3,F=siegeMode:e4"" is legal.
 end note
 
 note right of SP
@@ -58,8 +58,8 @@ note right of CL
 end note
 
 note right of KD
-  ""kind = 'spawn' / 'pawnDouble' / 'knightMine' /""
-  ""       'bishopSnipe' / 'rookSiege' / 'queenWarp'""
+  ""kind = 'spawn' / 'stimStep' / 'spiderMine' /""
+  ""       'charonMissiles' / 'siegeMode' / 'tacticalJump'""
 end note
 
 note bottom

@@ -33,7 +33,7 @@ import {
 import { activePlayerColor, opponentPieceSet, playerPieceSet } from "~/store/settingsStore";
 import { isTravelling, travelFen, travelIndex, travelMoveHistory } from "~/store/travelStore";
 import type { PromotionPiece } from "~/types/chess";
-// SPEC: _spec/apps/ui/components.puml
+// SPEC: _spec/apps/chess/components.puml
 import type { CoachEmotion } from "~/types/coach";
 import type { MoveSquares } from "~/types/game";
 import type { PieceSet } from "~/types/settings";

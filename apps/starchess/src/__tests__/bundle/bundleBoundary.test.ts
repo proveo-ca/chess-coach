@@ -16,9 +16,9 @@ const walk = (dir: string): string[] => {
 };
 
 describe("apps/starchess boundary", () => {
-  it("does not import apps/ui, gameStore, coach, EnginePool, stockfish, web-llm", () => {
+  it("does not import apps/chess, gameStore, coach, EnginePool, stockfish, web-llm", () => {
     // Ban Coach UI / engine paths. StarChess may use its own `~/store/*`
-    // (settings, capabilities, review vision) — not apps/ui's store tree.
+    // (settings, capabilities, review vision) — not apps/chess's store tree.
     const forbidden =
       /from ["'](?:.*apps\/ui|~\/(?:engine|hooks\/useChessBoard)|.*gameStore|.*coachStore|.*EnginePool|.*stockfish|.*web-llm|@mlc-ai)/;
     const offenders: string[] = [];
@@ -122,7 +122,7 @@ describe("apps/starchess boundary", () => {
     expect([...choosers]).toEqual([join("screens", "TutorialScreen.tsx")]);
     // Glyph switches + the PieceSet union itself — no app / store / core reader.
     expect([...readers].sort()).toEqual([
-      join("presentation", "animations", "components", "kingDamageOverlay.tsx"),
+      join("presentation", "animations", "components", "ccDamageOverlay.tsx"),
       join("presentation", "board", "components", "PieceGlyph.tsx"),
       join("types", "board.ts"),
     ]);
@@ -146,7 +146,7 @@ describe("apps/starchess boundary", () => {
   it("pieceUrl is reachable only from the two cburnett glyph switches", () => {
     const allowed = [
       join("presentation", "board", "components", "PieceGlyph.tsx"),
-      join("presentation", "animations", "components", "kingDamageOverlay.tsx"),
+      join("presentation", "animations", "components", "ccDamageOverlay.tsx"),
       join("presentation", "board", "pieceUrl.ts"),
     ].sort();
 

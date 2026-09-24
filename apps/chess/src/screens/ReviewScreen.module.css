@@ -24,7 +24,7 @@
   line-height: 1.2 !important;
 }
 
-/* SPEC: _spec/apps/ui/responsiveness/rules.md — MoveList in top (like Analysis FEN). */
+/* SPEC: _spec/apps/chess/responsiveness/rules.md — MoveList in top (like Analysis FEN). */
 @media (max-width: 719px) {
   :global([data-region="top"]:has([data-testid="review-matchup"]) .mobile-banner) {
     margin-bottom: 0;

@@ -26,8 +26,8 @@ import {
   CHARON_MAX_GUESSES_PER_SHIP,
   CHARON_MAX_GUESSES_TOTAL,
   EQUAL_TRADE_ATTACK,
-  HUNT_UNDEFENDED_PAWN,
-  PAWN_TRADE,
+  HUNT_UNDEFENDED_MARINE,
+  MARINE_TRADE,
   SAC_FOR_CC,
   SAC_FOR_CC_WINNING,
   enemyCanJump,
@@ -59,7 +59,7 @@ const charonStrikes = (ctx: StrategicCtx): Candidate[] => {
       for (const target of charonTargetShips(map, from)) {
         out.push(
           asCandidate(
-            { timing: "B", kind: "bishopSnipe", color: us, from, to: target },
+            { timing: "B", kind: "charonMissiles", color: us, from, to: target },
             base + CHARON_INSTA,
           ),
         );
@@ -87,7 +87,7 @@ const charonStrikes = (ctx: StrategicCtx): Candidate[] => {
         total += 1;
         out.push(
           asCandidate(
-            { timing: "F", kind: "bishopSnipe", color: us, from, to: dest },
+            { timing: "F", kind: "charonMissiles", color: us, from, to: dest },
             base + CHARON_GUESS * CHARON_GUESS_HIT_RATE,
           ),
         );
@@ -98,15 +98,15 @@ const charonStrikes = (ctx: StrategicCtx): Candidate[] => {
 };
 
 const score = (ev: MoveEval, ctx: StrategicCtx): number => {
-  const { move, piece, isKingMove } = ev;
-  if (isKingMove || !move.capture) return 0;
+  const { move, piece, isCCMove } = ev;
+  if (isCCMove || !move.capture) return 0;
 
-  const { tactical, material, weights, enemy, enemyKing, snap, vision, ccIntel } = ctx;
+  const { tactical, material, weights, enemy, enemyCC, snap, vision, ccIntel } = ctx;
   const { trade } = weights;
   let s = 0;
 
-  const isGuess = !vision.enemyKingVisible;
-  const targetCC: Square | null = isGuess ? ccIntel.focus : enemyKing;
+  const isGuess = !vision.enemyCCVisible;
+  const targetCC: Square | null = isGuess ? ccIntel.focus : enemyCC;
   const guessUsable = !isGuess || ccIntel.strength > 0;
 
   const victimValue = UNIT_COST[move.capture.type];
@@ -132,9 +132,9 @@ const score = (ev: MoveEval, ctx: StrategicCtx): number => {
       guessUsable && (deployDefends || nearCC) && keepsCCUnderFire;
 
     const undefended = !tactical.enemyAttacks(move.to) && !deployDefends && !nearCC;
-    if (undefended) s += HUNT_UNDEFENDED_PAWN;
-    else if (material.congested) s += HUNT_UNDEFENDED_PAWN * 0.35;
-    if (material.congested && piece.type === "p") s += PAWN_TRADE;
+    if (undefended) s += HUNT_UNDEFENDED_MARINE;
+    else if (material.congested) s += HUNT_UNDEFENDED_MARINE * 0.35;
+    if (material.congested && piece.type === "p") s += MARINE_TRADE;
     if (givesUnitForCC) s += ctx.winning ? SAC_FOR_CC_WINNING : SAC_FOR_CC;
   }
 

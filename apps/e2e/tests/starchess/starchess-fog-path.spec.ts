@@ -2,9 +2,9 @@ import { expect, test } from "@playwright/test";
 import type { Page } from "@playwright/test";
 
 /**
- * Progressive path fog — bishop fog-edge lesson on starchess Storybook (:6007).
- * Asserts g7 lights while the bishop is still walking (move layer active), not only
- * after the final occupy commit — matches apps/ui StarChessBoardView path vision.
+ * Progressive path fog — Mecha fog-edge lesson on starchess Storybook (:6007).
+ * Asserts g7 lights while the Mecha is still walking (move layer active), not only
+ * after the final occupy commit — matches apps/chess StarChessBoardView path vision.
  *
  * The story is a **live** lesson projection (`lessonStory("fog", "bishop")`, see
  * `FogOfWar.stories.tsx`): queue Bd4→h8 by clicking, `endTurnAfterQueue: "first"`
@@ -13,20 +13,20 @@ import type { Page } from "@playwright/test";
  * (a Playwright poll loop backs off past the window). Related VFX guarantees:
  * `_spec/apps/starchess/vfx-guarantees.md`.
  */
-const BISHOP_STORY =
-  "http://127.0.0.1:6007/iframe.html?id=starchess-fog-of-war-and-move-animations--bishop&viewMode=story";
+const MECHA_STORY =
+  "http://127.0.0.1:6007/iframe.html?id=starchess-fog-of-war-and-move-animations--mecha&viewMode=story";
 
 const fogOf = async (page: Page, sq: string) =>
   page.locator(`[data-board-grid] [data-square="${sq}"]`).getAttribute("data-fog");
 
-test.describe("StarChess fog path reveal (bishop)", () => {
-  test("bishop lights g7 while walking the fog-edge diagonal", async ({ page }) => {
-    await page.goto(BISHOP_STORY, { waitUntil: "networkidle" });
+test.describe("StarChess fog path reveal (Mecha)", () => {
+  test("Mecha lights g7 while walking the fog-edge diagonal", async ({ page }) => {
+    await page.goto(MECHA_STORY, { waitUntil: "networkidle" });
     await expect(page.locator("[data-board-grid] [data-square]").first()).toBeVisible({
       timeout: 30_000,
     });
 
-    // Start: Bd4 rest vision — g7 pawn stays fogged.
+    // Start: Bd4 rest vision — g7 Marine stays fogged.
     await expect.poll(async () => fogOf(page, "d4")).toBe("visible");
     await expect.poll(async () => fogOf(page, "g7")).toBe("hidden");
 
@@ -48,7 +48,7 @@ test.describe("StarChess fog path reveal (bishop)", () => {
     await page.locator("[data-square='d4']").click();
     await page.locator("[data-square='h8']").click();
 
-    // Settled: discovery capture — g7 stays lit, bishop stops on g7.
+    // Settled: discovery capture — g7 stays lit, Mecha stops on g7.
     await expect.poll(async () => fogOf(page, "g7"), { timeout: 20_000 }).toBe("visible");
     await expect(
       page.locator(

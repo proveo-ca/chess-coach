@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/ui/components.puml
+// SPEC: _spec/apps/chess/components.puml
 /**
  * Abstraction over the LLM used to produce coaching commentary.
  *

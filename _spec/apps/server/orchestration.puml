@@ -6,7 +6,7 @@ title Chess Coach: Backend Orchestration Workflow (Maia + Commentary Agent + Sto
 
 ' The desktop backend is a single Bun server (apps/server) that runs the
 ' orchestrator IN-PROCESS — no daemon, no JSON-line protocol. The web UI engine
-' (apps/ui/src/engine) mirrors this same workflow. The prompt-construction logic
+' (apps/chess/src/engine) mirrors this same workflow. The prompt-construction logic
 ' is shared verbatim via @chess-coach/engine-core. See _spec/apps/server/behavior.md for
 ' exact values and _spec/packages/engine-core/ui-engine-parity.md for the parity map.
 

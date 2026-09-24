@@ -1,0 +1,26 @@
+' purpose: parallel full-suite E2E orchestration through Nx and Docker Compose
+' covers: package.json
+' covers: apps/chess/project.json
+' covers: apps/starchess/project.json
+' covers: compose.yml
+@startuml
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+title Parallel application E2E suites
+
+component "package.json\ne2e" as ROOT <<host>>
+component "Nx run-many\nui, starchess / parallel=2" as NX <<host>>
+component "apps/chess/project.json\ne2e" as CHESS <<app>>
+component "apps/starchess/project.json\ne2e" as STAR <<app>>
+component "compose.yml\ne2e-chess / E2E_TARGET=web-no-llm" as CHESS_RUNNER <<host>>
+component "compose.yml\ne2e-starchess / E2E_TARGET=starchess" as STAR_RUNNER <<host>>
+component "apps/chess\nDefault browsers, then primitives\nBoth run; either failure fails target" as CHESS_SUITE <<app>>
+component "apps/starchess\nDefault Playwright suite" as STAR_SUITE <<app>>
+
+ROOT ARROW_MAIN NX : run
+NX ARROW_QUEUE CHESS : uncached
+NX ARROW_QUEUE STAR : uncached
+CHESS ARROW_MAIN CHESS_RUNNER : docker compose
+STAR ARROW_MAIN STAR_RUNNER : docker compose
+CHESS_RUNNER ARROW_MAIN CHESS_SUITE : isolated webServer
+STAR_RUNNER ARROW_MAIN STAR_SUITE : isolated webServer
+@enduml

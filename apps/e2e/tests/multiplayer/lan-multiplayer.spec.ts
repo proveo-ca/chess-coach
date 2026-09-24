@@ -207,7 +207,7 @@ test.describe("LAN multiplayer (serverless WebRTC)", () => {
     skipMdnsLoopbackHandshake(browserName);
     await withStartedGame(browser, async (host, guest) => {
       await drawButton(host).click();
-      // 🤝 on the offerer's king, relayed to the opponent. No ⚔️ yet.
+      // 🤝 on the offerer's Command Center, relayed to the opponent. No ⚔️ yet.
       await expect(offerBubble(host)).toBeVisible({ timeout: 10_000 });
       await expect(offerBubble(guest)).toBeVisible({ timeout: 10_000 });
       await expect(rejectBubble(host)).toHaveCount(0);
@@ -248,7 +248,7 @@ test.describe("LAN multiplayer (serverless WebRTC)", () => {
       await expect(draw(host)).toBeVisible({ timeout: 10_000 });
       await expect(draw(guest)).toBeVisible({ timeout: 10_000 });
 
-      // Agreed → 🤝 on BOTH kings (mutual handshake), on both ends.
+      // Agreed → 🤝 on BOTH Command Centers (mutual handshake), on both ends.
       for (const page of [host, guest]) {
         await expect(offerBubble(page)).toBeVisible();
         await expect(page.getByTestId("draw-agree-bubble")).toBeVisible();
@@ -265,7 +265,7 @@ test.describe("LAN multiplayer (serverless WebRTC)", () => {
       await drawButton(host).click();
       await expect(offerBubble(guest)).toBeVisible({ timeout: 10_000 });
 
-      // Recipient declines via the sidebar button → ⚔️ on the refuser's king,
+      // Recipient declines via the sidebar button → ⚔️ on the refuser's Command Center,
       // both bubbles now showing on both ends.
       await drawButton(guest).click();
       await guest.getByRole("button", { name: "No" }).click();

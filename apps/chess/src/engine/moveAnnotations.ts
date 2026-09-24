@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/ui/components.puml
+// SPEC: _spec/apps/chess/components.puml
 import type { AnnotationTag, MoveRow } from "~/types/analysis";
 import type { MoveRecord } from "~/types/game";
 

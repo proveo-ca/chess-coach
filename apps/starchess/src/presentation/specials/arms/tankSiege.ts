@@ -1,6 +1,6 @@
 // SPEC: _spec/apps/starchess/turn-input-sequence.puml
 /**
- * Siege Tank arm — queue the `rookSiege` toggle (B, or F after a classical).
+ * Siege Tank arm — queue the `siegeMode` toggle (B, or F after a classical).
  * (Moved from `app/BaseScreen.tsx` gas-deploy handlers.)
  */
 import type { PieceSymbol, Square } from "chess.js";
@@ -22,7 +22,7 @@ export const tankSiegeArm = (
   const timing = specialTimingFor(snap.queue, color);
   return tryQueue(
     store,
-    { timing, kind: "rookSiege", color, from: ctx.square },
+    { timing, kind: "siegeMode", color, from: ctx.square },
     `Siege Tank toggle queued on ${ctx.square} · End to resolve`,
   )
     ? "armed"

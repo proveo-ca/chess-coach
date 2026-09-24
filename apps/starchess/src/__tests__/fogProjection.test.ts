@@ -15,7 +15,7 @@ import {
   mapWithMovePathOccupancy,
   observerVisionFromSnap,
 } from "~/presentation/board/fogProjection";
-import { rookModeForSieged } from "~/presentation/board/rookMode";
+import { tankModeForSieged } from "~/presentation/board/tankMode";
 import { COMBAT_CHAIN_START_SCFEN } from "~/demos/combatChain";
 
 describe("fogProjection", () => {
@@ -24,21 +24,21 @@ describe("fogProjection", () => {
     const v = observerVisionFromSnap(snap);
     expect(v.w.litSquares.size).toBeGreaterThan(0);
     expect(v.b.litSquares.size).toBeGreaterThan(0);
-    // No sieged rooks is the same board as passing none explicitly.
-    const explicit = observerVisionFromSnap(snap, { siegedRooks: [] });
+    // No sieged Tanks is the same board as passing none explicitly.
+    const explicit = observerVisionFromSnap(snap, { siegedTanks: [] });
     expect(explicit.w.litSquares.size).toBe(v.w.litSquares.size);
   });
 
-  it("sieged rook mode changes vision vs tank", () => {
+  it("sieged Tank mode changes vision vs tank", () => {
     const snap = parseScFen(
       "SCFEN|4k3/8/8/8/3R4/8/8/4K3|0|33|P|G:11:11|S:d4|Q:w:;b:",
     );
     const sieged = new Set<Square>(["d4"]);
     const siegeV = getSideVision(snap.placement, "w", {
-      rookModeFor: rookModeForSieged(sieged),
+      tankModeFor: tankModeForSieged(sieged),
     });
     const tankV = getSideVision(snap.placement, "w", {
-      rookModeFor: rookModeForSieged([]),
+      tankModeFor: tankModeForSieged([]),
     });
     expect(siegeV.litSquares.size).not.toBe(tankV.litSquares.size);
   });

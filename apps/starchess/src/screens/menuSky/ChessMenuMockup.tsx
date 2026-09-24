@@ -1,5 +1,5 @@
 /**
- * Shatterable facsimile of apps/ui MenuScreen — not imported from Coach.
+ * Shatterable facsimile of apps/chess MenuScreen — not imported from Coach.
  * Intact state is laid out + styled to match `/chess/` MenuScreen 1:1
  * (SplashScreen column, identity rows, MenuButtons, Credits), including
  * Coach light/dark tokens via `data-theme` / prefers-color-scheme.
@@ -110,7 +110,7 @@ const ShatterableButton: Component<{
 );
 
 /**
- * Coach MenuScreen lookalike — DOM/CSS mirrored from apps/ui MenuScreen.
+ * Coach MenuScreen lookalike — DOM/CSS mirrored from apps/chess MenuScreen.
  */
 export const ChessMenuMockup: Component<ChessMenuMockupProps> = (props) => {
   const chromeHidden = (): boolean => !!props.fadeChrome;

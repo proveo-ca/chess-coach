@@ -32,7 +32,7 @@ describe("mines under viewer fog", () => {
     const placement = "4k3/8/8/8/8/8/3P4/R3K3";
     const mines = [MINE_B("a4"), MINE_B("h8"), { color: "w" as const, at: "g1" as never }];
     const seen = minesVisibleToViewer(placement, "w", mines, true, {
-      siegedRooks: ["a1"],
+      siegedTanks: ["a1"],
     }).map((m) => m.at);
     expect(seen).toEqual(expect.arrayContaining(["a4", "g1"]));
     expect(seen).not.toContain("h8");
@@ -101,7 +101,7 @@ describe("resolve timeline cues", () => {
   it("Tactical Jump onto a hostile mine: mine boom then the BattleShip", () => {
     const result = endWith(
       "SCFEN|4k3/8/8/8/8/8/8/Q3K3|21|33|P|G:33:33|Q:w:;b:|M:w:;b:d4",
-      { timing: "B", kind: "queenWarp", color: "w", from: "a1", to: "d4" },
+      { timing: "B", kind: "tacticalJump", color: "w", from: "a1", to: "d4" },
     );
     const cues = projectResolveTimeline(result);
     const ids = cues.map((c) => c.id);
@@ -118,7 +118,7 @@ describe("resolve timeline cues", () => {
   it("Tactical Jump onto an own mine plays the jump alone", () => {
     const result = endWith(
       "SCFEN|4k3/8/8/8/8/8/8/Q3K3|21|33|P|G:33:33|Q:w:;b:|M:w:d4;b:",
-      { timing: "B", kind: "queenWarp", color: "w", from: "a1", to: "d4" },
+      { timing: "B", kind: "tacticalJump", color: "w", from: "a1", to: "d4" },
     );
     const cues = projectResolveTimeline(result);
     expect(cues.filter((c) => c.kind === "death")).toEqual([]);

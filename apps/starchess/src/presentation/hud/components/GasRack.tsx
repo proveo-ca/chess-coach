@@ -145,7 +145,7 @@ export const GasRack: Component<GasDeployProps> = (props) => {
       map = placementToMap(state.liveSnapshot.placement);
     } catch {
       // Timeline commits publish intermediate placements that `placementToMap`
-      // rejects (same guard `LiveLessonHost` keeps on forced rook mode). A drop
+      // rejects (same guard `LiveLessonHost` keeps on forced Tank mode). A drop
       // that lands in that window must read as "no unit here" — throwing out of
       // the gesture is what used to strand the lift mid-air.
       setHover(null);

@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/ui/responsiveness/rules.md
+// SPEC: _spec/apps/chess/responsiveness/rules.md
 import { setFooterFloat } from "~/store/viewportLayoutStore";
 
 /**

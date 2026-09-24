@@ -82,7 +82,7 @@ describe("matchReducer", () => {
       ...s,
       lastResolve: {
         ...result,
-        next: { ...result.next, phase: "O", kingLives: { w: 3, b: 0 } },
+        next: { ...result.next, phase: "O", ccLives: { w: 3, b: 0 } },
       },
     };
     s = matchReducer(s, { type: "TIMELINE_DONE" });
@@ -108,7 +108,7 @@ describe("matchReducer", () => {
           placement: "4k3/8/8/8/8/8/8/4K3",
           turn: 2,
           phase: "O",
-          kingLives: { w: 3, b: 0 },
+          ccLives: { w: 3, b: 0 },
         },
       ],
       settledResolves: [],
@@ -126,7 +126,7 @@ describe("matchReducer", () => {
     expect(s.statusText).toBe("Final");
   });
 
-  it("timeout with open promotion modal defaults to queen", () => {
+  it("timeout with open promotion modal defaults to BattleShip", () => {
     let s = matchReducer(createInitialMatchState(), {
       type: "LOAD_SCFEN",
       scfen: "SCFEN|k7/4P3/8/8/8/8/8/4K3|1|33|P|G:11:11|Q:w:;b:",

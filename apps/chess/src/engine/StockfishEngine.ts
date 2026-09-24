@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/ui/components.puml
+// SPEC: _spec/apps/chess/components.puml
 import { UciDriver } from "~/engine/UciDriver.ts";
 
 export type EvalResult = {

@@ -33,7 +33,7 @@ type HistoryState = {
   games: StarChessGameRecord[];
 };
 
-const MAX_GAMES = 100;
+const MAX_GAMES = 150;
 
 const [state, setState] = createPersistedStore<HistoryState>(MATCH_HISTORY_KEY, {
   games: [],

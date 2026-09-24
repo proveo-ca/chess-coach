@@ -9,7 +9,7 @@
 import type { Square } from "chess.js";
 
 import {
-  findKing,
+  findCC,
   isSquareAttackedBy,
   mapToPlacement,
   type ScPiece,
@@ -20,7 +20,7 @@ import type { PieceColor, ScAction, ScActionInput } from "../../model/types";
 
 /**
  * Occupancy after one action resolves. Actions that do not move or remove a
- * unit (knightMine / rookSiege) leave the board unchanged.
+ * unit (spiderMine / siegeMode) leave the board unchanged.
  */
 const simulateAction = (
   map: Map<Square, ScPiece>,
@@ -32,12 +32,12 @@ const simulateAction = (
   const { from, to } = action;
   if (!to) return next;
 
-  if (action.kind === "spawn") {
+  if (action.kind === "deploy") {
     const unit = "unit" in action ? action.unit : undefined;
     if (unit) next.set(to, { type: unit, color: us });
     return next;
   }
-  if (action.kind === "bishopSnipe") {
+  if (action.kind === "charonMissiles") {
     // Charon removes the aimed ship when it is the first ship on its ray —
     // which may be the checker. Fire-and-forget like the resolver.
     if (!charonStrikeTarget(next, action.from, to, action.color)) return next;
@@ -46,8 +46,8 @@ const simulateAction = (
   }
   if (
     action.kind === "classical" ||
-    action.kind === "pawnDouble" ||
-    action.kind === "queenWarp"
+    action.kind === "stimStep" ||
+    action.kind === "tacticalJump"
   ) {
     const piece = next.get(from);
     // A classical move onto a command center (CC) square is dropped: the mover stays put.
@@ -71,7 +71,7 @@ const simulateAction = (
 /**
  * Apply a candidate plan in resolve order.
  *
- * Marine/battleship stacks (B+C on the same vector) relocate twice — mid, then far.
+ * Marine stacks (B+C on the same vector) relocate twice — mid, then far.
  * That folding is `rewriteClassicalAfterB`'s job, and the simulation borrows it
  * verbatim so a plan we score can never land somewhere the resolver would not
  * put it (the rewrite also declines on a blocked landing and outside the
@@ -104,6 +104,6 @@ export const clearsCheck = (
   enemy: PieceColor,
 ): boolean => {
   const after = simulatePlan(map, actions, sieged, us);
-  const king = findKing(after, us);
-  return !!king && !isSquareAttackedBy(after, king, enemy);
+  const commandCenter = findCC(after, us);
+  return !!commandCenter && !isSquareAttackedBy(after, commandCenter, enemy);
 };

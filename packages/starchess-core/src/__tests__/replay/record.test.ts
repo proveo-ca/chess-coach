@@ -46,7 +46,7 @@ describe("historyFromRecord", () => {
     expect(history.settledSnapshots.length).toBe(record.scfens.length);
     expect(history.settledResolves.length).toBe(record.resolves.length);
     expect(history.settledSnapshots[0]?.turn).toBe(0);
-    // Step-1 placement: white pawn advanced e2→e4 (rank 4 = `4P3`).
+    // Step-1 placement: white Marine advanced e2→e4 (rank 4 = `4P3`).
     expect(history.settledSnapshots[1]?.placement.split("/")[4]).toBe("4P3");
     expect(history.settledSnapshots[1]?.placement).not.toBe(
       history.settledSnapshots[0]?.placement,

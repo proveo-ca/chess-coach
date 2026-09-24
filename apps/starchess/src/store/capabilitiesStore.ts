@@ -1,7 +1,7 @@
 /**
  * Per-screen capabilities — screens / live board set on mount; SideRailTools and
  * input hooks read flags instead of branching on a mode name.
- * Pattern mirrors apps/ui `capabilitiesStore`.
+ * Pattern mirrors apps/chess `capabilitiesStore`.
  */
 import { createSignal } from "solid-js";
 

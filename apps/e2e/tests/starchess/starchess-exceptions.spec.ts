@@ -19,8 +19,8 @@ const gotoScfen = async (page: Page, scfen: string) => {
   }
 };
 
-const kingLives = (page: Page) =>
-  page.getByTestId("king-lives");
+const ccLives = (page: Page) =>
+  page.getByTestId("cc-lives");
 
 test.describe("StarChess SCFEN exceptions", () => {
   test.beforeEach(async ({ page }) => {
@@ -28,34 +28,34 @@ test.describe("StarChess SCFEN exceptions", () => {
     await page.evaluate(() => localStorage.clear());
   });
 
-  test("king duel chips HP on load (face-to-face turn-open)", async ({ page }) => {
+  test("Command Center duel chips HP on load (face-to-face turn-open)", async ({ page }) => {
     // Kd1 vs kd2 — turn-open mutual shots chip once on mount (full duel loop is
     // covered in core beginScTurn / resolve tests).
     const scfen = "SCFEN|8/8/8/8/8/8/3k4/3K4|1|33|P|G:11:11|Q:w:;b:";
     await gotoScfen(page, scfen);
-    await expect(kingLives(page)).toHaveAttribute("data-w", "2", { timeout: 15_000 });
-    await expect(kingLives(page)).toHaveAttribute("data-b", "2");
+    await expect(ccLives(page)).toHaveAttribute("data-w", "2", { timeout: 15_000 });
+    await expect(ccLives(page)).toHaveAttribute("data-b", "2");
   });
 
   test("deploy stack second checker deals 2 HP next turn", async ({ page }) => {
-    // White king d4; black king e6; white pawn already on e5 checking (1 HP).
+    // White Command Center d4; black Command Center e6; white Marine already on e5 checking (1 HP).
     // After End, black should be at 2 lives (was 3). Then seed is already mid-duel.
-    // Stronger: white pawn c5 + king d4 both check black king d6 → 2 chips.
+    // Stronger: white Marine c5 + Command Center d4 both check black Command Center d6 → 2 chips.
     const scfen =
       "SCFEN|8/8/3k4/2P5/3K4/8/8/8|1|33|P|G:11:11|Q:w:;b:";
     await gotoScfen(page, scfen);
     await expect(page.getByTestId("turn-end")).toBeEnabled({ timeout: 20_000 });
     await page.getByTestId("turn-end").click();
-    // King d4 + pawn c5 both check kd6 → black loses 2 HP (3→1).
+    // Command Center d4 + Marine c5 both check kd6 → black loses 2 HP (3→1).
     // If only one checker fires (fog / timing), still require damage applied.
-    await expect(kingLives(page)).not.toHaveAttribute("data-b", "3", { timeout: 20_000 });
-    const bLives = await kingLives(page).getAttribute("data-b");
+    await expect(ccLives(page)).not.toHaveAttribute("data-b", "3", { timeout: 20_000 });
+    const bLives = await ccLives(page).getAttribute("data-b");
     expect(Number(bLives)).toBeLessThanOrEqual(2);
-    await expect(kingLives(page)).toHaveAttribute("data-w", "3");
+    await expect(ccLives(page)).toHaveAttribute("data-w", "3");
   });
 
   test("sieged tank offers fire missions, never quiet relocates", async ({ page }) => {
-    // Sieged rook c4, empty board around — the whole cross highlights, but
+    // Sieged Tank c4, empty board around — the whole cross highlights, but
     // every mission fires in place: after End the tank is still on c4.
     const scfen =
       "SCFEN|4k3/8/8/8/2R5/8/8/4K3|1|33|P|G:11:11|S:c4|Q:w:;b:";
@@ -79,7 +79,7 @@ test.describe("StarChess SCFEN exceptions", () => {
     await gotoScfen(page, scfen);
     await expect(page.getByTestId("turn-queue")).toContainText(/d4→h7/);
     await page.getByTestId("turn-end").click();
-    // Inline rook uses role=img + data-piece-inline (not img[alt]).
+    // Inline Tank uses role=img + data-piece-inline (not img[alt]).
     await expect(
       page.locator("[data-square='d4'] [data-piece-inline='r'], [data-square='d4'] img[alt='w r']"),
     ).toBeVisible({ timeout: 15_000 });
@@ -91,9 +91,9 @@ test.describe("StarChess SCFEN exceptions", () => {
   test("spawn then classical move same turn via board click", async ({
     page,
   }) => {
-    // B spawn d1 pawn → select d1 (virtual) → legal d2.
+    // B spawn d1 Marine → select d1 (virtual) → legal d2.
     const scfen =
-      "SCFEN|4k3/8/8/8/8/8/8/4K3|1|33|P|G:01:11|B:3:3|Q:w:B=spawn:e1:d1:p;b:";
+      "SCFEN|4k3/8/8/8/8/8/8/4K3|1|33|P|G:01:11|B:3:3|Q:w:B=deploy:e1:d1:p;b:";
     await gotoScfen(page, scfen);
     await page.locator("[data-square='d1']").click();
     await expect(
@@ -101,11 +101,11 @@ test.describe("StarChess SCFEN exceptions", () => {
     ).toBeVisible({ timeout: 3_000 });
   });
 
-  test("gas pawn then select landing square for further dests", async ({
+  test("gas Marine then select landing square for further dests", async ({
     page,
   }) => {
     const scfen =
-      "SCFEN|4k3/8/8/8/8/8/4P3/4K3|1|33|P|G:01:11|B:3:3|Q:w:B=pawnDouble:e2:e3;b:";
+      "SCFEN|4k3/8/8/8/8/8/4P3/4K3|1|33|P|G:01:11|B:3:3|Q:w:B=stimStep:e2:e3;b:";
     await gotoScfen(page, scfen);
     await page.locator("[data-square='e3']").click();
     await expect(
@@ -113,9 +113,9 @@ test.describe("StarChess SCFEN exceptions", () => {
     ).toBeVisible({ timeout: 3_000 });
   });
 
-  test("unsiege then quiet rook relocate legal", async ({ page }) => {
+  test("unsiege then quiet Tank relocate legal", async ({ page }) => {
     const scfen =
-      "SCFEN|4k3/8/8/8/2R5/8/8/4K3|1|33|P|G:01:11|S:c4|B:3:3|Q:w:B=rookSiege:c4;b:";
+      "SCFEN|4k3/8/8/8/2R5/8/8/4K3|1|33|P|G:01:11|S:c4|B:3:3|Q:w:B=siegeMode:c4;b:";
     await gotoScfen(page, scfen);
     await page.locator("[data-square='c4']").click();
     await expect(

@@ -44,7 +44,7 @@ import { enemyOf, rankOf, RUNNER_RANKS_PER_TURN, stepsToPromotion } from "../con
 export type ResolveWitness = {
   placement: string;
   mines?: readonly ScMine[];
-  siegedRooks?: readonly Square[];
+  siegedTanks?: readonly Square[];
   moves?: readonly ResolveMove[];
   attacks?: readonly ResolveAttack[];
 };
@@ -63,7 +63,7 @@ export type ResolveWitness = {
 export const witnessFromEndTurn = (esr: EndScTurnResult): ResolveWitness => ({
   placement: esr.afterB.placement,
   mines: esr.afterB.mines,
-  siegedRooks: esr.afterB.siegedRooks,
+  siegedTanks: esr.afterB.siegedTanks,
   moves: [...esr.bMoves, ...esr.resolved.moves, ...esr.fMoves],
   attacks: [
     ...esr.resolved.attacks,
@@ -82,10 +82,10 @@ export const witnessFromEndTurn = (esr: EndScTurnResult): ResolveWitness => ({
 
 /** The side's fog for this witness, read the way the planner reads it. */
 const witnessVision = (witness: ResolveWitness, side: PieceColor) => {
-  const sieged: ReadonlySet<Square> = new Set(witness.siegedRooks ?? []);
+  const sieged: ReadonlySet<Square> = new Set(witness.siegedTanks ?? []);
   return getSideVision(witness.placement, side, {
     ...(witness.mines ? { mines: witness.mines } : {}),
-    rookModeFor: (s: Square) => (sieged.has(s) ? "siege" : "tank"),
+    tankModeFor: (s: Square) => (sieged.has(s) ? "siege" : "tank"),
   });
 };
 
@@ -96,7 +96,7 @@ const witnessVision = (witness: ResolveWitness, side: PieceColor) => {
  * passed through — useless for retaliation and misleading as a sighting.
  */
 const shotOrigin = (a: ResolveAttack): Square =>
-  a.kind === "kingShot" ? (a.stopAt ?? a.from) : a.from;
+  a.kind === "ccShot" ? (a.stopAt ?? a.from) : a.from;
 
 /** Squares an enemy attack gave away this turn: firing reveals the shooter. */
 const revealedByFiring = (
@@ -228,7 +228,7 @@ export const ccAttackers = (
   const out: CCAttacker[] = [];
   for (const a of witness.attacks ?? []) {
     if (a.color !== enemy) continue;
-    if (a.kind !== "kingShot" || a.target !== side) continue;
+    if (a.kind !== "ccShot" || a.target !== side) continue;
     // Where it *rests*, not where it fired from mid-slide: a mark on a square
     // the shooter never stands on is a debt nothing can collect.
     out.push({ at: shotOrigin(a), piece: a.piece, turn });

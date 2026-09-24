@@ -1,9 +1,9 @@
 /**
  * Rest ↔ aim orientation for the inline units — global, not a CSS module,
- * because two components share it (`InlineKnight`, `InlineQueen`) and a module
+ * because two components share it (`InlineHoverbike`, `InlineBattleShip`) and a module
  * may only be imported by its own component.
  *
- * The shipping silhouettes in `apps/ui/public/pieces/nerd/` ARE the rest pose,
+ * The shipping silhouettes in `apps/chess/public/pieces/nerd/` ARE the rest pose,
  * so at rest these groups carry no transform at all — that is what keeps a unit
  * sitting on its square identical to the art players already know.
  *
@@ -19,9 +19,16 @@
  * uses. Note this must sit on a group with no `transform` *attribute*: a CSS
  * transform replaces the attribute outright rather than composing with it.
  *
- * The hoverbike's rest↔aim delta is a reflection, not a rotation, so its tween
- * passes through a flattened frame and reads as a bank/roll — deliberate.
+ * The hoverbike's rest↔aim delta can be a reflection, which a tween would
+ * squash through a paper-thin frame. So it splits the reflection out onto an
+ * outer `.sc-unit-side` group that never transitions: the side snaps, and only
+ * the `.sc-unit-pose` rotation inside it tweens.
  */
+.sc-unit-side {
+  transform-box: view-box;
+  transform-origin: 22.5px 22.5px;
+}
+
 .sc-unit-pose {
   transform-box: view-box;
   transform-origin: 22.5px 22.5px;

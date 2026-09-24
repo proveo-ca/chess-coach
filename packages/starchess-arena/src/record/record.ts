@@ -35,7 +35,7 @@ export const recordFromRun = (
     mapSeed: run.startScfen,
     ...(run.map !== undefined ? { map: run.map } : {}),
     ...(run.variant !== undefined ? { variant: run.variant } : {}),
-    // Aborted/non-terminal runs have no king outcome — the shared schema needs
+    // Aborted/non-terminal runs have no Command Center outcome — the shared schema needs
     // a draw signal, so a "no one won" is recorded as a draw.
     outcome: run.outcome ?? { winner: null, draw: true },
     turns: run.turns,

@@ -30,7 +30,7 @@ export type TutorialNarrationState = {
   turn?: number;
   /** Live SCFEN queue actions (intent) — preferred over wire regex for stacks. */
   queue?: readonly TutorialQueueAction[];
-  /** Live targeting mode (`bishopSnipe`, `queenWarp`, `spawn`, …). */
+  /** Live targeting mode (`charonMissiles`, `tacticalJump`, `deploy`, …). */
   targetingKind?: string | null;
   /** Enemy-occupied watch squares mapped to their current coverers. */
   covers?: SquareCovers;

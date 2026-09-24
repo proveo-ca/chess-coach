@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/ui/multiplayer.puml
+// SPEC: _spec/apps/chess/multiplayer.puml
 import type { PieceSet } from "~/types/settings";
 
 /** Chess colors, matching chess.js. */

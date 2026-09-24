@@ -1,6 +1,6 @@
 /**
  * Match-store selectors used by ResourceBar / TurnBar / GasDeploy.
- * Replaces apps/ui starChessStore reads for the standalone app.
+ * Replaces apps/chess starChessStore reads for the standalone app.
  * // SPEC: _spec/apps/starchess/core/board/planning-projection.puml
  */
 import {

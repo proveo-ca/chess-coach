@@ -91,7 +91,7 @@ note bottom
   precedence (deploys before phase-1, promo before the tail) was a hazard, not
   a rule. Lanes with no entry (""bSpecial"" · ""crush"" · ""approach"") fall to
   ""handleSequential"", which owns the fog-approach chains, the Tactical Jump
-  and the fused lethal kingShot. Each command is now readable — and
+  and the fused lethal ccShot. Each command is now readable — and
   greppable — on its own instead of as a paragraph inside a 400-line closure.
 
 end note

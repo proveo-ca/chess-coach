@@ -93,7 +93,7 @@ describe("record round-trip", () => {
     if (record.meta?.status === "finished") {
       expect(scOutcome(terminal)).toEqual(record.outcome);
     } else {
-      // Stall/abort: the recorded tail is not king-terminal, so the decoded
+      // Stall/abort: the recorded tail is not Command Center-terminal, so the decoded
       // terminal snap has no outcome — the record reports the draw instead.
       expect(scOutcome(terminal)).toBeNull();
       expect(record.outcome).toEqual({ winner: null, draw: true });

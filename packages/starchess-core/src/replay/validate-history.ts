@@ -9,8 +9,8 @@ const snapCoreMatches = (got: ScFenSnapshot, expect: ScFenSnapshot): boolean => 
   if (
     got.placement !== expect.placement ||
     got.turn !== expect.turn ||
-    got.kingLives.w !== expect.kingLives.w ||
-    got.kingLives.b !== expect.kingLives.b ||
+    got.ccLives.w !== expect.ccLives.w ||
+    got.ccLives.b !== expect.ccLives.b ||
     got.gasIncome.w !== expect.gasIncome.w ||
     got.gasIncome.b !== expect.gasIncome.b ||
     got.phase !== expect.phase
@@ -31,12 +31,12 @@ const snapCoreMatches = (got: ScFenSnapshot, expect: ScFenSnapshot): boolean => 
       .sort()
       .join(",");
   if (pack(got.mines) !== pack(expect.mines)) return false;
-  const packHits = (hits: ScFenSnapshot["pendingKingShots"]) =>
+  const packHits = (hits: ScFenSnapshot["pendingCCShots"]) =>
     (hits ?? [])
       .map((h) => `${h.color}${h.piece}${h.from}${h.to}`)
       .sort()
       .join(",");
-  if (packHits(got.pendingKingShots) !== packHits(expect.pendingKingShots)) return false;
+  if (packHits(got.pendingCCShots) !== packHits(expect.pendingCCShots)) return false;
   return true;
 };
 

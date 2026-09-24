@@ -2,7 +2,7 @@
 
 > **Purpose.** The desktop backend is the Bun server (`apps/server`, see
 > [`behavior.md`](./behavior.md)); the web distribution runs the same loop in
-> `apps/ui/src/engine/`. **Both import `@chess-coach/engine-core` for the
+> `apps/chess/src/engine/`. **Both import `@chess-coach/engine-core` for the
 > behaviour-defining prompt logic**, so prompt construction / classification /
 > commentary extraction is now *one shared implementation*, not two to keep in
 > sync. This document confirms the remaining parity and records the surviving
@@ -16,7 +16,7 @@
 
 ## 1. Component mapping
 
-| Concern | Bun server (`apps/server`) | Web engine (`apps/ui/src/engine`) | Status |
+| Concern | Bun server (`apps/server`) | Web engine (`apps/chess/src/engine`) | Status |
 |---|---|---|---|
 | Prompt logic | `@chess-coach/engine-core` | `@chess-coach/engine-core` | ✅ **shared, identical** |
 | Orchestrator | `Orchestrator.ts` (in-process) | `Orchestrator.ts` + `orchestrator.worker.ts` | ✅ mirrors |
@@ -52,7 +52,7 @@ Both run lc0 with constant base `Temperature 0.5`; they add early-game variety d
 
 - **Server (`apps/server/src/MaiaEngine.ts`):** native lc0 with `OwnBook=true` +
   `BookFile=openings.bin` (Polyglot book). **No `TempDecayMoves`.**
-- **Web (`apps/ui/src/engine/MaiaEngine.ts`):** lc0.wasm with **no** book; instead a
+- **Web (`apps/chess/src/engine/MaiaEngine.ts`):** lc0.wasm with **no** book; instead a
   difficulty-dependent **`TempDecayMoves`** (set per `getMove`): `intermediate`=15,
   `advanced`=12, `expert`=10. (Defined in `getDecay`, not `config.ts`.
   `polyglotZobrist.ts` is **not** a book — it hashes games for localStorage.)
@@ -67,7 +67,7 @@ Both run lc0 with constant base `Temperature 0.5`; they add early-game variety d
   `type==="explanation"`. **Both** server and web use it. Guarded by
   `apps/server/src/llmPromptFormat.test.ts` + `Orchestrator.test.ts`.
 - ✅ **SAN sentence in the system prompt** (was MEDIUM): `engine-core` exports the
-  canonical `SYSTEM_PROMPT` (with the SAN sentence); `apps/ui/src/engine/config.ts`
+  canonical `SYSTEM_PROMPT` (with the SAN sentence); `apps/chess/src/engine/config.ts`
   imports it. Guarded by the system-prompt test.
 
 ---
@@ -120,4 +120,4 @@ Both run lc0 with constant base `Temperature 0.5`; they add early-game variety d
   advice/explanation stream semantics, and the prompt fields.
 - `apps/server/src/app.test.ts` covers the HTTP contract + COOP/COEP + error mapping.
 - Web-only concerns (worker plumbing, `EnginePool`, sanitizer/fallback) keep their
-  own tests under `apps/ui`.
+  own tests under `apps/chess`.

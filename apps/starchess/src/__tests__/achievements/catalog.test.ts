@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { ACHIEVEMENTS, achievementsFor } from "~/achievements/catalog";
+import { ACHIEVEMENTS, ACHIEVEMENT_SHORT_IDS, achievementsFor } from "~/achievements/catalog";
 import {
   ACHIEVEMENT_DESCRIPTION_MAX,
   ACHIEVEMENT_MATERIALS,
@@ -46,7 +46,7 @@ describe("achievement catalog", () => {
     const shortIds = [...new Set(ACHIEVEMENTS.map((achievement) => achievement.shortId))];
     expect(shortIds).toEqual([
       "beat",
-      "beat100",
+      "beat50",
       "flawless",
       "cheese",
       "stonks",
@@ -65,16 +65,20 @@ describe("achievement catalog", () => {
     }
   });
 
-  it("says Beat the Adjutant and lets the level name who fell", () => {
+  it("names the Adjutant each level beats", () => {
+    const names = ["Naive", "Strategic", "ML", "RLHF", "RLCD"];
     for (const level of [1, 2, 3, 4, 5] as const) {
-      expect(by("beat", level).description).toBe("Beat the Adjutant");
-      expect(by("beat100", level).description).toBe("Beat the Adjutant 100 times");
+      const name = names[level - 1];
+      expect(by("beat", level).description).toBe(`Beat the ${name} Adjutant`);
+      expect(by("beat50", level).description).toBe(`Beat the ${name} Adjutant 50 times`);
+      expect(by("flawless", level).description).toBe(
+        `Beat the ${name} Adjutant with no damage to your Command Center`,
+      );
       expect(by("beat", level).title).toBe("Human Training");
       expect(by("beat", level).difficulty).toBe("easy");
       expect(by("beat", level).type).toBe("count");
       expect(by("beat", level).scale).toBe("adjutant");
     }
-    expect(by("beat", 1).description).not.toMatch(/Naive|Strategic/);
     expect(ADJUTANT_BY_LEVEL[1].name).toBe("Naive");
     expect(ADJUTANT_BY_LEVEL[2].name).toBe("Strategic");
     expect(ADJUTANT_BY_LEVEL[5].name).toBe("RLCD");
@@ -85,7 +89,27 @@ describe("achievement catalog", () => {
 
   it("levels Human Training by how many wins that tier took", () => {
     expect(by("beat", 2).threshold).toBe(1);
-    expect(by("beat100", 5).threshold).toBe(100);
+    expect(by("beat50", 5).threshold).toBe(50);
+  });
+
+  it("states each score level's threshold, with a count that reads naturally", () => {
+    expect(by("stonks", 1).description).toBe("Get +3 material advantage from a single piece");
+    expect(by("gogo", 1).description).toBe("Promote 1 Marine in a game");
+    expect(by("gogo", 5).description).toBe("Promote 7 Marines in a game");
+    expect(by("medal", 1).description).toBe("Have 1 Marine intercept an attack and die");
+    expect(by("mines", 1).description).toBe("Attack 1 enemy using Mines in a game");
+    expect(by("mines", 3).description).toBe("Attack 4 enemies using Mines in a game");
+    expect(by("mecha", 2).description).toBe("Eliminate 2 BattleShips using a Mecha in a game");
+    expect(by("vision", 1).description).toBe("Have full vision of the board for 2 consecutive turns");
+    expect(by("juke", 5).description).toBe("Use the BattleShip's jump in 15 consecutive turns");
+    expect(by("light", 1).description).toBe(
+      "Capture 3 enemy units at a 3x3 radius around your Command Center",
+    );
+    // Every level of every family says something different.
+    for (const shortId of ACHIEVEMENT_SHORT_IDS) {
+      const texts = achievementsFor(shortId).map((achievement) => achievement.description);
+      expect(new Set(texts).size, shortId).toBe(5);
+    }
   });
 
   it("records the score ladders", () => {

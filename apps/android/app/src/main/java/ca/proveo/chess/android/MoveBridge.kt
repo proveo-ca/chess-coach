@@ -6,7 +6,7 @@ import ca.proveo.chess.thinserver.Server
 
 /**
  * Exposed to the WebView JS as `window.ChessNative`
- * (consumed by apps/ui/src/services/p2p.ts). All structured payloads cross as
+ * (consumed by apps/chess/src/services/p2p.ts). All structured payloads cross as
  * JSON strings. Methods run on a binder thread — keep them non-blocking.
  */
 class MoveBridge(private val server: Server) {

@@ -26,15 +26,10 @@ import { displayedSnapshot } from "~/app/selectors";
 import { liveMatchPhase } from "~/presentation/hud/liveMatchPhase";
 import { BaseScreen } from "~/app/BaseScreen.tsx";
 import { CHOREOGRAPHY } from "~/demos/choreography";
-import { clearSiegedRooks, setRookMode } from "~/presentation/animations/rookModeStore";
+import { clearSiegedTanks, setTankMode } from "~/presentation/animations/tankModeStore";
 import { LiveMatchShell } from "~/screens/LiveMatchShell";
 import { TUTORIAL_CAPABILITIES, setCapabilities } from "~/store/capabilitiesStore";
-import {
-  nextAlertLatch,
-  resolveTutorialAlertSquares,
-  resolveTutorialArrows,
-  resolveTutorialHints,
-} from "~/tutorial/tutorialScript";
+import { nextAlertLatch, resolveTutorialHint } from "~/tutorial/tutorialScript";
 import type { AlertLatch } from "~/types/tutorial";
 import { availableTrajectories, coveredEnemyShips } from "~/tutorial/lessonTactics";
 import { useLessonNarration } from "~/tutorial/useLessonNarration";
@@ -56,31 +51,31 @@ const withViewerGas = (state: MatchState, gas: number | undefined): MatchState =
 };
 
 /** Force every rook into a mode the seed cannot express (fog rook lessons). */
-const useForcedRookMode = (store: MatchStore, mode: () => "tank" | "siege" | undefined) => {
+const useForcedTankMode = (store: MatchStore, mode: () => "tank" | "siege" | undefined) => {
   createEffect(() => {
     const forced = mode();
     const placement = store.state().liveSnapshot.placement;
-    clearSiegedRooks();
+    clearSiegedTanks();
     if (!forced) return;
     try {
       for (const [square, piece] of placementToMap(placement)) {
-        if (piece.type === "r") setRookMode(square as Square, forced);
+        if (piece.type === "r") setTankMode(square as Square, forced);
       }
     } catch {
       /* malformed placement — leave rook modes alone */
     }
-    // Keep the MatchStore sieged set aligned (observer reads snap.siegedRooks).
+    // Keep the MatchStore sieged set aligned (observer reads snap.siegedTanks).
     if (forced !== "tank") return;
     const s = store.state();
-    if (s.siegedRooks.size > 0 || (s.liveSnapshot.siegedRooks?.length ?? 0) > 0) {
+    if (s.siegedTanks.size > 0 || (s.liveSnapshot.siegedTanks?.length ?? 0) > 0) {
       store.dispatch({
         type: "APPLY_SNAPSHOT",
-        snapshot: { ...s.liveSnapshot, siegedRooks: [] },
+        snapshot: { ...s.liveSnapshot, siegedTanks: [] },
       });
     }
   });
 
-  onCleanup(() => clearSiegedRooks());
+  onCleanup(() => clearSiegedTanks());
 };
 
 const LiveLessonInner: Component<LiveLessonHostProps> = (props) => {
@@ -93,7 +88,7 @@ const LiveLessonInner: Component<LiveLessonHostProps> = (props) => {
       })
     : {};
 
-  useForcedRookMode(store, () => props.board.rookMode);
+  useForcedTankMode(store, () => props.board.tankMode);
   useLessonNarration(store, () => props.narrate === true);
 
   onMount(() => {
@@ -102,64 +97,49 @@ const LiveLessonInner: Component<LiveLessonHostProps> = (props) => {
 
   const interactive = () => choreography.interactive?.() ?? true;
 
-  const hintQuery = createMemo(() => {
+  const hintScfen = createMemo(() => formatScFen(displayedSnapshot(store.state())));
+
+  const hintMarks = createMemo(() => {
     const s = store.state();
-    const snap = displayedSnapshot(s);
-    const scfen = formatScFen(snap);
-    return {
+    const scfen = hintScfen();
+    return resolveTutorialHint(props.boardHints, {
       scfen,
       covers: coveredEnemyShips(scfen, s.viewer),
       trajectories: availableTrajectories(scfen, s.viewer),
-      query: {
-        reviewPhase: liveMatchPhase({
-          phase: s.phase,
-          lastResolve: s.lastResolve,
-          timelineActive: s.timeline.active,
-          pendingPromotion: !!s.pendingPromotion,
-        }),
-        turn: snap.turn + 1,
-      },
-    };
+      reviewPhase: liveMatchPhase({
+        phase: s.phase,
+        lastResolve: s.lastResolve,
+        timelineActive: s.timeline.active,
+        pendingPromotion: !!s.pendingPromotion,
+      }),
+      turn: displayedSnapshot(s).turn + 1,
+    });
   });
 
-  const hintSquares = createMemo(() => {
-    if (!interactive()) return [];
-    const q = hintQuery();
-    return resolveTutorialHints(props.boardHints, q.scfen, q.covers, q.trajectories, q.query);
-  });
-
-  const scriptedAlerts = createMemo(() => {
-    const q = hintQuery();
-    return resolveTutorialAlertSquares(
-      props.boardHints,
-      q.scfen,
-      q.covers,
-      q.trajectories,
-      q.query,
-    );
-  });
+  const hintSquares = () => (interactive() ? hintMarks().squares : []);
+  const scriptedAlerts = () => hintMarks().alertSquares;
 
   const [alertLatch, setAlertLatch] = createSignal<AlertLatch>({ squares: [] });
 
   createEffect(() => {
     const scripted = scriptedAlerts();
-    const followKing = props.board.alertLatch === "king";
-    let kingAt: Square | undefined;
-    let kingVisible = false;
-    if (followKing) {
-      const placement = hintQuery().scfen.split("|")[1];
+    const followCC = props.board.alertLatch === "king";
+    let ccAt: Square | undefined;
+    let ccVisible = false;
+    if (followCC) {
+      const placement = hintScfen().split("|")[1];
       if (placement) {
         try {
           const map = placementToMap(placement);
           const viewer = store.state().viewer;
           const enemy = viewer === "w" ? "b" : "w";
           for (const [sq, piece] of map) {
-            if (piece.type === "k" && piece.color === enemy) kingAt = sq;
+            if (piece.type === "k" && piece.color === enemy) ccAt = sq;
           }
-          if (kingAt) {
+          if (ccAt) {
             const vision = getSideVision(map, viewer);
-            kingVisible =
-              vision.litSquares.has(kingAt) || vision.revealedPieces.has(kingAt);
+            ccVisible =
+              vision.litSquares.has(ccAt) || vision.revealedPieces.has(ccAt);
           }
         } catch {
           // A mid-animation placement can be unreadable for a frame.
@@ -168,7 +148,7 @@ const LiveLessonInner: Component<LiveLessonHostProps> = (props) => {
     }
     if (!props.board.alertLatch) return;
     setAlertLatch((prev) =>
-      nextAlertLatch(prev, scripted, { followKing, kingAt, kingVisible }),
+      nextAlertLatch(prev, scripted, { followCC, ccAt, ccVisible }),
     );
   });
 
@@ -177,11 +157,7 @@ const LiveLessonInner: Component<LiveLessonHostProps> = (props) => {
     return props.board.alertLatch ? alertLatch().squares : scriptedAlerts();
   });
 
-  const hintArrows = createMemo(() => {
-    if (!interactive()) return [];
-    const q = hintQuery();
-    return resolveTutorialArrows(props.boardHints, q.scfen, q.covers, q.trajectories, q.query);
-  });
+  const hintArrows = () => (interactive() ? hintMarks().arrows : []);
 
   const Overlay = choreography.Overlay;
 

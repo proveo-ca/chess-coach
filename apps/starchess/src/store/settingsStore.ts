@@ -1,12 +1,12 @@
 /**
- * Shared Coach settings blob — same localStorage key as `apps/ui` so
+ * Shared Coach settings blob — same localStorage key as `apps/chess` so
  * proveo.ca/chess and proveo.ca/starchess share the player name.
  */
 import { createSharedSettingsFieldStore } from "~/store/createPersistedStore";
 import { randomName } from "~/utils/randomName";
 import { clampPlayerName } from "~/utils/playerName";
 
-/** Must match `apps/ui/src/store/settingsStore.ts`. */
+/** Must match `apps/chess/src/store/settingsStore.ts`. */
 export const SETTINGS_STORAGE_KEY = "chess_coach_settings_state";
 
 const [settingsState, setSettingsState] = createSharedSettingsFieldStore(

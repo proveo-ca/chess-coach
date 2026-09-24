@@ -3,11 +3,11 @@ import { expect, test } from "@playwright/test";
 /**
  * Mating-net-exit hover messaging (web-no-llm).
  *
- * Position: White to move with Ra8# (mate in 1). Hovering a non-mating rook
+ * Position: White to move with Ra8# (mate in 1). Hovering a non-mating Tank
  * slide (Rb1) leaves the forced mate — coach must use mating-net-exit copy,
  * not the generic "blunder" label.
  *
- * Uses three pawns on the 7th so the king has no f7 escape (two-pawn FENs
+ * Uses three Marines on the 7th so the Command Center has no f7 escape (two-Marine FENs
  * make Ra8 only check, not mate).
  */
 const MATING_NET_FEN = "6k1/5ppp/8/8/8/8/8/R5K1 w - - 0 1";

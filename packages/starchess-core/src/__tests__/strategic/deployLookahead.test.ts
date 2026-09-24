@@ -23,8 +23,8 @@ describe("deployLookahead horizon 5", () => {
     expect(projectedBank(3, 5, 3)).toBe(6);
   });
 
-  it("allows ship/queen consideration via horizon when current bank short", () => {
-    // turn 15 bank 2 projected 12 => queen affordable within horizon
+  it("allows ship/BattleShip consideration via horizon when current bank short", () => {
+    // turn 15 bank 2 projected 12 => BattleShip affordable within horizon
     const snap = snapAt(15);
     const ctx = buildStrategicCtx(snap, {
       color: "b",

@@ -60,7 +60,7 @@ RUN ARROW_MAIN RMEM : seed + update every settled ply
 RUN ARROW_MAIN AMEM : seed + update every settled ply
 RUN ARROW_MAIN WIT : the ply's own account, per fold point
 WIT ARROW_MAIN RMEM : crossings (fog-gated)
-WIT ARROW_MAIN AMEM : kingShot (no gate needed)
+WIT ARROW_MAIN AMEM : ccShot (no gate needed)
 CCI ARROW_MAIN PS : SideContext → adjCtx
 RMEM ARROW_MAIN PS : SideContext → adjCtx
 AMEM ARROW_MAIN PS : SideContext → adjCtx

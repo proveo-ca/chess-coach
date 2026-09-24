@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
 import {
   COLLISION_ALLY_BLOCK_SCENARIO,
-  COLLISION_KNIGHT_SPEED_SCENARIO,
+  COLLISION_HOVERBIKE_SPEED_SCENARIO,
   COLLISION_PATH_BLOCK_SCENARIO,
   COLLISION_SAME_SQUARE_SCENARIO,
 } from "~/demos/collisionRaces";
@@ -24,7 +24,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Collision races via ReviewScreen DualNav (pre-loaded match history). Path block discovers the first enemy; same-square race → both die; knight vs gas-flee + bishop race → both die.",
+          "Collision races via ReviewScreen DualNav (pre-loaded match history). Path block discovers the first enemy; same-square race → both die; Hoverbike vs gas-flee + Mecha race → both die.",
       },
     },
   },
@@ -48,13 +48,13 @@ const storyOf = (id: string, scenario: FogEdgeScenario, label: string): Story =>
   render: () => <ReviewScreen />,
 });
 
-export const PathBlockDiscoveredPawn = storyOf(
+export const PathBlockDiscoveredMarine = storyOf(
   "storybook-collision-path-block",
   {
     ...COLLISION_PATH_BLOCK_SCENARIO,
     reviewLabel: "Path block",
   },
-  "Path block · discovered pawn",
+  "Path block · discovered Marine",
 );
 
 export const AllyBlockTruncate = storyOf(
@@ -68,7 +68,7 @@ export const AllyBlockTruncate = storyOf(
   "Ally block · truncate",
 );
 
-export const SameSquareBishops = storyOf(
+export const SameSquareMechas = storyOf(
   "storybook-collision-same-square",
   {
     ...COLLISION_SAME_SQUARE_SCENARIO,
@@ -76,18 +76,18 @@ export const SameSquareBishops = storyOf(
     visionMode: "observer",
     fog: false,
   },
-  "Same square · bishops 1 vs 3",
+  "Same square · Mechas 1 vs 3",
 );
 
-export const KnightSpeed = storyOf(
-  "storybook-collision-knight-speed",
+export const HoverbikeSpeed = storyOf(
+  "storybook-collision-hoverbike-speed",
   {
-    ...COLLISION_KNIGHT_SPEED_SCENARIO,
-    reviewLabel: "Knight speed",
+    ...COLLISION_HOVERBIKE_SPEED_SCENARIO,
+    reviewLabel: "Hoverbike speed",
     visionMode: "observer",
     fog: false,
   },
-  "Knight speed · gas pawn + bishop",
+  "Hoverbike speed · gas Marine + Mecha",
 );
 
 /**
@@ -104,7 +104,7 @@ export const DeployCrushEnemy: Story = {
     docs: {
       description: {
         story:
-          "Loop · white pawn deploys onto black knight d4 · death starts 100ms into the 500ms drop · assert deploy hull above death boom via ffmpeg.",
+          "Loop · white Marine deploys onto black Hoverbike d4 · death starts 100ms into the 500ms drop · assert deploy hull above death boom via ffmpeg.",
       },
     },
   },

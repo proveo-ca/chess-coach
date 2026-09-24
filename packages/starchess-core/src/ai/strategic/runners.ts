@@ -10,7 +10,7 @@
  * `nearPromoteRush` asks the question only about *our* marines — so a visible
  * enemy runner scored exactly nothing before this module existed.
  *
- * A marine never shoots straight ahead (`rules/specials/pawnDouble.ts` and the
+ * A marine never shoots straight ahead (`rules/specials/stimStep.ts` and the
  * front-blocked suite), which is what makes the answers here cheap: a body on
  * the square in front stops the runner dead, and the only way past is a
  * diagonal capture — so a blockade is only as good as the forward diagonals
@@ -36,7 +36,7 @@ import { parseSquare, placementToMap, sq } from "../../board/placement";
 import type { ScPiece } from "../../board/placement";
 import { getSideVision } from "../../board/vision";
 import type { PieceColor, ScFenSnapshot } from "../../model/types";
-import { pawnSingleTarget } from "../../rules/specials/pawnDouble";
+import { marineSingleTarget } from "../../rules/specials/stimStep";
 import type { AdjutantCtx } from "../context";
 import {
   enemyOf,
@@ -48,7 +48,7 @@ import {
 } from "../context";
 import { ourMarineKills, runnerCrossings, type ResolveWitness } from "./witness";
 
-// Both live in `ai/context/pawns.ts` with the other marine-distance facts, and
+// Both live in `ai/context/Marines.ts` with the other marine-distance facts, and
 // are re-exported here because this is the module callers reach for them from.
 export { RUNNER_RANKS_PER_TURN, turnsToPromote };
 
@@ -106,7 +106,7 @@ const forwardPath = (
   const out: Square[] = [];
   let at: Square | null = from;
   for (let i = 0; i < steps; i += 1) {
-    at = pawnSingleTarget(at, color);
+    at = marineSingleTarget(at, color);
     if (!at) break;
     out.push(at);
   }
@@ -305,7 +305,7 @@ const advanceGhost = (
     // something we can see standing in the way.
     let step: Square | null = at;
     for (let i = 0; i < reach; i += 1) {
-      step = pawnSingleTarget(step, enemy);
+      step = marineSingleTarget(step, enemy);
       if (!step) break;
       if (ours(step)) break;
       if (visible(step) && map.has(step) && !isRunner(step)) break;
@@ -360,13 +360,13 @@ export const foldRunnerMemory = (
 
   const enemy = enemyOf(side);
   const map = placementToMap(snap.placement);
-  const sieged: ReadonlySet<Square> = new Set(snap.siegedRooks ?? []);
+  const sieged: ReadonlySet<Square> = new Set(snap.siegedTanks ?? []);
   // Same vision the planner gets (`ai/context/vision.ts`): a sieged tank lights
   // 9×9, and our mines light their own tile. A fold that asked for less would
   // forget marines its own siege cone is looking at.
   const { litSquares, revealedPieces } = getSideVision(snap.placement, side, {
     mines: snap.mines,
-    rookModeFor: (s) => (sieged.has(s) ? "siege" : "tank"),
+    tankModeFor: (s) => (sieged.has(s) ? "siege" : "tank"),
   });
   const visible = (at: Square) => litSquares.has(at) || revealedPieces.has(at);
 
@@ -377,7 +377,7 @@ export const foldRunnerMemory = (
 
   /**
    * Squares one of ours left *and* that we can account for as a loss: a type
-   * whose count dropped. Without the count test our own knight hopping off a
+   * whose count dropped. Without the count test our own Hoverbike hopping off a
    * runner's capture diagonal would invent an advance the enemy never made.
    */
   const lost = new Map<ScPiece["type"], number>();

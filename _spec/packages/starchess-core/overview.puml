@@ -16,13 +16,13 @@ package "resolve/submit-turn.ts — facade (rank order)" {
   component "applySpecial(placement, mines, action)\nsnipe · warp · gas step · deploy · drop · siege" as SPECIAL <<async>>
   component "applyArrivalMine(placement, mines, at, color, unit)\n**one** non-attack arrival rule" as ARRIVE <<async>>
   component "collectSpecialsUsed(...)\nU: aura squares, migrated" as USED <<db>>
-  component "visionCheckGate / byTiming / eventFor\nclassicalFor · toggleRookSiege" as SUBHELP <<db>>
+  component "visionCheckGate / byTiming / eventFor\nclassicalFor · toggleTankSiege" as SUBHELP <<db>>
 }
 
 package "resolve/resolve-turn.ts — pipeline (phases)" {
   component "resolveTurn(input)\nRULES pipeline → 4 phases" as RT <<app>>
-  component "relocate(plan, fromOccupyList)\nphase-2 closure over board/mines" as RELOC <<async>>
-  component "applyPendingKingShots(input)\nturn-open HP / blocker collision" as KSHOT <<app>>
+  component "moveWave(plans) · planLanding · land\ncollide · ccTakes · stopShortOf · relocate\nphase-2 closures over board/mines" as RELOC <<async>>
+  component "applyPendingCCShots(input)\nturn-open HP / blocker collision" as KSHOT <<app>>
   component "applyPathRevealAttack(snap, a)\napplyPathRevealKingShot(snap, a)\nshared engine ⇄ UI replay" as PRAPPLY <<app>>
   component "RULES / applyOutcome / rayContactOutcome\napproachWalk · attacksOwnDest · leapsPiece\nplansOf · squareBeforeOnRay" as RTHELP <<db>>
 }
@@ -32,6 +32,7 @@ package "board/* — queries the engine reads" {
   component "mines.ts\nrayBetween · firstBlockerOnRay\npathContactSquares · mineAt · caps" as MN <<db>>
   component "**mine-contact.ts**\nmineContact · withoutMine · hostileMineOn\n(the one spider-mine rules table)" as MC <<app>>
   component "vision.ts\ngetSideVision · pathRevealSteps" as VIS <<db>>
+  component "**move-timing.ts**\nsquareTicks · timedMover · moverContact\n(who held the square first)" as MT <<app>>
 }
 
 package "documents out" {
@@ -50,6 +51,7 @@ END ARROW_MAIN ESR
 SPECIAL ARROW_MAIN ARRIVE : warp · gas step · deploy
 ARRIVE ARROW_MAIN MC : mode = arrive
 RT ARROW_MAIN RELOC : phase 2
+RELOC ARROW_MAIN MT : timed contact
 RT ARROW_MAIN PRAPPLY : phase 3
 RT ARROW_MAIN RTR
 RT ARROW_OPTIONAL VIS : pathRevealSteps per candidate

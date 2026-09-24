@@ -20,7 +20,7 @@ title StarChess · Strategic economy — deploy dials on known-vs-seen
 package "Inputs" {
   database "kvs\nknown · scouted · captured" as KVS <<db>>
   component "bank · unit mix · king proximity" as BANK <<db>>
-  component "kingThreatened" as HOT <<app>>
+  component "ccThreatened" as HOT <<app>>
   component "turn · income tiers → horizon 5\nprojectedBank(bank, turn, 5)" as HORIZON <<app>>
 }
 
@@ -28,7 +28,7 @@ package "Strategic economy" {
   component "strategies/economy.ts\ndeploys()" as ECO <<app>>
   component "deployLookahead.ts\nbestDeploySequence(horizon:5)\np+p+q vs n+b+r on budget 11" as LOOK <<app>>
   package "Dials" {
-    component "QUEEN_FINISH 3200\nwinning ∧ gap = 0 ∧ bank ≥ 9" as SHIP <<app>>
+    component "BATTLESHIP_FINISH 3200\nwinning ∧ gap = 0 ∧ bank ≥ 9" as SHIP <<app>>
     component "HIDDEN_GUARD 1450\ngap > 0 (cheese window)\n**or** RUNNER_GUARD 1450\nurgent runner — same shape,\nseparate constant" as GUARD <<app>>
     component "skip p/n\nwinning ∧ gap = 0 ∧ bank < 9 ∧ horizonBank ≥ 9" as SAVE <<app>>
     component "SHIP_WARP_READY 800\n(+ SHIP_HORIZON_BONUS 600)\nCC guess within warp reach" as WARP <<app>>
@@ -62,7 +62,7 @@ RUND ARROW_MAIN DROP : land on / in front of the runner
 
 note bottom
   **Rules, in priority order:**
-  * ""kingThreatened"" — survival dials dominate (unchanged from naive).
+  * ""ccThreatened"" — survival dials dominate (unchanged from naive).
   * ""gap > 0"" — hidden enemy material (promotion runner / cheese):
     defense outranks saving; rook guard ""HIDDEN_GUARD""; ship rush cancelled.
   * **an urgent runner** (""isUrgentRunner"": unobstructed **and** ≤ 2 turns from
@@ -79,7 +79,7 @@ note bottom
     1-mineral marine can be the answer. Model: ""promotion-defense.puml"".
   * ""winning ∧ gap = 0"" — our board + captures exceed what the enemy
     knows: rush the BattleShip once the bank pays for a queen
-    (""QUEEN_FINISH"") and skip pawn / hoverbike drops that delay it —
+    (""BATTLESHIP_FINISH"") and skip pawn / hoverbike drops that delay it —
     saving only when the ship is reachable within 5 turns
     (""horizonBank ≥ 9"").
   * **Deploy budget over 5:** projects stored minerals after 5 turns of
@@ -153,7 +153,7 @@ note as N_DEAD
   **What the cleanup removed.** A dead ""_isOpenFile"" helper and the comment
   that described the open-file gate it never actually implemented are gone, so
   the file no longer documents a rule the code does not have. A tank deploy is
-  therefore preferred by ""ROOK_AFTER_KNIGHTS"" and ""HIDDEN_GUARD"" alone, with
+  therefore preferred by ""TANK_AFTER_HOVERBIKES"" and ""HIDDEN_GUARD"" alone, with
   no file-openness term anywhere in the pure core.
 
   A separate closed-file cap does still exist, but it is an **arena** concern
