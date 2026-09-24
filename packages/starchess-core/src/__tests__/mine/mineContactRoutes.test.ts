@@ -406,10 +406,12 @@ describe("move-phase races — unchanged, the mine outlives the trade", () => {
     expect(mineOn(r, "e3")).toEqual({ color: "w", at: "e3" });
   });
 
-  it("first arrival spends the mine — the second mover inherits a clean tile", () => {
+  it("first arrival spends the mine — the later mover inherits a clean tile", () => {
+    // The marine lands on tick 2 and dies to the mine; the Mecha's two squares
+    // bring it in on tick 4, onto a tile nobody holds any more.
     const r = resolve(
-      "SCFEN|4k3/8/8/8/4p3/8/4P3/4K3|0|33|P|G:11:11|Q:w:;b:|M:w:;b:e3",
-      [classical("w", "e2", "e3"), classical("b", "e4", "e3")],
+      "SCFEN|4k3/8/8/2b5/8/8/4P3/4K3|0|33|P|G:11:11|Q:w:;b:|M:w:;b:e3",
+      [classical("w", "e2", "e3"), classical("b", "c5", "e3")],
     );
     expect(r.resolved.mineTriggers).toEqual([
       expect.objectContaining({
@@ -420,7 +422,19 @@ describe("move-phase races — unchanged, the mine outlives the trade", () => {
         victim: { piece: "p", color: "w" },
       }),
     ]);
-    expect(pieceAt(r, "e3")).toEqual({ type: "p", color: "b" });
+    expect(r.resolved.moveCollisions).toEqual([]);
+    expect(pieceAt(r, "e3")).toEqual({ type: "b", color: "b" });
     expect(mineOn(r, "e3")).toBeUndefined();
+  });
+
+  it("same-tick arrival onto a hostile mine — the race wins, the mine survives", () => {
+    const r = resolve(
+      "SCFEN|4k3/8/8/8/4p3/8/4P3/4K3|0|33|P|G:11:11|Q:w:;b:|M:w:;b:e3",
+      [classical("w", "e2", "e3"), classical("b", "e4", "e3")],
+    );
+    assertNoMineEvent(r);
+    expect(pieceAt(r, "e3")).toBeUndefined();
+    expect(r.resolved.moveCollisions).toHaveLength(2);
+    expect(mineOn(r, "e3")).toEqual({ color: "b", at: "e3" });
   });
 });

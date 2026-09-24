@@ -1,0 +1,41 @@
+@startuml move-timing
+' SPEC: _spec/packages/starchess-core/move-timing.puml
+' purpose: board/move-timing.ts — the single owner of "who held that square
+' first" in the simultaneous move phase. Authority: this is shipped.
+' covers: packages/starchess-core/src/board/move-timing.ts
+' covers: packages/starchess-core/src/__tests__/move-timing.test.ts
+' covers: packages/starchess-core/src/__tests__/collision/collisionRaces.test.ts
+' see also: resolve-turn-activity.puml (phase 2 moveWave)
+!include ../../themes/proveo.puml
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+title StarChess Core · Move timing — one clock for rules and VFX
+
+package "board/move-timing.ts" {
+  component "squareTicks(piece)\nHoverbike 1 · everything else 2\n(1 tick = half a classical square)" as ST <<db>>
+  component "timedMover(from, to, piece, { diesOnLanding })\nsliders: every ray square, enter = i × ticks\nleapers (n · k · p): landing only — airborne between\norigin never held · ""until"" = landing tick if a mine takes it" as TM <<app>>
+  component "moverContact(a, b) → { at, tick, first } | null\nfirst tick both hold one square (first = a | b | both)\nor a head-on swap mid-edge (lower-named square)" as MC <<app>>
+}
+
+package "resolve/resolve-turn.ts" {
+  component "moveWave — phase 2\nplanLanding on the pre-wave board\nboth die · CC takes / other stops short" as MW <<async>>
+}
+
+package "apps/starchess" {
+  component "presentation/animations/moveTiming.ts\nMOVE_TICK_MS × squareTicks\n(the slide the player watches)" as APP <<app>>
+}
+
+ST ARROW_MAIN TM
+TM ARROW_MAIN MC
+MW ARROW_MAIN MC : two opposite-colour landings
+APP ARROW_MAIN ST : same numbers on screen
+
+note bottom of MC
+  Example: bike g7→h5 lands on tick 3; tank h1→h8 enters h5 on tick 8
+  → contact(h5, first = bike) → both die on h5, whichever colour is which.
+  Tanks a4→h4 × d8→d1: white holds d4 on ticks 6–7, black enters on 8
+  → no contact, they pass. d7→d1 instead enters d4 on tick 6 → both die.
+end note
+@enduml

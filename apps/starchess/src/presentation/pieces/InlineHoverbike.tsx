@@ -1,3 +1,4 @@
+// SPEC: _spec/apps/starchess/architecture/board-entities.puml
 import type { Component } from "solid-js";
 
 import type { AimPose } from "~/presentation/pieces/geometry";
@@ -14,21 +15,23 @@ type InlineHoverbikeProps = {
 
 /**
  * Hoverbike nose → local +x. The art is drawn nose-up-right, so normalizing it
- * costs a mirror *and* 40°; the rest pose is simply this transform's absence,
- * which is what makes it match `apps/chess/public/pieces/nerd/*N.svg`.
+ * costs a mirror *and* 40°: an aim is `[mirror] rotate(r) scale(-1, 1)
+ * rotate(40)`. That product is always `[side] rotate(40 − r)` — a plain
+ * rotation, plus a reflection exactly when the aim faces right — so the two
+ * are split across two groups. The side **snaps** (tweening a reflection
+ * squashes the hull through a zero-width, paper-thin frame); only the rotation
+ * tweens. The rest pose is both groups' absence, which is what makes it match
+ * `apps/chess/public/pieces/nerd/*N.svg`.
  */
-const NOSE_TO_PLUS_X = "scale(-1, 1) rotate(40deg)";
+const REST_NOSE_DEG = 40;
 
-/**
- * Combined aim: `aimPose` first, then the normalization — the same order the
- * old nested `hullAimTransform` → mirror → rotate(40) groups produced. Returns
- * `undefined` at rest so the group falls back to the shipping silhouette.
- */
-const hullPoseCss = (aim?: AimPose): string | undefined => {
-  if (!aim) return undefined;
-  const flip = aim.mirrorX ? "scale(-1, 1) " : "";
-  return `${flip}rotate(${aim.rotateDeg}deg) ${NOSE_TO_PLUS_X}`;
-};
+const normalizeDeg = (deg: number): number => ((((deg + 180) % 360) + 360) % 360) - 180;
+
+const sideCss = (aim?: AimPose): string | undefined =>
+  aim && !aim.mirrorX ? "scale(-1, 1)" : undefined;
+
+const turnCss = (aim?: AimPose): string | undefined =>
+  aim ? `rotate(${normalizeDeg(REST_NOSE_DEG - aim.rotateDeg)}deg)` : undefined;
 
 /** Experimental Hoverbike. Rest ≡ `*N.svg`; aim normalizes the nose to +x. */
 export const InlineHoverbike: Component<InlineHoverbikeProps> = (props) => {
@@ -50,10 +53,16 @@ export const InlineHoverbike: Component<InlineHoverbikeProps> = (props) => {
       <g transform={PIECE_FRAME.N}>
         <g transform="translate(22.5 22.5) scale(1.1) translate(-22.5 -22.5)">
           <g
+            data-part="hull-side"
+            data-side={props.aimPose && !props.aimPose.mirrorX ? "right" : "left"}
+            class="sc-unit-side"
+            style={{ transform: sideCss(props.aimPose) }}
+          >
+          <g
             data-part="hull"
             data-pose={props.aimPose ? "aim" : "rest"}
             class="sc-unit-pose"
-            style={{ transform: hullPoseCss(props.aimPose) }}
+            style={{ transform: turnCss(props.aimPose) }}
           >
             <g stroke="#222" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
               <g data-part="body">
@@ -84,6 +93,7 @@ export const InlineHoverbike: Component<InlineHoverbikeProps> = (props) => {
                 <path fill="#fff" stroke="#222" stroke-width="1" d="M22 21 Q24 23.5 26 21z" />
               </g>
             </g>
+          </g>
           </g>
         </g>
       </g>

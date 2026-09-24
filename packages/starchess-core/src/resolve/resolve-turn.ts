@@ -1,4 +1,4 @@
-// SPEC: _spec/packages/starchess-core/resolve.puml, _spec/packages/starchess-core/overview.puml, _spec/packages/starchess-core/resolve-turn-activity.puml, _spec/packages/starchess-core/mine-contact.puml, _spec/apps/starchess/core/turn/resolve-pipeline.puml, _spec/packages/starchess-core/gas-phase-vacancy.puml
+// SPEC: _spec/packages/starchess-core/resolve.puml, _spec/packages/starchess-core/overview.puml, _spec/packages/starchess-core/resolve-turn-activity.puml, _spec/packages/starchess-core/mine-contact.puml, _spec/apps/starchess/core/turn/resolve-pipeline.puml, _spec/packages/starchess-core/gas-phase-vacancy.puml, _spec/packages/starchess-core/move-timing.puml
 import type { Square } from "chess.js";
 
 import {
@@ -22,6 +22,7 @@ import type {
   SpawnPiece,
 } from "../model/types";
 import { scanRay, type RayContact } from "../board/ray-scan";
+import { moverContact, timedMover, type MoverContact } from "../board/move-timing";
 import { pathRevealSteps } from "../board/vision";
 
 export type { ClassicalPlan };
@@ -798,15 +799,21 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
   const moversDead = new Set<Square>();
   const pendingPromos: ResolvePromotion[] = [];
 
-  const relocate = (plan: ClassicalPlan, mode: RelocateMode) => {
-    if (deadSquares.has(plan.from) || moversDead.has(plan.from)) return;
+  type Landing = {
+    plan: ClassicalPlan;
+    piece: ScPiece;
+    dest: Square;
+  };
+
+  const planLanding = (plan: ClassicalPlan, mode: RelocateMode): Landing | null => {
+    if (deadSquares.has(plan.from) || moversDead.has(plan.from)) return null;
     const piece = board.get(plan.from);
-    if (!piece || piece.color !== plan.color) return;
+    if (!piece || piece.color !== plan.color) return null;
     if (
       piece.type === "r" &&
       (input.siegedTanks ?? []).includes(plan.from)
     ) {
-      return;
+      return null;
     }
 
     let dest = plan.to;
@@ -817,13 +824,13 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
         const blocking = board.get(blocker)!;
         if (blocking.type === "k") {
           const before = squareBeforeOnRay(plan.from, blocker);
-          if (!before || before === plan.from) return;
+          if (!before || before === plan.from) return null;
           dest = before;
         } else if (blocking.color !== plan.color) {
           dest = blocker;
         } else {
           const before = squareBeforeOnRay(plan.from, blocker);
-          if (!before || before === plan.from) return;
+          if (!before || before === plan.from) return null;
           dest = before;
         }
       }
@@ -833,14 +840,36 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
     if (occ?.type === "k") {
       if (occ.color === plan.color) {
         const before = squareBeforeOnRay(plan.from, dest);
-        if (!before || before === plan.from) return;
+        if (!before || before === plan.from) return null;
         dest = before;
       } else {
         const before = squareBeforeOnRay(plan.from, dest);
-        if (!before || before === plan.from || board.get(before)) return;
+        if (!before || before === plan.from || board.get(before)) return null;
         dest = before;
       }
-    } else if (occ && occ.color !== plan.color) {
+    }
+    return { plan, piece, dest };
+  };
+
+  const walkContact = ({ plan, piece, dest }: Landing): MineContact =>
+    plan.extraStepTo
+      ? { kind: "inert" }
+      : mineContact({
+          mines,
+          color: plan.color,
+          piece: piece.type,
+          squares: [
+            ...(plan.extraStepFrom ? [plan.extraStepFrom] : []),
+            ...pathContactSquares(plan.from, dest, piece.type),
+            dest,
+          ],
+          mode: "walk",
+        });
+
+  const land = (landing: Landing) => {
+    const { plan, piece, dest } = landing;
+    const occ = board.get(dest);
+    if (occ && occ.color !== plan.color && occ.type !== "k") {
       if (destinationsWritten.has(dest)) {
         moveCollisions.push({
           kind: "capture",
@@ -891,23 +920,7 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
       });
     }
 
-    // One walk per marine. A queued Extra Step means `dest` is not the landing
-    // tile, so the arrival check in phase 4 owns this contact list; a spent one
-    // means the marine is standing on a tile it only reached this turn, so that
-    // tile is still live. Either way the mine waits for the real destination.
-    const trip: MineContact = plan.extraStepTo
-      ? { kind: "inert" }
-      : mineContact({
-          mines,
-          color: plan.color,
-          piece: piece.type,
-          squares: [
-            ...(plan.extraStepFrom ? [plan.extraStepFrom] : []),
-            ...pathContactSquares(plan.from, dest, piece.type),
-            dest,
-          ],
-          mode: "walk",
-        });
+    const trip = walkContact(landing);
 
     board.delete(plan.from);
     board.set(dest, piece);
@@ -950,8 +963,115 @@ export const resolveTurn = (input: ResolveTurnInput): ResolveTurnResult => {
     }
   };
 
-  for (const plan of occupy) relocate(plan, "occupy");
-  for (const plan of quiets) relocate(plan, "quiet");
+  const relocate = (plan: ClassicalPlan, mode: RelocateMode) => {
+    const landing = planLanding(plan, mode);
+    if (landing) land(landing);
+  };
+
+  const scheduleOf = (l: Landing) =>
+    timedMover(l.plan.from, l.dest, l.piece.type, {
+      diesOnLanding: walkContact(l).kind === "detonated",
+    });
+
+  const stopShortOf = (l: Landing, at: Square): Landing | null => {
+    if (leapsPiece(l.piece.type)) return null;
+    const before = squareBeforeOnRay(l.plan.from, at);
+    return before ? { ...l, dest: before } : null;
+  };
+
+  const collide = (a: Landing, b: Landing, contact: MoverContact) => {
+    const [rammer, held] = contact.first === "a" ? [b, a] : [a, b];
+    const at = contact.at;
+    moveCollisions.push(
+      {
+        kind: "capture",
+        piece: rammer.piece.type,
+        color: rammer.plan.color,
+        from: rammer.plan.from,
+        to: at,
+        victim: { piece: held.piece.type, color: held.plan.color },
+        occupies: false,
+        collision: true,
+        moveCollision: true,
+      },
+      {
+        kind: "capture",
+        piece: held.piece.type,
+        color: held.plan.color,
+        from: contact.first === "both" ? held.plan.from : at,
+        to: at,
+        victim: { piece: rammer.piece.type, color: rammer.plan.color },
+        occupies: false,
+        collision: true,
+        moveCollision: true,
+      },
+    );
+    for (const l of [a, b]) {
+      board.delete(l.plan.from);
+      moves.push({ piece: l.piece.type, color: l.plan.color, from: l.plan.from, to: at });
+    }
+  };
+
+  const ccTakes = (cc: Landing, other: Landing, at: Square) => {
+    const mineColor = clearOnCapture(at, cc.plan.color, cc.piece.type);
+    moveCollisions.push({
+      kind: "capture",
+      piece: cc.piece.type,
+      color: cc.plan.color,
+      from: cc.plan.from,
+      to: at,
+      victim: { piece: other.piece.type, color: other.plan.color },
+      occupies: true,
+      collision: true,
+      moveCollision: true,
+      ...(mineColor ? { mineColor } : {}),
+    });
+    board.delete(other.plan.from);
+    moves.push({
+      piece: other.piece.type,
+      color: other.plan.color,
+      from: other.plan.from,
+      to: at,
+    });
+    land(cc);
+  };
+
+  const moveWave = (wave: readonly (readonly [ClassicalPlan, RelocateMode])[]) => {
+    const landings = wave
+      .map(([plan, mode]) => planLanding(plan, mode))
+      .filter((l): l is Landing => l != null);
+    const [a, b] = landings;
+    const contact =
+      a && b && landings.length === 2 && a.plan.color !== b.plan.color
+        ? moverContact(scheduleOf(a), scheduleOf(b))
+        : null;
+    if (!a || !b || !contact) {
+      for (const l of landings) land(l);
+      return;
+    }
+    const aCC = a.piece.type === "k";
+    const bCC = b.piece.type === "k";
+    if (aCC && bCC) return;
+    if (!aCC && !bCC) {
+      collide(a, b, contact);
+      return;
+    }
+    const [cc, other, ccFirst] = aCC
+      ? [a, b, contact.first === "a"]
+      : [b, a, contact.first === "b"];
+    if (!ccFirst) {
+      ccTakes(cc, other, contact.at);
+      return;
+    }
+    land(cc);
+    const short = stopShortOf(other, contact.at);
+    if (short && short.dest !== short.plan.from) land(short);
+  };
+
+  moveWave([
+    ...occupy.map((plan) => [plan, "occupy"] as const),
+    ...quiets.map((plan) => [plan, "quiet"] as const),
+  ]);
 
   const pathRevealAttacks: ResolveAttack[] = [];
   const pathRevealMineTriggers: ResolveAttack[] = [];

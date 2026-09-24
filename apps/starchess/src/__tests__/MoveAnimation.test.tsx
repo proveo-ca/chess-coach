@@ -165,3 +165,55 @@ describe("MoveAnimation · travel facing", () => {
     }
   });
 });
+
+/**
+ * A side change is a reflection, and tweening one squashes the hull through a
+ * paper-thin frame. So the Hoverbike picks its side once per flight and the
+ * hull itself only ever rotates.
+ * // SPEC: _spec/apps/starchess/architecture/board-entities.puml
+ */
+describe("MoveAnimation · Hoverbike side", () => {
+  const bike = (from: MoveCue["from"], to: MoveCue["to"], leg: 0 | 1) => {
+    const { container } = render(() => (
+      <MoveAnimation
+        cues={[{ ...CC_MOVE, piece: "n", from, to }]}
+        progress={{ f0: 1 }}
+        leg={{ f0: leg }}
+        boardWidth={400}
+        boardHeight={400}
+      />
+    ));
+    const el = container.querySelector<HTMLElement>("[data-move-id='f0']")!;
+    const side = el.querySelector<SVGGElement>("[data-part='hull-side']")!;
+    const hull = el.querySelector<SVGGElement>("[data-part='hull']")!;
+    return { el, side: side.getAttribute("data-side"), turn: hull.style.transform };
+  };
+
+  it.each([
+    { from: "g1", to: "f3", side: "left" },
+    { from: "g1", to: "h3", side: "right" },
+    { from: "b1", to: "d2", side: "right" },
+    { from: "g8", to: "e7", side: "left" },
+  ] as const)("$from→$to holds the $side side across the elbow", ({ from, to, side }) => {
+    const long = bike(from, to, 0);
+    cleanup();
+    const short = bike(from, to, 1);
+    expect([long.side, short.side]).toEqual([side, side]);
+    for (const leg of [long, short]) {
+      expect(leg.turn).toMatch(/^rotate\(-?[\d.]+deg\)$/);
+    }
+    expect(long.turn).not.toBe(short.turn);
+  });
+
+  it("lands on the resting silhouette", async () => {
+    vi.useFakeTimers();
+    try {
+      const { el } = bike("g1", "h3", 1);
+      await vi.advanceTimersByTimeAsync(moveDurationMs("g1", "h3", "n"));
+      expect(el.querySelector("[data-part='hull-side']")!.getAttribute("data-side")).toBe("left");
+      expect(el.querySelector("[data-part='hull']")!.getAttribute("data-pose")).toBe("rest");
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+});

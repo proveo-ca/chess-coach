@@ -40,6 +40,35 @@
 }
 
 /*
+ * Hoverbike touchdown: a short squash-and-stretch on the pad. A bike that flew
+ * right lands mirrored and snaps back to its left-facing rest here (a side
+ * change never tweens — see `styles/unitPose.css`), so the squash is what the
+ * eye reads instead of the snap. Bottom-anchored so it compresses onto the pad.
+ */
+.hoverbikeLanding {
+  transform-origin: 50% 90%;
+  animation: hoverbikeLand var(--settle-ms, 260ms) cubic-bezier(0.22, 0.61, 0.36, 1) 1;
+}
+
+@keyframes hoverbikeLand {
+  0% {
+    transform: scale(1.08, 0.84);
+  }
+  45% {
+    transform: scale(0.96, 1.05);
+  }
+  100% {
+    transform: scale(1, 1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hoverbikeLanding {
+    animation: none;
+  }
+}
+
+/*
  * BattleShip slide settle. The hull's own normalize unwinds inside InlineBattleShip; this
  * unwinds the travel aim its parent applies, over the same window, so the two
  * land together on the resting bow-down silhouette. Without it the ship snaps

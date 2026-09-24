@@ -75,6 +75,13 @@ export const STIM_MOVE_SQUARE_MS = MOVE_SQUARE_MS / 2;
 export const SETTLE_MS = 260;
 
 /**
+ * Hoverbike in-flight turn — rest → first leg at lift-off, and long leg → short
+ * leg at the elbow. Half a Hoverbike square ({@link MOVE_SQUARE_MS} / 4), so the
+ * short leg still flies nose-first; the landing unwind keeps {@link SETTLE_MS}.
+ */
+export const HOVERBIKE_TURN_MS = 90;
+
+/**
  * Siege Tank pack ↔ unpack (CSS `--siege-toggle-ms`) — the whole staggered
  * plate sequence fits in this window. Same 250ms beat every other unit state
  * change uses ({@link MINE_DEPLOY_MS}, {@link FRAG_FLIGHT_MS}); at the old 480

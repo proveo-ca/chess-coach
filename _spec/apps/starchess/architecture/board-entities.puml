@@ -172,6 +172,14 @@ package "presentation/pieces (units)" {
     holds the mover one SETTLE_MS past arrival so the unwind
     finishes before the overlay hands the square to PieceGlyph
     (a CSS transition cannot span that unmount).
+
+    **Never tween a reflection** — it squashes through a paper-thin
+    frame. The Hoverbike's aim factors as [side] · rotate(40 − r):
+    an outer .sc-unit-side group snaps the mirror, only the inner
+    .sc-unit-pose rotation tweens. MoveAnimation fixes the side once
+    per L (from the move's file direction) so the elbow only
+    rotates; the touchdown snap hides behind a landing squash.
+    Travel ticks come from core ""move-timing.ts"".
   end note
 
 }

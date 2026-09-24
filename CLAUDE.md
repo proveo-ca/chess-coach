@@ -54,6 +54,7 @@ When you add, rename, or remove a component, hook, store, or service:
 | `_spec/packages/starchess-core/submit-turn-activity.puml` | `beginScTurn` / `endScTurn` rank pipeline: ordering, bail-outs, event vocabulary |
 | `_spec/packages/starchess-core/mine-contact.puml` | `board/mine-contact.ts` — the single spider-mine rules table (attack / walk / arrive) every caller asks |
 | `_spec/packages/starchess-core/deploy-reach.puml` | `board/deploy-reach.ts` — the single deploy-reach table; **a `false` is a proof**, and the explicit non-goal vs "should I deploy to capture" |
+| `_spec/packages/starchess-core/move-timing.puml` | `board/move-timing.ts` — the one move-phase clock (Hoverbike 1 tick/square, rest 2): `timedMover` / `moverContact` decide collisions by who held the square first; the app's move VFX reads the same ticks |
 | `_spec/packages/starchess-core/ray-scan.puml` | `board/ray-scan.ts` — one `scanRay` + one `takeRayContact` replacing the duplicated ray walks |
 | `_spec/apps/starchess/timeline/overview.puml` | `timelinePlayer.ts` interior: projector + interpreter, cue lanes, board ladder |
 | `_spec/apps/starchess/timeline/cue-projection.puml` | `projectResolveTimeline` emission order (the cue list **is** the script) |
@@ -131,6 +132,16 @@ When you add, rename, or remove a component, hook, store, or service:
   deploy-landing derivations in `ai/` still disagree with the validator; see
   `_spec/packages/starchess-core/deploy-reach.puml` and
   `_spec/apps/starchess/core/adjutant/strategic/strategic-economy.puml`.
+- **Move-phase collisions**: the move phase is simultaneous, so which of two
+  movers hits the other is a matter of **time**, never plan order or colour.
+  `resolveTurn`'s `moveWave` plans every landing against the same pre-wave board,
+  then asks `board/move-timing.ts` (`moverContact`) where the schedules meet:
+  a unit is hit on a square the other already holds (parked or passing) or enters
+  on the same tick, and both die there — a Command Center instead takes a unit it
+  steps onto, and stops a unit that reaches it later one square short. Leapers are
+  airborne (landing only); sliders hold every ray square. Never reintroduce a
+  sequential "whoever relocated first" check. The app's `moveTiming.ts` derives
+  its per-square ms from the same `squareTicks`, so the screen matches the rule.
 - **Adjutant CC targeting**: `ctx.enemyCC` is `findCC(map, enemy)` and is
   **never fog-filtered**. The naive script reads it directly and is omniscient by
   design; the strategic script is fog-honest and must resolve `targetCC` once

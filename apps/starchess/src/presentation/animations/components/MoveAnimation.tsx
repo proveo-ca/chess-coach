@@ -18,6 +18,7 @@ import {
 } from "~/presentation/pieces/geometry";
 import {
   aimPoseFor,
+  aimPoseWithin,
   hoverbikeLegVecs,
   screenAngleDeg,
   squareAt,
@@ -34,7 +35,12 @@ import { InlineBattleShip } from "~/presentation/pieces/InlineBattleShip";
 import type { MoveCue } from "~/presentation/animations/types";
 import { tankModeAt } from "~/presentation/animations/tankModeStore";
 import { PieceGlyph } from "~/presentation/board/components/PieceGlyph";
-import { MOVE_SQUARE_MS, SETTLE_MS, STIM_MOVE_SQUARE_MS } from "~/presentation/constants";
+import {
+  HOVERBIKE_TURN_MS,
+  MOVE_SQUARE_MS,
+  SETTLE_MS,
+  STIM_MOVE_SQUARE_MS,
+} from "~/presentation/constants";
 
 const NO_SPECIAL_USED: ReadonlySet<Square> = new Set();
 
@@ -246,14 +252,29 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
         if (m.piece === "n") {
           const legs = () => hoverbikeLegVecs(vec());
           const hasL = () => squareAt(m.from, legs().leg1) != null;
+          // One side for the whole flight (an L always has a sideways part):
+          // the side snaps, so it may change only at lift-off and touchdown.
+          const mirrorX = () => vec().df < 0;
           const pose = () => {
-            const { leg1, leg2 } = legs();
-            // Always face the active travel leg (long → short); destination vec if no L.
-            // Mirror kept for hoverbike: its rest silhouette bakes scale(-1,1)
-            // in (NOSE_TO_PLUS_X), so rotation-only needs art rework.
             if (!hasL()) return aimPoseFor(vec());
-            return aimPoseFor((props.leg?.[m.id] ?? 0) === 1 ? leg2 : leg1);
+            const { leg1, leg2 } = legs();
+            return aimPoseWithin((props.leg?.[m.id] ?? 0) === 1 ? leg2 : leg1, mirrorX());
           };
+          const hullStyle = () => ({
+            "--settle-ms": `${settling() ? SETTLE_MS : HOVERBIKE_TURN_MS}ms`,
+          });
+          const face = () => (
+            <div
+              class={`${styles.pieceFace} ${styles.moverFace}`}
+              classList={{
+                ["sc-special-used"]: gas(),
+                [styles.hoverbikeLanding]: settling(),
+              }}
+              style={hullStyle()}
+            >
+              <InlineHoverbike color={m.color} aimPose={settling() ? undefined : pose()} />
+            </div>
+          );
           return (
             <Show
               when={hasL()}
@@ -269,12 +290,7 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
                   data-move-id={m.id}
                   data-special-used={gas() ? "true" : undefined}
                 >
-                  <div
-                    class={`${styles.pieceFace} ${styles.moverFace}`}
-                    classList={{ ["sc-special-used"]: gas() }}
-                  >
-                    <InlineHoverbike color={m.color} aimPose={settling() ? undefined : pose()} />
-                  </div>
+                  {face()}
                 </div>
               }
             >
@@ -289,12 +305,7 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
                 data-move-id={m.id}
                 data-special-used={gas() ? "true" : undefined}
               >
-                <div
-                  class={`${styles.pieceFace} ${styles.moverFace}`}
-                  classList={{ ["sc-special-used"]: gas() }}
-                >
-                  <InlineHoverbike color={m.color} aimPose={settling() ? undefined : pose()} />
-                </div>
+                {face()}
               </div>
             </Show>
           );

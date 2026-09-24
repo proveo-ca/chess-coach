@@ -117,3 +117,92 @@ describe("collision: Hoverbike speed vs gas Marine + Mecha", () => {
     ]);
   });
 });
+
+describe("collision: timed paths — colour-independent", () => {
+  const run = (scfen: string, moves: Parameters<typeof addScMove>[1][]) => {
+    let s = parseScFen(scfen);
+    for (const m of moves) s = addScMove(s, m);
+    return endScTurn(s, { skipTurnStartChecks: true });
+  };
+
+  it.each([
+    {
+      label: "white Tank, black Hoverbike",
+      scfen: "SCFEN|k7/6n1/8/8/8/8/8/K6R|1|33|P|G:11:11|Q:w:;b:",
+      moves: [
+        { color: "w", from: "h1", to: "h8" },
+        { color: "b", from: "g7", to: "h5" },
+      ],
+      at: "h5",
+    },
+    {
+      label: "white Hoverbike, black Tank",
+      scfen: "SCFEN|k6r/8/8/8/8/8/6N1/K7|1|33|P|G:11:11|Q:w:;b:",
+      moves: [
+        { color: "w", from: "g2", to: "h4" },
+        { color: "b", from: "h8", to: "h1" },
+      ],
+      at: "h4",
+    },
+  ] as const)("$label — the bike is parked when the Tank arrives", ({ scfen, moves, at }) => {
+    const r = run(scfen, [...moves]);
+    expect(r.next.placement).toBe("k7/8/8/8/8/8/8/K7");
+    expect(r.resolved.moveCollisions).toHaveLength(2);
+    expect(r.resolved.moveCollisions.every((c) => c.to === at && c.occupies === false)).toBe(true);
+    expect(r.resolved.moves.map((m) => m.to)).toEqual([at, at]);
+  });
+
+  it("sliders crossing at different ticks pass through each other", () => {
+    // White holds d4 on ticks 6–7; black reaches d4 on tick 8.
+    const r = run("SCFEN|k2r4/8/8/8/R7/8/8/K7|1|33|P|G:11:11|Q:w:;b:", [
+      { color: "w", from: "a4", to: "h4" },
+      { color: "b", from: "d8", to: "d1" },
+    ]);
+    expect(r.next.placement).toBe("k7/8/8/8/7R/8/8/K2r4");
+    expect(r.resolved.moveCollisions).toEqual([]);
+  });
+
+  it("sliders reaching the crossing on the same tick both die there", () => {
+    const r = run("SCFEN|k7/3r4/8/8/R7/8/8/K7|1|33|P|G:11:11|Q:w:;b:", [
+      { color: "w", from: "a4", to: "h4" },
+      { color: "b", from: "d7", to: "d1" },
+    ]);
+    expect(r.next.placement).toBe("k7/8/8/8/8/8/8/K7");
+    expect(r.resolved.moveCollisions.map((c) => c.to)).toEqual(["d4", "d4"]);
+  });
+
+  it("head-on sliders passing mid-edge both die", () => {
+    const r = run("SCFEN|k3r3/8/8/8/8/8/8/K3R3|1|33|P|G:11:11|Q:w:;b:", [
+      { color: "w", from: "e1", to: "e5" },
+      { color: "b", from: "e8", to: "e4" },
+    ]);
+    expect(r.next.placement).toBe("k7/8/8/8/8/8/8/K7");
+    expect(r.resolved.moveCollisions).toHaveLength(2);
+  });
+
+  it("a Tank reaching a square the Command Center already holds stops short", () => {
+    const r = run("SCFEN|8/8/8/1k6/8/8/8/R3K3|1|33|P|G:11:11|Q:w:;b:", [
+      { color: "w", from: "a1", to: "a8" },
+      { color: "b", from: "b5", to: "a5" },
+    ]);
+    expect(r.next.placement).toBe("8/8/8/k7/R7/8/8/4K3");
+    expect(r.resolved.moveCollisions).toEqual([]);
+  });
+
+  it("a Command Center stepping onto a mover takes it", () => {
+    const r = run("SCFEN|8/8/8/8/8/1k6/8/R3K3|1|33|P|G:11:11|Q:w:;b:", [
+      { color: "w", from: "a1", to: "a2" },
+      { color: "b", from: "b3", to: "a2" },
+    ]);
+    expect(r.next.placement).toBe("8/8/8/8/8/8/k7/4K3");
+    expect(r.resolved.moveCollisions).toEqual([
+      expect.objectContaining({
+        piece: "k",
+        color: "b",
+        to: "a2",
+        victim: { piece: "r", color: "w" },
+        occupies: true,
+      }),
+    ]);
+  });
+});

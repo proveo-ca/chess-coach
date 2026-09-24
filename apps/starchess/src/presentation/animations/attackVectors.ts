@@ -114,6 +114,17 @@ export const aimPoseFor = (vec: AttackVec): AimPose => {
 };
 
 /**
+ * {@link aimPoseFor} with the side already chosen. A Hoverbike L commits to one
+ * side for the whole flight, because changing side is a reflection: the long
+ * leg of `g1→f3` points straight up, where `aimPoseFor` alone would pick the
+ * right side and the short leg would then flip the hull left at the elbow.
+ */
+export const aimPoseWithin = (vec: AttackVec, mirrorX: boolean): AimPose => {
+  const theta = screenAngleDeg(vec) - AIM_FORWARD_DEG;
+  return { mirrorX, rotateDeg: normalizeDeg(mirrorX ? 180 - theta : theta) };
+};
+
+/**
  * Siege Tank move facing — hull is a fixed ¾ front silhouette, so file travel
  * (up/down) keeps rest orientation; rank travel turns around in place.
  * Rest art reads leftish (guns ≈ −135°); a half-turn faces right.

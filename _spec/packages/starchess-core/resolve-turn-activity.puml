@@ -71,10 +71,31 @@ partition "Phase 1 — attack" {
   :remove ""deadSquares"" → **afterAttack** snapshot;
 }
 
-partition "Phase 2 — move (""relocate"", occupy list then quiets)" {
+partition "Phase 2 — move (""moveWave"": plan every landing, then time them)" {
   :skip movers that died in phase 1, and sieged rooks (never relocate);
-  :quiet slides truncate on the first blocker — enemy blocker is\ncaptured, ally / king blocker stops the slide one square short;
-  :destination still held by an enemy → capture + occupy, **unless**\nanother mover already landed there this phase\n(""destinationsWritten"") → **both die**, tile empty, no cue;
+  :""planLanding"" — every mover plans against the **same** pre-wave board,
+so plan order (white first) can never decide an outcome. Quiet slides
+truncate on the first **stationary** blocker — enemy blocker is captured,
+ally / king blocker stops the slide one square short;
+  :two opposite-colour landings → ""moverContact(timedMover(a), timedMover(b))""
+(""move-timing.puml"": Hoverbike 1 tick / square, everything else 2,
+leapers hold only their landing, sliders every ray square,
+a mover a mine takes on landing holds nothing afterwards);
+  if (contact at X?) then (yes)
+    if (a Command Center in the pair?) then (yes)
+      :CC reached X **first** → CC lands, the other stops one ray
+square short (a leaper stays home) · CC arrived on or after the
+other → CC **takes** it (""moveCollisions"" capture, occupies,
+clears the mine on X) · CC vs CC → neither moves;
+    else (no)
+      :**both die on X**, mines untouched, no cue — whether the other
+was parked there, arrived the same tick, or they passed head-on
+mid-edge (reported on the lower-named square);
+    endif
+  else (no)
+    :``land`` each mover as planned;
+  endif
+  :``land``: destination still held by an enemy → capture + occupy, **unless**\nanother mover already landed there (""destinationsWritten"", phase 3 only)\n→ **both die**, tile empty, no cue;
   :""mineContact"" over ""[extraStepFrom?, …pathContactSquares, dest]""
 (mode **walk**) — one ordered scan answers chase **and** walk-over.
 A plan carrying ""extraStepTo"" **stands down**: its landing is one hop

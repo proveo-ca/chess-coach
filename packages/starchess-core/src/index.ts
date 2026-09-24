@@ -87,6 +87,18 @@ export {
 
 export { hostileMineOn } from "./board/mine-contact";
 
+export {
+  squareTicks,
+  movesAirborne,
+  travelSquares,
+  travelTicks,
+  timedMover,
+  moverContact,
+  type TimedMover,
+  type TimedStep,
+  type MoverContact,
+} from "./board/move-timing";
+
 export { isTankSiegedAfterB, tankModeAfterB } from "./board/siege";
 
 export {

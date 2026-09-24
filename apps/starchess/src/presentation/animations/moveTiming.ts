@@ -1,12 +1,19 @@
+// SPEC: _spec/packages/starchess-core/move-timing.puml
 import type { PieceSymbol, Square } from "chess.js";
 
 import { vecBetween } from "~/presentation/animations/boardGeom";
 import { hoverbikeLegVecs, squareAt } from "~/presentation/animations/attackVectors";
-import { rayBetween } from "@chess-coach/starchess-core";
+import { rayBetween, squareTicks, travelSquares } from "@chess-coach/starchess-core";
 import { MOVE_SQUARE_MS, STIM_MOVE_SQUARE_MS } from "~/presentation/constants";
 
+/**
+ * One core move tick in ms. Rules own the per-square ticks (`squareTicks`), so
+ * a mover is on screen where `resolveTurn`'s timed contact says it is.
+ */
+export const MOVE_TICK_MS = MOVE_SQUARE_MS / 2;
+
 /** Hoverbike is the only piece that travels at half the per-square rate. */
-export const hoverbikeSquareMs = (): number => MOVE_SQUARE_MS / 2;
+export const hoverbikeSquareMs = (): number => squareTicks("n") * MOVE_TICK_MS;
 
 /** Marine gas-step stim — half classical travel (100ms / square). */
 export const stimSquareMs = (): number => STIM_MOVE_SQUARE_MS;
@@ -19,11 +26,7 @@ export const moveTravelSquares = (
   from: Square,
   to: Square,
   piece?: PieceSymbol,
-): number => {
-  const { df, dr } = vecBetween(from, to);
-  if (piece === "n") return Math.max(1, Math.abs(df) + Math.abs(dr));
-  return Math.max(1, Math.abs(df), Math.abs(dr));
-};
+): number => travelSquares(from, to, piece ?? "p");
 
 export type MoveSquareMsOpts = {
   /** Marine gas-step — {@link STIM_MOVE_SQUARE_MS}. */
@@ -32,7 +35,7 @@ export type MoveSquareMsOpts = {
 
 const squareMsFor = (piece?: PieceSymbol, opts?: MoveSquareMsOpts): number => {
   if (opts?.stim) return stimSquareMs();
-  return piece === "n" ? hoverbikeSquareMs() : MOVE_SQUARE_MS;
+  return squareTicks(piece ?? "p") * MOVE_TICK_MS;
 };
 
 /**
