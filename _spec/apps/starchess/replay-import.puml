@@ -31,7 +31,7 @@ database "matchReducer (MatchState)\nsettledSnapshots · settledResolves" as ST 
 SRV ARROW_MAIN READ : fetch record JSON
 FILE ARROW_MAIN READ : readAsText → validate → localStorage
 URL ARROW_MAIN READ : decode scfens / game list
-READ ARROW_MAIN HFR : { scfens[], resolves[] }
+READ ARROW_MAIN HFR : { scfens[], resolves[] | packed }
 HFR ARROW_MAIN BUILD : settled plies
 BUILD ARROW_MAIN ST : seeded gameOver state
 ST ARROW_MAIN REVIEW : replay /review/:id host
@@ -49,6 +49,10 @@ note bottom
   type=file>""/drag-drop → ""FileReader"" → validate → localStorage
   (""starchess_match_history""). No HTTP, so no CORP/COEP issue; per-origin
   localStorage caveat — file export↔import is the portable round-trip.
+  **Stored packed:** ""starchess_match_history"" holds records with
+  ""packed"" (deflated resolves) in place of ""resolves"" — see
+  ""packages/starchess-core/record-packing.puml"". Export unpacks to plain
+  JSON; import accepts either form.
   **Cross-origin:** the ""?game="" fetch needs the server to send
   ""Cross-Origin-Resource-Policy: cross-origin"" (COEP-isolated app); the
   arena library also gets explicit loading/error states.

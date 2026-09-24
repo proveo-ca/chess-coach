@@ -1,7 +1,7 @@
 /**
  * Match history helpers — result labeling + DualNav pack rebuild.
  */
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { createInitialMatchState } from "~/app/matchReducer";
 import {
@@ -126,5 +126,65 @@ describe("records remember which Adjutant script played", () => {
       map: "eclipse",
     });
     expect(record?.opponent).toBeUndefined();
+  });
+});
+
+describe("matchHistoryStore · packed storage", () => {
+  const playedGame = async (): Promise<StarChessGameRecord> => {
+    const { addScMove, endScTurn, formatScFen, parseScFen } = await import(
+      "@chess-coach/starchess-core"
+    );
+    let snap = parseScFen("SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|Q:w:;b:");
+    const scfens = [formatScFen(snap)];
+    const resolves = [];
+    for (const [w, b] of [
+      [["d2", "d3"], ["e7", "e6"]],
+      [["e2", "e3"], ["d7", "d6"]],
+    ] as const) {
+      snap = addScMove(snap, { color: "w", from: w[0], to: w[1] });
+      snap = addScMove(snap, { color: "b", from: b[0], to: b[1] });
+      const r = endScTurn(snap, { skipTurnStartChecks: true });
+      resolves.push(r);
+      scfens.push(formatScFen(r.next));
+      snap = r.next;
+    }
+    return {
+      id: "sc-packed",
+      startedAt: "2026-09-24T00:00:00.000Z",
+      endedAt: "2026-09-24T00:10:00.000Z",
+      result: "win",
+      map: "eclipse",
+      playerColor: "w",
+      scfens,
+      resolves,
+    };
+  };
+
+  it("stores a finished game packed and still opens it", async () => {
+    const store = await import("~/store/matchHistoryStore");
+    const game = await playedGame();
+    store.addMatchRecord(game);
+    const saved = store.getMatchById("sc-packed")!;
+    expect(saved.resolves).toBeUndefined();
+    expect(saved.packed?.count).toBe(2);
+    expect(saved.scsan).toEqual(["Q:w:C=d2d3;b:C=e7e6", "Q:w:C=e2e3;b:C=d7d6"]);
+    expect(JSON.parse(JSON.stringify(store.historyFromRecord(saved)))).toEqual(
+      JSON.parse(JSON.stringify(store.historyFromRecord(game))),
+    );
+    const persisted = localStorage.getItem(store.MATCH_HISTORY_KEY)!;
+    expect(persisted.length).toBeLessThan(JSON.stringify(game).length);
+  });
+
+  it("packs a plain history left by an older build on load", async () => {
+    const game = await playedGame();
+    localStorage.setItem("starchess_match_history", JSON.stringify({ games: [game] }));
+    vi.resetModules();
+    const store = await import("~/store/matchHistoryStore");
+    const [loaded] = store.matchHistory();
+    expect(loaded!.resolves).toBeUndefined();
+    expect(loaded!.packed).toBeDefined();
+    expect(JSON.parse(JSON.stringify(store.historyFromRecord(loaded!)))).toEqual(
+      JSON.parse(JSON.stringify(store.historyFromRecord(game))),
+    );
   });
 });

@@ -214,6 +214,17 @@ export {
   validateScFenHistory,
 } from "./replay/validate-history";
 
+export {
+  PACKED_RESOLVES_VERSION,
+  packResolves,
+  unpackResolves,
+  packRecord,
+  unpackRecord,
+  resolvesOf,
+  scsanOf,
+  type PackedResolves,
+  type ReplayPayload,
+} from "./replay/packed";
 export type { FenProjection } from "./replay/fen";
 export { scfenToFen } from "./replay/fen";
 

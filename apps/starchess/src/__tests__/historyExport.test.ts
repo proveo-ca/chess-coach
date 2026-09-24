@@ -25,7 +25,7 @@ const record = (id: string): StarChessGameRecord => ({
   playerName: "Tester",
   opponent: "strategic",
   scfens: [SCFEN_A, SCFEN_B],
-  resolves: [{ resolved: null, next: null } as unknown as StarChessGameRecord["resolves"][number]],
+  resolves: [{ resolved: null, next: null } as unknown as NonNullable<StarChessGameRecord["resolves"]>[number]],
 });
 
 describe("historyExport", () => {
@@ -71,5 +71,30 @@ describe("historyExport", () => {
     const name = historyExportFilename(new Date("2026-09-21T12:34:56.000Z"));
     expect(name.startsWith("starchess-match-history-20260921-")).toBe(true);
     expect(name.endsWith(".json")).toBe(true);
+  });
+});
+
+describe("historyExport · packed records", () => {
+  const packedGame = async (): Promise<StarChessGameRecord> => {
+    const { addScMove, endScTurn, formatScFen, packRecord, parseScFen } = await import(
+      "@chess-coach/starchess-core"
+    );
+    let snap = parseScFen("SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|Q:w:;b:");
+    snap = addScMove(snap, { color: "w", from: "d2", to: "d3" });
+    const r = endScTurn(snap, { skipTurnStartChecks: true });
+    return packRecord({ ...record("sc-p"), scfens: [formatScFen(snap), formatScFen(r.next)], resolves: [r] });
+  };
+
+  it("exports a packed record with plain resolves", async () => {
+    const game = await packedGame();
+    const [out] = buildHistoryExport([game]).games;
+    expect(out!.resolves).toHaveLength(1);
+    expect(out!.packed).toBeUndefined();
+  });
+
+  it("accepts a packed record on import", async () => {
+    const game = await packedGame();
+    expect(extractExportedGames([game])).toHaveLength(1);
+    expect(extractExportedGames([{ ...game, packed: { ...game.packed, count: 5 } }])).toBeNull();
   });
 });
