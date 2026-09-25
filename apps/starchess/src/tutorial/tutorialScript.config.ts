@@ -18,35 +18,35 @@
  */
 import type { TutorialScriptConfig } from "~/tutorial/tutorialScript";
 
-import { king as fogKing } from "~/tutorial/stories/fog/king";
-import { pawn as fogPawn } from "~/tutorial/stories/fog/pawn";
-import { knight as fogKnight } from "~/tutorial/stories/fog/knight";
-import { bishop as fogBishop } from "~/tutorial/stories/fog/bishop";
-import { rookTank as fogRookTank } from "~/tutorial/stories/fog/rook-tank";
-import { rookSiege as fogRookSiege } from "~/tutorial/stories/fog/rook-siege";
-import { queen as fogQueen } from "~/tutorial/stories/fog/queen";
-import { mine as fogMine } from "~/tutorial/stories/fog/mine";
+import { king as fogKing } from "~/tutorial/steps/fog/king";
+import { pawn as fogPawn } from "~/tutorial/steps/fog/pawn";
+import { knight as fogKnight } from "~/tutorial/steps/fog/knight";
+import { bishop as fogBishop } from "~/tutorial/steps/fog/bishop";
+import { rookTank as fogRookTank } from "~/tutorial/steps/fog/rook-tank";
+import { rookSiege as fogRookSiege } from "~/tutorial/steps/fog/rook-siege";
+import { queen as fogQueen } from "~/tutorial/steps/fog/queen";
+import { mine as fogMine } from "~/tutorial/steps/fog/mine";
 
-import { marine as specialsMarine } from "~/tutorial/stories/specials/marine";
-import { cc as specialsCc } from "~/tutorial/stories/specials/cc";
-import { hoverbike as specialsHoverbike } from "~/tutorial/stories/specials/hoverbike";
-import { mecha as specialsMecha } from "~/tutorial/stories/specials/mecha";
-import { ship as specialsShip } from "~/tutorial/stories/specials/ship";
-import { tank as specialsTank } from "~/tutorial/stories/specials/tank";
+import { marine as specialsMarine } from "~/tutorial/steps/specials/marine";
+import { cc as specialsCc } from "~/tutorial/steps/specials/cc";
+import { hoverbike as specialsHoverbike } from "~/tutorial/steps/specials/hoverbike";
+import { mecha as specialsMecha } from "~/tutorial/steps/specials/mecha";
+import { ship as specialsShip } from "~/tutorial/steps/specials/ship";
+import { tank as specialsTank } from "~/tutorial/steps/specials/tank";
 
-import { combatChain as resolveCombatChain } from "~/tutorial/stories/resolve/combat-chain";
-import { kingHunt as resolveKingHunt } from "~/tutorial/stories/resolve/king-hunt";
+import { combatChain as resolveCombatChain } from "~/tutorial/steps/resolve/combat-chain";
+import { kingHunt as resolveKingHunt } from "~/tutorial/steps/resolve/king-hunt";
 
-import { kingDefense } from "~/tutorial/stories/king/king-defense";
-import { kingDefense2 } from "~/tutorial/stories/king/king-defense-2";
-import { kingDefense3 } from "~/tutorial/stories/king/king-defense-3";
-import { kingDefense4 } from "~/tutorial/stories/king/king-defense-4";
-import { kingDefense5 } from "~/tutorial/stories/king/king-defense-5";
-import { kingDefense6 } from "~/tutorial/stories/king/king-defense-6";
-import { kingAttack1 } from "~/tutorial/stories/king/king-attack-1";
-import { kingAttack2 } from "~/tutorial/stories/king/king-attack-2";
-import { kingAttack3 } from "~/tutorial/stories/king/king-attack-3";
-import { kingAttack4 } from "~/tutorial/stories/king/king-attack-4";
+import { kingDefense } from "~/tutorial/steps/king/king-defense";
+import { kingDefense2 } from "~/tutorial/steps/king/king-defense-2";
+import { kingDefense3 } from "~/tutorial/steps/king/king-defense-3";
+import { kingDefense4 } from "~/tutorial/steps/king/king-defense-4";
+import { kingDefense5 } from "~/tutorial/steps/king/king-defense-5";
+import { kingDefense6 } from "~/tutorial/steps/king/king-defense-6";
+import { kingAttack1 } from "~/tutorial/steps/king/king-attack-1";
+import { kingAttack2 } from "~/tutorial/steps/king/king-attack-2";
+import { kingAttack3 } from "~/tutorial/steps/king/king-attack-3";
+import { kingAttack4 } from "~/tutorial/steps/king/king-attack-4";
 
 export const TUTORIAL_SCRIPT_CONFIG = [
   {
