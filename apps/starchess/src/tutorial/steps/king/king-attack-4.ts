@@ -11,6 +11,7 @@ export const kingAttack4 = {
     stored: 3,
     opponent: "adjutant",
     choreography: "turtledOpeningScript",
+    alertLatch: "cc",
     docs: "Enemy Command Center on b7, Siege Tank sieged on d8, Marines on a7/b6/c7/d7/e7, Mecha on c6, Hoverbike on a6 — a fully turtled defense. Ally Command Center on e1, Marines on c2/d4/e5/f3, Hoverbikes on a3/d2, mobile Siege Tank on e2, Mecha on d3, a Mine on b1. Turn 12 (relative turn 1), 3 minerals each side. Scripted: the a6 Hoverbike mines its own square then rides to c5 (turn 1); it then threatens the ally Command Center via c5->d3, dying to its own move if not captured first (turn 2); the enemy deploys a Tank on a6, pushes its b-file Marine, and rides the Tank a6->a1 — running into the ally's own a3 mine if the Hoverbike there has already moved (turn 3). Turn 4 onward hands off to the naive Adjutant.",
   },
   comment: "Uncontested center stinks of rat to me... \n\n Centralize your tank.",
@@ -19,10 +20,39 @@ export const kingAttack4 = {
   restartWhen: { kind: "lives", own: 0 },
   beats: [
     {
+      priority: 3,
+      when: { kind: "lives", own: 0 },
+      say: "Oh no! That rat got us. Give it another try.",
+      emotion: "shocked",
+      action: { kind: "retryLesson", label: "Retry lesson" },
+    },
+    {
+      priority: 3,
+      when: { kind: "lives", enemy: 0 },
+      say: "Rat smoked out. Nicely done!",
+      emotion: "happy",
+    },
+    {
+      priority: 2,
+      when: { kind: "stopRunner" },
+      say: "Stop that Marine from promoting!",
+      emotion: "shocked",
+      mark: {},
+    },
+    {
+      priority: 2,
+      when: { kind: "ccThreat" },
+      say: "Our Command Center is under fire. Take out the attacker!",
+      emotion: "shocked",
+      mark: {},
+    },
+    {
+      priority: 1,
       turn: 12,
       mark: { squares: ["e2"], arrows: [{ from: "e2", to: "e3" }] },
     },
     {
+      priority: 1,
       // Turn 1, move queued (siege not yet).
       turn: 12,
       when: queued("C=e2e3"),
@@ -31,6 +61,7 @@ export const kingAttack4 = {
       mark: { squares: ["e3"] },
     },
     {
+      priority: 1,
       // Turn 1 (relative), most advanced state: move and siege queued.
       turn: 12,
       when: and(queued("C=e2e3"), or(queued("B=siegeMode:e2"), queued("F=siegeMode:e2"))),
@@ -39,6 +70,7 @@ export const kingAttack4 = {
       mark: { squares: ["c2"], arrows: [{ from: "c2", to: "c3" }] },
     },
     {
+      priority: 1,
       turn: 13,
       say: "I knew it, nowhere to hide with full vision. \n\nThat Hoverbike is a risk to our default location CC. Get it!",
       emotion: "thinking",
@@ -53,6 +85,7 @@ export const kingAttack4 = {
       },
     },
     {
+      priority: 1,
       // Turn 2, attack queued only.
       turn: 13,
       when: queued("C=d4c5"),
@@ -61,6 +94,7 @@ export const kingAttack4 = {
       mark: { squares: ["a3"] },
     },
     {
+      priority: 1,
       // Turn 2, both queued.
       turn: 13,
       when: and(queued("C=d4c5"), or(queued("B=spiderMine:a3"), queued("F=spiderMine:a3"))),
@@ -69,12 +103,14 @@ export const kingAttack4 = {
       mark: { squares: ["e2"] },
     },
     {
+      priority: 1,
       turn: 14,
       say: "Good job! \n\nHold the C file, as A and B already have mines",
       emotion: "happy",
       mark: { squares: ["c2"], arrows: [{ from: "a3", to: "c2" }] },
     },
     {
+      priority: 1,
       // Turn 1 (relative), most advanced state: move and siege queued.
       turn: 14,
       when: and(queued("C=a3c2")),
@@ -83,6 +119,7 @@ export const kingAttack4 = {
       mark: { squares: ["f3"], arrows: [{ from: "f3", to: "f4" }] },
     },
     {
+      priority: 1,
       // Turn 3, Hoverbike move queued only.
       turn: 14,
       when: and(queued("C=a3c2"), or(queued("B=stimStep:f3"), queued("F=stimStep:f3"))),
@@ -91,6 +128,7 @@ export const kingAttack4 = {
       mark: { squares: ["e3"], alertSquares: ["b7"] },
     },
     {
+      priority: 1,
       // Turn 4 (relative), siege in opponent's face
       turn: 15,
       say: "Use gas. \n\nMove the Marine out of the way.",
@@ -98,6 +136,7 @@ export const kingAttack4 = {
       mark: { squares: ["c3"], arrows: [{ from: "c3", to: "c4" }] },
     },
     {
+      priority: 1,
       turn: 15,
       when: queued("B=stimStep:c3"),
       say: "Now point the Tank at the enemy CC.",
@@ -111,6 +150,7 @@ export const kingAttack4 = {
       },
     },
     {
+      priority: 1,
       turn: 15,
       when: and(queued("B=stimStep:c3"), queued("C=e3b3")),
       say: "Siege it up with gas in that Tank ghost!",
@@ -118,8 +158,16 @@ export const kingAttack4 = {
       mark: { squares: ["b3"] },
     },
     {
+      priority: 1,
       turn: 16,
       mark: { squares: [] },
+    },
+    {
+      priority: 0,
+      when: { kind: "ccPressure" },
+      say: "Apply pressure to the enemy Command Center.",
+      emotion: "thinking",
+      mark: {},
     },
   ],
 } satisfies TutorialStoryScript;

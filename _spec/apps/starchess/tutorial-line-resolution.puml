@@ -52,6 +52,18 @@ note over RESOLVER
   to the story introduction comment.
 end note
 
+' N_ALERTS:
+note over BOARD
+  Alert rings: a beat's alertSquares, or a
+  latch. `king` pins the ring to scripted
+  sightings; `cc` adds the enemy Command
+  Center's last seen square to every beat's
+  alerts and moves it only when that square
+  is visible (nextCCSighting, withCCAlert).
+  ccThreat alerts visible attackers of the
+  ally Command Center; fogged ones never count.
+end note
+
 ' N_REBASE:
 note over RESOLVER
   Turn-open bookkeeping refills gas and

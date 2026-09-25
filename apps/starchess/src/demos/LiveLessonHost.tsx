@@ -29,7 +29,12 @@ import { CHOREOGRAPHY } from "~/demos/choreography";
 import { clearSiegedTanks, setTankMode } from "~/presentation/animations/tankModeStore";
 import { LiveMatchShell } from "~/screens/LiveMatchShell";
 import { TUTORIAL_CAPABILITIES, setCapabilities } from "~/store/capabilitiesStore";
-import { nextAlertLatch, resolveTutorialHint } from "~/tutorial/tutorialScript";
+import {
+  nextAlertLatch,
+  nextCCSighting,
+  resolveTutorialHint,
+  withCCAlert,
+} from "~/tutorial/tutorialScript";
 import type { AlertLatch } from "~/types/tutorial";
 import { availableTrajectories, coveredEnemyShips } from "~/tutorial/lessonTactics";
 import { useLessonNarration } from "~/tutorial/useLessonNarration";
@@ -119,13 +124,15 @@ const LiveLessonInner: Component<LiveLessonHostProps> = (props) => {
   const scriptedAlerts = () => hintMarks().alertSquares;
 
   const [alertLatch, setAlertLatch] = createSignal<AlertLatch>({ squares: [] });
+  const [ccSeen, setCCSeen] = createSignal<Square | undefined>();
 
   createEffect(() => {
     const scripted = scriptedAlerts();
     const followCC = props.board.alertLatch === "king";
+    const trackCC = props.board.alertLatch === "cc";
     let ccAt: Square | undefined;
     let ccVisible = false;
-    if (followCC) {
+    if (followCC || trackCC) {
       const placement = hintScfen().split("|")[1];
       if (placement) {
         try {
@@ -145,6 +152,10 @@ const LiveLessonInner: Component<LiveLessonHostProps> = (props) => {
         }
       }
     }
+    if (trackCC) {
+      setCCSeen((prev) => nextCCSighting(prev, { ccAt, ccVisible }));
+      return;
+    }
     if (!props.board.alertLatch) return;
     setAlertLatch((prev) =>
       nextAlertLatch(prev, scripted, { followCC, ccAt, ccVisible }),
@@ -153,6 +164,7 @@ const LiveLessonInner: Component<LiveLessonHostProps> = (props) => {
 
   const hintAlertSquares = createMemo(() => {
     if (!interactive()) return [];
+    if (props.board.alertLatch === "cc") return withCCAlert(scriptedAlerts(), ccSeen());
     return props.board.alertLatch ? alertLatch().squares : scriptedAlerts();
   });
 

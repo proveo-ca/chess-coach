@@ -161,6 +161,26 @@ export const ccPressureUnits = (
   return units.length > 0 ? { cc, units } : null;
 };
 
+/** Enemy units the viewer can see attacking the viewer's own Command Center. */
+export const ccThreatUnits = (
+  scfen: string | undefined,
+  viewer: StarChessColor = "w",
+): { cc: Square; units: SquareCoverer[] } | null => {
+  const map = scfen ? placementMap(scfen) : null;
+  if (!scfen || !map) return null;
+  const cc = findCC(map, viewer);
+  if (!cc) return null;
+  const vision = getSideVision(map, viewer, {
+    tankModeFor: (sq) => (squareSieged(scfen, sq) ? "siege" : "tank"),
+    mines: minesOf(scfen),
+  });
+  const enemy = viewer === "w" ? "b" : "w";
+  const units = attackersOfSquare(map, cc, enemy).filter(
+    (u) => vision.litSquares.has(u.from) || vision.revealedPieces.has(u.from),
+  );
+  return units.length > 0 ? { cc, units } : null;
+};
+
 /**
  * Square of the marine to gas once the classical move is queued and no gas
  * action is queued yet. The furthest-advanced ally marine, toward the h-file

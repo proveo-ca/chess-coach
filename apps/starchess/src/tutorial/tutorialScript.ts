@@ -8,6 +8,7 @@ import { TUTORIAL_SCRIPT_CONFIG } from "~/tutorial/tutorialScript.config";
 import {
   boardConditionHolds,
   ccPressureUnits,
+  ccThreatUnits,
   gasMarineSquare,
   g2DeployName,
   isBoardCondition,
@@ -419,6 +420,16 @@ const enrichMark = (beat: TutorialBeat, scfen: string | undefined): TutorialMark
     const sq = tankSiegeSquare(scfen);
     if (sq) return { ...base, squares: [sq] };
   }
+  if (w.kind === "ccThreat") {
+    const threat = ccThreatUnits(scfen);
+    if (threat) {
+      return {
+        ...base,
+        alertSquares: threat.units.map((u) => u.from),
+        arrows: threat.units.map((u) => ({ from: u.from, to: threat.cc, tone: "alert" as const })),
+      };
+    }
+  }
   if (w.kind === "ccPressure") {
     const pressure = ccPressureUnits(scfen);
     if (pressure) {
@@ -495,6 +506,16 @@ export const nextAlertLatch = (
   }
   return prev;
 };
+
+/** The enemy Command Center's last seen square — a fogged CC never moves it. */
+export const nextCCSighting = (
+  prev: Square | undefined,
+  opts: { ccAt?: Square; ccVisible: boolean },
+): Square | undefined => (opts.ccVisible && opts.ccAt ? opts.ccAt : prev);
+
+/** A beat's alert rings plus the ring on the last seen enemy Command Center. */
+export const withCCAlert = (scripted: readonly Square[], seen: Square | undefined): Square[] =>
+  seen && !scripted.includes(seen) ? [...scripted, seen] : [...scripted];
 
 /** Remember a white BattleShip on h8, and call the resolve that removes it. */
 export const nextBattleShipWatch = (

@@ -72,9 +72,10 @@ export type LiveLessonBoard = {
   /**
    * Alert rings stick after the beat that introduced them, so fog and later
    * hints do not clear a last-seen square. `Command Center` also moves the ring when
-   * the enemy Command Center is seen on a new square.
+   * the enemy Command Center is seen on a new square. `cc` always adds a ring
+   * on the enemy Command Center's last *seen* square to each beat's own alerts.
    */
-  alertLatch?: "sticky" | "king";
+  alertLatch?: "sticky" | "king" | "cc";
 };
 
 /**
@@ -149,6 +150,7 @@ export type TutorialWhen =
   | TutorialMineGuardWhen
   | TutorialShipJukeWhen
   | TutorialCcPressureWhen
+  | TutorialCcThreatWhen
   | TutorialBoardCondition;
 
 /** A White or Black action already queued this turn, matched against the
@@ -319,6 +321,15 @@ export type TutorialShipJukeWhen = { kind: "shipJuke" };
  */
 export type TutorialCcPressureWhen = {
   kind: "ccPressure";
+  phases?: readonly ReviewTurnPhase[];
+};
+
+/**
+ * A *visible* enemy unit attacks the ally Command Center. The hint alert-rings
+ * each attacker and draws its arrow onto the Command Center.
+ */
+export type TutorialCcThreatWhen = {
+  kind: "ccThreat";
   phases?: readonly ReviewTurnPhase[];
 };
 
