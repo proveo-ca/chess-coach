@@ -20,78 +20,28 @@ export const kingAttack4 = {
   beats: [
     {
       turn: 12,
-      mark: { squares: ["e2"], arrows: [{ from: "e2", to: "e4" }] },
-    },
-    {
-      // Turn 1 (relative), most advanced state: move and siege queued.
-      turn: 12,
-      when: and(queued("C=e2e4"), or(queued("B=siegeMode:e2"), queued("F=siegeMode:e2"))),
-      say: "Move this Marine from c2 to c3.",
-      emotion: "thinking",
-      mark: { squares: ["c2"], arrows: [{ from: "c2", to: "c3" }] },
+      mark: { squares: ["e2"], arrows: [{ from: "e2", to: "e3" }] },
     },
     {
       // Turn 1, move queued (siege not yet).
       turn: 12,
-      when: queued("C=e2e4"),
+      when: queued("C=e2e3"),
       say: "Now siege it up with gas.",
       emotion: "thinking",
-      mark: { squares: ["e4"] },
+      mark: { squares: ["e3"] },
+    },
+    {
+      // Turn 1 (relative), most advanced state: move and siege queued.
+      turn: 12,
+      when: and(queued("C=e2e3"), or(queued("B=siegeMode:e2"), queued("F=siegeMode:e2"))),
+      say: "Use gas. \n\nMove this Marine from c2 to c3.",
+      emotion: "thinking",
+      mark: { squares: ["c2"], arrows: [{ from: "c2", to: "c3" }] },
     },
     {
       turn: 13,
       say: "I knew it, nowhere to hide with full vision. \n\nThat Hoverbike is a risk to our default location CC. Get it!",
       emotion: "thinking",
-    },
-    {
-      turn: 14,
-      mark: { squares: ["c2"], arrows: [{ from: "a3", to: "c2" }] },
-    },
-    {
-      // Turn 2, both queued.
-      turn: 13,
-      when: and(queued("C=d4c5"), or(queued("B=spiderMine:a3"), queued("F=spiderMine:a3"))),
-      say: "Deploy a Marine",
-      emotion: "thinking",
-      mark: { squares: ["e2"] },
-    },
-    {
-      // Turn 2, attack queued only.
-      turn: 13,
-      when: queued("C=d4c5"),
-      say: "Guard that back alley with a trap.",
-      emotion: "thinking",
-      mark: { squares: ["a3"] },
-    },
-    {
-      turn: 14,
-      say: "Good job! \n\nHold the C file, as A and B already have mines",
-      emotion: "happy",
-    },
-    {
-      // Turn 3, both queued: Hoverbike relocated and the Tank unsieged.
-      turn: 14,
-      when: and(queued("C=a3c2"), or(queued("B=siegeMode:e4"), queued("F=siegeMode:e4"))),
-      say: "Now point it at the enemy CC.",
-      emotion: "happy",
-      mark: {
-        squares: ["b4"],
-        arrows: [
-          { from: "e4", to: "b4" },
-          { from: "b4", to: "b7", tone: "alert" },
-        ],
-      },
-    },
-    {
-      // Turn 3, Hoverbike move queued only.
-      turn: 14,
-      when: queued("C=a3c2"),
-      say: "Force this rat to move with a sieged Tank. \n\nUnsiege your tank.",
-      emotion: "happy",
-      mark: { squares: ["e4"], alertSquares: ["b7"] },
-    },
-    {
-      turn: 13,
       mark: {
         squares: ["c5", "d4"],
         alertSquares: ["d3"],
@@ -103,6 +53,72 @@ export const kingAttack4 = {
       },
     },
     {
+      // Turn 2, attack queued only.
+      turn: 13,
+      when: queued("C=d4c5"),
+      say: "Use gas. \n\nGuard that back alley with a trap.",
+      emotion: "thinking",
+      mark: { squares: ["a3"] },
+    },
+    {
+      // Turn 2, both queued.
+      turn: 13,
+      when: and(queued("C=d4c5"), or(queued("B=spiderMine:a3"), queued("F=spiderMine:a3"))),
+      say: "Deploy a Marine dropping gas on the Command Center.",
+      emotion: "thinking",
+      mark: { squares: ["e2"] },
+    },
+    {
+      turn: 14,
+      say: "Good job! \n\nHold the C file, as A and B already have mines",
+      emotion: "happy",
+      mark: { squares: ["c2"], arrows: [{ from: "a3", to: "c2" }] },
+    },
+    {
+      // Turn 1 (relative), most advanced state: move and siege queued.
+      turn: 14,
+      when: and(queued("C=a3c2")),
+      say: "Use gas. \n\nMove this Marine from f3 to f4.",
+      emotion: "thinking",
+      mark: { squares: ["f3"], arrows: [{ from: "f3", to: "f4" }] },
+    },
+    {
+      // Turn 3, Hoverbike move queued only.
+      turn: 14,
+      when: and(queued("C=a3c2"), or(queued("B=stimStep:f3"), queued("F=stimStep:f3"))),
+      say: "Force this rat to move with a Tank. \n\nUnsiege it first with gas.",
+      emotion: "happy",
+      mark: { squares: ["e3"], alertSquares: ["b7"] },
+    },
+    {
+      // Turn 4 (relative), siege in opponent's face
+      turn: 15,
+      say: "Use gas. \n\nMove the Marine out of the way.",
+      emotion: "thinking",
+      mark: { squares: ["c3"], arrows: [{ from: "c3", to: "c4" }] },
+    },
+    {
+      turn: 15,
+      when: queued("B=stimStep:c3"),
+      say: "Now point the Tank at the enemy CC.",
+      emotion: "happy",
+      mark: {
+        squares: ["b3"],
+        arrows: [
+          { from: "e3", to: "b3" },
+          { from: "b3", to: "b7", tone: "alert" },
+        ],
+      },
+    },
+    {
+      turn: 15,
+      when: and(queued("B=stimStep:c3"), queued("C=e3b3")),
+      say: "Siege it up with gas in that Tank ghost!",
+      emotion: "thinking",
+      mark: { squares: ["b3"] },
+    },
+    {
+      turn: 16,
       mark: { squares: [] },
     },
   ],
