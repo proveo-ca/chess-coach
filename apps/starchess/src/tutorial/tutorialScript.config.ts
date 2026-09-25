@@ -1903,16 +1903,33 @@ export const TUTORIAL_SCRIPT_CONFIG = [
         title: "Turtled Opponent",
         board: {
           scfen:
-            "SCFEN|3r4/pkp1n3/1pb1N3/2n1P3/3PRP2/N1PB4/8/4K3|12|33|P|G:22:22|M:w:b1|S:d8e4|Q:w:;b:",
+            "SCFEN|3r4/pkp1n3/npb5/4P3/3P1P2/N1PB4/3NR3/4K3|12|33|P|G:21:22|M:w:b1|S:d8|Q:w:;b:B=spiderMine:a6:a6,C=a6c5",
           stored: 3,
           opponent: "adjutant",
           choreography: "kingHuntGraduation",
-          docs: "Enemy Command Center on b7, Siege Tank sieged on d8, Marines on a7/b6/c7, Mecha on c6, Hoverbikes on c5/e7 — a fully turtled defense. Ally Command Center on e1, Marines on c3/d4/e5/f4, Hoverbikes on a3/e6, Siege Tank sieged on e4, Mecha on d3, a Mine on b1. Turn 12, 3 minerals each side.",
+          docs: "Enemy Command Center on b7, Siege Tank sieged on d8, Marines on a7/b6/c7, Mecha on c6, Hoverbikes on a6/e7 — a fully turtled defense. Ally Command Center on e1, Marines on c3/d4/e5/f4, Hoverbikes on a3/d2, mobile Siege Tank on e2, Mecha on d3, a Mine on b1. Turn 12, 3 minerals each side. The enemy's opening is scripted: the a6 Hoverbike lays a mine on its own square, then rides back to c5.",
         },
-        comment: "The enemy has dug in. Find the way through.",
+        comment: "Uncontested center stinks of rat to me... \n\n Centralize your tank.",
         emotion: "thinking",
         completeWhen: { kind: "lives", enemy: 0 },
         restartWhen: { kind: "lives", own: 0 },
+        reactions: [
+          {
+            when: { kind: "scfen", re: /Q:w:[^;]*C=e2e4/ },
+            comment: "Now siege it up with gas.",
+            emotion: "thinking",
+          },
+        ],
+        hints: [
+          {
+            when: { kind: "scfen", re: /Q:w:[^;]*C=e2e4/ },
+            squares: ["e4"],
+          },
+          {
+            squares: ["e2"],
+            arrows: [{ from: "e2", to: "e4" }],
+          },
+        ],
       },
     ],
   },

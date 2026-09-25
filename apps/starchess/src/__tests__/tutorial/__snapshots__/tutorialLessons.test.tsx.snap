@@ -22,7 +22,7 @@ exports[`tutorial lesson catalog > 'king'/'king-attack-2' > mounts with a board 
 
 exports[`tutorial lesson catalog > 'king'/'king-attack-3' > mounts with a board and a stable chrome fingerprint 1`] = `"squares=64,pieces=6,chessboard,turn-end,starchess-gas-deploy,starchess-side-rail,tutorial-header,tutorial-footer-nav"`;
 
-exports[`tutorial lesson catalog > 'king'/'king-attack-4' > mounts with a board and a stable chrome fingerprint 1`] = `"squares=64,pieces=17,chessboard,turn-end,starchess-gas-deploy,starchess-side-rail,tutorial-header,tutorial-footer-nav"`;
+exports[`tutorial lesson catalog > 'king'/'king-attack-4' > mounts with a board and a stable chrome fingerprint 1`] = `"squares=64,pieces=10,chessboard,turn-end,starchess-gas-deploy,starchess-side-rail,tutorial-header,tutorial-footer-nav"`;
 
 exports[`tutorial lesson catalog > 'king'/'king-defense' > mounts with a board and a stable chrome fingerprint 1`] = `"squares=64,pieces=1,chessboard,turn-end,starchess-gas-deploy,starchess-side-rail,tutorial-header,tutorial-footer-nav"`;
 
