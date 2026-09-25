@@ -175,7 +175,7 @@ const FogSection: Component<{
         header={props.header}
         guideBubble={props.guideBubble}
         footerExtra={props.footer}
-        boardHints={props.showHints ? tutorialStory("fog", id)?.hints : undefined}
+        boardHints={props.showHints ? tutorialStory("fog", id)?.beats : undefined}
       />
     )}
   </Show>
@@ -604,7 +604,7 @@ export const TutorialScreen: Component = () => {
                   header={specialCoachHeader()}
                   guideBubble={guideBubble()}
                   footerExtra={specialFooter()}
-                  boardHints={tutorialStory("specials", id)?.hints}
+                  boardHints={tutorialStory("specials", id)?.beats}
                 />
               );
             }}
@@ -651,7 +651,7 @@ export const TutorialScreen: Component = () => {
                   header={kingCoachHeader()}
                   guideBubble={guideBubble()}
                   footerExtra={kingFooter()}
-                  boardHints={tutorialStory("king", id)?.hints}
+                  boardHints={tutorialStory("king", id)?.beats}
                 />
               );
             }}

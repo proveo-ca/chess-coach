@@ -4,7 +4,7 @@ import type { JSX } from "solid-js";
 
 import type { BoardSkin, BoardVariant, PieceSet } from "~/types/board";
 import type { KerriganEmotion } from "~/types/coach";
-import type { LiveLessonBoard, TutorialBoardHint } from "~/types/tutorial";
+import type { LiveLessonBoard, TutorialBeat } from "~/types/tutorial";
 
 export type LiveLessonHostProps = {
   /** Seed + board chrome from the lesson catalog. */
@@ -31,7 +31,7 @@ export type LiveLessonHostProps = {
   guideBubble?: JSX.Element;
   footerExtra?: JSX.Element;
   /** Script-driven destination rings, resolved against the live SCFEN. */
-  boardHints?: readonly TutorialBoardHint[];
+  boardHints?: readonly TutorialBeat[];
   /** Wrap in a sky shell; omit when nested in one already. */
   shell?: BoardVariant;
   /** Storybook control — override the viewer's remaining vespene. */

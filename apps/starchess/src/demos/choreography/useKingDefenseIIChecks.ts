@@ -3,26 +3,13 @@
  * King Defense II — apply turn-open checks on mount so the opening damage is
  * on the board before the player plans.
  */
-import { createMemo, onMount } from "solid-js";
+import { defineChoreography } from "~/demos/choreography/defineChoreography";
+import type { LessonChoreography } from "~/demos/choreography";
 
-import type { ChoreographyResult } from "~/demos/choreography";
-import type { MatchStore } from "~/types/match";
-
-export const useKingDefenseIIChecks = (store: MatchStore): ChoreographyResult => {
-  onMount(() => {
-    queueMicrotask(() => {
-      store.ensureTurnOpenChecks();
-    });
-  });
-
-  const interactive = createMemo(() => {
+export const useKingDefenseIIChecks: LessonChoreography = defineChoreography({
+  steps: [{ onMount: true, ensureTurnOpenChecks: true }],
+  interactive: (store) => {
     const s = store.state();
-    return (
-      s.turnStartChecksApplied &&
-      !s.timeline.active &&
-      (s.phase === "planning" || s.phase === "targeting")
-    );
-  });
-
-  return { interactive };
-};
+    return s.turnStartChecksApplied && !s.timeline.active && (s.phase === "planning" || s.phase === "targeting");
+  },
+});

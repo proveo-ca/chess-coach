@@ -113,36 +113,91 @@ export type TutorialBoardArrow = {
   tone?: "alert";
 };
 
-/** Board hint step — first matching entry wins (SCFEN `when`, else fallback). */
-export type TutorialBoardHint = {
-  when?:
-    | { kind: "scfen"; re: RegExp; phases?: readonly ReviewTurnPhase[] }
-    | { kind: "reviewPhase"; phase: ReviewTurnPhase; /** 1-based planning ordinal. */ turn?: number }
-    | TutorialCoversWhen
-    | TutorialTrajectoryWhen
-    | TutorialBackrankWhen
-    | TutorialMechaDiagonalWhen
-    | TutorialMechaThreatWhen
-    | TutorialGasMarineWhen
-    | TutorialForwardDeployWhen
-    | TutorialPromotionWhen
-    | TutorialChargeWhen
-    | TutorialTankSiegeWhen
-    | TutorialStopRunnerWhen
-    | TutorialMineGuardWhen
-    | TutorialShipJukeWhen
-    | TutorialCcPressureWhen
-    | TutorialBoardCondition;
-  /**
-   * Rewrite arrow origins to the viewer's BattleShip. The destination stays
-   * the square named on the arrow.
-   */
-  fromBattleShip?: boolean;
+/**
+ * One condition a beat can gate on, beyond its own `turn`/`phase`. Replaces
+ * two near-duplicate ~20-kind unions (`TutorialReactionWhen` in
+ * `tutorialScript.ts`, this file's old `TutorialBoardHint.when`) that had to
+ * be kept in sync by hand.
+ *
+ * `queued`/`and`/`or`/`not` (built via the constructors in `tutorial/when.ts`)
+ * replace hand-written `re: /SCFEN\|.../` regexes for "is this action already
+ * queued" — they check the *parsed* queue, not the raw wire string, so they
+ * don't care about field order or B-vs-F timing the way a regex would.
+ */
+export type TutorialWhen =
+  | TutorialQueuedWhen
+  | TutorialAndWhen
+  | TutorialOrWhen
+  | TutorialNotWhen
+  | { kind: "scfen"; re: RegExp }
+  | { kind: "reviewPhase"; phase: ReviewTurnPhase }
+  | { kind: "timelineActive" }
+  | { kind: "chessSkin"; chess: boolean }
+  | { kind: "targeting"; targetingKind: string }
+  | { kind: "shipSniped" }
+  | TutorialCoversWhen
+  | TutorialTrajectoryWhen
+  | TutorialBackrankWhen
+  | TutorialMechaDiagonalWhen
+  | TutorialMechaThreatWhen
+  | TutorialGasMarineWhen
+  | TutorialForwardDeployWhen
+  | TutorialPromotionWhen
+  | TutorialChargeWhen
+  | TutorialTankSiegeWhen
+  | TutorialStopRunnerWhen
+  | TutorialMineGuardWhen
+  | TutorialShipJukeWhen
+  | TutorialCcPressureWhen
+  | TutorialBoardCondition;
+
+/** A White or Black action already queued this turn, matched against the
+ * *parsed* queue (see `tutorial/when.ts`'s `queued()`), e.g. `"C=a3c2"` or
+ * `"B=siegeMode:e4"`. */
+export type TutorialQueuedWhen = { kind: "queued"; color?: "w" | "b"; action: string };
+export type TutorialAndWhen = { kind: "and"; all: readonly TutorialWhen[] };
+export type TutorialOrWhen = { kind: "or"; any: readonly TutorialWhen[] };
+export type TutorialNotWhen = { kind: "not"; not: TutorialWhen };
+
+/** Board rings/arrows a beat paints. Any omitted field renders empty — a
+ * matched beat's marks always replace the previous beat's wholesale, they
+ * never merge. */
+export type TutorialMark = {
   /** Guide-green rings. */
   squares?: readonly Square[];
   /** Alert-red rings. Same step as `squares`; both paint together. */
   alertSquares?: readonly Square[];
   arrows?: readonly TutorialBoardArrow[];
+  /**
+   * Rewrite arrow origins to the viewer's BattleShip. The destination stays
+   * the square named on the arrow.
+   */
+  fromBattleShip?: boolean;
+};
+
+/**
+ * One scripted beat: a `when` (plus first-class `turn`/`phase` gates) paired
+ * with the message and/or board marks that go together. Replaces the old
+ * `reactions[]` + `hints[]` pair — no more writing the same `when` twice.
+ * `say`/`mark` are independently optional: a beat can update just the coach
+ * line, just the board marks, or both. First beat whose gates all match wins
+ * for `say`, and (separately) first beat whose gates match wins for `mark` —
+ * same first-match-wins ordering rule as before (most specific first), now in
+ * one array instead of two.
+ */
+export type TutorialBeat = {
+  /** Absolute turn gate — first-class, no more embedding it in a regex. */
+  turn?: number;
+  phase?: ReviewTurnPhase | readonly ReviewTurnPhase[];
+  when?: TutorialWhen;
+  /** Coach line. Omit to leave the bubble to a later/fallback beat. */
+  say?: string;
+  emotion?: KerriganEmotion;
+  action?: TutorialReactionAction;
+  /** Momentary beat — shown while matched, never latched as the sticky line. */
+  transient?: boolean;
+  /** Board rings/arrows. Omit to leave marks to a later/fallback beat. */
+  mark?: TutorialMark;
 };
 
 /** One viewer-side unit covering a square, via core attack geometry. */
