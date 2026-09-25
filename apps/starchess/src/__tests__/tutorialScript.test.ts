@@ -177,6 +177,18 @@ describe("tutorialScript", () => {
     "minesTipTurn2",
     "ccPressureFallback",
   );
+  const KING_ATTACK_4 = namedReactions(
+    "king",
+    "king-attack-4",
+    "gasMarine",
+    "siegeTank",
+    "deployBoth",
+    "guardAlley",
+    "hoverbikeThreat",
+    "pointAtCC",
+    "unsiegeTank",
+    "goodJob",
+  );
 
   it("covers four stages with the expected story counts", () => {
     expect(TUTORIAL_SCRIPT.map((s) => s.id)).toEqual([
@@ -228,19 +240,21 @@ describe("tutorialScript", () => {
     expect(snap.mines).toEqual([{ color: "w", at: "b1" }]);
     expect(snap.siegedTanks).toEqual(["d8"]);
     const map = placementToMap(snap.placement);
-    expect(map.size).toBe(17);
+    expect(map.size).toBe(18);
     expect(map.get("b7")).toEqual({ color: "b", type: "k" });
     expect(map.get("e1")).toEqual({ color: "w", type: "k" });
     expect(map.get("d2")).toEqual({ color: "w", type: "n" });
     expect(map.get("e2")).toEqual({ color: "w", type: "r" });
     expect(map.get("a6")).toEqual({ color: "b", type: "n" });
+    expect(map.get("d7")).toEqual({ color: "b", type: "p" });
+    expect(map.get("e7")).toEqual({ color: "b", type: "p" });
     expect(story.board?.stored).toBe(3);
     expect(story.board?.opponent).toBe("adjutant");
     expect(matchesTutorialCompleteWhen(story.completeWhen, seed)).toBe(false);
     expect(
       matchesTutorialCompleteWhen(
         story.completeWhen,
-        "SCFEN|3r4/pkp1n3/npb5/4P3/3P1P2/N1PB4/3NR3/4K3|12|30|P|G:21:22|M:w:b1|S:d8|Q:w:;b:B=spiderMine:a6:a6,C=a6c5",
+        "SCFEN|3r4/pkppp3/npb5/4P3/3P1P2/N1PB4/3NR3/4K3|12|30|P|G:21:22|M:w:b1|S:d8|Q:w:;b:B=spiderMine:a6:a6,C=a6c5",
       ),
     ).toBe(true);
   });
@@ -260,25 +274,76 @@ describe("tutorialScript", () => {
     expect(map.get("a6")).toBeUndefined();
   });
 
-  it("king-attack-4 nudges toward e4 first, then toward gas once it's queued", () => {
+  it("king-attack-4 turn 1: centralize, siege, then gas the f-file Marine", () => {
     const story = storyOf("king", "king-attack-4");
+    const placement = "3r4/pkppp3/npb5/4P3/3P1P2/N1PB4/3NR3/4K3";
+    const black = "b:B=spiderMine:a6:a6,C=a6c5";
     const seed = lessonBoard("king", "king-attack-4").scfen;
-    expectIntro(
-      resolveTutorialLine({ stageId: "king", storyId: "king-attack-4", scfen: seed }),
-      "king",
-      "king-attack-4",
-    );
+    const lineFor = (scfen: string) =>
+      resolveTutorialLine({ stageId: "king", storyId: "king-attack-4", scfen });
+
+    expectIntro(lineFor(seed), "king", "king-attack-4");
     expect(hintSquares(story.hints, seed)).toEqual(["e2"]);
     expect(hintArrows(story.hints, seed)).toEqual([{ from: "e2", to: "e4" }]);
 
-    const queued =
-      "SCFEN|3r4/pkp1n3/npb5/4P3/3P1P2/N1PB4/3NR3/4K3|12|33|P|G:21:22|M:w:b1|S:d8|Q:w:C=e2e4;b:";
-    const [siege] = storyOf("king", "king-attack-4").reactions ?? [];
-    expectReaction(
-      resolveTutorialLine({ stageId: "king", storyId: "king-attack-4", scfen: queued }),
-      siege!,
-    );
-    expect(hintSquares(story.hints, queued)).toEqual(["e4"]);
+    const moveQueued = `SCFEN|${placement}|12|33|P|G:21:22|M:w:b1|S:d8|Q:w:C=e2e4;${black}`;
+    expectReaction(lineFor(moveQueued), KING_ATTACK_4.siegeTank);
+    expect(hintSquares(story.hints, moveQueued)).toEqual(["e4"]);
+
+    const bothQueued = `SCFEN|${placement}|12|33|P|G:11:22|M:w:b1|S:d8|Q:w:C=e2e4,B=siegeMode:e2;${black}`;
+    expectReaction(lineFor(bothQueued), KING_ATTACK_4.gasMarine);
+    expect(hintSquares(story.hints, bothQueued)).toEqual(["f5"]);
+    expect(hintArrows(story.hints, bothQueued)).toEqual([{ from: "f4", to: "f5" }]);
+  });
+
+  it("king-attack-4 turn 2: capture the Hoverbike, mine a3, deploy a Marine", () => {
+    const story = storyOf("king", "king-attack-4");
+    const placement = "3r4/pkppp3/1pb5/2n1PP2/3PR3/N1PB4/3N4/4K3";
+    const lineFor = (scfen: string) =>
+      resolveTutorialLine({ stageId: "king", storyId: "king-attack-4", scfen, turn: 13 });
+
+    const nothing = `SCFEN|${placement}|13|33|P|G:22:22|M:w:b1|S:d8e4|Q:w:;b:`;
+    expectReaction(lineFor(nothing), KING_ATTACK_4.hoverbikeThreat);
+    expect(hintSquares(story.hints, nothing)).toEqual(["c5", "d4"]);
+    expect(hintAlerts(story.hints, nothing)).toEqual(["d3"]);
+    expect(hintArrows(story.hints, nothing)).toEqual([
+      { from: "c5", to: "d3" },
+      { from: "d3", to: "e1", tone: "alert" },
+      { from: "d4", to: "c5" },
+    ]);
+
+    const attackOnly = `SCFEN|${placement}|13|33|P|G:22:22|M:w:b1|S:d8e4|Q:w:C=d4c5;b:`;
+    expectReaction(lineFor(attackOnly), KING_ATTACK_4.guardAlley);
+    expect(hintSquares(story.hints, attackOnly)).toEqual(["a3"]);
+
+    const bothQueued = `SCFEN|${placement}|13|33|P|G:12:22|M:w:b1|S:d8e4|Q:w:C=d4c5,B=spiderMine:a3:a3;b:`;
+    expectReaction(lineFor(bothQueued), KING_ATTACK_4.deployBoth);
+    expect(hintSquares(story.hints, bothQueued)).toEqual(["e2"]);
+  });
+
+  it("king-attack-4 turn 3: relocate the Hoverbike, then unsiege the Tank", () => {
+    const story = storyOf("king", "king-attack-4");
+    const placement = "3r4/pkppp3/2b5/1pP1PP2/4R3/2P5/3NP3/4K3";
+    const lineFor = (scfen: string) =>
+      resolveTutorialLine({ stageId: "king", storyId: "king-attack-4", scfen, turn: 14 });
+
+    const nothing = `SCFEN|${placement}|14|33|P|G:22:22|M:w:a3b1|S:d8|Q:w:;b:`;
+    expectReaction(lineFor(nothing), KING_ATTACK_4.goodJob);
+    expect(hintSquares(story.hints, nothing)).toEqual(["c2"]);
+    expect(hintArrows(story.hints, nothing)).toEqual([{ from: "a3", to: "c2" }]);
+
+    const moveOnly = `SCFEN|${placement}|14|33|P|G:22:22|M:w:a3b1|S:d8|Q:w:C=a3c2;b:`;
+    expectReaction(lineFor(moveOnly), KING_ATTACK_4.unsiegeTank);
+    expect(hintSquares(story.hints, moveOnly)).toEqual(["e4"]);
+    expect(hintAlerts(story.hints, moveOnly)).toEqual(["b7"]);
+
+    const bothQueued = `SCFEN|${placement}|14|33|P|G:12:22|M:w:a3b1|S:d8|Q:w:C=a3c2,B=siegeMode:e4;b:`;
+    expectReaction(lineFor(bothQueued), KING_ATTACK_4.pointAtCC);
+    expect(hintSquares(story.hints, bothQueued)).toEqual(["b4"]);
+    expect(hintArrows(story.hints, bothQueued)).toEqual([
+      { from: "e4", to: "b4" },
+      { from: "b4", to: "b7", tone: "alert" },
+    ]);
   });
 
   it("fog completeWhen does not match seed SCFEN but matches post-goal boards", () => {

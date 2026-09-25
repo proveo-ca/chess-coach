@@ -100,7 +100,7 @@ describe("tutorial lesson catalog", () => {
     const lastStage = TUTORIAL_SCRIPT[TUTORIAL_SCRIPT.length - 1]!;
     const lastStory = lastStage.stories[lastStage.stories.length - 1]!;
     expect(`${lastStage.id}/${lastStory.id}`).toBe("king/king-attack-4");
-    expect(lastStory.board?.choreography).toBe("kingHuntGraduation");
+    expect(lastStory.board?.choreography).toBe("turtledOpeningScript");
   });
 
   it("every live lesson can be completed", () => {

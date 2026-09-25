@@ -1903,11 +1903,11 @@ export const TUTORIAL_SCRIPT_CONFIG = [
         title: "Turtled Opponent",
         board: {
           scfen:
-            "SCFEN|3r4/pkp1n3/npb5/4P3/3P1P2/N1PB4/3NR3/4K3|12|33|P|G:21:22|M:w:b1|S:d8|Q:w:;b:B=spiderMine:a6:a6,C=a6c5",
+            "SCFEN|3r4/pkppp3/npb5/4P3/3P1P2/N1PB4/3NR3/4K3|12|33|P|G:21:22|M:w:b1|S:d8|Q:w:;b:B=spiderMine:a6:a6,C=a6c5",
           stored: 3,
           opponent: "adjutant",
-          choreography: "kingHuntGraduation",
-          docs: "Enemy Command Center on b7, Siege Tank sieged on d8, Marines on a7/b6/c7, Mecha on c6, Hoverbikes on a6/e7 — a fully turtled defense. Ally Command Center on e1, Marines on c3/d4/e5/f4, Hoverbikes on a3/d2, mobile Siege Tank on e2, Mecha on d3, a Mine on b1. Turn 12, 3 minerals each side. The enemy's opening is scripted: the a6 Hoverbike lays a mine on its own square, then rides back to c5.",
+          choreography: "turtledOpeningScript",
+          docs: "Enemy Command Center on b7, Siege Tank sieged on d8, Marines on a7/b6/c7/d7/e7, Mecha on c6, Hoverbike on a6 — a fully turtled defense. Ally Command Center on e1, Marines on c3/d4/e5/f4, Hoverbikes on a3/d2, mobile Siege Tank on e2, Mecha on d3, a Mine on b1. Turn 12 (relative turn 1), 3 minerals each side. Scripted: the a6 Hoverbike mines its own square then rides to c5 (turn 1); it then threatens the ally Command Center via c5->d3, dying to its own move if not captured first (turn 2); the enemy deploys a Tank on a6, pushes its b-file Marine, and rides the Tank a6->a1 — running into the ally's own a3 mine if the Hoverbike there has already moved (turn 3). Turn 4 onward hands off to the naive Adjutant.",
         },
         comment: "Uncontested center stinks of rat to me... \n\n Centralize your tank.",
         emotion: "thinking",
@@ -1915,19 +1915,142 @@ export const TUTORIAL_SCRIPT_CONFIG = [
         restartWhen: { kind: "lives", own: 0 },
         reactions: [
           {
-            when: { kind: "scfen", re: /Q:w:[^;]*C=e2e4/ },
+            // Turn 1 (relative), most advanced state: siege queued.
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|12\|[^|]*\|[^|]*\|(?=.*\|Q:w:[^;]*[BF]=siegeMode:e2)/,
+            },
+            comment: "Move this Marine from f4 to f5.",
+            emotion: "thinking",
+          },
+          {
+            // Turn 1, move queued (siege not yet).
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|12\|[^|]*\|[^|]*\|(?=.*\|Q:w:[^;]*C=e2e4)/,
+            },
             comment: "Now siege it up with gas.",
             emotion: "thinking",
+          },
+          {
+            // Turn 2, both queued.
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|13\|[^|]*\|[^|]*\|(?=.*\|Q:w:[^;]*C=d4c5)(?=.*\|Q:w:[^;]*[BF]=spiderMine:a3)/,
+            },
+            comment: "Deploy a Marine",
+            emotion: "thinking",
+          },
+          {
+            // Turn 2, attack queued only.
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|13\|[^|]*\|[^|]*\|(?=.*\|Q:w:[^;]*C=d4c5)/,
+            },
+            comment: "Guard that back alley with a trap.",
+            emotion: "thinking",
+          },
+          {
+            when: { kind: "turn", turn: 13 },
+            comment:
+              "I knew it, nowhere to hide with full vision. \n\nThat Hoverbike is a risk to our default location CC.",
+            emotion: "thinking",
+          },
+          {
+            // Turn 3, both queued: Hoverbike relocated and the Tank unsieged.
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|14\|[^|]*\|[^|]*\|(?=.*\|Q:w:[^;]*C=a3c2)(?=.*\|Q:w:[^;]*[BF]=siegeMode:e4)/,
+            },
+            comment: "Now point it at the enemy CC.",
+            emotion: "happy",
+          },
+          {
+            // Turn 3, Hoverbike move queued only.
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|14\|[^|]*\|[^|]*\|(?=.*\|Q:w:[^;]*C=a3c2)/,
+            },
+            comment: "Force this rat to move with a sieged Tank. \n\nUnsiege your tank.",
+            emotion: "happy",
+          },
+          {
+            when: { kind: "turn", turn: 14 },
+            comment: "Good job! \n\nHold the C file, as A and B already have mines",
+            emotion: "happy",
           },
         ],
         hints: [
           {
-            when: { kind: "scfen", re: /Q:w:[^;]*C=e2e4/ },
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|12\|[^|]*\|[^|]*\|(?=.*\|Q:w:[^;]*[BF]=siegeMode:e2)/,
+            },
+            squares: ["f5"],
+            arrows: [{ from: "f4", to: "f5" }],
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|12\|[^|]*\|[^|]*\|(?=.*\|Q:w:[^;]*C=e2e4)/,
+            },
             squares: ["e4"],
           },
           {
+            when: { kind: "scfen", re: /SCFEN\|[^|]+\|12\|/ },
             squares: ["e2"],
             arrows: [{ from: "e2", to: "e4" }],
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|13\|[^|]*\|[^|]*\|(?=.*\|Q:w:[^;]*C=d4c5)(?=.*\|Q:w:[^;]*[BF]=spiderMine:a3)/,
+            },
+            squares: ["e2"],
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|13\|[^|]*\|[^|]*\|(?=.*\|Q:w:[^;]*C=d4c5)/,
+            },
+            squares: ["a3"],
+          },
+          {
+            when: { kind: "scfen", re: /SCFEN\|[^|]+\|13\|/ },
+            squares: ["c5", "d4"],
+            alertSquares: ["d3"],
+            arrows: [
+              { from: "c5", to: "d3" },
+              { from: "d3", to: "e1", tone: "alert" },
+              { from: "d4", to: "c5" },
+            ],
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|14\|[^|]*\|[^|]*\|(?=.*\|Q:w:[^;]*C=a3c2)(?=.*\|Q:w:[^;]*[BF]=siegeMode:e4)/,
+            },
+            squares: ["b4"],
+            arrows: [
+              { from: "e4", to: "b4" },
+              { from: "b4", to: "b7", tone: "alert" },
+            ],
+          },
+          {
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|[^|]+\|14\|[^|]*\|[^|]*\|(?=.*\|Q:w:[^;]*C=a3c2)/,
+            },
+            squares: ["e4"],
+            alertSquares: ["b7"],
+          },
+          {
+            when: { kind: "scfen", re: /SCFEN\|[^|]+\|14\|/ },
+            squares: ["c2"],
+            arrows: [{ from: "a3", to: "c2" }],
+          },
+          {
+            squares: [],
           },
         ],
       },
