@@ -54,20 +54,39 @@ describe("foldTurn on one settled ply", () => {
     );
   });
 
-  it("does not credit a non-sliding attacker (King) as an interception", () => {
-    // c3 (black King) x d4 (white Marine) is one step; a Rook further out on
-    // the same diagonal (e5) was never actually threatened by that capture.
+  it("does not credit a Marine that was never gas-stepped this ply", () => {
+    // The Marine on d4 just sits there — it did not gas-step into this capture,
+    // so it never "intercepted" anything, regardless of what stands behind it.
     const state = seedAnalysis({ turn: 1, placement: "8/8/8/4R3/3P4/2k5/8/K7" }, "w");
     const bubbles = foldTurn(state, {
       turn: 2,
       placement: "8/8/8/4R3/8/2k5/8/K7",
       beforePlacement: "8/8/8/4R3/3P4/2k5/8/K7",
       attacks: [
-        { kind: "capture", color: "b", piece: "k", from: "c3", to: "d4", victim: { piece: "p", color: "w" } },
+        { kind: "capture", color: "b", from: "c3", to: "d4", victim: { piece: "p", color: "w" } },
       ],
     });
     expect(state.intercepts).toBe(0);
     expect(bubbles.some((bubble) => bubble.shortId === "medal")).toBe(false);
+  });
+
+  it("credits a gas-stepped Marine's death regardless of attacker or what stands behind it", () => {
+    // A King capture, no friendly piece behind at all — gas-stepping into the
+    // shot is the only thing this achievement requires.
+    const state = seedAnalysis({ turn: 1, placement: "8/8/8/8/3k4/8/2P5/K7" }, "w");
+    const bubbles = foldTurn(state, {
+      turn: 2,
+      placement: "8/8/8/8/8/2k5/8/K7",
+      beforePlacement: "8/8/8/8/3k4/8/2P5/K7",
+      events: [{ phase: "specialBefore", color: "w", kind: "stimStep", from: "c2", to: "c3" }],
+      attacks: [
+        { kind: "capture", color: "b", from: "d4", to: "c3", victim: { piece: "p", color: "w" } },
+      ],
+    });
+    expect(state.intercepts).toBe(1);
+    expect(bubbles.some((bubble) => bubble.shortId === "medal" && bubble.origin === "c3")).toBe(
+      true,
+    );
   });
 
   it("counts a Marine that takes a BattleShip as Stonks level 2 and not level 3", () => {

@@ -93,8 +93,6 @@ export type AnalysisState = {
 export type FoldAttack = {
   kind?: string;
   color?: string;
-  /** The attacking piece's own type. Only `b`/`r`/`q` slide past `to`. */
-  piece?: string;
   from?: string;
   to?: string;
   victim?: { piece?: string; color?: string };
@@ -260,38 +258,6 @@ const bumpStreak = (
   return { streak: 1, last: turn };
 };
 
-const FILES = "abcdefgh";
-
-/** Mecha, Siege Tank, BattleShip — the only units whose ray extends past their target. */
-const SLIDING_PIECES = new Set(["b", "r", "q"]);
-
-const protectsFriend = (
-  placement: string,
-  from: string,
-  to: string,
-  friend: StarChessColor,
-): boolean => {
-  if (!/^[a-h][1-8]$/.test(from) || !/^[a-h][1-8]$/.test(to)) return false;
-  const df = FILES.indexOf(to[0]!) - FILES.indexOf(from[0]!);
-  const dr = Number(to[1]) - Number(from[1]);
-  if (df === 0 && dr === 0) return false;
-  const ortho = df === 0 || dr === 0;
-  const diag = Math.abs(df) === Math.abs(dr);
-  if (!ortho && !diag) return false;
-  const stepF = Math.sign(df);
-  const stepR = Math.sign(dr);
-  const map = placementToMap(placement);
-  let file = FILES.indexOf(to[0]!) + stepF;
-  let rank = Number(to[1]) + stepR;
-  while (file >= 0 && file < 8 && rank >= 1 && rank <= 8) {
-    const piece = map.get(`${FILES[file]}${rank}` as Square);
-    if (piece) return piece.color === friend && piece.type !== "p";
-    file += stepF;
-    rank += stepR;
-  }
-  return false;
-};
-
 /** What `color` sees on the board a ply settled into. */
 const plyVision = (ply: FoldPly, color: StarChessColor) => {
   const sieged = new Set(ply.siegedTanks ?? []);
@@ -361,6 +327,9 @@ export const foldTurn = (state: AnalysisState, ply: FoldPly): AchievementBubble[
   let lightOrigin: Spot | undefined;
   let jumpOrigin: Spot | undefined;
   const commandCenter = ccSquare(ply.placement, player);
+  // Squares a friendly unit gas-stepped onto this ply — an interception only
+  // counts a Marine gas moved into the shot, never one that was just standing there.
+  const gasSteppedTo = new Set<string>();
 
   const credit = (from: string, victimType: string | undefined, to: string | undefined) => {
     const piece = idAt(state, from, ply.turn);
@@ -407,6 +376,7 @@ export const foldTurn = (state: AnalysisState, ply: FoldPly): AchievementBubble[
       }
     }
     if (ev.kind === "tacticalJump") jumpOrigin = { id: piece, at: ev.to };
+    if (ev.kind === "stimStep" && ev.to) gasSteppedTo.add(ev.to);
     if ((ev.kind === "stimStep" || ev.kind === "tacticalJump") && ev.to && ev.to !== ev.from) {
       state.at.delete(ev.from);
       state.at.set(ev.to, piece);
@@ -425,13 +395,9 @@ export const foldTurn = (state: AnalysisState, ply: FoldPly): AchievementBubble[
     }
     if (atk.kind !== "capture" || !atk.from || !atk.to) continue;
     if (atk.victim?.piece === "p" && atk.victim.color === player && atk.color !== player) {
-      const behind =
-        !!atk.piece &&
-        SLIDING_PIECES.has(atk.piece) &&
-        protectsFriend(ply.beforePlacement ?? ply.placement, atk.from, atk.to, player);
-      if (behind) {
+      if (gasSteppedTo.has(atk.to)) {
         state.intercepts += 1;
-        // The Marine died where it stood in the way.
+        // The Marine died where its gas step carried it.
         medalOrigin = { at: atk.to };
       }
       continue;
