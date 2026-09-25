@@ -50,9 +50,6 @@ export const useLessonNarration = (
       })),
       targetingKind: s.targeting?.kind ?? null,
       shipSniped: battleShipWatch.sniped,
-      // Seed SCFEN uses turn 0 for the first planning window; +1 → 1-based
-      // ordinal so turn-gated script lines fire on the right turn.
-      turn: snap.turn + 1,
     });
   });
 

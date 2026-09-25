@@ -1,6 +1,6 @@
 @startuml tutorial-line-resolution
 ' purpose: Tutorial coach-line pipeline — deep-link
-'   canonicalization, first-match reaction pick,
+'   canonicalization, ranked beat pick,
 '   intro hold with turn-open re-baseline, and
 '   settled-board auto-advance gates.
 ' covers: apps/starchess/src/tutorial/tutorialScript.ts
@@ -29,7 +29,7 @@ RESOLVER ARROW_ERROR SCREEN : lessonBoard throws\non unknown id
 == Coach line per frame ==
 BOARD ARROW_MAIN SCREEN : scfen · phase · targeting
 SCREEN ARROW_MAIN RESOLVER : resolveTutorialLine(ctx)
-RESOLVER ARROW_MAIN RESOLVER : first matching\nreaction wins
+RESOLVER ARROW_MAIN RESOLVER : pickBeat: priority,\nthen specificity
 RESOLVER ARROW_OPTIONAL SCREEN : story intro fallback
 SCREEN ARROW_MAIN RESOLVER : holdTutorialLine(hold,\nkey, raw, ctx)
 RESOLVER ARROW_MAIN RESOLVER : baseline, re-baseline,\nsticky-or-silence
@@ -42,11 +42,14 @@ SCREEN ARROW_MAIN SCREEN : ending hold, success\nbubble, auto-advance
 
 ' N_PRECEDENCE:
 note over RESOLVER
-  First matching reaction wins, judged in
-  declaration order from reviewPhase down
-  to targeting; narrow scfen beats precede
-  broad turn beats. Unmatched contexts fall
-  back to the story introduction comment.
+  Per field (say, mark), the matching beat
+  with the highest priority wins, then the one
+  with the most leaf gates (turn, phase, each
+  and() leaf); declaration order breaks only a
+  full tie. `turn:` reads the SCFEN turn field,
+  so a beat's turn comes from the wire, not a
+  host counter. Unmatched contexts fall back
+  to the story introduction comment.
 end note
 
 ' N_REBASE:

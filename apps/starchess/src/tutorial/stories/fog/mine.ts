@@ -20,21 +20,21 @@ export const mine = {
   },
   beats: [
     {
-      turn: 3,
+      turn: 2,
       say: "See what happens when exploring the fog uncovers a mine",
       emotion: "watching",
     },
     {
-      turn: 2,
+      turn: 1,
       say: "Mines can be targetted for attack",
       emotion: "watching",
     },
     {
-      when: { kind: "scfen", re: /SCFEN\|[^|]+\|1\|/ },
+      turn: 1,
       mark: { squares: ["c3"], arrows: [{ from: "d2", to: "c3" }] },
     },
     {
-      when: { kind: "scfen", re: /SCFEN\|[^|]+\|0\|/ },
+      turn: 0,
       mark: { squares: ["e4"], arrows: [{ from: "e2", to: "e4" }] },
     },
     {

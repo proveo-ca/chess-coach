@@ -44,11 +44,11 @@ export const rookSiege = {
       mark: { squares: ["d7"], arrows: [{ from: "d4", to: "d7" }] },
     },
     {
-      turn: 3,
+      turn: 2,
       mark: { squares: ["d1"], arrows: [{ from: "d4", to: "d1" }] },
     },
     {
-      turn: 2,
+      turn: 1,
       mark: { squares: ["d2"], arrows: [{ from: "d4", to: "d2" }] },
     },
     {

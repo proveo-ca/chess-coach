@@ -188,12 +188,12 @@ describe("tutorialScript", () => {
     "king-attack-4",
     "gasMarine",
     "siegeTank",
+    "hoverbikeThreat",
     "deployBoth",
     "guardAlley",
-    "hoverbikeThreat",
+    "goodJob",
     "pointAtCC",
     "unsiegeTank",
-    "goodJob",
   );
 
   it("covers four stages with the expected story counts", () => {
@@ -298,23 +298,23 @@ describe("tutorialScript", () => {
 
     const bothQueued = `SCFEN|${placement}|12|33|P|G:11:22|M:w:b1|S:d8|Q:w:C=e2e4,B=siegeMode:e2;${black}`;
     expectReaction(lineFor(bothQueued), KING_ATTACK_4.gasMarine);
-    expect(hintSquares(story.beats, bothQueued)).toEqual(["f5"]);
-    expect(hintArrows(story.beats, bothQueued)).toEqual([{ from: "f4", to: "f5" }]);
+    expect(hintSquares(story.beats, bothQueued)).toEqual(["c2"]);
+    expect(hintArrows(story.beats, bothQueued)).toEqual([{ from: "c2", to: "c3" }]);
   });
 
   it("king-attack-4 turn 2: capture the Hoverbike, mine a3, deploy a Marine", () => {
     const story = storyOf("king", "king-attack-4");
     const placement = "3r4/pkppp3/1pb5/2n1PP2/3PR3/N1PB4/3N4/4K3";
     const lineFor = (scfen: string) =>
-      resolveTutorialLine({ stageId: "king", storyId: "king-attack-4", scfen, turn: 14 });
+      resolveTutorialLine({ stageId: "king", storyId: "king-attack-4", scfen });
 
     const nothing = `SCFEN|${placement}|13|33|P|G:22:22|M:w:b1|S:d8e4|Q:w:;b:`;
     expectReaction(lineFor(nothing), KING_ATTACK_4.hoverbikeThreat);
     expect(hintSquares(story.beats, nothing)).toEqual(["c5", "d4"]);
     expect(hintAlerts(story.beats, nothing)).toEqual(["d3"]);
     expect(hintArrows(story.beats, nothing)).toEqual([
-      { from: "c5", to: "d3" },
-      { from: "d3", to: "e1", tone: "alert" },
+      { from: "c5", to: "d3", via: "c3" },
+      { from: "d3", to: "e1", via: "d1", tone: "alert" },
       { from: "d4", to: "c5" },
     ]);
 
@@ -331,7 +331,7 @@ describe("tutorialScript", () => {
     const story = storyOf("king", "king-attack-4");
     const placement = "3r4/pkppp3/2b5/1pP1PP2/4R3/2P5/3NP3/4K3";
     const lineFor = (scfen: string) =>
-      resolveTutorialLine({ stageId: "king", storyId: "king-attack-4", scfen, turn: 15 });
+      resolveTutorialLine({ stageId: "king", storyId: "king-attack-4", scfen });
 
     const nothing = `SCFEN|${placement}|14|33|P|G:22:22|M:w:a3b1|S:d8|Q:w:;b:`;
     expectReaction(lineFor(nothing), KING_ATTACK_4.goodJob);
@@ -901,21 +901,19 @@ describe("tutorialScript", () => {
     ).toBe(true);
   });
 
-  it("gates king-attack-3 intro + intent tip to display turn 1", () => {
-    expectIntro(
+  it("gates king-attack-3 intent tip to the seed turn's intent phase", () => {
+    expect(
       resolveTutorialLine({
         stageId: "king",
         storyId: "king-attack-3",
-        turn: 1,
-      }),
-      "king",
-      "king-attack-3",
-    );
+        scfen: lessonBoard("king", "king-attack-3").scfen,
+      }).comment,
+    ).not.toBe(KING_ATTACK_3.intentTipTurn1.say);
     expectReaction(
       resolveTutorialLine({
         stageId: "king",
         storyId: "king-attack-3",
-        turn: 1,
+        scfen: lessonBoard("king", "king-attack-3").scfen,
         reviewPhase: "intent",
       }),
       KING_ATTACK_3.intentTipTurn1,
@@ -946,12 +944,11 @@ describe("tutorialScript", () => {
       stageId: "king",
       storyId: "king-attack-3",
       scfen,
-      turn: 1,
       reviewPhase: "resolve",
     });
     expectReaction(line, KING_ATTACK_3.ccMoved);
     expect(line.transient).toBe(true);
-    const query = { reviewPhase: "resolve" as const, turn: 1 };
+    const query = { reviewPhase: "resolve" as const };
     expect(hintAlerts(story.beats, scfen, undefined, undefined, query)).toEqual([
       "d5",
     ]);

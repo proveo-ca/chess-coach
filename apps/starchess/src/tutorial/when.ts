@@ -172,19 +172,54 @@ export const matchWhen = (when: TutorialWhen, ctx: TutorialWhenContext): boolean
   }
 };
 
-/** `TutorialWhenContext` plus the beat's own first-class turn gate. */
-export type TutorialBeatMatchContext = TutorialWhenContext & {
-  /** 1-based planning ordinal (`snap.turn + 1`; seed turn 0 → 1). */
-  turn?: number;
+export type TutorialBeatMatchContext = TutorialWhenContext;
+
+const scfenTurn = (scfen: string | undefined): number | undefined => {
+  const field = scfen?.split("|")[2];
+  return field ? Number(field) : undefined;
 };
 
-/** True when every gate on `beat` holds: `turn`, `phase`, and `when` (all optional, all AND'd). */
+/** True when every gate on `beat` holds: `turn` (the SCFEN turn field), `phase`, and `when`. */
 export const matchesBeat = (beat: TutorialBeat, ctx: TutorialBeatMatchContext): boolean => {
-  if (beat.turn != null && ctx.turn !== beat.turn) return false;
+  if (beat.turn != null && scfenTurn(ctx.scfen) !== beat.turn) return false;
   if (beat.phase != null) {
     const phases = Array.isArray(beat.phase) ? beat.phase : [beat.phase];
     if (!ctx.reviewPhase || !phases.includes(ctx.reviewPhase)) return false;
   }
   if (beat.when != null && !matchWhen(beat.when, ctx)) return false;
   return true;
+};
+
+const whenSpecificity = (when: TutorialWhen): number =>
+  when.kind === "and" ? when.all.reduce((n, w) => n + whenSpecificity(w), 0) : 1;
+
+/** Leaf gates a beat must pass: `turn`, `phase`, and each `and(...)` leaf of `when`. */
+export const beatSpecificity = (beat: TutorialBeat): number =>
+  (beat.turn != null ? 1 : 0) +
+  (beat.phase != null ? 1 : 0) +
+  (beat.when != null ? whenSpecificity(beat.when) : 0);
+
+/**
+ * The beat carrying `field` whose gates hold, ranked by `priority` (default 0),
+ * then {@link beatSpecificity}; declaration order breaks a full tie.
+ */
+export const pickBeat = (
+  beats: readonly TutorialBeat[] | undefined,
+  field: "say" | "mark",
+  ctx: TutorialBeatMatchContext,
+): TutorialBeat | undefined => {
+  let best: TutorialBeat | undefined;
+  let bestPriority = -Infinity;
+  let bestScore = -1;
+  for (const beat of beats ?? []) {
+    if (beat[field] == null || !matchesBeat(beat, ctx)) continue;
+    const priority = beat.priority ?? 0;
+    const score = beatSpecificity(beat);
+    if (priority > bestPriority || (priority === bestPriority && score > bestScore)) {
+      best = beat;
+      bestPriority = priority;
+      bestScore = score;
+    }
+  }
+  return best;
 };

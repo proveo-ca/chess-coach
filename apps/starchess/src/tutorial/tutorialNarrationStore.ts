@@ -26,8 +26,6 @@ export type TutorialNarrationState = {
    * (the review / typewriter hosts), and `holdTutorialLine` then no-ops.
    */
   turnStartChecksApplied?: boolean;
-  /** 1-based planning ordinal (`snap.turn + 1`; seed turn 0 → 1). */
-  turn?: number;
   /** Live SCFEN queue actions (intent) — preferred over wire regex for stacks. */
   queue?: readonly TutorialQueueAction[];
   /** Live targeting mode (`charonMissiles`, `tacticalJump`, `deploy`, …). */

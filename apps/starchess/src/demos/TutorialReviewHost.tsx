@@ -151,7 +151,6 @@ const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
       // Busy covers resolve VFX await so completeWhen waits for Turn 3 end.
       timelineActive: s.timeline.active || busy(),
       scfen: formatScFen(board),
-      turn: typewriterTurn || reviewTurnNumber(),
       typewriterTurn: typewriterTurn || undefined,
       typewriterBeat: beat?.kind,
     });

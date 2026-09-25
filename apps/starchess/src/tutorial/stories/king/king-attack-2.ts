@@ -83,7 +83,7 @@ export const kingAttack2 = {
       mark: { squares: ["f4"], arrows: [{ from: "f2", to: "f4" }] },
     },
     {
-      when: { kind: "scfen", re: /SCFEN\|[^|]+\|21\|/ },
+      turn: 21,
       mark: { squares: ["d2"], fromBattleShip: true, arrows: [{ from: "h7", to: "d2" }] },
     },
     {

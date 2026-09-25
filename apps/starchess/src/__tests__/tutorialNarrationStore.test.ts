@@ -12,10 +12,8 @@ describe("tutorialNarrationStore", () => {
       reviewPhase: "intent",
       timelineActive: true,
       scfen: "SCFEN|…",
-      turn: 2,
     });
     expect(tutorialNarration().reviewPhase).toBe("intent");
-    expect(tutorialNarration().turn).toBe(2);
     resetTutorialNarration();
     expect(tutorialNarration()).toEqual({});
   });

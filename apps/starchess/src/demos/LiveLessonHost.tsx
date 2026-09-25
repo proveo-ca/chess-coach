@@ -112,7 +112,6 @@ const LiveLessonInner: Component<LiveLessonHostProps> = (props) => {
         timelineActive: s.timeline.active,
         pendingPromotion: !!s.pendingPromotion,
       }),
-      turn: displayedSnapshot(s).turn + 1,
     });
   });
 

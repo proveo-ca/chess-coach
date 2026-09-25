@@ -18,7 +18,7 @@ import {
   tankSiegeSquare,
   whiteBattleShipSquare,
 } from "~/tutorial/lessonTactics";
-import { matchesBeat, type TutorialBeatMatchContext } from "~/tutorial/when";
+import { pickBeat, type TutorialBeatMatchContext } from "~/tutorial/when";
 import type { KerriganEmotion } from "~/types/coach";
 import type {
   AlertLatch,
@@ -206,8 +206,6 @@ export type TutorialScriptContext = {
   chessSkin?: boolean;
   /** Live `formatScFen` wire for `scfen` reactions. */
   scfen?: string;
-  /** 1-based planning ordinal (`snap.turn + 1`; seed turn 0 → 1). */
-  turn?: number;
   /** Live targeting kind (`charonMissiles`, …). */
   targetingKind?: string | null;
   /** Enemy-occupied watch squares mapped to their current coverers. */
@@ -223,7 +221,6 @@ export type TutorialScriptContext = {
 /** `TutorialScriptContext` narrowed to what `matchesBeat` needs. */
 const beatMatchContext = (ctx: TutorialScriptContext): TutorialBeatMatchContext => ({
   scfen: ctx.scfen,
-  turn: ctx.turn,
   reviewPhase: ctx.reviewPhase,
   timelineActive: ctx.timelineActive,
   chessSkin: ctx.chessSkin,
@@ -265,10 +262,8 @@ export const resolveTutorialLine = (ctx: TutorialScriptContext): TutorialLine =>
     };
   }
 
-  const matchCtx = beatMatchContext(ctx);
-  for (const beat of story.beats ?? []) {
-    if (beat.say == null) continue;
-    if (!matchesBeat(beat, matchCtx)) continue;
+  const beat = pickBeat(story.beats, "say", beatMatchContext(ctx));
+  if (beat?.say != null) {
     return {
       comment: enrichSay(beat, ctx.scfen) ?? beat.say,
       emotion: beat.emotion ?? story.emotion,
@@ -368,7 +363,7 @@ export const holdTutorialLine = (
 /** The board state hint steps read — the board half of {@link TutorialScriptContext}. */
 export type TutorialHintContext = Pick<
   TutorialScriptContext,
-  "scfen" | "covers" | "trajectories" | "reviewPhase" | "turn"
+  "scfen" | "covers" | "trajectories" | "reviewPhase"
 >;
 
 /** What the board paints for the step in force. Empty arrays clear the marks. */
@@ -438,9 +433,9 @@ const enrichMark = (beat: TutorialBeat, scfen: string | undefined): TutorialMark
 };
 
 /**
- * The mark step in force — first beat whose `turn`/`phase`/`when` all match
- * and that carries a `mark`. Rings, alert rings and arrows all come from that
- * *one* beat, so a lesson cannot show a ring from one beat and a line from
+ * The mark step in force — the most specific beat carrying a `mark` whose
+ * `turn`/`phase`/`when` all match. Rings, alert rings and arrows all come from
+ * that *one* beat, so a lesson cannot show a ring from one beat and a line from
  * another.
  */
 export const resolveTutorialHint = (
@@ -449,18 +444,15 @@ export const resolveTutorialHint = (
 ): TutorialHintMarks => {
   const matchCtx: TutorialBeatMatchContext = {
     scfen: ctx.scfen,
-    turn: ctx.turn,
     reviewPhase: ctx.reviewPhase,
     covers: ctx.covers,
     trajectories: ctx.trajectories,
   };
+  const beat = pickBeat(beats, "mark", matchCtx);
   let mark: TutorialMark | undefined;
-  for (const beat of beats ?? []) {
-    if (beat.mark == null) continue;
-    if (!matchesBeat(beat, matchCtx)) continue;
+  if (beat) {
     mark = enrichMark(beat, ctx.scfen);
     if (mark.fromBattleShip && ctx.scfen) mark = battleShipOrigin(mark, ctx.scfen);
-    break;
   }
   return {
     squares: [...(mark?.squares ?? [])],

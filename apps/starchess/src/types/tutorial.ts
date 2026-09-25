@@ -180,13 +180,15 @@ export type TutorialMark = {
  * with the message and/or board marks that go together. Replaces the old
  * `reactions[]` + `hints[]` pair — no more writing the same `when` twice.
  * `say`/`mark` are independently optional: a beat can update just the coach
- * line, just the board marks, or both. First beat whose gates all match wins
- * for `say`, and (separately) first beat whose gates match wins for `mark` —
- * same first-match-wins ordering rule as before (most specific first), now in
- * one array instead of two.
+ * line, just the board marks, or both. Per field, the matching beat with the
+ * highest `priority` wins, then the one with the most leaf gates
+ * (`beatSpecificity`); array order only breaks a full tie.
+ * SPEC: _spec/apps/starchess/architecture/storybook-projection.puml
  */
 export type TutorialBeat = {
-  /** Absolute turn gate — first-class, no more embedding it in a regex. */
+  /** Rank over specificity; urgent beats (threat alerts) outrank tips. Default 0. */
+  priority?: number;
+  /** SCFEN turn field (`SCFEN|board|<turn>|…`), read from the wire itself. */
   turn?: number;
   phase?: ReviewTurnPhase | readonly ReviewTurnPhase[];
   when?: TutorialWhen;

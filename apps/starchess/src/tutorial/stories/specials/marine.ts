@@ -40,7 +40,7 @@ export const marine = {
     },
     {
       // Second planning window, no gas yet — teach the slip-away.
-      when: { kind: "scfen", re: /SCFEN\|[^|]+\|2\|/ },
+      turn: 2,
       say: "Now the slipping away technique, drop a gas canister in your Marine",
       emotion: "scanning",
       mark: { squares: ["e3"] },
@@ -54,7 +54,7 @@ export const marine = {
       emotion: "idle",
     },
     {
-      when: { kind: "scfen", re: /SCFEN\|[^|]+\|1\|/ },
+      turn: 1,
       mark: { squares: ["d4"], arrows: [{ from: "d2", to: "d4" }] },
     },
     {
