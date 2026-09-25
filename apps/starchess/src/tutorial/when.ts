@@ -13,6 +13,7 @@ import type { Square } from "chess.js";
 
 import {
   boardConditionHolds,
+  ccDeployPressure,
   ccPressureUnits,
   ccThreatUnits,
   chargeFromH8,
@@ -168,6 +169,8 @@ export const matchWhen = (when: TutorialWhen, ctx: TutorialWhenContext): boolean
       return !!ctx.scfen && shipJuke(ctx.scfen) != null;
     case "ccPressure":
       return !!ctx.scfen && phaseAllows(when.phases, ctx.reviewPhase) && ccPressureUnits(ctx.scfen) != null;
+    case "ccDeploy":
+      return !!ctx.scfen && phaseAllows(when.phases, ctx.reviewPhase) && ccDeployPressure(ctx.scfen) != null;
     case "ccThreat":
       return !!ctx.scfen && phaseAllows(when.phases, ctx.reviewPhase) && ccThreatUnits(ctx.scfen) != null;
     default:

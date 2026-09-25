@@ -164,6 +164,13 @@ export const kingAttack4 = {
     },
     {
       priority: 0,
+      when: { kind: "ccDeploy" },
+      say: "Deploy a unit that attacks the enemy Command Center.",
+      emotion: "thinking",
+      mark: {},
+    },
+    {
+      priority: 0,
       when: { kind: "ccPressure" },
       say: "Apply pressure to the enemy Command Center.",
       emotion: "thinking",

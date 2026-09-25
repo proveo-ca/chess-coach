@@ -4,9 +4,11 @@
  */
 import type { Square } from "chess.js";
 
+import { specialCopyFor } from "~/presentation/specials/copy";
 import { TUTORIAL_SCRIPT_CONFIG } from "~/tutorial/tutorialScript.config";
 import {
   boardConditionHolds,
+  ccDeployPressure,
   ccPressureUnits,
   ccThreatUnits,
   gasMarineSquare,
@@ -249,6 +251,15 @@ const enrichSay = (beat: TutorialBeat, scfen: string | undefined): string | unde
     const guard = mineGuard(scfen);
     if (guard) return `1 unit guarding ${guard.files} promoting files!`;
   }
+  if (w.kind === "ccDeploy") {
+    const deploy = ccDeployPressure(scfen);
+    if (deploy) {
+      const unit = specialCopyFor(deploy.unit).unit;
+      return deploy.hits.includes(deploy.cc)
+        ? `Deploy a ${unit} on ${deploy.at} with Gas: it hits the enemy Command Center!`
+        : `Deploy a ${unit} on ${deploy.at} with Gas to cover the enemy Command Center's escape squares.`;
+    }
+  }
   return beat.say;
 };
 
@@ -419,6 +430,16 @@ const enrichMark = (beat: TutorialBeat, scfen: string | undefined): TutorialMark
   if (w.kind === "tankSiege") {
     const sq = tankSiegeSquare(scfen);
     if (sq) return { ...base, squares: [sq] };
+  }
+  if (w.kind === "ccDeploy") {
+    const deploy = ccDeployPressure(scfen);
+    if (deploy) {
+      return {
+        ...base,
+        squares: [deploy.at],
+        arrows: deploy.hits.map((to) => ({ from: deploy.at, to, ...(to === deploy.cc ? { tone: "alert" as const } : {}) })),
+      };
+    }
   }
   if (w.kind === "ccThreat") {
     const threat = ccThreatUnits(scfen);

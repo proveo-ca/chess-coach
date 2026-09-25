@@ -1,6 +1,7 @@
 // SPEC: _spec/apps/starchess/menu-flow.puml
 import {
   attacksSquare,
+  deployCoverers,
   findCC,
   getSideVision,
   hostileMineOn,
@@ -10,6 +11,7 @@ import {
   type ScAction,
   type ScPiece,
   type StarChessColor,
+  type StarChessPiece,
 } from "@chess-coach/starchess-core";
 import type { Square } from "chess.js";
 
@@ -143,22 +145,110 @@ export const mechaDiagonalOpen = (scfen: string, viewer: StarChessColor = "w"): 
   return marine?.color === "w" && marine.type === "p" && blocker?.color === "b";
 };
 
+const sideVision = (scfen: string, map: Map<Square, ScPiece>, viewer: StarChessColor) =>
+  getSideVision(map, viewer, {
+    tankModeFor: (sq) => (squareSieged(scfen, sq) ? "siege" : "tank"),
+    mines: minesOf(scfen),
+  });
+
+/** The enemy Command Center's square, only while the viewer can see it. */
+const visibleEnemyCC = (
+  scfen: string,
+  map: Map<Square, ScPiece>,
+  viewer: StarChessColor,
+): Square | null => {
+  const cc = findCC(map, viewer === "w" ? "b" : "w");
+  if (!cc) return null;
+  const vision = sideVision(scfen, map, viewer);
+  return vision.litSquares.has(cc) || vision.revealedPieces.has(cc) ? cc : null;
+};
+
+const ringOf = (center: Square): Square[] => {
+  const file = FILES.indexOf(center[0]!);
+  const rank = Number(center[1]);
+  const out: Square[] = [];
+  for (let df = -1; df <= 1; df += 1) {
+    for (let dr = -1; dr <= 1; dr += 1) {
+      const f = FILES[file + df];
+      const r = rank + dr;
+      if ((df || dr) && f && r >= 1 && r <= 8) out.push(`${f}${r}` as Square);
+    }
+  }
+  return out;
+};
+
 /**
- * Ally units that currently attack the enemy Command Center, wherever it
- * stands — a Mecha on its diagonal, a Marine a step away, anything with the
- * geometry, not a piece-type-specific check like {@link mechaThreatOpen}.
+ * Ally units that currently attack the *visible* enemy Command Center — a
+ * Mecha on its diagonal, a Marine a step away, anything with the geometry.
+ * A fogged Command Center never counts.
  */
 export const ccPressureUnits = (
   scfen: string | undefined,
   viewer: StarChessColor = "w",
 ): { cc: Square; units: SquareCoverer[] } | null => {
   const map = scfen ? placementMap(scfen) : null;
-  if (!map) return null;
-  const enemy = viewer === "w" ? "b" : "w";
-  const cc = findCC(map, enemy);
+  if (!scfen || !map) return null;
+  const cc = visibleEnemyCC(scfen, map, viewer);
   if (!cc) return null;
   const units = attackersOfSquare(map, cc, viewer);
   return units.length > 0 ? { cc, units } : null;
+};
+
+export type CCDeployPressure = {
+  cc: Square;
+  at: Square;
+  unit: StarChessPiece;
+  /** The enemy Command Center and/or ring squares that deploy would attack. */
+  hits: Square[];
+};
+
+/**
+ * Best gas deploy onto the ally Command Center's ring that attacks the visible
+ * enemy Command Center, else the most squares around it; cheapest on a tie.
+ * Reach comes from core `deployCoverers`. None while a deploy is queued, or
+ * while a unit already attacks it ({@link ccPressureUnits} owns that hint).
+ */
+export const ccDeployPressure = (
+  scfen: string | undefined,
+  viewer: StarChessColor = "w",
+): CCDeployPressure | null => {
+  if (!scfen || viewer !== "w") return null;
+  if (/deploy:/.test(whiteQueue(scfen))) return null;
+  if (ccPressureUnits(scfen, viewer)) return null;
+  const map = placementMap(scfen);
+  if (!map) return null;
+  const cc = visibleEnemyCC(scfen, map, viewer);
+  if (!cc) return null;
+  const query = {
+    map,
+    mines: minesOf(scfen),
+    color: viewer,
+    cc: findCC(map, viewer),
+    gas: whiteGas(scfen),
+    minerals: storedMinerals(scfen, viewer) ?? 0,
+  };
+  const options = new Map<string, CCDeployPressure>();
+  for (const target of [cc, ...ringOf(cc)]) {
+    for (const { at, unit } of deployCoverers(query, target)) {
+      const key = `${unit}@${at}`;
+      const option = options.get(key) ?? { cc, at, unit, hits: [] };
+      option.hits.push(target);
+      options.set(key, option);
+    }
+  }
+  const rank = (o: CCDeployPressure) => [o.hits.includes(cc) ? 1 : 0, o.hits.length, -UNIT_COST[o.unit]];
+  let best: CCDeployPressure | null = null;
+  for (const option of options.values()) {
+    if (!best) {
+      best = option;
+      continue;
+    }
+    const a = rank(option);
+    const b = rank(best);
+    const i = a.findIndex((v, k) => v !== b[k]);
+    if (i >= 0 && a[i]! > b[i]!) best = option;
+  }
+  return best;
 };
 
 /** Enemy units the viewer can see attacking the viewer's own Command Center. */
@@ -170,10 +260,7 @@ export const ccThreatUnits = (
   if (!scfen || !map) return null;
   const cc = findCC(map, viewer);
   if (!cc) return null;
-  const vision = getSideVision(map, viewer, {
-    tankModeFor: (sq) => (squareSieged(scfen, sq) ? "siege" : "tank"),
-    mines: minesOf(scfen),
-  });
+  const vision = sideVision(scfen, map, viewer);
   const enemy = viewer === "w" ? "b" : "w";
   const units = attackersOfSquare(map, cc, enemy).filter(
     (u) => vision.litSquares.has(u.from) || vision.revealedPieces.has(u.from),

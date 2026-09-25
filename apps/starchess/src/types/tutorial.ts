@@ -151,6 +151,7 @@ export type TutorialWhen =
   | TutorialShipJukeWhen
   | TutorialCcPressureWhen
   | TutorialCcThreatWhen
+  | TutorialCcDeployWhen
   | TutorialBoardCondition;
 
 /** A White or Black action already queued this turn, matched against the
@@ -330,6 +331,16 @@ export type TutorialCcPressureWhen = {
  */
 export type TutorialCcThreatWhen = {
   kind: "ccThreat";
+  phases?: readonly ReviewTurnPhase[];
+};
+
+/**
+ * An affordable gas deploy on the ally Command Center's ring attacks the
+ * *visible* enemy Command Center or a square around it. Line and marks are
+ * computed (`ccDeployPressure`).
+ */
+export type TutorialCcDeployWhen = {
+  kind: "ccDeploy";
   phases?: readonly ReviewTurnPhase[];
 };
 

@@ -62,6 +62,12 @@ note over BOARD
   is visible (nextCCSighting, withCCAlert).
   ccThreat alerts visible attackers of the
   ally Command Center; fogged ones never count.
+  ccPressure and ccDeploy read the enemy
+  Command Center only while it is visible.
+  ccDeploy names the best gas deploy that hits
+  it or its ring (core deployCoverers) and
+  yields to ccPressure when a unit already
+  attacks it.
 end note
 
 ' N_REBASE:
