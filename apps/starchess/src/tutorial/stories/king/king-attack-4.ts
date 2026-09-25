@@ -19,14 +19,18 @@ export const kingAttack4 = {
   restartWhen: { kind: "lives", own: 0 },
   beats: [
     {
+      when: { kind: "scfen", re: /SCFEN\|[^|]+\|12\|/ },
+      mark: { squares: ["e2"], arrows: [{ from: "e2", to: "e4" }] },
+    },
+    {
       // Turn 1 (relative), most advanced state: siege queued.
       when: and(
         { kind: "scfen", re: /SCFEN\|[^|]+\|12\|/ },
         or(queued("B=siegeMode:e2"), queued("F=siegeMode:e2")),
       ),
-      say: "Move this Marine from f4 to f5.",
+      say: "Move this Marine from c2 to c3.",
       emotion: "thinking",
-      mark: { squares: ["f5"], arrows: [{ from: "f4", to: "f5" }] },
+      mark: { squares: ["c2"], arrows: [{ from: "c2", to: "c3" }] },
     },
     {
       // Turn 1, move queued (siege not yet).
@@ -34,6 +38,15 @@ export const kingAttack4 = {
       say: "Now siege it up with gas.",
       emotion: "thinking",
       mark: { squares: ["e4"] },
+    },
+    {
+      turn: 14,
+      say: "I knew it, nowhere to hide with full vision. \n\nThat Hoverbike is a risk to our default location CC. Get it!",
+      emotion: "thinking",
+    },
+    {
+      when: { kind: "scfen", re: /SCFEN\|[^|]+\|14\|/ },
+      mark: { squares: ["c2"], arrows: [{ from: "a3", to: "c2" }] },
     },
     {
       // Turn 2, both queued.
@@ -54,9 +67,9 @@ export const kingAttack4 = {
       mark: { squares: ["a3"] },
     },
     {
-      turn: 14,
-      say: "I knew it, nowhere to hide with full vision. \n\nThat Hoverbike is a risk to our default location CC.",
-      emotion: "thinking",
+      turn: 15,
+      say: "Good job! \n\nHold the C file, as A and B already have mines",
+      emotion: "happy",
     },
     {
       // Turn 3, both queued: Hoverbike relocated and the Tank unsieged.
@@ -83,29 +96,16 @@ export const kingAttack4 = {
       mark: { squares: ["e4"], alertSquares: ["b7"] },
     },
     {
-      turn: 15,
-      say: "Good job! \n\nHold the C file, as A and B already have mines",
-      emotion: "happy",
-    },
-    {
-      when: { kind: "scfen", re: /SCFEN\|[^|]+\|12\|/ },
-      mark: { squares: ["e2"], arrows: [{ from: "e2", to: "e4" }] },
-    },
-    {
       when: { kind: "scfen", re: /SCFEN\|[^|]+\|13\|/ },
       mark: {
         squares: ["c5", "d4"],
         alertSquares: ["d3"],
         arrows: [
-          { from: "c5", to: "d3" },
-          { from: "d3", to: "e1", tone: "alert" },
+          { from: "c5", to: "d3", via: "c3" },
+          { from: "d3", to: "e1", via: "d1", tone: "alert" },
           { from: "d4", to: "c5" },
         ],
       },
-    },
-    {
-      when: { kind: "scfen", re: /SCFEN\|[^|]+\|14\|/ },
-      mark: { squares: ["c2"], arrows: [{ from: "a3", to: "c2" }] },
     },
     {
       mark: { squares: [] },
