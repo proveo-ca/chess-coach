@@ -1,0 +1,41 @@
+// SPEC: _spec/apps/starchess/architecture/storybook-projection.puml
+import type { TutorialStoryScript } from "~/tutorial/tutorialScript";
+
+export const kingDefense2 = {
+  id: "king-defense-2",
+  title: "King Defense II",
+  board: {
+    scfen: "SCFEN|7k/8/8/8/8/8/6bq/6BK|11|33|P|G:22:22|B:1:1|Q:w:;b:",
+    stored: 1,
+    choreography: "kingDefenseIIChecks",
+  },
+  comment: "",
+  emotion: "shocked",
+  completeWhen: { kind: "lost", pieces: ["b", "q"] },
+  restartWhen: { kind: "lives", own: 0 },
+  beats: [
+    {
+      when: { kind: "scfen", re: /deploy:[^:;]*:g2/ },
+      say: "Now, queue an attack on that ship with either your Command Center or Mecha.",
+      emotion: "watching",
+    },
+    {
+      when: { kind: "scfen", re: /SCFEN\|[^|]+\|11\|1[0-3]\|/ },
+      say: "Cornered! \n\nCrush the enemy mecha by deploying a Marine onto its square.",
+      emotion: "shocked",
+    },
+    {
+      when: { kind: "scfen", re: /deploy:[^:;]*:g2/ },
+      mark: {
+        squares: ["h2"],
+        arrows: [
+          { from: "g1", to: "h2" },
+          { from: "h1", to: "h2" },
+        ],
+      },
+    },
+    {
+      mark: { squares: ["g2"], arrows: [{ from: "h1", to: "g2" }] },
+    },
+  ],
+} satisfies TutorialStoryScript;
