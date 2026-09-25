@@ -94,7 +94,7 @@ FEN ARROW_QUEUE UI : cumulative fog (""board/vision.ts"")\n+ ""playTimeline"" pr
 note over ES
   Gas does not accumulate; ""endScTurn"" leaves remaining at **0**
   and sets income tier. ""beginScTurn"" / turn-open **refills**
-  ""G:"" to full income (check chip, or no-check arm).
+  ""G:"" to income − ""queueGasSpent(queue)"" (check chip, or no-check arm).
 end note
 
 note over OUT

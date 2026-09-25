@@ -50,7 +50,7 @@ export const kingAttack4 = {
       emotion: "thinking",
     },
     {
-      turn: 13,
+      turn: 14,
       say: "I knew it, nowhere to hide with full vision. \n\nThat Hoverbike is a risk to our default location CC.",
       emotion: "thinking",
     },
@@ -71,7 +71,7 @@ export const kingAttack4 = {
       emotion: "happy",
     },
     {
-      turn: 14,
+      turn: 15,
       say: "Good job! \n\nHold the C file, as A and B already have mines",
       emotion: "happy",
     },

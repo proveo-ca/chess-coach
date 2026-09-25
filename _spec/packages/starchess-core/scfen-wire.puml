@@ -45,7 +45,9 @@ note right of G
   Income must equal the turn tier (1 / 2 / 3).
   Gas does **not** accumulate — ""endScTurn"" leaves
   remaining at **0**; ""beginScTurn"" / turn-open
-  **refills** to full income.
+  **refills** to income **minus** ""queueGasSpent"" of the
+  queue it keeps — a seed with a pre-queued special stays
+  ""rem + spent ≤ income"", so the wire re-parses.
 end note
 
 note right of Q

@@ -306,7 +306,7 @@ describe("tutorialScript", () => {
     const story = storyOf("king", "king-attack-4");
     const placement = "3r4/pkppp3/1pb5/2n1PP2/3PR3/N1PB4/3N4/4K3";
     const lineFor = (scfen: string) =>
-      resolveTutorialLine({ stageId: "king", storyId: "king-attack-4", scfen, turn: 13 });
+      resolveTutorialLine({ stageId: "king", storyId: "king-attack-4", scfen, turn: 14 });
 
     const nothing = `SCFEN|${placement}|13|33|P|G:22:22|M:w:b1|S:d8e4|Q:w:;b:`;
     expectReaction(lineFor(nothing), KING_ATTACK_4.hoverbikeThreat);
@@ -331,7 +331,7 @@ describe("tutorialScript", () => {
     const story = storyOf("king", "king-attack-4");
     const placement = "3r4/pkppp3/2b5/1pP1PP2/4R3/2P5/3NP3/4K3";
     const lineFor = (scfen: string) =>
-      resolveTutorialLine({ stageId: "king", storyId: "king-attack-4", scfen, turn: 14 });
+      resolveTutorialLine({ stageId: "king", storyId: "king-attack-4", scfen, turn: 15 });
 
     const nothing = `SCFEN|${placement}|14|33|P|G:22:22|M:w:a3b1|S:d8|Q:w:;b:`;
     expectReaction(lineFor(nothing), KING_ATTACK_4.goodJob);
@@ -553,18 +553,15 @@ describe("tutorialScript", () => {
     // Turn-open refills gas and applies standing check damage, so on a seed
     // whose gas is mid-turn the SCFEN moves on mount with no player input.
     // king/king-attack-1 is that seed: Black's gas reads 0, spent on its queued
-    // mine, and turn-open puts it back to 2. Arming the planning timer used to
-    // retire the opening line unread, which is why the timer was disabled here.
+    // mine, and turn-open refills it net of that mine. Arming the planning timer
+    // used to retire the opening line unread, which is why the timer was disabled here.
     const seed = lessonBoard("king", "king-attack-1").scfen;
     const seedSnap = parseScFen(seed);
     const openedSnap = beginScTurn(seedSnap).next;
-    // The wire the narration store publishes once turn-open lands. Note it is
-    // not re-parseable: `refillTurnGas` hands Black back gas its queued mine
-    // already spent, so the string trips `assertQueueGas`. That is the rules
-    // engine's business — what matters here is that the wire *moved*.
     const opened = formatScFen(openedSnap);
     expect(seedSnap.gas).toEqual({ w: 2, b: 0 });
-    expect(openedSnap.gas).toEqual({ w: 2, b: 2 });
+    expect(openedSnap.gas).toEqual({ w: 2, b: 1 });
+    expect(() => parseScFen(opened)).not.toThrow();
     expect(opened).not.toBe(seed);
 
     const key = "king|king-attack-1";

@@ -29,6 +29,7 @@ import {
   type ResolveMove,
 } from "./resolve-turn";
 import { getSideVision } from "../board/vision";
+import { queueGasSpent } from "../scfen/codec";
 import type {
   ClassicalPlan,
   PieceColor,
@@ -113,10 +114,16 @@ const visionCheckGate = (
   };
 };
 
-export const refillTurnGas = (snap: ScFenSnapshot): ScFenSnapshot => ({
-  ...snap,
-  gas: { w: snap.gasIncome.w, b: snap.gasIncome.b },
-});
+export const refillTurnGas = (snap: ScFenSnapshot): ScFenSnapshot => {
+  const spent = queueGasSpent(snap.queue?.actions);
+  return {
+    ...snap,
+    gas: {
+      w: Math.max(0, snap.gasIncome.w - spent.w),
+      b: Math.max(0, snap.gasIncome.b - spent.b),
+    },
+  };
+};
 
 export const beginScTurn = (snapshot: ScFenSnapshot): BeginScTurnResult => {
   if (snapshot.phase !== "P") {
