@@ -23,18 +23,12 @@ export const knight = {
       when: { kind: "scfen", re: /SCFEN\|(?:[^/]*\/){3}6N1/ },
       say: "Did you see that?!",
       emotion: "shocked",
+      mark: { squares: [] },
     },
     {
       when: { kind: "scfen", re: /SCFEN\|(?:[^/]*\/){2}4N3/ },
       say: "Now move to g5. \nPay attention to the h8 corner!",
       emotion: "watching",
-    },
-    {
-      when: { kind: "scfen", re: /SCFEN\|(?:[^/]*\/){3}6N1/ },
-      mark: { squares: [] },
-    },
-    {
-      when: { kind: "scfen", re: /SCFEN\|(?:[^/]*\/){2}4N3/ },
       mark: {
         squares: ["g5"],
         alertSquares: ["h8"],

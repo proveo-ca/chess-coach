@@ -26,12 +26,14 @@ export const kingAttack4 = {
       ),
       say: "Move this Marine from f4 to f5.",
       emotion: "thinking",
+      mark: { squares: ["f5"], arrows: [{ from: "f4", to: "f5" }] },
     },
     {
       // Turn 1, move queued (siege not yet).
       when: and({ kind: "scfen", re: /SCFEN\|[^|]+\|12\|/ }, queued("C=e2e4")),
       say: "Now siege it up with gas.",
       emotion: "thinking",
+      mark: { squares: ["e4"] },
     },
     {
       // Turn 2, both queued.
@@ -42,12 +44,14 @@ export const kingAttack4 = {
       ),
       say: "Deploy a Marine",
       emotion: "thinking",
+      mark: { squares: ["e2"] },
     },
     {
       // Turn 2, attack queued only.
       when: and({ kind: "scfen", re: /SCFEN\|[^|]+\|13\|/ }, queued("C=d4c5")),
       say: "Guard that back alley with a trap.",
       emotion: "thinking",
+      mark: { squares: ["a3"] },
     },
     {
       turn: 14,
@@ -63,12 +67,20 @@ export const kingAttack4 = {
       ),
       say: "Now point it at the enemy CC.",
       emotion: "happy",
+      mark: {
+        squares: ["b4"],
+        arrows: [
+          { from: "e4", to: "b4" },
+          { from: "b4", to: "b7", tone: "alert" },
+        ],
+      },
     },
     {
       // Turn 3, Hoverbike move queued only.
       when: and({ kind: "scfen", re: /SCFEN\|[^|]+\|14\|/ }, queued("C=a3c2")),
       say: "Force this rat to move with a sieged Tank. \n\nUnsiege your tank.",
       emotion: "happy",
+      mark: { squares: ["e4"], alertSquares: ["b7"] },
     },
     {
       turn: 15,
@@ -76,31 +88,8 @@ export const kingAttack4 = {
       emotion: "happy",
     },
     {
-      when: and(
-        { kind: "scfen", re: /SCFEN\|[^|]+\|12\|/ },
-        or(queued("B=siegeMode:e2"), queued("F=siegeMode:e2")),
-      ),
-      mark: { squares: ["f5"], arrows: [{ from: "f4", to: "f5" }] },
-    },
-    {
-      when: and({ kind: "scfen", re: /SCFEN\|[^|]+\|12\|/ }, queued("C=e2e4")),
-      mark: { squares: ["e4"] },
-    },
-    {
       when: { kind: "scfen", re: /SCFEN\|[^|]+\|12\|/ },
       mark: { squares: ["e2"], arrows: [{ from: "e2", to: "e4" }] },
-    },
-    {
-      when: and(
-        { kind: "scfen", re: /SCFEN\|[^|]+\|13\|/ },
-        queued("C=d4c5"),
-        or(queued("B=spiderMine:a3"), queued("F=spiderMine:a3")),
-      ),
-      mark: { squares: ["e2"] },
-    },
-    {
-      when: and({ kind: "scfen", re: /SCFEN\|[^|]+\|13\|/ }, queued("C=d4c5")),
-      mark: { squares: ["a3"] },
     },
     {
       when: { kind: "scfen", re: /SCFEN\|[^|]+\|13\|/ },
@@ -113,24 +102,6 @@ export const kingAttack4 = {
           { from: "d4", to: "c5" },
         ],
       },
-    },
-    {
-      when: and(
-        { kind: "scfen", re: /SCFEN\|[^|]+\|14\|/ },
-        queued("C=a3c2"),
-        or(queued("B=siegeMode:e4"), queued("F=siegeMode:e4")),
-      ),
-      mark: {
-        squares: ["b4"],
-        arrows: [
-          { from: "e4", to: "b4" },
-          { from: "b4", to: "b7", tone: "alert" },
-        ],
-      },
-    },
-    {
-      when: and({ kind: "scfen", re: /SCFEN\|[^|]+\|14\|/ }, queued("C=a3c2")),
-      mark: { squares: ["e4"], alertSquares: ["b7"] },
     },
     {
       when: { kind: "scfen", re: /SCFEN\|[^|]+\|14\|/ },

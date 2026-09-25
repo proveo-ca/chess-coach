@@ -18,14 +18,6 @@ export const kingDefense2 = {
       when: { kind: "scfen", re: /deploy:[^:;]*:g2/ },
       say: "Now, queue an attack on that ship with either your Command Center or Mecha.",
       emotion: "watching",
-    },
-    {
-      when: { kind: "scfen", re: /SCFEN\|[^|]+\|11\|1[0-3]\|/ },
-      say: "Cornered! \n\nCrush the enemy mecha by deploying a Marine onto its square.",
-      emotion: "shocked",
-    },
-    {
-      when: { kind: "scfen", re: /deploy:[^:;]*:g2/ },
       mark: {
         squares: ["h2"],
         arrows: [
@@ -33,6 +25,11 @@ export const kingDefense2 = {
           { from: "h1", to: "h2" },
         ],
       },
+    },
+    {
+      when: { kind: "scfen", re: /SCFEN\|[^|]+\|11\|1[0-3]\|/ },
+      say: "Cornered! \n\nCrush the enemy mecha by deploying a Marine onto its square.",
+      emotion: "shocked",
     },
     {
       mark: { squares: ["g2"], arrows: [{ from: "h1", to: "g2" }] },

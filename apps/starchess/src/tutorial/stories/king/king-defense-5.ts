@@ -37,18 +37,12 @@ export const kingDefense5 = {
       when: { kind: "scfen", re: /[BF]=siegeMode:d2/ },
       say: "Now move your tank out of danger!",
       emotion: "watching",
+      mark: { squares: ["e2"], arrows: [{ from: "d2", to: "e2" }] },
     },
     {
       when: { kind: "scfen", re: /[BF]=stimStep:c2/ },
       say: "Now, unsiege your tank by dropping a gas canister on it.",
       emotion: "watching",
-    },
-    {
-      when: { kind: "scfen", re: /[BF]=siegeMode:d2/ },
-      mark: { squares: ["e2"], arrows: [{ from: "d2", to: "e2" }] },
-    },
-    {
-      when: { kind: "scfen", re: /[BF]=stimStep:c2/ },
       mark: { squares: ["d2"] },
     },
     {

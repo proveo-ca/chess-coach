@@ -29,6 +29,7 @@ export const mecha = {
       when: { kind: "scfen", re: /charonMissiles:/ },
       say: "You still have the classical Chess move/capture available. Order your Mecha to capture that Marine and let the turn finish.",
       emotion: "watching",
+      mark: { squares: ["e5"], arrows: [{ from: "d4", to: "e5" }] },
     },
     {
       // Gas landed, no target picked yet — live UI targeting state, which
@@ -36,10 +37,6 @@ export const mecha = {
       when: { kind: "targeting", targetingKind: "charonMissiles" },
       say: "Now aim the ship to complete your intention!",
       emotion: "scanning",
-    },
-    {
-      when: { kind: "scfen", re: /charonMissiles:/ },
-      mark: { squares: ["e5"], arrows: [{ from: "d4", to: "e5" }] },
     },
     {
       mark: { squares: ["h8"], arrows: [{ from: "d4", to: "h8" }] },

@@ -40,16 +40,19 @@ export const kingAttack3 = {
       say: "Enemy Command Center moved, I saw where!",
       emotion: "thinking",
       transient: true,
+      mark: { alertSquares: ["d5"] },
     },
     {
       when: { kind: "promotionChoice", phases: ["intent"] },
       say: "Choose your promotion wisely: \nBattleShip, risk getting sniped \nTank, worse but harder to hit",
       emotion: "thinking",
+      mark: {},
     },
     {
       when: { kind: "mechaThreat", phases: ["intent"] },
       say: "Threat that Command Center with your Mecha",
       emotion: "thinking",
+      mark: { arrows: [{ from: "g2", to: "a8" }] },
     },
     {
       // g2×f3 frees a Command Center deploy square. A Mecha costs 3
@@ -59,12 +62,19 @@ export const kingAttack3 = {
       when: { kind: "mechaDiagonal", phases: ["intent"] },
       say: "Your Marine will vacate g2 after attacking, deploy a Mecha there instead of a Marine",
       emotion: "thinking",
+      mark: { squares: ["g2"], arrows: [{ from: "g2", to: "a8" }] },
     },
     {
       // Open Attack/Move, BattleShip or Tank on h8. A nearby Marine does
       // not hide the charge — the arrows are the coaching.
       when: { kind: "chargeH8", phases: ["intent"] },
       say: "Go get 'em!",
+      mark: {
+        arrows: [
+          { from: "h8", to: "d8" },
+          { from: "d8", to: "d5", tone: "alert" },
+        ],
+      },
     },
     {
       // One beat for every enemy Marine on the last three ranks. The
@@ -72,62 +82,77 @@ export const kingAttack3 = {
       when: { kind: "stopRunner" },
       say: "Stop that Marine from promoting!",
       emotion: "shocked",
+      mark: {},
     },
     {
       when: { kind: "covers", square: "e1", kinds: ["n"] },
       say: "Your Hoverbike already reaches e1 — take it, no deploy needed!",
+      mark: { squares: ["e1"] },
     },
     {
       when: { kind: "covers", square: "e1", kinds: ["k"] },
       say: "Your Command Center already covers e1 — take it, no deploy needed!",
+      mark: { squares: ["e1"] },
     },
     {
       when: { kind: "covers", square: "e1", kinds: ["r"] },
       say: "Your Tank already covers e1 — take it, no deploy needed!",
+      mark: { squares: ["e1"] },
     },
     {
       when: { kind: "covers", square: "e1", kinds: ["b"] },
       say: "Your Mecha already covers e1 — take it, no deploy needed!",
+      mark: { squares: ["e1"] },
     },
     {
       when: { kind: "covers", square: "f1", kinds: ["n"] },
       say: "Your Hoverbike already reaches f1 — take it, no deploy needed!",
+      mark: { squares: ["f1"] },
     },
     {
       when: { kind: "covers", square: "f1", kinds: ["k"] },
       say: "Your Command Center already covers f1 — take it, no deploy needed!",
+      mark: { squares: ["f1"] },
     },
     {
       when: { kind: "covers", square: "f1", kinds: ["r"] },
       say: "Your Tank already covers f1 — take it, no deploy needed!",
+      mark: { squares: ["f1"] },
     },
     {
       when: { kind: "covers", square: "f1", kinds: ["b"] },
       say: "Your Mecha already covers f1 — take it, no deploy needed!",
+      mark: { squares: ["f1"] },
     },
     {
       when: { kind: "covers", square: "g1", kinds: ["n"] },
       say: "Your Hoverbike already reaches g1 — take it, no deploy needed!",
+      mark: { squares: ["g1"] },
     },
     {
       when: { kind: "covers", square: "g1", kinds: ["k"] },
       say: "Your Command Center already covers g1 — take it, no deploy needed!",
+      mark: { squares: ["g1"] },
     },
     {
       when: { kind: "covers", square: "g1", kinds: ["r"] },
       say: "Your Tank already covers g1 — take it, no deploy needed!",
+      mark: { squares: ["g1"] },
     },
     {
       when: { kind: "covers", square: "g1", kinds: ["b"] },
       say: "Your Mecha already covers g1 — take it, no deploy needed!",
+      mark: { squares: ["g1"] },
     },
     {
       when: { kind: "trajectory", from: "g2", to: "d5" },
       say: "You have 3 minerals — deploy a Mecha on g2, then take d5!",
+      mark: { squares: ["g2", "d5"], arrows: [{ from: "g2", to: "d5" }] },
     },
     {
       when: { kind: "board", at: { d5: "k", c2: "N" }, notQueued: { kind: "spiderMine", from: "c2" } },
       say: "Deploy a mine in c2 to discourage Marines from promoting",
+      mark: { squares: ["c2"] },
     },
     {
       when: { kind: "board", at: { d5: "k", c2: "N" }, queued: { kind: "spiderMine", from: "c2" } },
@@ -257,92 +282,6 @@ export const kingAttack3 = {
       },
       say: "Apply pressure to the enemy Command Center.",
       emotion: "thinking",
-    },
-    {
-      turn: 1,
-      phase: "resolve",
-      mark: { alertSquares: ["d5"] },
-    },
-    {
-      when: { kind: "promotionChoice", phases: ["intent"] },
-      mark: {},
-    },
-    {
-      when: { kind: "mechaThreat", phases: ["intent"] },
-      mark: { arrows: [{ from: "g2", to: "a8" }] },
-    },
-    {
-      when: { kind: "mechaDiagonal", phases: ["intent"] },
-      mark: { squares: ["g2"], arrows: [{ from: "g2", to: "a8" }] },
-    },
-    {
-      when: { kind: "chargeH8", phases: ["intent"] },
-      mark: {
-        arrows: [
-          { from: "h8", to: "d8" },
-          { from: "d8", to: "d5", tone: "alert" },
-        ],
-      },
-    },
-    {
-      when: { kind: "stopRunner" },
-      mark: {},
-    },
-    {
-      when: { kind: "covers", square: "e1", kinds: ["n"] },
-      mark: { squares: ["e1"] },
-    },
-    {
-      when: { kind: "covers", square: "e1", kinds: ["k"] },
-      mark: { squares: ["e1"] },
-    },
-    {
-      when: { kind: "covers", square: "e1", kinds: ["r"] },
-      mark: { squares: ["e1"] },
-    },
-    {
-      when: { kind: "covers", square: "e1", kinds: ["b"] },
-      mark: { squares: ["e1"] },
-    },
-    {
-      when: { kind: "covers", square: "f1", kinds: ["n"] },
-      mark: { squares: ["f1"] },
-    },
-    {
-      when: { kind: "covers", square: "f1", kinds: ["k"] },
-      mark: { squares: ["f1"] },
-    },
-    {
-      when: { kind: "covers", square: "f1", kinds: ["r"] },
-      mark: { squares: ["f1"] },
-    },
-    {
-      when: { kind: "covers", square: "f1", kinds: ["b"] },
-      mark: { squares: ["f1"] },
-    },
-    {
-      when: { kind: "covers", square: "g1", kinds: ["n"] },
-      mark: { squares: ["g1"] },
-    },
-    {
-      when: { kind: "covers", square: "g1", kinds: ["k"] },
-      mark: { squares: ["g1"] },
-    },
-    {
-      when: { kind: "covers", square: "g1", kinds: ["r"] },
-      mark: { squares: ["g1"] },
-    },
-    {
-      when: { kind: "covers", square: "g1", kinds: ["b"] },
-      mark: { squares: ["g1"] },
-    },
-    {
-      when: { kind: "trajectory", from: "g2", to: "d5" },
-      mark: { squares: ["g2", "d5"], arrows: [{ from: "g2", to: "d5" }] },
-    },
-    {
-      when: { kind: "board", at: { d5: "k", c2: "N" }, notQueued: { kind: "spiderMine", from: "c2" } },
-      mark: { squares: ["c2"] },
     },
     {
       // Intent only: the ride is still being queued. Resolve keeps the

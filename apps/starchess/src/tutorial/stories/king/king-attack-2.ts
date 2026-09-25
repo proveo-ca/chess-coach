@@ -46,6 +46,7 @@ export const kingAttack2 = {
       },
       say: "Now queue a move from d2 to c2 \nand take out that Mecha!",
       emotion: "thinking",
+      mark: { squares: ["c2"], arrows: [{ from: "d2", to: "c2" }] },
     },
     {
       /**
@@ -67,13 +68,6 @@ export const kingAttack2 = {
        */
       say: "Juke this army with your ship! \nGas it up to escape danger.",
       emotion: "happy",
-    },
-    {
-      when: {
-        kind: "scfen",
-        re: /SCFEN\|[^|]+\|21\|(?!.*Q:w:[^;]*C=).*tacticalJump:h7:d2/,
-      },
-      mark: { squares: ["c2"], arrows: [{ from: "d2", to: "c2" }] },
     },
     {
       // Jump and capture both queued — nothing left to point at.

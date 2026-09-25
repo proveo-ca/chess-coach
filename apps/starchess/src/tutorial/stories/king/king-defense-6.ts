@@ -36,24 +36,18 @@ export const kingDefense6 = {
       when: { kind: "scfen", re: /charonMissiles:/ },
       say: "Locked on f1, end your turn!",
       emotion: "happy",
+      mark: { squares: ["f1"], arrows: [{ from: "g2", to: "f1" }] },
     },
     {
       when: { kind: "scfen", re: /Q:w:[^;]*C=e4g2/ },
       say: "Now gas the Mecha ghost.",
       emotion: "scanning",
+      mark: { squares: ["f1"], arrows: [{ from: "g2", to: "f1" }] },
     },
     {
       when: { kind: "scfen", re: /tacticalJump:/ },
       say: "I doubt the opponent wants to trade their BattleShip for your Mecha... \n\nMove your Mecha to g2.",
       emotion: "thinking",
-    },
-    {
-      when: { kind: "scfen", re: /charonMissiles:/ },
-      mark: { squares: ["f1"], arrows: [{ from: "g2", to: "f1" }] },
-    },
-    {
-      when: { kind: "scfen", re: /Q:w:[^;]*C=e4g2/ },
-      mark: { squares: ["f1"], arrows: [{ from: "g2", to: "f1" }] },
     },
     {
       mark: {

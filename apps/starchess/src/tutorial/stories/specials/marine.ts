@@ -30,6 +30,7 @@ export const marine = {
       when: { kind: "scfen", re: /^(?=SCFEN\|[^|]+\|2\|)(?=.*[BF]=stimStep:)/ },
       say: "Now click that gas-ghost Marine and queue a move intent",
       emotion: "watching",
+      mark: { squares: ["e5"], arrows: [{ from: "e4", to: "e5" }] },
     },
     {
       // Turn-1 gas queued, before or after the move.
@@ -42,6 +43,7 @@ export const marine = {
       when: { kind: "scfen", re: /SCFEN\|[^|]+\|2\|/ },
       say: "Now the slipping away technique, drop a gas canister in your Marine",
       emotion: "scanning",
+      mark: { squares: ["e3"] },
     },
     {
       // Turn-1 classical queued from a Marine square (d2 / e3 on this
@@ -50,14 +52,6 @@ export const marine = {
       when: { kind: "scfen", re: /^(?=SCFEN\|[^|]+\|1\|)(?=.*Q:w:[^;]*C=[de][23])/ },
       say: "You just queued an intent! \nIt looks like a ghost. \n\nSee that gas canister in the bottom? Drag and drop it into that transparent Marine.",
       emotion: "idle",
-    },
-    {
-      when: { kind: "scfen", re: /^(?=SCFEN\|[^|]+\|2\|)(?=.*[BF]=stimStep:)/ },
-      mark: { squares: ["e5"], arrows: [{ from: "e4", to: "e5" }] },
-    },
-    {
-      when: { kind: "scfen", re: /SCFEN\|[^|]+\|2\|/ },
-      mark: { squares: ["e3"] },
     },
     {
       when: { kind: "scfen", re: /SCFEN\|[^|]+\|1\|/ },

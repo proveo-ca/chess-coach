@@ -24,9 +24,6 @@ export const kingDefense3 = {
       when: { kind: "scfen", re: /[BF]=stimStep:f2/ },
       say: "Now shoot it off e4!",
       emotion: "watching",
-    },
-    {
-      when: { kind: "scfen", re: /[BF]=stimStep:f2/ },
       mark: { squares: ["e4"], arrows: [{ from: "f3", to: "e4" }] },
     },
     {
