@@ -1413,7 +1413,6 @@ export const TUTORIAL_SCRIPT_CONFIG = [
           stored: 1,
           alertLatch: "king",
           opponent: "adjutant",
-          choreography: "kingHuntGraduation",
         },
         comment: "Remember to use your Gas and your Move each turn",
         emotion: "happy",
@@ -1659,6 +1658,16 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             comment: "Deploy a mine",
             emotion: "watching",
           },
+          {
+            // Last resort: nothing more specific matched and the Move slot
+            // is still empty — keep the pressure on, never go silent.
+            when: {
+              kind: "scfen",
+              re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)/,
+            },
+            comment: "Apply pressure to the enemy Command Center.",
+            emotion: "thinking",
+          },
         ],
         hints: [
           {
@@ -1880,9 +1889,30 @@ export const TUTORIAL_SCRIPT_CONFIG = [
             ],
           },
           {
+            // Fallback: nothing more specific matched. Ring + arrow whichever
+            // ally unit already lines up the enemy Command Center, if any.
+            when: { kind: "ccPressure" },
+          },
+          {
             squares: [],
           },
         ],
+      },
+      {
+        id: "king-attack-4",
+        title: "Turtled Opponent",
+        board: {
+          scfen:
+            "SCFEN|3r4/pkp1n3/1pb1N3/2n1P3/3PRP2/N1PB4/8/4K3|12|33|P|G:22:22|M:w:b1|S:d8e4|Q:w:;b:",
+          stored: 3,
+          opponent: "adjutant",
+          choreography: "kingHuntGraduation",
+          docs: "Enemy Command Center on b7, Siege Tank sieged on d8, Marines on a7/b6/c7, Mecha on c6, Hoverbikes on c5/e7 — a fully turtled defense. Ally Command Center on e1, Marines on c3/d4/e5/f4, Hoverbikes on a3/e6, Siege Tank sieged on e4, Mecha on d3, a Mine on b1. Turn 12, 3 minerals each side.",
+        },
+        comment: "The enemy has dug in. Find the way through.",
+        emotion: "thinking",
+        completeWhen: { kind: "lives", enemy: 0 },
+        restartWhen: { kind: "lives", own: 0 },
       },
     ],
   },

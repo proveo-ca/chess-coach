@@ -90,6 +90,7 @@ describe("tutorial lesson catalog", () => {
       "king/king-attack-1",
       "king/king-attack-2",
       "king/king-attack-3",
+      "king/king-attack-4",
     ]);
   });
 
@@ -98,7 +99,7 @@ describe("tutorial lesson catalog", () => {
     // go, and graduation is the lesson's own choreography.
     const lastStage = TUTORIAL_SCRIPT[TUTORIAL_SCRIPT.length - 1]!;
     const lastStory = lastStage.stories[lastStage.stories.length - 1]!;
-    expect(`${lastStage.id}/${lastStory.id}`).toBe("king/king-attack-3");
+    expect(`${lastStage.id}/${lastStory.id}`).toBe("king/king-attack-4");
     expect(lastStory.board?.choreography).toBe("kingHuntGraduation");
   });
 

@@ -144,6 +144,24 @@ export const mechaDiagonalOpen = (scfen: string, viewer: StarChessColor = "w"): 
 };
 
 /**
+ * Ally units that currently attack the enemy Command Center, wherever it
+ * stands — a Mecha on its diagonal, a Marine a step away, anything with the
+ * geometry, not a piece-type-specific check like {@link mechaThreatOpen}.
+ */
+export const ccPressureUnits = (
+  scfen: string | undefined,
+  viewer: StarChessColor = "w",
+): { cc: Square; units: SquareCoverer[] } | null => {
+  const map = scfen ? placementMap(scfen) : null;
+  if (!map) return null;
+  const enemy = viewer === "w" ? "b" : "w";
+  const cc = findCC(map, enemy);
+  if (!cc) return null;
+  const units = attackersOfSquare(map, cc, viewer);
+  return units.length > 0 ? { cc, units } : null;
+};
+
+/**
  * Square of the marine to gas once the classical move is queued and no gas
  * action is queued yet. The furthest-advanced ally marine, toward the h-file
  * on a tie — that is the one the push lines are walking.

@@ -5,8 +5,9 @@ import { placementToMap } from "@chess-coach/starchess-core";
 import {
   attackersOfSquare,
   availableTrajectories,
-  coveredEnemyShips,
   boardConditionHolds,
+  ccPressureUnits,
+  coveredEnemyShips,
 } from "~/tutorial/lessonTactics";
 
 describe("attackersOfSquare", () => {
@@ -62,6 +63,31 @@ describe("coveredEnemyShips", () => {
   it("returns empty for missing or malformed input", () => {
     expect(coveredEnemyShips(undefined, "w")).toEqual({});
     expect(coveredEnemyShips("SCFEN|nope|1|33", "w")).toEqual({});
+  });
+});
+
+describe("ccPressureUnits", () => {
+  const scfen = (placement: string): string =>
+    `SCFEN|${placement}|1|33|P|G:11:11|Q:w:;b:`;
+
+  it("finds an ally Mecha lined up on the enemy Command Center's diagonal", () => {
+    expect(ccPressureUnits(scfen("8/8/8/3k4/8/8/B7/7K"), "w")).toEqual({
+      cc: "d5",
+      units: [{ from: "a2", kind: "b" }],
+    });
+  });
+
+  it("respects ray clearance and reports no pressure when blocked", () => {
+    expect(ccPressureUnits(scfen("8/8/8/3k4/8/1P6/B7/7K"), "w")).toBeNull();
+  });
+
+  it("returns null with no enemy Command Center on the board", () => {
+    expect(ccPressureUnits(scfen("8/8/8/8/8/8/B7/7K"), "w")).toBeNull();
+  });
+
+  it("returns null for missing or malformed input", () => {
+    expect(ccPressureUnits(undefined, "w")).toBeNull();
+    expect(ccPressureUnits("SCFEN|nope|1|33", "w")).toBeNull();
   });
 });
 

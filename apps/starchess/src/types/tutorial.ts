@@ -130,6 +130,7 @@ export type TutorialBoardHint = {
     | TutorialStopRunnerWhen
     | TutorialMineGuardWhen
     | TutorialShipJukeWhen
+    | TutorialCcPressureWhen
     | TutorialBoardCondition;
   /**
    * Rewrite arrow origins to the viewer's BattleShip. The destination stays
@@ -253,6 +254,15 @@ export type TutorialMineGuardWhen = { kind: "mineGuard" };
  * Command Center. The hint's ring and arrow are computed, not listed.
  */
 export type TutorialShipJukeWhen = { kind: "shipJuke" };
+
+/**
+ * Any ally unit already attacking the enemy Command Center, wherever it
+ * stands. The hint's ring(s) and arrow(s) are computed, not listed.
+ */
+export type TutorialCcPressureWhen = {
+  kind: "ccPressure";
+  phases?: readonly ReviewTurnPhase[];
+};
 
 /**
  * White BattleShip was on h8 and is gone. Armed while it stands there; `sniped`

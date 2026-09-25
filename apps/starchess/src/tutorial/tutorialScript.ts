@@ -7,6 +7,7 @@ import type { Square } from "chess.js";
 import { TUTORIAL_SCRIPT_CONFIG } from "~/tutorial/tutorialScript.config";
 import {
   boardConditionHolds,
+  ccPressureUnits,
   chargeFromH8,
   forwardDeploySquare,
   g2DeployName,
@@ -626,6 +627,15 @@ const matchTutorialHint = (
       tankSiegeOnH5(scfen)
     ) {
       return { ...h, squares: [tankSiegeSquare(scfen)!] };
+    }
+    if (h.when.kind === "ccPressure" && scfen && phaseAllows(h.when.phases, reviewPhase)) {
+      const pressure = ccPressureUnits(scfen);
+      if (!pressure) continue;
+      return {
+        ...h,
+        squares: pressure.units.map((u) => u.from),
+        arrows: pressure.units.map((u) => ({ from: u.from, to: pressure.cc })),
+      };
     }
   }
   return undefined;

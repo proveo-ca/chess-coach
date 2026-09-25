@@ -175,6 +175,7 @@ describe("tutorialScript", () => {
     "queuedReview",
     "intentTipTurn1",
     "minesTipTurn2",
+    "ccPressureFallback",
   );
 
   it("covers four stages with the expected story counts", () => {
@@ -191,7 +192,7 @@ describe("tutorialScript", () => {
       "combat-chain",
       "king-hunt",
     ]);
-    expect(TUTORIAL_SCRIPT[3]!.stories).toHaveLength(9);
+    expect(TUTORIAL_SCRIPT[3]!.stories).toHaveLength(10);
     expect(TUTORIAL_SCRIPT[3]!.stories.map((s) => s.id)).toEqual([
       "king-defense",
       "king-defense-2",
@@ -202,6 +203,7 @@ describe("tutorialScript", () => {
       "king-attack-1",
       "king-attack-2",
       "king-attack-3",
+      "king-attack-4",
     ]);
   });
 
@@ -212,6 +214,32 @@ describe("tutorialScript", () => {
     expect(tutorialPath("king", "king-attack-3")).toBe(
       "/tutorial/king/king-attack-3",
     );
+    expect(tutorialPath("king", "king-attack-4")).toBe(
+      "/tutorial/king/king-attack-4",
+    );
+  });
+
+  it("king-attack-4 seeds the turtled position with 3 minerals each and a live opponent", () => {
+    const story = storyOf("king", "king-attack-4");
+    const seed = lessonBoard("king", "king-attack-4").scfen;
+    const snap = parseScFen(seed);
+    expect(snap.turn).toBe(12);
+    expect(snap.ccLives).toEqual({ w: 3, b: 3 });
+    expect(snap.mines).toEqual([{ color: "w", at: "b1" }]);
+    expect(snap.siegedTanks?.slice().sort()).toEqual(["d8", "e4"]);
+    const map = placementToMap(snap.placement);
+    expect(map.size).toBe(17);
+    expect(map.get("b7")).toEqual({ color: "b", type: "k" });
+    expect(map.get("e1")).toEqual({ color: "w", type: "k" });
+    expect(story.board?.stored).toBe(3);
+    expect(story.board?.opponent).toBe("adjutant");
+    expect(matchesTutorialCompleteWhen(story.completeWhen, seed)).toBe(false);
+    expect(
+      matchesTutorialCompleteWhen(
+        story.completeWhen,
+        "SCFEN|3r4/pkp1n3/1pb1N3/2n1P3/3PRP2/N1PB4/8/4K3|12|30|P|G:22:22|M:w:b1|S:d8e4|Q:w:;b:",
+      ),
+    ).toBe(true);
   });
 
   it("fog completeWhen does not match seed SCFEN but matches post-goal boards", () => {
@@ -793,14 +821,13 @@ describe("tutorialScript", () => {
       }),
       KING_ATTACK_3.minesTipTurn2,
     );
-    expectIntro(
+    expectReaction(
       resolveTutorialLine({
         stageId: "king",
         storyId: "king-attack-3",
         scfen: "SCFEN|8/8/8/8/4k3/5P2/6P1/4N1BK|1|33|P|G:01:11|Q:w:;b:",
       }),
-      "king",
-      "king-attack-3",
+      KING_ATTACK_3.ccPressureFallback,
     );
   });
 
@@ -924,10 +951,30 @@ describe("tutorialScript", () => {
         storyId: "king-attack-3",
         scfen,
       });
-    expectIntro(lineFor(oneEnemyMarine), "king", "king-attack-3");
-    expectIntro(lineFor(marineRank5Hp3), "king", "king-attack-3");
+    expectReaction(lineFor(oneEnemyMarine), KING_ATTACK_3.ccPressureFallback);
+    expectReaction(lineFor(marineRank5Hp3), KING_ATTACK_3.ccPressureFallback);
     expectReaction(lineFor(marineRank5Hp1), KING_ATTACK_3.oneMoreHit);
-    expectIntro(lineFor(marineRank4Hp3), "king", "king-attack-3");
+    expectReaction(lineFor(marineRank4Hp3), KING_ATTACK_3.ccPressureFallback);
+  });
+
+  it("rings and arrows whichever unit already pressures the enemy Command Center", () => {
+    const story = storyOf("king", "king-attack-3");
+    const pressuring = "SCFEN|8/8/8/3k4/8/8/B7/7K|5|33|P|G:11:11|Q:w:;b:";
+    expectReaction(
+      resolveTutorialLine({ stageId: "king", storyId: "king-attack-3", scfen: pressuring }),
+      KING_ATTACK_3.ccPressureFallback,
+    );
+    expect(hintSquares(story.hints, pressuring)).toEqual(["a2"]);
+    expect(hintArrows(story.hints, pressuring)).toEqual([{ from: "a2", to: "d5" }]);
+
+    // Blocked ray: same fallback line, but nothing to ring.
+    const blocked = "SCFEN|8/8/8/3k4/8/1P6/B7/7K|5|33|P|G:11:11|Q:w:;b:";
+    expectReaction(
+      resolveTutorialLine({ stageId: "king", storyId: "king-attack-3", scfen: blocked }),
+      KING_ATTACK_3.ccPressureFallback,
+    );
+    expect(hintSquares(story.hints, blocked)).toEqual([]);
+    expect(hintArrows(story.hints, blocked)).toEqual([]);
   });
 
   it("fires king-attack-3 threat lines with matching rings", () => {

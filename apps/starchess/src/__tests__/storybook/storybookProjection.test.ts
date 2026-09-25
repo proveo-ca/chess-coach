@@ -81,6 +81,7 @@ describe("Storybook projection", () => {
       "king/king-defense-6",
       "king/king-attack-1",
       "king/king-attack-2",
+      "king/king-attack-4",
     ]);
   });
 });
