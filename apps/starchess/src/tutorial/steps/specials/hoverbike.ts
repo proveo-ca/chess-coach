@@ -36,12 +36,21 @@ export const hoverbike = {
       when: { kind: "mineGuard" },
       say: "1 unit guarding 4 promoting files!",
       emotion: "happy",
+      final: true,
       /*
        * d4 → c2 → a1: the two hops that, with a mine on each turn, leave one
        * Hoverbike watching the a–d files. The closing step rings the mines
        * and draws where the Hoverbike can strike from where it stopped.
        */
       mark: {},
+    },
+    {
+      when: { kind: "scfen", re: /^(?=.*Q:w:[^;]*C=)(?!.*[BF]=spiderMine:)/ },
+      mark: { gasOnMoveGhost: true },
+    },
+    {
+      when: { kind: "scfen", re: /^SCFEN\|(?:[^/]*\/){4}3N[^|]*\|1\|(?=.*Q:w:;)/ },
+      mark: { gasSquares: ["d4"] },
     },
     {
       when: {

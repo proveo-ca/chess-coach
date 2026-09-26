@@ -85,7 +85,7 @@ skinparam noteTextAlignment left
 ' SHIPPED: medal counts a Marine captured in the same ply its own gas step
 ' (`stimStep`) landed it on that square — the only requirement is that gas
 ' carried it into the shot; attacker type and what stood behind it are
-' irrelevant. Canonical case: tutorial king-defense-5.
+' irrelevant. Canonical case: tutorial live-play-defense-5.
 ' FIXED: an earlier version credited any Marine capture where a non-pawn
 ' friendly happened to sit further out on the same rank/file/diagonal —
 ' true for any adjacent capture (King, another Marine) regardless of gas,

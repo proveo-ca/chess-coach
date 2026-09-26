@@ -1,8 +1,8 @@
-// SPEC: _spec/apps/starchess/menu-flow.puml, _spec/apps/starchess/architecture/storybook-projection.puml
+// SPEC: _spec/apps/starchess/menu-flow.puml, _spec/apps/starchess/architecture/storybook-projection.puml, _spec/apps/starchess/tutorial/hints-and-coach.md
 /**
  * Tutorial script — Stage → Story → Selena comment (+ optional store/board beats).
  */
-import type { Square } from "chess.js";
+import type { PieceSymbol, Square } from "chess.js";
 
 import { specialCopyFor } from "~/presentation/specials/copy";
 import { TUTORIAL_SCRIPT_CONFIG } from "~/tutorial/tutorialScript.config";
@@ -10,18 +10,25 @@ import {
   boardConditionHolds,
   ccDeployPressure,
   ccPressureUnits,
+  ccThreatAnswer,
   ccThreatUnits,
+  deployGasSquare,
+  mechaPressureLine,
   gasMarineSquare,
   g2DeployName,
   isBoardCondition,
   mineGuard,
   promotionChoiceOpen,
+  queuedMoveGhost,
+  unitArrow,
+  whiteGas,
   runnerStop,
   shipJuke,
   tankSiegeSquare,
   whiteBattleShipSquare,
 } from "~/tutorial/lessonTactics";
-import { pickBeat, type TutorialBeatMatchContext } from "~/tutorial/when";
+import { pickBeat, wrongQueuedAction, type TutorialBeatMatchContext } from "~/tutorial/when";
+import { queueActionKey } from "~/presentation/hud/queueHint";
 import type { KerriganEmotion } from "~/types/coach";
 import type {
   AlertLatch,
@@ -83,6 +90,7 @@ export type TutorialStoryScript = {
    * the player clicked Next Lesson. Must not match the lesson seed SCFEN.
    */
   completeWhen?: TutorialCompleteWhen;
+  hideCoachWhen?: TutorialCompleteWhen;
   /**
    * When matched after resolve, remount/restart this lesson (e.g. ship died).
    * Must not match the lesson seed SCFEN.
@@ -159,7 +167,7 @@ export const parseTutorialSection = (
 ): TutorialSectionId => {
   if (raw === "specials" || raw === "special-moves") return "specials";
   if (raw === "resolve" || raw === "turn-resolution") return "resolve";
-  if (raw === "king" || raw === "cc-damage") return "king";
+  if (raw === "live-play" || raw === "king" || raw === "cc-damage") return "live-play";
   if (raw === "fog" || raw === "fog-of-war") return "fog";
   return "fog";
 };
@@ -240,6 +248,17 @@ const beatMatchContext = (ctx: TutorialScriptContext): TutorialBeatMatchContext 
 const enrichSay = (beat: TutorialBeat, scfen: string | undefined): string | undefined => {
   const w = beat.when;
   if (!scfen || !w) return beat.say;
+  if (w.kind === "ccThreat") {
+    const answer = ccThreatAnswer(scfen);
+    const name = (unit: string) => specialCopyFor(unit as PieceSymbol).unit;
+    if (answer?.kind === "deploy") {
+      return `Our Command Center is under fire! \n\nDeploy a ${name(answer.unit)} on ${answer.at} to take out the attacker.`;
+    }
+    if (answer?.kind === "deployed") return `Now take out the attacker with that ${name(answer.unit)}!`;
+    if (answer?.kind === "capture") return `Take out the attacker with your ${name(answer.unit)}!`;
+    if (answer?.kind === "evade") return "Nothing reaches the attacker. Move your Command Center out of danger!";
+    if (answer?.kind === "answered") return "That should do it. End your turn!";
+  }
   if (w.kind === "gasOnMarine") {
     const sq = gasMarineSquare(scfen);
     if (sq) return `Keep pushing your ${sq[0]}-file Marine by dropping gas on it`;
@@ -281,6 +300,7 @@ export const resolveTutorialLine = (ctx: TutorialScriptContext): TutorialLine =>
       emotion: beat.emotion ?? story.emotion,
       ...(beat.action ? { action: beat.action } : {}),
       ...(beat.transient ? { transient: true as const } : {}),
+      ...(beat.holdMs ? { holdMs: beat.holdMs } : {}),
       source: "reaction",
     };
   }
@@ -375,7 +395,7 @@ export const holdTutorialLine = (
 /** The board state hint steps read — the board half of {@link TutorialScriptContext}. */
 export type TutorialHintContext = Pick<
   TutorialScriptContext,
-  "scfen" | "covers" | "trajectories" | "reviewPhase"
+  "scfen" | "covers" | "trajectories" | "reviewPhase" | "targetingKind"
 >;
 
 /** What the board paints for the step in force. Empty arrays clear the marks. */
@@ -384,7 +404,9 @@ export type TutorialHintMarks = {
   squares: Square[];
   /** Alert-red rings. */
   alertSquares: Square[];
+  gasSquares: Square[];
   arrows: TutorialBoardArrow[];
+  cancelQueued: string | null;
 };
 
 /** Juke arrows leave from the BattleShip's current square, not the seed square. */
@@ -413,7 +435,7 @@ const enrichMark = (beat: TutorialBeat, scfen: string | undefined): TutorialMark
   }
   if (w.kind === "shipJuke") {
     const juke = shipJuke(scfen);
-    if (juke) return { ...base, squares: [juke.to], arrows: [juke] };
+    if (juke) return { ...base, squares: [juke.to], gasSquares: [juke.from], arrows: [juke] };
   }
   if (w.kind === "mineGuard") {
     const guard = mineGuard(scfen);
@@ -421,34 +443,65 @@ const enrichMark = (beat: TutorialBeat, scfen: string | undefined): TutorialMark
   }
   if (w.kind === "gasOnMarine") {
     const sq = gasMarineSquare(scfen);
-    if (sq) return { ...base, squares: [sq] };
+    if (sq) return { ...base, squares: [], gasSquares: [sq] };
   }
   if (w.kind === "promotionChoice") {
     const sq = promotionChoiceOpen(scfen);
-    if (sq) return { ...base, squares: [sq] };
+    if (sq && whiteGas(scfen) >= 1) return { ...base, squares: [], gasSquares: [sq] };
+    if (sq) {
+      const next = `${sq[0]}${Number(sq[1]) + 1}` as Square;
+      return { ...base, squares: [next], arrows: [{ from: sq, to: next }] };
+    }
   }
   if (w.kind === "tankSiege") {
     const sq = tankSiegeSquare(scfen);
-    if (sq) return { ...base, squares: [sq] };
+    if (sq) return { ...base, squares: [], gasSquares: [sq] };
   }
   if (w.kind === "ccDeploy") {
     const deploy = ccDeployPressure(scfen);
     if (deploy) {
       return {
         ...base,
+        gasOnCC: true,
         squares: [deploy.at],
-        arrows: deploy.hits.map((to) => ({ from: deploy.at, to, ...(to === deploy.cc ? { tone: "alert" as const } : {}) })),
+        arrows: deploy.hits.map((to) => ({
+          ...unitArrow(deploy.unit, deploy.at, to),
+          ...(to === deploy.cc ? { tone: "alert" as const } : {}),
+        })),
       };
     }
+  }
+  if (w.kind === "wrongQueue") {
+    const wrong = wrongQueuedAction(scfen, w.sequence);
+    if (wrong) return { squares: [], alertSquares: [], gasSquares: [], arrows: [], cancelQueued: queueActionKey(wrong) };
   }
   if (w.kind === "ccThreat") {
     const threat = ccThreatUnits(scfen);
     if (threat) {
-      return {
-        ...base,
+      const danger = {
         alertSquares: threat.units.map((u) => u.from),
-        arrows: threat.units.map((u) => ({ from: u.from, to: threat.cc, tone: "alert" as const })),
+        arrows: threat.units.map((u) => ({ ...unitArrow(u.kind, u.from, threat.cc), tone: "alert" as const })),
       };
+      const answer = ccThreatAnswer(scfen);
+      if (answer?.kind === "deploy") {
+        return {
+          ...base,
+          ...danger,
+          squares: [answer.at],
+          gasOnCC: true,
+          arrows: [...danger.arrows, unitArrow(answer.unit, answer.at, answer.target)],
+        };
+      }
+      if (answer?.kind === "deployed") {
+        return { ...base, ...danger, squares: [answer.at], arrows: [...danger.arrows, unitArrow(answer.unit, answer.at, answer.target)] };
+      }
+      if (answer?.kind === "capture") {
+        return { ...base, ...danger, squares: [answer.from], arrows: [...danger.arrows, unitArrow(answer.unit, answer.from, answer.target)] };
+      }
+      if (answer?.kind === "evade") {
+        return { ...base, ...danger, squares: [answer.to], arrows: [...danger.arrows, { from: answer.cc, to: answer.to }] };
+      }
+      return { ...base, ...danger };
     }
   }
   if (w.kind === "ccPressure") {
@@ -457,11 +510,34 @@ const enrichMark = (beat: TutorialBeat, scfen: string | undefined): TutorialMark
       return {
         ...base,
         squares: pressure.units.map((u) => u.from),
-        arrows: pressure.units.map((u) => ({ from: u.from, to: pressure.cc })),
+        arrows: pressure.units.map((u) => unitArrow(u.kind, u.from, pressure.cc)),
       };
     }
   }
   return base;
+};
+
+export const completedLessonBeats = (
+  beats: readonly TutorialBeat[] | undefined,
+): TutorialBeat[] | undefined => beats?.filter((b) => b.final);
+
+const pressureMark = (scfen: string): TutorialMark => {
+  const pressure = ccPressureUnits(scfen);
+  if (pressure) {
+    return {
+      squares: pressure.units.map((u) => u.from),
+      arrows: pressure.units.map((u) => unitArrow(u.kind, u.from, pressure.cc)),
+    };
+  }
+  const line = mechaPressureLine(scfen);
+  if (!line) return {};
+  return {
+    squares: [line.to],
+    arrows: [
+      { from: line.from, to: line.to },
+      { from: line.to, to: line.cc, tone: "alert" },
+    ],
+  };
 };
 
 /**
@@ -479,25 +555,31 @@ export const resolveTutorialHint = (
     reviewPhase: ctx.reviewPhase,
     covers: ctx.covers,
     trajectories: ctx.trajectories,
+    targetingKind: ctx.targetingKind,
   };
   const beat = pickBeat(beats, "mark", matchCtx);
   let mark: TutorialMark | undefined;
   if (beat) {
     mark = enrichMark(beat, ctx.scfen);
     if (mark.fromBattleShip && ctx.scfen) mark = battleShipOrigin(mark, ctx.scfen);
+    const ghost = mark.gasOnMoveGhost && ctx.scfen ? queuedMoveGhost(ctx.scfen) : null;
+    if (ghost) mark = { ...mark, gasSquares: [...(mark.gasSquares ?? []), ghost] };
+    const cc =
+      mark.gasOnCC && ctx.scfen && ctx.targetingKind !== "deploy" ? deployGasSquare(ctx.scfen) : null;
+    if (cc) mark = { ...mark, gasSquares: [...(mark.gasSquares ?? []), cc] };
+    const push = mark.gasOnPush && ctx.scfen ? gasMarineSquare(ctx.scfen) : null;
+    if (push) mark = { ...mark, gasSquares: [...(mark.gasSquares ?? []), push] };
+    if (mark.pressureCC && ctx.scfen) mark = { ...mark, ...pressureMark(ctx.scfen) };
   }
   return {
     squares: [...(mark?.squares ?? [])],
     alertSquares: [...(mark?.alertSquares ?? [])],
+    gasSquares: [...(mark?.gasSquares ?? [])],
     arrows: [...(mark?.arrows ?? [])],
+    cancelQueued: mark?.cancelQueued ?? null,
   };
 };
 
-/**
- * Keep alert rings up through later beats. A `followKing` lesson (king-attack-3)
- * moves the ring only when the Command Center is seen on a different square —
- * a fogged king does not count, so a dark move cannot relocate the mark.
- */
 export const nextAlertLatch = (
   prev: AlertLatch,
   scripted: readonly Square[],

@@ -1,8 +1,8 @@
 // SPEC: _spec/apps/starchess/architecture/storybook-projection.puml
 import type { TutorialStoryScript } from "~/tutorial/tutorialScript";
 
-export const kingDefense6 = {
-  id: "king-defense-6",
+export const livePlayDefense6 = {
+  id: "live-play-defense-6",
   title: "Ship Snipe Defense",
   board: {
     scfen: "SCFEN|7k/8/8/3q4/4B3/8/5b1P/4N2K|21|13|P|G:33:33|Q:w:;b:",
@@ -31,6 +31,7 @@ export const kingDefense6 = {
       when: { kind: "targeting", targetingKind: "charonMissiles" },
       say: "Target f1. \n\nSneaky BattleShip will arrive to flying missiles.",
       emotion: "scanning",
+      mark: { squares: ["f1"], arrows: [{ from: "g2", to: "f1" }] },
     },
     {
       when: { kind: "scfen", re: /charonMissiles:/ },
@@ -42,7 +43,7 @@ export const kingDefense6 = {
       when: { kind: "scfen", re: /Q:w:[^;]*C=e4g2/ },
       say: "Now gas the Mecha ghost.",
       emotion: "scanning",
-      mark: { squares: ["f1"], arrows: [{ from: "g2", to: "f1" }] },
+      mark: { squares: ["f1"], gasSquares: ["g2"], arrows: [{ from: "g2", to: "f1" }] },
     },
     {
       when: { kind: "scfen", re: /tacticalJump:/ },

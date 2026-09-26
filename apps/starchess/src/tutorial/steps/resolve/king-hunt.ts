@@ -7,8 +7,14 @@ export const kingHunt = {
   comment: "We're observing a Command Center in the run! \nIt will crumble after 3 attacks.",
   emotion: "watching",
   intentArrows: true,
-  completeWhen: { kind: "lives", own: 0 },
   beats: [
+    {
+      priority: 1,
+      when: { kind: "lives", own: 0 },
+      say: "Now we have learned how turns resolve simultaneously for 2 players. \nReady for some live practice?",
+      emotion: "happy",
+      action: { kind: "goSection", section: "live-play", label: "Next Section" },
+    },
     {
       when: { kind: "lives", own: 2 },
       say: "Checked, a fire represents the damage.",

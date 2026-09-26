@@ -27,26 +27,26 @@ import { rookSiege as fogRookSiege } from "~/tutorial/steps/fog/rook-siege";
 import { queen as fogQueen } from "~/tutorial/steps/fog/queen";
 import { mine as fogMine } from "~/tutorial/steps/fog/mine";
 
-import { marine as specialsMarine } from "~/tutorial/steps/specials/marine";
 import { cc as specialsCc } from "~/tutorial/steps/specials/cc";
+import { marine as specialsMarine } from "~/tutorial/steps/specials/marine";
 import { hoverbike as specialsHoverbike } from "~/tutorial/steps/specials/hoverbike";
 import { mecha as specialsMecha } from "~/tutorial/steps/specials/mecha";
-import { ship as specialsShip } from "~/tutorial/steps/specials/ship";
 import { tank as specialsTank } from "~/tutorial/steps/specials/tank";
+import { ship as specialsShip } from "~/tutorial/steps/specials/ship";
 
 import { combatChain as resolveCombatChain } from "~/tutorial/steps/resolve/combat-chain";
 import { kingHunt as resolveKingHunt } from "~/tutorial/steps/resolve/king-hunt";
 
-import { kingDefense } from "~/tutorial/steps/king/king-defense";
-import { kingDefense2 } from "~/tutorial/steps/king/king-defense-2";
-import { kingDefense3 } from "~/tutorial/steps/king/king-defense-3";
-import { kingDefense4 } from "~/tutorial/steps/king/king-defense-4";
-import { kingDefense5 } from "~/tutorial/steps/king/king-defense-5";
-import { kingDefense6 } from "~/tutorial/steps/king/king-defense-6";
-import { kingAttack1 } from "~/tutorial/steps/king/king-attack-1";
-import { kingAttack2 } from "~/tutorial/steps/king/king-attack-2";
-import { kingAttack3 } from "~/tutorial/steps/king/king-attack-3";
-import { kingAttack4 } from "~/tutorial/steps/king/king-attack-4";
+import { livePlayDefense1 } from "~/tutorial/steps/live-play/live-play-defense-1";
+import { livePlayDefense2 } from "~/tutorial/steps/live-play/live-play-defense-2";
+import { livePlayDefense3 } from "~/tutorial/steps/live-play/live-play-defense-3";
+import { livePlayDefense4 } from "~/tutorial/steps/live-play/live-play-defense-4";
+import { livePlayDefense5 } from "~/tutorial/steps/live-play/live-play-defense-5";
+import { livePlayDefense6 } from "~/tutorial/steps/live-play/live-play-defense-6";
+import { livePlayAttack1 } from "~/tutorial/steps/live-play/live-play-attack-1";
+import { livePlayAttack2 } from "~/tutorial/steps/live-play/live-play-attack-2";
+import { livePlayAttack3 } from "~/tutorial/steps/live-play/live-play-attack-3";
+import { livePlayAttack4 } from "~/tutorial/steps/live-play/live-play-attack-4";
 
 export const TUTORIAL_SCRIPT_CONFIG = [
   {
@@ -57,7 +57,7 @@ export const TUTORIAL_SCRIPT_CONFIG = [
   {
     id: "specials",
     label: "Special Moves",
-    stories: [specialsMarine, specialsCc, specialsHoverbike, specialsMecha, specialsShip, specialsTank],
+    stories: [specialsCc, specialsMarine, specialsHoverbike, specialsMecha, specialsTank, specialsShip],
   },
   {
     id: "resolve",
@@ -65,19 +65,19 @@ export const TUTORIAL_SCRIPT_CONFIG = [
     stories: [resolveCombatChain, resolveKingHunt],
   },
   {
-    id: "king",
-    label: "King Damage",
+    id: "live-play",
+    label: "Live Play",
     stories: [
-      kingDefense,
-      kingDefense2,
-      kingDefense3,
-      kingDefense4,
-      kingDefense5,
-      kingDefense6,
-      kingAttack1,
-      kingAttack2,
-      kingAttack3,
-      kingAttack4,
+      livePlayDefense1,
+      livePlayDefense2,
+      livePlayDefense3,
+      livePlayDefense4,
+      livePlayDefense5,
+      livePlayDefense6,
+      livePlayAttack1,
+      livePlayAttack2,
+      livePlayAttack3,
+      livePlayAttack4,
     ],
   },
 ] as const satisfies TutorialScriptConfig;

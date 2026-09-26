@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/starchess/architecture/storybook-projection.puml
+// SPEC: _spec/apps/starchess/architecture/storybook-projection.puml, _spec/apps/starchess/tutorial/hints-and-coach.md
 /** Tutorial stage ids (Breadcrumb / routes / script). */
 
 import type { Square } from "chess.js";
@@ -7,7 +7,7 @@ import type { ScPiece, ScSpecialKind } from "@chess-coach/starchess-core";
 import type { KerriganEmotion } from "~/types/coach";
 import type { ReviewTurnPhase } from "~/types/review";
 
-export type TutorialSectionId = "fog" | "specials" | "resolve" | "king";
+export type TutorialSectionId = "fog" | "specials" | "resolve" | "live-play";
 
 /** Resolve timeline wave partitions for tutorial steppers. */
 export type ResolveWaveId =
@@ -140,6 +140,8 @@ export type TutorialWhen =
   | TutorialTrajectoryWhen
   | TutorialBackrankWhen
   | TutorialMechaDiagonalWhen
+  | TutorialMechaDeployReadyWhen
+  | TutorialWrongQueueWhen
   | TutorialMechaThreatWhen
   | TutorialGasMarineWhen
   | TutorialForwardDeployWhen
@@ -170,6 +172,12 @@ export type TutorialMark = {
   squares?: readonly Square[];
   /** Alert-red rings. Same step as `squares`; both paint together. */
   alertSquares?: readonly Square[];
+  gasSquares?: readonly Square[];
+  cancelQueued?: string;
+  gasOnMoveGhost?: boolean;
+  gasOnCC?: boolean;
+  gasOnPush?: boolean;
+  pressureCC?: boolean;
   arrows?: readonly TutorialBoardArrow[];
   /**
    * Rewrite arrow origins to the viewer's BattleShip. The destination stays
@@ -201,8 +209,10 @@ export type TutorialBeat = {
   action?: TutorialReactionAction;
   /** Momentary beat — shown while matched, never latched as the sticky line. */
   transient?: boolean;
+  holdMs?: number;
   /** Board rings/arrows. Omit to leave marks to a later/fallback beat. */
   mark?: TutorialMark;
+  final?: boolean;
 };
 
 /** One viewer-side unit covering a square, via core attack geometry. */
@@ -250,6 +260,16 @@ export type TutorialBackrankWhen = { kind: "backrankGuard" };
  */
 export type TutorialMechaDiagonalWhen = {
   kind: "mechaDiagonal";
+  phases?: readonly ReviewTurnPhase[];
+};
+
+export type TutorialWrongQueueWhen = {
+  kind: "wrongQueue";
+  sequence: readonly (string | readonly string[])[];
+};
+
+export type TutorialMechaDeployReadyWhen = {
+  kind: "mechaDeployReady";
   phases?: readonly ReviewTurnPhase[];
 };
 
@@ -429,6 +449,7 @@ export type TutorialLine = {
   source: "intro" | "reaction";
   /** Momentary beat — shown while matched, never latched as the sticky line. */
   transient?: boolean;
+  holdMs?: number;
 };
 
 /**

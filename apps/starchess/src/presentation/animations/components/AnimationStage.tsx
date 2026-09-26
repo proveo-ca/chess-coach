@@ -84,6 +84,7 @@ export type AnimationStageProps = {
   hintSquares?: readonly Square[];
   /** Tutorial rings drawn in alert red. */
   hintAlertSquares?: readonly Square[];
+  hintGasSquares?: readonly Square[];
   /** Tutorial hint lines drawn square-to-square. */
   hintArrows?: readonly TutorialBoardArrow[];
   onSquareClick?: (square: Square) => void;
@@ -235,6 +236,7 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
         legalDests={props.legalDests}
         hintSquares={props.hintSquares}
         hintAlertSquares={props.hintAlertSquares}
+        hintGasSquares={props.hintGasSquares}
         hintArrows={props.hintArrows}
         onSquareClick={props.onSquareClick}
         hideSquares={hidden()}

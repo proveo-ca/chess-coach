@@ -27,6 +27,8 @@ import { useMatchStore } from "~/app/MatchStoreContext";
 import { canSubmit, readDisplayedSnapshot } from "~/app/selectors";
 import { Button } from "@chess-coach/ui-web/primitives/Button";
 import { Chip } from "@chess-coach/ui-web/primitives/Chip";
+import { CancelHint } from "~/presentation/hud/components/CancelHint";
+import { queueActionKey, queueHint } from "~/presentation/hud/queueHint";
 import { CountdownRing } from "@chess-coach/ui-web/primitives/CountdownRing";
 import { DualNavButton } from "@chess-coach/ui-web/primitives/DualNavButton";
 import { turnTimeoutMsForTurn } from "~/presentation/constants";
@@ -186,17 +188,19 @@ export const TurnBarSidebar: Component<TurnBarSidebarProps> = (props) => {
   };
 
   const queueChip = (a: ScAction) => (
-    <Chip
-      size="sm"
-      tone={toneFor(a.timing)}
-      data-timing={a.timing}
-      data-seq={a.seq}
-      removeTestId={`queue-remove-${a.seq}`}
-      removeLabel={`Remove ${badgeLabel(a)}`}
-      onRemove={(e) => removeChip(a, e)}
-    >
-      {badgeLabel(a)}
-    </Chip>
+    <CancelHint active={queueHint() === queueActionKey(a)}>
+      <Chip
+        size="sm"
+        tone={toneFor(a.timing)}
+        data-timing={a.timing}
+        data-seq={a.seq}
+        removeTestId={`queue-remove-${a.seq}`}
+        removeLabel={`Remove ${badgeLabel(a)}`}
+        onRemove={(e) => removeChip(a, e)}
+      >
+        {badgeLabel(a)}
+      </Chip>
+    </CancelHint>
   );
 
   return (

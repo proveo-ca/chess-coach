@@ -1,17 +1,18 @@
 // SPEC: _spec/apps/starchess/architecture/storybook-projection.puml
 import type { TutorialStoryScript } from "~/tutorial/tutorialScript";
+import { and, not } from "~/tutorial/when";
 
 export const cc = {
   id: "cc",
   title: "Command Center",
   board: {
-    scfen: "SCFEN|r6k/8/8/8/3K4/8/8/7R|1|33|P|G:11:11|Q:w:;b:",
+    scfen: "SCFEN|r6k/8/8/8/8/8/8/4K3|1|33|P|G:11:11|Q:w:;b:",
     stored: 12,
     endTurnAfterQueue: "first",
     armTimer: false,
-    docs: "1. Drag gas onto the command center on d4 \u2192 DeployModal. 2. Pick a unit. 3. Tap an adjacent empty square \u2014 queued spawn \u00b7 End to drop.",
+    docs: "1. Drag gas onto the command center on e1 \u2192 DeployModal. 2. Pick a unit. 3. Tap an adjacent empty square \u2014 queued spawn \u00b7 End to drop.",
   },
-  comment: "The Command Center can deploy units with gas!",
+  comment: "The Command Center can deploy units with gas! Often the best gas use. \n\nSee that gas canister in the bottom? Drag and drop it into your Command Center.",
   emotion: "watching",
   completeWhen: {
     kind: "queue",
@@ -25,6 +26,16 @@ export const cc = {
       when: { kind: "scfen", re: /SCFEN\|[^|]+\|[^|]+\|\d2\|/ },
       say: "I'll explain attacks and King Damage later.",
       emotion: "watching",
+    },
+    {
+      when: and(
+        not({ kind: "targeting", targetingKind: "deploy" }),
+        not({ kind: "scfen", re: /[BF]=deploy:/ }),
+      ),
+      mark: { gasSquares: ["e1"] },
+    },
+    {
+      mark: {},
     },
   ],
 } satisfies TutorialStoryScript;

@@ -154,3 +154,21 @@
   min-width: 2.25rem;
   min-height: 2.25rem;
 }
+
+.dualInBanner {
+  flex-wrap: nowrap;
+  gap: 6px;
+  width: 100%;
+  max-width: none;
+}
+
+.dualInBanner > * {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+@media (max-width: 719px) {
+  .bannerOwned {
+    display: none !important;
+  }
+}

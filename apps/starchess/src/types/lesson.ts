@@ -21,6 +21,7 @@ export type LiveLessonHostProps = {
   boardVariant?: BoardSkin;
   pieceSet?: PieceSet;
   hideResources?: boolean;
+  hudResources?: boolean;
   hideGas?: boolean;
   turnChrome?: "bar" | "sidebar" | "none";
   /** Storybook override; otherwise the catalog decides. */

@@ -218,3 +218,13 @@ h1 {
     padding-bottom: 0.5rem;
   }
 }
+
+@media (max-width: 479px), (max-width: 719px) and (min-height: 640px) {
+  .app-container:has(:global(.mobile-banner[data-band="mobile"])) {
+    padding-top: var(--mobile-banner-tall-height, 6.25rem);
+  }
+
+  .app-container:has(:global(.mobile-banner[data-band="mobile"])) :global(.screen-back) {
+    visibility: hidden;
+  }
+}

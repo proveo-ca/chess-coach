@@ -54,6 +54,7 @@ export const LiveStarChessBoard: Component<{
   hintSquares?: readonly Square[];
   /** Tutorial rings drawn in alert red. */
   hintAlertSquares?: readonly Square[];
+  hintGasSquares?: readonly Square[];
   /** Tutorial hint lines drawn square-to-square. */
   hintArrows?: readonly TutorialBoardArrow[];
 }> = (props) => {
@@ -344,6 +345,7 @@ export const LiveStarChessBoard: Component<{
         legalDests={interactive() ? state().legalDests : []}
         hintSquares={props.hintSquares}
         hintAlertSquares={props.hintAlertSquares}
+        hintGasSquares={props.hintGasSquares}
         hintArrows={props.hintArrows}
         onSquareClick={interactive() ? onSquareClick : undefined}
         combat={combatFrame()}

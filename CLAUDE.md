@@ -57,6 +57,7 @@ When you add, rename, or remove a component, hook, store, or service:
 | `_spec/packages/starchess-core/record-packing.puml` | `replay/packed.ts` — lossless storage codec for a record's resolves (verified deflate, `next` dropped only where rebuildable) + the per-ply SCSan (`Q:`) intent line; `matchHistoryStore` stores records packed |
 | `_spec/packages/starchess-core/move-timing.puml` | `board/move-timing.ts` — the one move-phase clock (Hoverbike 1 tick/square, rest 2): `timedMover` / `moverContact` decide collisions by who held the square first; the app's move VFX reads the same ticks |
 | `_spec/packages/starchess-core/ray-scan.puml` | `board/ray-scan.ts` — one `scanRay` + one `takeRayContact` replacing the duplicated ray walks |
+| `_spec/apps/starchess/tutorial/hints-and-coach.md` | **Tutorial hints + coach rationale** — gas hints and mark options, marks after a lesson ends, `holdMs`, coach hiding/farewell, strict `wrongQueue` order + queue cancel hint, `lessonTactics` helpers, per-lesson beat notes |
 | `_spec/apps/starchess/timeline/overview.puml` | `timelinePlayer.ts` interior: projector + interpreter, cue lanes, board ladder |
 | `_spec/apps/starchess/timeline/cue-projection.puml` | `projectResolveTimeline` emission order (the cue list **is** the script) |
 | `_spec/apps/starchess/timeline/cue-playback.puml` | `playTimeline` dispatch, commit semantics, cancellation contract |

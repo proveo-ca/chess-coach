@@ -1,17 +1,16 @@
 /* // SPEC: _spec/apps/starchess/navigation-chrome.md */
-/*
- * Fixed width, not `fit-content`: the two review bars must read as a matched
- * pair regardless of name length or digit count, and a stable width is what
- * keeps the flanking turn arrows from shifting as the numbers change.
- */
 .bar {
   display: flex;
   align-items: stretch;
   gap: 10px;
   padding: 8px 10px;
-  width: 18rem;
+  width: fit-content;
   max-width: 100%;
   box-sizing: border-box;
+}
+
+.bar:has(.name) {
+  width: 18rem;
 }
 
 .strip {
@@ -98,12 +97,6 @@
   font-size: 0.78rem;
 }
 
-/*
- * Fixed here too (narrower than the 18rem default — 11px type, tighter gaps):
- * content is ~9.5rem, so 12rem holds the widest bank / supply digits without
- * the strip stretching across the banner. The banner's turn column takes the
- * slack, so End Turn + timer stay pinned right as the numbers change.
- */
-.bar.compact {
+.bar.compact:has(.name) {
   width: 12rem;
 }

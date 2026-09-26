@@ -1,3 +1,4 @@
+// SPEC: _spec/apps/starchess/navigation-chrome.md
 import type { ScAction } from "@chess-coach/starchess-core";
 /**
  * StarChess turn chrome — phase chips + queue badges + End + countdown.
@@ -23,6 +24,8 @@ import { useMatchStore } from "~/app/MatchStoreContext";
 import { canSubmit, readDisplayedSnapshot } from "~/app/selectors";
 import { Button } from "@chess-coach/ui-web/primitives/Button";
 import { Chip } from "@chess-coach/ui-web/primitives/Chip";
+import { CancelHint } from "~/presentation/hud/components/CancelHint";
+import { queueActionKey, queueHint } from "~/presentation/hud/queueHint";
 import { CountdownRing } from "@chess-coach/ui-web/primitives/CountdownRing";
 import { TeamFrame } from "@chess-coach/ui-web/primitives/TeamFrame";
 import { turnTimeoutMsForTurn } from "~/presentation/constants";
@@ -178,17 +181,22 @@ export const TurnBar: Component<TurnBarProps> = (props) => {
   };
 
   const queueChip = (a: ScAction) => (
-    <Chip
-      size="sm"
-      tone={toneFor(a.timing)}
-      data-timing={a.timing}
-      data-seq={a.seq}
-      removeTestId={`queue-remove-${a.seq}`}
-      removeLabel={`Remove ${badgeLabel(a)}`}
-      onRemove={(e) => removeChip(a, e)}
+    <CancelHint
+      active={queueHint() === queueActionKey(a)}
+      direction={isCompact() || isQueueOnly() ? "right" : "down"}
     >
-      {badgeLabel(a)}
-    </Chip>
+      <Chip
+        size="sm"
+        tone={toneFor(a.timing)}
+        data-timing={a.timing}
+        data-seq={a.seq}
+        removeTestId={`queue-remove-${a.seq}`}
+        removeLabel={`Remove ${badgeLabel(a)}`}
+        onRemove={(e) => removeChip(a, e)}
+      >
+        {badgeLabel(a)}
+      </Chip>
+    </CancelHint>
   );
 
   return (

@@ -19,6 +19,18 @@ export const combatChain = {
       emotion: "shocked",
     },
     {
+      turn: 0,
+      when: { kind: "reviewPhase", phase: "intent" },
+      say: "Intent: ghosts are promises. Nothing moves until next phase. \nThe colored lines represent each player's vision; watch it move as units move!",
+      emotion: "watching",
+    },
+    {
+      turn: 2,
+      when: { kind: "reviewPhase", phase: "intent" },
+      say: "Intent: That Tank wants to move to the 8th rank. \nThe Hoverbike will attack it before it can move!",
+      emotion: "watching",
+    },
+    {
       when: { kind: "reviewPhase", phase: "intent" },
       say: "Intent: ghosts are promises. Nothing moves until next phase.",
       emotion: "watching",

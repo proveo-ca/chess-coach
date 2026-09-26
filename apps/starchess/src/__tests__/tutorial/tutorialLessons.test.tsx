@@ -75,22 +75,22 @@ describe("tutorial lesson catalog", () => {
       "fog/rook-siege",
       "fog/queen",
       "fog/mine",
-      "specials/marine",
       "specials/cc",
+      "specials/marine",
       "specials/hoverbike",
       "specials/mecha",
-      "specials/ship",
       "specials/tank",
-      "king/king-defense",
-      "king/king-defense-2",
-      "king/king-defense-3",
-      "king/king-defense-4",
-      "king/king-defense-5",
-      "king/king-defense-6",
-      "king/king-attack-1",
-      "king/king-attack-2",
-      "king/king-attack-3",
-      "king/king-attack-4",
+      "specials/ship",
+      "live-play/live-play-defense-1",
+      "live-play/live-play-defense-2",
+      "live-play/live-play-defense-3",
+      "live-play/live-play-defense-4",
+      "live-play/live-play-defense-5",
+      "live-play/live-play-defense-6",
+      "live-play/live-play-attack-1",
+      "live-play/live-play-attack-2",
+      "live-play/live-play-attack-3",
+      "live-play/live-play-attack-4",
     ]);
   });
 
@@ -99,16 +99,19 @@ describe("tutorial lesson catalog", () => {
     // go, and graduation is the lesson's own choreography.
     const lastStage = TUTORIAL_SCRIPT[TUTORIAL_SCRIPT.length - 1]!;
     const lastStory = lastStage.stories[lastStage.stories.length - 1]!;
-    expect(`${lastStage.id}/${lastStory.id}`).toBe("king/king-attack-4");
+    expect(`${lastStage.id}/${lastStory.id}`).toBe("live-play/live-play-attack-4");
     expect(lastStory.board?.choreography).toBe("turtledOpeningScript");
   });
 
   it("every live lesson can be completed", () => {
-    // A lesson without `completeWhen` is a dead end — the player reaches it and
-    // the tutorial never advances (fog/mine shipped this way).
     const deadEnds = TUTORIAL_SCRIPT.flatMap((stage) =>
       stage.stories
-        .filter((s) => s.board != null && s.completeWhen == null)
+        .filter(
+          (s) =>
+            s.board != null &&
+            s.completeWhen == null &&
+            !s.beats?.some((b) => b.action?.kind === "goSection"),
+        )
         .map((s) => `${stage.id}/${s.id}`),
     );
     expect(deadEnds).toEqual([]);

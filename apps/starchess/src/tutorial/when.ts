@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/starchess/architecture/storybook-projection.puml
+// SPEC: _spec/apps/starchess/architecture/storybook-projection.puml, _spec/apps/starchess/tutorial/hints-and-coach.md
 /**
  * `TutorialWhen` builders + the one shared evaluator. Replaces two
  * near-duplicate ~20-branch if-chains (the old `resolveTutorialLine` reaction
@@ -21,6 +21,7 @@ import {
   g1GuardNeeded,
   gasMarineSquare,
   isBoardCondition,
+  mechaDeployReady,
   mechaDiagonalOpen,
   mechaThreatOpen,
   mineGuard,
@@ -91,6 +92,35 @@ const actionMatchesSpec = (a: ScAction, spec: ParsedQueuedSpec): boolean =>
   a.from === spec.from &&
   (spec.to == null || a.to === spec.to);
 
+export const wrongQueuedAction = (
+  scfen: string,
+  sequence: readonly (string | readonly string[])[],
+): ScAction | null => {
+  let actions: readonly ScAction[];
+  try {
+    actions = parseScFen(scfen).queue?.actions ?? [];
+  } catch {
+    return null;
+  }
+  const matches = (a: ScAction, raw: string): boolean => {
+    const any = raw.startsWith("*=");
+    const spec = parseQueuedSpec(any ? `B=${raw.slice(2)}` : raw);
+    if (!spec) return false;
+    return any && (a.timing === "B" || a.timing === "F")
+      ? actionMatchesSpec(a, { ...spec, timing: a.timing })
+      : actionMatchesSpec(a, spec);
+  };
+  const white = actions.filter((a) => a.color === "w").sort((x, y) => x.seq - y.seq);
+  return (
+    white.find((a, i) => {
+      const step = sequence[i];
+      if (step == null) return true;
+      const options: readonly string[] = typeof step === "string" ? [step] : step;
+      return !options.some((raw) => matches(a, raw));
+    }) ?? null
+  );
+};
+
 const isQueued = (scfen: string | undefined, color: "w" | "b", action: string): boolean => {
   if (!scfen) return false;
   const spec = parseQueuedSpec(action);
@@ -143,6 +173,10 @@ export const matchWhen = (when: TutorialWhen, ctx: TutorialWhenContext): boolean
       return !!ctx.trajectories?.some((t) => t.from === when.from && t.to === when.to);
     case "backrankGuard":
       return !!ctx.scfen && g1GuardNeeded(ctx.scfen);
+    case "wrongQueue":
+      return !!ctx.scfen && wrongQueuedAction(ctx.scfen, when.sequence) != null;
+    case "mechaDeployReady":
+      return !!ctx.scfen && phaseAllows(when.phases, ctx.reviewPhase) && mechaDeployReady(ctx.scfen);
     case "mechaDiagonal":
       return !!ctx.scfen && phaseAllows(when.phases, ctx.reviewPhase) && mechaDiagonalOpen(ctx.scfen);
     case "mechaThreat":

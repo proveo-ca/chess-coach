@@ -81,6 +81,7 @@ export type StarChessBoardProps = {
   hintSquares?: readonly Square[];
   /** Tutorial destination rings drawn in alert red. */
   hintAlertSquares?: readonly Square[];
+  hintGasSquares?: readonly Square[];
   /** Tutorial hint lines drawn square-to-square (attack / x-ray lines). */
   hintArrows?: readonly TutorialBoardArrow[];
   onSquareClick?: (square: Square) => void;
@@ -530,7 +531,9 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
                     tankModeAt(square, sieged());
                   const isSelected = () => props.selected === square;
                   const isLegal = () => props.legalDests?.includes(square) ?? false;
-                  const isHint = () => props.hintSquares?.includes(square) ?? false;
+                  const isGasHint = () => props.hintGasSquares?.includes(square) ?? false;
+                  const isHint = () =>
+                    (props.hintSquares?.includes(square) ?? false) || isGasHint();
                   const gasUsedAura = () => {
                     // Resolve absorb — green eases onto the unit with the canister drop
                     // (LiveStarChessBoard already fog-gates gasDrop / absorb squares).
@@ -579,6 +582,7 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
                       )}
                       data-square={square}
                       data-hint={isHint() ? square : undefined}
+                      data-hint-gas={isGasHint() ? square : undefined}
                       data-legal={isLegal() ? square : undefined}
                       data-tone={isLight() ? "light" : "dark"}
                       data-fog={
@@ -623,6 +627,14 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
                             data-special-used={gasUsedAura() ? "true" : undefined}
                           />
                         )}
+                      </Show>
+                      <Show when={isGasHint()}>
+                        <div class={styles.gasHint} aria-hidden="true">
+                          <VespeneIcon size={22} />
+                          <svg class={styles.gasHintArrow} viewBox="0 0 12 10">
+                            <path d="M1.5 1.5 6 7.5 10.5 1.5" />
+                          </svg>
+                        </div>
                       </Show>
                       <Show when={canister()}>
                         {(c) => (

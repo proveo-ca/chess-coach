@@ -932,3 +932,65 @@
     animation-iteration-count: 1;
   }
 }
+
+.chessboard .square[data-square][data-hint-gas] {
+  position: relative;
+  z-index: 10;
+}
+
+.gasHint {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  z-index: 13;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  color: var(--sc-guide-green, #3ecf8e);
+  filter:
+    drop-shadow(0 0 1px rgb(0 0 0 / 0.95))
+    drop-shadow(0 0 1px rgb(0 0 0 / 0.95))
+    drop-shadow(0 0 4px color-mix(in srgb, var(--sc-guide-green, #3ecf8e) 70%, transparent));
+  pointer-events: none;
+  line-height: 0;
+  transform: translate(-50%, -95%);
+  animation: sc-gas-hint-drop 1.2s ease-in-out infinite;
+}
+
+.gasHintArrow {
+  width: 14px;
+  height: 12px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.25;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+@keyframes sc-gas-hint-drop {
+  0%,
+  100% { transform: translate(-50%, -95%); }
+  50% { transform: translate(-50%, -75%); }
+}
+
+.square[data-square$="8"] .gasHint {
+  top: 3%;
+  flex-direction: row;
+  align-items: center;
+  gap: 2px;
+  transform: translate(-50%, 0);
+  animation-name: sc-gas-hint-drop-inset;
+}
+
+@keyframes sc-gas-hint-drop-inset {
+  0%,
+  100% { transform: translate(-50%, 0); }
+  50% { transform: translate(-50%, 15%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gasHint {
+    animation: none;
+  }
+}

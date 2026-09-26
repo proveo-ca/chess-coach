@@ -88,7 +88,7 @@ note as N_BLOCK
   An interposed **piece** on that same tile does both: it eats the shot
   (""collision"") and, being captured on a mined tile, clears the mine
   (""attack"" mode above). Pinned by ""src/__tests__/mine/mineChecks.test.ts"";
-  the tutorial lesson ""king/king-attack-1"" plants c6 on the h1-a8 diagonal so
+  the tutorial lesson ""live-play/live-play-attack-1"" plants c6 on the h1-a8 diagonal so
   the product board carries the same case.
 end note
 

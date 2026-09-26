@@ -48,6 +48,7 @@
 
 /* MobileBanner density — queue (flex) + End + timer (fixed). */
 .compact {
+  min-height: 40px;
   flex-direction: row;
   align-items: center;
   gap: 0.35rem;
@@ -121,4 +122,12 @@
 .queueOnly .queue {
   width: auto;
   flex-wrap: nowrap;
+}
+
+.queue [data-timing] {
+  min-height: 40px;
+}
+
+.compact .inlineQueue [data-timing] {
+  min-height: 40px;
 }

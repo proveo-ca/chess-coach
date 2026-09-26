@@ -9,7 +9,7 @@
  * `ResourceBar` stay untouched and the labels vanish outside the tutorial.
  */
 import type { PieceSymbol } from "chess.js";
-import { For, createSignal, onCleanup, onMount, type Component } from "solid-js";
+import { For, createEffect, createSignal, on, onCleanup, onMount, type Component } from "solid-js";
 import { Portal } from "solid-js/web";
 
 import { ChatBubble } from "@chess-coach/ui-web/primitives/ChatBubble";
@@ -165,6 +165,7 @@ export const TutorialHudLabels: Component<TutorialHudLabelsProps> = (props) => {
     window.addEventListener("resize", onViewport);
     window.addEventListener("scroll", onViewport, true);
     schedule();
+    createEffect(on(() => props.enabled, () => schedule(0), { defer: true }));
 
     onCleanup(() => {
       observer.disconnect();

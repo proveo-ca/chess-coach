@@ -41,7 +41,6 @@ describe("piece id", () => {
 });
 
 describe("foldTurn on one settled ply", () => {
-  // Reference case: proveo.ca/starchess/tutorial/king/king-defense-5
   it("awards Medal of Honor when a marine intercepts and dies", () => {
     const scfen =
       "SCFEN|7k/8/8/8/1b6/8/2PR4/3K4|11|33|P|G:12:22|S:d2|Q:w:B=stimStep:c2:c3;b:C=b4d2";

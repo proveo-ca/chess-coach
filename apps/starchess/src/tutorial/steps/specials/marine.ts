@@ -43,7 +43,7 @@ export const marine = {
       turn: 2,
       say: "Now the slipping away technique, drop a gas canister in your Marine",
       emotion: "scanning",
-      mark: { squares: ["e3"] },
+      mark: { gasSquares: ["e3"] },
     },
     {
       // Turn-1 classical queued from a Marine square (d2 / e3 on this
@@ -52,6 +52,10 @@ export const marine = {
       when: { kind: "scfen", re: /^(?=SCFEN\|[^|]+\|1\|)(?=.*Q:w:[^;]*C=[de][23])/ },
       say: "You just queued an intent! \nIt looks like a ghost. \n\nSee that gas canister in the bottom? Drag and drop it into that transparent Marine.",
       emotion: "idle",
+    },
+    {
+      when: { kind: "scfen", re: /^(?=SCFEN\|[^|]+\|1\|)(?!.*[BF]=stimStep:)(?=.*Q:w:[^;]*C=)/ },
+      mark: { gasOnMoveGhost: true },
     },
     {
       turn: 1,

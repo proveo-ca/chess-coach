@@ -38,7 +38,7 @@ const TUTORIAL_SECTIONS = [
   { id: "fog", label: "Fog of War" },
   { id: "specials", label: "Special Moves" },
   { id: "resolve", label: "Turn Resolution" },
-  { id: "king", label: "King Damage" },
+  { id: "live-play", label: "Live Play" },
 ];
 
 export const SingleTopChrome: Story = {

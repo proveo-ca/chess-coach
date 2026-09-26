@@ -56,7 +56,7 @@ export const KingHunt: Story = {
 };
 
 export const KingAttack3: Story = {
-  ...lessonStory("king", "king-attack-3", { shell: "eclipse", turnChrome: "sidebar" }),
+  ...lessonStory("live-play", "live-play-attack-3", { shell: "eclipse", turnChrome: "sidebar" }),
   name: "King Attack #3",
   parameters: {
     layout: "fullscreen",

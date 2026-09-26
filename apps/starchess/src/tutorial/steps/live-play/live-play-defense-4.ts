@@ -1,8 +1,8 @@
 // SPEC: _spec/apps/starchess/architecture/storybook-projection.puml
 import type { TutorialStoryScript } from "~/tutorial/tutorialScript";
 
-export const kingDefense4 = {
-  id: "king-defense-4",
+export const livePlayDefense4 = {
+  id: "live-play-defense-4",
   title: "King Defense IV",
   board: {
     scfen: "SCFEN|k7/8/8/4B3/8/8/4r3/5NPK|1|13|P|G:11:11|Q:w:;b:C=e2h2",

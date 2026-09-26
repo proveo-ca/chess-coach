@@ -2,8 +2,8 @@
 import type { TutorialStoryScript } from "~/tutorial/tutorialScript";
 import { and, or, queued } from "~/tutorial/when";
 
-export const kingAttack4 = {
-  id: "king-attack-4",
+export const livePlayAttack4 = {
+  id: "live-play-attack-4",
   title: "Turtled Opponent",
   board: {
     scfen:
@@ -17,12 +17,13 @@ export const kingAttack4 = {
   comment: "Uncontested center stinks of rat to me... \n\n Centralize your tank.",
   emotion: "thinking",
   completeWhen: { kind: "lives", enemy: 0 },
+  hideCoachWhen: { kind: "scfen", re: /SCFEN\|[^|]+\|(?:1[6-9]|[2-9]\d)\|/ },
   restartWhen: { kind: "lives", own: 0 },
   beats: [
     {
       priority: 3,
       when: { kind: "lives", own: 0 },
-      say: "Oh no! That rat got us. Give it another try.",
+      say: "What happened here?",
       emotion: "shocked",
       action: { kind: "retryLesson", label: "Retry lesson" },
     },
@@ -47,6 +48,42 @@ export const kingAttack4 = {
       mark: {},
     },
     {
+      priority: 2,
+      turn: 12,
+      when: { kind: "wrongQueue", sequence: ["C=e2e3", ["*=siegeMode:e2", "*=siegeMode:e3"], "*=stimStep:c2"] },
+      say: "Hmmm that's not right, cancel the queued action.",
+      emotion: "thinking",
+      transient: true,
+      mark: {},
+    },
+    {
+      priority: 2,
+      turn: 13,
+      when: { kind: "wrongQueue", sequence: ["C=d4c5", "*=spiderMine:a3", "*=deploy:e1:e2"] },
+      say: "Hmmm that's not right, cancel the queued action.",
+      emotion: "thinking",
+      transient: true,
+      mark: {},
+    },
+    {
+      priority: 2,
+      turn: 14,
+      when: { kind: "wrongQueue", sequence: ["C=a3c2", "*=stimStep:f3", "*=siegeMode:e3"] },
+      say: "Hmmm that's not right, cancel the queued action.",
+      emotion: "thinking",
+      transient: true,
+      mark: {},
+    },
+    {
+      priority: 2,
+      turn: 15,
+      when: { kind: "wrongQueue", sequence: ["*=stimStep:c3", "C=e3b3", ["*=siegeMode:e3", "*=siegeMode:b3"]] },
+      say: "Hmmm that's not right, cancel the queued action.",
+      emotion: "thinking",
+      transient: true,
+      mark: {},
+    },
+    {
       priority: 1,
       turn: 12,
       mark: { squares: ["e2"], arrows: [{ from: "e2", to: "e3" }] },
@@ -58,7 +95,7 @@ export const kingAttack4 = {
       when: queued("C=e2e3"),
       say: "Now siege it up with gas.",
       emotion: "thinking",
-      mark: { squares: ["e3"] },
+      mark: { gasSquares: ["e3"] },
     },
     {
       priority: 1,
@@ -67,12 +104,12 @@ export const kingAttack4 = {
       when: and(queued("C=e2e3"), or(queued("B=siegeMode:e2"), queued("F=siegeMode:e2"))),
       say: "Use gas. \n\nMove this Marine from c2 to c3.",
       emotion: "thinking",
-      mark: { squares: ["c2"], arrows: [{ from: "c2", to: "c3" }] },
+      mark: { gasSquares: ["c2"], arrows: [{ from: "c2", to: "c3" }] },
     },
     {
       priority: 1,
       turn: 13,
-      say: "I knew it, nowhere to hide with full vision. \n\nThat Hoverbike is a risk to our default location CC. Get it!",
+      say: "That Hoverbike is a risk to our default location CC. Get it!",
       emotion: "thinking",
       mark: {
         squares: ["c5", "d4"],
@@ -91,7 +128,7 @@ export const kingAttack4 = {
       when: queued("C=d4c5"),
       say: "Use gas. \n\nGuard that back alley with a trap.",
       emotion: "thinking",
-      mark: { squares: ["a3"] },
+      mark: { gasSquares: ["a3"] },
     },
     {
       priority: 1,
@@ -100,14 +137,21 @@ export const kingAttack4 = {
       when: and(queued("C=d4c5"), or(queued("B=spiderMine:a3"), queued("F=spiderMine:a3"))),
       say: "Deploy a Marine dropping gas on the Command Center.",
       emotion: "thinking",
-      mark: { squares: ["e2"] },
+      mark: { squares: ["e2"], gasSquares: ["e1"] },
+    },
+    {
+      priority: 1,
+      turn: 13,
+      when: { kind: "scfen", re: /\|S:(?:[a-h][1-8])*e3(?:[a-h][1-8])*(?:\||$)/ },
+      say: "I knew it, nowhere to hide with full vision. \n\nThat Hoverbike is a risk to our default location CC. Get it!",
+      emotion: "thinking",
     },
     {
       priority: 1,
       turn: 14,
       say: "Good job! \n\nHold the C file, as A and B already have mines",
       emotion: "happy",
-      mark: { squares: ["c2"], arrows: [{ from: "a3", to: "c2" }] },
+      mark: { squares: ["c2"], arrows: [{ from: "a3", to: "c2", via: "c3" }] },
     },
     {
       priority: 1,
@@ -116,7 +160,7 @@ export const kingAttack4 = {
       when: and(queued("C=a3c2")),
       say: "Use gas. \n\nMove this Marine from f3 to f4.",
       emotion: "thinking",
-      mark: { squares: ["f3"], arrows: [{ from: "f3", to: "f4" }] },
+      mark: { gasSquares: ["f3"], arrows: [{ from: "f3", to: "f4" }] },
     },
     {
       priority: 1,
@@ -125,7 +169,7 @@ export const kingAttack4 = {
       when: and(queued("C=a3c2"), or(queued("B=stimStep:f3"), queued("F=stimStep:f3"))),
       say: "Force this rat to move with a Tank. \n\nUnsiege it first with gas.",
       emotion: "happy",
-      mark: { squares: ["e3"], alertSquares: ["b7"] },
+      mark: { gasSquares: ["e3"], alertSquares: ["b7"] },
     },
     {
       priority: 1,
@@ -133,7 +177,7 @@ export const kingAttack4 = {
       turn: 15,
       say: "Use gas. \n\nMove the Marine out of the way.",
       emotion: "thinking",
-      mark: { squares: ["c3"], arrows: [{ from: "c3", to: "c4" }] },
+      mark: { gasSquares: ["c3"], arrows: [{ from: "c3", to: "c4" }] },
     },
     {
       priority: 1,
@@ -155,7 +199,7 @@ export const kingAttack4 = {
       when: and(queued("B=stimStep:c3"), queued("C=e3b3")),
       say: "Siege it up with gas in that Tank ghost!",
       emotion: "thinking",
-      mark: { squares: ["b3"] },
+      mark: { gasSquares: ["b3"] },
     },
     {
       priority: 1,

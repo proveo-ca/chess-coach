@@ -152,13 +152,13 @@ describe("nav touch targets (static CSS contract)", () => {
       mediaHas(text, "(min-width: 720px)", ".topChrome .liveBar"),
       "story live bar fit-content on desktop",
     ).toBe(true);
+    const resourceBar = css(join(SRC, "presentation/hud/components/ResourceBar.module.css"));
+    expect(resourceBar, "play bar wraps its content").toMatch(/\.bar\s*\{[^}]*width:\s*fit-content/);
+    expect(resourceBar, "named review bars stay fixed").toMatch(/\.bar:has\(\.name\)\s*\{[^}]*width:\s*18rem/);
     expect(
-      mediaBlocks(css(join(SRC, "app/BaseScreen.module.css")), "(min-width: 720px)").some(
-        (block) =>
-          block.includes(".topChrome .topResourceBar") && block.includes("width: fit-content"),
-      ),
-      "desktop fit-content lives in the min-width:720 band",
-    ).toBe(true);
+      css(join(SRC, "app/BaseScreen.module.css")),
+      "no fixed-width override on the top ResourceBar",
+    ).not.toMatch(/\.topResourceBar[^{]*\{[^}]*width:\s*18rem/);
     expect(
       mediaHas(
         text,
@@ -188,8 +188,11 @@ describe("nav touch targets (static CSS contract)", () => {
 
   it("review dual bars go compact and nameless in the dynamic band", () => {
     const demo = readFileSync(join(SRC, "demos/ReviewDemoScreen.tsx"), "utf8");
-    expect(demo, "dual bars compact in dynamic").toContain("compact={dynamicMobile()}");
-    expect(demo, "names stand down in dynamic").toContain("name={dynamicMobile() ? undefined");
+    expect(demo, "banner bars include the dynamic band").toContain(
+      "const bannerBars = () => dynamicMobile() ||",
+    );
+    expect(demo, "dual bars compact in the banner").toContain("compact={bannerBars()}");
+    expect(demo, "names stand down in the banner").toContain("name={bannerBars() ? undefined");
 
     const navClose = demo.indexOf("</ScreenBackNav>", demo.indexOf("review-detail-back"));
     expect(navClose, "detail nav band closes").toBeGreaterThan(-1);

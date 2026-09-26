@@ -37,9 +37,10 @@ export const mecha = {
       when: { kind: "targeting", targetingKind: "charonMissiles" },
       say: "Now aim the ship to complete your intention!",
       emotion: "scanning",
+      mark: { squares: ["h8"], arrows: [{ from: "d4", to: "h8" }] },
     },
     {
-      mark: { squares: ["h8"], arrows: [{ from: "d4", to: "h8" }] },
+      mark: { gasSquares: ["d4"], arrows: [{ from: "d4", to: "h8" }] },
     },
   ],
 } satisfies TutorialStoryScript;

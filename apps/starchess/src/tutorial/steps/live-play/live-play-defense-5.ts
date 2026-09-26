@@ -1,8 +1,8 @@
 // SPEC: _spec/apps/starchess/architecture/storybook-projection.puml
 import type { TutorialStoryScript } from "~/tutorial/tutorialScript";
 
-export const kingDefense5 = {
-  id: "king-defense-5",
+export const livePlayDefense5 = {
+  id: "live-play-defense-5",
   title: "Pawn Gas Defense",
   board: {
     scfen: "SCFEN|7k/8/8/8/1b6/8/2PR4/3K4|11|33|P|G:22:22|Q:w:;b:|S:d2",
@@ -43,11 +43,11 @@ export const kingDefense5 = {
       when: { kind: "scfen", re: /[BF]=stimStep:c2/ },
       say: "Now, unsiege your tank by dropping a gas canister on it.",
       emotion: "watching",
-      mark: { squares: ["d2"] },
+      mark: { gasSquares: ["d2"] },
     },
     {
       mark: {
-        squares: ["c3"],
+        gasSquares: ["c2"],
         arrows: [
           { from: "c2", to: "c3" },
           { from: "b4", to: "d2" },

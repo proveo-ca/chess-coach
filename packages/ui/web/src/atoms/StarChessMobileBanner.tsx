@@ -1,4 +1,4 @@
-// SPEC: _spec/_plans/chess-ui-primitives.puml
+// SPEC: _spec/_plans/chess-ui-primitives.puml, _spec/apps/starchess/navigation-chrome.md
 import { Show, type Component, type JSX } from "solid-js";
 
 import styles from "./StarChessMobileBanner.module.css";
@@ -14,6 +14,7 @@ export type StarChessMobileBannerProps = {
   turn?: JSX.Element;
 
   fixedResources?: boolean;
+  band?: "dynamic" | "mobile";
   class?: string;
   "data-testid"?: string;
 };
@@ -23,6 +24,7 @@ export const StarChessMobileBanner: Component<StarChessMobileBannerProps> = (pro
     class={`mobile-banner ${styles.banner} ${props.class ?? ""}`.trim()}
     data-testid={props["data-testid"] ?? "mobile-banner"}
     data-resources={props.fixedResources ? "fixed" : undefined}
+    data-band={props.band ?? "dynamic"}
   >
     <div class={styles.back} data-slot="back">
       <Show

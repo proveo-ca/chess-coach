@@ -65,6 +65,7 @@ export type StarChessScreenProps = {
   matchTitle?: string;
   turnChrome?: "bar" | "sidebar" | "none";
   hideResources?: boolean;
+  hudResources?: boolean;
   hideGas?: boolean;
   tutorial?: boolean;
   /**
@@ -81,6 +82,7 @@ export type StarChessScreenProps = {
   footerExtra?: import("solid-js").JSX.Element;
   hintSquares?: readonly Square[];
   hintAlertSquares?: readonly Square[];
+  hintGasSquares?: readonly Square[];
   hintArrows?: readonly TutorialBoardArrow[];
 };
 
@@ -119,16 +121,6 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
     !turnHidden() &&
     !ended() &&
     (!turnInSidebar() || (mobileViewport() && !dynamicMobile()));
-
-  /** Coach-header branch only (tutorials): topChrome never renders there. */
-  const showFooterTurnBar = () =>
-    starChessMode() &&
-    !ended() &&
-    !turnHidden() &&
-    turnInSidebar() &&
-    mobileViewport() &&
-    !dynamicMobile() &&
-    coachHeader();
 
   const liveMatch = () => {
     const phase = store.shell().phase;
@@ -554,7 +546,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
     <Screen>
       {/* Names the deploy / promotion tiles and the ResourceBar strips — the
           labelled components stay unaware, see TutorialHudLabels. */}
-      <TutorialHudLabels enabled={!!props.tutorial} />
+      <TutorialHudLabels enabled={!!props.tutorial && !props.hudResources} />
       <Show when={starChessMode()}>
         <span
           data-testid="cc-lives"
@@ -565,17 +557,26 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
       </Show>
 
       {/*
-        Dynamic band owns the top strip. The coach header collapses to nothing
-        there (its avatar is `desktop-only` / `mobile-hero`), and the rail and
-        footer TurnBar are both off, so without this a lesson has no `‹ Back`
-        and no End Turn. Same move `TutorialReviewHost` makes for the replays —
-        a direct `Screen` child so the strip resolves full-bleed against the
-        viewport, not against the inset chrome pane. Resources stay out: the
-        tutorial shows no ResourceBar in any other band either.
+        Mobile top chrome, one banner for every live screen: a direct `Screen`
+        child so it resolves full-bleed against the viewport, not the inset
+        chrome pane. Dynamic band: one row. Tall phones (`band="mobile"`): Back +
+        ResourceBar, then the compact TurnBar (last queued action) as the
+        sub-banner. Lessons show resources only once the coach hides.
       */}
-      <Show when={coachHeader() && starChessMode() && !ended() && dynamicMobile()}>
+      <Show
+        when={
+          starChessMode() && !ended() && mobileViewport() && (coachHeader() || !!props.onExitToMenu)
+        }
+      >
         <MobileBanner
-          onBack={props.onExitToMenu}
+          band="mobile"
+          onBack={coachHeader() ? props.onExitToMenu : requestLeave}
+          fixedResources={!coachHeader()}
+          resources={
+            <Show when={coachHeader() ? props.hudResources : !props.hideResources}>
+              <ResourceBar compact />
+            </Show>
+          }
           turn={
             <Show when={!turnHidden()}>
               <TurnBar
@@ -606,27 +607,6 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
                 </div>
               }
             >
-              <Show when={starChessMode() && !ended() && dynamicMobile()}>
-                <MobileBanner
-                  onBack={requestLeave}
-                  fixedResources
-                  resources={
-                    <Show when={!props.hideResources}>
-                      <ResourceBar compact />
-                    </Show>
-                  }
-                  turn={
-                    <Show when={!turnHidden()}>
-                      <TurnBar
-                        compact
-                        autoStart={false}
-                        resolveOnEnd={false}
-                        onEnd={() => store.submitTurn("end")}
-                      />
-                    </Show>
-                  }
-                />
-              </Show>
               {/*
                 Top section rows: the nav band owns Row 1 (`‹ Back` + title)
                 and the chrome stack follows as its own rows below — the
@@ -635,7 +615,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
               */}
               <div
                 class={styles.topNavRow}
-                classList={{ [styles.dynamicHide]: starChessMode() && !ended() && dynamicMobile() }}
+                classList={{ [styles.mobileHide]: starChessMode() && !ended() && mobileViewport() }}
               >
                 <ScreenBackNav onBack={requestLeave} data-testid="live-back">
                   <Show when={props.matchTitle}>
@@ -681,6 +661,15 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
               </div>
             </Show>
             {props.guideBubble}
+            <Show when={props.hudResources && starChessMode()}>
+              <div
+                class={styles.headerResources}
+                classList={{ [styles.mobileHide]: mobileViewport() }}
+                data-testid="tutorial-hud-resources"
+              >
+                <ResourceBar class={styles.topResourceBar} />
+              </div>
+            </Show>
           </div>
         </Screen.Header>
       </Show>
@@ -701,6 +690,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
               pieceSet={props.pieceSet}
               hintSquares={props.hintSquares}
               hintAlertSquares={props.hintAlertSquares}
+              hintGasSquares={props.hintGasSquares}
               hintArrows={props.hintArrows}
             />
             <Show when={starChessMode() && overlayBox()}>
@@ -823,16 +813,6 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
               />
             </Show>
           </div>
-          <Show when={showFooterTurnBar()}>
-            <TurnBar
-              density="default"
-              hidePhase
-              class={styles.footerTurnBar}
-              autoStart={false}
-              resolveOnEnd={false}
-              onEnd={() => store.submitTurn("end")}
-            />
-          </Show>
           <Show when={!props.tutorial || props.fullMatchHud}>
             <div
               class={styles.statusLine}

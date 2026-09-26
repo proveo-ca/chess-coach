@@ -1,8 +1,9 @@
 // SPEC: _spec/apps/starchess/architecture/storybook-projection.puml
 import type { TutorialStoryScript } from "~/tutorial/tutorialScript";
+import { queued } from "~/tutorial/when";
 
-export const kingAttack3 = {
-  id: "king-attack-3",
+export const livePlayAttack3 = {
+  id: "live-play-attack-3",
   title: "King Attack #3",
   board: {
     scfen: "SCFEN|8/8/8/8/4k3/5P2/6P1/4N1BK|0|33|P|G:11:11|Q:w:;b:",
@@ -55,6 +56,12 @@ export const kingAttack3 = {
     },
     {
       priority: 2,
+      phase: "intent",
+      when: { kind: "scfen", re: /^(?!.*\|Q:w:[^;]*C=)(?=.*\|Q:w:[^;]*[BF]=stimStep:h6:h7)/ },
+      mark: { squares: ["h8"], arrows: [{ from: "h7", to: "h8" }] },
+    },
+    {
+      priority: 2,
       when: { kind: "mechaThreat", phases: ["intent"] },
       say: "Threat that Command Center with your Mecha",
       emotion: "thinking",
@@ -67,9 +74,16 @@ export const kingAttack3 = {
       // classical Attack/Move still has to be open — this is the move
       // that vacates g2.
       when: { kind: "mechaDiagonal", phases: ["intent"] },
-      say: "Your Marine will vacate g2 after attacking, deploy a Mecha there instead of a Marine",
+      say: "Stop that Marine in f3 from promoting!",
       emotion: "thinking",
-      mark: { squares: ["g2"], arrows: [{ from: "g2", to: "a8" }] },
+      mark: { squares: ["g2"], arrows: [{ from: "g2", to: "f3" }] },
+    },
+    {
+      priority: 2,
+      when: { kind: "mechaDeployReady", phases: ["intent"] },
+      say: "You have enough minerals to deploy a Mecha",
+      emotion: "thinking",
+      mark: { squares: ["g2"], gasOnCC: true, arrows: [{ from: "g2", to: "a8" }] },
     },
     {
       priority: 2,
@@ -169,13 +183,13 @@ export const kingAttack3 = {
       priority: 2,
       when: { kind: "trajectory", from: "g2", to: "d5" },
       say: "You have 3 minerals — deploy a Mecha on g2, then take d5!",
-      mark: { squares: ["g2", "d5"], arrows: [{ from: "g2", to: "d5" }] },
+      mark: { squares: ["g2", "d5"], gasOnCC: true, arrows: [{ from: "g2", to: "d5" }] },
     },
     {
       priority: 2,
       when: { kind: "board", at: { d5: "k", c2: "N" }, notQueued: { kind: "spiderMine", from: "c2" } },
       say: "Deploy a mine in c2 to discourage Marines from promoting",
-      mark: { squares: ["c2"] },
+      mark: { gasSquares: ["c2"] },
     },
     {
       priority: 2,
@@ -284,6 +298,7 @@ export const kingAttack3 = {
         re: /SCFEN\|[^|]+\|0\|[^|]*\|[^|]*\|G:0/,
       },
       say: "Centralize your Hoverbike",
+      mark: { squares: ["c2"], arrows: [{ from: "e1", to: "c2", via: "c1" }] },
     },
     {
       priority: 1,
@@ -303,7 +318,7 @@ export const kingAttack3 = {
     {
       turn: 0,
       phase: "intent",
-      say: "The enemy is overextended. Punish it!. \n\nDeploy a Marine.",
+      say: "Deploy a Marine. \n\nWe'll push this guy to victory.",
       emotion: "watching",
     },
     {
@@ -321,7 +336,7 @@ export const kingAttack3 = {
         kind: "scfen",
         re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)/,
       },
-      say: "Apply pressure to the enemy Command Center.",
+      say: "The enemy is overextended!.",
       emotion: "thinking",
     },
     {
@@ -345,17 +360,17 @@ export const kingAttack3 = {
     {
       priority: 1,
       when: { kind: "board", at: { g1: "q" }, notQueuedOnto: "g1" },
-      mark: { squares: ["g1"] },
+      mark: { squares: ["g1"], gasOnCC: true },
     },
     {
       priority: 1,
       when: { kind: "board", at: { e1: "q" }, notQueuedOnto: "e1" },
-      mark: { squares: ["g2", "e1"], arrows: [{ from: "g2", to: "e1", via: "e2" }] },
+      mark: { squares: ["g2", "e1"], gasOnCC: true, arrows: [{ from: "g2", to: "e1", via: "e2" }] },
     },
     {
       priority: 1,
       when: { kind: "board", at: { f1: "q" }, notQueuedOnto: "f1" },
-      mark: { squares: ["h2", "f1"], arrows: [{ from: "h2", to: "f1", via: "f2" }] },
+      mark: { squares: ["h2", "f1"], gasOnCC: true, arrows: [{ from: "h2", to: "f1", via: "f2" }] },
     },
     {
       priority: 1,
@@ -370,7 +385,7 @@ export const kingAttack3 = {
     {
       priority: 1,
       when: { kind: "forwardDeploy", square: "g2", phases: ["intent"] },
-      mark: { squares: ["g2"] },
+      mark: { squares: ["g2"], gasOnCC: true },
     },
     {
       phase: "intent",
@@ -386,7 +401,7 @@ export const kingAttack3 = {
         kind: "scfen",
         re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){5}[^/|]*P(?=[/|])/,
       },
-      mark: { squares: ["h3"], arrows: [{ from: "h3", to: "h5" }] },
+      mark: { gasSquares: ["h3"], arrows: [{ from: "h3", to: "h5" }] },
     },
     {
       phase: "intent",
@@ -394,7 +409,7 @@ export const kingAttack3 = {
         kind: "scfen",
         re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)(?:[^/]*\/){4}[^/|]*P(?=[/|])/,
       },
-      mark: { squares: ["h4"], arrows: [{ from: "h4", to: "h6" }] },
+      mark: { gasSquares: ["h4"], arrows: [{ from: "h4", to: "h6" }] },
     },
     {
       when: {
@@ -405,32 +420,37 @@ export const kingAttack3 = {
     },
     {
       when: { kind: "backrankGuard" },
-      mark: { squares: ["g1"], arrows: [{ from: "a1", to: "h1" }] },
+      mark: { squares: ["g1"], gasOnCC: true, arrows: [{ from: "a1", to: "h1" }] },
     },
     {
+      phase: "intent",
       when: { kind: "gasOnMarine", phases: ["intent"] },
       mark: {},
-    },
-    {
-      when: {
-        kind: "scfen",
-        re: /SCFEN\|[^|]+\|0\|[^|]*\|[^|]*\|G:0/,
-      },
-      mark: { squares: ["c2"] },
     },
     {
       turn: 0,
       mark: { squares: ["h2"] },
     },
     {
-      turn: 1,
-      mark: { squares: ["c2"] },
+      when: queued("C=e1c2"),
+      mark: { gasOnMoveGhost: true },
+    },
+    {
+      when: { kind: "scfen", re: /^SCFEN\|(?:[^/]*\/){7}4N[^|]*\|1\|(?!.*\|Q:w:[^;]*C=)/ },
+      mark: { squares: ["c2"], arrows: [{ from: "e1", to: "c2", via: "c1" }] },
     },
     {
       // Fallback: nothing more specific matched. Ring + arrow whichever
       // ally unit already lines up the enemy Command Center, if any.
       when: { kind: "ccPressure" },
       mark: {},
+    },
+    {
+      when: {
+        kind: "scfen",
+        re: /SCFEN\|(?!.*\|Q:w:[^;]*C=)/,
+      },
+      mark: { pressureCC: true },
     },
     {
       mark: { squares: [] },

@@ -16,6 +16,7 @@ export type LiveBoardBindingProps = {
   pieceSet?: PieceSet;
   hintSquares?: readonly Square[];
   hintAlertSquares?: readonly Square[];
+  hintGasSquares?: readonly Square[];
   hintArrows?: readonly TutorialBoardArrow[];
 };
 
@@ -27,6 +28,7 @@ export const LiveBoardBinding: Component<LiveBoardBindingProps> = (props) => (
     pieceSet={props.pieceSet}
     hintSquares={props.hintSquares}
     hintAlertSquares={props.hintAlertSquares}
+    hintGasSquares={props.hintGasSquares}
     hintArrows={props.hintArrows}
   />
 );

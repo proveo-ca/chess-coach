@@ -22,7 +22,7 @@ import { createMatchStore, MatchStoreProvider, useMatchStore } from "~/app/Match
 import { createMatchStateFromReviewHistory } from "~/app/reviewHistory";
 import { displayedSnapshot } from "~/app/selectors";
 import { useMediaQuery } from "~/hooks/useMediaQuery";
-import { DYNAMIC_MOBILE_MQ } from "~/utils/breakpoints";
+import { DYNAMIC_MOBILE_MQ, MOBILE_MQ } from "~/utils/breakpoints";
 import { Label } from "@chess-coach/ui-web/primitives/Label";
 import { Screen } from "@chess-coach/ui-web/primitives/Screen";
 import { ScreenBackNav } from "~/components/primitives/ScreenBackNav";
@@ -81,6 +81,8 @@ export type ReviewDemoScreenProps = {
 
   hideDualNav?: boolean;
 
+  bannerChrome?: boolean;
+
   tutorial?: boolean;
 
   header?: JSX.Element;
@@ -122,6 +124,8 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
   const snap = createMemo(() => displayedSnapshot(store.state()));
 
   const dynamicMobile = useMediaQuery(DYNAMIC_MOBILE_MQ);
+  const mobileViewport = useMediaQuery(MOBILE_MQ);
+  const bannerBars = () => dynamicMobile() || (!!props.bannerChrome && mobileViewport());
 
   const reviewBusy = () =>
     store.state().timeline.active ||
@@ -257,6 +261,7 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
   const dualResourceBars = () => (
     <div
       class={styles.dualResources}
+      classList={{ [styles.dualInBanner]: bannerBars() }}
       role="group"
       aria-label={
         reviewVisionFilter() === "both"
@@ -269,18 +274,18 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
 
       <Show when={showWhiteResources()}>
         <ResourceBar
-          compact={dynamicMobile()}
+          compact={bannerBars()}
           color="w"
           snapshot={snap()}
-          name={dynamicMobile() ? undefined : sideName("w")}
+          name={bannerBars() ? undefined : sideName("w")}
         />
       </Show>
       <Show when={showBlackResources()}>
         <ResourceBar
-          compact={dynamicMobile()}
+          compact={bannerBars()}
           color="b"
           snapshot={snap()}
-          name={dynamicMobile() ? undefined : sideName("b")}
+          name={bannerBars() ? undefined : sideName("b")}
         />
       </Show>
     </div>
@@ -295,13 +300,34 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
     <Screen>
 
       <MobileBanner
+        band={props.bannerChrome ? "mobile" : "dynamic"}
         onBack={() => props.onHome?.()}
         resources={dualResourceBars()}
+        turn={
+          <Show when={props.bannerChrome && !props.hideDualNav}>
+            <ReviewTurnNav
+              onBack={() => store.reviewBack()}
+              onForward={() => store.reviewForward()}
+              backDisabled={reviewNavDisabled().back}
+              forwardDisabled={reviewNavDisabled().forward}
+            >
+              <Show when={props.matchTitle}>
+                {(title) => (
+                  <Label variant="title" color={title().result} class={styles.resultLine}>
+                    {title().resultLine}
+                  </Label>
+                )}
+              </Show>
+            </ReviewTurnNav>
+          </Show>
+        }
       />
       <Show
         when={props.header}
         fallback={
-          <Screen.SidebarInset class={styles.topPane}>
+          <Screen.SidebarInset
+            class={props.bannerChrome ? `${styles.topPane} ${styles.bannerOwned}` : styles.topPane}
+          >
 
             <ScreenBackNav
               onBack={() => props.onHome?.()}
@@ -378,7 +404,7 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
         </div>
       </Screen.Footer>
 
-      <Show when={dynamicMobile() && !props.hideDualNav}>
+      <Show when={dynamicMobile() && !props.hideDualNav && !props.bannerChrome}>
         <Portal>
           <div
             class={styles.navDockDynamic}
@@ -425,6 +451,7 @@ export const ReviewDemoScreen: Component<ReviewDemoScreenProps> = (props) => {
         onHome={props.onHome}
         hideResources={props.hideResources}
         hideDualNav={props.hideDualNav}
+        bannerChrome={props.bannerChrome}
         tutorial={props.tutorial}
         header={props.header}
         footerExtra={props.footerExtra}

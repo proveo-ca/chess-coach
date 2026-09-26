@@ -14,11 +14,14 @@ export const mine = {
   },
   comment: "See what happens if a piece walks over that mine",
   emotion: "happy",
-  completeWhen: {
-    kind: "scfen",
-    re: /SCFEN\|[^|]+\|(?:[3-9]|\d\d+)\|/,
-  },
   beats: [
+    {
+      priority: 1,
+      when: { kind: "scfen", re: /SCFEN\|[^|]+\|(?:[3-9]|\d\d+)\|/ },
+      say: "You have seen how Starchess pieces see, attack and move. Let's explore how specials are used and planned!",
+      emotion: "happy",
+      action: { kind: "goSection", section: "specials", label: "Next Section" },
+    },
     {
       turn: 2,
       say: "See what happens when exploring the fog uncovers a mine",

@@ -73,15 +73,15 @@ describe("Storybook projection", () => {
     }
     // Command Center lessons ship inside `/tutorial` only; they need no standalone story.
     expect(missing).toEqual([
-      "king/king-defense",
-      "king/king-defense-2",
-      "king/king-defense-3",
-      "king/king-defense-4",
-      "king/king-defense-5",
-      "king/king-defense-6",
-      "king/king-attack-1",
-      "king/king-attack-2",
-      "king/king-attack-4",
+      "live-play/live-play-defense-1",
+      "live-play/live-play-defense-2",
+      "live-play/live-play-defense-3",
+      "live-play/live-play-defense-4",
+      "live-play/live-play-defense-5",
+      "live-play/live-play-defense-6",
+      "live-play/live-play-attack-1",
+      "live-play/live-play-attack-2",
+      "live-play/live-play-attack-4",
     ]);
   });
 });

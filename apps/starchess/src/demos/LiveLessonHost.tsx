@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/starchess/architecture/storybook-projection.puml, _spec/apps/starchess/architecture/screen-entities.puml
+// SPEC: _spec/apps/starchess/architecture/storybook-projection.puml, _spec/apps/starchess/architecture/screen-entities.puml, _spec/apps/starchess/tutorial/hints-and-coach.md
 /**
  * Sole live-lesson host — seeds a MatchStore from a catalog board, publishes
  * narration, resolves hints, and mounts {@link BaseScreen}.
@@ -24,6 +24,7 @@ import { createMatchStore, MatchStoreProvider, useMatchStore } from "~/app/Match
 import { createMatchStateFromScfen } from "~/app/matchReducer";
 import { displayedSnapshot } from "~/app/selectors";
 import { liveMatchPhase } from "~/presentation/hud/liveMatchPhase";
+import { setQueueHint } from "~/presentation/hud/queueHint";
 import { BaseScreen } from "~/app/BaseScreen.tsx";
 import { CHOREOGRAPHY } from "~/demos/choreography";
 import { clearSiegedTanks, setTankMode } from "~/presentation/animations/tankModeStore";
@@ -111,6 +112,7 @@ const LiveLessonInner: Component<LiveLessonHostProps> = (props) => {
       scfen,
       covers: coveredEnemyShips(scfen, s.viewer),
       trajectories: availableTrajectories(scfen, s.viewer),
+      targetingKind: s.targeting?.kind ?? null,
       reviewPhase: liveMatchPhase({
         phase: s.phase,
         lastResolve: s.lastResolve,
@@ -121,6 +123,7 @@ const LiveLessonInner: Component<LiveLessonHostProps> = (props) => {
   });
 
   const hintSquares = () => (interactive() ? hintMarks().squares : []);
+  const hintGasSquares = () => (interactive() ? hintMarks().gasSquares : []);
   const scriptedAlerts = () => hintMarks().alertSquares;
 
   const [alertLatch, setAlertLatch] = createSignal<AlertLatch>({ squares: [] });
@@ -170,6 +173,9 @@ const LiveLessonInner: Component<LiveLessonHostProps> = (props) => {
 
   const hintArrows = () => (interactive() ? hintMarks().arrows : []);
 
+  createEffect(() => setQueueHint(interactive() ? hintMarks().cancelQueued : null));
+  onCleanup(() => setQueueHint(null));
+
   const Overlay = choreography.Overlay;
 
   return (
@@ -184,6 +190,7 @@ const LiveLessonInner: Component<LiveLessonHostProps> = (props) => {
         fullMatchHud={props.fullMatchHud}
         matchTitle={props.matchTitle}
         hideResources={props.hideResources}
+        hudResources={props.hudResources}
         hideGas={props.hideGas}
         turnChrome={props.turnChrome}
         onExitToMenu={props.onExitToMenu}
@@ -196,6 +203,7 @@ const LiveLessonInner: Component<LiveLessonHostProps> = (props) => {
         }
         hintSquares={hintSquares()}
         hintAlertSquares={hintAlertSquares()}
+        hintGasSquares={hintGasSquares()}
         hintArrows={hintArrows()}
         autoQueueOpponent={
           props.board.opponent === "adjutant"

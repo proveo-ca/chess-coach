@@ -1,8 +1,8 @@
 // SPEC: _spec/apps/starchess/architecture/storybook-projection.puml
 import type { TutorialStoryScript } from "~/tutorial/tutorialScript";
 
-export const kingDefense = {
-  id: "king-defense",
+export const livePlayDefense1 = {
+  id: "live-play-defense-1",
   title: "King Defense",
   board: {
     scfen: "SCFEN|7k/8/8/8/8/8/7b/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:C=h2g3",
@@ -40,7 +40,7 @@ export const kingDefense = {
       mark: { squares: ["g3"], arrows: [{ from: "f2", to: "g3" }] },
     },
     {
-      mark: { squares: ["f2"], arrows: [{ from: "e1", to: "f2" }] },
+      mark: { squares: ["f2"], gasOnCC: true, arrows: [{ from: "e1", to: "f2" }] },
     },
   ],
 } satisfies TutorialStoryScript;

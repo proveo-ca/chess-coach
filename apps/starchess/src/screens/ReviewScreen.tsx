@@ -506,7 +506,7 @@ const reviewAchievements = (record: StarChessGameRecord) => {
   };
 };
 
-const ReviewDetail: Component<{ record: StarChessGameRecord }> = (props) => {
+const ReviewDetail: Component<{ record: StarChessGameRecord; bannerChrome?: boolean }> = (props) => {
   const navigate = useNavigate();
   let pack: ReturnType<typeof historyFromRecord> | null = null;
   let loadError: string | null = null;
@@ -556,6 +556,7 @@ const ReviewDetail: Component<{ record: StarChessGameRecord }> = (props) => {
         playerName={props.record.playerName}
         arenaPlayers={props.record.arenaPlayers}
         achievements={reviewAchievements(props.record)}
+        bannerChrome={props.bannerChrome}
         onHome={() => navigate("/review")}
       />
     </LiveMatchShell>
@@ -637,7 +638,7 @@ const ReviewImportHandler: Component = () => {
   );
 };
 
-export const ReviewScreen: Component = () => {
+export const ReviewScreen: Component<{ bannerChrome?: boolean }> = (props) => {
   const params = useParams<{ id?: string }>();
   const id = () => params.id;
 
@@ -660,7 +661,7 @@ export const ReviewScreen: Component = () => {
               </>
             }
           >
-            {(g) => <ReviewDetail record={g()} />}
+            {(g) => <ReviewDetail record={g()} bannerChrome={props.bannerChrome} />}
           </Show>
         );
       }}
