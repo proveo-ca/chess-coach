@@ -6,7 +6,7 @@ import type { Component } from "solid-js";
 import { For, Show } from "solid-js";
 import type { PendingPromotion, PromotionPiece } from "~/types/chess";
 import { Modal } from "@chess-coach/ui-web/atoms/Modal";
-import styles from "~/components/primitives/PromotionModal.module.css";
+import styles from "~/components/features/PromotionModal.module.css";
 import { PieceGlyph } from "~/presentation/board/components/PieceGlyph";
 
 export type { PendingPromotion, PromotionPiece };

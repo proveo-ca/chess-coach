@@ -37,9 +37,11 @@ import {
   noteSettledPlies,
   achievementCursor,
   resetAchievementLive,
+  achievementBubbles,
 } from "~/achievements/achievementLive";
 import { foldPlyFromResolve } from "~/achievements/analysis";
 import { createMatchStore } from "~/app/MatchStoreContext";
+import { AchievementBubblesProvider } from "~/presentation/board/achievementBubbles";
 import { MatchStoreProvider, useMatchStore } from "~/ports/matchStore";
 import { createMatchStateFromScfen } from "~/app/matchReducer";
 import { BaseScreen } from "~/app/BaseScreen.tsx";
@@ -247,27 +249,29 @@ const MatchInner: Component<{
   });
 
   return (
-    <BaseScreen
-      boardVariant={props.boardVariant}
-      starChessMode
-      turnChrome="sidebar"
-      matchTitle={liveAdjutantMatchTitle(props.opponent)}
-      onExitToMenu={props.onExitToMenu}
-      autoQueueOpponent={(snap) => {
-        const color = opponentColor();
-        const storedFor = (c: StarChessColor) => store.shell().economies[c].stored;
-        if (props.opponent !== "strategic") return adjutant(snap, { color, storedFor });
-        foldTracking(snap);
-        return strategicAdjutant(snap, {
-          color,
-          storedFor,
-          kvs: kvs?.perSide[color],
-          ccIntel: ccIntel.perSide[color],
-          runnerMemory: runnerMemory.perSide[color],
-          attackerMemory: attackerMemory.perSide[color],
-        });
-      }}
-    />
+    <AchievementBubblesProvider value={achievementBubbles}>
+      <BaseScreen
+        boardVariant={props.boardVariant}
+        starChessMode
+        turnChrome="sidebar"
+        matchTitle={liveAdjutantMatchTitle(props.opponent)}
+        onExitToMenu={props.onExitToMenu}
+        autoQueueOpponent={(snap) => {
+          const color = opponentColor();
+          const storedFor = (c: StarChessColor) => store.shell().economies[c].stored;
+          if (props.opponent !== "strategic") return adjutant(snap, { color, storedFor });
+          foldTracking(snap);
+          return strategicAdjutant(snap, {
+            color,
+            storedFor,
+            kvs: kvs?.perSide[color],
+            ccIntel: ccIntel.perSide[color],
+            runnerMemory: runnerMemory.perSide[color],
+            attackerMemory: attackerMemory.perSide[color],
+          });
+        }}
+      />
+    </AchievementBubblesProvider>
   );
 };
 

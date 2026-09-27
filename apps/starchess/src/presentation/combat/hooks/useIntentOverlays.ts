@@ -9,8 +9,7 @@ import {
   boardVisionFor,
   intentOverlayActions,
   intentOverlayViewer,
-} from "~/app/intentOverlayPolicy";
-import { readDisplayedSnapshot } from "~/app/selectors";
+} from "~/presentation/combat/intentOverlayPolicy";
 import { sameFlat } from "~/presentation/board/memoEquals";
 import { intentOverlaysFromQueue } from "~/presentation/combat/intentOverlays";
 import { reviewVisionFilter } from "~/store/reviewVisionStore";
@@ -20,7 +19,7 @@ import type { MatchStore } from "~/types/match";
 export const useIntentOverlays = (store: MatchStore) => {
   const overlays = createMemo(() => {
     const s = store.shell();
-    const snap = readDisplayedSnapshot(store);
+    const snap = store.view.displayedSnapshot();
     const filter = reviewVisionFilter();
     const actions = intentOverlayActions(
       s.phase,

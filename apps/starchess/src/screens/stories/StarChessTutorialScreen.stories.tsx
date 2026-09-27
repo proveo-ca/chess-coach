@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { createSignal, type JSX } from "solid-js";
 
 import { TutorialHudLabels } from "~/components/features/TutorialHudLabels";
-import { PromotionModal } from "~/components/primitives/PromotionModal";
+import { PromotionModal } from "~/components/features/PromotionModal";
 import { DeployModal } from "~/presentation/hud/components/DeployModal";
 import { TutorialScreen } from "~/screens/TutorialScreen.tsx";
 import { WithMatchStore } from "~/stories/project";

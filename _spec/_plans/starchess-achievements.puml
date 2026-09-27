@@ -80,6 +80,11 @@ skinparam noteTextAlignment left
 ' but never forwarded that prop to the inner component that reads it — `game`
 ' was always null, so review never raised a bubble (`achievements` prop wired
 ' through in ReviewDemoScreen.tsx now).
+' SHIPPED (2026-09-27): bubbles reach the board through
+' AchievementBubblesProvider (presentation/board/achievementBubbles.ts),
+' provided by the two match hosts (SingleScreen, ReviewDemoScreen) from
+' achievementLive's signal. A board with no match host (tutorial, demos)
+' paints none; the board used to read the global signal directly.
 ' SHIPPED: mines counts a detonation only. An opponent defusing a mine
 ' (a ranged attack clears an empty mined square, no casualty) never counts.
 ' SHIPPED: medal counts a Marine captured in the same ply its own gas step

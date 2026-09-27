@@ -9,7 +9,7 @@ import { createInitialMatchState, matchReducer } from "~/app/matchReducer";
 import {
   intentOverlayActions,
   intentOverlayViewer,
-} from "~/app/intentOverlayPolicy";
+} from "~/presentation/combat/intentOverlayPolicy";
 import { intentOverlaysFromQueue } from "~/presentation/combat/intentOverlays";
 import type { MatchState } from "~/types/match";
 

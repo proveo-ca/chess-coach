@@ -14,6 +14,7 @@ import {
 } from "solid-js";
 
 import {
+  achievementBubbles,
   clearAchievementBubbles,
   pushAchievementBubbles,
 } from "~/achievements/achievementLive";
@@ -39,6 +40,7 @@ import { ResourceBar } from "~/presentation/hud/components/ResourceBar";
 import { ReviewTurnNav } from "@chess-coach/ui-web/atoms/ReviewTurnNav";
 import { TurnBarSidebar } from "~/presentation/hud/components/TurnBarSidebar";
 import { CapabilitiesProvider, LIVE_CAPABILITIES, TUTORIAL_CAPABILITIES } from "~/store/capabilitiesStore";
+import { AchievementBubblesProvider } from "~/presentation/board/achievementBubbles";
 import {
   resetReviewVisionFilter,
   reviewVisionFilter,
@@ -398,28 +400,30 @@ export const ReviewDemoScreen: Component<ReviewDemoScreenProps> = (props) => {
 
   return (
     <CapabilitiesProvider value={() => (props.tutorial ? TUTORIAL_CAPABILITIES : LIVE_CAPABILITIES)}>
-    <MatchStoreProvider store={store}>
-      <ReviewDemoInner
-        history={props.history}
-        reviewLabel={props.reviewLabel}
-        matchTitle={props.matchTitle}
-        visionMode={props.visionMode}
-        fog={props.fog}
-        variant={props.variant}
-        pieceSet={props.pieceSet}
-        packedTank={props.packedTank}
-        playerColor={props.playerColor}
-        playerName={props.playerName}
-        arenaPlayers={props.arenaPlayers}
-        onHome={props.onHome}
-        hideResources={props.hideResources}
-        hideDualNav={props.hideDualNav}
-        tutorial={props.tutorial}
-        header={props.header}
-        footerExtra={props.footerExtra}
-        achievements={props.achievements}
-      />
-    </MatchStoreProvider>
+      <AchievementBubblesProvider value={achievementBubbles}>
+        <MatchStoreProvider store={store}>
+          <ReviewDemoInner
+            history={props.history}
+            reviewLabel={props.reviewLabel}
+            matchTitle={props.matchTitle}
+            visionMode={props.visionMode}
+            fog={props.fog}
+            variant={props.variant}
+            pieceSet={props.pieceSet}
+            packedTank={props.packedTank}
+            playerColor={props.playerColor}
+            playerName={props.playerName}
+            arenaPlayers={props.arenaPlayers}
+            onHome={props.onHome}
+            hideResources={props.hideResources}
+            hideDualNav={props.hideDualNav}
+            tutorial={props.tutorial}
+            header={props.header}
+            footerExtra={props.footerExtra}
+            achievements={props.achievements}
+          />
+        </MatchStoreProvider>
+      </AchievementBubblesProvider>
     </CapabilitiesProvider>
   );
 };

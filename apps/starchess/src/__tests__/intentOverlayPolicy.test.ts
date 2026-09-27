@@ -8,7 +8,7 @@ import {
   intentOverlayActions,
   intentOverlayViewer,
   playerFogOccultsMoves,
-} from "~/app/intentOverlayPolicy";
+} from "~/presentation/combat/intentOverlayPolicy";
 import type { ScAction } from "@chess-coach/starchess-core";
 
 const sampleQueue: ScAction[] = [

@@ -45,35 +45,30 @@ app --> adapters
 pres --> adapters
 
 pieces -[#red,dashed]-> anim : pieces-below-animations
-prims -[#red,dashed]-> pres : primitives-stay-presentational\n(known: PromotionModal → PieceGlyph)
+prims -[#red,dashed]-> pres : primitives-stay-presentational
 atoms -[#red,dashed]-> features : atoms-below-features
 components -[#red,dashed]-> screens : components-below-routes
-pres -[#red,dashed]-> app : presentation-below-app\n(known: 6 edges)
+pres -[#red,dashed]-> app : presentation-below-app
 store -[#red,dashed]-> pres : store-below-ui
 types -[#red,dashed]-> app : types-are-leaves
 
 note right of pres
-  Known violations (baseline, 7 in
-  .dependency-cruiser-known-violations.json;
-  30 → 15 → 7: the store context moved to
-  ~/ports/matchStore; specials and hud read
-  store.view; the storeless ResourceBar rules
-  gasRemainingFor / estimateStoredFromSnap moved
-  to starchess-core rules/economy):
-  • board (LiveStarChessBoard, useBoardInput),
-    combat (useIntentOverlays) → selectors,
-    intentOverlayPolicy, achievementLive
-  • PromotionModal (primitive) → PieceGlyph
-  Paying one off: add the read to MatchView
-  (store.view, ~/types/match) — or, when it needs
-  no store, to starchess-core — call it from
-  presentation, then run check:deps:baseline
-  (shrink-only) so the baseline shrinks.
+  No known violations (2026-09-27). The
+  30-edge presentation → app baseline was paid
+  off in three PRs (specials · hud · board+combat):
+  • store context → ~/ports/matchStore
+  • match reads → store.view (MatchView, ~/types/match)
+  • store-free rules → starchess-core rules/economy
+  • intentOverlayPolicy → presentation/combat
+    (only presentation used it)
+  • achievement bubbles → a context match hosts
+    provide (AchievementBubblesProvider)
+  • PromotionModal → components/features
+    (it composes PieceGlyph)
 end note
 
 note bottom
-  pnpm lint runs oxlint, then check:deps (--ignore-known): a new violation fails,
-  a paid-off one goes stale — check:deps:baseline drops it (shrink-only).
+  pnpm lint runs oxlint, then check:deps: any violation fails (no baseline).
   Type-only imports are exempt everywhere (they vanish at runtime);
   cycles are judged on runtime edges only.
   timers-through-adapter: only adapters/ and MatchStoreContext import adapters/browser.
