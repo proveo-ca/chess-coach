@@ -19,6 +19,7 @@ import {
   type JSX,
 } from "solid-js";
 
+import { schedule } from "~/adapters/timers";
 import { buildReviewHistory } from "~/app/reviewHistory";
 import { CoachAvatar } from "~/components/atoms/CoachAvatar";
 import { TutorialGuideBubble } from "~/components/features/TutorialGuideBubble";
@@ -63,6 +64,7 @@ import type {
   TutorialReactionAction,
   TutorialSectionId,
 } from "~/types/tutorial";
+import type { Cancel } from "~/types/ports";
 
 export type { TutorialSectionId } from "~/types/tutorial";
 
@@ -209,9 +211,9 @@ export const TutorialScreen: Component = () => {
    * works the toggle themselves — it plays *for* the hand on the toggle, never
    * against it. Cancelling releases the hints early rather than stranding them.
    */
-  let skinDemo: ReturnType<typeof setTimeout>[] = [];
+  let skinDemo: Cancel[] = [];
   const clearSkinDemo = () => {
-    skinDemo.forEach(clearTimeout);
+    skinDemo.forEach((cancel) => cancel());
     skinDemo = [];
   };
   onCleanup(clearSkinDemo);
@@ -228,11 +230,11 @@ export const TutorialScreen: Component = () => {
     }
     setHintsReady(false);
     skinDemo.push(
-      setTimeout(() => setChessMode(true), SKIN_DEMO_START_MS),
-      setTimeout(() => batch(() => {
+      schedule(SKIN_DEMO_START_MS, () => setChessMode(true)),
+      schedule(HINT_DELAY_MS, () => batch(() => {
         setChessMode(false);
         setHintsReady(true);
-      }), HINT_DELAY_MS),
+      })),
     );
   });
 
@@ -297,16 +299,16 @@ export const TutorialScreen: Component = () => {
   const liveHints = (beats: readonly TutorialBeat[] | undefined) =>
     outcome() === "active" ? beats : completedLessonBeats(beats);
   let outcomeKey = "";
-  let advanceTimer: ReturnType<typeof setTimeout> | undefined;
-  let elapsedTimer: ReturnType<typeof setTimeout> | undefined;
-  let endingTimer: ReturnType<typeof setTimeout> | undefined;
+  let advanceTimer: Cancel | undefined;
+  let elapsedTimer: Cancel | undefined;
+  let endingTimer: Cancel | undefined;
   /** Auto-advance hold the pending success was requested with. */
   let successAdvanceMs = LESSON_ADVANCE_MS;
 
   const clearTimers = () => {
-    if (advanceTimer != null) clearTimeout(advanceTimer);
-    if (elapsedTimer != null) clearTimeout(elapsedTimer);
-    if (endingTimer != null) clearTimeout(endingTimer);
+    advanceTimer?.();
+    elapsedTimer?.();
+    endingTimer?.();
     advanceTimer = undefined;
     elapsedTimer = undefined;
     endingTimer = undefined;
@@ -336,10 +338,10 @@ export const TutorialScreen: Component = () => {
   const completeObjective = () => {
     setOutcome("success");
     if (!hasNextLesson()) return;
-    advanceTimer = setTimeout(() => {
+    advanceTimer = schedule(successAdvanceMs, () => {
       advanceTimer = undefined;
       goNextLesson();
-    }, successAdvanceMs);
+    });
   };
 
   /**
@@ -349,10 +351,10 @@ export const TutorialScreen: Component = () => {
    */
   const fail = (delayMs: number = LESSON_ADVANCE_MS) => {
     setOutcome("failed");
-    advanceTimer = setTimeout(() => {
+    advanceTimer = schedule(delayMs, () => {
       advanceTimer = undefined;
       retryLesson();
-    }, delayMs);
+    });
   };
 
   const matches = (
@@ -390,10 +392,10 @@ export const TutorialScreen: Component = () => {
       // `elapsed` needs no board condition — arm it on entry.
       const complete = script?.completeWhen;
       if (complete?.kind === "elapsed") {
-        elapsedTimer = setTimeout(() => {
+        elapsedTimer = schedule(Math.max(0, complete.ms), () => {
           elapsedTimer = undefined;
           if (section() === sec && storyId() === story) succeed(0);
-        }, Math.max(0, complete.ms));
+        });
       }
     }
 
@@ -419,10 +421,8 @@ export const TutorialScreen: Component = () => {
   let shownKey = "";
   let shownHoldMs = 0;
   const [holdTick, setHoldTick] = createSignal(0);
-  let holdTimer: ReturnType<typeof setTimeout> | undefined;
-  onCleanup(() => {
-    if (holdTimer != null) clearTimeout(holdTimer);
-  });
+  let holdTimer: Cancel | undefined;
+  onCleanup(() => holdTimer?.());
   const [line, setLine] = createSignal(resolveTutorialLine({
     stageId: "fog",
     storyId: "king",
@@ -460,10 +460,10 @@ export const TutorialScreen: Component = () => {
       const wait = key === shownKey ? shownHoldMs - (performance.now() - shownAt) : 0;
       if (wait > 0) {
         if (holdTimer == null) {
-          holdTimer = setTimeout(() => {
+          holdTimer = schedule(wait, () => {
             holdTimer = undefined;
             setHoldTick((t) => t + 1);
-          }, wait);
+          });
         }
         return;
       }
@@ -492,10 +492,10 @@ export const TutorialScreen: Component = () => {
       completeObjective();
       return;
     }
-    endingTimer = setTimeout(() => {
+    endingTimer = schedule(hold, () => {
       endingTimer = undefined;
       completeObjective();
-    }, hold);
+    });
   });
 
   const lineKey = () =>
@@ -509,9 +509,9 @@ export const TutorialScreen: Component = () => {
 
   type CoachState = "shown" | "leaving" | "hidden" | "revealed";
   const [coachState, setCoachState] = createSignal<CoachState>("shown");
-  let leaveTimer: ReturnType<typeof setTimeout> | undefined;
+  let leaveTimer: Cancel | undefined;
   const cancelLeave = () => {
-    if (leaveTimer != null) clearTimeout(leaveTimer);
+    leaveTimer?.();
     leaveTimer = undefined;
   };
   onCleanup(cancelLeave);
@@ -532,10 +532,13 @@ export const TutorialScreen: Component = () => {
     if (hide) {
       if (prev === "shown" || prev === "revealed") {
         setCoachState("leaving");
-        leaveTimer = setTimeout(() => {
-          leaveTimer = undefined;
-          setCoachState("hidden");
-        }, tutorialStory(section(), storyId())?.coachFarewellMs ?? COACH_FAREWELL_MS);
+        leaveTimer = schedule(
+          tutorialStory(section(), storyId())?.coachFarewellMs ?? COACH_FAREWELL_MS,
+          () => {
+            leaveTimer = undefined;
+            setCoachState("hidden");
+          },
+        );
       }
       return;
     }

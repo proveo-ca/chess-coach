@@ -19,6 +19,7 @@ import {
 import type { Component, JSX } from "solid-js";
 import { Portal } from "solid-js/web";
 
+import { schedule } from "~/adapters/timers";
 import { viewerColor } from "~/app/matchEconomy";
 import { useMatchStore } from "~/app/MatchStoreContext";
 import { canSubmit, outcomeLabel, readDisplayedSnapshot } from "~/app/selectors";
@@ -58,6 +59,7 @@ import { TUTORIAL_CAPABILITIES, setCapabilities } from "~/store/capabilitiesStor
 import { resetReviewVisionFilter, reviewVisionFilter } from "~/store/reviewVisionStore";
 import type { BoardSkin, PieceSet } from "~/types/board";
 import type { PromotionPiece } from "~/types/chess";
+import type { Cancel } from "~/types/ports";
 import type { KerriganEmotion } from "~/types/coach";
 import type { TutorialBoardArrow } from "~/types/tutorial";
 
@@ -363,20 +365,15 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
     store.armTimer();
   });
 
-  /**
-   * End the turn exactly the way the End button does. Auto-End must not
-   * dispatch from inside a reactive effect: SUBMIT_TURN starts the resolve
-   * timeline, and running that inside the effect's batch lands the timeline's
-   * coalesced TIMELINE_COMMIT patches after TIMELINE_DONE — the cues are
-   * cleared before any `playingIds` reach the overlays, so the move VFX never
-   * renders and pieces appear to teleport. Deferring to a task puts the submit
-   * in the same context a click would.
-   */
+  /** End the turn exactly the way the End button does, one task after the effect. */
+  let cancelAutoEnd: Cancel = () => {};
+  onCleanup(() => cancelAutoEnd());
   const endTurnLikeAClick = () => {
-    setTimeout(() => {
+    cancelAutoEnd();
+    cancelAutoEnd = schedule(0, () => {
       if (!canSubmit(store.shell())) return;
       store.submitTurn("end");
-    }, 0);
+    });
   };
 
   let prevQueueReady = false;

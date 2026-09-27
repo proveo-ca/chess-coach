@@ -64,6 +64,19 @@ Rules R1–R8 are defined in `../reactivity.md`; store topology is in `../../mat
 - **Auto-queue effect** — the script call runs under `untrack`: the script reads
   the store freely (e.g. `storedFor`), and those reads must not subscribe the
   effect to the whole state (R1).
+- **Auto-End (`endTurnLikeAClick`)** — tutorial Auto-End submits one task after
+  the queue-ready effect, via `schedule(0)` (R9), never inside the effect:
+  SUBMIT_TURN starts the resolve timeline, and inside the effect's batch the
+  timeline's coalesced TIMELINE_COMMIT patches land after TIMELINE_DONE — the
+  cues clear before any `playingIds` reach the overlays, so the move VFX never
+  renders and pieces teleport. The cancel is component-owned, not effect-owned:
+  a store tick re-runs the effect before the task and must not drop the submit;
+  unmount cancels it.
+- **`autoQueueOpponent` (LiveLessonHost)** — a memo over `props.board.opponent`,
+  not a constant read at host creation: the live-play section keeps one host
+  across stories (only `lessonKey` changes), so a constant froze the first
+  lesson's opponent — walking defense-1 → attack-3/4 left the adjutant inert,
+  and attack-3 → defense-1 leaked one into a lesson without an opponent.
 - **`bannerBack`** — hoisted because `MobileBanner` reads `onBack` from its click
   handler; a ternary prop there builds an ownerless memo per click (R2).
   `bannerResources` / `bannerTurn` hoisted likewise.

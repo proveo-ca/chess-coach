@@ -226,16 +226,16 @@ const LiveLessonInner: Component<LiveLessonHostProps> = (props) => {
   createEffect(() => setQueueHint(interactive() ? hintMarks().cancelQueued : null));
   onCleanup(() => setQueueHint(null));
 
-  const autoQueueOpponent =
-    props.board.opponent === "adjutant"
-      ? (snap: ScFenSnapshot) => {
-          const s = store.state();
-          return adjutant(snap, {
-            color: s.viewer === "w" ? "b" : "w",
-            storedFor: (color) => store.state().economies[color].stored,
-          });
-        }
-      : undefined;
+  const queueAdjutant = (snap: ScFenSnapshot) => {
+    const s = store.state();
+    return adjutant(snap, {
+      color: s.viewer === "w" ? "b" : "w",
+      storedFor: (color) => store.state().economies[color].stored,
+    });
+  };
+  const autoQueueOpponent = createMemo(() =>
+    props.board.opponent === "adjutant" ? queueAdjutant : undefined,
+  );
 
   const scope = () => (
     <LessonScope
@@ -277,7 +277,7 @@ const LiveLessonInner: Component<LiveLessonHostProps> = (props) => {
         hintAlertSquares={hintAlertSquares()}
         hintGasSquares={hintGasSquares()}
         hintArrows={hintArrows()}
-        autoQueueOpponent={autoQueueOpponent}
+        autoQueueOpponent={autoQueueOpponent()}
       />
     </>
   );
