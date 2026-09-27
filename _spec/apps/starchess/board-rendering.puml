@@ -4,6 +4,8 @@
 '   intent chrome, terrain themes, and glyph states.
 ' covers: apps/starchess/src/presentation/board/components/StarChessBoard.tsx
 ' covers: apps/starchess/src/presentation/board/components/StarChessBoard.module.css
+' covers: apps/starchess/src/presentation/board/components/LiveStarChessBoard.tsx (veilMoveIds)
+' related: _spec/apps/starchess/architecture/reactivity/presentation.md
 ' related: _spec/apps/starchess/architecture/board-entities.puml
 ' related: _spec/apps/starchess/architecture/strategy-starchess-board.puml
 ' related: _spec/apps/starchess/menu-flow.puml
@@ -46,11 +48,38 @@ note as N_HINT
 end note
 
 note as N_VEIL
-  Enemy movers with fogged origins render
+  Every enemy mover whose path touches vision
+  (fog → sight **and** sight → fog) renders
   beneath the veil, appearing smoothly only
   while crossing lit squares. Their layer forms
   a stacking context that confines animation
   hulls, which would otherwise pierce the veil.
+  The veil is **opaque**: a checker ""<pattern>""
+  of board tones under 88% fog ink (the same
+  colour the old translucent rect composited
+  to), so nothing beneath it ever shows through.
+  The old ""rgba(…, 0.88)"" rect let 12% of
+  anything beneath show, so an enemy sliding
+  under the veil ghosted across dark squares.
+  Tiles are ""color-mix(fog-ink 88%, board tone)""
+  (""--fog-ink: rgb(3,7,10)""); the pattern starts
+  on a light corner, true for both viewers
+  (a8 and h1 are light).
+end note
+
+note as N_UNDERVEIL
+  ""LiveStarChessBoard.veilMoveIds"": enemy movers
+  whose path crosses the viewer's vision
+  (lit ∪ revealed — the veil's own predicate),
+  whether they start in fog or in sight. They
+  stay in the frame's ""moveCues"" (fog relocation
+  + hide squares), but ""CombatOverlayRoot"" drops
+  their overlay hull (""hullCues""); the board
+  renders them under the opaque veil, shown only
+  while on lit squares, out of the fog and into
+  it alike. An above-veil hull used to ride over
+  the dark: a unit entering the fog stayed
+  visible to where it parked.
 end note
 
 note as N_COORD
@@ -89,6 +118,7 @@ N_FRAME .. CSS
 N_RING .. CSS
 N_HINT .. CSS
 N_VEIL .. BOARD
+N_UNDERVEIL .. BOARD
 N_COORD .. CSS
 N_GATE .. BOARD
 N_GRASS .. CSS

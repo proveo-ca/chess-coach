@@ -1,3 +1,4 @@
+// SPEC: _spec/apps/starchess/architecture/reactivity/components.md
 /**
  * Selena / Selena — classic coach cat, optional Ghost sniper helm.
  * `identity="selena"` matches apps/chess CoachAvatar (no helm). Switching to
@@ -9,6 +10,7 @@
 import clsx from "clsx";
 import {
   createEffect,
+  createMemo,
   createSignal,
   on,
   onCleanup,
@@ -114,9 +116,10 @@ export const CoachAvatar: Component<CoachAvatarProps> = (props) => {
   );
 
   // Ambient scoped ↔ unscoped when the host does not pin an emotion.
+  const pinned = createMemo(() => props.emotion != null || !!props.sleeping);
   onMount(() => {
     const id = window.setInterval(() => {
-      if (props.emotion != null || props.sleeping) return;
+      if (pinned()) return;
       setAmbient((prev) => {
         const next = pickAmbient();
         // Always change so the visor slide is visible each tick.
@@ -130,13 +133,13 @@ export const CoachAvatar: Component<CoachAvatarProps> = (props) => {
     if (helmTimer !== undefined) clearTimeout(helmTimer);
   });
 
-  const emotion = (): KerriganEmotion => {
+  const emotion = createMemo((): KerriganEmotion => {
     if (props.sleeping) return "sleeping";
     const phase = helmPhase();
     if (phase === "dropping") return "happy";
     if (phase === "lifting") return "watching--up";
     return props.emotion ?? ambient();
-  };
+  });
 
   const character = () =>
     helmPhase() === "off" || helmPhase() === "lifting"

@@ -1,9 +1,9 @@
-// SPEC: _spec/apps/starchess/architecture/storybook-projection.puml
+// SPEC: _spec/apps/starchess/architecture/storybook-projection.puml, _spec/apps/starchess/architecture/reactivity/tutorial.md, _spec/apps/starchess/tutorial/hints-and-coach.md
 /**
  * King Hunt (live) — the final lesson. When the enemy Command Center dies, hold
  * a beat for the death VFX, then offer graduation and mark the tutorial cleared.
  */
-import { Show, createEffect, createSignal, onCleanup, type Component } from "solid-js";
+import { Show, createEffect, createMemo, createSignal, onCleanup, type Component } from "solid-js";
 
 import { TutorialCompleteConfirm } from "~/components/features/TutorialCompleteConfirm";
 import type { ChoreographyContext, ChoreographyResult } from "~/demos/choreography";
@@ -21,19 +21,16 @@ export const useKingHuntGraduation = (
   let offered = false;
   let timer: ReturnType<typeof setTimeout> | undefined;
 
-  createEffect(() => {
-    if (!ctx.tutorial) return;
-    const s = store.state();
-    void s.phase;
-    void s.liveSnapshot.ccLives.b;
-    void s.outcome;
-    if (offered) return;
-    // Offer whenever the enemy CC dies in this run — even on a replay after
-    // the player already cleared once. `cleared` only gates the menu.
-    const enemyDead = s.liveSnapshot.ccLives.b === 0;
+  const enemyDown = createMemo(() => {
+    const s = store.shell();
     const over =
       s.phase === "gameOver" || s.liveSnapshot.phase === "O" || s.outcome != null;
-    if (!enemyDead || !over) return;
+    return over && s.liveSnapshot.ccLives.b === 0;
+  });
+
+  createEffect(() => {
+    if (!ctx.tutorial) return;
+    if (!enemyDown() || offered) return;
     offered = true;
     // Deliberately not cleared on effect re-runs — Solid's onCleanup would
     // cancel the pending offer every time the store ticks.

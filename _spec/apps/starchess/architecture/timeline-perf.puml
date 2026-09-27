@@ -138,8 +138,9 @@ note bottom
   frames — vsync-off env no longer throttles).
   **Shipped:** paint-animation audit · .board-phase-ring · gas .aura opacity-only ·
   review caps (capForDensity, VFX_CAP_REVIEW_*).
-  **P2:** AttackAnimation fragShockwave border-color removal · .pieceSpecialUsed
-  outline (30ms hotspot, accepted) · optional-FX drop.
+  **Shipped (P2):** AttackAnimation fragShockwave border-color → two-ring
+  opacity cross-fade.
+  **P2:** .pieceSpecialUsed outline (30ms hotspot, accepted) · optional-FX drop.
   **Deferred:** Chip phase border · InlineMecha crank loop.
   See ""timeline-vfx-density.puml"".
   **Invariant:** no per-layer Show · components never own the clock.

@@ -1,10 +1,16 @@
-// SPEC: _spec/apps/starchess/match-store.puml, _spec/apps/starchess/animation-pipeline.md, _spec/apps/starchess/core/turn/playback-interpreter.puml, _spec/apps/starchess/core/turn/turn-bonus-broadcast.puml, _spec/apps/starchess/core/engine-boundary.puml, _spec/apps/starchess/architecture/timeline-perf.puml
+// SPEC: _spec/apps/starchess/match-store.puml, _spec/apps/starchess/animation-pipeline.md, _spec/apps/starchess/core/turn/playback-interpreter.puml, _spec/apps/starchess/core/turn/turn-bonus-broadcast.puml, _spec/apps/starchess/core/engine-boundary.puml, _spec/apps/starchess/architecture/timeline-perf.puml, _spec/apps/starchess/architecture/reactivity/app-screens.md
 /**
  * Match store — Solid signal + reducer; timeline / timer / DualNav review runners.
  */
 import {
+  batch,
   createContext,
+  createMemo,
+  createRoot,
   createSignal,
+  getOwner,
+  onCleanup,
+  untrack,
   useContext,
   type ParentComponent,
 } from "solid-js";
@@ -22,6 +28,7 @@ import type {
   TimelineState,
 } from "~/types/match";
 import { createInitialMatchState, matchReducer } from "~/app/matchReducer";
+import { createShellFields } from "~/app/shellFields";
 import type { Clock, Scheduler } from "~/types/ports";
 import { browserClock, browserScheduler } from "~/adapters/browser";
 import { perfNoteDispatch, perfNoteMatch } from "~/debug/perfMonitor";
@@ -37,6 +44,8 @@ import {
   playResolveWave,
 } from "~/presentation/timeline/playResolveWave";
 import { turnBonusFor } from "~/app/turnBonusPolicy";
+import { displayedSnapshotFrom, registerDisplayedSnapshot } from "~/app/selectors";
+import { sameFlat } from "~/presentation/board/memoEquals";
 import type { ResolveWaveId } from "~/types/tutorial";
 
 export type { MatchStore };
@@ -46,15 +55,6 @@ export const MatchStoreContext = createContext<MatchStore>();
 const toShell = (s: MatchState): MatchShell => {
   const { timeline: _t, ...shell } = s;
   return shell;
-};
-
-const shellShallowEqual = (a: MatchShell, b: MatchShell): boolean => {
-  const keys = Object.keys(a) as (keyof MatchShell)[];
-  if (keys.length !== (Object.keys(b) as (keyof MatchShell)[]).length) return false;
-  for (const k of keys) {
-    if (!Object.is(a[k], b[k])) return false;
-  }
-  return true;
 };
 
 /** playTimeline + commit gate; cancel drops pending flush + player. */
@@ -97,17 +97,21 @@ export const createMatchStore = (opts?: {
    * (`TIMELINE_DONE` / begin-checks). Storybook `fast` fixtures use an
    * immediate scheduler — arming would microtask-loop timeout → End forever.
    */
-  autoArmTimer?: boolean;
+  autoArmTimer?: boolean | (() => boolean | undefined);
   turnBonuses?: boolean;
 }): MatchStore => {
   const clock = opts?.clock ?? browserClock;
   const scheduler = opts?.scheduler ?? browserScheduler;
-  const autoArmTimer = opts?.autoArmTimer !== false;
+  const autoArmOpt = opts?.autoArmTimer;
+  const autoArmTimer = (): boolean =>
+    (typeof autoArmOpt === "function" ? untrack(autoArmOpt) : autoArmOpt) !== false;
   const turnBonusesEnabled = opts?.turnBonuses === true;
   const initial = opts?.initial ?? createInitialMatchState();
-  const [shell, setShell] = createSignal<MatchShell>(toShell(initial));
+  const shellFields = createShellFields<MatchShell>(toShell(initial));
+  const shell = (): MatchShell => shellFields.view;
   const [timeline, setTimeline] = createSignal<TimelineState>(initial.timeline);
-  const state = (): MatchState => ({ ...shell(), timeline: timeline() });
+  const state = (): MatchState => ({ ...shellFields.view, timeline: timeline() });
+  const peek = (): MatchState => ({ ...shellFields.read(), timeline: untrack(timeline) });
   const [reviewPhase, setReviewPhase] = createSignal<ReviewTurnPhase>("start");
   const [reviewIntentActions, setReviewIntentActions] = createSignal<
     readonly ScAction[] | null
@@ -121,19 +125,20 @@ export const createMatchStore = (opts?: {
 
   const dispatch = (action: MatchAction) => {
     perfNoteDispatch(action.type);
-    const prev = state();
+    const prev = peek();
     const next = matchReducer(prev, action);
     perfNoteMatch(next.phase, next.timeline.active);
     if (next === prev) return;
-    const nextShell = toShell(next);
-    if (!shellShallowEqual(shell(), nextShell)) setShell(nextShell);
-    if (timeline() !== next.timeline) setTimeline(next.timeline);
+    batch(() => {
+      shellFields.write(toShell(next));
+      if (untrack(timeline) !== next.timeline) setTimeline(next.timeline);
+    });
   };
 
   const clearReviewIntent = () => setReviewIntentActions(null);
 
   const syncReviewPhaseIdle = () => {
-    const s = state();
+    const s = peek();
     const max = Math.max(0, s.settledSnapshots.length - 1);
     if (s.phase !== "gameOver") {
       setReviewPhase("start");
@@ -159,14 +164,14 @@ export const createMatchStore = (opts?: {
   };
 
   const dismissTurnBonus = () => {
-    if (!state().turnBonus) return;
+    if (!peek().turnBonus) return;
     dispatch({ type: "HIDE_TURN_BONUS" });
   };
 
   const armTimer = () => {
-    if (!autoArmTimer) return;
+    if (!autoArmTimer()) return;
     cancelTimer?.();
-    const s = state();
+    const s = peek();
     if (s.phase !== "planning" && s.phase !== "targeting") return;
     if (!s.turnStartChecksApplied) {
       ensureTurnOpenChecks({ armTimer: true });
@@ -187,7 +192,7 @@ export const createMatchStore = (opts?: {
   };
 
   const ensureTurnOpenChecks = (opts?: { armTimer?: boolean }) => {
-    const s = state();
+    const s = peek();
     if (s.phase !== "planning" && s.phase !== "targeting") return;
     if (s.turnStartChecksApplied) {
       if (opts?.armTimer) armTimer();
@@ -196,7 +201,7 @@ export const createMatchStore = (opts?: {
 
     // Sole engine write for turn-open — reducer owns beginScTurn.
     dispatch({ type: "TURN_OPEN" });
-    const after = state();
+    const after = peek();
     if (after.turnStartChecksApplied) {
       if (opts?.armTimer) armTimer();
       return;
@@ -212,7 +217,7 @@ export const createMatchStore = (opts?: {
     cancelTimeline?.();
     cancelTimeline = runTimeline(result, dispatch, scheduler, () => {
       dispatch({ type: "BEGIN_CHECKS_DONE" });
-      const next = state();
+      const next = peek();
       if (next.phase === "planning" && opts?.armTimer) armTimer();
       if (next.phase === "gameOver") syncReviewPhaseIdle();
     });
@@ -221,7 +226,7 @@ export const createMatchStore = (opts?: {
   const submitTurn = (reason: "end" | "timeout" = "end") => {
     cancelTimer?.();
     cancelTimer = null;
-    const before = state();
+    const before = peek();
     if (before.phase !== "planning" && before.phase !== "targeting") return;
     // The clock must not pick a BattleShip while the promotion modal is open.
     // A click on Tank would otherwise lose the race and resolve as BattleShip.
@@ -232,25 +237,25 @@ export const createMatchStore = (opts?: {
     if (!before.turnStartChecksApplied) {
       ensureTurnOpenChecks();
       // If checks are animating, defer submit until planning re-opens.
-      if (state().phase === "resolving") return;
+      if (peek().phase === "resolving") return;
     }
     dispatch({ type: "SUBMIT_TURN", reason });
-    const after = state();
+    const after = peek();
     const result = after.lastResolve;
     if (!result) return;
     cancelTimeline?.();
     cancelTimeline = runTimeline(result, dispatch, scheduler, () => {
       dispatch({ type: "TIMELINE_DONE" });
-      const next = state();
+      const next = peek();
       if (next.phase === "planning") {
-        ensureTurnOpenChecks({ armTimer: autoArmTimer });
+        ensureTurnOpenChecks({ armTimer: autoArmTimer() });
       }
       if (next.phase === "gameOver") syncReviewPhaseIdle();
     });
   };
 
   const reviewBack = () => {
-    const s = state();
+    const s = peek();
     if (s.phase !== "gameOver") return;
     if (reviewBusy || s.timeline.active) {
       cancelReviewTurn?.();
@@ -274,7 +279,7 @@ export const createMatchStore = (opts?: {
   };
 
   const reviewForward = () => {
-    const s0 = state();
+    const s0 = peek();
     if (s0.phase !== "gameOver") return;
     if (reviewBusy || s0.timeline.active) return;
     const max = s0.settledSnapshots.length - 1;
@@ -321,8 +326,8 @@ export const createMatchStore = (opts?: {
         if (!endResult) return;
         // After check TIMELINE_DONE, reviewIndex is startIndex+1; End plays there.
         // If no check, reviewIndex is still startIndex.
-        const idx = state().reviewIndex;
-        const result = state().settledResolves[idx];
+        const idx = peek().reviewIndex;
+        const result = peek().settledResolves[idx];
         if (!result || isCheckOnlyResolve(result)) {
           // Check-only terminal (Command Center died on check) — already settled by playChecks.
           return;
@@ -373,7 +378,7 @@ export const createMatchStore = (opts?: {
       cancelTimeline = fn;
     });
 
-  return {
+  const store: MatchStore = {
     state,
     shell,
     timeline,
@@ -392,6 +397,18 @@ export const createMatchStore = (opts?: {
     dismissTurnBonus,
     cancelEffects,
   };
+
+  const disposeDisplayed = createRoot((dispose) => {
+    registerDisplayedSnapshot(
+      store,
+      createMemo(() => displayedSnapshotFrom(shellFields.view, timeline()), undefined, {
+        equals: sameFlat,
+      }),
+    );
+    return dispose;
+  });
+  if (getOwner()) onCleanup(disposeDisplayed);
+  return store;
 };
 
 export const MatchStoreProvider: ParentComponent<{ store: MatchStore }> = (

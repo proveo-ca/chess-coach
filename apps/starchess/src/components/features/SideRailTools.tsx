@@ -3,6 +3,7 @@
  * Live Home asks for confirmation before leaving; review exposes vision radios.
  * // SPEC: _spec/apps/starchess/screens.puml
  * // SPEC: _spec/apps/chess/responsiveness/rules.md
+ * // SPEC: _spec/apps/starchess/architecture/reactivity/components.md
  */
 import type { StarChessColor } from "@chess-coach/starchess-core";
 import type { Component } from "solid-js";
@@ -11,7 +12,6 @@ import { For, Show, createMemo, createSignal } from "solid-js";
 import { useMatchStore } from "~/app/MatchStoreContext";
 import { VisionSwatch } from "@chess-coach/ui-web/atoms/VisionSwatch";
 import { formatScriptLabel } from "~/utils/matchTitle";
-import type { MatchState } from "~/types/match";
 import { ExitGameConfirm } from "~/components/features/ExitGameConfirm";
 import styles from "~/components/features/SideRailTools.module.css";
 import { Divider } from "@chess-coach/ui-web/primitives/Divider";
@@ -40,21 +40,20 @@ export const SideRailTools: Component<SideRailToolsProps> = (props) => {
   const [exitOpen, setExitOpen] = createSignal(false);
 
   const flip = () => {
-    const v = store.state().viewer;
+    const v = store.shell().viewer;
     store.dispatch({ type: "SET_VIEWER", viewer: v === "w" ? "b" : "w" });
   };
 
   /** Active live match — leaving discards the session. */
   const liveMatch = () => {
-    const phase = store.state().phase;
+    const phase = store.shell().phase;
     return phase === "planning" || phase === "targeting" || phase === "resolving";
   };
 
-  const reviewing = () => store.state().phase === "gameOver";
+  const reviewing = () => store.shell().phase === "gameOver";
 
-  const playerColor = () => store.state().playerColor;
-  const arenaPlayers = () =>
-    (store.state() as MatchState & { arenaPlayers?: { w: string; b: string } }).arenaPlayers;
+  const playerColor = () => store.shell().playerColor;
+  const arenaPlayers = () => store.shell().arenaPlayers;
 
   const visionOptions = createMemo((): VisionOption[] => {
     const you = playerColor();

@@ -9,7 +9,6 @@ export const livePlayDefense5 = {
     stored: 2,
     endTurnAfterQueue: "moveAndSpecial",
     choreography: "pawnGasDefenseCounter",
-    objective: "Hold d1 — block c3, unsiege d2, leave to e2",
     docs: "White Kd1 + sieged Rd2 + Pc2 vs Bb4 + Kh8. Black B b4→d2 queued once on T11. Gas pawn c2→c3 (single step) blocks, gas unsiege d2, then R d2→e2. Win R e2 + K d1; fail R/K missing.",
   },
   comment: "That Mecha is gonna get your Tank! \n\nGas your Marine to body-block!",

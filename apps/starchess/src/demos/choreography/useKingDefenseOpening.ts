@@ -17,7 +17,7 @@ export const useKingDefenseOpening: LessonChoreography = defineChoreography({
   ],
   // Suppress input until the Turn 1 bishop resolve has settled (turn ≥ 1, idle).
   interactive: (store) => {
-    const s = store.state();
-    return s.liveSnapshot.turn >= 1 && !s.timeline.active && (s.phase === "planning" || s.phase === "targeting");
+    const s = store.shell();
+    return s.liveSnapshot.turn >= 1 && !store.timeline().active && (s.phase === "planning" || s.phase === "targeting");
   },
 });

@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/starchess/demos.puml, _spec/apps/starchess/architecture/board-entities.puml, _spec/apps/starchess/architecture/composite-vfx-stack.puml
+// SPEC: _spec/apps/starchess/demos.puml, _spec/apps/starchess/architecture/board-entities.puml, _spec/apps/starchess/architecture/composite-vfx-stack.puml, _spec/apps/starchess/architecture/reactivity/presentation.md
 /**
  * Snapshot board + combat VFX overlay stack (Facade).
  * Store-free host for Storybook animation demos and timeline projection.
@@ -40,6 +40,7 @@ import type { TutorialBoardArrow } from "~/types/tutorial";
 
 const NO_ARMED: Square[] = [];
 const NO_GAS_ABSORB: ReadonlySet<Square> = new Set();
+const NO_HIDDEN: ReadonlySet<Square> = new Set();
 const NO_SPENT: Square[] = [];
 
 const fenToSnapshot = (fen: string, sieged: readonly Square[] = []): ScFenSnapshot => {
@@ -113,11 +114,11 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
   const [box, setBox] = createSignal<OverlayBox>({ top: 0, left: 0, w: 480, h: 480 });
   const [measured, setMeasured] = createSignal(false);
 
-  const snap = (): ScFenSnapshot => {
+  const snap = createMemo((): ScFenSnapshot => {
     if (props.snapshot) return props.snapshot;
     const fen = props.fen ?? "4k3/8/8/8/8/8/8/4K3 w - - 0 1";
     return fenToSnapshot(fen, siegedTanksList());
-  };
+  });
 
   const combatFrame = createMemo(
     (): CombatCueFrame => props.combat ?? EMPTY_COMBAT_CUE_FRAME,
@@ -189,7 +190,7 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
 
   const hidden = () => {
     const h = props.hideSquares;
-    if (!h) return new Set<Square>();
+    if (!h) return NO_HIDDEN;
     return h instanceof Set ? h : new Set(h);
   };
 
@@ -200,11 +201,11 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
   };
 
   /** U: stamps + absorb squares — combat overlays keep the green aura. */
-  const specialUsedSquares = (): ReadonlySet<Square> => {
+  const specialUsedSquares = createMemo((): ReadonlySet<Square> => {
     const next = new Set<Square>(gasAbsorb());
     for (const sq of snap().specialsUsed ?? []) next.add(sq);
     return next;
-  };
+  });
 
   return (
     <div

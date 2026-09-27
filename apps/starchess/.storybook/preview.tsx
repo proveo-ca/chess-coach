@@ -8,12 +8,13 @@ import {
   readStorybookTheme,
   storybookThemeGlobalTypes,
 } from "~/storybookApplyTheme";
+import { applyStorybookVfxTier, storybookVfxTierGlobalTypes } from "~/storybookVfxTier";
 import "~/theme.css";
 import "~/styles/index.css";
 
 /**
  * Match apps/chess Storybook: viewports + theme toolbar + Screen responsiveness tokens.
- * // SPEC: _spec/apps/chess/responsiveness/rules.md, _spec/apps/starchess/navigation-chrome.md
+ * // SPEC: _spec/apps/chess/responsiveness/rules.md, _spec/apps/starchess/navigation-chrome.md, _spec/apps/starchess/vfx-tier.puml
  */
 const viewports = {
   desktop: {
@@ -36,6 +37,7 @@ const viewports = {
 const preview: Preview = {
   globalTypes: {
     ...storybookThemeGlobalTypes,
+    ...storybookVfxTierGlobalTypes,
   },
   parameters: {
     layout: "centered",
@@ -116,10 +118,12 @@ const preview: Preview = {
     viewport: { value: "desktop", isRotated: false },
     // Match apps/starchess :root default (dark).
     theme: "dark",
+    vfxTier: "full",
   },
   decorators: [
     (Story, context) => {
       applyStorybookTheme(readStorybookTheme(context.globals));
+      applyStorybookVfxTier(context.globals);
       const parameters = context.parameters as { route?: string };
       const history = createMemoryHistory();
       history.set({ value: parameters.route ?? "/" });

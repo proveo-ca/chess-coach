@@ -49,6 +49,7 @@ describe("createMatchStore dual-signal", () => {
       hidden: ["e2"],
     });
     expect(store.shell()).toBe(shellAfterStart);
+    expect(store.shell().phase).toBe(shellAfterStart.phase);
     expect(store.timeline()).not.toBe(tlAfterStart);
     expect(store.timeline().playingIds).toEqual(["m1"]);
     expect(store.timeline().moveProgress).toEqual({ m1: 0 });

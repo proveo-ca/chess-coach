@@ -1,3 +1,4 @@
+/* // SPEC: _spec/apps/starchess/board-rendering.puml */
 .board-layout-wrapper {
   position: relative;
   z-index: 1;
@@ -101,6 +102,18 @@
   height: 100%;
   pointer-events: none;
   z-index: 5;
+}
+
+.fog-overlay {
+  --fog-ink: rgb(3, 7, 10);
+}
+
+.fog-veil-light {
+  fill: color-mix(in srgb, var(--fog-ink) 88%, var(--board-light, #f0d9b5));
+}
+
+.fog-veil-dark {
+  fill: color-mix(in srgb, var(--fog-ink) 88%, var(--board-dark, #b58863));
 }
 
 /*
@@ -832,6 +845,12 @@
    Outline only — CSS filters force extra compositor layers on mobile GPUs. */
 .pieceSpecialUsed {
   outline-color: rgba(61, 206, 106, 0.95);
+}
+
+/* Lite VFX tier: the outline tween is the one main-thread (paint) animation
+   left on the board — six painted steps instead of one per frame. */
+:global(html[data-vfx-tier="lite"]) .piece {
+  transition-timing-function: steps(6, end);
 }
 
 @media (prefers-reduced-motion: reduce) {

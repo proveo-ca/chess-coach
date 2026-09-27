@@ -233,3 +233,7 @@ order — several beats below are placed or gated only to win (or lose) a tie.
 - **Test fixtures**: a hand-built SCFEN that queues a gas action must also
   spend it in `G:` (e.g. `G:21 → 11 → 01`), or `parseScFen` rejects the wire
   (gas remaining + spent exceeds income).
+- **King Hunt graduation** (`useKingHuntGraduation`): the graduation offer
+  fires whenever the enemy Command Center dies in this run — even on a replay
+  after the player already cleared the tutorial. `cleared` only gates the
+  menu, never the offer.

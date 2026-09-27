@@ -1,3 +1,4 @@
+// SPEC: _spec/apps/starchess/architecture/reactivity/components.md
 import { createEffect, createRoot } from "solid-js";
 import { type SetStoreFunction, createStore } from "solid-js/store";
 
@@ -10,8 +11,10 @@ export function createPersistedStore<T extends object>(
   initialValue: T,
 ): [T, SetStoreFunction<T>] {
   let state = initialValue;
+  let written: string | null = null;
   try {
     const stored = localStorage.getItem(key);
+    written = stored;
     if (stored) {
       const parsed = JSON.parse(stored) as Partial<T>;
       state = { ...initialValue, ...parsed };
@@ -25,7 +28,10 @@ export function createPersistedStore<T extends object>(
   createRoot(() => {
     createEffect(() => {
       try {
-        localStorage.setItem(key, JSON.stringify(store));
+        const next = JSON.stringify(store);
+        if (next === written) return;
+        localStorage.setItem(key, next);
+        written = next;
       } catch (e) {
         console.error(`Failed to save state for key: ${key}`, e);
       }

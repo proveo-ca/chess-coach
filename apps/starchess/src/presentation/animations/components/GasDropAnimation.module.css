@@ -55,9 +55,28 @@
   line-height: 0;
   will-change: transform;
   color: #2a9b6a;
-  /* Single shadow — multi drop-shadow is fill-rate heavy on mobile. */
-  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.45));
   animation: gasFall var(--gas-drop-ms, 260ms) cubic-bezier(0.35, 0.05, 0.65, 1) 1 forwards;
+}
+
+/* Baked contact shadow — a gradient child instead of `filter: drop-shadow`,
+   which gave the falling canister a filter layer to raster on mount. It rides
+   the canister's transform (its stacking context), painted under the icon. */
+.canisterShadow {
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  bottom: 12%;
+  height: 22%;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0));
+  transform: translateY(2px);
+  pointer-events: none;
+}
+
+/* Lite VFX tier: the aura keeps its outline, drops the 12px glow raster. */
+:global(html[data-vfx-tier="lite"]) .aura {
+  box-shadow: none;
 }
 
 @keyframes gasFall {

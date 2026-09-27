@@ -1,8 +1,10 @@
-// SPEC: _spec/apps/starchess/architecture/timeline-perf.puml, _spec/apps/starchess/architecture/board-entities.puml
+// SPEC: _spec/apps/starchess/architecture/timeline-perf.puml, _spec/apps/starchess/architecture/board-entities.puml, _spec/apps/starchess/vfx-tier.puml
 /**
  * Combat VFX performance helpers — stable lists, concurrency caps, DPR clamp.
  * Look-preserving GPU relief for AnimationStage overlays.
  */
+
+import { vfxTier } from "~/store/vfxTierStore";
 
 /** Max simultaneous cues of one kind on tight viewports (dynamic / phone). */
 export const VFX_CAP_TIGHT = 4;
@@ -16,15 +18,20 @@ export const VFX_CAP_REVIEW_DESKTOP = 4;
 /** VFX density mode — `review` = match replay, `full` = live play. */
 export type VfxDensity = "full" | "review";
 
-/** Cap for a density mode on the current viewport. */
-export const capForDensity = (density: VfxDensity): number =>
-  isTightVfxViewport()
+/** Lite VFX tier runs half as many same-kind cues at once (never below one). */
+export const liteCap = (cap: number): number => Math.max(1, Math.floor(cap / 2));
+
+/** Cap for a density mode on the current viewport and VFX tier. */
+export const capForDensity = (density: VfxDensity): number => {
+  const cap = isTightVfxViewport()
     ? density === "review"
       ? VFX_CAP_REVIEW_TIGHT
       : VFX_CAP_TIGHT
     : density === "review"
       ? VFX_CAP_REVIEW_DESKTOP
       : VFX_CAP_DESKTOP;
+  return vfxTier() === "lite" ? liteCap(cap) : cap;
+};
 
 const TIGHT_MQ = "(max-width: 719px), (max-height: 639px)";
 

@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/starchess/architecture/storybook-projection.puml, _spec/apps/starchess/architecture/screen-entities.puml, _spec/apps/starchess/tutorial/hints-and-coach.md
+// SPEC: _spec/apps/starchess/architecture/storybook-projection.puml, _spec/apps/starchess/architecture/screen-entities.puml, _spec/apps/starchess/tutorial/hints-and-coach.md, _spec/apps/starchess/architecture/reactivity/tutorial.md
 /**
  * Sole live-lesson host — seeds a MatchStore from a catalog board, publishes
  * narration, resolves hints, and mounts {@link BaseScreen}.
@@ -8,12 +8,15 @@
  * imperative store choreography; config lives on `board`, choreography behind
  * `board.choreography` — see `demos/choreography/`.
  */
-import { adjutant, formatScFen, getSideVision, placementToMap } from "@chess-coach/starchess-core";
+import { adjutant, getSideVision, placementToMap, type ScFenSnapshot } from "@chess-coach/starchess-core";
 import type { Square } from "chess.js";
 import {
+  batch,
+  createComputed,
   createEffect,
   createMemo,
   createSignal,
+  on,
   onCleanup,
   onMount,
   untrack,
@@ -22,11 +25,9 @@ import {
 
 import { createMatchStore, MatchStoreProvider, useMatchStore } from "~/app/MatchStoreContext";
 import { createMatchStateFromScfen } from "~/app/matchReducer";
-import { displayedSnapshot } from "~/app/selectors";
-import { liveMatchPhase } from "~/presentation/hud/liveMatchPhase";
 import { setQueueHint } from "~/presentation/hud/queueHint";
 import { BaseScreen } from "~/app/BaseScreen.tsx";
-import { CHOREOGRAPHY } from "~/demos/choreography";
+import { CHOREOGRAPHY, type ChoreographyResult } from "~/demos/choreography";
 import { clearSiegedTanks, setTankMode } from "~/presentation/animations/tankModeStore";
 import { LiveMatchShell } from "~/screens/LiveMatchShell";
 import { TUTORIAL_CAPABILITIES, setCapabilities } from "~/store/capabilitiesStore";
@@ -36,9 +37,9 @@ import {
   resolveTutorialHint,
   withCCAlert,
 } from "~/tutorial/tutorialScript";
-import type { AlertLatch } from "~/types/tutorial";
-import { availableTrajectories, coveredEnemyShips } from "~/tutorial/lessonTactics";
-import { useLessonNarration } from "~/tutorial/useLessonNarration";
+import type { AlertLatch, LiveLessonBoard, TutorialBoardArrow } from "~/types/tutorial";
+import { sameStructure } from "~/tutorial/sameStructure";
+import { createLessonBoard, useLessonNarration } from "~/tutorial/useLessonNarration";
 import type { MatchState, MatchStore } from "~/types/match";
 import type { LiveLessonHostProps } from "~/types/lesson";
 
@@ -58,128 +59,200 @@ const withViewerGas = (state: MatchState, gas: number | undefined): MatchState =
 
 /** Force every rook into a mode the seed cannot express (fog rook lessons). */
 const useForcedTankMode = (store: MatchStore, mode: () => "tank" | "siege" | undefined) => {
+  const placement = createMemo(() => store.shell().liveSnapshot.placement);
+  const siegedCount = createMemo(
+    () => store.shell().siegedTanks.size + (store.shell().liveSnapshot.siegedTanks?.length ?? 0),
+  );
   createEffect(() => {
     const forced = mode();
-    const placement = store.state().liveSnapshot.placement;
+    const current = placement();
+    siegedCount();
     clearSiegedTanks();
     if (!forced) return;
     try {
-      for (const [square, piece] of placementToMap(placement)) {
+      for (const [square, piece] of placementToMap(current)) {
         if (piece.type === "r") setTankMode(square as Square, forced);
       }
     } catch {
       /* malformed placement — leave rook modes alone */
     }
     // Keep the MatchStore sieged set aligned (observer reads snap.siegedTanks).
-    if (forced !== "tank") return;
-    const s = store.state();
-    if (s.siegedTanks.size > 0 || (s.liveSnapshot.siegedTanks?.length ?? 0) > 0) {
-      store.dispatch({
-        type: "APPLY_SNAPSHOT",
-        snapshot: { ...s.liveSnapshot, siegedTanks: [] },
-      });
-    }
+    if (forced !== "tank" || siegedCount() === 0) return;
+    const live = untrack(() => store.shell().liveSnapshot);
+    store.dispatch({
+      type: "APPLY_SNAPSHOT",
+      snapshot: { ...live, siegedTanks: [] },
+    });
   });
 
   onCleanup(() => clearSiegedTanks());
 };
 
+const applyViewerGas = (store: MatchStore, gas: number) => {
+  const next = Math.min(3, Math.max(0, Math.floor(gas)));
+  const s = store.state();
+  if ((s.liveSnapshot.gas[s.viewer] ?? 0) === next) return;
+  store.dispatch({
+    type: "APPLY_SNAPSHOT",
+    snapshot: {
+      ...s.liveSnapshot,
+      gas: { ...s.liveSnapshot.gas, [s.viewer]: next },
+    },
+  });
+};
+
+const LessonScope: Component<{
+  board: LiveLessonBoard;
+  lessonBoard: ReturnType<typeof createLessonBoard>;
+  narrate: boolean;
+  tutorial: boolean;
+  onExitToMenu?: () => void;
+  onChoreography: (c: ChoreographyResult) => void;
+}> = (props) => {
+  const store = useMatchStore();
+  const choreography = untrack(() =>
+    props.board.choreography
+      ? CHOREOGRAPHY[props.board.choreography](store, {
+          tutorial: props.tutorial,
+          onExitToMenu: props.onExitToMenu,
+        })
+      : {},
+  );
+  props.onChoreography(choreography);
+  onCleanup(() => props.onChoreography({}));
+  useForcedTankMode(store, () => props.board.tankMode);
+  useLessonNarration(props.lessonBoard, () => props.narrate);
+  const Overlay = choreography.Overlay;
+  return Overlay ? <Overlay /> : null;
+};
+
+const NO_SQUARES: readonly Square[] = [];
+const NO_ARROWS: readonly TutorialBoardArrow[] = [];
+
 const LiveLessonInner: Component<LiveLessonHostProps> = (props) => {
   const store = useMatchStore();
-
-  const choreography = props.board.choreography
-    ? CHOREOGRAPHY[props.board.choreography](store, {
-        tutorial: props.tutorial === true,
-        onExitToMenu: props.onExitToMenu,
-      })
-    : {};
-
-  useForcedTankMode(store, () => props.board.tankMode);
-  useLessonNarration(store, () => props.narrate === true);
+  const [choreography, setChoreography] = createSignal<ChoreographyResult>({});
+  const board = createLessonBoard(store);
 
   onMount(() => {
     if (props.tutorial) setCapabilities(TUTORIAL_CAPABILITIES);
   });
 
-  const interactive = () => choreography.interactive?.() ?? true;
+  const interactive = () => choreography().interactive?.() ?? true;
+  const lessonKey = () => props.lessonKey ?? "";
 
-  const hintScfen = createMemo(() => formatScFen(displayedSnapshot(store.state())));
-
-  const hintMarks = createMemo(() => {
-    const s = store.state();
-    const scfen = hintScfen();
-    return resolveTutorialHint(props.boardHints, {
-      scfen,
-      covers: coveredEnemyShips(scfen, s.viewer),
-      trajectories: availableTrajectories(scfen, s.viewer),
-      targetingKind: s.targeting?.kind ?? null,
-      reviewPhase: liveMatchPhase({
-        phase: s.phase,
-        lastResolve: s.lastResolve,
-        timelineActive: s.timeline.active,
-        pendingPromotion: !!s.pendingPromotion,
+  const hintMarks = createMemo(
+    () =>
+      resolveTutorialHint(props.boardHints, {
+        scfen: board.scfen(),
+        covers: board.covers(),
+        trajectories: board.trajectories(),
+        targetingKind: board.targetingKind(),
+        reviewPhase: board.reviewPhase(),
       }),
-    });
-  });
+    undefined,
+    { equals: sameStructure },
+  );
 
-  const hintSquares = () => (interactive() ? hintMarks().squares : []);
-  const hintGasSquares = () => (interactive() ? hintMarks().gasSquares : []);
+  const hintSquares = createMemo(() => (interactive() ? hintMarks().squares : NO_SQUARES));
+  const hintGasSquares = createMemo(() => (interactive() ? hintMarks().gasSquares : NO_SQUARES));
+  const hintArrows = createMemo(() => (interactive() ? hintMarks().arrows : NO_ARROWS));
+  const endTurnAfterQueue = createMemo(() =>
+    interactive() ? props.board.endTurnAfterQueue : undefined,
+  );
   const scriptedAlerts = () => hintMarks().alertSquares;
 
-  const [alertLatch, setAlertLatch] = createSignal<AlertLatch>({ squares: [] });
-  const [ccSeen, setCCSeen] = createSignal<Square | undefined>();
-
-  createEffect(() => {
-    const scripted = scriptedAlerts();
-    const followCC = props.board.alertLatch === "king";
-    const trackCC = props.board.alertLatch === "cc";
-    let ccAt: Square | undefined;
-    let ccVisible = false;
-    if (followCC || trackCC) {
-      const placement = hintScfen().split("|")[1];
-      if (placement) {
-        try {
-          const map = placementToMap(placement);
-          const viewer = store.state().viewer;
-          const enemy = viewer === "w" ? "b" : "w";
-          for (const [sq, piece] of map) {
-            if (piece.type === "k" && piece.color === enemy) ccAt = sq;
-          }
-          if (ccAt) {
-            const vision = getSideVision(map, viewer);
-            ccVisible =
-              vision.litSquares.has(ccAt) || vision.revealedPieces.has(ccAt);
-          }
-        } catch {
-          // A mid-animation placement can be unreadable for a frame.
-        }
+  const ccSight = createMemo(
+    (): { ccAt?: Square; ccVisible: boolean } => {
+      if (props.board.alertLatch !== "king" && props.board.alertLatch !== "cc") {
+        return { ccVisible: false };
       }
-    }
-    if (trackCC) {
-      setCCSeen((prev) => nextCCSighting(prev, { ccAt, ccVisible }));
-      return;
-    }
-    if (!props.board.alertLatch) return;
-    setAlertLatch((prev) =>
-      nextAlertLatch(prev, scripted, { followCC, ccAt, ccVisible }),
-    );
-  });
+      const placement = board.scfen().split("|")[1];
+      if (!placement) return { ccVisible: false };
+      try {
+        const map = placementToMap(placement);
+        const viewer = store.shell().viewer;
+        const enemy = viewer === "w" ? "b" : "w";
+        let ccAt: Square | undefined;
+        for (const [sq, piece] of map) {
+          if (piece.type === "k" && piece.color === enemy) ccAt = sq;
+        }
+        if (!ccAt) return { ccVisible: false };
+        const vision = getSideVision(map, viewer);
+        return { ccAt, ccVisible: vision.litSquares.has(ccAt) || vision.revealedPieces.has(ccAt) };
+      } catch {
+        return { ccVisible: false };
+      }
+    },
+    undefined,
+    { equals: sameStructure },
+  );
 
-  const hintAlertSquares = createMemo(() => {
-    if (!interactive()) return [];
-    if (props.board.alertLatch === "cc") return withCCAlert(scriptedAlerts(), ccSeen());
-    return props.board.alertLatch ? alertLatch().squares : scriptedAlerts();
-  });
+  const ccSeenFold = createMemo<{ key: string; at: Square | undefined }>(
+    (prev) => {
+      const key = lessonKey();
+      const base = prev.key === key ? prev.at : undefined;
+      return { key, at: props.board.alertLatch === "cc" ? nextCCSighting(base, ccSight()) : base };
+    },
+    { key: untrack(lessonKey), at: undefined },
+  );
+  const ccSeen = () => ccSeenFold().at;
+  const alertLatchFold = createMemo<{ key: string; latch: AlertLatch }>(
+    (prev) => {
+      const key = lessonKey();
+      const base: AlertLatch = prev.key === key ? prev.latch : { squares: [] };
+      const latch = props.board.alertLatch;
+      if (!latch || latch === "cc") return { key, latch: base };
+      const { ccAt, ccVisible } = ccSight();
+      return {
+        key,
+        latch: nextAlertLatch(base, scriptedAlerts(), { followCC: latch === "king", ccAt, ccVisible }),
+      };
+    },
+    { key: untrack(lessonKey), latch: { squares: [] } },
+  );
+  const alertLatch = () => alertLatchFold().latch;
 
-  const hintArrows = () => (interactive() ? hintMarks().arrows : []);
+  const hintAlertSquares = createMemo(
+    (): readonly Square[] => {
+      if (!interactive()) return NO_SQUARES;
+      if (props.board.alertLatch === "cc") return withCCAlert(scriptedAlerts(), ccSeen());
+      return props.board.alertLatch ? alertLatch().squares : scriptedAlerts();
+    },
+    undefined,
+    { equals: sameStructure },
+  );
 
   createEffect(() => setQueueHint(interactive() ? hintMarks().cancelQueued : null));
   onCleanup(() => setQueueHint(null));
 
-  const Overlay = choreography.Overlay;
+  const autoQueueOpponent =
+    props.board.opponent === "adjutant"
+      ? (snap: ScFenSnapshot) => {
+          const s = store.state();
+          return adjutant(snap, {
+            color: s.viewer === "w" ? "b" : "w",
+            storedFor: (color) => store.state().economies[color].stored,
+          });
+        }
+      : undefined;
+
+  const scope = () => (
+    <LessonScope
+      board={props.board}
+      lessonBoard={board}
+      narrate={props.narrate === true}
+      tutorial={props.tutorial === true}
+      onExitToMenu={props.onExitToMenu}
+      onChoreography={setChoreography}
+    />
+  );
+
+  const scopeView = createMemo(on(lessonKey, () => scope()));
 
   return (
     <>
+      {scopeView()}
       <BaseScreen
         starChessMode
         fog={props.fog}
@@ -198,24 +271,13 @@ const LiveLessonInner: Component<LiveLessonHostProps> = (props) => {
         coachEmotion={props.coachEmotion}
         guideBubble={props.guideBubble}
         footerExtra={props.footerExtra}
-        endTurnAfterQueue={
-          interactive() ? props.board.endTurnAfterQueue : undefined
-        }
+        endTurnAfterQueue={endTurnAfterQueue()}
         hintSquares={hintSquares()}
         hintAlertSquares={hintAlertSquares()}
         hintGasSquares={hintGasSquares()}
         hintArrows={hintArrows()}
-        autoQueueOpponent={
-          props.board.opponent === "adjutant"
-            ? (snap) =>
-                adjutant(snap, {
-                  color: store.state().viewer === "w" ? "b" : "w",
-                  storedFor: (color) => store.state().economies[color].stored,
-                })
-            : undefined
-        }
+        autoQueueOpponent={autoQueueOpponent}
       />
-      {Overlay ? <Overlay /> : null}
     </>
   );
 };
@@ -227,25 +289,33 @@ export const LiveLessonHost: Component<LiveLessonHostProps> = (props) => {
       props.gas,
     ),
     // `autoArmTimer !== false` enables — so `undefined` must stay `undefined`.
-    autoArmTimer: props.armTimer ?? props.board.armTimer,
+    autoArmTimer: () => props.armTimer ?? props.board.armTimer,
   });
+
+  createComputed(
+    on(
+      () => props.lessonKey,
+      () =>
+        untrack(() =>
+          batch(() => {
+            store.cancelEffects();
+            store.dispatch({
+              type: "LOAD_SCFEN",
+              scfen: props.board.scfen,
+              stored: props.board.stored ?? 4,
+            });
+            if (props.gas != null) applyViewerGas(store, props.gas);
+          }),
+        ),
+      { defer: true },
+    ),
+  );
 
   // Storybook control only — re-apply on change without wiping queued spends.
   createEffect(() => {
     const g = props.gas;
     if (g == null) return;
-    const next = Math.min(3, Math.max(0, Math.floor(g)));
-    untrack(() => {
-      const s = store.state();
-      if ((s.liveSnapshot.gas[s.viewer] ?? 0) === next) return;
-      store.dispatch({
-        type: "APPLY_SNAPSHOT",
-        snapshot: {
-          ...s.liveSnapshot,
-          gas: { ...s.liveSnapshot.gas, [s.viewer]: next },
-        },
-      });
-    });
+    untrack(() => applyViewerGas(store, g));
   });
 
   const body = (

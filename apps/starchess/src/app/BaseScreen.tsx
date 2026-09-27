@@ -1,11 +1,22 @@
-// SPEC: _spec/apps/chess/responsiveness/rules.md, _spec/apps/starchess/screens.puml, _spec/apps/starchess/architecture/screen-entities.puml, _spec/apps/starchess/architecture/base-screen.puml, _spec/apps/starchess/core/board/planning-projection.puml, _spec/apps/starchess/core/engine-boundary.puml, _spec/apps/starchess/navigation-chrome.md
+// SPEC: _spec/apps/chess/responsiveness/rules.md, _spec/apps/starchess/screens.puml, _spec/apps/starchess/architecture/screen-entities.puml, _spec/apps/starchess/architecture/base-screen.puml, _spec/apps/starchess/core/board/planning-projection.puml, _spec/apps/starchess/core/engine-boundary.puml, _spec/apps/starchess/navigation-chrome.md, _spec/apps/starchess/architecture/reactivity/app-screens.md
 import {
   type ScFenSnapshot,
   type StarChessColor,
 } from "@chess-coach/starchess-core";
 import type { Square } from "chess.js";
-import { For, Show, createEffect, createMemo, createSignal, onCleanup, onMount } from "solid-js";
-import type { Component } from "solid-js";
+import {
+  For,
+  Show,
+  batch,
+  children,
+  createEffect,
+  createMemo,
+  createSignal,
+  onCleanup,
+  onMount,
+  untrack,
+} from "solid-js";
+import type { Component, JSX } from "solid-js";
 import { Portal } from "solid-js/web";
 
 import { viewerColor } from "~/app/matchEconomy";
@@ -88,6 +99,21 @@ export type StarChessScreenProps = {
 
 type OverlayBox = { top: number; left: number; width: number; height: number };
 
+const NO_SQUARES: readonly Square[] = [];
+
+const Slot: Component<{
+  content: JSX.Element;
+  fallback?: JSX.Element;
+  wrap?: (content: JSX.Element) => JSX.Element;
+}> = (props) => {
+  const resolved = children(() => props.content);
+  return (
+    <Show when={resolved.toArray().length > 0} fallback={props.fallback}>
+      {props.wrap ? props.wrap(resolved()) : resolved()}
+    </Show>
+  );
+};
+
 export const BaseScreen: Component<StarChessScreenProps> = (props) => {
   const store = useMatchStore();
   const variant = (): BoardSkin => props.boardVariant ?? "eclipse";
@@ -108,16 +134,25 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
   /**
    * Coach-header shell (lesson chrome: avatar band + guide bubble) instead of
    * the `/single` top pane. The final lesson (`fullMatchHud`) opts back out.
+   * Memoized, `tutorial` first: `props.header` is a JSX getter, so each read
+   * renders a fresh header — read from a click handler (the banner's `onBack`)
+   * that runs outside the Route and `ScreenBackNav`'s `useNavigate` throws.
    */
-  const coachHeader = () =>
-    (props.header != null || props.tutorial) && !props.fullMatchHud;
+  const coachHeader = createMemo(
+    () => (props.tutorial || props.header != null) && !props.fullMatchHud,
+  );
 
   /** Tall/narrow mobile loses the rail — TurnBar moves to the top chrome,
       compact under the resource bar (single End instance, never doubled).
       The footer keeps its own copy for the coach-header branch, which never
-      renders topChrome — the two branches are mutually exclusive. */
+      renders topChrome — the two branches are mutually exclusive.
+      A lesson keeps the banner through game over: the coach header's in-flow
+      `‹ Back` is hidden only while a banner is mounted, so dropping it on a
+      lost lesson resurfaces that nav. */
   const bannerOwnsChrome = () =>
-    starChessMode() && !ended() && mobileViewport() && (coachHeader() || !!props.onExitToMenu);
+    starChessMode() &&
+    mobileViewport() &&
+    (coachHeader() || (!ended() && !!props.onExitToMenu));
 
   const showTopTurnBar = () =>
     starChessMode() &&
@@ -153,12 +188,11 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
   const spawnPhase = ccd.spawnPhase;
   const spawnAdjacent = ccd.spawnAdjacent;
 
-  const specialTargetSquares = createMemo((): Square[] => {
+  const specialTargetSquares = createMemo((): readonly Square[] => {
     const t = store.shell().targeting;
-    if (!t) return [];
-    if (t.kind === "charonMissiles") return [...t.targets];
-    if (t.kind === "tacticalJump") return [...t.targets];
-    return [];
+    if (!t) return NO_SQUARES;
+    if (t.kind === "charonMissiles" || t.kind === "tacticalJump") return t.targets;
+    return NO_SQUARES;
   });
 
   const modalPending = createMemo(() => {
@@ -178,7 +212,9 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
     return phase === "intent" ? s.pendingPromotion : null;
   });
 
-  const resolvePromotion = (piece: PromotionPiece) => {
+  const resolvePromotion = (piece: PromotionPiece) =>
+    batch(() => resolvePromotionNow(piece));
+  const resolvePromotionNow = (piece: PromotionPiece) => {
     const pending = store.shell().pendingPromotion;
     if (!pending) return;
     store.dispatch({ type: "CLEAR_PENDING_PROMOTION" });
@@ -251,6 +287,22 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
   const onCancelSpawn = ccd.onCancelSpawn;
   const deploySpawnAt = ccd.deploySpawnAt;
 
+  const commitSpecialTarget = (sq: Square) =>
+    batch(() => {
+      const kind = store.shell().targeting?.kind;
+      if (kind === "charonMissiles") commitCharonMissiles(sq);
+      else if (kind === "tacticalJump") commitTacticalJump(sq);
+    });
+
+  const cancelArmed = () =>
+    batch(() => {
+      onCancelSpawn();
+      store.dispatch({
+        type: "QUEUE_REJECT",
+        message: "Cancelled — canister returned",
+      });
+    });
+
   const commitCharonMissiles = (to: Square) => {
     const t = store.shell().targeting;
     if (!t || t.kind !== "charonMissiles" || !t.targets.includes(to)) return;
@@ -287,7 +339,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
     void s.turn;
     void s.placement;
     void (s.queue?.actions.length ?? 0);
-    const result = fn(s);
+    const result = untrack(() => fn(s));
     if (result.snapshot === s) return;
     if (result.spendMinerals) {
       const { color, amount } = result.spendMinerals;
@@ -397,11 +449,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
         const s = store.shell();
         if (s.targeting || spawnPhase() !== "idle") {
           e.preventDefault();
-          onCancelSpawn();
-          store.dispatch({
-            type: "QUEUE_REJECT",
-            message: "Cancelled — canister returned",
-          });
+          cancelArmed();
           return;
         }
         if (s.pendingPromotion) {
@@ -476,6 +524,33 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
    * to both). Desktop keeps TurnBar on top.
    */
   const barFirst = () => mobileViewport() && !dynamicMobile();
+
+  const bannerBack = createMemo(() => (coachHeader() ? props.onExitToMenu : requestLeave));
+  const bannerResources = createMemo(() =>
+    coachHeader() ? !!props.hudResources : !props.hideResources,
+  );
+  const bannerTurn = createMemo(() => !turnHidden() && !ended());
+  const coachEmotion = createMemo(() => props.coachEmotion ?? "idle");
+  const overlay = createMemo(() => (starChessMode() ? overlayBox() : null));
+  const liveHud = createMemo(() => starChessMode() && !ended());
+  const boardFog = createMemo(() => (ended() ? undefined : fogOfWar()));
+  const dynamicGasDock = createMemo(
+    () => !!props.onExitToMenu && liveHud() && !props.hideGas && dynamicMobile(),
+  );
+  const reviewNav = createMemo(() => {
+    if (!ended()) return undefined;
+    return {
+      turn: reviewTurnNumber(),
+      phase: store.reviewPhase(),
+      hideDualNav: true,
+      onBack: () => store.reviewBack(),
+      onForward: () => store.reviewForward(),
+      backDisabled: reviewBusy() || store.shell().reviewIndex <= 0,
+      forwardDisabled:
+        reviewBusy() ||
+        store.shell().reviewIndex >= store.shell().settledSnapshots.length - 1,
+    };
+  });
 
   const topTurnBar = () => (
     <Show when={showTopTurnBar()}>
@@ -571,15 +646,15 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
         <MobileBanner
           band="mobile"
           subBanner={coachHeader() ? "float" : "inline"}
-          onBack={coachHeader() ? props.onExitToMenu : requestLeave}
+          onBack={bannerBack()}
           fixedResources={!coachHeader()}
           resources={
-            <Show when={coachHeader() ? props.hudResources : !props.hideResources}>
+            <Show when={bannerResources()}>
               <ResourceBar compact />
             </Show>
           }
           turn={
-            <Show when={!turnHidden()}>
+            <Show when={bannerTurn()}>
               <TurnBar
                 compact
                 autoStart={false}
@@ -595,9 +670,10 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
         when={coachHeader()}
         fallback={
           <Screen.SidebarInset class={styles.topPane}>
-            <Show when={props.guideBubble}>
-              <div class={styles.hudGuideSlot}>{props.guideBubble}</div>
-            </Show>
+            <Slot
+              content={props.guideBubble}
+              wrap={(bubble) => <div class={styles.hudGuideSlot}>{bubble}</div>}
+            />
             <Show
               when={props.onExitToMenu}
               fallback={
@@ -637,27 +713,23 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
         <Screen.Header>
           <div class={styles.headerSlot}>
             <div class="desktop-only" data-testid="tutorial-header">
-              <Show
-                when={props.header}
+              <Slot
+                content={props.header}
                 fallback={
-                  <CoachAvatar identity="kerrigan" emotion={props.coachEmotion ?? "idle"} />
+                  <CoachAvatar identity="kerrigan" emotion={coachEmotion()} />
                 }
-              >
-                {props.header}
-              </Show>
+              />
             </div>
             {/* Mobile coach lives in the chrome track, never in the board
                 column — see TutorialReviewHost. */}
             <Show when={props.tutorial && !props.fullMatchHud}>
               <div class="mobile-hero" data-testid="tutorial-mobile-hero">
-                <Show
-                  when={props.header}
+                <Slot
+                  content={props.header}
                   fallback={
-                    <CoachAvatar identity="kerrigan" emotion={props.coachEmotion ?? "idle"} />
+                    <CoachAvatar identity="kerrigan" emotion={coachEmotion()} />
                   }
-                >
-                  {props.header}
-                </Show>
+                />
               </div>
             </Show>
             {props.guideBubble}
@@ -680,7 +752,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
             }}
           >
             <LiveBoardBinding
-              fog={ended() ? undefined : fogOfWar()}
+              fog={boardFog()}
               visionMode="player"
               variant={variant()}
               pieceSet={props.pieceSet}
@@ -689,7 +761,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
               hintGasSquares={props.hintGasSquares}
               hintArrows={props.hintArrows}
             />
-            <Show when={starChessMode() && overlayBox()}>
+            <Show when={overlay()}>
               {(box) => (
                 <div
                   class={styles.boardOverlay}
@@ -721,18 +793,14 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
                         style={squareBoxStyle(sq, box().width, box().height)}
                         data-square={sq}
                         data-special-target
-                        onClick={() => {
-                          const kind = store.shell().targeting?.kind;
-                          if (kind === "charonMissiles") commitCharonMissiles(sq);
-                          else if (kind === "tacticalJump") commitTacticalJump(sq);
-                        }}
+                        onClick={() => commitSpecialTarget(sq)}
                       />
                     )}
                   </For>
                 </div>
               )}
             </Show>
-            <Show when={starChessMode() && !ended()}>
+            <Show when={liveHud()}>
               <DeployModal
                 pending={modalPending()}
                 onSelect={onSelectSpawnUnit}
@@ -763,19 +831,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
                 />
               }
             >
-              <TurnBarSidebar
-                review={{
-                  turn: reviewTurnNumber(),
-                  phase: store.reviewPhase(),
-                  hideDualNav: true,
-                  onBack: () => store.reviewBack(),
-                  onForward: () => store.reviewForward(),
-                  backDisabled: reviewBusy() || store.shell().reviewIndex <= 0,
-                  forwardDisabled:
-                    reviewBusy() ||
-                    store.shell().reviewIndex >= store.shell().settledSnapshots.length - 1,
-                }}
-              />
+              <TurnBarSidebar review={reviewNav()} />
             </Show>
           </Show>
         </MatchBoardHost.Rail>
@@ -783,7 +839,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
 
       <Screen.Footer>
         <div class={styles.footerStack}>
-          <Show when={props.footerExtra}>{props.footerExtra}</Show>
+          {props.footerExtra}
           <div
             classList={{
               [styles.gasDock]: true,
@@ -796,17 +852,8 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
             }}
             data-testid="starchess-gas-deploy"
           >
-            <Show when={starChessMode() && !ended() && !props.hideGas}>
-              <GasRack
-                onDeploy={onGasDeploy}
-                onCancel={() => {
-                  onCancelSpawn();
-                  store.dispatch({
-                    type: "QUEUE_REJECT",
-                    message: "Cancelled — canister returned",
-                  });
-                }}
-              />
+            <Show when={liveHud() && !props.hideGas}>
+              <GasRack onDeploy={onGasDeploy} onCancel={cancelArmed} />
             </Show>
           </div>
           <Show when={!props.tutorial || props.fullMatchHud}>
@@ -834,17 +881,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
           </Show>
         </div>
       </Screen.Footer>
-      <Show
-        when={
-          !!(
-            props.onExitToMenu &&
-            starChessMode() &&
-            !ended() &&
-            !props.hideGas &&
-            dynamicMobile()
-          )
-        }
-      >
+      <Show when={dynamicGasDock()}>
         <Portal>
           <div
             class={`gas-dock-dynamic ${styles.gasDockDynamic}`}
@@ -858,16 +895,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
               "z-index": "70",
             }}
           >
-            <GasRack
-              onDeploy={onGasDeploy}
-              onCancel={() => {
-                onCancelSpawn();
-                store.dispatch({
-                  type: "QUEUE_REJECT",
-                  message: "Cancelled — canister returned",
-                });
-              }}
-            />
+            <GasRack onDeploy={onGasDeploy} onCancel={cancelArmed} />
           </div>
         </Portal>
       </Show>

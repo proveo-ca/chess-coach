@@ -104,16 +104,6 @@
   color: var(--sc-guide-green, #3ecf8e);
 }
 
-/* Persistent lesson goal above the section breadcrumb. */
-.objective {
-  margin: 0 0 0.35rem;
-  font-size: 0.82rem;
-  line-height: 1.35;
-  text-align: center;
-  color: color-mix(in srgb, var(--text) 78%, transparent);
-  white-space: pre-line;
-}
-
 .coachHide {
   display: inline-flex;
   position: relative;

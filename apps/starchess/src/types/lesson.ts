@@ -9,6 +9,7 @@ import type { LiveLessonBoard, TutorialBeat } from "~/types/tutorial";
 export type LiveLessonHostProps = {
   /** Seed + board chrome from the lesson catalog. */
   board: LiveLessonBoard;
+  lessonKey?: string;
   /** Publish into `tutorialNarrationStore` (tutorial lessons only). */
   narrate?: boolean;
   /** Tutorial chrome — HOME-only rail, no ExitGameConfirm. */

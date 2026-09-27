@@ -10,7 +10,7 @@ title StarChess · MatchStore (apps/starchess)
 
 package "Store shell" {
   component "MatchStoreContext\ncreateMatchStore / Provider" as CTX <<app>>
-  database "shell()\nphase · snaps · economies" as SHELL <<db>>
+  database "shell() — per-field signals\n(app/shellFields.ts · stable read-only view)\nphase · snaps · economies" as SHELL <<db>>
   database "timeline()\ncues · playing · display*" as TLS <<db>>
   component "matchReducer\nQUEUE_ACTION · SUBMIT_TURN · TIMELINE_*\nREVIEW_* · SELECT_SQUARE · …" as RED <<async>>
   component "selectors\nreadDisplayedSnapshot / canSubmit / …" as SEL <<db>>
@@ -63,6 +63,17 @@ note bottom
   Authoritative live snap is ""liveSnapshot""; timeline patches
   presentation until ""TIMELINE_DONE"". See animation-pipeline.md.
   **Perf shipped:** CommitGate · structural share · dual-signal shell∥timeline ·
+  **per-field shell** (""createShellFields"": a reader wakes only when a field
+  it read changes, ""Object.is""; top-level only — values stay the reducer's
+  immutable objects; ""dispatch"" reads untracked) ·
+  **""peek()""** (untracked plain state for the store's own runners —
+  ""armTimer"" etc. are called from screen effects, so ""state()"" there would
+  subscribe the caller to everything, R1) ·
+  **displayed-snapshot memo** (one ""sameFlat"" memo per store, registered in
+  ""selectors.ts"" via ""registerDisplayedSnapshot"", owned by its own
+  ""createRoot"" so test/story stores work, disposed with the creating owner;
+  hand-built stores fall back to a direct fold) ·
+  per-site detail: ""architecture/reactivity/app-screens.md"" ·
   light paint/GPU · compositor relief (paint audit · phase ring · review caps)
   (""architecture/timeline-vfx-density.puml"").
   Classical legality seam: ""_spec/packages/starchess-core/sc-moves.puml"".

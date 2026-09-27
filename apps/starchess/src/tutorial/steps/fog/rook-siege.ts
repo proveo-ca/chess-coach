@@ -10,7 +10,6 @@ export const rookSiege = {
     tankMode: "siege",
     endTurnAfterQueue: "first",
     armTimer: false,
-    objective: "Keep your siege tank on d4 alive — reduce the enemy to 1 pawn.",
     choreography: "siegeFocusCounter",
     docs: "Siege rook on d4 \u2014 immobile 9\u00d79 vision. Fire any square on the cross: empty ground still takes HE, and the first unit in the way intercepts.",
   },

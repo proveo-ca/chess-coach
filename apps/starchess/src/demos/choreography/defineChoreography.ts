@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/starchess/architecture/storybook-projection.puml
+// SPEC: _spec/apps/starchess/architecture/storybook-projection.puml, _spec/apps/starchess/architecture/reactivity/tutorial.md
 /**
  * Declarative choreography helper — the shared guard every scripted-enemy-turn
  * hook used to hand-roll: phase/turnStartChecksApplied/timeline checks, "this
@@ -6,7 +6,7 @@
  * and never-throw. A hook becomes a `steps` list; only board-specific
  * branching stays as code, via `when`/`actions` or the `run` escape hatch.
  */
-import { createEffect, createMemo, onMount } from "solid-js";
+import { batch, createEffect, createMemo, onMount } from "solid-js";
 import { placementToMap } from "@chess-coach/starchess-core";
 import type { ScActionInput, ScFenSnapshot, ScPiece, StarChessColor } from "@chess-coach/starchess-core";
 import type { Square } from "chess.js";
@@ -81,11 +81,13 @@ const dispatchStep = (
   snap: ScFenSnapshot,
 ): void => {
   if (step.ensureTurnOpenChecks) store.ensureTurnOpenChecks();
-  const spend = step.spendStored?.(map, snap);
-  if (spend) store.dispatch({ type: "SPEND_STORED", color: spend.color, amount: spend.amount });
-  for (const action of step.actions?.(map, snap) ?? []) {
-    store.dispatch({ type: "QUEUE_ACTION", action });
-  }
+  batch(() => {
+    const spend = step.spendStored?.(map, snap);
+    if (spend) store.dispatch({ type: "SPEND_STORED", color: spend.color, amount: spend.amount });
+    for (const action of step.actions?.(map, snap) ?? []) {
+      store.dispatch({ type: "QUEUE_ACTION", action });
+    }
+  });
   if (step.submitTurn) store.submitTurn(step.submitTurn);
 };
 
@@ -105,16 +107,25 @@ const runOnMountStep = (store: MatchStore, step: ChoreographyStep): void => {
   });
 };
 
-const runTurnStep = (store: MatchStore, step: ChoreographyStep): void => {
+const createStepGate = (store: MatchStore) => ({
+  phase: createMemo(() => store.shell().phase),
+  checksApplied: createMemo(() => store.shell().turnStartChecksApplied),
+  timelineActive: createMemo(() => store.timeline().active),
+  liveSnapshot: createMemo(() => store.shell().liveSnapshot),
+});
+
+type StepGate = ReturnType<typeof createStepGate>;
+
+const runTurnStep = (store: MatchStore, gate: StepGate, step: ChoreographyStep): void => {
   let doneForever = false;
   let doneTurn: number | null = null;
 
   createEffect(() => {
     try {
-      const s = store.state();
-      if (s.phase !== "planning" && s.phase !== "targeting") return;
-      if (!s.turnStartChecksApplied || s.timeline.active) return;
-      const snap = s.liveSnapshot;
+      const phase = gate.phase();
+      if (phase !== "planning" && phase !== "targeting") return;
+      if (!gate.checksApplied() || gate.timelineActive()) return;
+      const snap = gate.liveSnapshot();
       if (snap.phase !== "P") return;
       if (step.turn != null && snap.turn !== step.turn) return;
       if (doneForever || doneTurn === snap.turn) return;
@@ -166,9 +177,10 @@ const runTurnStep = (store: MatchStore, step: ChoreographyStep): void => {
 
 export const defineChoreography = (config: ChoreographyConfig): LessonChoreography => {
   return (store, ctx) => {
+    const gate = createStepGate(store);
     for (const step of config.steps) {
       if (step.onMount) runOnMountStep(store, step);
-      else runTurnStep(store, step);
+      else runTurnStep(store, gate, step);
     }
     const composed = config.compose?.(store, ctx);
     const interactive = config.interactive

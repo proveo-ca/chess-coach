@@ -55,11 +55,6 @@ export type LiveLessonBoard = {
    */
   armTimer?: boolean;
   /**
-   * The player-facing goal, shown persistently while the lesson is active so
-   * it survives coach reactions. Falls back to the story's opening comment.
-   */
-  objective?: string;
-  /**
    * What this board demonstrates, in prose. Storybook renders it as the story
    * description — the copy lives with the lesson, not in the story file.
    */

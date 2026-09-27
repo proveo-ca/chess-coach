@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/starchess/architecture/board-entities.puml
+// SPEC: _spec/apps/starchess/architecture/board-entities.puml, _spec/apps/starchess/architecture/reactivity/presentation.md
 import {
   For,
   Show,
@@ -260,6 +260,7 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
             const { leg1, leg2 } = legs();
             return aimPoseWithin((props.leg?.[m.id] ?? 0) === 1 ? leg2 : leg1, mirrorX());
           };
+          const aimPose = createMemo(() => (settling() ? undefined : pose()));
           const hullStyle = () => ({
             "--settle-ms": `${settling() ? SETTLE_MS : HOVERBIKE_TURN_MS}ms`,
           });
@@ -272,7 +273,7 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
               }}
               style={hullStyle()}
             >
-              <InlineHoverbike color={m.color} aimPose={settling() ? undefined : pose()} />
+              <InlineHoverbike color={m.color} aimPose={aimPose()} />
             </div>
           );
           return (
@@ -455,8 +456,9 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
         return (
           <div
             class={styles.mover}
+            classList={{ [styles.moverSlide]: started() }}
             style={{
-              ...squareBoxStyle(sq(), props.boardWidth, props.boardHeight),
+              ...slideMoverStyle(m.from, m.to, props.boardWidth, props.boardHeight),
               "--move-ms": `${travelMs()}ms`,
             }}
             data-square={sq()}

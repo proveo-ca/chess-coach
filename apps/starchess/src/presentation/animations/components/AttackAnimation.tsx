@@ -15,6 +15,8 @@ import {
 } from "~/presentation/animations/attackAnim";
 import { CC_REST_AIM_DEG, TANK_REST_AIM_DEG } from "~/presentation/pieces/geometry";
 import styles from "~/presentation/animations/components/AttackAnimation.module.css";
+import { syncToClock } from "~/presentation/animations/clockSync";
+import { vfxTier } from "~/store/vfxTierStore";
 import {
   MECHA_CHARON,
   charonImpactStyle,
@@ -293,7 +295,8 @@ export const AttackAnimation: Component<AttackAnimationProps> = (props) => {
           const anim = () => cue().anim ?? ANIM_BY_PIECE[cue().piece];
           const isDying = () => dying(id);
           return (
-            <>
+            // `contents`: one clock-sync root for every sibling layer of the cue.
+            <div style={{ display: "contents" }} ref={(el) => syncToClock(el)}>
               <div
                 class={styles.targetSlot}
                 style={squareBoxStyle(cue().to, props.boardWidth, props.boardHeight)}
@@ -306,11 +309,16 @@ export const AttackAnimation: Component<AttackAnimationProps> = (props) => {
                   class={styles.tankImpact}
                   style={tankImpactStyle(cue(), props.boardWidth, props.boardHeight)!}
                 >
-                  <div class={styles.tankImpactSmoke} />
+                  {/* Lite VFX tier: fire + core only — smoke and ejecta are garnish. */}
+                  <Show when={vfxTier() === "full"}>
+                    <div class={styles.tankImpactSmoke} />
+                  </Show>
                   <div class={styles.tankImpactFire} />
                   <div class={styles.tankImpactCore} />
-                  <div class={styles.tankImpactEjecta} />
-                  <div class={styles.tankImpactEjectaDiag} />
+                  <Show when={vfxTier() === "full"}>
+                    <div class={styles.tankImpactEjecta} />
+                    <div class={styles.tankImpactEjectaDiag} />
+                  </Show>
                 </BoardFx>
               </Show>
 
@@ -323,7 +331,9 @@ export const AttackAnimation: Component<AttackAnimationProps> = (props) => {
                   }}
                 >
                   <div class={styles.laserStarRays} />
-                  <div class={styles.laserStarRaysDiag} />
+                  <Show when={vfxTier() === "full"}>
+                    <div class={styles.laserStarRaysDiag} />
+                  </Show>
                   <div class={styles.laserStarCore} />
                 </BoardFx>
               </Show>
@@ -407,9 +417,10 @@ export const AttackAnimation: Component<AttackAnimationProps> = (props) => {
                   aria-hidden="true"
                 >
                   <div class={styles.fragCylinder} />
+                  <div class={styles.fragShockwaveGrey} />
                 </div>
               </Show>
-            </>
+            </div>
           );
         }}
       </For>

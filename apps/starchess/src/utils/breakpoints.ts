@@ -15,3 +15,6 @@ export const MOBILE_MQ = "(max-width: 719px)";
  */
 export const DYNAMIC_MOBILE_MQ =
   "(max-width: 719px) and (min-width: 480px) and (max-height: 639px)";
+
+/** Player asked for less motion — the VFX CSS already collapses to 1ms here. */
+export const REDUCED_MOTION_MQ = "(prefers-reduced-motion: reduce)";

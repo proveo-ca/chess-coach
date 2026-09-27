@@ -7,6 +7,7 @@ import {
   VFX_CAP_TIGHT,
   capCues,
   capForDensity,
+  liteCap,
   overlayDevicePixelRatio,
   overlayRootPerfStyle,
 } from "~/presentation/animations/vfxPerf";
@@ -14,6 +15,12 @@ import {
 describe("vfxPerf", () => {
   afterEach(() => {
     vi.unstubAllGlobals();
+  });
+
+  it("liteCap halves a cap, never below one", () => {
+    expect(liteCap(VFX_CAP_DESKTOP)).toBe(VFX_CAP_DESKTOP / 2);
+    expect(liteCap(VFX_CAP_REVIEW_TIGHT)).toBe(1);
+    expect(liteCap(1)).toBe(1);
   });
 
   it("capCues keeps earliest entries", () => {

@@ -1,3 +1,4 @@
+// SPEC: _spec/apps/starchess/architecture/reactivity/presentation.md
 /**
  * Command Center deploy picker — ResourceBar + marine-first grid.
  * Affordability reads MatchStore minerals / deploy cap / remaining vespene.
@@ -5,7 +6,7 @@
  * tank mode rather than its siege rest pose.
  */
 import type { Component } from "solid-js";
-import { For, Show } from "solid-js";
+import { For, Show, createMemo } from "solid-js";
 import type { SpawnPiece, StarChessColor } from "@chess-coach/starchess-core";
 
 import { Modal } from "@chess-coach/ui-web/atoms/Modal";
@@ -61,7 +62,7 @@ export const DeployModal: Component<DeployModalProps> = (props) => {
             <div class={styles.choices}>
               <For each={SPAWN_CHOICES}>
                 {(piece) => {
-                  const affordable = () => canAfford(piece);
+                  const affordable = createMemo(() => canAfford(piece));
                   return (
                     <button
                       type="button"

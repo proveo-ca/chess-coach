@@ -1,3 +1,4 @@
+// SPEC: _spec/apps/starchess/match-store.puml, _spec/apps/starchess/architecture/reactivity/app-screens.md
 import {
   getSideVision,
   placementToMap,
@@ -5,6 +6,7 @@ import {
   type ScFenSnapshot,
 } from "@chess-coach/starchess-core";
 import type { Square } from "chess.js";
+import type { Accessor } from "solid-js";
 
 import type { MatchState } from "~/app/matchTypes";
 import type { MatchShell, MatchStore, TimelineState } from "~/types/match";
@@ -57,9 +59,17 @@ export const displayedSnapshotFrom = (
 export const displayedSnapshot = (state: MatchState): ScFenSnapshot =>
   displayedSnapshotFrom(state, state.timeline);
 
-/** Reactive read: shell + timeline (call inside createMemo). */
+const displayedByStore = new WeakMap<MatchStore, Accessor<ScFenSnapshot>>();
+
+export const registerDisplayedSnapshot = (
+  store: MatchStore,
+  displayed: Accessor<ScFenSnapshot>,
+): void => {
+  displayedByStore.set(store, displayed);
+};
+
 export const readDisplayedSnapshot = (store: MatchStore): ScFenSnapshot =>
-  displayedSnapshotFrom(store.shell(), store.timeline());
+  displayedByStore.get(store)?.() ?? displayedSnapshotFrom(store.shell(), store.timeline());
 
 export const isTerminal = (state: MatchShell | MatchState) =>
   state.phase === "gameOver" || state.liveSnapshot.phase === "O";

@@ -1,9 +1,9 @@
-// SPEC: _spec/_plans/starchess-achievements.puml
+// SPEC: _spec/_plans/starchess-achievements.puml, _spec/apps/starchess/architecture/reactivity/components.md
 /**
  * One gallery card: a family shown at the level the player holds. Pure view —
  * the gallery decides the level and whether the card opens a witness game.
  */
-import { For, Show, type Component, type JSX } from "solid-js";
+import { For, Show, createMemo, type Component, type JSX } from "solid-js";
 
 import { achievementsFor } from "~/achievements/catalog";
 import { ACHIEVEMENT_MATERIALS } from "~/achievements/types";
@@ -11,6 +11,7 @@ import styles from "~/components/features/AchievementCard.module.css";
 
 /** Tint of a card nobody has earned yet. */
 const MISSING_TINT = "#8aa094";
+const METER_STEPS = [1, 2, 3, 4, 5] as const;
 
 export type AchievementCardProps = {
   shortId: string;
@@ -22,8 +23,9 @@ export type AchievementCardProps = {
 
 export const AchievementCard: Component<AchievementCardProps> = (props) => {
   const obtained = () => props.level >= 1;
-  const row = () =>
-    achievementsFor(props.shortId).find((entry) => entry.level === (props.level || 1))!;
+  const row = createMemo(
+    () => achievementsFor(props.shortId).find((entry) => entry.level === (props.level || 1))!,
+  );
   const tint = () => (obtained() ? ACHIEVEMENT_MATERIALS[row().level].fill : MISSING_TINT);
   const className = () => `${styles.card}${obtained() ? "" : ` ${styles.missing}`}`;
   const shared = () => ({
@@ -39,7 +41,7 @@ export const AchievementCard: Component<AchievementCardProps> = (props) => {
       <div class={styles.icon} style={{ "--glyph-url": `url("${row().icon}")` }} />
       <p class={styles.status}>{obtained() ? `Obtained (Level ${props.level})` : "Missing"}</p>
       <div class={styles.meter} aria-label={`Level ${props.level} of 5`}>
-        <For each={[1, 2, 3, 4, 5]}>
+        <For each={METER_STEPS}>
           {(step) => <span class={step <= props.level ? styles.filled : undefined} />}
         </For>
       </div>

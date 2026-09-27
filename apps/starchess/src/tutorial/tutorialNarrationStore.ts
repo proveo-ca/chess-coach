@@ -1,8 +1,10 @@
+// SPEC: _spec/apps/starchess/architecture/reactivity/tutorial.md
 /**
  * Tutorial narration bridge — demos push MatchStore phase; header reads Selena lines.
  */
 import { createSignal } from "solid-js";
 
+import { sameStructure } from "~/tutorial/sameStructure";
 import type { ReviewTurnPhase } from "~/types/review";
 import type { AttackTrajectory, SquareCovers } from "~/types/tutorial";
 
@@ -42,6 +44,6 @@ export type TutorialNarrationState = {
 };
 
 export const [tutorialNarration, setTutorialNarration] =
-  createSignal<TutorialNarrationState>({});
+  createSignal<TutorialNarrationState>({}, { equals: sameStructure });
 
 export const resetTutorialNarration = () => setTutorialNarration({});

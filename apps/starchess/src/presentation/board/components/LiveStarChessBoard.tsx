@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/starchess/architecture/board-entities.puml, _spec/apps/starchess/architecture/screen-entities.puml
+// SPEC: _spec/apps/starchess/architecture/board-entities.puml, _spec/apps/starchess/architecture/screen-entities.puml, _spec/apps/starchess/architecture/reactivity/presentation.md, _spec/apps/starchess/board-rendering.puml
 /**
  * Live match board — snapshot from match store + combat VFX from timeline.
  * Variants: eclipse | butter | vermeer.
@@ -12,7 +12,7 @@ import {
 } from "@chess-coach/starchess-core";
 import type { Square } from "chess.js";
 import type { Component } from "solid-js";
-import { createEffect, createMemo, createSignal, onMount } from "solid-js";
+import { createMemo, onMount } from "solid-js";
 
 import { useMatchStore } from "~/app/MatchStoreContext";
 import { achievementBubbles } from "~/achievements/achievementLive";
@@ -44,6 +44,11 @@ import type { BoardSkin, PieceSet, VisionMode } from "~/types/board";
 import type { TutorialBoardArrow } from "~/types/tutorial";
 import type { CCDamageCue } from "~/types/cues";
 import type { ReviewTurnPhase } from "~/types/review";
+import { sameFlat, sameList, sameSet } from "~/presentation/board/memoEquals";
+
+const NO_SQUARES: readonly Square[] = [];
+const NO_SQUARE_SET: ReadonlySet<Square> = new Set();
+const NO_IDS: ReadonlySet<string> = new Set();
 
 export const LiveStarChessBoard: Component<{
   fog?: boolean;
@@ -70,10 +75,9 @@ export const LiveStarChessBoard: Component<{
   const { onSquareClick } = useBoardInput(visionOverrides);
   const combat = useCombatOverlays(store);
   const overlays = useIntentOverlays(store);
-  const snap = createMemo(() => readDisplayedSnapshot(store));
-  const [ccDamage, setCCDamage] = createSignal<CCDamageCue[]>([]);
+  const snap = createMemo(() => readDisplayedSnapshot(store), undefined, { equals: sameFlat });
   const reviewing = () => store.shell().phase === "gameOver";
-  const interactive = () => canSubmit(store.shell());
+  const interactive = createMemo(() => canSubmit(store.shell()));
 
   // Live play locks viewer orientation — Flip stays off in SideRailTools.
   // Tutorial sets homeOnly; do not clobber that chrome.
@@ -129,37 +133,24 @@ export const LiveStarChessBoard: Component<{
     );
   };
 
-  /**
-   * Enemy movers whose origin is fogged but whose path crosses the viewer's
-   * vision (lit ∪ revealed — same predicate the veil renders with). They stay
-   * in the frame's moveCues (fog relocation + hide squares) but their overlay
-   * hull is suppressed: StarChessBoard renders them *under* the veil, revealed
-   * tile-by-tile as they cross lit squares. Without this the whole cue used to
-   * be dropped, so a fog-origin mover crossing vision was never seen — only
-   * its missile/death popped over the dark.
-   */
   const veilMoveIds = createMemo((): ReadonlySet<string> => {
-    if (!gateFx()) return new Set();
+    if (!gateFx()) return NO_IDS;
     const viewer = store.shell().viewer;
     const gate = targetVisibleGate(snap().placement, fogVisionOpts());
     const out = new Set<string>();
     for (const m of combat.moveCues()) {
       if (m.color === viewer) continue;
-      if (moverFxVisible(m)) continue;
       const path = [m.from, ...rayBetween(m.from, m.to), m.to];
       if (path.some((sq) => gate(viewer, sq))) out.add(m.id);
     }
     return out;
-  });
+  }, undefined, { equals: sameSet });
 
   // Persist fire overlays for both Command Centers from HP (turn-open checks + path reveal).
-  createEffect(() => {
+  const ccDamage = createMemo<CCDamageCue[]>((prev) => {
     const s = snap();
-    void s.ccLives.w;
-    void s.ccLives.b;
-    void s.placement;
-    setCCDamage((prev) => ccDamageCuesFromBoard(s.placement, s.ccLives, prev));
-  });
+    return ccDamageCuesFromBoard(s.placement, s.ccLives, prev);
+  }, []);
 
   const { autoDeployCues } = useAutoDeploy({
     pieces: () => placementToMap(snap().placement),
@@ -235,7 +226,7 @@ export const LiveStarChessBoard: Component<{
    * square": arming now, a queued strike (own side while planning; both in
    * review), and — until turn-open clears `U:` — the Mecha that fired.
    */
-  const armedMechas = createMemo((): Square[] => {
+  const armedMechas = createMemo((): readonly Square[] => {
     const s = store.shell();
     const out = new Set<Square>();
     if (s.targeting?.kind === "charonMissiles") out.add(s.targeting.from);
@@ -248,17 +239,17 @@ export const LiveStarChessBoard: Component<{
     for (const sq of restingCharonSquares(s.settledResolves[shown - 1], snap().specialsUsed)) {
       out.add(sq);
     }
-    return [...out];
-  });
+    return out.size > 0 ? [...out] : NO_SQUARES;
+  }, undefined, { equals: sameList });
 
   /** Every square a firing Mecha held in the resolve on screen — mid-resolve hulls. */
   const charonSquares = createMemo(() => charonTrailSquares(store.shell().lastResolve));
 
   /** Shoulder-raise anim only while arming — persistent U: keeps pods up quietly. */
-  const armAnimMechas = createMemo((): Square[] => {
+  const armAnimMechas = createMemo((): readonly Square[] => {
     const t = store.shell().targeting;
-    return t?.kind === "charonMissiles" ? [t.from] : [];
-  });
+    return t?.kind === "charonMissiles" ? [t.from] : NO_SQUARES;
+  }, undefined, { equals: sameList });
 
   /** No canister / green absorb through fog for unseen enemy gas spends. */
   const gasDropCues = createMemo(() =>
@@ -274,9 +265,9 @@ export const LiveStarChessBoard: Component<{
 
   const gasAbsorbSquares = createMemo((): ReadonlySet<Square> => {
     const cues = gasDropCues();
-    if (cues.length === 0) return new Set();
+    if (cues.length === 0) return NO_SQUARE_SET;
     return new Set(cues.map((c) => c.at));
-  });
+  }, undefined, { equals: sameSet });
 
   const jumpCues = createMemo(() => combat.jumpCues().filter((c) => moverFxVisible(c)));
 
@@ -300,9 +291,12 @@ export const LiveStarChessBoard: Component<{
     const next = new Set(frame.hideSquares);
     for (const sq of combat.hideSquares()) next.add(sq);
     return next;
-  });
+  }, undefined, { equals: sameSet });
 
   const state = () => store.shell();
+  const selectedProp = createMemo(() => (interactive() ? state().selected : null));
+  const legalDestsProp = createMemo(() => (interactive() ? state().legalDests : NO_SQUARES));
+  const squareClickProp = createMemo(() => (interactive() ? onSquareClick : undefined));
 
   const combatFrame = createMemo((): CombatCueFrame => ({
     attackCues: attackCues(),
@@ -341,13 +335,13 @@ export const LiveStarChessBoard: Component<{
         intentGhosts={overlays().destinations}
         intentCanisters={intentCanisters()}
         intentChecks={overlays().checks}
-        selected={interactive() ? state().selected : null}
-        legalDests={interactive() ? state().legalDests : []}
+        selected={selectedProp()}
+        legalDests={legalDestsProp()}
         hintSquares={props.hintSquares}
         hintAlertSquares={props.hintAlertSquares}
         hintGasSquares={props.hintGasSquares}
         hintArrows={props.hintArrows}
-        onSquareClick={interactive() ? onSquareClick : undefined}
+        onSquareClick={squareClickProp()}
         combat={combatFrame()}
         spentMines={combat.spentMines()}
         gasAbsorbSquares={gasAbsorbSquares()}

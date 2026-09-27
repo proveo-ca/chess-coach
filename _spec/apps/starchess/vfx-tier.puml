@@ -1,0 +1,113 @@
+@startuml
+!include https://raw.githubusercontent.com/proveo-ca/identity/main/proveo.puml
+skinparam noteTextAlignment left
+' SPEC: _spec/apps/starchess/vfx-tier.puml
+' purpose: pick full vs lite combat VFX per device from a silent menu probe
+' status: shipped 2026-09-26 — lite only at ~20× CPU slowdown; silent (no UI); probe on first menu + PROBE_VERSION bump / 14 days
+' covers: storybookVfxTier.ts (toolbar pin) · clockSync.ts · vfxProbe.ts · hooks/useVfxProbe.ts · store/vfxTierStore.ts · vfxPerf.ts · Death/Attack/GasDrop/Deploy layers · StarChessBoard.module.css
+' reference: _spec/apps/starchess/animation-pipeline.md
+' reference: _spec/apps/starchess/vfx-guarantees.md
+title StarChess VFX tier — silent menu CPU probe → full / lite
+
+package "apps/starchess · menu" {
+  component "screens/MenuScreen.tsx\nuseVfxProbe(chrome === on)" as MENU <<app>>
+  component "menuSky/DebrisMarinePlayground\nreal AnimationStage loop\n(deploy · attack · death · move · gas · jump)" as PLAY <<app>>
+}
+
+package "apps/starchess · presentation/animations" {
+  component "clockSync.ts\nsyncToClock(el) seeks late cues\nonClockLag(max seek per cue)" as SYNC <<app>>
+  component "vfxProbe.ts · startVfxProbe\nWARMUP_MS 3s → MIN_CUES 8 or 12s → stop" as PROBE <<async>>
+  component "decideVfxTier(samples, current)\npure · vfxProbe.test.ts" as DECIDE <<app>>
+}
+
+package "apps/starchess · store" {
+  database "vfxTierStore.ts\ncreatePersistedStore('starchess_vfx_tier')\n{ tier, probedAt, probeVersion,\n  liteStreak, lastLagMs, lastJankRatio }" as STORE <<db>>
+}
+
+component "<html data-vfx-tier>\none createRoot effect · imported by main.tsx\n(every route, not only after the menu)" as ROOT <<app>>
+component "CSS modules\n:global(html[data-vfx-tier=lite]) …" as CSS <<app>>
+component "Layers + vfxPerf\nvfxTier(): <Show> optional layers ·\ncapForDensity → liteCap (½, min 1)" as LAYERS <<app>>
+
+MENU ARROW_MAIN PLAY : mounts
+MENU ARROW_OPTIONAL PROBE : when probeIsStale(PROBE_VERSION)\n&& !prefers-reduced-motion
+PLAY ARROW_MAIN SYNC : death / attack / gas / deploy cues
+SYNC ARROW_QUEUE PROBE : clock lag per cue
+PROBE ARROW_MAIN DECIDE : lags · rAF intervals
+DECIDE ARROW_MAIN STORE : recordProbe(verdict)\nlite needs 2 in a row
+PROBE ARROW_ERROR PROBE : hidden tab / unmount →\nstop, no verdict
+STORE ARROW_MAIN ROOT : vfxTier()
+ROOT ARROW_MAIN CSS : restyle
+STORE ARROW_MAIN LAYERS : element count
+
+note right of DECIDE
+  **Calibrated: only ~20× picks lite** (CDP
+  setCPUThrottlingRate, menu, after warm-up):
+  | rate | median lag | jank |
+  | 1× | 3–4ms | 0% |
+  | 6× | 7–10ms | ≤0.1% |
+  | 10× | 14ms | 0.3% |
+  | 20× | 25–29ms | 3–6% |
+  lite if lag > **LAG_LITE_MS 20** or
+  jank > **JANK_LITE_RATIO 0.02** (jank = frame
+  > 2 × the display's own median interval, so
+  30 Hz / 120 Hz displays judge themselves).
+  Already lite: thresholds × UPGRADE_MARGIN 0.5
+  to go back to full (no 14-day flip-flop).
+  A live /single resolve lags ~5× the menu
+  (129ms at 20×) — the menu is a proxy.
+end note
+
+note bottom of CSS
+  **lite tier** (visual only):
+  * deaths — unit bursts as one element
+    (liteBurst on the svg) instead of ~12 body
+    parts on their own tracks; parts stay drawn
+  * gone: tank smoke + ejecta, laser diag rays,
+    mine frag ring, gas aura glow
+  * same-kind concurrency caps halved
+  * steps(6) on the one main-thread tween left
+    (.piece outline-color)
+  Command Center rubble + booms keep full look.
+end note
+
+note bottom of LAYERS
+  **Multiplayer invariant:** the tier never touches
+  timeline durations or cue slots — every client
+  advances in lockstep; only what is drawn differs.
+  No UA sniffing: measured, not inferred.
+end note
+
+note right of STORE
+  **Session pin** — `pinVfxTier(tier | null)`
+  sets a signal that wins over the stored tier:
+  `vfxTier() = pinned() ?? state.tier`. It is
+  never persisted and a probe verdict cannot
+  replace it (`recordProbe` still writes disk).
+  `null` returns to the probed tier. Used by the
+  Storybook toolbar and manual comparison.
+  **Types** (types/vfxTier.ts): `ProbeVerdict`
+  `inconclusive` changes nothing; `ProbeMetrics`
+  (lag median, jank ratio) are kept for
+  `?debug=perf` and calibration.
+end note
+
+component "storybookVfxTier.ts\n.storybook/preview.tsx toolbar" as SB <<app>>
+SB ARROW_MAIN STORE : pinVfxTier(globals.vfxTier)\nanything but lite → full
+note bottom of SB
+  Toolbar pins the tier for every story, so a
+  demo can be compared under full and lite
+  without faking a CPU probe. Default global
+  `vfxTier: "full"`.
+end note
+
+note top of PROBE
+  **Tests:**
+  * vitest — vfxProbe.test.ts (decide table),
+    vfxTierStore.test.ts (streak, staleness, pin,
+    persistence), vfxPerf.test.ts (liteCap)
+  * e2e — vfx-tier-probe.spec.ts: 1× / 6× / 10×
+    full; 20× lite on 2nd probe, reaches /single;
+    reduced motion never probes
+  * vfx-fps-throttle.spec.ts — VFX_TIER=lite
+end note
+@enduml

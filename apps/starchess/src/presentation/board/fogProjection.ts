@@ -47,6 +47,8 @@ export function mapWithMovePathOccupancy(
     if (at === m.from && onFrom) continue;
     const piece = onFrom ?? next.get(m.to);
     if (!piece) continue;
+    const held = next.get(at);
+    if (at !== m.to && held && held !== piece) continue;
     if (onFrom) next.delete(m.from);
     const onTo = next.get(m.to);
     if (
@@ -57,7 +59,6 @@ export function mapWithMovePathOccupancy(
     ) {
       next.delete(m.to);
     }
-    // Overwrite destination/mid occupancy — SCFEN path discovery, not FEN legality.
     next.set(at, piece);
     changed = true;
   }

@@ -105,9 +105,9 @@ note bottom
   Tutorial → ``/tutorial/:section/:story`` (ids from ``TUTORIAL_SCRIPT``,
   e.g. ``/tutorial/fog/king`` · ``/tutorial/specials/marine``).
   Bare ``/tutorial`` canonicalizes to the first Fog story.
-  **Lesson loop — objective → ending → success → next.** The goal shows
-  persistently in the footer (``board.objective``, else the story comment) so
-  coach reactions never bury it. ``completeWhen`` / ``restartWhen`` are judged
+  **Lesson loop — objective → ending → success → next.** The lesson's
+  goal is carried by the coach bubble alone — no text under the board.
+  ``completeWhen`` / ``restartWhen`` are judged
   **only on a settled board** (timeline idle). A hit lands in ``ending`` first:
   the bubble keeps the coach's closing line for its reading time
   (``lessonEndMessageMs`` — ~200 wpm, floor 1.2s, ceiling 4s; no line → no

@@ -53,7 +53,7 @@ export const useMineRa1Counter: LessonChoreography = defineChoreography({
   ],
   // Gate input once the turn-3 auto-end is underway — the player watches.
   interactive: (store) => {
-    const s = store.state();
+    const s = store.shell();
     if (s.liveSnapshot.turn !== COUNTER_TURN) return true;
     return s.phase === "planning" || s.phase === "targeting";
   },

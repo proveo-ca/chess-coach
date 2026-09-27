@@ -1,6 +1,6 @@
-// SPEC: _spec/apps/starchess/core/board/planning-projection.puml, _spec/apps/starchess/core/engine-boundary.puml, _spec/apps/starchess/architecture/board-entities.puml
+// SPEC: _spec/apps/starchess/core/board/planning-projection.puml, _spec/apps/starchess/core/engine-boundary.puml, _spec/apps/starchess/architecture/board-entities.puml, _spec/apps/starchess/architecture/reactivity/presentation.md
 import type { Square } from "chess.js";
-import { createMemo } from "solid-js";
+import { batch, createMemo } from "solid-js";
 import {
   UNIT_COST,
   placementToMap,
@@ -88,7 +88,7 @@ export const useBoardInput = (
 ) => {
   const store = useMatchStore();
   const vision = useBoardVision(store, visionOverrides);
-  const pendingPromotion = createMemo(() => store.state().pendingPromotion);
+  const pendingPromotion = createMemo(() => store.shell().pendingPromotion);
 
   const clearSelection = () => {
     store.dispatch({ type: "SELECT_SQUARE", square: null });
@@ -127,7 +127,9 @@ export const useBoardInput = (
     });
   };
 
-  const resolvePromotion = (piece: PromotionPiece) => {
+  const resolvePromotion = (piece: PromotionPiece) => batch(() => resolvePromotionNow(piece));
+
+  const resolvePromotionNow = (piece: PromotionPiece) => {
     const pending = pendingPromotion();
     if (!pending) return;
     store.dispatch({ type: "CLEAR_PENDING_PROMOTION" });
@@ -153,7 +155,9 @@ export const useBoardInput = (
     store.dispatch({ type: "CLEAR_PENDING_PROMOTION" });
   };
 
-  const onSquareClick = (square: Square) => {
+  const onSquareClick = (square: Square) => batch(() => handleSquareClick(square));
+
+  const handleSquareClick = (square: Square) => {
     const state = store.state();
     if (!canSubmit(state)) return;
     if (state.pendingPromotion) return;

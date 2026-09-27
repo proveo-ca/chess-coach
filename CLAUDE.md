@@ -47,6 +47,9 @@ When you add, rename, or remove a component, hook, store, or service:
 | `_spec/apps/starchess/replay-import.puml` | Arena record import: file → localStorage + `?game=` / `?scfens=` validate → `ReviewDemoScreen` |
 | `_spec/apps/starchess/animation-pipeline.md` | `playTimeline` → `TIMELINE_*` MatchStore → AnimationStage |
 | `_spec/apps/starchess/vfx-guarantees.md` | **VFX guarantee roster** — every combat-VFX promise ↔ its e2e test (`apps/e2e/tests/vfx/`), observation method, known gaps |
+| `_spec/apps/starchess/architecture/reactivity.md` | **Solid reactivity rules** (R1–R8: `store.state()` subscribes to everything, conditional props build a memo per read, JSX props re-render per read, fresh empties, per-square Set/Map + selectors, batch, derive-don't-sync, remount only to reset) + the `?debug=reactivity` probe; per-area applications in `architecture/reactivity/*.md` |
+| `_spec/apps/starchess/vfx-tier.puml` | **VFX tier** — silent menu CPU probe (`syncToClock` lag + jank on the `DebrisMarinePlayground` loop) picks `full` / `lite` per device; calibrated so only ~20× slowdown goes lite; `<html data-vfx-tier>`; never touches timeline pace |
+| `_spec/apps/starchess/_experiments/fog-honest-scfen.md` | **EXPERIMENT** — fog-honest engine: a referee holds the omniscient SCFEN; clients only get `project(state, viewer)` (SCFEN-V with `?` squares + per-tick viewer resolves); noninterference property test as the anti-maphack guarantee |
 | `_spec/apps/starchess/roadmap.md` | Spec remediation roadmap |
 | `_spec/packages/starchess-core/*` | Live StarChess rules: SCFEN wire/queue, resolve, turn queue, sc-moves |
 | `_spec/packages/starchess-core/overview.puml` | Resolve engine **module interior**: every function in `resolve-turn.ts` / `submit-turn.ts`, the snapshot ladder, the invariants that throw |
@@ -217,6 +220,16 @@ When you add, rename, or remove a component, hook, store, or service:
   constant, where a retune silently inverts it. Name every weight (no bare
   numbers in a scoring expression). Roster and enforced orderings:
   `_spec/apps/starchess/core/adjutant/weight-ladder.puml`.
+- **VFX tier**: the timeline's pace is authoritative (multiplayer lockstep) —
+  never make a step wait on an animation. A cue that starts late is fast-forwarded
+  by `syncToClock` (`presentation/animations/clockSync.ts`, a ref on every
+  death / attack / gas / deploy cue root); a device too slow for the full effects
+  gets the `lite` tier, measured by the silent menu probe (`vfxProbe.ts`) and
+  owned by `store/vfxTierStore.ts`, which alone writes `<html data-vfx-tier>`.
+  Lite rules go in CSS (`:global(html[data-vfx-tier="lite"]) …`); read
+  `vfxTier()` in JS only where the element count changes. Bump `PROBE_VERSION`
+  when combat VFX change enough to re-measure. See
+  `_spec/apps/starchess/vfx-tier.puml`.
 - **Timeline cues**: `timelinePlayer` routes on `cue.lane` / `cue.board` / `cue.group`,
   stamped by `presentation/timeline/cueLanes.ts`. Never branch on a cue id prefix.
 - **These three files carry no comments**: `resolve-turn.ts`, `submit-turn.ts`,

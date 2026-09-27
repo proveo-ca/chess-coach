@@ -9,7 +9,6 @@ export const livePlayDefense6 = {
     stored: 0,
     endTurnAfterQueue: "moveAndSpecial",
     choreography: "shipSnipeCounter",
-    objective: "Catch the jump: Be4 to g2, then snipe f1 after it lands.",
     docs: "Ally CC h1 at HP 1 with g1/f1 free. Enemy ship warps to f1 in B phase. Move Be4→g2, then F snipe g2→f1 in the 2nd gas phase to catch it post-jump. White marine h2 holds the flank; ally hoverbike e1 screens the base. Enemy mecha f2 spots the jump square.",
   },
   comment: "That ship is jumping to f1 for your base! Move your Mecha to g2 first.",

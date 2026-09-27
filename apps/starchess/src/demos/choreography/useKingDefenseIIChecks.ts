@@ -9,7 +9,7 @@ import type { LessonChoreography } from "~/demos/choreography";
 export const useKingDefenseIIChecks: LessonChoreography = defineChoreography({
   steps: [{ onMount: true, ensureTurnOpenChecks: true }],
   interactive: (store) => {
-    const s = store.state();
-    return s.turnStartChecksApplied && !s.timeline.active && (s.phase === "planning" || s.phase === "targeting");
+    const s = store.shell();
+    return s.turnStartChecksApplied && !store.timeline().active && (s.phase === "planning" || s.phase === "targeting");
   },
 });

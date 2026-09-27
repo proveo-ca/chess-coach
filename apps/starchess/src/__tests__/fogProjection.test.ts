@@ -15,6 +15,7 @@ import {
   mapWithMovePathOccupancy,
   observerVisionFromSnap,
 } from "~/presentation/board/fogProjection";
+import { moveSquareAtElapsed } from "~/presentation/animations/moveTiming";
 import { tankModeForSieged } from "~/presentation/board/tankMode";
 import { COMBAT_CHAIN_START_SCFEN } from "~/demos/combatChain";
 
@@ -49,6 +50,19 @@ describe("fogProjection", () => {
       { col: 1, row: 0 },
     ]);
     expect(paths.length).toBeGreaterThan(0);
+  });
+
+  it("mapWithMovePathOccupancy never displaces a unit the mover passes over", () => {
+    // live-play-attack-1: the enemy Hoverbike b8→d7 elbows over the BattleShip on d8.
+    const map = placementToMap("kn1Q4/ppp5/8/8/8/8/8/6K1");
+    const cue = { id: "n1", from: "b8" as Square, to: "d7" as Square, piece: "n" as const, startedAt: 0 };
+    let crossedD8 = false;
+    for (let t = 0; t <= 3_000; t += 5) {
+      if (moveSquareAtElapsed("b8", "d7", "n", t) === "d8") crossedD8 = true;
+      const moved = mapWithMovePathOccupancy(map, [cue], t);
+      expect(moved.get("d8"), `t=${t}`).toEqual({ type: "q", color: "w" });
+    }
+    expect(crossedD8).toBe(true);
   });
 
   it("mapWithMovePathOccupancy relocates movers along path", () => {
