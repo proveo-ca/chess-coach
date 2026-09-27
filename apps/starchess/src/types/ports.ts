@@ -3,9 +3,16 @@ export type Clock = {
   now: () => number;
 };
 
+export type Cancel = () => void;
+
 /** Cancellable delay — Storybook/tests inject a controllable scheduler. */
 export type Scheduler = {
-  delay: (ms: number, fn: () => void) => () => void;
+  delay: (ms: number, fn: () => void) => Cancel;
+};
+
+/** Cancellable fixed-period repeat. */
+export type Interval = {
+  every: (ms: number, fn: () => void) => Cancel;
 };
 
 /** Optional RNG for mine-leg jitter etc. */

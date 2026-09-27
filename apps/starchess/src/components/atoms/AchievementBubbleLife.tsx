@@ -1,8 +1,9 @@
 /**
  * One bubble's lifetime. Calls `onDone` when the rise-and-fade finishes.
  */
-import { onCleanup, onMount, type Component } from "solid-js";
+import { onMount, type Component } from "solid-js";
 
+import { createDelay } from "~/adapters/timers";
 import { AchievementBubble } from "~/components/primitives/AchievementBubble";
 
 export type AchievementBubbleLifeProps = {
@@ -22,8 +23,7 @@ export type AchievementBubbleLifeProps = {
 
 export const AchievementBubbleLife: Component<AchievementBubbleLifeProps> = (props) => {
   onMount(() => {
-    const timer = window.setTimeout(() => props.onDone(), props.lifeMs);
-    onCleanup(() => window.clearTimeout(timer));
+    createDelay(props.lifeMs, () => props.onDone());
   });
 
   return (

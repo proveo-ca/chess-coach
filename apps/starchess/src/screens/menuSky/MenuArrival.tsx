@@ -11,6 +11,7 @@ import {
   type Component,
 } from "solid-js";
 
+import { createDelay } from "~/adapters/timers";
 import { ChessMenuMockup } from "~/screens/menuSky/ChessMenuMockup";
 import {
   MenuScreen,
@@ -52,31 +53,26 @@ export const MenuArrival: Component<MenuArrivalProps> = (props) => {
     on(
       () => props.surface,
       (surface, prev) => {
-        const timers: ReturnType<typeof setTimeout>[] = [];
-
         if (surface === "chess") {
           setPhase("chess");
-          return () => timers.forEach(clearTimeout);
+          return;
         }
 
         // Mounted already on StarChess — no entrance.
         if (prev === undefined) {
           setPhase("starchess");
-          return () => timers.forEach(clearTimeout);
+          return;
         }
 
         // chess → starchess arrival
         setPhase("glass");
-        timers.push(
-          setTimeout(() => setPhase("identity"), T_IDENTITY),
-          setTimeout(() => setPhase("shatter"), T_SHATTER),
-          setTimeout(() => setPhase("reveal"), T_REVEAL),
-          setTimeout(() => {
-            setPhase("starchess");
-            props.onArrived?.();
-          }, T_DONE),
-        );
-        return () => timers.forEach(clearTimeout);
+        createDelay(T_IDENTITY, () => setPhase("identity"));
+        createDelay(T_SHATTER, () => setPhase("shatter"));
+        createDelay(T_REVEAL, () => setPhase("reveal"));
+        createDelay(T_DONE, () => {
+          setPhase("starchess");
+          props.onArrived?.();
+        });
       },
     ),
   );

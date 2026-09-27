@@ -1,10 +1,4 @@
-import {
-  createEffect,
-  createSignal,
-  onCleanup,
-  onMount,
-  type Component,
-} from "solid-js";
+import { createEffect, createSignal, on, type Component } from "solid-js";
 
 import {
   DEPLOY_FEN_EMPTY,
@@ -14,8 +8,13 @@ import {
 } from "~/presentation/animations/deployAnim";
 import styles from "~/presentation/animations/components/DeployBoardDemo.module.css";
 import { AnimationStage } from "~/presentation/animations/components/AnimationStage";
+import { createPhaseLoop } from "~/presentation/animations/phaseLoop";
 import { Screen } from "@chess-coach/ui-web/primitives/Screen";
 import type { DeployCue } from "~/presentation/types";
+
+const DEMO_ORIGIN = "e4" as const;
+const FALL_AT_MS = 400;
+const LOOP_TAIL_MS = 900;
 
 type DeployPhase = "idle" | "falling" | "landed";
 
@@ -25,51 +24,43 @@ export const DeployBoardDemo: Component<{ piece: DeployPiece }> = (props) => {
   const [cues, setCues] = createSignal<DeployCue[]>([]);
   const [hide, setHide] = createSignal<string[]>([]);
 
-  let stepTimer = 0;
-  let loopTimer = 0;
-
-  const runOnce = () => {
-    window.clearTimeout(stepTimer);
-    setPhase("idle");
-    setFen(DEPLOY_FEN_EMPTY);
-    setCues([]);
-    setHide([]);
-    stepTimer = window.setTimeout(() => {
-      setPhase("falling");
-      const landed = DEPLOY_FEN_LANDED[props.piece];
-      setFen(landed);
-      // Origin square for demos is e4 in deployAnim.
-      const at = "e4" as const;
-      setHide([at]);
-      setCues([
-        {
-          id: `deploy-${props.piece}`,
-          piece: props.piece,
-          color: "w",
-          at,
-        },
-      ]);
-      stepTimer = window.setTimeout(() => {
-        setPhase("landed");
-        setCues([]);
-        setHide([]);
-      }, DEPLOY_MS);
-    }, 400);
-  };
-
-  onMount(() => {
-    runOnce();
-    loopTimer = window.setInterval(runOnce, DEPLOY_MS + 900);
-    onCleanup(() => {
-      window.clearTimeout(stepTimer);
-      window.clearInterval(loopTimer);
-    });
-  });
-
-  createEffect(() => {
-    void props.piece;
-    runOnce();
-  });
+  createEffect(
+    on(
+      () => props.piece,
+      (piece) =>
+        createPhaseLoop(
+          [
+            [
+              0,
+              () => {
+                setPhase("idle");
+                setFen(DEPLOY_FEN_EMPTY);
+                setCues([]);
+                setHide([]);
+              },
+            ],
+            [
+              FALL_AT_MS,
+              () => {
+                setPhase("falling");
+                setFen(DEPLOY_FEN_LANDED[piece]);
+                setHide([DEMO_ORIGIN]);
+                setCues([{ id: `deploy-${piece}`, piece, color: "w", at: DEMO_ORIGIN }]);
+              },
+            ],
+            [
+              FALL_AT_MS + DEPLOY_MS,
+              () => {
+                setPhase("landed");
+                setCues([]);
+                setHide([]);
+              },
+            ],
+          ],
+          DEPLOY_MS + LOOP_TAIL_MS,
+        ),
+    ),
+  );
 
   const label = () => {
     const p = props.piece;

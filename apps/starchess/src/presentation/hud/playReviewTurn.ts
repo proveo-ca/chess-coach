@@ -1,11 +1,13 @@
 /**
  * One DualNav Forward = one full turn: check → intent hold → resolve.
- * // SPEC: _spec/packages/starchess-core/turn-queue-sequence.puml
+ * // SPEC: _spec/packages/starchess-core/turn-queue-sequence.puml, _spec/apps/starchess/architecture/timers.puml
  */
+import { sleep } from "~/adapters/timers";
 import {
   REVIEW_INTENT_HOLD_MS,
   type ReviewTurnPhase,
 } from "~/presentation/hud/reviewPhases";
+import type { Cancel } from "~/types/ports";
 
 export type PlayReviewTurnArgs = {
   onPhase: (phase: ReviewTurnPhase) => void;
@@ -19,36 +21,29 @@ export type PlayReviewTurnArgs = {
 
 /**
  * Runs check → intent hold → resolve sequentially.
- * Returns a cancel function (rejects in-flight waits; callers cancel playback too).
+ * Returns a cancel: it settles the in-flight hold and stops every later phase.
+ * Callers cancel their own check / resolve playback.
  */
-export const playReviewTurn = (args: PlayReviewTurnArgs): (() => void) => {
-  let cancelled = false;
-  let holdTimer: ReturnType<typeof setTimeout> | null = null;
-
-  const wait = (ms: number) =>
-    new Promise<void>((resolve) => {
-      holdTimer = setTimeout(() => {
-        holdTimer = null;
-        resolve();
-      }, ms);
-    });
+export const playReviewTurn = (args: PlayReviewTurnArgs): Cancel => {
+  const abort = new AbortController();
+  const { signal } = abort;
 
   const run = async () => {
     try {
       if (args.playChecks) {
         args.onPhase("check");
         await args.playChecks();
-        if (cancelled) return;
+        if (signal.aborted) return;
       }
 
       args.onPhase("intent");
       args.showIntent();
-      await wait(REVIEW_INTENT_HOLD_MS);
-      if (cancelled) return;
+      await sleep(REVIEW_INTENT_HOLD_MS, signal);
+      if (signal.aborted) return;
 
       args.onPhase("resolve");
       await args.playResolve();
-      if (cancelled) return;
+      if (signal.aborted) return;
 
       args.onDone();
     } catch {
@@ -58,11 +53,5 @@ export const playReviewTurn = (args: PlayReviewTurnArgs): (() => void) => {
 
   void run();
 
-  return () => {
-    cancelled = true;
-    if (holdTimer != null) {
-      clearTimeout(holdTimer);
-      holdTimer = null;
-    }
-  };
+  return () => abort.abort();
 };

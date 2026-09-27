@@ -6,6 +6,7 @@
  *   proveo-starchess/route-target-in-screens — <Route> targets must live in screens/
  *   proveo-starchess/own-css-module          — only import own same-named *.module.css
  *   proveo-starchess/no-cross-module-types   — shared types live in ~/types/
+ *   proveo-starchess/no-raw-timer            — timers go through ~/adapters/timers
  *
  * NOTE: oxlint JS plugins are alpha. AST is ESTree-compatible.
  */
@@ -186,6 +187,41 @@ const noCrossModuleTypes = {
   },
 };
 
+const RAW_TIMERS = new Set(["setTimeout", "setInterval", "clearTimeout", "clearInterval"]);
+const TIMER_HOSTS = new Set(["window", "globalThis", "self"]);
+
+/** Time enters through ~/adapters/timers; only the browser adapter touches raw timers. */
+const noRawTimer = {
+  meta: {
+    type: "problem",
+    docs: {
+      description: "Raw setTimeout/setInterval are banned; use ~/adapters/timers.",
+    },
+  },
+  create(context: any) {
+    const file = norm(context.filename);
+    if (isTestFile(file) || file.includes("/src/adapters/browser/")) return {};
+    const report = (node: any, name: string) =>
+      context.report({
+        node,
+        message: `Raw ${name} is banned in apps/starchess. Use createDelay/createRepeat (owner-bound) or schedule/repeat/sleep from ~/adapters/timers. See _spec/apps/starchess/architecture/reactivity.md R9.`,
+      });
+    return {
+      Identifier(node: any) {
+        if (!RAW_TIMERS.has(node.name)) return;
+        const parent = node.parent;
+        if (parent?.type === "MemberExpression" && parent.property === node && !parent.computed) {
+          const host = parent.object;
+          if (host?.type === "Identifier" && TIMER_HOSTS.has(host.name)) report(parent, node.name);
+          return;
+        }
+        if ((parent?.type === "Property" || parent?.type === "MethodDefinition") && parent.key === node && !parent.computed) return;
+        report(node, node.name);
+      },
+    };
+  },
+};
+
 const plugin = {
   meta: { name: "proveo-starchess" },
   rules: {
@@ -193,6 +229,7 @@ const plugin = {
     "route-target-in-screens": routeTargetInScreens,
     "own-css-module": ownCssModule,
     "no-cross-module-types": noCrossModuleTypes,
+    "no-raw-timer": noRawTimer,
   },
 };
 

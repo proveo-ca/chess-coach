@@ -1,14 +1,9 @@
 import type { Square } from "chess.js";
 import { parseScFen, type ScFenSnapshot } from "@chess-coach/starchess-core";
-import {
-  createEffect,
-  createSignal,
-  onCleanup,
-  onMount,
-  type Component,
-} from "solid-js";
+import { createEffect, createSignal, on, type Component } from "solid-js";
 
 import styles from "~/presentation/animations/components/DeathBoardDemo.module.css";
+import { createPhaseLoop } from "~/presentation/animations/phaseLoop";
 import {
   DEATH_MS,
   FEN_BY_PIECE,
@@ -28,6 +23,7 @@ import {
 import { Screen } from "@chess-coach/ui-web/primitives/Screen";
 import type { DeathCue } from "~/presentation/types";
 
+const LOOP_TAIL_MS = 400;
 const NO_MINES: readonly Square[] = [];
 const MINE_SPENT: readonly Square[] = [ORIGIN];
 
@@ -52,9 +48,6 @@ export const DeathBoardDemo: Component<{ subject: DeathSubject }> = (props) => {
   const unit = () => props.subject as DeathPiece;
   const [phase, setPhase] = createSignal<DeathPhase>("idle");
   const [cues, setCues] = createSignal<DeathCue[]>([]);
-
-  let stepTimer = 0;
-  let loopTimer = 0;
 
   const idleFen = () => (unit() === "r" ? FEN_TANK_DUAL : FEN_BY_PIECE[unit()]);
 
@@ -95,39 +88,39 @@ export const DeathBoardDemo: Component<{ subject: DeathSubject }> = (props) => {
     ];
   };
 
-  const runOnce = () => {
-    window.clearTimeout(stepTimer);
-    seedTankModes();
-    setPhase("idle");
-    setCues([]);
-    stepTimer = window.setTimeout(() => {
-      setPhase("dying");
-      setCues(makeCues());
-      stepTimer = window.setTimeout(() => {
-        setPhase("gone");
-        setCues([]);
-        stepTimer = window.setTimeout(() => {
-          /* hold gone */
-        }, HOLD_MS);
-      }, DEATH_MS);
-    }, IDLE_MS);
-  };
-
-  onMount(() => {
-    seedTankModes();
-    runOnce();
-    loopTimer = window.setInterval(runOnce, IDLE_MS + DEATH_MS + HOLD_MS + 400);
-    onCleanup(() => {
-      window.clearTimeout(stepTimer);
-      window.clearInterval(loopTimer);
-    });
-  });
-
-  createEffect(() => {
-    void props.subject;
-    seedTankModes();
-    runOnce();
-  });
+  createEffect(
+    on(
+      () => props.subject,
+      () =>
+        createPhaseLoop(
+          [
+            [
+              0,
+              () => {
+                seedTankModes();
+                setPhase("idle");
+                setCues([]);
+              },
+            ],
+            [
+              IDLE_MS,
+              () => {
+                setPhase("dying");
+                setCues(makeCues());
+              },
+            ],
+            [
+              IDLE_MS + DEATH_MS,
+              () => {
+                setPhase("gone");
+                setCues([]);
+              },
+            ],
+          ],
+          IDLE_MS + DEATH_MS + HOLD_MS + LOOP_TAIL_MS,
+        ),
+    ),
+  );
 
   const fen = () => {
     if (phase() === "gone") return FEN_GONE[unit()];

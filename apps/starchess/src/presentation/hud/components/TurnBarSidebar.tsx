@@ -12,7 +12,6 @@ import {
   createEffect,
   createMemo,
   createSignal,
-  onCleanup,
   onMount,
   type Component,
   type JSX,
@@ -24,6 +23,7 @@ import {
   turnSecondsRemaining,
   viewerColor,
 } from "~/app/matchEconomy";
+import { createRepeat } from "~/adapters/timers";
 import { useMatchStore } from "~/app/MatchStoreContext";
 import { canSubmit, readDisplayedSnapshot } from "~/app/selectors";
 import { Button } from "@chess-coach/ui-web/primitives/Button";
@@ -61,6 +61,8 @@ export type TurnBarSidebarProps = {
    */
   review?: TurnBarSidebarReviewProps;
 };
+
+const TURN_DEADLINE_TICK_MS = 200;
 
 const badgeLabel = (a: ScAction): string => {
   if (a.timing === "C") return `${a.from}→${a.to}`;
@@ -108,7 +110,7 @@ export const TurnBarSidebar: Component<TurnBarSidebarProps> = (props) => {
     if (props.autoStart !== false && turnDeadlineAt(store) == null) {
       store.armTimer();
     }
-    const id = window.setInterval(() => {
+    createRepeat(TURN_DEADLINE_TICK_MS, () => {
       if (reviewing()) return;
       setNow(Date.now());
       const deadline = turnDeadlineAt(store);
@@ -121,8 +123,7 @@ export const TurnBarSidebar: Component<TurnBarSidebarProps> = (props) => {
         if (resolveOnEnd() && canSubmit(store.shell())) store.submitTurn("timeout");
         onTimeout()?.();
       });
-    }, 200);
-    onCleanup(() => window.clearInterval(id));
+    });
   });
 
   createEffect(() => {

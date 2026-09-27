@@ -3,8 +3,9 @@
  * King Hunt (live) — the final lesson. When the enemy Command Center dies, hold
  * a beat for the death VFX, then offer graduation and mark the tutorial cleared.
  */
-import { Show, createEffect, createMemo, createSignal, onCleanup, type Component } from "solid-js";
+import { Show, createEffect, createMemo, createSignal, type Component } from "solid-js";
 
+import { createDelay } from "~/adapters/timers";
 import { TutorialCompleteConfirm } from "~/components/features/TutorialCompleteConfirm";
 import type { ChoreographyContext, ChoreographyResult } from "~/demos/choreography";
 import { setTutorialCleared } from "~/store/tutorialProgressStore";
@@ -19,7 +20,6 @@ export const useKingHuntGraduation = (
 ): ChoreographyResult => {
   const [open, setOpen] = createSignal(false);
   let offered = false;
-  let timer: ReturnType<typeof setTimeout> | undefined;
 
   const enemyDown = createMemo(() => {
     const s = store.shell();
@@ -31,17 +31,10 @@ export const useKingHuntGraduation = (
   createEffect(() => {
     if (!ctx.tutorial) return;
     if (!enemyDown() || offered) return;
-    offered = true;
-    // Deliberately not cleared on effect re-runs — Solid's onCleanup would
-    // cancel the pending offer every time the store ticks.
-    timer = setTimeout(() => {
-      timer = undefined;
+    createDelay(GRADUATION_DELAY_MS, () => {
+      offered = true;
       setOpen(true);
-    }, GRADUATION_DELAY_MS);
-  });
-
-  onCleanup(() => {
-    if (timer != null) clearTimeout(timer);
+    });
   });
 
   const Overlay: Component = () => (

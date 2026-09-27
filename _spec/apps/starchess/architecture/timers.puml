@@ -1,0 +1,64 @@
+@startuml timers
+title StarChess — time has one owner (reactivity.md R9)
+
+skinparam componentStyle rectangle
+skinparam shadowing false
+
+package "adapters/browser" as browser {
+  [browserScheduler\ndelay(ms, fn) → Cancel] as bs
+  [browserInterval\nevery(ms, fn) → Cancel] as bi
+}
+
+package "adapters/timers" as timers {
+  [schedule(ms, fn) → Cancel] as sch
+  [repeat(ms, fn) → Cancel] as rep
+  [createDelay(ms, fn) → Cancel] as cd
+  [createRepeat(ms, fn) → Cancel] as cr
+  [sleep(ms, signal?) → Promise<void>] as slp
+}
+
+package "match store / timeline" as tl {
+  [MatchStoreContext\n(Scheduler injected)] as msc
+  [playResolveWave / timelinePlayer] as prw
+}
+
+package "components · hooks · screens" as ui {
+  [owned timers\n(component / effect run)] as own
+  [unowned timers\n(cancel map · player · deferred submit)] as unown
+  [awaited pauses\n(review turn hold)] as await
+}
+
+bs <-- sch
+bi <-- rep
+sch <-- cd : + onCleanup(cancel)\nwhen getOwner()
+rep <-- cr : + onCleanup(cancel)\nwhen getOwner()
+sch <-- slp : abort → cancel + resolve
+
+msc --> bs : default port\n(tests inject a fake)
+msc --> prw
+
+own --> cd
+own --> cr
+unown --> sch
+unown --> rep
+await --> slp
+
+note right of browser
+  sole raw-timer site
+  lint: proveo-starchess/no-raw-timer
+  (test files exempt)
+end note
+
+note bottom of ui
+  allowed without the adapter:
+  requestAnimationFrame · queueMicrotask
+  AbortSignal.timeout / AbortSignal.any
+end note
+
+note right of cd
+  inside createEffect: the next run
+  cancels the pending delay.
+  Re-arm only on a chosen dep:
+  createEffect(on(dep, v => createDelay(...)))
+end note
+@enduml

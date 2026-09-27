@@ -1,4 +1,5 @@
-import type { Clock, LocationPort, RandomSource, Scheduler } from "~/types/ports";
+// SPEC: _spec/apps/starchess/architecture/timers.puml
+import type { Clock, Interval, LocationPort, RandomSource, Scheduler } from "~/types/ports";
 
 export const browserClock: Clock = {
   now: () => Date.now(),
@@ -6,8 +7,15 @@ export const browserClock: Clock = {
 
 export const browserScheduler: Scheduler = {
   delay: (ms, fn) => {
-    const id = window.setTimeout(fn, ms);
-    return () => window.clearTimeout(id);
+    const id = globalThis.setTimeout(fn, ms);
+    return () => globalThis.clearTimeout(id);
+  },
+};
+
+export const browserInterval: Interval = {
+  every: (ms, fn) => {
+    const id = globalThis.setInterval(fn, ms);
+    return () => globalThis.clearInterval(id);
   },
 };
 

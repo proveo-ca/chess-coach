@@ -1,10 +1,7 @@
-import {
-  createSignal,
-  onCleanup,
-  onMount,
-  type Component,
-} from "solid-js";
+import { createSignal, onMount, type Component } from "solid-js";
 import type { Square } from "chess.js";
+
+import { createPhaseLoop } from "~/presentation/animations/phaseLoop";
 
 import { AnimationStage } from "~/presentation/animations/components/AnimationStage";
 import styles from "~/presentation/animations/components/CrushBoardDemo.module.css";
@@ -23,6 +20,7 @@ import type { DeathCue, DeployCue } from "~/presentation/types";
 
 const AT: Square = ORIGIN;
 const CRUSH_WINDOW_MS = Math.max(DEPLOY_MS, CRUSH_DEATH_MS + DEATH_MS);
+const LOOP_TAIL_MS = 400;
 
 const FEN_IDLE = "7k/8/8/8/3n4/8/8/K7 w - - 0 1";
 const FEN_LANDED = "7k/8/8/8/3P4/8/8/K7 w - - 0 1";
@@ -35,45 +33,42 @@ export const CrushBoardDemo: Component = () => {
   const [deploys, setDeploys] = createSignal<DeployCue[]>([]);
   const [deaths, setDeaths] = createSignal<DeathCue[]>([]);
 
-  let stepTimer = 0;
-  let loopTimer = 0;
-
-  const runOnce = () => {
-    window.clearTimeout(stepTimer);
-    setPhase("idle");
-    setFen(FEN_IDLE);
-    setDeploys([]);
-    setDeaths([]);
-    stepTimer = window.setTimeout(() => {
-      setPhase("crushing");
-      setFen(FEN_LANDED);
-      setDeploys([{ id: "crush-deploy", piece: "p", color: "w", at: AT }]);
-      stepTimer = window.setTimeout(() => {
-        setDeaths([{ id: "crush-death", piece: "n", color: "b", at: AT }]);
-        stepTimer = window.setTimeout(() => {
-          setPhase("landed");
-          setDeploys([]);
-          setDeaths([]);
-        }, CRUSH_WINDOW_MS - CRUSH_DEATH_MS);
-      }, CRUSH_DEATH_MS);
-    }, IDLE_MS);
-  };
-
-  onMount(() => {
-    runOnce();
-    loopTimer = window.setInterval(
-      runOnce,
-      IDLE_MS + CRUSH_WINDOW_MS + HOLD_MS + 400,
-    );
-    onCleanup(() => {
-      window.clearTimeout(stepTimer);
-      window.clearInterval(loopTimer);
-    });
-  });
-
-  // No props to track — onMount owns the loop (DeathBoardDemo's
-  // createEffect restarts on subject change; there is nothing to restart on
-  // here, so a bare effect would only double-fire runOnce on mount).
+  onMount(() =>
+    createPhaseLoop(
+      [
+        [
+          0,
+          () => {
+            setPhase("idle");
+            setFen(FEN_IDLE);
+            setDeploys([]);
+            setDeaths([]);
+          },
+        ],
+        [
+          IDLE_MS,
+          () => {
+            setPhase("crushing");
+            setFen(FEN_LANDED);
+            setDeploys([{ id: "crush-deploy", piece: "p", color: "w", at: AT }]);
+          },
+        ],
+        [
+          IDLE_MS + CRUSH_DEATH_MS,
+          () => setDeaths([{ id: "crush-death", piece: "n", color: "b", at: AT }]),
+        ],
+        [
+          IDLE_MS + CRUSH_WINDOW_MS,
+          () => {
+            setPhase("landed");
+            setDeploys([]);
+            setDeaths([]);
+          },
+        ],
+      ],
+      IDLE_MS + CRUSH_WINDOW_MS + HOLD_MS + LOOP_TAIL_MS,
+    ),
+  );
 
   return (
     <Screen>

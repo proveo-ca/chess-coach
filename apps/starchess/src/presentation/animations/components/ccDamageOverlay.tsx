@@ -6,10 +6,10 @@ import {
   createEffect,
   createMemo,
   createSignal,
-  onCleanup,
   type JSX,
 } from "solid-js";
 
+import { createDelay } from "~/adapters/timers";
 import { squareBoxStyle } from "~/presentation/animations/boardGeom";
 import styles from "~/presentation/animations/components/ccDamageOverlay.module.css";
 import { HIT_BOOM_MS } from "~/presentation/animations/ccDamage";
@@ -62,12 +62,9 @@ const isChessCC = (props: SlotProps) =>
  */
 const CCDamageSlot = (props: SlotProps) => {
   const [phase, setPhase] = createSignal<"boom" | "fire">("fire");
-  let boomTimer = 0;
-
   const playBoom = () => {
-    window.clearTimeout(boomTimer);
     setPhase("boom");
-    boomTimer = window.setTimeout(() => setPhase("fire"), HIT_BOOM_MS);
+    createDelay(HIT_BOOM_MS, () => setPhase("fire"));
   };
 
   createEffect(() => {
@@ -85,8 +82,6 @@ const CCDamageSlot = (props: SlotProps) => {
       setPhase("fire");
     }
   });
-
-  onCleanup(() => window.clearTimeout(boomTimer));
 
   const box = () => squareBoxStyle(props.at, props.boardWidth, props.boardHeight);
 

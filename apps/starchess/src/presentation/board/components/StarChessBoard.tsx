@@ -50,6 +50,7 @@ import { SpiderMine } from "~/presentation/specials/components/SpiderMine";
 import { VespeneIcon } from "@chess-coach/ui-web/primitives/icons";
 import { MoveAnimation } from "~/presentation/animations/components/MoveAnimation";
 import { MOVE_SQUARE_MS } from "~/presentation/constants";
+import { createRepeat } from "~/adapters/timers";
 import type { MoveCue } from "~/types/cues";
 import styles from "~/presentation/board/components/StarChessBoard.module.css";
 import type {
@@ -198,11 +199,7 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
     }
     const sliding = cues.some((c) => prog[c.id] === 1);
     if (!sliding) return;
-    const tick = window.setInterval(
-      () => setMoveVisionTick((n) => n + 1),
-      Math.max(32, MOVE_SQUARE_MS / 4),
-    );
-    onCleanup(() => window.clearInterval(tick));
+    createRepeat(Math.max(32, MOVE_SQUARE_MS / 4), () => setMoveVisionTick((n) => n + 1));
   });
 
   const fog = createMemo((): BoardFog => {

@@ -1,10 +1,13 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { createSignal } from "solid-js";
 
+import { schedule } from "~/adapters/timers";
 import {
   CoachAvatar,
 } from "~/components/atoms/CoachAvatar";
 import type { CoachIdentity, KerriganEmotion } from "~/types/coach";
+
+const HELM_TOGGLE_LOCK_MS = 500;
 
 /**
  * Selena — Ghost sniper helm on the classic coach cat.
@@ -81,7 +84,7 @@ export const Idle: Story = {
       if (busy()) return;
       setBusy(true);
       setIdentity((id) => (id === "selena" ? "kerrigan" : "selena"));
-      setTimeout(() => setBusy(false), 500);
+      schedule(HELM_TOGGLE_LOCK_MS, () => setBusy(false));
     };
     return (
       <div

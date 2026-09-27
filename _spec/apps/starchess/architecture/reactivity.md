@@ -70,6 +70,32 @@ outside world (DOM, timers, storage).
 A keyed `<Show>` rebuilds the whole subtree. Key it on what must start fresh
 (a retry epoch), not on values an update could carry.
 
+## R9 — time has one owner
+
+Solid's graph is synchronous: it answers "what changed", never "when". A raw
+`setTimeout` is invisible to it — no owner disposes it, a read inside the
+callback tracks nothing, and a 0 ms hop used to escape a batch hides a
+dispatch-from-effect (R7). So:
+
+- Only `adapters/browser` touches `setTimeout` / `setInterval`; the lint rule
+  `proveo-starchess/no-raw-timer` fails everything else (tests excepted).
+- Component and effect code uses `createDelay` / `createRepeat` from
+  `~/adapters/timers`: the cancel registers on the current owner, so unmount —
+  or the effect's next run — cancels it. Arm it inside `createEffect(on(dep, …))`
+  when only `dep` should re-arm it.
+- Code that outlives one owner (a cancel map keyed by square, a player object,
+  a click-deferred submit) uses `schedule` / `repeat` and owns the cancel.
+- An awaited pause uses `sleep(ms, signal)`: aborting settles it, so a cancelled
+  sequence never hangs on a promise that cannot resolve.
+- A fetch deadline is `AbortSignal.timeout(ms)`, joined with the owner's
+  controller through `AbortSignal.any` — no timer to forget on the throw path.
+- A phase ladder (idle → act → hold, looped) is one table of offsets from one
+  origin, not nested delays beside a hand-summed interval period.
+- `requestAnimationFrame` and `queueMicrotask` are frame and microtask hooks,
+  not wall-clock timers; they stay allowed.
+
+Owner map: `timers.puml`.
+
 ## Where each rule is applied
 
 Per-site rationale (why a memo exists, what it compares, the measured cost it

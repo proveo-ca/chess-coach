@@ -58,6 +58,11 @@ import {
 } from "~/app/historyExport";
 import type { ArenaListItem } from "~/types/arena";
 
+const ARENA_FETCH_TIMEOUT_MS = 5_000;
+
+const arenaDeadline = (owner: AbortSignal): AbortSignal =>
+  AbortSignal.any([owner, AbortSignal.timeout(ARENA_FETCH_TIMEOUT_MS)]);
+
 const formatDate = (iso: string): string => {
   try {
     return new Date(iso).toLocaleDateString(undefined, {
@@ -168,14 +173,14 @@ const ArenaLibrary: Component = () => {
     }
   };
 
+  const owner = new AbortController();
+  onCleanup(() => owner.abort());
+
   const loadArenaList = async () => {
     setLibraryState({ phase: "loading" });
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 5000);
     try {
       const base = arenaBaseUrl();
-      const result = await fetchArenaList(base, controller.signal);
-      clearTimeout(timeout);
+      const result = await fetchArenaList(base, arenaDeadline(owner.signal));
       if (result.ok) {
         if (result.games.length === 0) {
           setLibraryState({ phase: "ready", games: [] });
@@ -187,7 +192,6 @@ const ArenaLibrary: Component = () => {
         setLibraryState({ phase: "unreachable" });
       }
     } catch {
-      clearTimeout(timeout);
       setLibraryState({ phase: "unreachable" });
     }
   };
@@ -303,10 +307,7 @@ const ArenaLibrary: Component = () => {
 
   const handleArenaClick = async (item: ArenaListItem) => {
     const base = arenaBaseUrl();
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 5000);
-    const result = await fetchArenaRecord(base, item.id, controller.signal);
-    clearTimeout(timeout);
+    const result = await fetchArenaRecord(base, item.id, arenaDeadline(owner.signal));
     if (!result.ok) {
       setImportError(result.error);
       return;
@@ -582,10 +583,9 @@ const ReviewImportHandler: Component = () => {
     if (parsed.gameId) {
       setImportState({ phase: "loading", source: `game ${parsed.gameId}` });
       const base = arenaBaseUrl();
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 5000);
-      void fetchArenaRecord(base, parsed.gameId, controller.signal).then((res) => {
-        clearTimeout(timeout);
+      const owner = new AbortController();
+      onCleanup(() => owner.abort());
+      void fetchArenaRecord(base, parsed.gameId, arenaDeadline(owner.signal)).then((res) => {
         if (!res.ok) {
           setImportState({ phase: "error", message: res.error });
           return;
@@ -598,10 +598,6 @@ const ReviewImportHandler: Component = () => {
           window.history.replaceState({}, "", url.toString());
         }
         navigate(`/review/${adapted.id}`);
-      });
-      onCleanup(() => {
-        clearTimeout(timeout);
-        controller.abort();
       });
     } else if (parsed.scfens) {
       const validation = decodeScfensParam(parsed.scfens);

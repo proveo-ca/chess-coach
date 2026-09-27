@@ -5,12 +5,12 @@ import {
   createEffect,
   createMemo,
   createSignal,
-  onCleanup,
   type Component,
   type JSX,
 } from "solid-js";
 import type { Square } from "chess.js";
 
+import { createDelay } from "~/adapters/timers";
 import { attackFaceFor } from "~/presentation/animations/attackAnim";
 import {
   CC_REST_AIM_DEG,
@@ -245,8 +245,7 @@ export const MoveAnimation: Component<MoveAnimationProps> = (props) => {
             return;
           }
           const releaseAt = Math.max(0, travelMs());
-          const t = setTimeout(() => setSettling(true), releaseAt);
-          onCleanup(() => clearTimeout(t));
+          createDelay(releaseAt, () => setSettling(true));
         });
 
         if (m.piece === "n") {

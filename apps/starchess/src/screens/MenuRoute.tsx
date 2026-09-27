@@ -5,8 +5,9 @@
  * Redirects from `/chess/` play {@link MenuArrival} (Chess mockup → StarChess).
  */
 import { useNavigate, type RouteSectionProps } from "@solidjs/router";
-import { createSignal, onCleanup, onMount, type Component } from "solid-js";
+import { createSignal, type Component } from "solid-js";
 
+import { createDelay } from "~/adapters/timers";
 import {
   MenuArrival,
 } from "~/screens/menuSky/MenuArrival";
@@ -17,6 +18,8 @@ import type { MenuSurface } from "~/types/menu";
 import type { NewGameOptions } from "~/types/newGame";
 import { tutorialPath } from "~/tutorial/tutorialScript";
 
+const CHESS_MOCKUP_READ_MS = 480;
+
 export const MenuRoute: Component<RouteSectionProps> = () => {
   const navigate = useNavigate();
   const fromChess = consumeChessMenuEntrance();
@@ -24,12 +27,7 @@ export const MenuRoute: Component<RouteSectionProps> = () => {
     fromChess ? "chess" : "starchess",
   );
 
-  onMount(() => {
-    if (!fromChess) return;
-    // Let the Chess mockup read, then play the arrival.
-    const id = window.setTimeout(() => setSurface("starchess"), 480);
-    onCleanup(() => window.clearTimeout(id));
-  });
+  if (fromChess) createDelay(CHESS_MOCKUP_READ_MS, () => setSurface("starchess"));
 
   const onStartGame = (opts: NewGameOptions) => {
     // Fresh match — drop any mid-game resume blob.

@@ -15,7 +15,9 @@ import {
   makeDeployCue,
   type DeployPiece,
 } from "~/presentation/animations/deployAnim";
+import { schedule } from "~/adapters/timers";
 import type { DeployCue, PieceColor } from "~/presentation/types";
+import type { Cancel } from "~/types/ports";
 
 type PieceAt = { type: StarChessPiece; color: PieceColor };
 
@@ -63,10 +65,10 @@ export function useAutoDeploy(opts: {
 }) {
   const [autoCues, setAutoCues] = createSignal<DeployCue[]>([]);
   let prev: Map<Square, PieceAt> | null = null;
-  const timers = new Map<string, number>();
+  const timers = new Map<string, Cancel>();
 
   const clearTimers = () => {
-    for (const id of timers.values()) window.clearTimeout(id);
+    for (const cancel of timers.values()) cancel();
     timers.clear();
   };
 
@@ -100,11 +102,8 @@ export function useAutoDeploy(opts: {
       });
       for (const c of cur) {
         if (kept.some((k) => k.id === c.id)) continue;
-        const t = timers.get(c.id);
-        if (t) {
-          window.clearTimeout(t);
-          timers.delete(c.id);
-        }
+        timers.get(c.id)?.();
+        timers.delete(c.id);
       }
       if (fresh.length === 0) return kept;
       return [...kept, ...fresh];
@@ -113,14 +112,13 @@ export function useAutoDeploy(opts: {
     if (fresh.length === 0) return;
 
     for (const cue of fresh) {
-      const existing = timers.get(cue.id);
-      if (existing) window.clearTimeout(existing);
+      timers.get(cue.id)?.();
       timers.set(
         cue.id,
-        window.setTimeout(() => {
+        schedule(DEPLOY_MS, () => {
           timers.delete(cue.id);
           setAutoCues((cur) => cur.filter((c) => c.id !== cue.id));
-        }, DEPLOY_MS),
+        }),
       );
     }
   });

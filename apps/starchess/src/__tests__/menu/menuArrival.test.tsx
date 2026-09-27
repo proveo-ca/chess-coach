@@ -66,6 +66,24 @@ describe("MenuArrival", () => {
     expect(onArrived).toHaveBeenCalledOnce();
   });
 
+  it("a flip back to chess mid-arrival cancels every pending beat", () => {
+    const [surface, setSurface] = createSignal<MenuSurface>("chess");
+    const onArrived = vi.fn();
+    const { getByTestId } = render(() => (
+      <MenuArrival surface={surface()} onArrived={onArrived} />
+    ));
+
+    setSurface("starchess");
+    vi.advanceTimersByTime(500);
+    expect(getByTestId("menu-arrival").getAttribute("data-phase")).toBe("identity");
+
+    setSurface("chess");
+    vi.advanceTimersByTime(5_000);
+    expect(getByTestId("menu-arrival").getAttribute("data-phase")).toBe("chess");
+    expect(onArrived).not.toHaveBeenCalled();
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
   it("shows Selena CoachAvatar on the Chess mockup", () => {
     const { getByTestId, getByLabelText } = render(() => (
       <MenuArrival surface="chess" />

@@ -47,7 +47,8 @@ When you add, rename, or remove a component, hook, store, or service:
 | `_spec/apps/starchess/replay-import.puml` | Arena record import: file → localStorage + `?game=` / `?scfens=` validate → `ReviewDemoScreen` |
 | `_spec/apps/starchess/animation-pipeline.md` | `playTimeline` → `TIMELINE_*` MatchStore → AnimationStage |
 | `_spec/apps/starchess/vfx-guarantees.md` | **VFX guarantee roster** — every combat-VFX promise ↔ its e2e test (`apps/e2e/tests/vfx/`), observation method, known gaps |
-| `_spec/apps/starchess/architecture/reactivity.md` | **Solid reactivity rules** (R1–R8: `store.state()` subscribes to everything, conditional props build a memo per read, JSX props re-render per read, fresh empties, per-square Set/Map + selectors, batch, derive-don't-sync, remount only to reset) + the `?debug=reactivity` probe; per-area applications in `architecture/reactivity/*.md` |
+| `_spec/apps/starchess/architecture/reactivity.md` | **Solid reactivity rules** (R1–R9: `store.state()` subscribes to everything, conditional props build a memo per read, JSX props re-render per read, fresh empties, per-square Set/Map + selectors, batch, derive-don't-sync, remount only to reset, time has one owner) + the `?debug=reactivity` probe; per-area applications in `architecture/reactivity/*.md` |
+| `_spec/apps/starchess/architecture/timers.puml` | **Time has one owner** (reactivity.md R9) — only `adapters/browser` touches `setTimeout`/`setInterval`; app code uses `createDelay`/`createRepeat` (owner-bound) or `schedule`/`repeat`/`sleep` from `~/adapters/timers`; lint `proveo-starchess/no-raw-timer` |
 | `_spec/apps/starchess/vfx-tier.puml` | **VFX tier** — silent menu CPU probe (`syncToClock` lag + jank on the `DebrisMarinePlayground` loop) picks `full` / `lite` per device; calibrated so only ~20× slowdown goes lite; `<html data-vfx-tier>`; never touches timeline pace |
 | `_spec/apps/starchess/_experiments/fog-honest-scfen.md` | **EXPERIMENT** — fog-honest engine: a referee holds the omniscient SCFEN; clients only get `project(state, viewer)` (SCFEN-V with `?` squares + per-tick viewer resolves); noninterference property test as the anti-maphack guarantee |
 | `_spec/apps/starchess/roadmap.md` | Spec remediation roadmap |
@@ -230,6 +231,12 @@ When you add, rename, or remove a component, hook, store, or service:
   `vfxTier()` in JS only where the element count changes. Bump `PROBE_VERSION`
   when combat VFX change enough to re-measure. See
   `_spec/apps/starchess/vfx-tier.puml`.
+- **Timers**: never call `setTimeout` / `setInterval` in `apps/starchess` —
+  `proveo-starchess/no-raw-timer` fails the lint. Owned lifetimes use
+  `createDelay` / `createRepeat` (cancelled by the owner's cleanup, including an
+  effect's next run); a cancel that must outlive one owner uses `schedule` /
+  `repeat`; an awaited pause uses `sleep(ms, signal)`; a fetch deadline uses
+  `AbortSignal.timeout`. See `_spec/apps/starchess/architecture/timers.puml`.
 - **Timeline cues**: `timelinePlayer` routes on `cue.lane` / `cue.board` / `cue.group`,
   stamped by `presentation/timeline/cueLanes.ts`. Never branch on a cue id prefix.
 - **These three files carry no comments**: `resolve-turn.ts`, `submit-turn.ts`,

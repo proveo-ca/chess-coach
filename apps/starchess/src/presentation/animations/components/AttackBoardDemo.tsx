@@ -3,8 +3,7 @@ import {
   createEffect,
   createMemo,
   createSignal,
-  onCleanup,
-  onMount,
+  on,
   Show,
   type Component,
 } from "solid-js";
@@ -17,6 +16,7 @@ import {
 import styles from "~/presentation/animations/components/AttackBoardDemo.module.css";
 import { attackVectorsFor, squareAt } from "~/presentation/animations/attackVectors";
 import { AnimationStage } from "~/presentation/animations/components/AnimationStage";
+import { createPhaseLoop } from "~/presentation/animations/phaseLoop";
 import {
   clearSiegedTanks,
   setTankMode,
@@ -54,9 +54,6 @@ export const AttackBoardDemo: Component<{
   const [cues, setCues] = createSignal<AttackCue[]>([]);
   const [hide, setHide] = createSignal<Square[]>([]);
 
-  let phaseTimer = 0;
-  let cycleTimer = 0;
-
   const prepare = () => {
     clearSiegedTanks();
     if (props.piece === "r") setTankMode(ORIGIN, props.tankMode ?? "tank");
@@ -67,70 +64,59 @@ export const AttackBoardDemo: Component<{
     return vec ? squareAt(origin, vec) : null;
   };
 
-  const beginIdleThenAttack = () => {
-    window.clearTimeout(phaseTimer);
+  const idle = (cycle: number) => {
+    if (cycle > 0) {
+      const n = Math.max(vectors().length, opposingVectors().length);
+      if (n > 0) setVecIndex((i) => (i + 1) % n);
+    }
     setCues([]);
     setHide([]);
-    phaseTimer = window.setTimeout(() => {
-      const next: AttackCue[] = [];
-      const to = targetSq(ORIGIN, vectors());
-      if (to) {
+  };
+
+  const attack = () => {
+    const next: AttackCue[] = [];
+    const to = targetSq(ORIGIN, vectors());
+    if (to) {
+      next.push({
+        id: `story-atk-${props.piece}-${vecIndex()}`,
+        piece: props.piece,
+        color: "w",
+        from: ORIGIN,
+        to,
+        tankMode: props.tankMode,
+      });
+      setHide([ORIGIN]);
+    }
+    const oppList = opposingVectors();
+    if (oppList.length > 0) {
+      const oppTo = targetSq(OPPOSING_MARINE, oppList);
+      if (oppTo) {
         next.push({
-          id: `story-atk-${props.piece}-${vecIndex()}`,
-          piece: props.piece,
-          color: "w",
-          from: ORIGIN,
-          to,
-          tankMode: props.tankMode,
+          id: `story-atk-p-opp-${vecIndex()}`,
+          piece: "p",
+          color: "b",
+          from: OPPOSING_MARINE,
+          to: oppTo,
         });
-        setHide([ORIGIN]);
+        setHide((h) => [...h, OPPOSING_MARINE]);
       }
-      const oppList = opposingVectors();
-      if (oppList.length > 0) {
-        const oppTo = targetSq(OPPOSING_MARINE, oppList);
-        if (oppTo) {
-          next.push({
-            id: `story-atk-p-opp-${vecIndex()}`,
-            piece: "p",
-            color: "b",
-            from: OPPOSING_MARINE,
-            to: oppTo,
-          });
-          setHide((h) => [...h, OPPOSING_MARINE]);
-        }
-      }
-      setCues(next);
-    }, IDLE_FRONT_MS);
+    }
+    setCues(next);
   };
 
-  const armCycle = () => {
-    window.clearInterval(cycleTimer);
-    const period = IDLE_FRONT_MS + ATTACK_MS;
-    beginIdleThenAttack();
-    cycleTimer = window.setInterval(() => {
-      const n = Math.max(vectors().length, opposingVectors().length);
-      if (n === 0) return;
-      setVecIndex((i) => (i + 1) % n);
-      beginIdleThenAttack();
-    }, period);
-  };
-
-  onMount(() => {
-    prepare();
-    setVecIndex(0);
-  });
-
-  createEffect(() => {
-    void props.piece;
-    void props.tankMode;
-    prepare();
-    setVecIndex(0);
-    armCycle();
-    onCleanup(() => {
-      window.clearInterval(cycleTimer);
-      window.clearTimeout(phaseTimer);
-    });
-  });
+  createEffect(
+    on([() => props.piece, () => props.tankMode], () => {
+      prepare();
+      setVecIndex(0);
+      createPhaseLoop(
+        [
+          [0, idle],
+          [IDLE_FRONT_MS, attack],
+        ],
+        IDLE_FRONT_MS + ATTACK_MS,
+      );
+    }),
+  );
 
   const captionTargets = () => {
     const live = cues();

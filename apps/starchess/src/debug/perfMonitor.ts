@@ -3,6 +3,9 @@
  * Runtime perf / resource monitor for VFX guarding.
  * Enable: `?debug=perf` · localStorage starchess_debug=perf · VITE_STARC_DEBUG=1
  */
+import { repeat } from "~/adapters/timers";
+import type { Cancel } from "~/types/ports";
+
 export type PerfSnapshot = {
   t: number;
   /** Frames in the last sample window. */
@@ -36,7 +39,7 @@ const SAMPLE_MS = 1000;
 let enabled = false;
 let started = false;
 let rafId = 0;
-let sampleTimer: ReturnType<typeof setInterval> | null = null;
+let stopSampling: Cancel | null = null;
 let frames = 0;
 let longTasks = 0;
 let longTaskMs = 0;
@@ -290,9 +293,7 @@ export const startPerfMonitor = (): void => {
     }
   }
 
-  sampleTimer = setInterval(() => {
-    logSample(sample());
-  }, SAMPLE_MS);
+  stopSampling = repeat(SAMPLE_MS, () => logSample(sample()));
 
   (
     window as unknown as {
@@ -318,8 +319,8 @@ export const stopPerfMonitor = (): void => {
   started = false;
   if (rafId) cancelAnimationFrame(rafId);
   rafId = 0;
-  if (sampleTimer) clearInterval(sampleTimer);
-  sampleTimer = null;
+  stopSampling?.();
+  stopSampling = null;
   po?.disconnect();
   po = null;
   hudEl?.remove();

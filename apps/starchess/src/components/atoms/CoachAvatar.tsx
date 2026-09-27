@@ -18,8 +18,10 @@ import {
   type Component,
 } from "solid-js";
 
+import { createRepeat, schedule } from "~/adapters/timers";
 import styles from "~/components/atoms/CoachAvatar.module.css";
 import type { CoachIdentity, KerriganEmotion } from "~/types/coach";
+import type { Cancel } from "~/types/ports";
 
 export type { CoachIdentity, KerriganEmotion } from "~/types/coach";
 
@@ -70,7 +72,7 @@ export const CoachAvatar: Component<CoachAvatarProps> = (props) => {
   const [ambient, setAmbient] = createSignal<"idle" | "scanning">(pickAmbient());
 
   let rootEl: HTMLDivElement | undefined;
-  let helmTimer: ReturnType<typeof setTimeout> | undefined;
+  let cancelHelm: Cancel = () => {};
 
   const syncFerryY = () => {
     if (!rootEl) return;
@@ -87,7 +89,7 @@ export const CoachAvatar: Component<CoachAvatarProps> = (props) => {
         queueMicrotask(syncFerryY);
         return;
       }
-      if (helmTimer !== undefined) clearTimeout(helmTimer);
+      cancelHelm();
 
       syncFerryY();
 
@@ -98,17 +100,17 @@ export const CoachAvatar: Component<CoachAvatarProps> = (props) => {
           syncFerryY();
           requestAnimationFrame(() => {
             setHelmPhase("dropping");
-            helmTimer = setTimeout(() => setHelmPhase("on"), HELM_MS);
+            cancelHelm = schedule(HELM_MS, () => setHelmPhase("on"));
           });
         });
         return;
       }
       if (id === "selena" && prev === "kerrigan") {
         setHelmPhase("lifting");
-        helmTimer = setTimeout(() => {
+        cancelHelm = schedule(HELM_MS, () => {
           setHelmPhase("off");
           syncFerryY();
-        }, HELM_MS);
+        });
         return;
       }
       setHelmPhase(id === "kerrigan" ? "on" : "off");
@@ -118,20 +120,17 @@ export const CoachAvatar: Component<CoachAvatarProps> = (props) => {
   // Ambient scoped ↔ unscoped when the host does not pin an emotion.
   const pinned = createMemo(() => props.emotion != null || !!props.sleeping);
   onMount(() => {
-    const id = window.setInterval(() => {
+    createRepeat(AMBIENT_MS, () => {
       if (pinned()) return;
       setAmbient((prev) => {
         const next = pickAmbient();
         // Always change so the visor slide is visible each tick.
         return next === prev ? (prev === "idle" ? "scanning" : "idle") : next;
       });
-    }, AMBIENT_MS);
-    onCleanup(() => window.clearInterval(id));
+    });
   });
 
-  onCleanup(() => {
-    if (helmTimer !== undefined) clearTimeout(helmTimer);
-  });
+  onCleanup(() => cancelHelm());
 
   const emotion = createMemo((): KerriganEmotion => {
     if (props.sleeping) return "sleeping";

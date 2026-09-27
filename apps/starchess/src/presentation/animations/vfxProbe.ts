@@ -13,7 +13,9 @@
  * or `PROBE_MAX_MS`, then stops for good; a hidden tab aborts it without a
  * verdict.
  */
+import { schedule } from "~/adapters/timers";
 import { onClockLag } from "~/presentation/animations/clockSync";
+import type { Cancel } from "~/types/ports";
 import type { ProbeVerdict, VfxTier } from "~/types/vfxTier";
 
 /** Bump when combat VFX change enough that stored tiers are stale. */
@@ -101,14 +103,14 @@ export const startVfxProbe = (
   let last = 0;
   let done = false;
   let offLag = () => {};
-  let deadline: ReturnType<typeof setTimeout> | undefined;
+  let cancelDeadline: Cancel = () => {};
 
   const stop = () => {
     if (done) return;
     done = true;
     cancelAnimationFrame(raf);
-    clearTimeout(warmup);
-    clearTimeout(deadline);
+    cancelWarmup();
+    cancelDeadline();
     offLag();
     document.removeEventListener("visibilitychange", onHidden);
   };
@@ -126,14 +128,14 @@ export const startVfxProbe = (
     raf = requestAnimationFrame(tick);
   };
 
-  const warmup = setTimeout(() => {
+  const cancelWarmup = schedule(WARMUP_MS, () => {
     offLag = onClockLag((lag) => {
       lagsMs.push(lag);
       if (lagsMs.length >= MIN_CUES) finish();
     });
-    deadline = setTimeout(finish, PROBE_MAX_MS);
+    cancelDeadline = schedule(PROBE_MAX_MS, finish);
     raf = requestAnimationFrame(tick);
-  }, WARMUP_MS);
+  });
   document.addEventListener("visibilitychange", onHidden);
   return stop;
 };

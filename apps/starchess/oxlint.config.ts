@@ -29,5 +29,6 @@ export default defineConfig({
     "proveo-starchess/route-target-in-screens": "error",
     "proveo-starchess/own-css-module": "error",
     "proveo-starchess/no-cross-module-types": "error",
+    "proveo-starchess/no-raw-timer": "error",
   },
 });

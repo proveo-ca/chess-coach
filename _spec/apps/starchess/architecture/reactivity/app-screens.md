@@ -77,8 +77,23 @@ Rules R1–R8 are defined in `../reactivity.md`; store topology is in `../../mat
 
 ## screens/MenuRoute.tsx
 
-- **Arrival timer cleanup** — Solid's `onMount` ignores a returned cleanup, so the
-  `clearTimeout` is registered explicitly with `onCleanup`.
+- **Arrival delay** — `createDelay(CHESS_MOCKUP_READ_MS)` in the component body:
+  the Chess mockup stays readable for 480 ms, then the arrival plays. The
+  component owner cancels it on unmount (R9).
+
+## screens/menuSky/MenuArrival.tsx
+
+- **Beat ladder** — `createDelay` per beat inside `createEffect(on(surface))`:
+  a surface flip mid-arrival disposes the run and cancels every pending beat.
+  It used to return `() => timers.forEach(clearTimeout)` from the `on` callback,
+  which Solid keeps as the effect's value — never as a cleanup — so a
+  chess → starchess → chess flip still fired the beats and `onArrived`.
+
+## screens/menuSky/DebrisMarinePlayground.tsx
+
+- **Loop pauses** — `sleep(ms, life.signal)`; unmount aborts `life`, which
+  settles the pending pause so the loop reaches its `cancelled` check and exits
+  instead of hanging on a promise nothing resolves.
 
 ## screens/MenuScreen.tsx
 

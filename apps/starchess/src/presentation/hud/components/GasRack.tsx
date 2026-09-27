@@ -23,6 +23,7 @@ import {
   hasUsedSpecialThisTurn,
   viewerColor,
 } from "~/app/matchEconomy";
+import { schedule } from "~/adapters/timers";
 import { useMatchStore } from "~/app/MatchStoreContext";
 import { ChatBubble } from "@chess-coach/ui-web/primitives/ChatBubble";
 import { VespeneIcon } from "@chess-coach/ui-web/primitives/icons";
@@ -32,6 +33,7 @@ import { SPECIAL_ENERGY_COST } from "~/presentation/constants";
 import styles from "~/presentation/hud/components/GasRack.module.css";
 import { specialCopyFor } from "~/presentation/specials/copy";
 import type { GasDeployTarget } from "~/presentation/specials/types";
+import type { Cancel } from "~/types/ports";
 
 type GasDeployProps = {
   /**
@@ -61,6 +63,7 @@ type HoverState = {
 };
 
 const CANISTER = 60;
+const GAS_RETURN_MS = 240;
 /** Max reserves in the oval (capacity 3 − ready slot). Stable DOM for slide anim. */
 const MAX_RESERVES = 2;
 /** Per-unit vespene cost (Mecha Charon Booster Missiles = 2; default = 1). */
@@ -87,7 +90,7 @@ export const GasRack: Component<GasDeployProps> = (props) => {
   const desktopClient = useIsDesktopClient();
   let circleEl: HTMLButtonElement | undefined;
   let dockEl: HTMLDivElement | undefined;
-  let returnTimer: number | undefined;
+  let cancelReturn: Cancel = () => {};
 
   /** Canisters visually lifted with the drag (2 while hovering a 2-gas unit). */
   const dragCount = () => {
@@ -106,10 +109,8 @@ export const GasRack: Component<GasDeployProps> = (props) => {
   const reserveCount = createMemo(() => Math.max(0, dockCount() - 1));
 
   const clearReturnTimer = () => {
-    if (returnTimer != null) {
-      window.clearTimeout(returnTimer);
-      returnTimer = undefined;
-    }
+    cancelReturn();
+    cancelReturn = () => {};
   };
 
   onCleanup(clearReturnTimer);
@@ -220,7 +221,7 @@ export const GasRack: Component<GasDeployProps> = (props) => {
       setDrag((prev) => (prev ? { ...prev, x: tx, y: ty, returning: true } : null));
     });
     clearReturnTimer();
-    returnTimer = window.setTimeout(finishCancel, 240);
+    cancelReturn = schedule(GAS_RETURN_MS, finishCancel);
   };
 
   /**

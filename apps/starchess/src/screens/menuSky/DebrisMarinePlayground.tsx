@@ -14,6 +14,7 @@ import clsx from "clsx";
 import type { Square } from "chess.js";
 import { onCleanup, onMount, createSignal, type Component } from "solid-js";
 
+import { sleep } from "~/adapters/timers";
 import {
   ATTACK_MS,
   FRAG_FLIGHT_MS,
@@ -92,27 +93,10 @@ export const DebrisMarinePlayground: Component<DebrisMarinePlaygroundProps> = (p
   const [jumpTrails, setJumpTrails] = createSignal<ShipJumpTrail[]>([]);
   const [hide, setHide] = createSignal<Square[]>([]);
 
-  const timers: number[] = [];
+  const life = new AbortController();
   let cancelled = false;
 
-  const later = (ms: number, fn: () => void) => {
-    const id = window.setTimeout(() => {
-      const i = timers.indexOf(id);
-      if (i >= 0) timers.splice(i, 1);
-      fn();
-    }, ms);
-    timers.push(id);
-  };
-
-  const wait = (ms: number) =>
-    new Promise<void>((resolve) => {
-      later(ms, () => resolve());
-    });
-
-  const clearTimers = () => {
-    for (const id of timers) window.clearTimeout(id);
-    timers.length = 0;
-  };
+  const wait = (ms: number) => sleep(ms, life.signal);
 
   const resetFx = () => {
     setAttackCues([]);
@@ -328,7 +312,7 @@ export const DebrisMarinePlayground: Component<DebrisMarinePlaygroundProps> = (p
     void runLoop();
     onCleanup(() => {
       cancelled = true;
-      clearTimers();
+      life.abort();
     });
   });
 

@@ -208,3 +208,19 @@ now only claims an empty mid-square (or its own destination); while another
 unit holds the square it is crossing, the mover keeps its previous square for
 vision. Pinned by `__tests__/fogProjection.test.ts` ("never displaces a unit
 the mover passes over"), which walks that exact path tick by tick.
+
+## Timers (R9)
+
+- `GasRack` `GAS_RETURN_MS` (240) = `.ghostReturning` `left`/`top` transition
+  (220ms, `GasRack.module.css`) + 20ms slack; the cancel lives in a plain
+  `schedule` because the drop handler, not an owner, arms it. Retune both together.
+- `TurnBar` / `TurnBarSidebar` `TURN_DEADLINE_TICK_MS` (200) is the 200ms
+  deadline poll above, now a mount-owned `createRepeat`.
+- `CoachAvatar` helm uses `schedule` + a kept cancel: the drop arms inside a
+  nested `requestAnimationFrame`, which has no owner, so `createDelay` would
+  not register its cleanup there.
+- `useAutoDeploy` keys `schedule` cancels by cue id: a pending deploy must
+  survive the occupancy effect's re-runs.
+- `ccDamageOverlay` boom and `MoveAnimation` settle use `createDelay` inside
+  their effect: every re-run ends the pending phase anyway, so the run-scoped
+  cancel is exact.
