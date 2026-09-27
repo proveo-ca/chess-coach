@@ -21,7 +21,7 @@ import {
   viewerColor,
 } from "~/app/matchEconomy";
 import { createRepeat } from "~/adapters/timers";
-import { useMatchStore } from "~/app/MatchStoreContext";
+import { useMatchStore } from "~/ports/matchStore";
 import { canSubmit, readDisplayedSnapshot } from "~/app/selectors";
 import { Button } from "@chess-coach/ui-web/primitives/Button";
 import { Chip } from "@chess-coach/ui-web/primitives/Chip";

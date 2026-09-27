@@ -10,7 +10,7 @@ const base = vi.hoisted(() => ({
 }));
 
 vi.mock("~/app/BaseScreen.tsx", async () => {
-  const { useMatchStore } = await import("~/app/MatchStoreContext");
+  const { useMatchStore } = await import("~/ports/matchStore");
   return {
     BaseScreen: (props: { hintAlertSquares?: readonly string[] }) => {
       base.props = props;

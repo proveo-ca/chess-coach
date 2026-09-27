@@ -4,15 +4,12 @@
  */
 import {
   batch,
-  createContext,
   createMemo,
   createRoot,
   createSignal,
   getOwner,
   onCleanup,
   untrack,
-  useContext,
-  type ParentComponent,
 } from "solid-js";
 import {
   turnTimeoutMsForTurn,
@@ -43,14 +40,13 @@ import { bindTimeline } from "~/presentation/timeline/timelineCommitGate";
 import {
   playResolveWave,
 } from "~/presentation/timeline/playResolveWave";
+import { hasUsedSpecialThisTurn, storedMaterial, viewerColor } from "~/app/matchEconomy";
 import { turnBonusFor } from "~/app/turnBonusPolicy";
 import { canSubmit, displayedSnapshotFrom, registerDisplayedSnapshot } from "~/app/selectors";
 import { sameFlat } from "~/presentation/board/memoEquals";
 import type { ResolveWaveId } from "~/types/tutorial";
 
 export type { MatchStore };
-
-export const MatchStoreContext = createContext<MatchStore>();
 
 const toShell = (s: MatchState): MatchShell => {
   const { timeline: _t, ...shell } = s;
@@ -424,6 +420,11 @@ export const createMatchStore = (opts?: {
     });
 
   const store: MatchStore = {
+    view: {
+      viewerColor: () => viewerColor(store),
+      storedMaterial: () => storedMaterial(store),
+      specialUsed: (square) => hasUsedSpecialThisTurn(store, square),
+    },
     state,
     shell,
     timeline,
@@ -467,18 +468,4 @@ export const createMatchStore = (opts?: {
     });
   }
   return store;
-};
-
-export const MatchStoreProvider: ParentComponent<{ store: MatchStore }> = (
-  props,
-) => (
-  <MatchStoreContext.Provider value={props.store}>
-    {props.children}
-  </MatchStoreContext.Provider>
-);
-
-export const useMatchStore = (): MatchStore => {
-  const ctx = useContext(MatchStoreContext);
-  if (!ctx) throw new Error("useMatchStore requires MatchStoreProvider");
-  return ctx;
 };

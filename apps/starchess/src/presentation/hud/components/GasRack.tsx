@@ -24,7 +24,7 @@ import {
   viewerColor,
 } from "~/app/matchEconomy";
 import { schedule } from "~/adapters/timers";
-import { useMatchStore } from "~/app/MatchStoreContext";
+import { useMatchStore } from "~/ports/matchStore";
 import { ChatBubble } from "@chess-coach/ui-web/primitives/ChatBubble";
 import { VespeneIcon } from "@chess-coach/ui-web/primitives/icons";
 import { SpecialPreview } from "@chess-coach/ui-web/primitives/SpecialPreview";

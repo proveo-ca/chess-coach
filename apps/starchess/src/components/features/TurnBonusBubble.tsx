@@ -2,7 +2,7 @@
 import { Show, createEffect, createSignal, onCleanup } from "solid-js";
 import type { Component } from "solid-js";
 
-import { useMatchStore } from "~/app/MatchStoreContext";
+import { useMatchStore } from "~/ports/matchStore";
 import { ChatBubble } from "@chess-coach/ui-web/primitives/ChatBubble";
 import {
   MineralsIcon,

@@ -10,7 +10,8 @@ import { describe, expect, it } from "vitest";
 import { placementToMap, type Square } from "@chess-coach/starchess-core";
 
 import { createMatchStateFromScfen } from "~/app/matchReducer";
-import { createMatchStore, MatchStoreProvider } from "~/app/MatchStoreContext";
+import { createMatchStore } from "~/app/MatchStoreContext";
+import { MatchStoreProvider } from "~/ports/matchStore";
 import { useBoardInput } from "~/presentation/board/hooks/useBoardInput";
 import { armPieceSpecial } from "~/presentation/specials/pieceSpecials";
 import { marineGasArm } from "~/presentation/specials/arms/marineGas";

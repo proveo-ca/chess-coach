@@ -108,7 +108,8 @@ When you add, rename, or remove a component, hook, store, or service:
   *and* a non-mobile UA — either alone misfires on tablets and mouse-equipped phones.
   In `apps/starchess` use the `useIsDesktopClient()` hook. Note this is the *device*
   axis, unrelated to `runtimeMode === 'desktop'` (which is a distribution mode).
-- **Capabilities pattern**: each screen sets `ScreenCapabilities` on mount (`capabilitiesStore`); hooks and components read specific flags rather than branching on a screen name.
+- **Capabilities pattern**: in `apps/starchess` each screen host *provides* `ScreenCapabilities` for its own tree (`CapabilitiesProvider`, default = live match) and components read `useCapabilities()` — never a module-global signal, which let tutorial chrome (`homeOnly`) outlive the tutorial into `/single`. Hooks and components read specific flags rather than branching on a screen name. (`apps/chess` / Coach keeps its global `capabilitiesStore` + set-on-mount.)
+- **Presentation reads match state through the port**: `useMatchStore` / `MatchStoreProvider` live in `~/ports/matchStore`, and match derivations presentation needs are `store.view.*` (`viewerColor`, `storedMaterial`, `specialUsed`, …) — presentation never imports `~/app/`. `check:deps` enforces it; the remaining known edges are listed in `_spec/apps/starchess/architecture/layers.puml`.
 - **Piece art**: `apps/starchess/public/pieces` holds **cburnett only**. Every
   product board — live match, review, demos, deploy/promotion pickers — renders
   the inline units in `presentation/pieces/` through the single `PieceGlyph`

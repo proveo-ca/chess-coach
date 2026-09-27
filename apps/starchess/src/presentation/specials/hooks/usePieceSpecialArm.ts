@@ -3,7 +3,7 @@ import {
   armPieceSpecial,
   type PieceSpecialArmHandlers,
 } from "~/presentation/specials/pieceSpecials";
-import { useMatchStore } from "~/app/MatchStoreContext";
+import { useMatchStore } from "~/ports/matchStore";
 
 /**
  * Connects {@link GasDeploy} drops to per-piece special activators.

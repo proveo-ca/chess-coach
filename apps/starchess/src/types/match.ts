@@ -20,6 +20,15 @@ export type MatchPhase = "loading" | "planning" | "targeting" | "resolving" | "g
 
 export type ViewerColor = StarChessColor;
 
+/** Read-only match derivations presentation uses without importing app/. */
+export type MatchView = {
+  viewerColor: () => StarChessColor;
+  /** Viewer's stored minerals. */
+  storedMaterial: () => number;
+  /** A special already fired from `square` this planning window. */
+  specialUsed: (square: Square) => boolean;
+};
+
 export type TargetingState =
   | null
   | { kind: "deploy"; unit: SpawnPiece; color: StarChessColor }
@@ -344,6 +353,7 @@ export type MatchStore = {
   submitTurn: (reason?: "end" | "timeout") => void;
   /** End the turn one task later; `cancelEffects` and disposal drop it. */
   submitTurnNextTask: () => void;
+  view: MatchView;
   /** Re-seed in place for a new lesson: drop in-flight effects, load, apply the gas override — one batch. */
   loadLesson: (seed: { scfen: string; stored: number; gas?: number }) => void;
   /** Viewer's vespene, clamped to 0–3; a no-op when unchanged. */

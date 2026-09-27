@@ -12,7 +12,7 @@ import { ccDeployTargets } from "~/presentation/specials/deployTargets";
 import { specialTimingFor } from "~/presentation/specials/queue";
 
 import { playerFogOccultsMoves } from "~/app/intentOverlayPolicy";
-import { useMatchStore } from "~/app/MatchStoreContext";
+import { useMatchStore } from "~/ports/matchStore";
 import { canSubmit, displayedSnapshot } from "~/app/selectors";
 import {
   isViewerBRelocateOrigin,

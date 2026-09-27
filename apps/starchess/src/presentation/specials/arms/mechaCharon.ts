@@ -15,7 +15,6 @@ import {
   type ScFenSnapshot,
 } from "@chess-coach/starchess-core";
 
-import { viewerColor } from "~/app/matchEconomy";
 import type { MatchStore } from "~/types/match";
 import type { ArmResult } from "~/presentation/specials/types";
 
@@ -26,7 +25,7 @@ export const mechaCharonArm = (
   opts?: { resetSpawn?: () => void; onAfterOpen?: () => void },
 ): ArmResult | boolean => {
   if (ctx.piece !== "b") return false;
-  const color = viewerColor(store);
+  const color = store.view.viewerColor();
   // F after a same-mecha classical fires from the post-move square
   // (mirrors validation's projection rule exactly: same color, same
   // from, classical C): offer that square's diagonals so a move +

@@ -176,3 +176,16 @@ Rules R1–R8 are defined in `../reactivity.md`; store topology is in `../../mat
   otherwise ask `lessonBoard(stage, storyIdOfOtherSection)`, which throws.
 - The resolve section keeps its keyed `<Show>`: switching replay rebuilds the
   review timeline on purpose.
+
+## `store/capabilitiesStore.ts`
+
+- **Capabilities are scoped, not global.** Hosts provide them for their own
+  tree (`CapabilitiesProvider`: `LiveLessonHost` and `ReviewDemoScreen` →
+  tutorial or live by `props.tutorial`; `TutorialReviewHost` → tutorial);
+  readers (`SideRailTools`) take `useCapabilities()`, default live. The global
+  signal it replaced was written on mount by five places and reset by none:
+  walking `/tutorial/*` → `/single` in one tab kept `homeOnly: true` in the
+  live match (observed in the browser, 2026-09-27), and the live board guarded
+  its own write with `if (capabilities().homeOnly) return`. Pinned by
+  `__tests__/hud/boardSideRail.test.tsx`.
+

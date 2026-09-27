@@ -8,7 +8,6 @@ import type { PieceSymbol, Square } from "chess.js";
 
 import type { TankMode, ScFenSnapshot } from "@chess-coach/starchess-core";
 
-import { viewerColor } from "~/app/matchEconomy";
 import type { MatchStore } from "~/types/match";
 import { tacticalJumpTargets } from "~/presentation/specials/shipTacticalJump";
 import type { ArmResult } from "~/presentation/specials/types";
@@ -25,7 +24,7 @@ export const shipJumpArm = (
   },
 ): ArmResult | boolean => {
   if (ctx.piece !== "q") return false;
-  const color = viewerColor(store);
+  const color = store.view.viewerColor();
   const targets = tacticalJumpTargets(snap.placement, ctx.square, color, {
     tankModeFor: opts?.tankModeFor ?? (() => "tank" as TankMode),
   });

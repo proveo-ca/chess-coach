@@ -21,7 +21,7 @@ import { Portal } from "solid-js/web";
 
 import { afterPaint } from "~/adapters/timers";
 import { viewerColor } from "~/app/matchEconomy";
-import { useMatchStore } from "~/app/MatchStoreContext";
+import { useMatchStore } from "~/ports/matchStore";
 import { outcomeLabel, readDisplayedSnapshot } from "~/app/selectors";
 import styles from "~/app/BaseScreen.module.css";
 import { CoachAvatar } from "~/components/atoms/CoachAvatar";
@@ -55,7 +55,6 @@ import { tankSiegeArm } from "~/presentation/specials/arms/tankSiege";
 import { hoverbikeMineArm } from "~/presentation/specials/arms/hoverbikeMine";
 import { mechaCharonArm } from "~/presentation/specials/arms/mechaCharon";
 import { shipJumpArm } from "~/presentation/specials/arms/shipJump";
-import { TUTORIAL_CAPABILITIES, setCapabilities } from "~/store/capabilitiesStore";
 import { resetReviewVisionFilter, reviewVisionFilter } from "~/store/reviewVisionStore";
 import type { BoardSkin, PieceSet } from "~/types/board";
 import type { PromotionPiece } from "~/types/chess";
@@ -409,7 +408,6 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
   });
 
   onMount(() => {
-    if (props.tutorial) setCapabilities(TUTORIAL_CAPABILITIES);
     const onKey = (e: KeyboardEvent) => {
       const t = e.target as HTMLElement | null;
       if (

@@ -48,31 +48,30 @@ pieces -[#red,dashed]-> anim : pieces-below-animations
 prims -[#red,dashed]-> pres : primitives-stay-presentational\n(known: PromotionModal → PieceGlyph)
 atoms -[#red,dashed]-> features : atoms-below-features
 components -[#red,dashed]-> screens : components-below-routes
-pres -[#red,dashed]-> app : presentation-below-app\n(known: 29 edges)
+pres -[#red,dashed]-> app : presentation-below-app\n(known: 14 edges)
 store -[#red,dashed]-> pres : store-below-ui
 types -[#red,dashed]-> app : types-are-leaves
 
 note right of pres
-  Known violations (baseline, 30 in
-  .dependency-cruiser-known-violations.json):
+  Known violations (baseline, 15 in
+  .dependency-cruiser-known-violations.json;
+  was 30 — the store context moved to
+  ~/ports/matchStore, specials read store.view):
   • hud (TurnBar, TurnBarSidebar, ResourceBar,
-    GasRack, DeployModal) → MatchStoreContext,
-    selectors, matchEconomy
-  • specials arms + pieceSpecials → matchEconomy
+    GasRack, DeployModal) → selectors, matchEconomy
   • board (LiveStarChessBoard, useBoardInput),
     combat (useIntentOverlays) → selectors,
-    intentOverlayPolicy, MatchStoreContext,
-    achievementLive
-  These are the edges that fold 11 layers into one
-  strongly connected cluster. Paying one off: move
-  the selector / economy read behind a prop or a
-  presentation-side port, then run
-  check:deps:baseline so the baseline shrinks.
+    intentOverlayPolicy, achievementLive
+  • PromotionModal (primitive) → PieceGlyph
+  Paying one off: add the read to MatchView
+  (store.view, ~/types/match), call it from
+  presentation, then run check:deps:baseline
+  (shrink-only) so the baseline shrinks.
 end note
 
 note bottom
   pnpm lint runs oxlint, then check:deps (--ignore-known): a new violation fails,
-  a paid-off one goes stale — regenerate with check:deps:baseline.
+  a paid-off one goes stale — check:deps:baseline drops it (shrink-only).
   Type-only imports are exempt everywhere (they vanish at runtime);
   cycles are judged on runtime edges only.
   timers-through-adapter: only adapters/ and MatchStoreContext import adapters/browser.
