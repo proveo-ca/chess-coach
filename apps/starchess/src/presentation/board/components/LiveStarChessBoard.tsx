@@ -138,6 +138,23 @@ export const LiveStarChessBoard: Component<{
     return out;
   }, undefined, { equals: sameSet });
 
+  const collisionSquares = createMemo((): ReadonlySet<Square> => {
+    const heading = new Set<Square>();
+    const out = new Set<Square>();
+    for (const m of combat.moveCues()) {
+      if (heading.has(m.to)) out.add(m.to);
+      heading.add(m.to);
+    }
+    for (const d of combat.deathCues()) if (d.collision) out.add(d.at);
+    return out;
+  }, undefined, { equals: sameSet });
+
+  const intentGhosts = createMemo(() => {
+    const clash = collisionSquares();
+    const ghosts = overlays().destinations;
+    return clash.size ? ghosts.filter((g) => !clash.has(g.at)) : ghosts;
+  });
+
   // Persist fire overlays for both Command Centers from HP (turn-open checks + path reveal).
   const ccDamage = createMemo<CCDamageCue[]>((prev) => {
     const s = snap();
@@ -324,7 +341,7 @@ export const LiveStarChessBoard: Component<{
         variant={props.variant ?? "eclipse"}
         pieceSet={props.pieceSet}
         phase={phase()}
-        intentGhosts={overlays().destinations}
+        intentGhosts={intentGhosts()}
         intentCanisters={intentCanisters()}
         intentChecks={overlays().checks}
         selected={selectedProp()}

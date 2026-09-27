@@ -129,6 +129,8 @@ export type TimelineCue = CueRouting &
        */
       spentAt?: Square;
       tankMode?: "siege" | "tank";
+      /** A move-phase collision: both movers meet and die here (or a Command Center takes the other). */
+      collision?: boolean;
     }
   | {
       kind: "deploy";

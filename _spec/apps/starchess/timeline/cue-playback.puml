@@ -43,13 +43,14 @@ repeat :read cue at ""index"", ""takeWhile"" its batch;
     :trails + ""spentMines"" for the wake tile; the mine snapshot comes from\n""cue.board"" — ""afterMove"" for a phase-3 chase, ""afterAttack"" otherwise;
     :trails outlive the cue (CSS fade cleared later, fire-and-forget);
   elseif (move-collision death?) then (yes)
-    :death window, then vacate the square in ""displayPlacement"";
+    :only when no wave absorbed it (see the move wave below): death window,\nthen vacate the square in ""displayPlacement"";
     :a mine among them takes ""spentMines"" too — this lane's ""mineBlast""\nbranch has no producer today, kept honest rather than exercised;
   elseif (mine-trigger death — phase 2 **and** phase-3 approach?) then (yes)
     :commit the ""afterMove"" mine snapshot + ""spentMines"" for the boom tile\n(plus the wake tile a chase left behind), then vacate;
   elseif (simultaneous move wave?) then (yes)
     :group by ""cue.group"" — B gas steps, classical, F steps each form one\nwave; opposing sides move together;
     :progress 0 → 1 on the next frame drives the slide; knights flip their\nleg at the elbow; a hoverbike/battleship wave is held one SETTLE_MS\npast touchdown so the aim→rest unwind lands before hand-off;\nwindow = slowest cue in the batch + that settle hold;
+    :**collisions meet at contact** — the wave absorbs the collision deaths\nthat follow it when every one sits on a square ≥ 2 of its movers target\n(core already ends both movers' ""to"" on ""moverContact"".at). A square's\ncontact is the later mover's arrival (""cueDuration"", no settle): there the\ndying movers leave ""playingIds"", vanish from ""displayPlacement"" (the\nboard derives hides from playing cues, so a kept origin would reappear),\nand the square's deaths play for DEATH_MS. A survivor (a Command Center\nthat took the unit) keeps sliding and relocates at the end. Window =\nmax(survivors + settle, contact + DEATH_MS); a wave with no collision\nkeeps the old window.;
   elseif (promo walk-off / promo deploy?) then (yes)
     :walk-offs in parallel (square vacated at the end), then deploys —\npromoted units are placed **before** the deploy animation so nothing\ndownstream sees a late spawn after ""TIMELINE_DONE"";
   else (sequential tail)
