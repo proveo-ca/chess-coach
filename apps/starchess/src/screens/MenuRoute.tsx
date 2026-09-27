@@ -1,11 +1,11 @@
-// SPEC: _spec/apps/starchess/menu-flow.puml, _spec/apps/starchess/architecture/screen-entities.puml
+// SPEC: _spec/apps/starchess/menu-flow.puml, _spec/apps/starchess/architecture/screen-entities.puml, _spec/apps/starchess/architecture/reactivity/app-screens.md
 /**
  * Menu route — `/starchess/` · START → `/single` · Tutorial → `/tutorial/fog/king`
  * · Review → `/review`. Multiplayer stays disabled (Coming Soon).
  * Redirects from `/chess/` play {@link MenuArrival} (Chess mockup → StarChess).
  */
 import { useNavigate, type RouteSectionProps } from "@solidjs/router";
-import { createSignal, onMount, type Component } from "solid-js";
+import { createSignal, onCleanup, onMount, type Component } from "solid-js";
 
 import {
   MenuArrival,
@@ -28,7 +28,7 @@ export const MenuRoute: Component<RouteSectionProps> = () => {
     if (!fromChess) return;
     // Let the Chess mockup read, then play the arrival.
     const id = window.setTimeout(() => setSurface("starchess"), 480);
-    return () => window.clearTimeout(id);
+    onCleanup(() => window.clearTimeout(id));
   });
 
   const onStartGame = (opts: NewGameOptions) => {

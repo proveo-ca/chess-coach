@@ -59,6 +59,10 @@
   grid-template-rows: minmax(0, auto) auto 0fr;
 }
 
+.app-container:not(:has([data-board-column])):not([data-footer-float="true"]) {
+  grid-template-rows: minmax(0, auto) minmax(0, 1fr) minmax(0, auto);
+}
+
 .app-container[data-footer-float="true"]:not(:has([data-region="top"] :global(.floating-move-list)))
   > .footer,
 .app-container[data-footer-float="true"]:not(:has([data-region="top"] :global(.floating-move-list)))
@@ -161,11 +165,11 @@ h1 {
   }
 
   .app-container:not(:has([data-board-column])) {
-    grid-template-rows: minmax(0, auto) 1fr minmax(0, auto);
+    grid-template-rows: minmax(0, auto) minmax(0, 1fr) minmax(0, auto);
   }
 
   .app-container:not(:has([data-board-column]))[data-footer-float="true"] {
-    grid-template-rows: minmax(0, auto) 1fr 0fr;
+    grid-template-rows: minmax(0, auto) minmax(0, 1fr) 0fr;
   }
 
   .board-area {
@@ -216,5 +220,19 @@ h1 {
   .app-container {
     padding-top: 3rem;
     padding-bottom: 0.5rem;
+  }
+}
+
+@media (max-width: 719px) {
+  .app-container:has(:global(.mobile-banner)) {
+    padding-top: var(--mobile-banner-row-height, 48px);
+  }
+
+  .app-container:has(:global(.mobile-sub-banner[data-sub-banner="inline"])) {
+    padding-top: var(--mobile-banner-tall-height, 6.25rem);
+  }
+
+  .app-container:has(:global(.mobile-banner)) :global(.screen-back) {
+    visibility: hidden;
   }
 }

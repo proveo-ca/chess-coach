@@ -65,7 +65,8 @@ test.describe("live achievement bubbles", () => {
   test("Medal of Honor fires when a marine intercepts and dies", async ({ page }) => {
     await open(page, MEDAL);
     await page.getByTestId("turn-end").click();
-    await expect.poll(() => seen(page), { timeout: 20_000 }).toContain("medal:1:c2");
+    // Rises where the Marine fell (c3, after its gas step), not its birth square (c2).
+    await expect.poll(() => seen(page), { timeout: 20_000 }).toContain("medal:1:c3");
   });
 
   test("a short strategic win lists new achievements before VICTORY", async ({ page }) => {
@@ -81,5 +82,26 @@ test.describe("live achievement bubbles", () => {
     await expect(page.getByTestId("match-result-headline")).toHaveText("VICTORY");
     await expect(page.getByTestId("match-result-another-game")).toBeVisible();
     await expect(page.getByTestId("match-result-replay")).toBeVisible();
+  });
+});
+
+test.describe("review achievement bubbles", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto("./");
+    await page.evaluate(() => localStorage.clear());
+  });
+
+  test("Replay raises the winning game's bubbles as review steps forward", async ({ page }) => {
+    await open(page, WIN);
+    await page.getByTestId("turn-end").click();
+    await expect(page.getByTestId("new-achievements-modal")).toBeVisible({ timeout: 20_000 });
+    await page.getByTestId("achievements-continue").click();
+    await page.getByTestId("match-result-replay").click();
+    await expect(page).toHaveURL(/\/review\//);
+    await expect(page.getByTestId("starchess-review-detail")).toBeVisible({ timeout: 20_000 });
+    await armWatcher(page);
+    await page.getByTestId("review-turn-next").click();
+    await expect.poll(() => seen(page), { timeout: 20_000 }).not.toEqual([]);
+    expect(hasLevel(await seen(page), "flawless")).toBe(true);
   });
 });

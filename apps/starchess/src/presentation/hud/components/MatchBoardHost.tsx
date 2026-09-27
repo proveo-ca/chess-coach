@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/starchess/architecture/bridge-match-board-host.puml, _spec/apps/starchess/screens.puml, _spec/apps/starchess/architecture/screen-entities.puml
+// SPEC: _spec/apps/starchess/architecture/bridge-match-board-host.puml, _spec/apps/starchess/screens.puml, _spec/apps/starchess/architecture/screen-entities.puml, _spec/apps/starchess/architecture/reactivity/presentation.md
 /**
  * Structural board row shell — compound regions like {@link Screen}.
  * Chrome assemblers compose Column / BoardHost / Rail; no slot props.
@@ -48,7 +48,7 @@ const BoardHost: Component<BoardHostProps> = (props) => (
 /** Side rail — turn controls as children; Home tools always present. */
 const Rail: Component<RailProps> = (props) => (
   <BoardSideRail
-    controlsVisible={props.controlsVisible ?? props.children != null}
+    controlsVisible={props.controlsVisible ?? "children" in props}
     onHome={props.onHome}
     controls={props.children}
   />

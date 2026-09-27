@@ -36,7 +36,7 @@ export const DeathMarine: Component<DeathMarineProps> = (props) => {
           <Shard index={1} seed={seed()} distScale={0.55}>
             <path fill={team()} d="M24 36 L24 39 Q24 41 25 41 L27 41 Q29 41 29 38z" />
           </Shard>
-          <Shard index={2} seed={seed()} distScale={0.55}>
+          <Shard index={2} lite seed={seed()} distScale={0.55}>
             <ellipse fill={team()} cx="22.5" cy="34" rx="8" ry="5" />
           </Shard>
           <Shard index={3} seed={seed()} distScale={0.55}>
@@ -45,13 +45,13 @@ export const DeathMarine: Component<DeathMarineProps> = (props) => {
           <Shard index={4} seed={seed()} distScale={0.55}>
             <circle fill={team()} cx="30" cy="31" r="2.5" />
           </Shard>
-          <Shard index={5} seed={seed()} distScale={0.6}>
+          <Shard index={5} lite seed={seed()} distScale={0.6}>
             <ellipse fill="#fff" cx="22.5" cy="22" rx="13" ry="14" />
           </Shard>
-          <Shard index={6} seed={seed()} distScale={0.5}>
+          <Shard index={6} lite seed={seed()} distScale={0.5}>
             <path fill="#fff" stroke="none" d="M16 14 Q18 10 24 11 Q20 10 16 14z" />
           </Shard>
-          <Shard index={7} seed={seed()} distScale={0.55}>
+          <Shard index={7} lite seed={seed()} distScale={0.55}>
             <rect fill={gunBlock()} x="8" y="24" width="16" height="9" rx="2" />
           </Shard>
           <Shard index={8} seed={seed()} distScale={0.65}>

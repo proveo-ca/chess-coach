@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   beginScTurn,
   endScTurn,
+  formatScFen,
   parseScFen,
   refillTurnGas,
 } from "@chess-coach/starchess-core";
@@ -51,6 +52,20 @@ describe("beginScTurn", () => {
     expect(begun.changed).toBe(false);
     expect(begun.next.gas).toEqual({ w: 1, b: 1 });
     expect(refillTurnGas(empty).gas).toEqual({ w: 1, b: 1 });
+  });
+
+  it("refills net of specials already queued, so the snap still round-trips", () => {
+    const seeded = parseScFen(
+      "SCFEN|3r4/pkppp3/npb5/4P3/3P4/N2B1P2/2PNR3/4K3|12|33|P|G:21:22|M:w:b1|S:d8|Q:w:;b:B=spiderMine:a6:a6,C=a6c5",
+    );
+    const refilled = refillTurnGas(seeded);
+    expect(refilled.gas).toEqual({ w: 2, b: 1 });
+    expect(() => parseScFen(formatScFen(refilled))).not.toThrow();
+
+    const begun = beginScTurn(seeded);
+    expect(begun.changed).toBe(false);
+    expect(begun.next.gas).toEqual({ w: 2, b: 1 });
+    expect(() => parseScFen(formatScFen(begun.next))).not.toThrow();
   });
 });
 

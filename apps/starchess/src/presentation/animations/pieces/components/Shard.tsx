@@ -1,3 +1,4 @@
+// SPEC: _spec/apps/starchess/animation-pipeline.md
 import type { Component, JSX } from "solid-js";
 
 import { shardFlightStyle } from "~/presentation/animations/deathAnim";
@@ -7,6 +8,7 @@ type ShardProps = {
   seed: number;
   /** Scale flight distance (Marine uses ~0.55 so the pop stays local). */
   distScale?: number;
+  lite?: boolean;
   children: JSX.Element;
 };
 
@@ -19,7 +21,7 @@ export const Shard: Component<ShardProps> = (props) => {
   };
 
   return (
-    <g data-shard style={style()}>
+    <g data-shard data-shard-lite={props.lite ? "" : undefined} style={style()}>
       {props.children}
     </g>
   );

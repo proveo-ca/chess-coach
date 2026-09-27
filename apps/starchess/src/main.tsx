@@ -1,4 +1,4 @@
-// SPEC: _spec/_plans/chess-ui-primitives.puml, _spec/apps/starchess/deployment.puml
+// SPEC: _spec/_plans/chess-ui-primitives.puml, _spec/apps/starchess/deployment.puml, _spec/apps/starchess/architecture/reactivity/components.md
 import { UiProvider } from "@chess-coach/ui-web/provider";
 /**
  * StarChess router entry — menu `/`, live `/single`, replays `/review` + `/review/:id`,
@@ -12,6 +12,9 @@ import { lazy } from "solid-js";
 import { render } from "solid-js/web";
 
 import { initPerfDebug } from "~/debug/perfMonitor";
+import { initReactivityProbe } from "~/debug/reactivityProbe";
+// Side effect: stamps <html data-vfx-tier> on every route, not just after the menu.
+import "~/store/vfxTierStore";
 import { MenuRoute } from "~/screens/MenuRoute.tsx";
 
 // The menu is the landing page; every other screen is its own chunk, fetched
@@ -29,6 +32,7 @@ import "~/theme.css";
 import "~/styles/index.css";
 
 initPerfDebug();
+initReactivityProbe();
 
 const root = document.getElementById("root");
 if (!root) {

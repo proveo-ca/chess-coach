@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/starchess/screens.puml, _spec/apps/starchess/architecture/screen-entities.puml
+// SPEC: _spec/apps/starchess/screens.puml, _spec/apps/starchess/architecture/screen-entities.puml, _spec/apps/starchess/architecture/reactivity/tutorial.md
 /**
  * Tutorial review host — typewriter turn/phase footer (Check → Intent → Resolve).
  */
@@ -6,7 +6,6 @@ import { placementToMap, formatScFen } from "@chess-coach/starchess-core";
 import type { StarChessColor } from "@chess-coach/starchess-core";
 import type { Square } from "chess.js";
 import {
-  Show,
   createEffect,
   createMemo,
   createSignal,
@@ -18,9 +17,10 @@ import {
 
 import { createMatchStore, MatchStoreProvider, useMatchStore } from "~/app/MatchStoreContext";
 import { createMatchStateFromReviewHistory } from "~/app/reviewHistory";
-import { displayedSnapshot } from "~/app/selectors";
+import { readDisplayedSnapshot } from "~/app/selectors";
 import { CoachAvatar } from "~/components/atoms/CoachAvatar";
 import { StarChessMobileBanner as MobileBanner } from "@chess-coach/ui-web/atoms/StarChessMobileBanner";
+import { StarChessMobileSubBanner as MobileSubBanner } from "@chess-coach/ui-web/atoms/StarChessMobileSubBanner";
 import { ReviewTurnNav } from "@chess-coach/ui-web/atoms/ReviewTurnNav";
 import { Screen } from "@chess-coach/ui-web/primitives/Screen";
 import { ScreenBackNav } from "~/components/primitives/ScreenBackNav";
@@ -45,7 +45,9 @@ import {
 import type { BoardSkin, PieceSet, VisionMode } from "~/types/board";
 import type { KerriganEmotion } from "~/types/coach";
 import type { ReviewHistory } from "~/types/review";
-import type { TypewriterBeat } from "~/types/tutorial";
+import type { TutorialBoardArrow, TypewriterBeat } from "~/types/tutorial";
+
+const NO_ARROWS: readonly TutorialBoardArrow[] = [];
 
 const syncTankModes = (
   placement: string,
@@ -96,11 +98,13 @@ export type TutorialReviewHostProps = {
 
 const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
   const store = useMatchStore();
-  const snap = createMemo(() => displayedSnapshot(store.state()));
+  const snap = createMemo(() => readDisplayedSnapshot(store));
+  const scfen = createMemo(() => formatScFen(snap()));
+  const timelineActive = createMemo(() => store.timeline().active);
   const [beatIndex, setBeatIndex] = createSignal(0);
   const [busy, setBusy] = createSignal(false);
 
-  const beats = createMemo(() => buildTypewriterBeats(store.state().settledResolves));
+  const beats = createMemo(() => buildTypewriterBeats(store.shell().settledResolves));
   /**
    * Turn comes from the most recent `turn` beat, not the store: the store's
    * review turn lags the cursor, which mislabelled `Turn 2 · Check` as
@@ -116,19 +120,27 @@ const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
     return turn || reviewTurnNumber();
   };
 
-  const arrows = createMemo(() => {
-    if (!props.intentArrows || store.reviewPhase() !== "intent") return [];
+  const arrows = createMemo((): readonly TutorialBoardArrow[] => {
+    if (!props.intentArrows || store.reviewPhase() !== "intent") return NO_ARROWS;
     const actions = store.reviewIntentActions();
-    return actions ? intentArrows(snap().placement, actions) : [];
+    return actions ? intentArrows(snap().placement, actions) : NO_ARROWS;
   });
 
   const beatLabel = () => labelForBeat(beats()[beatIndex()], beatTurn());
 
-  const reviewTurnNumber = () => {
-    const s = store.state();
+  const reviewTurnNumber = createMemo(() => {
+    const s = store.shell();
     const settled = s.settledSnapshots[s.reviewIndex];
     return Math.max(1, settled?.turn ?? snap().turn);
-  };
+  });
+
+  const sidebarReview = createMemo(() => ({
+    turn: reviewTurnNumber(),
+    phase: store.reviewPhase(),
+    hideDualNav: true,
+  }));
+  const backDisabled = createMemo(() => beatIndex() <= 0 || busy());
+  const forwardDisabled = createMemo(() => beatIndex() >= beats().length - 1 || busy());
 
   createEffect(() => {
     const s = snap();
@@ -136,8 +148,6 @@ const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
   });
 
   createEffect(() => {
-    const s = store.state();
-    const board = snap();
     const list = beats();
     const idx = beatIndex();
     const beat = list[idx];
@@ -149,9 +159,8 @@ const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
     setTutorialNarration({
       reviewPhase: store.reviewPhase(),
       // Busy covers resolve VFX await so completeWhen waits for Turn 3 end.
-      timelineActive: s.timeline.active || busy(),
-      scfen: formatScFen(board),
-      turn: typewriterTurn || reviewTurnNumber(),
+      timelineActive: timelineActive() || busy(),
+      scfen: scfen(),
       typewriterTurn: typewriterTurn || undefined,
       typewriterBeat: beat?.kind,
     });
@@ -302,21 +311,17 @@ const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
 
   return (
     <Screen>
-      {/* Dynamic-only chrome (CSS-gated): banner + board, nothing else. */}
-      {/* Stepper hugs the right in the `turn` slot, matching Review's arrows. */}
-      <MobileBanner
-        onBack={() => props.onHome?.()}
-        turn={
-          <ReviewTurnNav
-            onBack={goPrev}
-            onForward={() => void goNext()}
-            backDisabled={beatIndex() <= 0 || busy()}
-            forwardDisabled={beatIndex() >= beats().length - 1 || busy()}
-          >
-            <span class={styles.phaseLabel}>{beatLabel()}</span>
-          </ReviewTurnNav>
-        }
-      />
+      <MobileBanner onBack={() => props.onHome?.()} title={props.reviewLabel} />
+      <MobileSubBanner>
+        <ReviewTurnNav
+          onBack={goPrev}
+          onForward={() => void goNext()}
+          backDisabled={backDisabled()}
+          forwardDisabled={forwardDisabled()}
+        >
+          <span class={styles.phaseLabel}>{beatLabel()}</span>
+        </ReviewTurnNav>
+      </MobileSubBanner>
       <Screen.Header>
         <div class={styles.headerSlot}>
           <div class={styles.reviewChrome}>
@@ -332,8 +337,8 @@ const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
                 keyboard
                 onBack={goPrev}
                 onForward={() => void goNext()}
-                backDisabled={beatIndex() <= 0 || busy()}
-                forwardDisabled={beatIndex() >= beats().length - 1 || busy()}
+                backDisabled={backDisabled()}
+                forwardDisabled={forwardDisabled()}
               >
                 <span class={styles.phaseLabel} data-testid="tutorial-review-phase">
                   {beatLabel()}
@@ -363,18 +368,12 @@ const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
           onHome={props.onHome}
           controlsVisible={props.turnChrome === "sidebar"}
         >
-          <TurnBarSidebar
-            review={{
-              turn: reviewTurnNumber(),
-              phase: store.reviewPhase(),
-              hideDualNav: true,
-            }}
-          />
+          <TurnBarSidebar review={sidebarReview()} />
         </MatchBoardHost.Rail>
       </MatchBoardHost>
       <Screen.Footer>
         <div class={styles.footerStack}>
-          <Show when={props.footerExtra}>{props.footerExtra}</Show>
+          {props.footerExtra}
         </div>
       </Screen.Footer>
     </Screen>

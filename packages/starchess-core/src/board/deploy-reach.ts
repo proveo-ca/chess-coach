@@ -61,25 +61,33 @@ const canLand = (unit: StarChessPiece, at: Square): boolean => {
   return rank !== 1 && rank !== 8;
 };
 
-/** Would any legal deploy by `color` attack `target`? */
-export const deployCovers = (q: DeployReachQuery, target: Square): boolean => {
+export type DeployCover = { at: Square; unit: StarChessPiece };
+
+/** Every legal deploy by `color` that attacks `target`, or lands on it. */
+export const deployCoverers = (q: DeployReachQuery, target: Square): DeployCover[] => {
+  const out: DeployCover[] = [];
   const targets = deployTargets(q);
-  if (targets.length === 0) return false;
   const units = deployableUnits(q.minerals);
-  if (units.length === 0) return false;
+  if (targets.length === 0 || units.length === 0) return out;
 
   const probe = new Map(q.map);
   for (const at of targets) {
-    if (at === target && units.some((unit) => canLand(unit, at))) return true;
     const occupant = probe.get(at);
     for (const unit of units) {
       if (!canLand(unit, at)) continue;
+      if (at === target) {
+        out.push({ at, unit });
+        continue;
+      }
       probe.set(at, { type: unit, color: q.color });
-      const hit = attacksSquare(probe, at, target);
-      if (hit) return true;
+      if (attacksSquare(probe, at, target)) out.push({ at, unit });
     }
     if (occupant === undefined) probe.delete(at);
     else probe.set(at, occupant);
   }
-  return false;
+  return out;
 };
+
+/** Would any legal deploy by `color` attack `target`? */
+export const deployCovers = (q: DeployReachQuery, target: Square): boolean =>
+  deployCoverers(q, target).length > 0;

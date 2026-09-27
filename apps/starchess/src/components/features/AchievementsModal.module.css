@@ -23,25 +23,6 @@
   overflow: auto;
   text-transform: none;
   letter-spacing: 0;
-  scrollbar-width: thin;
-  scrollbar-color: #7cff4a #041208;
-}
-
-.grid::-webkit-scrollbar {
-  width: 0.5rem;
-}
-
-.grid::-webkit-scrollbar-track {
-  background: #041208;
-}
-
-.grid::-webkit-scrollbar-thumb {
-  background: #7cff4a;
-  border: 2px solid #041208;
-}
-
-.grid::-webkit-scrollbar-thumb:hover {
-  background: #b6ff8a;
 }
 
 @media (min-width: 720px) {

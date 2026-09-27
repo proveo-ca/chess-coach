@@ -1,3 +1,4 @@
+/* // SPEC: _spec/apps/starchess/animation-pipeline.md */
 .boardOverlay {
   position: absolute;
   pointer-events: none;
@@ -219,6 +220,29 @@
     filter: saturate(0.45) brightness(0.78);
     transform: translate(var(--rx, 0), var(--ry, 12px)) rotate(var(--rspin, 0deg)) scale(0.92);
   }
+}
+
+@keyframes liteBurst {
+  0%,
+  30% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.08);
+  }
+}
+
+:global(html[data-vfx-tier="lite"]) .dyingDrama :global([data-shard]:not([data-shard-lite])),
+:global(html[data-vfx-tier="lite"]) .dyingMarine :global([data-shard]:not([data-shard-lite])) {
+  animation: none;
+}
+
+:global(html[data-vfx-tier="lite"]) .dyingDrama .pieceFace > svg,
+:global(html[data-vfx-tier="lite"]) .dyingMarine .pieceFace > svg {
+  transform-origin: center;
+  animation: liteBurst var(--death-ms) ease-in 1 forwards;
 }
 
 /* ── Phase bindings — every animation is exactly --death-ms, no delay ─ */

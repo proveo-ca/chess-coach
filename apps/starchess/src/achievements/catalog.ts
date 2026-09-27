@@ -173,11 +173,13 @@ const FAMILIES: readonly Family[] = [
     title: "Let there be Light",
     difficulty: "hard",
     type: "scfen",
+    // Captures within 3 squares of the CC; an enemy reaching the 8 squares
+    // beside it ends the count for the game.
     measure: { kind: "ccRadiusCaptures" },
     scale: "score",
     goal: "atLeast",
     thresholds: [3, 7, 10, 14, 20],
-    description: (n) => `Capture ${count(n, "enemy unit")} at a 3x3 radius around your Command Center`,
+    description: (n) => `Capture ${count(n, "enemy unit")} in a 7x7 around your Command Center, none adjacent`,
   },
 ];
 

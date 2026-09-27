@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/starchess/architecture/board-entities.puml
+// SPEC: _spec/apps/starchess/architecture/board-entities.puml, _spec/apps/starchess/architecture/reactivity/presentation.md
 /**
  * Map match timeline cues → AnimationStage overlay props.
  *
@@ -13,6 +13,7 @@ import { createMemo } from "solid-js";
 import type { Square } from "chess.js";
 
 import { deriveVisualFrame } from "~/presentation/animations/visualFrame";
+import { sameSet } from "~/presentation/board/memoEquals";
 import { capCues, capForDensity, type VfxDensity } from "~/presentation/animations/vfxPerf";
 import type { MatchStore, TimelineCue } from "~/types/match";
 import type {
@@ -55,13 +56,6 @@ const stablePlaying = <K extends TimelineCue["kind"]>() => {
   };
 };
 
-const playAttacks = stablePlaying<"attack">();
-const playDeaths = stablePlaying<"death">();
-const playMoves = stablePlaying<"move">();
-const playDeploys = stablePlaying<"deploy">();
-const playGas = stablePlaying<"gasDrop">();
-const playMissiles = stablePlaying<"mineMissile">();
-
 const asMineMissile = (c: CueOf<"mineMissile">): MineMissileCue => ({
   id: c.id,
   from: c.from,
@@ -71,6 +65,13 @@ const asMineMissile = (c: CueOf<"mineMissile">): MineMissileCue => ({
 
 export const useCombatOverlays = (store: MatchStore) => {
   const tl = () => store.timeline();
+
+  const playAttacks = stablePlaying<"attack">();
+  const playDeaths = stablePlaying<"death">();
+  const playMoves = stablePlaying<"move">();
+  const playDeploys = stablePlaying<"deploy">();
+  const playGas = stablePlaying<"gasDrop">();
+  const playMissiles = stablePlaying<"mineMissile">();
 
   /**
    * Review playback runs under phase === "gameOver" while the timeline is
@@ -225,7 +226,7 @@ export const useCombatOverlays = (store: MatchStore) => {
       jumpCues: jumps,
       deployCues: deploys,
     }).hideSquares;
-  });
+  }, undefined, { equals: sameSet });
 
   return {
     attackCues,

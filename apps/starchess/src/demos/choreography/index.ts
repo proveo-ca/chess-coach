@@ -14,6 +14,7 @@ import { useMineRa1Counter } from "~/demos/choreography/useMineRa1Counter";
 import { usePawnGasDefenseCounter } from "~/demos/choreography/usePawnGasDefenseCounter";
 import { useShipSnipeCounter } from "~/demos/choreography/useShipSnipeCounter";
 import { useSiegeFocusCounter } from "~/demos/choreography/useSiegeFocusCounter";
+import { useTurtledOpeningScript } from "~/demos/choreography/useTurtledOpeningScript";
 import type { MatchStore } from "~/types/match";
 import type { LessonChoreographyId } from "~/types/tutorial";
 
@@ -49,4 +50,5 @@ export const CHOREOGRAPHY = {
   pawnGasDefenseCounter: usePawnGasDefenseCounter,
   shipSnipeCounter: useShipSnipeCounter,
   mineRa1Counter: useMineRa1Counter,
+  turtledOpeningScript: useTurtledOpeningScript,
 } satisfies Record<LessonChoreographyId, LessonChoreography>;

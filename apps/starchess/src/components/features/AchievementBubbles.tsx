@@ -1,10 +1,10 @@
-// SPEC: _spec/_plans/starchess-achievements.puml
+// SPEC: _spec/_plans/starchess-achievements.puml, _spec/apps/starchess/architecture/reactivity/components.md
 /**
  * Live achievement layer. Places each bubble on its origin square and
  * dismisses it from the live tally when the atom's lifetime ends.
  */
 import type { Square } from "chess.js";
-import { For, type Component } from "solid-js";
+import { For, createMemo, type Component } from "solid-js";
 
 import { BUBBLE_LIFE_MS, BUBBLE_RISE_SQUARES } from "~/achievements/analysis";
 import { dismissAchievementBubble } from "~/achievements/achievementLive";
@@ -27,8 +27,9 @@ export const AchievementBubbles: Component<AchievementBubblesProps> = (props) =>
     <div class={styles.layer} data-starchess-achievement-bubbles>
       <For each={props.bubbles}>
         {(bubble) => {
-          const box = () =>
-            squareBoxStyle(bubble.origin as Square, props.boardWidth, props.boardHeight);
+          const box = createMemo(() =>
+            squareBoxStyle(bubble.origin as Square, props.boardWidth, props.boardHeight),
+          );
           return (
             <AchievementBubbleLife
               icon={bubble.icon}

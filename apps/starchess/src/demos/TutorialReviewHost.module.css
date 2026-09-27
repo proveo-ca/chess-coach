@@ -80,6 +80,12 @@
   }
 }
 
+@media (max-width: 719px) {
+  .reviewNav {
+    display: none;
+  }
+}
+
 /*
  * Guide bubble. Unlike the lesson hosts, this header has no desktop coach —
  * the top band is the review arrows — so "beside Kerrigan" would park the line

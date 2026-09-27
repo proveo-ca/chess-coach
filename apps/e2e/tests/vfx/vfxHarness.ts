@@ -75,7 +75,13 @@ export const dismissTurnBonus = async (page: Page) => {
 /** Canonical deep link: baseURL is `/starchess/`. */
 export const gotoScfen = async (page: Page, scfen: string) => {
   await page.goto(`single?scfen=${encodeURIComponent(scfen)}`);
-  await expect(page.getByTestId("starchess-board-chrome")).toBeVisible({ timeout: 20_000 });
+  await expect(
+    page
+      .getByTestId("starchess-board-chrome")
+      .or(page.getByTestId("mobile-banner"))
+      .filter({ visible: true })
+      .first(),
+  ).toBeVisible({ timeout: 20_000 });
   await dismissTurnBonus(page);
   await expect(page.locator(`${ROOT}`)).toHaveCount(1, { timeout: 10_000 });
 };

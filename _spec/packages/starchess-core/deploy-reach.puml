@@ -19,6 +19,7 @@ title StarChess Core · Deploy reach — one table, every caller
 package "board/deploy-reach.ts" {
   component "deployTargets(q)\n→ Square[] — legal landings" as DT <<app>>
   component "deployableUnits(minerals)\n→ affordable subset of DEPLOYABLE_UNITS" as DU <<db>>
+  component "deployCoverers(q, target)\n→ DeployCover[] {at, unit} — every witness" as DW <<app>>
   component "deployCovers(q, target)\n→ boolean — exhaustive; a false is a proof" as DC <<app>>
 }
 
@@ -30,15 +31,18 @@ package "reads (pure)" {
 
 package "callers" {
   component "ai/strategies/captures.ts\ndeployDefends — POST-move board,\nenemy side, snap.gasIncome[enemy],\nctx.storedFor(enemy)" as CAP <<app>>
+  component "apps/starchess tutorial/lessonTactics.ts\nccDeployPressure — deploy that attacks the\nvisible enemy CC or its ring (coach hint)" as TUT <<app>>
 }
 
-DC ARROW_MAIN DT
-DC ARROW_MAIN DU
+DC ARROW_MAIN DW : length > 0
+DW ARROW_MAIN DT
+DW ARROW_MAIN DU
 DT ARROW_MAIN MC : drop mined landings
 DT ARROW_MAIN K : gas gate
 DU ARROW_MAIN K : UNIT_COST
-DC ARROW_MAIN PL : attacksSquare on a probe map
+DW ARROW_MAIN PL : attacksSquare on a probe map
 CAP ARROW_MAIN DC
+TUT ARROW_MAIN DW
 
 note right of DT
   **The table.** Every rule a Command Center deploy obeys, once:

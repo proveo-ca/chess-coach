@@ -11,6 +11,7 @@ import {
   intentOverlayViewer,
 } from "~/app/intentOverlayPolicy";
 import { readDisplayedSnapshot } from "~/app/selectors";
+import { sameFlat } from "~/presentation/board/memoEquals";
 import { intentOverlaysFromQueue } from "~/presentation/combat/intentOverlays";
 import { reviewVisionFilter } from "~/store/reviewVisionStore";
 import type { VisionMode } from "~/types/board";
@@ -48,4 +49,4 @@ export const useBoardVision = (
   createMemo(() => {
     const o = overrides?.() ?? {};
     return boardVisionFor(store.shell().phase, reviewVisionFilter(), o);
-  });
+  }, undefined, { equals: sameFlat });

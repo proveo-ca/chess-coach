@@ -1,8 +1,10 @@
-// SPEC: _spec/apps/starchess/architecture/timeline-perf.puml, _spec/apps/starchess/architecture/timeline-commit-batching.mmd, _spec/apps/starchess/animation-pipeline.md
+// SPEC: _spec/apps/starchess/architecture/timeline-perf.puml, _spec/apps/starchess/architecture/timeline-commit-batching.mmd, _spec/apps/starchess/animation-pipeline.md, _spec/apps/starchess/architecture/reactivity/presentation.md
 /**
  * Binder-internal coalesce: same-turn onCommit patches → ≤1 TIMELINE_COMMIT.
  * Not a second clock — only MatchStore dispatch writes presentation state.
  */
+import { batch } from "solid-js";
+
 import type { MatchAction, TimelineCallbacks, TimelineCommitPatch } from "~/types/match";
 import type { Scheduler } from "~/types/ports";
 
@@ -48,8 +50,10 @@ export const createTimelineCommitGate = (
   return {
     onStart: (cues, placement) => {
       if (cancelled) return;
-      flush();
-      dispatch({ type: "TIMELINE_START", cues, placement });
+      batch(() => {
+        flush();
+        dispatch({ type: "TIMELINE_START", cues, placement });
+      });
     },
     onCommit: (patch) => {
       if (cancelled) return;
@@ -79,10 +83,11 @@ export const bindTimeline = (
     callbacks: {
       onStart: gate.onStart,
       onCommit: gate.onCommit,
-      onDone: () => {
-        gate.flush();
-        onDone();
-      },
+      onDone: () =>
+        batch(() => {
+          gate.flush();
+          onDone();
+        }),
     },
     cancelGate: gate.cancel,
   };

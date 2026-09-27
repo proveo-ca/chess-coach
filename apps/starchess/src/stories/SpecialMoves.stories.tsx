@@ -21,9 +21,9 @@ const meta = {
 
 export default meta;
 
-export const Marine = lessonStory("specials", "marine");
 export const CommandCenter = lessonStory("specials", "cc");
+export const Marine = lessonStory("specials", "marine");
 export const Hoverbike = lessonStory("specials", "hoverbike");
 export const Mecha = lessonStory("specials", "mecha");
-export const BattleShip = lessonStory("specials", "ship");
 export const SiegeTank = lessonStory("specials", "tank");
+export const BattleShip = lessonStory("specials", "ship");

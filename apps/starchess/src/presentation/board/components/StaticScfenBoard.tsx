@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/starchess/demos.puml, _spec/apps/starchess/architecture/board-entities.puml
+// SPEC: _spec/apps/starchess/demos.puml, _spec/apps/starchess/architecture/board-entities.puml, _spec/apps/starchess/architecture/reactivity/presentation.md
 /**
  * Static SCFEN board frame — maps gallery / open-board samples.
  * Always mounts on Screen grid (top · board · footer). No match store / DualNav.
@@ -25,6 +25,7 @@ export type StaticScfenBoardProps = {
 export const StaticScfenBoard: Component<StaticScfenBoardProps> = (props) => {
   const snap = createMemo(() => parseScFen(props.scfen));
   const mode = () => props.visionMode ?? (props.fog === false ? "observer" : "player");
+  const fog = createMemo(() => (mode() === "observer" ? false : props.fog !== false));
   return (
     <Screen>
       <Screen.SidebarInset />
@@ -33,7 +34,7 @@ export const StaticScfenBoard: Component<StaticScfenBoardProps> = (props) => {
           <AnimationStage
             snapshot={snap()}
             viewer={props.viewer ?? "w"}
-            fog={mode() === "observer" ? false : props.fog !== false}
+            fog={fog()}
             visionMode={mode()}
             variant={props.boardVariant ?? "eclipse"}
           />

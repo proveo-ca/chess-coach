@@ -47,6 +47,31 @@ use max batch impact so victims sync.
 Thin adapter only: `delay(ms, () => …)` with `runId` checks before commit/done.
 No direct board writes from timers — only MatchStore dispatches.
 
+## Cue clock sync (`syncToClock`)
+
+The timeline's wall-clock pace is authoritative — multiplayer clients advance in
+lockstep — so a cue's slot never stretches for a slow device. A CSS animation,
+though, starts only once the browser has styled the new cue; under load that
+first frame ate ~40% of a 500ms death slot and the cue unmounted mid-shatter.
+`presentation/animations/clockSync.ts` (`syncToClock(el)`, a ref on each death /
+attack / gas-drop cue root) fast-forwards the cue's animations to the time since
+mount for its first two frames: a late cue drops its opening and still lands its
+ending on time. Never fix a cut animation by making the timeline wait. The
+detector is `apps/e2e/tests/vfx/vfx-fps-throttle.spec.ts`. The largest seek per cue is also the
+menu CPU probe's signal (`onClockLag` → `vfxProbe.ts`, see `vfx-tier.puml`).
+
+## Lite-tier death burst (`DeathAnimation.module.css`, `Shard lite`)
+
+On the lite VFX tier each unit keeps **four art-picked parts** (`<Shard lite>`,
+`data-shard-lite`) on their full-tier flight; every other shard's animation is
+dropped and rides one `liteBurst` of the unit's svg instead of ~12 tracks of
+its own. Every part stays drawn — a hidden shard is a hole. Pick the lite parts
+that read as the unit (Tank keeps a
+separate four in tank and siege mode). `liteBurst` holds full opacity to 30%
+(through the boom flash) before an `ease-in` fade to `scale(1.08)`, so the four
+flyers inside it stay readable for their whole flight. Booms and the Command
+Center rubble keep their full-tier look. Tier selection itself: `vfx-tier.puml`.
+
 ## Commit gate (shipped)
 
 Binder-internal coalesce between `playTimeline` callbacks and `dispatch`:

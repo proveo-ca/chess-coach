@@ -17,7 +17,7 @@ const renderLesson = (props: Partial<Parameters<typeof LiveLessonHost>[0]>) => {
       <Route
         path="*"
         component={() => (
-          <LiveLessonHost board={lessonBoard("king", "king-attack-3")} {...props} />
+          <LiveLessonHost board={lessonBoard("live-play", "live-play-attack-3")} {...props} />
         )}
       />
     </MemoryRouter>

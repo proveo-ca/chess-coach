@@ -146,7 +146,7 @@ note bottom
   promotion tiles (``specialCopyFor``) and the three ResourceBar strips.
   Anchors are found by test id and measured into a portal, so ``DeployModal`` /
   ``PromotionModal`` / ``ResourceBar`` carry no tutorial branch.
-  **Full-match exception:** final lesson ``king-attack-3`` (``fullMatchHud``)
+  **Full-match exception:** final lesson ``live-play-attack-3`` (``fullMatchHud``)
   renders the ``/single``-style top pane — Home + matchTitle + ResourceBar +
   status line — with no coach header / mobile hero; guide bubble docks below
   the pane (``hudGuideSlot``). Status line is gated ``!tutorial || fullMatchHud``

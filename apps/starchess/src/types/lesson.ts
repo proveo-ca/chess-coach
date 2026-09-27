@@ -4,11 +4,12 @@ import type { JSX } from "solid-js";
 
 import type { BoardSkin, BoardVariant, PieceSet } from "~/types/board";
 import type { KerriganEmotion } from "~/types/coach";
-import type { LiveLessonBoard, TutorialBoardHint } from "~/types/tutorial";
+import type { LiveLessonBoard, TutorialBeat } from "~/types/tutorial";
 
 export type LiveLessonHostProps = {
   /** Seed + board chrome from the lesson catalog. */
   board: LiveLessonBoard;
+  lessonKey?: string;
   /** Publish into `tutorialNarrationStore` (tutorial lessons only). */
   narrate?: boolean;
   /** Tutorial chrome — HOME-only rail, no ExitGameConfirm. */
@@ -16,11 +17,13 @@ export type LiveLessonHostProps = {
   /** Full `/single`-style top pane instead of the coach lesson header. */
   fullMatchHud?: boolean;
   matchTitle?: string;
+  bannerTitle?: string;
   /** Player fog veil (fog lessons). */
   fog?: boolean;
   boardVariant?: BoardSkin;
   pieceSet?: PieceSet;
   hideResources?: boolean;
+  hudResources?: boolean;
   hideGas?: boolean;
   turnChrome?: "bar" | "sidebar" | "none";
   /** Storybook override; otherwise the catalog decides. */
@@ -31,7 +34,7 @@ export type LiveLessonHostProps = {
   guideBubble?: JSX.Element;
   footerExtra?: JSX.Element;
   /** Script-driven destination rings, resolved against the live SCFEN. */
-  boardHints?: readonly TutorialBoardHint[];
+  boardHints?: readonly TutorialBeat[];
   /** Wrap in a sky shell; omit when nested in one already. */
   shell?: BoardVariant;
   /** Storybook control — override the viewer's remaining vespene. */

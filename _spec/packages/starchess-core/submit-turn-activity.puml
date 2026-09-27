@@ -13,7 +13,7 @@ partition "beginScTurn — turn open, **before** players choose intent" {
   :require phase **P**;
   :fog-visible legal king-checks (""collectLegalCCChecks"")\n→ ""applyPendingCCShots"";
   if (nothing fired?) then (yes)
-    :refill gas from income, clear ""U:"", keep the queue → return unchanged;
+    :refill gas to income − ""queueGasSpent"" of the kept queue, clear ""U:"" → return unchanged;
     stop
   endif
   :""turn"" does **not** advance unless a king died (then phase **O**, turn+1);

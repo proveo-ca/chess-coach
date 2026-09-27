@@ -1,0 +1,51 @@
+/* // SPEC: _spec/apps/starchess/navigation-chrome.md */
+.wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.wrap[data-cancel-hint] > :first-child {
+  border-color: var(--sc-guide-green, #3ecf8e);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--sc-guide-green, #3ecf8e) 70%, transparent);
+}
+
+.chevron {
+  position: absolute;
+  left: 50%;
+  top: -14px;
+  width: 14px;
+  height: 12px;
+  fill: none;
+  stroke: var(--sc-guide-green, #3ecf8e);
+  stroke-width: 2.25;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 1px rgb(0 0 0 / 0.95));
+  transform: translateX(-50%);
+  pointer-events: none;
+  animation: cancel-hint-bob 1.2s ease-in-out infinite;
+}
+
+@keyframes cancel-hint-bob {
+  0%,
+  100% { transform: translate(-50%, -3px); }
+  50% { transform: translate(-50%, 2px); }
+}
+
+.chevron[data-direction="right"] {
+  left: -18px;
+  top: 50%;
+  animation-name: cancel-hint-nudge;
+}
+
+@keyframes cancel-hint-nudge {
+  0%,
+  100% { transform: translate(-3px, -50%) rotate(-90deg); }
+  50% { transform: translate(2px, -50%) rotate(-90deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chevron {
+    animation: none;
+  }
+}

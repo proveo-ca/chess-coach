@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/starchess/architecture/base-screen.puml, _spec/apps/starchess/screens.puml
+// SPEC: _spec/apps/starchess/architecture/base-screen.puml, _spec/apps/starchess/screens.puml, _spec/apps/starchess/architecture/reactivity/presentation.md
 /**
  * Footer gas rack — drag a vespene canister onto a friendly unit to arm its special.
  * Match HUD (lives with ResourceBar / TurnBar), not the app shell kit.
@@ -8,6 +8,7 @@ import type { PieceSymbol, Square } from "chess.js";
 import {
   For,
   Show,
+  batch,
   createEffect,
   createMemo,
   createSignal,
@@ -69,7 +70,7 @@ const RESERVE_SLOTS = Array.from({ length: MAX_RESERVES }, (_, i) => i);
 
 export const GasRack: Component<GasDeployProps> = (props) => {
   const store = useMatchStore();
-  const gas = () => Math.max(0, energyRemaining(store));
+  const gas = createMemo(() => Math.max(0, energyRemaining(store)));
 
   const [drag, setDrag] = createSignal<DragState | null>(null);
   const [hover, setHover] = createSignal<HoverState | null>(null);
@@ -102,7 +103,7 @@ export const GasRack: Component<GasDeployProps> = (props) => {
     return drag() ? Math.max(0, g - Math.max(1, dragCount())) : g;
   };
 
-  const reserveCount = () => Math.max(0, dockCount() - 1);
+  const reserveCount = createMemo(() => Math.max(0, dockCount() - 1));
 
   const clearReturnTimer = () => {
     if (returnTimer != null) {
@@ -193,23 +194,26 @@ export const GasRack: Component<GasDeployProps> = (props) => {
     return next;
   };
 
-  const finishCancel = () => {
-    clearReturnTimer();
-    setDrag(null);
-    setHover(null);
-    props.onCancel?.();
-  };
+  const finishCancel = () =>
+    batch(() => {
+      clearReturnTimer();
+      setDrag(null);
+      setHover(null);
+      props.onCancel?.();
+    });
 
   const beginReturn = (fromX: number, fromY: number) => {
     const rect = circleEl?.getBoundingClientRect();
     const tx = rect ? rect.left + rect.width / 2 : fromX;
     const ty = rect ? rect.top + rect.height / 2 : fromY;
-    setHover(null);
-    setDrag({
-      pointerId: -1,
-      x: fromX,
-      y: fromY,
-      returning: true,
+    batch(() => {
+      setHover(null);
+      setDrag({
+        pointerId: -1,
+        x: fromX,
+        y: fromY,
+        returning: true,
+      });
     });
     // Next frame → target so CSS transition runs.
     requestAnimationFrame(() => {
@@ -267,8 +271,10 @@ export const GasRack: Component<GasDeployProps> = (props) => {
         bail();
         return;
       }
-      setDrag({ ...d, x: e.clientX, y: e.clientY });
-      resolveHover(e.clientX, e.clientY);
+      batch(() => {
+        setDrag({ ...d, x: e.clientX, y: e.clientY });
+        resolveHover(e.clientX, e.clientY);
+      });
     };
 
     const onUp = (e: PointerEvent) => {
@@ -329,8 +335,10 @@ export const GasRack: Component<GasDeployProps> = (props) => {
       target = null;
     }
     if (target) {
-      setDrag(null);
-      setHover(null);
+      batch(() => {
+        setDrag(null);
+        setHover(null);
+      });
         // Outside the guard on purpose — arming owns its own failures, and by here
       // the lift is already retired, so a throw cannot strand anything.
       props.onDeploy?.(target);
@@ -351,14 +359,16 @@ export const GasRack: Component<GasDeployProps> = (props) => {
       /* capture refused — window listeners still carry the gesture */
     }
     clearReturnTimer();
-    setDrag({
-      pointerId: e.pointerId,
-      x: e.clientX,
-      y: e.clientY,
-      returning: false,
+    batch(() => {
+      setDrag({
+        pointerId: e.pointerId,
+        x: e.clientX,
+        y: e.clientY,
+        returning: false,
+      });
+      measureHintAnchor();
+      resolveHover(e.clientX, e.clientY);
     });
-    measureHintAnchor();
-    resolveHover(e.clientX, e.clientY);
   };
 
   const hoverCopy = () => {

@@ -1,10 +1,20 @@
-// SPEC: _spec/apps/starchess/demos.puml, _spec/apps/starchess/architecture/board-entities.puml, _spec/apps/starchess/architecture/strategy-starchess-board.puml
+// SPEC: _spec/apps/starchess/demos.puml, _spec/apps/starchess/architecture/board-entities.puml, _spec/apps/starchess/architecture/strategy-starchess-board.puml, _spec/apps/starchess/architecture/reactivity/presentation.md, _spec/apps/starchess/board-rendering.puml
 /**
  * Snapshot-driven StarChess board — eclipse/butter/vermeer (default eclipse).
  * Vision via VisionStrategy (player fog | observer dual borders).
  * Presentation CSS matches apps/chess StarChessBoardView + StarChessSquare at 3bed049.
  */
-import { For, Show, createEffect, createMemo, createSignal, createUniqueId, onCleanup, onMount } from "solid-js";
+import {
+  For,
+  Show,
+  createEffect,
+  createMemo,
+  createSelector,
+  createSignal,
+  createUniqueId,
+  onCleanup,
+  onMount,
+} from "solid-js";
 import type { Component } from "solid-js";
 import type { Square } from "chess.js";
 import clsx from "clsx";
@@ -34,6 +44,7 @@ import {
 import { tankModeAt, tankModeForSieged } from "~/presentation/board/tankMode";
 import { PieceGlyph } from "~/presentation/board/components/PieceGlyph";
 import { visionStrategyFor } from "~/presentation/board/vision/VisionStrategy";
+import { sameFlat, sameMap, sameSet } from "~/presentation/board/memoEquals";
 import { TEAM_PRIMARY } from "~/presentation/pieces/teamColors";
 import { SpiderMine } from "~/presentation/specials/components/SpiderMine";
 import { VespeneIcon } from "@chess-coach/ui-web/primitives/icons";
@@ -81,6 +92,7 @@ export type StarChessBoardProps = {
   hintSquares?: readonly Square[];
   /** Tutorial destination rings drawn in alert red. */
   hintAlertSquares?: readonly Square[];
+  hintGasSquares?: readonly Square[];
   /** Tutorial hint lines drawn square-to-square (attack / x-ray lines). */
   hintArrows?: readonly TutorialBoardArrow[];
   onSquareClick?: (square: Square) => void;
@@ -116,8 +128,29 @@ export type StarChessBoardProps = {
   gasAbsorbSquares?: ReadonlySet<Square> | readonly Square[];
 };
 
+const NO_SQUARE_SET: ReadonlySet<Square> = new Set();
+const NO_FOG = { litSquares: NO_SQUARE_SET, revealedPieces: NO_SQUARE_SET };
+
+type BoardFog = { litSquares: ReadonlySet<Square>; revealedPieces: ReadonlySet<Square> };
+const sameFog = (a: BoardFog, b: BoardFog) =>
+  sameSet(a.litSquares, b.litSquares) && sameSet(a.revealedPieces, b.revealedPieces);
+
+const squareSet = (list: () => readonly Square[] | undefined) =>
+  createMemo((): ReadonlySet<Square> => {
+    const l = list();
+    return l && l.length > 0 ? new Set(l) : NO_SQUARE_SET;
+  }, undefined, { equals: sameSet });
+
+const squareSetOf = (value: () => ReadonlySet<Square> | readonly Square[] | undefined) =>
+  createMemo((): ReadonlySet<Square> => {
+    const v = value();
+    if (!v) return NO_SQUARE_SET;
+    return v instanceof Set ? v : (v as readonly Square[]).length > 0 ? new Set(v as readonly Square[]) : NO_SQUARE_SET;
+  }, undefined, { equals: sameSet });
+
 export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
   const maskId = createUniqueId();
+  const veilTilesId = createUniqueId();
   const hintHeadId = createUniqueId();
   const hintHeadAlertId = createUniqueId();
   const viewer = () => props.viewer ?? "w";
@@ -127,32 +160,21 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
   const isObserver = () => strategy().isObserver;
   /** Player fog veil — off in observer mode or when fog=false. */
   const usePlayerFog = () => strategy().usePlayerFog(props.fog);
-  const map = createMemo(() => placementToMap(props.snapshot.placement));
-  const sieged = createMemo(
-    () => new Set(props.siegedTanks ?? props.snapshot.siegedTanks ?? []),
-  );
-  const specialsUsed = createMemo(
-    () => new Set(props.snapshot.specialsUsed ?? []),
-  );
-  const spentMines = createMemo(() => new Set(props.spentMines ?? []));
-  const chasingMines = createMemo(() => new Set(props.chasingMines ?? []));
-  const armedMechas = createMemo(() => new Set(props.armedMechas ?? []));
-  const armAnimMechas = createMemo(() => new Set(props.armAnimMechas ?? []));
-  const gasAbsorb = createMemo((): ReadonlySet<Square> => {
-    const g = props.gasAbsorbSquares;
-    if (!g) return new Set();
-    return g instanceof Set ? g : new Set(g);
-  });
+  const placement = createMemo(() => props.snapshot.placement);
+  const map = createMemo(() => placementToMap(placement()));
+  const sieged = squareSet(() => props.siegedTanks ?? props.snapshot.siegedTanks);
+  const specialsUsed = squareSet(() => props.snapshot.specialsUsed);
+  const spentMines = squareSet(() => props.spentMines);
+  const chasingMines = squareSet(() => props.chasingMines);
+  const armedMechas = squareSet(() => props.armedMechas);
+  const armAnimMechas = squareSet(() => props.armAnimMechas);
+  const gasAbsorb = squareSetOf(() => props.gasAbsorbSquares);
   const minesBySquare = createMemo(() => {
     const out = new Map<Square, StarChessColor>();
     for (const m of props.snapshot.mines ?? []) out.set(m.at, m.color);
     return out;
-  });
-  const fxHidden = createMemo((): ReadonlySet<Square> => {
-    const h = props.hideSquares;
-    if (!h) return new Set();
-    return h instanceof Set ? h : new Set(h);
-  });
+  }, undefined, { equals: sameMap });
+  const fxHidden = squareSetOf(() => props.hideSquares);
 
   const moveVisionStartedAt = new Map<string, number>();
   const [moveVisionTick, setMoveVisionTick] = createSignal(0);
@@ -183,10 +205,8 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
     onCleanup(() => window.clearInterval(tick));
   });
 
-  const fog = createMemo(() => {
-    if (!usePlayerFog()) {
-      return { litSquares: new Set<Square>(), revealedPieces: new Set<Square>() };
-    }
+  const fog = createMemo((): BoardFog => {
+    if (!usePlayerFog()) return NO_FOG;
     void moveVisionTick();
     void sieged();
     const cues = props.moveCues ?? [];
@@ -216,7 +236,7 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
       tankModeFor: tankModeForSieged(sieged()),
       mines: props.snapshot.mines,
     });
-  });
+  }, undefined, { equals: sameFog });
 
   /**
    * Veil-reveal movers — enemy hulls with a fogged origin whose path crosses
@@ -347,11 +367,29 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
     return getVisionBorderPaths(getVisionDisplayCells(v.b.litSquares, FILES, RANKS));
   });
 
-  const ghostAt = (sq: Square) => props.intentGhosts?.find((g) => g.at === sq);
-  const canisterAt = (sq: Square) =>
-    props.intentCanisters?.find((g) => g.at === sq);
-  const checkAt = (sq: Square) =>
-    !!props.intentChecks?.some((g) => g.at === sq);
+  const firstBySquare = <T extends { at: Square }>(list: () => readonly T[] | undefined) =>
+    createMemo(() => {
+      const out = new Map<Square, T>();
+      for (const item of list() ?? []) if (!out.has(item.at)) out.set(item.at, item);
+      return out;
+    }, undefined, { equals: sameMap });
+  const selectedSquare = createMemo(() => props.selected ?? null);
+  const legalSet = squareSet(() => props.legalDests);
+  const hintSet = squareSet(() => props.hintSquares);
+  const gasHintSet = squareSet(() => props.hintGasSquares);
+  const ghostBySquare = firstBySquare(() => props.intentGhosts);
+  const canisterBySquare = firstBySquare(() => props.intentCanisters);
+  const checkSet = squareSet(() => props.intentChecks?.map((g) => g.at));
+
+  const inSet = (sq: Square, set: ReadonlySet<Square>) => set.has(sq);
+  const isSelectedSq = createSelector(selectedSquare);
+  const isLit = createSelector(() => fog().litSquares, inSet);
+  const isRevealed = createSelector(() => fog().revealedPieces, inSet);
+  const isHidden = createSelector(fxHidden, inSet);
+  const isLegalSq = createSelector(legalSet, inSet);
+  const isHintSq = createSelector(hintSet, inSet);
+  const isGasHintSq = createSelector(gasHintSet, inSet);
+  const isCheckSq = createSelector(checkSet, inSet);
 
   return (
     <div class={styles["board-layout-wrapper"]}>
@@ -366,6 +404,8 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
             gridEl = el;
           }}
           data-board-grid
+          data-interactive={props.onSquareClick ? "true" : undefined}
+          aria-disabled={props.onSquareClick ? undefined : "true"}
           data-vision-mode={isObserver() ? "observer" : "player"}
           class={clsx(
             styles.chessboard,
@@ -402,10 +442,23 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
                   </Show>
                 </mask>
               </defs>
+              <defs>
+                <pattern
+                  id={veilTilesId}
+                  patternUnits="userSpaceOnUse"
+                  width="2"
+                  height="2"
+                >
+                  <rect class={styles["fog-veil-light"]} x="0" y="0" width="1" height="1" />
+                  <rect class={styles["fog-veil-dark"]} x="1" y="0" width="1" height="1" />
+                  <rect class={styles["fog-veil-dark"]} x="0" y="1" width="1" height="1" />
+                  <rect class={styles["fog-veil-light"]} x="1" y="1" width="1" height="1" />
+                </pattern>
+              </defs>
               <rect
                 width="8"
                 height="8"
-                fill="rgba(3, 7, 10, 0.88)"
+                fill={`url(#${veilTilesId})`}
                 mask={`url(#${maskId})`}
               />
             </svg>
@@ -509,18 +562,19 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
               <For each={FILES}>
                 {(file) => {
                   const square = `${file}${rank}` as Square;
-                  const piece = () => map().get(square) ?? null;
+                  const piece = createMemo(() => map().get(square) ?? null, undefined, {
+                    equals: (a, b) => a === b || (!!a && !!b && a.type === b.type && a.color === b.color),
+                  });
                   const isLight = () => isLightSquare(file, rank);
-                  const isFogged = () =>
-                    !usePlayerFog() ? false : !fog().litSquares.has(square);
-                  const revealed = () => fog().revealedPieces.has(square);
-                  const hidePiece = () => {
-                    if (fxHidden().has(square)) return true;
+                  const isFogged = createMemo(() => (!usePlayerFog() ? false : !isLit(square)));
+                  const revealed = () => isRevealed(square);
+                  const hidePiece = createMemo(() => {
+                    if (isHidden(square)) return true;
                     if (!usePlayerFog()) return false;
                     const p = piece();
                     if (!p) return false;
                     return isFogged() && p.color !== viewer() && !revealed();
-                  };
+                  });
                   const localFogVeil = () => {
                     const p = piece();
                     return isFogged() && !!p && !hidePiece();
@@ -528,9 +582,10 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
                   const visiblePiece = () => (hidePiece() ? null : piece());
                   const tankMode = (): TankMode =>
                     tankModeAt(square, sieged());
-                  const isSelected = () => props.selected === square;
-                  const isLegal = () => props.legalDests?.includes(square) ?? false;
-                  const isHint = () => props.hintSquares?.includes(square) ?? false;
+                  const isSelected = () => isSelectedSq(square);
+                  const isLegal = () => isLegalSq(square);
+                  const isGasHint = () => isGasHintSq(square);
+                  const isHint = createMemo(() => isHintSq(square) || isGasHint());
                   const gasUsedAura = () => {
                     // Resolve absorb — green eases onto the unit with the canister drop
                     // (LiveStarChessBoard already fog-gates gasDrop / absorb squares).
@@ -542,32 +597,33 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
                     if (usePlayerFog() && hidePiece()) return false;
                     return true;
                   };
+                  const canisterHere = createMemo(() => canisterBySquare().get(square), undefined, {
+                    equals: sameFlat,
+                  });
                   const canister = () => {
-                    const c = canisterAt(square);
+                    const c = canisterHere();
                     if (!c) return undefined;
                     // Hide only when the actor unit is occulted (enemy in fog).
                     // Own fogged tiles still show queued canisters above the veil.
                     if (usePlayerFog() && hidePiece()) return undefined;
                     return c;
                   };
-                  const ghost = () => {
-                    // Intent destinations paint above fog (square lift + ghost z).
-                    return ghostAt(square);
-                  };
-                  const intentCheck = () => {
-                    // Attack/move intent rings paint above fog (square lift z=7).
-                    // Enemies stay hidden via hidePiece — ring alone does not reveal.
-                    return checkAt(square);
-                  };
-                  const mineColor = () => minesBySquare().get(square);
-                  const showMine = () => {
-                    const color = mineColor();
-                    if (!color) return false;
-                    if (spentMines().has(square)) return false;
+                  // Intent destinations paint above fog (square lift + ghost z).
+                  const ghost = createMemo(() => ghostBySquare().get(square), undefined, {
+                    equals: sameFlat,
+                  });
+                  // Attack/move intent rings paint above fog (square lift z=7).
+                  // Enemies stay hidden via hidePiece — ring alone does not reveal.
+                  const intentCheck = () => isCheckSq(square);
+                  const shownMine = createMemo(() => {
+                    const color = minesBySquare().get(square);
+                    if (!color) return undefined;
+                    if (spentMines().has(square)) return undefined;
                     // Player fog: mines only on lit squares (own mine lights its tile).
-                    if (usePlayerFog() && isFogged()) return false;
-                    return true;
-                  };
+                    if (usePlayerFog() && isFogged()) return undefined;
+                    return color;
+                  });
+                  const showMine = () => shownMine() != null;
                   return (
                     <div
                       class={clsx(
@@ -579,6 +635,7 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
                       )}
                       data-square={square}
                       data-hint={isHint() ? square : undefined}
+                      data-hint-gas={isGasHint() ? square : undefined}
                       data-legal={isLegal() ? square : undefined}
                       data-tone={isLight() ? "light" : "dark"}
                       data-fog={
@@ -592,13 +649,13 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
                       data-intent-canister={canister() ? square : undefined}
                       data-intent-check={intentCheck() ? square : undefined}
                       data-spider-mine={showMine() ? square : undefined}
-                      role={props.onSquareClick ? "button" : undefined}
+                      role="button"
                       onClick={() => props.onSquareClick?.(square)}
                     >
                       <Show when={localFogVeil()}>
                         <div class={styles.fog} aria-hidden="true" />
                       </Show>
-                      <Show when={showMine() ? mineColor() : undefined}>
+                      <Show when={shownMine()}>
                         {(c) => (
                           <SpiderMine
                             color={c()}
@@ -623,6 +680,14 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
                             data-special-used={gasUsedAura() ? "true" : undefined}
                           />
                         )}
+                      </Show>
+                      <Show when={isGasHint()}>
+                        <div class={styles.gasHint} aria-hidden="true">
+                          <VespeneIcon size={22} />
+                          <svg class={styles.gasHintArrow} viewBox="0 0 12 10">
+                            <path d="M1.5 1.5 6 7.5 10.5 1.5" />
+                          </svg>
+                        </div>
                       </Show>
                       <Show when={canister()}>
                         {(c) => (

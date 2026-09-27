@@ -1,4 +1,4 @@
-// SPEC: _spec/_plans/starchess-achievements.puml
+// SPEC: _spec/_plans/starchess-achievements.puml, _spec/apps/starchess/architecture/reactivity/components.md
 /**
  * Obtained achievement ids. The gallery reads this file plus career levels.
  */
@@ -51,13 +51,15 @@ export const noteAchievementUnlocks = (
   );
 };
 
-export const unlockedLevel = (shortId: string): number => {
+export const unlockedLevel = (
+  shortId: string,
+  career: { beat: number; beat50: number } = careerAchievementLevels(),
+): number => {
   let level = 0;
   for (const key of Object.keys(state.unlocks)) {
     const parsed = parseAchievementId(key);
     if (parsed?.shortId === shortId && parsed.level > level) level = parsed.level;
   }
-  const career = careerAchievementLevels();
   if (shortId === "beat") level = Math.max(level, career.beat);
   if (shortId === "beat50") level = Math.max(level, career.beat50);
   return level;

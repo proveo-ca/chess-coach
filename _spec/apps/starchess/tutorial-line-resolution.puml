@@ -1,6 +1,6 @@
 @startuml tutorial-line-resolution
 ' purpose: Tutorial coach-line pipeline — deep-link
-'   canonicalization, first-match reaction pick,
+'   canonicalization, ranked beat pick,
 '   intro hold with turn-open re-baseline, and
 '   settled-board auto-advance gates.
 ' covers: apps/starchess/src/tutorial/tutorialScript.ts
@@ -29,7 +29,7 @@ RESOLVER ARROW_ERROR SCREEN : lessonBoard throws\non unknown id
 == Coach line per frame ==
 BOARD ARROW_MAIN SCREEN : scfen · phase · targeting
 SCREEN ARROW_MAIN RESOLVER : resolveTutorialLine(ctx)
-RESOLVER ARROW_MAIN RESOLVER : first matching\nreaction wins
+RESOLVER ARROW_MAIN RESOLVER : pickBeat: priority,\nthen specificity
 RESOLVER ARROW_OPTIONAL SCREEN : story intro fallback
 SCREEN ARROW_MAIN RESOLVER : holdTutorialLine(hold,\nkey, raw, ctx)
 RESOLVER ARROW_MAIN RESOLVER : baseline, re-baseline,\nsticky-or-silence
@@ -42,11 +42,53 @@ SCREEN ARROW_MAIN SCREEN : ending hold, success\nbubble, auto-advance
 
 ' N_PRECEDENCE:
 note over RESOLVER
-  First matching reaction wins, judged in
-  declaration order from reviewPhase down
-  to targeting; narrow scfen beats precede
-  broad turn beats. Unmatched contexts fall
-  back to the story introduction comment.
+  Per field (say, mark), the matching beat
+  with the highest priority wins, then the one
+  with the most leaf gates (turn, phase, each
+  and() leaf); declaration order breaks only a
+  full tie. `turn:` reads the SCFEN turn field,
+  so a beat's turn comes from the wire, not a
+  host counter. Unmatched contexts fall back
+  to the story introduction comment.
+  A beat's holdMs keeps its line up at least
+  that long before the screen shows a later
+  line (reading time; a lesson change skips it).
+  A story's hideCoachWhen hides the coach
+  (hop, then under the board), drops the
+  bubble and shows the ResourceBar; a retry
+  line or a non-active outcome reverses it.
+end note
+
+' N_ALERTS:
+note over BOARD
+  Alert rings: a beat's alertSquares, or a
+  latch. `king` pins the ring to scripted
+  sightings; `cc` adds the enemy Command
+  Center's last seen square to every beat's
+  alerts and moves it only when that square
+  is visible (nextCCSighting, withCCAlert).
+  Gas hints: a beat's gasSquares ring the
+  square guide-green and bob a canister with
+  a down chevron onto it (data-hint-gas);
+  gasOnMoveGhost adds the queued move's ghost.
+  Hint beats also read targetingKind, so a
+  canister leaves once the special is aimed.
+  Once a lesson completes or fails, only
+  beats marked `final` (its closing picture)
+  still mark the board (completedLessonBeats).
+  ccThreat alerts visible attackers of the
+  ally Command Center; fogged ones never count.
+  ccThreatAnswer picks the reply, in order:
+  deploy onto an empty square that hits the
+  attacker (core deployCoverers), then attack
+  with it; capture with a unit on the board;
+  step the Command Center to a safe square.
+  ccPressure and ccDeploy read the enemy
+  Command Center only while it is visible.
+  ccDeploy names the best gas deploy that hits
+  it or its ring (core deployCoverers) and
+  yields to ccPressure when a unit already
+  attacks it.
 end note
 
 ' N_REBASE:

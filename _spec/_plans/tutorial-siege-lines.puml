@@ -2,13 +2,13 @@
 !include ../themes/proveo.puml
 skinparam noteTextAlignment left
 ' SPEC: _spec/_plans/tutorial-siege-lines.puml
-' purpose: king-attack-4 — take sieged lines for strong
-'   positions; king-attack-5 next is openings 3x3
+' purpose: live-play-attack-4 — take sieged lines for strong
+'   positions; live-play-attack-5 next is openings 3x3
 ' status: ACTIVE — spec only, no source this turn
-'   product = StarChess; latest attack is king-attack-3
+'   product = StarChess; latest attack is live-play-attack-3
 ' covers: apps/starchess/src/tutorial/tutorialScript.config.ts
-'         (future king-attack-4 siege-lines lesson and
-'          king-attack-5 openings-tree lesson)
+'         (future live-play-attack-4 siege-lines lesson and
+'          live-play-attack-5 openings-tree lesson)
 ' live spec: _spec/specials/index.puml
 '            _spec/packages/starchess-core/scfen-wire.puml
 ' Notes are capped at 5 lines x 50 columns; one idea per anchor.
@@ -21,10 +21,10 @@ skinparam noteTextAlignment left
 ' openings: 3 moves with 3 branches each.
 title King Attack 4 — take siege lines;\nKing Attack 5 next: openings 3x3
 
-component "lesson config\nking-attack-4 lines" as CFG <<app>>
+component "lesson config\nlive-play-attack-4 lines" as CFG <<app>>
 component "TutorialScreen\nlive engine + gates" as RUN <<app>>
 component "siegedTanks / siegeMode\nstrong positions" as MODE <<app>>
-component "king-attack-5 openings\n3 moves x 3 branches" as OPEN <<app>>
+component "live-play-attack-5 openings\n3 moves x 3 branches" as OPEN <<app>>
 component "**placed line type**\nengine has none" as LINE <<error>>
 
 CFG ARROW_MAIN RUN
@@ -37,7 +37,7 @@ note bottom of RUN
   Hints mark strong-position squares;
   gates judge the held line, not a
   drawing. King-attack-3 stays last
-  until king-attack-4 ships.
+  until live-play-attack-4 ships.
 end note
 
 note bottom of LINE
@@ -51,8 +51,8 @@ end note
 legend bottom
   **Spec only this turn — no source.**
   ==
-  king-attack-4 takes siege lines;
-  king-attack-5 hints openings 3x3.
+  live-play-attack-4 takes siege lines;
+  live-play-attack-5 hints openings 3x3.
   Diff config when building either.
 end legend
 @enduml

@@ -22,7 +22,7 @@ export const ScreenBackNav: Component<ScreenBackNavProps> = (props) => {
 
   return (
     <div class={`${styles.panel} ${props.class ?? ""}`.trim()} data-testid="screen-top-nav">
-      <div class={styles.side}>
+      <div class={`screen-back ${styles.side}`}>
         <Show
           when={props.href != null && props.onBack == null}
           fallback={

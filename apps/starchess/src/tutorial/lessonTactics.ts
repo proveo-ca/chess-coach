@@ -1,6 +1,7 @@
-// SPEC: _spec/apps/starchess/menu-flow.puml
+// SPEC: _spec/apps/starchess/menu-flow.puml, _spec/apps/starchess/tutorial/hints-and-coach.md
 import {
   attacksSquare,
+  deployCoverers,
   findCC,
   getSideVision,
   hostileMineOn,
@@ -10,6 +11,7 @@ import {
   type ScAction,
   type ScPiece,
   type StarChessColor,
+  type StarChessPiece,
 } from "@chess-coach/starchess-core";
 import type { Square } from "chess.js";
 
@@ -71,7 +73,7 @@ const whiteQueue = (scfen: string): string => {
   return field.slice("Q:".length).replace(/^w:/, "").split(";")[0] ?? "";
 };
 
-const whiteGas = (scfen: string): number => {
+export const whiteGas = (scfen: string): number => {
   const field = scfen.split("|").find((part) => part.startsWith("G:"));
   if (!field) return 0;
   // `G:wb:WB` packs one digit per side, so `G:21:22` is white remaining 2.
@@ -143,6 +145,214 @@ export const mechaDiagonalOpen = (scfen: string, viewer: StarChessColor = "w"): 
   return marine?.color === "w" && marine.type === "p" && blocker?.color === "b";
 };
 
+export const mechaDeployReady = (scfen: string, viewer: StarChessColor = "w"): boolean => {
+  if (viewer !== "w") return false;
+  if ((storedMinerals(scfen, viewer) ?? 0) < MECHA_DEPLOY_MINERALS) return false;
+  const queue = whiteQueue(scfen);
+  if (!/C=g2f3\b/.test(queue) || /[BF]=deploy:/.test(queue)) return false;
+  const marine = placementMap(scfen)?.get("g2");
+  return marine?.color === "w" && marine.type === "p";
+};
+
+const sideVision = (scfen: string, map: Map<Square, ScPiece>, viewer: StarChessColor) =>
+  getSideVision(map, viewer, {
+    tankModeFor: (sq) => (squareSieged(scfen, sq) ? "siege" : "tank"),
+    mines: minesOf(scfen),
+  });
+
+/** The enemy Command Center's square, only while the viewer can see it. */
+const visibleEnemyCC = (
+  scfen: string,
+  map: Map<Square, ScPiece>,
+  viewer: StarChessColor,
+): Square | null => {
+  const cc = findCC(map, viewer === "w" ? "b" : "w");
+  if (!cc) return null;
+  const vision = sideVision(scfen, map, viewer);
+  return vision.litSquares.has(cc) || vision.revealedPieces.has(cc) ? cc : null;
+};
+
+const ringOf = (center: Square): Square[] => {
+  const file = FILES.indexOf(center[0]!);
+  const rank = Number(center[1]);
+  const out: Square[] = [];
+  for (let df = -1; df <= 1; df += 1) {
+    for (let dr = -1; dr <= 1; dr += 1) {
+      const f = FILES[file + df];
+      const r = rank + dr;
+      if ((df || dr) && f && r >= 1 && r <= 8) out.push(`${f}${r}` as Square);
+    }
+  }
+  return out;
+};
+
+/**
+ * Ally units that currently attack the *visible* enemy Command Center — a
+ * Mecha on its diagonal, a Marine a step away, anything with the geometry.
+ * A fogged Command Center never counts.
+ */
+export const ccPressureUnits = (
+  scfen: string | undefined,
+  viewer: StarChessColor = "w",
+): { cc: Square; units: SquareCoverer[] } | null => {
+  const map = scfen ? placementMap(scfen) : null;
+  if (!scfen || !map) return null;
+  const cc = visibleEnemyCC(scfen, map, viewer);
+  if (!cc) return null;
+  const units = attackersOfSquare(map, cc, viewer);
+  return units.length > 0 ? { cc, units } : null;
+};
+
+const DIAGONALS: readonly (readonly [number, number])[] = [
+  [1, 1],
+  [1, -1],
+  [-1, 1],
+  [-1, -1],
+];
+
+export const mechaPressureLine = (
+  scfen: string | undefined,
+  viewer: StarChessColor = "w",
+): { from: Square; to: Square; cc: Square } | null => {
+  const map = scfen ? placementMap(scfen) : null;
+  if (!scfen || !map) return null;
+  const cc = visibleEnemyCC(scfen, map, viewer);
+  if (!cc) return null;
+  const ccFile = FILES.indexOf(cc[0]!);
+  const ccRank = Number(cc[1]);
+  let best: { from: Square; to: Square; cc: Square; score: number } | null = null;
+  for (const [from, piece] of map) {
+    if (piece.color !== viewer || piece.type !== "b") continue;
+    for (const [df, dr] of DIAGONALS) {
+      let file = FILES.indexOf(from[0]!);
+      let rank = Number(from[1]);
+      for (;;) {
+        file += df;
+        rank += dr;
+        if (file < 0 || file > 7 || rank < 1 || rank > 8) break;
+        const to = `${FILES[file]}${rank}` as Square;
+        const occupant = map.get(to);
+        if (occupant && (occupant.color === viewer || occupant.type === "k")) break;
+        const after = new Map(map);
+        after.delete(from);
+        after.set(to, piece);
+        if (attacksSquare(after, to, cc)) {
+          const safe = ![...after].some(
+            ([sq, p]) => p.color !== viewer && attacksSquare(after, sq, to),
+          );
+          const reach = Math.max(Math.abs(file - ccFile), Math.abs(rank - ccRank));
+          const score = (safe ? 100 : 0) + reach;
+          if (!best || score > best.score) best = { from, to, cc, score };
+        }
+        if (occupant) break;
+      }
+    }
+  }
+  return best ? { from: best.from, to: best.to, cc: best.cc } : null;
+};
+
+export type CCDeployPressure = {
+  cc: Square;
+  at: Square;
+  unit: StarChessPiece;
+  /** The enemy Command Center and/or ring squares that deploy would attack. */
+  hits: Square[];
+};
+
+/**
+ * Best gas deploy onto the ally Command Center's ring that attacks the visible
+ * enemy Command Center, else the most squares around it; cheapest on a tie.
+ * Reach comes from core `deployCoverers`. None while a deploy is queued, or
+ * while a unit already attacks it ({@link ccPressureUnits} owns that hint).
+ */
+export const ccDeployPressure = (
+  scfen: string | undefined,
+  viewer: StarChessColor = "w",
+): CCDeployPressure | null => {
+  if (!scfen || viewer !== "w") return null;
+  if (/deploy:/.test(whiteQueue(scfen))) return null;
+  if (ccPressureUnits(scfen, viewer)) return null;
+  const map = placementMap(scfen);
+  if (!map) return null;
+  const cc = visibleEnemyCC(scfen, map, viewer);
+  if (!cc) return null;
+  const query = {
+    map,
+    mines: minesOf(scfen),
+    color: viewer,
+    cc: findCC(map, viewer),
+    gas: whiteGas(scfen),
+    minerals: storedMinerals(scfen, viewer) ?? 0,
+  };
+  const options = new Map<string, CCDeployPressure>();
+  for (const target of [cc, ...ringOf(cc)]) {
+    for (const { at, unit } of deployCoverers(query, target)) {
+      const key = `${unit}@${at}`;
+      const option = options.get(key) ?? { cc, at, unit, hits: [] };
+      option.hits.push(target);
+      options.set(key, option);
+    }
+  }
+  const rank = (o: CCDeployPressure) => [o.hits.includes(cc) ? 1 : 0, o.hits.length, -UNIT_COST[o.unit]];
+  let best: CCDeployPressure | null = null;
+  for (const option of options.values()) {
+    if (!best) {
+      best = option;
+      continue;
+    }
+    const a = rank(option);
+    const b = rank(best);
+    const i = a.findIndex((v, k) => v !== b[k]);
+    if (i >= 0 && a[i]! > b[i]!) best = option;
+  }
+  return best;
+};
+
+/** Enemy units the viewer can see attacking the viewer's own Command Center. */
+export const ccThreatUnits = (
+  scfen: string | undefined,
+  viewer: StarChessColor = "w",
+): { cc: Square; units: SquareCoverer[] } | null => {
+  const map = scfen ? placementMap(scfen) : null;
+  if (!scfen || !map) return null;
+  const cc = findCC(map, viewer);
+  if (!cc) return null;
+  const vision = sideVision(scfen, map, viewer);
+  const enemy = viewer === "w" ? "b" : "w";
+  const units = attackersOfSquare(map, cc, enemy).filter(
+    (u) => vision.litSquares.has(u.from) || vision.revealedPieces.has(u.from),
+  );
+  return units.length > 0 ? { cc, units } : null;
+};
+
+export const knightVia = (from: Square, to: Square): Square | undefined => {
+  const df = FILES.indexOf(to[0]!) - FILES.indexOf(from[0]!);
+  const dr = Number(to[1]) - Number(from[1]);
+  if (Math.abs(df) === 2 && Math.abs(dr) === 1) return `${to[0]}${from[1]}` as Square;
+  if (Math.abs(df) === 1 && Math.abs(dr) === 2) return `${from[0]}${to[1]}` as Square;
+  return undefined;
+};
+
+export const unitArrow = (
+  kind: string,
+  from: Square,
+  to: Square,
+): { from: Square; to: Square; via?: Square } => {
+  const via = kind === "n" ? knightVia(from, to) : undefined;
+  return via ? { from, to, via } : { from, to };
+};
+
+export const deployGasSquare = (scfen: string): Square | null => {
+  if (/[BF]=deploy:/.test(whiteQueue(scfen))) return null;
+  for (const [sq, piece] of placementMap(scfen) ?? []) {
+    if (piece.color === "w" && piece.type === "k") return sq;
+  }
+  return null;
+};
+
+export const queuedMoveGhost = (scfen: string): Square | null =>
+  (/C=[a-h][1-8]([a-h][1-8])/.exec(whiteQueue(scfen))?.[1] as Square | undefined) ?? null;
+
 /**
  * Square of the marine to gas once the classical move is queued and no gas
  * action is queued yet. The furthest-advanced ally marine, toward the h-file
@@ -158,11 +368,14 @@ export const gasMarineSquare = (scfen: string, viewer: StarChessColor = "w"): Sq
   if (/[BF]=(?!deploy\b)[A-Za-z]/.test(queue)) return null;
   const map = placementMap(scfen);
   if (!map) return null;
-  const from = /C=([a-h][1-8])/.exec(queue)?.[1] as Square | undefined;
+  const move = /C=([a-h][1-8])([a-h][1-8])/.exec(queue);
+  const from = move?.[1] as Square | undefined;
   const fromPiece = from ? map.get(from) : undefined;
   const moverIsMarine = fromPiece?.color === viewer && fromPiece.type === "p";
-  // The h-file push just spent its move — gas is the extra step on that marine.
-  if (moverIsMarine && from![0] === "h") return from!;
+  if (moverIsMarine && from![0] === "h") {
+    const to = move![2] as Square;
+    return from === "h2" && to === "h4" ? to : from!;
+  }
   let best: Square | null = null;
   let bestRank = -1;
   let bestFile = -1;
@@ -314,6 +527,84 @@ export const chargeFromH8 = (scfen: string, viewer: StarChessColor = "w"): boole
 
 const G2_DIAGONAL: readonly Square[] = ["f3", "e4", "d5", "c6", "b7", "a8"];
 const G2_HOVERBIKE: readonly Square[] = ["e1", "e3", "f4", "h4", "c1", "c3"];
+
+export type CCThreatAnswer =
+  | { kind: "deploy"; cc: Square; target: Square; at: Square; unit: StarChessPiece }
+  | { kind: "deployed"; cc: Square; target: Square; at: Square; unit: StarChessPiece }
+  | { kind: "capture"; cc: Square; target: Square; from: Square; unit: StarChessPiece }
+  | { kind: "evade"; cc: Square; target: Square; to: Square }
+  | { kind: "answered"; cc: Square; target: Square };
+
+export const ccThreatAnswer = (
+  scfen: string | undefined,
+  viewer: StarChessColor = "w",
+): CCThreatAnswer | null => {
+  if (!scfen || viewer !== "w") return null;
+  const threat = ccThreatUnits(scfen, viewer);
+  const map = placementMap(scfen);
+  if (!threat || !map) return null;
+  const queue = whiteQueue(scfen);
+  const { cc } = threat;
+  const targets = threat.units.map((u) => u.from);
+  const classical = /C=([a-h][1-8])([a-h][1-8])/.exec(queue);
+  if (classical) {
+    const [, from, to] = classical as unknown as [string, Square, Square];
+    const target = targets.find((t) => t === to);
+    if (target) return { kind: "answered", cc, target };
+    return from === cc ? { kind: "answered", cc, target: targets[0]! } : null;
+  }
+  const cost = (unit: string) => UNIT_COST[unit as keyof typeof UNIT_COST] ?? 99;
+
+  const queuedDeploy = /[BF]=deploy:[a-h][1-8]:([a-h][1-8]):([a-z])/.exec(queue);
+  if (queuedDeploy) {
+    const at = queuedDeploy[1] as Square;
+    const unit = queuedDeploy[2] as StarChessPiece;
+    const after = new Map(map);
+    after.set(at, { color: viewer, type: unit } as ScPiece);
+    const target = targets.find((t) => attacksSquare(after, at, t));
+    if (target) return { kind: "deployed", cc, target, at, unit };
+  } else {
+    const query = {
+      map,
+      mines: minesOf(scfen),
+      color: viewer,
+      cc,
+      gas: whiteGas(scfen),
+      minerals: storedMinerals(scfen, viewer) ?? 0,
+    };
+    let best: { target: Square; at: Square; unit: StarChessPiece } | null = null;
+    for (const target of targets) {
+      for (const { at, unit } of deployCoverers(query, target)) {
+        if (map.has(at)) continue;
+        if (!best || cost(unit) < cost(best.unit)) best = { target, at, unit };
+      }
+    }
+    if (best) return { kind: "deploy", cc, ...best };
+  }
+
+  let capture: { target: Square; from: Square; unit: StarChessPiece } | null = null;
+  for (const target of targets) {
+    for (const u of attackersOfSquare(map, target, viewer)) {
+      if (u.kind === "k") continue;
+      if (!capture || cost(u.kind) < cost(capture.unit)) {
+        capture = { target, from: u.from, unit: u.kind as StarChessPiece };
+      }
+    }
+  }
+  if (capture) return { kind: "capture", cc, ...capture };
+
+  const king = map.get(cc)!;
+  for (const to of ringOf(cc)) {
+    const there = map.get(to);
+    if (there && (there.color === viewer || there.type === "k")) continue;
+    const after = new Map(map);
+    after.delete(cc);
+    after.set(to, king);
+    const hit = [...after].some(([sq, p]) => p.color !== viewer && attacksSquare(after, sq, to));
+    if (!hit) return { kind: "evade", cc, target: targets[0]!, to };
+  }
+  return null;
+};
 
 /**
  * Which unit the g2 gas-deploy beat should name. A Mecha when one eyes the

@@ -1,6 +1,6 @@
 /**
  * Shared board-side rail shell for live, review, and tutorial hosts.
- * // SPEC: _spec/apps/starchess/screens.puml
+ * // SPEC: _spec/apps/starchess/screens.puml, _spec/apps/starchess/architecture/reactivity/presentation.md
  */
 import { Show, type Component, type JSX } from "solid-js";
 
@@ -18,7 +18,7 @@ export type BoardSideRailProps = {
 
 export const BoardSideRail: Component<BoardSideRailProps> = (props) => (
   <aside class={styles.rail} data-testid="starchess-side-rail">
-    <Show when={props.controlsVisible ?? props.controls != null}>
+    <Show when={props.controlsVisible ?? "controls" in props}>
       {props.controls}
       <hr class={styles.divider} />
     </Show>

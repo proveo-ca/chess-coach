@@ -10,13 +10,12 @@ import { ROOT, clearStorage, gotoScfen, recordResolveFor } from "./vfxHarness";
  * ("no transition / @keyframes on paint-only properties") and the shipped
  * evidence in `timeline-perf.puml` (DroppedFrame 4045 → 330).
  *
- * Paint-only properties repaint the animated box every frame. Two offenders are
+ * Paint-only properties repaint the animated box every frame. One offender is
  * accepted and pinned below; anything else added is the regression.
  */
 
 /** Accepted paint-animating keyframes (hashed CSS-module names at runtime). */
 const PAINT_ALLOWLIST = [
-  /fragShockwave/, // P2 in timeline-perf.puml — Hoverbike frag ring border-color.
   /sc-hint-pulse/, // Tutorial hint ring (board chrome, one square, not combat).
 ];
 
@@ -71,7 +70,7 @@ test.describe("VFX · paint budget", () => {
       ),
     ];
     expect(offenders).toEqual([]);
-    // The allowlist must stay honest: both entries still exist to be excused.
+    // The allowlist must stay honest: its entry still exists to be excused.
     expect(hits.length).toBeGreaterThan(0);
   });
 

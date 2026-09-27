@@ -2,12 +2,13 @@
  * Vertical turn controls for BoardSideRail (live + review chips).
  * Review DualNav lives in top ReviewTurnNav; pass `hideDualNav`.
  * Does not replace horizontal `TurnBar`.
- * // SPEC: _spec/apps/starchess/screens.puml
+ * // SPEC: _spec/apps/starchess/screens.puml, _spec/apps/starchess/architecture/reactivity/presentation.md
  */
 import type { ScAction } from "@chess-coach/starchess-core";
 import {
   For,
   Show,
+  batch,
   createEffect,
   createMemo,
   createSignal,
@@ -27,6 +28,8 @@ import { useMatchStore } from "~/app/MatchStoreContext";
 import { canSubmit, readDisplayedSnapshot } from "~/app/selectors";
 import { Button } from "@chess-coach/ui-web/primitives/Button";
 import { Chip } from "@chess-coach/ui-web/primitives/Chip";
+import { CancelHint } from "~/presentation/hud/components/CancelHint";
+import { queueActionKey, queueHint } from "~/presentation/hud/queueHint";
 import { CountdownRing } from "@chess-coach/ui-web/primitives/CountdownRing";
 import { DualNavButton } from "@chess-coach/ui-web/primitives/DualNavButton";
 import { turnTimeoutMsForTurn } from "~/presentation/constants";
@@ -90,10 +93,12 @@ export const TurnBarSidebar: Component<TurnBarSidebarProps> = (props) => {
   const store = useMatchStore();
   const [now, setNow] = createSignal(Date.now());
   let firedForDeadline: number | null = null;
-  const reviewing = () => !!props.review;
+  const reviewing = createMemo(() => !!props.review);
+  const resolveOnEnd = createMemo(() => props.resolveOnEnd !== false);
+  const onTimeout = createMemo(() => props.onTimeout);
 
   const resolveIfArmed = () => {
-    if (props.resolveOnEnd === false) return;
+    if (!resolveOnEnd()) return;
     if (!canSubmit(store.shell())) return;
     store.submitTurn("end");
   };
@@ -111,13 +116,11 @@ export const TurnBarSidebar: Component<TurnBarSidebarProps> = (props) => {
       if (turnSecondsRemaining(store) > 0) return;
       if (firedForDeadline === deadline) return;
       firedForDeadline = deadline;
-      store.dispatch({ type: "SET_DEADLINE", at: null });
-      if (props.resolveOnEnd === false) {
-        props.onTimeout?.();
-        return;
-      }
-      if (canSubmit(store.shell())) store.submitTurn("timeout");
-      props.onTimeout?.();
+      batch(() => {
+        store.dispatch({ type: "SET_DEADLINE", at: null });
+        if (resolveOnEnd() && canSubmit(store.shell())) store.submitTurn("timeout");
+        onTimeout()?.();
+      });
     }, 200);
     onCleanup(() => window.clearInterval(id));
   });
@@ -130,17 +133,19 @@ export const TurnBarSidebar: Component<TurnBarSidebarProps> = (props) => {
     }
   });
 
-  const seconds = () => {
+  const seconds = createMemo(() => {
     void now();
     return turnSecondsRemaining(store);
-  };
+  });
 
-  const progress = () => {
-    const total = turnTimeoutMsForTurn(readDisplayedSnapshot(store).turn) / 1000;
+  const displayedTurn = createMemo(() => readDisplayedSnapshot(store).turn);
+
+  const progress = createMemo(() => {
+    const total = turnTimeoutMsForTurn(displayedTurn()) / 1000;
     return Math.min(1, Math.max(0, seconds() / Math.max(1, total)));
-  };
+  });
 
-  const liveTurnNumber = createMemo(() => Math.max(1, readDisplayedSnapshot(store).turn));
+  const liveTurnNumber = createMemo(() => Math.max(1, displayedTurn()));
 
   const livePhase = createMemo(() => {
     const s = store.shell();
@@ -163,13 +168,13 @@ export const TurnBarSidebar: Component<TurnBarSidebarProps> = (props) => {
     return <>Turn {turnNumber()}</>;
   };
 
-  const sideQueue = () => {
+  const sideQueue = createMemo(() => {
     const color = viewerColor(store);
     return currentQueue(store)
       .filter((a) => a.color === color)
       .slice()
       .sort((a, b) => a.seq - b.seq);
-  };
+  });
 
   const befores = () => sideQueue().filter((a) => a.timing === "B");
   const classical = () => sideQueue().find((a) => a.timing === "C") ?? null;
@@ -186,17 +191,19 @@ export const TurnBarSidebar: Component<TurnBarSidebarProps> = (props) => {
   };
 
   const queueChip = (a: ScAction) => (
-    <Chip
-      size="sm"
-      tone={toneFor(a.timing)}
-      data-timing={a.timing}
-      data-seq={a.seq}
-      removeTestId={`queue-remove-${a.seq}`}
-      removeLabel={`Remove ${badgeLabel(a)}`}
-      onRemove={(e) => removeChip(a, e)}
-    >
-      {badgeLabel(a)}
-    </Chip>
+    <CancelHint active={queueHint() === queueActionKey(a)}>
+      <Chip
+        size="sm"
+        tone={toneFor(a.timing)}
+        data-timing={a.timing}
+        data-seq={a.seq}
+        removeTestId={`queue-remove-${a.seq}`}
+        removeLabel={`Remove ${badgeLabel(a)}`}
+        onRemove={(e) => removeChip(a, e)}
+      >
+        {badgeLabel(a)}
+      </Chip>
+    </CancelHint>
   );
 
   return (

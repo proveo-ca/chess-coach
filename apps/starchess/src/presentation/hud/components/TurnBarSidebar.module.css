@@ -82,3 +82,11 @@
   font-size: 0.65rem;
   padding-inline: 4px;
 }
+
+.queue [data-timing] {
+  min-height: 40px;
+}
+
+.queue:has([data-cancel-hint]) {
+  padding-top: 16px;
+}

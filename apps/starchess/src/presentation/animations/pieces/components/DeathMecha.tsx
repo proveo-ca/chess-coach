@@ -54,7 +54,7 @@ export const DeathMecha: Component<DeathMechaProps> = (props) => {
           <line x1="31" y1="38" x2="27" y2="28" stroke-width="1" />
         </Shard>
         {/* Cockpit split so the big dome doesn't read as one flying SVG. */}
-        <Shard index={2} seed={seed()}>
+        <Shard index={2} lite seed={seed()}>
           <ellipse
             fill="#fff"
             cx="22.5"
@@ -64,7 +64,7 @@ export const DeathMecha: Component<DeathMechaProps> = (props) => {
             clip-path={`url(#sc-mecha-left-${seed()})`}
           />
         </Shard>
-        <Shard index={3} seed={seed()}>
+        <Shard index={3} lite seed={seed()}>
           <ellipse
             fill="#fff"
             cx="22.5"
@@ -77,10 +77,10 @@ export const DeathMecha: Component<DeathMechaProps> = (props) => {
         <Shard index={4} seed={seed()}>
           <ellipse fill="#fff" cx="18" cy="16" rx="3" ry="5" stroke="none" />
         </Shard>
-        <Shard index={5} seed={seed()}>
+        <Shard index={5} lite seed={seed()}>
           <Gatling cx={10} cy={20} team={team()} />
         </Shard>
-        <Shard index={6} seed={seed()}>
+        <Shard index={6} lite seed={seed()}>
           <Gatling cx={35} cy={20} team={team()} />
         </Shard>
       </g>

@@ -53,6 +53,41 @@ describe("foldTurn on one settled ply", () => {
     );
   });
 
+  it("does not credit a Marine that was never gas-stepped this ply", () => {
+    // The Marine on d4 just sits there — it did not gas-step into this capture,
+    // so it never "intercepted" anything, regardless of what stands behind it.
+    const state = seedAnalysis({ turn: 1, placement: "8/8/8/4R3/3P4/2k5/8/K7" }, "w");
+    const bubbles = foldTurn(state, {
+      turn: 2,
+      placement: "8/8/8/4R3/8/2k5/8/K7",
+      beforePlacement: "8/8/8/4R3/3P4/2k5/8/K7",
+      attacks: [
+        { kind: "capture", color: "b", from: "c3", to: "d4", victim: { piece: "p", color: "w" } },
+      ],
+    });
+    expect(state.intercepts).toBe(0);
+    expect(bubbles.some((bubble) => bubble.shortId === "medal")).toBe(false);
+  });
+
+  it("credits a gas-stepped Marine's death regardless of attacker or what stands behind it", () => {
+    // A King capture, no friendly piece behind at all — gas-stepping into the
+    // shot is the only thing this achievement requires.
+    const state = seedAnalysis({ turn: 1, placement: "8/8/8/8/3k4/8/2P5/K7" }, "w");
+    const bubbles = foldTurn(state, {
+      turn: 2,
+      placement: "8/8/8/8/8/2k5/8/K7",
+      beforePlacement: "8/8/8/8/3k4/8/2P5/K7",
+      events: [{ phase: "specialBefore", color: "w", kind: "stimStep", from: "c2", to: "c3" }],
+      attacks: [
+        { kind: "capture", color: "b", from: "d4", to: "c3", victim: { piece: "p", color: "w" } },
+      ],
+    });
+    expect(state.intercepts).toBe(1);
+    expect(bubbles.some((bubble) => bubble.shortId === "medal" && bubble.origin === "c3")).toBe(
+      true,
+    );
+  });
+
   it("counts a Marine that takes a BattleShip as Stonks level 2 and not level 3", () => {
     const scfen = "SCFEN|4k3/8/8/3q4/2P5/8/8/4K3|1|33|P|G:11:11|Q:w:C=c4d5;b:";
     const state = seedAnalysis(parseScFen(scfen), "w");
@@ -91,6 +126,16 @@ describe("foldTurn on one settled ply", () => {
     play(state, second);
     expect(state.mines).toBeGreaterThanOrEqual(2);
     expect(levelOf(state, "mines")).toBeGreaterThanOrEqual(2);
+  });
+
+  it("does not credit an opponent defusing a mine without a casualty", () => {
+    // A classical attack on an empty mined square clears the mine (`mineClear`)
+    // with no victim — distinct from a walk-in detonation (`mineTriggers`).
+    const scfen = "SCFEN|4k3/8/8/8/8/8/8/Q3K3|1|33|P|G:11:11|M:b:d4|Q:w:C=a1d4;b:";
+    const state = seedAnalysis(parseScFen(scfen), "b");
+    play(state, scfen);
+    expect(state.mines).toBe(0);
+    expect(levelOf(state, "mines")).toBe(0);
   });
 
   it("snipes two battleships", () => {

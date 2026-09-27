@@ -20,7 +20,7 @@ package "apps/starchess" {
   component "navigate /review" as NAVR <<async>>
   component "StarChessSingleScreen\nMatchStore + LiveMatchShell\nStarChessScreen turnChrome=sidebar\nAdjutant = opposite of team\nscript = ?opponent (naive|strategic)" as LIVE <<app>>
   component "StarChessTutorialScreen\n/tutorial/:section/:story\n(TUTORIAL_SCRIPT ids)\nKerrigan header · HOME-only\ne.g. /tutorial/fog/king" as TUT <<app>>
-  component "TutorialCompleteConfirm\nking-attack-3 enemy HP=0\nwhen tutorialCleared=false" as TUTDONE <<app>>
+  component "TutorialCompleteConfirm\nlive-play-attack-3 enemy HP=0\nwhen tutorialCleared=false" as TUTDONE <<app>>
   component "localStorage\nstarchess_tutorial_cleared" as TUTFLAG <<db>>
   component "ExitGameConfirm\nHome during planning/targeting/resolving" as EXIT <<error>>
   component "gameOver → matchHistory\nMatchResultModal\nVICTORY|DEFEAT (+DRAW)" as END <<db>>
@@ -42,7 +42,7 @@ NAVR ARROW_MAIN REV
 LIVE ARROW_ERROR EXIT : Home
 EXIT ARROW_OPTIONAL MENU : Leave confirmed
 TUT ARROW_OPTIONAL MENU : Home
-TUT ARROW_MAIN TUTDONE : king-attack-3 win\n+ uncleared
+TUT ARROW_MAIN TUTDONE : live-play-attack-3 win\n+ uncleared
 TUTDONE ARROW_MAIN TUTFLAG : Go Home → cleared=true
 TUTDONE ARROW_MAIN MENU : Go Home
 LIVE ARROW_MAIN END : gameOver
@@ -98,16 +98,16 @@ note bottom
   Contract + the two hand-copied Coach details: ``_spec/apps/chess/responsiveness/rules.md`` §5.
   **Board hints** — one ``hints`` step wins per beat (first matching ``when``,
   else the unconditional entry) and carries both ``squares`` (destination rings)
-  and ``arrows`` (lines drawn square-to-square, e.g. the ``king-attack-1`` h1-a8
+  and ``arrows`` (lines drawn square-to-square, e.g. the ``live-play-attack-1`` h1-a8
   x-ray and the Ship's d8-a8 shot). Arrows paint above the fog veil on purpose —
   the lines a lesson draws usually run *through* fog. Purely presentational: the
   board never checks the line is legal or unobstructed.
   Tutorial → ``/tutorial/:section/:story`` (ids from ``TUTORIAL_SCRIPT``,
   e.g. ``/tutorial/fog/king`` · ``/tutorial/specials/marine``).
   Bare ``/tutorial`` canonicalizes to the first Fog story.
-  **Lesson loop — objective → ending → success → next.** The goal shows
-  persistently in the footer (``board.objective``, else the story comment) so
-  coach reactions never bury it. ``completeWhen`` / ``restartWhen`` are judged
+  **Lesson loop — objective → ending → success → next.** The lesson's
+  goal is carried by the coach bubble alone — no text under the board.
+  ``completeWhen`` / ``restartWhen`` are judged
   **only on a settled board** (timeline idle). A hit lands in ``ending`` first:
   the bubble keeps the coach's closing line for its reading time
   (``lessonEndMessageMs`` — ~200 wpm, floor 1.2s, ceiling 4s; no line → no

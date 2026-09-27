@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/starchess/menu-flow.puml, _spec/apps/starchess/screens.puml, _spec/apps/starchess/deployment.puml, _spec/apps/starchess/architecture/screen-entities.puml, _spec/_plans/forfeit-as-loss.puml, _spec/_plans/starchess-achievements.puml
+// SPEC: _spec/apps/starchess/menu-flow.puml, _spec/apps/starchess/screens.puml, _spec/apps/starchess/deployment.puml, _spec/apps/starchess/architecture/screen-entities.puml, _spec/_plans/forfeit-as-loss.puml, _spec/_plans/starchess-achievements.puml, _spec/apps/starchess/architecture/reactivity/app-screens.md
 /**
  * Single-player match — `/starchess/single?map=&team=` (+ optional `scfen=`).
  * Adjutant script always plays the opposite of `team` (White or Black).
@@ -28,7 +28,7 @@ import type {
   ScFenSnapshot,
 } from "@chess-coach/starchess-core";
 import type { StarChessColor } from "@chess-coach/starchess-core";
-import { Show, createEffect, createSignal, onCleanup, type Component } from "solid-js";
+import { Show, batch, createEffect, createSignal, onCleanup, untrack, type Component } from "solid-js";
 
 import { browserLocation, readScfenQuery } from "~/adapters/browser";
 import {
@@ -189,15 +189,13 @@ const MatchInner: Component<{
 
   // Keep SCFEN + playerColor warm in localStorage while this match is live.
   createEffect(() => {
-    const s = store.state();
-    void s.liveSnapshot;
-    void s.economies.w.stored;
-    void s.economies.b.stored;
-    void s.phase;
-    void s.playerColor;
-    if (s.phase === "gameOver") return;
+    const shell = store.shell();
+    void shell.liveSnapshot;
+    void shell.economies;
+    void shell.playerColor;
+    if (shell.phase === "gameOver") return;
     saveMatchSession(
-      matchSessionFromState(s, props.boardVariant, {
+      matchSessionFromState(untrack(store.state), props.boardVariant, {
         id: props.matchId,
         startedAt: props.startedAt,
         opponent: props.opponent,
@@ -224,8 +222,8 @@ const MatchInner: Component<{
 
   // Terminal → persist DualNav package, then offer rematch / replay.
   createEffect(() => {
-    const s = store.state();
-    if (s.phase !== "gameOver" || historySaved) return;
+    if (store.shell().phase !== "gameOver" || historySaved) return;
+    const s = untrack(store.state);
     const result = resultForPlayer(s);
     const record = recordFromMatchState(s, {
       id: props.matchId,
@@ -257,7 +255,7 @@ const MatchInner: Component<{
       onExitToMenu={props.onExitToMenu}
       autoQueueOpponent={(snap) => {
         const color = opponentColor();
-        const storedFor = (c: StarChessColor) => store.state().economies[c].stored;
+        const storedFor = (c: StarChessColor) => store.shell().economies[c].stored;
         if (props.opponent !== "strategic") return adjutant(snap, { color, storedFor });
         foldTracking(snap);
         return strategicAdjutant(snap, {
@@ -368,7 +366,7 @@ export const SingleScreen: Component = () => {
     setResultOpen(true);
   };
 
-  const onAnotherGame = () => {
+  const onAnotherGame = () => batch(() => {
     setResultOpen(false);
     setEarnedOpen(false);
     setEarned([]);
@@ -382,14 +380,16 @@ export const SingleScreen: Component = () => {
     q.set("opponent", opponent());
     navigate(`/single?${q.toString()}`, { replace: true });
     setMatchEpoch((n) => n + 1);
-  };
+  });
 
   const onReplay = () => {
     const id = finishedId();
     if (!id) return;
-    setResultOpen(false);
-    setEarnedOpen(false);
-    navigate(`/review/${id}`, { replace: true });
+    batch(() => {
+      setResultOpen(false);
+      setEarnedOpen(false);
+      navigate(`/review/${id}`, { replace: true });
+    });
   };
 
   return (

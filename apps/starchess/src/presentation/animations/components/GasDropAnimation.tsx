@@ -4,6 +4,7 @@
  */
 import { For, type Component } from "solid-js";
 
+import { syncToClock } from "~/presentation/animations/clockSync";
 import { GAS_DROP_MS } from "~/presentation/animations/gasDrop";
 import styles from "~/presentation/animations/components/GasDropAnimation.module.css";
 import { squareBoxStyle } from "~/presentation/animations/boardGeom";
@@ -37,6 +38,7 @@ export const GasDropAnimation: Component<GasDropAnimationProps> = (props) => (
     <For each={props.cues}>
       {(cue) => (
         <div
+          ref={(el) => syncToClock(el)}
           class={styles.slot}
           style={squareBoxStyle(cue.at, props.boardWidth, props.boardHeight)}
           data-square={cue.at}
@@ -49,6 +51,7 @@ export const GasDropAnimation: Component<GasDropAnimationProps> = (props) => (
             style={{ color: VESPENE_GREEN }}
             aria-hidden="true"
           >
+            <div class={styles.canisterShadow} />
             <VespeneIcon size={32} />
           </div>
         </div>

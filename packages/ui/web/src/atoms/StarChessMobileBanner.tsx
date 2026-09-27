@@ -1,19 +1,17 @@
-// SPEC: _spec/_plans/chess-ui-primitives.puml
+// SPEC: _spec/_plans/chess-ui-primitives.puml, _spec/apps/starchess/navigation-chrome.md
 import { Show, type Component, type JSX } from "solid-js";
 
 import styles from "./StarChessMobileBanner.module.css";
 import { ChevronNav } from "../primitives/ChevronNav";
+import { Label, type LabelColor } from "../primitives/Label";
 
 export type StarChessMobileBannerProps = {
   onBack?: () => void;
-
   href?: string;
-
-  resources?: JSX.Element;
-
-  turn?: JSX.Element;
-
-  fixedResources?: boolean;
+  title?: string;
+  titleColor?: LabelColor;
+  center?: JSX.Element;
+  fill?: boolean;
   class?: string;
   "data-testid"?: string;
 };
@@ -22,7 +20,7 @@ export const StarChessMobileBanner: Component<StarChessMobileBannerProps> = (pro
   <header
     class={`mobile-banner ${styles.banner} ${props.class ?? ""}`.trim()}
     data-testid={props["data-testid"] ?? "mobile-banner"}
-    data-resources={props.fixedResources ? "fixed" : undefined}
+    data-fill={props.fill ? "true" : undefined}
   >
     <div class={styles.back} data-slot="back">
       <Show
@@ -48,11 +46,22 @@ export const StarChessMobileBanner: Component<StarChessMobileBannerProps> = (pro
         </ChevronNav>
       </Show>
     </div>
-    <div class={styles.resources} data-slot="resources">
-      {props.resources}
+    <div class={styles.title} data-slot="title">
+      <Show when={!props.center} fallback={props.center}>
+      <Show when={props.title}>
+        {(title) => (
+          <Label
+            variant="title"
+            color={props.titleColor}
+            class={styles.titleText}
+            data-testid="mobile-banner-title"
+          >
+            {title()}
+          </Label>
+        )}
+      </Show>
+      </Show>
     </div>
-    <div class={styles.turn} data-slot="turn">
-      {props.turn}
-    </div>
+    <div class={styles.end} aria-hidden="true" />
   </header>
 );

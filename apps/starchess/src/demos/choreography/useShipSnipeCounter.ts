@@ -6,42 +6,24 @@
  * (specialAfter) catches the ship after it lands. Generic adjutant
  * untouched.
  */
-import { createEffect } from "solid-js";
-import { placementToMap } from "@chess-coach/starchess-core";
 import type { Square } from "chess.js";
 
-import type { ChoreographyResult } from "~/demos/choreography";
-import type { MatchStore } from "~/types/match";
+import { defineChoreography } from "~/demos/choreography/defineChoreography";
+import type { LessonChoreography } from "~/demos/choreography";
 
 const COUNTER_TURN = 21;
 const FROM: Square = "d5";
 const TO: Square = "f1";
 
-export const useShipSnipeCounter = (store: MatchStore): ChoreographyResult => {
-  let queued = false;
-
-  createEffect(() => {
-    if (queued) return;
-    try {
-      const s = store.state();
-      if (s.phase !== "planning" && s.phase !== "targeting") return;
-      if (!s.turnStartChecksApplied || s.timeline.active) return;
-      const snap = s.liveSnapshot;
-      if (snap.turn !== COUNTER_TURN || snap.phase !== "P") return;
-      if ((snap.queue?.actions ?? []).some((a) => a.color === "b")) return;
-      const map = placementToMap(snap.placement);
-      const origin = map.get(FROM);
-      if (!origin || origin.type !== "q" || origin.color !== "b") return;
-      if (map.has(TO)) return;
-      queued = true;
-      store.dispatch({
-        type: "QUEUE_ACTION",
-        action: { timing: "B", kind: "tacticalJump", color: "b", from: FROM, to: TO },
-      });
-    } catch {
-      queued = false;
-    }
-  });
-
-  return {};
-};
+export const useShipSnipeCounter: LessonChoreography = defineChoreography({
+  steps: [
+    {
+      turn: COUNTER_TURN,
+      when: (map) => {
+        const origin = map.get(FROM);
+        return !!origin && origin.type === "q" && origin.color === "b" && !map.has(TO);
+      },
+      actions: () => [{ timing: "B", kind: "tacticalJump", color: "b", from: FROM, to: TO }],
+    },
+  ],
+});

@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/starchess/screens.puml, _spec/apps/starchess/architecture/screen-entities.puml, _spec/apps/starchess/navigation-chrome.md
+// SPEC: _spec/apps/starchess/screens.puml, _spec/apps/starchess/architecture/screen-entities.puml, _spec/apps/starchess/navigation-chrome.md, _spec/apps/starchess/architecture/reactivity/tutorial.md
 
 import { placementToMap, type StarChessColor } from "@chess-coach/starchess-core";
 import type { Square } from "chess.js";
@@ -8,10 +8,10 @@ import {
   onCleanup,
   onMount,
   Show,
+  untrack,
   type Component,
   type JSX,
 } from "solid-js";
-import { Portal } from "solid-js/web";
 
 import {
   clearAchievementBubbles,
@@ -20,7 +20,7 @@ import {
 import { foldGame, foldPlyFromResolve, plySeenBy } from "~/achievements/analysis";
 import { createMatchStore, MatchStoreProvider, useMatchStore } from "~/app/MatchStoreContext";
 import { createMatchStateFromReviewHistory } from "~/app/reviewHistory";
-import { displayedSnapshot } from "~/app/selectors";
+import { readDisplayedSnapshot } from "~/app/selectors";
 import { useMediaQuery } from "~/hooks/useMediaQuery";
 import { DYNAMIC_MOBILE_MQ } from "~/utils/breakpoints";
 import { Label } from "@chess-coach/ui-web/primitives/Label";
@@ -81,6 +81,7 @@ export type ReviewDemoScreenProps = {
 
   hideDualNav?: boolean;
 
+
   tutorial?: boolean;
 
   header?: JSX.Element;
@@ -119,33 +120,36 @@ const syncTankModes = (
 
 const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
   const store = useMatchStore();
-  const snap = createMemo(() => displayedSnapshot(store.state()));
+  const snap = createMemo(() => readDisplayedSnapshot(store));
+  const timelineActive = createMemo(() => store.timeline().active);
+  const reviewIndex = createMemo(() => store.shell().reviewIndex);
 
   const dynamicMobile = useMediaQuery(DYNAMIC_MOBILE_MQ);
+  const bannerBars = () => dynamicMobile();
 
   const reviewBusy = () =>
-    store.state().timeline.active ||
+    timelineActive() ||
     store.reviewPhase() === "check" ||
     store.reviewPhase() === "intent" ||
     store.reviewPhase() === "resolve";
 
-  const reviewTurnNumber = () => {
-    const s = store.state();
-    const settled = s.settledSnapshots[s.reviewIndex];
+  const reviewTurnNumber = createMemo(() => {
+    const settled = store.shell().settledSnapshots[reviewIndex()];
     return Math.max(1, settled?.turn ?? snap().turn);
-  };
+  });
 
   const caption = createMemo(() => {
-    const s = store.state();
+    const index = reviewIndex();
+    const resolves = store.shell().settledResolves;
     const phase = store.reviewPhase();
     const steps = props.history.steps;
     const startCaption = props.history.startCaption;
-    if (s.reviewIndex <= 0 && (phase === "start" || phase === "final")) {
+    if (index <= 0 && (phase === "start" || phase === "final")) {
       return startCaption;
     }
     let endsBefore = 0;
-    for (let i = 0; i < s.reviewIndex; i += 1) {
-      const r = s.settledResolves[i];
+    for (let i = 0; i < index; i += 1) {
+      const r = resolves[i];
       if (r && !isCheckOnlyResolve(r)) endsBefore += 1;
     }
     const playing = phase === "check" || phase === "intent" || phase === "resolve";
@@ -167,7 +171,7 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
     if (!props.tutorial) return;
     setTutorialNarration({
       reviewPhase: store.reviewPhase(),
-      timelineActive: store.state().timeline.active,
+      timelineActive: timelineActive(),
     });
   });
 
@@ -179,9 +183,9 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
   const opening = props.history.settledSnapshots[0];
   const game =
     props.achievements && opening ? foldGame(opening, plies, props.achievements) : null;
-  let shownIndex = store.state().reviewIndex;
+  let shownIndex = untrack(reviewIndex);
   createEffect(() => {
-    const index = store.state().reviewIndex;
+    const index = reviewIndex();
     if (!game || index === shownIndex) return;
     const from = shownIndex;
     shownIndex = index;
@@ -257,6 +261,7 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
   const dualResourceBars = () => (
     <div
       class={styles.dualResources}
+      classList={{ [styles.dualInBanner]: bannerBars() }}
       role="group"
       aria-label={
         reviewVisionFilter() === "both"
@@ -269,42 +274,62 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
 
       <Show when={showWhiteResources()}>
         <ResourceBar
-          compact={dynamicMobile()}
+          compact={bannerBars()}
           color="w"
           snapshot={snap()}
-          name={dynamicMobile() ? undefined : sideName("w")}
+          name={bannerBars() ? undefined : sideName("w")}
         />
       </Show>
       <Show when={showBlackResources()}>
         <ResourceBar
-          compact={dynamicMobile()}
+          compact={bannerBars()}
           color="b"
           snapshot={snap()}
-          name={dynamicMobile() ? undefined : sideName("b")}
+          name={bannerBars() ? undefined : sideName("b")}
         />
       </Show>
     </div>
   );
 
-  const reviewNavDisabled = () => ({
-    back: reviewBusy() || store.state().reviewIndex <= 0,
-    forward: reviewBusy() || store.state().reviewIndex >= store.state().settledSnapshots.length - 1,
-  });
+  const reviewNavDisabled = createMemo(
+    () => ({
+      back: reviewBusy() || reviewIndex() <= 0,
+      forward: reviewBusy() || reviewIndex() >= store.shell().settledSnapshots.length - 1,
+    }),
+    undefined,
+    { equals: (a, b) => a.back === b.back && a.forward === b.forward },
+  );
+
+  const sidebarReview = createMemo(() => ({
+    turn: reviewTurnNumber(),
+    phase: store.reviewPhase(),
+    hideDualNav: true,
+    onBack: () => store.reviewBack(),
+    onForward: () => store.reviewForward(),
+    backDisabled: reviewNavDisabled().back,
+    forwardDisabled: reviewNavDisabled().forward,
+  }));
+
+  const header = createMemo(() => props.header);
 
   return (
     <Screen>
 
       <MobileBanner
         onBack={() => props.onHome?.()}
-        resources={dualResourceBars()}
+        title={props.matchTitle?.resultLine ?? props.reviewLabel}
+        titleColor={props.matchTitle?.result}
       />
       <Show
-        when={props.header}
+        when={header()}
         fallback={
-          <Screen.SidebarInset class={styles.topPane}>
+          <Screen.SidebarInset
+            class={styles.topPane}
+          >
 
             <ScreenBackNav
               onBack={() => props.onHome?.()}
+              class={styles.inFlowBack}
               data-testid="review-detail-back"
             >
               <Show when={props.matchTitle}>
@@ -339,7 +364,7 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
           </Screen.SidebarInset>
         }
       >
-        <Screen.Header>{props.header}</Screen.Header>
+        <Screen.Header>{header()}</Screen.Header>
       </Show>
       <MatchBoardHost>
         <MatchBoardHost.BoardColumn>
@@ -356,45 +381,18 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
           onHome={props.onHome}
           controlsVisible={!props.hideDualNav}
         >
-          <TurnBarSidebar
-            review={{
-              turn: reviewTurnNumber(),
-              phase: store.reviewPhase(),
-              hideDualNav: true,
-              onBack: () => store.reviewBack(),
-              onForward: () => store.reviewForward(),
-              backDisabled: reviewNavDisabled().back,
-              forwardDisabled: reviewNavDisabled().forward,
-            }}
-          />
+          <TurnBarSidebar review={sidebarReview()} />
         </MatchBoardHost.Rail>
       </MatchBoardHost>
       <Screen.Footer>
         <div class={styles.footerStack}>
-          <Show when={props.footerExtra}>{props.footerExtra}</Show>
+          {props.footerExtra}
           <p class={styles.caption}>
             Review · {props.reviewLabel ?? "Review"} · {caption()}
           </p>
         </div>
       </Screen.Footer>
 
-      <Show when={dynamicMobile() && !props.hideDualNav}>
-        <Portal>
-          <div
-            class={styles.navDockDynamic}
-            data-testid="review-turn-nav-dynamic"
-          >
-            <ReviewTurnNav
-              onBack={() => store.reviewBack()}
-              onForward={() => store.reviewForward()}
-              backDisabled={reviewNavDisabled().back}
-              forwardDisabled={reviewNavDisabled().forward}
-            >
-              <span />
-            </ReviewTurnNav>
-          </div>
-        </Portal>
-      </Show>
     </Screen>
   );
 };
@@ -428,6 +426,7 @@ export const ReviewDemoScreen: Component<ReviewDemoScreenProps> = (props) => {
         tutorial={props.tutorial}
         header={props.header}
         footerExtra={props.footerExtra}
+        achievements={props.achievements}
       />
     </MatchStoreProvider>
   );

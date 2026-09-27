@@ -79,9 +79,9 @@ erase a wreck that size, and all three were observed doing exactly that
 The frag boom is a fourth: it is positioned and the wreck's `svg` is not, so it
 always paints on top and has to stay brief and translucent.
 
-Pinned allowlist for V29/V30: `fragShockwave` (border-colour, accepted P2 in
-`timeline-perf.puml`) and `sc-hint-pulse` (tutorial hint ring, board chrome).
-Anything new is a regression.
+Pinned allowlist for V29/V30: `sc-hint-pulse` (tutorial hint ring, board
+chrome). `fragShockwave` left it once its colour shift became a two-ring
+opacity cross-fade. Anything new is a regression.
 
 ### Adjacent — owned by another subject folder
 
@@ -150,3 +150,18 @@ seq per slot instead of resetting on every re-run.
 * `transition` on paint-only properties is only checked for
   `.board-phase-ring` (V31); the shipped `.pieceSpecialUsed` outline transition
   is the accepted P2 exception.
+* **Which animations need optimizing is detected, not guaranteed.**
+  `vfx-fps-throttle.spec.ts` runs every Moves / Attacks / Deaths / Deploys
+  Storybook demo at 1× and 20× CPU (`Emulation.setCPUThrottlingRate`, Chromium
+  only, needs Storybook on :6007) and ranks each CSS animation in
+  `apps/e2e/test-results/vfx-optimize/report.md`: **non-composited** (Chromium's
+  `compositeFailed` verdict from the `blink.animations` trace), **cut** (its cue
+  unmounted before its keyframes ended) and **mount hitch** (a long frame when it
+  started). The timeline's pace is authoritative — multiplayer clients advance
+  in lockstep — so a cut animation is fixed in the VFX, never by making the
+  timeline wait. `VFX_OPTIMIZE_STRICT=1` fails on any flag.
+  `VFX_TIER=lite` measures the lite tier.
+* **VFX tier probe** — `vfx-tier-probe.spec.ts` pins the calibration in
+  `vfx-tier.puml`: the menu probe keeps `full` at 1× / 6× / 10× CPU, goes `lite`
+  on the second 20× probe (and the tier reaches `/single`), and never runs under
+  reduced motion.

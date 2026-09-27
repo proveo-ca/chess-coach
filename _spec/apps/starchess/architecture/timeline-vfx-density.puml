@@ -53,7 +53,8 @@ note bottom
   **Measured (…105537):** DroppedFrame **330 (8% of baseline 4045) — met**;
   GPU main busy **8.3s** (was ~39s); paint max 0.88ms. Paint/s · Commit/s ·
   Swap/s doubled — cheap frames, not a regression signal in vsync-off env.
-  **P2:** fragShockwave border-color removal · .pieceSpecialUsed outline
+  **Shipped:** fragShockwave border-color → two-ring opacity cross-fade.
+  **P2:** .pieceSpecialUsed outline
   (30ms hotspot, accepted) · optional-FX drop.
   Parent design: ""timeline-perf.puml"".
 end note

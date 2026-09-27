@@ -50,7 +50,7 @@ export const DeathMine: Component<DeathMineProps> = (props) => {
       overflow="visible"
       data-death-glyph="mine"
     >
-      <Shard index={0} seed={props.seed} distScale={0.25}>
+      <Shard index={0} lite seed={props.seed} distScale={0.25}>
         <ellipse cx="20" cy="26.5" rx="8" ry="2.2" fill="rgba(0,0,0,0.14)" />
       </Shard>
 
@@ -59,7 +59,7 @@ export const DeathMine: Component<DeathMineProps> = (props) => {
           {(i) => {
             const g = radialLeg(i);
             return (
-              <Shard index={i + 1} seed={props.seed} distScale={PART_FLIGHT}>
+              <Shard index={i + 1} lite={i === 0 || i === 2} seed={props.seed} distScale={PART_FLIGHT}>
                 <path
                   fill="none"
                   stroke={team()}
@@ -81,7 +81,7 @@ export const DeathMine: Component<DeathMineProps> = (props) => {
           }}
         </For>
 
-        <Shard index={5} seed={props.seed} distScale={PART_FLIGHT}>
+        <Shard index={5} lite seed={props.seed} distScale={PART_FLIGHT}>
           <path
             fill="#fff"
             stroke="#222"

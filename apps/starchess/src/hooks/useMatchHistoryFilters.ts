@@ -1,7 +1,7 @@
 /**
  * Review list filters — color (Blue/Red) + date pages.
  * No first-move filter (StarChess has no SAN opening book).
- * // SPEC: _spec/apps/starchess/menu-flow.puml
+ * // SPEC: _spec/apps/starchess/menu-flow.puml, _spec/apps/starchess/architecture/reactivity/components.md
  */
 import { useSearchParams } from "@solidjs/router";
 import { createMemo, createSignal } from "solid-js";
@@ -9,6 +9,8 @@ import type { StarChessColor } from "@chess-coach/starchess-core";
 
 import { matchHistory } from "~/store/matchHistoryStore";
 import type { StarChessGameRecord } from "~/types/review";
+
+const NO_GAMES: StarChessGameRecord[] = [];
 
 export function useMatchHistoryFilters() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -49,7 +51,7 @@ export function useMatchHistoryFilters() {
 
   const visibleGames = createMemo(() => {
     const group = dateGroups()[activePage()];
-    return group ? group.games : [];
+    return group ? group.games : NO_GAMES;
   });
 
   const currentDateLabel = createMemo(() => {

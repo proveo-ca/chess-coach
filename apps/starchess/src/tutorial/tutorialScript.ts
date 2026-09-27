@@ -1,28 +1,34 @@
-// SPEC: _spec/apps/starchess/menu-flow.puml, _spec/apps/starchess/architecture/storybook-projection.puml
+// SPEC: _spec/apps/starchess/menu-flow.puml, _spec/apps/starchess/architecture/storybook-projection.puml, _spec/apps/starchess/tutorial/hints-and-coach.md
 /**
- * Tutorial script — Stage → Story → Selena comment (+ optional store/board reactions).
+ * Tutorial script — Stage → Story → Selena comment (+ optional store/board beats).
  */
-import type { Square } from "chess.js";
+import type { PieceSymbol, Square } from "chess.js";
 
+import { specialCopyFor } from "~/presentation/specials/copy";
 import { TUTORIAL_SCRIPT_CONFIG } from "~/tutorial/tutorialScript.config";
 import {
   boardConditionHolds,
-  chargeFromH8,
-  forwardDeploySquare,
-  g2DeployName,
+  ccDeployPressure,
+  ccPressureUnits,
+  ccThreatAnswer,
+  ccThreatUnits,
+  deployGasSquare,
+  mechaPressureLine,
   gasMarineSquare,
-  g1GuardNeeded,
+  g2DeployName,
   isBoardCondition,
   mineGuard,
-  mechaDiagonalOpen,
-  mechaThreatOpen,
   promotionChoiceOpen,
+  queuedMoveGhost,
+  unitArrow,
+  whiteGas,
   runnerStop,
   shipJuke,
-  tankSiegeOnH5,
   tankSiegeSquare,
   whiteBattleShipSquare,
 } from "~/tutorial/lessonTactics";
+import { pickBeat, wrongQueuedAction, type TutorialBeatMatchContext } from "~/tutorial/when";
+import { queueActionKey } from "~/presentation/hud/queueHint";
 import type { KerriganEmotion } from "~/types/coach";
 import type {
   AlertLatch,
@@ -30,24 +36,12 @@ import type {
   LiveLessonBoard,
   BattleShipWatch,
   SquareCovers,
-  TutorialBackrankWhen,
-  TutorialBoardCondition,
+  TutorialBeat,
   TutorialBoardArrow,
-  TutorialBoardHint,
-  TutorialChargeWhen,
   TutorialCompleteWhen,
-  TutorialCoversWhen,
-  TutorialForwardDeployWhen,
-  TutorialGasMarineWhen,
   TutorialLine,
   TutorialLineHold,
-  TutorialMechaDiagonalWhen,
-  TutorialMechaThreatWhen,
-  TutorialMineGuardWhen,
-  TutorialPromotionWhen,
-  TutorialStopRunnerWhen,
-  TutorialTankSiegeWhen,
-  TutorialTrajectoryWhen,
+  TutorialMark,
   TutorialReactionAction,
   TutorialSectionId,
 } from "~/types/tutorial";
@@ -58,57 +52,17 @@ export type {
   LiveLessonBoard,
   SquareCovers,
   TutorialBoardArrow,
-  TutorialBoardHint,
+  TutorialBeat,
   TutorialCompleteWhen,
   TutorialCoversWhen,
   TutorialLine,
   TutorialLineHold,
+  TutorialMark,
   TutorialTrajectoryWhen,
   TutorialReactionAction,
   TutorialSectionId,
 } from "~/types/tutorial";
-
-export type TutorialReactionWhen =
-  /** DualNav / phase-stepper review phase. */
-  | { kind: "reviewPhase"; phase: ReviewTurnPhase; /** 1-based planning ordinal. */ turn?: number }
-  /** Timeline cues playing (resolve VFX). */
-  | { kind: "timelineActive" }
-  /** Fog section Chess skin toggle. */
-  | { kind: "chessSkin"; chess: boolean }
-  /** Live board SCFEN matches this pattern. */
-  | { kind: "scfen"; re: RegExp; phases?: readonly ReviewTurnPhase[] }
-  /** 1-based planning ordinal (`snap.turn + 1`; seed turn 0 → 1). */
-  | { kind: "turn"; turn: number }
-  /** Live targeting mode (e.g. Charon armed → `charonMissiles`). */
-  | { kind: "targeting"; targetingKind: string }
-  /** Live tactics cover the square with one of these kinds. */
-  | TutorialCoversWhen
-  /** Live tactics hold an open staging post against the enemy CC. */
-  | TutorialTrajectoryWhen
-  | TutorialBackrankWhen
-  | TutorialMechaDiagonalWhen
-  | TutorialMechaThreatWhen
-  | TutorialGasMarineWhen
-  | TutorialForwardDeployWhen
-  | TutorialPromotionWhen
-  | TutorialChargeWhen
-  | TutorialTankSiegeWhen
-  | TutorialStopRunnerWhen
-  | TutorialMineGuardWhen
-  /** Command Center HP, units gone, or units on named squares. */
-  | TutorialBoardCondition
-  /** BattleShip that was standing on h8 is gone during resolve. */
-  | { kind: "shipSniped" };
-
-export type TutorialReaction = {
-  when: TutorialReactionWhen;
-  comment: string;
-  emotion?: KerriganEmotion;
-  /** Optional in-bubble CTA (e.g. retry after ally CC dies). */
-  action?: TutorialReactionAction;
-  /** Momentary beat — shown while matched, never latched as the sticky line. */
-  transient?: boolean;
-};
+export { queued, and, or, not } from "~/tutorial/when";
 
 export type TutorialStoryScript = {
   id: string;
@@ -118,10 +72,12 @@ export type TutorialStoryScript = {
   emotion?: KerriganEmotion;
   /** Optional CTA on the default intro line. */
   action?: TutorialReactionAction;
-  /** Optional overlays when MatchStore / board state changes. */
-  reactions?: readonly TutorialReaction[];
-  /** Optional destination rings on the live board. */
-  hints?: readonly TutorialBoardHint[];
+  /**
+   * Scripted beats: coach line and/or board marks, gated by turn/phase/when.
+   * First-match-wins, evaluated independently for `say` and for `mark` (a
+   * beat can carry one, the other, or both).
+   */
+  beats?: readonly TutorialBeat[];
   /** Replay lessons: draw queued intents as arrows on the Intent beat. */
   intentArrows?: boolean;
   /**
@@ -134,6 +90,9 @@ export type TutorialStoryScript = {
    * the player clicked Next Lesson. Must not match the lesson seed SCFEN.
    */
   completeWhen?: TutorialCompleteWhen;
+  hideCoachWhen?: TutorialCompleteWhen;
+  coachFarewell?: string;
+  coachFarewellMs?: number;
   /**
    * When matched after resolve, remount/restart this lesson (e.g. ship died).
    * Must not match the lesson seed SCFEN.
@@ -210,7 +169,7 @@ export const parseTutorialSection = (
 ): TutorialSectionId => {
   if (raw === "specials" || raw === "special-moves") return "specials";
   if (raw === "resolve" || raw === "turn-resolution") return "resolve";
-  if (raw === "king" || raw === "cc-damage") return "king";
+  if (raw === "live-play" || raw === "king" || raw === "cc-damage") return "live-play";
   if (raw === "fog" || raw === "fog-of-war") return "fog";
   return "fog";
 };
@@ -260,8 +219,6 @@ export type TutorialScriptContext = {
   chessSkin?: boolean;
   /** Live `formatScFen` wire for `scfen` reactions. */
   scfen?: string;
-  /** 1-based planning ordinal (`snap.turn + 1`; seed turn 0 → 1). */
-  turn?: number;
   /** Live targeting kind (`charonMissiles`, …). */
   targetingKind?: string | null;
   /** Enemy-occupied watch squares mapped to their current coverers. */
@@ -272,6 +229,59 @@ export type TutorialScriptContext = {
   turnStartChecksApplied?: boolean;
   /** White BattleShip was lost on h8 during this resolve. */
   shipSniped?: boolean;
+};
+
+/** `TutorialScriptContext` narrowed to what `matchesBeat` needs. */
+const beatMatchContext = (ctx: TutorialScriptContext): TutorialBeatMatchContext => ({
+  scfen: ctx.scfen,
+  reviewPhase: ctx.reviewPhase,
+  timelineActive: ctx.timelineActive,
+  chessSkin: ctx.chessSkin,
+  targetingKind: ctx.targetingKind,
+  covers: ctx.covers,
+  trajectories: ctx.trajectories,
+  shipSniped: ctx.shipSniped,
+});
+
+/**
+ * A handful of `when` kinds carry their own computed text — the beat's own
+ * `say` is a placeholder the config author never sees rendered for these.
+ */
+const enrichSay = (beat: TutorialBeat, scfen: string | undefined): string | undefined => {
+  const w = beat.when;
+  if (!scfen || !w) return beat.say;
+  if (w.kind === "ccThreat") {
+    const answer = ccThreatAnswer(scfen);
+    const name = (unit: string) => specialCopyFor(unit as PieceSymbol).unit;
+    if (answer?.kind === "deploy") {
+      return `Our Command Center is under fire! \n\nDeploy a ${name(answer.unit)} on ${answer.at} to take out the attacker.`;
+    }
+    if (answer?.kind === "deployed") return `Now take out the attacker with that ${name(answer.unit)}!`;
+    if (answer?.kind === "capture") return `Take out the attacker with your ${name(answer.unit)}!`;
+    if (answer?.kind === "evade") return "Nothing reaches the attacker. Move your Command Center out of danger!";
+    if (answer?.kind === "answered") return "That should do it. End your turn!";
+  }
+  if (w.kind === "gasOnMarine") {
+    const sq = gasMarineSquare(scfen);
+    if (sq) return `Keep pushing your ${sq[0]}-file Marine by dropping gas on it`;
+  }
+  if (w.kind === "forwardDeploy") {
+    return `Deploy a ${g2DeployName(scfen)} on g2 with Gas`;
+  }
+  if (w.kind === "mineGuard") {
+    const guard = mineGuard(scfen);
+    if (guard) return `1 unit guarding ${guard.files} promoting files!`;
+  }
+  if (w.kind === "ccDeploy") {
+    const deploy = ccDeployPressure(scfen);
+    if (deploy) {
+      const unit = specialCopyFor(deploy.unit).unit;
+      return deploy.hits.includes(deploy.cc)
+        ? `Deploy a ${unit} on ${deploy.at} with Gas: it hits the enemy Command Center!`
+        : `Deploy a ${unit} on ${deploy.at} with Gas to cover the enemy Command Center's escape squares.`;
+    }
+  }
+  return beat.say;
 };
 
 /** Pick the most specific Selena line for the current board/store context. */
@@ -285,122 +295,16 @@ export const resolveTutorialLine = (ctx: TutorialScriptContext): TutorialLine =>
     };
   }
 
-  const reactions = story.reactions ?? [];
-  const reactionLine = (r: (typeof reactions)[number]): TutorialLine => ({
-    comment: r.comment,
-    emotion: r.emotion ?? story.emotion,
-    ...(r.action ? { action: r.action } : {}),
-    ...(r.transient ? { transient: true as const } : {}),
-    source: "reaction",
-  });
-
-  for (const r of reactions) {
-    const w = r.when;
-    if (isBoardCondition(w)) {
-      if (ctx.scfen && phaseAllows(w.phases, ctx.reviewPhase) && boardConditionHolds(w, ctx.scfen)) {
-        return reactionLine(r);
-      }
-      continue;
-    }
-    if (w.kind === "reviewPhase" && ctx.reviewPhase === w.phase) {
-      if (w.turn != null && ctx.turn !== w.turn) continue;
-      return reactionLine(r);
-    }
-    if (w.kind === "timelineActive" && ctx.timelineActive) {
-      return reactionLine(r);
-    }
-    if (w.kind === "chessSkin" && ctx.chessSkin === w.chess) {
-      return reactionLine(r);
-    }
-    if (w.kind === "scfen" && ctx.scfen != null && w.re.test(ctx.scfen)) {
-      const phase = ctx.reviewPhase;
-      if (w.phases && (!phase || !w.phases.includes(phase))) continue;
-      return reactionLine(r);
-    }
-    if (w.kind === "turn" && ctx.turn === w.turn) {
-      return reactionLine(r);
-    }
-    if (
-      w.kind === "targeting" &&
-      ctx.targetingKind != null &&
-      ctx.targetingKind === w.targetingKind
-    ) {
-      return reactionLine(r);
-    }
-    if (w.kind === "covers" && ctx.covers) {
-      const list = ctx.covers[w.square] ?? [];
-      if (list.some((c) => !w.kinds || w.kinds.includes(c.kind))) {
-        return reactionLine(r);
-      }
-    }
-    if (w.kind === "trajectory" && ctx.trajectories?.some((t) => t.from === w.from && t.to === w.to)) {
-      return reactionLine(r);
-    }
-    if (w.kind === "backrankGuard" && ctx.scfen && g1GuardNeeded(ctx.scfen)) {
-      return reactionLine(r);
-    }
-    if (w.kind === "mechaDiagonal" && ctx.scfen && phaseAllows(w.phases, ctx.reviewPhase) && mechaDiagonalOpen(ctx.scfen)) {
-      return reactionLine(r);
-    }
-    if (w.kind === "mechaThreat" && ctx.scfen && phaseAllows(w.phases, ctx.reviewPhase) && mechaThreatOpen(ctx.scfen)) {
-      return reactionLine(r);
-    }
-    if (w.kind === "gasOnMarine" && ctx.scfen && phaseAllows(w.phases, ctx.reviewPhase) && gasMarineSquare(ctx.scfen)) {
-      const sq = gasMarineSquare(ctx.scfen)!;
-      return {
-        ...reactionLine(r),
-        comment: `Keep pushing your ${sq[0]}-file Marine by dropping gas on it`,
-      };
-    }
-    if (
-      w.kind === "forwardDeploy" &&
-      ctx.scfen &&
-      phaseAllows(w.phases, ctx.reviewPhase) &&
-      forwardDeploySquare(ctx.scfen) === w.square
-    ) {
-      return {
-        ...reactionLine(r),
-        comment: `Deploy a ${g2DeployName(ctx.scfen)} on g2 with Gas`,
-      };
-    }
-    if (
-      w.kind === "promotionChoice" &&
-      ctx.scfen &&
-      phaseAllows(w.phases, ctx.reviewPhase) &&
-      promotionChoiceOpen(ctx.scfen)
-    ) {
-      return reactionLine(r);
-    }
-    if (
-      w.kind === "chargeH8" &&
-      ctx.scfen &&
-      phaseAllows(w.phases, ctx.reviewPhase) &&
-      chargeFromH8(ctx.scfen)
-    ) {
-      return reactionLine(r);
-    }
-    if (w.kind === "stopRunner" && ctx.scfen && runnerStop(ctx.scfen)) {
-      return reactionLine(r);
-    }
-    if (w.kind === "mineGuard" && ctx.scfen) {
-      const guard = mineGuard(ctx.scfen);
-      if (!guard) continue;
-      return {
-        ...reactionLine(r),
-        comment: `1 unit guarding ${guard.files} promoting files!`,
-      };
-    }
-    if (
-      w.kind === "tankSiege" &&
-      ctx.scfen &&
-      phaseAllows(w.phases, ctx.reviewPhase) &&
-      tankSiegeOnH5(ctx.scfen)
-    ) {
-      return reactionLine(r);
-    }
-    if (w.kind === "shipSniped" && ctx.shipSniped) {
-      return reactionLine(r);
-    }
+  const beat = pickBeat(story.beats, "say", beatMatchContext(ctx));
+  if (beat?.say != null) {
+    return {
+      comment: enrichSay(beat, ctx.scfen) ?? beat.say,
+      emotion: beat.emotion ?? story.emotion,
+      ...(beat.action ? { action: beat.action } : {}),
+      ...(beat.transient ? { transient: true as const } : {}),
+      ...(beat.holdMs ? { holdMs: beat.holdMs } : {}),
+      source: "reaction",
+    };
   }
 
   return {
@@ -493,7 +397,7 @@ export const holdTutorialLine = (
 /** The board state hint steps read — the board half of {@link TutorialScriptContext}. */
 export type TutorialHintContext = Pick<
   TutorialScriptContext,
-  "scfen" | "covers" | "trajectories" | "reviewPhase" | "turn"
+  "scfen" | "covers" | "trajectories" | "reviewPhase" | "targetingKind"
 >;
 
 /** What the board paints for the step in force. Empty arrays clear the marks. */
@@ -502,162 +406,183 @@ export type TutorialHintMarks = {
   squares: Square[];
   /** Alert-red rings. */
   alertSquares: Square[];
+  gasSquares: Square[];
   arrows: TutorialBoardArrow[];
+  cancelQueued: string | null;
 };
 
 /** Juke arrows leave from the BattleShip's current square, not the seed square. */
-const battleShipOrigin = (hint: TutorialBoardHint, scfen: string): TutorialBoardHint => {
+const battleShipOrigin = (mark: TutorialMark, scfen: string): TutorialMark => {
   const from = whiteBattleShipSquare(scfen);
-  if (!from || !hint.arrows) return { ...hint, arrows: [] };
+  if (!from || !mark.arrows) return { ...mark, arrows: [] };
   return {
-    ...hint,
-    arrows: hint.arrows.flatMap((arrow) =>
+    ...mark,
+    arrows: mark.arrows.flatMap((arrow) =>
       arrow.to === from ? [] : [{ ...arrow, from }],
     ),
   };
 };
 
-const matchTutorialHint = (
-  hints: readonly TutorialBoardHint[] | undefined,
-  { scfen, covers, trajectories, reviewPhase, turn }: TutorialHintContext,
-): TutorialBoardHint | undefined => {
-  if (!hints?.length) return undefined;
-  for (const h of hints) {
-    if (!h.when) return h;
-    if (isBoardCondition(h.when)) {
-      if (scfen && phaseAllows(h.when.phases, reviewPhase) && boardConditionHolds(h.when, scfen)) {
-        return h;
-      }
-      continue;
-    }
-    if (h.when.kind === "reviewPhase") {
-      if (reviewPhase !== h.when.phase) continue;
-      if (h.when.turn != null && turn !== h.when.turn) continue;
-      return h;
-    }
-    if (h.when.kind === "scfen" && scfen != null && h.when.re.test(scfen)) {
-      const phases = h.when.phases;
-      if (!phaseAllows(phases, reviewPhase)) continue;
-      return h.fromBattleShip ? battleShipOrigin(h, scfen) : h;
-    }
-    if (h.when.kind === "stopRunner" && scfen) {
-      const stop = runnerStop(scfen);
-      if (!stop) continue;
-      return {
-        ...h,
-        squares: [stop.to],
-        arrows: [{ from: stop.from, to: stop.to }],
-      };
-    }
-    if (h.when.kind === "shipJuke" && scfen) {
-      const juke = shipJuke(scfen);
-      if (!juke) continue;
-      return { ...h, squares: [juke.to], arrows: [juke] };
-    }
-    if (h.when.kind === "mineGuard" && scfen) {
-      const guard = mineGuard(scfen);
-      if (!guard) continue;
-      return { ...h, squares: guard.mines, arrows: guard.hops };
-    }
-    if (h.when.kind === "covers" && covers) {
-      const when = h.when;
-      const list = covers[when.square] ?? [];
-      if (list.some((c) => !when.kinds || when.kinds.includes(c.kind))) {
-        return h;
-      }
-    }
-    if (h.when.kind === "trajectory" && trajectories) {
-      const when = h.when;
-      if (trajectories.some((t) => t.from === when.from && t.to === when.to)) {
-        return h;
-      }
-    }
-    if (h.when.kind === "backrankGuard" && scfen && g1GuardNeeded(scfen)) {
-      return h;
-    }
-    if (
-      h.when.kind === "mechaDiagonal" &&
-      scfen &&
-      phaseAllows(h.when.phases, reviewPhase) &&
-      mechaDiagonalOpen(scfen)
-    ) {
-      return h;
-    }
-    if (
-      h.when.kind === "mechaThreat" &&
-      scfen &&
-      phaseAllows(h.when.phases, reviewPhase) &&
-      mechaThreatOpen(scfen)
-    ) {
-      return h;
-    }
-    if (
-      h.when.kind === "gasOnMarine" &&
-      scfen &&
-      phaseAllows(h.when.phases, reviewPhase) &&
-      gasMarineSquare(scfen)
-    ) {
-      return { ...h, squares: [gasMarineSquare(scfen)!] };
-    }
-    if (
-      h.when.kind === "forwardDeploy" &&
-      scfen &&
-      phaseAllows(h.when.phases, reviewPhase) &&
-      forwardDeploySquare(scfen) === h.when.square
-    ) {
-      return h;
-    }
-    if (h.when.kind === "promotionChoice" && scfen && phaseAllows(h.when.phases, reviewPhase)) {
-      const square = promotionChoiceOpen(scfen);
-      if (square) return { ...h, squares: [square] };
-    }
-    if (
-      h.when.kind === "chargeH8" &&
-      scfen &&
-      phaseAllows(h.when.phases, reviewPhase) &&
-      chargeFromH8(scfen)
-    ) {
-      return h;
-    }
-    if (
-      h.when.kind === "tankSiege" &&
-      scfen &&
-      phaseAllows(h.when.phases, reviewPhase) &&
-      tankSiegeOnH5(scfen)
-    ) {
-      return { ...h, squares: [tankSiegeSquare(scfen)!] };
+/**
+ * A handful of `when` kinds compute their own squares/arrows — the beat's own
+ * `mark` (if any) is the base these overrides render on top of.
+ */
+const enrichMark = (beat: TutorialBeat, scfen: string | undefined): TutorialMark => {
+  const base = beat.mark ?? {};
+  const w = beat.when;
+  if (!scfen || !w) return base;
+  if (w.kind === "stopRunner") {
+    const stop = runnerStop(scfen);
+    if (stop) return { ...base, squares: [stop.to], arrows: [{ from: stop.from, to: stop.to }] };
+  }
+  if (w.kind === "shipJuke") {
+    const juke = shipJuke(scfen);
+    if (juke) return { ...base, squares: [juke.to], gasSquares: [juke.from], arrows: [juke] };
+  }
+  if (w.kind === "mineGuard") {
+    const guard = mineGuard(scfen);
+    if (guard) return { ...base, squares: guard.mines, arrows: guard.hops };
+  }
+  if (w.kind === "gasOnMarine") {
+    const sq = gasMarineSquare(scfen);
+    if (sq) return { ...base, squares: [], gasSquares: [sq] };
+  }
+  if (w.kind === "promotionChoice") {
+    const sq = promotionChoiceOpen(scfen);
+    if (sq && whiteGas(scfen) >= 1) return { ...base, squares: [], gasSquares: [sq] };
+    if (sq) {
+      const next = `${sq[0]}${Number(sq[1]) + 1}` as Square;
+      return { ...base, squares: [next], arrows: [{ from: sq, to: next }] };
     }
   }
-  return undefined;
+  if (w.kind === "tankSiege") {
+    const sq = tankSiegeSquare(scfen);
+    if (sq) return { ...base, squares: [], gasSquares: [sq] };
+  }
+  if (w.kind === "ccDeploy") {
+    const deploy = ccDeployPressure(scfen);
+    if (deploy) {
+      return {
+        ...base,
+        gasOnCC: true,
+        squares: [deploy.at],
+        arrows: deploy.hits.map((to) => ({
+          ...unitArrow(deploy.unit, deploy.at, to),
+          ...(to === deploy.cc ? { tone: "alert" as const } : {}),
+        })),
+      };
+    }
+  }
+  const wrongQueue = w.kind === "wrongQueue" ? w : w.kind === "and" ? w.all.find((x) => x.kind === "wrongQueue") : undefined;
+  if (wrongQueue?.kind === "wrongQueue") {
+    const wrong = wrongQueuedAction(scfen, wrongQueue.sequence);
+    if (wrong) return { squares: [], alertSquares: [], gasSquares: [], arrows: [], cancelQueued: queueActionKey(wrong) };
+  }
+  if (w.kind === "ccThreat") {
+    const threat = ccThreatUnits(scfen);
+    if (threat) {
+      const danger = {
+        alertSquares: threat.units.map((u) => u.from),
+        arrows: threat.units.map((u) => ({ ...unitArrow(u.kind, u.from, threat.cc), tone: "alert" as const })),
+      };
+      const answer = ccThreatAnswer(scfen);
+      if (answer?.kind === "deploy") {
+        return {
+          ...base,
+          ...danger,
+          squares: [answer.at],
+          gasOnCC: true,
+          arrows: [...danger.arrows, unitArrow(answer.unit, answer.at, answer.target)],
+        };
+      }
+      if (answer?.kind === "deployed") {
+        return { ...base, ...danger, squares: [answer.at], arrows: [...danger.arrows, unitArrow(answer.unit, answer.at, answer.target)] };
+      }
+      if (answer?.kind === "capture") {
+        return { ...base, ...danger, squares: [answer.from], arrows: [...danger.arrows, unitArrow(answer.unit, answer.from, answer.target)] };
+      }
+      if (answer?.kind === "evade") {
+        return { ...base, ...danger, squares: [answer.to], arrows: [...danger.arrows, { from: answer.cc, to: answer.to }] };
+      }
+      return { ...base, ...danger };
+    }
+  }
+  if (w.kind === "ccPressure") {
+    const pressure = ccPressureUnits(scfen);
+    if (pressure) {
+      return {
+        ...base,
+        squares: pressure.units.map((u) => u.from),
+        arrows: pressure.units.map((u) => unitArrow(u.kind, u.from, pressure.cc)),
+      };
+    }
+  }
+  return base;
 };
 
-const phaseAllows = (
-  phases: readonly ReviewTurnPhase[] | undefined,
-  phase: ReviewTurnPhase | undefined,
-): boolean => !phases || (!!phase && phases.includes(phase));
+export const completedLessonBeats = (
+  beats: readonly TutorialBeat[] | undefined,
+): TutorialBeat[] | undefined => beats?.filter((b) => b.final);
 
-/**
- * The hint step in force — first entry whose `when` matches, else the first
- * unconditional one. Rings, alert rings and arrows all come from that *one*
- * step, so a lesson cannot show a ring from one beat and a line from another.
- */
-export const resolveTutorialHint = (
-  hints: readonly TutorialBoardHint[] | undefined,
-  ctx: TutorialHintContext,
-): TutorialHintMarks => {
-  const step = matchTutorialHint(hints, ctx);
+const pressureMark = (scfen: string): TutorialMark => {
+  const pressure = ccPressureUnits(scfen);
+  if (pressure) {
+    return {
+      squares: pressure.units.map((u) => u.from),
+      arrows: pressure.units.map((u) => unitArrow(u.kind, u.from, pressure.cc)),
+    };
+  }
+  const line = mechaPressureLine(scfen);
+  if (!line) return {};
   return {
-    squares: [...(step?.squares ?? [])],
-    alertSquares: [...(step?.alertSquares ?? [])],
-    arrows: [...(step?.arrows ?? [])],
+    squares: [line.to],
+    arrows: [
+      { from: line.from, to: line.to },
+      { from: line.to, to: line.cc, tone: "alert" },
+    ],
   };
 };
 
 /**
- * Keep alert rings up through later beats. A `followKing` lesson (king-attack-3)
- * moves the ring only when the Command Center is seen on a different square —
- * a fogged king does not count, so a dark move cannot relocate the mark.
+ * The mark step in force — the most specific beat carrying a `mark` whose
+ * `turn`/`phase`/`when` all match. Rings, alert rings and arrows all come from
+ * that *one* beat, so a lesson cannot show a ring from one beat and a line from
+ * another.
  */
+export const resolveTutorialHint = (
+  beats: readonly TutorialBeat[] | undefined,
+  ctx: TutorialHintContext,
+): TutorialHintMarks => {
+  const matchCtx: TutorialBeatMatchContext = {
+    scfen: ctx.scfen,
+    reviewPhase: ctx.reviewPhase,
+    covers: ctx.covers,
+    trajectories: ctx.trajectories,
+    targetingKind: ctx.targetingKind,
+  };
+  const beat = pickBeat(beats, "mark", matchCtx);
+  let mark: TutorialMark | undefined;
+  if (beat) {
+    mark = enrichMark(beat, ctx.scfen);
+    if (mark.fromBattleShip && ctx.scfen) mark = battleShipOrigin(mark, ctx.scfen);
+    const ghost = mark.gasOnMoveGhost && ctx.scfen ? queuedMoveGhost(ctx.scfen) : null;
+    if (ghost) mark = { ...mark, gasSquares: [...(mark.gasSquares ?? []), ghost] };
+    const cc =
+      mark.gasOnCC && ctx.scfen && ctx.targetingKind !== "deploy" ? deployGasSquare(ctx.scfen) : null;
+    if (cc) mark = { ...mark, gasSquares: [...(mark.gasSquares ?? []), cc] };
+    const push = mark.gasOnPush && ctx.scfen ? gasMarineSquare(ctx.scfen) : null;
+    if (push) mark = { ...mark, gasSquares: [...(mark.gasSquares ?? []), push] };
+    if (mark.pressureCC && ctx.scfen) mark = { ...mark, ...pressureMark(ctx.scfen) };
+  }
+  return {
+    squares: [...(mark?.squares ?? [])],
+    alertSquares: [...(mark?.alertSquares ?? [])],
+    gasSquares: [...(mark?.gasSquares ?? [])],
+    arrows: [...(mark?.arrows ?? [])],
+    cancelQueued: mark?.cancelQueued ?? null,
+  };
+};
+
 export const nextAlertLatch = (
   prev: AlertLatch,
   scripted: readonly Square[],
@@ -687,6 +612,16 @@ export const nextAlertLatch = (
   }
   return prev;
 };
+
+/** The enemy Command Center's last seen square — a fogged CC never moves it. */
+export const nextCCSighting = (
+  prev: Square | undefined,
+  opts: { ccAt?: Square; ccVisible: boolean },
+): Square | undefined => (opts.ccVisible && opts.ccAt ? opts.ccAt : prev);
+
+/** A beat's alert rings plus the ring on the last seen enemy Command Center. */
+export const withCCAlert = (scripted: readonly Square[], seen: Square | undefined): Square[] =>
+  seen && !scripted.includes(seen) ? [...scripted, seen] : [...scripted];
 
 /** Remember a white BattleShip on h8, and call the resolve that removes it. */
 export const nextBattleShipWatch = (

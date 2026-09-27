@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/starchess/architecture/storybook-projection.puml
+// SPEC: _spec/apps/starchess/architecture/storybook-projection.puml, _spec/apps/starchess/tutorial/hints-and-coach.md
 /** Tutorial stage ids (Breadcrumb / routes / script). */
 
 import type { Square } from "chess.js";
@@ -7,7 +7,7 @@ import type { ScPiece, ScSpecialKind } from "@chess-coach/starchess-core";
 import type { KerriganEmotion } from "~/types/coach";
 import type { ReviewTurnPhase } from "~/types/review";
 
-export type TutorialSectionId = "fog" | "specials" | "resolve" | "king";
+export type TutorialSectionId = "fog" | "specials" | "resolve" | "live-play";
 
 /** Resolve timeline wave partitions for tutorial steppers. */
 export type ResolveWaveId =
@@ -55,11 +55,6 @@ export type LiveLessonBoard = {
    */
   armTimer?: boolean;
   /**
-   * The player-facing goal, shown persistently while the lesson is active so
-   * it survives coach reactions. Falls back to the story's opening comment.
-   */
-  objective?: string;
-  /**
    * What this board demonstrates, in prose. Storybook renders it as the story
    * description — the copy lives with the lesson, not in the story file.
    */
@@ -72,9 +67,10 @@ export type LiveLessonBoard = {
   /**
    * Alert rings stick after the beat that introduced them, so fog and later
    * hints do not clear a last-seen square. `Command Center` also moves the ring when
-   * the enemy Command Center is seen on a new square.
+   * the enemy Command Center is seen on a new square. `cc` always adds a ring
+   * on the enemy Command Center's last *seen* square to each beat's own alerts.
    */
-  alertLatch?: "sticky" | "king";
+  alertLatch?: "sticky" | "king" | "cc";
 };
 
 /**
@@ -96,7 +92,8 @@ export type LessonChoreographyId =
   | "siegeFocusCounter"
   | "pawnGasDefenseCounter"
   | "shipSnipeCounter"
-  | "mineRa1Counter";
+  | "mineRa1Counter"
+  | "turtledOpeningScript";
 
 /**
  * Hint line drawn square-to-square — for a claim a ring cannot make, like the
@@ -112,35 +109,105 @@ export type TutorialBoardArrow = {
   tone?: "alert";
 };
 
-/** Board hint step — first matching entry wins (SCFEN `when`, else fallback). */
-export type TutorialBoardHint = {
-  when?:
-    | { kind: "scfen"; re: RegExp; phases?: readonly ReviewTurnPhase[] }
-    | { kind: "reviewPhase"; phase: ReviewTurnPhase; /** 1-based planning ordinal. */ turn?: number }
-    | TutorialCoversWhen
-    | TutorialTrajectoryWhen
-    | TutorialBackrankWhen
-    | TutorialMechaDiagonalWhen
-    | TutorialMechaThreatWhen
-    | TutorialGasMarineWhen
-    | TutorialForwardDeployWhen
-    | TutorialPromotionWhen
-    | TutorialChargeWhen
-    | TutorialTankSiegeWhen
-    | TutorialStopRunnerWhen
-    | TutorialMineGuardWhen
-    | TutorialShipJukeWhen
-    | TutorialBoardCondition;
+/**
+ * One condition a beat can gate on, beyond its own `turn`/`phase`. Replaces
+ * two near-duplicate ~20-kind unions (`TutorialReactionWhen` in
+ * `tutorialScript.ts`, this file's old `TutorialBoardHint.when`) that had to
+ * be kept in sync by hand.
+ *
+ * `queued`/`and`/`or`/`not` (built via the constructors in `tutorial/when.ts`)
+ * replace hand-written `re: /SCFEN\|.../` regexes for "is this action already
+ * queued" — they check the *parsed* queue, not the raw wire string, so they
+ * don't care about field order or B-vs-F timing the way a regex would.
+ */
+export type TutorialWhen =
+  | TutorialQueuedWhen
+  | TutorialAndWhen
+  | TutorialOrWhen
+  | TutorialNotWhen
+  | { kind: "scfen"; re: RegExp }
+  | { kind: "reviewPhase"; phase: ReviewTurnPhase }
+  | { kind: "timelineActive" }
+  | { kind: "chessSkin"; chess: boolean }
+  | { kind: "targeting"; targetingKind: string }
+  | { kind: "shipSniped" }
+  | TutorialCoversWhen
+  | TutorialTrajectoryWhen
+  | TutorialBackrankWhen
+  | TutorialMechaDiagonalWhen
+  | TutorialMechaDeployReadyWhen
+  | TutorialWrongQueueWhen
+  | TutorialMechaThreatWhen
+  | TutorialGasMarineWhen
+  | TutorialForwardDeployWhen
+  | TutorialPromotionWhen
+  | TutorialChargeWhen
+  | TutorialTankSiegeWhen
+  | TutorialStopRunnerWhen
+  | TutorialMineGuardWhen
+  | TutorialShipJukeWhen
+  | TutorialCcPressureWhen
+  | TutorialCcThreatWhen
+  | TutorialCcDeployWhen
+  | TutorialBoardCondition;
+
+/** A White or Black action already queued this turn, matched against the
+ * *parsed* queue (see `tutorial/when.ts`'s `queued()`), e.g. `"C=a3c2"` or
+ * `"B=siegeMode:e4"`. */
+export type TutorialQueuedWhen = { kind: "queued"; color?: "w" | "b"; action: string };
+export type TutorialAndWhen = { kind: "and"; all: readonly TutorialWhen[] };
+export type TutorialOrWhen = { kind: "or"; any: readonly TutorialWhen[] };
+export type TutorialNotWhen = { kind: "not"; not: TutorialWhen };
+
+/** Board rings/arrows a beat paints. Any omitted field renders empty — a
+ * matched beat's marks always replace the previous beat's wholesale, they
+ * never merge. */
+export type TutorialMark = {
+  /** Guide-green rings. */
+  squares?: readonly Square[];
+  /** Alert-red rings. Same step as `squares`; both paint together. */
+  alertSquares?: readonly Square[];
+  gasSquares?: readonly Square[];
+  cancelQueued?: string;
+  gasOnMoveGhost?: boolean;
+  gasOnCC?: boolean;
+  gasOnPush?: boolean;
+  pressureCC?: boolean;
+  arrows?: readonly TutorialBoardArrow[];
   /**
    * Rewrite arrow origins to the viewer's BattleShip. The destination stays
    * the square named on the arrow.
    */
   fromBattleShip?: boolean;
-  /** Guide-green rings. */
-  squares?: readonly Square[];
-  /** Alert-red rings. Same step as `squares`; both paint together. */
-  alertSquares?: readonly Square[];
-  arrows?: readonly TutorialBoardArrow[];
+};
+
+/**
+ * One scripted beat: a `when` (plus first-class `turn`/`phase` gates) paired
+ * with the message and/or board marks that go together. Replaces the old
+ * `reactions[]` + `hints[]` pair — no more writing the same `when` twice.
+ * `say`/`mark` are independently optional: a beat can update just the coach
+ * line, just the board marks, or both. Per field, the matching beat with the
+ * highest `priority` wins, then the one with the most leaf gates
+ * (`beatSpecificity`); array order only breaks a full tie.
+ * SPEC: _spec/apps/starchess/architecture/storybook-projection.puml
+ */
+export type TutorialBeat = {
+  /** Rank over specificity; urgent beats (threat alerts) outrank tips. Default 0. */
+  priority?: number;
+  /** SCFEN turn field (`SCFEN|board|<turn>|…`), read from the wire itself. */
+  turn?: number;
+  phase?: ReviewTurnPhase | readonly ReviewTurnPhase[];
+  when?: TutorialWhen;
+  /** Coach line. Omit to leave the bubble to a later/fallback beat. */
+  say?: string;
+  emotion?: KerriganEmotion;
+  action?: TutorialReactionAction;
+  /** Momentary beat — shown while matched, never latched as the sticky line. */
+  transient?: boolean;
+  holdMs?: number;
+  /** Board rings/arrows. Omit to leave marks to a later/fallback beat. */
+  mark?: TutorialMark;
+  final?: boolean;
 };
 
 /** One viewer-side unit covering a square, via core attack geometry. */
@@ -188,6 +255,16 @@ export type TutorialBackrankWhen = { kind: "backrankGuard" };
  */
 export type TutorialMechaDiagonalWhen = {
   kind: "mechaDiagonal";
+  phases?: readonly ReviewTurnPhase[];
+};
+
+export type TutorialWrongQueueWhen = {
+  kind: "wrongQueue";
+  sequence: readonly (string | readonly string[])[];
+};
+
+export type TutorialMechaDeployReadyWhen = {
+  kind: "mechaDeployReady";
   phases?: readonly ReviewTurnPhase[];
 };
 
@@ -253,6 +330,34 @@ export type TutorialMineGuardWhen = { kind: "mineGuard" };
  * Command Center. The hint's ring and arrow are computed, not listed.
  */
 export type TutorialShipJukeWhen = { kind: "shipJuke" };
+
+/**
+ * Any ally unit already attacking the enemy Command Center, wherever it
+ * stands. The hint's ring(s) and arrow(s) are computed, not listed.
+ */
+export type TutorialCcPressureWhen = {
+  kind: "ccPressure";
+  phases?: readonly ReviewTurnPhase[];
+};
+
+/**
+ * A *visible* enemy unit attacks the ally Command Center. The hint alert-rings
+ * each attacker and draws its arrow onto the Command Center.
+ */
+export type TutorialCcThreatWhen = {
+  kind: "ccThreat";
+  phases?: readonly ReviewTurnPhase[];
+};
+
+/**
+ * An affordable gas deploy on the ally Command Center's ring attacks the
+ * *visible* enemy Command Center or a square around it. Line and marks are
+ * computed (`ccDeployPressure`).
+ */
+export type TutorialCcDeployWhen = {
+  kind: "ccDeploy";
+  phases?: readonly ReviewTurnPhase[];
+};
 
 /**
  * White BattleShip was on h8 and is gone. Armed while it stands there; `sniped`
@@ -339,6 +444,7 @@ export type TutorialLine = {
   source: "intro" | "reaction";
   /** Momentary beat — shown while matched, never latched as the sticky line. */
   transient?: boolean;
+  holdMs?: number;
 };
 
 /**

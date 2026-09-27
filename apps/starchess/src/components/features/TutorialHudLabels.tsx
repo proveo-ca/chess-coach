@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/starchess/screens.puml
+// SPEC: _spec/apps/starchess/screens.puml, _spec/apps/starchess/architecture/reactivity/components.md
 /**
  * Tutorial-only naming layer for HUD chrome the lessons talk about but never
  * spells out: the unit tiles in the deploy / promotion pickers, and the three
@@ -9,7 +9,7 @@
  * `ResourceBar` stay untouched and the labels vanish outside the tutorial.
  */
 import type { PieceSymbol } from "chess.js";
-import { For, createSignal, onCleanup, onMount, type Component } from "solid-js";
+import { For, createEffect, createMemo, createSignal, onCleanup, type Component } from "solid-js";
 import { Portal } from "solid-js/web";
 
 import { ChatBubble } from "@chess-coach/ui-web/primitives/ChatBubble";
@@ -136,19 +136,20 @@ export type TutorialHudLabelsProps = {
 
 export const TutorialHudLabels: Component<TutorialHudLabelsProps> = (props) => {
   const [placed, setPlaced] = createSignal<Placed[]>([]);
+  const enabled = createMemo(() => !!props.enabled);
 
-  onMount(() => {
+  createEffect(() => {
+    if (!enabled()) {
+      setPlaced([]);
+      return;
+    }
     let frame: number | undefined;
     let settleUntil = 0;
 
     const sync = () => {
       frame = undefined;
-      if (!props.enabled) {
-        if (placed().length) setPlaced([]);
-      } else {
-        const next = measure();
-        setPlaced((prev) => (sameLayout(prev, next) ? prev : next));
-      }
+      const next = measure();
+      setPlaced((prev) => (sameLayout(prev, next) ? prev : next));
       // Pickers animate in, so one post-mutation read lands mid-transform —
       // keep re-reading briefly until the rects stop moving.
       if (performance.now() < settleUntil) schedule(0);

@@ -1,10 +1,10 @@
-// SPEC: _spec/apps/starchess/screens.puml, _spec/apps/chess/responsiveness/rules.md
+// SPEC: _spec/apps/starchess/screens.puml, _spec/apps/chess/responsiveness/rules.md, _spec/apps/starchess/architecture/reactivity/components.md
 /**
  * Floating dismissible Selena line — a ChatBubble docked out of document flow
  * so the CoachScreen header avatar stays put. Where it docks is band-dependent
  * (gutter · over Kerrigan · over ranks 7–8); the stylesheet owns that call.
  */
-import { Show, createSignal, type Component } from "solid-js";
+import { Show, createMemo, createSignal, type Component } from "solid-js";
 
 import { ChatBubble } from "@chess-coach/ui-web/primitives/ChatBubble";
 import styles from "~/components/features/TutorialGuideBubble.module.css";
@@ -30,6 +30,8 @@ export const TutorialGuideBubble: Component<TutorialGuideBubbleProps> = (
   props,
 ) => {
   const [dismissedKey, setDismissedKey] = createSignal<string | null>(null);
+  const variant = createMemo(() => props.variant ?? "coach");
+  const counting = createMemo(() => props.autoAdvanceMs != null);
   const open = () =>
     !!props.message.trim() && dismissedKey() !== props.lineKey;
 
@@ -39,22 +41,22 @@ export const TutorialGuideBubble: Component<TutorialGuideBubbleProps> = (
    * both ends are showing.
    */
   const showMessage = () =>
-    !(props.variant === "success" && props.action?.kind === "nextLesson");
+    !(variant() === "success" && props.action?.kind === "nextLesson");
 
   return (
     <Show when={open()}>
       <div
         class={`tutorial-guide-bubble ${styles.dock}`}
-        classList={{ [styles.success!]: props.variant === "success" }}
+        classList={{ [styles.success!]: variant() === "success" }}
         data-testid="tutorial-guide-bubble"
-        data-variant={props.variant ?? "coach"}
+        data-variant={variant()}
       >
         <ChatBubble
           testId="tutorial-selena-bubble"
           class={styles.bubble}
         >
           <div class={styles.body}>
-            <Show when={props.variant === "success"}>
+            <Show when={variant() === "success"}>
               <span
                 class={styles.successMark}
                 data-testid="tutorial-objective-complete"
@@ -70,9 +72,9 @@ export const TutorialGuideBubble: Component<TutorialGuideBubbleProps> = (
                 <button
                   type="button"
                   class={styles.action}
-                  classList={{ [styles.counting!]: props.autoAdvanceMs != null }}
+                  classList={{ [styles.counting!]: counting() }}
                   style={
-                    props.autoAdvanceMs != null
+                    counting()
                       ? { "--auto-advance": `${props.autoAdvanceMs}ms` }
                       : undefined
                   }
@@ -85,7 +87,7 @@ export const TutorialGuideBubble: Component<TutorialGuideBubbleProps> = (
                   }
                   onClick={() => props.onAction?.(action())}
                 >
-                  <Show when={props.autoAdvanceMs != null}>
+                  <Show when={counting()}>
                     {/*
                       pathLength normalizes the perimeter to 100 so one
                       dashoffset animation draws the whole border regardless of

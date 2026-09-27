@@ -11,6 +11,7 @@ import {
   deployKindFor,
 } from "~/presentation/animations/deployAnim";
 import styles from "~/presentation/animations/components/DeployAnimation.module.css";
+import { syncToClock } from "~/presentation/animations/clockSync";
 import { squareBoxStyle } from "~/presentation/animations/boardGeom";
 import { InlineMecha } from "~/presentation/pieces/InlineMecha";
 import { InlineHoverbike } from "~/presentation/pieces/InlineHoverbike";
@@ -87,6 +88,7 @@ export const DeployAnimation: Component<DeployAnimationProps> = (props) => {
         const gas = () => used().has(cue.at);
         return (
           <div
+            ref={(el) => syncToClock(el)}
             class={styles.slot}
             classList={{
               [styles.humanoid]: kind === "humanoid",

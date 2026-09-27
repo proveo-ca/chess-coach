@@ -86,6 +86,11 @@ export {
 } from "./board/mines";
 
 export { hostileMineOn } from "./board/mine-contact";
+export {
+  deployCoverers,
+  type DeployCover,
+  type DeployReachQuery,
+} from "./board/deploy-reach";
 
 export {
   squareTicks,

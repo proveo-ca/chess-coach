@@ -1,4 +1,4 @@
-// SPEC: _spec/_plans/starchess-achievements.puml
+// SPEC: _spec/_plans/starchess-achievements.puml, _spec/apps/starchess/architecture/reactivity/components.md
 import { For, type Component } from "solid-js";
 
 import { achievementsFor } from "~/achievements/catalog";
@@ -27,7 +27,7 @@ export const NewAchievementsModal: Component<NewAchievementsModalProps> = (props
       <div class={styles.list}>
         <For each={props.earned}>
           {(item) => {
-            const row = () => achievementsFor(item.shortId).find((entry) => entry.level === item.level);
+            const row = achievementsFor(item.shortId).find((entry) => entry.level === item.level);
             return (
               <article
                 class={styles.card}
@@ -43,8 +43,8 @@ export const NewAchievementsModal: Component<NewAchievementsModalProps> = (props
                   }}
                 />
                 <div>
-                  <p class={styles.title}>{row()?.title}</p>
-                  <p class={styles.description}>{row()?.description}</p>
+                  <p class={styles.title}>{row?.title}</p>
+                  <p class={styles.description}>{row?.description}</p>
                 </div>
               </article>
             );

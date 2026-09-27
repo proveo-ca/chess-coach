@@ -2,6 +2,8 @@
 import { For, Show, createMemo, type Component, type JSX } from "solid-js";
 import type { Square } from "chess.js";
 
+import { syncToClock } from "~/presentation/animations/clockSync";
+import { vfxTier } from "~/store/vfxTierStore";
 import { DEATH_MS, scatterSeedFromId } from "~/presentation/animations/deathAnim";
 import styles from "~/presentation/animations/components/DeathAnimation.module.css";
 import { DeathMecha } from "~/presentation/animations/pieces/components/DeathMecha";
@@ -105,6 +107,7 @@ export const DeathAnimation: Component<DeathAnimationProps> = (props) => {
         const gas = () => used().has(cue().at);
         return (
           <div
+            ref={(el) => syncToClock(el)}
             class={styles.originSlot}
             classList={{
               [styles.dying]: true,
@@ -134,7 +137,9 @@ export const DeathAnimation: Component<DeathAnimationProps> = (props) => {
               <Show when={mineDeath()}>
                 <div class={styles.mineFrag} data-part="mine-frag" aria-hidden="true">
                   <div class={styles.mineFragCore} />
-                  <div class={styles.mineFragRing} />
+                  <Show when={vfxTier() === "full"}>
+                    <div class={styles.mineFragRing} />
+                  </Show>
                 </div>
               </Show>
             </div>

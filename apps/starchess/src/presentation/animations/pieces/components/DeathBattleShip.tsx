@@ -16,7 +16,7 @@ export const DeathBattleShip: Component<DeathBattleShipProps> = (props) => {
       <g transform="translate(22.5 22.5) rotate(-90) translate(-22.5 -22.5)">
         <g transform={PIECE_FRAME.Q}>
           <g stroke="#222" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8">
-            <Shard index={0} seed={props.seed}>
+            <Shard index={0} lite seed={props.seed}>
               <ellipse fill="#555" cx="22.5" cy="42" rx="16" ry="2" stroke="none" opacity=".25" />
             </Shard>
             <Shard index={1} seed={props.seed}>
@@ -27,7 +27,7 @@ export const DeathBattleShip: Component<DeathBattleShipProps> = (props) => {
               <rect fill="#555" x="24.5" y="2.5" width="7" height="12" rx="3" />
               <ellipse fill={accent()} cx="28" cy="3.5" rx="3" ry="1.6" />
             </Shard>
-            <Shard index={3} seed={props.seed}>
+            <Shard index={3} lite seed={props.seed}>
               <path fill="#fff" d="M5 9 14 6 18 9h9l4-3 9 3-2 10-11-2-2 5h-5l-2-5-11 2z" />
             </Shard>
             <Shard index={4} seed={props.seed}>
@@ -36,11 +36,11 @@ export const DeathBattleShip: Component<DeathBattleShipProps> = (props) => {
             <Shard index={5} seed={props.seed}>
               <path fill={team()} d="m38 10-7-2-3 3 2 4 8 1z" />
             </Shard>
-            <Shard index={6} seed={props.seed}>
+            <Shard index={6} lite seed={props.seed}>
               <path fill="#fff" d="m19 12 3.5-2 3.5 2 3 20-6.5 4-6.5-4z" />
               <path fill={team()} d="m18 22 4.5 3 4.5-3 1 7-5.5 4-5.5-4z" />
             </Shard>
-            <Shard index={7} seed={props.seed}>
+            <Shard index={7} lite seed={props.seed}>
               <path fill="#fff" d="m4 32 12-4 6.5 3 6.5-3 12 4 1 7-9 4H12l-9-4z" />
             </Shard>
             <Shard index={8} seed={props.seed}>

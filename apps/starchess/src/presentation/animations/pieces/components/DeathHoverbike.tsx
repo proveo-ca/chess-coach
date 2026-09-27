@@ -22,16 +22,16 @@ export const DeathHoverbike: Component<DeathHoverbikeProps> = (props) => {
             this hull in place, so any orientation gap shows as a rotation jump. */}
         <g transform="translate(22.5 22.5) scale(1.1) translate(-22.5 -22.5)">
         <g stroke="#222" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
-          <Shard index={1} seed={props.seed}>
+          <Shard index={1} lite seed={props.seed}>
             <ellipse fill={team()} cx="31" cy="10" rx="5" ry="3.5" transform="rotate(-50 31 10)" />
           </Shard>
-          <Shard index={2} seed={props.seed}>
+          <Shard index={2} lite seed={props.seed}>
             <path fill="#fff" d="M5 40 Q1 37 4 33 L34 9 Q39 6 42 10 Q44 14 39 17z" />
           </Shard>
-          <Shard index={3} seed={props.seed}>
+          <Shard index={3} lite seed={props.seed}>
             <path fill="#fff" stroke="none" d="M8 36 L36 10 Q41 8 41 12 L11 36z" />
           </Shard>
-          <Shard index={4} seed={props.seed}>
+          <Shard index={4} lite seed={props.seed}>
             <ellipse fill={team()} cx="16" cy="34" rx="5" ry="3.5" transform="rotate(-30 -1 -14)" />
           </Shard>
           <Shard index={5} seed={props.seed}>

@@ -19,7 +19,8 @@ class BaseScreen <<app>> {
   tutorial? fullMatchHud? hideResources? hideGas?
   endTurnAfterQueue? coachEmotion?
   header? guideBubble? footerExtra?
-  hintSquares? hintAlertSquares? hintArrows?
+  hintSquares? hintAlertSquares? hintGasSquares? hintArrows?
+  hudResources? (coach-header band: ResourceBar once the coach hides)
 }
 
 class MatchBoardHost <<host>> {
@@ -56,7 +57,7 @@ note as N_PROPS
   **fullMatchHud** (tutorial only) — full SingleScreen-style top pane
   (Home + matchTitle + ResourceBar) instead of the coach lesson-nav
   header; tutorial mobile hero hidden; guide bubble docks below the pane
-  (""hudGuideSlot""). Used by the final lesson king-attack-3.
+  (""hudGuideSlot""). Used by the final lesson live-play-attack-3.
   **status line** — gated ""!tutorial || fullMatchHud"": hidden for regular
   tutorials; visible on /single and the fullMatchHud lesson; carries
   statusText incl. QUEUE_REJECT feedback.

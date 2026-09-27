@@ -76,6 +76,20 @@ skinparam noteTextAlignment left
 ' for both sides (foldGame) and raises each resolve's bubbles as it finishes
 ' playing forward; any other seek clears them; a side's vision filter hides
 ' the other side's unseen bubbles.
+' FIXED: ReviewDemoScreen's outer component built `game` from `props.achievements`
+' but never forwarded that prop to the inner component that reads it — `game`
+' was always null, so review never raised a bubble (`achievements` prop wired
+' through in ReviewDemoScreen.tsx now).
+' SHIPPED: mines counts a detonation only. An opponent defusing a mine
+' (a ranged attack clears an empty mined square, no casualty) never counts.
+' SHIPPED: medal counts a Marine captured in the same ply its own gas step
+' (`stimStep`) landed it on that square — the only requirement is that gas
+' carried it into the shot; attacker type and what stood behind it are
+' irrelevant. Canonical case: tutorial live-play-defense-5.
+' FIXED: an earlier version credited any Marine capture where a non-pawn
+' friendly happened to sit further out on the same rank/file/diagonal —
+' true for any adjacent capture (King, another Marine) regardless of gas,
+' which is what actually made this achievement fire on ordinary trades.
 '
 '   shortId   title                 type      levels
 '   beat      Human Training        count     1 win, easy, adjutant tier
@@ -93,6 +107,11 @@ skinparam noteTextAlignment left
 '   mecha     Target Designated     analysis  1/2/3/5/7, impossible
 '   juke      Make it happen        scfen     2/4/7/10/15 jumps, hard
 '   light     Let there be Light    scfen     3/7/10/14/20 defensive captures, hard
+'   Light counts captures landing within 3 squares of our Command Center
+'   (the 7x7). The first enemy seen in the 3x3 beside it (on the ply's start
+'   or settled board, or captured / mined there) sets `ccBreached`: no later
+'   capture counts that game. Captures in the breaching ply do not count;
+'   levels already announced stand.
 ' Medal of Honor and Ready to roll out! were both numbered 8.
 ' Dropping the 10-win Human Training card leaves 12.
 '

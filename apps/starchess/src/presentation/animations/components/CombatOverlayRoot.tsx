@@ -1,8 +1,8 @@
-// SPEC: _spec/apps/starchess/architecture/composite-vfx-stack.puml, _spec/apps/starchess/architecture/timeline-perf.puml, _spec/apps/starchess/architecture/board-entities.puml
+// SPEC: _spec/apps/starchess/architecture/composite-vfx-stack.puml, _spec/apps/starchess/architecture/timeline-perf.puml, _spec/apps/starchess/architecture/board-entities.puml, _spec/apps/starchess/architecture/reactivity/presentation.md, _spec/apps/starchess/board-rendering.puml
 /**
  * Composite combat VFX stack — stable layer order (never per-layer Show).
  */
-import type { Component } from "solid-js";
+import { createMemo, type Component } from "solid-js";
 import type { Square } from "chess.js";
 
 import { AttackAnimation } from "~/presentation/animations/components/AttackAnimation";
@@ -29,6 +29,7 @@ import type {
   ShipJumpTrail,
 } from "~/presentation/types";
 import type { PieceSet } from "~/types/board";
+import { sameList } from "~/presentation/board/memoEquals";
 
 const NO_ATTACKS: AttackCue[] = [];
 const NO_DEATHS: DeathCue[] = [];
@@ -55,6 +56,15 @@ export const CombatOverlayRoot: Component<CombatOverlayRootProps> = (props) => {
   const h = () => props.box.h;
   /** Enemy veil-reveal movers — hull suppressed (board renders them under fog). */
   const veilIds = () => c().veilMoveCueIds ?? NO_VEIL_IDS;
+  const hullCues = createMemo(
+    (): readonly MoveCue[] => {
+      const all = c().moveCues ?? NO_MOVES;
+      const ids = veilIds();
+      return ids.size > 0 ? all.filter((m) => !ids.has(m.id)) : all;
+    },
+    undefined,
+    { equals: sameList },
+  );
 
   return (
     <div
@@ -100,7 +110,7 @@ export const CombatOverlayRoot: Component<CombatOverlayRootProps> = (props) => {
         boardHeight={h()}
       />
       <MoveAnimation
-        cues={veilIds().size > 0 ? (c().moveCues ?? NO_MOVES).filter((m) => !veilIds().has(m.id)) : c().moveCues ?? NO_MOVES}
+        cues={hullCues()}
         progress={c().moveProgress ?? NO_MOVE_PROGRESS}
         leg={c().moveLeg}
         specialUsedSquares={props.specialUsedSquares}

@@ -25,7 +25,10 @@ Implementation lives primarily in:
 - `packages/ui/web/src/primitives/Breadcrumb.tsx` +
   `Breadcrumb.module.css` (tutorial section crumbs)
 - `apps/starchess/src/presentation/hud/components/ResourceBar.tsx` +
-  `ResourceBar.module.css` (`.bar` 18rem, `.bar.compact` 12rem, `TeamFrame`)
+  `ResourceBar.module.css` (play `.bar` wraps its content; named review bars
+  `.bar:has(.name)` 18rem / compact 12rem — fixed, not `fit-content`, so the
+  review pair reads as a matched pair regardless of name length or digits and
+  the flanking turn arrows never shift as numbers change; `TeamFrame`)
 - `apps/starchess/src/stories/Navigation.stories.tsx` +
   `Navigation.stories.module.css` (7-story production mirror)
 - `apps/starchess/.storybook/preview.tsx` (viewports + `storySort`)
@@ -121,6 +124,11 @@ reintroduce a live dual.
 
 ## 5. Bar first on phones, TurnBar on top on desktop; pixels owned by Storybook
 
+> **Superseded on phones** by "Mobile banner: one chrome from the Screen
+> primitives up" below: live screens now carry Back, resources and the
+> compact TurnBar in the two-row banner. Desktop ordering here still holds.
+
+
 Desktop DOM order is TurnBar then viewer bar; phones swap the visual order
 so the bar reads first with TurnBar underneath.
 
@@ -132,9 +140,9 @@ so the bar reads first with TurnBar underneath.
   `.topChrome > .liveBar { order: 1 }`.
 - The pixels for this are owned by Storybook viewports, not unit tests:
   `preview.tsx` defines Mobile `390×844`, Dynamic `560×420`, Desktop
-  `1280×900`. Stories pin each case (`SingleTopChrome` → mobile,
-  `SingleDynamicBanner` → dynamic, `ReviewDualNav` → desktop,
-  `ReviewListChrome` → mobile, `ReviewListBanner` → dynamic,
+  `1280×900`. Stories pin each case (`SingleDesktopChrome` → desktop,
+  `SingleMobileBanner` → mobile, `SingleDynamicBanner` → dynamic,
+  `ReviewDualNav` → desktop, `ReviewListBanner` → mobile,
   `TutorialCoachHeader` → mobile, `TurnArrowsIsolated` → mobile).
 
 ## 6. Deterministic width cascade, no bundle-order ties
@@ -190,9 +198,9 @@ it asserts media-rule presence, selector presence, ordering, and absence
 
 ## 8. Storybook `Navigation/Chrome` mirrors production via its own module
 
-Seven stories (`SingleTopChrome`, `SingleDynamicBanner`, `ReviewDualNav`,
-`ReviewListChrome`, `ReviewListBanner`, `TutorialCoachHeader`,
-`TurnArrowsIsolated`) under title `Navigation/Chrome`, sorted by
+Seven stories (`SingleDesktopChrome`, `SingleMobileBanner`,
+`SingleDynamicBanner`, `ReviewDualNav`, `ReviewListBanner`,
+`TutorialCoachHeader`, `TurnArrowsIsolated`) under title `Navigation/Chrome`, sorted by
 `preview.tsx` `storySort` (`Navigation → [Chrome, *]`).
 
 Own-CSS-module rule: the folder mirrors production chrome through
@@ -207,6 +215,11 @@ a mirror gap — fix the mirror selectors (`.topChrome`, `.turnFill`,
 
 ## 9. TurnBar on top for tall-mobile sidebar, DOM order, lazy story wrappers
 
+> **Superseded on phones** by "Mobile banner: one chrome from the Screen
+> primitives up" below: live screens now carry Back, resources and the
+> compact TurnBar in the two-row banner. Desktop ordering here still holds.
+
+
 Supersedes §5's `order: 1/2` swap (rules deleted from both stylesheets);
 §5's viewport pinning (which story covers which viewport) still holds.
 
@@ -219,7 +232,119 @@ Supersedes §5's `order: 1/2` swap (rules deleted from both stylesheets);
   renders resources then turn, so keyboard / screen-reader order matches
   the visual — never CSS `order`. Desktop keeps TurnBar first via the
   `Show` fallback (`{topTurnBar()}{topResources()}`).
-- Story mirror (`SingleTopChrome`): local `Bar` / `Turn` wrapper components
-  around the same `Show when={barFirst()}`, not hoisted JSX values. Hoisted
-  JSX evaluates eagerly outside `MatchStoreProvider` and crashes TurnBar's
-  `useMatchStore`; component children stay lazy as getters.
+- Story mirror (`SingleDesktopChrome`): desktop order only (TurnBar, then
+  the ResourceBar) — phones no longer render this in-flow chrome; they get
+  `SingleMobileBanner` / `SingleDynamicBanner`. Mobile stories mount the
+  real `StarChessMobileBanner` / `StarChessMobileSubBanner`; the story module
+  mirrors `BaseScreen`'s sub-banner split (`.subSplit`) and one-row inline
+  (`.bannerInline`).
+
+## Mobile banner: one chrome from the Screen primitives up
+
+`StarChessMobileBanner` (`packages/ui/web/src/atoms/`) is the mobile top
+chrome for every live screen; `Screen.starchess.module.css` reserves its room.
+
+- **Dynamic band** (`DYNAMIC_MOBILE_MQ`): every banner, one row —
+  `‹ Back | resources | turn`, transparent panel. Unchanged.
+- **Tall phones** (every mobile width outside the dynamic band): only
+  `band="mobile"` banners show, as two rows. Row 1 `‹ Back + ResourceBar`
+  (no title) on solid black; row 2 is the **sub-banner**: the compact TurnBar
+  (last queued action + End + timer), transparent, pinned right.
+- `Screen` reserves `--mobile-banner-tall-height` (6.25rem) above the grid
+  when a `band="mobile"` banner is present, and hides any in-flow
+  `ScreenBackNav` Back (`.screen-back` hook, `visibility: hidden` so a
+  header's centre stays centred) — the banner owns Back.
+- `BaseScreen` renders one banner at the `Screen` root for `/single` and
+  tutorials (`band="mobile"`) whenever `bannerOwnsChrome()` (live, mobile,
+  coach header or an exit). While it does, the in-flow nav row (Back + title
+  + chrome) and the lesson header's ResourceBar are **not rendered** — not
+  CSS-hidden — so there is exactly one TurnBar / End / ResourceBar on the page
+  (a hidden duplicate doubled `turn-end` and ran a second TurnBar). Lessons
+  show the ResourceBar in the banner only once the coach hides
+  (`hudResources`). The footer TurnBar is gone.
+- Review detail keeps `band="dynamic"` for now. `ReviewDemoScreen
+  bannerChrome` is the proposal (Storybook "Game Detail · banner (proposal)"):
+  row 1 `‹ Back` + both compact nameless bars on one line, sub-banner
+  `‹ result ›` turn nav; replaces the in-flow top pane on tall phones and the
+  floating arrow dock in Dynamic.
+- Queue chips are whole-chip buttons (× is a cue), 40px tall in every bar;
+  the compact bar holds 40px with or without a chip, and the tutorial cancel
+  chevron sits left of the chip there (the inline queue clips above it).
+
+Banner construction (`StarChessMobileBanner.module.css`):
+
+- Shared geometry lives in a plain `(max-width: 719px)` block; each band
+  only switches `display` on. Tall phones = every mobile width outside the
+  dynamic band: `(max-width: 479px), (max-width: 719px) and (min-height: 640px)`.
+- Two full-bleed rows, each owning its height (no outer padding, no row gap)
+  so its content centres vertically: row 1 `minmax(48px, auto)` painted black
+  by `::before`, row 2 painted `rgb(0 0 0 / 0.3)` by `::after` (both
+  `align-self: stretch`, or they collapse to 0 under `align-items: center`).
+  The sub-banner has equal padding above and below; no rule between the rows
+  (the black row already separates them).
+- Columns `4rem minmax(min-content, 1fr) minmax(0, 4rem)`: the empty third
+  column mirrors Back so a single ResourceBar centres on the banner, and it
+  yields down to 0 when the resources need the room (review's pair).
+- In the banner the ResourceBar is `flex: 0 1 auto` (wraps its content); the
+  turn column keeps End pinned right. An empty turn slot is `display: none`.
+- Lesson header ResourceBar (`hudResources`, coach hidden) sits absolute at
+  the header band's bottom, `pointer-events` only on the bar; hidden on mobile
+  where the banner carries it.
+
+Chips and the cancel hint:
+
+- `Chip` variants are data attributes (`data-tone`, `data-size`,
+  `data-removable`) styled with `.chip:where([data-…])` — `:where` keeps them
+  at one-class specificity, so consumer classes (e.g. the sidebar's
+  `styles.chip`) still override exactly as the old per-tone classes did.
+  `onRemove` renders a `<button>` root; `removeTestId` moves onto it (e2e
+  `queue-remove-*`).
+- `CancelHint` wraps a queue chip: neon guide-green border + glow on the chip
+  and the board's gas-hint chevron — `down` centred above the chip (the whole
+  chip is the cancel target), `right` at its left for one-row bars whose
+  inline queue clips anything above. The sidebar queue (overflow clipped)
+  reserves 16px above itself only while a hint is present (`:has`).
+
+## Mobile banner — one stripe on every screen (2026-09-27)
+
+Below 720px every screen except the Menu carries the same stripe,
+`StarChessMobileBanner`: `‹ Back` · centred title · spacer, one black 48px
+full-bleed row (`--mobile-banner-row-height`), `z-index: 60` so lesson
+headers (z 50 while the guide bubble shows) never cover it. It has no
+content slots — `resources` / `turn` / `band` / `subBanner` /
+`turnPlacement` / `fixedResources` are gone.
+
+| Screen | Title | Under the stripe |
+|---|---|---|
+| `/single` | **no title** — the ResourceBar sits in the centre slot (`center`) | sub-banner split: queued chip right-aligned in the left half, `[End Turn] [timer]` left-aligned in the right half — both meet at the centre, like the ResourceBar, and a new chip never moves End/timer |
+| lessons | lesson title (`bannerTitle`) | same split sub-banner (floats over the coach); resources, once the coach hides, take the middle column |
+| tutorial replays | story label (`reviewLabel`) | sub-banner: `‹ Turn N ›` stepper |
+| review list | "Review" | sub-banner: compact filters; matches fill the middle; Arena library in the footer |
+| review detail | result line, coloured (`titleColor`) | in-flow: stacked resource bars with ‹ › on each side |
+
+- `StarChessMobileSubBanner` is the old second row, lifted out of the
+  banner: absolute at `top: 48px`, `inline` (the screen reserves
+  `--mobile-banner-tall-height`) or `float` (no reservation, z 60).
+- `Screen` reserves 48px under any `.mobile-banner`, and hides the in-flow
+  `‹ Back` *cell* (`.screen-back`, visibility only — lessons keep the coach
+  that sits in the same `ScreenBackNav`). Hosts whose in-flow row is only
+  Back + title drop it on mobile (review detail `.inFlowBack`, review list
+  `.listChrome`).
+- Review detail: its top pane is a `Screen.SidebarInset` (x 32–358 at 390px,
+  `overflow: hidden`); the arrows-plus-bars row is 374px, so on mobile the
+  pane is `overflow: visible` or the ‹ › are clipped. The dynamic band keeps
+  the side-by-side compact bars; the portaled arrow dock is retired.
+- Board-less screens bound their middle row with `minmax(0, 1fr)` (desktop
+  and mobile), otherwise a long list grows the row past the viewport and the
+  footer is cropped. The review list's footer drops the board-width cap, the
+  sidebar padding and (mobile) the screen's bottom `padding-block`, so the
+  Arena library lines up with the list tiles.
+
+### Short landscape (dynamic band, w ≥ 480 · h < 640) — `BaseScreen` screens
+
+No sub-banner fits: the stripe is the whole chrome, one row,
+`‹ Back [ResourceBar] [TurnBar compact]` (`fill` drops the right spacer so
+the centre can take the width), then the board. The split is two TurnBar
+instances only on tall phones: `compact hideQueue` (End + timer — the only
+instance that arms the planning timer; `noQueue` drops its empty 1fr queue
+column) and `density="queueOnly"` (last chip, never ticks).

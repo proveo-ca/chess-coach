@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/starchess/deployment.puml, _spec/apps/starchess/menu-flow.puml, _spec/apps/starchess/architecture/screen-entities.puml
+// SPEC: _spec/apps/starchess/deployment.puml, _spec/apps/starchess/menu-flow.puml, _spec/apps/starchess/architecture/screen-entities.puml, _spec/apps/starchess/tutorial/hints-and-coach.md, _spec/apps/starchess/architecture/reactivity/app-screens.md
 /**
  * StarChess tutorial — CoachScreen-shaped shell (Header avatar · board · footer).
  * Floating dismissible ChatBubble overlays ranks 7–8.
@@ -9,10 +9,12 @@ import {
   Match,
   Show,
   Switch,
+  batch,
   createEffect,
   createMemo,
   createSignal,
   onCleanup,
+  untrack,
   type Component,
   type JSX,
 } from "solid-js";
@@ -42,6 +44,7 @@ import {
   LESSON_ADVANCE_MS,
   TUTORIAL_SCRIPT,
   adjacentTutorialStoryId,
+  completedLessonBeats,
   lessonBoard,
   lessonEndMessageMs,
   holdTutorialLine,
@@ -53,6 +56,8 @@ import {
   tutorialStory,
 } from "~/tutorial/tutorialScript";
 import type {
+  LiveLessonBoard,
+  TutorialBeat,
   TutorialCompleteWhen,
   TutorialLineHold,
   TutorialReactionAction,
@@ -79,6 +84,12 @@ const SKIN_DEMO_HOLD_MS = 2000;
  */
 const HINT_DELAY_MS = SKIN_DEMO_START_MS + SKIN_DEMO_HOLD_MS;
 
+const COACH_FAREWELL = "Ok, I'll let you play!";
+
+const NEXT_LESSON_ACTION: TutorialReactionAction = { kind: "nextLesson" };
+const RETRY_LESSON_ACTION: TutorialReactionAction = { kind: "retryLesson" };
+const COACH_FAREWELL_MS = 1000;
+
 const COMBAT_HISTORY = buildReviewHistory({
   start: COMBAT_CHAIN_PLY_SC[0]!,
   steps: COMBAT_CHAIN_STEPS,
@@ -96,18 +107,9 @@ const KING_HISTORY = buildReviewHistory({
 const TutorialFooterNav: Component<{
   section: TutorialSectionId;
   onSelect: (id: TutorialSectionId) => void;
-  /** Persistent lesson goal — stays put while coach reactions come and go. */
-  objective?: string;
   children?: JSX.Element;
 }> = (props) => (
   <div class={styles.footerNav} data-testid="tutorial-footer-nav">
-    <Show when={props.objective}>
-      {(text) => (
-        <p class={styles.objective} data-testid="tutorial-objective">
-          {text()}
-        </p>
-      )}
-    </Show>
     <Breadcrumb
       items={SECTIONS}
       current={props.section}
@@ -147,39 +149,46 @@ const SkinToggle: Component<{
 );
 
 const FogSection: Component<{
-  lessonId: string;
+  board: LiveLessonBoard;
+  lessonKey: string;
+  bannerTitle?: string;
+  beats: readonly TutorialBeat[] | undefined;
   chessMode: boolean;
   /** Held back until the skin demo has finished — see HINT_DELAY_MS. */
   showHints: boolean;
+  liveHints: (beats: readonly TutorialBeat[] | undefined) => readonly TutorialBeat[] | undefined;
   coachEmotion: ReturnType<typeof resolveTutorialLine>["emotion"];
   guideBubble: JSX.Element;
   header: JSX.Element;
   footer: JSX.Element;
   onHome: () => void;
-}> = (props) => (
-  <Show when={props.lessonId} keyed>
-    {(id) => (
-      <LiveLessonHost
-        board={lessonBoard("fog", id)}
-        fog
-        boardVariant={props.chessMode ? "classic" : "eclipse"}
-        // Sole product entry for cburnett — fog tutorial Chess skin only.
-        pieceSet={props.chessMode ? "cburnett" : "nerd"}
-        tutorial
-        hideResources
-        hideGas
-        narrate
-        turnChrome="none"
-        onExitToMenu={props.onHome}
-        coachEmotion={props.coachEmotion}
-        header={props.header}
-        guideBubble={props.guideBubble}
-        footerExtra={props.footer}
-        boardHints={props.showHints ? tutorialStory("fog", id)?.hints : undefined}
-      />
-    )}
-  </Show>
-);
+}> = (props) => {
+  const boardHints = createMemo(() =>
+    props.showHints ? props.liveHints(props.beats) : undefined,
+  );
+  return (
+    <LiveLessonHost
+      board={props.board}
+      lessonKey={props.lessonKey}
+      bannerTitle={props.bannerTitle}
+      fog
+      boardVariant={props.chessMode ? "classic" : "eclipse"}
+      // Sole product entry for cburnett — fog tutorial Chess skin only.
+      pieceSet={props.chessMode ? "cburnett" : "nerd"}
+      tutorial
+      hideResources
+      hideGas
+      narrate
+      turnChrome="none"
+      onExitToMenu={props.onHome}
+      coachEmotion={props.coachEmotion}
+      header={props.header}
+      guideBubble={props.guideBubble}
+      footerExtra={props.footer}
+      boardHints={boardHints()}
+    />
+  );
+};
 
 export const TutorialScreen: Component = () => {
   const params = useParams<{ section?: string; story?: string }>();
@@ -220,18 +229,20 @@ export const TutorialScreen: Component = () => {
     setHintsReady(false);
     skinDemo.push(
       setTimeout(() => setChessMode(true), SKIN_DEMO_START_MS),
-      setTimeout(() => {
+      setTimeout(() => batch(() => {
         setChessMode(false);
         setHintsReady(true);
-      }, HINT_DELAY_MS),
+      }), HINT_DELAY_MS),
     );
   });
 
   /** Player-driven skin change — retires the demo for this lesson. */
   const selectSkin = (chess: boolean) => {
     clearSkinDemo();
-    setHintsReady(true);
-    setChessMode(chess);
+    batch(() => {
+      setHintsReady(true);
+      setChessMode(chess);
+    });
   };
 
   // Canonicalize `/tutorial` · `/tutorial/fog` · aliases → `/tutorial/:section/:story`.
@@ -261,7 +272,7 @@ export const TutorialScreen: Component = () => {
     }
     if (sec === "fog") selectSection("specials");
     else if (sec === "specials") selectSection("resolve");
-    else if (sec === "resolve") selectSection("king");
+    else if (sec === "resolve") selectSection("live-play");
   };
 
   /**
@@ -282,6 +293,9 @@ export const TutorialScreen: Component = () => {
    */
   type LessonOutcome = "active" | "ending" | "success" | "failed";
   const [outcome, setOutcome] = createSignal<LessonOutcome>("active");
+
+  const liveHints = (beats: readonly TutorialBeat[] | undefined) =>
+    outcome() === "active" ? beats : completedLessonBeats(beats);
   let outcomeKey = "";
   let advanceTimer: ReturnType<typeof setTimeout> | undefined;
   let elapsedTimer: ReturnType<typeof setTimeout> | undefined;
@@ -306,7 +320,7 @@ export const TutorialScreen: Component = () => {
    */
   const hasNextLesson = () =>
     adjacentTutorialStoryId(section(), storyId(), 1) != null ||
-    section() !== "king";
+    section() !== "live-play";
 
   /**
    * Objective met → `ending`, which keeps the coach's closing line up for its
@@ -402,6 +416,13 @@ export const TutorialScreen: Component = () => {
   /** When the currently displayed comment landed — the ending hold subtracts it. */
   let shownComment = "";
   let shownAt = 0;
+  let shownKey = "";
+  let shownHoldMs = 0;
+  const [holdTick, setHoldTick] = createSignal(0);
+  let holdTimer: ReturnType<typeof setTimeout> | undefined;
+  onCleanup(() => {
+    if (holdTimer != null) clearTimeout(holdTimer);
+  });
   const [line, setLine] = createSignal(resolveTutorialLine({
     stageId: "fog",
     storyId: "king",
@@ -410,6 +431,7 @@ export const TutorialScreen: Component = () => {
     const sec = section();
     const story = storyId();
     const n = tutorialNarration();
+    holdTick();
     const ctx = {
       stageId: sec,
       storyId: story,
@@ -419,7 +441,6 @@ export const TutorialScreen: Component = () => {
       scfen: n.scfen,
       covers: n.covers,
       trajectories: n.trajectories,
-      turn: n.turn,
       targetingKind: n.targetingKind,
       turnStartChecksApplied: n.turnStartChecksApplied,
       shipSniped: n.shipSniped,
@@ -432,11 +453,24 @@ export const TutorialScreen: Component = () => {
       ctx,
     );
     lineHold = next.hold;
+    const key = `${sec}|${story}|${lessonEpoch()}`;
     // Plain fields, not a signal read: this effect writes `line`, so reading it
     // here would loop (`next.line` is a fresh object every run).
     if (next.line.comment !== shownComment) {
+      const wait = key === shownKey ? shownHoldMs - (performance.now() - shownAt) : 0;
+      if (wait > 0) {
+        if (holdTimer == null) {
+          holdTimer = setTimeout(() => {
+            holdTimer = undefined;
+            setHoldTick((t) => t + 1);
+          }, wait);
+        }
+        return;
+      }
       shownComment = next.line.comment;
       shownAt = performance.now();
+      shownKey = key;
+      shownHoldMs = next.line.holdMs ?? 0;
     }
     setLine(next.line);
   });
@@ -473,32 +507,84 @@ export const TutorialScreen: Component = () => {
     setLessonEpoch((n) => n + 1);
   };
 
+  type CoachState = "shown" | "leaving" | "hidden" | "revealed";
+  const [coachState, setCoachState] = createSignal<CoachState>("shown");
+  let leaveTimer: ReturnType<typeof setTimeout> | undefined;
+  const cancelLeave = () => {
+    if (leaveTimer != null) clearTimeout(leaveTimer);
+    leaveTimer = undefined;
+  };
+  onCleanup(cancelLeave);
+  createEffect(() => {
+    section();
+    storyId();
+    lessonEpoch();
+    cancelLeave();
+    setCoachState("shown");
+  });
+  createEffect(() => {
+    const rule = tutorialStory(section(), storyId())?.hideCoachWhen;
+    const n = tutorialNarration();
+    const reveal = outcome() !== "active" || line().action?.kind === "retryLesson";
+    const hide = !!rule && !reveal && matches(rule, n);
+    const prev = untrack(coachState);
+    if (prev === "leaving" && !reveal) return;
+    if (hide) {
+      if (prev === "shown" || prev === "revealed") {
+        setCoachState("leaving");
+        leaveTimer = setTimeout(() => {
+          leaveTimer = undefined;
+          setCoachState("hidden");
+        }, tutorialStory(section(), storyId())?.coachFarewellMs ?? COACH_FAREWELL_MS);
+      }
+      return;
+    }
+    if (prev === "leaving") {
+      cancelLeave();
+      setCoachState("shown");
+    } else if (prev === "hidden") {
+      setCoachState("revealed");
+    }
+  });
+  const coachHidden = () => coachState() === "hidden";
+  const coachLeaving = () => coachState() === "leaving";
+  const headerEmotion = createMemo(() => (coachLeaving() ? "happy" : line().emotion));
+
   /** Success / failure keep the coach's line and add the matching CTA. */
   const bubbleMessage = () =>
-    outcome() === "success"
+    coachLeaving()
+      ? (tutorialStory(section(), storyId())?.coachFarewell ?? COACH_FAREWELL)
+      : outcome() === "success"
       ? (line().comment || tutorialStory(section(), storyId())?.title || "Nice.")
       : line().comment;
 
-  const bubbleAction = (): TutorialReactionAction | undefined => {
+  const bubbleAction = createMemo((): TutorialReactionAction | undefined => {
     if (outcome() === "success") {
-      return hasNextLesson() ? { kind: "nextLesson" } : undefined;
+      return hasNextLesson() ? NEXT_LESSON_ACTION : undefined;
     }
-    if (outcome() === "failed") return { kind: "retryLesson" };
+    if (outcome() === "failed") return RETRY_LESSON_ACTION;
     return line().action;
-  };
+  });
+
+  const bubbleVariant = createMemo(() => (outcome() === "success" ? "success" : "coach"));
+  // Only when a timer is actually armed — `ending` waits on the line, not
+  // on a countdown, so its bubble draws no border.
+  const bubbleAutoAdvanceMs = createMemo(() =>
+    outcome() === "failed" || (outcome() === "success" && hasNextLesson())
+      ? LESSON_ADVANCE_MS
+      : undefined,
+  );
+  const bubbleLineKey = createMemo(() =>
+    coachLeaving() ? "coach-farewell" : `${lineKey()}|${outcome()}`,
+  );
 
   const guideBubble = () => (
+    <Show when={!coachHidden()}>
     <TutorialGuideBubble
-      variant={outcome() === "success" ? "success" : "coach"}
-      // Only when a timer is actually armed — `ending` waits on the line, not
-      // on a countdown, so its bubble draws no border.
-      autoAdvanceMs={
-        outcome() === "failed" || (outcome() === "success" && hasNextLesson())
-          ? LESSON_ADVANCE_MS
-          : undefined
-      }
+      variant={bubbleVariant()}
+      autoAdvanceMs={bubbleAutoAdvanceMs()}
       message={bubbleMessage()}
-      lineKey={`${lineKey()}|${outcome()}`}
+      lineKey={bubbleLineKey()}
       action={bubbleAction()}
       onAction={(action) => {
         if (action.kind === "retryLesson") retryLesson();
@@ -509,20 +595,13 @@ export const TutorialScreen: Component = () => {
         if (action.kind === "goSection") selectSection(action.section);
       }}
     />
+    </Show>
   );
-
-  /**
-   * Persistent goal — survives coach reactions while the lesson is active.
-   * Only an explicit `board.objective` renders: falling back to the story
-   * comment duplicates whatever the guide bubble is already saying.
-   */
-  const objectiveLine = () => tutorialStory(section(), storyId())?.board?.objective;
 
   const withFooter = (extra?: JSX.Element) => (
     <TutorialFooterNav
       section={section()}
       onSelect={selectSection}
-      objective={outcome() === "active" ? objectiveLine() : undefined}
     >
       {extra}
     </TutorialFooterNav>
@@ -539,7 +618,9 @@ export const TutorialScreen: Component = () => {
       onBack={goHome}
       data-testid={opts.testId}
     >
-      <CoachAvatar identity="kerrigan" emotion={line().emotion} />
+      <div class={styles.coachHide} data-coach={coachState()} data-testid="tutorial-coach">
+        <CoachAvatar identity="kerrigan" emotion={headerEmotion()} />
+      </div>
     </ScreenBackNav>
   );
 
@@ -563,52 +644,92 @@ export const TutorialScreen: Component = () => {
 
   const resolveFooter = () => withFooter();
 
+  const lessonKey = () => `${storyId()}#${lessonEpoch()}`;
+  const lessonTitle = createMemo(() => tutorialStory(section(), storyId())?.title);
+  const sectionBoard = (stage: TutorialSectionId) =>
+    createMemo<LiveLessonBoard>((prev) =>
+      section() === stage ? lessonBoard(stage, storyId()) : prev!,
+    );
+  const sectionBeats = (stage: TutorialSectionId) =>
+    createMemo<readonly TutorialBeat[] | undefined>((prev) =>
+      section() === stage ? tutorialStory(stage, storyId())?.beats : prev,
+    );
+
+  const FogLesson: Component = () => {
+    const board = sectionBoard("fog");
+    const beats = sectionBeats("fog");
+    return (
+      <FogSection
+        board={board()}
+        lessonKey={lessonKey()}
+        bannerTitle={lessonTitle()}
+        beats={beats()}
+        chessMode={chessMode()}
+        showHints={hintsReady()}
+        liveHints={liveHints}
+        coachEmotion={line().emotion}
+        guideBubble={guideBubble()}
+        header={fogCoachHeader()}
+        footer={fogFooter()}
+        onHome={goHome}
+      />
+    );
+  };
+
+  const SpecialsLesson: Component = () => {
+    const board = sectionBoard("specials");
+    const beats = sectionBeats("specials");
+    const hints = createMemo(() => liveHints(beats()));
+    return (
+      <LiveLessonHost
+        board={board()}
+        lessonKey={lessonKey()}
+        bannerTitle={lessonTitle()}
+        tutorial
+        narrate
+        hideResources
+        turnChrome="none"
+        onExitToMenu={goHome}
+        coachEmotion={line().emotion}
+        header={specialCoachHeader()}
+        guideBubble={guideBubble()}
+        footerExtra={specialFooter()}
+        boardHints={hints()}
+      />
+    );
+  };
+
+  const LivePlayLesson: Component = () => {
+    const board = sectionBoard("live-play");
+    const beats = sectionBeats("live-play");
+    const hints = createMemo(() => liveHints(beats()));
+    return (
+      <LiveLessonHost
+        board={board()}
+        lessonKey={lessonKey()}
+        bannerTitle={lessonTitle()}
+        tutorial
+        narrate
+        turnChrome="sidebar"
+        onExitToMenu={goHome}
+        coachEmotion={line().emotion}
+        header={kingCoachHeader()}
+        guideBubble={guideBubble()}
+        footerExtra={kingFooter()}
+        boardHints={hints()}
+        hudResources={coachHidden()}
+      />
+    );
+  };
+
   return (
     <LiveMatchShell world="eclipse" testId="starchess-tutorial">
       <Switch>
         <Match when={section() === "fog"}>
-          <Show when={`${storyId()}#${lessonEpoch()}`} keyed>
-            {(key) => {
-              // Keyed on retry epoch (like specials/king) so Retry
-              // remounts the seed SCFEN instead of keeping the
-              // failed board.
-              const id = key.split("#")[0]!;
-              return (
-                <FogSection
-                  lessonId={id}
-                  chessMode={chessMode()}
-                  showHints={hintsReady()}
-                  coachEmotion={line().emotion}
-                  guideBubble={guideBubble()}
-                  header={fogCoachHeader()}
-                  footer={fogFooter()}
-                  onHome={goHome}
-                />
-              );
-            }}
-          </Show>
+          <FogLesson />
         </Match>
         <Match when={section() === "specials"}>
-          <Show when={`${storyId()}#${lessonEpoch()}`} keyed>
-            {(key) => {
-              const id = key.split("#")[0]!;
-              return (
-                <LiveLessonHost
-                  board={lessonBoard("specials", id)}
-                  tutorial
-                  narrate
-                  hideResources
-                  turnChrome="none"
-                  onExitToMenu={goHome}
-                  coachEmotion={line().emotion}
-                  header={specialCoachHeader()}
-                  guideBubble={guideBubble()}
-                  footerExtra={specialFooter()}
-                  boardHints={tutorialStory("specials", id)?.hints}
-                />
-              );
-            }}
-          </Show>
+          <SpecialsLesson />
         </Match>
         <Match when={section() === "resolve"}>
           {/* Two replays, one host — keyed so switching story remounts the
@@ -634,28 +755,8 @@ export const TutorialScreen: Component = () => {
             }}
           </Show>
         </Match>
-        <Match when={section() === "king"}>
-          <Show when={`${storyId()}#${lessonEpoch()}`} keyed>
-            {(key) => {
-              // Every King Damage lesson is a live board since `king-hunt`
-              // moved to Turn Resolution — that stage owns both replays now.
-              const id = key.split("#")[0]!;
-              return (
-                <LiveLessonHost
-                  board={lessonBoard("king", id)}
-                  tutorial
-                  narrate
-                  turnChrome="sidebar"
-                  onExitToMenu={goHome}
-                  coachEmotion={line().emotion}
-                  header={kingCoachHeader()}
-                  guideBubble={guideBubble()}
-                  footerExtra={kingFooter()}
-                  boardHints={tutorialStory("king", id)?.hints}
-                />
-              );
-            }}
-          </Show>
+        <Match when={section() === "live-play"}>
+          <LivePlayLesson />
         </Match>
       </Switch>
     </LiveMatchShell>

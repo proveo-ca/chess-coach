@@ -227,6 +227,12 @@
   animation: humanoidSlide var(--move-ms, 250ms) linear 1 forwards;
 }
 
+.moverSlide {
+  transition: none;
+  will-change: transform;
+  animation: humanoidSlide var(--move-ms, 250ms) linear 1 forwards;
+}
+
 /* Siege Tank (tank mode): slide while twin battery faces travel. */
 .moverTank {
   transition: none;
@@ -249,6 +255,7 @@
   .moverMecha,
   .moverBattleShip,
   .moverTank,
+  .moverSlide,
   .moverMarine .marineFace,
   .moverMarine :global([data-part="leg-left"]),
   .moverMarine :global([data-part="leg-right"]) {

@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/starchess/navigation-chrome.md
+// SPEC: _spec/apps/starchess/navigation-chrome.md, _spec/apps/starchess/architecture/reactivity/presentation.md
 import {
   deployedMaterialFromPlacement,
   energyForTurn,
@@ -101,13 +101,7 @@ export const ResourceBar: Component<ResourceBarProps> = (props) => {
   const stored = createMemo(() => {
     if (props.stored != null) return props.stored;
     const s = snap();
-    if (ctx) {
-      void ctx.state().economies[color()].stored;
-      void ctx.state().reviewIndex;
-      void ctx.reviewPhase();
-      void ctx.state().settledResolves.length;
-      return displayedStoredMaterial(ctx, color(), s);
-    }
+    if (ctx) return displayedStoredMaterial(ctx, color(), s);
     if (s?.stored?.[color()] != null) return s.stored![color()];
     if (s) return estimateStoredFromSnap(s, color());
     return 0;

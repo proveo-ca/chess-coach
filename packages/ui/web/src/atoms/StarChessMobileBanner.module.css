@@ -1,79 +1,56 @@
+/* SPEC: _spec/apps/starchess/navigation-chrome.md */
 .banner {
   display: none;
 }
 
-@media (max-width: 719px) and (min-width: 480px) and (max-height: 639px) {
+@media (max-width: 719px) {
   .banner {
     display: grid;
-
-    grid-template-columns: 4rem minmax(0, 1fr) auto;
+    grid-template-columns: 4rem minmax(0, 1fr) 4rem;
     align-items: center;
-    column-gap: 0.35rem;
-    width: 100%;
-    max-width: none;
-    align-self: stretch;
-    box-sizing: border-box;
-    margin: 0;
-    flex-shrink: 0;
-
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     width: 100%;
-    padding-block: 0.25rem;
+    box-sizing: border-box;
+    min-height: var(--mobile-banner-row-height, 48px);
+    margin: 0;
     padding-inline: 0.5rem;
-    min-height: 40px;
-    background: var(--panel-bg, rgba(0, 0, 0, 0.2));
-    border-bottom: 1px solid var(--border-color, #444);
-    z-index: 5;
-    overflow: visible;
+    background: #000;
+    z-index: 60;
   }
 
-  .banner[data-resources="fixed"] {
-    grid-template-columns: 4rem auto minmax(0, 1fr);
+  .banner[data-fill="true"] {
+    grid-template-columns: 4rem minmax(0, 1fr) 0;
   }
 
-  .banner[data-resources="fixed"] .resources > * {
-    flex: 0 0 auto;
+  .banner[data-fill="true"] .title {
+    justify-content: flex-end;
   }
 
   .back {
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    width: 4rem;
-    min-width: 4rem;
-    max-width: 4rem;
-    overflow: hidden;
-  }
-
-  .resources {
-    display: flex;
-    align-items: center;
-    justify-content: stretch;
     min-width: 0;
     overflow: hidden;
   }
 
-  .resources > * {
-    flex: 1 1 auto;
-    min-width: 0;
-    width: 100%;
-    max-width: 100%;
-  }
-
-  .turn {
+  .title {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: center;
     min-width: 0;
-    overflow: visible;
+    overflow: hidden;
   }
 
-  .turn > * {
+  .title .titleText {
+    margin: 0;
     min-width: 0;
-    width: auto;
-    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: center;
   }
 }

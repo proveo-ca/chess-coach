@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/starchess/deployment.puml, _spec/apps/starchess/menu-flow.puml, _spec/apps/starchess/screens.puml, _spec/apps/starchess/architecture/screen-entities.puml, _spec/apps/starchess/replay-import.puml, _spec/_plans/game-export-localstorage.puml, _spec/_plans/starchess-achievements.puml
+// SPEC: _spec/apps/starchess/deployment.puml, _spec/apps/starchess/menu-flow.puml, _spec/apps/starchess/screens.puml, _spec/apps/starchess/architecture/screen-entities.puml, _spec/apps/starchess/replay-import.puml, _spec/_plans/game-export-localstorage.puml, _spec/_plans/starchess-achievements.puml, _spec/apps/starchess/architecture/reactivity/app-screens.md
 /**
  * Match history list + DualNav replay — `/review` and `/review/:id`.
  * List chrome mirrors Coach Review: Playing as + date (no First move, no title).
@@ -10,16 +10,19 @@ import { A, useNavigate, useParams } from "@solidjs/router";
 import {
   For,
   Show,
+  batch,
   createEffect,
   createMemo,
   createSignal,
   onCleanup,
+  onMount,
   type Component,
 } from "solid-js";
 
 import { AchievementsModal } from "~/components/features/AchievementsModal";
 import { MatchHistoryFilters } from "@chess-coach/ui-web/atoms/MatchHistoryFilters";
 import { StarChessMobileBanner as MobileBanner } from "@chess-coach/ui-web/atoms/StarChessMobileBanner";
+import { StarChessMobileSubBanner as MobileSubBanner } from "@chess-coach/ui-web/atoms/StarChessMobileSubBanner";
 import { Screen } from "@chess-coach/ui-web/primitives/Screen";
 import { ScreenBackNav } from "~/components/primitives/ScreenBackNav";
 import { ReviewDemoScreen } from "~/demos/ReviewDemoScreen";
@@ -151,13 +154,17 @@ const ArenaLibrary: Component = () => {
     if (games.length === 0) return;
     try {
       downloadHistoryExport(buildHistoryExport(games));
-      setImportError(null);
-      setImportMessage(
-        `Exported ${games.length} game${games.length === 1 ? "" : "s"}`,
-      );
+      batch(() => {
+        setImportError(null);
+        setImportMessage(
+          `Exported ${games.length} game${games.length === 1 ? "" : "s"}`,
+        );
+      });
     } catch (e) {
-      setImportMessage(null);
-      setImportError(e instanceof Error ? e.message : "Export failed");
+      batch(() => {
+        setImportMessage(null);
+        setImportError(e instanceof Error ? e.message : "Export failed");
+      });
     }
   };
 
@@ -185,7 +192,7 @@ const ArenaLibrary: Component = () => {
     }
   };
 
-  createEffect(() => {
+  onMount(() => {
     void loadArenaList();
   });
 
@@ -247,19 +254,20 @@ const ArenaLibrary: Component = () => {
         }
       }
     }
-    if (imported.length === 0) {
-      setImportError(lastError ?? "No valid records found");
-      setImportMessage(null);
-      return;
-    }
-    setImportError(null);
-    if (imported.length === 1) {
-      setImportMessage(`Imported ${fileName ?? imported[0]!}`);
+    batch(() => {
+      if (imported.length === 0) {
+        setImportError(lastError ?? "No valid records found");
+        setImportMessage(null);
+        return;
+      }
+      setImportError(null);
+      setImportMessage(
+        imported.length === 1
+          ? `Imported ${fileName ?? imported[0]!}`
+          : `Imported ${imported.length} games from ${fileName ?? "file"}`,
+      );
       navigate(`/review/${imported[0]!}`);
-    } else {
-      setImportMessage(`Imported ${imported.length} games from ${fileName ?? "file"}`);
-      navigate(`/review/${imported[0]!}`);
-    }
+    });
   };
 
   const handleFileInput = async (e: Event) => {
@@ -458,36 +466,28 @@ const ReviewListShell: Component<{ activeId?: string }> = (props) => {
   return (
     <LiveMatchShell world="eclipse" testId="starchess-review">
       <Screen>
-        {/* Dynamic-only chrome (CSS-gated): Back + filters in one full-bleed
-            strip, same as /single and the review detail. The in-flow chrome
-            below stands down there — it overflows the top track at 420px. */}
-        <MobileBanner
-          href="/"
-          resources={
-            <div class={styles.bannerFilters}>{historyFilters(true)}</div>
-          }
-          data-testid="review-list-banner"
-        />
+        <MobileBanner href="/" title="Review" data-testid="review-list-banner" />
+        <MobileSubBanner data-testid="review-list-filters-mobile">
+          <div class={styles.bannerFilters}>{historyFilters(true)}</div>
+        </MobileSubBanner>
         <Screen.SidebarInset class={styles.listChrome}>
-          <div class="desktop-only">
-            <ScreenBackNav href="/" data-testid="review-back-menu">
-              {historyFilters()}
-            </ScreenBackNav>
-          </div>
-          <div class="mobile-only">
-            <ScreenBackNav href="/" data-testid="review-back-menu-mobile" />
+          <ScreenBackNav href="/" data-testid="review-back-menu">
             {historyFilters()}
-          </div>
+          </ScreenBackNav>
         </Screen.SidebarInset>
         <Screen.BoardArea>
-          <div class={styles.listPane}>
-            <ArenaLibrary />
+          <div class={`${styles.listPane} neon-scroll`}>
             <MatchList
               games={filters.visibleGames()}
               activeId={props.activeId}
             />
           </div>
         </Screen.BoardArea>
+        <Screen.Footer>
+          <div class={styles.footerPane}>
+            <ArenaLibrary />
+          </div>
+        </Screen.Footer>
       </Screen>
     </LiveMatchShell>
   );
@@ -537,15 +537,17 @@ const ReviewDetail: Component<{ record: StarChessGameRecord }> = (props) => {
   };
 
   const isArena = !!props.record.arenaPlayers;
+  const matchTitle = {
+    resultLine: formatMatchResultTitle(props.record),
+    result: props.record.result,
+    matchup: formatMatchLabel(props.record),
+  };
+  const achievements = reviewAchievements(props.record);
   return (
     <LiveMatchShell world={props.record.map} testId="starchess-review-detail">
       <ReviewDemoScreen
         history={history}
-        matchTitle={{
-          resultLine: formatMatchResultTitle(props.record),
-          result: props.record.result,
-          matchup: formatMatchLabel(props.record),
-        }}
+        matchTitle={matchTitle}
         reviewLabel={
           isArena
             ? `${resultLabel(props.record.result)} · ${formatScriptLabel(props.record.arenaPlayers!.w)} (Blue) vs ${formatScriptLabel(props.record.arenaPlayers!.b)} (Red)`
@@ -555,7 +557,7 @@ const ReviewDetail: Component<{ record: StarChessGameRecord }> = (props) => {
         playerColor={props.record.playerColor}
         playerName={props.record.playerName}
         arenaPlayers={props.record.arenaPlayers}
-        achievements={reviewAchievements(props.record)}
+        achievements={achievements}
         onHome={() => navigate("/review")}
       />
     </LiveMatchShell>

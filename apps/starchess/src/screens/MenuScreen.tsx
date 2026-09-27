@@ -10,10 +10,10 @@
  *
  * Chess → StarChess arrival (glass / shatter / identity) lives in
  * {@link MenuArrival} — this screen exposes `identity` + `chrome` for that host.
- * // SPEC: _spec/apps/starchess/menu-flow.puml
+ * // SPEC: _spec/apps/starchess/menu-flow.puml, _spec/apps/starchess/vfx-tier.puml, _spec/apps/starchess/architecture/reactivity/app-screens.md
  */
 import clsx from "clsx";
-import { Show, createSignal, type Component, type JSX } from "solid-js";
+import { Show, createMemo, createSignal, type Component, type JSX } from "solid-js";
 
 import { CoachAvatar } from "~/components/atoms/CoachAvatar";
 import type { CoachIdentity } from "~/types/coach";
@@ -33,6 +33,7 @@ import { MenuMoon } from "~/screens/menuSky/MenuMoon";
 import { MenuPlanet, type MenuWorldId } from "~/screens/menuSky/MenuPlanet";
 import styles from "~/screens/MenuScreen.module.css";
 import { isTutorialCleared } from "~/store/tutorialProgressStore";
+import { useVfxProbe } from "~/hooks/useVfxProbe";
 import type { NewGameOptions } from "~/types/newGame";
 
 export type StarChessMenuAction =
@@ -114,6 +115,20 @@ export const MenuScreen: Component<StarChessMenuScreenProps> = (props) => {
   const identity = (): CoachIdentity => props.identity ?? "kerrigan";
   const chrome = (): StarChessMenuChrome => props.chrome ?? "on";
   const chromeInteractive = () => chrome() === "on";
+
+  const tutorialAction = createMemo(() => (chromeInteractive() ? props.onAction : undefined));
+  const creditsAction = createMemo(() =>
+    chromeInteractive()
+      ? (action: StarChessMenuAction) => {
+          props.onAction?.(action);
+          setCreditsOpen(true);
+        }
+      : undefined,
+  );
+
+  // The Single Player playground loops real combat VFX: measure them here,
+  // silently, to pick this device's VFX tier (never the game's pace).
+  useVfxProbe(chromeInteractive);
 
   /** Uncleared tutorial → first-time gate; else open New Game setup. */
   const requestSinglePlayer = () => {
@@ -218,20 +233,13 @@ export const MenuScreen: Component<StarChessMenuScreenProps> = (props) => {
           class={styles.posTutorial}
           action="tutorial"
           label="Tutorial"
-          onAction={chromeInteractive() ? props.onAction : undefined}
+          onAction={tutorialAction()}
         />
         <MenuTextItem
           class={styles.posCredits}
           action="credits"
           label="Credits"
-          onAction={
-            chromeInteractive()
-              ? (action) => {
-                  props.onAction?.(action);
-                  setCreditsOpen(true);
-                }
-              : undefined
-          }
+          onAction={creditsAction()}
         />
 
         <MenuAnchor
