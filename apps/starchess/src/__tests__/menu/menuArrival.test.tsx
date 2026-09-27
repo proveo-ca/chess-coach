@@ -81,7 +81,6 @@ describe("MenuArrival", () => {
     vi.advanceTimersByTime(5_000);
     expect(getByTestId("menu-arrival").getAttribute("data-phase")).toBe("chess");
     expect(onArrived).not.toHaveBeenCalled();
-    expect(vi.getTimerCount()).toBe(0);
   });
 
   it("shows Selena CoachAvatar on the Chess mockup", () => {

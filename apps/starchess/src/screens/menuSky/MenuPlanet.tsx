@@ -5,7 +5,10 @@
  */
 import { createSignal, onCleanup, onMount, type Component } from "solid-js";
 
+import { repeat } from "~/adapters/timers";
+import { createPhaseLoop } from "~/presentation/animations/phaseLoop";
 import styles from "~/screens/menuSky/MenuPlanet.module.css";
+import type { Cancel } from "~/types/ports";
 
 export type MenuWorldId = "eclipse" | "butter" | "vermeer";
 
@@ -47,71 +50,50 @@ export const MenuPlanet: Component<MenuPlanetProps> = (props) => {
   };
 
   onMount(() => {
-    const timers: number[] = [];
-    let charTimer = 0;
-    let cancelled = false;
+    let stopTyping: Cancel = () => {};
 
     props.onWorldChange?.(WORLDS[0]!.id);
 
-    const clearChar = () => {
-      window.clearInterval(charTimer);
-      charTimer = 0;
-    };
-
-    const clearTimers = () => {
-      for (const id of timers) window.clearTimeout(id);
-      timers.length = 0;
-    };
-
-    const later = (ms: number, fn: () => void) => {
-      const id = window.setTimeout(() => {
-        const i = timers.indexOf(id);
-        if (i >= 0) timers.splice(i, 1);
-        if (!cancelled) fn();
-      }, ms);
-      timers.push(id);
-    };
-
     const startTyping = (label: string) => {
-      clearChar();
+      stopTyping();
       setLen(0);
       let i = 0;
-      const charMs = TYPE_BUDGET_MS / label.length;
-      charTimer = window.setInterval(() => {
+      stopTyping = repeat(TYPE_BUDGET_MS / label.length, () => {
         i += 1;
         setLen(i);
-        if (i >= label.length) clearChar();
-      }, charMs);
-    };
-
-    const runWorld = (idx: number) => {
-      if (cancelled) return;
-      setWorld(idx);
-      setLen(0);
-      setPhase("enter");
-
-      later(ENTER_MS, () => {
-        setPhase("hold");
-        startTyping(WORLDS[idx]!.label);
-
-        later(HOLD_MS, () => {
-          clearChar();
-          setPhase("exit");
-
-          later(EXIT_MS, () => {
-            runWorld((idx + 1) % WORLDS.length);
-          });
-        });
+        if (i >= label.length) stopTyping();
       });
     };
 
-    runWorld(0);
+    createPhaseLoop(
+      [
+        [
+          0,
+          (k) => {
+            setWorld(k % WORLDS.length);
+            setLen(0);
+            setPhase("enter");
+          },
+        ],
+        [
+          ENTER_MS,
+          (k) => {
+            setPhase("hold");
+            startTyping(WORLDS[k % WORLDS.length]!.label);
+          },
+        ],
+        [
+          ENTER_MS + HOLD_MS,
+          () => {
+            stopTyping();
+            setPhase("exit");
+          },
+        ],
+      ],
+      ENTER_MS + HOLD_MS + EXIT_MS,
+    );
 
-    onCleanup(() => {
-      cancelled = true;
-      clearChar();
-      clearTimers();
-    });
+    onCleanup(() => stopTyping());
   });
 
   return (
