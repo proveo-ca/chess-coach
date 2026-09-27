@@ -1,0 +1,51 @@
+@startuml tutorial-lesson
+title Tutorial live-lesson host — Quint model ↔ source (tutorialLesson.qnt)
+
+skinparam shadowing false
+skinparam defaultFontSize 11
+
+rectangle "Model state" as M {
+  card "mounted" as m1
+  card "lesson, epoch → cur: Key" as m2
+  card "armed (opponent handed to BaseScreen)" as m3
+  card "screenTimers · baseTimers · storeTimers" as m4
+  card "violation (kind, what) — ghost" as m5
+}
+
+rectangle "Source owner" as S {
+  card "route mount / leave\nscreens/TutorialScreen.tsx" as s1
+  card "section · storyId · lessonEpoch\nTutorialScreen outcome effect (clearTimers)\ndemos/LiveLessonHost.tsx createComputed(on(lessonKey))\n→ cancelEffects + LOAD_SCFEN" as s2
+  card "LiveLessonHost autoQueueOpponent memo\n→ BaseScreen props.autoQueueOpponent" as s3
+  card "TutorialScreen schedule(): advance · retry · elapsed · ending · leave\nMatchStore.submitTurnNextTask (Auto-End)\nMatchStore.armTimer (turn timeout)" as s4
+}
+
+m1 .. s1
+m2 .. s2
+m3 .. s3
+m4 .. s4
+
+rectangle "Invariant safe" as I {
+  card "noTimerMisfires:\nno timer acts after unmount\nor into a different lesson key" as i1
+  card "opponentMatchesLesson:\nmounted ⇒ armed ⇔ lesson ∈ OPPONENT_LESSONS" as i2
+}
+
+rectangle "Regression switches (each must be violated)" as R {
+  card "staleOpponent\nautoQueueOpponent read once at host creation\n(live-play-attack-2/3/4 inert via in-app nav)" as r1
+  card "unownedStoreTimers\ncreateMatchStore onCleanup skipped turn timeout / timeline\n(orphaned store auto-submits after leaving)" as r2
+  card "unguardedAutoEnd\nBaseScreen owned the Auto-End task; BaseScreen outlives\nlessons, so queue-ready → retry → submit ended the fresh board's turn" as r3
+}
+
+r1 --> i2
+r2 --> i1
+r3 --> i1
+
+note bottom
+  Run: pnpm --filter @chess-coach/starchess check:model
+  • fixed: Apalache bounded check, 10 steps — safe holds
+  • each switch: 6 steps — safe violated (proves the model still sees the bug)
+  Scope: LESSONS = {0,1,2}, OPPONENT_LESSONS = {1,2}, MAX_EPOCH = 1.
+  Abstracted away: board contents, beats, animation timing, holdTimer
+  (its callback only re-evaluates the line — no lesson effect).
+  Update the model when a new timer owner or a new lesson-change path appears.
+end note
+@enduml

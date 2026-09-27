@@ -44,7 +44,7 @@ import {
   playResolveWave,
 } from "~/presentation/timeline/playResolveWave";
 import { turnBonusFor } from "~/app/turnBonusPolicy";
-import { displayedSnapshotFrom, registerDisplayedSnapshot } from "~/app/selectors";
+import { canSubmit, displayedSnapshotFrom, registerDisplayedSnapshot } from "~/app/selectors";
 import { sameFlat } from "~/presentation/board/memoEquals";
 import type { ResolveWaveId } from "~/types/tutorial";
 
@@ -119,6 +119,7 @@ export const createMatchStore = (opts?: {
   let cancelTimeline: (() => void) | null = null;
   let cancelTimer: (() => void) | null = null;
   let cancelReviewTurn: (() => void) | null = null;
+  let cancelDeferredSubmit: (() => void) | null = null;
   let reviewBusy = false;
   /** Settled index when the in-flight one-arrow turn began. */
   let reviewTurnStart = 0;
@@ -159,6 +160,8 @@ export const createMatchStore = (opts?: {
     cancelTimeline = null;
     cancelTimer?.();
     cancelTimer = null;
+    cancelDeferredSubmit?.();
+    cancelDeferredSubmit = null;
     clearReviewIntent();
     dispatch({ type: "CANCEL_EFFECTS" });
   };
@@ -220,6 +223,14 @@ export const createMatchStore = (opts?: {
       const next = peek();
       if (next.phase === "planning" && opts?.armTimer) armTimer();
       if (next.phase === "gameOver") syncReviewPhaseIdle();
+    });
+  };
+
+  const submitTurnNextTask = () => {
+    cancelDeferredSubmit?.();
+    cancelDeferredSubmit = scheduler.delay(0, () => {
+      cancelDeferredSubmit = null;
+      if (canSubmit(peek())) submitTurn("end");
     });
   };
 
@@ -384,6 +395,7 @@ export const createMatchStore = (opts?: {
     timeline,
     dispatch,
     submitTurn,
+    submitTurnNextTask,
     armTimer,
     ensureTurnOpenChecks,
     reviewBack,
@@ -407,7 +419,15 @@ export const createMatchStore = (opts?: {
     );
     return dispose;
   });
-  if (getOwner()) onCleanup(disposeDisplayed);
+  if (getOwner()) {
+    onCleanup(() => {
+      cancelReviewTurn?.();
+      cancelTimeline?.();
+      cancelTimer?.();
+      cancelDeferredSubmit?.();
+      disposeDisplayed();
+    });
+  }
   return store;
 };
 

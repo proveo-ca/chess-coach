@@ -1,0 +1,951 @@
+{
+  "name": "ApalacheIR",
+  "version": "1.0",
+  "description": "https://apalache-mc.org/docs/adr/005adr-json.html",
+  "modules": [
+    {
+      "kind": "TlaModule",
+      "name": "counterexample",
+      "declarations": [
+        {
+          "type": "(() => Bool)",
+          "kind": "TlaOperDecl",
+          "name": "ConstInit",
+          "formalParams": [],
+          "isRecursive": false,
+          "body": {
+            "type": "Bool",
+            "kind": "ValEx",
+            "value": {
+              "kind": "TlaBool",
+              "value": true
+            }
+          }
+        },
+        {
+          "type": "(() => Bool)",
+          "kind": "TlaOperDecl",
+          "name": "State0",
+          "formalParams": [],
+          "isRecursive": false,
+          "body": {
+            "type": "Bool",
+            "kind": "OperEx",
+            "oper": "AND",
+            "args": [
+              {
+                "type": "Bool",
+                "kind": "OperEx",
+                "oper": "EQ",
+                "args": [
+                  {
+                    "type": "Bool",
+                    "kind": "NameEx",
+                    "name": "unownedStoreTimers::tutorialLesson::armed"
+                  },
+                  {
+                    "type": "Bool",
+                    "kind": "ValEx",
+                    "value": {
+                      "kind": "TlaBool",
+                      "value": true
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "Bool",
+                "kind": "OperEx",
+                "oper": "EQ",
+                "args": [
+                  {
+                    "type": "Set({ key: { epoch: Int, lesson: Int }, kind: Str })",
+                    "kind": "NameEx",
+                    "name": "unownedStoreTimers::tutorialLesson::baseTimers"
+                  },
+                  {
+                    "type": "Set({ key: { epoch: Int, lesson: Int }, kind: Str })",
+                    "kind": "OperEx",
+                    "oper": "SET_ENUM",
+                    "args": []
+                  }
+                ]
+              },
+              {
+                "type": "Bool",
+                "kind": "OperEx",
+                "oper": "EQ",
+                "args": [
+                  {
+                    "type": "Int",
+                    "kind": "NameEx",
+                    "name": "unownedStoreTimers::tutorialLesson::epoch"
+                  },
+                  {
+                    "type": "Int",
+                    "kind": "ValEx",
+                    "value": {
+                      "kind": "TlaInt",
+                      "value": 0
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "Bool",
+                "kind": "OperEx",
+                "oper": "EQ",
+                "args": [
+                  {
+                    "type": "Int",
+                    "kind": "NameEx",
+                    "name": "unownedStoreTimers::tutorialLesson::lesson"
+                  },
+                  {
+                    "type": "Int",
+                    "kind": "ValEx",
+                    "value": {
+                      "kind": "TlaInt",
+                      "value": 1
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "Bool",
+                "kind": "OperEx",
+                "oper": "EQ",
+                "args": [
+                  {
+                    "type": "Bool",
+                    "kind": "NameEx",
+                    "name": "unownedStoreTimers::tutorialLesson::mounted"
+                  },
+                  {
+                    "type": "Bool",
+                    "kind": "ValEx",
+                    "value": {
+                      "kind": "TlaBool",
+                      "value": true
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "Bool",
+                "kind": "OperEx",
+                "oper": "EQ",
+                "args": [
+                  {
+                    "type": "Set({ key: { epoch: Int, lesson: Int }, kind: Str })",
+                    "kind": "NameEx",
+                    "name": "unownedStoreTimers::tutorialLesson::screenTimers"
+                  },
+                  {
+                    "type": "Set({ key: { epoch: Int, lesson: Int }, kind: Str })",
+                    "kind": "OperEx",
+                    "oper": "SET_ENUM",
+                    "args": []
+                  }
+                ]
+              },
+              {
+                "type": "Bool",
+                "kind": "OperEx",
+                "oper": "EQ",
+                "args": [
+                  {
+                    "type": "Set({ key: { epoch: Int, lesson: Int }, kind: Str })",
+                    "kind": "NameEx",
+                    "name": "unownedStoreTimers::tutorialLesson::storeTimers"
+                  },
+                  {
+                    "type": "Set({ key: { epoch: Int, lesson: Int }, kind: Str })",
+                    "kind": "OperEx",
+                    "oper": "SET_ENUM",
+                    "args": []
+                  }
+                ]
+              },
+              {
+                "type": "Bool",
+                "kind": "OperEx",
+                "oper": "EQ",
+                "args": [
+                  {
+                    "type": "<<Str, Str>>",
+                    "kind": "NameEx",
+                    "name": "unownedStoreTimers::tutorialLesson::violation"
+                  },
+                  {
+                    "type": "<<Str, Str>>",
+                    "kind": "OperEx",
+                    "oper": "TUPLE",
+                    "args": [
+                      {
+                        "type": "Str",
+                        "kind": "ValEx",
+                        "value": {
+                          "kind": "TlaStr",
+                          "value": ""
+                        }
+                      },
+                      {
+                        "type": "Str",
+                        "kind": "ValEx",
+                        "value": {
+                          "kind": "TlaStr",
+                          "value": ""
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "type": "(() => Bool)",
+          "kind": "TlaOperDecl",
+          "name": "State1",
+          "formalParams": [],
+          "isRecursive": false,
+          "body": {
+            "type": "Bool",
+            "kind": "OperEx",
+            "oper": "AND",
+            "args": [
+              {
+                "type": "Bool",
+                "kind": "OperEx",
+                "oper": "EQ",
+                "args": [
+                  {
+                    "type": "Bool",
+                    "kind": "NameEx",
+                    "name": "unownedStoreTimers::tutorialLesson::armed"
+                  },
+                  {
+                    "type": "Bool",
+                    "kind": "ValEx",
+                    "value": {
+                      "kind": "TlaBool",
+                      "value": true
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "Bool",
+                "kind": "OperEx",
+                "oper": "EQ",
+                "args": [
+                  {
+                    "type": "Set({ key: { epoch: Int, lesson: Int }, kind: Str })",
+                    "kind": "NameEx",
+                    "name": "unownedStoreTimers::tutorialLesson::baseTimers"
+                  },
+                  {
+                    "type": "Set({ key: { epoch: Int, lesson: Int }, kind: Str })",
+                    "kind": "OperEx",
+                    "oper": "SET_ENUM",
+                    "args": []
+                  }
+                ]
+              },
+              {
+                "type": "Bool",
+                "kind": "OperEx",
+                "oper": "EQ",
+                "args": [
+                  {
+                    "type": "Int",
+                    "kind": "NameEx",
+                    "name": "unownedStoreTimers::tutorialLesson::epoch"
+                  },
+                  {
+                    "type": "Int",
+                    "kind": "ValEx",
+                    "value": {
+                      "kind": "TlaInt",
+                      "value": 0
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "Bool",
+                "kind": "OperEx",
+                "oper": "EQ",
+                "args": [
+                  {
+                    "type": "Int",
+                    "kind": "NameEx",
+                    "name": "unownedStoreTimers::tutorialLesson::lesson"
+                  },
+                  {
+                    "type": "Int",
+                    "kind": "ValEx",
+                    "value": {
+                      "kind": "TlaInt",
+                      "value": 1
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "Bool",
+                "kind": "OperEx",
+                "oper": "EQ",
+                "args": [
+                  {
+                    "type": "Bool",
+                    "kind": "NameEx",
+                    "name": "unownedStoreTimers::tutorialLesson::mounted"
+                  },
+                  {
+                    "type": "Bool",
+                    "kind": "ValEx",
+                    "value": {
+                      "kind": "TlaBool",
+                      "value": true
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "Bool",
+                "kind": "OperEx",
+                "oper": "EQ",
+                "args": [
+                  {
+                    "type": "Set({ key: { epoch: Int, lesson: Int }, kind: Str })",
+                    "kind": "NameEx",
+                    "name": "unownedStoreTimers::tutorialLesson::screenTimers"
+                  },
+                  {
+                    "type": "Set({ key: { epoch: Int, lesson: Int }, kind: Str })",
+                    "kind": "OperEx",
+                    "oper": "SET_ENUM",
+                    "args": []
+                  }
+                ]
+              },
+              {
+                "type": "Bool",
+                "kind": "OperEx",
+                "oper": "EQ",
+                "args": [
+                  {
+                    "type": "Set({ key: { epoch: Int, lesson: Int }, kind: Str })",
+                    "kind": "NameEx",
+                    "name": "unownedStoreTimers::tutorialLesson::storeTimers"
+                  },
+                  {
+                    "type": "Set({ key: { epoch: Int, lesson: Int }, kind: Str })",
+                    "kind": "OperEx",
+                    "oper": "SET_ENUM",
+                    "args": [
+                      {
+                        "type": "{ key: { epoch: Int, lesson: Int }, kind: Str }",
+                        "kind": "OperEx",
+                        "oper": "RECORD",
+                        "args": [
+                          {
+                            "type": "Str",
+                            "kind": "ValEx",
+                            "value": {
+                              "kind": "TlaStr",
+                              "value": "key"
+                            }
+                          },
+                          {
+                            "type": "{ epoch: Int, lesson: Int }",
+                            "kind": "OperEx",
+                            "oper": "RECORD",
+                            "args": [
+                              {
+                                "type": "Str",
+                                "kind": "ValEx",
+                                "value": {
+                                  "kind": "TlaStr",
+                                  "value": "epoch"
+                                }
+                              },
+                              {
+                                "type": "Int",
+                                "kind": "ValEx",
+                                "value": {
+                                  "kind": "TlaInt",
+                                  "value": 0
+                                }
+                              },
+                              {
+                                "type": "Str",
+                                "kind": "ValEx",
+                                "value": {
+                                  "kind": "TlaStr",
+                                  "value": "lesson"
+                                }
+                              },
+                              {
+                                "type": "Int",
+                                "kind": "ValEx",
+                                "value": {
+                                  "kind": "TlaInt",
+                                  "value": 1
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "type": "Str",
+                            "kind": "ValEx",
+                            "value": {
+                              "kind": "TlaStr",
+                              "value": "kind"
+                            }
+                          },
+                          {
+                            "type": "Str",
+                            "kind": "ValEx",
+                            "value": {
+                              "kind": "TlaStr",
+                              "value": "timeout"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "Bool",
+                "kind": "OperEx",
+                "oper": "EQ",
+                "args": [
+                  {
+                    "type": "<<Str, Str>>",
+                    "kind": "NameEx",
+                    "name": "unownedStoreTimers::tutorialLesson::violation"
+                  },
+                  {
+                    "type": "<<Str, Str>>",
+                    "kind": "OperEx",
+                    "oper": "TUPLE",
+                    "args": [
+                      {
+                        "type": "Str",
+                        "kind": "ValEx",
+                        "value": {
+                          "kind": "TlaStr",
+                          "value": ""
+                        }
+                      },
+                      {
+                        "type": "Str",
+                        "kind": "ValEx",
+                        "value": {
+                          "kind": "TlaStr",
+                          "value": ""
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "type": "(() => Bool)",
+          "kind": "TlaOperDecl",
+          "name": "State2",
+          "formalParams": [],
+          "isRecursive": false,
+          "body": {
+            "type": "Bool",
+            "kind": "OperEx",
+            "oper": "AND",
+            "args": [
+              {
+                "type": "Bool",
+                "kind": "OperEx",
+                "oper": "EQ",
+                "args": [
+                  {
+                    "type": "Bool",
+                    "kind": "NameEx",
+                    "name": "unownedStoreTimers::tutorialLesson::armed"
+                  },
+                  {
+                    "type": "Bool",
+                    "kind": "ValEx",
+                    "value": {
+                      "kind": "TlaBool",
+                      "value": true
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "Bool",
+                "kind": "OperEx",
+                "oper": "EQ",
+                "args": [
+                  {
+                    "type": "Set({ key: { epoch: Int, lesson: Int }, kind: Str })",
+                    "kind": "NameEx",
+                    "name": "unownedStoreTimers::tutorialLesson::baseTimers"
+                  },
+                  {
+                    "type": "Set({ key: { epoch: Int, lesson: Int }, kind: Str })",
+                    "kind": "OperEx",
+                    "oper": "SET_ENUM",
+                    "args": []
+                  }
+                ]
+              },
+              {
+                "type": "Bool",
+                "kind": "OperEx",
+                "oper": "EQ",
+                "args": [
+                  {
+                    "type": "Int",
+                    "kind": "NameEx",
+                    "name": "unownedStoreTimers::tutorialLesson::epoch"
+                  },
+                  {
+                    "type": "Int",
+                    "kind": "ValEx",
+                    "value": {
+                      "kind": "TlaInt",
+                      "value": 0
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "Bool",
+                "kind": "OperEx",
+                "oper": "EQ",
+                "args": [
+                  {
+                    "type": "Int",
+                    "kind": "NameEx",
+                    "name": "unownedStoreTimers::tutorialLesson::lesson"
+                  },
+                  {
+                    "type": "Int",
+                    "kind": "ValEx",
+                    "value": {
+                      "kind": "TlaInt",
+                      "value": 1
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "Bool",
+                "kind": "OperEx",
+                "oper": "EQ",
+                "args": [
+                  {
+                    "type": "Bool",
+                    "kind": "NameEx",
+                    "name": "unownedStoreTimers::tutorialLesson::mounted"
+                  },
+                  {
+                    "type": "Bool",
+                    "kind": "ValEx",
+                    "value": {
+                      "kind": "TlaBool",
+                      "value": false
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "Bool",
+                "kind": "OperEx",
+                "oper": "EQ",
+                "args": [
+                  {
+                    "type": "Set({ key: { epoch: Int, lesson: Int }, kind: Str })",
+                    "kind": "NameEx",
+                    "name": "unownedStoreTimers::tutorialLesson::screenTimers"
+                  },
+                  {
+                    "type": "Set({ key: { epoch: Int, lesson: Int }, kind: Str })",
+                    "kind": "OperEx",
+                    "oper": "SET_ENUM",
+                    "args": []
+                  }
+                ]
+              },
+              {
+                "type": "Bool",
+                "kind": "OperEx",
+                "oper": "EQ",
+                "args": [
+                  {
+                    "type": "Set({ key: { epoch: Int, lesson: Int }, kind: Str })",
+                    "kind": "NameEx",
+                    "name": "unownedStoreTimers::tutorialLesson::storeTimers"
+                  },
+                  {
+                    "type": "Set({ key: { epoch: Int, lesson: Int }, kind: Str })",
+                    "kind": "OperEx",
+                    "oper": "SET_ENUM",
+                    "args": [
+                      {
+                        "type": "{ key: { epoch: Int, lesson: Int }, kind: Str }",
+                        "kind": "OperEx",
+                        "oper": "RECORD",
+                        "args": [
+                          {
+                            "type": "Str",
+                            "kind": "ValEx",
+                            "value": {
+                              "kind": "TlaStr",
+                              "value": "key"
+                            }
+                          },
+                          {
+                            "type": "{ epoch: Int, lesson: Int }",
+                            "kind": "OperEx",
+                            "oper": "RECORD",
+                            "args": [
+                              {
+                                "type": "Str",
+                                "kind": "ValEx",
+                                "value": {
+                                  "kind": "TlaStr",
+                                  "value": "epoch"
+                                }
+                              },
+                              {
+                                "type": "Int",
+                                "kind": "ValEx",
+                                "value": {
+                                  "kind": "TlaInt",
+                                  "value": 0
+                                }
+                              },
+                              {
+                                "type": "Str",
+                                "kind": "ValEx",
+                                "value": {
+                                  "kind": "TlaStr",
+                                  "value": "lesson"
+                                }
+                              },
+                              {
+                                "type": "Int",
+                                "kind": "ValEx",
+                                "value": {
+                                  "kind": "TlaInt",
+                                  "value": 1
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "type": "Str",
+                            "kind": "ValEx",
+                            "value": {
+                              "kind": "TlaStr",
+                              "value": "kind"
+                            }
+                          },
+                          {
+                            "type": "Str",
+                            "kind": "ValEx",
+                            "value": {
+                              "kind": "TlaStr",
+                              "value": "timeout"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "Bool",
+                "kind": "OperEx",
+                "oper": "EQ",
+                "args": [
+                  {
+                    "type": "<<Str, Str>>",
+                    "kind": "NameEx",
+                    "name": "unownedStoreTimers::tutorialLesson::violation"
+                  },
+                  {
+                    "type": "<<Str, Str>>",
+                    "kind": "OperEx",
+                    "oper": "TUPLE",
+                    "args": [
+                      {
+                        "type": "Str",
+                        "kind": "ValEx",
+                        "value": {
+                          "kind": "TlaStr",
+                          "value": ""
+                        }
+                      },
+                      {
+                        "type": "Str",
+                        "kind": "ValEx",
+                        "value": {
+                          "kind": "TlaStr",
+                          "value": ""
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "type": "(() => Bool)",
+          "kind": "TlaOperDecl",
+          "name": "State3",
+          "formalParams": [],
+          "isRecursive": false,
+          "body": {
+            "type": "Bool",
+            "kind": "OperEx",
+            "oper": "AND",
+            "args": [
+              {
+                "type": "Bool",
+                "kind": "OperEx",
+                "oper": "EQ",
+                "args": [
+                  {
+                    "type": "Bool",
+                    "kind": "NameEx",
+                    "name": "unownedStoreTimers::tutorialLesson::armed"
+                  },
+                  {
+                    "type": "Bool",
+                    "kind": "ValEx",
+                    "value": {
+                      "kind": "TlaBool",
+                      "value": true
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "Bool",
+                "kind": "OperEx",
+                "oper": "EQ",
+                "args": [
+                  {
+                    "type": "Set({ key: { epoch: Int, lesson: Int }, kind: Str })",
+                    "kind": "NameEx",
+                    "name": "unownedStoreTimers::tutorialLesson::baseTimers"
+                  },
+                  {
+                    "type": "Set({ key: { epoch: Int, lesson: Int }, kind: Str })",
+                    "kind": "OperEx",
+                    "oper": "SET_ENUM",
+                    "args": []
+                  }
+                ]
+              },
+              {
+                "type": "Bool",
+                "kind": "OperEx",
+                "oper": "EQ",
+                "args": [
+                  {
+                    "type": "Int",
+                    "kind": "NameEx",
+                    "name": "unownedStoreTimers::tutorialLesson::epoch"
+                  },
+                  {
+                    "type": "Int",
+                    "kind": "ValEx",
+                    "value": {
+                      "kind": "TlaInt",
+                      "value": 0
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "Bool",
+                "kind": "OperEx",
+                "oper": "EQ",
+                "args": [
+                  {
+                    "type": "Int",
+                    "kind": "NameEx",
+                    "name": "unownedStoreTimers::tutorialLesson::lesson"
+                  },
+                  {
+                    "type": "Int",
+                    "kind": "ValEx",
+                    "value": {
+                      "kind": "TlaInt",
+                      "value": 1
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "Bool",
+                "kind": "OperEx",
+                "oper": "EQ",
+                "args": [
+                  {
+                    "type": "Bool",
+                    "kind": "NameEx",
+                    "name": "unownedStoreTimers::tutorialLesson::mounted"
+                  },
+                  {
+                    "type": "Bool",
+                    "kind": "ValEx",
+                    "value": {
+                      "kind": "TlaBool",
+                      "value": false
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "Bool",
+                "kind": "OperEx",
+                "oper": "EQ",
+                "args": [
+                  {
+                    "type": "Set({ key: { epoch: Int, lesson: Int }, kind: Str })",
+                    "kind": "NameEx",
+                    "name": "unownedStoreTimers::tutorialLesson::screenTimers"
+                  },
+                  {
+                    "type": "Set({ key: { epoch: Int, lesson: Int }, kind: Str })",
+                    "kind": "OperEx",
+                    "oper": "SET_ENUM",
+                    "args": []
+                  }
+                ]
+              },
+              {
+                "type": "Bool",
+                "kind": "OperEx",
+                "oper": "EQ",
+                "args": [
+                  {
+                    "type": "Set({ key: { epoch: Int, lesson: Int }, kind: Str })",
+                    "kind": "NameEx",
+                    "name": "unownedStoreTimers::tutorialLesson::storeTimers"
+                  },
+                  {
+                    "type": "Set({ key: { epoch: Int, lesson: Int }, kind: Str })",
+                    "kind": "OperEx",
+                    "oper": "SET_ENUM",
+                    "args": []
+                  }
+                ]
+              },
+              {
+                "type": "Bool",
+                "kind": "OperEx",
+                "oper": "EQ",
+                "args": [
+                  {
+                    "type": "<<Str, Str>>",
+                    "kind": "NameEx",
+                    "name": "unownedStoreTimers::tutorialLesson::violation"
+                  },
+                  {
+                    "type": "<<Str, Str>>",
+                    "kind": "OperEx",
+                    "oper": "TUPLE",
+                    "args": [
+                      {
+                        "type": "Str",
+                        "kind": "ValEx",
+                        "value": {
+                          "kind": "TlaStr",
+                          "value": "timeout"
+                        }
+                      },
+                      {
+                        "type": "Str",
+                        "kind": "ValEx",
+                        "value": {
+                          "kind": "TlaStr",
+                          "value": "fired after unmount"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "type": "(() => Bool)",
+          "kind": "TlaOperDecl",
+          "name": "InvariantViolation",
+          "formalParams": [],
+          "isRecursive": false,
+          "body": {
+            "type": "Bool",
+            "kind": "OperEx",
+            "oper": "NOT",
+            "args": [
+              {
+                "type": "Bool",
+                "kind": "OperEx",
+                "oper": "EQ",
+                "args": [
+                  {
+                    "type": "Str",
+                    "kind": "OperEx",
+                    "oper": "FUN_APP",
+                    "args": [
+                      {
+                        "type": "<<Str, Str>>",
+                        "kind": "NameEx",
+                        "name": "unownedStoreTimers::tutorialLesson::violation"
+                      },
+                      {
+                        "type": "Int",
+                        "kind": "ValEx",
+                        "value": {
+                          "kind": "TlaInt",
+                          "value": 2
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "Str",
+                    "kind": "ValEx",
+                    "value": {
+                      "kind": "TlaStr",
+                      "value": ""
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+@!@!@STARTMSG 2262:0 @!@!@
+Created by Apalache on Sun Sep 27 09:53:38 GMT-07:00 2026
+@!@!@ENDMSG 2262 @!@!@
+@!@!@STARTMSG 2110:1 @!@!@
+Invariant is violated.
+@!@!@ENDMSG 2110 @!@!@
+@!@!@STARTMSG 2121:1 @!@!@
+The behavior up to this point is:
+@!@!@ENDMSG 2121 @!@!@
+@!@!@STARTMSG 2217:4 @!@!@
+1: <Initial predicate>
+/\ unguardedAutoEnd::tutorialLesson::armed = TRUE
+/\ unguardedAutoEnd::tutorialLesson::baseTimers = {}
+/\ unguardedAutoEnd::tutorialLesson::epoch = 0
+/\ unguardedAutoEnd::tutorialLesson::lesson = 1
+/\ unguardedAutoEnd::tutorialLesson::mounted = TRUE
+/\ unguardedAutoEnd::tutorialLesson::screenTimers = {}
+/\ unguardedAutoEnd::tutorialLesson::storeTimers = {}
+/\ unguardedAutoEnd::tutorialLesson::violation = <<"", "">>
+
+@!@!@ENDMSG 2217 @!@!@
+@!@!@STARTMSG 2217:4 @!@!@
+2: <Next>
+/\ unguardedAutoEnd::tutorialLesson::armed = TRUE
+/\ unguardedAutoEnd::tutorialLesson::baseTimers = {[key |-> [epoch |-> 0, lesson |-> 1], kind |-> "autoEnd"]}
+/\ unguardedAutoEnd::tutorialLesson::epoch = 0
+/\ unguardedAutoEnd::tutorialLesson::lesson = 1
+/\ unguardedAutoEnd::tutorialLesson::mounted = TRUE
+/\ unguardedAutoEnd::tutorialLesson::screenTimers = {}
+/\ unguardedAutoEnd::tutorialLesson::storeTimers = {}
+/\ unguardedAutoEnd::tutorialLesson::violation = <<"", "">>
+
+@!@!@ENDMSG 2217 @!@!@
+@!@!@STARTMSG 2217:4 @!@!@
+3: <Next>
+/\ unguardedAutoEnd::tutorialLesson::armed = TRUE
+/\ unguardedAutoEnd::tutorialLesson::baseTimers = {[key |-> [epoch |-> 0, lesson |-> 1], kind |-> "autoEnd"]}
+/\ unguardedAutoEnd::tutorialLesson::epoch = 1
+/\ unguardedAutoEnd::tutorialLesson::lesson = 1
+/\ unguardedAutoEnd::tutorialLesson::mounted = TRUE
+/\ unguardedAutoEnd::tutorialLesson::screenTimers = {}
+/\ unguardedAutoEnd::tutorialLesson::storeTimers = {}
+/\ unguardedAutoEnd::tutorialLesson::violation = <<"", "">>
+
+@!@!@ENDMSG 2217 @!@!@
+@!@!@STARTMSG 2217:4 @!@!@
+4: <Next>
+/\ unguardedAutoEnd::tutorialLesson::armed = TRUE
+/\ unguardedAutoEnd::tutorialLesson::baseTimers = {}
+/\ unguardedAutoEnd::tutorialLesson::epoch = 1
+/\ unguardedAutoEnd::tutorialLesson::lesson = 1
+/\ unguardedAutoEnd::tutorialLesson::mounted = TRUE
+/\ unguardedAutoEnd::tutorialLesson::screenTimers = {}
+/\ unguardedAutoEnd::tutorialLesson::storeTimers = {}
+/\ unguardedAutoEnd::tutorialLesson::violation = <<"autoEnd", "fired into another lesson">>
+
+@!@!@ENDMSG 2217 @!@!@

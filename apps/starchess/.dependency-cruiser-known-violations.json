@@ -1,0 +1,512 @@
+[
+  {
+    "type": "dependency",
+    "from": "src/presentation/board/components/LiveStarChessBoard.tsx",
+    "to": "src/achievements/achievementLive.ts",
+    "unresolvedTo": "~/achievements/achievementLive",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "presentation-below-app"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/presentation/board/components/LiveStarChessBoard.tsx",
+    "to": "src/app/MatchStoreContext.tsx",
+    "unresolvedTo": "~/app/MatchStoreContext",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "presentation-below-app"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/presentation/board/components/LiveStarChessBoard.tsx",
+    "to": "src/app/selectors.ts",
+    "unresolvedTo": "~/app/selectors",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "presentation-below-app"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/presentation/board/hooks/useBoardInput.ts",
+    "to": "src/app/intentOverlayPolicy.ts",
+    "unresolvedTo": "~/app/intentOverlayPolicy",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "presentation-below-app"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/presentation/board/hooks/useBoardInput.ts",
+    "to": "src/app/MatchStoreContext.tsx",
+    "unresolvedTo": "~/app/MatchStoreContext",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "presentation-below-app"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/presentation/board/hooks/useBoardInput.ts",
+    "to": "src/app/selectors.ts",
+    "unresolvedTo": "~/app/selectors",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "presentation-below-app"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/presentation/combat/hooks/useIntentOverlays.ts",
+    "to": "src/app/intentOverlayPolicy.ts",
+    "unresolvedTo": "~/app/intentOverlayPolicy",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "presentation-below-app"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/presentation/combat/hooks/useIntentOverlays.ts",
+    "to": "src/app/selectors.ts",
+    "unresolvedTo": "~/app/selectors",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "presentation-below-app"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/presentation/hud/components/DeployModal.tsx",
+    "to": "src/app/matchEconomy.ts",
+    "unresolvedTo": "~/app/matchEconomy",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "presentation-below-app"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/presentation/hud/components/DeployModal.tsx",
+    "to": "src/app/MatchStoreContext.tsx",
+    "unresolvedTo": "~/app/MatchStoreContext",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "presentation-below-app"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/presentation/hud/components/GasRack.tsx",
+    "to": "src/app/matchEconomy.ts",
+    "unresolvedTo": "~/app/matchEconomy",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "presentation-below-app"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/presentation/hud/components/GasRack.tsx",
+    "to": "src/app/MatchStoreContext.tsx",
+    "unresolvedTo": "~/app/MatchStoreContext",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "presentation-below-app"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/presentation/hud/components/ResourceBar.tsx",
+    "to": "src/app/matchEconomy.ts",
+    "unresolvedTo": "~/app/matchEconomy",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "presentation-below-app"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/presentation/hud/components/ResourceBar.tsx",
+    "to": "src/app/MatchStoreContext.tsx",
+    "unresolvedTo": "~/app/MatchStoreContext",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "presentation-below-app"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/presentation/hud/components/ResourceBar.tsx",
+    "to": "src/app/selectors.ts",
+    "unresolvedTo": "~/app/selectors",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "presentation-below-app"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/presentation/hud/components/TurnBar.tsx",
+    "to": "src/app/matchEconomy.ts",
+    "unresolvedTo": "~/app/matchEconomy",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "presentation-below-app"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/presentation/hud/components/TurnBar.tsx",
+    "to": "src/app/MatchStoreContext.tsx",
+    "unresolvedTo": "~/app/MatchStoreContext",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "presentation-below-app"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/presentation/hud/components/TurnBar.tsx",
+    "to": "src/app/selectors.ts",
+    "unresolvedTo": "~/app/selectors",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "presentation-below-app"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/presentation/hud/components/TurnBarSidebar.tsx",
+    "to": "src/app/matchEconomy.ts",
+    "unresolvedTo": "~/app/matchEconomy",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "presentation-below-app"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/presentation/hud/components/TurnBarSidebar.tsx",
+    "to": "src/app/MatchStoreContext.tsx",
+    "unresolvedTo": "~/app/MatchStoreContext",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "presentation-below-app"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/presentation/hud/components/TurnBarSidebar.tsx",
+    "to": "src/app/selectors.ts",
+    "unresolvedTo": "~/app/selectors",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "presentation-below-app"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/presentation/specials/arms/CCDeploy.ts",
+    "to": "src/app/matchEconomy.ts",
+    "unresolvedTo": "~/app/matchEconomy",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "presentation-below-app"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/presentation/specials/arms/hoverbikeMine.ts",
+    "to": "src/app/matchEconomy.ts",
+    "unresolvedTo": "~/app/matchEconomy",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "presentation-below-app"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/presentation/specials/arms/marineGas.ts",
+    "to": "src/app/matchEconomy.ts",
+    "unresolvedTo": "~/app/matchEconomy",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "presentation-below-app"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/presentation/specials/arms/mechaCharon.ts",
+    "to": "src/app/matchEconomy.ts",
+    "unresolvedTo": "~/app/matchEconomy",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "presentation-below-app"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/presentation/specials/arms/shipJump.ts",
+    "to": "src/app/matchEconomy.ts",
+    "unresolvedTo": "~/app/matchEconomy",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "presentation-below-app"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/presentation/specials/arms/tankSiege.ts",
+    "to": "src/app/matchEconomy.ts",
+    "unresolvedTo": "~/app/matchEconomy",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "presentation-below-app"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/presentation/specials/hooks/usePieceSpecialArm.ts",
+    "to": "src/app/MatchStoreContext.tsx",
+    "unresolvedTo": "~/app/MatchStoreContext",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "presentation-below-app"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/presentation/specials/pieceSpecials.ts",
+    "to": "src/app/matchEconomy.ts",
+    "unresolvedTo": "~/app/matchEconomy",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "presentation-below-app"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/components/primitives/PromotionModal.tsx",
+    "to": "src/presentation/board/components/PieceGlyph.tsx",
+    "unresolvedTo": "~/presentation/board/components/PieceGlyph",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "primitives-stay-presentational"
+    }
+  }
+]

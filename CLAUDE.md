@@ -49,6 +49,8 @@ When you add, rename, or remove a component, hook, store, or service:
 | `_spec/apps/starchess/vfx-guarantees.md` | **VFX guarantee roster** — every combat-VFX promise ↔ its e2e test (`apps/e2e/tests/vfx/`), observation method, known gaps |
 | `_spec/apps/starchess/architecture/reactivity.md` | **Solid reactivity rules** (R1–R9: `store.state()` subscribes to everything, conditional props build a memo per read, JSX props re-render per read, fresh empties, per-square Set/Map + selectors, batch, derive-don't-sync, remount only to reset, time has one owner) + the `?debug=reactivity` probe; per-area applications in `architecture/reactivity/*.md` |
 | `_spec/apps/starchess/architecture/timers.puml` | **Time has one owner** (reactivity.md R9) — only `adapters/browser` touches `setTimeout`/`setInterval`; app code uses `createDelay`/`createRepeat` (owner-bound) or `schedule`/`repeat`/`sleep` from `~/adapters/timers`; lint `proveo-starchess/no-raw-timer` |
+| `_spec/apps/starchess/architecture/layers.puml` | **Import layers** enforced by `apps/starchess/.dependency-cruiser.cjs` (`pnpm lint` → `check:deps`): routes → app → presentation → components → primitives; the 30-edge known-violation baseline (presentation → app) |
+| `_spec/apps/starchess/models/tutorial-lesson.puml` | **Quint model** of the tutorial lesson host (`models/tutorialLesson.qnt`): lesson/epoch keys, the three timer owners, unmount, opponent arming; invariant `safe` + one regression switch per shipped bug (`pnpm check:model`) |
 | `_spec/apps/starchess/vfx-tier.puml` | **VFX tier** — silent menu CPU probe (`syncToClock` lag + jank on the `DebrisMarinePlayground` loop) picks `full` / `lite` per device; calibrated so only ~20× slowdown goes lite; `<html data-vfx-tier>`; never touches timeline pace |
 | `_spec/apps/starchess/_experiments/fog-honest-scfen.md` | **EXPERIMENT** — fog-honest engine: a referee holds the omniscient SCFEN; clients only get `project(state, viewer)` (SCFEN-V with `?` squares + per-tick viewer resolves); noninterference property test as the anti-maphack guarantee |
 | `_spec/apps/starchess/roadmap.md` | Spec remediation roadmap |
@@ -237,6 +239,11 @@ When you add, rename, or remove a component, hook, store, or service:
   effect's next run); a cancel that must outlive one owner uses `schedule` /
   `repeat`; an awaited pause uses `sleep(ms, signal)`; a fetch deadline uses
   `AbortSignal.timeout`. See `_spec/apps/starchess/architecture/timers.puml`.
+- **Layers and model**: `pnpm lint` also runs `check:deps` (dependency-cruiser,
+  `.dependency-cruiser.cjs`); a new upward import fails, a paid-off one needs
+  `check:deps:baseline`. A change to how a lesson loads, retries, unmounts or
+  owns a timer updates `_spec/apps/starchess/models/tutorialLesson.qnt` and must
+  keep `pnpm check:model` green (needs Java; Apalache downloads on first run).
 - **Timeline cues**: `timelinePlayer` routes on `cue.lane` / `cue.board` / `cue.group`,
   stamped by `presentation/timeline/cueLanes.ts`. Never branch on a cue id prefix.
 - **These three files carry no comments**: `resolve-turn.ts`, `submit-turn.ts`,

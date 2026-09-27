@@ -19,10 +19,9 @@ import {
 import type { Component, JSX } from "solid-js";
 import { Portal } from "solid-js/web";
 
-import { schedule } from "~/adapters/timers";
 import { viewerColor } from "~/app/matchEconomy";
 import { useMatchStore } from "~/app/MatchStoreContext";
-import { canSubmit, outcomeLabel, readDisplayedSnapshot } from "~/app/selectors";
+import { outcomeLabel, readDisplayedSnapshot } from "~/app/selectors";
 import styles from "~/app/BaseScreen.module.css";
 import { CoachAvatar } from "~/components/atoms/CoachAvatar";
 import { StarChessMobileBanner as MobileBanner } from "@chess-coach/ui-web/atoms/StarChessMobileBanner";
@@ -59,7 +58,6 @@ import { TUTORIAL_CAPABILITIES, setCapabilities } from "~/store/capabilitiesStor
 import { resetReviewVisionFilter, reviewVisionFilter } from "~/store/reviewVisionStore";
 import type { BoardSkin, PieceSet } from "~/types/board";
 import type { PromotionPiece } from "~/types/chess";
-import type { Cancel } from "~/types/ports";
 import type { KerriganEmotion } from "~/types/coach";
 import type { TutorialBoardArrow } from "~/types/tutorial";
 
@@ -365,16 +363,6 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
     store.armTimer();
   });
 
-  /** End the turn exactly the way the End button does, one task after the effect. */
-  let cancelAutoEnd: Cancel = () => {};
-  onCleanup(() => cancelAutoEnd());
-  const endTurnLikeAClick = () => {
-    cancelAutoEnd();
-    cancelAutoEnd = schedule(0, () => {
-      if (!canSubmit(store.shell())) return;
-      store.submitTurn("end");
-    });
-  };
 
   let prevQueueReady = false;
   createEffect(() => {
@@ -398,7 +386,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
         : side.some((a) => a.timing === "C") && side.some((a) => a.timing !== "C");
     const shouldEnd = ready && !prevQueueReady;
     prevQueueReady = ready;
-    if (shouldEnd) endTurnLikeAClick();
+    if (shouldEnd) store.submitTurnNextTask();
   });
 
   createEffect(() => {

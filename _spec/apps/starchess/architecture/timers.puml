@@ -52,7 +52,7 @@ end note
 note bottom of ui
   allowed without the adapter:
   requestAnimationFrame · queueMicrotask
-  AbortSignal.timeout / AbortSignal.any
+  AbortSignal.timeout (joined by hand, not .any)
 end note
 
 note right of cd

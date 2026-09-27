@@ -60,12 +60,15 @@ describe("adapters/timers", () => {
     expect(fired).toEqual([2]);
   });
 
-  it("createDelay without an owner still returns a working cancel", () => {
+  it("createDelay without an owner warns in dev and still returns a working cancel", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     const fn = vi.fn();
     const cancel = createDelay(10, fn);
+    expect(warn).toHaveBeenCalledOnce();
     cancel();
     vi.advanceTimersByTime(10);
     expect(fn).not.toHaveBeenCalled();
+    warn.mockRestore();
   });
 
   it("sleep resolves after ms, and an abort settles it early with no timer left", async () => {

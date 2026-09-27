@@ -12,6 +12,9 @@ export const repeat = (ms: number, fn: () => void): Cancel => browserInterval.ev
 
 const owned = (cancel: Cancel): Cancel => {
   if (getOwner()) onCleanup(cancel);
+  else if (import.meta.env.DEV) {
+    console.warn("createDelay/createRepeat ran with no owner; use schedule/repeat and keep the cancel.");
+  }
   return cancel;
 };
 
@@ -21,7 +24,7 @@ export const createDelay = (ms: number, fn: () => void): Cancel => owned(schedul
 /** Repeat cancelled when the current owner (component, effect run) disposes. */
 export const createRepeat = (ms: number, fn: () => void): Cancel => owned(repeat(ms, fn));
 
-/** Resolves after `ms`; an abort settles it early instead of stranding the awaiter. */
+/** Resolves after `ms`, or as soon as `signal` aborts. */
 export const sleep = (ms: number, signal?: AbortSignal): Promise<void> =>
   new Promise((resolve) => {
     if (signal?.aborted) return resolve();

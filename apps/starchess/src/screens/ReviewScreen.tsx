@@ -60,8 +60,14 @@ import type { ArenaListItem } from "~/types/arena";
 
 const ARENA_FETCH_TIMEOUT_MS = 5_000;
 
-const arenaDeadline = (owner: AbortSignal): AbortSignal =>
-  AbortSignal.any([owner, AbortSignal.timeout(ARENA_FETCH_TIMEOUT_MS)]);
+const arenaDeadline = (owner: AbortSignal): AbortSignal => {
+  const fetchAbort = new AbortController();
+  const stop = () => fetchAbort.abort();
+  if (owner.aborted) stop();
+  owner.addEventListener("abort", stop, { once: true });
+  AbortSignal.timeout(ARENA_FETCH_TIMEOUT_MS).addEventListener("abort", stop, { once: true });
+  return fetchAbort.signal;
+};
 
 const formatDate = (iso: string): string => {
   try {

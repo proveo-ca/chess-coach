@@ -189,6 +189,14 @@ const noCrossModuleTypes = {
 
 const RAW_TIMERS = new Set(["setTimeout", "setInterval", "clearTimeout", "clearInterval"]);
 const TIMER_HOSTS = new Set(["window", "globalThis", "self"]);
+const HOST_PROPS = new Set([...TIMER_HOSTS, "defaultView"]);
+const KEY_PARENTS = new Set([
+  "Property",
+  "MethodDefinition",
+  "PropertyDefinition",
+  "TSPropertySignature",
+  "TSMethodSignature",
+]);
 
 /** Time enters through ~/adapters/timers; only the browser adapter touches raw timers. */
 const noRawTimer = {
@@ -200,23 +208,62 @@ const noRawTimer = {
   },
   create(context: any) {
     const file = norm(context.filename);
-    if (isTestFile(file) || file.includes("/src/adapters/browser/")) return {};
+    if (isTestFile(file) || file.includes("/__tests__/") || file.includes("/src/adapters/browser/")) {
+      return {};
+    }
     const report = (node: any, name: string) =>
       context.report({
         node,
         message: `Raw ${name} is banned in apps/starchess. Use createDelay/createRepeat (owner-bound) or schedule/repeat/sleep from ~/adapters/timers. See _spec/apps/starchess/architecture/reactivity.md R9.`,
       });
+    const isLocal = (node: any): boolean => {
+      for (let s = context.sourceCode.getScope(node); s; s = s.upper) {
+        if ((s.set?.get(node.name)?.defs?.length ?? 0) > 0) return true;
+      }
+      return false;
+    };
+    const isHost = (node: any): boolean => {
+      if (node?.type === "Identifier") return TIMER_HOSTS.has(node.name) && !isLocal(node);
+      if (node?.type === "MemberExpression" && !node.computed) return HOST_PROPS.has(node.property?.name);
+      return false;
+    };
+    const timerName = (key: any, computed: boolean): string | null => {
+      if (!computed && key?.type === "Identifier") return RAW_TIMERS.has(key.name) ? key.name : null;
+      if (key?.type === "Literal" && typeof key.value === "string") {
+        return RAW_TIMERS.has(key.value) ? key.value : null;
+      }
+      return null;
+    };
     return {
       Identifier(node: any) {
         if (!RAW_TIMERS.has(node.name)) return;
         const parent = node.parent;
-        if (parent?.type === "MemberExpression" && parent.property === node && !parent.computed) {
-          const host = parent.object;
-          if (host?.type === "Identifier" && TIMER_HOSTS.has(host.name)) report(parent, node.name);
-          return;
-        }
-        if ((parent?.type === "Property" || parent?.type === "MethodDefinition") && parent.key === node && !parent.computed) return;
+        if (parent?.type === "MemberExpression" && parent.property === node && !parent.computed) return;
+        if (KEY_PARENTS.has(parent?.type) && parent.key === node && !parent.computed) return;
+        if (isLocal(node)) return;
         report(node, node.name);
+      },
+      MemberExpression(node: any) {
+        const name = timerName(node.property, node.computed);
+        if (name && isHost(node.object)) report(node, name);
+      },
+      VariableDeclarator(node: any) {
+        if (node.id?.type !== "ObjectPattern" || !isHost(node.init)) return;
+        for (const prop of node.id.properties ?? []) {
+          const name = prop.type === "Property" ? timerName(prop.key, prop.computed) : null;
+          if (name) report(prop, name);
+        }
+      },
+      CallExpression(node: any) {
+        const callee = node.callee;
+        const reflectGet =
+          callee?.type === "MemberExpression" &&
+          callee.object?.type === "Identifier" &&
+          callee.object.name === "Reflect" &&
+          callee.property?.name === "get";
+        if (!reflectGet || !isHost(node.arguments?.[0])) return;
+        const name = timerName(node.arguments?.[1], true);
+        if (name) report(node, name);
       },
     };
   },

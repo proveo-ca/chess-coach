@@ -87,8 +87,14 @@ dispatch-from-effect (R7). So:
   a click-deferred submit) uses `schedule` / `repeat` and owns the cancel.
 - An awaited pause uses `sleep(ms, signal)`: aborting settles it, so a cancelled
   sequence never hangs on a promise that cannot resolve.
-- A fetch deadline is `AbortSignal.timeout(ms)`, joined with the owner's
-  controller through `AbortSignal.any` — no timer to forget on the throw path.
+- A fetch deadline is `AbortSignal.timeout(ms)` joined by hand with the owner's
+  controller (one per-fetch controller both abort) — no timer to forget on the
+  throw path. Not `AbortSignal.any`: Chrome 116 / Safari 17.4 only, above the
+  build's baseline, and its reason would surface a `TimeoutError` message in
+  the import error chrome instead of the `AbortError` users saw before.
+- A store's own timers (turn timeout, timeline, review runner) die with its
+  owner: `createMatchStore` cancels them in its `onCleanup`, so a screen left
+  mid-turn never auto-submits into a store nobody renders.
 - A phase ladder (idle → act → hold, looped) is one table of offsets from one
   origin, not nested delays beside a hand-summed interval period.
 - `requestAnimationFrame` and `queueMicrotask` are frame and microtask hooks,

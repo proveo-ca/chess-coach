@@ -41,9 +41,28 @@ describe("ReviewScreen arena fetch deadline", () => {
     expect(signals[0].aborted).toBe(true);
   });
 
-  it("the arena list fetch carries a 5s deadline", () => {
-    const timeout = vi.spyOn(AbortSignal, "timeout");
+  it("the arena list fetch aborts with AbortError once its 5s deadline passes", () => {
+    const deadline = new AbortController();
+    vi.spyOn(AbortSignal, "timeout").mockImplementation((ms) => {
+      expect(ms).toBe(5_000);
+      return deadline.signal;
+    });
     renderReview();
-    expect(timeout).toHaveBeenCalledWith(5_000);
+    expect(signals[0].aborted).toBe(false);
+    deadline.abort();
+    expect(signals[0].aborted).toBe(true);
+    expect((signals[0].reason as DOMException).name).toBe("AbortError");
+  });
+
+  it("does not depend on AbortSignal.any", () => {
+    const any = Object.getOwnPropertyDescriptor(AbortSignal, "any");
+    Reflect.deleteProperty(AbortSignal, "any");
+    try {
+      const { unmount } = renderReview();
+      unmount();
+      expect(signals[0].aborted).toBe(true);
+    } finally {
+      if (any) Object.defineProperty(AbortSignal, "any", any);
+    }
   });
 });
