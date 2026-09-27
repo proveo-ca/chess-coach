@@ -39,7 +39,7 @@ export default defineConfig({
         start_url: "/starchess/",
         scope: "/starchess/",
         display: "standalone",
-        background_color: "#0a1a22",
+        background_color: "#000000",
         theme_color: "#005F7F",
         icons: [
           {
