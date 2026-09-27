@@ -33,7 +33,7 @@ import { TutorialHudLabels } from "~/components/features/TutorialHudLabels";
 import { useMediaQuery } from "~/hooks/useMediaQuery";
 import { DYNAMIC_MOBILE_MQ, MOBILE_MQ } from "~/utils/breakpoints";
 import { Label } from "@chess-coach/ui-web/primitives/Label";
-import { PromotionModal } from "~/components/primitives/PromotionModal";
+import { PromotionModal } from "~/components/features/PromotionModal";
 import { Screen } from "@chess-coach/ui-web/primitives/Screen";
 import { ScreenBackNav } from "~/components/primitives/ScreenBackNav";
 import { squareBoxStyle, findBoardGrid } from "~/presentation/animations/boardGeom";

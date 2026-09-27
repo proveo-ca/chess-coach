@@ -11,9 +11,8 @@ import {
 import { ccDeployTargets } from "~/presentation/specials/deployTargets";
 import { specialTimingFor } from "~/presentation/specials/queue";
 
-import { playerFogOccultsMoves } from "~/app/intentOverlayPolicy";
+import { playerFogOccultsMoves } from "~/presentation/combat/intentOverlayPolicy";
 import { useMatchStore } from "~/ports/matchStore";
-import { canSubmit, displayedSnapshot } from "~/app/selectors";
 import {
   isViewerBRelocateOrigin,
   occupancyForQueuedMoves,
@@ -97,7 +96,7 @@ export const useBoardInput = (
 
   /** Pre-B fog map + viewer B projection (spawn / gas / warp) + post-B siege. */
   const planningMoves = (state: ReturnType<typeof store.state>) => {
-    const snap = displayedSnapshot(state);
+    const snap = store.view.displayedSnapshot();
     const raw = placementToMap(snap.placement);
     return occupancyForQueuedMoves(
       raw,
@@ -159,7 +158,7 @@ export const useBoardInput = (
 
   const handleSquareClick = (square: Square) => {
     const state = store.state();
-    if (!canSubmit(state)) return;
+    if (!store.view.canSubmit()) return;
     if (state.pendingPromotion) return;
 
     if (state.targeting?.kind === "deploy") {
@@ -249,7 +248,7 @@ export const useBoardInput = (
     }
 
     const selected = state.selected;
-    const snap = displayedSnapshot(state);
+    const snap = store.view.displayedSnapshot();
     const raw = placementToMap(snap.placement);
     const actions = snap.queue?.actions;
     const { map: postBMap, siegedTanks } = planningMoves(state);

@@ -15,8 +15,7 @@ import type { Component } from "solid-js";
 import { createMemo } from "solid-js";
 
 import { useMatchStore } from "~/ports/matchStore";
-import { achievementBubbles } from "~/achievements/achievementLive";
-import { canSubmit, readDisplayedSnapshot } from "~/app/selectors";
+import { useAchievementBubbles } from "~/presentation/board/achievementBubbles";
 import { AnimationStage } from "~/presentation/animations/components/AnimationStage";
 import type { CombatCueFrame } from "~/presentation/animations/combatCueFrame";
 import {
@@ -74,9 +73,10 @@ export const LiveStarChessBoard: Component<{
   const { onSquareClick } = useBoardInput(visionOverrides);
   const combat = useCombatOverlays(store);
   const overlays = useIntentOverlays(store);
-  const snap = createMemo(() => readDisplayedSnapshot(store), undefined, { equals: sameFlat });
+  const achievementBubbles = useAchievementBubbles();
+  const snap = createMemo(() => store.view.displayedSnapshot(), undefined, { equals: sameFlat });
   const reviewing = () => store.shell().phase === "gameOver";
-  const interactive = createMemo(() => canSubmit(store.shell()));
+  const interactive = createMemo(() => store.view.canSubmit());
 
   const phase = createMemo((): ReviewTurnPhase => {
     const s = store.shell();

@@ -83,7 +83,7 @@ const preview: Preview = {
           "Navigation",
           ["Chrome", "*"],
           "Features",
-          ["Credits", "GasDeploy", "Side Rail Tools", "Turn Chrome", "*"],
+          ["Credits", "GasDeploy", "PromotionModal", "Side Rail Tools", "Turn Chrome", "*"],
           "Atoms",
           [
             "CoachAvatar",
@@ -102,7 +102,6 @@ const preview: Preview = {
             "CountdownRing",
             "DualNavButton",
             "Label",
-            "PromotionModal",
             "Screen",
             "Select",
             "SpecialPreview",

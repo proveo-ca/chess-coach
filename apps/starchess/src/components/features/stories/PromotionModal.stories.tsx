@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
-import { PromotionModal } from "~/components/primitives/PromotionModal";
+import { PromotionModal } from "~/components/features/PromotionModal";
 
 const meta = {
-  title: "Primitives/PromotionModal",
+  title: "Features/PromotionModal",
   component: PromotionModal,
   decorators: [
     (Story) => (

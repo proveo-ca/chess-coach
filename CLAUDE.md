@@ -49,7 +49,7 @@ When you add, rename, or remove a component, hook, store, or service:
 | `_spec/apps/starchess/vfx-guarantees.md` | **VFX guarantee roster** — every combat-VFX promise ↔ its e2e test (`apps/e2e/tests/vfx/`), observation method, known gaps |
 | `_spec/apps/starchess/architecture/reactivity.md` | **Solid reactivity rules** (R1–R9: `store.state()` subscribes to everything, conditional props build a memo per read, JSX props re-render per read, fresh empties, per-square Set/Map + selectors, batch, derive-don't-sync, remount only to reset, time has one owner) + the `?debug=reactivity` probe; per-area applications in `architecture/reactivity/*.md` |
 | `_spec/apps/starchess/architecture/timers.puml` | **Time has one owner** (reactivity.md R9) — only `adapters/browser` touches `setTimeout`/`setInterval`; app code uses `createDelay`/`createRepeat` (owner-bound) or `schedule`/`repeat`/`sleep` from `~/adapters/timers`; lint `proveo-starchess/no-raw-timer` |
-| `_spec/apps/starchess/architecture/layers.puml` | **Import layers** enforced by `apps/starchess/.dependency-cruiser.cjs` (`pnpm lint` → `check:deps`): routes → app → presentation → components → primitives; the 30-edge known-violation baseline (presentation → app) |
+| `_spec/apps/starchess/architecture/layers.puml` | **Import layers** enforced by `apps/starchess/.dependency-cruiser.cjs` (`pnpm lint` → `check:deps`): routes → app → presentation → components → primitives; zero known violations (the 30-edge presentation → app baseline was paid off through `~/ports/matchStore` + `store.view`) |
 | `_spec/apps/starchess/models/tutorial-lesson.puml` | **Quint model** of the tutorial lesson host (`models/tutorialLesson.qnt`): lesson/epoch keys, the three timer owners, unmount, opponent arming; invariant `safe` + one regression switch per shipped bug (`pnpm check:model`) |
 | `_spec/apps/starchess/vfx-tier.puml` | **VFX tier** — silent menu CPU probe (`syncToClock` lag + jank on the `DebrisMarinePlayground` loop) picks `full` / `lite` per device; calibrated so only ~20× slowdown goes lite; `<html data-vfx-tier>`; never touches timeline pace |
 | `_spec/apps/starchess/_experiments/fog-honest-scfen.md` | **EXPERIMENT** — fog-honest engine: a referee holds the omniscient SCFEN; clients only get `project(state, viewer)` (SCFEN-V with `?` squares + per-tick viewer resolves); noninterference property test as the anti-maphack guarantee |
@@ -109,7 +109,7 @@ When you add, rename, or remove a component, hook, store, or service:
   In `apps/starchess` use the `useIsDesktopClient()` hook. Note this is the *device*
   axis, unrelated to `runtimeMode === 'desktop'` (which is a distribution mode).
 - **Capabilities pattern**: in `apps/starchess` each screen host *provides* `ScreenCapabilities` for its own tree (`CapabilitiesProvider`, default = live match) and components read `useCapabilities()` — never a module-global signal, which let tutorial chrome (`homeOnly`) outlive the tutorial into `/single`. Hooks and components read specific flags rather than branching on a screen name. (`apps/chess` / Coach keeps its global `capabilitiesStore` + set-on-mount.)
-- **Presentation reads match state through the port**: `useMatchStore` / `MatchStoreProvider` live in `~/ports/matchStore`, and match derivations presentation needs are `store.view.*` (`viewerColor`, `storedMaterial`, `specialUsed`, …) — presentation never imports `~/app/`. `check:deps` enforces it; the remaining known edges are listed in `_spec/apps/starchess/architecture/layers.puml`.
+- **Presentation reads match state through the port**: `useMatchStore` / `MatchStoreProvider` live in `~/ports/matchStore`, and match derivations presentation needs are `store.view.*` (`viewerColor`, `storedMaterial`, `specialUsed`, …) — presentation never imports `~/app/`. A read that needs no store (e.g. `gasRemainingFor`) goes in `starchess-core`; a host-scoped value (capabilities, queue hint, achievement bubbles) is a context the host provides. `check:deps` enforces it with no baseline.
 - **Piece art**: `apps/starchess/public/pieces` holds **cburnett only**. Every
   product board — live match, review, demos, deploy/promotion pickers — renders
   the inline units in `presentation/pieces/` through the single `PieceGlyph`
@@ -241,8 +241,8 @@ When you add, rename, or remove a component, hook, store, or service:
   `repeat`; an awaited pause uses `sleep(ms, signal)`; a fetch deadline uses
   `AbortSignal.timeout`. See `_spec/apps/starchess/architecture/timers.puml`.
 - **Layers and model**: `pnpm lint` also runs `check:deps` (dependency-cruiser,
-  `.dependency-cruiser.cjs`); a new upward import fails, a paid-off one needs
-  `check:deps:baseline`. A change to how a lesson loads, retries, unmounts or
+  `.dependency-cruiser.cjs`); any upward import fails — there is no baseline.
+  A change to how a lesson loads, retries, unmounts or
   owns a timer updates `_spec/apps/starchess/models/tutorialLesson.qnt` and must
   keep `pnpm check:model` green — root `pnpm run ci` runs it via `test:model`
   (needs Java 17+ on the CI host; Apalache downloads to `~/.quint` on first
