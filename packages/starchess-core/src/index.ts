@@ -54,6 +54,8 @@ export {
   deployedMaterialFromMap,
   applyStoredIncome,
   OPENING_STORED_MATERIAL,
+  estimateStoredFromSnap,
+  gasRemainingFor,
 } from "./rules/economy";
 
 export type { ScPiece } from "./board/placement";

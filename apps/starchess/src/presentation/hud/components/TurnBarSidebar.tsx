@@ -17,15 +17,8 @@ import {
   type JSX,
 } from "solid-js";
 
-import {
-  currentQueue,
-  turnDeadlineAt,
-  turnSecondsRemaining,
-  viewerColor,
-} from "~/app/matchEconomy";
 import { createRepeat } from "~/adapters/timers";
 import { useMatchStore } from "~/ports/matchStore";
-import { canSubmit, readDisplayedSnapshot } from "~/app/selectors";
 import { Button } from "@chess-coach/ui-web/primitives/Button";
 import { Chip } from "@chess-coach/ui-web/primitives/Chip";
 import { CancelHint } from "~/presentation/hud/components/CancelHint";
@@ -102,26 +95,26 @@ export const TurnBarSidebar: Component<TurnBarSidebarProps> = (props) => {
 
   const resolveIfArmed = () => {
     if (!resolveOnEnd()) return;
-    if (!canSubmit(store.shell())) return;
+    if (!store.view.canSubmit()) return;
     store.submitTurn("end");
   };
 
   onMount(() => {
     if (reviewing()) return;
-    if (props.autoStart !== false && turnDeadlineAt(store) == null) {
+    if (props.autoStart !== false && store.view.turnDeadlineAt() == null) {
       store.armTimer();
     }
     createRepeat(TURN_DEADLINE_TICK_MS, () => {
       if (reviewing()) return;
       setNow(Date.now());
-      const deadline = turnDeadlineAt(store);
+      const deadline = store.view.turnDeadlineAt();
       if (deadline == null) return;
-      if (turnSecondsRemaining(store) > 0) return;
+      if (store.view.turnSecondsRemaining() > 0) return;
       if (firedForDeadline === deadline) return;
       firedForDeadline = deadline;
       batch(() => {
         store.dispatch({ type: "SET_DEADLINE", at: null });
-        if (resolveOnEnd() && canSubmit(store.shell())) store.submitTurn("timeout");
+        if (resolveOnEnd() && store.view.canSubmit()) store.submitTurn("timeout");
         onTimeout()?.();
       });
     });
@@ -129,7 +122,7 @@ export const TurnBarSidebar: Component<TurnBarSidebarProps> = (props) => {
 
   createEffect(() => {
     if (reviewing()) return;
-    const deadline = turnDeadlineAt(store);
+    const deadline = store.view.turnDeadlineAt();
     if (deadline != null && deadline !== firedForDeadline) {
       firedForDeadline = null;
     }
@@ -137,10 +130,10 @@ export const TurnBarSidebar: Component<TurnBarSidebarProps> = (props) => {
 
   const seconds = createMemo(() => {
     void now();
-    return turnSecondsRemaining(store);
+    return store.view.turnSecondsRemaining();
   });
 
-  const displayedTurn = createMemo(() => readDisplayedSnapshot(store).turn);
+  const displayedTurn = createMemo(() => store.view.displayedSnapshot().turn);
 
   const progress = createMemo(() => {
     const total = turnTimeoutMsForTurn(displayedTurn()) / 1000;
@@ -171,8 +164,8 @@ export const TurnBarSidebar: Component<TurnBarSidebarProps> = (props) => {
   };
 
   const sideQueue = createMemo(() => {
-    const color = viewerColor(store);
-    return currentQueue(store)
+    const color = store.view.viewerColor();
+    return store.view.currentQueue()
       .filter((a) => a.color === color)
       .slice()
       .sort((a, b) => a.seq - b.seq);
@@ -212,7 +205,7 @@ export const TurnBarSidebar: Component<TurnBarSidebarProps> = (props) => {
     <div
       class={styles.rail}
       data-testid={reviewing() ? "turn-bar-sidebar-review" : "turn-bar-sidebar"}
-      data-team={viewerColor(store)}
+      data-team={store.view.viewerColor()}
       data-phase={phase()}
       role="group"
       aria-label={reviewing() ? "Review turn" : "Turn"}

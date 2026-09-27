@@ -9,11 +9,10 @@ import {
   applyStoredIncome,
   deployedMaterialFromPlacement,
   energyForTurn,
+  gasRemainingFor,
   incomeForTurn,
-  specialGasCost,
   toClassicFen,
   type EndScTurnResult,
-  type ScAction,
   type ScFenSnapshot,
   type StarChessColor,
 } from "@chess-coach/starchess-core";
@@ -30,22 +29,6 @@ export const applyTurnIncome = (
   bank: { w: number; b: number },
   turn: number,
 ): { w: number; b: number } => applyStoredIncome(bank, turn);
-
-/**
- * Legacy snaps without SCFEN `B:` — opening bank + income by turn.
- * Prefer {@link reconstructStoredBanks} when a full history is available.
- */
-export const estimateStoredFromSnap = (
-  snap: ScFenSnapshot,
-  _color?: StarChessColor,
-): number => {
-  let stored = OPENING_STORED_MATERIAL;
-  const turn = Math.max(0, snap.turn);
-  for (let t = 1; t <= turn; t += 1) {
-    stored = applyTurnIncome({ w: stored, b: stored }, t).w;
-  }
-  return Math.max(0, stored);
-};
 
 /**
  * Rebuild per-snap mineral banks for history missing `B:`.
@@ -159,29 +142,6 @@ export const materialIncome = (store: MatchStore) =>
 
 export const energyCapacity = (store: MatchStore) =>
   energyForTurn(Math.max(1, store.shell().liveSnapshot.turn));
-
-/**
- * Display remaining vespene for a side.
- *
- * `snap.gas` is already net of `snap.queue` spends (`addScAction`). DualNav
- * intent may overlay reconstructed specials that are **not** on the snap —
- * debit those so ResourceBar matches GasDeploy when ghost canisters render.
- */
-export const gasRemainingFor = (
-  snap: Pick<ScFenSnapshot, "gas" | "queue">,
-  color: StarChessColor,
-  overlayActions?: readonly ScAction[] | null,
-): number => {
-  let rem = Math.max(0, snap.gas[color] ?? 0);
-  if (!overlayActions?.length) return rem;
-  const onSnap = new Set((snap.queue?.actions ?? []).map((a) => a.seq));
-  for (const a of overlayActions) {
-    if (a.color !== color || a.timing === "C") continue;
-    if (onSnap.has(a.seq)) continue;
-    rem -= specialGasCost(a.kind);
-  }
-  return Math.max(0, rem);
-};
 
 /** Gas does not bank — remaining refills at turn-open from gasIncome. */
 export const energyRemaining = (store: MatchStore) => {

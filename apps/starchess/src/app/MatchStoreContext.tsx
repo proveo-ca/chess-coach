@@ -40,9 +40,25 @@ import { bindTimeline } from "~/presentation/timeline/timelineCommitGate";
 import {
   playResolveWave,
 } from "~/presentation/timeline/playResolveWave";
-import { hasUsedSpecialThisTurn, storedMaterial, viewerColor } from "~/app/matchEconomy";
+import {
+  classicFenForViewer,
+  currentQueue,
+  deployedMaterial,
+  displayedStoredMaterial,
+  energyRemaining,
+  hasUsedSpecialThisTurn,
+  storedMaterial,
+  turnDeadlineAt,
+  turnSecondsRemaining,
+  viewerColor,
+} from "~/app/matchEconomy";
 import { turnBonusFor } from "~/app/turnBonusPolicy";
-import { canSubmit, displayedSnapshotFrom, registerDisplayedSnapshot } from "~/app/selectors";
+import {
+  canSubmit,
+  displayedSnapshotFrom,
+  readDisplayedSnapshot,
+  registerDisplayedSnapshot,
+} from "~/app/selectors";
 import { sameFlat } from "~/presentation/board/memoEquals";
 import type { ResolveWaveId } from "~/types/tutorial";
 
@@ -424,6 +440,15 @@ export const createMatchStore = (opts?: {
       viewerColor: () => viewerColor(store),
       storedMaterial: () => storedMaterial(store),
       specialUsed: (square) => hasUsedSpecialThisTurn(store, square),
+      energyRemaining: () => energyRemaining(store),
+      deployedMaterial: () => deployedMaterial(store),
+      displayedStoredMaterial: (color, snap) => displayedStoredMaterial(store, color, snap),
+      classicFenForViewer: () => classicFenForViewer(store),
+      currentQueue: () => currentQueue(store),
+      turnDeadlineAt: () => turnDeadlineAt(store),
+      turnSecondsRemaining: () => turnSecondsRemaining(store),
+      displayedSnapshot: () => readDisplayedSnapshot(store),
+      canSubmit: () => canSubmit(store.shell()),
     },
     state,
     shell,

@@ -9,9 +9,10 @@
  */
 
 import type { Square } from "../model/square";
-import type { StarChessColor } from "../model/types";
+import type { ScAction, ScFenSnapshot, StarChessColor } from "../model/types";
 import { placementToMap, type ScPiece } from "../board/placement";
 import { MAX_STORED_MATERIAL, UNIT_COST, incomeForTurn } from "./constants";
+import { specialGasCost } from "./specials/registry";
 
 /** Single-player / review opening Command Center bank (both sides). */
 export const OPENING_STORED_MATERIAL = 3;
@@ -31,6 +32,39 @@ export const applyStoredIncome = (
     w: Math.min(MAX_STORED_MATERIAL, bank.w + amount),
     b: Math.min(MAX_STORED_MATERIAL, bank.b + amount),
   };
+};
+
+/**
+ * Stored bank for a snapshot without SCFEN `B:`: the opening bank plus every
+ * turn's income up to `snap.turn`. Prefer a replayed history when one exists.
+ */
+export const estimateStoredFromSnap = (snap: Pick<ScFenSnapshot, "turn">): number => {
+  let stored = OPENING_STORED_MATERIAL;
+  for (let t = 1; t <= Math.max(0, snap.turn); t += 1) {
+    stored = applyStoredIncome({ w: stored, b: stored }, t).w;
+  }
+  return Math.max(0, stored);
+};
+
+/**
+ * `color`'s gas after the snapshot's queue, minus specials in `overlayActions`
+ * that are not on the snapshot yet (review intent ghosts). Classical moves cost
+ * no gas.
+ */
+export const gasRemainingFor = (
+  snap: Pick<ScFenSnapshot, "gas" | "queue">,
+  color: StarChessColor,
+  overlayActions?: readonly ScAction[] | null,
+): number => {
+  let rem = Math.max(0, snap.gas[color] ?? 0);
+  if (!overlayActions?.length) return rem;
+  const onSnap = new Set((snap.queue?.actions ?? []).map((a) => a.seq));
+  for (const a of overlayActions) {
+    if (a.color !== color || a.timing === "C") continue;
+    if (onSnap.has(a.seq)) continue;
+    rem -= specialGasCost(a.kind);
+  }
+  return Math.max(0, rem);
 };
 
 /** Sum of `UNIT_COST` for every piece of `color` on the placement. */

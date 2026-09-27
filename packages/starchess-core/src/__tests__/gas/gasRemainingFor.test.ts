@@ -1,7 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseScFen, addScAction, type ScAction } from "@chess-coach/starchess-core";
-
-import { gasRemainingFor } from "~/app/matchEconomy";
+import { addScAction, gasRemainingFor, parseScFen, type ScAction } from "../../index";
 
 describe("gasRemainingFor", () => {
   it("reads snap.gas after queue spends (same as GasDeploy)", () => {
