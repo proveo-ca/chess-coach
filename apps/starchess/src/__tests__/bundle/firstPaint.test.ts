@@ -20,3 +20,11 @@ describe("first paint", () => {
     expect(config).toMatch(/background_color:\s*"#000000"/);
   });
 });
+
+describe("theme", () => {
+  it("stays dark whatever the OS theme; light only on an explicit data-theme", () => {
+    const theme = readFileSync(join(APP, "src/theme.css"), "utf8");
+    expect(theme).not.toMatch(/prefers-color-scheme/);
+    expect(theme).toMatch(/:root\[data-theme="light"\]/);
+  });
+});

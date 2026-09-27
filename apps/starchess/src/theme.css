@@ -73,22 +73,7 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme="dark"]) {
-    --bg-color: #ffffff;
-    --surface-color: #f9f9f9;
-    --surface-hover: #ffffff;
-    --text-color: #213547;
-    --text-muted: #666;
-    --text-strong: #1a1a1a;
-    --text: #213547;
-    --border-color: #ccc;
-    --primary-hover: #747bff;
-    color-scheme: light;
-  }
-}
-
-/* Storybook toolbar (and any explicit toggle) — beats prefers-color-scheme. */
+/* Light only on an explicit toggle (Storybook toolbar); the OS theme never switches it. */
 :root[data-theme="light"] {
   --bg-color: #ffffff;
   --surface-color: #f9f9f9;
