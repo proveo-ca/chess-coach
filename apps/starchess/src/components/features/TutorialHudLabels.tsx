@@ -1,12 +1,12 @@
 // SPEC: _spec/apps/starchess/screens.puml, _spec/apps/starchess/architecture/reactivity/components.md
 /**
  * Tutorial-only naming layer for HUD chrome the lessons talk about but never
- * spells out: the unit tiles in the deploy / promotion pickers, and the three
- * ResourceBar strips.
+ * spells out: the unit tiles in the deploy picker, and the three ResourceBar
+ * strips.
  *
  * Nothing it labels knows it is being taught from. Anchors are found by test id
- * and measured into a portal, so `DeployModal` / `PromotionModal` /
- * `ResourceBar` stay untouched and the labels vanish outside the tutorial.
+ * and measured into a portal, so `DeployModal` / `ResourceBar` stay untouched
+ * and the labels vanish outside the tutorial.
  */
 import type { PieceSymbol } from "chess.js";
 import { For, createEffect, createMemo, createSignal, onCleanup, type Component } from "solid-js";
@@ -16,11 +16,8 @@ import { ChatBubble } from "@chess-coach/ui-web/primitives/ChatBubble";
 import styles from "~/components/features/TutorialHudLabels.module.css";
 import { specialCopyFor } from "~/presentation/specials/copy";
 
-/** Unit pickers — one attribute each, both keyed by piece symbol. */
-const PICKERS = [
-  { host: '[data-testid="deploy-modal"]', attr: "data-spawn-piece" },
-  { host: '[data-testid="promotion-modal"]', attr: "data-promo-piece" },
-] as const;
+/** Unit pickers without names of their own, keyed by piece symbol. */
+const PICKERS = [{ host: '[data-testid="deploy-modal"]', attr: "data-spawn-piece" }] as const;
 
 /** ResourceBar strips, in render order (minerals · vespene · supply). */
 const STRIP_LABELS = [
