@@ -148,9 +148,15 @@ lesson hosts (`apps/starchess/src/demos/**`) and the tutorial bridge
   narration) live in a DOM-free child keyed by `createMemo(on(lessonKey))`.
   Remounting it is cheap; it hands its `ChoreographyResult` up through a
   signal (`interactive` gating reads it), and resets it to `{}` on cleanup.
-- **Folds keyed on the lesson** — `ccSeen` / `alertLatch` fold from their
-  previous value; the fold now carries the `lessonKey` it belongs to and
-  restarts when the key changes, which is what a remount did. `alertLatch`
+- **Folds keyed on the board's lesson** — `ccSeen` / `alertLatch` fold from
+  their previous value and restart when the key changes, which is what a
+  remount did. The key is the host's `boardKey`, not the route's `lessonKey`:
+  the host bumps it in the same batch as `loadLesson`, so a fold never pairs the
+  new lesson's key with the previous lesson's board. Keyed on the route, winning
+  attack-3 (enemy CC seen on d5) and advancing opened attack-4 with a d5 ring —
+  the fold read attack-3's board under attack-4's key and latched d5 as a
+  sighting. `LessonScope` (choreography, narration tag) keys on `boardKey` too.
+  Pinned by `__tests__/tutorial/lessonAdvanceBoardKey.test.tsx`. `alertLatch`
   restarts empty; `ccSeen` restarts on the enemy CC's home square
   (`emptyCCIntel(enemy).focus`), so an unseen CC rings its default location.
 - **`autoArmTimer` is an accessor** (`() => props.armTimer ?? board.armTimer`)

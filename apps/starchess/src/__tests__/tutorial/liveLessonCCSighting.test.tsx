@@ -95,3 +95,16 @@ describe("LiveLessonHost CC sighting (alertLatch: cc)", () => {
     expect(nextCCSighting("d2", { ccAt: "d3", ccVisible: false })).toBe("d2");
   });
 });
+
+describe("CC sighting across lessons in one host", () => {
+  it("attack-3 → attack-4 does not carry attack-3's last seen Command Center", () => {
+    const [story, setStory] = createSignal("live-play-attack-3");
+    render(() => (
+      <LiveLessonHost board={lessonBoard("live-play", story())} lessonKey={`${story()}#0`} tutorial />
+    ));
+    load(scfen("8/8/8/3k4/3R4/8/8/4K3"));
+    setStory(ATTACK_4);
+    expect(rings()).not.toContain("d5");
+    expect(rings()).toContain("e8");
+  });
+});

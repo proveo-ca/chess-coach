@@ -17,6 +17,7 @@ import {
 } from "@chess-coach/starchess-core";
 import type { Square } from "chess.js";
 import {
+  batch,
   createComputed,
   createEffect,
   createMemo,
@@ -122,13 +123,13 @@ const LessonScope: Component<{
 const NO_SQUARES: readonly Square[] = [];
 const NO_ARROWS: readonly TutorialBoardArrow[] = [];
 
-const LiveLessonInner: Component<LiveLessonHostProps> = (props) => {
+const LiveLessonInner: Component<LiveLessonHostProps & { boardKey: string }> = (props) => {
   const store = useMatchStore();
   const [choreography, setChoreography] = createSignal<ChoreographyResult>({});
   const board = createLessonBoard(store);
 
   const interactive = () => choreography().interactive?.() ?? true;
-  const lessonKey = () => props.lessonKey ?? "";
+  const lessonKey = () => props.boardKey;
 
   const hintMarks = createMemo(
     () =>
@@ -284,12 +285,16 @@ export const LiveLessonHost: Component<LiveLessonHostProps> = (props) => {
     autoArmTimer: () => props.armTimer ?? props.board.armTimer,
   });
 
+  const [boardKey, setBoardKey] = createSignal(untrack(() => props.lessonKey ?? ""));
   createComputed(
     on(
       () => props.lessonKey,
       () =>
         untrack(() =>
-          store.loadLesson({ scfen: props.board.scfen, stored: props.board.stored ?? 4, gas: props.gas }),
+          batch(() => {
+            store.loadLesson({ scfen: props.board.scfen, stored: props.board.stored ?? 4, gas: props.gas });
+            setBoardKey(props.lessonKey ?? "");
+          }),
         ),
       { defer: true },
     ),
@@ -306,7 +311,7 @@ export const LiveLessonHost: Component<LiveLessonHostProps> = (props) => {
   const body = (
     <CapabilitiesProvider value={capabilities}>
       <MatchStoreProvider store={store}>
-        <LiveLessonInner {...props} />
+        <LiveLessonInner {...props} boardKey={boardKey()} />
       </MatchStoreProvider>
     </CapabilitiesProvider>
   );
