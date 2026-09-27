@@ -11,7 +11,7 @@ export const king = {
     armTimer: false,
     docs: "Kd4 live. Queue Kd4\u2192e5, End \u2014 slide + progressive fog.",
   },
-  comment: "StarChess units move like Chess pieces. \n...But the board has fog. \n\nTry moving your King, watch the fog follow.",
+  comment: "StarChess units move like Chess pieces... But the board has fog. \n\nTry moving your King, watch the fog follow.",
   emotion: "watching",
   // Turn counter off 0 — the board only leaves turn 0 once a queued move
   // has resolved, and the lone white King is the only thing that can

@@ -301,9 +301,12 @@ const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
 
   return (
     <Screen>
-      {/* Dynamic-only chrome (CSS-gated): banner + board, nothing else. */}
-      {/* Stepper hugs the right in the `turn` slot, matching Review's arrows. */}
+      {/* Mobile chrome (CSS-gated). Short landscape: banner + board, the stepper
+          hugging the right like Review's arrows. Tall phones: one black row,
+          `‹ Back` left and the stepper centred. */}
       <MobileBanner
+        band="mobile"
+        turnPlacement="center"
         onBack={() => props.onHome?.()}
         turn={
           <ReviewTurnNav

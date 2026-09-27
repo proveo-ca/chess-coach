@@ -3,7 +3,7 @@
  * SCFEN → `endScTurn` → `foldPlyFromResolve` (the mapping SingleScreen uses)
  * → `foldTurn`. Each case is a path the tally used to drop on the floor.
  */
-import { UNIT_COST, endScTurn, parseScFen } from "@chess-coach/starchess-core";
+import { UNIT_COST, endScTurn, parseScFen, placementToMap } from "@chess-coach/starchess-core";
 import { beforeEach, describe, expect, it } from "vitest";
 
 import {
@@ -67,7 +67,7 @@ describe("badge events the engine reports outside `attacks`", () => {
     expect(levelOf(state, "mines")).toBe(1);
   });
 
-  it("credits a deploy that crushes an enemy, for Stonks and Let there be Light", () => {
+  it("credits a deploy that crushes an enemy for Stonks, not Let there be Light", () => {
     const scfen =
       "SCFEN|4k3/8/8/8/8/8/3q4/4K3|1|33|P|G:01:11|B:3:3|Q:w:B=deploy:e1:d2:p;b:";
     const state = seedAnalysis(parseScFen(scfen), "w");
@@ -77,7 +77,9 @@ describe("badge events the engine reports outside `attacks`", () => {
     expect(marine).toMatch(/-p-d2$/);
     expect(state.material.get(marine)).toBe(UNIT_COST.q - UNIT_COST.p);
     expect(levelOf(state, "stonks")).toBe(2);
-    expect(state.ccCaptures).toBe(1);
+    // The BattleShip stood beside the Command Center: Light is already over.
+    expect(state.ccBreached).toBe(true);
+    expect(state.ccCaptures).toBe(0);
   });
 
   it("counts a Marine promoted by a gas step for GO GO GO", () => {
@@ -88,12 +90,6 @@ describe("badge events the engine reports outside `attacks`", () => {
     expect(levelOf(state, "gogo")).toBe(1);
   });
 
-  it("counts a capture beside our Command Center for Let there be Light", () => {
-    const scfen = "SCFEN|4k3/8/8/8/8/8/3p4/3RK3|1|33|P|G:11:11|Q:w:C=d1d2;b:";
-    const state = seedAnalysis(parseScFen(scfen), "w");
-    play(state, scfen);
-    expect(state.ccCaptures).toBe(1);
-  });
 
   it("streaks BattleShip jumps on consecutive turns for Make it happen", () => {
     const first = "SCFEN|4k3/8/8/8/8/8/8/Q3K3|21|33|P|G:03:33|Q:w:B=tacticalJump:a1:a4;b:";
@@ -256,5 +252,42 @@ describe("where a bubble rises, and whose it is", () => {
     const ids = game.perPly.flat().map((bubble) => bubble.id);
     expect(new Set(ids).size).toBe(ids.length);
     expect(game.final).toEqual([]);
+  });
+});
+
+describe("Let there be Light counts the 7x7 until an enemy reaches the 3x3", () => {
+  it("counts a capture three squares from the Command Center", () => {
+    const scfen = "SCFEN|4k3/8/8/8/7p/8/8/4K2R|1|33|P|G:11:11|Q:w:C=h1h4;b:";
+    const state = seedAnalysis(parseScFen(scfen), "w");
+    play(state, scfen);
+    expect(state.ccCaptures).toBe(1);
+  });
+
+  it("does not count a capture four squares out", () => {
+    const scfen = "SCFEN|4k3/8/8/7p/8/8/8/4K2R|1|33|P|G:11:11|Q:w:C=h1h5;b:";
+    const state = seedAnalysis(parseScFen(scfen), "w");
+    play(state, scfen);
+    expect(state.ccCaptures).toBe(0);
+  });
+
+  it("stops counting once an enemy steps beside the Command Center", () => {
+    const first = "SCFEN|4k3/8/8/8/2n2p1p/8/8/4K2R|1|33|P|G:11:11|Q:w:C=h1h4;b:";
+    const state = seedAnalysis(parseScFen(first), "w");
+    const opened = play(state, first);
+    expect(state.ccCaptures).toBe(1);
+
+    // The Hoverbike lands on d2, beside e1.
+    const stepIn = `SCFEN|${opened.result.next.placement}|${opened.result.next.turn}|33|P|G:11:11|Q:w:;b:C=c4d2`;
+    const stepped = play(state, stepIn);
+    expect(placementToMap(stepped.result.next.placement).get("d2")).toMatchObject({ type: "n", color: "b" });
+    expect(state.ccBreached).toBe(true);
+
+    // It steps back out, and a capture inside the 7x7 still no longer counts.
+    const after = `SCFEN|${stepped.result.next.placement}|${stepped.result.next.turn}|33|P|G:11:11|Q:w:C=h4f4;b:C=d2b3`;
+    const { result, bubbles } = play(state, after);
+    expect(placementToMap(result.next.placement).get("f4")).toMatchObject({ color: "w" });
+    expect(placementToMap(result.next.placement).get("d2")).toBeUndefined();
+    expect(state.ccCaptures).toBe(1);
+    expect(bubbles.some((bubble) => bubble.shortId === "light")).toBe(false);
   });
 });

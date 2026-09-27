@@ -564,11 +564,13 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
         child so it resolves full-bleed against the viewport, not the inset
         chrome pane. Dynamic band: one row. Tall phones (`band="mobile"`): Back +
         ResourceBar, then the compact TurnBar (last queued action) as the
-        sub-banner. Lessons show resources only once the coach hides.
+        sub-banner. Lessons show resources only once the coach hides, and float
+        the sub-banner over the coach rather than pushing it down.
       */}
       <Show when={bannerOwnsChrome()}>
         <MobileBanner
           band="mobile"
+          subBanner={coachHeader() ? "float" : "inline"}
           onBack={coachHeader() ? props.onExitToMenu : requestLeave}
           fixedResources={!coachHeader()}
           resources={

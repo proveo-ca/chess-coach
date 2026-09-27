@@ -103,7 +103,7 @@ describe("achievement catalog", () => {
     expect(by("vision", 1).description).toBe("Have full vision of the board for 2 consecutive turns");
     expect(by("juke", 5).description).toBe("Use the BattleShip's jump in 15 consecutive turns");
     expect(by("light", 1).description).toBe(
-      "Capture 3 enemy units at a 3x3 radius around your Command Center",
+      "Capture 3 enemy units in a 7x7 around your Command Center, none adjacent",
     );
     // Every level of every family says something different.
     for (const shortId of ACHIEVEMENT_SHORT_IDS) {

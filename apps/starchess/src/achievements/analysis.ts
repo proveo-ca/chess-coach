@@ -76,6 +76,8 @@ export type AnalysisState = {
   mines: number;
   mechaKills: number;
   ccCaptures: number;
+  /** An enemy stood beside our Command Center: Let there be Light stops counting. */
+  ccBreached: boolean;
   jumpStreak: number;
   bestJump: number;
   lastJumpTurn: number | null;
@@ -155,12 +157,24 @@ const valueOf = (type: string | undefined): number => {
   return 0;
 };
 
-const near = (commandCenter: string, sq: string): boolean => {
+/** Let there be Light: a capture counts within this many squares of the CC (7x7). */
+const LIGHT_RADIUS = 3;
+/** An enemy this close to the CC (the 3x3) ends Let there be Light for the game. */
+const LIGHT_GUARD = 1;
+
+const within = (commandCenter: string, sq: string, radius: number): boolean => {
   if (sq.length < 2 || commandCenter.length < 2) return false;
   return (
-    Math.abs(commandCenter.charCodeAt(0) - sq.charCodeAt(0)) <= 1 &&
-    Math.abs(Number(commandCenter[1]) - Number(sq[1])) <= 1
+    Math.abs(commandCenter.charCodeAt(0) - sq.charCodeAt(0)) <= radius &&
+    Math.abs(Number(commandCenter[1]) - Number(sq[1])) <= radius
   );
+};
+
+const enemyBeside = (placement: string, player: StarChessColor, commandCenter: string): boolean => {
+  for (const [square, piece] of placementToMap(placement)) {
+    if (piece.color !== player && within(commandCenter, square, LIGHT_GUARD)) return true;
+  }
+  return false;
 };
 
 export const seedAnalysis = (
@@ -183,6 +197,7 @@ export const seedAnalysis = (
     mines: 0,
     mechaKills: 0,
     ccCaptures: 0,
+    ccBreached: false,
     jumpStreak: 0,
     bestJump: 0,
     lastJumpTurn: null,
@@ -244,6 +259,29 @@ const ccSquare = (placement: string, color: StarChessColor): string | null => {
     if (piece.type === "k" && piece.color === color) return square;
   }
   return null;
+};
+
+/**
+ * Whether an enemy stood beside our Command Center during this ply: on the
+ * board it started from, on the board it settled into, or on a square beside
+ * the CC where it was captured or tripped a mine (it stepped in and died there).
+ */
+const lightBreached = (
+  ply: FoldPly,
+  player: StarChessColor,
+  commandCenter: string | null,
+): boolean => {
+  const before = ply.beforePlacement ? ccSquare(ply.beforePlacement, player) : null;
+  if (before && enemyBeside(ply.beforePlacement!, player, before)) return true;
+  if (!commandCenter) return false;
+  if (enemyBeside(ply.placement, player, commandCenter)) return true;
+  return [...(ply.attacks ?? []), ...(ply.mineTriggers ?? [])].some(
+    (atk) =>
+      atk.to != null &&
+      atk.victim?.color != null &&
+      atk.victim.color !== player &&
+      within(commandCenter, atk.to, LIGHT_GUARD),
+  );
 };
 
 const bumpStreak = (
@@ -330,6 +368,8 @@ export const foldTurn = (state: AnalysisState, ply: FoldPly): AchievementBubble[
   // Squares a friendly unit gas-stepped onto this ply — an interception only
   // counts a Marine gas moved into the shot, never one that was just standing there.
   const gasSteppedTo = new Set<string>();
+  // Light captures this ply; they count only if the ply settles unbreached.
+  let lightCaptures = 0;
 
   const credit = (from: string, victimType: string | undefined, to: string | undefined) => {
     const piece = idAt(state, from, ply.turn);
@@ -339,8 +379,8 @@ export const foldTurn = (state: AnalysisState, ply: FoldPly): AchievementBubble[
     const total = opened + valueOf(victimType);
     state.material.set(piece, total);
     stonksOrigin = { id: piece, at: to };
-    if (to && commandCenter && near(commandCenter, to)) {
-      state.ccCaptures += 1;
+    if (to && commandCenter && within(commandCenter, to, LIGHT_RADIUS)) {
+      lightCaptures += 1;
       lightOrigin = { id: piece, at: to };
     }
     return piece;
@@ -448,6 +488,10 @@ export const foldTurn = (state: AnalysisState, ply: FoldPly): AchievementBubble[
   state.visionStreak = visionNext.streak;
   state.lastVisionTurn = visionNext.last;
   if (visionNext.streak > state.bestVision) state.bestVision = visionNext.streak;
+
+  if (lightBreached(ply, player, commandCenter)) state.ccBreached = true;
+  if (state.ccBreached) lightOrigin = undefined;
+  else state.ccCaptures += lightCaptures;
 
   const lives = ply.ccLives?.[player];
   if (lives != null && lives < state.startLives) state.damaged = true;
