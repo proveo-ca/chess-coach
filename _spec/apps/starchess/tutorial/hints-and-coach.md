@@ -97,8 +97,9 @@ hands over to plain play:
 
 - States: `shown` → `leaving` → `hidden` → `revealed`; reset per lesson /
   retry.
-- `leaving`: the bubble says **"Ok, I'll let you play!"** (happy) for
-  `COACH_FAREWELL_MS` (1000), then `hidden`. Once the farewell starts it plays
+- `leaving`: the bubble says the story's `coachFarewell` (default **"Ok,
+  I'll let you play!"**, happy) for `coachFarewellMs` (default
+  `COACH_FAREWELL_MS`, 1000), then `hidden`. Once the farewell starts it plays
   out: the board can blink out of the hide rule mid-resolve (turn-open
   checks), and only a real reveal reason cancels it — a retry line (lost) or
   a non-active outcome.
@@ -128,6 +129,12 @@ hands over to plain play:
   never writes the store, so it stays null there.
 - The coach line is `transient`: once the action is cancelled, the turn's own
   line comes back instead of the "Hmmm…" line sticking.
+- **Off-script, no corrections.** Each `wrongQueue` beat is
+  `and(wrongQueue, not(ccThreat), not(stopRunner))`: once the game has left
+  the script — our Command Center under fire, an enemy runner on our back
+  ranks — the player may need several free actions (e.g. deploy + capture to
+  defend), so "cancel the queued action" never fires; the threat beats take
+  over. `enrichMark` reads the `wrongQueue` leaf inside the `and`.
 - The beats are the scripted order, not derived from the turn beats: the turn
   beats imply it (each `when` adds one queued step), but a turn's last step
   has no beat of its own and would be flagged.
@@ -194,9 +201,16 @@ order — several beats below are placed or gated only to win (or lose) a tie.
   h8. The `gasOnMarine` mark beat carries a beat-level phase so it outranks
   the bare rank-5 ring. The c2 fallbacks have one gate each so any other hint
   wins; the pressure fallback sits last, beside the "Apply pressure" line.
-- `attack-4` — turn 13's "full vision" line needs the Tank dug in on e3
-  (`S:` lists sieged Tanks) and is declared after the queued replies: equal
-  specificity, and those must win once one is queued.
+- `attack-4` — the farewell ("Ok I'll let you play. / Here are some hints",
+  `coachFarewell`) stays up 3000ms (`coachFarewellMs`) so it reads before the
+  coach and bubble go. Turns 16–18 (relative 5–7) then keep strategy hints up:
+  rings on e4 and d6, arrows e2→a6 (Mecha diagonal), the Hoverbike path
+  d2→e4→d6 then red d6→b7, f4→f8 and b3→b7; the enemy CC alert ring comes
+  from the lesson's fog-honest `alertLatch: "cc"`.
+  Turn 13's deploy line asks for a Mecha. Turn 13's "full vision" line needs the Tank dug in on e3
+  (`S:` lists sieged Tanks) and an empty White queue, so it never ties with
+  the queued replies (beat choice must not depend on array order —
+  `livePlayAttack4Narration` reverses the beats to prove it).
 
 ## 9. Carried-over notes (previously in code)
 

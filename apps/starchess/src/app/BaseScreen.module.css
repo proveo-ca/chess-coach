@@ -243,8 +243,3 @@
   }
 }
 
-@media (max-width: 719px) {
-  .mobileHide {
-    display: none !important;
-  }
-}

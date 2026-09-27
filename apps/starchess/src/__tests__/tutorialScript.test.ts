@@ -189,14 +189,28 @@ describe("tutorialScript", () => {
   const KING_ATTACK_4 = namedReactions(
     "live-play",
     "live-play-attack-4",
-    "gasMarine",
+    "ownCcDead",
+    "enemyDown",
+    "stopRunner",
+    "ccThreat",
+    "offScriptTurn12",
+    "offScriptTurn13",
+    "offScriptTurn14",
+    "offScriptTurn15",
     "siegeTank",
+    "gasMarine",
     "hoverbikeThreat",
-    "deployBoth",
     "guardAlley",
+    "deployBoth",
+    "fullVision",
     "goodJob",
-    "pointAtCC",
+    "pushF3",
     "unsiegeTank",
+    "clearMarine",
+    "pointAtCC",
+    "siegeGhost",
+    "ccDeployFallback",
+    "ccPressureFallback",
   );
 
   it("covers four stages with the expected story counts", () => {
@@ -283,36 +297,34 @@ describe("tutorialScript", () => {
     expect(map.get("a6")).toBeUndefined();
   });
 
-  it("live-play-attack-4 turn 1: centralize, siege, then gas the f-file Marine", () => {
+  it("live-play-attack-4 turn 1: centralize, siege, then gas the c-file Marine", () => {
     const story = storyOf("live-play", "live-play-attack-4");
-    const placement = "3r4/pkppp3/npb5/4P3/3P1P2/N1PB4/3NR3/4K3";
-    const black = "b:B=spiderMine:a6:a6,C=a6c5";
     const seed = lessonBoard("live-play", "live-play-attack-4").scfen;
     const lineFor = (scfen: string) =>
       resolveTutorialLine({ stageId: "live-play", storyId: "live-play-attack-4", scfen });
 
     expectIntro(lineFor(seed), "live-play", "live-play-attack-4");
     expect(hintSquares(story.beats, seed)).toEqual(["e2"]);
-    expect(hintArrows(story.beats, seed)).toEqual([{ from: "e2", to: "e4" }]);
+    expect(hintArrows(story.beats, seed)).toEqual([{ from: "e2", to: "e3" }]);
 
-    const moveQueued = `SCFEN|${placement}|12|33|P|G:21:22|M:w:b1|S:d8|Q:w:C=e2e4;${black}`;
+    const moveQueued = seed.replace("Q:w:;", "Q:w:C=e2e3;");
     expectReaction(lineFor(moveQueued), KING_ATTACK_4.siegeTank);
-    expect(hintSquares(story.beats, moveQueued)).toEqual(["e4"]);
+    expect(hintGas(story.beats, moveQueued)).toEqual(["e3"]);
 
-    const bothQueued = `SCFEN|${placement}|12|33|P|G:11:22|M:w:b1|S:d8|Q:w:C=e2e4,B=siegeMode:e2;${black}`;
+    const bothQueued = seed.replace("G:21:", "G:11:").replace("Q:w:;", "Q:w:C=e2e3,F=siegeMode:e2;");
     expectReaction(lineFor(bothQueued), KING_ATTACK_4.gasMarine);
-    expect(hintSquares(story.beats, bothQueued)).toEqual(["c2"]);
+    expect(hintGas(story.beats, bothQueued)).toEqual(["c2"]);
     expect(hintArrows(story.beats, bothQueued)).toEqual([{ from: "c2", to: "c3" }]);
   });
 
-  it("live-play-attack-4 turn 2: capture the Hoverbike, mine a3, deploy a Marine", () => {
+  it("live-play-attack-4 turn 2: capture the Hoverbike, mine a3, deploy a Mecha", () => {
     const story = storyOf("live-play", "live-play-attack-4");
-    const placement = "3r4/pkppp3/1pb5/2n1PP2/3PR3/N1PB4/3N4/4K3";
+    const placement = "3r4/pkppp3/1pb5/2n1PP2/3P4/N1PBR3/3N4/4K3";
     const lineFor = (scfen: string) =>
       resolveTutorialLine({ stageId: "live-play", storyId: "live-play-attack-4", scfen });
 
-    const nothing = `SCFEN|${placement}|13|33|P|G:22:22|M:w:b1|S:d8e4|Q:w:;b:`;
-    expectReaction(lineFor(nothing), KING_ATTACK_4.hoverbikeThreat);
+    const nothing = `SCFEN|${placement}|13|33|P|G:22:22|M:w:b1|S:d8e3|Q:w:;b:`;
+    expectReaction(lineFor(nothing), KING_ATTACK_4.fullVision);
     expect(hintSquares(story.beats, nothing)).toEqual(["c5", "d4"]);
     expect(hintAlerts(story.beats, nothing)).toEqual(["d3"]);
     expect(hintArrows(story.beats, nothing)).toEqual([
@@ -320,39 +332,38 @@ describe("tutorialScript", () => {
       { from: "d3", to: "e1", via: "d1", tone: "alert" },
       { from: "d4", to: "c5" },
     ]);
+    expectReaction(lineFor(nothing.replace("S:d8e3", "S:d8")), KING_ATTACK_4.hoverbikeThreat);
 
-    const attackOnly = `SCFEN|${placement}|13|33|P|G:22:22|M:w:b1|S:d8e4|Q:w:C=d4c5;b:`;
+    const attackOnly = `SCFEN|${placement}|13|33|P|G:22:22|M:w:b1|S:d8e3|Q:w:C=d4c5;b:`;
     expectReaction(lineFor(attackOnly), KING_ATTACK_4.guardAlley);
-    expect(hintSquares(story.beats, attackOnly)).toEqual(["a3"]);
+    expect(hintGas(story.beats, attackOnly)).toEqual(["a3"]);
 
-    const bothQueued = `SCFEN|${placement}|13|33|P|G:12:22|M:w:b1|S:d8e4|Q:w:C=d4c5,B=spiderMine:a3:a3;b:`;
+    const bothQueued = `SCFEN|${placement}|13|33|P|G:12:22|M:w:b1|S:d8e3|Q:w:C=d4c5,B=spiderMine:a3:a3;b:`;
     expectReaction(lineFor(bothQueued), KING_ATTACK_4.deployBoth);
+    expect(KING_ATTACK_4.deployBoth.say).toBe("Deploy a Mecha dropping gas on the Command Center.");
     expect(hintSquares(story.beats, bothQueued)).toEqual(["e2"]);
+    expect(hintGas(story.beats, bothQueued)).toEqual(["e1"]);
   });
 
-  it("live-play-attack-4 turn 3: relocate the Hoverbike, then unsiege the Tank", () => {
+  it("live-play-attack-4 turn 3: relocate the Hoverbike, push f3, then unsiege the Tank", () => {
     const story = storyOf("live-play", "live-play-attack-4");
-    const placement = "3r4/pkppp3/2b5/1pP1PP2/4R3/2P5/3NP3/4K3";
+    const placement = "3r4/pkppp3/2b5/1pP1PP2/8/2P1RP2/3NP3/4K3";
     const lineFor = (scfen: string) =>
       resolveTutorialLine({ stageId: "live-play", storyId: "live-play-attack-4", scfen });
 
-    const nothing = `SCFEN|${placement}|14|33|P|G:22:22|M:w:a3b1|S:d8|Q:w:;b:`;
+    const nothing = `SCFEN|${placement}|14|33|P|G:22:22|M:w:a3b1|S:d8e3|Q:w:;b:`;
     expectReaction(lineFor(nothing), KING_ATTACK_4.goodJob);
     expect(hintSquares(story.beats, nothing)).toEqual(["c2"]);
-    expect(hintArrows(story.beats, nothing)).toEqual([{ from: "a3", to: "c2" }]);
 
-    const moveOnly = `SCFEN|${placement}|14|33|P|G:22:22|M:w:a3b1|S:d8|Q:w:C=a3c2;b:`;
-    expectReaction(lineFor(moveOnly), KING_ATTACK_4.unsiegeTank);
-    expect(hintSquares(story.beats, moveOnly)).toEqual(["e4"]);
-    expect(hintAlerts(story.beats, moveOnly)).toEqual(["b7"]);
+    const moveOnly = `SCFEN|${placement}|14|33|P|G:22:22|M:w:a3b1|S:d8e3|Q:w:C=a3c2;b:`;
+    expectReaction(lineFor(moveOnly), KING_ATTACK_4.pushF3);
+    expect(hintGas(story.beats, moveOnly)).toEqual(["f3"]);
+    expect(hintArrows(story.beats, moveOnly)).toEqual([{ from: "f3", to: "f4" }]);
 
-    const bothQueued = `SCFEN|${placement}|14|33|P|G:12:22|M:w:a3b1|S:d8|Q:w:C=a3c2,B=siegeMode:e4;b:`;
-    expectReaction(lineFor(bothQueued), KING_ATTACK_4.pointAtCC);
-    expect(hintSquares(story.beats, bothQueued)).toEqual(["b4"]);
-    expect(hintArrows(story.beats, bothQueued)).toEqual([
-      { from: "e4", to: "b4" },
-      { from: "b4", to: "b7", tone: "alert" },
-    ]);
+    const pushed = `SCFEN|${placement}|14|33|P|G:12:22|M:w:a3b1|S:d8e3|Q:w:C=a3c2,B=stimStep:f3:f4;b:`;
+    expectReaction(lineFor(pushed), KING_ATTACK_4.unsiegeTank);
+    expect(hintGas(story.beats, pushed)).toEqual(["e3"]);
+    expect(hintAlerts(story.beats, pushed)).toEqual(["b7"]);
   });
 
   it("fog completeWhen does not match seed SCFEN but matches post-goal boards", () => {
@@ -1061,16 +1072,16 @@ describe("tutorialScript", () => {
 
   it("rings and arrows whichever unit already pressures the enemy Command Center", () => {
     const story = storyOf("live-play", "live-play-attack-3");
-    const pressuring = "SCFEN|8/8/8/3k4/8/8/B7/7K|5|33|P|G:11:11|Q:w:;b:";
+    const pressuring = "SCFEN|8/8/8/8/2k5/8/B7/7K|5|33|P|G:11:11|Q:w:;b:";
     expectReaction(
       resolveTutorialLine({ stageId: "live-play", storyId: "live-play-attack-3", scfen: pressuring }),
       KING_ATTACK_3.ccPressureFallback,
     );
     expect(hintSquares(story.beats, pressuring)).toEqual(["a2"]);
-    expect(hintArrows(story.beats, pressuring)).toEqual([{ from: "a2", to: "d5" }]);
+    expect(hintArrows(story.beats, pressuring)).toEqual([{ from: "a2", to: "c4" }]);
 
     // Blocked ray: same fallback line, but nothing to ring.
-    const blocked = "SCFEN|8/8/8/3k4/8/1P6/B7/7K|5|33|P|G:11:11|Q:w:;b:";
+    const blocked = "SCFEN|8/8/8/8/2k5/1R6/B7/7K|5|33|P|G:11:11|Q:w:;b:";
     expectReaction(
       resolveTutorialLine({ stageId: "live-play", storyId: "live-play-attack-3", scfen: blocked }),
       KING_ATTACK_3.ccPressureFallback,

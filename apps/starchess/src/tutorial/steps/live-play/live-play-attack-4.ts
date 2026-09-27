@@ -1,6 +1,6 @@
 // SPEC: _spec/apps/starchess/architecture/storybook-projection.puml
 import type { TutorialStoryScript } from "~/tutorial/tutorialScript";
-import { and, or, queued } from "~/tutorial/when";
+import { and, or, queued, not } from "~/tutorial/when";
 
 export const livePlayAttack4 = {
   id: "live-play-attack-4",
@@ -18,6 +18,8 @@ export const livePlayAttack4 = {
   emotion: "thinking",
   completeWhen: { kind: "lives", enemy: 0 },
   hideCoachWhen: { kind: "scfen", re: /SCFEN\|[^|]+\|(?:1[6-9]|[2-9]\d)\|/ },
+  coachFarewell: "Ok I'll let you play. \n\nHere are some hints",
+  coachFarewellMs: 3000,
   restartWhen: { kind: "lives", own: 0 },
   beats: [
     {
@@ -50,7 +52,11 @@ export const livePlayAttack4 = {
     {
       priority: 2,
       turn: 12,
-      when: { kind: "wrongQueue", sequence: ["C=e2e3", ["*=siegeMode:e2", "*=siegeMode:e3"], "*=stimStep:c2"] },
+      when: and(
+        { kind: "wrongQueue", sequence: ["C=e2e3", ["*=siegeMode:e2", "*=siegeMode:e3"], "*=stimStep:c2"] },
+        not({ kind: "ccThreat" }),
+        not({ kind: "stopRunner" }),
+      ),
       say: "Hmmm that's not right, cancel the queued action.",
       emotion: "thinking",
       transient: true,
@@ -59,7 +65,11 @@ export const livePlayAttack4 = {
     {
       priority: 2,
       turn: 13,
-      when: { kind: "wrongQueue", sequence: ["C=d4c5", "*=spiderMine:a3", "*=deploy:e1:e2"] },
+      when: and(
+        { kind: "wrongQueue", sequence: ["C=d4c5", "*=spiderMine:a3", "*=deploy:e1:e2"] },
+        not({ kind: "ccThreat" }),
+        not({ kind: "stopRunner" }),
+      ),
       say: "Hmmm that's not right, cancel the queued action.",
       emotion: "thinking",
       transient: true,
@@ -68,7 +78,11 @@ export const livePlayAttack4 = {
     {
       priority: 2,
       turn: 14,
-      when: { kind: "wrongQueue", sequence: ["C=a3c2", "*=stimStep:f3", "*=siegeMode:e3"] },
+      when: and(
+        { kind: "wrongQueue", sequence: ["C=a3c2", "*=stimStep:f3", "*=siegeMode:e3"] },
+        not({ kind: "ccThreat" }),
+        not({ kind: "stopRunner" }),
+      ),
       say: "Hmmm that's not right, cancel the queued action.",
       emotion: "thinking",
       transient: true,
@@ -77,7 +91,11 @@ export const livePlayAttack4 = {
     {
       priority: 2,
       turn: 15,
-      when: { kind: "wrongQueue", sequence: ["*=stimStep:c3", "C=e3b3", ["*=siegeMode:e3", "*=siegeMode:b3"]] },
+      when: and(
+        { kind: "wrongQueue", sequence: ["*=stimStep:c3", "C=e3b3", ["*=siegeMode:e3", "*=siegeMode:b3"]] },
+        not({ kind: "ccThreat" }),
+        not({ kind: "stopRunner" }),
+      ),
       say: "Hmmm that's not right, cancel the queued action.",
       emotion: "thinking",
       transient: true,
@@ -135,14 +153,14 @@ export const livePlayAttack4 = {
       // Turn 2, both queued.
       turn: 13,
       when: and(queued("C=d4c5"), or(queued("B=spiderMine:a3"), queued("F=spiderMine:a3"))),
-      say: "Deploy a Marine dropping gas on the Command Center.",
+      say: "Deploy a Mecha dropping gas on the Command Center.",
       emotion: "thinking",
       mark: { squares: ["e2"], gasSquares: ["e1"] },
     },
     {
       priority: 1,
       turn: 13,
-      when: { kind: "scfen", re: /\|S:(?:[a-h][1-8])*e3(?:[a-h][1-8])*(?:\||$)/ },
+      when: { kind: "scfen", re: /^(?=.*\|S:(?:[a-h][1-8])*e3(?:[a-h][1-8])*(?:\||$))(?=.*\|Q:w:;)/ },
       say: "I knew it, nowhere to hide with full vision. \n\nThat Hoverbike is a risk to our default location CC. Get it!",
       emotion: "thinking",
     },
@@ -203,8 +221,18 @@ export const livePlayAttack4 = {
     },
     {
       priority: 1,
-      turn: 16,
-      mark: { squares: [] },
+      when: { kind: "scfen", re: /SCFEN\|[^|]+\|1[6-8]\|/ },
+      mark: {
+        squares: ["e4", "d6"],
+        arrows: [
+          { from: "e2", to: "a6" },
+          { from: "d2", to: "e4", via: "d4" },
+          { from: "e4", to: "d6", via: "e6" },
+          { from: "d6", to: "b7", via: "b6", tone: "alert" },
+          { from: "f4", to: "f8" },
+          { from: "b3", to: "b7" },
+        ],
+      },
     },
     {
       priority: 0,

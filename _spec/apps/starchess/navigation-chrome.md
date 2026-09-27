@@ -253,9 +253,13 @@ chrome for every live screen; `Screen.starchess.module.css` reserves its room.
   `ScreenBackNav` Back (`.screen-back` hook, `visibility: hidden` so a
   header's centre stays centred) — the banner owns Back.
 - `BaseScreen` renders one banner at the `Screen` root for `/single` and
-  tutorials (`band="mobile"`): `/single` hides its in-flow nav row (Back +
-  title + chrome) on mobile; lessons show the ResourceBar in the banner only
-  once the coach hides (`hudResources`). The footer TurnBar is gone.
+  tutorials (`band="mobile"`) whenever `bannerOwnsChrome()` (live, mobile,
+  coach header or an exit). While it does, the in-flow nav row (Back + title
+  + chrome) and the lesson header's ResourceBar are **not rendered** — not
+  CSS-hidden — so there is exactly one TurnBar / End / ResourceBar on the page
+  (a hidden duplicate doubled `turn-end` and ran a second TurnBar). Lessons
+  show the ResourceBar in the banner only once the coach hides
+  (`hudResources`). The footer TurnBar is gone.
 - Review detail keeps `band="dynamic"` for now. `ReviewDemoScreen
   bannerChrome` is the proposal (Storybook "Game Detail · banner (proposal)"):
   row 1 `‹ Back` + both compact nameless bars on one line, sub-banner

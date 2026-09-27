@@ -34,10 +34,10 @@ describe("live-play-attack-4 narration", () => {
     expect(lineFor(openedSeed())).toBe(story.comment);
   });
 
-  it("answers the queued e2→e4 Tank move after turn-open", () => {
+  it("answers the queued e2→e3 Tank move after turn-open", () => {
     const { snapshot } = addScAction({
       snapshot: openedSeed(),
-      action: { timing: "C", kind: "classical", color: "w", from: "e2", to: "e4" },
+      action: { timing: "C", kind: "classical", color: "w", from: "e2", to: "e3" },
     });
     expect(lineFor(snapshot)).toBe("Now siege it up with gas.");
   });
@@ -45,19 +45,19 @@ describe("live-play-attack-4 narration", () => {
 
 describe("beat selection ignores array order", () => {
   const p1 = "3r4/pkppp3/npb5/4P3/3P4/N2B1P2/2PNR3/4K3";
-  const p2 = "3r4/pkppp3/1pb5/2n1PP2/3PR3/N1PB4/3N4/4K3";
-  const p3 = "3r4/pkppp3/2b5/1pP1PP2/4R3/2P5/3NP3/4K3";
+  const p2 = "3r4/pkppp3/1pb5/2n1PP2/3P4/N1PBR3/3N4/4K3";
+  const p3 = "3r4/pkppp3/2b5/1pP1PP2/8/2P1RP2/3NP3/4K3";
   const black = "b:B=spiderMine:a6:a6,C=a6c5";
   const boards = [
     `SCFEN|${p1}|12|33|P|G:21:22|M:w:b1|S:d8|Q:w:;${black}`,
-    `SCFEN|${p1}|12|33|P|G:21:22|M:w:b1|S:d8|Q:w:C=e2e4;${black}`,
-    `SCFEN|${p1}|12|33|P|G:11:22|M:w:b1|S:d8|Q:w:C=e2e4,B=siegeMode:e2;${black}`,
-    `SCFEN|${p2}|13|33|P|G:22:22|M:w:b1|S:d8e4|Q:w:;b:`,
-    `SCFEN|${p2}|13|33|P|G:22:22|M:w:b1|S:d8e4|Q:w:C=d4c5;b:`,
-    `SCFEN|${p2}|13|33|P|G:12:22|M:w:b1|S:d8e4|Q:w:C=d4c5,B=spiderMine:a3:a3;b:`,
-    `SCFEN|${p3}|14|33|P|G:22:22|M:w:a3b1|S:d8|Q:w:;b:`,
-    `SCFEN|${p3}|14|33|P|G:22:22|M:w:a3b1|S:d8|Q:w:C=a3c2;b:`,
-    `SCFEN|${p3}|14|33|P|G:12:22|M:w:a3b1|S:d8|Q:w:C=a3c2,B=siegeMode:e4;b:`,
+    `SCFEN|${p1}|12|33|P|G:21:22|M:w:b1|S:d8|Q:w:C=e2e3;${black}`,
+    `SCFEN|${p1}|12|33|P|G:11:22|M:w:b1|S:d8|Q:w:C=e2e3,F=siegeMode:e2;${black}`,
+    `SCFEN|${p2}|13|33|P|G:22:22|M:w:b1|S:d8e3|Q:w:;b:`,
+    `SCFEN|${p2}|13|33|P|G:22:22|M:w:b1|S:d8e3|Q:w:C=d4c5;b:`,
+    `SCFEN|${p2}|13|33|P|G:12:22|M:w:b1|S:d8e3|Q:w:C=d4c5,B=spiderMine:a3:a3;b:`,
+    `SCFEN|${p3}|14|33|P|G:22:22|M:w:a3b1|S:d8e3|Q:w:;b:`,
+    `SCFEN|${p3}|14|33|P|G:22:22|M:w:a3b1|S:d8e3|Q:w:C=a3c2;b:`,
+    `SCFEN|${p3}|14|33|P|G:12:22|M:w:a3b1|S:d8e3|Q:w:C=a3c2,B=stimStep:f3:f4;b:`,
   ];
   const beats = story.beats!;
   const reversed = [...beats].reverse();
@@ -70,7 +70,7 @@ describe("beat selection ignores array order", () => {
 
   it("the queued reply outranks its turn's opener", () => {
     const ctx = { scfen: boards[4]!, reviewPhase: "intent" as const };
-    expect(pickBeat(beats, "say", ctx)?.say).toBe("Guard that back alley with a trap.");
+    expect(pickBeat(beats, "say", ctx)?.say).toBe("Use gas. \n\nGuard that back alley with a trap.");
     expect(beatSpecificity(pickBeat(beats, "say", ctx)!)).toBe(2);
   });
 
@@ -113,6 +113,24 @@ describe("coach hands over after the scripted turns", () => {
     expect(matchesTutorialCompleteWhen(story.hideCoachWhen, at(15))).toBe(false);
     expect(matchesTutorialCompleteWhen(story.hideCoachWhen, at(16))).toBe(true);
     expect(matchesTutorialCompleteWhen(story.hideCoachWhen, at(23))).toBe(true);
+  });
+
+  it("says its own farewell and leaves hints up through relative turn 7", () => {
+    expect(story.coachFarewell).toBe("Ok I'll let you play. \n\nHere are some hints");
+    expect(story.coachFarewellMs).toBe(3000);
+    const hintAt = (turn: number) => resolveTutorialHint(story.beats, { scfen: at(turn) });
+    for (const turn of [16, 17, 18]) {
+      expect(hintAt(turn).squares).toEqual(["e4", "d6"]);
+      expect(hintAt(turn).arrows).toEqual([
+        { from: "e2", to: "a6" },
+        { from: "d2", to: "e4", via: "d4" },
+        { from: "e4", to: "d6", via: "e6" },
+        { from: "d6", to: "b7", via: "b6", tone: "alert" },
+        { from: "f4", to: "f8" },
+        { from: "b3", to: "b7" },
+      ]);
+    }
+    expect(hintAt(19).arrows).not.toContainEqual({ from: "f4", to: "f8" });
   });
 
   it("comes back out on a loss with a retry", () => {
@@ -202,6 +220,12 @@ describe("off-script orders", () => {
       .replace("G:21:", "G:01:")
       .replace("Q:w:;", "Q:w:C=e2e3,B=siegeMode:e2,B=stimStep:c2:c3;");
     expect(hint(third).cancelQueued).toBeNull();
+  });
+
+  it("skips the correction once the game is off-script (CC under fire)", () => {
+    const defend = "SCFEN|k7/8/8/8/8/5n2/5P2/4K3|13|33|P|G:01:11|B:2:3|Q:w:B=deploy:e1:e2:p,C=e2f3;b:";
+    expect(line(defend)).not.toBe("Hmmm that's not right, cancel the queued action.");
+    expect(resolveTutorialHint(story.beats, { scfen: defend, reviewPhase: "intent" }).cancelQueued).toBeNull();
   });
 
   it("stays quiet while the queue follows the script", () => {

@@ -116,6 +116,9 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
       compact under the resource bar (single End instance, never doubled).
       The footer keeps its own copy for the coach-header branch, which never
       renders topChrome — the two branches are mutually exclusive. */
+  const bannerOwnsChrome = () =>
+    starChessMode() && !ended() && mobileViewport() && (coachHeader() || !!props.onExitToMenu);
+
   const showTopTurnBar = () =>
     starChessMode() &&
     !turnHidden() &&
@@ -563,11 +566,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
         ResourceBar, then the compact TurnBar (last queued action) as the
         sub-banner. Lessons show resources only once the coach hides.
       */}
-      <Show
-        when={
-          starChessMode() && !ended() && mobileViewport() && (coachHeader() || !!props.onExitToMenu)
-        }
-      >
+      <Show when={bannerOwnsChrome()}>
         <MobileBanner
           band="mobile"
           onBack={coachHeader() ? props.onExitToMenu : requestLeave}
@@ -613,23 +612,22 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
                 resource bars never share the nav grid track, so a long name
                 or a second bar cannot squeeze `‹ Back` or overflow X.
               */}
-              <div
-                class={styles.topNavRow}
-                classList={{ [styles.mobileHide]: starChessMode() && !ended() && mobileViewport() }}
-              >
-                <ScreenBackNav onBack={requestLeave} data-testid="live-back">
-                  <Show when={props.matchTitle}>
-                    <div class={styles.matchTitle} data-testid="live-match-title">
-                      <Label variant="title" class={styles.matchupLine}>
-                        {props.matchTitle}
-                      </Label>
-                    </div>
-                  </Show>
-                </ScreenBackNav>
-                <div class={styles.topChrome} data-testid="starchess-board-chrome">
-                  {topChrome()}
+              <Show when={!bannerOwnsChrome()}>
+                <div class={styles.topNavRow}>
+                  <ScreenBackNav onBack={requestLeave} data-testid="live-back">
+                    <Show when={props.matchTitle}>
+                      <div class={styles.matchTitle} data-testid="live-match-title">
+                        <Label variant="title" class={styles.matchupLine}>
+                          {props.matchTitle}
+                        </Label>
+                      </div>
+                    </Show>
+                  </ScreenBackNav>
+                  <div class={styles.topChrome} data-testid="starchess-board-chrome">
+                    {topChrome()}
+                  </div>
                 </div>
-              </div>
+              </Show>
             </Show>
           </Screen.SidebarInset>
         }
@@ -661,12 +659,8 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
               </div>
             </Show>
             {props.guideBubble}
-            <Show when={props.hudResources && starChessMode()}>
-              <div
-                class={styles.headerResources}
-                classList={{ [styles.mobileHide]: mobileViewport() }}
-                data-testid="tutorial-hud-resources"
-              >
+            <Show when={props.hudResources && starChessMode() && !bannerOwnsChrome()}>
+              <div class={styles.headerResources} data-testid="tutorial-hud-resources">
                 <ResourceBar class={styles.topResourceBar} />
               </div>
             </Show>

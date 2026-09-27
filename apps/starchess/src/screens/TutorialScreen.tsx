@@ -531,7 +531,7 @@ export const TutorialScreen: Component = () => {
         leaveTimer = setTimeout(() => {
           leaveTimer = undefined;
           setCoachState("hidden");
-        }, COACH_FAREWELL_MS);
+        }, tutorialStory(section(), storyId())?.coachFarewellMs ?? COACH_FAREWELL_MS);
       }
       return;
     }
@@ -548,7 +548,7 @@ export const TutorialScreen: Component = () => {
   /** Success / failure keep the coach's line and add the matching CTA. */
   const bubbleMessage = () =>
     coachLeaving()
-      ? COACH_FAREWELL
+      ? (tutorialStory(section(), storyId())?.coachFarewell ?? COACH_FAREWELL)
       : outcome() === "success"
       ? (line().comment || tutorialStory(section(), storyId())?.title || "Nice.")
       : line().comment;

@@ -71,14 +71,18 @@ describe("ccPressureUnits", () => {
     `SCFEN|${placement}|1|33|P|G:11:11|Q:w:;b:`;
 
   it("finds an ally Mecha lined up on the enemy Command Center's diagonal", () => {
-    expect(ccPressureUnits(scfen("8/8/8/3k4/8/8/B7/7K"), "w")).toEqual({
-      cc: "d5",
+    expect(ccPressureUnits(scfen("8/8/8/8/2k5/8/B7/7K"), "w")).toEqual({
+      cc: "c4",
       units: [{ from: "a2", kind: "b" }],
     });
   });
 
+  it("ignores a Command Center in fog, even on the Mecha's line", () => {
+    expect(ccPressureUnits(scfen("8/8/8/3k4/8/8/B7/7K"), "w")).toBeNull();
+  });
+
   it("respects ray clearance and reports no pressure when blocked", () => {
-    expect(ccPressureUnits(scfen("8/8/8/3k4/8/1P6/B7/7K"), "w")).toBeNull();
+    expect(ccPressureUnits(scfen("8/8/8/8/2k5/1R6/B7/7K"), "w")).toBeNull();
   });
 
   it("returns null with no enemy Command Center on the board", () => {

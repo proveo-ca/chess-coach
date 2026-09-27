@@ -91,6 +91,8 @@ export type TutorialStoryScript = {
    */
   completeWhen?: TutorialCompleteWhen;
   hideCoachWhen?: TutorialCompleteWhen;
+  coachFarewell?: string;
+  coachFarewellMs?: number;
   /**
    * When matched after resolve, remount/restart this lesson (e.g. ship died).
    * Must not match the lesson seed SCFEN.
@@ -471,8 +473,9 @@ const enrichMark = (beat: TutorialBeat, scfen: string | undefined): TutorialMark
       };
     }
   }
-  if (w.kind === "wrongQueue") {
-    const wrong = wrongQueuedAction(scfen, w.sequence);
+  const wrongQueue = w.kind === "wrongQueue" ? w : w.kind === "and" ? w.all.find((x) => x.kind === "wrongQueue") : undefined;
+  if (wrongQueue?.kind === "wrongQueue") {
+    const wrong = wrongQueuedAction(scfen, wrongQueue.sequence);
     if (wrong) return { squares: [], alertSquares: [], gasSquares: [], arrows: [], cancelQueued: queueActionKey(wrong) };
   }
   if (w.kind === "ccThreat") {
