@@ -187,7 +187,14 @@ const noCrossModuleTypes = {
   },
 };
 
-const RAW_TIMERS = new Set(["setTimeout", "setInterval", "clearTimeout", "clearInterval"]);
+const RAW_TIMERS = new Set([
+  "setTimeout",
+  "setInterval",
+  "clearTimeout",
+  "clearInterval",
+  "requestIdleCallback",
+  "cancelIdleCallback",
+]);
 const TIMER_HOSTS = new Set(["window", "globalThis", "self"]);
 const HOST_PROPS = new Set([...TIMER_HOSTS, "defaultView"]);
 const KEY_PARENTS = new Set([

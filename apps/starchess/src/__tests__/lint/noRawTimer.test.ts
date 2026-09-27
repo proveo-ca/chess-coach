@@ -21,6 +21,8 @@ const FLAGGED: Record<string, string> = {
   destructureShorthand: "const { clearTimeout } = globalThis; clearTimeout(1);",
   reflect: 'Reflect.get(window, "setTimeout");',
   typeQuery: "let id: ReturnType<typeof setTimeout>;",
+  idle: "requestIdleCallback(() => {});",
+  idleWindow: "window.cancelIdleCallback(1);",
 };
 
 const CLEAN: Record<string, string> = {

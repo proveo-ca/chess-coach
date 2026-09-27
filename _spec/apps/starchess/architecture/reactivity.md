@@ -108,6 +108,9 @@ dispatch-from-effect (R7). So:
   not wall-clock timers; they stay allowed, but a frame callback that must be
   cancellable goes through `frame(fn) → Cancel` (`~/adapters/timers`, port
   `Frames`).
+- `requestIdleCallback` / `cancelIdleCallback` are banned like timers: idle work
+  is unowned deferred work, and Safari lacks it. If one is ever needed, add an
+  `idle()` port beside `frame()` in `adapters/browser`.
 
 Owner map: `timers.puml`.
 

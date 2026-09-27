@@ -125,3 +125,6 @@ apps/e2e/.hero-capture/
 
 # Arena headless runs (wiped on every arena:* run)
 apps/starchess/arena-results/
+
+# Apalache / Quint model-checker run output
+_apalache-out/

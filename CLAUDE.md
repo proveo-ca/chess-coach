@@ -243,7 +243,9 @@ When you add, rename, or remove a component, hook, store, or service:
   `.dependency-cruiser.cjs`); a new upward import fails, a paid-off one needs
   `check:deps:baseline`. A change to how a lesson loads, retries, unmounts or
   owns a timer updates `_spec/apps/starchess/models/tutorialLesson.qnt` and must
-  keep `pnpm check:model` green (needs Java; Apalache downloads on first run).
+  keep `pnpm check:model` green — root `pnpm run ci` runs it via `test:model`
+  (needs Java 17+ on the CI host; Apalache downloads to `~/.quint` on first
+  run, so cache that directory).
 - **Timeline cues**: `timelinePlayer` routes on `cue.lane` / `cue.board` / `cue.group`,
   stamped by `presentation/timeline/cueLanes.ts`. Never branch on a cue id prefix.
 - **These three files carry no comments**: `resolve-turn.ts`, `submit-turn.ts`,
