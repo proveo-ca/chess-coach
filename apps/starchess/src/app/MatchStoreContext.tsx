@@ -232,6 +232,23 @@ export const createMatchStore = (opts?: {
     });
   };
 
+  const setViewerGas = (gas: number) => {
+    const next = Math.min(3, Math.max(0, Math.floor(gas)));
+    const s = peek();
+    if ((s.liveSnapshot.gas[s.viewer] ?? 0) === next) return;
+    dispatch({
+      type: "APPLY_SNAPSHOT",
+      snapshot: { ...s.liveSnapshot, gas: { ...s.liveSnapshot.gas, [s.viewer]: next } },
+    });
+  };
+
+  const loadLesson = (seed: { scfen: string; stored: number; gas?: number }) =>
+    batch(() => {
+      cancelEffects();
+      dispatch({ type: "LOAD_SCFEN", scfen: seed.scfen, stored: seed.stored });
+      if (seed.gas != null) setViewerGas(seed.gas);
+    });
+
   const armWhenIdle = () => {
     cancelArmWhenIdle?.();
     cancelArmWhenIdle = null;
@@ -413,6 +430,8 @@ export const createMatchStore = (opts?: {
     dispatch,
     submitTurn,
     submitTurnNextTask,
+    loadLesson,
+    setViewerGas,
     armTimer,
     ensureTurnOpenChecks,
     reviewBack,

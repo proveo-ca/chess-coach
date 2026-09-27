@@ -29,7 +29,7 @@ import { canSubmit, readDisplayedSnapshot } from "~/app/selectors";
 import { Button } from "@chess-coach/ui-web/primitives/Button";
 import { Chip } from "@chess-coach/ui-web/primitives/Chip";
 import { CancelHint } from "~/presentation/hud/components/CancelHint";
-import { queueActionKey, queueHint } from "~/presentation/hud/queueHint";
+import { queueActionKey, useQueueHint } from "~/presentation/hud/queueHint";
 import { CountdownRing } from "@chess-coach/ui-web/primitives/CountdownRing";
 import { DualNavButton } from "@chess-coach/ui-web/primitives/DualNavButton";
 import { turnTimeoutMsForTurn } from "~/presentation/constants";
@@ -92,6 +92,7 @@ const phaseShort = (phase: ReviewTurnPhase): string => {
 };
 
 export const TurnBarSidebar: Component<TurnBarSidebarProps> = (props) => {
+  const queueHint = useQueueHint();
   const store = useMatchStore();
   const [now, setNow] = createSignal(Date.now());
   let firedForDeadline: number | null = null;

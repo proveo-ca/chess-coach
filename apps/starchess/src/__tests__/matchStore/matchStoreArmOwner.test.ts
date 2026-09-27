@@ -68,3 +68,20 @@ describe("createMatchStore owns turn-timer arming", () => {
     expect(store.shell().deadlineAt).toBeNull();
   });
 });
+
+describe("createMatchStore loadLesson", () => {
+  it("drops in-flight effects, re-seeds, and applies the gas override in one batch", () => {
+    const { store, pending, runZeroDelay } = create();
+    store.dispatch({ type: "LOAD_SCFEN", scfen: PROMOTION_CLEAN_SCFEN, stored: 4 });
+    runZeroDelay();
+    store.submitTurnNextTask();
+    const deadlineJobs = pending().length;
+    expect(deadlineJobs).toBeGreaterThan(0);
+    store.loadLesson({ scfen: PROMOTION_CLEAN_SCFEN, stored: 2, gas: 9 });
+    const s = store.shell();
+    expect(s.deadlineAt).toBeNull();
+    expect(s.liveSnapshot.gas[s.viewer]).toBe(3);
+    expect(pending().filter((j) => j.ms > 0)).toHaveLength(0);
+    expect(pending().filter((j) => j.ms === 0)).toHaveLength(1);
+  });
+});

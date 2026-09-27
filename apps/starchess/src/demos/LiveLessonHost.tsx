@@ -17,7 +17,6 @@ import {
 } from "@chess-coach/starchess-core";
 import type { Square } from "chess.js";
 import {
-  batch,
   createComputed,
   createEffect,
   createMemo,
@@ -31,7 +30,7 @@ import {
 
 import { createMatchStore, MatchStoreProvider, useMatchStore } from "~/app/MatchStoreContext";
 import { createMatchStateFromScfen } from "~/app/matchReducer";
-import { setQueueHint } from "~/presentation/hud/queueHint";
+import { QueueHintProvider } from "~/presentation/hud/queueHint";
 import { BaseScreen } from "~/app/BaseScreen.tsx";
 import { CHOREOGRAPHY, type ChoreographyResult } from "~/demos/choreography";
 import { clearSiegedTanks, setTankMode } from "~/presentation/animations/tankModeStore";
@@ -92,19 +91,6 @@ const useForcedTankMode = (store: MatchStore, mode: () => "tank" | "siege" | und
   });
 
   onCleanup(() => clearSiegedTanks());
-};
-
-const applyViewerGas = (store: MatchStore, gas: number) => {
-  const next = Math.min(3, Math.max(0, Math.floor(gas)));
-  const s = store.state();
-  if ((s.liveSnapshot.gas[s.viewer] ?? 0) === next) return;
-  store.dispatch({
-    type: "APPLY_SNAPSHOT",
-    snapshot: {
-      ...s.liveSnapshot,
-      gas: { ...s.liveSnapshot.gas, [s.viewer]: next },
-    },
-  });
 };
 
 const LessonScope: Component<{
@@ -232,8 +218,7 @@ const LiveLessonInner: Component<LiveLessonHostProps> = (props) => {
     { equals: sameStructure },
   );
 
-  createEffect(() => setQueueHint(interactive() ? hintMarks().cancelQueued : null));
-  onCleanup(() => setQueueHint(null));
+  const queueHint = createMemo(() => (interactive() ? hintMarks().cancelQueued : null));
 
   const queueAdjutant = (snap: ScFenSnapshot) => {
     const s = store.state();
@@ -260,7 +245,7 @@ const LiveLessonInner: Component<LiveLessonHostProps> = (props) => {
   const scopeView = createMemo(on(lessonKey, () => scope()));
 
   return (
-    <>
+    <QueueHintProvider value={queueHint}>
       {scopeView()}
       <BaseScreen
         starChessMode
@@ -287,7 +272,7 @@ const LiveLessonInner: Component<LiveLessonHostProps> = (props) => {
         hintArrows={hintArrows()}
         autoQueueOpponent={autoQueueOpponent()}
       />
-    </>
+    </QueueHintProvider>
   );
 };
 
@@ -306,15 +291,7 @@ export const LiveLessonHost: Component<LiveLessonHostProps> = (props) => {
       () => props.lessonKey,
       () =>
         untrack(() =>
-          batch(() => {
-            store.cancelEffects();
-            store.dispatch({
-              type: "LOAD_SCFEN",
-              scfen: props.board.scfen,
-              stored: props.board.stored ?? 4,
-            });
-            if (props.gas != null) applyViewerGas(store, props.gas);
-          }),
+          store.loadLesson({ scfen: props.board.scfen, stored: props.board.stored ?? 4, gas: props.gas }),
         ),
       { defer: true },
     ),
@@ -324,7 +301,7 @@ export const LiveLessonHost: Component<LiveLessonHostProps> = (props) => {
   createEffect(() => {
     const g = props.gas;
     if (g == null) return;
-    untrack(() => applyViewerGas(store, g));
+    untrack(() => store.setViewerGas(g));
   });
 
   const body = (

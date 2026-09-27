@@ -344,6 +344,10 @@ export type MatchStore = {
   submitTurn: (reason?: "end" | "timeout") => void;
   /** End the turn one task later; `cancelEffects` and disposal drop it. */
   submitTurnNextTask: () => void;
+  /** Re-seed in place for a new lesson: drop in-flight effects, load, apply the gas override — one batch. */
+  loadLesson: (seed: { scfen: string; stored: number; gas?: number }) => void;
+  /** Viewer's vespene, clamped to 0–3; a no-op when unchanged. */
+  setViewerGas: (gas: number) => void;
   armTimer: () => void;
   /** Resolve turn-open Command Center-checks before intent; then arm timer when requested. */
   ensureTurnOpenChecks: (opts?: { armTimer?: boolean }) => void;

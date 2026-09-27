@@ -69,6 +69,16 @@ import type { Cancel } from "~/types/ports";
 
 export type { TutorialSectionId } from "~/types/tutorial";
 
+type LineState = {
+  line: ReturnType<typeof resolveTutorialLine>;
+  hold: TutorialLineHold;
+  shownComment: string;
+  shownAt: number;
+  shownKey: string;
+  shownHoldMs: number;
+  waitMs: number;
+};
+
 const SECTIONS = TUTORIAL_SCRIPT.map((s) => ({ id: s.id, label: s.label }));
 
 /**
@@ -402,7 +412,7 @@ export const TutorialScreen: Component = () => {
       }
     }
 
-    if (outcome() !== "active") return;
+    if (untrack(outcome) !== "active") return;
     // Only judge a board that has finished animating.
     if (n.timelineActive) return;
 
@@ -417,80 +427,71 @@ export const TutorialScreen: Component = () => {
 
 
   // Intro comment once per lesson; reactions stick (no bounce back to opener).
-  let lineHold: TutorialLineHold = { lessonKey: "", introDone: false };
-  /** When the currently displayed comment landed — the ending hold subtracts it. */
-  let shownComment = "";
-  let shownAt = 0;
-  let shownKey = "";
-  let shownHoldMs = 0;
   const [holdTick, setHoldTick] = createSignal(0);
+  const lineState = createMemo<LineState>(
+    (prev) => {
+      const sec = section();
+      const story = storyId();
+      const n = tutorialNarration();
+      holdTick();
+      const ctx = {
+        stageId: sec,
+        storyId: story,
+        chessSkin: sec === "fog" ? chessMode() : undefined,
+        reviewPhase: n.reviewPhase,
+        timelineActive: n.timelineActive,
+        scfen: n.scfen,
+        covers: n.covers,
+        trajectories: n.trajectories,
+        targetingKind: n.targetingKind,
+        turnStartChecksApplied: n.turnStartChecksApplied,
+        shipSniped: n.shipSniped,
+      };
+      const key = `${sec}|${story}|${lessonEpoch()}`;
+      const next = holdTutorialLine(prev.hold, key, resolveTutorialLine(ctx), ctx);
+      if (next.line.comment === prev.shownComment) {
+        return { ...prev, line: next.line, hold: next.hold, waitMs: 0 };
+      }
+      const waitMs = key === prev.shownKey ? prev.shownHoldMs - (performance.now() - prev.shownAt) : 0;
+      if (waitMs > 0) return { ...prev, hold: next.hold, waitMs };
+      return {
+        line: next.line,
+        hold: next.hold,
+        shownComment: next.line.comment,
+        shownAt: performance.now(),
+        shownKey: key,
+        shownHoldMs: next.line.holdMs ?? 0,
+        waitMs: 0,
+      };
+    },
+    {
+      line: resolveTutorialLine({ stageId: "fog", storyId: "king" }),
+      hold: { lessonKey: "", introDone: false },
+      shownComment: "",
+      shownAt: 0,
+      shownKey: "",
+      shownHoldMs: 0,
+      waitMs: 0,
+    },
+  );
+  const line = createMemo(() => lineState().line);
+
   let holdTimer: Cancel | undefined;
   onCleanup(() => holdTimer?.());
-  const [line, setLine] = createSignal(resolveTutorialLine({
-    stageId: "fog",
-    storyId: "king",
-  }));
   createEffect(() => {
-    const sec = section();
-    const story = storyId();
-    const n = tutorialNarration();
-    holdTick();
-    const ctx = {
-      stageId: sec,
-      storyId: story,
-      chessSkin: sec === "fog" ? chessMode() : undefined,
-      reviewPhase: n.reviewPhase,
-      timelineActive: n.timelineActive,
-      scfen: n.scfen,
-      covers: n.covers,
-      trajectories: n.trajectories,
-      targetingKind: n.targetingKind,
-      turnStartChecksApplied: n.turnStartChecksApplied,
-      shipSniped: n.shipSniped,
-    };
-    const raw = resolveTutorialLine(ctx);
-    const next = holdTutorialLine(
-      lineHold,
-      `${sec}|${story}|${lessonEpoch()}`,
-      raw,
-      ctx,
-    );
-    lineHold = next.hold;
-    const key = `${sec}|${story}|${lessonEpoch()}`;
-    // Plain fields, not a signal read: this effect writes `line`, so reading it
-    // here would loop (`next.line` is a fresh object every run).
-    if (next.line.comment !== shownComment) {
-      const wait = key === shownKey ? shownHoldMs - (performance.now() - shownAt) : 0;
-      if (wait > 0) {
-        if (holdTimer == null) {
-          holdTimer = schedule(wait, () => {
-            holdTimer = undefined;
-            setHoldTick((t) => t + 1);
-          });
-        }
-        return;
-      }
-      shownComment = next.line.comment;
-      shownAt = performance.now();
-      shownKey = key;
-      shownHoldMs = next.line.holdMs ?? 0;
-    }
-    setLine(next.line);
+    const waitMs = lineState().waitMs;
+    if (waitMs <= 0 || holdTimer != null) return;
+    holdTimer = schedule(waitMs, () => {
+      holdTimer = undefined;
+      setHoldTick((t) => t + 1);
+    });
   });
 
-  /**
-   * `ending` → success handoff. Created *after* the line effect on purpose: by
-   * the time this runs, `line()` is the line the completing board produced, not
-   * the one before it. Time the line has already been on screen counts toward
-   * its reading budget, so only a line that lands with the objective waits the
-   * full hold — a mid-lesson line the player has been reading doesn't re-charge
-   * for it.
-   */
+  /** `ending` → success handoff after the closing line's remaining reading time. */
   createEffect(() => {
     if (outcome() !== "ending") return;
     if (endingTimer != null) return;
-    const hold =
-      lessonEndMessageMs(line().comment) - (performance.now() - shownAt);
+    const hold = lessonEndMessageMs(line().comment) - (performance.now() - untrack(lineState).shownAt);
     if (hold <= 0) {
       completeObjective();
       return;
@@ -505,7 +506,6 @@ export const TutorialScreen: Component = () => {
     `${section()}|${storyId()}|${line().comment}|${line().emotion}|${line().action?.kind ?? ""}`;
 
   const retryLesson = () => {
-    lineHold = { lessonKey: "", introDone: false };
     clearTimers();
     setLessonEpoch((n) => n + 1);
   };
@@ -518,14 +518,14 @@ export const TutorialScreen: Component = () => {
     leaveTimer = undefined;
   };
   onCleanup(cancelLeave);
+  let coachKey = "";
   createEffect(() => {
-    section();
-    storyId();
-    lessonEpoch();
-    cancelLeave();
-    setCoachState("shown");
-  });
-  createEffect(() => {
+    const key = `${section()}|${storyId()}|${lessonEpoch()}`;
+    if (key !== coachKey) {
+      coachKey = key;
+      cancelLeave();
+      setCoachState("shown");
+    }
     const rule = tutorialStory(section(), storyId())?.hideCoachWhen;
     const n = tutorialNarration();
     const reveal = outcome() !== "active" || line().action?.kind === "retryLesson";

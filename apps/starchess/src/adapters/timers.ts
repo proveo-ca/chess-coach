@@ -27,6 +27,14 @@ export const createRepeat = (ms: number, fn: () => void): Cancel => owned(repeat
 /** Unowned frame callback: the caller keeps the cancel. */
 export const frame = (fn: (now: number) => void): Cancel => browserFrames.request(fn);
 
+/** Runs `fn` after the next paint (two frames); the cancel covers both frames. */
+export const afterPaint = (fn: () => void): Cancel => {
+  let cancel = frame(() => {
+    cancel = frame(() => fn());
+  });
+  return () => cancel();
+};
+
 /** Ms since the first frame, updated once per animation frame; stops when the owner disposes. */
 export const createFrameClock = (): Accessor<number> => {
   const [elapsed, setElapsed] = createSignal(0);

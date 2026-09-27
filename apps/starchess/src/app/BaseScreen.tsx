@@ -19,6 +19,7 @@ import {
 import type { Component, JSX } from "solid-js";
 import { Portal } from "solid-js/web";
 
+import { afterPaint } from "~/adapters/timers";
 import { viewerColor } from "~/app/matchEconomy";
 import { useMatchStore } from "~/app/MatchStoreContext";
 import { outcomeLabel, readDisplayedSnapshot } from "~/app/selectors";
@@ -58,6 +59,7 @@ import { TUTORIAL_CAPABILITIES, setCapabilities } from "~/store/capabilitiesStor
 import { resetReviewVisionFilter, reviewVisionFilter } from "~/store/reviewVisionStore";
 import type { BoardSkin, PieceSet } from "~/types/board";
 import type { PromotionPiece } from "~/types/chess";
+import type { Cancel } from "~/types/ports";
 import type { KerriganEmotion } from "~/types/coach";
 import type { TutorialBoardArrow } from "~/types/tutorial";
 
@@ -184,7 +186,13 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
   // `syncOverlay` is a hoisted function declaration below, so the open
   // callback can bind it even though the hook is created here (memos evaluate
   // eagerly and must see a ready hook).
-  const afterOpen = () => requestAnimationFrame(() => requestAnimationFrame(syncOverlay));
+  let cancelOverlaySync: Cancel = () => {};
+  const syncOverlayAfterPaint = () => {
+    cancelOverlaySync();
+    cancelOverlaySync = afterPaint(syncOverlay);
+  };
+  onCleanup(() => cancelOverlaySync());
+  const afterOpen = syncOverlayAfterPaint;
   const ccd = createCCDeploy(store, snap, { onAfterOpen: afterOpen });
   const spawnPhase = ccd.spawnPhase;
   const spawnAdjacent = ccd.spawnAdjacent;
@@ -384,7 +392,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
     void snap().placement;
     void spawnPhase();
     void store.shell().targeting;
-    requestAnimationFrame(() => requestAnimationFrame(syncOverlay));
+    syncOverlayAfterPaint();
   });
 
   // A board-click spawn commit (useBoardInput) queues without touching this
@@ -454,9 +462,10 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
         const grid = boardHost ? findBoardGrid(boardHost) : null;
         if (grid) ro.observe(grid);
       };
-      requestAnimationFrame(() => requestAnimationFrame(kick));
+      const cancelKick = afterPaint(kick);
       window.addEventListener("resize", syncOverlay);
       onCleanup(() => {
+        cancelKick();
         ro.disconnect();
         window.removeEventListener("resize", syncOverlay);
         window.removeEventListener("keydown", onKey);
