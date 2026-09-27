@@ -1,0 +1,33 @@
+@!@!@STARTMSG 2262:0 @!@!@
+Created by Apalache on Sun Sep 27 10:26:13 GMT-07:00 2026
+@!@!@ENDMSG 2262 @!@!@
+@!@!@STARTMSG 2110:1 @!@!@
+Invariant is violated.
+@!@!@ENDMSG 2110 @!@!@
+@!@!@STARTMSG 2121:1 @!@!@
+The behavior up to this point is:
+@!@!@ENDMSG 2121 @!@!@
+@!@!@STARTMSG 2217:4 @!@!@
+1: <Initial predicate>
+/\ staleOpponent::tutorialLesson::armed = TRUE
+/\ staleOpponent::tutorialLesson::baseTimers = {}
+/\ staleOpponent::tutorialLesson::epoch = 0
+/\ staleOpponent::tutorialLesson::lesson = 1
+/\ staleOpponent::tutorialLesson::mounted = TRUE
+/\ staleOpponent::tutorialLesson::screenTimers = {}
+/\ staleOpponent::tutorialLesson::storeTimers = {}
+/\ staleOpponent::tutorialLesson::violation = <<"", "">>
+
+@!@!@ENDMSG 2217 @!@!@
+@!@!@STARTMSG 2217:4 @!@!@
+2: <Next>
+/\ staleOpponent::tutorialLesson::armed = TRUE
+/\ staleOpponent::tutorialLesson::baseTimers = {}
+/\ staleOpponent::tutorialLesson::epoch = 0
+/\ staleOpponent::tutorialLesson::lesson = 0
+/\ staleOpponent::tutorialLesson::mounted = TRUE
+/\ staleOpponent::tutorialLesson::screenTimers = {}
+/\ staleOpponent::tutorialLesson::storeTimers = {[key |-> [epoch |-> 0, lesson |-> 0], kind |-> "armIdle"]}
+/\ staleOpponent::tutorialLesson::violation = <<"", "">>
+
+@!@!@ENDMSG 2217 @!@!@

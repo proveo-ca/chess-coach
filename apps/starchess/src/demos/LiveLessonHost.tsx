@@ -43,7 +43,7 @@ import {
   resolveTutorialHint,
   withCCAlert,
 } from "~/tutorial/tutorialScript";
-import type { AlertLatch, LiveLessonBoard, TutorialBoardArrow } from "~/types/tutorial";
+import type { AlertLatch, LiveLessonBoard, NarrationSink, TutorialBoardArrow } from "~/types/tutorial";
 import { sameStructure } from "~/tutorial/sameStructure";
 import { createLessonBoard, useLessonNarration } from "~/tutorial/useLessonNarration";
 import type { MatchState, MatchStore } from "~/types/match";
@@ -110,7 +110,7 @@ const applyViewerGas = (store: MatchStore, gas: number) => {
 const LessonScope: Component<{
   board: LiveLessonBoard;
   lessonBoard: ReturnType<typeof createLessonBoard>;
-  narrate: boolean;
+  onNarration?: NarrationSink;
   tutorial: boolean;
   onExitToMenu?: () => void;
   onChoreography: (c: ChoreographyResult) => void;
@@ -127,7 +127,7 @@ const LessonScope: Component<{
   props.onChoreography(choreography);
   onCleanup(() => props.onChoreography({}));
   useForcedTankMode(store, () => props.board.tankMode);
-  useLessonNarration(props.lessonBoard, () => props.narrate);
+  useLessonNarration(props.lessonBoard, props.onNarration);
   const Overlay = choreography.Overlay;
   return Overlay ? <Overlay /> : null;
 };
@@ -250,7 +250,7 @@ const LiveLessonInner: Component<LiveLessonHostProps> = (props) => {
     <LessonScope
       board={props.board}
       lessonBoard={board}
-      narrate={props.narrate === true}
+      onNarration={props.onNarration}
       tutorial={props.tutorial === true}
       onExitToMenu={props.onExitToMenu}
       onChoreography={setChoreography}
@@ -267,7 +267,6 @@ const LiveLessonInner: Component<LiveLessonHostProps> = (props) => {
         fog={props.fog}
         boardVariant={props.boardVariant ?? "eclipse"}
         pieceSet={props.pieceSet}
-        armTimer={props.armTimer ?? props.board.armTimer}
         tutorial={props.tutorial}
         fullMatchHud={props.fullMatchHud}
         matchTitle={props.matchTitle}

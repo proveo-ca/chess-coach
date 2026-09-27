@@ -67,8 +67,12 @@ note bottom
   it read changes, ""Object.is""; top-level only — values stay the reducer's
   immutable objects; ""dispatch"" reads untracked) ·
   **""peek()""** (untracked plain state for the store's own runners —
-  ""armTimer"" etc. are called from screen effects, so ""state()"" there would
+  ""armTimer"" etc. can run inside a caller's effect, so ""state()"" there would
   subscribe the caller to everything, R1) ·
+  **turn-timer owner** (the store alone arms: one task after creation and
+  after every ""LOAD_SCFEN"" via ""armWhenIdle"", and after each resolve;
+  an explicit ""armTimer()"" supersedes the pending idle arm; ""cancelEffects""
+  and disposal drop it — no screen effect arms, R9) ·
   **displayed-snapshot memo** (one ""sameFlat"" memo per store, registered in
   ""selectors.ts"" via ""registerDisplayedSnapshot"", owned by its own
   ""createRoot"" so test/story stores work, disposed with the creating owner;

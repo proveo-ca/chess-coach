@@ -71,7 +71,6 @@ export type StarChessScreenProps = {
   fog?: boolean;
   boardVariant?: BoardSkin;
   pieceSet?: PieceSet;
-  armTimer?: boolean;
   autoQueueOpponent?: (snap: ScFenSnapshot) => AutoQueueOpponentResult;
   onExitToMenu?: () => void;
   matchTitle?: string;
@@ -343,25 +342,17 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
     void (s.queue?.actions.length ?? 0);
     const result = untrack(() => fn(s));
     if (result.snapshot === s) return;
-    if (result.spendMinerals) {
-      const { color, amount } = result.spendMinerals;
-      const before = store.shell().economies[color].stored;
-      store.dispatch({ type: "SPEND_STORED", color, amount });
-      if (store.shell().economies[color].stored === before) return;
-    }
-    store.dispatch({ type: "APPLY_SNAPSHOT", snapshot: result.snapshot });
+    untrack(() => {
+      if (result.spendMinerals) {
+        const { color, amount } = result.spendMinerals;
+        const before = store.shell().economies[color].stored;
+        store.dispatch({ type: "SPEND_STORED", color, amount });
+        if (store.shell().economies[color].stored === before) return;
+      }
+      store.dispatch({ type: "APPLY_SNAPSHOT", snapshot: result.snapshot });
+    });
   });
 
-  createEffect(() => {
-    if (props.armTimer === false || !starChessMode()) return;
-    const s = store.shell();
-    void s.liveSnapshot.turn;
-    void s.liveSnapshot.placement;
-    if (s.phase !== "planning" && s.phase !== "targeting") return;
-    if (store.timeline().active) return;
-    if (s.deadlineAt != null) return;
-    store.armTimer();
-  });
 
 
   let prevQueueReady = false;

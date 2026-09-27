@@ -60,6 +60,22 @@ describe("useKingHuntGraduation", () => {
     dispose();
   });
 
+  it("enemyDown true → false inside the beat cancels the offer; true again re-arms a full beat", () => {
+    const { setShell, dispose } = mount();
+    setShell(won(1));
+    vi.advanceTimersByTime(800);
+    setShell(live(2));
+    vi.advanceTimersByTime(1_200);
+    expect(confirmOpen.read()).toBe(false);
+    expect(vi.getTimerCount()).toBe(0);
+    setShell(won(3));
+    vi.advanceTimersByTime(1_199);
+    expect(confirmOpen.read()).toBe(false);
+    vi.advanceTimersByTime(1);
+    expect(confirmOpen.read()).toBe(true);
+    dispose();
+  });
+
   it("unmount before the beat cancels the offer", () => {
     const { setShell, dispose } = mount();
     setShell(won(1));

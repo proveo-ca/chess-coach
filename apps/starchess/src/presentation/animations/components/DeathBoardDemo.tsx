@@ -3,7 +3,7 @@ import { parseScFen, type ScFenSnapshot } from "@chess-coach/starchess-core";
 import { createEffect, createSignal, on, type Component } from "solid-js";
 
 import styles from "~/presentation/animations/components/DeathBoardDemo.module.css";
-import { createPhaseLoop } from "~/presentation/animations/phaseLoop";
+import { createPhaseClock } from "~/presentation/animations/phaseLoop";
 import {
   DEATH_MS,
   FEN_BY_PIECE,
@@ -92,7 +92,7 @@ export const DeathBoardDemo: Component<{ subject: DeathSubject }> = (props) => {
     on(
       () => props.subject,
       () =>
-        createPhaseLoop(
+        createPhaseClock(
           [
             [
               0,

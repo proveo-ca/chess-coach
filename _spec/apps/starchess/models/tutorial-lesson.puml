@@ -16,7 +16,7 @@ rectangle "Source owner" as S {
   card "route mount / leave\nscreens/TutorialScreen.tsx" as s1
   card "section · storyId · lessonEpoch\nTutorialScreen outcome effect (clearTimers)\ndemos/LiveLessonHost.tsx createComputed(on(lessonKey))\n→ cancelEffects + LOAD_SCFEN" as s2
   card "LiveLessonHost autoQueueOpponent memo\n→ BaseScreen props.autoQueueOpponent" as s3
-  card "TutorialScreen schedule(): advance · retry · elapsed · ending · leave\nMatchStore.submitTurnNextTask (Auto-End)\nMatchStore.armTimer (turn timeout)" as s4
+  card "TutorialScreen schedule(): advance · retry · elapsed · ending · leave\nMatchStore.submitTurnNextTask (Auto-End)\nMatchStore.armWhenIdle (armIdle, on LOAD_SCFEN) → armTimer (turn timeout)" as s4
 }
 
 m1 .. s1
@@ -27,6 +27,7 @@ m4 .. s4
 rectangle "Invariant safe" as I {
   card "noTimerMisfires:\nno timer acts after unmount\nor into a different lesson key" as i1
   card "opponentMatchesLesson:\nmounted ⇒ armed ⇔ lesson ∈ OPPONENT_LESSONS" as i2
+  card "oneTurnTimer:\n≤ 1 store timer pending (idle arm or timeout)" as i3
 }
 
 rectangle "Regression switches (each must be violated)" as R {

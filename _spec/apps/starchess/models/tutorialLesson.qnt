@@ -49,7 +49,7 @@ module tutorialLesson {
     armed' = if (STALE_OPPONENT) armed else OPPONENT_LESSONS.contains(l),
     screenTimers' = Set(),
     baseTimers' = baseTimers,
-    storeTimers' = Set(),
+    storeTimers' = Set({ kind: "armIdle", key: { lesson: l, epoch: e } }),
     violation' = violation,
     mounted' = mounted,
   }
@@ -79,7 +79,7 @@ module tutorialLesson {
     screenTimers' = screenTimers, storeTimers' = storeTimers, violation' = violation,
   }
 
-  // MatchStore armTimer: the planning timeout that auto-submits.
+  // MatchStore armTimer: cancels the pending idle arm and any timeout, arms one.
   action armTurnTimer = all {
     mounted,
     storeTimers' = Set({ kind: "timeout", key: cur }),
@@ -124,7 +124,9 @@ module tutorialLesson {
     storeTimers.size() > 0,
     nondet t = storeTimers.oneOf()
     all {
-      storeTimers' = storeTimers.exclude(Set(t)),
+      storeTimers' =
+        if (t.kind == "armIdle" and firedInto(t) == "") Set({ kind: "timeout", key: cur })
+        else storeTimers.exclude(Set(t)),
       violation' = note(firedInto(t), t),
       mounted' = mounted, lesson' = lesson, epoch' = epoch, armed' = armed,
       screenTimers' = screenTimers, baseTimers' = baseTimers,
@@ -155,7 +157,8 @@ module tutorialLesson {
 
   val noTimerMisfires = violation._2 == ""
   val opponentMatchesLesson = mounted implies (armed == OPPONENT_LESSONS.contains(lesson))
-  val safe = noTimerMisfires and opponentMatchesLesson
+  val oneTurnTimer = storeTimers.size() <= 1
+  val safe = noTimerMisfires and opponentMatchesLesson and oneTurnTimer
 }
 
 module fixed {

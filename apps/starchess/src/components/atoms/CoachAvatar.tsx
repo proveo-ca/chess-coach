@@ -18,7 +18,7 @@ import {
   type Component,
 } from "solid-js";
 
-import { createRepeat, schedule } from "~/adapters/timers";
+import { createRepeat, frame, schedule } from "~/adapters/timers";
 import styles from "~/components/atoms/CoachAvatar.module.css";
 import type { CoachIdentity, KerriganEmotion } from "~/types/coach";
 import type { Cancel } from "~/types/ports";
@@ -96,9 +96,9 @@ export const CoachAvatar: Component<CoachAvatarProps> = (props) => {
       if (id === "kerrigan" && prev === "selena") {
         // Ensure start pose is the stage-top ferry before animating down.
         setHelmPhase("off");
-        requestAnimationFrame(() => {
+        cancelHelm = frame(() => {
           syncFerryY();
-          requestAnimationFrame(() => {
+          cancelHelm = frame(() => {
             setHelmPhase("dropping");
             cancelHelm = schedule(HELM_MS, () => setHelmPhase("on"));
           });

@@ -5,19 +5,37 @@
  */
 import { cleanup, render, screen } from "@solidjs/testing-library";
 import { MemoryRouter, Route, createMemoryHistory } from "@solidjs/router";
+import { createSignal } from "solid-js";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
+import type { TutorialNarrationState } from "~/types/tutorial";
+
+const fed = vi.hoisted(() => ({
+  set: null as null | ((n: TutorialNarrationState) => void),
+}));
+
+vi.mock("~/tutorial/useLessonNarration", async (importOriginal) => {
+  const real = await importOriginal<typeof import("~/tutorial/useLessonNarration")>();
+  return {
+    ...real,
+    useLessonNarration: (...[board, sink]: Parameters<typeof real.useLessonNarration>) => {
+      if (!sink) return;
+      let live: () => TutorialNarrationState = () => ({});
+      real.useLessonNarration(board, (source) => (live = source));
+      const [override, setOverride] = createSignal<TutorialNarrationState | null>(null);
+      fed.set = setOverride;
+      sink(() => override() ?? live());
+    },
+  };
+});
+
 import { TutorialScreen } from "~/screens/TutorialScreen";
-import {
-  resetTutorialNarration,
-  setTutorialNarration,
-} from "~/tutorial/tutorialNarrationStore";
 import { tutorialPath } from "~/tutorial/tutorialScript";
 import type { TutorialSectionId } from "~/types/tutorial";
 
 afterEach(() => {
   cleanup();
-  resetTutorialNarration();
+  fed.set = null;
   vi.useRealTimers();
 });
 
@@ -34,12 +52,11 @@ const renderLesson = (section: TutorialSectionId, story: string) => {
 
 /** Settled board, as `useLessonNarration` would publish it. */
 const settle = (scfen: string) =>
-  setTutorialNarration({
+  fed.set!({
     scfen,
     timelineActive: false,
     queue: [],
     targetingKind: null,
-    turn: 2,
   });
 
 /** Knight on g5 — fog/knight's `completeWhen` *and* its "Did you see that?!". */

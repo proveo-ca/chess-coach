@@ -35,7 +35,6 @@ import { splitResolveWaves } from "~/presentation/timeline/resolveWaves";
 import { TUTORIAL_CAPABILITIES, setCapabilities } from "~/store/capabilitiesStore";
 import { resetReviewVisionFilter, setReviewVisionFilter } from "~/store/reviewVisionStore";
 import { intentArrows } from "~/tutorial/lessonTactics";
-import { resetTutorialNarration, setTutorialNarration } from "~/tutorial/tutorialNarrationStore";
 import {
   boardIndexForBeat,
   buildTypewriterBeats,
@@ -45,7 +44,13 @@ import {
 import type { BoardSkin, PieceSet, VisionMode } from "~/types/board";
 import type { KerriganEmotion } from "~/types/coach";
 import type { ReviewHistory } from "~/types/review";
-import type { TutorialBoardArrow, TypewriterBeat } from "~/types/tutorial";
+import { sameStructure } from "~/tutorial/sameStructure";
+import type {
+  NarrationSink,
+  TutorialBoardArrow,
+  TutorialNarrationState,
+  TypewriterBeat,
+} from "~/types/tutorial";
 
 const NO_ARROWS: readonly TutorialBoardArrow[] = [];
 
@@ -94,6 +99,8 @@ export type TutorialReviewHostProps = {
   turnChrome?: "sidebar" | "none";
   /** Draw every queued intent as an arrow on the Intent beat (checks in red). */
   intentArrows?: boolean;
+  /** Hand the typewriter narration to the tutorial screen. */
+  onNarration?: NarrationSink;
 };
 
 const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
@@ -147,24 +154,27 @@ const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
     syncTankModes(s.placement, s.siegedTanks, props.packedTank);
   });
 
-  createEffect(() => {
-    const list = beats();
-    const idx = beatIndex();
-    const beat = list[idx];
-    let typewriterTurn = 0;
-    for (let i = 0; i <= idx; i += 1) {
-      const b = list[i];
-      if (b?.kind === "turn") typewriterTurn = b.turn;
-    }
-    setTutorialNarration({
-      reviewPhase: store.reviewPhase(),
-      // Busy covers resolve VFX await so completeWhen waits for Turn 3 end.
-      timelineActive: timelineActive() || busy(),
-      scfen: scfen(),
-      typewriterTurn: typewriterTurn || undefined,
-      typewriterBeat: beat?.kind,
-    });
-  });
+  const narration = createMemo(
+    (): TutorialNarrationState => {
+      const list = beats();
+      const idx = beatIndex();
+      let typewriterTurn = 0;
+      for (let i = 0; i <= idx; i += 1) {
+        const b = list[i];
+        if (b?.kind === "turn") typewriterTurn = b.turn;
+      }
+      return {
+        reviewPhase: store.reviewPhase(),
+        timelineActive: timelineActive() || busy(),
+        scfen: scfen(),
+        typewriterTurn: typewriterTurn || undefined,
+        typewriterBeat: list[idx]?.kind,
+      };
+    },
+    undefined,
+    { equals: sameStructure },
+  );
+  props.onNarration?.(narration);
 
   const seekBoard = (index: number) => {
     store.cancelEffects();
@@ -274,7 +284,6 @@ const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
       store.cancelEffects();
       clearSiegedTanks();
       resetReviewVisionFilter();
-      resetTutorialNarration();
     });
   });
 

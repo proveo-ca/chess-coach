@@ -1,0 +1,97 @@
+{
+  "#meta": {
+    "format": "ITF",
+    "varTypes": {
+      "staleOpponent::tutorialLesson::mounted": "Bool",
+      "staleOpponent::tutorialLesson::lesson": "Int",
+      "staleOpponent::tutorialLesson::epoch": "Int",
+      "staleOpponent::tutorialLesson::armed": "Bool",
+      "staleOpponent::tutorialLesson::screenTimers": "Set({ key: { epoch: Int, lesson: Int }, kind: Str })",
+      "staleOpponent::tutorialLesson::baseTimers": "Set({ key: { epoch: Int, lesson: Int }, kind: Str })",
+      "staleOpponent::tutorialLesson::storeTimers": "Set({ key: { epoch: Int, lesson: Int }, kind: Str })",
+      "staleOpponent::tutorialLesson::violation": "<<Str, Str>>"
+    },
+    "format-description": "https://apalache-mc.org/docs/adr/015adr-trace.html",
+    "description": "Created by Apalache on Sun Sep 27 10:26:13 GMT-07:00 2026"
+  },
+  "vars": [
+    "staleOpponent::tutorialLesson::mounted",
+    "staleOpponent::tutorialLesson::lesson",
+    "staleOpponent::tutorialLesson::epoch",
+    "staleOpponent::tutorialLesson::armed",
+    "staleOpponent::tutorialLesson::screenTimers",
+    "staleOpponent::tutorialLesson::baseTimers",
+    "staleOpponent::tutorialLesson::storeTimers",
+    "staleOpponent::tutorialLesson::violation"
+  ],
+  "states": [
+    {
+      "#meta": {
+        "index": 0
+      },
+      "staleOpponent::tutorialLesson::armed": true,
+      "staleOpponent::tutorialLesson::baseTimers": {
+        "#set": []
+      },
+      "staleOpponent::tutorialLesson::epoch": {
+        "#bigint": "0"
+      },
+      "staleOpponent::tutorialLesson::lesson": {
+        "#bigint": "1"
+      },
+      "staleOpponent::tutorialLesson::mounted": true,
+      "staleOpponent::tutorialLesson::screenTimers": {
+        "#set": []
+      },
+      "staleOpponent::tutorialLesson::storeTimers": {
+        "#set": []
+      },
+      "staleOpponent::tutorialLesson::violation": {
+        "#tup": [
+          "",
+          ""
+        ]
+      }
+    },
+    {
+      "#meta": {
+        "index": 1
+      },
+      "staleOpponent::tutorialLesson::armed": true,
+      "staleOpponent::tutorialLesson::baseTimers": {
+        "#set": []
+      },
+      "staleOpponent::tutorialLesson::epoch": {
+        "#bigint": "0"
+      },
+      "staleOpponent::tutorialLesson::lesson": {
+        "#bigint": "0"
+      },
+      "staleOpponent::tutorialLesson::mounted": true,
+      "staleOpponent::tutorialLesson::screenTimers": {
+        "#set": []
+      },
+      "staleOpponent::tutorialLesson::storeTimers": {
+        "#set": [
+          {
+            "key": {
+              "epoch": {
+                "#bigint": "0"
+              },
+              "lesson": {
+                "#bigint": "0"
+              }
+            },
+            "kind": "armIdle"
+          }
+        ]
+      },
+      "staleOpponent::tutorialLesson::violation": {
+        "#tup": [
+          "",
+          ""
+        ]
+      }
+    }
+  ]
+}

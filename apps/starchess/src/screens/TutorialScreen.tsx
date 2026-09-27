@@ -40,7 +40,7 @@ import {
 import { TutorialReviewHost } from "~/demos/TutorialReviewHost";
 import { LiveMatchShell } from "~/screens/LiveMatchShell";
 import styles from "~/screens/TutorialScreen.module.css";
-import { tutorialNarration } from "~/tutorial/tutorialNarrationStore";
+import { createNarrationSlot } from "~/tutorial/narrationSlot";
 import {
   LESSON_ADVANCE_MS,
   TUTORIAL_SCRIPT,
@@ -60,6 +60,7 @@ import type {
   LiveLessonBoard,
   TutorialBeat,
   TutorialCompleteWhen,
+  NarrationSink,
   TutorialLineHold,
   TutorialReactionAction,
   TutorialSectionId,
@@ -164,6 +165,7 @@ const FogSection: Component<{
   header: JSX.Element;
   footer: JSX.Element;
   onHome: () => void;
+  onNarration: NarrationSink;
 }> = (props) => {
   const boardHints = createMemo(() =>
     props.showHints ? props.liveHints(props.beats) : undefined,
@@ -180,7 +182,7 @@ const FogSection: Component<{
       tutorial
       hideResources
       hideGas
-      narrate
+      onNarration={props.onNarration}
       turnChrome="none"
       onExitToMenu={props.onHome}
       coachEmotion={props.coachEmotion}
@@ -195,6 +197,7 @@ const FogSection: Component<{
 export const TutorialScreen: Component = () => {
   const params = useParams<{ section?: string; story?: string }>();
   const navigate = useNavigate();
+  const { narration: tutorialNarration, provide: provideNarration } = createNarrationSlot();
   const section = createMemo(() => parseTutorialSection(params.section));
   const storyId = createMemo(() =>
     resolveTutorialStoryId(section(), params.story),
@@ -663,6 +666,7 @@ export const TutorialScreen: Component = () => {
     const beats = sectionBeats("fog");
     return (
       <FogSection
+        onNarration={provideNarration}
         board={board()}
         lessonKey={lessonKey()}
         bannerTitle={lessonTitle()}
@@ -689,7 +693,7 @@ export const TutorialScreen: Component = () => {
         lessonKey={lessonKey()}
         bannerTitle={lessonTitle()}
         tutorial
-        narrate
+        onNarration={provideNarration}
         hideResources
         turnChrome="none"
         onExitToMenu={goHome}
@@ -712,7 +716,7 @@ export const TutorialScreen: Component = () => {
         lessonKey={lessonKey()}
         bannerTitle={lessonTitle()}
         tutorial
-        narrate
+        onNarration={provideNarration}
         turnChrome="sidebar"
         onExitToMenu={goHome}
         coachEmotion={line().emotion}
@@ -753,6 +757,7 @@ export const TutorialScreen: Component = () => {
                   guideBubble={guideBubble()}
                   footerExtra={resolveFooter()}
                   intentArrows={tutorialStory("resolve", id)?.intentArrows}
+                  onNarration={provideNarration}
                 />
               );
             }}

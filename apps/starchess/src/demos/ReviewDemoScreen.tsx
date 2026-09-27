@@ -43,7 +43,6 @@ import {
   reviewVisionFilter,
   setReviewVisionFilter,
 } from "~/store/reviewVisionStore";
-import { resetTutorialNarration, setTutorialNarration } from "~/tutorial/tutorialNarrationStore";
 import type { BoardSkin, PieceSet, VisionMode } from "~/types/board";
 import type { ReviewHistory, StarChessMatchResult } from "~/types/review";
 
@@ -167,14 +166,6 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
     syncTankModes(s.placement, s.siegedTanks, props.packedTank);
   });
 
-  createEffect(() => {
-    if (!props.tutorial) return;
-    setTutorialNarration({
-      reviewPhase: store.reviewPhase(),
-      timelineActive: timelineActive(),
-    });
-  });
-
   // Achievements: the whole match is folded once; each forward step raises the
   // bubbles of the resolve that just finished. Any other seek clears the board.
   const plies = props.history.settledResolves.map((esr, i) =>
@@ -236,7 +227,6 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
       store.cancelEffects();
       clearSiegedTanks();
       resetReviewVisionFilter();
-      if (props.tutorial) resetTutorialNarration();
     });
   });
 

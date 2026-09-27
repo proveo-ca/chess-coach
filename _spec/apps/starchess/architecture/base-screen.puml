@@ -13,7 +13,7 @@ class BaseScreen <<app>> {
   app/BaseScreen.tsx
   --
   starChessMode? fog? boardVariant? pieceSet?
-  armTimer? autoQueueOpponent?
+  autoQueueOpponent?
   onExitToMenu? matchTitle?
   turnChrome: bar | sidebar | none
   tutorial? fullMatchHud? hideResources? hideGas?

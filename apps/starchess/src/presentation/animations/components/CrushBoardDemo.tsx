@@ -1,7 +1,7 @@
 import { createSignal, onMount, type Component } from "solid-js";
 import type { Square } from "chess.js";
 
-import { createPhaseLoop } from "~/presentation/animations/phaseLoop";
+import { createPhaseClock } from "~/presentation/animations/phaseLoop";
 
 import { AnimationStage } from "~/presentation/animations/components/AnimationStage";
 import styles from "~/presentation/animations/components/CrushBoardDemo.module.css";
@@ -34,7 +34,7 @@ export const CrushBoardDemo: Component = () => {
   const [deaths, setDeaths] = createSignal<DeathCue[]>([]);
 
   onMount(() =>
-    createPhaseLoop(
+    createPhaseClock(
       [
         [
           0,

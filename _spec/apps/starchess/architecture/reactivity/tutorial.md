@@ -28,12 +28,27 @@ lesson hosts (`apps/starchess/src/demos/**`) and the tutorial bridge
   - `queue`: rebuilt from the live queue on every run, so the same actions
     must compare equal (`sameStructure`).
 
-## `tutorial/tutorialNarrationStore.ts`
+## `tutorial/narrationSlot.ts`
 
-- **`tutorialNarration` signal** uses `equals: sameStructure`: hosts publish a
-  rebuilt object on every board change (a unit select included), and three
-  `TutorialScreen` effects read the whole value — an identical publish must
-  not wake them.
+- **One reader, one writer, no sync effect (R7).** `TutorialScreen` owns a
+  `createNarrationSlot()`; the mounted host hands it a narration *accessor*
+  once (`onNarration`), and the slot's memo reads through it. The module-global
+  signal it replaced had three writers (`useLessonNarration`,
+  `TutorialReviewHost`, a dead `ReviewDemoScreen` branch) each copying into it
+  from an effect, so the screen judged the objective one pass late and the
+  last writer won.
+- **Release is conditional**: a host's cleanup silences the slot only if it is
+  still the current source — a keyed remount mounts the next host before the
+  old one's cleanup runs.
+- **`equals: sameStructure`** on the slot memo and on each host's narration
+  memo: hosts rebuild the object on every board change (a unit select
+  included), and three `TutorialScreen` effects read the whole value — an
+  identical rebuild must not wake them.
+- **`useLessonNarration`** derives the narration as a memo; the BattleShip
+  watch is a memo fold (`prev` → `nextBattleShipWatch`), not a mutable `let`
+  inside an effect.
+- **`TutorialReviewHost`** reports `timelineActive || busy()`: the typewriter
+  awaits resolve VFX while `busy`, so `completeWhen` waits for the Turn 3 end.
 
 ## `demos/LiveLessonHost.tsx`
 
@@ -119,5 +134,6 @@ lesson hosts (`apps/starchess/src/demos/**`) and the tutorial bridge
   (`emptyCCIntel(enemy).focus`), so an unseen CC rings its default location.
 - **`autoArmTimer` is an accessor** (`() => props.armTimer ?? board.armTimer`)
   because lessons in one section disagree (several set `armTimer: false`).
-  `BaseScreen`'s arm effect reacts to `liveSnapshot`, so it re-arms itself
-  after a reset; turn-open checks still only run through `armTimer`.
+  The store re-arms after a reset itself (`LOAD_SCFEN` → `armWhenIdle`, one task
+  later, outside any effect); turn-open checks still only run through
+  `armTimer`.

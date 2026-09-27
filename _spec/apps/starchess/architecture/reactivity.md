@@ -95,10 +95,19 @@ dispatch-from-effect (R7). So:
 - A store's own timers (turn timeout, timeline, review runner) die with its
   owner: `createMatchStore` cancels them in its `onCleanup`, so a screen left
   mid-turn never auto-submits into a store nobody renders.
-- A phase ladder (idle → act → hold, looped) is one table of offsets from one
-  origin, not nested delays beside a hand-summed interval period.
+- A phase ladder (idle → act → hold, looped) is **derived from time**, not
+  scheduled: `createPhaseClock(steps, cycleMs)` (`presentation/animations/phaseLoop.ts`)
+  memoizes `{ cycle, phase }` over one owner-bound `createFrameClock()` (rAF,
+  frame timestamps) and runs each step once per cycle in offset order — a frame
+  that jumps several steps runs every one it crossed; a gap longer than one
+  cycle (background tab) resumes at the current cycle instead of replaying
+  stale ones. No timer set exists to halt, so no step can be cancelled by the
+  next cycle's start. Offsets start at 0, ascend, and stay `< cycleMs` (dev
+  throws). Timing is pinned per demo in `__tests__/demos/demoPhaseTiming.test.tsx`.
 - `requestAnimationFrame` and `queueMicrotask` are frame and microtask hooks,
-  not wall-clock timers; they stay allowed.
+  not wall-clock timers; they stay allowed, but a frame callback that must be
+  cancellable goes through `frame(fn) → Cancel` (`~/adapters/timers`, port
+  `Frames`).
 
 Owner map: `timers.puml`.
 
