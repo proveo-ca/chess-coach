@@ -7,13 +7,11 @@ import {
 } from "@chess-coach/starchess-core";
 
 import {
-  OPENING_STORED_MATERIAL,
   classicFenForViewer,
   currentQueue,
   deployedMaterial,
   energyCapacity,
   energyRemaining,
-  estimateStoredFromSnap,
   hasUsedSpecialThisTurn,
   materialIncome,
   maxDeployedSupply,
@@ -28,15 +26,6 @@ import { createMatchStore } from "~/app/MatchStoreContext";
 import { createMatchStateFromScfen } from "~/app/matchReducer";
 
 describe("matchEconomy integration", () => {
-  it("estimateStoredFromSnap caps opening + income", () => {
-    const snap = parseScFen(
-      "SCFEN|4k3/8/8/8/8/8/4P3/4K3|3|33|P|G:11:11|Q:w:;b:",
-    );
-    const v = estimateStoredFromSnap(snap);
-    expect(v).toBeGreaterThanOrEqual(OPENING_STORED_MATERIAL);
-    expect(v).toBeLessThanOrEqual(99);
-  });
-
   it("reconstructStoredBanks fills missing B: and respects existing", () => {
     const a = parseScFen(
       "SCFEN|4k3/8/8/8/8/8/4P3/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:",

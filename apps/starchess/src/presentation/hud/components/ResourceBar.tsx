@@ -4,6 +4,8 @@ import {
   energyForTurn,
   incomeForTurn,
   MAX_DEPLOYED_MATERIAL,
+  estimateStoredFromSnap,
+  gasRemainingFor,
   type ScFenSnapshot,
   type StarChessColor,
 } from "@chess-coach/starchess-core";
@@ -15,15 +17,8 @@ import {
  */
 import { Show, createMemo, useContext, type Component } from "solid-js";
 
-import {
-  displayedStoredMaterial,
-  estimateStoredFromSnap,
-  gasRemainingFor,
-  viewerColor,
-} from "~/app/matchEconomy";
 import { MatchStoreContext } from "~/ports/matchStore";
 import { clampPlayerName } from "~/utils/playerName";
-import { readDisplayedSnapshot } from "~/app/selectors";
 import { MineralsIcon, SupplyIcon, VespeneIcon } from "@chess-coach/ui-web/primitives/icons";
 import { TeamFrame } from "@chess-coach/ui-web/primitives/TeamFrame";
 import { TEAM_PRIMARY } from "~/presentation/pieces/teamColors";
@@ -49,14 +44,13 @@ export type ResourceBarProps = {
   class?: string;
 };
 
-export { estimateStoredFromSnap } from "~/app/matchEconomy";
 
 export const ResourceBar: Component<ResourceBarProps> = (props) => {
   const ctx = useContext(MatchStoreContext);
 
   const color = createMemo((): StarChessColor => {
     if (props.color) return props.color;
-    if (ctx) return viewerColor(ctx);
+    if (ctx) return ctx.view.viewerColor();
     return "w";
   });
 
@@ -75,7 +69,7 @@ export const ResourceBar: Component<ResourceBarProps> = (props) => {
       return s;
     }
     if (ctx) {
-      const d = readDisplayedSnapshot(ctx);
+      const d = ctx.view.displayedSnapshot();
       void d.turn;
       void d.gas.w;
       void d.gas.b;
@@ -101,9 +95,9 @@ export const ResourceBar: Component<ResourceBarProps> = (props) => {
   const stored = createMemo(() => {
     if (props.stored != null) return props.stored;
     const s = snap();
-    if (ctx) return displayedStoredMaterial(ctx, color(), s);
+    if (ctx) return ctx.view.displayedStoredMaterial(color(), s);
     if (s?.stored?.[color()] != null) return s.stored![color()];
-    if (s) return estimateStoredFromSnap(s, color());
+    if (s) return estimateStoredFromSnap(s);
     return 0;
   });
 

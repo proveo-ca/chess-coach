@@ -17,12 +17,6 @@ import {
 } from "solid-js";
 import { Portal } from "solid-js/web";
 
-import {
-  classicFenForViewer,
-  energyRemaining,
-  hasUsedSpecialThisTurn,
-  viewerColor,
-} from "~/app/matchEconomy";
 import { schedule } from "~/adapters/timers";
 import { useMatchStore } from "~/ports/matchStore";
 import { ChatBubble } from "@chess-coach/ui-web/primitives/ChatBubble";
@@ -73,7 +67,7 @@ const RESERVE_SLOTS = Array.from({ length: MAX_RESERVES }, (_, i) => i);
 
 export const GasRack: Component<GasDeployProps> = (props) => {
   const store = useMatchStore();
-  const gas = createMemo(() => Math.max(0, energyRemaining(store)));
+  const gas = createMemo(() => Math.max(0, store.view.energyRemaining()));
 
   const [drag, setDrag] = createSignal<DragState | null>(null);
   const [hover, setHover] = createSignal<HoverState | null>(null);
@@ -141,7 +135,7 @@ export const GasRack: Component<GasDeployProps> = (props) => {
       return null;
     }
     const state = store.shell();
-    const color = viewerColor(store);
+    const color = store.view.viewerColor();
     let map: ReturnType<typeof placementToMap>;
     try {
       map = placementToMap(state.liveSnapshot.placement);
@@ -329,8 +323,8 @@ export const GasRack: Component<GasDeployProps> = (props) => {
       const canArm =
         over &&
         copy?.deployable &&
-        !hasUsedSpecialThisTurn(store, over.square) &&
-        energyRemaining(store) >= cost;
+        !store.view.specialUsed(over.square) &&
+        store.view.energyRemaining() >= cost;
       if (canArm && over) target = { square: over.square, piece: over.piece };
     } catch {
       target = null;
@@ -376,7 +370,7 @@ export const GasRack: Component<GasDeployProps> = (props) => {
     const h = hover();
     if (!h) return null;
     const base = specialCopyFor(h.piece);
-    if (hasUsedSpecialThisTurn(store, h.square)) {
+    if (store.view.specialUsed(h.square)) {
       return {
         ...base,
         name: `${base.name} (used)`,
@@ -385,7 +379,7 @@ export const GasRack: Component<GasDeployProps> = (props) => {
       };
     }
     const cost = gasCostFor(h.piece);
-    if (base.deployable && energyRemaining(store) < cost) {
+    if (base.deployable && store.view.energyRemaining() < cost) {
       return {
         ...base,
         name: "Not enough gas",
@@ -397,7 +391,7 @@ export const GasRack: Component<GasDeployProps> = (props) => {
   };
 
   // Touch fen helper so Solid tracks economy/placement for hover copy.
-  void classicFenForViewer(store);
+  void store.view.classicFenForViewer();
 
   return (
     <div

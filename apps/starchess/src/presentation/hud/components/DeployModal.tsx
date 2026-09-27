@@ -7,16 +7,10 @@
  */
 import type { Component } from "solid-js";
 import { For, Show, createMemo } from "solid-js";
-import type { SpawnPiece, StarChessColor } from "@chess-coach/starchess-core";
+import { MAX_DEPLOYED_MATERIAL, type SpawnPiece, type StarChessColor } from "@chess-coach/starchess-core";
 
 import { Modal } from "@chess-coach/ui-web/atoms/Modal";
 import { useMatchStore } from "~/ports/matchStore";
-import {
-  deployedMaterial,
-  energyRemaining,
-  maxDeployedSupply,
-  storedMaterial,
-} from "~/app/matchEconomy";
 import { SPECIAL_ENERGY_COST, UNIT_COST } from "~/presentation/constants";
 import { PieceGlyph } from "~/presentation/board/components/PieceGlyph";
 import { ResourceBar } from "~/presentation/hud/components/ResourceBar";
@@ -40,9 +34,9 @@ export const DeployModal: Component<DeployModalProps> = (props) => {
   const canAfford = (piece: SpawnPiece) => {
     const cost = UNIT_COST[piece];
     return (
-      energyRemaining(store) >= SPECIAL_ENERGY_COST &&
-      storedMaterial(store) >= cost &&
-      deployedMaterial(store) + cost <= maxDeployedSupply
+      store.view.energyRemaining() >= SPECIAL_ENERGY_COST &&
+      store.view.storedMaterial() >= cost &&
+      store.view.deployedMaterial() + cost <= MAX_DEPLOYED_MATERIAL
     );
   };
 

@@ -27,6 +27,23 @@ export type MatchView = {
   storedMaterial: () => number;
   /** A special already fired from `square` this planning window. */
   specialUsed: (square: Square) => boolean;
+  /** Viewer's gas after the live queue and any review intent ghosts. */
+  energyRemaining: () => number;
+  /** Viewer's deployed supply on the displayed board. */
+  deployedMaterial: () => number;
+  /** `color`'s bank as the HUD shows it for the displayed snapshot. */
+  displayedStoredMaterial: (color: StarChessColor, snap: ScFenSnapshot | null) => number;
+  /** Displayed board as a classic FEN from the viewer's side. */
+  classicFenForViewer: () => string;
+  /** The live queue's actions (both colours). */
+  currentQueue: () => readonly ScAction[];
+  turnDeadlineAt: () => number | null;
+  /** Whole seconds left on the planning clock; 0 when unarmed. */
+  turnSecondsRemaining: () => number;
+  /** The board the screen shows (live, mid-timeline, or review seek). */
+  displayedSnapshot: () => ScFenSnapshot;
+  /** Planning or targeting — End Turn / timeout may submit. */
+  canSubmit: () => boolean;
 };
 
 export type TargetingState =

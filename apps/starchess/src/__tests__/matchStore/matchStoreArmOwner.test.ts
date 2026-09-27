@@ -97,4 +97,20 @@ describe("createMatchStore view", () => {
     store.dispatch({ type: "MARK_SPECIAL_USED", square: "e2" });
     expect(store.view.specialUsed("e2")).toBe(true);
   });
+
+  it("reads the clock, queue, gas, board and submit gate the HUD shows", () => {
+    const { store } = create();
+    store.dispatch({ type: "LOAD_SCFEN", scfen: PROMOTION_CLEAN_SCFEN, stored: 4 });
+    const s = store.shell();
+    expect(store.view.canSubmit()).toBe(true);
+    expect(store.view.turnDeadlineAt()).toBeNull();
+    expect(store.view.turnSecondsRemaining()).toBe(0);
+    expect(store.view.currentQueue()).toEqual(s.liveSnapshot.queue?.actions ?? []);
+    expect(store.view.energyRemaining()).toBe(s.liveSnapshot.gas[s.viewer]);
+    expect(store.view.displayedSnapshot().placement).toBe(s.liveSnapshot.placement);
+    expect(store.view.displayedStoredMaterial(s.viewer, null)).toBe(s.economies[s.viewer].stored);
+    expect(store.view.classicFenForViewer()).toContain(" ");
+    store.armTimer();
+    expect(store.view.turnDeadlineAt()).not.toBeNull();
+  });
 });
