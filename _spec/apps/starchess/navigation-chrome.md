@@ -261,7 +261,7 @@ chrome for every live screen; `Screen.starchess.module.css` reserves its room.
   CSS-hidden — so there is exactly one TurnBar / End / ResourceBar on the page
   (a hidden duplicate doubled `turn-end` and ran a second TurnBar). Lessons
   show the ResourceBar in the banner only once the coach hides
-  (`hudResources`). The footer TurnBar is gone.
+  (`hudResources`), where it takes the title's place. The footer TurnBar is gone.
 - Review detail keeps `band="dynamic"` for now. `ReviewDemoScreen
   bannerChrome` is the proposal (Storybook "Game Detail · banner (proposal)"):
   row 1 `‹ Back` + both compact nameless bars on one line, sub-banner
@@ -317,7 +317,7 @@ content slots — `resources` / `turn` / `band` / `subBanner` /
 | Screen | Title | Under the stripe |
 |---|---|---|
 | `/single` | **no title** — the ResourceBar sits in the centre slot (`center`) | sub-banner split: queued chip right-aligned in the left half, `[End Turn] [timer]` left-aligned in the right half — both meet at the centre, like the ResourceBar, and a new chip never moves End/timer |
-| lessons | lesson title (`bannerTitle`) | same split sub-banner (floats over the coach); resources, once the coach hides, take the middle column |
+| lessons | lesson title (`bannerTitle`) **until the coach hides** (`hudResources`); then the ResourceBar **replaces the title** in the centre slot, 40px tall like the End Turn row (`.bannerResourceBar`), as on `/single`. Tall phones only: the Dynamic band never shows a title, and desktop keeps its own header | same split sub-banner (floats over the coach) |
 | tutorial replays | story label (`reviewLabel`) | sub-banner: `‹ Turn N ›` stepper |
 | review list | "Review" | sub-banner: compact filters; matches fill the middle; Arena library in the footer |
 | review detail | result line, coloured (`titleColor`) | in-flow: stacked resource bars with ‹ › on each side |
