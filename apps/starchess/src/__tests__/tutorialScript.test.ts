@@ -185,7 +185,6 @@ describe("tutorialScript", () => {
     "centralize",
     "gasOnMarine",
     "queuedReview",
-    "intentTipTurn1",
     "minesTipTurn2",
     "ccPressureFallback",
   );
@@ -909,14 +908,16 @@ describe("tutorialScript", () => {
     ).toBe(true);
   });
 
-  it("gates king-attack-3 intent tip to the seed turn's intent phase", () => {
-    expect(
+  it("opens king-attack-3 on the intro (with the deploy tip), then the turn-1 tips", () => {
+    expectReaction(
       resolveTutorialLine({
         stageId: "live-play",
         storyId: "live-play-attack-3",
         scfen: lessonBoard("live-play", "live-play-attack-3").scfen,
-      }).comment,
-    ).not.toBe(KING_ATTACK_3.intentTipTurn1.say);
+      }),
+      KING_ATTACK_3.intro,
+    );
+    expect(KING_ATTACK_3.intro.say).toContain("Deploy a Marine");
     expectReaction(
       resolveTutorialLine({
         stageId: "live-play",

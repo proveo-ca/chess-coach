@@ -19,7 +19,7 @@ export const livePlayAttack3 = {
       priority: 2,
       turn: 0,
       when: { kind: "scfen", re: /\|Q:w:;/ },
-      say: "Remember to use your Gas and your Move each turn",
+      say: "Remember to use your Gas and your Move each turn. \n\nDeploy a Marine — we'll push this guy to victory.",
       emotion: "happy",
     },
     {
@@ -320,12 +320,6 @@ export const livePlayAttack3 = {
         re: /SCFEN\|[^|]+\|[^|]*\|[^|]*\|[^|]*\|(?=.*\|Q:w:(?!;))/,
       },
       say: "Review your queued orders, then End Turn.",
-      emotion: "watching",
-    },
-    {
-      turn: 0,
-      phase: "intent",
-      say: "Deploy a Marine. \n\nWe'll push this guy to victory.",
       emotion: "watching",
     },
     {

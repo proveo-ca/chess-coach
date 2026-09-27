@@ -37,9 +37,10 @@ options), `tutorial/coach-line.puml`, `tutorial/lesson-gates.puml`.
   retired as "acted" by turn-open checks or the opponent's opening queue, so
   defense-5, defense-6 and attack-3 never showed it. The beat outranks turn-0
   guidance until the player queues; failure and threat beats (`priority: 3`)
-  still win. Consequence: attack-3's turn-0 intent tip ("Deploy a Marine…",
-  priority 0) is masked by the intro, then by "Review your queued orders"
-  (priority 1) once anything is queued.
+  still win. attack-3's turn-0 intent tip ("Deploy a Marine…", priority 0)
+  would have been masked by the intro and then by "Review your queued orders"
+  (priority 1), so its copy is folded into the attack-3 intro and the beat is
+  gone.
 - **Every `restartWhen` has an urgent failure line.** A beat gated on the same
   condition, `priority: 3`, lesson-specific copy (what went wrong, then the
   fix), `emotion: "shocked"`, `action: retryLesson`. On `failed` the bubble
