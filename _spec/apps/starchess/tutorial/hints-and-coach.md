@@ -173,6 +173,10 @@ hands over to plain play:
 - `mechaPressureLine` — a Mecha move landing on a diagonal of the *visible*
   enemy CC; prefers a landing no enemy attacks, then the one farthest from the
   CC.
+- `pawnClimbStep` — one square straight ahead of the viewer's pawn, wherever
+  it stands; `null` once promoted. Backs the `pawnStep` `when`/mark (fog
+  pawn lesson): the hint arrow always points at the *next* rank, never the
+  promotion square directly, so the player queues one step per turn.
 - `knightVia` / `unitArrow` — a Hoverbike's arrow bends at its L corner, long
   leg first as the scripted arrows draw it (d4→c2 via d2, c2→a1 via a2). Used
   by `ccPressure`, `ccThreat` and `ccDeploy` arrows.

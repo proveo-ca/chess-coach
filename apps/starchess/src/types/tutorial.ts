@@ -150,6 +150,7 @@ export type TutorialWhen =
   | TutorialCcPressureWhen
   | TutorialCcThreatWhen
   | TutorialCcDeployWhen
+  | TutorialPawnStepWhen
   | TutorialBoardCondition;
 
 /** A White or Black action already queued this turn, matched against the
@@ -331,6 +332,9 @@ export type TutorialMineGuardWhen = { kind: "mineGuard" };
  * Command Center. The hint's ring and arrow are computed, not listed.
  */
 export type TutorialShipJukeWhen = { kind: "shipJuke" };
+
+/** A viewer pawn is still on the board — hint its next rank up, one square at a time. */
+export type TutorialPawnStepWhen = { kind: "pawnStep" };
 
 /**
  * Any ally unit already attacking the enemy Command Center, wherever it

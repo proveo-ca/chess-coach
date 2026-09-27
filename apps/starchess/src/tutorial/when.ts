@@ -25,6 +25,7 @@ import {
   mechaDiagonalOpen,
   mechaThreatOpen,
   mineGuard,
+  pawnClimbStep,
   promotionChoiceOpen,
   runnerStop,
   shipJuke,
@@ -201,6 +202,8 @@ export const matchWhen = (when: TutorialWhen, ctx: TutorialWhenContext): boolean
       return !!ctx.scfen && mineGuard(ctx.scfen) != null;
     case "shipJuke":
       return !!ctx.scfen && shipJuke(ctx.scfen) != null;
+    case "pawnStep":
+      return !!ctx.scfen && pawnClimbStep(ctx.scfen) != null;
     case "ccPressure":
       return !!ctx.scfen && phaseAllows(when.phases, ctx.reviewPhase) && ccPressureUnits(ctx.scfen) != null;
     case "ccDeploy":
