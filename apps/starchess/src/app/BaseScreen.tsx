@@ -640,7 +640,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
               center={
                 <div class={styles.bannerInline}>
                   <Show when={bannerResources()}>
-                    <ResourceBar compact class={styles.bannerInlineResources} />
+                    <ResourceBar compact class={`${styles.bannerInlineResources} ${styles.bannerResourceBar}`} />
                   </Show>
                   <Show when={!turnHidden()}>
                     <HudHold held={ended()}>
