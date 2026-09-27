@@ -27,7 +27,7 @@ export const AchievementsModal: Component<AchievementsModalProps> = (props) => {
       showCloseButton
       contentClass={styles.sheet}
     >
-      <div class={styles.grid} data-testid="achievements-modal">
+      <div class={`${styles.grid} neon-scroll`} data-testid="achievements-modal">
         <For each={ACHIEVEMENT_SHORT_IDS}>
           {(shortId) => {
             const level = createMemo(() => unlockedLevel(shortId, career()));

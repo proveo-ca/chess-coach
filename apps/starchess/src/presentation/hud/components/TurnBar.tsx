@@ -57,6 +57,7 @@ type TurnBarProps = {
   density?: TurnBarDensity;
   /** Alias for density="compact" (MobileBanner). */
   compact?: boolean;
+  hideQueue?: boolean;
   /** Hide Turn/Phase label chips (tall-mobile footer under GasRack). */
   hidePhase?: boolean;
   class?: string;
@@ -208,7 +209,7 @@ export const TurnBar: Component<TurnBarProps> = (props) => {
   return (
     <Show when={!isQueueOnly() || lastQueued()}>
       <TeamFrame
-        class={`${styles.bar}${isCompact() ? ` ${styles.compact}` : ""}${isQueueOnly() ? ` ${styles.queueOnly}` : ""}${props.class ? ` ${props.class}` : ""}`}
+        class={`${styles.bar}${isCompact() ? ` ${styles.compact}` : ""}${isCompact() && props.hideQueue ? ` ${styles.noQueue}` : ""}${isQueueOnly() ? ` ${styles.queueOnly}` : ""}${props.class ? ` ${props.class}` : ""}`}
         teamColor="#000"
         data-testid="turn-bar"
         data-density={density()}
@@ -231,7 +232,7 @@ export const TurnBar: Component<TurnBarProps> = (props) => {
                 </Show>
               </div>
             </Show>
-            <Show when={isCompact()}>
+            <Show when={isCompact() && !props.hideQueue}>
               <div
                 class={styles.inlineQueue}
                 data-testid="turn-queue"

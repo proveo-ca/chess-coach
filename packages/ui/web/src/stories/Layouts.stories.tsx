@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import {
   ChessMobileBanner,
   StarChessMobileBanner,
+  StarChessMobileSubBanner,
   Screen,
   ScreenBackNav,
   Label,
@@ -47,12 +48,12 @@ export const StarChessBanner: Story = {
   globals: { viewport: { value: "dynamic", isRotated: false } },
   render: () => (
     <UiProvider product="starchess">
-      <StarChessMobileBanner
-        onBack={() => {}}
-        resources={<Label>Resources</Label>}
-        turn={<Button>End turn</Button>}
-      />
-      <p class="fixture">Visible in the short mobile band (560 × 420).</p>
+      <StarChessMobileBanner onBack={() => {}} title="Title" />
+      <StarChessMobileSubBanner>
+        <Label>Resources</Label>
+        <Button>End turn</Button>
+      </StarChessMobileSubBanner>
+      <p class="fixture">Visible below 720px wide.</p>
     </UiProvider>
   ),
 };

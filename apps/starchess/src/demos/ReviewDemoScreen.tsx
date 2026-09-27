@@ -12,7 +12,6 @@ import {
   type Component,
   type JSX,
 } from "solid-js";
-import { Portal } from "solid-js/web";
 
 import {
   clearAchievementBubbles,
@@ -23,7 +22,7 @@ import { createMatchStore, MatchStoreProvider, useMatchStore } from "~/app/Match
 import { createMatchStateFromReviewHistory } from "~/app/reviewHistory";
 import { readDisplayedSnapshot } from "~/app/selectors";
 import { useMediaQuery } from "~/hooks/useMediaQuery";
-import { DYNAMIC_MOBILE_MQ, MOBILE_MQ } from "~/utils/breakpoints";
+import { DYNAMIC_MOBILE_MQ } from "~/utils/breakpoints";
 import { Label } from "@chess-coach/ui-web/primitives/Label";
 import { Screen } from "@chess-coach/ui-web/primitives/Screen";
 import { ScreenBackNav } from "~/components/primitives/ScreenBackNav";
@@ -82,7 +81,6 @@ export type ReviewDemoScreenProps = {
 
   hideDualNav?: boolean;
 
-  bannerChrome?: boolean;
 
   tutorial?: boolean;
 
@@ -127,8 +125,7 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
   const reviewIndex = createMemo(() => store.shell().reviewIndex);
 
   const dynamicMobile = useMediaQuery(DYNAMIC_MOBILE_MQ);
-  const mobileViewport = useMediaQuery(MOBILE_MQ);
-  const bannerBars = () => dynamicMobile() || (!!props.bannerChrome && mobileViewport());
+  const bannerBars = () => dynamicMobile();
 
   const reviewBusy = () =>
     timelineActive() ||
@@ -319,37 +316,20 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
     <Screen>
 
       <MobileBanner
-        band={props.bannerChrome ? "mobile" : "dynamic"}
         onBack={() => props.onHome?.()}
-        resources={dualResourceBars()}
-        turn={
-          <Show when={props.bannerChrome && !props.hideDualNav}>
-            <ReviewTurnNav
-              onBack={() => store.reviewBack()}
-              onForward={() => store.reviewForward()}
-              backDisabled={reviewNavDisabled().back}
-              forwardDisabled={reviewNavDisabled().forward}
-            >
-              <Show when={props.matchTitle}>
-                {(title) => (
-                  <Label variant="title" color={title().result} class={styles.resultLine}>
-                    {title().resultLine}
-                  </Label>
-                )}
-              </Show>
-            </ReviewTurnNav>
-          </Show>
-        }
+        title={props.matchTitle?.resultLine ?? props.reviewLabel}
+        titleColor={props.matchTitle?.result}
       />
       <Show
         when={header()}
         fallback={
           <Screen.SidebarInset
-            class={props.bannerChrome ? `${styles.topPane} ${styles.bannerOwned}` : styles.topPane}
+            class={styles.topPane}
           >
 
             <ScreenBackNav
               onBack={() => props.onHome?.()}
+              class={styles.inFlowBack}
               data-testid="review-detail-back"
             >
               <Show when={props.matchTitle}>
@@ -413,23 +393,6 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
         </div>
       </Screen.Footer>
 
-      <Show when={dynamicMobile() && !props.hideDualNav && !props.bannerChrome}>
-        <Portal>
-          <div
-            class={styles.navDockDynamic}
-            data-testid="review-turn-nav-dynamic"
-          >
-            <ReviewTurnNav
-              onBack={() => store.reviewBack()}
-              onForward={() => store.reviewForward()}
-              backDisabled={reviewNavDisabled().back}
-              forwardDisabled={reviewNavDisabled().forward}
-            >
-              <span />
-            </ReviewTurnNav>
-          </div>
-        </Portal>
-      </Show>
     </Screen>
   );
 };
@@ -460,7 +423,6 @@ export const ReviewDemoScreen: Component<ReviewDemoScreenProps> = (props) => {
         onHome={props.onHome}
         hideResources={props.hideResources}
         hideDualNav={props.hideDualNav}
-        bannerChrome={props.bannerChrome}
         tutorial={props.tutorial}
         header={props.header}
         footerExtra={props.footerExtra}

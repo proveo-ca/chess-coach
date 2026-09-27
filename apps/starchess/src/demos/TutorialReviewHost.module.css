@@ -80,10 +80,7 @@
   }
 }
 
-/* Tall phones: the black MobileBanner carries `‹ Back ‹ Turn 1 ›`, so the
-   in-flow nav row goes and the coach moves up. Its keyboard binding stays
-   mounted; only the box is dropped. */
-@media (max-width: 479px), (max-width: 719px) and (min-height: 640px) {
+@media (max-width: 719px) {
   .reviewNav {
     display: none;
   }

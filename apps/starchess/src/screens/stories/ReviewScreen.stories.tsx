@@ -82,10 +82,3 @@ export const GameDetail: Story = {
   beforeEach: seedMatchHistory(...games),
   render: () => <ReviewScreen />,
 };
-
-export const GameDetailBannerProposal: Story = {
-  name: "Game Detail · banner (proposal)",
-  parameters: { route: `/review/${REVIEW_ID}` },
-  beforeEach: seedMatchHistory(...games),
-  render: () => <ReviewScreen bannerChrome />,
-};

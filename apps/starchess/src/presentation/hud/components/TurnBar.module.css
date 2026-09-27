@@ -71,6 +71,15 @@
   min-width: 0;
 }
 
+.compact.noQueue {
+  width: auto;
+}
+
+.compact.noQueue .controls {
+  grid-template-columns: auto auto;
+  width: auto;
+}
+
 .compact .end {
   padding: 0.25rem 0.55rem;
   font-size: 0.75rem;

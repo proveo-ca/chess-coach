@@ -1,6 +1,6 @@
 // SPEC: _spec/apps/starchess/navigation-chrome.md
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
-import { createSignal, Show } from "solid-js";
+import { createSignal } from "solid-js";
 
 import { Breadcrumb } from "@chess-coach/ui-web/primitives/Breadcrumb";
 import { ChevronNav } from "@chess-coach/ui-web/primitives/ChevronNav";
@@ -8,6 +8,7 @@ import { ScreenBackNav } from "~/components/primitives/ScreenBackNav";
 import { CoachAvatar } from "~/components/atoms/CoachAvatar";
 import { MatchHistoryFilters } from "@chess-coach/ui-web/atoms/MatchHistoryFilters";
 import { StarChessMobileBanner as MobileBanner } from "@chess-coach/ui-web/atoms/StarChessMobileBanner";
+import { StarChessMobileSubBanner as MobileSubBanner } from "@chess-coach/ui-web/atoms/StarChessMobileSubBanner";
 import { ReviewTurnNav } from "@chess-coach/ui-web/atoms/ReviewTurnNav";
 import { FULL_ARMY_SAMPLE, OPEN_BOARD_SAMPLE } from "~/demos/samples";
 import { ResourceBar } from "~/presentation/hud/components/ResourceBar";
@@ -15,7 +16,7 @@ import { TurnBar } from "~/presentation/hud/components/TurnBar";
 import { StaticScfenBoard } from "~/presentation/board/components/StaticScfenBoard";
 import { WithMatchStore } from "~/stories/project";
 import { useMediaQuery } from "~/hooks/useMediaQuery";
-import { DYNAMIC_MOBILE_MQ, MOBILE_MQ } from "~/utils/breakpoints";
+import { DYNAMIC_MOBILE_MQ } from "~/utils/breakpoints";
 import styles from "~/stories/Navigation.stories.module.css";
 
 const meta = {
@@ -25,7 +26,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Back / turn / section chrome across the three screens. Touch targets clear 40×40px on mobile (ChevronNav, review ‹ ›, pager, breadcrumb); live bars sit one row each — content-sized on desktop, full-width on phones; side-by-side only in the dynamic strip.",
+          "Back / turn / section chrome. Desktop: in-flow ‹ Back nav + bars. Mobile (< 720px): one black stripe `‹ Back · centre` on every screen, with the screen's own row under it (MobileSubBanner); the dynamic band (short landscape) folds everything into the stripe. Touch targets clear 40×40px on mobile.",
       },
     },
   },
@@ -41,49 +42,63 @@ const TUTORIAL_SECTIONS = [
   { id: "live-play", label: "Live Play" },
 ];
 
-export const SingleTopChrome: Story = {
-  name: "Single player · top chrome",
+export const SingleDesktopChrome: Story = {
+  name: "Single player · desktop top chrome",
+  parameters: {
+    route: "/single?map=eclipse&team=w",
+    viewport: { defaultViewport: "desktop" },
+    docs: {
+      description: {
+        story:
+          "Desktop only: in-flow ‹ Back + match title, then the turn bar and the ResourceBar, content-sized. Phones use the mobile banner instead.",
+      },
+    },
+  },
+  render: () => (
+    <WithMatchStore board={FULL_ARMY_SAMPLE}>
+      <div class={styles.pad}>
+        <ScreenBackNav onBack={() => undefined} data-testid="live-back">
+          <span class={styles.titleHint}>Game vs Adjutant (Script)</span>
+        </ScreenBackNav>
+        <div class={styles.topChrome} data-testid="starchess-board-chrome">
+          <div class={styles.turnFill}>
+            <TurnBar autoStart={false} resolveOnEnd={false} onEnd={() => undefined} />
+          </div>
+          <ResourceBar class={styles.liveBar} color="w" />
+        </div>
+      </div>
+    </WithMatchStore>
+  ),
+};
+
+export const SingleMobileBanner: Story = {
+  name: "Single player · mobile banner",
   parameters: {
     route: "/single?map=eclipse&team=w",
     viewport: { defaultViewport: "mobile" },
     docs: {
       description: {
         story:
-          "Bar-mode top chrome (demos/tutorials — Single ships the sidebar rail, so its own top slot holds the bar alone). Narrow-phone case: nav row first, then one fixed-strip single-row bar — bars never overflow X.",
+          "Stripe: ‹ Back · ResourceBar (no title in Single Player). Sub-banner split at the centre: queued chip right-aligned on the left, [End Turn] [timer] left-aligned on the right — a new chip never moves End/timer.",
       },
     },
   },
-  render: () => {
-    const mobile = useMediaQuery(MOBILE_MQ);
-    const dynamic = useMediaQuery(DYNAMIC_MOBILE_MQ);
-    const barFirst = () => mobile() && !dynamic();
-    const Bar = () => <ResourceBar class={styles.liveBar} color="w" />;
-    const Turn = () => (
-      <div class={styles.turnFill}>
-        <TurnBar
-          compact={mobile()}
-          autoStart={false}
-          resolveOnEnd={false}
-          onEnd={() => undefined}
-        />
-      </div>
-    );
-    return (
-      <WithMatchStore board={FULL_ARMY_SAMPLE}>
-        <div class={styles.pad}>
-          <ScreenBackNav onBack={() => undefined} data-testid="live-back">
-            <span class={styles.titleHint}>Game vs Adjutant (Script)</span>
-          </ScreenBackNav>
-          <div class={styles.topChrome} data-testid="starchess-board-chrome">
-            <Show when={barFirst()} fallback={<><Turn /><Bar /></>}>
-              <Bar /><Turn />
-            </Show>
-          </div>
+  render: () => (
+    <WithMatchStore board={FULL_ARMY_SAMPLE}>
+      <MobileBanner onBack={() => undefined} center={<ResourceBar compact color="w" />} />
+      <MobileSubBanner class={styles.subSplit}>
+        <div class={styles.subQueue}>
+          <TurnBar density="queueOnly" />
         </div>
-      </WithMatchStore>
-    );
-  },
+        <div />
+        <div class={styles.subControls}>
+          <TurnBar compact hideQueue autoStart={false} resolveOnEnd={false} onEnd={() => undefined} />
+        </div>
+      </MobileSubBanner>
+    </WithMatchStore>
+  ),
 };
+
 export const SingleDynamicBanner: Story = {
   name: "Single player · dynamic banner",
   parameters: {
@@ -92,7 +107,7 @@ export const SingleDynamicBanner: Story = {
     docs: {
       description: {
         story:
-          "Dynamic viewport (560×420). Fixed-width compact viewer resources; slack sits left of End Turn.",
+          "Dynamic viewport (560×420): no sub-banner fits, so the stripe is the whole chrome — ‹ Back [ResourceBar] [TurnBar] — then the board.",
       },
     },
   },
@@ -100,9 +115,19 @@ export const SingleDynamicBanner: Story = {
     <WithMatchStore board={FULL_ARMY_SAMPLE}>
       <MobileBanner
         onBack={() => undefined}
-        fixedResources
-        resources={<ResourceBar compact color="w" />}
-        turn={<TurnBar compact autoStart={false} resolveOnEnd={false} onEnd={() => undefined} />}
+        fill
+        center={
+          <div class={styles.bannerInline}>
+            <ResourceBar compact color="w" class={styles.bannerInlineResources} />
+            <TurnBar
+              compact
+              class={styles.bannerInlineTurn}
+              autoStart={false}
+              resolveOnEnd={false}
+              onEnd={() => undefined}
+            />
+          </div>
+        }
       />
     </WithMatchStore>
   ),
@@ -111,24 +136,25 @@ export const SingleDynamicBanner: Story = {
 export const ReviewDualNav: Story = {
   name: "Review · dual turn nav",
   parameters: {
-
     viewport: { defaultViewport: "desktop" },
     docs: {
       description: {
         story:
-          "Green ‹ › stay 40×40px with the dual bars between them. Desktop: side-by-side named. Mobile: stacked named. Dynamic: compact nameless, arrows dock bottom-right (see review detail).",
+          "Green ‹ › stay 40×40px on each side of the dual bars. Desktop: in-flow ‹ Back + result above, bars side by side. Mobile: the result moves to the stripe; bars stack. Dynamic: compact nameless bars, still flanked by ‹ ›.",
       },
     },
   },
   render: () => {
-
     const dynamic = useMediaQuery(DYNAMIC_MOBILE_MQ);
     return (
       <WithMatchStore board={FULL_ARMY_SAMPLE}>
+        <MobileBanner onBack={() => undefined} title="Win (Blue)" titleColor="win" />
         <div class={styles.pad}>
-          <ScreenBackNav onBack={() => undefined} data-testid="review-detail-back">
-            <span class={styles.titleHint}>Win (Blue)</span>
-          </ScreenBackNav>
+          <div class={styles.desktopOnly}>
+            <ScreenBackNav onBack={() => undefined} data-testid="review-detail-back">
+              <span class={styles.titleHint}>Win (Blue)</span>
+            </ScreenBackNav>
+          </div>
           <ReviewTurnNav onBack={() => undefined} onForward={() => undefined}>
             <div class={styles.dualResources} role="group" aria-label="Both sides resources">
               <ResourceBar
@@ -151,49 +177,13 @@ export const ReviewDualNav: Story = {
   },
 };
 
-export const ReviewListChrome: Story = {
-  name: "Review · list chrome",
+export const ReviewListBanner: Story = {
+  name: "Review · list banner",
   parameters: {
     viewport: { defaultViewport: "mobile" },
     docs: {
       description: {
-        story:
-          "In-flow list chrome: link Back plus Playing-as / date pager at 40×40px. The dynamic band hides this in favor of the banner (next story).",
-      },
-    },
-  },
-  render: () => {
-    const [color, setColor] = createSignal<"w" | "b">("w");
-
-    return (
-      <WithMatchStore board={FULL_ARMY_SAMPLE}>
-        <div class={styles.stack}>
-          <ScreenBackNav href="/" data-testid="review-back">
-            <span class={styles.titleHint}>Win (White)</span>
-          </ScreenBackNav>
-          <MatchHistoryFilters
-            colorFilter={color()}
-            setColorFilter={setColor}
-            totalPages={3}
-            activePage={0}
-            currentDateLabel="Aug 11, 2026"
-            goToPrev={() => undefined}
-            goToNext={() => undefined}
-          />
-        </div>
-      </WithMatchStore>
-    );
-  },
-};
-
-export const ReviewListBanner: Story = {
-  name: "Review · list banner",
-  parameters: {
-
-    viewport: { defaultViewport: "dynamic" },
-    docs: {
-      description: {
-        story: "Dynamic band: Back plus swatches-left / pager-right, each clearing 40×40px.",
+        story: "Stripe ‹ Back · Review, then the compact filters row: swatches left, pager right, each clearing 40×40px.",
       },
     },
   },
@@ -201,23 +191,21 @@ export const ReviewListBanner: Story = {
     const [color, setColor] = createSignal<"w" | "b">("w");
     return (
       <WithMatchStore board={FULL_ARMY_SAMPLE}>
-        <MobileBanner
-          href="/"
-          resources={
-            <div class={styles.bannerFilters}>
-              <MatchHistoryFilters
-                compact
-                colorFilter={color()}
-                setColorFilter={setColor}
-                totalPages={3}
-                activePage={0}
-                currentDateLabel="Aug 11, 2026"
-                goToPrev={() => undefined}
-                goToNext={() => undefined}
-              />
-            </div>
-          }
-        />
+        <MobileBanner href="/" title="Review" />
+        <MobileSubBanner>
+          <div class={styles.bannerFilters}>
+            <MatchHistoryFilters
+              compact
+              colorFilter={color()}
+              setColorFilter={setColor}
+              totalPages={3}
+              activePage={0}
+              currentDateLabel="Aug 11, 2026"
+              goToPrev={() => undefined}
+              goToNext={() => undefined}
+            />
+          </div>
+        </MobileSubBanner>
       </WithMatchStore>
     );
   },
@@ -230,30 +218,33 @@ export const TutorialCoachHeader: Story = {
     docs: {
       description: {
         story:
-          "‹ Back beside Kerrigan over the lesson board; section crumbs clear 40px tall on mobile (footer grows to fit).",
+          "Mobile: stripe ‹ Back · lesson title, Kerrigan below it; section crumbs clear 40px tall (footer grows to fit). Desktop: ‹ Back sits beside Kerrigan in-flow.",
       },
     },
   },
   render: () => (
-    <div class={styles.stack}>
-      <ScreenBackNav onBack={() => undefined} data-testid="tutorial-fog-coach-nav">
-        <CoachAvatar identity="kerrigan" emotion="idle" />
-      </ScreenBackNav>
-      <StaticScfenBoard
-        scfen={OPEN_BOARD_SAMPLE.scfen}
-        boardVariant="eclipse"
-        fog={false}
-        visionMode="observer"
-        caption="Fog of War · Command Center — lesson board"
-      />
-      <Breadcrumb
-        items={[...TUTORIAL_SECTIONS]}
-        current="fog"
-        onSelect={() => undefined}
-        aria-label="Tutorial sections"
-        data-testid="tutorial-breadcrumb"
-      />
-    </div>
+    <>
+      <MobileBanner onBack={() => undefined} title="King" />
+      <div class={styles.stack}>
+        <ScreenBackNav onBack={() => undefined} data-testid="tutorial-fog-coach-nav">
+          <CoachAvatar identity="kerrigan" emotion="idle" />
+        </ScreenBackNav>
+        <StaticScfenBoard
+          scfen={OPEN_BOARD_SAMPLE.scfen}
+          boardVariant="eclipse"
+          fog={false}
+          visionMode="observer"
+          caption="Fog of War · Command Center — lesson board"
+        />
+        <Breadcrumb
+          items={[...TUTORIAL_SECTIONS]}
+          current="fog"
+          onSelect={() => undefined}
+          aria-label="Tutorial sections"
+          data-testid="tutorial-breadcrumb"
+        />
+      </div>
+    </>
   ),
 };
 

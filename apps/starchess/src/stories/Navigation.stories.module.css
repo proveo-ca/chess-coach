@@ -100,3 +100,59 @@
   box-sizing: border-box;
 }
 
+
+.desktopOnly {
+  display: contents;
+}
+
+@media (max-width: 719px) {
+  .desktopOnly {
+    display: none;
+  }
+
+  .stack,
+  .pad {
+    padding-top: var(--mobile-banner-row-height, 48px);
+  }
+
+  .stack :global(.screen-back) {
+    visibility: hidden;
+  }
+
+  :global(.mobile-sub-banner).subSplit {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    column-gap: 0.35rem;
+  }
+}
+
+.subQueue {
+  display: flex;
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+.subControls {
+  display: flex;
+  justify-content: flex-start;
+  min-width: 0;
+}
+
+.bannerInline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.35rem;
+  width: 100%;
+  min-width: 0;
+}
+
+.bannerInline > .bannerInlineResources {
+  flex: 0 0 auto;
+}
+
+.bannerInline > .bannerInlineTurn {
+  flex: 1 1 auto;
+  min-width: 0;
+}

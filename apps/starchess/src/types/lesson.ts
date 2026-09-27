@@ -17,6 +17,7 @@ export type LiveLessonHostProps = {
   /** Full `/single`-style top pane instead of the coach lesson header. */
   fullMatchHud?: boolean;
   matchTitle?: string;
+  bannerTitle?: string;
   /** Player fog veil (fog lessons). */
   fog?: boolean;
   boardVariant?: BoardSkin;

@@ -151,6 +151,7 @@ const SkinToggle: Component<{
 const FogSection: Component<{
   board: LiveLessonBoard;
   lessonKey: string;
+  bannerTitle?: string;
   beats: readonly TutorialBeat[] | undefined;
   chessMode: boolean;
   /** Held back until the skin demo has finished — see HINT_DELAY_MS. */
@@ -169,6 +170,7 @@ const FogSection: Component<{
     <LiveLessonHost
       board={props.board}
       lessonKey={props.lessonKey}
+      bannerTitle={props.bannerTitle}
       fog
       boardVariant={props.chessMode ? "classic" : "eclipse"}
       // Sole product entry for cburnett — fog tutorial Chess skin only.
@@ -643,6 +645,7 @@ export const TutorialScreen: Component = () => {
   const resolveFooter = () => withFooter();
 
   const lessonKey = () => `${storyId()}#${lessonEpoch()}`;
+  const lessonTitle = createMemo(() => tutorialStory(section(), storyId())?.title);
   const sectionBoard = (stage: TutorialSectionId) =>
     createMemo<LiveLessonBoard>((prev) =>
       section() === stage ? lessonBoard(stage, storyId()) : prev!,
@@ -659,6 +662,7 @@ export const TutorialScreen: Component = () => {
       <FogSection
         board={board()}
         lessonKey={lessonKey()}
+        bannerTitle={lessonTitle()}
         beats={beats()}
         chessMode={chessMode()}
         showHints={hintsReady()}
@@ -680,6 +684,7 @@ export const TutorialScreen: Component = () => {
       <LiveLessonHost
         board={board()}
         lessonKey={lessonKey()}
+        bannerTitle={lessonTitle()}
         tutorial
         narrate
         hideResources
@@ -702,6 +707,7 @@ export const TutorialScreen: Component = () => {
       <LiveLessonHost
         board={board()}
         lessonKey={lessonKey()}
+        bannerTitle={lessonTitle()}
         tutorial
         narrate
         turnChrome="sidebar"

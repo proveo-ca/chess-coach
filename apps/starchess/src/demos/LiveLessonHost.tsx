@@ -262,6 +262,7 @@ const LiveLessonInner: Component<LiveLessonHostProps> = (props) => {
         tutorial={props.tutorial}
         fullMatchHud={props.fullMatchHud}
         matchTitle={props.matchTitle}
+        bannerTitle={props.bannerTitle}
         hideResources={props.hideResources}
         hudResources={props.hudResources}
         hideGas={props.hideGas}

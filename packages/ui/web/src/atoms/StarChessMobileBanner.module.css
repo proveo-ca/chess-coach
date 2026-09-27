@@ -1,167 +1,56 @@
+/* SPEC: _spec/apps/starchess/navigation-chrome.md */
 .banner {
   display: none;
 }
 
 @media (max-width: 719px) {
   .banner {
-    grid-template-columns: 4rem minmax(0, 1fr) auto;
+    display: grid;
+    grid-template-columns: 4rem minmax(0, 1fr) 4rem;
     align-items: center;
-    column-gap: 0.35rem;
-    max-width: none;
-    align-self: stretch;
-    box-sizing: border-box;
-    margin: 0;
-    flex-shrink: 0;
-
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     width: 100%;
-    padding-block: 0.25rem;
+    box-sizing: border-box;
+    min-height: var(--mobile-banner-row-height, 48px);
+    margin: 0;
     padding-inline: 0.5rem;
-    min-height: 40px;
-    background: var(--panel-bg, rgba(0, 0, 0, 0.2));
-    border-bottom: 1px solid var(--border-color, #444);
-    z-index: 5;
-    overflow: visible;
+    background: #000;
+    z-index: 60;
   }
 
-  .banner[data-resources="fixed"] {
-    grid-template-columns: 4rem auto minmax(0, 1fr);
+  .banner[data-fill="true"] {
+    grid-template-columns: 4rem minmax(0, 1fr) 0;
   }
 
-  .banner[data-resources="fixed"] .resources > * {
-    flex: 0 0 auto;
+  .banner[data-fill="true"] .title {
+    justify-content: flex-end;
   }
 
   .back {
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    width: 4rem;
-    min-width: 4rem;
-    max-width: 4rem;
-    overflow: hidden;
-  }
-
-  .resources {
-    display: flex;
-    align-items: center;
-    justify-content: stretch;
     min-width: 0;
     overflow: hidden;
   }
 
-  .resources > * {
-    flex: 0 1 auto;
-    min-width: 0;
-    max-width: 100%;
-  }
-
-  .turn {
+  .title {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
-    min-width: 0;
-    overflow: visible;
-  }
-
-  .turn > * {
-    min-width: 0;
-    width: auto;
-    max-width: 100%;
-  }
-
-  .turn:empty {
-    display: none;
-  }
-}
-
-@media (max-width: 719px) and (min-width: 480px) and (max-height: 639px) {
-  .banner {
-    display: grid;
-  }
-}
-
-@media (max-width: 479px), (max-width: 719px) and (min-height: 640px) {
-  .banner[data-band="mobile"] {
-    display: grid;
-    grid-template-columns: 4rem minmax(min-content, 1fr) minmax(0, 4rem);
-    grid-template-rows: minmax(48px, auto) auto;
-    grid-template-areas:
-      "back resources ."
-      "turn turn turn";
-    row-gap: 0;
-    padding-block: 0;
-    background: transparent;
-  }
-
-  .banner[data-band="mobile"]::before,
-  .banner[data-band="mobile"]::after {
-    content: "";
-    grid-column: 1 / -1;
-    align-self: stretch;
-    margin-inline: -0.5rem;
-    z-index: -1;
-  }
-
-  .banner[data-band="mobile"]::before {
-    grid-row: 1;
-    background: #000;
-  }
-
-  .banner[data-band="mobile"]::after {
-    grid-row: 2;
-    background: rgb(0 0 0 / 0.3);
-  }
-
-  /* Floating over the coach: the lesson's top region lifts itself to z 50 while
-     the guide bubble shows (TutorialGuideBubble.module.css), so the sub-banner
-     must clear it to be seen and clicked. */
-  .banner[data-band="mobile"][data-sub-banner="float"] {
-    z-index: 60;
-  }
-
-  .banner[data-band="mobile"] .back {
-    grid-area: back;
-  }
-
-  .banner[data-band="mobile"] .resources {
-    grid-area: resources;
     justify-content: center;
+    min-width: 0;
+    overflow: hidden;
   }
 
-  .banner[data-band="mobile"] .turn {
-    grid-area: turn;
-    align-self: stretch;
-    align-items: center;
-    padding-block: 0.25rem;
-  }
-
-  .banner[data-band="mobile"] .turn > * {
-    width: 100%;
-  }
-
-  /* One row: the turn stepper takes the centre column beside Back. */
-  .banner[data-band="mobile"][data-turn="center"] {
-    /* Symmetric side columns, so the stepper centres on the screen. */
-    grid-template-columns: 4rem minmax(0, 1fr) 4rem;
-    grid-template-rows: minmax(48px, auto);
-    grid-template-areas: "back turn .";
-  }
-
-  .banner[data-band="mobile"][data-turn="center"]::after,
-  .banner[data-band="mobile"][data-turn="center"] .resources {
-    display: none;
-  }
-
-  .banner[data-band="mobile"][data-turn="center"] .turn {
-    justify-content: center;
-    padding-block: 0;
-  }
-
-  .banner[data-band="mobile"][data-turn="center"] .turn > * {
-    width: auto;
+  .title .titleText {
+    margin: 0;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: center;
   }
 }

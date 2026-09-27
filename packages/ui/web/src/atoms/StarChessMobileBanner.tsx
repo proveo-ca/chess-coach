@@ -3,29 +3,15 @@ import { Show, type Component, type JSX } from "solid-js";
 
 import styles from "./StarChessMobileBanner.module.css";
 import { ChevronNav } from "../primitives/ChevronNav";
+import { Label, type LabelColor } from "../primitives/Label";
 
 export type StarChessMobileBannerProps = {
   onBack?: () => void;
-
   href?: string;
-
-  resources?: JSX.Element;
-
-  turn?: JSX.Element;
-
-  fixedResources?: boolean;
-  band?: "dynamic" | "mobile";
-  /**
-   * `band="mobile"` only: `float` lays the sub-banner (the `turn` row) over the
-   * content below instead of reserving its height — the page offsets by the
-   * first row alone.
-   */
-  subBanner?: "inline" | "float";
-  /**
-   * `band="mobile"` only: `center` puts `turn` in the first row, centred between
-   * Back and the right edge — one black row, no sub-banner (review steppers).
-   */
-  turnPlacement?: "row" | "center";
+  title?: string;
+  titleColor?: LabelColor;
+  center?: JSX.Element;
+  fill?: boolean;
   class?: string;
   "data-testid"?: string;
 };
@@ -34,10 +20,7 @@ export const StarChessMobileBanner: Component<StarChessMobileBannerProps> = (pro
   <header
     class={`mobile-banner ${styles.banner} ${props.class ?? ""}`.trim()}
     data-testid={props["data-testid"] ?? "mobile-banner"}
-    data-resources={props.fixedResources ? "fixed" : undefined}
-    data-band={props.band ?? "dynamic"}
-    data-sub-banner={props.subBanner ?? "inline"}
-    data-turn={props.turnPlacement ?? "row"}
+    data-fill={props.fill ? "true" : undefined}
   >
     <div class={styles.back} data-slot="back">
       <Show
@@ -63,11 +46,22 @@ export const StarChessMobileBanner: Component<StarChessMobileBannerProps> = (pro
         </ChevronNav>
       </Show>
     </div>
-    <div class={styles.resources} data-slot="resources">
-      {props.resources}
+    <div class={styles.title} data-slot="title">
+      <Show when={!props.center} fallback={props.center}>
+      <Show when={props.title}>
+        {(title) => (
+          <Label
+            variant="title"
+            color={props.titleColor}
+            class={styles.titleText}
+            data-testid="mobile-banner-title"
+          >
+            {title()}
+          </Label>
+        )}
+      </Show>
+      </Show>
     </div>
-    <div class={styles.turn} data-slot="turn">
-      {props.turn}
-    </div>
+    <div class={styles.end} aria-hidden="true" />
   </header>
 );

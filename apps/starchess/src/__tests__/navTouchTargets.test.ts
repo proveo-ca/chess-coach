@@ -188,8 +188,8 @@ describe("nav touch targets (static CSS contract)", () => {
 
   it("review dual bars go compact and nameless in the dynamic band", () => {
     const demo = readFileSync(join(SRC, "demos/ReviewDemoScreen.tsx"), "utf8");
-    expect(demo, "banner bars include the dynamic band").toContain(
-      "const bannerBars = () => dynamicMobile() ||",
+    expect(demo, "compact bars follow the dynamic band").toContain(
+      "const bannerBars = () => dynamicMobile();",
     );
     expect(demo, "dual bars compact in the banner").toContain("compact={bannerBars()}");
     expect(demo, "names stand down in the banner").toContain("name={bannerBars() ? undefined");

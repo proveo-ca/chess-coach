@@ -22,6 +22,7 @@ import {
 import { AchievementsModal } from "~/components/features/AchievementsModal";
 import { MatchHistoryFilters } from "@chess-coach/ui-web/atoms/MatchHistoryFilters";
 import { StarChessMobileBanner as MobileBanner } from "@chess-coach/ui-web/atoms/StarChessMobileBanner";
+import { StarChessMobileSubBanner as MobileSubBanner } from "@chess-coach/ui-web/atoms/StarChessMobileSubBanner";
 import { Screen } from "@chess-coach/ui-web/primitives/Screen";
 import { ScreenBackNav } from "~/components/primitives/ScreenBackNav";
 import { ReviewDemoScreen } from "~/demos/ReviewDemoScreen";
@@ -465,36 +466,28 @@ const ReviewListShell: Component<{ activeId?: string }> = (props) => {
   return (
     <LiveMatchShell world="eclipse" testId="starchess-review">
       <Screen>
-        {/* Dynamic-only chrome (CSS-gated): Back + filters in one full-bleed
-            strip, same as /single and the review detail. The in-flow chrome
-            below stands down there — it overflows the top track at 420px. */}
-        <MobileBanner
-          href="/"
-          resources={
-            <div class={styles.bannerFilters}>{historyFilters(true)}</div>
-          }
-          data-testid="review-list-banner"
-        />
+        <MobileBanner href="/" title="Review" data-testid="review-list-banner" />
+        <MobileSubBanner data-testid="review-list-filters-mobile">
+          <div class={styles.bannerFilters}>{historyFilters(true)}</div>
+        </MobileSubBanner>
         <Screen.SidebarInset class={styles.listChrome}>
-          <div class="desktop-only">
-            <ScreenBackNav href="/" data-testid="review-back-menu">
-              {historyFilters()}
-            </ScreenBackNav>
-          </div>
-          <div class="mobile-only">
-            <ScreenBackNav href="/" data-testid="review-back-menu-mobile" />
+          <ScreenBackNav href="/" data-testid="review-back-menu">
             {historyFilters()}
-          </div>
+          </ScreenBackNav>
         </Screen.SidebarInset>
         <Screen.BoardArea>
-          <div class={styles.listPane}>
-            <ArenaLibrary />
+          <div class={`${styles.listPane} neon-scroll`}>
             <MatchList
               games={filters.visibleGames()}
               activeId={props.activeId}
             />
           </div>
         </Screen.BoardArea>
+        <Screen.Footer>
+          <div class={styles.footerPane}>
+            <ArenaLibrary />
+          </div>
+        </Screen.Footer>
       </Screen>
     </LiveMatchShell>
   );
@@ -513,7 +506,7 @@ const reviewAchievements = (record: StarChessGameRecord) => {
   };
 };
 
-const ReviewDetail: Component<{ record: StarChessGameRecord; bannerChrome?: boolean }> = (props) => {
+const ReviewDetail: Component<{ record: StarChessGameRecord }> = (props) => {
   const navigate = useNavigate();
   let pack: ReturnType<typeof historyFromRecord> | null = null;
   let loadError: string | null = null;
@@ -565,7 +558,6 @@ const ReviewDetail: Component<{ record: StarChessGameRecord; bannerChrome?: bool
         playerName={props.record.playerName}
         arenaPlayers={props.record.arenaPlayers}
         achievements={achievements}
-        bannerChrome={props.bannerChrome}
         onHome={() => navigate("/review")}
       />
     </LiveMatchShell>
@@ -647,7 +639,7 @@ const ReviewImportHandler: Component = () => {
   );
 };
 
-export const ReviewScreen: Component<{ bannerChrome?: boolean }> = (props) => {
+export const ReviewScreen: Component = () => {
   const params = useParams<{ id?: string }>();
   const id = () => params.id;
 
@@ -670,7 +662,7 @@ export const ReviewScreen: Component<{ bannerChrome?: boolean }> = (props) => {
               </>
             }
           >
-            {(g) => <ReviewDetail record={g()} bannerChrome={props.bannerChrome} />}
+            {(g) => <ReviewDetail record={g()} />}
           </Show>
         );
       }}

@@ -45,5 +45,6 @@ export * from "./atoms/NetworkSignal";
 export * from "./atoms/ReviewTurnNav";
 export * from "./atoms/SelectCard";
 export * from "./atoms/StarChessMobileBanner";
+export * from "./atoms/StarChessMobileSubBanner";
 export * from "./atoms/TeamSwatch";
 export * from "./atoms/VisionSwatch";

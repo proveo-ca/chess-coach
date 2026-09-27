@@ -112,48 +112,16 @@
   }
 }
 
-/* Dynamic: the banner owns the chrome, so the in-flow top pane stands down. */
-@media (max-width: 719px) and (min-width: 480px) and (max-height: 639px) {
-  .topPane {
+@media (max-width: 719px) {
+  .inFlowBack {
     display: none;
+  }
+
+  .topPane {
+    overflow: visible;
   }
 }
 
-/*
- * Portaled turn-nav dock (dynamic band only — JS-gated by DYNAMIC_MOBILE_MQ).
- * Bottom-right like the live GasRack, and same rack fill/border so the two
- * floating controls read as one family. The Portal escapes `.starchess-play`,
- * so re-pin the dark tokens or Storybook light leaks in.
- */
-.navDockDynamic {
-  --rack-fill: color-mix(in srgb, var(--text-color) 10%, var(--bg-color));
-  --rack-border: color-mix(in srgb, var(--text-color) 22%, var(--bg-color));
-
-  position: fixed;
-  right: 0.75rem;
-  bottom: 0.75rem;
-  z-index: 70;
-  display: flex;
-  align-items: center;
-  padding: 0.1rem 0.35rem;
-  border-radius: 999px;
-  background: var(--rack-fill);
-  border: 1px solid var(--rack-border);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
-  pointer-events: auto;
-  color-scheme: dark;
-  color: #e8eaed;
-  --bg-color: #12171c;
-  --surface-color: #1a1a1a;
-  --text-color: #e8eaed;
-  --border-color: #444;
-}
-
-/* Touch targets: the in-flow arrows are text-sized; a floating dock needs thumbs. */
-.navDockDynamic button {
-  min-width: 2.25rem;
-  min-height: 2.25rem;
-}
 
 .dualInBanner {
   flex-wrap: nowrap;
@@ -167,8 +135,3 @@
   min-width: 0;
 }
 
-@media (max-width: 719px) {
-  .bannerOwned {
-    display: none !important;
-  }
-}

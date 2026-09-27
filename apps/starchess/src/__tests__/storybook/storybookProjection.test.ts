@@ -81,6 +81,7 @@ describe("Storybook projection", () => {
       "live-play/live-play-defense-6",
       "live-play/live-play-attack-1",
       "live-play/live-play-attack-2",
+      "live-play/live-play-attack-3",
       "live-play/live-play-attack-4",
     ]);
   });

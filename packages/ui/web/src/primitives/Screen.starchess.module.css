@@ -59,6 +59,10 @@
   grid-template-rows: minmax(0, auto) auto 0fr;
 }
 
+.app-container:not(:has([data-board-column])):not([data-footer-float="true"]) {
+  grid-template-rows: minmax(0, auto) minmax(0, 1fr) minmax(0, auto);
+}
+
 .app-container[data-footer-float="true"]:not(:has([data-region="top"] :global(.floating-move-list)))
   > .footer,
 .app-container[data-footer-float="true"]:not(:has([data-region="top"] :global(.floating-move-list)))
@@ -161,11 +165,11 @@ h1 {
   }
 
   .app-container:not(:has([data-board-column])) {
-    grid-template-rows: minmax(0, auto) 1fr minmax(0, auto);
+    grid-template-rows: minmax(0, auto) minmax(0, 1fr) minmax(0, auto);
   }
 
   .app-container:not(:has([data-board-column]))[data-footer-float="true"] {
-    grid-template-rows: minmax(0, auto) 1fr 0fr;
+    grid-template-rows: minmax(0, auto) minmax(0, 1fr) 0fr;
   }
 
   .board-area {
@@ -219,19 +223,16 @@ h1 {
   }
 }
 
-@media (max-width: 479px), (max-width: 719px) and (min-height: 640px) {
-  .app-container:has(:global(.mobile-banner[data-band="mobile"])) {
-    padding-top: var(--mobile-banner-tall-height, 6.25rem);
-  }
-
-  /* A floating sub-banner sits over the content, and a centred turn has none:
-     reserve the first row only. */
-  .app-container:has(:global(.mobile-banner[data-band="mobile"][data-sub-banner="float"])),
-  .app-container:has(:global(.mobile-banner[data-band="mobile"][data-turn="center"])) {
+@media (max-width: 719px) {
+  .app-container:has(:global(.mobile-banner)) {
     padding-top: var(--mobile-banner-row-height, 48px);
   }
 
-  .app-container:has(:global(.mobile-banner[data-band="mobile"])) :global(.screen-back) {
+  .app-container:has(:global(.mobile-sub-banner[data-sub-banner="inline"])) {
+    padding-top: var(--mobile-banner-tall-height, 6.25rem);
+  }
+
+  .app-container:has(:global(.mobile-banner)) :global(.screen-back) {
     visibility: hidden;
   }
 }

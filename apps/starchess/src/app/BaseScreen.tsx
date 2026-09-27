@@ -25,6 +25,7 @@ import { canSubmit, outcomeLabel, readDisplayedSnapshot } from "~/app/selectors"
 import styles from "~/app/BaseScreen.module.css";
 import { CoachAvatar } from "~/components/atoms/CoachAvatar";
 import { StarChessMobileBanner as MobileBanner } from "@chess-coach/ui-web/atoms/StarChessMobileBanner";
+import { StarChessMobileSubBanner as MobileSubBanner } from "@chess-coach/ui-web/atoms/StarChessMobileSubBanner";
 import { ExitGameConfirm } from "~/components/features/ExitGameConfirm";
 import { TurnBonusBubble } from "~/components/features/TurnBonusBubble";
 import { TutorialHudLabels } from "~/components/features/TutorialHudLabels";
@@ -74,6 +75,7 @@ export type StarChessScreenProps = {
   autoQueueOpponent?: (snap: ScFenSnapshot) => AutoQueueOpponentResult;
   onExitToMenu?: () => void;
   matchTitle?: string;
+  bannerTitle?: string;
   turnChrome?: "bar" | "sidebar" | "none";
   hideResources?: boolean;
   hudResources?: boolean;
@@ -634,36 +636,67 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
         />
       </Show>
 
-      {/*
-        Mobile top chrome, one banner for every live screen: a direct `Screen`
-        child so it resolves full-bleed against the viewport, not the inset
-        chrome pane. Dynamic band: one row. Tall phones (`band="mobile"`): Back +
-        ResourceBar, then the compact TurnBar (last queued action) as the
-        sub-banner. Lessons show resources only once the coach hides, and float
-        the sub-banner over the coach rather than pushing it down.
-      */}
       <Show when={bannerOwnsChrome()}>
-        <MobileBanner
-          band="mobile"
-          subBanner={coachHeader() ? "float" : "inline"}
-          onBack={bannerBack()}
-          fixedResources={!coachHeader()}
-          resources={
-            <Show when={bannerResources()}>
-              <ResourceBar compact />
-            </Show>
+        <Show
+          when={!dynamicMobile()}
+          fallback={
+            <MobileBanner
+              onBack={bannerBack()}
+              fill
+              center={
+                <div class={styles.bannerInline}>
+                  <Show when={bannerResources()}>
+                    <ResourceBar compact class={styles.bannerInlineResources} />
+                  </Show>
+                  <Show when={bannerTurn()}>
+                    <TurnBar
+                      compact
+                      class={styles.bannerInlineTurn}
+                      autoStart={false}
+                      resolveOnEnd={false}
+                      onEnd={() => store.submitTurn("end")}
+                    />
+                  </Show>
+                </div>
+              }
+            />
           }
-          turn={
-            <Show when={bannerTurn()}>
-              <TurnBar
-                compact
-                autoStart={false}
-                resolveOnEnd={false}
-                onEnd={() => store.submitTurn("end")}
-              />
-            </Show>
-          }
-        />
+        >
+          <MobileBanner
+            onBack={bannerBack()}
+            title={coachHeader() ? props.bannerTitle : undefined}
+            center={
+              coachHeader() ? undefined : (
+                <Show when={bannerResources()}>
+                  <ResourceBar compact />
+                </Show>
+              )
+            }
+          />
+          <MobileSubBanner float={coachHeader()} class={styles.subBannerSplit}>
+            <div class={styles.subBannerQueue}>
+              <Show when={bannerTurn()}>
+                <TurnBar density="queueOnly" />
+              </Show>
+            </div>
+            <div class={styles.subBannerMiddle}>
+              <Show when={coachHeader() && bannerResources()}>
+                <ResourceBar compact />
+              </Show>
+            </div>
+            <div class={styles.subBannerControls}>
+              <Show when={bannerTurn()}>
+                <TurnBar
+                  compact
+                  hideQueue
+                  autoStart={false}
+                  resolveOnEnd={false}
+                  onEnd={() => store.submitTurn("end")}
+                />
+              </Show>
+            </div>
+          </MobileSubBanner>
+        </Show>
       </Show>
 
       <Show

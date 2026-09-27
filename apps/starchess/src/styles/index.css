@@ -33,3 +33,25 @@ button {
   /* Buttons are not text fields — hide the I-beam caret on focus. */
   caret-color: transparent;
 }
+
+.neon-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #7cff4a #041208;
+}
+
+.neon-scroll::-webkit-scrollbar {
+  width: 0.5rem;
+}
+
+.neon-scroll::-webkit-scrollbar-track {
+  background: #041208;
+}
+
+.neon-scroll::-webkit-scrollbar-thumb {
+  background: #7cff4a;
+  border: 2px solid #041208;
+}
+
+.neon-scroll::-webkit-scrollbar-thumb:hover {
+  background: #b6ff8a;
+}

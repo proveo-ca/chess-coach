@@ -31,7 +31,7 @@ are done; polish items remain. Timeline perf is a separate track under
 
 1. ~~Optionally delete `_spec/apps/chess/starchess/` stubs~~ **Done** — directory removed (content lived in core + apps/starchess; stubs/PNGs had no unique value).
 2. Align `starchess-mode` UX package with sidebar chrome as product default.
-3. Extend demos inventory: `VermeerLiveTurnSidebar`, menu stories, review DualNav host.
+3. Extend demos inventory: menu stories, review DualNav host.
 4. Mention StarChess in `_spec/summary.md` / top-level architecture if still silent.
 
 ## Animation / timeline performance

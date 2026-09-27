@@ -20,6 +20,7 @@ import { createMatchStateFromReviewHistory } from "~/app/reviewHistory";
 import { readDisplayedSnapshot } from "~/app/selectors";
 import { CoachAvatar } from "~/components/atoms/CoachAvatar";
 import { StarChessMobileBanner as MobileBanner } from "@chess-coach/ui-web/atoms/StarChessMobileBanner";
+import { StarChessMobileSubBanner as MobileSubBanner } from "@chess-coach/ui-web/atoms/StarChessMobileSubBanner";
 import { ReviewTurnNav } from "@chess-coach/ui-web/atoms/ReviewTurnNav";
 import { Screen } from "@chess-coach/ui-web/primitives/Screen";
 import { ScreenBackNav } from "~/components/primitives/ScreenBackNav";
@@ -310,24 +311,17 @@ const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
 
   return (
     <Screen>
-      {/* Mobile chrome (CSS-gated). Short landscape: banner + board, the stepper
-          hugging the right like Review's arrows. Tall phones: one black row,
-          `‹ Back` left and the stepper centred. */}
-      <MobileBanner
-        band="mobile"
-        turnPlacement="center"
-        onBack={() => props.onHome?.()}
-        turn={
-          <ReviewTurnNav
-            onBack={goPrev}
-            onForward={() => void goNext()}
-            backDisabled={backDisabled()}
-            forwardDisabled={forwardDisabled()}
-          >
-            <span class={styles.phaseLabel}>{beatLabel()}</span>
-          </ReviewTurnNav>
-        }
-      />
+      <MobileBanner onBack={() => props.onHome?.()} title={props.reviewLabel} />
+      <MobileSubBanner>
+        <ReviewTurnNav
+          onBack={goPrev}
+          onForward={() => void goNext()}
+          backDisabled={backDisabled()}
+          forwardDisabled={forwardDisabled()}
+        >
+          <span class={styles.phaseLabel}>{beatLabel()}</span>
+        </ReviewTurnNav>
+      </MobileSubBanner>
       <Screen.Header>
         <div class={styles.headerSlot}>
           <div class={styles.reviewChrome}>
