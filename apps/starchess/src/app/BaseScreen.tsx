@@ -660,13 +660,11 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
         >
           <MobileBanner
             onBack={bannerBack()}
-            title={coachHeader() ? props.bannerTitle : undefined}
+            title={coachHeader() && !bannerResources() ? props.bannerTitle : undefined}
             center={
-              coachHeader() ? undefined : (
-                <Show when={bannerResources()}>
-                  <ResourceBar compact />
-                </Show>
-              )
+              bannerResources() ? (
+                <ResourceBar compact class={styles.bannerResourceBar} />
+              ) : undefined
             }
           />
           <MobileSubBanner float={coachHeader()} class={styles.subBannerSplit}>
@@ -677,11 +675,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
                 </HudHold>
               </Show>
             </div>
-            <div class={styles.subBannerMiddle}>
-              <Show when={coachHeader() && bannerResources()}>
-                <ResourceBar compact />
-              </Show>
-            </div>
+            <div class={styles.subBannerMiddle} />
             <div class={styles.subBannerControls}>
               <Show when={!turnHidden()}>
                 <HudHold held={ended()}>

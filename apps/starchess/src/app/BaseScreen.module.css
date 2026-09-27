@@ -298,3 +298,9 @@
 .hudHold[data-hud-held] {
   visibility: hidden;
 }
+
+.bannerResourceBar {
+  height: 40px;
+  align-items: center;
+}
+
