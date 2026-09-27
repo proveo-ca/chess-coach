@@ -8,7 +8,13 @@
  * imperative store choreography; config lives on `board`, choreography behind
  * `board.choreography` — see `demos/choreography/`.
  */
-import { adjutant, getSideVision, placementToMap, type ScFenSnapshot } from "@chess-coach/starchess-core";
+import {
+  adjutant,
+  emptyCCIntel,
+  getSideVision,
+  placementToMap,
+  type ScFenSnapshot,
+} from "@chess-coach/starchess-core";
 import type { Square } from "chess.js";
 import {
   batch,
@@ -188,11 +194,14 @@ const LiveLessonInner: Component<LiveLessonHostProps> = (props) => {
     { equals: sameStructure },
   );
 
+  const enemyCCHome = (): Square =>
+    emptyCCIntel(store.shell().viewer === "w" ? "b" : "w").focus;
   const ccSeenFold = createMemo<{ key: string; at: Square | undefined }>(
     (prev) => {
       const key = lessonKey();
-      const base = prev.key === key ? prev.at : undefined;
-      return { key, at: props.board.alertLatch === "cc" ? nextCCSighting(base, ccSight()) : base };
+      if (props.board.alertLatch !== "cc") return { key, at: undefined };
+      const base = (prev.key === key ? prev.at : undefined) ?? enemyCCHome();
+      return { key, at: nextCCSighting(base, ccSight()) };
     },
     { key: untrack(lessonKey), at: undefined },
   );

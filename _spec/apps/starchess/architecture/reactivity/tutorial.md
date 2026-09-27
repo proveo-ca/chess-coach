@@ -114,7 +114,9 @@ lesson hosts (`apps/starchess/src/demos/**`) and the tutorial bridge
   signal (`interactive` gating reads it), and resets it to `{}` on cleanup.
 - **Folds keyed on the lesson** — `ccSeen` / `alertLatch` fold from their
   previous value; the fold now carries the `lessonKey` it belongs to and
-  restarts from empty when the key changes, which is what a remount did.
+  restarts when the key changes, which is what a remount did. `alertLatch`
+  restarts empty; `ccSeen` restarts on the enemy CC's home square
+  (`emptyCCIntel(enemy).focus`), so an unseen CC rings its default location.
 - **`autoArmTimer` is an accessor** (`() => props.armTimer ?? board.armTimer`)
   because lessons in one section disagree (several set `armTimer: false`).
   `BaseScreen`'s arm effect reacts to `liveSnapshot`, so it re-arms itself

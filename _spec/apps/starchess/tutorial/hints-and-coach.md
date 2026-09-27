@@ -206,7 +206,9 @@ order — several beats below are placed or gated only to win (or lose) a tie.
   coach and bubble go. Turns 16–18 (relative 5–7) then keep strategy hints up:
   rings on e4 and d6, arrows e2→a6 (Mecha diagonal), the Hoverbike path
   d2→e4→d6 then red d6→b7, f4→f8 and b3→b7; the enemy CC alert ring comes
-  from the lesson's fog-honest `alertLatch: "cc"`.
+  from the lesson's fog-honest `alertLatch: "cc"`: e8 (the default location,
+  `emptyCCIntel("b").focus`) until the b7 Command Center is first seen, then
+  its last seen square.
   Turn 13's deploy line asks for a Mecha. Turn 13's "full vision" line needs the Tank dug in on e3
   (`S:` lists sieged Tanks) and an empty White queue, so it never ties with
   the queued replies (beat choice must not depend on array order —
