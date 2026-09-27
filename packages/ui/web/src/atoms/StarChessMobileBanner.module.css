@@ -116,6 +116,13 @@
     background: rgb(0 0 0 / 0.3);
   }
 
+  /* Floating over the coach: the lesson's top region lifts itself to z 50 while
+     the guide bubble shows (TutorialGuideBubble.module.css), so the sub-banner
+     must clear it to be seen and clicked. */
+  .banner[data-band="mobile"][data-sub-banner="float"] {
+    z-index: 60;
+  }
+
   .banner[data-band="mobile"] .back {
     grid-area: back;
   }
@@ -134,5 +141,27 @@
 
   .banner[data-band="mobile"] .turn > * {
     width: 100%;
+  }
+
+  /* One row: the turn stepper takes the centre column beside Back. */
+  .banner[data-band="mobile"][data-turn="center"] {
+    /* Symmetric side columns, so the stepper centres on the screen. */
+    grid-template-columns: 4rem minmax(0, 1fr) 4rem;
+    grid-template-rows: minmax(48px, auto);
+    grid-template-areas: "back turn .";
+  }
+
+  .banner[data-band="mobile"][data-turn="center"]::after,
+  .banner[data-band="mobile"][data-turn="center"] .resources {
+    display: none;
+  }
+
+  .banner[data-band="mobile"][data-turn="center"] .turn {
+    justify-content: center;
+    padding-block: 0;
+  }
+
+  .banner[data-band="mobile"][data-turn="center"] .turn > * {
+    width: auto;
   }
 }

@@ -107,6 +107,11 @@ skinparam noteTextAlignment left
 '   mecha     Target Designated     analysis  1/2/3/5/7, impossible
 '   juke      Make it happen        scfen     2/4/7/10/15 jumps, hard
 '   light     Let there be Light    scfen     3/7/10/14/20 defensive captures, hard
+'   Light counts captures landing within 3 squares of our Command Center
+'   (the 7x7). The first enemy seen in the 3x3 beside it (on the ply's start
+'   or settled board, or captured / mined there) sets `ccBreached`: no later
+'   capture counts that game. Captures in the breaching ply do not count;
+'   levels already announced stand.
 ' Medal of Honor and Ready to roll out! were both numbered 8.
 ' Dropping the 10-win Human Training card leaves 12.
 '

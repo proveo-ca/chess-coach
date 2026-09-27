@@ -224,6 +224,13 @@ h1 {
     padding-top: var(--mobile-banner-tall-height, 6.25rem);
   }
 
+  /* A floating sub-banner sits over the content, and a centred turn has none:
+     reserve the first row only. */
+  .app-container:has(:global(.mobile-banner[data-band="mobile"][data-sub-banner="float"])),
+  .app-container:has(:global(.mobile-banner[data-band="mobile"][data-turn="center"])) {
+    padding-top: var(--mobile-banner-row-height, 48px);
+  }
+
   .app-container:has(:global(.mobile-banner[data-band="mobile"])) :global(.screen-back) {
     visibility: hidden;
   }

@@ -15,6 +15,17 @@ export type StarChessMobileBannerProps = {
 
   fixedResources?: boolean;
   band?: "dynamic" | "mobile";
+  /**
+   * `band="mobile"` only: `float` lays the sub-banner (the `turn` row) over the
+   * content below instead of reserving its height — the page offsets by the
+   * first row alone.
+   */
+  subBanner?: "inline" | "float";
+  /**
+   * `band="mobile"` only: `center` puts `turn` in the first row, centred between
+   * Back and the right edge — one black row, no sub-banner (review steppers).
+   */
+  turnPlacement?: "row" | "center";
   class?: string;
   "data-testid"?: string;
 };
@@ -25,6 +36,8 @@ export const StarChessMobileBanner: Component<StarChessMobileBannerProps> = (pro
     data-testid={props["data-testid"] ?? "mobile-banner"}
     data-resources={props.fixedResources ? "fixed" : undefined}
     data-band={props.band ?? "dynamic"}
+    data-sub-banner={props.subBanner ?? "inline"}
+    data-turn={props.turnPlacement ?? "row"}
   >
     <div class={styles.back} data-slot="back">
       <Show
