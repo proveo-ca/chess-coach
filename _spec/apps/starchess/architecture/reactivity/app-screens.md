@@ -85,6 +85,16 @@ Rules R1–R8 are defined in `../reactivity.md`; store topology is in `../../mat
   pending pair is cancelled by the next request and on unmount, as is the
   mount-time ResizeObserver kick. Raw nested `requestAnimationFrame` calls used
   to run `syncOverlay` after the screen was gone.
+- **Live HUD is held, not unmounted, at game over.** The banner `TurnBar`s and
+  the `GasRack` stay mounted inside `HudHold` (`display: contents`); once the
+  match ends it sets `bool:inert`, `aria-hidden` and `visibility: hidden`. At
+  objective complete / game over they used to unmount in one frame — the board
+  rect never moved (measured 0 px across 7 viewports), but the chrome around it
+  swapped at once and read as a jitter. `inert` blocks every pointer path, and
+  GasRack's window listeners only attach during a drag, so a held rack is
+  idle. `bool:inert` (typed in `types/solid-jsx.d.ts`) writes the attribute;
+  a plain `inert` prop is a DOM property jsdom and older engines ignore.
+  Pinned by `__tests__/hud/hudHeldAtGameOver.test.tsx`.
 - **`bannerBack`** — hoisted because `MobileBanner` reads `onBack` from its click
   handler; a ternary prop there builds an ownerless memo per click (R2).
   `bannerResources` / `bannerTurn` hoisted likewise.

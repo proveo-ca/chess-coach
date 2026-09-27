@@ -16,7 +16,7 @@ import {
   onMount,
   untrack,
 } from "solid-js";
-import type { Component, JSX } from "solid-js";
+import type { Component, JSX, ParentComponent } from "solid-js";
 import { Portal } from "solid-js/web";
 
 import { afterPaint } from "~/adapters/timers";
@@ -115,6 +115,18 @@ const Slot: Component<{
     </Show>
   );
 };
+
+/** Keeps live HUD in the layout after the match ends: hidden and inert, never unmounted. */
+const HudHold: ParentComponent<{ held: boolean }> = (props) => (
+  <div
+    class={styles.hudHold}
+    data-hud-held={props.held ? "" : undefined}
+    bool:inert={props.held}
+    aria-hidden={props.held ? "true" : undefined}
+  >
+    {props.children}
+  </div>
+);
 
 export const BaseScreen: Component<StarChessScreenProps> = (props) => {
   const store = useMatchStore();
@@ -514,7 +526,6 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
   const bannerResources = createMemo(() =>
     coachHeader() ? !!props.hudResources : !props.hideResources,
   );
-  const bannerTurn = createMemo(() => !turnHidden() && !ended());
   const coachEmotion = createMemo(() => props.coachEmotion ?? "idle");
   const overlay = createMemo(() => (starChessMode() ? overlayBox() : null));
   const liveHud = createMemo(() => starChessMode() && !ended());
@@ -631,14 +642,16 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
                   <Show when={bannerResources()}>
                     <ResourceBar compact class={styles.bannerInlineResources} />
                   </Show>
-                  <Show when={bannerTurn()}>
-                    <TurnBar
-                      compact
-                      class={styles.bannerInlineTurn}
-                      autoStart={false}
-                      resolveOnEnd={false}
-                      onEnd={() => store.submitTurn("end")}
-                    />
+                  <Show when={!turnHidden()}>
+                    <HudHold held={ended()}>
+                      <TurnBar
+                        compact
+                        class={styles.bannerInlineTurn}
+                        autoStart={false}
+                        resolveOnEnd={false}
+                        onEnd={() => store.submitTurn("end")}
+                      />
+                    </HudHold>
                   </Show>
                 </div>
               }
@@ -658,8 +671,10 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
           />
           <MobileSubBanner float={coachHeader()} class={styles.subBannerSplit}>
             <div class={styles.subBannerQueue}>
-              <Show when={bannerTurn()}>
-                <TurnBar density="queueOnly" />
+              <Show when={!turnHidden()}>
+                <HudHold held={ended()}>
+                  <TurnBar density="queueOnly" />
+                </HudHold>
               </Show>
             </div>
             <div class={styles.subBannerMiddle}>
@@ -668,14 +683,16 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
               </Show>
             </div>
             <div class={styles.subBannerControls}>
-              <Show when={bannerTurn()}>
-                <TurnBar
-                  compact
-                  hideQueue
-                  autoStart={false}
-                  resolveOnEnd={false}
-                  onEnd={() => store.submitTurn("end")}
-                />
+              <Show when={!turnHidden()}>
+                <HudHold held={ended()}>
+                  <TurnBar
+                    compact
+                    hideQueue
+                    autoStart={false}
+                    resolveOnEnd={false}
+                    onEnd={() => store.submitTurn("end")}
+                  />
+                </HudHold>
               </Show>
             </div>
           </MobileSubBanner>
@@ -868,8 +885,10 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
             }}
             data-testid="starchess-gas-deploy"
           >
-            <Show when={liveHud() && !props.hideGas}>
-              <GasRack onDeploy={onGasDeploy} onCancel={cancelArmed} />
+            <Show when={starChessMode() && !props.hideGas}>
+              <HudHold held={ended()}>
+                <GasRack onDeploy={onGasDeploy} onCancel={cancelArmed} />
+              </HudHold>
             </Show>
           </div>
           <Show when={!props.tutorial || props.fullMatchHud}>
