@@ -64,6 +64,27 @@ Rules R1–R8 are defined in `../reactivity.md`; store topology is in `../../mat
 - **Auto-queue effect** — the script call runs under `untrack`: the script reads
   the store freely (e.g. `storedFor`), and those reads must not subscribe the
   effect to the whole state (R1).
+- **Auto-End (`store.submitTurnNextTask`)** — tutorial Auto-End submits one task
+  after the queue-ready effect (`scheduler.delay(0)`, R9), never inside the
+  effect: SUBMIT_TURN starts the resolve timeline, and inside the effect's batch
+  the timeline's coalesced TIMELINE_COMMIT patches land after TIMELINE_DONE — the
+  cues clear before any `playingIds` reach the overlays, so the move VFX never
+  renders and pieces teleport. The pending task is **store-owned**, not
+  BaseScreen-owned: BaseScreen outlives a lesson change (the host only reloads
+  its store), so a BaseScreen-owned task armed before a retry ended the fresh
+  board's first turn. `cancelEffects` (every `LOAD_SCFEN` path) and store
+  disposal drop it; a store tick does not. Found by the Quint model's
+  `unguardedAutoEnd` switch — `_spec/apps/starchess/models/tutorial-lesson.puml`.
+- **`autoQueueOpponent` (LiveLessonHost)** — a memo over `props.board.opponent`,
+  not a constant read at host creation: the live-play section keeps one host
+  across stories (only `lessonKey` changes), so a constant froze the first
+  lesson's opponent — walking defense-1 → attack-3/4 left the adjutant inert,
+  and attack-3 → defense-1 leaked one into a lesson without an opponent.
+- **Overlay sync after paint** — the CC-spawn overlay re-measures two frames
+  after a change (`afterPaint(syncOverlay)` from `~/adapters/timers`); the
+  pending pair is cancelled by the next request and on unmount, as is the
+  mount-time ResizeObserver kick. Raw nested `requestAnimationFrame` calls used
+  to run `syncOverlay` after the screen was gone.
 - **`bannerBack`** — hoisted because `MobileBanner` reads `onBack` from its click
   handler; a ternary prop there builds an ownerless memo per click (R2).
   `bannerResources` / `bannerTurn` hoisted likewise.

@@ -6,7 +6,7 @@
 import { createSignal, onCleanup, onMount, type Component } from "solid-js";
 
 import { repeat } from "~/adapters/timers";
-import { createPhaseLoop } from "~/presentation/animations/phaseLoop";
+import { createPhaseClock } from "~/presentation/animations/phaseLoop";
 import styles from "~/screens/menuSky/MenuPlanet.module.css";
 import type { Cancel } from "~/types/ports";
 
@@ -65,7 +65,7 @@ export const MenuPlanet: Component<MenuPlanetProps> = (props) => {
       });
     };
 
-    createPhaseLoop(
+    createPhaseClock(
       [
         [
           0,

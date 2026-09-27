@@ -1,25 +1,23 @@
 // SPEC: _spec/apps/starchess/architecture/storybook-projection.puml, _spec/apps/starchess/architecture/reactivity/tutorial.md
-/**
- * Sole publisher into {@link tutorialNarrationStore} from a live lesson.
- * Previously copy-pasted across five hosts, each omitting a different field —
- * one publisher means every lesson reports the same shape.
- */
+/** The live lesson's narration: one derivation, handed to the tutorial screen. */
 import { formatScFen } from "@chess-coach/starchess-core";
-import { createEffect, createMemo, onCleanup, type Accessor } from "solid-js";
+import { createMemo, type Accessor } from "solid-js";
 
 import { readDisplayedSnapshot } from "~/app/selectors";
 import { liveMatchPhase } from "~/presentation/hud/liveMatchPhase";
 import { availableTrajectories, coveredEnemyShips, whiteBattleShipAtH8 } from "~/tutorial/lessonTactics";
 import { sameStructure } from "~/tutorial/sameStructure";
-import {
-  resetTutorialNarration,
-  setTutorialNarration,
-  type TutorialQueueAction,
-} from "~/tutorial/tutorialNarrationStore";
 import { nextBattleShipWatch } from "~/tutorial/tutorialScript";
 import type { MatchStore } from "~/types/match";
 import type { ReviewTurnPhase } from "~/types/review";
-import type { AttackTrajectory, BattleShipWatch, SquareCovers } from "~/types/tutorial";
+import type {
+  AttackTrajectory,
+  BattleShipWatch,
+  NarrationSink,
+  SquareCovers,
+  TutorialNarrationState,
+  TutorialQueueAction,
+} from "~/types/tutorial";
 
 export type LessonBoard = {
   scfen: Accessor<string>;
@@ -68,31 +66,28 @@ export const createLessonBoard = (store: MatchStore): LessonBoard => {
   };
 };
 
-export const useLessonNarration = (
-  board: LessonBoard,
-  enabled: () => boolean,
-): void => {
-  let battleShipWatch: BattleShipWatch = { onH8: false, sniped: false };
-  createEffect(() => {
-    if (!enabled()) return;
-    const scfen = board.scfen();
-    const reviewPhase = board.reviewPhase();
-    const battleShip = whiteBattleShipAtH8(scfen);
-    if (battleShip) battleShipWatch = nextBattleShipWatch(battleShipWatch, { ...battleShip, reviewPhase });
-    setTutorialNarration({
-      reviewPhase,
+const NO_WATCH: BattleShipWatch = { onH8: false, sniped: false };
+
+export const useLessonNarration = (board: LessonBoard, sink: NarrationSink | undefined): void => {
+  if (!sink) return;
+  const battleShipWatch = createMemo<BattleShipWatch>((prev) => {
+    const battleShip = whiteBattleShipAtH8(board.scfen());
+    return battleShip ? nextBattleShipWatch(prev, { ...battleShip, reviewPhase: board.reviewPhase() }) : prev;
+  }, NO_WATCH);
+  const narration: Accessor<TutorialNarrationState> = createMemo(
+    () => ({
+      reviewPhase: board.reviewPhase(),
       timelineActive: board.timelineActive(),
-      scfen,
+      scfen: board.scfen(),
       covers: board.covers(),
       trajectories: board.trajectories(),
       turnStartChecksApplied: board.turnStartChecksApplied(),
       queue: board.queue(),
       targetingKind: board.targetingKind(),
-      shipSniped: battleShipWatch.sniped,
-    });
-  });
-
-  onCleanup(() => {
-    if (enabled()) resetTutorialNarration();
-  });
+      shipSniped: battleShipWatch().sniped,
+    }),
+    undefined,
+    { equals: sameStructure },
+  );
+  sink(narration);
 };

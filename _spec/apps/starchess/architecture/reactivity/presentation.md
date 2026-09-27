@@ -216,9 +216,17 @@ the mover passes over"), which walks that exact path tick by tick.
   `schedule` because the drop handler, not an owner, arms it. Retune both together.
 - `TurnBar` / `TurnBarSidebar` `TURN_DEADLINE_TICK_MS` (200) is the 200ms
   deadline poll above, now a mount-owned `createRepeat`.
-- `CoachAvatar` helm uses `schedule` + a kept cancel: the drop arms inside a
-  nested `requestAnimationFrame`, which has no owner, so `createDelay` would
-  not register its cleanup there.
+- `CoachAvatar` helm keeps **one** cancel for the whole drop chain —
+  `frame` → `frame` → `schedule(HELM_MS)` — reassigned at each stage, so an
+  identity flip or unmount at any stage cancels what is pending. The two
+  frames used to be raw `requestAnimationFrame` calls nobody cancelled: a
+  selena → kerrigan → selena flip inside two frames still ran "dropping" and
+  settled the helm "on" (pinned in `__tests__/CoachAvatar.test.tsx`). The
+  chain has no owner (frame callbacks), so it cannot use `createDelay`.
+- Demo boards (`Death` / `Deploy` / `Crush` / `AttackBoardDemo`) and
+  `MenuPlanet` run their ladders on `createPhaseClock` (R9). Prop changes
+  (`on(props.subject)` etc.) restart from a fresh cycle because the clock is
+  owned by that effect run.
 - `useAutoDeploy` keys `schedule` cancels by cue id: a pending deploy must
   survive the occupancy effect's re-runs.
 - `ccDamageOverlay` boom and `MoveAnimation` settle use `createDelay` inside

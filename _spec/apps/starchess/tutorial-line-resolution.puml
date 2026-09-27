@@ -67,6 +67,10 @@ note over BOARD
   Center's last seen square to every beat's
   alerts and moves it only when that square
   is visible (nextCCSighting, withCCAlert).
+  Before any sighting the ring sits on the
+  CC's home square (e8 for Black) — core's
+  emptyCCIntel(enemy).focus, the same prior
+  the strategic adjutant starts from.
   Gas hints: a beat's gasSquares ring the
   square guide-green and bob a canister with
   a down chevron onto it (data-hint-gas);

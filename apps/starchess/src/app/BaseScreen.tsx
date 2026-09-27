@@ -19,9 +19,10 @@ import {
 import type { Component, JSX } from "solid-js";
 import { Portal } from "solid-js/web";
 
+import { afterPaint } from "~/adapters/timers";
 import { viewerColor } from "~/app/matchEconomy";
 import { useMatchStore } from "~/app/MatchStoreContext";
-import { canSubmit, outcomeLabel, readDisplayedSnapshot } from "~/app/selectors";
+import { outcomeLabel, readDisplayedSnapshot } from "~/app/selectors";
 import styles from "~/app/BaseScreen.module.css";
 import { CoachAvatar } from "~/components/atoms/CoachAvatar";
 import { StarChessMobileBanner as MobileBanner } from "@chess-coach/ui-web/atoms/StarChessMobileBanner";
@@ -58,6 +59,7 @@ import { TUTORIAL_CAPABILITIES, setCapabilities } from "~/store/capabilitiesStor
 import { resetReviewVisionFilter, reviewVisionFilter } from "~/store/reviewVisionStore";
 import type { BoardSkin, PieceSet } from "~/types/board";
 import type { PromotionPiece } from "~/types/chess";
+import type { Cancel } from "~/types/ports";
 import type { KerriganEmotion } from "~/types/coach";
 import type { TutorialBoardArrow } from "~/types/tutorial";
 
@@ -71,7 +73,6 @@ export type StarChessScreenProps = {
   fog?: boolean;
   boardVariant?: BoardSkin;
   pieceSet?: PieceSet;
-  armTimer?: boolean;
   autoQueueOpponent?: (snap: ScFenSnapshot) => AutoQueueOpponentResult;
   onExitToMenu?: () => void;
   matchTitle?: string;
@@ -185,7 +186,13 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
   // `syncOverlay` is a hoisted function declaration below, so the open
   // callback can bind it even though the hook is created here (memos evaluate
   // eagerly and must see a ready hook).
-  const afterOpen = () => requestAnimationFrame(() => requestAnimationFrame(syncOverlay));
+  let cancelOverlaySync: Cancel = () => {};
+  const syncOverlayAfterPaint = () => {
+    cancelOverlaySync();
+    cancelOverlaySync = afterPaint(syncOverlay);
+  };
+  onCleanup(() => cancelOverlaySync());
+  const afterOpen = syncOverlayAfterPaint;
   const ccd = createCCDeploy(store, snap, { onAfterOpen: afterOpen });
   const spawnPhase = ccd.spawnPhase;
   const spawnAdjacent = ccd.spawnAdjacent;
@@ -343,41 +350,18 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
     void (s.queue?.actions.length ?? 0);
     const result = untrack(() => fn(s));
     if (result.snapshot === s) return;
-    if (result.spendMinerals) {
-      const { color, amount } = result.spendMinerals;
-      const before = store.shell().economies[color].stored;
-      store.dispatch({ type: "SPEND_STORED", color, amount });
-      if (store.shell().economies[color].stored === before) return;
-    }
-    store.dispatch({ type: "APPLY_SNAPSHOT", snapshot: result.snapshot });
+    untrack(() => {
+      if (result.spendMinerals) {
+        const { color, amount } = result.spendMinerals;
+        const before = store.shell().economies[color].stored;
+        store.dispatch({ type: "SPEND_STORED", color, amount });
+        if (store.shell().economies[color].stored === before) return;
+      }
+      store.dispatch({ type: "APPLY_SNAPSHOT", snapshot: result.snapshot });
+    });
   });
 
-  createEffect(() => {
-    if (props.armTimer === false || !starChessMode()) return;
-    const s = store.shell();
-    void s.liveSnapshot.turn;
-    void s.liveSnapshot.placement;
-    if (s.phase !== "planning" && s.phase !== "targeting") return;
-    if (store.timeline().active) return;
-    if (s.deadlineAt != null) return;
-    store.armTimer();
-  });
 
-  /**
-   * End the turn exactly the way the End button does. Auto-End must not
-   * dispatch from inside a reactive effect: SUBMIT_TURN starts the resolve
-   * timeline, and running that inside the effect's batch lands the timeline's
-   * coalesced TIMELINE_COMMIT patches after TIMELINE_DONE — the cues are
-   * cleared before any `playingIds` reach the overlays, so the move VFX never
-   * renders and pieces appear to teleport. Deferring to a task puts the submit
-   * in the same context a click would.
-   */
-  const endTurnLikeAClick = () => {
-    setTimeout(() => {
-      if (!canSubmit(store.shell())) return;
-      store.submitTurn("end");
-    }, 0);
-  };
 
   let prevQueueReady = false;
   createEffect(() => {
@@ -401,14 +385,14 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
         : side.some((a) => a.timing === "C") && side.some((a) => a.timing !== "C");
     const shouldEnd = ready && !prevQueueReady;
     prevQueueReady = ready;
-    if (shouldEnd) endTurnLikeAClick();
+    if (shouldEnd) store.submitTurnNextTask();
   });
 
   createEffect(() => {
     void snap().placement;
     void spawnPhase();
     void store.shell().targeting;
-    requestAnimationFrame(() => requestAnimationFrame(syncOverlay));
+    syncOverlayAfterPaint();
   });
 
   // A board-click spawn commit (useBoardInput) queues without touching this
@@ -478,9 +462,10 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
         const grid = boardHost ? findBoardGrid(boardHost) : null;
         if (grid) ro.observe(grid);
       };
-      requestAnimationFrame(() => requestAnimationFrame(kick));
+      const cancelKick = afterPaint(kick);
       window.addEventListener("resize", syncOverlay);
       onCleanup(() => {
+        cancelKick();
         ro.disconnect();
         window.removeEventListener("resize", syncOverlay);
         window.removeEventListener("keydown", onKey);

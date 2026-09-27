@@ -2,6 +2,7 @@
 /** Tutorial stage ids (Breadcrumb / routes / script). */
 
 import type { Square } from "chess.js";
+import type { Accessor } from "solid-js";
 
 import type { ScPiece, ScSpecialKind } from "@chess-coach/starchess-core";
 import type { KerriganEmotion } from "~/types/coach";
@@ -462,3 +463,41 @@ export type TutorialLineHold = {
   /** Last reaction line to keep when no when-clause matches. */
   sticky?: TutorialLine;
 };
+
+/** Compact live intent queue entry for completeWhen / reactions. */
+export type TutorialQueueAction = {
+  timing: string;
+  kind: string;
+  color: string;
+};
+
+export type TutorialNarrationState = {
+  reviewPhase?: ReviewTurnPhase;
+  timelineActive?: boolean;
+  /** Live `formatScFen` for script `scfen` reactions. */
+  scfen?: string;
+  /**
+   * Whether turn-open checks have landed on the live board. Turn-open is engine
+   * bookkeeping (gas refill, check damage) that moves the SCFEN with no player
+   * input — `holdTutorialLine` needs it to tell that apart from a real action.
+   * Three-valued: `undefined` means this host does not run a live planning turn
+   * (the review / typewriter hosts), and `holdTutorialLine` then no-ops.
+   */
+  turnStartChecksApplied?: boolean;
+  /** Live SCFEN queue actions (intent) — preferred over wire regex for stacks. */
+  queue?: readonly TutorialQueueAction[];
+  /** Live targeting mode (`charonMissiles`, `tacticalJump`, `deploy`, …). */
+  targetingKind?: string | null;
+  /** Enemy-occupied watch squares mapped to their current coverers. */
+  covers?: SquareCovers;
+  /** Open staging posts against the enemy Command Center. */
+  trajectories?: AttackTrajectory[];
+  /** White BattleShip was lost on h8 during the resolve now playing. */
+  shipSniped?: boolean;
+  /** Tutorial typewriter cursor (Turn Resolution steppers). */
+  typewriterTurn?: number;
+  typewriterBeat?: "turn" | "check" | "intent" | "resolve";
+};
+
+/** A host hands its narration accessor to the tutorial screen once, on mount. */
+export type NarrationSink = (source: Accessor<TutorialNarrationState>) => void;

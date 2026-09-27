@@ -9,7 +9,7 @@ skinparam defaultTextAlignment left
 title StarChess · Turn bonus broadcast (turns 1 · 11 · 21 …)
 
 package "Presenters" {
-  component "BaseScreen auto-arm effect\nTurnBarSidebar onMount" as ARM <<host>>
+  component "MatchStore armWhenIdle / TIMELINE_DONE\nTurnBarSidebar onMount" as ARM <<host>>
   component "TurnBonusBubble\nclick-to-dismiss · nothing locked" as UI <<host>>
   component "TurnBar / CountdownRing polls" as POLL <<host>>
 }

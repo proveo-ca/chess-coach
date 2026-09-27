@@ -56,7 +56,7 @@ describe("createMatchStore turnBonuses", () => {
     // Only the planning timeout — no auto-dismiss job.
     expect(s1.pendingCount()).toBe(1);
 
-    // Re-entrant arms (BaseScreen auto-arm effect) keep the bubble, never stack jobs.
+    // Re-entrant arms keep the bubble, never stack jobs.
     store.armTimer();
     store.armTimer();
     expect(store.shell().turnBonus?.turn).toBe(1);

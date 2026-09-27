@@ -249,7 +249,6 @@ const MatchInner: Component<{
     <BaseScreen
       boardVariant={props.boardVariant}
       starChessMode
-      armTimer
       turnChrome="sidebar"
       matchTitle={liveAdjutantMatchTitle(props.opponent)}
       onExitToMenu={props.onExitToMenu}

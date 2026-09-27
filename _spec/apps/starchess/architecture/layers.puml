@@ -1,0 +1,80 @@
+@startuml layers
+title apps/starchess — import layers (enforced by .dependency-cruiser.cjs)
+
+skinparam shadowing false
+skinparam defaultFontSize 11
+skinparam packageStyle rectangle
+
+package "routes" {
+  [screens] as screens
+  [demos] as demos
+}
+package "app side" {
+  [app] as app
+  [tutorial] as tutorial
+  [achievements] as ach
+}
+package "presentation" {
+  [animations] as anim
+  [pieces] as pieces
+  [board / combat / hud / specials / timeline] as pres
+}
+package "components" {
+  [features] as features
+  [atoms] as atoms
+  [primitives] as prims
+}
+[store (UI-wide flags)] as store
+[hooks] as hooks
+[adapters] as adapters
+[types] as types
+
+screens --> demos
+screens --> app
+demos --> app
+app --> pres
+app --> components
+pres --> anim
+anim --> pieces
+pres --> components
+features --> atoms
+atoms --> prims
+pres --> store
+components --> store
+app --> adapters
+pres --> adapters
+
+pieces -[#red,dashed]-> anim : pieces-below-animations
+prims -[#red,dashed]-> pres : primitives-stay-presentational\n(known: PromotionModal → PieceGlyph)
+atoms -[#red,dashed]-> features : atoms-below-features
+components -[#red,dashed]-> screens : components-below-routes
+pres -[#red,dashed]-> app : presentation-below-app\n(known: 29 edges)
+store -[#red,dashed]-> pres : store-below-ui
+types -[#red,dashed]-> app : types-are-leaves
+
+note right of pres
+  Known violations (baseline, 30 in
+  .dependency-cruiser-known-violations.json):
+  • hud (TurnBar, TurnBarSidebar, ResourceBar,
+    GasRack, DeployModal) → MatchStoreContext,
+    selectors, matchEconomy
+  • specials arms + pieceSpecials → matchEconomy
+  • board (LiveStarChessBoard, useBoardInput),
+    combat (useIntentOverlays) → selectors,
+    intentOverlayPolicy, MatchStoreContext,
+    achievementLive
+  These are the edges that fold 11 layers into one
+  strongly connected cluster. Paying one off: move
+  the selector / economy read behind a prop or a
+  presentation-side port, then run
+  check:deps:baseline so the baseline shrinks.
+end note
+
+note bottom
+  pnpm lint runs oxlint, then check:deps (--ignore-known): a new violation fails,
+  a paid-off one goes stale — regenerate with check:deps:baseline.
+  Type-only imports are exempt everywhere (they vanish at runtime);
+  cycles are judged on runtime edges only.
+  timers-through-adapter: only adapters/ and MatchStoreContext import adapters/browser.
+end note
+@enduml

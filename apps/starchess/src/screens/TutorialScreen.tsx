@@ -19,6 +19,7 @@ import {
   type JSX,
 } from "solid-js";
 
+import { schedule } from "~/adapters/timers";
 import { buildReviewHistory } from "~/app/reviewHistory";
 import { CoachAvatar } from "~/components/atoms/CoachAvatar";
 import { TutorialGuideBubble } from "~/components/features/TutorialGuideBubble";
@@ -39,7 +40,7 @@ import {
 import { TutorialReviewHost } from "~/demos/TutorialReviewHost";
 import { LiveMatchShell } from "~/screens/LiveMatchShell";
 import styles from "~/screens/TutorialScreen.module.css";
-import { tutorialNarration } from "~/tutorial/tutorialNarrationStore";
+import { createNarrationSlot } from "~/tutorial/narrationSlot";
 import {
   LESSON_ADVANCE_MS,
   TUTORIAL_SCRIPT,
@@ -59,12 +60,24 @@ import type {
   LiveLessonBoard,
   TutorialBeat,
   TutorialCompleteWhen,
+  NarrationSink,
   TutorialLineHold,
   TutorialReactionAction,
   TutorialSectionId,
 } from "~/types/tutorial";
+import type { Cancel } from "~/types/ports";
 
 export type { TutorialSectionId } from "~/types/tutorial";
+
+type LineState = {
+  line: ReturnType<typeof resolveTutorialLine>;
+  hold: TutorialLineHold;
+  shownComment: string;
+  shownAt: number;
+  shownKey: string;
+  shownHoldMs: number;
+  waitMs: number;
+};
 
 const SECTIONS = TUTORIAL_SCRIPT.map((s) => ({ id: s.id, label: s.label }));
 
@@ -162,6 +175,7 @@ const FogSection: Component<{
   header: JSX.Element;
   footer: JSX.Element;
   onHome: () => void;
+  onNarration: NarrationSink;
 }> = (props) => {
   const boardHints = createMemo(() =>
     props.showHints ? props.liveHints(props.beats) : undefined,
@@ -178,7 +192,7 @@ const FogSection: Component<{
       tutorial
       hideResources
       hideGas
-      narrate
+      onNarration={props.onNarration}
       turnChrome="none"
       onExitToMenu={props.onHome}
       coachEmotion={props.coachEmotion}
@@ -193,6 +207,7 @@ const FogSection: Component<{
 export const TutorialScreen: Component = () => {
   const params = useParams<{ section?: string; story?: string }>();
   const navigate = useNavigate();
+  const { narration: tutorialNarration, provide: provideNarration } = createNarrationSlot();
   const section = createMemo(() => parseTutorialSection(params.section));
   const storyId = createMemo(() =>
     resolveTutorialStoryId(section(), params.story),
@@ -209,9 +224,9 @@ export const TutorialScreen: Component = () => {
    * works the toggle themselves — it plays *for* the hand on the toggle, never
    * against it. Cancelling releases the hints early rather than stranding them.
    */
-  let skinDemo: ReturnType<typeof setTimeout>[] = [];
+  let skinDemo: Cancel[] = [];
   const clearSkinDemo = () => {
-    skinDemo.forEach(clearTimeout);
+    skinDemo.forEach((cancel) => cancel());
     skinDemo = [];
   };
   onCleanup(clearSkinDemo);
@@ -228,11 +243,11 @@ export const TutorialScreen: Component = () => {
     }
     setHintsReady(false);
     skinDemo.push(
-      setTimeout(() => setChessMode(true), SKIN_DEMO_START_MS),
-      setTimeout(() => batch(() => {
+      schedule(SKIN_DEMO_START_MS, () => setChessMode(true)),
+      schedule(HINT_DELAY_MS, () => batch(() => {
         setChessMode(false);
         setHintsReady(true);
-      }), HINT_DELAY_MS),
+      })),
     );
   });
 
@@ -297,16 +312,16 @@ export const TutorialScreen: Component = () => {
   const liveHints = (beats: readonly TutorialBeat[] | undefined) =>
     outcome() === "active" ? beats : completedLessonBeats(beats);
   let outcomeKey = "";
-  let advanceTimer: ReturnType<typeof setTimeout> | undefined;
-  let elapsedTimer: ReturnType<typeof setTimeout> | undefined;
-  let endingTimer: ReturnType<typeof setTimeout> | undefined;
+  let advanceTimer: Cancel | undefined;
+  let elapsedTimer: Cancel | undefined;
+  let endingTimer: Cancel | undefined;
   /** Auto-advance hold the pending success was requested with. */
   let successAdvanceMs = LESSON_ADVANCE_MS;
 
   const clearTimers = () => {
-    if (advanceTimer != null) clearTimeout(advanceTimer);
-    if (elapsedTimer != null) clearTimeout(elapsedTimer);
-    if (endingTimer != null) clearTimeout(endingTimer);
+    advanceTimer?.();
+    elapsedTimer?.();
+    endingTimer?.();
     advanceTimer = undefined;
     elapsedTimer = undefined;
     endingTimer = undefined;
@@ -336,10 +351,10 @@ export const TutorialScreen: Component = () => {
   const completeObjective = () => {
     setOutcome("success");
     if (!hasNextLesson()) return;
-    advanceTimer = setTimeout(() => {
+    advanceTimer = schedule(successAdvanceMs, () => {
       advanceTimer = undefined;
       goNextLesson();
-    }, successAdvanceMs);
+    });
   };
 
   /**
@@ -349,10 +364,10 @@ export const TutorialScreen: Component = () => {
    */
   const fail = (delayMs: number = LESSON_ADVANCE_MS) => {
     setOutcome("failed");
-    advanceTimer = setTimeout(() => {
+    advanceTimer = schedule(delayMs, () => {
       advanceTimer = undefined;
       retryLesson();
-    }, delayMs);
+    });
   };
 
   const matches = (
@@ -390,14 +405,14 @@ export const TutorialScreen: Component = () => {
       // `elapsed` needs no board condition — arm it on entry.
       const complete = script?.completeWhen;
       if (complete?.kind === "elapsed") {
-        elapsedTimer = setTimeout(() => {
+        elapsedTimer = schedule(Math.max(0, complete.ms), () => {
           elapsedTimer = undefined;
           if (section() === sec && storyId() === story) succeed(0);
-        }, Math.max(0, complete.ms));
+        });
       }
     }
 
-    if (outcome() !== "active") return;
+    if (untrack(outcome) !== "active") return;
     // Only judge a board that has finished animating.
     if (n.timelineActive) return;
 
@@ -412,117 +427,105 @@ export const TutorialScreen: Component = () => {
 
 
   // Intro comment once per lesson; reactions stick (no bounce back to opener).
-  let lineHold: TutorialLineHold = { lessonKey: "", introDone: false };
-  /** When the currently displayed comment landed — the ending hold subtracts it. */
-  let shownComment = "";
-  let shownAt = 0;
-  let shownKey = "";
-  let shownHoldMs = 0;
   const [holdTick, setHoldTick] = createSignal(0);
-  let holdTimer: ReturnType<typeof setTimeout> | undefined;
-  onCleanup(() => {
-    if (holdTimer != null) clearTimeout(holdTimer);
-  });
-  const [line, setLine] = createSignal(resolveTutorialLine({
-    stageId: "fog",
-    storyId: "king",
-  }));
-  createEffect(() => {
-    const sec = section();
-    const story = storyId();
-    const n = tutorialNarration();
-    holdTick();
-    const ctx = {
-      stageId: sec,
-      storyId: story,
-      chessSkin: sec === "fog" ? chessMode() : undefined,
-      reviewPhase: n.reviewPhase,
-      timelineActive: n.timelineActive,
-      scfen: n.scfen,
-      covers: n.covers,
-      trajectories: n.trajectories,
-      targetingKind: n.targetingKind,
-      turnStartChecksApplied: n.turnStartChecksApplied,
-      shipSniped: n.shipSniped,
-    };
-    const raw = resolveTutorialLine(ctx);
-    const next = holdTutorialLine(
-      lineHold,
-      `${sec}|${story}|${lessonEpoch()}`,
-      raw,
-      ctx,
-    );
-    lineHold = next.hold;
-    const key = `${sec}|${story}|${lessonEpoch()}`;
-    // Plain fields, not a signal read: this effect writes `line`, so reading it
-    // here would loop (`next.line` is a fresh object every run).
-    if (next.line.comment !== shownComment) {
-      const wait = key === shownKey ? shownHoldMs - (performance.now() - shownAt) : 0;
-      if (wait > 0) {
-        if (holdTimer == null) {
-          holdTimer = setTimeout(() => {
-            holdTimer = undefined;
-            setHoldTick((t) => t + 1);
-          }, wait);
-        }
-        return;
+  const lineState = createMemo<LineState>(
+    (prev) => {
+      const sec = section();
+      const story = storyId();
+      const n = tutorialNarration();
+      holdTick();
+      const ctx = {
+        stageId: sec,
+        storyId: story,
+        chessSkin: sec === "fog" ? chessMode() : undefined,
+        reviewPhase: n.reviewPhase,
+        timelineActive: n.timelineActive,
+        scfen: n.scfen,
+        covers: n.covers,
+        trajectories: n.trajectories,
+        targetingKind: n.targetingKind,
+        turnStartChecksApplied: n.turnStartChecksApplied,
+        shipSniped: n.shipSniped,
+      };
+      const key = `${sec}|${story}|${lessonEpoch()}`;
+      const next = holdTutorialLine(prev.hold, key, resolveTutorialLine(ctx), ctx);
+      if (next.line.comment === prev.shownComment) {
+        return { ...prev, line: next.line, hold: next.hold, waitMs: 0 };
       }
-      shownComment = next.line.comment;
-      shownAt = performance.now();
-      shownKey = key;
-      shownHoldMs = next.line.holdMs ?? 0;
-    }
-    setLine(next.line);
+      const waitMs = key === prev.shownKey ? prev.shownHoldMs - (performance.now() - prev.shownAt) : 0;
+      if (waitMs > 0) return { ...prev, hold: next.hold, waitMs };
+      return {
+        line: next.line,
+        hold: next.hold,
+        shownComment: next.line.comment,
+        shownAt: performance.now(),
+        shownKey: key,
+        shownHoldMs: next.line.holdMs ?? 0,
+        waitMs: 0,
+      };
+    },
+    {
+      line: resolveTutorialLine({ stageId: "fog", storyId: "king" }),
+      hold: { lessonKey: "", introDone: false },
+      shownComment: "",
+      shownAt: 0,
+      shownKey: "",
+      shownHoldMs: 0,
+      waitMs: 0,
+    },
+  );
+  const line = createMemo(() => lineState().line);
+
+  let holdTimer: Cancel | undefined;
+  onCleanup(() => holdTimer?.());
+  createEffect(() => {
+    const waitMs = lineState().waitMs;
+    if (waitMs <= 0 || holdTimer != null) return;
+    holdTimer = schedule(waitMs, () => {
+      holdTimer = undefined;
+      setHoldTick((t) => t + 1);
+    });
   });
 
-  /**
-   * `ending` → success handoff. Created *after* the line effect on purpose: by
-   * the time this runs, `line()` is the line the completing board produced, not
-   * the one before it. Time the line has already been on screen counts toward
-   * its reading budget, so only a line that lands with the objective waits the
-   * full hold — a mid-lesson line the player has been reading doesn't re-charge
-   * for it.
-   */
+  /** `ending` → success handoff after the closing line's remaining reading time. */
   createEffect(() => {
     if (outcome() !== "ending") return;
     if (endingTimer != null) return;
-    const hold =
-      lessonEndMessageMs(line().comment) - (performance.now() - shownAt);
+    const hold = lessonEndMessageMs(line().comment) - (performance.now() - untrack(lineState).shownAt);
     if (hold <= 0) {
       completeObjective();
       return;
     }
-    endingTimer = setTimeout(() => {
+    endingTimer = schedule(hold, () => {
       endingTimer = undefined;
       completeObjective();
-    }, hold);
+    });
   });
 
   const lineKey = () =>
     `${section()}|${storyId()}|${line().comment}|${line().emotion}|${line().action?.kind ?? ""}`;
 
   const retryLesson = () => {
-    lineHold = { lessonKey: "", introDone: false };
     clearTimers();
     setLessonEpoch((n) => n + 1);
   };
 
   type CoachState = "shown" | "leaving" | "hidden" | "revealed";
   const [coachState, setCoachState] = createSignal<CoachState>("shown");
-  let leaveTimer: ReturnType<typeof setTimeout> | undefined;
+  let leaveTimer: Cancel | undefined;
   const cancelLeave = () => {
-    if (leaveTimer != null) clearTimeout(leaveTimer);
+    leaveTimer?.();
     leaveTimer = undefined;
   };
   onCleanup(cancelLeave);
+  let coachKey = "";
   createEffect(() => {
-    section();
-    storyId();
-    lessonEpoch();
-    cancelLeave();
-    setCoachState("shown");
-  });
-  createEffect(() => {
+    const key = `${section()}|${storyId()}|${lessonEpoch()}`;
+    if (key !== coachKey) {
+      coachKey = key;
+      cancelLeave();
+      setCoachState("shown");
+    }
     const rule = tutorialStory(section(), storyId())?.hideCoachWhen;
     const n = tutorialNarration();
     const reveal = outcome() !== "active" || line().action?.kind === "retryLesson";
@@ -532,10 +535,13 @@ export const TutorialScreen: Component = () => {
     if (hide) {
       if (prev === "shown" || prev === "revealed") {
         setCoachState("leaving");
-        leaveTimer = setTimeout(() => {
-          leaveTimer = undefined;
-          setCoachState("hidden");
-        }, tutorialStory(section(), storyId())?.coachFarewellMs ?? COACH_FAREWELL_MS);
+        leaveTimer = schedule(
+          tutorialStory(section(), storyId())?.coachFarewellMs ?? COACH_FAREWELL_MS,
+          () => {
+            leaveTimer = undefined;
+            setCoachState("hidden");
+          },
+        );
       }
       return;
     }
@@ -660,6 +666,7 @@ export const TutorialScreen: Component = () => {
     const beats = sectionBeats("fog");
     return (
       <FogSection
+        onNarration={provideNarration}
         board={board()}
         lessonKey={lessonKey()}
         bannerTitle={lessonTitle()}
@@ -686,7 +693,7 @@ export const TutorialScreen: Component = () => {
         lessonKey={lessonKey()}
         bannerTitle={lessonTitle()}
         tutorial
-        narrate
+        onNarration={provideNarration}
         hideResources
         turnChrome="none"
         onExitToMenu={goHome}
@@ -709,7 +716,7 @@ export const TutorialScreen: Component = () => {
         lessonKey={lessonKey()}
         bannerTitle={lessonTitle()}
         tutorial
-        narrate
+        onNarration={provideNarration}
         turnChrome="sidebar"
         onExitToMenu={goHome}
         coachEmotion={line().emotion}
@@ -750,6 +757,7 @@ export const TutorialScreen: Component = () => {
                   guideBubble={guideBubble()}
                   footerExtra={resolveFooter()}
                   intentArrows={tutorialStory("resolve", id)?.intentArrows}
+                  onNarration={provideNarration}
                 />
               );
             }}

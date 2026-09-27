@@ -1,7 +1,7 @@
 // SPEC: _spec/apps/starchess/architecture/timers.puml
-import { getOwner, onCleanup } from "solid-js";
+import { createSignal, getOwner, onCleanup, type Accessor } from "solid-js";
 
-import { browserInterval, browserScheduler } from "~/adapters/browser";
+import { browserFrames, browserInterval, browserScheduler } from "~/adapters/browser";
 import type { Cancel } from "~/types/ports";
 
 /** Unowned delay: the caller keeps the cancel. */
@@ -12,6 +12,9 @@ export const repeat = (ms: number, fn: () => void): Cancel => browserInterval.ev
 
 const owned = (cancel: Cancel): Cancel => {
   if (getOwner()) onCleanup(cancel);
+  else if (import.meta.env.DEV) {
+    console.warn("createDelay/createRepeat/createFrameClock ran with no owner; use schedule/repeat and keep the cancel.");
+  }
   return cancel;
 };
 
@@ -21,7 +24,33 @@ export const createDelay = (ms: number, fn: () => void): Cancel => owned(schedul
 /** Repeat cancelled when the current owner (component, effect run) disposes. */
 export const createRepeat = (ms: number, fn: () => void): Cancel => owned(repeat(ms, fn));
 
-/** Resolves after `ms`; an abort settles it early instead of stranding the awaiter. */
+/** Unowned frame callback: the caller keeps the cancel. */
+export const frame = (fn: (now: number) => void): Cancel => browserFrames.request(fn);
+
+/** Runs `fn` after the next paint (two frames); the cancel covers both frames. */
+export const afterPaint = (fn: () => void): Cancel => {
+  let cancel = frame(() => {
+    cancel = frame(() => fn());
+  });
+  return () => cancel();
+};
+
+/** Ms since the first frame, updated once per animation frame; stops when the owner disposes. */
+export const createFrameClock = (): Accessor<number> => {
+  const [elapsed, setElapsed] = createSignal(0);
+  let origin: number | undefined;
+  let cancel: Cancel = () => {};
+  const tick = (now: number) => {
+    origin ??= now;
+    setElapsed(now - origin);
+    cancel = frame(tick);
+  };
+  cancel = frame(tick);
+  owned(() => cancel());
+  return elapsed;
+};
+
+/** Resolves after `ms`, or as soon as `signal` aborts. */
 export const sleep = (ms: number, signal?: AbortSignal): Promise<void> =>
   new Promise((resolve) => {
     if (signal?.aborted) return resolve();

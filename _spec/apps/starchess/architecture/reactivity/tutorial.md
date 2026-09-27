@@ -28,12 +28,27 @@ lesson hosts (`apps/starchess/src/demos/**`) and the tutorial bridge
   - `queue`: rebuilt from the live queue on every run, so the same actions
     must compare equal (`sameStructure`).
 
-## `tutorial/tutorialNarrationStore.ts`
+## `tutorial/narrationSlot.ts`
 
-- **`tutorialNarration` signal** uses `equals: sameStructure`: hosts publish a
-  rebuilt object on every board change (a unit select included), and three
-  `TutorialScreen` effects read the whole value — an identical publish must
-  not wake them.
+- **One reader, one writer, no sync effect (R7).** `TutorialScreen` owns a
+  `createNarrationSlot()`; the mounted host hands it a narration *accessor*
+  once (`onNarration`), and the slot's memo reads through it. The module-global
+  signal it replaced had three writers (`useLessonNarration`,
+  `TutorialReviewHost`, a dead `ReviewDemoScreen` branch) each copying into it
+  from an effect, so the screen judged the objective one pass late and the
+  last writer won.
+- **Release is conditional**: a host's cleanup silences the slot only if it is
+  still the current source — a keyed remount mounts the next host before the
+  old one's cleanup runs.
+- **`equals: sameStructure`** on the slot memo and on each host's narration
+  memo: hosts rebuild the object on every board change (a unit select
+  included), and three `TutorialScreen` effects read the whole value — an
+  identical rebuild must not wake them.
+- **`useLessonNarration`** derives the narration as a memo; the BattleShip
+  watch is a memo fold (`prev` → `nextBattleShipWatch`), not a mutable `let`
+  inside an effect.
+- **`TutorialReviewHost`** reports `timelineActive || busy()`: the typewriter
+  awaits resolve VFX while `busy`, so `completeWhen` waits for the Turn 3 end.
 
 ## `demos/LiveLessonHost.tsx`
 
@@ -55,6 +70,12 @@ lesson hosts (`apps/starchess/src/demos/**`) and the tutorial bridge
   extra pass per change.
 - **`autoQueueOpponent`** — static per lesson; hoisted so the prop is not a
   conditional getter (R2).
+
+- **Queue cancel hint is context, not a global.** The host provides
+  `createMemo(() => interactive() ? hintMarks().cancelQueued : null)` through
+  `QueueHintProvider` around `BaseScreen`; `TurnBar` / `TurnBarSidebar` read
+  `useQueueHint()` (default `null`). It replaced a module signal the host wrote
+  from an effect and cleared on cleanup (R7).
 
 ## `demos/ReviewDemoScreen.tsx`
 
@@ -101,21 +122,53 @@ lesson hosts (`apps/starchess/src/demos/**`) and the tutorial bridge
   remount the whole host (store, `BaseScreen`, board, HUD): ~3,800 computations
   created and a ~265ms frame at 20× CPU. Now `TutorialScreen` passes
   `lessonKey` (`story#retryEpoch`) and the host re-seeds its store instead:
-  `createComputed(on(lessonKey))` → `cancelEffects()` then `LOAD_SCFEN` (the
-  same `seedFromSnap` a fresh store uses), plus the Storybook gas override.
+  `createComputed(on(lessonKey))` → `store.loadLesson({ scfen, stored, gas })`,
+  one store command that batches `cancelEffects()`, `LOAD_SCFEN` (the same
+  `seedFromSnap` a fresh store uses) and the Storybook gas override
+  (`setViewerGas`, read through `peek()`, not the host's `store.state()`).
   Measured: advance frame ~150ms at 20×, ~300 computations created, and the
   `[data-board-grid]` element survives the advance.
 - **`createComputed`, not `createEffect`.** It runs in the pure phase, before
   render effects, so the store is already re-seeded when the new lesson's
-  choreography mounts and dispatches its opening steps.
+  choreography mounts and dispatches its opening steps. This is the one
+  accepted dispatch-from-computation: deferring it (effect, task) lets the new
+  choreography dispatch onto the old board. The graph review flagged it; the
+  ordering requirement keeps it.
 - **`LessonScope`** — the lesson-scoped hooks (choreography, forced tank mode,
   narration) live in a DOM-free child keyed by `createMemo(on(lessonKey))`.
   Remounting it is cheap; it hands its `ChoreographyResult` up through a
   signal (`interactive` gating reads it), and resets it to `{}` on cleanup.
 - **Folds keyed on the lesson** — `ccSeen` / `alertLatch` fold from their
   previous value; the fold now carries the `lessonKey` it belongs to and
-  restarts from empty when the key changes, which is what a remount did.
+  restarts when the key changes, which is what a remount did. `alertLatch`
+  restarts empty; `ccSeen` restarts on the enemy CC's home square
+  (`emptyCCIntel(enemy).focus`), so an unseen CC rings its default location.
 - **`autoArmTimer` is an accessor** (`() => props.armTimer ?? board.armTimer`)
   because lessons in one section disagree (several set `armTimer: false`).
-  `BaseScreen`'s arm effect reacts to `liveSnapshot`, so it re-arms itself
-  after a reset; turn-open checks still only run through `armTimer`.
+  The store re-arms after a reset itself (`LOAD_SCFEN` → `armWhenIdle`, one task
+  later, outside any effect); turn-open checks still only run through
+  `armTimer`.
+
+## `screens/TutorialScreen.tsx` — objective, line, coach
+
+- **The line is a memo fold, not an effect.** `lineState` folds
+  `(narration, lesson key, holdTick)` over its previous value
+  (`holdTutorialLine` hold + the shown comment, when it landed, its hold);
+  `line` is a memo over it. The ending handoff reads `line()` and so always
+  sees the line the completing board produced — a memo is brought up to date
+  on read, whatever order effects were created in. It replaced an effect that
+  wrote `line` and an ending effect that was only correct because it was
+  *created after* it.
+- **Reading budget.** Time the closing line has already been on screen counts
+  toward its hold (`performance.now() - shownAt`), so only a line that lands
+  with the objective waits the full `lessonEndMessageMs`; a mid-lesson line the
+  player has been reading doesn't re-charge.
+- **Hold timer** — the only side effect left from the fold: an effect arms one
+  `schedule(waitMs)` from `lineState().waitMs`, which bumps `holdTick`.
+- **Coach state has one writer.** The lesson-key reset and the hide / leave /
+  reveal logic are one effect keyed on `section|story|epoch`; two effects used
+  to write `coachState` on the same lesson change.
+- **The objective judge reads `outcome` untracked**: it is the only writer of
+  `"active"` (on a key change), so tracking its own write only bought a no-op
+  re-run.
+

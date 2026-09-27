@@ -4,14 +4,14 @@ import type { JSX } from "solid-js";
 
 import type { BoardSkin, BoardVariant, PieceSet } from "~/types/board";
 import type { KerriganEmotion } from "~/types/coach";
-import type { LiveLessonBoard, TutorialBeat } from "~/types/tutorial";
+import type { LiveLessonBoard, NarrationSink, TutorialBeat } from "~/types/tutorial";
 
 export type LiveLessonHostProps = {
   /** Seed + board chrome from the lesson catalog. */
   board: LiveLessonBoard;
   lessonKey?: string;
-  /** Publish into `tutorialNarrationStore` (tutorial lessons only). */
-  narrate?: boolean;
+  /** Hand this lesson's narration to the tutorial screen (tutorial lessons only). */
+  onNarration?: NarrationSink;
   /** Tutorial chrome — HOME-only rail, no ExitGameConfirm. */
   tutorial?: boolean;
   /** Full `/single`-style top pane instead of the coach lesson header. */

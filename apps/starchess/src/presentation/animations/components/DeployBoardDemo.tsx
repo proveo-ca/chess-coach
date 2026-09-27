@@ -8,7 +8,7 @@ import {
 } from "~/presentation/animations/deployAnim";
 import styles from "~/presentation/animations/components/DeployBoardDemo.module.css";
 import { AnimationStage } from "~/presentation/animations/components/AnimationStage";
-import { createPhaseLoop } from "~/presentation/animations/phaseLoop";
+import { createPhaseClock } from "~/presentation/animations/phaseLoop";
 import { Screen } from "@chess-coach/ui-web/primitives/Screen";
 import type { DeployCue } from "~/presentation/types";
 
@@ -28,7 +28,7 @@ export const DeployBoardDemo: Component<{ piece: DeployPiece }> = (props) => {
     on(
       () => props.piece,
       (piece) =>
-        createPhaseLoop(
+        createPhaseClock(
           [
             [
               0,

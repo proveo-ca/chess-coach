@@ -44,7 +44,7 @@ import {
   playResolveWave,
 } from "~/presentation/timeline/playResolveWave";
 import { turnBonusFor } from "~/app/turnBonusPolicy";
-import { displayedSnapshotFrom, registerDisplayedSnapshot } from "~/app/selectors";
+import { canSubmit, displayedSnapshotFrom, registerDisplayedSnapshot } from "~/app/selectors";
 import { sameFlat } from "~/presentation/board/memoEquals";
 import type { ResolveWaveId } from "~/types/tutorial";
 
@@ -119,6 +119,8 @@ export const createMatchStore = (opts?: {
   let cancelTimeline: (() => void) | null = null;
   let cancelTimer: (() => void) | null = null;
   let cancelReviewTurn: (() => void) | null = null;
+  let cancelDeferredSubmit: (() => void) | null = null;
+  let cancelArmWhenIdle: (() => void) | null = null;
   let reviewBusy = false;
   /** Settled index when the in-flight one-arrow turn began. */
   let reviewTurnStart = 0;
@@ -133,6 +135,7 @@ export const createMatchStore = (opts?: {
       shellFields.write(toShell(next));
       if (untrack(timeline) !== next.timeline) setTimeline(next.timeline);
     });
+    if (action.type === "LOAD_SCFEN") armWhenIdle();
   };
 
   const clearReviewIntent = () => setReviewIntentActions(null);
@@ -159,6 +162,10 @@ export const createMatchStore = (opts?: {
     cancelTimeline = null;
     cancelTimer?.();
     cancelTimer = null;
+    cancelDeferredSubmit?.();
+    cancelDeferredSubmit = null;
+    cancelArmWhenIdle?.();
+    cancelArmWhenIdle = null;
     clearReviewIntent();
     dispatch({ type: "CANCEL_EFFECTS" });
   };
@@ -169,6 +176,8 @@ export const createMatchStore = (opts?: {
   };
 
   const armTimer = () => {
+    cancelArmWhenIdle?.();
+    cancelArmWhenIdle = null;
     if (!autoArmTimer()) return;
     cancelTimer?.();
     const s = peek();
@@ -220,6 +229,42 @@ export const createMatchStore = (opts?: {
       const next = peek();
       if (next.phase === "planning" && opts?.armTimer) armTimer();
       if (next.phase === "gameOver") syncReviewPhaseIdle();
+    });
+  };
+
+  const setViewerGas = (gas: number) => {
+    const next = Math.min(3, Math.max(0, Math.floor(gas)));
+    const s = peek();
+    if ((s.liveSnapshot.gas[s.viewer] ?? 0) === next) return;
+    dispatch({
+      type: "APPLY_SNAPSHOT",
+      snapshot: { ...s.liveSnapshot, gas: { ...s.liveSnapshot.gas, [s.viewer]: next } },
+    });
+  };
+
+  const loadLesson = (seed: { scfen: string; stored: number; gas?: number }) =>
+    batch(() => {
+      cancelEffects();
+      dispatch({ type: "LOAD_SCFEN", scfen: seed.scfen, stored: seed.stored });
+      if (seed.gas != null) setViewerGas(seed.gas);
+    });
+
+  const armWhenIdle = () => {
+    cancelArmWhenIdle?.();
+    cancelArmWhenIdle = null;
+    if (!autoArmTimer()) return;
+    cancelArmWhenIdle = scheduler.delay(0, () => {
+      cancelArmWhenIdle = null;
+      const s = peek();
+      if (s.deadlineAt == null && !s.timeline.active) armTimer();
+    });
+  };
+
+  const submitTurnNextTask = () => {
+    cancelDeferredSubmit?.();
+    cancelDeferredSubmit = scheduler.delay(0, () => {
+      cancelDeferredSubmit = null;
+      if (canSubmit(peek())) submitTurn("end");
     });
   };
 
@@ -384,6 +429,9 @@ export const createMatchStore = (opts?: {
     timeline,
     dispatch,
     submitTurn,
+    submitTurnNextTask,
+    loadLesson,
+    setViewerGas,
     armTimer,
     ensureTurnOpenChecks,
     reviewBack,
@@ -407,7 +455,17 @@ export const createMatchStore = (opts?: {
     );
     return dispose;
   });
-  if (getOwner()) onCleanup(disposeDisplayed);
+  armWhenIdle();
+  if (getOwner()) {
+    onCleanup(() => {
+      cancelReviewTurn?.();
+      cancelTimeline?.();
+      cancelTimer?.();
+      cancelDeferredSubmit?.();
+      cancelArmWhenIdle?.();
+      disposeDisplayed();
+    });
+  }
   return store;
 };
 

@@ -16,7 +16,7 @@ import {
 import styles from "~/presentation/animations/components/AttackBoardDemo.module.css";
 import { attackVectorsFor, squareAt } from "~/presentation/animations/attackVectors";
 import { AnimationStage } from "~/presentation/animations/components/AnimationStage";
-import { createPhaseLoop } from "~/presentation/animations/phaseLoop";
+import { createPhaseClock } from "~/presentation/animations/phaseLoop";
 import {
   clearSiegedTanks,
   setTankMode,
@@ -108,7 +108,7 @@ export const AttackBoardDemo: Component<{
     on([() => props.piece, () => props.tankMode], () => {
       prepare();
       setVecIndex(0);
-      createPhaseLoop(
+      createPhaseClock(
         [
           [0, idle],
           [IDLE_FRONT_MS, attack],

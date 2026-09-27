@@ -123,6 +123,15 @@ package "AFTER · Bridge via composition" as AFTER {
 
   N_AFTER .. MatchBoardHost
 
+  note bottom of MatchBoardHost
+    **Decided (2026-09-27): stay compound.** Each host composes
+    Root → BoardColumn → BoardHost → LiveBoardBinding + Rail itself;
+    the repeated ~20 lines are the composition, not duplication to
+    extract. A slot-prop wrapper (board / overlay / rail) was
+    considered and rejected. Pinned by
+    ""__tests__/composition/boardHostComposition.test.ts"".
+  end note
+
   BaseScreen_A *-- MatchBoardHost : LiveChrome slots
   ReviewDemoScreen_A *-- MatchBoardHost : DualNav slots
   TutorialReviewHost_A *-- MatchBoardHost : Typewriter slots
