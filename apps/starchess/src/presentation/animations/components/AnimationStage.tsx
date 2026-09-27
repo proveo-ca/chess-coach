@@ -27,6 +27,7 @@ import {
 import { findBoardGrid } from "~/presentation/animations/boardGeom";
 import { siegedTanksList } from "~/presentation/animations/tankModeStore";
 import { StarChessBoard } from "~/presentation/board/components/StarChessBoard";
+import type { BoardDragGhost } from "~/presentation/board/hooks/useBoardInput";
 import type {
   BoardSkin,
   IntentCanister,
@@ -89,6 +90,13 @@ export type AnimationStageProps = {
   /** Tutorial hint lines drawn square-to-square. */
   hintArrows?: readonly TutorialBoardArrow[];
   onSquareClick?: (square: Square) => void;
+  /** Unified pointer-drag path — classical moves only; deploy/Charon/Jump stay tap-only. */
+  onPointerDown?: (e: PointerEvent) => void;
+  onPointerMove?: (e: PointerEvent) => void;
+  onPointerUp?: (e: PointerEvent) => boolean;
+  onPointerCancel?: (e: PointerEvent) => void;
+  dragGhost?: BoardDragGhost | null;
+  hoveredDragSquare?: Square | null;
   /** Combat VFX cues — single bag for the Composite overlay root. */
   combat?: CombatCueFrame;
   /** Squares currently absorbing gas (piece green aura transition). */
@@ -240,6 +248,12 @@ export const AnimationStage: Component<AnimationStageProps> = (props) => {
         hintGasSquares={props.hintGasSquares}
         hintArrows={props.hintArrows}
         onSquareClick={props.onSquareClick}
+        onPointerDown={props.onPointerDown}
+        onPointerMove={props.onPointerMove}
+        onPointerUp={props.onPointerUp}
+        onPointerCancel={props.onPointerCancel}
+        dragGhost={props.dragGhost}
+        hoveredDragSquare={props.hoveredDragSquare}
         hideSquares={hidden()}
         moveCues={combatFrame().moveCues}
         moveProgress={combatFrame().moveProgress}

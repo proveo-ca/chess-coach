@@ -1,12 +1,13 @@
 // SPEC: _spec/apps/starchess/core/board/planning-projection.puml, _spec/apps/starchess/core/engine-boundary.puml, _spec/apps/starchess/architecture/board-entities.puml, _spec/apps/starchess/architecture/reactivity/presentation.md
 import type { Square } from "chess.js";
-import { batch, createMemo } from "solid-js";
+import { batch, createMemo, createSignal } from "solid-js";
 import {
   UNIT_COST,
   placementToMap,
   scMovesFrom,
   type ScFenSnapshot,
   type StarChessColor,
+  type StarChessPiece,
 } from "@chess-coach/starchess-core";
 import { ccDeployTargets } from "~/presentation/specials/deployTargets";
 import { specialTimingFor } from "~/presentation/specials/queue";
@@ -25,6 +26,24 @@ import { tankModeForSieged } from "~/presentation/board/tankMode";
 import { useBoardVision } from "~/presentation/combat/hooks/useIntentOverlays";
 import type { VisionMode } from "~/types/board";
 import type { PromotionPiece } from "~/types/chess";
+
+/** Unified pointer-drag ghost — one path for mouse/touch/pen via pointer capture. */
+export type BoardDragGhost = {
+  from: Square;
+  color: StarChessColor;
+  piece: StarChessPiece;
+  x: number;
+  y: number;
+};
+
+const DRAG_THRESHOLD_PX = 6;
+
+const squareFromPoint = (x: number, y: number): { square: Square; el: HTMLElement } | null => {
+  const el = document.elementFromPoint(x, y);
+  const target = el?.closest("[data-square]") as HTMLElement | null;
+  const square = target?.dataset.square;
+  return target && square ? { square: square as Square, el: target } : null;
+};
 
 /**
  * Gas then same-vector classical (B e6→e7 + C e6→e7) rewrites to e7→e8.
@@ -358,10 +377,111 @@ export const useBoardInput = (
     queueClassical(selected, square, mover.color);
   };
 
+  // ── Pointer drag (classical moves only; deploy/Charon/Jump stay tap-only) ──
+  type DragCandidate = {
+    from: Square;
+    pointerId: number;
+    el: HTMLElement;
+    startX: number;
+    startY: number;
+  };
+  let dragCandidate: DragCandidate | null = null;
+  const [dragGhost, setDragGhost] = createSignal<BoardDragGhost | null>(null);
+  const [hoveredDragSquare, setHoveredDragSquare] = createSignal<Square | null>(null);
+
+  const pieceAt = (square: Square) =>
+    placementToMap(store.view.displayedSnapshot().placement).get(square) ?? null;
+
+  const clearDrag = () => {
+    dragCandidate = null;
+    setDragGhost(null);
+    setHoveredDragSquare(null);
+  };
+
+  const onPointerDown = (e: PointerEvent) => {
+    if (dragCandidate) return;
+    const state = store.state();
+    if (state.targeting || state.pendingPromotion || !store.view.canSubmit()) return;
+    const hit = squareFromPoint(e.clientX, e.clientY);
+    if (!hit) return;
+    const piece = pieceAt(hit.square);
+    if (!piece || piece.color !== state.viewer) return;
+    e.preventDefault();
+    dragCandidate = {
+      from: hit.square,
+      pointerId: e.pointerId,
+      el: hit.el,
+      startX: e.clientX,
+      startY: e.clientY,
+    };
+  };
+
+  const onPointerMove = (e: PointerEvent) => {
+    const candidate = dragCandidate;
+    if (!candidate || candidate.pointerId !== e.pointerId) return;
+    if (!dragGhost()) {
+      const dx = e.clientX - candidate.startX;
+      const dy = e.clientY - candidate.startY;
+      if (Math.hypot(dx, dy) < DRAG_THRESHOLD_PX) return;
+      const piece = pieceAt(candidate.from);
+      if (!piece) {
+        dragCandidate = null;
+        return;
+      }
+      // Deferred select: this is the gesture's "first tap" — calling it only
+      // now (not on pointerdown) means a plain stationary click never reaches
+      // handleSquareClick twice (see onPointerUp / the onClick suppression flag).
+      candidate.el.setPointerCapture(candidate.pointerId);
+      onSquareClick(candidate.from);
+      setDragGhost({ from: candidate.from, color: piece.color, piece: piece.type, x: e.clientX, y: e.clientY });
+      setHoveredDragSquare(candidate.from);
+      return;
+    }
+    setDragGhost((g) => (g ? { ...g, x: e.clientX, y: e.clientY } : g));
+    setHoveredDragSquare(squareFromPoint(e.clientX, e.clientY)?.square ?? null);
+  };
+
+  /**
+   * True when this pointerup resolved a tracked candidate (tap-select/confirm
+   * or a drop) — the caller suppresses the click that otherwise follows the
+   * same gesture so it is never applied twice.
+   */
+  const onPointerUp = (e: PointerEvent): boolean => {
+    const candidate = dragCandidate;
+    if (!candidate || candidate.pointerId !== e.pointerId) return false;
+    if (candidate.el.hasPointerCapture(candidate.pointerId)) {
+      candidate.el.releasePointerCapture(candidate.pointerId);
+    }
+    if (!dragGhost()) {
+      clearDrag();
+      onSquareClick(candidate.from);
+      return true;
+    }
+    const drop = squareFromPoint(e.clientX, e.clientY)?.square ?? null;
+    clearDrag();
+    if (drop && drop !== candidate.from) onSquareClick(drop);
+    return true;
+  };
+
+  const onPointerCancel = (e: PointerEvent) => {
+    const candidate = dragCandidate;
+    if (!candidate || candidate.pointerId !== e.pointerId) return;
+    if (candidate.el.hasPointerCapture(candidate.pointerId)) {
+      candidate.el.releasePointerCapture(candidate.pointerId);
+    }
+    clearDrag();
+  };
+
   return {
     onSquareClick,
     pendingPromotion,
     resolvePromotion,
     cancelPromotion,
+    onPointerDown,
+    onPointerMove,
+    onPointerUp,
+    onPointerCancel,
+    dragGhost,
+    hoveredDragSquare,
   };
 };

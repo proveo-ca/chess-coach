@@ -4,7 +4,7 @@
  */
 import type { Component } from "solid-js";
 
-import styles from "~/components/primitives/AchievementBubble.module.css";
+import { Bubble } from "@chess-coach/ui-web/primitives/Bubble";
 
 export type AchievementBubbleProps = {
   icon: string;
@@ -21,22 +21,17 @@ export type AchievementBubbleProps = {
 };
 
 export const AchievementBubble: Component<AchievementBubbleProps> = (props) => (
-  <div
-    class={styles.bubble}
-    style={{
-      left: props.left,
-      top: props.top,
-      width: props.width,
-      height: props.height,
-      "--bubble-rise": props.rise,
-      "--glyph": props.tint,
-      "--glyph-url": `url("${props.icon}")`,
-    }}
+  <Bubble
+    icon={props.icon}
+    tint={props.tint}
+    left={props.left}
+    top={props.top}
+    width={props.width}
+    height={props.height}
+    rise={props.rise}
     data-testid="achievement-bubble"
     data-short-id={props.shortId}
     data-origin={props.origin}
     data-level={props.level}
-  >
-    <span class={styles.mark} />
-  </div>
+  />
 );
