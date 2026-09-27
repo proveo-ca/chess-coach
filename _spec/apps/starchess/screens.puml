@@ -142,10 +142,11 @@ note bottom
   King. Never a rules concept — asserted in ``__tests__/bundle/bundleBoundary``.
   Fire cues pass the same fog gate as every other cue layer, so an unseen
   burning CC never marks its square (``__tests__/fog/ccDamageFog``).
-  **Tutorial-only labels** (``TutorialHudLabels``) — names the deploy /
-  promotion tiles (``specialCopyFor``) and the three ResourceBar strips.
-  Anchors are found by test id and measured into a portal, so ``DeployModal`` /
-  ``PromotionModal`` / ``ResourceBar`` carry no tutorial branch.
+  **Tutorial-only labels** (``TutorialHudLabels``) — names the deploy tiles
+  (``specialCopyFor``) and the three ResourceBar strips. Anchors are found by
+  test id and measured into a portal, so ``DeployModal`` / ``ResourceBar``
+  carry no tutorial branch. ``PromotionModal`` names its own choices
+  (BattleShip / Tank / Mecha / Hoverbike), so the tutorial adds none there.
   **Full-match exception:** final lesson ``live-play-attack-3`` (``fullMatchHud``)
   renders the ``/single``-style top pane — Home + matchTitle + ResourceBar +
   status line — with no coach header / mobile hero; guide bubble docks below
