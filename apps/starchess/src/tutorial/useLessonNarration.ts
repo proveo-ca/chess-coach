@@ -68,7 +68,11 @@ export const createLessonBoard = (store: MatchStore): LessonBoard => {
 
 const NO_WATCH: BattleShipWatch = { onH8: false, sniped: false };
 
-export const useLessonNarration = (board: LessonBoard, sink: NarrationSink | undefined): void => {
+export const useLessonNarration = (
+  board: LessonBoard,
+  sink: NarrationSink | undefined,
+  lessonKey: string,
+): void => {
   if (!sink) return;
   const battleShipWatch = createMemo<BattleShipWatch>((prev) => {
     const battleShip = whiteBattleShipAtH8(board.scfen());
@@ -76,6 +80,7 @@ export const useLessonNarration = (board: LessonBoard, sink: NarrationSink | und
   }, NO_WATCH);
   const narration: Accessor<TutorialNarrationState> = createMemo(
     () => ({
+      lessonKey,
       reviewPhase: board.reviewPhase(),
       timelineActive: board.timelineActive(),
       scfen: board.scfen(),

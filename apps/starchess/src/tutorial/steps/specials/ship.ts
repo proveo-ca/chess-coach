@@ -20,9 +20,11 @@ export const ship = {
   },
   beats: [
     {
+      priority: 3,
       when: { kind: "scfen", re: /SCFEN\|[^|Q]*\|(?:2[2-9]|[3-9]\d+)/ },
-      say: "Bruh",
-      emotion: "watching",
+      say: "The BattleShip never jumped. \n\nDrop all 3 canisters on it, then pick a lit square.",
+      emotion: "shocked",
+      action: { kind: "retryLesson", label: "Retry lesson" },
     },
     {
       priority: 1,

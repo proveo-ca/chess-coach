@@ -15,6 +15,13 @@ export const livePlayDefense2 = {
   restartWhen: { kind: "lives", own: 0 },
   beats: [
     {
+      priority: 3,
+      when: { kind: "lives", own: 0 },
+      say: "Your Command Center fell. \n\nDeploy a Marine onto the Mecha to crush it.",
+      emotion: "shocked",
+      action: { kind: "retryLesson", label: "Retry lesson" },
+    },
+    {
       when: { kind: "scfen", re: /deploy:[^:;]*:g2/ },
       say: "Now, queue an attack on that ship with either your Command Center or Mecha.",
       emotion: "watching",

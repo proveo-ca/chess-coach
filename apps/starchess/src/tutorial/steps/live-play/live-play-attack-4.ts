@@ -14,7 +14,7 @@ export const livePlayAttack4 = {
     alertLatch: "cc",
     docs: "Enemy Command Center on b7, Siege Tank sieged on d8, Marines on a7/b6/c7/d7/e7, Mecha on c6, Hoverbike on a6 — a fully turtled defense. Ally Command Center on e1, Marines on c2/d4/e5/f3, Hoverbikes on a3/d2, mobile Siege Tank on e2, Mecha on d3, a Mine on b1. Turn 12 (relative turn 1), 3 minerals each side. Scripted: the a6 Hoverbike mines its own square then rides to c5 (turn 1); it then threatens the ally Command Center via c5->d3, dying to its own move if not captured first (turn 2); the enemy deploys a Tank on a6, pushes its b-file Marine, and rides the Tank a6->a1 — running into the ally's own a3 mine if the Hoverbike there has already moved (turn 3). Turn 4 onward hands off to the naive Adjutant.",
   },
-  comment: "Uncontested center stinks of rat to me... \n\n Centralize your tank.",
+  comment: "",
   emotion: "thinking",
   completeWhen: { kind: "lives", enemy: 0 },
   hideCoachWhen: { kind: "scfen", re: /SCFEN\|[^|]+\|(?:1[6-9]|[2-9]\d)\|/ },
@@ -22,6 +22,13 @@ export const livePlayAttack4 = {
   coachFarewellMs: 3000,
   restartWhen: { kind: "lives", own: 0 },
   beats: [
+    {
+      priority: 2,
+      turn: 12,
+      when: { kind: "scfen", re: /\|Q:w:;/ },
+      say: "Uncontested center stinks of rat to me... \n\n Centralize your tank.",
+      emotion: "thinking",
+    },
     {
       priority: 3,
       when: { kind: "lives", own: 0 },

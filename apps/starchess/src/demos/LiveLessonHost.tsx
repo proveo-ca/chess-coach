@@ -97,6 +97,7 @@ const LessonScope: Component<{
   board: LiveLessonBoard;
   lessonBoard: ReturnType<typeof createLessonBoard>;
   onNarration?: NarrationSink;
+  lessonKey: string;
   tutorial: boolean;
   onExitToMenu?: () => void;
   onChoreography: (c: ChoreographyResult) => void;
@@ -113,7 +114,7 @@ const LessonScope: Component<{
   props.onChoreography(choreography);
   onCleanup(() => props.onChoreography({}));
   useForcedTankMode(store, () => props.board.tankMode);
-  useLessonNarration(props.lessonBoard, props.onNarration);
+  useLessonNarration(props.lessonBoard, props.onNarration, untrack(() => props.lessonKey));
   const Overlay = choreography.Overlay;
   return Overlay ? <Overlay /> : null;
 };
@@ -232,6 +233,7 @@ const LiveLessonInner: Component<LiveLessonHostProps> = (props) => {
       board={props.board}
       lessonBoard={board}
       onNarration={props.onNarration}
+      lessonKey={lessonKey()}
       tutorial={props.tutorial === true}
       onExitToMenu={props.onExitToMenu}
       onChoreography={setChoreography}

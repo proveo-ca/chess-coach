@@ -472,6 +472,8 @@ export type TutorialQueueAction = {
 };
 
 export type TutorialNarrationState = {
+  /** The lesson this board belongs to (`story#epoch`); a reader drops narration from any other. */
+  lessonKey?: string;
   reviewPhase?: ReviewTurnPhase;
   timelineActive?: boolean;
   /** Live `formatScFen` for script `scfen` reactions. */

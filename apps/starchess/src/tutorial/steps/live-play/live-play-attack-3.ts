@@ -11,10 +11,17 @@ export const livePlayAttack3 = {
     alertLatch: "king",
     opponent: "adjutant",
   },
-  comment: "Remember to use your Gas and your Move each turn",
+  comment: "",
   emotion: "happy",
   completeWhen: { kind: "lives", enemy: 0 },
   beats: [
+    {
+      priority: 2,
+      turn: 0,
+      when: { kind: "scfen", re: /\|Q:w:;/ },
+      say: "Remember to use your Gas and your Move each turn",
+      emotion: "happy",
+    },
     {
       priority: 3,
       when: { kind: "lives", own: 0 },

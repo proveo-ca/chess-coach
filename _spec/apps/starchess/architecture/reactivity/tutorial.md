@@ -37,6 +37,16 @@ lesson hosts (`apps/starchess/src/demos/**`) and the tutorial bridge
   `TutorialReviewHost`, a dead `ReviewDemoScreen` branch) each copying into it
   from an effect, so the screen judged the objective one pass late and the
   last writer won.
+- **Narration is tagged with its lesson.** Hosts put the `lessonKey`
+  (`story#epoch`) their board belongs to on the narration; `TutorialScreen`
+  reads it through a memo that drops narration from any other lesson. On an
+  in-app lesson change (section navs, Next) the route updates before the host
+  re-seeds or remounts, so for one pass the slot still carries the previous
+  lesson's board: the line fold baselined the old SCFEN, read the re-seed as a
+  player move and retired the opening line unread (specials marine…ship,
+  resolve combat-chain / king-hunt), and the objective judge could match the new
+  lesson's gates against the old board. Pinned by the in-app walk in
+  `__tests__/tutorial/lessonIntroAndFailure.test.tsx`.
 - **Release is conditional**: a host's cleanup silences the slot only if it is
   still the current source — a keyed remount mounts the next host before the
   old one's cleanup runs.
