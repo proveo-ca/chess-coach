@@ -62,6 +62,7 @@ style).
 | V38 | A capture onto a **mined** tile buries **both** — `Rxe5` on an e5 holding a unit and a mine plays the victim's wreck and the mine's, with the glyph darkened; visible captures pair them in one phase-1 window, a fogged approach pairs `prdm` with `prdth` before the occupy slide, and the attacker lands alive either way | `mine-contact.puml` (a blocker draws the shot; a capture reports its mine), `cue-projection.puml` | **unit only — see gaps** |
 | V39 | VFX that is a unit's **own** ordnance carries its player's swatch — Hoverbike deploy jet + frag boom, Ship laser, mine-wreck boom — and two sides firing in one window keep their tints apart | `board-entities.puml` (`teamTintStyle`) | **unit only — see gaps** |
 | V40 | A spawn **crush** layers the deploy hull **above** the victim's death boom on the shared square — co-present cues, same tile, `Deploy z37 > Death z35`, topmost hit-test is the deploy layer | `composite-vfx-stack.puml` (Deploy DOM-last ≈ topmost; explicit z under `isolate`) | `vfx-crush-compose.spec.ts` |
+| V41 | A move-phase collision **meets**: both movers end on the contact square, the collision deaths start the moment the later one arrives (no settle wait), neither origin glyph reappears, and no landing ghost covers the square | `cue-playback.puml` (move wave, collisions meet at contact), `move-timing.puml` | **unit only** — `__tests__/collision/collisionContact.test.ts`, `__tests__/collision/collisionGhost.test.tsx` (see Known gaps) |
 
 ### V37 — why the mine wreck needs its own tuning
 
@@ -123,6 +124,11 @@ seq per slot instead of resetting on every re-run.
 
 ## Known gaps
 
+* **V41 has no e2e pin.** Contact timing is a ~20ms window inside one wave and
+  the sampler records cue kinds, not when a death starts relative to a mover.
+  The unit tests drive `playTimeline` on a virtual clock (defense-4's
+  Mecha e5→h2 vs Tank e2→h2, a Hoverbike vs Tank landing, a Command Center
+  taking a unit, and an uncollided wave that keeps its settle pacing).
 * **V35–V39 have no e2e pin.** The offending frames last one cue (a king move is
   200ms, a death `DEATH_MS`), and the sampler records cue *kinds*, layer identity
   and king hit phases — not a hull's `data-king-damage`, `data-death-glyph`, or

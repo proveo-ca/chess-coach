@@ -432,6 +432,7 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
         piece: a.victim.piece,
         color: a.victim.color,
         at: a.to,
+        collision: true,
         ...(a.victim.piece === "r"
           ? { tankMode: tankModeAt(a.to, sieged) }
           : {}),
@@ -444,6 +445,7 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
           color: a.mineColor,
           at: a.to,
           mine: true,
+          collision: true,
         });
       }
     } else if (a.kind === "mineBlast") {
@@ -454,6 +456,7 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
         color: a.mineColor,
         at: a.to,
         mine: true,
+        collision: true,
       });
     }
   }
@@ -1293,18 +1296,58 @@ export const playTimeline = (
   const handleMoveWave: CueHandler = (cue, index) => {
     if (!afterBApplied && cue.board !== "preAfterB") applyAfterB();
     const group = cue.group;
-    const { batch, next } = takeWhile(
+    const taken = takeWhile(
       cues,
       index,
       (c) => isSimulMoveWave(c) && c.group === group,
     );
-    const moves = batch as Extract<TimelineCue, { kind: "move" }>[];
+    const moves = taken.batch as Extract<TimelineCue, { kind: "move" }>[];
     const hidden = moves.map((c) => c.from);
     const ids = moves.map((c) => c.id);
     const progress0 = Object.fromEntries(ids.map((id) => [id, 0 as const]));
     const progress1 = Object.fromEntries(ids.map((id) => [id, 1 as const]));
     const leg0 = hoverbikeLeg0(moves);
     let legState: Record<string, 0 | 1> = { ...leg0 };
+
+    const arrivals = new Map<Square, Extract<TimelineCue, { kind: "move" }>[]>();
+    for (const m of moves) arrivals.set(m.to, [...(arrivals.get(m.to) ?? []), m]);
+    const tail = takeWhile(cues, taken.next, isMoveCollisionDeath);
+    const tailDeaths = tail.batch as Extract<TimelineCue, { kind: "death" }>[];
+    const absorb =
+      tailDeaths.length > 0 && tailDeaths.every((d) => (arrivals.get(d.at)?.length ?? 0) >= 2);
+    const next = absorb ? tail.next : taken.next;
+    const contacts = absorb
+      ? [...new Set(tailDeaths.map((d) => d.at))].map((at) => {
+          const movers = arrivals.get(at)!;
+          const deaths = tailDeaths.filter((d) => d.at === at);
+          const dying = movers.filter((m) =>
+            deaths.some((d) => !d.mine && d.piece === m.piece && d.color === m.color),
+          );
+          return {
+            at,
+            ms: Math.max(1, ...movers.map((m) => cueDuration(m))),
+            movers,
+            deaths,
+            dying: new Set(dying.map((m) => m.id)),
+          };
+        })
+      : [];
+    const dyingIds = new Set(contacts.flatMap((c) => [...c.dying]));
+
+    let playingMovers = new Set(ids);
+    let playingDeaths = new Set<string>();
+    let deathSquares = new Set<Square>();
+    let spent = new Set<Square>();
+    const commitWave = (placement?: string) =>
+      cb.onCommit({
+        ...(placement != null ? { placement } : {}),
+        hidden: [...hidden, ...deathSquares],
+        playingIds: [...playingMovers, ...playingDeaths],
+        ...(spent.size ? { spentMines: [...spent] } : {}),
+        moveProgress: Object.fromEntries([...playingMovers].map((id) => [id, 1 as const])),
+        moveLeg: { ...legState },
+      });
+
     cb.onCommit({
       hidden,
       playingIds: ids,
@@ -1326,6 +1369,10 @@ export const playTimeline = (
       const elbow = scheduler.delay(hoverbikeElbowMs(m.from, m.to), () => {
         if (cancelled) return;
         legState = { ...legState, [m.id]: 1 };
+        if (contacts.length) {
+          commitWave();
+          return;
+        }
         cb.onCommit({
           hidden,
           playingIds: ids,
@@ -1335,19 +1382,48 @@ export const playTimeline = (
       });
       cancels.push(elbow);
     }
+    const settles = (c: Extract<TimelineCue, { kind: "move" }>) =>
+      c.piece === "n" || c.piece === "q" || c.piece === "r";
+    const beats: StepBeat[] = contacts.flatMap((c) => [
+      {
+        at: c.ms,
+        run: () => {
+          playingMovers = new Set([...playingMovers].filter((id) => !c.dying.has(id)));
+          playingDeaths = new Set([...playingDeaths, ...c.deaths.map((d) => d.id)]);
+          deathSquares = new Set([...deathSquares, c.at]);
+          spent = new Set([...spent, ...spentMineSquares(c.deaths)]);
+          for (const m of c.movers) {
+            if (!c.dying.has(m.id)) continue;
+            displayPlacement = withoutSquare(displayPlacement, m.from);
+            usedSquares.delete(m.from);
+          }
+          commitWave(displayPlacement);
+        },
+      },
+      {
+        at: c.ms + DEATH_MS,
+        run: () => {
+          playingDeaths = new Set([...playingDeaths].filter((id) => !c.deaths.some((d) => d.id === id)));
+          commitWave();
+        },
+      },
+    ]);
+    const survivorMs = moves
+      .filter((m) => !dyingIds.has(m.id))
+      .map((m) => cueDuration(m) + (settles(m) ? SETTLE_MS : 0));
+    const contactMs = contacts.map((c) => c.ms + DEATH_MS);
     return runStep({
-      durationMs:
-        Math.max(1, ...moves.map((c) => cueDuration(c))) +
-        // Hoverbike / siege tank settle into rest at touchdown;
-        // the mover must stay mounted for the unwind transition to complete
-        // before hand-off.
-        (moves.some((c) => c.piece === "n" || c.piece === "q" || c.piece === "r") ? SETTLE_MS : 0),
+      beats,
+      durationMs: contacts.length
+        ? Math.max(1, ...survivorMs, ...contactMs)
+        : Math.max(1, ...moves.map((c) => cueDuration(c))) +
+          (moves.some(settles) ? SETTLE_MS : 0),
       end: () => {
         for (const m of moves) {
-          if (isBoardSquare(m.to)) {
-            displayPlacement = relocatePlacement(displayPlacement, m.from, m.to);
-            migrateUsed(m.from, m.to);
-          }
+          if (!isBoardSquare(m.to)) continue;
+          if (dyingIds.has(m.id)) continue;
+          displayPlacement = relocatePlacement(displayPlacement, m.from, m.to);
+          migrateUsed(m.from, m.to);
         }
         cb.onCommit({
           placement: displayPlacement,

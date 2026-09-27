@@ -53,6 +53,8 @@ export type DeathCue = {
   at: Square;
   mine?: boolean;
   tankMode?: TankMode;
+  /** A move-phase collision death — the board clears the landing ghost on its square. */
+  collision?: boolean;
 };
 
 export type MoveCue = {

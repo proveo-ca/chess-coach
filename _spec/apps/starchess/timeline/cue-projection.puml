@@ -38,7 +38,7 @@ partition "phase 1" {
 }
 
 :**classical moves** (""c"") — one simultaneous wave;
-:**move collisions** — ""mc"" victim, ""mcm"" mine (no attack cue: the mover\nnever saw what it hit); a fogged capture onto a mined tile pairs them\nthe same way phase 1 does;
+:**move collisions** — ""mc"" victim, ""mcm"" mine (no attack cue: the mover\nnever saw what it hit); a fogged capture onto a mined tile pairs them\nthe same way phase 1 does; each carries ""collision: true"" (data, not an\nid prefix) so the board can clear the landing ghost on that square;
 
 partition "phase-2 mine triggers" {
   :chase → ""mm"" missile from the wake tile to the landing tile;
