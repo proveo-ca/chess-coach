@@ -16,7 +16,7 @@ vi.mock("@chess-coach/starchess-core", async (importOriginal) => {
   };
 });
 
-import { useMatchStore } from "~/app/MatchStoreContext";
+import { useMatchStore } from "~/ports/matchStore";
 import { LiveLessonHost } from "~/demos/LiveLessonHost";
 import { lessonBoard } from "~/tutorial/tutorialScript";
 import type { MatchStore } from "~/types/match";

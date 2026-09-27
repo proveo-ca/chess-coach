@@ -23,19 +23,19 @@ import {
   createSignal,
   on,
   onCleanup,
-  onMount,
   untrack,
   type Component,
 } from "solid-js";
 
-import { createMatchStore, MatchStoreProvider, useMatchStore } from "~/app/MatchStoreContext";
+import { createMatchStore } from "~/app/MatchStoreContext";
+import { MatchStoreProvider, useMatchStore } from "~/ports/matchStore";
 import { createMatchStateFromScfen } from "~/app/matchReducer";
 import { QueueHintProvider } from "~/presentation/hud/queueHint";
 import { BaseScreen } from "~/app/BaseScreen.tsx";
 import { CHOREOGRAPHY, type ChoreographyResult } from "~/demos/choreography";
 import { clearSiegedTanks, setTankMode } from "~/presentation/animations/tankModeStore";
 import { LiveMatchShell } from "~/screens/LiveMatchShell";
-import { TUTORIAL_CAPABILITIES, setCapabilities } from "~/store/capabilitiesStore";
+import { CapabilitiesProvider, LIVE_CAPABILITIES, TUTORIAL_CAPABILITIES } from "~/store/capabilitiesStore";
 import {
   nextAlertLatch,
   nextCCSighting,
@@ -125,10 +125,6 @@ const LiveLessonInner: Component<LiveLessonHostProps> = (props) => {
   const store = useMatchStore();
   const [choreography, setChoreography] = createSignal<ChoreographyResult>({});
   const board = createLessonBoard(store);
-
-  onMount(() => {
-    if (props.tutorial) setCapabilities(TUTORIAL_CAPABILITIES);
-  });
 
   const interactive = () => choreography().interactive?.() ?? true;
   const lessonKey = () => props.lessonKey ?? "";
@@ -304,10 +300,13 @@ export const LiveLessonHost: Component<LiveLessonHostProps> = (props) => {
     untrack(() => store.setViewerGas(g));
   });
 
+  const capabilities = () => (props.tutorial ? TUTORIAL_CAPABILITIES : LIVE_CAPABILITIES);
   const body = (
-    <MatchStoreProvider store={store}>
-      <LiveLessonInner {...props} />
-    </MatchStoreProvider>
+    <CapabilitiesProvider value={capabilities}>
+      <MatchStoreProvider store={store}>
+        <LiveLessonInner {...props} />
+      </MatchStoreProvider>
+    </CapabilitiesProvider>
   );
 
   return props.shell ? <LiveMatchShell world={props.shell}>{body}</LiveMatchShell> : body;

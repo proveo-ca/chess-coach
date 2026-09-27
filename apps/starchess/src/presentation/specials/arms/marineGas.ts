@@ -9,7 +9,6 @@ import {
   type ScFenSnapshot,
 } from "@chess-coach/starchess-core";
 
-import { viewerColor } from "~/app/matchEconomy";
 import type { MatchStore } from "~/types/match";
 import { moveThenGasPromotes } from "~/presentation/board/hooks/useBoardInput";
 import { specialTimingFor, tryQueue } from "~/presentation/specials/queue";
@@ -27,7 +26,7 @@ export const marineGasArm = (
   ctx: { square: Square; piece: PieceSymbol },
 ): ArmResult | boolean => {
   if (ctx.piece !== "p") return false;
-  const color = viewerColor(store);
+  const color = store.view.viewerColor();
   const timing = specialTimingFor(snap.queue, color);
   const to = marineSingleTarget(ctx.square, color);
   if (!to) {

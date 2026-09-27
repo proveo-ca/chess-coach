@@ -9,7 +9,8 @@ import type { StoryObj } from "storybook-solidjs-vite";
 import type { JSX } from "solid-js";
 import { formatScFen } from "@chess-coach/starchess-core";
 
-import { createMatchStore, MatchStoreProvider } from "~/app/MatchStoreContext";
+import { createMatchStore } from "~/app/MatchStoreContext";
+import { MatchStoreProvider } from "~/ports/matchStore";
 import { buildReviewHistory } from "~/app/reviewHistory";
 import { createMatchStateFromScfen } from "~/app/matchReducer";
 import { LiveLessonHost } from "~/demos/LiveLessonHost";

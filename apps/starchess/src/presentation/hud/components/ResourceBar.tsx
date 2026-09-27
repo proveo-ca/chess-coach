@@ -21,7 +21,7 @@ import {
   gasRemainingFor,
   viewerColor,
 } from "~/app/matchEconomy";
-import { MatchStoreContext } from "~/app/MatchStoreContext";
+import { MatchStoreContext } from "~/ports/matchStore";
 import { clampPlayerName } from "~/utils/playerName";
 import { readDisplayedSnapshot } from "~/app/selectors";
 import { MineralsIcon, SupplyIcon, VespeneIcon } from "@chess-coach/ui-web/primitives/icons";

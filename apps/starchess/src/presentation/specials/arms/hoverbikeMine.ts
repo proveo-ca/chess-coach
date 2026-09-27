@@ -7,7 +7,6 @@ import type { PieceSymbol, Square } from "chess.js";
 
 import type { ScFenSnapshot } from "@chess-coach/starchess-core";
 
-import { viewerColor } from "~/app/matchEconomy";
 import type { MatchStore } from "~/types/match";
 import { specialTimingFor, tryQueue } from "~/presentation/specials/queue";
 import type { ArmResult } from "~/presentation/specials/types";
@@ -18,7 +17,7 @@ export const hoverbikeMineArm = (
   ctx: { square: Square; piece: PieceSymbol },
 ): ArmResult | boolean => {
   if (ctx.piece !== "n") return false;
-  const color = viewerColor(store);
+  const color = store.view.viewerColor();
   const timing = specialTimingFor(snap.queue, color);
   return tryQueue(
     store,

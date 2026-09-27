@@ -9,7 +9,7 @@ import type { StarChessColor } from "@chess-coach/starchess-core";
 import type { Component } from "solid-js";
 import { For, Show, createMemo, createSignal } from "solid-js";
 
-import { useMatchStore } from "~/app/MatchStoreContext";
+import { useMatchStore } from "~/ports/matchStore";
 import { VisionSwatch } from "@chess-coach/ui-web/atoms/VisionSwatch";
 import { formatScriptLabel } from "~/utils/matchTitle";
 import { ExitGameConfirm } from "~/components/features/ExitGameConfirm";
@@ -17,7 +17,7 @@ import styles from "~/components/features/SideRailTools.module.css";
 import { Divider } from "@chess-coach/ui-web/primitives/Divider";
 import { IconButton } from "@chess-coach/ui-web/primitives/IconButton";
 import { BackArrowIcon, FlipBoardIcon } from "@chess-coach/ui-web/primitives/icons";
-import { capabilities } from "~/store/capabilitiesStore";
+import { useCapabilities } from "~/store/capabilitiesStore";
 import { reviewVisionFilter, setReviewVisionFilter } from "~/store/reviewVisionStore";
 import type { ReviewVisionFilter } from "~/types/board";
 
@@ -36,6 +36,7 @@ export type SideRailToolsProps = {
 };
 
 export const SideRailTools: Component<SideRailToolsProps> = (props) => {
+  const capabilities = useCapabilities();
   const store = useMatchStore();
   const [exitOpen, setExitOpen] = createSignal(false);
 

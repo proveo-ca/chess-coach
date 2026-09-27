@@ -15,7 +15,6 @@ import {
   type SpawnPiece,
 } from "@chess-coach/starchess-core";
 
-import { storedMaterial, viewerColor } from "~/app/matchEconomy";
 import type { MatchStore } from "~/types/match";
 import { ccDeployTargets } from "~/presentation/specials/deployTargets";
 import { specialTimingFor, tryQueue } from "~/presentation/specials/queue";
@@ -35,12 +34,12 @@ export const createCCDeploy = (
   // NOT the F-projected anchor from `ccDeployTargets` — after a classical
   // Command Center move that square is empty until End.
   const activeCCSq = (): Square | null =>
-    findCC(placementToMap(snap().placement), viewerColor(store));
+    findCC(placementToMap(snap().placement), store.view.viewerColor());
 
   /** Ring targets for the pick step (empty while not picking). */
   const spawnAdjacent = (): Square[] => {
     if (spawnPhase() !== "pick") return [];
-    return ccDeployTargets(snap(), viewerColor(store)).targets;
+    return ccDeployTargets(snap(), store.view.viewerColor()).targets;
   };
 
   /** Gas-drop arm for the Command Center — opens the deploy modal. */
@@ -53,17 +52,17 @@ export const createCCDeploy = (
     setSpawnPhase("modal");
     store.dispatch({
       type: "QUEUE_REJECT",
-      message: `Pick a unit to deploy · minerals ${storedMaterial(store)}`,
+      message: `Pick a unit to deploy · minerals ${store.view.storedMaterial()}`,
     });
     return "pending"; // open modal; mark used only after spawn commits
   };
 
   const onSelectSpawnUnit = (piece: SpawnPiece): void => {
     const cost = UNIT_COST[piece];
-    if (storedMaterial(store) < cost) {
+    if (store.view.storedMaterial() < cost) {
       store.dispatch({
         type: "QUEUE_REJECT",
-        message: `Need ${cost} minerals (have ${storedMaterial(store)})`,
+        message: `Need ${cost} minerals (have ${store.view.storedMaterial()})`,
       });
       return;
     }
@@ -75,7 +74,7 @@ export const createCCDeploy = (
     });
     store.dispatch({
       type: "OPEN_SPAWN",
-      color: viewerColor(store),
+      color: store.view.viewerColor(),
       unit: piece,
     });
     opts?.onAfterOpen?.();
@@ -96,7 +95,7 @@ export const createCCDeploy = (
   const deploySpawnAt = (to: Square): void => {
     const unit = spawnUnit();
     const from = activeCCSq();
-    const color = viewerColor(store);
+    const color = store.view.viewerColor();
     if (!unit || !from) return;
     // Stale/off-ring clicks (e.g. ring moved under the pick overlay) are
     // rejected before spending — the engine remains the authority via tryQueue.
@@ -113,7 +112,7 @@ export const createCCDeploy = (
     if (store.shell().economies[color].stored === before) {
       store.dispatch({
         type: "QUEUE_REJECT",
-        message: `Need ${cost} minerals (have ${storedMaterial(store)})`,
+        message: `Need ${cost} minerals (have ${store.view.storedMaterial()})`,
       });
       return;
     }

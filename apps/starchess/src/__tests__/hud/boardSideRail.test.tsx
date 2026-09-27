@@ -3,27 +3,25 @@ import { createSignal } from "solid-js";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { createMatchStateFromScfen } from "~/app/matchReducer";
-import { createMatchStore, MatchStoreProvider } from "~/app/MatchStoreContext";
+import { createMatchStore } from "~/app/MatchStoreContext";
+import { MatchStoreProvider } from "~/ports/matchStore";
 import { BoardSideRail } from "~/presentation/hud/components/BoardSideRail";
 import { TurnBarSidebar } from "~/presentation/hud/components/TurnBarSidebar";
 import {
   ANALYSIS_CAPABILITIES,
-  LIVE_CAPABILITIES,
-  setCapabilities,
+  CapabilitiesProvider,
+  TUTORIAL_CAPABILITIES,
 } from "~/store/capabilitiesStore";
+import type { ScreenCapabilities } from "~/types/capabilities";
 import { STAR_STARTING_SCFEN } from "~/app/seeds";
 
-afterEach(() => {
-  cleanup();
-  setCapabilities(LIVE_CAPABILITIES);
-});
+afterEach(() => cleanup());
 
 const directDividers = (rail: HTMLElement) =>
   Array.from(rail.children).filter((child) => child.tagName === "HR");
 
 describe("BoardSideRail", () => {
   it("wraps live controls and confirms before leaving", () => {
-    setCapabilities(LIVE_CAPABILITIES);
     const onHome = vi.fn();
     const store = createMatchStore({
       initial: createMatchStateFromScfen(STAR_STARTING_SCFEN, 1),
@@ -55,7 +53,6 @@ describe("BoardSideRail", () => {
   });
 
   it("wraps review controls and exposes review-only tools", () => {
-    setCapabilities(ANALYSIS_CAPABILITIES);
     const onHome = vi.fn();
     const base = createMatchStateFromScfen(STAR_STARTING_SCFEN, 1);
     const store = createMatchStore({
@@ -63,13 +60,15 @@ describe("BoardSideRail", () => {
     });
 
     render(() => (
-      <MatchStoreProvider store={store}>
-        <BoardSideRail
-          controlsVisible
-          controls={<TurnBarSidebar review={{ turn: 1, phase: "resolve", hideDualNav: true }} />}
-          onHome={onHome}
-        />
-      </MatchStoreProvider>
+      <CapabilitiesProvider value={() => ANALYSIS_CAPABILITIES}>
+        <MatchStoreProvider store={store}>
+          <BoardSideRail
+            controlsVisible
+            controls={<TurnBarSidebar review={{ turn: 1, phase: "resolve", hideDualNav: true }} />}
+            onHome={onHome}
+          />
+        </MatchStoreProvider>
+      </CapabilitiesProvider>
     ));
 
     const rail = screen.getByTestId("starchess-side-rail");
@@ -110,5 +109,27 @@ describe("BoardSideRail", () => {
     setControlsVisible(false);
     expect(screen.queryByTestId("hidden-controls")).toBeNull();
     expect(directDividers(rail)).toHaveLength(0);
+  });
+
+  const reviewRail = (caps?: ScreenCapabilities) => {
+    const base = createMatchStateFromScfen(STAR_STARTING_SCFEN, 1);
+    const store = createMatchStore({ initial: { ...base, phase: "gameOver" } });
+    const rail = () => (
+      <MatchStoreProvider store={store}>
+        <BoardSideRail controlsVisible controls={<div />} />
+      </MatchStoreProvider>
+    );
+    return render(() =>
+      caps ? <CapabilitiesProvider value={() => caps}>{rail()}</CapabilitiesProvider> : rail(),
+    );
+  };
+
+  it("a tutorial host hides the vision filter only inside its own tree", () => {
+    const tutorial = reviewRail(TUTORIAL_CAPABILITIES);
+    expect(screen.queryByTestId("review-vision-filter")).toBeNull();
+    tutorial.unmount();
+
+    reviewRail();
+    expect(screen.getByTestId("review-vision-filter")).not.toBeNull();
   });
 });

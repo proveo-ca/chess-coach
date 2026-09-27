@@ -9,7 +9,8 @@ import type { JSX } from "solid-js";
 import { describe, expect, it } from "vitest";
 
 import { createMatchStateFromScfen } from "~/app/matchReducer";
-import { createMatchStore, MatchStoreProvider } from "~/app/MatchStoreContext";
+import { createMatchStore } from "~/app/MatchStoreContext";
+import { MatchStoreProvider } from "~/ports/matchStore";
 import {
   gasStackPromotes,
   moveThenGasPromotes,

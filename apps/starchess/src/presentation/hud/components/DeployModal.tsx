@@ -10,7 +10,7 @@ import { For, Show, createMemo } from "solid-js";
 import type { SpawnPiece, StarChessColor } from "@chess-coach/starchess-core";
 
 import { Modal } from "@chess-coach/ui-web/atoms/Modal";
-import { useMatchStore } from "~/app/MatchStoreContext";
+import { useMatchStore } from "~/ports/matchStore";
 import {
   deployedMaterial,
   energyRemaining,

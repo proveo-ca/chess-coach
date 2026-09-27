@@ -12,9 +12,9 @@ import {
 } from "@chess-coach/starchess-core";
 import type { Square } from "chess.js";
 import type { Component } from "solid-js";
-import { createMemo, onMount } from "solid-js";
+import { createMemo } from "solid-js";
 
-import { useMatchStore } from "~/app/MatchStoreContext";
+import { useMatchStore } from "~/ports/matchStore";
 import { achievementBubbles } from "~/achievements/achievementLive";
 import { canSubmit, readDisplayedSnapshot } from "~/app/selectors";
 import { AnimationStage } from "~/presentation/animations/components/AnimationStage";
@@ -34,7 +34,6 @@ import { useAutoDeploy } from "~/presentation/board/hooks/useAutoDeploy";
 import { useCombatOverlays } from "~/presentation/combat/hooks/useCombatOverlays";
 import { useBoardVision, useIntentOverlays } from "~/presentation/combat/hooks/useIntentOverlays";
 import { liveMatchPhase } from "~/presentation/hud/liveMatchPhase";
-import { LIVE_CAPABILITIES, capabilities, setCapabilities } from "~/store/capabilitiesStore";
 import {
   charonTrailSquares,
   queuedCharonSquares,
@@ -78,13 +77,6 @@ export const LiveStarChessBoard: Component<{
   const snap = createMemo(() => readDisplayedSnapshot(store), undefined, { equals: sameFlat });
   const reviewing = () => store.shell().phase === "gameOver";
   const interactive = createMemo(() => canSubmit(store.shell()));
-
-  // Live play locks viewer orientation — Flip stays off in SideRailTools.
-  // Tutorial sets homeOnly; do not clobber that chrome.
-  onMount(() => {
-    if (capabilities().homeOnly) return;
-    setCapabilities(LIVE_CAPABILITIES);
-  });
 
   const phase = createMemo((): ReviewTurnPhase => {
     const s = store.shell();

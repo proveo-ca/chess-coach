@@ -15,7 +15,8 @@ import {
   type JSX,
 } from "solid-js";
 
-import { createMatchStore, MatchStoreProvider, useMatchStore } from "~/app/MatchStoreContext";
+import { createMatchStore } from "~/app/MatchStoreContext";
+import { MatchStoreProvider, useMatchStore } from "~/ports/matchStore";
 import { createMatchStateFromReviewHistory } from "~/app/reviewHistory";
 import { readDisplayedSnapshot } from "~/app/selectors";
 import { CoachAvatar } from "~/components/atoms/CoachAvatar";
@@ -32,7 +33,7 @@ import { isCheckOnlyResolve } from "~/presentation/hud/isCheckOnlyResolve";
 import { MatchBoardHost } from "~/presentation/hud/components/MatchBoardHost";
 import { TurnBarSidebar } from "~/presentation/hud/components/TurnBarSidebar";
 import { splitResolveWaves } from "~/presentation/timeline/resolveWaves";
-import { TUTORIAL_CAPABILITIES, setCapabilities } from "~/store/capabilitiesStore";
+import { CapabilitiesProvider, TUTORIAL_CAPABILITIES } from "~/store/capabilitiesStore";
 import { resetReviewVisionFilter, setReviewVisionFilter } from "~/store/reviewVisionStore";
 import { intentArrows } from "~/tutorial/lessonTactics";
 import {
@@ -271,7 +272,6 @@ const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
   };
 
   onMount(() => {
-    setCapabilities(TUTORIAL_CAPABILITIES);
     if (props.visionMode === "player" || props.fog === true) {
       setReviewVisionFilter("w");
       store.dispatch({ type: "SET_VIEWER", viewer: "w" });
@@ -398,8 +398,10 @@ export const TutorialReviewHost: Component<TutorialReviewHostProps> = (props) =>
   });
 
   return (
-    <MatchStoreProvider store={store}>
-      <TutorialReviewInner {...props} />
-    </MatchStoreProvider>
+    <CapabilitiesProvider value={() => TUTORIAL_CAPABILITIES}>
+      <MatchStoreProvider store={store}>
+        <TutorialReviewInner {...props} />
+      </MatchStoreProvider>
+    </CapabilitiesProvider>
   );
 };

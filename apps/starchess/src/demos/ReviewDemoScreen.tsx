@@ -18,7 +18,8 @@ import {
   pushAchievementBubbles,
 } from "~/achievements/achievementLive";
 import { foldGame, foldPlyFromResolve, plySeenBy } from "~/achievements/analysis";
-import { createMatchStore, MatchStoreProvider, useMatchStore } from "~/app/MatchStoreContext";
+import { createMatchStore } from "~/app/MatchStoreContext";
+import { MatchStoreProvider, useMatchStore } from "~/ports/matchStore";
 import { createMatchStateFromReviewHistory } from "~/app/reviewHistory";
 import { readDisplayedSnapshot } from "~/app/selectors";
 import { useMediaQuery } from "~/hooks/useMediaQuery";
@@ -37,7 +38,7 @@ import { MatchBoardHost } from "~/presentation/hud/components/MatchBoardHost";
 import { ResourceBar } from "~/presentation/hud/components/ResourceBar";
 import { ReviewTurnNav } from "@chess-coach/ui-web/atoms/ReviewTurnNav";
 import { TurnBarSidebar } from "~/presentation/hud/components/TurnBarSidebar";
-import { TUTORIAL_CAPABILITIES, setCapabilities } from "~/store/capabilitiesStore";
+import { CapabilitiesProvider, LIVE_CAPABILITIES, TUTORIAL_CAPABILITIES } from "~/store/capabilitiesStore";
 import {
   resetReviewVisionFilter,
   reviewVisionFilter,
@@ -201,7 +202,6 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
   onCleanup(clearAchievementBubbles);
 
   onMount(() => {
-    if (props.tutorial) setCapabilities(TUTORIAL_CAPABILITIES);
 
     if (props.visionMode === "player" || props.fog === true) {
       setReviewVisionFilter("w");
@@ -397,6 +397,7 @@ export const ReviewDemoScreen: Component<ReviewDemoScreenProps> = (props) => {
   });
 
   return (
+    <CapabilitiesProvider value={() => (props.tutorial ? TUTORIAL_CAPABILITIES : LIVE_CAPABILITIES)}>
     <MatchStoreProvider store={store}>
       <ReviewDemoInner
         history={props.history}
@@ -419,6 +420,7 @@ export const ReviewDemoScreen: Component<ReviewDemoScreenProps> = (props) => {
         achievements={props.achievements}
       />
     </MatchStoreProvider>
+    </CapabilitiesProvider>
   );
 };
 

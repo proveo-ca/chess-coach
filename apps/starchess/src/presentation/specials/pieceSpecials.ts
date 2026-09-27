@@ -1,7 +1,6 @@
 import type { PieceSymbol, Square } from "chess.js";
 
 import type { MatchStore } from "~/types/match";
-import { hasUsedSpecialThisTurn } from "~/app/matchEconomy";
 import type { GasDeployTarget, ArmResult } from "~/presentation/specials/types";
 import { specialCopyFor, type SpecialCopy } from "~/presentation/specials/copy";
 import type { ScSpecialKind } from "@chess-coach/starchess-core";
@@ -47,7 +46,7 @@ export const armPieceSpecial = (
 
   // One special per unit per turn, no exceptions — the engine refuses a stacked
   // queue anyway (`assertQueueShape`); this keeps the HUD from offering it.
-  if (hasUsedSpecialThisTurn(store, target.square)) return false;
+  if (store.view.specialUsed(target.square)) return false;
 
   const result = fn({ square: target.square, piece: target.piece });
   if (result === false) return false;

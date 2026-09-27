@@ -85,3 +85,16 @@ describe("createMatchStore loadLesson", () => {
     expect(pending().filter((j) => j.ms === 0)).toHaveLength(1);
   });
 });
+
+describe("createMatchStore view", () => {
+  it("reads the viewer, their stored minerals and this window's used specials", () => {
+    const { store } = create(false);
+    store.dispatch({ type: "LOAD_SCFEN", scfen: PROMOTION_CLEAN_SCFEN, stored: 4 });
+    const s = store.shell();
+    expect(store.view.viewerColor()).toBe(s.viewer);
+    expect(store.view.storedMaterial()).toBe(s.economies[s.viewer].stored);
+    expect(store.view.specialUsed("e2")).toBe(false);
+    store.dispatch({ type: "MARK_SPECIAL_USED", square: "e2" });
+    expect(store.view.specialUsed("e2")).toBe(true);
+  });
+});
