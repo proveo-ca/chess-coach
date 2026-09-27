@@ -28,6 +28,26 @@ options), `tutorial/coach-line.puml`, `tutorial/lesson-gates.puml`.
 
 ---
 
+## 0. Opening and failure lines
+
+- **Live Play opens on a first beat, not `comment`.** Each Live Play lesson with
+  an opening line carries it as `beats[0]`: `priority: 2`, `turn: <seed turn>`,
+  `when: { kind: "scfen", re: /\|Q:w:;/ }` (nothing queued yet); its
+  `comment` is `""`. The old intro lost to any matching reaction and was
+  retired as "acted" by turn-open checks or the opponent's opening queue, so
+  defense-5, defense-6 and attack-3 never showed it. The beat outranks turn-0
+  guidance until the player queues; failure and threat beats (`priority: 3`)
+  still win. attack-3's turn-0 intent tip ("Deploy a Marine…", priority 0)
+  would have been masked by the intro and then by "Review your queued orders"
+  (priority 1), so its copy is folded into the attack-3 intro and the beat is
+  gone.
+- **Every `restartWhen` has an urgent failure line.** A beat gated on the same
+  condition, `priority: 3`, lesson-specific copy (what went wrong, then the
+  fix), `emotion: "shocked"`, `action: retryLesson`. On `failed` the bubble
+  shows the current line with a Retry CTA, so without this beat it showed stale
+  guidance, nothing, or the placeholder "Bruh". Pinned by
+  `__tests__/tutorial/lessonIntroAndFailure.test.tsx`.
+
 ## 1. Gas hints
 
 A gas hint is a guide-green ring plus a canister with a down chevron bobbing

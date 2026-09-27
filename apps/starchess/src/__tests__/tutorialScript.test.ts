@@ -77,6 +77,8 @@ const storyOf = (stageId: TutorialSectionId, storyId: string) => {
 /** One scripted overlay line — a `say`-carrying beat. */
 type ScriptedReaction = TutorialBeat & { say: string };
 
+const INTRO_LINE: TutorialLine = { comment: "Opening line", emotion: "idle", source: "intro" };
+
 /** A story's beats that carry a coach line, in resolver order (first match wins). */
 const sayBeats = (stageId: TutorialSectionId, storyId: string): ScriptedReaction[] =>
   (storyOf(stageId, storyId).beats ?? []).filter(
@@ -140,6 +142,7 @@ describe("tutorialScript", () => {
   const KING_ATTACK_3 = namedReactions(
     "live-play",
     "live-play-attack-3",
+    "intro",
     "ownCcDead",
     "enemyDown",
     "shipSniped",
@@ -182,13 +185,13 @@ describe("tutorialScript", () => {
     "centralize",
     "gasOnMarine",
     "queuedReview",
-    "intentTipTurn1",
     "minesTipTurn2",
     "ccPressureFallback",
   );
   const KING_ATTACK_4 = namedReactions(
     "live-play",
     "live-play-attack-4",
+    "intro",
     "ownCcDead",
     "enemyDown",
     "stopRunner",
@@ -303,7 +306,7 @@ describe("tutorialScript", () => {
     const lineFor = (scfen: string) =>
       resolveTutorialLine({ stageId: "live-play", storyId: "live-play-attack-4", scfen });
 
-    expectIntro(lineFor(seed), "live-play", "live-play-attack-4");
+    expectReaction(lineFor(seed), KING_ATTACK_4.intro);
     expect(hintSquares(story.beats, seed)).toEqual(["e2"]);
     expect(hintArrows(story.beats, seed)).toEqual([{ from: "e2", to: "e3" }]);
 
@@ -575,12 +578,9 @@ describe("tutorialScript", () => {
     expect(opened).not.toBe(seed);
 
     const key = "live-play|live-play-attack-1";
-    const lineFor = (scfen: string) =>
-      resolveTutorialLine({
-        stageId: "live-play",
-        storyId: "live-play-attack-1",
-        scfen,
-      });
+    // The hold's intro mechanics, on attack-1's turn-open board. Live-play
+    // lessons now open on a first beat, so feed the hold an intro-source line.
+    const lineFor = (_scfen: string) => INTRO_LINE;
 
     // Mount: the pre-turn-open seed is the baseline, intro on screen.
     let step = holdTutorialLine(
@@ -589,7 +589,7 @@ describe("tutorialScript", () => {
       lineFor(seed),
       { scfen: seed, turnStartChecksApplied: false },
     );
-    expectIntro(step.line, "live-play", "live-play-attack-1");
+    expect(step.line).toBe(INTRO_LINE);
 
     // Turn-open lands: the SCFEN moved, but no one played a move — the line
     // must survive, and the opened board becomes the new baseline.
@@ -597,7 +597,7 @@ describe("tutorialScript", () => {
       scfen: opened,
       turnStartChecksApplied: true,
     });
-    expectIntro(step.line, "live-play", "live-play-attack-1");
+    expect(step.line).toBe(INTRO_LINE);
     expect(step.hold.baselineScfen).toBe(opened);
 
     // Queueing an actual action moves the board for real, and that still
@@ -641,17 +641,13 @@ describe("tutorialScript", () => {
     // must keep the pre-existing "any SCFEN move retires the intro" behavior.
     const seed = lessonBoard("live-play", "live-play-attack-1").scfen;
     const key = "live-play|live-play-attack-1";
-    const line = resolveTutorialLine({
-      stageId: "live-play",
-      storyId: "live-play-attack-1",
-      scfen: seed,
-    });
+    const line = INTRO_LINE;
 
     const mounted = holdTutorialLine({ lessonKey: "", introDone: false }, key, line, {
       scfen: seed,
     });
     expect(mounted.hold.checksApplied).toBeUndefined();
-    expectIntro(mounted.line, "live-play", "live-play-attack-1");
+    expect(mounted.line).toBe(INTRO_LINE);
 
     const moved = holdTutorialLine(mounted.hold, key, line, {
       scfen: seed.replace("|G:20:22|", "|G:21:22|"),
@@ -912,14 +908,16 @@ describe("tutorialScript", () => {
     ).toBe(true);
   });
 
-  it("gates king-attack-3 intent tip to the seed turn's intent phase", () => {
-    expect(
+  it("opens king-attack-3 on the intro (with the deploy tip), then the turn-1 tips", () => {
+    expectReaction(
       resolveTutorialLine({
         stageId: "live-play",
         storyId: "live-play-attack-3",
         scfen: lessonBoard("live-play", "live-play-attack-3").scfen,
-      }).comment,
-    ).not.toBe(KING_ATTACK_3.intentTipTurn1.say);
+      }),
+      KING_ATTACK_3.intro,
+    );
+    expect(KING_ATTACK_3.intro.say).toContain("Deploy a Marine");
     expectReaction(
       resolveTutorialLine({
         stageId: "live-play",
@@ -927,7 +925,7 @@ describe("tutorialScript", () => {
         scfen: lessonBoard("live-play", "live-play-attack-3").scfen,
         reviewPhase: "intent",
       }),
-      KING_ATTACK_3.intentTipTurn1,
+      KING_ATTACK_3.intro,
     );
     expectReaction(
       resolveTutorialLine({
@@ -1368,7 +1366,7 @@ describe("tutorialScript", () => {
       "f3",
     ]);
     const centralized =
-      "SCFEN|8/8/8/8/4k3/5P2/6P1/4N1BK|0|33|P|G:01:11|B:0:3|Q:w:;b:";
+      "SCFEN|8/8/8/8/4k3/5P2/6P1/4N1BK|0|33|P|G:01:11|B:0:3|Q:w:B=stimStep:f3:f4;b:";
     expectReaction(lineFor(centralized), KING_ATTACK_3.centralize);
     expect(hintSquares(story.beats, centralized)).toEqual(["c2"]);
   });
@@ -1650,6 +1648,7 @@ describe("tutorialScript", () => {
     const r = namedReactions(
       "live-play",
       "live-play-defense-1",
+      "restartLine",
       "mechaDown",
       "attackTheMecha",
       "ccUnderAttack",
@@ -1677,6 +1676,7 @@ describe("tutorialScript", () => {
     const r = namedReactions(
       "live-play",
       "live-play-defense-2",
+      "restartLine",
       "attackTheShip",
       "cornered",
     );
@@ -1753,6 +1753,7 @@ describe("tutorialScript", () => {
     const r = namedReactions(
       "live-play",
       "live-play-defense-3",
+      "intro",
       "ownCcDead",
       "shootTheHoverbike",
     );
@@ -1810,6 +1811,7 @@ describe("tutorialScript", () => {
     const r = namedReactions(
       "live-play",
       "live-play-defense-3",
+      "intro",
       "ownCcDead",
       "shootTheHoverbike",
     );
@@ -1818,14 +1820,13 @@ describe("tutorialScript", () => {
     const gasQueued =
       "SCFEN|k7/8/8/8/4n3/8/4PP1P/7K|1|13|P|G:01:11|B:0:3|Q:w:B=stimStep:f2:f3;b:C=e4f2";
 
-    expectIntro(
+    expectReaction(
       resolveTutorialLine({
         stageId: "live-play",
         storyId: "live-play-defense-3",
         scfen: seed,
       }),
-      "live-play",
-      "live-play-defense-3",
+      r.intro,
     );
     expectReaction(
       resolveTutorialLine({
@@ -1855,7 +1856,7 @@ describe("tutorialScript", () => {
   });
 
   it("king-defense-4 completes on the h2 collision and restarts when idle", () => {
-    const r = namedReactions("live-play", "live-play-defense-4", "ownCcDead");
+    const r = namedReactions("live-play", "live-play-defense-4", "intro", "ownCcDead");
     const story = storyOf("live-play", "live-play-defense-4");
     const { completeWhen: complete, restartWhen: restart } = story;
     const seed = lessonBoard("live-play", "live-play-defense-4").scfen;
@@ -1878,14 +1879,13 @@ describe("tutorialScript", () => {
         `${from} must not reach the tank`,
       ).not.toContain("e2");
     }
-    expectIntro(
+    expectReaction(
       resolveTutorialLine({
         stageId: "live-play",
         storyId: "live-play-defense-4",
         scfen: seed,
       }),
-      "live-play",
-      "live-play-defense-4",
+      r.intro,
     );
 
     // Both movers land on h2 in the move phase → both die, tile empty.
@@ -1927,6 +1927,7 @@ describe("tutorialScript", () => {
     const r = namedReactions(
       "live-play",
       "live-play-attack-1",
+      "intro",
       "shipDown",
       "stackedDamage",
       "halfHit",
@@ -2059,6 +2060,7 @@ describe("tutorialScript", () => {
     const r = namedReactions(
       "live-play",
       "live-play-attack-2",
+      "intro",
       "shipDown",
       "ownCcDead",
       "juked",
@@ -2078,17 +2080,16 @@ describe("tutorialScript", () => {
     expect(snap.gasIncome).toEqual({ w: 3, b: 3 });
     expect(matchesTutorialCompleteWhen(story.completeWhen, seed)).toBe(false);
     expect(matchesTutorialCompleteWhen(story.restartWhen, seed)).toBe(false);
-    // The opening check resolves on mount, so `holdTutorialLine` retires the
-    // intro — the catch-all reaction is what actually reaches the bubble, and
-    // it has to carry the same line or the lesson ships with no instructions.
-    expect(r.jukeTip.say).toBe(story.comment);
+    // The seed opens on the intro beat; once the player queues, the catch-all
+    // reaction repeats the same line, so the lesson never goes silent.
+    expect(r.jukeTip.say).toBe(r.intro.say);
     expectReaction(
       resolveTutorialLine({
         stageId: "live-play",
         storyId: "live-play-attack-2",
         scfen: seed,
       }),
-      r.jukeTip,
+      r.intro,
     );
 
     // Standing check on the long diagonal — the opening turn costs Black 1 HP.

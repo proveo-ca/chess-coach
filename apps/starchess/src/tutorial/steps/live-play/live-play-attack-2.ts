@@ -11,15 +11,24 @@ export const livePlayAttack2 = {
     opponent: "adjutant",
     docs: "A BattleShip and a dug-in Siege Tank against a five-unit escort, one of them a Mecha parked on c2. Turn 21 = tier-3 gas, so Tactical Jump (3 vespene) is affordable every turn — the whole point of the lesson. Qh7 already bears on the ke4 diagonal, so the opening turn chips it 3→2 for free; the coached opener is Tactical Jump h7→h4 (no Move is left to stack on it), and the next turn Rf2xf4 takes the Hoverbike; the adjutant answers by deploying and shooting at the ship, so one that sits still dies early. Rf2 is immobile but owns the f-file and rank 2, which covers the nf4 flank and the approach to Kh1. White holds 0 minerals and cannot deploy: keep re-checking the Command Center from a fresh angle, and jump out when the escort closes.",
   },
-  comment: "Juke this army with your ship! \nGas it up to escape danger.",
+  comment: "",
   emotion: "happy",
   completeWhen: {kind: "lives", enemy: 0},
   restartWhen: {kind: "lost", pieces: ["Q"]},
   beats: [
     {
+      priority: 2,
+      turn: 21,
+      when: { kind: "scfen", re: /\|Q:w:;/ },
+      say: "Juke this army with your ship! \nGas it up to escape danger.",
+      emotion: "happy",
+    },
+    {
+      priority: 3,
       when: {kind: "lost", pieces: ["Q"]},
-      say: "Bruh",
-      emotion: "watching",
+      say: "Your BattleShip got caught. \n\nKeep jumping it out of reach with Gas.",
+      emotion: "shocked",
+      action: { kind: "retryLesson", label: "Retry lesson" },
     },
     {
       when: {kind: "lives", own: 0},

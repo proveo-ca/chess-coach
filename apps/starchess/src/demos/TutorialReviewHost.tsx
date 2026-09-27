@@ -102,6 +102,8 @@ export type TutorialReviewHostProps = {
   intentArrows?: boolean;
   /** Hand the typewriter narration to the tutorial screen. */
   onNarration?: NarrationSink;
+  /** The tutorial lesson this review belongs to; tags its narration. */
+  lessonKey?: string;
 };
 
 const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
@@ -165,6 +167,7 @@ const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
         if (b?.kind === "turn") typewriterTurn = b.turn;
       }
       return {
+        lessonKey: props.lessonKey,
         reviewPhase: store.reviewPhase(),
         timelineActive: timelineActive() || busy(),
         scfen: scfen(),

@@ -29,6 +29,13 @@ export const rookSiege = {
   },
   beats: [
     {
+      priority: 3,
+      when: { kind: "scfen", re: /^(?!.*\|S:[^|]*d4)/ },
+      say: "Out of siege, the rook can't hold the file. \n\nKeep it sieged on d4.",
+      emotion: "shocked",
+      action: { kind: "retryLesson", label: "Retry lesson" },
+    },
+    {
       when: { kind: "lost", pieces: ["p"] },
       say: "The rook has 2 modes, mobile and immobile. \n\n Prevent pawns from promoting!",
       emotion: "happy",

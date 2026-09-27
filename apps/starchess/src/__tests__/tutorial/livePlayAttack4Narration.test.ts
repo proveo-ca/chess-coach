@@ -31,7 +31,7 @@ const lineFor = (snap: ScFenSnapshot) =>
 
 describe("live-play-attack-4 narration", () => {
   it("opens on the intro, not the turn-13 line", () => {
-    expect(lineFor(openedSeed())).toBe(story.comment);
+    expect(lineFor(openedSeed())).toBe(story.beats![0]!.say);
   });
 
   it("answers the queued e2→e3 Tank move after turn-open", () => {

@@ -18,15 +18,24 @@ export const livePlayAttack1 = {
      */
     docs: "Enemy CC on a8 (HP 2) is smothered by a7/b7/b8, and b7 is the choke point every remaining line shares. Black's own queued turn opens rank 8 for free: nb8→d7 leaves the back rank and uncovers the fogged Qd8. One shot supplies the rest — Rb1 siege-fires b7 (without vacating), which simultaneously clears the h1-a8 diagonal for the x-raying Bh1. Two checkers at the turn-12 open take HP 2 to 0. Leave b7 alive and only the Ship connects (2→1); `kingAttackTankCounter` then deploys a Siege Tank onto b8 and shoots the Ship, which `restartWhen` reads as a retry. The choke point is a **Marine** — the enemy tank is dug in on a2 instead, where its rank-2 ray stops at the f2 marine and never reaches Kg1. Enemy mines sit on c6 and d4 (black's third lands on b8 from its own queued `spiderMine`, which is the side's cap): c6 is planted *on* the h1-a8 diagonal on purpose — mines are not FEN pieces, so they neither block the Bishop's check nor get spent by it (`starchess-core` `mine/mineChecks.test.ts`).",
   },
-  comment: "Your Ship and Mecha are concealed by the fog! \n\n Aim your tank at b7 to open the line for your Mecha.",
+  comment: "",
   emotion: "watching--left",
   completeWhen: { kind: "lives", enemy: 0 },
   restartWhen: { kind: "lost", pieces: ["Q"] },
   beats: [
     {
+      priority: 2,
+      turn: 11,
+      when: { kind: "scfen", re: /\|Q:w:;/ },
+      say: "Your Ship and Mecha are concealed by the fog! \n\n Aim your tank at b7 to open the line for your Mecha.",
+      emotion: "watching--left",
+    },
+    {
+      priority: 3,
       when: { kind: "lost", pieces: ["Q"] },
-      say: "Bruh",
-      emotion: "watching",
+      say: "Your BattleShip got shot down. \n\nOpen b7 with the Tank so the Mecha can reach the Command Center.",
+      emotion: "shocked",
+      action: { kind: "retryLesson", label: "Retry lesson" },
     },
     {
       /**

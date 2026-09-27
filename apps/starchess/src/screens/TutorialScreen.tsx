@@ -62,12 +62,15 @@ import type {
   TutorialCompleteWhen,
   NarrationSink,
   TutorialLineHold,
+  TutorialNarrationState,
   TutorialReactionAction,
   TutorialSectionId,
 } from "~/types/tutorial";
 import type { Cancel } from "~/types/ports";
 
 export type { TutorialSectionId } from "~/types/tutorial";
+
+const NO_NARRATION: TutorialNarrationState = {};
 
 type LineState = {
   line: ReturnType<typeof resolveTutorialLine>;
@@ -207,13 +210,20 @@ const FogSection: Component<{
 export const TutorialScreen: Component = () => {
   const params = useParams<{ section?: string; story?: string }>();
   const navigate = useNavigate();
-  const { narration: tutorialNarration, provide: provideNarration } = createNarrationSlot();
+  const { narration: hostNarration, provide: provideNarration } = createNarrationSlot();
   const section = createMemo(() => parseTutorialSection(params.section));
   const storyId = createMemo(() =>
     resolveTutorialStoryId(section(), params.story),
   );
   const [chessMode, setChessMode] = createSignal(false);
   const [lessonEpoch, setLessonEpoch] = createSignal(0);
+  const lessonKey = () => `${storyId()}#${lessonEpoch()}`;
+  const tutorialNarration = createMemo(
+    (): TutorialNarrationState => {
+      const n = hostNarration();
+      return n.lessonKey === lessonKey() ? n : NO_NARRATION;
+    },
+  );
 
   /** Gated by the skin demo — see HINT_DELAY_MS. */
   const [hintsReady, setHintsReady] = createSignal(false);
@@ -650,7 +660,6 @@ export const TutorialScreen: Component = () => {
 
   const resolveFooter = () => withFooter();
 
-  const lessonKey = () => `${storyId()}#${lessonEpoch()}`;
   const lessonTitle = createMemo(() => tutorialStory(section(), storyId())?.title);
   const sectionBoard = (stage: TutorialSectionId) =>
     createMemo<LiveLessonBoard>((prev) =>
@@ -758,6 +767,7 @@ export const TutorialScreen: Component = () => {
                   footerExtra={resolveFooter()}
                   intentArrows={tutorialStory("resolve", id)?.intentArrows}
                   onNarration={provideNarration}
+                  lessonKey={lessonKey()}
                 />
               );
             }}

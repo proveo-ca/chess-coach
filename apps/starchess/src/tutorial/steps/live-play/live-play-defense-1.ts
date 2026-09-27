@@ -14,6 +14,13 @@ export const livePlayDefense1 = {
   completeWhen: { kind: "lost", pieces: ["b"] },
   restartWhen: { kind: "lives", own: 0 },
   beats: [
+    {
+      priority: 3,
+      when: { kind: "lives", own: 0 },
+      say: "Your Command Center fell. \n\nDeploy a Marine to save it.",
+      emotion: "shocked",
+      action: { kind: "retryLesson", label: "Retry lesson" },
+    },
     // Mecha gone (no `b` in the placement) — the Command Center is no
     // longer under attack, so the panic line below must not ride out the
     // win. First, because reactions stick: only another reaction retires

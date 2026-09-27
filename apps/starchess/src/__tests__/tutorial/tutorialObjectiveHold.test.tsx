@@ -18,13 +18,16 @@ vi.mock("~/tutorial/useLessonNarration", async (importOriginal) => {
   const real = await importOriginal<typeof import("~/tutorial/useLessonNarration")>();
   return {
     ...real,
-    useLessonNarration: (...[board, sink]: Parameters<typeof real.useLessonNarration>) => {
+    useLessonNarration: (...[board, sink, lessonKey]: Parameters<typeof real.useLessonNarration>) => {
       if (!sink) return;
       let live: () => TutorialNarrationState = () => ({});
-      real.useLessonNarration(board, (source) => (live = source));
+      real.useLessonNarration(board, (source) => (live = source), lessonKey);
       const [override, setOverride] = createSignal<TutorialNarrationState | null>(null);
       fed.set = setOverride;
-      sink(() => override() ?? live());
+      sink(() => {
+        const o = override();
+        return o ? { ...o, lessonKey } : live();
+      });
     },
   };
 });
