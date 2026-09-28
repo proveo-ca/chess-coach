@@ -26,7 +26,6 @@ import { outcomeLabel, readDisplayedSnapshot } from "~/app/selectors";
 import styles from "~/app/BaseScreen.module.css";
 import { CoachAvatar } from "~/components/atoms/CoachAvatar";
 import { StarChessMobileBanner as MobileBanner } from "@chess-coach/ui-web/atoms/StarChessMobileBanner";
-import { StarChessMobileSubBanner as MobileSubBanner } from "@chess-coach/ui-web/atoms/StarChessMobileSubBanner";
 import { ExitGameConfirm } from "~/components/features/ExitGameConfirm";
 import { TurnBonusBubble } from "~/components/features/TurnBonusBubble";
 import { TutorialHudLabels } from "~/components/features/TutorialHudLabels";
@@ -40,6 +39,7 @@ import { squareBoxStyle, findBoardGrid } from "~/presentation/animations/boardGe
 import { LiveBoardBinding } from "~/presentation/board/components/LiveBoardBinding";
 import { tankModeForSieged } from "~/presentation/board/tankMode";
 import { GasRack } from "~/presentation/hud/components/GasRack";
+import { HudDock } from "~/presentation/hud/components/HudDock";
 import { usePieceSpecialArm } from "~/presentation/specials/hooks/usePieceSpecialArm";
 import { DeployModal } from "~/presentation/hud/components/DeployModal";
 import { liveMatchPhase } from "~/presentation/hud/liveMatchPhase";
@@ -522,6 +522,13 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
    */
   const barFirst = () => mobileViewport() && !dynamicMobile();
 
+  /**
+   * Tall phones move the turn controls under the board: one `HudDock` tray,
+   * `[queued chip] [GasRack] [End Turn] [timer]`, instead of a sub-banner under
+   * the stripe (which floated over the lesson coach and pushed the board down).
+   */
+  const footerTurnDock = () => bannerOwnsChrome() && barFirst();
+
   const bannerBack = createMemo(() => (coachHeader() ? props.onExitToMenu : requestLeave));
   const bannerResources = createMemo(() =>
     coachHeader() ? !!props.hudResources : !props.hideResources,
@@ -667,29 +674,6 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
               ) : undefined
             }
           />
-          <MobileSubBanner float={coachHeader()} class={styles.subBannerSplit}>
-            <div class={styles.subBannerQueue}>
-              <Show when={!turnHidden()}>
-                <HudHold held={ended()}>
-                  <TurnBar density="queueOnly" />
-                </HudHold>
-              </Show>
-            </div>
-            <div class={styles.subBannerMiddle} />
-            <div class={styles.subBannerControls}>
-              <Show when={!turnHidden()}>
-                <HudHold held={ended()}>
-                  <TurnBar
-                    compact
-                    hideQueue
-                    autoStart={false}
-                    resolveOnEnd={false}
-                    onEnd={() => store.submitTurn("end")}
-                  />
-                </HudHold>
-              </Show>
-            </div>
-          </MobileSubBanner>
         </Show>
       </Show>
 
@@ -879,10 +863,46 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
             }}
             data-testid="starchess-gas-deploy"
           >
-            <Show when={starChessMode() && !props.hideGas}>
-              <HudHold held={ended()}>
-                <GasRack onDeploy={onGasDeploy} onCancel={cancelArmed} />
-              </HudHold>
+            <Show
+              when={footerTurnDock()}
+              fallback={
+                <Show when={starChessMode() && !props.hideGas}>
+                  <HudHold held={ended()}>
+                    <GasRack onDeploy={onGasDeploy} onCancel={cancelArmed} />
+                  </HudHold>
+                </Show>
+              }
+            >
+              <HudDock
+                class={styles.footerDock}
+                queue={
+                  <Show when={!turnHidden()}>
+                    <HudHold held={ended()}>
+                      <TurnBar density="queueOnly" />
+                    </HudHold>
+                  </Show>
+                }
+                rack={
+                  <Show when={!props.hideGas}>
+                    <HudHold held={ended()}>
+                      <GasRack onDeploy={onGasDeploy} onCancel={cancelArmed} />
+                    </HudHold>
+                  </Show>
+                }
+                controls={
+                  <Show when={!turnHidden()}>
+                    <HudHold held={ended()}>
+                      <TurnBar
+                        compact
+                        hideQueue
+                        autoStart={false}
+                        resolveOnEnd={false}
+                        onEnd={() => store.submitTurn("end")}
+                      />
+                    </HudHold>
+                  </Show>
+                }
+              />
             </Show>
           </div>
           <Show when={!props.tutorial || props.fullMatchHud}>

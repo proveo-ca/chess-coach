@@ -79,22 +79,13 @@ export const SingleMobileBanner: Story = {
     docs: {
       description: {
         story:
-          "Stripe: ‹ Back · ResourceBar (no title in Single Player). Sub-banner split at the centre: queued chip right-aligned on the left, [End Turn] [timer] left-aligned on the right — a new chip never moves End/timer.",
+          "Stripe: ‹ Back · ResourceBar (no title in Single Player). No sub-banner: the turn controls sit in the footer tray — see Features/GasDeploy · Mobile HUD dock.",
       },
     },
   },
   render: () => (
     <WithMatchStore board={FULL_ARMY_SAMPLE}>
       <MobileBanner onBack={() => undefined} center={<ResourceBar compact color="w" />} />
-      <MobileSubBanner class={styles.subSplit}>
-        <div class={styles.subQueue}>
-          <TurnBar density="queueOnly" />
-        </div>
-        <div />
-        <div class={styles.subControls}>
-          <TurnBar compact hideQueue autoStart={false} resolveOnEnd={false} onEnd={() => undefined} />
-        </div>
-      </MobileSubBanner>
     </WithMatchStore>
   ),
 };

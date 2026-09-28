@@ -56,6 +56,9 @@ export const TutorialGuideBubble: Component<TutorialGuideBubbleProps> = (
           class={styles.bubble}
         >
           <div class={styles.body}>
+            {/* Holds the × corner so the text wraps around it; the button
+                itself sits outside the bubble, which is aria-hidden. */}
+            <span class={styles.dismissSpace} aria-hidden="true" />
             <Show when={variant() === "success"}>
               <span
                 class={styles.successMark}

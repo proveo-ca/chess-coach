@@ -166,6 +166,13 @@
   }
 }
 
+/* The tall-phone tray carries End Turn, so it never collapses into the
+   board's row the way a lone rack may. */
+.gasDock:has(.footerDock) {
+  height: auto;
+  min-height: 3.75rem;
+}
+
 .statusLine {
   width: 100%;
   text-align: center;
@@ -243,35 +250,6 @@
   }
 }
 
-
-@media (max-width: 719px) {
-  :global(.mobile-sub-banner).subBannerSplit {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-    align-items: center;
-    column-gap: 0.35rem;
-  }
-}
-
-:global(.mobile-sub-banner) > .subBannerQueue {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  min-width: 0;
-}
-
-:global(.mobile-sub-banner) > .subBannerMiddle {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-:global(.mobile-sub-banner) > .subBannerControls {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  min-width: 0;
-}
 
 .bannerInline {
   display: flex;
