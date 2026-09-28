@@ -41,12 +41,22 @@ export default defineConfig({
         display: "standalone",
         background_color: "#000000",
         theme_color: "#005F7F",
+        // The Blue BattleShip (public/icon*.svg); PNGs from scripts/build-icons.sh.
         icons: [
+          { src: "/starchess/icon.svg", sizes: "any", type: "image/svg+xml", purpose: "any" },
+          { src: "/starchess/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any" },
+          { src: "/starchess/icon-512.png", sizes: "512x512", type: "image/png", purpose: "any" },
           {
-            src: "/starchess/icon.svg",
+            src: "/starchess/icon-maskable.svg",
             sizes: "any",
             type: "image/svg+xml",
-            purpose: "any maskable",
+            purpose: "maskable",
+          },
+          {
+            src: "/starchess/icon-maskable-512.png",
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "maskable",
           },
         ],
       },

@@ -357,6 +357,11 @@ content slots — `resources` / `turn` / `band` / `subBanner` /
 
 ### Short landscape (dynamic band, w ≥ 480 · h < 640) — `BaseScreen` screens
 
+Tutorial guide bubbles skip the coach's line here (`TutorialGuideBubble
+actionOnly`, set by `TutorialScreen` on `DYNAMIC_MOBILE_MQ`): nothing shows
+unless the line carries an action, and then only the success mark and the
+button (Next lesson / Retry / go to section), which the lesson still needs.
+
 No sub-banner fits: the stripe is the whole chrome, one row,
 `‹ Back [ResourceBar] [TurnBar compact]` (`fill` drops the right spacer so
 the centre can take the width), then the board. The split is two TurnBar

@@ -24,6 +24,12 @@ export type TutorialGuideBubbleProps = {
    * happens rather than surprising the player.
    */
   autoAdvanceMs?: number;
+  /**
+   * Drop the coach's line and show only the action (and the success mark).
+   * Nothing renders when there is no action. The dynamic band (short
+   * landscape) has no room for coach text over the board.
+   */
+  actionOnly?: boolean;
 };
 
 export const TutorialGuideBubble: Component<TutorialGuideBubbleProps> = (
@@ -33,7 +39,8 @@ export const TutorialGuideBubble: Component<TutorialGuideBubbleProps> = (
   const variant = createMemo(() => props.variant ?? "coach");
   const counting = createMemo(() => props.autoAdvanceMs != null);
   const open = () =>
-    !!props.message.trim() && dismissedKey() !== props.lineKey;
+    dismissedKey() !== props.lineKey &&
+    (props.actionOnly ? !!props.action : !!props.message.trim());
 
   /**
    * "✓ Objective complete" plus the Next lesson button already say everything
@@ -41,6 +48,7 @@ export const TutorialGuideBubble: Component<TutorialGuideBubbleProps> = (
    * both ends are showing.
    */
   const showMessage = () =>
+    !props.actionOnly &&
     !(variant() === "success" && props.action?.kind === "nextLesson");
 
   return (

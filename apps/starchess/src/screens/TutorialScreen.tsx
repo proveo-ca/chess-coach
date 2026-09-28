@@ -23,6 +23,8 @@ import { schedule } from "~/adapters/timers";
 import { buildReviewHistory } from "~/app/reviewHistory";
 import { CoachAvatar } from "~/components/atoms/CoachAvatar";
 import { TutorialGuideBubble } from "~/components/features/TutorialGuideBubble";
+import { useMediaQuery } from "~/hooks/useMediaQuery";
+import { DYNAMIC_MOBILE_MQ } from "~/utils/breakpoints";
 import { Breadcrumb } from "@chess-coach/ui-web/primitives/Breadcrumb";
 import { ScreenBackNav } from "~/components/primitives/ScreenBackNav";
 import { Toggle } from "@chess-coach/ui-web/primitives/Toggle";
@@ -596,9 +598,13 @@ export const TutorialScreen: Component = () => {
     coachLeaving() ? "coach-farewell" : `${lineKey()}|${outcome()}`,
   );
 
+  /** Short landscape: no coach text over the board — see `actionOnly`. */
+  const dynamicMobile = useMediaQuery(DYNAMIC_MOBILE_MQ);
+
   const guideBubble = () => (
     <Show when={!coachHidden()}>
     <TutorialGuideBubble
+      actionOnly={dynamicMobile()}
       variant={bubbleVariant()}
       autoAdvanceMs={bubbleAutoAdvanceMs()}
       message={bubbleMessage()}
