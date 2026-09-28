@@ -53,6 +53,11 @@ type TurnBarProps = {
   hideQueue?: boolean;
   /** Hide Turn/Phase label chips (tall-mobile footer under GasRack). */
   hidePhase?: boolean;
+  /**
+   * queueOnly: the chip stretches to the bar's width, text left and × right
+   * (the tall-phone HudDock tray, where the chip fills its whole column).
+   */
+  fill?: boolean;
   class?: string;
 };
 
@@ -204,7 +209,7 @@ export const TurnBar: Component<TurnBarProps> = (props) => {
   return (
     <Show when={!isQueueOnly() || lastQueued()}>
       <TeamFrame
-        class={`${styles.bar}${isCompact() ? ` ${styles.compact}` : ""}${isCompact() && props.hideQueue ? ` ${styles.noQueue}` : ""}${isQueueOnly() ? ` ${styles.queueOnly}` : ""}${props.class ? ` ${props.class}` : ""}`}
+        class={`${styles.bar}${isCompact() ? ` ${styles.compact}` : ""}${isCompact() && props.hideQueue ? ` ${styles.noQueue}` : ""}${isQueueOnly() ? ` ${styles.queueOnly}` : ""}${props.fill ? ` ${styles.fill}` : ""}${props.class ? ` ${props.class}` : ""}`}
         teamColor="#000"
         data-testid="turn-bar"
         data-density={density()}

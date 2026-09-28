@@ -87,7 +87,7 @@ export const MobileHudDock: StoryObj = {
       {[QUEUED_SAMPLE, withGas(1)].map((board) => (
         <WithMatchStore board={board}>
           <HudDock
-            queue={<TurnBar density="queueOnly" />}
+            queue={<TurnBar density="queueOnly" fill />}
             rack={<GasRack />}
             controls={
               <TurnBar compact hideQueue autoStart={false} resolveOnEnd={false} onEnd={() => undefined} />

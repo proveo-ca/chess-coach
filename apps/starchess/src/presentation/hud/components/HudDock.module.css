@@ -51,13 +51,25 @@
   margin-block: -6px;
 }
 
-/* Pinned to row 1 so `.center`, which spans the row, overlaps them rather
-   than pushing them to a second row. Chip hugs the rack from the left,
-   End + timer from the right. */
+/* Every slot is pinned to row 1 so `.center`, which spans the row, overlaps
+   them rather than pushing them to a second row.
+   The queued chip fills its column and runs on under the rack to the circle's
+   centre — GasRack's circle and tail are positioned with z-index 1–2, so they
+   paint over it. Its left end follows the tray's round end, like the timer
+   ring on the right. Two classes beat Chip's own 6px radius. */
 .queue {
-  grid-area: 1 / 1;
-  justify-content: flex-end;
+  grid-area: 1 / 1 / 2 / 3;
+  justify-content: stretch;
   padding-left: 0.3rem;
+  padding-right: calc(var(--rack-track) - 30px);
+}
+
+.queue :global([data-timing]) {
+  border-top-left-radius: 999px;
+  border-bottom-left-radius: 999px;
+  padding-left: 14px;
+  /* Keep the × clear of the 30px the circle covers. */
+  padding-right: calc(30px + 0.5rem);
 }
 
 .controls {

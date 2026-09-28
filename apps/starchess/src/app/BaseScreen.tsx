@@ -885,7 +885,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
                 queue={
                   <Show when={!turnHidden()}>
                     <HudHold held={ended()}>
-                      <TurnBar density="queueOnly" />
+                      <TurnBar density="queueOnly" fill />
                     </HudHold>
                   </Show>
                 }

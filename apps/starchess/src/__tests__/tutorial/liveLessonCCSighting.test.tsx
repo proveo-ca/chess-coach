@@ -78,6 +78,17 @@ describe("LiveLessonHost CC sighting (alertLatch: cc)", () => {
     expect(rings()).not.toContain("b7");
   });
 
+  it("counts a sieged Tank's reach: the e3 siege sees the b7 CC placement alone cannot", () => {
+    // Turtled Opponent after the Tank moved to e3 and sieged (`S:…e3`).
+    const sieged =
+      "SCFEN|3r4/pkppp3/npb5/4P3/3P4/N2BRP2/2PN4/4K3|14|33|P|G:21:22|M:w:b1|S:d8e3|Q:w:;b:";
+    expect(litForWhite(sieged, "b7")).toBe(false);
+    mount();
+    load(sieged);
+    expect(rings()).toContain("b7");
+    expect(rings()).not.toContain("e8");
+  });
+
   it("a lesson key change resets the ring to the home square", () => {
     const setKey = mount();
     load(CC_LIT);
