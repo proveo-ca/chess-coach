@@ -1,4 +1,4 @@
-/* Achievement glyph — rise 2 squares in 1s, exponential fade through 3s. */
+/* Positioned glyph marker — rise 2 squares in 1s, exponential fade through 3s. */
 
 .bubble {
   position: absolute;
@@ -6,7 +6,7 @@
   align-items: center;
   justify-content: center;
   pointer-events: none;
-  animation: achievement-bubble-rise 3s linear forwards;
+  animation: bubble-rise 3s linear forwards;
 }
 
 .mark {
@@ -24,7 +24,7 @@
   -webkit-mask-size: contain;
 }
 
-@keyframes achievement-bubble-rise {
+@keyframes bubble-rise {
   0% {
     transform: translateY(0);
     opacity: 1;

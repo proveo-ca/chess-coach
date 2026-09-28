@@ -41,6 +41,11 @@ export type ResourceBarProps = {
    * team colour, so the name replaces a separate "X (Blue) vs Y (Red)" title.
    */
   name?: string;
+  /**
+   * Stretch to the row instead of the fixed named width; the name takes the
+   * extra room (review detail on tall phones, where no ‹ › share the row).
+   */
+  fill?: boolean;
   class?: string;
 };
 
@@ -127,7 +132,7 @@ export const ResourceBar: Component<ResourceBarProps> = (props) => {
 
   return (
     <TeamFrame
-      class={`${styles.bar}${props.compact ? ` ${styles.compact}` : ""}${props.class ? ` ${props.class}` : ""}`}
+      class={`${styles.bar}${props.compact ? ` ${styles.compact}` : ""}${props.fill ? ` ${styles.fill}` : ""}${props.class ? ` ${props.class}` : ""}`}
       teamColor={team()}
       data-testid="resource-bar"
       data-team={color()}

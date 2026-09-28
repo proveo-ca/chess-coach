@@ -429,8 +429,11 @@ export const livePlayAttack3 = {
       mark: {},
     },
     {
+      // Opening "Deploy a Marine": ring the landing square and put the gas
+      // hint on our Command Center — the deploy starts there. `gasOnCC`
+      // drops itself once the deploy is queued.
       turn: 0,
-      mark: { squares: ["h2"] },
+      mark: { squares: ["h2"], gasOnCC: true },
     },
     {
       when: queued("C=e1c2"),

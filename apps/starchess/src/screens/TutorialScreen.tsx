@@ -23,6 +23,8 @@ import { schedule } from "~/adapters/timers";
 import { buildReviewHistory } from "~/app/reviewHistory";
 import { CoachAvatar } from "~/components/atoms/CoachAvatar";
 import { TutorialGuideBubble } from "~/components/features/TutorialGuideBubble";
+import { useMediaQuery } from "~/hooks/useMediaQuery";
+import { DYNAMIC_MOBILE_MQ } from "~/utils/breakpoints";
 import { Breadcrumb } from "@chess-coach/ui-web/primitives/Breadcrumb";
 import { ScreenBackNav } from "~/components/primitives/ScreenBackNav";
 import { Toggle } from "@chess-coach/ui-web/primitives/Toggle";
@@ -177,6 +179,7 @@ const FogSection: Component<{
   guideBubble: JSX.Element;
   header: JSX.Element;
   footer: JSX.Element;
+  skinToggle: JSX.Element;
   onHome: () => void;
   onNarration: NarrationSink;
 }> = (props) => {
@@ -202,6 +205,7 @@ const FogSection: Component<{
       header={props.header}
       guideBubble={props.guideBubble}
       footerExtra={props.footer}
+      hudCenter={props.skinToggle}
       boardHints={boardHints()}
     />
   );
@@ -594,9 +598,13 @@ export const TutorialScreen: Component = () => {
     coachLeaving() ? "coach-farewell" : `${lineKey()}|${outcome()}`,
   );
 
+  /** Short landscape: no coach text over the board — see `actionOnly`. */
+  const dynamicMobile = useMediaQuery(DYNAMIC_MOBILE_MQ);
+
   const guideBubble = () => (
     <Show when={!coachHidden()}>
     <TutorialGuideBubble
+      actionOnly={dynamicMobile()}
       variant={bubbleVariant()}
       autoAdvanceMs={bubbleAutoAdvanceMs()}
       message={bubbleMessage()}
@@ -649,10 +657,7 @@ export const TutorialScreen: Component = () => {
   const kingCoachHeader = () =>
     lessonCoachHeader({ testId: "tutorial-king-coach-nav" });
 
-  const fogFooter = () =>
-    withFooter(
-      <SkinToggle chess={chessMode()} onChange={selectSkin} />,
-    );
+  const fogFooter = () => withFooter();
 
   const specialFooter = () => withFooter();
 
@@ -687,6 +692,7 @@ export const TutorialScreen: Component = () => {
         guideBubble={guideBubble()}
         header={fogCoachHeader()}
         footer={fogFooter()}
+        skinToggle={<SkinToggle chess={chessMode()} onChange={selectSkin} />}
         onHome={goHome}
       />
     );

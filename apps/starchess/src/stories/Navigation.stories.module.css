@@ -118,25 +118,6 @@
   .stack :global(.screen-back) {
     visibility: hidden;
   }
-
-  :global(.mobile-sub-banner).subSplit {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-    align-items: center;
-    column-gap: 0.35rem;
-  }
-}
-
-.subQueue {
-  display: flex;
-  justify-content: flex-end;
-  min-width: 0;
-}
-
-.subControls {
-  display: flex;
-  justify-content: flex-start;
-  min-width: 0;
 }
 
 .bannerInline {

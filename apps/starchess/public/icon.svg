@@ -1,11 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080" width="1080" height="1080" role="img" aria-label="Proveo">
-  <rect width="1080" height="1080" fill="#005F7F"/>
-  <g fill="#F5F5F5" transform="translate(-229.752 -250.508) scale(1.449578)">
-    <path d="M540.07,448.473c-27.271,0-50.159,10.039-68.031,29.828c-16.231,17.906-24.453,39.359-24.453,63.762 c0,24.621,8.687,46.449,25.826,64.82c17.176,18.449,39.606,27.828,66.658,27.828c26.946,0,49.328-9.379,66.503-27.828 c17.147-18.371,25.834-40.199,25.834-64.82c0-24.492-8.229-46.023-24.46-63.93C590.074,458.469,567.242,448.473,540.07,448.473z"/>
-    <path d="M414.813,784.934H298.349V298.25h94.767v-17.949H280.384v522.574h151.457 C431.841,802.875,430.157,784.934,414.813,784.934z"/>
-    <path d="M398.463,322.707c-9.8,0-17.915-3.52-24.368-10.629c-5.854-6.469-8.778-14.133-8.778-22.973 c0-8.879,3.093-16.66,9.278-23.285c6.192-6.668,14.153-9.988,23.868-9.988c9.764,0,17.738,3.32,23.931,9.988 c6.192,6.625,9.285,14.406,9.285,23.285c0,8.793-2.931,16.441-8.792,22.902C416.448,319.145,408.304,322.707,398.463,322.707z"/>
-    <path d="M665.18,295.066h116.472V781.75h-94.767v17.949h112.731V277.121H648.159 C648.159,277.121,649.843,295.066,665.18,295.066z"/>
-    <path d="M681.537,757.289c9.8,0,17.915,3.523,24.368,10.633c5.854,6.465,8.778,14.129,8.778,22.974 c0,8.875-3.093,16.659-9.278,23.28c-6.192,6.672-14.153,9.992-23.868,9.992c-9.764,0-17.738-3.32-23.931-9.992 c-6.192-6.621-9.285-14.405-9.285-23.28c0-8.794,2.931-16.446,8.792-22.903C663.552,760.855,671.688,757.289,681.537,757.289z"/>
+<!-- StarChess app icon: the Blue BattleShip at rest, copied from
+     src/presentation/pieces/InlineBattleShip.tsx (PIECE_FRAME.Q, TEAM_PRIMARY.w).
+     Update both together; `scripts/build-icons.sh` rasterizes this file. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45" width="512" height="512" role="img" aria-label="StarChess">
+  <!-- Rounded tile matching apps/chess/public/icon-192.png: #1a1a2e, corner
+       radius 1/6 of the side, art at ~63% of the tile. -->
+  <rect width="45" height="45" rx="7.5" fill="#1a1a2e"/>
+  <!-- Re-centre: PIECE_FRAME seats the hull on the square's baseline and lets
+       the thrusters run above y=0 (art spans y ≈ -2.9…40.1). -->
+  <g transform="translate(22.5 22.5) scale(0.66) translate(-22.5 -18.6)">
+  <g transform="translate(22.5 39.2) scale(0.8987 0.9927) translate(-22.50 -44.00)">
+    <g stroke="#222" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8">
+      <rect fill="#555" x="13.5" y="2.5" width="7" height="12" rx="3"/>
+      <rect fill="#555" x="24.5" y="2.5" width="7" height="12" rx="3"/>
+      <ellipse fill="#3b7dd8" cx="17" cy="3.5" rx="3" ry="1.6"/>
+      <ellipse fill="#3b7dd8" cx="28" cy="3.5" rx="3" ry="1.6"/>
+      <path fill="#fff" d="M5 9 14 6 18 9h9l4-3 9 3-2 10-11-2-2 5h-5l-2-5-11 2z"/>
+      <path fill="#3b7dd8" d="M7 10 14 8l3 3-2 4-8 1z"/>
+      <path fill="#3b7dd8" d="m38 10-7-2-3 3 2 4 8 1z"/>
+      <path fill="#fff" d="m19 12 3.5-2 3.5 2 3 20-6.5 4-6.5-4z"/>
+      <path fill="#3b7dd8" d="m18 22 4.5 3 4.5-3 1 7-5.5 4-5.5-4z"/>
+      <path fill="#fff" d="m4 32 12-4 6.5 3 6.5-3 12 4 1 7-9 4H12l-9-4z"/>
+      <path fill="#3b7dd8" d="m6 33 9-3 3 3-3 6-9-1z"/>
+      <path fill="#3b7dd8" d="m39 33-9-3-3 3 3 6 9-1z"/>
+      <path fill="#222" d="m7 35 6-1 1 2-7 1z"/>
+      <path fill="#222" d="m38 35-6-1-1 2 7 1z"/>
+    </g>
+  </g>
   </g>
 </svg>

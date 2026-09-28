@@ -1,24 +1,5 @@
-.card {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  min-width: 0;
-  margin: 0;
-  padding: 0.5rem;
-  border: 1px solid color-mix(in srgb, #7cff4a 35%, transparent);
-  background: color-mix(in srgb, #041208 80%, transparent);
-  color: inherit;
-  font: inherit;
-  text-align: left;
-  cursor: default;
-}
-
-.missing {
-  opacity: 0.45;
-}
-
-button.card {
-  cursor: pointer;
+.glyphScope {
+  display: contents;
 }
 
 .icon {

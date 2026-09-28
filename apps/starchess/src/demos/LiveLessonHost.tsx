@@ -12,6 +12,7 @@ import {
   adjutant,
   emptyCCIntel,
   getSideVision,
+  parseScFen,
   placementToMap,
   type ScFenSnapshot,
 } from "@chess-coach/starchess-core";
@@ -31,6 +32,7 @@ import {
 import { createMatchStore } from "~/app/MatchStoreContext";
 import { MatchStoreProvider, useMatchStore } from "~/ports/matchStore";
 import { createMatchStateFromScfen } from "~/app/matchReducer";
+import { tankModeForSieged } from "~/presentation/board/tankMode";
 import { QueueHintProvider } from "~/presentation/hud/queueHint";
 import { BaseScreen } from "~/app/BaseScreen.tsx";
 import { CHOREOGRAPHY, type ChoreographyResult } from "~/demos/choreography";
@@ -157,10 +159,9 @@ const LiveLessonInner: Component<LiveLessonHostProps & { boardKey: string }> = (
       if (props.board.alertLatch !== "king" && props.board.alertLatch !== "cc") {
         return { ccVisible: false };
       }
-      const placement = board.scfen().split("|")[1];
-      if (!placement) return { ccVisible: false };
       try {
-        const map = placementToMap(placement);
+        const snap = parseScFen(board.scfen());
+        const map = placementToMap(snap.placement);
         const viewer = store.shell().viewer;
         const enemy = viewer === "w" ? "b" : "w";
         let ccAt: Square | undefined;
@@ -168,7 +169,13 @@ const LiveLessonInner: Component<LiveLessonHostProps & { boardKey: string }> = (
           if (piece.type === "k" && piece.color === enemy) ccAt = sq;
         }
         if (!ccAt) return { ccVisible: false };
-        const vision = getSideVision(map, viewer);
+        // The player's real fog (as `fogForViewer`): a sieged Tank sees
+        // further and a mine lights its square. Placement alone missed the
+        // e3 siege in "Turtled Opponent", so the ring sat on the e8 prior.
+        const vision = getSideVision(map, viewer, {
+          tankModeFor: tankModeForSieged(snap.siegedTanks ?? []),
+          mines: snap.mines,
+        });
         return { ccAt, ccVisible: vision.litSquares.has(ccAt) || vision.revealedPieces.has(ccAt) };
       } catch {
         return { ccVisible: false };
@@ -264,6 +271,7 @@ const LiveLessonInner: Component<LiveLessonHostProps & { boardKey: string }> = (
         coachEmotion={props.coachEmotion}
         guideBubble={props.guideBubble}
         footerExtra={props.footerExtra}
+        hudCenter={props.hudCenter}
         endTurnAfterQueue={endTurnAfterQueue()}
         hintSquares={hintSquares()}
         hintAlertSquares={hintAlertSquares()}

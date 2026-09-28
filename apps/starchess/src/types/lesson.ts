@@ -33,6 +33,8 @@ export type LiveLessonHostProps = {
   coachEmotion?: KerriganEmotion;
   guideBubble?: JSX.Element;
   footerExtra?: JSX.Element;
+  /** Centred in the tall-phone footer tray; in the footer elsewhere. */
+  hudCenter?: JSX.Element;
   /** Script-driven destination rings, resolved against the live SCFEN. */
   boardHints?: readonly TutorialBeat[];
   /** Wrap in a sky shell; omit when nested in one already. */

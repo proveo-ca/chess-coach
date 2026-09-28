@@ -674,7 +674,7 @@ describe("tutorialScript", () => {
         scfen ?? lessonBoard(stage, story).scfen,
       );
     expect(arrows("fog", "king")).toEqual([{ from: "d4", to: "c3" }]);
-    expect(arrows("fog", "pawn")).toEqual([{ from: "d4", to: "d8" }]);
+    expect(arrows("fog", "pawn")).toEqual([{ from: "d4", to: "d5" }]);
     expect(arrows("fog", "bishop")).toEqual([{ from: "d4", to: "h8" }]);
     expect(arrows("fog", "rook-tank")).toEqual([{ from: "d4", to: "d8" }]);
     expect(arrows("fog", "rook-siege")).toEqual([{ from: "d4", to: "h4" }]);

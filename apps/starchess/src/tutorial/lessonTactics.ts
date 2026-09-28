@@ -354,6 +354,25 @@ export const queuedMoveGhost = (scfen: string): Square | null =>
   (/C=[a-h][1-8]([a-h][1-8])/.exec(whiteQueue(scfen))?.[1] as Square | undefined) ?? null;
 
 /**
+ * One square straight ahead of wherever the viewer's pawn stands now — the
+ * climb-one-rank-at-a-time hint. `null` once it has promoted (no pawn left).
+ */
+export const pawnClimbStep = (
+  scfen: string,
+  viewer: StarChessColor = "w",
+): { from: Square; to: Square } | null => {
+  const map = placementMap(scfen);
+  if (!map) return null;
+  for (const [sq, piece] of map) {
+    if (piece.color !== viewer || piece.type !== "p") continue;
+    const rank = Number(sq[1]);
+    if (rank >= 8) return null;
+    return { from: sq, to: `${sq[0]}${rank + 1}` as Square };
+  }
+  return null;
+};
+
+/**
  * Square of the marine to gas once the classical move is queued and no gas
  * action is queued yet. The furthest-advanced ally marine, toward the h-file
  * on a tie — that is the one the push lines are walking.

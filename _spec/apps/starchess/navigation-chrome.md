@@ -236,7 +236,7 @@ Supersedes §5's `order: 1/2` swap (rules deleted from both stylesheets);
   the ResourceBar) — phones no longer render this in-flow chrome; they get
   `SingleMobileBanner` / `SingleDynamicBanner`. Mobile stories mount the
   real `StarChessMobileBanner` / `StarChessMobileSubBanner`; the story module
-  mirrors `BaseScreen`'s sub-banner split (`.subSplit`) and one-row inline
+  mirrors `BaseScreen`'s one-row inline
   (`.bannerInline`).
 
 ## Mobile banner: one chrome from the Screen primitives up
@@ -316,12 +316,27 @@ content slots — `resources` / `turn` / `band` / `subBanner` /
 
 | Screen | Title | Under the stripe |
 |---|---|---|
-| `/single` | **no title** — the ResourceBar sits in the centre slot (`center`) | sub-banner split: queued chip right-aligned in the left half, `[End Turn] [timer]` left-aligned in the right half — both meet at the centre, like the ResourceBar, and a new chip never moves End/timer |
-| lessons | lesson title (`bannerTitle`) **until the coach hides** (`hudResources`); then the ResourceBar **replaces the title** in the centre slot, 40px tall like the End Turn row (`.bannerResourceBar`), as on `/single`. Tall phones only: the Dynamic band never shows a title, and desktop keeps its own header | same split sub-banner (floats over the coach) |
-| tutorial replays | story label (`reviewLabel`) | sub-banner: `‹ Turn N ›` stepper |
+| `/single` | **no title** — the ResourceBar sits in the centre slot (`center`) | nothing: the turn controls live in the footer `HudDock` (below) |
+| lessons | lesson title (`bannerTitle`) **until the coach hides** (`hudResources`); then the ResourceBar **replaces the title** in the centre slot, 40px tall like the End Turn row (`.bannerResourceBar`), as on `/single`. Tall phones only: the Dynamic band never shows a title, and desktop keeps its own header | nothing: footer `HudDock`, as on `/single` |
+| tutorial replays | story label (`reviewLabel`) | nothing on tall phones: the `‹ Turn N ›` stepper is centred in the footer `HudDock` (`TutorialReviewHost`); the dynamic band keeps it in the sub-banner |
 | review list | "Review" | sub-banner: compact filters; matches fill the middle; Arena library in the footer |
-| review detail | result line, coloured (`titleColor`) | in-flow: stacked resource bars with ‹ › on each side |
+| review detail | result line, coloured (`titleColor`) | in-flow: stacked resource bars at full board width (`ResourceBar fill`); on tall phones the ‹ › are centred in the footer `HudDock` with the step caption (desktop keeps them beside the bars; the dynamic band keeps its side-by-side compact bars) |
 
+- **Tall-phone footer HUD (`HudDock`, 2026-09-27)**: `BaseScreen` no longer
+  renders a sub-banner. Whenever `bannerOwnsChrome()` on a tall phone
+  (`footerTurnDock()`), the footer's gas row is one tray —
+  `[queued chip] [GasRack] [End Turn] [timer]` — in the rack's fill and
+  border, running to the 16px screen gutter. Columns `minmax(0, 1fr) 96px
+  7.4rem` — fixed tracks, never `auto`: a new chip, a spent canister, or a
+  lesson that hides the turn controls (`turnHidden`) or the gas leaves the
+  rack and End/timer exactly where they are. The tray stays in flow on short viewports (a
+  lone rack still collapses to height 0 there). The GasRack's tail is fixed
+  width at every gas level; reserves stack behind the ready canister, tucked
+  under the circle's rim. The Dynamic band and desktop are unchanged.
+  A lesson with no rack can put one control in the tray's centre
+  (`hudCenter` → `HudDock center`): the fog lessons' Chess / StarChess skin
+  toggle. Off tall phones `hudCenter` renders under `footerExtra` instead.
+  Story: `Features/GasDeploy` → "Mobile HUD dock", "Rack · gas levels".
 - `StarChessMobileSubBanner` is the old second row, lifted out of the
   banner: absolute at `top: 48px`, `inline` (the screen reserves
   `--mobile-banner-tall-height`) or `float` (no reservation, z 60).
@@ -341,6 +356,11 @@ content slots — `resources` / `turn` / `band` / `subBanner` /
   Arena library lines up with the list tiles.
 
 ### Short landscape (dynamic band, w ≥ 480 · h < 640) — `BaseScreen` screens
+
+Tutorial guide bubbles skip the coach's line here (`TutorialGuideBubble
+actionOnly`, set by `TutorialScreen` on `DYNAMIC_MOBILE_MQ`): nothing shows
+unless the line carries an action, and then only the success mark and the
+button (Next lesson / Retry / go to section), which the lesson still needs.
 
 No sub-banner fits: the stripe is the whole chrome, one row,
 `‹ Back [ResourceBar] [TurnBar compact]` (`fill` drops the right spacer so

@@ -43,6 +43,7 @@ import {
 } from "~/presentation/board/fogProjection";
 import { tankModeAt, tankModeForSieged } from "~/presentation/board/tankMode";
 import { PieceGlyph } from "~/presentation/board/components/PieceGlyph";
+import type { BoardDragGhost } from "~/presentation/board/hooks/useBoardInput";
 import { visionStrategyFor } from "~/presentation/board/vision/VisionStrategy";
 import { sameFlat, sameMap, sameSet } from "~/presentation/board/memoEquals";
 import { TEAM_PRIMARY } from "~/presentation/pieces/teamColors";
@@ -127,6 +128,14 @@ export type StarChessBoardProps = {
    * Lasts for the drop cue only; persistent green is snap `U:` / arm marks.
    */
   gasAbsorbSquares?: ReadonlySet<Square> | readonly Square[];
+  /** Unified pointer-drag path — classical moves only; deploy/Charon/Jump stay tap-only. */
+  onPointerDown?: (e: PointerEvent) => void;
+  onPointerMove?: (e: PointerEvent) => void;
+  /** Returns true when the gesture resolved a tap/drop — caller suppresses the trailing click. */
+  onPointerUp?: (e: PointerEvent) => boolean;
+  onPointerCancel?: (e: PointerEvent) => void;
+  dragGhost?: BoardDragGhost | null;
+  hoveredDragSquare?: Square | null;
 };
 
 const NO_SQUARE_SET: ReadonlySet<Square> = new Set();
@@ -387,6 +396,18 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
   const isHintSq = createSelector(hintSet, inSet);
   const isGasHintSq = createSelector(gasHintSet, inSet);
   const isCheckSq = createSelector(checkSet, inSet);
+  const dragOriginSquare = createMemo(() => props.dragGhost?.from ?? null);
+  const isDragOriginSq = createSelector(dragOriginSquare);
+  const dragHoverSquare = createMemo(() => props.hoveredDragSquare ?? null);
+  const isDragHoverSq = createSelector(dragHoverSquare);
+
+  /**
+   * A pointerup that resolved a tap/drop is followed by a native `click` on
+   * whichever square is under the pointer (mouse fires it regardless of
+   * `preventDefault`) — this flag swallows exactly that one click so the
+   * gesture is never applied twice.
+   */
+  let suppressClick = false;
 
   return (
     <div class={styles["board-layout-wrapper"]}>
@@ -404,6 +425,12 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
           data-interactive={props.onSquareClick ? "true" : undefined}
           aria-disabled={props.onSquareClick ? undefined : "true"}
           data-vision-mode={isObserver() ? "observer" : "player"}
+          onPointerDown={props.onPointerDown}
+          onPointerMove={props.onPointerMove}
+          onPointerUp={(e) => {
+            if (props.onPointerUp?.(e)) suppressClick = true;
+          }}
+          onPointerCancel={props.onPointerCancel}
           class={clsx(
             styles.chessboard,
             variant() !== "classic" && styles[`chessboard--${variant()}`],
@@ -621,6 +648,8 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
                     return color;
                   });
                   const showMine = () => shownMine() != null;
+                  const isDragOrigin = () => isDragOriginSq(square);
+                  const isDragHover = () => isDragHoverSq(square) && !isDragOriginSq(square);
                   return (
                     <div
                       class={clsx(
@@ -629,6 +658,8 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
                         isSelected() && styles.selected,
                         isLegal() && styles["advice-highlight"],
                         isHint() && styles["hint-highlight"],
+                        isDragOrigin() && styles["drag-origin"],
+                        isDragHover() && styles["drag-hover"],
                       )}
                       data-square={square}
                       data-hint={isHint() ? square : undefined}
@@ -647,7 +678,13 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
                       data-intent-check={intentCheck() ? square : undefined}
                       data-spider-mine={showMine() ? square : undefined}
                       role="button"
-                      onClick={() => props.onSquareClick?.(square)}
+                      onClick={() => {
+                        if (suppressClick) {
+                          suppressClick = false;
+                          return;
+                        }
+                        props.onSquareClick?.(square);
+                      }}
                     >
                       <Show when={localFogVeil()}>
                         <div class={styles.fog} aria-hidden="true" />
@@ -772,6 +809,24 @@ export const StarChessBoard: Component<StarChessBoardProps> = (props) => {
               )}
             </For>
           </div>
+          {/* Drag ghost — viewport-fixed, follows the pointer above pieces (10),
+              fog veil (5) and coordinate labels (20). */}
+          <Show when={props.dragGhost}>
+            {(g) => (
+              <div
+                class={styles["drag-ghost"]}
+                style={{ left: `${g().x}px`, top: `${g().y}px` }}
+                aria-hidden="true"
+              >
+                <PieceGlyph
+                  color={g().color}
+                  type={g().piece}
+                  pieceSet={pieceSet()}
+                  class={styles["drag-ghost-piece"]}
+                />
+              </div>
+            )}
+          </Show>
         </div>
       </div>
     </div>

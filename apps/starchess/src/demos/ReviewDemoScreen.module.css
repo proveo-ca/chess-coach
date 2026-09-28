@@ -135,3 +135,29 @@
   min-width: 0;
 }
 
+
+/* Tall phones: the ‹ › moved to the footer tray, so the stacked bars take
+   the full board width they used to share with the chevrons. */
+.dualFullWidth {
+  flex-direction: column;
+  flex-wrap: nowrap;
+  gap: 6px;
+  width: 100%;
+  max-width: none;
+}
+
+/* Tray caption — same read as the tutorial replay stepper (`phaseLabel`). */
+.navLabel {
+  display: block;
+  box-sizing: border-box;
+  width: 9.5rem;
+  padding: 0.35rem 0.25rem;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--sc-guide-green, #3ecf8e);
+}

@@ -26,7 +26,8 @@ export const pawn = {
       emotion: "happy",
     },
     {
-      mark: { squares: ["d8"], arrows: [{ from: "d4", to: "d8" }] },
+      when: { kind: "pawnStep" },
+      mark: {},
     },
   ],
 } satisfies TutorialStoryScript;

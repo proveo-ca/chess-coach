@@ -100,3 +100,15 @@
 .bar.compact:has(.name) {
   width: 12rem;
 }
+
+/* `fill`: stretched to the row. After `.bar:has(.name)` on purpose — same
+   specificity, so order is what lets this width win. */
+.bar.fill {
+  width: 100%;
+}
+
+.fill .name {
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 6rem;
+}

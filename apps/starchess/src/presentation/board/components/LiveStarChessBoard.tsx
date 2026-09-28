@@ -70,7 +70,15 @@ export const LiveStarChessBoard: Component<{
   const fog = () => boardVision().fog;
   const visionMode = () => boardVision().visionMode;
   // Same vision overrides as the veil — fog intent clicks are app-wide policy.
-  const { onSquareClick } = useBoardInput(visionOverrides);
+  const {
+    onSquareClick,
+    onPointerDown,
+    onPointerMove,
+    onPointerUp,
+    onPointerCancel,
+    dragGhost,
+    hoveredDragSquare,
+  } = useBoardInput(visionOverrides);
   const combat = useCombatOverlays(store);
   const overlays = useIntentOverlays(store);
   const achievementBubbles = useAchievementBubbles();
@@ -306,6 +314,12 @@ export const LiveStarChessBoard: Component<{
   const selectedProp = createMemo(() => (interactive() ? state().selected : null));
   const legalDestsProp = createMemo(() => (interactive() ? state().legalDests : NO_SQUARES));
   const squareClickProp = createMemo(() => (interactive() ? onSquareClick : undefined));
+  const pointerDownProp = createMemo(() => (interactive() ? onPointerDown : undefined));
+  const pointerMoveProp = createMemo(() => (interactive() ? onPointerMove : undefined));
+  const pointerUpProp = createMemo(() => (interactive() ? onPointerUp : undefined));
+  const pointerCancelProp = createMemo(() => (interactive() ? onPointerCancel : undefined));
+  const dragGhostProp = createMemo(() => (interactive() ? dragGhost() : null));
+  const hoveredDragSquareProp = createMemo(() => (interactive() ? hoveredDragSquare() : null));
 
   const combatFrame = createMemo((): CombatCueFrame => ({
     attackCues: attackCues(),
@@ -351,6 +365,12 @@ export const LiveStarChessBoard: Component<{
         hintGasSquares={props.hintGasSquares}
         hintArrows={props.hintArrows}
         onSquareClick={squareClickProp()}
+        onPointerDown={pointerDownProp()}
+        onPointerMove={pointerMoveProp()}
+        onPointerUp={pointerUpProp()}
+        onPointerCancel={pointerCancelProp()}
+        dragGhost={dragGhostProp()}
+        hoveredDragSquare={hoveredDragSquareProp()}
         combat={combatFrame()}
         spentMines={combat.spentMines()}
         gasAbsorbSquares={gasAbsorbSquares()}

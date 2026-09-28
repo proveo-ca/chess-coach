@@ -24,7 +24,7 @@ import { MatchStoreProvider, useMatchStore } from "~/ports/matchStore";
 import { createMatchStateFromReviewHistory } from "~/app/reviewHistory";
 import { readDisplayedSnapshot } from "~/app/selectors";
 import { useMediaQuery } from "~/hooks/useMediaQuery";
-import { DYNAMIC_MOBILE_MQ } from "~/utils/breakpoints";
+import { DYNAMIC_MOBILE_MQ, MOBILE_MQ } from "~/utils/breakpoints";
 import { Label } from "@chess-coach/ui-web/primitives/Label";
 import { Screen } from "@chess-coach/ui-web/primitives/Screen";
 import { ScreenBackNav } from "~/components/primitives/ScreenBackNav";
@@ -35,6 +35,7 @@ import { LiveBoardBinding } from "~/presentation/board/components/LiveBoardBindi
 import { displayPlayerName } from "~/utils/playerName";
 import { formatScriptLabel } from "~/utils/matchTitle";
 import { isCheckOnlyResolve } from "~/presentation/hud/isCheckOnlyResolve";
+import { HudDock } from "~/presentation/hud/components/HudDock";
 import { MatchBoardHost } from "~/presentation/hud/components/MatchBoardHost";
 import { ResourceBar } from "~/presentation/hud/components/ResourceBar";
 import { ReviewTurnNav } from "@chess-coach/ui-web/atoms/ReviewTurnNav";
@@ -128,6 +129,13 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
 
   const dynamicMobile = useMediaQuery(DYNAMIC_MOBILE_MQ);
   const bannerBars = () => dynamicMobile();
+  const mobileViewport = useMediaQuery(MOBILE_MQ);
+  /**
+   * Tall phones step the review from the footer tray (centred, as the
+   * tutorial replays), so the top row is the two ResourceBars alone and they
+   * take the width the ‹ › used to hold.
+   */
+  const footerNav = () => mobileViewport() && !dynamicMobile();
 
   const reviewBusy = () =>
     timelineActive() ||
@@ -253,7 +261,10 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
   const dualResourceBars = () => (
     <div
       class={styles.dualResources}
-      classList={{ [styles.dualInBanner]: bannerBars() }}
+      classList={{
+        [styles.dualInBanner]: bannerBars(),
+        [styles.dualFullWidth]: footerNav(),
+      }}
       role="group"
       aria-label={
         reviewVisionFilter() === "both"
@@ -267,6 +278,7 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
       <Show when={showWhiteResources()}>
         <ResourceBar
           compact={bannerBars()}
+          fill={footerNav()}
           color="w"
           snapshot={snap()}
           name={bannerBars() ? undefined : sideName("w")}
@@ -275,6 +287,7 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
       <Show when={showBlackResources()}>
         <ResourceBar
           compact={bannerBars()}
+          fill={footerNav()}
           color="b"
           snapshot={snap()}
           name={bannerBars() ? undefined : sideName("b")}
@@ -342,7 +355,7 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
               </Show>
             </ScreenBackNav>
             <Show when={!props.hideResources}>
-              <Show when={!props.hideDualNav} fallback={dualResourceBars()}>
+              <Show when={!props.hideDualNav && !footerNav()} fallback={dualResourceBars()}>
                 <ReviewTurnNav
                   onBack={() => store.reviewBack()}
                   onForward={() => store.reviewForward()}
@@ -379,6 +392,22 @@ const ReviewDemoInner: Component<ReviewDemoScreenProps> = (props) => {
       <Screen.Footer>
         <div class={styles.footerStack}>
           {props.footerExtra}
+          <Show when={footerNav() && !props.hideDualNav}>
+            <HudDock
+              center={
+                <ReviewTurnNav
+                  onBack={() => store.reviewBack()}
+                  onForward={() => store.reviewForward()}
+                  backDisabled={reviewNavDisabled().back}
+                  forwardDisabled={reviewNavDisabled().forward}
+                >
+                  <span class={styles.navLabel} data-testid="review-dock-caption">
+                    {caption()}
+                  </span>
+                </ReviewTurnNav>
+              }
+            />
+          </Show>
           <p class={styles.caption}>
             Review · {props.reviewLabel ?? "Review"} · {caption()}
           </p>

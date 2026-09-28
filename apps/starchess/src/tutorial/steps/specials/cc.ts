@@ -12,7 +12,7 @@ export const cc = {
     armTimer: false,
     docs: "1. Drag gas onto the command center on e1 \u2192 DeployModal. 2. Pick a unit. 3. Tap an adjacent empty square \u2014 queued spawn \u00b7 End to drop.",
   },
-  comment: "The Command Center can deploy units with gas! Often the best gas use. \n\nSee that gas canister in the bottom? Drag and drop it into your Command Center.",
+  comment: "The Command Center can deploy units! Often the best gas use. \n\nSee that gas canister in the bottom? Drag and drop it into your Command Center.",
   emotion: "watching",
   completeWhen: {
     kind: "queue",

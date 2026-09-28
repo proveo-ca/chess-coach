@@ -18,6 +18,7 @@ import {
   g2DeployName,
   isBoardCondition,
   mineGuard,
+  pawnClimbStep,
   promotionChoiceOpen,
   queuedMoveGhost,
   unitArrow,
@@ -442,6 +443,10 @@ const enrichMark = (beat: TutorialBeat, scfen: string | undefined): TutorialMark
   if (w.kind === "mineGuard") {
     const guard = mineGuard(scfen);
     if (guard) return { ...base, squares: guard.mines, arrows: guard.hops };
+  }
+  if (w.kind === "pawnStep") {
+    const step = pawnClimbStep(scfen);
+    if (step) return { ...base, squares: [step.to], arrows: [{ from: step.from, to: step.to }] };
   }
   if (w.kind === "gasOnMarine") {
     const sq = gasMarineSquare(scfen);
