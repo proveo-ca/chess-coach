@@ -320,7 +320,7 @@ content slots — `resources` / `turn` / `band` / `subBanner` /
 | lessons | lesson title (`bannerTitle`) **until the coach hides** (`hudResources`); then the ResourceBar **replaces the title** in the centre slot, 40px tall like the End Turn row (`.bannerResourceBar`), as on `/single`. Tall phones only: the Dynamic band never shows a title, and desktop keeps its own header | nothing: footer `HudDock`, as on `/single` |
 | tutorial replays | story label (`reviewLabel`) | nothing on tall phones: the `‹ Turn N ›` stepper is centred in the footer `HudDock` (`TutorialReviewHost`); the dynamic band keeps it in the sub-banner |
 | review list | "Review" | sub-banner: compact filters; matches fill the middle; Arena library in the footer |
-| review detail | result line, coloured (`titleColor`) | in-flow: stacked resource bars with ‹ › on each side |
+| review detail | result line, coloured (`titleColor`) | in-flow: stacked resource bars at full board width (`ResourceBar fill`); on tall phones the ‹ › are centred in the footer `HudDock` with the step caption (desktop keeps them beside the bars; the dynamic band keeps its side-by-side compact bars) |
 
 - **Tall-phone footer HUD (`HudDock`, 2026-09-27)**: `BaseScreen` no longer
   renders a sub-banner. Whenever `bannerOwnsChrome()` on a tall phone
