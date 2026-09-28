@@ -93,6 +93,11 @@ export type StarChessScreenProps = {
   guideBubble?: import("solid-js").JSX.Element;
   header?: import("solid-js").JSX.Element;
   footerExtra?: import("solid-js").JSX.Element;
+  /**
+   * Centred inside the tall-phone `HudDock` tray (for a lesson whose tray has
+   * no rack, e.g. the fog skin toggle); under `footerExtra` everywhere else.
+   */
+  hudCenter?: import("solid-js").JSX.Element;
   hintSquares?: readonly Square[];
   hintAlertSquares?: readonly Square[];
   hintGasSquares?: readonly Square[];
@@ -851,6 +856,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
       <Screen.Footer>
         <div class={styles.footerStack}>
           {props.footerExtra}
+          <Show when={!footerTurnDock()}>{props.hudCenter}</Show>
           <div
             classList={{
               [styles.gasDock]: true,
@@ -875,6 +881,7 @@ export const BaseScreen: Component<StarChessScreenProps> = (props) => {
             >
               <HudDock
                 class={styles.footerDock}
+                center={props.hudCenter}
                 queue={
                   <Show when={!turnHidden()}>
                     <HudHold held={ended()}>

@@ -6,6 +6,7 @@ import { placementToMap, formatScFen } from "@chess-coach/starchess-core";
 import type { StarChessColor } from "@chess-coach/starchess-core";
 import type { Square } from "chess.js";
 import {
+  Show,
   createEffect,
   createMemo,
   createSignal,
@@ -23,6 +24,8 @@ import { CoachAvatar } from "~/components/atoms/CoachAvatar";
 import { StarChessMobileBanner as MobileBanner } from "@chess-coach/ui-web/atoms/StarChessMobileBanner";
 import { StarChessMobileSubBanner as MobileSubBanner } from "@chess-coach/ui-web/atoms/StarChessMobileSubBanner";
 import { ReviewTurnNav } from "@chess-coach/ui-web/atoms/ReviewTurnNav";
+import { useMediaQuery } from "~/hooks/useMediaQuery";
+import { DYNAMIC_MOBILE_MQ, MOBILE_MQ } from "~/utils/breakpoints";
 import { Screen } from "@chess-coach/ui-web/primitives/Screen";
 import { ScreenBackNav } from "~/components/primitives/ScreenBackNav";
 import styles from "~/demos/TutorialReviewHost.module.css";
@@ -30,6 +33,7 @@ import { clearSiegedTanks, setTankMode } from "~/presentation/animations/tankMod
 import { LiveBoardBinding } from "~/presentation/board/components/LiveBoardBinding";
 
 import { isCheckOnlyResolve } from "~/presentation/hud/isCheckOnlyResolve";
+import { HudDock } from "~/presentation/hud/components/HudDock";
 import { MatchBoardHost } from "~/presentation/hud/components/MatchBoardHost";
 import { TurnBarSidebar } from "~/presentation/hud/components/TurnBarSidebar";
 import { splitResolveWaves } from "~/presentation/timeline/resolveWaves";
@@ -321,19 +325,32 @@ const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
     }
   };
 
+  const mobileViewport = useMediaQuery(MOBILE_MQ);
+  const dynamicMobile = useMediaQuery(DYNAMIC_MOBILE_MQ);
+  /**
+   * Tall phones step the replay from the footer tray (centred, as the lesson
+   * HUD); the dynamic band keeps the sub-banner. Mounted, not CSS-gated: a
+   * hidden sub-banner still makes `Screen` reserve its row above the board.
+   */
+  const footerNav = () => mobileViewport() && !dynamicMobile();
+
+  const mobileTurnNav = () => (
+    <ReviewTurnNav
+      onBack={goPrev}
+      onForward={() => void goNext()}
+      backDisabled={backDisabled()}
+      forwardDisabled={forwardDisabled()}
+    >
+      <span class={styles.phaseLabel}>{beatLabel()}</span>
+    </ReviewTurnNav>
+  );
+
   return (
     <Screen>
       <MobileBanner onBack={() => props.onHome?.()} title={props.reviewLabel} />
-      <MobileSubBanner>
-        <ReviewTurnNav
-          onBack={goPrev}
-          onForward={() => void goNext()}
-          backDisabled={backDisabled()}
-          forwardDisabled={forwardDisabled()}
-        >
-          <span class={styles.phaseLabel}>{beatLabel()}</span>
-        </ReviewTurnNav>
-      </MobileSubBanner>
+      <Show when={!footerNav()}>
+        <MobileSubBanner>{mobileTurnNav()}</MobileSubBanner>
+      </Show>
       <Screen.Header>
         <div class={styles.headerSlot}>
           <div class={styles.reviewChrome}>
@@ -342,9 +359,9 @@ const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
               class={styles.reviewNav}
               data-testid="tutorial-review-back"
             >
-              {/* Keys bind here, not on the banner copy above — both render at
-                  once (the banner is CSS-gated, not unmounted), and two
-                  listeners would step twice per press. */}
+              {/* Keys bind here, not on the mobile copy (sub-banner or footer
+                  tray) — both render at once (this one is CSS-gated, not
+                  unmounted), and two listeners would step twice per press. */}
               <ReviewTurnNav
                 keyboard
                 onBack={goPrev}
@@ -386,6 +403,9 @@ const TutorialReviewInner: Component<TutorialReviewHostProps> = (props) => {
       <Screen.Footer>
         <div class={styles.footerStack}>
           {props.footerExtra}
+          <Show when={footerNav()}>
+            <HudDock center={mobileTurnNav()} />
+          </Show>
         </div>
       </Screen.Footer>
     </Screen>

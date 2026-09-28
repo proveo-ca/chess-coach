@@ -318,7 +318,7 @@ content slots — `resources` / `turn` / `band` / `subBanner` /
 |---|---|---|
 | `/single` | **no title** — the ResourceBar sits in the centre slot (`center`) | nothing: the turn controls live in the footer `HudDock` (below) |
 | lessons | lesson title (`bannerTitle`) **until the coach hides** (`hudResources`); then the ResourceBar **replaces the title** in the centre slot, 40px tall like the End Turn row (`.bannerResourceBar`), as on `/single`. Tall phones only: the Dynamic band never shows a title, and desktop keeps its own header | nothing: footer `HudDock`, as on `/single` |
-| tutorial replays | story label (`reviewLabel`) | sub-banner: `‹ Turn N ›` stepper |
+| tutorial replays | story label (`reviewLabel`) | nothing on tall phones: the `‹ Turn N ›` stepper is centred in the footer `HudDock` (`TutorialReviewHost`); the dynamic band keeps it in the sub-banner |
 | review list | "Review" | sub-banner: compact filters; matches fill the middle; Arena library in the footer |
 | review detail | result line, coloured (`titleColor`) | in-flow: stacked resource bars with ‹ › on each side |
 
@@ -333,6 +333,9 @@ content slots — `resources` / `turn` / `band` / `subBanner` /
   lone rack still collapses to height 0 there). The GasRack's tail is fixed
   width at every gas level; reserves stack behind the ready canister, tucked
   under the circle's rim. The Dynamic band and desktop are unchanged.
+  A lesson with no rack can put one control in the tray's centre
+  (`hudCenter` → `HudDock center`): the fog lessons' Chess / StarChess skin
+  toggle. Off tall phones `hudCenter` renders under `footerExtra` instead.
   Story: `Features/GasDeploy` → "Mobile HUD dock", "Rack · gas levels".
 - `StarChessMobileSubBanner` is the old second row, lifted out of the
   banner: absolute at `top: 48px`, `inline` (the screen reserves

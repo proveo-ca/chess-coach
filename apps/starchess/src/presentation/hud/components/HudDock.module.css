@@ -47,16 +47,30 @@
 
 /* 60px rack in a 48px tray: count as tray height, overhang both edges. */
 .rack {
+  grid-area: 1 / 2;
   margin-block: -6px;
 }
 
-/* Chip hugs the rack from the left, End + timer from the right. */
+/* Pinned to row 1 so `.center`, which spans the row, overlaps them rather
+   than pushing them to a second row. Chip hugs the rack from the left,
+   End + timer from the right. */
 .queue {
+  grid-area: 1 / 1;
   justify-content: flex-end;
   padding-left: 0.3rem;
 }
 
 .controls {
+  grid-area: 1 / 3;
   justify-content: flex-start;
   padding-right: 0.3rem;
+}
+
+/* Spans every track and centres on the tray, not on the rack's column. */
+.center {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  justify-self: center;
+  display: flex;
+  align-items: center;
 }

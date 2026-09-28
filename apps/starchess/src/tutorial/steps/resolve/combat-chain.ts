@@ -4,7 +4,7 @@ import type { TutorialStoryScript } from "~/tutorial/tutorialScript";
 export const combatChain = {
   id: "combat-chain",
   title: "Combat Chain",
-  comment: "We're now observers of a past combat. \nReplay it with the arrows on the top. \nNotice how turns are simultaneous!",
+  comment: "We're now observers of a past combat. \nReplay it with the ‹ › arrows. \nNotice how turns are simultaneous!",
   emotion: "idle",
   intentArrows: true,
   completeWhen: {

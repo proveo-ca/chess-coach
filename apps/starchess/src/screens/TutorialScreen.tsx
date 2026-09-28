@@ -177,6 +177,7 @@ const FogSection: Component<{
   guideBubble: JSX.Element;
   header: JSX.Element;
   footer: JSX.Element;
+  skinToggle: JSX.Element;
   onHome: () => void;
   onNarration: NarrationSink;
 }> = (props) => {
@@ -202,6 +203,7 @@ const FogSection: Component<{
       header={props.header}
       guideBubble={props.guideBubble}
       footerExtra={props.footer}
+      hudCenter={props.skinToggle}
       boardHints={boardHints()}
     />
   );
@@ -649,10 +651,7 @@ export const TutorialScreen: Component = () => {
   const kingCoachHeader = () =>
     lessonCoachHeader({ testId: "tutorial-king-coach-nav" });
 
-  const fogFooter = () =>
-    withFooter(
-      <SkinToggle chess={chessMode()} onChange={selectSkin} />,
-    );
+  const fogFooter = () => withFooter();
 
   const specialFooter = () => withFooter();
 
@@ -687,6 +686,7 @@ export const TutorialScreen: Component = () => {
         guideBubble={guideBubble()}
         header={fogCoachHeader()}
         footer={fogFooter()}
+        skinToggle={<SkinToggle chess={chessMode()} onChange={selectSkin} />}
         onHome={goHome}
       />
     );

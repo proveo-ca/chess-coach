@@ -264,6 +264,7 @@ const LiveLessonInner: Component<LiveLessonHostProps & { boardKey: string }> = (
         coachEmotion={props.coachEmotion}
         guideBubble={props.guideBubble}
         footerExtra={props.footerExtra}
+        hudCenter={props.hudCenter}
         endTurnAfterQueue={endTurnAfterQueue()}
         hintSquares={hintSquares()}
         hintAlertSquares={hintAlertSquares()}

@@ -5,7 +5,7 @@
  * sits in the middle track, so a new chip or a spent canister never moves
  * either neighbour. Layout only: the host passes the three pieces in.
  */
-import type { Component, JSX } from "solid-js";
+import { Show, type Component, type JSX } from "solid-js";
 
 import styles from "~/presentation/hud/components/HudDock.module.css";
 
@@ -13,6 +13,8 @@ export type HudDockProps = {
   queue?: JSX.Element;
   rack?: JSX.Element;
   controls?: JSX.Element;
+  /** Centred across the whole tray — for a tray whose rack is hidden. */
+  center?: JSX.Element;
   class?: string;
 };
 
@@ -24,5 +26,8 @@ export const HudDock: Component<HudDockProps> = (props) => (
     <div class={styles.queue}>{props.queue}</div>
     <div class={styles.rack}>{props.rack}</div>
     <div class={styles.controls}>{props.controls}</div>
+    <Show when={props.center}>
+      <div class={styles.center}>{props.center}</div>
+    </Show>
   </div>
 );
