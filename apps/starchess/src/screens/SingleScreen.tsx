@@ -1,4 +1,4 @@
-// SPEC: _spec/apps/starchess/menu-flow.puml, _spec/apps/starchess/screens.puml, _spec/apps/starchess/deployment.puml, _spec/apps/starchess/architecture/screen-entities.puml, _spec/_plans/forfeit-as-loss.puml, _spec/_plans/starchess-achievements.puml, _spec/apps/starchess/architecture/reactivity/app-screens.md
+// SPEC: _spec/apps/starchess/menu-flow.puml, _spec/apps/starchess/screens.puml, _spec/apps/starchess/deployment.puml, _spec/apps/starchess/architecture/screen-entities.puml, _spec/_plans/forfeit-as-loss.puml, _spec/_plans/starchess-achievements.puml, _spec/apps/starchess/architecture/reactivity/app-screens.md, _spec/apps/starchess/wireframe.puml, _spec/packages/starchess-core/adjutant-definitions.puml
 /**
  * Single-player match — `/starchess/single?map=&team=` (+ optional `scfen=`).
  * Adjutant script always plays the opposite of `team` (White or Black).
@@ -412,21 +412,21 @@ export const SingleScreen: Component = () => {
         </section>
       }>
         {(kind) => (
-      <Show when={`${map()}-${team()}-${opponent()}-${matchEpoch()}`} keyed>
-        {(key) => {
-          const epoch = Number(key.slice(key.lastIndexOf("-") + 1));
-          return (
-            <LiveMatchSession
-              epoch={epoch}
-              map={map()}
-              team={team()}
-              opponent={kind()}
-              onExitToMenu={exitToMenu}
-              onMatchFinished={onMatchFinished}
-            />
-          );
-        }}
-      </Show>
+          <Show when={`${map()}-${team()}-${opponent()}-${matchEpoch()}`} keyed>
+            {(key) => {
+              const epoch = Number(key.slice(key.lastIndexOf("-") + 1));
+              return (
+                <LiveMatchSession
+                  epoch={epoch}
+                  map={map()}
+                  team={team()}
+                  opponent={kind()}
+                  onExitToMenu={exitToMenu}
+                  onMatchFinished={onMatchFinished}
+                />
+              );
+            }}
+          </Show>
         )}
       </Show>
       <NewAchievementsModal

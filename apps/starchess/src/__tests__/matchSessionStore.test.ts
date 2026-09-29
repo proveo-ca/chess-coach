@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+import type { AdjutantKind } from "~/types/newGame";
 
 import { createInitialMatchState } from "~/app/matchReducer";
 import {
@@ -86,7 +87,7 @@ describe("matchSessionStore", () => {
 describe("the resume blob remembers the opponent script", () => {
   afterEach(() => localStorage.clear());
 
-  const blobFor = (opponent?: "naive" | "strategic") =>
+  const blobFor = (opponent?: AdjutantKind) =>
     matchSessionFromState(createInitialMatchState(), "eclipse", {
       id: "sc-1",
       startedAt: "2026-01-01T00:00:00.000Z",
@@ -96,6 +97,11 @@ describe("the resume blob remembers the opponent script", () => {
   it("round-trips the script", () => {
     saveMatchSession(blobFor("strategic"));
     expect(loadMatchSession()?.opponent).toBe("strategic");
+  });
+
+  it.each(["machine-learning", "rlhf", "rlcd"] as const)("preserves %s so admission can block a placeholder session", (opponent) => {
+    saveMatchSession(blobFor(opponent));
+    expect(loadMatchSession()?.opponent).toBe(opponent);
   });
 
   it("stays absent when none is supplied", () => {

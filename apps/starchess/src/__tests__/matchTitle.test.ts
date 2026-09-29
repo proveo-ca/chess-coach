@@ -52,6 +52,9 @@ describe("live match title names the chosen opponent", () => {
     // "Adjutant (Strategic)" appears to start a Script game.
     expect(adjutantKindLabel("naive")).toBe("Adjutant (Script)");
     expect(adjutantKindLabel("strategic")).toBe("Adjutant (Strategic)");
+    expect(adjutantKindLabel("machine-learning")).toBe("Adjutant (Machine Learning)");
+    expect(adjutantKindLabel("rlhf")).toBe("Adjutant (RLHF)");
+    expect(adjutantKindLabel("rlcd")).toBe("Adjutant (RLCD)");
   });
 });
 
