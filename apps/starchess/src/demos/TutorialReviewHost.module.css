@@ -93,11 +93,22 @@
  * width bounded by the gutter that is actually there.
  */
 @media (min-width: 720px) {
+  /* Same box as the live-play bubble (TutorialGuideBubble desktop dock). The
+     review header has no desktop coach, so the line still sits right of the
+     board — only the width follows the live-play ceiling. A vw-relative width
+     collapsed to one row inside the 1280px root. */
   .headerSlot :global(.tutorial-guide-bubble) {
     left: calc(100% + 1rem);
-    width: min(
-      22rem,
-      calc(50vw - var(--board-size) / 2 + var(--sidebar-width) / 2 - 2rem)
-    );
+    width: 22rem;
+    /* The review chrome is one nav row, so a stretch-to-parent bubble collapses
+       to that row and clips the line. Size to the text, like live-play. */
+    height: auto;
+    align-items: flex-start;
+  }
+
+  .headerSlot :global(.tutorial-guide-bubble) > * {
+    height: auto;
+    align-self: auto;
+    flex: 0 1 auto;
   }
 }
