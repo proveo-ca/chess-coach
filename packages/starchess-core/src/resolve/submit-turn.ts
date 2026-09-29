@@ -49,6 +49,11 @@ export type ResolveEvent = {
   to?: Square;
   kind?: ScAction["kind"];
   victim?: { type: StarChessPiece; color: StarChessColor };
+  /**
+   * Jump collision: the occupant at the landing square (`victim`) and the
+   * jumping ship both die. `victim` carries the occupant, `collider` the ship.
+   */
+  collider?: { type: StarChessPiece; color: StarChessColor };
   mineColor?: StarChessColor;
   /** Wake tile of a mine that chased the arriving unit to `to`. */
   chaseFrom?: Square;
@@ -333,6 +338,7 @@ const applySpecial = (
   placement: string;
   mines: ScMine[];
   victim?: { type: StarChessPiece; color: StarChessColor };
+  collider?: { type: StarChessPiece; color: StarChessColor };
   mineColor?: StarChessColor;
 } => {
   const kind = action.kind as SpecialKind;
@@ -356,8 +362,32 @@ const applySpecial = (
     case "tacticalJump": {
       if (!action.to) return { placement, mines };
       ignoreAttacksOn.push(action.from);
-      const hull = placementToMap(placement).get(action.from);
+      const board = placementToMap(placement);
+      const hull = board.get(action.from);
       if (!hull || hull.color !== action.color) return { placement, mines };
+      const occupant = board.get(action.to);
+      if (occupant && occupant.color === action.color) return { placement, mines };
+      if (occupant && occupant.type !== "k") {
+        // Jump collision: ship and occupant meet on the landing square —
+        // both die, neither survives onto it.
+        board.delete(action.from);
+        board.delete(action.to);
+        return {
+          placement: mapToPlacement(board),
+          mines,
+          victim: { type: occupant.type, color: occupant.color },
+          collider: { type: hull.type, color: hull.color },
+        };
+      }
+      if (occupant) {
+        // A Command Center takes the jumper: the ship dies on its square.
+        board.delete(action.from);
+        return {
+          placement: mapToPlacement(board),
+          mines,
+          victim: { type: hull.type, color: hull.color },
+        };
+      }
       const landed = relocate(placement, action.from, action.to);
       return applyArrivalMine(landed, mines, [action.to], action.color, hull);
     }
@@ -803,6 +833,7 @@ export const endScTurn = (
       event.extra = {
         ...(a.kind === "deploy" && a.unit ? { unit: a.unit } : {}),
         ...(applied.victim ? { victim: applied.victim } : {}),
+        ...(applied.collider ? { collider: applied.collider } : {}),
         ...(applied.mineColor ? { mineColor: applied.mineColor } : {}),
       };
       extrasBySeq.set(a.seq, event);
@@ -1007,6 +1038,7 @@ export const endScTurn = (
     log.special("specialAfter", rewritten, {
       ...(a.kind === "deploy" && a.unit ? { unit: a.unit } : {}),
       ...(applied.victim ? { victim: applied.victim } : {}),
+      ...(applied.collider ? { collider: applied.collider } : {}),
       ...(applied.mineColor ? { mineColor: applied.mineColor } : {}),
     });
   }

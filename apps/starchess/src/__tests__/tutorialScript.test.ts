@@ -2214,4 +2214,34 @@ describe("tutorialScript", () => {
       }
     }
   });
+
+  it("a 00 draw never completes a lives win and restarts attack-3", () => {
+    // Bare `enemy: 0` wins (attack-1..4) must not match the draw — both
+    // Command Centers down is not a win. `TutorialScreen` checks
+    // `restartWhen` first, so attack-3's `own: 0` restart fails the draw.
+    const asDraw = (seed: string): string => {
+      // SCFEN|placement|turn|lives|… — lives is parts[3].
+      const parts = seed.split("|");
+      parts[3] = "00";
+      return parts.join("|");
+    };
+    for (const id of [
+      "live-play-attack-1",
+      "live-play-attack-2",
+      "live-play-attack-3",
+      "live-play-attack-4",
+    ]) {
+      const story = storyOf("live-play", id);
+      const seed = lessonBoard("live-play", id).scfen;
+      expect(matchesTutorialCompleteWhen(story.completeWhen, asDraw(seed))).toBe(
+        false,
+      );
+    }
+    const attack3 = storyOf("live-play", "live-play-attack-3");
+    const seed3 = lessonBoard("live-play", "live-play-attack-3").scfen;
+    expect(matchesTutorialCompleteWhen(attack3.restartWhen, seed3)).toBe(false);
+    expect(matchesTutorialCompleteWhen(attack3.restartWhen, asDraw(seed3))).toBe(
+      true,
+    );
+  });
 });

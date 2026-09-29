@@ -242,15 +242,24 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
           at: ev.to,
           mine: true,
         });
-        if (ev.victim) {
-          cues.push({
-            kind: "death",
-            id: `qjd${n++}`,
-            piece: ev.victim.type,
-            color: ev.victim.color,
-            at: ev.to,
-          });
-        }
+      }
+      if (ev.victim) {
+        cues.push({
+          kind: "death",
+          id: `qjd${n++}`,
+          piece: ev.victim.type,
+          color: ev.victim.color,
+          at: ev.to,
+        });
+      }
+      if (ev.collider) {
+        cues.push({
+          kind: "death",
+          id: `qjc${n++}`,
+          piece: ev.collider.type,
+          color: ev.collider.color,
+          at: ev.to,
+        });
       }
     }
   }
@@ -624,15 +633,24 @@ export const projectResolveTimeline = (result: EndScTurnResult): TimelineCue[] =
         at: ev.to,
         mine: true,
       });
-      if (ev.victim) {
-        cues.push({
-          kind: "death",
-          id: `qjfd${n++}`,
-          piece: ev.victim.type,
-          color: ev.victim.color,
-          at: ev.to,
-        });
-      }
+    }
+    if (ev.victim) {
+      cues.push({
+        kind: "death",
+        id: `qjfd${n++}`,
+        piece: ev.victim.type,
+        color: ev.victim.color,
+        at: ev.to,
+      });
+    }
+    if (ev.collider) {
+      cues.push({
+        kind: "death",
+        id: `qjfc${n++}`,
+        piece: ev.collider.type,
+        color: ev.collider.color,
+        at: ev.to,
+      });
     }
   }
   // F-rank Charon (2nd gas phase): same volley as B, plus the off-board
@@ -1124,7 +1142,19 @@ export const playTimeline = (
     if (deaths.length > 0) {
       const dying: Record<string, boolean> = {};
       for (const a of attacks) {
-        if (deaths.some((d) => d.at === a.from)) dying[a.id] = true;
+        // Only the attacker's own death hides its hull. A spent mine popping
+        // on the same square (mine death, foreign piece) must not blank a
+        // surviving attacker — that reads as an empty square mid-attack.
+        if (
+          deaths.some(
+            (d) =>
+              d.at === a.from &&
+              !d.mine &&
+              d.piece === a.piece &&
+              d.color === a.color,
+          )
+        )
+          dying[a.id] = true;
       }
 
       const spentMines = spentMineSquares(deaths);
