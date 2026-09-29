@@ -16,7 +16,7 @@ const resultWord = (r: StarChessMatchResult): string =>
 
 /** Opponent script as the New Game modal names it. */
 export const adjutantKindLabel = (kind: AdjutantKind): string =>
-  ADJUTANT_DEFINITIONS.find((definition) => definition.id === kind)!.label;
+  ADJUTANT_DEFINITIONS.find((definition) => definition.id === kind)?.label ?? "Adjutant (Script)";
 
 /** Live `/single` header — reflects the opponent chosen in New Game setup. */
 export const liveAdjutantMatchTitle = (kind: AdjutantKind): string =>
