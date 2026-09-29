@@ -47,6 +47,47 @@
       "fingerprint": null
     },
     {
+      "spec": "_spec/packages/starchess-core/adjutant-definitions.puml",
+      "covers": [
+        "packages/starchess-core/src/ai/**",
+        "packages/starchess-core/src/index.ts",
+        "apps/starchess/src/types/newGame.ts",
+        "apps/starchess/src/components/features/NewGamePanel.tsx",
+        "apps/starchess/src/screens/SingleScreen.tsx",
+        "apps/starchess/src/store/newGameSetupStore.ts",
+        "apps/starchess/src/store/matchSessionStore.ts",
+        "apps/starchess/src/utils/matchTitle.ts"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/apps/starchess/menu-flow.puml",
+      "covers": [
+        "apps/starchess/src/components/features/NewGamePanel.tsx",
+        "apps/starchess/src/screens/SingleScreen.tsx",
+        "apps/starchess/src/store/newGameSetupStore.ts",
+        "apps/starchess/src/store/matchSessionStore.ts",
+        "apps/starchess/src/store/matchHistoryStore.ts",
+        "apps/starchess/src/types/newGame.ts",
+        "apps/starchess/src/utils/matchTitle.ts",
+        "apps/starchess/src/screens/TutorialScreen.tsx",
+        "apps/starchess/src/screens/ReviewScreen.tsx",
+        "apps/starchess/src/screens/MenuRoute.tsx",
+        "apps/starchess/src/screens/MenuScreen.tsx",
+        "apps/starchess/src/screens/menuSky/**",
+        "apps/starchess/src/tutorial/**"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/apps/starchess/wireframe.puml",
+      "covers": [
+        "apps/starchess/src/components/features/NewGamePanel.tsx",
+        "apps/starchess/src/screens/SingleScreen.tsx"
+      ],
+      "fingerprint": null
+    },
+    {
       "spec": "_spec/apps/starchess/core/adjutant/cc-focus.puml",
       "covers": [
         "packages/starchess-core/src/ai/strategies/checks.ts",

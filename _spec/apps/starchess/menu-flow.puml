@@ -1,6 +1,25 @@
-@startuml menu-flow
-' SPEC: _spec/apps/starchess/menu-flow.puml
 ' purpose: Menu → Single Player / Tutorial; gameOver → result modal → rematch|/review/:id.
+' covers: apps/starchess/src/components/features/NewGamePanel.tsx
+' covers: apps/starchess/src/screens/SingleScreen.tsx
+' covers: apps/starchess/src/store/newGameSetupStore.ts
+' covers: apps/starchess/src/store/matchSessionStore.ts
+' covers: apps/starchess/src/store/matchHistoryStore.ts
+' covers: apps/starchess/src/types/newGame.ts
+' covers: apps/starchess/src/utils/matchTitle.ts
+' covers: apps/starchess/src/screens/TutorialScreen.tsx
+' covers: apps/starchess/src/screens/ReviewScreen.tsx
+' covers: apps/starchess/src/screens/MenuRoute.tsx
+' covers: apps/starchess/src/screens/MenuScreen.tsx
+' covers: apps/starchess/src/screens/menuSky/**
+' covers: apps/starchess/src/tutorial/**
+' status: Existing flows plus APPROVED preparatory catalog/admission integration; source verification pending for that integration.
+' related: _spec/packages/starchess-core/adjutant-definitions.puml
+' related: _spec/apps/starchess/wireframe.puml
+' related: _spec/apps/starchess/core/adjutant/cc-focus.puml
+' related: _spec/apps/starchess/screens.puml
+' related: _spec/apps/starchess/deployment.puml
+' related: _spec/apps/chess/responsiveness/rules.md §5 (mockup contract)
+@startuml menu-flow
 !include ../../themes/proveo.puml
 
 skinparam packageStyle rectangle
@@ -18,6 +37,8 @@ package "apps/starchess" {
   component "navigate /single?map=&team=&opponent=" as NAV <<async>>
   component "navigate /tutorial" as NAVT <<async>>
   component "navigate /review" as NAVR <<async>>
+  component "SingleScreen\nopponent admission\n(approved integration)" as ADMIT <<app>>
+  component "SingleScreen\nUnavailable · Not implemented\nno live match for known EMPTY ID\n(approved integration)" as UNAVAILABLE <<error>>
   component "StarChessSingleScreen\nMatchStore + LiveMatchShell\nStarChessScreen turnChrome=sidebar\nAdjutant = opposite of team\nscript = ?opponent (naive|strategic)" as LIVE <<app>>
   component "StarChessTutorialScreen\n/tutorial/:section/:story\n(TUTORIAL_SCRIPT ids)\nKerrigan header · HOME-only\ne.g. /tutorial/fog/king" as TUT <<app>>
   component "TutorialCompleteConfirm\nlive-play-attack-3 enemy HP=0\nwhen tutorialCleared=false" as TUTDONE <<app>>
@@ -34,7 +55,9 @@ UI ARROW_OPTIONAL MOCK : from /chess/\n(session flag)
 MOCK ARROW_MAIN UI : glass · Kerrigan\n· shatter · chrome in
 UI ARROW_MAIN SETUP : Single Player
 SETUP ARROW_MAIN NAV : START
-NAV ARROW_MAIN LIVE
+NAV ARROW_MAIN ADMIT
+ADMIT ARROW_MAIN LIVE : naive | strategic
+ADMIT ARROW_ERROR UNAVAILABLE : machine-learning | rlhf | rlcd
 UI ARROW_MAIN NAVT : Tutorial
 NAVT ARROW_MAIN TUT
 UI ARROW_MAIN NAVR : Review
@@ -50,89 +73,222 @@ END ARROW_MAIN RESULT : save + open modal
 RESULT ARROW_MAIN LIVE : Another Game\n(same map+team rematch)
 RESULT ARROW_MAIN REV : Replay\nreplace /review/:id
 
-note bottom
-  Multiplayer **MenuAnchor** stays ``disabled`` + ``Coming Soon``.
-  **Opponent** picks the Adjutant script: ``naive`` (engine rules only) or
-  ``strategic`` (engine rules + vision + tactics). The Single Player modal
-  restores the last choice from ``starchess_setup`` — a fresh open shows that
-  script, not a hardcoded naive default. That key is not Coach ``difficulty``.
-  The choice rides the URL as
-  ``?opponent=``, so refresh-resume and **Another Game** keep the choice, and
-  an unknown value falls back to ``naive``. For ``strategic`` the screen folds
-  ``ccIntel`` / ``kvs`` forward once per turn through core's
-  ``ai/strategic/tracking.ts`` — the same folds the arena runner uses — so the
-  CC posterior accumulates in live play. See ``core/adjutant/cc-focus.puml``.
-  The choice is also written to the match record (``opponent``), so Review and
-  the history list name the script that played. It is **optional** on
-  ``StarChessGameRecord``: records saved before the select shipped carry none
-  and keep reading as the unqualified ``Adjutant``. ``arenaPlayers`` still wins
-  for imported arena games, which name both sides.
-  The resume blob carries it too (``MatchSessionBlob.opponent``, still ``v: 1``
-  — additive and optional), so a bare ``/single`` with a live session resumes on
-  the right script. Resolution order: ``?opponent=`` wins, else the blob, else
-  ``naive``. A session whose script disagrees is **not** resumed — that is a
-  different game, not the same one on a different opponent.
-  Live gameOver → ``matchHistory`` + ``MatchResultModal``
-  (``VICTORY`` / ``DEFEAT`` / ``DRAW``): **Another Game** remounts
-  ``/single?map=&team=&opponent=``; **Replay** → ``/review/:id`` DualNav.
-  Review list remains at ``/review``: ``MatchHistoryFilters``
-  (Playing as Blue/Red + date pages; no First move; no Review title) via
-  ``useMatchHistoryFilters`` · ``‹ Back`` only. On the dynamic band a
-  ``MobileBanner`` (``href="/"``) owns that chrome — ``‹ Back`` + ``compact``
-  filters (swatches + date pager, no caption); the in-flow inset stands down
-  because its min-content height collides with the list. See ``screens.puml``.
-  Review detail ``/review/:id``: Coach-style title stack
-  (``Win (Blue)`` · ``Alex (Blue) vs Adjutant (Red)``) above ``ReviewTurnNav``.
-  Coach ``/chess/`` → ``/starchess/`` (nerd yes / ``StarChessRedirect``)
-  sets ``starchess_from_chess``; menu plays ``MenuArrival``:
-  Chess mockup (Coach light/dark tokens via ``data-theme``) → glass clears
-  to sky → Selena→Kerrigan → buttons shatter → StarChess anchors fade in.
-  Storybook: Screens/Menu · StarChess toggle · Theme toolbar.
-  The mockup must match Coach ``MenuScreen`` box-for-box at Desktop / Mobile /
-  Dynamic — two columns on desktop **and** dynamic, one on portrait mobile,
-  plus Coach's sub-480 root-font scale and the dynamic-band chat bubble.
-  That includes Coach's ``isNerd`` shortcut: **Play StarChess** under the fused
-  Play control, column 1, in ``--sc-menu-neon``. The mock reads the flag through
-  ``store/nerdFlag`` (read-only — Coach owns the key) and reads it once, since
-  Coach sets it before the full-page hop.
-  Contract + the two hand-copied Coach details: ``_spec/apps/chess/responsiveness/rules.md`` §5.
-  **Board hints** — one ``hints`` step wins per beat (first matching ``when``,
-  else the unconditional entry) and carries both ``squares`` (destination rings)
-  and ``arrows`` (lines drawn square-to-square, e.g. the ``live-play-attack-1`` h1-a8
-  x-ray and the Ship's d8-a8 shot). Arrows paint above the fog veil on purpose —
-  the lines a lesson draws usually run *through* fog. Purely presentational: the
-  board never checks the line is legal or unobstructed.
-  Tutorial → ``/tutorial/:section/:story`` (ids from ``TUTORIAL_SCRIPT``,
-  e.g. ``/tutorial/fog/king`` · ``/tutorial/specials/marine``).
-  Bare ``/tutorial`` canonicalizes to the first Fog story.
-  **Lesson loop — objective → ending → success → next.** The lesson's
-  goal is carried by the coach bubble alone — no text under the board.
-  ``completeWhen`` / ``restartWhen`` are judged
-  **only on a settled board** (timeline idle). A hit lands in ``ending`` first:
-  the bubble keeps the coach's closing line for its reading time
-  (``lessonEndMessageMs`` — ~200 wpm, floor 1.2s, ceiling 4s; no line → no
-  hold), because the success bubble **hides** that line. Then the guide bubble
-  flips to its success variant (``✓ Objective complete`` + ``Next lesson →``,
-  message suppressed between them) and auto-advances after
-  ``LESSON_ADVANCE_MS`` (3s, drawn as the CTA's border); the CTA skips the
-  wait. Failure offers Retry and keeps its line.
-  Every live lesson must carry a ``completeWhen`` — a lesson without one is a
-  dead end (guarded by ``tutorial/tutorialLessons.test.tsx``).
-  **Stage 3 (Turn Resolution)** owns both observer replays —
-  ``combat-chain`` (COMBAT_HISTORY) then ``king-hunt`` (KING_HISTORY), keyed on
-  story so switching remounts the timeline. Stage 4 is live boards only.
-  It wears ``/review/:id`` chrome: ``‹ Back`` +
-  ``ReviewTurnNav`` arrows above the board, turn/phase in the rail
-  (``hideDualNav``). The arrows step one **phase** (Check → Intent → Resolve)
-  rather than a whole turn — ``playReviewTurn`` plays a turn straight through,
-  so the lesson is the slow-motion version of the Review screen it introduces.
-  The bespoke ``TutorialTypewriterNav`` transcript is gone; the phase readout
-  between the arrows replaces it.
-  ``starchess_tutorial_cleared`` (default false): King Attack #3 enemy
-  HP=0 opens ``TutorialCompleteConfirm`` when still false —
-  Go Home sets cleared=true and returns to menu.
-  Deployment / PWA: ``deployment.puml``. HUD: ``screens.puml``.
-  Leave chrome: ``ScreenBackNav`` + ``ChevronNav`` (+ ``PanelTitle`` where
-  labeled) on tutorial / live ``/single`` (top panel · ``‹ Back``).
+note bottom of SETUP
+  Approved catalog: core owns IDs and labels.
+  Only naive and strategic remain playable.
+  EMPTY definitions do not implement players.
+end note
+
+note right of SETUP
+  Setup restores the last playable choice from
+  starchess_setup rather than resetting it.
+  Coach difficulty uses a separate settings key,
+  so it cannot select an Adjutant opponent.
+end note
+
+note bottom of ADMIT
+  A recognized URL opponent wins over a session;
+  unknown or missing values retain legacy resume.
+  A known EMPTY definition stays unavailable,
+  so it cannot silently launch a naive match.
+end note
+
+note bottom of LIVE
+  Naive: engine rules only.
+  Strategic: rules, vision, and tactics.
+end note
+
+note right of LIVE
+  The screen folds ccIntel and kvs once per turn
+  through core tracking, as the arena does.
+  Shared folds accumulate the CC posterior
+  consistently across live and headless play.
+end note
+
+note left of LIVE
+  Resume stores an optional opponent in v: 1;
+  legacy blobs without it mean naive.
+  An opponent mismatch prevents resume because
+  changing the script would create another game.
+end note
+
+note bottom of END
+  An optional record opponent names the script,
+  while legacy records retain the plain
+  Adjutant label. Imported arenaPlayers takes
+  precedence over that field because it
+  identifies both sides of the matchup.
+end note
+
+note bottom of RESULT
+  Another Game preserves map, team, opponent.
+  Replay replaces the route with /review/:id.
+  Results: VICTORY / DEFEAT / DRAW.
+end note
+
+note bottom of REV
+  /review: Blue/Red + date pages; Back only.
+  No First move filter or Review title.
+  useMatchHistoryFilters owns the filters.
+end note
+
+note right of REV
+  Dynamic MobileBanner exclusively owns Back
+  and compact swatches plus date paging,
+  with no caption. The in-flow inset disappears
+  because its minimum content height collides
+  with the list.
+end note
+
+note left of REV
+  /review/:id: Coach-style title stack
+  above ReviewTurnNav, e.g. Win (Blue) and
+  Alex (Blue) vs Adjutant (Red).
+  MobileBanner link: href=/.
+end note
+
+note bottom of UI
+  Multiplayer MenuAnchor: disabled.
+  Label: Coming Soon.
+end note
+
+note bottom of MOCK
+  StarChessRedirect sets starchess_from_chess
+  on the nerd-approved /chess/ → /starchess/ hop.
+  MenuArrival then plays the mockup transition.
+end note
+
+note right of MOCK
+  Coach data-theme: light/dark tokens.
+  Glass → sky; Selena → Kerrigan.
+  Buttons shatter; StarChess anchors fade in.
+  Storybook: Screens/Menu, toggle, Theme toolbar.
+end note
+
+note left of MOCK
+  Match Coach MenuScreen box-for-box.
+  Desktop/dynamic: two columns; portrait: one.
+  Include sub-480 root-font scaling
+  and the dynamic-band chat bubble.
+end note
+
+note as SHORTCUT
+  Play StarChess: under fused Play, column 1.
+  Style token: --sc-menu-neon.
+end note
+MOCK .. SHORTCUT
+
+note as NERD_FLAG
+  The mockup reads store/nerdFlag once without
+  modifying the value because Coach owns that
+  persisted setting. Coach sets it before
+  navigation, so the arriving menu needs
+  no subscription.
+end note
+SHORTCUT .. NERD_FLAG
+
+note bottom of TUT
+  IDs come from TUTORIAL_SCRIPT.
+  /tutorial defaults to the first Fog story.
+  Examples: /tutorial/fog/king and
+  /tutorial/specials/marine.
+end note
+
+note right of TUT
+  One hints step wins per beat: first matching
+  when, otherwise the unconditional entry.
+  Squares mark destinations; arrows join squares.
+end note
+
+note as HINTS
+  Arrows paint above the fog overlay because
+  a tutorial may cross squares outside the
+  player's vision. They remain presentational
+  rather than validating a legal or
+  unobstructed board move.
+end note
+TUT .. HINTS
+
+note as HINT_EXAMPLES
+  live-play-attack-1: h1-a8 x-ray.
+  Ship hint: d8-a8 shot.
+end note
+HINTS .. HINT_EXAMPLES
+
+note as LESSON_LOOP
+  Objective → ending → success → next.
+  Goal text lives only in the coach bubble.
+  completeWhen / restartWhen: settled board only.
+  Timeline must be idle when judging either.
+end note
+TUT .. LESSON_LOOP
+
+note as ENDING
+  Preserve the closing message in the ending
+  state for its required reading interval
+  before success. The success bubble suppresses
+  that message, so an immediate transition
+  would discard the lesson's conclusion.
+end note
+LESSON_LOOP .. ENDING
+
+note as READING_TIME
+  lessonEndMessageMs: approximately 200 wpm.
+  Floor 1.2s; ceiling 4s; no line means no hold.
+end note
+ENDING .. READING_TIME
+
+note as SUCCESS
+  Success: Objective complete + Next lesson.
+  Suppress the message between those labels.
+  LESSON_ADVANCE_MS: 3s, drawn on CTA border.
+  CTA skips wait; Retry preserves failure line.
+end note
+ENDING .. SUCCESS
+
+note as COMPLETION_GUARD
+  Every live lesson requires completeWhen
+  because an unchecked objective is a dead end.
+  The tutorialLessons test guards this contract
+  rather than relying on manual progression.
+end note
+SUCCESS .. COMPLETION_GUARD
+
+note as OBSERVER
+  Stage 3: combat-chain (COMBAT_HISTORY),
+  then king-hunt (KING_HISTORY).
+  Story keys remount the timeline.
+  Stage 4 uses live boards only.
+end note
+TUT .. OBSERVER
+
+note as PHASE_NAV
+  Stage 3 uses Review Back + ReviewTurnNav,
+  with turn/phase in the rail and hideDualNav.
+  Arrows step Check → Intent → Resolve phases.
+  Phase readout replaces TutorialTypewriterNav.
+end note
+OBSERVER .. PHASE_NAV
+
+note as SLOW_REVIEW
+  playReviewTurn resolves an entire turn
+  without intermediate phase stops.
+  The lesson instead presents each phase
+  separately, providing a slower introduction
+  to the Review screen.
+end note
+PHASE_NAV .. SLOW_REVIEW
+
+note bottom of TUTDONE
+  starchess_tutorial_cleared defaults false.
+  King Attack #3: enemy HP=0 while uncleared
+  opens TutorialCompleteConfirm.
+  Go Home writes cleared=true and returns home.
+end note
+
+note bottom of EXIT
+  Live/tutorial top-panel leave chrome:
+  ScreenBackNav + ChevronNav, with Back.
+  Labeled panels also use PanelTitle.
 end note
 @enduml

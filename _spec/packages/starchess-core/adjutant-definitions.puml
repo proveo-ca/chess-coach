@@ -1,0 +1,73 @@
+' purpose: Approved preparatory Adjutant catalog, app selection, and runtime admission; not learning architecture.
+' covers: packages/starchess-core/src/ai/**
+' covers: packages/starchess-core/src/index.ts
+' covers: apps/starchess/src/types/newGame.ts
+' covers: apps/starchess/src/components/features/NewGamePanel.tsx
+' covers: apps/starchess/src/screens/SingleScreen.tsx
+' covers: apps/starchess/src/store/newGameSetupStore.ts
+' covers: apps/starchess/src/store/matchSessionStore.ts
+' covers: apps/starchess/src/utils/matchTitle.ts
+' status: APPROVED preparatory contract; definitions.ts and app integration await source verification.
+' related: _spec/apps/starchess/menu-flow.puml
+' related: _spec/apps/starchess/wireframe.puml
+' related: _spec/_plans/PLAN-ml-adjutant.md
+@startuml adjutant-definitions
+!include ../../themes/proveo.puml
+title StarChess Core · Adjutant definitions (approved preparatory contract)
+
+package "packages/starchess-core/src" {
+  component "ai/definitions.ts\nregistry (approved target)\nnaive → Adjutant (Script) · playable\nstrategic → Adjutant (Strategic) · playable\nmachine-learning → Adjutant (Machine Learning) · EMPTY\nrlhf → Adjutant (RLHF) · EMPTY\nrlcd → Adjutant (RLCD) · EMPTY" as REG <<app>>
+  component "Derived types and guards\nAdjutantKind / isAdjutantKind\nPlayableAdjutantKind / isPlayableAdjutantKind" as GUARDS <<app>>
+  component "index.ts\npublic catalog exports" as EXPORTS <<app>>
+  component "ai/adjutant.ts\nai/strategic/**\nexisting playable scripts" as SCRIPTS <<app>>
+}
+
+package "apps/starchess/src" {
+  component "types/newGame.ts\nconsume core types and guards" as TYPES <<app>>
+  component "components/features/NewGamePanel.tsx\nregistry labels and availability\nonly playable choices can start" as SELECTOR <<app>>
+  component "utils/matchTitle.ts\ncanonical labels" as LABELS <<app>>
+  component "screens/SingleScreen.tsx\nresolve opponent, then admit" as ADMIT <<app>>
+  component "SingleScreen.tsx\nexplicit unavailable state\nno LiveMatchSession mount" as UNAVAILABLE <<error>>
+  component "store/matchSessionStore.ts\nlegacy resume handling" as SESSION <<db>>
+  component "store/newGameSetupStore.ts\nremember playable selection" as SAVED <<db>>
+}
+
+REG ARROW_MAIN GUARDS : derive, do not duplicate unions
+REG ARROW_MAIN EXPORTS
+GUARDS ARROW_MAIN EXPORTS
+EXPORTS ARROW_OPTIONAL TYPES
+EXPORTS ARROW_OPTIONAL SELECTOR
+EXPORTS ARROW_OPTIONAL LABELS
+TYPES ARROW_OPTIONAL ADMIT
+SELECTOR ARROW_MAIN ADMIT : ?opponent=playable ID
+SELECTOR ARROW_MAIN SAVED : playable choice
+SESSION ARROW_OPTIONAL ADMIT : unknown/missing URL → saved opponent or naive
+ADMIT ARROW_MAIN SCRIPTS : resolved naive | strategic only
+ADMIT ARROW_ERROR UNAVAILABLE : known EMPTY ID, including direct URL
+
+note bottom of REG
+  Core owns the catalog so the app can share
+  canonical IDs and labels without importing
+  a model runtime. EMPTY metadata does not
+  implement a player or authorize training work.
+end note
+
+note bottom of GUARDS
+  AdjutantKind: all five registry IDs.
+  PlayableAdjutantKind: naive | strategic.
+end note
+
+note bottom of UNAVAILABLE
+  A known placeholder must remain unavailable
+  rather than falling through to naive.
+  This prevents a direct URL from silently
+  starting a match against a different opponent.
+end note
+
+note bottom of SESSION
+  URL wins when recognized; otherwise resume
+  the saved opponent, then default to naive.
+  Legacy blobs without opponent remain naive,
+  and another opponent prevents session resume.
+end note
+@enduml
