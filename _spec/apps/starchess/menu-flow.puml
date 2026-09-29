@@ -12,7 +12,7 @@
 ' covers: apps/starchess/src/screens/MenuScreen.tsx
 ' covers: apps/starchess/src/screens/menuSky/**
 ' covers: apps/starchess/src/tutorial/**
-' status: Existing flows plus APPROVED preparatory catalog/admission integration; source verification pending for that integration.
+' status: Preparatory catalog/admission integration IMPLEMENTED; source verification IN PROGRESS.
 ' related: _spec/packages/starchess-core/adjutant-definitions.puml
 ' related: _spec/apps/starchess/wireframe.puml
 ' related: _spec/apps/starchess/core/adjutant/cc-focus.puml
@@ -37,8 +37,8 @@ package "apps/starchess" {
   component "navigate /single?map=&team=&opponent=" as NAV <<async>>
   component "navigate /tutorial" as NAVT <<async>>
   component "navigate /review" as NAVR <<async>>
-  component "SingleScreen\nopponent admission\n(approved integration)" as ADMIT <<app>>
-  component "SingleScreen\nUnavailable · Not implemented\nno live match for known EMPTY ID\n(approved integration)" as UNAVAILABLE <<error>>
+  component "SingleScreen\nopponent admission" as ADMIT <<app>>
+  component "SingleScreen\nUnavailable · Not implemented\nno live match for known placeholder\nfrom URL or session" as UNAVAILABLE <<error>>
   component "StarChessSingleScreen\nMatchStore + LiveMatchShell\nStarChessScreen turnChrome=sidebar\nAdjutant = opposite of team\nscript = ?opponent (naive|strategic)" as LIVE <<app>>
   component "StarChessTutorialScreen\n/tutorial/:section/:story\n(TUTORIAL_SCRIPT ids)\nKerrigan header · HOME-only\ne.g. /tutorial/fog/king" as TUT <<app>>
   component "TutorialCompleteConfirm\nlive-play-attack-3 enemy HP=0\nwhen tutorialCleared=false" as TUTDONE <<app>>
@@ -74,7 +74,7 @@ RESULT ARROW_MAIN LIVE : Another Game\n(same map+team rematch)
 RESULT ARROW_MAIN REV : Replay\nreplace /review/:id
 
 note bottom of SETUP
-  Approved catalog: core owns IDs and labels.
+  Core catalog owns IDs and labels.
   Only naive and strategic remain playable.
   EMPTY definitions do not implement players.
 end note

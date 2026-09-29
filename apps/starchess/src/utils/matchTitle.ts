@@ -3,7 +3,7 @@
  * Mirrors Coach `formatGameLabel` / result line — Blue/Red · Adjutant.
  * // SPEC: _spec/apps/starchess/menu-flow.puml
  */
-import type { StarChessColor } from "@chess-coach/starchess-core";
+import { ADJUTANT_DEFINITIONS, type StarChessColor } from "@chess-coach/starchess-core";
 
 import type { AdjutantKind } from "~/types/newGame";
 import type { StarChessGameRecord, StarChessMatchResult } from "~/types/review";
@@ -16,7 +16,7 @@ const resultWord = (r: StarChessMatchResult): string =>
 
 /** Opponent script as the New Game modal names it. */
 export const adjutantKindLabel = (kind: AdjutantKind): string =>
-  kind === "strategic" ? "Adjutant (Strategic)" : "Adjutant (Script)";
+  ADJUTANT_DEFINITIONS.find((definition) => definition.id === kind)!.label;
 
 /** Live `/single` header — reflects the opponent chosen in New Game setup. */
 export const liveAdjutantMatchTitle = (kind: AdjutantKind): string =>

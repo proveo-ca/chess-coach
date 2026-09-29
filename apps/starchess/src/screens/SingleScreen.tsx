@@ -47,6 +47,7 @@ import { createMatchStateFromScfen } from "~/app/matchReducer";
 import { BaseScreen } from "~/app/BaseScreen.tsx";
 import { MatchResultModal } from "~/components/features/MatchResultModal";
 import { NewAchievementsModal } from "~/components/features/NewAchievementsModal";
+import { Button } from "@chess-coach/ui-web/primitives/Button";
 import { noteAchievementUnlocks } from "~/store/achievementStore";
 import { LiveMatchShell } from "~/screens/LiveMatchShell";
 import { STAR_STARTING_SCFEN } from "~/app/seeds";
@@ -66,8 +67,8 @@ import { playerName } from "~/store/settingsStore";
 import type { BoardVariant } from "~/types/board";
 import type { AchievementBubble } from "~/types/achievements";
 import type { StarChessMatchResult } from "~/types/review";
-import { isAdjutantKind, type AdjutantKind } from "~/types/newGame";
-import { liveAdjutantMatchTitle } from "~/utils/matchTitle";
+import { isAdjutantKind, isPlayableAdjutantKind, type AdjutantKind, type PlayableAdjutantKind } from "~/types/newGame";
+import { adjutantKindLabel, liveAdjutantMatchTitle } from "~/utils/matchTitle";
 
 const MAPS: readonly BoardVariant[] = ["eclipse", "butter", "vermeer"];
 
@@ -95,7 +96,7 @@ type MatchBootstrap = {
 const bootstrapMatch = (
   map: BoardVariant,
   team: StarChessColor,
-  opponent: AdjutantKind,
+  opponent: PlayableAdjutantKind,
   opts: { rematch: boolean },
 ): MatchBootstrap => {
   if (opts.rematch) {
@@ -134,7 +135,7 @@ const bootstrapMatch = (
 const MatchInner: Component<{
   boardVariant: BoardVariant;
   team: StarChessColor;
-  opponent: AdjutantKind;
+  opponent: PlayableAdjutantKind;
   matchId: string;
   startedAt: string;
   onExitToMenu: () => void;
@@ -259,7 +260,7 @@ const MatchInner: Component<{
         autoQueueOpponent={(snap) => {
           const color = opponentColor();
           const storedFor = (c: StarChessColor) => store.shell().economies[c].stored;
-          if (props.opponent !== "strategic") return adjutant(snap, { color, storedFor });
+          if (props.opponent === "naive") return adjutant(snap, { color, storedFor });
           foldTracking(snap);
           return strategicAdjutant(snap, {
             color,
@@ -280,7 +281,7 @@ const LiveMatchSession: Component<{
   epoch: number;
   map: BoardVariant;
   team: StarChessColor;
-  opponent: AdjutantKind;
+  opponent: PlayableAdjutantKind;
   onExitToMenu: () => void;
   onMatchFinished: (id: string, result: StarChessMatchResult, earned: readonly AchievementBubble[]) => void;
 }> = (props) => {
@@ -342,11 +343,16 @@ export const SingleScreen: Component = () => {
 
   const map = () => parseMap(params.map);
   const team = () => parseTeam(params.team);
+  const sessionOpponent = loadMatchSession()?.opponent ?? "naive";
   // URL wins; a bare /single with a live session resumes on its script.
   const opponent = (): AdjutantKind => {
     const fromUrl = asOne(params.opponent);
     if (isAdjutantKind(fromUrl)) return fromUrl;
-    return loadMatchSession()?.opponent ?? "naive";
+    return sessionOpponent;
+  };
+  const playableOpponent = (): PlayableAdjutantKind | undefined => {
+    const kind = opponent();
+    return isPlayableAdjutantKind(kind) ? kind : undefined;
   };
 
   const exitToMenu = () => {
@@ -398,6 +404,14 @@ export const SingleScreen: Component = () => {
 
   return (
     <LiveMatchShell world={map()} testId="starchess-app">
+      <Show when={playableOpponent()} fallback={
+        <section aria-label="Opponent unavailable" data-testid="opponent-unavailable">
+          <h1>{adjutantKindLabel(opponent())}</h1>
+          <p>This opponent is not implemented yet.</p>
+          <Button variant="neon" onClick={exitToMenu}>Return to menu</Button>
+        </section>
+      }>
+        {(kind) => (
       <Show when={`${map()}-${team()}-${opponent()}-${matchEpoch()}`} keyed>
         {(key) => {
           const epoch = Number(key.slice(key.lastIndexOf("-") + 1));
@@ -406,12 +420,14 @@ export const SingleScreen: Component = () => {
               epoch={epoch}
               map={map()}
               team={team()}
-              opponent={opponent()}
+              opponent={kind()}
               onExitToMenu={exitToMenu}
               onMatchFinished={onMatchFinished}
             />
           );
         }}
+      </Show>
+        )}
       </Show>
       <NewAchievementsModal
         open={earnedOpen()}

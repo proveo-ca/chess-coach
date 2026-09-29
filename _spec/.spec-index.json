@@ -50,6 +50,7 @@
       "spec": "_spec/packages/starchess-core/adjutant-definitions.puml",
       "covers": [
         "packages/starchess-core/src/ai/**",
+        "packages/starchess-core/src/ai/definitions.ts",
         "packages/starchess-core/src/index.ts",
         "apps/starchess/src/types/newGame.ts",
         "apps/starchess/src/components/features/NewGamePanel.tsx",

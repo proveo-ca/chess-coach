@@ -271,6 +271,16 @@ export {
 export { DEFAULT_RNG, mulberry32, type Rng } from "./ai/context/rng";
 
 export {
+  ADJUTANT_DEFINITIONS,
+  ADJUTANT_KINDS,
+  isAdjutantKind,
+  isPlayableAdjutantKind,
+  type AdjutantDefinition,
+  type AdjutantKind,
+  type PlayableAdjutantKind,
+} from "./ai/definitions";
+
+export {
   strategicAdjutant,
   strategicCandidates,
   applyCandidate,

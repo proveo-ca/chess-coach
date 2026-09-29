@@ -1,5 +1,6 @@
-' purpose: Approved preparatory Adjutant catalog, app selection, and runtime admission; not learning architecture.
+' purpose: Implemented preparatory Adjutant catalog, app selection, and runtime admission; not learning architecture.
 ' covers: packages/starchess-core/src/ai/**
+' covers: packages/starchess-core/src/ai/definitions.ts
 ' covers: packages/starchess-core/src/index.ts
 ' covers: apps/starchess/src/types/newGame.ts
 ' covers: apps/starchess/src/components/features/NewGamePanel.tsx
@@ -7,17 +8,17 @@
 ' covers: apps/starchess/src/store/newGameSetupStore.ts
 ' covers: apps/starchess/src/store/matchSessionStore.ts
 ' covers: apps/starchess/src/utils/matchTitle.ts
-' status: APPROVED preparatory contract; definitions.ts and app integration await source verification.
+' status: IMPLEMENTED preparatory source contract; source verification IN PROGRESS.
 ' related: _spec/apps/starchess/menu-flow.puml
 ' related: _spec/apps/starchess/wireframe.puml
 ' related: _spec/_plans/PLAN-ml-adjutant.md
 @startuml adjutant-definitions
 !include ../../themes/proveo.puml
-title StarChess Core · Adjutant definitions (approved preparatory contract)
+title StarChess Core · Adjutant definitions (implemented preparatory contract)
 
 package "packages/starchess-core/src" {
-  component "ai/definitions.ts\nregistry (approved target)\nnaive → Adjutant (Script) · playable\nstrategic → Adjutant (Strategic) · playable\nmachine-learning → Adjutant (Machine Learning) · EMPTY\nrlhf → Adjutant (RLHF) · EMPTY\nrlcd → Adjutant (RLCD) · EMPTY" as REG <<app>>
-  component "Derived types and guards\nAdjutantKind / isAdjutantKind\nPlayableAdjutantKind / isPlayableAdjutantKind" as GUARDS <<app>>
+  component "ai/definitions.ts\nADJUTANT_DEFINITIONS\nnaive → Adjutant (Script) · ready\nstrategic → Adjutant (Strategic) · ready\nmachine-learning → Adjutant (Machine Learning) · placeholder (EMPTY)\nrlhf → Adjutant (RLHF) · placeholder (EMPTY)\nrlcd → Adjutant (RLCD) · placeholder (EMPTY)" as REG <<app>>
+  component "Derived types and guards\nAdjutantKind / isAdjutantKind\nPlayableAdjutantKind / isPlayableAdjutantKind\nplayable iff status='ready'" as GUARDS <<app>>
   component "index.ts\npublic catalog exports" as EXPORTS <<app>>
   component "ai/adjutant.ts\nai/strategic/**\nexisting playable scripts" as SCRIPTS <<app>>
 }
@@ -43,7 +44,7 @@ SELECTOR ARROW_MAIN ADMIT : ?opponent=playable ID
 SELECTOR ARROW_MAIN SAVED : playable choice
 SESSION ARROW_OPTIONAL ADMIT : unknown/missing URL → saved opponent or naive
 ADMIT ARROW_MAIN SCRIPTS : resolved naive | strategic only
-ADMIT ARROW_ERROR UNAVAILABLE : known EMPTY ID, including direct URL
+ADMIT ARROW_ERROR UNAVAILABLE : known placeholder from URL or session
 
 note bottom of REG
   Core owns the catalog so the app can share

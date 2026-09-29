@@ -1,10 +1,10 @@
 # PLAN — ML Adjutant: a third script, and the harness that can prove it is better
 
-Status: **Preparatory catalog policy COMPLETED; phases 1–5 PLANNED and unimplemented.**
-Executor approved the registry IDs, EMPTY placeholders, disabled selector entries, and explicit
-unavailable admission state. Source landing and verification remain delegated to the lead:
-the inspected tree still has the two-ID app union and no core `ai/definitions.ts`.
-This records a completed definition contract, not a shipped learning player.
+Status: **Preparatory catalog IMPLEMENTED; source verification IN PROGRESS.**
+Phases 1–5 remain **PLANNED and unimplemented**.
+Core `ai/definitions.ts` now owns all five IDs, canonical labels, and derived guards.
+The app implements disabled placeholder entries and explicit unavailable admission for known
+placeholder URLs or sessions. This completes the preparatory catalog, not a learning player.
 Phases 1–3 remain prerequisites for learning work; phase 4 proposes retiring Stockfish.
 
 Scope: a proposed top-level **`ml/`** training workspace. `ml` is workspace/tooling shorthand,
@@ -12,15 +12,18 @@ Scope: a proposed top-level **`ml/`** training workspace. `ml` is workspace/tool
 The arena's `ScriptPlayer` remains its execution contract; the app consumes the core-derived
 `AdjutantKind` and `PlayableAdjutantKind` through `apps/starchess/src/types/newGame.ts`.
 
-## Completed preparatory contract (no learning implementation)
+## Implemented preparatory contract (no learning implementation)
 
 - Core owns the metadata registry in `packages/starchess-core/src/ai/definitions.ts` and exports
-  its derived types and guards. `naive` and `strategic` remain the only playable IDs.
+  its derived types and guards. `ADJUTANT_DEFINITIONS` marks `naive` and `strategic` as `ready`;
+  `PlayableAdjutantKind` and its guard admit only those entries.
 - `machine-learning`, `rlhf`, and `rlcd` are **EMPTY metadata definitions**, not executable
-  scripts, model loaders, training implementations, or strategic fallbacks.
+  scripts, model loaders, training implementations, or strategic fallbacks. Their source status
+  is `placeholder`; EMPTY describes their unimplemented behavior, not a status literal.
 - New Game lists all five canonical labels from the registry. The last three entries remain
   disabled and marked not implemented; only playable choices can start a match.
-- A recognized EMPTY opponent, including a direct `/single?opponent=machine-learning` URL,
+- A recognized placeholder opponent from a URL or session, including a direct
+  `/single?opponent=machine-learning` URL,
   displays an explicit unavailable state and cannot mount a live match. Unknown/missing values
   retain legacy resolution: saved session opponent, otherwise `naive`.
 - Catalog metadata introduces **no runtime ML dependency** into core or the app.
@@ -87,7 +90,7 @@ ml/
 | Fog, per side | `getSideVision(placement, side, {mines, tankModeFor})` (`packages/starchess-core/src/board/vision.ts:178`) |
 | A belief state, already fog-honest | `ai/strategic/{runners,attackers,witness,intel}.ts` + `ai/context/ccIntel.ts`, folded by `ai/strategic/tracking.ts` |
 | Terminal reward | `scOutcome` (`packages/starchess-core/src/outcome.ts:15`), `MAX_GAME_TURNS` 45, `ccLives` |
-| App-side catalog and admission | Approved core registry + derived guards; `NewGamePanel` lists definitions, while `SingleScreen` admits only playable opponents |
+| App-side catalog and admission | Implemented core registry + derived guards; `NewGamePanel` lists definitions, while `SingleScreen` admits only playable opponents |
 
 ---
 

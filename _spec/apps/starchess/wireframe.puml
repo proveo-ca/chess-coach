@@ -1,12 +1,12 @@
-' purpose: Approved New Game opponent options and known-placeholder unavailable surface.
+' purpose: Implemented New Game opponent options and known-placeholder unavailable surface.
 ' covers: apps/starchess/src/components/features/NewGamePanel.tsx
 ' covers: apps/starchess/src/screens/SingleScreen.tsx
-' status: APPROVED preparatory layout; source integration awaits verification.
+' status: IMPLEMENTED preparatory layout; source verification IN PROGRESS.
 ' related: _spec/apps/starchess/menu-flow.puml
 ' related: _spec/packages/starchess-core/adjutant-definitions.puml
 @startsalt
 !include ../../themes/proveo.puml
-title StarChess · Preparatory opponent selector (approved layout)
+title StarChess · Preparatory opponent selector (implemented layout)
 {
   {^"NewGamePanel · Single Player"
     Name | "Player name                  "
@@ -15,25 +15,26 @@ title StarChess · Preparatory opponent selector (approved layout)
     Opponent | ^Adjutant (Script)^
     . | Adjutant (Script)
     . | Adjutant (Strategic)
-    . | <color:#9a9a9a>Adjutant (Machine Learning) · Not implemented</color>
-    . | <color:#9a9a9a>Adjutant (RLHF) · Not implemented</color>
-    . | <color:#9a9a9a>Adjutant (RLCD) · Not implemented</color>
+    . | <color:#9a9a9a>Adjutant (Machine Learning) — not implemented</color>
+    . | <color:#9a9a9a>Adjutant (RLHF) — not implemented</color>
+    . | <color:#9a9a9a>Adjutant (RLCD) — not implemented</color>
     . | [ Start ]
   }
   {^"Known EMPTY opponent requested"
     Opponent | Canonical registry label
-    State | Unavailable · Not implemented
+    State | This opponent is not implemented yet.
     Live match | .
+    Action | [ Return to menu ]
   }
 }
 legend bottom
-  Approved states, not evidence of shipped UI.
+  Implemented source layout; verification in progress.
   Opponent rows show the expanded Select options.
   The selected value restores the playable choice.
   Grey with a reason: offered, not selectable.
   A dot: element absent; its column remains.
   The titled unavailable region replaces live play
-  only for machine-learning, rlhf, or rlcd.
+  for machine-learning, rlhf, or rlcd from URL/session.
   No live-match frame exists in that state.
   Placeholder definitions do not disable Start for
   the currently selected playable opponent.

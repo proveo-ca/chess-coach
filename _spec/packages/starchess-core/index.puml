@@ -1,6 +1,6 @@
 ' purpose: Live StarChess rules spec map (packages/starchess-core).
 ' covers: packages/starchess-core/src/index.ts
-' related: _spec/packages/starchess-core/adjutant-definitions.puml (approved preparatory contract; source verification pending)
+' related: _spec/packages/starchess-core/adjutant-definitions.puml (implemented preparatory contract; source verification in progress)
 ' related: _spec/apps/starchess/core/adjutant/naive/opponent-strategy.puml
 ' related: _spec/apps/starchess/core/adjutant/strategic/strategic-architecture.puml
 ' related: _spec/apps/starchess/core/adjutant/cc-focus.puml
@@ -22,7 +22,7 @@ package "_spec/packages/starchess-core" {
   component "mine-contact.puml" as MINE <<app>>
   component "deploy-reach.puml" as DEPLOY <<app>>
   component "ray-scan.puml" as RAY <<app>>
-  component "adjutant-definitions.puml\napproved preparatory catalog" as DEFINITIONS <<app>>
+  component "adjutant-definitions.puml\nimplemented preparatory catalog" as DEFINITIONS <<app>>
 }
 
 package "packages/starchess-core/src" {
@@ -73,7 +73,7 @@ MOVES ARROW_OPTIONAL UI : useBoardInput
 
 note bottom of AI
   Naive and strategic: executable scripts.
-  Approved learning entries: EMPTY metadata.
+  Learning placeholders: EMPTY metadata.
 end note
 
 note bottom of RAYS

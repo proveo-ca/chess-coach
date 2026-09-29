@@ -5,22 +5,22 @@
  * chess_coach_settings_state — this key is StarChess-only.
  */
 import { createPersistedStore } from "~/store/createPersistedStore";
-import { isAdjutantKind, type AdjutantKind } from "~/types/newGame";
+import { isPlayableAdjutantKind, type PlayableAdjutantKind } from "~/types/newGame";
 
 export const NEW_GAME_SETUP_KEY = "starchess_setup";
 
 const [state, setState] = createPersistedStore(NEW_GAME_SETUP_KEY, {
-  opponent: "naive" as AdjutantKind,
+  opponent: "naive" as PlayableAdjutantKind,
 });
 
-if (!isAdjutantKind(state.opponent)) {
+if (!isPlayableAdjutantKind(state.opponent)) {
   setState("opponent", "naive");
 }
 
-export const savedOpponent = (): AdjutantKind =>
-  isAdjutantKind(state.opponent) ? state.opponent : "naive";
+export const savedOpponent = (): PlayableAdjutantKind =>
+  isPlayableAdjutantKind(state.opponent) ? state.opponent : "naive";
 
-export const setSavedOpponent = (kind: AdjutantKind): void => {
-  if (!isAdjutantKind(kind)) return;
+export const setSavedOpponent = (kind: PlayableAdjutantKind): void => {
+  if (!isPlayableAdjutantKind(kind)) return;
   setState("opponent", kind);
 };
