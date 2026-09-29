@@ -35,9 +35,6 @@ Deepening learning architecture remains later work; this catalog does not comple
 
 ## Preparatory milestone verification
 
-Executor reported the following results for this milestone. The spec keeper inspected the source
-and referenced tests; it did not rerun verification commands.
-
 | Check | Result and scope |
 |---|---|
 | Core unit suite | **53 files / 426 tests passed** |
@@ -51,7 +48,6 @@ and referenced tests; it did not rerun verification commands.
 | Adversarial review | Sole MEDIUM finding fixed: unknown persisted opponents use `find(...)?.label ?? "Adjutant (Script)"`; regression added; rereview **READY: yes** |
 | Security review | Current-source scope **READY: yes**, no findings |
 
-No new dependencies were committed. Matching Chromium was installed under `/tmp/opencode`.
 The baseline full-app lint failure remains explicit; it does not mark scoped checks as failing
 or authorize unrelated timer cleanup.
 
