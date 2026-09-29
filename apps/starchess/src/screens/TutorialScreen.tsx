@@ -48,6 +48,8 @@ import {
   TUTORIAL_SCRIPT,
   adjacentTutorialStoryId,
   completedLessonBeats,
+  isCanonicalTutorialSection,
+  lastTutorialPath,
   lessonBoard,
   lessonEndMessageMs,
   holdTutorialLine,
@@ -274,8 +276,15 @@ export const TutorialScreen: Component = () => {
     });
   };
 
-  // Canonicalize `/tutorial` · `/tutorial/fog` · aliases → `/tutorial/:section/:story`.
+  // Canonicalize `/tutorial` · `/tutorial/fog` → `/tutorial/:section/:story`.
+  // Outdated section paths (e.g. `/tutorial/king/…`) land on the last lesson.
+  // Outdated story slugs (e.g. `king-defense`) land on the section's last
+  // lesson via `resolveTutorialStoryId`.
   createEffect(() => {
+    if (params.section != null && !isCanonicalTutorialSection(params.section)) {
+      navigate(lastTutorialPath(), { replace: true });
+      return;
+    }
     const sec = section();
     const story = storyId();
     if (params.section !== sec || params.story !== story) {

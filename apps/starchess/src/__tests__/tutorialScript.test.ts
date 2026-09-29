@@ -20,6 +20,8 @@ import {
   TUTORIAL_SCRIPT,
   adjacentTutorialStoryId,
   holdTutorialLine,
+  isCanonicalTutorialSection,
+  lastTutorialPath,
   lessonBoard,
   lessonEndMessageMs,
   matchesTutorialCompleteWhen,
@@ -430,12 +432,21 @@ describe("tutorialScript", () => {
     ).toBe(false);
   });
 
-  it("canonicalizes section aliases and unknown stories", () => {
-    expect(parseTutorialSection("special-moves")).toBe("specials");
+  it("canonicalizes sections without aliases and redirects unknown stories to last", () => {
+    expect(parseTutorialSection("live-play")).toBe("live-play");
+    expect(parseTutorialSection("special-moves")).toBe("fog");
+    expect(parseTutorialSection("king")).toBe("fog");
+    expect(parseTutorialSection("cc-damage")).toBe("fog");
     expect(parseTutorialSection(undefined)).toBe("fog");
+    expect(isCanonicalTutorialSection("live-play")).toBe(true);
+    expect(isCanonicalTutorialSection("king")).toBe(false);
+    expect(isCanonicalTutorialSection(undefined)).toBe(false);
     expect(resolveTutorialStoryId("fog", undefined)).toBe("king");
-    expect(resolveTutorialStoryId("fog", "nope")).toBe("king");
+    expect(resolveTutorialStoryId("fog", "nope")).toBe("mine");
     expect(resolveTutorialStoryId("fog", "pawn")).toBe("pawn");
+    expect(resolveTutorialStoryId("live-play", "king-defense")).toBe("live-play-attack-4");
+    expect(resolveTutorialStoryId("live-play", undefined)).toBe("live-play-defense-1");
+    expect(lastTutorialPath()).toBe("/tutorial/live-play/live-play-attack-4");
   });
 
   it("walks adjacent stories linearly or wrapping", () => {

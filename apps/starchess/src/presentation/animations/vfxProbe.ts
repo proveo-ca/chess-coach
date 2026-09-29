@@ -97,6 +97,11 @@ export const startVfxProbe = (
   current: VfxTier,
   onResult: (result: ProbeResult) => void,
 ): (() => void) => {
+  // Background-only: a hidden tab throttles rAF and would stall the warmup
+  // timers, leaving the caller waiting. Abort with no verdict instead.
+  if (typeof document !== "undefined" && document.visibilityState === "hidden") {
+    return () => {};
+  }
   const lagsMs: number[] = [];
   const framesMs: number[] = [];
   let raf = 0;

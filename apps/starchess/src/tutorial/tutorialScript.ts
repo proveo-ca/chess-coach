@@ -164,25 +164,49 @@ export const lessonBoard = (
   return board;
 };
 
-/** Normalize route / breadcrumb aliases → canonical stage id. */
+/** Canonical tutorial sections. Anything else is an outdated URL path. */
+export const CANONICAL_TUTORIAL_SECTIONS: readonly TutorialSectionId[] = [
+  "fog",
+  "specials",
+  "resolve",
+  "live-play",
+];
+
+/** True for `/tutorial/:section` values that are current canonical paths. */
+export const isCanonicalTutorialSection = (raw: string | undefined): boolean =>
+  raw != null && (CANONICAL_TUTORIAL_SECTIONS as readonly string[]).includes(raw);
+
+/** Normalize route → canonical stage id. Outdated aliases are gone on purpose. */
 export const parseTutorialSection = (
   raw: string | undefined,
 ): TutorialSectionId => {
-  if (raw === "specials" || raw === "special-moves") return "specials";
-  if (raw === "resolve" || raw === "turn-resolution") return "resolve";
-  if (raw === "live-play" || raw === "king" || raw === "cc-damage") return "live-play";
-  if (raw === "fog" || raw === "fog-of-war") return "fog";
+  if (raw === "specials") return "specials";
+  if (raw === "resolve") return "resolve";
+  if (raw === "live-play") return "live-play";
+  if (raw === "fog") return "fog";
   return "fog";
 };
 
-/** First story id when missing / unknown — keeps deep links resilient. */
+/**
+ * Missing story (e.g. `/tutorial/live-play`) → first story of the section.
+ * Unknown story (e.g. `/tutorial/live-play/king-defense`) → last story of
+ * the section. Outdated lesson slugs redirect forward, never to the start.
+ */
 export const resolveTutorialStoryId = (
   stageId: TutorialSectionId,
   storyId: string | undefined,
 ): string => {
   const stories = tutorialStage(stageId).stories;
-  if (storyId && stories.some((s) => s.id === storyId)) return storyId;
-  return stories[0]!.id;
+  if (storyId == null) return stories[0]!.id;
+  if (stories.some((s) => s.id === storyId)) return storyId;
+  return stories[stories.length - 1]!.id;
+};
+
+/** Last lesson overall — outdated section URLs land here. */
+export const lastTutorialPath = (): string => {
+  const stage = TUTORIAL_SCRIPT[TUTORIAL_SCRIPT.length - 1]!;
+  const story = stage.stories[stage.stories.length - 1]!;
+  return `/tutorial/${stage.id}/${story.id}`;
 };
 
 /** Canonical tutorial deep link: `/tutorial/fog/king`. */

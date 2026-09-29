@@ -66,23 +66,31 @@ export const CoachScreen: Component = () => {
   useGameRecorder();
   useLivePreAnalysis();
 
-  onMount(async () => {
+  onMount(() => {
     setCapabilities(COACH_CAPABILITIES);
     restoreGame();
+    // Render first — engine/LLM calibration (`/hello` warmup) runs behind.
+    dispatchCoachEvent({ type: "APP_READY" });
 
-    try {
-      const helloData = await fetchHello();
+    // Background calibration: greeting phrases never gate the board or moves.
+    fetchHello().then(
+      (helloData) => {
+        if (fenHistory().length > 1) {
+          setAdvice("Welcome back! Let's continue our game.");
+        } else {
+          setAdvice(helloData.greeting);
+        }
+        setThinkingPhrases(helloData.thinking);
+        setBestMovePhrases(helloData.bestMove);
+      },
+      (err) => {
+        logger.error("Failed to fetch /hello", err);
+        setAdvice("Hey! I couldn't connect to the server. Is it running?");
+        dispatchCoachEvent({ type: "APP_ERROR" });
+      },
+    );
 
-      if (fenHistory().length > 1) {
-        setAdvice("Welcome back! Let's continue our game.");
-      } else {
-        setAdvice(helloData.greeting);
-      }
-
-      setThinkingPhrases(helloData.thinking);
-      setBestMovePhrases(helloData.bestMove);
-      dispatchCoachEvent({ type: "APP_READY" });
-
+    const maybeAiContinuation = () => {
       const g = game();
       const turn = currentFen().split(" ")[1];
 
@@ -111,11 +119,8 @@ export const CoachScreen: Component = () => {
             dispatchCoachEvent({ type: "AI_ERROR" });
           });
       }
-    } catch (err) {
-      logger.error("Failed to fetch /hello", err);
-      setAdvice("Hey! I couldn't connect to the server. Is it running?");
-      dispatchCoachEvent({ type: "APP_ERROR" });
-    }
+    };
+    maybeAiContinuation();
 
     const { supported, reason, debug } = checkEngineSupport();
     if (!supported) {

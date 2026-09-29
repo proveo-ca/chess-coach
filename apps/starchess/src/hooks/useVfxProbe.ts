@@ -13,20 +13,40 @@ import { probeIsStale, recordProbe, vfxTier } from "~/store/vfxTierStore";
 export function useVfxProbe(ready: Accessor<boolean>): void {
   let started = false;
   let stop: (() => void) | undefined;
+  let idleId: number | undefined;
+
+  const start = () => {
+    if (started) return;
+    if (typeof window === "undefined" || typeof requestAnimationFrame !== "function") return;
+    if (document.visibilityState === "hidden") return;
+    if (window.matchMedia?.(REDUCED_MOTION_MQ).matches) return;
+    if (!probeIsStale(PROBE_VERSION)) return;
+    started = true;
+    stop = startVfxProbe(vfxTier(), (result) => {
+      stop = undefined;
+      recordProbe(result.verdict, PROBE_VERSION, Date.now(), result);
+    });
+  };
 
   createEffect(
     on(ready, (isReady) => {
       if (!isReady || started) return;
-      if (typeof window === "undefined" || typeof requestAnimationFrame !== "function") return;
-      if (window.matchMedia?.(REDUCED_MOTION_MQ).matches) return;
-      if (!probeIsStale(PROBE_VERSION)) return;
-      started = true;
-      stop = startVfxProbe(vfxTier(), (result) => {
-        stop = undefined;
-        recordProbe(result.verdict, PROBE_VERSION, Date.now(), result);
-      });
+      // Background calibration: never steal first paint / interaction.
+      const ric = (window as unknown as { requestIdleCallback?: typeof requestIdleCallback }).requestIdleCallback;
+      if (typeof ric === "function") {
+        idleId = ric(() => start(), { timeout: 2000 }) as unknown as number;
+      } else {
+        idleId = window.setTimeout(start, 0);
+      }
     }),
   );
 
-  onCleanup(() => stop?.());
+  onCleanup(() => {
+    if (idleId != null) {
+      const cic = (window as unknown as { cancelIdleCallback?: typeof cancelIdleCallback }).cancelIdleCallback;
+      if (typeof cic === "function") cic(idleId);
+      else clearTimeout(idleId);
+    }
+    stop?.();
+  });
 }
