@@ -93,11 +93,15 @@
  * width bounded by the gutter that is actually there.
  */
 @media (min-width: 720px) {
+  /* Same box as the live-play bubble (TutorialGuideBubble desktop dock). The
+     review header has no desktop coach, so the line still sits right of the
+     board. The dock carries top:0 + bottom:0.5rem from the mobile default —
+     with both set the height stretches to the short review chrome and clips
+     the line to one row. Free it so the bubble sizes to the text. */
   .headerSlot :global(.tutorial-guide-bubble) {
     left: calc(100% + 1rem);
-    width: min(
-      22rem,
-      calc(50vw - var(--board-size) / 2 + var(--sidebar-width) / 2 - 2rem)
-    );
+    width: 22rem;
+    bottom: auto;
+    height: auto;
   }
 }

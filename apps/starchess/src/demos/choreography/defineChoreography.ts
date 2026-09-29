@@ -26,8 +26,8 @@ export type ChoreographyStep = {
     map: Map<Square, ScPiece>,
     snap: ScFenSnapshot,
   ) => { color: StarChessColor; amount: number } | undefined;
-  /** `store.ensureTurnOpenChecks()` — no board guard beyond `when`. */
-  ensureTurnOpenChecks?: boolean;
+  /** `store.ensureTurnOpenChecks(opts)` — no board guard beyond `when`. */
+  ensureTurnOpenChecks?: boolean | { armTimer?: boolean };
   /** `store.submitTurn("end")`, after `actions`/`ensureTurnOpenChecks`. */
   submitTurn?: "end";
   /**
@@ -80,7 +80,12 @@ const dispatchStep = (
   map: Map<Square, ScPiece>,
   snap: ScFenSnapshot,
 ): void => {
-  if (step.ensureTurnOpenChecks) store.ensureTurnOpenChecks();
+  if (step.ensureTurnOpenChecks)
+    store.ensureTurnOpenChecks(
+      typeof step.ensureTurnOpenChecks === "object"
+        ? step.ensureTurnOpenChecks
+        : undefined,
+    );
   batch(() => {
     const spend = step.spendStored?.(map, snap);
     if (spend) store.dispatch({ type: "SPEND_STORED", color: spend.color, amount: spend.amount });

@@ -14,6 +14,7 @@ export const livePlayAttack3 = {
   comment: "",
   emotion: "happy",
   completeWhen: { kind: "lives", enemy: 0 },
+  restartWhen: { kind: "lives", own: 0 },
   beats: [
     {
       priority: 2,

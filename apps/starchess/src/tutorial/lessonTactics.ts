@@ -1041,9 +1041,15 @@ const specialQueued = (queue: string, { kind, from }: QueuedSpecial): boolean =>
 export const boardConditionHolds = (when: TutorialBoardCondition, scfen: string): boolean => {
   if (when.kind === "lives") {
     const lives = scfen.split("|")[3] ?? "";
-    if (when.own != null && Number(lives[0]) !== when.own) return false;
-    if (when.enemy != null && Number(lives[1]) !== when.enemy) return false;
-    return /^\d\d$/.test(lives);
+    if (!/^\d\d$/.test(lives)) return false;
+    const own = Number(lives[0]);
+    const enemy = Number(lives[1]);
+    // A bare `enemy: 0` win never matches the `00` draw — both Command
+    // Centers down is not a win. Draws fall through to `restartWhen`.
+    if (when.enemy === 0 && when.own == null && own === 0) return false;
+    if (when.own != null && own !== when.own) return false;
+    if (when.enemy != null && enemy !== when.enemy) return false;
+    return true;
   }
   if (when.kind === "lost") {
     const placement = scfen.split("|")[1];

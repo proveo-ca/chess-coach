@@ -118,6 +118,8 @@
     /* Top of the chrome track, one rail-width clear of Kerrigan's head — the
        anchor's 50% is the board centre, which is also hers. */
     top: 0;
+    bottom: auto;
+    height: auto;
     left: calc(50% + var(--sidebar-width));
     transform: none;
     /* Same ceiling as the float, floored by the room left of the viewport edge. */
