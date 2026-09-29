@@ -1,5 +1,5 @@
 // SPEC: _spec/apps/chess/components.puml
-import { createSignal, onMount } from "solid-js";
+import { createSignal, onCleanup, onMount } from "solid-js";
 import type { Component } from "solid-js";
 
 import { OpponentCaptures, PlayerCaptures } from "~/components/atoms/CapturedPieces";
@@ -67,25 +67,46 @@ export const CoachScreen: Component = () => {
   useLivePreAnalysis();
 
   onMount(() => {
+    let alive = true;
+    onCleanup(() => {
+      alive = false;
+    });
     setCapabilities(COACH_CAPABILITIES);
     restoreGame();
     // Render first — engine/LLM calibration (`/hello` warmup) runs behind.
     dispatchCoachEvent({ type: "APP_READY" });
 
+    // AI continuation never waits on calibration; calibration never clobbers it.
+    const aiToMoveAtMount = (() => {
+      try {
+        const g = game();
+        return !g.isGameOver() && currentFen().split(" ")[1] !== activePlayerColor();
+      } catch {
+        return false;
+      }
+    })();
+
     // Background calibration: greeting phrases never gate the board or moves.
     fetchHello().then(
       (helloData) => {
+        if (!alive) return;
+        setThinkingPhrases(helloData.thinking);
+        setBestMovePhrases(helloData.bestMove);
+        // Skip the greeting when the AI was already thinking at mount —
+        // a late hello must not overwrite "Let me think…".
+        if (aiToMoveAtMount) return;
         if (fenHistory().length > 1) {
           setAdvice("Welcome back! Let's continue our game.");
         } else {
           setAdvice(helloData.greeting);
         }
-        setThinkingPhrases(helloData.thinking);
-        setBestMovePhrases(helloData.bestMove);
       },
       (err) => {
+        if (!alive) return;
         logger.error("Failed to fetch /hello", err);
-        setAdvice("Hey! I couldn't connect to the server. Is it running?");
+        if (!aiToMoveAtMount) {
+          setAdvice("Hey! I couldn't connect to the server. Is it running?");
+        }
         dispatchCoachEvent({ type: "APP_ERROR" });
       },
     );

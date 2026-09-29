@@ -13,40 +13,83 @@ import { probeIsStale, recordProbe, vfxTier } from "~/store/vfxTierStore";
 export function useVfxProbe(ready: Accessor<boolean>): void {
   let started = false;
   let stop: (() => void) | undefined;
+  let idleKind: "idle" | "timeout" | undefined;
   let idleId: number | undefined;
+  let onVisible: (() => void) | undefined;
+
+  const clearIdle = () => {
+    if (idleId == null) return;
+    if (idleKind === "idle") {
+      const cic = (window as unknown as { cancelIdleCallback?: typeof cancelIdleCallback })
+        .cancelIdleCallback;
+      if (typeof cic === "function") cic(idleId);
+      else clearTimeout(idleId);
+    } else {
+      clearTimeout(idleId);
+    }
+    idleId = undefined;
+    idleKind = undefined;
+  };
 
   const start = () => {
     if (started) return;
     if (typeof window === "undefined" || typeof requestAnimationFrame !== "function") return;
-    if (document.visibilityState === "hidden") return;
+    if (document.visibilityState === "hidden") {
+      // Retry when visible instead of dropping the stale probe silently.
+      if (!onVisible) {
+        onVisible = () => {
+          if (document.visibilityState === "visible") {
+            document.removeEventListener("visibilitychange", onVisible!);
+            onVisible = undefined;
+            start();
+          }
+        };
+        document.addEventListener("visibilitychange", onVisible);
+      }
+      return;
+    }
     if (window.matchMedia?.(REDUCED_MOTION_MQ).matches) return;
     if (!probeIsStale(PROBE_VERSION)) return;
     started = true;
+    clearIdle();
     stop = startVfxProbe(vfxTier(), (result) => {
       stop = undefined;
       recordProbe(result.verdict, PROBE_VERSION, Date.now(), result);
     });
   };
 
+  const schedule = () => {
+    if (started || idleId != null) return;
+    // Background calibration: never steal first paint / interaction.
+    const ric = (window as unknown as { requestIdleCallback?: typeof requestIdleCallback })
+      .requestIdleCallback;
+    if (typeof ric === "function") {
+      idleKind = "idle";
+      idleId = ric(() => {
+        idleId = undefined;
+        idleKind = undefined;
+        start();
+      }, { timeout: 2000 }) as unknown as number;
+    } else {
+      idleKind = "timeout";
+      idleId = window.setTimeout(() => {
+        idleId = undefined;
+        idleKind = undefined;
+        start();
+      }, 0);
+    }
+  };
+
   createEffect(
     on(ready, (isReady) => {
-      if (!isReady || started) return;
-      // Background calibration: never steal first paint / interaction.
-      const ric = (window as unknown as { requestIdleCallback?: typeof requestIdleCallback }).requestIdleCallback;
-      if (typeof ric === "function") {
-        idleId = ric(() => start(), { timeout: 2000 }) as unknown as number;
-      } else {
-        idleId = window.setTimeout(start, 0);
-      }
+      if (!isReady) return;
+      schedule();
     }),
   );
 
   onCleanup(() => {
-    if (idleId != null) {
-      const cic = (window as unknown as { cancelIdleCallback?: typeof cancelIdleCallback }).cancelIdleCallback;
-      if (typeof cic === "function") cic(idleId);
-      else clearTimeout(idleId);
-    }
+    clearIdle();
+    if (onVisible) document.removeEventListener("visibilitychange", onVisible);
     stop?.();
   });
 }

@@ -755,6 +755,10 @@ export const TutorialScreen: Component = () => {
 
   return (
     <LiveMatchShell world="eclipse" testId="starchess-tutorial">
+      <Show
+        when={params.section == null || isCanonicalTutorialSection(params.section)}
+        fallback={null}
+      >
       <Switch>
         <Match when={section() === "fog"}>
           <FogLesson />
@@ -792,6 +796,7 @@ export const TutorialScreen: Component = () => {
           <LivePlayLesson />
         </Match>
       </Switch>
+      </Show>
     </LiveMatchShell>
   );
 };
