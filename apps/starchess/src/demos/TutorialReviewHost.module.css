@@ -95,20 +95,13 @@
 @media (min-width: 720px) {
   /* Same box as the live-play bubble (TutorialGuideBubble desktop dock). The
      review header has no desktop coach, so the line still sits right of the
-     board — only the width follows the live-play ceiling. A vw-relative width
-     collapsed to one row inside the 1280px root. */
+     board. The dock carries top:0 + bottom:0.5rem from the mobile default —
+     with both set the height stretches to the short review chrome and clips
+     the line to one row. Free it so the bubble sizes to the text. */
   .headerSlot :global(.tutorial-guide-bubble) {
     left: calc(100% + 1rem);
     width: 22rem;
-    /* The review chrome is one nav row, so a stretch-to-parent bubble collapses
-       to that row and clips the line. Size to the text, like live-play. */
+    bottom: auto;
     height: auto;
-    align-items: flex-start;
-  }
-
-  .headerSlot :global(.tutorial-guide-bubble) > * {
-    height: auto;
-    align-self: auto;
-    flex: 0 1 auto;
   }
 }
