@@ -1,7 +1,7 @@
 ' purpose: Implemented New Game opponent options and known-placeholder unavailable surface.
 ' covers: apps/starchess/src/components/features/NewGamePanel.tsx
 ' covers: apps/starchess/src/screens/SingleScreen.tsx
-' status: IMPLEMENTED preparatory layout; source verification IN PROGRESS.
+' status: IMPLEMENTED and VERIFIED preparatory layout; baseline full-app lint exception recorded in _spec/_plans/PLAN-ml-adjutant.md.
 ' related: _spec/apps/starchess/menu-flow.puml
 ' related: _spec/packages/starchess-core/adjutant-definitions.puml
 @startsalt
@@ -28,7 +28,7 @@ title StarChess · Preparatory opponent selector (implemented layout)
   }
 }
 legend bottom
-  Implemented source layout; verification in progress.
+  Implemented and verified preparatory source layout.
   Opponent rows show the expanded Select options.
   The selected value restores the playable choice.
   Grey with a reason: offered, not selectable.

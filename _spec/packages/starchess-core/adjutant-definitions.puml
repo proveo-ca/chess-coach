@@ -8,7 +8,14 @@
 ' covers: apps/starchess/src/store/newGameSetupStore.ts
 ' covers: apps/starchess/src/store/matchSessionStore.ts
 ' covers: apps/starchess/src/utils/matchTitle.ts
-' status: IMPLEMENTED preparatory source contract; source verification IN PROGRESS.
+' covers: packages/starchess-core/src/__tests__/adjutantDefinitions.test.ts
+' covers: apps/starchess/src/__tests__/singleOpponent.test.ts
+' covers: apps/starchess/src/__tests__/newGameSetupStore.test.tsx
+' covers: apps/starchess/src/__tests__/matchSessionStore.test.ts
+' covers: apps/starchess/src/__tests__/matchTitle.test.ts
+' covers: apps/e2e/tests/starchess/starchess-opponents.spec.ts
+' status: IMPLEMENTED and VERIFIED preparatory source contract; learning phases remain PLANNED.
+' verification: Covered regression tests pin this contract; reported results and the baseline full-app lint exception live in _spec/_plans/PLAN-ml-adjutant.md.
 ' related: _spec/apps/starchess/menu-flow.puml
 ' related: _spec/apps/starchess/wireframe.puml
 ' related: _spec/_plans/PLAN-ml-adjutant.md
@@ -26,7 +33,7 @@ package "packages/starchess-core/src" {
 package "apps/starchess/src" {
   component "types/newGame.ts\nconsume core types and guards" as TYPES <<app>>
   component "components/features/NewGamePanel.tsx\nregistry labels and availability\nonly playable choices can start" as SELECTOR <<app>>
-  component "utils/matchTitle.ts\ncanonical labels" as LABELS <<app>>
+  component "utils/matchTitle.ts\ncanonical labels\nunknown persisted opponent → Adjutant (Script)" as LABELS <<app>>
   component "screens/SingleScreen.tsx\nresolve opponent, then admit" as ADMIT <<app>>
   component "SingleScreen.tsx\nexplicit unavailable state\nno LiveMatchSession mount" as UNAVAILABLE <<error>>
   component "store/matchSessionStore.ts\nlegacy resume handling" as SESSION <<db>>

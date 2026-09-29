@@ -57,7 +57,13 @@
         "apps/starchess/src/screens/SingleScreen.tsx",
         "apps/starchess/src/store/newGameSetupStore.ts",
         "apps/starchess/src/store/matchSessionStore.ts",
-        "apps/starchess/src/utils/matchTitle.ts"
+        "apps/starchess/src/utils/matchTitle.ts",
+        "packages/starchess-core/src/__tests__/adjutantDefinitions.test.ts",
+        "apps/starchess/src/__tests__/singleOpponent.test.ts",
+        "apps/starchess/src/__tests__/newGameSetupStore.test.tsx",
+        "apps/starchess/src/__tests__/matchSessionStore.test.ts",
+        "apps/starchess/src/__tests__/matchTitle.test.ts",
+        "apps/e2e/tests/starchess/starchess-opponents.spec.ts"
       ],
       "fingerprint": null
     },

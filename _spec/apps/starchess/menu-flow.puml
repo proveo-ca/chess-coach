@@ -12,7 +12,7 @@
 ' covers: apps/starchess/src/screens/MenuScreen.tsx
 ' covers: apps/starchess/src/screens/menuSky/**
 ' covers: apps/starchess/src/tutorial/**
-' status: Preparatory catalog/admission integration IMPLEMENTED; source verification IN PROGRESS.
+' status: Preparatory catalog/admission integration IMPLEMENTED and VERIFIED; baseline full-app lint exception recorded in _spec/_plans/PLAN-ml-adjutant.md.
 ' related: _spec/packages/starchess-core/adjutant-definitions.puml
 ' related: _spec/apps/starchess/wireframe.puml
 ' related: _spec/apps/starchess/core/adjutant/cc-focus.puml

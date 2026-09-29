@@ -1,6 +1,6 @@
 # PLAN — ML Adjutant: a third script, and the harness that can prove it is better
 
-Status: **Preparatory catalog IMPLEMENTED; source verification IN PROGRESS.**
+Status: **Preparatory catalog IMPLEMENTED and VERIFIED**, with the baseline full-app lint exception below.
 Phases 1–5 remain **PLANNED and unimplemented**.
 Core `ai/definitions.ts` now owns all five IDs, canonical labels, and derived guards.
 The app implements disabled placeholder entries and explicit unavailable admission for known
@@ -32,6 +32,37 @@ Owning contract: [`adjutant-definitions.puml`](../packages/starchess-core/adjuta
 App flow: [`menu-flow.puml`](../apps/starchess/menu-flow.puml).
 Selector layout: [`wireframe.puml`](../apps/starchess/wireframe.puml).
 Deepening learning architecture remains later work; this catalog does not complete any phase below.
+
+## Preparatory milestone verification
+
+Executor reported the following results for this milestone. The spec keeper inspected the source
+and referenced tests; it did not rerun verification commands.
+
+| Check | Result and scope |
+|---|---|
+| Core unit suite | **53 files / 426 tests passed** |
+| App unit suite | **108 files / 791 tests passed**, before the final unknown-record label regression |
+| Final label regression run | **10 focused label tests passed** in `matchTitle.test.ts`; no subsequent full-app 792-test run is claimed |
+| Browser opponent suite | **10 tests passed** in `starchess-opponents.spec.ts` |
+| Typechecks | Core, app, and e2e passed |
+| Scoped static checks | Changed-file oxlint, dependency checks, and CSS checks passed |
+| PlantUML | All four changed `.puml` files passed `checkonly` |
+| Full app lint | **Fails on the existing baseline only:** five unchanged `no-raw-timer` violations in `apps/starchess/src/hooks/useVfxProbe.ts` at lines **23, 26, 28, 64, 75** |
+| Adversarial review | Sole MEDIUM finding fixed: unknown persisted opponents use `find(...)?.label ?? "Adjutant (Script)"`; regression added; rereview **READY: yes** |
+| Security review | Current-source scope **READY: yes**, no findings |
+
+No new dependencies were committed. Matching Chromium was installed under `/tmp/opencode`.
+The baseline full-app lint failure remains explicit; it does not mark scoped checks as failing
+or authorize unrelated timer cleanup.
+
+| Verification reference | Contract pinned |
+|---|---|
+| [`packages/starchess-core/src/__tests__/adjutantDefinitions.test.ts`](../../packages/starchess-core/src/__tests__/adjutantDefinitions.test.ts) | EMPTY metadata shape, all-ID recognition, ready-only admission, rejection of `ml` and unknown inputs |
+| [`apps/starchess/src/__tests__/singleOpponent.test.ts`](../../apps/starchess/src/__tests__/singleOpponent.test.ts) | App guards and distinct playable script execution |
+| [`apps/starchess/src/__tests__/newGameSetupStore.test.tsx`](../../apps/starchess/src/__tests__/newGameSetupStore.test.tsx) | Disabled placeholder options, playable selection/Start, persisted setup |
+| [`apps/starchess/src/__tests__/matchSessionStore.test.ts`](../../apps/starchess/src/__tests__/matchSessionStore.test.ts) | Preserve known placeholders for admission; retain legacy/unknown session handling |
+| [`apps/starchess/src/__tests__/matchTitle.test.ts`](../../apps/starchess/src/__tests__/matchTitle.test.ts) | Canonical labels and safe unknown-record fallback |
+| [`apps/e2e/tests/starchess/starchess-opponents.spec.ts`](../../apps/e2e/tests/starchess/starchess-opponents.spec.ts) | Browser selection, placeholder URL/session blocks, unchanged stored data, strategic rematch, setup normalization |
 
 ---
 
