@@ -25,7 +25,7 @@ export const baselineProposals = (observation: AuthorizedObservation): QueueProp
   }
   const cc = observation.own.pieces.find(({ piece }) => piece.type === "k");
   if (cc && observation.own.gas >= 1 && observation.own.minerals >= UNIT_COST.p) {
-    for (const to of adjacentSquares(cc.square)) {
+    for (const to of adjacentSquares(cc.square, new Set(map.keys()))) {
       if (!map.has(to)) push([{ kind: "deploy", timing: "B", color: observation.side, from: cc.square, to, unit: "p" }], 50);
     }
   }

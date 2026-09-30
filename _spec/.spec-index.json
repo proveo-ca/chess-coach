@@ -203,6 +203,15 @@
       "fingerprint": null
     },
     {
+      "spec": "_spec/packages/starchess-arena/ml-adjutant-phase1.puml",
+      "covers": [
+        "packages/starchess-arena/src/challenge/**",
+        "packages/starchess-arena/src/__tests__/challenge*.test.ts",
+        "packages/starchess-arena/src/__tests__/fixtures/challenge*.ts"
+      ],
+      "fingerprint": null
+    },
+    {
       "spec": "_spec/apps/starchess/core/index.puml",
       "covers": [],
       "fingerprint": null

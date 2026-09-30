@@ -1,8 +1,11 @@
 # ML Adjutant — strict recorded-queue and live strategic challenge
 
-Status: **PLANNED; no executable compatibility, trained artifact, or win-rate result yet.**
+Status: **Phase 1 implementation UNDERWAY in `packages/starchess-arena`; verification PENDING
+lead reports of actual tests and baseline reruns. Phases 2+ remain PLANNED and unimplemented.**
 Owner roadmap: [PLAN-ml-adjutant.md](PLAN-ml-adjutant.md).
-This document defines acceptance, not implemented behavior.
+Phase 1 boundary: [ml-adjutant-phase1.puml](../packages/starchess-arena/ml-adjutant-phase1.puml).
+This document defines acceptance; inspected source is not verified execution evidence.
+No trained artifact, measured baseline result, or learned PASS is claimed.
 
 ## 1. Decision and scope
 
@@ -10,11 +13,13 @@ The accepted plan uses **18 current cases** and Executor selected **STRICT RECOR
 Blue = White = exported player = `w`; the corpus candidate is Black/Red = `b`.
 Beat BOTH the recorded White corpus and separately executing live strategic.
 
-The referenced 18+100 exports do not establish an available 118-case dataset.
-The lead's workspace/parent glob and tracked-inventory audit found only the named export below.
-Do not invent a missing path or silently change the denominator. A future 118-case challenge
-requires locating and auditing the actual additional exports, checking duplicates and executable
-compatibility, and approving a new pinned manifest/version.
+The earlier workspace/parent and tracked-inventory audit found only the pinned export below.
+Executor now reports external `/starchess-match-history-20260922-222825.json` was found and
+parsed: **96 games, not the previously described 100**. Only its count is reported; its hashes,
+IDs, duplicates, provenance, rules, and executable trace compatibility remain unaudited.
+Do not silently add those games, infer a 118-case dataset, or change manifest v1. Any expansion
+requires a separate audit and approved new pinned manifest/version. The denominator remains
+**18 corpus cases and 36 live strategic matches**.
 
 Required initial claim:
 
@@ -51,8 +56,8 @@ SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:
 The lead ran current-core `historyFromRecord`, `parseScFen`, `scsanOf`, and `scOutcome` checks:
 358 raw snapshots parse; 358 repaired snapshots decode; all 18 snapshot/resolve cardinalities align; all 18 SC-SAN
 comparisons match exactly; all 18 terminal result labels match. Record repair and decode are
-not action admission or simulation. No current-rule queue reexecution, training, baseline
-benchmark, or learned challenge run has occurred.
+not action admission or simulation. No lead-verified current-rule queue reexecution, baseline
+benchmark/rerun, or learned challenge result is recorded here. Training remains unimplemented.
 
 The [manifest](../corpora/ml-adjutant-corpus.manifest.json) pins all 18 actual IDs, source
 provenance, extraction version, canonical opening, source ordering, and White trace hashes.
@@ -60,6 +65,11 @@ White queues remain source references rather than duplicate action payloads. Fil
 resolve queues by planning ordinal using the manifest's extraction contract.
 Keep IDs and source results host-side for reports; do not expose them as candidate features.
 Preserve the original export unchanged and fail audit on any pin/count mismatch.
+Preserve manifest `audit.currentRuleReexecution = "pending"` and
+`audit.candidateWinrate = "not measured"` as the original Phase 0 historical audit statuses.
+New execution evidence belongs separately at the **PLANNED, currently absent** path
+`_spec/evidence/ml-adjutant-phase1/baseline-report.json`; it must not rewrite historical audit
+statuses or masquerade as a new corpus manifest version.
 
 ## 3. Selection and exhaustive scheduling
 
@@ -147,6 +157,17 @@ This is distinct from the non-learned candidate baseline, which must obey the sa
 proposal interface as the learned candidate. An unchanged full-snapshot strategic candidate does
 not prove this interface honest. Phase 1 owns the minimal interface; phase 2 adds numeric features.
 
+Arena Phase 1 implements that boundary in `src/challenge/observation.ts` and `baseline.ts`.
+`baseline-v1` ranks classical singleton queues, Marine deployment singleton queues, and pass
+using only authorized observed occupancy, own modes/mines/resources, fixed heuristic scores,
+and canonical-key tie-breaking. It does not reuse strategic candidates, learn weights, or obtain
+alternate proposals from hidden admission results. A selected rejection fails the case.
+Candidate memory is sightings-only, separate from opening-seeded strategic KVS and other
+host-private strategic ledgers; those ledgers must not supply candidate history.
+Numeric features, training, learned models/artifacts, and browser integration remain phases 2+.
+Phase 1 emits `modelArtifact = null`, `learnedGateEligible = false`, `fallbackCount = 0`;
+baseline performance validates plumbing and comparison only, never learned acceptance.
+
 The model-facing observation includes only own facts, permitted visibility/public facts, own
 resources, and side-authorized memory/belief history. Exclude:
 
@@ -196,6 +217,29 @@ Pin before gate execution:
 - Opening, complete schedule, arena RNG convention, and inference seed 0 per match.
 - Numerical inference/match watchdog budgets in versioned harness configuration.
 
+Approved Phase 1 standard configuration is `CHALLENGE_CONFIG` version `phase1-v1`:
+
+| Budget / invariant | Pin |
+|---|---|
+| Startup deadline | 10000 ms |
+| Per candidate/strategic plan deadline | 10000 ms |
+| Match deadline after child ready | 300000 ms; progress does not renew it |
+| Planning-window cap | 64 |
+| Recorded-ply cap, including chips | 128 |
+| Proposal cap | 4096 |
+| Merge order | White then Black, preserving each queue's array order; fresh host sequences |
+| Inference seed / feed / movetime | 0 / off / 0 ms |
+
+Each side stages independently against the frozen turn-open snapshot and its own opening
+resources for that window. The host commits only a successful pair with exact deployment debits
+before current income; it verifies strategic's reported spend against admitted costs.
+Parent `supervisor.ts` launches `worker.ts`, validates ready/progress/completion IPC, uses
+`SIGKILL` on finish/failure, and returns only after child close/reap. Deadline, protocol, and
+crash failures retain validated partial plies with `outcome = null`, not a fabricated win.
+Startup and match deadlines plus per-plan deadlines bound synchronous loops and unresolved
+promises. Repeated identical phase messages do not renew the planning deadline.
+Test budget overrides do not establish a standard-budget baseline result.
+
 No model updates, configuration tuning, trace replacement, or strategic candidate fallback may
 occur within the gate. A changed artifact/configuration requires rerunning the whole gate.
 Missing model/runtime or nonfinite scores fail; product fallback cannot earn learned wins.
@@ -216,7 +260,10 @@ as provenance. Same pins and seeds must reproduce the same semantic executions.
 ## 8. Required integrity verification
 
 `packages/starchess-arena/src/__tests__/corpusManifest.test.ts` persists the provenance/codec audit.
-The executable challenge checks below remain **PLANNED**, not completed tests. Proposed test paths and phase ownership are
+`packages/starchess-arena/src/__tests__/challengeWatchdog.test.ts` and its three challenge
+worker fixtures now exist, but their execution results remain **PENDING**. The other executable
+checks below require lead-supplied actual arena test paths and results; none are marked passed.
+Existing/proposed verification paths and phase ownership are
 listed in [PLAN-ml-adjutant.md](PLAN-ml-adjutant.md#planned-verification-and-pending-ownership).
 
 | Check | Required adversarial cases |
@@ -231,6 +278,7 @@ listed in [PLAN-ml-adjutant.md](PLAN-ml-adjutant.md#planned-verification-and-pen
 | Simultaneous input isolation | Both views derived before commits; candidate in both seats cannot observe prior same-window queue, gas, or bank delta. |
 | Learned execution | Artifact frozen, inference seed reset, weight updates absent, no missing-model rescue, no strategic replacement or next-candidate rescue after rejection, fallback count zero. |
 | Determinism and schedule | Semantic rerun equality, exact 18+36 schedule, feed off, seat RNG convention, all failures retained in denominators. |
+| Supervision | Startup stall, synchronous loop, unresolved promise, match deadline independent of progress, repeated phase without deadline renewal, malformed/before-ready IPC, crash, partial evidence, and reap before return. |
 
 ## 9. Reporting and evidence limits
 
@@ -238,6 +286,12 @@ Publish the pins and integrity results with one row per corpus case and per live
 Include candidate side, actual terminal outcome or failure reason, planning ordinal/failed
 action where applicable, fallback count, and reproducibility result. Report historical source
 outcomes separately from executed outcomes. Keep private metadata in host reports, not policy inputs.
+
+Phase 1 `src/challenge/evidence.ts` and separate `src/cli/challenge.ts` remain planned modules.
+The planned baseline report path above must record all 54 scheduled rows, standard configuration,
+source/rules/strategic/baseline version pins, actual integrity results, and normalized rerun
+comparisons. Do not create a placeholder report that implies execution. The lead must supply
+actual test/static-check/review results and baseline reruns before Phase 1 becomes VERIFIED.
 
 If all clauses pass, say **100% wins on the pinned 18-case corpus and 36-match live strategic
 suite**. If any clause fails, say FAIL and identify it; do not exclude the failing case to retain

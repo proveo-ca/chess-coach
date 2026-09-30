@@ -11,6 +11,11 @@ the verification record includes the existing full-app lint baseline exception:
 The registry ID is `machine-learning`; `ml/` names proposed training tooling, not an opponent alias.
 `machine-learning`, `rlhf`, and `rlcd` remain EMPTY and unavailable until implemented.
 The implemented catalog definitions do not complete any learning stage below.
+The separate strict-challenge roadmap now owns Phase 1 in `packages/starchess-arena`:
+[`ml-adjutant-phase1.puml`](_spec/packages/starchess-arena/ml-adjutant-phase1.puml).
+Implementation is underway; verification remains PENDING lead test and baseline rerun reports.
+Numeric features, training, learned models/artifacts, and browser rollout remain unimplemented
+phases 2+ of that roadmap; this planning-only evolution ladder does not mark them shipped.
 
 This replaces the prior standalone-migration PLAN (Phases 1–6 are done).
 

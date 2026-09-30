@@ -1,0 +1,124 @@
+' purpose: Arena-owned Phase 1 strict challenge boundaries and non-learned baseline.
+' covers: packages/starchess-arena/src/challenge/**
+' covers: packages/starchess-arena/src/__tests__/challenge*.test.ts
+' covers: packages/starchess-arena/src/__tests__/fixtures/challenge*.ts
+' status: IMPLEMENTATION UNDERWAY; execution verification PENDING lead test and baseline rerun reports.
+' related: _spec/_plans/PLAN-ml-adjutant.md
+' related: _spec/_plans/ml-adjutant-challenge.md
+' related: _spec/packages/starchess-arena/arena.puml (legacy runner, not this isolated host)
+' planned: packages/starchess-arena/src/challenge/evidence.ts
+' planned: packages/starchess-arena/src/cli/challenge.ts (separate from cli/main.ts)
+' planned coverage: add the separate CLI when it exists; challenge/** already owns evidence.ts.
+' planned evidence: _spec/evidence/ml-adjutant-phase1/baseline-report.json
+' evidence boundary: manifest v1 and Phase 0 historical audit statuses remain unchanged.
+' later: numeric features, training, learned model/artifact, and browser integration remain unimplemented phases 2+.
+@startuml ml-adjutant-phase1
+!include ../../themes/proveo.puml
+title StarChess arena · ML Adjutant Phase 1 — verification PENDING
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+package "packages/starchess-arena/src/challenge" {
+  component "types.ts\nAuthorizedObservation / CandidatePolicy\nChallengeEvidence / ScheduledMatch" as TYPES <<app>>
+  component "config.ts\nCHALLENGE_CONFIG phase1-v1" as CONFIG <<host>>
+  component "corpus.ts\nauditCorpus / extractWhiteWindows" as CORPUS <<host>>
+  component "schedule.ts\nbuildSchedule / sampleOne" as SCHEDULE <<host>>
+  component "supervisor.ts\nrunSupervised / validated IPC" as SUPERVISOR <<host>>
+  node "worker.ts child process" as CHILD <<host>> {
+    component "runChallengeMatch.ts\nturn-open / plan / stage / settle" as RUN <<app>>
+    component "observation.ts\nobserve / side sightings only" as OBSERVE <<app>>
+    component "baseline.ts\nbaselineProposals / baselinePolicy" as BASELINE <<app>>
+    component "admission.ts\nstageQueue / commitPair" as ADMISSION <<host>>
+  }
+}
+
+component "players/strategic.ts\nstrategicScript: feed = null\nmovetimeMs = 0" as STRATEGIC <<app>>
+database "Host-private strategic state\nKVS / CC intel / runners / attackers" as LEDGERS <<db>>
+component "run/bank.ts\ngrantStoredIncome" as BANK <<host>>
+component "packages/starchess-core\nbeginScTurn / endScTurn\naddScAction / scOutcome" as CORE <<app>>
+database "ChallengeEvidence\nscfens / resolves / bankTrail / stop" as EVIDENCE <<db>>
+
+CONFIG ARROW_OPTIONAL SUPERVISOR : pinned deadlines
+CONFIG ARROW_OPTIONAL RUN : progress limits / versions
+TYPES ARROW_OPTIONAL RUN : boundary contracts
+CORPUS ARROW_MAIN SCHEDULE : unchanged 18-case manifest v1
+SCHEDULE ARROW_MAIN SUPERVISOR : 18 corpus + 36 live seat/seed matches
+SUPERVISOR ARROW_QUEUE CHILD : ready then one request
+SUPERVISOR ARROW_ERROR CHILD : SIGKILL; wait for close
+CHILD ARROW_QUEUE SUPERVISOR : phase / ply / complete
+RUN ARROW_MAIN OBSERVE : both views from frozen turn-open state
+OBSERVE ARROW_MAIN BASELINE : cells + own modes/mines/resources + sightings
+BASELINE ARROW_MAIN RUN : one selected intent queue; no retry
+RUN ARROW_MAIN STRATEGIC : independent precommit clone / seat RNG
+LEDGERS ARROW_MAIN STRATEGIC : private SideContext only
+RUN ARROW_MAIN LEDGERS : chip and settlement witness folds
+RUN ARROW_MAIN ADMISSION : stage each side against its own open resources
+ADMISSION ARROW_MAIN CORE : whole-queue gate; fresh w then b sequences
+RUN ARROW_MAIN CORE : terminal-first; chip and simultaneous settlement
+RUN ARROW_MAIN BANK : exact deployment debit then current income
+RUN ARROW_MAIN EVIDENCE : terminal outcome or explicit stop
+SUPERVISOR ARROW_MAIN EVIDENCE : validated completion or retained ply prefix
+
+note bottom of OBSERVE
+  Candidate memory stores only sightings that
+  its side can observe, not strategic ledgers
+  seeded from the complete opening state.
+  This boundary excludes privileged knowledge
+  without discarding facts its side has seen.
+end note
+
+note bottom of BASELINE
+  The baseline ranks classical singleton queues,
+  Marine deployment singletons, and pass using
+  fixed scores from observed occupancy.
+  It never reuses strategic ranking or learns
+  weights, so baseline wins cannot pass ML gates.
+end note
+
+note bottom of ADMISSION
+  Independent staging rejects the entire
+  queue if any intent or resource check fails.
+  Only successful pairs commit white then black
+  with fresh sequence numbers and exact debits,
+  so neither side observes a partial commitment.
+end note
+
+note bottom of RUN
+  Terminal checks run before queue exhaustion
+  and host limits, so actual wins retain their
+  authoritative outcome.
+  Chip plies update records and private memories
+  without advancing the planning ordinal.
+end note
+
+note bottom of SUPERVISOR
+  Parent deadlines interrupt synchronous loops
+  and unresolved promises by killing the child.
+  Completion waits for process close to reap it,
+  while validated progress preserves partial
+  evidence after timeout or protocol failure.
+end note
+
+note right of CONFIG
+  startupMs = 10000; planMs = 10000
+  matchMs = 300000; maxWindows = 64
+  maxRecordedPlies = 128
+  maxProposals = 4096; inferenceSeed = 0
+  mergeOrder = white-then-black-array-order
+end note
+
+note bottom of EVIDENCE
+  modelArtifact = null
+  learnedGateEligible = false
+  fallbackCount = 0
+end note
+
+legend bottom
+  Inspected modules exist; tests and baseline reruns remain PENDING.
+  Corpus candidate = b, arena/inference seed = 0; live seeds = 0..17 in both seats.
+  Seat RNG: w = mulberry32(seed), b = mulberry32(~seed).
+  evidence.ts, separate cli/challenge.ts, and baseline-report.json are PLANNED, not present.
+  Numeric features, training, learned artifacts, and browser integration remain phases 2+.
+endlegend
+@enduml

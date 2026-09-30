@@ -28,7 +28,7 @@ export const stageQueue = (
   if (!Array.isArray(intents)) return { ok: false, failure: {
     kind: "queue-rejected", phase: "admission", planningOrdinal, turn: open.turn, side, reason: "invalid-intent-array",
   } };
-  for (const [actionIndex, action] of intents.entries()) {
+  for (const [actionIndex, action] of (intents as readonly ScActionInput[]).entries()) {
     const base: ChallengeStop = { kind: "queue-rejected", phase: "admission", planningOrdinal, turn: open.turn, side, actionIndex, action };
     if (!validIntent(action, side)) return { ok: false, failure: { ...base, reason: "invalid-intent" } };
     const cost = action.kind === "deploy" && action.unit ? UNIT_COST[action.unit] : 0;
