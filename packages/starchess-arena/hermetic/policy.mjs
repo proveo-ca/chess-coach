@@ -21,7 +21,7 @@ export function runArguments(image, output, command = ['verify']) {
   ];
 }
 
-export function assertContainerPolicy(inspect) {
+export function assertContainerPolicy(inspect, validatedOutput) {
   const host = inspect.HostConfig;
   const config = inspect.Config;
   const binds = inspect.Mounts.filter((mount) => mount.Type === 'bind');
@@ -30,7 +30,7 @@ export function assertContainerPolicy(inspect) {
       host.Memory !== 4 * 1024 ** 3 || host.MemorySwap !== host.Memory || host.PidsLimit !== 256 ||
       !host.CapDrop?.includes('ALL') || host.CapAdd?.length ||
       !host.SecurityOpt?.includes('no-new-privileges=true') ||
-      binds.length !== 1 || binds[0].Destination !== outputTarget || !binds[0].RW ||
+      binds.length !== 1 || binds[0].Destination !== outputTarget || binds[0].Source !== validatedOutput || !binds[0].RW ||
       inspect.Mounts.some((mount) => mount.Type !== 'bind' && mount.Type !== 'tmpfs') ||
       Object.keys(host.Tmpfs ?? {}).join() !== '/tmp' ||
       !host.Tmpfs['/tmp'].includes('nosuid') || !host.Tmpfs['/tmp'].includes('nodev')) {

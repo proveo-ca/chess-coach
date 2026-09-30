@@ -1,11 +1,12 @@
 // SPEC: _spec/packages/starchess-arena/ml-adjutant-phase2.puml
-import { execFileSync, spawnSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 import { chmodSync, createReadStream, existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, realpathSync, writeFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
-import { join, resolve } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { prepareContext } from './context.mjs';
 import { assertContainerPolicy, imagePattern, runArguments } from './policy.mjs';
+import { runLogged } from './logged-command.mjs';
 import pins from './pins.json' with { type: 'json' };
 
 const temporaryRoot = '/tmp/opencode';
@@ -30,9 +31,18 @@ function freshWork(prefix) {
   if (!existsSync(temporaryRoot) || !lstatSync(temporaryRoot).isDirectory() || realpathSync(temporaryRoot) !== temporaryRoot) throw new Error('Verified /tmp/opencode parent is required');
   return mkdtempSync(join(temporaryRoot, prefix));
 }
-function freshOutput(path) {
+export function freshOutput(path) {
   const absolute = resolve(path);
   if (/[,\n\r]/.test(absolute)) throw new Error('Output path contains Docker mount delimiters');
+  const parent = dirname(absolute);
+  if (realpathSync(parent) !== parent) throw new Error('Output parent must have canonical ancestors');
+  let privateParent = false;
+  for (let ancestor = parent; ; ancestor = dirname(ancestor)) {
+    const stat = lstatSync(ancestor);
+    if (stat.isDirectory() && stat.uid === process.getuid() && (stat.mode & 0o077) === 0) privateParent = true;
+    if (ancestor === dirname(ancestor)) break;
+  }
+  if (!privateParent) throw new Error('Output requires a private host-owned ancestor (mode 0700)');
   if (!existsSync(absolute)) mkdirSync(absolute, { mode: 0o777 });
   if (!lstatSync(absolute).isDirectory() || lstatSync(absolute).isSymbolicLink() || realpathSync(absolute) !== absolute || readdirSync(absolute).length) throw new Error('Output must be a fresh empty real directory');
   chmodSync(absolute, 0o777);
@@ -89,12 +99,16 @@ export async function main(argv) {
     }
     const target = options.dependencies ? frozenDependency ? 'frozen' : 'dependencies' : 'runtime';
     const args = ['build', '--platform', pins.platform, '--pull=false', '--target', target, ...extra, '--iidfile', iid, '--file', join(context, 'Dockerfile'), context];
-    docker(args, true);
+    const buildLog = await runLogged('docker', args, { directory: work, prefix: 'build' });
+    if (buildLog.error || buildLog.exitCode !== 0) {
+      json(join(work, 'build-failure.json'), { passed: false, buildLog });
+      throw new Error(`Docker build failed; logs: ${work}`);
+    }
     const image = readFileSync(iid, 'utf8').trim();
     const measured = measurements(image);
     if (frozenDependency && measured.dependencies.manifestSha256 !== frozenDependency.measurements.dependencies.manifestSha256) throw new Error('Frozen dependency artifact changed during build');
     const envelope = { version: 1, kind: options.dependencies ? 'dependency-build' : 'source-image-build', image, pins, host: observedHost, buildArguments: args,
-      imageInspection: inspectImage(image), measurements: measured, frozenDependency, capture };
+      imageInspection: inspectImage(image), measurements: measured, frozenDependency, capture, buildLog };
     json(join(work, 'build.json'), envelope);
     console.log(JSON.stringify({ image, evidence: join(work, 'build.json'), context }, null, 2));
     return;
@@ -126,20 +140,23 @@ export async function main(argv) {
   }
   const container = docker(['create', ...args.slice(1)]).trim();
   const evidence = join(work, 'execution.json');
-  let inspection;
+  let initialInspection;
+  let finalInspection;
+  let executionLog;
   let failure;
   try {
-    [inspection] = JSON.parse(docker(['container', 'inspect', container]));
-    assertContainerPolicy(inspection);
-    if (inspection.Image !== imageInspection.Id) throw new Error('Container image ID mismatch');
-    json(evidence, { ...envelope, output, container, arguments: args, containerInspection: inspection, status: 'created', passed: false });
-    const execution = spawnSync('docker', ['start', '--attach', container], { stdio: 'inherit' });
-    [inspection] = JSON.parse(docker(['container', 'inspect', container]));
-    if (execution.error || execution.status !== 0 || inspection.State.ExitCode !== 0 || inspection.State.OOMKilled || inspection.State.Error) throw new Error(`Container failed: ${JSON.stringify(inspection.State)}`);
+    [initialInspection] = JSON.parse(docker(['container', 'inspect', container]));
+    assertContainerPolicy(initialInspection, output);
+    if (initialInspection.Image !== imageInspection.Id) throw new Error('Container image ID mismatch');
+    json(evidence, { ...envelope, output, container, arguments: args, initialContainerInspection: initialInspection, status: 'created', passed: false });
+    executionLog = await runLogged('docker', ['start', '--attach', container], { directory: work, prefix: 'execution' });
+    [finalInspection] = JSON.parse(docker(['container', 'inspect', container]));
+    assertContainerPolicy(finalInspection, output);
+    if (executionLog.error || executionLog.exitCode !== 0 || finalInspection.State.ExitCode !== 0 || finalInspection.State.OOMKilled || finalInspection.State.Error) throw new Error(`Container failed: ${JSON.stringify(finalInspection.State)}; logs: ${work}`);
   } catch (error) {
     failure = error;
   } finally {
-    json(evidence, { ...envelope, output, container, arguments: args, containerInspection: inspection, status: failure ? 'failed' : 'passed', passed: !failure, error: failure ? String(failure) : null });
+    json(evidence, { ...envelope, output, container, arguments: args, initialContainerInspection: initialInspection, finalContainerInspection: finalInspection, executionLog, status: failure ? 'failed' : 'passed', passed: !failure, error: failure ? String(failure) : null });
     docker(['container', 'rm', container]);
   }
   console.log(JSON.stringify({ output, evidence, passed: !failure }, null, 2));

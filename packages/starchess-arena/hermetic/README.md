@@ -35,6 +35,8 @@ The CLI passes arguments directly to executables.
 Every command creates an evidence directory under `/tmp/opencode/starchess-hermetic-*`.
 `run` and `preflight` accept `--out /absolute/empty-directory`.
 The output directory must have a real existing parent.
+An ancestor of that parent must belong to the host user and grant no group or other permissions (mode 0700).
+The default command work directory supplies that private ancestor.
 The CLI rejects commas, carriage returns, and newlines in output paths.
 The CLI makes the dedicated output directory writable by UID 10001.
 
@@ -81,6 +83,10 @@ The capture records absent optional configs explicitly.
 Package-manager overrides require context review before capture.
 The capture excludes host `node_modules`, stores, Git metadata, generated caches, coverage, and build outputs.
 The capture rejects symlinks, special files, and secret-bearing filenames in allowlisted trees.
+It validates every ancestor and canonical repository containment before reading or copying host inputs.
+It parses TypeScript configs with the arena's existing TypeScript JSONC parser.
+It captures recursive relative `extends` targets at their repository paths.
+It rejects missing, ambiguous, cyclic, external, and symlinked config targets.
 The root environment and unrelated workspace packages never enter the context.
 
 `/hermetic-evidence/dependencies.json` records installed-tree, tool-tree, and frozen-store entries.
@@ -97,6 +103,7 @@ The Docker image ID lives only in the external assurance envelope.
 
 The runner creates a container and inspects its policy before starting it.
 It records the initial and final Docker inspection in `execution.json`.
+It verifies the inspected bind source equals the validated output directory.
 
 | Setting | Value |
 | --- | --- |
@@ -115,10 +122,19 @@ The CLI verifies the daemon-init version and commit before execution.
 The daemon supplies the init binary externally through `--init`.
 
 HOME, PNPM_HOME, TMPDIR, and XDG cache/config/data directories point into `/tmp`.
+Runtime preflight creates `/tmp/opencode` for isolated inventory and test fixtures.
 The runner creates temporary Vitest configs with `/tmp` cache directories and `--configLoader native`.
 It disables Vitest's persistent test cache.
 It limits Vitest to two workers.
 Runtime execution performs no dependency installation.
+
+Each command retains separate stdout and stderr logs with an 8 MiB limit per stream.
+The logger continues draining output after reaching the limit.
+Command records include log paths, retained byte counts, observed byte counts, SHA-256, and truncation flags.
+Failed commands retain partial logs.
+The host prints concise command statuses.
+Vitest also writes JSON reports whose actual test counts and hashes enter command records.
+The Docker build and attached-container command retain bounded host logs alongside the external envelope.
 
 ## Phase2 integration contract
 
@@ -154,8 +170,8 @@ HERMETIC_DEPENDENCY_IMAGE=sha256:... node --test packages/starchess-arena/hermet
 
 | Test file | Purpose |
 | --- | --- |
-| `infra.test.mjs` | Parse Dockerfile stage policy; preserve lock/workspace links; verify source/test capture and secret/symlink boundaries; reject Docker grammar injection; inspect and execute the real restricted container. |
-| `probe.mjs` | Verify UID, capabilities, no-new-privileges, isolated interfaces, read-only source/store, writable evidence, offline TS/Vitest, and unchanged dependency/store/tool hashes. |
+| `infra.test.mjs` | Parse Dockerfile stage policy; preserve lock/workspace links; verify recursive JSONC capture and ancestor boundaries; reject public output parents and mount injection; validate bounded success/failure logs; execute the real restricted container. |
+| `probe.mjs` | Verify restricted execution, fresh temporary inventory setup, isolated source-only inventory, offline TS/Vitest JSON counts, persisted command logs, and unchanged dependency/store/tool hashes. |
 
 Run the suite with `HERMETIC_DEPENDENCY_IMAGE` to execute the Docker test.
 Without that environment variable, the suite skips the Docker test.

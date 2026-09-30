@@ -1,11 +1,12 @@
 // SPEC: _spec/packages/starchess-arena/ml-adjutant-phase2.puml
 import assert from 'node:assert/strict';
-import { execFileSync } from 'node:child_process';
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { networkInterfaces } from 'node:os';
 import { verifyDependencies } from './closure.mjs';
 import { dependencyManifest } from './manifest.mjs';
 import { outputTarget } from './policy.mjs';
+import { initializeTemporaryDirectories } from './runtime.mjs';
+import { runLogged } from './logged-command.mjs';
 
 assert.equal(process.getuid(), 10001);
 assert.equal(process.getgid(), 10001);
@@ -15,19 +16,35 @@ assert.match(status, /^CapEff:\s+0+$/m);
 assert.match(status, /^NoNewPrivs:\s+1$/m);
 assert.throws(() => writeFileSync('/app/must-not-write', 'forbidden'), { code: 'EROFS' });
 assert.throws(() => writeFileSync('/pnpm/store/must-not-write', 'forbidden'), { code: 'EROFS' });
-for (const path of ['/tmp/home', '/tmp/cache', '/tmp/config', '/tmp/data', '/tmp/pnpm', '/tmp/test']) mkdirSync(path, { recursive: true });
+assert.equal(existsSync('/tmp/opencode'), false);
+initializeTemporaryDirectories();
+mkdirSync('/tmp/test');
 const before = dependencyManifest();
 const expected = JSON.parse(readFileSync('/hermetic-evidence/dependencies.json', 'utf8'));
 assert.equal(before.installedSha256, expected.installedSha256);
 assert.equal(before.frozenStore.sha256, expected.frozenStore.sha256);
 const arena = '/app/packages/starchess-arena';
+const commands = [];
+async function execute(args, prefix, testReport) {
+  const record = await runLogged(`${arena}/node_modules/.bin/${prefix === 'vitest' ? 'vitest' : 'tsx'}`, args, { cwd: '/tmp/test', directory: `${outputTarget}/logs`, prefix, testReport });
+  commands.push(record);
+  assert.equal(record.error, null);
+  assert.equal(record.exitCode, 0);
+  return record;
+}
+writeFileSync('/tmp/test/source-only-inventory.ts', 'import assert from "node:assert/strict"; import { mkdtempSync, writeFileSync } from "node:fs"; import { initializeTemporaryDirectories } from "/hermetic/runtime.mjs"; import { treeManifest } from "/hermetic/manifest.mjs"; initializeTemporaryDirectories(); const root = mkdtempSync("/tmp/opencode/source-only-inventory-"); writeFileSync(root + "/source.ts", "export const number = 42;\\n"); const inventory = treeManifest(root); assert.equal(inventory.entries.filter(entry => entry.type === "file").length, 1); assert.equal(inventory.entries.find(entry => entry.type === "file").path, "source.ts"); console.log("source-only inventory: 1 file captured");\n');
+await execute(['/tmp/test/source-only-inventory.ts'], 'inventory');
 writeFileSync('/tmp/test/direct.ts', 'const actual: number = 6 * 7; if (actual !== 42) throw new Error("tsx failed");\n');
-execFileSync(`${arena}/node_modules/.bin/tsx`, ['/tmp/test/direct.ts'], { stdio: 'inherit' });
+await execute(['/tmp/test/direct.ts'], 'tsx');
 writeFileSync('/tmp/test/runtime.test.ts', 'import { it, expect } from "/app/packages/starchess-arena/node_modules/vitest/dist/index.js"; it("transforms TypeScript in an offline read-only container", () => { const actual: number = 6 * 7; expect(actual).toBe(42); });\n');
 writeFileSync('/tmp/test/config.mts', 'export default { root: "/tmp/test", cacheDir: "/tmp/cache/vite", test: { include: ["runtime.test.ts"], cache: false } };\n');
-execFileSync(`${arena}/node_modules/.bin/vitest`, ['run', '--config', '/tmp/test/config.mts', '--configLoader', 'native'], { cwd: '/tmp/test', stdio: 'inherit' });
+const testReport = `${outputTarget}/vitest-probe.json`;
+const tested = await execute(['run', '--config', '/tmp/test/config.mts', '--configLoader', 'native', '--reporter=default', '--reporter=json', '--outputFile', testReport], 'vitest', testReport);
+assert.equal(tested.tests.total, 1);
+assert.equal(tested.tests.passed, 1);
+assert.match(readFileSync(tested.logs.stdout.path, 'utf8').replace(/\x1b\[[0-9;]*m/g, ''), /Tests\s+1 passed/);
 const after = dependencyManifest();
 assert.equal(before.installedSha256, after.installedSha256);
 assert.equal(before.frozenStore.sha256, after.frozenStore.sha256);
 assert.equal(before.tools.sha256, after.tools.sha256);
-writeFileSync(`${outputTarget}/probe.json`, JSON.stringify({ passed: true, closure: verifyDependencies(), installedSha256: after.installedSha256, frozenStoreSha256: after.frozenStore.sha256, toolsSha256: after.tools.sha256 }, null, 2) + '\n');
+writeFileSync(`${outputTarget}/probe.json`, JSON.stringify({ passed: true, freshTemporaryRoot: true, sourceOnlyInventoryFiles: 1, commands, closure: verifyDependencies(), installedSha256: after.installedSha256, frozenStoreSha256: after.frozenStore.sha256, toolsSha256: after.tools.sha256 }, null, 2) + '\n');

@@ -1,12 +1,15 @@
 // SPEC: _spec/packages/starchess-arena/ml-adjutant-phase2.puml
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, symlinkSync, writeFileSync } from 'node:fs';
+import { existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, renameSync, symlinkSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { test } from 'node:test';
+import { createHash } from 'node:crypto';
 import { prepareContext, repository } from './context.mjs';
 import { assertContainerPolicy, outputTarget, runArguments } from './policy.mjs';
 import pins from './pins.json' with { type: 'json' };
+import { freshOutput } from './run.mjs';
+import { logLimit, runLogged } from './logged-command.mjs';
 
 const parent = '/tmp/opencode';
 function fixture() {
@@ -65,11 +68,14 @@ test('context keeps the original lock and workspace links without root dependenc
   assert.deepEqual(readdirSync(context).sort(), ['Dockerfile', 'capture.json', 'deps', 'hermetic']);
 });
 
-test('runtime capture includes tests and fixtures and rejects escaping host symlinks', () => {
+test('runtime capture preserves JSONC config closure, tests, fixtures, and rejects escaping paths or ancestor symlinks', () => {
   const root = fixture();
   const files = {
     'package.json': '{"private":true}', 'pnpm-lock.yaml': 'lockfileVersion: 9\n', 'pnpm-workspace.yaml': 'packages: []\n',
     'packages/starchess-arena/package.json': '{}', 'packages/starchess-core/package.json': '{}',
+    'packages/starchess-arena/tsconfig.json': '{ // JSONC\n "extends": "../../config/base", }',
+    'packages/starchess-core/tsconfig.json': '{"extends":["../../config/base.json"]}',
+    'config/base.json': '{"extends":"./nested/strict.json"}', 'config/nested/strict.json': '{}',
     'packages/starchess-core/src/__tests__/fixture.json': '{}', 'packages/starchess-arena/src/__tests__/case.test.ts': 'export {};\n',
     'scripts/challenge-contract-evidence.ts': 'export {};\n', '_spec/corpora/ml-adjutant-corpus.manifest.json': '{"sourcePath":"corpus.json"}',
     '_spec/evidence/ml-adjutant-phase1/baseline-report.json': '{}', '_spec/evidence/ml-adjutant-phase1/verification.json': '{}', 'corpus.json': '{}',
@@ -89,23 +95,65 @@ test('runtime capture includes tests and fixtures and rejects escaping host syml
   assert(capture.runtime.entries.some((entry) => entry.path.endsWith('case.test.ts')));
   assert(!capture.runtime.entries.some((entry) => entry.path.includes('host-secret')));
   assert(!existsSync(join(context, 'runtime/_spec/evidence/ml-adjutant-phase2')));
+  assert.equal(readFileSync(join(context, 'runtime/config/base.json'), 'utf8'), files['config/base.json']);
+  assert.equal(readFileSync(join(context, 'runtime/config/nested/strict.json'), 'utf8'), '{}');
+  assert(capture.configClosure.includes('config/nested/strict.json'));
+  writeFileSync(join(root, 'config/base.json'), '{"extends":"../packages/starchess-arena/tsconfig.json"}');
+  assert.throws(() => prepareContext(fixture(), false, root), /Cyclic tsconfig extends/);
+  writeFileSync(join(root, 'config/base.json'), '{"extends":"../../outside.json"}');
+  assert.throws(() => prepareContext(fixture(), false, root), /escapes repository/);
+  writeFileSync(join(root, 'config/base.json'), '{"extends":"./missing.json"}');
+  assert.throws(() => prepareContext(fixture(), false, root), /Missing or ambiguous tsconfig extends/);
+  writeFileSync(join(root, 'config/base.json'), files['config/base.json']);
+  const outside = fixture();
+  renameSync(join(root, 'config'), join(outside, 'config'));
+  symlinkSync(join(outside, 'config'), join(root, 'config'));
+  assert.throws(() => prepareContext(fixture(), false, root), /Host symlink excluded/);
   symlinkSync('/etc/passwd', join(root, 'packages/starchess-core/src/escape'));
   assert.throws(() => prepareContext(fixture(), false, root), /Host symlink excluded/);
+  renameSync(join(root, 'packages'), join(outside, 'packages'));
+  symlinkSync(join(outside, 'packages'), join(root, 'packages'));
+  assert.throws(() => prepareContext(fixture(), true, root), /Host symlink excluded/);
+  const alias = fixture();
+  symlinkSync(root, join(alias, 'repository'));
+  assert.throws(() => prepareContext(fixture(), true, join(alias, 'repository')), /Host symlink excluded/);
 });
 
-test('CLI argument boundaries reject image options and mount grammar injection', () => {
+test('CLI rejects mount injection and public output parents and preserves bounded success/failure logs', async () => {
   const image = 'sha256:' + 'a'.repeat(64);
   for (const malicious of ['node:latest', '--privileged', 'sha256:' + 'a'.repeat(64) + '\n--network=host']) assert.throws(() => runArguments(malicious, '/tmp/opencode/out'));
   for (const path of ['relative', '/tmp/x,target=/app', '/tmp/x\n--privileged']) assert.throws(() => runArguments(image, path));
   const args = runArguments(image, '/tmp/opencode/output with spaces;literal', ['code', 'scripts/test.ts', 'literal;$(touch /tmp/forbidden)']);
   assert(args.includes('type=bind,source=/tmp/opencode/output with spaces;literal,target=' + outputTarget + ',bind-propagation=rprivate'));
   assert.equal(args.at(-1), 'literal;$(touch /tmp/forbidden)');
+  assert.notEqual(lstatSync(parent).mode & 0o077, 0);
+  const publicOutput = join(parent, `public-output-${Date.now()}-${process.pid}`);
+  assert.throws(() => freshOutput(publicOutput), /private host-owned ancestor/);
+  assert(!existsSync(publicOutput));
+  const protectedOutput = freshOutput(join(fixture(), 'output'));
+  assert.equal(lstatSync(protectedOutput).mode & 0o777, 0o777);
+  const directory = fixture();
+  const noisy = await runLogged(process.execPath, ['-e', `process.stdout.write(Buffer.alloc(${logLimit + 4096}, 'a')); process.stderr.write(Buffer.alloc(${logLimit + 8192}, 'b'));`], { directory, prefix: 'bounded' });
+  assert.equal(noisy.exitCode, 0);
+  for (const [name, log] of Object.entries(noisy.logs)) {
+    assert.equal(log.bytes, 8 * 1024 * 1024);
+    assert.equal(log.truncated, true);
+    const bytes = readFileSync(log.path);
+    assert.equal(bytes.length, log.bytes);
+    assert.equal(log.sha256, createHash('sha256').update(bytes).digest('hex'));
+    assert.equal(bytes[0], name === 'stdout' ? 97 : 98);
+  }
+  const failure = await runLogged(process.execPath, ['-e', 'console.log("partial progress"); console.error("failure diagnostic"); process.exit(3);'], { directory, prefix: 'failed' });
+  assert.equal(failure.exitCode, 3);
+  assert.match(readFileSync(failure.logs.stdout.path, 'utf8'), /partial progress/);
+  assert.match(readFileSync(failure.logs.stderr.path, 'utf8'), /failure diagnostic/);
+  assert.equal(failure.logs.stdout.truncated, false);
 });
 
-test('Docker enforces bounds, read-only code/store, no network, and writable output with offline TS/Vitest', { skip: !process.env.HERMETIC_DEPENDENCY_IMAGE }, () => {
+test('Docker enforces policy, fresh temporary inventory, and logged offline TS/Vitest', { skip: !process.env.HERMETIC_DEPENDENCY_IMAGE }, async () => {
   const image = process.env.HERMETIC_DEPENDENCY_IMAGE;
-  const output = fixture();
-  chmodSync(output, 0o777);
+  const work = fixture();
+  const output = freshOutput(join(work, 'output'));
   const args = runArguments(image, output, ['preflight']);
   const position = args.indexOf(image);
   args.splice(position, 0, '--entrypoint', 'node');
@@ -116,19 +164,35 @@ test('Docker enforces bounds, read-only code/store, no network, and writable out
     const [inspect] = JSON.parse(docker(['inspect', container]));
     const [imageInspect] = JSON.parse(docker(['image', 'inspect', image]));
     assert.equal(inspect.Image, imageInspect.Id);
-    assertContainerPolicy(inspect);
+    assertContainerPolicy(inspect, output);
+    const wrongMount = structuredClone(inspect);
+    wrongMount.Mounts[0].Source = join(output, 'replaced');
+    assert.throws(() => assertContainerPolicy(wrongMount, output), /policy mismatch/);
     assert.equal(inspect.HostConfig.NetworkMode, 'none');
     assert.equal(inspect.HostConfig.ReadonlyRootfs, true);
     assert.equal(inspect.HostConfig.Memory, 4294967296);
     assert.equal(inspect.HostConfig.NanoCpus, 2000000000);
     assert.equal(inspect.HostConfig.PidsLimit, 256);
-    execFileSync('docker', ['start', '--attach', container], { stdio: 'inherit' });
+    const executionLog = await runLogged('docker', ['start', '--attach', container], { directory: work, prefix: 'docker' });
+    assert.equal(executionLog.exitCode, 0);
     const [completed] = JSON.parse(docker(['inspect', container]));
     assert.equal(completed.State.ExitCode, 0);
     assert.equal(completed.State.OOMKilled, false);
     const report = JSON.parse(readFileSync(join(output, 'probe.json'), 'utf8'));
     assert.equal(report.passed, true);
     assert.equal(report.closure.tools.node, '22.23.2');
+    assert.equal(report.freshTemporaryRoot, true);
+    assert.equal(report.sourceOnlyInventoryFiles, 1);
+    const tested = report.commands.find((entry) => entry.tests);
+    assert.equal(tested.tests.total, 1);
+    assert.equal(tested.tests.passed, 1);
+    for (const command of report.commands) {
+      for (const log of Object.values(command.logs)) {
+        const path = join(output, log.path.slice(outputTarget.length + 1));
+        assert.equal(log.sha256, createHash('sha256').update(readFileSync(path)).digest('hex'));
+      }
+    }
+    writeFileSync(join(work, 'execution.json'), JSON.stringify({ initialContainerInspection: inspect, finalContainerInspection: completed, executionLog, report }, null, 2) + '\n');
     console.log(`Docker probe evidence: ${output}/probe.json`);
   } finally {
     docker(['rm', container]);

@@ -1,56 +1,124 @@
 // SPEC: _spec/packages/starchess-arena/ml-adjutant-phase2.puml
-import { chmodSync, copyFileSync, existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
+import { chmodSync, copyFileSync, lstatSync, mkdirSync, readdirSync, readFileSync, realpathSync, writeFileSync } from 'node:fs';
+import { dirname, extname, join, relative, resolve, sep } from 'node:path';
+import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { sha256, treeManifest } from './manifest.mjs';
+
+const require = createRequire(new URL('../package.json', import.meta.url));
+const ts = require('typescript');
 
 export const repository = fileURLToPath(new URL('../../../', import.meta.url));
 export const optionalConfigs = ['.npmrc', '.pnpmfile.cjs', 'pnpmfile.cjs', 'tsconfig.json', 'tsconfig.base.json', 'vitest.config.ts', 'vite.config.ts', 'nx.json'];
 export const excludedNames = ['node_modules', '.git', '.pnpm-store', '.cache', '.vite', '.vite-temp', 'coverage', 'dist', '.DS_Store'];
 
-function copyTree(source, target) {
+function sourcePath(root, path, optional = false) {
+  const absolute = resolve(root, path);
+  const name = relative(root, absolute);
+  if (name === '..' || name.startsWith(`..${sep}`)) throw new Error(`Source path escapes repository: ${path}`);
+  let current = sep;
+  for (const part of absolute.split(sep).filter(Boolean)) {
+    current = join(current, part);
+    let stat;
+    try { stat = lstatSync(current); }
+    catch (error) {
+      if (optional && error.code === 'ENOENT') return null;
+      throw error;
+    }
+    if (stat.isSymbolicLink()) throw new Error(`Host symlink excluded from context: ${current}`);
+  }
+  if (realpathSync(absolute) !== absolute) throw new Error(`Non-canonical source path: ${path}`);
+  return absolute;
+}
+
+function sourceBytes(root, path) {
+  return readFileSync(sourcePath(root, path));
+}
+
+function copyTree(root, path, target) {
+  const source = sourcePath(root, path);
   const stat = lstatSync(source);
-  if (stat.isSymbolicLink()) throw new Error(`Host symlink excluded from context: ${source}`);
   if (stat.isDirectory()) {
     mkdirSync(target, { recursive: true, mode: 0o755 });
-    for (const name of readdirSync(source).sort()) {
+    for (const name of readdirSync(sourcePath(root, path)).sort()) {
       if (excludedNames.includes(name)) continue;
       if (/^(\.env(?:\.|$)|\.npmrc$)|\.(pem|key|p12|pfx)$/i.test(name)) throw new Error(`Secret-bearing path excluded: ${source}/${name}`);
-      copyTree(join(source, name), join(target, name));
+      copyTree(root, join(path, name), join(target, name));
     }
   } else if (stat.isFile()) {
     mkdirSync(dirname(target), { recursive: true });
-    copyFileSync(source, target);
+    copyFileSync(sourcePath(root, path), target);
     chmodSync(target, stat.mode & 0o111 ? 0o755 : 0o644);
   } else throw new Error(`Special host file excluded: ${source}`);
 }
 
+function configClosure(root, seeds) {
+  const visited = new Set();
+  const active = new Set();
+  function visit(path) {
+    if (active.has(path)) throw new Error(`Cyclic tsconfig extends: ${path}`);
+    if (visited.has(path)) return;
+    const absolute = sourcePath(root, path);
+    if (!lstatSync(absolute).isFile()) throw new Error(`Non-file tsconfig: ${path}`);
+    active.add(path);
+    const parsed = ts.parseConfigFileTextToJson(path, sourceBytes(root, path).toString('utf8'));
+    const config = parsed.config;
+    if (parsed.error || !config || typeof config !== 'object' || Array.isArray(config)) throw new Error(`Invalid tsconfig: ${path}`);
+    const parents = config.extends === undefined ? [] : Array.isArray(config.extends) ? config.extends : [config.extends];
+    for (const parent of parents) {
+      if (typeof parent !== 'string' || !parent.startsWith('.') || parent.includes('\\')) throw new Error(`Unsafe tsconfig extends: ${path}`);
+      const target = relative(root, resolve(dirname(absolute), parent));
+      const candidates = extname(target) ? [target] : [target, `${target}.json`];
+      const found = candidates.filter((candidate) => {
+        const checked = sourcePath(root, candidate, true);
+        return checked !== null && lstatSync(checked).isFile();
+      });
+      if (found.length !== 1) throw new Error(`Missing or ambiguous tsconfig extends: ${path}`);
+      if (found[0].split(sep).some((part) => excludedNames.includes(part) || /^(\.env(?:\.|$)|\.npmrc$)|\.(pem|key|p12|pfx)$/i.test(part))) throw new Error(`Excluded tsconfig extends: ${path}`);
+      visit(found[0]);
+    }
+    active.delete(path);
+    visited.add(path);
+  }
+  for (const path of seeds) visit(path);
+  return [...visited].sort();
+}
+
 export function prepareContext(context, dependenciesOnly = false, root = repository) {
+  root = resolve(root);
+  sourcePath(root, '.');
   if (readdirSync(context).length) throw new Error('Docker context must start empty');
-  const control = join(root, 'packages/starchess-arena/hermetic');
-  copyTree(control, join(context, 'hermetic'));
-  copyTree(join(control, 'Dockerfile'), join(context, 'Dockerfile'));
+  const control = 'packages/starchess-arena/hermetic';
+  copyTree(root, control, join(context, 'hermetic'));
+  copyTree(root, join(control, 'Dockerfile'), join(context, 'Dockerfile'));
   const dependencyFiles = ['pnpm-lock.yaml', 'packages/starchess-core/package.json', 'packages/starchess-arena/package.json'];
-  for (const path of dependencyFiles) copyTree(join(root, path), join(context, 'deps', path));
+  for (const path of dependencyFiles) copyTree(root, path, join(context, 'deps', path));
   const narrowedWorkspace = 'packages:\n  - packages/starchess-core\n  - packages/starchess-arena\nallowBuilds:\n  esbuild: true\n';
   writeFileSync(join(context, 'deps/pnpm-workspace.yaml'), narrowedWorkspace);
-  const configs = optionalConfigs.map((path) => ({ path, present: existsSync(join(root, path)) }));
+  const configs = optionalConfigs.map((path) => {
+    const absolute = sourcePath(root, path, true);
+    if (absolute !== null && !lstatSync(absolute).isFile()) throw new Error(`Non-file runtime configuration: ${path}`);
+    return { path, present: absolute !== null };
+  });
   if (configs.some((entry) => entry.present && ['.npmrc', '.pnpmfile.cjs', 'pnpmfile.cjs'].includes(entry.path))) throw new Error('Package-manager override requires explicit context review');
   const capture = {
     version: 1, dependenciesOnly, excludedNames,
-    dependencyFiles: dependencyFiles.map((path) => ({ path, sha256: sha256(readFileSync(join(root, path))) })),
-    workspace: { originalSha256: sha256(readFileSync(join(root, 'pnpm-workspace.yaml'))), acquisition: narrowedWorkspace },
+    dependencyFiles: dependencyFiles.map((path) => ({ path, sha256: sha256(sourceBytes(root, path)) })),
+    workspace: { originalSha256: sha256(sourceBytes(root, 'pnpm-workspace.yaml')), acquisition: narrowedWorkspace },
     optionalConfigs: configs,
   };
   if (!dependenciesOnly) {
     const required = ['package.json', 'pnpm-lock.yaml', 'pnpm-workspace.yaml', 'packages/starchess-core', 'packages/starchess-arena',
       'scripts', '_spec/corpora', '_spec/evidence/ml-adjutant-phase1'];
-    const corpus = JSON.parse(readFileSync(join(root, '_spec/corpora/ml-adjutant-corpus.manifest.json'), 'utf8'));
+    const corpus = JSON.parse(sourceBytes(root, '_spec/corpora/ml-adjutant-corpus.manifest.json').toString('utf8'));
     if (!/^[a-zA-Z0-9._-]+\.json$/.test(corpus.sourcePath)) throw new Error('Corpus source must be a root JSON filename');
     required.push(corpus.sourcePath);
-    if (!existsSync(join(root, 'scripts/challenge-contract-evidence.ts'))) throw new Error('Phase2 diagnostic script is not integrated');
-    for (const path of [...required, ...configs.filter((entry) => entry.present).map((entry) => entry.path)]) {
-      copyTree(resolve(root, path), join(context, 'runtime', path));
+    if (sourcePath(root, 'scripts/challenge-contract-evidence.ts', true) === null) throw new Error('Phase2 diagnostic script is not integrated');
+    const seeds = ['packages/starchess-core/tsconfig.json', 'packages/starchess-arena/tsconfig.json',
+      ...configs.filter((entry) => entry.present && ['tsconfig.json', 'tsconfig.base.json'].includes(entry.path)).map((entry) => entry.path)];
+    capture.configClosure = configClosure(root, seeds);
+    for (const path of [...required, ...configs.filter((entry) => entry.present).map((entry) => entry.path), ...capture.configClosure]) {
+      copyTree(root, path, join(context, 'runtime', path));
     }
     capture.runtime = treeManifest(join(context, 'runtime'));
   }
