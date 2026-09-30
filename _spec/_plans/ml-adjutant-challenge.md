@@ -1,11 +1,11 @@
 # ML Adjutant — strict recorded-queue and live strategic challenge
 
-Status: **Phase 1 implementation UNDERWAY in `packages/starchess-arena`; verification PENDING
-lead reports of actual tests and baseline reruns. Phases 2+ remain PLANNED and unimplemented.**
+Status: **Phase 1 IMPLEMENTED and VERIFIED in `packages/starchess-arena` by tests and persisted
+baseline executions; rereview PENDING. Phases 2+ remain PLANNED and unimplemented.**
 Owner roadmap: [PLAN-ml-adjutant.md](PLAN-ml-adjutant.md).
 Phase 1 boundary: [ml-adjutant-phase1.puml](../packages/starchess-arena/ml-adjutant-phase1.puml).
-This document defines acceptance; inspected source is not verified execution evidence.
-No trained artifact, measured baseline result, or learned PASS is claimed.
+This document defines learned acceptance and records the separately verified non-learned baseline.
+No trained artifact, learned PASS, or review readiness is claimed.
 
 ## 1. Decision and scope
 
@@ -56,8 +56,8 @@ SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:
 The lead ran current-core `historyFromRecord`, `parseScFen`, `scsanOf`, and `scOutcome` checks:
 358 raw snapshots parse; 358 repaired snapshots decode; all 18 snapshot/resolve cardinalities align; all 18 SC-SAN
 comparisons match exactly; all 18 terminal result labels match. Record repair and decode are
-not action admission or simulation. No lead-verified current-rule queue reexecution, baseline
-benchmark/rerun, or learned challenge result is recorded here. Training remains unimplemented.
+not action admission or simulation. Phase 1 now supplies separate current-rule baseline execution
+and rerun evidence below; it includes strict queue-rejection failures. Training remains unimplemented.
 
 The [manifest](../corpora/ml-adjutant-corpus.manifest.json) pins all 18 actual IDs, source
 provenance, extraction version, canonical opening, source ordering, and White trace hashes.
@@ -67,9 +67,11 @@ Keep IDs and source results host-side for reports; do not expose them as candida
 Preserve the original export unchanged and fail audit on any pin/count mismatch.
 Preserve manifest `audit.currentRuleReexecution = "pending"` and
 `audit.candidateWinrate = "not measured"` as the original Phase 0 historical audit statuses.
-New execution evidence belongs separately at the **PLANNED, currently absent** path
-`_spec/evidence/ml-adjutant-phase1/baseline-report.json`; it must not rewrite historical audit
-statuses or masquerade as a new corpus manifest version.
+The persisted [baseline-report.json](../evidence/ml-adjutant-phase1/baseline-report.json)
+**supersedes those pending statements separately for this measured Phase 1 baseline**.
+It does not rewrite historical audit statuses, establish universal trace compatibility, or create
+a new corpus manifest version. [verification.json](../evidence/ml-adjutant-phase1/verification.json)
+binds the raw report hash to actual integrity-test paths, hashes, purposes, and static commands.
 
 ## 3. Selection and exhaustive scheduling
 
@@ -227,6 +229,9 @@ Approved Phase 1 standard configuration is `CHALLENGE_CONFIG` version `phase1-v1
 | Planning-window cap | 64 |
 | Recorded-ply cap, including chips | 128 |
 | Proposal cap | 4096 |
+| IPC message cap | 2048 |
+| Progress/non-completion message cap | 1048576 bytes per message |
+| Completion message cap | 16777216 bytes per message |
 | Merge order | White then Black, preserving each queue's array order; fresh host sequences |
 | Inference seed / feed / movetime | 0 / off / 0 ms |
 
@@ -238,6 +243,11 @@ Parent `supervisor.ts` launches `worker.ts`, validates ready/progress/completion
 crash failures retain validated partial plies with `outcome = null`, not a fabricated win.
 Startup and match deadlines plus per-plan deadlines bound synchronous loops and unresolved
 promises. Repeated identical phase messages do not renew the planning deadline.
+`integrity.ts` reexecutes each accepted ply prefix and completion against authoritative full
+resolve payloads, resource transitions, and actual terminal outcomes. Forged resolve/resources
+or outcomes and `script-contract` failures invalidate execution integrity. Protocol-size/count
+caps remain fixed by configuration. `publication.ts` fsyncs a private temporary file before
+exclusive hardlink publication; an existing report is never overwritten by that operation.
 Test budget overrides do not establish a standard-budget baseline result.
 
 No model updates, configuration tuning, trace replacement, or strategic candidate fallback may
@@ -260,11 +270,14 @@ as provenance. Same pins and seeds must reproduce the same semantic executions.
 ## 8. Required integrity verification
 
 `packages/starchess-arena/src/__tests__/corpusManifest.test.ts` persists the provenance/codec audit.
-`packages/starchess-arena/src/__tests__/challengeWatchdog.test.ts` and its three challenge
-worker fixtures now exist, but their execution results remain **PENDING**. The other executable
-checks below require lead-supplied actual arena test paths and results; none are marked passed.
-Existing/proposed verification paths and phase ownership are
+All ten Phase 1 integrity-test files now exist and passed as recorded in
+[verification.json](../evidence/ml-adjutant-phase1/verification.json). The arena full run passed
+**160 tests / 17 files**; core passed **426 / 53**; both typechecks and the direct strict test
+TypeScript check passed. Final tests-only literal-cast corrections were followed by **8 focused
+passing tests in 2 files**, not a claimed second full 160-test run. Actual paths and purposes are
 listed in [PLAN-ml-adjutant.md](PLAN-ml-adjutant.md#planned-verification-and-pending-ownership).
+Phase 2 feature encoders and Phase 3–4 learned execution checks below remain planned;
+Phase 1 tests do not implement or verify a trained policy. Phase 1 rereview remains PENDING.
 
 | Check | Required adversarial cases |
 |---|---|
@@ -279,6 +292,8 @@ listed in [PLAN-ml-adjutant.md](PLAN-ml-adjutant.md#planned-verification-and-pen
 | Learned execution | Artifact frozen, inference seed reset, weight updates absent, no missing-model rescue, no strategic replacement or next-candidate rescue after rejection, fallback count zero. |
 | Determinism and schedule | Semantic rerun equality, exact 18+36 schedule, feed off, seat RNG convention, all failures retained in denominators. |
 | Supervision | Startup stall, synchronous loop, unresolved promise, match deadline independent of progress, repeated phase without deadline renewal, malformed/before-ready IPC, crash, partial evidence, and reap before return. |
+| Evidence integrity | Authoritative full resolve/resource reexecution, actual terminal truth, forged evidence rejected, and script-contract invalidation. |
+| Publication | Fsynced private temporary JSON, exclusive hardlink, existing report preserved, and cleanup on serialization failure. |
 
 ## 9. Reporting and evidence limits
 
@@ -287,11 +302,25 @@ Include candidate side, actual terminal outcome or failure reason, planning ordi
 action where applicable, fallback count, and reproducibility result. Report historical source
 outcomes separately from executed outcomes. Keep private metadata in host reports, not policy inputs.
 
-Phase 1 `src/challenge/evidence.ts` and separate `src/cli/challenge.ts` remain planned modules.
-The planned baseline report path above must record all 54 scheduled rows, standard configuration,
-source/rules/strategic/baseline version pins, actual integrity results, and normalized rerun
-comparisons. Do not create a placeholder report that implies execution. The lead must supply
-actual test/static-check/review results and baseline reruns before Phase 1 becomes VERIFIED.
+Phase 1 `src/challenge/evidence.ts`, `integrity.ts`, `publication.ts`, and separate
+`src/cli/challenge.ts` exist. The full-suite CLI executed all **54 supervised matches twice**
+under final pins; **54/54 normalized semantic comparisons are equal**.
+
+| Measured non-learned baseline | Scheduled | Candidate wins | Terminal losses | Queue-rejection failures |
+|---|---|---|---|---|
+| Recorded White corpus | 18 | 0 | 2 | 16 |
+| Live strategic | 36 | 0 | 36 | 0 |
+
+No draws occurred. The persisted report records `executionIntegrity = true`,
+`learnedGateEligible = false`, `modelArtifact = null`, and `learnedChallengePass = false`.
+Failures stay in the denominator. This validates harness execution and reproducibility, not
+learned strength or universal feasibility/infeasibility of strict replay.
+The report pins rules, challenge/CLI sources, strategic/ledger sources, dependency lock, runtime
+configuration, Node version, final watchdogs, schedule, and RNG conventions.
+The independent verification record binds raw report SHA-256
+`eb73aa799d60f4dd2d81488c6bcb838a48a8ba2d158e0b9e24e1dd4156b47236`.
+The lead reports the initial PlantUML `checkonly` passed; the revised diagram needs fresh
+validation. Adversarial/security rereview remains **PENDING**, with no READY claim.
 
 If all clauses pass, say **100% wins on the pinned 18-case corpus and 36-match live strategic
 suite**. If any clause fails, say FAIL and identify it; do not exclude the failing case to retain

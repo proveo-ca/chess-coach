@@ -13,7 +13,12 @@ The registry ID is `machine-learning`; `ml/` names proposed training tooling, no
 The implemented catalog definitions do not complete any learning stage below.
 The separate strict-challenge roadmap now owns Phase 1 in `packages/starchess-arena`:
 [`ml-adjutant-phase1.puml`](_spec/packages/starchess-arena/ml-adjutant-phase1.puml).
-Implementation is underway; verification remains PENDING lead test and baseline rerun reports.
+Phase 1 is IMPLEMENTED and VERIFIED by tests and persisted execution evidence;
+rereview remains PENDING. Evidence:
+[`baseline-report.json`](_spec/evidence/ml-adjutant-phase1/baseline-report.json) and
+[`verification.json`](_spec/evidence/ml-adjutant-phase1/verification.json).
+All 54 semantic reruns match; candidate wins remain 0/18 corpus and 0/36 live strategic.
+This completes the non-learned harness baseline, not learned acceptance or merge readiness.
 Numeric features, training, learned models/artifacts, and browser rollout remain unimplemented
 phases 2+ of that roadmap; this planning-only evolution ladder does not mark them shipped.
 

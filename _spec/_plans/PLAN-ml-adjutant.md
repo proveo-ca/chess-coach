@@ -2,14 +2,16 @@
 
 Status: **Preparatory catalog IMPLEMENTED and VERIFIED**, with the baseline full-app lint exception below.
 Phase 0 provenance is **IMPLEMENTED** with persisted audit verification.
-Phase 1 implementation is **UNDERWAY in `packages/starchess-arena`**; implementation
-verification is **PENDING** until the lead reports actual tests and baseline reruns.
+Phase 1 is **IMPLEMENTED and VERIFIED in `packages/starchess-arena`** by tests and persisted
+baseline execution evidence. Phase 1 adversarial/security **rereview remains PENDING**;
+implementation verification does not claim merge readiness.
 Phases 2–4 and optional phases 5–6 remain **PLANNED and unimplemented**.
 Core `ai/definitions.ts` now owns all five IDs, canonical labels, and derived guards.
 The app implements disabled placeholder entries and explicit unavailable admission for known
 placeholder URLs or sessions. This completes the preparatory catalog, not a learning player.
-The corpus schema audit below is complete; executable compatibility, training, and challenge
-wins are not. Stockfish retirement is not an acceptance prerequisite.
+The corpus schema audit and Phase 1 baseline execution verification are complete. Strict queue
+failures remain visible; universal trace compatibility, training, and learned challenge wins
+are not established. Stockfish retirement is not an acceptance prerequisite.
 
 Scope: arena-owned Phase 1, with a proposed top-level **`ml/`** training workspace for later phases. `ml` is workspace/tooling shorthand,
 **not an Adjutant registry ID or a URL alias**. The exact future player ID is **`machine-learning`**.
@@ -114,11 +116,13 @@ The lead reports this completed JSON/core codec audit:
 
 Those checks validate recorded structure and labels. They do **not** validate current-rule queue
 admission, reexecution against a diverging opponent, learning, or achieved candidate wins.
-No lead-verified queue-admission benchmark, baseline rerun, or challenge result is recorded here.
-Training remains unimplemented. Keep manifest `audit.currentRuleReexecution = "pending"`
-and `audit.candidateWinrate = "not measured"` as historical Phase 0 audit statuses.
-Publish new Phase 1 execution evidence separately at the **PLANNED** path
-`_spec/evidence/ml-adjutant-phase1/baseline-report.json`; no report is present or claimed.
+The separate [Phase 1 baseline report](../evidence/ml-adjutant-phase1/baseline-report.json)
+now records current-rule execution and all 54 semantic rerun comparisons. Training remains
+unimplemented. Keep manifest `audit.currentRuleReexecution = "pending"` and
+`audit.candidateWinrate = "not measured"` unchanged as historical Phase 0 audit statuses.
+The new execution evidence **supersedes those pending statements separately for the measured
+baseline**, not by rewriting the original manifest or claiming universal trace compatibility.
+The report includes 16 strict queue-rejection failures and does not establish a learned win.
 
 ## Invariants (non-negotiable)
 
@@ -147,7 +151,7 @@ Publish new Phase 1 execution evidence separately at the **PLANNED** path
 
 | Need | Existing seam / required work |
 |---|---|
-| Deterministic settlement | `packages/starchess-arena/src/run/runMatch.ts`, `beginScTurn`, `endScTurn`, `mulberry32`; new benchmark adapter must isolate precommit inputs rather than expose sequential mutations. |
+| Deterministic settlement | `challenge/runChallengeMatch.ts` isolates precommit inputs and uses `beginScTurn` / `endScTurn` / `mulberry32`; `challenge/integrity.ts` reexecutes evidence. The legacy `run/runMatch.ts` remains distinct. |
 | Player contract | `packages/starchess-arena/src/players/types.ts`: `ScriptPlayer` / `SideContext`; the unrestricted snapshot and both-side bank stay host-side, not model-side. |
 | Live opponent | `packages/starchess-arena/src/players/strategic.ts`: execute `strategicScript` with feed off, not a recorded response. |
 | Candidate/application seam | Phase 1 `challenge/baseline.ts` uses authorized observed occupancy and own modes/mines for classical singletons, Marine deployment singletons, and pass; fixed heuristic scores, no strategic candidate reuse. `challenge/admission.ts` stages full queues through `addScAction` and exact host affordability. Later strategic reuse requires its own leakage audit. |
@@ -162,7 +166,8 @@ opening, White queue source references, trace hashes, and extraction provenance.
 Preserve the source export unchanged. Validate all pins and counts before every gate.
 
 **Done when.** The manifest audit reproduces the supplied schema facts and makes each queue's
-planning ordinal inspectable. Mark executable compatibility as pending until phase 1 tests it.
+planning ordinal inspectable. Its historical executable audit status remains pending; Phase 1
+now supplies separate measured execution evidence, including strict incompatibility failures.
 The manifest and persisted corpus audit test implement this provenance slice.
 Audit the newly located external 96-game export's hashes, IDs, duplicates, rules, and trace
 compatibility before proposing any expanded challenge and approving a new manifest version.
@@ -170,13 +175,13 @@ Do not silently expand the existing denominator.
 
 ## Phase 1 — Strict serial harness, adapters, and baseline
 
-**Status: implementation UNDERWAY; verification PENDING.** Arena owns this phase, not `ml/`.
+**Status: IMPLEMENTED and VERIFIED; rereview PENDING.** Arena owns this phase, not `ml/`.
 Owning diagram: [`ml-adjutant-phase1.puml`](../packages/starchess-arena/ml-adjutant-phase1.puml).
 Source inspection found `src/challenge/{types,config,corpus,observation,baseline,admission,
-runChallengeMatch,schedule,supervisor,worker}.ts` in `packages/starchess-arena`.
-Each of those ten modules already cites the owning diagram.
-`src/challenge/evidence.ts` and separate `src/cli/challenge.ts` are **PLANNED**, not present;
-do not conflate the new CLI with existing `src/cli/main.ts` or change the legacy runner contract.
+runChallengeMatch,schedule,supervisor,worker,integrity,publication,evidence}.ts` and the separate
+`src/cli/challenge.ts` in `packages/starchess-arena`. The new implementation modules cite the
+owning diagram. Do not conflate the challenge CLI with existing `src/cli/main.ts` or change the
+legacy runner contract.
 
 **Deliverables.** Implement the white recorded-queue adapter, isolated candidate adapter,
 turn-open observation boundary, atomic queue validation, hosted bank ledger, deterministic
@@ -184,6 +189,8 @@ settlement, terminal-first checks, and failure reports specified in the challeng
 Approved `CHALLENGE_CONFIG` version `phase1-v1` pins startup and per-plan deadlines to
 **10000 ms each**, match deadline to **300000 ms**, and caps to **64 planning windows,
 128 recorded plies, 4096 proposals**. Inference seed is 0; feed is off; `movetimeMs = 0`.
+IPC caps are **2048 messages**, **1048576 bytes per progress/non-completion message**, and
+**16777216 bytes per completion message**. They are part of the final configuration pin.
 Standard baseline reports must use these budgets; test overrides are not standard-run evidence.
 
 The inspected host derives both inputs from one frozen turn-open state, stages each whole queue
@@ -191,7 +198,11 @@ independently, and commits **w then b in array order** with fresh sequences and 
 debits before current income. Terminal checks precede trace exhaustion and host caps. Chip plies
 update evidence and private memory without consuming a planning ordinal. Parent supervision uses
 hard kill and waits for child close/reap; validated progress retains partial evidence on failure.
-These source facts require executable integrity verification before any completion claim.
+`integrity.ts` authoritatively reexecutes full resolve payloads, staged queues, exact resources,
+and real terminal outcomes; forged evidence and `script-contract` stops invalidate execution
+integrity. `publication.ts` writes and fsyncs a private temporary file, then publishes with an
+exclusive hardlink; it preserves an existing report and removes temporary files on write failure.
+The persisted tests and evidence below verify these Phase 1 contracts.
 
 Phase 1 owns a minimal observation-safe proposal interface and deterministic non-learned baseline.
 Phase 2 extends that interface with versioned numerical features and learned-ranking inputs.
@@ -205,9 +216,38 @@ training, models, learned artifacts, and browser integration remain unimplemente
 Baseline evidence fixes `modelArtifact = null`, `learnedGateEligible = false`, `fallbackCount = 0`;
 even a baseline win cannot satisfy the learned gate.
 
-Run the observation-safe baseline through this minimal candidate boundary. Report its actual
-18-case and 36-match results, including admission/exhaustion failures; do not assume wins.
-Use it to validate plumbing and provide a comparison, not to satisfy the learned gate.
+The observation-safe baseline ran through this boundary on every scheduled case twice under
+the final pins. Results validate plumbing and provide a comparison, not learned acceptance:
+
+| Suite | Scheduled | Candidate wins | Terminal losses | Queue-rejection failures |
+|---|---|---|---|---|
+| Strict recorded White corpus | 18 | 0 | 2 | 16 |
+| Live strategic, both candidate seats | 36 | 0 | 36 | 0 |
+
+There were no draws. All **54/54 semantic rerun comparisons match**;
+`executionIntegrity = true`, `learnedGateEligible = false`, and `learnedChallengePass = false`.
+Every failure remains in the denominator. These results do not prove every trace can support
+winning counterplay, nor that a queue failure under this baseline makes a trace universally infeasible.
+
+### Phase 1 implementation verification
+
+The [independent verification record](../evidence/ml-adjutant-phase1/verification.json) records
+actual test paths, SHA-256 hashes, purposes, static commands, and the raw baseline report hash.
+It binds [baseline-report.json](../evidence/ml-adjutant-phase1/baseline-report.json) to SHA-256
+`eb73aa799d60f4dd2d81488c6bcb838a48a8ba2d158e0b9e24e1dd4156b47236`.
+The execution report pins core rules, challenge/CLI sources, strategic/ledger sources, dependency
+lock, runtime configuration, Node version, configuration, opening, schedule, and RNG conventions.
+
+| Check | Result and scope |
+|---|---|
+| Arena full suite | **17 files / 160 tests passed** |
+| Arena typecheck | **Passed** |
+| Core full suite / typecheck | **53 files / 426 tests passed; typecheck passed** |
+| Direct strict TypeScript check of challenge tests | **Passed**; exact command and workdir in verification.json |
+| Final tests-only literal-cast corrections | **2 files / 8 focused tests passed** after the full 160-test run; no subsequent full-suite run is claimed |
+| Full-suite CLI with `--suite all --rerun` | **54 supervised first executions + 54 reruns; 54/54 semantic comparisons equal** under final pins |
+| PlantUML initial diagram | Lead reports **`plantuml -checkonly` passed**; the final diagram edits require a fresh checkonly |
+| Phase 1 adversarial/security rereview | **PENDING**; no READY/merge-readiness claim |
 
 **Done when.** Integrity tests and deterministic reruns pass; baseline reports enumerate every
 scheduled case. Full-state/metadata leakage and white-first queue/bank exposure tests must pass
@@ -319,30 +359,36 @@ wins and one draw supply demonstrations/outcomes, not human preference compariso
 
 ## Planned verification and pending ownership
 
-The corpus provenance test above exists. Source inspection also confirms the Phase 1 watchdog
-test and its three fixtures below; **execution results remain PENDING lead verification**.
+The corpus provenance test and all ten Phase 1 integrity-test files below exist.
+Their results are persisted in [verification.json](../evidence/ml-adjutant-phase1/verification.json).
 All `ml/` paths below remain **PROPOSED** for phases 2+, pending the training packaging decision.
 No Phase 1 placeholder test path is presented as an existing arena test.
 
 | Existing / proposed test/report path | Phase | Verification purpose |
 |---|---|---|
 | `packages/starchess-arena/src/__tests__/corpusManifest.test.ts` (EXISTS) | 0 | Pins, 18 unique cases/traces, action counts, snapshot/resolve cardinality, codec/result checks, and source provenance. |
-| `packages/starchess-arena/src/__tests__/challengeWatchdog.test.ts` (EXISTS; results PENDING) | 1 | Startup/plan/match deadlines, synchronous and async hangs, protocol failures, crashes, retained partial plies, and child reap before return. |
+| `packages/starchess-arena/src/__tests__/challengeCorpus.test.ts` (PASSED) | 1 | Manifest/source pins, extraction, explicit empty queues, chip ordinals, private selection, and exhaustive schedule. |
+| `packages/starchess-arena/src/__tests__/strictRecordedQueues.test.ts` (PASSED) | 1 | Atomic rejection, order/sequence, gas, no retries, frustrated intents versus missing actors. |
+| `packages/starchess-arena/src/__tests__/resourceLedger.test.ts` (PASSED) | 1 | Exact deployment affordability/debits, income tiers, ledger continuity, and cap. |
+| `packages/starchess-arena/src/__tests__/challengeLifecycle.test.ts` (PASSED) | 1 | Terminal-first checks, chips, exhaustion, and genuine turn-45 outcomes. |
+| `packages/starchess-arena/src/__tests__/observationIsolation.test.ts` (PASSED) | 1 | Both-seat precommit inputs, mutation isolation, and private trace invariance. |
+| `packages/starchess-arena/src/__tests__/challengeObservation.test.ts` (PASSED) | 1 | Hidden-state proposal/ranking invariance, authorized sightings, and Battleship pings. |
+| `packages/starchess-arena/src/__tests__/challengeWatchdog.test.ts` (PASSED) | 1 | Real-child hangs/crashes, fixed deadlines, bounded/validated IPC, partial evidence, and reap before return. |
+| `packages/starchess-arena/src/__tests__/challengeEvidence.test.ts` (PASSED) | 1 | Semantic determinism, production worker, authoritative reexecution, and forged outcome/resource rejection. |
+| `packages/starchess-arena/src/__tests__/challengeSuites.test.ts` (PASSED) | 1 | Persisted 54-case execution, source/runtime pins, and every rerun semantic hash. |
+| `packages/starchess-arena/src/__tests__/challengePublication.test.ts` (PASSED) | 1 | Atomic/exclusive publication, serialization-failure cleanup, and preservation of existing reports. |
 | `packages/starchess-arena/src/__tests__/fixtures/{challengeWorker,challengeStartupHang,challengeBeforeReady}.ts` (EXIST) | 1 | Child-process fixtures used by watchdog tests; not independent verification results. |
-| `_spec/evidence/ml-adjutant-phase1/baseline-report.json` (PLANNED; absent) | 1 | All 18 corpus and 36 live cases, pins/budgets, failures, integrity results, and deterministic rerun comparison; separate from historical manifest audit. |
+| `_spec/evidence/ml-adjutant-phase1/baseline-report.json` (PERSISTED) | 1 | All 18 corpus and 36 live cases, final pins/budgets, failures, integrity results, and deterministic rerun comparison; separate from historical manifest audit. |
+| `_spec/evidence/ml-adjutant-phase1/verification.json` (PERSISTED) | 1 | Independent commands/results, actual ten integrity-test paths with hashes/purposes, and raw report SHA-256. |
 | `ml/codec/__tests__/authorizedFeatures.test.ts` | 2 | Versioned observation round trip, unknowns, authorized memory, queue feature coverage. |
 | `ml/player/__tests__/learnedRanker.test.ts` | 3 | Loss-driven weight changes, frozen artifacts, selected-queue admission, no fallback/online updates. |
 | `ml/harness/__tests__/perfectGate.test.ts` | 4 | Exactly 18 corpus + 36 live strategic wins; every non-win/integrity failure fails the gate. |
 | `ml/preference/__tests__/preferenceLoss.test.ts` | 5, optional | Same-observation human pairs, preference-loss direction, policy regularization. |
 
-**Pending Phase 1 completion:** build finishes evidence/report and separate CLI modules, persists
-the remaining arena integrity tests, and supplies actual paths/results. Strict extraction,
-atomic rollback, resource ledger, terminal/chip handling, hidden-state/proposal invariance,
-both-seat precommit isolation, exact schedule, and semantic determinism still require reported
-verification. Replace pending requirements with actual arena test paths only after they exist.
-The lead must report type/static checks, review gates, all 54 baseline rows and normalized reruns
-before changing Phase 1 to VERIFIED; failures stay in the denominator and do not imply learned PASS.
-Build must run `plantuml -checkonly` on the new diagram; spec-keeper does not execute shell commands.
+**Pending final gates:** Phase 1 rereview remains in progress until the lead supplies actual
+adversarial/security outcomes. Build must run `plantuml -checkonly` on the finalized diagram;
+spec-keeper does not execute shell commands. Implementation/tests/reports are VERIFIED, not a learned PASS or
+a declaration of merge readiness.
 **Phases 2+ remain pending and unimplemented**; reviewers must later verify legality, isolation,
 and zero-fallback learned evidence independently of this non-learned baseline.
 The challenge document specifies additional adversarial integrity cases.
