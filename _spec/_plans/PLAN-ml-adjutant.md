@@ -55,12 +55,12 @@ or authorize unrelated timer cleanup.
 
 | Verification reference | Contract pinned |
 |---|---|
-| [`packages/starchess-core/src/__tests__/adjutantDefinitions.test.ts`](../../packages/starchess-core/src/__tests__/adjutantDefinitions.test.ts) | EMPTY metadata shape, all-ID recognition, ready-only admission, rejection of `ml` and unknown inputs |
-| [`apps/starchess/src/__tests__/singleOpponent.test.ts`](../../apps/starchess/src/__tests__/singleOpponent.test.ts) | App guards and distinct playable script execution |
-| [`apps/starchess/src/__tests__/newGameSetupStore.test.tsx`](../../apps/starchess/src/__tests__/newGameSetupStore.test.tsx) | Disabled placeholder options, playable selection/Start, persisted setup |
-| [`apps/starchess/src/__tests__/matchSessionStore.test.ts`](../../apps/starchess/src/__tests__/matchSessionStore.test.ts) | Preserve known placeholders for admission; retain legacy/unknown session handling |
-| [`apps/starchess/src/__tests__/matchTitle.test.ts`](../../apps/starchess/src/__tests__/matchTitle.test.ts) | Canonical labels and safe unknown-record fallback |
-| [`apps/e2e/tests/starchess/starchess-opponents.spec.ts`](../../apps/e2e/tests/starchess/starchess-opponents.spec.ts) | Browser selection, placeholder URL/session blocks, unchanged stored data, strategic rematch, setup normalization |
+| [`packages/starchess-core/src/__tests__/adjutantDefinitions.test.ts`](../../../packages/starchess-core/src/__tests__/adjutantDefinitions.test.ts) | EMPTY metadata shape, all-ID recognition, ready-only admission, rejection of `ml` and unknown inputs |
+| [`apps/starchess/src/__tests__/singleOpponent.test.ts`](../../../apps/starchess/src/__tests__/singleOpponent.test.ts) | App guards and distinct playable script execution |
+| [`apps/starchess/src/__tests__/newGameSetupStore.test.tsx`](../../../apps/starchess/src/__tests__/newGameSetupStore.test.tsx) | Disabled placeholder options, playable selection/Start, persisted setup |
+| [`apps/starchess/src/__tests__/matchSessionStore.test.ts`](../../../apps/starchess/src/__tests__/matchSessionStore.test.ts) | Preserve known placeholders for admission; retain legacy/unknown session handling |
+| [`apps/starchess/src/__tests__/matchTitle.test.ts`](../../../apps/starchess/src/__tests__/matchTitle.test.ts) | Canonical labels and safe unknown-record fallback |
+| [`apps/e2e/tests/starchess/starchess-opponents.spec.ts`](../../../apps/e2e/tests/starchess/starchess-opponents.spec.ts) | Browser selection, placeholder URL/session blocks, unchanged stored data, strategic rematch, setup normalization |
 
 ---
 
@@ -288,7 +288,7 @@ The corpus provenance test above exists. All additional test paths below are **P
 not claims about existing files or executed challenge tests.
 `ml/` paths describe proposed responsibilities pending the packaging decision.
 
-| Proposed test/report path | Phase | Verification purpose |
+| Existing / proposed test/report path | Phase | Verification purpose |
 |---|---|---|
 | `packages/starchess-arena/src/__tests__/corpusManifest.test.ts` (EXISTS) | 0 | Pins, 18 unique cases/traces, action counts, snapshot/resolve cardinality, codec/result checks, and source provenance. |
 | `ml/harness/__tests__/strictRecordedQueues.test.ts` | 1 | Planning ordinals vs chip plies, terminal-first behavior, seq reassignment, full-queue rollback, missing actor, affordability, exhaustion, and no substitutions. |
@@ -300,7 +300,7 @@ not claims about existing files or executed challenge tests.
 | `ml/harness/__tests__/perfectGate.test.ts` | 4 | Exactly 18 corpus + 36 live strategic wins; every non-win/integrity failure fails the gate. |
 | `ml/preference/__tests__/preferenceLoss.test.ts` | 5, optional | Same-observation human pairs, preference-loss direction, policy regularization. |
 
-**Pending executable work:** lead publishes the manifest; build implements phases 1–4 and
+**Pending executable work:** build implements phases 1–4 and
 persists the tests; reviewers verify legality, isolation, and zero-fallback evidence.
 The challenge document specifies additional adversarial integrity cases.
-This plan edit is not an Upgrade Complete claim and does not redo unrelated diagrams.
+Corpus provenance verification does not establish a learned player's performance.
