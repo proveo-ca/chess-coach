@@ -43,6 +43,15 @@ describe("pinned ML challenge corpus provenance", () => {
     expect(manifest.traceSide).toBe("w");
     expect(manifest.candidateSide).toBe("b");
     expect(manifest.policy).toBe("strict-recorded-queues");
+    expect(manifest.extractionVersion).toBe("white-planning-queues-v1");
+    expect(manifest.extraction).toEqual({
+      queueSource: "games[sourceIndex].resolves[sourcePlyIndex].queue",
+      chipPredicate: "events.some(event => event.id.startsWith('ev-begin-'))",
+      planningOrder: "source ply order, excluding chip plies; preserve empty planning queues",
+      actionOrder: "queue array order filtered to color w; remove seq; retain timing and other intent fields",
+      traceHash: "sha256(JSON.stringify({openingScfen, trace})); trace = planning windows mapped to {sourceTurn, actions}; sourceTurn comes from the prior SCFEN turn; actions follow actionOrder; preserve source object key order",
+      queueStorage: "source references; no duplicate action payloads in this manifest",
+    });
   });
 
   it("reproduces White intent hashes, planning/chip counts, and historical terminal labels", () => {
@@ -50,8 +59,14 @@ describe("pinned ML challenge corpus provenance", () => {
     let chips = 0;
     let windows = 0;
     let actions = 0;
+    let aligned = 0;
+    let scsanMatches = 0;
+    let terminalMatches = 0;
+    let whiteWins = 0;
+    let draws = 0;
     const kinds: Record<string, number> = {};
     const traces = new Set<string>();
+    const openings = new Set<string>();
     for (const [index, game] of (source.games as SourceGame[]).entries()) {
       const entry = manifest.cases[index];
       expect(entry.sourceIndex).toBe(index);
@@ -59,15 +74,21 @@ describe("pinned ML challenge corpus provenance", () => {
       expect(game.playerColor).toBe("w");
       expect(game.opponent).toBe("strategic");
       expect(game.scfens[0]).toBe(manifest.openingScfen);
+      openings.add(game.scfens[0]!);
       expect(game.scfens).toHaveLength(game.resolves.length + 1);
       const history = historyFromRecord(game);
       expect(history.settledResolves).toHaveLength(history.settledSnapshots.length - 1);
+      aligned++;
       expect(scsanOf(history.settledResolves)).toEqual(game.scsan);
+      scsanMatches++;
       snapshots += game.scfens.map((scfen) => parseScFen(scfen)).length;
       const terminal = history.settledSnapshots.at(-1)!;
       expect(terminal.turn).toBe(entry.terminalTurn);
       expect(entry.historicalResult).toBe(game.result);
       expect(scOutcome(terminal)).toEqual(game.result === "win" ? { winner: "w", draw: false } : { winner: null, draw: true });
+      terminalMatches++;
+      if (game.result === "win") whiteWins++;
+      else draws++;
       const chipCount = game.resolves.filter(isChip).length;
       const trace = whiteTrace(game);
       const digest = hash(JSON.stringify({ openingScfen: game.scfens[0], trace }));
@@ -92,6 +113,13 @@ describe("pinned ML challenge corpus provenance", () => {
     expect(actions).toBe(manifest.audit.whiteActions);
     expect(kinds).toEqual(manifest.audit.actionKinds);
     expect(traces.size).toBe(manifest.audit.uniqueWhiteTraces);
+    expect(traces.size).toBe(18);
+    expect(openings.size).toBe(manifest.audit.uniqueOpenings);
+    expect(aligned).toBe(manifest.audit.historiesAligned);
+    expect(scsanMatches).toBe(manifest.audit.scsanMatches);
+    expect(terminalMatches).toBe(manifest.audit.terminalLabelsMatch);
+    expect(whiteWins).toBe(manifest.audit.historicalWhiteWins);
+    expect(draws).toBe(manifest.audit.historicalDraws);
   });
 
   it("keeps the live strategic schedule separate and paired across both colours", () => {

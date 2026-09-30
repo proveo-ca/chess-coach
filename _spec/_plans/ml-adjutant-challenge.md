@@ -6,11 +6,11 @@ This document defines acceptance, not implemented behavior.
 
 ## 1. Decision and scope
 
-Executor chose **18 current cases** and **STRICT RECORDED QUEUES**.
+The accepted plan uses **18 current cases** and Executor selected **STRICT RECORDED QUEUES**.
 Blue = White = exported player = `w`; the corpus candidate is Black/Red = `b`.
 Beat BOTH the recorded White corpus and separately executing live strategic.
 
-The supposed 18+100 exports do not establish an available 118-case dataset.
+The referenced 18+100 exports do not establish an available 118-case dataset.
 The lead's workspace/parent glob and tracked-inventory audit found only the named export below.
 Do not invent a missing path or silently change the denominator. A future 118-case challenge
 requires locating and auditing the actual additional exports, checking duplicates and executable
@@ -49,7 +49,7 @@ SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:
 ```
 
 The lead ran current-core `historyFromRecord`, `parseScFen`, `scsanOf`, and `scOutcome` checks:
-358 raw snapshots parse; 358 repaired snapshots decode; all 18 histories align; all 18 SC-SAN
+358 raw snapshots parse; 358 repaired snapshots decode; all 18 snapshot/resolve cardinalities align; all 18 SC-SAN
 comparisons match exactly; all 18 terminal result labels match. Record repair and decode are
 not action admission or simulation. No current-rule queue reexecution, training, baseline
 benchmark, or learned challenge run has occurred.
@@ -141,6 +141,11 @@ also plans from the precommit snapshot/context, not the opponent's updated queue
 The host may validate/merge in stable order afterward; it must not feed that intermediate state
 back into the same-window policy. Keep strategic's existing pinned algorithm and feed-off
 configuration; do not silently replace it with a different learned opponent.
+
+Live strategic remains a trusted host-side opponent with its existing algorithm and context.
+This is distinct from the non-learned candidate baseline, which must obey the same observation-safe
+proposal interface as the learned candidate. An unchanged full-snapshot strategic candidate does
+not prove this interface honest. Phase 1 owns the minimal interface; phase 2 adds numeric features.
 
 The model-facing observation includes only own facts, permitted visibility/public facts, own
 resources, and side-authorized memory/belief history. Exclude:

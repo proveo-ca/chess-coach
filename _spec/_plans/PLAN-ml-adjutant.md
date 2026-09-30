@@ -1,7 +1,8 @@
 # PLAN — ML Adjutant: learn a ranker and prove the strict challenge
 
 Status: **Preparatory catalog IMPLEMENTED and VERIFIED**, with the baseline full-app lint exception below.
-Challenge phases 0–4 and optional phases 5–6 remain **PLANNED and unimplemented**.
+Phase 0 provenance is **IMPLEMENTED** with persisted audit verification.
+Executable challenge phases 1–4 and optional phases 5–6 remain **PLANNED and unimplemented**.
 Core `ai/definitions.ts` now owns all five IDs, canonical labels, and derived guards.
 The app implements disabled placeholder entries and explicit unavailable admission for known
 placeholder URLs or sessions. This completes the preparatory catalog, not a learning player.
@@ -79,7 +80,7 @@ The normative acceptance contract is [ml-adjutant-challenge.md](ml-adjutant-chal
 ## Closed decisions and evidence boundary
 
 - **Use 18 now, not 118.** The lead's workspace/parent glob and tracked-inventory audit found
-  only `starchess-match-history-20260929-203446.json`. The supposed additional 100 exports
+  only `starchess-match-history-20260929-203446.json`. The additional 100-game export
   remain unaudited and unavailable; this plan invents no missing path.
 - **Blue = White = recorded player (`w`).** The corpus supplies white queues; the candidate
   counterplays as black/red (`b`). This is not a replay of the historical black strategic moves.
@@ -153,6 +154,7 @@ Preserve the source export unchanged. Validate all pins and counts before every 
 
 **Done when.** The manifest audit reproduces the supplied schema facts and makes each queue's
 planning ordinal inspectable. Mark executable compatibility as pending until phase 1 tests it.
+The manifest and persisted corpus audit test implement this provenance slice.
 If the additional 100 become available, audit their actual locations, hashes, IDs, duplicates,
 rules, and trace compatibility before approving a new versioned 118-case challenge.
 Do not silently expand the existing denominator.
@@ -164,7 +166,12 @@ turn-open observation boundary, atomic queue validation, hosted bank ledger, det
 settlement, terminal-first checks, and failure reports specified in the challenge document.
 Pin numerical inference/match watchdog budgets in versioned harness configuration before runs.
 
-Run a non-learned strategic baseline through this same candidate boundary. Report its actual
+Phase 1 owns a minimal observation-safe proposal interface and deterministic non-learned baseline.
+Phase 2 extends that interface with versioned numerical features and learned-ranking inputs.
+The existing full-snapshot `strategicScript` remains the trusted opponent; calling it unchanged
+does not establish an observation-honest candidate baseline.
+
+Run the observation-safe baseline through this minimal candidate boundary. Report its actual
 18-case and 36-match results, including admission/exhaustion failures; do not assume wins.
 Use it to validate plumbing and provide a comparison, not to satisfy the learned gate.
 
@@ -283,7 +290,7 @@ not claims about existing files or executed challenge tests.
 
 | Proposed test/report path | Phase | Verification purpose |
 |---|---|---|
-| `ml/harness/__tests__/corpusAudit.test.ts` | 0 | Pins, 18 unique cases/traces, action counts, extraction alignment, and source provenance. |
+| `packages/starchess-arena/src/__tests__/corpusManifest.test.ts` (EXISTS) | 0 | Pins, 18 unique cases/traces, action counts, snapshot/resolve cardinality, codec/result checks, and source provenance. |
 | `ml/harness/__tests__/strictRecordedQueues.test.ts` | 1 | Planning ordinals vs chip plies, terminal-first behavior, seq reassignment, full-queue rollback, missing actor, affordability, exhaustion, and no substitutions. |
 | `ml/harness/__tests__/observationIsolation.test.ts` | 1–2 | Same precommit inputs; no enemy queue/bank deltas or future trace/metadata; hidden-state invariance across features and candidate membership/order/scores. |
 | `ml/harness/__tests__/resourceLedger.test.ts` | 1 | Opening bank, deploy spends, income, gas; reject insufficiency rather than accept clamped debit. |
