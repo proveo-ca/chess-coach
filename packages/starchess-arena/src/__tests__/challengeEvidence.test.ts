@@ -24,9 +24,24 @@ describe("baseline execution evidence", () => {
     expect(run.outcome).toBeNull();
     expect(summarize([run]).corpus).toMatchObject({ scheduled: 1, wins: 0, failures: 1 });
     expect(run.learnedGateEligible).toBe(false);
-    const fabricated = { ...run, outcome: { winner: "b" as const, draw: false }, stop: { ...run.stop, kind: "terminal" as const } };
+    const fabricated = { ...run, outcome: { winner: "b" as const, draw: false as const }, stop: { ...run.stop, kind: "terminal" as const } };
     expect(executionIntegrity(fabricated)).toBe(false);
     expect(summarize([fabricated]).corpus.wins).toBe(0);
+    const protocolFailure = { ...run, stop: { ...run.stop, kind: "script-contract" as const } };
+    expect(executionIntegrity(protocolFailure)).toBe(false);
+  });
+
+  it("detects changed debits, out-of-range banks, and contradictory resolve bodies", async () => {
+    const run = await runChallengeMatch(buildSchedule(loadPinnedCorpus())[0]!);
+    const ledger = structuredClone(run);
+    ledger.bankTrail[0]!.b = 99;
+    expect(executionIntegrity(ledger)).toBe(false);
+    const resolve = structuredClone(run);
+    resolve.resolves[0]!.resolved.moves = [];
+    expect(executionIntegrity(resolve)).toBe(false);
+    const bank = structuredClone(run);
+    bank.finalBank.b = 0;
+    expect(executionIntegrity(bank)).toBe(false);
   });
 
   it("runs the production supervised worker with pinned config and matches in-process semantics", async () => {

@@ -39,7 +39,7 @@ describe("strict corpus extraction and scheduling", () => {
     const action = { timing: "F", kind: "deploy", color: "w", from: "e1", to: "f1", unit: "p", seq: 90 } as ScAction;
     const other = { timing: "C", kind: "classical", color: "b", from: "e8", to: "f8", seq: 5 } as ScAction;
     const move = { timing: "C", kind: "classical", color: "w", from: "e1", to: "d1", seq: 3 } as ScAction;
-    const resolve = (queue: ScAction[] | undefined, chip = false) => ({ queue, events: chip ? [{ id: "ev-begin-fixture" }] : [] }) as EndScTurnResult;
+    const resolve = (queue: ScAction[] | undefined, chip = false) => ({ queue, events: chip ? [{ id: "ev-begin-fixture" }] : [] }) as unknown as EndScTurnResult;
     const game = { scfens: [opening, opening, opening, opening, opening], resolves: [resolve(undefined, true), resolve([]), resolve([action, other, move]), resolve(undefined, true)] } as SourceGame;
     const windows = extractWhiteWindows(game);
     expect(windows.map(({ planningOrdinal, sourcePlyIndex }) => [planningOrdinal, sourcePlyIndex])).toEqual([[0, 1], [1, 2]]);

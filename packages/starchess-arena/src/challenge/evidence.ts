@@ -2,12 +2,14 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { join } from "node:path";
-import { formatScFen, normalizeSnapGas, parseScFen, scOutcome } from "@chess-coach/starchess-core";
 import { canonical, CHALLENGE_CONFIG } from "./config";
 import { loadPinnedCorpus, REPOSITORY_ROOT, sha256 } from "./corpus";
 import { buildSchedule } from "./schedule";
 import { runSupervised } from "./supervisor";
+import { executionIntegrity } from "./integrity";
 import type { ChallengeEvidence } from "./types";
+
+export { executionIntegrity } from "./integrity";
 
 export type Suite = "all" | "corpus" | "live-strategic";
 
@@ -30,9 +32,13 @@ export const executionPins = () => ({
   configuration: CHALLENGE_CONFIG,
   configurationSha256: sha256(canonical(CHALLENGE_CONFIG)),
   coreRulesSha256: sourceDigest(["packages/starchess-core/src"]),
-  adapterSha256: sourceDigest(["packages/starchess-arena/src/challenge"]),
+  adapterSha256: sourceDigest(["packages/starchess-arena/src/challenge", "packages/starchess-arena/src/cli"]),
   strategicAndLedgerSha256: sourceDigest(["packages/starchess-arena/src/players", "packages/starchess-arena/src/run"]),
   dependencyLockSha256: sha256(readFileSync(new URL("pnpm-lock.yaml", REPOSITORY_ROOT))),
+  runtimeConfigurationSha256: sha256(canonical([
+    "package.json", "pnpm-workspace.yaml", "packages/starchess-arena/package.json", "packages/starchess-arena/tsconfig.json",
+    "packages/starchess-core/package.json", "packages/starchess-core/tsconfig.json",
+  ].map((path) => ({ path, hash: sha256(readFileSync(new URL(path, REPOSITORY_ROOT))) })))),
   nodeVersion: process.version,
   seatRng: "w:mulberry32(seed),b:mulberry32(~seed)",
   candidateInferenceSeed: 0,
@@ -45,14 +51,6 @@ export const normalizeEvidence = (evidence: ChallengeEvidence): string => canoni
   fallbackCount: evidence.fallbackCount, scfens: evidence.scfens, resolves: evidence.resolves,
   bankTrail: evidence.bankTrail, finalBank: evidence.finalBank, outcome: evidence.outcome, stop: evidence.stop,
 });
-
-export const executionIntegrity = (evidence: ChallengeEvidence): boolean => {
-  if (evidence.scfens.length !== evidence.resolves.length + 1 || evidence.bankTrail.length !== evidence.resolves.length ||
-    evidence.fallbackCount !== 0 || evidence.modelArtifact !== null || evidence.learnedGateEligible !== false) return false;
-  if (!evidence.resolves.every((resolve, index) => evidence.scfens[index + 1] === formatScFen(normalizeSnapGas(resolve.next)))) return false;
-  const actual = scOutcome(parseScFen(evidence.scfens.at(-1)!));
-  return evidence.stop.kind === "terminal" ? actual !== null && canonical(actual) === canonical(evidence.outcome) : evidence.outcome === null;
-};
 
 export const summarize = (rows: ChallengeEvidence[]) => {
   const count = (suite: "corpus" | "live-strategic") => {
@@ -92,6 +90,7 @@ export const runBaselineSuite = async (suite: Suite = "all", rerun = true) => {
   const integrity = rows.every(executionIntegrity);
   return {
     version: "phase1-baseline-report-v1", kind: "phase1-baseline", learnedGateEligible: false, modelArtifact: null,
+    independentVerification: "_spec/evidence/ml-adjutant-phase1/verification.json",
     manifestSha256: corpus.manifestSha256, sourceSha256: corpus.manifest.sourceSha256, pins,
     suite, schedule: schedule.map(({ trace: _trace, ...entry }) => entry),
     summary: summarize(rows), executionIntegrity: integrity,

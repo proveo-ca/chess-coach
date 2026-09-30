@@ -7,6 +7,7 @@ import {
 } from "@chess-coach/starchess-core";
 import { seedBankForOpening, type Bank } from "../run/bank";
 import { canonical, CHALLENGE_CONFIG } from "./config";
+import { executionIntegrity } from "./integrity";
 import type { ChallengeEvidence, ChallengeProgress, ChallengeStop, ScheduledMatch } from "./types";
 
 export type SupervisedOptions = {
@@ -19,8 +20,8 @@ const record = (value: unknown): value is Record<string, unknown> =>
 const ordinal = (value: unknown): value is number => Number.isSafeInteger(value) && (value as number) >= 0;
 const side = (value: unknown) => value === undefined || value === "w" || value === "b";
 const bank = (value: unknown): value is Bank => record(value) &&
-  typeof value.w === "number" && Number.isFinite(value.w) && value.w >= 0 &&
-  typeof value.b === "number" && Number.isFinite(value.b) && value.b >= 0;
+  typeof value.w === "number" && Number.isSafeInteger(value.w) && value.w >= 0 && value.w <= 12 &&
+  typeof value.b === "number" && Number.isSafeInteger(value.b) && value.b >= 0 && value.b <= 12;
 const resolveResult = (value: unknown): value is EndScTurnResult => {
   if (!record(value) || !record(value.resolved)) return false;
   const resolved = value.resolved;
@@ -77,6 +78,7 @@ export const runSupervised = (
   };
   let child: ChildProcess | undefined;
   let ready = false;
+  let messageCount = 0;
   let result: ChallengeEvidence | undefined;
   let startupTimer: NodeJS.Timeout | undefined;
   let matchTimer: NodeJS.Timeout | undefined;
@@ -127,7 +129,7 @@ export const runSupervised = (
         !((value.outcome.winner === null && value.outcome.draw === true) ||
           ((value.outcome.winner === "w" || value.outcome.winner === "b") &&
             (value.outcome.draw === false || value.outcome.draw === undefined))))) return false;
-    if ((value.stop.kind === "terminal") !== (value.outcome !== null)) return false;
+    if ((value.stop.kind === "terminal") !== (value.outcome !== null) || !executionIntegrity(value as ChallengeEvidence)) return false;
     if (value.bankTrail.length > 0 && canonical(value.finalBank) !== canonical(value.bankTrail.at(-1))) return false;
     const completedResolves = value.resolves;
     const completedScfens = value.scfens;
@@ -141,6 +143,9 @@ export const runSupervised = (
     if (result) return;
     try {
       if (!record(message)) { protocolError("non-object message"); return; }
+      if (++messageCount > CHALLENGE_CONFIG.maxIpcMessages) { protocolError("message count limit exceeded"); return; }
+      const limit = message.kind === "complete" ? CHALLENGE_CONFIG.maxCompletionBytes : CHALLENGE_CONFIG.maxProgressBytes;
+      if (Buffer.byteLength(JSON.stringify(message), "utf8") > limit) { protocolError("message byte limit exceeded"); return; }
       if (message.kind === "ready") {
         if (ready) { protocolError("duplicate ready"); return; }
         ready = true;
@@ -173,10 +178,16 @@ export const runSupervised = (
         return;
       }
       if (message.kind === "ply") {
+        if (resolves.length >= CHALLENGE_CONFIG.maxRecordedPlies) { protocolError("recorded ply limit exceeded"); return; }
         if (!scfen(message.scfen) || !resolveResult(message.resolve) || !bank(message.bank) ||
             !paired(message.resolve, message.scfen)) {
           protocolError("malformed ply"); return;
         }
+        const prefix: ChallengeEvidence = {
+          ...failed("trace-exhausted", "prefix validation"), scfens: [...scfens, message.scfen],
+          resolves: [...resolves, message.resolve], bankTrail: [...bankTrail, message.bank], finalBank: message.bank,
+        };
+        if (!executionIntegrity(prefix)) { protocolError("invalid ply progression or resources"); return; }
         scfens.push(message.scfen);
         resolves.push(message.resolve);
         bankTrail.push(message.bank);

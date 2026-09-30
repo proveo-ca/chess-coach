@@ -1,7 +1,8 @@
 // SPEC: _spec/packages/starchess-arena/ml-adjutant-phase1.puml
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { runBaselineSuite, type Suite } from "../challenge/evidence";
+import { publishReport } from "../challenge/publication";
 
 const args = process.argv.slice(2);
 const usage = "Usage: pnpm --filter @chess-coach/starchess-arena challenge [--suite all|corpus|live-strategic] [--rerun] --out <report.json>";
@@ -26,7 +27,7 @@ else {
   const report = await runBaselineSuite(suite, rerun);
   const path = resolve(output);
   mkdirSync(dirname(path), { recursive: true });
-  writeFileSync(path, `${JSON.stringify(report, null, 2)}\n`, { flag: "wx" });
+  publishReport(path, report);
   console.log(JSON.stringify({ path, summary: report.summary, executionIntegrity: report.executionIntegrity, deterministicRerun: report.deterministicRerun.equal, learnedGateEligible: false }, null, 2));
   if (!report.executionIntegrity || (rerun && !report.deterministicRerun.equal)) process.exitCode = 1;
 }

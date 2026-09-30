@@ -1,11 +1,11 @@
 // SPEC: _spec/packages/starchess-arena/ml-adjutant-phase1.puml
 import { describe, expect, it } from "vitest";
 import { endScTurn, formatScFen, normalizeSnapGas, parseScFen } from "@chess-coach/starchess-core";
-import { seedBankForOpening } from "../run/bank";
+import { seedBankForOpening, grantStoredIncome } from "../run/bank";
 import { runSupervised } from "../challenge/supervisor";
 import type { ChallengeEvidence, ScheduledMatch } from "../challenge/types";
 
-const opening = "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|Q:w:;b:";
+const opening = "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:";
 const request = (key: string): ScheduledMatch => ({
   key, suite: "live-strategic", candidateSide: "w", arenaSeed: 42, inferenceSeed: 0, opening,
 });
@@ -71,13 +71,14 @@ describe("challenge child watchdog", () => {
   it.each([
     "malformed-identity", "malformed-arrays", "malformed-resolve", "malformed-outcome",
     "malformed-policy", "malformed-ply-prefix", "malformed-resolve-body", "malformed-scfens", "malformed-final-bank",
+    "fabricated-terminal", "wrong-ledger", "altered-resolve",
   ])("rejects %s completion", async (key) => {
     const evidence = await run(key);
     expectFailure(evidence, key);
     expect(evidence.stop).toMatchObject({ kind: "script-contract", reason: "worker protocol error: malformed completion" });
   });
 
-  it.each(["duplicate-ready", "malformed-phase", "malformed-ply", "unknown-message"])("rejects %s IPC", async (key) => {
+  it.each(["duplicate-ready", "malformed-phase", "malformed-ply", "unknown-message", "oversized-ply", "duplicate-ply"])("rejects %s IPC", async (key) => {
     const evidence = await run(key);
     expectFailure(evidence, key);
     expect(evidence.stop.kind).toBe("script-contract");
@@ -100,7 +101,7 @@ describe("challenge child watchdog", () => {
       formatScFen(normalizeSnapGas(snapshot)), formatScFen(normalizeSnapGas(resolved.next)),
     ]);
     expect(evidence.resolves).toEqual([resolved]);
-    expect(evidence.bankTrail).toEqual([seedBankForOpening(snapshot)]);
+    expect(evidence.bankTrail).toEqual([grantStoredIncome(seedBankForOpening(snapshot), resolved.next.turn)]);
     expect(evidence.finalBank).toEqual(evidence.bankTrail[0]);
     expect(evidence.stop).toMatchObject({ planningOrdinal: 7, turn: 3, side: "b" });
   });
