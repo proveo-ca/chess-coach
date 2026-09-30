@@ -61,6 +61,8 @@ else if (command === 'code') {
       if (!existsSync(`${output}/${file}`)) throw new Error(`Diagnostic did not generate ${file}`);
     }
     for (const name of ['starchess-core', 'starchess-arena']) execute(`/app/packages/${name}/node_modules/.bin/tsc`, ['-p', 'tsconfig.json', '--noEmit'], `/app/packages/${name}`);
+    const integrityTests = readdirSync(`${arena}/src/__tests__`).filter((file) => /^challenge.*\.test\.ts$/.test(file) || ['strictRecordedQueues.test.ts', 'resourceLedger.test.ts', 'observationIsolation.test.ts'].includes(file)).sort();
+    execute(`${arena}/node_modules/.bin/tsc`, ['--noEmit', '--target', 'ES2022', '--module', 'ESNext', '--moduleResolution', 'Bundler', '--strict', '--skipLibCheck', ...integrityTests.map((file) => `${arena}/src/__tests__/${file}`), '/app/scripts/challenge-contract-evidence.ts'], arena);
     tests('starchess-core');
     tests('starchess-arena');
     const after = preflight();

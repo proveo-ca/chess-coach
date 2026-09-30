@@ -5,6 +5,7 @@ import { loadPinnedCorpus, REPOSITORY_ROOT, sha256 } from "../challenge/corpus";
 import { executionIntegrity, executionPins, normalizeEvidence, summarize } from "../challenge/evidence";
 import { buildSchedule } from "../challenge/schedule";
 import type { ChallengeEvidence } from "../challenge/types";
+import { compareBaselineReports, ORIGINAL_BASELINE_SHA256, ORIGINAL_VERIFICATION_SHA256 } from "../challenge/pinMigration";
 
 const report = JSON.parse(readFileSync(new URL("_spec/evidence/ml-adjutant-phase1/baseline-report.json", REPOSITORY_ROOT), "utf8")) as {
   manifestSha256: string; sourceSha256: string; pins: ReturnType<typeof executionPins>;
@@ -12,6 +13,7 @@ const report = JSON.parse(readFileSync(new URL("_spec/evidence/ml-adjutant-phase
   executionIntegrity: boolean; learnedChallengePass: boolean; learnedGateEligible: boolean;
   deterministicRerun: { performed: boolean; equal: boolean; comparisons: { key: string; equal: boolean; firstSha256: string; rerunSha256: string }[] };
 };
+const current = JSON.parse(readFileSync(new URL("_spec/evidence/ml-adjutant-phase2/baseline-report.json", REPOSITORY_ROOT), "utf8")) as typeof report;
 
 describe("persisted exhaustive Phase1 baseline evidence", () => {
   it("contains every pinned18+36 case in exact order, retaining failures", () => {
@@ -37,7 +39,9 @@ describe("persisted exhaustive Phase1 baseline evidence", () => {
   });
 
   it("pins the actual source, runtime configuration, rules, seeds, and watchdogs", () => {
-    expect(canonical(report.pins)).toBe(canonical(executionPins()));
+    expect(canonical(current.pins)).toBe(canonical(executionPins()));
+    expect(sha256(readFileSync(new URL("_spec/evidence/ml-adjutant-phase1/baseline-report.json", REPOSITORY_ROOT)))).toBe(ORIGINAL_BASELINE_SHA256);
+    expect(sha256(readFileSync(new URL("_spec/evidence/ml-adjutant-phase1/verification.json", REPOSITORY_ROOT)))).toBe(ORIGINAL_VERIFICATION_SHA256);
   });
 
   it("records semantic parity for an independently executed rerun of each scheduled case", () => {
@@ -49,5 +53,12 @@ describe("persisted exhaustive Phase1 baseline evidence", () => {
       expect(entry.firstSha256).toBe(sha256(normalizeEvidence(report.rows[index]!)));
       expect(entry.rerunSha256).toBe(entry.firstSha256);
     }
+  });
+
+  it("preserves all 54 original semantic executions across the pin-partition migration", () => {
+    const comparison = compareBaselineReports(report, current);
+    expect(comparison.passed).toBe(true);
+    expect(comparison.comparisons).toHaveLength(54);
+    expect(comparison.comparisons.every((entry) => entry.equal && entry.originalIntegrity && entry.currentIntegrity)).toBe(true);
   });
 });
