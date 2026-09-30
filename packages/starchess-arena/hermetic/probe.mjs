@@ -1,0 +1,33 @@
+// SPEC: _spec/packages/starchess-arena/ml-adjutant-phase2.puml
+import assert from 'node:assert/strict';
+import { execFileSync } from 'node:child_process';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { networkInterfaces } from 'node:os';
+import { verifyDependencies } from './closure.mjs';
+import { dependencyManifest } from './manifest.mjs';
+import { outputTarget } from './policy.mjs';
+
+assert.equal(process.getuid(), 10001);
+assert.equal(process.getgid(), 10001);
+assert(Object.values(networkInterfaces()).flat().every((iface) => iface.internal));
+const status = readFileSync('/proc/self/status', 'utf8');
+assert.match(status, /^CapEff:\s+0+$/m);
+assert.match(status, /^NoNewPrivs:\s+1$/m);
+assert.throws(() => writeFileSync('/app/must-not-write', 'forbidden'), { code: 'EROFS' });
+assert.throws(() => writeFileSync('/pnpm/store/must-not-write', 'forbidden'), { code: 'EROFS' });
+for (const path of ['/tmp/home', '/tmp/cache', '/tmp/config', '/tmp/data', '/tmp/pnpm', '/tmp/test']) mkdirSync(path, { recursive: true });
+const before = dependencyManifest();
+const expected = JSON.parse(readFileSync('/hermetic-evidence/dependencies.json', 'utf8'));
+assert.equal(before.installedSha256, expected.installedSha256);
+assert.equal(before.frozenStore.sha256, expected.frozenStore.sha256);
+const arena = '/app/packages/starchess-arena';
+writeFileSync('/tmp/test/direct.ts', 'const actual: number = 6 * 7; if (actual !== 42) throw new Error("tsx failed");\n');
+execFileSync(`${arena}/node_modules/.bin/tsx`, ['/tmp/test/direct.ts'], { stdio: 'inherit' });
+writeFileSync('/tmp/test/runtime.test.ts', 'import { it, expect } from "/app/packages/starchess-arena/node_modules/vitest/dist/index.js"; it("transforms TypeScript in an offline read-only container", () => { const actual: number = 6 * 7; expect(actual).toBe(42); });\n');
+writeFileSync('/tmp/test/config.mts', 'export default { root: "/tmp/test", cacheDir: "/tmp/cache/vite", test: { include: ["runtime.test.ts"], cache: false } };\n');
+execFileSync(`${arena}/node_modules/.bin/vitest`, ['run', '--config', '/tmp/test/config.mts', '--configLoader', 'native'], { cwd: '/tmp/test', stdio: 'inherit' });
+const after = dependencyManifest();
+assert.equal(before.installedSha256, after.installedSha256);
+assert.equal(before.frozenStore.sha256, after.frozenStore.sha256);
+assert.equal(before.tools.sha256, after.tools.sha256);
+writeFileSync(`${outputTarget}/probe.json`, JSON.stringify({ passed: true, closure: verifyDependencies(), installedSha256: after.installedSha256, frozenStoreSha256: after.frozenStore.sha256, toolsSha256: after.tools.sha256 }, null, 2) + '\n');
