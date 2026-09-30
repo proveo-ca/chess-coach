@@ -1,9 +1,12 @@
 # ML Adjutant — strict recorded-queue and live strategic challenge
 
 Status: **Phase 1 IMPLEMENTED and VERIFIED in `packages/starchess-arena` by tests and persisted
-baseline executions; both reviews READY: yes. Phases 2+ remain PLANNED and unimplemented.**
+baseline executions; both Phase 1 reviews READY: yes. Phase 2 implementation ACTIVE;
+final hermetic verification and both Phase 2 reviews PENDING. Phase 3+ PLANNED and unimplemented.**
 Owner roadmap: [PLAN-ml-adjutant.md](PLAN-ml-adjutant.md).
 Phase 1 boundary: [ml-adjutant-phase1.puml](../packages/starchess-arena/ml-adjutant-phase1.puml).
+Phase 2 boundary: [ml-adjutant-phase2.puml](../packages/starchess-arena/ml-adjutant-phase2.puml).
+FIRST-training/weights contract: [ml-adjutant-weights.md](ml-adjutant-weights.md).
 This document defines learned acceptance and records the separately verified non-learned baseline.
 The lead reports adversarial READY: yes with no remaining findings and security READY: yes
 for the trusted non-learned scope. No trained artifact or learned PASS is claimed.
@@ -167,7 +170,8 @@ and canonical-key tie-breaking. It does not reuse strategic candidates, learn we
 alternate proposals from hidden admission results. A selected rejection fails the case.
 Candidate memory is sightings-only, separate from opening-seeded strategic KVS and other
 host-private strategic ledgers; those ledgers must not supply candidate history.
-Numeric features, training, learned models/artifacts, and browser integration remain phases 2+.
+Phase 2 codecs/numeric features now exist, with final verification pending; training, learned models/artifacts,
+and browser integration remain unimplemented. These new contracts do not expand `baseline-v1` generation.
 Phase 1 emits `modelArtifact = null`, `learnedGateEligible = false`, `fallbackCount = 0`;
 baseline performance validates plumbing and comparison only, never learned acceptance.
 
@@ -187,6 +191,38 @@ the same inference seed. Vary hidden placement/mines, enemy queue/bank, and reco
 Candidate generation must use authorized inputs; audit any reuse of `strategicCandidates`.
 Do not give the policy repeated hidden-state admission probes or select another candidate using
 a hidden admission response.
+
+### Phase 2 contract and FIRST-training boundary
+
+Inspected `src/challengeContract/{validation,observationCodec,candidateCodec,features,coverage}.ts`
+versions strict observations, ordered candidate intents, requested own spend, canonical ranking, and named features.
+Current dimensions are observation **1623**, action row **64**, ranker **158**; weights **NONE**.
+`baselineScore` is handcrafted, not learned and not a feature. The codec supports seven kinds;
+the generator covers only classical singletons, Marine deployment singletons at B, and pass.
+The **65-action encoding limit** proves neither legality nor exhaustive combinations.
+
+Executor chose **Broader first trained ranker**, not training directly on these minimal v1 summaries.
+Before FIRST Phase 3 training, freeze a separately versioned combination generator and v2 economic/positional
+interactions, own paid-investment/loss lineage ledger, and confirmed opponent-loss lower bounds with uncertainty.
+Weights are shared named-feature coefficients `s_w(h,c)=wᵀφ_version(h,c)`, never one entry per move or tree node.
+Observation-constant terms cancel in linear comparisons, so context must interact with candidate features.
+Rules/gas/mineral costs are never learned. Exact v2 names/dimensions/budgets remain unsettled until freeze.
+
+Start at **H=1**. A separate future milestone covers conditional plans across up to **three simultaneous
+planning windows** using future authorized observations, history, and belief/opponent hypotheses.
+Chips do not consume planning ordinals. Distinguish exact conceptual domains from finite versioned beam budgets;
+ban future traces, actual private queues, full hidden state, and policy-side hidden admission probes.
+
+Distinguish requested spend, actual own paid investment lost, and replacement value; endowed opening units
+and free promotions are not paid investments. Opponent fog disappearance is not confirmed destruction,
+and confirmed loss lower bounds never reveal an exact enemy bank or privileged KVS ledger.
+Unknown ray blockers remain uncertain, confidence stays categorical without a calibrated forecast,
+and exploration novelty proxies are not entropy reduction. The weights contract specifies these requirements.
+
+The proposed training objective uses stable softmax, actual candidate-side outcome/queue-failure rewards,
+an action-independent previous-episode-mean baseline, and `L=-A Σ log π + λ||w||²/2`.
+Initialization/optimizer/seeds/provenance and an externally hashed, finite, exactly name-aligned artifact remain planned.
+No 158-value artifact, trained performance, online updates, model fallback, or registry activation is promised here.
 
 The policy ranks observation-safe proposed queues; enumeration does not guarantee legality.
 Host `addScAction`/gas/mineral checks remain authoritative. In the learned gate a rejected
@@ -217,6 +253,8 @@ Pin before gate execution:
 - Candidate artifact SHA-256, training provenance, and learned-ranker configuration.
 - Core rules revision, benchmark adapter revision, and strategic script revision.
 - Observation/feature and candidate enumeration/ordering versions.
+- Own-loss/opponent-knowledge versions, v2 names/scales/interactions, separate combination-generator version,
+  horizon and finite generation/search configuration before learned evaluation.
 - Opening, complete schedule, arena RNG convention, and inference seed 0 per match.
 - Numerical inference/match watchdog budgets in versioned harness configuration.
 
@@ -261,6 +299,37 @@ Recorded White rejection details must match current-rule staging of that window.
 the temporary file, and fsyncs the containing directory; it never overwrites an existing report.
 Test budget overrides do not establish a standard-budget baseline result.
 
+### Phase 2 pin migration and hermetic execution — final checks PENDING
+
+Executor selected partitioned execution pins then a hermetic image, with pull/build downloads approved.
+`challenge/sourceInventory.ts` inventories all declared root files in execution (all core and arena source
+except contracts, excluding package tests), contracts (`challengeContract`), and diagnostics (root scripts/hermetic).
+The AST import audit covers relative/declared external/workspace imports, worker loading, and explicitly supported
+loader patterns, including the declared esbuild closure case; it does not certify arbitrary computed loaders.
+`challenge-execution-pins-v2` carries partition/config hashes; tests, installed modules, tools, store, and captured
+source bytes receive additional hermetic manifests outside the project pin. Do not assert a fixed source count.
+
+Preserve Phase 1 original report SHA-256
+`940387370040f88888e9dfe0bb86ad9d4a8be88854df507120f34b22ee2d362b`
+and original verification SHA-256
+`55d965afa71d775ff6ee1e95b6650a27d0ce759b966a81c43a3bb364236c7508`.
+Produce a new Phase 2 baseline with **54 current executions + 54 reruns** and compare all 54 rows semantically
+against the original report using `pinMigration.ts`. Never overwrite or retrofit Phase 1 evidence.
+Persist contract/coverage/migration reports before suites; only publish final verification after all checks succeed.
+Final Phase 2 execution/parity/coverage is not yet claimed.
+
+The lead reports the **dependency image verified**: official Node **22.23.2** `linux/amd64` platform digest
+`sha256:43aeff40f4afc22e83f7589a2f37e111cff5ca84529571f1c8415bcc5fcc21b2`, pnpm **10.33.0**
+tool byte pin, **126 locked packages**, fresh-store acquisition and offline frozen install with network none.
+The **final source image is NOT BUILT**. It must capture frozen source/tests/config/corpus/Phase 1 evidence,
+verify separate source/dependency/store/tool manifests, and run restricted/no-network/read-only with dedicated evidence output.
+The final typechecks/suites, migration, manifest rechecks, PlantUML validation, and adversarial/security reviews are PENDING.
+
+Lead-reported preliminary host coverage is **18/282 exact queues**, **204/576 singleton intents**,
+**282/282 reference codec and feature encodings**, and **48 maximum proposals**.
+These counts describe historical White observations and structural membership, not live counterplay,
+admission, exhaustive combinations, learned success, or final hermetic verification.
+
 No model updates, configuration tuning, trace replacement, or strategic candidate fallback may
 occur within the gate. A changed artifact/configuration requires rerunning the whole gate.
 Missing model/runtime or nonfinite scores fail; product fallback cannot earn learned wins.
@@ -286,7 +355,8 @@ All ten Phase 1 integrity-test files now exist and passed as recorded in
 **164 tests / 17 files after all source and test changes**; core passed **426 / 53**;
 both typechecks and the direct strict test TypeScript check passed. Actual paths and purposes are
 listed in [PLAN-ml-adjutant.md](PLAN-ml-adjutant.md#planned-verification-and-pending-ownership).
-Phase 2 feature encoders and Phase 3–4 learned execution checks below remain planned;
+Phase 2 feature encoders now exist but their final hermetic verification/reviews remain pending;
+broader generator/v2 ledger/interaction tests and Phase 3–4 learned execution checks remain planned.
 Phase 1 tests do not implement or verify a trained policy. The lead reports both Phase 1
 reviews READY: yes; adversarial has no remaining findings and security covers trusted non-learned execution.
 

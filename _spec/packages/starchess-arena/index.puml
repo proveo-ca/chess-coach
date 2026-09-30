@@ -1,8 +1,19 @@
-@startuml index
-' SPEC: _spec/packages/starchess-arena/index.puml
 ' purpose: StarChess script-arena spec map (packages/starchess-arena).
 ' covers: packages/starchess-arena/src/index.ts
+' covers: packages/starchess-arena/src/challenge/**
+' covers: packages/starchess-arena/src/challengeContract/**
+' covers: scripts/challenge-contract-evidence.ts
+' covers: packages/starchess-arena/hermetic/**
 ' see also: arena.puml (the runner itself)
+' related: _spec/_plans/PLAN-ml-adjutant.md
+' related: _spec/_plans/ml-adjutant-challenge.md
+' related: _spec/_plans/ml-adjutant-weights.md
+' legacy rationale: What the arena measures is a spec question, not just a runner question.
+' legacy rationale: Scripts live under _spec/apps/starchess/core/adjutant/; omitted per-side inputs change results without changing scripts.
+' legacy history: The previous map called out ccIntel forwarding; arena.puml owns that legacy runner concern, not the isolated challenge.
+' source pointers: optional corroboration; spec-side covers headers own drift coverage.
+' rendering: PENDING for the updated map.
+@startuml index
 !include ../../themes/proveo.puml
 
 skinparam packageStyle rectangle
@@ -12,6 +23,8 @@ title StarChess Arena · Spec Map (_spec/packages/starchess-arena)
 
 package "_spec/packages/starchess-arena" {
   component "arena.puml\nheadless match runner" as ARENA <<app>>
+  component "ml-adjutant-phase1.puml\nverified non-learned historical baseline" as PHASE1 <<app>>
+  component "ml-adjutant-phase2.puml\nACTIVE codecs / pins / hermetic boundary\nfinal verification and reviews PENDING" as PHASE2 <<app>>
 }
 
 package "packages/starchess-arena/src" {
@@ -21,7 +34,12 @@ package "packages/starchess-arena/src" {
   component "record/record.ts" as REC <<app>>
   component "compare/compare.ts" as CMP <<app>>
   component "cli/main.ts" as CLI <<app>>
+  component "challenge/\nisolated strict challenge host" as CHALLENGE <<host>>
+  component "challengeContract/\ncodecs / named features / coverage" as CONTRACT <<app>>
 }
+
+component "scripts/challenge-contract-evidence.ts\ncontract and migration diagnostics" as DIAGNOSTIC <<host>>
+component "packages/starchess-arena/hermetic\ndependency verified (lead-reported)\nfinal source image NOT BUILT" as HERMETIC <<host>>
 
 package "packages/starchess-core/src (shared)" {
   component "replay/{fen,record}.ts · rules/economy.ts" as CORE <<app>>
@@ -36,6 +54,11 @@ package "apps/starchess" {
 }
 
 ARENA ARROW_MAIN RUN
+PHASE1 ARROW_MAIN CHALLENGE
+PHASE2 ARROW_MAIN CONTRACT
+PHASE2 ARROW_MAIN CHALLENGE : source inventory / pin migration
+PHASE2 ARROW_MAIN DIAGNOSTIC
+PHASE2 ARROW_MAIN HERMETIC
 ARENA ARROW_MAIN PL
 ARENA ARROW_MAIN REC
 ARENA ARROW_OPTIONAL CMP
@@ -46,14 +69,9 @@ CORE ARROW_MAIN RUN : income · projector · record
 FEEDIMPL ARROW_MAIN FEED : implements
 CLI ARROW_OPTIONAL FEEDIMPL : --engine runs
 
-note bottom
-  Arena package stays DOM/worker/fetch-free. ""// SPEC:"" refs live in the
-  source files that realize each spec.
-
-  **What the arena measures is a spec question, not just a runner question.**
-  The scripts it pits against each other are specified under
-  ""_spec/apps/starchess/core/adjutant/"", so a per-side input the player forgets
-  to forward changes the result without changing either script. One such gap is
-  live today — ""ccIntel"" — and ""arena.puml"" records it against the exact lines.
+note bottom of PHASE2
+  v1 features: weights NONE
+  Broader v2 FIRST training: PLANNED
+  H=1 first; three-window search later
 end note
 @enduml

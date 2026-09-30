@@ -1,0 +1,122 @@
+' purpose: Phase 2 authorized codecs and features, partitioned pins, and hermetic verification boundary.
+' covers: packages/starchess-arena/src/challengeContract/**
+' covers: packages/starchess-arena/src/challenge/**
+' covers: packages/starchess-arena/src/__tests__/challenge*.test.ts
+' covers: scripts/**
+' covers: packages/starchess-arena/hermetic/**
+' status: ACTIVE implementation; final verification and adversarial/security reviews PENDING.
+' related: _spec/_plans/PLAN-ml-adjutant.md
+' related: _spec/_plans/ml-adjutant-challenge.md
+' related: _spec/_plans/ml-adjutant-weights.md
+' related: _spec/packages/starchess-arena/ml-adjutant-phase1.puml (verified historical baseline)
+' decision: FIRST Phase 3 training requires broader versioned combinations and v2 authorized economic/positional interactions; horizon 1.
+' later: three conditional planning windows are a separate future milestone; no training/model/artifact/registry activation here.
+' boundary: codec representability is not proposal completeness or private host admission.
+' boundary: baselineScore remains handcrafted and excluded from features; no learned weights exist.
+' boundary: a selected proposal receives one private whole-queue admission, never hidden probes or rescue.
+' pin scope: project source inventory excludes tests; separate hermetic capture retains source/tests, dependency/store/tool bytes.
+' import audit: supported AST imports/workspace edges/worker URL and declared esbuild closure loader; not arbitrary computed-loader analysis.
+' assurance: dependency image lead-reported verified; final source image not built; Phase 2 evidence not yet verified.
+' rendering: PENDING; vendored identity theme follows the existing Phase 1 diagram.
+@startuml ml-adjutant-phase2
+!include ../../themes/proveo.puml
+title StarChess arena · ML Adjutant Phase 2 — ACTIVE, verification/reviews PENDING
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+component "src/challenge/observation.ts\nAuthorizedObservation / side sightings" as OBSERVE <<app>>
+component "src/challenge/baseline.ts\nbaseline-v1 proposals / fixed scores" as BASELINE <<app>>
+component "src/challenge/admission.ts\nstageQueue / commitPair" as ADMISSION <<host>>
+
+package "packages/starchess-arena/src/challengeContract" {
+  component "validation.ts\nContractError / strict schema" as VALIDATE <<app>>
+  component "observationCodec.ts\nencodeObservation / decodeObservation" as OBS_CODEC <<app>>
+  component "candidateCodec.ts\nencodeCandidate / decodeCandidate\nencodeBaselineCandidates / comparator" as CAND_CODEC <<app>>
+  component "features.ts\nFEATURE_SCHEMA / encodeFeatures" as FEATURES <<app>>
+  component "coverage.ts\nmeasureCoverage / historical population" as COVERAGE <<host>>
+}
+
+package "packages/starchess-arena/src/challenge" {
+  component "sourceInventory.ts\ncollectSourceInventory / AST audit" as INVENTORY <<host>>
+  component "evidence.ts\nexecutionPins v2 / runBaselineSuite" as PINS <<host>>
+  component "pinMigration.ts\ncreateMigration / compareBaselineReports" as MIGRATION <<host>>
+}
+
+component "scripts/challenge-contract-evidence.ts\ncontract / migration / coverage reports" as DIAGNOSTIC <<host>>
+database "_spec/evidence/ml-adjutant-phase1\nimmutable baseline / verification bytes" as ORIGINAL <<db>>
+
+package "packages/starchess-arena/hermetic" {
+  component "pins.json / Dockerfile\nNode platform digest / pnpm tool bytes" as IMAGE_PINS <<host>>
+  component "context.mjs / manifest.mjs\nallowlist capture / artifact manifests" as CAPTURE <<host>>
+  component "closure.mjs / probe.mjs\ndependency closure / runtime checks" as PROBES <<host>>
+  component "run.mjs / policy.mjs\nimage-ID selection / restricted container" as RUNNER <<host>>
+  component "runtime.mjs\nverify / baseline / diagnostics / checks" as RUNTIME <<host>>
+}
+
+OBSERVE ARROW_MAIN OBS_CODEC : authorized facts only
+BASELINE ARROW_MAIN CAND_CODEC : singleton queues and pass
+VALIDATE ARROW_OPTIONAL OBS_CODEC : versions / unknowns / consistency
+VALIDATE ARROW_OPTIONAL CAND_CODEC : kind / timing / derived spend
+OBS_CODEC ARROW_MAIN FEATURES : validated observation
+CAND_CODEC ARROW_MAIN FEATURES : ordered intent rows
+OBS_CODEC ARROW_MAIN COVERAGE : historical authorized observations
+CAND_CODEC ARROW_MAIN COVERAGE : reference membership / representability
+FEATURES ARROW_MAIN COVERAGE : named finite arrays
+CAND_CODEC ARROW_OPTIONAL ADMISSION : selected queue; admission stays private
+INVENTORY ARROW_MAIN PINS : execution / contracts / diagnostics hashes
+PINS ARROW_MAIN DIAGNOSTIC : current pins and baseline binding
+COVERAGE ARROW_MAIN DIAGNOSTIC : deterministic measurements
+ORIGINAL ARROW_MAIN MIGRATION : original byte pins
+MIGRATION ARROW_MAIN DIAGNOSTIC : 54 original/current semantic comparisons
+IMAGE_PINS ARROW_MAIN CAPTURE : frozen dependency toolchain
+CAPTURE ARROW_MAIN PROBES : source / installed tree / store / tools
+RUNNER ARROW_MAIN RUNTIME : final source image required
+PROBES ARROW_OPTIONAL RUNTIME : pre/post immutable manifests
+RUNTIME ARROW_MAIN PINS : 54 current executions + 54 reruns
+RUNTIME ARROW_MAIN DIAGNOSTIC : generated baseline input
+
+note bottom of FEATURES
+  challenge-features-v1
+  observation = 1623; action = 64
+  ranker = 158; weights = NONE
+end note
+
+note bottom of CAND_CODEC
+  Seven action kinds; ordered B/C/F intents
+  MAX_QUEUE_ACTIONS = 65: encoding only
+  baselineScore: separate, handcrafted
+end note
+
+note bottom of COVERAGE
+  Historical membership / encoding metrics
+  Final hermetic verification: PENDING
+end note
+
+note bottom of INVENTORY
+  execution: core + arena, excluding tests
+  contracts: arena challengeContract
+  diagnostics: scripts + arena hermetic
+end note
+
+note bottom of RUNNER
+  Network none; root filesystem read-only
+  UID 10001; capabilities dropped
+  Writable evidence + temporary storage
+  No runtime dependency installation
+end note
+
+note bottom of RUNTIME
+  Final source image: NOT BUILT
+  Static checks / suites / parity: PENDING
+  Adversarial / security reviews: PENDING
+end note
+
+legend bottom
+  ACTIVE Phase 2 source is not verified completion or learned acceptance.
+  Phase 1 evidence remains immutable; Phase 2 uses a new baseline and pin migration report.
+  Dependency image: lead reports verification with 126 locked packages and offline frozen install.
+  FIRST Phase 3 training: broader versioned generator + v2 interactions/own ledger/confirmed-loss uncertainty, H=1.
+  Three-window conditional search remains separate future work. No trained coefficients or playable ML player.
+endlegend
+@enduml

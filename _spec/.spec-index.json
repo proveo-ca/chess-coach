@@ -198,7 +198,11 @@
     {
       "spec": "_spec/packages/starchess-arena/index.puml",
       "covers": [
-        "packages/starchess-arena/src/index.ts"
+        "packages/starchess-arena/src/index.ts",
+        "packages/starchess-arena/src/challenge/**",
+        "packages/starchess-arena/src/challengeContract/**",
+        "scripts/challenge-contract-evidence.ts",
+        "packages/starchess-arena/hermetic/**"
       ],
       "fingerprint": null
     },
@@ -214,6 +218,17 @@
         "packages/starchess-arena/src/__tests__/corpusManifest.test.ts",
         "packages/starchess-arena/src/__tests__/fixtures/challenge*.ts",
         "_spec/evidence/ml-adjutant-phase1/*.json"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/packages/starchess-arena/ml-adjutant-phase2.puml",
+      "covers": [
+        "packages/starchess-arena/src/challengeContract/**",
+        "packages/starchess-arena/src/challenge/**",
+        "packages/starchess-arena/src/__tests__/challenge*.test.ts",
+        "scripts/**",
+        "packages/starchess-arena/hermetic/**"
       ],
       "fingerprint": null
     },

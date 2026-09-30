@@ -23,8 +23,23 @@ Evidence:
 All 54 semantic reruns match; candidate wins remain 0/18 corpus and 0/36 live strategic.
 This completes the non-learned harness baseline, not learned acceptance.
 The lead will run final PlantUML `checkonly` after the spec edits.
-Numeric features, training, learned models/artifacts, and browser rollout remain unimplemented
-phases 2+ of that roadmap; this planning-only evolution ladder does not mark them shipped.
+Phase 2 implementation is ACTIVE in arena; final hermetic verification and adversarial/security reviews are PENDING:
+[`ml-adjutant-phase2.puml`](_spec/packages/starchess-arena/ml-adjutant-phase2.puml).
+Executor chose **Broader first trained ranker**:
+[`ml-adjutant-weights.md`](_spec/_plans/ml-adjutant-weights.md).
+FIRST Phase 3 training requires a separately versioned combination generator and v2 authorized
+economic/positional interactions, own-loss lineage ledger, and confirmed opponent-loss lower bounds with fog uncertainty.
+Current named feature arrays (ranker 158 / action 64 / observation 1623) have **no weights** and are not adequate
+for that first trained ranker. Start at H=1; three conditional simultaneous planning windows are separate future work.
+Training, learned models/artifacts, and browser rollout remain unimplemented; registry entries stay EMPTY/unavailable.
+
+Executor selected three-partition execution pins then a hermetic image and approved pull/build downloads.
+The lead reports dependency-image verification (official Node 22.23.2 platform digest, pnpm 10.33.0 tool bytes,
+126 locked packages, fresh store and offline frozen install with network none).
+The final source image is NOT BUILT. Final Phase 2 evidence must run 54 current matches + 54 reruns under v2 pins,
+compare all 54 original rows, preserve Phase 1 bytes, and pass hermetic/static/tests/review checks.
+Preliminary host coverage is not final verification. See the strict roadmap for exact pins and pending handoff.
+This historical evolution ladder does not override the authorized-observation/no-fallback challenge contracts.
 
 This replaces the prior standalone-migration PLAN (Phases 1–6 are done).
 
@@ -190,7 +205,8 @@ for episode in 1..N:
 Constraints specific to StarChess:
 
 - Simultaneous turns → each “ply” is a **pair of queues**, not alternating chess moves. The policy must output a *plan* (0–2 actions + timings), not one classical move.
-- Fog: training can use perfect information first; later train a **belief / fog-faithful** policy that only sees `getSideVision`.
+- Fog: the strict learned challenge trains and infers on authorized observations/history from the first run.
+  Perfect-information experiments cannot substitute for that gate.
 - Minerals live outside SCFEN today — the self-play host must carry economy state next to the snapshot (same as live Single Player).
 
 **No:** “plays itself” does not by itself create a neural net. It only creates **experience**.
@@ -280,7 +296,8 @@ Non-goals until later: full MCTS at web latency, fog belief nets, multi-agent po
 
 ## Design constraints (do not violate)
 
-1. **One rules engine** — learning only selects among legal `addScAction` outcomes.
+1. **One rules engine** — learning selects an observation-safe proposal; the host privately admits it via
+   `addScAction` and exact gas/mineral rules. Enumeration is not admission; selected rejection fails the learned gate.
 2. **Heuristic remains** — Easy / demos / tests stay deterministic Adjutant.
 3. **Pure core** — training I/O and model weights live outside `starchess-core` rule purity; core may load a `ScoreFn` interface.
 4. **Replay format first** — settled snapshots + queued plans + economy are the dataset schema before any net architecture bikeshed.
