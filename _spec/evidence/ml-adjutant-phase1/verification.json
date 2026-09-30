@@ -3,6 +3,7 @@
   "baselineReport": "_spec/evidence/ml-adjutant-phase1/baseline-report.json",
   "baselineReportSha256": "940387370040f88888e9dfe0bb86ad9d4a8be88854df507120f34b22ee2d362b",
   "verification": [
+    { "command": "plantuml -checkonly _spec/packages/starchess-arena/ml-adjutant-phase1.puml", "result": "passed" },
     { "command": "pnpm --filter @chess-coach/starchess-arena typecheck", "result": "passed" },
     { "command": "pnpm --filter @chess-coach/starchess-arena test", "result": "passed", "files": 17, "tests": 164 },
     { "command": "pnpm --filter @chess-coach/starchess-core typecheck", "result": "passed" },

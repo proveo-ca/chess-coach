@@ -17,7 +17,7 @@
 ' baseline report SHA-256: 940387370040f88888e9dfe0bb86ad9d4a8be88854df507120f34b22ee2d362b
 ' transport: spawned stdin/stdout JSONL pipes; no Node process.send channel.
 ' evidence boundary: manifest v1 historical Phase 0 pending statuses remain unchanged; the separate execution report supersedes them for this measured baseline only.
-' rendering: lead reports initial diagram passed plantuml -checkonly; this revised diagram needs a fresh checkonly.
+' rendering: final diagram passed plantuml -checkonly.
 ' later: numeric features, training, learned model/artifact, and browser integration remain unimplemented phases 2+.
 @startuml ml-adjutant-phase1
 !include ../../themes/proveo.puml
@@ -203,7 +203,7 @@ legend bottom
   Corpus: 0 wins, 2 terminal losses, 16 queue-rejection failures; live: 0 wins, 36 terminal losses.
   executionIntegrity = true; learnedGateEligible = false; learnedChallengePass = false.
   Lead reports adversarial READY: yes, no remaining findings; security READY: yes, trusted non-learned scope.
-  No learned acceptance or universal trace-compatibility claim; final checkonly belongs to the lead.
+  No learned acceptance or universal trace-compatibility claim; final PlantUML checkonly passed.
   Numeric features, training, learned artifacts, and browser integration remain phases 2+.
 endlegend
 @enduml

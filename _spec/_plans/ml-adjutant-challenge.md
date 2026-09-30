@@ -334,9 +334,8 @@ The report pins rules, challenge/CLI sources, strategic/ledger sources, dependen
 configuration, Node version, final watchdogs, schedule, and RNG conventions.
 The independent verification record binds raw report SHA-256
 `940387370040f88888e9dfe0bb86ad9d4a8be88854df507120f34b22ee2d362b`.
-The lead reports the initial PlantUML `checkonly` passed; the revised diagram needs fresh
-validation by the lead after this final spec edit. Adversarial and security rereviews are
-lead-reported **READY: yes** within the trusted non-learned Phase 1 scope.
+The final Phase 1 PlantUML diagram passed `checkonly`. Adversarial and security rereviews are
+**READY: yes** within the trusted non-learned Phase 1 scope.
 
 If all clauses pass, say **100% wins on the pinned 18-case corpus and 36-match live strategic
 suite**. If any clause fails, say FAIL and identify it; do not exclude the failing case to retain

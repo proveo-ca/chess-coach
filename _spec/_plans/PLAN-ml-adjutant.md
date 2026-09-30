@@ -5,7 +5,7 @@ Phase 0 provenance is **IMPLEMENTED** with persisted audit verification.
 Phase 1 is **IMPLEMENTED and VERIFIED in `packages/starchess-arena`** by tests and persisted
 baseline execution evidence. The lead reports both Phase 1 reviews **READY: yes**:
 adversarial has no remaining findings; security approves the trusted non-learned scope.
-The lead will run final PlantUML `checkonly` after these spec edits.
+The final Phase 1 PlantUML diagram passed `checkonly`.
 Phases 2–4 and optional phases 5–6 remain **PLANNED and unimplemented**.
 Core `ai/definitions.ts` now owns all five IDs, canonical labels, and derived guards.
 The app implements disabled placeholder entries and explicit unavailable admission for known
@@ -258,7 +258,7 @@ retention does not expose identity, results, metadata, or future queues to `Cand
 | Core full suite / typecheck | **53 files / 426 tests passed; typecheck passed** |
 | Direct strict TypeScript check of challenge tests | **Passed**; exact command and workdir in verification.json |
 | Full-suite CLI with `--suite all --rerun` | **54 supervised first executions + 54 reruns; 54/54 semantic comparisons equal** under final pins |
-| PlantUML initial diagram | Lead reports **`plantuml -checkonly` passed**; the final diagram edits require a fresh checkonly |
+| PlantUML final diagram | **`plantuml -checkonly` passed** |
 | Phase 1 adversarial rereview | Lead reports **READY: yes**, no remaining findings |
 | Phase 1 security rereview | Lead reports **READY: yes** for trusted non-learned execution |
 
