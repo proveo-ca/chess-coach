@@ -168,6 +168,8 @@ describe("partitioned challenge source inventory", () => {
     ['import * as mod from "node:module"; const load = mod.createRequire(import.meta.url); load(variable);', "Computed module loader"],
     ['import { createRequire } from "node:module"; createRequire(import.meta.url)(variable);', "Computed module loader"],
     ['import { createRequire } from "node:module"; const load = createRequire(import.meta.url); load(variable);', "Computed module loader"],
+    ['import { createRequire } from "node:module"; Reflect.apply(createRequire(import.meta.url), null, [variable]);', "Unsupported loader escape"],
+    ['import * as mod from "node:module"; const { "createRequire": make } = mod; const load = make(import.meta.url); load("../challengeContract/codec");', "Unsupported loader destructuring"],
   ])("rejects unauditable or excluded module edge %s", (code, message) => {
     const root = fixture();
     put(root, `${CORE}/src/__tests__/hidden.ts`, "export {};\n");

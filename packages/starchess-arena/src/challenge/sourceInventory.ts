@@ -241,7 +241,8 @@ export const collectSourceInventory = (
       if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) && node.initializer &&
           (loader(node.initializer) || ts.isCallExpression(node.initializer) && factory(node.initializer.expression))) requireNames.add(node.name.text);
       if (ts.isVariableDeclaration(node) && node.initializer && ts.isIdentifier(node.name) && factory(node.initializer)) requireFactories.add(node.name.text);
-      if (ts.isVariableDeclaration(node) && node.initializer && !ts.isIdentifier(node.name) && (loader(node.initializer) || factory(node.initializer))) throw new Error(`Unsupported loader destructuring: ${file.path}`);
+      if (ts.isVariableDeclaration(node) && node.initializer && !ts.isIdentifier(node.name) && (loader(node.initializer) || factory(node.initializer) ||
+        (ts.isIdentifier(node.initializer) && moduleNamespaces.has(node.initializer.text)))) throw new Error(`Unsupported loader destructuring: ${file.path}`);
       ts.forEachChild(node, scanBindings);
     };
     scanBindings(source);
@@ -256,6 +257,13 @@ export const collectSourceInventory = (
         if (!declaration && !directCall && !alias && !resolver && !memberName) throw new Error(`Unsupported loader escape: ${file.path}`);
       }
       if (ts.isPropertyAccessExpression(node) && ["bind", "call", "apply"].includes(node.name.text) && (loader(node.expression) || factory(node.expression))) throw new Error(`Unsupported loader escape: ${file.path}`);
+      if (ts.isCallExpression(node) && (factory(node.expression) || loader(node.expression))) {
+        const parent = node.parent;
+        const assigned = ts.isVariableDeclaration(parent) && parent.initializer === node && ts.isIdentifier(parent.name);
+        const invoked = ts.isCallExpression(parent) && parent.expression === node;
+        const resolved = ts.isPropertyAccessExpression(parent) && parent.expression === node && parent.name.text === "resolve";
+        if (!assigned && !invoked && !resolved) throw new Error(`Unsupported loader escape: ${file.path}`);
+      }
       if (ts.isImportDeclaration(node) || ts.isExportDeclaration(node)) {
         if (node.moduleSpecifier) {
           const specifier = literal(node.moduleSpecifier);
