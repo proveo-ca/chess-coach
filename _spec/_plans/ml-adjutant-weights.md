@@ -1,6 +1,6 @@
 # ML Adjutant — weights, combination coverage, and planning horizons
 
-Status: **PLANNED learning contract; Phase 2 implementation ACTIVE, verification and reviews PENDING.**
+Status: **PLANNED learning contract. Phase 2 hermetic verification PASSED. This is not a learned PASS. Post-image adversarial and security rereview is not yet recorded.**
 Executor selected **Broader first trained ranker**. The FIRST Phase 3 training run requires
 a separately versioned combination generator and authorized economic/positional interactions,
 including an own-loss lineage ledger and confirmed opponent-loss knowledge with explicit fog uncertainty.
@@ -65,12 +65,13 @@ Feature arrays and normalization scales live in `FEATURE_SCHEMA`; this plan does
 Current memory records sightings by square, not unique enemy identities, paid investments, or confirmed destruction.
 The own-loss lineage ledger and opponent confirmed-loss schema remain **pending**.
 
-**Lead-reported preliminary host coverage, not final hermetic evidence:**
+**Persisted in-image coverage, not winning coverage:**
 18/282 exact recorded queues; 204/576 singleton intents; 282/282 reference queues structurally encode;
 282/282 reference feature encodings; maximum 48 baseline proposals.
 The population is recorded White authorized historical observations, not live counterplay or legal/winning completeness.
 The fourteen both-seat/seven-kind fixtures exercise structural encoding, not legal or tactical coverage.
-Do not promote these counts to verified Phase 2 acceptance until final source-image checks persist them.
+These counts are representability. They are persisted in the imported Phase 2 coverage report.
+They do not establish a learned PASS or FIRST-training readiness.
 
 ## 3. All actions and all combinations: exact domain versus bounded implementation
 
@@ -270,4 +271,8 @@ Product fallback remains separate future work. The strict denominator remains 18
 | Challenge | All 54 cases retained, integrity and semantic reruns, actual terminal truth, strict failures; no held-out claim for the training-used corpus. |
 
 These tests are acceptance requirements, not existing passing test results.
-Phase 2 final hermetic execution, static checks, PlantUML rendering, adversarial review, and security review remain PENDING.
+Phase 2 hermetic execution passed. Weights remain NONE.
+The broader combination generator and authorized economy/position interactions remain a Phase 3 prerequisite, not implemented.
+Three-turn planning remains a later milestone.
+Fresh PlantUML `checkonly` of the edited Phase 2 diagram belongs to the lead.
+Post-image adversarial and security rereview is not yet recorded.

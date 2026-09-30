@@ -22,8 +22,9 @@ Evidence:
 [`verification.json`](_spec/evidence/ml-adjutant-phase1/verification.json).
 All 54 semantic reruns match; candidate wins remain 0/18 corpus and 0/36 live strategic.
 This completes the non-learned harness baseline, not learned acceptance.
-The lead will run final PlantUML `checkonly` after the spec edits.
-Phase 2 implementation is ACTIVE in arena; final hermetic verification and adversarial/security reviews are PENDING:
+The Phase 1 diagram already passed `checkonly`. That fact does not cover the Phase 2 edit below.
+Phase 2 hermetic verification PASSED in arena. This is not a learned PASS.
+Post-image adversarial and security rereview is not yet recorded:
 [`ml-adjutant-phase2.puml`](_spec/packages/starchess-arena/ml-adjutant-phase2.puml).
 Executor chose **Broader first trained ranker**:
 [`ml-adjutant-weights.md`](_spec/_plans/ml-adjutant-weights.md).
@@ -33,12 +34,26 @@ Current named feature arrays (ranker 158 / action 64 / observation 1623) have **
 for that first trained ranker. Start at H=1; three conditional simultaneous planning windows are separate future work.
 Training, learned models/artifacts, and browser rollout remain unimplemented; registry entries stay EMPTY/unavailable.
 
-Executor selected three-partition execution pins then a hermetic image and approved pull/build downloads.
-The lead reports dependency-image verification (official Node 22.23.2 platform digest, pnpm 10.33.0 tool bytes,
-126 locked packages, fresh store and offline frozen install with network none).
-The final source image is NOT BUILT. Final Phase 2 evidence must run 54 current matches + 54 reruns under v2 pins,
-compare all 54 original rows, preserve Phase 1 bytes, and pass hermetic/static/tests/review checks.
-Preliminary host coverage is not final verification. See the strict roadmap for exact pins and pending handoff.
+The final source image is `sha256:54f85a0d129667d8d00975daaf0755c801a442eb1e0046797c403dcaea426f95`.
+The lead reports it reused dependency image `sha256:979ae1a1536d1beb0006ca8285a2a6f7a4b35c24c0ecb031b1e59935bdf156a0`.
+The official Node 22.23.2 bookworm-slim platform digest is
+`sha256:43aeff40f4afc22e83f7589a2f37e111cff5ca84529571f1c8415bcc5fcc21b2`.
+The image run passed network-none, read-only, and nonroot.
+Baseline 54 executions plus 54 reruns are semantically equal.
+`executionIntegrity` is true. `learnedGateEligible` is false.
+Results are unchanged: corpus 18 scheduled, 0 wins, 2 terminal losses, 16 queue-rejected;
+live strategic 36 scheduled, 0 wins, 36 terminal losses.
+Coverage is representability, not winning coverage: exact queues 18/282, singleton intents 204/576,
+codec 282/282, features 282/282.
+In-image vitest passed core 426/426 and arena 434/434.
+In-image core and arena typecheck passed, and the strict test `tsc` passed.
+The lead reports host-after-import arena 434 tests / 25 files and arena typecheck passed.
+Evidence is imported under `_spec/evidence/ml-adjutant-phase2/`. Phase 1 bytes are unchanged.
+The external archive SHA-256 `babe14d848bad14c13604736f2fa02c10f201d668388762b50d5440576187e3a`
+is not in the repo. The lead reports its path as `/tmp/opencode/starchess-hermetic-export-JNb7j0/image.tar`.
+Pre-freeze findings were fixed before this freeze. Post-image rereview is not recorded.
+Fresh PlantUML `checkonly` of the edited Phase 2 diagram belongs to the lead.
+See the strict roadmap for pins and the remaining review handoff.
 This historical evolution ladder does not override the authorized-observation/no-fallback challenge contracts.
 
 This replaces the prior standalone-migration PLAN (Phases 1–6 are done).

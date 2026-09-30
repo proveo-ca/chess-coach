@@ -257,7 +257,7 @@ export const collectSourceInventory = (
         if (!declaration && !directCall && !alias && !resolver && !memberName) throw new Error(`Unsupported loader escape: ${file.path}`);
       }
       if (ts.isPropertyAccessExpression(node) && ["bind", "call", "apply"].includes(node.name.text) && (loader(node.expression) || factory(node.expression))) throw new Error(`Unsupported loader escape: ${file.path}`);
-      if (ts.isCallExpression(node) && (factory(node.expression) || loader(node.expression))) {
+      if (ts.isCallExpression(node) && factory(node.expression)) {
         const parent = node.parent;
         const assigned = ts.isVariableDeclaration(parent) && parent.initializer === node && ts.isIdentifier(parent.name);
         const invoked = ts.isCallExpression(parent) && parent.expression === node;

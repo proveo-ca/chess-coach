@@ -6,7 +6,8 @@ Phase 1 is **IMPLEMENTED and VERIFIED in `packages/starchess-arena`** by tests a
 baseline execution evidence. The lead reports both Phase 1 reviews **READY: yes**:
 adversarial has no remaining findings; security approves the trusted non-learned scope.
 The final Phase 1 PlantUML diagram passed `checkonly`.
-Phase 2 implementation is **ACTIVE**; final hermetic verification and both reviews are **PENDING**.
+Phase 2 hermetic verification **PASSED**. This is not a learned PASS.
+Post-image adversarial and security rereview is **not yet recorded**.
 Phase 3 learning, Phase 4 learned acceptance, and optional phases 5–6 remain **PLANNED and unimplemented**.
 Core `ai/definitions.ts` now owns all five IDs, canonical labels, and derived guards.
 The app implements disabled placeholder entries and explicit unavailable admission for known
@@ -280,7 +281,7 @@ challenge; a report alone is not proof that all traces support winning counterpl
 
 ## Phase 2 — Authorized codecs/features, coverage, and partitioned execution pins
 
-**Status: ACTIVE implementation; final verification and adversarial/security reviews PENDING.**
+**Status: hermetic verification PASSED. Not a learned PASS. Post-image adversarial and security rereview is not yet recorded.**
 Owning diagram: [ml-adjutant-phase2.puml](../packages/starchess-arena/ml-adjutant-phase2.puml).
 Weights/future training boundary: [ml-adjutant-weights.md](ml-adjutant-weights.md).
 Executor selected partitioned execution pins, then a hermetic image, and approved pull/build downloads.
@@ -299,10 +300,11 @@ weights are **NONE**. `baselineScore` is handcrafted and not part of the feature
 Sums and position-weighted sums can collide; observation-only terms cancel in linear candidate comparisons.
 These v1 inputs do not satisfy the accepted broader FIRST-training requirements.
 
-**Lead-reported preliminary host coverage:** exact queues 18/282; singleton intents 204/576;
+**Persisted in-image coverage:** exact queues 18/282; singleton intents 204/576;
 reference codec and feature representability each 282/282; maximum 48 proposals.
 These historical White membership/encoding counts do not establish live counterplay, legal completeness,
-winning queues, or final hermetic acceptance. Reproduce and persist them under the final source image.
+or winning queues. They are representability, not winning coverage.
+The counts are persisted in [coverage.json](../evidence/ml-adjutant-phase2/coverage.json).
 
 ### Pin partition and import audit contract
 
@@ -339,31 +341,49 @@ verification.json SHA-256
 Write a **new Phase 2 baseline** under v2 pins, not a rewritten Phase 1 report.
 Require 54 current executions + 54 reruns, exact schedule/integrity, and semantic comparison with all
 54 original rows. Persist `contract-report.json`, `coverage.json`, and `pin-migration.json` only from that run;
-the runner publishes final `verification.json` after checks succeed. None of these final results is claimed yet.
+The runner published final `verification.json` only after those checks succeeded.
+[verification.json](../evidence/ml-adjutant-phase2/verification.json) records `"passed": true`.
+Current baseline SHA-256 is `e3aa24c03bd3225b56d0d96bdd357e681354fd16fec0267e9d7bc9af9e43306e`.
 
-### Hermetic assurance progress and remaining handoff
+### Hermetic assurance — final source image passed
 
-**Lead-reported dependency image verification only:** official Node **22.23.2**, `linux/amd64`,
-platform digest `sha256:43aeff40f4afc22e83f7589a2f37e111cff5ca84529571f1c8415bcc5fcc21b2`;
-pnpm **10.33.0** registry-tool bytes pinned in `hermetic/pins.json` to SHA-256
-`bfcc1bcbad279b13a516c446a75b3c58b6904b45d57a1951411015e50b751a80` plus SHA-512 integrity;
-**126 locked packages**, fresh-store acquisition, then offline frozen installation with network none.
-The **final source image is NOT BUILT**. Dependency preflight is not final source verification.
+The final source image is `sha256:54f85a0d129667d8d00975daaf0755c801a442eb1e0046797c403dcaea426f95`.
+The lead reports it reused dependency image `sha256:979ae1a1536d1beb0006ca8285a2a6f7a4b35c24c0ecb031b1e59935bdf156a0`.
+Official Node **22.23.2** bookworm-slim, `linux/amd64`, platform digest
+`sha256:43aeff40f4afc22e83f7589a2f37e111cff5ca84529571f1c8415bcc5fcc21b2`.
+pnpm **10.33.0** registry-tool bytes remain pinned in `hermetic/pins.json` to SHA-256
+`bfcc1bcbad279b13a516c446a75b3c58b6904b45d57a1951411015e50b751a80` plus SHA-512 integrity.
+The earlier dependency preflight recorded **126 locked packages**, fresh-store acquisition, then offline frozen installation with network none.
 
-The final capture retains core/arena source, tests/fixtures, diagnostics/infrastructure, configs,
-the pinned corpus, and immutable Phase 1 evidence; it excludes host dependency trees, secrets, and caches.
+The image run passed network-none, read-only root, and nonroot.
+Capture retained core/arena source, tests/fixtures, diagnostics/infrastructure, configs,
+the pinned corpus, and immutable Phase 1 evidence. It excluded host dependency trees, secrets, and caches.
 Manifests record source/test, installed-tree, store, and tool bytes outside their inventoried roots.
-Run the final immutable image with network none, read-only root, UID 10001, capabilities dropped,
-no runtime installs, and only the dedicated Phase 2 evidence output writable besides temporary storage.
-Recompute manifests before and after execution; preserve the Docker/runtime assurance envelope externally.
+The run used UID 10001, dropped capabilities, no runtime installs, and only the dedicated Phase 2 evidence output writable besides temporary storage.
+[image-assurance.json](../evidence/ml-adjutant-phase2/image-assurance.json) records the inspected image id and archive SHA-256
+`babe14d848bad14c13604736f2fa02c10f201d668388762b50d5440576187e3a`.
+That archive is external and not in the repo. The lead reports its path as `/tmp/opencode/starchess-hermetic-export-JNb7j0/image.tar`.
 
-**Done when (PENDING).** The lead freezes source, builds/preflights the final image, runs the new full baseline
-and diagnostic/migration sequence, passes core/arena typechecks and suites, and records unchanged artifact manifests.
-Verify observation round trips, finite/name-aligned features, hidden-state invariant candidate channels,
-whole-queue admission/gas/minerals, partition completeness/import boundaries, and immutable migration parity.
-Render/check the Phase 2 diagram; obtain adversarial and security reviews on the final sources and evidence.
-This phase remains non-learned even when all checks pass. Broader generation and v2 economics/position are
-required **before FIRST Phase 3 training**, not implied complete by this Phase 2 slice.
+**Passed in that image.** New full baseline: 54 executions plus 54 reruns, semantic rerun equal,
+`executionIntegrity = true`, `learnedGateEligible = false`, `learnedChallengePass = false`.
+Results are unchanged: corpus 18 scheduled, 0 wins, 2 terminal losses, 16 queue-rejected;
+live strategic 36 scheduled, 0 wins, 36 terminal losses.
+In-image vitest passed core **426/426** and arena **434/434**.
+In-image core typecheck, arena typecheck, and the strict test `tsc` passed.
+The lead reports host-after-import arena **434 tests / 25 files** and arena typecheck passed.
+Imported evidence includes `baseline-report.json`, `verification.json`, `pin-migration.json`,
+`coverage.json`, `contract-report.json`, and `image-assurance.json`.
+Phase 1 baseline SHA-256 `940387370040f88888e9dfe0bb86ad9d4a8be88854df507120f34b22ee2d362b`
+and verification SHA-256 `55d965afa71d775ff6ee1e95b6650a27d0ce759b966a81c43a3bb364236c7508` are unchanged.
+`pin-migration.json` records `semanticParity = true` against those original bytes.
+
+**Not claimed.** This pass is not learned acceptance. Weights remain **NONE**.
+Pre-freeze adversarial, security, and devops findings were fixed before this freeze:
+loader escapes, dense arrays, provenance, capture containment, and importer completeness.
+Post-image rereview is not yet recorded. Do not treat this section as a READY verdict.
+An earlier PlantUML `checkonly` predates this evidence update. Fresh `checkonly` of the edited diagram belongs to the lead.
+Broader generation and v2 economics/position remain required **before FIRST Phase 3 training**.
+This Phase 2 slice does not implement them. Three-turn planning remains a later milestone.
 
 ## Phase 3 — Learn and freeze a ranker from outcomes
 
@@ -490,22 +510,22 @@ No Phase 1 placeholder test path is presented as an existing arena test.
 | `packages/starchess-arena/src/__tests__/fixtures/{challengeWorker,challengeStartupHang,challengeBeforeReady}.ts` (EXIST) | 1 | Child-process fixtures used by watchdog tests; not independent verification results. |
 | `_spec/evidence/ml-adjutant-phase1/baseline-report.json` (PERSISTED) | 1 | All 18 corpus and 36 live cases, final pins/budgets, failures, integrity results, and deterministic rerun comparison; separate from historical manifest audit. |
 | `_spec/evidence/ml-adjutant-phase1/verification.json` (PERSISTED) | 1 | Independent commands/results, actual ten integrity-test paths with hashes/purposes, and raw report SHA-256. |
-| `packages/starchess-arena/src/__tests__/challengeObservationCodec.test.ts` (EXISTS, final verification PENDING) | 2 | Observation round trips, schema/unknown/visibility and memory semantics. |
-| `packages/starchess-arena/src/__tests__/challengeCandidateCodec.test.ts` (EXISTS, final verification PENDING) | 2 | Ordered kind/timing/spend encoding, canonical keys, structural bounds and comparator. |
-| `packages/starchess-arena/src/__tests__/challengeFeatures.test.ts` (EXISTS, final verification PENDING) | 2 | Named finite vectors, authorized inputs, normalization and historical coverage. |
-| `packages/starchess-arena/src/__tests__/challengeContractAdmission.test.ts` (EXISTS, final verification PENDING) | 2 | Codec proposals remain distinct from host whole-queue legality/resource gates. |
-| `packages/starchess-arena/src/__tests__/challengeSourceInventory.test.ts` (EXISTS, final verification PENDING) | 2 | Complete partitioned source/config inventory, import boundaries and loader policy. |
-| `packages/starchess-arena/src/__tests__/challengePinMigration.test.ts` (EXISTS, final verification PENDING) | 2 | Immutable Phase 1 byte pins, new v2 baseline and all-row semantic migration parity. |
-| `packages/starchess-arena/hermetic/infra.test.mjs` (EXISTS; lead reports dependency verification only) | 2 | Restricted real-container policy, allowlisted capture, tools/dependency/store assurance; final source-image run pending. |
-| `_spec/evidence/ml-adjutant-phase2/{baseline-report,contract-report,coverage,pin-migration,verification}.json` (REQUIRED outputs, not claimed verified) | 2 | Final hermetic 54+54 execution, original 54-row parity, contracts/coverage/pins and persisted command evidence. |
+| `packages/starchess-arena/src/__tests__/challengeObservationCodec.test.ts` (EXISTS; in-image arena vitest 434/434 passed) | 2 | Observation round trips, schema/unknown/visibility and memory semantics. |
+| `packages/starchess-arena/src/__tests__/challengeCandidateCodec.test.ts` (EXISTS; in-image arena vitest 434/434 passed) | 2 | Ordered kind/timing/spend encoding, canonical keys, structural bounds and comparator. |
+| `packages/starchess-arena/src/__tests__/challengeFeatures.test.ts` (EXISTS; in-image arena vitest 434/434 passed) | 2 | Named finite vectors, authorized inputs, normalization and historical coverage. |
+| `packages/starchess-arena/src/__tests__/challengeContractAdmission.test.ts` (EXISTS; in-image arena vitest 434/434 passed) | 2 | Codec proposals remain distinct from host whole-queue legality/resource gates. |
+| `packages/starchess-arena/src/__tests__/challengeSourceInventory.test.ts` (EXISTS; in-image arena vitest 434/434 passed) | 2 | Complete partitioned source/config inventory, import boundaries and loader policy. |
+| `packages/starchess-arena/src/__tests__/challengePinMigration.test.ts` (EXISTS; in-image arena vitest 434/434 passed) | 2 | Immutable Phase 1 byte pins, new v2 baseline and all-row semantic migration parity. |
+| `packages/starchess-arena/hermetic/infra.test.mjs` (EXISTS; not one of the seven recorded in-image commands) | 2 | Restricted real-container policy, allowlisted capture, tools/dependency/store assurance. The final image run passed network-none, read-only, and nonroot. |
+| `_spec/evidence/ml-adjutant-phase2/{baseline-report,contract-report,coverage,pin-migration,verification,image-assurance}.json` (IMPORTED; verification passed) | 2 | Hermetic 54+54 execution, original 54-row parity, contracts/coverage/pins, image id, and persisted command evidence. Not a learned PASS. |
 | `ml/player/__tests__/learnedRanker.test.ts` | 3 | Loss-driven weight changes, frozen artifacts, selected-queue admission, no fallback/online updates. |
 | `ml/harness/__tests__/perfectGate.test.ts` | 4 | Exactly 18 corpus + 36 live strategic wins; every non-win/integrity failure fails the gate. |
 | `ml/preference/__tests__/preferenceLoss.test.ts` | 5, optional | Same-observation human pairs, preference-loss direction, policy regularization. |
 
-**Final handoff:** both Phase 1 reviews are lead-reported READY: yes. The lead will run
-`plantuml -checkonly` on the finalized diagram after this edit; spec-keeper does not execute
-shell commands. Implementation/tests/reports and review readiness do not constitute a learned PASS.
-**Phase 2 remains ACTIVE, final verification/reviews PENDING. Phase 3+ remains planned and unimplemented**;
+**Final handoff:** both Phase 1 reviews are lead-reported READY: yes. The Phase 1 diagram already passed `checkonly`.
+The lead must run fresh `plantuml -checkonly` on the edited Phase 2 diagram; spec-keeper does not execute
+shell commands. Hermetic execution does not constitute a learned PASS, and it is not a post-image READY verdict.
+**Phase 2 hermetic verification PASSED. Post-image rereview is not yet recorded. Phase 3+ remains planned and unimplemented**;
 reviewers must verify legality, isolation, and zero-fallback learned evidence independently of the non-learned baseline.
 The broader FIRST-training prerequisites and all proposed persistent learning/economy/search tests in
 [ml-adjutant-weights.md](ml-adjutant-weights.md#9-future-persistent-acceptance--proposed-not-done) remain pending.

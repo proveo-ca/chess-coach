@@ -228,7 +228,8 @@
         "packages/starchess-arena/src/challenge/**",
         "packages/starchess-arena/src/__tests__/challenge*.test.ts",
         "scripts/**",
-        "packages/starchess-arena/hermetic/**"
+        "packages/starchess-arena/hermetic/**",
+        "_spec/evidence/ml-adjutant-phase2/*.json"
       ],
       "fingerprint": null
     },

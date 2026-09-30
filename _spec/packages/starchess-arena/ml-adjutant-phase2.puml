@@ -1,10 +1,11 @@
-' purpose: Phase 2 authorized codecs and features, partitioned pins, and hermetic verification boundary.
+' purpose: Phase 2 authorized codecs and features, partitioned pins, and the passed hermetic verification boundary.
 ' covers: packages/starchess-arena/src/challengeContract/**
 ' covers: packages/starchess-arena/src/challenge/**
 ' covers: packages/starchess-arena/src/__tests__/challenge*.test.ts
 ' covers: scripts/**
 ' covers: packages/starchess-arena/hermetic/**
-' status: ACTIVE implementation; final verification and adversarial/security reviews PENDING.
+' covers: _spec/evidence/ml-adjutant-phase2/*.json
+' status: IMPLEMENTED. Hermetic verification PASSED. Not a learned PASS. Post-image adversarial/security rereview is not yet recorded.
 ' related: _spec/_plans/PLAN-ml-adjutant.md
 ' related: _spec/_plans/ml-adjutant-challenge.md
 ' related: _spec/_plans/ml-adjutant-weights.md
@@ -16,11 +17,18 @@
 ' boundary: a selected proposal receives one private whole-queue admission, never hidden probes or rescue.
 ' pin scope: project source inventory excludes tests; separate hermetic capture retains source/tests, dependency/store/tool bytes.
 ' import audit: supported AST imports/workspace edges/worker URL and declared esbuild closure loader; not arbitrary computed-loader analysis.
-' assurance: dependency image lead-reported verified; final source image not built; Phase 2 evidence not yet verified.
-' rendering: PENDING; vendored identity theme follows the existing Phase 1 diagram.
+' assurance: final source image sha256:54f85a0d129667d8d00975daaf0755c801a442eb1e0046797c403dcaea426f95 passed network-none, read-only, nonroot.
+' assurance: lead reports reused dependency image sha256:979ae1a1536d1beb0006ca8285a2a6f7a4b35c24c0ecb031b1e59935bdf156a0.
+' assurance: official Node 22.23.2 bookworm-slim platform digest sha256:43aeff40f4afc22e83f7589a2f37e111cff5ca84529571f1c8415bcc5fcc21b2.
+' evidence: baseline-report.json SHA-256 e3aa24c03bd3225b56d0d96bdd357e681354fd16fec0267e9d7bc9af9e43306e
+' evidence: external archive, not in repo, lead-reported path /tmp/opencode/starchess-hermetic-export-JNb7j0/image.tar SHA-256 babe14d848bad14c13604736f2fa02c10f201d668388762b50d5440576187e3a
+' phase1 pins: baseline 940387370040f88888e9dfe0bb86ad9d4a8be88854df507120f34b22ee2d362b; verification 55d965afa71d775ff6ee1e95b6650a27d0ce759b966a81c43a3bb364236c7508. Unchanged.
+' reviews: pre-freeze findings were fixed before this freeze: loader escapes, dense arrays, provenance, capture containment, importer completeness.
+' reviews: post-image adversarial and security rereview is not yet recorded. This diagram is not a READY verdict.
+' rendering: an earlier checkonly predates this evidence update. Fresh plantuml -checkonly belongs to the lead.
 @startuml ml-adjutant-phase2
 !include ../../themes/proveo.puml
-title StarChess arena · ML Adjutant Phase 2 — ACTIVE, verification/reviews PENDING
+title StarChess arena · ML Adjutant Phase 2 — hermetic verification passed, not learned
 
 skinparam packageStyle rectangle
 skinparam defaultTextAlignment left
@@ -45,6 +53,7 @@ package "packages/starchess-arena/src/challenge" {
 
 component "scripts/challenge-contract-evidence.ts\ncontract / migration / coverage reports" as DIAGNOSTIC <<host>>
 database "_spec/evidence/ml-adjutant-phase1\nimmutable baseline / verification bytes" as ORIGINAL <<db>>
+database "_spec/evidence/ml-adjutant-phase2\nimported baseline / verification" as EVIDENCE <<db>>
 
 package "packages/starchess-arena/hermetic" {
   component "pins.json / Dockerfile\nNode platform digest / pnpm tool bytes" as IMAGE_PINS <<host>>
@@ -71,10 +80,12 @@ ORIGINAL ARROW_MAIN MIGRATION : original byte pins
 MIGRATION ARROW_MAIN DIAGNOSTIC : 54 original/current semantic comparisons
 IMAGE_PINS ARROW_MAIN CAPTURE : frozen dependency toolchain
 CAPTURE ARROW_MAIN PROBES : source / installed tree / store / tools
-RUNNER ARROW_MAIN RUNTIME : final source image required
+RUNNER ARROW_MAIN RUNTIME : restricted source image ran
 PROBES ARROW_OPTIONAL RUNTIME : pre/post immutable manifests
 RUNTIME ARROW_MAIN PINS : 54 current executions + 54 reruns
 RUNTIME ARROW_MAIN DIAGNOSTIC : generated baseline input
+RUNTIME ARROW_MAIN EVIDENCE : passed hermetic outputs
+MIGRATION ARROW_MAIN EVIDENCE : parity report
 
 note bottom of FEATURES
   challenge-features-v1
@@ -89,8 +100,11 @@ note bottom of CAND_CODEC
 end note
 
 note bottom of COVERAGE
-  Historical membership / encoding metrics
-  Final hermetic verification: PENDING
+  Historical membership is representability,
+  not a winning-coverage claim. Exact queues
+  cover 18 of 282 and singleton intents
+  cover 204 of 576, while codec and feature
+  encodings each cover all 282.
 end note
 
 note bottom of INVENTORY
@@ -106,17 +120,33 @@ note bottom of RUNNER
   No runtime dependency installation
 end note
 
+note right of RUNNER
+  Pre-freeze review findings were fixed before
+  this image. Post-image adversarial and
+  security rereview is not yet recorded.
+end note
+
 note bottom of RUNTIME
-  Final source image: NOT BUILT
-  Static checks / suites / parity: PENDING
-  Adversarial / security reviews: PENDING
+  The restricted nonroot execution passed with
+  equal semantic reruns. Zero candidate wins
+  keep learned acceptance false.
+end note
+
+note bottom of EVIDENCE
+  Imported phase2 evidence
+  Phase 1 bytes unchanged
+  Image tar stays outside the repo
 end note
 
 legend bottom
-  ACTIVE Phase 2 source is not verified completion or learned acceptance.
-  Phase 1 evidence remains immutable; Phase 2 uses a new baseline and pin migration report.
-  Dependency image: lead reports verification with 126 locked packages and offline frozen install.
-  FIRST Phase 3 training: broader versioned generator + v2 interactions/own ledger/confirmed-loss uncertainty, H=1.
-  Three-window conditional search remains separate future work. No trained coefficients or playable ML player.
+  Hermetic verification passed. This is not learned acceptance.
+  Weights remain NONE. learnedGateEligible is false. Candidate wins are 0/18 corpus and 0/36 live.
+  Corpus: 18 scheduled, 0 wins, 2 terminal losses, 16 queue-rejected. Live: 36 scheduled, 0 wins, 36 terminal losses.
+  Phase 1 evidence bytes stay immutable. Phase 2 baseline and pin migration are a new report.
+  Pre-freeze findings were fixed: loader escapes, dense arrays, provenance, capture containment, importer completeness.
+  Post-image adversarial and security rereview is not yet recorded. Do not read this diagram as READY.
+  FIRST Phase 3 training still needs a broader versioned generator and v2 interactions, at H=1.
+  Three-window conditional search remains later work. No trained coefficients or playable ML player.
+  Fresh plantuml -checkonly of this edited diagram belongs to the lead.
 endlegend
 @enduml

@@ -12,7 +12,7 @@
 ' legacy rationale: Scripts live under _spec/apps/starchess/core/adjutant/; omitted per-side inputs change results without changing scripts.
 ' legacy history: The previous map called out ccIntel forwarding; arena.puml owns that legacy runner concern, not the isolated challenge.
 ' source pointers: optional corroboration; spec-side covers headers own drift coverage.
-' rendering: PENDING for the updated map.
+' rendering: fresh plantuml -checkonly of this status edit belongs to the lead.
 @startuml index
 !include ../../themes/proveo.puml
 
@@ -24,7 +24,7 @@ title StarChess Arena · Spec Map (_spec/packages/starchess-arena)
 package "_spec/packages/starchess-arena" {
   component "arena.puml\nheadless match runner" as ARENA <<app>>
   component "ml-adjutant-phase1.puml\nverified non-learned historical baseline" as PHASE1 <<app>>
-  component "ml-adjutant-phase2.puml\nACTIVE codecs / pins / hermetic boundary\nfinal verification and reviews PENDING" as PHASE2 <<app>>
+  component "ml-adjutant-phase2.puml\nhermetic verification passed\nnot learned; post-image review unrecorded" as PHASE2 <<app>>
 }
 
 package "packages/starchess-arena/src" {
@@ -39,7 +39,7 @@ package "packages/starchess-arena/src" {
 }
 
 component "scripts/challenge-contract-evidence.ts\ncontract and migration diagnostics" as DIAGNOSTIC <<host>>
-component "packages/starchess-arena/hermetic\ndependency verified (lead-reported)\nfinal source image NOT BUILT" as HERMETIC <<host>>
+component "packages/starchess-arena/hermetic\nsource image run passed\npost-image review unrecorded" as HERMETIC <<host>>
 
 package "packages/starchess-core/src (shared)" {
   component "replay/{fen,record}.ts · rules/economy.ts" as CORE <<app>>
