@@ -45,7 +45,7 @@ against some counterplay; preserve that fact as a failure rather than relaxing t
 Canonical opening, exact:
 
 ```text
-SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:;
+SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:
 ```
 
 The lead ran current-core `historyFromRecord`, `parseScFen`, `scsanOf`, and `scOutcome` checks:
@@ -54,10 +54,10 @@ comparisons match exactly; all 18 terminal result labels match. Record repair an
 not action admission or simulation. No current-rule queue reexecution, training, baseline
 benchmark, or learned challenge run has occurred.
 
-Lead separately creates **PLANNED** `_spec/corpora/ml-adjutant-corpus.manifest.json`.
-This document does not assert its existence or invent its 18 IDs.
-The manifest must pin those actual IDs, source provenance, extraction/repair version, canonical
-opening, source ordering, white queues by planning ordinal, and all trace hashes.
+The [manifest](../corpora/ml-adjutant-corpus.manifest.json) pins all 18 actual IDs, source
+provenance, extraction version, canonical opening, source ordering, and White trace hashes.
+White queues remain source references rather than duplicate action payloads. Filter the referenced
+resolve queues by planning ordinal using the manifest's extraction contract.
 Keep IDs and source results host-side for reports; do not expose them as candidate features.
 Preserve the original export unchanged and fail audit on any pin/count mismatch.
 
@@ -210,7 +210,8 @@ as provenance. Same pins and seeds must reproduce the same semantic executions.
 
 ## 8. Required integrity verification
 
-These are **PLANNED checks**, not completed tests. Proposed test paths and phase ownership are
+`packages/starchess-arena/src/__tests__/corpusManifest.test.ts` persists the provenance/codec audit.
+The executable challenge checks below remain **PLANNED**, not completed tests. Proposed test paths and phase ownership are
 listed in [PLAN-ml-adjutant.md](PLAN-ml-adjutant.md#planned-verification-and-pending-ownership).
 
 | Check | Required adversarial cases |

@@ -90,9 +90,9 @@ The normative acceptance contract is [ml-adjutant-challenge.md](ml-adjutant-chal
 - **Start with a learned linear ranker.** Defer neural-network complexity until separate held-out
   measurements justify it. Defer textual `SCOBS`, worker pools, and determinization.
 
-The lead separately owns the **PLANNED** manifest
-`_spec/corpora/ml-adjutant-corpus.manifest.json`, including all 18 case IDs and provenance.
-This docs-only change does not create it or assert that it exists.
+The [pinned manifest](../corpora/ml-adjutant-corpus.manifest.json) records all 18 case IDs,
+source references, trace hashes, provenance, and the paired strategic schedule.
+`packages/starchess-arena/src/__tests__/corpusManifest.test.ts` persists its integrity audit.
 
 The lead reports this completed JSON/core codec audit:
 
@@ -147,8 +147,8 @@ No queue-admission benchmark, training run, or challenge match has been performe
 
 ## Phase 0 — Pin and audit the available corpus
 
-**Deliverables.** Lead creates the 18-case manifest with source hash/size/version/timestamp,
-case IDs, opening, white planning queues, trace hashes, and extraction/repair provenance.
+**Deliverables.** The 18-case manifest pins source hash/size/version/timestamp, case IDs,
+opening, White queue source references, trace hashes, and extraction provenance.
 Preserve the source export unchanged. Validate all pins and counts before every gate.
 
 **Done when.** The manifest audit reproduces the supplied schema facts and makes each queue's
@@ -277,7 +277,8 @@ wins and one draw supply demonstrations/outcomes, not human preference compariso
 
 ## Planned verification and pending ownership
 
-All test paths below are **PROPOSED**, not claims about existing files or executed tests.
+The corpus provenance test above exists. All additional test paths below are **PROPOSED**,
+not claims about existing files or executed challenge tests.
 `ml/` paths describe proposed responsibilities pending the packaging decision.
 
 | Proposed test/report path | Phase | Verification purpose |
