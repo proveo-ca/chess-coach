@@ -14,7 +14,7 @@ export type SourceFileRecord = { path: string; sha256: string; partition: Source
 export type RuntimeFileRecord = { path: string; present: boolean; sha256: string | null };
 export type ImportAuditEdge = {
   importer: string; specifier: string; kind: "import" | "export" | "dynamic" | "require" | "import-type" | "resolve" | "worker";
-  target: string; targetKind: "source" | "builtin" | "external";
+  target: string; targetKind: "source" | "builtin" | "external"; typeOnly?: boolean;
 };
 export type SourceImportAudit = { passed: true; edges: ImportAuditEdge[]; auditedFiles: string[] };
 export type SourceInventoryV1 = {
@@ -102,6 +102,7 @@ export const collectSourceInventory = (
     if (stat.isDirectory()) {
       for (const name of readdirSync(safePath(path)).sort(order)) walk(`${path}/${name}`);
     } else if (stat.isFile()) {
+      if (/\.(?:sh|bash|py|wasm|node|so|c|cc|cpp|rs)$/.test(path)) throw new Error(`Unsupported executable source: ${path}`);
       if (!excludedTest(path)) files.push({ path, sha256: hash(bytes(path)), partition: classify(path) });
     } else throw new Error(`Special file in inventory: ${path}`);
   };
@@ -165,19 +166,21 @@ export const collectSourceInventory = (
     if (!listed.has(found[0]!)) throw new Error(`Unclassified import target: ${importer} -> ${found[0]}`);
     return found[0]!;
   };
-  const addEdge = (importer: string, specifier: string, kind: ImportAuditEdge["kind"]): void => {
+  const addEdge = (importer: string, specifier: string, kind: ImportAuditEdge["kind"], typeOnly = false): void => {
     let target = specifier;
     let targetKind: ImportAuditEdge["targetKind"];
     const owner = importer.startsWith(`${CORE}/`) ? CORE : importer.startsWith(`${ARENA}/`) ? ARENA : "";
     const manifest = manifests.get(owner)!;
     const name = specifier.startsWith("@") ? specifier.split("/").slice(0, 2).join("/") : specifier.split("/")[0]!;
     const dependencies = [manifest.dependencies, manifest.devDependencies, manifest.optionalDependencies].filter(object);
+    const lockedClosureLoader = importer === `${ARENA}/hermetic/closure.mjs` && ["resolve", "require"].includes(kind) && specifier === "esbuild" &&
+      bytes("pnpm-lock.yaml").toString("utf8").includes("esbuild@");
     if (specifier.startsWith(".")) {
       target = localTarget(importer, specifier);
       targetKind = "source";
     } else if (isBuiltin(specifier)) targetKind = "builtin";
     else {
-      if (specifier.startsWith("/") || !dependencies.some((dependency) => typeof dependency[name] === "string")) {
+      if (specifier.startsWith("/") || (!lockedClosureLoader && !dependencies.some((dependency) => typeof dependency[name] === "string"))) {
         throw new Error(`Undeclared external import: ${importer} -> ${specifier}`);
       }
       const workspace = [...manifests.entries()].find(([path, value]) => path && value.name === name);
@@ -188,7 +191,10 @@ export const collectSourceInventory = (
         if (typeof exported !== "string" || !exported.startsWith("./")) throw new Error(`Unsupported workspace export: ${specifier}`);
         target = localTarget(importer, specifier, `${path}/${exported.slice(2)}`);
         targetKind = "source";
-      } else targetKind = "external";
+      } else {
+        if (dependencies.some((dependency) => typeof dependency[name] === "string" && String(dependency[name]).startsWith("workspace:"))) throw new Error(`Undeclared workspace target: ${specifier}`);
+        targetKind = "external";
+      }
     }
     if (targetKind === "source" && listed.get(importer)!.partition === "execution" && listed.get(target)!.partition !== "execution") {
       throw new Error(`Forbidden partition edge: ${importer} -> ${target}`);
@@ -196,7 +202,7 @@ export const collectSourceInventory = (
     if (targetKind === "source" && listed.get(importer)!.partition === "contracts" && listed.get(target)!.partition === "diagnostics") {
       throw new Error(`Forbidden partition edge: ${importer} -> ${target}`);
     }
-    edges.push({ importer, specifier, kind, target, targetKind });
+    edges.push({ importer, specifier, kind, target, targetKind, ...(typeOnly ? { typeOnly: true } : {}) });
   };
   const literal = (node: ts.Node | undefined): string | undefined => node && ts.isStringLiteralLike(node) ? node.text : undefined;
   for (const file of files) {
@@ -242,7 +248,10 @@ export const collectSourceInventory = (
         if (node.moduleSpecifier) {
           const specifier = literal(node.moduleSpecifier);
           if (specifier === undefined) throw new Error(`Computed module declaration: ${file.path}`);
-          addEdge(file.path, specifier, ts.isImportDeclaration(node) ? "import" : "export");
+          const typeOnly = ts.isImportDeclaration(node)
+            ? node.importClause?.isTypeOnly === true || (node.importClause?.namedBindings !== undefined && ts.isNamedImports(node.importClause.namedBindings) && !node.importClause.name && node.importClause.namedBindings.elements.length > 0 && node.importClause.namedBindings.elements.every((element) => element.isTypeOnly))
+            : node.isTypeOnly;
+          addEdge(file.path, specifier, ts.isImportDeclaration(node) ? "import" : "export", typeOnly);
         }
       } else if (ts.isImportEqualsDeclaration(node) && ts.isExternalModuleReference(node.moduleReference)) {
         const specifier = literal(node.moduleReference.expression);
@@ -251,7 +260,7 @@ export const collectSourceInventory = (
       } else if (ts.isImportTypeNode(node)) {
         const specifier = ts.isLiteralTypeNode(node.argument) ? literal(node.argument.literal) : undefined;
         if (specifier === undefined) throw new Error(`Computed import type: ${file.path}`);
-        addEdge(file.path, specifier, "import-type");
+          addEdge(file.path, specifier, "import-type", true);
       } else if (ts.isCallExpression(node)) {
         const expression = node.expression;
         const dynamic = expression.kind === ts.SyntaxKind.ImportKeyword;
@@ -260,7 +269,14 @@ export const collectSourceInventory = (
         const resolver = member !== undefined && member.name === "resolve" && loader(member.receiver);
         if (dynamic || requireCall || resolver) {
           const specifier = literal(node.arguments[0]);
-          if (specifier === undefined) throw new Error(`Computed module loader: ${file.path}`);
+          if (specifier === undefined) {
+            if (file.path === `${ARENA}/hermetic/closure.mjs` && requireCall && node.getText(source) === "require(require.resolve('esbuild', { paths: [require.resolve('tsx/package.json')] }))") {
+              addEdge(file.path, "esbuild", "require");
+              ts.forEachChild(node, visit);
+              return;
+            }
+            throw new Error(`Computed module loader: ${file.path}`);
+          }
           if (resolver && member && ts.isCallExpression(member.receiver) &&
               (file.path !== `${ARENA}/src/challenge/supervisor.ts` || specifier !== "tsx" || member.receiver.getText(source) !== "createRequire(import.meta.url)" || node.arguments.length !== 1)) {
             throw new Error(`Undeclared createRequire resolver: ${file.path}`);

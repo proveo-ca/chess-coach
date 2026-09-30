@@ -29,7 +29,7 @@ export const validateObservation = (value: unknown): AuthorizedObservation => {
     if (!Object.hasOwn(cell, "piece") || (cell.visibility === "revealed" && cell.piece === null)) fail(`${path}.piece`);
     const current = cell.piece === null ? null : piece(cell.piece, `${path}.piece`);
     if (cell.visibility === "revealed") {
-      if (current?.type !== "q" || current.color === color) fail(`${path}.piece`);
+      if (!current || current.type !== "q" || current.color === color) return fail(`${path}.piece`);
       return { square: at, visibility: "revealed", piece: current };
     }
     return { square: at, visibility: "lit", piece: current };

@@ -1,44 +1,21 @@
 // SPEC: _spec/packages/starchess-arena/ml-adjutant-phase1.puml
-import { readFileSync, readdirSync } from "node:fs";
-import { fileURLToPath } from "node:url";
-import { join } from "node:path";
 import { canonical, CHALLENGE_CONFIG } from "./config";
 import { loadPinnedCorpus, REPOSITORY_ROOT, sha256 } from "./corpus";
 import { buildSchedule } from "./schedule";
 import { runSupervised } from "./supervisor";
 import { executionIntegrity } from "./integrity";
 import type { ChallengeEvidence } from "./types";
+import { collectSourceInventory } from "./sourceInventory";
 
 export { executionIntegrity } from "./integrity";
 
 export type Suite = "all" | "corpus" | "live-strategic";
 
-const sourceDigest = (paths: string[]): string => {
-  const root = fileURLToPath(REPOSITORY_ROOT);
-  const entries: { path: string; hash: string }[] = [];
-  const walk = (relative: string) => {
-    const absolute = join(root, relative);
-    for (const entry of readdirSync(absolute, { withFileTypes: true }).sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0)) {
-      const path = `${relative}/${entry.name}`;
-      if (entry.isDirectory() && entry.name !== "__tests__") walk(path);
-      else if (entry.isFile() && entry.name.endsWith(".ts")) entries.push({ path, hash: sha256(readFileSync(join(root, path))) });
-    }
-  };
-  for (const path of paths) walk(path);
-  return sha256(canonical(entries));
-};
-
 export const executionPins = () => ({
+  version: "challenge-execution-pins-v2",
+  sourceInventory: collectSourceInventory(),
   configuration: CHALLENGE_CONFIG,
   configurationSha256: sha256(canonical(CHALLENGE_CONFIG)),
-  coreRulesSha256: sourceDigest(["packages/starchess-core/src"]),
-  adapterSha256: sourceDigest(["packages/starchess-arena/src/challenge", "packages/starchess-arena/src/cli"]),
-  strategicAndLedgerSha256: sourceDigest(["packages/starchess-arena/src/players", "packages/starchess-arena/src/run"]),
-  dependencyLockSha256: sha256(readFileSync(new URL("pnpm-lock.yaml", REPOSITORY_ROOT))),
-  runtimeConfigurationSha256: sha256(canonical([
-    "package.json", "pnpm-workspace.yaml", "packages/starchess-arena/package.json", "packages/starchess-arena/tsconfig.json",
-    "packages/starchess-core/package.json", "packages/starchess-core/tsconfig.json",
-  ].map((path) => ({ path, hash: sha256(readFileSync(new URL(path, REPOSITORY_ROOT))) })))),
   nodeVersion: process.version,
   seatRng: "w:mulberry32(seed),b:mulberry32(~seed)",
   candidateInferenceSeed: 0,
@@ -89,8 +66,9 @@ export const runBaselineSuite = async (suite: Suite = "all", rerun = true) => {
   if (canonical(pins) !== canonical(executionPins())) throw new Error("execution pins changed during suite");
   const integrity = rows.every((row) => executionIntegrity(row));
   return {
-    version: "phase1-baseline-report-v1", kind: "phase1-baseline", learnedGateEligible: false, modelArtifact: null,
-    independentVerification: "_spec/evidence/ml-adjutant-phase1/verification.json",
+    version: "phase2-baseline-report-v1", kind: "phase2-current-baseline", learnedGateEligible: false, modelArtifact: null,
+    independentVerification: "_spec/evidence/ml-adjutant-phase2/verification.json",
+    migrationReference: "_spec/evidence/ml-adjutant-phase2/pin-migration.json",
     manifestSha256: corpus.manifestSha256, sourceSha256: corpus.manifest.sourceSha256, pins,
     suite, schedule: schedule.map(({ trace: _trace, ...entry }) => entry),
     summary: summarize(rows), executionIntegrity: integrity,

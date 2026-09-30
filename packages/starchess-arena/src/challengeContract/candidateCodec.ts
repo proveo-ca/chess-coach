@@ -35,10 +35,13 @@ export const validateActions = (value: unknown, color: PieceColor): ScActionInpu
   return { kind: base.kind as Exclude<typeof ACTION_KINDS[number], "classical">,
     timing: base.timing, color, from, ...(to ? { to } : {}), ...(unit ? { unit } : {}), ...(promotion ? { promotion } : {}) };
 });
-export const requestedSpend = (actions: readonly ScActionInput[]) => ({
-  minerals: actions.reduce((sum, action) => sum + (action.kind === "deploy" && action.unit ? UNIT_COST[action.unit] : 0), 0),
-  gas: actions.reduce((sum, action) => sum + (action.kind === "classical" ? 0 : specialGasCost(action.kind)), 0),
-});
+export const requestedSpend = (input: readonly ScActionInput[]) => {
+  const actions = validateActions(input, side(input[0]?.color ?? "w", "$.side"));
+  return {
+    minerals: actions.reduce((sum, action) => sum + (action.kind === "deploy" && action.unit ? UNIT_COST[action.unit] : 0), 0),
+    gas: actions.reduce((sum, action) => sum + (action.kind === "classical" ? 0 : specialGasCost(action.kind)), 0),
+  };
+};
 export const encodeCandidate = (observation: AuthorizedObservation, value: readonly ScActionInput[]): EncodedCandidate => {
   const authorized = validateObservation(observation);
   const actions = validateActions(value, authorized.side);

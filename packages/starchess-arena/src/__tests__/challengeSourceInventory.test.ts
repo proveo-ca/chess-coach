@@ -209,9 +209,11 @@ describe("partitioned challenge source inventory", () => {
     expect(() => collectSourceInventory(root)).toThrow("Non-file runtime configuration");
   });
 
-  it("rejects the production hermetic computed loader without weakening the external artifact boundary", () => {
+  it("audits the exact locked hermetic closure loader and rejects changed computed loaders", () => {
     const root = fixture();
     put(root, `${ARENA}/hermetic/closure.mjs`, readFileSync(join(repository, `${ARENA}/hermetic/closure.mjs`), "utf8"));
+    expect(collectSourceInventory(root).audit.edges.some((edge) => edge.importer.endsWith("closure.mjs") && edge.specifier === "esbuild")).toBe(true);
+    put(root, `${ARENA}/hermetic/closure.mjs`, readFileSync(join(repository, `${ARENA}/hermetic/closure.mjs`), "utf8").replace("require(require.resolve('esbuild', { paths: [require.resolve('tsx/package.json')] }))", "require(process.env.MODULE)"));
     expect(() => collectSourceInventory(root)).toThrow("Computed module loader");
   });
 });
