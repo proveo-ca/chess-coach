@@ -5,6 +5,8 @@ import { baselinePolicy, baselineProposals } from "../challenge/baseline";
 import { observe } from "../challenge/observation";
 import { ACTION_KINDS, compareRankedCandidates, decodeCandidate, encodeBaselineCandidates, encodeCandidate, MAX_QUEUE_ACTIONS, requestedSpend } from "../challengeContract/candidateCodec";
 import { ContractError } from "../challengeContract/validation";
+import { validateObservation } from "../challengeContract/observationCodec";
+import { encodeFeatures } from "../challengeContract/features";
 
 const observation = (side: PieceColor = "w", placement = "4k3/3p4/8/8/8/8/3P4/4K3") => observe(
   parseScFen(`SCFEN|${placement}|21|33|P|G:33:33|B:3:3|Q:w:;b:`), { w: 3, b: 3 }, side,
@@ -16,6 +18,26 @@ const action = (kind: ScActionInput["kind"], timing: "B" | "C" | "F", color: Pie
 } as ScActionInput);
 
 describe("Phase 2 all-kind candidate codec", () => {
+  it("rejects sparse arrays and extra array properties before encoding costs or features", () => {
+    const authorized = observation();
+    const sparse = new Array<ScActionInput>(1);
+    expect(() => encodeCandidate(authorized, sparse)).toThrow("ARRAY");
+    expect(() => requestedSpend(sparse)).toThrow("ARRAY");
+    const encoded = { ...encodeCandidate(authorized, []), actions: sparse };
+    expect(() => decodeCandidate(encoded, "w")).toThrow("ARRAY");
+    expect(() => encodeFeatures(authorized, encoded)).toThrow("ARRAY");
+    const extra = Object.assign([], { privateMetadata: "forbidden" });
+    expect(() => encodeCandidate(authorized, extra)).toThrow("ARRAY");
+    for (const field of ["cells", "memory"] as const) {
+      const changed = structuredClone(authorized);
+      delete changed[field][0];
+      if (field === "memory") changed.memory.length = 1;
+      expect(() => validateObservation(changed)).toThrow("ARRAY");
+    }
+    const changed = structuredClone(authorized);
+    changed.own.mines = new Array(1);
+    expect(() => validateObservation(changed)).toThrow("ARRAY");
+  });
   for (const color of ["w", "b"] as const) {
     for (const kind of ACTION_KINDS) {
       it.each(kind === "classical" ? ["C"] as const : ["B", "F"] as const)(`${color} ${kind} timing %s preserves exact intent and absent fields`, (timing) => {

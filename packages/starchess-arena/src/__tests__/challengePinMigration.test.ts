@@ -7,17 +7,22 @@ import type { ChallengeEvidence, ScheduledMatch } from "../challenge/types";
 const baselineBytes = readFileSync(new URL("../../../../_spec/evidence/ml-adjutant-phase1/baseline-report.json", import.meta.url));
 const verificationBytes = readFileSync(new URL("../../../../_spec/evidence/ml-adjutant-phase1/verification.json", import.meta.url));
 type FixtureReport = {
+  version: string; kind: string; independentVerification: string; migrationReference?: string;
   pins: Record<string, unknown>; schedule: Omit<ScheduledMatch, "trace">[]; rows: ChallengeEvidence[];
   executionIntegrity: boolean; manifestSha256: string;
   deterministicRerun: { performed: boolean; equal: boolean; comparisons: { key: string; equal: boolean; firstSha256: string; rerunSha256: string }[] };
 };
 const baseline = (): FixtureReport => JSON.parse(baselineBytes.toString("utf8")) as FixtureReport;
+const currentBaseline = (): FixtureReport => ({ ...baseline(), version: "phase2-baseline-report-v1", kind: "phase2-current-baseline",
+  independentVerification: "_spec/evidence/ml-adjutant-phase2/verification.json", migrationReference: "_spec/evidence/ml-adjutant-phase2/pin-migration.json",
+  pins: { version: "challenge-execution-pins-v2" },
+});
 
 describe("baseline execution pin migration", () => {
   it("pins the original baseline and verification raw bytes and verifies all 54 semantic rows", () => {
     expect(sha256(baselineBytes)).toBe(ORIGINAL_BASELINE_SHA256);
     expect(sha256(verificationBytes)).toBe(ORIGINAL_VERIFICATION_SHA256);
-    const comparison = compareBaselineReports(baseline(), baseline());
+    const comparison = compareBaselineReports(baseline(), currentBaseline());
     expect(comparison).toMatchObject({ passed: true, scheduledMatches: 54, exactSchedule: true,
       executionIntegrity: true, deterministicRerun: true, semanticParity: true });
     expect(comparison.comparisons).toHaveLength(54);
@@ -26,8 +31,8 @@ describe("baseline execution pin migration", () => {
   });
 
   it("permits changed source/runtime pins while retaining exact execution semantics", () => {
-    const current = baseline();
-    current.pins = { schema: 2, inventorySha256: "new-inventory", executionSha256: "new-execution" };
+    const current = currentBaseline();
+    current.pins = { version: "challenge-execution-pins-v2", inventorySha256: "new-inventory", executionSha256: "new-execution" };
     const currentBytes = Buffer.from(JSON.stringify(current));
     const migration = createMigration(baselineBytes, verificationBytes, currentBytes);
     expect(migration).toMatchObject({ version: "challenge-pin-migration-v1", passed: true,
@@ -42,7 +47,7 @@ describe("baseline execution pin migration", () => {
   });
 
   it.each(["missing", "duplicate", "reordered", "seed", "side", "opening", "manifest"])("rejects changed schedule identity: %s", (mutation) => {
-    const current = baseline();
+    const current = currentBaseline();
     if (mutation === "missing") { current.schedule.pop(); current.rows.pop(); }
     if (mutation === "duplicate") { current.schedule[1] = current.schedule[0]!; current.rows[1] = current.rows[0]!; }
     if (mutation === "reordered") { current.schedule.reverse(); current.rows.reverse(); current.deterministicRerun.comparisons.reverse(); }
@@ -54,7 +59,7 @@ describe("baseline execution pin migration", () => {
   });
 
   it.each(["not-performed", "not-equal", "missing", "key", "first-hash", "rerun-hash", "claim"])("rejects unverified deterministic reruns: %s", (mutation) => {
-    const current = baseline();
+    const current = currentBaseline();
     const rerun = current.deterministicRerun;
     if (mutation === "not-performed") rerun.performed = false;
     if (mutation === "not-equal") rerun.equal = false;
@@ -68,7 +73,7 @@ describe("baseline execution pin migration", () => {
 
   it("reexecutes evidence integrity rather than accepting report flags or matching forged bodies", () => {
     const original = baseline();
-    const current = baseline();
+    const current = currentBaseline();
     original.rows[0]!.bankTrail[0]!.b = 99;
     current.rows[0]!.bankTrail[0]!.b = 99;
     const comparison = compareBaselineReports(original, current);
@@ -77,30 +82,36 @@ describe("baseline execution pin migration", () => {
   });
 
   it("detects changed normalized event IDs and stop evidence", () => {
-    const current = baseline();
+    const current = currentBaseline();
     current.rows[0]!.resolves[0]!.events[0]!.id = "changed-id";
     expect(compareBaselineReports(baseline(), current)).toMatchObject({ passed: false, semanticParity: false });
-    const stop = baseline();
+    const stop = currentBaseline();
     stop.rows[0]!.stop.reason = "changed reason";
     expect(compareBaselineReports(baseline(), stop)).toMatchObject({ passed: false, semanticParity: false });
   });
 
   it("ignores diagnostic-only historical labels but retains execution outcome and eligibility", () => {
     const original = baseline();
-    const current = baseline();
+    const current = currentBaseline();
     const row = current.rows[0]! as ChallengeEvidence & { historicalSource: unknown };
     row.historicalSource = { result: "changed historical annotation" };
     expect(compareBaselineReports(original, current).passed).toBe(true);
     current.rows[0]!.outcome = { winner: "b", draw: false };
     expect(compareBaselineReports(original, current).passed).toBe(false);
-    expect(() => compareBaselineReports(original, { ...baseline(), learnedGateEligible: true })).toThrow("Invalid baseline");
+    expect(() => compareBaselineReports(original, { ...currentBaseline(), learnedGateEligible: true })).toThrow("Invalid baseline");
   });
 
   it("rejects malformed inputs and report integrity claims", () => {
-    expect(() => compareBaselineReports({}, baseline())).toThrow("Invalid baseline");
-    expect(() => compareBaselineReports(baseline(), { ...baseline(), rows: [null] })).toThrow("Invalid baseline evidence row");
-    const current = baseline();
+    expect(() => compareBaselineReports({}, currentBaseline())).toThrow("Invalid baseline");
+    expect(() => compareBaselineReports(baseline(), { ...currentBaseline(), rows: [null] })).toThrow("Invalid baseline evidence row");
+    const current = currentBaseline();
     current.executionIntegrity = false;
     expect(compareBaselineReports(baseline(), current)).toMatchObject({ passed: false, executionIntegrity: false });
+  });
+
+  it.each(["version", "kind", "independentVerification", "migrationReference"] as const)("rejects incorrect current provenance %s", (field) => {
+    const current = currentBaseline();
+    current[field] = "wrong";
+    expect(() => compareBaselineReports(baseline(), current)).toThrow("Invalid baseline migration provenance");
   });
 });

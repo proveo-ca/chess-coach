@@ -28,7 +28,14 @@ export const piece = (value: unknown, path: string): ScPiece => {
   if (!PIECE_TYPES.includes(record.type as ScPiece["type"])) return fail(`${path}.type`);
   return { type: record.type as ScPiece["type"], color: side(record.color, `${path}.color`) };
 };
-export const array = (value: unknown, path: string, max = 64): unknown[] => Array.isArray(value) && value.length <= max ? value : fail(path, "ARRAY");
+export const array = (value: unknown, path: string, max = 64): unknown[] => {
+  if (!Array.isArray(value) || value.length > max || Reflect.ownKeys(value).length !== value.length + 1) return fail(path, "ARRAY");
+  for (let index = 0; index < value.length; index++) {
+    const descriptor = Object.getOwnPropertyDescriptor(value, String(index));
+    if (!descriptor || !Object.hasOwn(descriptor, "value")) return fail(path, "ARRAY");
+  }
+  return value;
+};
 export const orderedSquares = <T>(entries: readonly T[], key: (entry: T) => string, path: string): void => {
   for (let index = 1; index < entries.length; index++) if (key(entries[index - 1]!) >= key(entries[index]!)) fail(path, "ORDER");
 };

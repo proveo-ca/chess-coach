@@ -16,6 +16,7 @@ const put = (root: string, path: string, value: string): void => {
   writeFileSync(join(root, path), value);
 };
 const fixture = (): string => {
+  mkdirSync("/tmp/opencode", { recursive: true });
   const root = mkdtempSync("/tmp/opencode/challenge-source-inventory-");
   temporary.push(root);
   for (const path of ["package.json", "pnpm-lock.yaml", "pnpm-workspace.yaml", `${CORE}/package.json`, `${ARENA}/package.json`, `${CORE}/tsconfig.json`, `${ARENA}/tsconfig.json`, `${ARENA}/hermetic/pins.json`]) {
@@ -27,12 +28,29 @@ const fixture = (): string => {
   put(root, "scripts/challenge-contract-evidence.ts", `import "../${ARENA}/src/challengeContract/codec";\n`);
   put(root, `${ARENA}/hermetic/run.mjs`, 'import "./runtime.mjs";\nimport pins from "./pins.json" with { type: "json" };\nvoid pins;\n');
   put(root, `${ARENA}/hermetic/runtime.mjs`, 'import "node:child_process";\nnew URL(variable, import.meta.url);\n');
-  put(root, `${ARENA}/hermetic/infra.test.mjs`, "import(computed);\n");
+  put(root, `${ARENA}/hermetic/infra.test.mjs`, "export {};\n");
   put(root, `${ARENA}/src/__tests__/excluded.ts`, "import(computed);\n");
   return root;
 };
 
 describe("partitioned challenge source inventory", () => {
+  it("audits execution files named infra.test.mjs instead of bypassing partition rules", () => {
+    const root = fixture();
+    put(root, `${ARENA}/src/infra.test.mjs`, 'import "./challengeContract/codec";\n');
+    expect(() => collectSourceInventory(root)).toThrow("Forbidden partition edge");
+  });
+
+  it.each([
+    'const load = createRequire(import.meta.url).bind(null); load(variable);',
+    'const request = createRequire(import.meta.url); const bound = request.bind(null); bound(variable);',
+    'const request = createRequire(import.meta.url); Reflect.apply(request, null, [variable]);',
+    'const request = createRequire(import.meta.url); (0, request)(variable);',
+    'const { resolve: locate } = createRequire(import.meta.url); locate(variable);',
+  ])("rejects escaping a module loader: %s", (code) => {
+    const root = fixture();
+    put(root, `${ARENA}/src/escape.ts`, `import {createRequire} from "node:module";\n${code}\n`);
+    expect(() => collectSourceInventory(root)).toThrow(/Unsupported loader/);
+  });
   it("enumerates deterministic disjoint complete partitions, pins itself, and hashes explicit records", () => {
     const root = fixture();
     const inventory = collectSourceInventory(root);
@@ -43,7 +61,7 @@ describe("partitioned challenge source inventory", () => {
     expect(inventory.groups.execution.some((file) => file.path.endsWith("/sourceInventory.ts"))).toBe(true);
     expect(inventory.files.some((file) => file.path.includes("__tests__"))).toBe(false);
     expect(inventory.groups.diagnostics.some((file) => file.path.endsWith("/infra.test.mjs"))).toBe(true);
-    expect(inventory.audit.auditedFiles.some((path) => path.endsWith("/infra.test.mjs"))).toBe(false);
+    expect(inventory.audit.auditedFiles.some((path) => path.endsWith("/infra.test.mjs"))).toBe(true);
     expect(new Set(Object.values(inventory.groups).flat().map((file) => file.path)).size).toBe(inventory.files.length);
     expect(inventory.executionSha256).toBe(sha256(canonical(inventory.groups.execution)));
     expect(inventory.runtimeConfigurationSha256).toBe(sha256(canonical(inventory.runtime)));

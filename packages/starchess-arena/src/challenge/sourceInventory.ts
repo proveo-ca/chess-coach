@@ -206,7 +206,7 @@ export const collectSourceInventory = (
   };
   const literal = (node: ts.Node | undefined): string | undefined => node && ts.isStringLiteralLike(node) ? node.text : undefined;
   for (const file of files) {
-    if (!CODE_EXTENSION.test(file.path) || file.path.endsWith("/infra.test.mjs")) continue;
+    if (!CODE_EXTENSION.test(file.path)) continue;
     auditedFiles.push(file.path);
     const source = ts.createSourceFile(file.path, bytes(file.path).toString("utf8"), ts.ScriptTarget.Latest, true,
       /\.[cm]?js$/.test(file.path) ? ts.ScriptKind.JS : file.path.endsWith("x") ? ts.ScriptKind.TSX : ts.ScriptKind.TS);
@@ -240,10 +240,22 @@ export const collectSourceInventory = (
       }
       if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) && node.initializer &&
           (loader(node.initializer) || ts.isCallExpression(node.initializer) && factory(node.initializer.expression))) requireNames.add(node.name.text);
+      if (ts.isVariableDeclaration(node) && node.initializer && ts.isIdentifier(node.name) && factory(node.initializer)) requireFactories.add(node.name.text);
+      if (ts.isVariableDeclaration(node) && node.initializer && !ts.isIdentifier(node.name) && (loader(node.initializer) || factory(node.initializer))) throw new Error(`Unsupported loader destructuring: ${file.path}`);
       ts.forEachChild(node, scanBindings);
     };
     scanBindings(source);
     const visit = (node: ts.Node): void => {
+      if (ts.isIdentifier(node) && (requireNames.has(node.text) || requireFactories.has(node.text))) {
+        const parent = node.parent;
+        const declaration = (ts.isVariableDeclaration(parent) && parent.name === node) || ts.isImportSpecifier(parent) || ts.isImportClause(parent);
+        const directCall = ts.isCallExpression(parent) && parent.expression === node;
+        const alias = ts.isVariableDeclaration(parent) && parent.initializer === node && ts.isIdentifier(parent.name);
+        const resolver = ts.isPropertyAccessExpression(parent) && parent.expression === node && parent.name.text === "resolve" && requireNames.has(node.text) && ts.isCallExpression(parent.parent) && parent.parent.expression === parent;
+        const memberName = ts.isPropertyAccessExpression(parent) && parent.name === node && (factory(parent) || loader(parent));
+        if (!declaration && !directCall && !alias && !resolver && !memberName) throw new Error(`Unsupported loader escape: ${file.path}`);
+      }
+      if (ts.isPropertyAccessExpression(node) && ["bind", "call", "apply"].includes(node.name.text) && (loader(node.expression) || factory(node.expression))) throw new Error(`Unsupported loader escape: ${file.path}`);
       if (ts.isImportDeclaration(node) || ts.isExportDeclaration(node)) {
         if (node.moduleSpecifier) {
           const specifier = literal(node.moduleSpecifier);

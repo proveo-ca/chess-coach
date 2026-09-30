@@ -28,7 +28,11 @@ type BaselineReport = {
   deterministicRerun: { performed: boolean; equal: boolean; comparisons: RerunComparison[] };
 };
 const object = (value: unknown): value is Record<string, unknown> => value !== null && typeof value === "object" && !Array.isArray(value);
-const report = (value: unknown): BaselineReport => {
+const report = (value: unknown, phase: "original" | "current"): BaselineReport => {
+  if (!object(value) || value.version !== (phase === "original" ? "phase1-baseline-report-v1" : "phase2-baseline-report-v1") ||
+    value.kind !== (phase === "original" ? "phase1-baseline" : "phase2-current-baseline") ||
+    value.independentVerification !== `_spec/evidence/ml-adjutant-${phase === "original" ? "phase1" : "phase2"}/verification.json` ||
+    (phase === "current" && (value.migrationReference !== "_spec/evidence/ml-adjutant-phase2/pin-migration.json" || !object(value.pins) || value.pins.version !== "challenge-execution-pins-v2"))) throw new Error("Invalid baseline migration provenance");
   if (!object(value) || !Array.isArray(value.schedule) || !Array.isArray(value.rows) ||
       !object(value.deterministicRerun) || !Array.isArray(value.deterministicRerun.comparisons) ||
       typeof value.manifestSha256 !== "string" || typeof value.sourceSha256 !== "string" || value.suite !== "all" ||
@@ -52,8 +56,8 @@ const report = (value: unknown): BaselineReport => {
 const scheduleEntry = ({ trace: _trace, ...match }: ScheduledMatch): Omit<ScheduledMatch, "trace"> => match;
 
 export const compareBaselineReports = (original: unknown, current: unknown): BaselineReportComparison => {
-  const before = report(original);
-  const after = report(current);
+  const before = report(original, "original");
+  const after = report(current, "current");
   const complete = (value: BaselineReport): boolean => value.schedule.length === 54 && value.rows.length === 54 &&
     new Set(value.schedule.map((entry) => entry.key)).size === 54 &&
     value.rows.every((row, index) => canonical(scheduleEntry(row.match)) === canonical(value.schedule[index]));
