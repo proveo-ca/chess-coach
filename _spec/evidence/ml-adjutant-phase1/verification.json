@@ -1,14 +1,13 @@
 {
   "version": "phase1-independent-verification-v1",
   "baselineReport": "_spec/evidence/ml-adjutant-phase1/baseline-report.json",
-  "baselineReportSha256": "eb73aa799d60f4dd2d81488c6bcb838a48a8ba2d158e0b9e24e1dd4156b47236",
+  "baselineReportSha256": "050fb2adf3013f75bc0954a3ca5c88452fee8de40d405960d155bbbc1941b54a",
   "verification": [
     { "command": "pnpm --filter @chess-coach/starchess-arena typecheck", "result": "passed" },
-    { "command": "pnpm --filter @chess-coach/starchess-arena test", "result": "passed", "files": 17, "tests": 160 },
+    { "command": "pnpm --filter @chess-coach/starchess-arena test", "result": "passed", "files": 17, "tests": 163 },
     { "command": "pnpm --filter @chess-coach/starchess-core typecheck", "result": "passed" },
     { "command": "pnpm --filter @chess-coach/starchess-core test", "result": "passed", "files": 53, "tests": 426 },
     { "command": "pnpm exec tsc --noEmit --target ES2022 --module ESNext --moduleResolution Bundler --strict --skipLibCheck src/__tests__/challenge*.test.ts src/__tests__/strictRecordedQueues.test.ts src/__tests__/resourceLedger.test.ts src/__tests__/observationIsolation.test.ts", "workdir": "packages/starchess-arena", "result": "passed" },
-    { "command": "pnpm test src/__tests__/challengeCorpus.test.ts src/__tests__/challengeEvidence.test.ts", "workdir": "packages/starchess-arena", "result": "passed", "files": 2, "tests": 8, "scope": "Final test-only type corrections after the full 160-test run" },
     { "command": "pnpm --filter @chess-coach/starchess-arena challenge --suite all --rerun --out ../../_spec/evidence/ml-adjutant-phase1/baseline-report.json", "result": "passed", "scheduledMatches": 54, "rerunMatches": 54, "semanticComparisonsEqual": 54 }
   ],
   "integrityTests": [
@@ -18,10 +17,10 @@
     { "path": "packages/starchess-arena/src/__tests__/challengeLifecycle.test.ts", "purpose": "Terminal-first and chip handling, exhaustion and genuine turn-45 outcomes", "sha256": "96466fa041ad6c3eb7db381ea8d612b08631bad73faf29b099530ea36d994dda", "result": "passed" },
     { "path": "packages/starchess-arena/src/__tests__/observationIsolation.test.ts", "purpose": "Both-seat precommit inputs, snapshot/context mutation isolation and private trace invariance", "sha256": "0b1a23b290b806241115d1adb206c3f602ea6cfc364e09fa01617d0dfe6cef07", "result": "passed" },
     { "path": "packages/starchess-arena/src/__tests__/challengeObservation.test.ts", "purpose": "Hidden-state proposal/ranking invariance, authorized sightings and Battleship pings", "sha256": "0eb4e0d8e0886de0717d5380f2ca4e2f8d486c7be1cf598ae3305f13b2331230", "result": "passed" },
-    { "path": "packages/starchess-arena/src/__tests__/challengeWatchdog.test.ts", "purpose": "Real-child hangs/crashes, fixed deadlines, bounded and validated IPC, partial evidence and reaping", "sha256": "7d76134aea3bcf4ec756c2325f6945548b506197df13dc098c26363215bcd551", "result": "passed" },
-    { "path": "packages/starchess-arena/src/__tests__/challengeEvidence.test.ts", "purpose": "Semantic determinism, production worker, authoritative reexecution and forged outcome/resource rejection", "sha256": "b60457121edefdff0216d15ae35f4dea766ab8c925ae93fe36131d16c40ad366", "result": "passed" },
-    { "path": "packages/starchess-arena/src/__tests__/challengeSuites.test.ts", "purpose": "Persisted 54-case execution, current source/runtime pins and all rerun semantic hashes", "sha256": "f0eb2bbab3ec09209b9dd425d4deff754493e2f5d3f06b16573f394b282c8a95", "result": "passed" },
-    { "path": "packages/starchess-arena/src/__tests__/challengePublication.test.ts", "purpose": "Atomic publication, failed serialization cleanup and exclusive preservation", "sha256": "4779e76bdff9038116f5ed84d8a9cd5875bdf685f1882637f9b07d2b26fef2af", "result": "passed" }
+    { "path": "packages/starchess-arena/src/__tests__/challengeWatchdog.test.ts", "purpose": "Real-child hangs/crashes, fixed deadlines, bounded JSONL pipes before deserialization, partial evidence and reaping", "sha256": "2f809947bbec5d598a8783e99fa7f4ccea7df07ac80a4308ba56ffb707aea2ef", "result": "passed" },
+    { "path": "packages/starchess-arena/src/__tests__/challengeEvidence.test.ts", "purpose": "Semantic determinism, production worker, strict trace identity, authoritative reexecution and forged outcome/resource rejection", "sha256": "9eebc1183c635c03ac3c8443ad8ebf7e566dd3a52aa1d20f96ab3d584c7badbe", "result": "passed" },
+    { "path": "packages/starchess-arena/src/__tests__/challengeSuites.test.ts", "purpose": "Persisted 54-case execution, current source/runtime pins and all rerun semantic hashes", "sha256": "8d58fe437f7f4e3dfc26ed622baf3b155136d54ef46490805d9a474e63b5a682", "result": "passed" },
+    { "path": "packages/starchess-arena/src/__tests__/challengePublication.test.ts", "purpose": "Atomic durable publication, failed serialization cleanup and exclusive preservation", "sha256": "39019f7403f28da46c5f99ca96339b03f7a4c5264f0ed58c509b2efe88e89be5", "result": "passed" }
   ],
   "scope": "Phase 1 non-learned baseline; numerical features and weight training remain unimplemented"
 }

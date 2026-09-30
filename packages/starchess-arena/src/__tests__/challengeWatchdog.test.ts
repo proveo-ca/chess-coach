@@ -71,14 +71,14 @@ describe("challenge child watchdog", () => {
   it.each([
     "malformed-identity", "malformed-arrays", "malformed-resolve", "malformed-outcome",
     "malformed-policy", "malformed-ply-prefix", "malformed-resolve-body", "malformed-scfens", "malformed-final-bank",
-    "fabricated-terminal", "wrong-ledger", "altered-resolve",
+    "fabricated-terminal", "wrong-ledger", "altered-resolve", "invalid-stop",
   ])("rejects %s completion", async (key) => {
     const evidence = await run(key);
     expectFailure(evidence, key);
     expect(evidence.stop).toMatchObject({ kind: "script-contract", reason: "worker protocol error: malformed completion" });
   });
 
-  it.each(["duplicate-ready", "malformed-phase", "malformed-ply", "unknown-message", "oversized-ply", "duplicate-ply"])("rejects %s IPC", async (key) => {
+  it.each(["duplicate-ready", "malformed-phase", "malformed-ply", "unknown-message", "oversized-ply", "duplicate-ply", "oversized-frame"])("rejects %s IPC", async (key) => {
     const evidence = await run(key);
     expectFailure(evidence, key);
     expect(evidence.stop.kind).toBe("script-contract");
@@ -108,7 +108,7 @@ describe("challenge child watchdog", () => {
 
   it("accepts normal completion only after reaping the child", async () => {
     const evidence = await run("normal") as ChallengeEvidence & { workerPid: number };
-    expect(evidence.stop.kind).toBe("trace-exhausted");
+    expect(evidence.stop.kind).toBe("exception");
     expect(evidence.match).toEqual(request("normal"));
     expect(evidence.resolves).toHaveLength(1);
     expect(evidence.bankTrail).toHaveLength(1);

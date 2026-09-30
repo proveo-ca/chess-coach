@@ -1,15 +1,17 @@
 // SPEC: _spec/packages/starchess-arena/ml-adjutant-phase1.puml
+import { createInterface } from "node:readline";
 import { endScTurn, formatScFen, normalizeSnapGas, parseScFen } from "@chess-coach/starchess-core";
 import { seedBankForOpening, grantStoredIncome } from "../../run/bank";
 import type { ChallengeEvidence, ChallengeProgress, ScheduledMatch } from "../../challenge/types";
 
 const send = (message: unknown): Promise<void> => new Promise((resolve, reject) => {
-  process.send!(message, (error) => error ? reject(error) : resolve());
+  process.stdout.write(`${JSON.stringify(message)}\n`, (error) => error ? reject(error) : resolve());
 });
 const hang = () => new Promise<void>(() => {});
 const loop = () => { for (;;) {} };
 
-process.on("message", async (message: { kind: "request"; request: ScheduledMatch }) => {
+createInterface({ input: process.stdin }).on("line", async (line) => {
+  const message = JSON.parse(line) as { kind: "request"; request: ScheduledMatch };
   const request = message.request;
   const snapshot = parseScFen(request.opening);
   const initialBank = seedBankForOpening(snapshot);
@@ -26,7 +28,7 @@ process.on("message", async (message: { kind: "request"; request: ScheduledMatch
     scfens: [formatScFen(normalizeSnapGas(snapshot)), nextScfen],
     resolves: [resolve], bankTrail: [finalBank], finalBank,
     outcome: null,
-    stop: { kind: "trace-exhausted", phase: "trace", planningOrdinal: 7, turn: 3, side: "b" },
+    stop: { kind: "exception", phase: "candidate-plan", planningOrdinal: 1, turn: 1, side: "b", reason: "fixture exception" },
     workerPid: process.pid,
   };
   if (request.key === "unknown-message") {
@@ -76,6 +78,11 @@ process.on("message", async (message: { kind: "request"; request: ScheduledMatch
   }
   if (request.key === "wrong-ledger") evidence.bankTrail = [initialBank];
   if (request.key === "altered-resolve") evidence.resolves[0]!.resolved.moves = [{ from: "a1", to: "a2", color: "w", piece: "p" }];
+  if (request.key === "invalid-stop") evidence.stop = { kind: "trace-exhausted", phase: "trace", planningOrdinal: 7, turn: 3 };
+  if (request.key === "oversized-frame") {
+    process.stdout.write("x".repeat(16_777_217));
+    return;
+  }
   if (request.key === "oversized-ply") {
     await send({ kind: "ply", scfen: nextScfen, resolve, bank: finalBank, excess: "x".repeat(1_048_577) });
     return;
@@ -88,5 +95,4 @@ process.on("message", async (message: { kind: "request"; request: ScheduledMatch
   await send({ kind: "complete", evidence });
 });
 
-process.on("disconnect", () => process.exit(0));
 void send({ kind: "ready" });

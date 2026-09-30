@@ -1,5 +1,5 @@
 // SPEC: _spec/packages/starchess-arena/ml-adjutant-phase1.puml
-import { fork, type ChildProcess } from "node:child_process";
+import { spawn, type ChildProcess } from "node:child_process";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import {
@@ -79,6 +79,8 @@ export const runSupervised = (
   let child: ChildProcess | undefined;
   let ready = false;
   let messageCount = 0;
+  let frameChunks: Buffer[] = [];
+  let frameBytes = 0;
   let result: ChallengeEvidence | undefined;
   let startupTimer: NodeJS.Timeout | undefined;
   let matchTimer: NodeJS.Timeout | undefined;
@@ -153,7 +155,7 @@ export const runSupervised = (
         startupTimer = undefined;
         lastPhase = { ...lastPhase, phase: "ready" };
         matchTimer = setTimeout(() => fail("watchdog", "match timeout"), budgets.matchMs);
-        child!.send({ kind: "request", request }, (error) => {
+        child!.stdin!.write(`${JSON.stringify({ kind: "request", request })}\n`, (error) => {
           if (error) fail("exception", `worker request failed: ${error.message}`);
         });
         return;
@@ -187,7 +189,7 @@ export const runSupervised = (
           ...failed("trace-exhausted", "prefix validation"), scfens: [...scfens, message.scfen],
           resolves: [...resolves, message.resolve], bankTrail: [...bankTrail, message.bank], finalBank: message.bank,
         };
-        if (!executionIntegrity(prefix)) { protocolError("invalid ply progression or resources"); return; }
+        if (!executionIntegrity(prefix, false)) { protocolError("invalid ply progression or resources"); return; }
         scfens.push(message.scfen);
         resolves.push(message.resolve);
         bankTrail.push(message.bank);
@@ -204,12 +206,37 @@ export const runSupervised = (
     }
   };
   const onError = (error: Error) => fail("exception", `worker error: ${error.message}`);
-  const onDisconnect = () => fail("exception", "worker disconnected before completion");
+  const onData = (chunk: Buffer) => {
+    if (result) return;
+    let start = 0;
+    while (start < chunk.length && !result) {
+      const newline = chunk.indexOf(10, start);
+      const end = newline < 0 ? chunk.length : newline;
+      const part = chunk.subarray(start, end);
+      if (frameBytes + part.length > CHALLENGE_CONFIG.maxCompletionBytes) {
+        protocolError("frame byte limit exceeded");
+        frameChunks = [];
+        frameBytes = 0;
+        return;
+      }
+      frameChunks.push(part);
+      frameBytes += part.length;
+      if (newline < 0) return;
+      const frame = Buffer.concat(frameChunks, frameBytes);
+      frameChunks = [];
+      frameBytes = 0;
+      try { onMessage(JSON.parse(frame.toString("utf8"))); }
+      catch { protocolError("invalid JSON frame"); }
+      start = newline + 1;
+    }
+  };
   const onClose = (code: number | null, signal: NodeJS.Signals | null) => {
     clearTimers();
-    child!.removeListener("message", onMessage);
+    child!.stdout?.removeListener("data", onData);
+    frameChunks = [];
+    frameBytes = 0;
     child!.removeListener("error", onError);
-    child!.removeListener("disconnect", onDisconnect);
+    child!.stdin?.removeListener("error", onError);
     result ??= failed("exception", `worker exited before completion (code=${code}, signal=${signal})`);
     resolve(result);
   };
@@ -221,15 +248,11 @@ export const runSupervised = (
   }
   startupTimer = setTimeout(() => fail("watchdog", "startup timeout"), budgets.startupMs);
   try {
-    child = fork(fileURLToPath(options.workerUrl ?? new URL("./worker.ts", import.meta.url)), [], {
-      execPath: process.execPath,
-      execArgv: ["--import", createRequire(import.meta.url).resolve("tsx")],
-      stdio: ["ignore", "ignore", "ignore", "ipc"],
-      serialization: "json",
-    });
-    child.on("message", onMessage);
+    child = spawn(process.execPath, ["--import", createRequire(import.meta.url).resolve("tsx"),
+      fileURLToPath(options.workerUrl ?? new URL("./worker.ts", import.meta.url))], { stdio: ["pipe", "pipe", "ignore"] });
+    child.stdout!.on("data", onData);
     child.on("error", onError);
-    child.on("disconnect", onDisconnect);
+    child.stdin!.on("error", onError);
     child.once("close", onClose);
   } catch (error) {
     fail("exception", `worker launch failed: ${String(error)}`);

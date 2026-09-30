@@ -8,7 +8,7 @@ import { commitPair, stageQueue } from "./admission";
 import { canonical, CHALLENGE_CONFIG } from "./config";
 import type { ChallengeEvidence } from "./types";
 
-export const executionIntegrity = (evidence: ChallengeEvidence): boolean => {
+export const executionIntegrity = (evidence: ChallengeEvidence, verifyStop = true): boolean => {
   try {
     if (evidence.stop.kind === "script-contract" || evidence.scfens.length !== evidence.resolves.length + 1 ||
       evidence.bankTrail.length !== evidence.resolves.length || evidence.resolves.length > CHALLENGE_CONFIG.maxRecordedPlies ||
@@ -19,6 +19,9 @@ export const executionIntegrity = (evidence: ChallengeEvidence): boolean => {
     let bank: Bank = { ...snap.stored };
     let ready = false;
     let windows = 0;
+    const trace = evidence.match.trace;
+    if (evidence.match.suite === "corpus" && (!trace || trace.caseId !== evidence.match.key ||
+      trace.openingScfen !== evidence.match.opening || evidence.match.candidateSide !== "b")) return false;
     for (const [index, resolve] of evidence.resolves.entries()) {
       if (scOutcome(snap)) return false;
       if (!ready) {
@@ -37,6 +40,7 @@ export const executionIntegrity = (evidence: ChallengeEvidence): boolean => {
       if (queue.some((action) => action.color !== "w" && action.color !== "b")) return false;
       const intents = (side: "w" | "b"): ScActionInput[] => queue.filter((action) => action.color === side)
         .map(({ seq: _seq, ...action }) => action);
+      if (evidence.match.suite === "corpus" && canonical(intents("w")) !== canonical(trace!.windows[windows]?.actions)) return false;
       const white = stageQueue(snap, bank, "w", intents("w"), windows);
       const black = stageQueue(snap, bank, "b", intents("b"), windows);
       if (!white.ok || !black.ok) return false;
@@ -51,7 +55,21 @@ export const executionIntegrity = (evidence: ChallengeEvidence): boolean => {
       ready = false;
     }
     if (canonical(evidence.finalBank) !== canonical(bank)) return false;
+    if (!verifyStop) return true;
+    if (evidence.stop.planningOrdinal !== windows || evidence.stop.turn !== snap.turn) return false;
     const actual = scOutcome(snap);
+    if (evidence.stop.kind === "trace-exhausted" && (evidence.match.suite !== "corpus" || trace!.windows[windows] || actual !== null)) return false;
+    if (evidence.stop.kind === "progress-limit" && actual === null && windows < CHALLENGE_CONFIG.maxWindows &&
+      evidence.resolves.length < CHALLENGE_CONFIG.maxRecordedPlies) return false;
+    if (evidence.stop.kind === "queue-rejected" && evidence.match.suite === "corpus" && evidence.stop.side === "w") {
+      const window = trace!.windows[windows];
+      if (!window || evidence.stop.sourcePlyIndex !== window.sourcePlyIndex) return false;
+      const open = ready ? snap : beginScTurn(snap).next;
+      const staged = stageQueue(open, bank, "w", window.actions, windows);
+      if (staged.ok) return false;
+      const { sourcePlyIndex: _sourcePlyIndex, ...failure } = evidence.stop;
+      if (canonical(failure) !== canonical(staged.failure)) return false;
+    }
     return evidence.stop.kind === "terminal" ? actual !== null && canonical(actual) === canonical(evidence.outcome) : evidence.outcome === null;
   } catch { return false; }
 };

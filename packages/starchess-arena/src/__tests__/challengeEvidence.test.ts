@@ -44,6 +44,16 @@ describe("baseline execution evidence", () => {
     expect(executionIntegrity(bank)).toBe(false);
   });
 
+  it("rejects a real corpus execution relabelled as a different pinned White trace", async () => {
+    const schedule = buildSchedule(loadPinnedCorpus());
+    const run = await runChallengeMatch(schedule[0]!);
+    expect(executionIntegrity(run)).toBe(true);
+    expect(executionIntegrity({ ...run, match: schedule[1]! })).toBe(false);
+    const changedOrdinal = structuredClone(run);
+    changedOrdinal.stop.planningOrdinal++;
+    expect(executionIntegrity(changedOrdinal)).toBe(false);
+  });
+
   it("runs the production supervised worker with pinned config and matches in-process semantics", async () => {
     const request = buildSchedule(loadPinnedCorpus())[0]!;
     const expected = await runChallengeMatch(request);

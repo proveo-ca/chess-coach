@@ -87,7 +87,7 @@ export const runBaselineSuite = async (suite: Suite = "all", rerun = true) => {
     }
   }
   if (canonical(pins) !== canonical(executionPins())) throw new Error("execution pins changed during suite");
-  const integrity = rows.every(executionIntegrity);
+  const integrity = rows.every((row) => executionIntegrity(row));
   return {
     version: "phase1-baseline-report-v1", kind: "phase1-baseline", learnedGateEligible: false, modelArtifact: null,
     independentVerification: "_spec/evidence/ml-adjutant-phase1/verification.json",

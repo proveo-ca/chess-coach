@@ -1,10 +1,11 @@
-import { mkdtempSync, readFileSync, readdirSync, rmSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { publishReport } from "../challenge/publication";
 
 describe("exclusive atomic evidence publication", () => {
   it("publishes complete JSON and preserves an existing report", () => {
+    mkdirSync("/tmp/opencode", { recursive: true });
     const directory = mkdtempSync("/tmp/opencode/challenge-report-");
     try {
       const path = join(directory, "report.json");

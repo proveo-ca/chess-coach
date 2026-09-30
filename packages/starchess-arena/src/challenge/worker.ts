@@ -1,16 +1,17 @@
 // SPEC: _spec/packages/starchess-arena/ml-adjutant-phase1.puml
+import { createInterface } from "node:readline";
 import { runChallengeMatch } from "./runChallengeMatch";
 import type { ChallengeProgress, ScheduledMatch } from "./types";
 
 const send = (message: unknown) => {
-  if (!process.send || !process.connected) throw new Error("worker IPC unavailable");
-  process.send(message, (error) => {
+  process.stdout.write(`${JSON.stringify(message)}\n`, (error) => {
     if (error) process.exit(1);
   });
 };
 
 let requested = false;
-process.on("message", async (message: unknown) => {
+createInterface({ input: process.stdin }).on("line", async (line) => {
+  const message: unknown = JSON.parse(line);
   if (requested || !message || typeof message !== "object" ||
       !("kind" in message) || message.kind !== "request" || !("request" in message)) {
     process.exit(1);
@@ -25,5 +26,4 @@ process.on("message", async (message: unknown) => {
     process.exit(1);
   }
 });
-process.on("disconnect", () => process.exit(0));
 send({ kind: "ready" });

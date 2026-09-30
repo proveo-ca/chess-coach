@@ -17,4 +17,7 @@ export const publishReport = (path: string, report: unknown): void => {
   closeSync(fd);
   try { linkSync(temporary, path); }
   finally { unlinkSync(temporary); }
+  const directory = openSync(dirname(path), "r");
+  try { fsyncSync(directory); }
+  finally { closeSync(directory); }
 };
