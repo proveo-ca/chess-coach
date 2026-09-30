@@ -25,7 +25,7 @@
 ' phase1 pins: baseline 940387370040f88888e9dfe0bb86ad9d4a8be88854df507120f34b22ee2d362b; verification 55d965afa71d775ff6ee1e95b6650a27d0ce759b966a81c43a3bb364236c7508. Unchanged.
 ' reviews: pre-freeze findings were fixed before this freeze: loader escapes, dense arrays, provenance, capture containment, importer completeness.
 ' reviews: post-image adversarial and security rereview is not yet recorded. This diagram is not a READY verdict.
-' rendering: an earlier checkonly predates this evidence update. Fresh plantuml -checkonly belongs to the lead.
+' rendering: final evidence update passed plantuml -checkonly.
 @startuml ml-adjutant-phase2
 !include ../../themes/proveo.puml
 title StarChess arena · ML Adjutant Phase 2 — hermetic verification passed, not learned
@@ -147,6 +147,6 @@ legend bottom
   Post-image adversarial and security rereview is not yet recorded. Do not read this diagram as READY.
   FIRST Phase 3 training still needs a broader versioned generator and v2 interactions, at H=1.
   Three-window conditional search remains later work. No trained coefficients or playable ML player.
-  Fresh plantuml -checkonly of this edited diagram belongs to the lead.
+  Final PlantUML checkonly passed.
 endlegend
 @enduml
