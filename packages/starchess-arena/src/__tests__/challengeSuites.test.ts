@@ -28,10 +28,8 @@ describe("persisted exhaustive Phase1 baseline evidence", () => {
   });
 
   it("reexecutes recorded settlement and resource evidence through authoritative rules", () => {
-    const corpus = loadPinnedCorpus();
-    expect(report.rows.every((row) => executionIntegrity({ ...row,
-      match: { ...row.match, trace: corpus.traces.find((trace) => trace.caseId === row.match.key) },
-    }))).toBe(true);
+    expect(report.rows.filter((row) => row.match.suite === "corpus").every((row) => row.match.trace)).toBe(true);
+    expect(report.rows.every((row) => executionIntegrity(row))).toBe(true);
     expect(report.executionIntegrity).toBe(true);
     expect(report.rows.every((row) => row.fallbackCount === 0 && row.modelArtifact === null && row.learnedGateEligible === false)).toBe(true);
     expect(report.learnedChallengePass).toBe(false);

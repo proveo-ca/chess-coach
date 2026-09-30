@@ -27,7 +27,7 @@
     },
     "configurationSha256": "f36cf84bf9c7c97bf35161c15a1aa95409f2e75d39dd28cb9e8dbec1be2de57f",
     "coreRulesSha256": "811dc1ba6634c8fc073d241325578a014d370ad2a2613565b5bd3a7783b1bd68",
-    "adapterSha256": "94e62092c07ccb38fb2b214481d3fc43a4958c6d072e965b10f450e2f48c37e3",
+    "adapterSha256": "24678cd7bf668ca05aa6bfe22b706f764c8915d6ceea4110c9e7ae80d7985f37",
     "strategicAndLedgerSha256": "0072ca7f5d257ef3b3108a9669a3c4ef8f56af39c1352f40b13315ca3067997c",
     "dependencyLockSha256": "0c27c2b6f4bf1ffbe9822c5a0be8fda591c63d16ef1eedc43cfbac538cc72508",
     "runtimeConfigurationSha256": "6e77cf45b15d7a558a77a77a1f81867dfa3c3d13f2344435b59c9036ba337cad",
@@ -1322,7 +1322,436 @@
         "candidateSide": "b",
         "arenaSeed": 0,
         "inferenceSeed": 0,
-        "opening": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:"
+        "opening": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:",
+        "trace": {
+          "caseId": "white-trace-01",
+          "gameId": "sc-mulk6tx6-a3ifuyd",
+          "historicalResult": "win",
+          "openingScfen": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:",
+          "traceSha256": "0111341cda582d753b3526e44db71b643faa8888cf8a44ed84c8318639376485",
+          "windows": [
+            {
+              "planningOrdinal": 0,
+              "sourcePlyIndex": 0,
+              "sourceTurn": 0,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e2",
+                  "to": "e4"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "f3"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 1,
+              "sourcePlyIndex": 1,
+              "sourceTurn": 1,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "f2"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "g3",
+                  "unit": "b"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 2,
+              "sourcePlyIndex": 2,
+              "sourceTurn": 2,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e4",
+                  "to": "d5"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "e3",
+                  "unit": "p"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 3,
+              "sourcePlyIndex": 3,
+              "sourceTurn": 3,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "d5",
+                  "to": "c6"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "e3",
+                  "to": "e4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 4,
+              "sourcePlyIndex": 4,
+              "sourceTurn": 4,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "c6",
+                  "to": "d7"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 5,
+              "sourcePlyIndex": 5,
+              "sourceTurn": 5,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "e3",
+                  "unit": "n"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "g3",
+                  "to": "e5"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 6,
+              "sourcePlyIndex": 6,
+              "sourceTurn": 6,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e3",
+                  "to": "d5"
+                },
+                {
+                  "timing": "F",
+                  "kind": "spiderMine",
+                  "color": "w",
+                  "from": "e3",
+                  "to": "e3"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 7,
+              "sourcePlyIndex": 7,
+              "sourceTurn": 7,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "d5",
+                  "to": "c7"
+                },
+                {
+                  "timing": "F",
+                  "kind": "spiderMine",
+                  "color": "w",
+                  "from": "d5",
+                  "to": "d5"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 8,
+              "sourcePlyIndex": 8,
+              "sourceTurn": 8,
+              "actions": []
+            },
+            {
+              "planningOrdinal": 9,
+              "sourcePlyIndex": 9,
+              "sourceTurn": 9,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "c7",
+                  "to": "e8"
+                },
+                {
+                  "timing": "F",
+                  "kind": "spiderMine",
+                  "color": "w",
+                  "from": "c7",
+                  "to": "c7"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 10,
+              "sourcePlyIndex": 10,
+              "sourceTurn": 10,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e8",
+                  "to": "c7"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "f3",
+                  "unit": "r"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 11,
+              "sourcePlyIndex": 11,
+              "sourceTurn": 11,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "siegeMode",
+                  "color": "w",
+                  "from": "f3"
+                },
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "g3",
+                  "unit": "p"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 12,
+              "sourcePlyIndex": 12,
+              "sourceTurn": 12,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "c7",
+                  "to": "e6"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "g3",
+                  "to": "g4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 13,
+              "sourcePlyIndex": 13,
+              "sourceTurn": 13,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "e3",
+                  "unit": "p"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e3",
+                  "to": "e4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 14,
+              "sourcePlyIndex": 14,
+              "sourceTurn": 14,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "siegeMode",
+                  "color": "w",
+                  "from": "f3"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f3",
+                  "to": "f8"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "f3",
+                  "unit": "n"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 15,
+              "sourcePlyIndex": 16,
+              "sourceTurn": 15,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "e3",
+                  "unit": "p"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e3",
+                  "to": "d4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 16,
+              "sourcePlyIndex": 18,
+              "sourceTurn": 16,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "g4",
+                  "to": "f5"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "g3",
+                  "unit": "p"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 17,
+              "sourcePlyIndex": 19,
+              "sourceTurn": 17,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f3",
+                  "to": "d4"
+                },
+                {
+                  "timing": "F",
+                  "kind": "spiderMine",
+                  "color": "w",
+                  "from": "f3",
+                  "to": "f3"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 18,
+              "sourcePlyIndex": 20,
+              "sourceTurn": 18,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "d4",
+                  "to": "c6"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "f3",
+                  "unit": "q"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "g3",
+                  "to": "g4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 19,
+              "sourcePlyIndex": 21,
+              "sourceTurn": 19,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "c6",
+                  "to": "e7"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "f5",
+                  "to": "f6"
+                }
+              ]
+            }
+          ]
+        }
       },
       "historicalSource": {
         "gameId": "sc-mulk6tx6-a3ifuyd",
@@ -1839,7 +2268,188 @@
         "candidateSide": "b",
         "arenaSeed": 0,
         "inferenceSeed": 0,
-        "opening": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:"
+        "opening": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:",
+        "trace": {
+          "caseId": "white-trace-02",
+          "gameId": "sc-mukqy5de-1jg2eup",
+          "historicalResult": "win",
+          "openingScfen": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:",
+          "traceSha256": "b1ab1d3cad41ea38f3b130919677d75e3b85dd2c65573608515b9c75d51239e0",
+          "windows": [
+            {
+              "planningOrdinal": 0,
+              "sourcePlyIndex": 0,
+              "sourceTurn": 0,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "e2",
+                  "to": "e3"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "e2"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 1,
+              "sourcePlyIndex": 1,
+              "sourceTurn": 1,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "e3",
+                  "to": "e4"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e2",
+                  "to": "e3"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 2,
+              "sourcePlyIndex": 2,
+              "sourceTurn": 2,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e3",
+                  "to": "d3",
+                  "unit": "p"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "f4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 3,
+              "sourcePlyIndex": 3,
+              "sourceTurn": 3,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "e4",
+                  "to": "e5"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e3",
+                  "to": "e4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 4,
+              "sourcePlyIndex": 4,
+              "sourceTurn": 4,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "e5",
+                  "to": "e6"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e4",
+                  "to": "e5"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 5,
+              "sourcePlyIndex": 5,
+              "sourceTurn": 5,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e5",
+                  "to": "e6",
+                  "unit": "p"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e6",
+                  "to": "d7"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 6,
+              "sourcePlyIndex": 7,
+              "sourceTurn": 6,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e5",
+                  "to": "e6"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e5",
+                  "to": "f7",
+                  "unit": "p"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 7,
+              "sourcePlyIndex": 9,
+              "sourceTurn": 7,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e6",
+                  "to": "d7"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e6",
+                  "to": "d6",
+                  "unit": "p"
+                }
+              ]
+            }
+          ]
+        }
       },
       "historicalSource": {
         "gameId": "sc-mukqy5de-1jg2eup",
@@ -2210,7 +2820,438 @@
         "candidateSide": "b",
         "arenaSeed": 0,
         "inferenceSeed": 0,
-        "opening": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:"
+        "opening": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:",
+        "trace": {
+          "caseId": "white-trace-03",
+          "gameId": "sc-mukqs61j-cny2iu5",
+          "historicalResult": "win",
+          "openingScfen": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:",
+          "traceSha256": "a2b2f9efa1396a55bd35f4e10ac743367c9d87085818ec2473bbf9b06c9138d0",
+          "windows": [
+            {
+              "planningOrdinal": 0,
+              "sourcePlyIndex": 0,
+              "sourceTurn": 0,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "f1",
+                  "unit": "n"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f1",
+                  "to": "e3"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 1,
+              "sourcePlyIndex": 1,
+              "sourceTurn": 1,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e3",
+                  "to": "d5"
+                },
+                {
+                  "timing": "F",
+                  "kind": "spiderMine",
+                  "color": "w",
+                  "from": "e3",
+                  "to": "e3"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 2,
+              "sourcePlyIndex": 2,
+              "sourceTurn": 2,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "d5",
+                  "to": "c7"
+                },
+                {
+                  "timing": "F",
+                  "kind": "spiderMine",
+                  "color": "w",
+                  "from": "d5",
+                  "to": "d5"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 3,
+              "sourcePlyIndex": 4,
+              "sourceTurn": 3,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "c7",
+                  "to": "b5"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "f1",
+                  "unit": "n"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 4,
+              "sourcePlyIndex": 5,
+              "sourceTurn": 4,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f1",
+                  "to": "g3"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "e2",
+                  "to": "e3"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 5,
+              "sourcePlyIndex": 6,
+              "sourceTurn": 5,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "g3",
+                  "to": "f5"
+                },
+                {
+                  "timing": "F",
+                  "kind": "spiderMine",
+                  "color": "w",
+                  "from": "g3",
+                  "to": "g3"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 6,
+              "sourcePlyIndex": 8,
+              "sourceTurn": 6,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "e2",
+                  "unit": "n"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "f4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 7,
+              "sourcePlyIndex": 9,
+              "sourceTurn": 7,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f5",
+                  "to": "d6"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "e3",
+                  "to": "e4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 8,
+              "sourcePlyIndex": 10,
+              "sourceTurn": 8,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "e4",
+                  "to": "e5"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e5",
+                  "to": "f6"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 9,
+              "sourcePlyIndex": 11,
+              "sourceTurn": 9,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f6",
+                  "to": "e7"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "d2",
+                  "to": "d3"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 10,
+              "sourcePlyIndex": 12,
+              "sourceTurn": 10,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e2",
+                  "to": "g3"
+                },
+                {
+                  "timing": "F",
+                  "kind": "spiderMine",
+                  "color": "w",
+                  "from": "e2",
+                  "to": "e2"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 11,
+              "sourcePlyIndex": 13,
+              "sourceTurn": 11,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "g3",
+                  "to": "f5"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "d2",
+                  "unit": "n"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 12,
+              "sourcePlyIndex": 14,
+              "sourceTurn": 12,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f5",
+                  "to": "d4"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "d1",
+                  "unit": "b"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 13,
+              "sourcePlyIndex": 15,
+              "sourceTurn": 13,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "d1",
+                  "to": "h5"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "f2",
+                  "unit": "n"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 14,
+              "sourcePlyIndex": 16,
+              "sourceTurn": 14,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "e2",
+                  "unit": "p"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e2",
+                  "to": "d3"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "f4",
+                  "to": "f5"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 15,
+              "sourcePlyIndex": 17,
+              "sourceTurn": 15,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "e4"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "f5",
+                  "to": "f6"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "e2",
+                  "unit": "p"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 16,
+              "sourcePlyIndex": 18,
+              "sourceTurn": 16,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "d2",
+                  "to": "c4"
+                },
+                {
+                  "timing": "F",
+                  "kind": "spiderMine",
+                  "color": "w",
+                  "from": "d2",
+                  "to": "d2"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 17,
+              "sourcePlyIndex": 19,
+              "sourceTurn": 17,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "c4",
+                  "to": "e5"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "e2",
+                  "to": "e3"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "f2",
+                  "unit": "r"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 18,
+              "sourcePlyIndex": 20,
+              "sourceTurn": 18,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e4",
+                  "to": "f6"
+                }
+              ]
+            }
+          ]
+        }
       },
       "historicalSource": {
         "gameId": "sc-mukqs61j-cny2iu5",
@@ -2581,7 +3622,293 @@
         "candidateSide": "b",
         "arenaSeed": 0,
         "inferenceSeed": 0,
-        "opening": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:"
+        "opening": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:",
+        "trace": {
+          "caseId": "white-trace-04",
+          "gameId": "sc-mukqpjww-1l3cipl",
+          "historicalResult": "win",
+          "openingScfen": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:",
+          "traceSha256": "e5854014a122bf0476a15f00798f7f8f2e2381a041a82b85f4cc25894e0bd843",
+          "windows": [
+            {
+              "planningOrdinal": 0,
+              "sourcePlyIndex": 0,
+              "sourceTurn": 0,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "f1",
+                  "unit": "n"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f1",
+                  "to": "e3"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 1,
+              "sourcePlyIndex": 1,
+              "sourceTurn": 1,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e3",
+                  "to": "d5"
+                },
+                {
+                  "timing": "F",
+                  "kind": "spiderMine",
+                  "color": "w",
+                  "from": "e3",
+                  "to": "e3"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 2,
+              "sourcePlyIndex": 2,
+              "sourceTurn": 2,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "d5",
+                  "to": "c7"
+                },
+                {
+                  "timing": "F",
+                  "kind": "spiderMine",
+                  "color": "w",
+                  "from": "d5",
+                  "to": "d5"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 3,
+              "sourcePlyIndex": 4,
+              "sourceTurn": 3,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "d2",
+                  "to": "d3"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e2",
+                  "to": "e4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 4,
+              "sourcePlyIndex": 5,
+              "sourceTurn": 4,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "e2",
+                  "unit": "n"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "c7",
+                  "to": "e6"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 5,
+              "sourcePlyIndex": 6,
+              "sourceTurn": 5,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "spiderMine",
+                  "color": "w",
+                  "from": "e6",
+                  "to": "e6"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e6",
+                  "to": "g7"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 6,
+              "sourcePlyIndex": 7,
+              "sourceTurn": 6,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e2",
+                  "to": "d4"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "e2",
+                  "unit": "n"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 7,
+              "sourcePlyIndex": 8,
+              "sourceTurn": 7,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "d4",
+                  "to": "e6"
+                },
+                {
+                  "timing": "F",
+                  "kind": "spiderMine",
+                  "color": "w",
+                  "from": "d4",
+                  "to": "d4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 8,
+              "sourcePlyIndex": 9,
+              "sourceTurn": 8,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e6",
+                  "to": "g5"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "f3"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 9,
+              "sourcePlyIndex": 10,
+              "sourceTurn": 9,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e2",
+                  "to": "f4"
+                },
+                {
+                  "timing": "F",
+                  "kind": "spiderMine",
+                  "color": "w",
+                  "from": "e2",
+                  "to": "e2"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 10,
+              "sourcePlyIndex": 11,
+              "sourceTurn": 10,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f4",
+                  "to": "g6"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "f2",
+                  "unit": "b"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 11,
+              "sourcePlyIndex": 13,
+              "sourceTurn": 11,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "h4"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "f3",
+                  "to": "f4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 12,
+              "sourcePlyIndex": 14,
+              "sourceTurn": 12,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "h4",
+                  "to": "f6"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "f4",
+                  "to": "f5"
+                }
+              ]
+            }
+          ]
+        }
       },
       "historicalSource": {
         "gameId": "sc-mukqpjww-1l3cipl",
@@ -2952,7 +4279,267 @@
         "candidateSide": "b",
         "arenaSeed": 0,
         "inferenceSeed": 0,
-        "opening": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:"
+        "opening": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:",
+        "trace": {
+          "caseId": "white-trace-05",
+          "gameId": "sc-mukqmw48-fhkueuv",
+          "historicalResult": "win",
+          "openingScfen": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:",
+          "traceSha256": "5f309bcdd10c901833a2fe41c5219f95f0dabac9cbea28b05214f3f45c556023",
+          "windows": [
+            {
+              "planningOrdinal": 0,
+              "sourcePlyIndex": 0,
+              "sourceTurn": 0,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "f1",
+                  "unit": "n"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f1",
+                  "to": "e3"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 1,
+              "sourcePlyIndex": 1,
+              "sourceTurn": 1,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e3",
+                  "to": "d5"
+                },
+                {
+                  "timing": "F",
+                  "kind": "spiderMine",
+                  "color": "w",
+                  "from": "e3",
+                  "to": "e3"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 2,
+              "sourcePlyIndex": 2,
+              "sourceTurn": 2,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "d5",
+                  "to": "c7"
+                },
+                {
+                  "timing": "F",
+                  "kind": "spiderMine",
+                  "color": "w",
+                  "from": "d5",
+                  "to": "d5"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 3,
+              "sourcePlyIndex": 4,
+              "sourceTurn": 3,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e2",
+                  "to": "e3"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 4,
+              "sourcePlyIndex": 5,
+              "sourceTurn": 4,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "f1",
+                  "unit": "b"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "c7",
+                  "to": "e6"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 5,
+              "sourcePlyIndex": 6,
+              "sourceTurn": 5,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "f4"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "e3",
+                  "to": "e4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 6,
+              "sourcePlyIndex": 7,
+              "sourceTurn": 6,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "f2",
+                  "unit": "b"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "h4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 7,
+              "sourcePlyIndex": 8,
+              "sourceTurn": 7,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "h4",
+                  "to": "e7"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "e4",
+                  "to": "e5"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 8,
+              "sourcePlyIndex": 9,
+              "sourceTurn": 8,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e5",
+                  "to": "d6"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "e2",
+                  "unit": "p"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 9,
+              "sourcePlyIndex": 10,
+              "sourceTurn": 9,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "f4",
+                  "to": "f5"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f5",
+                  "to": "e6"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 10,
+              "sourcePlyIndex": 11,
+              "sourceTurn": 10,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e6",
+                  "to": "f7"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "e2",
+                  "to": "e3"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 11,
+              "sourcePlyIndex": 13,
+              "sourceTurn": 11,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "f7",
+                  "to": "f8",
+                  "promotion": "q"
+                },
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "f2",
+                  "unit": "p"
+                }
+              ]
+            }
+          ]
+        }
       },
       "historicalSource": {
         "gameId": "sc-mukqmw48-fhkueuv",
@@ -4048,7 +5635,297 @@
         "candidateSide": "b",
         "arenaSeed": 0,
         "inferenceSeed": 0,
-        "opening": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:"
+        "opening": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:",
+        "trace": {
+          "caseId": "white-trace-06",
+          "gameId": "sc-mukq93fp-hhcfy3x",
+          "historicalResult": "win",
+          "openingScfen": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:",
+          "traceSha256": "896815afcb6465ec999e8c334681b14060c4187d6f92747f22121765415a4b9c",
+          "windows": [
+            {
+              "planningOrdinal": 0,
+              "sourcePlyIndex": 0,
+              "sourceTurn": 0,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "f1"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "g2",
+                  "unit": "p"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 1,
+              "sourcePlyIndex": 1,
+              "sourceTurn": 1,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "g2",
+                  "to": "g3"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f1",
+                  "to": "g2"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 2,
+              "sourcePlyIndex": 2,
+              "sourceTurn": 2,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "g2",
+                  "to": "f3",
+                  "unit": "n"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f3",
+                  "to": "d4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 3,
+              "sourcePlyIndex": 3,
+              "sourceTurn": 3,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "g2",
+                  "to": "h2",
+                  "unit": "p"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 4,
+              "sourcePlyIndex": 4,
+              "sourceTurn": 4,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "h2",
+                  "to": "h4"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "h2",
+                  "to": "h3"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 5,
+              "sourcePlyIndex": 5,
+              "sourceTurn": 5,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "h5",
+                  "to": "h6"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "h6",
+                  "to": "h7"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 6,
+              "sourcePlyIndex": 6,
+              "sourceTurn": 6,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "g3",
+                  "to": "h4"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "g2",
+                  "to": "g3",
+                  "unit": "p"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 7,
+              "sourcePlyIndex": 7,
+              "sourceTurn": 7,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "h7",
+                  "to": "h8",
+                  "promotion": "q"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "h4",
+                  "to": "h5"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 8,
+              "sourcePlyIndex": 8,
+              "sourceTurn": 8,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "h8",
+                  "to": "f6"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "h5",
+                  "to": "h6"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 9,
+              "sourcePlyIndex": 10,
+              "sourceTurn": 9,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "h6",
+                  "to": "h7"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "h7",
+                  "to": "h8",
+                  "promotion": "q"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 10,
+              "sourcePlyIndex": 12,
+              "sourceTurn": 10,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "g2",
+                  "to": "h3",
+                  "unit": "p"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "h3",
+                  "to": "h4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 11,
+              "sourcePlyIndex": 13,
+              "sourceTurn": 11,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "h4",
+                  "to": "h5"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "h5",
+                  "to": "h6"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "g2",
+                  "to": "h2",
+                  "unit": "r"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 12,
+              "sourcePlyIndex": 14,
+              "sourceTurn": 12,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "h8",
+                  "to": "e8"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "h6",
+                  "to": "h7"
+                }
+              ]
+            }
+          ]
+        }
       },
       "historicalSource": {
         "gameId": "sc-mukq93fp-hhcfy3x",
@@ -4675,7 +6552,373 @@
         "candidateSide": "b",
         "arenaSeed": 0,
         "inferenceSeed": 0,
-        "opening": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:"
+        "opening": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:",
+        "trace": {
+          "caseId": "white-trace-07",
+          "gameId": "sc-muk9xlrd-trahdj1",
+          "historicalResult": "win",
+          "openingScfen": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:",
+          "traceSha256": "1a937e1dba4e50115816ee271c54badc02e0f36012fe191522f5a751403e481e",
+          "windows": [
+            {
+              "planningOrdinal": 0,
+              "sourcePlyIndex": 0,
+              "sourceTurn": 0,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "f3"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "f2"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 1,
+              "sourcePlyIndex": 1,
+              "sourceTurn": 1,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "g2"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "g3",
+                  "unit": "p"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 2,
+              "sourcePlyIndex": 2,
+              "sourceTurn": 2,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "g2",
+                  "to": "f2",
+                  "unit": "n"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "d1"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 3,
+              "sourcePlyIndex": 3,
+              "sourceTurn": 3,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "e2",
+                  "to": "e3"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e3",
+                  "to": "d4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 4,
+              "sourcePlyIndex": 4,
+              "sourceTurn": 4,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "d4",
+                  "to": "e5"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "g2",
+                  "to": "f1",
+                  "unit": "b"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 5,
+              "sourcePlyIndex": 5,
+              "sourceTurn": 5,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "d1",
+                  "to": "b2"
+                },
+                {
+                  "timing": "F",
+                  "kind": "spiderMine",
+                  "color": "w",
+                  "from": "d1",
+                  "to": "d1"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 6,
+              "sourcePlyIndex": 6,
+              "sourceTurn": 6,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "b2",
+                  "to": "a4"
+                },
+                {
+                  "timing": "F",
+                  "kind": "spiderMine",
+                  "color": "w",
+                  "from": "b2",
+                  "to": "b2"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 7,
+              "sourcePlyIndex": 7,
+              "sourceTurn": 7,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "g3",
+                  "to": "g4"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "g4",
+                  "to": "f5"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 8,
+              "sourcePlyIndex": 8,
+              "sourceTurn": 8,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "g2",
+                  "to": "g3",
+                  "unit": "p"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 9,
+              "sourcePlyIndex": 9,
+              "sourceTurn": 9,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "a4",
+                  "to": "c3"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "d2",
+                  "to": "d3"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 10,
+              "sourcePlyIndex": 10,
+              "sourceTurn": 10,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "c3",
+                  "to": "d5"
+                },
+                {
+                  "timing": "F",
+                  "kind": "spiderMine",
+                  "color": "w",
+                  "from": "c3",
+                  "to": "c3"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 11,
+              "sourcePlyIndex": 11,
+              "sourceTurn": 11,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "d5",
+                  "to": "c7"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 12,
+              "sourcePlyIndex": 13,
+              "sourceTurn": 12,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "d3",
+                  "to": "d4"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f1",
+                  "to": "b5"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 13,
+              "sourcePlyIndex": 14,
+              "sourceTurn": 13,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "b5",
+                  "to": "d7"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "g2",
+                  "to": "f1",
+                  "unit": "n"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 14,
+              "sourcePlyIndex": 16,
+              "sourceTurn": 14,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f1",
+                  "to": "d2"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "g2",
+                  "to": "h2",
+                  "unit": "r"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 15,
+              "sourcePlyIndex": 17,
+              "sourceTurn": 15,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "h2",
+                  "to": "h8"
+                },
+                {
+                  "timing": "F",
+                  "kind": "siegeMode",
+                  "color": "w",
+                  "from": "h2"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "g2",
+                  "to": "f1",
+                  "unit": "b"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 16,
+              "sourcePlyIndex": 19,
+              "sourceTurn": 16,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "h8",
+                  "to": "f8"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "g2",
+                  "to": "f2",
+                  "unit": "n"
+                }
+              ]
+            }
+          ]
+        }
       },
       "historicalSource": {
         "gameId": "sc-muk9xlrd-trahdj1",
@@ -5013,7 +7256,241 @@
         "candidateSide": "b",
         "arenaSeed": 0,
         "inferenceSeed": 0,
-        "opening": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:"
+        "opening": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:",
+        "trace": {
+          "caseId": "white-trace-08",
+          "gameId": "sc-muk9dpbf-v4r8kfm",
+          "historicalResult": "win",
+          "openingScfen": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:",
+          "traceSha256": "99cbccea3aed78c8716663858d63c3b54147842b132374fadf4e9a85308cb168",
+          "windows": [
+            {
+              "planningOrdinal": 0,
+              "sourcePlyIndex": 0,
+              "sourceTurn": 0,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e2",
+                  "to": "e4"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "d2",
+                  "to": "d3"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 1,
+              "sourcePlyIndex": 1,
+              "sourceTurn": 1,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e4",
+                  "to": "d5"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "f3"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 2,
+              "sourcePlyIndex": 2,
+              "sourceTurn": 2,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "e2",
+                  "unit": "r"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e2",
+                  "to": "e4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 3,
+              "sourcePlyIndex": 3,
+              "sourceTurn": 3,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "siegeMode",
+                  "color": "w",
+                  "from": "e4"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e4",
+                  "to": "e5"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 4,
+              "sourcePlyIndex": 4,
+              "sourceTurn": 4,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "f3",
+                  "to": "f4"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e4",
+                  "to": "e7"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 5,
+              "sourcePlyIndex": 6,
+              "sourceTurn": 5,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f4",
+                  "to": "f5"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "e2",
+                  "unit": "n"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 6,
+              "sourcePlyIndex": 7,
+              "sourceTurn": 6,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "siegeMode",
+                  "color": "w",
+                  "from": "e4"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e4",
+                  "to": "e8"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 7,
+              "sourcePlyIndex": 9,
+              "sourceTurn": 7,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e2",
+                  "to": "c3"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "f5",
+                  "to": "f6"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 8,
+              "sourcePlyIndex": 10,
+              "sourceTurn": 8,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f6",
+                  "to": "g7"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 9,
+              "sourcePlyIndex": 11,
+              "sourceTurn": 9,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "c3",
+                  "to": "e4"
+                },
+                {
+                  "timing": "F",
+                  "kind": "spiderMine",
+                  "color": "w",
+                  "from": "c3",
+                  "to": "c3"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 10,
+              "sourcePlyIndex": 12,
+              "sourceTurn": 10,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "e2",
+                  "unit": "r"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e2",
+                  "to": "e8"
+                }
+              ]
+            }
+          ]
+        }
       },
       "historicalSource": {
         "gameId": "sc-muk9dpbf-v4r8kfm",
@@ -5530,7 +8007,203 @@
         "candidateSide": "b",
         "arenaSeed": 0,
         "inferenceSeed": 0,
-        "opening": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:"
+        "opening": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:",
+        "trace": {
+          "caseId": "white-trace-09",
+          "gameId": "sc-muhc51rp-zm62sji",
+          "historicalResult": "draw",
+          "openingScfen": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:",
+          "traceSha256": "d6907b26dfd23639ad522f17ea949f53d110d69778cc0ae3d14024cb5286f29c",
+          "windows": [
+            {
+              "planningOrdinal": 0,
+              "sourcePlyIndex": 0,
+              "sourceTurn": 0,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "e2",
+                  "to": "e3"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "e2"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 1,
+              "sourcePlyIndex": 1,
+              "sourceTurn": 1,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "e3",
+                  "to": "e4"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e2",
+                  "to": "e3"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 2,
+              "sourcePlyIndex": 2,
+              "sourceTurn": 2,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e3",
+                  "to": "d3",
+                  "unit": "p"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "f4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 3,
+              "sourcePlyIndex": 3,
+              "sourceTurn": 3,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "e4",
+                  "to": "e5"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e3",
+                  "to": "e4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 4,
+              "sourcePlyIndex": 4,
+              "sourceTurn": 4,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "e5",
+                  "to": "e6"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e4",
+                  "to": "e5"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 5,
+              "sourcePlyIndex": 5,
+              "sourceTurn": 5,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e5",
+                  "to": "e6",
+                  "unit": "p"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e6",
+                  "to": "d7"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 6,
+              "sourcePlyIndex": 7,
+              "sourceTurn": 6,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e5",
+                  "to": "e6"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e5",
+                  "to": "f7",
+                  "unit": "p"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 7,
+              "sourcePlyIndex": 9,
+              "sourceTurn": 7,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e6",
+                  "to": "d7",
+                  "unit": "p"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 8,
+              "sourcePlyIndex": 10,
+              "sourceTurn": 8,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e6",
+                  "to": "d6"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e6",
+                  "to": "d5",
+                  "unit": "p"
+                }
+              ]
+            }
+          ]
+        }
       },
       "historicalSource": {
         "gameId": "sc-muhc51rp-zm62sji",
@@ -6047,7 +8720,218 @@
         "candidateSide": "b",
         "arenaSeed": 0,
         "inferenceSeed": 0,
-        "opening": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:"
+        "opening": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:",
+        "trace": {
+          "caseId": "white-trace-10",
+          "gameId": "sc-muhc0n0r-q1803v3",
+          "historicalResult": "win",
+          "openingScfen": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:",
+          "traceSha256": "46b9c5c7f6002d3710ade20b403463ac6b761677164a9cee839f12e0244aa13f",
+          "windows": [
+            {
+              "planningOrdinal": 0,
+              "sourcePlyIndex": 0,
+              "sourceTurn": 0,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "e2",
+                  "to": "e3"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "e2"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 1,
+              "sourcePlyIndex": 1,
+              "sourceTurn": 1,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "e3",
+                  "to": "e4"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e2",
+                  "to": "e3"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 2,
+              "sourcePlyIndex": 2,
+              "sourceTurn": 2,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e3",
+                  "to": "d3",
+                  "unit": "p"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "f4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 3,
+              "sourcePlyIndex": 3,
+              "sourceTurn": 3,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "e4",
+                  "to": "e5"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e3",
+                  "to": "e4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 4,
+              "sourcePlyIndex": 4,
+              "sourceTurn": 4,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "e5",
+                  "to": "e6"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e4",
+                  "to": "e5"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 5,
+              "sourcePlyIndex": 5,
+              "sourceTurn": 5,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e5",
+                  "to": "e6",
+                  "unit": "p"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e6",
+                  "to": "d7"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 6,
+              "sourcePlyIndex": 7,
+              "sourceTurn": 6,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e5",
+                  "to": "e6",
+                  "unit": "r"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e6",
+                  "to": "e7"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 7,
+              "sourcePlyIndex": 8,
+              "sourceTurn": 7,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e5",
+                  "to": "d6",
+                  "unit": "p"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 8,
+              "sourcePlyIndex": 10,
+              "sourceTurn": 8,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e5",
+                  "to": "d5",
+                  "unit": "b"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "d3",
+                  "to": "d4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 9,
+              "sourcePlyIndex": 12,
+              "sourceTurn": 9,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e5",
+                  "to": "d6",
+                  "unit": "p"
+                }
+              ]
+            }
+          ]
+        }
       },
       "historicalSource": {
         "gameId": "sc-muhc0n0r-q1803v3",
@@ -7339,7 +10223,614 @@
         "candidateSide": "b",
         "arenaSeed": 0,
         "inferenceSeed": 0,
-        "opening": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:"
+        "opening": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:",
+        "trace": {
+          "caseId": "white-trace-11",
+          "gameId": "sc-muhbtoh4-8dwg7k6",
+          "historicalResult": "win",
+          "openingScfen": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:",
+          "traceSha256": "44e9f08b58d0b403b7d4c90957561f1cb42a2ec44d22cf48bba2e71842bf66ba",
+          "windows": [
+            {
+              "planningOrdinal": 0,
+              "sourcePlyIndex": 0,
+              "sourceTurn": 0,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "f3"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "f2"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 1,
+              "sourcePlyIndex": 1,
+              "sourceTurn": 1,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "g2",
+                  "unit": "p"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e2",
+                  "to": "e4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 2,
+              "sourcePlyIndex": 2,
+              "sourceTurn": 2,
+              "actions": []
+            },
+            {
+              "planningOrdinal": 3,
+              "sourcePlyIndex": 3,
+              "sourceTurn": 3,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "e3",
+                  "unit": "b"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e3",
+                  "to": "d4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 4,
+              "sourcePlyIndex": 4,
+              "sourceTurn": 4,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "d4",
+                  "to": "e5"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "e3",
+                  "unit": "n"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 5,
+              "sourcePlyIndex": 5,
+              "sourceTurn": 5,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e3",
+                  "to": "d5"
+                },
+                {
+                  "timing": "F",
+                  "kind": "spiderMine",
+                  "color": "w",
+                  "from": "e3",
+                  "to": "e3"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 6,
+              "sourcePlyIndex": 6,
+              "sourceTurn": 6,
+              "actions": []
+            },
+            {
+              "planningOrdinal": 7,
+              "sourcePlyIndex": 8,
+              "sourceTurn": 7,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "e3",
+                  "unit": "p"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e3",
+                  "to": "d4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 8,
+              "sourcePlyIndex": 9,
+              "sourceTurn": 8,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "d5",
+                  "to": "b4"
+                },
+                {
+                  "timing": "F",
+                  "kind": "spiderMine",
+                  "color": "w",
+                  "from": "d5",
+                  "to": "d5"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 9,
+              "sourcePlyIndex": 10,
+              "sourceTurn": 9,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "b4",
+                  "to": "a2"
+                },
+                {
+                  "timing": "F",
+                  "kind": "spiderMine",
+                  "color": "w",
+                  "from": "b4",
+                  "to": "b4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 10,
+              "sourcePlyIndex": 11,
+              "sourceTurn": 10,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "a2",
+                  "to": "c3"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 11,
+              "sourcePlyIndex": 12,
+              "sourceTurn": 11,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "g3",
+                  "unit": "r"
+                },
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "f3",
+                  "to": "f4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 12,
+              "sourcePlyIndex": 13,
+              "sourceTurn": 12,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "e2",
+                  "unit": "b"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e2",
+                  "to": "c4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 13,
+              "sourcePlyIndex": 14,
+              "sourceTurn": 13,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "siegeMode",
+                  "color": "w",
+                  "from": "g3"
+                },
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "f3",
+                  "unit": "n"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 14,
+              "sourcePlyIndex": 15,
+              "sourceTurn": 14,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "d2",
+                  "to": "d3"
+                },
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "f4",
+                  "to": "f5"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 15,
+              "sourcePlyIndex": 16,
+              "sourceTurn": 15,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "f5",
+                  "to": "f6"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f6",
+                  "to": "e7"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 16,
+              "sourcePlyIndex": 17,
+              "sourceTurn": 16,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e7",
+                  "to": "f8",
+                  "promotion": "r"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "e3",
+                  "unit": "r"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "e4",
+                  "to": "e5"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 17,
+              "sourcePlyIndex": 18,
+              "sourceTurn": 17,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "siegeMode",
+                  "color": "w",
+                  "from": "e3"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f3",
+                  "to": "d4"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "f3",
+                  "unit": "n"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 18,
+              "sourcePlyIndex": 19,
+              "sourceTurn": 18,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "siegeMode",
+                  "color": "w",
+                  "from": "g3"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "g3",
+                  "to": "g8"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 19,
+              "sourcePlyIndex": 20,
+              "sourceTurn": 19,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f3",
+                  "to": "d4"
+                },
+                {
+                  "timing": "F",
+                  "kind": "siegeMode",
+                  "color": "w",
+                  "from": "g8"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 20,
+              "sourcePlyIndex": 21,
+              "sourceTurn": 20,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "g8",
+                  "to": "f8"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "f1",
+                  "unit": "b"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 21,
+              "sourcePlyIndex": 23,
+              "sourceTurn": 21,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f1",
+                  "to": "e2"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "f3",
+                  "unit": "p"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 22,
+              "sourcePlyIndex": 24,
+              "sourceTurn": 22,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "g2",
+                  "to": "g3"
+                },
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "g3",
+                  "unit": "p"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "g3",
+                  "to": "f4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 23,
+              "sourcePlyIndex": 25,
+              "sourceTurn": 23,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "g2",
+                  "unit": "r"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "g2",
+                  "to": "g8"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "f4",
+                  "to": "f5"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 24,
+              "sourcePlyIndex": 26,
+              "sourceTurn": 24,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "g8",
+                  "to": "f8"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "g3",
+                  "unit": "r"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 25,
+              "sourcePlyIndex": 28,
+              "sourceTurn": 25,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "g3",
+                  "to": "h3"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "g3",
+                  "unit": "p"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 26,
+              "sourcePlyIndex": 29,
+              "sourceTurn": 26,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "h3",
+                  "to": "h8"
+                },
+                {
+                  "timing": "F",
+                  "kind": "siegeMode",
+                  "color": "w",
+                  "from": "h3"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 27,
+              "sourcePlyIndex": 30,
+              "sourceTurn": 27,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "h8",
+                  "to": "f8"
+                },
+                {
+                  "timing": "F",
+                  "kind": "spiderMine",
+                  "color": "w",
+                  "from": "d4",
+                  "to": "d4"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "g2",
+                  "unit": "n"
+                }
+              ]
+            }
+          ]
+        }
       },
       "historicalSource": {
         "gameId": "sc-muhbtoh4-8dwg7k6",
@@ -8290,7 +11781,651 @@
         "candidateSide": "b",
         "arenaSeed": 0,
         "inferenceSeed": 0,
-        "opening": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:"
+        "opening": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:",
+        "trace": {
+          "caseId": "white-trace-12",
+          "gameId": "sc-mug151i3-f6p9vlo",
+          "historicalResult": "win",
+          "openingScfen": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:",
+          "traceSha256": "946aaf2f2784029325f86e45e4172071572ed46f03462ca551efe5a61716f43e",
+          "windows": [
+            {
+              "planningOrdinal": 0,
+              "sourcePlyIndex": 0,
+              "sourceTurn": 0,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "f1",
+                  "unit": "n"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f1",
+                  "to": "h2"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 1,
+              "sourcePlyIndex": 1,
+              "sourceTurn": 1,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "spiderMine",
+                  "color": "w",
+                  "from": "h2",
+                  "to": "h2"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "h2",
+                  "to": "g4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 2,
+              "sourcePlyIndex": 2,
+              "sourceTurn": 2,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "spiderMine",
+                  "color": "w",
+                  "from": "g4",
+                  "to": "g4"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "g4",
+                  "to": "e3"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 3,
+              "sourcePlyIndex": 3,
+              "sourceTurn": 3,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "c2",
+                  "to": "c3"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "c3",
+                  "to": "d4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 4,
+              "sourcePlyIndex": 4,
+              "sourceTurn": 4,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "d1"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "c2",
+                  "unit": "p"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 5,
+              "sourcePlyIndex": 5,
+              "sourceTurn": 5,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e3",
+                  "to": "d5"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "c2",
+                  "to": "c3"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 6,
+              "sourcePlyIndex": 6,
+              "sourceTurn": 6,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "d1",
+                  "to": "c2"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "d1",
+                  "to": "b2",
+                  "unit": "p"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 7,
+              "sourcePlyIndex": 7,
+              "sourceTurn": 7,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "d2",
+                  "to": "d3"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "d3",
+                  "to": "e4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 8,
+              "sourcePlyIndex": 8,
+              "sourceTurn": 8,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e4",
+                  "to": "f5"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "c2",
+                  "to": "d3",
+                  "unit": "p"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 9,
+              "sourcePlyIndex": 9,
+              "sourceTurn": 9,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "d5",
+                  "to": "b4"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "e2",
+                  "to": "e3"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 10,
+              "sourcePlyIndex": 10,
+              "sourceTurn": 10,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e3",
+                  "to": "f4"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "d4",
+                  "to": "d5"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 11,
+              "sourcePlyIndex": 11,
+              "sourceTurn": 11,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "d5",
+                  "to": "e6"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "f5",
+                  "to": "f6"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "c2",
+                  "to": "d2",
+                  "unit": "r"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 12,
+              "sourcePlyIndex": 12,
+              "sourceTurn": 12,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e6",
+                  "to": "f7"
+                },
+                {
+                  "timing": "F",
+                  "kind": "siegeMode",
+                  "color": "w",
+                  "from": "d2"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "c2",
+                  "to": "d1",
+                  "unit": "b"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 13,
+              "sourcePlyIndex": 13,
+              "sourceTurn": 13,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "d1",
+                  "to": "h5"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "f3"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "c2",
+                  "to": "b3",
+                  "unit": "n"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 14,
+              "sourcePlyIndex": 14,
+              "sourceTurn": 14,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "h5",
+                  "to": "f7"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "c2",
+                  "to": "d1",
+                  "unit": "b"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 15,
+              "sourcePlyIndex": 15,
+              "sourceTurn": 15,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "b4",
+                  "to": "c6"
+                },
+                {
+                  "timing": "F",
+                  "kind": "spiderMine",
+                  "color": "w",
+                  "from": "b4",
+                  "to": "b4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 16,
+              "sourcePlyIndex": 17,
+              "sourceTurn": 16,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "c6",
+                  "to": "a5"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "c3",
+                  "to": "c4"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "d3",
+                  "to": "d4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 17,
+              "sourcePlyIndex": 18,
+              "sourceTurn": 17,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "d4",
+                  "to": "d5"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "d5",
+                  "to": "c6"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "c2",
+                  "to": "d3",
+                  "unit": "p"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 18,
+              "sourcePlyIndex": 19,
+              "sourceTurn": 18,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "d3",
+                  "to": "d4"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "d4",
+                  "to": "e5"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "c2",
+                  "to": "d3",
+                  "unit": "p"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 19,
+              "sourcePlyIndex": 20,
+              "sourceTurn": 19,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "f3",
+                  "to": "f4"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "b3",
+                  "to": "a5"
+                },
+                {
+                  "timing": "F",
+                  "kind": "spiderMine",
+                  "color": "w",
+                  "from": "b3",
+                  "to": "b3"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 20,
+              "sourcePlyIndex": 21,
+              "sourceTurn": 20,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f4",
+                  "to": "e5"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "c4",
+                  "to": "c5"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "c2",
+                  "to": "c3",
+                  "unit": "p"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 21,
+              "sourcePlyIndex": 22,
+              "sourceTurn": 21,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "a5",
+                  "to": "b7"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "c3",
+                  "to": "c4"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "c2",
+                  "to": "c3",
+                  "unit": "b"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "b2",
+                  "to": "b3"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 22,
+              "sourcePlyIndex": 23,
+              "sourceTurn": 22,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "b7",
+                  "to": "d8"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "d3",
+                  "to": "d4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 23,
+              "sourcePlyIndex": 24,
+              "sourceTurn": 23,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "d8",
+                  "to": "e6"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "c2",
+                  "to": "b1",
+                  "unit": "q"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "d4",
+                  "to": "d5"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 24,
+              "sourcePlyIndex": 25,
+              "sourceTurn": 24,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "tacticalJump",
+                  "color": "w",
+                  "from": "b1",
+                  "to": "d6"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "d6",
+                  "to": "e6"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 25,
+              "sourcePlyIndex": 27,
+              "sourceTurn": 25,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "tacticalJump",
+                  "color": "w",
+                  "from": "e6",
+                  "to": "c8"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "c8",
+                  "to": "d8"
+                }
+              ]
+            }
+          ]
+        }
       },
       "historicalSource": {
         "gameId": "sc-mug151i3-f6p9vlo",
@@ -9186,7 +13321,587 @@
         "candidateSide": "b",
         "arenaSeed": 0,
         "inferenceSeed": 0,
-        "opening": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:"
+        "opening": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:",
+        "trace": {
+          "caseId": "white-trace-13",
+          "gameId": "sc-mug0xgxu-64qvu1h",
+          "historicalResult": "win",
+          "openingScfen": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:",
+          "traceSha256": "4ec3a2932b304c55ca89d34f19ca0dd0091214a2462a2c0ea23a0c557a712720",
+          "windows": [
+            {
+              "planningOrdinal": 0,
+              "sourcePlyIndex": 0,
+              "sourceTurn": 0,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "f1"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "g2",
+                  "unit": "p"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 1,
+              "sourcePlyIndex": 1,
+              "sourceTurn": 1,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "f1",
+                  "to": "e1",
+                  "unit": "n"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "d3"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 2,
+              "sourcePlyIndex": 2,
+              "sourceTurn": 2,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "spiderMine",
+                  "color": "w",
+                  "from": "d3",
+                  "to": "d3"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "d3",
+                  "to": "b2"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 3,
+              "sourcePlyIndex": 3,
+              "sourceTurn": 3,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "spiderMine",
+                  "color": "w",
+                  "from": "b2",
+                  "to": "b2"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "b2",
+                  "to": "a4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 4,
+              "sourcePlyIndex": 4,
+              "sourceTurn": 4,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e2",
+                  "to": "d3"
+                },
+                {
+                  "timing": "F",
+                  "kind": "spiderMine",
+                  "color": "w",
+                  "from": "a4",
+                  "to": "a4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 5,
+              "sourcePlyIndex": 5,
+              "sourceTurn": 5,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "a4",
+                  "to": "c3"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "d3",
+                  "to": "d4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 6,
+              "sourcePlyIndex": 6,
+              "sourceTurn": 6,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "g2",
+                  "to": "g3"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f1",
+                  "to": "g2"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 7,
+              "sourcePlyIndex": 7,
+              "sourceTurn": 7,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "d4",
+                  "to": "e5"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "g2",
+                  "to": "f3",
+                  "unit": "n"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 8,
+              "sourcePlyIndex": 8,
+              "sourceTurn": 8,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "g2",
+                  "to": "h2",
+                  "unit": "p"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 9,
+              "sourcePlyIndex": 9,
+              "sourceTurn": 9,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "g3",
+                  "to": "f4"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "g2",
+                  "to": "g3",
+                  "unit": "p"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 10,
+              "sourcePlyIndex": 10,
+              "sourceTurn": 10,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "g2",
+                  "to": "h3",
+                  "unit": "b"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "c3",
+                  "to": "d5"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 11,
+              "sourcePlyIndex": 11,
+              "sourceTurn": 11,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "spiderMine",
+                  "color": "w",
+                  "from": "d5",
+                  "to": "d5"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "d5",
+                  "to": "c7"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 12,
+              "sourcePlyIndex": 13,
+              "sourceTurn": 12,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "g2",
+                  "to": "f1",
+                  "unit": "r"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f1",
+                  "to": "e1"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 13,
+              "sourcePlyIndex": 14,
+              "sourceTurn": 13,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "e4"
+                },
+                {
+                  "timing": "F",
+                  "kind": "siegeMode",
+                  "color": "w",
+                  "from": "e1"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "d2",
+                  "to": "d3"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 14,
+              "sourcePlyIndex": 16,
+              "sourceTurn": 14,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "g3",
+                  "to": "f4"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "g2",
+                  "to": "g3",
+                  "unit": "p"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "d3",
+                  "to": "d4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 15,
+              "sourcePlyIndex": 17,
+              "sourceTurn": 15,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "d4",
+                  "to": "d5"
+                },
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "e5",
+                  "to": "e6"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e6",
+                  "to": "f7"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 16,
+              "sourcePlyIndex": 18,
+              "sourceTurn": 16,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "f4",
+                  "to": "f5"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e4",
+                  "to": "e7"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "g2",
+                  "to": "f1",
+                  "unit": "r"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 17,
+              "sourcePlyIndex": 20,
+              "sourceTurn": 17,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "g3",
+                  "to": "f4"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "g2",
+                  "to": "g3",
+                  "unit": "p"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 18,
+              "sourcePlyIndex": 21,
+              "sourceTurn": 18,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "g2",
+                  "to": "f2",
+                  "unit": "n"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "e4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 19,
+              "sourcePlyIndex": 22,
+              "sourceTurn": 19,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "spiderMine",
+                  "color": "w",
+                  "from": "f3",
+                  "to": "f3"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e4",
+                  "to": "c5"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 20,
+              "sourcePlyIndex": 23,
+              "sourceTurn": 20,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "c5",
+                  "to": "d7"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "g2",
+                  "to": "f2",
+                  "unit": "p"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 21,
+              "sourcePlyIndex": 24,
+              "sourceTurn": 21,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f1",
+                  "to": "e1"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "f5",
+                  "to": "f6"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "g3",
+                  "to": "g4"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "g2",
+                  "to": "g3",
+                  "unit": "p"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 22,
+              "sourcePlyIndex": 25,
+              "sourceTurn": 22,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "e4"
+                },
+                {
+                  "timing": "F",
+                  "kind": "siegeMode",
+                  "color": "w",
+                  "from": "e1"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "g4",
+                  "to": "g5"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "f4",
+                  "to": "f5"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 23,
+              "sourcePlyIndex": 26,
+              "sourceTurn": 23,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e4",
+                  "to": "e7"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "g5",
+                  "to": "g6"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "g3",
+                  "to": "g4"
+                }
+              ]
+            }
+          ]
+        }
       },
       "historicalSource": {
         "gameId": "sc-mug0xgxu-64qvu1h",
@@ -9524,7 +14239,576 @@
         "candidateSide": "b",
         "arenaSeed": 0,
         "inferenceSeed": 0,
-        "opening": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:"
+        "opening": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:",
+        "trace": {
+          "caseId": "white-trace-14",
+          "gameId": "sc-mug0r4nd-zevz2re",
+          "historicalResult": "win",
+          "openingScfen": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:",
+          "traceSha256": "9d991eb5702280be204b74cbc6e9c6a28a5cdc8eee3ed1fd2b5efaf1254bca67",
+          "windows": [
+            {
+              "planningOrdinal": 0,
+              "sourcePlyIndex": 0,
+              "sourceTurn": 0,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e2",
+                  "to": "e4"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "d2",
+                  "to": "d3"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 1,
+              "sourcePlyIndex": 1,
+              "sourceTurn": 1,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e4",
+                  "to": "d5"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "f3"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 2,
+              "sourcePlyIndex": 2,
+              "sourceTurn": 2,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "e2",
+                  "unit": "r"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e2",
+                  "to": "e4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 3,
+              "sourcePlyIndex": 3,
+              "sourceTurn": 3,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "siegeMode",
+                  "color": "w",
+                  "from": "e4"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e4",
+                  "to": "e5"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 4,
+              "sourcePlyIndex": 4,
+              "sourceTurn": 4,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "e2",
+                  "unit": "p"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e4",
+                  "to": "e7"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 5,
+              "sourcePlyIndex": 6,
+              "sourceTurn": 5,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "f3",
+                  "to": "f4"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "d3",
+                  "to": "d4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 6,
+              "sourcePlyIndex": 7,
+              "sourceTurn": 6,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "d2",
+                  "unit": "b"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 7,
+              "sourcePlyIndex": 8,
+              "sourceTurn": 7,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "d2",
+                  "to": "c3"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "f2",
+                  "unit": "p"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 8,
+              "sourcePlyIndex": 9,
+              "sourceTurn": 8,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e4",
+                  "to": "e5"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "e2",
+                  "to": "e3"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 9,
+              "sourcePlyIndex": 10,
+              "sourceTurn": 9,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "siegeMode",
+                  "color": "w",
+                  "from": "e4"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "c3",
+                  "to": "b4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 10,
+              "sourcePlyIndex": 11,
+              "sourceTurn": 10,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "f3"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f3",
+                  "to": "e4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 11,
+              "sourcePlyIndex": 12,
+              "sourceTurn": 11,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e4",
+                  "to": "f5"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "e2",
+                  "unit": "b"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 12,
+              "sourcePlyIndex": 13,
+              "sourceTurn": 12,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "b4",
+                  "to": "e7"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "f4",
+                  "to": "f5"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "e3",
+                  "to": "e4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 13,
+              "sourcePlyIndex": 14,
+              "sourceTurn": 13,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "e4",
+                  "to": "e5"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f5",
+                  "to": "e6"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 14,
+              "sourcePlyIndex": 15,
+              "sourceTurn": 14,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "e5",
+                  "to": "e6"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "d5",
+                  "to": "c6"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 15,
+              "sourcePlyIndex": 16,
+              "sourceTurn": 15,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "c6",
+                  "to": "c7"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "c7",
+                  "to": "c8",
+                  "promotion": "q"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "f2",
+                  "unit": "r"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 16,
+              "sourcePlyIndex": 17,
+              "sourceTurn": 16,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "siegeMode",
+                  "color": "w",
+                  "from": "f2"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "c8",
+                  "to": "c6"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 17,
+              "sourcePlyIndex": 18,
+              "sourceTurn": 17,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f5",
+                  "to": "e6"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "d2",
+                  "unit": "n"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 18,
+              "sourcePlyIndex": 20,
+              "sourceTurn": 18,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "f3"
+                },
+                {
+                  "timing": "F",
+                  "kind": "spiderMine",
+                  "color": "w",
+                  "from": "d2",
+                  "to": "d2"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 19,
+              "sourcePlyIndex": 21,
+              "sourceTurn": 19,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "d2",
+                  "to": "e4"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "d2",
+                  "unit": "p"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 20,
+              "sourcePlyIndex": 22,
+              "sourceTurn": 20,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "spiderMine",
+                  "color": "w",
+                  "from": "e4",
+                  "to": "e4"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e4",
+                  "to": "d6"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 21,
+              "sourcePlyIndex": 23,
+              "sourceTurn": 21,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "d6",
+                  "to": "f5"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "f1",
+                  "unit": "b"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 22,
+              "sourcePlyIndex": 24,
+              "sourceTurn": 22,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "f5"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "d1",
+                  "unit": "q"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 23,
+              "sourcePlyIndex": 25,
+              "sourceTurn": 23,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "siegeMode",
+                  "color": "w",
+                  "from": "f2"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "f6"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 24,
+              "sourcePlyIndex": 26,
+              "sourceTurn": 24,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "f2",
+                  "unit": "p"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f1",
+                  "to": "h3"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 25,
+              "sourcePlyIndex": 27,
+              "sourceTurn": 25,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "siegeMode",
+                  "color": "w",
+                  "from": "f6"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f6",
+                  "to": "e6"
+                }
+              ]
+            }
+          ]
+        }
       },
       "historicalSource": {
         "gameId": "sc-mug0r4nd-zevz2re",
@@ -11261,7 +16545,348 @@
         "candidateSide": "b",
         "arenaSeed": 0,
         "inferenceSeed": 0,
-        "opening": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:"
+        "opening": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:",
+        "trace": {
+          "caseId": "white-trace-15",
+          "gameId": "sc-mug0lh7d-ss6gvra",
+          "historicalResult": "win",
+          "openingScfen": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:",
+          "traceSha256": "dccf373767fd1c12d818df3b9f70593afb61899697c5402136ba041f68a7fcce",
+          "windows": [
+            {
+              "planningOrdinal": 0,
+              "sourcePlyIndex": 0,
+              "sourceTurn": 0,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "f1"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "g2",
+                  "unit": "p"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 1,
+              "sourcePlyIndex": 1,
+              "sourceTurn": 1,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f1",
+                  "to": "g1"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "f1",
+                  "to": "h2",
+                  "unit": "p"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 2,
+              "sourcePlyIndex": 2,
+              "sourceTurn": 2,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "h2",
+                  "to": "h4"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "h2",
+                  "to": "h3"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 3,
+              "sourcePlyIndex": 3,
+              "sourceTurn": 3,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "e2",
+                  "to": "e3"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e3",
+                  "to": "d4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 4,
+              "sourcePlyIndex": 4,
+              "sourceTurn": 4,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "h5",
+                  "to": "h6"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "h6",
+                  "to": "h7"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 5,
+              "sourcePlyIndex": 5,
+              "sourceTurn": 5,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "h7",
+                  "to": "h8",
+                  "promotion": "r"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "g2",
+                  "to": "g4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 6,
+              "sourcePlyIndex": 6,
+              "sourceTurn": 6,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "siegeMode",
+                  "color": "w",
+                  "from": "h8"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "g4",
+                  "to": "g5"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 7,
+              "sourcePlyIndex": 7,
+              "sourceTurn": 7,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "h8",
+                  "to": "d8"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "g1",
+                  "to": "h2",
+                  "unit": "r"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 8,
+              "sourcePlyIndex": 8,
+              "sourceTurn": 8,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "h2",
+                  "to": "h7"
+                },
+                {
+                  "timing": "F",
+                  "kind": "siegeMode",
+                  "color": "w",
+                  "from": "h2"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 9,
+              "sourcePlyIndex": 9,
+              "sourceTurn": 9,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "h7",
+                  "to": "f7"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "g1",
+                  "to": "g2",
+                  "unit": "n"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 10,
+              "sourcePlyIndex": 11,
+              "sourceTurn": 10,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "g2",
+                  "to": "e1"
+                },
+                {
+                  "timing": "F",
+                  "kind": "spiderMine",
+                  "color": "w",
+                  "from": "g2",
+                  "to": "g2"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 11,
+              "sourcePlyIndex": 12,
+              "sourceTurn": 11,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "siegeMode",
+                  "color": "w",
+                  "from": "h8"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "h8",
+                  "to": "h7"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 12,
+              "sourcePlyIndex": 13,
+              "sourceTurn": 12,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "siegeMode",
+                  "color": "w",
+                  "from": "h7"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "h7",
+                  "to": "f7"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "g1",
+                  "to": "h2",
+                  "unit": "r"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 13,
+              "sourcePlyIndex": 15,
+              "sourceTurn": 13,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "c2"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "g1",
+                  "to": "f1",
+                  "unit": "n"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 14,
+              "sourcePlyIndex": 16,
+              "sourceTurn": 14,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "spiderMine",
+                  "color": "w",
+                  "from": "c2",
+                  "to": "c2"
+                },
+                {
+                  "timing": "B",
+                  "kind": "spiderMine",
+                  "color": "w",
+                  "from": "f1",
+                  "to": "f1"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "h7",
+                  "to": "f7"
+                }
+              ]
+            }
+          ]
+        }
       },
       "historicalSource": {
         "gameId": "sc-mug0lh7d-ss6gvra",
@@ -12443,7 +18068,266 @@
         "candidateSide": "b",
         "arenaSeed": 0,
         "inferenceSeed": 0,
-        "opening": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:"
+        "opening": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:",
+        "trace": {
+          "caseId": "white-trace-16",
+          "gameId": "sc-mug0i54q-pw140mb",
+          "historicalResult": "win",
+          "openingScfen": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:",
+          "traceSha256": "eaf33400c5c105e6a1f453d76cc7fb4c3a9f22af9a4d790c9391421810d492ec",
+          "windows": [
+            {
+              "planningOrdinal": 0,
+              "sourcePlyIndex": 0,
+              "sourceTurn": 0,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "f1"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 1,
+              "sourcePlyIndex": 1,
+              "sourceTurn": 1,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f1",
+                  "to": "g1"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 2,
+              "sourcePlyIndex": 2,
+              "sourceTurn": 2,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "g1",
+                  "to": "h2",
+                  "unit": "r"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "h2",
+                  "to": "h8"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 3,
+              "sourcePlyIndex": 3,
+              "sourceTurn": 3,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "siegeMode",
+                  "color": "w",
+                  "from": "h8"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "f4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 4,
+              "sourcePlyIndex": 5,
+              "sourceTurn": 4,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "g1",
+                  "to": "g2",
+                  "unit": "p"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "g2",
+                  "to": "f3"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 5,
+              "sourcePlyIndex": 6,
+              "sourceTurn": 5,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "g1",
+                  "to": "h2",
+                  "unit": "p"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 6,
+              "sourcePlyIndex": 7,
+              "sourceTurn": 6,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "h2",
+                  "to": "h4"
+                },
+                {
+                  "timing": "F",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "h2",
+                  "to": "h3"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 7,
+              "sourcePlyIndex": 8,
+              "sourceTurn": 7,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "h5",
+                  "to": "h6"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "h5",
+                  "to": "h6"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 8,
+              "sourcePlyIndex": 9,
+              "sourceTurn": 8,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "g1",
+                  "to": "g2",
+                  "unit": "p"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "g2",
+                  "to": "g4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 9,
+              "sourcePlyIndex": 10,
+              "sourceTurn": 9,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "g4",
+                  "to": "g5"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "g5",
+                  "to": "g6"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 10,
+              "sourcePlyIndex": 11,
+              "sourceTurn": 10,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "g6",
+                  "to": "g7"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "g7",
+                  "to": "h8",
+                  "promotion": "q"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 11,
+              "sourcePlyIndex": 13,
+              "sourceTurn": 11,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "h8",
+                  "to": "e5"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 12,
+              "sourcePlyIndex": 14,
+              "sourceTurn": 12,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "g1",
+                  "to": "g2",
+                  "unit": "r"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "g2",
+                  "to": "g8"
+                }
+              ]
+            }
+          ]
+        }
       },
       "historicalSource": {
         "gameId": "sc-mug0i54q-pw140mb",
@@ -12832,7 +18716,188 @@
         "candidateSide": "b",
         "arenaSeed": 0,
         "inferenceSeed": 0,
-        "opening": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:"
+        "opening": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:",
+        "trace": {
+          "caseId": "white-trace-17",
+          "gameId": "sc-mug0f3nd-j0nfyiw",
+          "historicalResult": "win",
+          "openingScfen": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:",
+          "traceSha256": "4e805a7f291167379bcf5b31b73247d1523e496ed8bdba515cfe607e5566ff76",
+          "windows": [
+            {
+              "planningOrdinal": 0,
+              "sourcePlyIndex": 0,
+              "sourceTurn": 0,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "f3"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "f2"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 1,
+              "sourcePlyIndex": 1,
+              "sourceTurn": 1,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "e3",
+                  "unit": "n"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e3",
+                  "to": "d5"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 2,
+              "sourcePlyIndex": 2,
+              "sourceTurn": 2,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "spiderMine",
+                  "color": "w",
+                  "from": "d5",
+                  "to": "d5"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "d5",
+                  "to": "c7"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 3,
+              "sourcePlyIndex": 4,
+              "sourceTurn": 3,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "c7",
+                  "to": "e6"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "g2",
+                  "unit": "b"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 4,
+              "sourcePlyIndex": 5,
+              "sourceTurn": 4,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "f3",
+                  "to": "f4"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "g2",
+                  "to": "c6"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 5,
+              "sourcePlyIndex": 7,
+              "sourceTurn": 5,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "g3",
+                  "unit": "p"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "g3",
+                  "to": "g4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 6,
+              "sourcePlyIndex": 8,
+              "sourceTurn": 6,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "g4",
+                  "to": "g5"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "g5",
+                  "to": "g6"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 7,
+              "sourcePlyIndex": 9,
+              "sourceTurn": 7,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "g6",
+                  "to": "g7"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "g7",
+                  "to": "g8",
+                  "promotion": "q"
+                }
+              ]
+            }
+          ]
+        }
       },
       "historicalSource": {
         "gameId": "sc-mug0f3nd-j0nfyiw",
@@ -13221,7 +19286,225 @@
         "candidateSide": "b",
         "arenaSeed": 0,
         "inferenceSeed": 0,
-        "opening": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:"
+        "opening": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:",
+        "trace": {
+          "caseId": "white-trace-18",
+          "gameId": "sc-muftf94z-k26bsvr",
+          "historicalResult": "win",
+          "openingScfen": "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:",
+          "traceSha256": "c0c449ff77607e7f3f582e96c3e26edde6ec7d3a3afa9ea858246bea535cb39a",
+          "windows": [
+            {
+              "planningOrdinal": 0,
+              "sourcePlyIndex": 0,
+              "sourceTurn": 0,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "f3"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e1",
+                  "to": "f2"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 1,
+              "sourcePlyIndex": 1,
+              "sourceTurn": 1,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "e3",
+                  "unit": "n"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "e3",
+                  "to": "d5"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 2,
+              "sourcePlyIndex": 2,
+              "sourceTurn": 2,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "spiderMine",
+                  "color": "w",
+                  "from": "d5",
+                  "to": "d5"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "d5",
+                  "to": "c7"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 3,
+              "sourcePlyIndex": 4,
+              "sourceTurn": 3,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "c7",
+                  "to": "e6"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 4,
+              "sourcePlyIndex": 5,
+              "sourceTurn": 4,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "g2",
+                  "unit": "b"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "f3",
+                  "to": "f4"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 5,
+              "sourcePlyIndex": 6,
+              "sourceTurn": 5,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "g2",
+                  "to": "c6"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "g3",
+                  "unit": "p"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 6,
+              "sourcePlyIndex": 8,
+              "sourceTurn": 6,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "g3",
+                  "to": "g4"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "g4",
+                  "to": "g5"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 7,
+              "sourcePlyIndex": 9,
+              "sourceTurn": 7,
+              "actions": [
+                {
+                  "timing": "B",
+                  "kind": "stimStep",
+                  "color": "w",
+                  "from": "g5",
+                  "to": "g6"
+                },
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "g6",
+                  "to": "g7"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 8,
+              "sourcePlyIndex": 10,
+              "sourceTurn": 8,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "g7",
+                  "to": "g8",
+                  "promotion": "q"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "g3",
+                  "unit": "p"
+                }
+              ]
+            },
+            {
+              "planningOrdinal": 9,
+              "sourcePlyIndex": 11,
+              "sourceTurn": 9,
+              "actions": [
+                {
+                  "timing": "C",
+                  "kind": "classical",
+                  "color": "w",
+                  "from": "g8",
+                  "to": "d8"
+                },
+                {
+                  "timing": "F",
+                  "kind": "deploy",
+                  "color": "w",
+                  "from": "f2",
+                  "to": "g3",
+                  "unit": "p"
+                }
+              ]
+            }
+          ]
+        }
       },
       "historicalSource": {
         "gameId": "sc-muftf94z-k26bsvr",

@@ -99,8 +99,9 @@ export const runSupervised = (
     scfens: [...scfens], resolves: [...resolves], bankTrail: [...bankTrail],
     finalBank: { ...(bankTrail.at(-1) ?? initialBank) }, outcome: null,
     stop: {
-      kind, phase: lastPhase.phase, planningOrdinal: lastPhase.planningOrdinal,
-      turn: lastPhase.turn, ...(lastPhase.side ? { side: lastPhase.side } : {}), reason,
+      kind, phase: lastPhase.phase,
+      planningOrdinal: resolves.filter((entry) => !entry.events.some((event) => event.id.startsWith("ev-begin-"))).length,
+      turn: resolves.at(-1)?.next.turn ?? initialTurn, ...(lastPhase.side ? { side: lastPhase.side } : {}), reason,
     },
   });
   const finish = (evidence: ChallengeEvidence) => {

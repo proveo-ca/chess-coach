@@ -31,6 +31,11 @@ createInterface({ input: process.stdin }).on("line", async (line) => {
     stop: { kind: "exception", phase: "candidate-plan", planningOrdinal: 1, turn: 1, side: "b", reason: "fixture exception" },
     workerPid: process.pid,
   };
+  if (request.key === "ply-before-phase-crash") {
+    await send({ kind: "phase", phase: "settlement", planningOrdinal: 0, turn: 0 });
+    await send({ kind: "ply", scfen: nextScfen, resolve, bank: finalBank });
+    process.exit(23);
+  }
   if (request.key === "unknown-message") {
     await send({ kind: "unexpected" });
     return;

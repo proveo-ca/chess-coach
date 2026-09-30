@@ -97,7 +97,7 @@ export const runBaselineSuite = async (suite: Suite = "all", rerun = true) => {
     deterministicRerun: { performed: rerun, equal: rerun ? comparisons.every((entry) => entry.equal) : null, comparisons },
     learnedChallengePass: false,
     rows: rows.map(({ match, ...evidence }) => ({
-      ...evidence, match: { ...match, trace: undefined },
+      ...evidence, match,
       historicalSource: match.trace ? { gameId: match.trace.gameId, result: match.trace.historicalResult, traceSha256: match.trace.traceSha256 } : null,
     })),
   };
