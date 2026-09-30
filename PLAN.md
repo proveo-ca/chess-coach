@@ -14,11 +14,15 @@ The implemented catalog definitions do not complete any learning stage below.
 The separate strict-challenge roadmap now owns Phase 1 in `packages/starchess-arena`:
 [`ml-adjutant-phase1.puml`](_spec/packages/starchess-arena/ml-adjutant-phase1.puml).
 Phase 1 is IMPLEMENTED and VERIFIED by tests and persisted execution evidence;
-rereview remains PENDING. Evidence:
+the lead reports adversarial and security reviews READY: yes for the trusted non-learned scope.
+Final arena verification passed 164 tests / 17 files after all source/test changes, arena
+typecheck, and the strict test TypeScript check; core remains 426 tests / 53 files with typecheck passed.
+Evidence:
 [`baseline-report.json`](_spec/evidence/ml-adjutant-phase1/baseline-report.json) and
 [`verification.json`](_spec/evidence/ml-adjutant-phase1/verification.json).
 All 54 semantic reruns match; candidate wins remain 0/18 corpus and 0/36 live strategic.
-This completes the non-learned harness baseline, not learned acceptance or merge readiness.
+This completes the non-learned harness baseline, not learned acceptance.
+The lead will run final PlantUML `checkonly` after the spec edits.
 Numeric features, training, learned models/artifacts, and browser rollout remain unimplemented
 phases 2+ of that roadmap; this planning-only evolution ladder does not mark them shipped.
 

@@ -1,11 +1,12 @@
 # ML Adjutant — strict recorded-queue and live strategic challenge
 
 Status: **Phase 1 IMPLEMENTED and VERIFIED in `packages/starchess-arena` by tests and persisted
-baseline executions; rereview PENDING. Phases 2+ remain PLANNED and unimplemented.**
+baseline executions; both reviews READY: yes. Phases 2+ remain PLANNED and unimplemented.**
 Owner roadmap: [PLAN-ml-adjutant.md](PLAN-ml-adjutant.md).
 Phase 1 boundary: [ml-adjutant-phase1.puml](../packages/starchess-arena/ml-adjutant-phase1.puml).
 This document defines learned acceptance and records the separately verified non-learned baseline.
-No trained artifact, learned PASS, or review readiness is claimed.
+The lead reports adversarial READY: yes with no remaining findings and security READY: yes
+for the trusted non-learned scope. No trained artifact or learned PASS is claimed.
 
 ## 1. Decision and scope
 
@@ -229,7 +230,8 @@ Approved Phase 1 standard configuration is `CHALLENGE_CONFIG` version `phase1-v1
 | Planning-window cap | 64 |
 | Recorded-ply cap, including chips | 128 |
 | Proposal cap | 4096 |
-| IPC message cap | 2048 |
+| JSONL protocol message cap (`maxIpcMessages`) | 2048 |
+| Raw stdout frame cap before `JSON.parse` | 16777216 bytes |
 | Progress/non-completion message cap | 1048576 bytes per message |
 | Completion message cap | 16777216 bytes per message |
 | Merge order | White then Black, preserving each queue's array order; fresh host sequences |
@@ -238,16 +240,25 @@ Approved Phase 1 standard configuration is `CHALLENGE_CONFIG` version `phase1-v1
 Each side stages independently against the frozen turn-open snapshot and its own opening
 resources for that window. The host commits only a successful pair with exact deployment debits
 before current income; it verifies strategic's reported spend against admitted costs.
-Parent `supervisor.ts` launches `worker.ts`, validates ready/progress/completion IPC, uses
-`SIGKILL` on finish/failure, and returns only after child close/reap. Deadline, protocol, and
+Parent `supervisor.ts` spawns `worker.ts` with **stdin/stdout JSONL pipes**, not a Node
+`process.send` channel. It bounds raw frames to 16 MiB before `JSON.parse`, then validates
+ready/progress/completion messages and enforces the 1 MiB progress, 16 MiB completion,
+2048-message, and 128-ply caps. It uses `SIGKILL` on finish/failure and returns only after
+child close/reap. Deadline, protocol, and
 crash failures retain validated partial plies with `outcome = null`, not a fabricated win.
+Failure counters derive from accepted plies: planning ordinal counts non-chip resolves and
+turn comes from the latest accepted `resolve.next`, or the opening when none exists. A crash
+before the next phase announcement must not regress these counters.
 Startup and match deadlines plus per-plan deadlines bound synchronous loops and unresolved
 promises. Repeated identical phase messages do not renew the planning deadline.
 `integrity.ts` reexecutes each accepted ply prefix and completion against authoritative full
 resolve payloads, resource transitions, and actual terminal outcomes. Forged resolve/resources
 or outcomes and `script-contract` failures invalidate execution integrity. Protocol-size/count
-caps remain fixed by configuration. `publication.ts` fsyncs a private temporary file before
-exclusive hardlink publication; an existing report is never overwritten by that operation.
+caps remain fixed by configuration. Corpus validation binds consumed White queues to the
+actual audited trace windows; stop turn and planning ordinal must match reexecuted progress.
+Recorded White rejection details must match current-rule staging of that window.
+`publication.ts` fsyncs a private temporary file before exclusive hardlink publication, unlinks
+the temporary file, and fsyncs the containing directory; it never overwrites an existing report.
 Test budget overrides do not establish a standard-budget baseline result.
 
 No model updates, configuration tuning, trace replacement, or strategic candidate fallback may
@@ -272,12 +283,12 @@ as provenance. Same pins and seeds must reproduce the same semantic executions.
 `packages/starchess-arena/src/__tests__/corpusManifest.test.ts` persists the provenance/codec audit.
 All ten Phase 1 integrity-test files now exist and passed as recorded in
 [verification.json](../evidence/ml-adjutant-phase1/verification.json). The arena full run passed
-**160 tests / 17 files**; core passed **426 / 53**; both typechecks and the direct strict test
-TypeScript check passed. Final tests-only literal-cast corrections were followed by **8 focused
-passing tests in 2 files**, not a claimed second full 160-test run. Actual paths and purposes are
+**164 tests / 17 files after all source and test changes**; core passed **426 / 53**;
+both typechecks and the direct strict test TypeScript check passed. Actual paths and purposes are
 listed in [PLAN-ml-adjutant.md](PLAN-ml-adjutant.md#planned-verification-and-pending-ownership).
 Phase 2 feature encoders and Phase 3–4 learned execution checks below remain planned;
-Phase 1 tests do not implement or verify a trained policy. Phase 1 rereview remains PENDING.
+Phase 1 tests do not implement or verify a trained policy. The lead reports both Phase 1
+reviews READY: yes; adversarial has no remaining findings and security covers trusted non-learned execution.
 
 | Check | Required adversarial cases |
 |---|---|
@@ -291,9 +302,9 @@ Phase 1 tests do not implement or verify a trained policy. Phase 1 rereview rema
 | Simultaneous input isolation | Both views derived before commits; candidate in both seats cannot observe prior same-window queue, gas, or bank delta. |
 | Learned execution | Artifact frozen, inference seed reset, weight updates absent, no missing-model rescue, no strategic replacement or next-candidate rescue after rejection, fallback count zero. |
 | Determinism and schedule | Semantic rerun equality, exact 18+36 schedule, feed off, seat RNG convention, all failures retained in denominators. |
-| Supervision | Startup stall, synchronous loop, unresolved promise, match deadline independent of progress, repeated phase without deadline renewal, malformed/before-ready IPC, crash, partial evidence, and reap before return. |
-| Evidence integrity | Authoritative full resolve/resource reexecution, actual terminal truth, forged evidence rejected, and script-contract invalidation. |
-| Publication | Fsynced private temporary JSON, exclusive hardlink, existing report preserved, and cleanup on serialization failure. |
+| Supervision | Startup stall, synchronous loop, unresolved promise, fixed deadlines, bounded raw JSONL before parsing, malformed/before-ready messages, accepted-ply counters across crashes, partial evidence, and reap before return. |
+| Evidence integrity | Authoritative full resolve/resource reexecution, actual terminal truth, White trace-window binding, stop turn/ordinal consistency, forged evidence rejected, and script-contract invalidation. |
+| Publication | Fsynced private temporary JSON, exclusive hardlink, temp unlink followed by containing-directory fsync, existing report preserved, and cleanup on serialization failure. |
 
 ## 9. Reporting and evidence limits
 
@@ -301,6 +312,10 @@ Publish the pins and integrity results with one row per corpus case and per live
 Include candidate side, actual terminal outcome or failure reason, planning ordinal/failed
 action where applicable, fallback count, and reproducibility result. Report historical source
 outcomes separately from executed outcomes. Keep private metadata in host reports, not policy inputs.
+Persist complete host-private `match.trace` data on each corpus report row so standalone
+`summarize` and integrity revalidation retain the actual White-window references. The schedule
+summary may omit those payloads. Candidate inputs still exclude metadata and future queues;
+report retention does not relax the authorized observation boundary.
 
 Phase 1 `src/challenge/evidence.ts`, `integrity.ts`, `publication.ts`, and separate
 `src/cli/challenge.ts` exist. The full-suite CLI executed all **54 supervised matches twice**
@@ -318,9 +333,10 @@ learned strength or universal feasibility/infeasibility of strict replay.
 The report pins rules, challenge/CLI sources, strategic/ledger sources, dependency lock, runtime
 configuration, Node version, final watchdogs, schedule, and RNG conventions.
 The independent verification record binds raw report SHA-256
-`eb73aa799d60f4dd2d81488c6bcb838a48a8ba2d158e0b9e24e1dd4156b47236`.
+`940387370040f88888e9dfe0bb86ad9d4a8be88854df507120f34b22ee2d362b`.
 The lead reports the initial PlantUML `checkonly` passed; the revised diagram needs fresh
-validation. Adversarial/security rereview remains **PENDING**, with no READY claim.
+validation by the lead after this final spec edit. Adversarial and security rereviews are
+lead-reported **READY: yes** within the trusted non-learned Phase 1 scope.
 
 If all clauses pass, say **100% wins on the pinned 18-case corpus and 36-match live strategic
 suite**. If any clause fails, say FAIL and identify it; do not exclude the failing case to retain

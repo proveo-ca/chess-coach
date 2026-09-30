@@ -7,18 +7,21 @@
 ' covers: packages/starchess-arena/src/__tests__/observationIsolation.test.ts
 ' covers: packages/starchess-arena/src/__tests__/corpusManifest.test.ts
 ' covers: packages/starchess-arena/src/__tests__/fixtures/challenge*.ts
-' status: PHASE 1 IMPLEMENTED and VERIFIED by persisted tests and execution reports; rereview PENDING.
+' covers: _spec/evidence/ml-adjutant-phase1/*.json
+' status: PHASE 1 IMPLEMENTED and VERIFIED; lead reports adversarial and security reviews READY: yes for the trusted non-learned scope.
 ' related: _spec/_plans/PLAN-ml-adjutant.md
 ' related: _spec/_plans/ml-adjutant-challenge.md
 ' related: _spec/packages/starchess-arena/arena.puml (legacy runner, not this isolated host)
 ' evidence: _spec/evidence/ml-adjutant-phase1/baseline-report.json
 ' verification: _spec/evidence/ml-adjutant-phase1/verification.json
+' baseline report SHA-256: 940387370040f88888e9dfe0bb86ad9d4a8be88854df507120f34b22ee2d362b
+' transport: spawned stdin/stdout JSONL pipes; no Node process.send channel.
 ' evidence boundary: manifest v1 historical Phase 0 pending statuses remain unchanged; the separate execution report supersedes them for this measured baseline only.
 ' rendering: lead reports initial diagram passed plantuml -checkonly; this revised diagram needs a fresh checkonly.
 ' later: numeric features, training, learned model/artifact, and browser integration remain unimplemented phases 2+.
 @startuml ml-adjutant-phase1
 !include ../../themes/proveo.puml
-title StarChess arena · ML Adjutant Phase 1 — implemented and verified; review pending
+title StarChess arena · ML Adjutant Phase 1 — implemented, verified, reviews READY
 
 skinparam packageStyle rectangle
 skinparam defaultTextAlignment left
@@ -28,11 +31,11 @@ package "packages/starchess-arena/src/challenge" {
   component "config.ts\nCHALLENGE_CONFIG phase1-v1" as CONFIG <<host>>
   component "corpus.ts\nauditCorpus / extractWhiteWindows" as CORPUS <<host>>
   component "schedule.ts\nbuildSchedule / sampleOne" as SCHEDULE <<host>>
-  component "supervisor.ts\nrunSupervised / validated IPC" as SUPERVISOR <<host>>
+  component "supervisor.ts\nrunSupervised / bounded JSONL pipes" as SUPERVISOR <<host>>
   component "integrity.ts\nexecutionIntegrity" as INTEGRITY <<host>>
   component "evidence.ts\nexecutionPins / runBaselineSuite\nnormalizeEvidence / summarize" as REPORT <<host>>
   component "publication.ts\npublishReport" as PUBLICATION <<host>>
-  node "worker.ts child process" as CHILD <<host>> {
+  node "worker.ts spawned child\nstdin / stdout JSONL" as CHILD <<host>> {
     component "runChallengeMatch.ts\nturn-open / plan / stage / settle" as RUN <<app>>
     component "observation.ts\nobserve / side sightings only" as OBSERVE <<app>>
     component "baseline.ts\nbaselineProposals / baselinePolicy" as BASELINE <<app>>
@@ -46,7 +49,7 @@ database "Host-private strategic state\nKVS / CC intel / runners / attackers" as
 component "run/bank.ts\ngrantStoredIncome" as BANK <<host>>
 component "packages/starchess-core\nbeginScTurn / endScTurn\naddScAction / scOutcome" as CORE <<app>>
 database "ChallengeEvidence\nscfens / resolves / bankTrail / stop" as EVIDENCE <<db>>
-database "baseline-report.json\n54 rows / pins / semantic rerun hashes" as REPORT_FILE <<db>>
+database "baseline-report.json\n54 rows / full host-private traces\npins / semantic rerun hashes" as REPORT_FILE <<db>>
 database "verification.json\n10 integrity test paths / hashes / purposes\ncommands / raw report SHA-256" as VERIFICATION <<db>>
 
 CONFIG ARROW_OPTIONAL SUPERVISOR : pinned deadlines
@@ -58,7 +61,7 @@ SCHEDULE ARROW_MAIN REPORT : 18 corpus + 36 live seat/seed matches
 REPORT ARROW_MAIN SUPERVISOR : serial suite and independent rerun
 SUPERVISOR ARROW_QUEUE CHILD : ready then one request
 SUPERVISOR ARROW_ERROR CHILD : SIGKILL; wait for close
-CHILD ARROW_QUEUE SUPERVISOR : phase / ply / complete
+CHILD ARROW_QUEUE SUPERVISOR : stdout JSONL: ready / phase / ply / complete
 RUN ARROW_MAIN OBSERVE : both views from frozen turn-open state
 OBSERVE ARROW_MAIN BASELINE : cells + own modes/mines/resources + sightings
 BASELINE ARROW_MAIN RUN : one selected intent queue; no retry
@@ -71,14 +74,15 @@ RUN ARROW_MAIN CORE : terminal-first; chip and simultaneous settlement
 RUN ARROW_MAIN BANK : exact deployment debit then current income
 RUN ARROW_MAIN EVIDENCE : terminal outcome or explicit stop
 SUPERVISOR ARROW_MAIN EVIDENCE : validated completion or retained ply prefix
+CORPUS ARROW_MAIN INTEGRITY : audited White trace via host-private match
 SUPERVISOR ARROW_MAIN INTEGRITY : validate each ply prefix and completion
 REPORT ARROW_MAIN INTEGRITY : authoritative execution audit
-INTEGRITY ARROW_MAIN CORE : reexecute full resolves and terminal truth
+INTEGRITY ARROW_MAIN CORE : reexecute full resolves; check stop turn/ordinal
 INTEGRITY ARROW_MAIN ADMISSION : replay independent staging and commit
 INTEGRITY ARROW_MAIN BANK : replay exact debits and current income
 EVIDENCE ARROW_MAIN REPORT : rows / summary / normalized comparisons
 REPORT ARROW_MAIN PUBLICATION : complete JSON via CLI
-PUBLICATION ARROW_MAIN REPORT_FILE : fsync temp; exclusive hardlink
+PUBLICATION ARROW_MAIN REPORT_FILE : fsync temp; exclusive hardlink; unlink temp; fsync directory
 VERIFICATION ARROW_OPTIONAL REPORT_FILE : binds raw report hash to checks
 
 note bottom of OBSERVE
@@ -121,6 +125,24 @@ note bottom of SUPERVISOR
   evidence after timeout or protocol failure.
 end note
 
+note as N_FRAMES
+  Raw frames are bounded before JSON parsing
+  so deserialization cannot bypass the byte cap.
+  Parsed progress has a tighter limit, while
+  message and ply caps constrain the evidence
+  accepted from the supervised child process.
+end note
+SUPERVISOR .. N_FRAMES
+
+note as N_COUNTERS
+  Failure counters come from accepted plies,
+  not the last phase announcement from a child
+  that may crash before sending another update.
+  This preserves the settled turn and planning
+  ordinal recorded in partial execution evidence.
+end note
+SUPERVISOR .. N_COUNTERS
+
 note right of CONFIG
   startupMs = 10000; planMs = 10000
   matchMs = 300000; maxWindows = 64
@@ -133,6 +155,7 @@ note bottom of CONFIG
   maxIpcMessages = 2048
   maxProgressBytes = 1048576
   maxCompletionBytes = 16777216
+  Raw frame cap = 16777216 before JSON.parse
 end note
 
 note bottom of INTEGRITY
@@ -143,6 +166,14 @@ note bottom of INTEGRITY
   failure invalidates execution evidence.
 end note
 
+note right of INTEGRITY
+  Corpus validation binds White intents to the
+  audited trace window instead of accepting any
+  legal queue that could produce a valid resolve.
+  Stop checks also require matching turns and
+  planning ordinals in complete evidence.
+end note
+
 note bottom of PUBLICATION
   Reports reach the final path only after a
   private temp file is written and fsynced.
@@ -151,21 +182,28 @@ note bottom of PUBLICATION
   file instead of publishing incomplete evidence.
 end note
 
+note right of PUBLICATION
+  fsync containing directory
+  after hardlink and temp unlink
+end note
+
 note bottom of EVIDENCE
   modelArtifact = null
   learnedGateEligible = false
   fallbackCount = 0
+  match.trace = full host-private trace
 end note
 
 legend bottom
-  PHASE 1 IMPLEMENTED and VERIFIED: arena 160 tests / 17 files; core 426 / 53; typechecks passed.
-  Final test-only cast corrections: strict test typecheck and focused 8 tests passed.
+  PHASE 1 IMPLEMENTED and VERIFIED: final arena 164 tests / 17 files; core 426 / 53.
+  Full arena suite ran after all source/test changes; both typechecks and strict test TS check passed.
   Corpus candidate = b, arena/inference seed = 0; live seeds = 0..17 in both seats.
   Seat RNG: w = mulberry32(seed), b = mulberry32(~seed).
   All 54 supervised cases ran twice under final pins; 54/54 semantic comparisons equal.
   Corpus: 0 wins, 2 terminal losses, 16 queue-rejection failures; live: 0 wins, 36 terminal losses.
   executionIntegrity = true; learnedGateEligible = false; learnedChallengePass = false.
-  Rereview is PENDING; no merge-readiness or universal trace-compatibility claim.
+  Lead reports adversarial READY: yes, no remaining findings; security READY: yes, trusted non-learned scope.
+  No learned acceptance or universal trace-compatibility claim; final checkonly belongs to the lead.
   Numeric features, training, learned artifacts, and browser integration remain phases 2+.
 endlegend
 @enduml

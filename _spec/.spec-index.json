@@ -212,7 +212,8 @@
         "packages/starchess-arena/src/__tests__/resourceLedger.test.ts",
         "packages/starchess-arena/src/__tests__/observationIsolation.test.ts",
         "packages/starchess-arena/src/__tests__/corpusManifest.test.ts",
-        "packages/starchess-arena/src/__tests__/fixtures/challenge*.ts"
+        "packages/starchess-arena/src/__tests__/fixtures/challenge*.ts",
+        "_spec/evidence/ml-adjutant-phase1/*.json"
       ],
       "fingerprint": null
     },
