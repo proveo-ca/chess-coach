@@ -7,6 +7,10 @@ Full implementation post-image adversarial review is **REVIEWED / READY TO MERGE
 The [R0 findings ledger](#r0-findings-ledger--full-implementation-post-image-review) records
 **15 pending findings: 7 HIGH + 8 MEDIUM**. R1 direction selections are **RECORDED**, but its contract freeze is **INCOMPLETE**.
 R2–R8 remain pending and unimplemented; no review findings are claimed for R1–R8.
+The [front nine-detail decision table, glossary/readings, and remaining-field freeze](ml-adjutant-r1-recipe.md#nine-detail-decision-record--accepted-directions-not-a-completed-freeze)
+records the accepted follow-up answers without replacing the original eight choices.
+Architecture task `ses_f06d4c62cffe4MgE59PmzWw1rO` retains **R1 contract freeze INCOMPLETE** until exact details settle.
+This update changes no code, build/run permissions, evidence, historical pins, or projected diagram/source entries.
 
 ## Current status ledger
 
@@ -18,7 +22,7 @@ R2–R8 remain pending and unimplemented; no review findings are claimed for R1�
 | R0 current assurance | Full implementation adversarial review **READY TO MERGE: no**; **7 HIGH + 8 MEDIUM pending**. Security rereview **UNRECORDED**. Source-derived counterexamples are **[Inference], not executed proof**; the reviewer inspected historical results rather than independently rerunning them. |
 | Coverage ≠ generation ≠ wins | Codec and feature representability each **282/282**; generated exact full queues **18/282**, singleton intents **204/576**. `baseline-v1` still proposes classical/Marine-deploy singletons and pass. Candidate wins remain **0/18 corpus + 0/36 live**; strict failures stay counted. |
 | Documentation completed | [Weights contract](ml-adjutant-weights.md) defines the broader first ranker; the generic study guide is published as **OPEN, unmerged** [Orrery PR #12](https://github.com/proveo-ca/orrery/pull/12). Neither implements learning. |
-| R1 design decisions | [R1.1–R1.8 recipe record](ml-adjutant-r1-recipe.md): directions selected; exact contracts and validation incomplete. Dedicated `packages/starchess-training` owner selected, not created. No build/run permission. |
+| R1 design decisions | [R1.1–R1.8 plus nine follow-up details](ml-adjutant-r1-recipe.md): accepted directions recorded; exact contracts and validation incomplete. Dedicated `packages/starchess-training` owner selected, not created; any proposed npm name is not approved. No build/run permission. |
 | Phase 3 / learned Phase 4 | Broader generation, authorized loss ledger, candidate-conditioned v2, training, frozen artifact/adapter, and learned eligibility/tests remain **PLANNED and unimplemented**. The existing 54-case scheduling/report machinery is not learned acceptance. |
 
 Current owning diagrams are [`ml-adjutant-challenge-harness.puml`](../packages/starchess-arena/ml-adjutant-challenge-harness.puml)
@@ -38,11 +42,11 @@ R1 direction selection has been performed; contract freeze remains incomplete. R
 Complete **R0–R5 before the first training run at R6**; use **H=1**. No training is authorized.
 
 0. **R0 — REVIEWED / BLOCKED: close full implementation post-image review.** Adversarial task `ses_f07c45365ffew0wJ58yFHXAye5` returned **READY TO MERGE: no**. Investigate and resolve all A01–A15 in the [R0 ledger](#r0-findings-ledger--full-implementation-post-image-review), persist meaningful negative regressions, refresh frozen-source/image evidence, and obtain recorded adversarial and security rereviews **READY: yes**. Security remains **UNRECORDED**. Rename-only approval and Orrery documentation review cover different scopes; neither substitutes for these verdicts.
-1. **R1 — Direction choices RECORDED; contract freeze INCOMPLETE.** [Eight concept decisions](ml-adjutant-r1-recipe.md) select `packages/starchess-training`, family-quota composition, typed blocks plus an ordered flat manifest, combined authorized ledger/snapshot views, 512 unique candidates including pass / 2048 attempted extensions including duplicates/pruned, SGD + REINFORCE, five independent seeds 101..105, and at most 1000 episodes per artifact (5000 total). The selected experimental profile uses zero initialization, float64 CPU, `η=0.001`, `τ=1`, L2 `λ=0.0001`, one complete episode per update, and no clipping. Npm identity/public exports, exact generator/v2/ledger/numeric/failure/RNG/artifact-selection contracts and validation remain **TBD**; R1 is not complete and no run is approved.
+1. **R1 — Direction choices RECORDED; contract freeze INCOMPLETE.** [Eight original choices plus nine accepted details](ml-adjutant-r1-recipe.md) retain `packages/starchess-training`, family-quota composition, typed blocks/ordered manifest, authorized ledger/snapshots, 512 unique candidates including pass / 2048 attempted extensions including duplicates/pruned, SGD + REINFORCE, independent masters 101..105, and at most 1000 episodes per artifact (5000 total, counting every started attempt). Follow-ups select purpose-based API suffixes; composition capacity `7×48 + 175 + 1 = 512` when all families are available; four ordered action-position blocks plus queue synergy/interactions; reconciled boundary batches; SHA-256 + existing `mulberry32`; infrastructure/provenance abort stops ALL training; prospective final-valid seed-101 primary and diagnostic cadence every 100 started attempts; per-seed all-history eligible-return mean/startup 0 with summed gradient/L2 once; and small-to-large validation. The experimental profile retains zero initialization, float64 CPU, `η=0.001`, `τ=1`, L2 `λ=0.0001`, one complete episode per update, and no clipping. Finish the explicitly [remaining fields](ml-adjutant-r1-recipe.md) and validation; R1 is not complete and no build/run is approved.
 2. **R2 — Implement broader observation-only generation.** Cover all kinds and meaningful ordered B/C/F chains with deterministic bounded composition, deduplication, pruning, and pass retention. Measure exhaustive small-fixture domains and actual generated membership separately; never use full-state legality probes or admission retries.
 3. **R3 — Implement authorized economics.** Track own lineage, confirmed paid debits, and paid-investment loss separately from replacement valuation. Track only observed/confirmed opponent-loss bounds with explicit unknowns; do not import private strategic KVS or infer an exact enemy ledger.
 4. **R4 — Implement candidate-conditioned feature v2.** Add economic, vision/attack-ray, tactical, and exploration interactions with knowledge masks, normalization, and frozen ordered names/dimensions. Observation-only terms and the shared bank component of budget margins cancel in linear ranking; extra global scalars do not supply candidate-context preferences.
-5. **R5 — Persist readiness verification.** Test broader generation, exact resources and ordered atomicity, whole-channel noninterference, own-ledger conservation, opponent uncertainty/unknown rays, v2 interactions, and gradient direction before first training. Refresh affected execution/capture pins and hermetic evidence when implementation changes; preserve historical bundles.
+5. **R5 — Persist readiness verification.** Use the selected gradient/finite-difference → numeric-extremes → exhaustive-small-fixture → capped-worst-case-runtime → reload/provenance diagnostic order. Still require every specialist privacy/noninterference, ledger/conservation, phase, Phase 1 host-resource/atomicity, opponent uncertainty/unknown-ray, and v2 interaction check. Exact tolerances, fixture manifest, hardware/deadlines, and test acceptance criteria remain TBD. Refresh affected execution/capture pins and hermetic evidence when implementation changes; preserve historical bundles.
 6. **R6 — Train the linear policy from actual outcomes.** Use the current 18 as training/regression plus a live-strategic curriculum, not held-out evidence. Separate training-selection/policy RNG streams from gate streams; persist data metadata, recipe, seeds, loss/update history, and provenance.
 7. **R7 — Freeze the real learned artifact and adapter.** Validate finite, exactly aligned v2 weights and an external artifact hash; implement a `ScriptPlayer`-compatible authorized adapter. Allow no online updates, heuristic/strategic rescue, or missing-model fallback in the learned gate.
 8. **R8 — Execute learned Phase 4.** Run every pinned case with the frozen artifact, integrity checks, and semantic reruns. Require **18/18 corpus + 36/36 live wins**, `fallbackCount = 0`; retain every loss, rejection, timeout, and other failure in the denominator.
@@ -53,7 +57,10 @@ this audit is not first-model readiness. Three-window belief/search, RLHF, Elo, 
 and Stockfish retirement do not block the first model.
 
 Scope: arena-owned Phases 1–2, with selected dedicated **`packages/starchess-training`** ownership for Phase 3 onward.
-The package is not created; npm identity and public exports remain TBD. Historical `ml/` ownership shorthand is superseded,
+The package is not created; npm identity is TBD, not an approved proposed name. Authorized purpose-based
+`/observations`, `/candidates`, `/features`, `/artifacts` suffixes are selected; package assignment, full export paths, and signatures remain TBD.
+Do not route all artifact logic into arena or publish unrestricted `SideContext` as a model interface.
+Historical `ml/` ownership shorthand is superseded,
 **not an Adjutant registry ID or a URL alias**. The exact future player ID is **`machine-learning`**.
 Phase 1 isolates candidates behind `CandidatePolicy` / `AuthorizedObservation`; live strategic
 retains the arena's trusted `ScriptPlayer` execution contract. The app consumes the core-derived
@@ -67,7 +74,7 @@ All **A01–A15 belong to the same R0 review**, not to R1–R8.
 | Action / current status | Phase ownership | Required gate |
 |---|---|---|
 | R0 — REVIEWED / BLOCKED | Cross-cutting Phase 1/2 remediation. A08–A10 own Phase 1 execution/watchdog/corpus/evidence and the Phase 0 corpus-pin contract. A01–A07, A11–A15 own the current Phase 2 import/audit/provenance/hermetic/publication layer. | Investigate and resolve every finding with meaningful negative fixtures; refresh evidence and obtain both adversarial/security READY verdicts before R6. Every later phase reuses this assurance boundary. |
-| R1 — Direction choices RECORDED; contract freeze INCOMPLETE | Cross-cutting architecture and Phase 3 design preparation; [eight selections](ml-adjutant-r1-recipe.md) recorded. | Design docs may advance independently of R0 repairs. Finish exact packaging/API, schema, numeric, RNG, failure/budget, and artifact-selection semantics plus validation before training. Do not accept a model freeze with the known-bad importer. |
+| R1 — Direction choices RECORDED; contract freeze INCOMPLETE | Cross-cutting architecture and Phase 3 design preparation; [eight original selections plus nine details](ml-adjutant-r1-recipe.md) recorded. | Design docs may advance independently of R0 repairs. Freeze remaining package/API/closure, quota mechanics, v2 manifest, ledger payload/reconciliation, RNG mapping/lifecycle, failure/eligibility/counters, curriculum/checkpoint/stopping/artifact validity, and validation criteria before training. Do not accept a model freeze with the known-bad importer. |
 | R2 — PENDING; not performed | Broader generation extends Phase 2 policy contracts as an accepted **FIRST Phase 3 training prerequisite**. | Implement, version, and verify before R6. Current v1 Phase 2 completion does not mean broader generation is complete. |
 | R3 — PENDING; not performed | Authorized economics/lineage/loss extends Phase 2 policy contracts as an accepted **FIRST Phase 3 training prerequisite**. | Implement and verify the authorized ledger/uncertainty contract before R6. |
 | R4 — PENDING; not performed | Candidate-conditioned v2 extends Phase 2 policy contracts as an accepted **FIRST Phase 3 training prerequisite**. | Implement, verify, and freeze ordered v2 names/dimensions before R6; current v1 does not satisfy it. |
@@ -590,19 +597,44 @@ authorized own-loss lineage ledger, confirmed opponent-loss lower bounds/uncerta
 candidate-context interactions. Current 158-entry v1 ranker inputs do not meet this prerequisite.
 The exact v2 names/dimension remain unsettled. R1 selects 512 unique candidates including pass,
 2048 attempted extensions including duplicates/pruned, and a rules-derived generation queue-length upper bound of 4;
-quota allocation, traversal, pruning, and exact counter semantics remain unfrozen. The codec bound stays 65.
+when all seven canonical families are available, capacity is **48 each (336) + 175 shared composition + 1 pass = 512**.
+These are capacity limits, not required emissions or unique-output guarantees.
+Mixed-queue single quota ownership, canonical family order, unavailable-family redistribution, shared-pool eligibility/traversal/distribution,
+deduplication/content-hash identity, pass reservation, pruning, and exact counter semantics remain unfrozen.
+First-action-kind/first-special ownership was not selected; counting one queue in two pools cannot count it twice as unique.
+The codec bound stays 65. Typed v2 action-position blocks preserve order and unknown/absent masks at four rules-derived positions;
+keep queue combo/timing synergy and candidate×economic/vision/tactics/exploration interactions, not linear position-only weights.
+Exact field names/scales/masks/versions/dimension remain TBD; do not reuse v1's 158 as a v2 count.
+Ledger boundary batches reconcile authorized ordered events and normalized chip/settlement snapshots before consumption.
+Host-issued own lineage IDs and side-local sequences must not leak hidden counts/gaps; raw full-resolve information remains private.
+Payload/order/ID formula/mismatch semantics remain TBD; own opening/free-promotion paid basis is zero and investment stays separate from replacement value.
 Use horizon **1** initially; three conditional simultaneous planning windows remain a separate future milestone.
 
 **Deliverables.** Fit `s_w(h,c) = wᵀφ_version(h,c)` through an explicit training loss.
 Coefficients are shared named-feature weights, not per-move or per-combination-tree entries.
 The [weights contract](ml-adjutant-weights.md#7-proposed-outcome-driven-phase-3-learning--not-implemented)
-proposes stable-softmax policy gradient with actual candidate-side rewards, a preceding-episode baseline whose aggregation remains unfrozen,
-`L = -A Σ log π + λ||w||²/2`, initialization/optimizer/seeds, and external artifact hashing.
+specifies selected stable-softmax policy gradient with actual candidate-side rewards and a **per-seed all-history mean of past eligible completed returns**,
+startup baseline **0**, held fixed before sampling; only add the current return after eligible completion.
+The selected objective sums decisions: `L = -A Σ_t log π + λ||w||²/2`; apply L2 once per episode update and `w′ = w − η∇L`.
+No per-length mean, recent-100/EMA baseline, mixed-seed history, or current-return baseline is selected.
 The [R1 record](ml-adjutant-r1-recipe.md) selects SGD + REINFORCE with zero initialization, float64 CPU,
 `η=0.001`, `τ=1`, L2 `λ=0.0001`, one complete episode per update, and no clipping.
-Five independent masters 101..105 produce five artifacts, each capped at 1000 episodes (5000 total); no automatic weight average.
-Exact gradient reduction/L2, baseline eligibility/startup/aggregation, abort accounting, RNG derivation,
-curriculum/checkpoint/stopping semantics, and pre-comparison artifact-selection rule remain TBD.
+Five independent masters 101..105 produce five artifacts, each capped at 1000 episodes (5000 total), counting **ALL started attempts**.
+Infrastructure/provenance abort stops **ALL training**, preserves consumed-attempt counters/diagnostics, and aborts the episode
+without fabricated reward or partial gradient update; policy/challenge failure remains `−1` with the failed sampled choice retained.
+No unlimited retry or automatic checkpoint resume is approved; any new continuation requires decisions and remaining-budget preservation.
+Use selected **SHA-256 + existing `mulberry32`** with separate selection/environment-settlement/policy-sampling/opponent streams;
+deterministic generation leaves its RNG stream unused. Versioned master+stream-label encoding, endianness/byte-seed mapping,
+collision scope/rejection policy, and reset/lifecycle semantics remain TBD before pinning derived seeds; record seeds and reject collisions under the frozen policy.
+Gate corpus arena 0, inference 0 reset per match, and live arena 0..17 both seats remain unchanged; hash IDs never become features.
+Prospectively select the **final VALID seed-101 artifact as primary before comparisons**; four others measure variability.
+No average, best-gate cherry-pick, alternate-seed/diagnostic-checkpoint fallback, new development suite, or all-five-artifact gate is selected.
+Diagnostic checkpoint cadence is **every 100 STARTED ATTEMPTS**, with complete verified state saved at eligible boundaries, not mid-partial-reward updates.
+Alternating corpus/live slots and alternating live candidate seats are **selected proposed curriculum context**, not implemented or schedule-frozen.
+At the full 1000 attempts this gives **500 corpus + 500 live**, with **250 live per candidate seat**; the training-used 18 are not held out.
+Exact failure taxonomy, baseline eligibility for policy failures/empty decisions/aborts, zero-decision update, incomplete-episode handling,
+baseline-history ordering relative to SGD, started-attempt/cap/counter boundaries, artifact validity/selection types,
+checkpoint phases/counters/failure/save boundaries, curriculum case order/shuffle/opponent selection/initialization, and stopping semantics remain TBD.
 Validate gradients, numerics, coverage, and runtime before approving a run; rule legality/gas/mineral costs never become learned parameters.
 Add a `ScriptPlayer`-compatible adapter that receives only the authorized interface, selects a
 queue using the learned scores, and delegates authoritative commit to the host.
@@ -672,7 +704,10 @@ These are separate follow-up tasks, not prerequisites or substitutes for phase 4
   an `ml` alias. Keep `rlcd` EMPTY: this plan defines no RLCD algorithm or runtime.
 
 `packages/starchess-training` is the selected, uncreated Phase 3+ owner; Phases 1–2 ownership stays in arena.
-Lead/build must freeze npm identity, observation-only public exports, and the deliberate dependency/audit/hermetic/CI extension before that work.
+Lead/build must freeze npm identity, package assignment/full paths/signatures for the purpose-based authorized interfaces,
+and the deliberate dependency/export-resolution/source-inventory/layer-policy/hermetic package-context/installed-store/CI extension before that work.
+The current capture/dependency closure covers core/arena, not the future training folder; `packages/*` already covers the future workspace path.
+Do not blindly relax the unused baseline graph's execution→contracts restriction while adding the future training/v2 closure.
 This spec slice changes neither source nor package configuration. Browser and scale
 decisions must not hold the serial learning challenge hostage.
 
