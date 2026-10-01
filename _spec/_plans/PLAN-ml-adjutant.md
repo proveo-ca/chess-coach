@@ -1,20 +1,47 @@
 # PLAN — ML Adjutant: learn a ranker and prove the strict challenge
 
-Status: **Preparatory catalog IMPLEMENTED and VERIFIED**, with the baseline full-app lint exception below.
-Phase 0 provenance is **IMPLEMENTED** with persisted audit verification.
-Phase 1 is **IMPLEMENTED and VERIFIED in `packages/starchess-arena`** by tests and persisted
-baseline execution evidence. The lead reports both Phase 1 reviews **READY: yes**:
-adversarial has no remaining findings; security approves the trusted non-learned scope.
-Both renamed diagrams and the edited spec map passed PlantUML `checkonly`.
-Phase 2 hermetic verification **PASSED**. This is not a learned PASS.
-Post-image adversarial and security rereview is **not yet recorded**.
-Phase 3 learning, Phase 4 learned acceptance, and optional phases 5–6 remain **PLANNED and unimplemented**.
-Core `ai/definitions.ts` now owns all five IDs, canonical labels, and derived guards.
-The app implements disabled placeholder entries and explicit unavailable admission for known
-placeholder URLs or sessions. This completes the preparatory catalog, not a learning player.
-The corpus schema audit and Phase 1 baseline execution verification are complete. Strict queue
-failures remain visible; universal trace compatibility, training, and learned challenge wins
-are not established. Stockfish retirement is not an acceptance prerequisite.
+Status: **Phases 0–1 implemented and verified; Phase 2 hermetic verification PASSED.**
+**NOT training-ready: weights NONE; no learned model, runtime readiness, or learned acceptance.**
+Full implementation post-image adversarial and security rereviews remain **UNRECORDED**.
+
+## Current status ledger
+
+| Area | Completed boundary / remaining boundary |
+|---|---|
+| Preparatory catalog + Phase 0 | Core owns all five IDs, labels, and guards; only `naive`/`strategic` are ready. App placeholders remain disabled/unavailable. Provenance pins **18** cases; no corpus expansion. The full-app lint baseline exception remains below. |
+| Phase 1 | Strict isolated serial harness, whole-queue atomic admission, exact resources, watchdogs, publication, and provenance verified. Historical Phase 1 reviews are lead-reported **READY: yes** for the non-learned scope. |
+| Phase 2 | All **7** kinds encode; feature v1 dimensions are **1623 observation / 64 action-row / 158 ranker**. Partitioned pins and hermetic image verification passed: **434/434 arena**, **426/426 core**, **54 executions + 54 reruns**, all semantic comparisons equal. |
+| Coverage ≠ generation ≠ wins | Codec and feature representability each **282/282**; generated exact full queues **18/282**, singleton intents **204/576**. `baseline-v1` still proposes classical/Marine-deploy singletons and pass. Candidate wins remain **0/18 corpus + 0/36 live**; strict failures stay counted. |
+| Documentation completed | [Weights contract](ml-adjutant-weights.md) defines the broader first ranker; the generic study guide is published as **OPEN, unmerged** [Orrery PR #12](https://github.com/proveo-ca/orrery/pull/12). Neither implements learning. |
+| Phase 3 / learned Phase 4 | Broader generation, authorized loss ledger, candidate-conditioned v2, training, frozen artifact/adapter, and learned eligibility/tests remain **PLANNED and unimplemented**. The existing 54-case scheduling/report machinery is not learned acceptance. |
+
+Current owning diagrams are [`ml-adjutant-challenge-harness.puml`](../packages/starchess-arena/ml-adjutant-challenge-harness.puml)
+and [`ml-adjutant-policy-contracts.puml`](../packages/starchess-arena/ml-adjutant-policy-contracts.puml).
+Their rename and spec-map `checkonly` passed as reported below.
+The current [image assurance](../evidence/ml-adjutant-phase2/image-assurance.json) pins image
+`sha256:e7f9ea8ac211c93804bd1125ed28fb7e165a160c4155ca70404c81f9e431710d`;
+[verification](../evidence/ml-adjutant-phase2/verification.json) records baseline SHA-256
+`5de86d94caaa626402b73ac9fa8f6bbc7a9b111e69a8b3801461380635cbd87f`.
+These are the already-recorded current pins, not a new run. Phase 1 and the pre-rename Phase 2 archive remain immutable.
+
+## Immediate ordered next actions — Train the first broader Adjutant
+
+All actions below remain pending. Complete **R0–R5 before the first training run**; use **H=1**.
+
+0. **R0 — Close full implementation post-image review.** Record adversarial and security verdicts against the current implementation/image evidence and resolve blocking findings. Rename-only approval and Orrery documentation review cover different scopes; neither substitutes for these verdicts.
+1. **R1 — Settle architecture and freeze the recipe.** Obtain the training ownership/packaging decision (`ml/` is proposed, not approved). Freeze the broader generator, candidate/action-feature v2 formats and names/dimensions, authorized observation/ledger versions, finite budgets, optimizer/loss, seeded recipe, and numeric run parameters. Proposed defaults are not an approved run configuration; unresolved values remain **TBD**.
+2. **R2 — Implement broader observation-only generation.** Cover all kinds and meaningful ordered B/C/F chains with deterministic bounded composition, deduplication, pruning, and pass retention. Measure exhaustive small-fixture domains and actual generated membership separately; never use full-state legality probes or admission retries.
+3. **R3 — Implement authorized economics.** Track own lineage, confirmed paid debits, and paid-investment loss separately from replacement valuation. Track only observed/confirmed opponent-loss bounds with explicit unknowns; do not import private strategic KVS or infer an exact enemy ledger.
+4. **R4 — Implement candidate-conditioned feature v2.** Add economic, vision/attack-ray, tactical, and exploration interactions with knowledge masks, normalization, and frozen ordered names/dimensions. Observation-only terms and the shared bank component of budget margins cancel in linear ranking; extra global scalars do not supply candidate-context preferences.
+5. **R5 — Persist readiness verification.** Test broader generation, exact resources and ordered atomicity, whole-channel noninterference, own-ledger conservation, opponent uncertainty/unknown rays, v2 interactions, and gradient direction before first training. Refresh affected execution/capture pins and hermetic evidence when implementation changes; preserve historical bundles.
+6. **R6 — Train the linear policy from actual outcomes.** Use the current 18 as training/regression plus a live-strategic curriculum, not held-out evidence. Separate training-selection/policy RNG streams from gate streams; persist data metadata, recipe, seeds, loss/update history, and provenance.
+7. **R7 — Freeze the real learned artifact and adapter.** Validate finite, exactly aligned v2 weights and an external artifact hash; implement a `ScriptPlayer`-compatible authorized adapter. Allow no online updates, heuristic/strategic rescue, or missing-model fallback in the learned gate.
+8. **R8 — Execute learned Phase 4.** Run every pinned case with the frozen artifact, integrity checks, and semantic reruns. Require **18/18 corpus + 36/36 live wins**, `fallbackCount = 0`; retain every loss, rejection, timeout, and other failure in the denominator.
+
+**Separate optional follow-up after R0:** audit the external **96-game count-only** export for provenance,
+duplicates, rules, and trace compatibility. No admission/dedup audit or gate expansion has completed;
+this audit is not first-model readiness. Three-window belief/search, RLHF, Elo, UI/runtime rollout,
+and Stockfish retirement do not block the first model.
 
 Scope: arena-owned Phases 1–2, with a proposed top-level **`ml/`** training workspace for Phase 3 onward. `ml` is workspace/tooling shorthand,
 **not an Adjutant registry ID or a URL alias**. The exact future player ID is **`machine-learning`**.
@@ -63,12 +90,12 @@ or authorize unrelated timer cleanup.
 
 | Verification reference | Contract pinned |
 |---|---|
-| [`packages/starchess-core/src/__tests__/adjutantDefinitions.test.ts`](../../../packages/starchess-core/src/__tests__/adjutantDefinitions.test.ts) | EMPTY metadata shape, all-ID recognition, ready-only admission, rejection of `ml` and unknown inputs |
-| [`apps/starchess/src/__tests__/singleOpponent.test.ts`](../../../apps/starchess/src/__tests__/singleOpponent.test.ts) | App guards and distinct playable script execution |
-| [`apps/starchess/src/__tests__/newGameSetupStore.test.tsx`](../../../apps/starchess/src/__tests__/newGameSetupStore.test.tsx) | Disabled placeholder options, playable selection/Start, persisted setup |
-| [`apps/starchess/src/__tests__/matchSessionStore.test.ts`](../../../apps/starchess/src/__tests__/matchSessionStore.test.ts) | Preserve known placeholders for admission; retain legacy/unknown session handling |
-| [`apps/starchess/src/__tests__/matchTitle.test.ts`](../../../apps/starchess/src/__tests__/matchTitle.test.ts) | Canonical labels and safe unknown-record fallback |
-| [`apps/e2e/tests/starchess/starchess-opponents.spec.ts`](../../../apps/e2e/tests/starchess/starchess-opponents.spec.ts) | Browser selection, placeholder URL/session blocks, unchanged stored data, strategic rematch, setup normalization |
+| [`packages/starchess-core/src/__tests__/adjutantDefinitions.test.ts`](../../packages/starchess-core/src/__tests__/adjutantDefinitions.test.ts) | EMPTY metadata shape, all-ID recognition, ready-only admission, rejection of `ml` and unknown inputs |
+| [`apps/starchess/src/__tests__/singleOpponent.test.ts`](../../apps/starchess/src/__tests__/singleOpponent.test.ts) | App guards and distinct playable script execution |
+| [`apps/starchess/src/__tests__/newGameSetupStore.test.tsx`](../../apps/starchess/src/__tests__/newGameSetupStore.test.tsx) | Disabled placeholder options, playable selection/Start, persisted setup |
+| [`apps/starchess/src/__tests__/matchSessionStore.test.ts`](../../apps/starchess/src/__tests__/matchSessionStore.test.ts) | Preserve known placeholders for admission; retain legacy/unknown session handling |
+| [`apps/starchess/src/__tests__/matchTitle.test.ts`](../../apps/starchess/src/__tests__/matchTitle.test.ts) | Canonical labels and safe unknown-record fallback |
+| [`apps/e2e/tests/starchess/starchess-opponents.spec.ts`](../../apps/e2e/tests/starchess/starchess-opponents.spec.ts) | Browser selection, placeholder URL/session blocks, unchanged stored data, strategic rematch, setup normalization |
 
 ---
 
@@ -83,6 +110,27 @@ FIRST Phase 3 training requires a separately versioned broader combination gener
 interactions, including an own-loss lineage ledger and confirmed opponent-loss lower bounds with fog uncertainty.
 Start at **H=1**; conditional plans across **three simultaneous planning windows** remain a separate future milestone.
 Current features v1 are not an adequate first-trained-ranker contract.
+
+### Completed learning documentation — not executable readiness
+
+[ml-adjutant-weights.md](ml-adjutant-weights.md) now defines shared coefficients, the combination domain,
+planning horizons, authorized economics/loss, vision/attack/tactical priorities, and the proposed learning/artifact contract.
+Weights are not per-move lookup entries. Own paid-investment loss differs from replacement value;
+enemy confirmed-loss bounds and unknown attack rays retain uncertainty. Candidate-independent observation
+and shared budget-margin components cancel in linear comparisons, requiring genuine v2 interactions.
+Executor accepted broader combinations/v2 at **H=1**; three-window belief/search stays later.
+The document is complete; its proposed implementation and persistent checks are not.
+
+The generic **Auditable Policy Learning** study guide, PlantUML/SVG, exercises/rubric, README discovery,
+and context-generator coverage are authored in Orrery. The contribution reports source-verified academic/official
+references and passing generator checks with frozen fixture oracles unchanged.
+[PR #12 files](https://github.com/proveo-ca/orrery/pull/12/files) contains
+`_spec/study-cases/auditable-policy-learning.md` and
+`_spec/study-cases/6-post-training/auditable-policy-learning.puml` plus its SVG.
+Publication is on `docs/auditable-policy-learning`, commit `790ff3843860a9d980519504dd4354619882cbca`.
+GitHub's checked PR state is **OPEN**, `merged_at = null`; this is not a merged-main claim.
+Its documentation/sourcing/security approvals do not review this project's post-image implementation
+or change executable contracts, runtime readiness, training evidence, or learned acceptance.
 
 | Original phase | Judgment | Replacement |
 |---|---|---|
@@ -180,9 +228,9 @@ Preserve the source export unchanged. Validate all pins and counts before every 
 planning ordinal inspectable. Its historical executable audit status remains pending; Phase 1
 now supplies separate measured execution evidence, including strict incompatibility failures.
 The manifest and persisted corpus audit test implement this provenance slice.
-Audit the newly located external 96-game export's hashes, IDs, duplicates, rules, and trace
-compatibility before proposing any expanded challenge and approving a new manifest version.
-Do not silently expand the existing denominator.
+Separately and optionally after R0, audit the newly located external 96-game export's hashes, IDs,
+duplicates, rules, and trace compatibility before proposing an expanded challenge and approving a new
+manifest version. This is not first-training readiness. Do not silently expand the existing denominator.
 
 ## Phase 1 — Strict serial harness, adapters, and baseline
 
@@ -400,7 +448,8 @@ and verification SHA-256 `55d965afa71d775ff6ee1e95b6650a27d0ce759b966a81c43a3bb3
 Pre-freeze adversarial, security, and devops findings were fixed before this freeze:
 loader escapes, dense arrays, provenance, capture containment, and importer completeness.
 Rename-only adversarial review is **READY: yes**.
-Post-image security rereview remains unrecorded. Do not treat this section as a READY verdict.
+Full implementation post-image adversarial and security rereviews remain unrecorded.
+Do not treat this section or the rename-only review as a full implementation READY verdict.
 An earlier PlantUML `checkonly` predates relocation and this evidence update.
 Both renamed diagrams and the edited spec map passed `plantuml -checkonly`.
 Broader generation and v2 economics/position remain required **before FIRST Phase 3 training**.
@@ -410,14 +459,15 @@ This Phase 2 slice does not implement them. Three-turn planning remains a later 
 
 ### Next delivery milestone — Train the first broader Adjutant
 
-Schedule this milestone next. Finish its bounded readiness tasks before starting optimization:
+Follow the [ordered R0–R8 actions](#immediate-ordered-next-actions--train-the-first-broader-adjutant),
+not a second parallel checklist. Three-window search is a later milestone.
+No training run or learned artifact exists yet.
 
-1. Freeze a deterministic combination generator with measured queue coverage and explicit budgets.
-2. Implement authorized own-investment/loss accounting and confirmed opponent-loss bounds.
-3. Freeze candidate-conditioned economic, visibility, and attack-line interactions as feature v2.
-4. Run the readiness checks, then fit, freeze, and evaluate the first weight artifact at horizon 1.
-
-Three-turn search is a later milestone. No training run or learned artifact exists yet.
+**Training-ready means:** R0–R5 have recorded passing evidence, ownership/packaging is approved,
+the broader generator and authorized ledger/v2 interfaces are implemented and frozen, and the
+loss/optimizer/seed recipe plus finite numeric budgets are settled. Persist integrity, noninterference,
+conservation, uncertainty/ray, interaction, and gradient checks before starting optimization.
+Documentation completion or a baseline image pass alone does not meet this definition.
 
 **Status: PLANNED, no training implementation or artifact.**
 **Prerequisite:** freeze a separately versioned broader combination generator and v2 feature names/dimensions,
@@ -442,14 +492,19 @@ Use a separate seeded training-selection stream; do not feed game IDs, corpus in
 white actions, or historical outcomes into the policy. Log optimizer/loss, training seeds,
 dataset versions, candidate coverage, and model artifact hash.
 
-**Done when.** Persistent tests verify broader combination coverage, authorized loss-ledger conservation,
-uncertainty/ray semantics, and context interactions before a repeatable training run produces changed learned
+**Done when (first trained model, not Phase 4 PASS).** Persistent tests verify broader combination coverage, authorized loss-ledger conservation,
+uncertainty/ray semantics, and context interactions before a repeatable seeded training run produces changed learned
 weights and a frozen, finite, exactly name-aligned v2 artifact with external hash and provenance.
+Retain the actual recipe, seeds, data identity, loss, and optimizer-update history with that artifact.
 Evaluate it without online updates using inference seed 0 per match. Publish failures as well as
 wins. Add a small neural network only if separate held-out results justify the added complexity.
 The 18 cases may be used for training/regression; they are not held-out generalization evidence.
 
 ## Phase 4 — Exhaustive perfect gate
+
+**Status: learned acceptance PLANNED.** Existing Phase 1 scheduling, supervision, and report/integrity
+machinery already exercises all 54 baseline cases. Learned runner eligibility, adapter/artifact validation,
+dedicated learned tests, and actual learned acceptance remain pending; zero-fallback baseline execution is not proof of learning.
 
 Run the [challenge contract](ml-adjutant-challenge.md) on one frozen candidate:
 
@@ -546,6 +601,8 @@ No Phase 1 placeholder test path is presented as an existing arena test.
 | `packages/starchess-arena/src/__tests__/challengeCandidateCodec.test.ts` (EXISTS; in-image arena vitest 434/434 passed) | 2 | Ordered kind/timing/spend encoding, canonical keys, structural bounds and comparator. |
 | `packages/starchess-arena/src/__tests__/challengeFeatures.test.ts` (EXISTS; in-image arena vitest 434/434 passed) | 2 | Named finite vectors, authorized inputs, normalization and historical coverage. |
 | `packages/starchess-arena/src/__tests__/challengeContractAdmission.test.ts` (EXISTS; in-image arena vitest 434/434 passed) | 2 | Codec proposals remain distinct from host whole-queue legality/resource gates. |
+| `packages/starchess-arena/src/__tests__/challengeContractCoverage.test.ts` (EXISTS; in-image arena vitest 434/434 passed) | 2 | Reproduce 282/282 codec/features versus 18/282 queue and 204/576 intent membership; bind contract/coverage evidence to current pins and all-row migration. |
+| `packages/starchess-arena/src/__tests__/challengeEvidenceImport.test.ts` (EXISTS; in-image arena vitest 434/434 passed) | 2 | Validate image/capture/artifact/log identities before publication; reject unsafe paths, capture drift, and incomplete inventories. |
 | `packages/starchess-arena/src/__tests__/challengeSourceInventory.test.ts` (EXISTS; in-image arena vitest 434/434 passed) | 2 | Complete partitioned source/config inventory, import boundaries and loader policy. |
 | `packages/starchess-arena/src/__tests__/challengePinMigration.test.ts` (EXISTS; in-image arena vitest 434/434 passed) | 2 | Immutable Phase 1 byte pins, new v2 baseline and all-row semantic migration parity. |
 | `packages/starchess-arena/hermetic/infra.test.mjs` (EXISTS; not one of the seven recorded in-image commands) | 2 | Restricted real-container policy, allowlisted capture, tools/dependency/store assurance. The final image run passed network-none, read-only, and nonroot. |
@@ -557,7 +614,7 @@ No Phase 1 placeholder test path is presented as an existing arena test.
 **Final handoff:** both historical Phase 1 reviews are lead-reported READY: yes.
 Both renamed diagrams and the edited spec map passed `plantuml -checkonly`.
 Hermetic execution does not constitute a learned PASS or a full implementation post-image READY verdict.
-Rename-only adversarial review is **READY: yes**. Full implementation post-image security rereview remains unrecorded.
+Rename-only adversarial review is **READY: yes**. Full implementation post-image adversarial and security rereviews remain **UNRECORDED**.
 **Phase 2 hermetic verification PASSED. Post-image rereview is not yet recorded. Phase 3+ remains planned and unimplemented**;
 reviewers must verify legality, isolation, and zero-fallback learned evidence independently of the non-learned baseline.
 The broader FIRST-training prerequisites and all proposed persistent learning/economy/search tests in
