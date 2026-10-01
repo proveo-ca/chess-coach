@@ -59,8 +59,9 @@ Apply only authorized own-resource and actor/shape rules when pruning.
 Hidden host probes may not influence membership, ordering, scoring, or pruning.
 Only the selected whole queue reaches private host admission; a rejection permits no next-candidate rescue.
 
-The approved generation queue-length upper bound is **4**: current maximum gas **3**, minimum special cost **1**,
+Current resource rules imply a same-window queue-length ceiling of **4**: maximum gas **3**, minimum special cost **1**,
 and at most **1 classical** imply at most three specials plus one classical.
+This is a rules-derived ceiling, not an additional user-selected generator setting; freeze the exact generation bound and version.
 This bound does not guarantee four actions can be admitted.
 The codec's `MAX_QUEUE_ACTIONS = 65` stays unchanged; encoding capacity is a different contract.
 

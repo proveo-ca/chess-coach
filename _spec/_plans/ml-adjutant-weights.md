@@ -108,7 +108,7 @@ Native rules determine possible combinations; this plan does not assert arbitrar
 Document deterministic deduplication, canonical ordering, pruning, per-family limits, and pass retention.
 R1 selects **family-quota composition**, **512 unique candidates including pass**, and
 **2048 attempted extensions including duplicates and pruned extensions** per call.
-The approved generation queue-length upper bound is **4** (gas maximum 3 / minimum special cost 1 + at most one classical),
+The current rules-derived queue-length ceiling is **4** (gas maximum 3 / minimum special cost 1 + at most one classical),
 not an admission guarantee or a change to the codec bound of 65.
 Freeze available-family quotas and redistribution, ordered timing/same-actor compositions, authorized pruning,
 deduplication/traversal, and exact counters before training; no numeric quota allocation is selected.
