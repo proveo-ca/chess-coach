@@ -101,7 +101,8 @@ No new fixture or passing result is claimed.
 ## A10: Validate first, then four exclusive buckets
 
 **Concept.** The StarChess engine remains the deterministic rules authority through SCFEN and native execution.
-A valid final SCFEN proves a board's mathematical outcome, not the action history, resources, approved source intents, or task identity.
+From a valid SCFEN, the engine can determine whether the board is terminal and its outcome if so.
+That snapshot alone does not prove the action history, resource accounting, approved source intents, or task identity.
 The host checks the working and roster, like a teacher counting every assigned exercise after marking it.
 **[Inference] R0 reports that reporting integrity-gates wins but counts losses/draws from labels and failures from stop kind.**
 This is a source-derived counterexample, not an executed exploit.
