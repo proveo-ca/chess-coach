@@ -12,7 +12,7 @@
 ' legacy rationale: Scripts live under _spec/apps/starchess/core/adjutant/; omitted per-side inputs change results without changing scripts.
 ' legacy history: The previous map called out ccIntel forwarding; arena.puml owns that legacy runner concern, not the isolated challenge.
 ' source pointers: optional corroboration; spec-side covers headers own drift coverage.
-' rendering: fresh plantuml -checkonly of this renamed-path map is pending with the lead.
+' rendering: renamed-path map passed plantuml -checkonly.
 @startuml index
 !include ../../themes/proveo.puml
 

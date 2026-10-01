@@ -5,7 +5,7 @@ Phase 0 provenance is **IMPLEMENTED** with persisted audit verification.
 Phase 1 is **IMPLEMENTED and VERIFIED in `packages/starchess-arena`** by tests and persisted
 baseline execution evidence. The lead reports both Phase 1 reviews **READY: yes**:
 adversarial has no remaining findings; security approves the trusted non-learned scope.
-The historical Phase 1 PlantUML diagram passed `checkonly`; both renamed diagrams await fresh validation.
+Both renamed diagrams and the edited spec map passed PlantUML `checkonly`.
 Phase 2 hermetic verification **PASSED**. This is not a learned PASS.
 Post-image adversarial and security rereview is **not yet recorded**.
 Phase 3 learning, Phase 4 learned acceptance, and optional phases 5–6 remain **PLANNED and unimplemented**.
@@ -399,10 +399,10 @@ and verification SHA-256 `55d965afa71d775ff6ee1e95b6650a27d0ce759b966a81c43a3bb3
 **Not claimed.** This pass is not learned acceptance. Weights remain **NONE**.
 Pre-freeze adversarial, security, and devops findings were fixed before this freeze:
 loader escapes, dense arrays, provenance, capture containment, and importer completeness.
-Final rename adversarial review is running; no READY verdict is recorded.
+Rename-only adversarial review is **READY: yes**.
 Post-image security rereview remains unrecorded. Do not treat this section as a READY verdict.
 An earlier PlantUML `checkonly` predates relocation and this evidence update.
-Fresh `checkonly` of both renamed diagrams and the edited spec map belongs to the lead.
+Both renamed diagrams and the edited spec map passed `plantuml -checkonly`.
 Broader generation and v2 economics/position remain required **before FIRST Phase 3 training**.
 This Phase 2 slice does not implement them. Three-turn planning remains a later milestone.
 
@@ -555,9 +555,9 @@ No Phase 1 placeholder test path is presented as an existing arena test.
 | `ml/preference/__tests__/preferenceLoss.test.ts` | 5, optional | Same-observation human pairs, preference-loss direction, policy regularization. |
 
 **Final handoff:** both historical Phase 1 reviews are lead-reported READY: yes.
-The lead must run fresh `plantuml -checkonly` on both renamed diagrams and the edited spec map; spec-keeper does not execute
-shell commands. Hermetic execution does not constitute a learned PASS, and it is not a post-image READY verdict.
-Final rename adversarial review is running; its verdict is pending. Post-image security rereview remains unrecorded.
+Both renamed diagrams and the edited spec map passed `plantuml -checkonly`.
+Hermetic execution does not constitute a learned PASS or a full implementation post-image READY verdict.
+Rename-only adversarial review is **READY: yes**. Full implementation post-image security rereview remains unrecorded.
 **Phase 2 hermetic verification PASSED. Post-image rereview is not yet recorded. Phase 3+ remains planned and unimplemented**;
 reviewers must verify legality, isolation, and zero-fallback learned evidence independently of the non-learned baseline.
 The broader FIRST-training prerequisites and all proposed persistent learning/economy/search tests in

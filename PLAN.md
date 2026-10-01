@@ -22,7 +22,7 @@ Evidence:
 [`verification.json`](_spec/evidence/ml-adjutant-phase1/verification.json).
 All 54 semantic reruns match; candidate wins remain 0/18 corpus and 0/36 live strategic.
 This completes the non-learned harness baseline, not learned acceptance.
-The historical Phase 1 diagram passed `checkonly`. The renamed diagrams and edited spec map await fresh `checkonly`.
+Both renamed diagrams and the edited spec map passed PlantUML `checkonly`.
 Phase 2 hermetic verification PASSED in arena. This is not a learned PASS.
 Post-image adversarial and security rereview is not yet recorded:
 [`ml-adjutant-policy-contracts.puml`](_spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml).
@@ -54,8 +54,8 @@ The [pre-rename evidence bundle](_spec/evidence/ml-adjutant-phase2-before-diagra
 is historical; the [current verification](_spec/evidence/ml-adjutant-phase2/verification.json) records fresh execution after pointer relocation.
 The external archive SHA-256 `64d6277f439f7cdfb82ecb2c6a230f735c5c7f3588d7f13082a30b430e6d07f7`
 is not in the repo. The lead reports its path as `/tmp/opencode/starchess-hermetic-export-k1KYQO/image.tar`.
-Pre-freeze findings were fixed before this freeze. Final rename adversarial review is running; no READY verdict is recorded.
-Post-image security rereview remains unrecorded. Fresh PlantUML `checkonly` of both renamed diagrams and the spec map belongs to the lead.
+Pre-freeze findings were fixed before this freeze. Rename-only adversarial review is **READY: yes**.
+Full implementation post-image security rereview remains unrecorded. Both renamed diagrams and the spec map passed PlantUML `checkonly`.
 See the strict roadmap for pins and the remaining review handoff.
 This historical evolution ladder does not override the authorized-observation/no-fallback challenge contracts.
 

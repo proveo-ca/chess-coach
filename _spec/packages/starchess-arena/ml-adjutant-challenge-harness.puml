@@ -18,7 +18,7 @@
 ' baseline report SHA-256: 940387370040f88888e9dfe0bb86ad9d4a8be88854df507120f34b22ee2d362b
 ' transport: spawned stdin/stdout JSONL pipes; no Node process.send channel.
 ' evidence boundary: manifest v1 historical Phase 0 pending statuses remain unchanged; the separate execution report supersedes them for this measured baseline only.
-' rendering: historical Phase 1 diagram passed plantuml -checkonly; fresh validation of this renamed diagram is pending with the lead.
+' rendering: renamed diagram passed plantuml -checkonly.
 ' historical scope: numeric features were later work at the Phase 1 freeze; the policy-contracts sibling owns their current implementation. Training, learned artifacts, and browser integration remain unimplemented.
 @startuml ml-adjutant-challenge-harness
 !include ../../themes/proveo.puml
@@ -204,7 +204,7 @@ legend bottom
   Corpus: 0 wins, 2 terminal losses, 16 queue-rejection failures; live: 0 wins, 36 terminal losses.
   executionIntegrity = true; learnedGateEligible = false; learnedChallengePass = false.
   Lead reports adversarial READY: yes, no remaining findings; security READY: yes, trusted non-learned scope.
-  No learned acceptance or universal trace-compatibility claim; fresh checkonly of the renamed diagram is pending.
+  No learned acceptance or universal trace-compatibility claim; renamed diagram checkonly passed.
   The policy-contracts sibling owns current numeric features. Training, learned artifacts, and browser integration remain unimplemented.
 endlegend
 @enduml

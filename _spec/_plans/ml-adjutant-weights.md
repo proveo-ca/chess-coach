@@ -274,6 +274,6 @@ These tests are acceptance requirements, not existing passing test results.
 Phase 2 hermetic execution passed. Weights remain NONE.
 The broader combination generator and authorized economy/position interactions remain a Phase 3 prerequisite, not implemented.
 Three-turn planning remains a later milestone.
-Fresh PlantUML `checkonly` of both renamed diagrams and the edited spec map belongs to the lead.
-Final rename adversarial review is running; no READY verdict is recorded.
+Both renamed diagrams and the edited spec map passed PlantUML `checkonly`.
+Rename-only adversarial review is **READY: yes**.
 Post-image security rereview remains unrecorded.

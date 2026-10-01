@@ -346,9 +346,9 @@ Persisted coverage is **18/282 exact queues**, **204/576 singleton intents**,
 These counts describe historical White observations and structural membership, not live counterplay,
 admission, exhaustive combinations, or learned success. They are representability, not winning coverage.
 Pre-freeze findings were fixed before this freeze: loader escapes, dense arrays, provenance, capture containment, and importer completeness.
-Final rename adversarial review is running; no READY verdict is recorded.
+Rename-only adversarial review is **READY: yes**.
 Post-image security rereview remains unrecorded.
-Fresh PlantUML `checkonly` of both renamed diagrams and the edited spec map belongs to the lead.
+Both renamed diagrams and the edited spec map passed PlantUML `checkonly`.
 This pass does not claim a learned PASS.
 
 No model updates, configuration tuning, trace replacement, or strategic candidate fallback may
