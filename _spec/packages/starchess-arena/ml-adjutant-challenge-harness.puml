@@ -11,14 +11,15 @@
 ' status: PHASE 1 IMPLEMENTED and VERIFIED; lead reports adversarial and security reviews READY: yes for the trusted non-learned scope.
 ' related: _spec/_plans/PLAN-ml-adjutant.md
 ' related: _spec/_plans/ml-adjutant-challenge.md
+' related: _spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml (current codecs/features and hermetic evidence)
 ' related: _spec/packages/starchess-arena/arena.puml (legacy runner, not this isolated host)
 ' evidence: _spec/evidence/ml-adjutant-phase1/baseline-report.json
 ' verification: _spec/evidence/ml-adjutant-phase1/verification.json
 ' baseline report SHA-256: 940387370040f88888e9dfe0bb86ad9d4a8be88854df507120f34b22ee2d362b
 ' transport: spawned stdin/stdout JSONL pipes; no Node process.send channel.
 ' evidence boundary: manifest v1 historical Phase 0 pending statuses remain unchanged; the separate execution report supersedes them for this measured baseline only.
-' rendering: final diagram passed plantuml -checkonly.
-' later: numeric features, training, learned model/artifact, and browser integration remain unimplemented phases 2+.
+' rendering: historical Phase 1 diagram passed plantuml -checkonly; fresh validation of this renamed diagram is pending with the lead.
+' historical scope: numeric features were later work at the Phase 1 freeze; the policy-contracts sibling owns their current implementation. Training, learned artifacts, and browser integration remain unimplemented.
 @startuml ml-adjutant-challenge-harness
 !include ../../themes/proveo.puml
 title StarChess arena · ML Adjutant challenge harness
@@ -203,7 +204,7 @@ legend bottom
   Corpus: 0 wins, 2 terminal losses, 16 queue-rejection failures; live: 0 wins, 36 terminal losses.
   executionIntegrity = true; learnedGateEligible = false; learnedChallengePass = false.
   Lead reports adversarial READY: yes, no remaining findings; security READY: yes, trusted non-learned scope.
-  No learned acceptance or universal trace-compatibility claim; final PlantUML checkonly passed.
-  Numeric features, training, learned artifacts, and browser integration remain phases 2+.
+  No learned acceptance or universal trace-compatibility claim; fresh checkonly of the renamed diagram is pending.
+  The policy-contracts sibling owns current numeric features. Training, learned artifacts, and browser integration remain unimplemented.
 endlegend
 @enduml

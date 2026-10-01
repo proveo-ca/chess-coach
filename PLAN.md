@@ -22,7 +22,7 @@ Evidence:
 [`verification.json`](_spec/evidence/ml-adjutant-phase1/verification.json).
 All 54 semantic reruns match; candidate wins remain 0/18 corpus and 0/36 live strategic.
 This completes the non-learned harness baseline, not learned acceptance.
-The Phase 1 diagram already passed `checkonly`. That fact does not cover the Phase 2 edit below.
+The historical Phase 1 diagram passed `checkonly`. The renamed diagrams and edited spec map await fresh `checkonly`.
 Phase 2 hermetic verification PASSED in arena. This is not a learned PASS.
 Post-image adversarial and security rereview is not yet recorded:
 [`ml-adjutant-policy-contracts.puml`](_spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml).
@@ -34,8 +34,8 @@ Current named feature arrays (ranker 158 / action 64 / observation 1623) have **
 for that first trained ranker. Start at H=1; three conditional simultaneous planning windows are separate future work.
 Training, learned models/artifacts, and browser rollout remain unimplemented; registry entries stay EMPTY/unavailable.
 
-The final source image is `sha256:54f85a0d129667d8d00975daaf0755c801a442eb1e0046797c403dcaea426f95`.
-The lead reports it reused dependency image `sha256:979ae1a1536d1beb0006ca8285a2a6f7a4b35c24c0ecb031b1e59935bdf156a0`.
+The final source image is `sha256:e7f9ea8ac211c93804bd1125ed28fb7e165a160c4155ca70404c81f9e431710d`.
+The lead reports a fresh standard dependency image `sha256:4c9d45b04f325a2d912cb34ebc982f139f057a2f2fb6d779ac2ef59f29ea987d`.
 The official Node 22.23.2 bookworm-slim platform digest is
 `sha256:43aeff40f4afc22e83f7589a2f37e111cff5ca84529571f1c8415bcc5fcc21b2`.
 The image run passed network-none, read-only, and nonroot.
@@ -47,12 +47,15 @@ Coverage is representability, not winning coverage: exact queues 18/282, singlet
 codec 282/282, features 282/282.
 In-image vitest passed core 426/426 and arena 434/434.
 In-image core and arena typecheck passed, and the strict test `tsc` passed.
-The lead reports host-after-import arena 434 tests / 25 files and arena typecheck passed.
+The lead reports host-after-import current-evidence checks passed 7 tests / 2 files, and arena typecheck passed.
 Evidence is imported under `_spec/evidence/ml-adjutant-phase2/`. Phase 1 bytes are unchanged.
-The external archive SHA-256 `babe14d848bad14c13604736f2fa02c10f201d668388762b50d5440576187e3a`
-is not in the repo. The lead reports its path as `/tmp/opencode/starchess-hermetic-export-JNb7j0/image.tar`.
-Pre-freeze findings were fixed before this freeze. Post-image rereview is not recorded.
-Fresh PlantUML `checkonly` of the edited Phase 2 diagram belongs to the lead.
+Current baseline SHA-256 is `5de86d94caaa626402b73ac9fa8f6bbc7a9b111e69a8b3801461380635cbd87f`.
+The [pre-rename evidence bundle](_spec/evidence/ml-adjutant-phase2-before-diagram-rename/verification.json)
+is historical; the [current verification](_spec/evidence/ml-adjutant-phase2/verification.json) records fresh execution after pointer relocation.
+The external archive SHA-256 `64d6277f439f7cdfb82ecb2c6a230f735c5c7f3588d7f13082a30b430e6d07f7`
+is not in the repo. The lead reports its path as `/tmp/opencode/starchess-hermetic-export-k1KYQO/image.tar`.
+Pre-freeze findings were fixed before this freeze. Final rename adversarial review is running; no READY verdict is recorded.
+Post-image security rereview remains unrecorded. Fresh PlantUML `checkonly` of both renamed diagrams and the spec map belongs to the lead.
 See the strict roadmap for pins and the remaining review handoff.
 This historical evolution ladder does not override the authorized-observation/no-fallback challenge contracts.
 

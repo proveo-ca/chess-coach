@@ -5,7 +5,7 @@ Phase 0 provenance is **IMPLEMENTED** with persisted audit verification.
 Phase 1 is **IMPLEMENTED and VERIFIED in `packages/starchess-arena`** by tests and persisted
 baseline execution evidence. The lead reports both Phase 1 reviews **READY: yes**:
 adversarial has no remaining findings; security approves the trusted non-learned scope.
-The final Phase 1 PlantUML diagram passed `checkonly`.
+The historical Phase 1 PlantUML diagram passed `checkonly`; both renamed diagrams await fresh validation.
 Phase 2 hermetic verification **PASSED**. This is not a learned PASS.
 Post-image adversarial and security rereview is **not yet recorded**.
 Phase 3 learning, Phase 4 learned acceptance, and optional phases 5–6 remain **PLANNED and unimplemented**.
@@ -343,12 +343,30 @@ Require 54 current executions + 54 reruns, exact schedule/integrity, and semanti
 54 original rows. Persist `contract-report.json`, `coverage.json`, and `pin-migration.json` only from that run;
 The runner published final `verification.json` only after those checks succeeded.
 [verification.json](../evidence/ml-adjutant-phase2/verification.json) records `"passed": true`.
-Current baseline SHA-256 is `e3aa24c03bd3225b56d0d96bdd357e681354fd16fec0267e9d7bc9af9e43306e`.
+Current baseline SHA-256 is `5de86d94caaa626402b73ac9fa8f6bbc7a9b111e69a8b3801461380635cbd87f`.
+
+### Diagram-reference relocation — historical versus current evidence
+
+The [pre-rename bundle](../evidence/ml-adjutant-phase2-before-diagram-rename/verification.json)
+remains historical and byte-preserved.
+The [current bundle](../evidence/ml-adjutant-phase2/verification.json) records a fresh standard hermetic run after the SPEC-pointer rename.
+Phase 1 evidence and its originally executed diagram command remain immutable.
+The lead reports checksum verification of all 20 archived runtime artifacts, including restoration of the original raw Vitest JSON bytes.
+The lead reports that reversing only the SPEC-name replacements reproduced the old manifest hashes for all 122 inventoried source files.
+The lead also reports equality of all 54 old/current semantic rerun comparison entries.
+These checks supplement fresh execution; they do not waive current byte-pin or capture checks.
+
+| Historical archive only | Recorded pin |
+|---|---|
+| Pre-rename baseline | `e3aa24c03bd3225b56d0d96bdd357e681354fd16fec0267e9d7bc9af9e43306e` |
+| Pre-rename source image | `sha256:54f85a0d129667d8d00975daaf0755c801a442eb1e0046797c403dcaea426f95` |
+| Pre-rename dependency image | `sha256:979ae1a1536d1beb0006ca8285a2a6f7a4b35c24c0ecb031b1e59935bdf156a0` |
+| Pre-rename external image archive | `babe14d848bad14c13604736f2fa02c10f201d668388762b50d5440576187e3a` |
 
 ### Hermetic assurance — final source image passed
 
-The final source image is `sha256:54f85a0d129667d8d00975daaf0755c801a442eb1e0046797c403dcaea426f95`.
-The lead reports it reused dependency image `sha256:979ae1a1536d1beb0006ca8285a2a6f7a4b35c24c0ecb031b1e59935bdf156a0`.
+The final source image is `sha256:e7f9ea8ac211c93804bd1125ed28fb7e165a160c4155ca70404c81f9e431710d`.
+The lead reports a fresh standard dependency image `sha256:4c9d45b04f325a2d912cb34ebc982f139f057a2f2fb6d779ac2ef59f29ea987d`.
 Official Node **22.23.2** bookworm-slim, `linux/amd64`, platform digest
 `sha256:43aeff40f4afc22e83f7589a2f37e111cff5ca84529571f1c8415bcc5fcc21b2`.
 pnpm **10.33.0** registry-tool bytes remain pinned in `hermetic/pins.json` to SHA-256
@@ -361,8 +379,8 @@ the pinned corpus, and immutable Phase 1 evidence. It excluded host dependency t
 Manifests record source/test, installed-tree, store, and tool bytes outside their inventoried roots.
 The run used UID 10001, dropped capabilities, no runtime installs, and only the dedicated Phase 2 evidence output writable besides temporary storage.
 [image-assurance.json](../evidence/ml-adjutant-phase2/image-assurance.json) records the inspected image id and archive SHA-256
-`babe14d848bad14c13604736f2fa02c10f201d668388762b50d5440576187e3a`.
-That archive is external and not in the repo. The lead reports its path as `/tmp/opencode/starchess-hermetic-export-JNb7j0/image.tar`.
+`64d6277f439f7cdfb82ecb2c6a230f735c5c7f3588d7f13082a30b430e6d07f7`.
+That archive is external and not in the repo. The lead reports its path as `/tmp/opencode/starchess-hermetic-export-k1KYQO/image.tar`.
 
 **Passed in that image.** New full baseline: 54 executions plus 54 reruns, semantic rerun equal,
 `executionIntegrity = true`, `learnedGateEligible = false`, `learnedChallengePass = false`.
@@ -370,7 +388,8 @@ Results are unchanged: corpus 18 scheduled, 0 wins, 2 terminal losses, 16 queue-
 live strategic 36 scheduled, 0 wins, 36 terminal losses.
 In-image vitest passed core **426/426** and arena **434/434**.
 In-image core typecheck, arena typecheck, and the strict test `tsc` passed.
-The lead reports host-after-import arena **434 tests / 25 files** and arena typecheck passed.
+The lead reports infrastructure **5/5 tests passed**, including the actual Docker test with no skips.
+The lead reports host-after-import current-evidence checks **7 tests / 2 files passed**, and arena typecheck passed.
 Imported evidence includes `baseline-report.json`, `verification.json`, `pin-migration.json`,
 `coverage.json`, `contract-report.json`, and `image-assurance.json`.
 Phase 1 baseline SHA-256 `940387370040f88888e9dfe0bb86ad9d4a8be88854df507120f34b22ee2d362b`
@@ -380,8 +399,10 @@ and verification SHA-256 `55d965afa71d775ff6ee1e95b6650a27d0ce759b966a81c43a3bb3
 **Not claimed.** This pass is not learned acceptance. Weights remain **NONE**.
 Pre-freeze adversarial, security, and devops findings were fixed before this freeze:
 loader escapes, dense arrays, provenance, capture containment, and importer completeness.
-Post-image rereview is not yet recorded. Do not treat this section as a READY verdict.
-An earlier PlantUML `checkonly` predates this evidence update. Fresh `checkonly` of the edited diagram belongs to the lead.
+Final rename adversarial review is running; no READY verdict is recorded.
+Post-image security rereview remains unrecorded. Do not treat this section as a READY verdict.
+An earlier PlantUML `checkonly` predates relocation and this evidence update.
+Fresh `checkonly` of both renamed diagrams and the edited spec map belongs to the lead.
 Broader generation and v2 economics/position remain required **before FIRST Phase 3 training**.
 This Phase 2 slice does not implement them. Three-turn planning remains a later milestone.
 
@@ -533,9 +554,10 @@ No Phase 1 placeholder test path is presented as an existing arena test.
 | `ml/harness/__tests__/perfectGate.test.ts` | 4 | Exactly 18 corpus + 36 live strategic wins; every non-win/integrity failure fails the gate. |
 | `ml/preference/__tests__/preferenceLoss.test.ts` | 5, optional | Same-observation human pairs, preference-loss direction, policy regularization. |
 
-**Final handoff:** both Phase 1 reviews are lead-reported READY: yes. The Phase 1 diagram already passed `checkonly`.
-The lead must run fresh `plantuml -checkonly` on the edited Phase 2 diagram; spec-keeper does not execute
+**Final handoff:** both historical Phase 1 reviews are lead-reported READY: yes.
+The lead must run fresh `plantuml -checkonly` on both renamed diagrams and the edited spec map; spec-keeper does not execute
 shell commands. Hermetic execution does not constitute a learned PASS, and it is not a post-image READY verdict.
+Final rename adversarial review is running; its verdict is pending. Post-image security rereview remains unrecorded.
 **Phase 2 hermetic verification PASSED. Post-image rereview is not yet recorded. Phase 3+ remains planned and unimplemented**;
 reviewers must verify legality, isolation, and zero-fallback learned evidence independently of the non-learned baseline.
 The broader FIRST-training prerequisites and all proposed persistent learning/economy/search tests in

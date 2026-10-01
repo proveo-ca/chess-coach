@@ -17,15 +17,18 @@
 ' boundary: a selected proposal receives one private whole-queue admission, never hidden probes or rescue.
 ' pin scope: project source inventory excludes tests; separate hermetic capture retains source/tests, dependency/store/tool bytes.
 ' import audit: supported AST imports/workspace edges/worker URL and declared esbuild closure loader; not arbitrary computed-loader analysis.
-' assurance: final source image sha256:54f85a0d129667d8d00975daaf0755c801a442eb1e0046797c403dcaea426f95 passed network-none, read-only, nonroot.
-' assurance: lead reports reused dependency image sha256:979ae1a1536d1beb0006ca8285a2a6f7a4b35c24c0ecb031b1e59935bdf156a0.
+' assurance: final source image sha256:e7f9ea8ac211c93804bd1125ed28fb7e165a160c4155ca70404c81f9e431710d passed network-none, read-only, nonroot.
+' assurance: lead reports fresh standard dependency image sha256:4c9d45b04f325a2d912cb34ebc982f139f057a2f2fb6d779ac2ef59f29ea987d.
 ' assurance: official Node 22.23.2 bookworm-slim platform digest sha256:43aeff40f4afc22e83f7589a2f37e111cff5ca84529571f1c8415bcc5fcc21b2.
-' evidence: baseline-report.json SHA-256 e3aa24c03bd3225b56d0d96bdd357e681354fd16fec0267e9d7bc9af9e43306e
-' evidence: external archive, not in repo, lead-reported path /tmp/opencode/starchess-hermetic-export-JNb7j0/image.tar SHA-256 babe14d848bad14c13604736f2fa02c10f201d668388762b50d5440576187e3a
+' evidence: baseline-report.json SHA-256 5de86d94caaa626402b73ac9fa8f6bbc7a9b111e69a8b3801461380635cbd87f
+' evidence: external archive, not in repo, lead-reported path /tmp/opencode/starchess-hermetic-export-k1KYQO/image.tar SHA-256 64d6277f439f7cdfb82ecb2c6a230f735c5c7f3588d7f13082a30b430e6d07f7
+' relocation: _spec/evidence/ml-adjutant-phase2-before-diagram-rename/verification.json is the byte-preserved historical bundle; _spec/evidence/ml-adjutant-phase2/verification.json records fresh current execution.
+' relocation proof: lead reports 20 archived runtime artifact checksums, 122 source files reconstructed by reversing only SPEC-name replacements, and 54 equal old/current semantic rerun comparisons.
+' verification: current image core 426/426, arena 434/434, both typechecks and strict test TS passed; lead reports infra 5/5 with actual Docker/no skips and host focused 7 tests/2 files plus arena typecheck.
 ' phase1 pins: baseline 940387370040f88888e9dfe0bb86ad9d4a8be88854df507120f34b22ee2d362b; verification 55d965afa71d775ff6ee1e95b6650a27d0ce759b966a81c43a3bb364236c7508. Unchanged.
 ' reviews: pre-freeze findings were fixed before this freeze: loader escapes, dense arrays, provenance, capture containment, importer completeness.
-' reviews: post-image adversarial and security rereview is not yet recorded. This diagram is not a READY verdict.
-' rendering: final evidence update passed plantuml -checkonly.
+' reviews: final rename adversarial review is running; no READY verdict is recorded. Post-image security rereview remains unrecorded.
+' rendering: fresh plantuml -checkonly of both renamed diagrams and the edited spec map is pending with the lead.
 @startuml ml-adjutant-policy-contracts
 !include ../../themes/proveo.puml
 title StarChess arena · ML Adjutant policy contracts and hermetic verification
@@ -147,6 +150,6 @@ legend bottom
   Post-image adversarial and security rereview is not yet recorded. Do not read this diagram as READY.
   FIRST Phase 3 training still needs a broader versioned generator and v2 interactions, at H=1.
   Three-window conditional search remains later work. No trained coefficients or playable ML player.
-  Final PlantUML checkonly passed.
+  Final rename adversarial verdict and fresh PlantUML checkonly remain pending.
 endlegend
 @enduml

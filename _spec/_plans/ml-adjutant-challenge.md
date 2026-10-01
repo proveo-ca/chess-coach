@@ -319,10 +319,15 @@ against the original report using `pinMigration.ts`. Phase 1 evidence was not ov
 [pin-migration.json](../evidence/ml-adjutant-phase2/pin-migration.json) records `semanticParity = true`,
 `executionIntegrity = true`, and `deterministicRerun = true`.
 [verification.json](../evidence/ml-adjutant-phase2/verification.json) records `"passed": true`.
-Current baseline SHA-256 is `e3aa24c03bd3225b56d0d96bdd357e681354fd16fec0267e9d7bc9af9e43306e`.
+Current baseline SHA-256 is `5de86d94caaa626402b73ac9fa8f6bbc7a9b111e69a8b3801461380635cbd87f`.
+The [pre-rename bundle](../evidence/ml-adjutant-phase2-before-diagram-rename/verification.json)
+is historical and byte-preserved; the [current bundle](../evidence/ml-adjutant-phase2/verification.json)
+records fresh standard hermetic execution after diagram-reference relocation.
+The [relocation record](PLAN-ml-adjutant.md#diagram-reference-relocation--historical-versus-current-evidence)
+separates archived pins from current pins and records the lead-reported pointer-only proof.
 
-The final source image is `sha256:54f85a0d129667d8d00975daaf0755c801a442eb1e0046797c403dcaea426f95`.
-The lead reports it reused dependency image `sha256:979ae1a1536d1beb0006ca8285a2a6f7a4b35c24c0ecb031b1e59935bdf156a0`.
+The final source image is `sha256:e7f9ea8ac211c93804bd1125ed28fb7e165a160c4155ca70404c81f9e431710d`.
+The lead reports a fresh standard dependency image `sha256:4c9d45b04f325a2d912cb34ebc982f139f057a2f2fb6d779ac2ef59f29ea987d`.
 Official Node **22.23.2** bookworm-slim `linux/amd64` platform digest
 `sha256:43aeff40f4afc22e83f7589a2f37e111cff5ca84529571f1c8415bcc5fcc21b2`.
 pnpm **10.33.0** tool bytes stay pinned. The earlier dependency preflight recorded **126 locked packages**,
@@ -330,18 +335,20 @@ fresh-store acquisition, and offline frozen install with network none.
 The image run passed network-none, read-only, and nonroot.
 In-image vitest passed core **426/426** and arena **434/434**.
 In-image core typecheck, arena typecheck, and the strict test `tsc` passed.
-The lead reports host-after-import arena **434 tests / 25 files** and arena typecheck passed.
+The lead reports infrastructure **5/5 tests passed**, including the actual Docker test with no skips.
+The lead reports host-after-import current-evidence checks **7 tests / 2 files passed**, and arena typecheck passed.
 Imported evidence includes baseline, verification, pin-migration, coverage, contract, and image-assurance reports.
-The external archive SHA-256 `babe14d848bad14c13604736f2fa02c10f201d668388762b50d5440576187e3a` is not in the repo.
-The lead reports its path as `/tmp/opencode/starchess-hermetic-export-JNb7j0/image.tar`.
+The external archive SHA-256 `64d6277f439f7cdfb82ecb2c6a230f735c5c7f3588d7f13082a30b430e6d07f7` is not in the repo.
+The lead reports its path as `/tmp/opencode/starchess-hermetic-export-k1KYQO/image.tar`.
 
 Persisted coverage is **18/282 exact queues**, **204/576 singleton intents**,
 **282/282 reference codec and feature encodings**, and **48 maximum proposals**.
 These counts describe historical White observations and structural membership, not live counterplay,
 admission, exhaustive combinations, or learned success. They are representability, not winning coverage.
 Pre-freeze findings were fixed before this freeze: loader escapes, dense arrays, provenance, capture containment, and importer completeness.
-Post-image adversarial and security rereview is not yet recorded.
-Fresh PlantUML `checkonly` of the edited Phase 2 diagram belongs to the lead.
+Final rename adversarial review is running; no READY verdict is recorded.
+Post-image security rereview remains unrecorded.
+Fresh PlantUML `checkonly` of both renamed diagrams and the edited spec map belongs to the lead.
 This pass does not claim a learned PASS.
 
 No model updates, configuration tuning, trace replacement, or strategic candidate fallback may
@@ -369,7 +376,7 @@ All ten Phase 1 integrity-test files now exist and passed as recorded in
 **164 tests / 17 files after all source and test changes**; core passed **426 / 53**;
 both typechecks and the direct strict test TypeScript check passed. Those counts are historical.
 The Phase 2 image passed arena vitest **434/434** and core vitest **426/426**.
-The lead reports host-after-import arena **434 tests / 25 files** and arena typecheck passed.
+The lead reports host-after-import current-evidence checks **7 tests / 2 files passed**, and arena typecheck passed.
 Actual paths and purposes are
 listed in [PLAN-ml-adjutant.md](PLAN-ml-adjutant.md#planned-verification-and-pending-ownership).
 Phase 2 feature encoders exist and hermetic verification passed; post-image rereview is not yet recorded;
