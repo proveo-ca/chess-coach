@@ -1,0 +1,54 @@
+{
+  "version": "phase2-image-assurance-v1",
+  "image": "sha256:e7f9ea8ac211c93804bd1125ed28fb7e165a160c4155ca70404c81f9e431710d",
+  "inspectedImageId": "sha256:e7f9ea8ac211c93804bd1125ed28fb7e165a160c4155ca70404c81f9e431710d",
+  "archive": {
+    "sha256": "64d6277f439f7cdfb82ecb2c6a230f735c5c7f3588d7f13082a30b430e6d07f7",
+    "bytes": 133596672
+  },
+  "hostLogs": [
+    {
+      "label": "build",
+      "path": "/tmp/opencode/starchess-hermetic-build-JFivAB/build.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "label": "build",
+      "path": "/tmp/opencode/starchess-hermetic-build-JFivAB/build.stderr.log",
+      "sha256": "fbb3b42e5a081551acdb6e8176f139b288f7c380b8d341278ec81f925ceb30f5",
+      "bytes": 2667
+    },
+    {
+      "label": "execution",
+      "path": "/tmp/opencode/starchess-hermetic-run-b5oOrE/execution.stdout.log",
+      "sha256": "2e6aa8ea7601e7a5b84852294d907bb3fdf153261e29c54374194bea25095e32",
+      "bytes": 734
+    },
+    {
+      "label": "execution",
+      "path": "/tmp/opencode/starchess-hermetic-run-b5oOrE/execution.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  ],
+  "references": {
+    "execution": {
+      "path": "/tmp/opencode/starchess-hermetic-run-b5oOrE/execution.json",
+      "sha256": "20b919277d35055607713d559d85b8d285301830ecebbc98abb6e63578a057da"
+    },
+    "build": {
+      "path": "/tmp/opencode/starchess-hermetic-build-JFivAB/build.json",
+      "sha256": "d0fee6fe21566e2d70cb2fbbc3f8c8a38a1ba67865da2d34eef3f648ccca8301"
+    },
+    "export": {
+      "path": "/tmp/opencode/starchess-hermetic-export-k1KYQO/export.json",
+      "sha256": "e131d27e41af11b6abc8035c82d8c104b053b5d62b22b884f558bacdfdcbb58e"
+    }
+  },
+  "capture": {
+    "runtimeSha256": "8e45726c2c9dfab06af5d49d16e9fe89ee58aa5a6a6857a29d00c27ffbe9e9ff",
+    "controlSha256": "a7fdc7c3eaad540855d37a5ca61becd870a12a1ca8486e6691f85aebd45197e3"
+  },
+  "verifiedArtifactCount": 22
+}
