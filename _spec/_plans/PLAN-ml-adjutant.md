@@ -1,16 +1,20 @@
 # PLAN — ML Adjutant: learn a ranker and prove the strict challenge
 
-Status: **Phases 0–1 implemented and verified; Phase 2 hermetic verification PASSED.**
+Status: **Phases 0–2 implemented; recorded test/hermetic verification PASSED historically. Current R0 assurance BLOCKED.**
 **NOT training-ready: weights NONE; no learned model, runtime readiness, or learned acceptance.**
-Full implementation post-image adversarial and security rereviews remain **UNRECORDED**.
+Full implementation post-image adversarial review is **REVIEWED / READY TO MERGE: no**
+(task `ses_f07c45365ffew0wJ58yFHXAye5`); security rereview remains **UNRECORDED**.
+The [R0 findings ledger](#r0-findings-ledger--full-implementation-post-image-review) records
+**15 pending findings: 7 HIGH + 8 MEDIUM**. R1–R8 have not been performed; no findings are claimed for them.
 
 ## Current status ledger
 
 | Area | Completed boundary / remaining boundary |
 |---|---|
 | Preparatory catalog + Phase 0 | Core owns all five IDs, labels, and guards; only `naive`/`strategic` are ready. App placeholders remain disabled/unavailable. Provenance pins **18** cases; no corpus expansion. The full-app lint baseline exception remains below. |
-| Phase 1 | Strict isolated serial harness, whole-queue atomic admission, exact resources, watchdogs, publication, and provenance verified. Historical Phase 1 reviews are lead-reported **READY: yes** for the non-learned scope. |
-| Phase 2 | All **7** kinds encode; feature v1 dimensions are **1623 observation / 64 action-row / 158 ranker**. Partitioned pins and hermetic image verification passed: **434/434 arena**, **426/426 core**, **54 executions + 54 reruns**, all semantic comparisons equal. |
+| Phase 1 | Strict isolated serial harness, whole-queue atomic admission, exact resources, watchdogs, publication, and provenance implemented with historical verification. Historical Phase 1 reviews remain lead-reported **READY: yes** for that non-learned scope. Current R0 findings A08–A10 reopen watchdog/corpus/evidence assurance; they do not rewrite old test results. |
+| Phase 2 | All **7** kinds encode; feature v1 dimensions are **1623 observation / 64 action-row / 158 ranker**. Historical partitioned-pin/hermetic verification passed: **434/434 arena**, **426/426 core**, **54 executions + 54 reruns**, all semantic comparisons equal. Current R0 findings A01–A07 and A11–A15 block import/audit/provenance/hermetic/publication assurance. |
+| R0 current assurance | Full implementation adversarial review **READY TO MERGE: no**; **7 HIGH + 8 MEDIUM pending**. Security rereview **UNRECORDED**. Source-derived counterexamples are **[Inference], not executed proof**; the reviewer inspected historical results rather than independently rerunning them. |
 | Coverage ≠ generation ≠ wins | Codec and feature representability each **282/282**; generated exact full queues **18/282**, singleton intents **204/576**. `baseline-v1` still proposes classical/Marine-deploy singletons and pass. Candidate wins remain **0/18 corpus + 0/36 live**; strict failures stay counted. |
 | Documentation completed | [Weights contract](ml-adjutant-weights.md) defines the broader first ranker; the generic study guide is published as **OPEN, unmerged** [Orrery PR #12](https://github.com/proveo-ca/orrery/pull/12). Neither implements learning. |
 | Phase 3 / learned Phase 4 | Broader generation, authorized loss ledger, candidate-conditioned v2, training, frozen artifact/adapter, and learned eligibility/tests remain **PLANNED and unimplemented**. The existing 54-case scheduling/report machinery is not learned acceptance. |
@@ -22,13 +26,15 @@ The current [image assurance](../evidence/ml-adjutant-phase2/image-assurance.jso
 `sha256:e7f9ea8ac211c93804bd1125ed28fb7e165a160c4155ca70404c81f9e431710d`;
 [verification](../evidence/ml-adjutant-phase2/verification.json) records baseline SHA-256
 `5de86d94caaa626402b73ac9fa8f6bbc7a9b111e69a8b3801461380635cbd87f`.
-These are the already-recorded current pins, not a new run. Phase 1 and the pre-rename Phase 2 archive remain immutable.
+These are the already-recorded current pins, not a new run or current R0 approval.
+Phase 1 and the pre-rename Phase 2 archive remain immutable.
 
 ## Immediate ordered next actions — Train the first broader Adjutant
 
-All actions below remain pending. Complete **R0–R5 before the first training run**; use **H=1**.
+R0's adversarial review has been performed; remediation, regression verification, and review closure remain pending.
+R1–R8 have not been performed. Complete **R0–R5 before the first training run at R6**; use **H=1**.
 
-0. **R0 — Close full implementation post-image review.** Record adversarial and security verdicts against the current implementation/image evidence and resolve blocking findings. Rename-only approval and Orrery documentation review cover different scopes; neither substitutes for these verdicts.
+0. **R0 — REVIEWED / BLOCKED: close full implementation post-image review.** Adversarial task `ses_f07c45365ffew0wJ58yFHXAye5` returned **READY TO MERGE: no**. Investigate and resolve all A01–A15 in the [R0 ledger](#r0-findings-ledger--full-implementation-post-image-review), persist meaningful negative regressions, refresh frozen-source/image evidence, and obtain recorded adversarial and security rereviews **READY: yes**. Security remains **UNRECORDED**. Rename-only approval and Orrery documentation review cover different scopes; neither substitutes for these verdicts.
 1. **R1 — Settle architecture and freeze the recipe.** Obtain the training ownership/packaging decision (`ml/` is proposed, not approved). Freeze the broader generator, candidate/action-feature v2 formats and names/dimensions, authorized observation/ledger versions, finite budgets, optimizer/loss, seeded recipe, and numeric run parameters. Proposed defaults are not an approved run configuration; unresolved values remain **TBD**.
 2. **R2 — Implement broader observation-only generation.** Cover all kinds and meaningful ordered B/C/F chains with deterministic bounded composition, deduplication, pruning, and pass retention. Measure exhaustive small-fixture domains and actual generated membership separately; never use full-state legality probes or admission retries.
 3. **R3 — Implement authorized economics.** Track own lineage, confirmed paid debits, and paid-investment loss separately from replacement valuation. Track only observed/confirmed opponent-loss bounds with explicit unknowns; do not import private strategic KVS or infer an exact enemy ledger.
@@ -48,6 +54,86 @@ Scope: arena-owned Phases 1–2, with a proposed top-level **`ml/`** training wo
 Phase 1 isolates candidates behind `CandidatePolicy` / `AuthorizedObservation`; live strategic
 retains the arena's trusted `ScriptPlayer` execution contract. The app consumes the core-derived
 `AdjutantKind` and `PlayableAdjutantKind` through `apps/starchess/src/types/newGame.ts`.
+
+### Phase ownership and gates — R0–R8 are not all Phase 2
+
+These actions repair existing assurance or prepare/execute later phases; they are not nine new Phase 2 findings.
+All **A01–A15 belong to the same R0 review**, not to R1–R8.
+
+| Action / current status | Phase ownership | Required gate |
+|---|---|---|
+| R0 — REVIEWED / BLOCKED | Cross-cutting Phase 1/2 remediation. A08–A10 own Phase 1 execution/watchdog/corpus/evidence and the Phase 0 corpus-pin contract. A01–A07, A11–A15 own the current Phase 2 import/audit/provenance/hermetic/publication layer. | Investigate and resolve every finding with meaningful negative fixtures; refresh evidence and obtain both adversarial/security READY verdicts before R6. Every later phase reuses this assurance boundary. |
+| R1 — PENDING; not performed | Cross-cutting architecture and Phase 3 design preparation. | Architecture discussion/docs may advance independently of R0 repairs. Do not accept a model freeze with the known-bad importer; settle approved ownership/recipe before training. |
+| R2 — PENDING; not performed | Broader generation extends Phase 2 policy contracts as an accepted **FIRST Phase 3 training prerequisite**. | Implement, version, and verify before R6. Current v1 Phase 2 completion does not mean broader generation is complete. |
+| R3 — PENDING; not performed | Authorized economics/lineage/loss extends Phase 2 policy contracts as an accepted **FIRST Phase 3 training prerequisite**. | Implement and verify the authorized ledger/uncertainty contract before R6. |
+| R4 — PENDING; not performed | Candidate-conditioned v2 extends Phase 2 policy contracts as an accepted **FIRST Phase 3 training prerequisite**. | Implement, verify, and freeze ordered v2 names/dimensions before R6; current v1 does not satisfy it. |
+| R5 — PENDING; not performed | Cross-cutting repair/regression verification plus new broader-model readiness checks. | Persist passing readiness checks and current frozen-source/hermetic evidence before R6. Historical PASSED suites do not demonstrate rejection of the newly identified counterexamples. |
+| R6 — PENDING; not performed | Phase 3 training. | Start only after R0–R5 close; persist actual-outcome training and provenance at H=1. |
+| R7 — PENDING; not performed | Phase 3 learned artifact/runtime adapter. | Complete artifact/adapter validation and freeze before R8; no online updates or rescue fallback. |
+| R8 — PENDING; not performed | Phase 4 execution. | Execute only after R6–R7 complete; require 18/18 + 36/36 wins, integrity, semantic reruns, and `fallbackCount = 0`. |
+
+**Do not wait until Phase 4 to repair R0.** Close R0–R5 before training, then complete R6–R7 before R8.
+“Apply all R0–R8 before Phase 4” is false: **R8 is performed in Phase 4**.
+No unstarted action has a review finding or a passing result in this session.
+H=1..3 belief/search remains optional later work; this mapping approves no new implementation recipe,
+task date, workspace decision, or numeric training budget.
+
+### R0 findings ledger — full implementation post-image review
+
+Review task: `ses_f07c45365ffew0wJ58yFHXAye5`. Verdict: **READY TO MERGE: no**.
+The reviewer assigned **7 HIGH and 8 MEDIUM**, with **no BLOCKER-severity finding**.
+Completion still blocks on the negative verdict and mandatory HIGH review gate.
+There are no LOW findings in this review; none is silently deferred.
+
+**[Inference] All counterexamples below are source-derived reviewer findings, not executed exploit or regression proof.**
+The reviewer inspected recorded **426 core / 434 arena** passes and **54 executions + 54 semantic reruns**;
+the reviewer did **not** independently rerun them. This docs-only correction executes no tests.
+Current source reads confirm the cited file/line anchors, not the outcomes of hypothetical executions.
+Every obligation below is **PENDING**, not a claim that code or tests have been repaired.
+Source locations are repo-root-relative; `packages/starchess-arena/` is the arena owner.
+
+| Stable ID | Severity | Source location | Owning phase / domain | Source-derived finding | Pending verify/repair obligation |
+|---|---|---|---|---|---|
+| A01 | HIGH | `scripts/challenge-import-evidence.mjs:118` | Phase 2 import/provenance; backend | [Inference] Import trusts baseline/migration flags and lengths instead of authoritative schedule, reexecution, rerun, and corpus validation. The test fixture supplies rows `0..53` and comparisons `{ equal: true }`. | Reject invented/duplicate/missing schedule rows, forged integrity/parity, and unbound corpus data; independently validate scheduled evidence and recompute semantic comparisons against authoritative inputs. |
+| A02 | HIGH | `scripts/challenge-import-evidence.mjs:69` | Phase 2 verification inventory; backend/devops | [Inference] Loose command predicates do not bind executable, complete arguments, strict-check inputs, or test coverage; fake/partial verification can qualify. | Persist negative command/argument/input/coverage fixtures and enforce the approved complete verification inventory rather than matching isolated argument tokens. |
+| A03 | HIGH | `scripts/challenge-import-evidence.mjs:91` | Phase 2 verification provenance; backend | [Inference] `command.tests.sha` and recomputed Vitest metadata are not bound. Replacing raw failure JSON and updating its artifact checksum can leave self-reported passing counts accepted. | Bind each test command to its actual JSON bytes/hash and recompute success/counts; reject failure JSON with forged passing metadata and updated checksums. |
+| A04 | HIGH | `scripts/challenge-import-evidence.mjs:125` | Phase 2 capture/image provenance; devops | [Inference] Current capture is compared with `build.capture`, but neither is joined to image measurements / `verification.assurance.sourceSha256`, allowing stale execution. | Bind current capture, build capture, measured image source, and execution verification to one source identity; reject stale execution paired with refreshed capture metadata. |
+| A05 | HIGH | `scripts/challenge-import-evidence.mjs:106` | Phase 2 archive/image identity; devops | [Inference] Export validation checks only the envelope checksum, not actual image identity. The fixture uses literal `image-bytes` as its accepted archive. | Validate archive structure/content identity against the expected image; reject non-image bytes and a valid archive of another image despite matching envelope checksums. |
+| A06 | HIGH | `packages/starchess-arena/src/challenge/sourceInventory.ts:234` | Phase 2 dependency audit; backend | [Inference] Default `node:module` import and module namespace aliases escape loader tracking, bypassing execution→contracts restrictions. | Persist default-import and namespace-alias loader regressions; audit their actual edges or reject unsupported loader forms before accepting the inventory. |
+| A07 | HIGH | `packages/starchess-arena/src/challenge/sourceInventory.ts:209` | Phase 2 dependency audit; backend | [Inference] Node CommonJS unknown-extension fallback can execute `require("./helper.txt")`; the target is hashed but skipped by AST auditing, bypassing partitions. | Persist an unknown-extension executable-helper regression; audit executable contents/edges or reject this loading path instead of treating hashing as dependency validation. |
+| A08 | MEDIUM | `packages/starchess-arena/src/challenge/supervisor.ts:174` | Phase 1 watchdog/execution; backend | [Inference] Changed phase/ordinal/turn/side announcements renew the plan deadline without validated progress, allowing a stalled plan to last until match timeout. | Persist a real-child changing-announcement/no-progress fixture; validate permitted progress/transitions and enforce the original plan deadline without announcement-driven renewal. |
+| A09 | MEDIUM | `packages/starchess-arena/src/challenge/integrity.ts:23` | Phase 1 corpus/evidence + Phase 0 pin contract; backend | [Inference] Supplied trace hash/case ID are not pinned to actual corpus identity; standalone integrity can accept relabeled cases or garbage hashes. | Bind standalone integrity to the audited corpus identity/trace bytes and persist relabel/hash-tampering rejection fixtures. |
+| A10 | MEDIUM | `packages/starchess-arena/src/challenge/evidence.ts:37` | Phase 1 evidence accounting + Phase 0 pin contract; backend | [Inference] Integrity gates only wins; losses/draws use labels and failures use stop kind. A fabricated win can go unaccounted, while an invalid draw can count. | Validate every row and persist fabricated-win/invalid-draw regressions; account for every scheduled row exactly once, retaining invalid evidence in the failure denominator. |
+| A11 | MEDIUM | `scripts/challenge-import-evidence.mjs:149` | Phase 2 atomic import publication; backend/systems | [Inference] An existence check followed by rename can overwrite a raced-in empty destination directory, violating no-overwrite. | Persist a destination-creation race regression and implement approved exclusive publication; preserve any destination created by a competitor. |
+| A12 | MEDIUM | `scripts/challenge-import-evidence.mjs:147` | Phase 2 import crash durability; backend/systems | [Inference] Nested log directories and the destination parent lack fsync; crash durability is not established by fsync of the staging root alone. | Persist filesystem-operation/fault regressions and establish durable nested directory entries and the parent publication entry, not merely file contents. |
+| A13 | MEDIUM | `scripts/challenge-import-evidence.mjs:154` | Phase 2 publication failure semantics; backend/systems | [Inference] Post-rename fsync failure sits outside rollback, leaving a published destination while throwing and blocking retry. | Inject post-rename fsync failure; define and verify approved cleanup or explicit committed-state recovery semantics so failure does not leave ambiguous publication/retry state. |
+| A14 | MEDIUM | `scripts/challenge-import-evidence.mjs:15` | Phase 2 importer resource bounds; backend | [Inference] JSON is read before size validation and all artifact bytes remain retained without individual/aggregate allocation caps. | Approve finite limits and persist oversized-JSON/artifact/aggregate regressions; enforce bounds before allocation/parse and bound total retained bytes. No new numeric limits are approved here. |
+| A15 | MEDIUM | `packages/starchess-arena/hermetic/policy.mjs:34` | Phase 2 hermetic mount policy; devops | [Inference] Additional tmpfs/source overlays can pass mount validation, and `/tmp` size/mode are not enforced. | Persist unexpected tmpfs/source-overlay and altered `/tmp` size/mode regressions; enforce the exact approved mount set and temporary-storage configuration with actual Docker verification. |
+
+The A01 and A05 fixture observations are in
+`packages/starchess-arena/src/__tests__/challengeEvidenceImport.test.ts:34,46,78–86`.
+Reading that fixture confirms its contents, not an independent execution of it.
+
+### R0 remediation and re-verification — pending diagnostic order
+
+This grouping records suggested diagnostic order, **not a newly approved implementation recipe**:
+
+1. Audited identity and authoritative validation: **A01, A03, A04, A05, A09, A10**.
+2. Complete verification inventory: **A02**.
+3. Dependency/loader audit: **A06, A07**.
+4. Runtime bounds, watchdog progress, and mounts: **A08, A14, A15**.
+5. Atomic publication and crash/failure durability: **A11–A13**.
+
+Lead/build must investigate each finding under the accepted architecture and route repairs to the
+most specific domain owner. Persist true adversarial negative regressions before claiming closure;
+old PASSED fixtures do not demonstrate that these counterexamples fail safely.
+After code freeze, rehash fresh source/dependency/configuration captures, rebuild the hermetic image,
+and execute the complete **54 + 54** baseline/rerun schedule while preserving all historical bundles.
+Rerun core/arena suites, strict TypeScript checks, and infrastructure checks including **actual Docker**;
+bind all current capture, image, command/test/log, archive, and execution artifacts.
+Record the new commands/results and obtain full implementation adversarial **and security** rereviews
+**READY: yes** before closing R0. No repair, refreshed hash, run, or rereview is claimed here.
+The later first-training gate still requires R1–R5; R0 closure alone does not authorize R6.
 
 ## Implemented preparatory contract (no learning implementation)
 
@@ -72,6 +158,9 @@ Deepening learning architecture remains later work; this catalog does not comple
 
 ## Preparatory milestone verification
 
+These historical catalog-only checks and scoped approvals remain unchanged in outcome;
+they do not substitute for current R0 full implementation assurance.
+
 | Check | Result and scope |
 |---|---|
 | Core unit suite | **53 files / 426 tests passed** |
@@ -83,7 +172,7 @@ Deepening learning architecture remains later work; this catalog does not comple
 | PlantUML | All four changed `.puml` files passed `checkonly` |
 | Full app lint | **Fails on the existing baseline only:** five unchanged `no-raw-timer` violations in `apps/starchess/src/hooks/useVfxProbe.ts` at lines **23, 26, 28, 64, 75** |
 | Adversarial review | Sole MEDIUM finding fixed: unknown persisted opponents use `find(...)?.label ?? "Adjutant (Script)"`; regression added; rereview **READY: yes** |
-| Security review | Current-source scope **READY: yes**, no findings |
+| Security review | Historical preparatory catalog source scope **READY: yes**, no findings |
 
 The baseline full-app lint failure remains explicit; it does not mark scoped checks as failing
 or authorize unrelated timer cleanup.
@@ -234,7 +323,9 @@ manifest version. This is not first-training readiness. Do not silently expand t
 
 ## Phase 1 — Strict serial harness, adapters, and baseline
 
-**Status: IMPLEMENTED and VERIFIED; both reviews READY: yes.** Arena owns this phase, not `ml/`.
+**Status: IMPLEMENTED; historical verification PASSED and both scoped Phase 1 reviews READY: yes.**
+**Current R0 assurance BLOCKED:** A08–A10 require watchdog/corpus/evidence repair and re-verification.
+Arena owns this phase, not `ml/`. Historical scoped approvals are not a current full implementation verdict.
 Owning diagram: [`ml-adjutant-challenge-harness.puml`](../packages/starchess-arena/ml-adjutant-challenge-harness.puml).
 Source inspection found `src/challenge/{types,config,corpus,observation,baseline,admission,
 runChallengeMatch,schedule,supervisor,worker,integrity,publication,evidence}.ts` and the separate
@@ -270,7 +361,9 @@ against authoritative staging of the corresponding recorded window.
 `publication.ts` writes and fsyncs a private temporary file, then publishes with an exclusive
 hardlink, unlinks the temp file, and fsyncs the containing directory. It preserves an existing
 report and removes temporary files on write failure.
-The persisted tests and evidence below verify these Phase 1 contracts.
+The persisted tests and evidence below record historical verification of these Phase 1 contracts.
+Their passing results do not establish rejection of the newly identified A08–A10 counterexamples.
+In particular, standalone corpus identity and all-row summary accounting remain R0 repair obligations.
 
 Phase 1 owns a minimal observation-safe proposal interface and deterministic non-learned baseline.
 Phase 2 extends that interface with versioned numerical features and learned-ranking inputs.
@@ -299,7 +392,7 @@ There were no draws. All **54/54 semantic rerun comparisons match**;
 Every failure remains in the denominator. These results do not prove every trace can support
 winning counterplay, nor that a queue failure under this baseline makes a trace universally infeasible.
 
-### Phase 1 implementation verification
+### Phase 1 implementation verification — historical
 
 The [independent verification record](../evidence/ml-adjutant-phase1/verification.json) records
 actual test paths, SHA-256 hashes, purposes, static commands, and the raw baseline report hash.
@@ -319,8 +412,8 @@ retention does not expose identity, results, metadata, or future queues to `Cand
 | Direct strict TypeScript check of challenge tests | **Passed**; exact command and workdir in verification.json |
 | Full-suite CLI with `--suite all --rerun` | **54 supervised first executions + 54 reruns; 54/54 semantic comparisons equal** under final pins |
 | PlantUML final diagram | **`plantuml -checkonly` passed** |
-| Phase 1 adversarial rereview | Lead reports **READY: yes**, no remaining findings |
-| Phase 1 security rereview | Lead reports **READY: yes** for trusted non-learned execution |
+| Phase 1 adversarial rereview | Historical lead report **READY: yes**, no remaining findings in that scope; not the current R0 verdict |
+| Phase 1 security rereview | Historical lead report **READY: yes** for trusted non-learned execution; current full implementation security rereview remains UNRECORDED |
 
 **Done when.** Integrity tests and deterministic reruns pass; baseline reports enumerate every
 scheduled case. Full-state/metadata leakage and white-first queue/bank exposure tests must pass
@@ -329,7 +422,9 @@ challenge; a report alone is not proof that all traces support winning counterpl
 
 ## Phase 2 — Authorized codecs/features, coverage, and partitioned execution pins
 
-**Status: hermetic verification PASSED. Not a learned PASS. Post-image adversarial and security rereview is not yet recorded.**
+**Status: historical hermetic verification PASSED. Not a learned PASS. Current R0 assurance BLOCKED.**
+Full implementation post-image adversarial review is recorded **READY TO MERGE: no** with A01–A15;
+security rereview remains **UNRECORDED**. Phase 2 owns A01–A07 and A11–A15, not all R0 findings.
 Owning diagram: [ml-adjutant-policy-contracts.puml](../packages/starchess-arena/ml-adjutant-policy-contracts.puml).
 Weights/future training boundary: [ml-adjutant-weights.md](ml-adjutant-weights.md).
 Executor selected partitioned execution pins, then a hermetic image, and approved pull/build downloads.
@@ -355,6 +450,9 @@ or winning queues. They are representability, not winning coverage.
 The counts are persisted in [coverage.json](../evidence/ml-adjutant-phase2/coverage.json).
 
 ### Pin partition and import audit contract
+
+The following describes the implemented/intended audit contract, not a current R0 approval.
+A06–A07 identify loader/extension gaps in its enforcement; A01–A05 identify import/provenance gaps.
 
 `src/challenge/sourceInventory.ts` generates a complete explicit file inventory over declared roots,
 with every included file assigned exactly once to:
@@ -411,7 +509,7 @@ These checks supplement fresh execution; they do not waive current byte-pin or c
 | Pre-rename dependency image | `sha256:979ae1a1536d1beb0006ca8285a2a6f7a4b35c24c0ecb031b1e59935bdf156a0` |
 | Pre-rename external image archive | `babe14d848bad14c13604736f2fa02c10f201d668388762b50d5440576187e3a` |
 
-### Hermetic assurance — final source image passed
+### Hermetic assurance — historical final source image passed
 
 The final source image is `sha256:e7f9ea8ac211c93804bd1125ed28fb7e165a160c4155ca70404c81f9e431710d`.
 The lead reports a fresh standard dependency image `sha256:4c9d45b04f325a2d912cb34ebc982f139f057a2f2fb6d779ac2ef59f29ea987d`.
@@ -444,12 +542,14 @@ Phase 1 baseline SHA-256 `940387370040f88888e9dfe0bb86ad9d4a8be88854df507120f34b
 and verification SHA-256 `55d965afa71d775ff6ee1e95b6650a27d0ce759b966a81c43a3bb364236c7508` are unchanged.
 `pin-migration.json` records `semanticParity = true` against those original bytes.
 
-**Not claimed.** This pass is not learned acceptance. Weights remain **NONE**.
-Pre-freeze adversarial, security, and devops findings were fixed before this freeze:
+**Not claimed.** This historical pass is neither learned acceptance nor current R0 approval. Weights remain **NONE**.
+The lead historically reported pre-freeze adversarial, security, and devops findings fixed before this freeze:
 loader escapes, dense arrays, provenance, capture containment, and importer completeness.
-Rename-only adversarial review is **READY: yes**.
-Full implementation post-image adversarial and security rereviews remain unrecorded.
-Do not treat this section or the rename-only review as a full implementation READY verdict.
+That earlier scoped closure does not close the new A01–A15 ledger.
+Historical rename-only adversarial review remains **READY: yes**.
+Full implementation post-image adversarial review is now **REVIEWED / READY TO MERGE: no**
+(task `ses_f07c45365ffew0wJ58yFHXAye5`); security rereview remains **UNRECORDED**.
+Do not treat this section or rename-only approval as a full implementation READY verdict.
 An earlier PlantUML `checkonly` predates relocation and this evidence update.
 Both renamed diagrams and the edited spec map passed `plantuml -checkonly`.
 Broader generation and v2 economics/position remain required **before FIRST Phase 3 training**.
@@ -578,6 +678,8 @@ wins and one draw supply demonstrations/outcomes, not human preference compariso
 
 The corpus provenance test and all ten Phase 1 integrity-test files below exist.
 Their results are persisted in [verification.json](../evidence/ml-adjutant-phase1/verification.json).
+All PASSED/in-image results below are **historical records**, not reruns in this docs-only correction
+or passing evidence for A01–A15 negative regressions. Current R0 assurance remains blocked.
 All `ml/` paths below remain **PROPOSED** for Phase 3+, pending the training packaging decision.
 No Phase 1 placeholder test path is presented as an existing arena test.
 
@@ -614,9 +716,15 @@ No Phase 1 placeholder test path is presented as an existing arena test.
 **Final handoff:** both historical Phase 1 reviews are lead-reported READY: yes.
 Both renamed diagrams and the edited spec map passed `plantuml -checkonly`.
 Hermetic execution does not constitute a learned PASS or a full implementation post-image READY verdict.
-Rename-only adversarial review is **READY: yes**. Full implementation post-image adversarial and security rereviews remain **UNRECORDED**.
-**Phase 2 hermetic verification PASSED. Post-image rereview is not yet recorded. Phase 3+ remains planned and unimplemented**;
+Historical rename-only adversarial review remains **READY: yes**.
+Full implementation post-image adversarial review is **REVIEWED / READY TO MERGE: no**
+(task `ses_f07c45365ffew0wJ58yFHXAye5`); security rereview remains **UNRECORDED**.
+The [R0 ledger](#r0-findings-ledger--full-implementation-post-image-review) holds **7 HIGH + 8 MEDIUM**, all pending.
+**Phases 0–2 retain historical implementation/test/hermetic PASSES; current R0 assurance is BLOCKED.
+Phase 3+ remains planned and unimplemented; weights NONE; NOT training-ready**;
 reviewers must verify legality, isolation, and zero-fallback learned evidence independently of the non-learned baseline.
+Resolve R0 with regressions, refreshed evidence, and both READY rereviews before first training at R6;
+complete R1–R5 before R6 and R6–R7 before R8. R8 executes Phase 4, not a prerequisite to it.
 The broader FIRST-training prerequisites and all proposed persistent learning/economy/search tests in
 [ml-adjutant-weights.md](ml-adjutant-weights.md#9-future-persistent-acceptance--proposed-not-done) remain pending.
 The challenge document specifies additional adversarial integrity cases.
