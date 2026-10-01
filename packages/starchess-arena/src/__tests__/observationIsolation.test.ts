@@ -1,4 +1,4 @@
-// SPEC: _spec/packages/starchess-arena/ml-adjutant-phase1.puml
+// SPEC: _spec/packages/starchess-arena/ml-adjutant-challenge-harness.puml
 import { describe, expect, it, vi } from "vitest";
 import {
   addScAction, parseScFen, type PieceColor, type ScActionInput, type ScFenSnapshot,

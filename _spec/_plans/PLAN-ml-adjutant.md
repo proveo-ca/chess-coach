@@ -187,7 +187,7 @@ Do not silently expand the existing denominator.
 ## Phase 1 — Strict serial harness, adapters, and baseline
 
 **Status: IMPLEMENTED and VERIFIED; both reviews READY: yes.** Arena owns this phase, not `ml/`.
-Owning diagram: [`ml-adjutant-phase1.puml`](../packages/starchess-arena/ml-adjutant-phase1.puml).
+Owning diagram: [`ml-adjutant-challenge-harness.puml`](../packages/starchess-arena/ml-adjutant-challenge-harness.puml).
 Source inspection found `src/challenge/{types,config,corpus,observation,baseline,admission,
 runChallengeMatch,schedule,supervisor,worker,integrity,publication,evidence}.ts` and the separate
 `src/cli/challenge.ts` in `packages/starchess-arena`. The new implementation modules cite the
@@ -282,7 +282,7 @@ challenge; a report alone is not proof that all traces support winning counterpl
 ## Phase 2 — Authorized codecs/features, coverage, and partitioned execution pins
 
 **Status: hermetic verification PASSED. Not a learned PASS. Post-image adversarial and security rereview is not yet recorded.**
-Owning diagram: [ml-adjutant-phase2.puml](../packages/starchess-arena/ml-adjutant-phase2.puml).
+Owning diagram: [ml-adjutant-policy-contracts.puml](../packages/starchess-arena/ml-adjutant-policy-contracts.puml).
 Weights/future training boundary: [ml-adjutant-weights.md](ml-adjutant-weights.md).
 Executor selected partitioned execution pins, then a hermetic image, and approved pull/build downloads.
 This approval does not authorize training or model/registry activation.
@@ -386,6 +386,17 @@ Broader generation and v2 economics/position remain required **before FIRST Phas
 This Phase 2 slice does not implement them. Three-turn planning remains a later milestone.
 
 ## Phase 3 — Learn and freeze a ranker from outcomes
+
+### Next delivery milestone — Train the first broader Adjutant
+
+Schedule this milestone next. Finish its bounded readiness tasks before starting optimization:
+
+1. Freeze a deterministic combination generator with measured queue coverage and explicit budgets.
+2. Implement authorized own-investment/loss accounting and confirmed opponent-loss bounds.
+3. Freeze candidate-conditioned economic, visibility, and attack-line interactions as feature v2.
+4. Run the readiness checks, then fit, freeze, and evaluate the first weight artifact at horizon 1.
+
+Three-turn search is a later milestone. No training run or learned artifact exists yet.
 
 **Status: PLANNED, no training implementation or artifact.**
 **Prerequisite:** freeze a separately versioned broader combination generator and v2 feature names/dimensions,

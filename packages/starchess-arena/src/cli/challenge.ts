@@ -1,4 +1,4 @@
-// SPEC: _spec/packages/starchess-arena/ml-adjutant-phase1.puml
+// SPEC: _spec/packages/starchess-arena/ml-adjutant-challenge-harness.puml
 import { mkdirSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { runBaselineSuite, type Suite } from "../challenge/evidence";

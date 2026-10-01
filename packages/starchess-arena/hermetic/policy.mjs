@@ -1,4 +1,4 @@
-// SPEC: _spec/packages/starchess-arena/ml-adjutant-phase2.puml
+// SPEC: _spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml
 import { isAbsolute } from 'node:path';
 import pins from './pins.json' with { type: 'json' };
 

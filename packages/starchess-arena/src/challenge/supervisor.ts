@@ -1,4 +1,4 @@
-// SPEC: _spec/packages/starchess-arena/ml-adjutant-phase1.puml
+// SPEC: _spec/packages/starchess-arena/ml-adjutant-challenge-harness.puml
 import { spawn, type ChildProcess } from "node:child_process";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";

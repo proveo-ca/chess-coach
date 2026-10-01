@@ -1,4 +1,4 @@
-// SPEC: _spec/packages/starchess-arena/ml-adjutant-phase2.puml
+// SPEC: _spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml
 import { spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { closeSync, mkdirSync, openSync, readFileSync, writeSync } from 'node:fs';

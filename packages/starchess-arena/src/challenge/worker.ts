@@ -1,4 +1,4 @@
-// SPEC: _spec/packages/starchess-arena/ml-adjutant-phase1.puml
+// SPEC: _spec/packages/starchess-arena/ml-adjutant-challenge-harness.puml
 import { createInterface } from "node:readline";
 import { runChallengeMatch } from "./runChallengeMatch";
 import type { ChallengeProgress, ScheduledMatch } from "./types";

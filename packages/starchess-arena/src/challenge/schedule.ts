@@ -1,4 +1,4 @@
-// SPEC: _spec/packages/starchess-arena/ml-adjutant-phase1.puml
+// SPEC: _spec/packages/starchess-arena/ml-adjutant-challenge-harness.puml
 import { mulberry32 } from "@chess-coach/starchess-core";
 import { deepFreeze } from "./config";
 import type { AuditedCorpus } from "./corpus";

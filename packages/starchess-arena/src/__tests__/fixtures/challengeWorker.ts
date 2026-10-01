@@ -1,4 +1,4 @@
-// SPEC: _spec/packages/starchess-arena/ml-adjutant-phase1.puml
+// SPEC: _spec/packages/starchess-arena/ml-adjutant-challenge-harness.puml
 import { createInterface } from "node:readline";
 import { endScTurn, formatScFen, normalizeSnapGas, parseScFen } from "@chess-coach/starchess-core";
 import { seedBankForOpening, grantStoredIncome } from "../../run/bank";

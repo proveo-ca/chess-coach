@@ -1,4 +1,4 @@
-// SPEC: _spec/packages/starchess-arena/ml-adjutant-phase2.puml
+// SPEC: _spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml
 import { describe, expect, it } from "vitest";
 import { mapToPlacement, MAX_GAME_TURNS, parseScFen, placementToMap, type PieceColor, type ScActionInput, type Square } from "@chess-coach/starchess-core";
 import { observe } from "../challenge/observation";

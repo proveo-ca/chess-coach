@@ -1,4 +1,4 @@
-// SPEC: _spec/packages/starchess-arena/ml-adjutant-phase2.puml
+// SPEC: _spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml
 import { readFileSync } from "node:fs";
 import { historyFromRecord, parseScFen, refillTurnGas, type ScActionInput } from "@chess-coach/starchess-core";
 import { canonical } from "../challenge/config";

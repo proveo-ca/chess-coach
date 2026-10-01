@@ -1,4 +1,4 @@
-// SPEC: _spec/packages/starchess-arena/ml-adjutant-phase2.puml
+// SPEC: _spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml
 import { MAX_GAME_TURNS, MAX_STORED_MATERIAL, specialGasCost, UNIT_COST, type ScActionInput, type Square } from "@chess-coach/starchess-core";
 import { deepFreeze } from "../challenge/config";
 import { SQUARES } from "../challenge/observation";

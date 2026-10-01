@@ -23,8 +23,8 @@ title StarChess Arena · Spec Map (_spec/packages/starchess-arena)
 
 package "_spec/packages/starchess-arena" {
   component "arena.puml\nheadless match runner" as ARENA <<app>>
-  component "ml-adjutant-phase1.puml\nverified non-learned historical baseline" as PHASE1 <<app>>
-  component "ml-adjutant-phase2.puml\nhermetic verification passed\nnot learned; post-image review unrecorded" as PHASE2 <<app>>
+  component "ml-adjutant-challenge-harness.puml\nverified non-learned historical baseline" as PHASE1 <<app>>
+  component "ml-adjutant-policy-contracts.puml\nhermetic verification passed\nnot learned; post-image review unrecorded" as PHASE2 <<app>>
 }
 
 package "packages/starchess-arena/src" {

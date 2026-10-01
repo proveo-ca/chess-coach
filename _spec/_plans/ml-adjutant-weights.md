@@ -8,7 +8,7 @@ Start at **horizon 1**. Planning across **three simultaneous planning windows** 
 Current `challenge-features-v1` is an inspectable Phase 2 contract, **not sufficient for this first trained ranker**.
 
 Owners: [roadmap](PLAN-ml-adjutant.md), [strict challenge](ml-adjutant-challenge.md),
-[Phase 2 boundary](../packages/starchess-arena/ml-adjutant-phase2.puml).
+[Policy-contract boundary](../packages/starchess-arena/ml-adjutant-policy-contracts.puml).
 This document authorizes no training code, model/artifact publication, registry activation, or browser rollout.
 
 ## 1. What a weight means

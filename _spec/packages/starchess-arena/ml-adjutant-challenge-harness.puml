@@ -1,4 +1,4 @@
-' purpose: Arena-owned Phase 1 strict challenge boundaries and non-learned baseline.
+' purpose: Strict recorded-queue challenge harness and non-learned baseline.
 ' covers: packages/starchess-arena/src/challenge/**
 ' covers: packages/starchess-arena/src/cli/challenge.ts
 ' covers: packages/starchess-arena/src/__tests__/challenge*.test.ts
@@ -19,9 +19,9 @@
 ' evidence boundary: manifest v1 historical Phase 0 pending statuses remain unchanged; the separate execution report supersedes them for this measured baseline only.
 ' rendering: final diagram passed plantuml -checkonly.
 ' later: numeric features, training, learned model/artifact, and browser integration remain unimplemented phases 2+.
-@startuml ml-adjutant-phase1
+@startuml ml-adjutant-challenge-harness
 !include ../../themes/proveo.puml
-title StarChess arena · ML Adjutant Phase 1 — implemented, verified, reviews READY
+title StarChess arena · ML Adjutant challenge harness
 
 skinparam packageStyle rectangle
 skinparam defaultTextAlignment left

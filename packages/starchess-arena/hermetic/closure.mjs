@@ -1,4 +1,4 @@
-// SPEC: _spec/packages/starchess-arena/ml-adjutant-phase2.puml
+// SPEC: _spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml
 import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync, readdirSync, realpathSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';

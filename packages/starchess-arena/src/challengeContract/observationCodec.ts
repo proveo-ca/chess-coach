@@ -1,4 +1,4 @@
-// SPEC: _spec/packages/starchess-arena/ml-adjutant-phase2.puml
+// SPEC: _spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml
 import { CC_MAX_LIVES, MAX_GAME_TURNS, MAX_MINES_PER_SIDE, MAX_STORED_MATERIAL } from "@chess-coach/starchess-core";
 import { canonical, deepFreeze } from "../challenge/config";
 import { SQUARES } from "../challenge/observation";

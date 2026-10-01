@@ -1,4 +1,4 @@
-// SPEC: _spec/packages/starchess-arena/ml-adjutant-phase1.puml
+// SPEC: _spec/packages/starchess-arena/ml-adjutant-challenge-harness.puml
 import { adjacentSquares, scMovesFor, UNIT_COST, type ScActionInput, type ScPiece, type Square } from "@chess-coach/starchess-core";
 import { canonical, CHALLENGE_CONFIG } from "./config";
 import type { AuthorizedObservation, CandidatePolicy, QueueProposal } from "./types";

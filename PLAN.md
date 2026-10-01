@@ -12,7 +12,7 @@ The registry ID is `machine-learning`; `ml/` names proposed training tooling, no
 `machine-learning`, `rlhf`, and `rlcd` remain EMPTY and unavailable until implemented.
 The implemented catalog definitions do not complete any learning stage below.
 The separate strict-challenge roadmap now owns Phase 1 in `packages/starchess-arena`:
-[`ml-adjutant-phase1.puml`](_spec/packages/starchess-arena/ml-adjutant-phase1.puml).
+[`ml-adjutant-challenge-harness.puml`](_spec/packages/starchess-arena/ml-adjutant-challenge-harness.puml).
 Phase 1 is IMPLEMENTED and VERIFIED by tests and persisted execution evidence;
 the lead reports adversarial and security reviews READY: yes for the trusted non-learned scope.
 Final arena verification passed 164 tests / 17 files after all source/test changes, arena
@@ -25,7 +25,7 @@ This completes the non-learned harness baseline, not learned acceptance.
 The Phase 1 diagram already passed `checkonly`. That fact does not cover the Phase 2 edit below.
 Phase 2 hermetic verification PASSED in arena. This is not a learned PASS.
 Post-image adversarial and security rereview is not yet recorded:
-[`ml-adjutant-phase2.puml`](_spec/packages/starchess-arena/ml-adjutant-phase2.puml).
+[`ml-adjutant-policy-contracts.puml`](_spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml).
 Executor chose **Broader first trained ranker**:
 [`ml-adjutant-weights.md`](_spec/_plans/ml-adjutant-weights.md).
 FIRST Phase 3 training requires a separately versioned combination generator and v2 authorized

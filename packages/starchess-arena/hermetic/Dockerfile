@@ -1,4 +1,4 @@
-# SPEC: _spec/packages/starchess-arena/ml-adjutant-phase2.puml
+# SPEC: _spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml
 ARG FROZEN_DEPENDENCIES=dependencies
 FROM docker.io/library/node:22.23.2-bookworm-slim@sha256:43aeff40f4afc22e83f7589a2f37e111cff5ca84529571f1c8415bcc5fcc21b2 AS tools
 COPY hermetic/ /hermetic/

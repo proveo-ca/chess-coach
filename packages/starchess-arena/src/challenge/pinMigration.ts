@@ -1,4 +1,4 @@
-// SPEC: _spec/packages/starchess-arena/ml-adjutant-phase2.puml
+// SPEC: _spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml
 import { canonical } from "./config";
 import { sha256 } from "./corpus";
 import { normalizeEvidence } from "./evidence";

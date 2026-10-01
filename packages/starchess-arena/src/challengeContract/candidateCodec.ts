@@ -1,4 +1,4 @@
-// SPEC: _spec/packages/starchess-arena/ml-adjutant-phase2.puml
+// SPEC: _spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml
 import { specialGasCost, UNIT_COST, type PieceColor, type ScActionInput, type SpawnPiece } from "@chess-coach/starchess-core";
 import { baselineProposals } from "../challenge/baseline";
 import { canonical, deepFreeze } from "../challenge/config";

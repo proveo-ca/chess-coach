@@ -1,4 +1,4 @@
-// SPEC: _spec/packages/starchess-arena/ml-adjutant-phase1.puml
+// SPEC: _spec/packages/starchess-arena/ml-adjutant-challenge-harness.puml
 import { getSideVision, placementToMap, type PieceColor, type ScFenSnapshot, type Square } from "@chess-coach/starchess-core";
 import type { Bank } from "../run/bank";
 import { deepFreeze } from "./config";

@@ -1,4 +1,4 @@
-// SPEC: _spec/packages/starchess-arena/ml-adjutant-phase1.puml
+// SPEC: _spec/packages/starchess-arena/ml-adjutant-challenge-harness.puml
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { historyFromRecord, parseScFen, scOutcome, scsanOf, type EndScTurnResult, type ScActionInput } from "@chess-coach/starchess-core";

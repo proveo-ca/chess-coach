@@ -1,4 +1,4 @@
-// SPEC: _spec/packages/starchess-arena/ml-adjutant-phase1.puml
+// SPEC: _spec/packages/starchess-arena/ml-adjutant-challenge-harness.puml
 import type {
   EndScTurnResult, PieceColor, ScActionInput, ScOutcome, ScPiece, Square,
 } from "@chess-coach/starchess-core";

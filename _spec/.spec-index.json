@@ -207,7 +207,7 @@
       "fingerprint": null
     },
     {
-      "spec": "_spec/packages/starchess-arena/ml-adjutant-phase1.puml",
+      "spec": "_spec/packages/starchess-arena/ml-adjutant-challenge-harness.puml",
       "covers": [
         "packages/starchess-arena/src/challenge/**",
         "packages/starchess-arena/src/cli/challenge.ts",
@@ -222,7 +222,7 @@
       "fingerprint": null
     },
     {
-      "spec": "_spec/packages/starchess-arena/ml-adjutant-phase2.puml",
+      "spec": "_spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml",
       "covers": [
         "packages/starchess-arena/src/challengeContract/**",
         "packages/starchess-arena/src/challenge/**",

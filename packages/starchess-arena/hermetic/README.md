@@ -1,6 +1,6 @@
 # Hermetic arena execution image
 
-SPEC: `_spec/packages/starchess-arena/ml-adjutant-phase2.puml`
+SPEC: `_spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml`
 
 Run the CLI from any directory with Node supporting ESM JSON import attributes.
 Use the returned immutable `sha256:…` image ID for every subsequent command.

@@ -1,4 +1,4 @@
-' purpose: Phase 2 authorized codecs and features, partitioned pins, and the passed hermetic verification boundary.
+' purpose: Authorized policy codecs and features, source provenance, and hermetic verification.
 ' covers: packages/starchess-arena/src/challengeContract/**
 ' covers: packages/starchess-arena/src/challenge/**
 ' covers: packages/starchess-arena/src/__tests__/challenge*.test.ts
@@ -9,7 +9,7 @@
 ' related: _spec/_plans/PLAN-ml-adjutant.md
 ' related: _spec/_plans/ml-adjutant-challenge.md
 ' related: _spec/_plans/ml-adjutant-weights.md
-' related: _spec/packages/starchess-arena/ml-adjutant-phase1.puml (verified historical baseline)
+' related: _spec/packages/starchess-arena/ml-adjutant-challenge-harness.puml (verified historical baseline)
 ' decision: FIRST Phase 3 training requires broader versioned combinations and v2 authorized economic/positional interactions; horizon 1.
 ' later: three conditional planning windows are a separate future milestone; no training/model/artifact/registry activation here.
 ' boundary: codec representability is not proposal completeness or private host admission.
@@ -26,9 +26,9 @@
 ' reviews: pre-freeze findings were fixed before this freeze: loader escapes, dense arrays, provenance, capture containment, importer completeness.
 ' reviews: post-image adversarial and security rereview is not yet recorded. This diagram is not a READY verdict.
 ' rendering: final evidence update passed plantuml -checkonly.
-@startuml ml-adjutant-phase2
+@startuml ml-adjutant-policy-contracts
 !include ../../themes/proveo.puml
-title StarChess arena · ML Adjutant Phase 2 — hermetic verification passed, not learned
+title StarChess arena · ML Adjutant policy contracts and hermetic verification
 
 skinparam packageStyle rectangle
 skinparam defaultTextAlignment left

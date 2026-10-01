@@ -1,4 +1,4 @@
-// SPEC: _spec/packages/starchess-arena/ml-adjutant-phase1.puml
+// SPEC: _spec/packages/starchess-arena/ml-adjutant-challenge-harness.puml
 import { addScAction, AddScActionError, UNIT_COST, type PieceColor, type ScActionInput, type ScFenSnapshot } from "@chess-coach/starchess-core";
 import type { Bank } from "../run/bank";
 import type { ChallengeStop } from "./types";

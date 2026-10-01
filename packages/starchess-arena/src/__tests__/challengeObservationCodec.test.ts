@@ -1,4 +1,4 @@
-// SPEC: _spec/packages/starchess-arena/ml-adjutant-phase2.puml
+// SPEC: _spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml
 import { describe, expect, it } from "vitest";
 import { MAX_GAME_TURNS, MAX_MINES_PER_SIDE, MAX_STORED_MATERIAL, parseScFen, type PieceColor } from "@chess-coach/starchess-core";
 import { observe } from "../challenge/observation";

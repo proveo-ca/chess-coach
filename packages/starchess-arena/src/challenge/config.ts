@@ -1,4 +1,4 @@
-// SPEC: _spec/packages/starchess-arena/ml-adjutant-phase1.puml
+// SPEC: _spec/packages/starchess-arena/ml-adjutant-challenge-harness.puml
 export const CHALLENGE_CONFIG = Object.freeze({
   version: "phase1-v1",
   observationVersion: "challenge-observation-v1",

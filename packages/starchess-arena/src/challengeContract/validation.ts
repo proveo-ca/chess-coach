@@ -1,4 +1,4 @@
-// SPEC: _spec/packages/starchess-arena/ml-adjutant-phase2.puml
+// SPEC: _spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml
 import type { PieceColor, ScPiece, Square } from "@chess-coach/starchess-core";
 
 export const MAX_CODEC_BYTES = 1_048_576;

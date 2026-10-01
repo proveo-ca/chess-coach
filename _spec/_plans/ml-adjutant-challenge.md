@@ -5,8 +5,8 @@ baseline executions; both Phase 1 reviews READY: yes. Phase 2 hermetic verificat
 This is not a learned PASS. Post-image adversarial and security rereview is not yet recorded.
 Phase 3+ PLANNED and unimplemented.**
 Owner roadmap: [PLAN-ml-adjutant.md](PLAN-ml-adjutant.md).
-Phase 1 boundary: [ml-adjutant-phase1.puml](../packages/starchess-arena/ml-adjutant-phase1.puml).
-Phase 2 boundary: [ml-adjutant-phase2.puml](../packages/starchess-arena/ml-adjutant-phase2.puml).
+Harness boundary: [ml-adjutant-challenge-harness.puml](../packages/starchess-arena/ml-adjutant-challenge-harness.puml).
+Policy-contract boundary: [ml-adjutant-policy-contracts.puml](../packages/starchess-arena/ml-adjutant-policy-contracts.puml).
 FIRST-training/weights contract: [ml-adjutant-weights.md](ml-adjutant-weights.md).
 This document defines learned acceptance and records the separately verified non-learned baseline.
 The lead reports adversarial READY: yes with no remaining findings and security READY: yes
