@@ -1,15 +1,24 @@
 # ML Adjutant — weights, combination coverage, and planning horizons
 
-Status: **PLANNED learning contract. Phase 2 hermetic verification PASSED. This is not a learned PASS. Post-image adversarial and security rereview is not yet recorded.**
+Status: **PLANNED learning contract. Historical Phase 2 hermetic verification PASSED; not a learned PASS.**
+R0 full implementation post-image adversarial review is **REVIEWED / READY TO MERGE: no**;
+the [R0 ledger](PLAN-ml-adjutant.md#r0-findings-ledger--full-implementation-post-image-review) holds **15 pending findings: 7 HIGH + 8 MEDIUM**.
+Security rereview is **UNRECORDED**. [R1.1–R1.8 selections](ml-adjutant-r1-recipe.md) are **RECORDED**, but contract freeze is **INCOMPLETE**.
+No approved run or training authorization exists; R2–R8 remain pending and unimplemented; weights **NONE**.
 Executor selected **Broader first trained ranker**. The FIRST Phase 3 training run requires
 a separately versioned combination generator and authorized economic/positional interactions,
 including an own-loss lineage ledger and confirmed opponent-loss knowledge with explicit fog uncertainty.
 Start at **horizon 1**. Planning across **three simultaneous planning windows** is a separate future milestone.
 Current `challenge-features-v1` is an inspectable Phase 2 contract, **not sufficient for this first trained ranker**.
 
-Owners: [roadmap](PLAN-ml-adjutant.md), [strict challenge](ml-adjutant-challenge.md),
+Owners: [roadmap](PLAN-ml-adjutant.md), [R1 recipe decisions](ml-adjutant-r1-recipe.md), [strict challenge](ml-adjutant-challenge.md),
 [Policy-contract boundary](../packages/starchess-arena/ml-adjutant-policy-contracts.puml).
 This document authorizes no training code, model/artifact publication, registry activation, or browser rollout.
+The selected training owner is `packages/starchess-training`, not yet created; npm ID and public exports remain TBD.
+Select `training → arena authorized public contracts → pure core`, with no core/browser ML dependencies.
+Current arena root exports expose unrestricted `SideContext` and no challenge contracts; design a dedicated observation-only public API.
+Keep trusted host/opponent context separate. Deliberately extend future dependency closure, export resolution,
+source-inventory partitions/entrypoints, hermetic capture/installed-store context, and CI; no config/export changes occur here.
 
 ## 1. What a weight means
 
@@ -97,7 +106,12 @@ It must propose all supported action families and meaningful same-window composi
 deploy+classical, mine+relocate, timing/order alternatives, and resource-constrained multi-action queues.
 Native rules determine possible combinations; this plan does not assert arbitrary cross-products are legal.
 Document deterministic deduplication, canonical ordering, pruning, per-family limits, and pass retention.
-Freeze numeric proposal/expansion/queue-length budgets before training; they remain unsettled here.
+R1 selects **family-quota composition**, **512 unique candidates including pass**, and
+**2048 attempted extensions including duplicates and pruned extensions** per call.
+The approved generation queue-length upper bound is **4** (gas maximum 3 / minimum special cost 1 + at most one classical),
+not an admission guarantee or a change to the codec bound of 65.
+Freeze available-family quotas and redistribution, ordered timing/same-actor compositions, authorized pruning,
+deduplication/traversal, and exact counters before training; no numeric quota allocation is selected.
 
 For tractable fixtures enumerate the full conceptual domain and compare bounded output against that reference.
 For larger cases report omitted families, pruning reasons, queue lengths, timings, units, and ordering alternatives.
@@ -165,6 +179,10 @@ Record separately any newly paid debit, surviving investment, destroyed replacem
 Reconcile ledger totals against host-confirmed own bank debits after settlement and chips.
 Gas usage is a separate rule resource, not mineral investment.
 The ledger requires a versioned authorized event/identity contract and tests; current square sightings cannot provide it.
+R1 selects **combined authorized events→ledger plus normalized side-authorized snapshots with consistency checks**.
+In the selected design, the host owns actual debits and authorized lineage/event production. Event ordering/deduplication, visible-loss confirmation,
+same-turn chip ordering, rollback/no-debit behavior, and event/snapshot reconciliation remain to freeze.
+Private KVS, queues, and full snapshots never become model channels.
 
 Opponent losses are **confirmed-loss lower bounds**, with separate uncertainty state.
 Count only side-authorized destruction witnesses; deduplicate confirmed identities/events across repeated sightings.
@@ -210,22 +228,26 @@ Hard survival filtering would alter the proposal contract and needs its own revi
 **Prerequisite:** implement and freeze the broader combination generator, own-loss/opponent-knowledge contracts,
 and `φ_v2` names, dimensions, scales, interactions, and collision limitations.
 The exact v2 names and dimension `d_v2` remain **unsettled**. There is no promise to publish a 158-value trained artifact.
+R1 selects **typed feature blocks plus a fixed flat ordered manifest**.
+Actual v2 version strings, names/dimension, scales/masks, flattening order, interaction set/calculus,
+and public artifact schema remain TBD; the selected structure does not freeze those contracts.
 
-Proposed first recipe: linear logits with a numerically stable softmax over the generated candidates:
+Selected first direction: **SGD + REINFORCE**, with linear logits and stable softmax over generated candidates.
+The expression below remains the proposed loss/gradient pending exact reduction, baseline, and update semantics:
 
 ```text
 m_t = max_{c∈G_v(h_t)} s_w(h_t,c)
 π_w(c|h_t) = exp((s_w(h_t,c)-m_t)/τ)
              / Σ_{k∈G_v(h_t)} exp((s_w(h_t,k)-m_t)/τ)
 R = +1 actual candidate win; 0 actual draw; -1 actual candidate loss
-R = -1 selected-queue admission/resource failure or policy-contract failure
-b = previous completed-valid-episode reward mean (empty history: 0)
+R = -1 policy/challenge failure, including selected-queue admission/resource or policy-contract failure
+b = preceding-episode reward baseline (eligible completions/aggregation/startup remain to freeze)
 A = stopGradient(R-b)
 L = -A Σ_t log π_w(c_t|h_t) + λ||w||²/2
 ∇_w L = -(A/τ) Σ_t [φ(h_t,c_t)-Σ_c π_w(c|h_t)φ(h_t,c)] + λw
 ```
 
-Fix `b` before sampling the current episode/batch; update its historical mean only afterward.
+Fix `b` before sampling the current episode; update its baseline history only afterward.
 It is action-independent and cannot incorporate the current candidate choice or reward before that choice.
 Use candidate-side rewards from **newly executed games**, never historical White winner labels.
 Store the sampled failed selection as a decision when assigning queue-failure reward.
@@ -233,13 +255,23 @@ Classify infrastructure/provenance failures separately and abort the training ba
 Every such failure still fails the strict gate. Initial training uses terminal returns, not unapproved dense shaping.
 Softmax sampling belongs to training; frozen evaluation uses score argmax with the pinned comparator and inference seed 0.
 
-Proposed defaults, all **PLANNED** until packaging and run configuration freeze:
-zero-initialize all `d_v2` coefficients; float64 CPU arithmetic; `τ=1`; Adam with
-`η=0.001`, `β₁=0.9`, `β₂=0.999`, `ε=1e-8`; loss regularization `λ=0.0001`.
-Freeze update count, episode cap, batches, clipping policy, and numeric generation budgets before the first run.
-Derive named training-selection, policy-sampling, opponent, and simulation streams from a pinned master seed;
-persist the derivation algorithm and actual seeds. Do not reuse gate-selection metadata as an input feature.
-Optional teacher warm-start requires a separate authorized-label audit and explicit objective; it is not today's baseline score.
+**Selected experimental profile, not validated or approved for a run:** zero-initialize all `d_v2` coefficients;
+float64 CPU; **SGD** with `η=0.001`, `τ=1`, L2 `λ=0.0001`, **one complete episode per update**, **no clipping**.
+**Adam and imitation/teacher bootstrap are not selected.** Any later warm-start requires a separate decision and authorized-label audit.
+Use **five independent master seeds 101..105** and **five independent artifacts**, with **no automatic weight average**.
+Initial maximum: **1000 episodes per artifact**, total ceiling **5000**, not 1000 total or 3000.
+Derive separate named selection, environment-settlement, policy-sampling, and opponent streams from each master;
+the derivation algorithm remains TBD. Specify the deterministic generator's stream as unused.
+Keep gate pins unchanged: corpus arena 0, inference 0 reset per match, live arena 0..17 in both seats; H=1 first, H≤3 later.
+Do not reuse gate-selection metadata as an input feature. Freeze the artifact-selection rule **before comparing seeds**.
+
+Exact gradient sum/mean and episode-length handling, SGD/L2 update conventions consistent with the displayed formula,
+baseline-eligible completions/startup/aggregation, policy failures versus infrastructure aborts, and finite abort/retry budget
+accounting remain TBD. The existing infrastructure-abort batch rule never creates fake wins, and all gate failures stay counted.
+Do not silently exclude infrastructure failures from the episode cap or permit unlimited retries.
+Freeze epoch 0..1000 identifiers, stopping/checkpoints, curriculum/data/seat selection, versions/metadata and candidate/pruning counters.
+Persist gradient, numerical, coverage, and runtime validation plus exact semantic freeze before an approved run.
+The [eight-section R1 record](ml-adjutant-r1-recipe.md) owns the concept readings and remaining freeze items; R1 is not complete.
 
 ## 8. Planned artifact and inference contract
 
@@ -265,15 +297,16 @@ Product fallback remains separate future work. The strict denominator remains 18
 | Own economic ledger | Paid deploy, rollback/no debit on rejection, endowed opening units, free promotion, lineage preservation, one-time loss retirement, chip updates, debit conservation. |
 | Opponent knowledge | Confirmed destruction only; stale/fog disappearance remains uncertain; identity/event deduplication; lower bounds never exact enemy bank/investment. |
 | Rays and exploration | Unknown blockers cannot become clear; reveal versus visibility distinction; dated memory; categorical confidence; novelty is not entropy. |
-| Persistent learning | Analytic/finite-difference gradient direction, stable softmax, previous-mean baseline independence, reproducible nonzero updates from outcome rewards, serialization/reload and artifact hash alignment. |
+| Persistent learning | Analytic/finite-difference gradient direction, stable softmax, preceding-episode baseline independence, reproducible nonzero updates from outcome rewards, serialization/reload and artifact hash alignment. |
 | Frozen inference | Finite/version/name/length rejection; argmax ties; one private admission; no rescue/fallback/online update; invariant selection for identical authorized history. |
 | Future H≤3 search | Conditional future observation branches, simultaneous opponent hypotheses, chips without ordinals, bounded deterministic beam, invariance to actual hidden state/queue/future trace. |
 | Challenge | All 54 cases retained, integrity and semantic reruns, actual terminal truth, strict failures; no held-out claim for the training-used corpus. |
 
 These tests are acceptance requirements, not existing passing test results.
-Phase 2 hermetic execution passed. Weights remain NONE.
+Historical Phase 2 hermetic execution passed. Weights remain NONE; R1 selections do not approve a run.
 The broader combination generator and authorized economy/position interactions remain a Phase 3 prerequisite, not implemented.
 Three-turn planning remains a later milestone.
 Both renamed diagrams and the edited spec map passed PlantUML `checkonly`.
 Rename-only adversarial review is **READY: yes**.
-Post-image security rereview remains unrecorded.
+Full implementation post-image adversarial review is **REVIEWED / READY TO MERGE: no**, with **7 HIGH + 8 MEDIUM pending**.
+Post-image security rereview remains **UNRECORDED**. R0 assurance remains blocked; close R0–R5 before training.
