@@ -630,11 +630,11 @@ Gate corpus arena 0, inference 0 reset per match, and live arena 0..17 both seat
 Prospectively select the **final VALID seed-101 artifact as primary before comparisons**; four others measure variability.
 No average, best-gate cherry-pick, alternate-seed/diagnostic-checkpoint fallback, new development suite, or all-five-artifact gate is selected.
 Diagnostic checkpoint cadence is **every 100 STARTED ATTEMPTS**, with complete verified state saved at eligible boundaries, not mid-partial-reward updates.
-Alternating corpus/live slots and alternating live candidate seats are **selected proposed curriculum context**, not implemented or schedule-frozen.
-At the full 1000 attempts this gives **500 corpus + 500 live**, with **250 live per candidate seat**; the training-used 18 are not held out.
+Alternating corpus/live slots and live candidate seats remain **a proposal, NOT separately selected/approved or frozen**; curriculum mixture/order awaits an explicit R1 decision.
+**Only if that alternating proposal is later chosen** and reaches the full 1000 attempts, the illustrative allocation is **500 corpus + 500 live**, with **250 live per candidate seat**; this is not a selected schedule, and the training-used 18 are not held out.
 Exact failure taxonomy, baseline eligibility for policy failures/empty decisions/aborts, zero-decision update, incomplete-episode handling,
 baseline-history ordering relative to SGD, started-attempt/cap/counter boundaries, artifact validity/selection types,
-checkpoint phases/counters/failure/save boundaries, curriculum case order/shuffle/opponent selection/initialization, and stopping semantics remain TBD.
+checkpoint phases/counters/failure/save boundaries, curriculum mixture/order decision, case order/shuffle/opponent selection/initialization, and stopping semantics remain TBD.
 Validate gradients, numerics, coverage, and runtime before approving a run; rule legality/gas/mineral costs never become learned parameters.
 Add a `ScriptPlayer`-compatible adapter that receives only the authorized interface, selects a
 queue using the learned scores, and delegates authoritative commit to the host.

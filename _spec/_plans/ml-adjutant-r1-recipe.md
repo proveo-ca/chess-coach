@@ -24,7 +24,7 @@ Each selection below replaces only its decided field; the remaining-field lists 
 | D — Ledger | **Boundary batches:** authorized ordered events plus normalized snapshots at relevant chip/settlement boundaries; reconcile before consumption. Payload/order/ID/mismatch details remain TBD. | Lineage = host-issued own identity retained through movement/transformation; paid basis ≠ replacement value. [Weights §5](ml-adjutant-weights.md#5-authorized-economics-and-trade-losses-required-before-first-training). |
 | E — RNG | **Hash derivation:** SHA-256 plus existing `mulberry32`, versioned master+stream-label derivation; encoding/mapping/collision/reset policy remains TBD before pinning derived seeds. | Stream = separate named random sequence for one responsibility. [Weights §7](ml-adjutant-weights.md#7-proposed-outcome-driven-phase-3-learning--not-implemented), [§8](ml-adjutant-weights.md#8-planned-artifact-and-inference-contract). |
 | F — Failure | **Stop experiment:** infrastructure/provenance abort stops ALL training; every started attempt consumes the per-artifact cap. Failure/update eligibility details remain TBD. | Abort ≠ policy/challenge return `−1`; no fabricated reward or partial gradient. [Weights §7](ml-adjutant-weights.md#7-proposed-outcome-driven-phase-3-learning--not-implemented). |
-| G — Selection | **Preselect seed 101:** its final VALID artifact is prospectively primary; four others measure variability. Diagnostic cadence is every 100 STARTED ATTEMPTS. Alternating corpus/live and live seats is selected curriculum context, not a frozen schedule. | Primary = chosen before comparisons; diagnostic checkpoint ≠ fallback artifact. [Weights §7](ml-adjutant-weights.md#7-proposed-outcome-driven-phase-3-learning--not-implemented), [§8](ml-adjutant-weights.md#8-planned-artifact-and-inference-contract). |
+| G — Selection | **Preselect seed 101:** its final VALID artifact is prospectively primary; four others measure variability. Diagnostic cadence is every 100 STARTED ATTEMPTS. Curriculum mixture/order still awaits an explicit R1 decision; the alternating pattern is an illustrative proposal, not separately selected/approved or frozen. | Primary = chosen before comparisons; diagnostic checkpoint ≠ fallback artifact. [Weights §7](ml-adjutant-weights.md#7-proposed-outcome-driven-phase-3-learning--not-implemented), [§8](ml-adjutant-weights.md#8-planned-artifact-and-inference-contract). |
 | H — Learning | **All-history mean:** per-seed mean of past eligible completed returns, startup `0`, fixed before sampling; summed episode gradient and L2 once per episode update. Eligibility/update ordering remains TBD. | Baseline reduces variance; it is not a per-length mean objective. [Weights §7](ml-adjutant-weights.md#7-proposed-outcome-driven-phase-3-learning--not-implemented). |
 | I — Validation | **Small-to-large:** gradient/finite difference → numeric extremes → exhaustive small fixtures → capped worst-case runtime → reload/provenance. All privacy/ledger/Phase 1 resource checks remain required; exact criteria remain TBD. | Finite difference approximates a derivative to check the analytic gradient. [Weights §9](ml-adjutant-weights.md#9-future-persistent-acceptance--proposed-not-done). |
 
@@ -286,9 +286,9 @@ Follow-up F clarifies cap accounting: **all started attempts count**, including 
 Follow-up G selects diagnostic checkpoint cadence **every 100 STARTED ATTEMPTS**.
 Save complete verified training state at an eligible boundary, never a mid-episode partial-reward state.
 
-The common question proposed alternating corpus/live slots and alternating live candidate seats.
-Record that as **selected proposed curriculum context**, not an implemented or fully frozen schedule.
-At a full **1000 attempts**, this allocation means **500 corpus + 500 live**, with **250 live attempts per candidate seat**.
+Q7 asked which **model-selection contract** to use; its main question proposed alternating corpus/live slots and live candidate seats without separately asking for a curriculum choice.
+Curriculum mixture/order remains **a proposal, NOT separately selected/approved or frozen**, awaiting an explicit R1 decision.
+**Only if that alternating proposal is later chosen** and reaches the full **1000 attempts**, the illustrative allocation is **500 corpus + 500 live**, with **250 live attempts per candidate seat**; this is not a selected schedule.
 Case order/shuffle, opponent selection/initialization, counter boundaries, and exact stopping semantics remain TBD.
 The user selected no new development suite, model average, or all-five-artifact gate.
 
@@ -307,7 +307,7 @@ The strict gate still requires **18/18 corpus + 36/36 live wins**, integrity, se
 
 **Remaining freeze items.** Define exact started-attempt/completion/cap counters and epoch identifiers from initialization at 0 through at most 1000 attempts,
 stopping criteria, checkpoint phase/counters/failure handling and eligible save boundaries,
-curriculum case order/shuffle/opponent selection/initialization and slot/seat counter boundaries,
+curriculum mixture/order decision, case order/shuffle/opponent selection/initialization and slot/seat counter boundaries,
 artifact validity/selection types, schema/version metadata, and candidate/pruning counters.
 Any future continuation needs a new decision and remaining-budget preservation; no automatic retry/resume policy is selected.
 Follow-up I selects **small-to-large validation**: gradient/finite difference → numeric extremes → exhaustive small-domain fixtures

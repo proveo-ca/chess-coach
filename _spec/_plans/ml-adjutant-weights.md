@@ -302,14 +302,15 @@ Follow-up G **prospectively names the final VALID artifact from master 101 prima
 Keep the other four independent artifacts for variability; do not average, choose a best gate result, or substitute another seed/diagnostic checkpoint if 101 fails.
 Diagnostic checkpoints occur **every 100 STARTED ATTEMPTS**, saving complete verified training state at eligible boundaries,
 not mid-episode partial rewards. Exact phase/counter/failure/save-boundary semantics remain TBD.
-The common question's alternating corpus/live slots and alternating live candidate seats are **selected proposed curriculum context**,
-not implemented or fully schedule-frozen: at a full 1000 attempts, **500 corpus + 500 live**, with **250 live per seat**.
+Q7 asked for the **model-selection contract**, not a separate curriculum choice; its main question proposed alternating corpus/live slots and live candidate seats.
+Curriculum mixture/order remains **a proposal, NOT separately selected/approved or frozen**, awaiting an explicit R1 decision.
+**Only if that alternating proposal is later chosen** and reaches the full 1000 attempts, the illustrative allocation is **500 corpus + 500 live**, with **250 live per seat**; this is not a selected schedule.
 Case order/shuffle, opponent selection/initialization, slot/seat counter boundaries, and stopping semantics remain TBD.
 This selects no new development suite, model average, all-five-artifact gate, or held-out claim for the training-used 18.
 
 Baseline eligibility for policy failures/empty-decision episodes/infrastructure aborts, zero-decision updates,
 incomplete-episode handling, exact failure taxonomy, and baseline-history/SGD ordering remain TBD.
-Freeze started-attempt/completion/cap counters, epoch 0..1000 identifiers, exact stopping/checkpoint/curriculum details,
+Freeze started-attempt/completion/cap counters, epoch 0..1000 identifiers, exact stopping/checkpoint details and the pending curriculum mixture/order decision,
 artifact validity/selection types, versions/metadata and candidate/pruning counters. All gate failures stay counted.
 Persist gradient, numerical, coverage, runtime, reload/provenance validation plus exact semantic freeze before an approved run.
 The [eight-section R1 record with nine follow-up details](ml-adjutant-r1-recipe.md) owns the concept readings and remaining freeze items; R1 is not complete.
