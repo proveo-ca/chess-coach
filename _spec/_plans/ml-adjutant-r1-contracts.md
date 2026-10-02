@@ -131,8 +131,15 @@ In C, arena `/observations` also owns batch schema validation; training `/events
 Observation bytes wrap `{codecVersion:'challenge-observation-codec-v2',observation:snapshot}` in canonical UTF-8 JSON.
 Objects/arrays returned by validation are immutable detached copies; every typed-array return is a fresh caller-owned copy.
 `FeatureBlocks={version:'challenge-features-v2',queue:Queue34,positions:readonly [Position84,Position84,Position84,Position84]}`.
-`CandidateBatch={version:'challenge-composition-v2',candidates,diagnostics}`; retained candidates are key-byte sorted and contain pass once.
-Diagnostics include profile, unique/work counts, per-pool capacity/retained/active/exhausted, rejection counts by category, and stop reason.
+`Queue34` is a detached immutable plain object with exactly the 34 unprefixed queue names in §10 as property keys.
+`Position84` is a detached immutable plain object with exactly the 84 expanded unprefixed position names in §10 as property keys.
+Their values are finite JavaScript numbers satisfying the named formula/domain; dotted names are literal keys, not unspecified nested objects.
+Neither object accepts extra/missing keys, getters, inherited substitutes, or typed-array aliasing. `positions` is a dense four-element tuple.
+`flattenFeatures` checks version, exact key sets, domains and tuple length before allocating its fresh 370-element Float64Array.
+`encodeFeatures` first validates codec-v1 side/key/spend consistency, then rejects more than four actions with `ContractError('$.actions','CARDINALITY')`.
+It never truncates, folds additional actions into four slots, or changes the codec's independent 65-action capacity.
+`CandidateBatch={version:'challenge-composition-v2',candidates:readonly EncodedCandidate[1..512],diagnostics:CandidateDiagnostics}`; retained candidates are key-byte sorted and contain pass once.
+`CandidateDiagnostics` is the closed record defined in §8, not an arbitrary metrics object.
 No diagnostic becomes a feature or carries hidden admission results.
 Private functions are `runEpisode(request,policy,TrustedExecutionContext): Promise<HostEpisodeRecord>` and `verifyEpisode(record,TrustedExecutionContext): VerifiedEpisode`.
 `HostEpisodeRecord` contains full snapshots and private context; it is never passed to `choose`, features, or artifact scorers.
@@ -201,6 +208,18 @@ Apply the frame atomically; do not serialize a swap as destructive sequential ov
 Provenance initialization and every frame must reconcile exactly with the corresponding native snapshot, modes, mines and CC lives.
 Native provenance also supplies private actual visibility images at causal observation checkpoints, including path-reveal intermediate mover positions.
 Each image includes the actual full unit board, own modes and own mines at the native observation point; it is not reconstructed from animation or final squares.
+Define the exact private return companion for both begin/end wrappers as `{nativeResult,provenance,frames,visibilityImages}`.
+`nativeResult` is the unchanged corresponding BeginScTurnResult or EndScTurnResult; `provenance` is the updated entity table/counter.
+`VisibilityImage={key:string,ordinal:Int[0,MAX_SAFE_INTEGER],turn:Int[0,45],phase:FramePhase,state:FrameImage}`.
+`FrameImage={entities:readonly EngineEntity[0..70],ccLives:{w:Int[0,3],b:Int[0,3]}}`; units occupy unique squares, mines use native per-side caps, and private entity IDs are unique/canonical.
+Each frame adds `beforeVisibilityKey:string,afterVisibilityKey:string`; each `unit-destroy` adds `causalBeforeVisibilityKey:string`.
+All keys resolve only within that wrapper's dense, ordinal-ordered `visibilityImages` array; no external path, URL or worker-created witness authority is allowed.
+The native mutation/visibility site emits an image before and after its atomic effects and at each actual path-visibility check, in execution order.
+`beforeVisibilityKey`/`afterVisibilityKey` bind exactly the frame's before/after states; destruction's causal key binds the live victim and actual mover/vision position immediately before that destruction.
+For atomic multi-removal, every victim's causal key is the common pre-effect image; no sequential deletion may change another victim's authorization.
+Frames and images contain every native checkpoint, even when public projection is unchanged; public filtering subsequently removes empty deltas.
+Every image is referenced by its frame or checkpoint entry. Reject missing/duplicate/out-of-order keys, unmatched image states or source references.
+The provenance digest is SHA-256 of canonical bytes of `{provenance,frames,visibilityImages}`; parent recomputation compares those bytes and their digest, never the digest alone.
 No source effect key, private frame count, full board, private ID, opponent queue, or hidden cause crosses authorization.
 Generic pure engine hooks require R2–R5 implementation/review; selecting this seam does not claim that current core supplies it.
 
@@ -240,6 +259,36 @@ Host-private session binding is opaque and stays outside the model DTO; host pri
 | `enemy-unit-destruction-witnessed` | `witnessId, square, type, replacementLowerBound, paidLowerBound:0` |
 | `vision-witness` | `turn, changes:ObservedCell[1..64]`; dense unique canonical-square-ordered public cell changes. |
 
+### Exact public event field types and variant constraints
+
+The event table defines closed plain-object variants: common `{kind:literal,seq:Int[1,MAX_SAFE_INTEGER]}` plus exactly that row's fields.
+`OwnActionRef={planningOrdinal:Int[0,63],acceptedActionOrdinal:Int[0,3]}` refers to this recipient's committed queue, not a global sequence.
+`UnitType='p'|'n'|'b'|'r'|'q'|'k'`; `SpawnPiece='p'|'n'|'b'|'r'|'q'`; `Square` has the exact §4 domain.
+`id` and `lineageId` are recipient-own unit ID strings in §6's namespace; `mineId`, `receiptId`, and `witnessId` use their respective recipient namespaces.
+Every decimal ID suffix is canonical nonnegative base-10 without leading zeros; created-counter suffixes start at 1. The reducer verifies the next issued value and lifetime non-reuse.
+All other field types are:
+
+| Variant | Complete field domains and checked constraints |
+|---|---|
+| `own-paid-receipt` | `receiptId:string`, `actionRef:OwnActionRef`, `unit:SpawnPiece`, `requestedSquare:Square`, `minerals:Int[1,9]` exactly `UNIT_COST[unit]`; receipt unique and bound to its actual committed own deploy. |
+| `own-gas-debited` | `actionRef:OwnActionRef`, `gas:Int[1,3]` exactly the referenced own special's native cost; no classical gas debit and no repeated debit. |
+| `own-unit-endowed` | `id:string`, `square:Square`, `type:UnitType`, `paidBasis:0`; initial boundary only and exact initial own entity. |
+| `own-unit-created` | `lineageId:string`, `receiptId:string`, `square:Square`, `type:SpawnPiece`; unique next own birth, actual native materialization and matching paid receipt/unit. |
+| `own-deployment-unmaterialized` | `receiptId:string`, `paidMinerals:Int[1,9]` equal its unresolved receipt; no fake birth; closes disposition exactly once. |
+| `own-unit-moved` | `id:string`, `from:Square`, `to:Square`, `from!=to`; same live identity and native transfer; atomic-frame handling preserves swaps. |
+| `own-unit-transformed` | `id:string`, `fromType:UnitType`, `toType:SpawnPiece`, `paidDelta:0`, `fromType!=toType`; live type and native transformation agree; preserves identity/basis. |
+| `own-unit-mode-changed` | `id:string`, `mode:'tank'|'siege'`; live own Tank only, native mode changes and current state differs. |
+| `own-unit-destroyed` | `id:string`, `typeAtLoss:SpawnPiece`, `square:Square`, `retiredPaidBasis:Int[0,9]` exactly the live lineage basis; actual destruction, retire once; CC damage uses its separate event. |
+| `own-mine-endowed` | `mineId:string`, `actionRef:null`, `square:Square`; initial actual own mine only. |
+| `own-mine-created` | `mineId:string`, `actionRef:OwnActionRef`, `square:Square`; actual own native mine creation with next mine counter; no mineral unit basis. |
+| `own-mine-removed` | `mineId:string`; actual live own mine removal once. |
+| `own-income` | `actualCreditedMinerals:Int[0,3]`; exactly the native income after storage capping at settlement, including zero credit. |
+| `own-cc-lives-changed` | `before:Int[0,3]`, `after:Int[0,3]`, `after<before`; actual native own damage; before matches reducer. |
+| `enemy-unit-destruction-witnessed` | `witnessId:string`, `square:Square`, `type:SpawnPiece`, `replacementLowerBound:Int[1,9]` exactly native spawn cost, `paidLowerBound:0`; the closed causal authorization below is mandatory. |
+| `vision-witness` | `turn:Int[0,45]` at actual native observation, nondecreasing in recipient event order and ≤batch turn; `changes:readonly ObservedCell[1..64]`, dense unique square-ordered; exact v1 lit/revealed/unknown variant constraints with recipient-side ownership. |
+
+No nullable optional substitute or undocumented extra field is accepted. Private source references and reasons are not variant extensions.
+Each event's lifecycle/cost/image/action conditions are verified against trusted native facts before it is issued; public decoding alone cannot authenticate a producer.
 Receipts/gas events precede the corresponding committed native effects in the settled batch; they appear only after **successful whole-pair commit**.
 Native effect order determines the authorized effect order, with canonical own-ID order inside an atomic frame and native causal suborder for one ID; credited income follows native settlement.
 Every public batch applies transactionally by identity; intermediate occupancy checks cannot turn an atomic swap into a spurious destruction.
@@ -342,13 +391,41 @@ Global key-byte deduplication precedes retained-quota consumption; the same queu
 Reserve pass before traversal; pass consumes 1 unique slot and no attempted extension.
 Available family means an authorized singleton intent iterator is nonempty, not that hidden admission would accept it.
 
+`CandidateDiagnostics` has exactly these fields, with dense canonical arrays and closed record keys:
+
+```text
+Record{
+  profile:"A"|"B"|"C",
+  attemptedExtensions:Int[0,2048],
+  uniqueIncludingPass:Int[1,512],
+  retainedNonPass:Int[0,511],
+  duplicates:Int[0,2048], ownerSkipped:Int[0,2048], quotaSkipped:Int[0,2048],
+  pruned:Record{actor,shape,timing,resources,mineCap,ownOccupancy:Int[0,2048]},
+  activeFamilies:Kind[0..7], exhaustedLanes:Lane[0..8],
+  pools:PoolRecord[8], retainedByOwner:KindCounts,
+  retainedByLength:Record{"1","2","3","4":Int[0,511]},
+  attemptCapReached:boolean, capacityCapReached:boolean,
+  stopReason:"capacity-cap"|"attempt-cap"|"exhausted"
+}
+```
+
+`KindCounts` has exactly the seven K keys, each `Int[0,511]`. `Lane=Kind|'shared-composition'`.
+`PoolRecord={id:Lane,initialCapacity:Int[0,511],finalCapacity:Int[0,511],retained:Int[0,511],exhausted:boolean}`; order is K then shared.
+Initial capacity is measured AFTER initial redistribution; final capacity includes later proven-exhaustion transfers.
+`activeFamilies` and `exhaustedLanes` are unique and ordered by those registries. Pool retained counts are funding counts; retainedByOwner separately counts semantic owner.
+Classify each append once: first failed guard under priority `actor,shape,timing,resources,mineCap,ownOccupancy` →pruned; otherwise wrong lane/short shared prefix →ownerSkipped; otherwise retained-key duplicate →duplicates; otherwise no pool capacity →quotaSkipped; otherwise retainedNonPass.
+Continuation enqueue semantics are unchanged by retention classification. Require `attemptedExtensions=sum(pruned)+ownerSkipped+duplicates+quotaSkipped+retainedNonPass`.
+Require `uniqueIncludingPass=1+retainedNonPass=1+sum(retainedByOwner)=1+sum(pools.retained)=1+sum(retainedByLength)`; retained≤finalCapacity and both initial/final capacities sum to 511.
+`attemptCapReached` equals attemptedExtensions=2048; `capacityCapReached` equals uniqueIncludingPass=512. Capacity takes stopReason precedence when both are true; exhausted means every lane proved exhausted without either stopping cap.
+
 | Profile | Family owner for a nonempty queue | Initial inactive-family redistribution |
 |---|---|---|
 | A | First non-classical kind in array order, otherwise classical. | Release each inactive 48 to the shared composition pool. |
 | B | First action's kind. | Redistribute inactive 48s among active family lanes in canonical round-robin; shared stays 175. |
 | C | Minimum canonical kind appearing anywhere in the queue. | Split aggregate released capacity: floor(half) to active canonical round-robin, remainder to compositions. Odd capacity goes to compositions. |
 
-All profiles start with active family capacity 48, shared capacity 175, and pass capacity 1 before redistribution.
+All profiles start with family reservations 48, shared capacity 175, and pass capacity 1 before redistribution.
+If no family is active, every profile places all 511 non-pass slots in the shared pool rather than distributing into an empty family set; exhausted domains still emit only pass.
 Proven complete family-iterator exhaustion releases unused family capacity to compositions; a work cap is NOT evidence of exhaustion.
 Proven composition-iterator exhaustion redistributes unused shared capacity among nonexhausted families, one slot/family/canonical round.
 No active/nonexhausted recipient means unused capacity remains unused; retained capacity is an upper bound, never a required count.
@@ -481,7 +558,7 @@ Actor type reflects its supported own-intent hypothesis; tank-mode-known/sieged 
 | 66–67 | 2 | `exposure.known,exposure.possible` | After-prefix stationary enemy-source counts to this actor/64. |
 | 68–69 | 2 | `pressure.units,pressure.cc` | Known distinct observed NONCC targets/64; known observed enemy CC relation indicator. |
 | 70–71 | 2 | `protection.units,protection.cc` | Positive threatened-own-NONCC reduction/64; CC protection indicator. |
-| 72–83 | 12 | `ix.spendLiquidity,ix.gasAvailability,ix.deployMargin,ix.exposurePaidKnown,ix.exposurePaidPossible,ix.exposureReplacement,ix.tradeEnemyLoss,ix.ccPressureRisk,ix.noveltyReveal,ix.uncertainRayCost,ix.staleApproachAge,ix.protectionPaidLoss` | Exact ordered formulas below. |
+| 72–83 | 12 | `ix.spendLiquidity,ix.gasAvailability,ix.deployMargin,ix.exposurePaidKnown,ix.exposurePaidPossible,ix.exposureReplacement,ix.tradeEnemyLoss,ix.ccPressureRisk,ix.noveltyReveal,ix.uncertainRayDistance,ix.staleApproachAge,ix.protectionPaidLoss` | Exact ordered formulas below. |
 
 ```text
 spendLiquidity       = cost.minerals * B
@@ -493,12 +570,13 @@ exposureReplacement  = exposure.known * actor.replacement
 tradeEnemyLoss       = pressure.units * ER
 ccPressureRisk       = pressure.cc * Cv
 noveltyReveal        = nominal.newlyLit * I(nominal actor type=b [Mecha])
-uncertainRayCost     = ray.uncertain * (cost.minerals+cost.gas)/2
+uncertainRayDistance = ray.uncertain * effectiveChebyshevDistance/7
 staleApproachAge     = nominal.staleApproach * selectedStaleMemoryAge
 protectionPaidLoss   = protection.units * D
 ```
 
 `selectedStaleMemoryAge` belongs to the most-recent remembered square selected in §9, not necessarily `target.memory.age`.
+`effectiveChebyshevDistance` uses effective authored-origin rewrites; it is zero when ray is inapplicable. The distance interaction carries uncertainty signal even though classical actions have zero resource cost.
 The position counts sum `1+10+5+12+12+11+2+2+2+4+3+2+2+2+2+12=84`.
 
 ### Ordered queue block — all 34 names
@@ -936,8 +1014,7 @@ These **17 additional obligations** trace the supplied corrections and related s
 ### Rereview disposition, not a freeze-ready claim
 
 The draft applies 17 correction groups with 17 explicit negative obligations; adversarial/security rereview must confirm the replacements and their interactions.
-Two supplied schema-count/choice descriptions require explicit rereview acknowledgement: Configuration's named list has 26 keys, not 29; API C remains offered, whereas only provenance C defers executable freeze.
-The correction text's extraneous words do not define additional model fields, permissions, metadata channels, rewards or tests.
+Configuration has 26 named keys and Versions has 21; their exact named schemas govern validation. API C is executable; only provenance C defers completed freeze.
 Future adapter/native-hook implementation and execution must establish all obligations; this paper edit provides no new source/test/image identity or assurance.
 
 Future evidence must join source-before/after identities, fixture manifest, raw test bytes, tool/dependency closure and image measurements without fabricated hashes.
