@@ -1,9 +1,9 @@
 # ML Adjutant — weights, combination coverage, and planning horizons
 
-Status: **PLANNED learning contract. Historical Phase 2 hermetic verification PASSED; not a learned PASS.**
+Status: **FROZEN future R1 learning design; NOT implemented or validated. Historical Phase 2 hermetic verification PASSED; not a learned PASS.**
 R0 full implementation post-image adversarial review is **REVIEWED / READY TO MERGE: no**;
 the [R0 ledger](PLAN-ml-adjutant.md#r0-findings-ledger--full-implementation-post-image-review) holds **15 pending findings: 7 HIGH + 8 MEDIUM**.
-Security rereview is **UNRECORDED**. [R1.1–R1.8 selections and nine follow-up directions](ml-adjutant-r1-recipe.md) are **RECORDED**, but contract freeze is **INCOMPLETE**.
+Full implementation security rereview is **UNRECORDED**. [R1 selections](ml-adjutant-r1-recipe.md) and [exact contracts](ml-adjutant-r1-contracts.md) are **FROZEN as future design**, not implementation/readiness approval.
 No approved run or training authorization exists; R2–R8 remain pending and unimplemented; weights **NONE**.
 Executor selected **Broader first trained ranker**. The FIRST Phase 3 training run requires
 a separately versioned combination generator and authorized economic/positional interactions,
@@ -14,9 +14,9 @@ Current `challenge-features-v1` is an inspectable Phase 2 contract, **not suffic
 Owners: [roadmap](PLAN-ml-adjutant.md), [R1 recipe decisions](ml-adjutant-r1-recipe.md), [strict challenge](ml-adjutant-challenge.md),
 [Policy-contract boundary](../packages/starchess-arena/ml-adjutant-policy-contracts.puml).
 This document authorizes no training code, model/artifact publication, registry activation, or browser rollout.
-The selected training owner is `packages/starchess-training`, not yet created; any proposed npm name is not approved.
-Follow-up A selects purpose-based authorized `/observations`, `/candidates`, `/features`, and `/artifacts` interface suffixes.
-Npm ID, exact package assignment/full export paths, and signatures remain TBD; this does not assign all artifact logic to arena.
+The approved training owner remains `packages/starchess-training`, private `@chess-coach/starchess-training` version `0.0.1`, with StarChess-only scope and no inferred “starchess-coach” rename.
+API A freezes future arena `@chess-coach/starchess-arena/observations` and `/events`; training `@chess-coach/starchess-training/candidates`, `/features`, `/artifacts`.
+Contracts §§3–4 define exact signatures/closure; this approval creates no package or exports and does not assign artifact logic to arena.
 Select `training → arena authorized public contracts → pure core`, with no core/browser ML dependencies.
 Current arena root exports expose unrestricted `SideContext` and no challenge contracts; design a dedicated observation-only public API.
 Keep trusted host/opponent context separate. Deliberately extend future dependency closure, export resolution,
@@ -24,10 +24,23 @@ source-inventory partitions/entrypoints, hermetic capture/installed-store contex
 Future public exports/inventory/layer policies and hermetic package-context capture must refresh for the selected training/v2 closure.
 Do not blindly relax the unused baseline's execution→contracts restriction or publish unrestricted `SideContext` as a model interface.
 
-**Decision/freeze boundary:** the [front nine-detail table and glossary/readings](ml-adjutant-r1-recipe.md#nine-detail-decision-record--accepted-directions-not-a-completed-freeze)
-records A–I; this document carries the corresponding technical contract below.
-Architecture task `ses_f06d4c62cffe4MgE59PmzWw1rO` retains **R1 contract freeze INCOMPLETE** until the remaining exact fields freeze.
-No implementation, run, validation result, or new permission follows from those selections.
+**Decision/freeze boundary:** the [recipe](ml-adjutant-r1-recipe.md) preserves the original choices and follow-ups; the [exact R1 contracts](ml-adjutant-r1-contracts.md) own the approved future schemas/calculus and retained rejected alternatives.
+Source inventory and source facts here remain frozen historical evidence; no source refresh or new identity is claimed.
+
+| Slot | Selected | Exact approved contract |
+|---|---|---|
+| `PROFILECHOICE_API` | A | Split by owner, StarChess only: arena `/observations` and `/events`; training `/candidates`, `/features` and `/artifacts`. |
+| `PROFILECHOICE_QUOTA` | B | First action's kind owns a nonempty queue; inactive family capacity goes to active families in canonical round-robin; shared capacity stays 175. |
+| `PROFILECHOICE_PROVENANCE` | A | Private generic native companion hooks; unchanged normal native result, with private causal frames and visibility checkpoints. |
+| `PROFILECHOICE_CURRICULUM` | A | Even STARTED slot corpus, odd slot live; live seats alternate White/Black: 500 corpus + 250 live White + 250 live Black at 1000. |
+| `PROFILECHOICE_VALIDATION` | A | Central differences: `eps=1e-6`, `atol=1e-8`, `rtol=1e-5`, using contracts §16's coordinate-wise pass rule. |
+| `PROFILECHOICE_COMMON` | A | Full approval of contracts §§3–17 and C01–C17, including exact schemas, 370 features, RNG, eligibility, five-run completion and checkpoint rules. |
+
+Only `{api:'A',provenance:'A',quota:'B',curriculum:'A',validation:'A'}` is approved runtime metadata for this recipe; alternatives are rejected reference, never switches/fallback.
+COMMON A includes the 370-feature registry; paid surviving/destroyed/wasted; transient authorized vision and causal loss witnesses; parent ACK/fixed deadlines; exact Float64 binary64 hex; SHA-256 UTF-8 JSON-array/UInt32BE; mine lifetime and 2048-event batch cap; closed nested metadata; zero-sample PG/L2/baseline exclusion; durable checkpoints; and all-five valid completion before formal final-valid-101 primary.
+Lead reported document-only adversarial `ses_f061f5cf2ffe4PAinuWeFgHP8f` **READY freeze-candidate: yes** and security `ses_f061f5c50fferpU272G6KbdWLw` **docs freeze candidate READY** before Executor approved the design.
+Those prior corrected-draft verdicts do not close R0 or replace full implementation rereview. Lead arranges synchronized-document rereview; this pass claims no new verdict.
+No implementation, run, validation result or training permission follows from design freeze.
 
 ## 1. What a weight means
 
@@ -122,10 +135,9 @@ not an admission guarantee or a change to the codec bound of 65.
 Follow-up B selects **composition emphasis** when all seven canonical families are available:
 **48 capacity slots each (336 total) + 175 shared composition slots + 1 pass = 512**.
 Capacity is neither mandatory emission nor a unique-output guarantee; the 2048-attempt counter always includes duplicates/pruned extensions.
-Freeze available-family detection, canonical family order/redistribution when unavailable, shared-pool eligibility/traversal/distribution,
-single quota ownership for mixed queues, pass reservation, ordered timing/same-actor compositions, authorized pruning,
-canonical content-hash identity/deduplication, and exact counters before training.
-First-action-kind/first-special ownership was not selected and remains TBD; counting one queue in two pools does not make two unique candidates.
+Contracts §8 freezes quota **B**: first action's kind owns each nonempty queue; inactive 48s redistribute to active families in canonical round-robin; shared remains 175.
+The same section defines available families, canonical FIFO/depth-cursor traversal, prefix-native timing/actors, pass, authorized pruning priority, exact counters and hash plus raw-byte dedup.
+First-nonclassical/minimum-canonical ownership remain rejected reference. One retained queue uses one funding pool; counting it in two pools cannot create two unique candidates.
 
 For tractable fixtures enumerate the full conceptual domain and compare bounded output against that reference.
 For larger cases report omitted families, pruning reasons, queue lengths, timings, units, and ordering alternatives.
@@ -189,7 +201,8 @@ L_own_replacement = Σ ruleReplacementValue(type_at_loss)
 Opening-endowed units start with zero actual paid investment.
 Free promotion changes replacement value but does not create a mineral payment.
 Promotion/transform/movement preserve lineage; transfers do not duplicate accumulated investment.
-Record separately any newly paid debit, surviving investment, destroyed replacement value, and own CC/HP damage.
+Record separately any newly paid debit, surviving/destroyed/wasted investment, destroyed replacement value and own CC/HP damage.
+Contracts §§5–7 freeze actual receipt dispositions and `ownPaidDebits=ownPaidSurviving+ownPaidDestroyed+ownPaidWasted`; an unmaterialized paid deployment is waste, not a fabricated birth/death.
 Reconcile ledger totals against host-confirmed own bank debits after settlement and chips.
 Gas usage is a separate rule resource, not mineral investment.
 The ledger requires a versioned authorized event/identity contract and tests; current square sightings cannot provide it.
@@ -197,17 +210,18 @@ R1 selects **combined authorized events→ledger plus normalized side-authorized
 Follow-up D selects **boundary batches**: authorized ordered events plus normalized snapshots at relevant chip/settlement boundaries,
 reconciled before consumption. The host owns actual debits and issues own lineage IDs.
 Use side-local authorized event sequences; ID/sequence counts or gaps must not leak hidden events.
-Exact authorized payload/order, ID formula, sequence/deduplication rules, visible-loss confirmation,
-same-turn chip/batch ordering, rollback/no-debit behavior, and reconciliation/mismatch semantics remain to freeze.
-The zero paid basis of opening units/free promotion and separate investment/replacement quantities are selected; their fields remain TBD.
+Contracts §§5–7 freeze private native companion **A**, causal frames/visibility checkpoints, exact payloads/IDs/order/dedup, mine lifetime, scheduled initial/turn-open/settled batches and transactional reconciliation/mismatch semantics.
+Authorized transient vision survives in memory/everLit even when final cells become unknown; piece-only reveals do not add everLit.
+Zero opening/free-promotion paid basis and separate paid/replacement fields are frozen design, not implemented ledger evidence.
 Raw full-resolve events remain host-private.
 Private KVS, queues, and full snapshots never become model channels.
 
 Opponent losses are **confirmed-loss lower bounds**, with separate uncertainty state.
 Count only side-authorized destruction witnesses; deduplicate confirmed identities/events across repeated sightings.
 Visible nominal replacement value does not reveal actual opponent investment.
-A witnessed paid deployment may support a documented lower bound only under a frozen authorization rule.
-Unknown cost remains unknown. Do not reconstruct an exact enemy bank or investment ledger from privileged KVS.
+The approved rule requires actual native destruction plus visibility of the live victim in its causal pre-destruction image; no visibility proof means no witness.
+Enemy paid lower bound is exactly **0**, replacement lower bound is known spawn cost, and upper remains unknown; no alternate paid-deploy witness rule is selected.
+Do not reconstruct an exact enemy bank or investment ledger from privileged KVS.
 Fog disappearance, absent stale sightings, or a speculative ray hit is not confirmed destruction.
 
 First-training v2 features must express candidate-dependent economics: requested spend × own liquidity,
@@ -242,30 +256,30 @@ Any future exploration/survival/offense presets are separately versioned **confi
 Pin presets, resource rules, and feature/generator versions separately; changing a preset never changes legality.
 Hard survival filtering would alter the proposal contract and needs its own review/version, not an undocumented model override.
 
-## 7. Proposed outcome-driven Phase 3 learning — not implemented
+<a id="7-proposed-outcome-driven-phase-3-learning--not-implemented"></a>
 
-**Prerequisite:** implement and freeze the broader combination generator, own-loss/opponent-knowledge contracts,
-and `φ_v2` names, dimensions, scales, interactions, and collision limitations.
-The exact v2 names and dimension `d_v2` remain **unsettled**. There is no promise to publish a 158-value trained artifact.
+## 7. Frozen future outcome-driven Phase 3 learning — not implemented
+
+**Prerequisite:** implement and validate the frozen broader generator, own-loss/opponent-knowledge contracts and `φ_v2` names, dimensions, scales, interactions and collision limitations.
+The frozen future dimension is **370**, `34+4×84`, with every name/index/formula defined in contracts §§9–10,15. No 158-value v1 trained artifact satisfies this recipe.
 R1 selects **typed feature blocks plus a fixed flat ordered manifest**.
 Follow-up C selects **action-position blocks** holding candidate-context at four rules-derived positions with order preservation
 and distinct unknown-versus-absent masks. Four derives from gas 3 plus one classical, not an additional numeric approval.
 Retain queue-level combo/timing synergy and candidate×economic/vision/tactics/exploration interactions;
 linear position-only coefficients do not create nonlinear interactions automatically.
-Actual v2 version strings, names/dimension, scales/masks, flattening order, interaction set/calculus,
-and public artifact schema remain TBD; the selected structure does not freeze those contracts.
+Contracts §§4,9–10,15 freeze version strings, typed Queue34/Position84 blocks, names/order/scales/masks, interactions/calculus and exact artifact schema; validation remains future.
 
 Selected first direction: **SGD + REINFORCE**, with linear logits and stable softmax over generated candidates.
 Follow-up H selects **summed episode gradients**, **L2 once per episode update**, and a **per-seed all-history mean**
 of past eligible completed returns with **startup 0**. The objective is not a per-length mean; recent-100 and EMA were not selected.
-The selected loss/SGD direction below still needs the exact eligibility and data/update ordering contract:
+Contracts §§12–13 freeze the exact eligibility and atomic data/update ordering for this selected loss/SGD direction:
 
 ```text
 m_t = max_{c∈G_v(h_t)} s_w(h_t,c)
 π_w(c|h_t) = exp((s_w(h_t,c)-m_t)/τ)
              / Σ_{k∈G_v(h_t)} exp((s_w(h_t,k)-m_t)/τ)
 R = +1 actual candidate win; 0 actual draw; -1 actual candidate loss
-R = -1 policy/challenge failure, including selected-queue admission/resource or policy-contract failure
+R = -1 proved eligible native/challenge failure on verified accepted choices; not software/contract failure
 b = mean(past eligible completed returns for this seed), or 0 if history is empty
 A = stopGradient(R-b)
 L = -A Σ_t log π_w(c_t|h_t) + λ||w||²/2
@@ -274,10 +288,10 @@ w' = w - η∇_w L
 ```
 
 Fix `b` before sampling the current episode; update baseline history only after eligible completion.
-Exact baseline-history ordering relative to the SGD update remains TBD; never mix seeds or use the current return in its own baseline.
+Atomically commit verified weights, counters, ACKed stream/journal/control state and current-return baseline insertion once after proposal verification; never mix seeds or use the current return in its own baseline.
 It is action-independent and cannot incorporate the current candidate choice or reward before that choice.
 Use candidate-side rewards from **newly executed games**, never historical White winner labels.
-Store the sampled failed selection as a decision when assigning queue-failure reward.
+Store the ACKed verified selected member as a decision for proved native admission/resource rejection; malformed output, nonmember choice, exception/script-contract or unverified stop instead aborts ALL.
 Follow-up F classifies infrastructure/provenance aborts separately and **stops ALL training**, not just a batch or one seed.
 Preserve consumed-attempt counters and diagnostics; abort the episode without fabricated reward or partial gradient update.
 All started attempts count toward the per-artifact 1000 cap, including incomplete/aborted attempts.
@@ -293,27 +307,25 @@ Use **five independent master seeds 101..105** and **five independent artifacts*
 Initial maximum: **1000 episodes per artifact**, total ceiling **5000**, not 1000 total or 3000;
 follow-up F counts **all started attempts**, not just successful completions, against that ceiling.
 Derive separate named selection, environment-settlement, policy-sampling, and opponent streams from each master;
-follow-up E selects **SHA-256 plus existing `mulberry32`**. Versioned master+stream-label encoding, endianness/byte-to-seed mapping,
-domain separation, collision scope/rejection policy, and lifecycle/reset semantics remain TBD before actual derived seeds can be pinned.
-Record derived seeds after freeze and reject collisions under that policy. Specify the deterministic generator's stream as unused.
+follow-up E selects **SHA-256 plus existing `mulberry32`**. Contracts §11 freezes UTF-8 `JSON.stringify(['starchess-training-rng-v1',masterInteger,label])`, SHA-256 first four bytes unsigned big-endian uint32, domain separation and lifecycle.
+Future tooling must measure/persist all 20 roots and reject any cross-roster collision with no salt/rederivation; no actual derived seeds are pinned here.
+Selection/policy/opponent persist; environment-settlement is derived but unused; deterministic generator has no derived root and stays unused.
 Keep gate pins unchanged: corpus arena 0, inference 0 reset per match, live arena 0..17 in both seats; H=1 first, H≤3 later.
 Do not reuse gate-selection metadata or hash IDs as input features.
 Follow-up G **prospectively names the final VALID artifact from master 101 primary before seed comparisons**.
 Keep the other four independent artifacts for variability; do not average, choose a best gate result, or substitute another seed/diagnostic checkpoint if 101 fails.
 Diagnostic checkpoints occur **every 100 STARTED ATTEMPTS**, saving complete verified training state at eligible boundaries,
-not mid-episode partial rewards. Exact phase/counter/failure/save-boundary semantics remain TBD.
-Q7 asked for the **model-selection contract**, not a separate curriculum choice; its main question proposed alternating corpus/live slots and live candidate seats.
-Curriculum mixture/order remains **a proposal, NOT separately selected/approved or frozen**, awaiting an explicit R1 decision.
-**Only if that alternating proposal is later chosen** and reaches the full 1000 attempts, the illustrative allocation is **500 corpus + 500 live**, with **250 live per seat**; this is not a selected schedule.
-Case order/shuffle, opponent selection/initialization, slot/seat counter boundaries, and stopping semantics remain TBD.
-This selects no new development suite, model average, all-five-artifact gate, or held-out claim for the training-used 18.
+not mid-episode partial rewards. Contracts §15 freezes save phases/counters/durability: delayed bucket100 may save eligible101; zero-choice1000 cannot launch1001; publication failure aborts ALL.
+Explicit approval now selects curriculum **A**, superseding Q7's earlier unselected illustration: even STARTED slot corpus, odd live, live White/Black alternating.
+At 1000 STARTED slots: **500 corpus + 250 live White + 250 live Black** per master; early abort does not imply full allocation.
+Contracts §14 freezes ascending serial masters, manifest-order Fisher–Yates epochs, fresh episode history/strategic memory, persistent streams and cursor consumption on STARTED.
+This selects no new development suite, model average, all-five-artifact evaluation gate or held-out claim for the training-used 18; all-five VALID completion is a protocol requirement.
 
-Baseline eligibility for policy failures/empty-decision episodes/infrastructure aborts, zero-decision updates,
-incomplete-episode handling, exact failure taxonomy, and baseline-history/SGD ordering remain TBD.
-Freeze started-attempt/completion/cap counters, epoch 0..1000 identifiers, exact stopping/checkpoint details and the pending curriculum mixture/order decision,
-artifact validity/selection types, versions/metadata and candidate/pruning counters. All gate failures stay counted.
-Persist gradient, numerical, coverage, runtime, reload/provenance validation plus exact semantic freeze before an approved run.
-The [eight-section R1 record with nine follow-up details](ml-adjutant-r1-recipe.md) owns the concept readings and remaining freeze items; R1 is not complete.
+Contracts §§12–15 freeze proof-based eligibility, exact counters, stopping, checkpoint/final validity and versions/metadata.
+Verified completion with ≥1 parent-ACKed verified sampled decision is eligible; zero-sample terminal/challenge failure is diagnostic-only with **no SGD, no L2, no baseline insertion**.
+Parent permits and ACKs verify compact decision/prefix journals under fixed before-write 10s deadlines; no status renewal, unACKed draw/update, parent env.step or next-candidate rescue is allowed.
+All gate failures stay counted. Persist gradient, numerical, coverage, runtime and reload/provenance validation before an approved run.
+The [R1 recipe](ml-adjutant-r1-recipe.md) owns concept readings; [exact contracts](ml-adjutant-r1-contracts.md) own the **FROZEN future design**, not implementation/readiness.
 
 ## 8. Planned artifact and inference contract
 
@@ -329,16 +341,23 @@ core rules, strategic revision, source inventory partitions, runtime/dependency 
 feature schema and ledger authorization, and training reward/failure handling.
 Load one immutable artifact before evaluation; allow no online updates, per-case tuning, hidden rescue, or missing-model fallback.
 Use the prospectively selected final valid seed-101 primary; retained variability artifacts and diagnostic checkpoints are not fallback candidates.
-Pin the selected SHA-256/`mulberry32` derivation only after exact encoding/mapping/collision/lifecycle fields freeze.
+Persist measured SHA-256/`mulberry32` roots only after implementing the frozen derivation/collision/lifecycle rules; approval supplies no numeric roots.
+Contracts §15 uses exact finite binary64 big-endian Float64Hex for all persisted float fields, preserving signed zero; schemas close 26 Configuration keys and 21 Versions keys.
+Final VALID requires started=verifiedCompleted=1000, no abort, ≥1 nonzero outcome-driven PG update, finite aligned coefficients and bit-exact verified reload.
+All five valid serial runs must finish before the COMPLETE experiment envelope/formal final-valid-101 primary; a later-master abort forbids fallback to finished101.
+This prerequisite is not five evaluation gates; only the formal primary runs the unchanged strict 18+36 gate and reruns.
 Product fallback remains separate future work. The strict denominator remains 18 corpus + 36 live matches.
 
-## 9. Future persistent acceptance — proposed, not done
+<a id="9-future-persistent-acceptance--proposed-not-done"></a>
+
+## 9. Frozen future persistent acceptance — not performed
 
 Follow-up I selects **small-to-large diagnostic order**: gradient/finite difference → numeric extremes → exhaustive small-domain fixtures
 → capped worst-case runtime → artifact reload/provenance.
 Every specialist privacy/noninterference, ledger/conservation, phase, and Phase 1 host-resource check remains mandatory regardless of ordering.
-Arithmetic-first diagnostics do not waive noninterference. Exact tolerances, fixture manifest, runtime hardware/deadlines,
-and test acceptance criteria remain TBD; no new numeric limits or executed validation are recorded.
+Arithmetic-first diagnostics do not waive noninterference. Validation **A** freezes central differences `eps=1e-6`, `atol=1e-8`, `rtol=1e-5` with `|gAnalytic-gFD|≤atol+rtol*max(|gAnalytic|,|gFD|)` on every declared coordinate/fixture.
+Contracts §§16–17 define fixed basis/multi-decision fixtures and acceptance requirements, including the inherited 10s deadline and Docker resources.
+Actual hardware/provider identity, performance measurements and passing numerical results remain future evidence; no executed validation is recorded.
 
 | Proposed check | Required evidence |
 |---|---|

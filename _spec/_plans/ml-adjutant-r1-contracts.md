@@ -1,17 +1,18 @@
-# ML Adjutant — exact remaining R1 contracts
+# ML Adjutant — approved exact R1 future contracts
 
-Status: **PROPOSED DRAFT — paper contract proposal, NOT accepted or implemented.**
+Status: **FROZEN — Executor-approved future R1 design contract; NOT implemented or validated.**
 R0: **all 15 findings PENDING: 7 HIGH + 8 MEDIUM; READY TO MERGE: no.**
-Security rereview: **UNRECORDED**. Learned model / weights: **NONE**.
-R1 contract freeze remains **INCOMPLETE: C01–C17 corrections are PROPOSED and await adversarial/security rereview, profile choices and common approval**.
-R2–R5 still require implementation and persisted validation; R6 training is not authorized.
+Full implementation security rereview: **UNRECORDED**. Learned model / weights: **NONE**.
+R1 **design contract FROZEN**: Executor selected API A, quota B, provenance A, curriculum A, validation A and COMMON A after document-only rereviews.
+R2–R5 remain **unimplemented** and require persisted validation; R6 training is **not authorized**.
 This document records no build, training, registry activation, test result, new hash, or evidence.
-Only this new document changes; the recipe, weights ledger, PLAN, diagrams, corpus, and evidence remain unchanged.
+This approval pass synchronizes only this contract, the recipe, weights ledger and PLAN; source, tests, diagrams, corpus and evidence remain unchanged.
+The source-reading inventory and historical pins remain frozen historical evidence, not a refreshed source inspection.
 
 ## 1. Authority, vocabulary, and decision boundary
 
-Every normative sentence below describes a **proposed future contract**, unless explicitly labeled an existing selection or source fact.
-Approval can freeze the future R1 design; it cannot certify that the corresponding source or adapter exists.
+Every normative sentence below describes the **approved future contract**, unless explicitly labeled a historical source fact or rejected alternative.
+Approval freezes the future R1 design; it does not certify that the corresponding source, package exports, native hooks or adapter exist.
 Native SCFEN parsing, `addScAction`, `beginScTurn`, `endScTurn`, and `scOutcome` remain the rules and outcome authority.
 The host supplies pure bookkeeping, trusted-source binding, authorization, supervision, and verification, not a second rules engine.
 
@@ -40,28 +41,44 @@ final VALID seed-101 primary, diagnostic cadence every `100` STARTED attempts, n
 Full snapshots, hidden legality, corpus identity, future traces, and unrestricted opponent context never become model inputs.
 Core remains browser-pure; Node ML/tooling belongs outside core and browser dependency closures.
 
-## 2. Approval slots — no profile is selected by this draft
+## 2. Exact selected profiles — approved future design
 
-| Slot | Choices supplied for the upcoming TUI | Draft recommendation |
+| Slot | Selected | Exact approved contract |
 |---|---|---|
-| `PROFILECHOICE_API` | A: arena observations/events; training candidates/features/artifacts. B: arena observations/events/candidates/features; training artifacts. C: arena observations/private projection; training events reducer/candidates/features/artifacts. | A |
-| `PROFILECHOICE_PROVENANCE` | A: generic private native companion. B: persistent private engine entity IDs. C: defer provenance and leave R1 incomplete. | A |
-| `PROFILECHOICE_QUOTA` | A: first non-classical owner, inactive capacity to compositions. B: first action owner, inactive capacity to active families. C: minimum canonical owner, split inactive capacity. | A |
-| `PROFILECHOICE_CURRICULUM` | A: alternating corpus/live. B: 200 corpus warmup then alternating corpus/live. C: corpus/live-White/live-Black cycle. | A |
-| `PROFILECHOICE_VALIDATION` | A: standard central differences. B: stricter central differences. C: both prescribed step sizes. | A |
-| `PROFILECHOICE_COMMON` | A: approve the complete common contract, including npm identity, 370 fields, RNG, eligibility and checkpoint rules. B: request explicit amendments before approval. C: defer freeze; keep first training blocked. | A, subject to review |
+| `PROFILECHOICE_API` | A | Split by owner, StarChess only: arena `/observations` and `/events`; training `/candidates`, `/features` and `/artifacts`. |
+| `PROFILECHOICE_QUOTA` | B | First action's kind owns a nonempty queue; inactive family capacity goes to active families in canonical round-robin; shared capacity stays 175. |
+| `PROFILECHOICE_PROVENANCE` | A | Private generic native companion hooks; unchanged normal native result, with private causal frames and visibility checkpoints. |
+| `PROFILECHOICE_CURRICULUM` | A | Even STARTED slot corpus, odd slot live; live seats alternate White/Black: 500 corpus + 250 live White + 250 live Black at 1000. |
+| `PROFILECHOICE_VALIDATION` | A | Central differences: `eps=1e-6`, `atol=1e-8`, `rtol=1e-5`, using §16's coordinate-wise pass rule. |
+| `PROFILECHOICE_COMMON` | A | Full approval of §§3–17 and C01–C17, including exact schemas, 370 features, RNG, eligibility, five-run completion and checkpoint rules. |
 
-The common npm proposal is **private** `@chess-coach/starchess-training`, version `0.0.1`; it needs approval in every API profile.
+The approved package identity remains `packages/starchess-training`, **private** `@chess-coach/starchess-training`, version `0.0.1`.
+Executor clarified: “it'd be a starchess-coach in any case, yes this work is only for starchess. Split by owner”.
+That clarification fixes StarChess-specific scope and split ownership; it does **not** rename the selected package or authorize a generic chess-coach API.
+Only `{api:'A',provenance:'A',quota:'B',curriculum:'A',validation:'A'}` is approved for future execution; COMMON A is approval metadata, not a sixth runtime Profiles key.
+Other profiles below are **rejected alternatives / reference only**, not runtime switches, fallbacks or unresolved choices. Changing a selection requires a new explicit design decision.
 API suffixes name TypeScript import surfaces, **not HTTP routes**.
-The all-five completion prerequisite proposed below is a training-protocol validity rule, not a new all-five-artifact gate.
-`PROFILECHOICE_*` values await design choices; correction coverage is not a freeze-ready verdict, and future measured references are not invented pins.
-Common approval also covers the new **2048 authorized events/batch** cap; its equality to the existing IPC-message count is coincidental, not inherited authority.
+All-five completion is a training-protocol validity rule, not an all-five-artifact evaluation gate.
+Future measured references and the 20 derived RNG roots remain unmeasured; this approval creates no numeric seed pins.
+COMMON A includes the complete `34+4×84=370` calculus/registry; paid surviving/destroyed/wasted conservation; transient authorized vision and causal loss witnesses; mine lifetime state; the **2048 authorized events/batch** cap; parent ACKs with fixed deadlines and compact verified prefixes; Float64 exact binary64 hex; SHA-256 UTF-8 JSON-array derivation with UInt32BE mapping; closed 26-key Configuration / 21-key Versions schemas; zero-sample exclusion from PG/L2/baseline; durable checkpoint ordering; and all five complete valid runs before formal final-valid-101 primary.
+The batch-event cap's equality to the existing IPC-message count is coincidental, not inherited authority.
+
+### Rejected approval alternatives — retained for decision history
+
+| Slot | Rejected alternatives / reference |
+|---|---|
+| API | B: arena also owns candidates/features. C: training owns the events reducer over arena DTOs/private projection. |
+| Quota | A: first non-classical owner, inactive capacity to compositions. C: minimum canonical owner, split inactive capacity. |
+| Provenance | B: persistent private engine entity IDs/codec. C: defer provenance and leave the design freeze incomplete. |
+| Curriculum | B: 200 corpus warmup then alternating corpus/live. C: corpus/live-White/live-Black cycle. |
+| Validation | B: stricter tolerance. C: both prescribed step sizes. |
+| COMMON | B: amend before approval. C: defer freeze. |
 
 ## 3. Package ownership, exports, and dependency closure
 
-All paths below are proposed exact npm import specifiers, not filesystem URLs.
+All paths below are future exact npm import specifiers, not filesystem URLs or claims of existing exports; only A is selected.
 
-| Profile | Exact proposed public imports |
+| Profile | Exact future public imports (B/C rejected reference) |
 |---|---|
 | A | `@chess-coach/starchess-arena/observations`, `@chess-coach/starchess-arena/events`; `@chess-coach/starchess-training/candidates`, `@chess-coach/starchess-training/features`, `@chess-coach/starchess-training/artifacts`. |
 | B | `@chess-coach/starchess-arena/observations`, `@chess-coach/starchess-arena/events`, `@chess-coach/starchess-arena/candidates`, `@chess-coach/starchess-arena/features`; `@chess-coach/starchess-training/artifacts`. |
@@ -84,7 +101,7 @@ The existing `packages/*` workspace pattern already covers the future folder; no
 
 ## 4. Versioned DTOs, functions, and errors
 
-| Contract | Proposed version |
+| Contract | Frozen future version |
 |---|---|
 | Snapshot / observation codec / history | `challenge-observation-v2` / `challenge-observation-codec-v2` / `challenge-history-v2` |
 | Batch / economic ledger / provenance | `challenge-boundary-batch-v1` / `challenge-economic-ledger-v1` / `engine-provenance-v1` |
@@ -171,7 +188,7 @@ Current native result arrays group attacks, moves, promotions, mine triggers, an
 Actual path-reveal intermediates, simultaneous swaps/collisions, and create-then-die events require native causal hooks, not animation reconstruction.
 Host code must not infer identity from square/type continuity or fabricate a deployment birth from its receipt.
 
-| Profile | Proposed native seam and compatibility |
+| Profile (only A selected) | Future native seam and compatibility (B/C rejected reference) |
 |---|---|
 | A | Private generic companion: `initializeProvenance(snapshot)`, `beginTurnWithProvenance({snapshot,provenance})`, `endTurnWithProvenance({snapshot,provenance,actionBindings})`. Each wrapper returns the SAME native Begin/End result plus updated private provenance and ordered atomic frames. Normal resolver output stays unchanged. |
 | B | Thread persistent entity IDs through native execution context and private codec `engine-provenance-snapshot-v1`. IDs remain non-model data. This has a larger snapshot/replay compatibility cost than A. |
@@ -400,7 +417,7 @@ Available family means an authorized singleton intent iterator is nonempty, not 
 
 ```text
 Record{
-  profile:"A"|"B"|"C",
+   profile:"B",
   attemptedExtensions:Int[0,2048],
   uniqueIncludingPass:Int[1,512],
   retainedNonPass:Int[0,511],
@@ -423,7 +440,7 @@ Continuation enqueue semantics are unchanged by retention classification. Requir
 Require `uniqueIncludingPass=1+retainedNonPass=1+sum(retainedByOwner)=1+sum(pools.retained)=1+sum(retainedByLength)`; retained≤finalCapacity and both initial/final capacities sum to 511.
 `attemptCapReached` equals attemptedExtensions=2048; `capacityCapReached` equals uniqueIncludingPass=512. Capacity takes stopReason precedence when both are true; exhausted means every lane proved exhausted without either stopping cap.
 
-| Profile | Family owner for a nonempty queue | Initial inactive-family redistribution |
+| Profile (only B selected) | Family owner for a nonempty queue | Initial inactive-family redistribution |
 |---|---|---|
 | A | First non-classical kind in array order, otherwise classical. | Release each inactive 48 to the shared composition pool. |
 | B | First action's kind. | Redistribute inactive 48s among active family lanes in canonical round-robin; shared stays 175. |
@@ -519,13 +536,13 @@ All conditional own geometry keeps the nominal mask; no proxy claims that the co
 
 ## 10. Scales, typed masks, and exact 370-field flattening
 
-Proposed manifest dimension is **370**, not v1's 158 and not an arbitrary neuron count: `34 + 4×84 = 370`.
+Frozen future manifest dimension is **370**, not v1's 158 and not an arbitrary neuron count: `34 + 4×84 = 370`.
 Flatten queue first, then positions `0,1,2,3`; expanded names are `queue.<name>` and `position.<i>.<name>`.
 Expand `.K` in family K order, `.P` in `[p,n,b,r,q,k]`, `.S` in `[none,p,n,b,r,q]`; expand comma lists left-to-right.
 For queue row j (zero-based), index=j; position i local row k has index `34+84*i+k`.
 These expansion rules and the following ordered tables define **every** manifest name and index without unnamed dimensions.
 
-| Symbol | Exact proposed scale/context |
+| Symbol | Exact frozen scale/context |
 |---|---|
 | `M,G,T,L,V` | `MAX_STORED_MATERIAL=12`, maximum gas `3`, `MAX_GAME_TURNS=45`, `CC_MAX_LIVES=3`, maximum spawn cost `9`. |
 | `PaidScale,ReplacementScale` | `M×4×64=3072`, `V×4×64=2304`; conservative normalization scales, not game caps. |
@@ -636,9 +653,9 @@ Different queues may still have identical vectors and scores; exact ties use can
 
 ## 11. RNG derivation, state, sampling, and whole-episode ownership
 
-Common proposal: payload is UTF-8 `JSON.stringify(['starchess-training-rng-v1',masterInteger,label])`, with no BOM, LF or spaces.
+Approved derivation: payload is UTF-8 `JSON.stringify(['starchess-training-rng-v1',masterInteger,label])`, with no BOM, LF or spaces.
 Labels are exactly `selection`, `environment-settlement`, `policy-sampling`, `opponent`; take SHA-256's first four bytes as unsigned big-endian uint32.
-Compute the 20 master×label roots only after approval and persist the measured table; reject ANY collision across all 20, with no salt/rederivation.
+Approval is recorded; future tooling must compute the 20 master×label roots and persist the measured table before a run. Reject ANY collision across all 20, with no salt/rederivation; no actual roots are pinned here.
 Zero is permitted; policy/corpus IDs and source identities are never derivation inputs; there is no fifth derived generator root.
 
 ```text
@@ -784,7 +801,7 @@ No partial-episode update, failed-sample repair, unlimited retry, per-decision p
 Masters run serially in ascending order 101..105, each with new zero weights, empty baseline and independently derived root states.
 Let `a=0..999` be the STARTED slot; live occurrence l starts at 0 and advances only on a live STARTED slot.
 
-| Profile | Exact schedule at full 1000 STARTED slots | Allocation |
+| Profile (only A selected) | Exact schedule at full 1000 STARTED slots | Allocation |
 |---|---|---|
 | A | Even a corpus, odd a live; live l even candidate White, odd candidate Black. | 500 corpus, 250 live White, 250 live Black. |
 | B | a<200 corpus; thereafter `(a-200)` even corpus, odd live; live seats alternate by l. | 600 corpus, 200 live White, 200 live Black; NOT 600 corpus followed by 400 live. |
@@ -797,7 +814,7 @@ For each corpus epoch, begin with the 18-case manifest order and descending Fish
 Consume that permutation once, then reshuffle a fresh manifest-order array; selection never draws for live slots.
 Advance corpus cursor/live ordinal/schedule cursor on STARTED, not success; no adaptive gate-feedback curriculum or optimizer-driven case allocation.
 Live opponent is the pinned trusted strategic implementation with feed off and movetimeMs=0, using the persistent opponent stream.
-Training source IDs/allocation become host metadata only after profile approval; no corpus ID/result/private future queue enters the model.
+The approved allocation and future measured training source IDs stay host metadata; no corpus ID/result/private future queue enters the model.
 These training-used cases are not held-out acceptance evidence; the unchanged gate remains exactly 18 corpus + 36 live with semantic reruns.
 
 ## 15. Checkpoint bytes, save boundaries, and final validity
@@ -809,13 +826,13 @@ All objects in this section are closed recursively, all arrays dense, and all de
 `ByteRef={byteLength:Int[0..MAX_SAFE_INTEGER],sha256:string[64 lowercase hex]}`; it identifies parent-registered bounded bytes, never a file/path authority.
 `Float64Hex={hex:string[16 lowercase hex]}` decodes finite IEEE-754 binary64 big-endian; preserve signed zero exactly, reject NaN/Infinity bit patterns.
 Use Float64Hex for EVERY persisted float field and compact-journal numeric float; seeds/states/counters/integral baselineSum remain JSON integers.
-`Profiles={api,provenance,quota,curriculum,validation}`: api/quota/curriculum/validation are A/B/C; executable frozen provenance is A/B only.
-API C remains an offered executable profile; provenance C is the defer/incomplete choice and cannot populate a VALID artifact/checkpoint.
+`Profiles={api:'A',provenance:'A',quota:'B',curriculum:'A',validation:'A'}` is the exact approved runtime record; reject other values in an artifact/checkpoint for this recipe.
+Broader A/B/C schemas below describe retained alternatives only; API C was technically executable, while provenance C deferred freeze. Neither is selected or an operational option.
 `Versions` has exactly the 21 keys `snapshot,observationCodec,history,batch,ledger,provenance,candidateCodec,generator,projection,features,featureManifest,comparator,rng,episodeProtocol,checkpoint,artifact,optimizer,loss,eligibility,recipe,hostConfig`, each equal to its §4 literal.
 `Scales={minerals:12,gas:3,turn:45,ccLives:3,maxSpawn:9,paid:3072,replacement:2304,coords:7,squares:64,actions:4,pairs:6,relationPairs:4096,visionOverlap:256}`.
 These are exact integer metadata constants; no extra scale keys or alternative values are accepted.
 `HostLimits={startupMs:10000,planMs:10000,matchMs:300000,maxWindows:64,maxRecordedPlies:128,maxProposals:4096,maxIpcMessages:2048,maxProgressBytes:1048576,maxCompletionBytes:16777216}`.
-`Validation={profile,eps:Float64Hex[1|2],atol:Float64Hex,rtol:Float64Hex}` decodes exactly to the chosen §16 profile; eps order is [1e-6] or [1e-6,1e-5].
+`Validation={profile:'A',eps:Float64Hex[1],atol:Float64Hex,rtol:Float64Hex}` decodes exactly to `[1e-6]`, `1e-8`, `1e-5`; the rejected two-step profile is reference only.
 
 `Configuration` retains these **26 existing named keys**, not three invented fields to satisfy a conflicting "29-key" count in C10:
 
@@ -835,7 +852,7 @@ Manifest scales live in `FeatureManifest.scales`, not an undeclared Configuratio
 `Counters={started,verifiedCompleted,eligibleCompleted,updates,nonzeroPGUpdates,baselineCount,baselineSum}`: first six are Int[0..1000], baselineSum is Int[-1000..1000].
 Require `nonzeroPGUpdates≤updates=eligibleCompleted=baselineCount≤verifiedCompleted≤started` and `abs(baselineSum)≤baselineCount`.
 `JournalRef={byteLength,sha256,lastRecordOrdinal:Int[0..MAX_SAFE_INTEGER]}` extends ByteRef; ordinal matches the actual parent-registered byte prefix.
-`TrainingSummary={counters:Counters,recipeRef:ByteRef,recipeVersion:'starchess-training-recipe-v1',curriculumProfile:A|B|C,eligibilityVersion:'starchess-training-eligibility-v1',lastStartedOrdinal:999,finalBoundaryOrdinal:Int[0..256],finalJournalRef:JournalRef,aborted:false}`.
+`TrainingSummary={counters:Counters,recipeRef:ByteRef,recipeVersion:'starchess-training-recipe-v1',curriculumProfile:'A',eligibilityVersion:'starchess-training-eligibility-v1',lastStartedOrdinal:999,finalBoundaryOrdinal:Int[0..256],finalJournalRef:JournalRef,aborted:false}`.
 Cross-check summary profile/recipe/version/refs with Configuration/Versions/ProvenanceRefs and verified host journal; metadata labels do not certify completion.
 `ProvenanceRefs` has exactly ByteRef-valued fields `source,tests,sourceInventory,sourcePolicy,dependencyLock,installedTree,frozenStore,toolTree,image,runtimeConfiguration,corpusManifest,corpusSource,coreRules,strategicSource,hostConfiguration,recipe,featureManifest,fixtureManifest,episodeJournal`, plus `privateProvenanceCodec:ByteRef|null`.
 For A privateProvenanceCodec=null; for B it binds the supported `engine-provenance-snapshot-v1` codec bytes in the trusted registry.
@@ -937,10 +954,10 @@ This is NOT an all-five evaluation gate: only the prospectively chosen frozen pr
 
 ## 16. Validation profiles and explicit acceptance calculus
 
-Run the proposed diagnostics small-to-large: gradient → numeric extremes → exhaustive small-domain → capped runtime → reload/provenance.
+Run the frozen future diagnostics small-to-large: gradient → numeric extremes → exhaustive small-domain → capped runtime → reload/provenance.
 Privacy, ledger/conservation, phase/admission and Phase 1 resource checks remain mandatory in every profile.
 
-| Profile | Central finite-difference ε | atol | rtol | Pass rule |
+| Profile (only A selected) | Central finite-difference ε | atol | rtol | Pass rule |
 |---|---|---|---|---|
 | A | `1e-6` | `1e-8` | `1e-5` | Every declared fixture/coordinate passes. |
 | B | `1e-6` | `1e-9` | `1e-6` | Every declared fixture/coordinate passes stricter tolerance. |
@@ -975,7 +992,7 @@ R0 A14/A15 remain open until validated pre-parse/aggregate allocation and exact 
 Readiness requires the training closure captured into the refreshed offline dependency/image context and both adversarial/security reviews recorded READY.
 No fixture file, source pin, HMAC/SHA digest, executed command or passing count is manufactured here; future evidence records actual bytes and outcomes.
 
-Proposed `training-readiness-fixtures-v1` lists these stable fixture IDs; implementation later binds each to measured source/input/output references.
+Frozen future `training-readiness-fixtures-v1` lists these stable fixture IDs; implementation later binds each to measured source/input/output references.
 
 | ID | Required independently checked case |
 |---|---|
@@ -1019,25 +1036,32 @@ These **17 additional obligations** trace the supplied corrections and related s
 | C16 | §4,6,12: reject 65-change witness, 2049-event batch, oversized 1MiB progress/codec or 16MiB complete frame before expensive allocation; do not silently drop knowledge or retain unbounded simultaneous buffers. |
 | C17 | §15: injected publication race/fsync failure cannot fulfill bucket before durable exclusive commit; delay100→actual101, never1001; abort later master leaves no COMPLETE envelope/formal101 primary. |
 
-### Rereview disposition, not a freeze-ready claim
+### Document-only rereview disposition — design freeze, not implementation approval
 
-The draft applies 17 correction groups with 17 explicit negative obligations; adversarial/security rereview must confirm the replacements and their interactions.
-Configuration has 26 named keys and Versions has 21; their exact named schemas govern validation. API C is executable; only provenance C defers completed freeze.
+The corrected draft received the following lead-reported **document-only** rereviews before Executor's profile/common approval:
+
+| Review | Task | Recorded verdict / scope |
+|---|---|---|
+| Adversarial | `ses_f061f5cf2ffe4PAinuWeFgHP8f` | **READY freeze-candidate: yes**; corrected R1 document only. |
+| Security | `ses_f061f5c50fferpU272G6KbdWLw` | **docs freeze candidate READY**; corrected R1 document only. |
+
+COMMON A accepts C01–C17 and the corrected schema descriptions: Configuration has **26 named keys**, Versions has **21**; API C was executable as an alternative, while provenance C deferred completed freeze.
+Those verdicts are not full implementation rereviews. All R0 findings remain pending, and full implementation security rereview remains **UNRECORDED**.
 Future adapter/native-hook implementation and execution must establish all obligations; this paper edit provides no new source/test/image identity or assurance.
 
 Future evidence must join source-before/after identities, fixture manifest, raw test bytes, tool/dependency closure and image measurements without fabricated hashes.
-Existing evidence and historical pins remain immutable; old successes do not prove these proposed negative regressions pass.
+Existing evidence and historical pins remain immutable; old successes do not prove these required future negative regressions pass.
 
 ## 18. Source-reading map and original authorities
 
-The source facts used here were read locally; proposed APIs/version strings/seams above are not claims of current exports.
+The source facts used in the reviewed draft were read locally then; this map remains historical and was not refreshed in the approval pass. Frozen future APIs/version strings/seams above are not claims of current exports.
 
 | Reading reference | What it anchors |
 |---|---|
-| [Original R1 recipe](ml-adjutant-r1-recipe.md) | Eight existing choices, nine accepted directions, unselected remaining fields and experimental numbers. |
+| [R1 recipe](ml-adjutant-r1-recipe.md) | Eight original choices, nine accepted directions and synchronized approved profiles; experimental numbers are not validated performance. |
 | [Weights ledger](ml-adjutant-weights.md) | Coefficient meaning, cancellation, broader first ranker, own paid/replacement distinction and original outcome objective. |
 | [Execution/evidence guide](ml-adjutant-execution-revisions.md) | A08 fixed checked deadlines, A09 host-audited roster, A10 native validation plus fixed-N accounting. |
-| [Roadmap / R0 ledger](PLAN-ml-adjutant.md#r0-findings-ledger--full-implementation-post-image-review) | All 15 pending findings, historical scope, R0–R5 prerequisites; not amended by this draft. |
+| [Roadmap / R0 ledger](PLAN-ml-adjutant.md#r0-findings-ledger--full-implementation-post-image-review) | All 15 pending findings, historical scope, R0–R5 prerequisites; no finding closed by design approval. |
 | [Strict challenge](ml-adjutant-challenge.md) | Unchanged acceptance boundary and strict failure denominator. |
 | [DTOs](../../packages/starchess-arena/src/challenge/types.ts), [observation codec](../../packages/starchess-arena/src/challengeContract/observationCodec.ts), [validation](../../packages/starchess-arena/src/challengeContract/validation.ts) | Current v1 observation-only signature, masks, exact validation and throwing `ContractError` style. |
 | [Candidate codec](../../packages/starchess-arena/src/challengeContract/candidateCodec.ts), [config](../../packages/starchess-arena/src/challenge/config.ts) | Seven kinds, codec bound 65, canonical keys, costs, comparator and current resource/IPC caps. |
@@ -1050,25 +1074,13 @@ The source facts used here were read locally; proposed APIs/version strings/seam
 | [Hermetic execution guide](../../packages/starchess-arena/hermetic/README.md) | Existing execution/acquisition owner; training closure must be added and verified later. |
 | [Node Crypto Hash](https://nodejs.org/api/crypto.html#class-hash), [pnpm 10 workspaces](https://pnpm.io/10.x/workspaces) | Official implementation readings for future derivation tooling/workspace closure; not fetched or executed evidence in this task. |
 
-## 19. Next TUI and freeze acceptance checklist
+## 19. Approval disposition and remaining readiness gates
 
-```text
-R1 proposal approval — no implementation or run permission
-  API:         [A recommended] [B] [C]
-  Provenance:  [A recommended] [B] [C defer/incomplete]
-  Quota:       [A recommended] [B] [C]
-  Curriculum:  [A recommended] [B] [C]
-  Validation:  [A standard]    [B strict] [C both steps]
-  Common:      [A approve exact common contract]
-               [B specify amendments before freeze]
-               [C defer; first training stays blocked]
-```
-
-Record Executor's choices before changing original documents; do not convert recommendations into implicit selections.
-Common approval explicitly includes npm name/version, the complete 370-field calculus with visionOverlap, transient vision/strict loss authorization, mine lifetime state, 2048-event batch cap, checked permits/compact prefix journals, nested metadata, five-run envelope and durable checkpoint ordering.
-Profile provenance C prevents a completed R1 freeze even if the other slots are selected.
-Do NOT declare freeze-ready from this edit: first obtain adversarial/security rereview of C01–C17 and explicit acknowledgement of the two supplied schema-description discrepancies.
-After choices/common approval and rereview, only then request synchronized recipe/weights/PLAN updates in a separate authorized task; approval freezes a FUTURE contract, not current implementation readiness.
+Executor approved §2's exact selections and COMMON A after the §17 document-only rereviews. The future R1 **design contract is FROZEN**, not awaiting another profile-choice TUI.
+This authorized pass synchronizes [recipe](ml-adjutant-r1-recipe.md), [weights](ml-adjutant-weights.md) and [PLAN](PLAN-ml-adjutant.md); alternatives remain rejected reference, never automatic runtime selection.
+Numeric tolerances and resource budgets are design requirements; gradient, numerical and performance validation remain future work with no passing result.
 R1 design acceptance still leaves native hooks, adapters, package exports, DTOs, generation, ledger, features and all R2–R5 tests unimplemented here.
+Lead/build owns the requested revisit and repairs of existing R0 adversarial findings while Orrery proceeds independently. All **15 remain PENDING: 7 HIGH + 8 MEDIUM**, **READY TO MERGE: no**, with full implementation security rereview **UNRECORDED** until lead records repairs and rereviews.
+Lead arranges the required rereview of this synchronized documentation; this pass invokes no additional agents and records no new verdict.
 R0 closure plus persisted R2–R5 readiness and explicit training approval precede R6; frozen artifact/adapter R7 precedes learned strict R8.
-This paper contract ends with **no trained weights, no new hashes, no passing validation claim, and no altered existing authority**.
+This paper contract ends with **no trained weights, no new hashes, no actual derived seed pins, no passing validation claim, and no altered existing rules authority**.
