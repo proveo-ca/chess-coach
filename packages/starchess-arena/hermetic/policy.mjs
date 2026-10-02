@@ -30,8 +30,9 @@ export function assertContainerPolicy(inspect, validatedOutput) {
       config.User !== '10001:10001' || host.NanoCpus !== 2_000_000_000 ||
       host.Memory !== 4 * 1024 ** 3 || host.MemorySwap !== host.Memory || host.PidsLimit !== 256 ||
       !host.CapDrop?.includes('ALL') || host.CapAdd?.length ||
-      !host.SecurityOpt?.includes('no-new-privileges=true') ||
+      host.SecurityOpt?.length !== 1 || host.SecurityOpt[0] !== 'no-new-privileges=true' ||
       binds.length !== 1 || binds[0].Destination !== outputTarget || binds[0].Source !== validatedOutput || !binds[0].RW ||
+      binds[0].Propagation !== 'rprivate' ||
       inspect.Mounts.length !== 2 || inspect.Mounts.some((mount) => !(
         (mount.Type === 'bind' && mount.Destination === outputTarget && mount.Source === validatedOutput && mount.RW === true) ||
         (mount.Type === 'tmpfs' && mount.Destination === '/tmp')

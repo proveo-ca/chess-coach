@@ -1,5 +1,6 @@
 // SPEC: _spec/packages/starchess-arena/ml-adjutant-challenge-harness.puml
 import { spawn, type ChildProcess } from "node:child_process";
+import { randomBytes } from "node:crypto";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import {
@@ -101,6 +102,8 @@ export const runSupervised = (
   let stage = "expect-turn-open";
   let planningOrdinal = 0;
   let permitSerial = 0;
+  let inputBatch = 0;
+  let permitBatch = -1;
   let activePermit: PlanPermit | null = null;
   let openSnap: ScFenSnapshot | undefined;
   let openBank: Bank | undefined;
@@ -158,7 +161,7 @@ export const runSupervised = (
     if (!snap) return;
     const role = side === request.candidateSide ? "candidate" : "strategic";
     activePermit = {
-      permitId: `${request.key}:${planningOrdinal}:${side}:${permitSerial++}`, matchKey: request.key,
+      permitId: randomBytes(16).toString("hex"), matchKey: request.key,
       planningOrdinal, side, turn: snap.turn, role,
     };
     stage = "expect-decision";
@@ -169,6 +172,8 @@ export const runSupervised = (
     decisionDeadline = process.hrtime.bigint() + BigInt(budgets.planMs) * 1_000_000n;
     clearTimeout(planTimer);
     planTimer = setTimeout(() => fail("watchdog", "plan timeout"), budgets.planMs);
+    permitBatch = inputBatch;
+    permitSerial += 1;
     writeParent({ kind: "permit", permit: activePermit });
   };
 
@@ -272,6 +277,7 @@ export const runSupervised = (
         return;
       }
       if (message.kind === "decision") {
+        if (inputBatch === permitBatch) { protocolError("decision preceded permit"); return; }
         if (stage !== "expect-decision" || !activePermit || !openSnap || !openBank || !Array.isArray(message.actions) ||
             message.permitId !== activePermit.permitId || message.side !== activePermit.side ||
             message.planningOrdinal !== activePermit.planningOrdinal || message.turn !== activePermit.turn ||
@@ -371,6 +377,7 @@ export const runSupervised = (
       frameChunks.push(part);
       frameBytes += part.length;
       if (newline < 0) return;
+      inputBatch += 1;
       const receivedAt = process.hrtime.bigint();
       const frame = Buffer.concat(frameChunks, frameBytes);
       frameChunks = [];
@@ -399,7 +406,7 @@ export const runSupervised = (
     }
   }
   if (![budgets.startupMs, budgets.planMs, budgets.matchMs]
-    .every((ms) => Number.isFinite(ms) && ms > 0 && ms <= 2_147_483_647)) {
+    .every((ms) => Number.isSafeInteger(ms) && ms > 0 && ms <= 2_147_483_647)) {
     fail("script-contract", "invalid watchdog budgets"); return;
   }
   startupTimer = setTimeout(() => fail("watchdog", "startup timeout"), budgets.startupMs);

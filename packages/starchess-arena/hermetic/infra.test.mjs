@@ -128,7 +128,7 @@ test('CLI rejects mount injection and public output parents and preserves bounde
     HostConfig: { NetworkMode: 'none', ReadonlyRootfs: true, Privileged: false, Init: true, NanoCpus: 2_000_000_000, Memory: 4 * 1024 ** 3, MemorySwap: 4 * 1024 ** 3, PidsLimit: 256, CapDrop: ['ALL'], CapAdd: null, SecurityOpt: ['no-new-privileges=true'], Tmpfs: { '/tmp': tmpfsOptions } },
     Config: { User: '10001:10001' },
     Mounts: [
-      { Type: 'bind', Destination: outputTarget, Source: syntheticOutput, RW: true },
+      { Type: 'bind', Destination: outputTarget, Source: syntheticOutput, RW: true, Propagation: 'rprivate' },
       { Type: 'tmpfs', Destination: '/tmp' },
     ],
   };

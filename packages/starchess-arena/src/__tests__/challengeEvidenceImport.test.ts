@@ -25,7 +25,7 @@ const policy = (output: string, id = image) => ({
   HostConfig: { NetworkMode: "none", ReadonlyRootfs: true, Privileged: false, Init: true, NanoCpus: 2_000_000_000, Memory: 4 * 1024 ** 3, MemorySwap: 4 * 1024 ** 3, PidsLimit: 256, CapDrop: ["ALL"], CapAdd: null, SecurityOpt: ["no-new-privileges=true"], Tmpfs: { "/tmp": tmpfsOptions } },
   Config: { User: "10001:10001" },
   Mounts: [
-    { Type: "bind", Destination: "/app/_spec/evidence/ml-adjutant-phase2", Source: output, RW: true },
+    { Type: "bind", Destination: "/app/_spec/evidence/ml-adjutant-phase2", Source: output, RW: true, Propagation: "rprivate" },
     { Type: "tmpfs", Destination: "/tmp" },
   ],
 });
@@ -41,14 +41,14 @@ const tarHeader = (name: string, size: number) => {
   header.write("00", 263);
   return header;
 };
-const imageArchive = (config: Buffer, id = hash(config)) => {
-  const layer = Buffer.from("layer");
+const imageArchive = (layer = Buffer.from("layer")) => {
+  const config = Buffer.from(JSON.stringify({ rootfs: { type: "layers", diff_ids: [`sha256:${hash(layer)}`] } }));
   const manifest = Buffer.from(JSON.stringify([{ Config: "config.json", RepoTags: null, Layers: ["layer.tar"] }]));
   const parts = [tarHeader("config.json", config.length), config, Buffer.alloc((512 - (config.length % 512)) % 512),
     tarHeader("layer.tar", layer.length), layer, Buffer.alloc((512 - (layer.length % 512)) % 512),
     tarHeader("manifest.json", manifest.length), manifest, Buffer.alloc((512 - (manifest.length % 512)) % 512),
     Buffer.alloc(1024)];
-  return { bytes: Buffer.concat(parts), image: `sha256:${id}` };
+  return { bytes: Buffer.concat(parts), image: `sha256:${hash(config)}` };
 };
 
 describe("phase2 hermetic evidence import", () => {
@@ -79,7 +79,7 @@ describe("phase2 hermetic evidence import", () => {
     writeFileSync(join(root, "_spec/evidence/ml-adjutant-phase1/baseline-report.json"), originalBaseline);
     writeFileSync(join(root, "_spec/evidence/ml-adjutant-phase1/verification.json"), originalVerification);
     const logs = Object.fromEntries(["stdout", "stderr"].map((name) => [name, { path: `/app/_spec/evidence/ml-adjutant-phase2/logs/command-01.${name}.log`, sha256: hash(files[`logs/command-01.${name}.log`]!), bytes: files[`logs/command-01.${name}.log`]!.length }]));
-    const challengeTests = readdirSync(new URL(".", import.meta.url)).filter((name) => /^challenge.*\.ts$/.test(name) || ["observationIsolation.test.ts", "resourceLedger.test.ts", "strictRecordedQueues.test.ts"].includes(name)).sort().map((name) => `/app/packages/starchess-arena/src/__tests__/${name}`);
+    const challengeTests = readdirSync(new URL(".", import.meta.url)).filter((name) => /^challenge.*\.test\.ts$/.test(name) || ["observationIsolation.test.ts", "resourceLedger.test.ts", "strictRecordedQueues.test.ts"].includes(name)).sort().map((name) => `/app/packages/starchess-arena/src/__tests__/${name}`);
     const commands = [
       { executable: "/app/packages/starchess-arena/node_modules/.bin/tsx", args: ["/app/packages/starchess-arena/src/cli/challenge.ts", "--suite", "all", "--rerun", "--out", "/app/_spec/evidence/ml-adjutant-phase2/baseline-report.json"], cwd: "/app", exitCode: 0, signal: null, error: null, logs },
       { executable: "/app/packages/starchess-arena/node_modules/.bin/tsx", args: ["/app/scripts/challenge-contract-evidence.ts"], cwd: "/app", exitCode: 0, signal: null, error: null, logs },
@@ -102,7 +102,7 @@ describe("phase2 hermetic evidence import", () => {
     writeFileSync(hostLogPath, hostLog);
     const measurements = { source: { sourceSha256: assurance.sourceSha256 }, dependencies: { installedSha256: assurance.installedSha256, frozenStoreSha256: assurance.frozenStoreSha256, toolTreeSha256: assurance.toolsSha256 } };
     const logged = { logs: { stdout: { path: hostLogPath, sha256: hash(hostLog), bytes: hostLog.length }, stderr: { path: hostLogPath, sha256: hash(hostLog), bytes: hostLog.length } } };
-    const archive = imageArchive(Buffer.from("config-bytes"));
+    const archive = imageArchive();
     const archivePath = join(output, "image.tar");
     writeFileSync(archivePath, archive.bytes);
     const envelope = { image: archive.image, imageInspection: { Id: archive.image }, measurements, buildLog: logged, executionLog: logged, archive: archivePath, archiveSha256: hash(archive.bytes), archiveBytes: archive.bytes.length };
@@ -112,7 +112,7 @@ describe("phase2 hermetic evidence import", () => {
     writeFileSync(paths.build, JSON.stringify({ ...envelope, capture: { runtime: { sha256: assurance.sourceSha256 }, control: { sha256: "control" } } }));
     writeFileSync(paths.export, JSON.stringify(envelope));
     const destination = join(root, "_spec/evidence/ml-adjutant-phase2");
-    const imported = await importEvidence({ repositoryRoot: root, executionPath: paths.execution, buildPath: paths.build, exportPath: paths.export, expectedImage: archive.image, destination, inspectImage: async () => ({ Id: archive.image }), captureContext: async () => ({ runtime: { sha256: assurance.sourceSha256 }, control: { sha256: "control" } }) });
+    const imported = await importEvidence({ repositoryRoot: root, executionPath: paths.execution, buildPath: paths.build, exportPath: paths.export, expectedImage: archive.image, destination, inspectImage: async () => ({ Id: archive.image }), measureImage: async () => ({ source: { sourceSha256: assurance.sourceSha256 } }), captureContext: async () => ({ runtime: { sha256: assurance.sourceSha256 }, control: { sha256: "control" } }) });
     expect(imported.image).toBe(archive.image);
     expect(readFileSync(join(destination, "logs/command-01.stdout.log"), "utf8")).toBe("baseline ok\n");
     expect(JSON.parse(readFileSync(join(destination, "image-assurance.json"), "utf8")).image).toBe(archive.image);
@@ -135,7 +135,7 @@ describe("phase2 hermetic evidence import", () => {
     const archivePath = join(output, "image.tar");
     writeFileSync(archivePath, "image-bytes");
     expect(() => assertImageArchive(archivePath, image)).toThrow(/not a Docker image tar/);
-    const other = imageArchive(Buffer.from("other-image"));
+    const other = imageArchive(Buffer.from("other-layer"));
     writeFileSync(archivePath, other.bytes);
     expect(() => assertImageArchive(archivePath, image)).toThrow(/not the expected image/);
   });
@@ -148,7 +148,7 @@ describe("phase2 hermetic evidence import", () => {
     const executionPath = join(output, "execution.json");
     writeFileSync(executionPath, JSON.stringify({ image, passed: true, status: "passed", output, imageInspection: { Id: image }, initialContainerInspection: policy(output), finalContainerInspection: { ...policy(output), State: { ExitCode: 0, OOMKilled: false } }, measurements: { source: { sourceSha256: "source" }, dependencies: {} }, executionLog: { logs: { stdout: { path: join(output, "missing"), sha256: "ab", bytes: 1 }, stderr: { path: join(output, "missing"), sha256: "ab", bytes: 1 } } } }));
     await expect(importEvidence({ repositoryRoot: output, executionPath, buildPath: executionPath, exportPath: executionPath, expectedImage: image, destination: join(output, "published"), inspectImage: async () => ({ Id: image }), captureContext: async () => ({ runtime: { sha256: "source" }, control: { sha256: "control" } }) })).rejects.toThrow();
-    const other = imageArchive(Buffer.from("other-image"));
+    const other = imageArchive(Buffer.from("other-layer"));
     writeFileSync(join(output, "other.tar"), other.bytes);
     await expect(importEvidence({ repositoryRoot: output, executionPath, buildPath: executionPath, exportPath: executionPath, expectedImage: image, destination: join(output, "published-other"), inspectImage: async () => ({ Id: image }), captureContext: async () => ({ runtime: { sha256: "source" }, control: { sha256: "control" } }) })).rejects.toThrow();
   });

@@ -215,14 +215,21 @@ export const collectSourceInventory = (
     const requireNames = new Set(["require"]);
     const requireFactories = new Set(["createRequire"]);
     const moduleNamespaces = new Set(["module"]);
+    const unwrap = (node: ts.Expression): ts.Expression => {
+      if (ts.isParenthesizedExpression(node) || ts.isAsExpression(node) || ts.isNonNullExpression(node) || ts.isTypeAssertionExpression(node)) return unwrap(node.expression);
+      if (ts.isBinaryExpression(node) && node.operatorToken.kind === ts.SyntaxKind.CommaToken) return unwrap(node.right);
+      return node;
+    };
     const property = (node: ts.Expression): { receiver: ts.Expression; name: string | undefined } | undefined => {
-      if (ts.isPropertyAccessExpression(node)) return { receiver: node.expression, name: node.name.text };
-      if (ts.isElementAccessExpression(node)) return { receiver: node.expression, name: literal(node.argumentExpression) };
+      const expression = unwrap(node);
+      if (ts.isPropertyAccessExpression(expression)) return { receiver: unwrap(expression.expression), name: expression.name.text };
+      if (ts.isElementAccessExpression(expression)) return { receiver: unwrap(expression.expression), name: literal(expression.argumentExpression) };
       return undefined;
     };
     const factory = (node: ts.Expression): boolean => {
-      const member = property(node);
-      return ts.isIdentifier(node) && requireFactories.has(node.text) || member !== undefined && member.name === "createRequire" &&
+      const expression = unwrap(node);
+      const member = property(expression);
+      return ts.isIdentifier(expression) && requireFactories.has(expression.text) || member !== undefined && member.name === "createRequire" &&
         ts.isIdentifier(member.receiver) && moduleNamespaces.has(member.receiver.text);
     };
     const loader = (node: ts.Expression): boolean => {
@@ -260,7 +267,10 @@ export const collectSourceInventory = (
         if (!declaration && !directCall && !alias && !resolver && !memberName) throw new Error(`Unsupported loader escape: ${file.path}`);
       }
       if (ts.isPropertyAccessExpression(node) && ["bind", "call", "apply"].includes(node.name.text) && (loader(node.expression) || factory(node.expression))) throw new Error(`Unsupported loader escape: ${file.path}`);
-      if (ts.isCallExpression(node) && factory(node.expression)) {
+      if (ts.isElementAccessExpression(node) && ts.isIdentifier(unwrap(node.expression)) && moduleNamespaces.has((unwrap(node.expression) as ts.Identifier).text) && literal(node.argumentExpression) === undefined) {
+        throw new Error(`Unsupported loader escape: ${file.path}`);
+      }
+      if (ts.isCallExpression(node) && factory(unwrap(node.expression))) {
         const parent = node.parent;
         const assigned = ts.isVariableDeclaration(parent) && parent.initializer === node && ts.isIdentifier(parent.name);
         const invoked = ts.isCallExpression(parent) && parent.expression === node;
@@ -292,6 +302,7 @@ export const collectSourceInventory = (
         const resolver = member !== undefined && member.name === "resolve" && loader(member.receiver);
         if (dynamic || requireCall || resolver) {
           const specifier = literal(node.arguments[0]);
+          if (dynamic && (specifier === "node:module" || specifier === "module")) throw new Error(`Unsupported dynamic module import: ${file.path}`);
           if ((requireCall || resolver) && specifier !== undefined && (specifier.startsWith("./") || specifier.startsWith("../")) && !CODE_EXTENSION.test(specifier)) {
             throw new Error(`Unaudited executable extension: ${file.path}`);
           }

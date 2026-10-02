@@ -1,7 +1,7 @@
 // SPEC: _spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { closeSync, createReadStream, existsSync, fsyncSync, lstatSync, mkdirSync, mkdtempSync, openSync, readSync, readdirSync, realpathSync, rmSync, writeSync } from 'node:fs';
+import { closeSync, createReadStream, existsSync, fsyncSync, lstatSync, mkdirSync, mkdtempSync, openSync, readSync, readdirSync, realpathSync, rmSync, writeFileSync, writeSync } from 'node:fs';
 import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { prepareContext } from '../packages/starchess-arena/hermetic/context.mjs';
@@ -10,6 +10,8 @@ import { assertContainerPolicy } from '../packages/starchess-arena/hermetic/poli
 export const ORIGINAL_BASELINE_SHA256 = '940387370040f88888e9dfe0bb86ad9d4a8be88854df507120f34b22ee2d362b';
 export const ORIGINAL_VERIFICATION_SHA256 = '55d965afa71d775ff6ee1e95b6650a27d0ce759b966a81c43a3bb364236c7508';
 export const MAX_IMPORT_BYTES = 16_777_216;
+export const MAX_ARCHIVE_BYTES = 268_435_456;
+export const VITEST_FLOORS = { 'vitest-starchess-core.json': 426, 'vitest-starchess-arena.json': 434 };
 const REQUIRED = ['baseline-report.json', 'contract-report.json', 'coverage.json', 'pin-migration.json', 'vitest-starchess-core.json', 'vitest-starchess-arena.json'];
 const SCRIPT_DIR = fileURLToPath(new URL('.', import.meta.url));
 const TSX = join(SCRIPT_DIR, '../packages/starchess-arena/node_modules/.bin/tsx');
@@ -47,11 +49,27 @@ const readBounded = (path, retain) => {
 const decodeBounded = (path, retain) => JSON.parse(readBounded(path, retain).toString('utf8'));
 const streamHash = async (path) => {
   const stat = lstatSync(path);
-  if (!stat.isFile()) throw new Error(`Archive is not a file: ${path}`);
+  if (!stat.isFile() || stat.size > MAX_ARCHIVE_BYTES) throw new Error(`Archive exceeds byte cap: ${path}`);
   const digest = createHash('sha256');
   let bytes = 0;
-  for await (const chunk of createReadStream(path)) { digest.update(chunk); bytes += chunk.length; }
+  for await (const chunk of createReadStream(path)) {
+    bytes += chunk.length;
+    if (bytes > MAX_ARCHIVE_BYTES) throw new Error(`Archive exceeds byte cap: ${path}`);
+    digest.update(chunk);
+  }
   return { sha256: digest.digest('hex'), bytes };
+};
+export const recountVitest = (report) => {
+  if (!Array.isArray(report?.testResults)) throw new Error('Vitest report has no test results');
+  const counts = { passed: 0, failed: 0, pending: 0, todo: 0 };
+  for (const file of report.testResults) {
+    if (!Array.isArray(file?.assertionResults)) throw new Error('Vitest file has no assertion results');
+    for (const assertion of file.assertionResults) {
+      if (!Object.hasOwn(counts, assertion?.status)) throw new Error(`Vitest assertion status is not counted: ${assertion?.status}`);
+      counts[assertion.status] += 1;
+    }
+  }
+  return { ...counts, total: counts.passed + counts.failed + counts.pending + counts.todo };
 };
 const imageId = (value) => {
   if (!/^sha256:[a-f0-9]{64}$/.test(value ?? '')) throw new Error('Immutable image ID required');
@@ -70,6 +88,7 @@ const fsyncDirectory = (path) => {
 export const assertImageArchive = (path, image) => {
   const fd = openSync(path, 'r');
   const entries = new Map();
+  const hashes = new Map();
   const names = new Set();
   let retained = 0;
   try {
@@ -86,6 +105,18 @@ export const assertImageArchive = (path, image) => {
       if (!Number.isSafeInteger(size) || size < 0) throw new Error(`Invalid image archive entry: ${name}`);
       position += 512;
       names.add(name);
+      if (!name.endsWith('.json')) {
+        const digest = createHash('sha256');
+        let offset = 0;
+        while (offset < size) {
+          const chunk = Buffer.alloc(Math.min(1024 * 1024, size - offset));
+          const read = readSync(fd, chunk, 0, chunk.length, position + offset);
+          if (read === 0) throw new Error('Truncated image archive');
+          digest.update(chunk.subarray(0, read));
+          offset += read;
+        }
+        hashes.set(name, digest.digest('hex'));
+      }
       if (name === 'manifest.json' || name.endsWith('.json')) {
         if (size > MAX_IMPORT_BYTES) throw new Error(`Image archive entry exceeds byte cap: ${name}`);
         const data = Buffer.alloc(size);
@@ -109,13 +140,19 @@ export const assertImageArchive = (path, image) => {
     throw new Error('Exported image archive manifest mismatch');
   }
   const config = entries.get(manifest[0].Config);
-  if (!config || manifest[0].Layers.some((layer) => !names.has(layer))) throw new Error('Exported image archive config missing');
+  const configJson = config ? JSON.parse(config.toString('utf8')) : undefined;
+  const diffIds = configJson?.rootfs?.diff_ids;
+  if (!config || !Array.isArray(diffIds) || manifest[0].Layers.some((layer) => !names.has(layer))) throw new Error('Exported image archive config missing');
   if (`sha256:${hash(config)}` !== image) throw new Error('Exported image archive is not the expected image');
+  if (manifest[0].Layers.length !== diffIds.length || manifest[0].Layers.some((layer) => !diffIds.includes(`sha256:${hashes.get(layer)}`))) {
+    throw new Error('Exported image archive layers are not the expected image');
+  }
 };
 
 export async function importEvidence({
   repositoryRoot, executionPath, buildPath, exportPath, expectedImage, destination,
   inspectImage = (image) => JSON.parse(execFileSync('docker', ['image', 'inspect', image], { encoding: 'utf8' }))[0],
+  measureImage = (image) => JSON.parse(execFileSync('docker', ['run', '--rm', '--pull=never', '--network=none', '--read-only', '--user', '10001:10001', '--entrypoint', 'node', image, '-e', 'const fs=require("node:fs"); const crypto=require("node:crypto"); const file="/hermetic-evidence/source.json"; const value=JSON.parse(fs.readFileSync(file,"utf8")); console.log(JSON.stringify({source:{sourceSha256:value.sha256}}));'], { encoding: 'utf8' })),
   captureContext = async (root) => {
     const context = mkdtempSync(join('/tmp/opencode', 'challenge-capture-'));
     try { return prepareContext(context, false, root); }
@@ -148,7 +185,7 @@ export async function importEvidence({
   if (verification.commands.some((command) => command.exitCode !== 0 || command.signal || command.error)) throw new Error('Verification command failed');
   const sourceRoot = join(SCRIPT_DIR, '..');
   const challengeTests = readdirSync(join(sourceRoot, 'packages/starchess-arena/src/__tests__'))
-    .filter((name) => /^challenge.*\.ts$/.test(name) || ['observationIsolation.test.ts', 'resourceLedger.test.ts', 'strictRecordedQueues.test.ts'].includes(name))
+    .filter((name) => /^challenge.*\.test\.ts$/.test(name) || ['observationIsolation.test.ts', 'resourceLedger.test.ts', 'strictRecordedQueues.test.ts'].includes(name))
     .sort()
     .map((name) => `/app/packages/starchess-arena/src/__tests__/${name}`);
   const required = [
@@ -183,13 +220,15 @@ export async function importEvidence({
       const listed = verification.artifacts.find((entry) => entry.path === relative);
       if (!listed || listed.sha256 !== record.sha256 || listed.bytes !== record.bytes || !artifacts.has(relative)) throw new Error(`Command log is not bound to artifacts: ${relative}`);
     }
-    if (!command.tests) continue;
+    if (!command.executable?.endsWith('/vitest')) continue;
+    if (!command.tests) throw new Error(`Vitest command has no bound report: ${command.executable}`);
     const reportPath = basename(command.tests.path ?? '');
     const reportBytes = artifacts.get(reportPath);
-    if (!reportBytes || command.tests.sha256 !== hash(reportBytes)) throw new Error(`Vitest report is not bound: ${reportPath}`);
-    const report = JSON.parse(reportBytes.toString('utf8'));
-    if (report.success !== true || report.numFailedTests !== 0 || report.numPassedTests !== report.numTotalTests || !Number.isSafeInteger(report.numTotalTests) || report.numTotalTests <= 0 ||
-        command.tests.success !== true || command.tests.failed !== 0 || command.tests.passed !== report.numPassedTests || command.tests.total !== report.numTotalTests) {
+    const counted = reportBytes ? recountVitest(JSON.parse(reportBytes.toString('utf8'))) : undefined;
+    const floor = VITEST_FLOORS[reportPath];
+    if (!reportBytes || !counted || !floor || command.tests.sha256 !== hash(reportBytes) || counted.failed !== 0 || counted.pending !== 0 || counted.todo !== 0 ||
+        counted.passed !== counted.total || counted.total < floor || command.tests.success !== true || command.tests.failed !== 0 ||
+        command.tests.passed !== counted.passed || command.tests.total !== counted.total) {
       throw new Error(`Vitest report counts do not match: ${reportPath}`);
     }
   }
@@ -211,7 +250,14 @@ export async function importEvidence({
   const originalBaseline = join(root, '_spec/evidence/ml-adjutant-phase1/baseline-report.json');
   const originalVerification = join(root, '_spec/evidence/ml-adjutant-phase1/verification.json');
   if (hash(readBounded(originalBaseline, retain)) !== ORIGINAL_BASELINE_SHA256 || hash(readBounded(originalVerification, retain)) !== ORIGINAL_VERIFICATION_SHA256) throw new Error('Original Phase1 evidence changed');
-  const validated = execFileSync(TSX, [VALIDATOR, join(output, 'baseline-report.json'), originalBaseline, join(output, 'pin-migration.json')], { encoding: 'utf8' });
+  const scratch = mkdtempSync(join('/tmp/opencode', 'challenge-validate-'));
+  let validated;
+  try {
+    writeFileSync(join(scratch, 'baseline.json'), artifacts.get('baseline-report.json'));
+    writeFileSync(join(scratch, 'original.json'), readBounded(originalBaseline, retain));
+    writeFileSync(join(scratch, 'migration.json'), artifacts.get('pin-migration.json'));
+    validated = execFileSync(TSX, [VALIDATOR, join(scratch, 'baseline.json'), join(scratch, 'original.json'), join(scratch, 'migration.json')], { encoding: 'utf8' });
+  } finally { rmSync(scratch, { recursive: true, force: true }); }
   if (validated.trim() !== 'ok') throw new Error('Authoritative baseline validation failed');
   const baseline = JSON.parse(artifacts.get('baseline-report.json').toString('utf8'));
   const migration = JSON.parse(artifacts.get('pin-migration.json').toString('utf8'));
@@ -222,7 +268,8 @@ export async function importEvidence({
     migration.currentBaselineSha256 !== hash(artifacts.get('baseline-report.json'))) throw new Error('Migration verification failed');
   if (canonical(contract.pins) !== canonical(baseline.pins) || contract.coverageSha256 !== hash(canonical(coverage)) || contract.baselineReportSha256 !== migration.currentBaselineSha256 || contract.learnedGateEligible !== false) throw new Error('Contract report is not bound to current execution');
   const capture = await captureContext(root);
-  if (capture.runtime?.sha256 !== assurance.sourceSha256 || build.capture?.runtime?.sha256 !== assurance.sourceSha256 || capture.control?.sha256 !== build.capture?.control?.sha256) throw new Error('Captured source or hermetic control drifted');
+  const measuredImage = await measureImage(image);
+  if (measuredImage?.source?.sourceSha256 !== assurance.sourceSha256 || capture.runtime?.sha256 !== measuredImage.source.sourceSha256 || build.capture?.runtime?.sha256 !== measuredImage.source.sourceSha256 || capture.control?.sha256 !== build.capture?.control?.sha256) throw new Error('Captured source is not the inspected image source');
   const target = destination ?? join(root, '_spec/evidence/ml-adjutant-phase2');
   if (existsSync(target)) throw new Error('Phase2 evidence destination already exists');
   const published = [...artifacts].map(([path, bytes]) => ({ path, bytes }));
@@ -236,12 +283,12 @@ export async function importEvidence({
   try {
     mkdirSync(target);
     created = true;
-    syncDirectory(target);
+    const directories = new Set([target]);
     for (const artifact of published) {
       const path = safeRelative(artifact.path);
       const dest = join(target, path);
       mkdirSync(dirname(dest), { recursive: true });
-      syncDirectory(dirname(dest));
+      directories.add(dirname(dest));
       const fd = openSync(dest, 'wx', 0o644);
       try { writeSync(fd, artifact.bytes); fsyncSync(fd); }
       finally { closeSync(fd); }
@@ -250,8 +297,8 @@ export async function importEvidence({
     const markerFd = openSync(marker, 'wx', 0o644);
     try { writeSync(markerFd, 'ok\n'); fsyncSync(markerFd); }
     finally { closeSync(markerFd); }
-    syncDirectory(target);
     committed = true;
+    for (const directory of directories) syncDirectory(directory);
     syncDirectory(dirname(target));
   } catch (error) {
     if (created && !committed) rmSync(target, { recursive: true, force: true });

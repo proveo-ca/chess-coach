@@ -173,6 +173,9 @@ describe("partitioned challenge source inventory", () => {
     ['import nodeModule from "node:module";\nconst load = nodeModule.createRequire(import.meta.url);\nload(variable);', "Computed module loader"],
     ['import * as nodeModule from "node:module";\nconst alias = nodeModule;\nalias.createRequire(import.meta.url)(variable);', "Computed module loader"],
     ['require("./helper.txt");', "Unaudited executable extension"],
+    ['import nodeModule from "node:module";\n(nodeModule.createRequire)(import.meta.url)("./helper.txt");', "Unaudited executable extension"],
+    ['import nodeModule from "node:module";\nconst key = "createRequire";\nnodeModule[key](import.meta.url)("./helper.txt");', "Unsupported loader escape"],
+    ['import("node:module");', "Unsupported dynamic module import"],
   ])("rejects unauditable or excluded module edge %s", (code, message) => {
     const root = fixture();
     put(root, `${CORE}/src/__tests__/hidden.ts`, "export {};\n");
