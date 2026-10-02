@@ -827,7 +827,7 @@ All objects in this section are closed recursively, all arrays dense, and all de
 `Float64Hex={hex:string[16 lowercase hex]}` decodes finite IEEE-754 binary64 big-endian; preserve signed zero exactly, reject NaN/Infinity bit patterns.
 Use Float64Hex for EVERY persisted float field and compact-journal numeric float; seeds/states/counters/integral baselineSum remain JSON integers.
 `Profiles={api:'A',provenance:'A',quota:'B',curriculum:'A',validation:'A'}` is the exact approved runtime record; reject other values in an artifact/checkpoint for this recipe.
-Broader A/B/C schemas below describe retained alternatives only; API C was technically executable, while provenance C deferred freeze. Neither is selected or an operational option.
+References below to other A/B/C values describe rejected alternatives only; API C was technically executable, while provenance C deferred freeze. Neither is selected or an operational option.
 `Versions` has exactly the 21 keys `snapshot,observationCodec,history,batch,ledger,provenance,candidateCodec,generator,projection,features,featureManifest,comparator,rng,episodeProtocol,checkpoint,artifact,optimizer,loss,eligibility,recipe,hostConfig`, each equal to its §4 literal.
 `Scales={minerals:12,gas:3,turn:45,ccLives:3,maxSpawn:9,paid:3072,replacement:2304,coords:7,squares:64,actions:4,pairs:6,relationPairs:4096,visionOverlap:256}`.
 These are exact integer metadata constants; no extra scale keys or alternative values are accepted.
