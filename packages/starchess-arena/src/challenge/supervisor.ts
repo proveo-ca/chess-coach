@@ -363,6 +363,7 @@ export const runSupervised = (
   const onError = (error: Error) => fail("exception", `worker error: ${error.message}`);
   const onData = (chunk: Buffer) => {
     if (result) return;
+    inputBatch += 1;
     let start = 0;
     while (start < chunk.length && !result) {
       const newline = chunk.indexOf(10, start);
@@ -377,7 +378,6 @@ export const runSupervised = (
       frameChunks.push(part);
       frameBytes += part.length;
       if (newline < 0) return;
-      inputBatch += 1;
       const receivedAt = process.hrtime.bigint();
       const frame = Buffer.concat(frameChunks, frameBytes);
       frameChunks = [];
