@@ -3,7 +3,7 @@
 Status: **PROPOSED DRAFT — paper contract proposal, NOT accepted or implemented.**
 R0: **all 15 findings PENDING: 7 HIGH + 8 MEDIUM; READY TO MERGE: no.**
 Security rereview: **UNRECORDED**. Learned model / weights: **NONE**.
-R1 contract freeze remains **INCOMPLETE until Executor chooses the profiles and approves the common contract**.
+R1 contract freeze remains **INCOMPLETE: C01–C17 corrections are PROPOSED and await adversarial/security rereview, profile choices and common approval**.
 R2–R5 still require implementation and persisted validation; R6 training is not authorized.
 This document records no build, training, registry activation, test result, new hash, or evidence.
 Only this new document changes; the recipe, weights ledger, PLAN, diagrams, corpus, and evidence remain unchanged.
@@ -54,7 +54,8 @@ Core remains browser-pure; Node ML/tooling belongs outside core and browser depe
 The common npm proposal is **private** `@chess-coach/starchess-training`, version `0.0.1`; it needs approval in every API profile.
 API suffixes name TypeScript import surfaces, **not HTTP routes**.
 The all-five completion prerequisite proposed below is a training-protocol validity rule, not a new all-five-artifact gate.
-Only `PROFILECHOICE_*` values await design choices; future measured references are runtime data, not invented pins.
+`PROFILECHOICE_*` values await design choices; correction coverage is not a freeze-ready verdict, and future measured references are not invented pins.
+Common approval also covers the new **2048 authorized events/batch** cap; its equality to the existing IPC-message count is coincidental, not inherited authority.
 
 ## 3. Package ownership, exports, and dependency closure
 
@@ -92,13 +93,14 @@ The existing `packages/*` workspace pattern already covers the future folder; no
 | RNG / checkpoint / episode IPC | `starchess-training-rng-v1` / `starchess-training-checkpoint-v1` / `starchess-training-episode-v1` |
 | Optimizer / loss / eligibility | `starchess-sgd-float64-v1` / `starchess-reinforce-sum-v1` / `starchess-training-eligibility-v1` |
 | Recipe / host configuration | `starchess-training-recipe-v1` / `starchess-training-host-v1` |
+| External experiment envelope | `starchess-training-experiment-v1` (not an extra key in the 21-key Versions object) |
 | Readiness fixtures | `training-readiness-fixtures-v1` |
 
 Keep `challenge-candidate-codec-v1`, `MAX_QUEUE_ACTIONS=65`, and `score-desc-key-asc-v1`; generation's ceiling is separately four.
 All DTO object fields are exact: reject unknown/missing fields, sparse arrays, getters, invalid enums, nonfinite numbers, and side mismatches.
 `Side='w'|'b'`; `Square` is `[a-h][1-8]`; public ordinals/counters are nonnegative safe integers.
 `AuthorizedHistory={version:'challenge-history-v2',currentAuthorizedSnapshotV2,economicState,everLit}`.
-`everLit` is sorted unique squares, accumulated only from actually authorized `lit` cells, never piece-only reveals or nominal projections.
+`everLit` is sorted unique squares, accumulated from actual authorized vision-witness changes and final `lit` cells, never piece-only reveals or nominal projections.
 `economicState` is the reconciled ledger state defined in §7; the current snapshot is defined in §6.
 
 ```ts
@@ -151,6 +153,10 @@ Preserve existing codec-v1 error behavior; the new v2 boundary adds the stable c
 Host-private paths/details are stripped from model-facing diagnostics; an error never publishes a partly advanced history.
 Authorized observation/batch/candidate/artifact codecs inherit the existing `1_048_576` byte cap; checkpoint/host completion uses `16_777_216`.
 Check raw lengths before decoding/parsing or allocating declared arrays; stream journals rather than retaining unbounded evidence in memory.
+Every batch contains a dense array of 0..2048 events; every vision-witness contains 1..64 dense, unique, canonical-square-ordered changes.
+The whole batch still fits the 1MiB codec/progress cap; exceeding either count or byte cap aborts infrastructure rather than dropping authorized knowledge.
+Bound raw input before parse, then enforce every nested array/schema cap before constructing typed buffers; reject getters, sparse arrays and extra properties at every depth.
+The parent retains at most one pending raw frame and one staged batch; per-decision feature/probability buffers are released before the next permitted decision.
 
 ## 5. Native causal provenance — profiles A/B/C
 
@@ -193,6 +199,8 @@ Deployment `materializedEntityId=null` means unmaterialized, not invisible: F sk
 Resolve preexisting identities against a frame's **before** image; newly created IDs bind to explicit native creation references, including create-then-die within a frame.
 Apply the frame atomically; do not serialize a swap as destructive sequential overwrites or infer a victim by the after-image square.
 Provenance initialization and every frame must reconcile exactly with the corresponding native snapshot, modes, mines and CC lives.
+Native provenance also supplies private actual visibility images at causal observation checkpoints, including path-reveal intermediate mover positions.
+Each image includes the actual full unit board, own modes and own mines at the native observation point; it is not reconstructed from animation or final squares.
 No source effect key, private frame count, full board, private ID, opponent queue, or hidden cause crosses authorization.
 Generic pure engine hooks require R2–R5 implementation/review; selecting this seam does not claim that current core supplies it.
 
@@ -230,14 +238,27 @@ Host-private session binding is opaque and stays outside the model DTO; host pri
 | `own-income` | `actualCreditedMinerals` |
 | `own-cc-lives-changed` | `before, after` |
 | `enemy-unit-destruction-witnessed` | `witnessId, square, type, replacementLowerBound, paidLowerBound:0` |
+| `vision-witness` | `turn, changes:ObservedCell[1..64]`; dense unique canonical-square-ordered public cell changes. |
 
 Receipts/gas events precede the corresponding committed native effects in the settled batch; they appear only after **successful whole-pair commit**.
 Native effect order determines the authorized effect order, with canonical own-ID order inside an atomic frame and native causal suborder for one ID; credited income follows native settlement.
 Every public batch applies transactionally by identity; intermediate occupancy checks cannot turn an atomic swap into a spurious destruction.
-Enemy-loss authorization requires the live victim to be authorized at the actual causal frame using native vision with own modes/mines, or a source-authorized destruction witness.
-The host privately deduplicates the victim entity's destruction; the witness contains no enemy tracking ID or unseen root-cause attribution.
+Enemy loss requires an actual private native unit-destroy effect whose live enemy victim appears in the causal **pre-destruction** image.
+Publish it ONLY if native recipient `getSideVision`, with that image's own modes/mines, lights or reveals the victim square.
+For path reveal, use the actual intermediate mover-vision image used by native resolution, not the final board or a guessed discovery square.
+No visibility proof means **no enemy-loss event**, not a simulation abort; wrong/ambiguous private entity provenance instead aborts infrastructure.
+Privately deduplicate entity plus actual destruction lifecycle/event so aliases produce one witness; expose no enemy ID, private cause or root attribution.
 Fog disappearance, an empty cell, an animation cue, and partial damage/zero claimed damage cannot establish an enemy death.
-Replacement lower bound uses witnessed type's valuation; enemy actual paid investment stays unknown with a conservative paid lower bound of zero.
+Witnessed type must be a spawn type; replacement lower bound equals its nominal known spawn cost, paid lower bound is 0, upper remains unknown.
+CC damage and mine removal are NOT enemy-unit-loss witnesses; no alternate source-authorized witness rule exists.
+
+At every private native observation checkpoint, project recipient `getSideVision` to 64 canonical cells: lit has actual piece/null; revealed has enemy q; unknown has no piece.
+Compare with the SAME recipient's previous actual projection and emit `vision-witness` only for changed public cells; an empty delta emits nothing.
+Remove empty deltas and unauthorized events BEFORE assigning side-local event seq; never publish checkpoint/frame counts, timestamps, private IDs or sequence gaps.
+Fold each actual witness into `everLit` using lit changes only; refresh seen-enemy square memory at witness turn, clear memory on lit empty/own cells, retain it on unknown.
+Fold the final snapshot through the SAME observation reducer: current cells are final, but memory/everLit retain authorized transient observations.
+The host computes that folded memory before constructing the final v2 snapshot; reconciliation rejects a conflicting final snapshot memory.
+Do not create a public boundary for a transient checkpoint; INITIAL, TURN_OPEN including optional chip, and SETTLED remain the only scheduled batches.
 
 `AuthorizedSnapshotV2` retains v1 `{side,turn,own,cells,memory}`, changes `version` to `challenge-observation-v2`, and adds `ownUnitLineage,ownMineLineage,economicState`.
 `own` retains exact minerals/gas/gasIncome/ccLives/pieces/mines/siegedTanks; cells remain 64 canonical squares with unknown/lit/revealed distinctions.
@@ -253,7 +274,7 @@ Initial endowed events enumerate own units/mines canonically; initial cumulative
 Receipts are canonical-ID-sorted `{receiptId,actionRef,unit,requestedSquare,minerals,disposition}` records.
 `disposition={kind:'materialized',lineageId}` or `{kind:'unmaterialized'}`; no receipt remains unresolved at a published closed boundary.
 `retiredOwnIds` is sorted unique retired own unit lineage IDs; it prevents duplicate retirement without exposing enemy identities.
-Snapshot economic state equals the pure reducer's complete state; host-private witness/entity deduplication stays outside it.
+Snapshot economicState equals the reducer's complete EconomicState projection, not its separate mine/vision/sequence audit state; host-private enemy witness/entity deduplication stays outside it.
 Host debits accepted deployment minerals exactly from `UNIT_COST`; accepted gas debit uses native special cost, not a learned valuation.
 Opening paid basis is 0, free promotion paid delta is 0, movement/transform preserves lineage, and a confirmed destruction retires basis exactly once.
 Replacement value is `UNIT_COST[type]` for spawn types and **0 for CC**: CC is nonpurchasable, and its HP stays a separate resource.
@@ -272,17 +293,49 @@ Check these identities exactly at every closed boundary, together with resources
 Use actual capped credited income; gas reset/refill follows native begin/end boundary rules, not a fabricated SCFEN partial helper.
 Rejected/rolled-back pair admission publishes no receipts, debits, accepted bindings, or native effects; requested spend is not payment.
 `reconcileBoundary` stages an ephemeral next state and commits only after all validations; it never mutates the preceding batch/history.
-`ReconciledBoundaryState={snapshot,economicState,ordinal,phase,planningOrdinal,seqThrough,lastBatchBytes}` retains live identity facts and duplicate/sequence state, not merely economic totals.
+`ReconciledBoundaryState={snapshot,economicState,ownMineAuditState,everLit,ordinal,phase,planningOrdinal,seqThrough,lastBatchBytes}` retains live facts, transient vision and duplicate/sequence state.
+`OwnMineAuditState={liveOwnMines,retiredOwnMineIdsSorted,ownMineCreationCounter}`; live entries are `{mineId,square}` sorted by square, at most native cap 3.
+Retired IDs are sorted unique; creation counter starts at 0 and the first created ID suffix is 1, preserving §6's existing public ID formula.
+Initial mines use canonical opening IDs; each actual created mine advances the own lifetime counter once even if immediately removed.
+Reject reused IDs, unknown/double removal, noncontiguous creation counters, conflicting births and snapshot mine-location disagreement; retire each mine once.
+Only own mine state enters this reducer; opponent mine IDs/counters/removals never enter the authorized channel.
+Stage mine/unit/receipt/vision changes together and reconcile live mine IDs with both `ownMineLineage` and original `own.mines` before atomic publication.
 This reducer state is caller-owned audit state, **not** a field of `AuthorizedHistory`; trusted session binding wraps it privately without entering features.
 Replay of the last identical canonical raw batch hash is idempotent; require byte equality as well as hash equality.
 A conflicting duplicate, sequence gap, invalid ordinal/phase, session mismatch, or ambiguous provenance aborts ALL training before publication.
 Initial is accepted only with null prior state in the trusted session; another initial or a batch from another episode cannot reset a live ledger.
 The host checks session/sequence and calls reconciliation before `advanceHistory`; advancing history alone never authenticates an arbitrary JSON batch.
-`advanceHistory` consumes the checked boundary and atomically returns snapshot, reconciled ledger and `everLit`; it publishes nothing on error.
+`advanceHistory` consumes the fully folded checked boundary and atomically returns snapshot, reconciled ledger and transient-inclusive `everLit`; it publishes nothing on error.
 
 ## 8. Candidate domain, deterministic quota profiles, and work accounting
 
 Canonical family order `K=[classical,deploy,stimStep,spiderMine,charonMissiles,siegeMode,tacticalJump]`; use `C` as the classical family abbreviation.
+Define the next primitive domain `D(H,P)` from authorized history H and ALREADY APPENDED own prefix P, never from later actions or hidden state.
+All generated actions have exactly `kind,timing,color,from` plus only the fields permitted below; `color=H.side`, every authored coordinate is on-board.
+Special actors are current preturn own actors of the required type; preceding own B arrivals/births provide **classical actors ONLY**.
+Own post-prefix projected type cannot grant special permission: C-promotion→F-toggle is rejected when native preturn actor typing rejects it.
+
+| Kind | Current actor / timing | Exact emitted fields and prefix-only domain |
+|---|---|---|
+| `classical` | Current own actor, or native-supported preceding B arrival/birth; C. | Mandatory to with native `isScMoveShape(actorType,from,to,color)`; for Marine last-rank target emit promotion alternatives p,n,b,r,q, otherwise omit promotion. No unit. |
+| `deploy` | Current own k; B/F. | Mandatory to+unit p,n,b,r,q. Radius-1 ring around native append-time own CC anchor; exclude anchor and known CC positions only. Own nonCC occupied targets remain crushable; no promotion. |
+| `stimStep` | Current own p; B/F. | Mandatory to=`marineSingleTarget(authoredFrom,color)`; off-board means no intent. Last-rank to requires promotion alternatives p,n,b,r,q, otherwise omit; no unit. Apply native exceptions below. |
+| `spiderMine` | Current own n; B/F. | Emit NO to/unit/promotion. Placement anchor is preceding same-actor C target for F, otherwise authored origin; exclude existing own mine at anchor and native own cap 3. |
+| `charonMissiles` | Current own b; B/F. | Mandatory to: every on-board diagonal from append-time F same-actor C target when C is ALREADY IN PREFIX, otherwise authored origin. No unit/promotion; no ship-presence or hidden-blocker filter. |
+| `siegeMode` | Current own r; B/F. | Emit NO to/unit/promotion; native toggle only. |
+| `tacticalJump` | Current own q; B/F. | Mandatory to: every other on-board square except known occupied; retain unknown. No unit/promotion. |
+
+Order primitive fields by K, authored actor square, timing B/F (C only for classical), target, unit, promotion; absent fields precede present fields.
+Squares order a1..a8,b1..b8,…,h1..h8; unit/promotion alternatives order p,n,b,r,q.
+Guard costs with native `UNIT_COST` and `specialGasCost`; total requested minerals≤own bank, gas≤own current gas, ≤1 C, ≤1 special per native authored origin, length≤4.
+Classical own-occupancy constraints use native `classifyClassicalVacancy`: B origins may vacate, transit targets require the exact gasPair, and effective Siege includes preceding B toggles.
+Stim known-occupied to is permitted only for B with preceding B-stim chain-head from=to, or F with preceding same-actor C.to=authored to; unknown occupancy is retained.
+For F stim with preceding same-actor C, reject if `marineSingleTarget(C.to,color)` is last rank, exactly as current `assertSpecialLegal`; do not retrovalidate a previous F against a C appended later.
+Deploy uses `spawnCCAnchor`'s own prefix CC movement; Charon/F mine use their native append-time anchors, not a generic rewrite or hidden actual arrival.
+Extract these native public shape/anchor/own-rule calculations for authorized maps+unknown masks; NEVER call full private admission or feed fake partial SCFEN into validators.
+Classical geometry generation does not prove actual path/target legality; fog rays and mine absence remain uncertain and can lead to a selected native rejection.
+Charon's nonship-transparent effects are deliberately EXCLUDED from §9's CLASSICAL threat proxy, despite remaining represented as an intent family.
+
 Each family lane traverses queues owned by that family; the shared composition lane traverses queues of length ≥2.
 An emitted queue consumes **one** funding pool only; family visits use their owner pool, shared visits use shared capacity.
 Global key-byte deduplication precedes retained-quota consumption; the same queue in two lanes is never retained twice.
@@ -299,15 +352,17 @@ All profiles start with active family capacity 48, shared capacity 175, and pass
 Proven complete family-iterator exhaustion releases unused family capacity to compositions; a work cap is NOT evidence of exhaustion.
 Proven composition-iterator exhaustion redistributes unused shared capacity among nonexhausted families, one slot/family/canonical round.
 No active/nonexhausted recipient means unused capacity remains unused; retained capacity is an upper bound, never a required count.
-Traverse seven family lanes plus shared lane in canonical round-robin, one attempted append per live-lane visit.
-Family desired lengths cycle `1,2,3,4`; shared desired lengths cycle `2,3,4`; exhausted length iterators are skipped deterministically.
-For each length, enumerate prefix-dependent intent index tuples by increasing index sum, then lexicographic indices; indices are zero-based.
-Intent order is family K, actor square, timing `B,F` (only `C` for classical), destination square, unit, promotion; absent fields sort before present values.
-Squares order `a1,a2,…,a8,b1,…,h8`; spawn/promotion order `p,n,b,r,q`; no-promotion precedes those choices when permitted.
-Repeated prefix work counts again: increment work **before every prefix+intent attempted append**, including invalid, duplicate, owner-ineligible and quota-full attempts.
-Each visit advances its iterator even if it prunes or finds a duplicate; retain no partial queue as a substitute for its rejected extension.
-Retain per-lane/per-length tuple and prefix cursors across visits; each scheduled visit advances exactly one append, not a hidden full-queue search.
-Apply owner/quota retention checks at completed desired length; do not prune a prefix merely because later actions can change its final owner.
+Traverse seven family lanes plus shared lane in fixed canonical round-robin; each lane has four FIFO frontiers `F[0..3]` and cyclic depth cursor initially 0.
+Initialize each lane with one empty-prefix node in F[0]; each node stores `{prefix,nextIntentIndex}` for lazy canonically ordered `D(H,prefix)`.
+On a lane visit choose the first nonempty depth at/after its cursor modulo 4; drop exhausted domain nodes and continue to the next available node without restarting/rescanning.
+A logical visit performs exactly ONE prefix+intent append attempt: increment work BEFORE validity, advance node.nextIntentIndex, then set depthCursor=(chosenDepth+1)%4.
+An invalid extension produces no child; a valid queue Q with length<4 enqueues one fresh continuation node in F[length(Q)], regardless of dedup/owner/quota retention.
+Retain valid Q only if this lane's owner/pool condition, remaining capacity and global byte dedup permit it; family retention allows length1..4, shared retention length≥2.
+Do not prune a valid prefix for its current owner or a full quota: a later action can change the final owner; fullness skips retention, not structural extension.
+The parent prefix node remains FIFO-front with its next index until exhaustion; deeper FIFO nodes receive their cyclic visits rather than restarting the root.
+Every lane's append work counts again, including duplicates, invalid, owner-ineligible and quota-full extensions; no unseen full-queue traversal is free work.
+At most eight roots+2048 continuation nodes exist during the call; depth≤3 and lazy atomic domain cursors have bounded square/known-actor/unit/promotion ranges.
+Availability tests examine finite authorized singleton domains only; they neither execute hidden queries nor enumerate unbounded root side effects.
 Stop before attempted append 2049, or at 512 retained uniques, or after proven iterator exhaustion; counters never conceal dedup/pruning work.
 Derive canonical key from existing codec-v1 canonical action-array bytes, SHA-256 those raw bytes, and compare raw bytes on hash collision.
 Hashes accelerate identity, not replace exact key-byte comparison; final scoring/sampling order is ascending canonical key bytes.
@@ -315,10 +370,7 @@ Hashes accelerate identity, not replace exact key-byte comparison; final scoring
 Prune only authorized side/resource/queue-shape/actor/anchor/intent constraints; retain uncertainty in cells, enemy modes and hidden mines.
 Native pure shape helpers must accept authorized maps plus unknown masks; do not pass invalid fog-filtered SCFEN to actual resolve/admission.
 At most one C and one special per native-origin actor; total requested minerals ≤own bank, gas ≤own gas, generated length ≤4.
-Special actors remain native types: deploy k, stimStep p, spiderMine n, charonMissiles b, siegeMode r, tacticalJump q.
-Deployment/Charon/F mine origin and B→C coordinate rewrites follow native own anchors, not a generic positional rewrite invented by the trainer.
-B-created classical actors remain expressible where native queue rules permit them; current pre-C special actor checks cannot grant a future promoted actor new permission.
-Known illegal F-promotion→special chains are pruned as own-rule failures; unknown hidden occupancy must not be queried to decide membership.
+The primitive table is the only generator domain; its native constraints are prefix-only and must not be replaced by policy-side SCFEN probes.
 Pruning categories are `side`, `shape`, `own-resources`, `own-actor`, `own-anchor`, `own-mode`, `own-mine`, `promotion`, `owner`, `quota`, and `duplicate`.
 Report omissions, per-kind/timing/length coverage and cap termination; this bounded generator does not prove exhaustive legality or winning coverage.
 Exactly one selected whole queue reaches private admission, with no next-candidate rescue, prefix salvage, or hidden probing.
@@ -327,25 +379,54 @@ Exactly one selected whole queue reaches private admission, with no next-candida
 
 `authorized-own-projection-v1` maintains own nominal units/modes/mines and actor tokens separately from the fixed current observed-enemy layer.
 Tokens identify an existing own lineage or a local hypothetical B birth by queue index; tokens/IDs are never numeric features.
-Process the candidate through native B/C/F own-anchor/origin rules; array position remains the feature slot, even when settlement order differs.
-For slot i, its before/after states bracket that own action in the canonical own-only phase schedule; exclude later-phase actions from its prefix.
+Process native own `orderBHeadsFirst`, then C with native after-B coordinate rewrite, then F in own sequence with origin associated ONLY to that own actor's C.
+Array position remains the feature slot; before/after states bracket its action in that native phase schedule, excluding actions not yet reached there.
+FROM/TO coordinates and TARGET masks/type/memory use the ORIGINAL AUTHORED intent; actor geometry/type/mode, stale distance, exposure/pressure/protection, vision and classical ray/path use EFFECTIVE rewritten own-hypothesis coordinates.
+When a native rewrite depends on unknown occupancy, use an optimistic-clear own hypothesis and mark actor.nominal for that dependence; never assert actual clear terrain.
+Sieged C Tank fire stays in place; known enemy-CC aim uses native drops-at-resolve without nominal capture/relocation or predicted HP change.
+Hoverbike C leaps have no ray/path intermediates; every special's ray/path fields are zero, including Charon.
 Conditionally move/transform/create own hypotheses, but never simulate combat, opponent decisions, actual births/captures, or hidden truth.
 Nominal overlap with a fixed observed enemy is an explicit hypothetical overlap, not deletion of that observed enemy fact.
 Do not update cells, observed memory, ledger, or `everLit` from hypotheses; nominal investment is requested cost, not confirmed paid basis.
 Reusable native pure shape/vision/ray helpers accept authorized maps and unknown masks; full-world resolve is never a feature oracle.
 
-Threat/pressure/protection/exposure are **stationary geometric proxies**, not legality, damage, calibrated probability or future attack predictions.
+### Three occupancy layers and classical-only relation primitive
+
+Keep (1) current authorized cells, (2) FIXED currently observed enemies, and (3) NOMINAL own actors/modes/mines separate.
+A hypothetical own move removes its obsolete own blocker; its former known-own square becomes conditionally empty only if no nominal own or fixed enemy occupies it.
+Unknown cells NEVER become confirmed empty from hypotheses; new own arrivals are conditional blockers, and overlaps cannot erase an observed enemy.
+For effective ray intermediates, fixed observed enemy blockers dominate, then nominal own blockers, then original unknown cells, then actual-empty/conditionally-vacated-known-own cells.
+This lets an own vacate open a CONDITIONAL ray without claiming that a hidden opponent allowed the move.
+`path.knownEmpty` counts actual-empty plus conditionally vacated known-own intermediates; `knownOccupied` counts fixed enemy/nominal own blockers; `unknown` counts remaining unknowns.
+Those path labels describe authorized conditional occupancy, not a newly observed future grid.
+
+Threat/pressure/protection/exposure are declared **stationary CLASSICAL geometry proxies ONLY**, not legality, damage, calibrated probability or future attack predictions.
+Exclude Charon effects (including nonship transparency), deployment crushing, tactical-jump collision, mine triggers, pending-CC-check legality and every special attack effect.
+All seven families still have kind/intent-target/cost/position representation; no feature contract promises full tactical simulation.
+For source!=target use native `attacksSquare` shape with explicit unknown-mask path handling, never a private square map or a fabricated empty fog map:
+
+| Type | Stationary classical shape |
+|---|---|
+| p | One forward diagonal in its color direction; forward/double moves are NOT attacks. |
+| n | Absolute file/rank deltas (1,2) or (2,1); no intermediates. |
+| k | Adjacent distinct square, max absolute coordinate delta 1; no intermediates. |
+| b | Diagonal ray, absolute deltas equal and positive. |
+| r | Same file or rank, distinct square; Tank/siege compatible modes use native cross geometry and first occupied blocker, never Charon transparency. |
+| q | Diagonal or file/rank ray, distinct square. |
+
 Sources include only currently observed enemy units; stale sightings and unseen attackers never become live threat sources.
 An enemy Tank's unknown mode uses compatible possibilities `{tank,siege}`: intersection with known-clear path is known, union-minus-known is possible.
-For any source/target pair, a known intermediate blocker excludes the relation; an unknown intermediate makes it possible, never known.
-A nominal own blocker can add a conditional obstacle; it cannot erase a current observed blocker or convert unknown into known-empty.
+Both compatible Tank modes currently share the classical cross shape; mode uncertainty cannot be used to invent a special threat or a calibrated confidence.
+For a compatible mode's source/target relation, an intermediate fixed-enemy/nominal-own blocker excludes it; an unknown intermediate makes it possible, never known.
+An observed target itself is not an intermediate blocker; count the source→target pair once, not once per mode.
 Known and possible relation sets are disjoint; count distinct source→target pairs only once across compatible modes.
-Use native stationary attack geometry without fabricating a hidden hostile mine, classical legality probe, or certain capture at the landing square.
-Ray applies only to ray-based classical/Charon geometry; a known blocker dominates uncertainty, otherwise unknown dominates open.
-Applicable empty intermediate set is vacuously open; airborne/jump/nonray intermediates are empty, with no fabricated terrain knowledge.
-Path counts use **current** known-empty/known-occupied/unknown intermediates; target-square facts are encoded separately.
-`Lit(Q)` is geometric own-hypothesis lit squares plus own nominal mines; exclude Mecha's piece-only Battleship pings from lit novelty.
-`New(Q)=Lit(Q) \ everLit`; singleton projections begin independently from the same authorized history.
+Mine absence stays unknown/unmodeled; these proxies neither fabricate hidden mines nor provide a legality/confidence substitute.
+Per-action ray applies ONLY to CLASSICAL sliding b/r/q shapes; blocker dominates uncertainty, otherwise unknown dominates open; applicable empty intermediate set is vacuously open.
+All specials and classical p/n/k have ray/path all zero; original target knowledge remains separately encoded even for Charon's authored aim.
+Let L_i be own geometric LIT squares after action i in the native nominal schedule, including own nominal mines but excluding piece-only reveal pings.
+With E=actual authorized everLit, define `N_i=L_i\E`, `N_Q=union_i N_i`; empty queue has empty N_Q and overlap zero.
+Position newlyLit=`cardinality(N_i)/64`; queue newlyLit=`cardinality(N_Q)/64`; `visionOverlap=(sum_i cardinality(N_i)-cardinality(N_Q))/256` is nonnegative.
+This overlap measure needs no unsupported isolated-singleton actor projection, changes no observed history, and is not entropy reduction.
 For stale approach choose the most recent enemy remembered square, tie canonical square; use positive Chebyshev distance reduction from actor-before to actor-after.
 This uses a square sighting, not an enemy identity count; no memory means age/approach zero.
 Per-slot exposure counts stationary observed enemies related to that nominal actor after its prefix; pressure counts its known reachable observed targets.
@@ -369,7 +450,7 @@ These expansion rules and the following ordered tables define **every** manifest
 | `MM,GM,s` | `(bank-wholeRequestedMinerals)/M`; `(gas-wholeRequestedGas)/G`; `(wholeRequestedMinerals/M+wholeRequestedGas/G)/2`. |
 | `PK` | Whole nominal own→currently observed NONCC enemy **known relation-pair count/4096**, maximum `64×64`; never silently divide/cap it by 64. |
 
-Indicators are 0/1; signed synergy may be negative; all other scales use the domains above without clipping.
+Indicators are 0/1; visionOverlap is nonnegative, and all fields use their declared scales without clipping.
 Reject nonfinite/out-of-domain values; validate exact integer/resource constraints before normalization, never round invalid state into validity.
 Position coordinates are absolute zero-based file/rank indices divided by 7, not side-rotated coordinates.
 Actor paid/replacement values divide by M; per-action mineral/gas costs divide by M/G; path and unit/source counts divide by 64.
@@ -377,7 +458,7 @@ Memory age is `(turn-observedTurn)/T`; stale approach is positive Chebyshev redu
 An absent action slot is all 84 zeros; a present action without a target sets `target.absent=1`, not `target.unknown`.
 Deploy/promotion S one-hot uses `none` when absent; target P one-hot uses current observed target only, never stale memory type.
 Actor known means an actual own lineage matches the nominal prefix's own actor token; absent means no actor token, not fog uncertainty.
-Actor nominal is 1 when its hypothesized position/type differs from current facts or it is a hypothetical B-born actor.
+Actor nominal is 1 when its hypothesized position/type differs from current facts, it is a hypothetical B-born actor, or its effective rewrite uses optimistic unknown occupancy.
 `actor.paidKnown=1` only for existing actual own lineage, including known zero basis; hypothetical births use paidKnown=0 and actor.paid=0.
 Actor type reflects its supported own-intent hypothesis; tank-mode-known/sieged apply only to a Tank actor, and non-Tank masks are zero.
 
@@ -395,8 +476,8 @@ Actor type reflects its supported own-intent hypothesis; tank-mode-known/sieged 
 | 53–54 | 2 | `cost.minerals,cost.gas` | Native requested action cost/M,G. |
 | 55–56 | 2 | `actor.paid,actor.replacement` | Existing confirmed basis/M or 0; nominal actor current-type proxy/M, CC=0. |
 | 57–60 | 4 | `ray.applicable,ray.open,ray.blocked,ray.uncertain` | Applicable and mutually exclusive status; all zero when inapplicable. |
-| 61–63 | 3 | `path.knownEmpty,path.knownOccupied,path.unknown` | Current intermediate-square counts/64. |
-| 64–65 | 2 | `nominal.newlyLit,nominal.staleApproach` | Prefix New count/64; selected stale-square approach/7. |
+| 61–63 | 3 | `path.knownEmpty,path.knownOccupied,path.unknown` | Effective classical sliding-ray conditional-layer intermediate counts/64; specials/nonray all zero. |
+| 64–65 | 2 | `nominal.newlyLit,nominal.staleApproach` | Native-schedule N_i count/64; effective actor stale-square approach/7. |
 | 66–67 | 2 | `exposure.known,exposure.possible` | After-prefix stationary enemy-source counts to this actor/64. |
 | 68–69 | 2 | `pressure.units,pressure.cc` | Known distinct observed NONCC targets/64; known observed enemy CC relation indicator. |
 | 70–71 | 2 | `protection.units,protection.cc` | Positive threatened-own-NONCC reduction/64; CC protection indicator. |
@@ -439,7 +520,7 @@ Pair predicates are symmetric except timing inversion; hypothetical deploy child
 | 8 | `gasMargin` | `GM` |
 | 9 | `nominal.deployCrushOwnPaid` | Sum basis of distinct CURRENT own lineages hypothetically overwritten by permitted own deploy hypotheses /PaidScale. |
 | 10 | `nominal.deployCrushOwnReplacement` | Sum current-type proxy of the same distinct current own lineages /ReplacementScale. |
-| 11 | `nominal.newlyLit` | `NL=cardinality(New(whole projection))/64` |
+| 11 | `nominal.newlyLit` | `NL=cardinality(N_Q)/64` |
 | 12 | `nominal.ccExposureKnown` | `CK=known stationary enemy-source relations to own CC/64` |
 | 13 | `nominal.ccExposurePossible` | `CP=possible, disjoint-from-known relations to own CC/64` |
 | 14 | `nominal.ccProtection` | `I(pre CC known exposed AND post CC not known exposed)` |
@@ -449,7 +530,7 @@ Pair predicates are symmetric except timing inversion; hypothetical deploy child
 | 18 | `pair.mineRelocate` | spiderMine + same-actor C relocation pairs /6. |
 | 19 | `pair.deployMove` | B deploy + C using its local hypothetical child actor pairs /6. |
 | 20 | `pair.timingInversions` | Pairs i<j with phaseRank(action[i])>phaseRank(action[j]), B=0/C=1/F=2, /6. |
-| 21 | `nominal.visionSynergy` | `(cardinality(New(whole))-sum_i cardinality(New(singleton_i)))/256` |
+| 21 | `nominal.visionOverlap` | `(sum_i cardinality(N_i)-cardinality(N_Q))/256`, nonnegative; empty queue=0. |
 | 22 | `ix.spendOwnPaidLoss` | `s*D` |
 | 23 | `ix.tradeEnemyPaidBound` | `PK*EP` (explicit constant-zero conservative bound, not exact enemy payment). |
 | 24 | `ix.tradeEnemyReplacementBound` | `PK*ER` |
@@ -483,14 +564,18 @@ t ^= t + Math.imul(t ^ (t >>> 7), t | 61)
 u = ((t ^ (t >>> 14)) >>> 0) / 4294967296
 ```
 
-Serialized stream state is `{root:uint32,state:uint32,drawCount:uint53}`; initial state=root, count=0, restore resumes at the next increment.
+Serialized stream state is the closed StreamState in §15, including status, root:uint32, state:uint32 and nonnegative safe drawCount; initial state=root, count=0, restore resumes at the next increment.
 Selection persists across corpus epochs; policy persists across attempts; opponent persists across live episodes and makes no corpus draws.
 Environment-settlement is derived but **UNUSED** for fixed canonical opening/native deterministic settlement: state=root, draws=0.
 Generator is explicitly `{root:null,state:null,drawCount:0,status:'unused'}`; do not quietly introduce random candidate traversal.
 Require bounded, predeclared output parity against existing exported `mulberry32` and restore-next-draw parity; claim no unbounded parity beyond safe counters.
 Parent owns weights, episode-start baseline, roots and serialized states; the same child owns the WHOLE match.
 Child receives frozen episode weights and policy/opponent start-state snapshots, advances those streams privately and returns draw journals/final states.
-Parent reconstructs draws, verifies counts/final states, and commits them exactly once with the verified completed episode.
+Each decision's child draws are TENTATIVE until its complete compact result is parent-verified/ACKed; no queue admission occurs before that ACK.
+Parent reconstructs draws, keeps last-ACKed stream states and the verified 370-value score-accumulator prefix, then commits that prefix once at verified episode completion.
+If a candidate dies at its proved deadline, discard unACKed draws/actions/probabilities/gradient; parent-owned accepted prefix supplies the failure record without invented child end states.
+Opponent stream advancement requires a complete ACKed reply and exact parent replay of pinned strategic code/context; missing opponent reply, timeout or exception aborts ALL.
+Corpus episodes make zero opponent draws; selection state/cursor has already been durably consumed before launch and is never rolled back by abort.
 There is no parent per-decision policy loop, `env.step`, or status-driven deadline renewal.
 
 Stable log-sum-exp computes log-probabilities directly from logits; individual exponential underflow to probability 0 is allowed.
@@ -508,21 +593,55 @@ Host-only `TrustedExecutionContext` binds audited corpus roster, native rules/co
 `VerifiedEpisode` contains checked classification, sampled-decision count, score accumulator, stream end states, public-history audit refs and verified journal-prefix ref.
 All refs stay host-side; only `AuthorizedHistory` and policy RNG callback cross `choose`.
 
-Private JSONL messages use `version='starchess-training-episode-v1'`, `attemptId`, monotonically increasing `messageOrdinal`, and discriminated `kind`.
-Kinds are `ready`, `decision-start`, `decision-result`, `settlement`, `complete`; optional informational phase messages have no deadline authority.
-Decision-start/result bind `{planningOrdinal,turn,side}`; start references the verified turn-open state, result includes ordered actions, recomputed requested spend and journal entry.
-Settlement includes the next full native result/resource/provenance payload; complete includes stop proof, journals and final RNG states.
-Parent allows only ready→scheduled start→matching result→next scheduled side or checked settlement→next ordinal/complete transitions.
-A terminal turn-open permits completion without a decision; corpus White intents bind to the trusted recorded window, not an invented policy-start event.
-The child computes both plans from the same frozen turn-open precommit state; parent checks progress, not interactive environment stepping.
-Start a fixed deadline when the expected decision starts; repeated/changing status cannot renew, clear, or advance it.
-Startup 10s, candidate or strategic decision 10s, match 300s after ready remain unchanged; no additional window deadline.
-Use host monotonic elapsed time, reject matching late results, and kill/reap a blocked child before returning validated partial diagnostics.
-Node callbacks are not real-time guarantees; status receipt never overrides elapsed-time rejection.
-Preserve 64 windows, 128 recorded plies, 4096 proposal cap, 2048 IPC messages, progress 1MiB and completion/pre-parse frame 16MiB.
-Decoder bounds raw frames before JSON parse, then validates typed message/array caps; no protocol override earns standard-run credit.
-Verified sampled entries retain canonical candidate/features/selected key/logit distribution/uniform draw and frozen-weight binding; malformed entries are infrastructure failures.
-Full native reexecution validates outcomes/resources; the host independently reconstructs public batches, feature values, sampling and score accumulator.
+### Closed checked-stage JSONL messages — C05–C08
+
+Every message has exact common header `{version:'starchess-training-episode-v1',attemptId,messageOrdinal,kind}` plus ONLY the payload fields below.
+Parent and child each maintain their own contiguous messageOrdinal starting at 0; attempt/session/protocol/version mismatches abort infrastructure.
+Private permitId is parent-issued `${attemptId}:plan:${planningOrdinal}:${side}`; `DecisionId={planningOrdinal:Int0..63,side}` within the attempt header.
+`PlanPermit={permitId,planningOrdinal:Int0..63,turn,side,role:'candidate'|'strategic'}`; side/role/order must match the host-owned schedule.
+
+| Direction / kind | Exact payload fields |
+|---|---|
+| Child `ready` | `openingDigest:ByteRef,initialPublicBatch:AuthorizedBoundaryBatch,privateProvenanceDigest:ByteRef`; parent checks its trusted opening/initialization, not report-supplied pins. |
+| Child `turn-open-result` | `planningOrdinal,begin:BeginScTurnResult,bank:{w,b},publicBatch:AuthorizedBoundaryBatch,privateProvenanceDigest:ByteRef` |
+| Parent `turn-open-accepted` | `planningOrdinal,nextPermit:PlanPermit\|null` |
+| Child `decision-result` | `role:'candidate'\|'strategic',journalEntry:CompactSampleJournalEntry\|OppPrivateJournal` matching role |
+| Parent `decision-accepted` | `decisionId:DecisionId,nextPermit:PlanPermit\|null` |
+| Child `settlement` | `planningOrdinal,end:EndScTurnResult,bank:{w,b},publicBatch:AuthorizedBoundaryBatch,privateProvenanceDigest:ByteRef` |
+| Child `complete` | `acceptedCandidateDecisionIds:DecisionId[0..64],acceptedOpponentDecisionIds:DecisionId[0..64],scoreAccumulator:Float64Hex[370],rngSummaries,stopProof` |
+
+JSON arrays are dense, object schemas closed recursively, bank values exact Int0..12, publicBatch always candidate-side, turn follows checked native state.
+Native begin/end payload types remain the existing complete result schemas; they must equal parent native reexecution, not an outcome label or partial effect summary.
+The parent checks `turn-open-result` only in the expected state: reexecute native Begin from last checked full SCFEN/private provenance and bank, compare full Begin/bank/batch/digest and pinned identities.
+An initially terminal trusted opening completes without inventing Begin; a terminal verified turn-open gets nextPermit=null and permits only terminal completion, no policy decision.
+For nonterminal turn-open, check existing caps and trusted source availability BEFORE granting a permit; truthful exhaustion/cap permits classified completion with no plan.
+Worker MUST WAIT for a nonnull parent permit before ANY model-history preparation, candidate generation, feature encoding, scoring, sampling or opponent planning for that stage.
+Parent starts fixed monotonic **10_000ms BEFORE WRITING** a PlanPermit; white-then-black plan roles remain, except recorded White requires no plan permit.
+Both policy/opponent inputs remain frozen to the same precommit state; ACKing the first result exposes no first-side queue/spend to the other side.
+After each checked result parent stores its verified journal/state and sends decision-accepted; after the last required decision, nextPermit=null releases child whole-pair native admission/settlement.
+Parent authoritatively validates accepted settlement before ordinal/ply advancement; the child still owns the whole match, not a parent public env.step or parent-owned policy-request loop.
+These ACKs refine selected A08 checked-stage barriers; they do NOT replace it with the previously unselected per-decision parent policy orchestration.
+Startup is 10s; overall match is 300s from the complete ready frame's raw receipt, with ready validation, settlement, parent verification and barrier time included, not charged as candidate timeout.
+Use parent `process.hrtime.bigint()`; timestamp raw COMPLETE-frame receipt BEFORE parsing; a matching decision result received AT OR AFTER its permit deadline is late.
+Repeated/changing status has NO timer or progress authority; no informational status kind exists in this closed wire schema.
+Node callbacks are not real-time promises: enforce elapsed-time/receipt checks even if the timer callback has not fired, and kill/reap before returning partial diagnostics.
+Preserve 64 windows, 128 plies, 4096 proposals, a combined 2048 parent+child IPC messages, 1MiB progress and 16MiB completion/raw pre-parse frame caps; no override earns standard-run credit.
+
+`CompactSampleJournalEntry` is HOST-ONLY with exact fields:
+`{decisionId,permitId,historyDigest:ByteRef,manifestDigest:ByteRef,generatorVersion:'challenge-composition-v2',orderedCandidateKeysDigest:ByteRef,selectedIndex,selectedKey,actions,requestedSpend,uniform:Float64Hex,selectedLogProbability:Float64Hex,samplingBefore:StreamState,samplingAfter:StreamState}`.
+`actions` has 0..4 native intent records; selectedIndex is Int0..candidateCount-1; requestedSpend is `{minerals:Int0..12,gas:Int0..3}`; selectedKey is the codec-v1 canonical action-array key.
+Parent already owns verified history, frozen weights/manifest and private opponent context; recompute G, all φ/logits/probabilities, one uniform draw, membership/key/log-probability and score accumulator.
+Never trust an eligibility/validity boolean or child-provided full feature tensor; single-pass-only candidate calls still consume one verified uniform draw.
+`OppPrivateJournal={decisionId,permitId,actions,reportedMinSpend,opponentBefore:StreamState,opponentAfter:StreamState}`; actions obey existing native 65-action codec bound, reportedMinSpend is Int0..12.
+Parent exactly replays pinned strategic planning on the SAME private precommit context/start state and verifies actions/spend/end state before ACK; corpus recorded actions are verified against the trusted trace instead.
+`rngSummaries` contains exactly the four labeled StreamStates, equal to parent-ACKed prefixes; completion ID lists are unique ordered accepted references, not repeated decision tensors.
+Completion's 370 hex score accumulator is checked against the parent recomputation; do NOT serialize 512×370×64 matrices or probability distributions.
+Release per-decision temporary φ/probability matrices before the next validated decision; keep only compact accepted journals and the accumulated sufficient statistics.
+The parent registers bounded journal/evidence bytes itself; ByteRef is never a worker filesystem URL/path/source-root selector or claimed trusted-context authority.
+Full private native/provenance/HostEpisodeRecord payloads still obey inherited byte caps; oversized evidence is infrastructure rejection, never silent truncation or hidden-state loss.
+On a candidate deadline, retain only parent-ACKed prior sampled choices and known streams, discard the pending tentative transaction, end/reap the match with no retry.
+Reward -1 may update only that verified accepted prefix; zero accepted choices yields diagnostic failure with no PG/L2/baseline; unattributed timeout or unverified prefix aborts ALL.
+Full native reexecution validates outcomes/resources and public batches; the parent recomputes feature values, sampling and score statistics from its bounded accepted records.
 Trusted corpus context loads/audits the pinned 18-ID roster once, checks actual trace hashes and the complete consumed White prefix, and ignores unused trailing queues only after real terminal.
 Fixed gate schedule owns N=54 (18 corpus+36 live), or approved partial N=18/36; validate every row before assigning exactly one win/loss/draw/failure bucket.
 Missing/invalid/duplicate/unexpected records invalidate acceptance; anomalies cannot increase N or remove failures: `wins+losses+draws+failures=N`.
@@ -534,18 +653,27 @@ Before child launch, durably append the attempt descriptor and consume started o
 Private attempt IDs provide exactly-once commit keys; counters are started, verifiedCompleted, eligibleCompleted, updates, nonzeroPGUpdates, baselineCount and baselineSum.
 At attempt start `b=baselineSum/baselineCount`, or 0 if count=0; child gets this frozen value and current frozen θ.
 
-| Existing `stop.kind` | Verified policy/challenge classification | Infrastructure/provenance classification: abort ALL |
+| Existing stop.kind / origin | Required parent proof / closed eligible reason | Verified classification |
 |---|---|---|
-| `terminal` | Native verified candidate win/draw/loss gives `+1/0/-1`. | Invalid terminal claim, replay/resource/identity disagreement. |
-| `queue-rejected` | Structurally valid sampled candidate rejected by actual core/resource admission gives -1; valid trusted recorded White queue rejected on the genuinely diverged board also gives -1. | Malformed sample, host submitted different data, wrong trace/suite, invalid strategic opponent queue/contract. |
-| `trace-exhausted` | Audited corpus truly exhausted on a verified nonterminal prefix gives -1. | Wrong roster, premature cursor/exhaustion, bad request/trace binding. |
-| `watchdog` | Parent proves candidate's fixed 10s deadline expired with ≥1 verified sampled-decision prefix: -1. | Startup/opponent/match/unattributed timeout, unverified journal, late/protocol mismatch. |
-| `progress-limit` | Actual current frozen cap reached on verified nonterminal progress: -1. | Config overrides, false counters, altered protocol limits. |
-| `exception` | No generic unexpected throw becomes reward; a separately proved known policy behavior failure uses `script-contract` classification. | Unknown exception, numeric/codec/adapter/dataset/transport/source mismatch or software bug. |
-| `script-contract` | Only a documented candidate behavior failure with legitimate sampled intended choice and verified prior journal can give -1. | Opponent/host/version/protocol error, malformed sample, wrong distribution, adapter-mutated step; never learn software bugs. |
+| `terminal` / native | Exact native terminal reexecution and candidate outcome; `core-terminal`. | +1/0/-1 from actual win/draw/loss. |
+| `queue-rejected` / native candidate | Exact VALID STRUCTURAL GENERATED member already ACKed, identical submitted actions, actual core/own-mineral denial; `candidate-native-rejection`. | -1; retain that ACKed selection. |
+| `queue-rejected` / recorded White | Exact trusted recorded queue/source prefix rejected on actual diverged board; `recorded-white-rejection`. | -1, not substituted White play. |
+| `trace-exhausted` / recorded White | Truthful nonterminal exhaustion of audited trace at checked ordinal; `trace-exhaustion`. | -1. |
+| `progress-limit` / native host | Truthful nonterminal reach of unchanged frozen cap; `progress-cap`. | -1. |
+| `watchdog` / candidate deadline | Parent-issued candidate permit, raw receipt/deadline/role proof, last ACKed prefix and known states; `candidate-deadline`. | -1 on ACKed choices only; with zero ACKed choices diagnostic-only. |
+| `exception` or `script-contract` / any | These kinds NEVER establish an eligible return by themselves. | Infrastructure abort ALL, never relabeled as learned software-bug reward. |
+| Every other kind/origin/proof combination | No eligible proof above, any integrity mismatch, unattributed or forged stop claim. | Infrastructure abort ALL. |
+
+`StopProof={stop:ChallengeStop,origin,reason,checkedBoundaryOrdinal,acceptedCandidateCount,evidenceRef:ByteRef}` is host-only; its fields are claims until parent checked against its own execution/clock/journal.
+`origin='native'|'recorded-white'|'candidate-deadline'|'infrastructure'`; boundary ordinal is Int0..256 and candidate count Int0..64 matching the accepted prefix.
+Eligible reasons are exactly the six table literals; infrastructure reason is one of `exception,policy-schema,nonmember,version,codec,adapter-mutation,distribution,nonfinite,rng,journal,gradient,protocol,permit,session,opponent,startup-timeout,match-timeout,unattributed-timeout,dataset,source,identity,ledger,provenance,forged-progress,config-override,publication,storage,size`.
+Malformed policy output, non-generator choice, bad symbols/types, schema/version/codec failure, adapter mutation, wrong distribution/nonfinite/RNG/journal/gradient all abort ALL.
+Opponent exception/timeout/invalid actions or spend, startup/match/unattributed watchdog, dataset/source/trusted identity mismatch, receipts/ledger/provenance mismatch, forged progress and config override all abort ALL.
+Publication/storage errors abort ALL; a structurally invalid row cannot become a policy-gradient sample, regardless of a raw native error label.
+Native admission/resource rejection of the exact verified generated member is the game failure in the table; error kind alone or a source/animation cue is not its proof.
 
 A valid zero-sampled terminal/challenge failure records diagnostic reward but performs **NO SGD, NO L2, NO baseline insertion**.
-Eligibility requires verified completion, one or more verified sampled decisions, and a valid native outcome or proved policy/challenge failure.
+Eligibility requires verified completion, one or more parent-ACKed verified sampled decisions, and one of the exact proved return classifications above.
 Infrastructure abort grants no current reward, gradient, baseline insertion or retry; preserve STARTED/cursor/validated journal-prefix diagnostics and stop all masters.
 Storage failure also aborts ALL; no implicit continuation exists even if 101 previously finished.
 
@@ -559,10 +687,11 @@ L = -(R-b) * sum_decisions log π(selected) + λ*||w||²/2
 
 Accumulate float64 without per-length averaging; apply L2 λ=.0001 once, and no clipping/Adam/teacher initialization/dense shaping.
 Parent recomputes all terms; finite-check inputs, accumulator, gradient and proposed weights before a commit.
-Commit weights, verified counters, completed stream states, verified journal prefix, current return and baseline sum/count **atomically once**.
+Commit weights, verified counters, last-ACKed completed stream states, verified journal prefix, current return and baseline sum/count **atomically once**.
 Baseline inserts the current return only after the proposal passes verification; it never affects its own sampling/update baseline.
 `nonzeroPGUpdates` increments only when outcome-driven `-(R-b)*scoreAccum` has a nonzero coordinate, not for L2-only change.
-Diagnostic zero-choice completions increment verifiedCompleted only; they do not masquerade as policy learning.
+Diagnostic zero-choice completions increment verifiedCompleted but no learning/baseline counters; commit their known ACKed RNG/journal/control prefix without weights/PG/L2 changes.
+This includes a checked opponent reply before a zero-choice candidate timeout; unknown opponent state instead aborts ALL and cannot be rolled back into a retry.
 No partial-episode update, failed-sample repair, unlimited retry, per-decision parent learner loop, or automatic operational resume is permitted.
 
 ## 14. Curriculum profiles and immutable scheduling
@@ -588,53 +717,137 @@ These training-used cases are not held-out acceptance evidence; the unchanged ga
 
 ## 15. Checkpoint bytes, save boundaries, and final validity
 
-Checkpoint proposal is `starchess-training-checkpoint-v1`, host-only diagnostic state; `/artifacts` cannot decode/expose it as an inference model.
-Pure checkpoint validation/serde performs no filesystem I/O; the coordinator owns storage, audit references and private controls.
-`dueBucket=floor(startedAttempts/100)`; after a verified **sampled eligible complete update**, save if dueBucket>fulfilledBucket and then fulfill dueBucket.
-If STARTED attempt 100 has no sample, delay: a valid eligible attempt 101 saves with `actualEpoch=101`, not a fabricated epoch 100.
-Do not save an unfinished/aborted episode or a zero-choice L2-only checkpoint; preserve consumed abort diagnostics separately.
-At STARTED 1000, stop regardless of checkpoint eligibility; a zero-choice 1000 never authorizes attempt 1001 to catch up.
-A final VALID artifact can still finish without a checkpoint at 1000 if all validity conditions below hold.
+### Closed nested primitives, versions and configuration — C10
 
-| Checkpoint field | Exact meaning |
+All objects in this section are closed recursively, all arrays dense, and all declared lengths/domains checked before derived-field comparison.
+`Int[a..b]` means a safe JSON integer within inclusive bounds; `Master=101|102|103|104|105`, uint32=Int[0..4294967295].
+`ByteRef={byteLength:Int[0..MAX_SAFE_INTEGER],sha256:string[64 lowercase hex]}`; it identifies parent-registered bounded bytes, never a file/path authority.
+`Float64Hex={hex:string[16 lowercase hex]}` decodes finite IEEE-754 binary64 big-endian; preserve signed zero exactly, reject NaN/Infinity bit patterns.
+Use Float64Hex for EVERY persisted float field and compact-journal numeric float; seeds/states/counters/integral baselineSum remain JSON integers.
+`Profiles={api,provenance,quota,curriculum,validation}`: api/quota/curriculum/validation are A/B/C; executable frozen provenance is A/B only.
+API C remains an offered executable profile; provenance C is the defer/incomplete choice and cannot populate a VALID artifact/checkpoint.
+`Versions` has exactly the 21 keys `snapshot,observationCodec,history,batch,ledger,provenance,candidateCodec,generator,projection,features,featureManifest,comparator,rng,episodeProtocol,checkpoint,artifact,optimizer,loss,eligibility,recipe,hostConfig`, each equal to its §4 literal.
+`Scales={minerals:12,gas:3,turn:45,ccLives:3,maxSpawn:9,paid:3072,replacement:2304,coords:7,squares:64,actions:4,pairs:6,relationPairs:4096,visionOverlap:256}`.
+These are exact integer metadata constants; no extra scale keys or alternative values are accepted.
+`HostLimits={startupMs:10000,planMs:10000,matchMs:300000,maxWindows:64,maxRecordedPlies:128,maxProposals:4096,maxIpcMessages:2048,maxProgressBytes:1048576,maxCompletionBytes:16777216}`.
+`Validation={profile,eps:Float64Hex[1|2],atol:Float64Hex,rtol:Float64Hex}` decodes exactly to the chosen §16 profile; eps order is [1e-6] or [1e-6,1e-5].
+
+`Configuration` retains these **26 existing named keys**, not three invented fields to satisfy a conflicting "29-key" count in C10:
+
+| Keys | Exact type/value |
 |---|---|
-| `version,status,master,actualEpoch` | Checkpoint version, status=`diagnostic`, master 101..105, actual STARTED count at saved boundary. |
-| `counters` | started/verifiedCompleted/eligibleCompleted/updates/nonzeroPGUpdates/baselineCount/baselineSum; no omitted consumed attempts. |
-| `weights,orderedFeatureNames,manifestHash` | Exactly 370 binary64 weight encodings, complete ordered manifest names, measured manifest content reference. |
-| `versions,config` | All DTO/codec/generator/projection/ledger/RNG/optimizer/loss/config versions, chosen profiles, scales, H=1, budgets and experimental numeric values. |
-| `rng` | All four labeled `{root,state,drawCount,status}` records and explicit null-root/state generator record. |
-| `hostControl` | Corpus permutation/cursor/epoch, STARTED schedule cursor, live ordinal, dueBucket/fulfilledBucket; never exposed by inference decoding. |
-| `journalRef` | External byte-prefix length/hash/last-record ordinal, including durable STARTED descriptors and exactly-once completion records. |
-| `authorizedHistoryRefs,nextModelHistory` | Completed public-history audit references; `nextModelHistory=null` because the next episode starts fresh. |
-| `provenanceRefs` | Measured source/test/dependency/store/tool/image/corpus/core/strategic/config/recipe references and their versions, not fabricated current hashes. |
+| `profiles,horizon,dimension` | Profiles, integer 1, integer 370. |
+| `uniqueCap,workCap,maxGeneratedActions` | Integers 512,2048,4. |
+| `familyCapacity,compositionCapacity,passCapacity` | Integers 48,175,1. |
+| `maxStartedPerMaster,masters,checkpointCadence` | Integer 1000, ordered Master array [101,102,103,104,105], integer 100. |
+| `initialization,arithmetic,optimizer` | Literals `zeros`,`float64-cpu`,`SGD`. |
+| `learningRate,temperature,l2` | Float64Hex decoding exactly .001,1,.0001. |
+| `clipping,baseline,emptyDecision` | Literals `none`,`per-seed-all-history-eligible-mean`,`diagnostic-only`. |
+| `abortPolicy,primaryMaster` | Literal `stop-all`, integer 101. |
+| `openingRef,hostLimits,validation` | ByteRef binding the existing canonical opening bytes, HostLimits, Validation. |
 
-Private full SCFEN, traces, future corpus queues, opponent KVS and causal boards do not belong in model data; external host audit artifacts may hold them separately.
-`hostControl` and RNG tables never flow through checkpoint→inference paths; descriptive provenance and scorer inputs are distinct schemas.
-All persisted float fields use IEEE-754 binary64 big-endian **16 lowercase hex digits**, including weights/config floats; preserve signed zero exactly.
-`weights` is an ordered array of exact `{hex:string}` records; other persisted float-valued fields use the same hex-string encoding at their declared field paths.
-Metadata integers, seeds/states/counters and integral reward baselineSum remain validated JSON integers.
-Canonical JSON recursively sorts object keys and preserves arrays, with no BOM/whitespace/LF/undefined or duplicate keys.
-Reject noncanonical/duplicate-key bytes by raw re-encode equality, applying raw size caps before parse and allocation.
-The serializer header is outside self-hashing bytes; hash the physical canonical artifact externally, never include its own hash inside itself.
-Previous-checkpoint external byte hashes may form a chain; new measurements must come from actual future bytes, not this document.
-Publication must use an exclusive atomic durable bundle contract with fault verification; R0 A11–A13 must be FIXED before checkpoint reuse claims.
-If publication/storage cannot establish an unambiguous durable commit, abort all training and preserve host diagnostics; do not auto-retry or reinterpret ambiguous state as successful.
+Manifest scales live in `FeatureManifest.scales`, not an undeclared Configuration field; unknown nested configuration/metadata is rejected.
+`Counters={started,verifiedCompleted,eligibleCompleted,updates,nonzeroPGUpdates,baselineCount,baselineSum}`: first six are Int[0..1000], baselineSum is Int[-1000..1000].
+Require `nonzeroPGUpdates≤updates=eligibleCompleted=baselineCount≤verifiedCompleted≤started` and `abs(baselineSum)≤baselineCount`.
+`JournalRef={byteLength,sha256,lastRecordOrdinal:Int[0..MAX_SAFE_INTEGER]}` extends ByteRef; ordinal matches the actual parent-registered byte prefix.
+`TrainingSummary={counters:Counters,recipeRef:ByteRef,recipeVersion:'starchess-training-recipe-v1',curriculumProfile:A|B|C,eligibilityVersion:'starchess-training-eligibility-v1',lastStartedOrdinal:999,finalBoundaryOrdinal:Int[0..256],finalJournalRef:JournalRef,aborted:false}`.
+Cross-check summary profile/recipe/version/refs with Configuration/Versions/ProvenanceRefs and verified host journal; metadata labels do not certify completion.
+`ProvenanceRefs` has exactly ByteRef-valued fields `source,tests,sourceInventory,sourcePolicy,dependencyLock,installedTree,frozenStore,toolTree,image,runtimeConfiguration,corpusManifest,corpusSource,coreRules,strategicSource,hostConfiguration,recipe,featureManifest,fixtureManifest,episodeJournal`, plus `privateProvenanceCodec:ByteRef|null`.
+For A privateProvenanceCodec=null; for B it binds the supported `engine-provenance-snapshot-v1` codec bytes in the trusted registry.
+Host checks these refs against actual registered source/dependency/image/recipe/fixture/journal bytes; supplied self-consistent refs are not trusted identity.
 
-`starchess-training-artifact-v1` exact envelope is `{version,status,master,dimension,featureVersion,featureNames,manifest,weights,versions,configuration,trainingSummary,provenanceRefs}`.
-`status='VALID'`; dimension=370; manifest includes version, expanded names, scales and meanings; weights use the same binary64 encoding.
-`versions` has exact keys `snapshot,observationCodec,history,batch,ledger,provenance,candidateCodec,generator,projection,features,featureManifest,comparator,rng,episodeProtocol,checkpoint,artifact,optimizer,loss,eligibility,recipe,hostConfig`; values match §4.
-`configuration` has exact keys `profiles,horizon,dimension,uniqueCap,workCap,maxGeneratedActions,familyCapacity,compositionCapacity,passCapacity,maxStartedPerMaster,masters,checkpointCadence,initialization,arithmetic,optimizer,learningRate,temperature,l2,clipping,baseline,emptyDecision,abortPolicy,primaryMaster,openingRef,hostLimits,validation`.
-Those values are the approved profiles, 1, 370, 512, 2048, 4, 48, 175, 1, 1000, [101,102,103,104,105], 100, `zeros`, `float64-cpu`, `SGD`, .001, 1, .0001, `none`, `per-seed-all-history-eligible-mean`, `diagnostic-only`, `stop-all`, 101, and the opening/limits/validation bindings above, respectively.
-`profiles={api,provenance,quota,curriculum,validation}` holds chosen A/B/C literals; deferred provenance C cannot appear in a VALID artifact.
-`hostLimits` retains the exact named numeric budget fields from current `CHALLENGE_CONFIG`; `validation={profile,epsilon,atol,rtol}` uses §16, with epsilon an ordered array ([1e-6] or [1e-6,1e-5]).
-Measured byte references are `{byteLength,sha256}` with safe nonnegative length and exactly 64 lowercase hash hex digits; `openingRef` binds the pinned canonical opening bytes, never a new opening.
-`trainingSummary` contains verified counters/recipe-profile references, not per-case private corpus controls or RNG state tables.
-Inference validation checks names/order/dimension/versions/scales/config, finite decoded coefficients and supported H=1; no pad/truncate/relabel/fallback.
-`inferenceWeights` supplies only detached float64 coefficients to the scorer; host provenance is not concatenated to features.
-Final VALID seed requires exactly 1000 STARTED and 1000 verified completions, no infrastructure abort, ≥1 nonzero outcome-driven PG update and exact reload validation.
-Complete all five valid serial runs before designating the prospectively chosen **final VALID 101** primary; unfinished protocol has no formal primary.
-Prior finished bytes may remain diagnostic; no best seed, seed switch, checkpoint fallback, automatic averaging, or best-gate selection exists.
-This proposal adds no all-five evaluation gate: evaluate the frozen primary once under the existing exhaustive strict gate with no online changes.
+### Exact manifest meaning/scale registry — 370 entries, no free-form meanings
+
+`FeatureManifest={version:'challenge-feature-manifest-v2',dimension:370,names:string[370],entries:ManifestEntry[370],scales:Scales}`.
+`ManifestEntry={name,meaningId,scaleId}`; names equal the complete §10 expansion, entries in the SAME order, no duplicates or arbitrary prose meanings.
+Meaning IDs are exactly `q:j` for queue local index j, or `p:k` for position local index k; each matches the §10 formula applied at the name's declared position.
+Four position slots share p:k meanings with explicit slot index from name, not arbitrary meanings supplied by an artifact.
+The following is the complete scaleId registry; ranges assign that literal to EVERY expanded entry, not merely a group heading.
+`unit` is the reserved scale constant 1; base scale IDs refer to exact Scales keys. Product/mean/complement IDs below are fixed normalization pipelines, not extensible expressions.
+
+| Position local indices k | Exact scaleId |
+|---|---|
+| 0–10,13,16–51,57–60,69,71 | `unit` |
+| 11,12,14,15,65 | `coords` |
+| 52 | `turn` |
+| 53,55,56,74 | `minerals` |
+| 54 | `gas` |
+| 61–64,66–68,70,80 | `squares` |
+| 72 | `minerals*minerals` |
+| 73 | `gas*gas` |
+| 75–77 | `squares*minerals` |
+| 78 | `squares*replacement` |
+| 79 | `ccComplement` |
+| 81 | `meanCosts` |
+| 82 | `coords*turn` |
+| 83 | `squares*paid` |
+
+| Queue local indices j | Exact scaleId |
+|---|---|
+| 0,14 | `unit` |
+| 1,4–6 | `actions` |
+| 2,7 | `minerals` |
+| 3,8 | `gas` |
+| 9 | `paid` |
+| 10 | `replacement` |
+| 11–13 | `squares` |
+| 15–20 | `pairs` |
+| 21 | `visionOverlap` |
+| 22,32 | `meanCosts*paid` |
+| 23 | `relationPairs*paid` |
+| 24 | `relationPairs*replacement` |
+| 25 | `squares*squares` |
+| 26 | `squares*ccComplement` |
+| 27 | `pairs*squares` |
+| 28 | `meanCosts*turn` |
+| 29 | `ccComplement` |
+| 30 | `actions*gas` |
+| 31 | `relationPairs` |
+| 33 | `actions*paid` |
+
+Products multiply the already normalized operands in the §10 formula; `meanCosts=(requestedMinerals/12+requestedGas/3)/2` uses the formula's per-action operands at p:81 and whole-queue operands at q:22/28/32; `ccComplement=1-ownCCLives/3`.
+Flags/type one-hots introduce no extra normalization; arithmetic and operands must match each meaningId, including conditional masks, not just its divisor label.
+Flatten yields one 370-coordinate registry vector; validate all names/entries/meanings/scales against the TRUSTED declared registry, never an artifact-defined replacement.
+
+### Host-only checkpoint nested state and durable save ordering — C17
+
+`StreamState={status:'active'|'unused',root:uint32,state:uint32,drawCount:Int[0..MAX_SAFE_INTEGER]}`.
+`RngState={selection,environment-settlement,policy-sampling,opponent,generator}`: first four are StreamStates with approved derived roots.
+Selection/policy/opponent status=active; environment status=unused, drawCount=0 and state=root; generator is exactly `{status:'unused',root:null,state:null,drawCount:0}`.
+Policy drawCount equals accepted candidate records across the committed journal prefix; opponent state/drawCount equals checked strategic replies, with no corpus draws.
+`HostControl={corpusPermutation:Int[0..17][18],corpusCursor:Int[0..18],corpusEpoch:Int[0..999],scheduleCursor:Int[0..1000],liveOrdinal:Int[0..1000],dueBucket:Int[0..10],fulfilledBucket:Int[0..10]}`.
+Permutation has all 18 distinct manifest indices; all cursors/template seat counts/RNG states must reconstruct exactly from the consumed STARTED descriptors and ACKed journals.
+At a saved checkpoint, actualEpoch=started=verifiedCompleted=scheduleCursor; never erase a consumed abort to make this equality hold.
+For S STARTED slots: corpusStarted is ceil(S/2) in A; S for B's S≤200, otherwise 200+ceil((S-200)/2); ceil(S/3) in C; liveOrdinal=S-corpusStarted.
+For nonzero corpusStarted, current epoch=floor((corpusStarted-1)/18), cursor=((corpusStarted-1)%18)+1; shuffle only on the next corpus STARTED after cursor18.
+Selection drawCount=17*(corpusEpoch+1), and current permutation must match exact persistent-stream Fisher–Yates; initial unscheduled state uses cursor0/epoch0/manifest order before first shuffle.
+
+Checkpoint exact fields are `{version:'starchess-training-checkpoint-v1',status:'diagnostic',master:Master,actualEpoch:Int[1..1000],counters:Counters,weights:Float64Hex[370],orderedFeatureNames:string[370],manifestHash:ByteRef,versions:Versions,config:Configuration,rng:RngState,hostControl:HostControl,journalRef:JournalRef,authorizedHistoryRefs:ByteRef[0..1000],nextModelHistory:null,provenanceRefs:ProvenanceRefs}`.
+History refs are bounded completed public-history audit refs, never raw private SCFEN or next episode model state; manifestHash equals the registered canonical manifest ByteRef.
+Pure private checkpoint validation/serde does no filesystem I/O; `/artifacts` cannot decode a checkpoint as an inference model or expose its curriculum/RNG tables to scoring.
+After eligible COMPLETE verification, atomically commit the update, counters, all ACKed stream states and journal/control refs BEFORE checkpoint publication.
+Compute dueBucket=floor(started/100); when it exceeds previous durable fulfilledBucket, serialize that exact post-update state with staged fulfilledBucket=dueBucket.
+Mark the live fulfilledBucket ONLY AFTER verified exclusive durable bundle publication succeeds, not on serialization or file existence; saved fulfilledBucket=dueBucket.
+Any publication failure/ambiguous post-commit durability stops ALL; preserve consumed diagnostics and do not auto-retry/resume or claim the bucket fulfilled.
+Attempt100 with zero choices delays; eligible101 saves actualEpoch101 and fulfills bucket1. Zero-choice1000 never starts1001; final VALID may exist without a diagnostic checkpoint at1000.
+Do not save unfinished/aborted/zero-choice episodes or fabricate a L2-only zero-choice boundary; R0 A11–A13 remain PENDING prerequisites for verified publication/reuse.
+
+### Inference artifact, canonical bytes and external experiment envelope
+
+Artifact exact fields are `{version:'starchess-training-artifact-v1',status:'VALID',master:Master,dimension:370,featureVersion:'challenge-features-v2',featureNames:string[370],manifest:FeatureManifest,weights:Float64Hex[370],versions:Versions,configuration:Configuration,trainingSummary:TrainingSummary,provenanceRefs:ProvenanceRefs}`.
+Cross-check names/order/dimension/version/scales and all duplicated summary/config/manifest/recipe/journal refs; reject unknown nested fields and mismatched allowed schema values.
+No RNG states, corpus permutation/cursors, raw SCFEN, opponent KVS, future queues or unbounded metadata belong in the inference artifact.
+`inferenceWeights` returns ONLY a detached 370-value coefficient copy; the scorer separately gets the trusted approved manifest/generator config, not the artifact's complete training profile or provenance.
+Final VALID requires started=verifiedCompleted=1000, aborted=false, nonzeroPGUpdates≥1, exact registry alignment/finite coefficients and bit-exact verified reload.
+Canonical JSON sorts object keys/preserves arrays, with no BOM/whitespace/LF/undefined; raw byte re-encode equality rejects duplicate keys/noncanonical input after pre-parse size bounds.
+All persisted float paths use Float64Hex; hashes cover physical canonical bytes externally, never a self-hash field or fabricated source/image/test digest.
+Checkpoint≤16MiB, inference artifact≤1MiB; previous-checkpoint external hashes may chain through host journals without becoming undeclared checkpoint fields.
+Private controls/descriptive full-board provenance may live in separately bounded host audit records, NEVER checkpoint→inference scoring paths.
+Complete all five valid serial runs before formal primary: no finished101 fallback when a later master aborts, no best seed/averaging/checkpoint switch/cherry-picking.
+External envelope is closed `{version:'starchess-training-experiment-v1',status:'COMPLETE',artifacts:[{master,artifactByteRef:ByteRef}]×5,primaryMaster:101,primaryArtifactByteRef:ByteRef}`.
+Artifact entries are exactly ascending masters101..105 with their validated final ByteRefs; primaryArtifactByteRef equals master101's ref byte-for-byte.
+Hash the envelope externally; incomplete/aborted experiment has no COMPLETE envelope or formal primary, though prior finished bytes can remain diagnostic.
+This is NOT an all-five evaluation gate: only the prospectively chosen frozen primary runs the unchanged 18+36 strict gate and semantic reruns, with no online changes/fallback.
 
 ## 16. Validation profiles and explicit acceptance calculus
 
@@ -652,7 +865,8 @@ Hold actions/candidate sets/features/return/baseline fixed while perturbing θ; 
 Declare 1–4 decisions, 2–4 candidates/decision, toy features in [-1,1], weights in [-.25,.25]; sparse bounded-logit fixtures avoid cancellation.
 For every one of 370 coordinates, use a fixed basis-pair fixture with features `+e_i,-e_i`, θ=0 and one decision; include zero-gradient and regularization-only cases.
 Also use independent fixed multi-decision fixtures to test the SUM objective; no dense arbitrary-tensor universal tolerance claim is made.
-Positive-advantage nondegenerate one-decision/two-candidate θ=0 fixture must increase the selected log-probability after α=.001; negative advantage must decrease it.
+Positive-advantage check uses ONE decision, TWO distinct candidate vectors, θ=0 and L2 contribution=0; after α=.001 selected log-probability increases, and the paired negative-advantage fixture decreases it.
+This is a fixed nondegenerate unregularized direction check, NOT a claim that every positive-advantage update with arbitrary regularized θ increases that probability.
 L2 at θ=0 contributes zero; separate λ=0 and λ=.0001 fixtures test regularization once, not once per decision.
 Stable-softmax fixtures require finite log-probabilities, probabilities in [0,1], sum error≤1e-12 and logits including ±1000; underflow probability zero is allowed.
 Any nonfinite feature/score/probability/accumulator/gradient/proposed weight always aborts, never clips.
@@ -695,6 +909,37 @@ Proposed `training-readiness-fixtures-v1` lists these stable fixture IDs; implem
 | `whole-child-parent-protocol` | Frozen episode θ, private stream journal verification, forged progress/late replies, fixed deadline, no env.step. |
 | `metadata-ledger-preparse-publication` | Trusted roster/case exclusion, duplicate/gap/conservation rejection, pre-parse limits and atomic publication/storage fault injection. |
 
+### C01–C17 correction-to-negative-obligation register
+
+These **17 additional obligations** trace the supplied corrections and related security witness/mine/nested-metadata concerns; none is an implemented fixture or passing test claim.
+
+| Correction | Replacement section(s) / required negative obligation |
+|---|---|
+| C01 | §8: reject wrong native preturn special type, B-born special permission, missing/extra fields, absent last-rank promotion and future-C retrovalidation; enumerate primitive domain independently. |
+| C02 | §9–10: Charon with nonship-transparent native effect still has zero special ray/path and no classical threat from that special; test each classical shape including pawn forward-not-attack and Tank first blocker. |
+| C03 | §5–7: transient native intermediate vision updates memory/everLit although final cells return unknown; piece-only ping never increments everLit; empty/private-only checkpoint delta creates no public event/seq gap. |
+| C04 | §6: actual enemy destruction without proved causal preimage visibility yields no loss witness; reject alternate source cue, animation, mine loss or CC damage as a unit witness; alias lifecycle dedup. |
+| C05 | §12: forged/mismatched Begin/bank/public batch/provenance digest or initial-terminal invented Begin cannot obtain a plan permit; verify terminal-open null permit. |
+| C06 | §12: deny history/gen/features/score/sample/opponent work before permit; measure parent-before-write deadline, raw-frame at-deadline rejection, no status extension, and verification-time attribution. |
+| C07 | §11–13: kill candidate with tentative unACKed draw and no child end state; update only verified prior prefix using parent-known RNG; zero accepted choices has no PG/L2/baseline; opponent missing state aborts ALL. |
+| C08 | §12: forged compact membership/logP/RNG/digests/score statistics fail parent reconstruction; 64-decision sufficient statistics fit inherited frame bounds without matrices; no worker path/URL reference authority. |
+| C09 | §13: software exception/script-contract/nonmember/codec/malformed sample cannot obtain -1 learning reward; distinguish exact native game denial and proved candidate timer from opponent/startup/match/protocol abort. |
+| C10 | §15: reject extra/missing/wrong nested config/manifest/scale/meaning/ref/counter/version fields and cross-object inconsistency; provenance C cannot create VALID state; inference cannot consume checkpoint controls. |
+| C11 | §8: independent FIFO/depth-cursor trace proves one counted append/visit, no root restart, valid wrong-owner continuation, exact nodes/work/unique truncation, and no false exhaustion on cap. |
+| C12 | §9: old known-own blocker vacates conditionally, fixed enemy cannot vanish, unknown never becomes confirmed clear; nominal overlap does not assert capture. |
+| C13 | §9–10: authored target masks/coords differ from effective B/C/F geometry without being overwritten; unknown-dependent rewrite mask, fires-in-place Tank, CC drops and Hoverbike leap do not invent relocation/path. |
+| C14 | §9–10,15: visionOverlap from native-prefix N_i sets is nonnegative and empty-pass zero; B-born classical projection works without isolated-singleton actor assumptions; exact renamed registry keeps 34/84/370. |
+| C15 | §7: reject own mine UID reuse, removed-then-recreated conflicting ID, unknown/double removal, noncontiguous creation counter and snapshot mismatch; hidden opponent mine lifetime leaves authorized bytes invariant. |
+| C16 | §4,6,12: reject 65-change witness, 2049-event batch, oversized 1MiB progress/codec or 16MiB complete frame before expensive allocation; do not silently drop knowledge or retain unbounded simultaneous buffers. |
+| C17 | §15: injected publication race/fsync failure cannot fulfill bucket before durable exclusive commit; delay100→actual101, never1001; abort later master leaves no COMPLETE envelope/formal101 primary. |
+
+### Rereview disposition, not a freeze-ready claim
+
+The draft applies 17 correction groups with 17 explicit negative obligations; adversarial/security rereview must confirm the replacements and their interactions.
+Two supplied schema-count/choice descriptions require explicit rereview acknowledgement: Configuration's named list has 26 keys, not 29; API C remains offered, whereas only provenance C defers executable freeze.
+The correction text's extraneous words do not define additional model fields, permissions, metadata channels, rewards or tests.
+Future adapter/native-hook implementation and execution must establish all obligations; this paper edit provides no new source/test/image identity or assurance.
+
 Future evidence must join source-before/after identities, fixture manifest, raw test bytes, tool/dependency closure and image measurements without fabricated hashes.
 Existing evidence and historical pins remain immutable; old successes do not prove these proposed negative regressions pass.
 
@@ -714,6 +959,7 @@ The source facts used here were read locally; proposed APIs/version strings/seam
 | [Episode runner](../../packages/starchess-arena/src/challenge/runChallengeMatch.ts), [admission](../../packages/starchess-arena/src/challenge/admission.ts), [schedule](../../packages/starchess-arena/src/challenge/schedule.ts) | Whole-match child-side work, same precommit observations, whole-pair debit and fixed gate seed/seat mapping. |
 | [Native begin/end](../../packages/starchess-core/src/resolve/submit-turn.ts), [classical resolve](../../packages/starchess-core/src/resolve/resolve-turn.ts) | Current grouped arrays, actual B/C/F rewrites, swaps/collisions, F skip on terminal C and causal-hook requirement. |
 | [Queue append](../../packages/starchess-core/src/commands/queue-action.ts), [native validation](../../packages/starchess-core/src/rules/validation.ts) | Own actor types/anchors, B-created C actors, one-special origin and special admission restrictions. |
+| [Native shape](../../packages/starchess-core/src/board/moves.ts), [stationary attacks](../../packages/starchess-core/src/board/placement.ts), [mine cap/rays](../../packages/starchess-core/src/board/mines.ts), [CC anchor](../../packages/starchess-core/src/rules/specials/adjacent.ts), [Charon](../../packages/starchess-core/src/rules/specials/mechaCharon.ts) | C01/C02 source-first domains: shape versus admission, classical relation versus transparent special, and known own prefix anchors/cap3. |
 | [Vision](../../packages/starchess-core/src/board/vision.ts), [constants](../../packages/starchess-core/src/rules/constants.ts), [RNG](../../packages/starchess-core/src/ai/context/rng.ts) | Lit versus piece-only reveal, rule scales/costs, existing `mulberry32` arithmetic. |
 | [Registry](../../packages/starchess-core/src/ai/definitions.ts), [arena metadata](../../packages/starchess-arena/package.json), [workspace](../../pnpm-workspace.yaml) | ML remains placeholder; current arena ID is private; future folder fits packages/*. |
 | [Hermetic execution guide](../../packages/starchess-arena/hermetic/README.md) | Existing execution/acquisition owner; training closure must be added and verified later. |
@@ -734,9 +980,10 @@ R1 proposal approval — no implementation or run permission
 ```
 
 Record Executor's choices before changing original documents; do not convert recommendations into implicit selections.
-Common approval explicitly includes npm name/version, the complete 370-field calculus, trusted frame contract, serialized RNG, zero-choice exclusion, five-run validity and checkpoint bytes.
+Common approval explicitly includes npm name/version, the complete 370-field calculus with visionOverlap, transient vision/strict loss authorization, mine lifetime state, 2048-event batch cap, checked permits/compact prefix journals, nested metadata, five-run envelope and durable checkpoint ordering.
 Profile provenance C prevents a completed R1 freeze even if the other slots are selected.
-After choices, re-review the exact cross-profile combination and only then request synchronized recipe/weights/PLAN updates in a separate authorized task.
+Do NOT declare freeze-ready from this edit: first obtain adversarial/security rereview of C01–C17 and explicit acknowledgement of the two supplied schema-description discrepancies.
+After choices/common approval and rereview, only then request synchronized recipe/weights/PLAN updates in a separate authorized task; approval freezes a FUTURE contract, not current implementation readiness.
 R1 design acceptance still leaves native hooks, adapters, package exports, DTOs, generation, ledger, features and all R2–R5 tests unimplemented here.
 R0 closure plus persisted R2–R5 readiness and explicit training approval precede R6; frozen artifact/adapter R7 precedes learned strict R8.
 This paper contract ends with **no trained weights, no new hashes, no passing validation claim, and no altered existing authority**.
