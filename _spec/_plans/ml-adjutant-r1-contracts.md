@@ -208,7 +208,7 @@ Apply the frame atomically; do not serialize a swap as destructive sequential ov
 Provenance initialization and every frame must reconcile exactly with the corresponding native snapshot, modes, mines and CC lives.
 Native provenance also supplies private actual visibility images at causal observation checkpoints, including path-reveal intermediate mover positions.
 Each image includes the actual full unit board, own modes and own mines at the native observation point; it is not reconstructed from animation or final squares.
-Define the exact private return companion for both begin/end wrappers as `{nativeResult,provenance,frames,visibilityImages}`.
+Define the exact private return companion for both begin/end wrappers as `{nativeResult,provenance,frames,visibilityImages,visibilityCheckpoints}`.
 `nativeResult` is the unchanged corresponding BeginScTurnResult or EndScTurnResult; `provenance` is the updated entity table/counter.
 `VisibilityImage={key:string,ordinal:Int[0,MAX_SAFE_INTEGER],turn:Int[0,45],phase:FramePhase,state:FrameImage}`.
 `FrameImage={entities:readonly EngineEntity[0..70],ccLives:{w:Int[0,3],b:Int[0,3]}}`; units occupy unique squares, mines use native per-side caps, and private entity IDs are unique/canonical.
@@ -218,8 +218,13 @@ The native mutation/visibility site emits an image before and after its atomic e
 `beforeVisibilityKey`/`afterVisibilityKey` bind exactly the frame's before/after states; destruction's causal key binds the live victim and actual mover/vision position immediately before that destruction.
 For atomic multi-removal, every victim's causal key is the common pre-effect image; no sequential deletion may change another victim's authorization.
 Frames and images contain every native checkpoint, even when public projection is unchanged; public filtering subsequently removes empty deltas.
+`VisibilityCheckpoint={ordinal:Int[0,MAX_SAFE_INTEGER],imageKey:string,frameKey:string|null,point:'before-frame'|'after-frame'|'path-visibility'}`.
+`visibilityCheckpoints` is a dense execution-ordered array with contiguous ordinals beginning at 0; frameKey is null only for a native observation outside an atomic effect frame.
+Before/after entries must bind the named frame's corresponding image key; standalone path entries bind their actual native observation image. Every image key resolves locally and is used by at least one checkpoint.
 Every image is referenced by its frame or checkpoint entry. Reject missing/duplicate/out-of-order keys, unmatched image states or source references.
-The provenance digest is SHA-256 of canonical bytes of `{provenance,frames,visibilityImages}`; parent recomputation compares those bytes and their digest, never the digest alone.
+The provenance digest is SHA-256 of canonical bytes of `{provenance,frames,visibilityImages,visibilityCheckpoints}`.
+The parent produces and retains the authoritative bytes through its own native reexecution. It compares the child's claimed ByteRef length/hash with that trusted expected reference, not with unreceived child bytes.
+The verdict separately compares the complete supplied native result and authorized batch against parent recomputation; a matching claimed provenance digest alone never establishes execution or authorization.
 No source effect key, private frame count, full board, private ID, opponent queue, or hidden cause crosses authorization.
 Generic pure engine hooks require R2–R5 implementation/review; selecting this seam does not claim that current core supplies it.
 
@@ -448,7 +453,9 @@ Prune only authorized side/resource/queue-shape/actor/anchor/intent constraints;
 Native pure shape helpers must accept authorized maps plus unknown masks; do not pass invalid fog-filtered SCFEN to actual resolve/admission.
 At most one C and one special per native-origin actor; total requested minerals ≤own bank, gas ≤own gas, generated length ≤4.
 The primitive table is the only generator domain; its native constraints are prefix-only and must not be replaced by policy-side SCFEN probes.
-Pruning categories are `side`, `shape`, `own-resources`, `own-actor`, `own-anchor`, `own-mode`, `own-mine`, `promotion`, `owner`, `quota`, and `duplicate`.
+The ONLY pruning keys are the six diagnostic keys in §8: `actor`, `shape`, `timing`, `resources`, `mineCap`, and `ownOccupancy`, checked in that priority order.
+Missing/wrong-type actors map to actor; geometry/anchor/own-mode/promotion constraints map to shape; phase/classical-count/special-origin constraints map to timing; mineral/gas shortfall maps to resources; maximum mine count maps to mineCap; known illegal occupied targets/existing own mine at an anchor map to ownOccupancy.
+Wrong side, malformed fields or codec/version errors are generator-contract failures and abort infrastructure, not normal pruning. Owner, quota and duplicate checks use their separate §8 counters and never appear as additional pruning keys.
 Report omissions, per-kind/timing/length coverage and cap termination; this bounded generator does not prove exhaustive legality or winning coverage.
 Exactly one selected whole queue reaches private admission, with no next-candidate rescue, prefix salvage, or hidden probing.
 
@@ -856,7 +863,7 @@ The following is the complete scaleId registry; ranges assign that literal to EV
 | 75–77 | `squares*minerals` |
 | 78 | `squares*replacement` |
 | 79 | `ccComplement` |
-| 81 | `meanCosts` |
+| 81 | `coords` |
 | 82 | `coords*turn` |
 | 83 | `squares*paid` |
 
@@ -883,7 +890,8 @@ The following is the complete scaleId registry; ranges assign that literal to EV
 | 31 | `relationPairs` |
 | 33 | `actions*paid` |
 
-Products multiply the already normalized operands in the §10 formula; `meanCosts=(requestedMinerals/12+requestedGas/3)/2` uses the formula's per-action operands at p:81 and whole-queue operands at q:22/28/32; `ccComplement=1-ownCCLives/3`.
+Products multiply the already normalized operands in the §10 formula; `meanCosts=(requestedMinerals/12+requestedGas/3)/2` applies only to whole-queue operands at q:22/28/32; `ccComplement=1-ownCCLives/3`.
+Position p:81 instead multiplies its uncertainty indicator by effective Chebyshev distance/7 and therefore has scaleId `coords`.
 Flags/type one-hots introduce no extra normalization; arithmetic and operands must match each meaningId, including conditional masks, not just its divisor label.
 Flatten yields one 370-coordinate registry vector; validate all names/entries/meanings/scales against the TRUSTED declared registry, never an artifact-defined replacement.
 
