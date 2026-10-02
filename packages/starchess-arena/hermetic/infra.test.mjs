@@ -6,7 +6,7 @@ import { join } from 'node:path';
 import { test } from 'node:test';
 import { createHash } from 'node:crypto';
 import { prepareContext, repository } from './context.mjs';
-import { assertContainerPolicy, outputTarget, runArguments } from './policy.mjs';
+import { assertContainerPolicy, outputTarget, runArguments, tmpfsOptions } from './policy.mjs';
 import pins from './pins.json' with { type: 'json' };
 import { freshOutput } from './run.mjs';
 import { logLimit, runLogged } from './logged-command.mjs';
@@ -122,6 +122,23 @@ test('runtime capture preserves JSONC config closure, tests, fixtures, and rejec
 test('CLI rejects mount injection and public output parents and preserves bounded success/failure logs', async () => {
   const image = 'sha256:' + 'a'.repeat(64);
   for (const malicious of ['node:latest', '--privileged', 'sha256:' + 'a'.repeat(64) + '\n--network=host']) assert.throws(() => runArguments(malicious, '/tmp/opencode/out'));
+  const syntheticOutput = '/tmp/opencode/policy-output';
+  const approved = {
+    Image: image,
+    HostConfig: { NetworkMode: 'none', ReadonlyRootfs: true, Privileged: false, Init: true, NanoCpus: 2_000_000_000, Memory: 4 * 1024 ** 3, MemorySwap: 4 * 1024 ** 3, PidsLimit: 256, CapDrop: ['ALL'], CapAdd: null, SecurityOpt: ['no-new-privileges=true'], Tmpfs: { '/tmp': tmpfsOptions } },
+    Config: { User: '10001:10001' },
+    Mounts: [
+      { Type: 'bind', Destination: outputTarget, Source: syntheticOutput, RW: true },
+      { Type: 'tmpfs', Destination: '/tmp' },
+    ],
+  };
+  assertContainerPolicy(approved, syntheticOutput);
+  const extraTmpfs = structuredClone(approved);
+  extraTmpfs.Mounts.push({ Type: 'tmpfs', Destination: '/run' });
+  assert.throws(() => assertContainerPolicy(extraTmpfs, syntheticOutput), /policy mismatch/);
+  const looseTmpfs = structuredClone(approved);
+  looseTmpfs.HostConfig.Tmpfs['/tmp'] = 'rw,nosuid,nodev';
+  assert.throws(() => assertContainerPolicy(looseTmpfs, syntheticOutput), /policy mismatch/);
   for (const path of ['relative', '/tmp/x,target=/app', '/tmp/x\n--privileged']) assert.throws(() => runArguments(image, path));
   const args = runArguments(image, '/tmp/opencode/output with spaces;literal', ['code', 'scripts/test.ts', 'literal;$(touch /tmp/forbidden)']);
   assert(args.includes('type=bind,source=/tmp/opencode/output with spaces;literal,target=' + outputTarget + ',bind-propagation=rprivate'));

@@ -4,6 +4,7 @@ import pins from './pins.json' with { type: 'json' };
 
 export const outputTarget = '/app/_spec/evidence/ml-adjutant-phase2';
 export const imagePattern = /^sha256:[0-9a-f]{64}$/;
+export const tmpfsOptions = 'rw,nosuid,nodev,size=1073741824,mode=1777';
 
 export function runArguments(image, output, command = ['verify']) {
   if (!imagePattern.test(image)) throw new Error('Use the immutable Docker image ID (sha256 + 64 hex digits)');
@@ -14,7 +15,7 @@ export function runArguments(image, output, command = ['verify']) {
     '--network=none', '--read-only', '--user', '10001:10001',
     '--security-opt', 'no-new-privileges=true', '--cap-drop=ALL',
     '--cpus=2', '--memory=4g', '--memory-swap=4g', '--pids-limit=256',
-    '--tmpfs', '/tmp:rw,nosuid,nodev,size=1073741824,mode=1777',
+    '--tmpfs', `/tmp:${tmpfsOptions}`,
     '--mount', `type=bind,source=${output},target=${outputTarget},bind-propagation=rprivate`,
     '--env', 'HERMETIC_OUTPUT_DIRECTORY=' + outputTarget,
     '--workdir', '/app', image, ...command,
@@ -31,9 +32,11 @@ export function assertContainerPolicy(inspect, validatedOutput) {
       !host.CapDrop?.includes('ALL') || host.CapAdd?.length ||
       !host.SecurityOpt?.includes('no-new-privileges=true') ||
       binds.length !== 1 || binds[0].Destination !== outputTarget || binds[0].Source !== validatedOutput || !binds[0].RW ||
-      inspect.Mounts.some((mount) => mount.Type !== 'bind' && mount.Type !== 'tmpfs') ||
-      Object.keys(host.Tmpfs ?? {}).join() !== '/tmp' ||
-      !host.Tmpfs['/tmp'].includes('nosuid') || !host.Tmpfs['/tmp'].includes('nodev')) {
+      inspect.Mounts.length !== 2 || inspect.Mounts.some((mount) => !(
+        (mount.Type === 'bind' && mount.Destination === outputTarget && mount.Source === validatedOutput && mount.RW === true) ||
+        (mount.Type === 'tmpfs' && mount.Destination === '/tmp')
+      )) ||
+      Object.keys(host.Tmpfs ?? {}).join() !== '/tmp' || host.Tmpfs['/tmp'] !== tmpfsOptions) {
     throw new Error('Docker container policy mismatch');
   }
 }

@@ -149,7 +149,7 @@ No new helper, fixture, or passing result is claimed.
 ## Readiness and unchanged boundaries
 
 Use the [roadmap ledger](PLAN-ml-adjutant.md#r0-findings-ledger--full-implementation-post-image-review) for all obligations.
-A01–A07 and A11–A15 remain Phase 2 obligations in the same R0 review; none is closed here.
+A01–A07 and A11–A15 have source repairs pending rereview. None is closed. A14 reuses the existing 16,777,216-byte completion cap. A13 keeps a committed destination if parent durability fails.
 After repairs and source/image freeze, refresh whole-code/test evidence, core/arena suites, strict TypeScript,
 infrastructure including actual Docker, **54 executions + 54 reruns**, and full adversarial/security rereviews **READY: yes**.
 Keep old evidence and pins immutable. This repair does not refresh the frozen image or authorize training.

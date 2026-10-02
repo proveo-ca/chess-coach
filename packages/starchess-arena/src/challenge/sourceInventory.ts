@@ -232,12 +232,15 @@ export const collectSourceInventory = (
     };
     const scanBindings = (node: ts.Node): void => {
       if (ts.isImportDeclaration(node) && ["node:module", "module"].includes(literal(node.moduleSpecifier) ?? "")) {
+        if (node.importClause?.name) moduleNamespaces.add(node.importClause.name.text);
         const bindings = node.importClause?.namedBindings;
         if (bindings && ts.isNamespaceImport(bindings)) moduleNamespaces.add(bindings.name.text);
         if (bindings && ts.isNamedImports(bindings)) for (const element of bindings.elements) {
           if ((element.propertyName ?? element.name).text === "createRequire") requireFactories.add(element.name.text);
         }
       }
+      if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) && node.initializer && ts.isIdentifier(node.initializer) &&
+          moduleNamespaces.has(node.initializer.text)) moduleNamespaces.add(node.name.text);
       if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) && node.initializer &&
           (loader(node.initializer) || ts.isCallExpression(node.initializer) && factory(node.initializer.expression))) requireNames.add(node.name.text);
       if (ts.isVariableDeclaration(node) && node.initializer && ts.isIdentifier(node.name) && factory(node.initializer)) requireFactories.add(node.name.text);
@@ -289,6 +292,9 @@ export const collectSourceInventory = (
         const resolver = member !== undefined && member.name === "resolve" && loader(member.receiver);
         if (dynamic || requireCall || resolver) {
           const specifier = literal(node.arguments[0]);
+          if ((requireCall || resolver) && specifier !== undefined && (specifier.startsWith("./") || specifier.startsWith("../")) && !CODE_EXTENSION.test(specifier)) {
+            throw new Error(`Unaudited executable extension: ${file.path}`);
+          }
           if (specifier === undefined) {
             if (file.path === `${ARENA}/hermetic/closure.mjs` && requireCall && node.getText(source) === "require(require.resolve('esbuild', { paths: [require.resolve('tsx/package.json')] }))") {
               addEdge(file.path, "esbuild", "require");
