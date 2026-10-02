@@ -1,9 +1,10 @@
 // SPEC: _spec/packages/starchess-arena/ml-adjutant-challenge-harness.puml
 import { describe, expect, it } from "vitest";
-import { endScTurn, formatScFen, normalizeSnapGas, parseScFen } from "@chess-coach/starchess-core";
+import { beginScTurn, endScTurn, formatScFen, normalizeSnapGas, parseScFen } from "@chess-coach/starchess-core";
 import { seedBankForOpening, grantStoredIncome } from "../run/bank";
+import { commitPair, stageQueue } from "../challenge/admission";
 import { runSupervised } from "../challenge/supervisor";
-import { executionIntegrity } from "../challenge/integrity";
+import { replayExecutionIntegrity } from "../challenge/integrity";
 import type { ChallengeEvidence, ScheduledMatch } from "../challenge/types";
 
 const opening = "SCFEN|4k3/2pppp2/8/8/8/8/2PPPP2/4K3|0|33|P|G:11:11|B:3:3|Q:w:;b:";
@@ -48,14 +49,20 @@ describe("challenge child watchdog", () => {
     expectFailure(evidence, key);
     expect(evidence.stop).toMatchObject({
       kind: "watchdog", phase: key.includes("promise") ? "strategic-plan" : "candidate-plan",
-      reason: "plan timeout", planningOrdinal: 0, turn: 0, side: "b",
+      reason: "plan timeout", planningOrdinal: 0, turn: 0, side: key.includes("promise") ? "b" : "w",
     });
+  });
+
+  it("rejects a matching decision that arrives after the original deadline", async () => {
+    const evidence = await run("late-decision");
+    expectFailure(evidence, "late-decision");
+    expect(evidence.stop).toMatchObject({ kind: "watchdog", reason: "plan timeout", side: "w" });
   });
 
   it("uses the match deadline outside a planning phase", async () => {
     const evidence = await run("match-loop", { matchMs: 200 });
     expectFailure(evidence, "match-loop");
-    expect(evidence.stop).toMatchObject({ kind: "watchdog", phase: "resolve", reason: "match timeout" });
+    expect(evidence.stop).toMatchObject({ kind: "watchdog", phase: "ready", reason: "match timeout" });
   });
 
   it("does not renew the plan deadline for repeated phase messages", async () => {
@@ -73,7 +80,7 @@ describe("challenge child watchdog", () => {
   it("returns evidence when the child crashes", async () => {
     const evidence = await run("crash");
     expectFailure(evidence, "crash");
-    expect(evidence.stop).toMatchObject({ kind: "exception", planningOrdinal: 0, turn: 0, side: "b" });
+    expect(evidence.stop).toMatchObject({ kind: "exception", phase: "ready", planningOrdinal: 0, turn: 0 });
   });
 
   it.each([
@@ -104,14 +111,20 @@ describe("challenge child watchdog", () => {
     const evidence = await run(key);
     expectFailure(evidence, key);
     const snapshot = parseScFen(opening);
-    const resolved = endScTurn(snapshot);
+    const begun = beginScTurn(snapshot);
+    const initialBank = seedBankForOpening(snapshot);
+    const white = stageQueue(begun.next, initialBank, "w", [], 0);
+    const black = stageQueue(begun.next, initialBank, "b", [], 0);
+    if (!white.ok || !black.ok) throw new Error("fixture settlement did not admit");
+    const committed = commitPair(begun.next, initialBank, white.staged, black.staged);
+    const resolved = endScTurn(committed.snapshot, { skipTurnStartChecks: true });
     expect(evidence.scfens).toEqual([
       formatScFen(normalizeSnapGas(snapshot)), formatScFen(normalizeSnapGas(resolved.next)),
     ]);
     expect(evidence.resolves).toEqual([resolved]);
-    expect(evidence.bankTrail).toEqual([grantStoredIncome(seedBankForOpening(snapshot), resolved.next.turn)]);
+    expect(evidence.bankTrail).toEqual([grantStoredIncome(committed.bank, resolved.next.turn)]);
     expect(evidence.finalBank).toEqual(evidence.bankTrail[0]);
-    expect(evidence.stop).toMatchObject({ planningOrdinal: 1, turn: 1, side: "b" });
+    expect(evidence.stop).toMatchObject({ planningOrdinal: 1, turn: resolved.next.turn });
   });
 
   it("derives failure counters from an accepted ply before the next phase arrives", async () => {
@@ -119,7 +132,7 @@ describe("challenge child watchdog", () => {
     expectFailure(evidence, "ply-before-phase-crash");
     expect(evidence.stop).toMatchObject({ kind: "exception", phase: "settlement", planningOrdinal: 1, turn: 1 });
     expect(evidence.resolves).toHaveLength(1);
-    expect(executionIntegrity(evidence)).toBe(true);
+    expect(replayExecutionIntegrity(evidence, request("ply-before-phase-crash"))).toBe(true);
   });
 
   it("accepts normal completion only after reaping the child", async () => {

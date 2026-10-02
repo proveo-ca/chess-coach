@@ -60,9 +60,9 @@ CORPUS ARROW_MAIN SCHEDULE : unchanged 18-case manifest v1
 CLI ARROW_MAIN REPORT : separate from legacy cli/main.ts
 SCHEDULE ARROW_MAIN REPORT : 18 corpus + 36 live seat/seed matches
 REPORT ARROW_MAIN SUPERVISOR : serial suite and independent rerun
-SUPERVISOR ARROW_QUEUE CHILD : ready then one request
+SUPERVISOR ARROW_QUEUE CHILD : v2 request / permit / halt / accepted
 SUPERVISOR ARROW_ERROR CHILD : SIGKILL; wait for close
-CHILD ARROW_QUEUE SUPERVISOR : stdout JSONL: ready / phase / ply / complete
+CHILD ARROW_QUEUE SUPERVISOR : ready / turn-open / decision / settlement / complete
 RUN ARROW_MAIN OBSERVE : both views from frozen turn-open state
 OBSERVE ARROW_MAIN BASELINE : cells + own modes/mines/resources + sightings
 BASELINE ARROW_MAIN RUN : one selected intent queue; no retry
@@ -136,11 +136,11 @@ end note
 SUPERVISOR .. N_FRAMES
 
 note as N_COUNTERS
-  Failure counters come from accepted plies,
-  not the last phase announcement from a child
-  that may crash before sending another update.
-  This preserves the settled turn and planning
-  ordinal recorded in partial execution evidence.
+  Failure counters come from parent-accepted
+  resolves, not a child phase announcement.
+  A decision deadline is armed before the permit
+  write and is not renewed by status messages.
+  Checked settlement advances the ordinal.
 end note
 SUPERVISOR .. N_COUNTERS
 

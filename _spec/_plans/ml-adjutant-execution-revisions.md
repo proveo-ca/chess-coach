@@ -1,13 +1,14 @@
 # ML Adjutant — selected execution and evidence revisions
 
-Status: **A08–A10 directions RECORDED; design, implementation, and regression verification PENDING.**
+Status: **A08–A10 repairs IMPLEMENTED in source; adversarial/security rereview and fresh evidence refresh PENDING.**
+R0 remains **READY TO MERGE: no**. A01–A07 and A11–A15 remain open. Training is not authorized.
 These selections repair Phase 1 assurance and its Phase 0 corpus-pin boundary.
-They are not completed repairs, frozen protocols, new budgets, or build/training authorization.
+Source now contains the selected repairs. They are not rereviewed, evidence-refreshed, or training authorization.
 The [R0 ledger](PLAN-ml-adjutant.md#r0-findings-ledger--full-implementation-post-image-review)
-remains **READY TO MERGE: no**, with **all 15 findings pending: 7 HIGH + 8 MEDIUM**.
+remains **READY TO MERGE: no**. A01–A07 and A11–A15 remain open. A08–A10 are repaired pending rereview.
 Security rereview remains **UNRECORDED**; weights remain **NONE**; training is not ready.
-Historical **434/434 arena**, **426/426 core**, and **54 executions + 54 reruns** remain unchanged.
-Preserve evidence bytes and old pins; this document records no new test execution.
+Historical **54 executions + 54 reruns** and old pins remain unchanged.
+Focused arena tests after the repair: **435 passed, 2 failed**. Both failures are stale live-pin equality checks against phase2 evidence.
 
 ## Four useful terms
 
@@ -36,12 +37,12 @@ Use one fixed **10-second deadline for that policy decision**; repeated or chang
 Advance to the next side only after a checked decision-result payload consistent with admission/resolve.
 Advance the planning ordinal only after authoritative parent-validated settlement.
 Chip plies, including a terminal chip, do not consume a planning ordinal or invent another decision.
-The parent may ignore informational status for deadline purposes or reject invalid progress; that detail remains TBD.
+Contradictory phase messages are protocol errors. Repeated matching status cannot renew a deadline.
 
-The current stdin/stdout JSONL transport has ready, phase, ply, and completion messages, not structured plan results.
-Implementation therefore needs versioned decision-result messages.
-Proposed fields are match, ordinal, side, actions, and spend; these names and their schema are **not frozen**.
-Exact protocol version, start/result payloads, expected ordering, checked-result criteria, and monotonic clock type remain **TBD**.
+Implemented transport is `challenge-worker-v2`.
+The parent arms a `process.hrtime.bigint()` deadline before writing each permit.
+The child waits for that permit before preparing the corresponding policy or opponent decision.
+A matching decision received at or after the deadline is a plan timeout.
 
 Preserve startup **10 seconds**, each candidate **or** strategic plan **10 seconds**, and match **300 seconds after ready**.
 No additional window deadline or invented 20-second budget is selected.
@@ -85,7 +86,7 @@ Do not accept a report-supplied `trustedContext` as authority.
 Validate the full consumed prefix, including source references, action kind, timing, ordered intents, and planning windows.
 Exclude chip plies from planning ordinals; check partial/rejection evidence against the appropriate trusted window.
 When the engine reaches terminal early, unused trailing recorded queues remain irrelevant.
-Exact context lifecycle, API, and version remain **TBD**.
+Implemented context is an opaque `trusted-execution-context-v1` token. A forged object is not a roster.
 Original manifest/hash/source pins stay unchanged.
 R1 model inputs must never receive future traces, corpus IDs, or hashes; trust context remains host-private.
 
@@ -126,7 +127,7 @@ Every schedule anomaly invalidates acceptance and requires failure accounting wi
 Each expected case appears exactly once in the buckets: `wins + losses + draws + failures = N`.
 A raw JSON outcome label is not a verified board outcome.
 An integrity mismatch gives no outcome credit; retain raw claims only as separate diagnostics if useful.
-Exact invalid-reason enum, duplicate attribution, diagnostic-row/report version, caller API, and replay-proof scope remain **TBD**.
+Implemented anomaly rule: missing, duplicate, or mismatched known IDs fail that expected case. Unattributable extra or malformed rows fail the entire selected roster.
 
 For a learner: **9 valid wins + 1 invalid submission = 10 scheduled cases, 1 failure**, not 100% wins after dropping it.
 This example sets no new benchmark size or budget.
@@ -151,7 +152,6 @@ Use the [roadmap ledger](PLAN-ml-adjutant.md#r0-findings-ledger--full-implementa
 A01–A07 and A11–A15 remain Phase 2 obligations in the same R0 review; none is closed here.
 After repairs and source/image freeze, refresh whole-code/test evidence, core/arena suites, strict TypeScript,
 infrastructure including actual Docker, **54 executions + 54 reruns**, and full adversarial/security rereviews **READY: yes**.
-Keep old evidence and pins immutable; these selected directions approve no new code, budget, or frozen recipe.
-R1 choices remain unchanged: **SGD + REINFORCE**, five independent seeds, **1000 episodes per artifact / 5000 total**.
-R1 freeze remains incomplete; R0–R5 must close before R6 training; R6–R7 precede learned R8 execution.
-Only these explanatory selections and roadmap references change; source, normative challenge/diagrams, evidence, and training files do not.
+Keep old evidence and pins immutable. This repair does not refresh the frozen image or authorize training.
+R1 design choices remain **SGD + REINFORCE**, five independent seeds, and **1000 episodes per artifact / 5000 total**.
+R0–R5 must still close before R6 training; R6–R7 precede learned R8 execution.

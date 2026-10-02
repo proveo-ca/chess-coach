@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { canonical } from "../challenge/config";
 import { loadPinnedCorpus, REPOSITORY_ROOT, sha256 } from "../challenge/corpus";
 import { executionIntegrity, executionPins, normalizeEvidence, summarize } from "../challenge/evidence";
-import { buildSchedule } from "../challenge/schedule";
+import { buildSchedule, loadTrustedExecutionContext } from "../challenge/schedule";
 import type { ChallengeEvidence } from "../challenge/types";
 import { compareBaselineReports, ORIGINAL_BASELINE_SHA256, ORIGINAL_VERIFICATION_SHA256 } from "../challenge/pinMigration";
 
@@ -24,7 +24,7 @@ describe("persisted exhaustive Phase1 baseline evidence", () => {
       .toEqual(schedule.map((match) => ({ side: match.candidateSide, seed: match.arenaSeed })));
     expect(report.manifestSha256).toBe(corpus.manifestSha256);
     expect(report.sourceSha256).toBe(corpus.manifest.sourceSha256);
-    expect(report.summary).toEqual(summarize(report.rows));
+    expect(report.summary).toEqual(summarize(report.rows, loadTrustedExecutionContext("all")));
     expect(report.summary.corpus.scheduled).toBe(18);
     expect(report.summary.liveStrategic.scheduled).toBe(36);
   });

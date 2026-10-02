@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { CHALLENGE_CONFIG } from "../challenge/config";
 import { loadPinnedCorpus } from "../challenge/corpus";
-import { executionIntegrity, normalizeEvidence, summarize } from "../challenge/evidence";
+import { classifyScheduledEvidence, executionIntegrity, normalizeEvidence, summarize } from "../challenge/evidence";
 import { runChallengeMatch } from "../challenge/runChallengeMatch";
-import { buildSchedule } from "../challenge/schedule";
+import { buildSchedule, expectedMatch, loadTrustedExecutionContext } from "../challenge/schedule";
 import { runSupervised } from "../challenge/supervisor";
 
 describe("baseline execution evidence", () => {
@@ -22,11 +22,15 @@ describe("baseline execution evidence", () => {
     const request = buildSchedule(loadPinnedCorpus())[0]!;
     const run = await runChallengeMatch(request, { limits: { maxWindows: 0, maxRecordedPlies: 0 } });
     expect(run.outcome).toBeNull();
-    expect(summarize([run]).corpus).toMatchObject({ scheduled: 1, wins: 0, failures: 1 });
+    const context = loadTrustedExecutionContext("corpus");
+    const summary = summarize([run], context);
+    expect(summary.corpus.scheduled).toBe(18);
+    expect(summary.corpus.wins).toBe(0);
+    expect(summary.corpus.wins + summary.corpus.losses + summary.corpus.draws + summary.corpus.failures).toBe(18);
     expect(run.learnedGateEligible).toBe(false);
     const fabricated = { ...run, outcome: { winner: "b" as const, draw: false as const }, stop: { ...run.stop, kind: "terminal" as const } };
     expect(executionIntegrity(fabricated)).toBe(false);
-    expect(summarize([fabricated]).corpus.wins).toBe(0);
+    expect(summarize([fabricated], context).corpus.wins).toBe(0);
     const protocolFailure = { ...run, stop: { ...run.stop, kind: "script-contract" as const } };
     expect(executionIntegrity(protocolFailure)).toBe(false);
   });
@@ -52,6 +56,26 @@ describe("baseline execution evidence", () => {
     const changedOrdinal = structuredClone(run);
     changedOrdinal.stop.planningOrdinal++;
     expect(executionIntegrity(changedOrdinal)).toBe(false);
+    const forged = structuredClone(run);
+    forged.match.trace!.traceSha256 = "0".repeat(64);
+    forged.match.trace!.windows[0]!.actions = [];
+    expect(executionIntegrity(forged)).toBe(false);
+    expect(() => expectedMatch({ version: "trusted-execution-context-v1" }, run.match.key)).toThrow("untrusted execution context");
+  });
+
+  it("fails a known case locally and the whole roster for an unattributable row", async () => {
+    const context = loadTrustedExecutionContext("corpus");
+    const schedule = buildSchedule(loadPinnedCorpus());
+    const run = await runChallengeMatch(schedule[0]!);
+    const local = classifyScheduledEvidence([run, structuredClone(run)], context);
+    expect(local.acceptanceValid).toBe(false);
+    expect(local.cases.find((entry) => entry.key === run.match.key)?.failureReason?.kind).toBe("duplicate-record");
+    expect(local.cases.filter((entry) => entry.key !== run.match.key).every((entry) => entry.failureReason?.kind === "missing-record")).toBe(true);
+    const global = classifyScheduledEvidence([run, { match: { key: "not-a-roster-id" } }], context);
+    expect(global.acceptanceValid).toBe(false);
+    expect(global.anomalies).toEqual([{ kind: "unattributable", key: "not-a-roster-id" }]);
+    expect(global.cases.every((entry) => entry.bucket === "failure" && entry.failureReason?.kind === "schedule-anomaly")).toBe(true);
+    expect(global.cases.reduce((sum, entry) => sum + 1, 0)).toBe(18);
   });
 
   it("runs the production supervised worker with pinned config and matches in-process semantics", async () => {

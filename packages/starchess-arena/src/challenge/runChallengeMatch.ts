@@ -12,12 +12,15 @@ import { commitPair, stageQueue, type StagedQueue } from "./admission";
 import { baselinePolicy } from "./baseline";
 import { CHALLENGE_CONFIG, deepFreeze } from "./config";
 import { observe } from "./observation";
-import type { CandidatePolicy, ChallengeEvidence, ChallengeProgress, ChallengeStop, ScheduledMatch, Sighting } from "./types";
+import type {
+  CandidatePolicy, ChallengeEvidence, ChallengeProgress, ChallengeStop, CheckedStages, PlanPermit, ScheduledMatch, Sighting,
+} from "./types";
 
 export type MatchOptions = {
   candidate?: CandidatePolicy; strategic?: ScriptPlayer;
   onProgress?: (event: ChallengeProgress) => void;
   limits?: { maxWindows: number; maxRecordedPlies: number };
+  checked?: CheckedStages;
 };
 
 export const runChallengeMatch = async (request: ScheduledMatch, options: MatchOptions = {}): Promise<ChallengeEvidence> => {
@@ -75,14 +78,36 @@ export const runChallengeMatch = async (request: ScheduledMatch, options: MatchO
       if (scOutcome(snap)) { stop = fail("terminal"); break; }
       enter("turn-open");
       const opened = beginScTurn(snap);
+      let checkedPermit: PlanPermit | null = null;
+      if (options.checked) {
+        const reply = await options.checked.turnOpen({ planningOrdinal, begin: opened, bank: { ...bank } });
+        if (reply.kind === "permit") checkedPermit = reply.permit;
+        else {
+          snap = opened.next;
+          if (opened.asResolve) record(opened.asResolve);
+          const halted = reply.stop === "terminal" ? Boolean(scOutcome(snap))
+            : reply.stop === "progress-limit" ? planningOrdinal >= limits.maxWindows || resolves.length >= limits.maxRecordedPlies
+            : request.suite === "corpus" && !request.trace?.windows[planningOrdinal];
+          if (!halted) throw new Error(`halt mismatch: ${reply.stop}`);
+          stop = fail(reply.stop, reply.stop === "progress-limit" ? "deterministic progress budget exceeded" : undefined);
+          break;
+        }
+      }
       snap = opened.next;
       if (opened.asResolve) record(opened.asResolve);
-      if (scOutcome(snap)) { stop = fail("terminal"); break; }
+      if (scOutcome(snap)) {
+        if (options.checked) throw new Error("permit issued after terminal begin");
+        stop = fail("terminal"); break;
+      }
       if (planningOrdinal >= limits.maxWindows || resolves.length >= limits.maxRecordedPlies) {
+        if (options.checked) throw new Error("permit issued after progress limit");
         stop = fail("progress-limit", "deterministic progress budget exceeded"); break;
       }
       const recorded = request.trace?.windows[planningOrdinal];
-      if (request.suite === "corpus" && !recorded) { stop = fail("trace-exhausted"); break; }
+      if (request.suite === "corpus" && !recorded) {
+        if (options.checked) throw new Error("permit issued after trace exhaustion");
+        stop = fail("trace-exhausted"); break;
+      }
       if ((snap.queue?.actions.length ?? 0) !== 0) throw new Error("nonempty turn-open queue");
       updateMemory();
       const open = deepFreeze(structuredClone(snap));
@@ -100,30 +125,66 @@ export const runChallengeMatch = async (request: ScheduledMatch, options: MatchO
       };
       const intents: Record<PieceColor, ScActionInput[]> = { w: [], b: [] };
       const reportedSpend: Partial<Record<PieceColor, number>> = {};
-      for (const side of ["w", "b"] as const) {
-        if (side === request.candidateSide) {
-          enter("candidate-plan", side);
-          intents[side] = structuredClone(await candidate.choose(observations[side], inferenceRng));
-        } else if (request.suite === "corpus") {
-          intents[side] = structuredClone(recorded!.actions);
-        } else {
-          enter("strategic-plan", side);
-          const plan = await strategic.play(structuredClone(open), contexts[side]);
-          const actions = plan.snapshot.queue?.actions;
-          if (!Array.isArray(actions) || actions.some((action) => action.color !== side)) {
-            stop = fail("script-contract", "strategic returned an invalid side queue"); break;
+      const policySides = (["w", "b"] as const).filter((side) => side === request.candidateSide || request.suite !== "corpus");
+      if (options.checked) {
+        let permit: PlanPermit | null = checkedPermit;
+        for (const side of policySides) {
+          if (!permit || permit.side !== side || permit.planningOrdinal !== planningOrdinal || permit.turn !== snap.turn) {
+            throw new Error("permit does not match the required decision");
           }
-          intents[side] = actions.map(({ seq: _seq, ...action }) => action);
-          reportedSpend[side] = plan.spendMinerals ?? 0;
+          if (side === request.candidateSide) {
+            enter("candidate-plan", side);
+            intents[side] = structuredClone(await candidate.choose(observations[side], inferenceRng));
+            const next = await options.checked.decision({ permit, actions: intents[side], reportedMinSpend: null });
+            permit = next.kind === "permit" ? next.permit : null;
+          } else {
+            enter("strategic-plan", side);
+            const plan = await strategic.play(structuredClone(open), contexts[side]);
+            const actions = plan.snapshot.queue?.actions;
+            if (!Array.isArray(actions) || actions.some((action) => action.color !== side)) {
+              stop = fail("script-contract", "strategic returned an invalid side queue"); break;
+            }
+            intents[side] = actions.map(({ seq: _seq, ...action }) => action);
+            reportedSpend[side] = plan.spendMinerals ?? 0;
+            const next = await options.checked.decision({
+              permit, actions: intents[side], reportedMinSpend: reportedSpend[side] ?? 0,
+            });
+            permit = next.kind === "permit" ? next.permit : null;
+          }
+        }
+        if (stop) break;
+        if (permit) throw new Error("unused permit after required decisions");
+      } else {
+        for (const side of ["w", "b"] as const) {
+          if (side === request.candidateSide) {
+            enter("candidate-plan", side);
+            intents[side] = structuredClone(await candidate.choose(observations[side], inferenceRng));
+          } else if (request.suite === "corpus") {
+            intents[side] = structuredClone(recorded!.actions);
+          } else {
+            enter("strategic-plan", side);
+            const plan = await strategic.play(structuredClone(open), contexts[side]);
+            const actions = plan.snapshot.queue?.actions;
+            if (!Array.isArray(actions) || actions.some((action) => action.color !== side)) {
+              stop = fail("script-contract", "strategic returned an invalid side queue"); break;
+            }
+            intents[side] = actions.map(({ seq: _seq, ...action }) => action);
+            reportedSpend[side] = plan.spendMinerals ?? 0;
+          }
         }
       }
+      if (request.suite === "corpus") intents.w = structuredClone(recorded!.actions);
       if (stop) break;
       const staged: Partial<Record<PieceColor, StagedQueue>> = {};
       for (const side of ["w", "b"] as const) {
         enter("admission", side);
         const result = stageQueue(open, openBank, side, intents[side], planningOrdinal);
         if (!result.ok) {
-          stop = { ...result.failure, ...(request.suite === "corpus" && side === "w" ? { sourcePlyIndex: recorded!.sourcePlyIndex } : {}) };
+          stop = {
+            ...result.failure, rejectedQueue: structuredClone(intents[side]),
+            ...(request.suite === "corpus" && side === "w" ? { sourcePlyIndex: recorded!.sourcePlyIndex } : {}),
+          };
+          if (options.checked) await options.checked.admissionFailure({ stop, rejectedQueue: stop.rejectedQueue! });
           break;
         }
         if (reportedSpend[side] !== undefined && reportedSpend[side] !== result.staged.spend) {
@@ -136,6 +197,7 @@ export const runChallengeMatch = async (request: ScheduledMatch, options: MatchO
       const committed = commitPair(open, openBank, staged.w!, staged.b!);
       const resolve = endScTurn(committed.snapshot, { skipTurnStartChecks: true });
       bank = grantStoredIncome(committed.bank, resolve.next.turn);
+      if (options.checked) await options.checked.settlement({ planningOrdinal, end: resolve, bank: { ...bank } });
       record(resolve);
       planningOrdinal++;
       if (scOutcome(snap)) stop = fail("terminal");

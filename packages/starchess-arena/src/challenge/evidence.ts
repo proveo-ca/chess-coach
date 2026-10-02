@@ -1,10 +1,12 @@
 // SPEC: _spec/packages/starchess-arena/ml-adjutant-challenge-harness.puml
 import { canonical, CHALLENGE_CONFIG } from "./config";
 import { loadPinnedCorpus, REPOSITORY_ROOT, sha256 } from "./corpus";
-import { buildSchedule } from "./schedule";
+import {
+  expectedSchedule, loadTrustedExecutionContext, type TrustedExecutionContext,
+} from "./schedule";
 import { runSupervised } from "./supervisor";
 import { executionIntegrity } from "./integrity";
-import type { ChallengeEvidence } from "./types";
+import type { ChallengeEvidence, ChallengeStop } from "./types";
 import { collectSourceInventory } from "./sourceInventory";
 
 export { executionIntegrity } from "./integrity";
@@ -29,17 +31,81 @@ export const normalizeEvidence = (evidence: ChallengeEvidence): string => canoni
   bankTrail: evidence.bankTrail, finalBank: evidence.finalBank, outcome: evidence.outcome, stop: evidence.stop,
 });
 
-export const summarize = (rows: ChallengeEvidence[]) => {
+export type OutcomeBucket = "win" | "loss" | "draw" | "failure";
+export type FailureReason =
+  | { kind: "missing-record" }
+  | { kind: "duplicate-record" }
+  | { kind: "schedule-anomaly" }
+  | { kind: "invalid-evidence" }
+  | { kind: "execution-stop"; stopKind: Exclude<ChallengeStop["kind"], "terminal"> };
+export type CaseClassification = {
+  key: string; suite: "corpus" | "live-strategic"; bucket: OutcomeBucket; failureReason?: FailureReason;
+};
+export type ScheduleAnomaly = { kind: "unattributable"; key?: string };
+const record = (value: unknown): value is Record<string, unknown> =>
+  value !== null && typeof value === "object" && !Array.isArray(value);
+const rowKey = (row: unknown): string | undefined =>
+  record(row) && record(row.match) && typeof row.match.key === "string" ? row.match.key : undefined;
+
+export const classifyScheduledEvidence = (rows: readonly unknown[], context: TrustedExecutionContext) => {
+  const schedule = expectedSchedule(context);
+  const grouped = new Map<string, unknown[]>();
+  const anomalies: ScheduleAnomaly[] = [];
+  for (const row of rows) {
+    const key = rowKey(row);
+    if (!key || !schedule.some((match) => match.key === key)) {
+      anomalies.push({ kind: "unattributable", ...(key ? { key } : {}) });
+      continue;
+    }
+    grouped.set(key, [...(grouped.get(key) ?? []), row]);
+  }
+  const unattributable = anomalies.length > 0;
+  const cases: CaseClassification[] = schedule.map((match) => {
+    const fail = (failureReason: FailureReason): CaseClassification => ({
+      key: match.key, suite: match.suite, bucket: "failure", failureReason,
+    });
+    if (unattributable) return fail({ kind: "schedule-anomaly" });
+    const group = grouped.get(match.key) ?? [];
+    if (group.length === 0) return fail({ kind: "missing-record" });
+    if (group.length !== 1) return fail({ kind: "duplicate-record" });
+    const row = group[0];
+    if (!record(row) || !record(row.match) || !record(row.stop) || !executionIntegrity(row as ChallengeEvidence, true, context)) {
+      return fail({ kind: "invalid-evidence" });
+    }
+    const evidence = row as ChallengeEvidence;
+    if (evidence.stop.kind !== "terminal" || evidence.outcome === null) {
+      return fail({ kind: "execution-stop", stopKind: evidence.stop.kind as Exclude<ChallengeStop["kind"], "terminal"> });
+    }
+    if (evidence.outcome.draw || evidence.outcome.winner === null) {
+      return { key: match.key, suite: match.suite, bucket: "draw" };
+    }
+    return {
+      key: match.key, suite: match.suite,
+      bucket: evidence.outcome.winner === match.candidateSide ? "win" : "loss",
+    };
+  });
+  const blocking = new Set(["missing-record", "duplicate-record", "invalid-evidence", "schedule-anomaly"]);
+  return {
+    version: "challenge-accounting-v1" as const,
+    acceptanceValid: cases.every((entry) => !entry.failureReason || !blocking.has(entry.failureReason.kind)),
+    cases, anomalies,
+  };
+};
+
+export const summarize = (rows: ChallengeEvidence[], context?: TrustedExecutionContext) => {
+  const trusted = context ?? loadTrustedExecutionContext("all");
+  const accounting = classifyScheduledEvidence(rows, trusted);
   const count = (suite: "corpus" | "live-strategic") => {
-    const cases = rows.filter((row) => row.match.suite === suite);
+    const cases = accounting.cases.filter((entry) => entry.suite === suite);
+    const submitted = rows.filter((row) => row.match?.suite === suite);
     return {
       scheduled: cases.length,
-      wins: cases.filter((row) => executionIntegrity(row) && row.stop.kind === "terminal" && row.outcome?.winner === row.match.candidateSide).length,
-      losses: cases.filter((row) => row.stop.kind === "terminal" && row.outcome?.winner !== null && row.outcome?.winner !== row.match.candidateSide).length,
-      draws: cases.filter((row) => row.stop.kind === "terminal" && row.outcome?.draw).length,
-      failures: cases.filter((row) => row.stop.kind !== "terminal").length,
-      stopKinds: Object.fromEntries([...new Set(cases.map((row) => row.stop.kind))].sort()
-        .map((kind) => [kind, cases.filter((row) => row.stop.kind === kind).length])),
+      wins: cases.filter((entry) => entry.bucket === "win").length,
+      losses: cases.filter((entry) => entry.bucket === "loss").length,
+      draws: cases.filter((entry) => entry.bucket === "draw").length,
+      failures: cases.filter((entry) => entry.bucket === "failure").length,
+      stopKinds: Object.fromEntries([...new Set(submitted.map((row) => row.stop.kind))].sort()
+        .map((kind) => [kind, submitted.filter((row) => row.stop.kind === kind).length])),
     };
   };
   return { corpus: count("corpus"), liveStrategic: count("live-strategic") };
@@ -48,14 +114,15 @@ export const summarize = (rows: ChallengeEvidence[]) => {
 export const runBaselineSuite = async (suite: Suite = "all", rerun = true) => {
   const corpus = loadPinnedCorpus();
   const pins = executionPins();
-  const schedule = buildSchedule(corpus).filter((match) => suite === "all" || match.suite === suite);
+  const context = loadTrustedExecutionContext(suite);
+  const schedule = expectedSchedule(context);
   const rows: ChallengeEvidence[] = [];
   for (const request of schedule) rows.push(await runSupervised(request));
   const comparisons: { key: string; equal: boolean; firstSha256: string; rerunSha256: string }[] = [];
   if (rerun) {
     const auditedAgain = loadPinnedCorpus();
     if (corpus.manifestSha256 !== auditedAgain.manifestSha256 || canonical(pins) !== canonical(executionPins())) throw new Error("execution pins changed before rerun");
-    const repeatedSchedule = buildSchedule(auditedAgain).filter((match) => suite === "all" || match.suite === suite);
+    const repeatedSchedule = expectedSchedule(loadTrustedExecutionContext(suite));
     for (const [index, request] of repeatedSchedule.entries()) {
       const repeated = await runSupervised(request);
       const first = normalizeEvidence(rows[index]!);
@@ -64,14 +131,15 @@ export const runBaselineSuite = async (suite: Suite = "all", rerun = true) => {
     }
   }
   if (canonical(pins) !== canonical(executionPins())) throw new Error("execution pins changed during suite");
-  const integrity = rows.every((row) => executionIntegrity(row));
+  const accounting = classifyScheduledEvidence(rows, context);
+  const integrity = accounting.acceptanceValid;
   return {
     version: "phase2-baseline-report-v1", kind: "phase2-current-baseline", learnedGateEligible: false, modelArtifact: null,
     independentVerification: "_spec/evidence/ml-adjutant-phase2/verification.json",
     migrationReference: "_spec/evidence/ml-adjutant-phase2/pin-migration.json",
     manifestSha256: corpus.manifestSha256, sourceSha256: corpus.manifest.sourceSha256, pins,
     suite, schedule: schedule.map(({ trace: _trace, ...entry }) => entry),
-    summary: summarize(rows), executionIntegrity: integrity,
+    summary: summarize(rows, context), accounting, executionIntegrity: integrity,
     deterministicRerun: { performed: rerun, equal: rerun ? comparisons.every((entry) => entry.equal) : null, comparisons },
     learnedChallengePass: false,
     rows: rows.map(({ match, ...evidence }) => ({

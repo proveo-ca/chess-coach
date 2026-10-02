@@ -3,6 +3,7 @@ import { canonical } from "./config";
 import { sha256 } from "./corpus";
 import { normalizeEvidence } from "./evidence";
 import { executionIntegrity } from "./integrity";
+import { loadTrustedExecutionContext } from "./schedule";
 import type { ChallengeEvidence, ScheduledMatch } from "./types";
 
 export const ORIGINAL_BASELINE_SHA256 = "940387370040f88888e9dfe0bb86ad9d4a8be88854df507120f34b22ee2d362b";
@@ -63,13 +64,15 @@ export const compareBaselineReports = (original: unknown, current: unknown): Bas
     value.rows.every((row, index) => canonical(scheduleEntry(row.match)) === canonical(value.schedule[index]));
   const exactSchedule = complete(before) && complete(after) && canonical(before.schedule) === canonical(after.schedule) &&
     before.manifestSha256 === after.manifestSha256 && before.sourceSha256 === after.sourceSha256;
+  const context = loadTrustedExecutionContext("all");
   const comparisons = before.rows.map((row, index): BaselineMigrationComparison => {
     const next = after.rows[index];
     const originalSha256 = sha256(normalizeEvidence(row));
     const currentSha256 = next ? sha256(normalizeEvidence(next)) : "";
     return { key: row.match.key, originalSha256, currentSha256,
       equal: next?.match.key === row.match.key && originalSha256 === currentSha256,
-      originalIntegrity: executionIntegrity(row), currentIntegrity: next !== undefined && executionIntegrity(next) };
+      originalIntegrity: executionIntegrity(row, true, context),
+      currentIntegrity: next !== undefined && executionIntegrity(next, true, context) };
   });
   const rerunVerified = (value: BaselineReport): boolean => value.deterministicRerun.performed === true &&
     value.deterministicRerun.equal === true && value.deterministicRerun.comparisons.length === 54 &&
