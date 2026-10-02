@@ -31,7 +31,7 @@ if (rows.length !== schedule.length || originalRows.length !== schedule.length |
   throw new Error("Scheduled evidence cardinality mismatch");
 }
 const accounting = classifyScheduledEvidence(rows, context);
-if (!accounting.acceptanceValid || current.learnedChallengePass === true || current.executionIntegrity === false) throw new Error("Scheduled evidence failed authoritative validation");
+if (!accounting.acceptanceValid || current.learnedChallengePass !== false || current.executionIntegrity !== true) throw new Error("Scheduled evidence failed authoritative validation");
 const counted = (suite: "corpus" | "live-strategic") => {
   const cases = accounting.cases.filter((entry) => entry.suite === suite);
   return {
@@ -45,7 +45,7 @@ const counted = (suite: "corpus" | "live-strategic") => {
 for (const [suite, field] of [["corpus", "corpus"], ["live-strategic", "liveStrategic"]] as const) {
   const expected = counted(suite);
   const claimed = current.summary?.[field];
-  if (claimed && (claimed.scheduled !== expected.scheduled || claimed.wins !== expected.wins || claimed.losses !== expected.losses || claimed.draws !== expected.draws || claimed.failures !== expected.failures)) {
+  if (!claimed || claimed.scheduled !== expected.scheduled || claimed.wins !== expected.wins || claimed.losses !== expected.losses || claimed.draws !== expected.draws || claimed.failures !== expected.failures) {
     throw new Error(`Reported summary does not match authoritative buckets: ${suite}`);
   }
 }

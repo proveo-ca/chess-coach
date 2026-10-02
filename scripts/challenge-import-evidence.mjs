@@ -1,11 +1,12 @@
 // SPEC: _spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { closeSync, createReadStream, existsSync, fsyncSync, lstatSync, mkdirSync, mkdtempSync, openSync, readSync, readdirSync, realpathSync, rmSync, writeFileSync, writeSync } from 'node:fs';
+import { closeSync, createReadStream, existsSync, fsyncSync, lstatSync, mkdirSync, mkdtempSync, openSync, readFileSync, readSync, readdirSync, realpathSync, rmSync, writeFileSync, writeSync } from 'node:fs';
 import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { prepareContext } from '../packages/starchess-arena/hermetic/context.mjs';
 import { assertContainerPolicy } from '../packages/starchess-arena/hermetic/policy.mjs';
+import pins from '../packages/starchess-arena/hermetic/pins.json' with { type: 'json' };
 
 export const ORIGINAL_BASELINE_SHA256 = '940387370040f88888e9dfe0bb86ad9d4a8be88854df507120f34b22ee2d362b';
 export const ORIGINAL_VERIFICATION_SHA256 = '55d965afa71d775ff6ee1e95b6650a27d0ce759b966a81c43a3bb364236c7508';
@@ -144,7 +145,8 @@ export const assertImageArchive = (path, image) => {
   const diffIds = configJson?.rootfs?.diff_ids;
   if (!config || !Array.isArray(diffIds) || manifest[0].Layers.some((layer) => !names.has(layer))) throw new Error('Exported image archive config missing');
   if (`sha256:${hash(config)}` !== image) throw new Error('Exported image archive is not the expected image');
-  if (manifest[0].Layers.length !== diffIds.length || manifest[0].Layers.some((layer) => !diffIds.includes(`sha256:${hashes.get(layer)}`))) {
+  if (new Set(manifest[0].Layers).size !== manifest[0].Layers.length || manifest[0].Layers.length !== diffIds.length ||
+      manifest[0].Layers.some((layer, index) => diffIds[index] !== `sha256:${hashes.get(layer)}`)) {
     throw new Error('Exported image archive layers are not the expected image');
   }
 };
@@ -152,7 +154,19 @@ export const assertImageArchive = (path, image) => {
 export async function importEvidence({
   repositoryRoot, executionPath, buildPath, exportPath, expectedImage, destination,
   inspectImage = (image) => JSON.parse(execFileSync('docker', ['image', 'inspect', image], { encoding: 'utf8' }))[0],
-  measureImage = (image) => JSON.parse(execFileSync('docker', ['run', '--rm', '--pull=never', '--network=none', '--read-only', '--user', '10001:10001', '--entrypoint', 'node', image, '-e', 'const fs=require("node:fs"); const crypto=require("node:crypto"); const file="/hermetic-evidence/source.json"; const value=JSON.parse(fs.readFileSync(file,"utf8")); console.log(JSON.stringify({source:{sourceSha256:value.sha256}}));'], { encoding: 'utf8' })),
+  measureImage = (image) => {
+    const created = execFileSync('docker', ['create', '--pull=never', '--platform', pins.platform, '--entrypoint', 'true', image], { encoding: 'utf8' }).trim();
+    const scratch = mkdtempSync(join('/tmp/opencode', 'challenge-image-source-'));
+    try {
+      execFileSync('docker', ['cp', `${created}:/hermetic-evidence/source.json`, join(scratch, 'source.json')]);
+      const value = JSON.parse(readFileSync(join(scratch, 'source.json'), 'utf8'));
+      if (typeof value?.sha256 !== 'string') throw new Error('Image source manifest has no hash');
+      return { source: { sourceSha256: value.sha256 } };
+    } finally {
+      rmSync(scratch, { recursive: true, force: true });
+      execFileSync('docker', ['rm', created]);
+    }
+  },
   captureContext = async (root) => {
     const context = mkdtempSync(join('/tmp/opencode', 'challenge-capture-'));
     try { return prepareContext(context, false, root); }
@@ -222,7 +236,9 @@ export async function importEvidence({
     }
     if (!command.executable?.endsWith('/vitest')) continue;
     if (!command.tests) throw new Error(`Vitest command has no bound report: ${command.executable}`);
+    const outputFile = command.args?.at(-1);
     const reportPath = basename(command.tests.path ?? '');
+    if (reportPath !== basename(outputFile ?? '') || !Object.hasOwn(VITEST_FLOORS, reportPath)) throw new Error(`Vitest report is not the command output: ${reportPath}`);
     const reportBytes = artifacts.get(reportPath);
     const counted = reportBytes ? recountVitest(JSON.parse(reportBytes.toString('utf8'))) : undefined;
     const floor = VITEST_FLOORS[reportPath];
@@ -288,7 +304,10 @@ export async function importEvidence({
       const path = safeRelative(artifact.path);
       const dest = join(target, path);
       mkdirSync(dirname(dest), { recursive: true });
-      directories.add(dirname(dest));
+      for (let directory = dirname(dest); directory.startsWith(target); directory = dirname(directory)) {
+        directories.add(directory);
+        if (directory === target) break;
+      }
       const fd = openSync(dest, 'wx', 0o644);
       try { writeSync(fd, artifact.bytes); fsyncSync(fd); }
       finally { closeSync(fd); }
