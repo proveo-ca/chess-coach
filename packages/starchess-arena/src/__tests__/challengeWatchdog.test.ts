@@ -26,6 +26,13 @@ const expectFailure = (evidence: ChallengeEvidence, key: string) => {
 };
 
 describe("challenge child watchdog", () => {
+  it("rejects a child announcement that cancels an unfinished decision", async () => {
+    const evidence = await runSupervised(request("announcement-escape"), {
+      workerUrl: new URL("./fixtures/challengeAnnouncementEscape.ts", import.meta.url),
+      budgets: { ...budgets, matchMs: 300 },
+    });
+    expect(evidence.stop.kind).toBe("script-contract");
+  });
   it("reaps a child that never becomes ready", async () => {
     const evidence = await runSupervised(request("startup-hang"), {
       workerUrl: new URL("./fixtures/challengeStartupHang.ts", import.meta.url),
