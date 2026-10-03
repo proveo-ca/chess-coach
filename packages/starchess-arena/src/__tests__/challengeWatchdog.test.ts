@@ -31,6 +31,14 @@ const expectFailure = (evidence: ChallengeEvidence, key: string) => {
 };
 
 describe("challenge child watchdog", () => {
+  it("rejects a session-bound cross-phase announcement in a separate input chunk", async () => {
+    const evidence = await runSupervised(request("crossphase-announcement"), { workerUrl: childCasesUrl, budgets });
+    expect(evidence.stop).toMatchObject({
+      kind: "script-contract", phase: "candidate-plan", side: "w",
+      reason: "worker protocol error: phase contradicts checked stage",
+    });
+  });
+
   it.each(["direct-rejection", "permit-rejection", "direct-progress-limit"])(
     "rejects unbuffered %s completion that bypasses the checked stages", async (key) => {
       const evidence = await runSupervised(request(key), { workerUrl: childCasesUrl, budgets });
@@ -45,6 +53,13 @@ describe("challenge child watchdog", () => {
     expectFailure(evidence, key);
     expect(evidence.stop.kind).toBe(key === "permit-exception" ? "exception" : "watchdog");
     expect(replayExecutionIntegrity(evidence, request(key))).toBe(true);
+  });
+
+  it.each(["permit-false-bank", "permit-false-outcome"])("rejects %s even when an active error may finish", async (key) => {
+    const evidence = await runSupervised(request(key), { workerUrl: childCasesUrl, budgets });
+    expect(evidence.stop).toMatchObject({ kind: "script-contract", reason: "worker protocol error: malformed completion" });
+    expect(evidence.outcome).toBeNull();
+    expect(evidence.finalBank).toEqual({ w: 3, b: 3 });
   });
 
   it("accepts a rejection only after checking the decisions and admission witness", async () => {

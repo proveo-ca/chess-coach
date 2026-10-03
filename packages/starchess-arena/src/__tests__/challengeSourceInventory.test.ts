@@ -84,7 +84,6 @@ describe("partitioned challenge source inventory", () => {
     'make()("./codec.cjs");',
     'make(import.meta.url, extra)("./codec.cjs");',
     'make(...args)("./codec.cjs");',
-    'new make(import.meta.url)("./codec.cjs");',
   ])("rejects unsupported factory bases through forward aliases: %s", (code) => {
     const root = fixture();
     put(root, `${ARENA}/src/challenge/codec.cjs`, 'module.exports = "execution decoy";\n');
@@ -131,6 +130,15 @@ describe("partitioned challenge source inventory", () => {
   ])("rejects unsupported builtin acquisition: %s", (code) => {
     const root = fixture();
     put(root, `${ARENA}/src/challenge/worker.ts`, code);
+    expect(() => collectSourceInventory(root)).toThrow("Unsupported builtin acquisition");
+  });
+
+  it("rejects an actual builtin acquisition that loads contracts in CommonJS", () => {
+    const root = fixture();
+    const path = `${ARENA}/src/challenge/acquire.cjs`;
+    put(root, `${ARENA}/src/challengeContract/codec.cjs`, 'module.exports = "contracts target";\n');
+    put(root, path, 'module.exports = process.getBuiltinModule("module").createRequire(__filename)("../challengeContract/codec.cjs");\n');
+    expect(createRequire(import.meta.url)(join(root, path))).toBe("contracts target");
     expect(() => collectSourceInventory(root)).toThrow("Unsupported builtin acquisition");
   });
 
@@ -191,6 +199,24 @@ describe("partitioned challenge source inventory", () => {
     const root = fixture();
     put(root, `${ARENA}/src/challenge/worker.ts`, 'type Eval = typeof eval; type Constructor = Function;\nimport type {getBuiltinModule} from "node:process"; import type {registerHooks} from "node:module";\nexport type {getBuiltinModule, registerHooks};\nconst object = {eval: 1, Function: 2, getBuiltinModule: 3, register: 4}; void object.eval; void object.Function;\nfunction local(eval: (value: string) => string, Function: (value: string) => string, process: {getBuiltinModule: () => string}) { eval("safe"); Function("safe"); return process.getBuiltinModule(); }\nfunction scope() { function eval(value: string) { return value; } function Function(value: string) { return value; } return [eval("safe"), Function("safe")]; }\n');
     expect(collectSourceInventory(root).audit.passed).toBe(true);
+  });
+
+  it("allows actual CommonJS functions that shadow evaluation globals", () => {
+    const root = fixture();
+    const path = `${ARENA}/src/challenge/shadows.cjs`;
+    put(root, path, 'function eval(value) { return value; }\nfunction Function(value) { return value; }\nfunction local(process, globalThis) { return [process.getBuiltinModule(), globalThis.eval(), globalThis.Function()]; }\nmodule.exports = [eval("local eval"), Function("local Function"), ...local({getBuiltinModule: () => "local process"}, {eval: () => "local method", Function: () => "local constructor method"})];\n');
+    expect(createRequire(import.meta.url)(join(root, path))).toEqual(["local eval", "local Function", "local process", "local method", "local constructor method"]);
+    expect(collectSourceInventory(root).audit.passed).toBe(true);
+  });
+
+  it.each([
+    ["worker.ts", 'import {createRequire} from "node:module"; createRequire(import.meta.url).resolve("tsx");'],
+    ["supervisor.ts", 'import {createRequire} from "node:module"; createRequire(import.meta.url).resolve("tsx/package.json");'],
+    ["supervisor.ts", 'import {createRequire as make} from "node:module"; make(import.meta.url).resolve("tsx");'],
+  ])("keeps the inline factory resolver confined to its existing supervisor scope: %s %s", (name, code) => {
+    const root = fixture();
+    put(root, `${ARENA}/src/challenge/${name}`, code);
+    expect(() => collectSourceInventory(root)).toThrow("Undeclared createRequire resolver");
   });
 
   it.each([

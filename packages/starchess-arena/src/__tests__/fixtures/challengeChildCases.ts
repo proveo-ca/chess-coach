@@ -72,18 +72,27 @@ const run = async (request: ScheduledMatch) => {
     await send({ kind: "complete", evidence });
     return;
   }
+  if (mode === "crossphase-announcement") {
+    const permit = reply.permit as PlanPermit;
+    await send({ kind: "phase", phase: "candidate-plan", planningOrdinal: 0, turn: snap.turn, side: permit.side });
+    await new Promise((resolve) => setTimeout(resolve, 10));
+    await send({ kind: "phase", phase: "settlement", planningOrdinal: 0, turn: snap.turn });
+    return;
+  }
   if (mode === "permit-rejection") {
     rejection();
     await new Promise((resolve) => setTimeout(resolve, 10));
     await send({ kind: "complete", evidence });
     return;
   }
-  if (mode === "permit-exception" || mode === "permit-watchdog") {
+  if (mode === "permit-exception" || mode === "permit-watchdog" || mode === "permit-false-bank" || mode === "permit-false-outcome") {
     const permit = reply.permit as PlanPermit;
     evidence.stop = {
       kind: mode === "permit-exception" ? "exception" : "watchdog", phase: "candidate-plan",
       planningOrdinal: 0, turn: snap.turn, side: permit.side, reason: "fixture planning failure",
     };
+    if (mode === "permit-false-bank") evidence.finalBank = { w: 0, b: 3 };
+    if (mode === "permit-false-outcome") evidence.outcome = { winner: "w", draw: false };
     await send({ kind: "complete", evidence });
     return;
   }

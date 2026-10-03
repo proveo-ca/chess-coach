@@ -60,6 +60,25 @@ describe("terminal-first challenge lifecycle", () => {
     expect(replayExecutionIntegrity(omitted, match)).toBe(false);
   });
 
+  it("requires a nonterminal begin chip for a live rejection witness", async () => {
+    const match: ScheduledMatch = {
+      key: "live-chip-rejection", suite: "live-strategic", candidateSide: "w", arenaSeed: 0, inferenceSeed: 0,
+      opening: "SCFEN|4k3/3B4/8/8/8/8/8/7K|0|33|P|G:11:11|B:3:3|Q:w:;b:",
+    };
+    const evidence = await runChallengeMatch(match, {
+      candidate: { name: "baseline-v1", choose: () => invalid },
+      strategic: { name: "live-pass", play: (snapshot) => ({ snapshot, spendMinerals: 0 }) },
+    });
+    expect(evidence.stop).toMatchObject({ kind: "queue-rejected", side: "w" });
+    expect(evidence.resolves).toHaveLength(1);
+    expect(replayExecutionIntegrity(evidence, match)).toBe(true);
+    const omitted = structuredClone(evidence);
+    omitted.resolves = [];
+    omitted.scfens = [evidence.scfens[0]!];
+    omitted.bankTrail = [];
+    expect(replayExecutionIntegrity(omitted, match)).toBe(false);
+  });
+
   it.each([
     { key: "direct-terminal", opening: quietOpening(0, "03", "O"), plies: 0 },
     { key: "chip-terminal", opening: "SCFEN|7k/8/8/8/8/8/3b4/4K3|0|13|P|G:11:11|B:3:3|Q:w:;b:", plies: 1 },
