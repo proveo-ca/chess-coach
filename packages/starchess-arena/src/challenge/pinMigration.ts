@@ -8,7 +8,7 @@ import type { ChallengeEvidence, ScheduledMatch } from "./types";
 
 export const ORIGINAL_BASELINE_SHA256 = "940387370040f88888e9dfe0bb86ad9d4a8be88854df507120f34b22ee2d362b";
 export const ORIGINAL_VERIFICATION_SHA256 = "55d965afa71d775ff6ee1e95b6650a27d0ce759b966a81c43a3bb364236c7508";
-export const PIN_MIGRATION_VERSION = "challenge-pin-migration-v1";
+export const PIN_MIGRATION_VERSION = "challenge-pin-migration-v2";
 export type BaselineMigrationComparison = {
   key: string; originalSha256: string; currentSha256: string; equal: boolean;
   originalIntegrity: boolean; currentIntegrity: boolean;
@@ -18,9 +18,10 @@ export type BaselineReportComparison = {
   deterministicRerun: boolean; semanticParity: boolean; comparisons: BaselineMigrationComparison[];
 };
 export type PinMigrationReport = BaselineReportComparison & {
-  version: typeof PIN_MIGRATION_VERSION;
+  version: "challenge-pin-migration-v1";
   originalBaselineSha256: string; originalVerificationSha256: string; currentBaselineSha256: string;
 };
+export type PinMigrationReportV2 = Omit<PinMigrationReport, "version"> & { version: typeof PIN_MIGRATION_VERSION };
 type RerunComparison = { key: string; equal: boolean; firstSha256: string; rerunSha256: string };
 type BaselineReport = {
   manifestSha256: string; sourceSha256: string; suite: string;
@@ -29,11 +30,14 @@ type BaselineReport = {
   deterministicRerun: { performed: boolean; equal: boolean; comparisons: RerunComparison[] };
 };
 const object = (value: unknown): value is Record<string, unknown> => value !== null && typeof value === "object" && !Array.isArray(value);
-const report = (value: unknown, phase: "original" | "current"): BaselineReport => {
-  if (!object(value) || value.version !== (phase === "original" ? "phase1-baseline-report-v1" : "phase2-baseline-report-v1") ||
+const report = (value: unknown, phase: "original" | "current", refreshed: boolean): BaselineReport => {
+  const directory = phase === "original" ? "phase1" : refreshed ? "r2-refresh" : "phase2";
+  if (!object(value) || value.version !== (phase === "original" ? "phase1-baseline-report-v1" : refreshed ? "phase2-baseline-report-v2" : "phase2-baseline-report-v1") ||
     value.kind !== (phase === "original" ? "phase1-baseline" : "phase2-current-baseline") ||
-    value.independentVerification !== `_spec/evidence/ml-adjutant-${phase === "original" ? "phase1" : "phase2"}/verification.json` ||
-    (phase === "current" && (value.migrationReference !== "_spec/evidence/ml-adjutant-phase2/pin-migration.json" || !object(value.pins) || value.pins.version !== "challenge-execution-pins-v2"))) throw new Error("Invalid baseline migration provenance");
+    value.independentVerification !== `_spec/evidence/ml-adjutant-${directory}/verification.json` ||
+    (phase === "current" && (value.migrationReference !== `_spec/evidence/ml-adjutant-${directory}/pin-migration.json` || !object(value.pins) || value.pins.version !== (refreshed ? "challenge-execution-pins-v3" : "challenge-execution-pins-v2")))) throw new Error("Invalid baseline migration provenance");
+  if (phase === "current" && refreshed && (!object(value.pins) || !object(value.pins.sourceInventory) ||
+    value.pins.sourceInventory.version !== "challenge-source-inventory-v2" || value.pins.sourceInventory.policyVersion !== "challenge-source-policy-v2")) throw new Error("Invalid current source inventory version");
   if (!object(value) || !Array.isArray(value.schedule) || !Array.isArray(value.rows) ||
       !object(value.deterministicRerun) || !Array.isArray(value.deterministicRerun.comparisons) ||
       typeof value.manifestSha256 !== "string" || typeof value.sourceSha256 !== "string" || value.suite !== "all" ||
@@ -56,9 +60,11 @@ const report = (value: unknown, phase: "original" | "current"): BaselineReport =
 };
 const scheduleEntry = ({ trace: _trace, ...match }: ScheduledMatch): Omit<ScheduledMatch, "trace"> => match;
 
-export const compareBaselineReports = (original: unknown, current: unknown): BaselineReportComparison => {
-  const before = report(original, "original");
-  const after = report(current, "current");
+export const compareBaselineReports = (original: unknown, current: unknown): BaselineReportComparison => compareReports(original, current, false);
+export const compareBaselineReportsV2 = (original: unknown, current: unknown): BaselineReportComparison => compareReports(original, current, true);
+const compareReports = (original: unknown, current: unknown, refreshed: boolean): BaselineReportComparison => {
+  const before = report(original, "original", refreshed);
+  const after = report(current, "current", refreshed);
   const complete = (value: BaselineReport): boolean => value.schedule.length === 54 && value.rows.length === 54 &&
     new Set(value.schedule.map((entry) => entry.key)).size === 54 &&
     value.rows.every((row, index) => canonical(scheduleEntry(row.match)) === canonical(value.schedule[index]));
@@ -93,15 +99,19 @@ export const compareBaselineReports = (original: unknown, current: unknown): Bas
 
 export const createMigration = (
   originalBytes: Uint8Array, originalVerificationBytes: Uint8Array, currentBytes: Uint8Array,
-): PinMigrationReport => {
+): PinMigrationReport => migrate(originalBytes, originalVerificationBytes, currentBytes, false) as PinMigrationReport;
+export const createMigrationV2 = (
+  originalBytes: Uint8Array, originalVerificationBytes: Uint8Array, currentBytes: Uint8Array,
+): PinMigrationReportV2 => migrate(originalBytes, originalVerificationBytes, currentBytes, true) as PinMigrationReportV2;
+const migrate = (originalBytes: Uint8Array, originalVerificationBytes: Uint8Array, currentBytes: Uint8Array, refreshed: boolean): PinMigrationReport | PinMigrationReportV2 => {
   if (sha256(originalBytes) !== ORIGINAL_BASELINE_SHA256) throw new Error("Original baseline raw-byte pin mismatch");
   if (sha256(originalVerificationBytes) !== ORIGINAL_VERIFICATION_SHA256) throw new Error("Original verification raw-byte pin mismatch");
   const decode = (bytes: Uint8Array): unknown => JSON.parse(Buffer.from(bytes).toString("utf8")) as unknown;
   const verification = decode(originalVerificationBytes);
   if (!object(verification) || verification.baselineReportSha256 !== ORIGINAL_BASELINE_SHA256) throw new Error("Original verification baseline pin mismatch");
   return {
-    version: PIN_MIGRATION_VERSION,
+    version: refreshed ? PIN_MIGRATION_VERSION : "challenge-pin-migration-v1",
     originalBaselineSha256: ORIGINAL_BASELINE_SHA256, originalVerificationSha256: ORIGINAL_VERIFICATION_SHA256,
-    currentBaselineSha256: sha256(currentBytes), ...compareBaselineReports(decode(originalBytes), decode(currentBytes)),
+    currentBaselineSha256: sha256(currentBytes), ...compareReports(decode(originalBytes), decode(currentBytes), refreshed),
   };
 };

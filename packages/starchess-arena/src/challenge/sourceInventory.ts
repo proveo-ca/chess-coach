@@ -7,10 +7,11 @@ import { fileURLToPath } from "node:url";
 import ts from "typescript";
 import { canonical } from "./config";
 
-export const SOURCE_INVENTORY_VERSION = "challenge-source-inventory-v1";
-export const SOURCE_POLICY_VERSION = "challenge-source-policy-v1";
-export type SourcePartition = "execution" | "contracts" | "diagnostics";
-export type SourceFileRecord = { path: string; sha256: string; partition: SourcePartition };
+export const SOURCE_INVENTORY_VERSION = "challenge-source-inventory-v2";
+export const SOURCE_POLICY_VERSION = "challenge-source-policy-v2";
+export type LegacySourcePartition = "execution" | "contracts" | "diagnostics";
+export type SourcePartition = "core-rules" | "arena-authorized" | "arena-host" | "training-model" | "training-coordinator" | "verification-tooling";
+export type SourceFileRecord<P = SourcePartition> = { path: string; sha256: string; partition: P };
 export type RuntimeFileRecord = { path: string; present: boolean; sha256: string | null };
 export type ImportAuditEdge = {
   importer: string; specifier: string; kind: "import" | "export" | "dynamic" | "require" | "import-type" | "resolve" | "worker";
@@ -18,12 +19,12 @@ export type ImportAuditEdge = {
 };
 export type SourceImportAudit = { passed: true; edges: ImportAuditEdge[]; auditedFiles: string[] };
 export type SourceInventoryV1 = {
-  version: typeof SOURCE_INVENTORY_VERSION;
-  policyVersion: typeof SOURCE_POLICY_VERSION;
+  version: "challenge-source-inventory-v1";
+  policyVersion: "challenge-source-policy-v1";
   roots: readonly string[];
   entrypoints: readonly string[];
-  files: SourceFileRecord[];
-  groups: Record<SourcePartition, SourceFileRecord[]>;
+  files: SourceFileRecord<LegacySourcePartition>[];
+  groups: Record<LegacySourcePartition, SourceFileRecord<LegacySourcePartition>[]>;
   runtime: RuntimeFileRecord[];
   executionSha256: string;
   contractsSha256: string;
@@ -32,9 +33,34 @@ export type SourceInventoryV1 = {
   inventorySha256: string;
   audit: SourceImportAudit;
 };
+export type SourceInventoryV2 = {
+  version: typeof SOURCE_INVENTORY_VERSION;
+  policyVersion: typeof SOURCE_POLICY_VERSION;
+  roots: readonly string[];
+  entrypoints: readonly string[];
+  files: SourceFileRecord[];
+  groups: Record<SourcePartition, SourceFileRecord[]>;
+  partitionSha256: Record<SourcePartition, string>;
+  runtime: RuntimeFileRecord[];
+  runtimeConfigurationSha256: string;
+  inventorySha256: string;
+  audit: SourceImportAudit;
+};
 
 const CORE = "packages/starchess-core";
 const ARENA = "packages/starchess-arena";
+const TRAINING = "packages/starchess-training";
+const PARTITIONS: readonly SourcePartition[] = Object.freeze([
+  "core-rules", "arena-authorized", "arena-host", "training-model", "training-coordinator", "verification-tooling",
+]);
+const ALLOWED_EDGES: Record<SourcePartition, readonly SourcePartition[]> = {
+  "core-rules": ["core-rules"],
+  "arena-authorized": ["arena-authorized", "core-rules"],
+  "arena-host": ["arena-host", "arena-authorized", "core-rules"],
+  "training-model": ["training-model", "arena-authorized", "core-rules"],
+  "training-coordinator": ["training-coordinator", "training-model", "arena-authorized", "core-rules", "arena-host"],
+  "verification-tooling": PARTITIONS,
+};
 const ROOTS = Object.freeze([`${CORE}/src`, `${ARENA}/src`, "scripts", `${ARENA}/hermetic`].sort());
 const ENTRYPOINTS = Object.freeze([
   `${CORE}/src/index.ts`, `${ARENA}/src/cli/challenge.ts`, `${ARENA}/src/challenge/worker.ts`,
@@ -58,7 +84,13 @@ const object = (value: unknown): value is Record<string, unknown> => value !== n
 
 export const collectSourceInventory = (
   root: string = fileURLToPath(new URL("../../../../", import.meta.url)),
-): SourceInventoryV1 => {
+): SourceInventoryV1 => collectInventory(root, false) as SourceInventoryV1;
+
+export const collectSourceInventoryV2 = (
+  root: string = fileURLToPath(new URL("../../../../", import.meta.url)),
+): SourceInventoryV2 => collectInventory(root, true) as SourceInventoryV2;
+
+const collectInventory = (root: string, current: boolean): SourceInventoryV1 | SourceInventoryV2 => {
   const absoluteRoot = resolve(root);
   const safePath = (path: string): string => {
     if (path.startsWith("/") || path.split("/").some((part) => !part || part === "." || part === "..") || path.includes("\\")) {
@@ -88,28 +120,66 @@ export const collectSourceInventory = (
     if (!object(parsed)) throw new Error(`Invalid manifest: ${path}`);
     return parsed;
   };
-  const classify = (path: string): SourcePartition => {
-    const matches: SourcePartition[] = [];
+  const classify = (path: string): SourcePartition | LegacySourcePartition => {
+    if (current) {
+      if (path.startsWith(`${CORE}/src/`)) return "core-rules";
+      if (path.startsWith(`${ARENA}/src/authorized/`) || [`${ARENA}/src/observations.ts`, `${ARENA}/src/intent-codec-v1.ts`, `${ARENA}/src/challengeContract/validation.ts`, `${ARENA}/src/challengeContract/candidateWire.ts`].includes(path)) return "arena-authorized";
+      if (path.startsWith(`${ARENA}/src/`)) return "arena-host";
+      if (path.startsWith(`${TRAINING}/src/coordinator/`)) return "training-coordinator";
+      if (path.startsWith(`${TRAINING}/src/`)) return "training-model";
+      if (path.startsWith("scripts/") || path.startsWith(`${ARENA}/hermetic/`)) return "verification-tooling";
+      throw new Error(`Unclassified source: ${path}`);
+    }
+    const matches: LegacySourcePartition[] = [];
     if (path.startsWith(`${CORE}/src/`) || path.startsWith(`${ARENA}/src/`) && !path.startsWith(`${ARENA}/src/challengeContract/`)) matches.push("execution");
     if (path.startsWith(`${ARENA}/src/challengeContract/`)) matches.push("contracts");
     if (path.startsWith("scripts/") || path.startsWith(`${ARENA}/hermetic/`)) matches.push("diagnostics");
     if (matches.length !== 1) throw new Error(`Unclassified or overlapping source: ${path}`);
     return matches[0]!;
   };
-  const files: SourceFileRecord[] = [];
+  const files: SourceFileRecord<SourcePartition | LegacySourcePartition>[] = [];
   const walk = (path: string): void => {
     const stat = lstatSync(safePath(path));
     if (stat.isDirectory()) {
       for (const name of readdirSync(safePath(path)).sort(order)) walk(`${path}/${name}`);
     } else if (stat.isFile()) {
       if (/\.(?:sh|bash|py|wasm|node|so|c|cc|cpp|rs)$/.test(path)) throw new Error(`Unsupported executable source: ${path}`);
-      if (!excludedTest(path)) files.push({ path, sha256: hash(bytes(path)), partition: classify(path) });
+      if (!excludedTest(path) && !(current && path.startsWith(`${TRAINING}/src/`) && path.split("/").includes("__tests__"))) files.push({ path, sha256: hash(bytes(path)), partition: classify(path) });
     } else throw new Error(`Special file in inventory: ${path}`);
   };
-  for (const path of ROOTS) walk(path);
+  const roots = current ? Object.freeze([...ROOTS, `${TRAINING}/src`].sort(order)) : ROOTS;
+  for (const path of roots) walk(path);
   files.sort((a, b) => order(a.path, b.path));
   const listed = new Map(files.map((file) => [file.path, file]));
-  for (const path of ENTRYPOINTS) if (!listed.has(path)) throw new Error(`Missing inventory entrypoint: ${path}`);
+  const manifests = new Map(["", CORE, ARENA, ...(current ? [TRAINING] : [])].map((path) => [path, json(path ? `${path}/package.json` : "package.json")]));
+  const selectExport = (value: unknown): string | undefined => {
+    if (typeof value === "string") return value;
+    if (!current || !object(value)) return undefined;
+    for (const [condition, target] of Object.entries(value)) {
+      if (["browser", "import", "default"].includes(condition)) return selectExport(target);
+    }
+    return undefined;
+  };
+  const workspaceExport = (path: string, subpath: string): string => {
+    const manifest = manifests.get(path)!;
+    const exports = manifest.exports;
+    const target = selectExport(object(exports) && Object.keys(exports).some((key) => key.startsWith(".")) ? exports[subpath] : subpath === "." ? exports : undefined);
+    if (!target?.startsWith("./") || target.includes("*") || target.split("/").slice(1).some((part) => !part || part === "." || part === "..")) throw new Error(`Unsupported workspace export: ${manifest.name}${subpath.slice(1)}`);
+    return `${path}/${target.slice(2)}`;
+  };
+  const publicEntrypoints = current ? [workspaceExport(CORE, "."), workspaceExport(ARENA, "./observations"),
+    workspaceExport(ARENA, "./intent-codec-v1"), workspaceExport(TRAINING, "./candidates")] : [];
+  const entrypoints = current ? Object.freeze([...new Set([...ENTRYPOINTS, ...publicEntrypoints,
+    "scripts/challenge-validate-baseline.ts", "scripts/check-public-closure.mjs"])].sort(order)) : ENTRYPOINTS;
+  for (const path of entrypoints) if (!listed.has(path)) throw new Error(`Missing inventory entrypoint: ${path}`);
+  if (current) {
+    const training = manifests.get(TRAINING)!;
+    if (training.private !== true || training.version !== "0.0.1" || !object(training.dependencies) ||
+      training.dependencies["@noble/hashes"] !== "2.4.0" ||
+      training.dependencies["@chess-coach/starchess-core"] !== "workspace:*" ||
+      training.dependencies["@chess-coach/starchess-arena"] !== "workspace:*") throw new Error("Invalid training package pins");
+    if (publicEntrypoints.some((path, index) => listed.get(path)?.partition !== ["core-rules", "arena-authorized", "arena-authorized", "training-model"][index])) throw new Error("Invalid public entrypoint partition");
+  }
 
   const runtime = new Map<string, RuntimeFileRecord>();
   const addRuntime = (path: string, required: boolean): void => {
@@ -127,6 +197,10 @@ export const collectSourceInventory = (
   };
   REQUIRED_RUNTIME.forEach((path) => addRuntime(path, true));
   OPTIONAL_RUNTIME.forEach((path) => addRuntime(path, false));
+  if (current) {
+    for (const name of ["package.json", "tsconfig.json"]) addRuntime(`${TRAINING}/${name}`, true);
+    for (const name of [".npmrc", ".pnpmfile.cjs", "pnpmfile.cjs", "vitest.config.ts"]) addRuntime(`${TRAINING}/${name}`, false);
+  }
   const visited = new Set<string>();
   const active = new Set<string>();
   const configExtends = (path: string): void => {
@@ -149,11 +223,10 @@ export const collectSourceInventory = (
     active.delete(path);
     visited.add(path);
   };
-  for (const path of [`${CORE}/tsconfig.json`, `${ARENA}/tsconfig.json`, "tsconfig.json", "tsconfig.base.json"]) {
+  for (const path of [`${CORE}/tsconfig.json`, `${ARENA}/tsconfig.json`, ...(current ? [`${TRAINING}/tsconfig.json`] : []), "tsconfig.json", "tsconfig.base.json"]) {
     if (present(path)) configExtends(path);
   }
 
-  const manifests = new Map(["", CORE, ARENA].map((path) => [path, json(path ? `${path}/package.json` : "package.json")]));
   const edges: ImportAuditEdge[] = [];
   const auditedFiles: string[] = [];
   const localTarget = (importer: string, specifier: string, absolute?: string): string => {
@@ -161,7 +234,9 @@ export const collectSourceInventory = (
     safePath(target);
     if (excludedTest(target)) throw new Error(`Import into excluded tests: ${importer} -> ${target}`);
     if (extname(target) && !CODE_EXTENSION.test(target) && extname(target) !== ".json") throw new Error(`Unaudited executable extension: ${importer} -> ${specifier}`);
-    const candidates = extname(target) ? [target] : [target, ...[".ts", "/index.ts", ".mts", ".cts", ".tsx", ".js", "/index.js", ".mjs", ".cjs"].map((suffix) => `${target}${suffix}`)];
+    const candidates = current && /\.[cm]?js$/.test(target) && !present(target)
+      ? [target.replace(/\.js$/, ".ts").replace(/\.mjs$/, ".mts").replace(/\.cjs$/, ".cts")]
+      : extname(target) ? [target] : [target, ...[".ts", "/index.ts", ".mts", ".cts", ".tsx", ".js", "/index.js", ".mjs", ".cjs"].map((suffix) => `${target}${suffix}`)];
     const found = candidates.filter(present);
     if (found.length !== 1) throw new Error(`Missing or ambiguous import: ${importer} -> ${specifier}`);
     if (!listed.has(found[0]!)) throw new Error(`Unclassified import target: ${importer} -> ${found[0]}`);
@@ -171,37 +246,45 @@ export const collectSourceInventory = (
   const addEdge = (importer: string, specifier: string, kind: ImportAuditEdge["kind"], typeOnly = false): void => {
     let target = specifier;
     let targetKind: ImportAuditEdge["targetKind"];
-    const owner = importer.startsWith(`${CORE}/`) ? CORE : importer.startsWith(`${ARENA}/`) ? ARENA : "";
+    const owner = importer.startsWith(`${CORE}/`) ? CORE : importer.startsWith(`${ARENA}/`) ? ARENA : importer.startsWith(`${TRAINING}/`) ? TRAINING : "";
     const manifest = manifests.get(owner)!;
     const name = specifier.startsWith("@") ? specifier.split("/").slice(0, 2).join("/") : specifier.split("/")[0]!;
     const dependencies = [manifest.dependencies, manifest.devDependencies, manifest.optionalDependencies].filter(object);
     const lockedClosureLoader = importer === `${ARENA}/hermetic/closure.mjs` && ["resolve", "require"].includes(kind) && specifier === "esbuild" &&
       bytes("pnpm-lock.yaml").toString("utf8").includes("esbuild@");
+    const arenaDevelopment = manifests.get(ARENA)!.devDependencies;
+    const publicClosureParser = current && importer === "scripts/check-public-closure.mjs" && ["resolve", "require"].includes(kind) && specifier === "typescript" &&
+      object(arenaDevelopment) && arenaDevelopment.typescript === "~5.9.3" && bytes("pnpm-lock.yaml").toString("utf8").includes("typescript@");
     if (specifier.startsWith(".")) {
       target = localTarget(importer, specifier);
       targetKind = "source";
     } else if (isBuiltin(specifier)) targetKind = "builtin";
     else {
-      if (specifier.startsWith("/") || (!lockedClosureLoader && !dependencies.some((dependency) => typeof dependency[name] === "string"))) {
+      if (specifier.startsWith("/") || (!lockedClosureLoader && !publicClosureParser && !dependencies.some((dependency) => typeof dependency[name] === "string"))) {
         throw new Error(`Undeclared external import: ${importer} -> ${specifier}`);
       }
       const workspace = [...manifests.entries()].find(([path, value]) => path && value.name === name);
       if (workspace) {
         const [path, value] = workspace;
         const subpath = specifier === name ? "." : `.${specifier.slice(name.length)}`;
-        const exported = object(value.exports) ? value.exports[subpath] : subpath === "." ? value.exports : undefined;
-        if (typeof exported !== "string" || !exported.startsWith("./")) throw new Error(`Unsupported workspace export: ${specifier}`);
-        target = localTarget(importer, specifier, `${path}/${exported.slice(2)}`);
+        target = localTarget(importer, specifier, workspaceExport(path, subpath));
         targetKind = "source";
       } else {
         if (dependencies.some((dependency) => typeof dependency[name] === "string" && String(dependency[name]).startsWith("workspace:"))) throw new Error(`Undeclared workspace target: ${specifier}`);
         targetKind = "external";
       }
     }
-    if (targetKind === "source" && listed.get(importer)!.partition === "execution" && listed.get(target)!.partition !== "execution") {
+    const partition = listed.get(importer)!.partition;
+    if (current && targetKind === "source" && !ALLOWED_EDGES[partition as SourcePartition].includes(listed.get(target)!.partition as SourcePartition)) throw new Error(`Forbidden partition edge: ${importer} -> ${target}`);
+    if (current && ["core-rules", "arena-authorized", "training-model"].includes(partition)) {
+      if (targetKind === "builtin") throw new Error(`Builtin in public source: ${importer} -> ${specifier}`);
+      if (!["import", "export", "import-type"].includes(kind)) throw new Error(`Non-static public module edge: ${importer} -> ${specifier}`);
+      if (targetKind === "external" && (name !== "fflate" && name !== "@noble/hashes" || !object(manifest.dependencies) || typeof manifest.dependencies[name] !== "string")) throw new Error(`Unaudited public external: ${importer} -> ${specifier}`);
+    }
+    if (!current && targetKind === "source" && listed.get(importer)!.partition === "execution" && listed.get(target)!.partition !== "execution") {
       throw new Error(`Forbidden partition edge: ${importer} -> ${target}`);
     }
-    if (targetKind === "source" && listed.get(importer)!.partition === "contracts" && listed.get(target)!.partition === "diagnostics") {
+    if (!current && targetKind === "source" && listed.get(importer)!.partition === "contracts" && listed.get(target)!.partition === "diagnostics") {
       throw new Error(`Forbidden partition edge: ${importer} -> ${target}`);
     }
     edges.push({ importer, specifier, kind, target, targetKind, ...(typeOnly ? { typeOnly: true } : {}) });
@@ -427,6 +510,21 @@ export const collectSourceInventory = (
       return ts.isPropertyAccessExpression(parent) && parent.name === node ||
         (ts.isPropertyAssignment(parent) || ts.isMethodDeclaration(parent) || ts.isPropertyDeclaration(parent) || ts.isPropertySignature(parent) || ts.isMethodSignature(parent)) && parent.name === node && !ts.isComputedPropertyName(parent.name);
     };
+    const dtoInspection = (node: ts.Node): boolean => {
+      if (!current || file.path !== `${ARENA}/src/authorized/v1/guard.ts` || !ts.isCallExpression(node) ||
+        !["Object.getPrototypeOf(current)", 'Object.getOwnPropertyDescriptor(current, "length")',
+          "Object.getOwnPropertyDescriptor(current, String(index))", "Object.getOwnPropertyDescriptor(current, key)"].includes(node.getText(source))) return false;
+      const receiver = node.arguments[0];
+      if (!receiver || !ts.isIdentifier(receiver) || reassignedBindings.has(binding(receiver))) return false;
+      const symbol = checker.getSymbolAtLocation(receiver);
+      const parameter = symbol?.valueDeclaration;
+      if (!parameter || !ts.isParameter(parameter) || parameter.type?.kind !== ts.SyntaxKind.UnknownKeyword) return false;
+      const fn = parameter.parent;
+      if (!ts.isArrowFunction(fn) || !ts.isBlock(fn.body)) return false;
+      const gate = fn.body.statements[0];
+      return !!(gate && ts.isIfStatement(gate) && gate.expression.getText(source) === 'current === null || typeof current !== "object"' &&
+        ts.isBlock(gate.thenStatement) && gate.thenStatement.statements.at(-1)?.kind === ts.SyntaxKind.ReturnStatement);
+    };
     const visit = (node: ts.Node): void => {
       if (ts.isMetaProperty(node) && node.keywordToken === ts.SyntaxKind.ImportKeyword) {
         const access = node.parent;
@@ -447,7 +545,7 @@ export const collectSourceInventory = (
       const value = !ts.isPartOfTypeNode(node) && (ts.isIdentifier(node) && !sourceIsName(node) || ts.isPropertyAccessExpression(node) || ts.isElementAccessExpression(node) || ts.isCallExpression(node));
       if (value && evaluation(node as ts.Expression)) throw new Error(`Unsupported string evaluation: ${file.path}`);
       const accessed = value ? property(node as ts.Expression) : undefined;
-      if (["constructor", "__proto__", "getPrototypeOf", "getOwnPropertyDescriptors"].includes(accessed?.name ?? "")) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
+      if (["constructor", "__proto__", "getPrototypeOf", "getOwnPropertyDescriptors"].includes(accessed?.name ?? "") && !dtoInspection(node.parent)) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
       if (accessed && objectNamespace(accessed.receiver) && accessed.name === undefined) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
       if (accessed && reflectionNamespace(accessed.receiver) && !["ownKeys", "apply", "has", "set", "deleteProperty"].includes(accessed.name ?? "")) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
       if (ts.isBindingElement(node) && node.propertyName && ((ts.isIdentifier(node.propertyName) || ts.isStringLiteralLike(node.propertyName)) && ["constructor", "__proto__", "getPrototypeOf", "getOwnPropertyDescriptors", "getOwnPropertyDescriptor"].includes(node.propertyName.text) || ts.isComputedPropertyName(node.propertyName))) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
@@ -456,7 +554,7 @@ export const collectSourceInventory = (
           ts.isArrowFunction(origin(node.expression)) || ts.isFunctionExpression(origin(node.expression)))) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
       if (accessed?.name === "getOwnPropertyDescriptor" && !(ts.isCallExpression(node.parent) && node.parent.expression === node)) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
       if (ts.isCallExpression(node) && property(node.expression)?.name === "getOwnPropertyDescriptor") {
-        if (file.path !== `${ARENA}/src/challengeContract/validation.ts` || node.getText(source) !== "Object.getOwnPropertyDescriptor(value, String(index))") throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
+        if (!dtoInspection(node) && (file.path !== `${ARENA}/src/challengeContract/validation.ts` || node.getText(source) !== "Object.getOwnPropertyDescriptor(value, String(index))")) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
       }
       if (accessed && processNamespace(accessed.receiver) && accessed.name === "getBuiltinModule") throw new Error(`Unsupported builtin acquisition: ${file.path}`);
       if (accessed && namespace(accessed.receiver) && ["register", "registerHooks"].includes(accessed.name ?? "")) throw new Error(`Unsupported module loader API: ${file.path}`);
@@ -477,6 +575,7 @@ export const collectSourceInventory = (
         if (variable && ts.isVariableDeclaration(variable) && (ts.getCombinedModifierFlags(variable) & ts.ModifierFlags.Export)) throw new Error(`Unsupported loader escape: ${file.path}`);
       }
       if (ts.isImportDeclaration(node) || ts.isExportDeclaration(node)) {
+        if (current && ["core-rules", "arena-authorized", "training-model"].includes(file.partition) && ts.isExportDeclaration(node) && !node.exportClause) throw new Error(`Wildcard public reexport: ${file.path}`);
         if (node.moduleSpecifier) {
           const specifier = literal(node.moduleSpecifier);
           if (specifier === undefined) throw new Error(`Computed module declaration: ${file.path}`);
@@ -518,6 +617,11 @@ export const collectSourceInventory = (
           if ((dynamic || requireCall) && (specifier === "node:module" || specifier === "module")) throw new Error(`Unsupported dynamic module import: ${file.path}`);
           if ((dynamic || requireCall) && (specifier === "node:process" || specifier === "process")) throw new Error(`Unsupported builtin acquisition: ${file.path}`);
           if (specifier === undefined) {
+            if (current && file.path === "scripts/check-public-closure.mjs" && requireCall && node.getText(source) === "require(require.resolve('typescript', { paths: [new URL('../packages/starchess-arena', import.meta.url).pathname] }))") {
+              addEdge(file.path, "typescript", "require");
+              ts.forEachChild(node, visit);
+              return;
+            }
             if (file.path === `${ARENA}/hermetic/closure.mjs` && requireCall && node.getText(source) === "require(require.resolve('esbuild', { paths: [require.resolve('tsx/package.json')] }))") {
               addEdge(file.path, "esbuild", "require");
               ts.forEachChild(node, visit);
@@ -543,15 +647,24 @@ export const collectSourceInventory = (
     visit(source);
   }
   edges.sort((a, b) => order(canonical(a), canonical(b)));
-  const groups: SourceInventoryV1["groups"] = {
-    execution: files.filter((file) => file.partition === "execution"),
-    contracts: files.filter((file) => file.partition === "contracts"),
-    diagnostics: files.filter((file) => file.partition === "diagnostics"),
-  };
   const runtimeRecords = [...runtime.values()].sort((a, b) => order(a.path, b.path));
   const audit: SourceImportAudit = { passed: true, edges, auditedFiles };
+  if (current) {
+    const currentFiles = files as SourceFileRecord[];
+    const groups = Object.fromEntries(PARTITIONS.map((partition) => [partition, currentFiles.filter((file) => file.partition === partition)])) as SourceInventoryV2["groups"];
+    const descriptor: Pick<SourceInventoryV2, "version" | "policyVersion" | "roots" | "entrypoints" | "files" | "groups"> = { version: SOURCE_INVENTORY_VERSION, policyVersion: SOURCE_POLICY_VERSION, roots, entrypoints, files: currentFiles, groups };
+    return { ...descriptor, runtime: runtimeRecords, audit,
+      partitionSha256: Object.fromEntries(PARTITIONS.map((partition) => [partition, hash(canonical(groups[partition]))])) as SourceInventoryV2["partitionSha256"],
+      runtimeConfigurationSha256: hash(canonical(runtimeRecords)), inventorySha256: hash(canonical(descriptor)) };
+  }
+  const legacyFiles = files as SourceFileRecord<LegacySourcePartition>[];
+  const groups: SourceInventoryV1["groups"] = {
+    execution: legacyFiles.filter((file) => file.partition === "execution"),
+    contracts: legacyFiles.filter((file) => file.partition === "contracts"),
+    diagnostics: legacyFiles.filter((file) => file.partition === "diagnostics"),
+  };
   const descriptor: Pick<SourceInventoryV1, "version" | "policyVersion" | "roots" | "entrypoints" | "files" | "groups"> = {
-    version: SOURCE_INVENTORY_VERSION, policyVersion: SOURCE_POLICY_VERSION, roots: ROOTS, entrypoints: ENTRYPOINTS, files, groups,
+    version: "challenge-source-inventory-v1", policyVersion: "challenge-source-policy-v1", roots: ROOTS, entrypoints: ENTRYPOINTS, files: legacyFiles, groups,
   };
   return {
     ...descriptor, runtime: runtimeRecords, audit,

@@ -2,8 +2,8 @@
 
 Status: **Prior R1 future design contract FROZEN; new economic amendment PENDING. Implementation and validation readiness NOT established.**
 This record preserves Executor's eight original choices, nine follow-up directions and explicitly approved final profiles.
-Design approval authorizes no implementation, dependency/export changes, training, approved run or publication in this docs-only pass.
-R2–R8 remain pending and unimplemented. Weights remain **NONE**.
+Prior R1 design approval alone authorized no implementation or run. Executor now separately authorizes R2 implementation and FULL fresh verification through the [accepted V3 generator amendment](ml-adjutant-r2-generator-v3.md); this keeper pass still changes specs only and authorizes no training/publication.
+**R2 IN PROGRESS, NOT CLOSED**, with full fresh verification pending. R3–R8 remain future. Weights remain **NONE**.
 The [roadmap](PLAN-ml-adjutant.md) records **R0 CLOSED**, all **A01–A15 resolved**, with original **7 HIGH + 8 MEDIUM** history preserved.
 Unchanged [closure JSON](../evidence/ml-adjutant-r0-closure.json) records both final post-publication reviews **READY TO CLOSE R0: yes**.
 Complete the versioned economic amendment and R2–R5 readiness before explicit R6 training approval.
@@ -17,6 +17,7 @@ Source inventory and source observations below remain historical evidence from t
 ## Exact approved profile record — future contract only
 
 The normative [R1 contracts](ml-adjutant-r1-contracts.md#2-exact-selected-profiles--approved-future-design) record full semantics and rejected alternatives.
+The [R2 amendment](ml-adjutant-r2-generator-v3.md) records the already-selected explicit V1 bridge/PureV1WireSubpath, private `/candidates`, pinned synchronous `@noble/hashes@2.4.0`, generator V3 promotion/reservation changes, three-package graph and FULL eleven-command evidence gate. It does not rewrite the frozen profiles or settle the still-pending calibrated-economic amendment.
 
 | Slot | Selected | Exact approved contract |
 |---|---|---|
@@ -101,7 +102,7 @@ A workspace folder, npm package identity, and public export layout are separate 
 **User choice.** Select `packages/starchess-training` as the dedicated training owner.
 The approved npm identity is private `@chess-coach/starchess-training`, version `0.0.1`, with StarChess-only scope and no inferred rename.
 API A assigns `@chess-coach/starchess-arena/observations` and `/events` to arena, and `@chess-coach/starchess-training/candidates`, `/features`, `/artifacts` to training.
-Contracts §§3–4 freeze full paths/signatures; this does not create the folder or public APIs. The historical source inventory did not contain the future folder.
+Contracts §§3–4 preserve future full paths/signatures. Actual R2 now targets `/candidates` with explicit V1 `/observations` and pure `/intent-codec-v1`, under the [amendment](ml-adjutant-r2-generator-v3.md#2-public-imports-and-strict-v1-bridge). HistoryV2 composition and the other future subpaths remain RESERVED without stubs. The historical source inventory did not contain the future folder; new full capture/verification is pending.
 Historical `ml/` notation is superseded ownership shorthand, not a registry ID or URL alias.
 The future player ID remains `machine-learning`.
 
@@ -158,6 +159,7 @@ The codec's `MAX_QUEUE_ACTIONS = 65` stays unchanged; encoding capacity is a dif
 [native queue shape/order](../packages/starchess-core/scfen-queue.puml).
 
 **Frozen design / pending implementation.** Contracts §8 selects quota **B**, first action's kind as owner, inactive capacity to active families, and unchanged shared 175.
+R2 implementation is now IN PROGRESS under generator V3; structural potential promotion and prefix mine reservations are explicit versioned domain amendments, not native rule changes. Preserve the original V2 description below; use [amendment §§3–5](ml-adjutant-r2-generator-v3.md#3-v3-potential-promotion--exactly-five-choices) for the accepted R2 contract.
 It defines availability, canonical family order, FIFO/depth-cursor traversal, pass reservation, prefix-native timing/actor constraints, pruning priority, byte-exact identity/dedup and counted append work.
 First-nonclassical and minimum-canonical ownership remain rejected reference; no runtime switch is approved.
 Counting one queue against two pools never makes it two unique candidates; one emitted queue uses one funding pool.
@@ -362,5 +364,5 @@ Validation **A** freezes `eps=1e-6`, `atol=1e-8`, `rtol=1e-5` and contracts §§
 Actual hardware/provider identity, runtime performance and numerical results remain future evidence; numeric design approval authorizes no run.
 Persist all validation before approving R6.
 The prior R1 exact future design is **FROZEN**; the economic extension still requires its versioned amendment and calibration/readiness verification before training.
-**R0 CLOSED**, all A01–A15 resolved under both final READY reviews; R2–R5 implementation/readiness remain incomplete. No training is authorized.
+**R0 historically CLOSED**, all A01–A15 resolved under both final READY reviews; R2 is IN PROGRESS under its accepted V3 amendment, not CLOSED or fully verified. R3–R5 readiness remains future. No training is authorized.
 Public opening **4 deployed + 3 banked = 7**, CC exclusion/zero endowed paid basis, turn/grant-aware accounting and memory remain future **H=1** belief requirements, not native causal frames or H3 search.

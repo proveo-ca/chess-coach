@@ -4,10 +4,11 @@ Status: **Prior Executor-approved future R1 design contract FROZEN; new economic
 R0: **CLOSED within accepted non-learned assurance; A01–A15 resolved**, preserving original **7 HIGH + 8 MEDIUM** history.
 Unchanged [closure JSON](../evidence/ml-adjutant-r0-closure.json) records both final post-publication reviews **READY TO CLOSE R0: yes**. Learned model / weights: **NONE**.
 R1 **design contract FROZEN**: Executor selected API A, quota B, provenance A, curriculum A, validation A and COMMON A after document-only rereviews.
-R2–R5 remain **unimplemented** and require persisted validation; R6 training is **not authorized**.
+**R2 IN PROGRESS, NOT CLOSED:** Executor authorized implementation under the [accepted V3 generator amendment](ml-adjutant-r2-generator-v3.md); full fresh verification remains pending. R3–R5 remain future; R6 training is **not authorized**.
 This document implements no learner, training, registry activation, or new R1 evidence; R0 closure references remain separate from future contract validation.
 This docs-only closure synchronization changes no source, tests, configs, corpus, or evidence bytes.
 The source-reading inventory and historical pins remain frozen historical evidence, not a refreshed source inspection.
+The [V3 amendment](ml-adjutant-r2-generator-v3.md) explicitly supersedes this document's original V2 promotion/mine generator rules for R2 only; those frozen rules remain unchanged below as history. It authorizes strict V1 `/observations`, shared pure `/intent-codec-v1`, and training `/candidates` with `composeCandidatesFromObservationV1 → CandidateBatchV3`, not the future historyV2 API. Native gameplay/errors and old V1 wire bytes remain unchanged. Broader R1 economic/feature readiness stays open.
 **New economic extension: SELECTED DIRECTION; exact amendment NOT CHOSEN, NOT implemented or validated.** The prior frozen 370-field contract does not satisfy [§2.1](#21-selected-economic-extension--amendment-pending); extended R1 design/readiness remains open before R6.
 
 ## 1. Authority, vocabulary, and decision boundary
@@ -107,6 +108,8 @@ This choice records no completed overall amended R1 design, training permission,
 
 ## 3. Package ownership, exports, and dependency closure
 
+R2 implementation uses the explicit V1/pure-wire bridge in [amendment §2](ml-adjutant-r2-generator-v3.md#2-public-imports-and-strict-v1-bridge). `/events`, `/features`, `/artifacts`, and historyV2 composition below remain RESERVED future work, not throwing/empty stubs. Preserve this original API A design rather than silently relabeling V1 as V2.
+
 All paths below are future exact npm import specifiers, not filesystem URLs or claims of existing exports; only A is selected.
 
 | Profile | Exact future public imports (B/C rejected reference) |
@@ -131,6 +134,8 @@ Extend existing acquisition/capture roots deliberately for training; do not mere
 The existing `packages/*` workspace pattern already covers the future folder; no workspace/config edit occurs here.
 
 ## 4. Versioned DTOs, functions, and errors
+
+The following table/signatures preserve the prior future V2 contract. R2's implemented target is separately `composeCandidatesFromObservationV1(observation): CandidateBatchV3` with `challenge-composition-v3`; public `decodeCandidate` delegates V1. The future `composeCandidates(historyV2)` is RESERVED and unimplemented. V3 generation neither implements the 370-field feature registry nor creates an economic ledger.
 
 | Contract | Frozen future version |
 |---|---|
@@ -410,6 +415,8 @@ The host checks session/sequence and calls reconciliation before `advanceHistory
 `advanceHistory` consumes the fully folded checked boundary and atomically returns snapshot, reconciled ledger and transient-inclusive `everLit`; it publishes nothing on error.
 
 ## 8. Candidate domain, deterministic quota profiles, and work accounting
+
+**Historical frozen V2 domain below.** [R2 V3 amendment §§3–4](ml-adjutant-r2-generator-v3.md#3-v3-potential-promotion--exactly-five-choices) explicitly replaces authored-only promotion detection with structural potential promotion and current-only mine checks with prefix reservations. All other §8 rules, quota B, eight-lane/four-frontier traversal, exact diagnostic counters, skip continuations, canonical bytes and closure remain unchanged. This is a generator amendment, never a native rules change.
 
 Canonical family order `K=[classical,deploy,stimStep,spiderMine,charonMissiles,siegeMode,tacticalJump]`; use `C` as the classical family abbreviation.
 Define the next primitive domain `D(H,P)` from authorized history H and ALREADY APPENDED own prefix P, never from later actions or hidden state.

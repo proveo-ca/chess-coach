@@ -1,6 +1,8 @@
 # ML Adjutant — selected execution and evidence revisions
 
 Status: **R0 CLOSED within accepted non-learned execution/evidence assurance.**
+Scope of the completed gates/results below: **immutable historical R0 generation**, not the changed R2 source graph.
+The [accepted R2 V3 amendment](ml-adjutant-r2-generator-v3.md) now owns implementation IN PROGRESS and pending fresh three-package assurance: inventory V2, execution pins V3, exact eleven-command hermetic verification V3, baseline/contract/migration V2, and `_spec/evidence/ml-adjutant-r2-refresh`. No old evidence bytes or closure IDs are changed; no fresh R2 passing result is claimed.
 All **A01–A15 CLOSED**; original **7 HIGH + 8 MEDIUM** remain recorded as historical findings.
 These selections repair Phase 1/2 assurance and the Phase 0 corpus-pin boundary.
 Closure joins source repairs, new frozen verification, validated publication, and final reviews; it is not training authorization.

@@ -1,14 +1,15 @@
 import { mkdirSync, mkdtempSync, readFileSync, renameSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
-import { dirname, join } from "node:path";
+import { dirname, join, relative } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { afterEach, describe, expect, it } from "vitest";
 import { canonical } from "../challenge/config";
 import { sha256 } from "../challenge/corpus";
-import { collectSourceInventory } from "../challenge/sourceInventory";
+import { collectSourceInventory, collectSourceInventoryV2, type SourcePartition } from "../challenge/sourceInventory";
 
 const CORE = "packages/starchess-core";
 const ARENA = "packages/starchess-arena";
+const TRAINING = "packages/starchess-training";
 const repository = fileURLToPath(new URL("../../../../", import.meta.url));
 const temporary: string[] = [];
 afterEach(() => { for (const root of temporary.splice(0)) rmSync(root, { recursive: true, force: true }); });
@@ -16,6 +17,90 @@ const put = (root: string, path: string, value: string): void => {
   mkdirSync(dirname(join(root, path)), { recursive: true });
   writeFileSync(join(root, path), value);
 };
+
+const currentFixture = (): string => {
+  const root = fixture();
+  put(root, `${ARENA}/package.json`, JSON.stringify({ name: "@chess-coach/starchess-arena", type: "module",
+    exports: { "./observations": { browser: "./src/observations.ts", node: "./src/challenge/worker.ts" }, "./intent-codec-v1": "./src/authorized/v1/candidateWire.ts" },
+    dependencies: { "@chess-coach/starchess-core": "workspace:*" }, devDependencies: { tsx: "4.19.5", typescript: "~5.9.3" } }));
+  put(root, `${TRAINING}/package.json`, JSON.stringify({ name: "@chess-coach/starchess-training", private: true, version: "0.0.1", type: "module",
+    exports: { "./candidates": "./src/candidates.ts" }, dependencies: { "@chess-coach/starchess-core": "workspace:*", "@chess-coach/starchess-arena": "workspace:*", "@noble/hashes": "2.4.0" } }));
+  put(root, `${TRAINING}/tsconfig.json`, "{}");
+  put(root, `${ARENA}/src/observations.ts`, 'export { observation } from "./authorized/v1/types";');
+  put(root, `${ARENA}/src/authorized/v1/types.ts`, "export const observation = 1;");
+  put(root, `${ARENA}/src/authorized/v1/candidateWire.ts`, "export {};");
+  put(root, `${TRAINING}/src/candidates.ts`, 'import "@chess-coach/starchess-arena/observations"; import "@noble/hashes/sha2.js";');
+  put(root, `${TRAINING}/src/coordinator/episode.ts`, 'import "../candidates";');
+  put(root, `${TRAINING}/src/__tests__/excluded.ts`, "import(computed);");
+  put(root, "scripts/challenge-validate-baseline.ts", "export {};");
+  put(root, "scripts/check-public-closure.mjs", "export {};");
+  return root;
+};
+
+describe("R2 current source inventory", () => {
+  it("pins six distinct partitions, all three packages, public exports, and tooling", () => {
+    const root = currentFixture();
+    const inventory = collectSourceInventoryV2(root);
+    expect(inventory.version).toBe("challenge-source-inventory-v2");
+    expect(inventory.policyVersion).toBe("challenge-source-policy-v2");
+    expect(collectSourceInventoryV2(root)).toEqual(inventory);
+    expect(Object.keys(inventory.groups)).toHaveLength(6);
+    expect(Object.values(inventory.groups).flat().map((file) => file.path).sort()).toEqual(inventory.files.map((file) => file.path));
+    for (const partition of Object.keys(inventory.groups) as SourcePartition[]) expect(inventory.partitionSha256[partition]).toBe(sha256(canonical(inventory.groups[partition])));
+    expect(inventory.roots).toContain(`${TRAINING}/src`);
+    expect(inventory.runtime).toContainEqual(expect.objectContaining({ path: `${TRAINING}/package.json`, present: true }));
+    expect(inventory.entrypoints).toEqual(expect.arrayContaining([`${ARENA}/src/observations.ts`, `${TRAINING}/src/candidates.ts`, "scripts/check-public-closure.mjs", "scripts/challenge-validate-baseline.ts"]));
+    expect(inventory.files.some((file) => file.path.includes("__tests__"))).toBe(false);
+    expect(inventory.audit.edges).toContainEqual(expect.objectContaining({ specifier: "@chess-coach/starchess-arena/observations", target: `${ARENA}/src/observations.ts` }));
+    put(root, `${TRAINING}/src/new-model.ts`, "export const model = 1;");
+    expect(collectSourceInventoryV2(root).partitionSha256["training-model"]).not.toBe(inventory.partitionSha256["training-model"]);
+  });
+
+  const paths: Record<SourcePartition, string> = {
+    "core-rules": `${CORE}/src/edge.ts`, "arena-authorized": `${ARENA}/src/authorized/v1/edge.ts`,
+    "arena-host": `${ARENA}/src/challenge/edge.ts`, "training-model": `${TRAINING}/src/edge.ts`,
+    "training-coordinator": `${TRAINING}/src/coordinator/edge.ts`, "verification-tooling": "scripts/edge.ts",
+  };
+  const allowed: Record<SourcePartition, SourcePartition[]> = {
+    "core-rules": ["core-rules"], "arena-authorized": ["arena-authorized", "core-rules"],
+    "arena-host": ["arena-host", "arena-authorized", "core-rules"], "training-model": ["training-model", "arena-authorized", "core-rules"],
+    "training-coordinator": ["training-coordinator", "training-model", "arena-authorized", "core-rules", "arena-host"],
+    "verification-tooling": Object.keys(paths) as SourcePartition[],
+  };
+  it.each((Object.keys(paths) as SourcePartition[]).flatMap((from) => (Object.keys(paths) as SourcePartition[]).map((to) => [from, to] as const)))("enforces %s -> %s explicitly", (from, to) => {
+    const root = currentFixture();
+    for (const path of Object.values(paths)) put(root, path, "export {};");
+    const target = relative(dirname(paths[from]), paths[to]).replace(/\.ts$/, "");
+    put(root, paths[from], `import ${JSON.stringify(target.startsWith(".") ? target : `./${target}`)};`);
+    if (allowed[from].includes(to)) expect(collectSourceInventoryV2(root).audit.passed).toBe(true);
+    else expect(() => collectSourceInventoryV2(root)).toThrow("Forbidden partition edge");
+  });
+
+  it.each(['import "node:crypto";', 'import("@noble/hashes/sha2.js");', 'export * from "@chess-coach/starchess-arena/observations";', 'require(variable);', 'const load = eval; load(variable);']) ("rejects impure model loading: %s", (code) => {
+    const root = currentFixture();
+    put(root, `${TRAINING}/src/candidates.ts`, code);
+    expect(() => collectSourceInventoryV2(root)).toThrow(/Builtin in public|Non-static public|Wildcard public|Computed module|Unsupported/);
+  });
+
+  it("rejects stale training dependency pins and missing public export declarations", () => {
+    const root = currentFixture();
+    const manifest = JSON.parse(readFileSync(join(root, `${TRAINING}/package.json`), "utf8"));
+    manifest.dependencies["@noble/hashes"] = "^2.4.0";
+    put(root, `${TRAINING}/package.json`, JSON.stringify(manifest));
+    expect(() => collectSourceInventoryV2(root)).toThrow("Invalid training package pins");
+    manifest.dependencies["@noble/hashes"] = "2.4.0";
+    delete manifest.exports["./candidates"];
+    put(root, `${TRAINING}/package.json`, JSON.stringify(manifest));
+    expect(() => collectSourceInventoryV2(root)).toThrow("Unsupported workspace export");
+  });
+
+  it("does not grant the legacy contracts partition access to private host selection", () => {
+    const root = currentFixture();
+    put(root, `${ARENA}/src/authorized/v1/candidateWire.ts`, 'import "../../challenge/baseline";');
+    put(root, `${ARENA}/src/challenge/baseline.ts`, "export {};");
+    expect(() => collectSourceInventoryV2(root)).toThrow("Forbidden partition edge");
+  });
+});
 const fixture = (): string => {
   mkdirSync("/tmp/opencode", { recursive: true });
   const root = mkdtempSync("/tmp/opencode/challenge-source-inventory-");

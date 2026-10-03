@@ -1,0 +1,103 @@
+' purpose: Accepted R2 observation-only V3 generation, pure V1 wire bridge, and native helper boundary.
+' covers: packages/starchess-training/**
+' covers: packages/starchess-arena/src/observations.ts
+' covers: packages/starchess-arena/src/intent-codec-v1.ts
+' covers: packages/starchess-arena/src/challengeContract/**
+' covers: packages/starchess-core/src/rules/planning-intents.ts
+' covers: packages/starchess-core/src/rules/planning-order.ts
+' covers: packages/starchess-core/src/rules/specials/adjacent.ts
+' covers: packages/starchess-core/src/rules/specials/mechaCharon.ts
+' covers: packages/starchess-core/src/board/moves.ts
+' covers: packages/starchess-core/src/board/siege.ts
+' covers: packages/starchess-core/src/rules/validation.ts
+' covers: packages/starchess-core/src/resolve/submit-turn.ts
+' covers: packages/starchess-core/src/index.ts
+' covers: packages/starchess-core/src/__tests__/planningIntents.test.ts
+' covers: packages/starchess-core/src/__tests__/planningOrder.test.ts
+' status: ACCEPTED / IN PROGRESS; planned bridge/training targets may not exist. NOT CLOSED; full R2 verification pending.
+' related: _spec/_plans/ml-adjutant-r2-generator-v3.md (normative API/domain, exact eleven commands, fresh evidence gate)
+' related: _spec/_plans/ml-adjutant-r1-contracts.md (frozen quota B, traversal, closed diagnostics; original V2 remains historical)
+' related: _spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml (V1 and historical R0 assurance)
+' related: _spec/packages/starchess-core/sc-moves.puml
+' related: _spec/packages/starchess-core/gas-phase-vacancy.puml
+' boundary: V3 changes proposal promotion and prefix mine reservations, not native rules/errors or V1 wire bytes.
+' pending: training package and public bridge exports; future composeCandidates(historyV2) RESERVED, no implementation/stub.
+' proof: four existing native module/test SPEC pointers resolve here; no full R2 passing count or fresh hash is claimed.
+' notes: PROMOTION FK 10.2 (31 words, 52 syllables, 2 sentences); RESERVATION FK 12.4 (36 words, 64 syllables, 2 sentences).
+' rendering: native PlantUML checkonly and SPEC-map check remain lead/build gates; keeper has no shell.
+@startuml candidate-generation
+!include ../../themes/proveo.puml
+title StarChess R2 candidate generation V3 — ACCEPTED / IN PROGRESS
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+package "packages/starchess-arena (bridge targets pending)" {
+  component "src/observations.ts\n/observations: strict V1 DTO + codec" as OBS <<app>>
+  component "src/intent-codec-v1.ts\n/intent-codec-v1: shared pure wire" as WIRE <<app>>
+  component "src/challengeContract/candidateCodec.ts\nprivate baseline integration" as OLD <<host>>
+  component "src/challenge/admission.ts\nprivate native whole-queue admission" as ADMISSION <<host>>
+}
+
+package "packages/starchess-training (targets pending)" {
+  component "src/candidates.ts\n/candidates\ncomposeCandidatesFromObservationV1\npublic decodeCandidate delegates V1" as API <<app>>
+  component "src/candidates (private modules)\ncanonical prefix primitive domain" as DOMAIN <<app>>
+  component "V3 potential promotion\nappend-time Marine + authored last rank\nor earlier B structural rewrite last rank\nexactly p,n,b,r,q; no sixth none" as PROMOTION <<app>>
+  component "V3 prefix mine reservations\ncurrent count + all valid earlier intents\ncount >= 3: mineCap\ncurrent/reserved collision: ownOccupancy" as RESERVATION <<app>>
+  component "quota B traversal\n7 family lanes + shared lane\nfour cyclic FIFO depth frontiers\nvalid skipped prefixes still continue" as TRAVERSE <<app>>
+  component "CandidateBatchV3\nchallenge-composition-v3\nV1 candidates + closed diagnostics\npass once; key-byte order" as BATCH <<app>>
+}
+
+package "packages/starchess-core (helpers landed; V3 completion pending)" {
+  component "src/rules/planning-intents.ts\nPlanningKnowledge / classicalActorAt\nappendTimeSpecialAnchor\nknownAppendFailure" as INTENTS <<app>>
+  component "src/rules/planning-order.ts\nclassicalRewriteCoordinatesAfterB\norderBHeadsFirst" as ORDER <<app>>
+  component "src/rules/validation.ts\nsrc/resolve/submit-turn.ts\nunchanged private native rules/errors" as NATIVE <<app>>
+}
+
+component "@noble/hashes 2.4.0\nsha256 from sha2.js\nMIT; zero runtime dependencies" as SHA <<cloud>>
+
+OBS --> API : validate V1 authorized facts only
+API --> DOMAIN : compose detached bounded batch
+API --> WIRE : delegate public V1 decoding
+OLD --> WIRE : delegate unchanged shared bytes/errors
+DOMAIN --> INTENTS : authorized maps + unknown masks
+DOMAIN --> ORDER : structural coordinates only
+DOMAIN --> PROMOTION : earlier prefix; authored coordinates retained
+DOMAIN --> RESERVATION : immutable append-time anchors
+DOMAIN --> TRAVERSE : canonically ordered intents
+TRAVERSE --> WIRE : canonical V1 action-array bytes
+TRAVERSE --> SHA : synchronous digest; compare raw bytes on collision
+TRAVERSE --> BATCH : one funding pool per unique queue
+NATIVE ..> INTENTS : shared pure calculations; preserve native permission
+NATIVE ..> ORDER : actual rewrite still depends on native state
+BATCH ..> ADMISSION : selected queue only; never a generator dependency
+
+note right of PROMOTION
+Promotion choices describe a possible Marine
+landing, not a promise that native rules will
+move or preserve the actor. Earlier B intents
+can require five choices while authored
+coordinates stay unchanged.
+end note
+
+note right of RESERVATION
+Mine reservations record each valid intent at
+append time, even if its actor may later die.
+Potential removals do not release capacity,
+and later C intents cannot shift an earlier
+reservation or refund its reserved anchor.
+end note
+
+note bottom of TRAVERSE
+512 candidates including pass.
+2048 attempts; at most four actions.
+end note
+
+legend bottom
+  ACCEPTED contract, not shipped/verified behavior.
+  Bridge/training targets remain pending in this read.
+  Native helpers exist; V3 domain completion is pending.
+  Future historyV2 composer is RESERVED, without a stub.
+  No ledger, calibrated belief, feature V2, or model here.
+endlegend
+@enduml

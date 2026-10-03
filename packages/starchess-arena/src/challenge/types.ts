@@ -1,26 +1,11 @@
 // SPEC: _spec/packages/starchess-arena/ml-adjutant-challenge-harness.puml
 import type {
-  EndScTurnResult, PieceColor, ScActionInput, ScOutcome, ScPiece, Square,
+  EndScTurnResult, PieceColor, ScActionInput, ScOutcome,
 } from "@chess-coach/starchess-core";
 import type { Bank } from "../run/bank";
 
-export type ObservedCell =
-  | { square: Square; visibility: "unknown" }
-  | { square: Square; visibility: "lit"; piece: ScPiece | null }
-  | { square: Square; visibility: "revealed"; piece: ScPiece };
-export type Sighting = { square: Square; piece: ScPiece; observedTurn: number };
-export type AuthorizedObservation = {
-  version: "challenge-observation-v1";
-  side: PieceColor;
-  turn: number;
-  own: {
-    minerals: number; gas: number; gasIncome: number; ccLives: number;
-    pieces: { square: Square; piece: ScPiece }[];
-    mines: Square[]; siegedTanks: Square[];
-  };
-  cells: ObservedCell[];
-  memory: Sighting[];
-};
+import type { AuthorizedObservation } from "../authorized/v1/types";
+export type { AuthorizedObservation, ObservedCell, Sighting } from "../authorized/v1/types";
 export type QueueProposal = { key: string; actions: ScActionInput[]; score: number };
 export type CandidatePolicy = {
   name: string;

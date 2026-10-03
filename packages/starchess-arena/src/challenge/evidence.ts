@@ -7,15 +7,15 @@ import {
 import { runSupervised } from "./supervisor";
 import { executionIntegrity } from "./integrity";
 import type { ChallengeEvidence, ChallengeStop } from "./types";
-import { collectSourceInventory } from "./sourceInventory";
+import { collectSourceInventoryV2 } from "./sourceInventory";
 
 export { executionIntegrity } from "./integrity";
 
 export type Suite = "all" | "corpus" | "live-strategic";
 
 export const executionPins = () => ({
-  version: "challenge-execution-pins-v2",
-  sourceInventory: collectSourceInventory(),
+  version: "challenge-execution-pins-v3",
+  sourceInventory: collectSourceInventoryV2(),
   configuration: CHALLENGE_CONFIG,
   configurationSha256: sha256(canonical(CHALLENGE_CONFIG)),
   nodeVersion: process.version,
@@ -139,9 +139,9 @@ export const runBaselineSuite = async (suite: Suite = "all", rerun = true) => {
   const accounting = classifyScheduledEvidence(rows, context);
   const integrity = accounting.acceptanceValid;
   return {
-    version: "phase2-baseline-report-v1", kind: "phase2-current-baseline", learnedGateEligible: false, modelArtifact: null,
-    independentVerification: "_spec/evidence/ml-adjutant-phase2/verification.json",
-    migrationReference: "_spec/evidence/ml-adjutant-phase2/pin-migration.json",
+    version: "phase2-baseline-report-v2", kind: "phase2-current-baseline", learnedGateEligible: false, modelArtifact: null,
+    independentVerification: "_spec/evidence/ml-adjutant-r2-refresh/verification.json",
+    migrationReference: "_spec/evidence/ml-adjutant-r2-refresh/pin-migration.json",
     manifestSha256: corpus.manifestSha256, sourceSha256: corpus.manifest.sourceSha256, pins,
     suite, schedule: schedule.map(({ trace: _trace, ...entry }) => entry),
     summary: summarize(rows, context), accounting, executionIntegrity: integrity,

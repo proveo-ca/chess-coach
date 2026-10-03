@@ -1,10 +1,11 @@
 // SPEC: _spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml
-import { MAX_GAME_TURNS, MAX_STORED_MATERIAL, specialGasCost, UNIT_COST, type ScActionInput, type Square } from "@chess-coach/starchess-core";
-import { deepFreeze } from "../challenge/config";
-import { SQUARES } from "../challenge/observation";
-import type { AuthorizedObservation } from "../challenge/types";
-import { ACTION_KINDS, decodeCandidate, MAX_QUEUE_ACTIONS, type EncodedCandidate } from "./candidateCodec";
-import { validateObservation } from "./observationCodec";
+import { MAX_GAME_TURNS, MAX_STORED_MATERIAL, specialGasCost, UNIT_COST } from "@chess-coach/starchess-core/rules";
+import type { ScActionInput, Square } from "@chess-coach/starchess-core";
+import { deepFreeze } from "../authorized/v1/canonical";
+import { SQUARES } from "../authorized/v1/squares";
+import type { AuthorizedObservation } from "../authorized/v1/types";
+import { ACTION_KINDS, decodeCandidate, MAX_QUEUE_ACTIONS, type EncodedCandidate } from "../authorized/v1/candidateWire";
+import { validateObservation } from "../authorized/v1/observationCodec";
 import { fail, PIECE_TYPES, SPAWN_TYPES } from "./validation";
 
 export const FEATURE_VERSION = "challenge-features-v1";

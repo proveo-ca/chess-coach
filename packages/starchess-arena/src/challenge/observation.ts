@@ -1,11 +1,11 @@
 // SPEC: _spec/packages/starchess-arena/ml-adjutant-challenge-harness.puml
-import { getSideVision, placementToMap, type PieceColor, type ScFenSnapshot, type Square } from "@chess-coach/starchess-core";
+import { getSideVision, placementToMap, type PieceColor, type ScFenSnapshot } from "@chess-coach/starchess-core";
 import type { Bank } from "../run/bank";
 import { deepFreeze } from "./config";
 import type { AuthorizedObservation, ObservedCell, Sighting } from "./types";
 
-export const SQUARES = Array.from({ length: 64 }, (_, index) =>
-  `${"abcdefgh"[Math.floor(index / 8)]}${index % 8 + 1}` as Square);
+import { SQUARES } from "../authorized/v1/squares";
+export { SQUARES } from "../authorized/v1/squares";
 
 export const observe = (
   snapshot: ScFenSnapshot, bank: Bank, side: PieceColor, prior: readonly Sighting[] = [],

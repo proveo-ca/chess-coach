@@ -7,9 +7,9 @@ import { canonical, CHALLENGE_CONFIG } from "../packages/starchess-arena/src/cha
 import { loadPinnedCorpus, MANIFEST_SHA256, REPOSITORY_ROOT, sha256, type AuditedCorpus, type PinnedCorpusBytes } from "../packages/starchess-arena/src/challenge/corpus";
 import { classifyScheduledEvidence, normalizeEvidence, summarize } from "../packages/starchess-arena/src/challenge/evidence";
 import { executionIntegrity } from "../packages/starchess-arena/src/challenge/integrity";
-import { createMigration, ORIGINAL_BASELINE_SHA256, ORIGINAL_VERIFICATION_SHA256 } from "../packages/starchess-arena/src/challenge/pinMigration";
+import { createMigration, createMigrationV2, ORIGINAL_BASELINE_SHA256, ORIGINAL_VERIFICATION_SHA256 } from "../packages/starchess-arena/src/challenge/pinMigration";
 import { expectedSchedule, loadTrustedExecutionContext, type TrustedExecutionContext } from "../packages/starchess-arena/src/challenge/schedule";
-import { collectSourceInventory } from "../packages/starchess-arena/src/challenge/sourceInventory";
+import { collectSourceInventory, collectSourceInventoryV2 } from "../packages/starchess-arena/src/challenge/sourceInventory";
 import type { ChallengeEvidence, ScheduledMatch } from "../packages/starchess-arena/src/challenge/types";
 import { measureCoverage } from "../packages/starchess-arena/src/challengeContract/coverage";
 
@@ -78,13 +78,14 @@ const boundedReader = () => {
 
 type ValidatedBaseline = { report: Record<string, unknown>; rows: ChallengeEvidence[] };
 const validateBaseline = (
-  value: unknown, phase: "original" | "current", corpus: AuditedCorpus, context: TrustedExecutionContext,
+  value: unknown, phase: "original" | "current", corpus: AuditedCorpus, context: TrustedExecutionContext, refreshed: boolean,
 ): ValidatedBaseline => {
   const report = requireObject(value, `${phase} baseline`);
   const number = phase === "original" ? "phase1" : "phase2";
-  if (report.version !== `${number}-baseline-report-v1` || report.kind !== (phase === "original" ? "phase1-baseline" : "phase2-current-baseline") ||
-    report.independentVerification !== `_spec/evidence/ml-adjutant-${number}/verification.json` ||
-    (phase === "current" && report.migrationReference !== "_spec/evidence/ml-adjutant-phase2/pin-migration.json") ||
+  const directory = phase === "current" && refreshed ? "r2-refresh" : number;
+  if (report.version !== `${number}-baseline-report-v${phase === "current" && refreshed ? 2 : 1}` || report.kind !== (phase === "original" ? "phase1-baseline" : "phase2-current-baseline") ||
+    report.independentVerification !== `_spec/evidence/ml-adjutant-${directory}/verification.json` ||
+    (phase === "current" && report.migrationReference !== `_spec/evidence/ml-adjutant-${directory}/pin-migration.json`) ||
     report.suite !== "all" || report.learnedGateEligible !== false || report.modelArtifact !== null ||
     report.learnedChallengePass !== false || report.executionIntegrity !== true ||
     report.manifestSha256 !== corpus.manifestSha256 || report.sourceSha256 !== corpus.manifest.sourceSha256) {
@@ -119,7 +120,9 @@ const validateBaseline = (
   return { report, rows };
 };
 
-export const validateEvidenceFiles = (args: readonly string[]): void => {
+export const validateEvidenceFiles = (args: readonly string[]): void => validateFiles(args, false);
+export const validateEvidenceFilesV2 = (args: readonly string[]): void => validateFiles(args, true);
+const validateFiles = (args: readonly string[], refreshed: boolean): void => {
   if (args.length !== 7 || args.some((argument) => !argument)) {
     throw new Error("Expected [currentBaseline, originalBaseline, originalVerification, migration, coverage, contract, frozenSourceRoot]");
   }
@@ -144,8 +147,8 @@ export const validateEvidenceFiles = (args: readonly string[]): void => {
   const corpusBytes: PinnedCorpusBytes = { manifestBytes, sourceBytes: read(new URL(manifest.sourcePath, root)) };
   const corpus = loadPinnedCorpus(root, corpusBytes);
   const context = loadTrustedExecutionContext("all", root, corpusBytes);
-  const current = validateBaseline(decode(currentBytes), "current", corpus, context);
-  validateBaseline(decode(originalBytes), "original", corpus, context);
+   const current = validateBaseline(decode(currentBytes), "current", corpus, context, refreshed);
+   validateBaseline(decode(originalBytes), "original", corpus, context, refreshed);
   const verification = requireObject(decode(verificationBytes), "original verification");
   if (verification.version !== "phase1-independent-verification-v1" ||
     verification.baselineReport !== "_spec/evidence/ml-adjutant-phase1/baseline-report.json" ||
@@ -153,12 +156,12 @@ export const validateEvidenceFiles = (args: readonly string[]): void => {
   const hermeticPins = requireObject(decode(read(new URL("packages/starchess-arena/hermetic/pins.json", REPOSITORY_ROOT))), "trusted hermetic pins");
   if (typeof hermeticPins.node !== "string" || !/^\d+\.\d+\.\d+$/.test(hermeticPins.node)) throw new Error("Invalid trusted hermetic Node pin");
   const pins = {
-    version: "challenge-execution-pins-v2", sourceInventory: collectSourceInventory(fileURLToPath(root)),
+    version: refreshed ? "challenge-execution-pins-v3" : "challenge-execution-pins-v2", sourceInventory: refreshed ? collectSourceInventoryV2(fileURLToPath(root)) : collectSourceInventory(fileURLToPath(root)),
     configuration: CHALLENGE_CONFIG, configurationSha256: sha256(canonical(CHALLENGE_CONFIG)),
     nodeVersion: `v${hermeticPins.node}`, seatRng: "w:mulberry32(seed),b:mulberry32(~seed)", candidateInferenceSeed: 0,
   };
   exact(requireObject(current.report.pins, "current execution pins"), pins, "Current execution pins");
-  const migration = createMigration(originalBytes, verificationBytes, currentBytes);
+  const migration = (refreshed ? createMigrationV2 : createMigration)(originalBytes, verificationBytes, currentBytes);
   if (migration.passed !== true) throw new Error("Recomputed migration parity failed");
   exact(requireObject(decode(migrationBytes), "migration"), {
     ...migration, fromPinFormat: "phase1-legacy-digests", toPinFormat: pins.version,
@@ -173,7 +176,7 @@ export const validateEvidenceFiles = (args: readonly string[]): void => {
     coverage.featureRepresentability.covered !== coverage.featureRepresentability.total) throw new Error("Incomplete reference representability");
   exact(requireObject(decode(coverageBytes), "coverage"), coverage, "Full frozen-corpus coverage");
   exact(requireObject(decode(contractBytes), "contract"), {
-    version: "phase2-contract-report-v1", pins, coverageSha256: sha256(canonical(coverage)),
+    version: refreshed ? "phase2-contract-report-v2" : "phase2-contract-report-v1", pins, coverageSha256: sha256(canonical(coverage)),
     baselineReportSha256: sha256(currentBytes), phase1BaselineReportSha256: migration.originalBaselineSha256,
     migrationParity: migration.passed, coverageDeterministic: true,
     observationCodecVersion: coverage.observationCodecVersion, candidateCodecVersion: coverage.candidateCodecVersion,
@@ -183,6 +186,6 @@ export const validateEvidenceFiles = (args: readonly string[]): void => {
 };
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  validateEvidenceFiles(process.argv.slice(2));
+  validateEvidenceFilesV2(process.argv.slice(2));
   console.log("ok");
 }

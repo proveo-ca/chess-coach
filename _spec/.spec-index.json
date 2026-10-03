@@ -238,6 +238,27 @@
       "fingerprint": null
     },
     {
+      "spec": "_spec/packages/starchess-training/candidate-generation.puml",
+      "covers": [
+        "packages/starchess-training/**",
+        "packages/starchess-arena/src/observations.ts",
+        "packages/starchess-arena/src/intent-codec-v1.ts",
+        "packages/starchess-arena/src/challengeContract/**",
+        "packages/starchess-core/src/rules/planning-intents.ts",
+        "packages/starchess-core/src/rules/planning-order.ts",
+        "packages/starchess-core/src/rules/specials/adjacent.ts",
+        "packages/starchess-core/src/rules/specials/mechaCharon.ts",
+        "packages/starchess-core/src/board/moves.ts",
+        "packages/starchess-core/src/board/siege.ts",
+        "packages/starchess-core/src/rules/validation.ts",
+        "packages/starchess-core/src/resolve/submit-turn.ts",
+        "packages/starchess-core/src/index.ts",
+        "packages/starchess-core/src/__tests__/planningIntents.test.ts",
+        "packages/starchess-core/src/__tests__/planningOrder.test.ts"
+      ],
+      "fingerprint": null
+    },
+    {
       "spec": "_spec/apps/starchess/core/index.puml",
       "covers": [],
       "fingerprint": null
