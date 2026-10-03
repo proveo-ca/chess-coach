@@ -12,7 +12,7 @@ import { buildDiagnosticFixture, buildImportFixture, decode, evidenceLimits, jso
 const require = createRequire(import.meta.url);
 const { importEvidence, assertImageArchive, safeRelative } = require("../../../../scripts/challenge-import-evidence.mjs") as {
   importEvidence: (options: Record<string, unknown>) => Promise<{ image: string }>;
-  assertImageArchive: (path: string, image: string) => Promise<{ sha256: string; bytes: number }>;
+  assertImageArchive: (path: string, image: string) => { sha256: string; bytes: number } | Promise<{ sha256: string; bytes: number }>;
   safeRelative: (path: string) => string;
 };
 const roots: string[] = [];
@@ -183,32 +183,33 @@ describe("authoritative seven-input baseline validator", () => {
 });
 
 describe("synthetic test-only Docker-save archive parser", () => {
+  const checkArchive = async (path: string, image: string) => assertImageArchive(path, image);
   const archivePath = () => {
     const root = mkdtempSync("/tmp/opencode/import-archive-"); roots.push(root); return join(root, "image.tar");
   };
   it("returns the digest and byte count for correctly checksummed tar and uncompressed layer diff IDs", async () => {
     const archive = syntheticImageArchive(); const path = archivePath(); writeFileSync(path, archive.bytes);
-    await expect(assertImageArchive(path, archive.image)).resolves.toEqual({ sha256: sha256(archive.bytes), bytes: archive.bytes.length });
+    await expect(checkArchive(path, archive.image)).resolves.toEqual({ sha256: sha256(archive.bytes), bytes: archive.bytes.length });
   });
   it("rejects a config hash for another image", async () => {
     const archive = syntheticImageArchive(); const path = archivePath(); writeFileSync(path, archive.bytes);
-    await expect(assertImageArchive(path, `sha256:${"a".repeat(64)}`)).rejects.toThrow("config image ID mismatch");
+    await expect(checkArchive(path, `sha256:${"a".repeat(64)}`)).rejects.toThrow("config image ID mismatch");
   });
   it("rejects ordered layers whose manifest swaps their diff IDs", async () => {
     const archive = syntheticImageArchive({ manifestLayers: ["layer-1.tar", "layer-0.tar"] }); const path = archivePath(); writeFileSync(path, archive.bytes);
-    await expect(assertImageArchive(path, archive.image)).rejects.toThrow("ordered layer diff_id mismatch");
+    await expect(checkArchive(path, archive.image)).rejects.toThrow("ordered layer diff_id mismatch");
   });
   it("rejects a doubled manifest layer", async () => {
     const archive = syntheticImageArchive({ manifestLayers: ["layer-0.tar", "layer-0.tar"] }); const path = archivePath(); writeFileSync(path, archive.bytes);
-    await expect(assertImageArchive(path, archive.image)).rejects.toThrow("duplicate listed layer");
+    await expect(checkArchive(path, archive.image)).rejects.toThrow("duplicate listed layer");
   });
   it("rejects duplicate tar entries even when the metadata bytes match", async () => {
     const archive = syntheticImageArchive({ duplicate: true }); const path = archivePath(); writeFileSync(path, archive.bytes);
-    await expect(assertImageArchive(path, archive.image)).rejects.toThrow("duplicate path config.json");
+    await expect(checkArchive(path, archive.image)).rejects.toThrow("duplicate path config.json");
   });
   it("rejects a tar header with a damaged checksum", async () => {
     const archive = syntheticImageArchive(); archive.bytes[100] = 49; const path = archivePath(); writeFileSync(path, archive.bytes);
-    await expect(assertImageArchive(path, archive.image)).rejects.toThrow("header checksum");
+    await expect(checkArchive(path, archive.image)).rejects.toThrow("header checksum");
   });
   it("rejects malformed size bytes even after recomputing the header checksum", async () => {
     const archive = syntheticImageArchive(); archive.bytes.write("0000000000x\0", 124);
@@ -216,18 +217,18 @@ describe("synthetic test-only Docker-save archive parser", () => {
     const checksum = archive.bytes.subarray(0, 512).reduce((total, byte) => total + byte, 0);
     archive.bytes.write(`${checksum.toString(8).padStart(6, "0")}\0 `, 148);
     const path = archivePath(); writeFileSync(path, archive.bytes);
-    await expect(assertImageArchive(path, archive.image)).rejects.toThrow("malformed numeric field");
+    await expect(checkArchive(path, archive.image)).rejects.toThrow("malformed numeric field");
   });
   it("rejects a config whose diff IDs do not hash its uncompressed layers", async () => {
     const layer = tarArchive([["file", Buffer.from("uncompressed layer")]]);
     const config = jsonBytes({ rootfs: { type: "layers", diff_ids: [`sha256:${"0".repeat(64)}`] } });
     const bytes = tarArchive([["config.json", config], ["layer.tar", layer], ["manifest.json", jsonBytes([{ Config: "config.json", Layers: ["layer.tar"] }])]]);
     const path = archivePath(); writeFileSync(path, bytes);
-    await expect(assertImageArchive(path, `sha256:${sha256(config)}`)).rejects.toThrow("ordered layer diff_id mismatch");
+    await expect(checkArchive(path, `sha256:${sha256(config)}`)).rejects.toThrow("ordered layer diff_id mismatch");
   });
   it("rejects a sparse oversized archive without reading its entire payload", async () => {
     const archive = syntheticImageArchive(); const path = archivePath(); writeFileSync(path, archive.bytes);
     truncateSync(path, evidenceLimits.archiveBytes + 1);
-    await expect(assertImageArchive(path, archive.image)).rejects.toThrow("archive size or file type");
+    await expect(checkArchive(path, archive.image)).rejects.toThrow("archive size or file type");
   });
 });
