@@ -7,6 +7,7 @@ import { join, posix } from 'node:path';
 import { evidenceLimits } from './evidence-limits.mjs';
 import { archivePath, evidenceBudget, scanTarFile } from './tar.mjs';
 import { sha256, sourceExclusions } from './manifest.mjs';
+import pins from './pins.json' with { type: 'json' };
 
 const roots = ['/app/node_modules', '/app/packages/starchess-core/node_modules', '/app/packages/starchess-arena/node_modules'];
 const inputPaths = ['pnpm-lock.yaml', 'packages/starchess-core/package.json', 'packages/starchess-arena/package.json'];
@@ -139,7 +140,7 @@ function jsonFile(entries, path, follow = false) {
   return JSON.parse(new TextDecoder('utf-8', { fatal: true, ignoreBOM: true }).decode(entry.data));
 }
 
-export function measureCopiedFilesystem(entries) {
+export function measureCopiedFilesystem(entries, { interpreterSha256 = pins.nodeBinarySha256 } = {}) {
   const claim = (name, optional = false) => {
     const path = `/hermetic-evidence/${name}.json`;
     if (optional && !entries.has(path.slice(1))) return null;
@@ -161,7 +162,9 @@ export function measureCopiedFilesystem(entries) {
   const inputs = inputPaths.map((path) => ({ path, sha256: fileAt(entries, `/app/${path}`).sha256 }));
   equal(inputs, capture.value.dependencyFiles, 'capture input hashes');
   const actualPins = jsonFile(entries, `${source ? controlRoot : '/hermetic'}/pins.json`);
-  equal(tools.value.pins, actualPins, 'tool pins');
+  const recordedPins = (value) => Object.fromEntries(Object.entries(value).filter(([key]) => key !== 'nodeBinarySha256'));
+  equal(recordedPins(tools.value.pins), recordedPins(actualPins), 'tool pins');
+  for (const value of [tools.value.pins, actualPins]) if (Object.hasOwn(value, 'nodeBinarySha256') && value.nodeBinarySha256 !== interpreterSha256) mismatch('recorded Node binary pin');
   if (tools.value.node !== actualPins.node || tools.value.pnpm !== actualPins.pnpm) mismatch('tool versions');
   const artifact = fileAt(entries, '/opt/pnpm/artifact.tgz');
   if (!artifact.data) mismatch('unretained pnpm artifact');
@@ -198,7 +201,7 @@ export function measureCopiedFilesystem(entries) {
   return result;
 }
 
-export async function measureImageFilesystem(image, { spawnProcess = spawn, temporaryRoot = '/tmp/opencode', limits = evidenceLimits, timeoutMs = 120000 } = {}) {
+async function withUnstartedImage(image, { spawnProcess = spawn, temporaryRoot = '/tmp/opencode', limits = evidenceLimits, timeoutMs = 120000, platform } = {}, measure) {
   if (!/^sha256:[0-9a-f]{64}$/.test(image)) throw new Error('Expected immutable image ID');
   const parent = await lstat(temporaryRoot);
   if (!parent.isDirectory() || parent.isSymbolicLink() || await realpath(temporaryRoot) !== temporaryRoot || parent.uid !== process.getuid()) throw new Error('Verified host-owned temporary parent required');
@@ -210,20 +213,63 @@ export async function measureImageFilesystem(image, { spawnProcess = spawn, temp
   try {
     const [inspection] = JSON.parse(await read(['image', 'inspect', image]));
     if (inspection?.Id !== image || inspection.Os !== 'linux' || inspection.Architecture !== 'amd64') mismatch('image inspection');
+    const [platformInspection] = platform ? JSON.parse(await read(['image', 'inspect', '--platform', platform, image])) : [inspection];
+    if (!/^sha256:[0-9a-f]{64}$/.test(platformInspection?.Id) || platformInspection.Os !== 'linux' || platformInspection.Architecture !== 'amd64' || platform && platform !== 'linux/amd64') mismatch('platform inspection');
+    if (platform && platformInspection.Descriptor?.digest !== platformInspection.Id) mismatch('platform descriptor');
     cleanupName = `starchess-host-measurement-${randomUUID()}`;
-    container = (await read(['create', '--name', cleanupName, '--pull=never', '--network=none', '--read-only', '--entrypoint', '/__host_measurement_never_started__', image])).trim();
+    container = (await read(['create', '--name', cleanupName, '--pull=never', '--network=none', '--read-only', '--entrypoint', '/__host_measurement_never_started__', ...(platform ? ['--platform', platform] : []), image])).trim();
     if (!/^[0-9a-f]{64}$/.test(container)) mismatch('container ID');
     const [created] = JSON.parse(await read(['container', 'inspect', container]));
-    if (created?.Image !== image || created.State?.Status !== 'created' || created.State.Running !== false || created.State.Pid !== 0) mismatch('unstarted container inspection');
-    const entries = new Map();
+    if (![image, platformInspection.Id].includes(created?.Image) || created.State?.Status !== 'created' || created.State.Running !== false || created.State.Pid !== 0) mismatch('unstarted container inspection');
+    if (platform && created.ImageManifestDescriptor?.digest !== platformInspection.Id) mismatch('container platform descriptor');
     const budget = evidenceBudget(limits);
     let archiveBytes = 0;
-    const copy = async (root) => {
-      const path = join(work, `copy-${archiveBytes}-${entries.size}.tar`);
+    let copies = 0;
+    const copy = async (root, retain = () => false) => {
+      const path = join(work, `copy-${copies++}.tar`);
       const copied = await read(['cp', `${container}:${root}`, '-'], { output: path, cap: limits.archiveBytes - archiveBytes });
       archiveBytes += copied.bytes;
+      const scanned = await scanTarFile(path, { limits, budget, retain });
+      await rm(path);
+      return scanned;
+    };
+    return await measure({ copy, inspection, platformInspection, created });
+  } catch (error) { failure = error; throw error; }
+  finally {
+    let cleanupError;
+    if (cleanupName) {
+      const target = container && /^[0-9a-f]{64}$/.test(container) ? container : cleanupName;
+      try { await read(['container', 'rm', '--force', '--volumes', target]); } catch (error) { cleanupError = error; }
+    }
+    await rm(work, { recursive: true, force: true });
+    if (cleanupError && !failure) throw cleanupError;
+    if (cleanupError && failure) throw new AggregateError([failure, cleanupError], 'Measurement and container cleanup failed');
+  }
+}
+
+async function copyInterpreter(copy) {
+  const scanned = await copy('/usr/local/bin/node');
+  const entry = scanned.entries.get('node');
+  if (scanned.entries.size !== 1 || entry?.type !== 'file' || entry.mode !== '755') mismatch('Node interpreter file or mode');
+  return { interpreter: { path: '/usr/local/bin/node', sha256: entry.sha256, bytes: entry.bytes }, copy: { archiveSha256: scanned.sha256, archiveBytes: scanned.bytes } };
+}
+
+export async function measureInterpreter(image, options = {}) {
+  return withUnstartedImage(image, options, async ({ copy, inspection, platformInspection, created }) => ({
+    ...await copyInterpreter(copy), imageInspection: inspection, platformImageInspection: platformInspection,
+    containerInspection: created, method: 'host-scanned-unstarted-container-tar-v1',
+  }));
+}
+
+export async function measureImageFilesystem(image, { interpreterSha256 = pins.nodeBinarySha256, ...options } = {}) {
+  if (!/^[0-9a-f]{64}$/.test(interpreterSha256)) throw new Error('Trusted Node binary SHA-256 required');
+  return withUnstartedImage(image, options, async ({ copy }) => {
+    const { interpreter } = await copyInterpreter(copy);
+    if (interpreter.sha256 !== interpreterSha256) mismatch('Node interpreter SHA-256');
+    const entries = new Map();
+    const copyTree = async (root) => {
       const basename = posix.basename(root);
-      const scanned = await scanTarFile(path, { limits, budget, retain: (entry) => entry.type === 'file' && (root === '/hermetic-evidence' || entry.path.endsWith('/package.json') || entry.path === `${basename}/artifact.tgz` || entry.path.endsWith('/hermetic/pins.json') || root === '/hermetic' && entry.path === 'hermetic/pins.json') });
+      const scanned = await copy(root, (entry) => entry.type === 'file' && (root === '/hermetic-evidence' || entry.path.endsWith('/package.json') || entry.path === `${basename}/artifact.tgz` || entry.path.endsWith('/hermetic/pins.json') || root === '/hermetic' && entry.path === 'hermetic/pins.json'));
       if (scanned.entries.get(basename)?.type !== 'directory') mismatch(`copy directory ${root}`);
       for (const entry of scanned.entries.values()) {
         if (entry.path !== basename && !entry.path.startsWith(`${basename}/`)) mismatch(`copy root ${root}`);
@@ -238,20 +284,9 @@ export async function measureImageFilesystem(image, { spawnProcess = spawn, temp
         if (entries.has(mapped.path)) mismatch('overlapping copy roots');
         entries.set(mapped.path, mapped);
       }
-      await rm(path);
     };
-    for (const root of ['/app', '/pnpm/store', '/opt/pnpm', '/hermetic-evidence']) await copy(root);
-    if (!entries.has('hermetic-evidence/source.json')) await copy('/hermetic');
-    return measureCopiedFilesystem(entries);
-  } catch (error) { failure = error; throw error; }
-  finally {
-    let cleanupError;
-    if (cleanupName) {
-      const target = container && /^[0-9a-f]{64}$/.test(container) ? container : cleanupName;
-      try { await read(['container', 'rm', '--force', '--volumes', target]); } catch (error) { cleanupError = error; }
-    }
-    await rm(work, { recursive: true, force: true });
-    if (cleanupError && !failure) throw cleanupError;
-    if (cleanupError && failure) throw new AggregateError([failure, cleanupError], 'Measurement and container cleanup failed');
-  }
+    for (const root of ['/app', '/pnpm/store', '/opt/pnpm', '/hermetic-evidence']) await copyTree(root);
+    if (!entries.has('hermetic-evidence/source.json')) await copyTree('/hermetic');
+    return { ...measureCopiedFilesystem(entries, { interpreterSha256 }), interpreter };
+  });
 }

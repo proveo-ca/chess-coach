@@ -1,7 +1,7 @@
 import { mkdirSync, mkdtempSync, readFileSync, renameSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { afterEach, describe, expect, it } from "vitest";
 import { canonical } from "../challenge/config";
 import { sha256 } from "../challenge/corpus";
@@ -71,6 +71,126 @@ describe("partitioned challenge source inventory", () => {
     const root = fixture();
     put(root, `${ARENA}/src/challenge/worker.ts`, code);
     expect(() => collectSourceInventory(root)).toThrow("Forbidden partition edge");
+  });
+
+  it.each([
+    'make("/app/packages/starchess-arena/src/challengeContract/anchor.cjs")("./codec.cjs");',
+    'make(new URL("file:///app/packages/starchess-arena/src/challengeContract/anchor.cjs"))("./codec.cjs");',
+    'make(new URL("../challengeContract/anchor.cjs", import.meta.url))("./codec.cjs");',
+    'make(new URL(import.meta.url))("./codec.cjs");',
+    'make("file:///app/packages/starchess-arena/src/challengeContract/anchor.cjs")("./codec.cjs");',
+    'const base = import.meta.url; make(base)("./codec.cjs");',
+    'make((other(), import.meta.url))("./codec.cjs");',
+    'make()("./codec.cjs");',
+    'make(import.meta.url, extra)("./codec.cjs");',
+    'make(...args)("./codec.cjs");',
+    'new make(import.meta.url)("./codec.cjs");',
+  ])("rejects unsupported factory bases through forward aliases: %s", (code) => {
+    const root = fixture();
+    put(root, `${ARENA}/src/challenge/codec.cjs`, 'module.exports = "execution decoy";\n');
+    put(root, `${ARENA}/src/challengeContract/codec.cjs`, 'module.exports = "contracts target";\n');
+    put(root, `${ARENA}/src/challenge/worker.ts`, `import nodeModule from "node:module";\nconst make = later; const later = nodeModule["createRequire"];\n${code}\n`);
+    expect(() => collectSourceInventory(root)).toThrow("Unsupported createRequire base");
+  });
+
+  it.each(["absolute path", "URL"])("rejects a %s factory base that resolves to contracts instead of an execution decoy", (kind) => {
+    const root = fixture();
+    const anchor = join(root, `${ARENA}/src/challengeContract/anchor.cjs`);
+    const worker = join(root, `${ARENA}/src/challenge/worker.ts`);
+    put(root, `${ARENA}/src/challengeContract/anchor.cjs`, "module.exports = {};\n");
+    put(root, `${ARENA}/src/challengeContract/codec.cjs`, 'module.exports = "contracts target";\n');
+    put(root, `${ARENA}/src/challenge/codec.cjs`, 'module.exports = "execution decoy";\n');
+    const base = kind === "URL" ? pathToFileURL(anchor) : anchor;
+    expect(createRequire(base)("./codec.cjs")).toBe("contracts target");
+    expect(createRequire(worker)("./codec.cjs")).toBe("execution decoy");
+    const expression = kind === "URL" ? `new URL(${JSON.stringify(pathToFileURL(anchor).href)})` : JSON.stringify(anchor);
+    put(root, `${ARENA}/src/challenge/worker.ts`, `import {createRequire as factory} from "node:module";\nconst make = later; const later = factory;\nmake(${expression})("./codec.cjs");\n`);
+    expect(() => collectSourceInventory(root)).toThrow("Unsupported createRequire base");
+  });
+
+  it.each([
+    'process.getBuiltinModule("module").createRequire(import.meta.url)("../challengeContract/codec.ts");',
+    'process["getBuiltinModule"]("module").createRequire(import.meta.url)("../challengeContract/codec.ts");',
+    'const acquire = process.getBuiltinModule; acquire("module");',
+    'const p = later; const later = process; const acquire = p["getBuiltinModule"]; acquire("module");',
+    'const key = "getBuiltinModule"; process[key]("module");',
+    'const {getBuiltinModule: acquire} = process; acquire("module");',
+    'const box = {process}; box.process.getBuiltinModule("module");',
+    'import p from "node:process"; p.getBuiltinModule("module");',
+    'import * as p from "node:process"; const alias = p; alias["getBuiltinModule"]("module");',
+    'import * as p from "node:process"; p.default.getBuiltinModule("module");',
+    'import {default as p} from "process"; p.getBuiltinModule("module");',
+    'import {getBuiltinModule as acquire} from "node:process"; acquire("module");',
+    'globalThis.process.getBuiltinModule("module");',
+    'const g = globalThis; const p = g["process"]; p["getBuiltinModule"]("module");',
+    'const g = global; g.globalThis.process.getBuiltinModule("module");',
+    'const p = require("node:process"); p.getBuiltinModule("module");',
+    'import("node:process").then(p => p.getBuiltinModule("module"));',
+    'export {getBuiltinModule as acquire} from "node:process";',
+    'export * from "node:process";',
+  ])("rejects unsupported builtin acquisition: %s", (code) => {
+    const root = fixture();
+    put(root, `${ARENA}/src/challenge/worker.ts`, code);
+    expect(() => collectSourceInventory(root)).toThrow("Unsupported builtin acquisition");
+  });
+
+  it.each([
+    'import {register} from "node:module"; register("../challengeContract/codec.ts", import.meta.url);',
+    'import {registerHooks as install} from "module"; install(hooks);',
+    'import nodeModule from "node:module"; nodeModule.register("../challengeContract/codec.ts", import.meta.url);',
+    'import * as nodeModule from "node:module"; const alias = nodeModule; alias["registerHooks"](hooks);',
+    'import {Module as nodeModule} from "node:module"; const install = nodeModule["register"]; install(variable);',
+  ])("rejects unsupported Node module registration APIs: %s", (code) => {
+    const root = fixture();
+    put(root, `${ARENA}/src/challenge/worker.ts`, code);
+    expect(() => collectSourceInventory(root)).toThrow("Unsupported module loader API");
+  });
+
+  it.each([
+    'eval("require(\'../challengeContract/codec.cjs\')");',
+    '(0, eval)("require(\'../challengeContract/codec.cjs\')");',
+    '(eval as typeof eval)!(variable);',
+    'const execute = eval; execute(variable);',
+    'Reflect.apply(eval, null, [variable]);',
+    'eval.call(null, variable);',
+    'globalThis.eval(variable);',
+    'globalThis["eval"](variable);',
+    'const g = later; const later = globalThis; g["eval"](variable);',
+    'const g = global; g.globalThis.eval(variable);',
+    'Function("return import(\'../challengeContract/codec.ts\')")();',
+    'new Function("return import(\'../challengeContract/codec.ts\')")();',
+    '(0, Function)(variable)();',
+    'const compile = Function; compile(variable)();',
+    'globalThis["Function"](variable)();',
+    'const g = globalThis; new g.Function(variable)();',
+    'const box = {execute: eval}; box.execute(variable);',
+  ])("rejects direct and indirect string evaluation: %s", (code) => {
+    const root = fixture();
+    put(root, `${ARENA}/src/challenge/escape.cjs`, code);
+    expect(() => collectSourceInventory(root)).toThrow("Unsupported string evaluation");
+  });
+
+  it("rejects an actual CommonJS eval load into contracts", () => {
+    const root = fixture();
+    const path = `${ARENA}/src/challenge/evaluate.cjs`;
+    put(root, `${ARENA}/src/challengeContract/codec.cjs`, 'module.exports = "contracts target";\n');
+    put(root, path, 'module.exports = eval("require(\'../challengeContract/codec.cjs\')");\n');
+    expect(createRequire(import.meta.url)(join(root, path))).toBe("contracts target");
+    expect(() => collectSourceInventory(root)).toThrow("Unsupported string evaluation");
+  });
+
+  it("allows normalized import.meta.url factory bases and safe process namespace aliases", () => {
+    const root = fixture();
+    put(root, `${ARENA}/src/challenge/worker.ts`, 'import {createRequire as make} from "node:module";\nconst load = make(((import.meta.url as string)!));\nload("./supervisor.ts");\nimport * as p from "node:process"; const alias = p; void alias.env[variable]; void alias.default.argv;\nconst g = globalThis; void g.crypto;\n');
+    expect(collectSourceInventory(root).audit.edges).toContainEqual(expect.objectContaining({
+      importer: `${ARENA}/src/challenge/worker.ts`, target: `${ARENA}/src/challenge/supervisor.ts`, kind: "require",
+    }));
+  });
+
+  it("allows genuine lexical shadows, property names and erased evaluation API types", () => {
+    const root = fixture();
+    put(root, `${ARENA}/src/challenge/worker.ts`, 'type Eval = typeof eval; type Constructor = Function;\nimport type {getBuiltinModule} from "node:process"; import type {registerHooks} from "node:module";\nexport type {getBuiltinModule, registerHooks};\nconst object = {eval: 1, Function: 2, getBuiltinModule: 3, register: 4}; void object.eval; void object.Function;\nfunction local(eval: (value: string) => string, Function: (value: string) => string, process: {getBuiltinModule: () => string}) { eval("safe"); Function("safe"); return process.getBuiltinModule(); }\nfunction scope() { function eval(value: string) { return value; } function Function(value: string) { return value; } return [eval("safe"), Function("safe")]; }\n');
+    expect(collectSourceInventory(root).audit.passed).toBe(true);
   });
 
   it.each([
@@ -420,9 +540,10 @@ describe("partitioned challenge source inventory", () => {
 
   it("audits the exact locked hermetic closure loader and rejects changed computed loaders", () => {
     const root = fixture();
-    put(root, `${ARENA}/hermetic/closure.mjs`, readFileSync(join(repository, `${ARENA}/hermetic/closure.mjs`), "utf8"));
+    const closure = "import {createRequire} from 'node:module';\nconst require = createRequire(import.meta.url);\nconst esbuild = require(require.resolve('esbuild', { paths: [require.resolve('tsx/package.json')] }));\n";
+    put(root, `${ARENA}/hermetic/closure.mjs`, closure);
     expect(collectSourceInventory(root).audit.edges.some((edge) => edge.importer.endsWith("closure.mjs") && edge.specifier === "esbuild")).toBe(true);
-    put(root, `${ARENA}/hermetic/closure.mjs`, readFileSync(join(repository, `${ARENA}/hermetic/closure.mjs`), "utf8").replace("require(require.resolve('esbuild', { paths: [require.resolve('tsx/package.json')] }))", "require(process.env.MODULE)"));
+    put(root, `${ARENA}/hermetic/closure.mjs`, closure.replace("require(require.resolve('esbuild', { paths: [require.resolve('tsx/package.json')] }))", "require(process.env.MODULE)"));
     expect(() => collectSourceInventory(root)).toThrow("Computed module loader");
   });
 });

@@ -1,5 +1,8 @@
 // SPEC: _spec/packages/starchess-arena/ml-adjutant-challenge-harness.puml
 import { describe, expect, it } from "vitest";
+import { mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { beginScTurn, endScTurn, formatScFen, normalizeSnapGas, parseScFen } from "@chess-coach/starchess-core";
 import { seedBankForOpening, grantStoredIncome } from "../run/bank";
 import { commitPair, stageQueue } from "../challenge/admission";
@@ -12,6 +15,7 @@ const request = (key: string): ScheduledMatch => ({
   key, suite: "live-strategic", candidateSide: "w", arenaSeed: 42, inferenceSeed: 0, opening,
 });
 const workerUrl = new URL("./fixtures/challengeWorker.ts", import.meta.url);
+const childCasesUrl = new URL("./fixtures/challengeChildCases.ts", import.meta.url);
 const budgets = { startupMs: 3000, planMs: 100, matchMs: 1500 };
 const run = (key: string, override: Partial<typeof budgets> = {}) =>
   runSupervised(request(key), { workerUrl, budgets: { ...budgets, ...override } });
@@ -27,6 +31,96 @@ const expectFailure = (evidence: ChallengeEvidence, key: string) => {
 };
 
 describe("challenge child watchdog", () => {
+  it.each(["direct-rejection", "permit-rejection", "direct-progress-limit"])(
+    "rejects unbuffered %s completion that bypasses the checked stages", async (key) => {
+      const evidence = await runSupervised(request(key), { workerUrl: childCasesUrl, budgets });
+      expectFailure(evidence, key);
+      expect(evidence.stop).toMatchObject({ kind: "script-contract", reason: "worker protocol error: malformed completion" });
+      expect(evidence.resolves).toEqual([]);
+    },
+  );
+
+  it.each(["permit-exception", "permit-watchdog"])("finishes %s with an active permit without outcome credit", async (key) => {
+    const evidence = await runSupervised(request(key), { workerUrl: childCasesUrl, budgets });
+    expectFailure(evidence, key);
+    expect(evidence.stop.kind).toBe(key === "permit-exception" ? "exception" : "watchdog");
+    expect(replayExecutionIntegrity(evidence, request(key))).toBe(true);
+  });
+
+  it("accepts a rejection only after checking the decisions and admission witness", async () => {
+    const match = request("checked-rejection");
+    const evidence = await runSupervised(match, { workerUrl: childCasesUrl, budgets });
+    expect(evidence.stop).toMatchObject({ kind: "queue-rejected", phase: "admission", side: "w" });
+    expect(replayExecutionIntegrity(evidence, match)).toBe(true);
+  });
+
+  it.each(["guessed-permit", "replayed-permit"])("rejects %s in a later input chunk", async (key) => {
+    const evidence = await runSupervised(request(key), { workerUrl: childCasesUrl, budgets });
+    expect(evidence.stop).toMatchObject({ kind: "script-contract", reason: "worker protocol error: unexpected decision" });
+  });
+
+  it("issues distinct 128-bit nonce permits for the required sides", async () => {
+    const evidence = await runSupervised(request("nonce-permits"), { workerUrl: childCasesUrl, budgets }) as
+      ChallengeEvidence & { permitIds: string[] };
+    expect(evidence.stop.kind).toBe("exception");
+    expect(evidence.permitIds).toHaveLength(2);
+    expect(evidence.permitIds[0]).toMatch(/^[0-9a-f]{32}$/);
+    expect(evidence.permitIds[1]).toMatch(/^[0-9a-f]{32}$/);
+    expect(new Set(evidence.permitIds).size).toBe(2);
+  });
+
+  it("bounds stdout message count after preserving a checked settlement", async () => {
+    const evidence = await runSupervised(request("message-limit"), {
+      workerUrl: childCasesUrl, budgets: { ...budgets, matchMs: 3000 },
+    });
+    expect(evidence.stop).toMatchObject({ kind: "script-contract", reason: "worker protocol error: message count limit exceeded" });
+    expect(evidence.resolves).toHaveLength(1);
+  });
+
+  it.skipIf(process.platform !== "linux").each([
+    "descendant-complete", "descendant-crash", "descendant-watchdog", "detached-descendant",
+  ])("bounds %s with inherited stdout and reaps the direct child before resolving", async (mode) => {
+    const directory = mkdtempSync(join(tmpdir(), "challenge-descendant-"));
+    const pidFile = join(directory, "pids.json");
+    let pids: { workerPid: number; descendantPid: number } | undefined;
+    let timeout: NodeJS.Timeout | undefined;
+    const dead = (pid: number) => {
+      try { return readFileSync(`/proc/${pid}/stat`, "utf8").split(") ")[1]!.startsWith("Z "); }
+      catch (error) {
+        if ((error as NodeJS.ErrnoException).code === "ENOENT") return true;
+        throw error;
+      }
+    };
+    try {
+      const match = request(`${mode}:${pidFile}`);
+      const evidence = await Promise.race([
+        runSupervised(match, { workerUrl: childCasesUrl, budgets: { ...budgets, matchMs: 700 } }),
+        new Promise<never>((_resolve, reject) => {
+          timeout = setTimeout(() => reject(new Error("supervisor waited on descendant stdout")), 5000);
+        }),
+      ]);
+      pids = JSON.parse(readFileSync(pidFile, "utf8"));
+      expect(evidence.stop.kind).toBe(mode === "descendant-watchdog" ? "watchdog" : "exception");
+      expect(evidence.resolves).toHaveLength(1);
+      expect(evidence.bankTrail).toHaveLength(1);
+      expect(replayExecutionIntegrity(evidence, match)).toBe(true);
+      expect(() => process.kill(pids!.workerPid, 0)).toThrow(expect.objectContaining({ code: "ESRCH" }));
+      if (mode === "detached-descendant") {
+        expect(dead(pids!.descendantPid)).toBe(false);
+        expect(() => process.kill(pids!.descendantPid, 0)).not.toThrow();
+      } else {
+        await expect.poll(() => dead(pids!.descendantPid), { timeout: 1000 }).toBe(true);
+      }
+    } finally {
+      clearTimeout(timeout);
+      pids ??= (() => { try { return JSON.parse(readFileSync(pidFile, "utf8")); } catch { return undefined; } })();
+      for (const pid of pids ? [pids.workerPid, pids.descendantPid] : []) {
+        if (!dead(pid)) { try { process.kill(pid, "SIGKILL"); } catch {} }
+      }
+      rmSync(directory, { recursive: true, force: true });
+    }
+  });
+
   it("rejects a child announcement that cancels an unfinished decision", async () => {
     const evidence = await runSupervised(request("announcement-escape"), {
       workerUrl: new URL("./fixtures/challengeAnnouncementEscape.ts", import.meta.url),

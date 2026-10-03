@@ -3,13 +3,15 @@ import { describe, expect, it, vi } from "vitest";
 import { energyForTurn, parseScFen, scOutcome, type ScActionInput } from "@chess-coach/starchess-core";
 import { baselinePolicy } from "../challenge/baseline";
 import { loadPinnedCorpus } from "../challenge/corpus";
+import { replayExecutionIntegrity } from "../challenge/integrity";
 import { runChallengeMatch } from "../challenge/runChallengeMatch";
+import { runSupervised } from "../challenge/supervisor";
 import type { AuthorizedObservation, ScheduledMatch } from "../challenge/types";
 
 const corpus = loadPinnedCorpus();
 const request = (opening: string, queues: ScActionInput[][] = []): ScheduledMatch => ({
   key: "lifecycle-integrity", suite: "corpus", candidateSide: "b", arenaSeed: 0, inferenceSeed: 0, opening,
-  trace: { ...structuredClone(corpus.traces[0]!), openingScfen: opening,
+  trace: { ...structuredClone(corpus.traces[0]!), caseId: "lifecycle-integrity", openingScfen: opening,
     windows: queues.map((actions, planningOrdinal) => ({ planningOrdinal, sourcePlyIndex: 30 + planningOrdinal, sourceTurn: planningOrdinal, actions })) },
 });
 const quietOpening = (turn: number, lives = "33", phase = "P") => `SCFEN|4k3/8/8/8/8/8/8/4K3|${turn}|${lives}|${phase}|G:${energyForTurn(turn)}${energyForTurn(turn)}:${energyForTurn(turn)}${energyForTurn(turn)}|B:3:3|Q:w:;b:`;
@@ -20,6 +22,78 @@ const policies = () => ({
 });
 
 describe("terminal-first challenge lifecycle", () => {
+  it.each(["trace-exhausted", "queue-rejected"] as const)(
+    "requires an accepted nonterminal begin chip before %s", async (kind) => {
+      const match = request("SCFEN|4k3/3B4/8/8/8/8/8/7K|0|33|P|G:11:11|B:3:3|Q:w:;b:",
+        kind === "queue-rejected" ? [invalid] : []);
+      const evidence = await runChallengeMatch(match, policies());
+      expect(evidence.stop.kind).toBe(kind);
+      expect(evidence.resolves).toHaveLength(1);
+      expect(evidence.resolves[0]!.events[0]!.id).toBe("ev-begin-0");
+      expect(replayExecutionIntegrity(evidence, match)).toBe(true);
+      const omitted = structuredClone(evidence);
+      omitted.resolves = [];
+      omitted.scfens = [evidence.scfens[0]!];
+      omitted.bankTrail = [];
+      expect(replayExecutionIntegrity(omitted, match)).toBe(false);
+      expect(replayExecutionIntegrity(omitted, match, false)).toBe(true);
+      if (kind === "queue-rejected") {
+        const changedWitness = structuredClone(evidence);
+        changedWitness.stop.rejectedQueue = [];
+        expect(replayExecutionIntegrity(changedWitness, match)).toBe(false);
+        const historicalWitness = structuredClone(evidence);
+        delete historicalWitness.stop.rejectedQueue;
+        expect(replayExecutionIntegrity(historicalWitness, match)).toBe(true);
+      }
+    },
+  );
+
+  it("requires the recorded terminal begin chip rather than granting its unrecorded outcome", async () => {
+    const match = request("SCFEN|7k/8/8/8/8/8/3b4/4K3|0|13|P|G:11:11|B:3:3|Q:w:;b:");
+    const evidence = await runChallengeMatch(match, policies());
+    expect(replayExecutionIntegrity(evidence, match)).toBe(true);
+    const omitted = structuredClone(evidence);
+    omitted.resolves = [];
+    omitted.scfens = [evidence.scfens[0]!];
+    omitted.bankTrail = [];
+    omitted.stop.turn = 0;
+    expect(replayExecutionIntegrity(omitted, match)).toBe(false);
+  });
+
+  it.each([
+    { key: "direct-terminal", opening: quietOpening(0, "03", "O"), plies: 0 },
+    { key: "chip-terminal", opening: "SCFEN|7k/8/8/8/8/8/3b4/4K3|0|13|P|G:11:11|B:3:3|Q:w:;b:", plies: 1 },
+    { key: "settlement-terminal", opening: quietOpening(44, "23"), plies: 1 },
+  ])("allows $key completion at its checked terminal boundary", async ({ key, opening, plies }) => {
+    const match: ScheduledMatch = {
+      key, suite: "live-strategic", candidateSide: "w", arenaSeed: 0, inferenceSeed: 0, opening,
+    };
+    const evidence = await runSupervised(match, {
+      workerUrl: new URL("./fixtures/challengeChildCases.ts", import.meta.url),
+      budgets: { startupMs: 3000, planMs: 1000, matchMs: 3000 },
+    });
+    expect(evidence.stop.kind).toBe("terminal");
+    expect(evidence.outcome).toEqual({ winner: "b", draw: false });
+    expect(evidence.resolves).toHaveLength(plies);
+    expect(replayExecutionIntegrity(evidence, match)).toBe(true);
+  });
+
+  it.each([
+    { opening: quietOpening(0, "03", "O") },
+    { opening: "SCFEN|7k/8/8/8/8/8/3b4/4K3|0|13|P|G:11:11|B:3:3|Q:w:;b:" },
+    { opening: quietOpening(44, "23") },
+  ])("preserves production supervised/in-process terminal parity for $opening", async ({ opening }) => {
+    const match: ScheduledMatch = {
+      key: "production-terminal-parity", suite: "live-strategic", candidateSide: "w",
+      arenaSeed: 0, inferenceSeed: 0, opening,
+    };
+    const expected = await runChallengeMatch(match);
+    const actual = await runSupervised(match);
+    expect(actual).toEqual(expected);
+    expect(actual.stop.kind).toBe("terminal");
+    expect(replayExecutionIntegrity(actual, match)).toBe(true);
+  });
+
   it.each([{ label: "absent", queues: [] }, { label: "trailing", queues: [invalid] }])("scores an already terminal board before requesting $label queues", async ({ queues }) => {
     const options = policies();
     const evidence = await runChallengeMatch(request(quietOpening(0, "03", "O"), queues), {

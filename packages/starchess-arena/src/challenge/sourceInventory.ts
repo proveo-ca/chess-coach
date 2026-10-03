@@ -227,10 +227,16 @@ export const collectSourceInventory = (
     const requireNames = new Set<ts.Symbol | string>(["require"]);
     const requireFactories = new Set<ts.Symbol | string>(["createRequire"]);
     const moduleNamespaces = new Set<ts.Symbol | string>(["module"]);
-    const unwrap = (node: ts.Expression): ts.Expression => {
-      if (ts.isParenthesizedExpression(node) || ts.isAsExpression(node) || ts.isNonNullExpression(node) || ts.isTypeAssertionExpression(node) || ts.isSatisfiesExpression(node)) return unwrap(node.expression);
-      if (ts.isBinaryExpression(node) && node.operatorToken.kind === ts.SyntaxKind.CommaToken) return unwrap(node.right);
+    const processNamespaces = new Set<ts.Symbol | string>(["process"]);
+    const globalNamespaces = new Set<ts.Symbol | string>(["globalThis", "global"]);
+    const unwrapValue = (node: ts.Expression): ts.Expression => {
+      if (ts.isParenthesizedExpression(node) || ts.isAsExpression(node) || ts.isNonNullExpression(node) || ts.isTypeAssertionExpression(node) || ts.isSatisfiesExpression(node)) return unwrapValue(node.expression);
       return node;
+    };
+    const unwrap = (node: ts.Expression): ts.Expression => {
+      const expression = unwrapValue(node);
+      if (ts.isBinaryExpression(expression) && expression.operatorToken.kind === ts.SyntaxKind.CommaToken) return unwrap(expression.right);
+      return expression;
     };
     const property = (node: ts.Expression): { receiver: ts.Expression; name: string | undefined } | undefined => {
       const expression = unwrap(node);
@@ -241,6 +247,25 @@ export const collectSourceInventory = (
     const namespace = (node: ts.Expression): boolean => {
       const expression = unwrap(node);
       return ts.isIdentifier(expression) && moduleNamespaces.has(binding(expression));
+    };
+    const globalNamespace = (node: ts.Expression): boolean => {
+      const expression = unwrap(node);
+      const member = property(expression);
+      return ts.isIdentifier(expression) && globalNamespaces.has(binding(expression)) || member !== undefined &&
+        ["globalThis", "global"].includes(member.name ?? "") && globalNamespace(member.receiver);
+    };
+    const processNamespace = (node: ts.Expression): boolean => {
+      const expression = unwrap(node);
+      const member = property(expression);
+      return ts.isIdentifier(expression) && processNamespaces.has(binding(expression)) || member !== undefined &&
+        (member.name === "default" && processNamespace(member.receiver) || member.name === "process" && globalNamespace(member.receiver));
+    };
+    const evaluation = (node: ts.Expression): boolean => {
+      const expression = unwrap(node);
+      const member = property(expression);
+      const name = ts.isIdentifier(expression) ? binding(expression) : undefined;
+      return name === "eval" || name === "Function" ||
+        member !== undefined && ["eval", "Function"].includes(member.name ?? "") && globalNamespace(member.receiver);
     };
     const factory = (node: ts.Expression): boolean => {
       const expression = unwrap(node);
@@ -268,7 +293,17 @@ export const collectSourceInventory = (
           if (!element.isTypeOnly && ["default", "Module"].includes((element.propertyName ?? element.name).text)) moduleNamespaces.add(binding(element.name));
         }
       }
+      if (ts.isImportDeclaration(node) && ["node:process", "process"].includes(literal(node.moduleSpecifier) ?? "") && !node.importClause?.isTypeOnly) {
+        if (node.importClause?.name) processNamespaces.add(binding(node.importClause.name));
+        const bindings = node.importClause?.namedBindings;
+        if (bindings && ts.isNamespaceImport(bindings)) processNamespaces.add(binding(bindings.name));
+        if (bindings && ts.isNamedImports(bindings)) for (const element of bindings.elements) {
+          if (!element.isTypeOnly && (element.propertyName ?? element.name).text === "default") processNamespaces.add(binding(element.name));
+        }
+      }
       if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) && node.initializer && namespace(node.initializer)) moduleNamespaces.add(binding(node.name));
+      if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) && node.initializer && processNamespace(node.initializer)) processNamespaces.add(binding(node.name));
+      if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) && node.initializer && globalNamespace(node.initializer)) globalNamespaces.add(binding(node.name));
       if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) && node.initializer &&
           loader(node.initializer)) requireNames.add(binding(node.name));
       if (ts.isVariableDeclaration(node) && node.initializer && ts.isIdentifier(node.name) && factory(node.initializer)) requireFactories.add(binding(node.name));
@@ -277,10 +312,22 @@ export const collectSourceInventory = (
       ts.forEachChild(node, scanBindings);
     };
     let bindingCount: number;
+    const countBindings = (): number => requireNames.size + requireFactories.size + moduleNamespaces.size + processNamespaces.size + globalNamespaces.size;
     do {
-      bindingCount = requireNames.size + requireFactories.size + moduleNamespaces.size;
+      bindingCount = countBindings();
       scanBindings(source);
-    } while (bindingCount !== requireNames.size + requireFactories.size + moduleNamespaces.size);
+    } while (bindingCount !== countBindings());
+    const factoryBase = (node: ts.Node): void => {
+      if (ts.isCallExpression(node) && factory(node.expression)) {
+        const base = node.arguments[0] && unwrapValue(node.arguments[0]);
+        if (node.arguments.length !== 1 || !base || !ts.isPropertyAccessExpression(base) || base.name.text !== "url" ||
+            !ts.isMetaProperty(base.expression) || base.expression.keywordToken !== ts.SyntaxKind.ImportKeyword || base.expression.name.text !== "meta") {
+          throw new Error(`Unsupported createRequire base: ${file.path}`);
+        }
+      }
+      ts.forEachChild(node, factoryBase);
+    };
+    factoryBase(source);
     const wrappedUse = (node: ts.Expression): ts.Expression => {
       const parent = node.parent;
       if ((ts.isParenthesizedExpression(parent) || ts.isAsExpression(parent) || ts.isNonNullExpression(parent) || ts.isTypeAssertionExpression(parent) || ts.isSatisfiesExpression(parent)) && parent.expression === node ||
@@ -301,18 +348,24 @@ export const collectSourceInventory = (
         (ts.isPropertyAssignment(parent) || ts.isMethodDeclaration(parent) || ts.isPropertyDeclaration(parent) || ts.isPropertySignature(parent) || ts.isMethodSignature(parent)) && parent.name === node && !ts.isComputedPropertyName(parent.name);
     };
     const visit = (node: ts.Node): void => {
-      if (!ts.isPartOfTypeNode(node) && (ts.isIdentifier(node) && !sourceIsName(node) || ts.isPropertyAccessExpression(node) || ts.isElementAccessExpression(node) || ts.isCallExpression(node)) &&
-          (namespace(node as ts.Expression) || factory(node as ts.Expression) || loader(node as ts.Expression) || resolver(node as ts.Expression))) {
+      const value = !ts.isPartOfTypeNode(node) && (ts.isIdentifier(node) && !sourceIsName(node) || ts.isPropertyAccessExpression(node) || ts.isElementAccessExpression(node) || ts.isCallExpression(node));
+      if (value && evaluation(node as ts.Expression)) throw new Error(`Unsupported string evaluation: ${file.path}`);
+      const accessed = value ? property(node as ts.Expression) : undefined;
+      if (accessed && processNamespace(accessed.receiver) && accessed.name === "getBuiltinModule") throw new Error(`Unsupported builtin acquisition: ${file.path}`);
+      if (accessed && namespace(accessed.receiver) && ["register", "registerHooks"].includes(accessed.name ?? "")) throw new Error(`Unsupported module loader API: ${file.path}`);
+      if (value && (namespace(node as ts.Expression) || processNamespace(node as ts.Expression) || globalNamespace(node as ts.Expression) || factory(node as ts.Expression) || loader(node as ts.Expression) || resolver(node as ts.Expression))) {
         const expression = node as ts.Expression;
         const use = wrappedUse(expression);
         const parent = use.parent;
         const declaration = ts.isIdentifier(node) && sourceIsDeclaration(node);
         const alias = ts.isVariableDeclaration(parent) && parent.initializer === use && ts.isIdentifier(parent.name) && !resolver(expression);
-        const directCall = ts.isCallExpression(parent) && parent.expression === use && !namespace(expression);
+        const runtimeNamespace = processNamespace(expression) || globalNamespace(expression);
+        const directCall = ts.isCallExpression(parent) && parent.expression === use && !namespace(expression) && !runtimeNamespace;
         const member = (ts.isPropertyAccessExpression(parent) || ts.isElementAccessExpression(parent)) && parent.expression === use &&
           (namespace(expression) && (factory(parent) || loader(parent)) || loader(expression) && resolver(parent) ||
+            runtimeNamespace && property(parent)?.name !== undefined ||
             ts.isIdentifier(expression) && binding(expression) === "module" && property(parent)?.name === "exports");
-        if (!declaration && !alias && !directCall && !member) throw new Error(`Unsupported loader escape: ${file.path}`);
+        if (!declaration && !alias && !directCall && !member) throw new Error(`${runtimeNamespace ? "Unsupported builtin acquisition" : "Unsupported loader escape"}: ${file.path}`);
         const variable = alias ? parent : declaration ? node.parent : undefined;
         if (variable && ts.isVariableDeclaration(variable) && (ts.getCombinedModifierFlags(variable) & ts.ModifierFlags.Export)) throw new Error(`Unsupported loader escape: ${file.path}`);
       }
@@ -323,14 +376,23 @@ export const collectSourceInventory = (
           const typeOnly = ts.isImportDeclaration(node)
             ? node.importClause?.isTypeOnly === true || (node.importClause?.namedBindings !== undefined && ts.isNamedImports(node.importClause.namedBindings) && !node.importClause.name && node.importClause.namedBindings.elements.length > 0 && node.importClause.namedBindings.elements.every((element) => element.isTypeOnly))
             : node.isTypeOnly;
+          const namedImports = ts.isImportDeclaration(node) ? node.importClause?.namedBindings : undefined;
+          if (!typeOnly && namedImports && ts.isNamedImports(namedImports)) {
+            const names = namedImports.elements.filter((element) => !element.isTypeOnly).map((element) => (element.propertyName ?? element.name).text);
+            if (["node:module", "module"].includes(specifier) && names.some((name) => ["register", "registerHooks"].includes(name))) throw new Error(`Unsupported module loader API: ${file.path}`);
+            if (["node:process", "process"].includes(specifier) && names.includes("getBuiltinModule")) throw new Error(`Unsupported builtin acquisition: ${file.path}`);
+          }
           if (ts.isExportDeclaration(node) && !typeOnly && ["node:module", "module"].includes(specifier) &&
-               (!node.exportClause || !ts.isNamedExports(node.exportClause) || node.exportClause.elements.some((element) => !element.isTypeOnly && ["createRequire", "default", "Module"].includes((element.propertyName ?? element.name).text)))) throw new Error(`Unsupported loader escape: ${file.path}`);
+               (!node.exportClause || !ts.isNamedExports(node.exportClause) || node.exportClause.elements.some((element) => !element.isTypeOnly && ["createRequire", "default", "Module", "register", "registerHooks"].includes((element.propertyName ?? element.name).text)))) throw new Error(`Unsupported loader escape: ${file.path}`);
+          if (ts.isExportDeclaration(node) && !typeOnly && ["node:process", "process"].includes(specifier) &&
+              (!node.exportClause || !ts.isNamedExports(node.exportClause) || node.exportClause.elements.some((element) => !element.isTypeOnly && ["getBuiltinModule", "default"].includes((element.propertyName ?? element.name).text)))) throw new Error(`Unsupported builtin acquisition: ${file.path}`);
           addEdge(file.path, specifier, ts.isImportDeclaration(node) ? "import" : "export", typeOnly);
         }
       } else if (ts.isImportEqualsDeclaration(node) && ts.isExternalModuleReference(node.moduleReference)) {
         const specifier = literal(node.moduleReference.expression);
         if (specifier === undefined) throw new Error(`Computed module declaration: ${file.path}`);
         if (["node:module", "module"].includes(specifier)) throw new Error(`Unsupported module namespace import: ${file.path}`);
+        if (["node:process", "process"].includes(specifier)) throw new Error(`Unsupported builtin acquisition: ${file.path}`);
         addEdge(file.path, specifier, "require");
       } else if (ts.isImportTypeNode(node)) {
         const specifier = ts.isLiteralTypeNode(node.argument) ? literal(node.argument.literal) : undefined;
@@ -345,6 +407,7 @@ export const collectSourceInventory = (
         if (dynamic || requireCall || resolver) {
           const specifier = literal(node.arguments[0]);
           if ((dynamic || requireCall) && (specifier === "node:module" || specifier === "module")) throw new Error(`Unsupported dynamic module import: ${file.path}`);
+          if ((dynamic || requireCall) && (specifier === "node:process" || specifier === "process")) throw new Error(`Unsupported builtin acquisition: ${file.path}`);
           if (specifier === undefined) {
             if (file.path === `${ARENA}/hermetic/closure.mjs` && requireCall && node.getText(source) === "require(require.resolve('esbuild', { paths: [require.resolve('tsx/package.json')] }))") {
               addEdge(file.path, "esbuild", "require");

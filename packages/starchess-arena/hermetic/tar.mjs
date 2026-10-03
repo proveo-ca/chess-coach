@@ -44,6 +44,7 @@ export function archivePath(value, limits = evidenceLimits) {
 }
 function pax(bytes, limits) {
   const result = Object.create(null);
+  const seen = new Set();
   let offset = 0;
   while (offset < bytes.length) {
     const space = bytes.indexOf(32, offset);
@@ -58,9 +59,12 @@ function pax(bytes, limits) {
     if (equals <= 0) fail('PAX record');
     const key = record.slice(0, equals);
     if (/^(GNU\.sparse|SCHILY\.(?:realsize|filetype))/.test(key)) fail('sparse PAX entry');
-    if (Object.hasOwn(result, key)) fail('duplicate PAX key');
-    result[key] = record.slice(equals + 1);
-    if (['path', 'linkpath'].includes(key) && Buffer.byteLength(result[key]) > limits.pathBytes) fail('PAX path limit');
+    if (seen.has(key)) fail('duplicate PAX key');
+    seen.add(key);
+    if (['path', 'linkpath', 'size'].includes(key)) {
+      result[key] = record.slice(equals + 1);
+      if (key !== 'size' && Buffer.byteLength(result[key]) > limits.pathBytes) fail('PAX path limit');
+    }
     offset = end;
   }
   return result;
@@ -97,7 +101,6 @@ export async function scanTarFile(path, { limits = evidenceLimits, budget = evid
       return buffer;
     };
     const entries = new Map();
-    let global = Object.create(null);
     let local;
     let ended = false;
     while (position < size) {
@@ -130,7 +133,7 @@ export async function scanTarFile(path, { limits = evidenceLimits, budget = evid
       const extended = flag === 'x' || flag === 'g';
       archivePath(name, limits);
       if (!extended) {
-        const attributes = { ...global, ...local };
+        const attributes = local ?? Object.create(null);
         local = undefined;
         name = attributes.path ?? name;
         target = attributes.linkpath ?? target;
@@ -165,7 +168,6 @@ export async function scanTarFile(path, { limits = evidenceLimits, budget = evid
         const attributes = pax(Buffer.concat(chunks, bytes), limits);
         if (flag === 'g') {
           if (local || ['path', 'linkpath', 'size'].some((key) => Object.hasOwn(attributes, key))) fail('ambiguous global PAX');
-          global = { ...global, ...attributes };
         } else {
           if (local) fail('stacked local PAX');
           local = attributes;

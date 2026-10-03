@@ -88,6 +88,7 @@ export const runSupervised = (
     kind: "phase", phase: "startup", planningOrdinal: 0, turn: initialTurn,
   };
   let child: ChildProcess | undefined;
+  const ownsProcessGroup = process.platform !== "win32";
   let ready = false;
   let messageCount = 0;
   let childOrdinal = 0;
@@ -131,12 +132,20 @@ export const runSupervised = (
       turn: resolves.at(-1)?.next.turn ?? initialTurn, ...(lastPhase.side ? { side: lastPhase.side } : {}), reason,
     },
   });
+  const killOwnedProcesses = () => {
+    if (ownsProcessGroup && child?.pid) {
+      try { process.kill(-child.pid, "SIGKILL"); }
+      catch (error) {
+        if ((error as NodeJS.ErrnoException).code !== "ESRCH") child.kill("SIGKILL");
+      }
+    }
+    child?.kill("SIGKILL");
+  };
   const finish = (evidence: ChallengeEvidence) => {
     if (result) return;
     result = evidence;
-    clearTimers();
-    if (!child) { resolve(evidence); return; }
-    child.kill("SIGKILL");
+    if (!child) { clearTimers(); resolve(evidence); return; }
+    killOwnedProcesses();
   };
   const fail = (kind: ChallengeStop["kind"], reason: string) => finish(failed(kind, reason));
   const protocolError = (reason: string) => fail("script-contract", `worker protocol error: ${reason}`);
@@ -190,8 +199,25 @@ export const runSupervised = (
         !record(value.stop) || !stopKinds.has(value.stop.kind as ChallengeStop["kind"]) ||
         !phaseEvent({ ...value.stop, kind: "phase" }) ||
         (value.stop.reason !== undefined && typeof value.stop.reason !== "string")) return false;
-    if (expectedStop && canonical(value.stop) !== canonical(expectedStop)) return false;
-    if (expectedStopKind && value.stop.kind !== expectedStopKind) return false;
+    switch (value.stop.kind) {
+      case "terminal":
+        if (!snap || !scOutcome(snap) || !(stage === "expect-turn-open" ||
+          (stage === "expect-complete" && expectedStopKind === "terminal"))) return false;
+        break;
+      case "queue-rejected":
+        if (stage !== "expect-complete" || expectedStopKind !== "queue-rejected" || !expectedStop ||
+          canonical(value.stop) !== canonical(expectedStop)) return false;
+        break;
+      case "trace-exhausted":
+      case "progress-limit":
+        if (stage !== "expect-complete" || expectedStopKind !== value.stop.kind) return false;
+        break;
+      case "exception":
+      case "watchdog":
+        break;
+      default:
+        return false;
+    }
     if (value.outcome !== null && (!record(value.outcome) ||
         !((value.outcome.winner === null && value.outcome.draw === true) ||
           ((value.outcome.winner === "w" || value.outcome.winner === "b") &&
@@ -397,6 +423,12 @@ export const runSupervised = (
     result ??= failed("exception", `worker exited before completion (code=${code}, signal=${signal})`);
     resolve(result);
   };
+  const onExit = (code: number | null, signal: NodeJS.Signals | null) => {
+    result ??= failed("exception", `worker exited before completion (code=${code}, signal=${signal})`);
+    killOwnedProcesses();
+    child!.stdout?.destroy();
+    child!.stdin?.destroy();
+  };
 
   if (openingError) { fail("exception", openingError); return; }
   if (request.suite === "corpus" || expectedMatch(loadTrustedExecutionContext("all"), request.key)) {
@@ -412,10 +444,13 @@ export const runSupervised = (
   startupTimer = setTimeout(() => fail("watchdog", "startup timeout"), budgets.startupMs);
   try {
     child = spawn(process.execPath, ["--import", createRequire(import.meta.url).resolve("tsx"),
-      fileURLToPath(options.workerUrl ?? new URL("./worker.ts", import.meta.url))], { stdio: ["pipe", "pipe", "ignore"] });
+      fileURLToPath(options.workerUrl ?? new URL("./worker.ts", import.meta.url))], {
+      detached: ownsProcessGroup, stdio: ["pipe", "pipe", "ignore"],
+    });
     child.stdout!.on("data", onData);
     child.on("error", onError);
     child.stdin!.on("error", onError);
+    child.once("exit", onExit);
     child.once("close", onClose);
   } catch (error) {
     fail("exception", `worker launch failed: ${String(error)}`);

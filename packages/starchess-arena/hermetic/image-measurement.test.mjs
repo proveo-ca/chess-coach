@@ -9,10 +9,12 @@ import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { sha256, treeManifest, sourceExclusions } from './manifest.mjs';
 import { evidenceLimits } from './evidence-limits.mjs';
-import { dockerRead, measureImageFilesystem } from './image-measurement.mjs';
+import { dockerRead, measureImageFilesystem as measureFilesystem, measureInterpreter } from './image-measurement.mjs';
 
 const image = `sha256:${'1'.repeat(64)}`;
 const container = '2'.repeat(64);
+const interpreterBytes = Buffer.from('trusted fixture Node interpreter');
+const measureImageFilesystem = (image, options) => measureFilesystem(image, { interpreterSha256: sha256(interpreterBytes), ...options });
 const excluded = (path) => path.split('/').includes('node_modules') || path === sourceExclusions[1] || path.startsWith(`${sourceExclusions[1]}/`);
 function tar(entries) {
   return Buffer.concat([...entries.flatMap((entry) => {
@@ -80,6 +82,7 @@ async function fixture(source, action) {
     await write('hermetic-evidence/capture.json', capture);
     await write('hermetic-evidence/closure.json', { tools: { node: pins.node, pnpm: pins.pnpm }, packages: { 'starchess-core': { lib: '1.0.0' }, 'starchess-arena': { core: '0.0.1' } }, lockSha256: capture.dependencyFiles[0].sha256 });
     const streams = new Map();
+    streams.set('/usr/local/bin/node', tar([{ path: 'node', mode: '755', type: 'file', data: interpreterBytes }]));
     const rebuild = async () => {
       for (const root of ['/app', '/pnpm/store', '/opt/pnpm', '/hermetic-evidence', '/hermetic']) {
         const entries = await Promise.all(treeManifest(join(filesystem, root)).entries.map(async (entry) => ({ ...entry, path: `${root.split('/').at(-1)}${entry.path === '.' ? '' : `/${entry.path}`}`, ...(entry.type === 'file' ? { data: await readFile(join(filesystem, root, entry.path)) } : {}) })));
@@ -93,10 +96,10 @@ async function fixture(source, action) {
       }
     };
     await rebuild();
-    await action({ directory, temporaryRoot, filesystem, streams, write, rebuild, capture, dependencies });
+    await action({ directory, temporaryRoot, filesystem, streams, write, rebuild, capture, dependencies, imagePins: pins });
   } finally { await rm(directory, { recursive: true, force: true }); }
 }
-function mockDocker(streams, { inspectChange, failCopy, wrongImage = false, malformedCreate = false } = {}) {
+function mockDocker(streams, { inspectChange, failCopy, wrongImage = false, malformedCreate = false, platformImageId, wrongPlatformDescriptor = false } = {}) {
   const calls = [];
   const kills = [];
   const spawnProcess = (program, args, options) => {
@@ -117,9 +120,9 @@ function mockDocker(streams, { inspectChange, failCopy, wrongImage = false, malf
     };
     child.kill = (signal) => { kills.push({ args, signal }); queueMicrotask(() => close(null, signal)); return true; };
     queueMicrotask(() => {
-      if (args[0] === 'image') child.stdout.write(JSON.stringify([{ Id: image, Os: 'linux', Architecture: 'amd64' }]));
+      if (args[0] === 'image') child.stdout.write(JSON.stringify([{ Id: args.includes('--platform') ? platformImageId : image, Os: 'linux', Architecture: 'amd64', ...(args.includes('--platform') ? { Descriptor: { digest: platformImageId } } : {}) }]));
       else if (args[0] === 'create') child.stdout.write(malformedCreate ? 'malformed create output\n' : container + '\n');
-      else if (args[0] === 'container' && args[1] === 'inspect') child.stdout.write(JSON.stringify([inspectChange ?? { Image: wrongImage ? `sha256:${'3'.repeat(64)}` : image, State: { Status: 'created', Running: false, Pid: 0 } }]));
+      else if (args[0] === 'container' && args[1] === 'inspect') child.stdout.write(JSON.stringify([inspectChange ?? { Image: wrongImage ? `sha256:${'3'.repeat(64)}` : image, State: { Status: 'created', Running: false, Pid: 0 }, ...(platformImageId ? { ImageManifestDescriptor: { digest: wrongPlatformDescriptor ? `sha256:${'4'.repeat(64)}` : platformImageId } } : {}) }]));
       else if (args[0] === 'cp') {
         const root = args[1].slice(container.length + 1);
         if (failCopy === root) { child.stderr.write('copy failed'); close(1); return; }
@@ -146,9 +149,77 @@ for (const source of [false, true]) test(`measures ${source ? 'source' : 'depend
   assert.deepEqual(result.capture.inputs, capture.dependencyFiles);
   assert.equal(result.source?.sourceSha256, capture.runtime?.sha256);
   assert.equal(result.tools.actual.pnpm, '10.33.0');
+  assert.deepEqual(result.interpreter, { path: '/usr/local/bin/node', sha256: sha256(interpreterBytes), bytes: interpreterBytes.length });
   const copyRoots = docker.calls.filter((call) => call[0] === 'cp').map((call) => call[1].slice(container.length + 1));
-  assert.deepEqual(copyRoots, source ? ['/app', '/pnpm/store', '/opt/pnpm', '/hermetic-evidence'] : ['/app', '/pnpm/store', '/opt/pnpm', '/hermetic-evidence', '/hermetic']);
+  assert.deepEqual(copyRoots, source ? ['/usr/local/bin/node', '/app', '/pnpm/store', '/opt/pnpm', '/hermetic-evidence'] : ['/usr/local/bin/node', '/app', '/pnpm/store', '/opt/pnpm', '/hermetic-evidence', '/hermetic']);
   assert.deepEqual(docker.calls.at(-1), ['container', 'rm', '--force', '--volumes', container]);
+  assert.deepEqual(await readdir(temporaryRoot), []);
+}));
+test('rejects interpreter replacement despite unchanged version claims and tree manifests', () => fixture(false, async ({ temporaryRoot, streams }) => {
+  const evidence = streams.get('/hermetic-evidence');
+  streams.set('/usr/local/bin/node', tar([{ path: 'node', mode: '755', type: 'file', data: 'replacement interpreter' }]));
+  const docker = mockDocker(streams);
+  await assert.rejects(measureImageFilesystem(image, { temporaryRoot, spawnProcess: docker.spawnProcess }), /Node interpreter SHA-256/);
+  assert.equal(streams.get('/hermetic-evidence'), evidence);
+  assert.equal(docker.calls.at(-1)[1], 'rm');
+  assert.deepEqual(await readdir(temporaryRoot), []);
+}));
+test('production default rejects synthetic interpreter instead of trusting image pins', () => fixture(false, async ({ temporaryRoot, streams }) => {
+  const docker = mockDocker(streams);
+  await assert.rejects(measureFilesystem(image, { temporaryRoot, spawnProcess: docker.spawnProcess }), /Node interpreter SHA-256/);
+  assert.deepEqual(await readdir(temporaryRoot), []);
+}));
+test('accepts new source control binary pin with unchanged older tool pin claims', () => fixture(true, async ({ temporaryRoot, filesystem, streams, write, rebuild, capture, imagePins }) => {
+  await write('app/packages/starchess-arena/hermetic/pins.json', { ...imagePins, nodeBinarySha256: sha256(interpreterBytes) });
+  capture.control = treeManifest(join(filesystem, 'app/packages/starchess-arena/hermetic'));
+  capture.runtime = treeManifest(join(filesystem, 'app'), { exclude: excluded });
+  await write('hermetic-evidence/capture.json', capture);
+  await write('hermetic-evidence/source.json', { version: 1, root: '/app', exclusions: sourceExclusions, inventoryLocation: '/hermetic-evidence/source.json (outside inventoried root)', ...capture.runtime });
+  await rebuild();
+  const docker = mockDocker(streams);
+  const result = await measureImageFilesystem(image, { temporaryRoot, spawnProcess: docker.spawnProcess });
+  assert.equal(result.source.sourceSha256, capture.runtime.sha256);
+  assert.equal(Object.hasOwn(result.tools.actual.pins, 'nodeBinarySha256'), false);
+  assert.equal(result.interpreter.sha256, sha256(interpreterBytes));
+}));
+test('rejects a recorded binary pin that conflicts with the independently trusted pin', () => fixture(false, async ({ temporaryRoot, filesystem, streams, write, rebuild, capture, imagePins }) => {
+  await write('hermetic/pins.json', { ...imagePins, nodeBinarySha256: '0'.repeat(64) });
+  capture.control = treeManifest(join(filesystem, 'hermetic'));
+  await write('hermetic-evidence/capture.json', capture);
+  await rebuild();
+  const docker = mockDocker(streams);
+  await assert.rejects(measureImageFilesystem(image, { temporaryRoot, spawnProcess: docker.spawnProcess }), /recorded Node binary pin/);
+  assert.deepEqual(await readdir(temporaryRoot), []);
+}));
+for (const [label, entries] of [
+  ['non-executable mode', [{ path: 'node', mode: '644', type: 'file', data: interpreterBytes }]],
+  ['setuid mode', [{ path: 'node', mode: '4755', type: 'file', data: interpreterBytes }]],
+  ['symlink', [{ path: 'node', mode: '777', type: 'symlink', target: '/replacement' }]],
+  ['hardlink', [{ path: 'node', mode: '755', type: 'hardlink', target: 'replacement' }]],
+  ['extra file', [{ path: 'node', mode: '755', type: 'file', data: interpreterBytes }, { path: 'extra', mode: '644', type: 'file', data: 'x' }]],
+]) test(`rejects interpreter ${label}`, () => fixture(false, async ({ temporaryRoot, streams }) => {
+  streams.set('/usr/local/bin/node', tar(entries));
+  const docker = mockDocker(streams);
+  await assert.rejects(measureImageFilesystem(image, { temporaryRoot, spawnProcess: docker.spawnProcess }), /Node interpreter file or mode/);
+  assert.equal(docker.calls.at(-1)[1], 'rm');
+  assert.deepEqual(await readdir(temporaryRoot), []);
+}));
+test('interpreter helper returns copied-file hash and immutable-image provenance', () => fixture(false, async ({ temporaryRoot, streams }) => {
+  const platformImageId = `sha256:${'3'.repeat(64)}`;
+  const docker = mockDocker(streams, { platformImageId });
+  const result = await measureInterpreter(image, { temporaryRoot, spawnProcess: docker.spawnProcess, platform: 'linux/amd64' });
+  assert.deepEqual(result.interpreter, { path: '/usr/local/bin/node', sha256: sha256(interpreterBytes), bytes: interpreterBytes.length });
+  assert.equal(result.copy.archiveSha256, sha256(streams.get('/usr/local/bin/node')));
+  assert.equal(result.imageInspection.Id, image);
+  assert.equal(result.platformImageInspection.Id, platformImageId);
+  assert.equal(result.containerInspection.ImageManifestDescriptor.digest, platformImageId);
+  assert.deepEqual(docker.calls.filter((args) => args[0] === 'cp').map((args) => args[1]), [`${container}:/usr/local/bin/node`]);
+  assert.deepEqual(await readdir(temporaryRoot), []);
+}));
+test('interpreter helper rejects the wrong selected-platform container descriptor', () => fixture(false, async ({ temporaryRoot, streams }) => {
+  const docker = mockDocker(streams, { platformImageId: `sha256:${'3'.repeat(64)}`, wrongPlatformDescriptor: true });
+  await assert.rejects(measureInterpreter(image, { temporaryRoot, spawnProcess: docker.spawnProcess, platform: 'linux/amd64' }), /container platform descriptor/);
+  assert.equal(docker.calls.at(-1)[1], 'rm');
   assert.deepEqual(await readdir(temporaryRoot), []);
 }));
 for (const [label, source, path, value, pattern] of [

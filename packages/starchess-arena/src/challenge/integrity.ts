@@ -74,6 +74,12 @@ export const replayExecutionIntegrity = (
     if (!verifyStop) return true;
     if (evidence.stop.planningOrdinal !== windows || evidence.stop.turn !== snap.turn) return false;
     const actual = scOutcome(snap);
+    let admissionSnap = snap;
+    if (!ready && ["queue-rejected", "trace-exhausted", "progress-limit"].includes(evidence.stop.kind)) {
+      const opened = beginScTurn(snap);
+      if (opened.asResolve) return false;
+      admissionSnap = opened.next;
+    }
     if (evidence.stop.kind === "trace-exhausted" && (authority.suite !== "corpus" || trace!.windows[windows] || actual !== null)) return false;
     if (evidence.stop.kind === "progress-limit" && actual === null && windows < CHALLENGE_CONFIG.maxWindows &&
       evidence.resolves.length < CHALLENGE_CONFIG.maxRecordedPlies) return false;
@@ -81,14 +87,12 @@ export const replayExecutionIntegrity = (
       const window = trace!.windows[windows];
       if (!window || evidence.stop.sourcePlyIndex !== window.sourcePlyIndex) return false;
       if (evidence.stop.rejectedQueue !== undefined && canonical(evidence.stop.rejectedQueue) !== canonical(window.actions)) return false;
-      const open = ready ? snap : beginScTurn(snap).next;
-      const staged = stageQueue(open, bank, "w", window.actions, windows);
+      const staged = stageQueue(admissionSnap, bank, "w", window.actions, windows);
       if (staged.ok) return false;
       if (canonical(withoutWitness(evidence.stop)) !== canonical(staged.failure)) return false;
     } else if (evidence.stop.kind === "queue-rejected") {
       if (!evidence.stop.side || !Array.isArray(evidence.stop.rejectedQueue)) return false;
-      const open = ready ? snap : beginScTurn(snap).next;
-      const staged = stageQueue(open, bank, evidence.stop.side, evidence.stop.rejectedQueue, windows);
+      const staged = stageQueue(admissionSnap, bank, evidence.stop.side, evidence.stop.rejectedQueue, windows);
       if (staged.ok) return false;
       if (canonical(withoutWitness(evidence.stop)) !== canonical(staged.failure)) return false;
     }

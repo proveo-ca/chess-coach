@@ -6,7 +6,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { gzipSync } from 'node:zlib';
 import { createHash } from 'node:crypto';
-import { assertImageArchive, scanTarFile } from './tar.mjs';
+import { assertImageArchive, evidenceBudget, scanTarFile } from './tar.mjs';
 import { evidenceLimits } from './evidence-limits.mjs';
 
 const sha = (data) => createHash('sha256').update(data).digest('hex');
@@ -113,6 +113,37 @@ test('USTAR prefix and checksummed PAX path/link metadata', () => fixture(async 
   assert.equal(entries.get('root/file').sha256, sha('bytes'));
   assert.equal(entries.get(longName).sha256, sha('long bytes'));
   assert.equal(entries.get('root/link').target, '../external');
+}));
+test('scans many custom global PAX headers within the aggregate metadata budget', () => fixture(async (path) => {
+  const headers = Array.from({ length: 1000 }, (_, index) => ({ path: `PaxHeaders/global-${index}`, type: 'g', data: Array.from({ length: 32 }, (_, key) => paxRecord(`custom.${index}.${key}`, 'ignored')).join('') }));
+  const files = headers.map((_, index) => ({ path: `file-${index}`, data: 'payload' }));
+  const entries = headers.flatMap((header, index) => [header, files[index]]);
+  const bytes = tar(entries);
+  await writeFile(path, bytes);
+  const budget = evidenceBudget();
+  const scanned = await scanTarFile(path, { budget });
+  assert.equal(scanned.entries.size, files.length);
+  assert.equal(budget.entries, entries.length);
+  assert.equal(budget.scan, bytes.length);
+  assert.equal(budget.retained, 0);
+  assert.equal(budget.metadata, headers.reduce((sum, header) => sum + Buffer.byteLength(header.data), 0) + files.reduce((sum, file) => sum + Buffer.byteLength(file.path) + 160, 0));
+  for (const file of files) assert.equal(scanned.entries.get(file.path).sha256, sha(file.data));
+  await assert.rejects(scanTarFile(path, { limits: { ...evidenceLimits, metadataBytes: budget.metadata - 1 } }), /metadata resource limit/);
+}));
+test('ignores custom global/local PAX keys without prototype mutation and retains local layout', () => fixture(async (path) => {
+  await writeFile(path, tar([
+    { path: 'PaxHeaders/global', type: 'g', data: paxRecord('__proto__', 'polluted') + paxRecord('constructor', 'ignored') },
+    { path: 'PaxHeaders/local', type: 'x', data: paxRecord('toString', 'ignored') + paxRecord('path', 'actual/path') },
+    { path: 'placeholder', data: 'content' },
+  ]));
+  const scanned = await scanTarFile(path);
+  assert.equal(scanned.entries.get('actual/path').sha256, sha('content'));
+  assert.equal(scanned.entries.size, 1);
+  assert.equal(Object.hasOwn(Object.prototype, 'polluted'), false);
+}));
+test('rejects duplicate custom PAX keys within a global header', () => fixture(async (path) => {
+  await writeFile(path, tar([{ path: 'PaxHeaders/global', type: 'g', data: paxRecord('custom.key', 'first') + paxRecord('custom.key', 'second') }]));
+  await assert.rejects(scanTarFile(path), /duplicate PAX key/);
 }));
 test('Docker OCI image index ID binds extensionless config, layers, and provenance blobs', () => fixture(async (path) => {
   const image = ociSaved();
