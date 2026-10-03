@@ -1,10 +1,10 @@
 // SPEC: _spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdirSync, readFileSync, rmSync, truncateSync, writeFileSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, truncateSync, writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
-import { dirname, join } from "node:path";
+import { join } from "node:path";
 import { afterEach, beforeAll, describe, expect, it } from "vitest";
-import { canonical } from "../challenge/config";
 import { sha256 } from "../challenge/corpus";
 import { buildDiagnosticFixture, buildImportFixture, decode, evidenceLimits, jsonBytes, repositoryRoot,
   syntheticImageArchive, tarArchive, type Baseline } from "./fixtures/challengeEvidence";
@@ -12,7 +12,7 @@ import { buildDiagnosticFixture, buildImportFixture, decode, evidenceLimits, jso
 const require = createRequire(import.meta.url);
 const { importEvidence, assertImageArchive, safeRelative } = require("../../../../scripts/challenge-import-evidence.mjs") as {
   importEvidence: (options: Record<string, unknown>) => Promise<{ image: string }>;
-  assertImageArchive: (path: string, image: string) => { sha256: string; bytes: number };
+  assertImageArchive: (path: string, image: string) => Promise<{ sha256: string; bytes: number }>;
   safeRelative: (path: string) => string;
 };
 const roots: string[] = [];
@@ -26,15 +26,19 @@ const reject = async (value: Fixture, message: string | RegExp) => {
   await expect(importEvidence(value.options)).rejects.toThrow(message);
   expect(existsSync(value.destination)).toBe(false);
 };
+const runValidator = (args: string[]) => {
+  const result = spawnSync(join(repositoryRoot, "packages/starchess-arena/node_modules/.bin/tsx"), [
+    join(repositoryRoot, "scripts/challenge-validate-baseline.ts"), ...args,
+  ], { encoding: "utf8", timeout: 120000 });
+  return { status: result.status, stdout: result.stdout ?? "", output: `${result.stdout ?? ""}${result.stderr ?? ""}`, error: result.error };
+};
 const validate = (value: Fixture, extra: string[] = []) => {
   value.rebind(); value.save();
-  const result = spawnSync(join(repositoryRoot, "packages/starchess-arena/node_modules/.bin/tsx"), [
-    join(repositoryRoot, "scripts/challenge-validate-baseline.ts"),
+  return runValidator([
     join(value.output, "baseline-report.json"), join(value.root, "_spec/evidence/ml-adjutant-phase1/baseline-report.json"),
     join(value.root, "_spec/evidence/ml-adjutant-phase1/verification.json"), join(value.output, "pin-migration.json"),
     join(value.output, "coverage.json"), join(value.output, "contract-report.json"), repositoryRoot, ...extra,
-  ], { encoding: "utf8", timeout: 120000 });
-  return { status: result.status, output: `${result.stdout ?? ""}${result.stderr ?? ""}`, error: result.error };
+  ]);
 };
 
 describe("phase2 hermetic evidence import with synthetic test-only image hooks", () => {
@@ -47,7 +51,8 @@ describe("phase2 hermetic evidence import with synthetic test-only image hooks",
     expect(imported.image).toBe(value.archive.image);
     expect(readFileSync(join(value.destination, "logs/command-01.stdout.log"), "utf8")).toBe("synthetic test-only command output\n");
     expect(JSON.parse(readFileSync(join(value.destination, "image-assurance.json"), "utf8")).image).toBe(value.archive.image);
-    expect(readFileSync(join(value.destination, ".publication-complete"), "utf8")).toBe("ok\n");
+    const { readPublishedBundle } = require("../../hermetic/evidence-bundle.mjs") as { readPublishedBundle: (path: string) => { artifacts: Map<string, Buffer> } };
+    expect(readPublishedBundle(value.destination).artifacts.get("baseline-report.json")).toEqual(value.files["baseline-report.json"]);
   }, 120000);
 
   it.each(["../secret", "/tmp/x", "logs\\x", "logs/../x", ""])("rejects unsafe artifact path %s", (path) => {
@@ -108,27 +113,42 @@ describe("phase2 hermetic evidence import with synthetic test-only image hooks",
     await expect(importEvidence(value.options)).rejects.toThrow(/Input exceeds byte cap/);
     expect(existsSync(value.destination)).toBe(false);
   });
+  it("bounds aggregate retention of individually bounded sparse artifacts", async () => {
+    const value = fixture();
+    const chunk = Buffer.alloc(1024 * 1024);
+    const hash = createHash("sha256");
+    for (let remaining = evidenceLimits.fileBytes; remaining > 0; remaining -= chunk.length) hash.update(chunk.subarray(0, Math.min(remaining, chunk.length)));
+    const digest = hash.digest("hex");
+    for (let index = 0; index <= Math.floor(evidenceLimits.retainedBytes / evidenceLimits.fileBytes); index++) {
+      const path = `bounded-${index}.bin`;
+      writeFileSync(join(value.output, path), ""); truncateSync(join(value.output, path), evidenceLimits.fileBytes);
+      value.verification.artifacts.push({ path, type: "file", bytes: evidenceLimits.fileBytes, sha256: digest });
+    }
+    writeFileSync(join(value.output, "verification.json"), jsonBytes(value.verification));
+    await expect(importEvidence(value.options)).rejects.toThrow(/Aggregate import byte cap exceeded/);
+    expect(existsSync(value.destination)).toBe(false);
+  });
 });
 
 describe("authoritative seven-input baseline validator", () => {
   it("accepts the complete independent fixture without loading current output reports", () => {
     const result = validate(fixture());
-    expect(result.error).toBeUndefined(); expect(result.status, result.output).toBe(0); expect(result.output.trim()).toBe("ok");
+    expect(result.error).toBeUndefined(); expect(result.status, result.output).toBe(0); expect(result.stdout.trim()).toBe("ok");
   }, 120000);
 
   const cases: [string, string, (document: Record<string, any>) => void, RegExp][] = [
-    ["invented 54 integer rows", "baseline-report.json", (d) => { d.rows = Array.from({ length: 54 }, (_, index) => index); }, /evidence row|Scheduled evidence|baseline.*schema/i],
-    ["unknown roster", "baseline-report.json", (d) => { d.rows[0].match.key = "invented-roster"; }, /schedule|Scheduled evidence/i],
-    ["truthy learned flag", "baseline-report.json", (d) => { d.learnedGateEligible = "false"; }, /provenance|learned|baseline.*schema/i],
-    ["falsy execution flag", "baseline-report.json", (d) => { d.executionIntegrity = 0; }, /provenance|integrity|Scheduled evidence|baseline.*schema/i],
-    ["forged learned pass", "baseline-report.json", (d) => { d.learnedChallengePass = true; }, /learned|Scheduled evidence|provenance/i],
-    ["forged summary bucket", "baseline-report.json", (d) => { d.summary.corpus.wins++; }, /summary|buckets/i],
-    ["forged stop-kind summary", "baseline-report.json", (d) => { d.summary.corpus.stopKinds.invented = 1; }, /summary|buckets/i],
-    ["forged rerun flag", "baseline-report.json", (d) => { d.deterministicRerun.performed = false; }, /rerun|parity|migration/i],
-    ["forged rerun hash", "baseline-report.json", (d) => { d.deterministicRerun.comparisons[0].rerunSha256 = "0".repeat(64); }, /rerun|parity|migration/i],
-    ["unequal migration", "pin-migration.json", (d) => { d.comparisons[0].equal = false; }, /comparison|migration/i],
-    ["forged inventory", "baseline-report.json", (d) => { d.pins.sourceInventory.inventorySha256 = "0".repeat(64); }, /inventory|pins|provenance/i],
-    ["coverage feature hash changed with identical counts", "coverage.json", (d) => { d.windows[0].featureSha256 = "0".repeat(64); }, /coverage/i],
+    ["invented 54 integer rows", "baseline-report.json", (d) => { d.rows = Array.from({ length: 54 }, (_, index) => index); }, /Invalid current scheduled evidence shape or cardinality/],
+    ["unknown roster", "baseline-report.json", (d) => { d.rows[0].match.key = "invented-roster"; }, /current row match white-trace-01 mismatch/],
+    ["truthy learned flag", "baseline-report.json", (d) => { d.learnedGateEligible = "false"; }, /Invalid current baseline provenance or flags/],
+    ["falsy execution flag", "baseline-report.json", (d) => { d.executionIntegrity = 0; }, /Invalid current baseline provenance or flags/],
+    ["forged learned pass", "baseline-report.json", (d) => { d.learnedChallengePass = true; }, /Invalid current baseline provenance or flags/],
+    ["forged summary bucket", "baseline-report.json", (d) => { d.summary.corpus.wins++; }, /current full summary mismatch/],
+    ["forged stop-kind summary", "baseline-report.json", (d) => { d.summary.corpus.stopKinds.invented = 1; }, /current full summary mismatch/],
+    ["forged rerun flag", "baseline-report.json", (d) => { d.deterministicRerun.performed = false; }, /current deterministic rerun consistency mismatch/],
+    ["forged rerun hash", "baseline-report.json", (d) => { d.deterministicRerun.comparisons[0].rerunSha256 = "0".repeat(64); }, /current deterministic rerun consistency mismatch/],
+    ["unequal migration", "pin-migration.json", (d) => { d.comparisons[0].equal = false; }, /Full pin migration mismatch/],
+    ["forged inventory", "baseline-report.json", (d) => { d.pins.sourceInventory.inventorySha256 = "0".repeat(64); }, /Current execution pins mismatch/],
+    ["coverage feature hash changed with identical counts", "coverage.json", (d) => { d.windows[0].featureSha256 = "0".repeat(64); }, /Full frozen-corpus coverage mismatch/],
   ];
   it.each(cases)("rejects %s with rebound raw checksums", (_name, path, mutate, message) => {
     const value = fixture(); value.mutate(path, mutate);
@@ -138,53 +158,66 @@ describe("authoritative seven-input baseline validator", () => {
 
   it("rejects an extra CLI input instead of silently ignoring it", () => {
     const result = validate(fixture(), ["unexpected"]);
-    expect(result.status).not.toBe(0); expect(result.output).toMatch(/seven|7|Usage|required|arguments|paths/i);
+    expect(result.status).not.toBe(0); expect(result.output).toContain("Expected [currentBaseline, originalBaseline, originalVerification, migration, coverage, contract, frozenSourceRoot]");
+  });
+  it("rejects one sparse input beyond the shared file cap before decoding", () => {
+    const value = fixture(); truncateSync(join(value.output, "coverage.json"), evidenceLimits.fileBytes + 1);
+    const result = runValidator([join(value.output, "coverage.json"), ...Array(5).fill(value.paths.execution), repositoryRoot]);
+    expect(result.status).not.toBe(0); expect(result.output).toContain("Validator input exceeds byte cap");
+  });
+  it("bounds aggregate retention before decoding sparse inputs", () => {
+    const value = fixture(); const path = join(value.output, "bounded.json"); writeFileSync(path, ""); truncateSync(path, evidenceLimits.fileBytes);
+    const result = runValidator([...Array(6).fill(path), repositoryRoot]);
+    expect(result.status).not.toBe(0); expect(result.output).toContain("Validator retained-input byte cap exceeded");
   });
 });
 
 describe("synthetic test-only Docker-save archive parser", () => {
-  const archivePath = () => fixture().archivePath;
-  it("returns the digest and byte count for correctly checksummed tar and uncompressed layer diff IDs", () => {
+  const archivePath = () => {
+    const root = mkdtempSync("/tmp/opencode/import-archive-"); roots.push(root); return join(root, "image.tar");
+  };
+  it("returns the digest and byte count for correctly checksummed tar and uncompressed layer diff IDs", async () => {
     const archive = syntheticImageArchive(); const path = archivePath(); writeFileSync(path, archive.bytes);
-    expect(assertImageArchive(path, archive.image)).toEqual({ sha256: sha256(archive.bytes), bytes: archive.bytes.length });
+    await expect(assertImageArchive(path, archive.image)).resolves.toEqual({ sha256: sha256(archive.bytes), bytes: archive.bytes.length });
   });
-  it("rejects a config hash for another image", () => {
+  it("rejects a config hash for another image", async () => {
     const archive = syntheticImageArchive(); const path = archivePath(); writeFileSync(path, archive.bytes);
-    expect(() => assertImageArchive(path, `sha256:${"a".repeat(64)}`)).toThrow("not the expected image");
+    await expect(assertImageArchive(path, `sha256:${"a".repeat(64)}`)).rejects.toThrow("config image ID mismatch");
   });
-  it("rejects ordered layers whose manifest swaps their diff IDs", () => {
+  it("rejects ordered layers whose manifest swaps their diff IDs", async () => {
     const archive = syntheticImageArchive({ manifestLayers: ["layer-1.tar", "layer-0.tar"] }); const path = archivePath(); writeFileSync(path, archive.bytes);
-    expect(() => assertImageArchive(path, archive.image)).toThrow("layers are not the expected image");
+    await expect(assertImageArchive(path, archive.image)).rejects.toThrow("ordered layer diff_id mismatch");
   });
-  it("rejects a doubled manifest layer", () => {
+  it("rejects a doubled manifest layer", async () => {
     const archive = syntheticImageArchive({ manifestLayers: ["layer-0.tar", "layer-0.tar"] }); const path = archivePath(); writeFileSync(path, archive.bytes);
-    expect(() => assertImageArchive(path, archive.image)).toThrow("layers are not the expected image");
+    await expect(assertImageArchive(path, archive.image)).rejects.toThrow("duplicate listed layer");
   });
-  it("rejects duplicate tar entries even when the metadata bytes match", () => {
+  it("rejects duplicate tar entries even when the metadata bytes match", async () => {
     const archive = syntheticImageArchive({ duplicate: true }); const path = archivePath(); writeFileSync(path, archive.bytes);
-    expect(() => assertImageArchive(path, archive.image)).toThrow(/duplicate.*entry/i);
+    await expect(assertImageArchive(path, archive.image)).rejects.toThrow("duplicate path config.json");
   });
-  it("rejects a tar header with a damaged checksum", () => {
+  it("rejects a tar header with a damaged checksum", async () => {
     const archive = syntheticImageArchive(); archive.bytes[100] = 49; const path = archivePath(); writeFileSync(path, archive.bytes);
-    expect(() => assertImageArchive(path, archive.image)).toThrow(/checksum/i);
+    await expect(assertImageArchive(path, archive.image)).rejects.toThrow("header checksum");
   });
-  it("rejects malformed size bytes even after recomputing the header checksum", () => {
+  it("rejects malformed size bytes even after recomputing the header checksum", async () => {
     const archive = syntheticImageArchive(); archive.bytes.write("0000000000x\0", 124);
     archive.bytes.fill(32, 148, 156);
     const checksum = archive.bytes.subarray(0, 512).reduce((total, byte) => total + byte, 0);
     archive.bytes.write(`${checksum.toString(8).padStart(6, "0")}\0 `, 148);
     const path = archivePath(); writeFileSync(path, archive.bytes);
-    expect(() => assertImageArchive(path, archive.image)).toThrow(/Invalid.*(entry|size)|malformed.*size/i);
+    await expect(assertImageArchive(path, archive.image)).rejects.toThrow("malformed numeric field");
   });
-  it("rejects a config whose diff IDs do not hash its uncompressed layers", () => {
+  it("rejects a config whose diff IDs do not hash its uncompressed layers", async () => {
     const layer = tarArchive([["file", Buffer.from("uncompressed layer")]]);
     const config = jsonBytes({ rootfs: { type: "layers", diff_ids: [`sha256:${"0".repeat(64)}`] } });
     const bytes = tarArchive([["config.json", config], ["layer.tar", layer], ["manifest.json", jsonBytes([{ Config: "config.json", Layers: ["layer.tar"] }])]]);
     const path = archivePath(); writeFileSync(path, bytes);
-    expect(() => assertImageArchive(path, `sha256:${sha256(config)}`)).toThrow("layers are not the expected image");
+    await expect(assertImageArchive(path, `sha256:${sha256(config)}`)).rejects.toThrow("ordered layer diff_id mismatch");
   });
-  it("rejects a sparse oversized archive without reading its entire payload", () => {
-    const value = fixture(); truncateSync(value.archivePath, evidenceLimits.archiveBytes + 1);
-    expect(() => assertImageArchive(value.archivePath, value.archive.image)).toThrow(/Archive exceeds byte cap/);
+  it("rejects a sparse oversized archive without reading its entire payload", async () => {
+    const archive = syntheticImageArchive(); const path = archivePath(); writeFileSync(path, archive.bytes);
+    truncateSync(path, evidenceLimits.archiveBytes + 1);
+    await expect(assertImageArchive(path, archive.image)).rejects.toThrow("archive size or file type");
   });
 });

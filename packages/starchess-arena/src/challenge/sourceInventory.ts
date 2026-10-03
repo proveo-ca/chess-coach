@@ -220,9 +220,9 @@ export const collectSourceInventory = (
     const checker = ts.createProgram([file.path], bindingOptions, host).getTypeChecker();
     const binding = (node: ts.Identifier): ts.Symbol | string => {
       const parent = node.parent;
-      if (ts.isShorthandPropertyAssignment(parent)) return checker.getShorthandAssignmentValueSymbol(parent) ?? node.text;
-      if (ts.isExportSpecifier(parent)) return checker.getExportSpecifierLocalTargetSymbol(parent) ?? node.text;
-      return checker.getSymbolAtLocation(node) ?? node.text;
+      const symbol = ts.isShorthandPropertyAssignment(parent) ? checker.getShorthandAssignmentValueSymbol(parent)
+        : ts.isExportSpecifier(parent) ? checker.getExportSpecifierLocalTargetSymbol(parent) : checker.getSymbolAtLocation(node);
+      return symbol?.declarations?.length ? symbol : node.text;
     };
     const requireNames = new Set<ts.Symbol | string>(["require"]);
     const requireFactories = new Set<ts.Symbol | string>(["createRequire"]);
@@ -293,6 +293,10 @@ export const collectSourceInventory = (
     };
     const sourceIsName = (node: ts.Identifier): boolean => {
       const parent = node.parent;
+      if (ts.isExportSpecifier(parent) && (parent.isTypeOnly || parent.parent.parent.isTypeOnly)) return true;
+      let typeName: ts.Node = node;
+      while (ts.isQualifiedName(typeName.parent)) typeName = typeName.parent;
+      if (ts.isTypeQueryNode(typeName.parent) && typeName.parent.exprName === typeName) return true;
       return ts.isPropertyAccessExpression(parent) && parent.name === node ||
         (ts.isPropertyAssignment(parent) || ts.isMethodDeclaration(parent) || ts.isPropertyDeclaration(parent) || ts.isPropertySignature(parent) || ts.isMethodSignature(parent)) && parent.name === node && !ts.isComputedPropertyName(parent.name);
     };
@@ -306,7 +310,8 @@ export const collectSourceInventory = (
         const alias = ts.isVariableDeclaration(parent) && parent.initializer === use && ts.isIdentifier(parent.name) && !resolver(expression);
         const directCall = ts.isCallExpression(parent) && parent.expression === use && !namespace(expression);
         const member = (ts.isPropertyAccessExpression(parent) || ts.isElementAccessExpression(parent)) && parent.expression === use &&
-          (namespace(expression) && (factory(parent) || loader(parent)) || loader(expression) && resolver(parent));
+          (namespace(expression) && (factory(parent) || loader(parent)) || loader(expression) && resolver(parent) ||
+            ts.isIdentifier(expression) && binding(expression) === "module" && property(parent)?.name === "exports");
         if (!declaration && !alias && !directCall && !member) throw new Error(`Unsupported loader escape: ${file.path}`);
         const variable = alias ? parent : declaration ? node.parent : undefined;
         if (variable && ts.isVariableDeclaration(variable) && (ts.getCombinedModifierFlags(variable) & ts.ModifierFlags.Export)) throw new Error(`Unsupported loader escape: ${file.path}`);

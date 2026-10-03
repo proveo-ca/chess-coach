@@ -32,17 +32,28 @@ export function originalEvidence() {
 export function readEvidenceGeneration() {
   const names = ["baseline-report.json", "coverage.json", "contract-report.json", "pin-migration.json"] as const;
   const fresh = process.env.HERMETIC_OUTPUT_DIRECTORY;
+  if (fresh === "") throw new Error("HERMETIC_OUTPUT_DIRECTORY must name a fresh evidence directory");
   const directory = fresh ?? fileURLToPath(new URL("_spec/evidence/ml-adjutant-phase2", REPOSITORY_ROOT));
-  const files = Object.fromEntries(names.map((name) => [name, readFileSync(join(directory, name))])) as Record<typeof names[number], Buffer>;
   const historical = !fresh && !existsSync(join(directory, ".publication-complete"));
+  let files: Record<typeof names[number], Buffer>;
+  if (!fresh && !historical) {
+    const { readPublishedBundle } = require("../../../hermetic/evidence-bundle.mjs") as {
+      readPublishedBundle: (path: string) => { artifacts: Map<string, Buffer> };
+    };
+    const bundle = readPublishedBundle(directory);
+    files = Object.fromEntries(names.map((name) => {
+      const bytes = bundle.artifacts.get(name);
+      if (!bytes) throw new Error(`Published evidence is missing ${name}`);
+      return [name, bytes];
+    })) as Record<typeof names[number], Buffer>;
+  } else {
+    files = Object.fromEntries(names.map((name) => [name, readFileSync(join(directory, name))])) as Record<typeof names[number], Buffer>;
+  }
   if (historical) {
     for (const name of names) {
       const pinned = history.files[`_spec/evidence/ml-adjutant-phase2/${name}`];
       if (!pinned || files[name].length !== pinned.bytes || sha256(files[name]) !== pinned.sha256) throw new Error(`Unpublished evidence is not locked history: ${name}`);
     }
-  } else if (!fresh) {
-    const { readPublishedBundle } = require("../../../hermetic/publication.mjs") as { readPublishedBundle: (path: string) => unknown };
-    readPublishedBundle(directory);
   }
   return { files, historical, directory };
 }
@@ -138,7 +149,19 @@ export function buildImportFixture(diagnostics: ReturnType<typeof buildDiagnosti
   writeFileSync(join(originalDirectory, "baseline-report.json"), original.baseline);
   writeFileSync(join(originalDirectory, "verification.json"), original.verification);
   const target = "/app/_spec/evidence/ml-adjutant-phase2";
+  const current = decode<Baseline>(diagnostics["baseline-report.json"]);
+  current.pins = { ...executionPins(), nodeVersion: `v${runtimePins.node}` };
+  const currentBytes = jsonBytes(current);
+  const migration = decode<Record<string, unknown>>(diagnostics["pin-migration.json"]);
+  const contract = decode<Record<string, unknown>>(diagnostics["contract-report.json"]);
+  const inventory = current.pins.sourceInventory;
+  Object.assign(migration, { currentBaselineSha256: sha256(currentBytes), inventorySha256: inventory.inventorySha256,
+    importAuditSha256: sha256(canonical(inventory.audit)), newlyCoveredPaths: inventory.files.filter((entry) =>
+      !entry.path.startsWith("packages/starchess-core/src/") &&
+      !["challenge", "cli", "players", "run"].some((directory) => entry.path.startsWith(`packages/starchess-arena/src/${directory}/`))).map((entry) => entry.path) });
+  Object.assign(contract, { pins: current.pins, baselineReportSha256: sha256(currentBytes) });
   const files: Record<string, Buffer> = { ...diagnostics,
+    "baseline-report.json": currentBytes, "pin-migration.json": jsonBytes(migration), "contract-report.json": jsonBytes(contract),
     "vitest-starchess-core.json": jsonBytes(syntheticVitestReport(426, "starchess-core")),
     "vitest-starchess-arena.json": jsonBytes(syntheticVitestReport(434, "starchess-arena")),
   };

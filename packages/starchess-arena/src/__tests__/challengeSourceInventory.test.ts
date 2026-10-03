@@ -191,6 +191,48 @@ describe("partitioned challenge source inventory", () => {
       expect.objectContaining({ specifier: "./supervisor.ts", target: `${ARENA}/src/challenge/supervisor.ts` }),
     ]);
   });
+
+  it.each([".mjs", ".js"])("audits loader aliases and escapes in JavaScript %s files", (extension) => {
+    const root = fixture();
+    const path = `${ARENA}/src/challenge/escape${extension}`;
+    put(root, path, 'import nodeModule from "node:module"; const make = later; const later = nodeModule["createRequire"]; make(import.meta.url)("../challengeContract/codec.ts");\n');
+    expect(() => collectSourceInventory(root)).toThrow("Forbidden partition edge");
+    put(root, path, 'import nodeModule from "node:module"; const box = {make: nodeModule["createRequire"]}; box.make(import.meta.url)("../challengeContract/codec.ts");\n');
+    expect(() => collectSourceInventory(root)).toThrow("Unsupported loader escape");
+  });
+
+  it.each([
+    ['require(variable);', "Computed module loader"],
+    ['const box = {require}; box.require("../challengeContract/codec.ts");', "Unsupported loader escape"],
+    ['const nodeModule = require("node:module"); nodeModule.createRequire(__filename)("../challengeContract/codec.ts");', "Unsupported dynamic module import"],
+  ])("rejects unauditable CommonJS loader uses: %s", (code, message) => {
+    const root = fixture();
+    put(root, `${ARENA}/src/challenge/escape.cjs`, code);
+    expect(() => collectSourceInventory(root)).toThrow(message);
+  });
+
+  it("audits ordinary CommonJS imports and exports", () => {
+    const root = fixture();
+    put(root, `${ARENA}/src/challenge/helper.cjs`, "module.exports = {value: 42};\n");
+    put(root, `${ARENA}/src/challenge/load.cjs`, 'module.exports = require("./helper.cjs");\n');
+    expect(collectSourceInventory(root).audit.edges).toContainEqual(expect.objectContaining({
+      importer: `${ARENA}/src/challenge/load.cjs`, target: `${ARENA}/src/challenge/helper.cjs`, kind: "require",
+    }));
+  });
+
+  it("allows erased loader type queries and type-only reexports", () => {
+    const root = fixture();
+    put(root, `${ARENA}/src/challenge/worker.ts`, 'import {createRequire as make} from "node:module";\nimport nodeModule from "node:module";\ntype Factory = typeof make;\ntype Namespace = typeof nodeModule;\nexport type {make, nodeModule, Factory, Namespace};\nexport {type make as FactoryValue};\nexport {type createRequire} from "node:module";\n');
+    expect(collectSourceInventory(root).audit.passed).toBe(true);
+  });
+
+  it("audits its own actual source without confusing AST property names with loader references", () => {
+    const root = fixture();
+    const path = `${ARENA}/src/challenge/sourceInventory.ts`;
+    put(root, path, readFileSync(join(repository, path), "utf8"));
+    put(root, `${ARENA}/src/challenge/config.ts`, "export const canonical = JSON.stringify;\n");
+    expect(collectSourceInventory(root).audit.auditedFiles).toContain(path);
+  });
   it("enumerates deterministic disjoint complete partitions, pins itself, and hashes explicit records", () => {
     const root = fixture();
     const inventory = collectSourceInventory(root);

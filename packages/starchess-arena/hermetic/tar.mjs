@@ -211,9 +211,10 @@ async function layerHash(entry, file, budget) {
   } finally { stream.destroy(); unzip.destroy(); }
 }
 
-export async function assertImageArchive(path, image) {
+export async function assertImageArchive(path, image, { limits = evidenceLimits } = {}) {
   if (!/^sha256:[0-9a-f]{64}$/.test(image)) throw new Error('Expected immutable image ID');
   return scanTarFile(path, {
+    limits,
     retain: (entry) => entry.path === 'manifest.json',
     inspect: async (entry, file, budget) => {
       if (entry.type === 'file') entry.diffId = await layerHash(entry, file, budget);
@@ -228,9 +229,9 @@ export async function assertImageArchive(path, image) {
   const configPath = archivePath(record.Config);
   const configEntry = scanned.entries.get(configPath);
   if (configEntry?.type !== 'file' || configEntry.sha256 !== image.slice(7)) fail('config image ID mismatch');
-  if (configEntry.bytes > evidenceLimits.fileBytes) fail('config file limit');
-  charge(budget, 'retained', configEntry.bytes, evidenceLimits.retainedBytes);
-  charge(budget, 'scan', configEntry.bytes, evidenceLimits.scanBytes);
+  if (configEntry.bytes > limits.fileBytes) fail('config file limit');
+  charge(budget, 'retained', configEntry.bytes, limits.retainedBytes);
+  charge(budget, 'scan', configEntry.bytes, limits.scanBytes);
   const configBytes = Buffer.alloc(configEntry.bytes);
   let done = 0;
   while (done < configBytes.length) {

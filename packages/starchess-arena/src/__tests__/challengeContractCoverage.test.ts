@@ -38,4 +38,22 @@ describe("Phase2 measured coverage and migration evidence", () => {
     expect(canonical(measureCoverage())).toBe(canonical(coverage));
     expect(canonical(report.pins)).toBe(canonical(executionPins()));
   });
+
+  it.each(["baseline-report.json", "coverage.json", "contract-report.json", "pin-migration.json"] as const)(
+    "requires %s in the configured fresh output without falling back to host history", (missing) => {
+      const directory = mkdtempSync("/tmp/opencode/coverage-generation-");
+      const previous = process.env.HERMETIC_OUTPUT_DIRECTORY;
+      try {
+        for (const [name, bytes] of Object.entries(generation.files)) if (name !== missing) writeFileSync(join(directory, name), bytes);
+        process.env.HERMETIC_OUTPUT_DIRECTORY = directory;
+        expect(() => readEvidenceGeneration()).toThrow(missing);
+      } finally {
+        if (previous === undefined) delete process.env.HERMETIC_OUTPUT_DIRECTORY;
+        else process.env.HERMETIC_OUTPUT_DIRECTORY = previous;
+        rmSync(directory, { recursive: true, force: true });
+      }
+    },
+  );
 });
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
