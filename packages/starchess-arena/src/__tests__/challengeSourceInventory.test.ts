@@ -35,6 +35,18 @@ const fixture = (): string => {
 };
 
 describe("partitioned challenge source inventory", () => {
+  it.each([
+    'import.meta.url = "file:///contracts/anchor.cjs";',
+    'delete import.meta.url;',
+    'const meta = import.meta; Object.assign(meta, {url: "file:///contracts/anchor.cjs"});',
+    'Object.defineProperty(import.meta, "url", {value: "file:///contracts/anchor.cjs"});',
+    'const load = (() => {}).constructor(`return process.getBuiltinModule("module")`)();',
+    'const compile = Reflect.get(() => {}, "constructor"); compile("return process")();',
+  ])("rejects metadata mutation and indirect code constructors: %s", (code) => {
+    const root = fixture();
+    put(root, `${CORE}/src/index.ts`, code);
+    expect(() => collectSourceInventory(root)).toThrow(/Unsupported import metadata|Unsupported code constructor/);
+  });
   it("audits execution files named infra.test.mjs instead of bypassing partition rules", () => {
     const root = fixture();
     put(root, `${ARENA}/src/infra.test.mjs`, 'import "./challengeContract/codec";\n');

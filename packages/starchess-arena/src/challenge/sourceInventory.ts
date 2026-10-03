@@ -351,9 +351,22 @@ export const collectSourceInventory = (
         (ts.isPropertyAssignment(parent) || ts.isMethodDeclaration(parent) || ts.isPropertyDeclaration(parent) || ts.isPropertySignature(parent) || ts.isMethodSignature(parent)) && parent.name === node && !ts.isComputedPropertyName(parent.name);
     };
     const visit = (node: ts.Node): void => {
+      if (ts.isMetaProperty(node) && node.keywordToken === ts.SyntaxKind.ImportKeyword) {
+        const access = node.parent;
+        if (!ts.isPropertyAccessExpression(access) || access.expression !== node || !["url", "dirname", "filename"].includes(access.name.text)) throw new Error(`Unsupported import metadata escape: ${file.path}`);
+        const use = wrappedUse(access);
+        const parent = use.parent;
+        if (ts.isDeleteExpression(parent) ||
+            ts.isBinaryExpression(parent) && parent.left === use && parent.operatorToken.kind >= ts.SyntaxKind.FirstAssignment && parent.operatorToken.kind <= ts.SyntaxKind.LastAssignment ||
+            (ts.isPrefixUnaryExpression(parent) || ts.isPostfixUnaryExpression(parent)) && [ts.SyntaxKind.PlusPlusToken, ts.SyntaxKind.MinusMinusToken].includes(parent.operator)) {
+          throw new Error(`Unsupported import metadata mutation: ${file.path}`);
+        }
+      }
       const value = !ts.isPartOfTypeNode(node) && (ts.isIdentifier(node) && !sourceIsName(node) || ts.isPropertyAccessExpression(node) || ts.isElementAccessExpression(node) || ts.isCallExpression(node));
       if (value && evaluation(node as ts.Expression)) throw new Error(`Unsupported string evaluation: ${file.path}`);
       const accessed = value ? property(node as ts.Expression) : undefined;
+      if (accessed?.name === "constructor") throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
+      if (ts.isCallExpression(node) && ["get", "getOwnPropertyDescriptor"].includes(property(node.expression)?.name ?? "") && literal(node.arguments[1]) === "constructor") throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
       if (accessed && processNamespace(accessed.receiver) && accessed.name === "getBuiltinModule") throw new Error(`Unsupported builtin acquisition: ${file.path}`);
       if (accessed && namespace(accessed.receiver) && ["register", "registerHooks"].includes(accessed.name ?? "")) throw new Error(`Unsupported module loader API: ${file.path}`);
       if (value && (namespace(node as ts.Expression) || processNamespace(node as ts.Expression) || globalNamespace(node as ts.Expression) || factory(node as ts.Expression) || loader(node as ts.Expression) || resolver(node as ts.Expression))) {
