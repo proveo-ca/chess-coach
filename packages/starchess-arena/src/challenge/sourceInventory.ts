@@ -230,6 +230,7 @@ export const collectSourceInventory = (
     const processNamespaces = new Set<ts.Symbol | string>(["process"]);
     const globalNamespaces = new Set<ts.Symbol | string>(["globalThis", "global"]);
     const reflectionNamespaces = new Set<ts.Symbol | string>(["Reflect"]);
+    const reassignedBindings = new Set<ts.Symbol | string>();
     const unwrapValue = (node: ts.Expression): ts.Expression => {
       if (ts.isParenthesizedExpression(node) || ts.isAsExpression(node) || ts.isNonNullExpression(node) || ts.isTypeAssertionExpression(node) || ts.isSatisfiesExpression(node)) return unwrapValue(node.expression);
       return node;
@@ -307,6 +308,7 @@ export const collectSourceInventory = (
       return member !== undefined && member.name === "resolve" && loader(member.receiver);
     };
     const scanBindings = (node: ts.Node): void => {
+      if (ts.isBinaryExpression(node) && node.operatorToken.kind >= ts.SyntaxKind.FirstAssignment && node.operatorToken.kind <= ts.SyntaxKind.LastAssignment && ts.isIdentifier(node.left)) reassignedBindings.add(binding(node.left));
       if (ts.isImportDeclaration(node) && ["node:module", "module"].includes(literal(node.moduleSpecifier) ?? "")) {
         if (node.importClause?.isTypeOnly) return;
         if (node.importClause?.name) moduleNamespaces.add(binding(node.importClause.name));
@@ -406,7 +408,8 @@ export const collectSourceInventory = (
       const accessed = value ? property(node as ts.Expression) : undefined;
       if (["constructor", "__proto__", "getPrototypeOf", "getOwnPropertyDescriptors"].includes(accessed?.name ?? "")) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
       if (accessed && reflectionNamespace(accessed.receiver) && !["ownKeys", "apply", "has", "set", "deleteProperty"].includes(accessed.name ?? "")) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
-      if (ts.isBindingElement(node) && node.propertyName && ((ts.isIdentifier(node.propertyName) || ts.isStringLiteralLike(node.propertyName)) && node.propertyName.text === "constructor" || ts.isComputedPropertyName(node.propertyName))) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
+      if (ts.isBindingElement(node) && node.propertyName && ((ts.isIdentifier(node.propertyName) || ts.isStringLiteralLike(node.propertyName)) && ["constructor", "__proto__", "getPrototypeOf", "getOwnPropertyDescriptors", "getOwnPropertyDescriptor"].includes(node.propertyName.text) || ts.isComputedPropertyName(node.propertyName))) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
+      if (ts.isElementAccessExpression(node) && ts.isIdentifier(unwrapValue(node.expression)) && reassignedBindings.has(binding(unwrapValue(node.expression) as ts.Identifier))) throw new Error(`Unsupported mutable computed receiver: ${file.path}`);
       if (ts.isElementAccessExpression(node) && (checker.getTypeAtLocation(origin(node.expression)).getCallSignatures().length ||
           ts.isArrowFunction(origin(node.expression)) || ts.isFunctionExpression(origin(node.expression)))) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
       if (accessed?.name === "getOwnPropertyDescriptor" && !(ts.isCallExpression(node.parent) && node.parent.expression === node)) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);

@@ -52,10 +52,12 @@ describe("partitioned challenge source inventory", () => {
     'const key = ["con", "structor"].join(""); const compile = ((() => {}) as any)[key];',
     'const fn: any = () => {}; const key = ["con", "structor"].join(""); const compile = fn[key];',
     'const key = ["con", "structor"].join(""); const compile = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(() => {}), key).value;',
+    'let fn: any = {}; fn = () => {}; const key = ["con", "structor"].join(""); const compile = fn[key];',
+    'const {getPrototypeOf: p} = Object; const proto = p(() => {}); const key = ["con", "structor"].join(""); const compile = proto[key];',
   ])("rejects metadata mutation and indirect code constructors: %s", (code) => {
     const root = fixture();
     put(root, `${CORE}/src/index.ts`, code);
-    expect(() => collectSourceInventory(root)).toThrow(/Unsupported import metadata|Unsupported code constructor/);
+    expect(() => collectSourceInventory(root)).toThrow(/Unsupported import metadata|Unsupported code constructor|Unsupported mutable computed receiver/);
   });
   it("audits execution files named infra.test.mjs instead of bypassing partition rules", () => {
     const root = fixture();
