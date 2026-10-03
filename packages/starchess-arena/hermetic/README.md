@@ -147,9 +147,10 @@ The standard runner executes the following sequence:
 4. Invoke `scripts/challenge-contract-evidence.ts` through arena's installed `tsx`, with no CLI arguments.
 5. Require generated `contract-report.json`, `pin-migration.json`, and `coverage.json`.
 6. Typecheck core and arena.
-7. Execute core and arena test suites.
-8. Recompute and compare immutable artifact manifests.
-9. Publish `verification.json` with successful command records and output artifact hashes.
+7. Strictly typecheck the integrity tests and both evidence scripts, then execute core and arena test suites.
+8. Execute `evidence-bundle.test.mjs`, `image-measurement.test.mjs`, and `tar.test.mjs` through the pinned Node interpreter.
+9. Recompute and compare immutable artifact manifests.
+10. Publish `hermetic-verification-v2` with the exact eight successful command records and output artifact hashes.
 
 The diagnostic receives `HERMETIC_OUTPUT_DIRECTORY=/app/_spec/evidence/ml-adjutant-phase2`.
 It consumes the generated `baseline-report.json` at that path.
@@ -175,3 +176,27 @@ HERMETIC_DEPENDENCY_IMAGE=sha256:... node --test packages/starchess-arena/hermet
 
 Run the suite with `HERMETIC_DEPENDENCY_IMAGE` to execute the Docker test.
 Without that environment variable, the suite skips the Docker test.
+
+## R0 evidence refresh
+
+The host measures image files through bounded tar streams from an unstarted container.
+It checks the Node interpreter against the binary SHA-256 measured from the digest-pinned official base.
+It never executes image code to obtain trusted measurements.
+The archive checker binds the config or OCI image ID and every positional uncompressed layer digest.
+
+`evidence-limits.mjs` owns the approved limits: 16 MiB per input, 64 MiB retained evidence,
+512 MiB archive, 2 GiB scan/expansion, 16 MiB metadata, 262144 entries, and 4096-byte paths.
+The importer reads bounded descriptors, binds both Vitest reports to their commands,
+and authoritatively validates all seven data inputs against a retained source capture.
+
+Publish the refresh with the importer’s `--destination _spec/evidence/ml-adjutant-r0-refresh` option.
+Keep the existing phase-2 bundle unchanged.
+Publication uses exclusive creation and an atomically linked, hash-bound completion marker.
+Readers require the marker and its complete inventory; marker presence does not prove crash durability.
+Postcommit errors retain the bundle and report committed state.
+
+In-image tests use `HERMETIC_OUTPUT_DIRECTORY` and require that generation’s files without fallback.
+Import-test fixtures derive from pinned phase-1 rows and synthetic test-only tool reports.
+They never read their enclosing suite’s unfinished Vitest output.
+Local tests prefer the published R0 refresh; only exact byte-pinned historical inputs use historical mode.
+The two live-pin assertions run on the fresh generation before R0 can close.

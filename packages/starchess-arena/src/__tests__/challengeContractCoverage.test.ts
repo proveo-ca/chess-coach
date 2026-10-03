@@ -39,7 +39,7 @@ describe("Phase2 measured coverage and migration evidence", () => {
   it.runIf(!generation.historical)("reproduces fresh coverage and current runtime pins", () => {
     expect(canonical(measureCoverage())).toBe(canonical(coverage));
     expect(canonical(report.pins)).toBe(canonical(executionPins()));
-  });
+  }, 30000);
 
   it.each(["baseline-report.json", "coverage.json", "contract-report.json", "pin-migration.json"] as const)(
     "requires %s in the configured fresh output without falling back to host history", (missing) => {

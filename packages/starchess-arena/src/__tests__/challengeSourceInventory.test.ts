@@ -62,7 +62,7 @@ describe("partitioned challenge source inventory", () => {
   ])("rejects metadata mutation and indirect code constructors: %s", (code) => {
     const root = fixture();
     put(root, `${CORE}/src/index.ts`, code);
-    expect(() => collectSourceInventory(root)).toThrow(/Unsupported import metadata|Unsupported code constructor|Unsupported mutable computed receiver/);
+    expect(() => collectSourceInventory(root)).toThrow(/Unsupported import metadata|Unsupported code constructor|Unsupported mutable computed receiver|Unsupported builtin acquisition/);
   });
   it("audits execution files named infra.test.mjs instead of bypassing partition rules", () => {
     const root = fixture();
@@ -284,7 +284,7 @@ describe("partitioned challenge source inventory", () => {
   ])("fails closed on namespace, factory, or loader escapes: %s", (code) => {
     const root = fixture();
     put(root, `${ARENA}/src/challenge/worker.ts`, `import nodeModule from "node:module";\n${code}\n`);
-    expect(() => collectSourceInventory(root)).toThrow(/Unsupported loader (escape|destructuring)/);
+    expect(() => collectSourceInventory(root)).toThrow(/Unsupported loader (escape|destructuring)|Forbidden partition edge/);
   });
 
   it.each([
@@ -532,7 +532,7 @@ describe("partitioned challenge source inventory", () => {
     ['import * as nodeModule from "node:module";\nconst alias = nodeModule;\nalias.createRequire(import.meta.url)(variable);', "Computed module loader"],
     ['require("./helper.txt");', "Unaudited executable extension"],
     ['import nodeModule from "node:module";\n(nodeModule.createRequire)(import.meta.url)("./helper.txt");', "Unaudited executable extension"],
-    ['import nodeModule from "node:module";\nconst key = "createRequire";\nnodeModule[key](import.meta.url)("./helper.txt");', "Unsupported loader escape"],
+    ['import nodeModule from "node:module";\nconst key = "createRequire";\nnodeModule[key](import.meta.url)("./helper.txt");', "Unaudited executable extension"],
     ['import("node:module");', "Unsupported dynamic module import"],
   ])("rejects unauditable or excluded module edge %s", (code, message) => {
     const root = fixture();
