@@ -1,6 +1,6 @@
 # Adjutant evolution — from strategies to learned opponent
 
-Status: **planning only** (not scheduled work).  
+Status: **learning roadmap only; NOT training-ready. R0 CLOSED within accepted non-learned assurance.**  
 Scope: how Single Player’s opponent (`packages/starchess-core/src/ai/adjutant.ts`) grows from named strategy algorithms → a composed heuristic → something that learns, without rewriting the StarChess rules engine.
 
 The preparatory catalog is implemented and verified separately from this learning roadmap;
@@ -11,34 +11,63 @@ the verification record includes the existing full-app lint baseline exception:
 The registry ID is `machine-learning`; `ml/` names proposed training tooling, not an opponent alias.
 `machine-learning`, `rlhf`, and `rlcd` remain EMPTY and unavailable until implemented.
 The implemented catalog definitions do not complete any learning stage below.
+
+## Current R0 foundation — closed, not training-ready
+
+The authoritative [strict ML roadmap](_spec/_plans/PLAN-ml-adjutant.md) records **A01–A15 CLOSED** within accepted non-learned execution/evidence assurance.
+Use unchanged [R0 closure JSON](_spec/evidence/ml-adjutant-r0-closure.json) and [fresh frozen verification](_spec/evidence/ml-adjutant-r0-refresh/verification.json) for current facts and pins.
+Final post-publication adversarial `ses_efe0ed67dffew2su1gZIUaDy23` and security `ses_efe0ed520ffeOEg3kd6jAtN33i` both returned **READY TO CLOSE R0: yes**.
+Recorded current checks: **689/689 arena + 426/426 core**, zero failed/pending/todo; **54 executions + 54 semantic reruns**, parity true; **107 Node tests**, **5/5 actual Docker infrastructure**, and **13/13 host post-publication checks**, no skips.
+The host checks include both live source pins; all **8 exact verification commands**, including three static checks and both scripts, passed.
+The [current closure/pin record](_spec/_plans/PLAN-ml-adjutant.md#r0-closure--current-frozen-evidence) identifies the new frozen image and publication separately from the historical records below.
+This closes assurance, not learning: weights remain **NONE**, no trained artifact or learned acceptance exists, and `machine-learning` stays unavailable.
+Lead reports both updated diagrams passed PlantUML `checkonly` with exit **0** and `git diff --check` passed; this navigation-only follow-up does not rerun those checks.
+
+### Historical Phase 1 verification
+
 The separate strict-challenge roadmap now owns Phase 1 in `packages/starchess-arena`:
 [`ml-adjutant-challenge-harness.puml`](_spec/packages/starchess-arena/ml-adjutant-challenge-harness.puml).
-Phase 1 is IMPLEMENTED and VERIFIED by tests and persisted execution evidence;
-the lead reports adversarial and security reviews READY: yes for the trusted non-learned scope.
-Final arena verification passed 164 tests / 17 files after all source/test changes, arena
-typecheck, and the strict test TypeScript check; core remains 426 tests / 53 files with typecheck passed.
-Evidence:
+Phase 1 is IMPLEMENTED; the following records its historical verification, not the current R0 generation.
+The lead historically reported adversarial and security reviews READY: yes for the trusted non-learned scope.
+Then-final arena verification passed 164 tests / 17 files after all source/test changes, arena
+typecheck, and the strict test TypeScript check; that core run passed 426 tests / 53 files with typecheck passed.
+Historical evidence:
 [`baseline-report.json`](_spec/evidence/ml-adjutant-phase1/baseline-report.json) and
 [`verification.json`](_spec/evidence/ml-adjutant-phase1/verification.json).
-All 54 semantic reruns match; candidate wins remain 0/18 corpus and 0/36 live strategic.
+All 54 historical semantic reruns matched; candidate wins remain 0/18 corpus and 0/36 live strategic.
 This completes the non-learned harness baseline, not learned acceptance.
-Both renamed diagrams and the edited spec map passed PlantUML `checkonly`.
-Phase 2 hermetic verification PASSED in arena. This is not a learned PASS.
-Post-image adversarial and security rereview is not yet recorded:
+Both renamed diagrams and the edited spec map historically passed PlantUML `checkonly`.
+Historical Phase 2 hermetic verification PASSED in arena; its records remain below. This is not a learned PASS.
+Current policy/assurance boundary:
 [`ml-adjutant-policy-contracts.puml`](_spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml).
+
+### First-training prerequisites — still pending
+
 Executor chose **Broader first trained ranker**:
 [`ml-adjutant-weights.md`](_spec/_plans/ml-adjutant-weights.md).
 FIRST Phase 3 training requires a separately versioned combination generator and v2 authorized
 economic/positional interactions, own-loss lineage ledger, and confirmed opponent-loss lower bounds with fog uncertainty.
+The selected **turn-aware calibrated belief** also requires a versioned amendment before training.
+Its public turn-0 prior is **4 surviving deployed combat replacement + 3 banked minerals = 7**, excluding CC; endowed opening units have paid basis **0**.
+Compare known own surviving combat replacement material against the authorized-history estimate of enemy surviving deployed combat replacement material under equivalent valuation.
+Keep deployed material and inferred enemy bank as separate components; neither is an exact hidden-state or historical-payment oracle.
+Use native `incomeForTurn(t)` and `applyStoredIncome` at actual income-grant boundaries, not planning ordinals, frame counts, or turn changes alone.
+Exact belief architecture, calibration data/objective/thresholds, and versioned feature amendment remain **PENDING**; the prior frozen **370**-field v2 contract does not supply a calibrated model.
+The [canonical economic gate](_spec/_plans/PLAN-ml-adjutant.md#selected-economic-extension--pre-training-gate) and [R1 amendment contract](_spec/_plans/ml-adjutant-r1-contracts.md#21-selected-economic-extension--amendment-pending) own the details; do not duplicate or silently amend their recipe here.
+R1 amendment and R2–R5 implementation/readiness must close before explicit R6 training approval; R7 artifact/runtime validation precedes R8 learned acceptance.
 Current named feature arrays (ranker 158 / action 64 / observation 1623) have **no weights** and are not adequate
 for that first trained ranker. Start at H=1; three conditional simultaneous planning windows are separate future work.
 Training, learned models/artifacts, and browser rollout remain unimplemented; registry entries stay EMPTY/unavailable.
 
-The final source image is `sha256:e7f9ea8ac211c93804bd1125ed28fb7e165a160c4155ca70404c81f9e431710d`.
-The lead reports a fresh standard dependency image `sha256:4c9d45b04f325a2d912cb34ebc982f139f057a2f2fb6d779ac2ef59f29ea987d`.
-The official Node 22.23.2 bookworm-slim platform digest is
+### Historical Phase 2 image and evidence snapshot
+
+The following records the earlier Phase 2 generation, not the current R0 image, verification, or review verdict.
+Keep these results and hashes unchanged as history; use the current R0 foundation above for closure navigation.
+The historical source image is `sha256:e7f9ea8ac211c93804bd1125ed28fb7e165a160c4155ca70404c81f9e431710d`.
+The lead historically reported the then-fresh dependency image `sha256:4c9d45b04f325a2d912cb34ebc982f139f057a2f2fb6d779ac2ef59f29ea987d`.
+The official Node 22.23.2 bookworm-slim platform digest recorded for that snapshot is
 `sha256:43aeff40f4afc22e83f7589a2f37e111cff5ca84529571f1c8415bcc5fcc21b2`.
-The image run passed network-none, read-only, and nonroot.
+That historical image run passed network-none, read-only, and nonroot.
 Baseline 54 executions plus 54 reruns are semantically equal.
 `executionIntegrity` is true. `learnedGateEligible` is false.
 Results are unchanged: corpus 18 scheduled, 0 wins, 2 terminal losses, 16 queue-rejected;
@@ -47,16 +76,16 @@ Coverage is representability, not winning coverage: exact queues 18/282, singlet
 codec 282/282, features 282/282.
 In-image vitest passed core 426/426 and arena 434/434.
 In-image core and arena typecheck passed, and the strict test `tsc` passed.
-The lead reports host-after-import current-evidence checks passed 7 tests / 2 files, and arena typecheck passed.
-Evidence is imported under `_spec/evidence/ml-adjutant-phase2/`. Phase 1 bytes are unchanged.
-Current baseline SHA-256 is `5de86d94caaa626402b73ac9fa8f6bbc7a9b111e69a8b3801461380635cbd87f`.
+The lead historically reported host-after-import checks passed 7 tests / 2 files, and arena typecheck passed.
+Historical evidence remains under `_spec/evidence/ml-adjutant-phase2/`. Phase 1/2 original bytes remain unchanged.
+Historical Phase 2 baseline SHA-256 is `5de86d94caaa626402b73ac9fa8f6bbc7a9b111e69a8b3801461380635cbd87f`.
 The [pre-rename evidence bundle](_spec/evidence/ml-adjutant-phase2-before-diagram-rename/verification.json)
-is historical; the [current verification](_spec/evidence/ml-adjutant-phase2/verification.json) records fresh execution after pointer relocation.
+is historical; the [post-rename historical verification](_spec/evidence/ml-adjutant-phase2/verification.json) records the then-fresh execution after pointer relocation, not current R0 repairs.
 The external archive SHA-256 `64d6277f439f7cdfb82ecb2c6a230f735c5c7f3588d7f13082a30b430e6d07f7`
 is not in the repo. The lead reports its path as `/tmp/opencode/starchess-hermetic-export-k1KYQO/image.tar`.
-Pre-freeze findings were fixed before this freeze. Rename-only adversarial review is **READY: yes**.
-Full implementation post-image security rereview remains unrecorded. Both renamed diagrams and the spec map passed PlantUML `checkonly`.
-See the strict roadmap for pins and the remaining review handoff.
+Earlier scoped pre-freeze findings were reported fixed before that historical freeze. Rename-only adversarial review was **READY: yes**.
+Full implementation post-image security rereview was unrecorded at that snapshot; both renamed diagrams and the spec map had passed PlantUML `checkonly`.
+Those historical approvals do not replace current R0 closure or satisfy remaining training gates; use the authoritative strict roadmap linked above.
 This historical evolution ladder does not override the authorized-observation/no-fallback challenge contracts.
 
 This replaces the prior standalone-migration PLAN (Phases 1–6 are done).
