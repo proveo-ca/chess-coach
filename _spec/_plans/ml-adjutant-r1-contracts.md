@@ -1,12 +1,12 @@
 # ML Adjutant — approved exact R1 future contracts
 
 Status: **Prior Executor-approved future R1 design contract FROZEN; new economic amendment PENDING. NOT implemented or validated.**
-R0: **all 15 findings PENDING: 7 HIGH + 8 MEDIUM; READY TO MERGE: no.**
-Full implementation security rereview: **UNRECORDED**. Learned model / weights: **NONE**.
+R0: **CLOSED within accepted non-learned assurance; A01–A15 resolved**, preserving original **7 HIGH + 8 MEDIUM** history.
+Unchanged [closure JSON](../evidence/ml-adjutant-r0-closure.json) records both final post-publication reviews **READY TO CLOSE R0: yes**. Learned model / weights: **NONE**.
 R1 **design contract FROZEN**: Executor selected API A, quota B, provenance A, curriculum A, validation A and COMMON A after document-only rereviews.
 R2–R5 remain **unimplemented** and require persisted validation; R6 training is **not authorized**.
-This document records no build, training, registry activation, test result, new hash, or evidence.
-This approval pass synchronizes only this contract, the recipe, weights ledger and PLAN; source, tests, diagrams, corpus and evidence remain unchanged.
+This document implements no learner, training, registry activation, or new R1 evidence; R0 closure references remain separate from future contract validation.
+This docs-only closure synchronization changes no source, tests, configs, corpus, or evidence bytes.
 The source-reading inventory and historical pins remain frozen historical evidence, not a refreshed source inspection.
 **New economic extension: SELECTED DIRECTION; exact amendment NOT CHOSEN, NOT implemented or validated.** The prior frozen 370-field contract does not satisfy [§2.1](#21-selected-economic-extension--amendment-pending); extended R1 design/readiness remains open before R6.
 
@@ -964,7 +964,7 @@ Compute dueBucket=floor(started/100); when it exceeds previous durable fulfilled
 Mark the live fulfilledBucket ONLY AFTER verified exclusive durable bundle publication succeeds, not on serialization or file existence; saved fulfilledBucket=dueBucket.
 Any publication failure/ambiguous post-commit durability stops ALL; preserve consumed diagnostics and do not auto-retry/resume or claim the bucket fulfilled.
 Attempt100 with zero choices delays; eligible101 saves actualEpoch101 and fulfills bucket1. Zero-choice1000 never starts1001; final VALID may exist without a diagnostic checkpoint at1000.
-Do not save unfinished/aborted/zero-choice episodes or fabricate a L2-only zero-choice boundary; R0 A11–A13 remain PENDING prerequisites for verified publication/reuse.
+Do not save unfinished/aborted/zero-choice episodes or fabricate a L2-only zero-choice boundary; **R0 A11–A13 are CLOSED**, but future training checkpoint integration still requires its own verified publication/reuse checks.
 
 ### Inference artifact, canonical bytes and external experiment envelope
 
@@ -1019,7 +1019,7 @@ Use the existing Docker profile: 2 CPUs, 4GiB memory and memory+swap, 256 PIDs, 
 Record actual provider/tool versions, CPU/ISA, runtime, image/config, and code identity; two-CPU limits are not a fabricated hardware performance measurement.
 Capped worst-case generator/feature calls must finish inside the existing 10s decision deadline on the frozen recorded environment.
 Verify actual Docker mount/resource/network enforcement and fixed monotonic deadline behavior, including late callback results and reap-before-return.
-R0 A14/A15 remain open until validated pre-parse/aggregate allocation and exact mount policy reject their negative fixtures; no current robustness claim follows here.
+**R0 A14/A15 are CLOSED** by current bounded-input/mount negative fixtures and actual Docker verification; that closure does not validate the unimplemented training closure or every arbitrary-JavaScript program.
 Readiness requires the training closure captured into the refreshed offline dependency/image context and both adversarial/security reviews recorded READY.
 No fixture file, source pin, HMAC/SHA digest, executed command or passing count is manufactured here; future evidence records actual bytes and outcomes.
 
@@ -1077,7 +1077,7 @@ The corrected draft received the following lead-reported **document-only** rerev
 | Security | `ses_f061f5c50fferpU272G6KbdWLw` | **docs freeze candidate READY**; corrected R1 document only. |
 
 COMMON A accepts C01–C17 and the corrected schema descriptions: Configuration has **26 named keys**, Versions has **21**; API C was executable as an alternative, while provenance C deferred completed freeze.
-Those verdicts are not full implementation rereviews. All R0 findings remain pending, and full implementation security rereview remains **UNRECORDED**.
+Those document-only verdicts were not full implementation rereviews. R0 is now separately **CLOSED** under final adversarial `ses_efe0ed67dffew2su1gZIUaDy23` and security `ses_efe0ed520ffeOEg3kd6jAtN33i`, both **READY TO CLOSE R0: yes**.
 Future adapter/native-hook implementation and execution must establish all obligations; this paper edit provides no new source/test/image identity or assurance.
 
 Future evidence must join source-before/after identities, fixture manifest, raw test bytes, tool/dependency closure and image measurements without fabricated hashes.
@@ -1092,7 +1092,7 @@ The source facts used in the reviewed draft were read locally then; this map rem
 | [R1 recipe](ml-adjutant-r1-recipe.md) | Eight original choices, nine accepted directions and synchronized approved profiles; experimental numbers are not validated performance. |
 | [Weights ledger](ml-adjutant-weights.md) | Coefficient meaning, cancellation, broader first ranker, own paid/replacement distinction and original outcome objective. |
 | [Execution/evidence guide](ml-adjutant-execution-revisions.md) | A08 fixed checked deadlines, A09 host-audited roster, A10 native validation plus fixed-N accounting. |
-| [Roadmap / R0 ledger](PLAN-ml-adjutant.md#r0-findings-ledger--full-implementation-post-image-review) | All 15 pending findings, historical scope, R0–R5 prerequisites; no finding closed by design approval. |
+| [Roadmap / R0 ledger](PLAN-ml-adjutant.md#r0-findings-ledger--full-implementation-post-image-review) | All 15 CLOSED findings with historical scope; implementation/evidence closure, not closure by R1 design approval. R1 amendment and R2–R5 remain prerequisites. |
 | [Strict challenge](ml-adjutant-challenge.md) | Unchanged acceptance boundary and strict failure denominator. |
 | [DTOs](../../packages/starchess-arena/src/challenge/types.ts), [observation codec](../../packages/starchess-arena/src/challengeContract/observationCodec.ts), [validation](../../packages/starchess-arena/src/challengeContract/validation.ts) | Current v1 observation-only signature, masks, exact validation and throwing `ContractError` style. |
 | [Candidate codec](../../packages/starchess-arena/src/challengeContract/candidateCodec.ts), [config](../../packages/starchess-arena/src/challenge/config.ts) | Seven kinds, codec bound 65, canonical keys, costs, comparator and current resource/IPC caps. |
@@ -1111,7 +1111,9 @@ Executor approved §2's exact selections and COMMON A after the §17 document-on
 This authorized pass synchronizes [recipe](ml-adjutant-r1-recipe.md), [weights](ml-adjutant-weights.md) and [PLAN](PLAN-ml-adjutant.md); alternatives remain rejected reference, never automatic runtime selection.
 Numeric tolerances and resource budgets are design requirements; gradient, numerical and performance validation remain future work with no passing result.
 R1 design acceptance still leaves native hooks, adapters, package exports, DTOs, generation, ledger, features and all R2–R5 tests unimplemented here.
-Lead/build owns the requested revisit and repairs of existing R0 adversarial findings while Orrery proceeds independently. All **15 remain PENDING: 7 HIGH + 8 MEDIUM**, **READY TO MERGE: no**, with full implementation security rereview **UNRECORDED** until lead records repairs and rereviews.
-Lead arranges the required rereview of this synchronized documentation; this pass invokes no additional agents and records no new verdict.
-R0 closure, §2.1's new versioned economic amendment, persisted R2–R5 readiness including calibration/interactions, and explicit training approval precede R6; frozen artifact/adapter R7 precedes learned strict R8.
-This paper contract ends with **no trained weights, no new hashes, no actual derived seed pins, no passing validation claim, and no altered existing rules authority**.
+Lead/build completed R0 repair/freeze/verification/publication; **A01–A15 CLOSED** under both final post-publication READY reviews in [closure JSON](../evidence/ml-adjutant-r0-closure.json).
+That authority records **426 core / 689 arena / 107 Node**, **54+54 semantic parity**, actual Docker **5/5**, host post-publication **13/13**, including both live pins, no skips.
+Reviewers read source/captured records without independently recomputing hashes or executing tests; this pass invokes no agents and executes nothing.
+R0 is closed; §2.1's new versioned economic amendment, persisted R2–R5 readiness including calibration/interactions, and explicit training approval still precede R6; frozen artifact/adapter R7 precedes learned strict R8.
+The prior **370**-field v2 registry remains frozen, not a supplied calibrated model; public turn-0 **4+3=7**, CC exclusion/zero endowed paid basis and turn/grant-aware memory are future **H=1** belief requirements, not native causal-frame calculus or H3 search.
+This future contract ends with **no trained weights, no actual derived training seed pins, no passing R1 learner/calibration validation claim, no registry activation, and no altered rules authority**.

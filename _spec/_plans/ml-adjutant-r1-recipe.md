@@ -4,8 +4,9 @@ Status: **Prior R1 future design contract FROZEN; new economic amendment PENDING
 This record preserves Executor's eight original choices, nine follow-up directions and explicitly approved final profiles.
 Design approval authorizes no implementation, dependency/export changes, training, approved run or publication in this docs-only pass.
 R2–R8 remain pending and unimplemented. Weights remain **NONE**.
-The [roadmap](PLAN-ml-adjutant.md) retains R0 **REVIEWED / BLOCKED** with **7 HIGH + 8 MEDIUM** pending;
-security rereview remains **UNRECORDED**. Complete R0–R5 before training at R6.
+The [roadmap](PLAN-ml-adjutant.md) records **R0 CLOSED**, all **A01–A15 resolved**, with original **7 HIGH + 8 MEDIUM** history preserved.
+Unchanged [closure JSON](../evidence/ml-adjutant-r0-closure.json) records both final post-publication reviews **READY TO CLOSE R0: yes**.
+Complete the versioned economic amendment and R2–R5 readiness before explicit R6 training approval.
 **New economic extension: SELECTED DIRECTION, NOT implemented or design-complete.** The prior R1 freeze remains intact; a new versioned amendment and readiness gate are required for the [calibrated-belief choice](#selected-economic-extension--calibrated-belief-model).
 
 The selected numeric values form a **frozen experimental profile**, not validated performance settings.
@@ -30,7 +31,7 @@ Keep `packages/starchess-training`, private `@chess-coach/starchess-training` ve
 Only `{api:'A',provenance:'A',quota:'B',curriculum:'A',validation:'A'}` may populate future runtime metadata for this recipe; all other profiles are rejected reference, not switches or fallback.
 COMMON A includes 370 features; paid surviving/destroyed/wasted conservation; transient authorized vision and causal loss witnesses; parent ACK/fixed deadlines; exact Float64 binary64 hex; SHA-256 UTF-8 JSON-array/UInt32BE derivation; mine lifetime and 2048-event batch cap; closed nested metadata; zero-sample exclusion from PG/L2/baseline; durable checkpoints; and all five complete valid runs before formal final-valid-101 primary, not five evaluation gates.
 Document-only adversarial `ses_f061f5cf2ffe4PAinuWeFgHP8f` returned **READY freeze-candidate: yes**; document-only security `ses_f061f5c50fferpU272G6KbdWLw` returned **docs freeze candidate READY**, as reported by lead.
-Those prior draft verdicts do not close R0, supply runtime evidence or record a full implementation security rereview. Lead arranges synchronized-document rereview; no new verdict is claimed here.
+Those prior document-only verdicts did not close R0; the separate final implementation/evidence reviews now do. They supply no R1 learner validation.
 
 ## Selected economic extension — calibrated belief model
 
@@ -61,7 +62,7 @@ R1 owns a new versioned amendment; R4 owns future belief/features implementation
 R5 also verifies the opening split, CC exclusion/zero paid basis, turn tiers/cap/grant boundaries, and memory without resets or double-counted sightings.
 Do not silently change the frozen 370-field contract or claim the overall amended R1 design is complete.
 See [contracts §2.1](ml-adjutant-r1-contracts.md#21-selected-economic-extension--amendment-pending), [weights §5.1](ml-adjutant-weights.md#51-selected-economic-extension--calibrated-surviving-material-belief), and [roadmap gate](PLAN-ml-adjutant.md#selected-economic-extension--pre-training-gate).
-This record authorizes no training and claims no weights or validation results; R0 repair/review/freeze remains lead-owned and open.
+This record authorizes no training and claims no weights or calibrated-belief validation; R0's separate repair/review/freeze gate is closed.
 
 <a id="nine-detail-decision-record--accepted-directions-not-a-completed-freeze"></a>
 
@@ -360,4 +361,6 @@ Require all specialist privacy/noninterference, ledger/conservation, phase, and 
 Validation **A** freezes `eps=1e-6`, `atol=1e-8`, `rtol=1e-5` and contracts §§16–17's fixed fixtures/pass calculus; inherited 10s decision and Docker resource requirements remain.
 Actual hardware/provider identity, runtime performance and numerical results remain future evidence; numeric design approval authorizes no run.
 Persist all validation before approving R6.
-The prior R1 exact future design is **FROZEN**; the newly selected economic extension requires a versioned amendment and readiness verification before training. Validation, R0 closure and R2–R5 implementation/readiness remain incomplete. All 15 R0 findings remain pending; full implementation security rereview remains UNRECORDED; no training is authorized.
+The prior R1 exact future design is **FROZEN**; the economic extension still requires its versioned amendment and calibration/readiness verification before training.
+**R0 CLOSED**, all A01–A15 resolved under both final READY reviews; R2–R5 implementation/readiness remain incomplete. No training is authorized.
+Public opening **4 deployed + 3 banked = 7**, CC exclusion/zero endowed paid basis, turn/grant-aware accounting and memory remain future **H=1** belief requirements, not native causal frames or H3 search.

@@ -1,36 +1,48 @@
 # ML Adjutant — selected execution and evidence revisions
 
-Status: **R0 PENDING REREVIEW; all A01–A15 source repairs IMPLEMENTED PROVISIONALLY.**
-R0 remains **READY TO MERGE: no**. All **15 findings (7 HIGH + 8 MEDIUM)** remain pending.
+Status: **R0 CLOSED within accepted non-learned execution/evidence assurance.**
+All **A01–A15 CLOSED**; original **7 HIGH + 8 MEDIUM** remain recorded as historical findings.
 These selections repair Phase 1/2 assurance and the Phase 0 corpus-pin boundary.
-Source implementation is not review closure, refreshed image evidence, or training authorization.
+Closure joins source repairs, new frozen verification, validated publication, and final reviews; it is not training authorization.
 The [R0 ledger](PLAN-ml-adjutant.md#r0-findings-ledger--full-implementation-post-image-review)
-remains **READY TO MERGE: no**. No A01–A15 finding is CLOSED; source proof of closure is **NONE**.
-Security rereview remains **UNRECORDED**; weights remain **NONE**; training is not ready.
-Historical **54 executions + 54 reruns** and old pins remain unchanged.
-Lead-reported preliminary checks: **571 arena tests passed; 2 live-pin checks deferred against locked history; 92 hermetic tests passed**.
-Those deferred tests are not fake passes. This spec pass runs no tests.
-Fresh full-core/static verification remains pending; the lead's core check is in progress.
-No fresh **426 core** result, both-typecheck completion, image, publication, or measured new pin is claimed.
+now references unchanged [closure JSON](../evidence/ml-adjutant-r0-closure.json) as current authority.
+Final adversarial `ses_efe0ed67dffew2su1gZIUaDy23` and security `ses_efe0ed520ffeOEg3kd6jAtN33i` both returned **READY TO CLOSE R0: yes**.
+Reviewers read source/captured records without independently recomputing hashes or executing tests.
+Weights remain **NONE**; training is not ready. This spec pass runs no tests and changes no evidence.
+Current frozen result: **426/426 core, 689/689 arena**, zero failed/pending/todo; **107 Node tests**, no failures/skips.
+All **8 exact commands**, including **3 static checks and both scripts**, passed; **54 executions + 54 semantic reruns**, migration parity true.
+Actual Docker infrastructure passed **5/5**, no skips, on the new dependency image.
+Host post-publication checks passed **13/13**, no skips, including both live source-pin comparisons previously deferred against history.
 
-## R0 goals and ordered closure gate
+## R0 ordered closure gate — completed
 
-1. Obtain full implementation adversarial **and security pre-freeze reviews READY: yes**.
-2. Freeze the reviewed source/tests/control/dependency capture and build a **new image**.
-3. Verify infrastructure with **actual Docker**, full core/arena suites, and all required static/strict checks.
-4. Execute **54 baseline cases + 54 independent reruns** under that frozen image and validate every artifact binding.
-5. Publish and reader-validate the new bundle at **`_spec/evidence/ml-adjutant-r0-refresh`**.
-6. Obtain full implementation adversarial **and security post-publication reviews READY: yes**.
+1. **Completed:** full implementation adversarial and security pre-freeze READY reviews.
+2. **Completed:** reviewed source/tests/control/dependency freeze and new image build.
+3. **Completed:** actual Docker infrastructure, full core/arena suites, and required static/strict checks.
+4. **Completed:** **54 baseline executions + 54 independent reruns** under the frozen image with artifact bindings validated.
+5. **Completed:** publication and reader validation at **`_spec/evidence/ml-adjutant-r0-refresh`**.
+6. **Completed:** final adversarial and security post-publication **READY TO CLOSE R0: yes** reviews.
 
-The fresh host destination is **not created yet** and stays outside captured source.
+The fresh host destination is **published**, stays outside captured source, and holds **24 artifacts**.
+Lead reports marker commit and confirmed durability; marker SHA-256 is
+`33ac25cc582ee154179b3321091368858a6c0d65ee36df4eec02e85f8ff1d34d`.
+Current source image: `sha256:3550d1cc2b98d9ae757937a9e45e1ba89b6e84459106a491a61af9e183968f72`.
+New dependency image: `sha256:8c5f7da07b82554325e64b8c99f36fa43ac213b470f8537a819ff464c2f657d6`.
+Captured source SHA-256: `b2b9e360fd5c2ecc0fbad667d5155ac56c3efd8603f3c09941982dadc5372147`.
+[Current verification](../evidence/ml-adjutant-r0-refresh/verification.json) records the exact eight command vectors and artifact inventory.
+[Current image assurance](../evidence/ml-adjutant-r0-refresh/image-assurance.json) binds the retained build/run/export envelopes.
+See [roadmap identity table](PLAN-ml-adjutant.md#r0-closure--current-frozen-evidence) for exact image/archive sizes, archive hash, and Node binary pin.
 Runtime working output remains **`/app/_spec/evidence/ml-adjutant-phase2`**.
 Preserve Phase 1 original bytes/pins and the existing Phase 2 bundle **in place, immutable**.
-Raw evidence at the current historical paths still measures old source, not these repairs.
+Evidence at historical Phase 1/2 paths still measures its old source, not these repairs.
 Review or image failure returns to the repair loop; no gate may substitute for a later one.
+Preserve failed run `/tmp/opencode/starchess-hermetic-run-Bv2jRa`; lead records a default 5s test timeout, unchanged assertions, then a 30s test timeout, clear source rereviews, and new passing freeze/build.
+Fixed policy deadlines remain unchanged. Executor approved `_spec/evidence` private ancestor mode **0700**; historical file bytes remain unchanged.
+Later captured-source edits restart freeze/verification; this docs-only update touches no captured file.
 
-## A01–A07 and A11–A15: provisional implementation contracts
+## A01–A07 and A11–A15: reviewed implementation contracts
 
-The following is the selected implementation report and verification goal, not a closure verdict.
+The following states the implementation contracts verified under current R0 closure, not a trained-model contract.
 The [policy-contract diagram](../packages/starchess-arena/ml-adjutant-policy-contracts.puml) owns these module boundaries.
 Reasoning belongs here and in diagrams, not new source prose; existing module `SPEC:` pointers corroborate coverage.
 
@@ -67,6 +79,9 @@ Never execute an image-resident binary to measure the image's truth.
 Host Docker inspection creates an **unstarted** container, verifies created/not-running/PID 0, and copies bounded tar streams.
 The trusted host scans those streams and reconstructs source, installed dependencies, store/tools, and control manifests.
 Join measured identity to current capture, build capture, runtime assurance, and export identity before import.
+Pin the official base Node **22.23.2** binary SHA-256 to `3517c2df0b2f8cd7f422b4b8450ef81c6889f08eb03e281d6de9079b15e6a327`.
+The retained export measures that binary at **124836408 bytes**, approximately **124.84 MB**; it is not the image/archive byte count.
+Host-copied binary bytes and dependency/store/tool/source/control trees establish the measurements; image-resident Node/proxy JSON self-claims do not.
 Reap/remove the measurement container and host scratch data without starting its entrypoint.
 
 ### Exact importer verification and seven-input validation
@@ -98,6 +113,11 @@ Consistent rerun metadata is not independent proof that a rerun happened; the fr
 It supports static types, transparent wrappers, namespace identifiers, and supported literal loader calls.
 Fail closed on unsupported loader escapes/computed calls and unknown-extension CommonJS execution.
 Hashing a helper without auditing its executable edges does not establish partition isolation.
+`createRequire` accepts the module's own `import.meta.url`; only `hermetic/closure.mjs` has the reviewed literal `/app/packages/starchess-arena/package.json` anchor, restricted to external-only loader edges.
+The declared esbuild/tsx resolution expression and supervisor's exact tsx resolver remain narrow reviewed seams, not general computed-loader permission.
+Conservatively reject unsupported loader APIs/alternate factories, import-metadata writes/escapes, string evaluation, reflective constructor acquisition, wrapper/type-erasure escapes, mutable receiver aliases, and unsupported destructuring.
+The sole descriptor-call seam is existing `challengeContract/validation.ts` array validation: exactly `Object.getOwnPropertyDescriptor(value, String(index))`, with dense own data-index checks.
+That exception does not authorize arbitrary descriptor/constructor access. Static policy checks do **not** prove arbitrary-JavaScript sandboxing.
 
 ### Selected publication — `evidence-bundle.mjs`
 
@@ -117,7 +137,7 @@ The trust boundary requires a canonical parent and private host-owned ancestor w
 Tests use **`HERMETIC_OUTPUT_DIRECTORY`** for runtime working output with **no fallback** to host history.
 On the host, prefer the fresh R0 directory when it exists and require marker validation; otherwise use the locked historical Phase 2 pinned fixture.
 An existing incomplete/invalid fresh directory fails; it must not silently fall back to old evidence.
-The two legacy live-pin comparisons remain explicitly deferred until fresh evidence exists.
+Fresh evidence now exists; both live source-pin comparisons passed in the **13/13** post-publication host checks, no skips.
 
 For historical semantic parity, normalize away **only** trace-owned `rejectedQueue` on a **corpus White queue-rejection** after validating equality with the trusted trace.
 Preserve `sourcePlyIndex` and all nonrecorded-side rejection witnesses.
@@ -165,11 +185,11 @@ Kill and reap a blocked child before returning; retain only validated partial pr
 Both sides still receive the same turn-open precommit observations.
 Admission feedback must never request another policy candidate; a rejected selection fails atomically.
 
-**Rereview goals.** Inspect the implemented `packages/starchess-arena/src/__tests__/challengeWatchdog.test.ts` and child fixtures.
+**Verified obligations.** `packages/starchess-arena/src/__tests__/challengeWatchdog.test.ts` and child fixtures belong to the passing frozen arena suite.
 Use a real child changing announcements without actual progress; prove the original 10-second decision limit does not move.
 Cover unknown/forged steps, late matching replies, terminal chips, and bogus ordinal advances.
 Preserve bounded frames, accepted-progress failure counters, and reap-before-return coverage.
-Source/tests are provisional; no independent closure proof or fresh-image pass is claimed.
+**A08 CLOSED**, with current frozen verification and both final reviews recorded in [closure JSON](../evidence/ml-adjutant-r0-closure.json).
 
 **Readings.** [Challenge §7: budgets and execution](ml-adjutant-challenge.md#7-frozen-artifact-outcomes-and-failure-semantics),
 [§8: integrity checks](ml-adjutant-challenge.md#8-required-integrity-verification),
@@ -203,10 +223,10 @@ Implemented context is an opaque `trusted-execution-context-v1` token. A forged 
 Original manifest/hash/source pins stay unchanged.
 R1 model inputs must never receive future traces, corpus IDs, or hashes; trust context remains host-private.
 
-**Rereview goals.** Inspect the implemented `packages/starchess-arena/src/__tests__/challengeEvidence.test.ts`.
+**Verified obligations.** `packages/starchess-arena/src/__tests__/challengeEvidence.test.ts` belongs to the passing frozen arena suite.
 Reject malformed/unknown IDs, relabels, forged hashes, and tampered trace prefixes using independent audited context.
 Cover partial evidence, early terminal with unused trailing queues, action timing/order, and chip ordinals.
-Source/tests are provisional; no independent closure proof or fresh-image pass is claimed.
+**A09 CLOSED**, with current frozen verification and both final reviews recorded in [closure JSON](../evidence/ml-adjutant-r0-closure.json).
 
 **Readings.** [Pinned manifest](../corpora/ml-adjutant-corpus.manifest.json),
 [challenge §8](ml-adjutant-challenge.md#8-required-integrity-verification), and
@@ -248,11 +268,11 @@ Phase 4 still requires integrity even for a favorable partial board.
 Never score historical labels or force an early host-cap result; never expose validation as a policy rescue channel.
 The learned gate remains **18/18 corpus + 36/36 live wins**, semantic reruns, and `fallbackCount = 0`.
 
-**Rereview goals.** Inspect the implemented `packages/starchess-arena/src/__tests__/challengeEvidence.test.ts` reporting regressions.
+**Verified obligations.** `packages/starchess-arena/src/__tests__/challengeEvidence.test.ts` reporting regressions belong to the passing frozen arena suite.
 Cover fake terminal wins/draws/losses, labels contradicting SCFEN, missing/duplicate/unexpected cases, and `sum(buckets) = N`.
 Exercise actual engine reexecution and ledger/trace checks, not just pure count fixtures.
 `classifyScheduledEvidence`, `expectedSchedule`, and trusted context now implement four-bucket accounting using the same engine APIs.
-Source/tests are provisional; no independent closure proof or fresh-image pass is claimed.
+**A10 CLOSED**, with current frozen verification and both final reviews recorded in [closure JSON](../evidence/ml-adjutant-r0-closure.json).
 
 **Readings.** [Actual core outcome authority](../../packages/starchess-core/src/outcome.ts),
 [challenge §7](ml-adjutant-challenge.md#7-frozen-artifact-outcomes-and-failure-semantics),
@@ -262,9 +282,12 @@ Source/tests are provisional; no independent closure proof or fresh-image pass i
 ## Readiness and unchanged boundaries
 
 Use the [roadmap ledger](PLAN-ml-adjutant.md#r0-findings-ledger--full-implementation-post-image-review) for all obligations.
-All A01–A15 source repairs remain provisional and **PENDING REREVIEW**; closure proof is **NONE**.
+All **A01–A15 CLOSED**, supported by the [current closure authority](../evidence/ml-adjutant-r0-closure.json).
 A14 uses the selected shared larger limits; A13 retains bytes after logical marker commit when durability fails.
-Follow the ordered pre-freeze review → new image/actual Docker/full suites/static → **54 + 54** → validated publication → post-review gate above.
-Keep old evidence and pins immutable. This repair does not refresh the frozen image or authorize training.
+The ordered pre-freeze review → new image/actual Docker/full suites/static → **54+54** → validated publication → post-review gate above is complete.
+Keep old evidence and pins immutable. The refreshed R0 image does not authorize training.
 R1 design choices remain **SGD + REINFORCE**, five independent seeds, and **1000 episodes per artifact / 5000 total**.
-R0–R5 must still close before R6 training; R6–R7 precede learned R8 execution.
+R0 is closed; the R1 calibrated turn-aware economic amendment and R2–R5 readiness must close before explicit R6 approval.
+The public opening remains **4 deployed + 3 banked = 7**, CC excluded and endowed paid basis zero; it is future H=1 belief work, not native provenance frames or H3 search.
+Prior v2 **370** fields remain design-frozen, not a supplied calibrated model. R6–R7 precede learned R8 execution; registry `machine-learning` stays disabled.
+Trusted host/daemon and no malicious same-UID mutation remain assumptions; retained host envelopes/archive stay under `/tmp/opencode`.

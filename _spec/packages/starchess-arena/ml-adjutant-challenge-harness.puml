@@ -8,21 +8,32 @@
 ' covers: packages/starchess-arena/src/__tests__/corpusManifest.test.ts
 ' covers: packages/starchess-arena/src/__tests__/fixtures/challenge*.ts
 ' covers: _spec/evidence/ml-adjutant-phase1/*.json
-' status: Phase 1 historical verification/READY verdicts preserved. R0 source repairs IMPLEMENTED PROVISIONALLY; PENDING REREVIEW, not CLOSED.
+' covers: _spec/evidence/ml-adjutant-r0-refresh/**
+' covers: _spec/evidence/ml-adjutant-r0-closure.json
+' status: R0 CLOSED within accepted non-learned assurance; A01-A15 resolved. Phase 1 historical verification/READY verdicts preserved; no learning or trained acceptance.
 ' related: _spec/_plans/PLAN-ml-adjutant.md
 ' related: _spec/_plans/ml-adjutant-challenge.md
-' related: _spec/_plans/ml-adjutant-execution-revisions.md (selected repairs and ordered R0 closure goals)
+' related: _spec/_plans/ml-adjutant-execution-revisions.md (reviewed repairs and completed ordered R0 closure)
 ' related: _spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml (current codecs/features and hermetic evidence)
 ' related: _spec/packages/starchess-arena/arena.puml (legacy runner, not this isolated host)
-' evidence: _spec/evidence/ml-adjutant-phase1/baseline-report.json
-' verification: _spec/evidence/ml-adjutant-phase1/verification.json
-' baseline report SHA-256: 940387370040f88888e9dfe0bb86ad9d4a8be88854df507120f34b22ee2d362b
+' current evidence: _spec/evidence/ml-adjutant-r0-refresh/baseline-report.json
+' current verification: _spec/evidence/ml-adjutant-r0-refresh/verification.json
+' closure authority: _spec/evidence/ml-adjutant-r0-closure.json (unchanged fact data)
+' current image: sha256:3550d1cc2b98d9ae757937a9e45e1ba89b6e84459106a491a61af9e183968f72
+' current source SHA-256: b2b9e360fd5c2ecc0fbad667d5155ac56c3efd8603f3c09941982dadc5372147
+' current marker SHA-256: 33ac25cc582ee154179b3321091368858a6c0d65ee36df4eec02e85f8ff1d34d; 24 artifacts, committed/durability confirmed per lead.
+' historical evidence: _spec/evidence/ml-adjutant-phase1/baseline-report.json, _spec/evidence/ml-adjutant-phase1/verification.json (immutable original bytes/pins)
+' historical baseline report SHA-256: 940387370040f88888e9dfe0bb86ad9d4a8be88854df507120f34b22ee2d362b
 ' transport: spawned stdin/stdout JSONL pipes; no Node process.send channel.
 ' evidence boundary: manifest v1 historical Phase 0 pending statuses remain unchanged; the separate execution report supersedes them for this measured baseline only.
 ' rendering: renamed diagram historically passed checkonly; current check not run by spec-keeper (no shell tool).
-' review: full implementation adversarial READY TO MERGE: no; security rereview UNRECORDED; all 15 pending (7 HIGH + 8 MEDIUM), closure proof NONE.
-' closure goals: both pre-freeze reviews READY -> new frozen image/actual Docker/full core+arena+static/54+54 -> validated fresh host publication -> both post-publication reviews READY.
-' evidence generations: Phase 1 original bytes/pins and existing Phase 2 immutable in place; future _spec/evidence/ml-adjutant-r0-refresh not created, outside capture; runtime output remains /app/_spec/evidence/ml-adjutant-phase2.
+' final reviews: adversarial ses_efe0ed67dffew2su1gZIUaDy23 and security ses_efe0ed520ffeOEg3kd6jAtN33i both READY TO CLOSE R0: yes; read-only source/captured-record review, no independent execution/hash recomputation.
+' historical review: ses_f07c45365ffew0wJ58yFHXAye5 READY TO MERGE: no; original 7 HIGH + 8 MEDIUM retained as history, all now CLOSED.
+' completed gate: pre-freeze reviews -> new frozen image/actual Docker/full core+arena+static/54+54 -> validated publication -> both final reviews READY.
+' current checks: core 426/426, arena 689/689, zero failed/pending/todo; 107 Node tests, Docker infrastructure 5/5 and host post-publication 13/13 (both live source pins), no skips; eight exact commands/three static checks include both scripts.
+' evidence generations: Phase 1/2 and pre-rename bytes remain immutable; fresh R0 publication is outside capture, not a rename/overwrite; runtime output remains /app/_spec/evidence/ml-adjutant-phase2.
+' trust: host/daemon, no malicious same-UID mutation; no arbitrary-JavaScript sandbox proof. Host envelopes/archive remain under /tmp/opencode.
+' future gates: R1 calibrated turn-aware material-belief amendment plus R2-R5 readiness before explicit R6 approval; R7 artifact/runtime then R8 learned acceptance. Prior 370-field v2 is not a supplied calibrated model.
 ' normalization: only trace-owned rejectedQueue on corpus White queue-rejection after validated equality; retain sourcePlyIndex and nonrecorded-side witnesses.
 ' historical scope: numeric features were later work at the Phase 1 freeze; the policy-contracts sibling owns their current implementation. Training, learned artifacts, and browser integration remain unimplemented.
 @startuml ml-adjutant-challenge-harness
@@ -56,7 +67,7 @@ component "run/bank.ts\ngrantStoredIncome" as BANK <<host>>
 component "packages/starchess-core\nbeginScTurn / endScTurn\naddScAction / scOutcome" as CORE <<app>>
 database "ChallengeEvidence\nscfens / resolves / bankTrail / stop" as EVIDENCE <<db>>
 database "baseline-report.json\n54 rows / full host-private traces\npins / semantic rerun hashes" as REPORT_FILE <<db>>
-database "verification.json\n10 integrity test paths / hashes / purposes\ncommands / raw report SHA-256" as VERIFICATION <<db>>
+database "verification.json\n8 exact commands / full suite outputs\nlogs / artifact hashes / current source pin" as VERIFICATION <<db>>
 
 CONFIG ARROW_OPTIONAL SUPERVISOR : pinned deadlines
 CONFIG ARROW_OPTIONAL RUN : progress limits / versions
@@ -218,16 +229,17 @@ end note
 
 legend bottom
   PHASE 1 HISTORICALLY VERIFIED: then-final arena 164 tests / 17 files; core 426 / 53.
-  Historical suites/typechecks/strict TS are not fresh R0 repair evidence.
+  Phase 1/2 historical bytes/pins stay immutable; current R0 evidence lives at ml-adjutant-r0-refresh.
   Corpus candidate = b, arena/inference seed = 0; live seeds = 0..17 in both seats.
   Seat RNG: w = mulberry32(seed), b = mulberry32(~seed).
   Historically all 54 supervised cases ran twice under original final pins; 54/54 semantic comparisons equal.
   Corpus: 0 wins, 2 terminal losses, 16 queue-rejection failures; live: 0 wins, 36 terminal losses.
   executionIntegrity = true; learnedGateEligible = false; learnedChallengePass = false.
-  Historical trusted non-learned scoped READY verdicts do not close full implementation R0 findings.
-  R0 PENDING REREVIEW: source repairs provisional; all 15 pending (7 HIGH + 8 MEDIUM), closure proof NONE.
-  Full implementation adversarial READY TO MERGE: no; security rereview UNRECORDED. No fresh image/pins/publication.
-  Require pre-freeze READY -> new image / actual Docker / full suites+static / 54+54 -> validated publication -> post-review READY.
+  R0 CLOSED: A01-A15 resolved within accepted non-learned assurance; both final reviews READY TO CLOSE R0: yes.
+  Frozen current image: 426 core / 689 arena, zero pending/todo; 107 Node tests, no skips.
+  Current 54 executions + 54 reruns: semantic and migration parity true; eight commands/three static checks passed.
+  Actual Docker 5/5; host post-publication 13/13 including both live source pins, no skips.
+  Fresh publication: 24 artifacts, marker commit/durability confirmed; no atomic directory-visibility claim.
   No learned acceptance or universal trace-compatibility claim. Current checkonly not run here.
   The policy-contracts sibling owns current numeric features. Training, learned artifacts, and browser integration remain unimplemented.
 endlegend

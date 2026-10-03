@@ -1,10 +1,10 @@
 # ML Adjutant — weights, combination coverage, and planning horizons
 
 Status: **Prior future R1 learning design FROZEN; new economic amendment PENDING. NOT implemented or validated. Historical Phase 2 hermetic verification PASSED; not a learned PASS.**
-R0 full implementation post-image adversarial review is **REVIEWED / READY TO MERGE: no**;
-the [R0 ledger](PLAN-ml-adjutant.md#r0-findings-ledger--full-implementation-post-image-review) holds **15 pending findings: 7 HIGH + 8 MEDIUM**.
-Full implementation security rereview is **UNRECORDED**. [R1 selections](ml-adjutant-r1-recipe.md) and [exact contracts](ml-adjutant-r1-contracts.md) are **FROZEN as future design**, not implementation/readiness approval.
-No approved run or training authorization exists; R2–R8 remain pending and unimplemented; weights **NONE**.
+R0 is **CLOSED within accepted non-learned assurance**; the [R0 ledger](PLAN-ml-adjutant.md#r0-findings-ledger--full-implementation-post-image-review) marks **A01–A15 CLOSED**, preserving original **7 HIGH + 8 MEDIUM** history.
+Unchanged [closure JSON](../evidence/ml-adjutant-r0-closure.json) records final adversarial `ses_efe0ed67dffew2su1gZIUaDy23` and security `ses_efe0ed520ffeOEg3kd6jAtN33i`, both **READY TO CLOSE R0: yes**.
+[R1 selections](ml-adjutant-r1-recipe.md) and [exact contracts](ml-adjutant-r1-contracts.md) remain **prior future design FROZEN**, not implementation/readiness approval.
+No approved training run or training authorization exists; R2–R8 remain pending and unimplemented; weights **NONE**.
 Executor selected **Broader first trained ranker**. The FIRST Phase 3 training run requires
 a separately versioned combination generator and authorized economic/positional interactions,
 including an own-loss lineage ledger and confirmed opponent-loss knowledge with explicit fog uncertainty.
@@ -26,7 +26,7 @@ Future public exports/inventory/layer policies and hermetic package-context capt
 Do not blindly relax the unused baseline's execution→contracts restriction or publish unrestricted `SideContext` as a model interface.
 
 **Decision/freeze boundary:** the [recipe](ml-adjutant-r1-recipe.md) preserves the original choices and follow-ups; the [exact R1 contracts](ml-adjutant-r1-contracts.md) own the approved future schemas/calculus and retained rejected alternatives.
-Source inventory and source facts here remain frozen historical evidence; no source refresh or new identity is claimed.
+R1 source-reading facts here remain historical; R0's new frozen identity/evidence is separately recorded in [roadmap closure](PLAN-ml-adjutant.md#r0-closure--current-frozen-evidence).
 
 | Slot | Selected | Exact approved contract |
 |---|---|---|
@@ -40,7 +40,7 @@ Source inventory and source facts here remain frozen historical evidence; no sou
 Only `{api:'A',provenance:'A',quota:'B',curriculum:'A',validation:'A'}` is approved runtime metadata for this recipe; alternatives are rejected reference, never switches/fallback.
 COMMON A includes the 370-feature registry; paid surviving/destroyed/wasted; transient authorized vision and causal loss witnesses; parent ACK/fixed deadlines; exact Float64 binary64 hex; SHA-256 UTF-8 JSON-array/UInt32BE; mine lifetime and 2048-event batch cap; closed nested metadata; zero-sample PG/L2/baseline exclusion; durable checkpoints; and all-five valid completion before formal final-valid-101 primary.
 Lead reported document-only adversarial `ses_f061f5cf2ffe4PAinuWeFgHP8f` **READY freeze-candidate: yes** and security `ses_f061f5c50fferpU272G6KbdWLw` **docs freeze candidate READY** before Executor approved the design.
-Those prior corrected-draft verdicts do not close R0 or replace full implementation rereview. Lead arranges synchronized-document rereview; this pass claims no new verdict.
+Those prior document-only verdicts did not close R0; the separate final implementation/evidence reviews now do. No R1 runtime validation verdict follows from them.
 No implementation, run, validation result or training permission follows from design freeze.
 
 ## 1. What a weight means
@@ -410,5 +410,8 @@ The broader combination generator and authorized economy/position interactions r
 Three-turn planning remains a later milestone.
 Both renamed diagrams and the edited spec map passed PlantUML `checkonly`.
 Rename-only adversarial review is **READY: yes**.
-Full implementation post-image adversarial review is **REVIEWED / READY TO MERGE: no**, with **7 HIGH + 8 MEDIUM pending**.
-Post-image security rereview remains **UNRECORDED**. R0 assurance remains blocked; close R0–R5 before training.
+Historical implementation review `ses_f07c45365ffew0wJ58yFHXAye5` remains **READY TO MERGE: no** in history, not as the current verdict.
+Current R0 is **CLOSED**, with **426 core / 689 arena**, **107 Node**, **54+54 parity**, **5/5 actual Docker**, and **13/13 host post-publication** including both live pins, no skips.
+Both final reviews returned **READY TO CLOSE R0: yes**, based on source/captured records without independent execution/hash recomputation.
+R1's economic amendment and R2–R5 readiness including calibration remain open before explicit R6 training approval; R6–R7 precede R8.
+The prior **370**-field registry is not a supplied calibrated model; `machine-learning` remains disabled, and no trained weights or learned acceptance exists.

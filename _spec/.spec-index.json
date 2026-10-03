@@ -217,7 +217,9 @@
         "packages/starchess-arena/src/__tests__/observationIsolation.test.ts",
         "packages/starchess-arena/src/__tests__/corpusManifest.test.ts",
         "packages/starchess-arena/src/__tests__/fixtures/challenge*.ts",
-        "_spec/evidence/ml-adjutant-phase1/*.json"
+        "_spec/evidence/ml-adjutant-phase1/*.json",
+        "_spec/evidence/ml-adjutant-r0-refresh/**",
+        "_spec/evidence/ml-adjutant-r0-closure.json"
       ],
       "fingerprint": null
     },
@@ -229,7 +231,9 @@
         "packages/starchess-arena/src/__tests__/challenge*.test.ts",
         "scripts/**",
         "packages/starchess-arena/hermetic/**",
-        "_spec/evidence/ml-adjutant-phase2/*.json"
+        "_spec/evidence/ml-adjutant-phase2/*.json",
+        "_spec/evidence/ml-adjutant-r0-refresh/**",
+        "_spec/evidence/ml-adjutant-r0-closure.json"
       ],
       "fingerprint": null
     },

@@ -1,32 +1,41 @@
 # ML Adjutant — strict recorded-queue and live strategic challenge
 
-Status: **Phase 1/2 implementation and verification PASSED historically. All R0 source repairs are
-IMPLEMENTED PROVISIONALLY; current R0 PENDING REREVIEW / READY TO MERGE: no.
-All 15 findings remain pending (7 HIGH + 8 MEDIUM); security rereview UNRECORDED.
+Status: **Phase 1/2 implementation and historical verification preserved; current R0 CLOSED.
+All A01–A15 CLOSED (original 7 HIGH + 8 MEDIUM resolved) within accepted non-learned assurance.
+Both final post-publication implementation reviews READY TO CLOSE R0: yes.
 This is not a learned PASS. Phase 3+ PLANNED and unimplemented; weights NONE.**
 Owner roadmap: [PLAN-ml-adjutant.md](PLAN-ml-adjutant.md).
 Harness boundary: [ml-adjutant-challenge-harness.puml](../packages/starchess-arena/ml-adjutant-challenge-harness.puml).
 Policy-contract boundary: [ml-adjutant-policy-contracts.puml](../packages/starchess-arena/ml-adjutant-policy-contracts.puml).
 FIRST-training/weights contract: [ml-adjutant-weights.md](ml-adjutant-weights.md).
 This document defines learned acceptance and records the separately verified non-learned baseline.
-The historical scoped Phase 1 READY verdicts do not close the current full implementation review.
-No new review verdict, source proof of closure, measured pin, trained artifact, or learned PASS is claimed.
-See [execution revisions](ml-adjutant-execution-revisions.md) for selected R0 contracts and goals.
+Current authority: unchanged [closure JSON](../evidence/ml-adjutant-r0-closure.json).
+Final adversarial `ses_efe0ed67dffew2su1gZIUaDy23` and security `ses_efe0ed520ffeOEg3kd6jAtN33i` read source/captured records without independent execution or hash recomputation.
+This docs-only update executes nothing and changes no evidence. It claims no trained artifact or learned PASS.
+See [execution revisions](ml-adjutant-execution-revisions.md) for reviewed R0 contracts and exact commands.
 
-## Current R0 closure goals — ordered, not completed
+## Current R0 closure — ordered gate completed
 
 Both pre-freeze implementation reviews **READY: yes** → reviewed source/tests/control/dependency freeze
 and **new image** → **actual Docker** infrastructure, full core/arena suites and static/strict checks →
 **54 executions + 54 independent reruns** → validated fresh marker publication → both post-publication reviews **READY: yes**.
-Lead reports preliminary **571 arena passed, 2 live-pin checks deferred, 92 hermetic passed**.
-The lead's core check is in progress; neither a fresh 426-core result nor completion of both typechecks is recorded.
-Raw evidence at existing paths measures old source; no fresh image or measured new pin exists here.
-Publish future validated host output to **`_spec/evidence/ml-adjutant-r0-refresh`**, not created yet and outside captured source.
+Recorded current result: **426/426 core + 689/689 arena**, zero failed/pending/todo; **107 Node tests**, no failures/skips.
+All **8 exact commands**, including **3 static checks and both scripts**, passed; **54+54**, semantic rerun and migration parity true.
+Actual Docker infrastructure **5/5**, no skips, on the new dependency image; host post-publication **13/13**, no skips, includes both live source pins.
+Current [verification](../evidence/ml-adjutant-r0-refresh/verification.json) and [image assurance](../evidence/ml-adjutant-r0-refresh/image-assurance.json) reside at **`_spec/evidence/ml-adjutant-r0-refresh`**, outside captured source.
+Frozen final image: `sha256:3550d1cc2b98d9ae757937a9e45e1ba89b6e84459106a491a61af9e183968f72`.
+New dependency image: `sha256:8c5f7da07b82554325e64b8c99f36fa43ac213b470f8537a819ff464c2f657d6`.
+Published inventory: **24 artifacts**, marker SHA-256 `33ac25cc582ee154179b3321091368858a6c0d65ee36df4eec02e85f8ff1d34d`; lead confirms commit and durability.
+Read [roadmap closure](PLAN-ml-adjutant.md#r0-closure--current-frozen-evidence) for captured source, baseline/archive hashes, exact byte sizes, and measured official Node binary pin.
 Keep Phase 1 original bytes/pins and the existing Phase 2 bundle **in place, immutable**.
 Runtime working output remains **`/app/_spec/evidence/ml-adjutant-phase2`**.
 The turn-aware calibrated-belief extension remains future work: public opening **4 deployed + 3 banked = 7**,
 native turn/grant-aware accounting, no hidden inputs, and versioned R1/R4/R5 readiness before R6.
 That selection does not make R1 training-ready or change the prior frozen feature registry.
+Opening Marines have actual paid basis **0** and CC stays outside `7`; the future calibrated belief remains **H=1**, not H3 search or native causal-frame calculus.
+Preserve failed run `/tmp/opencode/starchess-hermetic-run-Bv2jRa`; the 5s→30s test timeout repair kept assertions unchanged, passed source rereviews, and preceded the new final freeze/build.
+Executor approved `_spec/evidence` ancestor mode **0700** without changing historical evidence bytes.
+Trust remains host/daemon plus no malicious same-UID mutation. Import-policy checks do not prove arbitrary-JavaScript sandboxing; host envelopes/archive remain under `/tmp/opencode`.
 
 ## 1. Decision and scope
 
@@ -326,7 +335,7 @@ Test budget overrides do not establish a standard-budget baseline result.
 Executor selected partitioned execution pins then a hermetic image, with pull/build downloads approved.
 `challenge/sourceInventory.ts` inventories all declared root files in execution (all core and arena source
 except contracts, excluding package tests), contracts (`challengeContract`), and diagnostics (root scripts/hermetic).
-The provisional lexical fixed-point import audit covers relative/declared external/workspace imports,
+The reviewed lexical fixed-point import audit covers relative/declared external/workspace imports,
 worker loading, static types, wrappers, namespace binding identities, and supported literal loaders,
 including the declared esbuild closure case; unsupported escapes/computed loaders and unknown-extension CommonJS fail closed.
 `challenge-execution-pins-v2` carries partition/config hashes; tests, installed modules, tools, store, and captured
@@ -367,10 +376,10 @@ Persisted coverage is **18/282 exact queues**, **204/576 singleton intents**,
 **282/282 reference codec and feature encodings**, and **48 maximum proposals**.
 These counts describe historical White observations and structural membership, not live counterplay,
 admission, exhaustive combinations, or learned success. They are representability, not winning coverage.
-Earlier scoped pre-freeze findings were reported fixed before that historical freeze; they do not close A01–A15.
+Earlier scoped pre-freeze findings were reported fixed before that historical freeze; that historical approval did not close A01–A15.
 Rename-only adversarial review is **READY: yes**.
-Full implementation post-image adversarial review returned **READY TO MERGE: no**;
-all 15 findings remain pending rereview despite provisional repairs, and security rereview remains unrecorded.
+Historical full implementation review `ses_f07c45365ffew0wJ58yFHXAye5` returned **READY TO MERGE: no**;
+security rereview was unrecorded at that snapshot. Current A01–A15 closure and both final READY verdicts are recorded separately above.
 Both renamed diagrams and the edited spec map passed PlantUML `checkonly`.
 This pass does not claim a learned PASS.
 
@@ -394,7 +403,7 @@ Normalize away only the redundant trace-owned `rejectedQueue` on corpus White qu
 after authoritative validation proves equality with the trusted trace; this preserves historical semantic hashes.
 Do not normalize away `sourcePlyIndex` or nonrecorded-side rejection witnesses.
 
-### Provisional R0 verifier and marker-publication contracts
+### Reviewed R0 verifier and marker-publication contracts
 
 Exact shared authority: **`packages/starchess-arena/hermetic/evidence-limits.mjs`**.
 Selected limits: **file 16 MiB; retained 64 MiB; archive 512 MiB; scan/expansion 2 GiB;
@@ -408,6 +417,9 @@ are allowed only with matching positional diffIDs. Reject duplicate actual tar e
 `image-measurement.mjs` **never executes image binaries**: inspect/create an unstarted container,
 inspect created/not-running/PID 0, copy tar streams, and host-recompute source/dependency/store/tool/control manifests.
 Bind independent measurements to current/build capture, runtime assurance, and export identity.
+Host-copied Node binary bytes must match the measured official-base **22.23.2** pin; image-resident Node/proxy JSON self-claims are not authority.
+Source audit rejects unsupported loader APIs/alternate factories, metadata writes/escapes, eval/reflective constructors, wrapper erasure/mutable-alias escapes and unsupported destructuring.
+Keep the exact existing `validation.ts` array descriptor-call seam and reviewed external-only closure package anchor; [execution revisions](ml-adjutant-execution-revisions.md#lexical-source-audit--a06a07) records their precise scope.
 
 The importer requires **eight exact ordered commands in `hermetic-verification-v2`**.
 Bind executable/cwd/full args and log bytes; independently recount actual Vitest assertions and require
@@ -435,9 +447,9 @@ Require a canonical parent/private host-owned ancestor without malicious same-UI
 Runtime tests read **`HERMETIC_OUTPUT_DIRECTORY`** with **no fallback**.
 Host tests prefer the fresh R0 directory if it exists and require valid marker publication;
 only when absent may they use the locked historical Phase 2 pinned fixture.
-An incomplete/invalid fresh bundle fails rather than falling back; the two historical live-pin checks remain deferred.
+An incomplete/invalid fresh bundle fails rather than falling back; both previously deferred live source-pin checks now pass against the fresh publication.
 Exact mount validation allows only the working-output bind and `/tmp` tmpfs
-`rw,nosuid,nodev,size=1073741824,mode=1777`; actual Docker verification remains a closure goal.
+`rw,nosuid,nodev,size=1073741824,mode=1777`; actual Docker infrastructure passed **5/5**, no skips.
 
 ## 8. Required integrity verification
 
@@ -450,7 +462,7 @@ The Phase 2 image passed arena vitest **434/434** and core vitest **426/426**.
 The lead reports host-after-import current-evidence checks **7 tests / 2 files passed**, and arena typecheck passed.
 Actual paths and purposes are
 listed in [PLAN-ml-adjutant.md](PLAN-ml-adjutant.md#planned-verification-and-pending-ownership).
-Phase 2 feature encoders exist and historical hermetic verification passed; current R0 rereview is pending;
+Phase 2 feature encoders exist and historical hermetic verification passed; current R0 is **CLOSED** with fresh frozen verification;
 broader generator/v2 ledger/interaction tests and Phase 3–4 learned execution checks remain planned.
 Phase 1 tests do not implement or verify a trained policy. The lead reports both Phase 1
 reviews READY: yes; adversarial has no remaining findings and security covers trusted non-learned execution.

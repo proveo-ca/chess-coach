@@ -5,12 +5,14 @@
 ' covers: scripts/**
 ' covers: packages/starchess-arena/hermetic/**
 ' covers: _spec/evidence/ml-adjutant-phase2/*.json
-' status: R0 PENDING REREVIEW; all source repairs IMPLEMENTED PROVISIONALLY. 15 pending (7 HIGH + 8 MEDIUM); closure proof NONE. Historical hermetic pass only; no learned PASS.
+' covers: _spec/evidence/ml-adjutant-r0-refresh/**
+' covers: _spec/evidence/ml-adjutant-r0-closure.json
+' status: R0 CLOSED within accepted non-learned assurance; A01-A15 resolved (original 7 HIGH + 8 MEDIUM). No learned PASS or training authorization.
 ' related: _spec/_plans/PLAN-ml-adjutant.md
 ' related: _spec/_plans/ml-adjutant-challenge.md
 ' related: _spec/_plans/ml-adjutant-weights.md
-' related: _spec/packages/starchess-arena/ml-adjutant-challenge-harness.puml (provisional execution contracts; historical baseline)
-' related: _spec/_plans/ml-adjutant-execution-revisions.md (selected contracts, exact commands, and ordered closure goals)
+' related: _spec/packages/starchess-arena/ml-adjutant-challenge-harness.puml (reviewed execution contracts; current and historical baseline)
+' related: _spec/_plans/ml-adjutant-execution-revisions.md (reviewed contracts, exact commands, and completed closure gate)
 ' decision: FIRST Phase 3 training requires broader versioned combinations and v2 authorized economic/positional interactions; horizon 1.
 ' later: three conditional planning windows are a separate future milestone; no training/model/artifact/registry activation here.
 ' boundary: codec representability is not proposal completeness or private host admission.
@@ -18,24 +20,39 @@
 ' boundary: a selected proposal receives one private whole-queue admission, never hidden probes or rescue.
 ' pin scope: project source inventory excludes tests; separate hermetic capture retains source/tests, dependency/store/tool bytes.
 ' import audit: lexical fixed-point binding IDs; static types, wrappers, namespace aliases, literal calls and declared esbuild closure; fail closed on unsupported escapes/unknown-extension CJS.
+' import audit: supported createRequire bases are own import.meta.url and the exact closure.mjs package anchor /app/packages/starchess-arena/package.json, with external-only edges for that anchor.
+' import audit: reject unsupported loader APIs/alternate factories, import-metadata mutation/escape, eval/reflective constructor acquisition, wrapper erasure/mutable alias escapes and unsupported destructuring; no arbitrary-JS sandbox proof.
+' import audit seam: only challengeContract/validation.ts permits exact Object.getOwnPropertyDescriptor(value, String(index)) for existing dense own-data array validation, not general descriptor access.
+' current assurance: _spec/evidence/ml-adjutant-r0-refresh/image-assurance.json; closure authority _spec/evidence/ml-adjutant-r0-closure.json unchanged.
+' current image: sha256:3550d1cc2b98d9ae757937a9e45e1ba89b6e84459106a491a61af9e183968f72
+' current dependency image: sha256:8c5f7da07b82554325e64b8c99f36fa43ac213b470f8537a819ff464c2f657d6
+' current captured source SHA-256: b2b9e360fd5c2ecc0fbad667d5155ac56c3efd8603f3c09941982dadc5372147
+' current marker SHA-256: 33ac25cc582ee154179b3321091368858a6c0d65ee36df4eec02e85f8ff1d34d; 24 artifacts, committed/durability confirmed per lead.
+' current archive: external /tmp/opencode/starchess-hermetic-export-E2QdWc/image.tar; SHA-256 e349f9abd08a6e9b205778920a47538544a9b71a6542653f7de93616deab3833; 133682176 bytes.
+' measured official-base Node 22.23.2 binary SHA-256: 3517c2df0b2f8cd7f422b4b8450ef81c6889f08eb03e281d6de9079b15e6a327; 124836408 bytes (~124.84 MB); host byte/tree measurement, no image-resident Node/proxy JSON authority.
 ' assurance: historical source image sha256:e7f9ea8ac211c93804bd1125ed28fb7e165a160c4155ca70404c81f9e431710d passed network-none, read-only, nonroot; it does not measure R0 repairs.
-' assurance: historical dependency image sha256:4c9d45b04f325a2d912cb34ebc982f139f057a2f2fb6d779ac2ef59f29ea987d; no fresh R0 dependency-image measurement.
+' assurance: historical dependency image sha256:4c9d45b04f325a2d912cb34ebc982f139f057a2f2fb6d779ac2ef59f29ea987d; not the current R0 dependency image.
 ' assurance: official Node 22.23.2 bookworm-slim platform digest sha256:43aeff40f4afc22e83f7589a2f37e111cff5ca84529571f1c8415bcc5fcc21b2.
-' evidence: baseline-report.json SHA-256 5de86d94caaa626402b73ac9fa8f6bbc7a9b111e69a8b3801461380635cbd87f
-' evidence: external archive, not in repo, lead-reported path /tmp/opencode/starchess-hermetic-export-k1KYQO/image.tar SHA-256 64d6277f439f7cdfb82ecb2c6a230f735c5c7f3588d7f13082a30b430e6d07f7
+' historical evidence: Phase 2 baseline-report.json SHA-256 5de86d94caaa626402b73ac9fa8f6bbc7a9b111e69a8b3801461380635cbd87f
+' historical archive: external /tmp/opencode/starchess-hermetic-export-k1KYQO/image.tar SHA-256 64d6277f439f7cdfb82ecb2c6a230f735c5c7f3588d7f13082a30b430e6d07f7
 ' relocation: pre-rename archive and post-rename _spec/evidence/ml-adjutant-phase2/verification.json are immutable history; neither measures current R0 repairs.
 ' relocation proof: lead reports 20 archived runtime artifact checksums, 122 source files reconstructed by reversing only SPEC-name replacements, and 54 equal old/current semantic rerun comparisons.
-' verification: historical image core 426/426, arena 434/434, typechecks/strict TS passed; historical infra 5/5 actual Docker and focused 7 tests/2 files. No fresh image result.
-' preliminary: lead reports 571 arena passed, 2 live-pin checks deferred, 92 hermetic passed; core check in progress. No fresh 426-core or both-typecheck completion claim.
+' historical verification: image core 426/426, arena 434/434, typechecks/strict TS passed; historical infra 5/5 actual Docker and focused 7 tests/2 files.
+' current verification: core 426/426, arena 689/689, zero failed/pending/todo; 107 Node tests, no skips; 54 executions + 54 reruns, semantic/migration parity true; eight exact commands/three static checks include both scripts.
+' current host checks: actual Docker infrastructure 5/5 on new dependency image; host post-publication 13/13 including both live source pins, no skips.
 ' phase1 pins: baseline 940387370040f88888e9dfe0bb86ad9d4a8be88854df507120f34b22ee2d362b; verification 55d965afa71d775ff6ee1e95b6650a27d0ce759b966a81c43a3bb364236c7508. Unchanged.
-' reviews: earlier scoped/rename-only READY verdicts are historical. Full implementation adversarial READY TO MERGE: no; security rereview UNRECORDED; A01-A15 pending.
-' closure goals: both pre-freeze reviews READY -> new frozen image/actual Docker/full core+arena+static/54+54 -> validated new publication -> both post-publication reviews READY.
+' final reviews: adversarial ses_efe0ed67dffew2su1gZIUaDy23 and security ses_efe0ed520ffeOEg3kd6jAtN33i both READY TO CLOSE R0: yes; source/captured-record review, no independent execution/hash recomputation.
+' historical review: ses_f07c45365ffew0wJ58yFHXAye5 READY TO MERGE: no; earlier scoped/rename-only READY verdicts remain history, not current closure authority.
+' completed gate: pre-freeze reviews -> new frozen image/actual Docker/full core+arena+static/54+54 -> validated new publication -> both final reviews READY.
 ' publication selection: completion-marker logical commit, not atomic pointer/native directory rename; no atomic directory visibility claim.
-' future host destination: _spec/evidence/ml-adjutant-r0-refresh; not created yet, outside captured source. Existing Phase 2 remains immutable in place.
+' current host destination: _spec/evidence/ml-adjutant-r0-refresh, outside captured source; no rename/overwrite. Phase 1/2 and pre-rename bytes remain immutable.
 ' runtime output: /app/_spec/evidence/ml-adjutant-phase2; tests require HERMETIC_OUTPUT_DIRECTORY without fallback. Host prefers marker-validated R0 if present, else locked historical Phase 2 fixture.
 ' validator inputs: current baseline, original baseline, original verification, migration, coverage, contract, captured source root; exactly seven.
 ' command inventory: hermetic-verification-v2, exactly eight; strict command 5 includes both diagnostic/validator scripts including extensionless TS imports; trusted /usr/local/bin/node command 8 tests three hermetic modules.
 ' trust: publication requires canonical parent/private host-owned ancestor without malicious same-UID mutation.
+' permissions: Executor approved _spec/evidence ancestor mode 0700; historical evidence file bytes unchanged.
+' failed run retained: /tmp/opencode/starchess-hermetic-run-Bv2jRa; default 5s test timeout repaired to 30s with unchanged assertions, clear source rereview and new final freeze/build; policy deadlines unchanged.
+' future gates: calibrated turn-aware material belief remains H=1, public opening 4 deployed + 3 banked = 7 excludes CC and endowed paid basis; R1 versioned amendment/R4/R5 calibration before R6. Native causal frames are not H3 search. Prior 370-field v2 is not a supplied calibrated model.
 ' rendering: earlier checkonly is historical; current checkonly not run by spec-keeper (no shell tool).
 @startuml ml-adjutant-policy-contracts
 !include ../../themes/proveo.puml
@@ -64,12 +81,12 @@ package "packages/starchess-arena/src/challenge" {
 
 component "scripts/challenge-contract-evidence.ts\ncontract / migration / coverage reports" as DIAGNOSTIC <<host>>
 database "_spec/evidence/ml-adjutant-phase1\nimmutable baseline / verification bytes" as ORIGINAL <<db>>
-database "_spec/evidence/ml-adjutant-phase2\nimported baseline / verification" as EVIDENCE <<db>>
+database "_spec/evidence/ml-adjutant-phase2\nhistorical baseline / verification" as EVIDENCE <<db>>
 component "scripts/challenge-import-evidence.mjs\nexact command / test-output binding" as IMPORTER <<host>>
 component "scripts/challenge-validate-baseline.ts\nseven-input authoritative validation" as HOST_VALIDATE <<host>>
 
 package "packages/starchess-arena/hermetic" {
-  component "pins.json / Dockerfile\nNode platform digest / pnpm tool bytes" as IMAGE_PINS <<host>>
+  component "pins.json / Dockerfile\nNode platform + binary pin / pnpm bytes" as IMAGE_PINS <<host>>
   component "context.mjs / manifest.mjs\nallowlist capture / artifact manifests" as CAPTURE <<host>>
   component "closure.mjs / probe.mjs\ndependency closure / runtime checks" as PROBES <<host>>
   component "run.mjs / policy.mjs\nimage-ID selection / restricted container" as RUNNER <<host>>
@@ -79,7 +96,7 @@ package "packages/starchess-arena/hermetic" {
   component "image-measurement.mjs\nunstarted container / host tree scan" as MEASUREMENT <<host>>
   component "evidence-bundle.mjs\npublishBundleExclusive / readPublishedBundle" as BUNDLE <<host>>
 }
-database "PLANNED host publication\n_spec/evidence/ml-adjutant-r0-refresh\nnot created; outside captured source" as REFRESH <<db>>
+database "Published R0 host evidence\n_spec/evidence/ml-adjutant-r0-refresh\n24 artifacts; outside captured source" as REFRESH <<db>>
 
 OBSERVE ARROW_MAIN OBS_CODEC : authorized facts only
 BASELINE ARROW_MAIN CAND_CODEC : singleton queues and pass
@@ -100,7 +117,7 @@ IMAGE_PINS ARROW_MAIN CAPTURE : frozen dependency toolchain
 CAPTURE ARROW_MAIN PROBES : source / installed tree / store / tools
 RUNNER ARROW_MAIN RUNTIME : restricted image execution contract
 PROBES ARROW_OPTIONAL RUNTIME : pre/post immutable manifests
-RUNTIME ARROW_MAIN PINS : closure goal: 54 executions + 54 reruns
+RUNTIME ARROW_MAIN PINS : frozen 54 executions + 54 reruns
 RUNTIME ARROW_MAIN DIAGNOSTIC : generated baseline input
 RUNTIME ARROW_MAIN IMPORTER : working outputs / eight exact commands
 MIGRATION ARROW_MAIN HOST_VALIDATE : original-byte semantic parity
@@ -117,7 +134,7 @@ HOST_VALIDATE ARROW_MAIN INVENTORY : rebuild captured-root inventory
 HOST_VALIDATE ARROW_MAIN COVERAGE : recompute twice; exact contract
 HOST_VALIDATE ARROW_MAIN IMPORTER : replay / 54 hashes / summary / accounting
 IMPORTER ARROW_MAIN BUNDLE : validated artifact bytes only
-BUNDLE ARROW_OPTIONAL REFRESH : future marker-committed inventory
+BUNDLE ARROW_MAIN REFRESH : marker-committed inventory; durability confirmed
 EVIDENCE ARROW_OPTIONAL ORIGINAL : immutable history, not fresh R0 pins
 
 note bottom of FEATURES
@@ -161,18 +178,18 @@ note bottom of RUNNER
 end note
 
 note right of RUNNER
-  R0: PENDING REREVIEW; closure proof NONE
-  15 pending: 7 HIGH + 8 MEDIUM
-  Source repairs: IMPLEMENTED PROVISIONALLY
-  No fresh image, measured pins, or publication
+  R0: CLOSED within non-learned assurance
+  A01-A15: original 7 HIGH + 8 MEDIUM resolved
+  Both final reviews: READY TO CLOSE R0: yes
+  No arbitrary-JavaScript sandbox proof
 end note
 
 note bottom of RUNTIME
-  New-image closure goals
-  Full core / arena / static + actual Docker
-  54 executions + 54 independent reruns
-  Pre-freeze READY -> validated publication
-  -> post-publication READY
+  Frozen image: core 426/426; arena 689/689
+  Zero failed / pending / todo; Node 107 passed
+  8 commands / 3 static checks; both scripts
+  54 executions + 54 reruns; migration parity
+  Docker 5/5; host 13/13; no skips
 end note
 
 note bottom of EVIDENCE
@@ -247,15 +264,17 @@ note right of BUNDLE
 end note
 
 legend bottom
-  Historical hermetic verification passed. R0 repairs are source-implemented provisionally, not CLOSED.
+  R0 CLOSED: A01-A15 resolved within accepted non-learned assurance; both final reviews READY TO CLOSE R0: yes.
   Weights remain NONE. learnedGateEligible is false. Candidate wins are 0/18 corpus and 0/36 live.
   Corpus: 18 scheduled, 0 wins, 2 terminal losses, 16 queue-rejected. Live: 36 scheduled, 0 wins, 36 terminal losses.
-  Phase 1 original bytes/pins and existing Phase 2 remain immutable. No fresh R0 directory/image/measured pins yet.
-  R0 PENDING REREVIEW: all 15 pending (7 HIGH + 8 MEDIUM), closure proof NONE; adversarial READY TO MERGE: no, security UNRECORDED.
-  Closure goals: both pre-freeze READY -> new image / actual Docker / full suites+static / 54+54 -> validated publication -> both post-review READY.
+  Phase 1/2 and pre-rename bytes/pins stay immutable. Fresh R0 publication: 24 artifacts; commit/durability confirmed.
+  Current image passed core 426/426, arena 689/689, zero pending/todo; 107 Node tests, no skips.
+  Eight exact commands/three static checks passed; frozen 54+54 semantic reruns and migration parity true.
+  Actual Docker 5/5; host post-publication 13/13 including both live source-pin checks, no skips.
   Completion marker is logical commit, not atomic directory visibility; readers verify schema, exact inventory, and hashes.
   FIRST Phase 3 training still needs a broader versioned generator and v2 interactions, at H=1.
   Three-window conditional search remains later work. No trained coefficients or playable ML player.
-  Historical scoped READY/checkonly verdicts do not approve these repairs. Current rendering check not run here.
+  R1 economic amendment/R2-R5 calibration/readiness remain open; no supplied calibrated model or silent 370-field change.
+  Historical checkonly does not verify this edit. Current rendering check not run here; lead/build handoff.
 endlegend
 @enduml

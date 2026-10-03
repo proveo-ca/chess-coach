@@ -1,0 +1,150 @@
+{
+  "version": "ml-adjutant-r0-closure-v1",
+  "status": "closed",
+  "purpose": "Non-learned challenge execution and evidence assurance",
+  "findingIds": [
+    "A01",
+    "A02",
+    "A03",
+    "A04",
+    "A05",
+    "A06",
+    "A07",
+    "A08",
+    "A09",
+    "A10",
+    "A11",
+    "A12",
+    "A13",
+    "A14",
+    "A15"
+  ],
+  "reviews": {
+    "adversarial": {
+      "taskId": "ses_efe0ed67dffew2su1gZIUaDy23",
+      "verdict": "READY TO CLOSE R0: yes",
+      "basis": "Read-only source and captured-record review; no independent hash recomputation or execution"
+    },
+    "security": {
+      "taskId": "ses_efe0ed520ffeOEg3kd6jAtN33i",
+      "verdict": "READY TO CLOSE R0: yes",
+      "basis": "Read-only source and captured-record review; no independent hash recomputation or execution"
+    }
+  },
+  "evidence": {
+    "path": "_spec/evidence/ml-adjutant-r0-refresh",
+    "markerSha256": "33ac25cc582ee154179b3321091368858a6c0d65ee36df4eec02e85f8ff1d34d",
+    "artifactCount": 24,
+    "image": "sha256:3550d1cc2b98d9ae757937a9e45e1ba89b6e84459106a491a61af9e183968f72",
+    "archive": {
+      "sha256": "e349f9abd08a6e9b205778920a47538544a9b71a6542653f7de93616deab3833",
+      "bytes": 133682176
+    },
+    "sourceSha256": "b2b9e360fd5c2ecc0fbad667d5155ac56c3efd8603f3c09941982dadc5372147"
+  },
+  "checks": {
+    "executions": 54,
+    "semanticReruns": 54,
+    "semanticParity": true,
+    "verificationCommands": 8,
+    "tests": {
+      "starchess-core": {
+        "passed": 426,
+        "total": 426,
+        "failed": 0,
+        "pending": 0,
+        "todo": 0
+      },
+      "starchess-arena": {
+        "passed": 689,
+        "total": 689,
+        "failed": 0,
+        "pending": 0,
+        "todo": 0
+      }
+    },
+    "nodeTests": {
+      "passed": 107,
+      "failed": 0,
+      "skipped": 0
+    },
+    "hostPublishedChecks": {
+      "passed": 13,
+      "failed": 0,
+      "skipped": 0
+    },
+    "dockerInfrastructure": {
+      "passed": 5,
+      "failed": 0,
+      "skipped": 0,
+      "probe": {
+        "path": "/tmp/opencode/hermetic-test-ybR2F0/output/probe.json",
+        "sha256": "2e8b89922f4945355948609deace32cce457e3e80c17d838fab41b730b95f309"
+      }
+    }
+  },
+  "retainedInputs": {
+    "dependencyBuild": {
+      "path": "/tmp/opencode/starchess-hermetic-build-rssPgF/build.json",
+      "sha256": "84398e514225153f7cee5ca35d5c5450efe804a5690f7bc4cfb5d8125e738c23"
+    },
+    "dependencyPreflight": {
+      "path": "/tmp/opencode/starchess-hermetic-preflight-1DcevU/execution.json",
+      "sha256": "d77ad3a97aab87a00d8cb160f1c86dad2f1987fc4bc29c7dcd4af1b7092bb4a6"
+    },
+    "build": {
+      "path": "/tmp/opencode/starchess-hermetic-build-ozRB81/build.json",
+      "sha256": "80f7b49f13332450ff420bd5fbbde54c23fc78fae295cd93bc2e27c33b148805"
+    },
+    "execution": {
+      "path": "/tmp/opencode/starchess-hermetic-run-XdXChO/execution.json",
+      "sha256": "261a0bd1cf4f3710e57ce2249570f48da5997e4a4d73d5a4e8ec7980647a8a53"
+    },
+    "exported": {
+      "path": "/tmp/opencode/starchess-hermetic-export-E2QdWc/export.json",
+      "sha256": "6b15df464f2f67caab0a871592942ec9b4d5a180bab9dc38fc28347b45c51fb8"
+    }
+  },
+  "historicalBytes": {
+    "phase1Baseline": {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_spec/evidence/ml-adjutant-phase1/baseline-report.json",
+      "sha256": "940387370040f88888e9dfe0bb86ad9d4a8be88854df507120f34b22ee2d362b"
+    },
+    "phase1Verification": {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_spec/evidence/ml-adjutant-phase1/verification.json",
+      "sha256": "55d965afa71d775ff6ee1e95b6650a27d0ce759b966a81c43a3bb364236c7508"
+    },
+    "phase2Baseline": {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_spec/evidence/ml-adjutant-phase2/baseline-report.json",
+      "sha256": "5de86d94caaa626402b73ac9fa8f6bbc7a9b111e69a8b3801461380635cbd87f"
+    },
+    "phase2Verification": {
+      "path": "/home/gu1lty/Projects/proveo/chess-coach/_spec/evidence/ml-adjutant-phase2/verification.json",
+      "sha256": "aac3d8f72c45a648a765cb226bf2800926e7909a0144a3ca1a165b5ff4551537"
+    }
+  },
+  "failedRunPreserved": "/tmp/opencode/starchess-hermetic-run-Bv2jRa",
+  "permissions": {
+    "path": "_spec/evidence",
+    "mode": "0700",
+    "userApproved": true
+  },
+  "learnedPolicy": {
+    "modelArtifact": null,
+    "weights": null,
+    "registryReady": false,
+    "trainedAcceptance": false
+  },
+  "remainingGates": [
+    "R1 calibrated turn-aware material-belief amendment and calibration contract",
+    "R2–R5 implementation and readiness validation",
+    "R6 training and R7 artifact/runtime validation",
+    "R8 learned 18+36 acceptance"
+  ],
+  "assuranceLimits": [
+    "Trusted host/daemon and no malicious same-UID mutation",
+    "Static import-policy checks do not prove arbitrary-JavaScript sandboxing",
+    "Recorded rerun hashes are consistency checks supported by the frozen 54+54 execution",
+    "Referenced host envelopes and image archive remain under /tmp/opencode"
+  ]
+}
