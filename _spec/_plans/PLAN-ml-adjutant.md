@@ -5,13 +5,14 @@ Status: **Phases 0–2 implemented; recorded test/hermetic verification PASSED h
 Full implementation post-image adversarial review is **REVIEWED / READY TO MERGE: no**
 (task `ses_f07c45365ffew0wJ58yFHXAye5`); security rereview remains **UNRECORDED**.
 The [R0 findings ledger](#r0-findings-ledger--full-implementation-post-image-review) records
-**15 pending findings: 7 HIGH + 8 MEDIUM**. R1 future **design contract is FROZEN**, not implemented or validated.
+**15 pending findings: 7 HIGH + 8 MEDIUM**. Prior R1 future **design contract is FROZEN**, not implemented or validated; the new economic amendment remains **PENDING**.
 R2–R8 remain pending and unimplemented; no implementation review findings/results are claimed for those actions.
 The [R1 recipe](ml-adjutant-r1-recipe.md) preserves the original eight choices and nine follow-up directions; [exact contracts](ml-adjutant-r1-contracts.md) record Executor's approved final profiles and common semantics.
 Prior corrected-draft document-only rereviews: adversarial `ses_f061f5cf2ffe4PAinuWeFgHP8f` **READY freeze-candidate: yes**; security `ses_f061f5c50fferpU272G6KbdWLw` **docs freeze candidate READY**, as reported by lead.
 Those verdicts do not close R0 or substitute for full implementation rereviews. Lead arranges synchronized-document rereview; no new verdict is recorded here.
 This update changes no code, build/run permissions, evidence, historical pins, or projected diagram/source entries.
 Source inventory and source-reading anchors remain frozen historical evidence, not a fresh inspection.
+**New economic extension: SELECTED DIRECTION, NOT implemented or design-complete.** The [calibrated surviving-material belief gate](#selected-economic-extension--pre-training-gate) requires a versioned R1 amendment and R4/R5 readiness before R6; the prior 370-field freeze alone is insufficient.
 
 ## Exact approved R1 profile record — future design only
 
@@ -39,6 +40,7 @@ COMMON A includes 370 features; paid surviving/destroyed/wasted; transient autho
 | Coverage ≠ generation ≠ wins | Codec and feature representability each **282/282**; generated exact full queues **18/282**, singleton intents **204/576**. `baseline-v1` still proposes classical/Marine-deploy singletons and pass. Candidate wins remain **0/18 corpus + 0/36 live**; strict failures stay counted. |
 | Documentation completed | [Weights contract](ml-adjutant-weights.md) defines the broader first ranker; the generic study guide is published as **OPEN, unmerged** [Orrery PR #12](https://github.com/proveo-ca/orrery/pull/12). Neither implements learning. |
 | R1 design decisions | [Recipe](ml-adjutant-r1-recipe.md) and [exact contracts](ml-adjutant-r1-contracts.md): future design **FROZEN** with API A / quota B / provenance A / curriculum A / validation A / COMMON A. StarChess-only private `@chess-coach/starchess-training` `0.0.1` retains selected path. Exports/hooks/DTOs/validation remain unimplemented; no build/run permission. |
+| New economic extension | **SELECTED DIRECTION; amendment/readiness PENDING, NOT implemented.** Calibrated enemy surviving deployed replacement material versus known own equivalent replacement material requires R1/R4/R5 closure before R6; the prior frozen 370-field registry does not implement this comparison. |
 | Phase 3 / learned Phase 4 | Broader generation, authorized loss ledger, candidate-conditioned v2, training, frozen artifact/adapter, and learned eligibility/tests remain **PLANNED and unimplemented**. The existing 54-case scheduling/report machinery is not learned acceptance. |
 
 Current owning diagrams are [`ml-adjutant-challenge-harness.puml`](../packages/starchess-arena/ml-adjutant-challenge-harness.puml)
@@ -51,25 +53,44 @@ The current [image assurance](../evidence/ml-adjutant-phase2/image-assurance.jso
 These are the already-recorded current pins, not a new run or current R0 approval.
 Phase 1 and the pre-rename Phase 2 archive remain immutable.
 
+### Selected economic extension — pre-training gate
+
+Executor selected **Calibrated belief model** over visible-lower-bound and memory-heuristic alternatives.
+**SELECTED DIRECTION — NOT implemented or overall amended R1 design-complete.** SGD learns supplied feature weights; it does not invent missing features or establish calibration.
+The prior frozen 370-field v2 manifest covers own cost/investment/exposure and witnessed enemy **loss** lower bounds, not current surviving deployed-material balance.
+Require authorized history → calibrated distribution/interval, or expected value with explicit calibrated uncertainty, of enemy **surviving deployed replacement material**.
+Compare against known own surviving deployed replacement material under equivalent replacement valuation; enemy actual historical payment remains unknown.
+Do not compare exact own historical payments with estimated enemy replacement value; keep own paid debits/surviving/destroyed/wasted investment and witnessed enemy losses separate.
+Exclude hidden actual state, enemy bank, current enemy queue, and future traces from policy inputs.
+Require candidate × material-balance/uncertainty interactions for spend, deployment, trade, and protection; a context-only balance term cancels in linear ranking/softmax.
+Keep **H=1**; this requirement is not the optional three-window search milestone.
+
+**Ownership/gate:** R1 approves a new versioned amendment; R4 implements belief/features; R5 persists calibration, equivalent-valuation, uncertainty/interaction, and noninterference checks before R6.
+Exact architecture, feature dictionary, versions, calibration data/objective, and thresholds remain **NOT CHOSEN**; do not silently change the frozen 370-field count/meaning or claim amended R1 completion.
+See [recipe choice](ml-adjutant-r1-recipe.md#selected-economic-extension--calibrated-belief-model), [contracts §2.1](ml-adjutant-r1-contracts.md#21-selected-economic-extension--amendment-pending), and [weights §5.1](ml-adjutant-weights.md#51-selected-economic-extension--calibrated-surviving-material-belief).
+R0 source repairs, review and freeze continue under lead/build ownership; this choice closes no R0 finding and authorizes no training.
+
 ## Immediate ordered next actions — Train the first broader Adjutant
 
 R0's adversarial review has been performed; remediation, regression verification, and review closure remain pending.
-R1 future design freeze is complete; implementation and validation readiness are not. R2–R8 remain pending and unimplemented.
+The prior R1 future design is frozen; the newly selected economic extension still requires its versioned amendment and readiness gate. Implementation and validation readiness are not established. R2–R8 remain pending and unimplemented.
 Complete **R0–R5 before the first training run at R6**; use **H=1**. No training is authorized.
 
 0. **R0 — REVIEWED / BLOCKED: close full implementation post-image review.** Adversarial task `ses_f07c45365ffew0wJ58yFHXAye5` returned **READY TO MERGE: no**. Investigate and resolve all A01–A15 in the [R0 ledger](#r0-findings-ledger--full-implementation-post-image-review), persist meaningful negative regressions, refresh frozen-source/image evidence, and obtain recorded adversarial and security rereviews **READY: yes**. Security remains **UNRECORDED**. Rename-only approval and Orrery documentation review cover different scopes; neither substitutes for these verdicts.
 1. **R1 — Future design contract FROZEN; readiness not established.** [Recipe](ml-adjutant-r1-recipe.md) and [contracts](ml-adjutant-r1-contracts.md) preserve eight original choices/nine follow-ups and now freeze API A, quota B, provenance A, curriculum A, validation A and COMMON A. Retain `packages/starchess-training`, private `@chess-coach/starchess-training` `0.0.1`, H=1, `7×48+175+1=512` unique capacity, 2048 counted append attempts, four action slots, 370 ordered features, authorized ledger/native companion, SHA-256/`mulberry32`, all-history baseline/startup 0, summed REINFORCE gradient/L2 once and stop-ALL aborts. The frozen experimental profile keeps zero initialization, float64 CPU, `η=.001`, `τ=1`, `λ=.0001`, one eligible episode per update and no clipping. Five serial masters 101..105 each consume at most 1000 STARTED slots; curriculum A allocates 500 corpus / 250 live White / 250 live Black at the cap; all five must finish VALID before formal final-valid-101 primary. Numeric/gradient/performance validation and R0/R2–R5 remain pending; no build/run is approved.
+   R1 also owns the [new economic extension's versioned amendment](#selected-economic-extension--pre-training-gate); its architecture/features/versions and calibration data/objective/thresholds remain unchosen. The prior freeze is not overall amended R1 completion.
 2. **R2 — Implement broader observation-only generation.** Cover all kinds and meaningful ordered B/C/F chains with deterministic bounded composition, deduplication, pruning, and pass retention. Measure exhaustive small-fixture domains and actual generated membership separately; never use full-state legality probes or admission retries.
 3. **R3 — Implement authorized economics.** Track own lineage, confirmed paid debits, and paid-investment loss separately from replacement valuation. Track only observed/confirmed opponent-loss bounds with explicit unknowns; do not import private strategic KVS or infer an exact enemy ledger.
-4. **R4 — Implement candidate-conditioned feature v2.** Add economic, vision/attack-ray, tactical, and exploration interactions with knowledge masks, normalization, and frozen ordered names/dimensions. Observation-only terms and the shared bank component of budget margins cancel in linear ranking; extra global scalars do not supply candidate-context preferences.
+4. **R4 — Implement candidate-conditioned features and the economic extension after R1 amendment.** Retain v2 economic, vision/attack-ray, tactical, and exploration interactions; add the approved calibrated surviving-material belief and candidate × material-balance/uncertainty interactions for spend/deploy/trade/protection under a new versioned contract. Freeze masks, normalization, names/dimensions without silently changing the prior 370-field registry. Observation-only terms and shared bank components cancel in linear ranking.
 5. **R5 — Persist readiness verification.** Use gradient/finite-difference → numeric-extremes → exhaustive-small-fixture → capped-worst-case-runtime → reload/provenance. Validation A freezes `eps=1e-6`, `atol=1e-8`, `rtol=1e-5` and contracts §§16–17's fixtures/pass rules, inherited fixed deadlines and Docker resources. Require every privacy/noninterference, ledger/conservation, phase, host-resource/atomicity, uncertainty/unknown-ray and v2 interaction check. Actual hardware/provider measurements and numerical/runtime results remain future evidence. Refresh execution/capture pins and hermetic evidence after implementation changes; preserve historical bundles.
+   The new extension also requires persisted calibration, equivalent replacement valuation, uncertainty propagation, candidate-interaction/cancellation, and hidden-input noninterference checks against R1's approved amendment; calibration data/objective/thresholds are not yet selected.
 6. **R6 — Train the linear policy from actual outcomes.** Use the current 18 as training/regression plus a live-strategic curriculum, not held-out evidence. Separate training-selection/policy RNG streams from gate streams; persist data metadata, recipe, seeds, loss/update history, and provenance.
 7. **R7 — Freeze the real learned artifact and adapter.** Validate finite, exactly aligned v2 weights and an external artifact hash; implement a `ScriptPlayer`-compatible authorized adapter. Allow no online updates, heuristic/strategic rescue, or missing-model fallback in the learned gate.
 8. **R8 — Execute learned Phase 4.** Run every pinned case with the frozen artifact, integrity checks, and semantic reruns. Require **18/18 corpus + 36/36 live wins**, `fallbackCount = 0`; retain every loss, rejection, timeout, and other failure in the denominator.
 
 **Separate optional follow-up after R0:** audit the external **96-game count-only** export for provenance,
 duplicates, rules, and trace compatibility. No admission/dedup audit or gate expansion has completed;
-this audit is not first-model readiness. Three-window belief/search, RLHF, Elo, UI/runtime rollout,
+this audit is not first-model readiness. Three-window search (not the required H=1 material belief), RLHF, Elo, UI/runtime rollout,
 and Stockfish retirement do not block the first model.
 
 Scope: arena-owned Phases 1–2, with selected dedicated **`packages/starchess-training`** ownership for Phase 3 onward.
@@ -91,10 +112,11 @@ All **A01–A15 belong to the same R0 review**, not to R1–R8.
 |---|---|---|
 | R0 — REVIEWED / BLOCKED | Cross-cutting Phase 1/2 remediation. A08–A10 own Phase 1 execution/watchdog/corpus/evidence and the Phase 0 corpus-pin contract. A01–A07, A11–A15 own the current Phase 2 import/audit/provenance/hermetic/publication layer. | Investigate and resolve every finding with meaningful negative fixtures; refresh evidence and obtain both adversarial/security READY verdicts before R6. Every later phase reuses this assurance boundary. |
 | R1 — Future design FROZEN; not runtime-ready | Cross-cutting architecture and Phase 3 design preparation; [recipe](ml-adjutant-r1-recipe.md) and [exact contracts](ml-adjutant-r1-contracts.md) record approved profiles/common semantics. | Design freeze advances independently of R0 repairs, but supplies no implementation/validation evidence. Implement and persist R2–R5, close all R0 findings and obtain explicit training approval before R6. Do not accept a model freeze with the known-bad importer. |
+| R1 economic extension — SELECTED DIRECTION; amendment PENDING | Cross-cutting Phase 3 belief/economic design; prior freeze remains intact. | Approve a new versioned amendment, including belief architecture/features/versions and calibration data/objective/thresholds, before R4 implementation and R6 training; no silent 370-field mutation or overall amended R1 completion claim. |
 | R2 — PENDING; not performed | Broader generation extends Phase 2 policy contracts as an accepted **FIRST Phase 3 training prerequisite**. | Implement, version, and verify before R6. Current v1 Phase 2 completion does not mean broader generation is complete. |
 | R3 — PENDING; not performed | Authorized economics/lineage/loss extends Phase 2 policy contracts as an accepted **FIRST Phase 3 training prerequisite**. | Implement and verify the authorized ledger/uncertainty contract before R6. |
-| R4 — PENDING; not performed | Candidate-conditioned v2 extends Phase 2 policy contracts as an accepted **FIRST Phase 3 training prerequisite**. | Implement, verify, and freeze ordered v2 names/dimensions before R6; current v1 does not satisfy it. |
-| R5 — PENDING; not performed | Cross-cutting repair/regression verification plus new broader-model readiness checks. | Persist passing readiness checks and current frozen-source/hermetic evidence before R6. Historical PASSED suites do not demonstrate rejection of the newly identified counterexamples. |
+| R4 — PENDING; not performed | Candidate-conditioned features and calibrated surviving-material belief are **FIRST Phase 3 training prerequisites**. | Implement and verify the R1-amended belief/interactions; freeze versioned names/dimensions before R6. Neither current v1 nor the prior 370-field v2 contract satisfies the new material-comparison requirement. |
+| R5 — PENDING; not performed | Cross-cutting repair/regression verification plus broader-model and calibrated-economic readiness checks. | Persist passing calibration, equivalent-valuation, uncertainty/interaction and noninterference checks under the approved amendment, plus current frozen-source/hermetic evidence before R6. Historical PASSED suites do not demonstrate rejection of newly identified counterexamples. |
 | R6 — PENDING; not performed | Phase 3 training. | Start only after R0–R5 close; persist actual-outcome training and provenance at H=1. |
 | R7 — PENDING; not performed | Phase 3 learned artifact/runtime adapter. | Complete artifact/adapter validation and freeze before R8; no online updates or rescue fallback. |
 | R8 — PENDING; not performed | Phase 4 execution. | Execute only after R6–R7 complete; require 18/18 + 36/36 wins, integrity, semantic reruns, and `fallbackCount = 0`. |
@@ -102,7 +124,7 @@ All **A01–A15 belong to the same R0 review**, not to R1–R8.
 **Do not wait until Phase 4 to repair R0.** Close R0–R5 before training, then complete R6–R7 before R8.
 “Apply all R0–R8 before Phase 4” is false: **R8 is performed in Phase 4**.
 No unstarted action has a review finding or a passing result in this session.
-H≤3 belief/search remains optional later work. R1 future design/experimental numeric requirements are frozen,
+H≤3 search remains optional later work; the selected H=1 material-belief extension is a required pre-training gate. Prior R1 future design/experimental numeric requirements are frozen,
 not an implementation authorization, validated performance profile, task date or approved run.
 
 ### R0 findings ledger — full implementation post-image review
@@ -602,7 +624,7 @@ Follow the [ordered R0–R8 actions](#immediate-ordered-next-actions--train-the-
 not a second parallel checklist. Three-window search is a later milestone.
 No training run or learned artifact exists yet.
 
-**Training-ready means:** R0–R5 have recorded passing evidence, ownership/packaging is approved,
+**Training-ready means:** R0–R5 have recorded passing evidence, the [new economic extension's versioned amendment and calibration/readiness gate](#selected-economic-extension--pre-training-gate) are closed, ownership/packaging is approved,
 the broader generator and authorized ledger/v2 interfaces are implemented and frozen, and the
 loss/optimizer/seed recipe plus finite numeric budgets are settled. Persist integrity, noninterference,
 conservation, uncertainty/ray, interaction, and gradient checks before starting optimization.
@@ -626,6 +648,7 @@ Host-issued own lineage IDs and side-local sequences must not leak hidden counts
 Contracts §§5–7 freeze provenance **A**, private native causal/visibility hooks and exact payload/order/IDs/mismatch semantics; own opening/free-promotion paid basis is zero and investment stays separate from replacement value.
 Paid debits equal surviving+destroyed+wasted; unmaterialized deployments are waste, never invented births/deaths. Transient authorized vision updates memory/everLit; loss witnesses require actual causal pre-destruction visibility.
 Use horizon **1** initially; three conditional simultaneous planning windows remain a separate future milestone.
+The prior 370-field freeze does not implement the newly selected surviving-material comparison; complete its R1 versioned amendment and R4/R5 belief/interaction/calibration checks before R6 without silently mutating that registry.
 
 **Deliverables.** Fit `s_w(h,c) = wᵀφ_version(h,c)` through an explicit training loss.
 Coefficients are shared named-feature weights, not per-move or per-combination-tree entries.

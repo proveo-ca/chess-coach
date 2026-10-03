@@ -1,6 +1,6 @@
 # ML Adjutant — weights, combination coverage, and planning horizons
 
-Status: **FROZEN future R1 learning design; NOT implemented or validated. Historical Phase 2 hermetic verification PASSED; not a learned PASS.**
+Status: **Prior future R1 learning design FROZEN; new economic amendment PENDING. NOT implemented or validated. Historical Phase 2 hermetic verification PASSED; not a learned PASS.**
 R0 full implementation post-image adversarial review is **REVIEWED / READY TO MERGE: no**;
 the [R0 ledger](PLAN-ml-adjutant.md#r0-findings-ledger--full-implementation-post-image-review) holds **15 pending findings: 7 HIGH + 8 MEDIUM**.
 Full implementation security rereview is **UNRECORDED**. [R1 selections](ml-adjutant-r1-recipe.md) and [exact contracts](ml-adjutant-r1-contracts.md) are **FROZEN as future design**, not implementation/readiness approval.
@@ -10,6 +10,7 @@ a separately versioned combination generator and authorized economic/positional 
 including an own-loss lineage ledger and confirmed opponent-loss knowledge with explicit fog uncertainty.
 Start at **horizon 1**. Planning across **three simultaneous planning windows** is a separate future milestone.
 Current `challenge-features-v1` is an inspectable Phase 2 contract, **not sufficient for this first trained ranker**.
+**New economic extension: SELECTED DIRECTION, NOT implemented or design-complete.** Executor selected a calibrated belief model for surviving enemy deployed material; [§5.1](#51-selected-economic-extension--calibrated-surviving-material-belief) adds a pre-training amendment/readiness gate beyond the prior frozen 370-field contract.
 
 Owners: [roadmap](PLAN-ml-adjutant.md), [R1 recipe decisions](ml-adjutant-r1-recipe.md), [strict challenge](ml-adjutant-challenge.md),
 [Policy-contract boundary](../packages/starchess-arena/ml-adjutant-policy-contracts.puml).
@@ -230,6 +231,25 @@ confirmed enemy-loss lower bound × candidate trade opportunity, and categorical
 Use authorized projected effects or explicit hypotheses, not undisclosed actual future effects.
 Expose lost investment and replacement value separately so a free promoted unit does not masquerade as paid capital.
 
+### 5.1 Selected economic extension — calibrated surviving-material belief
+
+**SELECTED DIRECTION — NOT implemented; exact amendment pending.** Executor chose **Calibrated belief model** over visible-lower-bound and memory-heuristic alternatives.
+SGD learns coefficients for supplied features; it does not create a missing material comparison or establish belief calibration.
+The frozen 370-field v2 manifest covers own costs/investment/exposure and witnessed enemy **loss** lower bounds, not a comparison of current surviving deployed material.
+
+Required extension: derive a calibrated distribution/interval, or a calibrated expected value with explicit uncertainty, for enemy **surviving deployed replacement material** from authorized history only.
+Own surviving deployed replacement material is known from current own units under the same replacement valuation.
+Compare like valuation with like valuation; never compare exact own historical payments against estimated enemy replacement value.
+Enemy actual historical payment remains unknown.
+Keep own paid debits and surviving/destroyed/wasted investment separate from this material balance and from witnessed enemy-loss bounds.
+Hidden actual state, enemy bank, current enemy queue, and future traces never become policy inputs.
+
+Supply **candidate × material-balance/uncertainty interactions** for spend, deployment, trade, and protection; a raw context-only balance term cancels in linear ranking and softmax.
+This belief requirement keeps **H=1** and does not select three-window search.
+Exact belief architecture, feature dictionary, versions, calibration data/objective, and acceptance thresholds remain **NOT CHOSEN**.
+R1 must approve a new versioned amendment without silently changing the frozen 370-field names/count/meaning; R4 implements its belief/features and R5 persists calibration, valuation, interaction, and noninterference checks before R6.
+The [contracts extension](ml-adjutant-r1-contracts.md#21-selected-economic-extension--amendment-pending), [choice record](ml-adjutant-r1-recipe.md#selected-economic-extension--calibrated-belief-model), and [roadmap gate](PLAN-ml-adjutant.md#selected-economic-extension--pre-training-gate) record the same pending boundary.
+
 ## 6. Vision, attack lines, and priority families
 
 First-training v2 needs positional interactions, not merely target type and movement coordinates.
@@ -262,6 +282,7 @@ Hard survival filtering would alter the proposal contract and needs its own revi
 
 **Prerequisite:** implement and validate the frozen broader generator, own-loss/opponent-knowledge contracts and `φ_v2` names, dimensions, scales, interactions and collision limitations.
 The frozen future dimension is **370**, `34+4×84`, with every name/index/formula defined in contracts §§9–10,15. No 158-value v1 trained artifact satisfies this recipe.
+That prior freeze does not satisfy [§5.1's newly selected economic extension](#51-selected-economic-extension--calibrated-surviving-material-belief); its versioned amendment and R4/R5 readiness gate must also close before FIRST training.
 R1 selects **typed feature blocks plus a fixed flat ordered manifest**.
 Follow-up C selects **action-position blocks** holding candidate-context at four rules-derived positions with order preservation
 and distinct unknown-versus-absent masks. Four derives from gas 3 plus one classical, not an additional numeric approval.

@@ -1,6 +1,6 @@
 # ML Adjutant — approved exact R1 future contracts
 
-Status: **FROZEN — Executor-approved future R1 design contract; NOT implemented or validated.**
+Status: **Prior Executor-approved future R1 design contract FROZEN; new economic amendment PENDING. NOT implemented or validated.**
 R0: **all 15 findings PENDING: 7 HIGH + 8 MEDIUM; READY TO MERGE: no.**
 Full implementation security rereview: **UNRECORDED**. Learned model / weights: **NONE**.
 R1 **design contract FROZEN**: Executor selected API A, quota B, provenance A, curriculum A, validation A and COMMON A after document-only rereviews.
@@ -8,10 +8,11 @@ R2–R5 remain **unimplemented** and require persisted validation; R6 training i
 This document records no build, training, registry activation, test result, new hash, or evidence.
 This approval pass synchronizes only this contract, the recipe, weights ledger and PLAN; source, tests, diagrams, corpus and evidence remain unchanged.
 The source-reading inventory and historical pins remain frozen historical evidence, not a refreshed source inspection.
+**New economic extension: SELECTED DIRECTION; exact amendment NOT CHOSEN, NOT implemented or validated.** The prior frozen 370-field contract does not satisfy [§2.1](#21-selected-economic-extension--amendment-pending); extended R1 design/readiness remains open before R6.
 
 ## 1. Authority, vocabulary, and decision boundary
 
-Every normative sentence below describes the **approved future contract**, unless explicitly labeled a historical source fact or rejected alternative.
+Every normative sentence below describes the **approved future contract**, unless explicitly labeled a historical source fact, rejected alternative, or selected direction with amendment pending.
 Approval freezes the future R1 design; it does not certify that the corresponding source, package exports, native hooks or adapter exist.
 Native SCFEN parsing, `addScAction`, `beginScTurn`, `endScTurn`, and `scOutcome` remain the rules and outcome authority.
 The host supplies pure bookkeeping, trusted-source binding, authorization, supervision, and verification, not a second rules engine.
@@ -73,6 +74,25 @@ The batch-event cap's equality to the existing IPC-message count is coincidental
 | Curriculum | B: 200 corpus warmup then alternating corpus/live. C: corpus/live-White/live-Black cycle. |
 | Validation | B: stricter tolerance. C: both prescribed step sizes. |
 | COMMON | B: amend before approval. C: defer freeze. |
+
+### 2.1 Selected economic extension — amendment pending
+
+**SELECTED DIRECTION — NOT implemented or exact-design complete.** Executor selected **Calibrated belief model**, not the visible-lower-bound or memory-heuristic alternatives, for current enemy surviving deployed material.
+The prior frozen 370-field v2 registry contains own cost/investment/exposure and witnessed enemy-loss bounds; it does not implement this live material comparison.
+SGD learns supplied feature weights and cannot supply an absent comparison or prove calibration.
+
+The required extension derives a calibrated distribution/interval, or expected value with explicit calibrated uncertainty, for **enemy surviving deployed replacement material** using authorized history only.
+Compare it against known **own surviving deployed replacement material** using equivalent replacement valuation, not exact own paid basis versus estimated enemy replacement.
+Enemy actual historical payment remains unknown; keep own paid debits/surviving/destroyed/wasted investment and witnessed enemy-loss bounds separate.
+No hidden actual state, enemy bank, current enemy queue, or future trace enters policy inputs.
+Require candidate × material-balance/uncertainty interactions for spend, deployment, trade, and protection; a shared raw context term cancels in linear ranking/softmax.
+Keep **H=1**; this choice does not authorize three-window search.
+
+Exact architecture, feature dictionary, versions, calibration data/objective, and acceptance thresholds are **NOT CHOSEN**.
+R1 must approve a **new versioned amendment** covering affected belief/feature/artifact contracts before training; do not silently alter §§4,9–10,15's frozen 370-field registry or closed schemas.
+R4 owns future belief/features implementation; R5 must persist calibration, equivalent-valuation, uncertainty/interaction, and hidden-input noninterference verification before R6.
+See [weights §5.1](ml-adjutant-weights.md#51-selected-economic-extension--calibrated-surviving-material-belief), [recipe choice](ml-adjutant-r1-recipe.md#selected-economic-extension--calibrated-belief-model), and [roadmap gate](PLAN-ml-adjutant.md#selected-economic-extension--pre-training-gate).
+This choice records no completed overall amended R1 design, training permission, model, weights, or passing evidence.
 
 ## 3. Package ownership, exports, and dependency closure
 
@@ -1082,5 +1102,5 @@ Numeric tolerances and resource budgets are design requirements; gradient, numer
 R1 design acceptance still leaves native hooks, adapters, package exports, DTOs, generation, ledger, features and all R2–R5 tests unimplemented here.
 Lead/build owns the requested revisit and repairs of existing R0 adversarial findings while Orrery proceeds independently. All **15 remain PENDING: 7 HIGH + 8 MEDIUM**, **READY TO MERGE: no**, with full implementation security rereview **UNRECORDED** until lead records repairs and rereviews.
 Lead arranges the required rereview of this synchronized documentation; this pass invokes no additional agents and records no new verdict.
-R0 closure plus persisted R2–R5 readiness and explicit training approval precede R6; frozen artifact/adapter R7 precedes learned strict R8.
+R0 closure, §2.1's new versioned economic amendment, persisted R2–R5 readiness including calibration/interactions, and explicit training approval precede R6; frozen artifact/adapter R7 precedes learned strict R8.
 This paper contract ends with **no trained weights, no new hashes, no actual derived seed pins, no passing validation claim, and no altered existing rules authority**.
