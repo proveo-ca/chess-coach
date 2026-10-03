@@ -405,7 +405,7 @@ export const collectSourceInventory = (
       if (!declaration || !ts.isVariableDeclaration(declaration) || !ts.isVariableDeclarationList(declaration.parent)) return false;
       const loop = declaration.parent.parent;
       return !!(ts.isForOfStatement(loop) && declaration.parent.flags & ts.NodeFlags.Const && ts.isArrayLiteralExpression(unwrapValue(loop.expression)) &&
-        (unwrapValue(loop.expression) as ts.ArrayLiteralExpression).elements.every((entry) => ts.isStringLiteralLike(entry) && !["constructor", "__proto__", "prototype"].includes(entry.text)));
+        (unwrapValue(loop.expression) as ts.ArrayLiteralExpression).elements.every((entry) => ts.isStringLiteralLike(entry) && ["w", "b"].includes(entry.text)));
     };
     const sourceIsDeclaration = (node: ts.Identifier): boolean => {
       const parent = node.parent;
