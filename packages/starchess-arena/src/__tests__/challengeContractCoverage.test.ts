@@ -1,4 +1,6 @@
 // SPEC: _spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { canonical } from "../challenge/config";
 import { sha256 } from "../challenge/corpus";
@@ -41,6 +43,7 @@ describe("Phase2 measured coverage and migration evidence", () => {
 
   it.each(["baseline-report.json", "coverage.json", "contract-report.json", "pin-migration.json"] as const)(
     "requires %s in the configured fresh output without falling back to host history", (missing) => {
+      mkdirSync("/tmp/opencode", { recursive: true });
       const directory = mkdtempSync("/tmp/opencode/coverage-generation-");
       const previous = process.env.HERMETIC_OUTPUT_DIRECTORY;
       try {
@@ -55,5 +58,3 @@ describe("Phase2 measured coverage and migration evidence", () => {
     },
   );
 });
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
-import { join } from "node:path";

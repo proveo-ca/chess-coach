@@ -108,6 +108,12 @@ describe("phase2 hermetic evidence import with synthetic test-only image hooks",
     await expect(importEvidence(value.options)).rejects.toThrow(/destination already exists|EEXIST/);
     expect(readFileSync(join(value.destination, "kept"), "utf8")).toBe("competitor");
   }, 120000);
+  it("does not claim the destination when the before-publication hook fails", async () => {
+    const value = fixture();
+    await expect(importEvidence({ ...value.options, beforePublication: () => { throw new Error("injected before-publication failure"); } }))
+      .rejects.toThrow("injected before-publication failure");
+    expect(existsSync(value.destination)).toBe(false);
+  }, 120000);
   it("rejects a sparse oversized input before decoding it", async () => {
     const value = fixture(); truncateSync(value.paths.execution, evidenceLimits.fileBytes + 1);
     await expect(importEvidence(value.options)).rejects.toThrow(/Input exceeds byte cap/);
@@ -140,8 +146,11 @@ describe("authoritative seven-input baseline validator", () => {
     ["invented 54 integer rows", "baseline-report.json", (d) => { d.rows = Array.from({ length: 54 }, (_, index) => index); }, /Invalid current scheduled evidence shape or cardinality/],
     ["unknown roster", "baseline-report.json", (d) => { d.rows[0].match.key = "invented-roster"; }, /current row match white-trace-01 mismatch/],
     ["truthy learned flag", "baseline-report.json", (d) => { d.learnedGateEligible = "false"; }, /Invalid current baseline provenance or flags/],
+    ["falsy learned flag", "baseline-report.json", (d) => { d.learnedGateEligible = 0; }, /Invalid current baseline provenance or flags/],
+    ["eligible learned flag", "baseline-report.json", (d) => { d.learnedGateEligible = true; }, /Invalid current baseline provenance or flags/],
     ["falsy execution flag", "baseline-report.json", (d) => { d.executionIntegrity = 0; }, /Invalid current baseline provenance or flags/],
     ["forged learned pass", "baseline-report.json", (d) => { d.learnedChallengePass = true; }, /Invalid current baseline provenance or flags/],
+    ["falsy learned pass", "baseline-report.json", (d) => { d.learnedChallengePass = 0; }, /Invalid current baseline provenance or flags/],
     ["forged summary bucket", "baseline-report.json", (d) => { d.summary.corpus.wins++; }, /current full summary mismatch/],
     ["forged stop-kind summary", "baseline-report.json", (d) => { d.summary.corpus.stopKinds.invented = 1; }, /current full summary mismatch/],
     ["forged rerun flag", "baseline-report.json", (d) => { d.deterministicRerun.performed = false; }, /current deterministic rerun consistency mismatch/],
@@ -149,6 +158,7 @@ describe("authoritative seven-input baseline validator", () => {
     ["unequal migration", "pin-migration.json", (d) => { d.comparisons[0].equal = false; }, /Full pin migration mismatch/],
     ["forged inventory", "baseline-report.json", (d) => { d.pins.sourceInventory.inventorySha256 = "0".repeat(64); }, /Current execution pins mismatch/],
     ["coverage feature hash changed with identical counts", "coverage.json", (d) => { d.windows[0].featureSha256 = "0".repeat(64); }, /Full frozen-corpus coverage mismatch/],
+    ["coverage fixture hash changed with identical counts", "coverage.json", (d) => { d.fixtures.rows[0].featuresSha256 = "0".repeat(64); }, /Full frozen-corpus coverage mismatch/],
   ];
   it.each(cases)("rejects %s with rebound raw checksums", (_name, path, mutate, message) => {
     const value = fixture(); value.mutate(path, mutate);

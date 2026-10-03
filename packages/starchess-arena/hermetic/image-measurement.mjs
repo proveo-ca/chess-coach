@@ -1,6 +1,6 @@
 // SPEC: _spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml
 import { spawn } from 'node:child_process';
-import { createHash } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
 import { constants } from 'node:fs';
 import { lstat, mkdtemp, open, realpath, rm } from 'node:fs/promises';
 import { join, posix } from 'node:path';
@@ -22,8 +22,9 @@ export async function dockerRead(args, { output, cap = evidenceLimits.metadataBy
   try {
     child = spawnProcess('docker', args, { stdio: ['ignore', 'pipe', 'pipe'] });
     const closed = new Promise((resolve) => {
-      child.once('error', (error) => resolve({ error }));
-      child.once('close', (code, signal) => resolve({ code, signal }));
+      let error;
+      child.once('error', (value) => { error = value; });
+      child.once('close', (code, signal) => resolve({ code, signal, error }));
     });
     let failure;
     const stop = (error) => { failure ??= error; child.kill('SIGKILL'); };
@@ -38,10 +39,12 @@ export async function dockerRead(args, { output, cap = evidenceLimits.metadataBy
           if (isError) {
             errorBytes += chunk.length;
             if (errorBytes > evidenceLimits.fileBytes) { stop(new Error('Docker stderr resource limit')); continue; }
+            if (failure) continue;
             stderr.push(chunk);
           } else {
             bytes += chunk.length;
             if (bytes > cap) { stop(new Error('Docker stdout resource limit')); continue; }
+            if (failure) continue;
             if (file) {
               let offset = 0;
               while (offset < chunk.length) {
@@ -133,7 +136,7 @@ function fileAt(entries, path, follow = false) {
 function jsonFile(entries, path, follow = false) {
   const entry = fileAt(entries, path, follow);
   if (!entry.data) mismatch(`unretained JSON ${path}`);
-  return JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(entry.data));
+  return JSON.parse(new TextDecoder('utf-8', { fatal: true, ignoreBOM: true }).decode(entry.data));
 }
 
 export function measureCopiedFilesystem(entries) {
@@ -202,11 +205,13 @@ export async function measureImageFilesystem(image, { spawnProcess = spawn, temp
   const work = await mkdtemp(join(temporaryRoot, 'starchess-image-measurement-'));
   const read = (args, options = {}) => dockerRead(args, { spawnProcess, timeoutMs, ...options });
   let container;
+  let cleanupName;
   let failure;
   try {
     const [inspection] = JSON.parse(await read(['image', 'inspect', image]));
     if (inspection?.Id !== image || inspection.Os !== 'linux' || inspection.Architecture !== 'amd64') mismatch('image inspection');
-    container = (await read(['create', '--pull=never', '--network=none', '--read-only', '--entrypoint', '/__host_measurement_never_started__', image])).trim();
+    cleanupName = `starchess-host-measurement-${randomUUID()}`;
+    container = (await read(['create', '--name', cleanupName, '--pull=never', '--network=none', '--read-only', '--entrypoint', '/__host_measurement_never_started__', image])).trim();
     if (!/^[0-9a-f]{64}$/.test(container)) mismatch('container ID');
     const [created] = JSON.parse(await read(['container', 'inspect', container]));
     if (created?.Image !== image || created.State?.Status !== 'created' || created.State.Running !== false || created.State.Pid !== 0) mismatch('unstarted container inspection');
@@ -219,8 +224,10 @@ export async function measureImageFilesystem(image, { spawnProcess = spawn, temp
       archiveBytes += copied.bytes;
       const basename = posix.basename(root);
       const scanned = await scanTarFile(path, { limits, budget, retain: (entry) => entry.type === 'file' && (root === '/hermetic-evidence' || entry.path.endsWith('/package.json') || entry.path === `${basename}/artifact.tgz` || entry.path.endsWith('/hermetic/pins.json') || root === '/hermetic' && entry.path === 'hermetic/pins.json') });
+      if (scanned.entries.get(basename)?.type !== 'directory') mismatch(`copy directory ${root}`);
       for (const entry of scanned.entries.values()) {
         if (entry.path !== basename && !entry.path.startsWith(`${basename}/`)) mismatch(`copy root ${root}`);
+        if (entry.path !== basename && scanned.entries.get(posix.dirname(entry.path))?.type !== 'directory') mismatch(`copy parent ${entry.path}`);
         const remap = (path) => `${root.slice(1)}${path.slice(basename.length)}`;
         const mapped = { ...entry, path: remap(entry.path) };
         if (entry.type === 'hardlink') {
@@ -239,8 +246,9 @@ export async function measureImageFilesystem(image, { spawnProcess = spawn, temp
   } catch (error) { failure = error; throw error; }
   finally {
     let cleanupError;
-    if (container && /^[0-9a-f]{64}$/.test(container)) {
-      try { await read(['container', 'rm', '--force', '--volumes', container]); } catch (error) { cleanupError = error; }
+    if (cleanupName) {
+      const target = container && /^[0-9a-f]{64}$/.test(container) ? container : cleanupName;
+      try { await read(['container', 'rm', '--force', '--volumes', target]); } catch (error) { cleanupError = error; }
     }
     await rm(work, { recursive: true, force: true });
     if (cleanupError && !failure) throw cleanupError;

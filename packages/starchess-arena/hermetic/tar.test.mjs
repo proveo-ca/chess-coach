@@ -45,6 +45,19 @@ function saved({ blob = false, gzip = false, changeConfig = (value) => value, ch
   const manifest = changeManifest([{ Config: configName, RepoTags: null, Layers: [layerName] }]);
   return { image: `sha256:${sha(config)}`, entries: [{ path: layerName, data: layer }, { path: configName, data: config }, { path: 'manifest.json', data: JSON.stringify(manifest) }] };
 }
+function ociSaved({ badBinding = false, badDescriptor = false } = {}) {
+  const savedImage = saved({ blob: true, gzip: true });
+  const descriptor = (entry, mediaType) => ({ mediaType, digest: `sha256:${sha(entry.data)}`, size: Buffer.byteLength(entry.data) });
+  const manifest = { schemaVersion: 2, mediaType: 'application/vnd.oci.image.manifest.v1+json', config: descriptor(savedImage.entries[1], 'application/vnd.oci.image.config.v1+json'), layers: [descriptor(savedImage.entries[0], 'application/vnd.oci.image.layer.v1.tar+gzip')] };
+  if (badBinding) manifest.config = descriptor(savedImage.entries[0], 'application/vnd.oci.image.config.v1+json');
+  if (badDescriptor) manifest.layers[0].size++;
+  const manifestBytes = Buffer.from(JSON.stringify(manifest));
+  const manifestEntry = { path: `blobs/sha256/${sha(manifestBytes)}`, data: manifestBytes };
+  const provenanceBytes = Buffer.from(JSON.stringify({ predicateType: 'https://slsa.dev/provenance/v1', predicate: {} }));
+  const provenance = { path: `blobs/sha256/${sha(provenanceBytes)}`, data: provenanceBytes };
+  const index = Buffer.from(JSON.stringify({ schemaVersion: 2, mediaType: 'application/vnd.oci.image.index.v1+json', manifests: [{ ...descriptor(manifestEntry, manifest.mediaType), platform: { os: 'linux', architecture: 'amd64' } }, { ...descriptor(provenance, 'application/vnd.in-toto+json'), platform: { os: 'unknown', architecture: 'unknown' } }] }));
+  return { image: `sha256:${sha(index)}`, entries: [...savedImage.entries, manifestEntry, provenance, { path: `blobs/sha256/${sha(index)}`, data: index }, { path: 'oci-layout', data: '{"imageLayoutVersion":"1.0.0"}' }] };
+}
 async function fixture(action) {
   const directory = await mkdtemp(join(tmpdir(), 'tar-evidence-test-'));
   const path = join(directory, 'image.tar');
@@ -72,6 +85,32 @@ test('USTAR prefix and checksummed PAX path/link metadata', () => fixture(async 
   assert.equal(entries.get('root/file').sha256, sha('bytes'));
   assert.equal(entries.get(longName).sha256, sha('long bytes'));
   assert.equal(entries.get('root/link').target, '../external');
+}));
+test('Docker OCI image index ID binds extensionless config, layers, and provenance blobs', () => fixture(async (path) => {
+  const image = ociSaved();
+  const bytes = tar(image.entries);
+  await writeFile(path, bytes);
+  assert.deepEqual(await assertImageArchive(path, image.image), { sha256: sha(bytes), bytes: bytes.length });
+}));
+for (const [label, options, pattern] of [
+  ['OCI config binding', { badBinding: true }, /config binding/],
+  ['OCI descriptor size', { badDescriptor: true }, /descriptor content/],
+]) test(label, () => fixture(async (path) => {
+  const image = ociSaved(options);
+  await writeFile(path, tar(image.entries));
+  await assert.rejects(assertImageArchive(path, image.image), pattern);
+}));
+test('requires Docker save manifest even when OCI blobs exist', () => fixture(async (path) => {
+  const image = ociSaved();
+  await writeFile(path, tar(image.entries.filter((entry) => entry.path !== 'manifest.json')));
+  await assert.rejects(assertImageArchive(path, image.image), /Docker save manifest/);
+}));
+test('rejects reordered distinct layers', () => fixture(async (path) => {
+  const first = tar([{ path: 'first', data: 'one' }]);
+  const second = tar([{ path: 'second', data: 'two' }]);
+  const config = JSON.stringify({ rootfs: { type: 'layers', diff_ids: [`sha256:${sha(first)}`, `sha256:${sha(second)}`] } });
+  await writeFile(path, tar([{ path: 'first/layer.tar', data: first }, { path: 'second/layer.tar', data: second }, { path: 'config.json', data: config }, { path: 'manifest.json', data: JSON.stringify([{ Config: 'config.json', Layers: ['second/layer.tar', 'first/layer.tar'] }]) }]));
+  await assert.rejects(assertImageArchive(path, `sha256:${sha(config)}`), /ordered layer diff_id/);
 }));
 for (const [label, entries, pattern] of [
   ['parent traversal', [{ path: '../escape' }], /unsafe path/],

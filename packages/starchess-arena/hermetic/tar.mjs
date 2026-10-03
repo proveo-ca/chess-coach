@@ -7,7 +7,7 @@ import { Readable } from 'node:stream';
 import { evidenceLimits } from './evidence-limits.mjs';
 
 const digest = (bytes) => createHash('sha256').update(bytes).digest('hex');
-const utf8 = new TextDecoder('utf-8', { fatal: true });
+const utf8 = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true });
 const fail = (message) => { throw new Error(`Invalid tar evidence: ${message}`); };
 export function evidenceBudget(limits = evidenceLimits) {
   return { limits, scan: 0, retained: 0, metadata: 0, entries: 0 };
@@ -29,7 +29,7 @@ function number(bytes, binary = true) {
     if (value > BigInt(Number.MAX_SAFE_INTEGER)) fail('numeric overflow');
     return Number(value);
   }
-  const value = bytes.toString('ascii');
+  const value = bytes.toString('latin1');
   if (!/^[ \0]*[0-7]*[ \0]*$/.test(value)) fail('malformed numeric field');
   const result = parseInt(value.replace(/[ \0]/g, '') || '0', 8);
   if (!Number.isSafeInteger(result)) fail('numeric overflow');
@@ -48,7 +48,7 @@ function pax(bytes, limits) {
   while (offset < bytes.length) {
     const space = bytes.indexOf(32, offset);
     if (space < 0 || space - offset > 12) fail('PAX length');
-    const lengthText = bytes.subarray(offset, space).toString('ascii');
+    const lengthText = bytes.subarray(offset, space).toString('latin1');
     if (!/^[1-9][0-9]*$/.test(lengthText)) fail('PAX length');
     const length = Number(lengthText);
     const end = offset + length;
@@ -57,6 +57,7 @@ function pax(bytes, limits) {
     const equals = record.indexOf('=');
     if (equals <= 0) fail('PAX record');
     const key = record.slice(0, equals);
+    if (/^(GNU\.sparse|SCHILY\.(?:realsize|filetype))/.test(key)) fail('sparse PAX entry');
     if (Object.hasOwn(result, key)) fail('duplicate PAX key');
     result[key] = record.slice(equals + 1);
     if (['path', 'linkpath'].includes(key) && Buffer.byteLength(result[key]) > limits.pathBytes) fail('PAX path limit');
@@ -66,7 +67,7 @@ function pax(bytes, limits) {
 }
 
 async function checkedFile(path, limits, action) {
-  const file = await open(path, constants.O_RDONLY | constants.O_NOFOLLOW);
+  const file = await open(path, constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK);
   try {
     const before = await file.stat();
     if (!before.isFile() || before.size > limits.archiveBytes) fail('archive size or file type');
@@ -113,7 +114,7 @@ export async function scanTarFile(path, { limits = evidenceLimits, budget = evid
       let sum = 0;
       for (let i = 0; i < 512; i++) sum += i >= 148 && i < 156 ? 32 : header[i];
       if (sum !== checksum) fail('header checksum');
-      const magic = header.subarray(257, 263).toString('ascii');
+      const magic = header.subarray(257, 263).toString('latin1');
       if (!['ustar\0', 'ustar ', '\0\0\0\0\0\0'].includes(magic)) fail('header magic');
       if (magic === 'ustar\0' && header.subarray(263, 265).toString('ascii') !== '00') fail('USTAR version');
       const mode = number(header.subarray(100, 108));
@@ -217,47 +218,78 @@ export async function assertImageArchive(path, image, { limits = evidenceLimits 
     limits,
     retain: (entry) => entry.path === 'manifest.json',
     inspect: async (entry, file, budget) => {
+      const blob = /^blobs\/sha256\/([0-9a-f]{64})$/.exec(entry.path);
+      if (blob && (entry.type !== 'file' || entry.sha256 !== blob[1])) fail('blob content hash');
       if (entry.type === 'file') entry.diffId = await layerHash(entry, file, budget);
     },
     finish: async (scanned, file, budget) => {
-  const manifestEntry = scanned.entries.get('manifest.json');
-  if (manifestEntry?.type !== 'file' || !manifestEntry.data) fail('missing Docker save manifest.json');
-  const manifest = JSON.parse(utf8.decode(manifestEntry.data));
-  if (!Array.isArray(manifest) || manifest.length !== 1) fail('expected exactly one saved image');
-  const record = manifest[0];
-  if (!record || typeof record.Config !== 'string' || !Array.isArray(record.Layers) || !record.Layers.length) fail('Docker save manifest fields');
-  const configPath = archivePath(record.Config);
-  const configEntry = scanned.entries.get(configPath);
-  if (configEntry?.type !== 'file' || configEntry.sha256 !== image.slice(7)) fail('config image ID mismatch');
-  if (configEntry.bytes > limits.fileBytes) fail('config file limit');
-  charge(budget, 'retained', configEntry.bytes, limits.retainedBytes);
-  charge(budget, 'scan', configEntry.bytes, limits.scanBytes);
-  const configBytes = Buffer.alloc(configEntry.bytes);
-  let done = 0;
-  while (done < configBytes.length) {
-    const { bytesRead } = await file.read(configBytes, done, configBytes.length - done, configEntry.offset + done);
-    if (!bytesRead) fail('truncated config');
-    done += bytesRead;
-  }
-  if (digest(configBytes) !== configEntry.sha256) fail('config changed during scan');
-  const config = JSON.parse(utf8.decode(configBytes));
-  const diffIds = config.rootfs?.diff_ids;
-  if (config.rootfs?.type !== 'layers' || !Array.isArray(diffIds) || diffIds.length !== record.Layers.length || diffIds.some((id) => !/^sha256:[0-9a-f]{64}$/.test(id))) fail('rootfs diff_ids');
-  const listed = new Set();
-  const checkBlob = (name, entry) => {
-    const match = /^blobs\/sha256\/([0-9a-f]{64})$/.exec(name);
-    if (match && entry.sha256 !== match[1]) fail('blob content hash');
-  };
-  checkBlob(configPath, configEntry);
-  for (let i = 0; i < record.Layers.length; i++) {
-    const name = archivePath(record.Layers[i]);
-    if (listed.has(name)) fail('duplicate listed layer');
-    listed.add(name);
-    const entry = scanned.entries.get(name);
-    if (entry?.type !== 'file' || `sha256:${entry.diffId}` !== diffIds[i]) fail('ordered layer diff_id mismatch');
-    checkBlob(name, entry);
-  }
-  return { sha256: scanned.sha256, bytes: scanned.bytes };
+      const manifestEntry = scanned.entries.get('manifest.json');
+      if (manifestEntry?.type !== 'file' || !manifestEntry.data) fail('missing Docker save manifest.json');
+      const manifest = JSON.parse(utf8.decode(manifestEntry.data));
+      if (!Array.isArray(manifest) || manifest.length !== 1) fail('expected exactly one saved image');
+      const record = manifest[0];
+      if (!record || typeof record.Config !== 'string' || !Array.isArray(record.Layers) || !record.Layers.length) fail('Docker save manifest fields');
+      const configPath = archivePath(record.Config);
+      const configEntry = scanned.entries.get(configPath);
+      if (configEntry?.type !== 'file') fail('missing config');
+      const readJson = async (entry) => {
+        if (entry.bytes > limits.fileBytes) fail('config file limit');
+        charge(budget, 'retained', entry.bytes, limits.retainedBytes);
+        charge(budget, 'scan', entry.bytes, limits.scanBytes);
+        const bytes = Buffer.alloc(entry.bytes);
+        let done = 0;
+        while (done < bytes.length) {
+          const { bytesRead } = await file.read(bytes, done, bytes.length - done, entry.offset + done);
+          if (!bytesRead) fail('truncated config');
+          done += bytesRead;
+        }
+        if (digest(bytes) !== entry.sha256) fail('config changed during scan');
+        return JSON.parse(utf8.decode(bytes));
+      };
+      const descriptorEntry = (descriptor) => {
+        if (!descriptor || !/^sha256:[0-9a-f]{64}$/.test(descriptor.digest) || !Number.isSafeInteger(descriptor.size) || descriptor.size < 0) fail('OCI descriptor');
+        const entry = scanned.entries.get(`blobs/sha256/${descriptor.digest.slice(7)}`);
+        if (entry?.type !== 'file' || entry.sha256 !== descriptor.digest.slice(7) || entry.bytes !== descriptor.size) fail('OCI descriptor content');
+        return entry;
+      };
+      if (configEntry.sha256 !== image.slice(7)) {
+        let entry = scanned.entries.get(`blobs/sha256/${image.slice(7)}`);
+        if (entry?.type !== 'file' || entry.sha256 !== image.slice(7)) fail('config image ID mismatch');
+        const seen = new Set();
+        let bound = false;
+        for (let depth = 0; depth < 32; depth++) {
+          if (seen.has(entry.path)) fail('OCI index cycle');
+          seen.add(entry.path);
+          const value = await readJson(entry);
+          if (value.schemaVersion !== 2) fail('OCI schema version');
+          if (['application/vnd.oci.image.index.v1+json', 'application/vnd.docker.distribution.manifest.list.v2+json'].includes(value.mediaType)) {
+            if (!Array.isArray(value.manifests)) fail('OCI index manifests');
+            for (const descriptor of value.manifests) descriptorEntry(descriptor);
+            const selected = value.manifests.filter((descriptor) => descriptor.platform?.os === 'linux' && descriptor.platform?.architecture === 'amd64');
+            if (selected.length !== 1) fail('OCI platform selection');
+            entry = descriptorEntry(selected[0]);
+          } else {
+            if (!['application/vnd.oci.image.manifest.v1+json', 'application/vnd.docker.distribution.manifest.v2+json'].includes(value.mediaType) || !Array.isArray(value.layers)) fail('OCI image manifest');
+            if (descriptorEntry(value.config).path !== configPath || value.layers.length !== record.Layers.length) fail('OCI Docker save config binding');
+            for (let i = 0; i < value.layers.length; i++) if (descriptorEntry(value.layers[i]).path !== archivePath(record.Layers[i])) fail('OCI Docker save layer binding');
+            bound = true;
+            break;
+          }
+        }
+        if (!bound) fail('OCI index depth');
+      }
+      const config = await readJson(configEntry);
+      const diffIds = config.rootfs?.diff_ids;
+      if (config.rootfs?.type !== 'layers' || !Array.isArray(diffIds) || diffIds.length !== record.Layers.length || diffIds.some((id) => !/^sha256:[0-9a-f]{64}$/.test(id))) fail('rootfs diff_ids');
+      const listed = new Set();
+      for (let i = 0; i < record.Layers.length; i++) {
+        const name = archivePath(record.Layers[i]);
+        if (listed.has(name)) fail('duplicate listed layer');
+        listed.add(name);
+        const entry = scanned.entries.get(name);
+        if (entry?.type !== 'file' || `sha256:${entry.diffId}` !== diffIds[i]) fail('ordered layer diff_id mismatch');
+      }
+      return { sha256: scanned.sha256, bytes: scanned.bytes };
     },
   });
 }

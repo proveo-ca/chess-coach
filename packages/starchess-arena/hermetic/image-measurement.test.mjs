@@ -96,7 +96,7 @@ async function fixture(source, action) {
     await action({ directory, temporaryRoot, filesystem, streams, write, rebuild, capture, dependencies });
   } finally { await rm(directory, { recursive: true, force: true }); }
 }
-function mockDocker(streams, { inspectChange, failCopy, wrongImage = false } = {}) {
+function mockDocker(streams, { inspectChange, failCopy, wrongImage = false, malformedCreate = false } = {}) {
   const calls = [];
   const kills = [];
   const spawnProcess = (program, args, options) => {
@@ -118,13 +118,17 @@ function mockDocker(streams, { inspectChange, failCopy, wrongImage = false } = {
     child.kill = (signal) => { kills.push({ args, signal }); queueMicrotask(() => close(null, signal)); return true; };
     queueMicrotask(() => {
       if (args[0] === 'image') child.stdout.write(JSON.stringify([{ Id: image, Os: 'linux', Architecture: 'amd64' }]));
-      else if (args[0] === 'create') child.stdout.write(container + '\n');
+      else if (args[0] === 'create') child.stdout.write(malformedCreate ? 'malformed create output\n' : container + '\n');
       else if (args[0] === 'container' && args[1] === 'inspect') child.stdout.write(JSON.stringify([inspectChange ?? { Image: wrongImage ? `sha256:${'3'.repeat(64)}` : image, State: { Status: 'created', Running: false, Pid: 0 } }]));
       else if (args[0] === 'cp') {
         const root = args[1].slice(container.length + 1);
         if (failCopy === root) { child.stderr.write('copy failed'); close(1); return; }
         child.stdout.write(streams.get(root));
-      } else assert.deepEqual(args, ['container', 'rm', '--force', '--volumes', container]);
+      } else {
+        assert.deepEqual(args.slice(0, 4), ['container', 'rm', '--force', '--volumes']);
+        if (malformedCreate) assert.match(args[4], /^starchess-host-measurement-[0-9a-f-]+$/);
+        else assert.equal(args[4], container);
+      }
       close(0);
     });
     return child;
@@ -200,6 +204,19 @@ test('requires cp filesystem tar rather than fake measurement JSON', () => fixtu
   streams.set('/app', Buffer.from(JSON.stringify({ source: { sourceSha256: 'forged' } })));
   const docker = mockDocker(streams);
   await assert.rejects(measureImageFilesystem(image, { temporaryRoot, spawnProcess: docker.spawnProcess }), /truncated archive/);
+}));
+test('cleans created container by host-chosen name when stdout is malformed', () => fixture(false, async ({ temporaryRoot, streams }) => {
+  const docker = mockDocker(streams, { malformedCreate: true });
+  await assert.rejects(measureImageFilesystem(image, { temporaryRoot, spawnProcess: docker.spawnProcess }), /container ID/);
+  const create = docker.calls.find((args) => args[0] === 'create');
+  assert.equal(create[create.indexOf('--name') + 1], docker.calls.at(-1)[4]);
+  assert.deepEqual(await readdir(temporaryRoot), []);
+}));
+test('rejects copied descendants beneath a symlink without following it', () => fixture(false, async ({ temporaryRoot, streams }) => {
+  streams.set('/app', tar([{ path: 'app', type: 'directory', mode: '755' }, { path: 'app/link', type: 'symlink', mode: '777', target: '/host' }, { path: 'app/link/file', type: 'file', mode: '644', data: 'x' }]));
+  const docker = mockDocker(streams);
+  await assert.rejects(measureImageFilesystem(image, { temporaryRoot, spawnProcess: docker.spawnProcess }), /copy parent/);
+  assert.deepEqual(await readdir(temporaryRoot), []);
 }));
 test('times out, kills, and waits for command close', async () => {
   let reaped = false;
