@@ -49,6 +49,9 @@ describe("partitioned challenge source inventory", () => {
     'const {constructor: compile} = () => {};',
     'const read = Reflect.get; const compile = read(() => {}, "constructor");',
     'const key = "con" + "structor"; const compile = (() => {})[key];',
+    'const key = ["con", "structor"].join(""); const compile = ((() => {}) as any)[key];',
+    'const fn: any = () => {}; const key = ["con", "structor"].join(""); const compile = fn[key];',
+    'const key = ["con", "structor"].join(""); const compile = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(() => {}), key).value;',
   ])("rejects metadata mutation and indirect code constructors: %s", (code) => {
     const root = fixture();
     put(root, `${CORE}/src/index.ts`, code);

@@ -362,6 +362,15 @@ export const collectSourceInventory = (
           ts.isBinaryExpression(parent) && parent.operatorToken.kind === ts.SyntaxKind.CommaToken && parent.right === node) return wrappedUse(parent as ts.Expression);
       return node;
     };
+    const origin = (node: ts.Expression, seen = new Set<ts.Symbol | string>()): ts.Expression => {
+      const expression = unwrapValue(node);
+      if (!ts.isIdentifier(expression)) return expression;
+      const key = binding(expression);
+      if (seen.has(key) || typeof key === "string") return expression;
+      const declaration = key.valueDeclaration;
+      return declaration && ts.isVariableDeclaration(declaration) && declaration.initializer
+        ? origin(declaration.initializer, new Set([...seen, key])) : expression;
+    };
     const sourceIsDeclaration = (node: ts.Identifier): boolean => {
       const parent = node.parent;
       return ts.isVariableDeclaration(parent) && parent.name === node || ts.isImportSpecifier(parent) || ts.isImportClause(parent) || ts.isNamespaceImport(parent);
@@ -395,12 +404,15 @@ export const collectSourceInventory = (
       const value = !ts.isPartOfTypeNode(node) && (ts.isIdentifier(node) && !sourceIsName(node) || ts.isPropertyAccessExpression(node) || ts.isElementAccessExpression(node) || ts.isCallExpression(node));
       if (value && evaluation(node as ts.Expression)) throw new Error(`Unsupported string evaluation: ${file.path}`);
       const accessed = value ? property(node as ts.Expression) : undefined;
-      if (accessed?.name === "constructor") throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
+      if (["constructor", "__proto__", "getPrototypeOf", "getOwnPropertyDescriptors"].includes(accessed?.name ?? "")) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
       if (accessed && reflectionNamespace(accessed.receiver) && !["ownKeys", "apply", "has", "set", "deleteProperty"].includes(accessed.name ?? "")) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
       if (ts.isBindingElement(node) && node.propertyName && ((ts.isIdentifier(node.propertyName) || ts.isStringLiteralLike(node.propertyName)) && node.propertyName.text === "constructor" || ts.isComputedPropertyName(node.propertyName))) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
-      if (ts.isElementAccessExpression(node) && checker.getTypeAtLocation(node.expression).getCallSignatures().length) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
+      if (ts.isElementAccessExpression(node) && (checker.getTypeAtLocation(origin(node.expression)).getCallSignatures().length ||
+          ts.isArrowFunction(origin(node.expression)) || ts.isFunctionExpression(origin(node.expression)))) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
       if (accessed?.name === "getOwnPropertyDescriptor" && !(ts.isCallExpression(node.parent) && node.parent.expression === node)) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
-      if (ts.isCallExpression(node) && property(node.expression)?.name === "getOwnPropertyDescriptor" && node.arguments[1] && staticString(node.arguments[1]) === "constructor") throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
+      if (ts.isCallExpression(node) && property(node.expression)?.name === "getOwnPropertyDescriptor") {
+        if (file.path !== `${ARENA}/src/challengeContract/validation.ts` || node.getText(source) !== "Object.getOwnPropertyDescriptor(value, String(index))") throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
+      }
       if (accessed && processNamespace(accessed.receiver) && accessed.name === "getBuiltinModule") throw new Error(`Unsupported builtin acquisition: ${file.path}`);
       if (accessed && namespace(accessed.receiver) && ["register", "registerHooks"].includes(accessed.name ?? "")) throw new Error(`Unsupported module loader API: ${file.path}`);
       if (value && (namespace(node as ts.Expression) || processNamespace(node as ts.Expression) || globalNamespace(node as ts.Expression) || reflectionNamespace(node as ts.Expression) || factory(node as ts.Expression) || loader(node as ts.Expression) || resolver(node as ts.Expression))) {
