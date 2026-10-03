@@ -308,7 +308,18 @@ export const collectSourceInventory = (
       return member !== undefined && member.name === "resolve" && loader(member.receiver);
     };
     const scanBindings = (node: ts.Node): void => {
-      if (ts.isBinaryExpression(node) && node.operatorToken.kind >= ts.SyntaxKind.FirstAssignment && node.operatorToken.kind <= ts.SyntaxKind.LastAssignment && ts.isIdentifier(node.left)) reassignedBindings.add(binding(node.left));
+      const writes = (target: ts.Node): void => {
+        if (ts.isIdentifier(target)) reassignedBindings.add(binding(target));
+        else if (ts.isParenthesizedExpression(target)) writes(target.expression);
+        else if (ts.isArrayLiteralExpression(target)) for (const child of target.elements) writes(child);
+        else if (ts.isObjectLiteralExpression(target)) for (const child of target.properties) writes(child);
+        else if (ts.isPropertyAssignment(target)) writes(target.initializer);
+        else if (ts.isShorthandPropertyAssignment(target)) writes(target.name);
+        else if (ts.isSpreadElement(target) || ts.isSpreadAssignment(target)) writes(target.expression);
+        else if (ts.isBinaryExpression(target) && target.operatorToken.kind === ts.SyntaxKind.EqualsToken) writes(target.left);
+      };
+      if (ts.isBinaryExpression(node) && node.operatorToken.kind >= ts.SyntaxKind.FirstAssignment && node.operatorToken.kind <= ts.SyntaxKind.LastAssignment) writes(node.left);
+      if ((ts.isForOfStatement(node) || ts.isForInStatement(node)) && !ts.isVariableDeclarationList(node.initializer)) writes(node.initializer);
       if (ts.isImportDeclaration(node) && ["node:module", "module"].includes(literal(node.moduleSpecifier) ?? "")) {
         if (node.importClause?.isTypeOnly) return;
         if (node.importClause?.name) moduleNamespaces.add(binding(node.importClause.name));
@@ -373,6 +384,29 @@ export const collectSourceInventory = (
       return declaration && ts.isVariableDeclaration(declaration) && declaration.initializer
         ? origin(declaration.initializer, new Set([...seen, key])) : expression;
     };
+    const mutableOrigin = (node: ts.Expression, seen = new Set<ts.Symbol | string>()): boolean => {
+      const expression = unwrapValue(node);
+      if (!ts.isIdentifier(expression)) return false;
+      const key = binding(expression);
+      if (reassignedBindings.has(key)) return true;
+      if (seen.has(key) || typeof key === "string") return false;
+      const declaration = key.valueDeclaration;
+      return !!(declaration && ts.isVariableDeclaration(declaration) && declaration.initializer && mutableOrigin(declaration.initializer, new Set([...seen, key])));
+    };
+    const safeDataKey = (node: ts.Expression): boolean => {
+      const expression = unwrapValue(node);
+      const value = staticString(expression);
+      if (value !== undefined) return !["constructor", "__proto__", "prototype"].includes(value);
+      if (ts.isNumericLiteral(expression)) return true;
+      if (!ts.isIdentifier(expression)) return false;
+      const key = binding(expression);
+      if (typeof key === "string") return false;
+      const declaration = key.valueDeclaration;
+      if (!declaration || !ts.isVariableDeclaration(declaration) || !ts.isVariableDeclarationList(declaration.parent)) return false;
+      const loop = declaration.parent.parent;
+      return !!(ts.isForOfStatement(loop) && declaration.parent.flags & ts.NodeFlags.Const && ts.isArrayLiteralExpression(unwrapValue(loop.expression)) &&
+        (unwrapValue(loop.expression) as ts.ArrayLiteralExpression).elements.every((entry) => ts.isStringLiteralLike(entry) && !["constructor", "__proto__", "prototype"].includes(entry.text)));
+    };
     const sourceIsDeclaration = (node: ts.Identifier): boolean => {
       const parent = node.parent;
       return ts.isVariableDeclaration(parent) && parent.name === node || ts.isImportSpecifier(parent) || ts.isImportClause(parent) || ts.isNamespaceImport(parent);
@@ -409,7 +443,7 @@ export const collectSourceInventory = (
       if (["constructor", "__proto__", "getPrototypeOf", "getOwnPropertyDescriptors"].includes(accessed?.name ?? "")) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
       if (accessed && reflectionNamespace(accessed.receiver) && !["ownKeys", "apply", "has", "set", "deleteProperty"].includes(accessed.name ?? "")) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
       if (ts.isBindingElement(node) && node.propertyName && ((ts.isIdentifier(node.propertyName) || ts.isStringLiteralLike(node.propertyName)) && ["constructor", "__proto__", "getPrototypeOf", "getOwnPropertyDescriptors", "getOwnPropertyDescriptor"].includes(node.propertyName.text) || ts.isComputedPropertyName(node.propertyName))) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
-      if (ts.isElementAccessExpression(node) && ts.isIdentifier(unwrapValue(node.expression)) && reassignedBindings.has(binding(unwrapValue(node.expression) as ts.Identifier))) throw new Error(`Unsupported mutable computed receiver: ${file.path}`);
+      if (ts.isElementAccessExpression(node) && mutableOrigin(node.expression) && !safeDataKey(node.argumentExpression)) throw new Error(`Unsupported mutable computed receiver: ${file.path}`);
       if (ts.isElementAccessExpression(node) && (checker.getTypeAtLocation(origin(node.expression)).getCallSignatures().length ||
           ts.isArrowFunction(origin(node.expression)) || ts.isFunctionExpression(origin(node.expression)))) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
       if (accessed?.name === "getOwnPropertyDescriptor" && !(ts.isCallExpression(node.parent) && node.parent.expression === node)) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);

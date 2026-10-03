@@ -53,6 +53,8 @@ describe("partitioned challenge source inventory", () => {
     'const fn: any = () => {}; const key = ["con", "structor"].join(""); const compile = fn[key];',
     'const key = ["con", "structor"].join(""); const compile = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(() => {}), key).value;',
     'let fn: any = {}; fn = () => {}; const key = ["con", "structor"].join(""); const compile = fn[key];',
+    'let fn: any = {}; fn = () => {}; const alias = fn; const key = ["con", "structor"].join(""); const compile = alias[key];',
+    'let fn: any = {}; [fn] = [() => {}]; const key = ["con", "structor"].join(""); const compile = fn[key];',
     'const {getPrototypeOf: p} = Object; const proto = p(() => {}); const key = ["con", "structor"].join(""); const compile = proto[key];',
   ])("rejects metadata mutation and indirect code constructors: %s", (code) => {
     const root = fixture();
