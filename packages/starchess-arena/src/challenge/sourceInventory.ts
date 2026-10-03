@@ -267,7 +267,7 @@ export const collectSourceInventory = (
         if (!declaration && !directCall && !alias && !resolver && !memberName) throw new Error(`Unsupported loader escape: ${file.path}`);
       }
       const namespaceReceiver = ts.isPropertyAccessExpression(node) ? unwrap(node.expression) : undefined;
-      if (ts.isPropertyAccessExpression(node) && node.name.text === "createRequire" && ts.isIdentifier(namespaceReceiver) && moduleNamespaces.has(namespaceReceiver.text) && !(ts.isCallExpression(node.parent) && node.parent.expression === node)) {
+      if (ts.isPropertyAccessExpression(node) && node.name.text === "createRequire" && namespaceReceiver && ts.isIdentifier(namespaceReceiver) && moduleNamespaces.has(namespaceReceiver.text) && !(ts.isCallExpression(node.parent) && node.parent.expression === node)) {
         throw new Error(`Unsupported loader escape: ${file.path}`);
       }
       if (ts.isPropertyAccessExpression(node) && ["bind", "call", "apply"].includes(node.name.text) && (loader(node.expression) || factory(node.expression))) throw new Error(`Unsupported loader escape: ${file.path}`);
