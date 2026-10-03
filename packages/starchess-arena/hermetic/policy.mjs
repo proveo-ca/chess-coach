@@ -26,6 +26,7 @@ export function assertContainerPolicy(inspect, validatedOutput) {
   const host = inspect.HostConfig;
   const config = inspect.Config;
   const binds = inspect.Mounts.filter((mount) => mount.Type === 'bind');
+  const temporary = inspect.Mounts.filter((mount) => mount.Type === 'tmpfs');
   if (host.NetworkMode !== 'none' || !host.ReadonlyRootfs || host.Privileged || !host.Init ||
       config.User !== '10001:10001' || host.NanoCpus !== 2_000_000_000 ||
       host.Memory !== 4 * 1024 ** 3 || host.MemorySwap !== host.Memory || host.PidsLimit !== 256 ||
@@ -33,7 +34,7 @@ export function assertContainerPolicy(inspect, validatedOutput) {
       host.SecurityOpt?.length !== 1 || host.SecurityOpt[0] !== 'no-new-privileges=true' ||
       binds.length !== 1 || binds[0].Destination !== outputTarget || binds[0].Source !== validatedOutput || !binds[0].RW ||
       binds[0].Propagation !== 'rprivate' ||
-      inspect.Mounts.length !== 2 || inspect.Mounts.some((mount) => !(
+      temporary.length > 1 || inspect.Mounts.some((mount) => !(
         (mount.Type === 'bind' && mount.Destination === outputTarget && mount.Source === validatedOutput && mount.RW === true) ||
         (mount.Type === 'tmpfs' && mount.Destination === '/tmp')
       )) ||

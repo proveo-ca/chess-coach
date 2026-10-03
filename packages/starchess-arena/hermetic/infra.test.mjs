@@ -133,6 +133,9 @@ test('CLI rejects mount injection and public output parents and preserves bounde
     ],
   };
   assertContainerPolicy(approved, syntheticOutput);
+  const hostConfigTemporary = structuredClone(approved);
+  hostConfigTemporary.Mounts = hostConfigTemporary.Mounts.filter((mount) => mount.Type !== 'tmpfs');
+  assertContainerPolicy(hostConfigTemporary, syntheticOutput);
   const extraTmpfs = structuredClone(approved);
   extraTmpfs.Mounts.push({ Type: 'tmpfs', Destination: '/run' });
   assert.throws(() => assertContainerPolicy(extraTmpfs, syntheticOutput), /policy mismatch/);
@@ -182,6 +185,14 @@ test('Docker enforces policy, fresh temporary inventory, and logged offline TS/V
     const [imageInspect] = JSON.parse(docker(['image', 'inspect', image]));
     assert.equal(inspect.Image, imageInspect.Id);
     assertContainerPolicy(inspect, output);
+    const extraTemporary = structuredClone(inspect);
+    extraTemporary.Mounts.push({ Type: 'tmpfs', Destination: '/run' });
+    assert.throws(() => assertContainerPolicy(extraTemporary, output), /policy mismatch/);
+    for (const altered of ['rw,nosuid,nodev,size=1,mode=1777', 'rw,nosuid,nodev,size=1073741824,mode=777']) {
+      const wrongTemporary = structuredClone(inspect);
+      wrongTemporary.HostConfig.Tmpfs['/tmp'] = altered;
+      assert.throws(() => assertContainerPolicy(wrongTemporary, output), /policy mismatch/);
+    }
     const wrongMount = structuredClone(inspect);
     wrongMount.Mounts[0].Source = join(output, 'replaced');
     assert.throws(() => assertContainerPolicy(wrongMount, output), /policy mismatch/);
