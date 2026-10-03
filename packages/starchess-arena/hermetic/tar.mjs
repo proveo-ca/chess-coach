@@ -281,11 +281,8 @@ export async function assertImageArchive(path, image, { limits = evidenceLimits 
       const config = await readJson(configEntry);
       const diffIds = config.rootfs?.diff_ids;
       if (config.rootfs?.type !== 'layers' || !Array.isArray(diffIds) || diffIds.length !== record.Layers.length || diffIds.some((id) => !/^sha256:[0-9a-f]{64}$/.test(id))) fail('rootfs diff_ids');
-      const listed = new Set();
       for (let i = 0; i < record.Layers.length; i++) {
         const name = archivePath(record.Layers[i]);
-        if (listed.has(name)) fail('duplicate listed layer');
-        listed.add(name);
         const entry = scanned.entries.get(name);
         if (entry?.type !== 'file' || `sha256:${entry.diffId}` !== diffIds[i]) fail('ordered layer diff_id mismatch');
       }

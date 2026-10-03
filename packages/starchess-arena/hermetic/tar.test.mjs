@@ -36,19 +36,19 @@ function paxRecord(key, value) {
   while (String(length).length + Buffer.byteLength(body) !== length) length = String(length).length + Buffer.byteLength(body);
   return `${length}${body}`;
 }
-function saved({ blob = false, gzip = false, changeConfig = (value) => value, changeManifest = (value) => value, changeLayer = (value) => value } = {}) {
-  const raw = tar([{ path: 'payload', data: 'layer payload' }]);
+function saved({ blob = false, gzip = false, empty = false, repeat = false, changeConfig = (value) => value, changeManifest = (value) => value, changeLayer = (value) => value } = {}) {
+  const raw = tar(empty ? [] : [{ path: 'payload', data: 'layer payload' }]);
   const layer = changeLayer(gzip ? gzipSync(raw) : raw);
-  const config = Buffer.from(JSON.stringify(changeConfig({ rootfs: { type: 'layers', diff_ids: [`sha256:${sha(raw)}`] } })));
+  const config = Buffer.from(JSON.stringify(changeConfig({ rootfs: { type: 'layers', diff_ids: Array(repeat ? 2 : 1).fill(`sha256:${sha(raw)}`) } })));
   const configName = blob ? `blobs/sha256/${sha(config)}` : `${sha(config)}.json`;
   const layerName = blob ? `blobs/sha256/${sha(layer)}` : 'legacy/layer.tar';
-  const manifest = changeManifest([{ Config: configName, RepoTags: null, Layers: [layerName] }]);
+  const manifest = changeManifest([{ Config: configName, RepoTags: null, Layers: Array(repeat ? 2 : 1).fill(layerName) }]);
   return { image: `sha256:${sha(config)}`, entries: [{ path: layerName, data: layer }, { path: configName, data: config }, { path: 'manifest.json', data: JSON.stringify(manifest) }] };
 }
-function ociSaved({ badBinding = false, badDescriptor = false } = {}) {
-  const savedImage = saved({ blob: true, gzip: true });
+function ociSaved({ badBinding = false, badDescriptor = false, repeatEmpty = false, badSecondDiffId = false } = {}) {
+  const savedImage = saved({ blob: true, gzip: true, empty: repeatEmpty, repeat: repeatEmpty, changeConfig: (config) => badSecondDiffId ? { ...config, rootfs: { ...config.rootfs, diff_ids: [config.rootfs.diff_ids[0], `sha256:${'dead'.repeat(16)}`] } } : config });
   const descriptor = (entry, mediaType) => ({ mediaType, digest: `sha256:${sha(entry.data)}`, size: Buffer.byteLength(entry.data) });
-  const manifest = { schemaVersion: 2, mediaType: 'application/vnd.oci.image.manifest.v1+json', config: descriptor(savedImage.entries[1], 'application/vnd.oci.image.config.v1+json'), layers: [descriptor(savedImage.entries[0], 'application/vnd.oci.image.layer.v1.tar+gzip')] };
+  const manifest = { schemaVersion: 2, mediaType: 'application/vnd.oci.image.manifest.v1+json', config: descriptor(savedImage.entries[1], 'application/vnd.oci.image.config.v1+json'), layers: Array.from({ length: repeatEmpty ? 2 : 1 }, () => descriptor(savedImage.entries[0], 'application/vnd.oci.image.layer.v1.tar+gzip')) };
   if (badBinding) manifest.config = descriptor(savedImage.entries[0], 'application/vnd.oci.image.config.v1+json');
   if (badDescriptor) manifest.layers[0].size++;
   const manifestBytes = Buffer.from(JSON.stringify(manifest));
@@ -72,6 +72,34 @@ for (const options of [{}, { blob: true }, { blob: true, gzip: true }]) {
     assert.deepEqual(await assertImageArchive(path, image.image), { sha256: sha(bytes), bytes: bytes.length });
   }));
 }
+for (const options of [{}, { blob: true, gzip: true }]) test(`accepts repeated empty layer with identical positional diff_ids ${JSON.stringify(options)}`, () => fixture(async (path) => {
+  const image = saved({ ...options, empty: true, repeat: true });
+  const bytes = tar(image.entries);
+  await writeFile(path, bytes);
+  assert.deepEqual(await assertImageArchive(path, image.image), { sha256: sha(bytes), bytes: bytes.length });
+}));
+test('accepts OCI repeated empty layer descriptors with identical positional diff_ids', () => fixture(async (path) => {
+  const image = ociSaved({ repeatEmpty: true });
+  const bytes = tar(image.entries);
+  await writeFile(path, bytes);
+  assert.deepEqual(await assertImageArchive(path, image.image), { sha256: sha(bytes), bytes: bytes.length });
+}));
+test('rejects OCI repeated layer whose second positional diff_id differs', () => fixture(async (path) => {
+  const image = ociSaved({ repeatEmpty: true, badSecondDiffId: true });
+  await writeFile(path, tar(image.entries));
+  await assert.rejects(assertImageArchive(path, image.image), /ordered layer diff_id mismatch/);
+}));
+test('uses the selected larger evidence limits profile', () => {
+  assert.deepEqual(evidenceLimits, {
+    fileBytes: 16 * 1024 ** 2,
+    retainedBytes: 64 * 1024 ** 2,
+    archiveBytes: 512 * 1024 ** 2,
+    scanBytes: 2 * 1024 ** 3,
+    metadataBytes: 16 * 1024 ** 2,
+    entries: 262144,
+    pathBytes: 4096,
+  });
+});
 test('USTAR prefix and checksummed PAX path/link metadata', () => fixture(async (path) => {
   const longName = `root/${'long'.repeat(40)}`;
   await writeFile(path, tar([
@@ -112,6 +140,16 @@ test('rejects reordered distinct layers', () => fixture(async (path) => {
   await writeFile(path, tar([{ path: 'first/layer.tar', data: first }, { path: 'second/layer.tar', data: second }, { path: 'config.json', data: config }, { path: 'manifest.json', data: JSON.stringify([{ Config: 'config.json', Layers: ['second/layer.tar', 'first/layer.tar'] }]) }]));
   await assert.rejects(assertImageArchive(path, `sha256:${sha(config)}`), /ordered layer diff_id/);
 }));
+test('requires OCI descriptors and Docker save references in the same order', () => fixture(async (path) => {
+  const rawLayers = [tar([{ path: 'first', data: 'one' }]), tar([{ path: 'second', data: 'two' }])];
+  const blob = (data) => ({ path: `blobs/sha256/${sha(data)}`, data });
+  const descriptor = (entry, mediaType) => ({ mediaType, digest: `sha256:${sha(entry.data)}`, size: entry.data.length });
+  const layers = rawLayers.map((raw) => blob(gzipSync(raw)));
+  const config = blob(Buffer.from(JSON.stringify({ rootfs: { type: 'layers', diff_ids: rawLayers.map((raw) => `sha256:${sha(raw)}`) } })));
+  const manifest = blob(Buffer.from(JSON.stringify({ schemaVersion: 2, mediaType: 'application/vnd.oci.image.manifest.v1+json', config: descriptor(config, 'application/vnd.oci.image.config.v1+json'), layers: layers.map((layer) => descriptor(layer, 'application/vnd.oci.image.layer.v1.tar+gzip')) })));
+  await writeFile(path, tar([...layers, config, manifest, { path: 'manifest.json', data: JSON.stringify([{ Config: config.path, Layers: layers.map((layer) => layer.path).reverse() }]) }]));
+  await assert.rejects(assertImageArchive(path, `sha256:${sha(manifest.data)}`), /OCI Docker save layer binding/);
+}));
 for (const [label, entries, pattern] of [
   ['parent traversal', [{ path: '../escape' }], /unsafe path/],
   ['absolute path', [{ path: '/escape' }], /unsafe path/],
@@ -142,7 +180,7 @@ for (const [label, mutate, pattern] of [
 for (const [label, options, pattern] of [
   ['config digest', {}, /config image ID/],
   ['ordered diff_ids', { changeConfig: (c) => ({ ...c, rootfs: { ...c.rootfs, diff_ids: [`sha256:${'0'.repeat(64)}`] } }) }, /diff_id mismatch/],
-  ['duplicate listed layers', { changeManifest: (m) => [{ ...m[0], Layers: [m[0].Layers[0], m[0].Layers[0]] }], changeConfig: (c) => ({ ...c, rootfs: { ...c.rootfs, diff_ids: [...c.rootfs.diff_ids, ...c.rootfs.diff_ids] } }) }, /duplicate listed layer/],
+  ['repeated layer with different second diff_id', { repeat: true, changeConfig: (c) => ({ ...c, rootfs: { ...c.rootfs, diff_ids: [c.rootfs.diff_ids[0], `sha256:${'dead'.repeat(16)}`] } }) }, /ordered layer diff_id mismatch/],
   ['missing layer', { changeManifest: (m) => [{ ...m[0], Layers: ['missing/layer.tar'] }] }, /diff_id mismatch/],
   ['multiple images', { changeManifest: (m) => [...m, ...m] }, /exactly one/],
   ['layer mutation', { changeLayer: (b) => Buffer.from(b.map((value, index) => index === 512 ? value ^ 1 : value)) }, /diff_id mismatch/],
