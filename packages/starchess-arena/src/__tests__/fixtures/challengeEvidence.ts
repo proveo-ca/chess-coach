@@ -33,8 +33,10 @@ export function readEvidenceGeneration() {
   const names = ["baseline-report.json", "coverage.json", "contract-report.json", "pin-migration.json"] as const;
   const fresh = process.env.HERMETIC_OUTPUT_DIRECTORY;
   if (fresh === "") throw new Error("HERMETIC_OUTPUT_DIRECTORY must name a fresh evidence directory");
-  const directory = fresh ?? fileURLToPath(new URL("_spec/evidence/ml-adjutant-phase2", REPOSITORY_ROOT));
-  const historical = !fresh && !existsSync(join(directory, ".publication-complete"));
+  const historicalDirectory = fileURLToPath(new URL("_spec/evidence/ml-adjutant-phase2", REPOSITORY_ROOT));
+  const refreshedDirectory = fileURLToPath(new URL("_spec/evidence/ml-adjutant-r0-refresh", REPOSITORY_ROOT));
+  const directory = fresh ?? (existsSync(refreshedDirectory) ? refreshedDirectory : historicalDirectory);
+  const historical = !fresh && directory === historicalDirectory && !existsSync(join(directory, ".publication-complete"));
   let files: Record<typeof names[number], Buffer>;
   if (!fresh && !historical) {
     const { readPublishedBundle } = require("../../../hermetic/evidence-bundle.mjs") as {
@@ -173,6 +175,7 @@ export function buildImportFixture(diagnostics: ReturnType<typeof buildDiagnosti
       ...readdirSync(join(repositoryRoot, "packages/starchess-arena/src/__tests__")).filter((name) => /^challenge.*\.test\.ts$/.test(name) || ["observationIsolation.test.ts", "resourceLedger.test.ts", "strictRecordedQueues.test.ts"].includes(name)).sort().map((name) => `/app/packages/starchess-arena/src/__tests__/${name}`),
       "/app/scripts/challenge-contract-evidence.ts", "/app/scripts/challenge-validate-baseline.ts"], "/app/packages/starchess-arena"],
     ...["starchess-core", "starchess-arena"].map((pkg): [string, string[], string] => [`/app/packages/${pkg}/node_modules/.bin/vitest`, ["run", "--config", `/tmp/${pkg}.vitest.mts`, "--configLoader", "native", "--maxWorkers", "2", "--reporter=default", "--reporter=json", "--outputFile", `${target}/vitest-${pkg}.json`], `/app/packages/${pkg}`]),
+    ["/usr/local/bin/node", ["--test", "/app/packages/starchess-arena/hermetic/evidence-bundle.test.mjs", "/app/packages/starchess-arena/hermetic/image-measurement.test.mjs", "/app/packages/starchess-arena/hermetic/tar.test.mjs"], "/app"],
   ];
   const commands = specs.map(([executable, args, cwd], index): Command => {
     const prefix = `logs/command-${String(index + 1).padStart(2, "0")}`;
@@ -188,7 +191,7 @@ export function buildImportFixture(diagnostics: ReturnType<typeof buildDiagnosti
     return command;
   });
   const assurance = { sourceSha256: "source", installedSha256: "installed", frozenStoreSha256: "store", toolsSha256: "tools" };
-  const verification: Verification = { version: "hermetic-verification-v1", passed: true, assurance, commands, artifacts: [] };
+  const verification: Verification = { version: "hermetic-verification-v2", passed: true, assurance, commands, artifacts: [] };
   const policy = { Image: "", HostConfig: { NetworkMode: "none", ReadonlyRootfs: true, Privileged: false, Init: true,
     NanoCpus: 2_000_000_000, Memory: 4 * 1024 ** 3, MemorySwap: 4 * 1024 ** 3, PidsLimit: 256,
     CapDrop: ["ALL"], CapAdd: null, SecurityOpt: ["no-new-privileges=true"], Tmpfs: { "/tmp": tmpfsOptions } },
@@ -226,7 +229,7 @@ export function buildImportFixture(diagnostics: ReturnType<typeof buildDiagnosti
   return { root, output, files, verification, execution, build, paths, destination, archivePath, archive, save, mutate, rebind,
     options: { repositoryRoot: root, executionPath: paths.execution, buildPath: paths.build, exportPath: paths.export,
       expectedImage: archive.image, destination,
-      inspectImage: async () => ({ Id: archive.image }), measureImage: async () => ({ source: { sourceSha256: "source" } }),
+      inspectImage: async () => ({ Id: archive.image }), measureImage: async () => ({ source: { sourceSha256: "source" }, dependencies: { installedSha256: "installed", frozenStoreSha256: "store", toolTreeSha256: "tools" } }),
       captureContext: async () => ({ runtime: { sha256: "source" }, control: { sha256: "control" }, sourceRoot: repositoryRoot }),
     },
   };

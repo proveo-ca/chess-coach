@@ -23,13 +23,18 @@ export const executionPins = () => ({
   candidateInferenceSeed: 0,
 });
 
-export const normalizeEvidence = (evidence: ChallengeEvidence): string => canonical({
+export const normalizeEvidence = (evidence: ChallengeEvidence): string => {
+  const { rejectedQueue, ...recordedStop } = evidence.stop;
+  const stop = evidence.match.suite === "corpus" && evidence.stop.kind === "queue-rejected" && evidence.stop.side === "w"
+    ? recordedStop : evidence.stop;
+  return canonical({
   match: { key: evidence.match.key, suite: evidence.match.suite, candidateSide: evidence.match.candidateSide,
     arenaSeed: evidence.match.arenaSeed, inferenceSeed: evidence.match.inferenceSeed, opening: evidence.match.opening },
   policy: evidence.policy, modelArtifact: evidence.modelArtifact, learnedGateEligible: evidence.learnedGateEligible,
   fallbackCount: evidence.fallbackCount, scfens: evidence.scfens, resolves: evidence.resolves,
-  bankTrail: evidence.bankTrail, finalBank: evidence.finalBank, outcome: evidence.outcome, stop: evidence.stop,
-});
+  bankTrail: evidence.bankTrail, finalBank: evidence.finalBank, outcome: evidence.outcome, stop,
+  });
+};
 
 export type OutcomeBucket = "win" | "loss" | "draw" | "failure";
 export type FailureReason =

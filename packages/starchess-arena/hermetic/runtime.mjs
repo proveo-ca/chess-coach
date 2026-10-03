@@ -81,11 +81,12 @@ export async function main(argv) {
       await execute(`${arena}/node_modules/.bin/tsc`, ['--noEmit', '--target', 'ES2022', '--module', 'ESNext', '--moduleResolution', 'Bundler', '--strict', '--skipLibCheck', ...integrityTests.map((file) => `${arena}/src/__tests__/${file}`), '/app/scripts/challenge-contract-evidence.ts', '/app/scripts/challenge-validate-baseline.ts'], arena);
       await tests('starchess-core');
       await tests('starchess-arena');
+      await execute(process.execPath, ['--test', `${arena}/hermetic/evidence-bundle.test.mjs`, `${arena}/hermetic/image-measurement.test.mjs`, `${arena}/hermetic/tar.test.mjs`]);
       const after = preflight();
       if (JSON.stringify(after) !== JSON.stringify(assurance)) throw new Error('Execution artifacts changed');
       makeEvidenceReadable();
       const artifacts = treeManifest(output, { exclude: (path) => path === 'verification.json' }).entries.filter((entry) => entry.type === 'file');
-      writeFileSync(`${output}/verification.json`, JSON.stringify({ version: 'hermetic-verification-v1', passed: true, assurance, commands: records, artifacts }, null, 2) + '\n');
+      writeFileSync(`${output}/verification.json`, JSON.stringify({ version: 'hermetic-verification-v2', passed: true, assurance, commands: records, artifacts }, null, 2) + '\n');
     } catch (error) {
       writeFileSync(`${output}/hermetic-failure.json`, JSON.stringify({ version: 1, passed: false, error: String(error), assurance, commands: records }, null, 2) + '\n');
       throw error;

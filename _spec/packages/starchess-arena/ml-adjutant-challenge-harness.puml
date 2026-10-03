@@ -8,9 +8,10 @@
 ' covers: packages/starchess-arena/src/__tests__/corpusManifest.test.ts
 ' covers: packages/starchess-arena/src/__tests__/fixtures/challenge*.ts
 ' covers: _spec/evidence/ml-adjutant-phase1/*.json
-' status: PHASE 1 IMPLEMENTED and VERIFIED; lead reports adversarial and security reviews READY: yes for the trusted non-learned scope.
+' status: Phase 1 historical verification/READY verdicts preserved. R0 source repairs IMPLEMENTED PROVISIONALLY; PENDING REREVIEW, not CLOSED.
 ' related: _spec/_plans/PLAN-ml-adjutant.md
 ' related: _spec/_plans/ml-adjutant-challenge.md
+' related: _spec/_plans/ml-adjutant-execution-revisions.md (selected repairs and ordered R0 closure goals)
 ' related: _spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml (current codecs/features and hermetic evidence)
 ' related: _spec/packages/starchess-arena/arena.puml (legacy runner, not this isolated host)
 ' evidence: _spec/evidence/ml-adjutant-phase1/baseline-report.json
@@ -18,7 +19,11 @@
 ' baseline report SHA-256: 940387370040f88888e9dfe0bb86ad9d4a8be88854df507120f34b22ee2d362b
 ' transport: spawned stdin/stdout JSONL pipes; no Node process.send channel.
 ' evidence boundary: manifest v1 historical Phase 0 pending statuses remain unchanged; the separate execution report supersedes them for this measured baseline only.
-' rendering: renamed diagram passed plantuml -checkonly.
+' rendering: renamed diagram historically passed checkonly; current check not run by spec-keeper (no shell tool).
+' review: full implementation adversarial READY TO MERGE: no; security rereview UNRECORDED; all 15 pending (7 HIGH + 8 MEDIUM), closure proof NONE.
+' closure goals: both pre-freeze reviews READY -> new frozen image/actual Docker/full core+arena+static/54+54 -> validated fresh host publication -> both post-publication reviews READY.
+' evidence generations: Phase 1 original bytes/pins and existing Phase 2 immutable in place; future _spec/evidence/ml-adjutant-r0-refresh not created, outside capture; runtime output remains /app/_spec/evidence/ml-adjutant-phase2.
+' normalization: only trace-owned rejectedQueue on corpus White queue-rejection after validated equality; retain sourcePlyIndex and nonrecorded-side witnesses.
 ' historical scope: numeric features were later work at the Phase 1 freeze; the policy-contracts sibling owns their current implementation. Training, learned artifacts, and browser integration remain unimplemented.
 @startuml ml-adjutant-challenge-harness
 !include ../../themes/proveo.puml
@@ -31,10 +36,10 @@ package "packages/starchess-arena/src/challenge" {
   component "types.ts\nAuthorizedObservation / CandidatePolicy\nChallengeEvidence / ScheduledMatch" as TYPES <<app>>
   component "config.ts\nCHALLENGE_CONFIG phase1-v1" as CONFIG <<host>>
   component "corpus.ts\nauditCorpus / extractWhiteWindows" as CORPUS <<host>>
-  component "schedule.ts\nbuildSchedule / sampleOne" as SCHEDULE <<host>>
+  component "schedule.ts\nloadTrustedExecutionContext\nexpectedSchedule / buildSchedule / sampleOne" as SCHEDULE <<host>>
   component "supervisor.ts\nrunSupervised / bounded JSONL pipes" as SUPERVISOR <<host>>
   component "integrity.ts\nexecutionIntegrity" as INTEGRITY <<host>>
-  component "evidence.ts\nexecutionPins / runBaselineSuite\nnormalizeEvidence / summarize" as REPORT <<host>>
+  component "evidence.ts\nclassifyScheduledEvidence / summarize\nexecutionPins / runBaselineSuite / normalizeEvidence" as REPORT <<host>>
   component "publication.ts\npublishReport" as PUBLICATION <<host>>
   node "worker.ts spawned child\nstdin / stdout JSONL" as CHILD <<host>> {
     component "runChallengeMatch.ts\nturn-open / plan / stage / settle" as RUN <<app>>
@@ -57,8 +62,9 @@ CONFIG ARROW_OPTIONAL SUPERVISOR : pinned deadlines
 CONFIG ARROW_OPTIONAL RUN : progress limits / versions
 TYPES ARROW_OPTIONAL RUN : boundary contracts
 CORPUS ARROW_MAIN SCHEDULE : unchanged 18-case manifest v1
+SCHEDULE ARROW_MAIN INTEGRITY : opaque host-audited identity / trace context
 CLI ARROW_MAIN REPORT : separate from legacy cli/main.ts
-SCHEDULE ARROW_MAIN REPORT : 18 corpus + 36 live seat/seed matches
+SCHEDULE ARROW_MAIN REPORT : trusted 18 corpus + 36 live roster
 REPORT ARROW_MAIN SUPERVISOR : serial suite and independent rerun
 SUPERVISOR ARROW_QUEUE CHILD : v2 request / permit / halt / accepted
 SUPERVISOR ARROW_ERROR CHILD : SIGKILL; wait for close
@@ -136,13 +142,28 @@ end note
 SUPERVISOR .. N_FRAMES
 
 note as N_COUNTERS
-  Failure counters come from parent-accepted
-  resolves, not a child phase announcement.
-  A decision deadline is armed before the permit
-  write and is not renewed by status messages.
-  Checked settlement advances the ordinal.
+  Decision deadlines start before each permit
+  and cannot renew through status messages.
+  Only checked settlement moves the ordinal,
+  while counters reflect accepted resolves
+  rather than the child's phase claim.
 end note
 SUPERVISOR .. N_COUNTERS
+
+note right of REPORT
+  Validated buckets: win / loss / draw / failure
+  Trusted schedule: N = 54 (or 18 / 36)
+  Known-ID anomalies: fail that case
+  Unattributable rows: fail entire roster
+  wins + losses + draws + failures = N
+end note
+
+note bottom of REPORT
+  White corpus queue-rejected only
+  Validate rejectedQueue == trusted trace first
+  Normalize away rejectedQueue only
+  Retain sourcePlyIndex and other-side witnesses
+end note
 
 note right of CONFIG
   startupMs = 10000; planMs = 10000
@@ -196,15 +217,18 @@ note bottom of EVIDENCE
 end note
 
 legend bottom
-  PHASE 1 IMPLEMENTED and VERIFIED: final arena 164 tests / 17 files; core 426 / 53.
-  Full arena suite ran after all source/test changes; both typechecks and strict test TS check passed.
+  PHASE 1 HISTORICALLY VERIFIED: then-final arena 164 tests / 17 files; core 426 / 53.
+  Historical suites/typechecks/strict TS are not fresh R0 repair evidence.
   Corpus candidate = b, arena/inference seed = 0; live seeds = 0..17 in both seats.
   Seat RNG: w = mulberry32(seed), b = mulberry32(~seed).
-  All 54 supervised cases ran twice under final pins; 54/54 semantic comparisons equal.
+  Historically all 54 supervised cases ran twice under original final pins; 54/54 semantic comparisons equal.
   Corpus: 0 wins, 2 terminal losses, 16 queue-rejection failures; live: 0 wins, 36 terminal losses.
   executionIntegrity = true; learnedGateEligible = false; learnedChallengePass = false.
-  Lead reports adversarial READY: yes, no remaining findings; security READY: yes, trusted non-learned scope.
-  No learned acceptance or universal trace-compatibility claim; renamed diagram checkonly passed.
+  Historical trusted non-learned scoped READY verdicts do not close full implementation R0 findings.
+  R0 PENDING REREVIEW: source repairs provisional; all 15 pending (7 HIGH + 8 MEDIUM), closure proof NONE.
+  Full implementation adversarial READY TO MERGE: no; security rereview UNRECORDED. No fresh image/pins/publication.
+  Require pre-freeze READY -> new image / actual Docker / full suites+static / 54+54 -> validated publication -> post-review READY.
+  No learned acceptance or universal trace-compatibility claim. Current checkonly not run here.
   The policy-contracts sibling owns current numeric features. Training, learned artifacts, and browser integration remain unimplemented.
 endlegend
 @enduml

@@ -80,6 +80,7 @@ export const replayExecutionIntegrity = (
     if (evidence.stop.kind === "queue-rejected" && authority.suite === "corpus" && evidence.stop.side === "w") {
       const window = trace!.windows[windows];
       if (!window || evidence.stop.sourcePlyIndex !== window.sourcePlyIndex) return false;
+      if (evidence.stop.rejectedQueue !== undefined && canonical(evidence.stop.rejectedQueue) !== canonical(window.actions)) return false;
       const open = ready ? snap : beginScTurn(snap).next;
       const staged = stageQueue(open, bank, "w", window.actions, windows);
       if (staged.ok) return false;

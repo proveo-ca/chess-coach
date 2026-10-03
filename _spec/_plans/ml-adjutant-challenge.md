@@ -1,16 +1,32 @@
 # ML Adjutant — strict recorded-queue and live strategic challenge
 
-Status: **Phase 1 IMPLEMENTED and VERIFIED in `packages/starchess-arena` by tests and persisted
-baseline executions; both Phase 1 reviews READY: yes. Phase 2 hermetic verification PASSED.
-This is not a learned PASS. Post-image adversarial and security rereview is not yet recorded.
-Phase 3+ PLANNED and unimplemented.**
+Status: **Phase 1/2 implementation and verification PASSED historically. All R0 source repairs are
+IMPLEMENTED PROVISIONALLY; current R0 PENDING REREVIEW / READY TO MERGE: no.
+All 15 findings remain pending (7 HIGH + 8 MEDIUM); security rereview UNRECORDED.
+This is not a learned PASS. Phase 3+ PLANNED and unimplemented; weights NONE.**
 Owner roadmap: [PLAN-ml-adjutant.md](PLAN-ml-adjutant.md).
 Harness boundary: [ml-adjutant-challenge-harness.puml](../packages/starchess-arena/ml-adjutant-challenge-harness.puml).
 Policy-contract boundary: [ml-adjutant-policy-contracts.puml](../packages/starchess-arena/ml-adjutant-policy-contracts.puml).
 FIRST-training/weights contract: [ml-adjutant-weights.md](ml-adjutant-weights.md).
 This document defines learned acceptance and records the separately verified non-learned baseline.
-The lead reports adversarial READY: yes with no remaining findings and security READY: yes
-for the trusted non-learned scope. No trained artifact or learned PASS is claimed.
+The historical scoped Phase 1 READY verdicts do not close the current full implementation review.
+No new review verdict, source proof of closure, measured pin, trained artifact, or learned PASS is claimed.
+See [execution revisions](ml-adjutant-execution-revisions.md) for selected R0 contracts and goals.
+
+## Current R0 closure goals — ordered, not completed
+
+Both pre-freeze implementation reviews **READY: yes** → reviewed source/tests/control/dependency freeze
+and **new image** → **actual Docker** infrastructure, full core/arena suites and static/strict checks →
+**54 executions + 54 independent reruns** → validated fresh marker publication → both post-publication reviews **READY: yes**.
+Lead reports preliminary **571 arena passed, 2 live-pin checks deferred, 92 hermetic passed**.
+The lead's core check is in progress; neither a fresh 426-core result nor completion of both typechecks is recorded.
+Raw evidence at existing paths measures old source; no fresh image or measured new pin exists here.
+Publish future validated host output to **`_spec/evidence/ml-adjutant-r0-refresh`**, not created yet and outside captured source.
+Keep Phase 1 original bytes/pins and the existing Phase 2 bundle **in place, immutable**.
+Runtime working output remains **`/app/_spec/evidence/ml-adjutant-phase2`**.
+The turn-aware calibrated-belief extension remains future work: public opening **4 deployed + 3 banked = 7**,
+native turn/grant-aware accounting, no hidden inputs, and versioned R1/R4/R5 readiness before R6.
+That selection does not make R1 training-ready or change the prior frozen feature registry.
 
 ## 1. Decision and scope
 
@@ -207,7 +223,8 @@ Before FIRST Phase 3 training, freeze a separately versioned combination generat
 interactions, own paid-investment/loss lineage ledger, and confirmed opponent-loss lower bounds with uncertainty.
 Weights are shared named-feature coefficients `s_w(h,c)=wᵀφ_version(h,c)`, never one entry per move or tree node.
 Observation-constant terms cancel in linear comparisons, so context must interact with candidate features.
-Rules/gas/mineral costs are never learned. Exact v2 names/dimensions/budgets remain unsettled until freeze.
+Rules/gas/mineral costs are never learned. The prior future v2 registry is frozen at 370 fields;
+the selected calibrated-belief amendment still needs separately approved names/versions/calibration/readiness before R6.
 
 Start at **H=1**. A separate future milestone covers conditional plans across up to **three simultaneous
 planning windows** using future authorized observations, history, and belief/opponent hypotheses.
@@ -222,7 +239,8 @@ and exploration novelty proxies are not entropy reduction. The weights contract 
 
 The proposed training objective uses stable softmax, actual candidate-side outcome/queue-failure rewards,
 an action-independent previous-episode-mean baseline, and `L=-A Σ log π + λ||w||²/2`.
-Initialization/optimizer/seeds/provenance and an externally hashed, finite, exactly name-aligned artifact remain planned.
+The future recipe freezes SGD + REINFORCE, zero initialization, float64 CPU, five independent seeds,
+1000 STARTED episodes per artifact / 5000 total; implementation and the externally hashed artifact remain planned.
 No 158-value artifact, trained performance, online updates, model fallback, or registry activation is promised here.
 
 The policy ranks observation-safe proposed queues; enumeration does not guarantee legality.
@@ -289,24 +307,28 @@ Failure counters derive from accepted plies: planning ordinal counts non-chip re
 turn comes from the latest accepted `resolve.next`, or the opening when none exists. A crash
 before the next phase announcement must not regress these counters.
 Startup and match deadlines plus per-plan deadlines bound synchronous loops and unresolved
-promises. Repeated identical phase messages do not renew the planning deadline.
+promises. `challenge-worker-v2` identifies decisions by match/planning ordinal/side.
+The parent arms the fixed deadline before each permit; repeated or changed status cannot renew or clear it.
+Reject even a matching decision received late; checked settlement alone advances the planning ordinal.
 `integrity.ts` reexecutes each accepted ply prefix and completion against authoritative full
 resolve payloads, resource transitions, and actual terminal outcomes. Forged resolve/resources
 or outcomes and `script-contract` failures invalidate execution integrity. Protocol-size/count
 caps remain fixed by configuration. Corpus validation binds consumed White queues to the
-actual audited trace windows; stop turn and planning ordinal must match reexecuted progress.
+actual audited trace windows through the opaque host-loaded `trusted-execution-context-v1` roster,
+not self-declared report identity/hash/context; stop turn and planning ordinal must match reexecuted progress.
 Recorded White rejection details must match current-rule staging of that window.
 `publication.ts` fsyncs a private temporary file before exclusive hardlink publication, unlinks
 the temporary file, and fsyncs the containing directory; it never overwrites an existing report.
 Test budget overrides do not establish a standard-budget baseline result.
 
-### Phase 2 pin migration and hermetic execution — verification PASSED
+### Phase 2 pin migration and hermetic execution — historical verification PASSED
 
 Executor selected partitioned execution pins then a hermetic image, with pull/build downloads approved.
 `challenge/sourceInventory.ts` inventories all declared root files in execution (all core and arena source
 except contracts, excluding package tests), contracts (`challengeContract`), and diagnostics (root scripts/hermetic).
-The AST import audit covers relative/declared external/workspace imports, worker loading, and explicitly supported
-loader patterns, including the declared esbuild closure case; it does not certify arbitrary computed loaders.
+The provisional lexical fixed-point import audit covers relative/declared external/workspace imports,
+worker loading, static types, wrappers, namespace binding identities, and supported literal loaders,
+including the declared esbuild closure case; unsupported escapes/computed loaders and unknown-extension CommonJS fail closed.
 `challenge-execution-pins-v2` carries partition/config hashes; tests, installed modules, tools, store, and captured
 source bytes receive additional hermetic manifests outside the project pin. Do not assert a fixed source count.
 
@@ -314,20 +336,20 @@ Preserve Phase 1 original report SHA-256
 `940387370040f88888e9dfe0bb86ad9d4a8be88854df507120f34b22ee2d362b`
 and original verification SHA-256
 `55d965afa71d775ff6ee1e95b6650a27d0ce759b966a81c43a3bb364236c7508`.
-The new Phase 2 baseline ran **54 current executions + 54 reruns** and compared all 54 rows semantically
+The historical Phase 2 baseline ran **54 then-current executions + 54 reruns** and compared all 54 rows semantically
 against the original report using `pinMigration.ts`. Phase 1 evidence was not overwritten.
 [pin-migration.json](../evidence/ml-adjutant-phase2/pin-migration.json) records `semanticParity = true`,
 `executionIntegrity = true`, and `deterministicRerun = true`.
 [verification.json](../evidence/ml-adjutant-phase2/verification.json) records `"passed": true`.
-Current baseline SHA-256 is `5de86d94caaa626402b73ac9fa8f6bbc7a9b111e69a8b3801461380635cbd87f`.
+Historical post-rename baseline SHA-256 is `5de86d94caaa626402b73ac9fa8f6bbc7a9b111e69a8b3801461380635cbd87f`.
 The [pre-rename bundle](../evidence/ml-adjutant-phase2-before-diagram-rename/verification.json)
-is historical and byte-preserved; the [current bundle](../evidence/ml-adjutant-phase2/verification.json)
-records fresh standard hermetic execution after diagram-reference relocation.
+is historical and byte-preserved; the [post-rename bundle](../evidence/ml-adjutant-phase2/verification.json)
+records the then-fresh standard hermetic execution after relocation, not the current R0 repairs.
 The [relocation record](PLAN-ml-adjutant.md#diagram-reference-relocation--historical-versus-current-evidence)
-separates archived pins from current pins and records the lead-reported pointer-only proof.
+separates pre-rename from post-rename historical pins and records the lead-reported pointer-only proof.
 
-The final source image is `sha256:e7f9ea8ac211c93804bd1125ed28fb7e165a160c4155ca70404c81f9e431710d`.
-The lead reports a fresh standard dependency image `sha256:4c9d45b04f325a2d912cb34ebc982f139f057a2f2fb6d779ac2ef59f29ea987d`.
+The historical source image is `sha256:e7f9ea8ac211c93804bd1125ed28fb7e165a160c4155ca70404c81f9e431710d`.
+The lead historically reported dependency image `sha256:4c9d45b04f325a2d912cb34ebc982f139f057a2f2fb6d779ac2ef59f29ea987d`.
 Official Node **22.23.2** bookworm-slim `linux/amd64` platform digest
 `sha256:43aeff40f4afc22e83f7589a2f37e111cff5ca84529571f1c8415bcc5fcc21b2`.
 pnpm **10.33.0** tool bytes stay pinned. The earlier dependency preflight recorded **126 locked packages**,
@@ -345,9 +367,10 @@ Persisted coverage is **18/282 exact queues**, **204/576 singleton intents**,
 **282/282 reference codec and feature encodings**, and **48 maximum proposals**.
 These counts describe historical White observations and structural membership, not live counterplay,
 admission, exhaustive combinations, or learned success. They are representability, not winning coverage.
-Pre-freeze findings were fixed before this freeze: loader escapes, dense arrays, provenance, capture containment, and importer completeness.
+Earlier scoped pre-freeze findings were reported fixed before that historical freeze; they do not close A01–A15.
 Rename-only adversarial review is **READY: yes**.
-Post-image security rereview remains unrecorded.
+Full implementation post-image adversarial review returned **READY TO MERGE: no**;
+all 15 findings remain pending rereview despite provisional repairs, and security rereview remains unrecorded.
 Both renamed diagrams and the edited spec map passed PlantUML `checkonly`.
 This pass does not claim a learned PASS.
 
@@ -367,6 +390,54 @@ Integrity failures invalidate acceptance even if all match result labels say "wi
 Deterministic reruns compare normalized `scfens`, resolve payloads, and terminal results.
 Exclude generated match/record IDs and timestamps from semantic equality; preserve those fields
 as provenance. Same pins and seeds must reproduce the same semantic executions.
+Normalize away only the redundant trace-owned `rejectedQueue` on corpus White queue-rejection,
+after authoritative validation proves equality with the trusted trace; this preserves historical semantic hashes.
+Do not normalize away `sourcePlyIndex` or nonrecorded-side rejection witnesses.
+
+### Provisional R0 verifier and marker-publication contracts
+
+Exact shared authority: **`packages/starchess-arena/hermetic/evidence-limits.mjs`**.
+Selected limits: **file 16 MiB; retained 64 MiB; archive 512 MiB; scan/expansion 2 GiB;
+metadata 16 MiB; entries 262144; paths 4096 UTF-8 bytes**.
+Bound regular-file reads before allocation/JSON parse and charge aggregate scan/expansion/metadata budgets.
+These limits are distinct from the unchanged Phase 1 IPC/watchdog limits.
+
+`tar.mjs` performs bounded USTAR/PAX scans for Docker-save / OCI-compatible content identity.
+Bind config and each layer **positionally** to ordered diffIDs; identical repeated empty-layer references
+are allowed only with matching positional diffIDs. Reject duplicate actual tar entry paths.
+`image-measurement.mjs` **never executes image binaries**: inspect/create an unstarted container,
+inspect created/not-running/PID 0, copy tar streams, and host-recompute source/dependency/store/tool/control manifests.
+Bind independent measurements to current/build capture, runtime assurance, and export identity.
+
+The importer requires **eight exact ordered commands in `hermetic-verification-v2`**.
+Bind executable/cwd/full args and log bytes; independently recount actual Vitest assertions and require
+full `command.tests.path` equality with the exact command output plus matching hash/counts/success.
+Strict command 5 includes both diagnostic and validator scripts, including the validator's extensionless TS imports.
+Command 8 is trusted **`/usr/local/bin/node --test`** on hermetic
+`evidence-bundle.test.mjs`, `image-measurement.test.mjs`, and `tar.test.mjs`.
+The [execution revisions](ml-adjutant-execution-revisions.md#exact-importer-verification-and-seven-input-validation) record the complete inventory.
+
+The authoritative validator takes exactly seven inputs: current baseline, original baseline,
+original verification, migration, coverage, contract, and captured source root.
+Require full roster/trace identity and replay, all 54 rerun metadata/normalized hashes,
+full summary/accounting, original-byte pins, migration semantic parity, captured-root source inventory,
+twice-recomputed coverage, and exact full contract equality; self-reported flags do not replace those checks.
+Fresh independently executed reruns remain mandatory; validating their metadata does not execute them.
+
+Executor selected **`evidence-bundle.mjs` completion-marker publication**, not atomic pointer/native rename.
+Exclusive `mkdir` claims the destination; every file and temporary canonical inventory marker is fsynced.
+Sync deep nested directories then root before atomically linking **`.publication-complete`** as logical commit.
+Unlink the temporary marker and sync root/parent afterward; postcommit failures retain bytes with structured
+committed state/phase/target and durability unconfirmed. Precommit cleanup may remove only the publisher's owned claim.
+**No atomic directory visibility claim:** readers verify marker/schema/canonical exact inventory/lengths/hashes.
+Require a canonical parent/private host-owned ancestor without malicious same-UID mutation.
+
+Runtime tests read **`HERMETIC_OUTPUT_DIRECTORY`** with **no fallback**.
+Host tests prefer the fresh R0 directory if it exists and require valid marker publication;
+only when absent may they use the locked historical Phase 2 pinned fixture.
+An incomplete/invalid fresh bundle fails rather than falling back; the two historical live-pin checks remain deferred.
+Exact mount validation allows only the working-output bind and `/tmp` tmpfs
+`rw,nosuid,nodev,size=1073741824,mode=1777`; actual Docker verification remains a closure goal.
 
 ## 8. Required integrity verification
 
@@ -379,7 +450,7 @@ The Phase 2 image passed arena vitest **434/434** and core vitest **426/426**.
 The lead reports host-after-import current-evidence checks **7 tests / 2 files passed**, and arena typecheck passed.
 Actual paths and purposes are
 listed in [PLAN-ml-adjutant.md](PLAN-ml-adjutant.md#planned-verification-and-pending-ownership).
-Phase 2 feature encoders exist and hermetic verification passed; post-image rereview is not yet recorded;
+Phase 2 feature encoders exist and historical hermetic verification passed; current R0 rereview is pending;
 broader generator/v2 ledger/interaction tests and Phase 3–4 learned execution checks remain planned.
 Phase 1 tests do not implement or verify a trained policy. The lead reports both Phase 1
 reviews READY: yes; adversarial has no remaining findings and security covers trusted non-learned execution.
@@ -398,11 +469,16 @@ reviews READY: yes; adversarial has no remaining findings and security covers tr
 | Determinism and schedule | Semantic rerun equality, exact 18+36 schedule, feed off, seat RNG convention, all failures retained in denominators. |
 | Supervision | Startup stall, synchronous loop, unresolved promise, fixed deadlines, bounded raw JSONL before parsing, malformed/before-ready messages, accepted-ply counters across crashes, partial evidence, and reap before return. |
 | Evidence integrity | Authoritative full resolve/resource reexecution, actual terminal truth, White trace-window binding, stop turn/ordinal consistency, forged evidence rejected, and script-contract invalidation. |
+| R0 import / archive / measurement | Exact eight commands/full test-output binding; seven-input authoritative validation; bounded ordered diffIDs; duplicate actual paths rejected; image measurement never executes resident binaries. |
+| R0 bundle publication | Exclusive directory claim, deep-first sync before logical marker commit, marker/schema/hash/exact-inventory reader checks, race preservation and structured retained postcommit failures. No atomic directory visibility claim. |
 | Publication | Fsynced private temporary JSON, exclusive hardlink, temp unlink followed by containing-directory fsync, existing report preserved, and cleanup on serialization failure. |
 
 ## 9. Reporting and evidence limits
 
 Publish the pins and integrity results with one row per corpus case and per live seed/seat.
+Validate **every** row before exclusive win/loss/draw/failure classification against trusted N=54 (or approved 18/36 partial mode).
+Require `wins + losses + draws + failures = N`; missing/duplicate/invalid known IDs fail that case,
+and unattributable unexpected/malformed rows fail the selected roster. Labels alone earn no outcome credit.
 Include candidate side, actual terminal outcome or failure reason, planning ordinal/failed
 action where applicable, fallback count, and reproducibility result. Report historical source
 outcomes separately from executed outcomes. Keep private metadata in host reports, not policy inputs.

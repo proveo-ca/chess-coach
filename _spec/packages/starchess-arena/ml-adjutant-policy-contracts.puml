@@ -5,30 +5,38 @@
 ' covers: scripts/**
 ' covers: packages/starchess-arena/hermetic/**
 ' covers: _spec/evidence/ml-adjutant-phase2/*.json
-' status: IMPLEMENTED. Hermetic verification PASSED. Not a learned PASS. Post-image adversarial/security rereview is not yet recorded.
+' status: R0 PENDING REREVIEW; all source repairs IMPLEMENTED PROVISIONALLY. 15 pending (7 HIGH + 8 MEDIUM); closure proof NONE. Historical hermetic pass only; no learned PASS.
 ' related: _spec/_plans/PLAN-ml-adjutant.md
 ' related: _spec/_plans/ml-adjutant-challenge.md
 ' related: _spec/_plans/ml-adjutant-weights.md
-' related: _spec/packages/starchess-arena/ml-adjutant-challenge-harness.puml (verified historical baseline)
+' related: _spec/packages/starchess-arena/ml-adjutant-challenge-harness.puml (provisional execution contracts; historical baseline)
+' related: _spec/_plans/ml-adjutant-execution-revisions.md (selected contracts, exact commands, and ordered closure goals)
 ' decision: FIRST Phase 3 training requires broader versioned combinations and v2 authorized economic/positional interactions; horizon 1.
 ' later: three conditional planning windows are a separate future milestone; no training/model/artifact/registry activation here.
 ' boundary: codec representability is not proposal completeness or private host admission.
 ' boundary: baselineScore remains handcrafted and excluded from features; no learned weights exist.
 ' boundary: a selected proposal receives one private whole-queue admission, never hidden probes or rescue.
 ' pin scope: project source inventory excludes tests; separate hermetic capture retains source/tests, dependency/store/tool bytes.
-' import audit: supported AST imports/workspace edges/worker URL and declared esbuild closure loader; not arbitrary computed-loader analysis.
-' assurance: final source image sha256:e7f9ea8ac211c93804bd1125ed28fb7e165a160c4155ca70404c81f9e431710d passed network-none, read-only, nonroot.
-' assurance: lead reports fresh standard dependency image sha256:4c9d45b04f325a2d912cb34ebc982f139f057a2f2fb6d779ac2ef59f29ea987d.
+' import audit: lexical fixed-point binding IDs; static types, wrappers, namespace aliases, literal calls and declared esbuild closure; fail closed on unsupported escapes/unknown-extension CJS.
+' assurance: historical source image sha256:e7f9ea8ac211c93804bd1125ed28fb7e165a160c4155ca70404c81f9e431710d passed network-none, read-only, nonroot; it does not measure R0 repairs.
+' assurance: historical dependency image sha256:4c9d45b04f325a2d912cb34ebc982f139f057a2f2fb6d779ac2ef59f29ea987d; no fresh R0 dependency-image measurement.
 ' assurance: official Node 22.23.2 bookworm-slim platform digest sha256:43aeff40f4afc22e83f7589a2f37e111cff5ca84529571f1c8415bcc5fcc21b2.
 ' evidence: baseline-report.json SHA-256 5de86d94caaa626402b73ac9fa8f6bbc7a9b111e69a8b3801461380635cbd87f
 ' evidence: external archive, not in repo, lead-reported path /tmp/opencode/starchess-hermetic-export-k1KYQO/image.tar SHA-256 64d6277f439f7cdfb82ecb2c6a230f735c5c7f3588d7f13082a30b430e6d07f7
-' relocation: _spec/evidence/ml-adjutant-phase2-before-diagram-rename/verification.json is the byte-preserved historical bundle; _spec/evidence/ml-adjutant-phase2/verification.json records fresh current execution.
+' relocation: pre-rename archive and post-rename _spec/evidence/ml-adjutant-phase2/verification.json are immutable history; neither measures current R0 repairs.
 ' relocation proof: lead reports 20 archived runtime artifact checksums, 122 source files reconstructed by reversing only SPEC-name replacements, and 54 equal old/current semantic rerun comparisons.
-' verification: current image core 426/426, arena 434/434, both typechecks and strict test TS passed; lead reports infra 5/5 with actual Docker/no skips and host focused 7 tests/2 files plus arena typecheck.
+' verification: historical image core 426/426, arena 434/434, typechecks/strict TS passed; historical infra 5/5 actual Docker and focused 7 tests/2 files. No fresh image result.
+' preliminary: lead reports 571 arena passed, 2 live-pin checks deferred, 92 hermetic passed; core check in progress. No fresh 426-core or both-typecheck completion claim.
 ' phase1 pins: baseline 940387370040f88888e9dfe0bb86ad9d4a8be88854df507120f34b22ee2d362b; verification 55d965afa71d775ff6ee1e95b6650a27d0ce759b966a81c43a3bb364236c7508. Unchanged.
-' reviews: pre-freeze findings were fixed before this freeze: loader escapes, dense arrays, provenance, capture containment, importer completeness.
-' reviews: rename-only adversarial review READY: yes. Full implementation post-image security rereview remains unrecorded.
-' rendering: both renamed diagrams and the edited spec map passed plantuml -checkonly.
+' reviews: earlier scoped/rename-only READY verdicts are historical. Full implementation adversarial READY TO MERGE: no; security rereview UNRECORDED; A01-A15 pending.
+' closure goals: both pre-freeze reviews READY -> new frozen image/actual Docker/full core+arena+static/54+54 -> validated new publication -> both post-publication reviews READY.
+' publication selection: completion-marker logical commit, not atomic pointer/native directory rename; no atomic directory visibility claim.
+' future host destination: _spec/evidence/ml-adjutant-r0-refresh; not created yet, outside captured source. Existing Phase 2 remains immutable in place.
+' runtime output: /app/_spec/evidence/ml-adjutant-phase2; tests require HERMETIC_OUTPUT_DIRECTORY without fallback. Host prefers marker-validated R0 if present, else locked historical Phase 2 fixture.
+' validator inputs: current baseline, original baseline, original verification, migration, coverage, contract, captured source root; exactly seven.
+' command inventory: hermetic-verification-v2, exactly eight; strict command 5 includes both diagnostic/validator scripts including extensionless TS imports; trusted /usr/local/bin/node command 8 tests three hermetic modules.
+' trust: publication requires canonical parent/private host-owned ancestor without malicious same-UID mutation.
+' rendering: earlier checkonly is historical; current checkonly not run by spec-keeper (no shell tool).
 @startuml ml-adjutant-policy-contracts
 !include ../../themes/proveo.puml
 title StarChess arena · ML Adjutant policy contracts and hermetic verification
@@ -49,7 +57,7 @@ package "packages/starchess-arena/src/challengeContract" {
 }
 
 package "packages/starchess-arena/src/challenge" {
-  component "sourceInventory.ts\ncollectSourceInventory / AST audit" as INVENTORY <<host>>
+  component "sourceInventory.ts\nlexical fixed-point import audit" as INVENTORY <<host>>
   component "evidence.ts\nexecutionPins v2 / runBaselineSuite" as PINS <<host>>
   component "pinMigration.ts\ncreateMigration / compareBaselineReports" as MIGRATION <<host>>
 }
@@ -57,6 +65,8 @@ package "packages/starchess-arena/src/challenge" {
 component "scripts/challenge-contract-evidence.ts\ncontract / migration / coverage reports" as DIAGNOSTIC <<host>>
 database "_spec/evidence/ml-adjutant-phase1\nimmutable baseline / verification bytes" as ORIGINAL <<db>>
 database "_spec/evidence/ml-adjutant-phase2\nimported baseline / verification" as EVIDENCE <<db>>
+component "scripts/challenge-import-evidence.mjs\nexact command / test-output binding" as IMPORTER <<host>>
+component "scripts/challenge-validate-baseline.ts\nseven-input authoritative validation" as HOST_VALIDATE <<host>>
 
 package "packages/starchess-arena/hermetic" {
   component "pins.json / Dockerfile\nNode platform digest / pnpm tool bytes" as IMAGE_PINS <<host>>
@@ -64,7 +74,12 @@ package "packages/starchess-arena/hermetic" {
   component "closure.mjs / probe.mjs\ndependency closure / runtime checks" as PROBES <<host>>
   component "run.mjs / policy.mjs\nimage-ID selection / restricted container" as RUNNER <<host>>
   component "runtime.mjs\nverify / baseline / diagnostics / checks" as RUNTIME <<host>>
+  component "evidence-limits.mjs\nshared bounded-evidence limits" as LIMITS <<host>>
+  component "tar.mjs\nUSTAR / PAX / Docker-save / OCI binding" as TAR <<host>>
+  component "image-measurement.mjs\nunstarted container / host tree scan" as MEASUREMENT <<host>>
+  component "evidence-bundle.mjs\npublishBundleExclusive / readPublishedBundle" as BUNDLE <<host>>
 }
+database "PLANNED host publication\n_spec/evidence/ml-adjutant-r0-refresh\nnot created; outside captured source" as REFRESH <<db>>
 
 OBSERVE ARROW_MAIN OBS_CODEC : authorized facts only
 BASELINE ARROW_MAIN CAND_CODEC : singleton queues and pass
@@ -83,12 +98,27 @@ ORIGINAL ARROW_MAIN MIGRATION : original byte pins
 MIGRATION ARROW_MAIN DIAGNOSTIC : 54 original/current semantic comparisons
 IMAGE_PINS ARROW_MAIN CAPTURE : frozen dependency toolchain
 CAPTURE ARROW_MAIN PROBES : source / installed tree / store / tools
-RUNNER ARROW_MAIN RUNTIME : restricted source image ran
+RUNNER ARROW_MAIN RUNTIME : restricted image execution contract
 PROBES ARROW_OPTIONAL RUNTIME : pre/post immutable manifests
-RUNTIME ARROW_MAIN PINS : 54 current executions + 54 reruns
+RUNTIME ARROW_MAIN PINS : closure goal: 54 executions + 54 reruns
 RUNTIME ARROW_MAIN DIAGNOSTIC : generated baseline input
-RUNTIME ARROW_MAIN EVIDENCE : passed hermetic outputs
-MIGRATION ARROW_MAIN EVIDENCE : parity report
+RUNTIME ARROW_MAIN IMPORTER : working outputs / eight exact commands
+MIGRATION ARROW_MAIN HOST_VALIDATE : original-byte semantic parity
+ORIGINAL ARROW_MAIN HOST_VALIDATE : immutable original pins
+CAPTURE ARROW_MAIN IMPORTER : current / build capture identity
+MEASUREMENT ARROW_MAIN IMPORTER : independent source / dependency / tool identity
+TAR ARROW_MAIN IMPORTER : archive config / ordered layers / diffIDs
+LIMITS ARROW_OPTIONAL TAR : scan / expansion / metadata budgets
+LIMITS ARROW_OPTIONAL MEASUREMENT : copied archive / retained budgets
+LIMITS ARROW_OPTIONAL IMPORTER : bounded reads before parsing
+LIMITS ARROW_OPTIONAL BUNDLE : file / inventory limits
+IMPORTER ARROW_MAIN HOST_VALIDATE : six byte inputs + captured root
+HOST_VALIDATE ARROW_MAIN INVENTORY : rebuild captured-root inventory
+HOST_VALIDATE ARROW_MAIN COVERAGE : recompute twice; exact contract
+HOST_VALIDATE ARROW_MAIN IMPORTER : replay / 54 hashes / summary / accounting
+IMPORTER ARROW_MAIN BUNDLE : validated artifact bytes only
+BUNDLE ARROW_OPTIONAL REFRESH : future marker-committed inventory
+EVIDENCE ARROW_OPTIONAL ORIGINAL : immutable history, not fresh R0 pins
 
 note bottom of FEATURES
   challenge-features-v1
@@ -116,6 +146,13 @@ note bottom of INVENTORY
   diagnostics: scripts + arena hermetic
 end note
 
+note right of INVENTORY
+  Lexical IDs / fixed-point aliases
+  Static types / wrappers / namespace IDs
+  Supported literal loader calls only
+  Fail closed: escapes / unknown-extension CJS
+end note
+
 note bottom of RUNNER
   Network none; root filesystem read-only
   UID 10001; capabilities dropped
@@ -124,32 +161,101 @@ note bottom of RUNNER
 end note
 
 note right of RUNNER
-  Pre-freeze review findings were fixed before
-  this image. Post-image adversarial and
-  security rereview is not yet recorded.
+  R0: PENDING REREVIEW; closure proof NONE
+  15 pending: 7 HIGH + 8 MEDIUM
+  Source repairs: IMPLEMENTED PROVISIONALLY
+  No fresh image, measured pins, or publication
 end note
 
 note bottom of RUNTIME
-  The restricted nonroot execution passed with
-  equal semantic reruns. Zero candidate wins
-  keep learned acceptance false.
+  New-image closure goals
+  Full core / arena / static + actual Docker
+  54 executions + 54 independent reruns
+  Pre-freeze READY -> validated publication
+  -> post-publication READY
 end note
 
 note bottom of EVIDENCE
-  Imported phase2 evidence
-  Phase 1 bytes unchanged
-  Image tar stays outside the repo
+  Historical phase2 bundle: immutable in place
+  Phase 1 original bytes / pins unchanged
+  Image archive stays outside the repo
+end note
+
+note bottom of LIMITS
+  fileBytes = 16777216 (16 MiB)
+  retainedBytes = 67108864 (64 MiB)
+  archiveBytes = 536870912 (512 MiB)
+  scanBytes = 2147483648 (2 GiB)
+end note
+
+note right of LIMITS
+  metadataBytes = 16777216 (16 MiB)
+  entries = 262144; pathBytes = 4096
+end note
+
+note bottom of TAR
+  Layer hashes must match each ordered diffID
+  rather than a set of unique references.
+  An identical empty layer may recur at matching
+  positions, but duplicate actual entry paths
+  still invalidate the archive.
+end note
+
+note bottom of MEASUREMENT
+  Host measurement builds source and
+  dependency manifests from an unstarted
+  container. Inspection and copied tar streams
+  bind that identity without executing binaries
+  from the measured image.
+end note
+
+note bottom of HOST_VALIDATE
+  Full roster / trace / replay / 54 rerun hashes
+  Full migration parity / summary / accounting
+  Captured-root source inventory
+  Coverage recomputed twice / exact contract
+end note
+
+note bottom of IMPORTER
+  hermetic-verification-v2: eight exact commands
+  executable / cwd / full args / log bytes
+  Vitest: recount actual assertions
+  Full tests.path == exact output; hash bound
+end note
+
+note top of BUNDLE
+  Exclusive mkdir / all files fsynced
+  Deep nested directories then root synced
+  Atomic marker link: .publication-complete
+  Logical commit; temp unlink; sync root/parent
+end note
+
+note bottom of BUNDLE
+  Readers can see files before the marker
+  link commits the complete inventory.
+  They must check its schema and all hashes
+  because visible directories do not prove
+  that publication has finished.
+end note
+
+note right of BUNDLE
+  Once the marker commits, a failed sync
+  must retain all bytes rather than erase
+  the bundle. Errors report committed state
+  and unconfirmed durability so callers
+  can plan recovery without a blind retry.
 end note
 
 legend bottom
-  Hermetic verification passed. This is not learned acceptance.
+  Historical hermetic verification passed. R0 repairs are source-implemented provisionally, not CLOSED.
   Weights remain NONE. learnedGateEligible is false. Candidate wins are 0/18 corpus and 0/36 live.
   Corpus: 18 scheduled, 0 wins, 2 terminal losses, 16 queue-rejected. Live: 36 scheduled, 0 wins, 36 terminal losses.
-  Phase 1 evidence bytes stay immutable. Phase 2 baseline and pin migration are a new report.
-  Pre-freeze findings were fixed: loader escapes, dense arrays, provenance, capture containment, importer completeness.
-  Post-image adversarial and security rereview is not yet recorded. Do not read this diagram as READY.
+  Phase 1 original bytes/pins and existing Phase 2 remain immutable. No fresh R0 directory/image/measured pins yet.
+  R0 PENDING REREVIEW: all 15 pending (7 HIGH + 8 MEDIUM), closure proof NONE; adversarial READY TO MERGE: no, security UNRECORDED.
+  Closure goals: both pre-freeze READY -> new image / actual Docker / full suites+static / 54+54 -> validated publication -> both post-review READY.
+  Completion marker is logical commit, not atomic directory visibility; readers verify schema, exact inventory, and hashes.
   FIRST Phase 3 training still needs a broader versioned generator and v2 interactions, at H=1.
   Three-window conditional search remains later work. No trained coefficients or playable ML player.
-  Rename-only adversarial review READY: yes; renamed diagrams and map checkonly passed.
+  Historical scoped READY/checkonly verdicts do not approve these repairs. Current rendering check not run here.
 endlegend
 @enduml

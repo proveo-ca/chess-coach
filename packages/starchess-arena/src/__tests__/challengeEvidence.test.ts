@@ -78,6 +78,30 @@ describe("baseline execution evidence", () => {
     expect(global.cases.reduce((sum, entry) => sum + 1, 0)).toBe(18);
   });
 
+  it("keeps trace-owned rejection witnesses compatible while validating their contents", async () => {
+    const context = loadTrustedExecutionContext("corpus");
+    const request = buildSchedule(loadPinnedCorpus())[0]!;
+    const current = await runChallengeMatch(request);
+    expect(current.stop).toMatchObject({ kind: "queue-rejected", side: "w" });
+    expect(current.stop.rejectedQueue).toBeDefined();
+    const historical = structuredClone(current);
+    delete historical.stop.rejectedQueue;
+    expect(executionIntegrity(current, true, context)).toBe(true);
+    expect(executionIntegrity(historical, true, context)).toBe(true);
+    expect(normalizeEvidence(current)).toBe(normalizeEvidence(historical));
+    const forged = structuredClone(current);
+    forged.stop.rejectedQueue = [];
+    expect(executionIntegrity(forged, true, context)).toBe(false);
+    const reference = structuredClone(current);
+    reference.stop.sourcePlyIndex!++;
+    expect(normalizeEvidence(reference)).not.toBe(normalizeEvidence(current));
+    const otherSide = structuredClone(current);
+    otherSide.stop.side = "b";
+    const otherWithoutWitness = structuredClone(otherSide);
+    delete otherWithoutWitness.stop.rejectedQueue;
+    expect(normalizeEvidence(otherSide)).not.toBe(normalizeEvidence(otherWithoutWitness));
+  });
+
   it("runs the production supervised worker with pinned config and matches in-process semantics", async () => {
     const request = buildSchedule(loadPinnedCorpus())[0]!;
     const expected = await runChallengeMatch(request);

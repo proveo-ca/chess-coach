@@ -201,7 +201,7 @@ describe("synthetic test-only Docker-save archive parser", () => {
   });
   it("rejects a doubled manifest layer", async () => {
     const archive = syntheticImageArchive({ manifestLayers: ["layer-0.tar", "layer-0.tar"] }); const path = archivePath(); writeFileSync(path, archive.bytes);
-    await expect(checkArchive(path, archive.image)).rejects.toThrow("duplicate listed layer");
+    await expect(checkArchive(path, archive.image)).rejects.toThrow("ordered layer diff_id mismatch");
   });
   it("rejects duplicate tar entries even when the metadata bytes match", async () => {
     const archive = syntheticImageArchive({ duplicate: true }); const path = archivePath(); writeFileSync(path, archive.bytes);
