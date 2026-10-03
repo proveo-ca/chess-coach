@@ -39,15 +39,26 @@ SGD learns weights on supplied features; the prior frozen 370-field v2 manifest 
 Its own cost/investment/exposure and witnessed enemy-loss lower bounds do not estimate enemy surviving deployed material.
 
 Required extension: authorized history → calibrated distribution/interval, or expected value with explicit calibrated uncertainty, of **enemy surviving deployed replacement material**.
-Compare that estimate with known own surviving deployed replacement material under equivalent replacement valuation.
+Compare that estimate with known own surviving deployed combat replacement material under equivalent replacement valuation; exclude CC from both sides and keep CC HP separate.
 Enemy actual historical payment is unknown; do not compare exact own payments with estimated enemy replacement value.
 Keep own paid debits/surviving/destroyed/wasted investment and witnessed enemy losses separate.
 Exclude hidden actual state, enemy bank, current enemy queue, and future traces from policy inputs.
 Require candidate × material-balance/uncertainty interactions for spend, deployment, trade, and protection; context-only terms cancel in linear ranking/softmax.
 Keep the earlier **H=1** selection; belief estimation does not imply three-window search.
 
-Exact architecture, feature dictionary, versions, calibration data/objective, and thresholds remain **NOT CHOSEN**.
+**Additional user constraint: turn-aware belief. SELECTED — NOT implemented.** Standard public turn-0 opening starts from combat replacement `4` (four Marines, `p=1` each) + available minerals `3` = economic potential `7`.
+The public default prior uses no hidden oracle/corpus IDs; keep deployed and banked components separate with a joint estimate/uncertainty as observations arrive.
+Opening Marines are endowed with actual paid basis `0`; `4` is not a paid debit.
+The user's `7` excludes CC; `UNIT_COST.k=1` and `deployedMaterialFromPlacement` includes CC, so do not blindly reuse it or change engine valuation.
+Use native `incomeForTurn(t)` (`t<=10:+1`, `t<=20:+2`, otherwise `+3`) with `applyStoredIncome` cap `12` only at actual income-grant boundaries.
+Nonterminal turn-open chips grant no extra income; terminal chips can advance turn without a grant.
+Never accrue income per planning ordinal, observation/frame count, or turn change alone.
+Infer latent bank/spend/destruction/waste/promotion from authorized history, not actual hidden enemy accounting.
+Carry belief memory forward without resetting to `7` each turn/sighting or counting movement/repeated sightings as new deployments.
+
+Exact probabilistic architecture, feature dictionary/versions, calibration bins/data/objective, and thresholds remain **NOT CHOSEN**.
 R1 owns a new versioned amendment; R4 owns future belief/features implementation; R5 owns calibration, valuation, interaction, and noninterference readiness checks before R6.
+R5 also verifies the opening split, CC exclusion/zero paid basis, turn tiers/cap/grant boundaries, and memory without resets or double-counted sightings.
 Do not silently change the frozen 370-field contract or claim the overall amended R1 design is complete.
 See [contracts §2.1](ml-adjutant-r1-contracts.md#21-selected-economic-extension--amendment-pending), [weights §5.1](ml-adjutant-weights.md#51-selected-economic-extension--calibrated-surviving-material-belief), and [roadmap gate](PLAN-ml-adjutant.md#selected-economic-extension--pre-training-gate).
 This record authorizes no training and claims no weights or validation results; R0 repair/review/freeze remains lead-owned and open.

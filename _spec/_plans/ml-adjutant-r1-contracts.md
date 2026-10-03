@@ -82,15 +82,26 @@ The prior frozen 370-field v2 registry contains own cost/investment/exposure and
 SGD learns supplied feature weights and cannot supply an absent comparison or prove calibration.
 
 The required extension derives a calibrated distribution/interval, or expected value with explicit calibrated uncertainty, for **enemy surviving deployed replacement material** using authorized history only.
-Compare it against known **own surviving deployed replacement material** using equivalent replacement valuation, not exact own paid basis versus estimated enemy replacement.
+Compare it against known **own surviving deployed combat replacement material**, excluding CC on both sides and keeping CC HP separate, using equivalent replacement valuation rather than own paid basis versus estimated enemy replacement.
 Enemy actual historical payment remains unknown; keep own paid debits/surviving/destroyed/wasted investment and witnessed enemy-loss bounds separate.
 No hidden actual state, enemy bank, current enemy queue, or future trace enters policy inputs.
 Require candidate × material-balance/uncertainty interactions for spend, deployment, trade, and protection; a shared raw context term cancels in linear ranking/softmax.
 Keep **H=1**; this choice does not authorize three-window search.
 
-Exact architecture, feature dictionary, versions, calibration data/objective, and acceptance thresholds are **NOT CHOSEN**.
+**Selected turn-aware constraint — NOT implemented; amendment pending.** Standard public opening at turn 0: surviving enemy combat replacement `4` (four Marines at `UNIT_COST.p=1`) + available minerals `3` = economic potential `7`.
+Use this as a public default prior, not a hidden oracle or corpus-ID input; keep deployed/banked components and their joint uncertainty distinct thereafter.
+Opening Marines have actual paid basis `0`; `4` is replacement valuation, never a debit.
+CC is outside the user's `7`: native `UNIT_COST.k=1` and `deployedMaterialFromPlacement` includes CC, so do not reuse that helper blindly or change engine prices/valuation.
+Use native turn-aware `incomeForTurn(t)` tiers (`t<=10:1`, `t<=20:2`, otherwise `3`) and `applyStoredIncome` cap `12` only at actual income-grant boundaries.
+Nonterminal turn-open chips add no extra income; terminal chips can advance turn without a grant.
+Planning ordinal, observation/frame counts, and turn changes alone are not income grants.
+Infer latent enemy bank/spend/destruction/waste/promotion from authorized history; actual hidden accounting stays private.
+Maintain belief memory without resetting to `7` each turn/sighting or treating movement/repeated sightings as new deployment.
+
+Exact probabilistic architecture, feature dictionary/versions, calibration bins/data/objective, and acceptance thresholds are **NOT CHOSEN**.
 R1 must approve a **new versioned amendment** covering affected belief/feature/artifact contracts before training; do not silently alter §§4,9–10,15's frozen 370-field registry or closed schemas.
 R4 owns future belief/features implementation; R5 must persist calibration, equivalent-valuation, uncertainty/interaction, and hidden-input noninterference verification before R6.
+R5 also covers public opening/deployed-bank split, CC exclusion/zero paid basis, turn tiers/cap/grant-boundary correctness, and no belief resets or sighting double-counts.
 See [weights §5.1](ml-adjutant-weights.md#51-selected-economic-extension--calibrated-surviving-material-belief), [recipe choice](ml-adjutant-r1-recipe.md#selected-economic-extension--calibrated-belief-model), and [roadmap gate](PLAN-ml-adjutant.md#selected-economic-extension--pre-training-gate).
 This choice records no completed overall amended R1 design, training permission, model, weights, or passing evidence.
 

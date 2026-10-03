@@ -59,14 +59,25 @@ Executor selected **Calibrated belief model** over visible-lower-bound and memor
 **SELECTED DIRECTION — NOT implemented or overall amended R1 design-complete.** SGD learns supplied feature weights; it does not invent missing features or establish calibration.
 The prior frozen 370-field v2 manifest covers own cost/investment/exposure and witnessed enemy **loss** lower bounds, not current surviving deployed-material balance.
 Require authorized history → calibrated distribution/interval, or expected value with explicit calibrated uncertainty, of enemy **surviving deployed replacement material**.
-Compare against known own surviving deployed replacement material under equivalent replacement valuation; enemy actual historical payment remains unknown.
+Compare against known own surviving deployed combat replacement material under equivalent replacement valuation; exclude CC on both sides, keep CC HP separate, and leave enemy actual historical payment unknown.
 Do not compare exact own historical payments with estimated enemy replacement value; keep own paid debits/surviving/destroyed/wasted investment and witnessed enemy losses separate.
 Exclude hidden actual state, enemy bank, current enemy queue, and future traces from policy inputs.
 Require candidate × material-balance/uncertainty interactions for spend, deployment, trade, and protection; a context-only balance term cancels in linear ranking/softmax.
 Keep **H=1**; this requirement is not the optional three-window search milestone.
 
+**Selected turn-aware opening constraint — NOT implemented.** Standard public turn 0: enemy surviving combat replacement `4` (four Marines at `p=1`) + available minerals `3` = economic potential `7`.
+The public default prior is not a hidden oracle/corpus-ID input; retain deployed/banked components and a joint estimate/uncertainty as authorized history updates them.
+Opening Marines have paid basis `0`; replacement `4` is no debit, and the user's `7` excludes CC.
+Native `UNIT_COST.k=1` and `deployedMaterialFromPlacement` includes CC; do not reuse that helper blindly for combat material or change engine valuation.
+Use native `incomeForTurn(t)` tiers (`t<=10:+1`, `t<=20:+2`, otherwise `+3`) and `applyStoredIncome` bank cap `12` only at actual grant boundaries.
+Nonterminal turn-open chips grant no extra income; terminal chips can advance turn without a grant.
+Do not accrue income from planning ordinals, observation/frame counts, or turn changes alone.
+Infer latent enemy bank/spend/destruction/waste/promotion from authorized history; actual hidden accounting remains private.
+Preserve belief memory without resets to `7` each turn/sighting or counting movement/repeated sightings as deployments.
+
 **Ownership/gate:** R1 approves a new versioned amendment; R4 implements belief/features; R5 persists calibration, equivalent-valuation, uncertainty/interaction, and noninterference checks before R6.
-Exact architecture, feature dictionary, versions, calibration data/objective, and thresholds remain **NOT CHOSEN**; do not silently change the frozen 370-field count/meaning or claim amended R1 completion.
+R5 also verifies the public opening split, CC exclusion/zero paid basis, turn tiers/cap/grant boundaries, and memory without resets or sighting double-counts.
+Exact probabilistic architecture, feature dictionary/versions, calibration bins/data/objective, and thresholds remain **NOT CHOSEN**; do not silently change the frozen 370-field count/meaning or claim amended R1 completion.
 See [recipe choice](ml-adjutant-r1-recipe.md#selected-economic-extension--calibrated-belief-model), [contracts §2.1](ml-adjutant-r1-contracts.md#21-selected-economic-extension--amendment-pending), and [weights §5.1](ml-adjutant-weights.md#51-selected-economic-extension--calibrated-surviving-material-belief).
 R0 source repairs, review and freeze continue under lead/build ownership; this choice closes no R0 finding and authorizes no training.
 
@@ -83,7 +94,7 @@ Complete **R0–R5 before the first training run at R6**; use **H=1**. No traini
 3. **R3 — Implement authorized economics.** Track own lineage, confirmed paid debits, and paid-investment loss separately from replacement valuation. Track only observed/confirmed opponent-loss bounds with explicit unknowns; do not import private strategic KVS or infer an exact enemy ledger.
 4. **R4 — Implement candidate-conditioned features and the economic extension after R1 amendment.** Retain v2 economic, vision/attack-ray, tactical, and exploration interactions; add the approved calibrated surviving-material belief and candidate × material-balance/uncertainty interactions for spend/deploy/trade/protection under a new versioned contract. Freeze masks, normalization, names/dimensions without silently changing the prior 370-field registry. Observation-only terms and shared bank components cancel in linear ranking.
 5. **R5 — Persist readiness verification.** Use gradient/finite-difference → numeric-extremes → exhaustive-small-fixture → capped-worst-case-runtime → reload/provenance. Validation A freezes `eps=1e-6`, `atol=1e-8`, `rtol=1e-5` and contracts §§16–17's fixtures/pass rules, inherited fixed deadlines and Docker resources. Require every privacy/noninterference, ledger/conservation, phase, host-resource/atomicity, uncertainty/unknown-ray and v2 interaction check. Actual hardware/provider measurements and numerical/runtime results remain future evidence. Refresh execution/capture pins and hermetic evidence after implementation changes; preserve historical bundles.
-   The new extension also requires persisted calibration, equivalent replacement valuation, uncertainty propagation, candidate-interaction/cancellation, and hidden-input noninterference checks against R1's approved amendment; calibration data/objective/thresholds are not yet selected.
+   The new extension also requires persisted calibration, equivalent replacement valuation, uncertainty propagation, candidate-interaction/cancellation, and hidden-input noninterference checks against R1's approved amendment. Verify the turn-0 `4+3=7` split, CC exclusion/zero paid basis, native turn tiers/cap/actual grant boundaries, and memory without resets or movement/sighting double-counts; calibration bins/data/objective/thresholds remain unchosen.
 6. **R6 — Train the linear policy from actual outcomes.** Use the current 18 as training/regression plus a live-strategic curriculum, not held-out evidence. Separate training-selection/policy RNG streams from gate streams; persist data metadata, recipe, seeds, loss/update history, and provenance.
 7. **R7 — Freeze the real learned artifact and adapter.** Validate finite, exactly aligned v2 weights and an external artifact hash; implement a `ScriptPlayer`-compatible authorized adapter. Allow no online updates, heuristic/strategic rescue, or missing-model fallback in the learned gate.
 8. **R8 — Execute learned Phase 4.** Run every pinned case with the frozen artifact, integrity checks, and semantic reruns. Require **18/18 corpus + 36/36 live wins**, `fallbackCount = 0`; retain every loss, rejection, timeout, and other failure in the denominator.
