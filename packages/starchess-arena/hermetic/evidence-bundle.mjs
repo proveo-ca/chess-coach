@@ -182,7 +182,7 @@ function readSizedFile(path, expected) {
   } finally { closeSync(fd); }
 }
 
-export function readPublishedBundle(target) {
+export function readPublishedBundle(target, { inspectEntry = lstatSync } = {}) {
   target = trustedTarget(target);
   const root = lstatSync(target);
   if (!root.isDirectory() || root.isSymbolicLink() || realpathSync(target) !== target) throw invalid('Bundle root must be a real directory');
@@ -215,7 +215,12 @@ export function readPublishedBundle(target) {
       for (let entry; (entry = handle.readSync()) !== null;) {
         if (++entries > evidenceLimits.entries) throw invalid('Bundle entry limit exceeded');
         const path = directory ? `${directory}/${entry.name}` : entry.name;
-        const stat = lstatSync(join(target, path));
+        let stat;
+        try { stat = inspectEntry(join(target, path)); }
+        catch (error) {
+          if (path === temporaryName && error.code === 'ENOENT') continue;
+          throw error;
+        }
         if (stat.isSymbolicLink()) throw invalid(`Bundle symlink rejected: ${path}`);
         if (path === markerName) continue;
         if (path === temporaryName) {

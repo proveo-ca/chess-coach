@@ -5,7 +5,7 @@ import { closeSync, constants, fstatSync, mkdirSync, mkdtempSync, openSync, read
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { prepareContext } from '../packages/starchess-arena/hermetic/context.mjs';
-import { publishBundleExclusive } from '../packages/starchess-arena/hermetic/evidence-bundle.mjs';
+import { PublicationError, publishBundleExclusive } from '../packages/starchess-arena/hermetic/evidence-bundle.mjs';
 import { evidenceLimits } from '../packages/starchess-arena/hermetic/evidence-limits.mjs';
 import { measureImageFilesystem } from '../packages/starchess-arena/hermetic/image-measurement.mjs';
 import { assertContainerPolicy, outputTarget } from '../packages/starchess-arena/hermetic/policy.mjs';
@@ -158,7 +158,8 @@ export async function importEvidence({
     const report = bytes ? decode(bytes, `Vitest ${path}`) : null;
     const counted = report ? recountVitest(report) : null;
     if (!bytes || !counted || !Object.hasOwn(VITEST_FLOORS, path) || command.tests.sha256 !== hash(bytes) || counted.failed !== 0 || counted.pending !== 0 || counted.todo !== 0 || counted.total < VITEST_FLOORS[path] ||
-        report.success !== true || report.numTotalTests !== counted.total || report.numPassedTests !== counted.passed || report.numFailedTests !== counted.failed || report.numPendingTests !== counted.pending || report.numTodoTests !== counted.todo || report.numFailedTestSuites !== 0 ||
+        report.success !== true || report.numTotalTests !== counted.total || report.numPassedTests !== counted.passed || report.numFailedTests !== counted.failed || report.numPendingTests !== counted.pending || report.numTodoTests !== counted.todo || report.numFailedTestSuites !== 0 || report.numPendingTestSuites !== 0 ||
+        !Number.isSafeInteger(report.numTotalTestSuites) || report.numTotalTestSuites < report.testResults.length || report.numPassedTestSuites !== report.numTotalTestSuites ||
         command.tests.success !== true || command.tests.total !== counted.total || command.tests.passed !== counted.passed || command.tests.failed !== counted.failed ||
         (command.tests.pending !== undefined && command.tests.pending !== counted.pending) || (command.tests.todo !== undefined && command.tests.todo !== counted.todo)) throw new Error(`Vitest report counts do not match: ${path}`);
   }
@@ -179,6 +180,8 @@ export async function importEvidence({
   const originalVerification = read(join(root, '_spec/evidence/ml-adjutant-phase1/verification.json'));
   if (hash(originalBytes) !== ORIGINAL_BASELINE_SHA256 || hash(originalVerification) !== ORIGINAL_VERIFICATION_SHA256) throw new Error('Original Phase1 evidence changed');
   const snapshot = await capture(root);
+  let publication;
+  let primaryError;
   try {
     if (typeof snapshot.sourceRoot !== 'string' || snapshot.runtime?.sha256 !== assurance.sourceSha256 || build.capture?.runtime?.sha256 !== assurance.sourceSha256 || snapshot.control?.sha256 !== build.capture?.control?.sha256 ||
         (measuredImage.capture && measuredImage.capture.controlSha256 !== snapshot.control.sha256)) throw new Error('Captured source is not the inspected image source');
@@ -196,9 +199,20 @@ export async function importEvidence({
     const published = [...artifacts].map(([path, bytes]) => ({ path, bytes }));
     published.push({ path: 'verification.json', bytes: verificationBytes }, { path: 'image-assurance.json', bytes: Buffer.from(`${JSON.stringify(assuranceRecord, null, 2)}\n`) });
     await beforePublication?.(target);
-    const publication = publishBundleExclusive(target, published, { syncDirectory });
+    publication = publishBundleExclusive(target, published, { syncDirectory });
     return { ...publication, image, artifacts: published.length };
-  } finally { snapshot.cleanup?.(); }
+  } catch (error) { primaryError = error; throw error; }
+  finally {
+    try { snapshot.cleanup?.(); }
+    catch (cleanupCause) {
+      if (primaryError) primaryError.cleanupCause = cleanupCause;
+      else if (publication) {
+        const error = new PublicationError(publication.target, publication.state, 'snapshot-cleanup', cleanupCause);
+        error.durability = publication.durability;
+        throw error;
+      } else throw cleanupCause;
+    }
+  }
 }
 
 async function main() {

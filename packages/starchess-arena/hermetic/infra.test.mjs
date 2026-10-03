@@ -125,7 +125,7 @@ test('CLI rejects mount injection and public output parents and preserves bounde
   const syntheticOutput = '/tmp/opencode/policy-output';
   const approved = {
     Image: image,
-    HostConfig: { NetworkMode: 'none', ReadonlyRootfs: true, Privileged: false, Init: true, NanoCpus: 2_000_000_000, Memory: 4 * 1024 ** 3, MemorySwap: 4 * 1024 ** 3, PidsLimit: 256, CapDrop: ['ALL'], CapAdd: null, SecurityOpt: ['no-new-privileges=true'], Tmpfs: { '/tmp': tmpfsOptions } },
+    HostConfig: { NetworkMode: 'none', PidMode: '', IpcMode: 'private', ReadonlyRootfs: true, Privileged: false, Init: true, NanoCpus: 2_000_000_000, Memory: 4 * 1024 ** 3, MemorySwap: 4 * 1024 ** 3, PidsLimit: 256, CapDrop: ['ALL'], CapAdd: null, SecurityOpt: ['no-new-privileges=true'], Tmpfs: { '/tmp': tmpfsOptions } },
     Config: { User: '10001:10001' },
     Mounts: [
       { Type: 'bind', Destination: outputTarget, Source: syntheticOutput, RW: true, Propagation: 'rprivate' },
@@ -136,6 +136,11 @@ test('CLI rejects mount injection and public output parents and preserves bounde
   const hostConfigTemporary = structuredClone(approved);
   hostConfigTemporary.Mounts = hostConfigTemporary.Mounts.filter((mount) => mount.Type !== 'tmpfs');
   assertContainerPolicy(hostConfigTemporary, syntheticOutput);
+  for (const key of ['PidMode', 'IpcMode']) {
+    const sharedNamespace = structuredClone(approved);
+    sharedNamespace.HostConfig[key] = 'host';
+    assert.throws(() => assertContainerPolicy(sharedNamespace, syntheticOutput), /policy mismatch/);
+  }
   const extraTmpfs = structuredClone(approved);
   extraTmpfs.Mounts.push({ Type: 'tmpfs', Destination: '/run' });
   assert.throws(() => assertContainerPolicy(extraTmpfs, syntheticOutput), /policy mismatch/);

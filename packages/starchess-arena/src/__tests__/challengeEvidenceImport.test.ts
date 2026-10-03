@@ -76,6 +76,11 @@ describe("phase2 hermetic evidence import with synthetic test-only image hooks",
     const value = fixture(); value.mutate("vitest-starchess-core.json", (report) => { report.numPassedTests++; });
     await reject(value, "Vitest report counts do not match: vitest-starchess-core.json");
   });
+  it.each(["numPendingTestSuites", "numFailedTestSuites", "numPassedTestSuites", "numTotalTestSuites"])("rejects contradictory %s summaries", async (field) => {
+    const value = fixture();
+    value.mutate("vitest-starchess-core.json", (report) => { report[field] = field.startsWith("numPassed") || field.startsWith("numTotal") ? 0 : 1; });
+    await reject(value, "Vitest report counts do not match: vitest-starchess-core.json");
+  });
   it.each([[5, "core", 425], [6, "arena", 433]] as const)("rejects below-floor passing assertions in command %i", async (index, pkg, count) => {
     const value = fixture();
     value.mutate(`vitest-starchess-${pkg}.json`, (report) => {
@@ -113,6 +118,13 @@ describe("phase2 hermetic evidence import with synthetic test-only image hooks",
     await expect(importEvidence({ ...value.options, beforePublication: () => { throw new Error("injected before-publication failure"); } }))
       .rejects.toThrow("injected before-publication failure");
     expect(existsSync(value.destination)).toBe(false);
+  }, 120000);
+  it("retains committed-state information when snapshot cleanup fails after publication", async () => {
+    const value = fixture();
+    const capture = value.options.captureContext;
+    const error = await importEvidence({ ...value.options, captureContext: async () => ({ ...await capture(), cleanup: () => { throw new Error("injected snapshot cleanup"); } }) }).catch((failure: unknown) => failure);
+    expect(error).toMatchObject({ state: "committed", phase: "snapshot-cleanup", durability: "confirmed" });
+    expect(existsSync(join(value.destination, ".publication-complete"))).toBe(true);
   }, 120000);
   it("rejects a sparse oversized input before decoding it", async () => {
     const value = fixture(); truncateSync(value.paths.execution, evidenceLimits.fileBytes + 1);

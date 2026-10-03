@@ -18,7 +18,6 @@ export function verifyDependencies() {
     if (createHash('sha256').update(readFileSync(`/app/${entry.path}`)).digest('hex') !== entry.sha256) throw new Error(`Frozen input changed: ${entry.path}`);
   }
   for (const name of ['starchess-core', 'starchess-arena']) {
-    const require = createRequire(`/app/packages/${name}/package.json`);
     const manifest = JSON.parse(readFileSync(`/app/packages/${name}/package.json`, 'utf8'));
     const versions = {};
     for (const [dependency, specifier] of Object.entries({ ...manifest.dependencies, ...manifest.devDependencies })) {

@@ -37,6 +37,17 @@ function failure() {
   return Object.assign(new Error('injected I/O failure'), { code: 'EIO' });
 }
 
+test('reader accepts a committed bundle when publisher removes its temporary marker during enumeration', (t) => {
+  const target = fixture(t);
+  publishBundleExclusive(target, artifacts());
+  linkSync(join(target, markerName), join(target, temporaryName));
+  const result = readPublishedBundle(target, { inspectEntry(path) {
+    if (path === join(target, temporaryName)) unlinkSync(path);
+    return lstatSync(path);
+  } });
+  assert.equal(result.artifacts.size, artifacts().length);
+});
+
 function assertPublicationError(error, state, phase, target, cause) {
   assert(error instanceof PublicationError);
   assert.equal(error.state, state);

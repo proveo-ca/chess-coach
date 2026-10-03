@@ -320,8 +320,11 @@ export const collectSourceInventory = (
     const factoryBase = (node: ts.Node): void => {
       if (ts.isCallExpression(node) && factory(node.expression)) {
         const base = node.arguments[0] && unwrapValue(node.arguments[0]);
-        if (node.arguments.length !== 1 || !base || !ts.isPropertyAccessExpression(base) || base.name.text !== "url" ||
-            !ts.isMetaProperty(base.expression) || base.expression.keywordToken !== ts.SyntaxKind.ImportKeyword || base.expression.name.text !== "meta") {
+        const closureBase = file.path === `${ARENA}/hermetic/closure.mjs` && base &&
+          ts.isStringLiteral(base) && base.text === "/app/packages/starchess-arena/package.json";
+        const ownBase = base && ts.isPropertyAccessExpression(base) && base.name.text === "url" &&
+          ts.isMetaProperty(base.expression) && base.expression.keywordToken === ts.SyntaxKind.ImportKeyword && base.expression.name.text === "meta";
+        if (node.arguments.length !== 1 || (!ownBase && !closureBase)) {
           throw new Error(`Unsupported createRequire base: ${file.path}`);
         }
       }
@@ -406,6 +409,8 @@ export const collectSourceInventory = (
         const resolver = member !== undefined && member.name === "resolve" && loader(member.receiver);
         if (dynamic || requireCall || resolver) {
           const specifier = literal(node.arguments[0]);
+          if (file.path === `${ARENA}/hermetic/closure.mjs` && (requireCall || resolver) &&
+              specifier !== undefined && (specifier.startsWith(".") || specifier.startsWith("/"))) throw new Error(`Unsupported closure loader edge: ${file.path}`);
           if ((dynamic || requireCall) && (specifier === "node:module" || specifier === "module")) throw new Error(`Unsupported dynamic module import: ${file.path}`);
           if ((dynamic || requireCall) && (specifier === "node:process" || specifier === "process")) throw new Error(`Unsupported builtin acquisition: ${file.path}`);
           if (specifier === undefined) {

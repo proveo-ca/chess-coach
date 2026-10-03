@@ -192,7 +192,7 @@ export function buildImportFixture(diagnostics: ReturnType<typeof buildDiagnosti
   });
   const assurance = { sourceSha256: "source", installedSha256: "installed", frozenStoreSha256: "store", toolsSha256: "tools" };
   const verification: Verification = { version: "hermetic-verification-v2", passed: true, assurance, commands, artifacts: [] };
-  const policy = { Image: "", HostConfig: { NetworkMode: "none", ReadonlyRootfs: true, Privileged: false, Init: true,
+  const policy = { Image: "", HostConfig: { NetworkMode: "none", PidMode: "", IpcMode: "private", ReadonlyRootfs: true, Privileged: false, Init: true,
     NanoCpus: 2_000_000_000, Memory: 4 * 1024 ** 3, MemorySwap: 4 * 1024 ** 3, PidsLimit: 256,
     CapDrop: ["ALL"], CapAdd: null, SecurityOpt: ["no-new-privileges=true"], Tmpfs: { "/tmp": tmpfsOptions } },
     Config: { User: "10001:10001" }, Mounts: [{ Type: "bind", Destination: target, Source: output, RW: true, Propagation: "rprivate" }, { Type: "tmpfs", Destination: "/tmp" }] };
