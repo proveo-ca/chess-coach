@@ -1,8 +1,7 @@
 // SPEC: _spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml
-import { readFileSync } from "node:fs";
 import { historyFromRecord, parseScFen, refillTurnGas, type ScActionInput } from "@chess-coach/starchess-core";
 import { canonical } from "../challenge/config";
-import { loadPinnedCorpus, REPOSITORY_ROOT, sha256, type SourceGame } from "../challenge/corpus";
+import { loadPinnedCorpus, readPinnedCorpusBytes, REPOSITORY_ROOT, sha256, type PinnedCorpusBytes, type SourceGame } from "../challenge/corpus";
 import { observe } from "../challenge/observation";
 import type { Sighting } from "../challenge/types";
 import { ACTION_KINDS, CANDIDATE_CODEC_VERSION, CANDIDATE_ENUMERATION_VERSION, COMPARATOR_VERSION, encodeBaselineCandidates, encodeCandidate } from "./candidateCodec";
@@ -10,9 +9,9 @@ import { encodeFeatures, FEATURE_SCHEMA } from "./features";
 import { decodeObservation, encodeObservation, OBSERVATION_CODEC_VERSION } from "./observationCodec";
 
 const counter = () => ({ covered: 0, total: 0 });
-export const measureCoverage = () => {
-  const corpus = loadPinnedCorpus();
-  const source = JSON.parse(readFileSync(new URL(corpus.manifest.sourcePath, REPOSITORY_ROOT), "utf8")) as { games: SourceGame[] };
+export const measureCoverage = (root: URL = REPOSITORY_ROOT, bytes: PinnedCorpusBytes = readPinnedCorpusBytes(root)) => {
+  const corpus = loadPinnedCorpus(root, bytes);
+  const source = JSON.parse(Buffer.from(bytes.sourceBytes).toString("utf8")) as { games: SourceGame[] };
   const byKind = Object.fromEntries(ACTION_KINDS.map((kind) => [kind, counter()]));
   const byTiming = Object.fromEntries(["B", "C", "F"].map((timing) => [timing, counter()]));
   const byDeployUnit: Record<string, ReturnType<typeof counter>> = {};

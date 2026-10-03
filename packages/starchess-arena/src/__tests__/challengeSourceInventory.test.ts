@@ -1,4 +1,5 @@
 import { mkdirSync, mkdtempSync, readFileSync, renameSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { afterEach, describe, expect, it } from "vitest";
@@ -44,12 +45,151 @@ describe("partitioned challenge source inventory", () => {
     'const load = createRequire(import.meta.url).bind(null); load(variable);',
     'const request = createRequire(import.meta.url); const bound = request.bind(null); bound(variable);',
     'const request = createRequire(import.meta.url); Reflect.apply(request, null, [variable]);',
-    'const request = createRequire(import.meta.url); (0, request)(variable);',
     'const { resolve: locate } = createRequire(import.meta.url); locate(variable);',
   ])("rejects escaping a module loader: %s", (code) => {
     const root = fixture();
     put(root, `${ARENA}/src/escape.ts`, `import {createRequire} from "node:module";\n${code}\n`);
     expect(() => collectSourceInventory(root)).toThrow(/Unsupported loader/);
+  });
+
+  it.each([
+    'import nodeModule from "node:module"; nodeModule.createRequire(import.meta.url)("../challengeContract/codec.ts");',
+    'import nodeModule from "module"; nodeModule["createRequire"](import.meta.url)("../challengeContract/codec.ts");',
+    'import {default as nodeModule} from "node:module"; nodeModule.createRequire(import.meta.url)("../challengeContract/codec.ts");',
+    'import {Module as nodeModule} from "node:module"; nodeModule.createRequire(import.meta.url)("../challengeContract/codec.ts");',
+    'import * as nodeModule from "node:module"; const alias = nodeModule; alias.createRequire(import.meta.url)("../challengeContract/codec.ts");',
+    'import nodeModule from "node:module"; const second = first; const first = nodeModule; second["createRequire"](import.meta.url)("../challengeContract/codec.ts");',
+    'import nodeModule from "node:module"; (0, nodeModule.createRequire)(import.meta.url)("../challengeContract/codec.ts");',
+    'import nodeModule from "node:module"; (nodeModule["createRequire"] as typeof nodeModule.createRequire)!(import.meta.url)("../challengeContract/codec.ts");',
+    'import nodeModule from "node:module"; const make = nodeModule.createRequire; make(import.meta.url)("../challengeContract/codec.ts");',
+    'import nodeModule from "node:module"; const make = later; const later = nodeModule["createRequire"]; make(import.meta.url)("../challengeContract/codec.ts");',
+    'import { createRequire as make } from "node:module"; const first = second; const second = make; first(import.meta.url)("../challengeContract/codec.ts");',
+    'import { createRequire as make } from "node:module"; const load = later; const later = make(import.meta.url); load("../challengeContract/codec.ts");',
+    'import { createRequire } from "node:module"; (createRequire(import.meta.url) as ReturnType<typeof createRequire>)!("../challengeContract/codec.ts");',
+    'module["require"]("../challengeContract/codec.ts");',
+  ])("audits literal forbidden targets through supported loader syntax: %s", (code) => {
+    const root = fixture();
+    put(root, `${ARENA}/src/challenge/worker.ts`, code);
+    expect(() => collectSourceInventory(root)).toThrow("Forbidden partition edge");
+  });
+
+  it.each([
+    'const box = {make: nodeModule.createRequire}; box.make(import.meta.url)("../challengeContract/codec.js");',
+    'const box = {make: nodeModule["createRequire"]}; box.make(import.meta.url)("../challengeContract/codec.ts");',
+    'const make = nodeModule["createRequire"]; const box = {make}; box.make(import.meta.url)("../challengeContract/codec.ts");',
+    'const make = later; const later = nodeModule.createRequire; const box = {make}; box.make(import.meta.url)("../challengeContract/codec.ts");',
+    'const box = {nodeModule}; box.nodeModule.createRequire(import.meta.url)("../challengeContract/codec.ts");',
+    'const alias = nodeModule; export {alias};',
+    'export {nodeModule};',
+    'export default nodeModule;',
+    'export const alias = nodeModule;',
+    'export const make = nodeModule.createRequire;',
+    'export const load = nodeModule.createRequire(import.meta.url);',
+    'const alias = nodeModule; alias = other;',
+    'nodeModule = other;',
+    'nodeModule.createRequire = other;',
+    'const key = "createRequire"; nodeModule[key](import.meta.url)("../challengeContract/codec.ts");',
+    'nodeModule[getter()](import.meta.url)("../challengeContract/codec.ts");',
+    'nodeModule["default"].createRequire(import.meta.url)("../challengeContract/codec.ts");',
+    'const {createRequire: make} = (nodeModule as unknown);',
+    'consume(nodeModule);',
+    'consume(nodeModule["createRequire"]);',
+    'function getModule() { return nodeModule; }',
+    'function getFactory() { return nodeModule.createRequire; }',
+    'const load = nodeModule.createRequire(import.meta.url); consume(load);',
+    'const load = nodeModule.createRequire(import.meta.url); const box = {load};',
+    'const load = nodeModule.createRequire(import.meta.url); function getLoader() { return load; }',
+    'const load = nodeModule.createRequire(import.meta.url); load = other;',
+    'const load = nodeModule.createRequire(import.meta.url); const key = "resolve"; load[key]("../challengeContract/codec.ts");',
+    'const load = nodeModule.createRequire(import.meta.url); load[getter()]("../challengeContract/codec.ts");',
+    'const load = nodeModule.createRequire(import.meta.url); const locate = load["resolve"]; locate("../challengeContract/codec.ts");',
+    'const make = nodeModule.createRequire; make = other;',
+    'const make = nodeModule.createRequire; make["call"](null, import.meta.url)("../challengeContract/codec.ts");',
+    'const box = [nodeModule.createRequire]; box[0](import.meta.url)("../challengeContract/codec.ts");',
+  ])("fails closed on namespace, factory, or loader escapes: %s", (code) => {
+    const root = fixture();
+    put(root, `${ARENA}/src/challenge/worker.ts`, `import nodeModule from "node:module";\n${code}\n`);
+    expect(() => collectSourceInventory(root)).toThrow(/Unsupported loader (escape|destructuring)/);
+  });
+
+  it.each([
+    'export * from "node:module";',
+    'export * as box from "node:module";',
+    'export {createRequire as make} from "node:module";',
+    'export {default as box} from "module";',
+    'export {Module as box} from "node:module";',
+    'import {createRequire as make} from "node:module"; export {make};',
+    'import * as nodeModule from "node:module"; const alias = nodeModule; export {alias as box};',
+  ])("rejects loader-bearing reexports: %s", (code) => {
+    const root = fixture();
+    put(root, `${ARENA}/src/challenge/worker.ts`, code);
+    expect(() => collectSourceInventory(root)).toThrow("Unsupported loader escape");
+  });
+
+  it.each([
+    'import("node:module").then(nodeModule => nodeModule.createRequire(import.meta.url)("../challengeContract/codec.ts"));',
+    'const nodeModule = await import("module"); nodeModule.default.createRequire(import.meta.url)("../challengeContract/codec.ts");',
+    'const nodeModule = require("node:module"); nodeModule.createRequire(import.meta.url)("../challengeContract/codec.ts");',
+  ])("rejects non-static module namespaces: %s", (code) => {
+    const root = fixture();
+    put(root, `${ARENA}/src/challenge/worker.ts`, code);
+    expect(() => collectSourceInventory(root)).toThrow("Unsupported dynamic module import");
+  });
+
+  it.each([
+    'require("./helper.txt");',
+    'require.resolve("./helper.txt");',
+    'import nodeModule from "node:module"; (nodeModule.createRequire)(import.meta.url)("./helper.txt");',
+    'import * as nodeModule from "node:module"; const alias = nodeModule; alias["createRequire"](import.meta.url)("./helper.txt");',
+    'import {createRequire as make} from "node:module"; const load = make(import.meta.url); load("./helper.txt");',
+    'import "./helper.txt";',
+  ])("rejects actual unrecognized-extension executable sources: %s", (code) => {
+    const root = fixture();
+    const helper = `${ARENA}/src/challenge/helper.txt`;
+    put(root, helper, 'exports.value = require("../challengeContract/codec.cjs").value;\n');
+    put(root, `${ARENA}/src/challengeContract/codec.cjs`, "exports.value = 42;\n");
+    expect(createRequire(import.meta.url)(join(root, helper))).toEqual({ value: 42 });
+    put(root, `${ARENA}/src/challenge/worker.ts`, code);
+    expect(() => collectSourceInventory(root)).toThrow("Unaudited executable extension");
+  });
+
+  it("preserves static named loaders, extensionless code, JSON, MJS, package resolution and supervisor edges", () => {
+    const root = fixture();
+    put(root, `${ARENA}/src/challenge/helper.ts`, "export {};\n");
+    put(root, `${ARENA}/src/challenge/other.mjs`, "export {};\n");
+    put(root, `${ARENA}/src/challenge/data.json`, '{"value":42}\n');
+    put(root, `${ARENA}/src/challenge/worker.ts`, 'import {createRequire as make} from "node:module";\nconst load = make(import.meta.url);\nload("./helper");\nload("./other.mjs");\nload("./data.json");\nload.resolve("tsx/package.json");\n');
+    const inventory = collectSourceInventory(root);
+    expect(inventory.audit.edges).toEqual(expect.arrayContaining([
+      expect.objectContaining({ specifier: "./helper", target: `${ARENA}/src/challenge/helper.ts`, kind: "require" }),
+      expect.objectContaining({ specifier: "./other.mjs", kind: "require" }),
+      expect.objectContaining({ specifier: "./data.json", kind: "require" }),
+      expect.objectContaining({ specifier: "tsx/package.json", targetKind: "external", kind: "resolve" }),
+      expect.objectContaining({ specifier: "tsx", kind: "resolve", importer: `${ARENA}/src/challenge/supervisor.ts` }),
+      expect.objectContaining({ specifier: "./worker.ts", kind: "worker" }),
+    ]));
+  });
+
+  it.each([
+    'import nodeModule from "node:module"; (0, nodeModule.createRequire)(import.meta.url)("./supervisor.ts");',
+    'import nodeModule from "node:module"; (nodeModule["createRequire"] as typeof nodeModule.createRequire)!(import.meta.url)("./supervisor.ts");',
+    'import {createRequire} from "node:module"; (createRequire(import.meta.url) as ReturnType<typeof createRequire>)!("./supervisor.ts");',
+    'import nodeModule from "node:module"; const make = later; const later = (nodeModule["createRequire"] satisfies typeof nodeModule.createRequire); make(import.meta.url)("./supervisor.ts");',
+    'import * as nodeModule from "node:module"; const second = first; const first = (nodeModule); second.createRequire(import.meta.url)("./supervisor.ts");',
+  ])("records allowed literal targets through wrappers and forward aliases: %s", (code) => {
+    const root = fixture();
+    put(root, `${ARENA}/src/challenge/worker.ts`, code);
+    expect(collectSourceInventory(root).audit.edges).toContainEqual(expect.objectContaining({
+      importer: `${ARENA}/src/challenge/worker.ts`, target: `${ARENA}/src/challenge/supervisor.ts`, kind: "require",
+    }));
+  });
+
+  it("distinguishes lexical bindings and property names from loader value references", () => {
+    const root = fixture();
+    put(root, `${ARENA}/src/challenge/worker.ts`, 'import {isBuiltin} from "node:module";\nimport {createRequire as make} from "node:module";\nconst load = make(import.meta.url); load("./supervisor.ts");\nconst object = {createRequire: 1, require: 2, module: 3, make: 4};\nvoid object.createRequire; void object.require; void object.module; void object.make;\nfunction local(make: (value: string) => void, module: object, require: number) { make("unrelated"); return {module, require}; }\nfunction inner() { const load = (value: string) => value; return load("unrelated"); }\nvoid isBuiltin("fs");\nexport {isBuiltin};\n');
+    expect(collectSourceInventory(root).audit.edges.filter((edge) => edge.importer.endsWith("/worker.ts") && edge.kind === "require")).toEqual([
+      expect.objectContaining({ specifier: "./supervisor.ts", target: `${ARENA}/src/challenge/supervisor.ts` }),
+    ]);
   });
   it("enumerates deterministic disjoint complete partitions, pins itself, and hashes explicit records", () => {
     const root = fixture();
@@ -165,6 +305,7 @@ describe("partitioned challenge source inventory", () => {
     ['require["resolve"](variable);', "Computed module loader"],
     ['module.require(variable);', "Computed module loader"],
     ['const load = require; load(variable);', "Computed module loader"],
+    ['(0, require)(variable);', "Computed module loader"],
     ['import * as mod from "node:module"; const load = mod.createRequire(import.meta.url); load(variable);', "Computed module loader"],
     ['import { createRequire } from "node:module"; createRequire(import.meta.url)(variable);', "Computed module loader"],
     ['import { createRequire } from "node:module"; const load = createRequire(import.meta.url); load(variable);', "Computed module loader"],

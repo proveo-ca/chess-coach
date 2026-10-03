@@ -1,6 +1,6 @@
 // SPEC: _spec/packages/starchess-arena/ml-adjutant-challenge-harness.puml
 import { mulberry32 } from "@chess-coach/starchess-core";
-import { loadPinnedCorpus, type AuditedCorpus } from "./corpus";
+import { loadPinnedCorpus, REPOSITORY_ROOT, type AuditedCorpus, type PinnedCorpusBytes } from "./corpus";
 import { deepFreeze } from "./config";
 import type { ScheduledMatch } from "./types";
 
@@ -25,8 +25,10 @@ const trustedRosters = new WeakMap<object, TrustedRoster>();
 
 export const loadTrustedExecutionContext = (
   suite: "all" | "corpus" | "live-strategic" = "all",
+  root: URL = REPOSITORY_ROOT,
+  bytes?: PinnedCorpusBytes,
 ): TrustedExecutionContext => {
-  const corpus = loadPinnedCorpus();
+  const corpus = loadPinnedCorpus(root, bytes);
   const schedule = buildSchedule(corpus).filter((match) => suite === "all" || match.suite === suite);
   if (new Set(schedule.map((match) => match.key)).size !== schedule.length) throw new Error("duplicate schedule key");
   const token: TrustedExecutionContext = Object.freeze({ version: "trusted-execution-context-v1" });

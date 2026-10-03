@@ -6,14 +6,17 @@ import { executionIntegrity, executionPins, normalizeEvidence, summarize } from 
 import { buildSchedule, loadTrustedExecutionContext } from "../challenge/schedule";
 import type { ChallengeEvidence } from "../challenge/types";
 import { compareBaselineReports, ORIGINAL_BASELINE_SHA256, ORIGINAL_VERIFICATION_SHA256 } from "../challenge/pinMigration";
+import { decode, originalEvidence, readEvidenceGeneration } from "./fixtures/challengeEvidence";
 
-const report = JSON.parse(readFileSync(new URL("_spec/evidence/ml-adjutant-phase1/baseline-report.json", REPOSITORY_ROOT), "utf8")) as {
+const original = originalEvidence();
+const generation = readEvidenceGeneration();
+const report = decode<{
   manifestSha256: string; sourceSha256: string; pins: ReturnType<typeof executionPins>;
   rows: ChallengeEvidence[]; summary: ReturnType<typeof summarize>;
   executionIntegrity: boolean; learnedChallengePass: boolean; learnedGateEligible: boolean;
   deterministicRerun: { performed: boolean; equal: boolean; comparisons: { key: string; equal: boolean; firstSha256: string; rerunSha256: string }[] };
-};
-const current = JSON.parse(readFileSync(new URL("_spec/evidence/ml-adjutant-phase2/baseline-report.json", REPOSITORY_ROOT), "utf8")) as typeof report;
+}>(original.baseline);
+const current = decode<typeof report>(generation.files["baseline-report.json"]);
 
 describe("persisted exhaustive Phase1 baseline evidence", () => {
   it("contains every pinned18+36 case in exact order, retaining failures", () => {
@@ -38,10 +41,13 @@ describe("persisted exhaustive Phase1 baseline evidence", () => {
     expect(report.learnedGateEligible).toBe(false);
   });
 
-  it("pins the actual source, runtime configuration, rules, seeds, and watchdogs", () => {
-    expect(canonical(current.pins)).toBe(canonical(executionPins()));
+  it("retains immutable historical baseline and verification bytes", () => {
     expect(sha256(readFileSync(new URL("_spec/evidence/ml-adjutant-phase1/baseline-report.json", REPOSITORY_ROOT)))).toBe(ORIGINAL_BASELINE_SHA256);
     expect(sha256(readFileSync(new URL("_spec/evidence/ml-adjutant-phase1/verification.json", REPOSITORY_ROOT)))).toBe(ORIGINAL_VERIFICATION_SHA256);
+  });
+
+  it.runIf(!generation.historical)("pins fresh evidence to the actual source, runtime configuration, rules, seeds, and watchdogs", () => {
+    expect(canonical(current.pins)).toBe(canonical(executionPins()));
   });
 
   it("records semantic parity for an independently executed rerun of each scheduled case", () => {

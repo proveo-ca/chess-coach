@@ -160,10 +160,12 @@ export const collectSourceInventory = (
     const target = absolute ?? relative(absoluteRoot, resolve(absoluteRoot, dirname(importer), specifier)).split(sep).join("/");
     safePath(target);
     if (excludedTest(target)) throw new Error(`Import into excluded tests: ${importer} -> ${target}`);
+    if (extname(target) && !CODE_EXTENSION.test(target) && extname(target) !== ".json") throw new Error(`Unaudited executable extension: ${importer} -> ${specifier}`);
     const candidates = extname(target) ? [target] : [target, ...[".ts", "/index.ts", ".mts", ".cts", ".tsx", ".js", "/index.js", ".mjs", ".cjs"].map((suffix) => `${target}${suffix}`)];
     const found = candidates.filter(present);
     if (found.length !== 1) throw new Error(`Missing or ambiguous import: ${importer} -> ${specifier}`);
     if (!listed.has(found[0]!)) throw new Error(`Unclassified import target: ${importer} -> ${found[0]}`);
+    if (!CODE_EXTENSION.test(found[0]!) && extname(found[0]!) !== ".json") throw new Error(`Unaudited executable extension: ${importer} -> ${found[0]}`);
     return found[0]!;
   };
   const addEdge = (importer: string, specifier: string, kind: ImportAuditEdge["kind"], typeOnly = false): void => {
@@ -212,11 +214,21 @@ export const collectSourceInventory = (
       /\.[cm]?js$/.test(file.path) ? ts.ScriptKind.JS : file.path.endsWith("x") ? ts.ScriptKind.TSX : ts.ScriptKind.TS);
     const diagnostics = (source as ts.SourceFile & { parseDiagnostics: readonly ts.Diagnostic[] }).parseDiagnostics;
     if (diagnostics.length) throw new Error(`Invalid source syntax: ${file.path}`);
-    const requireNames = new Set(["require"]);
-    const requireFactories = new Set(["createRequire"]);
-    const moduleNamespaces = new Set(["module"]);
+    const bindingOptions: ts.CompilerOptions = { noLib: true, noResolve: true, allowJs: true };
+    const host = ts.createCompilerHost(bindingOptions);
+    host.getSourceFile = (path) => path === file.path ? source : undefined;
+    const checker = ts.createProgram([file.path], bindingOptions, host).getTypeChecker();
+    const binding = (node: ts.Identifier): ts.Symbol | string => {
+      const parent = node.parent;
+      if (ts.isShorthandPropertyAssignment(parent)) return checker.getShorthandAssignmentValueSymbol(parent) ?? node.text;
+      if (ts.isExportSpecifier(parent)) return checker.getExportSpecifierLocalTargetSymbol(parent) ?? node.text;
+      return checker.getSymbolAtLocation(node) ?? node.text;
+    };
+    const requireNames = new Set<ts.Symbol | string>(["require"]);
+    const requireFactories = new Set<ts.Symbol | string>(["createRequire"]);
+    const moduleNamespaces = new Set<ts.Symbol | string>(["module"]);
     const unwrap = (node: ts.Expression): ts.Expression => {
-      if (ts.isParenthesizedExpression(node) || ts.isAsExpression(node) || ts.isNonNullExpression(node) || ts.isTypeAssertionExpression(node)) return unwrap(node.expression);
+      if (ts.isParenthesizedExpression(node) || ts.isAsExpression(node) || ts.isNonNullExpression(node) || ts.isTypeAssertionExpression(node) || ts.isSatisfiesExpression(node)) return unwrap(node.expression);
       if (ts.isBinaryExpression(node) && node.operatorToken.kind === ts.SyntaxKind.CommaToken) return unwrap(node.right);
       return node;
     };
@@ -226,60 +238,78 @@ export const collectSourceInventory = (
       if (ts.isElementAccessExpression(expression)) return { receiver: unwrap(expression.expression), name: literal(expression.argumentExpression) };
       return undefined;
     };
+    const namespace = (node: ts.Expression): boolean => {
+      const expression = unwrap(node);
+      return ts.isIdentifier(expression) && moduleNamespaces.has(binding(expression));
+    };
     const factory = (node: ts.Expression): boolean => {
       const expression = unwrap(node);
       const member = property(expression);
-      return ts.isIdentifier(expression) && requireFactories.has(expression.text) || member !== undefined && member.name === "createRequire" &&
-        ts.isIdentifier(member.receiver) && moduleNamespaces.has(member.receiver.text);
+      return ts.isIdentifier(expression) && requireFactories.has(binding(expression)) || member !== undefined && member.name === "createRequire" && namespace(member.receiver);
     };
     const loader = (node: ts.Expression): boolean => {
+      const expression = unwrap(node);
+      const member = property(expression);
+      return ts.isIdentifier(expression) && requireNames.has(binding(expression)) || ts.isCallExpression(expression) && factory(expression.expression) ||
+        member !== undefined && member.name === "require" && namespace(member.receiver);
+    };
+    const resolver = (node: ts.Expression): boolean => {
       const member = property(node);
-      return ts.isIdentifier(node) && requireNames.has(node.text) || ts.isCallExpression(node) && factory(node.expression) ||
-        member !== undefined && member.name === "require" && ts.isIdentifier(member.receiver) && moduleNamespaces.has(member.receiver.text);
+      return member !== undefined && member.name === "resolve" && loader(member.receiver);
     };
     const scanBindings = (node: ts.Node): void => {
       if (ts.isImportDeclaration(node) && ["node:module", "module"].includes(literal(node.moduleSpecifier) ?? "")) {
-        if (node.importClause?.name) moduleNamespaces.add(node.importClause.name.text);
+        if (node.importClause?.isTypeOnly) return;
+        if (node.importClause?.name) moduleNamespaces.add(binding(node.importClause.name));
         const bindings = node.importClause?.namedBindings;
-        if (bindings && ts.isNamespaceImport(bindings)) moduleNamespaces.add(bindings.name.text);
+        if (bindings && ts.isNamespaceImport(bindings)) moduleNamespaces.add(binding(bindings.name));
         if (bindings && ts.isNamedImports(bindings)) for (const element of bindings.elements) {
-          if ((element.propertyName ?? element.name).text === "createRequire") requireFactories.add(element.name.text);
+          if (!element.isTypeOnly && (element.propertyName ?? element.name).text === "createRequire") requireFactories.add(binding(element.name));
+          if (!element.isTypeOnly && ["default", "Module"].includes((element.propertyName ?? element.name).text)) moduleNamespaces.add(binding(element.name));
         }
       }
-      if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) && node.initializer && ts.isIdentifier(node.initializer) &&
-          moduleNamespaces.has(node.initializer.text)) moduleNamespaces.add(node.name.text);
+      if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) && node.initializer && namespace(node.initializer)) moduleNamespaces.add(binding(node.name));
       if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) && node.initializer &&
-          (loader(node.initializer) || ts.isCallExpression(node.initializer) && factory(node.initializer.expression))) requireNames.add(node.name.text);
-      if (ts.isVariableDeclaration(node) && node.initializer && ts.isIdentifier(node.name) && factory(node.initializer)) requireFactories.add(node.name.text);
+          loader(node.initializer)) requireNames.add(binding(node.name));
+      if (ts.isVariableDeclaration(node) && node.initializer && ts.isIdentifier(node.name) && factory(node.initializer)) requireFactories.add(binding(node.name));
       if (ts.isVariableDeclaration(node) && node.initializer && !ts.isIdentifier(node.name) && (loader(node.initializer) || factory(node.initializer) ||
-        (ts.isIdentifier(node.initializer) && moduleNamespaces.has(node.initializer.text)))) throw new Error(`Unsupported loader destructuring: ${file.path}`);
+        namespace(node.initializer))) throw new Error(`Unsupported loader destructuring: ${file.path}`);
       ts.forEachChild(node, scanBindings);
     };
-    scanBindings(source);
+    let bindingCount: number;
+    do {
+      bindingCount = requireNames.size + requireFactories.size + moduleNamespaces.size;
+      scanBindings(source);
+    } while (bindingCount !== requireNames.size + requireFactories.size + moduleNamespaces.size);
+    const wrappedUse = (node: ts.Expression): ts.Expression => {
+      const parent = node.parent;
+      if ((ts.isParenthesizedExpression(parent) || ts.isAsExpression(parent) || ts.isNonNullExpression(parent) || ts.isTypeAssertionExpression(parent) || ts.isSatisfiesExpression(parent)) && parent.expression === node ||
+          ts.isBinaryExpression(parent) && parent.operatorToken.kind === ts.SyntaxKind.CommaToken && parent.right === node) return wrappedUse(parent as ts.Expression);
+      return node;
+    };
+    const sourceIsDeclaration = (node: ts.Identifier): boolean => {
+      const parent = node.parent;
+      return ts.isVariableDeclaration(parent) && parent.name === node || ts.isImportSpecifier(parent) || ts.isImportClause(parent) || ts.isNamespaceImport(parent);
+    };
+    const sourceIsName = (node: ts.Identifier): boolean => {
+      const parent = node.parent;
+      return ts.isPropertyAccessExpression(parent) && parent.name === node ||
+        (ts.isPropertyAssignment(parent) || ts.isMethodDeclaration(parent) || ts.isPropertyDeclaration(parent) || ts.isPropertySignature(parent) || ts.isMethodSignature(parent)) && parent.name === node && !ts.isComputedPropertyName(parent.name);
+    };
     const visit = (node: ts.Node): void => {
-      if (ts.isIdentifier(node) && (requireNames.has(node.text) || requireFactories.has(node.text))) {
-        const parent = node.parent;
-        const declaration = (ts.isVariableDeclaration(parent) && parent.name === node) || ts.isImportSpecifier(parent) || ts.isImportClause(parent);
-        const directCall = ts.isCallExpression(parent) && parent.expression === node;
-        const alias = ts.isVariableDeclaration(parent) && parent.initializer === node && ts.isIdentifier(parent.name);
-        const resolver = ts.isPropertyAccessExpression(parent) && parent.expression === node && parent.name.text === "resolve" && requireNames.has(node.text) && ts.isCallExpression(parent.parent) && parent.parent.expression === parent;
-        const memberName = ts.isPropertyAccessExpression(parent) && parent.name === node && (factory(parent) || loader(parent));
-        if (!declaration && !directCall && !alias && !resolver && !memberName) throw new Error(`Unsupported loader escape: ${file.path}`);
-      }
-      const namespaceReceiver = ts.isPropertyAccessExpression(node) ? unwrap(node.expression) : undefined;
-      if (ts.isPropertyAccessExpression(node) && node.name.text === "createRequire" && namespaceReceiver && ts.isIdentifier(namespaceReceiver) && moduleNamespaces.has(namespaceReceiver.text) && !(ts.isCallExpression(node.parent) && node.parent.expression === node)) {
-        throw new Error(`Unsupported loader escape: ${file.path}`);
-      }
-      if (ts.isPropertyAccessExpression(node) && ["bind", "call", "apply"].includes(node.name.text) && (loader(node.expression) || factory(node.expression))) throw new Error(`Unsupported loader escape: ${file.path}`);
-      if (ts.isElementAccessExpression(node) && ts.isIdentifier(unwrap(node.expression)) && moduleNamespaces.has((unwrap(node.expression) as ts.Identifier).text) && literal(node.argumentExpression) === undefined) {
-        throw new Error(`Unsupported loader escape: ${file.path}`);
-      }
-      if (ts.isCallExpression(node) && factory(unwrap(node.expression))) {
-        const parent = node.parent;
-        const assigned = ts.isVariableDeclaration(parent) && parent.initializer === node && ts.isIdentifier(parent.name);
-        const invoked = ts.isCallExpression(parent) && parent.expression === node;
-        const resolved = ts.isPropertyAccessExpression(parent) && parent.expression === node && parent.name.text === "resolve";
-        if (!assigned && !invoked && !resolved) throw new Error(`Unsupported loader escape: ${file.path}`);
+      if (!ts.isPartOfTypeNode(node) && (ts.isIdentifier(node) && !sourceIsName(node) || ts.isPropertyAccessExpression(node) || ts.isElementAccessExpression(node) || ts.isCallExpression(node)) &&
+          (namespace(node as ts.Expression) || factory(node as ts.Expression) || loader(node as ts.Expression) || resolver(node as ts.Expression))) {
+        const expression = node as ts.Expression;
+        const use = wrappedUse(expression);
+        const parent = use.parent;
+        const declaration = ts.isIdentifier(node) && sourceIsDeclaration(node);
+        const alias = ts.isVariableDeclaration(parent) && parent.initializer === use && ts.isIdentifier(parent.name) && !resolver(expression);
+        const directCall = ts.isCallExpression(parent) && parent.expression === use && !namespace(expression);
+        const member = (ts.isPropertyAccessExpression(parent) || ts.isElementAccessExpression(parent)) && parent.expression === use &&
+          (namespace(expression) && (factory(parent) || loader(parent)) || loader(expression) && resolver(parent));
+        if (!declaration && !alias && !directCall && !member) throw new Error(`Unsupported loader escape: ${file.path}`);
+        const variable = alias ? parent : declaration ? node.parent : undefined;
+        if (variable && ts.isVariableDeclaration(variable) && (ts.getCombinedModifierFlags(variable) & ts.ModifierFlags.Export)) throw new Error(`Unsupported loader escape: ${file.path}`);
       }
       if (ts.isImportDeclaration(node) || ts.isExportDeclaration(node)) {
         if (node.moduleSpecifier) {
@@ -288,28 +318,28 @@ export const collectSourceInventory = (
           const typeOnly = ts.isImportDeclaration(node)
             ? node.importClause?.isTypeOnly === true || (node.importClause?.namedBindings !== undefined && ts.isNamedImports(node.importClause.namedBindings) && !node.importClause.name && node.importClause.namedBindings.elements.length > 0 && node.importClause.namedBindings.elements.every((element) => element.isTypeOnly))
             : node.isTypeOnly;
+          if (ts.isExportDeclaration(node) && !typeOnly && ["node:module", "module"].includes(specifier) &&
+               (!node.exportClause || !ts.isNamedExports(node.exportClause) || node.exportClause.elements.some((element) => !element.isTypeOnly && ["createRequire", "default", "Module"].includes((element.propertyName ?? element.name).text)))) throw new Error(`Unsupported loader escape: ${file.path}`);
           addEdge(file.path, specifier, ts.isImportDeclaration(node) ? "import" : "export", typeOnly);
         }
       } else if (ts.isImportEqualsDeclaration(node) && ts.isExternalModuleReference(node.moduleReference)) {
         const specifier = literal(node.moduleReference.expression);
         if (specifier === undefined) throw new Error(`Computed module declaration: ${file.path}`);
+        if (["node:module", "module"].includes(specifier)) throw new Error(`Unsupported module namespace import: ${file.path}`);
         addEdge(file.path, specifier, "require");
       } else if (ts.isImportTypeNode(node)) {
         const specifier = ts.isLiteralTypeNode(node.argument) ? literal(node.argument.literal) : undefined;
         if (specifier === undefined) throw new Error(`Computed import type: ${file.path}`);
           addEdge(file.path, specifier, "import-type", true);
       } else if (ts.isCallExpression(node)) {
-        const expression = node.expression;
+        const expression = unwrap(node.expression);
         const dynamic = expression.kind === ts.SyntaxKind.ImportKeyword;
         const requireCall = loader(expression);
         const member = property(expression);
         const resolver = member !== undefined && member.name === "resolve" && loader(member.receiver);
         if (dynamic || requireCall || resolver) {
           const specifier = literal(node.arguments[0]);
-          if (dynamic && (specifier === "node:module" || specifier === "module")) throw new Error(`Unsupported dynamic module import: ${file.path}`);
-          if ((requireCall || resolver) && specifier !== undefined && (specifier.startsWith("./") || specifier.startsWith("../")) && !CODE_EXTENSION.test(specifier)) {
-            throw new Error(`Unaudited executable extension: ${file.path}`);
-          }
+          if ((dynamic || requireCall) && (specifier === "node:module" || specifier === "module")) throw new Error(`Unsupported dynamic module import: ${file.path}`);
           if (specifier === undefined) {
             if (file.path === `${ARENA}/hermetic/closure.mjs` && requireCall && node.getText(source) === "require(require.resolve('esbuild', { paths: [require.resolve('tsx/package.json')] }))") {
               addEdge(file.path, "esbuild", "require");

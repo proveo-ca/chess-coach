@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { prepareContext } from './context.mjs';
 import { assertContainerPolicy, imagePattern, runArguments } from './policy.mjs';
 import { runLogged } from './logged-command.mjs';
+import { measureImageFilesystem } from './image-measurement.mjs';
 import pins from './pins.json' with { type: 'json' };
 
 const temporaryRoot = '/tmp/opencode';
@@ -48,12 +49,6 @@ export function freshOutput(path) {
   chmodSync(absolute, 0o777);
   return absolute;
 }
-function measurements(image) {
-  const code = `const fs = require('node:fs'); const crypto = require('node:crypto'); const result = {}; for (const name of ['tools', 'dependencies', 'source', 'capture', 'closure']) { const file = '/hermetic-evidence/' + name + '.json'; if (!fs.existsSync(file)) continue; const bytes = fs.readFileSync(file); const value = JSON.parse(bytes); result[name] = { manifestSha256: crypto.createHash('sha256').update(bytes).digest('hex') }; if (name === 'tools' || name === 'closure') result[name].actual = value; if (name === 'dependencies') Object.assign(result[name], { installedSha256: value.installedSha256, frozenStoreSha256: value.frozenStore.sha256, toolTreeSha256: value.tools.sha256 }); if (name === 'source') result[name].sourceSha256 = value.sha256; if (name === 'capture') Object.assign(result[name], { inputs: value.dependencyFiles, controlSha256: value.control.sha256 }); } console.log(JSON.stringify(result));`;
-  return JSON.parse(docker(['run', '--rm', '--pull=never', '--platform', pins.platform, '--network=none', '--read-only', '--user', '10001:10001',
-    '--security-opt', 'no-new-privileges=true', '--cap-drop=ALL', '--cpus=2', '--memory=4g', '--memory-swap=4g', '--pids-limit=256',
-    '--tmpfs', '/tmp:rw,nosuid,nodev,size=1073741824,mode=1777', '--entrypoint', 'node', image, '-e', code]));
-}
 
 export async function main(argv) {
   const [command, ...input] = argv;
@@ -86,7 +81,7 @@ export async function main(argv) {
     if (options['from-dependencies']) {
       const image = options['from-dependencies'];
       const inspection = inspectImage(image);
-      const measured = measurements(image);
+      const measured = await measureImageFilesystem(image);
       if (measured.source || !measured.dependencies || measured.tools?.actual.node !== pins.node || measured.tools?.actual.pnpm !== pins.pnpm ||
           measured.closure?.actual.lockSha256 !== capture.dependencyFiles.find((entry) => entry.path === 'pnpm-lock.yaml').sha256 ||
           JSON.stringify(measured.capture?.inputs) !== JSON.stringify(capture.dependencyFiles) || measured.capture?.controlSha256 !== capture.control.sha256) throw new Error('Frozen dependency image does not match this source lock, manifests, tools, and hermetic infrastructure');
@@ -105,7 +100,7 @@ export async function main(argv) {
       throw new Error(`Docker build failed; logs: ${work}`);
     }
     const image = readFileSync(iid, 'utf8').trim();
-    const measured = measurements(image);
+    const measured = await measureImageFilesystem(image);
     if (frozenDependency && measured.dependencies.manifestSha256 !== frozenDependency.measurements.dependencies.manifestSha256) throw new Error('Frozen dependency artifact changed during build');
     const envelope = { version: 1, kind: options.dependencies ? 'dependency-build' : 'source-image-build', image, pins, host: observedHost, buildArguments: args,
       imageInspection: inspectImage(image), measurements: measured, frozenDependency, capture, buildLog };
@@ -114,7 +109,7 @@ export async function main(argv) {
     return;
   }
   const imageInspection = inspectImage(options.image);
-  const measured = measurements(options.image);
+  const measured = await measureImageFilesystem(options.image);
   if (measured.tools?.actual.node !== pins.node || measured.tools?.actual.pnpm !== pins.pnpm ||
       measured.tools?.actual.pins.basePlatformDigest !== pins.basePlatformDigest) throw new Error('Image tool pins mismatch');
   const envelope = { version: 1, requestedCommand: command, runtimeCommand: runtime.length ? runtime : command === 'run' ? ['verify'] : null, image: options.image, pins, host: observedHost, imageInspection, measurements: measured };

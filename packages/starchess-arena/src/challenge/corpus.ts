@@ -24,6 +24,7 @@ export type CorpusManifest = {
   strategicSchedule: { arenaSeeds: number[]; candidateSides: ("w" | "b")[]; expectedMatches: number; feed: string; inferenceSeed: number };
 };
 export type AuditedCorpus = { manifest: CorpusManifest; manifestSha256: string; traces: RecordedTrace[] };
+export type PinnedCorpusBytes = { readonly manifestBytes: Uint8Array; readonly sourceBytes: Uint8Array };
 
 export const isChip = (resolve: EndScTurnResult): boolean => {
   if (!Array.isArray(resolve.events)) throw new Error("missing resolve events");
@@ -80,9 +81,13 @@ export const auditCorpus = (manifestBytes: Uint8Array, sourceBytes: Uint8Array):
   return deepFreeze({ manifest, manifestSha256: MANIFEST_SHA256, traces });
 };
 
-export const loadPinnedCorpus = (): AuditedCorpus => {
-  const manifestBytes = readFileSync(new URL("_spec/corpora/ml-adjutant-corpus.manifest.json", REPOSITORY_ROOT));
+export const readPinnedCorpusBytes = (root: URL = REPOSITORY_ROOT): PinnedCorpusBytes => {
+  const manifestBytes = readFileSync(new URL("_spec/corpora/ml-adjutant-corpus.manifest.json", root));
   if (sha256(manifestBytes) !== MANIFEST_SHA256) throw new Error("manifest pin mismatch");
   const manifest = JSON.parse(manifestBytes.toString("utf8")) as CorpusManifest;
-  return auditCorpus(manifestBytes, readFileSync(new URL(manifest.sourcePath, REPOSITORY_ROOT)));
+  return { manifestBytes, sourceBytes: readFileSync(new URL(manifest.sourcePath, root)) };
 };
+
+export const loadPinnedCorpus = (
+  root: URL = REPOSITORY_ROOT, bytes: PinnedCorpusBytes = readPinnedCorpusBytes(root),
+): AuditedCorpus => auditCorpus(bytes.manifestBytes, bytes.sourceBytes);
