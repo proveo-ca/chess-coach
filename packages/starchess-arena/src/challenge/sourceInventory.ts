@@ -229,6 +229,7 @@ export const collectSourceInventory = (
     const moduleNamespaces = new Set<ts.Symbol | string>(["module"]);
     const processNamespaces = new Set<ts.Symbol | string>(["process"]);
     const globalNamespaces = new Set<ts.Symbol | string>(["globalThis", "global"]);
+    const reflectionNamespaces = new Set<ts.Symbol | string>(["Reflect"]);
     const unwrapValue = (node: ts.Expression): ts.Expression => {
       if (ts.isParenthesizedExpression(node) || ts.isAsExpression(node) || ts.isNonNullExpression(node) || ts.isTypeAssertionExpression(node) || ts.isSatisfiesExpression(node)) return unwrapValue(node.expression);
       return node;
@@ -238,10 +239,28 @@ export const collectSourceInventory = (
       if (ts.isBinaryExpression(expression) && expression.operatorToken.kind === ts.SyntaxKind.CommaToken) return unwrap(expression.right);
       return expression;
     };
+    const staticString = (node: ts.Expression, seen = new Set<ts.Symbol | string>()): string | undefined => {
+      const expression = unwrapValue(node);
+      if (ts.isStringLiteralLike(expression)) return expression.text;
+      if (ts.isBinaryExpression(expression) && expression.operatorToken.kind === ts.SyntaxKind.PlusToken) {
+        const a = staticString(expression.left, seen), b = staticString(expression.right, seen);
+        return a === undefined || b === undefined ? undefined : a + b;
+      }
+      if (ts.isIdentifier(expression)) {
+        const key = binding(expression);
+        if (seen.has(key) || typeof key === "string") return undefined;
+        const declaration = key.valueDeclaration;
+        if (declaration && ts.isVariableDeclaration(declaration) && declaration.initializer &&
+            ts.isVariableDeclarationList(declaration.parent) && declaration.parent.flags & ts.NodeFlags.Const) {
+          return staticString(declaration.initializer, new Set([...seen, key]));
+        }
+      }
+      return undefined;
+    };
     const property = (node: ts.Expression): { receiver: ts.Expression; name: string | undefined } | undefined => {
       const expression = unwrap(node);
       if (ts.isPropertyAccessExpression(expression)) return { receiver: unwrap(expression.expression), name: expression.name.text };
-      if (ts.isElementAccessExpression(expression)) return { receiver: unwrap(expression.expression), name: literal(expression.argumentExpression) };
+      if (ts.isElementAccessExpression(expression)) return { receiver: unwrap(expression.expression), name: staticString(expression.argumentExpression) };
       return undefined;
     };
     const namespace = (node: ts.Expression): boolean => {
@@ -259,6 +278,11 @@ export const collectSourceInventory = (
       const member = property(expression);
       return ts.isIdentifier(expression) && processNamespaces.has(binding(expression)) || member !== undefined &&
         (member.name === "default" && processNamespace(member.receiver) || member.name === "process" && globalNamespace(member.receiver));
+    };
+    const reflectionNamespace = (node: ts.Expression): boolean => {
+      const expression = unwrap(node), member = property(expression);
+      return ts.isIdentifier(expression) && reflectionNamespaces.has(binding(expression)) ||
+        member !== undefined && member.name === "Reflect" && globalNamespace(member.receiver);
     };
     const evaluation = (node: ts.Expression): boolean => {
       const expression = unwrap(node);
@@ -304,6 +328,7 @@ export const collectSourceInventory = (
       if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) && node.initializer && namespace(node.initializer)) moduleNamespaces.add(binding(node.name));
       if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) && node.initializer && processNamespace(node.initializer)) processNamespaces.add(binding(node.name));
       if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) && node.initializer && globalNamespace(node.initializer)) globalNamespaces.add(binding(node.name));
+      if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) && node.initializer && reflectionNamespace(node.initializer)) reflectionNamespaces.add(binding(node.name));
       if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) && node.initializer &&
           loader(node.initializer)) requireNames.add(binding(node.name));
       if (ts.isVariableDeclaration(node) && node.initializer && ts.isIdentifier(node.name) && factory(node.initializer)) requireFactories.add(binding(node.name));
@@ -312,7 +337,7 @@ export const collectSourceInventory = (
       ts.forEachChild(node, scanBindings);
     };
     let bindingCount: number;
-    const countBindings = (): number => requireNames.size + requireFactories.size + moduleNamespaces.size + processNamespaces.size + globalNamespaces.size;
+    const countBindings = (): number => requireNames.size + requireFactories.size + moduleNamespaces.size + processNamespaces.size + globalNamespaces.size + reflectionNamespaces.size;
     do {
       bindingCount = countBindings();
       scanBindings(source);
@@ -355,9 +380,14 @@ export const collectSourceInventory = (
         const access = node.parent;
         if (!ts.isPropertyAccessExpression(access) || access.expression !== node || !["url", "dirname", "filename"].includes(access.name.text)) throw new Error(`Unsupported import metadata escape: ${file.path}`);
         const use = wrappedUse(access);
-        const parent = use.parent;
+        let target: ts.Node = use;
+        while (ts.isArrayLiteralExpression(target.parent) || ts.isObjectLiteralExpression(target.parent) ||
+          ts.isPropertyAssignment(target.parent) && target.parent.initializer === target ||
+          (ts.isSpreadElement(target.parent) || ts.isSpreadAssignment(target.parent)) && target.parent.expression === target) target = target.parent;
+        const parent = target.parent;
         if (ts.isDeleteExpression(parent) ||
-            ts.isBinaryExpression(parent) && parent.left === use && parent.operatorToken.kind >= ts.SyntaxKind.FirstAssignment && parent.operatorToken.kind <= ts.SyntaxKind.LastAssignment ||
+            ts.isBinaryExpression(parent) && parent.left === target && parent.operatorToken.kind >= ts.SyntaxKind.FirstAssignment && parent.operatorToken.kind <= ts.SyntaxKind.LastAssignment ||
+            (ts.isForOfStatement(parent) || ts.isForInStatement(parent)) && parent.initializer === target ||
             (ts.isPrefixUnaryExpression(parent) || ts.isPostfixUnaryExpression(parent)) && [ts.SyntaxKind.PlusPlusToken, ts.SyntaxKind.MinusMinusToken].includes(parent.operator)) {
           throw new Error(`Unsupported import metadata mutation: ${file.path}`);
         }
@@ -366,16 +396,20 @@ export const collectSourceInventory = (
       if (value && evaluation(node as ts.Expression)) throw new Error(`Unsupported string evaluation: ${file.path}`);
       const accessed = value ? property(node as ts.Expression) : undefined;
       if (accessed?.name === "constructor") throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
-      if (ts.isCallExpression(node) && ["get", "getOwnPropertyDescriptor"].includes(property(node.expression)?.name ?? "") && literal(node.arguments[1]) === "constructor") throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
+      if (accessed && reflectionNamespace(accessed.receiver) && !["ownKeys", "apply", "has", "set", "deleteProperty"].includes(accessed.name ?? "")) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
+      if (ts.isBindingElement(node) && node.propertyName && ((ts.isIdentifier(node.propertyName) || ts.isStringLiteralLike(node.propertyName)) && node.propertyName.text === "constructor" || ts.isComputedPropertyName(node.propertyName))) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
+      if (ts.isElementAccessExpression(node) && checker.getTypeAtLocation(node.expression).getCallSignatures().length) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
+      if (accessed?.name === "getOwnPropertyDescriptor" && !(ts.isCallExpression(node.parent) && node.parent.expression === node)) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
+      if (ts.isCallExpression(node) && property(node.expression)?.name === "getOwnPropertyDescriptor" && node.arguments[1] && staticString(node.arguments[1]) === "constructor") throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
       if (accessed && processNamespace(accessed.receiver) && accessed.name === "getBuiltinModule") throw new Error(`Unsupported builtin acquisition: ${file.path}`);
       if (accessed && namespace(accessed.receiver) && ["register", "registerHooks"].includes(accessed.name ?? "")) throw new Error(`Unsupported module loader API: ${file.path}`);
-      if (value && (namespace(node as ts.Expression) || processNamespace(node as ts.Expression) || globalNamespace(node as ts.Expression) || factory(node as ts.Expression) || loader(node as ts.Expression) || resolver(node as ts.Expression))) {
+      if (value && (namespace(node as ts.Expression) || processNamespace(node as ts.Expression) || globalNamespace(node as ts.Expression) || reflectionNamespace(node as ts.Expression) || factory(node as ts.Expression) || loader(node as ts.Expression) || resolver(node as ts.Expression))) {
         const expression = node as ts.Expression;
         const use = wrappedUse(expression);
         const parent = use.parent;
         const declaration = ts.isIdentifier(node) && sourceIsDeclaration(node);
         const alias = ts.isVariableDeclaration(parent) && parent.initializer === use && ts.isIdentifier(parent.name) && !resolver(expression);
-        const runtimeNamespace = processNamespace(expression) || globalNamespace(expression);
+        const runtimeNamespace = processNamespace(expression) || globalNamespace(expression) || reflectionNamespace(expression);
         const directCall = ts.isCallExpression(parent) && parent.expression === use && !namespace(expression) && !runtimeNamespace;
         const member = (ts.isPropertyAccessExpression(parent) || ts.isElementAccessExpression(parent)) && parent.expression === use &&
           (namespace(expression) && (factory(parent) || loader(parent)) || loader(expression) && resolver(parent) ||

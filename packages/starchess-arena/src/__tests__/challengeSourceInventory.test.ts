@@ -42,6 +42,13 @@ describe("partitioned challenge source inventory", () => {
     'Object.defineProperty(import.meta, "url", {value: "file:///contracts/anchor.cjs"});',
     'const load = (() => {}).constructor(`return process.getBuiltinModule("module")`)();',
     'const compile = Reflect.get(() => {}, "constructor"); compile("return process")();',
+    '[import.meta.url] = ["file:///contracts/anchor.cjs"];',
+    '({url: import.meta.url} = {url: "file:///contracts/anchor.cjs"});',
+    'for ([import.meta.url] of [["file:///contracts/anchor.cjs"]]) {}',
+    'const key = "constructor"; const compile = (() => {})[key];',
+    'const {constructor: compile} = () => {};',
+    'const read = Reflect.get; const compile = read(() => {}, "constructor");',
+    'const key = "con" + "structor"; const compile = (() => {})[key];',
   ])("rejects metadata mutation and indirect code constructors: %s", (code) => {
     const root = fixture();
     put(root, `${CORE}/src/index.ts`, code);
