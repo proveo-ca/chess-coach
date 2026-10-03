@@ -58,6 +58,7 @@ describe("partitioned challenge source inventory", () => {
     'const {getPrototypeOf: p} = Object; const proto = p(() => {}); const key = ["con", "structor"].join(""); const compile = proto[key];',
     'let api: any = {}; api = Object; for (const key of ["getPrototypeOf"]) { const proto = api[key](() => {}); }',
     'let api: any = {}; api = Object; for (const key of ["getOwnPropertyDescriptor"]) { const descriptor = api[key]; }',
+    'const api = Object; for (const key of ["getPrototypeOf"]) { const proto = api[key](() => {}); }',
   ])("rejects metadata mutation and indirect code constructors: %s", (code) => {
     const root = fixture();
     put(root, `${CORE}/src/index.ts`, code);
