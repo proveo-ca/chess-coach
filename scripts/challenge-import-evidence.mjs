@@ -27,7 +27,7 @@ const SOURCE_ROOT = resolve(SCRIPT_DIR, '..');
 const TSX = join(SOURCE_ROOT, 'packages/starchess-arena/node_modules/.bin/tsx');
 const VALIDATOR = join(SCRIPT_DIR, 'challenge-validate-baseline.ts');
 const hash = (bytes) => createHash('sha256').update(bytes).digest('hex');
-const record = (value) => value !== null && typeof value === 'object' && !Array.isArray(value) && Object.getPrototypeOf(value) === Object.prototype;
+const record = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
 const digest = (value) => typeof value === 'string' && /^[a-f0-9]{64}$/.test(value);
 const equal = (a, b) => Array.isArray(a) && Array.isArray(b) && a.length === b.length && a.every((value, index) => value === b[index]);
 

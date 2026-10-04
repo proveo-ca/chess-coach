@@ -68,6 +68,12 @@ describe("phase2 hermetic evidence import with synthetic test-only image hooks",
     expect(JSON.parse(readFileSync(join(value.destination, "image-assurance.json"), "utf8")).image).toBe(value.archive.image);
     const { readPublishedBundle } = require("../../hermetic/evidence-bundle.mjs") as { readPublishedBundle: (path: string) => { artifacts: Map<string, Buffer> } };
     expect(readPublishedBundle(value.destination).artifacts.get("baseline-report.json")).toEqual(value.files["baseline-report.json"]);
+    const published = readPublishedBundle(value.destination).artifacts;
+    expect(published.get("host-infrastructure.json")).toEqual(readFileSync(value.paths.infrastructure));
+    expect(published.get("host-infrastructure/stdout.log")).toEqual(value.infrastructureFiles[value.infrastructure.command.logs.stdout.path]);
+    expect(published.get("host-infrastructure/probe.json")).toEqual(value.infrastructureFiles[value.infrastructure.probe.report.path]);
+    expect(published.has("host-infrastructure/inspections.json")).toBe(true);
+    expect(published.has("host-infrastructure/logs/vitest.stdout.log")).toBe(true);
   }, 120000);
 
   it.each(["../secret", "/tmp/x", "logs\\x", "logs/../x", ""])("rejects unsafe artifact path %s", (path) => {
@@ -160,6 +166,100 @@ describe("phase2 hermetic evidence import with synthetic test-only image hooks",
     writeFileSync(join(value.output, "verification.json"), jsonBytes(value.verification));
     await expect(importEvidence(value.options)).rejects.toThrow(/Aggregate import byte cap exceeded/);
     expect(existsSync(value.destination)).toBe(false);
+  });
+});
+
+describe("host infrastructure import gate with synthetic test-only host boundaries", () => {
+  it.each([undefined, null, ""])("requires the infrastructure path before publication: %j", async (path) => {
+    const value = fixture();
+    await expect(importEvidence({ ...value.options, infrastructurePath: path })).rejects.toThrow("infrastructure paths are required");
+    expect(existsSync(value.destination)).toBe(false);
+  });
+  it.each([undefined, null, false, 0, 1, "true"])("requires a real infrastructure success boolean: %j", async (flag) => {
+    const value = fixture(); value.infrastructure.passed = flag;
+    await reject(value, "Infrastructure verification did not pass");
+  });
+  it("rejects historical or incomplete infrastructure envelopes", async () => {
+    const value = fixture(); value.infrastructure.version = "r2-infrastructure-verification-v0";
+    await reject(value, "Infrastructure verification did not pass");
+  });
+  it("requires the separate dependency image from the source build", async () => {
+    const value = fixture(); delete (value.build as Partial<typeof value.build>).frozenDependency;
+    await reject(value, "Frozen dependency image identity required");
+  });
+  it("rejects a dependency-image substitution", async () => {
+    const value = fixture(); value.infrastructure.image = value.archive.image;
+    await reject(value, "Infrastructure dependency image mismatch");
+  });
+  it("remeasures dependency control independently of envelope claims", async () => {
+    const value = fixture(); value.infrastructure.measurements = structuredClone(value.infrastructureMeasurement);
+    value.infrastructure.measurements.capture.controlSha256 = "0".repeat(64);
+    await reject(value, "Infrastructure control binding mismatch");
+  });
+  it("rejects source-control rebinding despite internally consistent infrastructure metadata", async () => {
+    const value = fixture(); value.build.capture.control.sha256 = "0".repeat(64);
+    await reject(value, "Infrastructure control binding mismatch");
+  });
+  it("rejects dependency remeasurement drift", async () => {
+    const value = fixture(); value.options.measureInfrastructureImage = async () => ({ ...value.infrastructureMeasurement, method: "changed" });
+    await reject(value, "Infrastructure frozen dependency measurement mismatch");
+  });
+  it.each(["exitCode", "signal", "error", "env", "args"])("requires complete exact command metadata: %s", async (field) => {
+    const value = fixture(); delete value.infrastructure.command[field];
+    await reject(value, "Infrastructure exact command or runtime environment mismatch");
+  });
+  it("rejects changed host source-code metadata", async () => {
+    const value = fixture(); value.infrastructure.host.source.sha256 = "0".repeat(64);
+    await reject(value, "Infrastructure host runtime or source metadata mismatch");
+  });
+  it("recounts failed TAP with rebound raw checksums", async () => {
+    const value = fixture(); const path = value.infrastructure.command.logs.stdout.path;
+    value.infrastructureFiles[path] = Buffer.from(value.infrastructureFiles[path]!.toString().replace("ok 1 -", "not ok 1 -"));
+    value.rebindInfrastructure();
+    await reject(value, "Infrastructure TAP test count or Docker test mismatch");
+  });
+  it("rejects skipped TAP with rebound raw checksums", async () => {
+    const value = fixture(); const path = value.infrastructure.command.logs.stdout.path;
+    value.infrastructureFiles[path] = Buffer.from(value.infrastructureFiles[path]!.toString().replace("# skipped 0", "# skipped 1"));
+    value.rebindInfrastructure();
+    await reject(value, "Infrastructure TAP skipped summary mismatch");
+  });
+  it("rejects omitted TAP summaries rather than trusting envelope counts", async () => {
+    const value = fixture(); const path = value.infrastructure.command.logs.stdout.path;
+    value.infrastructureFiles[path] = Buffer.from(value.infrastructureFiles[path]!.toString().replace("# pass 5\n", ""));
+    value.rebindInfrastructure();
+    await reject(value, "Infrastructure TAP pass summary mismatch");
+  });
+  it("checks raw host stdout checksums", async () => {
+    const value = fixture(); value.infrastructure.command.logs.stdout.sha256 = "0".repeat(64);
+    await reject(value, "Infrastructure stdout checksum mismatch");
+  });
+  it.each([undefined, null, true])("requires explicit untruncated logs: %j", async (flag) => {
+    const value = fixture(); value.infrastructure.command.logs.stdout.truncated = flag;
+    await reject(value, "Infrastructure stdout metadata invalid");
+  });
+  it("requires the stdout-bound Docker probe path", async () => {
+    const value = fixture(); value.infrastructure.probe.report.path += ".substituted";
+    await reject(value, "Infrastructure Docker probe output path mismatch");
+  });
+  it.each([undefined, null, false, 1, "true"])("requires real probe success after report rebinding: %j", async (flag) => {
+    const value = fixture(); value.probeReport.passed = flag; value.rebindInfrastructure();
+    await reject(value, "Infrastructure Docker probe assurance mismatch");
+  });
+  it("requires actual probe container inspections to identify the dependency image", async () => {
+    const value = fixture(); value.probeExecution.finalContainerInspection.Image = value.archive.image; value.rebindInfrastructure();
+    await reject(value, "Infrastructure Docker inspection image or report binding mismatch");
+  });
+  it("requires the exact probe TS/Vitest commands despite rebound payloads", async () => {
+    const value = fixture(); value.probeReport.commands[1].args = ["/tmp/test/fabricated.ts"]; value.rebindInfrastructure();
+    await reject(value, "Infrastructure Docker TS/Vitest command mismatch");
+  });
+  it("recounts the probe Vitest assertion rather than accepting passing summaries", async () => {
+    const value = fixture(); const path = join(value.output, "host-probe/output/vitest-probe.json");
+    const report = decode<Record<string, any>>(value.infrastructureFiles[path]!); report.testResults[0].assertionResults[0].status = "failed";
+    value.infrastructureFiles[path] = jsonBytes(report); value.probeReport.commands[2].tests.sha256 = sha256(value.infrastructureFiles[path]!);
+    value.rebindInfrastructure();
+    await reject(value, "Infrastructure Docker Vitest assertion recount mismatch");
   });
 });
 

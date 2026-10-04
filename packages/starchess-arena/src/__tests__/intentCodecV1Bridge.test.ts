@@ -90,11 +90,11 @@ describe("public intent codec V1 bridge and pure wire", () => {
     }
   });
 
-  it.each(["side", "own", "minerals", "piece", "symbol", "hidden", "private"] as const)("inspects observation %s before public candidate encoding", (field) => {
+  it.each(["side", "own", "minerals", "piece", "cells", "index", "cellPiece", "symbol", "hidden", "private"] as const)("inspects observation %s before public candidate encoding", (field) => {
     const input = structuredClone(observation());
     const getter = vi.fn(() => field === "side" ? "w" : field === "minerals" ? 3 : {});
-    const target = field === "minerals" ? input.own : field === "piece" ? input.own.pieces[0]! : input;
-    const key = field === "symbol" ? Symbol("private") : field === "hidden" || field === "private" ? "private" : field;
+    const target = field === "minerals" ? input.own : field === "piece" ? input.own.pieces[0]! : field === "index" ? input.cells : field === "cellPiece" ? input.cells[0]! : input;
+    const key = field === "index" ? "0" : field === "cellPiece" ? "piece" : field === "symbol" ? Symbol("private") : field === "hidden" || field === "private" ? "private" : field;
     Object.defineProperty(target, key, { configurable: true, enumerable: field !== "hidden" && field !== "symbol", get: getter });
     expect(() => bridge.encodeCandidate(input, []), field).toThrow(ContractError);
     expect(getter).not.toHaveBeenCalled();
@@ -183,6 +183,20 @@ describe("public intent codec V1 bridge and pure wire", () => {
     const get = vi.fn(() => { throw new Error("unexpected property read"); });
     input.actions[0] = new Proxy(input.actions[0]!, { get });
     expect(bridge.decodeCandidate(new Proxy(input, { get }), "w")).toEqual(candidate());
+    expect(get).not.toHaveBeenCalled();
+  });
+
+  it("encodes, validates and computes spend from snapshots without caller property reads", () => {
+    const get = vi.fn(() => { throw new Error("unexpected property read"); });
+    const input = candidate();
+    input.actions[0] = new Proxy(input.actions[0]!, { get });
+    const actions = new Proxy(input.actions, { get });
+    const obs = structuredClone(observation());
+    obs.own = new Proxy(obs.own, { get });
+    obs.cells = new Proxy(obs.cells, { get });
+    expect(bridge.encodeCandidate(new Proxy(obs, { get }), actions)).toEqual(candidate());
+    expect(bridge.validateActions(actions, "w")).toEqual(candidate().actions);
+    expect(bridge.requestedSpend(actions)).toEqual(candidate().ownSpend);
     expect(get).not.toHaveBeenCalled();
   });
 

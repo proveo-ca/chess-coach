@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { prepareContext } from '../packages/starchess-arena/hermetic/context.mjs';
 import { evidenceLimits } from '../packages/starchess-arena/hermetic/evidence-limits.mjs';
 import { measureImageFilesystem } from '../packages/starchess-arena/hermetic/image-measurement.mjs';
+import { runLogged } from '../packages/starchess-arena/hermetic/logged-command.mjs';
 import { assertContainerPolicy, outputTarget } from '../packages/starchess-arena/hermetic/policy.mjs';
 
 export const INFRASTRUCTURE_VERSION = 'r2-infrastructure-verification-v1';
@@ -13,7 +14,7 @@ const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 export const infraPath = join(root, 'packages/starchess-arena/hermetic/infra.test.mjs');
 const scriptPath = fileURLToPath(import.meta.url);
 const hash = (bytes) => createHash('sha256').update(bytes).digest('hex');
-const object = (value) => value !== null && typeof value === 'object' && !Array.isArray(value) && Object.getPrototypeOf(value) === Object.prototype;
+const object = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 const digest = (value) => typeof value === 'string' && /^[a-f0-9]{64}$/.test(value);
 const immutable = (value) => typeof value === 'string' && /^sha256:[a-f0-9]{64}$/.test(value);
@@ -161,8 +162,8 @@ export async function captureInfrastructure({ image } = {}) {
   let capture;
   try { capture = prepareContext(context, true); } finally { rmSync(context, { recursive: true, force: true }); }
   if (measurements.source || measurements.capture?.controlSha256 !== capture.control.sha256) fail('dependency control does not match host source');
-  const { runLogged } = await import('../packages/starchess-arena/hermetic/trusted-logged-command.mjs');
-  const command = await runLogged(process.execPath, ['--test', infraPath], { cwd: root, directory, prefix: 'infrastructure', env: { ...process.env, HERMETIC_DEPENDENCY_IMAGE: image } });
+  process.env.HERMETIC_DEPENDENCY_IMAGE = image;
+  const command = await runLogged(process.execPath, ['--test', infraPath], { cwd: root, directory, prefix: 'infrastructure' });
   command.env = { HERMETIC_DEPENDENCY_IMAGE: image };
   const value = { version: INFRASTRUCTURE_VERSION, passed: false, image, imageInspection: { Id: image }, measurements, host, command };
   const path = join(directory, 'infrastructure.json');

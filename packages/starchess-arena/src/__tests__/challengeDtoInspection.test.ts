@@ -18,7 +18,7 @@ describe("bounded detached raw DTO inspection", () => {
   it("accepts depth 16 and rejects depth 17 before requesting leaf descriptors", () => {
     expect(inspectDto(chain(16))).toEqual(chain(16));
     const getOwnPropertyDescriptor = vi.fn(() => { throw new Error("depth guard ran too late"); });
-    sizeError(() => inspectDto(chain(17, new Proxy({}, { getOwnPropertyDescriptor }))));
+    sizeError(() => inspectDto(chain(17, new Proxy({ value: null }, { getOwnPropertyDescriptor }))));
     expect(getOwnPropertyDescriptor).not.toHaveBeenCalled();
   });
 
@@ -28,6 +28,9 @@ describe("bounded detached raw DTO inspection", () => {
     expect(inspectDto({ a: Array(8190).fill(null) })).toEqual({ a: Array(8190).fill(null) });
     sizeError(() => inspectDto({ a: Array(8191).fill(null) }));
     sizeError(() => inspectDto({ a: Array(4095).fill(null), b: Array(4095).fill(null) }));
+    const shared = { value: null };
+    expect((inspectDto(Array(8190).fill(shared)) as unknown[]).length).toBe(8190);
+    sizeError(() => inspectDto(Array(8191).fill(shared)));
   });
 
   it("caps input own keys before collecting descriptors", () => {
