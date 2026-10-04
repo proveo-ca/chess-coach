@@ -50,10 +50,11 @@ export function infrastructureReader() {
 
 export function recountInfrastructureTap(bytes) {
   const text = new TextDecoder('utf-8', { fatal: true }).decode(bytes);
-  if (!text.startsWith('TAP version 13\n') || /(?:^|\n)Bail out!|#\s*(?:SKIP|TODO)\b/i.test(text)) fail('TAP contains omitted or failed tests');
+  if (!text.startsWith('TAP version 13\n') || /(?:^|\n)\s*Bail out!|^\s*(?:ok|not ok)\b[^\n]*#\s*(?:SKIP|TODO)\b/im.test(text)) fail('TAP contains omitted or failed tests');
   const results = [...text.matchAll(/^(ok|not ok) (\d+) - (.+)$/gm)];
   if (results.length !== INFRASTRUCTURE_TESTS || results.some((entry, index) => entry[1] !== 'ok' || Number(entry[2]) !== index + 1) ||
       results.filter((entry) => entry[3] === 'Docker enforces policy, fresh temporary inventory, and logged offline TS/Vitest').length !== 1) fail('TAP test count or Docker test mismatch');
+  if (/^\s*not ok\b/m.test(text)) fail('TAP contains omitted or failed tests');
   const plans = [...text.matchAll(/^1\.\.(\d+)$/gm)];
   if (plans.length !== 1 || Number(plans[0][1]) !== INFRASTRUCTURE_TESTS) fail('TAP plan mismatch');
   const counts = { tests: INFRASTRUCTURE_TESTS, suites: 0, pass: INFRASTRUCTURE_TESTS, fail: 0, cancelled: 0, skipped: 0, todo: 0 };
@@ -102,7 +103,7 @@ export function validateInfrastructure(value, { read, image, measurements, contr
   const output = dirname(value.probe.report.path);
   if (value.probe.execution.path !== join(dirname(output), 'execution.json') || execution.output !== output || execution.image !== image || execution.imageInspection?.Id !== image ||
       execution.initialContainerInspection?.Image !== image || execution.finalContainerInspection?.Image !== image ||
-      execution.finalContainerInspection?.State?.ExitCode !== 0 || execution.finalContainerInspection?.State?.OOMKilled !== false || !same(execution.report, report)) fail('Docker inspection image or report binding mismatch');
+      execution.finalContainerInspection?.State?.ExitCode !== 0 || execution.finalContainerInspection?.State?.OOMKilled !== false || !same(execution.report, report) || !same(value.imageInspection, execution.imageInspection)) fail('Docker inspection image or report binding mismatch');
   assertContainerPolicy(execution.initialContainerInspection, output);
   assertContainerPolicy(execution.finalContainerInspection, output);
   if (!object(report) || report.passed !== true || report.freshTemporaryRoot !== true || report.sourceOnlyInventoryFiles !== 1 ||
@@ -136,7 +137,9 @@ export function validateInfrastructure(value, { read, image, measurements, contr
     for (const stream of ['stdout', 'stderr']) {
       const relative = `logs/${['inventory', 'tsx', 'vitest'][index]}.${stream}.log`;
       const metadata = inventory.get(relative)?.metadata;
-      if (!metadata || !same(actual.logs?.[stream], { ...Object.fromEntries(Object.entries(metadata).filter(([key]) => !['relative', 'path'].includes(key))), path: `${outputTarget}/${relative}` })) fail('Docker TS/Vitest log binding mismatch');
+      const log = actual.logs?.[stream];
+      if (!metadata || !object(log) || log.path !== `${outputTarget}/${relative}` ||
+          ['sha256', 'bytes', 'observedBytes', 'truncated'].some((key) => !Object.hasOwn(log, key) || log[key] !== metadata[key])) fail('Docker TS/Vitest log binding mismatch');
     }
   }
   const vitest = inventory.get('vitest-probe.json');
@@ -144,6 +147,7 @@ export function validateInfrastructure(value, { read, image, measurements, contr
   const parsed = vitest ? JSON.parse(vitest.bytes) : null;
   if (!vitest || !object(tests) || tests.path !== `${outputTarget}/vitest-probe.json` || tests.sha256 !== hash(vitest.bytes) || tests.success !== true || tests.total !== 1 || tests.passed !== 1 || tests.failed !== 0 || tests.pending !== 0 || tests.todo !== 0 ||
       parsed?.success !== true || parsed.numTotalTests !== 1 || parsed.numPassedTests !== 1 || parsed.numFailedTests !== 0 || parsed.numPendingTests !== 0 || parsed.numTodoTests !== 0 ||
+      parsed.numTotalTestSuites !== 1 || parsed.numPassedTestSuites !== 1 || parsed.numFailedTestSuites !== 0 || parsed.numPendingTestSuites !== 0 ||
       !Array.isArray(parsed.testResults) || parsed.testResults.length !== 1 || parsed.testResults[0].status !== 'passed' || parsed.testResults[0].assertionResults?.length !== 1 || parsed.testResults[0].assertionResults[0].status !== 'passed') fail('Docker Vitest assertion recount mismatch');
   return artifacts;
 }
@@ -176,6 +180,7 @@ export async function captureInfrastructure({ image } = {}) {
     const report = JSON.parse(read(reportPath));
     const executionPath = join(dirname(output), 'execution.json');
     const execution = JSON.parse(read(executionPath));
+    value.imageInspection = execution.imageInspection;
     const probeArtifacts = [];
     for (const entry of report.commands ?? []) for (const [stream, log] of Object.entries(entry.logs ?? {})) {
       if (typeof log.path !== 'string' || !log.path.startsWith(`${outputTarget}/logs/`)) fail('probe log path invalid');

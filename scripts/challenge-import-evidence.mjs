@@ -185,6 +185,8 @@ export async function importEvidence({
   const assurance = verification.assurance;
   if (!record(assurance)) throw new Error('Invalid runtime assurance');
   const measuredImage = await measureImage(image);
+  if (['installedSha256', 'frozenStoreSha256', 'toolTreeSha256'].some((key) => measuredImage.dependencies?.[key] !== infrastructureMeasurement.dependencies?.[key]) ||
+      measuredImage.capture?.inputs && JSON.stringify(measuredImage.capture.inputs) !== JSON.stringify(infrastructureMeasurement.capture?.inputs)) throw new Error('Infrastructure dependency measurements do not match source image');
   const measurements = [measuredImage, execution.measurements, build.measurements, exported.measurements];
   if (measurements.some((entry) => entry?.source?.sourceSha256 !== assurance.sourceSha256 || entry?.dependencies?.installedSha256 !== assurance.installedSha256 || entry?.dependencies?.frozenStoreSha256 !== assurance.frozenStoreSha256 || entry?.dependencies?.toolTreeSha256 !== assurance.toolsSha256)) throw new Error('Runtime assurance does not match image measurements');
   const originalBytes = read(join(root, '_spec/evidence/ml-adjutant-phase1/baseline-report.json'));
