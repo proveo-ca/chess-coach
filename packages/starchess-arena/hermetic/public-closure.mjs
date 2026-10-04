@@ -59,6 +59,15 @@ export const checkPublicClosure = (root = repository) => {
     return value;
   };
   const manifests = new Map([CORE, ARENA, TRAINING].map((owner) => [owner, readJson(join(root, owner, "package.json"))]));
+  const publicExports = new Map([
+    [CORE, ["."]],
+    [ARENA, [".", "./intent-codec-v1", "./observations"]],
+    [TRAINING, ["./candidates"]],
+  ]);
+  for (const [owner, expected] of publicExports) {
+    const exports = manifests.get(owner).exports;
+    if (!plain(exports) || JSON.stringify(Object.keys(exports).sort()) !== JSON.stringify([...expected].sort())) throw new Error(`Unapproved public export map: ${owner}`);
+  }
   const byName = new Map([...manifests].map(([owner, manifest]) => [manifest.name, owner]));
   if (byName.size !== 3 || [...byName.keys()].some((name) => typeof name !== "string")) throw new Error("Invalid workspace package names");
   const runtime = new Map(["", ...manifests.keys()].map((owner) => {
@@ -171,7 +180,7 @@ export const checkPublicClosure = (root = repository) => {
         }
       } else if (ts.isImportTypeNode(node)) edge(ts.isLiteralTypeNode(node.argument) ? literal(node.argument.literal) : undefined, "import-type", true);
       else if (ts.isImportEqualsDeclaration(node)) throw new Error(`CommonJS in public closure: ${id}`);
-      else if (ts.isCallExpression(node) && node.expression.kind === ts.SyntaxKind.ImportKeyword) edge(literal(node.arguments[0]), "dynamic");
+      else if (ts.isCallExpression(node) && node.expression.kind === ts.SyntaxKind.ImportKeyword) throw new Error(`Dynamic import in public closure: ${id}`);
       if (ts.isMetaProperty(node) && node.keywordToken === ts.SyntaxKind.ImportKeyword) throw new Error(`Import metadata in public closure: ${id}`);
       if (ts.isIdentifier(node) && !ts.isPartOfTypeNode(node)) {
         const parent = node.parent;

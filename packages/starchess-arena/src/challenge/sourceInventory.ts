@@ -317,6 +317,7 @@ export const collectSourceInventory = (
       }
     }
     const partition = listed.get(importer)!.partition;
+    if (kind === "dynamic" && PURE.has(partition)) throw new Error(`Forbidden dynamic import edge: ${importer} -> ${specifier}`);
     const inventorySeam = importer === `${ARENA}/src/challenge/evidence.ts` && target === `${ARENA}/src/challenge/sourceInventory.ts` && kind === "import";
     if (targetKind === "source" && !SOURCE_PARTITION_EDGES[partition].includes(listed.get(target)!.partition) && !inventorySeam) {
       throw new Error(`Forbidden partition edge: ${importer} -> ${target}`);
