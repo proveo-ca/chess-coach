@@ -391,7 +391,9 @@ export const checkPublicClosure = (root = repository) => {
           expression.operatorToken.kind === ts.SyntaxKind.PlusToken && (ts.isNumericLiteral(unwrap(expression.left)) || ts.isNumericLiteral(unwrap(expression.right))))) return true;
       const safeType = (type) => type.isUnion() ? type.types.every(safeType)
         : Boolean(type.flags & ts.TypeFlags.NumberLike) || type.isStringLiteral() && !["constructor", "__proto__", "prototype"].includes(type.value);
-      return safeType(dataType(node));
+      const value = origin(node);
+      if (ts.isCallExpression(value) || ts.isAwaitExpression(value) || ts.isNewExpression(value) || ts.isConditionalExpression(value) || ts.isBinaryExpression(value) || ts.isTaggedTemplateExpression(value)) return false;
+      return safeType(dataType(value));
     };
     const unsafeComputedReceiver = (node, seen = new Set(), dataIndex = false, dataKey = dataIndex) => {
       const provenData = dataKey;

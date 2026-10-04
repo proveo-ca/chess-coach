@@ -67,6 +67,10 @@ const dataArrayAccesses = [
   'const rows = [...inputRows]; void rows[0][1];',
 ];
 const unprovenComputedReceivers = [
+  'const make:any=()=>()=>{}; const f=make(); const key=["con","structor"].join("") as "w"; f[key]("return process")();',
+  'const make:any=()=>()=>{}; const f=make(); const key: "w"=["con","structor"].join("") as any; f[key]("return process")();',
+  'const make:any=()=>()=>{}; const f=make(); const key=["con","structor"].join("") as unknown as number; f[key]("return process")();',
+  'const make:any=()=>()=>{}; const f=make(); const makeKey=(): "w" => ["con","structor"].join("") as "w"; const key=makeKey(); f[key]("return process")();',
   'function make(): any {return () => {};} const value = make() as Record<string, number>; const compile: any = value[["con", "structor"].join("")]; compile("return process")();',
   'const make:any=()=>()=>{}; const f:Record<string,number>=make(); const c=f[["con","structor"].join("")] as unknown as (s:string)=>()=>unknown; c("return process")();',
   'const make = (): Record<string, number> => (() => {}) as unknown as Record<string, number>; const value = make(); const compile: any = value[["con", "structor"].join("")]; compile("return process")();',

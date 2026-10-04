@@ -78,7 +78,7 @@ export function recountVitest(report) {
   for (const file of report.testResults) {
     if (!record(file) || file.status !== 'passed' || !Array.isArray(file.assertionResults)) throw new Error('Vitest report contains an unsuccessful test file');
     for (const assertion of file.assertionResults) {
-      if (!record(assertion) || !Object.hasOwn(counts, assertion.status)) throw new Error('Vitest assertion status is not counted');
+      if (!record(assertion) || typeof assertion.status !== 'string' || !Object.hasOwn(counts, assertion.status)) throw new Error('Vitest assertion status is not counted');
       switch (assertion.status) {
         case 'passed': counts.passed++; break;
         case 'failed': counts.failed++; break;

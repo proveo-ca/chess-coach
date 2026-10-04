@@ -139,6 +139,11 @@ describe("phase2 hermetic evidence import with synthetic test-only image hooks",
     value.mutate("vitest-starchess-core.json", (report) => { report.testResults[0].assertionResults[0].status = "failed"; });
     await reject(value, "Vitest report counts do not match: vitest-starchess-core.json");
   });
+  it.each([["failed"], ["passed"], {}, null, 1])("rejects malformed assertion statuses instead of coercing them: %j", async (status) => {
+    const value = fixture();
+    value.mutate("vitest-starchess-core.json", (report) => { report.testResults[0].assertionResults[0].status = status; });
+    await reject(value, "Vitest assertion status is not counted");
+  });
   it("rejects report summary counts that disagree with real assertions", async () => {
     const value = fixture(); value.mutate("vitest-starchess-core.json", (report) => { report.numPassedTests++; });
     await reject(value, "Vitest report counts do not match: vitest-starchess-core.json");
