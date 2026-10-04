@@ -67,6 +67,10 @@ const dataArrayAccesses = [
   'const rows = [...inputRows]; void rows[0][1];',
 ];
 const unprovenComputedReceivers = [
+  'function make(): any {return () => {};} const value = make() as Record<string, number>; const compile: any = value[["con", "structor"].join("")]; compile("return process")();',
+  'const make:any=()=>()=>{}; const f:Record<string,number>=make(); const c=f[["con","structor"].join("")] as unknown as (s:string)=>()=>unknown; c("return process")();',
+  'const make = (): Record<string, number> => (() => {}) as unknown as Record<string, number>; const value = make(); const compile: any = value[["con", "structor"].join("")]; compile("return process")();',
+  'const box: {f: number} = {f: 0}; (box as any).f = () => {}; const value = box.f as unknown as Record<string, number>; const compile: any = value[["con", "structor"].join("")]; compile("return process")();',
   'const make:any=()=>()=>{}; const f:any=make(); f[["con","structor"].join("")]("return process")();',
   'const box:any={f:0}; box.f=()=>{}; box.f[["con","structor"].join("")]("return process")();',
   'const make: any = function () {return function () {};}; const f: any = make(); f[["con", "structor"].join("")]("return process")();',
@@ -109,8 +113,8 @@ const ordinaryComputedData = [
   'const make: any = () => [1, 2]; const values = make(); void values[0];',
   'const values: any = unknownFactory(); const index: number = 1; void values[index];',
   'const values: any = unknownFactory(); void values["data"];',
-  'const make = (): {[key: string]: number} => ({w: 1}); const values = make(); const key: string = "w"; void values[key];',
-  'const box: {data: {[key: string]: number}} = {data: {w: 1}}; box.data.w = 2; const key: string = "w"; void box.data[key];',
+  'const make = (): {[key: string]: number} => ({w: 1}); const values = make(); const key = "w"; void values[key];',
+  'const box: {data: {[key: string]: number}} = {data: {w: 1}}; box.data.w = 2; const key = "w"; void box.data[key];',
   'const box: any = {data: [1, 2]}; box.data[0] = 3; void box.data[0];',
   'const box: any = {data: [1, 2]}; Object.assign(box, {data: [3, 4]}); void box.data[1];',
   'const values: any = unknownFactory(); const key: "w" | "b" = unknownSide; void values[key];',

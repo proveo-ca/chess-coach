@@ -358,15 +358,6 @@ export const checkPublicClosure = (root = repository) => {
       ts.forEachChild(node, scanMutations);
     };
     scanMutations(source);
-    const ordinaryDataType = (type) => type.isUnion() ? type.types.every(ordinaryDataType)
-      : Boolean(type.flags & (ts.TypeFlags.StringLike | ts.TypeFlags.NumberLike | ts.TypeFlags.BooleanLike | ts.TypeFlags.BigIntLike | ts.TypeFlags.Null | ts.TypeFlags.Undefined));
-    const typedDataReceiver = (node) => {
-      const type = dataType(node);
-      if (ordinaryDataType(type)) return true;
-      if (type.getCallSignatures().length || type.getConstructSignatures().length) return false;
-      const indices = dataChecker.getIndexInfosOfType(type);
-      return indices.length > 0 ? indices.every((index) => ordinaryDataType(index.type)) : Boolean(type.flags & ts.TypeFlags.Object);
-    };
     const safeComputedDataKey = (node) => {
       const key = staticKey(node);
       if (key !== undefined) return !["constructor", "__proto__", "prototype"].includes(key);
@@ -403,7 +394,7 @@ export const checkPublicClosure = (root = repository) => {
       return safeType(dataType(node));
     };
     const unsafeComputedReceiver = (node, seen = new Set(), dataIndex = false, dataKey = dataIndex) => {
-      const provenData = dataKey || typedDataReceiver(node);
+      const provenData = dataKey;
       if (!provenData && [...provenance(node)].some((root) => mutatedRoots.has(root))) return true;
       const expression = origin(node);
       if (seen.has(expression)) return true;
@@ -411,8 +402,7 @@ export const checkPublicClosure = (root = repository) => {
       if (checker.getTypeAtLocation(expression).getCallSignatures().length || ts.isArrowFunction(expression) || ts.isFunctionExpression(expression)) return true;
       if (ts.isCallExpression(expression) || ts.isAwaitExpression(expression) || ts.isNewExpression(expression) ||
           ts.isConditionalExpression(expression) || ts.isBinaryExpression(expression) || ts.isTaggedTemplateExpression(expression)) {
-        const type = dataType(expression);
-        if (type.getCallSignatures().length || !provenData && type.flags & (ts.TypeFlags.Any | ts.TypeFlags.Unknown)) return true;
+        if (!provenData || dataType(expression).getCallSignatures().length) return true;
       }
       const symbol = ts.isIdentifier(expression) ? checker.getSymbolAtLocation(expression) : undefined;
       const declaration = symbol?.valueDeclaration;

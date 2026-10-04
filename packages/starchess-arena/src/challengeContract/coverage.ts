@@ -39,10 +39,10 @@ export const measureCoverage = (root: URL = REPOSITORY_ROOT, bytes: PinnedCorpus
       const exact = keys.has(canonical(window.actions));
       exactQueues.total++;
       exactQueues.covered += Number(exact);
-      const lengths = byQueueLength[String(window.actions.length)] ??= counter();
+      const lengths = byQueueLength[window.actions.length] ??= counter();
       lengths.total++;
       lengths.covered += Number(exact);
-      proposalHistogram[String(proposals.length)] = (proposalHistogram[String(proposals.length)] ?? 0) + 1;
+      proposalHistogram[proposals.length] = (proposalHistogram[proposals.length] ?? 0) + 1;
       for (const action of window.actions) {
         const covered = keys.has(canonical([action]));
         singletonIntents.total++;

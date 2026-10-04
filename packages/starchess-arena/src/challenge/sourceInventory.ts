@@ -307,7 +307,7 @@ export const collectSourceInventory = (
       if (workspace) {
         const [path, value] = workspace;
         const subpath = specifier === name ? "." : `.${specifier.slice(name.length)}`;
-        const exported = selectExport(object(value.exports) ? value.exports[subpath] : subpath === "." ? value.exports : undefined);
+        const exported = selectExport(object(value.exports) ? Object.entries(value.exports).find(([key]) => key === subpath)?.[1] : subpath === "." ? value.exports : undefined);
         if (typeof exported !== "string" || !exported.startsWith("./")) throw new Error(`Unsupported workspace export: ${specifier}`);
         target = localTarget(importer, specifier, `${path}/${exported.slice(2)}`);
         targetKind = "source";
@@ -358,7 +358,7 @@ export const collectSourceInventory = (
           if (workspace) {
             const [owner, manifest] = workspace;
             const subpath = name === manifest.name ? "." : `.${name.slice(String(manifest.name).length)}`;
-            const target = selectExport(object(manifest.exports) ? manifest.exports[subpath] : manifest.exports);
+            const target = selectExport(object(manifest.exports) ? Object.entries(manifest.exports).find(([key]) => key === subpath)?.[1] : manifest.exports);
             if (target?.startsWith("./")) specifier = resolve(absoluteRoot, owner, target);
           }
           const resolved = ts.resolveModuleName(specifier, importer, options, dataHost).resolvedModule;
@@ -662,15 +662,6 @@ export const collectSourceInventory = (
       ts.forEachChild(node, scanMutations);
     };
     scanMutations(source);
-    const ordinaryDataType = (type: ts.Type): boolean => type.isUnion() ? type.types.every(ordinaryDataType)
-      : !!(type.flags & (ts.TypeFlags.StringLike | ts.TypeFlags.NumberLike | ts.TypeFlags.BooleanLike | ts.TypeFlags.BigIntLike | ts.TypeFlags.Null | ts.TypeFlags.Undefined));
-    const typedDataReceiver = (node: ts.Expression): boolean => {
-      const type = dataType(node);
-      if (ordinaryDataType(type)) return true;
-      if (type.getCallSignatures().length || type.getConstructSignatures().length) return false;
-      const indices = dataChecker!.getIndexInfosOfType(type);
-      return indices.length > 0 ? indices.every((index) => ordinaryDataType(index.type)) : !!(type.flags & ts.TypeFlags.Object);
-    };
     const safeComputedDataKey = (node: ts.Expression): boolean => {
       const key = staticKey(node);
       if (key !== undefined) return !["constructor", "__proto__", "prototype"].includes(key);
@@ -707,7 +698,7 @@ export const collectSourceInventory = (
       return safeType(dataType(node));
     };
     const unsafeComputedReceiver = (node: ts.Expression, seen = new Set<ts.Expression>(), dataIndex = false, dataKey = dataIndex): boolean => {
-      const provenData = dataKey || typedDataReceiver(node);
+      const provenData = dataKey;
       if (!provenData && [...provenance(node)].some((root) => mutatedRoots.has(root))) return true;
       const expression = origin(node);
       if (seen.has(expression)) return true;
@@ -715,8 +706,7 @@ export const collectSourceInventory = (
       if (checker.getTypeAtLocation(expression).getCallSignatures().length || ts.isArrowFunction(expression) || ts.isFunctionExpression(expression)) return true;
       if (ts.isCallExpression(expression) || ts.isAwaitExpression(expression) || ts.isNewExpression(expression) ||
           ts.isConditionalExpression(expression) || ts.isBinaryExpression(expression) || ts.isTaggedTemplateExpression(expression)) {
-        const type = dataType(expression);
-        if (type.getCallSignatures().length || !provenData && type.flags & (ts.TypeFlags.Any | ts.TypeFlags.Unknown)) return true;
+        if (!provenData || dataType(expression).getCallSignatures().length) return true;
       }
       const key = ts.isIdentifier(expression) ? binding(expression) : undefined;
       const declaration = key && typeof key !== "string" ? key.valueDeclaration : undefined;

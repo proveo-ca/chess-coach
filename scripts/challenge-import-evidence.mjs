@@ -79,7 +79,12 @@ export function recountVitest(report) {
     if (!record(file) || file.status !== 'passed' || !Array.isArray(file.assertionResults)) throw new Error('Vitest report contains an unsuccessful test file');
     for (const assertion of file.assertionResults) {
       if (!record(assertion) || !Object.hasOwn(counts, assertion.status)) throw new Error('Vitest assertion status is not counted');
-      counts[assertion.status]++;
+      switch (assertion.status) {
+        case 'passed': counts.passed++; break;
+        case 'failed': counts.failed++; break;
+        case 'pending': counts.pending++; break;
+        case 'todo': counts.todo++; break;
+      }
     }
   }
   return { ...counts, total: counts.passed + counts.failed + counts.pending + counts.todo };
@@ -287,7 +292,9 @@ async function main() {
     if (!['--execution', '--build', '--export', '--infrastructure', '--acquisition', '--image', '--destination'].includes(key) || !process.argv[index + 1] || process.argv[index + 1].startsWith('--') || Object.hasOwn(options, key)) throw new Error('Expected --execution, --build, --export, --infrastructure, --acquisition, --image, and optional --destination');
     options[key] = process.argv[index + 1];
   }
-  if (['--execution', '--build', '--export', '--infrastructure', '--acquisition', '--image'].some((key) => !options[key])) throw new Error('Execution, build, export, infrastructure, acquisition, and expected image are required');
+  for (const key of ['--execution', '--build', '--export', '--infrastructure', '--acquisition', '--image']) {
+    if (!options[key]) throw new Error('Execution, build, export, infrastructure, acquisition, and expected image are required');
+  }
   console.log(JSON.stringify(await importEvidence({ repositoryRoot: SOURCE_ROOT, executionPath: resolve(options['--execution']), buildPath: resolve(options['--build']), exportPath: resolve(options['--export']), infrastructurePath: resolve(options['--infrastructure']), acquisitionPath: resolve(options['--acquisition']), expectedImage: options['--image'], ...(options['--destination'] ? { destination: resolve(options['--destination']) } : {}) })));
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main().catch((error) => { console.error(error); process.exitCode = 1; });

@@ -7,5 +7,5 @@ export const evidenceNamespace = '_spec/evidence/ml-adjutant-r2-refresh';
 export const excludedSource = (path) => path.split('/').includes('node_modules') || path === evidenceNamespace || path.startsWith(`${evidenceNamespace}/`);
 export function workspaceManifestTarget(name) {
   if (!Object.hasOwn(workspaceTargets, name)) throw new Error(`Unselected workspace dependency: ${name}`);
-  return `/app/${workspaceTargets[name]}/package.json`;
+  return `/app/${Object.entries(workspaceTargets).find(([key]) => key === name)?.[1]}/package.json`;
 }
