@@ -27,6 +27,9 @@ const ownMemberConstructors = [
   'const box: any = {nested: {get f() {return () => {};}}}; const alias = box.nested.f; alias[["con", "structor"].join("")]("return process")();',
   'const box: any = {f: () => {}}; const alias = later; const later = box.f; alias[["con", "structor"].join("")]("return process")();',
   'const box: any = {f: () => {}}; const key = "f"; box[key][["con", "structor"].join("")]("return process")();',
+  'const box: any = {f: 0, f: () => {}}; box.f[["con", "structor"].join("")]("return process")();',
+  'const member: any = {f: () => {}}; const box: any = {...member}; box.f[["con", "structor"].join("")]("return process")();',
+  'const box: any = {f: () => {}}; (0, box.f)[["con", "structor"].join("")]("return process")();',
 ];
 afterEach(() => { for (const root of temporary.splice(0)) rmSync(root, { recursive: true, force: true }); });
 const put = (root: string, path: string, value: string): void => {
@@ -63,6 +66,11 @@ describe("partitioned challenge source inventory", () => {
     const root = fixture();
     put(root, `${CORE}/src/index.ts`, code);
     expect(() => collectSourceInventory(root)).toThrow("Unsupported code constructor acquisition");
+  });
+  it("allows computed own data indexing beside function members", () => {
+    const root = fixture();
+    put(root, `${CORE}/src/index.ts`, 'const box: any = {f: () => {}, data: {w: 1, b: 2}}; const alias = box.data; void alias[key];');
+    expect(collectSourceInventory(root).audit.passed).toBe(true);
   });
   it.each([
     'import.meta.url = "file:///contracts/anchor.cjs";',
@@ -739,6 +747,14 @@ describe("static browser public closure", () => {
     const root = fixture();
     put(root, `${CORE}/src/index.ts`, code);
     await expect(check(root)).rejects.toThrow("Code constructor acquisition in public closure");
+  });
+  it("allows computed public data indexing and the reviewed DTO descriptors", async () => {
+    const root = fixture();
+    put(root, `${CORE}/src/index.ts`, 'const box: any = {f: () => {}, data: {w: 1, b: 2}}; const alias = box.data; void alias[key];');
+    const path = `${ARENA}/src/challengeContract/validation.ts`;
+    put(root, path, readFileSync(join(repository, path), "utf8"));
+    put(root, `${ARENA}/src/observations.ts`, 'export {inspectDto} from "./challengeContract/validation";');
+    expect((await check(root)).verifiedPaths).toContain(path);
   });
 
   it("traverses actual conditional exports and pins source and manifest bytes", async () => {

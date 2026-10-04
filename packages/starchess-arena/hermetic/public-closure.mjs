@@ -174,7 +174,8 @@ export const checkPublicClosure = (root = repository) => {
     };
     const literal = (node) => node && ts.isStringLiteralLike(node) ? node.text : undefined;
     const unwrap = (node) => ts.isParenthesizedExpression(node) || ts.isAsExpression(node) || ts.isNonNullExpression(node) ||
-      ts.isTypeAssertionExpression(node) || ts.isSatisfiesExpression(node) ? unwrap(node.expression) : node;
+      ts.isTypeAssertionExpression(node) || ts.isSatisfiesExpression(node) ? unwrap(node.expression)
+      : ts.isBinaryExpression(node) && node.operatorToken.kind === ts.SyntaxKind.CommaToken ? unwrap(node.right) : node;
     const staticString = (node, seen = new Set()) => {
       const expression = unwrap(node);
       if (ts.isStringLiteralLike(expression)) return expression.text;
@@ -203,9 +204,10 @@ export const checkPublicClosure = (root = repository) => {
       if (member?.name !== undefined) {
         const receiver = origin(member.receiver, seen, next);
         if (ts.isObjectLiteralExpression(receiver)) {
-          const entry = receiver.properties.find((entry) => !ts.isSpreadAssignment(entry) &&
+          const entries = receiver.properties.filter((entry) => !ts.isSpreadAssignment(entry) &&
             (ts.isComputedPropertyName(entry.name) ? staticString(entry.name.expression)
               : ts.isIdentifier(entry.name) || ts.isStringLiteralLike(entry.name) || ts.isNumericLiteral(entry.name) ? entry.name.text : undefined) === member.name);
+          const entry = entries.length === 1 && !receiver.properties.some(ts.isSpreadAssignment) ? entries[0] : undefined;
           if (entry && ts.isPropertyAssignment(entry)) return origin(entry.initializer, seen, next);
           if (entry && ts.isShorthandPropertyAssignment(entry)) return origin(entry.name, seen, next);
         }
@@ -229,7 +231,7 @@ export const checkPublicClosure = (root = repository) => {
       const receiver = origin(member.receiver);
       if (!ts.isObjectLiteralExpression(receiver)) return false;
       return receiver.properties.some((entry) => {
-        if (ts.isSpreadAssignment(entry)) return unsafeComputedReceiver(entry.expression, next);
+        if (ts.isSpreadAssignment(entry)) return true;
         const name = ts.isComputedPropertyName(entry.name) ? staticString(entry.name.expression)
           : ts.isIdentifier(entry.name) || ts.isStringLiteralLike(entry.name) ? entry.name.text : undefined;
         if (member.name !== undefined && name !== undefined && name !== member.name) return false;

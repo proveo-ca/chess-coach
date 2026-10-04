@@ -507,16 +507,17 @@ export const collectSourceInventory = (
       return node;
     };
     const origin = (node: ts.Expression, seen = new Set<ts.Symbol | string>(), members = new Set<ts.Expression>()): ts.Expression => {
-      const expression = unwrapValue(node);
+      const expression = unwrap(node);
       if (members.has(expression)) return expression;
       const next = new Set([...members, expression]);
       const member = property(expression);
       if (member?.name !== undefined) {
         const receiver = origin(member.receiver, seen, next);
         if (ts.isObjectLiteralExpression(receiver)) {
-          const entry = receiver.properties.find((entry) => !ts.isSpreadAssignment(entry) &&
+          const entries = receiver.properties.filter((entry) => !ts.isSpreadAssignment(entry) &&
             (ts.isComputedPropertyName(entry.name) ? staticString(entry.name.expression)
               : ts.isIdentifier(entry.name) || ts.isStringLiteralLike(entry.name) || ts.isNumericLiteral(entry.name) ? entry.name.text : undefined) === member.name);
+          const entry = entries.length === 1 && !receiver.properties.some(ts.isSpreadAssignment) ? entries[0] : undefined;
           if (entry && ts.isPropertyAssignment(entry)) return origin(entry.initializer, seen, next);
           if (entry && ts.isShorthandPropertyAssignment(entry)) return origin(entry.name, seen, next);
         }
@@ -539,7 +540,7 @@ export const collectSourceInventory = (
       const receiver = origin(member.receiver);
       if (!ts.isObjectLiteralExpression(receiver)) return false;
       return receiver.properties.some((entry) => {
-        if (ts.isSpreadAssignment(entry)) return unsafeComputedReceiver(entry.expression, next);
+        if (ts.isSpreadAssignment(entry)) return true;
         const name = ts.isComputedPropertyName(entry.name) ? staticString(entry.name.expression)
           : ts.isIdentifier(entry.name) || ts.isStringLiteralLike(entry.name) ? entry.name.text : undefined;
         if (member.name !== undefined && name !== undefined && name !== member.name) return false;
