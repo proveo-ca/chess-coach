@@ -68,8 +68,9 @@ export const checkPublicClosure = (root = repository) => {
     : plain(value) && Object.keys(value).length > 0 && Object.values(value).every((branch) => canonicalBranches(branch, target));
   for (const [owner, expected] of publicExports) {
     const exports = manifests.get(owner).exports;
+    const branches = new Map(plain(exports) ? Object.entries(exports) : []);
     if (!plain(exports) || JSON.stringify(Object.keys(exports).sort()) !== JSON.stringify(Object.keys(expected).sort()) ||
-        Object.entries(expected).some(([subpath, target]) => !canonicalBranches(exports[subpath], target))) throw new Error(`Unapproved public export map: ${owner}`);
+        Object.entries(expected).some(([subpath, target]) => !canonicalBranches(branches.get(subpath), target))) throw new Error(`Unapproved public export map: ${owner}`);
   }
   const byName = new Map([...manifests].map(([owner, manifest]) => [manifest.name, owner]));
   if (byName.size !== 3 || [...byName.keys()].some((name) => typeof name !== "string")) throw new Error("Invalid workspace package names");
@@ -154,6 +155,29 @@ export const checkPublicClosure = (root = repository) => {
     const host = ts.createCompilerHost(options);
     host.getSourceFile = (file) => file === path ? source : undefined;
     const checker = ts.createProgram([path], options, host).getTypeChecker();
+    let dataChecker;
+    const dataType = (node) => {
+      if (!dataChecker) {
+        const dataOptions = { ...options, noLib: false, noResolve: false, types: [], target: ts.ScriptTarget.ES2022,
+          module: ts.ModuleKind.ESNext, moduleResolution: ts.ModuleResolutionKind.Bundler };
+        const dataHost = ts.createCompilerHost(dataOptions);
+        dataHost.getCurrentDirectory = () => root;
+        dataHost.resolveModuleNames = (names, importer) => names.map((name) => {
+          const workspaceName = [...byName.keys()].find((candidate) => name === candidate || name.startsWith(`${candidate}/`));
+          let specifier = name;
+          if (workspaceName) {
+            const owner = byName.get(workspaceName);
+            const subpath = name === workspaceName ? "." : `.${name.slice(workspaceName.length)}`;
+            specifier = resolve(root, owner, exportTarget(manifests.get(owner), subpath));
+          }
+          return ts.resolveModuleName(specifier, importer, dataOptions, dataHost).resolvedModule;
+        });
+        const getSourceFile = dataHost.getSourceFile;
+        dataHost.getSourceFile = (file, ...args) => file === path ? source : getSourceFile(file, ...args);
+        dataChecker = ts.createProgram([path], dataOptions, dataHost).getTypeChecker();
+      }
+      return dataChecker.getTypeAtLocation(node);
+    };
     const globalReference = (node) => {
       const symbol = checker.getSymbolAtLocation(node);
       return !symbol?.declarations?.length;
@@ -243,6 +267,10 @@ export const checkPublicClosure = (root = repository) => {
       const expression = unwrap(node);
       if (members.has(expression)) return expression;
       const next = new Set([...members, expression]);
+      if (ts.isCallExpression(expression) && expression.arguments.length === 1) {
+        const method = property(expression.expression);
+        if (method?.name === "freeze" && builtinNamespace(method.receiver, "Object")) return origin(expression.arguments[0], seen, next);
+      }
       const member = property(expression);
       if (member?.name !== undefined) {
         const entry = ownMember(origin(member.receiver, seen, next), member.name);
@@ -261,18 +289,130 @@ export const checkPublicClosure = (root = repository) => {
       return declaration && ts.isVariableDeclaration(declaration) && declaration.initializer
         ? origin(declaration.initializer, new Set([...seen, symbol]), next) : expression;
     };
-    const unsafeComputedReceiver = (node, seen = new Set(), dataIndex = false) => {
+    const binding = (node) => ts.isShorthandPropertyAssignment(node.parent) ? checker.getShorthandAssignmentValueSymbol(node.parent)
+      : checker.getSymbolAtLocation(node);
+    const provenance = (node, seen = new Set()) => {
+      const expression = unwrap(node);
+      const roots = new Set();
+      if (seen.has(expression)) return roots;
+      roots.add(expression);
+      const next = new Set([...seen, expression]);
+      const add = (value) => { for (const root of provenance(value, next)) roots.add(root); };
+      if (ts.isIdentifier(expression)) {
+        const symbol = binding(expression);
+        roots.add(symbol ?? expression.text);
+        const declaration = symbol?.valueDeclaration;
+        if (declaration && ts.isVariableDeclaration(declaration) && declaration.initializer) add(declaration.initializer);
+        if (declaration && ts.isBindingElement(declaration)) {
+          const member = bindingMember(declaration);
+          if (member) add(member.receiver);
+        }
+      }
+      const member = property(expression);
+      if (member) {
+        add(member.receiver);
+        const entry = ownMember(origin(member.receiver), member.name);
+        if (entry) add(entry);
+      }
+      if (ts.isCallExpression(expression)) add(expression.expression);
+      if (ts.isBinaryExpression(expression) && expression.operatorToken.kind >= ts.SyntaxKind.FirstAssignment && expression.operatorToken.kind <= ts.SyntaxKind.LastAssignment) add(expression.left);
+      return roots;
+    };
+    const builtinNamespace = (node, name) => {
+      const expression = origin(node), member = property(expression);
+      return ts.isIdentifier(expression) && expression.text === name && globalReference(expression) || member?.name === name &&
+        ts.isIdentifier(member.receiver) && ["globalThis", "global"].includes(member.receiver.text) && globalReference(member.receiver);
+    };
+    const mutatedRoots = new Set();
+    const markMutation = (node) => { for (const root of provenance(node)) mutatedRoots.add(root); };
+    const scanMutations = (node) => {
+      const writes = (target) => {
+        if (ts.isIdentifier(target)) mutatedRoots.add(binding(target) ?? target.text);
+        else if (ts.isPropertyAccessExpression(target) || ts.isElementAccessExpression(target)) markMutation(target);
+        else if (ts.isParenthesizedExpression(target) || ts.isAsExpression(target) || ts.isNonNullExpression(target) || ts.isTypeAssertionExpression(target)) writes(target.expression);
+        else if (ts.isArrayLiteralExpression(target)) for (const child of target.elements) writes(child);
+        else if (ts.isObjectLiteralExpression(target)) for (const child of target.properties) writes(child);
+        else if (ts.isPropertyAssignment(target)) writes(target.initializer);
+        else if (ts.isShorthandPropertyAssignment(target)) writes(target.name);
+        else if (ts.isSpreadElement(target) || ts.isSpreadAssignment(target)) writes(target.expression);
+        else if (ts.isBinaryExpression(target) && target.operatorToken.kind === ts.SyntaxKind.EqualsToken) writes(target.left);
+      };
+      if (ts.isBinaryExpression(node) && node.operatorToken.kind >= ts.SyntaxKind.FirstAssignment && node.operatorToken.kind <= ts.SyntaxKind.LastAssignment) writes(node.left);
+      if ((ts.isPrefixUnaryExpression(node) || ts.isPostfixUnaryExpression(node)) && [ts.SyntaxKind.PlusPlusToken, ts.SyntaxKind.MinusMinusToken].includes(node.operator)) writes(node.operand);
+      if (ts.isDeleteExpression(node)) writes(node.expression);
+      if ((ts.isForOfStatement(node) || ts.isForInStatement(node)) && !ts.isVariableDeclarationList(node.initializer)) writes(node.initializer);
+      if (ts.isCallExpression(node)) {
+        const member = property(origin(node.expression));
+        if (node.arguments[0] && member && (builtinNamespace(member.receiver, "Object") && ["assign", "defineProperty", "defineProperties"].includes(member.name ?? "") ||
+            builtinNamespace(member.receiver, "Reflect") && ["set", "deleteProperty", "defineProperty"].includes(member.name ?? ""))) markMutation(node.arguments[0]);
+        if (member && ["push", "pop", "shift", "unshift", "splice", "sort", "reverse", "fill", "copyWithin"].includes(member.name ?? "")) markMutation(member.receiver);
+      }
+      ts.forEachChild(node, scanMutations);
+    };
+    scanMutations(source);
+    const ordinaryDataType = (type) => type.isUnion() ? type.types.every(ordinaryDataType)
+      : Boolean(type.flags & (ts.TypeFlags.StringLike | ts.TypeFlags.NumberLike | ts.TypeFlags.BooleanLike | ts.TypeFlags.BigIntLike | ts.TypeFlags.Null | ts.TypeFlags.Undefined));
+    const typedDataReceiver = (node) => {
+      const type = dataType(node);
+      if (ordinaryDataType(type)) return true;
+      if (type.getCallSignatures().length || type.getConstructSignatures().length) return false;
+      const indices = dataChecker.getIndexInfosOfType(type);
+      return indices.length > 0 ? indices.every((index) => ordinaryDataType(index.type)) : Boolean(type.flags & ts.TypeFlags.Object);
+    };
+    const safeComputedDataKey = (node) => {
+      const key = staticKey(node);
+      if (key !== undefined) return !["constructor", "__proto__", "prototype"].includes(key);
+      const expression = unwrap(node);
+      if (ts.isIdentifier(expression)) {
+        const symbol = binding(expression);
+        if (symbol && !mutatedRoots.has(symbol)) {
+          const boundedCondition = (condition) => {
+            const value = unwrap(condition);
+            if (ts.isBinaryExpression(value) && value.operatorToken.kind === ts.SyntaxKind.AmpersandAmpersandToken) return boundedCondition(value.left) || boundedCondition(value.right);
+            if (!ts.isCallExpression(value) || value.arguments.length !== 1) return false;
+            const member = property(value.expression), argument = unwrap(value.arguments[0]);
+            return member?.name === "includes" && ts.isArrayLiteralExpression(member.receiver) && member.receiver.elements.length > 0 &&
+              member.receiver.elements.every((entry) => ts.isStringLiteralLike(entry) && !["constructor", "__proto__", "prototype"].includes(entry.text)) &&
+              ts.isIdentifier(argument) && binding(argument) === symbol;
+          };
+          for (let branch = node; branch.parent; branch = branch.parent) {
+            if (ts.isIfStatement(branch.parent) && branch.parent.thenStatement === branch && boundedCondition(branch.parent.expression)) return true;
+          }
+        }
+        const declaration = symbol?.valueDeclaration;
+        if (declaration && ts.isVariableDeclaration(declaration) && ts.isVariableDeclarationList(declaration.parent) && declaration.parent.flags & ts.NodeFlags.Const) {
+          const loop = declaration.parent.parent;
+          if (ts.isForOfStatement(loop) && ts.isArrayLiteralExpression(unwrap(loop.expression)) &&
+              unwrap(loop.expression).elements.every((entry) => ts.isStringLiteralLike(entry) && !["constructor", "__proto__", "prototype"].includes(entry.text))) return true;
+        }
+      }
+      if (ts.isBinaryExpression(expression) && ([ts.SyntaxKind.MinusToken, ts.SyntaxKind.AsteriskToken, ts.SyntaxKind.AsteriskAsteriskToken,
+          ts.SyntaxKind.SlashToken, ts.SyntaxKind.PercentToken, ts.SyntaxKind.LessThanLessThanToken, ts.SyntaxKind.GreaterThanGreaterThanToken,
+          ts.SyntaxKind.GreaterThanGreaterThanGreaterThanToken, ts.SyntaxKind.AmpersandToken, ts.SyntaxKind.BarToken, ts.SyntaxKind.CaretToken].includes(expression.operatorToken.kind) ||
+          expression.operatorToken.kind === ts.SyntaxKind.PlusToken && (ts.isNumericLiteral(unwrap(expression.left)) || ts.isNumericLiteral(unwrap(expression.right))))) return true;
+      const safeType = (type) => type.isUnion() ? type.types.every(safeType)
+        : Boolean(type.flags & ts.TypeFlags.NumberLike) || type.isStringLiteral() && !["constructor", "__proto__", "prototype"].includes(type.value);
+      return safeType(dataType(node));
+    };
+    const unsafeComputedReceiver = (node, seen = new Set(), dataIndex = false, dataKey = dataIndex) => {
+      const provenData = dataKey || typedDataReceiver(node);
+      if (!provenData && [...provenance(node)].some((root) => mutatedRoots.has(root))) return true;
       const expression = origin(node);
       if (seen.has(expression)) return true;
       const next = new Set([...seen, expression]);
       if (checker.getTypeAtLocation(expression).getCallSignatures().length || ts.isArrowFunction(expression) || ts.isFunctionExpression(expression)) return true;
+      if (ts.isCallExpression(expression) || ts.isAwaitExpression(expression) || ts.isNewExpression(expression) ||
+          ts.isConditionalExpression(expression) || ts.isBinaryExpression(expression) || ts.isTaggedTemplateExpression(expression)) {
+        const type = dataType(expression);
+        if (type.getCallSignatures().length || !provenData && type.flags & (ts.TypeFlags.Any | ts.TypeFlags.Unknown)) return true;
+      }
       const symbol = ts.isIdentifier(expression) ? checker.getSymbolAtLocation(expression) : undefined;
       const declaration = symbol?.valueDeclaration;
       const destructured = declaration && ts.isBindingElement(declaration) ? declaration : undefined;
       if (destructured?.initializer && unsafeComputedReceiver(destructured.initializer, next)) return true;
       const member = property(expression) ?? (destructured ? bindingMember(destructured) : undefined);
       if (!member) return false;
-      if (unsafeComputedReceiver(member.receiver, next, dataIndex)) return true;
+      if (unsafeComputedReceiver(member.receiver, next, dataIndex, provenData)) return true;
       const receiver = origin(member.receiver);
       if (ts.isArrayLiteralExpression(receiver)) {
         if (receiver.elements.some(ts.isSpreadElement)) return !dataIndex;
@@ -289,7 +429,21 @@ export const checkPublicClosure = (root = repository) => {
           : ts.isShorthandPropertyAssignment(entry) && unsafeComputedReceiver(entry.name, next);
       });
     };
+    const reviewedDescriptor = (node) => {
+      if (id !== `${ARENA}/src/challengeContract/validation.ts`) return false;
+      const failDeclaration = source.statements.filter(ts.isVariableStatement).flatMap((statement) => [...statement.declarationList.declarations])
+        .find((declaration) => ts.isIdentifier(declaration.name) && declaration.name.text === "fail");
+      if (failDeclaration?.getText(source) !== 'fail = (path: string, code = "SCHEMA"): never => { throw new ContractError(path, code); }') return false;
+      for (let declaration = node; declaration; declaration = declaration.parent) {
+        if (ts.isVariableDeclaration(declaration) && ts.isIdentifier(declaration.name) && declaration.name.text === "inspectDto") {
+          return sha256(declaration.getText(source)) === "d8652cde892c49aca2285f14a6720c718d622fb5cf3cfc97308c118d7ae46008";
+        }
+      }
+      return false;
+    };
     const scan = (node) => {
+      if (id === `${ARENA}/src/challengeContract/validation.ts` && ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) &&
+          node.name.text === "inspectDto" && !reviewedDescriptor(node)) throw new Error(`Code constructor acquisition in public closure: ${id}`);
       if (ts.isImportDeclaration(node) || ts.isExportDeclaration(node)) {
         if (node.moduleSpecifier) {
           const typeOnly = ts.isImportDeclaration(node) ? node.importClause?.isTypeOnly === true ||
@@ -302,9 +456,15 @@ export const checkPublicClosure = (root = repository) => {
       else if (ts.isCallExpression(node) && node.expression.kind === ts.SyntaxKind.ImportKeyword) throw new Error(`Dynamic import in public closure: ${id}`);
       if (ts.isMetaProperty(node) && node.keywordToken === ts.SyntaxKind.ImportKeyword) throw new Error(`Import metadata in public closure: ${id}`);
       const member = !ts.isPartOfTypeNode(node) && (ts.isPropertyAccessExpression(node) || ts.isElementAccessExpression(node)) ? property(node) : undefined;
+      const directDataWrite = ts.isElementAccessExpression(node) && ts.isBinaryExpression(node.parent) && node.parent.left === node &&
+        node.parent.operatorToken.kind >= ts.SyntaxKind.FirstAssignment && node.parent.operatorToken.kind <= ts.SyntaxKind.LastAssignment;
+      const scalarComparison = ts.isElementAccessExpression(node) && (ts.isTypeOfExpression(node.parent) || ts.isBinaryExpression(node.parent) &&
+        [ts.SyntaxKind.LessThanToken, ts.SyntaxKind.LessThanEqualsToken, ts.SyntaxKind.GreaterThanToken, ts.SyntaxKind.GreaterThanEqualsToken,
+          ts.SyntaxKind.EqualsEqualsToken, ts.SyntaxKind.EqualsEqualsEqualsToken, ts.SyntaxKind.ExclamationEqualsToken, ts.SyntaxKind.ExclamationEqualsEqualsToken]
+          .includes(node.parent.operatorToken.kind));
       if (!dependency && (["constructor", "__proto__"].includes(member?.name) ||
-          ts.isElementAccessExpression(node) && unsafeComputedReceiver(node.expression, new Set(),
-            /^(0|[1-9][0-9]*)$/.test(staticKey(node.argumentExpression) ?? "")))) throw new Error(`Code constructor acquisition in public closure: ${id}`);
+          ts.isElementAccessExpression(node) && !directDataWrite && !reviewedDescriptor(node) && unsafeComputedReceiver(node.expression, new Set(),
+            /^(0|[1-9][0-9]*)$/.test(staticKey(node.argumentExpression) ?? ""), scalarComparison || safeComputedDataKey(node.argumentExpression)))) throw new Error(`Code constructor acquisition in public closure: ${id} -> ${node.getText(source)}`);
       if (ts.isIdentifier(node) && !ts.isPartOfTypeNode(node)) {
         const parent = node.parent;
         const propertyName = ts.isPropertyAccessExpression(parent) && parent.name === node ||

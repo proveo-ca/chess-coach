@@ -92,6 +92,18 @@ const unprovenComputedReceivers = [
   'const box: any = {f: 0}; [box.f] = [() => {}]; box.f[["con", "structor"].join("")]("return process")();',
   'const box: any = {f: 0}; ({f: box.f} = {f: () => {}}); box.f[["con", "structor"].join("")]("return process")();',
   'const box: any = {f: 0, other: 0}; box.other = 1; box.f[unknownKey];',
+  'const make: any = () => () => {}; const f: any = condition ? make() : make(); f[["con", "structor"].join("")]("return process")();',
+  'const make: any = () => () => {}; const f: any = make() || make(); f[["con", "structor"].join("")]("return process")();',
+  'const make: any = async () => () => {}; const f: any = await make(); f[["con", "structor"].join("")]("return process")();',
+  'const make: any = function () {return () => {};}; const f: any = new make(); f[["con", "structor"].join("")]("return process")();',
+  'const box: any = {f: 0}; const f: any = box.f = () => {}; f[["con", "structor"].join("")]("return process")();',
+  'const array: any = [0]; array.fill(() => {}); const f: any = array[0]; f[["con", "structor"].join("")]("return process")();',
+  'const array: any = [0]; array.splice(0, 1, () => {}); const [f] = array; f[["con", "structor"].join("")]("return process")();',
+  'const make: any = () => () => {}; const key = ["con", "structor"].join(""); if (["data"].includes(key) || true) make()[key]("return process")();',
+  'const make: any = () => () => {}; let key: any = "data"; if (["data"].includes(key)) {key = ["con", "structor"].join(""); make()[key]("return process")();}',
+  'const array: any = [0, () => {}]; array.reverse(); const f: any = array[0]; f[["con", "structor"].join("")]("return process")();',
+  'const box = {f: 0}; (box as any).f = () => {}; (box.f as any)[["con", "structor"].join("")]("return process")();',
+  'const box: any = {f: 0}; function mutate() {box.f = () => {};} mutate(); box.f[["con", "structor"].join("")]("return process")();',
 ];
 const ordinaryComputedData = [
   'const make: any = () => [1, 2]; const values = make(); void values[0];',
@@ -102,6 +114,12 @@ const ordinaryComputedData = [
   'const box: any = {data: [1, 2]}; box.data[0] = 3; void box.data[0];',
   'const box: any = {data: [1, 2]}; Object.assign(box, {data: [3, 4]}); void box.data[1];',
   'const values: any = unknownFactory(); const key: "w" | "b" = unknownSide; void values[key];',
+  'const values: any = unknownFactory(); for (const key of ["w", "b"]) void values[key];',
+  'const values: any = unknownFactory(); const key = unknownKey; if (["w", "b"].includes(key)) void values[key];',
+  'const values: any = unknownFactory(); void values[values.indexOf("first") + 1];',
+  'function charge(budget: any, field: string, amount: number) {budget[field] += amount; if (budget[field] > 100) throw new Error("limit");}',
+  'function inspect(value: {[key: string]: unknown}, key: string) {let alias: unknown = value.data; alias = null; return value[key];}',
+  'function access(array: any, index: number) {void array[index];} function Function(value: string) {return value;} void Function("data");',
 ];
 afterEach(() => { for (const root of temporary.splice(0)) rmSync(root, { recursive: true, force: true }); });
 const put = (root: string, path: string, value: string): void => {
@@ -134,6 +152,11 @@ const fixture = (): string => {
 };
 
 describe("partitioned challenge source inventory", () => {
+  it("preserves global evaluation rejection after data-type inference", () => {
+    const root = fixture();
+    put(root, `${CORE}/src/index.ts`, 'function access(array: any, index: number) {void array[index];} Function("return process")();');
+    expect(() => collectSourceInventory(root)).toThrow("Unsupported string evaluation");
+  });
   it.each(unprovenComputedReceivers)("rejects unproven call-derived or mutated receivers: %s", (code) => {
     const root = fixture();
     put(root, `${CORE}/src/index.ts`, code);
@@ -835,6 +858,12 @@ describe("static browser public closure", () => {
     return checkPublicClosure(root);
   };
 
+  it("preserves public host-global rejection after data-type inference", async () => {
+    const root = fixture();
+    put(root, `${CORE}/src/index.ts`, 'function access(array: any, index: number) {void array[index];} Function("return process")();');
+    await expect(check(root)).rejects.toThrow("Host global in public closure");
+  });
+
   it.each(unprovenComputedReceivers)("rejects public unproven call-derived or mutated receivers: %s", async (code) => {
     const root = fixture();
     put(root, `${CORE}/src/index.ts`, code);
@@ -869,6 +898,19 @@ describe("static browser public closure", () => {
     put(root, path, readFileSync(join(repository, path), "utf8"));
     put(root, `${ARENA}/src/observations.ts`, 'export {inspectDto} from "./challengeContract/validation";');
     expect((await check(root)).verifiedPaths).toContain(path);
+  });
+
+  it.each([
+    ['depth > 16 || ++state.visits > 8192', 'depth > 26 || ++state.visits > 81920'],
+    ['throw new ContractError(path, code);', 'return value as never;'],
+  ])("rejects a changed public DTO seam: %s", async (before, after) => {
+    const root = fixture();
+    const path = `${ARENA}/src/challengeContract/validation.ts`;
+    const original = readFileSync(join(repository, path), "utf8");
+    expect(original).toContain(before);
+    put(root, path, original.replace(before, after));
+    put(root, `${ARENA}/src/observations.ts`, 'export {inspectDto} from "./challengeContract/validation";');
+    await expect(check(root)).rejects.toThrow("Code constructor acquisition in public closure");
   });
 
   it("traverses actual conditional exports and pins source and manifest bytes", async () => {

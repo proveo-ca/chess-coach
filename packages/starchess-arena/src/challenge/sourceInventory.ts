@@ -342,6 +342,31 @@ export const collectSourceInventory = (
     const host = ts.createCompilerHost(bindingOptions);
     host.getSourceFile = (path) => path === file.path ? source : undefined;
     const checker = ts.createProgram([file.path], bindingOptions, host).getTypeChecker();
+    let dataChecker: ts.TypeChecker | undefined;
+    const dataType = (node: ts.Node): ts.Type => {
+      if (!dataChecker) {
+        const options: ts.CompilerOptions = { ...bindingOptions, noLib: false, noResolve: false, types: [], target: ts.ScriptTarget.ES2022,
+          module: ts.ModuleKind.ESNext, moduleResolution: ts.ModuleResolutionKind.Bundler };
+        const dataHost = ts.createCompilerHost(options);
+        dataHost.getCurrentDirectory = () => absoluteRoot;
+        dataHost.resolveModuleNames = (names, importer) => names.map((name) => {
+          const workspace = [...manifests].find(([owner, manifest]) => owner && typeof manifest.name === "string" &&
+            (name === manifest.name || name.startsWith(`${manifest.name}/`)));
+          let specifier = name;
+          if (workspace) {
+            const [owner, manifest] = workspace;
+            const subpath = name === manifest.name ? "." : `.${name.slice(String(manifest.name).length)}`;
+            const target = selectExport(object(manifest.exports) ? manifest.exports[subpath] : manifest.exports);
+            if (target?.startsWith("./")) specifier = resolve(absoluteRoot, owner, target);
+          }
+          return ts.resolveModuleName(specifier, importer, options, dataHost).resolvedModule;
+        });
+        const getSourceFile = dataHost.getSourceFile;
+        dataHost.getSourceFile = (path, ...args) => path === file.path ? source : getSourceFile(path, ...args);
+        dataChecker = ts.createProgram([file.path], options, dataHost).getTypeChecker();
+      }
+      return dataChecker.getTypeAtLocation(node);
+    };
     const binding = (node: ts.Identifier): ts.Symbol | string => {
       const parent = node.parent;
       const symbol = ts.isShorthandPropertyAssignment(parent) ? checker.getShorthandAssignmentValueSymbol(parent)
@@ -553,6 +578,10 @@ export const collectSourceInventory = (
       const expression = unwrap(node);
       if (members.has(expression)) return expression;
       const next = new Set([...members, expression]);
+      if (ts.isCallExpression(expression) && expression.arguments.length === 1) {
+        const method = property(expression.expression);
+        if (method?.name === "freeze" && objectNamespace(method.receiver)) return origin(expression.arguments[0]!, seen, next);
+      }
       const member = property(expression);
       if (member?.name !== undefined) {
         const entry = ownMember(origin(member.receiver, seen, next), member.name);
@@ -570,18 +599,123 @@ export const collectSourceInventory = (
       return declaration && ts.isVariableDeclaration(declaration) && declaration.initializer
         ? origin(declaration.initializer, new Set([...seen, key]), next) : expression;
     };
-    const unsafeComputedReceiver = (node: ts.Expression, seen = new Set<ts.Expression>(), dataIndex = false): boolean => {
+    const provenance = (node: ts.Expression, seen = new Set<ts.Expression>()): Set<ts.Expression | ts.Symbol | string> => {
+      const expression = unwrap(node);
+      const roots = new Set<ts.Expression | ts.Symbol | string>();
+      if (seen.has(expression)) return roots;
+      roots.add(expression);
+      const next = new Set([...seen, expression]);
+      const add = (value: ts.Expression): void => { for (const root of provenance(value, next)) roots.add(root); };
+      if (ts.isIdentifier(expression)) {
+        const key = binding(expression);
+        roots.add(key);
+        const declaration = typeof key !== "string" ? key.valueDeclaration : undefined;
+        if (declaration && ts.isVariableDeclaration(declaration) && declaration.initializer) add(declaration.initializer);
+        if (declaration && ts.isBindingElement(declaration)) {
+          const member = bindingMember(declaration);
+          if (member) add(member.receiver);
+        }
+      }
+      const member = property(expression);
+      if (member) {
+        add(member.receiver);
+        const entry = ownMember(origin(member.receiver), member.name);
+        if (entry) add(entry);
+      }
+      if (ts.isCallExpression(expression)) add(expression.expression);
+      if (ts.isBinaryExpression(expression) && expression.operatorToken.kind >= ts.SyntaxKind.FirstAssignment && expression.operatorToken.kind <= ts.SyntaxKind.LastAssignment) add(expression.left);
+      return roots;
+    };
+    const mutatedRoots = new Set<ts.Expression | ts.Symbol | string>();
+    const markMutation = (node: ts.Expression): void => { for (const root of provenance(node)) mutatedRoots.add(root); };
+    const scanMutations = (node: ts.Node): void => {
+      const writes = (target: ts.Node): void => {
+        if (ts.isIdentifier(target)) mutatedRoots.add(binding(target));
+        else if (ts.isPropertyAccessExpression(target) || ts.isElementAccessExpression(target)) markMutation(target);
+        else if (ts.isParenthesizedExpression(target) || ts.isAsExpression(target) || ts.isNonNullExpression(target) || ts.isTypeAssertionExpression(target)) writes(target.expression);
+        else if (ts.isArrayLiteralExpression(target)) for (const child of target.elements) writes(child);
+        else if (ts.isObjectLiteralExpression(target)) for (const child of target.properties) writes(child);
+        else if (ts.isPropertyAssignment(target)) writes(target.initializer);
+        else if (ts.isShorthandPropertyAssignment(target)) writes(target.name);
+        else if (ts.isSpreadElement(target) || ts.isSpreadAssignment(target)) writes(target.expression);
+        else if (ts.isBinaryExpression(target) && target.operatorToken.kind === ts.SyntaxKind.EqualsToken) writes(target.left);
+      };
+      if (ts.isBinaryExpression(node) && node.operatorToken.kind >= ts.SyntaxKind.FirstAssignment && node.operatorToken.kind <= ts.SyntaxKind.LastAssignment) writes(node.left);
+      if ((ts.isPrefixUnaryExpression(node) || ts.isPostfixUnaryExpression(node)) && [ts.SyntaxKind.PlusPlusToken, ts.SyntaxKind.MinusMinusToken].includes(node.operator)) writes(node.operand);
+      if (ts.isDeleteExpression(node)) writes(node.expression);
+      if ((ts.isForOfStatement(node) || ts.isForInStatement(node)) && !ts.isVariableDeclarationList(node.initializer)) writes(node.initializer);
+      if (ts.isCallExpression(node)) {
+        const member = property(origin(node.expression));
+        if (node.arguments[0] && member && (objectNamespace(origin(member.receiver)) && ["assign", "defineProperty", "defineProperties"].includes(member.name ?? "") ||
+            reflectionNamespace(origin(member.receiver)) && ["set", "deleteProperty", "defineProperty"].includes(member.name ?? ""))) markMutation(node.arguments[0]);
+        if (member && ["push", "pop", "shift", "unshift", "splice", "sort", "reverse", "fill", "copyWithin"].includes(member.name ?? "")) markMutation(member.receiver);
+      }
+      ts.forEachChild(node, scanMutations);
+    };
+    scanMutations(source);
+    const ordinaryDataType = (type: ts.Type): boolean => type.isUnion() ? type.types.every(ordinaryDataType)
+      : !!(type.flags & (ts.TypeFlags.StringLike | ts.TypeFlags.NumberLike | ts.TypeFlags.BooleanLike | ts.TypeFlags.BigIntLike | ts.TypeFlags.Null | ts.TypeFlags.Undefined));
+    const typedDataReceiver = (node: ts.Expression): boolean => {
+      const type = dataType(node);
+      if (ordinaryDataType(type)) return true;
+      if (type.getCallSignatures().length || type.getConstructSignatures().length) return false;
+      const indices = dataChecker!.getIndexInfosOfType(type);
+      return indices.length > 0 ? indices.every((index) => ordinaryDataType(index.type)) : !!(type.flags & ts.TypeFlags.Object);
+    };
+    const safeComputedDataKey = (node: ts.Expression): boolean => {
+      const key = staticKey(node);
+      if (key !== undefined) return !["constructor", "__proto__", "prototype"].includes(key);
+      const expression = unwrap(node);
+      if (ts.isIdentifier(expression)) {
+        const symbol = binding(expression);
+        if (typeof symbol !== "string" && !mutatedRoots.has(symbol)) {
+          const boundedCondition = (condition: ts.Expression): boolean => {
+            const value = unwrap(condition);
+            if (ts.isBinaryExpression(value) && value.operatorToken.kind === ts.SyntaxKind.AmpersandAmpersandToken) return boundedCondition(value.left) || boundedCondition(value.right);
+            if (!ts.isCallExpression(value) || value.arguments.length !== 1) return false;
+            const member = property(value.expression), argument = unwrap(value.arguments[0]!);
+            return member?.name === "includes" && ts.isArrayLiteralExpression(member.receiver) && member.receiver.elements.length > 0 &&
+              member.receiver.elements.every((entry) => ts.isStringLiteralLike(entry) && !["constructor", "__proto__", "prototype"].includes(entry.text)) &&
+              ts.isIdentifier(argument) && binding(argument) === symbol;
+          };
+          for (let branch: ts.Node = node; branch.parent; branch = branch.parent) {
+            if (ts.isIfStatement(branch.parent) && branch.parent.thenStatement === branch && boundedCondition(branch.parent.expression)) return true;
+          }
+        }
+        const declaration = typeof symbol !== "string" ? symbol.valueDeclaration : undefined;
+        if (declaration && ts.isVariableDeclaration(declaration) && ts.isVariableDeclarationList(declaration.parent) && declaration.parent.flags & ts.NodeFlags.Const) {
+          const loop = declaration.parent.parent;
+          if (ts.isForOfStatement(loop) && ts.isArrayLiteralExpression(unwrap(loop.expression)) &&
+              (unwrap(loop.expression) as ts.ArrayLiteralExpression).elements.every((entry) => ts.isStringLiteralLike(entry) && !["constructor", "__proto__", "prototype"].includes(entry.text))) return true;
+        }
+      }
+      if (ts.isBinaryExpression(expression) && ([ts.SyntaxKind.MinusToken, ts.SyntaxKind.AsteriskToken, ts.SyntaxKind.AsteriskAsteriskToken,
+          ts.SyntaxKind.SlashToken, ts.SyntaxKind.PercentToken, ts.SyntaxKind.LessThanLessThanToken, ts.SyntaxKind.GreaterThanGreaterThanToken,
+          ts.SyntaxKind.GreaterThanGreaterThanGreaterThanToken, ts.SyntaxKind.AmpersandToken, ts.SyntaxKind.BarToken, ts.SyntaxKind.CaretToken].includes(expression.operatorToken.kind) ||
+          expression.operatorToken.kind === ts.SyntaxKind.PlusToken && (ts.isNumericLiteral(unwrap(expression.left)) || ts.isNumericLiteral(unwrap(expression.right))))) return true;
+      const safeType = (type: ts.Type): boolean => type.isUnion() ? type.types.every(safeType)
+        : !!(type.flags & ts.TypeFlags.NumberLike) || type.isStringLiteral() && !["constructor", "__proto__", "prototype"].includes(type.value);
+      return safeType(dataType(node));
+    };
+    const unsafeComputedReceiver = (node: ts.Expression, seen = new Set<ts.Expression>(), dataIndex = false, dataKey = dataIndex): boolean => {
+      const provenData = dataKey || typedDataReceiver(node);
+      if (!provenData && [...provenance(node)].some((root) => mutatedRoots.has(root))) return true;
       const expression = origin(node);
       if (seen.has(expression)) return true;
       const next = new Set([...seen, expression]);
       if (checker.getTypeAtLocation(expression).getCallSignatures().length || ts.isArrowFunction(expression) || ts.isFunctionExpression(expression)) return true;
+      if (ts.isCallExpression(expression) || ts.isAwaitExpression(expression) || ts.isNewExpression(expression) ||
+          ts.isConditionalExpression(expression) || ts.isBinaryExpression(expression) || ts.isTaggedTemplateExpression(expression)) {
+        const type = dataType(expression);
+        if (type.getCallSignatures().length || !provenData && type.flags & (ts.TypeFlags.Any | ts.TypeFlags.Unknown)) return true;
+      }
       const key = ts.isIdentifier(expression) ? binding(expression) : undefined;
       const declaration = key && typeof key !== "string" ? key.valueDeclaration : undefined;
       const destructured = declaration && ts.isBindingElement(declaration) ? declaration : undefined;
       if (destructured?.initializer && unsafeComputedReceiver(destructured.initializer, next)) return true;
       const member = property(expression) ?? (destructured ? bindingMember(destructured) : undefined);
       if (!member) return false;
-      if (unsafeComputedReceiver(member.receiver, next, dataIndex)) return true;
+      if (unsafeComputedReceiver(member.receiver, next, dataIndex, provenData)) return true;
       const receiver = origin(member.receiver);
       if (ts.isArrayLiteralExpression(receiver)) {
         if (receiver.elements.some(ts.isSpreadElement)) return !dataIndex;
@@ -672,8 +806,16 @@ export const collectSourceInventory = (
       if (accessed && reflectionNamespace(accessed.receiver) && !["ownKeys", "apply", "has", "set", "deleteProperty"].includes(accessed.name ?? "")) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
       if (ts.isBindingElement(node) && node.propertyName && ((ts.isIdentifier(node.propertyName) || ts.isStringLiteralLike(node.propertyName)) && ["constructor", "__proto__", "getPrototypeOf", "getOwnPropertyDescriptors", "getOwnPropertyDescriptor"].includes(node.propertyName.text) || ts.isComputedPropertyName(node.propertyName))) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
       if (ts.isElementAccessExpression(node) && mutableOrigin(node.expression) && !safeDataKey(node.argumentExpression)) throw new Error(`Unsupported mutable computed receiver: ${file.path}`);
-      if (ts.isElementAccessExpression(node) && unsafeComputedReceiver(node.expression, new Set(),
-          /^(0|[1-9][0-9]*)$/.test(staticKey(node.argumentExpression) ?? ""))) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
+      if (ts.isElementAccessExpression(node) && loader(node.expression) && staticKey(node.argumentExpression) === undefined) throw new Error(`Unsupported loader escape: ${file.path}`);
+      const directDataWrite = ts.isElementAccessExpression(node) && ts.isBinaryExpression(wrappedUse(node).parent) &&
+        (wrappedUse(node).parent as ts.BinaryExpression).left === wrappedUse(node) && (wrappedUse(node).parent as ts.BinaryExpression).operatorToken.kind >= ts.SyntaxKind.FirstAssignment &&
+        (wrappedUse(node).parent as ts.BinaryExpression).operatorToken.kind <= ts.SyntaxKind.LastAssignment;
+      const scalarComparison = ts.isElementAccessExpression(node) && (ts.isTypeOfExpression(wrappedUse(node).parent) || ts.isBinaryExpression(wrappedUse(node).parent) &&
+        [ts.SyntaxKind.LessThanToken, ts.SyntaxKind.LessThanEqualsToken, ts.SyntaxKind.GreaterThanToken, ts.SyntaxKind.GreaterThanEqualsToken,
+          ts.SyntaxKind.EqualsEqualsToken, ts.SyntaxKind.EqualsEqualsEqualsToken, ts.SyntaxKind.ExclamationEqualsToken, ts.SyntaxKind.ExclamationEqualsEqualsToken]
+          .includes((wrappedUse(node).parent as ts.BinaryExpression).operatorToken.kind));
+      if (ts.isElementAccessExpression(node) && !directDataWrite && !reviewedDescriptor(node) && unsafeComputedReceiver(node.expression, new Set(),
+          /^(0|[1-9][0-9]*)$/.test(staticKey(node.argumentExpression) ?? ""), scalarComparison || safeComputedDataKey(node.argumentExpression))) throw new Error(`Unsupported code constructor acquisition: ${file.path} -> ${node.getText(source)}`);
       if (accessed?.name === "getOwnPropertyDescriptor" && !(ts.isCallExpression(node.parent) && node.parent.expression === node)) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
       if (ts.isCallExpression(node) && property(node.expression)?.name === "getOwnPropertyDescriptor") {
         if (file.path !== `${ARENA}/src/challengeContract/validation.ts` || node.getText(source) !== "Object.getOwnPropertyDescriptor(value, String(index))") throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
