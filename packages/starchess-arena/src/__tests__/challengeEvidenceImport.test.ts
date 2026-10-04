@@ -43,6 +43,33 @@ const validate = (value: Fixture, extra: string[] = []) => {
 };
 
 describe("phase2 hermetic evidence import with synthetic test-only image hooks", () => {
+  it("isolates fixture Buffers and decoded pins from the shared six-report snapshot", () => {
+    const snapshot = { ...diagnostics };
+    const first = fixture(); const second = fixture();
+    expect(Object.isFrozen(diagnostics)).toBe(true);
+    expect(Object.keys(diagnostics).sort()).toEqual([
+      "baseline-report.json", "contract-report.json", "coverage.json", "pin-migration.json",
+      "public-closure-report.json", "r2-composition-report.json",
+    ]);
+    for (const [name, text] of Object.entries(snapshot)) {
+      expect(typeof text).toBe("string");
+      expect(first.files[name]).not.toBe(second.files[name]);
+      expect(first.files[name]).toEqual(Buffer.from(text, "utf8"));
+    }
+    first.files["coverage.json"]![0] = 0;
+    const baseline = decode<Baseline>(first.files["baseline-report.json"]!);
+    const contract = decode<{ pins: Baseline["pins"] }>(first.files["contract-report.json"]!);
+    const originalPins = structuredClone(baseline.pins);
+    baseline.pins.sourceInventory.inventorySha256 = "0".repeat(64);
+    expect(contract.pins).toEqual(originalPins);
+    first.files["baseline-report.json"] = jsonBytes(baseline);
+    expect(first.files["coverage.json"]).not.toEqual(Buffer.from(snapshot["coverage.json"], "utf8"));
+    expect(decode<Baseline>(first.files["baseline-report.json"]!).pins).not.toEqual(originalPins);
+    expect(diagnostics).toEqual(snapshot);
+    for (const [name, text] of Object.entries(snapshot)) expect(second.files[name]).toEqual(Buffer.from(text, "utf8"));
+    expect(decode<Baseline>(second.files["baseline-report.json"]!).pins).toEqual(originalPins);
+    expect(decode<{ pins: Baseline["pins"] }>(second.files["contract-report.json"]!).pins).toEqual(originalPins);
+  });
   it("rejects historical v2 verification without authorizing the current graph", async () => {
     const value = fixture(); value.verification.version = "hermetic-verification-v2";
     await reject(value, "Incomplete verification commands");

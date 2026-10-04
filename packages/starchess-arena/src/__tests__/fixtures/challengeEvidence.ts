@@ -96,14 +96,15 @@ export function buildDiagnosticFixture() {
   const coverage = measureCoverage();
   if (canonical(coverage) !== canonical(measureCoverage())) throw new Error("Fixture coverage rerun mismatch");
   const composition = measureR2Composition();
-  return {
-    "baseline-report.json": currentBytes,
-    "coverage.json": jsonBytes(coverage),
-    "r2-composition-report.json": jsonBytes(composition),
+  const publicClosure = checkPublicClosure(repositoryRoot);
+  return Object.freeze({
+    "baseline-report.json": currentBytes.toString("utf8"),
+    "coverage.json": jsonBytes(coverage).toString("utf8"),
+    "r2-composition-report.json": jsonBytes(composition).toString("utf8"),
     "pin-migration.json": jsonBytes({ ...migration,
       fromPinFormat: "phase1-legacy-digests", toPinFormat: pins.version,
       ...migrationInventoryDiagnostics(pins.sourceInventory),
-    }),
+    }).toString("utf8"),
     "contract-report.json": jsonBytes({ version: "phase2-contract-report-v2", pins,
       r2CompositionVersion: composition.version, r2CompositionSha256: sha256(canonical(composition)),
       coverageSha256: sha256(canonical(coverage)), baselineReportSha256: sha256(currentBytes),
@@ -111,8 +112,9 @@ export function buildDiagnosticFixture() {
       observationCodecVersion: coverage.observationCodecVersion, candidateCodecVersion: coverage.candidateCodecVersion,
       enumerationVersion: coverage.enumerationVersion, comparatorVersion: coverage.comparatorVersion,
       featureSchema: coverage.featureSchema, learnedGateEligible: false, modelArtifact: null,
-    }),
-  };
+    }).toString("utf8"),
+    "public-closure-report.json": jsonBytes(publicClosure).toString("utf8"),
+  });
 }
 
 export function syntheticVitestReport(count: number, pkg: string) {
@@ -167,18 +169,9 @@ export function buildImportFixture(diagnostics: ReturnType<typeof buildDiagnosti
   writeFileSync(join(originalDirectory, "baseline-report.json"), original.baseline);
   writeFileSync(join(originalDirectory, "verification.json"), original.verification);
   const target = "/app/_spec/evidence/ml-adjutant-r2-refresh";
-  const current = decode<Baseline>(diagnostics["baseline-report.json"]);
-  current.pins = { ...executionPins(), nodeVersion: `v${runtimePins.node}` };
-  const currentBytes = jsonBytes(current);
-  const migration = decode<Record<string, unknown>>(diagnostics["pin-migration.json"]);
-  const contract = decode<Record<string, unknown>>(diagnostics["contract-report.json"]);
-  const inventory = current.pins.sourceInventory;
-  Object.assign(migration, { currentBaselineSha256: sha256(currentBytes), ...migrationInventoryDiagnostics(inventory) });
-  Object.assign(contract, { pins: current.pins, baselineReportSha256: sha256(currentBytes) });
-  const files: Record<string, Buffer> = { ...diagnostics,
-    "baseline-report.json": currentBytes, "pin-migration.json": jsonBytes(migration), "contract-report.json": jsonBytes(contract),
+  const files: Record<string, Buffer> = {
+    ...Object.fromEntries(Object.entries(diagnostics).map(([name, text]) => [name, Buffer.from(text, "utf8")])),
     ...Object.fromEntries(Object.entries(VITEST_FLOORS).map(([file, count]) => [file, jsonBytes(syntheticVitestReport(count, file.slice(7, -5)))])),
-    "public-closure-report.json": jsonBytes(checkPublicClosure(repositoryRoot)),
   };
   const commands = verificationCommands(repositoryRoot).map(({ executable, args, cwd }, index): Command => {
     const prefix = `logs/command-${String(index + 1).padStart(2, "0")}`;

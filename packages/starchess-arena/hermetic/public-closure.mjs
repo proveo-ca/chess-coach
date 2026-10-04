@@ -361,6 +361,7 @@ export const checkPublicClosure = (root = repository) => {
     const safeComputedDataKey = (node) => {
       const key = staticKey(node);
       if (key !== undefined) return !["constructor", "__proto__", "prototype"].includes(key);
+      if ([...provenance(node)].some((root) => mutatedRoots.has(root))) return false;
       const expression = unwrap(node);
       if (ts.isIdentifier(expression)) {
         const symbol = binding(expression);
@@ -392,6 +393,11 @@ export const checkPublicClosure = (root = repository) => {
       const safeType = (type) => type.isUnion() ? type.types.every(safeType)
         : Boolean(type.flags & ts.TypeFlags.NumberLike) || type.isStringLiteral() && !["constructor", "__proto__", "prototype"].includes(type.value);
       const value = origin(node);
+      if (ts.isConditionalExpression(value)) return safeComputedDataKey(value.whenTrue) && safeComputedDataKey(value.whenFalse);
+      if (ts.isCallExpression(value)) {
+        const member = property(value.expression);
+        return Boolean(member && ["indexOf", "lastIndexOf"].includes(member.name ?? "") && dataType(member.receiver).getNumberIndexType() && dataType(value).flags & ts.TypeFlags.NumberLike);
+      }
       if (ts.isCallExpression(value) || ts.isAwaitExpression(value) || ts.isNewExpression(value) || ts.isConditionalExpression(value) || ts.isBinaryExpression(value) || ts.isTaggedTemplateExpression(value)) return false;
       return safeType(dataType(value));
     };

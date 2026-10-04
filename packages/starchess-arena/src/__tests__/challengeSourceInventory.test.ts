@@ -121,7 +121,7 @@ const ordinaryComputedData = [
   'const box: {data: {[key: string]: number}} = {data: {w: 1}}; box.data.w = 2; const key = "w"; void box.data[key];',
   'const box: any = {data: [1, 2]}; box.data[0] = 3; void box.data[0];',
   'const box: any = {data: [1, 2]}; Object.assign(box, {data: [3, 4]}); void box.data[1];',
-  'const values: any = unknownFactory(); const key: "w" | "b" = unknownSide; void values[key];',
+  'const values: any = unknownFactory(); const key: "w" | "b" = unknownSide; if (["w", "b"].includes(key)) void values[key];',
   'const values: any = unknownFactory(); for (const key of ["w", "b"]) void values[key];',
   'const values: any = unknownFactory(); const key = unknownKey; if (["w", "b"].includes(key)) void values[key];',
   'const values: any = unknownFactory(); void values[values.indexOf("first") + 1];',
