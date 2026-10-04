@@ -343,6 +343,8 @@ export const collectSourceInventory = (
     host.getSourceFile = (path) => path === file.path ? source : undefined;
     const checker = ts.createProgram([file.path], bindingOptions, host).getTypeChecker();
     let dataChecker: ts.TypeChecker | undefined;
+    const dataNodes = new Map<string, ts.Node>();
+    const nodeKey = (node: ts.Node): string => `${node.pos}:${node.end}:${node.kind}`;
     const dataType = (node: ts.Node): ts.Type => {
       if (!dataChecker) {
         const options: ts.CompilerOptions = { ...bindingOptions, noLib: false, noResolve: false, types: [], target: ts.ScriptTarget.ES2022,
@@ -359,13 +361,20 @@ export const collectSourceInventory = (
             const target = selectExport(object(manifest.exports) ? manifest.exports[subpath] : manifest.exports);
             if (target?.startsWith("./")) specifier = resolve(absoluteRoot, owner, target);
           }
-          return ts.resolveModuleName(specifier, importer, options, dataHost).resolvedModule;
+          const resolved = ts.resolveModuleName(specifier, importer, options, dataHost).resolvedModule;
+          return workspace && resolved ? { ...resolved, resolvedUsingTsExtension: false } : resolved;
         });
         const getSourceFile = dataHost.getSourceFile;
-        dataHost.getSourceFile = (path, ...args) => path === file.path ? source : getSourceFile(path, ...args);
+        const dataSource = ts.createSourceFile(file.path, source.text, ts.ScriptTarget.Latest, true,
+          /\.[cm]?js$/.test(file.path) ? ts.ScriptKind.JS : file.path.endsWith("x") ? ts.ScriptKind.TSX : ts.ScriptKind.TS);
+        const indexDataNodes = (node: ts.Node): void => { dataNodes.set(nodeKey(node), node); ts.forEachChild(node, indexDataNodes); };
+        indexDataNodes(dataSource);
+        dataHost.getSourceFile = (path, ...args) => path === file.path ? dataSource : getSourceFile(path, ...args);
         dataChecker = ts.createProgram([file.path], options, dataHost).getTypeChecker();
       }
-      return dataChecker.getTypeAtLocation(node);
+      const dataNode = dataNodes.get(nodeKey(node));
+      if (!dataNode) throw new Error(`Unclassified data-type node: ${file.path}`);
+      return dataChecker.getTypeAtLocation(dataNode);
     };
     const binding = (node: ts.Identifier): ts.Symbol | string => {
       const parent = node.parent;

@@ -94,6 +94,7 @@ It parses TypeScript configs with the arena's existing TypeScript JSONC parser.
 It captures recursive relative `extends` targets at their repository paths.
 It rejects missing, ambiguous, cyclic, external, and symlinked config targets.
 Every copied directory and intermediate context directory has mode `0755`, including under host umask `077`.
+Generated `capture.json` and acquisition workspace YAML have mode `0644` inside the private scratch root.
 Context preparation preserves the scratch root's private mode.
 The root environment and unrelated workspace packages never enter the context.
 
@@ -198,6 +199,10 @@ Retain that path for the importer's mandatory `--infrastructure` argument.
 | `probe.mjs` | Verify restricted execution, fresh temporary inventory setup, isolated source-only inventory, offline TS/Vitest JSON counts, persisted command logs, and unchanged dependency/store/tool hashes. |
 
 The capture supplies `HERMETIC_DEPENDENCY_IMAGE` to execute the Docker test.
+The child receives only a fixed PATH, private scratch HOME, fresh empty DOCKER_CONFIG, and the image identity.
+Capture and import bind both probe environments to independently inspected image defaults plus the output assignment.
+They reject Node-loader and dynamic-loader overrides.
+Image comparison uses immutable identity/configuration/root-filesystem fields; legitimate tag changes preserve identity.
 For direct diagnostics, run `HERMETIC_DEPENDENCY_IMAGE=sha256:... node --test packages/starchess-arena/hermetic/infra.test.mjs`.
 Without that environment variable, the direct suite's Docker test fails.
 Direct test output does not replace the mandatory infrastructure envelope.
@@ -219,19 +224,24 @@ It replays original/current baseline semantics and independently remeasures orig
 The importer binds command 11 stdout to its standalone report and remeasures the public graph with trusted host code.
 
 Publish the refresh with the importer’s `--destination _spec/evidence/ml-adjutant-r2-refresh` option.
-Supply the mandatory host infrastructure envelope alongside the source-image execution, build, and export envelopes:
+Supply the uncached dependency-acquisition and host infrastructure envelopes alongside the source-image execution, build, and export envelopes:
 
 ```sh
 node scripts/challenge-import-evidence.mjs \
   --execution /tmp/opencode/.../execution.json \
   --build /tmp/opencode/.../build.json \
   --export /tmp/opencode/.../export.json \
+  --acquisition /tmp/opencode/.../dependency-build.json \
   --infrastructure /tmp/opencode/challenge-infrastructure-.../infrastructure.json \
   --image sha256:... \
   --destination _spec/evidence/ml-adjutant-r2-refresh
 ```
 
 Use the final source image ID for `--image` in this import command.
+Use the acquisition `build.json` emitted by `build --dependencies --no-cache` for `--acquisition`.
+The importer validates the exact uncached acquisition argv against independently remeasured dependency/control bytes.
+It binds both source inspections to the runtime entrypoint, `['verify']`, `/app`, and exact image environment plus output.
+It retains acquisition/build/execution/export envelopes and their complete untruncated logs in `host-provenance/`.
 The importer remeasures the dependency image and requires all six named infrastructure tests to pass without skipped or omitted tests.
 Keep the existing phase-2 bundle unchanged.
 Publication uses exclusive creation and an atomically linked, hash-bound completion marker.
@@ -251,7 +261,8 @@ Status remains WIP until the lead completes the fresh image build, eleven-comman
 ## Previous host checks and current lead handoff
 
 Previous full host Vitest runs measured core **469**, arena **811**, and training **50** passing assertions.
-`r2-assertion-floors-v1` records those floors in `verification-plan.mjs`.
+Historical `r2-assertion-floors-v1` recorded those floors.
+Current `r2-assertion-floors-v2` enforces the current registered invoice in `verification-plan.mjs`.
 These host runs do not constitute the frozen-image eleven-command proof.
 Previous checks recorded passing package typechecks and focused strict checks for the owned verification tests, bridge tests, and both scripts.
 Previous runs recorded **109** passing tests across the three Node suites and five passing static infrastructure tests.

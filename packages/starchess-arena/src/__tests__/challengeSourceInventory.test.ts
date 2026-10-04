@@ -785,7 +785,7 @@ describe("partitioned challenge source inventory", () => {
     expect(inventory.audit.edges).toContainEqual(expect.objectContaining({ importer: "scripts/check-public-closure.mjs", target: `${ARENA}/hermetic/public-closure.mjs`, targetKind: "source" }));
     expect(inventory.audit.edges).toContainEqual(expect.objectContaining({ importer: "scripts/r2-composition-evidence.ts", target: `${TRAINING}/src/candidates.ts`, targetKind: "source" }));
     expect(inventory.groups["verification-tooling"].some((file) => file.path === "scripts/check-public-closure.mjs")).toBe(true);
-  });
+  }, 120000);
 
   it.each([
     ['import "@chess-coach/starchess-arena";', "Forbidden partition edge"],

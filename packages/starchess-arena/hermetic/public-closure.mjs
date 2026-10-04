@@ -156,6 +156,8 @@ export const checkPublicClosure = (root = repository) => {
     host.getSourceFile = (file) => file === path ? source : undefined;
     const checker = ts.createProgram([path], options, host).getTypeChecker();
     let dataChecker;
+    const dataNodes = new Map();
+    const nodeKey = (node) => `${node.pos}:${node.end}:${node.kind}`;
     const dataType = (node) => {
       if (!dataChecker) {
         const dataOptions = { ...options, noLib: false, noResolve: false, types: [], target: ts.ScriptTarget.ES2022,
@@ -170,13 +172,19 @@ export const checkPublicClosure = (root = repository) => {
             const subpath = name === workspaceName ? "." : `.${name.slice(workspaceName.length)}`;
             specifier = resolve(root, owner, exportTarget(manifests.get(owner), subpath));
           }
-          return ts.resolveModuleName(specifier, importer, dataOptions, dataHost).resolvedModule;
+          const resolved = ts.resolveModuleName(specifier, importer, dataOptions, dataHost).resolvedModule;
+          return workspaceName && resolved ? { ...resolved, resolvedUsingTsExtension: false } : resolved;
         });
         const getSourceFile = dataHost.getSourceFile;
-        dataHost.getSourceFile = (file, ...args) => file === path ? source : getSourceFile(file, ...args);
+        const dataSource = ts.createSourceFile(path, source.text, ts.ScriptTarget.Latest, true, /\.m?js$/.test(path) ? ts.ScriptKind.JS : ts.ScriptKind.TS);
+        const indexDataNodes = (node) => { dataNodes.set(nodeKey(node), node); ts.forEachChild(node, indexDataNodes); };
+        indexDataNodes(dataSource);
+        dataHost.getSourceFile = (file, ...args) => file === path ? dataSource : getSourceFile(file, ...args);
         dataChecker = ts.createProgram([path], dataOptions, dataHost).getTypeChecker();
       }
-      return dataChecker.getTypeAtLocation(node);
+      const dataNode = dataNodes.get(nodeKey(node));
+      if (!dataNode) throw new Error(`Unclassified data-type node: ${id}`);
+      return dataChecker.getTypeAtLocation(dataNode);
     };
     const globalReference = (node) => {
       const symbol = checker.getSymbolAtLocation(node);

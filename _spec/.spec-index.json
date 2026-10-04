@@ -10,6 +10,7 @@
         "packages/starchess-arena/src/observations.ts",
         "packages/starchess-arena/src/challengeContract/**",
         "packages/starchess-arena/src/challenge/**",
+        "packages/starchess-arena/src/challenge/sourceInventory.ts",
         "packages/starchess-arena/src/__tests__/challenge*.test.ts",
         "packages/starchess-arena/src/__tests__/challengeSourceInventory.test.ts",
         "packages/starchess-arena/hermetic/public-closure.mjs",
@@ -277,6 +278,7 @@
         "scripts/challenge-import-evidence.mjs",
         "scripts/challenge-infrastructure-evidence.mjs",
         "packages/starchess-arena/hermetic/**",
+        "packages/starchess-arena/hermetic/public-closure.mjs",
         "_spec/evidence/ml-adjutant-phase2/*.json",
         "_spec/evidence/ml-adjutant-r0-refresh/**",
         "_spec/evidence/ml-adjutant-r0-closure.json"
