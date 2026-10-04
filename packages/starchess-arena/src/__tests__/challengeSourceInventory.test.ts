@@ -67,6 +67,7 @@ const dataArrayAccesses = [
   'const rows = [...inputRows]; void rows[0][1];',
 ];
 const unprovenComputedReceivers = [
+  'const make:any=()=>()=>{}; const f=make(); const keys={indexOf:()=>["con","structor"].join("")} as unknown as number[]; const key=keys.indexOf(0); f[key]("return process")();',
   'const f: any = unknownFactory(); for (let key: any = 0; condition; key++) {key = ["con", "structor"].join(""); f[key]("return process")();}',
   'const f: any = unknownFactory(); String = (() => "constructor") as any; f[String(1)]("return process")();',
   'const f: any = unknownFactory(); Math.floor = (() => "constructor") as any; f[Math.floor(1)]("return process")();',
@@ -131,7 +132,7 @@ const ordinaryComputedData = [
   'const values: any = unknownFactory(); const key: "w" | "b" = unknownSide; if (["w", "b"].includes(key)) void values[key];',
   'const values: any = unknownFactory(); for (const key of ["w", "b"]) void values[key];',
   'const values: any = unknownFactory(); const key = unknownKey; if (["w", "b"].includes(key)) void values[key];',
-  'const values: any = unknownFactory(); void values[values.indexOf("first") + 1];',
+  'const values: any = unknownFactory(); void values[+values.indexOf("first") + 1];',
   'function charge(budget: any, field: string, amount: number) {budget[field] += amount; if (budget[field] > 100) throw new Error("limit");}',
   'function inspect(value: {[key: string]: unknown}, key: string) {let alias: unknown = value.data; alias = null; return value[key];}',
   'function access(array: any, index: number) {void array[index];} function Function(value: string) {return value;} void Function("data");',

@@ -50,7 +50,7 @@ export const validateObservation = (value: unknown): AuthorizedObservation => {
   const siegedTanks = array(own.siegedTanks, "$.own.siegedTanks").map((entry, index) => square(entry, `$.own.siegedTanks[${index}]`));
   orderedSquares(mines, (entry) => entry, "$.own.mines");
   orderedSquares(siegedTanks, (entry) => entry, "$.own.siegedTanks");
-  if (mines.some((at) => cells[SQUARES.indexOf(at)]!.visibility !== "lit") ||
+  if (mines.some((at) => cells.find((cell) => cell.square === at)!.visibility !== "lit") ||
     siegedTanks.some((at) => !pieces.some((entry) => entry.square === at && entry.piece.type === "r"))) fail("$.own", "CONSISTENCY");
   const memory: Sighting[] = array(root.memory, "$.memory").map((entry, index) => {
     const path = `$.memory[${index}]`;

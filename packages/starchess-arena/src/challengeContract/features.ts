@@ -54,7 +54,7 @@ const globals = (observation: AuthorizedObservation): number[] => [
   observation.memory.length / 64,
 ];
 const cellFeatures = (observation: AuthorizedObservation, at: Square): number[] => {
-  const cell = observation.cells[SQUARES.indexOf(at)]!;
+  const cell = observation.cells.find((entry) => entry.square === at)!;
   const current = cell.visibility === "unknown" ? null : cell.piece;
   const own = current?.color === observation.side;
   const sighting = observation.memory.find((entry) => entry.square === at);
@@ -66,7 +66,7 @@ const cellFeatures = (observation: AuthorizedObservation, at: Square): number[] 
 };
 const actionFeatures = (observation: AuthorizedObservation, action: ScActionInput, index: number): number[] => {
   const actor = observation.own.pieces.find((entry) => entry.square === action.from)?.piece;
-  const target = action.to ? observation.cells[SQUARES.indexOf(action.to)] : undefined;
+  const target = action.to ? observation.cells.find((entry) => entry.square === action.to) : undefined;
   const victim = target?.visibility === "unknown" ? undefined : target?.piece;
   const remembered = observation.memory.find((entry) => entry.square === action.to);
   const ownTarget = victim?.color === observation.side;

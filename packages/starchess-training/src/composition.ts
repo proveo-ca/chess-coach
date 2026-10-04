@@ -66,7 +66,7 @@ export const composeKernel = (input: AuthorizedObservationV1, domain: DomainFact
   if (activeFamilies.length === 0) pools[7]!.initialCapacity += released;
   else {
     for (let i = 0; released > 0; i++, released--) {
-      pools[ACTION_KINDS.indexOf(activeFamilies[i % activeFamilies.length]!)]!.initialCapacity++;
+      pools.find((pool) => pool.id === activeFamilies[i % activeFamilies.length])!.initialCapacity++;
     }
   }
   for (const pool of pools) pool.finalCapacity = pool.initialCapacity;

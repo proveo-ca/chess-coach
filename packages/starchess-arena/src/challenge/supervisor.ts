@@ -321,7 +321,7 @@ export const runSupervised = (
         planTimer = undefined;
         decisionDeadline = null;
         decisions[activePermit.side] = actions;
-        const nextIndex = policySides.indexOf(activePermit.side) + 1;
+        const nextIndex = +policySides.indexOf(activePermit.side) + 1;
         if (nextIndex < policySides.length) { issuePermit(policySides[nextIndex]!); return; }
         stage = "expect-admission-or-settlement";
         activePermit = null;
