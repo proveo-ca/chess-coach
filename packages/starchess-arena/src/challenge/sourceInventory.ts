@@ -657,6 +657,13 @@ export const collectSourceInventory = (
       if ((ts.isForOfStatement(node) || ts.isForInStatement(node)) && !ts.isVariableDeclarationList(node.initializer)) writes(node.initializer);
       if (ts.isCallExpression(node)) {
         const member = property(origin(node.expression));
+        const mutator = (expression: ts.Expression): boolean => {
+          const method = property(origin(expression));
+          return !!(method && (objectNamespace(origin(method.receiver)) && ["assign", "defineProperty", "defineProperties", "setPrototypeOf"].includes(method.name ?? "") ||
+            reflectionNamespace(origin(method.receiver)) && ["set", "deleteProperty", "defineProperty", "setPrototypeOf"].includes(method.name ?? "")));
+        };
+        if (member && (["call", "apply", "bind"].includes(member.name ?? "") && mutator(member.receiver) ||
+          reflectionNamespace(origin(member.receiver)) && member.name === "apply" && node.arguments[0] && mutator(node.arguments[0]))) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
         if (node.arguments[0] && member && (objectNamespace(origin(member.receiver)) && ["assign", "defineProperty", "defineProperties"].includes(member.name ?? "") ||
             reflectionNamespace(origin(member.receiver)) && ["set", "deleteProperty", "defineProperty"].includes(member.name ?? ""))) markMutation(node.arguments[0]);
         if (member && ["push", "pop", "shift", "unshift", "splice", "sort", "reverse", "fill", "copyWithin"].includes(member.name ?? "")) markMutation(member.receiver);
@@ -735,6 +742,7 @@ export const collectSourceInventory = (
       const expression = origin(node);
       if (seen.has(expression)) return true;
       const next = new Set([...seen, expression]);
+      if (!provenData && (ts.isObjectLiteralExpression(expression) || ts.isArrayLiteralExpression(expression))) return true;
       if (checker.getTypeAtLocation(expression).getCallSignatures().length || ts.isArrowFunction(expression) || ts.isFunctionExpression(expression)) return true;
       if (ts.isCallExpression(expression) || ts.isAwaitExpression(expression) || ts.isNewExpression(expression) ||
           ts.isConditionalExpression(expression) || ts.isBinaryExpression(expression) || ts.isTaggedTemplateExpression(expression)) {
@@ -840,12 +848,13 @@ export const collectSourceInventory = (
       if (ts.isElementAccessExpression(node) && loader(node.expression) && staticKey(node.argumentExpression) === undefined) throw new Error(`Unsupported loader escape: ${file.path}`);
       const directDataWrite = ts.isElementAccessExpression(node) && ts.isBinaryExpression(wrappedUse(node).parent) &&
         (wrappedUse(node).parent as ts.BinaryExpression).left === wrappedUse(node) && (wrappedUse(node).parent as ts.BinaryExpression).operatorToken.kind >= ts.SyntaxKind.FirstAssignment &&
-        (wrappedUse(node).parent as ts.BinaryExpression).operatorToken.kind <= ts.SyntaxKind.LastAssignment;
+        (wrappedUse(node).parent as ts.BinaryExpression).operatorToken.kind <= ts.SyntaxKind.LastAssignment &&
+        ![ts.SyntaxKind.BarBarEqualsToken, ts.SyntaxKind.AmpersandAmpersandEqualsToken, ts.SyntaxKind.QuestionQuestionEqualsToken].includes((wrappedUse(node).parent as ts.BinaryExpression).operatorToken.kind);
       const scalarComparison = ts.isElementAccessExpression(node) && (ts.isTypeOfExpression(wrappedUse(node).parent) || ts.isBinaryExpression(wrappedUse(node).parent) &&
         [ts.SyntaxKind.LessThanToken, ts.SyntaxKind.LessThanEqualsToken, ts.SyntaxKind.GreaterThanToken, ts.SyntaxKind.GreaterThanEqualsToken,
           ts.SyntaxKind.EqualsEqualsToken, ts.SyntaxKind.EqualsEqualsEqualsToken, ts.SyntaxKind.ExclamationEqualsToken, ts.SyntaxKind.ExclamationEqualsEqualsToken]
           .includes((wrappedUse(node).parent as ts.BinaryExpression).operatorToken.kind));
-      if (ts.isElementAccessExpression(node) && !directDataWrite && !reviewedDescriptor(node) && unsafeComputedReceiver(node.expression, new Set(),
+      if (ts.isElementAccessExpression(node) && !directDataWrite && !ts.isVoidExpression(wrappedUse(node).parent) && !reviewedDescriptor(node) && unsafeComputedReceiver(node.expression, new Set(),
           /^(0|[1-9][0-9]*)$/.test(staticKey(node.argumentExpression) ?? ""), scalarComparison || safeComputedDataKey(node.argumentExpression))) throw new Error(`Unsupported code constructor acquisition: ${file.path} -> ${node.getText(source)}`);
       if (accessed?.name === "getOwnPropertyDescriptor" && !(ts.isCallExpression(node.parent) && node.parent.expression === node)) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
       if (ts.isCallExpression(node) && property(node.expression)?.name === "getOwnPropertyDescriptor") {

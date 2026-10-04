@@ -67,6 +67,15 @@ const dataArrayAccesses = [
   'const rows = [...inputRows]; void rows[0][1];',
 ];
 const unprovenComputedReceivers = [
+  'const key=["con","structor"].join(""); const receiver:any={}; receiver[key][key]("return process")();',
+  'const key=["con","structor"].join(""); const receiver:any=[]; receiver[key][key]("return process")();',
+  'const f:any=()=>{}; const key=["con","structor"].join(""); (f[key] ||= null)("return process")();',
+  'const f:any=()=>{}; const key=["con","structor"].join(""); (f[key] &&= f[key])("return process")();',
+  'const f:any=()=>{}; const key=["con","structor"].join(""); (f[key] ??= null)("return process")();',
+  'Object.assign.call(null, Math, {floor:()=>"constructor"}); const f:any=unknownFactory(); f[Math.floor(0)]("return process")();',
+  'Object.assign.apply(null, [Math, {floor:()=>"constructor"}]); const f:any=unknownFactory(); f[Math.floor(0)]("return process")();',
+  'Reflect.apply(Object.assign, null, [Math, {floor:()=>"constructor"}]); const f:any=unknownFactory(); f[Math.floor(0)]("return process")();',
+  'Object.assign.bind(null, Math, {floor:()=>"constructor"})(); const f:any=unknownFactory(); f[Math.floor(0)]("return process")();',
   'const make:any=()=>()=>{}; const f=make(); const keys={indexOf:()=>["con","structor"].join("")} as unknown as number[]; const key=keys.indexOf(0); f[key]("return process")();',
   'const f: any = unknownFactory(); for (let key: any = 0; condition; key++) {key = ["con", "structor"].join(""); f[key]("return process")();}',
   'const f: any = unknownFactory(); String = (() => "constructor") as any; f[String(1)]("return process")();',

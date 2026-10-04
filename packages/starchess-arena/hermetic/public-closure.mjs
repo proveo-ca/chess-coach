@@ -355,6 +355,13 @@ export const checkPublicClosure = (root = repository) => {
       if ((ts.isForOfStatement(node) || ts.isForInStatement(node)) && !ts.isVariableDeclarationList(node.initializer)) writes(node.initializer);
       if (ts.isCallExpression(node)) {
         const member = property(origin(node.expression));
+        const mutator = (expression) => {
+          const method = property(origin(expression));
+          return Boolean(method && (builtinNamespace(method.receiver, "Object") && ["assign", "defineProperty", "defineProperties", "setPrototypeOf"].includes(method.name ?? "") ||
+            builtinNamespace(method.receiver, "Reflect") && ["set", "deleteProperty", "defineProperty", "setPrototypeOf"].includes(method.name ?? "")));
+        };
+        if (member && (["call", "apply", "bind"].includes(member.name ?? "") && mutator(member.receiver) ||
+          builtinNamespace(member.receiver, "Reflect") && member.name === "apply" && node.arguments[0] && mutator(node.arguments[0]))) throw new Error(`Code constructor acquisition in public closure: ${id}`);
         if (node.arguments[0] && member && (builtinNamespace(member.receiver, "Object") && ["assign", "defineProperty", "defineProperties"].includes(member.name ?? "") ||
             builtinNamespace(member.receiver, "Reflect") && ["set", "deleteProperty", "defineProperty"].includes(member.name ?? ""))) markMutation(node.arguments[0]);
         if (member && ["push", "pop", "shift", "unshift", "splice", "sort", "reverse", "fill", "copyWithin"].includes(member.name ?? "")) markMutation(member.receiver);
@@ -433,6 +440,7 @@ export const checkPublicClosure = (root = repository) => {
       const expression = origin(node);
       if (seen.has(expression)) return true;
       const next = new Set([...seen, expression]);
+      if (!provenData && (ts.isObjectLiteralExpression(expression) || ts.isArrayLiteralExpression(expression))) return true;
       if (checker.getTypeAtLocation(expression).getCallSignatures().length || ts.isArrowFunction(expression) || ts.isFunctionExpression(expression)) return true;
       if (ts.isCallExpression(expression) || ts.isAwaitExpression(expression) || ts.isNewExpression(expression) ||
           ts.isConditionalExpression(expression) || ts.isBinaryExpression(expression) || ts.isTaggedTemplateExpression(expression)) {
@@ -489,13 +497,14 @@ export const checkPublicClosure = (root = repository) => {
       if (ts.isMetaProperty(node) && node.keywordToken === ts.SyntaxKind.ImportKeyword) throw new Error(`Import metadata in public closure: ${id}`);
       const member = !ts.isPartOfTypeNode(node) && (ts.isPropertyAccessExpression(node) || ts.isElementAccessExpression(node)) ? property(node) : undefined;
       const directDataWrite = ts.isElementAccessExpression(node) && ts.isBinaryExpression(node.parent) && node.parent.left === node &&
-        node.parent.operatorToken.kind >= ts.SyntaxKind.FirstAssignment && node.parent.operatorToken.kind <= ts.SyntaxKind.LastAssignment;
+        node.parent.operatorToken.kind >= ts.SyntaxKind.FirstAssignment && node.parent.operatorToken.kind <= ts.SyntaxKind.LastAssignment &&
+        ![ts.SyntaxKind.BarBarEqualsToken, ts.SyntaxKind.AmpersandAmpersandEqualsToken, ts.SyntaxKind.QuestionQuestionEqualsToken].includes(node.parent.operatorToken.kind);
       const scalarComparison = ts.isElementAccessExpression(node) && (ts.isTypeOfExpression(node.parent) || ts.isBinaryExpression(node.parent) &&
         [ts.SyntaxKind.LessThanToken, ts.SyntaxKind.LessThanEqualsToken, ts.SyntaxKind.GreaterThanToken, ts.SyntaxKind.GreaterThanEqualsToken,
           ts.SyntaxKind.EqualsEqualsToken, ts.SyntaxKind.EqualsEqualsEqualsToken, ts.SyntaxKind.ExclamationEqualsToken, ts.SyntaxKind.ExclamationEqualsEqualsToken]
           .includes(node.parent.operatorToken.kind));
       if (!dependency && (["constructor", "__proto__"].includes(member?.name) ||
-          ts.isElementAccessExpression(node) && !directDataWrite && !reviewedDescriptor(node) && unsafeComputedReceiver(node.expression, new Set(),
+          ts.isElementAccessExpression(node) && !directDataWrite && !ts.isVoidExpression(node.parent) && !reviewedDescriptor(node) && unsafeComputedReceiver(node.expression, new Set(),
             /^(0|[1-9][0-9]*)$/.test(staticKey(node.argumentExpression) ?? ""), scalarComparison || safeComputedDataKey(node.argumentExpression)))) throw new Error(`Code constructor acquisition in public closure: ${id} -> ${node.getText(source)}`);
       if (ts.isIdentifier(node) && !ts.isPartOfTypeNode(node)) {
         const parent = node.parent;

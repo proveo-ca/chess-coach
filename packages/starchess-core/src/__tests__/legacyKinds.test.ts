@@ -1,8 +1,15 @@
 import { describe, expect, it } from "vitest";
 
 import { formatScFen, historyFromRecord, parseScFen } from "../index";
+import { currentKind, migrateLegacyNames } from "../scfen/legacyKinds";
 
 describe("special kinds renamed off the chess words", () => {
+  it("keeps prototype-shaped unknown names as data", () => {
+    for (const name of ["constructor", "toString", "__proto__"]) expect(currentKind(name)).toBe(name);
+    expect(migrateLegacyNames({ kind: "constructor", constructor: "data", toString: "label" })).toEqual({
+      kind: "constructor", constructor: "data", toString: "label",
+    });
+  });
   it("reads a save written with the old names and writes it back with the new ones", () => {
     const legacy =
       "SCFEN|4k3/8/8/8/q7/8/8/3BK3|21|33|P|G:13:33|Q:w:B=bishopSnipe:d1:a4;b:";

@@ -23,7 +23,7 @@ function tar(entries) {
     header.write(entry.path, 0, 100);
     for (const [offset, width, value] of [[100, 8, parseInt(entry.mode, 8)], [108, 8, 0], [116, 8, 0], [124, 12, data.length], [136, 12, 0]]) header.write(value.toString(8).padStart(width - 1, '0') + '\0', offset, width);
     header.fill(32, 148, 156);
-    header.write(({ file: '0', directory: '5', symlink: '2', hardlink: '1' })[entry.type], 156);
+    header.write(Object.entries({ file: '0', directory: '5', symlink: '2', hardlink: '1' }).find(([type]) => type === entry.type)[1], 156);
     if (entry.target) header.write(entry.target, 157, 100);
     header.write('ustar\0', 257);
     header.write('00', 263);
