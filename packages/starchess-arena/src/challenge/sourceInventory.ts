@@ -383,10 +383,24 @@ export const collectSourceInventory = (
       }
       return undefined;
     };
+    const staticKey = (node: ts.Expression, seen = new Set<ts.Symbol | string>()): string | undefined => {
+      const expression = unwrapValue(node);
+      if (ts.isNumericLiteral(expression)) return String(Number(expression.text));
+      if (ts.isIdentifier(expression)) {
+        const key = binding(expression);
+        if (seen.has(key)) return undefined;
+        const declaration = typeof key !== "string" && key.valueDeclaration;
+        if (declaration && ts.isVariableDeclaration(declaration) && declaration.initializer &&
+            ts.isVariableDeclarationList(declaration.parent) && declaration.parent.flags & ts.NodeFlags.Const) {
+          return staticKey(declaration.initializer, new Set([...seen, key]));
+        }
+      }
+      return staticString(expression);
+    };
     const property = (node: ts.Expression): { receiver: ts.Expression; name: string | undefined } | undefined => {
       const expression = unwrap(node);
       if (ts.isPropertyAccessExpression(expression)) return { receiver: unwrap(expression.expression), name: expression.name.text };
-      if (ts.isElementAccessExpression(expression)) return { receiver: unwrap(expression.expression), name: staticString(expression.argumentExpression) };
+      if (ts.isElementAccessExpression(expression)) return { receiver: unwrap(expression.expression), name: staticKey(expression.argumentExpression) };
       return undefined;
     };
     const namespace = (node: ts.Expression): boolean => {
@@ -506,43 +520,78 @@ export const collectSourceInventory = (
           ts.isBinaryExpression(parent) && parent.operatorToken.kind === ts.SyntaxKind.CommaToken && parent.right === node) return wrappedUse(parent as ts.Expression);
       return node;
     };
+    const ownName = (name: ts.PropertyName): string | undefined => ts.isComputedPropertyName(name) ? staticKey(name.expression)
+      : ts.isIdentifier(name) || ts.isStringLiteralLike(name) ? name.text : ts.isNumericLiteral(name) ? String(Number(name.text)) : undefined;
+    const ownMember = (receiver: ts.Expression, name: string | undefined): ts.Expression | undefined => {
+      if (name === undefined) return undefined;
+      if (ts.isArrayLiteralExpression(receiver) && /^(0|[1-9][0-9]*)$/.test(name) && !receiver.elements.some(ts.isSpreadElement)) {
+        const entry = receiver.elements[Number(name)];
+        return entry && !ts.isOmittedExpression(entry) ? entry : undefined;
+      }
+      if (!ts.isObjectLiteralExpression(receiver)) return undefined;
+      const entries = receiver.properties.filter((entry) => !ts.isSpreadAssignment(entry) && ownName(entry.name) === name);
+      const entry = entries.length === 1 && !receiver.properties.some(ts.isSpreadAssignment) ? entries[0] : undefined;
+      return entry && ts.isPropertyAssignment(entry) ? entry.initializer : entry && ts.isShorthandPropertyAssignment(entry) ? entry.name : undefined;
+    };
+    const bindingMember = (declaration: ts.BindingElement): { receiver: ts.Expression; name: string | undefined } | undefined => {
+      const pattern = declaration.parent;
+      const owner = pattern.parent;
+      let receiver: ts.Expression | undefined;
+      if (ts.isVariableDeclaration(owner)) receiver = owner.initializer;
+      else if (ts.isBindingElement(owner)) {
+        const member = bindingMember(owner);
+        if (!member) return undefined;
+        receiver = ownMember(origin(member.receiver), member.name);
+        if (!receiver) return member;
+      }
+      if (!receiver) return undefined;
+      const name = declaration.dotDotDotToken ? undefined : ts.isArrayBindingPattern(pattern) ? String(pattern.elements.indexOf(declaration))
+        : declaration.propertyName ? ownName(declaration.propertyName) : ts.isIdentifier(declaration.name) ? declaration.name.text : undefined;
+      return { receiver, name };
+    };
     const origin = (node: ts.Expression, seen = new Set<ts.Symbol | string>(), members = new Set<ts.Expression>()): ts.Expression => {
       const expression = unwrap(node);
       if (members.has(expression)) return expression;
       const next = new Set([...members, expression]);
       const member = property(expression);
       if (member?.name !== undefined) {
-        const receiver = origin(member.receiver, seen, next);
-        if (ts.isObjectLiteralExpression(receiver)) {
-          const entries = receiver.properties.filter((entry) => !ts.isSpreadAssignment(entry) &&
-            (ts.isComputedPropertyName(entry.name) ? staticString(entry.name.expression)
-              : ts.isIdentifier(entry.name) || ts.isStringLiteralLike(entry.name) || ts.isNumericLiteral(entry.name) ? entry.name.text : undefined) === member.name);
-          const entry = entries.length === 1 && !receiver.properties.some(ts.isSpreadAssignment) ? entries[0] : undefined;
-          if (entry && ts.isPropertyAssignment(entry)) return origin(entry.initializer, seen, next);
-          if (entry && ts.isShorthandPropertyAssignment(entry)) return origin(entry.name, seen, next);
-        }
+        const entry = ownMember(origin(member.receiver, seen, next), member.name);
+        if (entry) return origin(entry, seen, next);
       }
       if (!ts.isIdentifier(expression)) return expression;
       const key = binding(expression);
       if (seen.has(key) || typeof key === "string") return expression;
       const declaration = key.valueDeclaration;
+      if (declaration && ts.isBindingElement(declaration) && !declaration.initializer && !declaration.dotDotDotToken) {
+        const member = bindingMember(declaration);
+        const entry = member && ownMember(origin(member.receiver, new Set([...seen, key]), next), member.name);
+        if (entry) return origin(entry, new Set([...seen, key]), next);
+      }
       return declaration && ts.isVariableDeclaration(declaration) && declaration.initializer
         ? origin(declaration.initializer, new Set([...seen, key]), next) : expression;
     };
-    const unsafeComputedReceiver = (node: ts.Expression, seen = new Set<ts.Expression>()): boolean => {
+    const unsafeComputedReceiver = (node: ts.Expression, seen = new Set<ts.Expression>(), dataIndex = false): boolean => {
       const expression = origin(node);
       if (seen.has(expression)) return true;
       const next = new Set([...seen, expression]);
       if (checker.getTypeAtLocation(expression).getCallSignatures().length || ts.isArrowFunction(expression) || ts.isFunctionExpression(expression)) return true;
-      const member = property(expression);
+      const key = ts.isIdentifier(expression) ? binding(expression) : undefined;
+      const declaration = key && typeof key !== "string" ? key.valueDeclaration : undefined;
+      const destructured = declaration && ts.isBindingElement(declaration) ? declaration : undefined;
+      if (destructured?.initializer && unsafeComputedReceiver(destructured.initializer, next)) return true;
+      const member = property(expression) ?? (destructured ? bindingMember(destructured) : undefined);
       if (!member) return false;
-      if (unsafeComputedReceiver(member.receiver, next)) return true;
+      if (unsafeComputedReceiver(member.receiver, next, dataIndex)) return true;
       const receiver = origin(member.receiver);
+      if (ts.isArrayLiteralExpression(receiver)) {
+        if (receiver.elements.some(ts.isSpreadElement)) return !dataIndex;
+        return receiver.elements.some((entry, index) => !ts.isOmittedExpression(entry) &&
+          (member.name === undefined || member.name === String(index)) && unsafeComputedReceiver(entry, next));
+      }
       if (!ts.isObjectLiteralExpression(receiver)) return false;
       return receiver.properties.some((entry) => {
         if (ts.isSpreadAssignment(entry)) return true;
-        const name = ts.isComputedPropertyName(entry.name) ? staticString(entry.name.expression)
-          : ts.isIdentifier(entry.name) || ts.isStringLiteralLike(entry.name) ? entry.name.text : undefined;
+        const name = ownName(entry.name);
         if (member.name !== undefined && name !== undefined && name !== member.name) return false;
         if (ts.isMethodDeclaration(entry) || ts.isGetAccessorDeclaration(entry) || ts.isSetAccessorDeclaration(entry)) return true;
         return ts.isPropertyAssignment(entry) ? unsafeComputedReceiver(entry.initializer, next)
@@ -623,7 +672,8 @@ export const collectSourceInventory = (
       if (accessed && reflectionNamespace(accessed.receiver) && !["ownKeys", "apply", "has", "set", "deleteProperty"].includes(accessed.name ?? "")) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
       if (ts.isBindingElement(node) && node.propertyName && ((ts.isIdentifier(node.propertyName) || ts.isStringLiteralLike(node.propertyName)) && ["constructor", "__proto__", "getPrototypeOf", "getOwnPropertyDescriptors", "getOwnPropertyDescriptor"].includes(node.propertyName.text) || ts.isComputedPropertyName(node.propertyName))) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
       if (ts.isElementAccessExpression(node) && mutableOrigin(node.expression) && !safeDataKey(node.argumentExpression)) throw new Error(`Unsupported mutable computed receiver: ${file.path}`);
-      if (ts.isElementAccessExpression(node) && unsafeComputedReceiver(node.expression)) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
+      if (ts.isElementAccessExpression(node) && unsafeComputedReceiver(node.expression, new Set(),
+          /^(0|[1-9][0-9]*)$/.test(staticKey(node.argumentExpression) ?? ""))) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
       if (accessed?.name === "getOwnPropertyDescriptor" && !(ts.isCallExpression(node.parent) && node.parent.expression === node)) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
       if (ts.isCallExpression(node) && property(node.expression)?.name === "getOwnPropertyDescriptor") {
         if (file.path !== `${ARENA}/src/challengeContract/validation.ts` || node.getText(source) !== "Object.getOwnPropertyDescriptor(value, String(index))") throw new Error(`Unsupported code constructor acquisition: ${file.path}`);

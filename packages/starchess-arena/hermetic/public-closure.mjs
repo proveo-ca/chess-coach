@@ -191,10 +191,53 @@ export const checkPublicClosure = (root = repository) => {
         ts.isVariableDeclarationList(declaration.parent) && declaration.parent.flags & ts.NodeFlags.Const
         ? staticString(declaration.initializer, new Set([...seen, symbol])) : undefined;
     };
+    const staticKey = (node, seen = new Set()) => {
+      const expression = unwrap(node);
+      if (ts.isNumericLiteral(expression)) return String(Number(expression.text));
+      if (ts.isIdentifier(expression)) {
+        const symbol = checker.getSymbolAtLocation(expression);
+        if (symbol && seen.has(symbol)) return undefined;
+        const declaration = symbol?.valueDeclaration;
+        if (declaration && ts.isVariableDeclaration(declaration) && declaration.initializer &&
+            ts.isVariableDeclarationList(declaration.parent) && declaration.parent.flags & ts.NodeFlags.Const) {
+          return staticKey(declaration.initializer, new Set([...seen, symbol]));
+        }
+      }
+      return staticString(expression);
+    };
     const property = (node) => {
       const expression = unwrap(node);
       if (ts.isPropertyAccessExpression(expression)) return { receiver: expression.expression, name: expression.name.text };
-      if (ts.isElementAccessExpression(expression)) return { receiver: expression.expression, name: staticString(expression.argumentExpression) };
+      if (ts.isElementAccessExpression(expression)) return { receiver: expression.expression, name: staticKey(expression.argumentExpression) };
+    };
+    const ownName = (name) => ts.isComputedPropertyName(name) ? staticKey(name.expression)
+      : ts.isIdentifier(name) || ts.isStringLiteralLike(name) ? name.text : ts.isNumericLiteral(name) ? String(Number(name.text)) : undefined;
+    const ownMember = (receiver, name) => {
+      if (name === undefined) return undefined;
+      if (ts.isArrayLiteralExpression(receiver) && /^(0|[1-9][0-9]*)$/.test(name) && !receiver.elements.some(ts.isSpreadElement)) {
+        const entry = receiver.elements[Number(name)];
+        return entry && !ts.isOmittedExpression(entry) ? entry : undefined;
+      }
+      if (!ts.isObjectLiteralExpression(receiver)) return undefined;
+      const entries = receiver.properties.filter((entry) => !ts.isSpreadAssignment(entry) && ownName(entry.name) === name);
+      const entry = entries.length === 1 && !receiver.properties.some(ts.isSpreadAssignment) ? entries[0] : undefined;
+      return entry && ts.isPropertyAssignment(entry) ? entry.initializer : entry && ts.isShorthandPropertyAssignment(entry) ? entry.name : undefined;
+    };
+    const bindingMember = (declaration) => {
+      const pattern = declaration.parent;
+      const owner = pattern.parent;
+      let receiver;
+      if (ts.isVariableDeclaration(owner)) receiver = owner.initializer;
+      else if (ts.isBindingElement(owner)) {
+        const member = bindingMember(owner);
+        if (!member) return undefined;
+        receiver = ownMember(origin(member.receiver), member.name);
+        if (!receiver) return member;
+      }
+      if (!receiver) return undefined;
+      const name = declaration.dotDotDotToken ? undefined : ts.isArrayBindingPattern(pattern) ? String(pattern.elements.indexOf(declaration))
+        : declaration.propertyName ? ownName(declaration.propertyName) : ts.isIdentifier(declaration.name) ? declaration.name.text : undefined;
+      return { receiver, name };
     };
     const origin = (node, seen = new Set(), members = new Set()) => {
       const expression = unwrap(node);
@@ -202,38 +245,44 @@ export const checkPublicClosure = (root = repository) => {
       const next = new Set([...members, expression]);
       const member = property(expression);
       if (member?.name !== undefined) {
-        const receiver = origin(member.receiver, seen, next);
-        if (ts.isObjectLiteralExpression(receiver)) {
-          const entries = receiver.properties.filter((entry) => !ts.isSpreadAssignment(entry) &&
-            (ts.isComputedPropertyName(entry.name) ? staticString(entry.name.expression)
-              : ts.isIdentifier(entry.name) || ts.isStringLiteralLike(entry.name) || ts.isNumericLiteral(entry.name) ? entry.name.text : undefined) === member.name);
-          const entry = entries.length === 1 && !receiver.properties.some(ts.isSpreadAssignment) ? entries[0] : undefined;
-          if (entry && ts.isPropertyAssignment(entry)) return origin(entry.initializer, seen, next);
-          if (entry && ts.isShorthandPropertyAssignment(entry)) return origin(entry.name, seen, next);
-        }
+        const entry = ownMember(origin(member.receiver, seen, next), member.name);
+        if (entry) return origin(entry, seen, next);
       }
       if (!ts.isIdentifier(expression)) return expression;
       const symbol = ts.isShorthandPropertyAssignment(expression.parent) ? checker.getShorthandAssignmentValueSymbol(expression.parent)
         : checker.getSymbolAtLocation(expression);
       if (!symbol || seen.has(symbol)) return expression;
       const declaration = symbol.valueDeclaration;
+      if (declaration && ts.isBindingElement(declaration) && !declaration.initializer && !declaration.dotDotDotToken) {
+        const member = bindingMember(declaration);
+        const entry = member && ownMember(origin(member.receiver, new Set([...seen, symbol]), next), member.name);
+        if (entry) return origin(entry, new Set([...seen, symbol]), next);
+      }
       return declaration && ts.isVariableDeclaration(declaration) && declaration.initializer
         ? origin(declaration.initializer, new Set([...seen, symbol]), next) : expression;
     };
-    const unsafeComputedReceiver = (node, seen = new Set()) => {
+    const unsafeComputedReceiver = (node, seen = new Set(), dataIndex = false) => {
       const expression = origin(node);
       if (seen.has(expression)) return true;
       const next = new Set([...seen, expression]);
       if (checker.getTypeAtLocation(expression).getCallSignatures().length || ts.isArrowFunction(expression) || ts.isFunctionExpression(expression)) return true;
-      const member = property(expression);
+      const symbol = ts.isIdentifier(expression) ? checker.getSymbolAtLocation(expression) : undefined;
+      const declaration = symbol?.valueDeclaration;
+      const destructured = declaration && ts.isBindingElement(declaration) ? declaration : undefined;
+      if (destructured?.initializer && unsafeComputedReceiver(destructured.initializer, next)) return true;
+      const member = property(expression) ?? (destructured ? bindingMember(destructured) : undefined);
       if (!member) return false;
-      if (unsafeComputedReceiver(member.receiver, next)) return true;
+      if (unsafeComputedReceiver(member.receiver, next, dataIndex)) return true;
       const receiver = origin(member.receiver);
+      if (ts.isArrayLiteralExpression(receiver)) {
+        if (receiver.elements.some(ts.isSpreadElement)) return !dataIndex;
+        return receiver.elements.some((entry, index) => !ts.isOmittedExpression(entry) &&
+          (member.name === undefined || member.name === String(index)) && unsafeComputedReceiver(entry, next));
+      }
       if (!ts.isObjectLiteralExpression(receiver)) return false;
       return receiver.properties.some((entry) => {
         if (ts.isSpreadAssignment(entry)) return true;
-        const name = ts.isComputedPropertyName(entry.name) ? staticString(entry.name.expression)
-          : ts.isIdentifier(entry.name) || ts.isStringLiteralLike(entry.name) ? entry.name.text : undefined;
+        const name = ownName(entry.name);
         if (member.name !== undefined && name !== undefined && name !== member.name) return false;
         if (ts.isMethodDeclaration(entry) || ts.isGetAccessorDeclaration(entry) || ts.isSetAccessorDeclaration(entry)) return true;
         return ts.isPropertyAssignment(entry) ? unsafeComputedReceiver(entry.initializer, next)
@@ -254,7 +303,8 @@ export const checkPublicClosure = (root = repository) => {
       if (ts.isMetaProperty(node) && node.keywordToken === ts.SyntaxKind.ImportKeyword) throw new Error(`Import metadata in public closure: ${id}`);
       const member = !ts.isPartOfTypeNode(node) && (ts.isPropertyAccessExpression(node) || ts.isElementAccessExpression(node)) ? property(node) : undefined;
       if (!dependency && (["constructor", "__proto__"].includes(member?.name) ||
-          ts.isElementAccessExpression(node) && unsafeComputedReceiver(node.expression))) throw new Error(`Code constructor acquisition in public closure: ${id}`);
+          ts.isElementAccessExpression(node) && unsafeComputedReceiver(node.expression, new Set(),
+            /^(0|[1-9][0-9]*)$/.test(staticKey(node.argumentExpression) ?? "")))) throw new Error(`Code constructor acquisition in public closure: ${id}`);
       if (ts.isIdentifier(node) && !ts.isPartOfTypeNode(node)) {
         const parent = node.parent;
         const propertyName = ts.isPropertyAccessExpression(parent) && parent.name === node ||
