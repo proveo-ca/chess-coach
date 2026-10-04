@@ -461,6 +461,26 @@ describe("host infrastructure import gate with synthetic test-only host boundari
       await reject(value, "Infrastructure Docker probe container command or environment mismatch");
     });
   });
+  it("rejects additional probe environment NODE_OPTIONS with rebound inspection checksums", async () => {
+    const value = fixture();
+    for (const inspection of ["initialContainerInspection", "finalContainerInspection"]) {
+      value.probeExecution[inspection].Config = structuredClone(value.probeExecution[inspection].Config);
+      value.probeExecution[inspection].Config.Env.push("NODE_OPTIONS=--require=/tmp/preload.cjs");
+    }
+    value.rebindInfrastructure();
+    await reject(value, "Infrastructure Docker probe container command or environment mismatch");
+  });
+  it("rejects forged dependency image inspection and probe environment with rebound checksums", async () => {
+    const value = fixture();
+    value.probeExecution.imageInspection.Config.Env.push("NODE_OPTIONS=--require=/tmp/preload.cjs");
+    value.infrastructure.imageInspection = structuredClone(value.probeExecution.imageInspection);
+    for (const inspection of ["initialContainerInspection", "finalContainerInspection"]) {
+      value.probeExecution[inspection].Config = structuredClone(value.probeExecution[inspection].Config);
+      value.probeExecution[inspection].Config.Env.push("NODE_OPTIONS=--require=/tmp/preload.cjs");
+    }
+    value.rebindInfrastructure();
+    await reject(value, "Infrastructure dependency image inspection mismatch");
+  });
   it("requires the exact probe TS/Vitest commands despite rebound payloads", async () => {
     const value = fixture(); value.probeReport.commands[1].args = ["/tmp/test/fabricated.ts"]; value.rebindInfrastructure();
     await reject(value, "Infrastructure Docker TS/Vitest command mismatch");

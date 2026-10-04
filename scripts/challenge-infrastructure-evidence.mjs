@@ -1,3 +1,4 @@
+import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { constants, closeSync, fstatSync, lstatSync, mkdirSync, mkdtempSync, openSync, readSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
@@ -83,9 +84,18 @@ export function infrastructureEnvironment(directory, image) {
     DOCKER_CONFIG: join(directory, 'docker-config'), HERMETIC_DEPENDENCY_IMAGE: image };
 }
 
-export function validateInfrastructure(value, { read, image, measurements, controlSha256, host = infrastructureHost(read) }) {
+const unsafeEnvironment = (value) => !Array.isArray(value) || value.some((entry) => typeof entry !== 'string' || /^(?:NODE_OPTIONS|NODE_PATH|LD_PRELOAD|LD_LIBRARY_PATH)(?:=|$)/.test(entry));
+
+function probeEnvironment(imageInspection, image) {
+  if (!object(imageInspection) || imageInspection.Id !== image || unsafeEnvironment(imageInspection.Config?.Env)) fail('dependency image inspection or environment mismatch');
+  return [...imageInspection.Config.Env.filter((entry) => !entry.startsWith('HERMETIC_OUTPUT_DIRECTORY=')), `HERMETIC_OUTPUT_DIRECTORY=${outputTarget}`];
+}
+
+export function validateInfrastructure(value, { read, image, imageInspection, measurements, controlSha256, host = infrastructureHost(read) }) {
   if (!object(value) || value.version !== INFRASTRUCTURE_VERSION || value.passed !== true) fail('verification did not pass');
   if (!immutable(image) || value.image !== image || value.imageInspection?.Id !== image) fail('dependency image mismatch');
+  const environment = probeEnvironment(imageInspection, image);
+  if (!same(value.imageInspection, imageInspection)) fail('dependency image inspection mismatch');
   if (!digest(controlSha256) || measurements?.capture?.controlSha256 !== controlSha256 || value.measurements?.capture?.controlSha256 !== controlSha256) fail('control binding mismatch');
   if (!object(measurements?.dependencies) || measurements.source || !same(value.measurements, measurements)) fail('host image remeasurement mismatch');
   if (!same(value.host, host)) fail('host runtime or source metadata mismatch');
@@ -115,7 +125,7 @@ export function validateInfrastructure(value, { read, image, measurements, contr
   const executionBytes = add(value.probe.execution, 'host-infrastructure/inspections.json', 'Docker inspections');
   const execution = JSON.parse(executionBytes);
   const output = dirname(value.probe.report.path);
-  if (value.probe.execution.path !== join(dirname(output), 'execution.json') || execution.output !== output || execution.image !== image || execution.imageInspection?.Id !== image ||
+  if (value.probe.execution.path !== join(dirname(output), 'execution.json') || execution.output !== output || execution.image !== image || !same(execution.imageInspection, imageInspection) ||
       execution.initialContainerInspection?.Image !== image || execution.finalContainerInspection?.Image !== image ||
       execution.finalContainerInspection?.State?.ExitCode !== 0 || execution.finalContainerInspection?.State?.OOMKilled !== false || !same(execution.report, report) || !same(value.imageInspection, execution.imageInspection)) fail('Docker inspection image or report binding mismatch');
   assertContainerPolicy(execution.initialContainerInspection, output);
@@ -123,7 +133,7 @@ export function validateInfrastructure(value, { read, image, measurements, contr
   for (const inspection of [execution.initialContainerInspection, execution.finalContainerInspection]) {
     const config = inspection.Config;
     if (!same(config.Entrypoint, ['node']) || !same(config.Cmd, ['/hermetic/probe.mjs']) || config.WorkingDir !== '/app' ||
-        !Array.isArray(config.Env) || !config.Env.every((entry) => typeof entry === 'string') ||
+        unsafeEnvironment(config.Env) || !same(config.Env, environment) ||
         !same(config.Env.filter((entry) => entry === 'HERMETIC_OUTPUT_DIRECTORY' || entry.startsWith('HERMETIC_OUTPUT_DIRECTORY=')),
           [`HERMETIC_OUTPUT_DIRECTORY=${outputTarget}`])) fail('Docker probe container command or environment mismatch');
   }
@@ -189,9 +199,11 @@ export async function captureInfrastructure({ image } = {}) {
   if (measurements.source || measurements.capture?.controlSha256 !== capture.control.sha256) fail('dependency control does not match host source');
   const env = infrastructureEnvironment(directory, image);
   mkdirSync(env.DOCKER_CONFIG, { mode: 0o700 });
+  const [imageInspection] = JSON.parse(execFileSync('docker', ['image', 'inspect', image], { encoding: 'utf8', env, maxBuffer: evidenceLimits.fileBytes }));
+  probeEnvironment(imageInspection, image);
   const command = await runLogged(process.execPath, ['--test', infraPath], { cwd: root, directory, prefix: 'infrastructure', env });
   command.env = env;
-  const value = { version: INFRASTRUCTURE_VERSION, passed: false, image, imageInspection: { Id: image }, measurements, host, command };
+  const value = { version: INFRASTRUCTURE_VERSION, passed: false, image, imageInspection, measurements, host, command };
   const path = join(directory, 'infrastructure.json');
   try {
     value.tap = recountInfrastructureTap(read(command.logs.stdout.path));
@@ -202,7 +214,6 @@ export async function captureInfrastructure({ image } = {}) {
     const report = JSON.parse(read(reportPath));
     const executionPath = join(dirname(output), 'execution.json');
     const execution = JSON.parse(read(executionPath));
-    value.imageInspection = execution.imageInspection;
     const probeArtifacts = [];
     for (const entry of report.commands ?? []) for (const [stream, log] of Object.entries(entry.logs ?? {})) {
       if (typeof log.path !== 'string' || !log.path.startsWith(`${outputTarget}/logs/`)) fail('probe log path invalid');
@@ -213,7 +224,7 @@ export async function captureInfrastructure({ image } = {}) {
     for (const stream of ['stdout', 'stderr']) probeArtifacts.push({ ...execution.executionLog.logs[stream], relative: `docker.${stream}.log` });
     value.probe = { report: metadata(reportPath), execution: metadata(executionPath), artifacts: probeArtifacts };
     value.passed = true;
-    validateInfrastructure(value, { read, image, measurements, controlSha256: capture.control.sha256, host });
+    validateInfrastructure(value, { read, image, imageInspection, measurements, controlSha256: capture.control.sha256, host });
   } catch (error) {
     value.passed = false;
     writeFileSync(path, `${JSON.stringify(value, null, 2)}\n`, { flag: 'wx', mode: 0o600 });

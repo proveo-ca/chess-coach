@@ -212,6 +212,7 @@ export function buildImportFixture(diagnostics: ReturnType<typeof buildDiagnosti
     finalContainerInspection: { ...policy, State: { ExitCode: 0, OOMKilled: false } } };
   const controlSha256 = sha256("synthetic test-only infrastructure control");
   const dependencyImage = `sha256:${sha256("synthetic test-only dependency image independent of source image")}`;
+  const dependencyImageInspection = { Id: dependencyImage, Config: { Env: ["PATH=/usr/local/bin:/usr/bin:/bin", "PNPM_HOME=/tmp/pnpm"] } };
   const dependencyFiles = ["pnpm-lock.yaml", "packages/starchess-core/package.json", "packages/starchess-arena/package.json", "packages/starchess-training/package.json"]
     .map((path) => ({ path, sha256: sha256(`synthetic test-only dependency input ${path}`) }));
   const infrastructureMeasurement = { dependencies: envelope.measurements.dependencies, capture: { controlSha256, inputs: dependencyFiles },
@@ -262,9 +263,9 @@ export function buildImportFixture(diagnostics: ReturnType<typeof buildDiagnosti
     closure: infrastructureMeasurement.closure.actual, installedSha256: assurance.installedSha256, frozenStoreSha256: assurance.frozenStoreSha256, toolsSha256: assurance.toolsSha256 };
   const containerId = "d".repeat(64);
   const probePolicy = { ...structuredClone(policy), Id: containerId, Image: dependencyImage,
-    Config: { User: "10001:10001", Entrypoint: ["node"], Cmd: ["/hermetic/probe.mjs"], WorkingDir: "/app", Env: [`HERMETIC_OUTPUT_DIRECTORY=${target}`] },
+    Config: { User: "10001:10001", Entrypoint: ["node"], Cmd: ["/hermetic/probe.mjs"], WorkingDir: "/app", Env: [...dependencyImageInspection.Config.Env, `HERMETIC_OUTPUT_DIRECTORY=${target}`] },
     Mounts: [{ Type: "bind", Destination: target, Source: probeOutput, RW: true, Propagation: "rprivate" }, { Type: "tmpfs", Destination: "/tmp" }] };
-  const probeExecution: Record<string, any> = { image: dependencyImage, output: probeOutput, imageInspection: { Id: dependencyImage },
+  const probeExecution: Record<string, any> = { image: dependencyImage, output: probeOutput, imageInspection: structuredClone(dependencyImageInspection),
     initialContainerInspection: probePolicy, finalContainerInspection: { ...probePolicy, State: { ExitCode: 0, OOMKilled: false } }, report: probeReport,
     executionLog: { executable: "docker", args: ["start", "--attach", containerId], exitCode: 0, signal: null, error: null,
       logs: { stdout: infrastructureLog(join(probeWork, "docker.stdout.log")), stderr: infrastructureLog(join(probeWork, "docker.stderr.log")) } } };
@@ -281,7 +282,7 @@ export function buildImportFixture(diagnostics: ReturnType<typeof buildDiagnosti
     ].map((name, index) => `ok ${index + 1} - ${name}`),
     "1..6", "# tests 6", "# suites 0", "# pass 6", "# fail 0", "# cancelled 0", "# skipped 0", "# todo 0", ""].join("\n");
   infrastructureFiles[tapPath] = Buffer.from(tap);
-  const infrastructure: Record<string, any> = { version: INFRASTRUCTURE_VERSION, passed: true, image: dependencyImage, imageInspection: { Id: dependencyImage }, measurements: infrastructureMeasurement,
+  const infrastructure: Record<string, any> = { version: INFRASTRUCTURE_VERSION, passed: true, image: dependencyImage, imageInspection: structuredClone(dependencyImageInspection), measurements: infrastructureMeasurement,
     host: infrastructureHost(readFileSync), command: { executable: process.execPath, args: ["--test", infraPath], cwd: repositoryRoot.replace(/\/$/, ""), env: infrastructureEnvironment(dirname(tapPath), dependencyImage),
       started: "2026-10-04T00:00:00.000Z", finished: "2026-10-04T00:00:01.000Z", exitCode: 0, signal: null, error: null,
       logs: { stdout: infrastructureLog(tapPath), stderr: infrastructureLog(join(output, "infrastructure.stderr.log")) } },
@@ -324,7 +325,7 @@ export function buildImportFixture(diagnostics: ReturnType<typeof buildDiagnosti
     options: { repositoryRoot: root, executionPath: paths.execution, buildPath: paths.build, exportPath: paths.export,
       expectedImage: archive.image, destination, infrastructurePath: paths.infrastructure, acquisitionPath: paths.acquisition,
       measureInfrastructureImage: async () => structuredClone(infrastructureMeasurement),
-       inspectImage: async () => ({ Id: archive.image, Config: { Env: ["PATH=/usr/local/bin:/usr/bin:/bin"] } }), measureImage: async () => ({ source: { sourceSha256: "source" }, dependencies: { installedSha256: "installed", frozenStoreSha256: "store", toolTreeSha256: "tools" } }),
+       inspectImage: async (image: string) => image === dependencyImage ? structuredClone(dependencyImageInspection) : { Id: archive.image, Config: { Env: ["PATH=/usr/local/bin:/usr/bin:/bin"] } }, measureImage: async () => ({ source: { sourceSha256: "source" }, dependencies: { installedSha256: "installed", frozenStoreSha256: "store", toolTreeSha256: "tools" } }),
       captureContext: async () => ({ runtime: { sha256: "source" }, control: { sha256: controlSha256 }, sourceRoot: repositoryRoot }),
     },
   };

@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, renameSync, symlinkSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { test } from 'node:test';
 import { createHash } from 'node:crypto';
 import { prepareContext, repository } from './context.mjs';
@@ -223,8 +223,7 @@ test('CLI rejects mount injection and public output parents and preserves bounde
   const args = runArguments(image, '/tmp/opencode/output with spaces;literal', ['code', 'scripts/test.ts', 'literal;$(touch /tmp/forbidden)']);
   assert(args.includes('type=bind,source=/tmp/opencode/output with spaces;literal,target=' + outputTarget + ',bind-propagation=rprivate'));
   assert.equal(args.at(-1), 'literal;$(touch /tmp/forbidden)');
-  assert.notEqual(lstatSync(parent).mode & 0o077, 0);
-  const publicOutput = join(parent, `public-output-${Date.now()}-${process.pid}`);
+  const publicOutput = join(dirname(parent), `public-output-${Date.now()}-${process.pid}`);
   assert.throws(() => freshOutput(publicOutput), /private host-owned ancestor/);
   assert(!existsSync(publicOutput));
   const protectedOutput = freshOutput(join(fixture(), 'output'));

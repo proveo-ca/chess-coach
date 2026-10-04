@@ -142,7 +142,8 @@ export async function importEvidence({
   if (infrastructure.image !== dependencyImage) throw new Error('Infrastructure dependency image mismatch');
   const infrastructureMeasurement = await measureInfrastructureImage(dependencyImage);
   if (JSON.stringify(build.frozenDependency.measurements) !== JSON.stringify(infrastructureMeasurement)) throw new Error('Infrastructure frozen dependency measurement mismatch');
-  const infrastructureArtifacts = validateInfrastructure(infrastructure, { read, image: dependencyImage, measurements: infrastructureMeasurement, controlSha256: build.capture?.control?.sha256 });
+  const dependencyInspection = await inspectImage(dependencyImage);
+  const infrastructureArtifacts = validateInfrastructure(infrastructure, { read, image: dependencyImage, imageInspection: dependencyInspection, measurements: infrastructureMeasurement, controlSha256: build.capture?.control?.sha256 });
   validateAcquisition(acquisition, dependencyImage, infrastructureMeasurement);
   const image = expectedImage;
   if (typeof image !== 'string' || !/^sha256:[a-f0-9]{64}$/.test(image)) throw new Error('Immutable image ID required');
