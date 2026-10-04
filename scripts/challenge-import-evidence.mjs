@@ -96,6 +96,24 @@ function successfulDockerCommand(value, args, label) {
   if (!record(value) || value.executable !== 'docker' || !equal(value.args, args) || value.exitCode !== 0 || value.signal !== null || value.error !== null) throw new Error(`Invalid ${label} host command`);
 }
 
+function validateAcquisition(value, image, measurements) {
+  if (value.version !== 1 || value.kind !== 'dependency-build' || value.image !== image || value.imageInspection?.Id !== image ||
+      Object.hasOwn(value, 'frozenDependency')) throw new Error('Invalid acquisition dependency image envelope');
+  if (measurements.source || JSON.stringify(value.measurements) !== JSON.stringify(measurements)) throw new Error('Acquisition dependency remeasurement mismatch');
+  if (value.capture?.version !== 1 || value.capture.dependenciesOnly !== true || value.capture.runtime ||
+      !digest(value.capture.control?.sha256) || value.capture.control.sha256 !== measurements.capture?.controlSha256) throw new Error('Acquisition control binding mismatch');
+  const inputs = measurements.capture?.inputs;
+  if (!Array.isArray(inputs) || !inputs.length || inputs.some((entry) => !record(entry) || typeof entry.path !== 'string' || !digest(entry.sha256)) ||
+      JSON.stringify(value.capture.dependencyFiles) !== JSON.stringify(inputs)) throw new Error('Acquisition dependency inputs mismatch');
+  const context = value.buildArguments?.at(-1);
+  if (typeof context !== 'string' || Buffer.byteLength(context) > evidenceLimits.pathBytes || !context.startsWith('/tmp/opencode/') ||
+      /[\0\r\n]/.test(context) || resolve(context) !== context || context !== join(dirname(context), 'context')) throw new Error('Invalid acquisition build context');
+  const expected = ['build', '--platform', 'linux/amd64', '--pull=false', '--target', 'dependencies', '--no-cache',
+    '--iidfile', join(dirname(context), 'image-id'), '--file', join(context, 'Dockerfile'), context];
+  if (!equal(value.buildArguments, expected)) throw new Error('Invalid acquisition build arguments');
+  successfulDockerCommand(value.buildLog, expected, 'acquisition');
+}
+
 function captureContext(root) {
   const scratch = mkdtempSync('/tmp/opencode/challenge-capture-');
   try {
@@ -104,11 +122,12 @@ function captureContext(root) {
 }
 
 export async function importEvidence({
-  repositoryRoot, executionPath, buildPath, exportPath, infrastructurePath, expectedImage, destination,
+  repositoryRoot, executionPath, buildPath, exportPath, infrastructurePath, acquisitionPath, expectedImage, destination,
   inspectImage = (image) => JSON.parse(execFileSync('docker', ['image', 'inspect', image], { encoding: 'utf8' }))[0],
   measureImage = measureImageFilesystem, measureInfrastructureImage = measureImageFilesystem, captureContext: capture = captureContext, syncDirectory, beforePublication,
 } = {}) {
   if ([repositoryRoot, executionPath, buildPath, exportPath, infrastructurePath].some((value) => typeof value !== 'string' || !value || Buffer.byteLength(value) > evidenceLimits.pathBytes || /[\0\r\n]/.test(value))) throw new Error('Repository, execution, build, export, and infrastructure paths are required');
+  if (typeof acquisitionPath !== 'string' || !acquisitionPath || Buffer.byteLength(acquisitionPath) > evidenceLimits.pathBytes || /[\0\r\n]/.test(acquisitionPath)) throw new Error('Acquisition path is required');
   mkdirSync('/tmp/opencode', { recursive: true });
   const root = resolve(repositoryRoot);
   const read = boundedReader();
@@ -116,12 +135,15 @@ export async function importEvidence({
   const execution = decode(executionBytes, 'execution'), build = decode(buildBytes, 'build'), exported = decode(exportBytes, 'export');
   const infrastructureBytes = read(infrastructurePath);
   const infrastructure = decode(infrastructureBytes, 'infrastructure');
+  const acquisitionBytes = read(acquisitionPath);
+  const acquisition = decode(acquisitionBytes, 'acquisition');
   const dependencyImage = build.frozenDependency?.image;
   if (typeof dependencyImage !== 'string' || !/^sha256:[a-f0-9]{64}$/.test(dependencyImage) || dependencyImage === expectedImage) throw new Error('Frozen dependency image identity required');
   if (infrastructure.image !== dependencyImage) throw new Error('Infrastructure dependency image mismatch');
   const infrastructureMeasurement = await measureInfrastructureImage(dependencyImage);
   if (JSON.stringify(build.frozenDependency.measurements) !== JSON.stringify(infrastructureMeasurement)) throw new Error('Infrastructure frozen dependency measurement mismatch');
   const infrastructureArtifacts = validateInfrastructure(infrastructure, { read, image: dependencyImage, measurements: infrastructureMeasurement, controlSha256: build.capture?.control?.sha256 });
+  validateAcquisition(acquisition, dependencyImage, infrastructureMeasurement);
   const image = expectedImage;
   if (typeof image !== 'string' || !/^sha256:[a-f0-9]{64}$/.test(image)) throw new Error('Immutable image ID required');
   if ([execution.image, build.image, exported.image, execution.imageInspection?.Id, build.imageInspection?.Id, exported.imageInspection?.Id, execution.initialContainerInspection?.Image, execution.finalContainerInspection?.Image].some((value) => value !== image)) throw new Error('Image identity mismatch');
@@ -189,7 +211,7 @@ export async function importEvidence({
   }
   const hostLogs = [];
   const hostArtifacts = [];
-  for (const [label, value] of [['build', build.buildLog], ['execution', execution.executionLog]]) for (const [index, stream] of logRecords(value, label).entries()) {
+  for (const [label, value] of [['acquisition', acquisition.buildLog], ['build', build.buildLog], ['execution', execution.executionLog]]) for (const [index, stream] of logRecords(value, label).entries()) {
     const bytes = read(stream.path);
     if (bytes.length !== stream.bytes || hash(bytes) !== stream.sha256) throw new Error(`${label} host log checksum mismatch`);
     hostLogs.push({ label, path: stream.path, sha256: stream.sha256, bytes: stream.bytes });
@@ -222,14 +244,16 @@ export async function importEvidence({
     } finally { rmSync(scratch, { recursive: true, force: true }); }
     const target = destination ?? join(root, evidenceNamespace);
     const assuranceRecord = { version: 'r2-image-assurance-v1', image, inspectedImageId: inspected.Id, archive, hostLogs,
-      references: { execution: { path: resolve(executionPath), sha256: hash(executionBytes) }, build: { path: resolve(buildPath), sha256: hash(buildBytes) }, export: { path: resolve(exportPath), sha256: hash(exportBytes) }, infrastructure: { path: resolve(infrastructurePath), sha256: hash(infrastructureBytes) } },
+      references: { acquisition: { path: resolve(acquisitionPath), sha256: hash(acquisitionBytes) }, execution: { path: resolve(executionPath), sha256: hash(executionBytes) }, build: { path: resolve(buildPath), sha256: hash(buildBytes) }, export: { path: resolve(exportPath), sha256: hash(exportBytes) }, infrastructure: { path: resolve(infrastructurePath), sha256: hash(infrastructureBytes) } },
       infrastructure: { image: dependencyImage, measurements: infrastructureMeasurement, artifact: 'host-infrastructure.json' },
-      capture: { runtimeSha256: snapshot.runtime.sha256, controlSha256: snapshot.control.sha256 }, verifiedArtifactCount: artifacts.size + 6 + infrastructureArtifacts.length + hostArtifacts.length };
+      capture: { runtimeSha256: snapshot.runtime.sha256, controlSha256: snapshot.control.sha256 }, verifiedArtifactCount: artifacts.size + 7 + infrastructureArtifacts.length + hostArtifacts.length };
     const published = [...artifacts].map(([path, bytes]) => ({ path, bytes }));
-    const reserved = new Set(['verification.json', 'image-assurance.json', 'host-infrastructure.json', ...infrastructureArtifacts.map((entry) => entry.path)]);
+    const reserved = new Set(['verification.json', 'image-assurance.json', 'host-infrastructure.json',
+      ...['acquisition', 'build', 'execution', 'export'].map((label) => `host-provenance/${label}.json`),
+      ...hostArtifacts.map((entry) => entry.path), ...infrastructureArtifacts.map((entry) => entry.path)]);
     if ([...artifacts.keys()].some((path) => reserved.has(path) || path.startsWith('host-infrastructure/') || path.startsWith('host-provenance/'))) throw new Error('Artifact inventory collides with host infrastructure paths');
     published.push({ path: 'host-infrastructure.json', bytes: infrastructureBytes }, ...infrastructureArtifacts);
-    published.push({ path: 'host-provenance/build.json', bytes: buildBytes }, { path: 'host-provenance/execution.json', bytes: executionBytes }, { path: 'host-provenance/export.json', bytes: exportBytes }, ...hostArtifacts);
+    published.push({ path: 'host-provenance/acquisition.json', bytes: acquisitionBytes }, { path: 'host-provenance/build.json', bytes: buildBytes }, { path: 'host-provenance/execution.json', bytes: executionBytes }, { path: 'host-provenance/export.json', bytes: exportBytes }, ...hostArtifacts);
     published.push({ path: 'verification.json', bytes: verificationBytes }, { path: 'image-assurance.json', bytes: Buffer.from(`${JSON.stringify(assuranceRecord, null, 2)}\n`) });
     await beforePublication?.(target);
     publication = publishBundleExclusive(target, published, { syncDirectory });
@@ -252,10 +276,10 @@ async function main() {
   const options = {};
   for (let index = 2; index < process.argv.length; index += 2) {
     const key = process.argv[index];
-    if (!['--execution', '--build', '--export', '--infrastructure', '--image', '--destination'].includes(key) || !process.argv[index + 1] || process.argv[index + 1].startsWith('--') || Object.hasOwn(options, key)) throw new Error('Expected --execution, --build, --export, --infrastructure, --image, and optional --destination');
+    if (!['--execution', '--build', '--export', '--infrastructure', '--acquisition', '--image', '--destination'].includes(key) || !process.argv[index + 1] || process.argv[index + 1].startsWith('--') || Object.hasOwn(options, key)) throw new Error('Expected --execution, --build, --export, --infrastructure, --acquisition, --image, and optional --destination');
     options[key] = process.argv[index + 1];
   }
-  if (['--execution', '--build', '--export', '--infrastructure', '--image'].some((key) => !options[key])) throw new Error('Execution, build, export, infrastructure, and expected image are required');
-  console.log(JSON.stringify(await importEvidence({ repositoryRoot: SOURCE_ROOT, executionPath: resolve(options['--execution']), buildPath: resolve(options['--build']), exportPath: resolve(options['--export']), infrastructurePath: resolve(options['--infrastructure']), expectedImage: options['--image'], ...(options['--destination'] ? { destination: resolve(options['--destination']) } : {}) })));
+  if (['--execution', '--build', '--export', '--infrastructure', '--acquisition', '--image'].some((key) => !options[key])) throw new Error('Execution, build, export, infrastructure, acquisition, and expected image are required');
+  console.log(JSON.stringify(await importEvidence({ repositoryRoot: SOURCE_ROOT, executionPath: resolve(options['--execution']), buildPath: resolve(options['--build']), exportPath: resolve(options['--export']), infrastructurePath: resolve(options['--infrastructure']), acquisitionPath: resolve(options['--acquisition']), expectedImage: options['--image'], ...(options['--destination'] ? { destination: resolve(options['--destination']) } : {}) })));
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main().catch((error) => { console.error(error); process.exitCode = 1; });

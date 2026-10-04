@@ -78,6 +78,11 @@ export function infrastructureHost(read) {
     script: { path: scriptPath, sha256: hash(read(scriptPath)) }, source: { path: infraPath, sha256: hash(read(infraPath)) } };
 }
 
+export function infrastructureEnvironment(directory, image) {
+  return { PATH: '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin', HOME: directory,
+    DOCKER_CONFIG: join(directory, 'docker-config'), HERMETIC_DEPENDENCY_IMAGE: image };
+}
+
 export function validateInfrastructure(value, { read, image, measurements, controlSha256, host = infrastructureHost(read) }) {
   if (!object(value) || value.version !== INFRASTRUCTURE_VERSION || value.passed !== true) fail('verification did not pass');
   if (!immutable(image) || value.image !== image || value.imageInspection?.Id !== image) fail('dependency image mismatch');
@@ -85,8 +90,9 @@ export function validateInfrastructure(value, { read, image, measurements, contr
   if (!object(measurements?.dependencies) || measurements.source || !same(value.measurements, measurements)) fail('host image remeasurement mismatch');
   if (!same(value.host, host)) fail('host runtime or source metadata mismatch');
   const command = value.command;
+  const directory = typeof command?.logs?.stdout?.path === 'string' ? dirname(command.logs.stdout.path) : '';
   if (!object(command) || command.executable !== process.execPath || !same(command.args, ['--test', infraPath]) || command.cwd !== root ||
-      !same(command.env, { HERMETIC_DEPENDENCY_IMAGE: image }) || command.exitCode !== 0 || command.signal !== null || command.error !== null ||
+      !directory || !same(command.env, infrastructureEnvironment(directory, image)) || command.exitCode !== 0 || command.signal !== null || command.error !== null ||
       !['started', 'finished'].every((key) => typeof command[key] === 'string' && new Date(command[key]).toISOString() === command[key]) || command.finished < command.started) fail('exact command or runtime environment mismatch');
   const artifacts = [];
   const add = (metadata, path, label, boundedLog = false) => {
@@ -181,9 +187,10 @@ export async function captureInfrastructure({ image } = {}) {
   let capture;
   try { capture = prepareContext(context, true); } finally { rmSync(context, { recursive: true, force: true }); }
   if (measurements.source || measurements.capture?.controlSha256 !== capture.control.sha256) fail('dependency control does not match host source');
-  process.env.HERMETIC_DEPENDENCY_IMAGE = image;
-  const command = await runLogged(process.execPath, ['--test', infraPath], { cwd: root, directory, prefix: 'infrastructure' });
-  command.env = { HERMETIC_DEPENDENCY_IMAGE: image };
+  const env = infrastructureEnvironment(directory, image);
+  mkdirSync(env.DOCKER_CONFIG, { mode: 0o700 });
+  const command = await runLogged(process.execPath, ['--test', infraPath], { cwd: root, directory, prefix: 'infrastructure', env });
+  command.env = env;
   const value = { version: INFRASTRUCTURE_VERSION, passed: false, image, imageInspection: { Id: image }, measurements, host, command };
   const path = join(directory, 'infrastructure.json');
   try {

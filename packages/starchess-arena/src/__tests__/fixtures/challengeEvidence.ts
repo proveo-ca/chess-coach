@@ -21,7 +21,8 @@ const { verificationCommands, VITEST_FLOORS, ASSERTION_FLOORS_VERSION } = requir
   VITEST_FLOORS: Record<string, number>; ASSERTION_FLOORS_VERSION: string;
 };
 const { checkPublicClosure } = require("../../../hermetic/public-closure.mjs") as { checkPublicClosure: (root: string) => unknown };
-const { infrastructureHost, INFRASTRUCTURE_VERSION, infraPath } = require("../../../../../scripts/challenge-infrastructure-evidence.mjs") as {
+const { infrastructureHost, infrastructureEnvironment, INFRASTRUCTURE_VERSION, infraPath } = require("../../../../../scripts/challenge-infrastructure-evidence.mjs") as {
+  infrastructureEnvironment: (directory: string, image: string) => Record<string, string>;
   infrastructureHost: (read: (path: string) => Buffer) => Record<string, unknown>; INFRASTRUCTURE_VERSION: string; infraPath: string;
 };
 const history = require("./challenge-history-pins.json") as { files: Record<string, { bytes: number; sha256: string }> };
@@ -211,14 +212,30 @@ export function buildImportFixture(diagnostics: ReturnType<typeof buildDiagnosti
     finalContainerInspection: { ...policy, State: { ExitCode: 0, OOMKilled: false } } };
   const controlSha256 = sha256("synthetic test-only infrastructure control");
   const dependencyImage = `sha256:${sha256("synthetic test-only dependency image independent of source image")}`;
-  const infrastructureMeasurement = { dependencies: envelope.measurements.dependencies, capture: { controlSha256 },
+  const dependencyFiles = ["pnpm-lock.yaml", "packages/starchess-core/package.json", "packages/starchess-arena/package.json", "packages/starchess-training/package.json"]
+    .map((path) => ({ path, sha256: sha256(`synthetic test-only dependency input ${path}`) }));
+  const infrastructureMeasurement = { dependencies: envelope.measurements.dependencies, capture: { controlSha256, inputs: dependencyFiles },
     closure: { actual: { tools: { node: runtimePins.node }, packages: {} } }, method: "synthetic-test-only-host-boundary" };
   const context = join(output, "source-build/context");
   const dependencyTag = `starchess-hermetic-dependencies:${dependencyImage.slice(7)}`;
   const buildArguments = ["build", "--platform", "linux/amd64", "--pull=false", "--target", "runtime", "--network=none", "--build-arg", `FROZEN_DEPENDENCIES=${dependencyTag}`, "--iidfile", join(dirname(context), "image-id"), "--file", join(context, "Dockerfile"), context];
   const build = { ...envelope, buildArguments, buildLog: { ...host, executable: "docker", args: [...buildArguments], exitCode: 0, signal: null, error: null }, capture: { runtime: { sha256: "source" }, control: { sha256: controlSha256 } },
     frozenDependency: { image: dependencyImage, localBuildReference: dependencyTag, measurements: infrastructureMeasurement } };
-  const paths = { execution: join(output, "execution.json"), build: join(output, "build.json"), export: join(output, "export.json"), infrastructure: join(output, "infrastructure.json") };
+  const acquisitionContext = join(output, "dependency-acquisition/context");
+  const acquisitionArguments = ["build", "--platform", "linux/amd64", "--pull=false", "--target", "dependencies", "--no-cache",
+    "--iidfile", join(dirname(acquisitionContext), "image-id"), "--file", join(acquisitionContext, "Dockerfile"), acquisitionContext];
+  const acquisitionFiles: Record<string, Buffer> = {};
+  const acquisitionLogs = Object.fromEntries(["stdout", "stderr"].map((stream) => {
+    const path = join(dirname(acquisitionContext), `build.${stream}.log`);
+    const bytes = stream === "stdout" ? Buffer.from("synthetic test-only uncached dependency acquisition\n") : Buffer.alloc(0);
+    acquisitionFiles[path] = bytes;
+    return [stream, { path, sha256: sha256(bytes), bytes: bytes.length, observedBytes: bytes.length, truncated: false }];
+  })) as { stdout: Log; stderr: Log };
+  const acquisition = { version: 1, kind: "dependency-build", image: dependencyImage, imageInspection: { Id: dependencyImage },
+    measurements: structuredClone(infrastructureMeasurement),
+    capture: { version: 1, dependenciesOnly: true, control: { sha256: controlSha256 }, dependencyFiles: structuredClone(dependencyFiles) },
+    buildArguments: acquisitionArguments, buildLog: { executable: "docker", args: [...acquisitionArguments], exitCode: 0, signal: null, error: null, logs: acquisitionLogs } };
+  const paths = { acquisition: join(output, "acquisition.json"), execution: join(output, "execution.json"), build: join(output, "build.json"), export: join(output, "export.json"), infrastructure: join(output, "infrastructure.json") };
   const probeWork = join(output, "host-probe");
   const probeOutput = join(probeWork, "output");
   const infrastructureFiles: Record<string, Buffer> = {};
@@ -265,7 +282,7 @@ export function buildImportFixture(diagnostics: ReturnType<typeof buildDiagnosti
     "1..6", "# tests 6", "# suites 0", "# pass 6", "# fail 0", "# cancelled 0", "# skipped 0", "# todo 0", ""].join("\n");
   infrastructureFiles[tapPath] = Buffer.from(tap);
   const infrastructure: Record<string, any> = { version: INFRASTRUCTURE_VERSION, passed: true, image: dependencyImage, imageInspection: { Id: dependencyImage }, measurements: infrastructureMeasurement,
-    host: infrastructureHost(readFileSync), command: { executable: process.execPath, args: ["--test", infraPath], cwd: repositoryRoot.replace(/\/$/, ""), env: { HERMETIC_DEPENDENCY_IMAGE: dependencyImage },
+    host: infrastructureHost(readFileSync), command: { executable: process.execPath, args: ["--test", infraPath], cwd: repositoryRoot.replace(/\/$/, ""), env: infrastructureEnvironment(dirname(tapPath), dependencyImage),
       started: "2026-10-04T00:00:00.000Z", finished: "2026-10-04T00:00:01.000Z", exitCode: 0, signal: null, error: null,
       logs: { stdout: infrastructureLog(tapPath), stderr: infrastructureLog(join(output, "infrastructure.stderr.log")) } },
     tap: { tests: 6, suites: 0, pass: 6, fail: 0, cancelled: 0, skipped: 0, todo: 0 }, probe: { artifacts: [] } };
@@ -287,6 +304,8 @@ export function buildImportFixture(diagnostics: ReturnType<typeof buildDiagnosti
     for (const [path, bytes] of Object.entries(files)) { mkdirSync(dirname(join(output, path)), { recursive: true }); writeFileSync(join(output, path), bytes); }
     writeFileSync(join(output, "verification.json"), jsonBytes(verification));
     writeFileSync(paths.execution, jsonBytes(execution)); writeFileSync(paths.build, jsonBytes(build)); writeFileSync(paths.export, jsonBytes(envelope));
+    for (const [path, bytes] of Object.entries(acquisitionFiles)) { mkdirSync(dirname(path), { recursive: true }); writeFileSync(path, bytes); }
+    writeFileSync(paths.acquisition, jsonBytes(acquisition));
     for (const [path, bytes] of Object.entries(infrastructureFiles)) { mkdirSync(dirname(path), { recursive: true }); writeFileSync(path, bytes); }
     writeFileSync(paths.infrastructure, jsonBytes(infrastructure));
   };
@@ -300,10 +319,10 @@ export function buildImportFixture(diagnostics: ReturnType<typeof buildDiagnosti
     mutate("contract-report.json", (document) => { document.baselineReportSha256 = sha256(files["baseline-report.json"]!); document.coverageSha256 = sha256(canonical(decode(files["coverage.json"]!))); document.r2CompositionSha256 = sha256(canonical(decode(files["r2-composition-report.json"]!))); });
   };
   save();
-  return { root, output, files, verification, execution, build, paths, destination, archivePath, archive, save, mutate, rebind,
+  return { root, output, files, verification, execution, build, acquisition, acquisitionFiles, paths, destination, archivePath, archive, save, mutate, rebind,
     infrastructure, infrastructureFiles, infrastructureMeasurement, probeReport, probeExecution, rebindInfrastructure,
     options: { repositoryRoot: root, executionPath: paths.execution, buildPath: paths.build, exportPath: paths.export,
-      expectedImage: archive.image, destination, infrastructurePath: paths.infrastructure,
+      expectedImage: archive.image, destination, infrastructurePath: paths.infrastructure, acquisitionPath: paths.acquisition,
       measureInfrastructureImage: async () => structuredClone(infrastructureMeasurement),
       inspectImage: async () => ({ Id: archive.image }), measureImage: async () => ({ source: { sourceSha256: "source" }, dependencies: { installedSha256: "installed", frozenStoreSha256: "store", toolTreeSha256: "tools" } }),
       captureContext: async () => ({ runtime: { sha256: "source" }, control: { sha256: controlSha256 }, sourceRoot: repositoryRoot }),

@@ -74,7 +74,11 @@ describe("phase2 hermetic evidence import with synthetic test-only image hooks",
     expect(published.get("host-infrastructure/probe.json")).toEqual(value.infrastructureFiles[value.infrastructure.probe.report.path]);
     expect(published.has("host-infrastructure/inspections.json")).toBe(true);
     expect(published.has("host-infrastructure/logs/vitest.stdout.log")).toBe(true);
-    for (const name of ["build", "execution", "export"]) expect(published.get(`host-provenance/${name}.json`)).toEqual(readFileSync(value.paths[name as "build" | "execution" | "export"]));
+    for (const name of ["acquisition", "build", "execution", "export"] as const) expect(published.get(`host-provenance/${name}.json`)).toEqual(readFileSync(value.paths[name]));
+    for (const stream of ["stdout", "stderr"] as const) expect(published.get(`host-provenance/acquisition.${stream}.log`)).toEqual(value.acquisitionFiles[value.acquisition.buildLog.logs[stream].path]);
+    const assurance = JSON.parse(readFileSync(join(value.destination, "image-assurance.json"), "utf8"));
+    expect(assurance.references.acquisition).toEqual({ path: value.paths.acquisition, sha256: sha256(readFileSync(value.paths.acquisition)) });
+    expect(assurance.verifiedArtifactCount).toBe(published.size);
     expect(published.get("host-provenance/build.stdout.log")).toEqual(readFileSync(value.build.buildLog.logs.stdout!.path));
     expect(published.has("host-provenance/execution.stderr.log")).toBe(true);
   }, 120000);
@@ -194,6 +198,107 @@ describe("phase2 hermetic evidence import with synthetic test-only image hooks",
   });
 });
 
+describe("uncached dependency acquisition import gate", () => {
+  it.each([undefined, null, ""])("requires the acquisition path before publication: %j", async (path) => {
+    const value = fixture();
+    await expect(importEvidence({ ...value.options, acquisitionPath: path })).rejects.toThrow("Acquisition path is required");
+    expect(existsSync(value.destination)).toBe(false);
+  });
+  it("requires the acquisition CLI option", () => {
+    const value = fixture();
+    const result = spawnSync(process.execPath, [join(repositoryRoot, "scripts/challenge-import-evidence.mjs"),
+      "--execution", value.paths.execution, "--build", value.paths.build, "--export", value.paths.export,
+      "--infrastructure", value.paths.infrastructure, "--image", value.archive.image], { encoding: "utf8" });
+    expect(result.status).not.toBe(0);
+    expect(result.stderr).toContain("acquisition, and expected image are required");
+    expect(existsSync(value.destination)).toBe(false);
+  });
+  it("rejects a missing acquisition envelope", async () => {
+    const value = fixture();
+    await expect(importEvidence({ ...value.options, acquisitionPath: join(value.output, "missing-acquisition.json") })).rejects.toThrow("ENOENT");
+    expect(existsSync(value.destination)).toBe(false);
+  });
+  it("bounds the acquisition envelope before decoding", async () => {
+    const value = fixture(); truncateSync(value.paths.acquisition, evidenceLimits.fileBytes + 1);
+    await expect(importEvidence(value.options)).rejects.toThrow("Input exceeds byte cap");
+    expect(existsSync(value.destination)).toBe(false);
+  });
+  it.each(["version", "kind"] as const)("rejects a substituted acquisition %s", async (field) => {
+    const value = fixture(); Object.assign(value.acquisition, { [field]: "historical" });
+    await reject(value, "Invalid acquisition dependency image envelope");
+  });
+  it("rejects acquisition rebound to the wrong image", async () => {
+    const value = fixture(); value.acquisition.image = value.archive.image; value.acquisition.imageInspection.Id = value.archive.image;
+    await reject(value, "Invalid acquisition dependency image envelope");
+  });
+  it("rejects acquisition measurement rebinding independently of the source build", async () => {
+    const value = fixture(); value.acquisition.measurements.dependencies = { ...value.acquisition.measurements.dependencies, installedSha256: "fabricated" };
+    await reject(value, "Acquisition dependency remeasurement mismatch");
+  });
+  it("rejects acquisition control rebinding", async () => {
+    const value = fixture(); value.acquisition.capture.control.sha256 = "0".repeat(64);
+    await reject(value, "Acquisition control binding mismatch");
+  });
+  it("rejects acquisition dependency input rebinding", async () => {
+    const value = fixture(); value.acquisition.capture.dependencyFiles[0]!.sha256 = "0".repeat(64);
+    await reject(value, "Acquisition dependency inputs mismatch");
+  });
+  it("rejects cached acquisition despite rebound command arguments", async () => {
+    const value = fixture(); value.acquisition.buildArguments.splice(6, 1); value.acquisition.buildLog.args = [...value.acquisition.buildArguments];
+    await reject(value, "Invalid acquisition build arguments");
+  });
+  it("rejects source-frozen acquisition references", async () => {
+    const value = fixture(); Object.assign(value.acquisition, { frozenDependency: value.build.frozenDependency });
+    await reject(value, "Invalid acquisition dependency image envelope");
+  });
+  it.each(["target", "iidfile", "dockerfile", "network", "frozen-reference"])("rejects substituted acquisition %s arguments even after command rebinding", async (field) => {
+    const value = fixture(); const args = value.acquisition.buildArguments;
+    if (field === "target") args[5] = "frozen";
+    else if (field === "iidfile") args[8] = join(value.output, "other-image-id");
+    else if (field === "dockerfile") args[10] = join(value.output, "Dockerfile");
+    else args.splice(7, 0, ...(field === "network" ? ["--network=host"] : ["--build-arg", "FROZEN_DEPENDENCIES=synthetic"]));
+    value.acquisition.buildLog.args = [...args];
+    await reject(value, "Invalid acquisition build arguments");
+  });
+  it.each(["exitCode", "signal", "error", "args"])("rejects unsuccessful or substituted acquisition command %s", async (field) => {
+    const value = fixture();
+    Object.assign(value.acquisition.buildLog, { [field]: field === "exitCode" ? 1 : field === "args" ? ["version"] : "failed" });
+    await reject(value, "Invalid acquisition host command");
+  });
+  it.each([undefined, null, true])("requires explicit untruncated acquisition logs: %j", async (flag) => {
+    const value = fixture(); Object.assign(value.acquisition.buildLog.logs.stdout, { truncated: flag });
+    await reject(value, "Invalid acquisition log metadata");
+  });
+  it("rejects acquisition log checksum substitution", async () => {
+    const value = fixture(); value.acquisition.buildLog.logs.stdout.sha256 = "0".repeat(64);
+    await reject(value, "acquisition host log checksum mismatch");
+  });
+});
+
+describe("logged child environment", () => {
+  const { runLogged } = require("../../hermetic/logged-command.mjs") as {
+    runLogged: (executable: string, args: string[], options: { directory: string; prefix: string; env?: Record<string, string> }) => Promise<{ exitCode: number; logs: { stdout: { path: string } } }>;
+  };
+  const { infrastructureEnvironment } = require("../../../../scripts/challenge-infrastructure-evidence.mjs") as {
+    infrastructureEnvironment: (directory: string, image: string) => Record<string, string>;
+  };
+  it("passes only the explicit infrastructure environment to the child", async () => {
+    const directory = mkdtempSync("/tmp/opencode/import-environment-"); roots.push(directory);
+    const env = infrastructureEnvironment(directory, `sha256:${"a".repeat(64)}`);
+    expect(env).toEqual({ PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin", HOME: directory,
+      DOCKER_CONFIG: join(directory, "docker-config"), HERMETIC_DEPENDENCY_IMAGE: `sha256:${"a".repeat(64)}` });
+    const command = await runLogged(process.execPath, ["--eval", "process.stdout.write(JSON.stringify(process.env))"], { directory, prefix: "scrubbed", env });
+    expect(command.exitCode).toBe(0);
+    expect(JSON.parse(readFileSync(command.logs.stdout.path, "utf8"))).toEqual(env);
+  });
+  it("defaults the logged environment to process.env", async () => {
+    const directory = mkdtempSync("/tmp/opencode/import-environment-"); roots.push(directory);
+    const command = await runLogged(process.execPath, ["--eval", "process.stdout.write(JSON.stringify(process.env))"], { directory, prefix: "default" });
+    expect(command.exitCode).toBe(0);
+    expect(JSON.parse(readFileSync(command.logs.stdout.path, "utf8"))).toEqual(process.env);
+  });
+});
+
 describe("host infrastructure import gate with synthetic test-only host boundaries", () => {
   const { INFRASTRUCTURE_TEST_NAMES, INFRASTRUCTURE_TESTS, infraPath, recountInfrastructureTap } = require("../../../../scripts/challenge-infrastructure-evidence.mjs") as {
     INFRASTRUCTURE_TEST_NAMES: readonly string[]; INFRASTRUCTURE_TESTS: number; infraPath: string;
@@ -246,6 +351,14 @@ describe("host infrastructure import gate with synthetic test-only host boundari
   });
   it.each(["exitCode", "signal", "error", "env", "args"])("requires complete exact command metadata: %s", async (field) => {
     const value = fixture(); delete value.infrastructure.command[field];
+    await reject(value, "Infrastructure exact command or runtime environment mismatch");
+  });
+  it.each(["NODE_OPTIONS", "NODE_PATH", "DOCKER_HOST", "DOCKER_CONTEXT", "CONTEXT", "LD_PRELOAD", "LD_LIBRARY_PATH", "DOCKER_AUTH_CONFIG", "AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "NPM_TOKEN"])("rejects unsupported infrastructure environment key %s", async (key) => {
+    const value = fixture(); value.infrastructure.command.env[key] = "unsupported";
+    await reject(value, "Infrastructure exact command or runtime environment mismatch");
+  });
+  it.each(["PATH", "HOME", "DOCKER_CONFIG", "HERMETIC_DEPENDENCY_IMAGE"])("rejects substituted infrastructure environment %s", async (key) => {
+    const value = fixture(); value.infrastructure.command.env[key] = "substituted";
     await reject(value, "Infrastructure exact command or runtime environment mismatch");
   });
   it("rejects changed host source-code metadata", async () => {

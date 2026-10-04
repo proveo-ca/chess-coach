@@ -6,7 +6,7 @@ import { basename, join } from 'node:path';
 
 export const logLimit = 8 * 1024 * 1024;
 
-export async function runLogged(executable, args, { cwd, directory, prefix, limit = logLimit, testReport } = {}) {
+export async function runLogged(executable, args, { cwd, directory, prefix, limit = logLimit, testReport, env = process.env } = {}) {
   mkdirSync(directory, { recursive: true, mode: 0o755 });
   const streams = {};
   try {
@@ -20,7 +20,7 @@ export async function runLogged(executable, args, { cwd, directory, prefix, limi
   }
   const started = new Date().toISOString();
   let error;
-  const child = spawn(executable, args, { cwd, env: process.env, stdio: ['ignore', 'pipe', 'pipe'] });
+  const child = spawn(executable, args, { cwd, env, stdio: ['ignore', 'pipe', 'pipe'] });
   for (const name of ['stdout', 'stderr']) {
     child[name].on('data', (chunk) => {
       const stream = streams[name];
