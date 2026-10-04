@@ -60,13 +60,16 @@ export const checkPublicClosure = (root = repository) => {
   };
   const manifests = new Map([CORE, ARENA, TRAINING].map((owner) => [owner, readJson(join(root, owner, "package.json"))]));
   const publicExports = new Map([
-    [CORE, ["."]],
-    [ARENA, [".", "./intent-codec-v1", "./observations"]],
-    [TRAINING, ["./candidates"]],
+    [CORE, { ".": "./src/index.ts" }],
+    [ARENA, { ".": "./src/index.ts", "./intent-codec-v1": "./src/intent-codec-v1.ts", "./observations": "./src/observations.ts" }],
+    [TRAINING, { "./candidates": "./src/candidates.ts" }],
   ]);
+  const canonicalBranches = (value, target) => typeof value === "string" ? value === target
+    : plain(value) && Object.keys(value).length > 0 && Object.values(value).every((branch) => canonicalBranches(branch, target));
   for (const [owner, expected] of publicExports) {
     const exports = manifests.get(owner).exports;
-    if (!plain(exports) || JSON.stringify(Object.keys(exports).sort()) !== JSON.stringify([...expected].sort())) throw new Error(`Unapproved public export map: ${owner}`);
+    if (!plain(exports) || JSON.stringify(Object.keys(exports).sort()) !== JSON.stringify(Object.keys(expected).sort()) ||
+        Object.entries(expected).some(([subpath, target]) => !canonicalBranches(exports[subpath], target))) throw new Error(`Unapproved public export map: ${owner}`);
   }
   const byName = new Map([...manifests].map(([owner, manifest]) => [manifest.name, owner]));
   if (byName.size !== 3 || [...byName.keys()].some((name) => typeof name !== "string")) throw new Error("Invalid workspace package names");
@@ -170,6 +173,71 @@ export const checkPublicClosure = (root = repository) => {
       visit(target.path, target.dependency);
     };
     const literal = (node) => node && ts.isStringLiteralLike(node) ? node.text : undefined;
+    const unwrap = (node) => ts.isParenthesizedExpression(node) || ts.isAsExpression(node) || ts.isNonNullExpression(node) ||
+      ts.isTypeAssertionExpression(node) || ts.isSatisfiesExpression(node) ? unwrap(node.expression) : node;
+    const staticString = (node, seen = new Set()) => {
+      const expression = unwrap(node);
+      if (ts.isStringLiteralLike(expression)) return expression.text;
+      if (ts.isBinaryExpression(expression) && expression.operatorToken.kind === ts.SyntaxKind.PlusToken) {
+        const left = staticString(expression.left, seen), right = staticString(expression.right, seen);
+        return left === undefined || right === undefined ? undefined : left + right;
+      }
+      if (!ts.isIdentifier(expression)) return undefined;
+      const symbol = checker.getSymbolAtLocation(expression);
+      if (!symbol || seen.has(symbol)) return undefined;
+      const declaration = symbol.valueDeclaration;
+      return declaration && ts.isVariableDeclaration(declaration) && declaration.initializer &&
+        ts.isVariableDeclarationList(declaration.parent) && declaration.parent.flags & ts.NodeFlags.Const
+        ? staticString(declaration.initializer, new Set([...seen, symbol])) : undefined;
+    };
+    const property = (node) => {
+      const expression = unwrap(node);
+      if (ts.isPropertyAccessExpression(expression)) return { receiver: expression.expression, name: expression.name.text };
+      if (ts.isElementAccessExpression(expression)) return { receiver: expression.expression, name: staticString(expression.argumentExpression) };
+    };
+    const origin = (node, seen = new Set(), members = new Set()) => {
+      const expression = unwrap(node);
+      if (members.has(expression)) return expression;
+      const next = new Set([...members, expression]);
+      const member = property(expression);
+      if (member?.name !== undefined) {
+        const receiver = origin(member.receiver, seen, next);
+        if (ts.isObjectLiteralExpression(receiver)) {
+          const entry = receiver.properties.find((entry) => !ts.isSpreadAssignment(entry) &&
+            (ts.isComputedPropertyName(entry.name) ? staticString(entry.name.expression)
+              : ts.isIdentifier(entry.name) || ts.isStringLiteralLike(entry.name) || ts.isNumericLiteral(entry.name) ? entry.name.text : undefined) === member.name);
+          if (entry && ts.isPropertyAssignment(entry)) return origin(entry.initializer, seen, next);
+          if (entry && ts.isShorthandPropertyAssignment(entry)) return origin(entry.name, seen, next);
+        }
+      }
+      if (!ts.isIdentifier(expression)) return expression;
+      const symbol = ts.isShorthandPropertyAssignment(expression.parent) ? checker.getShorthandAssignmentValueSymbol(expression.parent)
+        : checker.getSymbolAtLocation(expression);
+      if (!symbol || seen.has(symbol)) return expression;
+      const declaration = symbol.valueDeclaration;
+      return declaration && ts.isVariableDeclaration(declaration) && declaration.initializer
+        ? origin(declaration.initializer, new Set([...seen, symbol]), next) : expression;
+    };
+    const unsafeComputedReceiver = (node, seen = new Set()) => {
+      const expression = origin(node);
+      if (seen.has(expression)) return true;
+      const next = new Set([...seen, expression]);
+      if (checker.getTypeAtLocation(expression).getCallSignatures().length || ts.isArrowFunction(expression) || ts.isFunctionExpression(expression)) return true;
+      const member = property(expression);
+      if (!member) return false;
+      if (unsafeComputedReceiver(member.receiver, next)) return true;
+      const receiver = origin(member.receiver);
+      if (!ts.isObjectLiteralExpression(receiver)) return false;
+      return receiver.properties.some((entry) => {
+        if (ts.isSpreadAssignment(entry)) return unsafeComputedReceiver(entry.expression, next);
+        const name = ts.isComputedPropertyName(entry.name) ? staticString(entry.name.expression)
+          : ts.isIdentifier(entry.name) || ts.isStringLiteralLike(entry.name) ? entry.name.text : undefined;
+        if (member.name !== undefined && name !== undefined && name !== member.name) return false;
+        if (ts.isMethodDeclaration(entry) || ts.isGetAccessorDeclaration(entry) || ts.isSetAccessorDeclaration(entry)) return true;
+        return ts.isPropertyAssignment(entry) ? unsafeComputedReceiver(entry.initializer, next)
+          : ts.isShorthandPropertyAssignment(entry) && unsafeComputedReceiver(entry.name, next);
+      });
+    };
     const scan = (node) => {
       if (ts.isImportDeclaration(node) || ts.isExportDeclaration(node)) {
         if (node.moduleSpecifier) {
@@ -182,6 +250,9 @@ export const checkPublicClosure = (root = repository) => {
       else if (ts.isImportEqualsDeclaration(node)) throw new Error(`CommonJS in public closure: ${id}`);
       else if (ts.isCallExpression(node) && node.expression.kind === ts.SyntaxKind.ImportKeyword) throw new Error(`Dynamic import in public closure: ${id}`);
       if (ts.isMetaProperty(node) && node.keywordToken === ts.SyntaxKind.ImportKeyword) throw new Error(`Import metadata in public closure: ${id}`);
+      const member = !ts.isPartOfTypeNode(node) && (ts.isPropertyAccessExpression(node) || ts.isElementAccessExpression(node)) ? property(node) : undefined;
+      if (!dependency && (["constructor", "__proto__"].includes(member?.name) ||
+          ts.isElementAccessExpression(node) && unsafeComputedReceiver(node.expression))) throw new Error(`Code constructor acquisition in public closure: ${id}`);
       if (ts.isIdentifier(node) && !ts.isPartOfTypeNode(node)) {
         const parent = node.parent;
         const propertyName = ts.isPropertyAccessExpression(parent) && parent.name === node ||

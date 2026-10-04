@@ -12,6 +12,22 @@ const ARENA = "packages/starchess-arena";
 const TRAINING = "packages/starchess-training";
 const repository = fileURLToPath(new URL("../../../../", import.meta.url));
 const temporary: string[] = [];
+const ownMemberConstructors = [
+  'const box: any = {f: () => {}}; box.f[["con", "structor"].join("")]("return process")();',
+  'const box = {f: () => {}} as any; box.f[["con", "structor"].join("")]("return process")();',
+  'const box = {f: () => {}}; (box.f as any)[["con", "structor"].join("")]("return process")();',
+  'const box: any = {f: function () {}}; box["f"][["con", "structor"].join("")]("return process")();',
+  'const box: any = {f() {}}; box.f[["con", "structor"].join("")]("return process")();',
+  'const f: any = () => {}; const box: any = {f}; box.f[["con", "structor"].join("")]("return process")();',
+  'const box: any = {nested: {f: () => {}}}; box.nested.f[["con", "structor"].join("")]("return process")();',
+  'const box = {nested: {f: () => {}}} as any; const nested = box.nested; const alias = nested.f; alias[["con", "structor"].join("")]("return process")();',
+  'const box: any = {get f() {return () => {};}}; box.f[["con", "structor"].join("")]("return process")();',
+  'const box = {get f(): any {return () => {};}}; const alias = box.f; alias[["con", "structor"].join("")]("return process")();',
+  'const box: any = {get nested() {return {f: () => {}};}}; const alias = box.nested.f; alias[["con", "structor"].join("")]("return process")();',
+  'const box: any = {nested: {get f() {return () => {};}}}; const alias = box.nested.f; alias[["con", "structor"].join("")]("return process")();',
+  'const box: any = {f: () => {}}; const alias = later; const later = box.f; alias[["con", "structor"].join("")]("return process")();',
+  'const box: any = {f: () => {}}; const key = "f"; box[key][["con", "structor"].join("")]("return process")();',
+];
 afterEach(() => { for (const root of temporary.splice(0)) rmSync(root, { recursive: true, force: true }); });
 const put = (root: string, path: string, value: string): void => {
   mkdirSync(dirname(join(root, path)), { recursive: true });
@@ -43,6 +59,11 @@ const fixture = (): string => {
 };
 
 describe("partitioned challenge source inventory", () => {
+  it.each(ownMemberConstructors)("rejects computed constructors on own function members: %s", (code) => {
+    const root = fixture();
+    put(root, `${CORE}/src/index.ts`, code);
+    expect(() => collectSourceInventory(root)).toThrow("Unsupported code constructor acquisition");
+  });
   it.each([
     'import.meta.url = "file:///contracts/anchor.cjs";',
     'delete import.meta.url;',
@@ -714,6 +735,12 @@ describe("static browser public closure", () => {
     return checkPublicClosure(root);
   };
 
+  it.each(ownMemberConstructors)("rejects computed constructors on own public function members: %s", async (code) => {
+    const root = fixture();
+    put(root, `${CORE}/src/index.ts`, code);
+    await expect(check(root)).rejects.toThrow("Code constructor acquisition in public closure");
+  });
+
   it("traverses actual conditional exports and pins source and manifest bytes", async () => {
     const root = fixture();
     put(root, `${TRAINING}/src/candidates.ts`, 'import "@chess-coach/starchess-arena/observations";');
@@ -727,10 +754,41 @@ describe("static browser public closure", () => {
     put(root, `${ARENA}/src/authorized/v1/types.ts`, "export type Observation = string;");
     expect((await check(root)).sourceSha256).not.toBe(first.sourceSha256);
     put(root, `${CORE}/package.json`, JSON.stringify({ name: "@chess-coach/starchess-core", exports: { ".": {
-      node: "./src/host.ts", browser: { import: "./src/index.ts" }, default: "./src/host.ts",
+      node: "./src/index.ts", browser: { import: "./src/index.ts" }, default: "./src/index.ts",
     } } }));
-    put(root, `${CORE}/src/host.ts`, 'import "node:fs";');
     expect((await check(root)).entries[0].path).toBe(`${CORE}/src/index.ts`);
+  });
+
+  it.each([
+    [CORE, ".", "./src/index.ts"],
+    [ARENA, ".", "./src/index.ts"],
+    [ARENA, "./observations", "./src/observations.ts"],
+    [ARENA, "./intent-codec-v1", "./src/intent-codec-v1.ts"],
+    [TRAINING, "./candidates", "./src/candidates.ts"],
+  ])("rejects node and default alternatives for every canonical workspace export: %s %s", async (owner, subpath, target) => {
+    const root = fixture();
+    const path = `${owner}/package.json`;
+    const manifest = JSON.parse(readFileSync(join(root, path), "utf8"));
+    put(root, `${owner}/outside.mjs`, 'import "node:fs";');
+    put(root, `${owner}/src/host.ts`, 'import "node:fs";');
+    for (const condition of ["node", "default"]) {
+      for (const alternative of ["./outside.mjs", "./src/host.ts"]) {
+        manifest.exports[subpath!] = { browser: { import: target }, [condition]: alternative };
+        put(root, path, JSON.stringify(manifest));
+        await expect(check(root)).rejects.toThrow(`Unapproved public export map: ${owner}`);
+      }
+    }
+  });
+
+  it.each([
+    "./src/*.ts", "./src/../outside.mjs", "../outside.mjs", "/outside.mjs", "./src\\index.ts", "./src//index.ts",
+    null, ["./src/index.ts"], {}, { browser: "./src/index.ts", node: { default: "./outside.mjs" } },
+  ])("rejects wildcard, unsafe and unsupported workspace targets in unselected branches: %j", async (target) => {
+    const root = fixture();
+    put(root, `${CORE}/package.json`, JSON.stringify({ name: "@chess-coach/starchess-core", exports: {
+      ".": { browser: "./src/index.ts", default: target },
+    } }));
+    await expect(check(root)).rejects.toThrow(`Unapproved public export map: ${CORE}`);
   });
 
   it.each([

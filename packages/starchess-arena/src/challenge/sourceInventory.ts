@@ -506,14 +506,47 @@ export const collectSourceInventory = (
           ts.isBinaryExpression(parent) && parent.operatorToken.kind === ts.SyntaxKind.CommaToken && parent.right === node) return wrappedUse(parent as ts.Expression);
       return node;
     };
-    const origin = (node: ts.Expression, seen = new Set<ts.Symbol | string>()): ts.Expression => {
+    const origin = (node: ts.Expression, seen = new Set<ts.Symbol | string>(), members = new Set<ts.Expression>()): ts.Expression => {
       const expression = unwrapValue(node);
+      if (members.has(expression)) return expression;
+      const next = new Set([...members, expression]);
+      const member = property(expression);
+      if (member?.name !== undefined) {
+        const receiver = origin(member.receiver, seen, next);
+        if (ts.isObjectLiteralExpression(receiver)) {
+          const entry = receiver.properties.find((entry) => !ts.isSpreadAssignment(entry) &&
+            (ts.isComputedPropertyName(entry.name) ? staticString(entry.name.expression)
+              : ts.isIdentifier(entry.name) || ts.isStringLiteralLike(entry.name) || ts.isNumericLiteral(entry.name) ? entry.name.text : undefined) === member.name);
+          if (entry && ts.isPropertyAssignment(entry)) return origin(entry.initializer, seen, next);
+          if (entry && ts.isShorthandPropertyAssignment(entry)) return origin(entry.name, seen, next);
+        }
+      }
       if (!ts.isIdentifier(expression)) return expression;
       const key = binding(expression);
       if (seen.has(key) || typeof key === "string") return expression;
       const declaration = key.valueDeclaration;
       return declaration && ts.isVariableDeclaration(declaration) && declaration.initializer
-        ? origin(declaration.initializer, new Set([...seen, key])) : expression;
+        ? origin(declaration.initializer, new Set([...seen, key]), next) : expression;
+    };
+    const unsafeComputedReceiver = (node: ts.Expression, seen = new Set<ts.Expression>()): boolean => {
+      const expression = origin(node);
+      if (seen.has(expression)) return true;
+      const next = new Set([...seen, expression]);
+      if (checker.getTypeAtLocation(expression).getCallSignatures().length || ts.isArrowFunction(expression) || ts.isFunctionExpression(expression)) return true;
+      const member = property(expression);
+      if (!member) return false;
+      if (unsafeComputedReceiver(member.receiver, next)) return true;
+      const receiver = origin(member.receiver);
+      if (!ts.isObjectLiteralExpression(receiver)) return false;
+      return receiver.properties.some((entry) => {
+        if (ts.isSpreadAssignment(entry)) return unsafeComputedReceiver(entry.expression, next);
+        const name = ts.isComputedPropertyName(entry.name) ? staticString(entry.name.expression)
+          : ts.isIdentifier(entry.name) || ts.isStringLiteralLike(entry.name) ? entry.name.text : undefined;
+        if (member.name !== undefined && name !== undefined && name !== member.name) return false;
+        if (ts.isMethodDeclaration(entry) || ts.isGetAccessorDeclaration(entry) || ts.isSetAccessorDeclaration(entry)) return true;
+        return ts.isPropertyAssignment(entry) ? unsafeComputedReceiver(entry.initializer, next)
+          : ts.isShorthandPropertyAssignment(entry) && unsafeComputedReceiver(entry.name, next);
+      });
     };
     const mutableOrigin = (node: ts.Expression, seen = new Set<ts.Symbol | string>()): boolean => {
       const expression = unwrapValue(node);
@@ -589,8 +622,7 @@ export const collectSourceInventory = (
       if (accessed && reflectionNamespace(accessed.receiver) && !["ownKeys", "apply", "has", "set", "deleteProperty"].includes(accessed.name ?? "")) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
       if (ts.isBindingElement(node) && node.propertyName && ((ts.isIdentifier(node.propertyName) || ts.isStringLiteralLike(node.propertyName)) && ["constructor", "__proto__", "getPrototypeOf", "getOwnPropertyDescriptors", "getOwnPropertyDescriptor"].includes(node.propertyName.text) || ts.isComputedPropertyName(node.propertyName))) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
       if (ts.isElementAccessExpression(node) && mutableOrigin(node.expression) && !safeDataKey(node.argumentExpression)) throw new Error(`Unsupported mutable computed receiver: ${file.path}`);
-      if (ts.isElementAccessExpression(node) && (checker.getTypeAtLocation(origin(node.expression)).getCallSignatures().length ||
-          ts.isArrowFunction(origin(node.expression)) || ts.isFunctionExpression(origin(node.expression)))) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
+      if (ts.isElementAccessExpression(node) && unsafeComputedReceiver(node.expression)) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
       if (accessed?.name === "getOwnPropertyDescriptor" && !(ts.isCallExpression(node.parent) && node.parent.expression === node)) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
       if (ts.isCallExpression(node) && property(node.expression)?.name === "getOwnPropertyDescriptor") {
         if (file.path !== `${ARENA}/src/challengeContract/validation.ts` || node.getText(source) !== "Object.getOwnPropertyDescriptor(value, String(index))") throw new Error(`Unsupported code constructor acquisition: ${file.path}`);

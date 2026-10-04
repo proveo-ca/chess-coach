@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { sha256 } from "@noble/hashes/sha2.js";
 import { ACTION_KINDS, encodeCandidate, MAX_QUEUE_ACTIONS, requestedSpend } from "@chess-coach/starchess-arena/intent-codec-v1";
 import { validateObservationV1, type AuthorizedObservationV1 } from "@chess-coach/starchess-arena/observations";
-import { addScAction, getSideVision, mapToPlacement, type ScFenSnapshot, type ScPiece, type Square } from "@chess-coach/starchess-core";
+import { addScAction, getSideVision, mapToPlacement, SPECIAL_REGISTRY, UNIT_COST, type ScFenSnapshot, type ScPiece, type Square } from "@chess-coach/starchess-core";
 import * as publicApi from "../candidates";
 import { composeCandidatesFromObservationV1 as compose, decodeCandidate } from "../candidates";
 import { composeWithRuntime } from "../composition";
@@ -138,6 +138,30 @@ describe("bounded independent tiny oracle", () => {
 });
 
 describe("public V1 bridge, identity, and detachment", () => {
+  it("preserves requested spend and the complete composition batch after native cost mutation attempts", () => {
+    const o = allActors();
+    const actions = [
+      { ...s("deploy", "a1", "a2"), unit: "q" as const },
+      s("charonMissiles", "d4", "g7"),
+      s("tacticalJump", "f6", "h7"),
+    ];
+    const spend = requestedSpend(actions);
+    expect(spend).toEqual({ minerals: 9, gas: 6 });
+    const before = compose(o);
+    expect(before.diagnostics.activeFamilies).toEqual(ACTION_KINDS);
+    expect(before.candidates.some((candidate) => candidate.actions.some((action) => action.kind === "deploy"))).toBe(true);
+    for (const unit of Object.keys(UNIT_COST)) expect(Reflect.set(UNIT_COST, unit, 0)).toBe(false);
+    for (const kind of ACTION_KINDS) {
+      if (kind === "classical") continue;
+      expect(Reflect.set(SPECIAL_REGISTRY[kind], "gasCost", 0)).toBe(false);
+      expect(Reflect.set(SPECIAL_REGISTRY, kind, { gasCost: 0 })).toBe(false);
+    }
+    expect(requestedSpend(actions)).toEqual(spend);
+    const after = compose(o);
+    expect(after).toEqual(before);
+    checkBatch(after);
+  });
+
   it("exports only composition and V1 decoding at runtime and preserves the 65-action codec ceiling", () => {
     expect(Object.keys(publicApi).sort()).toEqual(["composeCandidatesFromObservationV1", "decodeCandidate"]);
     expect(MAX_QUEUE_ACTIONS).toBe(65);
