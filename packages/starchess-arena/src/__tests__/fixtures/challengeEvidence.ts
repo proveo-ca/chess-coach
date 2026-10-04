@@ -212,7 +212,11 @@ export function buildImportFixture(diagnostics: ReturnType<typeof buildDiagnosti
     finalContainerInspection: { ...policy, State: { ExitCode: 0, OOMKilled: false } } };
   const controlSha256 = sha256("synthetic test-only infrastructure control");
   const dependencyImage = `sha256:${sha256("synthetic test-only dependency image independent of source image")}`;
-  const dependencyImageInspection = { Id: dependencyImage, Config: { Env: ["PATH=/usr/local/bin:/usr/bin:/bin", "PNPM_HOME=/tmp/pnpm"] } };
+  const dependencyImageInspection = { Id: dependencyImage, Os: "linux", Architecture: "amd64",
+    Config: { Env: ["PATH=/usr/local/bin:/usr/bin:/bin", "PNPM_HOME=/tmp/pnpm"] },
+    RootFS: { Type: "layers", Layers: [`sha256:${sha256("synthetic test-only dependency layer")}`] },
+    RepoTags: [], RepoDigests: [], Metadata: { LastTagTime: "2026-10-04T00:00:00.000Z" },
+    GraphDriver: { Name: "overlay2", Data: { UpperDir: "/var/lib/docker/synthetic-capture" } } };
   const dependencyFiles = ["pnpm-lock.yaml", "packages/starchess-core/package.json", "packages/starchess-arena/package.json", "packages/starchess-training/package.json"]
     .map((path) => ({ path, sha256: sha256(`synthetic test-only dependency input ${path}`) }));
   const infrastructureMeasurement = { dependencies: envelope.measurements.dependencies, capture: { controlSha256, inputs: dependencyFiles },

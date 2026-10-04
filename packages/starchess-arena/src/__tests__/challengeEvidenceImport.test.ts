@@ -317,6 +317,48 @@ describe("logged child environment", () => {
   });
 });
 
+describe("immutable infrastructure image identity", () => {
+  const { infrastructureReader, validateInfrastructure } = require("../../../../scripts/challenge-infrastructure-evidence.mjs") as {
+    infrastructureReader: () => (path: string) => Buffer;
+    validateInfrastructure: (value: Record<string, any>, options: { read: (path: string) => Buffer; image: string;
+      imageInspection: Record<string, any>; measurements: unknown; controlSha256: string }) => { path: string; bytes: Buffer }[];
+  };
+  const validateImage = (value: Fixture, imageInspection: Record<string, any>) => validateInfrastructure(value.infrastructure, {
+    read: infrastructureReader(), image: value.infrastructure.image, imageInspection,
+    measurements: value.infrastructureMeasurement, controlSha256: value.build.capture.control.sha256,
+  });
+  it("accepts legitimate independent tag and daemon metadata changes while retaining the original full inspections", async () => {
+    const value = fixture();
+    const recorded = readFileSync(value.paths.infrastructure);
+    const recordedExecution = readFileSync(value.infrastructure.probe.execution.path);
+    const independent = await value.options.inspectImage(value.infrastructure.image);
+    Object.assign(independent, { RepoTags: [`starchess-hermetic-dependencies:${value.infrastructure.image.slice(7)}`],
+      RepoDigests: [`synthetic-dependencies@${value.infrastructure.image}`], Metadata: { LastTagTime: "2026-10-04T00:01:00.000Z" },
+      GraphDriver: { Name: "overlay2", Data: { UpperDir: "/var/lib/docker/synthetic-import" } }, Size: 123456 });
+    expect(independent).not.toEqual(value.infrastructure.imageInspection);
+    const retained = validateImage(value, independent);
+    expect(retained.find((entry) => entry.path === "host-infrastructure/inspections.json")?.bytes).toEqual(recordedExecution);
+    expect(readFileSync(value.paths.infrastructure)).toEqual(recorded);
+    expect(readFileSync(value.infrastructure.probe.execution.path)).toEqual(recordedExecution);
+  });
+  describe.each(["envelope", "execution", "both"] as const)("immutable inspection binding in %s", (location) => {
+    it.each(["Config", "RootFS"] as const)("rejects immutable image %s substitution with rebound JSON", async (field) => {
+      const value = fixture();
+      const independent = await value.options.inspectImage(value.infrastructure.image);
+      const inspections = location === "envelope" ? [value.infrastructure.imageInspection] : location === "execution" ? [value.probeExecution.imageInspection] :
+        [value.infrastructure.imageInspection, value.probeExecution.imageInspection];
+      for (const inspection of inspections) {
+        if (field === "Config") inspection.Config.WorkingDir = "/tmp/fabricated";
+        else inspection.RootFS.Layers[0] = `sha256:${"0".repeat(64)}`;
+      }
+      value.rebindInfrastructure(); value.save();
+      expect(sha256(readFileSync(value.infrastructure.probe.execution.path))).toBe(value.infrastructure.probe.execution.sha256);
+      expect(() => validateImage(value, independent)).toThrow(location === "execution" ?
+        "Infrastructure Docker inspection image or report binding mismatch" : "Infrastructure dependency image inspection mismatch");
+    });
+  });
+});
+
 describe("host infrastructure import gate with synthetic test-only host boundaries", () => {
   const { INFRASTRUCTURE_TEST_NAMES, INFRASTRUCTURE_TESTS, infraPath, recountInfrastructureTap } = require("../../../../scripts/challenge-infrastructure-evidence.mjs") as {
     INFRASTRUCTURE_TEST_NAMES: readonly string[]; INFRASTRUCTURE_TESTS: number; infraPath: string;

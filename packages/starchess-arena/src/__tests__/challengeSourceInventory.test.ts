@@ -66,6 +66,43 @@ const dataArrayAccesses = [
   'const path = [...rayBetween(from, to), to]; const blocked = 1; void path[blocked - 1];',
   'const rows = [...inputRows]; void rows[0][1];',
 ];
+const unprovenComputedReceivers = [
+  'const make:any=()=>()=>{}; const f:any=make(); f[["con","structor"].join("")]("return process")();',
+  'const box:any={f:0}; box.f=()=>{}; box.f[["con","structor"].join("")]("return process")();',
+  'const make: any = function () {return function () {};}; const f: any = make(); f[["con", "structor"].join("")]("return process")();',
+  'const make: any = () => ({f: () => {}}); const f = make().f; f[["con", "structor"].join("")]("return process")();',
+  'const make: any = () => [() => {}]; const f = make()[0]; f[["con", "structor"].join("")]("return process")();',
+  'const make: any = () => () => {}; const f = make(); const alias = f; alias[["con", "structor"].join("")]("return process")();',
+  'const make: any = () => () => {}; const box: any = {f: make()}; box.f[["con", "structor"].join("")]("return process")();',
+  'const make: any = () => ({f: () => {}}); const {f} = make(); f[["con", "structor"].join("")]("return process")();',
+  'const make: any = () => [() => {}]; const [f] = make(); f[["con", "structor"].join("")]("return process")();',
+  'const f: any = unknownFactory(); f[unknownKey];',
+  'const make: any = () => () => {}; (make() as any)[["con", "structor"].join("")]("return process")();',
+  'const box: any = {f: 0}; box["f"] = () => {}; const f = box.f; f[["con", "structor"].join("")]("return process")();',
+  'const box: any = {nested: {f: 0}}; box.nested.f = () => {}; box.nested.f[["con", "structor"].join("")]("return process")();',
+  'const box: any = {f: 0}; const alias = box; alias.f = () => {}; box.f[["con", "structor"].join("")]("return process")();',
+  'const box: any = {nested: {f: 0}}; const alias = box.nested; alias.f = () => {}; box.nested.f[["con", "structor"].join("")]("return process")();',
+  'const box: any = {nested: {f: 0}}; const {nested: alias} = box; alias.f = () => {}; box.nested.f[["con", "structor"].join("")]("return process")();',
+  'const array: any = [0]; array[0] = () => {}; const [f] = array; f[["con", "structor"].join("")]("return process")();',
+  'const box: any = {f: 0}; Object.assign(box, {f: () => {}}); box.f[["con", "structor"].join("")]("return process")();',
+  'const box: any = {f: 0}; const alias = box; const api = Object; api.assign(alias, {f: () => {}}); box.f[["con", "structor"].join("")]("return process")();',
+  'const box: any = {f: 0}; const assign = Object.assign; assign(box, {f: () => {}}); box.f[["con", "structor"].join("")]("return process")();',
+  'const box: any = {f: 0}; Object.defineProperty(box, "f", {value: () => {}}); box.f[["con", "structor"].join("")]("return process")();',
+  'const box: any = {f: 0}; Reflect.set(box, "f", () => {}); box.f[["con", "structor"].join("")]("return process")();',
+  'const box: any = {f: 0}; [box.f] = [() => {}]; box.f[["con", "structor"].join("")]("return process")();',
+  'const box: any = {f: 0}; ({f: box.f} = {f: () => {}}); box.f[["con", "structor"].join("")]("return process")();',
+  'const box: any = {f: 0, other: 0}; box.other = 1; box.f[unknownKey];',
+];
+const ordinaryComputedData = [
+  'const make: any = () => [1, 2]; const values = make(); void values[0];',
+  'const values: any = unknownFactory(); const index: number = 1; void values[index];',
+  'const values: any = unknownFactory(); void values["data"];',
+  'const make = (): {[key: string]: number} => ({w: 1}); const values = make(); const key: string = "w"; void values[key];',
+  'const box: {data: {[key: string]: number}} = {data: {w: 1}}; box.data.w = 2; const key: string = "w"; void box.data[key];',
+  'const box: any = {data: [1, 2]}; box.data[0] = 3; void box.data[0];',
+  'const box: any = {data: [1, 2]}; Object.assign(box, {data: [3, 4]}); void box.data[1];',
+  'const values: any = unknownFactory(); const key: "w" | "b" = unknownSide; void values[key];',
+];
 afterEach(() => { for (const root of temporary.splice(0)) rmSync(root, { recursive: true, force: true }); });
 const put = (root: string, path: string, value: string): void => {
   mkdirSync(dirname(join(root, path)), { recursive: true });
@@ -97,6 +134,16 @@ const fixture = (): string => {
 };
 
 describe("partitioned challenge source inventory", () => {
+  it.each(unprovenComputedReceivers)("rejects unproven call-derived or mutated receivers: %s", (code) => {
+    const root = fixture();
+    put(root, `${CORE}/src/index.ts`, code);
+    expect(() => collectSourceInventory(root)).toThrow(/Unsupported code constructor acquisition|Unsupported mutable computed receiver|Unsupported builtin acquisition/);
+  });
+  it.each(ordinaryComputedData)("allows ordinary call-derived and mutated data indexing: %s", (code) => {
+    const root = fixture();
+    put(root, `${CORE}/src/index.ts`, code);
+    expect(collectSourceInventory(root).audit.passed).toBe(true);
+  });
   it.each(arrayMemberConstructors)("rejects numeric array function constructor acquisition: %s", (code) => {
     const root = fixture();
     put(root, `${CORE}/src/index.ts`, code);
@@ -787,6 +834,17 @@ describe("static browser public closure", () => {
     const { checkPublicClosure } = await import(/* @vite-ignore */ script);
     return checkPublicClosure(root);
   };
+
+  it.each(unprovenComputedReceivers)("rejects public unproven call-derived or mutated receivers: %s", async (code) => {
+    const root = fixture();
+    put(root, `${CORE}/src/index.ts`, code);
+    await expect(check(root)).rejects.toThrow("Code constructor acquisition in public closure");
+  });
+  it.each(ordinaryComputedData)("allows ordinary public call-derived and mutated data indexing: %s", async (code) => {
+    const root = fixture();
+    put(root, `${CORE}/src/index.ts`, code);
+    expect((await check(root)).passed).toBe(true);
+  });
 
   it.each(arrayMemberConstructors)("rejects public numeric array function constructor acquisition: %s", async (code) => {
     const root = fixture();

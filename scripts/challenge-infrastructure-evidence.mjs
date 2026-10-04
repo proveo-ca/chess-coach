@@ -85,6 +85,8 @@ export function infrastructureEnvironment(directory, image) {
 }
 
 const unsafeEnvironment = (value) => !Array.isArray(value) || value.some((entry) => typeof entry !== 'string' || /^(?:NODE_OPTIONS|NODE_PATH|LD_PRELOAD|LD_LIBRARY_PATH)(?:=|$)/.test(entry));
+const sameImageIdentity = (actual, expected) => object(actual) && object(expected) &&
+  ['Id', 'Os', 'Architecture', 'Variant', 'Config', 'RootFS'].every((key) => same(actual[key], expected[key]));
 
 function probeEnvironment(imageInspection, image) {
   if (!object(imageInspection) || imageInspection.Id !== image || unsafeEnvironment(imageInspection.Config?.Env)) fail('dependency image inspection or environment mismatch');
@@ -95,7 +97,7 @@ export function validateInfrastructure(value, { read, image, imageInspection, me
   if (!object(value) || value.version !== INFRASTRUCTURE_VERSION || value.passed !== true) fail('verification did not pass');
   if (!immutable(image) || value.image !== image || value.imageInspection?.Id !== image) fail('dependency image mismatch');
   const environment = probeEnvironment(imageInspection, image);
-  if (!same(value.imageInspection, imageInspection)) fail('dependency image inspection mismatch');
+  if (!sameImageIdentity(value.imageInspection, imageInspection)) fail('dependency image inspection mismatch');
   if (!digest(controlSha256) || measurements?.capture?.controlSha256 !== controlSha256 || value.measurements?.capture?.controlSha256 !== controlSha256) fail('control binding mismatch');
   if (!object(measurements?.dependencies) || measurements.source || !same(value.measurements, measurements)) fail('host image remeasurement mismatch');
   if (!same(value.host, host)) fail('host runtime or source metadata mismatch');
@@ -125,9 +127,9 @@ export function validateInfrastructure(value, { read, image, imageInspection, me
   const executionBytes = add(value.probe.execution, 'host-infrastructure/inspections.json', 'Docker inspections');
   const execution = JSON.parse(executionBytes);
   const output = dirname(value.probe.report.path);
-  if (value.probe.execution.path !== join(dirname(output), 'execution.json') || execution.output !== output || execution.image !== image || !same(execution.imageInspection, imageInspection) ||
+  if (value.probe.execution.path !== join(dirname(output), 'execution.json') || execution.output !== output || execution.image !== image || !sameImageIdentity(execution.imageInspection, imageInspection) ||
       execution.initialContainerInspection?.Image !== image || execution.finalContainerInspection?.Image !== image ||
-      execution.finalContainerInspection?.State?.ExitCode !== 0 || execution.finalContainerInspection?.State?.OOMKilled !== false || !same(execution.report, report) || !same(value.imageInspection, execution.imageInspection)) fail('Docker inspection image or report binding mismatch');
+      execution.finalContainerInspection?.State?.ExitCode !== 0 || execution.finalContainerInspection?.State?.OOMKilled !== false || !same(execution.report, report)) fail('Docker inspection image or report binding mismatch');
   assertContainerPolicy(execution.initialContainerInspection, output);
   assertContainerPolicy(execution.finalContainerInspection, output);
   for (const inspection of [execution.initialContainerInspection, execution.finalContainerInspection]) {
