@@ -9,7 +9,15 @@ import { runLogged } from '../packages/starchess-arena/hermetic/logged-command.m
 import { assertContainerPolicy, outputTarget } from '../packages/starchess-arena/hermetic/policy.mjs';
 
 export const INFRASTRUCTURE_VERSION = 'r2-infrastructure-verification-v1';
-export const INFRASTRUCTURE_TESTS = 5;
+export const INFRASTRUCTURE_TEST_NAMES = Object.freeze([
+  'Dockerfile pins the official platform and isolates offline installation from acquisition',
+  'context keeps the original lock and workspace links without root dependencies or host stores',
+  'current verification freezes eleven exact commands and the complete strict source invoice',
+  'runtime capture preserves JSONC config closure, tests, fixtures, and rejects escaping paths or ancestor symlinks',
+  'CLI rejects mount injection and public output parents and preserves bounded success/failure logs',
+  'Docker enforces policy, fresh temporary inventory, and logged offline TS/Vitest',
+]);
+export const INFRASTRUCTURE_TESTS = INFRASTRUCTURE_TEST_NAMES.length;
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 export const infraPath = join(root, 'packages/starchess-arena/hermetic/infra.test.mjs');
 const scriptPath = fileURLToPath(import.meta.url);
@@ -52,8 +60,8 @@ export function recountInfrastructureTap(bytes) {
   const text = new TextDecoder('utf-8', { fatal: true }).decode(bytes);
   if (!text.startsWith('TAP version 13\n') || /(?:^|\n)\s*Bail out!|^\s*(?:ok|not ok)\b[^\n]*#\s*(?:SKIP|TODO)\b/im.test(text)) fail('TAP contains omitted or failed tests');
   const results = [...text.matchAll(/^(ok|not ok) (\d+) - (.+)$/gm)];
-  if (results.length !== INFRASTRUCTURE_TESTS || results.some((entry, index) => entry[1] !== 'ok' || Number(entry[2]) !== index + 1) ||
-      results.filter((entry) => entry[3] === 'Docker enforces policy, fresh temporary inventory, and logged offline TS/Vitest').length !== 1) fail('TAP test count or Docker test mismatch');
+  if (results.length !== INFRASTRUCTURE_TESTS || results.some((entry, index) => entry[1] !== 'ok' || Number(entry[2]) !== index + 1 ||
+      entry[3] !== INFRASTRUCTURE_TEST_NAMES[index])) fail('TAP test count or Docker test mismatch');
   if (/^\s*not ok\b/m.test(text)) fail('TAP contains omitted or failed tests');
   const plans = [...text.matchAll(/^1\.\.(\d+)$/gm)];
   if (plans.length !== 1 || Number(plans[0][1]) !== INFRASTRUCTURE_TESTS) fail('TAP plan mismatch');
@@ -106,6 +114,13 @@ export function validateInfrastructure(value, { read, image, measurements, contr
       execution.finalContainerInspection?.State?.ExitCode !== 0 || execution.finalContainerInspection?.State?.OOMKilled !== false || !same(execution.report, report) || !same(value.imageInspection, execution.imageInspection)) fail('Docker inspection image or report binding mismatch');
   assertContainerPolicy(execution.initialContainerInspection, output);
   assertContainerPolicy(execution.finalContainerInspection, output);
+  for (const inspection of [execution.initialContainerInspection, execution.finalContainerInspection]) {
+    const config = inspection.Config;
+    if (!same(config.Entrypoint, ['node']) || !same(config.Cmd, ['/hermetic/probe.mjs']) || config.WorkingDir !== '/app' ||
+        !Array.isArray(config.Env) || !config.Env.every((entry) => typeof entry === 'string') ||
+        !same(config.Env.filter((entry) => entry === 'HERMETIC_OUTPUT_DIRECTORY' || entry.startsWith('HERMETIC_OUTPUT_DIRECTORY=')),
+          [`HERMETIC_OUTPUT_DIRECTORY=${outputTarget}`])) fail('Docker probe container command or environment mismatch');
+  }
   if (!object(report) || report.passed !== true || report.freshTemporaryRoot !== true || report.sourceOnlyInventoryFiles !== 1 ||
       report.installedSha256 !== measurements.dependencies.installedSha256 || report.frozenStoreSha256 !== measurements.dependencies.frozenStoreSha256 ||
       report.toolsSha256 !== measurements.dependencies.toolTreeSha256 || !same(report.closure, measurements.closure?.actual) || !Array.isArray(report.commands) || report.commands.length !== 3) fail('Docker probe assurance mismatch');

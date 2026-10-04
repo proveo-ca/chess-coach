@@ -170,6 +170,21 @@ describe("phase2 hermetic evidence import with synthetic test-only image hooks",
 });
 
 describe("host infrastructure import gate with synthetic test-only host boundaries", () => {
+  const { INFRASTRUCTURE_TEST_NAMES, INFRASTRUCTURE_TESTS, infraPath, recountInfrastructureTap } = require("../../../../scripts/challenge-infrastructure-evidence.mjs") as {
+    INFRASTRUCTURE_TEST_NAMES: readonly string[]; INFRASTRUCTURE_TESTS: number; infraPath: string;
+    recountInfrastructureTap: (bytes: Buffer) => { tests: number; pass: number };
+  };
+  it("accepts the independent six-title TAP fixture matching the ordered infrastructure suite", () => {
+    const value = fixture(); const bytes = value.infrastructureFiles[value.infrastructure.command.logs.stdout.path]!;
+    const sourceNames = [...readFileSync(infraPath, "utf8").matchAll(/^test\('([^']+)'/gm)].map((entry) => entry[1]);
+    const tapNames = [...bytes.toString().matchAll(/^ok \d+ - (.+)$/gm)].map((entry) => entry[1]);
+    expect(Object.isFrozen(INFRASTRUCTURE_TEST_NAMES)).toBe(true);
+    expect(INFRASTRUCTURE_TEST_NAMES).toEqual(sourceNames);
+    expect(INFRASTRUCTURE_TESTS).toBe(6);
+    expect(tapNames).toEqual(sourceNames);
+    expect(recountInfrastructureTap(bytes)).toEqual(value.infrastructure.tap);
+    expect(value.infrastructure.tap).toMatchObject({ tests: 6, pass: 6 });
+  });
   it.each([undefined, null, ""])("requires the infrastructure path before publication: %j", async (path) => {
     const value = fixture();
     await expect(importEvidence({ ...value.options, infrastructurePath: path })).rejects.toThrow("infrastructure paths are required");
@@ -218,6 +233,21 @@ describe("host infrastructure import gate with synthetic test-only host boundari
     value.rebindInfrastructure();
     await reject(value, "Infrastructure TAP test count or Docker test mismatch");
   });
+  it.each(["missing", "duplicated", "substituted", "reordered"])("rejects %s infrastructure TAP titles with rebound raw checksums", async (change) => {
+    const value = fixture(); const path = value.infrastructure.command.logs.stdout.path;
+    const text = value.infrastructureFiles[path]!.toString();
+    const titles = [...text.matchAll(/^ok \d+ - (.+)$/gm)].map((entry) => entry[1]!);
+    if (change === "missing") titles.splice(2, 1);
+    else if (change === "duplicated") titles[2] = titles[1]!;
+    else if (change === "substituted") titles[2] = "synthetic substituted verification suite";
+    else [titles[1], titles[2]] = [titles[2]!, titles[1]!];
+    const changed = text.replace(/(?:^ok \d+ - .+\n)+/m, titles.map((title, index) => `ok ${index + 1} - ${title}\n`).join(""))
+      .replace("1..6", `1..${titles.length}`).replace("# tests 6", `# tests ${titles.length}`).replace("# pass 6", `# pass ${titles.length}`);
+    value.infrastructureFiles[path] = Buffer.from(changed);
+    Object.assign(value.infrastructure.tap, { tests: titles.length, pass: titles.length });
+    value.rebindInfrastructure();
+    await reject(value, "Infrastructure TAP test count or Docker test mismatch");
+  });
   it("rejects skipped TAP with rebound raw checksums", async () => {
     const value = fixture(); const path = value.infrastructure.command.logs.stdout.path;
     value.infrastructureFiles[path] = Buffer.from(value.infrastructureFiles[path]!.toString().replace("# skipped 0", "# skipped 1"));
@@ -226,7 +256,7 @@ describe("host infrastructure import gate with synthetic test-only host boundari
   });
   it("rejects omitted TAP summaries rather than trusting envelope counts", async () => {
     const value = fixture(); const path = value.infrastructure.command.logs.stdout.path;
-    value.infrastructureFiles[path] = Buffer.from(value.infrastructureFiles[path]!.toString().replace("# pass 5\n", ""));
+    value.infrastructureFiles[path] = Buffer.from(value.infrastructureFiles[path]!.toString().replace("# pass 6\n", ""));
     value.rebindInfrastructure();
     await reject(value, "Infrastructure TAP pass summary mismatch");
   });
@@ -249,6 +279,31 @@ describe("host infrastructure import gate with synthetic test-only host boundari
   it("requires actual probe container inspections to identify the dependency image", async () => {
     const value = fixture(); value.probeExecution.finalContainerInspection.Image = value.archive.image; value.rebindInfrastructure();
     await reject(value, "Infrastructure Docker inspection image or report binding mismatch");
+  });
+  const probeConfigCases: [string, (config: Record<string, any>) => void][] = [
+    ["missing entrypoint", (config) => { delete config.Entrypoint; }],
+    ["substituted entrypoint", (config) => { config.Entrypoint = ["sh"]; }],
+    ["extra entrypoint argument", (config) => { config.Entrypoint = ["node", "--eval"]; }],
+    ["missing command", (config) => { delete config.Cmd; }],
+    ["substituted command", (config) => { config.Cmd = ["/hermetic/run.mjs"]; }],
+    ["extra command argument", (config) => { config.Cmd = ["/hermetic/probe.mjs", "fabricated"]; }],
+    ["missing working directory", (config) => { delete config.WorkingDir; }],
+    ["substituted working directory", (config) => { config.WorkingDir = "/tmp/test"; }],
+    ["missing environment", (config) => { delete config.Env; }],
+    ["omitted output environment", (config) => { config.Env = ["PATH=/usr/local/bin:/usr/bin:/bin"]; }],
+    ["substituted output environment", (config) => { config.Env = ["HERMETIC_OUTPUT_DIRECTORY=/tmp/fabricated"]; }],
+    ["duplicated output environment", (config) => { config.Env.push(config.Env[0]); }],
+    ["conflicting output environment", (config) => { config.Env.push("HERMETIC_OUTPUT_DIRECTORY=/tmp/fabricated"); }],
+    ["bare output environment", (config) => { config.Env.push("HERMETIC_OUTPUT_DIRECTORY"); }],
+  ];
+  describe.each(["initialContainerInspection", "finalContainerInspection"])("probe command binding in %s", (inspection) => {
+    it.each(probeConfigCases)("rejects %s with rebound inspection checksums", async (_name, mutate) => {
+      const value = fixture();
+      value.probeExecution[inspection].Config = structuredClone(value.probeExecution[inspection].Config);
+      mutate(value.probeExecution[inspection].Config);
+      value.rebindInfrastructure();
+      await reject(value, "Infrastructure Docker probe container command or environment mismatch");
+    });
   });
   it("requires the exact probe TS/Vitest commands despite rebound payloads", async () => {
     const value = fixture(); value.probeReport.commands[1].args = ["/tmp/test/fabricated.ts"]; value.rebindInfrastructure();

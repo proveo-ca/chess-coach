@@ -242,6 +242,7 @@ export function buildImportFixture(diagnostics: ReturnType<typeof buildDiagnosti
     closure: infrastructureMeasurement.closure.actual, installedSha256: assurance.installedSha256, frozenStoreSha256: assurance.frozenStoreSha256, toolsSha256: assurance.toolsSha256 };
   const containerId = "d".repeat(64);
   const probePolicy = { ...structuredClone(policy), Id: containerId, Image: dependencyImage,
+    Config: { User: "10001:10001", Entrypoint: ["node"], Cmd: ["/hermetic/probe.mjs"], WorkingDir: "/app", Env: [`HERMETIC_OUTPUT_DIRECTORY=${target}`] },
     Mounts: [{ Type: "bind", Destination: target, Source: probeOutput, RW: true, Propagation: "rprivate" }, { Type: "tmpfs", Destination: "/tmp" }] };
   const probeExecution: Record<string, any> = { image: dependencyImage, output: probeOutput, imageInspection: { Id: dependencyImage },
     initialContainerInspection: probePolicy, finalContainerInspection: { ...probePolicy, State: { ExitCode: 0, OOMKilled: false } }, report: probeReport,
@@ -250,14 +251,21 @@ export function buildImportFixture(diagnostics: ReturnType<typeof buildDiagnosti
   const probePath = join(probeOutput, "probe.json");
   const tapPath = join(output, "infrastructure.stdout.log");
   const tap = ["TAP version 13", "# Docker probe evidence: " + probePath,
-    ...["Dockerfile pins", "context capture", "runtime source capture", "CLI policy", "Docker enforces policy, fresh temporary inventory, and logged offline TS/Vitest"].map((name, index) => `ok ${index + 1} - ${name}`),
-    "1..5", "# tests 5", "# suites 0", "# pass 5", "# fail 0", "# cancelled 0", "# skipped 0", "# todo 0", ""].join("\n");
+    ...[
+      "Dockerfile pins the official platform and isolates offline installation from acquisition",
+      "context keeps the original lock and workspace links without root dependencies or host stores",
+      "current verification freezes eleven exact commands and the complete strict source invoice",
+      "runtime capture preserves JSONC config closure, tests, fixtures, and rejects escaping paths or ancestor symlinks",
+      "CLI rejects mount injection and public output parents and preserves bounded success/failure logs",
+      "Docker enforces policy, fresh temporary inventory, and logged offline TS/Vitest",
+    ].map((name, index) => `ok ${index + 1} - ${name}`),
+    "1..6", "# tests 6", "# suites 0", "# pass 6", "# fail 0", "# cancelled 0", "# skipped 0", "# todo 0", ""].join("\n");
   infrastructureFiles[tapPath] = Buffer.from(tap);
   const infrastructure: Record<string, any> = { version: INFRASTRUCTURE_VERSION, passed: true, image: dependencyImage, imageInspection: { Id: dependencyImage }, measurements: infrastructureMeasurement,
     host: infrastructureHost(readFileSync), command: { executable: process.execPath, args: ["--test", infraPath], cwd: repositoryRoot.replace(/\/$/, ""), env: { HERMETIC_DEPENDENCY_IMAGE: dependencyImage },
       started: "2026-10-04T00:00:00.000Z", finished: "2026-10-04T00:00:01.000Z", exitCode: 0, signal: null, error: null,
       logs: { stdout: infrastructureLog(tapPath), stderr: infrastructureLog(join(output, "infrastructure.stderr.log")) } },
-    tap: { tests: 5, suites: 0, pass: 5, fail: 0, cancelled: 0, skipped: 0, todo: 0 }, probe: { artifacts: [] } };
+    tap: { tests: 6, suites: 0, pass: 6, fail: 0, cancelled: 0, skipped: 0, todo: 0 }, probe: { artifacts: [] } };
   const rebindInfrastructure = () => {
     infrastructureFiles[probePath] = jsonBytes(probeReport);
     infrastructureFiles[join(probeWork, "execution.json")] = jsonBytes(probeExecution);

@@ -518,8 +518,8 @@ describe("partitioned challenge source inventory", () => {
     put(root, `${CORE}/src/nested/index.ts`, "export {};\n");
     put(root, `${CORE}/src/module.mjs`, "export {};\n");
     put(root, `${CORE}/src/module.js`, "export {};\n");
-    put(root, `${CORE}/src/index.ts`, 'import type { Value } from "./value";\nexport type { Value } from "./value";\nimport("./nested");\nrequire("./module.mjs");\nimport mjs = require("./module.mjs");\ntype Ref = import("./value").Value;\nimport "./module.js";\nimport "fflate";\n');
-    put(root, `${ARENA}/src/challenge/worker.ts`, 'import "fs"; import "node:test";');
+    put(root, `${CORE}/src/index.ts`, 'import type { Value } from "./value";\nexport type { Value } from "./value";\nimport "./nested";\nrequire("./module.mjs");\nimport mjs = require("./module.mjs");\ntype Ref = import("./value").Value;\nimport "./module.js";\nimport "fflate";\n');
+    put(root, `${ARENA}/src/challenge/worker.ts`, 'import "fs"; import "node:test"; import("./supervisor");');
     const inventory = collectSourceInventory(root);
     expect(new Set(inventory.audit.edges.map((edge) => edge.kind))).toEqual(new Set(["import", "export", "dynamic", "require", "import-type", "resolve", "worker"]));
     expect(inventory.audit.edges.some((edge) => edge.specifier === "@chess-coach/starchess-core" && edge.target === `${CORE}/src/index.ts`)).toBe(true);
@@ -729,13 +729,30 @@ describe("static browser public closure", () => {
     ['import "node:fs";', /Node builtin/],
     ['import "node:crypto";', /Node builtin/],
     ['void process.getBuiltinModule("crypto").randomBytes(4);', /Host global|Host acquisition/],
-    ['import(variable);', /Computed public/],
+    ['import(variable);', /Dynamic import/],
+    ['import("./composition");', /Dynamic import/],
     ['export type { Hidden } from "./coordinator/run";', /Coordinator/],
   ])("rejects an actual public graph edge without tree-shaking: %s", async (code, message) => {
     const root = fixture();
+    put(root, `${TRAINING}/src/composition.ts`, "export {};\n");
     put(root, `${TRAINING}/src/coordinator/run.ts`, "export type Hidden = string;");
     put(root, `${TRAINING}/src/candidates.ts`, code);
     await expect(check(root)).rejects.toThrow(message);
+  });
+
+  it.each([
+    [TRAINING, "."],
+    [TRAINING, "./composition"],
+    [TRAINING, "./*"],
+    [ARENA, "./challenge"],
+    [CORE, "./private"],
+  ])("rejects an unapproved export even when public entries do not import it: %s %s", async (owner, subpath) => {
+    const root = fixture();
+    const path = `${owner}/package.json`;
+    const manifest = JSON.parse(readFileSync(join(root, path), "utf8"));
+    manifest.exports[subpath!] = "./src/index.ts";
+    put(root, path, JSON.stringify(manifest));
+    await expect(check(root)).rejects.toThrow(`Unapproved public export map: ${owner}`);
   });
 
   it("pins external browser ESM and SHA transitive files instead of Node export branches", async () => {
