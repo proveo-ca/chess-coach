@@ -14,6 +14,7 @@ import {
   unpackResolves,
   validateArenaRecord,
   type EndScTurnResult,
+  type ReplayPayload,
 } from "../index";
 
 /** Three settled plies of a real resolve chain — the shape live play records. */
@@ -68,7 +69,7 @@ describe("packed resolves", () => {
 describe("packed records", () => {
   it("stores packed resolves plus the per-ply intent line", () => {
     const { scfens, resolves } = game();
-    const stored = packRecord({ id: "g", scfens, resolves });
+    const stored: ReplayPayload & { id: string } = packRecord({ id: "g", scfens, resolves });
     expect(stored.resolves).toBeUndefined();
     expect(stored.scsan).toEqual([
       "Q:w:C=d2d3;b:C=e7e6",

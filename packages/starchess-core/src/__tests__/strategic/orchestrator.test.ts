@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { endScTurn, parseScFen, placementToMap } from "../../index";
+import { endScTurn, parseScFen, placementToMap, type ScAction } from "../../index";
 import { strategicAdjutant } from "../../ai/strategic";
 import { combineKnownVsSeen } from "../../ai/strategic/intel";
 
@@ -78,7 +78,9 @@ describe("strategicAdjutant orchestrator", () => {
     expect(winning).toEqual(expected);
 
     const spawnsWinning =
-      winning.snapshot.queue?.actions.filter((a) => a.kind === "deploy") ?? [];
+      winning.snapshot.queue?.actions.filter(
+        (a): a is Extract<ScAction, { timing: "B" | "F" }> => a.kind === "deploy",
+      ) ?? [];
     expect(spawnsWinning.some((a) => a.unit === "q")).toBe(true);
   });
 });

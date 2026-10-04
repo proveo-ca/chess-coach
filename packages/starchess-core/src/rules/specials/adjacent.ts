@@ -1,7 +1,7 @@
 // SPEC: _spec/apps/starchess/core/board/board-queries.puml, _spec/apps/starchess/core/turn/command-queue.puml
 import type { Square } from "../../model/square";
-import type { ScFenSnapshot, StarChessColor } from "../../model/types";
-import { findCC, placementToMap } from "../../board/placement";
+import type { ScActionInput, ScFenSnapshot, StarChessColor } from "../../model/types";
+import { placementToMap, type ScPiece } from "../../board/placement";
 
 /** Empty squares adjacent to `origin` (Command Center spawn ring). */
 export const adjacentSquares = (
@@ -33,17 +33,23 @@ export const adjacentSquares = (
  *   same-side classical relocates it; **all** same-side classical vacates count
  *   as empty so a unit can move off a square then receive an F deploy there.
  */
-export const spawnCCAnchor = (
-  snap: ScFenSnapshot,
+export const spawnCCAnchorFromMap = (
+  map: ReadonlyMap<Square, ScPiece>,
   color: StarChessColor,
   timing: "B" | "F",
+  prefix: readonly ScActionInput[],
 ): {
   commandCenter: Square | null;
   occupied: ReadonlySet<Square>;
   allyOccupied: ReadonlySet<Square>;
 } => {
-  const map = placementToMap(snap.placement);
-  let commandCenter = findCC(map, color);
+  let commandCenter: Square | null = null;
+  for (const [square, piece] of map) {
+    if (piece.type === "k" && piece.color === color) {
+      commandCenter = square;
+      break;
+    }
+  }
   const occupied = new Set(map.keys());
   // Command Centers block deploy (own center + enemy adjacent are never crushable).
   // Ally non-ccs are crushable: deployed unit replaces the occupant.
@@ -59,8 +65,7 @@ export const spawnCCAnchor = (
   // allyOccupied tracks Command Center squares only (Command Centers never crushable): B arms move
   // Marines/BattleShips or deploy non-ccs, so they never touch it; only a classical
   // Command Center move carries the block with it.
-  const actions = snap.queue?.actions ?? [];
-  for (const a of actions) {
+  for (const a of prefix) {
     if (a.color !== color) continue;
     if (a.timing === "B") {
       if (
@@ -86,3 +91,10 @@ export const spawnCCAnchor = (
   }
   return { commandCenter, occupied, allyOccupied };
 };
+
+export const spawnCCAnchor = (
+  snap: ScFenSnapshot,
+  color: StarChessColor,
+  timing: "B" | "F",
+): ReturnType<typeof spawnCCAnchorFromMap> =>
+  spawnCCAnchorFromMap(placementToMap(snap.placement), color, timing, snap.queue?.actions ?? []);

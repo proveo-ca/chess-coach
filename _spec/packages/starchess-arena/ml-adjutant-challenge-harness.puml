@@ -1,0 +1,246 @@
+' purpose: Strict recorded-queue challenge harness and non-learned baseline.
+' covers: packages/starchess-arena/src/challenge/**
+' covers: packages/starchess-arena/src/cli/challenge.ts
+' covers: packages/starchess-arena/src/__tests__/challenge*.test.ts
+' covers: packages/starchess-arena/src/__tests__/strictRecordedQueues.test.ts
+' covers: packages/starchess-arena/src/__tests__/resourceLedger.test.ts
+' covers: packages/starchess-arena/src/__tests__/observationIsolation.test.ts
+' covers: packages/starchess-arena/src/__tests__/corpusManifest.test.ts
+' covers: packages/starchess-arena/src/__tests__/fixtures/challenge*.ts
+' covers: _spec/evidence/ml-adjutant-phase1/*.json
+' covers: _spec/evidence/ml-adjutant-r0-refresh/**
+' covers: _spec/evidence/ml-adjutant-r0-closure.json
+' status: R0 CLOSED within accepted non-learned assurance; A01-A15 resolved. Phase 1 historical verification/READY verdicts preserved; no learning or trained acceptance.
+' related: _spec/_plans/PLAN-ml-adjutant.md
+' related: _spec/_plans/ml-adjutant-challenge.md
+' related: _spec/_plans/ml-adjutant-execution-revisions.md (reviewed repairs and completed ordered R0 closure)
+' related: _spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml (current codecs/features and hermetic evidence)
+' related: _spec/packages/starchess-arena/arena.puml (legacy runner, not this isolated host)
+' current evidence: _spec/evidence/ml-adjutant-r0-refresh/baseline-report.json
+' current verification: _spec/evidence/ml-adjutant-r0-refresh/verification.json
+' closure authority: _spec/evidence/ml-adjutant-r0-closure.json (unchanged fact data)
+' current image: sha256:3550d1cc2b98d9ae757937a9e45e1ba89b6e84459106a491a61af9e183968f72
+' current source SHA-256: b2b9e360fd5c2ecc0fbad667d5155ac56c3efd8603f3c09941982dadc5372147
+' current marker SHA-256: 33ac25cc582ee154179b3321091368858a6c0d65ee36df4eec02e85f8ff1d34d; 24 artifacts, committed/durability confirmed per lead.
+' historical evidence: _spec/evidence/ml-adjutant-phase1/baseline-report.json, _spec/evidence/ml-adjutant-phase1/verification.json (immutable original bytes/pins)
+' historical baseline report SHA-256: 940387370040f88888e9dfe0bb86ad9d4a8be88854df507120f34b22ee2d362b
+' transport: spawned stdin/stdout JSONL pipes; no Node process.send channel.
+' evidence boundary: manifest v1 historical Phase 0 pending statuses remain unchanged; the separate execution report supersedes them for this measured baseline only.
+' rendering: renamed diagram historically passed checkonly; current check not run by spec-keeper (no shell tool).
+' final reviews: adversarial ses_efe0ed67dffew2su1gZIUaDy23 and security ses_efe0ed520ffeOEg3kd6jAtN33i both READY TO CLOSE R0: yes; read-only source/captured-record review, no independent execution/hash recomputation.
+' historical review: ses_f07c45365ffew0wJ58yFHXAye5 READY TO MERGE: no; original 7 HIGH + 8 MEDIUM retained as history, all now CLOSED.
+' completed gate: pre-freeze reviews -> new frozen image/actual Docker/full core+arena+static/54+54 -> validated publication -> both final reviews READY.
+' current checks: core 426/426, arena 689/689, zero failed/pending/todo; 107 Node tests, Docker infrastructure 5/5 and host post-publication 13/13 (both live source pins), no skips; eight exact commands/three static checks include both scripts.
+' evidence generations: Phase 1/2 and pre-rename bytes remain immutable; fresh R0 publication is outside capture, not a rename/overwrite; runtime output remains /app/_spec/evidence/ml-adjutant-phase2.
+' trust: host/daemon, no malicious same-UID mutation; no arbitrary-JavaScript sandbox proof. Host envelopes/archive remain under /tmp/opencode.
+' future gates: R1 calibrated turn-aware material-belief amendment plus R2-R5 readiness before explicit R6 approval; R7 artifact/runtime then R8 learned acceptance. Prior 370-field v2 is not a supplied calibrated model.
+' normalization: only trace-owned rejectedQueue on corpus White queue-rejection after validated equality; retain sourcePlyIndex and nonrecorded-side witnesses.
+' historical scope: numeric features were later work at the Phase 1 freeze; the policy-contracts sibling owns their current implementation. Training, learned artifacts, and browser integration remain unimplemented.
+@startuml ml-adjutant-challenge-harness
+!include ../../themes/proveo.puml
+title StarChess arena · ML Adjutant challenge harness
+
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+package "packages/starchess-arena/src/challenge" {
+  component "types.ts\nAuthorizedObservation / CandidatePolicy\nChallengeEvidence / ScheduledMatch" as TYPES <<app>>
+  component "config.ts\nCHALLENGE_CONFIG phase1-v1" as CONFIG <<host>>
+  component "corpus.ts\nauditCorpus / extractWhiteWindows" as CORPUS <<host>>
+  component "schedule.ts\nloadTrustedExecutionContext\nexpectedSchedule / buildSchedule / sampleOne" as SCHEDULE <<host>>
+  component "supervisor.ts\nrunSupervised / bounded JSONL pipes" as SUPERVISOR <<host>>
+  component "integrity.ts\nexecutionIntegrity" as INTEGRITY <<host>>
+  component "evidence.ts\nclassifyScheduledEvidence / summarize\nexecutionPins / runBaselineSuite / normalizeEvidence" as REPORT <<host>>
+  component "publication.ts\npublishReport" as PUBLICATION <<host>>
+  node "worker.ts spawned child\nstdin / stdout JSONL" as CHILD <<host>> {
+    component "runChallengeMatch.ts\nturn-open / plan / stage / settle" as RUN <<app>>
+    component "observation.ts\nobserve / side sightings only" as OBSERVE <<app>>
+    component "baseline.ts\nbaselineProposals / baselinePolicy" as BASELINE <<app>>
+    component "admission.ts\nstageQueue / commitPair" as ADMISSION <<host>>
+  }
+}
+
+component "src/cli/challenge.ts\n--suite all|corpus|live-strategic\n--rerun / --out" as CLI <<host>>
+component "players/strategic.ts\nstrategicScript: feed = null\nmovetimeMs = 0" as STRATEGIC <<app>>
+database "Host-private strategic state\nKVS / CC intel / runners / attackers" as LEDGERS <<db>>
+component "run/bank.ts\ngrantStoredIncome" as BANK <<host>>
+component "packages/starchess-core\nbeginScTurn / endScTurn\naddScAction / scOutcome" as CORE <<app>>
+database "ChallengeEvidence\nscfens / resolves / bankTrail / stop" as EVIDENCE <<db>>
+database "baseline-report.json\n54 rows / full host-private traces\npins / semantic rerun hashes" as REPORT_FILE <<db>>
+database "verification.json\n8 exact commands / full suite outputs\nlogs / artifact hashes / current source pin" as VERIFICATION <<db>>
+
+CONFIG ARROW_OPTIONAL SUPERVISOR : pinned deadlines
+CONFIG ARROW_OPTIONAL RUN : progress limits / versions
+TYPES ARROW_OPTIONAL RUN : boundary contracts
+CORPUS ARROW_MAIN SCHEDULE : unchanged 18-case manifest v1
+SCHEDULE ARROW_MAIN INTEGRITY : opaque host-audited identity / trace context
+CLI ARROW_MAIN REPORT : separate from legacy cli/main.ts
+SCHEDULE ARROW_MAIN REPORT : trusted 18 corpus + 36 live roster
+REPORT ARROW_MAIN SUPERVISOR : serial suite and independent rerun
+SUPERVISOR ARROW_QUEUE CHILD : v2 request / permit / halt / accepted
+SUPERVISOR ARROW_ERROR CHILD : SIGKILL; wait for close
+CHILD ARROW_QUEUE SUPERVISOR : ready / turn-open / decision / settlement / complete
+RUN ARROW_MAIN OBSERVE : both views from frozen turn-open state
+OBSERVE ARROW_MAIN BASELINE : cells + own modes/mines/resources + sightings
+BASELINE ARROW_MAIN RUN : one selected intent queue; no retry
+RUN ARROW_MAIN STRATEGIC : independent precommit clone / seat RNG
+LEDGERS ARROW_MAIN STRATEGIC : private SideContext only
+RUN ARROW_MAIN LEDGERS : chip and settlement witness folds
+RUN ARROW_MAIN ADMISSION : stage each side against its own open resources
+ADMISSION ARROW_MAIN CORE : whole-queue gate; fresh w then b sequences
+RUN ARROW_MAIN CORE : terminal-first; chip and simultaneous settlement
+RUN ARROW_MAIN BANK : exact deployment debit then current income
+RUN ARROW_MAIN EVIDENCE : terminal outcome or explicit stop
+SUPERVISOR ARROW_MAIN EVIDENCE : validated completion or retained ply prefix
+CORPUS ARROW_MAIN INTEGRITY : audited White trace via host-private match
+SUPERVISOR ARROW_MAIN INTEGRITY : validate each ply prefix and completion
+REPORT ARROW_MAIN INTEGRITY : authoritative execution audit
+INTEGRITY ARROW_MAIN CORE : reexecute full resolves; check stop turn/ordinal
+INTEGRITY ARROW_MAIN ADMISSION : replay independent staging and commit
+INTEGRITY ARROW_MAIN BANK : replay exact debits and current income
+EVIDENCE ARROW_MAIN REPORT : rows / summary / normalized comparisons
+REPORT ARROW_MAIN PUBLICATION : complete JSON via CLI
+PUBLICATION ARROW_MAIN REPORT_FILE : fsync temp; exclusive hardlink; unlink temp; fsync directory
+VERIFICATION ARROW_OPTIONAL REPORT_FILE : binds raw report hash to checks
+
+note bottom of OBSERVE
+  Candidate memory stores only sightings that
+  its side can observe, not strategic ledgers
+  seeded from the complete opening state.
+  This boundary excludes privileged knowledge
+  without discarding facts its side has seen.
+end note
+
+note bottom of BASELINE
+  The baseline ranks classical singleton queues,
+  Marine deployment singletons, and pass using
+  fixed scores from observed occupancy.
+  It never reuses strategic ranking or learns
+  weights, so baseline wins cannot pass ML gates.
+end note
+
+note bottom of ADMISSION
+  Independent staging rejects the entire
+  queue if any intent or resource check fails.
+  Only successful pairs commit white then black
+  with fresh sequence numbers and exact debits,
+  so neither side observes a partial commitment.
+end note
+
+note bottom of RUN
+  Terminal checks run before queue exhaustion
+  and host limits, so actual wins retain their
+  authoritative outcome.
+  Chip plies update records and private memories
+  without advancing the planning ordinal.
+end note
+
+note bottom of SUPERVISOR
+  Parent deadlines interrupt synchronous loops
+  and unresolved promises by killing the child.
+  Completion waits for process close to reap it,
+  while validated progress preserves partial
+  evidence after timeout or protocol failure.
+end note
+
+note as N_FRAMES
+  Raw frames are bounded before JSON parsing
+  so deserialization cannot bypass the byte cap.
+  Parsed progress has a tighter limit, while
+  message and ply caps constrain the evidence
+  accepted from the supervised child process.
+end note
+SUPERVISOR .. N_FRAMES
+
+note as N_COUNTERS
+  Decision deadlines start before each permit
+  and cannot renew through status messages.
+  Only checked settlement moves the ordinal,
+  while counters reflect accepted resolves
+  rather than the child's phase claim.
+end note
+SUPERVISOR .. N_COUNTERS
+
+note right of REPORT
+  Validated buckets: win / loss / draw / failure
+  Trusted schedule: N = 54 (or 18 / 36)
+  Known-ID anomalies: fail that case
+  Unattributable rows: fail entire roster
+  wins + losses + draws + failures = N
+end note
+
+note bottom of REPORT
+  White corpus queue-rejected only
+  Validate rejectedQueue == trusted trace first
+  Normalize away rejectedQueue only
+  Retain sourcePlyIndex and other-side witnesses
+end note
+
+note right of CONFIG
+  startupMs = 10000; planMs = 10000
+  matchMs = 300000; maxWindows = 64
+  maxRecordedPlies = 128
+  maxProposals = 4096; inferenceSeed = 0
+  mergeOrder = white-then-black-array-order
+end note
+
+note bottom of CONFIG
+  maxIpcMessages = 2048
+  maxProgressBytes = 1048576
+  maxCompletionBytes = 16777216
+  Raw frame cap = 16777216 before JSON.parse
+end note
+
+note bottom of INTEGRITY
+  Checks reexecute full resolve payloads and
+  resource ledgers through core rules instead
+  of trusting labels that the child reports.
+  A forged terminal outcome or a script contract
+  failure invalidates execution evidence.
+end note
+
+note right of INTEGRITY
+  Corpus validation binds White intents to the
+  audited trace window instead of accepting any
+  legal queue that could produce a valid resolve.
+  Stop checks also require matching turns and
+  planning ordinals in complete evidence.
+end note
+
+note bottom of PUBLICATION
+  Reports reach the final path only after a
+  private temp file is written and fsynced.
+  An exclusive hardlink preserves an existing
+  report, while write failures remove the temp
+  file instead of publishing incomplete evidence.
+end note
+
+note right of PUBLICATION
+  fsync containing directory
+  after hardlink and temp unlink
+end note
+
+note bottom of EVIDENCE
+  modelArtifact = null
+  learnedGateEligible = false
+  fallbackCount = 0
+  match.trace = full host-private trace
+end note
+
+legend bottom
+  PHASE 1 HISTORICALLY VERIFIED: then-final arena 164 tests / 17 files; core 426 / 53.
+  Phase 1/2 historical bytes/pins stay immutable; current R0 evidence lives at ml-adjutant-r0-refresh.
+  Corpus candidate = b, arena/inference seed = 0; live seeds = 0..17 in both seats.
+  Seat RNG: w = mulberry32(seed), b = mulberry32(~seed).
+  Historically all 54 supervised cases ran twice under original final pins; 54/54 semantic comparisons equal.
+  Corpus: 0 wins, 2 terminal losses, 16 queue-rejection failures; live: 0 wins, 36 terminal losses.
+  executionIntegrity = true; learnedGateEligible = false; learnedChallengePass = false.
+  R0 CLOSED: A01-A15 resolved within accepted non-learned assurance; both final reviews READY TO CLOSE R0: yes.
+  Frozen current image: 426 core / 689 arena, zero pending/todo; 107 Node tests, no skips.
+  Current 54 executions + 54 reruns: semantic and migration parity true; eight commands/three static checks passed.
+  Actual Docker 5/5; host post-publication 13/13 including both live source pins, no skips.
+  Fresh publication: 24 artifacts, marker commit/durability confirmed; no atomic directory-visibility claim.
+  No learned acceptance or universal trace-compatibility claim. Current checkonly not run here.
+  The policy-contracts sibling owns current numeric features. Training, learned artifacts, and browser integration remain unimplemented.
+endlegend
+@enduml

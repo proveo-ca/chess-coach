@@ -4,9 +4,7 @@ import type { Square } from "chess.js";
 import {
   collectLegalCCChecks,
   mapToPlacement,
-  parseSquare,
   placementToMap,
-  sq,
   type ScPiece,
 } from "../board/placement";
 import { energyForTurn } from "../rules/constants";
@@ -17,10 +15,8 @@ import {
 } from "../board/mines";
 import { mineContact, withoutMine } from "../board/mine-contact";
 import { charonStrikeTarget, placementAfterMechaCharon } from "../rules/specials/mechaCharon";
-import {
-  canMarineDoubleStep,
-  marineSingleTarget,
-} from "../rules/specials/stimStep";
+import { marineSingleTarget } from "../rules/specials/stimStep";
+import { classicalRewriteCoordinatesAfterB, orderBHeadsFirst } from "../rules/planning-order";
 import {
   applyPendingCCShots,
   resolveTurn,
@@ -40,6 +36,8 @@ import type {
   StarChessColor,
   StarChessPiece,
 } from "../model/types";
+
+export { orderBHeadsFirst } from "../rules/planning-order";
 
 export type ResolveEvent = {
   id: string;
@@ -249,31 +247,6 @@ const byTiming = (actions: readonly ScAction[], timing: "B" | "C" | "F") =>
       if (a.color !== b.color) return a.color === "w" ? -1 : 1;
       return a.seq - b.seq;
     });
-
-export const orderBHeadsFirst = (
-  actions: readonly ScAction[],
-): ScAction[] => {
-  const ordered: ScAction[] = [];
-  const pending = [...actions].sort((a, b) => a.seq - b.seq);
-  while (pending.length) {
-    const heads = new Set(
-      pending
-        .filter(
-          (a) => (a.kind === "stimStep" || a.kind === "tacticalJump") && !!a.to,
-        )
-        .map((a) => a.from),
-    );
-    const idx = pending.findIndex((a) => {
-      if ((a.kind !== "stimStep" && a.kind !== "tacticalJump") || !a.to)
-        return true;
-      const others = new Set(heads);
-      others.delete(a.from);
-      return ![...others].some((from) => from === a.to);
-    });
-    ordered.push(idx >= 0 ? pending.splice(idx, 1)[0]! : pending.shift()!);
-  }
-  return ordered;
-};
 
 const relocate = (placement: string, from: Square, to: Square): string => {
   const map = placementToMap(placement);
@@ -532,11 +505,6 @@ const collectSpecialsUsed = (
   return [...used].filter((sq) => map.has(sq)).sort();
 };
 
-const shiftSquare = (s: Square, df: number, dr: number): Square | null => {
-  const { file, rank } = parseSquare(s);
-  return sq(file + df, rank + dr);
-};
-
 export const rewriteClassicalAfterB = (
   actions: readonly ScAction[],
   placement: string,
@@ -546,43 +514,14 @@ export const rewriteClassicalAfterB = (
   for (let i = 0; i < out.length; i += 1) {
     const c = out[i]!;
     if (c.timing !== "C") continue;
+    const coordinates = classicalRewriteCoordinatesAfterB(out, c);
+    if (!coordinates) continue;
     const b = out.find(
-      (a) =>
-        a.timing === "B" &&
-        a.color === c.color &&
-        a.from === c.from &&
-        a.to &&
+      (a) => a.timing === "B" && a.color === c.color && a.from === c.from && a.to &&
         (a.kind === "stimStep" || a.kind === "tacticalJump"),
     );
-    if (!b || !b.to) continue;
-
-    const fromP = parseSquare(b.from);
-    const toP = parseSquare(b.to);
-    const df = toP.file - fromP.file;
-    const dr = toP.rank - fromP.rank;
-    const newTo = shiftSquare(c.to, df, dr);
-    if (!newTo) continue;
-
-    if (b.kind === "stimStep") {
-      const sameFile = c.from[0] === c.to[0];
-      const ranks = Math.abs(Number(c.to[1]) - Number(c.from[1]));
-      const forward =
-        (Number(c.to[1]) - Number(c.from[1])) * (b.color === "w" ? 1 : -1) > 0;
-      const onStartRank = canMarineDoubleStep(c.from, b.color);
-      if (
-        c.kind !== "classical" ||
-        !sameFile ||
-        !forward ||
-        (ranks !== 1 && (ranks !== 2 || !onStartRank)) ||
-        occupied.has(newTo)
-      ) {
-        continue;
-      }
-    } else if (b.to !== c.to) {
-      continue;
-    }
-
-    out[i] = { ...c, from: b.to, to: newTo };
+    if (b?.kind === "stimStep" && occupied.has(coordinates.to)) continue;
+    out[i] = { ...c, ...coordinates };
   }
   return out;
 };

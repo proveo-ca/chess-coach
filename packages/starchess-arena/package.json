@@ -5,12 +5,15 @@
   "type": "module",
   "main": "./src/index.ts",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./observations": "./src/observations.ts",
+    "./intent-codec-v1": "./src/intent-codec-v1.ts"
   },
   "scripts": {
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "cli": "tsx src/cli/main.ts"
+    "cli": "tsx src/cli/main.ts",
+    "challenge": "tsx src/cli/challenge.ts"
   },
   "dependencies": {
     "@chess-coach/starchess-core": "workspace:*"

@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 
-import { parseScFen } from "../../index";
+import { parseScFen, type ScAction } from "../../index";
 import { buildStrategicCtx, strategicAdjutant } from "../../ai/strategic";
-import { combineKnownVsSeen, seedKnownVsSeen } from "../../ai/strategic/intel";
+import { combineKnownVsSeen, seedKnownVsSeen, type KnownVsSeen } from "../../ai/strategic/intel";
 import { economy as strategicEconomy } from "../../ai/strategic/strategies/economy";
 import { squareColor } from "../../ai/strategies/economy";
 
@@ -39,7 +39,9 @@ describe("strategic economy (known-vs-seen dials)", () => {
       kvs: WINNING_CLEAN,
     });
     const actions = plan.snapshot.queue?.actions.filter((a) => a.color === "b") ?? [];
-    const spawns = actions.filter((a) => a.kind === "deploy");
+    const spawns = actions.filter(
+      (a): a is Extract<ScAction, { timing: "B" | "F" }> => a.kind === "deploy",
+    );
     expect(spawns.every((a) => a.unit !== "p" && a.unit !== "n")).toBe(true);
   });
 
@@ -53,7 +55,9 @@ describe("strategic economy (known-vs-seen dials)", () => {
       kvs: combineKnownVsSeen(9, 2, 0), // gap 7 → hidden
     });
     const actions = plan.snapshot.queue?.actions.filter((a) => a.color === "b") ?? [];
-    const spawns = actions.filter((a) => a.kind === "deploy");
+    const spawns = actions.filter(
+      (a): a is Extract<ScAction, { timing: "B" | "F" }> => a.kind === "deploy",
+    );
     expect(spawns.every((a) => a.unit !== "q")).toBe(true);
   });
 
@@ -63,7 +67,7 @@ describe("strategic economy (known-vs-seen dials)", () => {
     const plan = strategicAdjutant(snap, {
       color: "b",
       storedFor: () => 12,
-      kvs: seedKnownVsSeen(),
+      kvs: seedKnownVsSeen() as unknown as KnownVsSeen,
     });
     const mechas = (plan.snapshot.queue?.actions ?? []).filter(
       (a) => a.color === "b" && a.kind === "deploy" && (a as { unit?: string }).unit === "b",
@@ -79,7 +83,7 @@ describe("strategic economy (known-vs-seen dials)", () => {
     const plan = strategicAdjutant(snap, {
       color: "b",
       storedFor: () => 12,
-      kvs: seedKnownVsSeen(),
+      kvs: seedKnownVsSeen() as unknown as KnownVsSeen,
     });
     const mechas = (plan.snapshot.queue?.actions ?? []).filter(
       (a) => a.color === "b" && a.kind === "deploy" && (a as { unit?: string }).unit === "b",
@@ -94,7 +98,7 @@ describe("strategic economy (known-vs-seen dials)", () => {
       const ctx = buildStrategicCtx(parseScFen(placement), {
         color: "b",
         storedFor: () => 3,
-        kvs: seedKnownVsSeen(),
+        kvs: seedKnownVsSeen() as unknown as KnownVsSeen,
       });
       if (!ctx) throw new Error("no ctx");
       return strategicEconomy
@@ -123,7 +127,7 @@ describe("strategic economy (known-vs-seen dials)", () => {
     const seeded = strategicAdjutant(snap, {
       color: "b",
       storedFor: () => 12,
-      kvs: seedKnownVsSeen(),
+      kvs: seedKnownVsSeen() as unknown as KnownVsSeen,
     });
     expect(seeded.snapshot.queue?.actions.some((a) => a.kind === "deploy")).toBe(
       true,

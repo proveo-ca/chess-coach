@@ -9,7 +9,7 @@ import {
 import { buildAdjutantCtx } from "../../ai/context";
 import { charonForwardStacks } from "../../ai/plans/stacks";
 import { asCandidate, generateCandidates } from "../../ai/strategies";
-import { charonDiagonalSquaresFromPlacement } from "../../index";
+import { charonDiagonalSquaresFromPlacement, type Square } from "../../index";
 import { parseScFen } from "../../index";
 
 const blackActions = (scfen: string) => {
@@ -71,7 +71,7 @@ describe("mode B teleport guess (2nd phase)", () => {
     );
     expect(guesses).toMatchObject([{ from: "e4", to: "d5" }]);
     expect(actions.some((a) => a.timing === "C")).toBe(true);
-    const diagonals = new Set(charonDiagonalSquaresFromPlacement(BOARD, "e4"));
+    const diagonals = new Set<Square>(charonDiagonalSquaresFromPlacement(BOARD, "e4"));
     for (const g of guesses) {
       expect(diagonals.has(g.to!)).toBe(true);
     }
@@ -110,7 +110,7 @@ describe("charonForwardStacks", () => {
     { timing: "F", kind: "charonMissiles", color: "b", from: "e4", to: "d5" },
     1500,
   );
-  const classical = (from: "a8" | "e4", to: "a7" | "d5" | "e5") =>
+  const classical = (from: "a8" | "e4", to: Square) =>
     asCandidate({ timing: "C", kind: "classical", color: "b", from, to }, 100);
 
   it("pairs the guess with a non-interfering classical", () => {

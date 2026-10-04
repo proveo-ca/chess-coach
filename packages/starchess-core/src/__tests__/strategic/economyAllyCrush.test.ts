@@ -15,12 +15,12 @@ import type { ScAction } from "../../index";
 
 const spawnsFor = (
   scfen: string,
-  opts: { color: "w" | "b"; stored: number; kvs: Parameters<typeof strategicAdjutant>[1]["kvs"] },
+  opts: { color: "w" | "b"; stored: number; kvs: ReturnType<typeof seedKnownVsSeen> | ReturnType<typeof combineKnownVsSeen> },
 ) => {
   const plan = strategicAdjutant(parseScFen(scfen), {
     color: opts.color,
     storedFor: () => opts.stored,
-    kvs: opts.kvs,
+    kvs: opts.kvs as NonNullable<Parameters<typeof strategicAdjutant>[1]>["kvs"],
   });
   return (
     plan.snapshot.queue?.actions.filter(
@@ -212,7 +212,7 @@ describe("same-type crush census", () => {
       const listed = strategicCandidates(parseScFen(spot.scfen), {
         color: spot.color,
         storedFor: () => spot.stored,
-        kvs: spot.kvs,
+        kvs: spot.kvs as NonNullable<Parameters<typeof strategicAdjutant>[1]>["kvs"],
       });
       for (const c of listed?.candidates ?? []) {
         const [first] = c.actions;

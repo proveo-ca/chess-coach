@@ -2,6 +2,34 @@
   "version": 1,
   "specs": [
     {
+      "spec": "_spec/packages/starchess-training/candidate-generation.puml",
+      "covers": [
+        "packages/starchess-training/**",
+        "packages/starchess-arena/src/authorized/v1/**",
+        "packages/starchess-arena/src/intent-codec-v1.ts",
+        "packages/starchess-arena/src/observations.ts",
+        "packages/starchess-arena/src/challengeContract/**",
+        "packages/starchess-arena/src/challenge/**",
+        "packages/starchess-arena/src/__tests__/challenge*.test.ts",
+        "packages/starchess-arena/src/__tests__/*V1Bridge*.test.ts",
+        "packages/starchess-arena/src/__tests__/r2CompositionEvidence.test.ts",
+        "packages/starchess-core/src/rules/**",
+        "packages/starchess-core/src/board/**",
+        "packages/starchess-core/src/resolve/submit-turn.ts",
+        "packages/starchess-core/src/index.ts",
+        "packages/starchess-core/src/__tests__/planning*.test.ts",
+        "packages/starchess-arena/package.json",
+        "packages/starchess-arena/hermetic/**",
+        "scripts/challenge-*.ts",
+        "scripts/r2-composition-evidence.ts",
+        "scripts/check-public-closure.mjs",
+        "package.json",
+        "pnpm-lock.yaml",
+        "pnpm-workspace.yaml"
+      ],
+      "fingerprint": null
+    },
+    {
       "spec": "_spec/apps/e2e/nx-compose.puml",
       "covers": [
         "package.json",
@@ -198,7 +226,49 @@
     {
       "spec": "_spec/packages/starchess-arena/index.puml",
       "covers": [
-        "packages/starchess-arena/src/index.ts"
+        "packages/starchess-arena/src/index.ts",
+        "packages/starchess-arena/src/challenge/**",
+        "packages/starchess-arena/src/challengeContract/**",
+        "scripts/challenge-contract-evidence.ts",
+        "packages/starchess-arena/hermetic/**"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/packages/starchess-arena/ml-adjutant-challenge-harness.puml",
+      "covers": [
+        "packages/starchess-arena/src/challenge/**",
+        "packages/starchess-arena/src/cli/challenge.ts",
+        "packages/starchess-arena/src/__tests__/challenge*.test.ts",
+        "packages/starchess-arena/src/__tests__/strictRecordedQueues.test.ts",
+        "packages/starchess-arena/src/__tests__/resourceLedger.test.ts",
+        "packages/starchess-arena/src/__tests__/observationIsolation.test.ts",
+        "packages/starchess-arena/src/__tests__/corpusManifest.test.ts",
+        "packages/starchess-arena/src/__tests__/fixtures/challenge*.ts",
+        "_spec/evidence/ml-adjutant-phase1/*.json",
+        "_spec/evidence/ml-adjutant-r0-refresh/**",
+        "_spec/evidence/ml-adjutant-r0-closure.json"
+      ],
+      "fingerprint": null
+    },
+    {
+      "spec": "_spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml",
+      "covers": [
+        "packages/starchess-arena/src/authorized/v1/**",
+        "packages/starchess-arena/src/observations.ts",
+        "packages/starchess-arena/src/intent-codec-v1.ts",
+        "packages/starchess-arena/src/challengeContract/**",
+        "packages/starchess-arena/src/challenge/**",
+        "packages/starchess-arena/src/__tests__/challenge*.test.ts",
+        "packages/starchess-arena/src/__tests__/*V1Bridge*.test.ts",
+        "packages/starchess-arena/src/__tests__/r2CompositionEvidence.test.ts",
+        "packages/starchess-arena/package.json",
+        "packages/starchess-training/**",
+        "scripts/**",
+        "packages/starchess-arena/hermetic/**",
+        "_spec/evidence/ml-adjutant-phase2/*.json",
+        "_spec/evidence/ml-adjutant-r0-refresh/**",
+        "_spec/evidence/ml-adjutant-r0-closure.json"
       ],
       "fingerprint": null
     },
@@ -324,6 +394,31 @@
     }
   ],
   "unresolved": [
+    {
+      "spec": "_spec/training/candidate-generation.puml",
+      "citedBy": [
+        "packages/starchess-arena/hermetic/verification-plan.mjs",
+        "packages/starchess-arena/hermetic/workspace-policy.mjs",
+        "packages/starchess-arena/src/__tests__/r2CompositionEvidence.test.ts",
+        "scripts/r2-composition-evidence.ts"
+      ]
+    },
+    {
+      "spec": "_spec/packages/starchess-arena/newgeneration.puml",
+      "citedBy": [
+        "packages/starchess-arena/src/authorized/v1/canonical.ts",
+        "packages/starchess-arena/src/authorized/v1/observationCodec.ts",
+        "packages/starchess-arena/src/authorized/v1/squares.ts",
+        "packages/starchess-arena/src/authorized/v1/types.ts",
+        "packages/starchess-arena/src/challengeContract/candidateWire.ts",
+        "packages/starchess-arena/src/challengeContract/validation.ts",
+        "packages/starchess-arena/src/intent-codec-v1.ts",
+        "packages/starchess-arena/src/observations.ts",
+        "packages/starchess-arena/src/__tests__/intentCodecV1Bridge.test.ts",
+        "packages/starchess-arena/src/__tests__/observationV1Bridge.test.ts",
+        "packages/starchess-arena/src/__tests__/publicV1BridgeIsolation.test.ts"
+      ]
+    },
     {
       "spec": "_spec/apps/starchess/turn-input-sequence.puml",
       "citedBy": [

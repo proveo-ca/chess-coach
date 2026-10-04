@@ -1,0 +1,23 @@
+{
+  "name": "@chess-coach/starchess-training",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./candidates": "./src/candidates.ts"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@chess-coach/starchess-arena": "workspace:*",
+    "@chess-coach/starchess-core": "workspace:*",
+    "@noble/hashes": "2.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "typescript": "~5.9.3",
+    "vitest": "^4.1.5"
+  }
+}

@@ -63,7 +63,7 @@ describe("strategicScript engine rescue", () => {
       color: "b",
       storedFor: 1,
       bank: { w: 1, b: 1 },
-      kvs: { known: 0, seen: 0, derivable: 0, hidden: 0 },
+      kvs: { known: 0, scouted: 0, captured: 0, gap: 0 },
       movetimeMs: 0,
     });
     expect(consulted).toBe(false);
@@ -83,7 +83,7 @@ describe("strategicScript engine rescue", () => {
       color: "b",
       storedFor: 1,
       bank: { w: 1, b: 1 },
-      kvs: { known: 0, seen: 0, derivable: 0, hidden: 0 },
+      kvs: { known: 0, scouted: 0, captured: 0, gap: 0 },
       movetimeMs: 250,
     });
     expect(budgets).toEqual([250]);
@@ -110,14 +110,14 @@ describe("strategicScript engine rescue", () => {
       color: "b",
       storedFor: 1,
       bank: { w: 1, b: 1 },
-      kvs: { known: 0, seen: 0, derivable: 0, hidden: 0 },
+      kvs: { known: 0, scouted: 0, captured: 0, gap: 0 },
       movetimeMs: 250,
     });
     const rescuedRes = await rescued.play(SNAP, {
       color: "b",
       storedFor: 1,
       bank: { w: 1, b: 1 },
-      kvs: { known: 0, seen: 0, derivable: 0, hidden: 0 },
+      kvs: { known: 0, scouted: 0, captured: 0, gap: 0 },
       movetimeMs: 250,
     });
 
@@ -143,14 +143,14 @@ describe("strategicScript engine rescue", () => {
       color: "b",
       storedFor: 1,
       bank: { w: 1, b: 1 },
-      kvs: { known: 0, seen: 0, derivable: 0, hidden: 0 },
+      kvs: { known: 0, scouted: 0, captured: 0, gap: 0 },
       movetimeMs: 250,
     });
     const rescuedRes = await rescued.play(SNAP, {
       color: "b",
       storedFor: 1,
       bank: { w: 1, b: 1 },
-      kvs: { known: 0, seen: 0, derivable: 0, hidden: 0 },
+      kvs: { known: 0, scouted: 0, captured: 0, gap: 0 },
       movetimeMs: 250,
     });
     expect(rescuedRes.snapshot).toEqual(plainRes.snapshot);
