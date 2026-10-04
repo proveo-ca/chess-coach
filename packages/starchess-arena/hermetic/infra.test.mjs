@@ -8,7 +8,7 @@ import { createHash } from 'node:crypto';
 import { prepareContext, repository } from './context.mjs';
 import { assertContainerPolicy, outputTarget, runArguments, tmpfsOptions } from './policy.mjs';
 import pins from './pins.json' with { type: 'json' };
-import { freshOutput } from './run.mjs';
+import { freshOutput, main, parseArguments } from './run.mjs';
 import { logLimit, runLogged } from './logged-command.mjs';
 import { workspacePackages, dependencyInputs, installedRoots } from './workspace-policy.mjs';
 import { verificationCommands, strictInputs, VERIFICATION_VERSION } from './verification-plan.mjs';
@@ -127,8 +127,23 @@ test('runtime capture preserves JSONC config closure, tests, fixtures, and rejec
   const control = join(root, 'packages/starchess-arena/hermetic');
   mkdirSync(control);
   writeFileSync(join(control, 'Dockerfile'), 'FROM scratch\n');
+  mkdirSync(join(root, 'packages/starchess-core/src/empty'));
   const context = fixture();
-  const capture = prepareContext(context, false, root);
+  let capture;
+  const previousUmask = process.umask(0o077);
+  try { capture = prepareContext(context, false, root); }
+  finally { process.umask(previousUmask); }
+  assert.equal(lstatSync(root).mode & 0o7777, 0o700);
+  assert.equal(lstatSync(context).mode & 0o7777, 0o700);
+  const checkDirectories = (path) => {
+    for (const entry of readdirSync(path, { withFileTypes: true })) {
+      if (!entry.isDirectory()) continue;
+      const child = join(path, entry.name);
+      assert.equal(lstatSync(child).mode & 0o7777, 0o755, child);
+      checkDirectories(child);
+    }
+  };
+  checkDirectories(context);
   assert(capture.runtime.entries.some((entry) => entry.path.endsWith('fixture.json')));
   assert(capture.runtime.entries.some((entry) => entry.path.endsWith('case.test.ts')));
   assert(!capture.runtime.entries.some((entry) => entry.path.includes('host-secret')));
@@ -159,6 +174,23 @@ test('runtime capture preserves JSONC config closure, tests, fixtures, and rejec
 
 test('CLI rejects mount injection and public output parents and preserves bounded success/failure logs', async () => {
   const image = 'sha256:' + 'a'.repeat(64);
+  assert.deepEqual(parseArguments(['build', '--dependencies', '--no-cache']), { command: 'build', options: { dependencies: true, 'no-cache': true }, runtime: [] });
+  assert.deepEqual(parseArguments(['build', '--from-dependencies', image, '--no-cache']), { command: 'build', options: { 'from-dependencies': image, 'no-cache': true }, runtime: [] });
+  assert.deepEqual(parseArguments(['build']).options, {});
+  assert.deepEqual(parseArguments(['run', '--image', image, '--', 'code', 'scripts/test.ts', '--no-cache']).runtime, ['code', 'scripts/test.ts', '--no-cache']);
+  for (const argv of [
+    ['build', '--no-cache', '--no-cache'], ['build', '--dependencies', '--dependencies'],
+    ['build', '--no-cache=true'], ['build', '--no-cache', 'false'], ['build', '--unknown'],
+    ['build', '--from-dependencies'], ['build', '--from-dependencies', image, '--from-dependencies', image],
+    ['build', '--image', image], ['build', '--out', '/tmp/opencode/out'], ['build', '--'],
+    ['preflight', '--image', image, '--no-cache'], ['run', '--image', image, '--no-cache'], ['export', '--image', image, '--no-cache'],
+    ['preflight', '--image', image, '--dependencies'], ['run', '--image', image, '--from-dependencies', image],
+    ['preflight', '--image', image, '--'], ['export', '--image', image, '--'],
+    ['run', '--image', image, '--image', image], ['run', '--out'], ['run'], ['unknown'], ['--help', '--no-cache'],
+  ]) {
+    assert.throws(() => parseArguments(argv), /Invalid option|Option does not apply|--image is required|Unsupported command/);
+    await assert.rejects(main(argv), /Invalid option|Option does not apply|--image is required|Unsupported command/);
+  }
   for (const malicious of ['node:latest', '--privileged', 'sha256:' + 'a'.repeat(64) + '\n--network=host']) assert.throws(() => runArguments(malicious, '/tmp/opencode/out'));
   const syntheticOutput = '/tmp/opencode/policy-output';
   const approved = {

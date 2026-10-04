@@ -8,7 +8,7 @@ Use the returned immutable `sha256:…` image ID for every subsequent command.
 ## Commands
 
 ```sh
-node packages/starchess-arena/hermetic/run.mjs build --dependencies
+node packages/starchess-arena/hermetic/run.mjs build --dependencies --no-cache
 node packages/starchess-arena/hermetic/run.mjs preflight --image sha256:...
 
 # Execute after the lead freezes and integrates the Phase2 source.
@@ -23,6 +23,10 @@ node packages/starchess-arena/hermetic/run.mjs export --image sha256:...
 The dependency preflight executes TypeScript and Vitest probes under the container policy.
 The source preflight recomputes source, installed-tree, tool-tree, and frozen-store hashes.
 `run` requires the final source image.
+`--no-cache` is a build-only boolean flag that adds Docker's `--no-cache` argument.
+Omit the flag to retain Docker's default build-cache behavior.
+The CLI rejects duplicate options, boolean values such as `--no-cache=true`, and options that do not apply to the selected command.
+Fresh dependency acquisition requires `build --dependencies --no-cache` after freezing source and controls.
 `build --from-dependencies` freezes source on the prepared dependency image without running acquisition stages.
 The CLI validates the dependency image's lock and tools and creates an image-ID-derived local build tag.
 The package manifests and `hermetic/` snapshot must match the prepared image exactly.
@@ -89,6 +93,8 @@ It validates every ancestor and canonical repository containment before reading 
 It parses TypeScript configs with the arena's existing TypeScript JSONC parser.
 It captures recursive relative `extends` targets at their repository paths.
 It rejects missing, ambiguous, cyclic, external, and symlinked config targets.
+Every copied directory and intermediate context directory has mode `0755`, including under host umask `077`.
+Context preparation preserves the scratch root's private mode.
 The root environment and unrelated workspace packages never enter the context.
 
 `/hermetic-evidence/dependencies.json` records installed-tree, tool-tree, and frozen-store entries.
@@ -177,16 +183,24 @@ The final image build and the exhaustive baseline execution belong to the lead's
 ## Infrastructure verification
 
 ```sh
-HERMETIC_DEPENDENCY_IMAGE=sha256:... node --test packages/starchess-arena/hermetic/infra.test.mjs
+node scripts/challenge-infrastructure-evidence.mjs --image sha256:...
 ```
+
+Use the immutable dependency image ID returned by `build --dependencies --no-cache`.
+This mandatory capture runs all six infrastructure tests, including the real Docker probe.
+It returns the path to an `infrastructure.json` envelope with version `r2-infrastructure-verification-v1`.
+The envelope binds the dependency image measurements, control snapshot, host runtime, exact command, bounded logs, six-test TAP recount, probe artifacts, and container inspections.
+Retain that path for the importer's mandatory `--infrastructure` argument.
 
 | Test file | Purpose |
 | --- | --- |
-| `infra.test.mjs` | Parse Dockerfile stage policy; preserve lock/workspace links; verify recursive JSONC capture and ancestor boundaries; reject public output parents and mount injection; validate bounded success/failure logs; execute the real restricted container. |
+| `infra.test.mjs` | Parse Dockerfile stage policy; preserve lock/workspace links; verify recursive JSONC capture, `0755` directories under umask `077`, and ancestor boundaries; reject malformed CLI options, public output parents, and mount injection; validate bounded success/failure logs; execute the real restricted container. |
 | `probe.mjs` | Verify restricted execution, fresh temporary inventory setup, isolated source-only inventory, offline TS/Vitest JSON counts, persisted command logs, and unchanged dependency/store/tool hashes. |
 
-Run the suite with `HERMETIC_DEPENDENCY_IMAGE` to execute the Docker test.
-Without that environment variable, the Docker test fails.
+The capture supplies `HERMETIC_DEPENDENCY_IMAGE` to execute the Docker test.
+For direct diagnostics, run `HERMETIC_DEPENDENCY_IMAGE=sha256:... node --test packages/starchess-arena/hermetic/infra.test.mjs`.
+Without that environment variable, the direct suite's Docker test fails.
+Direct test output does not replace the mandatory infrastructure envelope.
 Run this host/daemon suite separately from the eleven restricted-container commands.
 
 ## Fresh R2 evidence publication
@@ -205,6 +219,20 @@ It replays original/current baseline semantics and independently remeasures orig
 The importer binds command 11 stdout to its standalone report and remeasures the public graph with trusted host code.
 
 Publish the refresh with the importer’s `--destination _spec/evidence/ml-adjutant-r2-refresh` option.
+Supply the mandatory host infrastructure envelope alongside the source-image execution, build, and export envelopes:
+
+```sh
+node scripts/challenge-import-evidence.mjs \
+  --execution /tmp/opencode/.../execution.json \
+  --build /tmp/opencode/.../build.json \
+  --export /tmp/opencode/.../export.json \
+  --infrastructure /tmp/opencode/challenge-infrastructure-.../infrastructure.json \
+  --image sha256:... \
+  --destination _spec/evidence/ml-adjutant-r2-refresh
+```
+
+Use the final source image ID for `--image` in this import command.
+The importer remeasures the dependency image and requires all six named infrastructure tests to pass without skipped or omitted tests.
 Keep the existing phase-2 bundle unchanged.
 Publication uses exclusive creation and an atomically linked, hash-bound completion marker.
 Readers require the marker and its complete inventory; marker presence does not prove crash durability.
@@ -220,30 +248,49 @@ Live-pin assertions require actual v3 pins in the fresh generation.
 Historical v1 inventory/v2 pins remain explicitly typed read-only history.
 Status remains WIP until the lead completes the fresh image build, eleven-command run, host infrastructure probe, independent image/archive measurement, publication, and reviews.
 
-## Current host checks and lead handoff
+## Previous host checks and current lead handoff
 
-Full host Vitest runs measured core **469**, arena **811**, and training **50** passing assertions.
+Previous full host Vitest runs measured core **469**, arena **811**, and training **50** passing assertions.
 `r2-assertion-floors-v1` records those floors in `verification-plan.mjs`.
 These host runs do not constitute the frozen-image eleven-command proof.
-All three package typechecks pass.
-The owned verification tests, bridge tests, and both scripts pass focused strict checking.
-The three Node suites pass **109** tests.
-Five static infrastructure tests pass.
+Previous checks recorded passing package typechecks and focused strict checks for the owned verification tests, bridge tests, and both scripts.
+Previous runs recorded **109** passing tests across the three Node suites and five passing static infrastructure tests.
+Those historical results do not establish current verification results.
 The host Docker probe requires a freshly built dependency image.
 
-Command 6 currently fails on **19 existing type errors in ten core-owned test files**:
+The native owner fixed command 6's previously recorded **19 type errors in ten core-owned test files**:
 `adjutant.test.ts`, `ai/charonHunt.test.ts`, `collision/collisionRaces.test.ts`,
 `gas/marineGasStackOrder.test.ts`, `packed.test.ts`, `planningOrder.test.ts`,
 `replay/record.test.ts`, `strategic/economy.test.ts`, `strategic/economyAllyCrush.test.ts`,
 and `strategic/orchestrator.test.ts`, all under `packages/starchess-core/src/__tests__/`.
-The lead must route those fixture typings to the native owner before source freeze.
+Those fixture typing fixes do not establish the current full strict-invoice result.
 The full strict invoice retains every core/arena TypeScript test and fixture.
 It enables `allowImportingTsExtensions` for existing native test imports.
 
-After the native owner resolves command 6, freeze source and controls before dependency acquisition.
-Build and measure the fresh dependency image, then execute the host infrastructure suite with its immutable ID.
+Execute the current command-6 invoice from the repository root with the installed arena TypeScript binary:
+
+```sh
+node --input-type=module <<'NODE'
+import { execFileSync } from 'node:child_process';
+import { resolve } from 'node:path';
+import { verificationCommands } from './packages/starchess-arena/hermetic/verification-plan.mjs';
+const root = process.cwd();
+const command = verificationCommands(root)[5];
+const local = (value) => value.startsWith('/app/') ? resolve(root, value.slice(5)) : value;
+execFileSync(local(command.executable), command.args.map(local), {
+  cwd: local(command.cwd), stdio: 'inherit',
+});
+NODE
+```
+
+This derives the full current invoice and flags from `verification-plan.mjs` instead of substituting a focused file list.
+Record the actual exit status and diagnostics before source freeze.
+
+Freeze source and controls before dependency acquisition.
+Build and measure the fresh dependency image with `build --dependencies --no-cache`.
+Capture the mandatory `r2-infrastructure-verification-v1` envelope with its immutable dependency image ID and all six tests.
 Build the fresh source image from those exact dependency/control bytes.
 Run all eleven commands under the restricted policy.
 Export and independently validate the image archive.
-Import into the new R2 namespace with complete logs and marker-bound artifacts.
+Import into the new R2 namespace with mandatory `--infrastructure`, complete logs, and marker-bound artifacts.
 Complete adversarial, security, and spec review before declaring closure.

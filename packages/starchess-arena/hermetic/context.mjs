@@ -36,18 +36,27 @@ function sourceBytes(root, path) {
   return readFileSync(sourcePath(root, path));
 }
 
-function copyTree(root, path, target) {
+function contextDirectory(context, target) {
+  let current = context;
+  for (const part of relative(context, target).split(sep).filter(Boolean)) {
+    current = join(current, part);
+    mkdirSync(current, { recursive: true, mode: 0o755 });
+    chmodSync(current, 0o755);
+  }
+}
+
+function copyTree(root, path, target, context) {
   const source = sourcePath(root, path);
   const stat = lstatSync(source);
   if (stat.isDirectory()) {
-    mkdirSync(target, { recursive: true, mode: 0o755 });
+    contextDirectory(context, target);
     for (const name of readdirSync(sourcePath(root, path)).sort()) {
       if (excludedNames.includes(name)) continue;
       if (/^(\.env(?:\.|$)|\.npmrc$)|\.(pem|key|p12|pfx)$/i.test(name)) throw new Error(`Secret-bearing path excluded: ${source}/${name}`);
-      copyTree(root, join(path, name), join(target, name));
+      copyTree(root, join(path, name), join(target, name), context);
     }
   } else if (stat.isFile()) {
-    mkdirSync(dirname(target), { recursive: true });
+    contextDirectory(context, dirname(target));
     copyFileSync(sourcePath(root, path), target);
     chmodSync(target, stat.mode & 0o111 ? 0o755 : 0o644);
   } else throw new Error(`Special host file excluded: ${source}`);
@@ -86,14 +95,15 @@ function configClosure(root, seeds) {
 }
 
 export function prepareContext(context, dependenciesOnly = false, root = repository) {
+  context = resolve(context);
   root = resolve(root);
   sourcePath(root, '.');
   if (readdirSync(context).length) throw new Error('Docker context must start empty');
   const control = 'packages/starchess-arena/hermetic';
-  copyTree(root, control, join(context, 'hermetic'));
-  copyTree(root, join(control, 'Dockerfile'), join(context, 'Dockerfile'));
+  copyTree(root, control, join(context, 'hermetic'), context);
+  copyTree(root, join(control, 'Dockerfile'), join(context, 'Dockerfile'), context);
   const dependencyFiles = dependencyInputs;
-  for (const path of dependencyFiles) copyTree(root, path, join(context, 'deps', path));
+  for (const path of dependencyFiles) copyTree(root, path, join(context, 'deps', path), context);
   const narrowedWorkspace = `packages:\n${workspacePackages.map((name) => `  - packages/${name}\n`).join('')}allowBuilds:\n  esbuild: true\n`;
   writeFileSync(join(context, 'deps/pnpm-workspace.yaml'), narrowedWorkspace);
   const configs = optionalConfigs.map((path) => {
@@ -119,7 +129,7 @@ export function prepareContext(context, dependenciesOnly = false, root = reposit
       ...configs.filter((entry) => entry.present && ['tsconfig.json', 'tsconfig.base.json'].includes(entry.path)).map((entry) => entry.path)];
     capture.configClosure = configClosure(root, seeds);
     for (const path of [...required, ...configs.filter((entry) => entry.present).map((entry) => entry.path), ...capture.configClosure]) {
-      copyTree(root, path, join(context, 'runtime', path));
+      copyTree(root, path, join(context, 'runtime', path), context);
     }
     capture.runtime = treeManifest(join(context, 'runtime'));
   }
