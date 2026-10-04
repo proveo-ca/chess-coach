@@ -6,6 +6,8 @@
 ' covers: packages/starchess-arena/src/challengeContract/**
 ' covers: packages/starchess-arena/src/challenge/**
 ' covers: packages/starchess-arena/src/__tests__/challenge*.test.ts
+' covers: packages/starchess-arena/src/__tests__/challengeSourceInventory.test.ts
+' covers: packages/starchess-arena/hermetic/public-closure.mjs
 ' covers: packages/starchess-arena/src/__tests__/*V1Bridge*.test.ts
 ' covers: packages/starchess-arena/src/__tests__/r2CompositionEvidence.test.ts
 ' covers: packages/starchess-core/src/**
@@ -27,7 +29,7 @@
 ' covers: package.json
 ' covers: pnpm-lock.yaml
 ' covers: pnpm-workspace.yaml
-' status: IMPLEMENTED IN PROGRESS; source exists, full fresh verification and closure PENDING.
+' status: PREPARED SOURCE CONTRACT / R2 WIP; source exists, final gates and full fresh verification/closure PENDING; not full READY.
 ' related: _spec/_plans/r2-generator-v3.md (normative API, primitives, diagnostics and current eleven-command manifest)
 ' related: _spec/_plans/PLAN-ml-adjutant.md
 ' related: _spec/_plans/ml-adjutant-r1-contracts.md (prior future contracts; R2 amendment has scoped precedence)
@@ -49,26 +51,29 @@
 ' exports: every conditional workspace branch recursively targets the canonical approved file, including node/default and unselected branches; browser selection alone is insufficient.
 ' closure: pure roots are core '.', arena './observations' and './intent-codec-v1', training './candidates'; arena '.' remains the host barrel, not a pure model entrypoint.
 ' closure: static ESM only; reject all runtime dynamic imports, including literal targets, CommonJS, Node/process acquisition and forbidden/reverse package edges.
-' closure: inventory/public regressions reject computed own-function-member constructor acquisition hidden by any, wrappers, getters/methods, nested aliases or ambiguous members; ordinary data indexing and reviewed DTO descriptors remain valid.
+' closure: inventory/public regressions reject computed own-function-member constructor acquisition hidden by any, wrappers, getters/methods, nested aliases or ambiguous members; numeric arrays and nested destructuring now retain callable origin; ordinary data indexing/positive controls and reviewed DTO descriptors remain valid.
 ' availability: active iff a finite singleton probe passes every authorized root append guard, including resources/known occupancy; separate probe accounting, no free continuation.
 ' verification: inventory v2, pins v3, verification v3 source exists; 11 commands and separate host infra, new image and original 54 semantic parity PENDING.
 ' infrastructure: mandatory r2-infrastructure-verification-v1 host envelope binds actual Docker logs/inspections/probe artifacts to the captured dependency image; importer requires --infrastructure plus --acquisition and independently remeasures bytes before publication.
 ' infrastructure: SIX exact ordered titles (five static + one Docker), numbers/plan 1..6, tests=pass=6, suites=0, fail=cancelled=skipped=todo=0; source repaired, fresh execution PENDING.
 ' infrastructure: inspected probe Entrypoint=['node'], Cmd=['/hermetic/probe.mjs'], cwd=/app and approved output env bind invocation separately from report assertions; validate initial/final policy independently.
+' infrastructure: both complete ordered probe Config.Env vectors equal independent daemon dependency-image Env plus sole output assignment; no Node/linker preloads, even in image Env; capture/import use the same validator with independent inspections, not envelope claims.
 ' infrastructure: child receives only fixed PATH, private HOME, fresh empty private DOCKER_CONFIG and HERMETIC_DEPENDENCY_IMAGE; exact recorded env, no inherited preload/Docker endpoint/credential overrides.
+' infrastructure: host-owned canonical /tmp/opencode may be 0700; public-output negative fixture lives outside that private tree; six ordered top-level identities unchanged.
 ' provenance: importer retains host-provenance/{acquisition,build,execution,export}.json and acquisition/build/execution stdout/stderr logs; infrastructure envelope and all bound artifacts persist separately.
 ' provenance: exact offline Docker build argv and start --attach same initial/final container ID; every required log has explicit truncated=false, observedBytes=bytes and matching retained raw hash/length.
 ' provenance: both source inspections require runtime.mjs entrypoint, Cmd=['verify'], cwd=/app and exact ordered image Env + approved output; reject NODE_OPTIONS/NODE_PATH/LD_PRELOAD/LD_LIBRARY_PATH.
 ' acquisition: mandatory dependency-build envelope independently binds dependency image, measurements, controls/inputs, exact uncached Docker argv and successful untruncated logs; frozenDependency reuse is forbidden.
 ' capture: fresh dependency acquisition uses build --dependencies --no-cache; generated capture.json/workspace YAML explicitly 0644, child/intermediate/empty directories 0755 under umask 077; private context root stays private.
-' floors: r2-assertion-floors-v2 core471/arena1043/training56; Executor reports core/training passed, arena only enumerated, inventory321 passed and public checker88 sources/7 deps; direct strict rerunning, frozen proof pending.
+' floors target: r2-assertion-floors-v2 core471/arena1107/training56 = arena1043+62 array+2 probeEnv; inspected source arena1105 requires build repair; final enumeration/full arena pending.
+' reported checks: Executor reports inventory383/public88 sources+7 deps passed, prior core471/training56 passed; whole strict passed before array changes, agent strict files passed afterward, final whole lead rerun next; not independently executed here.
 ' checkpoint: Executor reports R2 source recovered from cc6 after reset; current pipeline restored; strict 19 errors and two legacy boundary casts resolved by lead, fresh full run PENDING.
 ' recovery: R0 records/partial logs are immutable history; absent archives/tmp images and old markers cannot authorize current tests or closure.
 ' future: H=1 calibrated turn-aware 4 deployed + 3 banked =7 excludes CC; versioned belief/features/calibration remain pending, no learned policy or SGD.
 ' rendering: no shell/renderer available; no checkonly success claimed.
 @startuml candidate-generation
 !include ../../themes/proveo.puml
-title StarChess R2 · V1 bridge and generation V3 · IMPLEMENTED IN PROGRESS
+title StarChess R2 · V1 bridge and generation V3 · PREPARED SOURCE CONTRACT / WIP
 
 skinparam packageStyle rectangle
 
@@ -210,7 +215,12 @@ end note
 note bottom of VERIFY
   Inventory v2 / pins v3 / verification v3
   Eleven commands; fresh image proof pending
-  Floors v2: core 471 / arena 1043 / training 56
+  Floor target v2: core 471 / arena 1107 / train 56
+end note
+
+note top of VERIFY
+  Source arena floor: 1105; required target: 1107
+  Final enumeration / full arena / strict pending
 end note
 
 note bottom of CLOSURE
@@ -224,6 +234,7 @@ end note
 note right of CLOSURE
   Every workspace branch: canonical target
   Computed function-member constructors: reject
+  Array/any/destructuring origins: traced
   Ordinary computed data indexing: allowed
 end note
 
@@ -244,6 +255,14 @@ note top of INFRA
   Child env: fixed PATH + image identity
   Private HOME / fresh empty DOCKER_CONFIG
   Exact recorded env; no inherited overrides
+  Private 0700 scratch parent supported
+end note
+
+note left of INFRA
+  Probe Env = daemon dependency image Env + output
+  Both inspections: exact ordered equality
+  Independent daemon inspection: capture + import
+  Reject preloads, including dependency image Env
 end note
 
 note bottom of CAPTURE
@@ -274,11 +293,13 @@ legend bottom
   Earlier five-promotion future generator draft is superseded, not native history.
   Executor-reported cc6 recovery restores R2 source, not fresh execution proof.
   Prior full host counts 469 core / 811 arena / 50 training are not a new run.
-  Floors v2: 471 core / 1043 arena / 56 training; arena only enumerated so far.
+  Floors v2 target: 471 core / 1107 arena / 56 training; final enumeration pending.
+  Inspected source arena floor 1105 needs build synchronization before freeze.
   Reported host checks and public closure do not establish full frozen verification.
   R0 records/partial logs and old markers are historical; no current closure authority.
   Legacy R0 archived logs and temporary images are missing.
   No fresh R2 image, evidence, acceptance or training is claimed.
+  Prepared source contract is not a full READY verdict or current frozen proof.
   Independent actual Docker envelope is mandatory; six-title source repair exists.
   Fresh acquisition, execution, image measurement and publication remain pending.
   Belief/calibration stays pending at H=1; weights NONE; no SGD or training.

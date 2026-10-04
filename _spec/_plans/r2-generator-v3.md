@@ -1,6 +1,7 @@
 # R2 — approved V1 bridge and candidate generation V3
 
 Status: **WIP / IMPLEMENTED IN PROGRESS; full fresh verification and R2 closure PENDING.**
+Spec readiness: **PREPARED SOURCE CONTRACT**, not full READY, image verification, evidence publication or acceptance.
 Scope: observation-only generation and its package graph, native helper extraction, pins, and full fresh verification.
 This document records the accepted TUI directions without reopening alternatives.
 No learned policy, SGD execution, training run, model artifact, or registry activation is authorized here.
@@ -27,12 +28,14 @@ Old completion markers cannot authorize current closure or live-pin assertions.
 - Source contains the private training package, four-promotion V3 domain, root-guard family availability, pure V1 bridge, inventory v2, execution pins v3, verification v3, and public-closure tooling.
 - Executor reports the native owner's **19** strict test-type errors are fixed and the lead resolved **two** legacy fixture boundary casts.
 - These repair reports do not constitute a new full strict run or test result.
-- Prior full host counts **469 core / 811 arena / 50 training** and `r2-assertion-floors-v1` remain history; current source requires **`r2-assertion-floors-v2`**, with floors **471 core / 1043 arena / 56 training**.
-- Executor reports core **471** and training **56** passed on the host after repairs; arena **1043** is **enumerated only**, not a full-suite passing result. Executor reports **321 source-inventory assertions passed** and public-checker success over **88 source files / 7 dependency files**; the complete direct strict invocation is being rerun. These are reported host checks, not independently executed here or full frozen verification.
+- Prior full host counts **469 core / 811 arena / 50 training** and `r2-assertion-floors-v1` remain history. Required **`r2-assertion-floors-v2`** target is **471 core / 1107 arena / 56 training**, where **1107 = 1043 + 62 array-origin checks + 2 probe-environment checks**; final enumeration and full arena execution remain pending.
+- Source-floor mismatch confirmed on this read: `hermetic/verification-plan.mjs:8` contains **471/1105/56**, omitting the two added probe-environment checks from the arena target. Build must synchronize **1107** before freeze; this spec pass cannot edit the manifest or invent a passing recount.
+- Executor reports core **471** and training **56** passed previously on the host, latest **383 source-inventory assertions passed**, and public-checker success over **88 source files / 7 dependency files**. Executor reports the whole strict invoice passed **before** the array changes and agent-scoped strict files passed afterward; the lead's final whole-invoice rerun is next. These are attributed host checks, not independently executed here or current full frozen verification.
 - The next source gate reruns all three full suites, all three package typechecks, every direct strict core/arena input and both scripts, Node checks, and public closure.
 - No fresh R2 dependency/source image, full frozen verification, publication, or closing review exists yet.
 - Latest source repair: `infra.test.mjs` and `scripts/challenge-infrastructure-evidence.mjs` now share **six exact ordered test identities (five static + one actual Docker)**. The capture validator checks every title, number, TAP plan and summary; source presence is not a passing infrastructure envelope.
 - Infrastructure validation independently binds the dependency image, probe invocation and inspected container policy. Its child receives only fixed PATH, private HOME, fresh empty DOCKER_CONFIG and image identity, with exact recorded environment equality and no inherited preloads, Docker endpoint overrides or credentials.
+- The MED probe-environment repair requires both container `Config.Env` vectors to equal an **independent daemon inspection** of dependency-image Env plus the approved output assignment, with no preloads; capture and import use that same validator rather than trusting envelope image claims.
 - Import requires **`--acquisition`** as well as **`--infrastructure`**; it independently joins uncached dependency acquisition, source build, exact runtime container configuration, attached-container identity, export and retained raw logs before publication.
 - Fresh dependency acquisition requires **`build --dependencies --no-cache`**; generated `capture.json` and acquisition workspace YAML normalize to **0644**, and captured child directories to **0755**, even under host umask **077**. These repairs have no fresh image or frozen execution result in this pass.
 - Executor's TUI-approved **Freeze native tables** direction freezes `UNIT_COST`, `SPECIAL_REGISTRY` and every nested special entry at declaration while preserving authoritative native costs; public audit also rejects divergent conditional workspace targets and computed own-function-member constructor bypasses.
@@ -119,6 +122,9 @@ Reject **all runtime dynamic imports, including `import('./literal-target')`**; 
 Reject CommonJS, computed loaders, Node/process acquisition, host/baseline/coordinator reachability, private cross-package bypasses, and forbidden reverse edges.
 Reject computed constructor acquisition through own function members even when `any`, wrappers, aliases or nested objects hide the callable receiver.
 Both inventory and public-closure audits trace own-member origins, shorthand functions, methods/getters, nested aliases and computed keys; ambiguous duplicate/spread member shapes fail closed rather than grant loader access.
+Origin tracing now also follows numeric/string/constant array indices, nested array/object members, `any`-erased callable entries and array/object destructuring, including nested binding patterns and callable defaults.
+Treat rest/spread uncertainty conservatively for constructor acquisition; retain numeric data-array indexing, noncallable destructured values and reviewed spread-data fixtures as positive controls.
+The array amendment adds **62 paired rejection/positive-control assertions** across inventory and public closure; these checks do not authorize arbitrary computed loaders or claim universal JavaScript sandboxing.
 Keep ordinary computed data indexing and the exact reviewed DTO descriptor seam valid; do not turn the bypass guard into a ban on all bracket access.
 `challengeSourceInventory.test.ts` persists paired inventory/public regressions for these forms and rejects noncanonical workspace targets in unselected conditional branches.
 Static rejection remains a reviewed graph policy, not arbitrary-JavaScript sandbox proof.
@@ -327,9 +333,10 @@ Preserve old fixture bytes and original-baseline pins; pin new execution separat
 ## 7. Full eleven-command verification v3 — source manifest, execution pending
 
 **IMPLEMENTED manifest, not fresh run or passing.** `packages/starchess-arena/hermetic/verification-plan.mjs` owns exact vectors; build must freeze its expanded input lists before execution.
-Its current assertion-floor version is **`r2-assertion-floors-v2`**, with exact report minima `vitest-starchess-core.json:471`, `vitest-starchess-arena.json:1043`, `vitest-starchess-training.json:56`.
+Required assertion-floor version remains **`r2-assertion-floors-v2`**, with target report minima `vitest-starchess-core.json:471`, `vitest-starchess-arena.json:1107`, `vitest-starchess-training.json:56`.
+The inspected source still has arena **1105**; this is an explicit build-owned manifest repair, not an already enforced 1107 floor or a reason to lower the target.
 The importer rejects a different floor version/vector and independently recounts every bound Vitest report with no failed/pending/todo assertions.
-These minima do not claim all three suites passed; arena's 1043 remains enumeration only until full execution succeeds, and all frozen-image commands remain pending.
+These minima do not claim final enumeration or any full arena pass; the lead must enumerate the final suite, reconcile the target, rerun the whole strict invoice and complete every frozen-image command.
 For the vectors below define `A=/app/packages/starchess-arena`, `P=/app/packages`, `O=/app/_spec/evidence/ml-adjutant-r2-refresh`, and `T=/app/packages/starchess-training`.
 Expand these symbols to absolute paths; they are notation, not shell variables or commands executed by this spec pass.
 Use the new R2 runtime/host namespace outside captured source, never over restored R0/Phase 1/Phase 2 history.
@@ -384,6 +391,7 @@ For private fresh host scratch directory `H`, the complete recorded and validate
 ```
 
 Create the fresh empty `DOCKER_CONFIG` directory with private **0700** permissions; retain HOME in the private scratch root.
+Support a host-owned canonical **0700 `/tmp/opencode` parent** without widening it. The output-rejection fixture uses a genuinely public parent outside that private tree; it no longer assumes `/tmp/opencode` itself grants public traversal.
 Pass the same object to `runLogged(...,{env})`, record it as `command.env`, and require exact equality during host validation.
 No inherited `NODE_OPTIONS`, `NODE_PATH`, `LD_PRELOAD`, `LD_LIBRARY_PATH`, `DOCKER_HOST`, `DOCKER_CONTEXT`, authentication config or credentials may enter that child; reject extra or substituted keys.
 This scrub is specific to the host infrastructure child; ordinary `runLogged` calls still default to `process.env`, and the capture parent remains trusted host tooling.
@@ -405,7 +413,10 @@ The six-test contract supersedes neither historical R0 **5/5** records nor their
 The host validator checks probe invocation separately from the probe report's `passed` assertion:
 
 - Both initial and final inspections must name the captured dependency image and satisfy `assertContainerPolicy` against the bound output directory.
-- Inspected `Config.Entrypoint=['node']`, `Config.Cmd=['/hermetic/probe.mjs']`, `WorkingDir='/app'`, and the sole `HERMETIC_OUTPUT_DIRECTORY` assignment to the approved output target bind what the container actually runs.
+- Inspected `Config.Entrypoint=['node']`, `Config.Cmd=['/hermetic/probe.mjs']`, `WorkingDir='/app'`, and the **entire ordered `Config.Env` vector** bind what the container actually runs in both initial and final inspections.
+- Compute expected probe Env from an **independent daemon dependency-image inspection**: remove image `HERMETIC_OUTPUT_DIRECTORY=` assignments, then append exactly `HERMETIC_OUTPUT_DIRECTORY=O`. Also require that this is the sole output assignment; `O` is §7's approved container output target.
+- Reject non-string/malformed Env vectors and `NODE_OPTIONS`, `NODE_PATH`, `LD_PRELOAD`, `LD_LIBRARY_PATH`, including bare keys or preloads in the independently inspected image. Reject extra/reordered/substituted container Env even when all artifact checksums have been rebound.
+- Capture obtains `docker image inspect` using the scrubbed host environment before running the child, retains that inspection and passes it to `validateInfrastructure`. Import independently inspects the immutable dependency image and passes its result to the **same validator**; require whole inspection equality with both the envelope and probe inspection artifact, not just a claimed image ID or a filtered output variable.
 - `executionLog` must be `docker ['start','--attach',initialContainerInspection.Id]`; final inspection must retain that same ID, zero exit and no OOM. Require zero command exit, no signal and no error, then bind both Docker streams to the retained artifacts.
 - The report must contain exactly three ordered commands below, each with cwd `/tmp/test`, zero exit, no signal/error, and bound stdout/stderr. This is a probe contract, not the eleven-command verification inventory.
 
@@ -419,6 +430,7 @@ Here `O` is the approved container output target from §7, not a host path.
 Require exactly nine probe artifacts: six command streams, `vitest-probe.json`, and two Docker attach streams.
 Bind the report and inspection JSON separately; recount the one actual passing Vitest assertion and its one passing suite with no failed/pending/todo assertions.
 Dependency installed/store/tool identities, measured closure and capture controls must match independently measured host bytes before publication; neither TAP success nor probe JSON alone establishes this join.
+The two new import regressions reject injected probe `NODE_OPTIONS` and a forged dependency-image inspection with rebound probe-environment/artifact checksums; they do not change the six top-level infrastructure test identities.
 
 Fresh image creation, infrastructure capture, current evidence, acceptance and R2 closure remain **PENDING**.
 No learned acceptance or training is authorized or claimed.
@@ -475,6 +487,32 @@ Retain `host-infrastructure.json` and every bound `host-infrastructure/` artifac
 Reject runtime-artifact collisions with reserved host provenance/infrastructure namespaces before exclusive marker publication.
 These persisted records let later review inspect the joins without relying on missing `/tmp` envelopes or logs; no publication or durability check occurred in this spec pass.
 
+#### Prepared CLI examples — lead execution pending
+
+Run from repository root only after the final source gates and freeze. These examples are **not executed here** and assign no image identities or evidence results.
+Set `DEPENDENCY_IMAGE` and `ACQUISITION_JSON` from the first build's immutable image ID and returned `build.json`; do not use the source build envelope as acquisition proof.
+Set `INFRASTRUCTURE_JSON` from the separate capture, then `SOURCE_IMAGE`/`SOURCE_BUILD_JSON`, `EXECUTION_JSON` and `EXPORT_JSON` from the corresponding source-image commands.
+All shell variables below are operator-supplied returned identities/paths, not new pins authored by this document.
+
+```sh
+node packages/starchess-arena/hermetic/run.mjs build --dependencies --no-cache
+node scripts/challenge-infrastructure-evidence.mjs --image "$DEPENDENCY_IMAGE"
+node packages/starchess-arena/hermetic/run.mjs build --from-dependencies "$DEPENDENCY_IMAGE"
+node packages/starchess-arena/hermetic/run.mjs run --image "$SOURCE_IMAGE"
+node packages/starchess-arena/hermetic/run.mjs export --image "$SOURCE_IMAGE"
+node scripts/challenge-import-evidence.mjs \
+  --acquisition "$ACQUISITION_JSON" \
+  --infrastructure "$INFRASTRUCTURE_JSON" \
+  --build "$SOURCE_BUILD_JSON" \
+  --execution "$EXECUTION_JSON" \
+  --export "$EXPORT_JSON" \
+  --image "$SOURCE_IMAGE" \
+  --destination _spec/evidence/ml-adjutant-r2-refresh
+```
+
+Dependency/source `preflight` may supply diagnostics but replaces neither mandatory infrastructure capture nor eleven-command source verification.
+Retain all returned acquisition/build/execution/export envelopes and logs until validated publication includes their raw bytes in `host-provenance/`; retain the infrastructure envelope/artifacts in its separate published namespace.
+
 ### 7.3 Frozen execution and closure obligations
 
 Bind all eleven executable/cwd/full-argv records, exits/signals, log bytes and hashes, exact test-report paths, and actual assertion recounts.
@@ -499,12 +537,12 @@ The baseline validator consumes exactly `[baseline,original,originalVerification
 | Traversal/diagnostics | Root-guard feasible family availability with finite separately metered probes; eight-lane RR, cyclic depth/FIFO laziness, continuation after valid skips, counted duplicates/pruning/owner/quota, exact six guard keys, transfers only on proven exhaustion, pass once, 512/2048/four-slot caps and closed count identities. |
 | Identity/privacy | Exact bytes despite forced hash collision, SHA known vectors, stable sorted results, hidden-world noninterference, no full-state admission probes or retries. |
 | Coverage/performance | Exhaustive small authorized fixture domains and actual membership/omissions; capped worst-case work/state/runtime under existing policy deadlines. No asserted exhaustive full-state legality. |
-| Closure/assurance | Three-package full suites/typechecks and floors v2 471/1043/56, strict direct inputs + two scripts; all conditional workspace branches canonical, static-only closures and computed own-function-member constructor rejection with data-indexing controls; six exact infrastructure titles and scrubbed explicit child env, independent image/probe/policy joins, mandatory acquisition/infrastructure import, four retained host envelopes/logs, explicit untruncated metadata, exact offline build/attach and source entrypoint/Cmd/cwd/Env; uncached acquisition and 0644 generated files/0755 child directories under 077; v2 graph/v3 pin fixtures, fresh measurement/publication, original 54 parity and 54+54 reruns. |
+| Closure/assurance | Three-package full suites/typechecks and floors v2 target 471/1107/56 (source arena 1105 needs build repair), final enumeration and whole strict invoice + two scripts; canonical workspace branches, static-only closures and computed object/array/destructured callable-origin rejection with data-indexing controls; six unchanged infra identities, private parent support, scrubbed host child and exact initial/final probe Env from independently inspected daemon image, shared capture/import validation; mandatory acquisition/infrastructure and raw provenance retention, untruncated logs, exact source/offline/attach contracts, 0644 generated files/0755 directories under 077; fresh measurement/publication, original 54 parity and 54+54 reruns. |
 
 Build owns all package/source/test/config/lock/CI and verifier changes above; this spec pass changes none.
 The canonical concern link is `_spec/packages/starchess-training/candidate-generation.puml`; the lead owns source-side `SPEC:` replacements and preserves unrelated pointers.
 Spec-side coverage includes current native/arena owners, actual training source/tests/metadata, graph controls, and diagnostics.
-The candidate diagram adds explicit native table/registry-test coverage and the assurance diagram adds explicit importer/infrastructure-owner coverage; the index projects both header updates with `fingerprint:null`.
+Both diagrams retain broad concern coverage and add explicit guard/probe regression ownership; the index projects the header updates with `fingerprint:null`.
 No captured source/config/README inside packages or evidence bytes are edited in this spec pass.
 No source prose was migrated or removal requested in this pass.
 No existing `specNotesEnforced`/`TestSpecNotesFitTheBox` implementation was found in the targeted source scan; if build supplies that ratchet, its source edit belongs to build.
@@ -569,8 +607,17 @@ Root `README.md` belongs to build, not spec-keeper; add current navigation to th
 Root `PLAN.md` now links this amendment and the canonical diagram, marks R2 WIP / verification PENDING, and labels its retained R0 proof block historical rather than current.
 This pass synchronizes root `PLAN.md` with the latest review repairs and links the canonical acquisition/provenance section; no diagram path changed.
 The package hermetic README is outside spec-keeper's hard edit scope and remains lead-only captured source despite the user allowing a README update if necessary.
-Build must update `packages/starchess-arena/hermetic/README.md`: add mandatory importer `--acquisition` to the publication example and handoff, retained acquisition envelope/logs, floors **v2 471/1043/56** with arena enumeration-only status, generated-file **0644** modes, exact source-container configuration and scrubbed infrastructure environment.
-Its existing native 19-error repair record remains history; record current direct strict execution as rerunning/pending, not passing. This docs handoff requires no source-code edits by spec-keeper.
+Build must perform the **docs-only** README repair below; explicit user permission does not expand spec-keeper's hard path limit. The earlier README handoff blocker cannot be marked removed until that edit lands.
+
+| Existing README section | Required docs-only replacement/addition |
+|---|---|
+| Fresh R2 evidence publication, CLI example | Add mandatory `--acquisition` from the uncached dependency build, retain `--infrastructure`, and use §7.2's prepared examples without assigning image IDs or current evidence. |
+| Publication and host handoff | Describe four retained host-provenance envelopes plus acquisition/build/execution streams and infrastructure artifacts; no temporary-reference-only proof. |
+| Previous host checks / current lead handoff | Preserve historical floors v1 separately; require v2 target **471/1107/56**, note inspected source arena **1105** until build synchronizes it, final enumeration/full arena pending, reported inventory **383** and public **88/7** success only. |
+| Strict invoice | Record whole-invoice success before array changes and subsequent agent-scoped strict success as attributed checkpoints; final whole lead rerun is next, not passed. |
+| Capture / infrastructure | Document 0644 generated files, 0755 children under 077, supported private 0700 scratch parent, scrubbed host child and both probe Env vectors bound to independent daemon dependency-image inspection with no preloads through shared capture/import validation. |
+
+Build also owns `packages/starchess-arena/hermetic/verification-plan.mjs:8`: synchronize arena **1105 → required 1107** only after confirming the final invoice includes all 62 array and two probe-env additions; retain core 471/training 56 and floors version v2.
 Root CI must include the training full suite/typecheck and `node scripts/check-public-closure.mjs`; no CI edit occurs here.
 
 Lead/build validation commands, from repository root; **not executed by spec-keeper**:
@@ -582,8 +629,8 @@ plantuml -tsvg _spec/packages/starchess-training/candidate-generation.puml _spec
 
 Renderer availability is unverified; these commands specify both diagrams without claiming installation or render success.
 No source note-ratchet implementation was found; if the lead adds `specNotesEnforced`, include both candidate-generation and policy-contracts diagrams edited here. That source/test change belongs to build.
-This pass preserves the bounded DTO/static-closure rules, documents approved nested native freezing and all-branch canonical workspace targets, and records acquisition/source-container/infrastructure-environment joins plus floors v2 without assigning fresh passing proof.
-It adds native-cost reasoning and updates structural labels in both owning diagrams; manual inspection checks their 2–5-line/50-column note boxes.
+This pass preserves the native freezing/DTO/static-closure contracts, adds array/destructuring origins and independent complete probe-Env binding, and records required floors v2/strict chronology without assigning fresh passing proof.
+It updates structural labels in both owning diagrams while preserving reasoning notes; manual inspection checks their 2–5-line/50-column note boxes. This is a prepared source contract, not full READY.
 It edits no source prose, publishes no evidence, and claims no renderer/test execution.
 
 ## 9. Unchanged future readiness gates
