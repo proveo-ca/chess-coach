@@ -1,4 +1,4 @@
-// SPEC: _spec/packages/starchess-arena/newgeneration.puml
+// SPEC: _spec/packages/starchess-training/candidate-generation.puml
 import { CC_MAX_LIVES, MAX_GAME_TURNS, MAX_STORED_MATERIAL } from "../../../../starchess-core/src/rules/constants";
 import { MAX_MINES_PER_SIDE } from "../../../../starchess-core/src/board/mines";
 import { canonical, deepFreeze } from "./canonical";

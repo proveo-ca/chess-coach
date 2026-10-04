@@ -1,4 +1,4 @@
-// SPEC: _spec/packages/starchess-arena/newgeneration.puml
+// SPEC: _spec/packages/starchess-training/candidate-generation.puml
 import type { AuthorizedObservationV1 } from "./authorized/v1/types";
 import { decodeObservation, encodeObservation, validateObservation } from "./authorized/v1/observationCodec";
 import { inspectDto } from "./challengeContract/validation";

@@ -1,4 +1,4 @@
-// SPEC: _spec/training/candidate-generation.puml
+// SPEC: _spec/packages/starchess-training/candidate-generation.puml
 export const workspacePackages = Object.freeze(['starchess-core', 'starchess-arena', 'starchess-training']);
 export const workspaceTargets = Object.freeze(Object.fromEntries(workspacePackages.map((name) => [`@chess-coach/${name}`, `packages/${name}`])));
 export const dependencyInputs = Object.freeze(['pnpm-lock.yaml', ...workspacePackages.map((name) => `packages/${name}/package.json`)]);

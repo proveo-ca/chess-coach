@@ -1,4 +1,4 @@
-// SPEC: _spec/training/candidate-generation.puml
+// SPEC: _spec/packages/starchess-training/candidate-generation.puml
 import { historyFromRecord, parseScFen, refillTurnGas, type PieceColor, type ScActionInput, type Square } from "../packages/starchess-core/src/index";
 import { ACTION_KINDS, encodeCandidate } from "../packages/starchess-arena/src/intent-codec-v1";
 import { encodeObservationV1, type AuthorizedObservationV1 } from "../packages/starchess-arena/src/observations";

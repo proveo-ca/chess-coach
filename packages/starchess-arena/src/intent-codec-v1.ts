@@ -1,4 +1,4 @@
-// SPEC: _spec/packages/starchess-arena/newgeneration.puml
+// SPEC: _spec/packages/starchess-training/candidate-generation.puml
 import type { PieceColor } from "@chess-coach/starchess-core";
 import { decodeCandidate as decodeWireCandidate, type EncodedCandidate } from "./challengeContract/candidateWire";
 import { inspectDto, parseJson } from "./challengeContract/validation";

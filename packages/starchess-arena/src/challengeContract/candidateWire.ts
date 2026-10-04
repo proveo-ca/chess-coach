@@ -1,4 +1,4 @@
-// SPEC: _spec/packages/starchess-arena/newgeneration.puml
+// SPEC: _spec/packages/starchess-training/candidate-generation.puml
 import type { PieceColor, ScActionInput, SpawnPiece } from "@chess-coach/starchess-core";
 import { UNIT_COST } from "../../../starchess-core/src/rules/constants";
 import { specialGasCost } from "../../../starchess-core/src/rules/specials/registry";

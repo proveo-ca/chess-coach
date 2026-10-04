@@ -1,4 +1,4 @@
-// SPEC: _spec/training/candidate-generation.puml
+// SPEC: _spec/packages/starchess-training/candidate-generation.puml
 import { beforeAll, describe, expect, it } from "vitest";
 import { canonical } from "../challenge/config";
 import { measureR2Composition } from "../../../../scripts/r2-composition-evidence";

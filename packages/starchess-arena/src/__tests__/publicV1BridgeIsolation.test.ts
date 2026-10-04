@@ -1,4 +1,4 @@
-// SPEC: _spec/packages/starchess-arena/newgeneration.puml
+// SPEC: _spec/packages/starchess-training/candidate-generation.puml
 import { readFileSync, existsSync } from "node:fs";
 import { createRequire, isBuiltin } from "node:module";
 import { dirname, join, resolve } from "node:path";

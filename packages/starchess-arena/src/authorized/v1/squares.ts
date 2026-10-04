@@ -1,4 +1,4 @@
-// SPEC: _spec/packages/starchess-arena/newgeneration.puml
+// SPEC: _spec/packages/starchess-training/candidate-generation.puml
 import type { Square } from "@chess-coach/starchess-core";
 
 export const SQUARES = Array.from({ length: 64 }, (_, index) =>

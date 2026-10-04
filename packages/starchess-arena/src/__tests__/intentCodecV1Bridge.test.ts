@@ -1,4 +1,4 @@
-// SPEC: _spec/packages/starchess-arena/newgeneration.puml
+// SPEC: _spec/packages/starchess-training/candidate-generation.puml
 import { describe, expect, it, vi } from "vitest";
 import { parseScFen, type PieceColor, type ScActionInput } from "@chess-coach/starchess-core";
 import { observe } from "../challenge/observation";

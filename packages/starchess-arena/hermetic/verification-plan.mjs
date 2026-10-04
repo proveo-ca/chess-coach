@@ -1,4 +1,4 @@
-// SPEC: _spec/training/candidate-generation.puml
+// SPEC: _spec/packages/starchess-training/candidate-generation.puml
 import { readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { workspacePackages, evidenceNamespace } from './workspace-policy.mjs';
