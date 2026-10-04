@@ -28,10 +28,18 @@ Lead historically reported both then-updated diagrams passed PlantUML `checkonly
 The [approved R2 V1 bridge / V3 amendment](_spec/_plans/r2-generator-v3.md) and [candidate-generation.puml](_spec/packages/starchess-training/candidate-generation.puml) own the current scoped work.
 Executor reports recovered R2 source; archived legacy R0 logs and temporary images are missing.
 Require bounded detached DTO inspection (depth **16**, **8192** root/node/edge visits, **1 MiB** total UTF-8 strings/keys), memoized shared subtrees with path-depth checks, cycles/accessors rejection, and frozen `ACTION_KINDS`.
+Executor's TUI-approved **Freeze native tables** direction freezes `UNIT_COST`, `SPECIAL_REGISTRY` and every nested special entry at declaration; authoritative costs and native admission/grammar remain unchanged.
 Exact public export keys remain core `['.']`, arena `['.','./observations','./intent-codec-v1']`, training `['./candidates']`.
-Pure core/authorized/training closures use static ESM only, including rejection of literal runtime dynamic imports; arena root remains the host barrel.
+Every conditional workspace export branch, including node/default/unselected branches, must use its canonical approved target, not merely satisfy keys or browser resolution.
+Pure core/authorized/training closures use static ESM only and reject literal runtime dynamic imports and computed own-function-member constructor bypasses hidden by `any`, aliases or wrappers; ordinary computed data indexing and reviewed DTO descriptors remain valid. Arena root remains the host barrel.
 Fresh eleven-command verification requires a separate mandatory actual Docker infrastructure envelope tied to the captured dependency image and independently joined by the importer.
 Infrastructure capture now enforces **six exact ordered test identities (five static + one Docker)** and independently binds the probe invocation; fresh execution remains pending.
+Its child receives only fixed PATH, private HOME, fresh empty private DOCKER_CONFIG and immutable image identity; exact recorded-env checks reject inherited preload/Docker endpoint/credential overrides.
+Importer requires **`--acquisition`** from **`build --dependencies --no-cache`**, independently joined to dependency-image measurements/controls/input invoice, exact argv and successful untruncated logs; retain acquisition/build/execution/export envelopes plus all declared logs in the published host-provenance namespace.
+Generated capture/workspace files explicitly chmod **0644**, and captured child directories **0755**, under umask **077**, without widening the private scratch root.
+Both source-container inspections must match the runtime entrypoint, `Cmd=['verify']`, cwd `/app` and exact ordered image Env + output; reject interpreter/linker preloads and bind attachment to the same inspected container.
+Current **`r2-assertion-floors-v2`** requires **471 core / 1043 arena / 56 training**. Executor reports core/training passed, source-inventory **321** passed and public checker passed over **88 sources / 7 dependencies**; arena **1043 is enumerated only**, and the complete direct strict invocation is being rerun. These reported host checks are not full frozen verification or independently executed by this spec pass.
+The [R2 provenance contract](_spec/_plans/r2-generator-v3.md#72-fresh-acquisition-offline-source-build-and-durable-host-provenance) owns exact acquisition/source vectors, environments, log metadata and retention.
 No fresh image, current evidence, R2 acceptance/closure, learned acceptance or training is claimed.
 
 ### Historical Phase 1 verification

@@ -10,6 +10,8 @@
 ' covers: packages/starchess-arena/package.json
 ' covers: packages/starchess-training/**
 ' covers: scripts/**
+' covers: scripts/challenge-import-evidence.mjs
+' covers: scripts/challenge-infrastructure-evidence.mjs
 ' covers: packages/starchess-arena/hermetic/**
 ' covers: _spec/evidence/ml-adjutant-phase2/*.json
 ' covers: _spec/evidence/ml-adjutant-r0-refresh/**
@@ -33,6 +35,8 @@
 ' import audit: lexical fixed-point binding IDs; static types, wrappers, namespace aliases, literal calls and declared esbuild closure; fail closed on unsupported escapes/unknown-extension CJS.
 ' import audit: supported createRequire bases are own import.meta.url and the exact closure.mjs package anchor /app/packages/starchess-arena/package.json, with external-only edges for that anchor.
 ' import audit: reject unsupported loader APIs/alternate factories, import-metadata mutation/escape, eval/reflective constructor acquisition, wrapper erasure/mutable alias escapes and unsupported destructuring; no arbitrary-JS sandbox proof.
+' import audit: own function-member computed constructors reject through any/wrappers/nested aliases/methods/getters; ordinary data indexing and the exact DTO descriptor seam remain valid.
+' public exports: all conditional workspace leaves, including node/default/unselected branches, must equal canonical approved targets; static-only pure closures reject every runtime dynamic import.
 ' import audit seam: challengeContract/validation.ts owns reviewed dense-array descriptor checks and exact inspectDto snapshot validation; this does not permit arbitrary reflective loader acquisition.
 ' historical R0 assurance: _spec/evidence/ml-adjutant-r0-refresh/image-assurance.json; original closure record _spec/evidence/ml-adjutant-r0-closure.json unchanged.
 ' historical R0 image: sha256:3550d1cc2b98d9ae757937a9e45e1ba89b6e84459106a491a61af9e183968f72
@@ -51,7 +55,8 @@
 ' historical verification: image core 426/426, arena 434/434, typechecks/strict TS passed; historical infra 5/5 actual Docker and focused 7 tests/2 files.
 ' historical R0 verification: core 426/426, arena 689/689, zero failed/pending/todo; 107 Node tests, no skips; 54 executions + 54 reruns, semantic/migration parity true; eight exact commands/three static checks include both scripts.
 ' historical R0 host checks: actual Docker infrastructure 5/5 on then-new dependency image; host post-publication 13/13 including then-live source pins, no skips.
-' prior R2 host counts: 469 core / 811 arena / 50 training; current assertion floors, not fresh full-run proof. No fresh R2 image or closure verdict assigned.
+' prior R2 host counts: 469 core / 811 arena / 50 training and floors v1 remain history; current r2-assertion-floors-v2 requires 471 core / 1043 arena / 56 training, not fresh frozen-run proof.
+' reported host checks: Executor reports core471/training56 passed, arena1043 enumerated only, source inventory321 passed, public checker88 sources/7 dependencies passed; direct strict invocation rerunning. Not independently executed here.
 ' phase1 pins: baseline 940387370040f88888e9dfe0bb86ad9d4a8be88854df507120f34b22ee2d362b; verification 55d965afa71d775ff6ee1e95b6650a27d0ce759b966a81c43a3bb364236c7508. Unchanged.
 ' historical R0 final reviews: adversarial ses_efe0ed67dffew2su1gZIUaDy23 and security ses_efe0ed520ffeOEg3kd6jAtN33i both READY TO CLOSE R0: yes; source/captured-record review, no independent execution/hash recomputation.
 ' historical review: ses_f07c45365ffew0wJ58yFHXAye5 READY TO MERGE: no; earlier scoped/rename-only READY verdicts remain history, not current closure authority.
@@ -63,6 +68,11 @@
 ' validator inputs: baseline, original, originalVerification, migration, coverage, contract, r2report, frozenRoot; exactly eight.
 ' command inventory: hermetic-verification-v3 exactly eleven; three package typechecks/full suites, strict command 6 all core/arena tests plus both scripts; command 10 three Node files; command 11 node scripts/check-public-closure.mjs.
 ' infrastructure: separate trusted host infra.test.mjs run requires fresh dependency image; no Docker socket, network or capabilities enter the restricted container.
+' infrastructure: six exact ordered identities plus mandatory r2-infrastructure-verification-v1; explicit replacement child env fixed PATH/private HOME/empty DOCKER_CONFIG/image only, exact recorded equality, no inherited preload/Docker endpoint/credential overrides.
+' acquisition: mandatory importer --acquisition binds dependency-build envelope to independently measured image/controls/input invoice and exact build --dependencies --no-cache Docker argv with successful untruncated logs; no frozenDependency reuse.
+' source container: both inspections require exact runtime.mjs entrypoint/Cmd verify/cwd app/ordered image Env plus output; reject interpreter/linker preloads independently of policy/success.
+' publication: retain host-provenance/{acquisition,build,execution,export}.json and every acquisition/build/execution log; references alone to temporary host files are insufficient.
+' capture modes: generated capture.json and acquisition workspace YAML explicitly 0644; child directories 0755 under umask077; preserve private scratch root.
 ' schemas: inventory challenge-source-inventory-v2, pins challenge-execution-pins-v3, composition challenge-composition-v3; public-closure-v1 stdout bound as public-closure-report.json.
 ' trust: publication requires canonical parent/private host-owned ancestor without malicious same-UID mutation.
 ' permissions: Executor approved _spec/evidence ancestor mode 0700; historical evidence file bytes unchanged.
@@ -105,6 +115,7 @@ component "scripts/challenge-import-evidence.mjs\nexact command / test-output bi
 component "scripts/challenge-validate-baseline.ts\neight-input authoritative validation" as HOST_VALIDATE <<host>>
 component "scripts/r2-composition-evidence.ts\nprimitive / retained membership and omissions" as R2_REPORT <<host>>
 component "scripts/check-public-closure.mjs\npublic-closure-v1 · exact stdout" as PUBLIC_CHECK <<host>>
+component "scripts/challenge-infrastructure-evidence.mjs\nsix exact identities / scrubbed host child" as HOST_INFRA <<host>>
 
 package "packages/starchess-arena/hermetic" {
   component "pins.json / Dockerfile\nNode platform + binary pin / pnpm bytes" as IMAGE_PINS <<host>>
@@ -158,6 +169,8 @@ RUNTIME ARROW_MAIN IMPORTER : working outputs / eleven exact commands
 MIGRATION ARROW_MAIN HOST_VALIDATE : original-byte semantic parity
 ORIGINAL ARROW_MAIN HOST_VALIDATE : immutable original pins
 CAPTURE ARROW_MAIN IMPORTER : current / build capture identity
+RUNNER ARROW_MAIN IMPORTER : acquisition / build / execution envelopes
+HOST_INFRA ARROW_MAIN IMPORTER : mandatory independent Docker evidence
 MEASUREMENT ARROW_MAIN IMPORTER : independent source / dependency / tool identity
 TAR ARROW_MAIN IMPORTER : archive config / ordered layers / diffIDs
 LIMITS ARROW_OPTIONAL TAR : scan / expansion / metadata budgets
@@ -221,8 +234,8 @@ end note
 
 note bottom of RUNTIME
   Fresh R2 image and full verification PENDING
-  Prior host floors: 469 core / 811 arena
-  Training floor: 50; not new passing proof
+  Floors v2: core 471 / arena 1043 / training 56
+  Arena 1043: enumerated, not passing proof
   Required: original 54 parity + 54 reruns
   Separate host Docker infra and final reviews
 end note
@@ -275,6 +288,31 @@ note bottom of IMPORTER
   Full tests.path == exact output; hash bound
 end note
 
+note top of IMPORTER
+  Mandatory --acquisition + --infrastructure
+  Exact uncached dependency-build argv / logs
+  Both source inspections: entrypoint/Cmd/cwd/Env
+  Four host envelopes + declared logs retained
+end note
+
+note bottom of HOST_INFRA
+  Explicit fixed PATH + immutable image identity
+  Private HOME / fresh empty DOCKER_CONFIG
+  Exact recorded env; no inherited overrides
+end note
+
+note bottom of CAPTURE
+  Generated capture/workspace files: chmod 0644
+  Captured child directories: chmod 0755
+  Host umask 077; private scratch root preserved
+end note
+
+note bottom of PUBLIC_GRAPH
+  Every workspace branch: canonical target
+  Computed function-member constructors: reject
+  Ordinary computed data indexing: allowed
+end note
+
 note top of BUNDLE
   Exclusive mkdir / all files fsynced
   Deep nested directories then root synced
@@ -303,8 +341,11 @@ legend bottom
   Executor reports cc6 source recovery and strict fixture repairs; the new full run remains pending.
   Original R0 A01-A15/reviews/counts are historical, not current proof or old-marker test authorization.
   Historical R0: 426 core / 689 arena / 107 Node; eight commands; 54+54 parity; Docker 5/5, host 13/13.
-  Prior R2 host 469 core / 811 arena / 50 training are assertion floors, not a fresh execution record.
+  Prior R2 host 469 core / 811 arena / 50 training and floors v1 remain historical.
+  Floors v2: core 471 / arena 1043 / training 56; arena only enumerated, frozen proof pending.
+  Reported inventory/public-checker/core/training host passes do not close the full frozen gate.
   R2 uses v2 inventory/v3 pins/v3 verification, eleven commands and separate trusted host infra.
+  Mandatory acquisition/infrastructure joins retain raw envelopes/logs; source configuration is exact.
   Primitive/retained omissions are diagnostic, not admission, exhaustive generation or learned PASS.
   Historical candidate wins remain 0/18 corpus and 0/36 live; weights NONE; no learned gate or training.
   Phase 1/2 and R0 evidence bytes/pins remain immutable; R0 partial logs/absent archives prove no new image.
