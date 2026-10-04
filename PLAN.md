@@ -31,7 +31,7 @@ Require bounded detached DTO inspection (depth **16**, **8192** root/node/edge v
 Exact public export keys remain core `['.']`, arena `['.','./observations','./intent-codec-v1']`, training `['./candidates']`.
 Pure core/authorized/training closures use static ESM only, including rejection of literal runtime dynamic imports; arena root remains the host barrel.
 Fresh eleven-command verification requires a separate mandatory actual Docker infrastructure envelope tied to the captured dependency image and independently joined by the importer.
-Current devops discovery: infrastructure has **six tests (five static + one Docker)**, but capture expects **five**; lead repair to the exact six ordered-title contract remains pending.
+Infrastructure capture now enforces **six exact ordered test identities (five static + one Docker)** and independently binds the probe invocation; fresh execution remains pending.
 No fresh image, current evidence, R2 acceptance/closure, learned acceptance or training is claimed.
 
 ### Historical Phase 1 verification
