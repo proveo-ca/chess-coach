@@ -88,8 +88,12 @@ export function recountVitest(report) {
 function logRecords(value, label) {
   if (!record(value?.logs) || !record(value.logs.stdout) || !record(value.logs.stderr)) throw new Error(`Missing ${label} logs`);
   const streams = [value.logs.stdout, value.logs.stderr];
-  if (streams.some((entry) => typeof entry.path !== 'string' || !digest(entry.sha256) || !Number.isSafeInteger(entry.bytes) || entry.bytes < 0 || entry.bytes > evidenceLimits.fileBytes)) throw new Error(`Invalid ${label} log metadata`);
+  if (streams.some((entry) => typeof entry.path !== 'string' || !digest(entry.sha256) || !Number.isSafeInteger(entry.bytes) || entry.bytes < 0 || entry.bytes > 8 * 1024 * 1024 || entry.truncated !== false || entry.observedBytes !== entry.bytes)) throw new Error(`Invalid ${label} log metadata`);
   return streams;
+}
+
+function successfulDockerCommand(value, args, label) {
+  if (!record(value) || value.executable !== 'docker' || !equal(value.args, args) || value.exitCode !== 0 || value.signal !== null || value.error !== null) throw new Error(`Invalid ${label} host command`);
 }
 
 function captureContext(root) {
@@ -127,6 +131,15 @@ export async function importEvidence({
   const output = realpathSync(execution.output);
   assertContainerPolicy(execution.initialContainerInspection, output);
   assertContainerPolicy(execution.finalContainerInspection, output);
+  const container = execution.initialContainerInspection.Id;
+  if (typeof container !== 'string' || !/^[a-f0-9]{64}$/.test(container) || execution.finalContainerInspection.Id !== container) throw new Error('Execution container identity mismatch');
+  successfulDockerCommand(execution.executionLog, ['start', '--attach', container], 'execution');
+  const context = build.buildArguments?.at(-1);
+  const dependencyTag = `starchess-hermetic-dependencies:${dependencyImage.slice(7)}`;
+  if (typeof context !== 'string' || !context.startsWith('/tmp/opencode/') || build.frozenDependency.localBuildReference !== dependencyTag) throw new Error('Invalid source build context or dependency reference');
+  const expectedBuild = ['build', '--platform', 'linux/amd64', '--pull=false', '--target', 'runtime', '--network=none', '--build-arg', `FROZEN_DEPENDENCIES=${dependencyTag}`, '--iidfile', join(dirname(context), 'image-id'), '--file', join(context, 'Dockerfile'), context];
+  if (!equal(build.buildArguments, expectedBuild) && !equal(build.buildArguments, [...expectedBuild.slice(0, 6), '--no-cache', ...expectedBuild.slice(6)])) throw new Error('Invalid source build arguments');
+  successfulDockerCommand(build.buildLog, build.buildArguments, 'build');
   const verificationBytes = read(join(output, 'verification.json'));
   const verification = decode(verificationBytes, 'verification');
   if (verification.version !== VERIFICATION_VERSION || verification.passed !== true || !Array.isArray(verification.commands) || verification.commands.length !== 11) throw new Error('Incomplete verification commands');
@@ -175,10 +188,12 @@ export async function importEvidence({
         (command.tests.pending !== undefined && command.tests.pending !== counted.pending) || (command.tests.todo !== undefined && command.tests.todo !== counted.todo)) throw new Error(`Vitest report counts do not match: ${path}`);
   }
   const hostLogs = [];
-  for (const [label, value] of [['build', build.buildLog], ['execution', execution.executionLog]]) for (const stream of logRecords(value, label)) {
+  const hostArtifacts = [];
+  for (const [label, value] of [['build', build.buildLog], ['execution', execution.executionLog]]) for (const [index, stream] of logRecords(value, label).entries()) {
     const bytes = read(stream.path);
     if (bytes.length !== stream.bytes || hash(bytes) !== stream.sha256) throw new Error(`${label} host log checksum mismatch`);
     hostLogs.push({ label, path: stream.path, sha256: stream.sha256, bytes: stream.bytes });
+    hostArtifacts.push({ path: `host-provenance/${label}.${index === 0 ? 'stdout' : 'stderr'}.log`, bytes });
   }
   const archive = await assertImageArchive(exported.archive, image);
   if (archive.sha256 !== exported.archiveSha256 || archive.bytes !== exported.archiveBytes) throw new Error('Exported image archive checksum mismatch');
@@ -209,11 +224,12 @@ export async function importEvidence({
     const assuranceRecord = { version: 'r2-image-assurance-v1', image, inspectedImageId: inspected.Id, archive, hostLogs,
       references: { execution: { path: resolve(executionPath), sha256: hash(executionBytes) }, build: { path: resolve(buildPath), sha256: hash(buildBytes) }, export: { path: resolve(exportPath), sha256: hash(exportBytes) }, infrastructure: { path: resolve(infrastructurePath), sha256: hash(infrastructureBytes) } },
       infrastructure: { image: dependencyImage, measurements: infrastructureMeasurement, artifact: 'host-infrastructure.json' },
-      capture: { runtimeSha256: snapshot.runtime.sha256, controlSha256: snapshot.control.sha256 }, verifiedArtifactCount: artifacts.size + 3 + infrastructureArtifacts.length };
+      capture: { runtimeSha256: snapshot.runtime.sha256, controlSha256: snapshot.control.sha256 }, verifiedArtifactCount: artifacts.size + 6 + infrastructureArtifacts.length + hostArtifacts.length };
     const published = [...artifacts].map(([path, bytes]) => ({ path, bytes }));
     const reserved = new Set(['verification.json', 'image-assurance.json', 'host-infrastructure.json', ...infrastructureArtifacts.map((entry) => entry.path)]);
-    if ([...artifacts.keys()].some((path) => reserved.has(path) || path.startsWith('host-infrastructure/'))) throw new Error('Artifact inventory collides with host infrastructure paths');
+    if ([...artifacts.keys()].some((path) => reserved.has(path) || path.startsWith('host-infrastructure/') || path.startsWith('host-provenance/'))) throw new Error('Artifact inventory collides with host infrastructure paths');
     published.push({ path: 'host-infrastructure.json', bytes: infrastructureBytes }, ...infrastructureArtifacts);
+    published.push({ path: 'host-provenance/build.json', bytes: buildBytes }, { path: 'host-provenance/execution.json', bytes: executionBytes }, { path: 'host-provenance/export.json', bytes: exportBytes }, ...hostArtifacts);
     published.push({ path: 'verification.json', bytes: verificationBytes }, { path: 'image-assurance.json', bytes: Buffer.from(`${JSON.stringify(assuranceRecord, null, 2)}\n`) });
     await beforePublication?.(target);
     publication = publishBundleExclusive(target, published, { syncDirectory });

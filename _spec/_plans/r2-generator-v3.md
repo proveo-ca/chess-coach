@@ -19,7 +19,7 @@ R0 evidence and partial logs remain historical; archived logs and `/tmp` images 
 The original R0 closure, counts, review verdicts, and image/archive hashes remain immutable **historical records**, not CURRENT proof of the recovered tree or R2.
 Do not rewrite restored evidence, substitute old output for a missing R2 run, or claim the historical image still exists.
 R2 requires a new captured-source/dependency image and fresh verification/publication.
-This spec pass reads source and changes only `_spec/` and root `PLAN.md`; it executes no tests, recomputes no hashes, and publishes no evidence.
+This spec pass reads source and changes only this amendment, `_spec/_plans/PLAN-ml-adjutant.md`, and the existing candidate-generation diagram; it executes no tests, recomputes no hashes, and publishes no evidence.
 Old completion markers cannot authorize current closure or live-pin assertions.
 
 ### Latest source checkpoint — not a verification result
@@ -30,7 +30,9 @@ Old completion markers cannot authorize current closure or live-pin assertions.
 - Prior full host counts were **469 core / 811 arena / 50 training**; `r2-assertion-floors-v1` records them as floors, not current passing totals.
 - The next source gate reruns all three full suites, all three package typechecks, every direct strict core/arena input and both scripts, Node checks, and public closure.
 - No fresh R2 dependency/source image, full frozen verification, publication, or closing review exists yet.
-- Current devops discovery: `infra.test.mjs` has **six tests (five static + one actual Docker)**; `scripts/challenge-infrastructure-evidence.mjs` still expects **five**. The lead must repair the exact six ordered-title contract before fresh infrastructure capture; no passing infrastructure envelope is claimed.
+- Latest source repair: `infra.test.mjs` and `scripts/challenge-infrastructure-evidence.mjs` now share **six exact ordered test identities (five static + one actual Docker)**. The capture validator checks every title, number, TAP plan and summary; source presence is not a passing infrastructure envelope.
+- Infrastructure validation independently binds the dependency image, probe invocation and inspected container policy. Import retains build/execution/export host envelopes and build/execution logs, requires exact offline source-build Docker arguments and attached-container identity, and rejects missing or truncated log metadata.
+- Fresh dependency acquisition supports **`build --dependencies --no-cache`**; copied context child directories normalize to **0755** even under a restrictive host umask. These repairs have no fresh image or execution result in this pass.
 - The lead appends the new package and public-closure check to root CI before freeze; spec-keeper edits no source, CI, package README, or evidence.
 
 Accepted directions:
@@ -344,9 +346,9 @@ Independently remeasure dependency-image installed/store/tool/control bytes and 
 Publish the validated envelope as **`host-infrastructure.json`**, its bound artifacts under **`host-infrastructure/`**, and the infrastructure reference in **`r2-image-assurance-v1`**.
 No daemon-unavailable skip, synthetic TAP success, old R0 log, nested-container claim, or eleven-command-only run closes this gate.
 
-**Current source mismatch — repair pending:** whole-file inspection confirms **six** `infra.test.mjs` tests, in the exact order below; five are static and the final test performs actual Docker execution.
-The capture script still declares `INFRASTRUCTURE_TESTS = 5` and checks only the Docker title, not the complete title vector.
-The lead owns the source repair to require **all six titles in order**, exact numbering `1..6`, TAP plan `1..6`, `tests=pass=6`, `suites=0`, and `fail=cancelled=skipped=todo=0`; reject omissions, additions, renames, reordering and duplicate titles.
+**Repaired source contract — fresh execution pending:** whole-file inspection confirms **six** `infra.test.mjs` tests, in the exact order below; five are static and the final test performs actual Docker execution.
+The capture script now freezes the full `INFRASTRUCTURE_TEST_NAMES` vector and derives `INFRASTRUCTURE_TESTS` from its length, **6**.
+Its recount requires **all six titles in order**, exact numbering `1..6`, TAP plan `1..6`, `tests=pass=6`, `suites=0`, and `fail=cancelled=skipped=todo=0`; reject omissions, additions, renames, reordering and duplicate titles.
 The six-test contract supersedes neither historical R0 **5/5** records nor their unchanged bytes.
 
 | Order | Kind | Exact test title |
@@ -358,10 +360,61 @@ The six-test contract supersedes neither historical R0 **5/5** records nor their
 | 5 | Static | `CLI rejects mount injection and public output parents and preserves bounded success/failure logs` |
 | 6 | Actual Docker | `Docker enforces policy, fresh temporary inventory, and logged offline TS/Vitest` |
 
+The host validator checks probe invocation separately from the probe report's `passed` assertion:
+
+- Both initial and final inspections must name the captured dependency image and satisfy `assertContainerPolicy` against the bound output directory.
+- Inspected `Config.Entrypoint=['node']`, `Config.Cmd=['/hermetic/probe.mjs']`, `WorkingDir='/app'`, and the sole `HERMETIC_OUTPUT_DIRECTORY` assignment to the approved output target bind what the container actually runs.
+- `executionLog` must be `docker ['start','--attach',initialContainerInspection.Id]`; final inspection must retain that same ID, zero exit and no OOM. Require zero command exit, no signal and no error, then bind both Docker streams to the retained artifacts.
+- The report must contain exactly three ordered commands below, each with cwd `/tmp/test`, zero exit, no signal/error, and bound stdout/stderr. This is a probe contract, not the eleven-command verification inventory.
+
+| Probe order | Exact executable | Exact argv |
+|---|---|---|
+| 1 | `/app/packages/starchess-arena/node_modules/.bin/tsx` | `['/tmp/test/source-only-inventory.ts']` |
+| 2 | `/app/packages/starchess-arena/node_modules/.bin/tsx` | `['/tmp/test/direct.ts']` |
+| 3 | `/app/packages/starchess-arena/node_modules/.bin/vitest` | `['run','--config','/tmp/test/config.mts','--configLoader','native','--reporter=default','--reporter=json','--outputFile',O+'/vitest-probe.json']` |
+
+Here `O` is the approved container output target from §7, not a host path.
+Require exactly nine probe artifacts: six command streams, `vitest-probe.json`, and two Docker attach streams.
+Bind the report and inspection JSON separately; recount the one actual passing Vitest assertion and its one passing suite with no failed/pending/todo assertions.
+Dependency installed/store/tool identities, measured closure and capture controls must match independently measured host bytes before publication; neither TAP success nor probe JSON alone establishes this join.
+
 Fresh image creation, infrastructure capture, current evidence, acceptance and R2 closure remain **PENDING**.
 No learned acceptance or training is authorized or claimed.
 
-### 7.2 Frozen execution and closure obligations
+### 7.2 Fresh acquisition, offline source build and durable host provenance
+
+Fresh acquisition uses `node packages/starchess-arena/hermetic/run.mjs build --dependencies --no-cache`, with no `--from-dependencies` substitute for acquisition.
+`--no-cache` forces a new acquisition/build attempt rather than accepting cached layers as evidence of fresh downloads; it does not itself prove execution or a new image identity.
+Installation remains offline/frozen-lockfile after acquisition; the final source build reuses only the independently measured captured dependency image and runs with `--network=none`.
+`context.mjs::contextDirectory` explicitly chmods every copied child directory to **0755**, including intermediate and empty directories, rather than allowing host umask to remove traversal permissions.
+The caller-owned private context root stays private; this normalization changes neither repository directory modes nor evidence-output permissions.
+Copied files remain 0755 when executable and 0644 otherwise.
+
+For exact source-build argv, let `C` be the captured context below `/tmp/opencode/`, `W=dirname(C)`, and `D='starchess-hermetic-dependencies:'+dependencyImage.slice(7)`.
+The importer permits only the following Docker vector, optionally inserting a single `--no-cache` immediately after `runtime`:
+
+```text
+['build','--platform','linux/amd64','--pull=false','--target','runtime',
+ '--network=none','--build-arg','FROZEN_DEPENDENCIES='+D,
+ '--iidfile',W+'/image-id','--file',C+'/Dockerfile',C]
+```
+
+Require `build.frozenDependency.localBuildReference=D`, exact equality with `build.buildArguments`, and the same argv in a successful `docker` build log.
+Source execution requires one valid 64-hex container ID shared by initial/final inspections and exact `docker ['start','--attach',containerId]`; a successful unrelated container log cannot stand in for it.
+Initial/final inspected policy is validated independently of command success and runtime assurance.
+
+For **every required log stream**, require explicit `truncated:false` and `observedBytes === bytes`, a safe-integer byte length within the 8-MiB stream cap, and a matching hash/length on retained raw bytes.
+Missing flags, hidden truncation or excess observed bytes fail even when a command exits zero.
+Apply this to eleven-command logs, build/execution host logs, infrastructure host logs, Docker probe attach logs and all three probe command logs.
+Bounded failure logs remain useful diagnostics but cannot become successful evidence by dropping truncation metadata.
+
+Publication retains the original input bytes of all three host envelopes at **`host-provenance/build.json`**, **`host-provenance/execution.json`**, and **`host-provenance/export.json`**, plus both build and execution streams as **`host-provenance/{build,execution}.{stdout,stderr}.log`**.
+The export envelope preserves its independently validated archive identity; the exporter declares no separate stdout/stderr log records.
+Retain `host-infrastructure.json` and every bound `host-infrastructure/` artifact alongside them, not just references to temporary host paths.
+Reject runtime-artifact collisions with reserved host provenance/infrastructure namespaces before exclusive marker publication.
+These persisted records let later review inspect the joins without relying on missing `/tmp` envelopes or logs; no publication or durability check occurred in this spec pass.
+
+### 7.3 Frozen execution and closure obligations
 
 Bind all eleven executable/cwd/full-argv records, exits/signals, log bytes and hashes, exact test-report paths, and actual assertion recounts.
 Require fresh **54 executions + 54 semantic reruns** of unchanged `baseline-v1` and **semantic parity with the original pinned 54-case baseline**.
@@ -385,11 +438,12 @@ The baseline validator consumes exactly `[baseline,original,originalVerification
 | Traversal/diagnostics | Root-guard feasible family availability with finite separately metered probes; eight-lane RR, cyclic depth/FIFO laziness, continuation after valid skips, counted duplicates/pruning/owner/quota, exact six guard keys, transfers only on proven exhaustion, pass once, 512/2048/four-slot caps and closed count identities. |
 | Identity/privacy | Exact bytes despite forced hash collision, SHA known vectors, stable sorted results, hidden-world noninterference, no full-state admission probes or retries. |
 | Coverage/performance | Exhaustive small authorized fixture domains and actual membership/omissions; capped worst-case work/state/runtime under existing policy deadlines. No asserted exhaustive full-state legality. |
-| Closure/assurance | Three-package full suites/typechecks, strict direct inputs + two scripts, exact export maps, static-only closures including literal dynamic-import rejection, mandatory independent six-title actual Docker envelope tied to the captured dependency image, v2 graph/v3 pin rejection fixtures, fresh image/source measurement/publication, original 54 parity and 54+54 reruns. |
+| Closure/assurance | Three-package full suites/typechecks, strict direct inputs + two scripts, exact export maps, static-only closures including literal dynamic-import rejection; six exact ordered infrastructure titles, independent dependency-image/probe-command/inspected-policy binding, mandatory infrastructure import, retained host envelopes/logs, explicit untruncated metadata, exact offline build/attached-container vectors, fresh no-cache acquisition and 0755 captured directories; v2 graph/v3 pin rejection fixtures, fresh image/source measurement/publication, original 54 parity and 54+54 reruns. |
 
 Build owns all package/source/test/config/lock/CI and verifier changes above; this spec pass changes none.
 The canonical concern link is `_spec/packages/starchess-training/candidate-generation.puml`; the lead owns source-side `SPEC:` replacements and preserves unrelated pointers.
 Spec-side coverage includes current native/arena owners, actual training source/tests/metadata, graph controls, and diagnostics.
+The existing 25 diagram coverage globs already cover these repaired owners and match the index entry exactly; its fingerprint is already `null`, so this three-file pass needs no index byte change.
 No captured source/config/README inside packages or evidence bytes are edited in this spec pass.
 No source prose was migrated or removal requested in this pass.
 No existing `specNotesEnforced`/`TestSpecNotesFitTheBox` implementation was found in the targeted source scan; if build supplies that ratchet, its source edit belongs to build.
@@ -405,7 +459,7 @@ Manual note-body measurement (markup stripped; two sentences each) gives:
 | `candidate-generation.puml` · note bottom of PREFIX | 31 / 56 / 2 | **11.8** |
 | `candidate-generation.puml` · note right of LANES | 31 / 56 / 2 | **11.8** |
 | `candidate-generation.puml` · note bottom of CLOSURE | 29 / 51 / 2 | **10.8** |
-| `candidate-generation.puml` · note bottom of INFRA | 29 / 52 / 2 | **11.2** |
+| `candidate-generation.puml` · note bottom of INFRA | 34 / 62 / 2 | **12.6** |
 
 All six reasoning notes have two sentences in five lines with at most 50 columns; structural label notes have two to four lines within the same width limit.
 
@@ -451,6 +505,8 @@ The existing empty-coverage `_spec/apps/starchess/core/index.puml` remains uncha
 
 Root `README.md` belongs to build, not spec-keeper; add current navigation to this amendment and both owning diagrams without changing unrelated README prose.
 Root `PLAN.md` now links this amendment and the canonical diagram, marks R2 WIP / verification PENDING, and labels its retained R0 proof block historical rather than current.
+Its `Current R2` summary at `PLAN.md:34` still says capture expects five and the six-title repair is pending; build must replace that sentence with the repaired six-identity source contract and fresh execution PENDING.
+Root `PLAN.md` is outside this pass's three-file allowlist and remains unchanged; the existing links require no repointing.
 The package hermetic README is also lead-only captured source; replace its stale 19-error command-6 blocker with the reported fixes/two resolved casts and the pending new full run, not a passing claim.
 Root CI must include the training full suite/typecheck and `node scripts/check-public-closure.mjs`; no CI edit occurs here.
 
@@ -463,7 +519,8 @@ plantuml -tsvg _spec/packages/starchess-training/candidate-generation.puml _spec
 
 Renderer availability is unverified; these commands specify both diagrams without claiming installation or render success.
 No source note-ratchet implementation was found; if the lead adds `specNotesEnforced`, include the candidate-generation diagram edited here and the policy-contracts diagram edited in the prior pass.
-This pass splits the oversized DTO note, adds shared-subtree, static-closure and independent-infrastructure reasoning notes, preserves the existing reasoning, and manually checks the candidate diagram's 2–5-line/50-column note boxes.
+This pass preserves the bounded DTO, frozen registry and static-closure rules, removes the stale five-test capture blocker, and records independent probe/policy binding plus retained host provenance and fresh acquisition/capture requirements.
+It updates the existing infrastructure reasoning note and adds structural host-provenance/capture labels; manual inspection checks the candidate diagram's 2–5-line/50-column note boxes.
 It edits no source prose, publishes no evidence, and claims no renderer/test execution.
 
 ## 9. Unchanged future readiness gates

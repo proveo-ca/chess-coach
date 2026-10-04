@@ -54,7 +54,7 @@ describe("phase2 hermetic evidence import with synthetic test-only image hooks",
     const value = fixture(); value.mutate("public-closure-report.json", (report) => { report.entries.pop(); });
     const bytes = value.files["public-closure-report.json"]!;
     value.files["logs/command-11.stdout.log"] = bytes;
-    Object.assign(value.verification.commands[10]!.logs.stdout, { sha256: sha256(bytes), bytes: bytes.length });
+    Object.assign(value.verification.commands[10]!.logs.stdout, { sha256: sha256(bytes), bytes: bytes.length, observedBytes: bytes.length });
     await reject(value, "Host public closure remeasurement mismatch");
   });
   it("validates independently built evidence and publishes nested command logs", async () => {
@@ -74,7 +74,32 @@ describe("phase2 hermetic evidence import with synthetic test-only image hooks",
     expect(published.get("host-infrastructure/probe.json")).toEqual(value.infrastructureFiles[value.infrastructure.probe.report.path]);
     expect(published.has("host-infrastructure/inspections.json")).toBe(true);
     expect(published.has("host-infrastructure/logs/vitest.stdout.log")).toBe(true);
+    for (const name of ["build", "execution", "export"]) expect(published.get(`host-provenance/${name}.json`)).toEqual(readFileSync(value.paths[name as "build" | "execution" | "export"]));
+    expect(published.get("host-provenance/build.stdout.log")).toEqual(readFileSync(value.build.buildLog.logs.stdout!.path));
+    expect(published.has("host-provenance/execution.stderr.log")).toBe(true);
   }, 120000);
+
+  it.each(["build", "execution"] as const)("rejects substituted %s command despite passing checksummed logs", async (label) => {
+    const value = fixture();
+    const command = label === "build" ? value.build.buildLog : value.execution.executionLog;
+    command.args = ["version"];
+    await reject(value, `Invalid ${label} host command`);
+  });
+  it("rejects different attached and inspected containers", async () => {
+    const value = fixture(); value.execution.finalContainerInspection.Id = "e".repeat(64);
+    await reject(value, "Execution container identity mismatch");
+  });
+  it("rejects source builds that enable network acquisition", async () => {
+    const value = fixture(); value.build.buildArguments[6] = "--network=host";
+    value.build.buildLog.args = [...value.build.buildArguments];
+    await reject(value, "Invalid source build arguments");
+  });
+  it.each(["verification", "build", "execution"] as const)("rejects truncated %s logs with rebound checksum metadata", async (label) => {
+    const value = fixture();
+    const log = label === "verification" ? value.verification.commands[0]!.logs.stdout : label === "build" ? value.build.buildLog.logs.stdout! : value.execution.executionLog.logs.stdout!;
+    log.truncated = true;
+    await reject(value, /Invalid .* log metadata/);
+  });
 
   it.each(["../secret", "/tmp/x", "logs\\x", "logs/../x", ""])("rejects unsafe artifact path %s", (path) => {
     expect(() => safeRelative(path)).toThrow("Unsafe artifact path");

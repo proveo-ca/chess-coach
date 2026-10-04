@@ -668,6 +668,17 @@ describe("partitioned challenge source inventory", () => {
     expect(inventory.audit.edges).toContainEqual(expect.objectContaining({ importer: `${TRAINING}/src/candidates.ts`, specifier: "@noble/hashes/sha2.js", targetKind: "external" }));
   });
 
+  it.each([
+    [`${CORE}/src/index.ts`, "./seeds"],
+    [`${ARENA}/src/observations.ts`, "./intent-codec-v1"],
+    [`${TRAINING}/src/candidates.ts`, "./domain"],
+  ])("rejects literal dynamic loading from a pure partition: %s", (path, target) => {
+    const root = fixture();
+    put(root, `${TRAINING}/src/domain.ts`, "export {};\n");
+    put(root, path!, `import(${JSON.stringify(target)});`);
+    expect(() => collectSourceInventory(root)).toThrow("Forbidden dynamic import edge");
+  });
+
   it("allows only the reviewed descriptor-safe DTO function and retains the indexed array seam", () => {
     const root = fixture();
     const path = `${ARENA}/src/challengeContract/validation.ts`;

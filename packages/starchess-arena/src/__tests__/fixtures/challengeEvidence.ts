@@ -148,7 +148,7 @@ export function syntheticImageArchive(options: { layers?: Buffer[]; manifestLaye
   return { bytes: tarArchive(entries), image: `sha256:${sha256(config)}` };
 }
 
-type Log = { path: string; sha256: string; bytes: number };
+type Log = { path: string; sha256: string; bytes: number; observedBytes: number; truncated: boolean };
 export type Command = { executable: string; args: string[]; cwd: string; exitCode: number; signal: null; error: null;
   logs: { stdout: Log; stderr: Log }; tests?: { path?: string; success: boolean; failed: number; passed: number; total: number; sha256: string } };
 export type Verification = { version: string; passed: boolean; assurance: Record<string, string>; commands: Command[];
@@ -183,7 +183,7 @@ export function buildImportFixture(diagnostics: ReturnType<typeof buildDiagnosti
     const prefix = `logs/command-${String(index + 1).padStart(2, "0")}`;
     files[`${prefix}.stdout.log`] = index === 10 ? files["public-closure-report.json"]! : Buffer.from("synthetic test-only command output\n");
     files[`${prefix}.stderr.log`] = Buffer.alloc(0);
-    const log = (stream: string): Log => ({ path: `${target}/${prefix}.${stream}.log`, sha256: sha256(files[`${prefix}.${stream}.log`]!), bytes: files[`${prefix}.${stream}.log`]!.length });
+    const log = (stream: string): Log => ({ path: `${target}/${prefix}.${stream}.log`, sha256: sha256(files[`${prefix}.${stream}.log`]!), bytes: files[`${prefix}.${stream}.log`]!.length, observedBytes: files[`${prefix}.${stream}.log`]!.length, truncated: false });
     const command: Command = { executable, args, cwd, exitCode: 0, signal: null, error: null, logs: { stdout: log("stdout"), stderr: log("stderr") } };
     if (executable.endsWith("/vitest")) {
       const name = args.at(-1)!.split("/").at(-1)!;
@@ -194,27 +194,30 @@ export function buildImportFixture(diagnostics: ReturnType<typeof buildDiagnosti
   });
   const assurance = { sourceSha256: "source", installedSha256: "installed", frozenStoreSha256: "store", toolsSha256: "tools" };
   const verification: Verification = { version: "hermetic-verification-v3", assertionFloorsVersion: ASSERTION_FLOORS_VERSION, assertionFloors: VITEST_FLOORS, passed: true, assurance, commands, artifacts: [] };
-  const policy = { Image: "", HostConfig: { NetworkMode: "none", PidMode: "", IpcMode: "private", ReadonlyRootfs: true, Privileged: false, Init: true,
+  const policy = { Id: "c".repeat(64), Image: "", HostConfig: { NetworkMode: "none", PidMode: "", IpcMode: "private", ReadonlyRootfs: true, Privileged: false, Init: true,
     NanoCpus: 2_000_000_000, Memory: 4 * 1024 ** 3, MemorySwap: 4 * 1024 ** 3, PidsLimit: 256,
     CapDrop: ["ALL"], CapAdd: null, SecurityOpt: ["no-new-privileges=true"], Tmpfs: { "/tmp": tmpfsOptions } },
     Config: { User: "10001:10001" }, Mounts: [{ Type: "bind", Destination: target, Source: output, RW: true, Propagation: "rprivate" }, { Type: "tmpfs", Destination: "/tmp" }] };
   const hostLog = Buffer.from("synthetic host log\n");
   const hostLogPath = join(output, "host.log"); writeFileSync(hostLogPath, hostLog);
-  const host = { logs: Object.fromEntries(["stdout", "stderr"].map((stream) => [stream, { path: hostLogPath, sha256: sha256(hostLog), bytes: hostLog.length }])) };
+  const host = { logs: Object.fromEntries(["stdout", "stderr"].map((stream) => [stream, { path: hostLogPath, sha256: sha256(hostLog), bytes: hostLog.length, observedBytes: hostLog.length, truncated: false }])) };
   const archive = syntheticImageArchive();
   const archivePath = join(output, "image.tar"); writeFileSync(archivePath, archive.bytes);
   policy.Image = archive.image;
   const envelope = { image: archive.image, imageInspection: { Id: archive.image },
     measurements: { source: { sourceSha256: "source" }, dependencies: { installedSha256: "installed", frozenStoreSha256: "store", toolTreeSha256: "tools" } },
     buildLog: host, executionLog: host, archive: archivePath, archiveSha256: sha256(archive.bytes), archiveBytes: archive.bytes.length };
-  const execution = { ...envelope, passed: true, status: "passed", output, initialContainerInspection: policy,
+  const execution = { ...envelope, executionLog: { ...host, executable: "docker", args: ["start", "--attach", policy.Id], exitCode: 0, signal: null, error: null }, passed: true, status: "passed", output, initialContainerInspection: policy,
     finalContainerInspection: { ...policy, State: { ExitCode: 0, OOMKilled: false } } };
   const controlSha256 = sha256("synthetic test-only infrastructure control");
   const dependencyImage = `sha256:${sha256("synthetic test-only dependency image independent of source image")}`;
   const infrastructureMeasurement = { dependencies: envelope.measurements.dependencies, capture: { controlSha256 },
     closure: { actual: { tools: { node: runtimePins.node }, packages: {} } }, method: "synthetic-test-only-host-boundary" };
-  const build = { ...envelope, capture: { runtime: { sha256: "source" }, control: { sha256: controlSha256 } },
-    frozenDependency: { image: dependencyImage, measurements: infrastructureMeasurement } };
+  const context = join(output, "source-build/context");
+  const dependencyTag = `starchess-hermetic-dependencies:${dependencyImage.slice(7)}`;
+  const buildArguments = ["build", "--platform", "linux/amd64", "--pull=false", "--target", "runtime", "--network=none", "--build-arg", `FROZEN_DEPENDENCIES=${dependencyTag}`, "--iidfile", join(dirname(context), "image-id"), "--file", join(context, "Dockerfile"), context];
+  const build = { ...envelope, buildArguments, buildLog: { ...host, executable: "docker", args: [...buildArguments], exitCode: 0, signal: null, error: null }, capture: { runtime: { sha256: "source" }, control: { sha256: controlSha256 } },
+    frozenDependency: { image: dependencyImage, localBuildReference: dependencyTag, measurements: infrastructureMeasurement } };
   const paths = { execution: join(output, "execution.json"), build: join(output, "build.json"), export: join(output, "export.json"), infrastructure: join(output, "infrastructure.json") };
   const probeWork = join(output, "host-probe");
   const probeOutput = join(probeWork, "output");
