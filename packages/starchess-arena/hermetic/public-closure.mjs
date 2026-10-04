@@ -332,10 +332,11 @@ export const checkPublicClosure = (root = repository) => {
         ts.isIdentifier(member.receiver) && ["globalThis", "global"].includes(member.receiver.text) && globalReference(member.receiver);
     };
     const mutatedRoots = new Set();
+    const nonNumericWrites = new Set();
     const markMutation = (node) => { for (const root of provenance(node)) mutatedRoots.add(root); };
     const scanMutations = (node) => {
-      const writes = (target) => {
-        if (ts.isIdentifier(target)) mutatedRoots.add(binding(target) ?? target.text);
+      const writes = (target, numeric = false) => {
+        if (ts.isIdentifier(target)) { const symbol = binding(target) ?? target.text; mutatedRoots.add(symbol); if (!numeric) nonNumericWrites.add(symbol); }
         else if (ts.isPropertyAccessExpression(target) || ts.isElementAccessExpression(target)) markMutation(target);
         else if (ts.isParenthesizedExpression(target) || ts.isAsExpression(target) || ts.isNonNullExpression(target) || ts.isTypeAssertionExpression(target)) writes(target.expression);
         else if (ts.isArrayLiteralExpression(target)) for (const child of target.elements) writes(child);
@@ -345,8 +346,9 @@ export const checkPublicClosure = (root = repository) => {
         else if (ts.isSpreadElement(target) || ts.isSpreadAssignment(target)) writes(target.expression);
         else if (ts.isBinaryExpression(target) && target.operatorToken.kind === ts.SyntaxKind.EqualsToken) writes(target.left);
       };
-      if (ts.isBinaryExpression(node) && node.operatorToken.kind >= ts.SyntaxKind.FirstAssignment && node.operatorToken.kind <= ts.SyntaxKind.LastAssignment) writes(node.left);
-      if ((ts.isPrefixUnaryExpression(node) || ts.isPostfixUnaryExpression(node)) && [ts.SyntaxKind.PlusPlusToken, ts.SyntaxKind.MinusMinusToken].includes(node.operator)) writes(node.operand);
+      if (ts.isBinaryExpression(node) && node.operatorToken.kind >= ts.SyntaxKind.FirstAssignment && node.operatorToken.kind <= ts.SyntaxKind.LastAssignment) writes(node.left,
+        [ts.SyntaxKind.PlusEqualsToken, ts.SyntaxKind.MinusEqualsToken].includes(node.operatorToken.kind) && ts.isNumericLiteral(unwrap(node.right)));
+      if ((ts.isPrefixUnaryExpression(node) || ts.isPostfixUnaryExpression(node)) && [ts.SyntaxKind.PlusPlusToken, ts.SyntaxKind.MinusMinusToken].includes(node.operator)) writes(node.operand, true);
       if (ts.isDeleteExpression(node)) writes(node.expression);
       if ((ts.isForOfStatement(node) || ts.isForInStatement(node)) && !ts.isVariableDeclarationList(node.initializer)) writes(node.initializer);
       if (ts.isCallExpression(node)) {
@@ -361,7 +363,28 @@ export const checkPublicClosure = (root = repository) => {
     const safeComputedDataKey = (node) => {
       const key = staticKey(node);
       if (key !== undefined) return !["constructor", "__proto__", "prototype"].includes(key);
-      if ([...provenance(node)].some((root) => mutatedRoots.has(root))) return false;
+      const input = unwrap(node);
+      if (ts.isBinaryExpression(input)) {
+        if ([ts.SyntaxKind.MinusToken, ts.SyntaxKind.AsteriskToken, ts.SyntaxKind.AsteriskAsteriskToken, ts.SyntaxKind.SlashToken, ts.SyntaxKind.PercentToken,
+          ts.SyntaxKind.LessThanLessThanToken, ts.SyntaxKind.GreaterThanGreaterThanToken, ts.SyntaxKind.GreaterThanGreaterThanGreaterThanToken,
+          ts.SyntaxKind.AmpersandToken, ts.SyntaxKind.BarToken, ts.SyntaxKind.CaretToken].includes(input.operatorToken.kind)) return true;
+        if (input.operatorToken.kind === ts.SyntaxKind.PlusToken && safeComputedDataKey(input.left) && safeComputedDataKey(input.right) &&
+          dataType(origin(input.left)).flags & ts.TypeFlags.NumberLike && dataType(origin(input.right)).flags & ts.TypeFlags.NumberLike) return true;
+      }
+      if (ts.isCallExpression(input)) {
+        const member = property(input.expression);
+        if (ts.isIdentifier(input.expression) && input.expression.text === "String" && globalReference(input.expression) && !["global", "globalThis"].some((root) => mutatedRoots.has(root)) && ![...provenance(input.expression)].some((root) => mutatedRoots.has(root)) && input.arguments.length === 1 &&
+          safeComputedDataKey(input.arguments[0]) && dataType(origin(input.arguments[0])).flags & ts.TypeFlags.NumberLike) return true;
+        if (member && ["floor", "ceil", "round", "trunc", "abs", "min", "max"].includes(member.name ?? "") && ts.isIdentifier(member.receiver) &&
+          member.receiver.text === "Math" && globalReference(member.receiver) && !["global", "globalThis"].some((root) => mutatedRoots.has(root)) && ![...provenance(member.receiver)].some((root) => mutatedRoots.has(root))) return true;
+      }
+      if ([...provenance(node)].some((root) => mutatedRoots.has(root))) {
+        const expression = unwrap(node);
+        const symbol = ts.isIdentifier(expression) ? binding(expression) : undefined;
+        const declaration = symbol?.valueDeclaration;
+        return Boolean(symbol && !nonNumericWrites.has(symbol) && declaration && ts.isVariableDeclaration(declaration) && declaration.initializer &&
+          safeComputedDataKey(declaration.initializer) && dataType(origin(declaration.initializer)).flags & ts.TypeFlags.NumberLike);
+      }
       const expression = unwrap(node);
       if (ts.isIdentifier(expression)) {
         const symbol = binding(expression);
@@ -393,10 +416,11 @@ export const checkPublicClosure = (root = repository) => {
       const safeType = (type) => type.isUnion() ? type.types.every(safeType)
         : Boolean(type.flags & ts.TypeFlags.NumberLike) || type.isStringLiteral() && !["constructor", "__proto__", "prototype"].includes(type.value);
       const value = origin(node);
+      if (value !== input && ts.isBinaryExpression(value)) return safeComputedDataKey(value);
       if (ts.isConditionalExpression(value)) return safeComputedDataKey(value.whenTrue) && safeComputedDataKey(value.whenFalse);
       if (ts.isCallExpression(value)) {
         const member = property(value.expression);
-        return Boolean(member && ["indexOf", "lastIndexOf"].includes(member.name ?? "") && dataType(member.receiver).getNumberIndexType() && dataType(value).flags & ts.TypeFlags.NumberLike);
+        return Boolean(member && ["indexOf", "lastIndexOf"].includes(member.name ?? "") && !["Array", "global", "globalThis"].some((root) => mutatedRoots.has(root)) && dataType(member.receiver).getNumberIndexType() && dataType(value).flags & ts.TypeFlags.NumberLike);
       }
       if (ts.isCallExpression(value) || ts.isAwaitExpression(value) || ts.isNewExpression(value) || ts.isConditionalExpression(value) || ts.isBinaryExpression(value) || ts.isTaggedTemplateExpression(value)) return false;
       return safeType(dataType(value));

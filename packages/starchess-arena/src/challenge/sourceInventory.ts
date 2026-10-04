@@ -636,10 +636,11 @@ export const collectSourceInventory = (
       return roots;
     };
     const mutatedRoots = new Set<ts.Expression | ts.Symbol | string>();
+    const nonNumericWrites = new Set<ts.Symbol | string>();
     const markMutation = (node: ts.Expression): void => { for (const root of provenance(node)) mutatedRoots.add(root); };
     const scanMutations = (node: ts.Node): void => {
-      const writes = (target: ts.Node): void => {
-        if (ts.isIdentifier(target)) mutatedRoots.add(binding(target));
+      const writes = (target: ts.Node, numeric = false): void => {
+        if (ts.isIdentifier(target)) { mutatedRoots.add(binding(target)); if (!numeric) nonNumericWrites.add(binding(target)); }
         else if (ts.isPropertyAccessExpression(target) || ts.isElementAccessExpression(target)) markMutation(target);
         else if (ts.isParenthesizedExpression(target) || ts.isAsExpression(target) || ts.isNonNullExpression(target) || ts.isTypeAssertionExpression(target)) writes(target.expression);
         else if (ts.isArrayLiteralExpression(target)) for (const child of target.elements) writes(child);
@@ -649,8 +650,9 @@ export const collectSourceInventory = (
         else if (ts.isSpreadElement(target) || ts.isSpreadAssignment(target)) writes(target.expression);
         else if (ts.isBinaryExpression(target) && target.operatorToken.kind === ts.SyntaxKind.EqualsToken) writes(target.left);
       };
-      if (ts.isBinaryExpression(node) && node.operatorToken.kind >= ts.SyntaxKind.FirstAssignment && node.operatorToken.kind <= ts.SyntaxKind.LastAssignment) writes(node.left);
-      if ((ts.isPrefixUnaryExpression(node) || ts.isPostfixUnaryExpression(node)) && [ts.SyntaxKind.PlusPlusToken, ts.SyntaxKind.MinusMinusToken].includes(node.operator)) writes(node.operand);
+      if (ts.isBinaryExpression(node) && node.operatorToken.kind >= ts.SyntaxKind.FirstAssignment && node.operatorToken.kind <= ts.SyntaxKind.LastAssignment) writes(node.left,
+        [ts.SyntaxKind.PlusEqualsToken, ts.SyntaxKind.MinusEqualsToken].includes(node.operatorToken.kind) && ts.isNumericLiteral(unwrap(node.right)));
+      if ((ts.isPrefixUnaryExpression(node) || ts.isPostfixUnaryExpression(node)) && [ts.SyntaxKind.PlusPlusToken, ts.SyntaxKind.MinusMinusToken].includes(node.operator)) writes(node.operand, true);
       if (ts.isDeleteExpression(node)) writes(node.expression);
       if ((ts.isForOfStatement(node) || ts.isForInStatement(node)) && !ts.isVariableDeclarationList(node.initializer)) writes(node.initializer);
       if (ts.isCallExpression(node)) {
@@ -665,7 +667,28 @@ export const collectSourceInventory = (
     const safeComputedDataKey = (node: ts.Expression): boolean => {
       const key = staticKey(node);
       if (key !== undefined) return !["constructor", "__proto__", "prototype"].includes(key);
-      if ([...provenance(node)].some((root) => mutatedRoots.has(root))) return false;
+      const input = unwrap(node);
+      if (ts.isBinaryExpression(input)) {
+        if ([ts.SyntaxKind.MinusToken, ts.SyntaxKind.AsteriskToken, ts.SyntaxKind.AsteriskAsteriskToken, ts.SyntaxKind.SlashToken, ts.SyntaxKind.PercentToken,
+          ts.SyntaxKind.LessThanLessThanToken, ts.SyntaxKind.GreaterThanGreaterThanToken, ts.SyntaxKind.GreaterThanGreaterThanGreaterThanToken,
+          ts.SyntaxKind.AmpersandToken, ts.SyntaxKind.BarToken, ts.SyntaxKind.CaretToken].includes(input.operatorToken.kind)) return true;
+        if (input.operatorToken.kind === ts.SyntaxKind.PlusToken && safeComputedDataKey(input.left) && safeComputedDataKey(input.right) &&
+          dataType(origin(input.left)).flags & ts.TypeFlags.NumberLike && dataType(origin(input.right)).flags & ts.TypeFlags.NumberLike) return true;
+      }
+      if (ts.isCallExpression(input)) {
+        const member = property(input.expression);
+        if (ts.isIdentifier(input.expression) && input.expression.text === "String" && typeof binding(input.expression) === "string" && !["global", "globalThis"].some((root) => mutatedRoots.has(root)) && ![...provenance(input.expression)].some((root) => mutatedRoots.has(root)) && input.arguments.length === 1 &&
+          safeComputedDataKey(input.arguments[0]!) && dataType(origin(input.arguments[0]!)).flags & ts.TypeFlags.NumberLike) return true;
+        if (member && ["floor", "ceil", "round", "trunc", "abs", "min", "max"].includes(member.name ?? "") && ts.isIdentifier(member.receiver) &&
+          member.receiver.text === "Math" && typeof binding(member.receiver) === "string" && !["global", "globalThis"].some((root) => mutatedRoots.has(root)) && ![...provenance(member.receiver)].some((root) => mutatedRoots.has(root))) return true;
+      }
+      if ([...provenance(node)].some((root) => mutatedRoots.has(root))) {
+        const expression = unwrap(node);
+        const symbol = ts.isIdentifier(expression) ? binding(expression) : undefined;
+        const declaration = symbol && typeof symbol !== "string" ? symbol.valueDeclaration : undefined;
+        return !!(symbol && !nonNumericWrites.has(symbol) && declaration && ts.isVariableDeclaration(declaration) && declaration.initializer &&
+          safeComputedDataKey(declaration.initializer) && dataType(origin(declaration.initializer)).flags & ts.TypeFlags.NumberLike);
+      }
       const expression = unwrap(node);
       if (ts.isIdentifier(expression)) {
         const symbol = binding(expression);
@@ -697,10 +720,11 @@ export const collectSourceInventory = (
       const safeType = (type: ts.Type): boolean => type.isUnion() ? type.types.every(safeType)
         : !!(type.flags & ts.TypeFlags.NumberLike) || type.isStringLiteral() && !["constructor", "__proto__", "prototype"].includes(type.value);
       const value = origin(node);
+      if (value !== input && ts.isBinaryExpression(value)) return safeComputedDataKey(value);
       if (ts.isConditionalExpression(value)) return safeComputedDataKey(value.whenTrue) && safeComputedDataKey(value.whenFalse);
       if (ts.isCallExpression(value)) {
         const member = property(value.expression);
-        return !!(member && ["indexOf", "lastIndexOf"].includes(member.name ?? "") && dataType(member.receiver).getNumberIndexType() && dataType(value).flags & ts.TypeFlags.NumberLike);
+        return !!(member && ["indexOf", "lastIndexOf"].includes(member.name ?? "") && !["Array", "global", "globalThis"].some((root) => mutatedRoots.has(root)) && dataType(member.receiver).getNumberIndexType() && dataType(value).flags & ts.TypeFlags.NumberLike);
       }
       if (ts.isCallExpression(value) || ts.isAwaitExpression(value) || ts.isNewExpression(value) || ts.isConditionalExpression(value) || ts.isBinaryExpression(value) || ts.isTaggedTemplateExpression(value)) return false;
       return safeType(dataType(value));

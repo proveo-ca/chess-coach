@@ -67,6 +67,11 @@ const dataArrayAccesses = [
   'const rows = [...inputRows]; void rows[0][1];',
 ];
 const unprovenComputedReceivers = [
+  'const f: any = unknownFactory(); for (let key: any = 0; condition; key++) {key = ["con", "structor"].join(""); f[key]("return process")();}',
+  'const f: any = unknownFactory(); String = (() => "constructor") as any; f[String(1)]("return process")();',
+  'const f: any = unknownFactory(); Math.floor = (() => "constructor") as any; f[Math.floor(1)]("return process")();',
+  'const f: any = unknownFactory(); globalThis.Math.floor = (() => "constructor") as any; f[Math.floor(1)]("return process")();',
+  'const f: any = unknownFactory(); Array.prototype.indexOf = (() => "constructor") as any; f[[0].indexOf(0)]("return process")();',
   'const make:any=()=>()=>{}; const f=make(); const key=["con","structor"].join("") as "w"; f[key]("return process")();',
   'const make:any=()=>()=>{}; const f=make(); const key: "w"=["con","structor"].join("") as any; f[key]("return process")();',
   'const make:any=()=>()=>{}; const f=make(); const key=["con","structor"].join("") as unknown as number; f[key]("return process")();',
@@ -114,6 +119,8 @@ const unprovenComputedReceivers = [
   'const box: any = {f: 0}; function mutate() {box.f = () => {};} mutate(); box.f[["con", "structor"].join("")]("return process")();',
 ];
 const ordinaryComputedData = [
+  'const values: any = unknownFactory(); for (let i = 0; i < 3; i++) void values[i];',
+  'const values: any = unknownFactory(); const items = [1, 2]; for (let i = items.length - 1; i >= 0; i--) void values[i];',
   'const make: any = () => [1, 2]; const values = make(); void values[0];',
   'const values: any = unknownFactory(); const index: number = 1; void values[index];',
   'const values: any = unknownFactory(); void values["data"];',

@@ -117,7 +117,7 @@ export const composeKernel = (input: AuthorizedObservationV1, domain: DomainFact
       const depth = (lane.depthCursor + offset) % 4;
       const frontier = lane.frontiers[depth]!;
       while (frontier.head < frontier.nodes.length) {
-        const node = frontier.nodes[frontier.head]!;
+        const node = frontier.nodes.at(frontier.head)!;
         runtime.cursorPulls++;
         const next = node.cursor.next();
         if (!next.done) return { node, action: next.value, depth };
@@ -141,7 +141,17 @@ export const composeKernel = (input: AuthorizedObservationV1, domain: DomainFact
       lane.depthCursor = (attempt.depth + 1) % 4;
       const { node, action } = attempt;
       const failure = appendFailure(observation, knowledge, node.state, action);
-      if (failure) { d.pruned[failure]++; continue; }
+      if (failure) {
+        switch (failure) {
+          case "actor": d.pruned.actor++; break;
+          case "shape": d.pruned.shape++; break;
+          case "timing": d.pruned.timing++; break;
+          case "resources": d.pruned.resources++; break;
+          case "mineCap": d.pruned.mineCap++; break;
+          case "ownOccupancy": d.pruned.ownOccupancy++; break;
+        }
+        continue;
+      }
       const child = appendState(knowledge, node.state, action);
       const length = child.actions.length;
       runtime.maximumQueueLength = Math.max(runtime.maximumQueueLength, length);
@@ -173,7 +183,7 @@ export const composeKernel = (input: AuthorizedObservationV1, domain: DomainFact
   }
   for (const lane of lanes) {
     for (const frontier of lane.frontiers) {
-      for (let i = frontier.head; i < frontier.nodes.length; i++) frontier.nodes[i]!.cursor.return(undefined);
+      for (const node of frontier.nodes.slice(frontier.head)) node!.cursor.return(undefined);
       frontier.nodes = [];
       frontier.head = 0;
     }

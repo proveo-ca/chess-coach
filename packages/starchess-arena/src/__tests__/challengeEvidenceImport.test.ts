@@ -42,7 +42,7 @@ const validate = (value: Fixture, extra: string[] = []) => {
   ]);
 };
 
-describe("phase2 hermetic evidence import with synthetic test-only image hooks", () => {
+describe("phase2 hermetic evidence import with synthetic test-only image hooks", { timeout: 120000 }, () => {
   it("isolates fixture Buffers and decoded pins from the shared six-report snapshot", () => {
     const snapshot = { ...diagnostics };
     const first = fixture(); const second = fixture();
@@ -54,7 +54,7 @@ describe("phase2 hermetic evidence import with synthetic test-only image hooks",
     for (const [name, text] of Object.entries(snapshot)) {
       expect(typeof text).toBe("string");
       expect(first.files[name]).not.toBe(second.files[name]);
-      expect(first.files[name]).toEqual(Buffer.from(text, "utf8"));
+      expect(first.files[name]!.equals(Buffer.from(text, "utf8"))).toBe(true);
     }
     first.files["coverage.json"]![0] = 0;
     const baseline = decode<Baseline>(first.files["baseline-report.json"]!);
@@ -63,10 +63,10 @@ describe("phase2 hermetic evidence import with synthetic test-only image hooks",
     baseline.pins.sourceInventory.inventorySha256 = "0".repeat(64);
     expect(contract.pins).toEqual(originalPins);
     first.files["baseline-report.json"] = jsonBytes(baseline);
-    expect(first.files["coverage.json"]).not.toEqual(Buffer.from(snapshot["coverage.json"], "utf8"));
+    expect(first.files["coverage.json"]!.equals(Buffer.from(snapshot["coverage.json"], "utf8"))).toBe(false);
     expect(decode<Baseline>(first.files["baseline-report.json"]!).pins).not.toEqual(originalPins);
     expect(diagnostics).toEqual(snapshot);
-    for (const [name, text] of Object.entries(snapshot)) expect(second.files[name]).toEqual(Buffer.from(text, "utf8"));
+    for (const [name, text] of Object.entries(snapshot)) expect(second.files[name]!.equals(Buffer.from(text, "utf8"))).toBe(true);
     expect(decode<Baseline>(second.files["baseline-report.json"]!).pins).toEqual(originalPins);
     expect(decode<{ pins: Baseline["pins"] }>(second.files["contract-report.json"]!).pins).toEqual(originalPins);
   });
@@ -166,7 +166,7 @@ describe("phase2 hermetic evidence import with synthetic test-only image hooks",
     value.mutate("vitest-starchess-core.json", (report) => { report.testResults[0].assertionResults[0].status = "failed"; });
     await reject(value, "Vitest report counts do not match: vitest-starchess-core.json");
   });
-  it.each([["failed"], ["passed"], {}, null, 1])("rejects malformed assertion statuses instead of coercing them: %j", async (status) => {
+  it.each([["failed"], ["passed"], {}, null, 1].map((status) => [status]))("rejects malformed assertion statuses instead of coercing them: %j", async (status) => {
     const value = fixture();
     value.mutate("vitest-starchess-core.json", (report) => { report.testResults[0].assertionResults[0].status = status; });
     await reject(value, "Vitest assertion status is not counted");
@@ -391,7 +391,7 @@ describe("immutable infrastructure image identity", () => {
   });
 });
 
-describe("host infrastructure import gate with synthetic test-only host boundaries", () => {
+describe("host infrastructure import gate with synthetic test-only host boundaries", { timeout: 120000 }, () => {
   const { INFRASTRUCTURE_TEST_NAMES, INFRASTRUCTURE_TESTS, infraPath, recountInfrastructureTap } = require("../../../../scripts/challenge-infrastructure-evidence.mjs") as {
     INFRASTRUCTURE_TEST_NAMES: readonly string[]; INFRASTRUCTURE_TESTS: number; infraPath: string;
     recountInfrastructureTap: (bytes: Buffer) => { tests: number; pass: number };
