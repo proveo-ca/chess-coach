@@ -135,6 +135,8 @@ test('runtime capture preserves JSONC config closure, tests, fixtures, and rejec
   finally { process.umask(previousUmask); }
   assert.equal(lstatSync(root).mode & 0o7777, 0o700);
   assert.equal(lstatSync(context).mode & 0o7777, 0o700);
+  assert.equal(lstatSync(join(context, 'capture.json')).mode & 0o7777, 0o644);
+  assert.equal(lstatSync(join(context, 'deps/pnpm-workspace.yaml')).mode & 0o7777, 0o644);
   const checkDirectories = (path) => {
     for (const entry of readdirSync(path, { withFileTypes: true })) {
       if (!entry.isDirectory()) continue;

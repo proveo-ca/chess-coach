@@ -106,6 +106,7 @@ export function prepareContext(context, dependenciesOnly = false, root = reposit
   for (const path of dependencyFiles) copyTree(root, path, join(context, 'deps', path), context);
   const narrowedWorkspace = `packages:\n${workspacePackages.map((name) => `  - packages/${name}\n`).join('')}allowBuilds:\n  esbuild: true\n`;
   writeFileSync(join(context, 'deps/pnpm-workspace.yaml'), narrowedWorkspace);
+  chmodSync(join(context, 'deps/pnpm-workspace.yaml'), 0o644);
   const configs = optionalConfigs.map((path) => {
     const absolute = sourcePath(root, path, true);
     if (absolute !== null && !lstatSync(absolute).isFile()) throw new Error(`Non-file runtime configuration: ${path}`);
@@ -135,5 +136,6 @@ export function prepareContext(context, dependenciesOnly = false, root = reposit
   }
   capture.control = treeManifest(join(context, 'hermetic'));
   writeFileSync(join(context, 'capture.json'), JSON.stringify(capture, null, 2) + '\n');
+  chmodSync(join(context, 'capture.json'), 0o644);
   return capture;
 }

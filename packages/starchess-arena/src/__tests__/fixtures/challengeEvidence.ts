@@ -198,7 +198,7 @@ export function buildImportFixture(diagnostics: ReturnType<typeof buildDiagnosti
   const policy = { Id: "c".repeat(64), Image: "", HostConfig: { NetworkMode: "none", PidMode: "", IpcMode: "private", ReadonlyRootfs: true, Privileged: false, Init: true,
     NanoCpus: 2_000_000_000, Memory: 4 * 1024 ** 3, MemorySwap: 4 * 1024 ** 3, PidsLimit: 256,
     CapDrop: ["ALL"], CapAdd: null, SecurityOpt: ["no-new-privileges=true"], Tmpfs: { "/tmp": tmpfsOptions } },
-    Config: { User: "10001:10001" }, Mounts: [{ Type: "bind", Destination: target, Source: output, RW: true, Propagation: "rprivate" }, { Type: "tmpfs", Destination: "/tmp" }] };
+    Config: { User: "10001:10001", Entrypoint: ["node", "/app/packages/starchess-arena/hermetic/runtime.mjs"], Cmd: ["verify"], WorkingDir: "/app", Env: ["PATH=/usr/local/bin:/usr/bin:/bin", `HERMETIC_OUTPUT_DIRECTORY=${target}`] }, Mounts: [{ Type: "bind", Destination: target, Source: output, RW: true, Propagation: "rprivate" }, { Type: "tmpfs", Destination: "/tmp" }] };
   const hostLog = Buffer.from("synthetic host log\n");
   const hostLogPath = join(output, "host.log"); writeFileSync(hostLogPath, hostLog);
   const host = { logs: Object.fromEntries(["stdout", "stderr"].map((stream) => [stream, { path: hostLogPath, sha256: sha256(hostLog), bytes: hostLog.length, observedBytes: hostLog.length, truncated: false }])) };
@@ -324,7 +324,7 @@ export function buildImportFixture(diagnostics: ReturnType<typeof buildDiagnosti
     options: { repositoryRoot: root, executionPath: paths.execution, buildPath: paths.build, exportPath: paths.export,
       expectedImage: archive.image, destination, infrastructurePath: paths.infrastructure, acquisitionPath: paths.acquisition,
       measureInfrastructureImage: async () => structuredClone(infrastructureMeasurement),
-      inspectImage: async () => ({ Id: archive.image }), measureImage: async () => ({ source: { sourceSha256: "source" }, dependencies: { installedSha256: "installed", frozenStoreSha256: "store", toolTreeSha256: "tools" } }),
+       inspectImage: async () => ({ Id: archive.image, Config: { Env: ["PATH=/usr/local/bin:/usr/bin:/bin"] } }), measureImage: async () => ({ source: { sourceSha256: "source" }, dependencies: { installedSha256: "installed", frozenStoreSha256: "store", toolTreeSha256: "tools" } }),
       captureContext: async () => ({ runtime: { sha256: "source" }, control: { sha256: controlSha256 }, sourceRoot: repositoryRoot }),
     },
   };

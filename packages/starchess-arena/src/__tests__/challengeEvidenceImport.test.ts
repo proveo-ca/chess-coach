@@ -10,10 +10,11 @@ import { buildDiagnosticFixture, buildImportFixture, decode, evidenceLimits, jso
   syntheticImageArchive, tarArchive, type Baseline } from "./fixtures/challengeEvidence";
 
 const require = createRequire(import.meta.url);
-const { importEvidence, assertImageArchive, safeRelative } = require("../../../../scripts/challenge-import-evidence.mjs") as {
+const { importEvidence, assertImageArchive, safeRelative, VITEST_FLOORS } = require("../../../../scripts/challenge-import-evidence.mjs") as {
   importEvidence: (options: Record<string, unknown>) => Promise<{ image: string }>;
   assertImageArchive: (path: string, image: string) => { sha256: string; bytes: number } | Promise<{ sha256: string; bytes: number }>;
   safeRelative: (path: string) => string;
+  VITEST_FLOORS: Record<string, number>;
 };
 const roots: string[] = [];
 let diagnostics: ReturnType<typeof buildDiagnosticFixture>;
@@ -93,6 +94,22 @@ describe("phase2 hermetic evidence import with synthetic test-only image hooks",
     const value = fixture(); value.execution.finalContainerInspection.Id = "e".repeat(64);
     await reject(value, "Execution container identity mismatch");
   });
+  it.each(["initialContainerInspection", "finalContainerInspection"] as const)("rejects substituted source invocation in %s", async (key) => {
+    const value = fixture();
+    value.execution[key].Config = structuredClone(value.execution[key].Config);
+    value.execution[key].Config.Cmd = ["preflight"];
+    await reject(value, "Source verification container configuration mismatch");
+  });
+  it.each(["Entrypoint", "Cmd", "WorkingDir", "Env"] as const)("requires exact source-verification %s", async (key) => {
+    const value = fixture();
+    const config = value.execution.initialContainerInspection.Config as Partial<typeof value.execution.initialContainerInspection.Config>;
+    delete config[key];
+    await reject(value, "Source verification container configuration mismatch");
+  });
+  it("rejects unrecorded source-container preload environment", async () => {
+    const value = fixture(); value.execution.initialContainerInspection.Config.Env.push("NODE_OPTIONS=--import=/tmp/preload.mjs");
+    await reject(value, "Source verification container configuration mismatch");
+  });
   it("rejects source builds that enable network acquisition", async () => {
     const value = fixture(); value.build.buildArguments[6] = "--network=host";
     value.build.buildLog.args = [...value.build.buildArguments];
@@ -131,7 +148,8 @@ describe("phase2 hermetic evidence import with synthetic test-only image hooks",
     value.mutate("vitest-starchess-core.json", (report) => { report[field] = field.startsWith("numPassed") || field.startsWith("numTotal") ? 0 : 1; });
     await reject(value, "Vitest report counts do not match: vitest-starchess-core.json");
   });
-  it.each([[6, "core", 468], [7, "arena", 810], [8, "training", 49]] as const)("rejects below-floor passing assertions in command %i", async (index, pkg, count) => {
+  it.each([[6, "core"], [7, "arena"], [8, "training"]] as const)("rejects below-floor passing assertions in command %i", async (index, pkg) => {
+    const count = VITEST_FLOORS[`vitest-starchess-${pkg}.json`]! - 1;
     const value = fixture();
     value.mutate(`vitest-starchess-${pkg}.json`, (report) => {
       report.testResults[0].assertionResults.length = count; report.numTotalTests = count; report.numPassedTests = count;

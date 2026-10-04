@@ -153,6 +153,13 @@ export async function importEvidence({
   const output = realpathSync(execution.output);
   assertContainerPolicy(execution.initialContainerInspection, output);
   assertContainerPolicy(execution.finalContainerInspection, output);
+  for (const inspection of [execution.initialContainerInspection, execution.finalContainerInspection]) {
+    const config = inspection.Config;
+    const imageConfig = inspected.Config;
+    const environment = Array.isArray(imageConfig?.Env) ? [...imageConfig.Env.filter((entry) => !entry.startsWith('HERMETIC_OUTPUT_DIRECTORY=')), `HERMETIC_OUTPUT_DIRECTORY=${outputTarget}`] : null;
+    if (!equal(config.Entrypoint, ['node', '/app/packages/starchess-arena/hermetic/runtime.mjs']) || !equal(config.Cmd, ['verify']) || config.WorkingDir !== '/app' || !environment || !equal(config.Env, environment) ||
+        environment.some((entry) => /^(?:NODE_OPTIONS|NODE_PATH|LD_PRELOAD|LD_LIBRARY_PATH)=/.test(entry))) throw new Error('Source verification container configuration mismatch');
+  }
   const container = execution.initialContainerInspection.Id;
   if (typeof container !== 'string' || !/^[a-f0-9]{64}$/.test(container) || execution.finalContainerInspection.Id !== container) throw new Error('Execution container identity mismatch');
   successfulDockerCommand(execution.executionLog, ['start', '--attach', container], 'execution');
