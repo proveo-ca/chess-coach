@@ -175,6 +175,14 @@ export async function importEvidence({
   const expectedBuild = ['build', '--platform', 'linux/amd64', '--pull=false', '--target', 'runtime', '--network=none', '--build-arg', `FROZEN_DEPENDENCIES=${dependencyTag}`, '--iidfile', join(dirname(context), 'image-id'), '--file', join(context, 'Dockerfile'), context];
   if (!equal(build.buildArguments, expectedBuild) && !equal(build.buildArguments, [...expectedBuild.slice(0, 6), '--no-cache', ...expectedBuild.slice(6)])) throw new Error('Invalid source build arguments');
   successfulDockerCommand(build.buildLog, build.buildArguments, 'build');
+  const hostLogs = [];
+  const hostArtifacts = [];
+  for (const [label, value] of [['acquisition', acquisition.buildLog], ['build', build.buildLog], ['execution', execution.executionLog]]) for (const [index, stream] of logRecords(value, label).entries()) {
+    const bytes = read(stream.path);
+    if (bytes.length !== stream.bytes || hash(bytes) !== stream.sha256) throw new Error(`${label} host log checksum mismatch`);
+    hostLogs.push({ label, path: stream.path, sha256: stream.sha256, bytes: stream.bytes });
+    hostArtifacts.push({ path: `host-provenance/${label}.${index === 0 ? 'stdout' : 'stderr'}.log`, bytes });
+  }
   const verificationBytes = read(join(output, 'verification.json'));
   const verification = decode(verificationBytes, 'verification');
   if (verification.version !== VERIFICATION_VERSION || verification.passed !== true || !Array.isArray(verification.commands) || verification.commands.length !== 11) throw new Error('Incomplete verification commands');
@@ -221,14 +229,6 @@ export async function importEvidence({
         !Number.isSafeInteger(report.numTotalTestSuites) || report.numTotalTestSuites < report.testResults.length || report.numPassedTestSuites !== report.numTotalTestSuites ||
         command.tests.success !== true || command.tests.total !== counted.total || command.tests.passed !== counted.passed || command.tests.failed !== counted.failed ||
         (command.tests.pending !== undefined && command.tests.pending !== counted.pending) || (command.tests.todo !== undefined && command.tests.todo !== counted.todo)) throw new Error(`Vitest report counts do not match: ${path}`);
-  }
-  const hostLogs = [];
-  const hostArtifacts = [];
-  for (const [label, value] of [['acquisition', acquisition.buildLog], ['build', build.buildLog], ['execution', execution.executionLog]]) for (const [index, stream] of logRecords(value, label).entries()) {
-    const bytes = read(stream.path);
-    if (bytes.length !== stream.bytes || hash(bytes) !== stream.sha256) throw new Error(`${label} host log checksum mismatch`);
-    hostLogs.push({ label, path: stream.path, sha256: stream.sha256, bytes: stream.bytes });
-    hostArtifacts.push({ path: `host-provenance/${label}.${index === 0 ? 'stdout' : 'stderr'}.log`, bytes });
   }
   const archive = await assertImageArchive(exported.archive, image);
   if (archive.sha256 !== exported.archiveSha256 || archive.bytes !== exported.archiveBytes) throw new Error('Exported image archive checksum mismatch');
