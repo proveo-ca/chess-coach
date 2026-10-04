@@ -1,10 +1,12 @@
 # PLAN — ML Adjutant: learn a ranker and prove the strict challenge
 
-Status: **Phases 0–2 source recovered; original R0 CLOSED historically within accepted non-learned assurance. R2 IMPLEMENTED IN PROGRESS; full fresh verification/closure PENDING.**
+Status: **Phases 0–2 source recovered; original R0 CLOSED historically within accepted non-learned assurance. R2 WIP / IMPLEMENTED IN PROGRESS; full fresh verification/closure PENDING.**
 **NOT training-ready: weights NONE; no learned model, runtime readiness, or learned acceptance.**
 **Recovery supersedes current-proof wording below:** Executor reports latest R2 source recovered from `cc6` after workspace reset; this replaces the earlier R0-only `0c6` description as current source status. R0 evidence/partial logs remain historical; archived logs and `/tmp` images are absent. Restored closure/evidence bytes and old markers do not establish CURRENT verification or authorize current tests. All retained R0 counts, pins, and verdicts below describe that historical run.
 The accepted [R2 V1 bridge / V3 generator amendment](r2-generator-v3.md) and [candidate-generation diagram](../packages/starchess-training/candidate-generation.puml) own current R2 behavior/direction. Source exists for exact `@noble/hashes` `2.4.0`, pure arena `/intent-codec-v1` + `/observations`, training `/candidates` only, package-graph inventory v2 / execution pins v3 / verification v3. Fresh image/full eleven-command verification plus separate host infrastructure remain pending; no fresh passing proof or image is claimed.
 **Next source gate:** Executor reports 19 native strict-type errors fixed and two legacy fixture boundary casts resolved by the lead. Prior full host counts **469 core / 811 arena / 50 training** are not a new full run; rerun full suites/typechecks/direct strict inputs/Node/public closure before freeze. Lead appends training and closure checks to root CI. No R2 closure is claimed.
+**Approved R2 public boundary:** detached DTO depth **16**, **8192 root/node/edge visits**, **1 MiB total UTF-8 string/key bytes**, memoized shared subtrees with incoming-path height checks, and cycles/accessors rejection; `ACTION_KINDS` frozen at declaration. Exact export keys: core `['.']`, arena `['.','./observations','./intent-codec-v1']`, training `['./candidates']`. Pure closures use static ESM only and reject **literal as well as computed runtime dynamic imports**; arena root stays host-only. [R2 §§2.1–2.2](r2-generator-v3.md#21-bounded-detached-dto-inspection-and-immutable-registry) owns exact maps and inspection rules.
+**Infrastructure gate blocked pending lead repair:** `infra.test.mjs` has **six ordered tests (five static + one actual Docker)**; capture still expects **five** and lacks the complete ordered-title check. Require the independent **`r2-infrastructure-verification-v1`** envelope bound to the captured dependency image, exact six-title TAP recount, host logs/daemon inspections/probe artifacts, importer remeasurement and mandatory `--infrastructure` before publication. [R2 §7.1](r2-generator-v3.md#71-mandatory-independent-actual-docker-infrastructure-envelope) owns the exact titles and joins. No fresh image, current evidence, acceptance or training is claimed; legacy R0 archived logs remain missing.
 Authority: [R0 closure JSON](../evidence/ml-adjutant-r0-closure.json), unchanged fact data.
 Final post-publication adversarial `ses_efe0ed67dffew2su1gZIUaDy23` and security
 `ses_efe0ed520ffeOEg3kd6jAtN33i` both returned **READY TO CLOSE R0: yes**.
@@ -376,7 +378,7 @@ The report includes 16 strict queue-rejection failures and does not establish a 
 
 - **Core never depends on ML.** Phase 1 flows `arena → core`; selected future training flows
   `packages/starchess-training → arena authorized public contracts → pure core`. Core and browser gain no ML dependencies.
-  The training package and dedicated observation-only public API remain unimplemented; unrestricted host/opponent context never faces the model.
+  The scoped R2 training `/candidates` and arena V1 observation/intent APIs exist in progress; broader V2/training interfaces remain future. Unrestricted host/opponent context never faces the model.
 - **Legality is never learned.** A model ranks action queues. `addScAction` and the host's gas
   and mineral checks authorize the full queue. `strategicCandidates` proposes ranked candidates;
   `applyCandidate` can return `null`. Enumeration is not an admission guarantee.
@@ -543,8 +545,8 @@ This approval does not authorize training or model/registry activation.
 implements strict authorized observation/candidate codecs, named numeric feature arrays, and historical coverage diagnostics.
 Observation cells preserve unknown/lit/revealed distinctions and dated square sightings.
 Candidate arrays preserve relative order and B/C/F timing with canonical keys and recomputed requested own spend.
-The codec supports all seven kinds; the current generator still proposes only classical singletons,
-Marine deployment singletons at B, and pass. `MAX_QUEUE_ACTIONS=65` bounds encoding, not legal queue length
+The codec supports all seven kinds; the unchanged historical `baseline-v1` still proposes only classical singletons,
+Marine deployment singletons at B, and pass. R2 V3 generation is separate and WIP. `MAX_QUEUE_ACTIONS=65` bounds encoding, not legal queue length
 or exhaustive coverage. One selected proposal goes to private host admission; no hidden probes or rescue.
 
 `challenge-features-v1` names **1623 observation**, **64 action-row**, and **158 ranker** entries;
@@ -799,8 +801,8 @@ These are separate follow-up tasks, not prerequisites or substitutes for phase 4
   product fallback. Implement `machine-learning` before changing registry readiness; never add
   an `ml` alias. Keep `rlcd` EMPTY: this plan defines no RLCD algorithm or runtime.
 
-`packages/starchess-training` is the selected, uncreated Phase 3+ owner; Phases 1–2 ownership stays in arena.
-Lead/build must implement the approved npm identity, API A paths/signatures and deliberate dependency/export-resolution/source-inventory/layer-policy/hermetic package-context/installed-store/CI requirements in contracts §§3–4.
+`packages/starchess-training` exists for scoped R2 `/candidates` generation; the broader Phase 3+ learner remains unimplemented and Phases 1–2 ownership stays in arena.
+Lead/build must complete fresh R2 closure under [r2-generator-v3.md](r2-generator-v3.md); broader API A paths/signatures and learning gates in contracts §§3–4 remain future.
 The frozen historical capture/dependency closure covers core/arena, not the future training folder; `packages/*` already covers the future workspace path.
 Do not blindly relax the unused baseline graph's execution→contracts restriction while adding the future training/v2 closure.
 This spec slice changes neither source nor package configuration. Browser and scale
@@ -878,8 +880,8 @@ Historical rename-only adversarial review remains **READY: yes**.
 Historical implementation review `ses_f07c45365ffew0wJ58yFHXAye5` remains **READY TO MERGE: no** in history.
 Current adversarial `ses_efe0ed67dffew2su1gZIUaDy23` and security `ses_efe0ed520ffeOEg3kd6jAtN33i` both returned **READY TO CLOSE R0: yes**.
 The [R0 ledger](#r0-findings-ledger--full-implementation-post-image-review) holds the original **7 HIGH + 8 MEDIUM**, all **CLOSED**.
-**Phases 0–2 retain historical PASSES and current frozen R0 assurance is CLOSED.
-Phase 3+ remains planned and unimplemented; weights NONE; NOT training-ready**;
+**Phases 0–2 retain historical PASSES and original frozen R0 assurance is CLOSED historically, not CURRENT proof.
+R2 generation is WIP; broader Phase 3+ learning remains planned and unimplemented; weights NONE; NOT training-ready**;
 reviewers must verify legality, isolation, and zero-fallback learned evidence independently of the non-learned baseline.
 R0's ordered gate is complete; preserve its frozen evidence and re-freeze after future captured-source changes.
 Complete the R1 economic amendment and R2–R5 readiness before explicit R6 training approval, then R6–R7 before R8.

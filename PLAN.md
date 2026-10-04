@@ -1,6 +1,6 @@
 # Adjutant evolution — from strategies to learned opponent
 
-Status: **learning roadmap only; NOT training-ready. R0 CLOSED within accepted non-learned assurance.**  
+Status: **learning roadmap only; NOT training-ready. R0 CLOSED historically within accepted non-learned assurance. R2 WIP; fresh verification/closure PENDING.**  
 Scope: how Single Player’s opponent (`packages/starchess-core/src/ai/adjutant.ts`) grows from named strategy algorithms → a composed heuristic → something that learns, without rewriting the StarChess rules engine.
 
 The preparatory catalog is implemented and verified separately from this learning roadmap;
@@ -12,16 +12,27 @@ The registry ID is `machine-learning`; `ml/` names proposed training tooling, no
 `machine-learning`, `rlhf`, and `rlcd` remain EMPTY and unavailable until implemented.
 The implemented catalog definitions do not complete any learning stage below.
 
-## Current R0 foundation — closed, not training-ready
+## Historical R0 foundation — closed then, not current proof
 
 The authoritative [strict ML roadmap](_spec/_plans/PLAN-ml-adjutant.md) records **A01–A15 CLOSED** within accepted non-learned execution/evidence assurance.
-Use unchanged [R0 closure JSON](_spec/evidence/ml-adjutant-r0-closure.json) and [fresh frozen verification](_spec/evidence/ml-adjutant-r0-refresh/verification.json) for current facts and pins.
-Final post-publication adversarial `ses_efe0ed67dffew2su1gZIUaDy23` and security `ses_efe0ed520ffeOEg3kd6jAtN33i` both returned **READY TO CLOSE R0: yes**.
-Recorded current checks: **689/689 arena + 426/426 core**, zero failed/pending/todo; **54 executions + 54 semantic reruns**, parity true; **107 Node tests**, **5/5 actual Docker infrastructure**, and **13/13 host post-publication checks**, no skips.
-The host checks include both live source pins; all **8 exact verification commands**, including three static checks and both scripts, passed.
-The [current closure/pin record](_spec/_plans/PLAN-ml-adjutant.md#r0-closure--current-frozen-evidence) identifies the new frozen image and publication separately from the historical records below.
+Use unchanged [R0 closure JSON](_spec/evidence/ml-adjutant-r0-closure.json) and [historical frozen verification](_spec/evidence/ml-adjutant-r0-refresh/verification.json) for original R0 facts and pins only.
+Historical final post-publication adversarial `ses_efe0ed67dffew2su1gZIUaDy23` and security `ses_efe0ed520ffeOEg3kd6jAtN33i` both returned **READY TO CLOSE R0: yes**.
+Recorded historical checks: **689/689 arena + 426/426 core**, zero failed/pending/todo; **54 executions + 54 semantic reruns**, parity true; **107 Node tests**, **5/5 actual Docker infrastructure**, and **13/13 host post-publication checks**, no skips.
+Those historical host checks included both then-live source pins; all **8 exact verification commands**, including three static checks and both scripts, passed then.
+The [original closure/pin record](_spec/_plans/PLAN-ml-adjutant.md#r0-closure--current-frozen-evidence) retains its legacy navigation anchor; none of its pins proves the recovered R2 tree.
 This closes assurance, not learning: weights remain **NONE**, no trained artifact or learned acceptance exists, and `machine-learning` stays unavailable.
-Lead reports both updated diagrams passed PlantUML `checkonly` with exit **0** and `git diff --check` passed; this navigation-only follow-up does not rerun those checks.
+Lead historically reported both then-updated diagrams passed PlantUML `checkonly` with exit **0** and `git diff --check` passed; this pass reruns neither check.
+
+### Current R2 — WIP, no fresh evidence or acceptance
+
+The [approved R2 V1 bridge / V3 amendment](_spec/_plans/r2-generator-v3.md) and [candidate-generation.puml](_spec/packages/starchess-training/candidate-generation.puml) own the current scoped work.
+Executor reports recovered R2 source; archived legacy R0 logs and temporary images are missing.
+Require bounded detached DTO inspection (depth **16**, **8192** root/node/edge visits, **1 MiB** total UTF-8 strings/keys), memoized shared subtrees with path-depth checks, cycles/accessors rejection, and frozen `ACTION_KINDS`.
+Exact public export keys remain core `['.']`, arena `['.','./observations','./intent-codec-v1']`, training `['./candidates']`.
+Pure core/authorized/training closures use static ESM only, including rejection of literal runtime dynamic imports; arena root remains the host barrel.
+Fresh eleven-command verification requires a separate mandatory actual Docker infrastructure envelope tied to the captured dependency image and independently joined by the importer.
+Current devops discovery: infrastructure has **six tests (five static + one Docker)**, but capture expects **five**; lead repair to the exact six ordered-title contract remains pending.
+No fresh image, current evidence, R2 acceptance/closure, learned acceptance or training is claimed.
 
 ### Historical Phase 1 verification
 
@@ -61,8 +72,8 @@ Training, learned models/artifacts, and browser rollout remain unimplemented; re
 
 ### Historical Phase 2 image and evidence snapshot
 
-The following records the earlier Phase 2 generation, not the current R0 image, verification, or review verdict.
-Keep these results and hashes unchanged as history; use the current R0 foundation above for closure navigation.
+The following records the earlier Phase 2 generation, not a current recovered-tree/R2 image, verification, or review verdict.
+Keep these results and hashes unchanged as history; use the historical R0 foundation above for original closure navigation and the R2 amendment for current pending work.
 The historical source image is `sha256:e7f9ea8ac211c93804bd1125ed28fb7e165a160c4155ca70404c81f9e431710d`.
 The lead historically reported the then-fresh dependency image `sha256:4c9d45b04f325a2d912cb34ebc982f139f057a2f2fb6d779ac2ef59f29ea987d`.
 The official Node 22.23.2 bookworm-slim platform digest recorded for that snapshot is
