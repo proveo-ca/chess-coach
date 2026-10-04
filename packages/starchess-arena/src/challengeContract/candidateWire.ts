@@ -11,7 +11,7 @@ export const CANDIDATE_CODEC_VERSION = "challenge-candidate-codec-v1";
 export const CANDIDATE_ENUMERATION_VERSION = "baseline-v1";
 export const COMPARATOR_VERSION = "score-desc-key-asc-v1";
 export const MAX_QUEUE_ACTIONS = 65;
-export const ACTION_KINDS = ["classical", "deploy", "stimStep", "spiderMine", "charonMissiles", "siegeMode", "tacticalJump"] as const;
+export const ACTION_KINDS = Object.freeze(["classical", "deploy", "stimStep", "spiderMine", "charonMissiles", "siegeMode", "tacticalJump"] as const);
 export type EncodedCandidate = {
   version: typeof CANDIDATE_CODEC_VERSION; key: string; actions: ScActionInput[];
   ownSpend: { minerals: number; gas: number };

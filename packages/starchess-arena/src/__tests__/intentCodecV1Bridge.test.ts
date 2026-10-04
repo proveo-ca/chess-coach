@@ -19,12 +19,12 @@ const candidate = () => structuredClone(wire.encodeCandidate(observation(), [act
 const boundaries = (input: wire.EncodedCandidate): object[] => [input, input.actions, input.actions[0]!, input.ownSpend];
 
 describe("public intent codec V1 bridge and pure wire", () => {
-  it("preserves every legacy wire export by identity", () => {
-    for (const key of Object.keys(wire) as (keyof typeof wire)[]) expect(legacy[key], key).toBe(wire[key]);
-    expect(bridge.encodeCandidate).toBe(wire.encodeCandidate);
-    expect(bridge.requestedSpend).toBe(wire.requestedSpend);
-    expect(bridge.validateActions).toBe(wire.validateActions);
-    expect(bridge.ACTION_KINDS).toBe(wire.ACTION_KINDS);
+  it("preserves legacy wire bytes, spend, action semantics and public exports", () => {
+    const actions = [action("deploy", "B", "w")];
+    expect(JSON.stringify(bridge.encodeCandidate(observation(), actions))).toBe(JSON.stringify(legacy.encodeCandidate(observation(), actions)));
+    expect(bridge.requestedSpend(actions)).toEqual(wire.requestedSpend(actions));
+    expect(bridge.validateActions(actions, "w")).toEqual(wire.validateActions(actions, "w"));
+    expect(bridge.ACTION_KINDS).toEqual(wire.ACTION_KINDS);
     expect(bridge.MAX_QUEUE_ACTIONS).toBe(65);
     expect(Object.keys(bridge).sort()).toEqual(["ACTION_KINDS", "MAX_QUEUE_ACTIONS", "decodeCandidate", "encodeCandidate", "requestedSpend", "validateActions"].sort());
   });
@@ -60,6 +60,87 @@ describe("public intent codec V1 bridge and pure wire", () => {
       expect(encoded.ownSpend).toEqual({ minerals: 0, gas: actions.length * 3 });
     }
     expect(() => bridge.encodeCandidate(observation(), Array.from({ length: 66 }, () => action("siegeMode", "B", "w")))).toThrow("ARRAY");
+  });
+
+  it("freezes action kinds at declaration with exact native ordering", () => {
+    const expected = ["classical", "deploy", "stimStep", "spiderMine", "charonMissiles", "siegeMode", "tacticalJump"];
+    expect(bridge.ACTION_KINDS).toEqual(expected);
+    expect(Object.isFrozen(bridge.ACTION_KINDS)).toBe(true);
+    expect(Reflect.set(bridge.ACTION_KINDS, "0", "private")).toBe(false);
+    expect(() => Reflect.apply(Array.prototype.push, bridge.ACTION_KINDS, ["private"])).toThrow(TypeError);
+    expect(() => Object.defineProperty(wire.ACTION_KINDS, "0", { value: "private" })).toThrow(TypeError);
+    expect(bridge.ACTION_KINDS).toEqual(expected);
+    expect(bridge.encodeCandidate(observation(), [action("deploy", "B", "w")])).toEqual(candidate());
+  });
+
+  it.each(["index", "color", "kind", "symbol", "hidden", "private"] as const)("inspects %s action descriptors before every public method reads input", (field) => {
+    for (const run of [
+      (input: wire.EncodedCandidate) => bridge.encodeCandidate(observation(), input.actions),
+      (input: wire.EncodedCandidate) => bridge.validateActions(input.actions, "w"),
+      (input: wire.EncodedCandidate) => bridge.requestedSpend(input.actions),
+      (input: wire.EncodedCandidate) => bridge.decodeCandidate(input, "w"),
+    ]) {
+      const input = candidate();
+      const getter = vi.fn(() => field === "index" ? action("deploy", "B", "w") : field === "color" ? "w" : "deploy");
+      const target = field === "index" ? input.actions : input.actions[0]!;
+      const key = field === "index" ? "0" : field === "symbol" ? Symbol("private") : field === "hidden" || field === "private" ? "private" : field;
+      Object.defineProperty(target, key, { configurable: true, enumerable: field !== "hidden" && field !== "symbol", get: getter });
+      expect(() => run(input), field).toThrow(ContractError);
+      expect(getter).not.toHaveBeenCalled();
+    }
+  });
+
+  it.each(["side", "own", "minerals", "piece", "symbol", "hidden", "private"] as const)("inspects observation %s before public candidate encoding", (field) => {
+    const input = structuredClone(observation());
+    const getter = vi.fn(() => field === "side" ? "w" : field === "minerals" ? 3 : {});
+    const target = field === "minerals" ? input.own : field === "piece" ? input.own.pieces[0]! : input;
+    const key = field === "symbol" ? Symbol("private") : field === "hidden" || field === "private" ? "private" : field;
+    Object.defineProperty(target, key, { configurable: true, enumerable: field !== "hidden" && field !== "symbol", get: getter });
+    expect(() => bridge.encodeCandidate(input, []), field).toThrow(ContractError);
+    expect(getter).not.toHaveBeenCalled();
+  });
+
+  it("rejects enumerable private observation and action fields through all public methods", () => {
+    const obs = { ...observation(), private: "host" };
+    expect(() => bridge.encodeCandidate(obs, [])).toThrow(ContractError);
+    const input = candidate();
+    Object.assign(input.actions[0]!, { private: "host" });
+    expect(() => bridge.encodeCandidate(observation(), input.actions)).toThrow(ContractError);
+    expect(() => bridge.validateActions(input.actions, "w")).toThrow(ContractError);
+    expect(() => bridge.requestedSpend(input.actions)).toThrow(ContractError);
+    expect(() => bridge.decodeCandidate(input, "w")).toThrow(ContractError);
+  });
+
+  it("validates side arguments even for an empty public action queue", () => {
+    for (const color of ["private", null, undefined, 0]) {
+      expect(() => bridge.validateActions([], color as PieceColor)).toThrow(ContractError);
+      expect(() => bridge.decodeCandidate(bridge.encodeCandidate(observation(), []), color as PieceColor)).toThrow(ContractError);
+    }
+    expect(() => bridge.requestedSpend(null as unknown as ScActionInput[])).toThrow(ContractError);
+  });
+
+  it("rejects cyclic action snapshots through every public action method", () => {
+    const input = candidate();
+    Object.assign(input.actions[0]!, { private: input.actions });
+    expect(() => bridge.encodeCandidate(observation(), input.actions)).toThrow(ContractError);
+    expect(() => bridge.validateActions(input.actions, "w")).toThrow(ContractError);
+    expect(() => bridge.requestedSpend(input.actions)).toThrow(ContractError);
+    expect(() => bridge.decodeCandidate(input, "w")).toThrow(ContractError);
+  });
+
+  it("rejects over-budget and huge sparse action DTOs through every public action method", () => {
+    for (const actions of [Array(8192).fill(null), new Array(0xffffffff)]) {
+      const input = { ...candidate(), actions };
+      for (const run of [
+        () => bridge.encodeCandidate(observation(), actions),
+        () => bridge.validateActions(actions, "w"),
+        () => bridge.requestedSpend(actions),
+        () => bridge.decodeCandidate(input, "w"),
+      ]) {
+        expect(run).toThrow(ContractError);
+        expect(run).toThrow("SIZE");
+      }
+    }
   });
 
   it.each(["getter", "setter", "symbol", "hidden", "prototype", "private"] as const)("rejects %s at every candidate boundary without invoking getters", (kind) => {

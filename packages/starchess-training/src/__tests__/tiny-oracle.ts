@@ -42,7 +42,7 @@ export const tinyOracle = (o: AuthorizedObservationV1): { keys: string[]; diagno
         if (!shape) continue;
         const base = { kind: "classical", timing: "C", color: o.side, from, to } as const;
         if (actor.type === "p" && to[1] === (o.side === "w" ? "8" : "1")) {
-          for (const promotion of units) actions.push({ ...base, promotion });
+          for (const promotion of units.slice(1)) actions.push({ ...base, promotion });
         } else actions.push(base);
       }
     }

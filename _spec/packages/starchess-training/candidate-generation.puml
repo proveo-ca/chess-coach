@@ -84,6 +84,20 @@ VERIFY ARROW_OPTIONAL GEN : public closure / V3 regressions
 VERIFY ARROW_OPTIONAL BASELINE : original 54 parity + 54 reruns
 
 note bottom of OBS
+  Public raw DTO inspection uses call-local state:
+  depth <=16; root + node/edge visits <=8192;
+  string + key UTF-8 bytes <=1048576.
+  Inspect own keys before descriptor collection.
+  Reject sparse huge arrays before allocating copies.
+  Reject cycles before memo lookup; retain detached
+  shared references and check memoized subtree depth.
+  Reject accessors/symbols/hidden metadata without
+  invoking getters; apply closed V1 schemas afterward.
+  Public encode validates the strict observation DTO.
+  Public actions/spend/decode inspect before reads.
+  ACTION_KINDS freezes at declaration in native order.
+  Legacy private wire validation retains its behavior.
+
   Candidate queues retain unknown cells because
   hidden blockers must not change which proposals
   the model receives. The host checks one selected

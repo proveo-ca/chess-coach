@@ -13,6 +13,7 @@ import { assertImageArchive } from '../packages/starchess-arena/hermetic/tar.mjs
 import { verificationCommands, VERIFICATION_VERSION, ASSERTION_FLOORS_VERSION, VITEST_FLOORS, requiredArtifacts } from '../packages/starchess-arena/hermetic/verification-plan.mjs';
 import { evidenceNamespace } from '../packages/starchess-arena/hermetic/workspace-policy.mjs';
 import { checkPublicClosure } from '../packages/starchess-arena/hermetic/public-closure.mjs';
+import { validateInfrastructure } from './challenge-infrastructure-evidence.mjs';
 
 export { assertImageArchive };
 export const ORIGINAL_BASELINE_SHA256 = '940387370040f88888e9dfe0bb86ad9d4a8be88854df507120f34b22ee2d362b';
@@ -26,7 +27,7 @@ const SOURCE_ROOT = resolve(SCRIPT_DIR, '..');
 const TSX = join(SOURCE_ROOT, 'packages/starchess-arena/node_modules/.bin/tsx');
 const VALIDATOR = join(SCRIPT_DIR, 'challenge-validate-baseline.ts');
 const hash = (bytes) => createHash('sha256').update(bytes).digest('hex');
-const record = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
+const record = (value) => value !== null && typeof value === 'object' && !Array.isArray(value) && Object.getPrototypeOf(value) === Object.prototype;
 const digest = (value) => typeof value === 'string' && /^[a-f0-9]{64}$/.test(value);
 const equal = (a, b) => Array.isArray(a) && Array.isArray(b) && a.length === b.length && a.every((value, index) => value === b[index]);
 
@@ -39,7 +40,12 @@ export const safeRelative = (path) => {
 
 function boundedReader() {
   let retained = 0;
+  const memo = new Map();
   return (path) => {
+    if (typeof path !== 'string' || !path || Buffer.byteLength(path) > evidenceLimits.pathBytes || /[\0\r\n]/.test(path)) throw new Error('Invalid import input path');
+    path = resolve(path);
+    if (memo.has(path)) return memo.get(path);
+    if (realpathSync(dirname(path)) !== dirname(path)) throw new Error(`Input ancestor is not canonical: ${path}`);
     const fd = openSync(path, constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK);
     try {
       const before = fstatSync(fd);
@@ -54,6 +60,7 @@ function boundedReader() {
       }
       const after = fstatSync(fd);
       if (after.dev !== before.dev || after.ino !== before.ino || after.size !== before.size || after.mtimeMs !== before.mtimeMs || after.ctimeMs !== before.ctimeMs) throw new Error(`Input changed during read: ${path}`);
+      memo.set(path, bytes);
       return bytes;
     } finally { closeSync(fd); }
   };
@@ -93,15 +100,24 @@ function captureContext(root) {
 }
 
 export async function importEvidence({
-  repositoryRoot, executionPath, buildPath, exportPath, expectedImage, destination,
+  repositoryRoot, executionPath, buildPath, exportPath, infrastructurePath, expectedImage, destination,
   inspectImage = (image) => JSON.parse(execFileSync('docker', ['image', 'inspect', image], { encoding: 'utf8' }))[0],
-  measureImage = measureImageFilesystem, captureContext: capture = captureContext, syncDirectory, beforePublication,
+  measureImage = measureImageFilesystem, measureInfrastructureImage = measureImageFilesystem, captureContext: capture = captureContext, syncDirectory, beforePublication,
 } = {}) {
+  if ([repositoryRoot, executionPath, buildPath, exportPath, infrastructurePath].some((value) => typeof value !== 'string' || !value || Buffer.byteLength(value) > evidenceLimits.pathBytes || /[\0\r\n]/.test(value))) throw new Error('Repository, execution, build, export, and infrastructure paths are required');
   mkdirSync('/tmp/opencode', { recursive: true });
   const root = resolve(repositoryRoot);
   const read = boundedReader();
   const executionBytes = read(executionPath), buildBytes = read(buildPath), exportBytes = read(exportPath);
   const execution = decode(executionBytes, 'execution'), build = decode(buildBytes, 'build'), exported = decode(exportBytes, 'export');
+  const infrastructureBytes = read(infrastructurePath);
+  const infrastructure = decode(infrastructureBytes, 'infrastructure');
+  const dependencyImage = build.frozenDependency?.image;
+  if (typeof dependencyImage !== 'string' || !/^sha256:[a-f0-9]{64}$/.test(dependencyImage) || dependencyImage === expectedImage) throw new Error('Frozen dependency image identity required');
+  if (infrastructure.image !== dependencyImage) throw new Error('Infrastructure dependency image mismatch');
+  const infrastructureMeasurement = await measureInfrastructureImage(dependencyImage);
+  if (JSON.stringify(build.frozenDependency.measurements) !== JSON.stringify(infrastructureMeasurement)) throw new Error('Infrastructure frozen dependency measurement mismatch');
+  const infrastructureArtifacts = validateInfrastructure(infrastructure, { read, image: dependencyImage, measurements: infrastructureMeasurement, controlSha256: build.capture?.control?.sha256 });
   const image = expectedImage;
   if (typeof image !== 'string' || !/^sha256:[a-f0-9]{64}$/.test(image)) throw new Error('Immutable image ID required');
   if ([execution.image, build.image, exported.image, execution.imageInspection?.Id, build.imageInspection?.Id, exported.imageInspection?.Id, execution.initialContainerInspection?.Image, execution.finalContainerInspection?.Image].some((value) => value !== image)) throw new Error('Image identity mismatch');
@@ -189,9 +205,13 @@ export async function importEvidence({
     } finally { rmSync(scratch, { recursive: true, force: true }); }
     const target = destination ?? join(root, evidenceNamespace);
     const assuranceRecord = { version: 'r2-image-assurance-v1', image, inspectedImageId: inspected.Id, archive, hostLogs,
-      references: { execution: { path: resolve(executionPath), sha256: hash(executionBytes) }, build: { path: resolve(buildPath), sha256: hash(buildBytes) }, export: { path: resolve(exportPath), sha256: hash(exportBytes) } },
-      capture: { runtimeSha256: snapshot.runtime.sha256, controlSha256: snapshot.control.sha256 }, verifiedArtifactCount: artifacts.size + 2 };
+      references: { execution: { path: resolve(executionPath), sha256: hash(executionBytes) }, build: { path: resolve(buildPath), sha256: hash(buildBytes) }, export: { path: resolve(exportPath), sha256: hash(exportBytes) }, infrastructure: { path: resolve(infrastructurePath), sha256: hash(infrastructureBytes) } },
+      infrastructure: { image: dependencyImage, measurements: infrastructureMeasurement, artifact: 'host-infrastructure.json' },
+      capture: { runtimeSha256: snapshot.runtime.sha256, controlSha256: snapshot.control.sha256 }, verifiedArtifactCount: artifacts.size + 3 + infrastructureArtifacts.length };
     const published = [...artifacts].map(([path, bytes]) => ({ path, bytes }));
+    const reserved = new Set(['verification.json', 'image-assurance.json', 'host-infrastructure.json', ...infrastructureArtifacts.map((entry) => entry.path)]);
+    if ([...artifacts.keys()].some((path) => reserved.has(path) || path.startsWith('host-infrastructure/'))) throw new Error('Artifact inventory collides with host infrastructure paths');
+    published.push({ path: 'host-infrastructure.json', bytes: infrastructureBytes }, ...infrastructureArtifacts);
     published.push({ path: 'verification.json', bytes: verificationBytes }, { path: 'image-assurance.json', bytes: Buffer.from(`${JSON.stringify(assuranceRecord, null, 2)}\n`) });
     await beforePublication?.(target);
     publication = publishBundleExclusive(target, published, { syncDirectory });
@@ -214,10 +234,10 @@ async function main() {
   const options = {};
   for (let index = 2; index < process.argv.length; index += 2) {
     const key = process.argv[index];
-    if (!['--execution', '--build', '--export', '--image', '--destination'].includes(key) || !process.argv[index + 1] || Object.hasOwn(options, key)) throw new Error('Expected --execution, --build, --export, --image, and optional --destination');
+    if (!['--execution', '--build', '--export', '--infrastructure', '--image', '--destination'].includes(key) || !process.argv[index + 1] || process.argv[index + 1].startsWith('--') || Object.hasOwn(options, key)) throw new Error('Expected --execution, --build, --export, --infrastructure, --image, and optional --destination');
     options[key] = process.argv[index + 1];
   }
-  if (['--execution', '--build', '--export', '--image'].some((key) => !options[key])) throw new Error('Execution, build, export, and expected image are required');
-  console.log(JSON.stringify(await importEvidence({ repositoryRoot: SOURCE_ROOT, executionPath: resolve(options['--execution']), buildPath: resolve(options['--build']), exportPath: resolve(options['--export']), expectedImage: options['--image'], ...(options['--destination'] ? { destination: resolve(options['--destination']) } : {}) })));
+  if (['--execution', '--build', '--export', '--infrastructure', '--image'].some((key) => !options[key])) throw new Error('Execution, build, export, infrastructure, and expected image are required');
+  console.log(JSON.stringify(await importEvidence({ repositoryRoot: SOURCE_ROOT, executionPath: resolve(options['--execution']), buildPath: resolve(options['--build']), exportPath: resolve(options['--export']), infrastructurePath: resolve(options['--infrastructure']), expectedImage: options['--image'], ...(options['--destination'] ? { destination: resolve(options['--destination']) } : {}) })));
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main().catch((error) => { console.error(error); process.exitCode = 1; });

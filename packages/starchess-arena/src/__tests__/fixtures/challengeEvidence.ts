@@ -21,6 +21,9 @@ const { verificationCommands, VITEST_FLOORS, ASSERTION_FLOORS_VERSION } = requir
   VITEST_FLOORS: Record<string, number>; ASSERTION_FLOORS_VERSION: string;
 };
 const { checkPublicClosure } = require("../../../hermetic/public-closure.mjs") as { checkPublicClosure: (root: string) => unknown };
+const { infrastructureHost, INFRASTRUCTURE_VERSION, infraPath } = require("../../../../../scripts/challenge-infrastructure-evidence.mjs") as {
+  infrastructureHost: (read: (path: string) => Buffer) => Record<string, unknown>; INFRASTRUCTURE_VERSION: string; infraPath: string;
+};
 const history = require("./challenge-history-pins.json") as { files: Record<string, { bytes: number; sha256: string }> };
 export const repositoryRoot = fileURLToPath(REPOSITORY_ROOT);
 export type Baseline = Awaited<ReturnType<typeof runBaselineSuite>>;
@@ -206,14 +209,75 @@ export function buildImportFixture(diagnostics: ReturnType<typeof buildDiagnosti
     buildLog: host, executionLog: host, archive: archivePath, archiveSha256: sha256(archive.bytes), archiveBytes: archive.bytes.length };
   const execution = { ...envelope, passed: true, status: "passed", output, initialContainerInspection: policy,
     finalContainerInspection: { ...policy, State: { ExitCode: 0, OOMKilled: false } } };
-  const build = { ...envelope, capture: { runtime: { sha256: "source" }, control: { sha256: "control" } } };
-  const paths = { execution: join(output, "execution.json"), build: join(output, "build.json"), export: join(output, "export.json") };
+  const controlSha256 = sha256("synthetic test-only infrastructure control");
+  const dependencyImage = `sha256:${sha256("synthetic test-only dependency image independent of source image")}`;
+  const infrastructureMeasurement = { dependencies: envelope.measurements.dependencies, capture: { controlSha256 },
+    closure: { actual: { tools: { node: runtimePins.node }, packages: {} } }, method: "synthetic-test-only-host-boundary" };
+  const build = { ...envelope, capture: { runtime: { sha256: "source" }, control: { sha256: controlSha256 } },
+    frozenDependency: { image: dependencyImage, measurements: infrastructureMeasurement } };
+  const paths = { execution: join(output, "execution.json"), build: join(output, "build.json"), export: join(output, "export.json"), infrastructure: join(output, "infrastructure.json") };
+  const probeWork = join(output, "host-probe");
+  const probeOutput = join(probeWork, "output");
+  const infrastructureFiles: Record<string, Buffer> = {};
+  const infrastructureLog = (path: string) => {
+    const bytes = infrastructureFiles[path] ?? Buffer.alloc(0); infrastructureFiles[path] = bytes;
+    return { path, bytes: bytes.length, sha256: sha256(bytes), observedBytes: bytes.length, truncated: false };
+  };
+  const probeCommands = [
+    { executable: "/app/packages/starchess-arena/node_modules/.bin/tsx", args: ["/tmp/test/source-only-inventory.ts"] },
+    { executable: "/app/packages/starchess-arena/node_modules/.bin/tsx", args: ["/tmp/test/direct.ts"] },
+    { executable: "/app/packages/starchess-arena/node_modules/.bin/vitest", args: ["run", "--config", "/tmp/test/config.mts", "--configLoader", "native", "--reporter=default", "--reporter=json", "--outputFile", `${target}/vitest-probe.json`] },
+  ].map((entry, index) => {
+    const logs = Object.fromEntries(["stdout", "stderr"].map((stream) => {
+      const relative = `logs/${["inventory", "tsx", "vitest"][index]}.${stream}.log`;
+      const metadata = infrastructureLog(join(probeOutput, relative));
+      return [stream, { ...metadata, path: `${target}/${relative}` }];
+    }));
+    return { ...entry, cwd: "/tmp/test", exitCode: 0, signal: null, error: null, logs };
+  });
+  const probeVitest = jsonBytes(syntheticVitestReport(1, "probe"));
+  infrastructureFiles[join(probeOutput, "vitest-probe.json")] = probeVitest;
+  Object.assign(probeCommands[2]!, { tests: { path: `${target}/vitest-probe.json`, sha256: sha256(probeVitest), success: true, total: 1, passed: 1, failed: 0, pending: 0, todo: 0 } });
+  const probeReport: Record<string, any> = { passed: true, freshTemporaryRoot: true, sourceOnlyInventoryFiles: 1, commands: probeCommands,
+    closure: infrastructureMeasurement.closure.actual, installedSha256: assurance.installedSha256, frozenStoreSha256: assurance.frozenStoreSha256, toolsSha256: assurance.toolsSha256 };
+  const containerId = "d".repeat(64);
+  const probePolicy = { ...structuredClone(policy), Id: containerId, Image: dependencyImage,
+    Mounts: [{ Type: "bind", Destination: target, Source: probeOutput, RW: true, Propagation: "rprivate" }, { Type: "tmpfs", Destination: "/tmp" }] };
+  const probeExecution: Record<string, any> = { image: dependencyImage, output: probeOutput, imageInspection: { Id: dependencyImage },
+    initialContainerInspection: probePolicy, finalContainerInspection: { ...probePolicy, State: { ExitCode: 0, OOMKilled: false } }, report: probeReport,
+    executionLog: { executable: "docker", args: ["start", "--attach", containerId], exitCode: 0, signal: null, error: null,
+      logs: { stdout: infrastructureLog(join(probeWork, "docker.stdout.log")), stderr: infrastructureLog(join(probeWork, "docker.stderr.log")) } } };
+  const probePath = join(probeOutput, "probe.json");
+  const tapPath = join(output, "infrastructure.stdout.log");
+  const tap = ["TAP version 13", "# Docker probe evidence: " + probePath,
+    ...["Dockerfile pins", "context capture", "runtime source capture", "CLI policy", "Docker enforces policy, fresh temporary inventory, and logged offline TS/Vitest"].map((name, index) => `ok ${index + 1} - ${name}`),
+    "1..5", "# tests 5", "# suites 0", "# pass 5", "# fail 0", "# cancelled 0", "# skipped 0", "# todo 0", ""].join("\n");
+  infrastructureFiles[tapPath] = Buffer.from(tap);
+  const infrastructure: Record<string, any> = { version: INFRASTRUCTURE_VERSION, passed: true, image: dependencyImage, imageInspection: { Id: dependencyImage }, measurements: infrastructureMeasurement,
+    host: infrastructureHost(readFileSync), command: { executable: process.execPath, args: ["--test", infraPath], cwd: repositoryRoot.replace(/\/$/, ""), env: { HERMETIC_DEPENDENCY_IMAGE: dependencyImage },
+      started: "2026-10-04T00:00:00.000Z", finished: "2026-10-04T00:00:01.000Z", exitCode: 0, signal: null, error: null,
+      logs: { stdout: infrastructureLog(tapPath), stderr: infrastructureLog(join(output, "infrastructure.stderr.log")) } },
+    tap: { tests: 5, suites: 0, pass: 5, fail: 0, cancelled: 0, skipped: 0, todo: 0 }, probe: { artifacts: [] } };
+  const rebindInfrastructure = () => {
+    infrastructureFiles[probePath] = jsonBytes(probeReport);
+    infrastructureFiles[join(probeWork, "execution.json")] = jsonBytes(probeExecution);
+    const metadata = (path: string) => ({ path, bytes: infrastructureFiles[path]!.length, sha256: sha256(infrastructureFiles[path]!) });
+    infrastructure.probe.report = metadata(probePath);
+    infrastructure.probe.execution = metadata(join(probeWork, "execution.json"));
+    infrastructure.probe.artifacts = Object.entries(infrastructureFiles).filter(([path]) => path.startsWith(probeWork) && path !== probePath && path !== join(probeWork, "execution.json")).map(([path]) => ({
+      ...(path.endsWith(".log") ? infrastructureLog(path) : metadata(path)), relative: path.startsWith(probeOutput + "/") ? path.slice(probeOutput.length + 1) : path.slice(probeWork.length + 1),
+    }));
+    for (const stream of ["stdout", "stderr"]) infrastructure.command.logs[stream] = infrastructureLog(infrastructure.command.logs[stream].path);
+  };
+  rebindInfrastructure();
   const destination = join(root, "published");
   const save = () => {
     verification.artifacts = Object.entries(files).map(([path, bytes]) => ({ path, type: "file", bytes: bytes.length, sha256: sha256(bytes) }));
     for (const [path, bytes] of Object.entries(files)) { mkdirSync(dirname(join(output, path)), { recursive: true }); writeFileSync(join(output, path), bytes); }
     writeFileSync(join(output, "verification.json"), jsonBytes(verification));
     writeFileSync(paths.execution, jsonBytes(execution)); writeFileSync(paths.build, jsonBytes(build)); writeFileSync(paths.export, jsonBytes(envelope));
+    for (const [path, bytes] of Object.entries(infrastructureFiles)) { mkdirSync(dirname(path), { recursive: true }); writeFileSync(path, bytes); }
+    writeFileSync(paths.infrastructure, jsonBytes(infrastructure));
   };
   const mutate = (path: string, change: (document: Record<string, any>) => void) => {
     const document = decode<Record<string, any>>(files[path]!); change(document); files[path] = jsonBytes(document);
@@ -226,10 +290,12 @@ export function buildImportFixture(diagnostics: ReturnType<typeof buildDiagnosti
   };
   save();
   return { root, output, files, verification, execution, build, paths, destination, archivePath, archive, save, mutate, rebind,
+    infrastructure, infrastructureFiles, infrastructureMeasurement, probeReport, probeExecution, rebindInfrastructure,
     options: { repositoryRoot: root, executionPath: paths.execution, buildPath: paths.build, exportPath: paths.export,
-      expectedImage: archive.image, destination,
+      expectedImage: archive.image, destination, infrastructurePath: paths.infrastructure,
+      measureInfrastructureImage: async () => structuredClone(infrastructureMeasurement),
       inspectImage: async () => ({ Id: archive.image }), measureImage: async () => ({ source: { sourceSha256: "source" }, dependencies: { installedSha256: "installed", frozenStoreSha256: "store", toolTreeSha256: "tools" } }),
-      captureContext: async () => ({ runtime: { sha256: "source" }, control: { sha256: "control" }, sourceRoot: repositoryRoot }),
+      captureContext: async () => ({ runtime: { sha256: "source" }, control: { sha256: controlSha256 }, sourceRoot: repositoryRoot }),
     },
   };
 }

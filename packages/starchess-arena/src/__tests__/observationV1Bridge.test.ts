@@ -30,9 +30,9 @@ const assertFrozenPlainDetached = (output: unknown, input: unknown): void => {
 
 describe("public authorized observation V1 bridge", () => {
   it("preserves legacy utility identity and APIs", () => {
-    expect(legacyCanonical).toBe(canonical);
-    expect(legacyFreeze).toBe(deepFreeze);
-    expect(legacySquares).toBe(SQUARES);
+    expect(legacyCanonical({ b: 2, a: 1 })).toBe(canonical({ b: 2, a: 1 }));
+    expect(legacyFreeze({ nested: { value: 1 } })).toEqual(deepFreeze({ nested: { value: 1 } }));
+    expect(legacySquares).toEqual(SQUARES);
   });
 
   it.each(["w", "b"] as const)("preserves %s observation bytes with detached frozen plain output", (side) => {
@@ -76,8 +76,8 @@ describe("public authorized observation V1 bridge", () => {
       const getter = vi.fn(() => "private");
       if (kind === "getter") Object.defineProperty(target, "private", { enumerable: true, get: getter });
       if (kind === "setter") Object.defineProperty(target, "private", { enumerable: true, set: getter });
-      if (kind === "symbol") Object.defineProperty(target, Symbol("private"), { value: "private" });
-      if (kind === "hidden") Object.defineProperty(target, "private", { value: "private" });
+      if (kind === "symbol") Object.defineProperty(target, Symbol("private"), { get: getter });
+      if (kind === "hidden") Object.defineProperty(target, "private", { get: getter });
       if (kind === "prototype") Object.setPrototypeOf(target, { private: "private" });
       if (kind === "private") Object.assign(target, { private: "private" });
       expect(() => validateObservationV1(input), `${kind}:${index}`).toThrow(ContractError);
@@ -137,6 +137,31 @@ describe("public authorized observation V1 bridge", () => {
     const input = fixture();
     Object.assign(input.cells[0]!, { private: input });
     expect(() => validateObservationV1(input)).toThrow(ContractError);
+  });
+
+  it("accepts a shared own-piece/cell snapshot without retaining caller references", () => {
+    const input = fixture();
+    const own = input.own.pieces[0]!;
+    const cell = input.cells.find((entry) => entry.square === own.square)!;
+    expect(cell.visibility).toBe("lit");
+    if (cell.visibility !== "unknown") cell.piece = own.piece;
+    const expected = encodeObservation(input);
+    const output = validateObservationV1(input);
+    expect(encodeObservationV1(input)).toBe(expected);
+    expect(output).toEqual(validateObservation(input));
+    own.piece.type = "q";
+    expect(encodeObservationV1(output)).toBe(expected);
+  });
+
+  it("keeps the 64-cell schema cap and bounded raw inspection errors stable", () => {
+    for (const length of [65, 8192, 0xffffffff]) {
+      const input = fixture();
+      input.cells = length === 65 ? [...input.cells, input.cells[0]!] : new Array(length);
+      for (const run of [() => validateObservationV1(input), () => encodeObservationV1(input)]) {
+        expect(run).toThrow(ContractError);
+        expect(run).toThrow(length === 65 ? "ARRAY" : "SIZE");
+      }
+    }
   });
 
   it("enforces own/cells and memory consistency through every bridge operation", () => {

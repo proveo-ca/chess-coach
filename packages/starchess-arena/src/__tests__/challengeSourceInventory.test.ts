@@ -678,15 +678,20 @@ describe("partitioned challenge source inventory", () => {
   });
 
   it.each([
-    ['typeof value === "function" || typeof value === "symbol"', 'typeof value === "symbol"'],
-    ['Object.getPrototypeOf(value)', 'Object.getPrototypeOf(() => {})'],
-    ['Object.getOwnPropertyDescriptors(value)', 'Object.getOwnPropertyDescriptors(Object)'],
-    ['inspectDto(descriptor.value,', 'inspectDto(descriptor.value.constructor,'],
+    ['typeof input === "function" || typeof input === "symbol"', 'typeof input === "symbol"'],
+    ['Object.getPrototypeOf(input)', 'Object.getPrototypeOf(() => {})'],
+    ['Object.getOwnPropertyDescriptors(input)', 'Object.getOwnPropertyDescriptors(Object)'],
+    ['visit(descriptor.value,', 'visit(descriptor.value.constructor,'],
+    ['depth > 16 || ++state.visits > 8192', 'depth > 26 || ++state.visits > 81920'],
+    ['if (state.ancestors.has(input)) fail(at);', 'if (false) fail(at);'],
+    ['if (state.textbytes > MAX_CODEC_BYTES) fail(at, "SIZE");', 'if (false) fail(at, "SIZE");'],
     ['throw new ContractError(path, code);', 'return value as never;'],
   ])("rejects changes to the descriptor seam: %s", (before, after) => {
     const root = fixture();
     const path = `${ARENA}/src/challengeContract/validation.ts`;
-    put(root, path, readFileSync(join(repository, path), "utf8").replace(before, after));
+    const original = readFileSync(join(repository, path), "utf8");
+    expect(original).toContain(before);
+    put(root, path, original.replace(before, after));
     expect(() => collectSourceInventory(root)).toThrow("Unsupported code constructor acquisition");
   });
 });

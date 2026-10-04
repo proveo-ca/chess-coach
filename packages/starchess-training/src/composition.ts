@@ -171,6 +171,13 @@ export const composeKernel = (input: AuthorizedObservationV1, domain: DomainFact
       d.retainedByLength[String(length) as "1" | "2" | "3" | "4"]++;
     }
   }
+  for (const lane of lanes) {
+    for (const frontier of lane.frontiers) {
+      for (let i = frontier.head; i < frontier.nodes.length; i++) frontier.nodes[i]!.cursor.return(undefined);
+      frontier.nodes = [];
+      frontier.head = 0;
+    }
+  }
   d.exhaustedLanes = lanes.filter((lane) => lane.exhausted).map((lane) => lane.id);
   d.attemptCapReached = d.attemptedExtensions === 2048;
   d.capacityCapReached = d.uniqueIncludingPass === 512;

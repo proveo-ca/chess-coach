@@ -264,7 +264,7 @@ test('Docker enforces policy, fresh temporary inventory, and logged offline TS/V
         assert.equal(log.sha256, createHash('sha256').update(readFileSync(path)).digest('hex'));
       }
     }
-    writeFileSync(join(work, 'execution.json'), JSON.stringify({ initialContainerInspection: inspect, finalContainerInspection: completed, executionLog, report }, null, 2) + '\n');
+    writeFileSync(join(work, 'execution.json'), JSON.stringify({ image, output, imageInspection: imageInspect, initialContainerInspection: inspect, finalContainerInspection: completed, executionLog, report }, null, 2) + '\n');
     console.log(`Docker probe evidence: ${output}/probe.json`);
   } finally {
     docker(['rm', container]);

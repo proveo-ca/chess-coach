@@ -88,33 +88,67 @@ const order = (a: string, b: string): number => a < b ? -1 : a > b ? 1 : 0;
 const excludedTest = (path: string): boolean =>
   [CORE, ARENA, TRAINING].some((root) => path.startsWith(`${root}/src/`)) && path.split("/").includes("__tests__");
 const object = (value: unknown): value is Record<string, unknown> => value !== null && typeof value === "object" && !Array.isArray(value);
-const REVIEWED_INSPECT_DTO = `inspectDto = (value: unknown, path = "$", ancestors = new Set<object>()): unknown => {
-  if (!value || typeof value !== "object") {
-    if (typeof value === "function" || typeof value === "symbol") fail(path);
-    return value;
-  }
-  if (ancestors.has(value)) fail(path);
-  const isArray = Array.isArray(value);
-  const prototype = Object.getPrototypeOf(value);
-  if (isArray ? prototype !== Array.prototype : prototype !== Object.prototype && prototype !== null) fail(path);
-  const descriptors = Object.getOwnPropertyDescriptors(value);
-  const keys = Reflect.ownKeys(descriptors);
-  if (keys.some((key) => typeof key !== "string")) fail(path);
-  const length = isArray ? descriptors.length?.value as number : 0;
-  if (isArray && keys.length !== length + 1) fail(path, "ARRAY");
-  ancestors.add(value);
-  const entries: [string, unknown][] = [];
-  for (const key of keys as string[]) {
-    const descriptor = descriptors[key]!;
-    if (!Object.hasOwn(descriptor, "value")) fail(\`\${path}.\${key}\`);
-    if (isArray && key === "length") continue;
-    if (!descriptor.enumerable) fail(\`\${path}.\${key}\`);
-    if (isArray && (!/^(0|[1-9][0-9]*)$/.test(key) || Number(key) >= length)) fail(path, "ARRAY");
-    entries.push([key, inspectDto(descriptor.value, isArray ? \`\${path}[\${key}]\` : \`\${path}.\${key}\`, ancestors)]);
-  }
-  ancestors.delete(value);
-  const detached = Object.fromEntries(entries);
-  return isArray ? Array.from({ length }, (_, index) => detached[String(index)]) : detached;
+const REVIEWED_INSPECT_DTO = `inspectDto = (value: unknown, path = "$"): unknown => {
+  const state = { seenWeakMap: new WeakMap<object, { copy: unknown; height: number }>(), ancestors: new Set<object>(), visits: 0, textbytes: 0 };
+  const countText = (text: string, at: string): void => {
+    if (text.length > MAX_CODEC_BYTES - state.textbytes) fail(at, "SIZE");
+    for (let index = 0; index < text.length; index++) {
+      const code = text.charCodeAt(index);
+      let bytes = code < 0x80 ? 1 : code < 0x800 ? 2 : 3;
+      if (code >= 0xd800 && code <= 0xdbff && index + 1 < text.length) {
+        const next = text.charCodeAt(index + 1);
+        if (next >= 0xdc00 && next <= 0xdfff) { bytes = 4; index++; }
+      }
+      state.textbytes += bytes;
+      if (state.textbytes > MAX_CODEC_BYTES) fail(at, "SIZE");
+    }
+  };
+  const visit = (input: unknown, at: string, depth: number): { copy: unknown; height: number } => {
+    if (depth > 16 || ++state.visits > 8192) fail(at, "SIZE");
+    if (!input || typeof input !== "object") {
+      if (typeof input === "function" || typeof input === "symbol") fail(at);
+      if (typeof input === "string") countText(input, at);
+      return { copy: input, height: 0 };
+    }
+    if (state.ancestors.has(input)) fail(at);
+    const memo = state.seenWeakMap.get(input);
+    if (memo) {
+      if (depth + memo.height > 16) fail(at, "SIZE");
+      return memo;
+    }
+    const isArray = Array.isArray(input);
+    const prototype = Object.getPrototypeOf(input);
+    if (isArray ? prototype !== Array.prototype : prototype !== Object.prototype && prototype !== null) fail(at);
+    const keys = Reflect.ownKeys(input);
+    if (keys.length - (isArray ? 1 : 0) > 8192 - state.visits) fail(at, "SIZE");
+    for (const key of keys) {
+      if (typeof key !== "string") fail(at);
+      countText(key as string, at);
+    }
+    const descriptors = Object.getOwnPropertyDescriptors(input);
+    const length = isArray ? descriptors.length?.value as number : 0;
+    if (isArray && length > 8192 - state.visits) fail(at, "SIZE");
+    if (isArray && keys.length !== length + 1) fail(at, "ARRAY");
+    state.ancestors.add(input);
+    const entries: [string, unknown][] = [];
+    let height = 0;
+    for (const key of keys as string[]) {
+      const descriptor = descriptors[key]!;
+      if (!Object.hasOwn(descriptor, "value")) fail(at);
+      if (isArray && key === "length") continue;
+      if (!descriptor.enumerable) fail(at);
+      if (isArray && (!/^(0|[1-9][0-9]*)$/.test(key) || Number(key) >= length)) fail(at, "ARRAY");
+      const child = visit(descriptor.value, isArray ? \`\${at}[\${key}]\` : \`\${at}.\${key}\`, depth + 1);
+      entries.push([key, child.copy]);
+      height = Math.max(height, child.height + 1);
+    }
+    state.ancestors.delete(input);
+    const detached = Object.fromEntries(entries);
+    const result = { copy: isArray ? Array.from({ length }, (_, index) => detached[String(index)]) : detached, height };
+    state.seenWeakMap.set(input, result);
+    return result;
+  };
+  return visit(value, path, 0).copy;
 }`;
 
 export const collectSourceInventory = (
