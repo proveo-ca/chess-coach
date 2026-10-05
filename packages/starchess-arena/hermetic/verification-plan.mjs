@@ -5,7 +5,7 @@ import { workspacePackages, evidenceNamespace } from './workspace-policy.mjs';
 
 export const VERIFICATION_VERSION = 'hermetic-verification-v3';
 export const ASSERTION_FLOORS_VERSION = 'r2-assertion-floors-v3';
-export const VITEST_FLOORS = Object.freeze({ 'vitest-starchess-core.json': 475, 'vitest-starchess-arena.json': 1620, 'vitest-starchess-training.json': 57 });
+export const VITEST_FLOORS = Object.freeze({ 'vitest-starchess-core.json': 475, 'vitest-starchess-arena.json': 1650, 'vitest-starchess-training.json': 57 });
 export const outputTarget = `/app/${evidenceNamespace}`;
 export const requiredArtifacts = Object.freeze(['baseline-report.json', 'contract-report.json', 'coverage.json', 'pin-migration.json', 'r2-composition-report.json', 'public-closure-report.json', ...Object.keys(VITEST_FLOORS)]);
 
