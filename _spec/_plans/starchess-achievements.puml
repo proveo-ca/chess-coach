@@ -45,7 +45,11 @@ skinparam noteTextAlignment left
 ' On desktop the sheet is min(56rem, calc(100vw - 4rem)). Do not
 ' widen .panel--md / .panel--lg. Fresh mode: only the new cards,
 ' dismissible false, no overlay close, one Continue button
-' (variant neon). Fresh title: New achievements.
+' (variant neon). Fresh title: Achievements (2026-10-05: "New" dropped —
+' the list holds every badge the match reached, not only first unlocks).
+' A row whose level beats the stored unlock (unlockedLevel with career
+' levels zeroed — finalize already raised the career floor for beat /
+' beat50) gets a "(new)" title suffix and data-new="true".
 '
 ' ── TYPE ───────────────────────────────────────────────────────────────────
 ' Achievement.id = "<level>-<type>-<shortId>"
@@ -85,6 +89,10 @@ skinparam noteTextAlignment left
 ' provided by the two match hosts (SingleScreen, ReviewDemoScreen) from
 ' achievementLive's signal. A board with no match host (tutorial, demos)
 ' paints none; the board used to read the global signal directly.
+' SHIPPED (2026-10-05): pushAchievementBubbles queues. An idle queue shows
+' the first bubble at once; the rest reach the board one per
+' BUBBLE_STAGGER_MS (600), so a ply that mints several no longer stacks
+' them on one square. clear / reset / ensure drop the queue and its timer.
 ' SHIPPED: mines counts a detonation only. An opponent defusing a mine
 ' (a ranged attack clears an empty mined square, no casualty) never counts.
 ' SHIPPED: medal counts a Marine captured in the same ply its own gas step
@@ -150,7 +158,7 @@ skinparam noteTextAlignment left
 '   before = unlock ids
 '   backfill(matchHistory())     ' oldest witness fills empty slots
 '   fresh = ids added whose gameId is this match
-'   fresh.length > 0 → New achievements modal, else result modal
+'   fresh.length > 0 → Achievements modal, else result modal
 ' Continue sets the fresh modal closed and the result modal open.
 ' Another Game / Replay stay on MatchResultModal; this plan does
 ' not add a third button there.

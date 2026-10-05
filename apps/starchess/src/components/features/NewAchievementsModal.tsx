@@ -11,13 +11,15 @@ import type { AchievementBubble } from "~/types/achievements";
 export type NewAchievementsModalProps = {
   open: boolean;
   earned: readonly AchievementBubble[];
+  /** Badge shortIds this match raised past their stored level; titled "(new)". */
+  newShortIds?: ReadonlySet<string>;
   onContinue: () => void;
 };
 
 export const NewAchievementsModal: Component<NewAchievementsModalProps> = (props) => (
   <NeonModal
     open={props.open}
-    title="New achievements"
+    title="Achievements"
     position="fixed"
     size="lg"
     dismissible={false}
@@ -34,6 +36,7 @@ export const NewAchievementsModal: Component<NewAchievementsModalProps> = (props
                 data-testid="new-achievement"
                 data-short-id={item.shortId}
                 data-level={item.level}
+                data-new={props.newShortIds?.has(item.shortId) ? "true" : undefined}
               >
                 <div
                   class={styles.icon}
@@ -43,7 +46,10 @@ export const NewAchievementsModal: Component<NewAchievementsModalProps> = (props
                   }}
                 />
                 <div>
-                  <p class={styles.title}>{row?.title}</p>
+                  <p class={styles.title}>
+                    {row?.title}
+                    {props.newShortIds?.has(item.shortId) ? " (new)" : ""}
+                  </p>
                   <p class={styles.description}>{row?.description}</p>
                 </div>
               </article>
