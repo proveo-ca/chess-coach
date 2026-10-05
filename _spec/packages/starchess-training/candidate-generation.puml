@@ -21,6 +21,8 @@
 ' covers: packages/starchess-core/src/index.ts
 ' covers: packages/starchess-core/src/planning-v1.ts
 ' covers: packages/starchess-core/src/__tests__/planning-v1.test.ts
+' covers: packages/starchess-core/src/replay/packed.ts
+' covers: packages/starchess-core/src/__tests__/packed.test.ts
 ' covers: packages/starchess-core/src/__tests__/planning*.test.ts
 ' covers: packages/starchess-core/package.json
 ' covers: packages/starchess-arena/package.json
@@ -49,6 +51,7 @@
 ' DTO: reject ancestor cycles before memo lookup; reuse detached shared-subtree copies and enforce depth + cached subtree height <=16 on every path; closed V1 validation follows inspection.
 ' DTO: public observation encode validates the strict DTO; public actions/spend/decode inspect before reads; legacy private wire validation retains its behavior.
 ' legacy JSON: canonical sorting preserves own __proto__ data properties via Object.fromEntries; detached results retain ordinary Object.prototype / Array.prototype, not a null-prototype redesign.
+' packed JSON: own __proto__ next fields remain stored, not misclassified as rebuildable; packed canonical equality preserves own keys and unpacked ordinary Object.prototype.
 ' registry: ACTION_KINDS is frozen at declaration in canonical native order K.
 ' native costs: TUI-approved Freeze native tables; UNIT_COST and SPECIAL_REGISTRY plus every nested gasCost/actorHint entry use Object.freeze at declaration; authoritative native values/lookup unchanged.
 ' exports: core {'.':'./src/index.ts','./planning-v1':'./src/planning-v1.ts'}; arena {'.':'./src/index.ts','./observations':'./src/observations.ts','./intent-codec-v1':'./src/intent-codec-v1.ts'}; training {'./candidates':'./src/candidates.ts'}; no extra keys.
@@ -62,6 +65,9 @@
 ' closure: inventory/public regressions reject computed own-function-member constructor acquisition hidden by any, wrappers, getters/methods, nested aliases or ambiguous members; numeric arrays and nested destructuring now retain callable origin; ordinary data indexing/positive controls and reviewed DTO descriptors remain valid.
 ' closure: dataType uses a separate parsed/full-typed AST from lexical binding IDs; resolved workspace aliases set resolvedUsingTsExtension=false for inference only; bounded numeric/literal keys and typed ordinary data maps stay valid.
 ' closure: factory/await/new/member-mutation provenance rejects callable or unproven computed receivers, with assignments/Object/Reflect/array-mutator roots tracked; proven ordinary data access remains allowed, no blanket mutation ban.
+' review HIGH repairs: literal for-of key proof requires pristine Array intrinsics, including Symbol.iterator; interprocedural parameter member mutations propagate to caller argument roots via a deduplicated finite fixed-point worklist in both audits. Reviewer confirmation remains pending.
+' host lookup: own Object.entries(...).find reads replace parameter-derived native side/bank/table indexing, preserving all valid native values; these private host APIs are not new model exports.
+' admission: stageQueue validates the original intent/resource checks and privately stages the whole queue through native addScAction; commitPair preserves stage gas/spend equality and original resource checks, no fallback.
 ' availability: active iff a finite singleton probe passes every authorized root append guard, including resources/known occupancy; separate probe accounting, no free continuation.
 ' verification: inventory v2, pins v3, verification v3 source exists; 11 commands and separate host infra, new image and original 54 semantic parity PENDING.
 ' infrastructure: mandatory r2-infrastructure-verification-v1 host envelope binds actual Docker logs/inspections/probe artifacts to the captured dependency image; importer requires --infrastructure plus --acquisition and independently remeasures bytes before publication.
@@ -76,11 +82,11 @@
 ' provenance: both source inspections require runtime.mjs entrypoint, Cmd=['verify'], cwd=/app and exact ordered image Env + approved output; reject NODE_OPTIONS/NODE_PATH/LD_PRELOAD/LD_LIBRARY_PATH.
 ' acquisition: mandatory dependency-build envelope independently binds dependency image, measurements, controls/inputs, exact uncached Docker argv and successful untruncated logs; frozenDependency reuse is forbidden.
 ' capture: fresh dependency acquisition uses build --dependencies --no-cache; generated capture.json/workspace YAML explicitly 0644, child/intermediate/empty directories 0755 under umask 077; private context root stays private.
-' floors: registered r2-assertion-floors-v2 is core472/arena1310/training56; expected core474 (+2), training57 actual, arena1514 tentative; final enumeration/floor repair/full suites pending.
-' reported checks: Executor reports public-closure-v2 PASS, four roots, 28 workspace files + jsSHA manifest/runtime module (2 dependency files), zero jsSHA runtime edges; training57, targeted planning/legacy-prototype7, all3 typechecks, whole strict invoice and Node109 PASS; not executed here.
-' open gate: inventory777 = 776 PASS + 1 failing actual host whole-graph index proof; lead repair pending. Prior full arena1276 PASS predates amendment; latest full arena pending. Source-alias review remains open for loop actual types/per-module callback numeric proof.
+' floors: inspected r2-assertion-floors-v3 core475/arena1650/training57; arena1650 full run concurrent/PENDING, not a passing total. Previous arena1564 PASS predates last86 tests; older arena1276 PASS predates amendment.
+' reported checks: Executor reports public-closure-v2 PASS, four roots, 28 workspace files + jsSHA manifest/runtime module (2 dependency files), zero jsSHA runtime edges; full core475 incl planning identity/legacy ownproto/packed ownproto, full training57 incl independent SHA vectors/collisions, source-inventory913, all3 typechecks, whole strict invoice and Node109 PASS; not executed here.
+' open gate: latest iterator/interprocedural HIGH source repairs exist, final adversarial/security reviews pending; full arena1650 and fresh frozen/image/infrastructure/54+54/archive/import/publication gates pending. Prior inventory776/777 failure superseded by reported source913 full PASS.
 ' test fixture: approved immutable six-JSON per-file test snapshot, fresh validators; scoped120000ms integration budget, no model permit/decision deadline change.
-' readiness: README outside role scope; build must replace stale noble pin and describe planning-v1/public-closure-v2 plus current pending gates; no README edit here, no full READY.
+' readiness: whole README checked; jsSHA3.3.2/planning-v1/public-closure-v2 handoff repaired by build and retired; no README edit here, no full READY.
 ' checkpoint: Executor reports R2 source recovered from cc6 after reset; current pipeline restored; strict 19 errors and two legacy boundary casts resolved by lead, fresh full run PENDING.
 ' recovery: R0 records/partial logs are immutable history; absent archives/tmp images and old markers cannot authorize current tests or closure.
 ' future: H=1 calibrated turn-aware 4 deployed + 3 banked =7 excludes CC; versioned belief/features/calibration remain pending, no learned policy or SGD.
@@ -246,12 +252,12 @@ end note
 note bottom of VERIFY
   Inventory v2 / pins v3 / verification v3
   Eleven commands; fresh image proof pending
-  Registered floors v2: 472 / 1310 / 56
+  Registered floors v3: 475 / 1650 / 57
 end note
 
 note top of VERIFY
-  Final invoice enumeration: pending
-  Inventory: 776/777; host index proof failing
+  Reported full core475 / source913: PASS
+  Arena1650 full run / final reviews: pending
 end note
 
 note bottom of CLOSURE
@@ -274,6 +280,18 @@ note top of CLOSURE
   Lexical bindings / dataType: separate ASTs
   Workspace type inference: extension flag false
   Global evaluation/loader guards unchanged
+end note
+
+note right of CORE_HOST
+  Own entries/find: side, bank and table reads
+  Valid native values / stage checks unchanged
+end note
+
+note right of VERIFY
+  For-of proof: pristine Array intrinsics
+  Parameter writes: caller arguments tainted
+  Deduplicated finite fixed-point propagation
+  HIGH repairs exist; final reviews pending
 end note
 
 note left of CLOSURE
@@ -339,11 +357,11 @@ legend bottom
   Earlier five-promotion future generator draft is superseded, not native history.
   Executor-reported cc6 recovery restores R2 source, not fresh execution proof.
   Prior full host counts 469 core / 811 arena / 50 training are not a new run.
-  Registered floors v2: 472 core / 1310 arena / 56 training; final enumeration/repair pending.
-  Expected core474 (+2); training57 actual; arena1514 tentative, not a passing total.
-  Inventory777: 776 PASS, one actual host whole-graph index proof failing; lead repair pending.
+  Registered floors v3: 475 core / 1650 arena / 57 training.
+  Reported full core475, training57 and source-inventory913 PASS; not executed here.
+  Arena1650 concurrent full run PENDING; previous1564 PASS precedes last86 tests.
   Scoped integration budget120000ms; immutable six-JSON test snapshot; validators stay fresh.
-  Prior full arena1276 PASS precedes amendment; latest full run and source-alias review pending.
+  Older arena1276 PASS precedes amendment; iterator/interprocedural HIGH rereviews pending.
   Reported host checks and public closure do not establish full frozen verification.
   R0 records/partial logs and old markers are historical; no current closure authority.
   Legacy R0 archived logs and temporary images are missing.

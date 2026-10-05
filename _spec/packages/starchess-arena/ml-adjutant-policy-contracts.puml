@@ -11,8 +11,11 @@
 ' covers: packages/starchess-arena/package.json
 ' covers: packages/starchess-training/**
 ' covers: packages/starchess-core/package.json
+' covers: packages/starchess-core/src/**
 ' covers: packages/starchess-core/src/planning-v1.ts
 ' covers: packages/starchess-core/src/__tests__/planning-v1.test.ts
+' covers: packages/starchess-core/src/replay/packed.ts
+' covers: packages/starchess-core/src/__tests__/packed.test.ts
 ' covers: scripts/**
 ' covers: scripts/challenge-import-evidence.mjs
 ' covers: scripts/challenge-infrastructure-evidence.mjs
@@ -36,6 +39,7 @@
 ' boundary: codec representability is not proposal completeness or private host admission.
 ' boundary: baselineScore remains handcrafted and excluded from features; no learned weights exist.
 ' legacy JSON: canonical sorting preserves own __proto__ data properties via Object.fromEntries; detached results retain ordinary Object.prototype / Array.prototype, not a null-prototype redesign.
+' packed JSON: own __proto__ next fields remain stored, not misclassified as rebuildable; packed canonical equality preserves own keys and unpacked ordinary Object.prototype.
 ' boundary: a selected proposal receives one private whole-queue admission, never hidden probes or rescue.
 ' pin scope: project source inventory excludes tests; separate hermetic capture retains source/tests, dependency/store/tool bytes.
 ' import audit: lexical fixed-point binding IDs; static types, wrappers, namespace aliases, literal calls and declared esbuild closure; fail closed on unsupported escapes/unknown-extension CJS.
@@ -45,6 +49,9 @@
 ' import audit: numeric/string/constant array indices and nested destructuring preserve callable origins even through any; paired array/data-control fixtures add62 assertions, no blanket bracket-access ban.
 ' import audit: separate noLib/noResolve lexical AST and lazy full dataType AST preserve binding IDs; workspace inference resolves approved targets with resolvedUsingTsExtension=false, not runtime loader permission.
 ' import audit: factory/member mutation provenance rejects callable/unproven receivers; bounded numeric/literal keys and type-checked ordinary maps retain data access, including reviewed data mutations; 106 paired factory/mutation/data assertions added.
+' review HIGH repairs: literal for-of keys require pristine Array intrinsics including Symbol.iterator; both audits propagate parameter member mutation to caller argument roots via a deduplicated finite fixed-point worklist; final reviews remain pending.
+' host lookup: own Object.entries(...).find reads replace parameter-derived native side/bank/table indexing while preserving valid native values; full native host remains private to models.
+' admission: original stageQueue intent/resource checks and whole native addScAction staging remain; commitPair preserves stage gas/spend/resource checks, no fallback.
 ' public exports: all conditional workspace leaves, including node/default/unselected branches, must equal canonical approved targets; static-only pure closures reject every runtime dynamic import.
 ' public exports: core {'.':'./src/index.ts','./planning-v1':'./src/planning-v1.ts'}; four model audit roots core './planning-v1', arena './observations' + './intent-codec-v1', training './candidates'.
 ' public boundary: authorized/model runtime + type imports retargeted to planning-v1, no deep-core exceptions; full native coreRoot and arena root stay host-only/captured/inventoried; fflate stays core host dependency, not model closure.
@@ -67,9 +74,9 @@
 ' historical verification: image core 426/426, arena 434/434, typechecks/strict TS passed; historical infra 5/5 actual Docker and focused 7 tests/2 files.
 ' historical R0 verification: core 426/426, arena 689/689, zero failed/pending/todo; 107 Node tests, no skips; 54 executions + 54 reruns, semantic/migration parity true; eight exact commands/three static checks include both scripts.
 ' historical R0 host checks: actual Docker infrastructure 5/5 on then-new dependency image; host post-publication 13/13 including then-live source pins, no skips.
-' prior R2 host counts: 469/811/50 and prior full arena1276 PASS remain history; registered floors v2 now472/1310/56, expected core474 (+2), training57 actual, arena1514 tentative; enumeration/floor repair/latest full suites pending.
-' reported host checks: public-closure-v2 PASS four roots/28 workspace/2 jsSHA dep files/zero jsSHA runtime edges; training57, targeted planning/legacy-prototype7, three typechecks, whole strict invoice and Node109 PASS per Executor, not executed here.
-' open host gate: inventory777 = 776 PASS + 1 actual host whole-graph index-proof failure; lead repair pending. Source-alias review remains open: loop actual types/per-module callback numeric proof.
+' prior R2 host counts: 469/811/50 and older arena1276 PASS remain history; previous full arena1564 PASS predates last86 tests. Inspected registered floors v3 now475/1650/57; latest arena1650 full run concurrent/PENDING.
+' reported host checks: public-closure-v2 PASS four roots/28 workspace/2 jsSHA dep files/zero jsSHA runtime edges; full core475 incl planning identity/legacy+packed ownproto, full training57 incl independent SHA/collision tests, source-inventory913, three typechecks, whole strict invoice and Node109 PASS per Executor, not executed here.
+' open gates: latest iterator/interprocedural HIGH source repairs exist, final adversarial/security reviews pending; arena1650 full run and fresh frozen/image/infrastructure/54+54/archive/import/publication pending. Prior inventory776/777 failure superseded by reported source913 full PASS.
 ' fixture: approved immutable six-JSON per-file test snapshot; validators stay fresh; scoped120000ms integration budget changes no model permit/decision deadline.
 ' phase1 pins: baseline 940387370040f88888e9dfe0bb86ad9d4a8be88854df507120f34b22ee2d362b; verification 55d965afa71d775ff6ee1e95b6650a27d0ce759b966a81c43a3bb364236c7508. Unchanged.
 ' historical R0 final reviews: adversarial ses_efe0ed67dffew2su1gZIUaDy23 and security ses_efe0ed520ffeOEg3kd6jAtN33i both READY TO CLOSE R0: yes; source/captured-record review, no independent execution/hash recomputation.
@@ -96,7 +103,7 @@
 ' historical failed run location (not recovered): /tmp/opencode/starchess-hermetic-run-Bv2jRa; default 5s test timeout repaired to 30s with unchanged assertions; policy deadlines unchanged.
 ' future gates: calibrated turn-aware material belief remains H=1, public opening 4 deployed + 3 banked = 7 excludes CC and endowed paid basis; R1 versioned amendment/R4/R5 calibration before R6. Native causal frames are not H3 search. Prior 370-field v2 is not a supplied calibrated model.
 ' rendering: earlier checkonly is historical; current checkonly not run by spec-keeper (no shell tool).
-' readiness: registered floors need final enumeration/repair; README stale noble pin needs build-only correction; no source/README edit here, no full READY verdict.
+' readiness: README whole-file inspection confirms jsSHA3.3.2/planning-v1/public-closure-v2 repair; retire old handoff. Registered floors v3 do not establish arena1650 PASS; no source/README edit here, no full READY verdict.
 @startuml ml-adjutant-policy-contracts
 !include ../../themes/proveo.puml
 title StarChess arena · R2 assurance · PREPARED SOURCE CONTRACT / WIP
@@ -275,15 +282,23 @@ end note
 
 note bottom of RUNTIME
   Fresh R2 image and full verification PENDING
-  Registered floors v2: 472 / 1310 / 56
-  Final arena enumeration / full suite pending
+  Registered floors v3: 475 / 1650 / 57
+  Arena1650 full run pending; not a PASS
   Required: original 54 parity + 54 reruns
   Separate host Docker infra and final reviews
 end note
 
 note top of RUNTIME
   Inventory real-graph test timeout: 120000 ms
-  Inventory: 776/777; host index proof failing
+  Reported source-inventory913 full PASS
+end note
+
+note left of INVENTORY
+  Parameter writes propagate to caller arguments
+  because declared types cannot prove safe
+  runtime keys. A deduplicated worklist reaches
+  a bounded fixed point before the audit accepts
+  numeric access proofs.
 end note
 
 note bottom of EVIDENCE
@@ -383,6 +398,19 @@ note top of PUBLIC_GRAPH
   No vendor exception, patch or tree shaking
 end note
 
+note right of PUBLIC_GRAPH
+  Literal array keys require pristine intrinsics
+  because a replaced iterator can yield
+  constructor names. Audits revoke the exemption
+  after mutation rather than trusting the apparent
+  contents of the array.
+end note
+
+note bottom of ADMISSION
+  Whole-queue native addScAction admission
+  Original stage/resource checks; no fallback
+end note
+
 note top of BUNDLE
   Exclusive mkdir / all files fsynced
   Deep nested directories then root synced
@@ -412,10 +440,11 @@ legend bottom
   Original R0 A01-A15/reviews/counts are historical, not current proof or old-marker test authorization.
   Historical R0: 426 core / 689 arena / 107 Node; eight commands; 54+54 parity; Docker 5/5, host 13/13.
   Prior R2 host 469 core / 811 arena / 50 training and floors v1 remain historical.
-  Registered floors v2: 472/1310/56; expected core474, training57 actual, arena1514 tentative.
-  Inventory777: 776 PASS + one host whole-graph index proof failing; lead repair pending.
+  Registered floors v3: 475/1650/57; arena1650 concurrent full run PENDING, not PASS.
+  Reported full core475/training57/source-inventory913 PASS; prior failed host proof superseded.
+  Previous full arena1564 PASS predates last86 tests; older1276 PASS predates amendment.
   Immutable six-JSON per-file test snapshot; fresh validators; scoped integration budget120000ms.
-  Latest full arena, final floor enumeration/repair and source-alias review remain pending.
+  Iterator/pristine-Array + bounded interprocedural HIGH repairs exist; final reviews pending.
   Reported inventory/public-checker/core/training host passes do not close the full frozen gate.
   Prepared source contract is not full READY, image proof, publication or acceptance.
   R2 uses v2 inventory/v3 pins/v3 verification, eleven commands and separate trusted host infra.
