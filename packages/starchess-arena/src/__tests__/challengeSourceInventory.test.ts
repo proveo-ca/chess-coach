@@ -67,6 +67,33 @@ const dataArrayAccesses = [
   'const rows = [...inputRows]; void rows[0][1];',
 ];
 const unprovenComputedReceivers = [
+  'this.Function("return process")();',
+  'this.eval("return process");',
+  'parent.Function("return process")();',
+  'document.defaultView.eval("return process");',
+  'const {defaultView: host} = document; host.Function("return process")();',
+  'globalThis.document.defaultView.Function("return process")();',
+  'const {document: doc} = globalThis; const {defaultView: host} = doc; host.eval("return process");',
+  'const key:any="constructor"; Number = (()=>key) as any; const receiver:any=unknownFactory(); receiver[Number(0)]("return process")();',
+  'void window.process;',
+  'void self.process;',
+  'const timer = setTimeout; timer("return process", 0);',
+  'setTimeout.bind(null)("return process", 0);',
+  'setInterval.call(null, "return process", 0);',
+  'Reflect.apply(setTimeout, null, ["return process", 0]);',
+  'setTimeout(unknownCallback, 0);',
+  'function schedule(callback: any) {setTimeout(callback, 0);}',
+  'consume(setTimeout);',
+  'const api = Reflect; consume(api.get);',
+  'const api = Object; consume(api.getOwnPropertyDescriptor);',
+  'const {get: read} = Reflect; read(() => {}, "constructor");',
+  'const bag = {get key(): number {return "constructor" as any;}}; const key = bag["key"]; const receiver:any = unknownFactory(); receiver[key]("return process")();',
+  'function compile(receiver: any, key: number) {receiver[key]("return process")();} compile(()=>{}, "constructor" as any);',
+  'function compile(receiver: any, key: number) {receiver[key + 1]("return process")();}',
+  'function compile(receiver: any, key: number | "data") {receiver[key]("return process")();}',
+  'const {apply} = Reflect; const args = [Object.assign, null, [Math, {floor:()=>"constructor"}]]; apply(...args); const receiver:any=unknownFactory(); receiver[Math.floor(0)]("return process")();',
+  'const args = [Object.assign, null, [Math, {floor:()=>"constructor"}]]; const apply = Reflect.apply; apply(...args); const receiver:any=unknownFactory(); receiver[Math.floor(0)]("return process")();',
+  'const args = [Reflect.apply, null, [Object.assign, null, [Math, {floor:()=>"constructor"}]]]; const apply = Reflect.apply; apply(...args); const receiver:any=unknownFactory(); receiver[Math.floor(0)]("return process")();',
   'globalThis.Function("return process")();',
   'globalThis["Function"]("return process")();',
   'globalThis["eval"]("return process");',
@@ -146,6 +173,10 @@ const unprovenComputedReceivers = [
   'const box: any = {f: 0}; function mutate() {box.f = () => {};} mutate(); box.f[["con", "structor"].join("")]("return process")();',
 ];
 const ordinaryComputedData = [
+  'setTimeout(() => {}, 0); setInterval(function () {}, 0);',
+  'function schedule(callback: () => void) {setTimeout(callback, 0);}',
+  'function callback() {} setTimeout(callback, 0);',
+  'const data = new Uint32Array(4); data[0] = 1; void data[0];',
   'const values: any = unknownFactory(); for (let i = 0; i < 3; i++) void values[i];',
   'const values: any = unknownFactory(); const items = [1, 2]; for (let i = items.length - 1; i >= 0; i--) void values[i];',
   'const make: any = () => [1, 2]; const values = make(); void values[0];',
@@ -175,14 +206,14 @@ const fixture = (): string => {
   for (const path of ["package.json", "pnpm-lock.yaml", "pnpm-workspace.yaml", `${CORE}/package.json`, `${ARENA}/package.json`, `${TRAINING}/package.json`, `${CORE}/tsconfig.json`, `${ARENA}/tsconfig.json`, `${TRAINING}/tsconfig.json`, `${ARENA}/hermetic/pins.json`]) {
     put(root, path, readFileSync(join(repository, path), "utf8"));
   }
-  put(root, `${CORE}/package.json`, JSON.stringify({ name: "@chess-coach/starchess-core", exports: { ".": "./src/index.ts" }, dependencies: { fflate: "^0.8.3" } }));
+  put(root, `${CORE}/package.json`, JSON.stringify({ name: "@chess-coach/starchess-core", exports: { ".": "./src/index.ts", "./planning-v1": "./src/planning-v1.ts" }, dependencies: { fflate: "^0.8.3" } }));
   put(root, `${ARENA}/package.json`, JSON.stringify({ name: "@chess-coach/starchess-arena", exports: {
     ".": "./src/index.ts", "./observations": "./src/observations.ts", "./intent-codec-v1": "./src/intent-codec-v1.ts",
   }, dependencies: { "@chess-coach/starchess-core": "workspace:*" }, devDependencies: { tsx: "^4.19.5", typescript: "~5.9.3" } }));
   put(root, `${TRAINING}/package.json`, JSON.stringify({ name: "@chess-coach/starchess-training", exports: { "./candidates": "./src/candidates.ts" }, dependencies: {
-    "@chess-coach/starchess-core": "workspace:*", "@chess-coach/starchess-arena": "workspace:*", "@noble/hashes": "2.4.0",
+    "@chess-coach/starchess-core": "workspace:*", "@chess-coach/starchess-arena": "workspace:*", jssha: "3.3.2",
   } }));
-  for (const path of [`${CORE}/src/index.ts`, `${CORE}/src/seeds.ts`, `${ARENA}/src/index.ts`, `${ARENA}/src/observations.ts`, `${ARENA}/src/intent-codec-v1.ts`, `${TRAINING}/src/candidates.ts`, `${ARENA}/src/challenge/worker.ts`, `${ARENA}/src/challenge/sourceInventory.ts`, `${ARENA}/src/challengeContract/codec.ts`]) put(root, path, "export {};\n");
+  for (const path of [`${CORE}/src/index.ts`, `${CORE}/src/planning-v1.ts`, `${CORE}/src/seeds.ts`, `${ARENA}/src/index.ts`, `${ARENA}/src/observations.ts`, `${ARENA}/src/intent-codec-v1.ts`, `${TRAINING}/src/candidates.ts`, `${ARENA}/src/challenge/worker.ts`, `${ARENA}/src/challenge/sourceInventory.ts`, `${ARENA}/src/challengeContract/codec.ts`]) put(root, path, "export {};\n");
   put(root, `${ARENA}/src/cli/challenge.ts`, 'import "@chess-coach/starchess-core";\n');
   put(root, `${ARENA}/src/challenge/supervisor.ts`, 'import { createRequire } from "node:module";\ncreateRequire(import.meta.url).resolve("tsx");\nnew URL("./worker.ts", import.meta.url);\n');
   put(root, "scripts/challenge-contract-evidence.ts", `import "../${ARENA}/src/challengeContract/codec";\n`);
@@ -194,6 +225,55 @@ const fixture = (): string => {
 };
 
 describe("partitioned challenge source inventory", () => {
+  it.each([`${TRAINING}/src/candidates.ts`, `${ARENA}/src/observations.ts`])("rejects every consumer edge kind to the core root: %s", (path) => {
+    const root = fixture();
+    for (const code of [
+      'import "@chess-coach/starchess-core";',
+      'import type {Hidden} from "@chess-coach/starchess-core";',
+      'export * from "@chess-coach/starchess-core";',
+      'export type {Hidden} from "@chess-coach/starchess-core";',
+      'type Hidden = import("@chess-coach/starchess-core").Hidden;',
+      'import "../../starchess-core/src/index";',
+    ]) {
+      put(root, path, code);
+      expect(() => collectSourceInventory(root)).toThrow("Forbidden core root edge");
+    }
+  });
+  it("keeps the native root and every unreferenced core file in the whole inventory", () => {
+    const root = fixture();
+    put(root, `${CORE}/src/scfen/native.ts`, 'import "fflate";');
+    const inventory = collectSourceInventory(root);
+    expect(inventory.entrypoints).toEqual(expect.arrayContaining([`${CORE}/src/index.ts`, `${CORE}/src/planning-v1.ts`]));
+    expect(inventory.files.map((file) => file.path)).toContain(`${CORE}/src/scfen/native.ts`);
+    expect(inventory.audit.edges).toContainEqual(expect.objectContaining({ specifier: "fflate", targetKind: "external" }));
+  });
+  it.each([".", "./planning-v1"])("rejects a noncanonical erased types branch for core %s", (subpath) => {
+    const root = fixture();
+    const path = `${CORE}/package.json`;
+    const manifest = JSON.parse(readFileSync(join(root, path), "utf8"));
+    manifest.exports[subpath] = { import: manifest.exports[subpath], types: "./src/seeds.ts" };
+    put(root, path, JSON.stringify(manifest));
+    expect(() => collectSourceInventory(root)).toThrow("Unsupported workspace export map");
+  });
+  it.each(["index", "scfen/native", "replay/native", "commands/native", "resolve/native"])("rejects transitive native planning inventory edge %s", (target) => {
+    const root = fixture();
+    put(root, `${CORE}/src/${target}.ts`, "export type Hidden = number;");
+    put(root, `${CORE}/src/planning-v1.ts`, 'export * from "./bridge";');
+    put(root, `${CORE}/src/bridge.ts`, `export type {Hidden} from "./${target}";`);
+    expect(() => collectSourceInventory(root)).toThrow("Forbidden native planning edge");
+  });
+  it("rejects fflate reconnection from planning while allowing native core use", () => {
+    const root = fixture();
+    put(root, `${CORE}/src/index.ts`, 'import "fflate";');
+    expect(collectSourceInventory(root).audit.passed).toBe(true);
+    put(root, `${CORE}/src/planning-v1.ts`, 'import "fflate";');
+    expect(() => collectSourceInventory(root)).toThrow("Forbidden native planning edge");
+  });
+  it("rejects the exact indexed descriptor call outside the reviewed array declaration", () => {
+    const root = fixture();
+    put(root, `${ARENA}/src/challengeContract/validation.ts`, 'function acquire(value: unknown, index: number) {return Object.getOwnPropertyDescriptor(value, String(index));}');
+    expect(() => collectSourceInventory(root)).toThrow("Unsupported code constructor acquisition");
+  });
   it("preserves global evaluation rejection after data-type inference", () => {
     const root = fixture();
     put(root, `${CORE}/src/index.ts`, 'function access(array: any, index: number) {void array[index];} Function("return process")();');
@@ -202,7 +282,7 @@ describe("partitioned challenge source inventory", () => {
   it.each(unprovenComputedReceivers)("rejects unproven call-derived or mutated receivers: %s", (code) => {
     const root = fixture();
     put(root, `${CORE}/src/index.ts`, code);
-    expect(() => collectSourceInventory(root)).toThrow(/Unsupported code constructor acquisition|Unsupported mutable computed receiver|Unsupported builtin acquisition|Unsupported string evaluation/);
+    expect(() => collectSourceInventory(root)).toThrow(/Unsupported code constructor acquisition|Unsupported mutable computed receiver|Unsupported builtin acquisition|Unsupported string evaluation|Forbidden process access/);
   });
   it.each(ordinaryComputedData)("allows ordinary call-derived and mutated data indexing: %s", (code) => {
     const root = fixture();
@@ -331,6 +411,13 @@ describe("partitioned challenge source inventory", () => {
   });
 
   it.each([
+    'process.mainModule.require("node:fs");',
+    'process.require("node:fs");',
+    'process.binding("fs");',
+    'process.dlopen(module, "addon.node");',
+    'const p = process; const acquire = p.binding; acquire("fs");',
+    'import {binding as acquire} from "node:process"; acquire("fs");',
+    'export {dlopen} from "node:process";',
     'process.getBuiltinModule("module").createRequire(import.meta.url)("../challengeContract/codec.ts");',
     'process["getBuiltinModule"]("module").createRequire(import.meta.url)("../challengeContract/codec.ts");',
     'const acquire = process.getBuiltinModule; acquire("module");',
@@ -846,12 +933,12 @@ describe("partitioned challenge source inventory", () => {
 
   it("allows model public seams and coordinator host edges without widening pure partitions", () => {
     const root = fixture();
-    put(root, `${TRAINING}/src/candidates.ts`, 'import "@chess-coach/starchess-arena/observations"; import "@chess-coach/starchess-arena/intent-codec-v1"; import "@noble/hashes/sha2.js";');
+    put(root, `${TRAINING}/src/candidates.ts`, 'import "@chess-coach/starchess-core/planning-v1"; import "@chess-coach/starchess-arena/observations"; import "@chess-coach/starchess-arena/intent-codec-v1"; import "jssha/sha256";');
     put(root, `${TRAINING}/src/coordinator/run.ts`, 'import "@chess-coach/starchess-arena"; import "node:fs"; import "../candidates";');
     const inventory = collectSourceInventory(root);
     expect(inventory.groups["training-model"].map((file) => file.path)).toEqual([`${TRAINING}/src/candidates.ts`]);
     expect(inventory.entrypoints).toEqual(expect.arrayContaining([`${TRAINING}/src/candidates.ts`, `${ARENA}/src/observations.ts`, `${ARENA}/src/intent-codec-v1.ts`]));
-    expect(inventory.audit.edges).toContainEqual(expect.objectContaining({ importer: `${TRAINING}/src/candidates.ts`, specifier: "@noble/hashes/sha2.js", targetKind: "external" }));
+    expect(inventory.audit.edges).toContainEqual(expect.objectContaining({ importer: `${TRAINING}/src/candidates.ts`, specifier: "jssha/sha256", targetKind: "external" }));
   });
 
   it.each([
@@ -899,43 +986,144 @@ describe("static browser public closure", () => {
     const { checkPublicClosure } = await import(/* @vite-ignore */ script);
     return checkPublicClosure(root);
   };
+  const shaFixture = (root: string, code = "export default class SHA {};"): string => {
+    const base = `${TRAINING}/node_modules/jssha`;
+    put(root, `${base}/package.json`, JSON.stringify({ name: "jssha", version: "3.3.2", exports: { "./sha256": { import: "./dist/sha256.mjs", require: "./dist/sha256.js" } } }));
+    put(root, `${base}/dist/sha256.mjs`, code);
+    put(root, `${TRAINING}/src/candidates.ts`, 'import "jssha/sha256";');
+    return base;
+  };
+  it.each(["jssha", "jssha/sha1", "jssha/dist/sha256.mjs"])("rejects an unreviewed SHA export %s", async (specifier) => {
+    const root = fixture();
+    shaFixture(root);
+    put(root, `${TRAINING}/src/candidates.ts`, `import "${specifier}";`);
+    await expect(check(root)).rejects.toThrow("Unreviewed SHA export");
+  });
+  it("rejects the indexed descriptor call outside the reviewed public array declaration", async () => {
+    const root = fixture();
+    put(root, `${ARENA}/src/challengeContract/validation.ts`, 'export function acquire(value: unknown, index: number) {return Object.getOwnPropertyDescriptor(value, String(index));}');
+    put(root, `${ARENA}/src/observations.ts`, 'export {acquire} from "./challengeContract/validation";');
+    await expect(check(root)).rejects.toThrow("Code constructor acquisition in public closure");
+  });
+  it.each([
+    'import "./helper.mjs"; export default class SHA {};',
+    'export {default} from "./helper.mjs";',
+    'const compile = (()=>{}).constructor; export default compile;',
+    'const compile = Reflect.get; export default compile;',
+    'const key = ["con", "structor"].join(""); const receiver = unknownFactory(); receiver[key]("return process")();',
+    'const timer = setTimeout; export default timer;',
+    'export default window.Function;',
+    'export default process;',
+  ])("audits every external SHA runtime site without bypasses: %s", async (code) => {
+    const root = fixture();
+    const base = shaFixture(root, code);
+    put(root, `${base}/dist/helper.mjs`, "export default 0;");
+    await expect(check(root)).rejects.toThrow(/Runtime import in SHA dependency|Code constructor acquisition in public closure|Host timer evaluation in public closure|Host acquisition in public closure|Host global in public closure/);
+  });
+  it.each(["^3.3.2", "~3.3.2", "3.3.1", "latest"])("requires an exact declared SHA pin instead of %s", async (pin) => {
+    const root = fixture();
+    shaFixture(root);
+    const path = `${TRAINING}/package.json`;
+    const manifest = JSON.parse(readFileSync(join(root, path), "utf8"));
+    manifest.dependencies.jssha = pin;
+    put(root, path, JSON.stringify(manifest));
+    await expect(check(root)).rejects.toThrow("SHA dependency must declare exact 3.3.2");
+  });
+  it("rejects a mismatched installed SHA version and alternative runtime target", async () => {
+    const root = fixture();
+    const base = shaFixture(root);
+    const path = `${base}/package.json`;
+    const manifest = JSON.parse(readFileSync(join(root, path), "utf8"));
+    manifest.version = "3.3.1";
+    put(root, path, JSON.stringify(manifest));
+    await expect(check(root)).rejects.toThrow("Unexpected dependency package");
+    manifest.version = "3.3.2";
+    manifest.exports["./sha256"].import = "./dist/sha256.js";
+    put(root, path, JSON.stringify(manifest));
+    await expect(check(root)).rejects.toThrow("Unreviewed SHA target");
+  });
+  it("permits ordinary external data intrinsics and numeric loop indexing", async () => {
+    const root = fixture();
+    shaFixture(root, 'const data = new Uint32Array(4); const words = []; let index; for (index = 0; index < data.length; index += 1) {words[index] = data[index];} export default words;');
+    expect((await check(root)).dependencyFiles).toHaveLength(2);
+  });
+  it.each([`${TRAINING}/src/candidates.ts`, `${ARENA}/src/observations.ts`])("rejects runtime and erased core root edges from %s", async (path) => {
+    const root = fixture();
+    for (const code of [
+      'import "@chess-coach/starchess-core";',
+      'import type {Hidden} from "@chess-coach/starchess-core";',
+      'export * from "@chess-coach/starchess-core";',
+      'export type {Hidden} from "@chess-coach/starchess-core";',
+      'type Hidden = import("@chess-coach/starchess-core").Hidden;',
+    ]) {
+      put(root, path, code);
+      await expect(check(root)).rejects.toThrow("Native core in public closure");
+    }
+  });
+  it.each(["index", "scfen/native", "replay/native", "commands/native", "resolve/native"])("rejects planning reconnection to native core %s", async (target) => {
+    const root = fixture();
+    put(root, `${CORE}/src/${target}.ts`, "export type Hidden = number;");
+    for (const code of [`export * from "./${target}";`, `export type {Hidden} from "./${target}";`, `type Hidden = import("./${target}").Hidden;`]) {
+      put(root, `${CORE}/src/planning-v1.ts`, code);
+      await expect(check(root)).rejects.toThrow("Native core in public closure");
+    }
+  });
+  it.each([
+    [`${ARENA}/src/authorized/v1/observationCodec.ts`, "board/mines"],
+    [`${ARENA}/src/challengeContract/candidateWire.ts`, "rules/constants"],
+  ])("rejects formerly reviewed deep core links from %s", async (path, target) => {
+    const root = fixture();
+    put(root, `${CORE}/src/${target}.ts`, "export {};");
+    put(root, path!, `import "${path!.includes("/authorized/") ? "../../../.." : "../../.."}/starchess-core/src/${target}";`);
+    put(root, `${ARENA}/src/observations.ts`, `import "./${path!.slice(`${ARENA}/src/`.length)}";`);
+    await expect(check(root)).rejects.toThrow("Deep private cross-package import");
+  });
+  it.each(["fflate", "@noble/hashes/sha2.js"])("rejects unreviewed public external %s", async (specifier) => {
+    const root = fixture();
+    const path = `${TRAINING}/package.json`;
+    const manifest = JSON.parse(readFileSync(join(root, path), "utf8"));
+    manifest.dependencies[specifier.startsWith("@noble/") ? "@noble/hashes" : specifier] = "1.0.0";
+    put(root, path, JSON.stringify(manifest));
+    put(root, `${TRAINING}/src/candidates.ts`, `import "${specifier}";`);
+    await expect(check(root)).rejects.toThrow("Unreviewed public dependency");
+  });
 
   it("preserves public host-global rejection after data-type inference", async () => {
     const root = fixture();
-    put(root, `${CORE}/src/index.ts`, 'function access(array: any, index: number) {void array[index];} Function("return process")();');
+    put(root, `${CORE}/src/planning-v1.ts`, 'function access(array: any, index: number) {void array[index];} Function("return process")();');
     await expect(check(root)).rejects.toThrow("Host global in public closure");
   });
 
   it.each(unprovenComputedReceivers)("rejects public unproven call-derived or mutated receivers: %s", async (code) => {
     const root = fixture();
-    put(root, `${CORE}/src/index.ts`, code);
+    put(root, `${CORE}/src/planning-v1.ts`, code);
     await expect(check(root)).rejects.toThrow(/Code constructor acquisition in public closure|Host acquisition in public closure|Host timer evaluation in public closure|Host global in public closure/);
   });
   it.each(ordinaryComputedData)("allows ordinary public call-derived and mutated data indexing: %s", async (code) => {
     const root = fixture();
-    put(root, `${CORE}/src/index.ts`, code);
+    put(root, `${CORE}/src/planning-v1.ts`, code);
     expect((await check(root)).passed).toBe(true);
   });
 
   it.each(arrayMemberConstructors)("rejects public numeric array function constructor acquisition: %s", async (code) => {
     const root = fixture();
-    put(root, `${CORE}/src/index.ts`, code);
+    put(root, `${CORE}/src/planning-v1.ts`, code);
     await expect(check(root)).rejects.toThrow("Code constructor acquisition in public closure");
   });
   it.each(dataArrayAccesses)("allows ordinary public data array indexing: %s", async (code) => {
     const root = fixture();
-    put(root, `${CORE}/src/index.ts`, code);
+    put(root, `${CORE}/src/planning-v1.ts`, code);
     expect((await check(root)).passed).toBe(true);
   });
 
   it.each(ownMemberConstructors)("rejects computed constructors on own public function members: %s", async (code) => {
     const root = fixture();
-    put(root, `${CORE}/src/index.ts`, code);
+    put(root, `${CORE}/src/planning-v1.ts`, code);
     await expect(check(root)).rejects.toThrow("Code constructor acquisition in public closure");
   });
   it("allows computed public data indexing and the reviewed DTO descriptors", async () => {
     const root = fixture();
-    put(root, `${CORE}/src/index.ts`, 'const box: any = {f: () => {}, data: {w: 1, b: 2}}; const alias = box.data; void alias[key];');
+    put(root, `${CORE}/src/planning-v1.ts`, 'const box: any = {f: () => {}, data: {w: 1, b: 2}}; const alias = box.data; void alias[key];');
     const path = `${ARENA}/src/challengeContract/validation.ts`;
     put(root, path, readFileSync(join(repository, path), "utf8"));
     put(root, `${ARENA}/src/observations.ts`, 'export {inspectDto} from "./challengeContract/validation";');
@@ -962,6 +1150,7 @@ describe("static browser public closure", () => {
     put(root, `${ARENA}/src/authorized/v1/types.ts`, "export type Observation = number;");
     const first = await check(root);
     expect(first.passed).toBe(true);
+    expect(first.version).toBe("public-closure-v2");
     expect(first.entries).toHaveLength(4);
     expect(first.verifiedPaths).toContain(`${ARENA}/src/authorized/v1/types.ts`);
     expect(await check(root)).toEqual(first);
@@ -969,12 +1158,13 @@ describe("static browser public closure", () => {
     expect((await check(root)).sourceSha256).not.toBe(first.sourceSha256);
     put(root, `${CORE}/package.json`, JSON.stringify({ name: "@chess-coach/starchess-core", exports: { ".": {
       node: "./src/index.ts", browser: { import: "./src/index.ts" }, default: "./src/index.ts",
-    } } }));
-    expect((await check(root)).entries[0].path).toBe(`${CORE}/src/index.ts`);
+    }, "./planning-v1": { types: "./src/planning-v1.ts", node: "./src/planning-v1.ts", browser: { import: "./src/planning-v1.ts" }, default: "./src/planning-v1.ts" } } }));
+    expect((await check(root)).entries[0]).toEqual({ package: "@chess-coach/starchess-core", subpath: "./planning-v1", path: `${CORE}/src/planning-v1.ts` });
   });
 
   it.each([
     [CORE, ".", "./src/index.ts"],
+    [CORE, "./planning-v1", "./src/planning-v1.ts"],
     [ARENA, ".", "./src/index.ts"],
     [ARENA, "./observations", "./src/observations.ts"],
     [ARENA, "./intent-codec-v1", "./src/intent-codec-v1.ts"],
@@ -985,7 +1175,7 @@ describe("static browser public closure", () => {
     const manifest = JSON.parse(readFileSync(join(root, path), "utf8"));
     put(root, `${owner}/outside.mjs`, 'import "node:fs";');
     put(root, `${owner}/src/host.ts`, 'import "node:fs";');
-    for (const condition of ["node", "default"]) {
+    for (const condition of ["node", "default", "types"]) {
       for (const alternative of ["./outside.mjs", "./src/host.ts"]) {
         manifest.exports[subpath!] = { browser: { import: target }, [condition]: alternative };
         put(root, path, JSON.stringify(manifest));
@@ -1000,7 +1190,7 @@ describe("static browser public closure", () => {
   ])("rejects wildcard, unsafe and unsupported workspace targets in unselected branches: %j", async (target) => {
     const root = fixture();
     put(root, `${CORE}/package.json`, JSON.stringify({ name: "@chess-coach/starchess-core", exports: {
-      ".": { browser: "./src/index.ts", default: target },
+      ".": "./src/index.ts", "./planning-v1": { browser: "./src/planning-v1.ts", default: target },
     } }));
     await expect(check(root)).rejects.toThrow(`Unapproved public export map: ${CORE}`);
   });
@@ -1038,21 +1228,23 @@ describe("static browser public closure", () => {
     await expect(check(root)).rejects.toThrow(`Unapproved public export map: ${owner}`);
   });
 
-  it("pins external browser ESM and SHA transitive files instead of Node export branches", async () => {
+  it("pins the exact standalone SHA-256 ESM runtime without constructor exceptions", async () => {
     const root = fixture();
     put(root, `${CORE}/src/index.ts`, 'import "fflate";');
-    put(root, `${TRAINING}/src/candidates.ts`, 'import "@noble/hashes/sha2.js";');
-    for (const [owner, name] of [[CORE, "fflate"], [TRAINING, "@noble/hashes"]]) {
+    put(root, `${TRAINING}/src/candidates.ts`, 'import "jssha/sha256";');
+    for (const [owner, name] of [[TRAINING, "jssha"]]) {
       const source = join(repository, owner!, "node_modules", name!);
       const target = join(root, owner!, "node_modules", name!);
       mkdirSync(dirname(target), { recursive: true });
       symlinkSync(source, target);
     }
     const report = await check(root);
-    expect(report.dependencyFiles.map((file: {path: string}) => file.path)).toEqual(expect.arrayContaining([
-      "fflate@0.8.3/esm/browser.js", "@noble/hashes@2.4.0/sha2.js", "@noble/hashes@2.4.0/_md.js", "@noble/hashes@2.4.0/_u64.js", "@noble/hashes@2.4.0/utils.js",
-    ]));
+    expect(report.dependencyFiles.map((file: {path: string}) => file.path)).toEqual([
+      "jssha@3.3.2/dist/sha256.mjs", "jssha@3.3.2/package.json",
+    ]);
     expect(report.dependencyFiles.every((file: {sha256: string}) => /^[0-9a-f]{64}$/.test(file.sha256))).toBe(true);
     expect(report.edges.some((edge: {specifier: string}) => edge.specifier.startsWith("node:"))).toBe(false);
+    expect(report.edges.some((edge: {importer: string}) => edge.importer.startsWith("jssha@"))).toBe(false);
+    expect(report.verifiedPaths).not.toContain(`${CORE}/src/index.ts`);
   });
 });

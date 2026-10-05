@@ -209,6 +209,13 @@ export const collectSourceInventory = (
   files.sort((a, b) => order(a.path, b.path));
   const listed = new Map(files.map((file) => [file.path, file]));
   const manifests = new Map(["", CORE, ARENA, TRAINING].map((path) => [path, json(path ? `${path}/package.json` : "package.json")]));
+  const canonicalBranches = (value: unknown, target: string): boolean => typeof value === "string" ? value === target
+    : object(value) && Object.keys(value).length > 0 && Object.values(value).every((branch) => canonicalBranches(branch, target));
+  const coreExports = manifests.get(CORE)!.exports;
+  if (!object(coreExports) || Object.keys(coreExports).sort().join(",") !== ".,./planning-v1" ||
+      !canonicalBranches(coreExports["."], "./src/index.ts") || !canonicalBranches(coreExports["./planning-v1"], "./src/planning-v1.ts")) {
+    throw new Error(`Unsupported workspace export map: ${CORE}`);
+  }
   const selectExport = (value: unknown): string | undefined => {
     if (typeof value === "string") return value;
     if (!object(value)) return undefined;
@@ -317,6 +324,7 @@ export const collectSourceInventory = (
       }
     }
     const partition = listed.get(importer)!.partition;
+    if (["arena-authorized", "training-model"].includes(partition) && target === `${CORE}/src/index.ts`) throw new Error(`Forbidden core root edge: ${importer} -> ${target}`);
     if (kind === "dynamic" && PURE.has(partition)) throw new Error(`Forbidden dynamic import edge: ${importer} -> ${specifier}`);
     const inventorySeam = importer === `${ARENA}/src/challenge/evidence.ts` && target === `${ARENA}/src/challenge/sourceInventory.ts` && kind === "import";
     if (targetKind === "source" && !SOURCE_PARTITION_EDGES[partition].includes(listed.get(target)!.partition) && !inventorySeam) {
@@ -325,7 +333,7 @@ export const collectSourceInventory = (
     if (importer.startsWith(`${ARENA}/src/challengeContract/`) && targetKind === "source" &&
         (target.startsWith("scripts/") || target.startsWith(`${ARENA}/hermetic/`))) throw new Error(`Forbidden partition edge: ${importer} -> ${target}`);
     if (targetKind === "builtin" && PURE.has(partition)) throw new Error(`Forbidden builtin edge: ${importer} -> ${specifier}`);
-    if (partition === "training-model" && targetKind === "source" && owner !== [...manifests.entries()].find(([path]) => path && target.startsWith(`${path}/`))?.[0] && specifier.startsWith(".")) {
+    if (["training-model", "arena-authorized"].includes(partition) && targetKind === "source" && owner !== [...manifests.entries()].find(([path]) => path && target.startsWith(`${path}/`))?.[0] && specifier.startsWith(".")) {
       throw new Error(`Forbidden deep private edge: ${importer} -> ${target}`);
     }
     edges.push({ importer, specifier, kind, target, targetKind, ...(typeOnly ? { typeOnly: true } : {}) });
@@ -463,18 +471,41 @@ export const collectSourceInventory = (
       return ts.isIdentifier(expression) && objectNamespaces.has(binding(expression)) ||
         member !== undefined && member.name === "Object" && globalNamespace(member.receiver);
     };
+    const documentRoot = (node: ts.Expression, seen = new Set<ts.Expression>()): boolean => {
+      const expression = origin(node);
+      if (seen.has(expression)) return false;
+      const next = new Set([...seen, expression]);
+      if (ts.isIdentifier(expression)) {
+        const key = binding(expression);
+        if (expression.text === "document" && typeof key === "string") return true;
+        const declaration = typeof key !== "string" ? key.valueDeclaration : undefined;
+        const bound = declaration && ts.isBindingElement(declaration) ? bindingMember(declaration) : undefined;
+        if (bound?.name === "document" && hostRoot(bound.receiver, next)) return true;
+      }
+      const member = property(expression);
+      return !!(member?.name === "document" && hostRoot(member.receiver, next));
+    };
     const hostRoot = (node: ts.Expression, seen = new Set<ts.Expression>()): boolean => {
       const expression = unwrap(node);
       if (seen.has(expression)) return false;
       const next = new Set([...seen, expression]);
       const rooted = origin(expression);
       if (rooted !== expression && hostRoot(rooted, next)) return true;
+      if (ts.isIdentifier(expression)) {
+        const key = binding(expression);
+        const declaration = typeof key !== "string" ? key.valueDeclaration : undefined;
+        const bound = declaration && ts.isBindingElement(declaration) ? bindingMember(declaration) : undefined;
+        if (bound && ["globalThis", "global", "window", "self", "frames", "top", "parent"].includes(bound.name ?? "") && hostRoot(bound.receiver, next)) return true;
+        const receiver = bound && origin(bound.receiver);
+        if (bound?.name === "defaultView" && receiver && documentRoot(receiver, next)) return true;
+      }
       const member = property(expression);
-      return ts.isIdentifier(expression) && ["globalThis", "global", "window", "self", "frames", "top", "parent"].includes(expression.text) &&
+      const receiver = member && origin(member.receiver);
+      return !!(expression.kind === ts.SyntaxKind.ThisKeyword || ts.isIdentifier(expression) && ["globalThis", "global", "window", "self", "frames", "top", "parent"].includes(expression.text) &&
         (globalNamespaces.has(binding(expression)) || typeof binding(expression) === "string") ||
         ts.isElementAccessExpression(expression) && hostRoot(expression.expression, next) ||
         member !== undefined && (["globalThis", "global", "window", "self", "frames", "top", "parent"].includes(member.name ?? "") && hostRoot(member.receiver, next) ||
-          member.name === "defaultView" && ts.isIdentifier(member.receiver) && member.receiver.text === "document" && typeof binding(member.receiver) === "string");
+          member.name === "defaultView" && receiver && documentRoot(receiver, next)));
     };
     const evaluation = (node: ts.Expression): boolean => {
       const expression = unwrap(node);
@@ -574,7 +605,7 @@ export const collectSourceInventory = (
     const ownMember = (receiver: ts.Expression, name: string | undefined): ts.Expression | undefined => {
       if (name === undefined) return undefined;
       if (ts.isArrayLiteralExpression(receiver) && /^(0|[1-9][0-9]*)$/.test(name) && !receiver.elements.some(ts.isSpreadElement)) {
-        const entry = receiver.elements[Number(name)];
+        const entry = receiver.elements[+name];
         return entry && !ts.isOmittedExpression(entry) ? entry : undefined;
       }
       if (!ts.isObjectLiteralExpression(receiver)) return undefined;
@@ -666,7 +697,7 @@ export const collectSourceInventory = (
         else if (ts.isBinaryExpression(target) && target.operatorToken.kind === ts.SyntaxKind.EqualsToken) writes(target.left);
       };
       if (ts.isBinaryExpression(node) && node.operatorToken.kind >= ts.SyntaxKind.FirstAssignment && node.operatorToken.kind <= ts.SyntaxKind.LastAssignment) writes(node.left,
-        [ts.SyntaxKind.PlusEqualsToken, ts.SyntaxKind.MinusEqualsToken].includes(node.operatorToken.kind) && ts.isNumericLiteral(unwrap(node.right)));
+        [ts.SyntaxKind.EqualsToken, ts.SyntaxKind.PlusEqualsToken, ts.SyntaxKind.MinusEqualsToken].includes(node.operatorToken.kind) && ts.isNumericLiteral(unwrap(node.right)));
       if ((ts.isPrefixUnaryExpression(node) || ts.isPostfixUnaryExpression(node)) && [ts.SyntaxKind.PlusPlusToken, ts.SyntaxKind.MinusMinusToken].includes(node.operator)) writes(node.operand, true);
       if (ts.isDeleteExpression(node)) writes(node.expression);
       if ((ts.isForOfStatement(node) || ts.isForInStatement(node)) && !ts.isVariableDeclarationList(node.initializer)) writes(node.initializer);
@@ -699,18 +730,16 @@ export const collectSourceInventory = (
           const value = origin(unwrap(argument));
           if (seen.has(value)) return false;
           const next = new Set([...seen, value]);
+          if (ts.isSpreadElement(value)) return argumentMutator(value.expression, next);
           if (ts.isArrayLiteralExpression(value)) return value.elements.some((entry) => !ts.isOmittedExpression(entry) && argumentMutator(entry, next));
-          if (ts.isIdentifier(value)) {
-            const key = binding(value);
-            const declaration = typeof key !== "string" ? key.valueDeclaration : undefined;
-            return !!(declaration && ts.isVariableDeclaration(declaration) && declaration.initializer && argumentMutator(declaration.initializer, next));
-          }
+          if (ts.isObjectLiteralExpression(value)) return value.properties.some((entry) => ts.isSpreadAssignment(entry) ? argumentMutator(entry.expression, next)
+            : ts.isPropertyAssignment(entry) ? argumentMutator(entry.initializer, next) : ts.isShorthandPropertyAssignment(entry) && argumentMutator(entry.name, next));
           return mutatorRoot(value);
         };
-        const callee = property(node.expression);
+        const callee = property(origin(node.expression));
         const indirect = callee !== undefined && (callee.name === undefined || ["call", "apply", "bind"].includes(callee.name));
-        if (mutatorRoot(node.expression) || indirect && node.arguments.some(argumentMutator)) {
-          for (const builtin of ["Math", "String", "Array", "globalThis", "global"]) mutatedRoots.add(builtin);
+        if (mutatorRoot(node.expression) || indirect && node.arguments.some((argument) => argumentMutator(argument))) {
+          for (const builtin of ["Math", "String", "Number", "Array", "globalThis", "global"]) mutatedRoots.add(builtin);
         }
         if (node.arguments[0] && member && (objectNamespace(origin(member.receiver)) && ["assign", "defineProperty", "defineProperties"].includes(member.name ?? "") ||
             reflectionNamespace(origin(member.receiver)) && ["set", "deleteProperty", "defineProperty"].includes(member.name ?? ""))) markMutation(node.arguments[0]);
@@ -719,6 +748,63 @@ export const collectSourceInventory = (
       ts.forEachChild(node, scanMutations);
     };
     scanMutations(source);
+    const numericOperators = new Set([
+      ts.SyntaxKind.MinusToken, ts.SyntaxKind.AsteriskToken, ts.SyntaxKind.AsteriskAsteriskToken, ts.SyntaxKind.SlashToken, ts.SyntaxKind.PercentToken,
+      ts.SyntaxKind.LessThanLessThanToken, ts.SyntaxKind.GreaterThanGreaterThanToken, ts.SyntaxKind.GreaterThanGreaterThanGreaterThanToken,
+      ts.SyntaxKind.AmpersandToken, ts.SyntaxKind.BarToken, ts.SyntaxKind.CaretToken,
+    ]);
+    const hidesGetter = (access: ts.Expression, seen = new Set<ts.Expression>()): boolean => {
+      const member = property(access);
+      if (!member || seen.has(access)) return false;
+      const next = new Set([...seen, access]);
+      const receiver = origin(member.receiver);
+      if (hidesGetter(receiver, next)) return true;
+      const receiverGetter = (value: ts.Expression, visited = new Set<ts.Expression>()): boolean => {
+        const object = origin(value);
+        if (visited.has(object)) return true;
+        if (!ts.isObjectLiteralExpression(object)) return true;
+        const nested = new Set([...visited, object]);
+        return object.properties.some((entry) => ts.isSpreadAssignment(entry) ? receiverGetter(entry.expression, nested) :
+          (member.name === undefined || ownName(entry.name) === undefined || ownName(entry.name) === member.name) &&
+          (ts.isGetAccessorDeclaration(entry) || ts.isSetAccessorDeclaration(entry)));
+      };
+      return ts.isObjectLiteralExpression(receiver) && receiverGetter(receiver);
+    };
+    const numericValue = (node: ts.Expression, coercionOnly = false, seen = new Set<ts.Expression>()): boolean => {
+      const input = unwrap(node);
+      if (seen.has(input)) return false;
+      const next = new Set([...seen, input]);
+      if (ts.isIdentifier(input)) {
+        if (nonNumericWrites.has(binding(input))) return false;
+        if (!coercionOnly && dataType(input).flags & (ts.TypeFlags.Any | ts.TypeFlags.Unknown)) return false;
+      }
+      const value = origin(input);
+      if (value !== input) return numericValue(value, coercionOnly, next);
+      if (ts.isNumericLiteral(value)) return true;
+      if (ts.isPrefixUnaryExpression(value) && [ts.SyntaxKind.PlusToken, ts.SyntaxKind.MinusToken, ts.SyntaxKind.TildeToken].includes(value.operator)) return true;
+      if (ts.isBinaryExpression(value)) return numericOperators.has(value.operatorToken.kind) ||
+        value.operatorToken.kind === ts.SyntaxKind.PlusToken && numericValue(value.left, coercionOnly, next) && numericValue(value.right, coercionOnly, next);
+      if (ts.isConditionalExpression(value)) return numericValue(value.whenTrue, coercionOnly, next) && numericValue(value.whenFalse, coercionOnly, next);
+      if (ts.isCallExpression(value)) {
+        const member = property(value.expression);
+        if (ts.isIdentifier(value.expression) && value.expression.text === "Number" && typeof binding(value.expression) === "string" &&
+            !["Number", "global", "globalThis"].some((root) => mutatedRoots.has(root)) && ![...provenance(value.expression)].some((root) => mutatedRoots.has(root))) return true;
+        return !!(member && ["floor", "ceil", "round", "trunc", "abs", "min", "max"].includes(member.name ?? "") &&
+          ts.isIdentifier(member.receiver) && member.receiver.text === "Math" && typeof binding(member.receiver) === "string" &&
+          !["Math", "global", "globalThis"].some((root) => mutatedRoots.has(root)) && ![...provenance(member.receiver)].some((root) => mutatedRoots.has(root)));
+      }
+      if (coercionOnly || ts.isAwaitExpression(value) || ts.isNewExpression(value) || ts.isTaggedTemplateExpression(value) || hidesGetter(value)) return false;
+      if (ts.isIdentifier(value)) {
+        const key = binding(value);
+        if (typeof key !== "string" && key.declarations?.some(ts.isParameter)) return false;
+      }
+      if (ts.isPropertyAccessExpression(value) || ts.isElementAccessExpression(value)) {
+        const symbol = ts.isPropertyAccessExpression(value) ? checker.getSymbolAtLocation(value.name) : undefined;
+        if (symbol?.declarations?.some((declaration) => ts.isGetAccessor(declaration) || ts.isSetAccessor(declaration))) return false;
+      }
+      const type = dataType(value);
+      return !!(type.flags & ts.TypeFlags.NumberLike) && !(type.flags & (ts.TypeFlags.Any | ts.TypeFlags.Unknown));
+    };
     const safeComputedDataKey = (node: ts.Expression): boolean => {
       const key = staticKey(node);
       if (key !== undefined) return !["constructor", "__proto__", "prototype"].includes(key);
@@ -728,27 +814,19 @@ export const collectSourceInventory = (
         if ([ts.SyntaxKind.MinusToken, ts.SyntaxKind.AsteriskToken, ts.SyntaxKind.AsteriskAsteriskToken, ts.SyntaxKind.SlashToken, ts.SyntaxKind.PercentToken,
           ts.SyntaxKind.LessThanLessThanToken, ts.SyntaxKind.GreaterThanGreaterThanToken, ts.SyntaxKind.GreaterThanGreaterThanGreaterThanToken,
           ts.SyntaxKind.AmpersandToken, ts.SyntaxKind.BarToken, ts.SyntaxKind.CaretToken].includes(input.operatorToken.kind)) return true;
-        const structuralNumber = (operand: ts.Expression): boolean => {
-          const stripped = unwrap(operand);
-          if (ts.isCallExpression(stripped) || ts.isNewExpression(stripped) || ts.isIdentifier(stripped) && ts.isCallExpression(origin(stripped))) return false;
-          const type = dataType(stripped);
-          return !!(type.flags & ts.TypeFlags.NumberLike) && !(type.flags & (ts.TypeFlags.Any | ts.TypeFlags.Unknown));
-        };
-        if (input.operatorToken.kind === ts.SyntaxKind.PlusToken && structuralNumber(input.left) && structuralNumber(input.right)) return true;
+        if (input.operatorToken.kind === ts.SyntaxKind.PlusToken && numericValue(input.left) && numericValue(input.right)) return true;
       }
       if (ts.isCallExpression(input)) {
-        const member = property(input.expression);
         if (ts.isIdentifier(input.expression) && input.expression.text === "String" && typeof binding(input.expression) === "string" && !["global", "globalThis"].some((root) => mutatedRoots.has(root)) && ![...provenance(input.expression)].some((root) => mutatedRoots.has(root)) && input.arguments.length === 1 &&
-          ts.isNumericLiteral(unwrap(input.arguments[0]!))) return true;
-        if (member && ["floor", "ceil", "round", "trunc", "abs", "min", "max"].includes(member.name ?? "") && ts.isIdentifier(member.receiver) &&
-          member.receiver.text === "Math" && typeof binding(member.receiver) === "string" && !["global", "globalThis"].some((root) => mutatedRoots.has(root)) && ![...provenance(member.receiver)].some((root) => mutatedRoots.has(root))) return true;
+          numericValue(input.arguments[0]!, true)) return true;
+        if (numericValue(input)) return true;
       }
       if ([...provenance(node)].some((root) => mutatedRoots.has(root))) {
         const expression = unwrap(node);
         const symbol = ts.isIdentifier(expression) ? binding(expression) : undefined;
         const declaration = symbol && typeof symbol !== "string" ? symbol.valueDeclaration : undefined;
-        return !!(symbol && !nonNumericWrites.has(symbol) && declaration && ts.isVariableDeclaration(declaration) && declaration.initializer &&
-          safeComputedDataKey(declaration.initializer) && dataType(origin(declaration.initializer)).flags & ts.TypeFlags.NumberLike);
+        return !!(symbol && !nonNumericWrites.has(symbol) && declaration && ts.isVariableDeclaration(declaration) &&
+          (declaration.initializer ? numericValue(declaration.initializer) : dataType(expression).flags & ts.TypeFlags.NumberLike));
       }
       const expression = unwrap(node);
       if (ts.isIdentifier(expression)) {
@@ -774,10 +852,6 @@ export const collectSourceInventory = (
               (unwrap(loop.expression) as ts.ArrayLiteralExpression).elements.every((entry) => ts.isStringLiteralLike(entry) && !["constructor", "__proto__", "prototype"].includes(entry.text))) return true;
         }
       }
-      if (ts.isBinaryExpression(expression) && ([ts.SyntaxKind.MinusToken, ts.SyntaxKind.AsteriskToken, ts.SyntaxKind.AsteriskAsteriskToken,
-          ts.SyntaxKind.SlashToken, ts.SyntaxKind.PercentToken, ts.SyntaxKind.LessThanLessThanToken, ts.SyntaxKind.GreaterThanGreaterThanToken,
-          ts.SyntaxKind.GreaterThanGreaterThanGreaterThanToken, ts.SyntaxKind.AmpersandToken, ts.SyntaxKind.BarToken, ts.SyntaxKind.CaretToken].includes(expression.operatorToken.kind) ||
-          expression.operatorToken.kind === ts.SyntaxKind.PlusToken && (ts.isNumericLiteral(unwrap(expression.left)) || ts.isNumericLiteral(unwrap(expression.right))))) return true;
       const safeType = (type: ts.Type): boolean => type.isUnion() ? type.types.every(safeType)
         : !!(type.flags & ts.TypeFlags.NumberLike) || type.isStringLiteral() && !["constructor", "__proto__", "prototype"].includes(type.value);
       const value = origin(node);
@@ -786,18 +860,6 @@ export const collectSourceInventory = (
       if (ts.isCallExpression(value)) {
         return false;
       }
-      const hidesGetter = (access: ts.Expression): boolean => {
-        const member = property(access);
-        if (!member?.name) return false;
-        let receiver = origin(member.receiver);
-        if (ts.isIdentifier(receiver)) {
-          const key = binding(receiver);
-          const declaration = typeof key !== "string" ? key.valueDeclaration : undefined;
-          if (declaration && ts.isVariableDeclaration(declaration) && declaration.initializer) receiver = unwrap(declaration.initializer);
-        }
-        return ts.isObjectLiteralExpression(receiver) && receiver.properties.some((entry) => !ts.isSpreadAssignment(entry) && ownName(entry.name) === member.name &&
-          (ts.isGetAccessorDeclaration(entry) || ts.isSetAccessorDeclaration(entry)));
-      };
       if (ts.isPropertyAccessExpression(value) || ts.isElementAccessExpression(value)) {
         if (hidesGetter(value)) return false;
         const symbol = ts.isPropertyAccessExpression(value) ? checker.getSymbolAtLocation(value.name) : undefined;
@@ -807,6 +869,14 @@ export const collectSourceInventory = (
         return !(type.flags & (ts.TypeFlags.Any | ts.TypeFlags.Unknown)) && safeType(type);
       }
       if (ts.isCallExpression(value) || ts.isAwaitExpression(value) || ts.isNewExpression(value) || ts.isConditionalExpression(value) || ts.isBinaryExpression(value) || ts.isTaggedTemplateExpression(value)) return false;
+      if (ts.isIdentifier(value)) {
+        const key = binding(value);
+        if (typeof key !== "string" && key.declarations?.some(ts.isParameter)) {
+          const literalData = (type: ts.Type): boolean => type.isUnion() ? type.types.every(literalData)
+            : type.isStringLiteral() && !["constructor", "__proto__", "prototype"].includes(type.value);
+          return literalData(dataType(value));
+        }
+      }
       return safeType(dataType(value));
     };
     const unsafeComputedReceiver = (node: ts.Expression, seen = new Set<ts.Expression>(), dataIndex = false, dataKey = dataIndex): boolean => {
@@ -823,6 +893,7 @@ export const collectSourceInventory = (
       }
       const key = ts.isIdentifier(expression) ? binding(expression) : undefined;
       const declaration = key && typeof key !== "string" ? key.valueDeclaration : undefined;
+      if (!provenData && declaration && ts.isParameter(declaration) && dataType(expression).flags & (ts.TypeFlags.Any | ts.TypeFlags.Unknown)) return true;
       const destructured = declaration && ts.isBindingElement(declaration) ? declaration : undefined;
       if (destructured?.initializer && unsafeComputedReceiver(destructured.initializer, next)) return true;
       const member = property(expression) ?? (destructured ? bindingMember(destructured) : undefined);
@@ -890,7 +961,42 @@ export const collectSourceInventory = (
       }
       return false;
     };
+    const reviewedArrayDescriptor = (node: ts.Node): boolean => {
+      if (file.path !== `${ARENA}/src/challengeContract/validation.ts` || node.getText(source) !== "Object.getOwnPropertyDescriptor") return false;
+      const call = node.parent;
+      if (!ts.isCallExpression(call) || call.expression !== node || call.getText(source) !== "Object.getOwnPropertyDescriptor(value, String(index))") return false;
+      for (let declaration: ts.Node | undefined = call; declaration; declaration = declaration.parent) {
+        if (ts.isVariableDeclaration(declaration) && ts.isIdentifier(declaration.name) && declaration.name.text === "array") {
+          return declaration.getText(source) === `array = (value: unknown, path: string, max = 64): unknown[] => {
+  if (!Array.isArray(value) || value.length > max || Reflect.ownKeys(value).length !== value.length + 1) return fail(path, "ARRAY");
+  for (let index = 0; index < value.length; index++) {
+    const descriptor = Object.getOwnPropertyDescriptor(value, String(index));
+    if (!descriptor || !Object.hasOwn(descriptor, "value")) return fail(path, "ARRAY");
+  }
+  return value;
+}` && source.statements.filter(ts.isVariableStatement).flatMap((statement) => [...statement.declarationList.declarations])
+            .some((entry) => entry.getText(source) === 'fail = (path: string, code = "SCHEMA"): never => { throw new ContractError(path, code); }');
+        }
+      }
+      return false;
+    };
+    const timerReference = (node: ts.Expression): boolean => {
+      const expression = origin(node), member = property(expression);
+      return ts.isIdentifier(expression) && ["setTimeout", "setInterval", "setImmediate"].includes(expression.text) && typeof binding(expression) === "string" ||
+        !!(member && ["setTimeout", "setInterval", "setImmediate"].includes(member.name ?? "") && hostRoot(member.receiver));
+    };
+    const callableTimerArgument = (node: ts.Expression | undefined): boolean => {
+      if (!node || ts.isSpreadElement(node)) return false;
+      const expression = unwrap(node), value = origin(expression);
+      if (ts.isArrowFunction(expression) || ts.isFunctionExpression(expression)) return true;
+      if (!ts.isIdentifier(expression)) return false;
+      const callableType = (type: ts.Type): boolean => !(type.flags & (ts.TypeFlags.Any | ts.TypeFlags.Unknown | ts.TypeFlags.Union)) && type.getCallSignatures().length > 0;
+      if (!callableType(dataType(expression))) return false;
+      return ts.isArrowFunction(value) || ts.isFunctionExpression(value) || ts.isIdentifier(value) && callableType(dataType(value));
+    };
     const visit = (node: ts.Node): void => {
+      if (file.path === `${ARENA}/src/challengeContract/validation.ts` && ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) &&
+          node.name.text === "inspectDto" && !reviewedDescriptor(node)) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
       if (ts.isMetaProperty(node) && node.keywordToken === ts.SyntaxKind.ImportKeyword) {
         const access = node.parent;
         if (!ts.isPropertyAccessExpression(access) || access.expression !== node || !["url", "dirname", "filename"].includes(access.name.text)) throw new Error(`Unsupported import metadata escape: ${file.path}`);
@@ -911,19 +1017,24 @@ export const collectSourceInventory = (
       const hostProcessRead = value && property(node as ts.Expression)?.name === "process" && hostRoot(property(node as ts.Expression)!.receiver);
       if (value && PURE.has(file.partition) && (processNamespace(node as ts.Expression) || hostProcessRead) && !(ts.isIdentifier(node) && sourceIsDeclaration(node))) throw new Error(`Forbidden process access: ${file.path}`);
       if (value && evaluation(node as ts.Expression)) throw new Error(`Unsupported string evaluation: ${file.path}`);
-      const timer = ts.isCallExpression(node) ? unwrap(node.expression) : undefined;
-      const timerName = timer && (ts.isIdentifier(timer) ? timer.text : property(timer)?.name);
-      const timerHost = timer && (ts.isIdentifier(timer) ? typeof binding(timer) === "string" : property(timer) !== undefined && hostRoot(property(timer)!.receiver));
-      if (ts.isCallExpression(node) && timer && ["setTimeout", "setInterval", "setImmediate"].includes(timerName ?? "") && timerHost &&
-          node.arguments[0] && (ts.isStringLiteralLike(unwrap(node.arguments[0])) || dataType(unwrap(node.arguments[0])).flags & ts.TypeFlags.StringLike)) throw new Error(`Unsupported string evaluation: ${file.path}`);
+      if (value && !(ts.isIdentifier(node) && sourceIsDeclaration(node)) && timerReference(node as ts.Expression)) {
+        const use = wrappedUse(node as ts.Expression), call = use.parent;
+        if (!ts.isCallExpression(call) || call.expression !== use || !callableTimerArgument(call.arguments[0])) throw new Error(`Unsupported string evaluation: ${file.path}`);
+      }
       const accessed = value ? property(node as ts.Expression) : undefined;
-      const descriptorSeam = accessed && ["getPrototypeOf", "getOwnPropertyDescriptors"].includes(accessed.name ?? "") &&
-        objectNamespace(accessed.receiver) && reviewedDescriptor(node) && ts.isCallExpression(node.parent) && node.parent.expression === node;
+      const reflected = value ? property(origin(node as ts.Expression)) : undefined;
+      const descriptorSeam = reflected && ["getPrototypeOf", "getOwnPropertyDescriptors"].includes(reflected.name ?? "") &&
+        objectNamespace(origin(reflected.receiver)) && reviewedDescriptor(node) && ts.isCallExpression(node.parent) && node.parent.expression === node;
+      if (reflected && (reflectionNamespace(origin(reflected.receiver)) && ["get", "getOwnPropertyDescriptor", undefined].includes(reflected.name) ||
+          objectNamespace(origin(reflected.receiver)) && ["getOwnPropertyDescriptor", "getPrototypeOf", "getOwnPropertyDescriptors", undefined].includes(reflected.name)) &&
+          !descriptorSeam && !reviewedArrayDescriptor(node)) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
       if (["constructor", "__proto__", "getPrototypeOf", "getOwnPropertyDescriptors"].includes(accessed?.name ?? "") && !descriptorSeam) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
       if (accessed && objectNamespace(accessed.receiver) && accessed.name === undefined) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
       if (accessed && reflectionNamespace(accessed.receiver) && !["ownKeys", "apply", "has", "set", "deleteProperty"].includes(accessed.name ?? "")) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
       const boundName = ts.isBindingElement(node) ? node.propertyName ? ownName(node.propertyName) : ts.isIdentifier(node.name) ? node.name.text : undefined : undefined;
-      if (ts.isBindingElement(node) && (["constructor", "__proto__", "eval", "Function", "process", "setTimeout", "setInterval", "setImmediate", "getPrototypeOf", "getOwnPropertyDescriptors", "getOwnPropertyDescriptor"].includes(boundName ?? "") || node.propertyName && ts.isComputedPropertyName(node.propertyName))) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
+      const bound = ts.isBindingElement(node) ? bindingMember(node) : undefined;
+      if (ts.isBindingElement(node) && (["constructor", "__proto__", "eval", "Function", "process", "setTimeout", "setInterval", "setImmediate", "getPrototypeOf", "getOwnPropertyDescriptors", "getOwnPropertyDescriptor"].includes(boundName ?? "") ||
+          bound?.name === "get" && reflectionNamespace(origin(bound.receiver)) || node.propertyName && ts.isComputedPropertyName(node.propertyName))) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
       if (ts.isElementAccessExpression(node) && mutableOrigin(node.expression) && !safeDataKey(node.argumentExpression)) throw new Error(`Unsupported mutable computed receiver: ${file.path}`);
       if (ts.isElementAccessExpression(node) && loader(node.expression) && staticKey(node.argumentExpression) === undefined) throw new Error(`Unsupported loader escape: ${file.path}`);
       const assignment = ts.isElementAccessExpression(node) && ts.isBinaryExpression(wrappedUse(node).parent) &&
@@ -936,16 +1047,12 @@ export const collectSourceInventory = (
           .includes((wrappedUse(node).parent as ts.BinaryExpression).operatorToken.kind));
       if (ts.isElementAccessExpression(node) && !directDataWrite && !ts.isVoidExpression(wrappedUse(node).parent) && !reviewedDescriptor(node) && unsafeComputedReceiver(node.expression, new Set(),
           /^(0|[1-9][0-9]*)$/.test(staticKey(node.argumentExpression) ?? ""), scalarComparison || safeComputedDataKey(node.argumentExpression))) throw new Error(`Unsupported code constructor acquisition: ${file.path} -> ${node.getText(source)}`);
-      if (accessed?.name === "getOwnPropertyDescriptor" && !(ts.isCallExpression(node.parent) && node.parent.expression === node)) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
-      if (ts.isCallExpression(node) && property(node.expression)?.name === "getOwnPropertyDescriptor") {
-        if (file.path !== `${ARENA}/src/challengeContract/validation.ts` || node.getText(source) !== "Object.getOwnPropertyDescriptor(value, String(index))") throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
-      }
       const hostProcess = (receiver: ts.Expression): boolean => {
         const expression = origin(unwrap(receiver));
         const member = property(expression);
         return processNamespace(expression) || member?.name === "process" && hostRoot(member.receiver);
       };
-      if (accessed && hostProcess(accessed.receiver) && accessed.name === "getBuiltinModule") throw new Error(`Unsupported builtin acquisition: ${file.path}`);
+      if (accessed && hostProcess(accessed.receiver) && ["getBuiltinModule", "mainModule", "require", "binding", "dlopen"].includes(accessed.name ?? "")) throw new Error(`Unsupported builtin acquisition: ${file.path}`);
       if (accessed && namespace(accessed.receiver) && ["register", "registerHooks"].includes(accessed.name ?? "")) throw new Error(`Unsupported module loader API: ${file.path}`);
       if (value && (namespace(node as ts.Expression) || processNamespace(node as ts.Expression) || globalNamespace(node as ts.Expression) || reflectionNamespace(node as ts.Expression) || objectNamespace(node as ts.Expression) || factory(node as ts.Expression) || loader(node as ts.Expression) || resolver(node as ts.Expression))) {
         const expression = node as ts.Expression;
@@ -974,12 +1081,12 @@ export const collectSourceInventory = (
           if (!typeOnly && namedImports && ts.isNamedImports(namedImports)) {
             const names = namedImports.elements.filter((element) => !element.isTypeOnly).map((element) => (element.propertyName ?? element.name).text);
             if (["node:module", "module"].includes(specifier) && names.some((name) => ["register", "registerHooks"].includes(name))) throw new Error(`Unsupported module loader API: ${file.path}`);
-            if (["node:process", "process"].includes(specifier) && names.includes("getBuiltinModule")) throw new Error(`Unsupported builtin acquisition: ${file.path}`);
+            if (["node:process", "process"].includes(specifier) && names.some((name) => ["getBuiltinModule", "mainModule", "require", "binding", "dlopen"].includes(name))) throw new Error(`Unsupported builtin acquisition: ${file.path}`);
           }
           if (ts.isExportDeclaration(node) && !typeOnly && ["node:module", "module"].includes(specifier) &&
                (!node.exportClause || !ts.isNamedExports(node.exportClause) || node.exportClause.elements.some((element) => !element.isTypeOnly && ["createRequire", "default", "Module", "register", "registerHooks"].includes((element.propertyName ?? element.name).text)))) throw new Error(`Unsupported loader escape: ${file.path}`);
           if (ts.isExportDeclaration(node) && !typeOnly && ["node:process", "process"].includes(specifier) &&
-              (!node.exportClause || !ts.isNamedExports(node.exportClause) || node.exportClause.elements.some((element) => !element.isTypeOnly && ["getBuiltinModule", "default"].includes((element.propertyName ?? element.name).text)))) throw new Error(`Unsupported builtin acquisition: ${file.path}`);
+              (!node.exportClause || !ts.isNamedExports(node.exportClause) || node.exportClause.elements.some((element) => !element.isTypeOnly && ["getBuiltinModule", "mainModule", "require", "binding", "dlopen", "default"].includes((element.propertyName ?? element.name).text)))) throw new Error(`Unsupported builtin acquisition: ${file.path}`);
           addEdge(file.path, specifier, ts.isImportDeclaration(node) ? "import" : "export", typeOnly);
         }
       } else if (ts.isImportEqualsDeclaration(node) && ts.isExternalModuleReference(node.moduleReference)) {
@@ -1029,6 +1136,19 @@ export const collectSourceInventory = (
     };
     visit(source);
   }
+  const planningVisited = new Set<string>();
+  const auditPlanning = (path: string): void => {
+    if (planningVisited.has(path)) return;
+    planningVisited.add(path);
+    if (path === `${CORE}/src/index.ts` || path.startsWith(`${CORE}/src/`) && /\/src\/(?:scfen|replay|commands|resolve)\//.test(path)) {
+      throw new Error(`Forbidden native planning edge: ${path}`);
+    }
+    for (const edge of edges.filter((edge) => edge.importer === path)) {
+      if (edge.targetKind === "source") auditPlanning(edge.target);
+      else if (edge.target === "fflate" || edge.target.startsWith("fflate/")) throw new Error(`Forbidden native planning edge: ${path} -> ${edge.target}`);
+    }
+  };
+  auditPlanning(`${CORE}/src/planning-v1.ts`);
   edges.sort((a, b) => order(canonical(a), canonical(b)));
   const groups = Object.fromEntries(SOURCE_PARTITIONS.map((partition) => [partition, files.filter((file) => file.partition === partition)])) as SourceInventoryV2["groups"];
   const partitionSha256 = Object.fromEntries(SOURCE_PARTITIONS.map((partition) => [partition, hash(canonical(groups[partition]))])) as SourceInventoryV2["partitionSha256"];

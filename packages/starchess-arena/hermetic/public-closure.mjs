@@ -14,10 +14,6 @@ const authorized = new Set([
   ...["types", "canonical", "squares", "observationCodec"].map((name) => `src/authorized/v1/${name}.ts`),
   ...["validation", "candidateWire", "observationCodec"].map((name) => `src/challengeContract/${name}.ts`),
 ]);
-const reviewedCoreLinks = new Map([
-  [`${ARENA}/src/authorized/v1/observationCodec.ts`, new Set([`${CORE}/src/rules/constants.ts`, `${CORE}/src/board/mines.ts`])],
-  [`${ARENA}/src/challengeContract/candidateWire.ts`, new Set([`${CORE}/src/rules/constants.ts`, `${CORE}/src/rules/specials/registry.ts`])],
-]);
 const sha256 = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const order = (a, b) => a < b ? -1 : a > b ? 1 : 0;
 const plain = (value) => value !== null && typeof value === "object" && !Array.isArray(value);
@@ -60,7 +56,7 @@ export const checkPublicClosure = (root = repository) => {
   };
   const manifests = new Map([CORE, ARENA, TRAINING].map((owner) => [owner, readJson(join(root, owner, "package.json"))]));
   const publicExports = new Map([
-    [CORE, { ".": "./src/index.ts" }],
+    [CORE, { ".": "./src/index.ts", "./planning-v1": "./src/planning-v1.ts" }],
     [ARENA, { ".": "./src/index.ts", "./intent-codec-v1": "./src/intent-codec-v1.ts", "./observations": "./src/observations.ts" }],
     [TRAINING, { "./candidates": "./src/candidates.ts" }],
   ]);
@@ -96,6 +92,7 @@ export const checkPublicClosure = (root = repository) => {
     const owner = sourceOwner(path);
     const local = owner && relative(join(root, owner), path).split(sep).join("/");
     if (!local?.startsWith("src/") || local.split("/").includes("__tests__")) throw new Error(`Private or unclassified public source: ${display(path)}`);
+    if (owner === CORE && (local === "src/index.ts" || /^src\/(?:scfen|replay|commands|resolve)\//.test(local))) throw new Error(`Native core in public closure: ${display(path)}`);
     if (owner === ARENA && !authorized.has(local)) throw new Error(`Host/baseline in public closure: ${display(path)}`);
     if (owner === TRAINING && /^src\/(?:coordinator|cli)\//.test(local)) throw new Error(`Coordinator in public closure: ${display(path)}`);
     return owner;
@@ -106,7 +103,7 @@ export const checkPublicClosure = (root = repository) => {
       const target = resolveFile(resolve(dirname(importer), specifier), dependency?.base ?? root);
       if (!dependency) {
         const owner = permitSource(target);
-        if (owner !== sourceOwner(importer) && !reviewedCoreLinks.get(display(importer))?.has(display(target))) throw new Error(`Deep private cross-package import: ${display(importer)} -> ${display(target)}`);
+        if (owner !== sourceOwner(importer)) throw new Error(`Deep private cross-package import: ${display(importer)} -> ${display(target)}`);
       }
       return { path: target, dependency };
     }
@@ -123,23 +120,23 @@ export const checkPublicClosure = (root = repository) => {
       permitSource(target);
       return { path: target };
     }
-    if (!["fflate", "@noble/hashes"].includes(name)) throw new Error(`Unreviewed public dependency: ${specifier}`);
-    if (name === "@noble/hashes" && !dependency && !["@noble/hashes/sha2.js", "@noble/hashes/utils.js"].includes(specifier)) throw new Error(`Unreviewed SHA export: ${specifier}`);
+    if (name !== "jssha") throw new Error(`Unreviewed public dependency: ${specifier}`);
+    if (specifier !== "jssha/sha256") throw new Error(`Unreviewed SHA export: ${specifier}`);
+    if (manifest.dependencies?.jssha !== "3.3.2") throw new Error("SHA dependency must declare exact 3.3.2");
     const packagePath = join(dependency?.base ?? join(root, owner), "node_modules", name);
     const base = realpathSync(packagePath);
     let resolvedPackage = dependencyPackages.get(base);
     if (!resolvedPackage) {
       const path = safe(join(base, "package.json"), base);
       const installed = JSON.parse(readFileSync(path, "utf8"));
-      if (installed.name !== name || name === "@noble/hashes" && (installed.version !== "2.4.0" || installed.type !== "module")) throw new Error(`Unexpected dependency package: ${name}`);
-      if (name === "@noble/hashes" && manifest.dependencies?.[name] !== "2.4.0") throw new Error("SHA dependency must declare exact 2.4.0");
+      if (installed.name !== name || installed.version !== "3.3.2") throw new Error(`Unexpected dependency package: ${name}`);
       resolvedPackage = { base, manifest: installed, name, version: installed.version };
       dependencyPackages.set(base, resolvedPackage);
       const id = `${name}@${installed.version}/package.json`;
       dependencies.set(id, { path: id, resolvedPath: display(path), sha256: sha256(readFileSync(path)) });
     }
     const target = exportTarget(resolvedPackage.manifest, subpath);
-    if (name === "fflate" && target !== "./esm/browser.js") throw new Error(`fflate did not select browser ESM: ${target}`);
+    if (target !== "./dist/sha256.mjs") throw new Error(`Unreviewed SHA target: ${target}`);
     return { path: resolveFile(resolve(base, target), base), dependency: resolvedPackage };
   };
   const visit = (path, dependency) => {
@@ -192,6 +189,7 @@ export const checkPublicClosure = (root = repository) => {
     };
     const edge = (specifier, kind, typeOnly = false) => {
       if (specifier === undefined) throw new Error(`Computed public module loader: ${id}`);
+      if (dependency && !typeOnly) throw new Error(`Runtime import in SHA dependency: ${id}`);
       if (typeOnly && !specifier.startsWith(".") && !byName.has(packageName(specifier)) && !isBuiltin(specifier) && !specifier.startsWith("node:")) {
         const manifest = dependency?.manifest ?? manifests.get(sourceOwner(path));
         const name = packageName(specifier);
@@ -247,7 +245,7 @@ export const checkPublicClosure = (root = repository) => {
     const ownMember = (receiver, name) => {
       if (name === undefined) return undefined;
       if (ts.isArrayLiteralExpression(receiver) && /^(0|[1-9][0-9]*)$/.test(name) && !receiver.elements.some(ts.isSpreadElement)) {
-        const entry = receiver.elements[Number(name)];
+        const entry = receiver.elements[+name];
         return entry && !ts.isOmittedExpression(entry) ? entry : undefined;
       }
       if (!ts.isObjectLiteralExpression(receiver)) return undefined;
@@ -328,6 +326,19 @@ export const checkPublicClosure = (root = repository) => {
       if (ts.isBinaryExpression(expression) && expression.operatorToken.kind >= ts.SyntaxKind.FirstAssignment && expression.operatorToken.kind <= ts.SyntaxKind.LastAssignment) add(expression.left);
       return roots;
     };
+    const documentRoot = (node, seen = new Set()) => {
+      const expression = origin(node);
+      if (seen.has(expression)) return false;
+      const next = new Set([...seen, expression]);
+      if (ts.isIdentifier(expression)) {
+        if (expression.text === "document" && globalReference(expression)) return true;
+        const declaration = checker.getSymbolAtLocation(expression)?.valueDeclaration;
+        const bound = declaration && ts.isBindingElement(declaration) ? bindingMember(declaration) : undefined;
+        if (bound?.name === "document" && hostRoot(bound.receiver, next)) return true;
+      }
+      const member = property(expression);
+      return Boolean(member?.name === "document" && hostRoot(member.receiver, next));
+    };
     const hostRoot = (value, seen = new Set()) => {
       const expression = unwrap(value);
       if (seen.has(expression)) return false;
@@ -339,7 +350,7 @@ export const checkPublicClosure = (root = repository) => {
         const bound = declaration && ts.isBindingElement(declaration) ? bindingMember(declaration) : undefined;
         if (bound && ["globalThis", "global", "window", "self", "frames", "top", "parent"].includes(bound.name ?? "") && hostRoot(bound.receiver, next)) return true;
         const receiver = bound && origin(bound.receiver);
-        if (bound?.name === "defaultView" && ts.isIdentifier(receiver) && receiver.text === "document" && globalReference(receiver)) return true;
+        if (bound?.name === "defaultView" && documentRoot(receiver, next)) return true;
       }
       const accessed = property(expression);
       const receiver = accessed && origin(accessed.receiver);
@@ -347,7 +358,7 @@ export const checkPublicClosure = (root = repository) => {
         ts.isIdentifier(expression) && ["globalThis", "global", "window", "self", "frames", "top", "parent"].includes(expression.text) && globalReference(expression) ||
         ts.isElementAccessExpression(expression) && hostRoot(expression.expression, next) ||
         accessed && (["globalThis", "global", "window", "self", "frames", "top", "parent"].includes(accessed.name ?? "") && hostRoot(accessed.receiver, next) ||
-          accessed.name === "defaultView" && ts.isIdentifier(receiver) && receiver.text === "document" && globalReference(receiver));
+          accessed.name === "defaultView" && documentRoot(receiver, next));
     };
     const builtinNamespace = (node, name) => {
       const expression = origin(node), member = property(expression);
@@ -370,7 +381,7 @@ export const checkPublicClosure = (root = repository) => {
         else if (ts.isBinaryExpression(target) && target.operatorToken.kind === ts.SyntaxKind.EqualsToken) writes(target.left);
       };
       if (ts.isBinaryExpression(node) && node.operatorToken.kind >= ts.SyntaxKind.FirstAssignment && node.operatorToken.kind <= ts.SyntaxKind.LastAssignment) writes(node.left,
-        [ts.SyntaxKind.PlusEqualsToken, ts.SyntaxKind.MinusEqualsToken].includes(node.operatorToken.kind) && ts.isNumericLiteral(unwrap(node.right)));
+        [ts.SyntaxKind.EqualsToken, ts.SyntaxKind.PlusEqualsToken, ts.SyntaxKind.MinusEqualsToken].includes(node.operatorToken.kind) && ts.isNumericLiteral(unwrap(node.right)));
       if ((ts.isPrefixUnaryExpression(node) || ts.isPostfixUnaryExpression(node)) && [ts.SyntaxKind.PlusPlusToken, ts.SyntaxKind.MinusMinusToken].includes(node.operator)) writes(node.operand, true);
       if (ts.isDeleteExpression(node)) writes(node.expression);
       if ((ts.isForOfStatement(node) || ts.isForInStatement(node)) && !ts.isVariableDeclarationList(node.initializer)) writes(node.initializer);
@@ -409,9 +420,12 @@ export const checkPublicClosure = (root = repository) => {
             : ts.isPropertyAssignment(entry) ? argumentMutator(entry.initializer, next) : ts.isShorthandPropertyAssignment(entry) && argumentMutator(entry.name, next));
           return mutatorRoot(value);
         };
-        const callee = property(origin(node.expression));
+        const calleeValue = origin(node.expression);
+        const calleeSymbol = ts.isIdentifier(calleeValue) ? binding(calleeValue) : undefined;
+        const calleeDeclaration = calleeSymbol?.valueDeclaration;
+        const callee = property(calleeValue) ?? (calleeDeclaration && ts.isBindingElement(calleeDeclaration) ? bindingMember(calleeDeclaration) : undefined);
         const indirect = callee !== undefined && (callee.name === undefined || ["call", "apply", "bind"].includes(callee.name));
-        if (mutatorRoot(node.expression) || indirect && node.arguments.some((argument) => argumentMutator(argument))) for (const builtin of ["Math", "String", "Array", "globalThis", "global"]) mutatedRoots.add(builtin);
+        if (mutatorRoot(node.expression) || indirect && node.arguments.some((argument) => argumentMutator(argument))) for (const builtin of ["Math", "String", "Number", "Array", "globalThis", "global"]) mutatedRoots.add(builtin);
         if (node.arguments[0] && member && (builtinNamespace(member.receiver, "Object") && ["assign", "defineProperty", "defineProperties"].includes(member.name ?? "") ||
             builtinNamespace(member.receiver, "Reflect") && ["set", "deleteProperty", "defineProperty"].includes(member.name ?? ""))) markMutation(node.arguments[0]);
         if (member && ["push", "pop", "shift", "unshift", "splice", "sort", "reverse", "fill", "copyWithin"].includes(member.name ?? "")) markMutation(member.receiver);
@@ -458,11 +472,14 @@ export const checkPublicClosure = (root = repository) => {
       if (ts.isConditionalExpression(value)) return numericValue(value.whenTrue, coercionOnly, next) && numericValue(value.whenFalse, coercionOnly, next);
       if (ts.isCallExpression(value)) {
         const member = property(value.expression);
+        if (ts.isIdentifier(value.expression) && value.expression.text === "Number" && globalReference(value.expression) &&
+            !["Number", "global", "globalThis"].some((root) => mutatedRoots.has(root)) && ![...provenance(value.expression)].some((root) => mutatedRoots.has(root))) return true;
         return Boolean(member && ["floor", "ceil", "round", "trunc", "abs", "min", "max"].includes(member.name ?? "") &&
           builtinNamespace(member.receiver, "Math") && !["Math", "global", "globalThis"].some((root) => mutatedRoots.has(root)) &&
           ![...provenance(member.receiver)].some((root) => mutatedRoots.has(root)));
       }
       if (coercionOnly || ts.isAwaitExpression(value) || ts.isNewExpression(value) || ts.isTaggedTemplateExpression(value) || hidesGetter(value)) return false;
+      if (ts.isIdentifier(value) && checker.getSymbolAtLocation(value)?.declarations?.some(ts.isParameter)) return false;
       if (ts.isPropertyAccessExpression(value) || ts.isElementAccessExpression(value)) {
         const symbol = ts.isPropertyAccessExpression(value) ? checker.getSymbolAtLocation(value.name) : undefined;
         if (symbol?.declarations?.some((declaration) => ts.isGetAccessor(declaration) || ts.isSetAccessor(declaration))) return false;
@@ -490,8 +507,8 @@ export const checkPublicClosure = (root = repository) => {
         const expression = unwrap(node);
         const symbol = ts.isIdentifier(expression) ? binding(expression) : undefined;
         const declaration = symbol?.valueDeclaration;
-        return Boolean(symbol && !nonNumericWrites.has(symbol) && declaration && ts.isVariableDeclaration(declaration) && declaration.initializer &&
-          numericValue(declaration.initializer));
+        return Boolean(symbol && !nonNumericWrites.has(symbol) && declaration && ts.isVariableDeclaration(declaration) &&
+          (declaration.initializer ? numericValue(declaration.initializer) : dataType(expression).flags & ts.TypeFlags.NumberLike));
       }
       const expression = unwrap(node);
       if (ts.isIdentifier(expression)) {
@@ -534,6 +551,11 @@ export const checkPublicClosure = (root = repository) => {
         return !(type.flags & (ts.TypeFlags.Any | ts.TypeFlags.Unknown)) && safeType(type);
       }
       if (ts.isCallExpression(value) || ts.isAwaitExpression(value) || ts.isNewExpression(value) || ts.isConditionalExpression(value) || ts.isBinaryExpression(value) || ts.isTaggedTemplateExpression(value)) return false;
+      if (ts.isIdentifier(value) && checker.getSymbolAtLocation(value)?.declarations?.some(ts.isParameter)) {
+        const literalData = (type) => type.isUnion() ? type.types.every(literalData)
+          : type.isStringLiteral() && !["constructor", "__proto__", "prototype"].includes(type.value);
+        return literalData(dataType(value));
+      }
       return safeType(dataType(value));
     };
     const unsafeComputedReceiver = (node, seen = new Set(), dataIndex = false, dataKey = dataIndex) => {
@@ -550,6 +572,7 @@ export const checkPublicClosure = (root = repository) => {
       }
       const symbol = ts.isIdentifier(expression) ? checker.getSymbolAtLocation(expression) : undefined;
       const declaration = symbol?.valueDeclaration;
+      if (!provenData && declaration && ts.isParameter(declaration) && dataType(expression).flags & (ts.TypeFlags.Any | ts.TypeFlags.Unknown)) return true;
       const destructured = declaration && ts.isBindingElement(declaration) ? declaration : undefined;
       if (destructured?.initializer && unsafeComputedReceiver(destructured.initializer, next)) return true;
       const member = property(expression) ?? (destructured ? bindingMember(destructured) : undefined);
@@ -671,7 +694,7 @@ export const checkPublicClosure = (root = repository) => {
       if (ts.isBindingElement(node) && (["constructor", "__proto__", "eval", "Function", "process", "setTimeout", "setInterval", "setImmediate", "getOwnPropertyDescriptor", "getPrototypeOf", "getOwnPropertyDescriptors"].includes(boundName ?? "") ||
           bound?.name === "get" && builtinNamespace(bound.receiver, "Reflect") || node.propertyName && ts.isComputedPropertyName(node.propertyName))) throw new Error(`Code constructor acquisition in public closure: ${id}`);
       if (["constructor", "__proto__"].includes(member?.name) ||
-          !dependency && ts.isElementAccessExpression(node) && !directDataWrite && !ts.isVoidExpression(node.parent) && !reviewedDescriptor(node) && unsafeComputedReceiver(node.expression, new Set(),
+          ts.isElementAccessExpression(node) && !directDataWrite && !ts.isVoidExpression(node.parent) && !reviewedDescriptor(node) && unsafeComputedReceiver(node.expression, new Set(),
             /^(0|[1-9][0-9]*)$/.test(staticKey(node.argumentExpression) ?? ""), scalarComparison || safeComputedDataKey(node.argumentExpression))) throw new Error(`Code constructor acquisition in public closure: ${id} -> ${node.getText(source)}`);
       if (ts.isIdentifier(node) && !ts.isPartOfTypeNode(node)) {
         const parent = node.parent;
@@ -688,7 +711,7 @@ export const checkPublicClosure = (root = repository) => {
     scan(source);
   };
   const entries = [
-    [CORE, "."], [ARENA, "./observations"], [ARENA, "./intent-codec-v1"], [TRAINING, "./candidates"],
+    [CORE, "./planning-v1"], [ARENA, "./observations"], [ARENA, "./intent-codec-v1"], [TRAINING, "./candidates"],
   ].map(([owner, subpath]) => {
     const path = resolveFile(resolve(root, owner, exportTarget(manifests.get(owner), subpath)), root);
     visit(path);
@@ -706,7 +729,7 @@ export const checkPublicClosure = (root = repository) => {
     typeof arenaManifest.devDependencies?.typescript === "string" ? `${ARENA}/package.json` : undefined;
   if (!declaredBy) throw new Error("Undeclared TypeScript audit tool");
   const report = {
-    version: "public-closure-v1", passed: true, conditions: [...conditions], entries,
+    version: "public-closure-v2", passed: true, conditions: [...conditions], entries,
     verifiedPaths: [...sourceFiles, ...dependencyFiles].map((file) => file.path),
     sourceFiles, dependencyFiles, runtimeFiles, edges,
     sourceSha256: sha256(JSON.stringify(sourceFiles)), dependencySha256: sha256(JSON.stringify(dependencyFiles)),
@@ -720,7 +743,7 @@ if (process.argv[1] && pathToFileURL(resolve(process.argv[1])).href === import.m
   try {
     process.stdout.write(`${JSON.stringify(checkPublicClosure(), null, 2)}\n`);
   } catch (error) {
-    process.stderr.write(`${JSON.stringify({ version: "public-closure-v1", passed: false, error: error.message })}\n`);
+    process.stderr.write(`${JSON.stringify({ version: "public-closure-v2", passed: false, error: error.message })}\n`);
     process.exitCode = 1;
   }
 }
