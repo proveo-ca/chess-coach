@@ -29,7 +29,7 @@ const VALIDATOR = join(SCRIPT_DIR, 'challenge-validate-baseline.ts');
 const hash = (bytes) => createHash('sha256').update(bytes).digest('hex');
 const record = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
 const digest = (value) => typeof value === 'string' && /^[a-f0-9]{64}$/.test(value);
-const equal = (a, b) => Array.isArray(a) && Array.isArray(b) && a.length === b.length && a.every((value, index) => value === b[index]);
+const equal = (a, b) => Array.isArray(a) && Array.isArray(b) && a.length === b.length && a.every((value, index) => value === b[+index]);
 
 export const safeRelative = (path) => {
   if (typeof path !== 'string' || Buffer.byteLength(path) > evidenceLimits.pathBytes || path.startsWith('/') || /[\\\0]/.test(path)) throw new Error(`Unsafe artifact path: ${path}`);
@@ -190,7 +190,7 @@ export async function importEvidence({
   if (verification.commands.some((command) => !record(command) || command.exitCode !== 0 || command.signal !== null || command.error !== null)) throw new Error('Verification command failed');
   const required = verificationCommands(SOURCE_ROOT);
   if (required.some((expected, index) => {
-    const command = verification.commands[index];
+    const command = verification.commands[+index];
     return command.executable !== expected.executable || command.cwd !== expected.cwd || !equal(command.args, expected.args);
   })) throw new Error('Required verification command missing');
   if (!Array.isArray(verification.artifacts) || verification.artifacts.length < REQUIRED.length || verification.artifacts.length > evidenceLimits.entries) throw new Error('Incomplete artifact inventory');

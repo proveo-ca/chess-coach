@@ -50,7 +50,7 @@ async function fixture(source, action) {
     await write('app/pnpm-lock.yaml', 'lock data\n');
     await write('app/packages/starchess-core/package.json', { name: '@chess-coach/starchess-core', version: '0.0.1', dependencies: { lib: '1.0.0' } });
     await write('app/packages/starchess-arena/package.json', { name: '@chess-coach/starchess-arena', version: '0.0.1', dependencies: { '@chess-coach/starchess-core': 'workspace:*' } });
-    await write('app/packages/starchess-training/package.json', { name: '@chess-coach/starchess-training', version: '0.0.1', dependencies: { '@chess-coach/starchess-core': 'workspace:*', '@chess-coach/starchess-arena': 'workspace:*', '@noble/hashes': '2.4.0' } });
+    await write('app/packages/starchess-training/package.json', { name: '@chess-coach/starchess-training', version: '0.0.1', dependencies: { '@chess-coach/starchess-core': 'workspace:*', '@chess-coach/starchess-arena': 'workspace:*', 'jssha': '3.3.2' } });
     await write('app/packages/starchess-core/node_modules/lib/package.json', { version: '1.0.0' });
     await mkdir(join(filesystem, 'app/packages/starchess-arena/node_modules'), { recursive: true, mode: 0o755 });
     await mkdir(join(filesystem, 'app/packages/starchess-arena/node_modules/@chess-coach'), { recursive: true });
@@ -58,7 +58,7 @@ async function fixture(source, action) {
     await mkdir(join(filesystem, 'app/packages/starchess-training/node_modules/@chess-coach'), { recursive: true });
     await symlink('../../../starchess-core', join(filesystem, 'app/packages/starchess-training/node_modules/@chess-coach/starchess-core'));
     await symlink('../../../starchess-arena', join(filesystem, 'app/packages/starchess-training/node_modules/@chess-coach/starchess-arena'));
-    await write('app/packages/starchess-training/node_modules/@noble/hashes/package.json', { name: '@noble/hashes', version: '2.4.0' });
+    await write('app/packages/starchess-training/node_modules/jssha/package.json', { name: 'jssha', version: '3.3.2' });
     await write('app/node_modules/z-child/value', 'z');
     await write('app/node_modules/a-child/value', 'a');
     await write('pnpm/store/z-file', 'content');
@@ -86,7 +86,7 @@ async function fixture(source, action) {
       await write('hermetic-evidence/source.json', { version: 1, root: '/app', exclusions: sourceExclusions, inventoryLocation: '/hermetic-evidence/source.json (outside inventoried root)', ...capture.runtime });
     }
     await write('hermetic-evidence/capture.json', capture);
-    await write('hermetic-evidence/closure.json', { tools: { node: pins.node, pnpm: pins.pnpm }, packages: { 'starchess-core': { lib: '1.0.0' }, 'starchess-arena': { '@chess-coach/starchess-core': '0.0.1' }, 'starchess-training': { '@chess-coach/starchess-core': '0.0.1', '@chess-coach/starchess-arena': '0.0.1', '@noble/hashes': '2.4.0' } }, lockSha256: capture.dependencyFiles[0].sha256 });
+    await write('hermetic-evidence/closure.json', { tools: { node: pins.node, pnpm: pins.pnpm }, packages: { 'starchess-core': { lib: '1.0.0' }, 'starchess-arena': { '@chess-coach/starchess-core': '0.0.1' }, 'starchess-training': { '@chess-coach/starchess-core': '0.0.1', '@chess-coach/starchess-arena': '0.0.1', 'jssha': '3.3.2' } }, lockSha256: capture.dependencyFiles[0].sha256 });
     const streams = new Map();
     streams.set('/usr/local/bin/node', tar([{ path: 'node', mode: '755', type: 'file', data: interpreterBytes }]));
     const rebuild = async () => {
@@ -184,7 +184,7 @@ test('rejects training arena link retargeted to core despite equal package versi
 }));
 
 test('rejects training dependency bytes changed under unchanged captured evidence', () => fixture(false, async ({ temporaryRoot, streams, write, rebuild }) => {
-  await write('app/packages/starchess-training/node_modules/@noble/hashes/package.json', { name: '@noble/hashes', version: '2.5.0' });
+  await write('app/packages/starchess-training/node_modules/jssha/package.json', { name: 'jssha', version: '3.4.0' });
   await rebuild();
   const docker = mockDocker(streams);
   await assert.rejects(measureImageFilesystem(image, { temporaryRoot, spawnProcess: docker.spawnProcess }), /dependencies manifest/);

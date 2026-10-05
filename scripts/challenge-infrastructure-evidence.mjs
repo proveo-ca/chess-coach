@@ -62,7 +62,7 @@ export function recountInfrastructureTap(bytes) {
   if (!text.startsWith('TAP version 13\n') || /(?:^|\n)\s*Bail out!|^\s*(?:ok|not ok)\b[^\n]*#\s*(?:SKIP|TODO)\b/im.test(text)) fail('TAP contains omitted or failed tests');
   const results = [...text.matchAll(/^(ok|not ok) (\d+) - (.+)$/gm)];
   if (results.length !== INFRASTRUCTURE_TESTS || results.some((entry, index) => entry[1] !== 'ok' || Number(entry[2]) !== index + 1 ||
-      entry[3] !== INFRASTRUCTURE_TEST_NAMES[index])) fail('TAP test count or Docker test mismatch');
+      entry[3] !== INFRASTRUCTURE_TEST_NAMES[+index])) fail('TAP test count or Docker test mismatch');
   if (/^\s*not ok\b/m.test(text)) fail('TAP contains omitted or failed tests');
   const plans = [...text.matchAll(/^1\.\.(\d+)$/gm)];
   if (plans.length !== 1 || Number(plans[0][1]) !== INFRASTRUCTURE_TESTS) fail('TAP plan mismatch');
@@ -86,7 +86,8 @@ export function infrastructureEnvironment(directory, image) {
 
 const unsafeEnvironment = (value) => !Array.isArray(value) || value.some((entry) => typeof entry !== 'string' || /^(?:NODE_OPTIONS|NODE_PATH|LD_PRELOAD|LD_LIBRARY_PATH)(?:=|$)/.test(entry));
 const sameImageIdentity = (actual, expected) => object(actual) && object(expected) &&
-  ['Id', 'Os', 'Architecture', 'Variant', 'Config', 'RootFS'].every((key) => same(actual[key], expected[key]));
+  ['Id', 'Os', 'Architecture', 'Variant', 'Config', 'RootFS'].every((key) => same(
+    Object.entries(actual).find(([name]) => name === key)?.[1], Object.entries(expected).find(([name]) => name === key)?.[1]));
 
 function probeEnvironment(imageInspection, image) {
   if (!object(imageInspection) || imageInspection.Id !== image || unsafeEnvironment(imageInspection.Config?.Env)) fail('dependency image inspection or environment mismatch');

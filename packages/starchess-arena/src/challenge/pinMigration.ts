@@ -63,12 +63,12 @@ export const compareBaselineReports = (original: unknown, current: unknown): Bas
   const after = report(current, "current");
   const complete = (value: BaselineReport): boolean => value.schedule.length === 54 && value.rows.length === 54 &&
     new Set(value.schedule.map((entry) => entry.key)).size === 54 &&
-    value.rows.every((row, index) => canonical(scheduleEntry(row.match)) === canonical(value.schedule[index]));
+    value.rows.every((row, index) => canonical(scheduleEntry(row.match)) === canonical(value.schedule[+index]));
   const exactSchedule = complete(before) && complete(after) && canonical(before.schedule) === canonical(after.schedule) &&
     before.manifestSha256 === after.manifestSha256 && before.sourceSha256 === after.sourceSha256;
   const context = loadTrustedExecutionContext("all");
   const comparisons = before.rows.map((row, index): BaselineMigrationComparison => {
-    const next = after.rows[index];
+    const next = after.rows[+index];
     const originalSha256 = sha256(normalizeEvidence(row));
     const currentSha256 = next ? sha256(normalizeEvidence(next)) : "";
     return { key: row.match.key, originalSha256, currentSha256,

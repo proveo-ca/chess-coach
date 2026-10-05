@@ -183,7 +183,7 @@ export function measureCopiedFilesystem(entries, { interpreterSha256 = pins.node
       const resolved = fileAt(entries, `/app/packages/${name}/node_modules/${dependencyName}/package.json`, true);
       if (specifier === 'workspace:*' && resolved.path !== workspaceManifestTarget(dependencyName).slice(1)) mismatch('workspace link');
       versions[dependencyName] = jsonFile(entries, resolved.path).version;
-      if (dependencyName === '@noble/hashes' && (specifier !== '2.4.0' || versions[dependencyName] !== '2.4.0')) mismatch('SHA dependency pin');
+      if (dependencyName === 'jssha' && (specifier !== '3.3.2' || versions[dependencyName] !== '3.3.2')) mismatch('SHA dependency pin');
     }
     packages[name] = versions;
   }

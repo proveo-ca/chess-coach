@@ -27,12 +27,15 @@ Old completion markers cannot authorize current closure or live-pin assertions.
 
 - Source contains the private training package, four-promotion V3 domain, root-guard family availability, pure V1 bridge, inventory v2, execution pins v3, verification v3, and public-closure tooling.
 - Executor reports the native owner's **19** strict test-type errors are fixed and the lead resolved **two** legacy fixture boundary casts.
-- These repair reports do not constitute a new full strict run or test result.
-- Prior full host counts **469 core / 811 arena / 50 training** and floors v1 remain history. Current **implemented `r2-assertion-floors-v2` = 471 core / 1220 arena / 56 training**, confirmed in `hermetic/verification-plan.mjs:8`; **1220 = 1107 + 106 factory/mutation/data checks + 7 image-identity checks**. Final enumeration and full arena/frozen execution remain pending; a registered floor is not a measured passing total.
-- The earlier arena-floor mismatch is repaired in source. Whole-file inspection also confirms the lead updated the hermetic README's `--acquisition` example, provenance retention, environments and capture modes; the earlier README handoff is no longer pending. This spec pass edits neither source nor README.
-- Executor reports the **489-test source-inventory file's semantic assertions succeeded**, but its real-repository graph case exceeded the old **5000 ms** test timeout. The source now gives that case **120000 ms**, and the lead's complete-file rerun is pending; do not record a current **489/489 passing suite** from assertion outcomes alone.
-- Executor reports **seven targeted image-identity tests passed** (one legitimate-tagging positive plus six Config/RootFS rejection cases), and latest public-checker success over **88 sources / 7 dependencies**. Prior core471/training56 and pre-array whole-strict/scoped-strict passes remain attributed checkpoints; final whole-invoice/frozen verification is still pending. No checks were independently executed here.
-- The next source gate reruns all three full suites, all three package typechecks, every direct strict core/arena input and both scripts, Node checks, and public closure.
+- Executor now reports all **three package typechecks** and the **whole strict invoice** passed; the earlier repair-only checkpoint is superseded by this attributed host result, not frozen-image proof.
+- Source inspection confirms registered **`r2-assertion-floors-v2` = 472 core / 1310 arena / 56 training** in `hermetic/verification-plan.mjs:8`. Executor expects **474 core (+2 tests)** and reports **57 training actual**; **1514 arena is tentative**, pending final enumeration. Build must reconcile the final floor vector and its bound fixtures/importer before freeze; neither 1310 nor 1514 is a current passing full-arena total.
+- Prior full host counts **469/811/50**, the earlier **471/1220/56** floor checkpoint, and **1276 PASS arena before this amendment** remain attributed history. The newest full arena run is pending.
+- Executor reports **777 inventory tests: 776 PASS + one actual host whole-graph index-proof failure**. Lead repair and complete-file rerun remain pending; this is an actual failed acceptance gate, not an assertion-only success or timeout completion claim.
+- Executor reports **public checker PASS** with version **`public-closure-v2`**, **four roots**, **28 workspace files**, and **two dependency files** (jsSHA package manifest + runtime module), with **zero jsSHA runtime edges**. No checker was executed here.
+- Executor reports **57 training tests PASS**, including empty/`abc` vectors, independent Node binary/Unicode/padding-55/56/63/64/65/subarray differential checks and forced collisions; **seven targeted planning-barrel/legacy-own-JSON-prototype checks PASS**, preserving ordinary object prototypes; and **109 Node tests PASS**. These host results do not close the frozen-image gate.
+- Source-alias review remains **OPEN**, including loop actual types and per-module callback numeric proof. Persisted rejection/positive-control tests do not substitute for final adversarial/security approval.
+- Executor approved an **immutable six-JSON test snapshot per file** with **fresh validators**, plus a scoped **120000-ms integration budget**. No model permit or policy decision deadline changes; no historical evidence is rewritten or fresh validation bypassed.
+- The next source gate repairs the real host index proof, closes source-alias review, enumerates/reconciles floors, and completes current full core/arena/training runs on the final tree. Repeat the typechecks, whole strict invoice, Node and public-closure checks after any repair and in the frozen cycle.
 - No fresh R2 dependency/source image, full frozen verification, publication, or closing review exists yet.
 - Latest source repair: `infra.test.mjs` and `scripts/challenge-infrastructure-evidence.mjs` now share **six exact ordered test identities (five static + one actual Docker)**. The capture validator checks every title, number, TAP plan and summary; source presence is not a passing infrastructure envelope.
 - Infrastructure validation independently binds the dependency image, probe invocation and inspected container policy. Its child receives only fixed PATH, private HOME, fresh empty DOCKER_CONFIG and image identity, with exact recorded environment equality and no inherited preloads, Docker endpoint overrides or credentials.
@@ -48,19 +51,24 @@ Accepted directions:
 | Decision | Accepted contract |
 |---|---|
 | Bridge | Implement against authorized observation V1 now; do not fake V2 history, ledger, or provenance. |
-| SHA dependency | Exact `@noble/hashes` **`2.4.0`**, never `^`/`~`; synchronous `sha256` from `@noble/hashes/sha2.js`. |
+| SHA dependency | Exact `jssha` **`3.3.2`**, never `^`/`~`; `import jsSHA from 'jssha/sha256'`, synchronous SHA-256 returning **`Uint8Array(32)`**; BSD-3-Clause. |
 | Package | Private `@chess-coach/starchess-training` **`0.0.1`**, path `packages/starchess-training`. |
 | Public training surface | **Only `/candidates`** in R2; no root, wildcard, `/features`, `/events`, or `/artifacts` export. |
-| Public export maps | Exact core `['.']`, arena `['.','./observations','./intent-codec-v1']`, training `['./candidates']`; no extra keys, aliases, wildcards, or conditional escape targets. |
+| Public export maps | Exact core `['.','./planning-v1']`, arena `['.','./observations','./intent-codec-v1']`, training `['./candidates']`; no extra keys, aliases, wildcards, or conditional escape targets. |
+| Model audit roots | Core `./planning-v1`, arena `./observations` + `./intent-codec-v1`, training `./candidates`; full native core `.` / `coreRoot` and arena `.` stay host-only, captured and inventoried. |
 | Generator | `composeCandidatesFromObservationV1` returns `CandidateBatchV3`, version `challenge-composition-v3`. |
 | Quota/diagnostics | Profile **B** and its exact closed diagnostics remain unchanged. |
 | Native rules | Share pure native helpers; do not change actual engine grammar, admission, or resolve semantics. |
 | Native cost ownership | TUI-approved **Freeze native tables**: declaration-time `Object.freeze` on `UNIT_COST`, `SPECIAL_REGISTRY` and every special entry; no copied model cost table or native cost amendment. |
 | Verification | Full fresh cycle, not a focused-test substitute: package-graph inventory v2, execution pins v3, verification v3. |
 
-Executor reports official README verification of the SHA package's MIT license, zero runtime dependencies, synchronous SHA-256, and `sha2.js` import subpath.
-This is the accepted dependency research record, not an independent network lookup or installed-byte measurement in this pass.
-Build must bind actual installed package/version/exports/license and lock/store bytes in the fresh closure.
+**Historical selection, explicitly overridden:** Executor previously selected `@noble/hashes` **2.4.0** / `sha2.js` / MIT; the later TUI approval replaces that current dependency choice with exact `jssha` **3.3.2** / `jssha/sha256` / BSD-3-Clause. Keep that decision history; do not present Noble as the current pin.
+Read source `src/identity.ts`: construct `new jsSHA('SHA-256','UINT8ARRAY')`, call `update(bytes)`, and return `getHash('UINT8ARRAY')` synchronously as 32 bytes.
+No vendor constructor exception, dependency patch, vendored replacement, or tree-shaking assumption is approved. Audit the complete selected installed runtime module under the existing guards; reject all jsSHA runtime import edges.
+Local inspection confirms the installed package manifest names **3.3.2**, exports `./sha256` to **`./dist/sha256.mjs`** for ESM, declares **BSD-3-Clause**, and has no runtime `dependencies`; its installed `LICENSE` states the three BSD conditions.
+Official research navigation: [jsSHA v3.3.2 release](https://github.com/Caligatio/jsSHA/releases/tag/v3.3.2), [versioned LICENSE](https://github.com/Caligatio/jsSHA/blob/v3.3.2/LICENSE), and [official repository](https://github.com/Caligatio/jsSHA).
+**[Unverified]** These network links were not fetched in this read-only research pass; the installed manifest identifies that official repository. An independent audit was **not located** in the supplied research record; do not claim jsSHA was independently audited or that no audit exists.
+Build must bind actual installed package/version/exports/license and lock/store bytes in the fresh closure; local inspection and attributed checker success are not fresh image-byte measurement.
 Use no WebCrypto promise, Node crypto, or bespoke SHA implementation in the model-facing closure.
 Node crypto may remain in host verification tooling.
 
@@ -89,6 +97,7 @@ Memoize each completed detached subtree with its height; reuse its copy and requ
 Shared DAG subtrees retain detached shared identity without repeated recursive expansion or descendant byte charging; memo hits still consume visits.
 Public observation encode validates the strict observation DTO; public action validation, spend and candidate decode inspect before property reads.
 The legacy private wire facade retains its existing acceptance behavior.
+Legacy own JSON `__proto__` keys remain data, not prototype mutation: canonical sorting uses `Object.fromEntries` to preserve own keys. Detached public/generated objects and arrays retain ordinary `Object.prototype` / `Array.prototype`; this amendment approves no null-prototype redesign. Executor reports the targeted identity/prototype checks passed, not a full current arena run.
 
 `ACTION_KINDS` is **runtime frozen at declaration**, not merely TypeScript `readonly`.
 Its exact order remains `[classical,deploy,stimStep,spiderMine,charonMissiles,siegeMode,tacticalJump]`.
@@ -108,7 +117,7 @@ These are exact approved keys and canonical targets, not minimum required subpat
 
 | Package | Exact `exports` map |
 |---|---|
-| `@chess-coach/starchess-core` | `{ ".": "./src/index.ts" }` |
+| `@chess-coach/starchess-core` | `{ ".": "./src/index.ts", "./planning-v1": "./src/planning-v1.ts" }` |
 | `@chess-coach/starchess-arena` | `{ ".": "./src/index.ts", "./observations": "./src/observations.ts", "./intent-codec-v1": "./src/intent-codec-v1.ts" }` |
 | `@chess-coach/starchess-training` | `{ "./candidates": "./src/candidates.ts" }` |
 
@@ -117,8 +126,11 @@ Equivalent conditional packaging may repeat the same target; it may not introduc
 Check arena `.` as well as the pure roots; its host ownership does not exempt its export target from this contract.
 External reviewed dependencies retain their separate browser-ESM resolution policy; this all-branch canonical-target rule applies to the three workspace packages, not every external dependency export.
 
-The pure closure audit roots are **core `.`**, **arena `./observations` and `./intent-codec-v1`**, and **training `./candidates`**.
-Arena `.` stays the existing host barrel; export-map presence does not make it a pure model entrypoint.
+The four model closure audit roots are **core `./planning-v1`**, **arena `./observations` and `./intent-codec-v1`**, and **training `./candidates`**.
+Core `.` / full native **`coreRoot`** and arena `.` stay host barrels, **captured and inventoried** but excluded from the public model audit roots. `fflate` remains a core host dependency, not a public model closure dependency.
+`src/planning-v1.ts` reexports the existing native implementation functions and constants plus authorized types; it supplies no parser, admission, resolver, replay or record barrel.
+Authorized/model **runtime and type imports** use `@chess-coach/starchess-core/planning-v1`; remove direct deep-core exceptions rather than granting a second model access route. Host/test verification imports are not model entrypoints.
+`src/__tests__/planning-v1.test.ts` resolves the public subpath, checks the exact runtime symbol set, asserts native export identity and frozen `UNIT_COST`, and rejects parser/admission/resolver/history exposure.
 Every transitive pure closure uses **static ESM imports/reexports only**.
 Reject **all runtime dynamic imports, including `import('./literal-target')`**; a literal target is not a static import and does not receive an exception.
 Reject CommonJS, computed loaders, Node/process acquisition, host/baseline/coordinator reachability, private cross-package bypasses, and forbidden reverse edges.
@@ -136,9 +148,10 @@ Mutation is not itself an automatic failure for proven ordinary data access, and
 Both audits keep the lexical binding checker on its original **noLib/noResolve AST** and lazily obtain ordinary data types through a **separate parsed AST and full typed program**.
 `dataType` maps corresponding nodes by `pos:end:kind`; do not reuse the binding AST in the full data program or let inferred data symbols replace lexical binding IDs.
 Workspace alias resolution in that data program uses the declared export target and sets **`resolvedUsingTsExtension:false`** on resolved workspace modules; this is an inference repair, not permission for runtime loaders or private package bypasses.
-The real-repository inventory regression retains its audit/edge/group assertions and now has an explicit **120000 ms per-test timeout**.
-Executor reports the full typed graph takes approximately **19 seconds** and previously hit the 5-second test deadline; this is a reported host finding, not a measurement made here.
-No semantic assertion was removed, and the wider regression deadline changes neither policy decision deadlines nor source semantics. The lead reruns that complete test file before freeze.
+The real-repository inventory regression retains its audit/edge/group assertions with an explicit **120000 ms per-test timeout**. Scoped integration setup/test budgets use the same 120000-ms allowance where approved, not a global model deadline change.
+The earlier approximately **19-second** typed-graph report and 5-second timeout are historical host findings, not current measurements. The latest actual host whole-graph **index-proof failure** still requires lead repair and complete-file rerun.
+Use only the approved immutable **six-JSON per-file test snapshot** to avoid repeated diagnostic construction; run validators fresh for every validation case. Synthetic fixture outputs never constitute real image/closure evidence.
+No semantic assertion, validator obligation, model permit deadline or policy decision deadline is removed.
 Keep ordinary computed data indexing and the exact reviewed DTO descriptor seam valid; do not turn the bypass guard into a ban on all bracket access.
 `challengeSourceInventory.test.ts` persists paired inventory/public regressions for these forms and rejects noncanonical workspace targets in unselected conditional branches.
 Static rejection remains a reviewed graph policy, not arbitrary-JavaScript sandbox proof.
@@ -168,7 +181,7 @@ Validate and detach the input before traversal; return detached immutable plain-
 Preserve action-array order and authored coordinates in every emitted key.
 Training owns composition only; arena owns shared DTO/codec semantics; core owns native geometry/rules.
 No core→arena/training or arena→training dependency is allowed.
-Training `/candidates` may reach only the authorized arena subpaths, pure native helpers, and the pinned pure SHA subpath.
+Training `/candidates` may reach only the authorized arena subpaths, core `/planning-v1`, and the pinned `jssha/sha256` subpath.
 No unrestricted `SideContext`, full SCFEN, hidden queue, enemy bank, future trace, corpus identity, or hidden occupancy enters generation.
 
 ## 3. V3 primitive amendment — promotion and prefix reservations
@@ -328,6 +341,7 @@ Diagnostics contain no hidden admission result and do not become features.
 | Execution pins | `challenge-execution-pins-v2` | **`challenge-execution-pins-v3`**, binds inventory v2 and R2 public surfaces/generator/SHA closure |
 | Verification envelope | `hermetic-verification-v2`, eight commands | **`hermetic-verification-v3`**, exactly eleven ordered commands |
 | Composition | Frozen future `challenge-composition-v2` | **`challenge-composition-v3`** with V1 bridge and §3 amendment |
+| Public closure report | `public-closure-v1`, full core-root audit | **`public-closure-v2`**, four narrow model roots; full native root stays host-only/captured/inventoried |
 | Observation/intent codec | V1 | **Unchanged V1** |
 | Broader history/features/optimizer | Frozen future contracts | **Pending**, not implemented by this bridge |
 
@@ -339,7 +353,7 @@ Retain supported host-only lexical loader seams and fail closed on unsupported l
 Public authorized/model closures allow pure static ESM dependencies only, without CommonJS/dynamic-loader/Node/global-process escapes; reject literal runtime dynamic imports as well as computed ones.
 Include every selected public entrypoint and private challenge/worker/verification entrypoint in graph roots.
 Capture training source/tests/configs/metadata, native helper changes, scripts, lockfile, installed dependencies, offline store, and tool/control bytes.
-Bind actual `@noble/hashes` 2.4.0 `sha2.js` transitive installed closure and export resolution; package README claims do not replace measured dependency bytes.
+Bind actual `jssha` 3.3.2 `dist/sha256.mjs` installed bytes and export resolution; the public report lists that runtime module and its package manifest as two dependency files and rejects jsSHA runtime import edges. Package README claims do not replace measured dependency bytes.
 Keep content-derived hashes; no mtime pins or invented counts/digests.
 Teach migration/validator/importer/tests the new closed schemas explicitly; do not accept historical v2 envelopes as fresh R2 verification.
 Preserve old fixture bytes and original-baseline pins; pin new execution separately.
@@ -347,8 +361,8 @@ Preserve old fixture bytes and original-baseline pins; pin new execution separat
 ## 7. Full eleven-command verification v3 — source manifest, execution pending
 
 **IMPLEMENTED manifest, not fresh run or passing.** `packages/starchess-arena/hermetic/verification-plan.mjs` owns exact vectors; build must freeze its expanded input lists before execution.
-Implemented assertion-floor version remains **`r2-assertion-floors-v2`**, with source-registered minima `vitest-starchess-core.json:471`, `vitest-starchess-arena.json:1220`, `vitest-starchess-training.json:56`.
-The inspected manifest matches this vector; remove the obsolete source-floor repair obligation, but retain final enumeration as a lead gate before freeze.
+Assertion-floor version remains **`r2-assertion-floors-v2`**, with currently registered minima `vitest-starchess-core.json:472`, `vitest-starchess-arena.json:1310`, `vitest-starchess-training.json:56`.
+Final enumeration and **floor repair are OPEN**: expected core474 (+2), training57 actual, arena1514 tentative. Build must reconcile the manifest and every bound fixture/importer expectation from the actual final invoice before freeze; this docs-only pass changes none of them.
 The importer rejects a different floor version/vector and independently recounts every bound Vitest report with no failed/pending/todo assertions.
 These minima do not claim final enumeration or any full arena pass; the lead must enumerate the final suite, reconcile the target, rerun the whole strict invoice and complete every frozen-image command.
 For the vectors below define `A=/app/packages/starchess-arena`, `P=/app/packages`, `O=/app/_spec/evidence/ml-adjutant-r2-refresh`, and `T=/app/packages/starchess-training`.
@@ -367,7 +381,7 @@ Use the new R2 runtime/host namespace outside captured source, never over restor
 | 8 | Arena package-bin `vitest` / arena cwd | `vitestArgs(starchess-arena)` |
 | 9 | Training package-bin `vitest` / training cwd | `vitestArgs(starchess-training)` |
 | 10 | `/usr/local/bin/node` / `/app` | `[--test,A/hermetic/evidence-bundle.test.mjs,A/hermetic/image-measurement.test.mjs,A/hermetic/tar.test.mjs]` |
-| 11 | `/usr/local/bin/node` / `/app` | `[/app/scripts/check-public-closure.mjs]`; exact stdout becomes `O/public-closure-report.json`, version `public-closure-v1` |
+| 11 | `/usr/local/bin/node` / `/app` | `[/app/scripts/check-public-closure.mjs]`; exact stdout becomes `O/public-closure-report.json`, version `public-closure-v2` |
 
 `vitestArgs(name)=[run,--config,/tmp/<name>.vitest.mts,--configLoader,native,--maxWorkers,2,--reporter=default,--reporter=json,--outputFile,O/vitest-<name>.json]`.
 Each temporary config preserves the package's test config and routes cache to `/tmp`; do not remove assertions, tests, or exclusions to manufacture success.
@@ -554,9 +568,9 @@ The baseline validator consumes exactly `[baseline,original,originalVerification
 | Mine reservations | Current+prior cap boundaries 0..3, current/current-prior/prior-prior anchor collisions, F with earlier same-actor C, F before later C, unrelated C, no hidden enemy-mine filter/refunds, guard priority. |
 | Native anchors/phase | B heads/vacancy/transit/exact gasPair, B toggle/Siege, deployment crush/CC exclusions, F Charon and stim constraints, preturn special actor type and all seven families. |
 | Traversal/diagnostics | Root-guard feasible family availability with finite separately metered probes; eight-lane RR, cyclic depth/FIFO laziness, continuation after valid skips, counted duplicates/pruning/owner/quota, exact six guard keys, transfers only on proven exhaustion, pass once, 512/2048/four-slot caps and closed count identities. |
-| Identity/privacy | Exact bytes despite forced hash collision, SHA known vectors, stable sorted results, hidden-world noninterference, no full-state admission probes or retries. |
+| Identity/privacy | Exact bytes despite forced hash collision; empty/abc known vectors and independent Node binary/Unicode/padding55/56/63/64/65/subarray differential tests; Uint8Array length32/input immutability; stable sorted results, hidden-world noninterference, no full-state admission probes or retries. |
 | Coverage/performance | Exhaustive small authorized fixture domains and actual membership/omissions; capped worst-case work/state/runtime under existing policy deadlines. No asserted exhaustive full-state legality. |
-| Closure/assurance | Source-registered floors v2 471/1220/56 with final enumeration/full suites/whole strict invoice pending; factory/member-mutation/callable-origin guards with numeric/bounded/typed data controls, separate lexical/data ASTs and workspace-extension inference repair; real graph per-test deadline120000 without assertion removal, complete inventory-file rerun pending; six unchanged infra identities, private parent support, independent exact probe Env and immutable image projection excluding tag/storage metadata, synthetic positive/negative tagging regressions; mandatory acquisition/infrastructure/raw provenance, exact source/offline/attach contracts and capture modes; fresh measurement/publication, original54 parity and54+54 reruns. |
+| Closure/assurance | Registered floors v2 472/1310/56 need enumeration/repair; inventory776/777 leaves actual host index proof failing; source-alias review open for loop actual types/per-module callback numeric proof. Four-root public-closure-v2 excludes full native/fflate, permits only unpatched jssha3.3.2/sha256 with zero runtime edges; paired guards preserve reviewed data controls. Immutable six-JSON per-file snapshot/fresh validators and scoped120000ms integration budget preserve model deadlines. Six unchanged infra identities, exact probe Env/immutable image projection and mandatory acquisition/infrastructure/raw provenance remain; fresh full frozen verification/measurement/publication, original54 parity and54+54 reruns stay pending. |
 
 Build owns all package/source/test/config/lock/CI and verifier changes above; this spec pass changes none.
 The canonical concern link is `_spec/packages/starchess-training/candidate-generation.puml`; the lead owns source-side `SPEC:` replacements and preserves unrelated pointers.
@@ -623,12 +637,11 @@ The index's pre-existing `turn-input-sequence.puml` unresolved row remains expli
 The existing empty-coverage `_spec/apps/starchess/core/index.puml` remains unchanged human triage.
 
 Root `README.md` belongs to build, not spec-keeper; add current navigation to this amendment and both owning diagrams without changing unrelated README prose.
-Root `PLAN.md` now links this amendment and the canonical diagram, marks R2 WIP / verification PENDING, and labels its retained R0 proof block historical rather than current.
-This pass synchronizes root `PLAN.md` with the latest review repairs and links the canonical acquisition/provenance section; no diagram path changed.
-Whole-file inspection confirms the lead updated `packages/starchess-arena/hermetic/README.md`: the publication example includes `--acquisition` and `--infrastructure`, acquisition provenance and retained envelopes/logs are documented, generated-file modes and host/probe environments are stated, and v1 floors are historical while v2 refers to the registered manifest.
-The README also states immutable image comparison tolerates legitimate tagging while retaining configuration/root-filesystem binding. The earlier README handoff blocker is removed; this spec pass changes no README bytes.
-Source inspection confirms `hermetic/verification-plan.mjs:8` now registers **471/1220/56**. The earlier **1105→1107** floor-mismatch handoff is removed, not silently presented as an unexecuted repair.
-Remaining lead gates are final invoice enumeration, complete inventory-file rerun after its timeout change, current full strict/frozen verification, fresh image/evidence publication and closing reviews; these are verification gates, not outstanding spec/source mismatch findings.
+Root `PLAN.md` links this amendment and the canonical diagram, marks R2 WIP, separates reported host results from frozen proof, and preserves its R0 history. No diagram path changed.
+Whole-file inspection confirms the hermetic README retains acquisition/infrastructure examples, provenance/log retention, modes and environment contracts, but **line71 still states Noble2.4**. That current dependency claim is stale.
+**REQUEST TO BUILD — README DOCS ONLY:** update `packages/starchess-arena/hermetic/README.md` to exact `jssha`3.3.2 / `jssha/sha256` / BSD-3-Clause / synchronous Uint8Array32; describe core `.` host-only versus `/planning-v1` model root, four model roots and public-closure-v2; keep `fflate` host-only. Attribute reported host results, mark inventory776/777 and source-alias review open, and require final count enumeration/floor repair plus fresh frozen/image/publication/review gates. Keep approved snapshot/validator/deadline scope and unchanged historical raw-byte records. No source edits are requested by this README handoff.
+Spec-keeper refuses edits outside `_spec/`, root `PLAN.md` and `AGENTS.md`; the README is outside this role's permitted paths. This pass changes no README bytes.
+Source inspection confirms registered floors **472/1310/56**, not final counts. Build owns floor enumeration/repair and the actual host whole-graph index-proof repair; open source-alias review prevents a completion verdict.
 Root CI must include the training full suite/typecheck and `node scripts/check-public-closure.mjs`; no CI edit occurs here.
 
 Lead/build validation commands, from repository root; **not executed by spec-keeper**:
@@ -640,9 +653,20 @@ plantuml -tsvg _spec/packages/starchess-training/candidate-generation.puml _spec
 
 Renderer availability is unverified; these commands specify both diagrams without claiming installation or render success.
 No source note-ratchet implementation was found; if the lead adds `specNotesEnforced`, include both candidate-generation and policy-contracts diagrams edited here. That source/test change belongs to build.
-This pass preserves native freezing/DTO/static-closure/probe-Env contracts, documents the implemented factory/member-mutation and separate typed-data guards, records stable image projection and actual registered floors v2, and removes checked obsolete handoffs without assigning fresh passing proof.
-It updates structural labels in both owning diagrams while preserving reasoning notes; manual inspection checks their 2–5-line/50-column note boxes. This is a prepared source contract, not full READY.
+This pass preserves native freezing/DTO/static-closure/probe-Env contracts, documents the approved planning-v1/jsSHA amendment, records attributed host results and actual registered floors, and leaves failed/pending gates explicit.
+It updates structural labels in both owning diagrams while preserving reasoning notes and their recorded FK grades; new labels are exempt from grade scoring. Notes retain 2–5 lines within 50 columns. This is a prepared source contract, not full READY.
 It edits no source prose, publishes no evidence, and claims no renderer/test execution.
+
+### 8.3 Current acceptance gates — all must close before R2 completion
+
+- [ ] Lead repairs the **actual host whole-graph index proof**; the complete inventory suite must pass all final registered tests, with no failure/skip/pending/todo substituted for the current **776/777** result.
+- [ ] Adversarial/security reviewers close **source-alias review**, including loop actual types and per-module callback numeric proof, without vendor constructor exceptions or weakened loader guards.
+- [ ] Lead enumerates final core/arena/training invoices, reconciles **registered472/1310/56** with actual results, and repairs all bound floor expectations. **Expected474 core**, **actual57 training**, and **tentative1514 arena** are distinct facts, not three passing totals.
+- [ ] Final amended full core/arena/training suites pass; repeat all three typechecks, the whole strict invoice, Node suites and public-closure-v2 after repairs. Prior arena1276 PASS predates the amendment.
+- [ ] Build corrects the stale hermetic README; lead checks both diagrams with PlantUML `checkonly`, renders them, and runs documentation whitespace/index checks. No such checks ran here.
+- [ ] Freeze source/controls, acquire and independently measure fresh dependency/source images, capture the mandatory six-identity actual Docker envelope, and pass all **eleven frozen commands** with exact logs/artifact bindings.
+- [ ] Require original54 semantic parity, fresh54+54 executions/reruns, independent image/archive/installed/tool measurement, validated new R2 publication and final adversarial/security/spec reviews.
+- [ ] Only then record **R2 closure**. No current images, current bundle, publication, R2 acceptance or training result exists in this checkpoint; R1/R3–R5 and explicit R6 training approval remain separate gates.
 
 ## 9. Unchanged future readiness gates
 

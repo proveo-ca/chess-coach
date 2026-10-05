@@ -228,8 +228,8 @@ export const runSupervised = (
     const completedResolves = value.resolves as EndScTurnResult[];
     const completedScfens = value.scfens as string[];
     const completedBanks = value.bankTrail as Bank[];
-    return resolves.every((entry, index) => canonical(entry) === canonical(completedResolves[index]) &&
-      scfens[index + 1] === completedScfens[index + 1] && canonical(bankTrail[index]) === canonical(completedBanks[index]));
+    return resolves.every((entry, index) => canonical(entry) === canonical(completedResolves[+index]) &&
+      scfens[+index + 1] === completedScfens[+index + 1] && canonical(bankTrail[+index]) === canonical(completedBanks[+index]));
   };
   const boundChild = (message: Record<string, unknown>): boolean => {
     if (message.version !== WORKER_PROTOCOL || message.matchKey !== request.key || message.messageOrdinal !== childOrdinal) {

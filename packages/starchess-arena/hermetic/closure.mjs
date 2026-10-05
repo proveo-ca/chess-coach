@@ -26,7 +26,7 @@ export function verifyDependencies() {
       const resolved = `/app/packages/${name}/node_modules/${dependency}/package.json`;
       versions[dependency] = JSON.parse(readFileSync(resolved, 'utf8')).version;
       if (specifier === 'workspace:*' && realpathSync(resolved) !== workspaceManifestTarget(dependency)) throw new Error('Workspace link mismatch');
-      if (dependency === '@noble/hashes' && (specifier !== '2.4.0' || versions[dependency] !== '2.4.0')) throw new Error('SHA dependency pin mismatch');
+      if (dependency === 'jssha' && (specifier !== '3.3.2' || versions[dependency] !== '3.3.2')) throw new Error('SHA dependency pin mismatch');
     }
     execFileSync(`/app/packages/${name}/node_modules/.bin/tsc`, ['--version']);
     execFileSync(`/app/packages/${name}/node_modules/.bin/vitest`, ['--version']);

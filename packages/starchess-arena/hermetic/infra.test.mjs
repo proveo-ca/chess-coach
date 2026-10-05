@@ -72,7 +72,7 @@ test('context keeps the original lock and workspace links without root dependenc
   assert.deepEqual(installedRoots, ['/app/node_modules', ...workspacePackages.map((name) => `/app/packages/${name}/node_modules`)]);
   const training = JSON.parse(readFileSync(join(context, 'deps/packages/starchess-training/package.json'), 'utf8'));
   assert.equal(training.dependencies['@chess-coach/starchess-arena'], 'workspace:*');
-  assert.equal(training.dependencies['@noble/hashes'], '2.4.0');
+  assert.equal(training.dependencies.jssha, '3.3.2');
   assert.deepEqual(Object.keys(training.exports), ['./candidates']);
 });
 

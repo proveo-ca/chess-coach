@@ -85,7 +85,7 @@ export async function main(argv) {
         if (index === 10) {
           const bytes = readFileSync(records[index].logs.stdout.path);
           const closure = JSON.parse(bytes.toString('utf8'));
-          if (closure.version !== 'public-closure-v1' || closure.passed !== true) throw new Error('Public closure did not pass');
+          if (closure.version !== 'public-closure-v2' || closure.passed !== true) throw new Error('Public closure did not pass');
           writeFileSync(`${output}/public-closure-report.json`, bytes, { flag: 'wx' });
         }
       }

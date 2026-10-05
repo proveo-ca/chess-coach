@@ -19,6 +19,8 @@
 ' covers: packages/starchess-core/src/board/**
 ' covers: packages/starchess-core/src/resolve/submit-turn.ts
 ' covers: packages/starchess-core/src/index.ts
+' covers: packages/starchess-core/src/planning-v1.ts
+' covers: packages/starchess-core/src/__tests__/planning-v1.test.ts
 ' covers: packages/starchess-core/src/__tests__/planning*.test.ts
 ' covers: packages/starchess-core/package.json
 ' covers: packages/starchess-arena/package.json
@@ -46,11 +48,16 @@
 ' DTO: inspect own keys before collecting descriptors; check array density/length before copy allocation; reject accessors, symbols, hidden metadata and unsupported prototypes without invoking getters.
 ' DTO: reject ancestor cycles before memo lookup; reuse detached shared-subtree copies and enforce depth + cached subtree height <=16 on every path; closed V1 validation follows inspection.
 ' DTO: public observation encode validates the strict DTO; public actions/spend/decode inspect before reads; legacy private wire validation retains its behavior.
+' legacy JSON: canonical sorting preserves own __proto__ data properties via Object.fromEntries; detached results retain ordinary Object.prototype / Array.prototype, not a null-prototype redesign.
 ' registry: ACTION_KINDS is frozen at declaration in canonical native order K.
 ' native costs: TUI-approved Freeze native tables; UNIT_COST and SPECIAL_REGISTRY plus every nested gasCost/actorHint entry use Object.freeze at declaration; authoritative native values/lookup unchanged.
-' exports: core {'.':'./src/index.ts'}; arena {'.':'./src/index.ts','./observations':'./src/observations.ts','./intent-codec-v1':'./src/intent-codec-v1.ts'}; training {'./candidates':'./src/candidates.ts'}; no extra keys.
+' exports: core {'.':'./src/index.ts','./planning-v1':'./src/planning-v1.ts'}; arena {'.':'./src/index.ts','./observations':'./src/observations.ts','./intent-codec-v1':'./src/intent-codec-v1.ts'}; training {'./candidates':'./src/candidates.ts'}; no extra keys.
 ' exports: every conditional workspace branch recursively targets the canonical approved file, including node/default and unselected branches; browser selection alone is insufficient.
-' closure: pure roots are core '.', arena './observations' and './intent-codec-v1', training './candidates'; arena '.' remains the host barrel, not a pure model entrypoint.
+' closure: four model audit roots are core './planning-v1', arena './observations' and './intent-codec-v1', training './candidates'; core '.' / coreRoot and arena '.' remain host-only, captured and inventoried.
+' closure: authorized/model runtime and type imports use core/planning-v1; direct deep-core exceptions removed. Full native coreRoot and fflate stay outside the public model closure.
+' SHA amendment: exact jssha 3.3.2, import jssha/sha256 -> dist/sha256.mjs, BSD-3-Clause; synchronous SHA-256 returns Uint8Array(32). Historical noble2.4 selection overridden, not erased.
+' SHA policy: no vendor constructor exceptions, patched dependency or tree-shaking assumption; scan the installed runtime module with unchanged guards and reject every jsSHA runtime import edge.
+' research: https://github.com/Caligatio/jsSHA/releases/tag/v3.3.2 ; https://github.com/Caligatio/jsSHA/blob/v3.3.2/LICENSE ; network links not fetched here, installed manifest/LICENSE read; independent audit not located, no audited claim.
 ' closure: static ESM only; reject all runtime dynamic imports, including literal targets, CommonJS, Node/process acquisition and forbidden/reverse package edges.
 ' closure: inventory/public regressions reject computed own-function-member constructor acquisition hidden by any, wrappers, getters/methods, nested aliases or ambiguous members; numeric arrays and nested destructuring now retain callable origin; ordinary data indexing/positive controls and reviewed DTO descriptors remain valid.
 ' closure: dataType uses a separate parsed/full-typed AST from lexical binding IDs; resolved workspace aliases set resolvedUsingTsExtension=false for inference only; bounded numeric/literal keys and typed ordinary data maps stay valid.
@@ -69,9 +76,11 @@
 ' provenance: both source inspections require runtime.mjs entrypoint, Cmd=['verify'], cwd=/app and exact ordered image Env + approved output; reject NODE_OPTIONS/NODE_PATH/LD_PRELOAD/LD_LIBRARY_PATH.
 ' acquisition: mandatory dependency-build envelope independently binds dependency image, measurements, controls/inputs, exact uncached Docker argv and successful untruncated logs; frozenDependency reuse is forbidden.
 ' capture: fresh dependency acquisition uses build --dependencies --no-cache; generated capture.json/workspace YAML explicitly 0644, child/intermediate/empty directories 0755 under umask 077; private context root stays private.
-' floors: inspected implemented r2-assertion-floors-v2 core471/arena1220/training56 = arena1107+106 factory/mutation/data+7 imageIdentity; final enumeration/full arena/frozen verification pending, obsolete floor mismatch removed.
-' reported checks: Executor reports semantic assertions in inventory489 succeeded but real graph hit old5000ms test timeout; case now120000ms, complete-file lead rerun pending; targeted imageIdentity7 incl tagging positive passed, public88 sources/7 deps passed, not independently executed here.
-' readiness: lead README acquisition/provenance/env/mode update inspected; obsolete README handoff removed, no source/README edits here, prepared contract is not full READY.
+' floors: registered r2-assertion-floors-v2 is core472/arena1310/training56; expected core474 (+2), training57 actual, arena1514 tentative; final enumeration/floor repair/full suites pending.
+' reported checks: Executor reports public-closure-v2 PASS, four roots, 28 workspace files + jsSHA manifest/runtime module (2 dependency files), zero jsSHA runtime edges; training57, targeted planning/legacy-prototype7, all3 typechecks, whole strict invoice and Node109 PASS; not executed here.
+' open gate: inventory777 = 776 PASS + 1 failing actual host whole-graph index proof; lead repair pending. Prior full arena1276 PASS predates amendment; latest full arena pending. Source-alias review remains open for loop actual types/per-module callback numeric proof.
+' test fixture: approved immutable six-JSON per-file test snapshot, fresh validators; scoped120000ms integration budget, no model permit/decision deadline change.
+' readiness: README outside role scope; build must replace stale noble pin and describe planning-v1/public-closure-v2 plus current pending gates; no README edit here, no full READY.
 ' checkpoint: Executor reports R2 source recovered from cc6 after reset; current pipeline restored; strict 19 errors and two legacy boundary casts resolved by lead, fresh full run PENDING.
 ' recovery: R0 records/partial logs are immutable history; absent archives/tmp images and old markers cannot authorize current tests or closure.
 ' future: H=1 calibrated turn-aware 4 deployed + 3 banked =7 excludes CC; versioned belief/features/calibration remain pending, no learned policy or SGD.
@@ -93,6 +102,8 @@ package "packages/starchess-arena" {
 }
 
 package "packages/starchess-core" {
+  component "src/planning-v1.ts\n/planning-v1 · narrow native barrel" as PLANNING <<app>>
+  component "src/index.ts\n. / coreRoot · full native host barrel" as CORE_HOST <<host>>
   component "src/rules/planning-intents.ts\nsrc/rules/planning-order.ts\nshared native pure helpers" as NATIVE <<app>>
   component "src/rules/constants.ts\nsrc/rules/specials/registry.ts\nfrozen native UNIT_COST / SPECIAL_REGISTRY" as COSTS <<app>>
   component "src/resolve/submit-turn.ts\nactual after-B rewrite / native resolve" as RESOLVE <<app>>
@@ -104,7 +115,8 @@ package "packages/starchess-training\nprivate @chess-coach/starchess-training 0.
   component "src/domain.ts\nappend-time own prefix\nstored anchors / mine reservations" as PREFIX <<app>>
 }
 
-component "@noble/hashes 2.4.0\nsha2.js / synchronous sha256" as SHA <<cloud>>
+component "jssha 3.3.2\njssha/sha256 · dist/sha256.mjs" as SHA <<cloud>>
+component "fflate\ncore host dependency only" as FFLATE <<cloud>>
 component "arena hermetic + scripts\npackage graph / fresh verification" as VERIFY <<host>>
 component "hermetic/public-closure.mjs\nscripts/check-public-closure.mjs\nstatic graph / typed data + mutation audit" as CLOSURE <<host>>
 component "scripts/challenge-infrastructure-evidence.mjs\nhermetic/infra.test.mjs\nindependent host / Docker envelope" as INFRA <<host>>
@@ -117,10 +129,14 @@ OBS ARROW_OPTIONAL DTO : inspect before schema reads
 CODEC ARROW_OPTIONAL DTO : inspect public actions / spend / decode
 GEN ARROW_MAIN LANES : deterministic bounded traversal
 LANES ARROW_MAIN PREFIX : one counted append per visit
-PREFIX ARROW_OPTIONAL NATIVE : geometry / matching / anchors
-PREFIX ARROW_OPTIONAL COSTS : unchanged native resource guards
+PREFIX ARROW_OPTIONAL PLANNING : geometry / matching / anchors / costs
+PLANNING ARROW_OPTIONAL NATIVE : identical native helper exports
+PLANNING ARROW_OPTIONAL COSTS : unchanged native resource guards
+CORE_HOST ARROW_OPTIONAL RESOLVE : private native execution
+CORE_HOST ARROW_CLOUD FFLATE : host record packing
 GEN ARROW_MAIN CODEC : authored action keys / requested spend
-CODEC ARROW_OPTIONAL COSTS : authoritative native spend
+CODEC ARROW_OPTIONAL PLANNING : authoritative native spend
+OBS ARROW_OPTIONAL PLANNING : runtime constants + erased types
 GEN ARROW_CLOUD SHA : hash canonical bytes; compare exact bytes
 LEGACY ARROW_MAIN CODEC : compatible V1 facade
 BASELINE ARROW_MAIN LEGACY : original baseline remains separate
@@ -213,19 +229,29 @@ note right of PREFIX
 end note
 
 note bottom of SHA
-  Exact version 2.4.0; MIT
-  Zero runtime dependencies; pure sync SHA-256
+  Exact version 3.3.2; BSD-3-Clause
+  Synchronous SHA-256 -> Uint8Array(32)
+end note
+
+note bottom of PLANNING
+  Runtime + type imports: planning-v1 only
+  Function identity with native exports preserved
+end note
+
+note bottom of CORE_HOST
+  Captured and inventoried; host-only root
+  No native barrel or fflate in model closure
 end note
 
 note bottom of VERIFY
   Inventory v2 / pins v3 / verification v3
   Eleven commands; fresh image proof pending
-  Floors v2: core 471 / arena 1220 / training 56
+  Registered floors v2: 472 / 1310 / 56
 end note
 
 note top of VERIFY
   Final invoice enumeration: pending
-  Complete inventory-file rerun: pending
+  Inventory: 776/777; host index proof failing
 end note
 
 note bottom of CLOSURE
@@ -248,6 +274,13 @@ note top of CLOSURE
   Lexical bindings / dataType: separate ASTs
   Workspace type inference: extension flag false
   Global evaluation/loader guards unchanged
+end note
+
+note left of CLOSURE
+  public-closure-v2: four model audit roots
+  Reported PASS: 28 workspace + 2 dep files
+  jsSHA runtime edges: zero
+  No vendor exception, patch or tree shaking
 end note
 
 note bottom of INFRA
@@ -306,8 +339,11 @@ legend bottom
   Earlier five-promotion future generator draft is superseded, not native history.
   Executor-reported cc6 recovery restores R2 source, not fresh execution proof.
   Prior full host counts 469 core / 811 arena / 50 training are not a new run.
-  Implemented floors v2: 471 core / 1220 arena / 56 training; final enumeration pending.
-  Real-graph regression timeout now 120000 ms; complete inventory-file rerun pending.
+  Registered floors v2: 472 core / 1310 arena / 56 training; final enumeration/repair pending.
+  Expected core474 (+2); training57 actual; arena1514 tentative, not a passing total.
+  Inventory777: 776 PASS, one actual host whole-graph index proof failing; lead repair pending.
+  Scoped integration budget120000ms; immutable six-JSON test snapshot; validators stay fresh.
+  Prior full arena1276 PASS precedes amendment; latest full run and source-alias review pending.
   Reported host checks and public closure do not establish full frozen verification.
   R0 records/partial logs and old markers are historical; no current closure authority.
   Legacy R0 archived logs and temporary images are missing.
