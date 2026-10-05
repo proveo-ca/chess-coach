@@ -119,6 +119,11 @@ note bottom
   just claimed. Board hints hold until the flip (1.2s); non-fog lessons have no demo, so theirs
   land at once. Working the toggle by hand cancels the demo and releases the
   hints early — it never fights the player's hand.
+  **Fog lesson remount** — ``FogSection`` keys ``LiveLessonHost`` on the lesson
+  key, so each fog lesson / retry mounts a fresh host. ``useAutoDeploy`` baselines
+  on mount, so the lesson opens without a deploy drop (a shared host diffed the
+  previous lesson's board and dropped every new piece). Fog-only bypass: other
+  sections keep the shared host + ``loadLesson``.
   resolve ``combat-chain`` shows ``TurnBarSidebar`` phase chips (DualNav off);
   resolve/king footer is typewriter turn/phase nav (‹ Turn · Check · Intent · Resolve ›).
   **Guide bubble placement** (``TutorialGuideBubble``) — the line never takes a

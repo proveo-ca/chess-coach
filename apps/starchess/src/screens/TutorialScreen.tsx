@@ -178,28 +178,31 @@ const FogSection: Component<{
   const boardHints = createMemo(() =>
     props.showHints ? props.liveHints(props.beats) : undefined,
   );
+  // One host per fog lesson. SPEC: _spec/apps/starchess/screens.puml
   return (
-    <LiveLessonHost
-      board={props.board}
-      lessonKey={props.lessonKey}
-      bannerTitle={props.bannerTitle}
-      fog
-      boardVariant={props.chessMode ? "classic" : "eclipse"}
-      // Sole product entry for cburnett — fog tutorial Chess skin only.
-      pieceSet={props.chessMode ? "cburnett" : "nerd"}
-      tutorial
-      hideResources
-      hideGas
-      onNarration={props.onNarration}
-      turnChrome="none"
-      onExitToMenu={props.onHome}
-      coachEmotion={props.coachEmotion}
-      header={props.header}
-      guideBubble={props.guideBubble}
-      footerExtra={props.footer}
-      hudCenter={props.skinToggle}
-      boardHints={boardHints()}
-    />
+    <Show keyed when={props.lessonKey}>
+      <LiveLessonHost
+        board={props.board}
+        lessonKey={props.lessonKey}
+        bannerTitle={props.bannerTitle}
+        fog
+        boardVariant={props.chessMode ? "classic" : "eclipse"}
+        // Sole product entry for cburnett — fog tutorial Chess skin only.
+        pieceSet={props.chessMode ? "cburnett" : "nerd"}
+        tutorial
+        hideResources
+        hideGas
+        onNarration={props.onNarration}
+        turnChrome="none"
+        onExitToMenu={props.onHome}
+        coachEmotion={props.coachEmotion}
+        header={props.header}
+        guideBubble={props.guideBubble}
+        footerExtra={props.footer}
+        hudCenter={props.skinToggle}
+        boardHints={boardHints()}
+      />
+    </Show>
   );
 };
 
