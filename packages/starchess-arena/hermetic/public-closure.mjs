@@ -382,7 +382,7 @@ export const checkPublicClosure = (root = repository) => {
           ? argument.elements.some((entry) => !ts.isOmittedExpression(entry) && argumentMutator(entry)) : mutatorRoot(argument);
         const callee = property(node.expression);
         const indirect = callee !== undefined && (callee.name === undefined || ["call", "apply", "bind"].includes(callee.name));
-        if (indirect && (mutatorRoot(node.expression) || node.arguments.some(argumentMutator))) for (const builtin of ["Math", "String", "Array", "globalThis", "global"]) mutatedRoots.add(builtin);
+        if (mutatorRoot(node.expression) || indirect && node.arguments.some(argumentMutator)) for (const builtin of ["Math", "String", "Array", "globalThis", "global"]) mutatedRoots.add(builtin);
         if (node.arguments[0] && member && (builtinNamespace(member.receiver, "Object") && ["assign", "defineProperty", "defineProperties"].includes(member.name ?? "") ||
             builtinNamespace(member.receiver, "Reflect") && ["set", "deleteProperty", "defineProperty"].includes(member.name ?? ""))) markMutation(node.arguments[0]);
         if (member && ["push", "pop", "shift", "unshift", "splice", "sort", "reverse", "fill", "copyWithin"].includes(member.name ?? "")) markMutation(member.receiver);
@@ -455,8 +455,14 @@ export const checkPublicClosure = (root = repository) => {
       if (ts.isCallExpression(value)) {
         return false;
       }
-      if (ts.isCallExpression(value) || ts.isAwaitExpression(value) || ts.isNewExpression(value) || ts.isConditionalExpression(value) || ts.isBinaryExpression(value) || ts.isTaggedTemplateExpression(value) ||
-          ts.isPropertyAccessExpression(value) || ts.isElementAccessExpression(value)) return false;
+      if (ts.isPropertyAccessExpression(value) || ts.isElementAccessExpression(value)) {
+        const symbol = ts.isPropertyAccessExpression(value) ? checker.getSymbolAtLocation(value.name) : undefined;
+        const declaration = symbol?.valueDeclaration ?? symbol?.declarations?.[0];
+        if (declaration && (ts.isGetAccessor(declaration) || ts.isSetAccessor(declaration))) return false;
+        const type = dataType(value);
+        return !(type.flags & (ts.TypeFlags.Any | ts.TypeFlags.Unknown)) && safeType(type);
+      }
+      if (ts.isCallExpression(value) || ts.isAwaitExpression(value) || ts.isNewExpression(value) || ts.isConditionalExpression(value) || ts.isBinaryExpression(value) || ts.isTaggedTemplateExpression(value)) return false;
       return safeType(dataType(value));
     };
     const unsafeComputedReceiver = (node, seen = new Set(), dataIndex = false, dataKey = dataIndex) => {
@@ -522,10 +528,8 @@ export const checkPublicClosure = (root = repository) => {
       if (ts.isMetaProperty(node) && node.keywordToken === ts.SyntaxKind.ImportKeyword) throw new Error(`Import metadata in public closure: ${id}`);
       const member = !ts.isPartOfTypeNode(node) && (ts.isPropertyAccessExpression(node) || ts.isElementAccessExpression(node)) ? property(node) : undefined;
       const assignment = ts.isElementAccessExpression(node) && ts.isBinaryExpression(node.parent) && node.parent.left === node ? node.parent.operatorToken.kind : undefined;
-      const update = assignment ? unwrap(node.parent.right) : undefined;
       const directDataWrite = assignment === ts.SyntaxKind.EqualsToken ||
-        [ts.SyntaxKind.PlusEqualsToken, ts.SyntaxKind.MinusEqualsToken].includes(assignment) &&
-        update && dataType(update).flags & ts.TypeFlags.NumberLike && !(dataType(update).flags & (ts.TypeFlags.Any | ts.TypeFlags.Unknown));
+        [ts.SyntaxKind.PlusEqualsToken, ts.SyntaxKind.MinusEqualsToken].includes(assignment);
       const scalarComparison = ts.isElementAccessExpression(node) && (ts.isTypeOfExpression(node.parent) || ts.isBinaryExpression(node.parent) &&
         [ts.SyntaxKind.LessThanToken, ts.SyntaxKind.LessThanEqualsToken, ts.SyntaxKind.GreaterThanToken, ts.SyntaxKind.GreaterThanEqualsToken,
           ts.SyntaxKind.EqualsEqualsToken, ts.SyntaxKind.EqualsEqualsEqualsToken, ts.SyntaxKind.ExclamationEqualsToken, ts.SyntaxKind.ExclamationEqualsEqualsToken]
