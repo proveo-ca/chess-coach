@@ -686,6 +686,8 @@ export const collectSourceInventory = (
     const nonNumericWrites = new Set<ts.Symbol | string>();
     const numericAssignments = new Map<ts.Symbol | string, ts.Expression[]>();
     const arrayMutatorTargets: ts.Expression[] = [];
+    const memberMutationTargets: ts.Expression[] = [];
+    const mutationCalls: ts.CallExpression[] = [];
     let arrayIntrinsicsMutated = false;
     const arrayIntrinsicRoot = (node: ts.Expression, seen = new Set<ts.Expression>()): boolean => {
       const value = origin(node);
@@ -702,6 +704,7 @@ export const collectSourceInventory = (
       return !!(member && arrayIntrinsicRoot(member.receiver, next));
     };
     const markMutation = (node: ts.Expression): void => {
+      memberMutationTargets.push(node);
       for (const root of provenance(node)) mutatedRoots.add(root);
       if (arrayIntrinsicRoot(node)) arrayIntrinsicsMutated = true;
     };
@@ -737,6 +740,7 @@ export const collectSourceInventory = (
       if (ts.isDeleteExpression(node)) writes(node.expression);
       if ((ts.isForOfStatement(node) || ts.isForInStatement(node)) && !ts.isVariableDeclarationList(node.initializer)) writes(node.initializer);
       if (ts.isCallExpression(node)) {
+        mutationCalls.push(node);
         const member = property(origin(node.expression));
         const mutator = (expression: ts.Expression): boolean => {
           const method = property(origin(expression));
@@ -926,6 +930,59 @@ export const collectSourceInventory = (
       }
     };
     const parameterProofActive = new Set<ts.ParameterDeclaration>();
+    const mutationParameters = new Set<ts.ParameterDeclaration>();
+    const pendingMutationParameters: ts.ParameterDeclaration[] = [];
+    const queueMutationParameter = (target: ts.Expression): void => {
+      const path = parameterPath(target);
+      if (path && !mutationParameters.has(path.declaration)) {
+        mutationParameters.add(path.declaration);
+        pendingMutationParameters.push(path.declaration);
+      }
+    };
+    const markArgumentMutation = (argument: ts.Expression, seen = new Set<ts.Expression>()): void => {
+      const value = origin(argument);
+      if (seen.has(value)) return;
+      const next = new Set([...seen, value]);
+      markMutation(argument);
+      queueMutationParameter(argument);
+      if (ts.isArrayLiteralExpression(value)) {
+        for (const entry of value.elements) if (!ts.isOmittedExpression(entry)) markArgumentMutation(ts.isSpreadElement(entry) ? entry.expression : entry, next);
+      } else if (ts.isObjectLiteralExpression(value)) {
+        for (const entry of value.properties) {
+          if (ts.isPropertyAssignment(entry)) markArgumentMutation(entry.initializer, next);
+          else if (ts.isShorthandPropertyAssignment(entry)) markArgumentMutation(entry.name, next);
+          else if (ts.isSpreadAssignment(entry)) markArgumentMutation(entry.expression, next);
+        }
+      }
+    };
+    memberMutationTargets.forEach(queueMutationParameter);
+    for (let cursor = 0; cursor < pendingMutationParameters.length; cursor++) {
+      const declaration = pendingMutationParameters[cursor]!;
+      const fn = declaration.parent;
+      if (!ts.isFunctionDeclaration(fn) && !ts.isArrowFunction(fn) && !ts.isFunctionExpression(fn)) continue;
+      const index = +fn.parameters.indexOf(declaration);
+      for (const call of mutationCalls) {
+        const callee = origin(call.expression);
+        const symbol = ts.isIdentifier(callee) ? binding(callee) : undefined;
+        const target = symbol && typeof symbol !== "string" ? symbol.valueDeclaration : callee;
+        if (target !== fn) continue;
+        const args: ts.Expression[] = [];
+        for (const argument of call.arguments) {
+          if (!ts.isSpreadElement(argument)) args.push(argument);
+          else {
+            const value = origin(argument.expression);
+            if (!ts.isArrayLiteralExpression(value) || value.elements.some((entry) => ts.isSpreadElement(entry) || ts.isOmittedExpression(entry))) {
+              throw new Error(`Unsupported parameter mutation spread: ${file.path}`);
+            }
+            args.push(...value.elements);
+          }
+        }
+        const argument = args[index];
+        if (!argument) continue;
+        markArgumentMutation(argument);
+      }
+    }
+    arrayIntrinsicsMutated ||= arrayMutatorTargets.some((target) => !freshError(target));
     const parameterValueProof = (node: ts.Expression, prove: (value: ts.Expression) => boolean): boolean | undefined => {
       const path = parameterPath(node);
       if (!path) return undefined;
@@ -1086,6 +1143,7 @@ export const collectSourceInventory = (
         const declaration = typeof symbol !== "string" ? symbol.valueDeclaration : undefined;
         if (declaration && ts.isVariableDeclaration(declaration) && ts.isVariableDeclarationList(declaration.parent) && declaration.parent.flags & ts.NodeFlags.Const) {
           const loop = declaration.parent.parent;
+          if (arrayIntrinsicsMutated && ts.isForOfStatement(loop) && ts.isArrayLiteralExpression(unwrap(loop.expression))) return false;
           if (ts.isForOfStatement(loop) && ts.isArrayLiteralExpression(unwrap(loop.expression)) &&
               (unwrap(loop.expression) as ts.ArrayLiteralExpression).elements.every((entry) => ts.isStringLiteralLike(entry) && !["constructor", "__proto__", "prototype"].includes(entry.text))) return true;
         }
@@ -1178,7 +1236,7 @@ export const collectSourceInventory = (
       const declaration = key.valueDeclaration;
       if (!declaration || !ts.isVariableDeclaration(declaration) || !ts.isVariableDeclarationList(declaration.parent)) return false;
       const loop = declaration.parent.parent;
-      return !!(ts.isForOfStatement(loop) && declaration.parent.flags & ts.NodeFlags.Const && ts.isArrayLiteralExpression(unwrapValue(loop.expression)) &&
+      return !!(!arrayIntrinsicsMutated && ts.isForOfStatement(loop) && declaration.parent.flags & ts.NodeFlags.Const && ts.isArrayLiteralExpression(unwrapValue(loop.expression)) &&
         (unwrapValue(loop.expression) as ts.ArrayLiteralExpression).elements.every((entry) => ts.isStringLiteralLike(entry) && ["w", "b"].includes(entry.text)));
     };
     const sourceIsDeclaration = (node: ts.Identifier): boolean => {

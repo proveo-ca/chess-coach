@@ -68,6 +68,18 @@ const dataArrayAccesses = [
   'const rows = [...inputRows]; void rows[0][1];',
 ];
 const unprovenComputedReceivers = [
+  'Array.prototype[Symbol.iterator]=function*(){yield["con","structor"].join("");};const receiver:any=unknownFactory();for(const key of["data"]){receiver[key]("return process")();}',
+  'const ArrayCtor=Array;const iterator=Symbol.iterator;ArrayCtor.prototype[iterator]=function*(){yield["con","structor"].join("");};const receiver:any=unknownFactory();for(const key of["data"]){receiver[key]("return process")();}',
+  'Array.prototype[Symbol.iterator]=function*(){yield["con","structor"].join("");};const receiver:any=unknownFactory();for(const key of["data"] as const){receiver[key]("return process")();}',
+  'function poison(bag:{key:number}){(bag as any).key=["con","structor"].join("");}function compile(receiver:any,bag:{key:number}){return receiver[bag.key]("return process")();}const data={key:0};poison(data);compile(()=>{},data);',
+  'function forward(bag:{key:number}){poison(bag);}function poison(bag:{key:number}){(bag as any).key=["con","structor"].join("");}function compile(receiver:any,bag:{key:number}){return receiver[bag.key]("return process")();}const data={key:0};forward(data);compile(()=>{},data);',
+  'function poison(bag:{key:number}){const alias=bag;(alias as any).key=["con","structor"].join("");}function compile(receiver:any,bag:{key:number}){return receiver[bag.key]("return process")();}const data={key:0};const mutate=poison;mutate(data);compile(()=>{},data);',
+  'function poison({bag}:{bag:{key:number}}){(bag as any).key=["con","structor"].join("");}function compile(receiver:any,bag:{key:number}){return receiver[bag.key]("return process")();}const data={key:0};poison({bag:data});compile(()=>{},data);',
+  'function poison(wrapper:{bag:{key:number}}){const {bag}=wrapper;(bag as any).key=["con","structor"].join("");}function forward(bag:{key:number}){poison({bag});}function compile(receiver:any,bag:{key:number}){return receiver[bag.key]("return process")();}const data={key:0};forward(data);compile(()=>{},data);',
+  'function poison(bag:{key:number}){Object.assign(bag,{key:["con","structor"].join("")});}function compile(receiver:any,bag:{key:number}){return receiver[bag.key]("return process")();}const data={key:0};poison(data);compile(()=>{},data);',
+  'const assign=Object.assign;function poison(bag:{key:number}){assign(bag,{key:["con","structor"].join("")});}function compile(receiver:any,bag:{key:number}){return receiver[bag.key]("return process")();}const data={key:0};poison(data);compile(()=>{},data);',
+  'const poison=(bag:{key:number})=>{(bag as any).key=["con","structor"].join("");};function compile(receiver:any,bag:{key:number}){return receiver[bag.key]("return process")();}const data={key:0};const mutate=poison;mutate(data);compile(()=>{},data);',
+  'function poison(bag:{key:number}){(bag as any).key=["con","structor"].join("");}function compile(receiver:any,bag:{key:number}){return receiver[bag.key]("return process")();}const data={key:0};poison(...[data] as [{key:number}]);compile(()=>{},data);',
   'function acquire(receiver:object,box:{key:number}){return(receiver as any)[box.key]("return process")();} acquire(()=>{},JSON.parse(`{"key":"constructor"}`));',
   'function compile(receiver:any,bag:{key:number}){return receiver[bag.key]("return process")();} compile(unknownFactory(),{key:"constructor" as any});',
   'function compile(receiver:any,bag:{key:"w"}){return receiver[bag.key]("return process")();} compile(unknownFactory(),{key:"constructor" as any});',
@@ -233,6 +245,9 @@ const unprovenComputedReceivers = [
   'const box: any = {f: 0}; function mutate() {box.f = () => {};} mutate(); box.f[["con", "structor"].join("")]("return process")();',
 ];
 const ordinaryComputedData = [
+  'function read(bag:{key:number}){return bag.key;}function compile(receiver:any,bag:{key:number}){return receiver[bag.key];}function forward(receiver:any,bag:{key:number}){read(bag);return compile(receiver,bag);}const data={key:0};consume(forward({0:"value"},data));',
+  'function resetLocal(bag:{key:number}){bag={key:42};return bag.key;}function compile(receiver:any,bag:{key:number}){return receiver[bag.key];}const data={key:0};resetLocal(data);consume(compile({0:"value"},data));',
+  'function inspect(bag:{key:number}){const {key}=bag;return key+1;}function compile(receiver:any,bag:{key:number}){return receiver[bag.key];}const data={key:0};inspect(data);consume(compile({0:"value"},data));',
   'function acquire(receiver:object,box:{key:number}){return(receiver as any)[box.key];} consume(acquire({1:"value"},{key:1}));',
   'function acquire(receiver:object,box:{nested:{key:number}}){return(receiver as any)[box.nested.key];} consume(acquire({1:"value"},{nested:{key:1}}));',
   'function acquire(receiver:object,{key}:{key:number}){return(receiver as any)[key];} consume(acquire({1:"value"},{key:1}));',

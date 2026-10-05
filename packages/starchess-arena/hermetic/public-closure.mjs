@@ -370,6 +370,8 @@ export const checkPublicClosure = (root = repository) => {
     const nonNumericWrites = new Set();
     const numericAssignments = new Map();
     const arrayMutatorTargets = [];
+    const memberMutationTargets = [];
+    const mutationCalls = [];
     let arrayIntrinsicsMutated = false;
     const arrayIntrinsicRoot = (node, seen = new Set()) => {
       const value = origin(node);
@@ -385,6 +387,7 @@ export const checkPublicClosure = (root = repository) => {
       return Boolean(member && arrayIntrinsicRoot(member.receiver, next));
     };
     const markMutation = (node) => {
+      memberMutationTargets.push(node);
       for (const root of provenance(node)) mutatedRoots.add(root);
       if (arrayIntrinsicRoot(node)) arrayIntrinsicsMutated = true;
     };
@@ -420,6 +423,7 @@ export const checkPublicClosure = (root = repository) => {
       if (ts.isDeleteExpression(node)) writes(node.expression);
       if ((ts.isForOfStatement(node) || ts.isForInStatement(node)) && !ts.isVariableDeclarationList(node.initializer)) writes(node.initializer);
       if (ts.isCallExpression(node)) {
+        mutationCalls.push(node);
         const member = property(origin(node.expression));
         const mutator = (expression) => {
           const method = property(origin(expression));
@@ -604,6 +608,58 @@ export const checkPublicClosure = (root = repository) => {
       }
     };
     const parameterProofActive = new Set();
+    const mutationParameters = new Set();
+    const pendingMutationParameters = [];
+    const queueMutationParameter = (target) => {
+      const path = parameterPath(target);
+      if (path && !mutationParameters.has(path.declaration)) {
+        mutationParameters.add(path.declaration);
+        pendingMutationParameters.push(path.declaration);
+      }
+    };
+    const markArgumentMutation = (argument, seen = new Set()) => {
+      const value = origin(argument);
+      if (seen.has(value)) return;
+      const next = new Set([...seen, value]);
+      markMutation(argument);
+      queueMutationParameter(argument);
+      if (ts.isArrayLiteralExpression(value)) {
+        for (const entry of value.elements) if (!ts.isOmittedExpression(entry)) markArgumentMutation(ts.isSpreadElement(entry) ? entry.expression : entry, next);
+      } else if (ts.isObjectLiteralExpression(value)) {
+        for (const entry of value.properties) {
+          if (ts.isPropertyAssignment(entry)) markArgumentMutation(entry.initializer, next);
+          else if (ts.isShorthandPropertyAssignment(entry)) markArgumentMutation(entry.name, next);
+          else if (ts.isSpreadAssignment(entry)) markArgumentMutation(entry.expression, next);
+        }
+      }
+    };
+    memberMutationTargets.forEach(queueMutationParameter);
+    for (let cursor = 0; cursor < pendingMutationParameters.length; cursor++) {
+      const declaration = pendingMutationParameters[cursor];
+      const fn = declaration.parent;
+      if (!ts.isFunctionDeclaration(fn) && !ts.isArrowFunction(fn) && !ts.isFunctionExpression(fn)) continue;
+      const index = +fn.parameters.indexOf(declaration);
+      for (const call of mutationCalls) {
+        const callee = origin(call.expression);
+        const target = ts.isIdentifier(callee) ? binding(callee)?.valueDeclaration : callee;
+        if (target !== fn) continue;
+        const args = [];
+        for (const argument of call.arguments) {
+          if (!ts.isSpreadElement(argument)) args.push(argument);
+          else {
+            const value = origin(argument.expression);
+            if (!ts.isArrayLiteralExpression(value) || value.elements.some((entry) => ts.isSpreadElement(entry) || ts.isOmittedExpression(entry))) {
+              throw new Error(`Unsupported parameter mutation spread in public closure: ${id}`);
+            }
+            args.push(...value.elements);
+          }
+        }
+        const argument = args[index];
+        if (!argument) continue;
+        markArgumentMutation(argument);
+      }
+    }
+    arrayIntrinsicsMutated ||= arrayMutatorTargets.some((target) => !freshError(target));
     const parameterValueProof = (node, prove) => {
       const path = parameterPath(node);
       if (!path) return undefined;
@@ -759,6 +815,7 @@ export const checkPublicClosure = (root = repository) => {
         const declaration = symbol?.valueDeclaration;
         if (declaration && ts.isVariableDeclaration(declaration) && ts.isVariableDeclarationList(declaration.parent) && declaration.parent.flags & ts.NodeFlags.Const) {
           const loop = declaration.parent.parent;
+          if (arrayIntrinsicsMutated && ts.isForOfStatement(loop) && ts.isArrayLiteralExpression(unwrap(loop.expression))) return false;
           if (ts.isForOfStatement(loop) && ts.isArrayLiteralExpression(unwrap(loop.expression)) &&
               unwrap(loop.expression).elements.every((entry) => ts.isStringLiteralLike(entry) && !["constructor", "__proto__", "prototype"].includes(entry.text))) return true;
         }
