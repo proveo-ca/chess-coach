@@ -319,7 +319,7 @@ export const collectSourceInventory = (
         target = localTarget(importer, specifier, `${path}/${exported.slice(2)}`);
         targetKind = "source";
       } else {
-        if (dependencies.some((dependency) => typeof dependency[name] === "string" && String(dependency[name]).startsWith("workspace:"))) throw new Error(`Undeclared workspace target: ${specifier}`);
+        if (dependencies.some((dependency) => typeof dependency[name] === "string" && String(Object.entries(dependency).find(([key]) => key === name)?.[1]).startsWith("workspace:"))) throw new Error(`Undeclared workspace target: ${specifier}`);
         targetKind = "external";
       }
     }
@@ -373,12 +373,13 @@ export const collectSourceInventory = (
           return workspace && resolved ? { ...resolved, resolvedUsingTsExtension: false } : resolved;
         });
         const getSourceFile = dataHost.getSourceFile;
-        const dataSource = ts.createSourceFile(file.path, source.text, ts.ScriptTarget.Latest, true,
+        const dataPath = resolve(absoluteRoot, file.path);
+        const dataSource = ts.createSourceFile(dataPath, source.text, ts.ScriptTarget.Latest, true,
           /\.[cm]?js$/.test(file.path) ? ts.ScriptKind.JS : file.path.endsWith("x") ? ts.ScriptKind.TSX : ts.ScriptKind.TS);
         const indexDataNodes = (node: ts.Node): void => { dataNodes.set(nodeKey(node), node); ts.forEachChild(node, indexDataNodes); };
         indexDataNodes(dataSource);
-        dataHost.getSourceFile = (path, ...args) => path === file.path ? dataSource : getSourceFile(path, ...args);
-        dataChecker = ts.createProgram([file.path], options, dataHost).getTypeChecker();
+        dataHost.getSourceFile = (path, ...args) => resolve(path) === dataPath ? dataSource : getSourceFile(path, ...args);
+        dataChecker = ts.createProgram([dataPath], options, dataHost).getTypeChecker();
       }
       const dataNode = dataNodes.get(nodeKey(node));
       if (!dataNode) throw new Error(`Unclassified data-type node: ${file.path}`);
@@ -863,22 +864,17 @@ export const collectSourceInventory = (
       ts.forEachChild(fn.body, scan);
       return returns.length > 0 && returns.every((returned) => returned !== undefined && arrayValue(returned, next));
     };
-    const numericParameter = (node: ts.Identifier, seen: Set<ts.Expression>): boolean => {
+    const parameterArguments = (node: ts.Identifier): ts.Expression[] | undefined => {
       const symbol = binding(node), declaration = typeof symbol !== "string" ? symbol.valueDeclaration : undefined;
-      if (!declaration || !ts.isParameter(declaration) || declaration.initializer || declaration.dotDotDotToken || mutatedRoots.has(symbol)) return false;
+      if (!declaration || !ts.isParameter(declaration) || declaration.initializer || declaration.dotDotDotToken || mutatedRoots.has(symbol)) return undefined;
       const fn = declaration.parent;
-      if (!ts.isFunctionDeclaration(fn) && !ts.isArrowFunction(fn) && !ts.isFunctionExpression(fn)) return false;
+      if (!ts.isFunctionDeclaration(fn) && !ts.isArrowFunction(fn) && !ts.isFunctionExpression(fn)) return undefined;
       const index = +fn.parameters.indexOf(declaration);
-      if (index === 1 && (ts.isArrowFunction(fn) || ts.isFunctionExpression(fn)) && ts.isCallExpression(fn.parent) && !arrayIntrinsicsMutated) {
-        const call = fn.parent, member = property(call.expression);
-        if (member && (call.arguments[0] === fn && ["map", "flatMap", "filter", "forEach"].includes(member.name ?? "") && arrayValue(member.receiver) ||
-            call.arguments[1] === fn && member.name === "from" && ts.isIdentifier(member.receiver) && binding(member.receiver) === "Array")) return true;
-      }
       const owner = ts.isFunctionDeclaration(fn) ? fn : fn.parent;
       if (!(ts.isFunctionDeclaration(owner) || ts.isVariableDeclaration(owner)) || !owner.name || !ts.isIdentifier(owner.name) ||
-          ts.getCombinedModifierFlags(owner) & ts.ModifierFlags.Export) return false;
+          ts.getCombinedModifierFlags(owner) & ts.ModifierFlags.Export) return undefined;
       const callable = binding(owner.name);
-      if (mutatedRoots.has(callable)) return false;
+      if (mutatedRoots.has(callable)) return undefined;
       const calls: ts.CallExpression[] = [];
       let escaped = false;
       const scan = (child: ts.Node): void => {
@@ -890,11 +886,54 @@ export const collectSourceInventory = (
         ts.forEachChild(child, scan);
       };
       scan(source);
-      return !escaped && calls.length > 0 && calls.every((call) => call.arguments[index] !== undefined && numericValue(call.arguments[index]!, false, seen));
+      if (escaped || !calls.length || calls.some((call) => call.arguments[index] === undefined)) return undefined;
+      return calls.map((call) => call.arguments[index]!);
+    };
+    const numericParameter = (node: ts.Identifier, seen: Set<ts.Expression>): boolean => {
+      const symbol = binding(node), declaration = typeof symbol !== "string" ? symbol.valueDeclaration : undefined;
+      if (!declaration || !ts.isParameter(declaration) || declaration.initializer || declaration.dotDotDotToken || mutatedRoots.has(symbol)) return false;
+      const fn = declaration.parent;
+      if (!ts.isFunctionDeclaration(fn) && !ts.isArrowFunction(fn) && !ts.isFunctionExpression(fn)) return false;
+      const index = +fn.parameters.indexOf(declaration);
+      if (index === 1 && (ts.isArrowFunction(fn) || ts.isFunctionExpression(fn)) && ts.isCallExpression(fn.parent) && !arrayIntrinsicsMutated) {
+        const call = fn.parent, member = property(call.expression);
+        if (member && (call.arguments[0] === fn && ["map", "flatMap", "filter", "forEach"].includes(member.name ?? "") && arrayValue(member.receiver) ||
+            call.arguments[1] === fn && member.name === "from" && ts.isIdentifier(member.receiver) && binding(member.receiver) === "Array")) return true;
+      }
+      const values = parameterArguments(node);
+      return values !== undefined && values.every((value) => numericValue(value, false, seen));
+    };
+    const plainData = (node: ts.Expression, seen = new Set<ts.Expression>()): boolean => {
+      const input = unwrap(node);
+      if (seen.has(input) || [...provenance(input)].some((root) => mutatedRoots.has(root))) return false;
+      const next = new Set([...seen, input]);
+      const value = origin(input);
+      if (value !== input) return plainData(value, next);
+      if (ts.isStringLiteralLike(value) || ts.isNumericLiteral(value) || [ts.SyntaxKind.NullKeyword, ts.SyntaxKind.TrueKeyword, ts.SyntaxKind.FalseKeyword].includes(value.kind)) return true;
+      if (!arrayIntrinsicsMutated && jsonData(value)) return true;
+      if (ts.isIdentifier(value)) {
+        const values = parameterArguments(value);
+        return values !== undefined && values.every((argument) => plainData(argument, next));
+      }
+      if (ts.isArrayLiteralExpression(value)) return value.elements.every((entry) => ts.isOmittedExpression(entry) || plainData(ts.isSpreadElement(entry) ? entry.expression : entry, next));
+      return ts.isObjectLiteralExpression(value) && value.properties.every((entry) => ts.isPropertyAssignment(entry) ? plainData(entry.initializer, next)
+        : ts.isShorthandPropertyAssignment(entry) ? plainData(entry.name, next) : ts.isSpreadAssignment(entry) && plainData(entry.expression, next));
+    };
+    const mutatedNumericMember = (node: ts.Expression, seen = new Set<ts.Expression>()): boolean => {
+      const input = unwrap(node);
+      if (seen.has(input)) return true;
+      const next = new Set([...seen, input]);
+      if (property(input)) return [...provenance(input)].some((root) => mutatedRoots.has(root));
+      if (!ts.isIdentifier(input)) return false;
+      const symbol = binding(input), declaration = typeof symbol !== "string" ? symbol.valueDeclaration : undefined;
+      if (declaration && ts.isVariableDeclaration(declaration) && declaration.initializer) return mutatedNumericMember(declaration.initializer, next);
+      const member = declaration && ts.isBindingElement(declaration) ? bindingMember(declaration) : undefined;
+      return !!(member && [...provenance(member.receiver)].some((root) => mutatedRoots.has(root)));
     };
     const numericValue = (node: ts.Expression, coercionOnly = false, seen = new Set<ts.Expression>()): boolean => {
       const input = unwrap(node);
       if (seen.has(input)) return false;
+      if (mutatedNumericMember(input)) return false;
       const next = new Set([...seen, input]);
       if (ts.isIdentifier(input)) {
         const symbol = binding(input);
@@ -1019,14 +1058,15 @@ export const collectSourceInventory = (
       if (seen.has(expression)) return true;
       const next = new Set([...seen, expression]);
       if (!provenData && ts.isElementAccessExpression(unwrap(node)) && !/^(0|[1-9][0-9]*)$/.test(staticKey((unwrap(node) as ts.ElementAccessExpression).argumentExpression) ?? "")) return true;
-      if (checker.getTypeAtLocation(expression).getCallSignatures().length || ts.isArrowFunction(expression) || ts.isFunctionExpression(expression)) return true;
+      const resolvedType = dataType(expression);
+      if (resolvedType.getCallSignatures().length || resolvedType.getConstructSignatures().length || ts.isArrowFunction(expression) || ts.isFunctionExpression(expression)) return true;
       if (ts.isCallExpression(expression) || ts.isAwaitExpression(expression) || ts.isNewExpression(expression) ||
           ts.isConditionalExpression(expression) || ts.isBinaryExpression(expression) || ts.isTaggedTemplateExpression(expression)) {
         if (!provenData || dataType(expression).getCallSignatures().length) return true;
       }
       const key = ts.isIdentifier(expression) ? binding(expression) : undefined;
       const declaration = key && typeof key !== "string" ? key.valueDeclaration : undefined;
-      if (!provenData && declaration && ts.isParameter(declaration) && dataType(expression).flags & (ts.TypeFlags.Any | ts.TypeFlags.Unknown)) return true;
+      if (!provenData && declaration && ts.isParameter(declaration) && !plainData(expression)) return true;
       const destructured = declaration && ts.isBindingElement(declaration) ? declaration : undefined;
       if (destructured?.initializer && unsafeComputedReceiver(destructured.initializer, next)) return true;
       const member = property(expression) ?? (destructured ? bindingMember(destructured) : undefined);

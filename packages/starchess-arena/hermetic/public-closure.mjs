@@ -545,20 +545,15 @@ export const checkPublicClosure = (root = repository) => {
       ts.forEachChild(fn.body, scan);
       return returns.length > 0 && returns.every((returned) => returned && arrayValue(returned, next));
     };
-    const numericParameter = (node, seen) => {
+    const parameterArguments = (node) => {
       const symbol = binding(node), declaration = symbol?.valueDeclaration;
-      if (!declaration || !ts.isParameter(declaration) || declaration.initializer || declaration.dotDotDotToken || mutatedRoots.has(symbol)) return false;
+      if (!declaration || !ts.isParameter(declaration) || declaration.initializer || declaration.dotDotDotToken || mutatedRoots.has(symbol)) return undefined;
       const fn = declaration.parent, index = +fn.parameters.indexOf(declaration);
-      if (index === 1 && (ts.isArrowFunction(fn) || ts.isFunctionExpression(fn)) && ts.isCallExpression(fn.parent) && !arrayIntrinsicsMutated) {
-        const call = fn.parent, member = property(call.expression);
-        if (member && (call.arguments[0] === fn && ["map", "flatMap", "filter", "forEach"].includes(member.name) && arrayValue(member.receiver) ||
-            call.arguments[1] === fn && member.name === "from" && builtinNamespace(member.receiver, "Array"))) return true;
-      }
       const owner = ts.isFunctionDeclaration(fn) ? fn : ts.isArrowFunction(fn) || ts.isFunctionExpression(fn) ? fn.parent : undefined;
       if (!owner || !(ts.isFunctionDeclaration(owner) || ts.isVariableDeclaration(owner)) || !owner.name || !ts.isIdentifier(owner.name) ||
-          ts.getCombinedModifierFlags(owner) & ts.ModifierFlags.Export) return false;
+          ts.getCombinedModifierFlags(owner) & ts.ModifierFlags.Export) return undefined;
       const callable = binding(owner.name);
-      if (mutatedRoots.has(callable)) return false;
+      if (mutatedRoots.has(callable)) return undefined;
       const calls = [];
       let escaped = false;
       const scan = (child) => {
@@ -570,11 +565,52 @@ export const checkPublicClosure = (root = repository) => {
         ts.forEachChild(child, scan);
       };
       scan(source);
-      return !escaped && calls.length > 0 && calls.every((call) => call.arguments[index] && numericValue(call.arguments[index], false, seen));
+      if (escaped || !calls.length || calls.some((call) => !call.arguments[index])) return undefined;
+      return calls.map((call) => call.arguments[index]);
+    };
+    const numericParameter = (node, seen) => {
+      const symbol = binding(node), declaration = symbol?.valueDeclaration;
+      if (!declaration || !ts.isParameter(declaration) || declaration.initializer || declaration.dotDotDotToken || mutatedRoots.has(symbol)) return false;
+      const fn = declaration.parent, index = +fn.parameters.indexOf(declaration);
+      if (index === 1 && (ts.isArrowFunction(fn) || ts.isFunctionExpression(fn)) && ts.isCallExpression(fn.parent) && !arrayIntrinsicsMutated) {
+        const call = fn.parent, member = property(call.expression);
+        if (member && (call.arguments[0] === fn && ["map", "flatMap", "filter", "forEach"].includes(member.name) && arrayValue(member.receiver) ||
+            call.arguments[1] === fn && member.name === "from" && builtinNamespace(member.receiver, "Array"))) return true;
+      }
+      const values = parameterArguments(node);
+      return values !== undefined && values.every((value) => numericValue(value, false, seen));
+    };
+    const plainData = (node, seen = new Set()) => {
+      const input = unwrap(node);
+      if (seen.has(input) || [...provenance(input)].some((root) => mutatedRoots.has(root))) return false;
+      const next = new Set([...seen, input]);
+      const value = origin(input);
+      if (value !== input) return plainData(value, next);
+      if (ts.isStringLiteralLike(value) || ts.isNumericLiteral(value) || [ts.SyntaxKind.NullKeyword, ts.SyntaxKind.TrueKeyword, ts.SyntaxKind.FalseKeyword].includes(value.kind)) return true;
+      if (!arrayIntrinsicsMutated && jsonData(value)) return true;
+      if (ts.isIdentifier(value)) {
+        const values = parameterArguments(value);
+        return values !== undefined && values.every((argument) => plainData(argument, next));
+      }
+      if (ts.isArrayLiteralExpression(value)) return value.elements.every((entry) => ts.isOmittedExpression(entry) || plainData(ts.isSpreadElement(entry) ? entry.expression : entry, next));
+      return ts.isObjectLiteralExpression(value) && value.properties.every((entry) => ts.isPropertyAssignment(entry) ? plainData(entry.initializer, next)
+        : ts.isShorthandPropertyAssignment(entry) ? plainData(entry.name, next) : ts.isSpreadAssignment(entry) && plainData(entry.expression, next));
+    };
+    const mutatedNumericMember = (node, seen = new Set()) => {
+      const input = unwrap(node);
+      if (seen.has(input)) return true;
+      const next = new Set([...seen, input]);
+      if (property(input)) return [...provenance(input)].some((root) => mutatedRoots.has(root));
+      if (!ts.isIdentifier(input)) return false;
+      const declaration = binding(input)?.valueDeclaration;
+      if (declaration && ts.isVariableDeclaration(declaration) && declaration.initializer) return mutatedNumericMember(declaration.initializer, next);
+      const member = declaration && ts.isBindingElement(declaration) ? bindingMember(declaration) : undefined;
+      return Boolean(member && [...provenance(member.receiver)].some((root) => mutatedRoots.has(root)));
     };
     const numericValue = (node, coercionOnly = false, seen = new Set()) => {
       const input = unwrap(node);
       if (seen.has(input)) return false;
+      if (mutatedNumericMember(input)) return false;
       const next = new Set([...seen, input]);
       if (ts.isIdentifier(input)) {
         const symbol = binding(input);
@@ -692,14 +728,15 @@ export const checkPublicClosure = (root = repository) => {
       if (seen.has(expression)) return true;
       const next = new Set([...seen, expression]);
       if (!provenData && ts.isElementAccessExpression(unwrap(node)) && !/^(0|[1-9][0-9]*)$/.test(staticKey(unwrap(node).argumentExpression) ?? "")) return true;
-      if (checker.getTypeAtLocation(expression).getCallSignatures().length || ts.isArrowFunction(expression) || ts.isFunctionExpression(expression)) return true;
+      const resolvedType = dataType(expression);
+      if (resolvedType.getCallSignatures().length || resolvedType.getConstructSignatures().length || ts.isArrowFunction(expression) || ts.isFunctionExpression(expression)) return true;
       if (ts.isCallExpression(expression) || ts.isAwaitExpression(expression) || ts.isNewExpression(expression) ||
           ts.isConditionalExpression(expression) || ts.isBinaryExpression(expression) || ts.isTaggedTemplateExpression(expression)) {
         if (!provenData || dataType(expression).getCallSignatures().length) return true;
       }
       const symbol = ts.isIdentifier(expression) ? checker.getSymbolAtLocation(expression) : undefined;
       const declaration = symbol?.valueDeclaration;
-      if (!provenData && declaration && ts.isParameter(declaration) && dataType(expression).flags & (ts.TypeFlags.Any | ts.TypeFlags.Unknown)) return true;
+      if (!provenData && declaration && ts.isParameter(declaration) && !plainData(expression)) return true;
       const destructured = declaration && ts.isBindingElement(declaration) ? declaration : undefined;
       if (destructured?.initializer && unsafeComputedReceiver(destructured.initializer, next)) return true;
       const member = property(expression) ?? (destructured ? bindingMember(destructured) : undefined);

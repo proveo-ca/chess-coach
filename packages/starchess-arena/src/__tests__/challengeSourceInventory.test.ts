@@ -68,6 +68,18 @@ const dataArrayAccesses = [
   'const rows = [...inputRows]; void rows[0][1];',
 ];
 const unprovenComputedReceivers = [
+  'function lookup(value:object,key:string):any{return(value as any)[key];} lookup(()=>{},["con","structor"].join(""))("return process")();',
+  'function lookup(value:object,key:string):any{const alias=value;return(alias as any)[key];} lookup(()=>{},["con","structor"].join(""))("return process")();',
+  'function lookup(value:{[key:string]:unknown},key:string):any{return value[key];} lookup((()=>{}) as any,["con","structor"].join(""))("return process")();',
+  'function lookup<T extends object>(value:T,key:string):any{return(value as any)[key];} lookup(()=>{},["con","structor"].join(""))("return process")();',
+  'const lookup=(value:object,key:string):any=>(value as any)[key]; consume(lookup); lookup({data:1},"data");',
+  'function lookup(value:object,key:string):any{return(value as any)[key];} lookup({data:1},"data"); lookup(()=>{},["con","structor"].join(""))("return process")();',
+  'const box={key:0};(box as any).key=["con","structor"].join("");const receiver:any=unknownFactory();receiver[box.key]("return process")();',
+  'const bag={key:0};const alias=bag;(alias as any)["key"]=["con","structor"].join("");const receiver:any=unknownFactory();receiver[bag["key"]]("return process")();',
+  'const box={key:0};(box as any).key=["con","structor"].join("");const key=box.key;const receiver:any=unknownFactory();receiver[key]("return process")();',
+  'const box={key:0};(box as any).key=["con","structor"].join("");const {key}=box;const receiver:any=unknownFactory();receiver[key]("return process")();',
+  'const box={nested:{key:0}};(box.nested as any).key=["con","structor"].join("");const receiver:any=unknownFactory();receiver[box.nested.key]("return process")();',
+  'const box={key:0};Object.assign(box,{key:["con","structor"].join("")});const receiver:any=unknownFactory();receiver[box.key]("return process")();',
   'const receiver:any=unknownFactory(); let key; for(key=0;key<3;key++){key=["con","structor"].join(""); receiver[key]("return process")();}',
   'const receiver:any=unknownFactory(); let key; key=0>>>2; key=["con","structor"].join(""); receiver[key]("return process")();',
   'const receiver:any=unknownFactory(); let key:number; key=["con","structor"].join("") as any; receiver[key]("return process")();',
@@ -200,6 +212,11 @@ const unprovenComputedReceivers = [
   'const box: any = {f: 0}; function mutate() {box.f = () => {};} mutate(); box.f[["con", "structor"].join("")]("return process")();',
 ];
 const ordinaryComputedData = [
+  'function lookup(value:object,key:string):unknown{return(value as Record<string,unknown>)[key];} consume(lookup({data:1,nested:{value:"ok"}},"data"));',
+  'function lookup(value:object,key:string):unknown{return(value as Record<string,unknown>)[key];} function wrap(value:object){return lookup(value,"data");} consume(wrap({data:1}));',
+  'function lookup(value:object,key:string):unknown{return(value as Record<string,unknown>)[key];} const data=JSON.parse(`{"data":1}`); consume(lookup(data,"data"));',
+  'function inspectRecord(value:object,key:string){void(value as any)[key];return typeof(value as any)[key]==="number";}',
+  'const box={key:0};(box as any).key=unknownValue;const receiver:any=unknownFactory();consume(receiver[box.key>>>0]);',
   'function pack(input:any,existing:any){let i,s;const words=existing||[0];for(i=0;i<input.length;i+=1){s=i>>>2;words[s]|=input[i];}return words;}',
   'const receiver:any=unknownFactory(); let key; for(key=0;key<3;key++) consume(receiver[key]);',
   'const receiver:any=unknownFactory(); let key; key=unknownValue>>>2; consume(receiver[key]);',
@@ -236,7 +253,7 @@ const ordinaryComputedData = [
   'const values: any = unknownFactory(); const key = unknownKey; if (["w", "b"].includes(key)) void values[key];',
   'const values: any = unknownFactory(); void values[+values.indexOf("first") + 1];',
   'function charge(budget: any, field: string, amount: number) {budget[field] += amount; if (budget[field] > 100) throw new Error("limit");}',
-  'function inspect(value: {[key: string]: unknown}, key: string) {let alias: unknown = value.data; alias = null; return value[key];}',
+  'function inspect(value: {[key: string]: unknown}, key: string) {let alias: unknown = value.data; alias = null; if(["data"].includes(key)) return value[key]; return undefined;}',
   'function access(array: any, index: number) {void array[index];} function Function(value: string) {return value;} void Function("data");',
 ];
 afterEach(() => { for (const root of temporary.splice(0)) rmSync(root, { recursive: true, force: true }); });
@@ -268,8 +285,29 @@ const fixture = (): string => {
   put(root, `${ARENA}/src/__tests__/excluded.ts`, "import(computed);\n");
   return root;
 };
+const importedReceivers = [
+  'import {specialGasCost} from "@chess-coach/starchess-core/planning-v1"; (specialGasCost as any)[["con","structor"].join("")]("return process")();',
+  'import {specialGasCost as cost} from "@chess-coach/starchess-core/planning-v1"; const alias=cost; (alias as any)[["con","structor"].join("")]("return process")();',
+  'import * as planning from "@chess-coach/starchess-core/planning-v1"; (planning.specialGasCost as any)[["con","structor"].join("")]("return process")();',
+  'import {specialGasCost} from "@chess-coach/starchess-core/planning-v1"; const make=()=>specialGasCost; const value=make(); (value as any)[["con","structor"].join("")]("return process")();',
+  'import {Budget} from "@chess-coach/starchess-core/planning-v1"; (Budget as any)[["con","structor"].join("")]("return process")();',
+];
+const importedFixture = (code: string): string => {
+  const root = fixture();
+  put(root, `${CORE}/src/planning-v1.ts`, 'export {specialGasCost,Budget,numbers} from "./rules/specials/registry";');
+  put(root, `${CORE}/src/rules/specials/registry.ts`, 'export const specialGasCost=(kind:string):number=>kind.length; export class Budget{}; export const numbers=[1,2,3];');
+  put(root, `${TRAINING}/src/candidates.ts`, code);
+  return root;
+};
 
 describe("partitioned challenge source inventory", () => {
+  it.each(importedReceivers)("resolves imported callable and constructor receiver signatures: %s", (code) => {
+    expect(() => collectSourceInventory(importedFixture(code))).toThrow("Unsupported code constructor acquisition");
+  });
+  it("resolves imported ordinary numeric data without classifying it as callable", () => {
+    const root = importedFixture('import {numbers} from "@chess-coach/starchess-core/planning-v1"; for(let i=0;i<numbers.length;i++) consume(numbers[i]);');
+    expect(collectSourceInventory(root).audit.passed).toBe(true);
+  });
   it.each([".js", ".mjs"])("proves hoisted JavaScript counter writes and rejects a string rewrite in %s", (extension) => {
     const root = fixture();
     const path = `${CORE}/src/numeric-read${extension}`;
@@ -1039,6 +1077,13 @@ describe("static browser public closure", () => {
     const { checkPublicClosure } = await import(/* @vite-ignore */ script);
     return checkPublicClosure(root);
   };
+  it.each(importedReceivers)("resolves public imported callable and constructor receiver signatures: %s", async (code) => {
+    await expect(check(importedFixture(code))).rejects.toThrow("Code constructor acquisition in public closure");
+  });
+  it("resolves public imported ordinary numeric data without classifying it as callable", async () => {
+    const root = importedFixture('import {numbers} from "@chess-coach/starchess-core/planning-v1"; for(let i=0;i<numbers.length;i++) consume(numbers[i]);');
+    expect((await check(root)).passed).toBe(true);
+  });
   const shaFixture = (root: string, code = "export default class SHA {};"): string => {
     const base = `${TRAINING}/node_modules/jssha`;
     put(root, `${base}/package.json`, JSON.stringify({ name: "jssha", version: "3.3.2", exports: { "./sha256": { import: "./dist/sha256.mjs", require: "./dist/sha256.js" } } }));
