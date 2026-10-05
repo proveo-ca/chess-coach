@@ -1,7 +1,5 @@
 // SPEC: _spec/packages/starchess-training/candidate-generation.puml
-import type { PieceColor, ScActionInput, SpawnPiece } from "@chess-coach/starchess-core";
-import { UNIT_COST } from "../../../starchess-core/src/rules/constants";
-import { specialGasCost } from "../../../starchess-core/src/rules/specials/registry";
+import { UNIT_COST, specialGasCost, type PieceColor, type ScActionInput, type SpawnPiece } from "@chess-coach/starchess-core/planning-v1";
 import { canonical, deepFreeze } from "../authorized/v1/canonical";
 import type { AuthorizedObservation } from "../authorized/v1/types";
 import { validateObservation } from "../authorized/v1/observationCodec";

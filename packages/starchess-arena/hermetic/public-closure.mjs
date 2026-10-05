@@ -27,7 +27,7 @@ const select = (value) => {
 const exportTarget = (manifest, subpath) => {
   const exports = manifest.exports;
   const target = plain(exports) && Object.keys(exports).some((key) => key.startsWith("."))
-    ? exports[subpath] : subpath === "." ? exports : undefined;
+    ? Object.entries(exports).find(([key]) => key === subpath)?.[1] : subpath === "." ? exports : undefined;
   if (target === undefined) throw new Error(`Unexported private subpath: ${manifest.name}${subpath.slice(1)}`);
   const selected = select(target);
   if (!selected.startsWith("./") || selected.includes("\\") || selected.split("/").some((part) => part === ".." || part === "*")) throw new Error(`Unsafe export target: ${selected}`);
@@ -296,7 +296,8 @@ export const checkPublicClosure = (root = repository) => {
         ? origin(declaration.initializer, new Set([...seen, symbol]), next) : expression;
     };
     const binding = (node) => {
-      const symbol = ts.isShorthandPropertyAssignment(node.parent) ? checker.getShorthandAssignmentValueSymbol(node.parent) : checker.getSymbolAtLocation(node);
+      const symbol = ts.isShorthandPropertyAssignment(node.parent) ? checker.getShorthandAssignmentValueSymbol(node.parent)
+        : ts.isExportSpecifier(node.parent) ? checker.getExportSpecifierLocalTargetSymbol(node.parent) : checker.getSymbolAtLocation(node);
       return symbol?.declarations?.length ? symbol : node.text;
     };
     const provenance = (node, seen = new Set()) => {
@@ -367,10 +368,36 @@ export const checkPublicClosure = (root = repository) => {
     };
     const mutatedRoots = new Set();
     const nonNumericWrites = new Set();
-    const markMutation = (node) => { for (const root of provenance(node)) mutatedRoots.add(root); };
+    const numericAssignments = new Map();
+    const arrayMutatorTargets = [];
+    let arrayIntrinsicsMutated = false;
+    const arrayIntrinsicRoot = (node, seen = new Set()) => {
+      const value = origin(node);
+      if (seen.has(value)) return false;
+      const next = new Set([...seen, value]);
+      if (ts.isIdentifier(value)) {
+        if (["Array", "Object", "String", "Number", "Boolean", "JSON", "globalThis", "global"].includes(binding(value))) return true;
+        const declaration = binding(value)?.valueDeclaration;
+        const member = declaration && ts.isBindingElement(declaration) ? bindingMember(declaration) : undefined;
+        return Boolean(member && arrayIntrinsicRoot(member.receiver, next));
+      }
+      const member = property(value);
+      return Boolean(member && arrayIntrinsicRoot(member.receiver, next));
+    };
+    const markMutation = (node) => {
+      for (const root of provenance(node)) mutatedRoots.add(root);
+      if (arrayIntrinsicRoot(node)) arrayIntrinsicsMutated = true;
+    };
+    const freshError = (node) => {
+      const value = origin(node);
+      if (!ts.isNewExpression(value)) return false;
+      const ctor = origin(value.expression);
+      return ts.isIdentifier(ctor) && ["Error", "TypeError", "RangeError", "SyntaxError", "ReferenceError", "URIError", "EvalError", "AggregateError"].includes(ctor.text) &&
+        globalReference(ctor) && ![...provenance(value.expression)].some((root) => mutatedRoots.has(root));
+    };
     const scanMutations = (node) => {
       const writes = (target, numeric = false) => {
-        if (ts.isIdentifier(target)) { const symbol = binding(target) ?? target.text; mutatedRoots.add(symbol); if (!numeric) nonNumericWrites.add(symbol); }
+        if (ts.isIdentifier(target)) { const symbol = binding(target) ?? target.text; mutatedRoots.add(symbol); if (!numeric) nonNumericWrites.add(symbol); if (["Array", "Object", "String", "Number", "Boolean", "JSON"].includes(symbol)) arrayIntrinsicsMutated = true; }
         else if (ts.isPropertyAccessExpression(target) || ts.isElementAccessExpression(target)) markMutation(target);
         else if (ts.isParenthesizedExpression(target) || ts.isAsExpression(target) || ts.isNonNullExpression(target) || ts.isTypeAssertionExpression(target)) writes(target.expression);
         else if (ts.isArrayLiteralExpression(target)) for (const child of target.elements) writes(child);
@@ -380,8 +407,15 @@ export const checkPublicClosure = (root = repository) => {
         else if (ts.isSpreadElement(target) || ts.isSpreadAssignment(target)) writes(target.expression);
         else if (ts.isBinaryExpression(target) && target.operatorToken.kind === ts.SyntaxKind.EqualsToken) writes(target.left);
       };
-      if (ts.isBinaryExpression(node) && node.operatorToken.kind >= ts.SyntaxKind.FirstAssignment && node.operatorToken.kind <= ts.SyntaxKind.LastAssignment) writes(node.left,
-        [ts.SyntaxKind.EqualsToken, ts.SyntaxKind.PlusEqualsToken, ts.SyntaxKind.MinusEqualsToken].includes(node.operatorToken.kind) && ts.isNumericLiteral(unwrap(node.right)));
+      if (ts.isBinaryExpression(node) && node.operatorToken.kind >= ts.SyntaxKind.FirstAssignment && node.operatorToken.kind <= ts.SyntaxKind.LastAssignment) {
+        const numericCandidate = [ts.SyntaxKind.EqualsToken, ts.SyntaxKind.PlusEqualsToken, ts.SyntaxKind.MinusEqualsToken].includes(node.operatorToken.kind);
+        const target = unwrap(node.left);
+        if (numericCandidate && ts.isIdentifier(target)) {
+          const symbol = binding(target);
+          numericAssignments.set(symbol, [...numericAssignments.get(symbol) ?? [], node.right]);
+        }
+        writes(node.left, numericCandidate);
+      }
       if ((ts.isPrefixUnaryExpression(node) || ts.isPostfixUnaryExpression(node)) && [ts.SyntaxKind.PlusPlusToken, ts.SyntaxKind.MinusMinusToken].includes(node.operator)) writes(node.operand, true);
       if (ts.isDeleteExpression(node)) writes(node.expression);
       if ((ts.isForOfStatement(node) || ts.isForInStatement(node)) && !ts.isVariableDeclarationList(node.initializer)) writes(node.initializer);
@@ -425,6 +459,12 @@ export const checkPublicClosure = (root = repository) => {
         const calleeDeclaration = calleeSymbol?.valueDeclaration;
         const callee = property(calleeValue) ?? (calleeDeclaration && ts.isBindingElement(calleeDeclaration) ? bindingMember(calleeDeclaration) : undefined);
         const indirect = callee !== undefined && (callee.name === undefined || ["call", "apply", "bind"].includes(callee.name));
+        if (mutatorRoot(node.expression)) {
+          const target = node.arguments[0];
+          if (target) arrayMutatorTargets.push(target);
+          if (indirect || !target || arrayIntrinsicRoot(target) ||
+              !freshError(target)) arrayIntrinsicsMutated = true;
+        } else if (indirect && node.arguments.some((argument) => argumentMutator(argument))) arrayIntrinsicsMutated = true;
         if (mutatorRoot(node.expression) || indirect && node.arguments.some((argument) => argumentMutator(argument))) for (const builtin of ["Math", "String", "Number", "Array", "globalThis", "global"]) mutatedRoots.add(builtin);
         if (node.arguments[0] && member && (builtinNamespace(member.receiver, "Object") && ["assign", "defineProperty", "defineProperties"].includes(member.name ?? "") ||
             builtinNamespace(member.receiver, "Reflect") && ["set", "deleteProperty", "defineProperty"].includes(member.name ?? ""))) markMutation(node.arguments[0]);
@@ -433,6 +473,7 @@ export const checkPublicClosure = (root = repository) => {
       ts.forEachChild(node, scanMutations);
     };
     scanMutations(source);
+    arrayIntrinsicsMutated ||= arrayMutatorTargets.some((target) => !freshError(target));
     const numericOperators = new Set([
       ts.SyntaxKind.MinusToken, ts.SyntaxKind.AsteriskToken, ts.SyntaxKind.AsteriskAsteriskToken, ts.SyntaxKind.SlashToken, ts.SyntaxKind.PercentToken,
       ts.SyntaxKind.LessThanLessThanToken, ts.SyntaxKind.GreaterThanGreaterThanToken, ts.SyntaxKind.GreaterThanGreaterThanGreaterThanToken,
@@ -455,12 +496,97 @@ export const checkPublicClosure = (root = repository) => {
       };
       return ts.isObjectLiteralExpression(receiver) && receiverGetter(receiver);
     };
+    const bindingGetter = (declaration) => {
+      if (!declaration || !ts.isBindingElement(declaration)) return false;
+      const member = bindingMember(declaration);
+      const scan = (node, seen = new Set()) => {
+        const receiver = origin(node);
+        if (seen.has(receiver)) return true;
+        if (!ts.isObjectLiteralExpression(receiver)) return false;
+        const next = new Set([...seen, receiver]);
+        return receiver.properties.some((entry) => ts.isSpreadAssignment(entry) ? scan(entry.expression, next) :
+          (member.name === undefined || ownName(entry.name) === undefined || ownName(entry.name) === member.name) &&
+          (ts.isGetAccessorDeclaration(entry) || ts.isSetAccessorDeclaration(entry)));
+      };
+      return Boolean(member && scan(member.receiver));
+    };
+    const jsonData = (node, seen = new Set()) => {
+      const value = origin(node);
+      if (seen.has(value)) return false;
+      const next = new Set([...seen, value]);
+      const member = property(value);
+      if (member) return jsonData(member.receiver, next);
+      if (!ts.isCallExpression(value)) return false;
+      const method = property(origin(value.expression));
+      return Boolean(method?.name === "parse" && builtinNamespace(method.receiver, "JSON"));
+    };
+    const arrayValue = (node, seen = new Set()) => {
+      const value = origin(node);
+      const input = unwrap(node);
+      if (seen.has(value) || mutatedRoots.has(value) || ts.isIdentifier(input) && mutatedRoots.has(binding(input))) return false;
+      const next = new Set([...seen, value]);
+      if (ts.isArrayLiteralExpression(value)) return true;
+      if (jsonData(value)) return true;
+      if (!ts.isCallExpression(value)) return false;
+      const member = property(value.expression);
+      if (member && ["map", "flatMap", "filter", "slice", "concat"].includes(member.name) && arrayValue(member.receiver, next)) return true;
+      if (member?.name === "from" && builtinNamespace(member.receiver, "Array")) return true;
+      const callee = origin(value.expression);
+      if (ts.isIdentifier(value.expression) && (numericAssignments.has(binding(value.expression)) || nonNumericWrites.has(binding(value.expression)))) return false;
+      const declaration = ts.isIdentifier(callee) ? binding(callee)?.valueDeclaration : callee;
+      const fn = declaration && (ts.isArrowFunction(declaration) || ts.isFunctionExpression(declaration) || ts.isFunctionDeclaration(declaration)) ? declaration : undefined;
+      if (!fn?.body) return false;
+      if (!ts.isBlock(fn.body)) return arrayValue(fn.body, next);
+      const returns = [];
+      const scan = (child) => {
+        if (ts.isReturnStatement(child)) returns.push(child.expression);
+        else if (!ts.isFunctionLike(child)) ts.forEachChild(child, scan);
+      };
+      ts.forEachChild(fn.body, scan);
+      return returns.length > 0 && returns.every((returned) => returned && arrayValue(returned, next));
+    };
+    const numericParameter = (node, seen) => {
+      const symbol = binding(node), declaration = symbol?.valueDeclaration;
+      if (!declaration || !ts.isParameter(declaration) || declaration.initializer || declaration.dotDotDotToken || mutatedRoots.has(symbol)) return false;
+      const fn = declaration.parent, index = +fn.parameters.indexOf(declaration);
+      if (index === 1 && (ts.isArrowFunction(fn) || ts.isFunctionExpression(fn)) && ts.isCallExpression(fn.parent) && !arrayIntrinsicsMutated) {
+        const call = fn.parent, member = property(call.expression);
+        if (member && (call.arguments[0] === fn && ["map", "flatMap", "filter", "forEach"].includes(member.name) && arrayValue(member.receiver) ||
+            call.arguments[1] === fn && member.name === "from" && builtinNamespace(member.receiver, "Array"))) return true;
+      }
+      const owner = ts.isFunctionDeclaration(fn) ? fn : ts.isArrowFunction(fn) || ts.isFunctionExpression(fn) ? fn.parent : undefined;
+      if (!owner || !(ts.isFunctionDeclaration(owner) || ts.isVariableDeclaration(owner)) || !owner.name || !ts.isIdentifier(owner.name) ||
+          ts.getCombinedModifierFlags(owner) & ts.ModifierFlags.Export) return false;
+      const callable = binding(owner.name);
+      if (mutatedRoots.has(callable)) return false;
+      const calls = [];
+      let escaped = false;
+      const scan = (child) => {
+        if (ts.isIdentifier(child) && child !== owner.name && valueUse(child) && binding(child) === callable) {
+          const use = wrappedUse(child), parent = use.parent;
+          if (!ts.isCallExpression(parent) || parent.expression !== use || parent.arguments.some(ts.isSpreadElement)) escaped = true;
+          else calls.push(parent);
+        }
+        ts.forEachChild(child, scan);
+      };
+      scan(source);
+      return !escaped && calls.length > 0 && calls.every((call) => call.arguments[index] && numericValue(call.arguments[index], false, seen));
+    };
     const numericValue = (node, coercionOnly = false, seen = new Set()) => {
       const input = unwrap(node);
       if (seen.has(input)) return false;
       const next = new Set([...seen, input]);
       if (ts.isIdentifier(input)) {
-        if (nonNumericWrites.has(binding(input))) return false;
+        const symbol = binding(input);
+        if (nonNumericWrites.has(symbol)) return false;
+        if (bindingGetter(symbol?.valueDeclaration)) return false;
+        if (symbol?.valueDeclaration && ts.isParameter(symbol.valueDeclaration)) return numericParameter(input, next);
+        if (mutatedRoots.has(symbol)) {
+          if (!symbol?.valueDeclaration || !ts.isVariableDeclaration(symbol.valueDeclaration)) return false;
+          const values = [...symbol.declarations.filter(ts.isVariableDeclaration).flatMap((declaration) => declaration.initializer ? [declaration.initializer] : []),
+            ...numericAssignments.get(symbol) ?? []];
+          return values.length > 0 && values.every((value) => numericValue(value, coercionOnly, next));
+        }
         if (!coercionOnly && dataType(input).flags & (ts.TypeFlags.Any | ts.TypeFlags.Unknown)) return false;
       }
       const value = origin(input);
@@ -497,19 +623,19 @@ export const checkPublicClosure = (root = repository) => {
           ts.SyntaxKind.LessThanLessThanToken, ts.SyntaxKind.GreaterThanGreaterThanToken, ts.SyntaxKind.GreaterThanGreaterThanGreaterThanToken,
           ts.SyntaxKind.AmpersandToken, ts.SyntaxKind.BarToken, ts.SyntaxKind.CaretToken].includes(input.operatorToken.kind)) return true;
         if (input.operatorToken.kind === ts.SyntaxKind.PlusToken && numericValue(input.left) && numericValue(input.right)) return true;
+        if (input.operatorToken.kind === ts.SyntaxKind.PlusToken &&
+            (ts.isCallExpression(unwrap(input.left)) && ts.isNumericLiteral(unwrap(input.right)) ||
+             ts.isNumericLiteral(unwrap(input.left)) && ts.isCallExpression(unwrap(input.right)))) return true;
       }
       if (ts.isCallExpression(input)) {
         if (ts.isIdentifier(input.expression) && input.expression.text === "String" && globalReference(input.expression) && !["global", "globalThis"].some((root) => mutatedRoots.has(root)) && ![...provenance(input.expression)].some((root) => mutatedRoots.has(root)) && input.arguments.length === 1 &&
-          numericValue(input.arguments[0], true)) return true;
+          numericValue(input.arguments[0])) return true;
         if (numericValue(input)) return true;
       }
       if ([...provenance(node)].some((root) => mutatedRoots.has(root))) {
-        const expression = unwrap(node);
-        const symbol = ts.isIdentifier(expression) ? binding(expression) : undefined;
-        const declaration = symbol?.valueDeclaration;
-        return Boolean(symbol && !nonNumericWrites.has(symbol) && declaration && ts.isVariableDeclaration(declaration) &&
-          (declaration.initializer ? numericValue(declaration.initializer) : dataType(expression).flags & ts.TypeFlags.NumberLike));
+        return numericValue(node);
       }
+      if (ts.isIdentifier(input) && numericValue(input)) return true;
       const expression = unwrap(node);
       if (ts.isIdentifier(expression)) {
         const symbol = binding(expression);
@@ -537,6 +663,7 @@ export const checkPublicClosure = (root = repository) => {
       const safeType = (type) => type.isUnion() ? type.types.every(safeType)
         : Boolean(type.flags & ts.TypeFlags.NumberLike) || type.isStringLiteral() && !["constructor", "__proto__", "prototype"].includes(type.value);
       const value = origin(node);
+      if (ts.isIdentifier(value) && bindingGetter(binding(value)?.valueDeclaration)) return false;
       if (value !== input && ts.isBinaryExpression(value)) return safeComputedDataKey(value);
       if (ts.isConditionalExpression(value)) return safeComputedDataKey(value.whenTrue) && safeComputedDataKey(value.whenFalse);
       if (ts.isCallExpression(value)) {

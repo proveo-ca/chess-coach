@@ -7,7 +7,7 @@ it("compiles source import descriptors and confines production to the approved p
   const files = ["candidates", "composition", "contracts", "domain", "identity"];
   const external = new Set([
     "@chess-coach/starchess-arena/observations", "@chess-coach/starchess-arena/intent-codec-v1",
-    "@chess-coach/starchess-core", "@noble/hashes/sha2.js",
+    "@chess-coach/starchess-core/planning-v1", "jssha/sha256",
   ]);
   const native = new Set([
     "appendTimeSpecialAnchor", "charonDiagonalSquaresFromSquare", "classicalActorAt",
@@ -25,7 +25,7 @@ it("compiles source import descriptors and confines production to the approved p
       const module = (statement.moduleSpecifier as ts.StringLiteral).text;
       imports.add(module);
       expect(external.has(module) || files.some((name) => module === `./${name}`)).toBe(true);
-      if (module === "@chess-coach/starchess-core" && ts.isImportDeclaration(statement)) {
+      if (module === "@chess-coach/starchess-core/planning-v1" && ts.isImportDeclaration(statement)) {
         const bindings = statement.importClause?.namedBindings;
         expect(bindings && ts.isNamedImports(bindings)).toBe(true);
         if (bindings && ts.isNamedImports(bindings)) {

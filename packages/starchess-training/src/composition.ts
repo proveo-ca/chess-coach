@@ -1,7 +1,7 @@
 // SPEC: _spec/packages/starchess-training/candidate-generation.puml
 import { validateObservationV1, type AuthorizedObservationV1 } from "@chess-coach/starchess-arena/observations";
 import { ACTION_KINDS, encodeCandidate, type EncodedCandidate } from "@chess-coach/starchess-arena/intent-codec-v1";
-import type { PlanningKnowledge, ScActionInput } from "@chess-coach/starchess-core";
+import type { PlanningKnowledge, ScActionInput } from "@chess-coach/starchess-core/planning-v1";
 import type { CandidateBatchV3, CandidateDiagnostics, CandidateKind, CandidateLane } from "./contracts";
 import { appendFailure, appendState, emptyPrefix, planningKnowledge, primitiveDomain, type PrefixState } from "./domain";
 import { compareBytes, KeyIndex, type Digest } from "./identity";

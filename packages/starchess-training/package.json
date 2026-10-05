@@ -13,7 +13,7 @@
   "dependencies": {
     "@chess-coach/starchess-arena": "workspace:*",
     "@chess-coach/starchess-core": "workspace:*",
-    "@noble/hashes": "2.4.0"
+    "jssha": "3.3.2"
   },
   "devDependencies": {
     "@types/node": "^22.15.0",

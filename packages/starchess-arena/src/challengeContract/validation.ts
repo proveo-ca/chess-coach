@@ -1,5 +1,5 @@
 // SPEC: _spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml, _spec/packages/starchess-training/candidate-generation.puml
-import type { PieceColor, ScPiece, Square } from "@chess-coach/starchess-core";
+import type { PieceColor, ScPiece, Square } from "@chess-coach/starchess-core/planning-v1";
 
 export const MAX_CODEC_BYTES = 1_048_576;
 export const PIECE_TYPES = ["p", "n", "b", "r", "q", "k"] as const;

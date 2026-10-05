@@ -10,6 +10,7 @@ import { collectSourceInventory, SOURCE_PARTITIONS, type SourceInventoryV1 } fro
 const CORE = "packages/starchess-core";
 const ARENA = "packages/starchess-arena";
 const TRAINING = "packages/starchess-training";
+const minifiedNumericRead = 'export function read(input,prior){let cursor,index;const words=prior||[0];for(cursor=0;cursor<input.length;cursor++){index=cursor>>>2;consume(words[index]);}return words;}';
 const repository = fileURLToPath(new URL("../../../../", import.meta.url));
 const temporary: string[] = [];
 const ownMemberConstructors = [
@@ -67,6 +68,32 @@ const dataArrayAccesses = [
   'const rows = [...inputRows]; void rows[0][1];',
 ];
 const unprovenComputedReceivers = [
+  'const receiver:any=unknownFactory(); let key; for(key=0;key<3;key++){key=["con","structor"].join(""); receiver[key]("return process")();}',
+  'const receiver:any=unknownFactory(); let key; key=0>>>2; key=["con","structor"].join(""); receiver[key]("return process")();',
+  'const receiver:any=unknownFactory(); let key:number; key=["con","structor"].join("") as any; receiver[key]("return process")();',
+  'const receiver:any=unknownFactory(); let key=0; function mutate(){key=["con","structor"].join("") as any;} mutate(); receiver[key]("return process")();',
+  'const receiver:any=unknownFactory(); let key; const bag={get key():number{return "constructor" as any;}}; key=bag["key"]; receiver[key]("return process")();',
+  'const receiver:any=unknownFactory(); let key; const bag={get key():number{return "constructor" as any;}}; key=bag["key"]+1; receiver[key]("return process")();',
+  'const receiver:any=unknownFactory(); const bag={get key():number{return "constructor" as any;}}; receiver[String(bag["key"])]("return process")();',
+  'function read(receiver:any,key:number){return receiver[String(key)]("return process")();} read(()=>{}, "constructor" as any);',
+  'const receiver:any=unknownFactory(); var key; key=0; var key=["con","structor"].join(""); receiver[key]("return process")();',
+  'const receiver:any=unknownFactory(); let key; [key]=["constructor"]; receiver[key]("return process")();',
+  'const receiver:any=unknownFactory(); let key; for(key=0;condition;key++){key+=unknownValue; receiver[key]("return process")();}',
+  'const receiver:any=unknownFactory(); const read=(key:number)=>receiver[key]("return process")(); read(0); read("constructor" as any);',
+  'const receiver:any=unknownFactory(); const read=(key:number)=>receiver[key]("return process")(); consume(read); read(0);',
+  'const receiver:any=unknownFactory(); const read=(key:number)=>receiver[key]("return process")(); export {read as escaped}; read(0);',
+  'const receiver:any=unknownFactory(); export const read=(key:number)=>receiver[key]("return process")(); read(0);',
+  'const receiver:any=unknownFactory(); const data=[1,2]; data.forEach=((cb:any)=>cb(1,"constructor")) as any; data.forEach((_,key)=>receiver[key]("return process")());',
+  'const receiver:any=unknownFactory(); const data={forEach(cb:any){cb(1,"constructor");}} as unknown as number[]; data.forEach((_,key)=>receiver[key]("return process")());',
+  'const receiver:any=unknownFactory(); Array.prototype.forEach=((cb:any)=>cb(1,"constructor")) as any; [1,2].forEach((_,key)=>receiver[key]("return process")());',
+  'const receiver:any=unknownFactory(); Object.assign(Array.prototype,{forEach(cb:any){cb(1,"constructor");}}); [1,2].forEach((_,key)=>receiver[key]("return process")());',
+  'const receiver:any=unknownFactory(); let data:any=[1,2]; data={forEach(cb:any){cb(1,"constructor");}}; data.forEach((_:any,key:number)=>receiver[key]("return process")());',
+  'const receiver:any=unknownFactory(); function Factory(){return Array.prototype;} Object.assign(new (Factory as any)(),{forEach(cb:any){cb(1,"constructor");}}); [1,2].forEach((_,key)=>receiver[key]("return process")());',
+  'const receiver:any=unknownFactory(); function Error(){return Array.prototype;} Object.assign(new (Error as any)(),{forEach(cb:any){cb(1,"constructor");}}); [1,2].forEach((_,key)=>receiver[key]("return process")());',
+  'const receiver:any=unknownFactory(); JSON.parse=(()=>({map(cb:any){cb(0,"constructor");}})) as any; JSON.parse("{}").map((_:any,key:number)=>receiver[key]("return process")());',
+  'const receiver:any=unknownFactory(); (Object.prototype as any).map=function(cb:any){cb(0,"constructor");}; JSON.parse("{}").map((_:any,key:number)=>receiver[key]("return process")());',
+  'const receiver:any=unknownFactory(); const {key}={get key():number{return "constructor" as any;}}; receiver[key]("return process")();',
+  'const receiver:any=unknownFactory(); let index; const {key}={get key():number{return "constructor" as any;}}; index=key; receiver[index]("return process")();',
   'this.Function("return process")();',
   'this.eval("return process");',
   'parent.Function("return process")();',
@@ -173,6 +200,24 @@ const unprovenComputedReceivers = [
   'const box: any = {f: 0}; function mutate() {box.f = () => {};} mutate(); box.f[["con", "structor"].join("")]("return process")();',
 ];
 const ordinaryComputedData = [
+  'function pack(input:any,existing:any){let i,s;const words=existing||[0];for(i=0;i<input.length;i+=1){s=i>>>2;words[s]|=input[i];}return words;}',
+  'const receiver:any=unknownFactory(); let key; for(key=0;key<3;key++) consume(receiver[key]);',
+  'const receiver:any=unknownFactory(); let key; key=unknownValue>>>2; consume(receiver[key]);',
+  'const receiver:any=unknownFactory(); let key; key=unknownValue&31; consume(receiver[key]);',
+  'const receiver:any=unknownFactory(); consume(receiver[unknownKeyFactory()+1]);',
+  'const receiver:any=unknownFactory(); const data:any=unknownFactory(); consume(data[data.indexOf("first")+1]);',
+  'const receiver:any=unknownFactory(); let key=0; key+=2; key-=1; consume(receiver[key]);',
+  'const receiver:any=unknownFactory(); const read=(key:number)=>receiver[key]; for(let i=0;i<3;i++) consume(read(i));',
+  'const receiver:any=unknownFactory(); function read(key:number){return receiver[key];} consume(read(1));',
+  'const receiver:any=unknownFactory(); const data=[1,2]; data.forEach((_,index)=>consume(receiver[index]));',
+  'const receiver:any=unknownFactory(); const make=()=>[1,2]; const data=make(); data.forEach((_,index)=>consume(receiver[index]));',
+  'const receiver:any=unknownFactory(); Array.from({length:4},(_,index)=>receiver[index]);',
+  'const receiver:any=unknownFactory(); const data=[1,2].map(value=>value*2); data.forEach((_,index)=>consume(receiver[index]));',
+  'const receiver:any=unknownFactory(); const data=Array.from({length:4},()=>[1,2]); data.flatMap((_,index)=>[receiver[index]]);',
+  'const receiver:any=unknownFactory(); const data=[1,2]; consume(receiver[String(data.length)]);',
+  'const receiver:any=unknownFactory(); const data=Array(4).fill(0); [1,2].forEach((_,index)=>consume(receiver[index]));',
+  'const receiver:any=unknownFactory(); Object.assign(new Error("failure"),{code:"X"}); [1,2].forEach((_,index)=>consume(receiver[index]));',
+  'const receiver:any=unknownFactory(); const data=JSON.parse(`{"items":[1,2]}`); data.items.map((_:any,index:number)=>receiver[index]);',
   'setTimeout(() => {}, 0); setInterval(function () {}, 0);',
   'function schedule(callback: () => void) {setTimeout(callback, 0);}',
   'function callback() {} setTimeout(callback, 0);',
@@ -225,6 +270,14 @@ const fixture = (): string => {
 };
 
 describe("partitioned challenge source inventory", () => {
+  it.each([".js", ".mjs"])("proves hoisted JavaScript counter writes and rejects a string rewrite in %s", (extension) => {
+    const root = fixture();
+    const path = `${CORE}/src/numeric-read${extension}`;
+    put(root, path, minifiedNumericRead);
+    expect(collectSourceInventory(root).audit.passed).toBe(true);
+    put(root, path, minifiedNumericRead.replace("consume(words[index])", 'index=["con","structor"].join("");consume(words[index])'));
+    expect(() => collectSourceInventory(root)).toThrow("Unsupported code constructor acquisition");
+  });
   it.each([`${TRAINING}/src/candidates.ts`, `${ARENA}/src/observations.ts`])("rejects every consumer edge kind to the core root: %s", (path) => {
     const root = fixture();
     for (const code of [
@@ -993,6 +1046,25 @@ describe("static browser public closure", () => {
     put(root, `${TRAINING}/src/candidates.ts`, 'import "jssha/sha256";');
     return base;
   };
+  it.each([".js", ".mjs"])("proves public hoisted JavaScript counter writes and rejects a string rewrite in %s", async (extension) => {
+    const root = fixture();
+    const path = `${CORE}/src/numeric-read${extension}`;
+    put(root, `${CORE}/src/planning-v1.ts`, `export * from "./numeric-read${extension}";`);
+    put(root, path, minifiedNumericRead);
+    expect((await check(root)).passed).toBe(true);
+    put(root, path, minifiedNumericRead.replace("consume(words[index])", 'index=["con","structor"].join("");consume(words[index])'));
+    await expect(check(root)).rejects.toThrow("Code constructor acquisition in public closure");
+  });
+  it("audits the real four-root public graph and standalone SHA runtime", async () => {
+    const report = await check(repository);
+    expect(report.version).toBe("public-closure-v2");
+    expect(report.passed).toBe(true);
+    expect(report.entries).toHaveLength(4);
+    expect(report.entries[0].subpath).toBe("./planning-v1");
+    expect(report.verifiedPaths).not.toContain(`${CORE}/src/index.ts`);
+    expect(report.dependencyFiles.map((file: {path: string}) => file.path)).toEqual(["jssha@3.3.2/dist/sha256.mjs", "jssha@3.3.2/package.json"]);
+    expect(report.edges.some((edge: {importer: string}) => edge.importer.startsWith("jssha@"))).toBe(false);
+  }, 120000);
   it.each(["jssha", "jssha/sha1", "jssha/dist/sha256.mjs"])("rejects an unreviewed SHA export %s", async (specifier) => {
     const root = fixture();
     shaFixture(root);

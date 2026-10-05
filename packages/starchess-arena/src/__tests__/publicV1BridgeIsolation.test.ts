@@ -65,6 +65,7 @@ describe("public V1 bridge isolation", () => {
       for (const specifier of runtimeEdges(path)) {
         expect(isBuiltin(specifier), `${path} -> ${specifier}`).toBe(false);
         if (specifier.startsWith(".")) visit(localTarget(path, specifier));
+        else if (specifier === "@chess-coach/starchess-core/planning-v1") visit(require.resolve(specifier));
         else throw new Error(`Non-leaf runtime dependency: ${path} -> ${specifier}`);
       }
     };
@@ -72,5 +73,6 @@ describe("public V1 bridge isolation", () => {
     expect(seen.has(join(arena, "src/authorized/v1/observationCodec.ts"))).toBe(true);
     expect(seen.has(join(arena, "src/challengeContract/candidateWire.ts"))).toBe(entry === "intent-codec-v1.ts");
     expect(seen.has(join(core, "src/index.ts"))).toBe(false);
+    expect(seen.has(join(core, "src/planning-v1.ts"))).toBe(true);
   });
 });

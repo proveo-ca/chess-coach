@@ -10,6 +10,17 @@ describe("special kinds renamed off the chess words", () => {
       kind: "constructor", constructor: "data", toString: "label",
     });
   });
+  it("copies own prototype-shaped JSON fields without changing ordinary object prototypes", () => {
+    const input = JSON.parse('{"__proto__":{"polluted":true},"items":[{"__proto__":{"nested":true},"constructor":"data"}]}');
+    const result = migrateLegacyNames(input);
+    expect(Object.getPrototypeOf(result)).toBe(Object.prototype);
+    expect(Object.getPrototypeOf(result.items[0])).toBe(Object.prototype);
+    expect(Object.hasOwn(result, "__proto__")).toBe(true);
+    expect(Object.hasOwn(result.items[0], "__proto__")).toBe(true);
+    expect(Object.getOwnPropertyDescriptor(result, "__proto__")).toMatchObject({ enumerable: true, configurable: true, writable: true, value: { polluted: true } });
+    expect(JSON.parse(JSON.stringify(result))).toEqual(input);
+    expect(Object.hasOwn(Object.prototype, "polluted")).toBe(false);
+  });
   it("reads a save written with the old names and writes it back with the new ones", () => {
     const legacy =
       "SCFEN|4k3/8/8/8/q7/8/8/3BK3|21|33|P|G:13:33|Q:w:B=bishopSnipe:d1:a4;b:";

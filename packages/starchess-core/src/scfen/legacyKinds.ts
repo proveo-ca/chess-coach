@@ -37,7 +37,7 @@ export const currentKind = (kind: string): string => Object.entries(LEGACY_SPECI
 export const migrateLegacyNames = <T>(value: T): T => {
   if (Array.isArray(value)) return value.map(migrateLegacyNames) as T;
   if (value === null || typeof value !== "object") return value;
-  const out = Object.create(null) as Record<string, unknown>;
+  const out: Record<string, unknown> = {};
   for (const [key, entry] of Object.entries(value)) {
     Object.defineProperty(out, Object.entries(LEGACY_FIELD_NAMES).find(([name]) => name === key)?.[1] ?? key, {
       value: key === "kind" && typeof entry === "string" ? currentKind(entry) : migrateLegacyNames(entry),

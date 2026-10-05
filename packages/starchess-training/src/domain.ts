@@ -6,7 +6,7 @@ import {
   classicalRewriteCoordinatesAfterB, isScMoveShape, knownAppendFailure,
   marineSingleTarget, spawnCCAnchorFromMap,
   type PlanningKnowledge, type ScActionInput, type SpawnPiece, type Square,
-} from "@chess-coach/starchess-core";
+} from "@chess-coach/starchess-core/planning-v1";
 import type { CandidateKind, PruningReason } from "./contracts";
 
 export const SQUARES: readonly Square[] = Object.freeze(

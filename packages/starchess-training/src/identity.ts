@@ -1,7 +1,12 @@
 // SPEC: _spec/packages/starchess-training/candidate-generation.puml
-import { sha256 } from "@noble/hashes/sha2.js";
+import jsSHA from "jssha/sha256";
 
 export type Digest = (bytes: Uint8Array) => Uint8Array;
+export const sha256: Digest = (bytes) => {
+  const hash = new jsSHA("SHA-256", "UINT8ARRAY");
+  hash.update(bytes);
+  return hash.getHash("UINT8ARRAY");
+};
 export const compareBytes = (a: Uint8Array, b: Uint8Array): number => {
   for (let i = 0; i < Math.min(a.length, b.length); i++) {
     if (a[i] !== b[i]) return a[i]! - b[i]!;

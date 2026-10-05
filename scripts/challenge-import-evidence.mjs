@@ -208,7 +208,7 @@ export async function importEvidence({
   const closureBytes = artifacts.get('public-closure-report.json');
   const publicClosure = decode(closureBytes, 'public closure');
   const closureLog = verification.commands[10]?.logs?.stdout;
-  if (publicClosure.version !== 'public-closure-v1' || publicClosure.passed !== true || !closureLog || closureLog.sha256 !== hash(closureBytes) || closureLog.bytes !== closureBytes.length) throw new Error('Public closure report is not bound to command 11');
+  if (publicClosure.version !== 'public-closure-v2' || publicClosure.passed !== true || !closureLog || closureLog.sha256 !== hash(closureBytes) || closureLog.bytes !== closureBytes.length) throw new Error('Public closure report is not bound to command 11');
   if (JSON.stringify(publicClosure) !== JSON.stringify(checkPublicClosure(SOURCE_ROOT))) throw new Error('Host public closure remeasurement mismatch');
   for (const command of verification.commands) {
     for (const stream of logRecords(command, command.executable)) {

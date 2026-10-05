@@ -9,7 +9,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   try {
     process.stdout.write(`${JSON.stringify(checkPublicClosure(), null, 2)}\n`);
   } catch (error) {
-    process.stderr.write(`${JSON.stringify({ version: "public-closure-v1", passed: false, error: error.message })}\n`);
+    process.stderr.write(`${JSON.stringify({ version: "public-closure-v2", passed: false, error: error.message })}\n`);
     process.exitCode = 1;
   }
 }

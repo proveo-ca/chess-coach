@@ -1,6 +1,6 @@
 // SPEC: _spec/packages/starchess-training/candidate-generation.puml
 import { describe, expect, it } from "vitest";
-import { sha256 } from "@noble/hashes/sha2.js";
+import { createHash } from "node:crypto";
 import { ACTION_KINDS, encodeCandidate, MAX_QUEUE_ACTIONS, requestedSpend } from "@chess-coach/starchess-arena/intent-codec-v1";
 import { validateObservationV1, type AuthorizedObservationV1 } from "@chess-coach/starchess-arena/observations";
 import { addScAction, getSideVision, mapToPlacement, SPECIAL_REGISTRY, UNIT_COST, type ScFenSnapshot, type ScPiece, type Square } from "@chess-coach/starchess-core";
@@ -8,7 +8,7 @@ import * as publicApi from "../candidates";
 import { composeCandidatesFromObservationV1 as compose, decodeCandidate } from "../candidates";
 import { composeWithRuntime } from "../composition";
 import type { CandidateBatchV3 } from "../contracts";
-import { KeyIndex } from "../identity";
+import { KeyIndex, sha256 } from "../identity";
 import { allActors, c, observation, s, squares } from "./fixtures";
 import { tinyOracle } from "./tiny-oracle";
 
@@ -242,6 +242,21 @@ describe("public V1 bridge, identity, and detachment", () => {
     expect(colliding.has(b)).toBe(true);
     const o = allActors();
     expect(composeWithRuntime(o, () => new Uint8Array(32)).batch).toEqual(compose(o));
+  });
+  it("matches independent SHA-256 across Unicode, binary padding boundaries, and offset views", () => {
+    const vectors = [new TextEncoder().encode("♟️\u0000棋🚀é")];
+    for (const length of [0, 1, 31, 55, 56, 63, 64, 65, 127, 128, 129, 255, 1024]) {
+      const backing = Uint8Array.from({ length: length + 11 }, (_, i) => (i * 73 + 251) & 255);
+      vectors.push(backing.subarray(7, 7 + length));
+    }
+    for (const bytes of vectors) {
+      const input = bytes.slice();
+      const expected = createHash("sha256").update(bytes).digest();
+      const actual = sha256(bytes);
+      expect(actual).toHaveLength(32);
+      expect(Buffer.from(actual).equals(expected)).toBe(true);
+      expect(Buffer.from(bytes).equals(Buffer.from(input))).toBe(true);
+    }
   });
 
   it.each(["w", "b"] as const)("keeps full batches and diagnostics identical across equal observations of different hidden worlds, %s", (side) => {

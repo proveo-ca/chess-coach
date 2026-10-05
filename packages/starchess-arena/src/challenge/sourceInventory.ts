@@ -683,10 +683,37 @@ export const collectSourceInventory = (
     };
     const mutatedRoots = new Set<ts.Expression | ts.Symbol | string>();
     const nonNumericWrites = new Set<ts.Symbol | string>();
-    const markMutation = (node: ts.Expression): void => { for (const root of provenance(node)) mutatedRoots.add(root); };
+    const numericAssignments = new Map<ts.Symbol | string, ts.Expression[]>();
+    const arrayMutatorTargets: ts.Expression[] = [];
+    let arrayIntrinsicsMutated = false;
+    const arrayIntrinsicRoot = (node: ts.Expression, seen = new Set<ts.Expression>()): boolean => {
+      const value = origin(node);
+      if (seen.has(value)) return false;
+      const next = new Set([...seen, value]);
+      if (ts.isIdentifier(value)) {
+        const symbol = binding(value);
+        if (typeof symbol === "string" && ["Array", "Object", "String", "Number", "Boolean", "JSON", "globalThis", "global"].includes(symbol)) return true;
+        const declaration = typeof symbol !== "string" ? symbol.valueDeclaration : undefined;
+        const member = declaration && ts.isBindingElement(declaration) ? bindingMember(declaration) : undefined;
+        return !!(member && arrayIntrinsicRoot(member.receiver, next));
+      }
+      const member = property(value);
+      return !!(member && arrayIntrinsicRoot(member.receiver, next));
+    };
+    const markMutation = (node: ts.Expression): void => {
+      for (const root of provenance(node)) mutatedRoots.add(root);
+      if (arrayIntrinsicRoot(node)) arrayIntrinsicsMutated = true;
+    };
+    const freshError = (node: ts.Expression): boolean => {
+      const value = origin(node);
+      if (!ts.isNewExpression(value)) return false;
+      const ctor = origin(value.expression);
+      return ts.isIdentifier(ctor) && ["Error", "TypeError", "RangeError", "SyntaxError", "ReferenceError", "URIError", "EvalError", "AggregateError"].includes(ctor.text) &&
+        typeof binding(ctor) === "string" && ![...provenance(value.expression)].some((root) => mutatedRoots.has(root));
+    };
     const scanMutations = (node: ts.Node): void => {
       const writes = (target: ts.Node, numeric = false): void => {
-        if (ts.isIdentifier(target)) { mutatedRoots.add(binding(target)); if (!numeric) nonNumericWrites.add(binding(target)); }
+        if (ts.isIdentifier(target)) { const symbol = binding(target); mutatedRoots.add(symbol); if (!numeric) nonNumericWrites.add(symbol); if (typeof symbol === "string" && ["Array", "Object", "String", "Number", "Boolean", "JSON"].includes(symbol)) arrayIntrinsicsMutated = true; }
         else if (ts.isPropertyAccessExpression(target) || ts.isElementAccessExpression(target)) markMutation(target);
         else if (ts.isParenthesizedExpression(target) || ts.isAsExpression(target) || ts.isNonNullExpression(target) || ts.isTypeAssertionExpression(target)) writes(target.expression);
         else if (ts.isArrayLiteralExpression(target)) for (const child of target.elements) writes(child);
@@ -696,8 +723,15 @@ export const collectSourceInventory = (
         else if (ts.isSpreadElement(target) || ts.isSpreadAssignment(target)) writes(target.expression);
         else if (ts.isBinaryExpression(target) && target.operatorToken.kind === ts.SyntaxKind.EqualsToken) writes(target.left);
       };
-      if (ts.isBinaryExpression(node) && node.operatorToken.kind >= ts.SyntaxKind.FirstAssignment && node.operatorToken.kind <= ts.SyntaxKind.LastAssignment) writes(node.left,
-        [ts.SyntaxKind.EqualsToken, ts.SyntaxKind.PlusEqualsToken, ts.SyntaxKind.MinusEqualsToken].includes(node.operatorToken.kind) && ts.isNumericLiteral(unwrap(node.right)));
+      if (ts.isBinaryExpression(node) && node.operatorToken.kind >= ts.SyntaxKind.FirstAssignment && node.operatorToken.kind <= ts.SyntaxKind.LastAssignment) {
+        const numericCandidate = [ts.SyntaxKind.EqualsToken, ts.SyntaxKind.PlusEqualsToken, ts.SyntaxKind.MinusEqualsToken].includes(node.operatorToken.kind);
+        const target = unwrap(node.left);
+        if (numericCandidate && ts.isIdentifier(target)) {
+          const symbol = binding(target);
+          numericAssignments.set(symbol, [...numericAssignments.get(symbol) ?? [], node.right]);
+        }
+        writes(node.left, numericCandidate);
+      }
       if ((ts.isPrefixUnaryExpression(node) || ts.isPostfixUnaryExpression(node)) && [ts.SyntaxKind.PlusPlusToken, ts.SyntaxKind.MinusMinusToken].includes(node.operator)) writes(node.operand, true);
       if (ts.isDeleteExpression(node)) writes(node.expression);
       if ((ts.isForOfStatement(node) || ts.isForInStatement(node)) && !ts.isVariableDeclarationList(node.initializer)) writes(node.initializer);
@@ -738,6 +772,12 @@ export const collectSourceInventory = (
         };
         const callee = property(origin(node.expression));
         const indirect = callee !== undefined && (callee.name === undefined || ["call", "apply", "bind"].includes(callee.name));
+        if (mutatorRoot(node.expression)) {
+          const target = node.arguments[0];
+          if (target) arrayMutatorTargets.push(target);
+          if (indirect || !target || arrayIntrinsicRoot(target) ||
+              !freshError(target)) arrayIntrinsicsMutated = true;
+        } else if (indirect && node.arguments.some((argument) => argumentMutator(argument))) arrayIntrinsicsMutated = true;
         if (mutatorRoot(node.expression) || indirect && node.arguments.some((argument) => argumentMutator(argument))) {
           for (const builtin of ["Math", "String", "Number", "Array", "globalThis", "global"]) mutatedRoots.add(builtin);
         }
@@ -748,6 +788,7 @@ export const collectSourceInventory = (
       ts.forEachChild(node, scanMutations);
     };
     scanMutations(source);
+    arrayIntrinsicsMutated ||= arrayMutatorTargets.some((target) => !freshError(target));
     const numericOperators = new Set([
       ts.SyntaxKind.MinusToken, ts.SyntaxKind.AsteriskToken, ts.SyntaxKind.AsteriskAsteriskToken, ts.SyntaxKind.SlashToken, ts.SyntaxKind.PercentToken,
       ts.SyntaxKind.LessThanLessThanToken, ts.SyntaxKind.GreaterThanGreaterThanToken, ts.SyntaxKind.GreaterThanGreaterThanGreaterThanToken,
@@ -770,12 +811,102 @@ export const collectSourceInventory = (
       };
       return ts.isObjectLiteralExpression(receiver) && receiverGetter(receiver);
     };
+    const bindingGetter = (declaration: ts.Declaration | undefined): boolean => {
+      if (!declaration || !ts.isBindingElement(declaration)) return false;
+      const member = bindingMember(declaration);
+      if (!member) return false;
+      const scan = (node: ts.Expression, seen = new Set<ts.Expression>()): boolean => {
+        const receiver = origin(node);
+        if (seen.has(receiver)) return true;
+        if (!ts.isObjectLiteralExpression(receiver)) return false;
+        const next = new Set([...seen, receiver]);
+        return receiver.properties.some((entry) => ts.isSpreadAssignment(entry) ? scan(entry.expression, next) :
+          (member.name === undefined || ownName(entry.name) === undefined || ownName(entry.name) === member.name) &&
+          (ts.isGetAccessorDeclaration(entry) || ts.isSetAccessorDeclaration(entry)));
+      };
+      return scan(member.receiver);
+    };
+    const jsonData = (node: ts.Expression, seen = new Set<ts.Expression>()): boolean => {
+      const value = origin(node);
+      if (seen.has(value)) return false;
+      const next = new Set([...seen, value]);
+      const member = property(value);
+      if (member) return jsonData(member.receiver, next);
+      if (!ts.isCallExpression(value)) return false;
+      const method = property(origin(value.expression));
+      const receiver = method && origin(method.receiver);
+      return !!(method?.name === "parse" && receiver && ts.isIdentifier(receiver) && binding(receiver) === "JSON");
+    };
+    const arrayValue = (node: ts.Expression, seen = new Set<ts.Expression>()): boolean => {
+      const value = origin(node);
+      const input = unwrap(node);
+      if (seen.has(value) || mutatedRoots.has(value) || ts.isIdentifier(input) && mutatedRoots.has(binding(input))) return false;
+      const next = new Set([...seen, value]);
+      if (ts.isArrayLiteralExpression(value)) return true;
+      if (jsonData(value)) return true;
+      if (!ts.isCallExpression(value)) return false;
+      const member = property(value.expression);
+      if (member && ["map", "flatMap", "filter", "slice", "concat"].includes(member.name ?? "") && arrayValue(member.receiver, next)) return true;
+      if (member?.name === "from" && ts.isIdentifier(member.receiver) && binding(member.receiver) === "Array") return true;
+      const callee = origin(value.expression);
+      if (ts.isIdentifier(value.expression) && (numericAssignments.has(binding(value.expression)) || nonNumericWrites.has(binding(value.expression)))) return false;
+      const symbol = ts.isIdentifier(callee) ? binding(callee) : undefined;
+      const declaration = symbol && typeof symbol !== "string" ? symbol.valueDeclaration : callee;
+      const fn = declaration && (ts.isArrowFunction(declaration) || ts.isFunctionExpression(declaration) || ts.isFunctionDeclaration(declaration)) ? declaration : undefined;
+      if (!fn?.body) return false;
+      if (!ts.isBlock(fn.body)) return arrayValue(fn.body, next);
+      const returns: (ts.Expression | undefined)[] = [];
+      const scan = (child: ts.Node): void => {
+        if (ts.isReturnStatement(child)) returns.push(child.expression);
+        else if (!ts.isFunctionLike(child)) ts.forEachChild(child, scan);
+      };
+      ts.forEachChild(fn.body, scan);
+      return returns.length > 0 && returns.every((returned) => returned !== undefined && arrayValue(returned, next));
+    };
+    const numericParameter = (node: ts.Identifier, seen: Set<ts.Expression>): boolean => {
+      const symbol = binding(node), declaration = typeof symbol !== "string" ? symbol.valueDeclaration : undefined;
+      if (!declaration || !ts.isParameter(declaration) || declaration.initializer || declaration.dotDotDotToken || mutatedRoots.has(symbol)) return false;
+      const fn = declaration.parent;
+      if (!ts.isFunctionDeclaration(fn) && !ts.isArrowFunction(fn) && !ts.isFunctionExpression(fn)) return false;
+      const index = +fn.parameters.indexOf(declaration);
+      if (index === 1 && (ts.isArrowFunction(fn) || ts.isFunctionExpression(fn)) && ts.isCallExpression(fn.parent) && !arrayIntrinsicsMutated) {
+        const call = fn.parent, member = property(call.expression);
+        if (member && (call.arguments[0] === fn && ["map", "flatMap", "filter", "forEach"].includes(member.name ?? "") && arrayValue(member.receiver) ||
+            call.arguments[1] === fn && member.name === "from" && ts.isIdentifier(member.receiver) && binding(member.receiver) === "Array")) return true;
+      }
+      const owner = ts.isFunctionDeclaration(fn) ? fn : fn.parent;
+      if (!(ts.isFunctionDeclaration(owner) || ts.isVariableDeclaration(owner)) || !owner.name || !ts.isIdentifier(owner.name) ||
+          ts.getCombinedModifierFlags(owner) & ts.ModifierFlags.Export) return false;
+      const callable = binding(owner.name);
+      if (mutatedRoots.has(callable)) return false;
+      const calls: ts.CallExpression[] = [];
+      let escaped = false;
+      const scan = (child: ts.Node): void => {
+        if (ts.isIdentifier(child) && child !== owner.name && !ts.isPartOfTypeNode(child) && !sourceIsName(child) && !sourceIsDeclaration(child) && binding(child) === callable) {
+          const use = wrappedUse(child), parent = use.parent;
+          if (!ts.isCallExpression(parent) || parent.expression !== use || parent.arguments.some(ts.isSpreadElement)) escaped = true;
+          else calls.push(parent);
+        }
+        ts.forEachChild(child, scan);
+      };
+      scan(source);
+      return !escaped && calls.length > 0 && calls.every((call) => call.arguments[index] !== undefined && numericValue(call.arguments[index]!, false, seen));
+    };
     const numericValue = (node: ts.Expression, coercionOnly = false, seen = new Set<ts.Expression>()): boolean => {
       const input = unwrap(node);
       if (seen.has(input)) return false;
       const next = new Set([...seen, input]);
       if (ts.isIdentifier(input)) {
-        if (nonNumericWrites.has(binding(input))) return false;
+        const symbol = binding(input);
+        if (nonNumericWrites.has(symbol)) return false;
+        if (typeof symbol !== "string" && bindingGetter(symbol.valueDeclaration)) return false;
+        if (typeof symbol !== "string" && symbol.valueDeclaration && ts.isParameter(symbol.valueDeclaration)) return numericParameter(input, next);
+        if (mutatedRoots.has(symbol)) {
+          if (typeof symbol === "string" || !symbol.valueDeclaration || !ts.isVariableDeclaration(symbol.valueDeclaration)) return false;
+          const values = [...(symbol.declarations ?? []).filter(ts.isVariableDeclaration).flatMap((declaration) => declaration.initializer ? [declaration.initializer] : []),
+            ...numericAssignments.get(symbol) ?? []];
+          return values.length > 0 && values.every((value) => numericValue(value, coercionOnly, next));
+        }
         if (!coercionOnly && dataType(input).flags & (ts.TypeFlags.Any | ts.TypeFlags.Unknown)) return false;
       }
       const value = origin(input);
@@ -815,19 +946,19 @@ export const collectSourceInventory = (
           ts.SyntaxKind.LessThanLessThanToken, ts.SyntaxKind.GreaterThanGreaterThanToken, ts.SyntaxKind.GreaterThanGreaterThanGreaterThanToken,
           ts.SyntaxKind.AmpersandToken, ts.SyntaxKind.BarToken, ts.SyntaxKind.CaretToken].includes(input.operatorToken.kind)) return true;
         if (input.operatorToken.kind === ts.SyntaxKind.PlusToken && numericValue(input.left) && numericValue(input.right)) return true;
+        if (input.operatorToken.kind === ts.SyntaxKind.PlusToken &&
+            (ts.isCallExpression(unwrap(input.left)) && ts.isNumericLiteral(unwrap(input.right)) ||
+             ts.isNumericLiteral(unwrap(input.left)) && ts.isCallExpression(unwrap(input.right)))) return true;
       }
       if (ts.isCallExpression(input)) {
         if (ts.isIdentifier(input.expression) && input.expression.text === "String" && typeof binding(input.expression) === "string" && !["global", "globalThis"].some((root) => mutatedRoots.has(root)) && ![...provenance(input.expression)].some((root) => mutatedRoots.has(root)) && input.arguments.length === 1 &&
-          numericValue(input.arguments[0]!, true)) return true;
+          numericValue(input.arguments[0]!)) return true;
         if (numericValue(input)) return true;
       }
       if ([...provenance(node)].some((root) => mutatedRoots.has(root))) {
-        const expression = unwrap(node);
-        const symbol = ts.isIdentifier(expression) ? binding(expression) : undefined;
-        const declaration = symbol && typeof symbol !== "string" ? symbol.valueDeclaration : undefined;
-        return !!(symbol && !nonNumericWrites.has(symbol) && declaration && ts.isVariableDeclaration(declaration) &&
-          (declaration.initializer ? numericValue(declaration.initializer) : dataType(expression).flags & ts.TypeFlags.NumberLike));
+        return numericValue(node);
       }
+      if (ts.isIdentifier(input) && numericValue(input)) return true;
       const expression = unwrap(node);
       if (ts.isIdentifier(expression)) {
         const symbol = binding(expression);
@@ -855,6 +986,8 @@ export const collectSourceInventory = (
       const safeType = (type: ts.Type): boolean => type.isUnion() ? type.types.every(safeType)
         : !!(type.flags & ts.TypeFlags.NumberLike) || type.isStringLiteral() && !["constructor", "__proto__", "prototype"].includes(type.value);
       const value = origin(node);
+      const valueSymbol = ts.isIdentifier(value) ? binding(value) : undefined;
+      if (valueSymbol && typeof valueSymbol !== "string" && bindingGetter(valueSymbol.valueDeclaration)) return false;
       if (value !== input && ts.isBinaryExpression(value)) return safeComputedDataKey(value);
       if (ts.isConditionalExpression(value)) return safeComputedDataKey(value.whenTrue) && safeComputedDataKey(value.whenFalse);
       if (ts.isCallExpression(value)) {

@@ -1,6 +1,5 @@
 // SPEC: _spec/packages/starchess-training/candidate-generation.puml
-import { CC_MAX_LIVES, MAX_GAME_TURNS, MAX_STORED_MATERIAL } from "../../../../starchess-core/src/rules/constants";
-import { MAX_MINES_PER_SIDE } from "../../../../starchess-core/src/board/mines";
+import { CC_MAX_LIVES, MAX_GAME_TURNS, MAX_STORED_MATERIAL, MAX_MINES_PER_SIDE } from "@chess-coach/starchess-core/planning-v1";
 import { canonical, deepFreeze } from "./canonical";
 import { SQUARES } from "./squares";
 import type { AuthorizedObservation, ObservedCell, Sighting } from "./types";
