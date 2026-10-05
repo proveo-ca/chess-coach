@@ -360,8 +360,29 @@ export const checkPublicClosure = (root = repository) => {
           return Boolean(method && (builtinNamespace(method.receiver, "Object") && ["assign", "defineProperty", "defineProperties", "setPrototypeOf"].includes(method.name ?? "") ||
             builtinNamespace(method.receiver, "Reflect") && ["set", "deleteProperty", "defineProperty", "setPrototypeOf"].includes(method.name ?? "")));
         };
-        if (member && (["call", "apply", "bind"].includes(member.name ?? "") && mutator(member.receiver) ||
-          builtinNamespace(member.receiver, "Reflect") && member.name === "apply" && node.arguments[0] && mutator(node.arguments[0]))) throw new Error(`Code constructor acquisition in public closure: ${id}`);
+        const mutatorRoot = (expression, depth = 0) => {
+          if (depth > 8) return true;
+          const current = origin(expression);
+          if (ts.isIdentifier(current)) {
+            const symbol = binding(current);
+            const declaration = symbol?.valueDeclaration;
+            if (declaration && ts.isBindingElement(declaration)) {
+              const bound = bindingMember(declaration);
+              if (bound && ["assign", "defineProperty", "defineProperties", "setPrototypeOf", "set", "deleteProperty"].includes(bound.name ?? "") &&
+                (builtinNamespace(origin(bound.receiver), "Object") || builtinNamespace(origin(bound.receiver), "Reflect"))) return true;
+            }
+          }
+          const method = property(current);
+          if (!method) return mutator(current);
+          if (method.name === undefined) return builtinNamespace(method.receiver, "Object") || builtinNamespace(method.receiver, "Reflect") || mutatorRoot(method.receiver, depth + 1);
+          if (["call", "apply", "bind"].includes(method.name)) return mutatorRoot(method.receiver, depth + 1);
+          return mutator(current);
+        };
+        const argumentMutator = (argument) => ts.isArrayLiteralExpression(argument)
+          ? argument.elements.some((entry) => !ts.isOmittedExpression(entry) && argumentMutator(entry)) : mutatorRoot(argument);
+        const callee = property(node.expression);
+        const indirect = callee !== undefined && (callee.name === undefined || ["call", "apply", "bind"].includes(callee.name));
+        if (indirect && (mutatorRoot(node.expression) || node.arguments.some(argumentMutator))) for (const builtin of ["Math", "String", "Array", "globalThis", "global"]) mutatedRoots.add(builtin);
         if (node.arguments[0] && member && (builtinNamespace(member.receiver, "Object") && ["assign", "defineProperty", "defineProperties"].includes(member.name ?? "") ||
             builtinNamespace(member.receiver, "Reflect") && ["set", "deleteProperty", "defineProperty"].includes(member.name ?? ""))) markMutation(node.arguments[0]);
         if (member && ["push", "pop", "shift", "unshift", "splice", "sort", "reverse", "fill", "copyWithin"].includes(member.name ?? "")) markMutation(member.receiver);
@@ -378,8 +399,11 @@ export const checkPublicClosure = (root = repository) => {
         if ([ts.SyntaxKind.MinusToken, ts.SyntaxKind.AsteriskToken, ts.SyntaxKind.AsteriskAsteriskToken, ts.SyntaxKind.SlashToken, ts.SyntaxKind.PercentToken,
           ts.SyntaxKind.LessThanLessThanToken, ts.SyntaxKind.GreaterThanGreaterThanToken, ts.SyntaxKind.GreaterThanGreaterThanGreaterThanToken,
           ts.SyntaxKind.AmpersandToken, ts.SyntaxKind.BarToken, ts.SyntaxKind.CaretToken].includes(input.operatorToken.kind)) return true;
-        if (input.operatorToken.kind === ts.SyntaxKind.PlusToken && safeComputedDataKey(input.left) && safeComputedDataKey(input.right) &&
-          dataType(origin(input.left)).flags & ts.TypeFlags.NumberLike && dataType(origin(input.right)).flags & ts.TypeFlags.NumberLike) return true;
+        const structuralNumber = (operand) => {
+          const type = dataType(unwrap(operand));
+          return Boolean(type.flags & ts.TypeFlags.NumberLike) && !(type.flags & (ts.TypeFlags.Any | ts.TypeFlags.Unknown));
+        };
+        if (input.operatorToken.kind === ts.SyntaxKind.PlusToken && structuralNumber(input.left) && structuralNumber(input.right)) return true;
       }
       if (ts.isCallExpression(input)) {
         const member = property(input.expression);
@@ -431,7 +455,8 @@ export const checkPublicClosure = (root = repository) => {
       if (ts.isCallExpression(value)) {
         return false;
       }
-      if (ts.isCallExpression(value) || ts.isAwaitExpression(value) || ts.isNewExpression(value) || ts.isConditionalExpression(value) || ts.isBinaryExpression(value) || ts.isTaggedTemplateExpression(value)) return false;
+      if (ts.isCallExpression(value) || ts.isAwaitExpression(value) || ts.isNewExpression(value) || ts.isConditionalExpression(value) || ts.isBinaryExpression(value) || ts.isTaggedTemplateExpression(value) ||
+          ts.isPropertyAccessExpression(value) || ts.isElementAccessExpression(value)) return false;
       return safeType(dataType(value));
     };
     const unsafeComputedReceiver = (node, seen = new Set(), dataIndex = false, dataKey = dataIndex) => {
@@ -440,7 +465,7 @@ export const checkPublicClosure = (root = repository) => {
       const expression = origin(node);
       if (seen.has(expression)) return true;
       const next = new Set([...seen, expression]);
-      if (!provenData && (ts.isObjectLiteralExpression(expression) || ts.isArrayLiteralExpression(expression))) return true;
+      if (!provenData && ts.isElementAccessExpression(unwrap(node)) && !/^(0|[1-9][0-9]*)$/.test(staticKey(unwrap(node).argumentExpression) ?? "")) return true;
       if (checker.getTypeAtLocation(expression).getCallSignatures().length || ts.isArrowFunction(expression) || ts.isFunctionExpression(expression)) return true;
       if (ts.isCallExpression(expression) || ts.isAwaitExpression(expression) || ts.isNewExpression(expression) ||
           ts.isConditionalExpression(expression) || ts.isBinaryExpression(expression) || ts.isTaggedTemplateExpression(expression)) {
@@ -496,13 +521,37 @@ export const checkPublicClosure = (root = repository) => {
       else if (ts.isCallExpression(node) && node.expression.kind === ts.SyntaxKind.ImportKeyword) throw new Error(`Dynamic import in public closure: ${id}`);
       if (ts.isMetaProperty(node) && node.keywordToken === ts.SyntaxKind.ImportKeyword) throw new Error(`Import metadata in public closure: ${id}`);
       const member = !ts.isPartOfTypeNode(node) && (ts.isPropertyAccessExpression(node) || ts.isElementAccessExpression(node)) ? property(node) : undefined;
-      const directDataWrite = ts.isElementAccessExpression(node) && ts.isBinaryExpression(node.parent) && node.parent.left === node &&
-        node.parent.operatorToken.kind >= ts.SyntaxKind.FirstAssignment && node.parent.operatorToken.kind <= ts.SyntaxKind.LastAssignment &&
-        ![ts.SyntaxKind.BarBarEqualsToken, ts.SyntaxKind.AmpersandAmpersandEqualsToken, ts.SyntaxKind.QuestionQuestionEqualsToken].includes(node.parent.operatorToken.kind);
+      const assignment = ts.isElementAccessExpression(node) && ts.isBinaryExpression(node.parent) && node.parent.left === node ? node.parent.operatorToken.kind : undefined;
+      const update = assignment ? unwrap(node.parent.right) : undefined;
+      const directDataWrite = assignment === ts.SyntaxKind.EqualsToken ||
+        [ts.SyntaxKind.PlusEqualsToken, ts.SyntaxKind.MinusEqualsToken].includes(assignment) &&
+        update && dataType(update).flags & ts.TypeFlags.NumberLike && !(dataType(update).flags & (ts.TypeFlags.Any | ts.TypeFlags.Unknown));
       const scalarComparison = ts.isElementAccessExpression(node) && (ts.isTypeOfExpression(node.parent) || ts.isBinaryExpression(node.parent) &&
         [ts.SyntaxKind.LessThanToken, ts.SyntaxKind.LessThanEqualsToken, ts.SyntaxKind.GreaterThanToken, ts.SyntaxKind.GreaterThanEqualsToken,
           ts.SyntaxKind.EqualsEqualsToken, ts.SyntaxKind.EqualsEqualsEqualsToken, ts.SyntaxKind.ExclamationEqualsToken, ts.SyntaxKind.ExclamationEqualsEqualsToken]
           .includes(node.parent.operatorToken.kind));
+      const hostRoot = (value, seen = new Set()) => {
+        const expression = unwrap(value);
+        if (seen.has(expression)) return false;
+        const next = new Set([...seen, expression]);
+        const rooted = origin(expression);
+        if (rooted !== expression && hostRoot(rooted, next)) return true;
+        const accessed = property(expression);
+        return ts.isIdentifier(expression) && ["globalThis", "global", "window", "self", "frames", "top"].includes(expression.text) && globalReference(expression) ||
+          ts.isElementAccessExpression(expression) && hostRoot(expression.expression, next) ||
+          accessed && ["globalThis", "global", "window", "self", "frames", "top"].includes(accessed.name ?? "") && hostRoot(accessed.receiver, next);
+      };
+      const hostName = member?.name;
+      if (!dependency && member && hostRoot(member.receiver) && ["eval", "Function", "process", "setTimeout", "setInterval", "setImmediate"].includes(hostName ?? "") ||
+          !dependency && ts.isElementAccessExpression(node) && hostRoot(node.expression) && ["eval", "Function", "process", undefined].includes(staticKey(node.argumentExpression))) throw new Error(`Host acquisition in public closure: ${id}`);
+      const timer = ts.isCallExpression(node) ? unwrap(node.expression) : undefined;
+      const timerName = timer && (ts.isIdentifier(timer) ? timer.text : property(timer)?.name);
+      const timerHost = timer && (ts.isIdentifier(timer) ? globalReference(timer) : property(timer) && hostRoot(property(timer).receiver));
+      if (!dependency && timer && ["setTimeout", "setInterval", "setImmediate"].includes(timerName ?? "") && timerHost &&
+          node.arguments[0] && (ts.isStringLiteralLike(unwrap(node.arguments[0])) || dataType(unwrap(node.arguments[0])).flags & ts.TypeFlags.StringLike)) throw new Error(`Host timer evaluation in public closure: ${id}`);
+      if (!dependency && !reviewedDescriptor(node) && ts.isCallExpression(node) && node.getText(source) !== "Object.getOwnPropertyDescriptor(value, String(index))" &&
+          ["get", "getOwnPropertyDescriptor"].includes(property(node.expression)?.name ?? "") &&
+          (builtinNamespace(property(node.expression).receiver, "Reflect") || builtinNamespace(property(node.expression).receiver, "Object"))) throw new Error(`Code constructor acquisition in public closure: ${id}`);
       if (!dependency && (["constructor", "__proto__"].includes(member?.name) ||
           ts.isElementAccessExpression(node) && !directDataWrite && !ts.isVoidExpression(node.parent) && !reviewedDescriptor(node) && unsafeComputedReceiver(node.expression, new Set(),
             /^(0|[1-9][0-9]*)$/.test(staticKey(node.argumentExpression) ?? ""), scalarComparison || safeComputedDataKey(node.argumentExpression)))) throw new Error(`Code constructor acquisition in public closure: ${id} -> ${node.getText(source)}`);

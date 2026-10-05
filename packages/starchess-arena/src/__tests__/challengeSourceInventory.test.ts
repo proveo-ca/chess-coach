@@ -67,6 +67,23 @@ const dataArrayAccesses = [
   'const rows = [...inputRows]; void rows[0][1];',
 ];
 const unprovenComputedReceivers = [
+  'globalThis.Function("return process")();',
+  'globalThis["Function"]("return process")();',
+  'globalThis["eval"]("return process");',
+  'window.Function("return process")();',
+  'self["eval"]("return process");',
+  'frames[0].Function("return process")();',
+  'top["eval"]("return process");',
+  'Reflect.get(globalThis, "Function")("return process")();',
+  'Object.getOwnPropertyDescriptor(globalThis, "Function").value("return process")();',
+  'setTimeout("return process", 0);',
+  'const x: any = 1; const y: any = 2; const key = (x as unknown as number) + (y as unknown as number); const receiver: any = {}; receiver[key][key]("return process")();',
+  'Object.assign.call.call(Object.assign, null, Math, {floor:()=>"constructor"}); const f:any=unknownFactory(); f[Math.floor(0)]("return process")();',
+  'Reflect.apply(Reflect.apply, null, [Object.assign, null, [Math, {floor:()=>"constructor"}]]); const f:any=unknownFactory(); f[Math.floor(0)]("return process")();',
+  'Object.assign[["c","all"].join("")](Math, {floor:()=>"constructor"}); const f:any=unknownFactory(); f[Math.floor(0)]("return process")();',
+  'const {assign}=Object; assign(globalThis.Math, {floor:()=>"constructor"}); const f:any=unknownFactory(); f[Math.floor(0)]("return process")();',
+  'const bag = { get key(): number { return "constructor" as any; } }; const receiver: any = {}; receiver[bag.key][bag.key]("return process")();',
+  'const f:any=()=>{}; const key=["con","structor"].join(""); (f[key] *= 1)("return process")();',
   'const key=["con","structor"].join(""); const receiver:any={}; receiver[key][key]("return process")();',
   'const key=["con","structor"].join(""); const receiver:any=[]; receiver[key][key]("return process")();',
   'const f:any=()=>{}; const key=["con","structor"].join(""); (f[key] ||= null)("return process")();',
@@ -185,7 +202,7 @@ describe("partitioned challenge source inventory", () => {
   it.each(unprovenComputedReceivers)("rejects unproven call-derived or mutated receivers: %s", (code) => {
     const root = fixture();
     put(root, `${CORE}/src/index.ts`, code);
-    expect(() => collectSourceInventory(root)).toThrow(/Unsupported code constructor acquisition|Unsupported mutable computed receiver|Unsupported builtin acquisition/);
+    expect(() => collectSourceInventory(root)).toThrow(/Unsupported code constructor acquisition|Unsupported mutable computed receiver|Unsupported builtin acquisition|Unsupported string evaluation/);
   });
   it.each(ordinaryComputedData)("allows ordinary call-derived and mutated data indexing: %s", (code) => {
     const root = fixture();
@@ -892,7 +909,7 @@ describe("static browser public closure", () => {
   it.each(unprovenComputedReceivers)("rejects public unproven call-derived or mutated receivers: %s", async (code) => {
     const root = fixture();
     put(root, `${CORE}/src/index.ts`, code);
-    await expect(check(root)).rejects.toThrow("Code constructor acquisition in public closure");
+    await expect(check(root)).rejects.toThrow(/Code constructor acquisition in public closure|Host acquisition in public closure|Host timer evaluation in public closure|Host global in public closure/);
   });
   it.each(ordinaryComputedData)("allows ordinary public call-derived and mutated data indexing: %s", async (code) => {
     const root = fixture();

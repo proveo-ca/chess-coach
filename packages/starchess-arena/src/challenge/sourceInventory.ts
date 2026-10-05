@@ -463,12 +463,25 @@ export const collectSourceInventory = (
       return ts.isIdentifier(expression) && objectNamespaces.has(binding(expression)) ||
         member !== undefined && member.name === "Object" && globalNamespace(member.receiver);
     };
+    const hostRoot = (node: ts.Expression, seen = new Set<ts.Expression>()): boolean => {
+      const expression = unwrap(node);
+      if (seen.has(expression)) return false;
+      const next = new Set([...seen, expression]);
+      const rooted = origin(expression);
+      if (rooted !== expression && hostRoot(rooted, next)) return true;
+      const member = property(expression);
+      return ts.isIdentifier(expression) && ["globalThis", "global", "window", "self", "frames", "top"].includes(expression.text) &&
+        (globalNamespaces.has(binding(expression)) || typeof binding(expression) === "string") ||
+        ts.isElementAccessExpression(expression) && hostRoot(expression.expression, next) ||
+        member !== undefined && ["globalThis", "global", "window", "self", "frames", "top"].includes(member.name ?? "") && hostRoot(member.receiver, next);
+    };
     const evaluation = (node: ts.Expression): boolean => {
       const expression = unwrap(node);
       const member = property(expression);
       const name = ts.isIdentifier(expression) ? binding(expression) : undefined;
+      const forbidden = ["eval", "Function", "process"];
       return name === "eval" || name === "Function" ||
-        member !== undefined && ["eval", "Function"].includes(member.name ?? "") && globalNamespace(member.receiver);
+        member !== undefined && (forbidden.includes(member.name ?? "") || member.name === undefined) && hostRoot(member.receiver);
     };
     const factory = (node: ts.Expression): boolean => {
       const expression = unwrap(node);
@@ -662,8 +675,32 @@ export const collectSourceInventory = (
           return !!(method && (objectNamespace(origin(method.receiver)) && ["assign", "defineProperty", "defineProperties", "setPrototypeOf"].includes(method.name ?? "") ||
             reflectionNamespace(origin(method.receiver)) && ["set", "deleteProperty", "defineProperty", "setPrototypeOf"].includes(method.name ?? "")));
         };
-        if (member && (["call", "apply", "bind"].includes(member.name ?? "") && mutator(member.receiver) ||
-          reflectionNamespace(origin(member.receiver)) && member.name === "apply" && node.arguments[0] && mutator(node.arguments[0]))) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
+        const mutatorRoot = (expression: ts.Expression, depth = 0): boolean => {
+          if (depth > 8) return true;
+          const current = origin(expression);
+          if (ts.isIdentifier(current)) {
+            const key = binding(current);
+            const declaration = typeof key !== "string" ? key.valueDeclaration : undefined;
+            if (declaration && ts.isBindingElement(declaration)) {
+              const bound = bindingMember(declaration);
+              if (bound && ["assign", "defineProperty", "defineProperties", "setPrototypeOf", "set", "deleteProperty"].includes(bound.name ?? "") &&
+                (objectNamespace(origin(bound.receiver)) || reflectionNamespace(origin(bound.receiver)))) return true;
+            }
+          }
+          const method = property(current);
+          if (!method) return mutator(current);
+          if (method.name === undefined) return objectNamespace(method.receiver) || reflectionNamespace(method.receiver) || mutatorRoot(method.receiver, depth + 1);
+          if (["call", "apply", "bind"].includes(method.name)) return mutatorRoot(method.receiver, depth + 1);
+          return mutator(current);
+        };
+        const argumentMutator = (argument: ts.Expression): boolean => ts.isArrayLiteralExpression(argument)
+          ? argument.elements.some((entry) => !ts.isOmittedExpression(entry) && argumentMutator(entry))
+          : mutatorRoot(argument);
+        const callee = property(node.expression);
+        const indirect = callee !== undefined && (callee.name === undefined || ["call", "apply", "bind"].includes(callee.name));
+        if (indirect && (mutatorRoot(node.expression) || node.arguments.some(argumentMutator))) {
+          for (const builtin of ["Math", "String", "Array", "globalThis", "global"]) mutatedRoots.add(builtin);
+        }
         if (node.arguments[0] && member && (objectNamespace(origin(member.receiver)) && ["assign", "defineProperty", "defineProperties"].includes(member.name ?? "") ||
             reflectionNamespace(origin(member.receiver)) && ["set", "deleteProperty", "defineProperty"].includes(member.name ?? ""))) markMutation(node.arguments[0]);
         if (member && ["push", "pop", "shift", "unshift", "splice", "sort", "reverse", "fill", "copyWithin"].includes(member.name ?? "")) markMutation(member.receiver);
@@ -680,8 +717,12 @@ export const collectSourceInventory = (
         if ([ts.SyntaxKind.MinusToken, ts.SyntaxKind.AsteriskToken, ts.SyntaxKind.AsteriskAsteriskToken, ts.SyntaxKind.SlashToken, ts.SyntaxKind.PercentToken,
           ts.SyntaxKind.LessThanLessThanToken, ts.SyntaxKind.GreaterThanGreaterThanToken, ts.SyntaxKind.GreaterThanGreaterThanGreaterThanToken,
           ts.SyntaxKind.AmpersandToken, ts.SyntaxKind.BarToken, ts.SyntaxKind.CaretToken].includes(input.operatorToken.kind)) return true;
-        if (input.operatorToken.kind === ts.SyntaxKind.PlusToken && safeComputedDataKey(input.left) && safeComputedDataKey(input.right) &&
-          dataType(origin(input.left)).flags & ts.TypeFlags.NumberLike && dataType(origin(input.right)).flags & ts.TypeFlags.NumberLike) return true;
+        const structuralNumber = (operand: ts.Expression): boolean => {
+          const stripped = unwrap(operand);
+          const type = dataType(stripped);
+          return !!(type.flags & ts.TypeFlags.NumberLike) && !(type.flags & (ts.TypeFlags.Any | ts.TypeFlags.Unknown));
+        };
+        if (input.operatorToken.kind === ts.SyntaxKind.PlusToken && structuralNumber(input.left) && structuralNumber(input.right)) return true;
       }
       if (ts.isCallExpression(input)) {
         const member = property(input.expression);
@@ -733,7 +774,8 @@ export const collectSourceInventory = (
       if (ts.isCallExpression(value)) {
         return false;
       }
-      if (ts.isCallExpression(value) || ts.isAwaitExpression(value) || ts.isNewExpression(value) || ts.isConditionalExpression(value) || ts.isBinaryExpression(value) || ts.isTaggedTemplateExpression(value)) return false;
+      if (ts.isCallExpression(value) || ts.isAwaitExpression(value) || ts.isNewExpression(value) || ts.isConditionalExpression(value) || ts.isBinaryExpression(value) || ts.isTaggedTemplateExpression(value) ||
+          ts.isPropertyAccessExpression(value) || ts.isElementAccessExpression(value)) return false;
       return safeType(dataType(value));
     };
     const unsafeComputedReceiver = (node: ts.Expression, seen = new Set<ts.Expression>(), dataIndex = false, dataKey = dataIndex): boolean => {
@@ -742,7 +784,7 @@ export const collectSourceInventory = (
       const expression = origin(node);
       if (seen.has(expression)) return true;
       const next = new Set([...seen, expression]);
-      if (!provenData && (ts.isObjectLiteralExpression(expression) || ts.isArrayLiteralExpression(expression))) return true;
+      if (!provenData && ts.isElementAccessExpression(unwrap(node)) && !/^(0|[1-9][0-9]*)$/.test(staticKey((unwrap(node) as ts.ElementAccessExpression).argumentExpression) ?? "")) return true;
       if (checker.getTypeAtLocation(expression).getCallSignatures().length || ts.isArrowFunction(expression) || ts.isFunctionExpression(expression)) return true;
       if (ts.isCallExpression(expression) || ts.isAwaitExpression(expression) || ts.isNewExpression(expression) ||
           ts.isConditionalExpression(expression) || ts.isBinaryExpression(expression) || ts.isTaggedTemplateExpression(expression)) {
@@ -837,6 +879,11 @@ export const collectSourceInventory = (
       const value = !ts.isPartOfTypeNode(node) && (ts.isIdentifier(node) && !sourceIsName(node) || ts.isPropertyAccessExpression(node) || ts.isElementAccessExpression(node) || ts.isCallExpression(node));
       if (value && PURE.has(file.partition) && processNamespace(node as ts.Expression) && !(ts.isIdentifier(node) && sourceIsDeclaration(node))) throw new Error(`Forbidden process access: ${file.path}`);
       if (value && evaluation(node as ts.Expression)) throw new Error(`Unsupported string evaluation: ${file.path}`);
+      const timer = ts.isCallExpression(node) ? unwrap(node.expression) : undefined;
+      const timerName = timer && (ts.isIdentifier(timer) ? timer.text : property(timer)?.name);
+      const timerHost = timer && (ts.isIdentifier(timer) ? typeof binding(timer) === "string" : property(timer) !== undefined && hostRoot(property(timer)!.receiver));
+      if (timer && ["setTimeout", "setInterval", "setImmediate"].includes(timerName ?? "") && timerHost &&
+          node.arguments[0] && (ts.isStringLiteralLike(unwrap(node.arguments[0])) || dataType(unwrap(node.arguments[0])).flags & ts.TypeFlags.StringLike)) throw new Error(`Unsupported string evaluation: ${file.path}`);
       const accessed = value ? property(node as ts.Expression) : undefined;
       const descriptorSeam = accessed && ["getPrototypeOf", "getOwnPropertyDescriptors"].includes(accessed.name ?? "") &&
         objectNamespace(accessed.receiver) && reviewedDescriptor(node) && ts.isCallExpression(node.parent) && node.parent.expression === node;
@@ -846,10 +893,12 @@ export const collectSourceInventory = (
       if (ts.isBindingElement(node) && node.propertyName && ((ts.isIdentifier(node.propertyName) || ts.isStringLiteralLike(node.propertyName)) && ["constructor", "__proto__", "getPrototypeOf", "getOwnPropertyDescriptors", "getOwnPropertyDescriptor"].includes(node.propertyName.text) || ts.isComputedPropertyName(node.propertyName))) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
       if (ts.isElementAccessExpression(node) && mutableOrigin(node.expression) && !safeDataKey(node.argumentExpression)) throw new Error(`Unsupported mutable computed receiver: ${file.path}`);
       if (ts.isElementAccessExpression(node) && loader(node.expression) && staticKey(node.argumentExpression) === undefined) throw new Error(`Unsupported loader escape: ${file.path}`);
-      const directDataWrite = ts.isElementAccessExpression(node) && ts.isBinaryExpression(wrappedUse(node).parent) &&
-        (wrappedUse(node).parent as ts.BinaryExpression).left === wrappedUse(node) && (wrappedUse(node).parent as ts.BinaryExpression).operatorToken.kind >= ts.SyntaxKind.FirstAssignment &&
-        (wrappedUse(node).parent as ts.BinaryExpression).operatorToken.kind <= ts.SyntaxKind.LastAssignment &&
-        ![ts.SyntaxKind.BarBarEqualsToken, ts.SyntaxKind.AmpersandAmpersandEqualsToken, ts.SyntaxKind.QuestionQuestionEqualsToken].includes((wrappedUse(node).parent as ts.BinaryExpression).operatorToken.kind);
+      const assignment = ts.isElementAccessExpression(node) && ts.isBinaryExpression(wrappedUse(node).parent) &&
+        (wrappedUse(node).parent as ts.BinaryExpression).left === wrappedUse(node) ? (wrappedUse(node).parent as ts.BinaryExpression).operatorToken.kind : undefined;
+      const update = assignment ? unwrap((wrappedUse(node).parent as ts.BinaryExpression).right) : undefined;
+      const directDataWrite = assignment === ts.SyntaxKind.EqualsToken ||
+        [ts.SyntaxKind.PlusEqualsToken, ts.SyntaxKind.MinusEqualsToken].includes(assignment ?? ts.SyntaxKind.Unknown) &&
+        !!update && !!(dataType(update).flags & ts.TypeFlags.NumberLike) && !(dataType(update).flags & (ts.TypeFlags.Any | ts.TypeFlags.Unknown));
       const scalarComparison = ts.isElementAccessExpression(node) && (ts.isTypeOfExpression(wrappedUse(node).parent) || ts.isBinaryExpression(wrappedUse(node).parent) &&
         [ts.SyntaxKind.LessThanToken, ts.SyntaxKind.LessThanEqualsToken, ts.SyntaxKind.GreaterThanToken, ts.SyntaxKind.GreaterThanEqualsToken,
           ts.SyntaxKind.EqualsEqualsToken, ts.SyntaxKind.EqualsEqualsEqualsToken, ts.SyntaxKind.ExclamationEqualsToken, ts.SyntaxKind.ExclamationEqualsEqualsToken]
