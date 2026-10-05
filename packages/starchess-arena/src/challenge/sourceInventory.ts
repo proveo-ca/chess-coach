@@ -864,9 +864,10 @@ export const collectSourceInventory = (
       ts.forEachChild(fn.body, scan);
       return returns.length > 0 && returns.every((returned) => returned !== undefined && arrayValue(returned, next));
     };
-    const parameterArguments = (node: ts.Identifier): ts.Expression[] | undefined => {
-      const symbol = binding(node), declaration = typeof symbol !== "string" ? symbol.valueDeclaration : undefined;
-      if (!declaration || !ts.isParameter(declaration) || declaration.initializer || declaration.dotDotDotToken || mutatedRoots.has(symbol)) return undefined;
+    const parameterArguments = (node: ts.Identifier | ts.ParameterDeclaration): ts.Expression[] | undefined => {
+      const symbol = ts.isIdentifier(node) ? binding(node) : ts.isIdentifier(node.name) ? binding(node.name) : undefined;
+      const declaration = ts.isParameter(node) ? node : symbol && typeof symbol !== "string" ? symbol.valueDeclaration : undefined;
+      if (!declaration || !ts.isParameter(declaration) || declaration.initializer || declaration.dotDotDotToken || symbol !== undefined && mutatedRoots.has(symbol)) return undefined;
       const fn = declaration.parent;
       if (!ts.isFunctionDeclaration(fn) && !ts.isArrowFunction(fn) && !ts.isFunctionExpression(fn)) return undefined;
       const index = +fn.parameters.indexOf(declaration);
@@ -888,6 +889,67 @@ export const collectSourceInventory = (
       scan(source);
       if (escaped || !calls.length || calls.some((call) => call.arguments[index] === undefined)) return undefined;
       return calls.map((call) => call.arguments[index]!);
+    };
+    type ParameterPath = { declaration: ts.ParameterDeclaration; keys: (string | undefined)[] };
+    const parameterPath = (node: ts.Expression, seen = new Set<ts.Expression>()): ParameterPath | undefined => {
+      const value = origin(node);
+      if (seen.has(value)) return undefined;
+      const next = new Set([...seen, value]);
+      const member = property(value);
+      if (member) {
+        const base = parameterPath(member.receiver, next);
+        return base && { declaration: base.declaration, keys: [...base.keys, member.name] };
+      }
+      if (ts.isCallExpression(value)) {
+        const base = parameterPath(value.expression, next);
+        return base && { declaration: base.declaration, keys: [...base.keys, undefined] };
+      }
+      if (!ts.isIdentifier(value)) return undefined;
+      const symbol = binding(value), declaration = typeof symbol !== "string" ? symbol.valueDeclaration : undefined;
+      if (declaration && ts.isParameter(declaration)) return { declaration, keys: [] };
+      if (!declaration || !ts.isBindingElement(declaration)) return undefined;
+      const bound = bindingMember(declaration);
+      if (bound) {
+        const base = parameterPath(bound.receiver, next);
+        return base && { declaration: base.declaration, keys: [...base.keys, bound.name] };
+      }
+      const keys: (string | undefined)[] = [];
+      let element = declaration;
+      for (;;) {
+        const pattern = element.parent;
+        keys.unshift(element.dotDotDotToken ? undefined : ts.isArrayBindingPattern(pattern) ? String(pattern.elements.indexOf(element))
+          : element.propertyName ? ownName(element.propertyName) : ts.isIdentifier(element.name) ? element.name.text : undefined);
+        const owner = pattern.parent;
+        if (ts.isParameter(owner)) return { declaration: owner, keys };
+        if (!ts.isBindingElement(owner)) return undefined;
+        element = owner;
+      }
+    };
+    const parameterProofActive = new Set<ts.ParameterDeclaration>();
+    const parameterValueProof = (node: ts.Expression, prove: (value: ts.Expression) => boolean): boolean | undefined => {
+      const path = parameterPath(node);
+      if (!path) return undefined;
+      if (parameterProofActive.has(path.declaration)) return false;
+      const follow = (argument: ts.Expression, keys: (string | undefined)[], seen = new Set<ts.Expression>()): boolean => {
+        if (!keys.length) return prove(argument);
+        const value = origin(argument);
+        if (seen.has(value) || [...provenance(argument)].some((root) => mutatedRoots.has(root))) return false;
+        const next = new Set([...seen, value]);
+        const nested = parameterPath(value);
+        if (nested) {
+          const values = parameterArguments(nested.declaration);
+          return values !== undefined && values.every((entry) => follow(entry, [...nested.keys, ...keys], next));
+        }
+        const key = keys[0];
+        if (key === "length" && keys.length === 1 && (ts.isArrayLiteralExpression(value) || ts.isStringLiteralLike(value))) return true;
+        const entry = ownMember(value, key);
+        return entry !== undefined && follow(entry, keys.slice(1), next);
+      };
+      parameterProofActive.add(path.declaration);
+      try {
+        const values = parameterArguments(path.declaration);
+        return values !== undefined && values.every((value) => follow(value, path.keys));
+      } finally { parameterProofActive.delete(path.declaration); }
     };
     const numericParameter = (node: ts.Identifier, seen: Set<ts.Expression>): boolean => {
       const symbol = binding(node), declaration = typeof symbol !== "string" ? symbol.valueDeclaration : undefined;
@@ -939,6 +1001,10 @@ export const collectSourceInventory = (
         const symbol = binding(input);
         if (nonNumericWrites.has(symbol)) return false;
         if (typeof symbol !== "string" && bindingGetter(symbol.valueDeclaration)) return false;
+        if (typeof symbol !== "string" && symbol.valueDeclaration && ts.isBindingElement(symbol.valueDeclaration)) {
+          const callerProof = parameterValueProof(input, (argument) => numericValue(argument, coercionOnly, next));
+          if (callerProof !== undefined) return callerProof;
+        }
         if (typeof symbol !== "string" && symbol.valueDeclaration && ts.isParameter(symbol.valueDeclaration)) return numericParameter(input, next);
         if (mutatedRoots.has(symbol)) {
           if (typeof symbol === "string" || !symbol.valueDeclaration || !ts.isVariableDeclaration(symbol.valueDeclaration)) return false;
@@ -969,6 +1035,8 @@ export const collectSourceInventory = (
         if (typeof key !== "string" && key.declarations?.some(ts.isParameter)) return false;
       }
       if (ts.isPropertyAccessExpression(value) || ts.isElementAccessExpression(value)) {
+        const callerProof = parameterValueProof(value, (argument) => numericValue(argument, coercionOnly, next));
+        if (callerProof !== undefined) return callerProof;
         const symbol = ts.isPropertyAccessExpression(value) ? checker.getSymbolAtLocation(value.name) : undefined;
         if (symbol?.declarations?.some((declaration) => ts.isGetAccessor(declaration) || ts.isSetAccessor(declaration))) return false;
       }
@@ -1005,7 +1073,7 @@ export const collectSourceInventory = (
           const boundedCondition = (condition: ts.Expression): boolean => {
             const value = unwrap(condition);
             if (ts.isBinaryExpression(value) && value.operatorToken.kind === ts.SyntaxKind.AmpersandAmpersandToken) return boundedCondition(value.left) || boundedCondition(value.right);
-            if (!ts.isCallExpression(value) || value.arguments.length !== 1) return false;
+            if (arrayIntrinsicsMutated || !ts.isCallExpression(value) || value.arguments.length !== 1) return false;
             const member = property(value.expression), argument = unwrap(value.arguments[0]!);
             return member?.name === "includes" && ts.isArrayLiteralExpression(member.receiver) && member.receiver.elements.length > 0 &&
               member.receiver.elements.every((entry) => ts.isStringLiteralLike(entry) && !["constructor", "__proto__", "prototype"].includes(entry.text)) &&
@@ -1027,6 +1095,8 @@ export const collectSourceInventory = (
       const value = origin(node);
       const valueSymbol = ts.isIdentifier(value) ? binding(value) : undefined;
       if (valueSymbol && typeof valueSymbol !== "string" && bindingGetter(valueSymbol.valueDeclaration)) return false;
+      const callerProof = parameterValueProof(value, safeComputedDataKey);
+      if (callerProof !== undefined) return callerProof;
       if (value !== input && ts.isBinaryExpression(value)) return safeComputedDataKey(value);
       if (ts.isConditionalExpression(value)) return safeComputedDataKey(value.whenTrue) && safeComputedDataKey(value.whenFalse);
       if (ts.isCallExpression(value)) {
@@ -1327,7 +1397,7 @@ export const collectSourceInventory = (
   auditPlanning(`${CORE}/src/planning-v1.ts`);
   edges.sort((a, b) => order(canonical(a), canonical(b)));
   const groups = Object.fromEntries(SOURCE_PARTITIONS.map((partition) => [partition, files.filter((file) => file.partition === partition)])) as SourceInventoryV2["groups"];
-  const partitionSha256 = Object.fromEntries(SOURCE_PARTITIONS.map((partition) => [partition, hash(canonical(groups[partition]))])) as SourceInventoryV2["partitionSha256"];
+  const partitionSha256 = Object.fromEntries(Object.entries(groups).map(([partition, records]) => [partition, hash(canonical(records))])) as SourceInventoryV2["partitionSha256"];
   const runtimeRecords = [...runtime.values()].sort((a, b) => order(a.path, b.path));
   const audit: SourceImportAudit = { passed: true, edges, auditedFiles };
   const descriptor: Pick<SourceInventoryV2, "version" | "policyVersion" | "roots" | "entrypoints" | "files" | "groups"> = {
