@@ -19,8 +19,13 @@ import {
 } from "~/achievements/analysis";
 import { achievementsFor } from "~/achievements/catalog";
 import { tierForOpponent } from "~/achievements/types";
+import { schedule } from "~/adapters/timers";
 import { matchHistory } from "~/store/matchHistoryStore";
 import type { StarChessGameRecord } from "~/types/review";
+import type { Cancel } from "~/types/ports";
+
+/** Gap between two queued bubbles reaching the board. */
+export const BUBBLE_STAGGER_MS = 600;
 
 const [bubbles, setBubbles] = createSignal<AchievementBubble[]>([]);
 
@@ -35,11 +40,32 @@ let live: {
   earned: AchievementBubble[];
 } | null = null;
 
+let queued: AchievementBubble[] = [];
+let releaseNext: Cancel | null = null;
+
+const release = (): void => {
+  const next = queued.shift();
+  if (!next) {
+    releaseNext = null;
+    return;
+  }
+  setBubbles((prev) => [...prev, next]);
+  releaseNext = schedule(BUBBLE_STAGGER_MS, release);
+};
+
+const dropQueue = (): void => {
+  queued = [];
+  releaseNext?.();
+  releaseNext = null;
+};
+
 export const achievementBubbles = bubbles;
 
+/** Queue bubbles; the first idle one shows at once, the rest every {@link BUBBLE_STAGGER_MS}. */
 export const pushAchievementBubbles = (next: readonly AchievementBubble[]): void => {
   if (next.length === 0) return;
-  setBubbles((prev) => [...prev, ...next]);
+  queued.push(...next);
+  if (!releaseNext) release();
 };
 
 export const dismissAchievementBubble = (id: string): void => {
@@ -48,11 +74,13 @@ export const dismissAchievementBubble = (id: string): void => {
 
 /** Drop every bubble on the board without touching a live tally (Review seeks). */
 export const clearAchievementBubbles = (): void => {
+  dropQueue();
   setBubbles([]);
 };
 
 export const resetAchievementLive = (): void => {
   live = null;
+  dropQueue();
   setBubbles([]);
 };
 
@@ -70,6 +98,7 @@ export const ensureAchievementLive = (
     finalized: false,
     earned: [],
   };
+  dropQueue();
   setBubbles([]);
 };
 

@@ -15,7 +15,7 @@ component "resolveTutorialLine\nfirst match wins" as Resolver <<app>>
 component "holdTutorialLine\nsticky intro latch" as Hold <<app>>
 component "TutorialScreen\nline + outcome effects" as Screen <<app>>
 component "TutorialGuideBubble\ncoach / success" as Bubble <<app>>
-component "fog skin demo\n2s + 2s timer" as SkinDemo <<async>>
+component "fog skin demo\nChess → StarChess @1.2s" as SkinDemo <<async>>
 component "resolveTutorialHints\n+ Arrows, same step" as Hints <<app>>
 
 Config ARROW_MAIN Resolver : catalog reactions + hints

@@ -1,7 +1,7 @@
 // SPEC: _spec/apps/starchess/architecture/timers.puml
 import { createSignal, getOwner, onCleanup, type Accessor } from "solid-js";
 
-import { browserFrames, browserInterval, browserScheduler } from "~/adapters/browser";
+import { browserFrames, browserIdle, browserInterval, browserScheduler } from "~/adapters/browser";
 import type { Cancel } from "~/types/ports";
 
 /** Unowned delay: the caller keeps the cancel. */
@@ -26,6 +26,9 @@ export const createRepeat = (ms: number, fn: () => void): Cancel => owned(repeat
 
 /** Unowned frame callback: the caller keeps the cancel. */
 export const frame = (fn: (now: number) => void): Cancel => browserFrames.request(fn);
+
+/** Unowned idle callback (`timeoutMs` caps the wait): the caller keeps the cancel. */
+export const whenIdle = (fn: () => void, timeoutMs: number): Cancel => browserIdle.request(fn, timeoutMs);
 
 /** Runs `fn` after the next paint (two frames); the cancel covers both frames. */
 export const afterPaint = (fn: () => void): Cancel => {

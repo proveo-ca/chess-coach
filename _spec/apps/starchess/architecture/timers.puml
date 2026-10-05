@@ -8,6 +8,7 @@ package "adapters/browser" as browser {
   [browserScheduler\ndelay(ms, fn) → Cancel] as bs
   [browserInterval\nevery(ms, fn) → Cancel] as bi
   [browserFrames\nrequest(fn(now)) → Cancel] as bf
+  [browserIdle\nrequest(fn, timeoutMs) → Cancel\n(requestIdleCallback, else setTimeout 0)] as bid
 }
 
 package "adapters/timers" as timers {
@@ -17,6 +18,7 @@ package "adapters/timers" as timers {
   [createRepeat(ms, fn) → Cancel] as cr
   [sleep(ms, signal?) → Promise<void>] as slp
   [frame(fn) → Cancel] as frm
+  [whenIdle(fn, timeoutMs) → Cancel] as wi
   [createFrameClock() → elapsed()] as fc
 }
 
@@ -41,6 +43,7 @@ sch <-- cd : + onCleanup(cancel)\nwhen getOwner()
 rep <-- cr : + onCleanup(cancel)\nwhen getOwner()
 sch <-- slp : abort → cancel + resolve
 bf <-- frm
+bid <-- wi
 frm <-- fc : + onCleanup when getOwner()
 fc <-- pc : memo over elapsed % cycle;\nruns every crossed step in order
 
@@ -57,6 +60,8 @@ demos --> pc
 [CoachAvatar helm chain] as helm
 helm --> frm
 helm --> sch
+[useVfxProbe\n(menu CPU probe)] as probe
+probe --> wi
 
 note right of browser
   sole raw-timer site
