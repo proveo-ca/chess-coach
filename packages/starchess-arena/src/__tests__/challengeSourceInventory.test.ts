@@ -13,6 +13,33 @@ const TRAINING = "packages/starchess-training";
 const minifiedNumericRead = 'export function read(input,prior){let cursor,index;const words=prior||[0];for(cursor=0;cursor<input.length;cursor++){index=cursor>>>2;consume(words[index]);}return words;}';
 const repository = fileURLToPath(new URL("../../../../", import.meta.url));
 const temporary: string[] = [];
+const wrappedMutations = [
+  'poison.call(null,data);',
+  'const alias=poison;alias["call"](null,data);',
+  'poison.apply(null,[data]);',
+  'const args=[data];poison.apply(null,args);',
+  'const args=[data];const stored={args};poison.apply(null,stored.args);',
+  'const bound=poison.bind(null,data);bound();',
+  'const bound=poison.bind(null);bound(data);',
+  'const bound=poison.bind.call(poison,null);bound(data);',
+  'const bound=poison.bind(null,data);[0].forEach(bound);',
+  'Reflect.apply(poison,null,[data]);',
+  'const apply=Reflect.apply;const args=[data];apply(poison,null,args);',
+  'const tuple=[poison,null,[data]];Reflect.apply(...tuple);',
+  'const tuple=[Reflect.apply,null,[poison,null,[data]]];const apply=Reflect.apply;apply(...tuple);',
+  'Reflect.apply(poison.call,null,[null,data]);',
+  'const call=poison.call;call.call(poison,null,data);',
+  'Reflect.apply(poison.bind,poison,[null,data])();',
+  'const bound=Reflect.apply.bind(null,poison);bound(null,[data]);',
+  'poison[unknownMethod](null,data);',
+  'poison.apply(null,unknownArguments);',
+  'consume(poison,data);',
+  'function invoke(callback:(bag:{key:number})=>void,bag:{key:number}){callback(bag);}invoke(poison,data);',
+  'function invoke({change}:{change:(bag:{key:number})=>void},bag:{key:number}){change(bag);}invoke({change:poison},data);',
+  'function invoke({change}:{change?:(bag:{key:number})=>void},bag:{key:number}){if(change)return change?change(bag):undefined;}invoke({change:poison},data);',
+  'function invoke({read,hidden}:any,bag:{key:number}){read(bag);consume(hidden,bag);}invoke({read:()=>0,hidden:poison},data);',
+];
+const mutationProbe = (invocation: string): string => `function poison(bag:{key:number}){(bag as any).key="changed";}function probe(receiver:any,bag:{key:number}){return receiver[bag.key];}const data={key:0};${invocation}consume(probe(unknownFactory(),data));`;
 const ownMemberConstructors = [
   'const box: any = {f: () => {}}; box.f[["con", "structor"].join("")]("return process")();',
   'const box = {f: () => {}} as any; box.f[["con", "structor"].join("")]("return process")();',
@@ -245,6 +272,12 @@ const unprovenComputedReceivers = [
   'const box: any = {f: 0}; function mutate() {box.f = () => {};} mutate(); box.f[["con", "structor"].join("")]("return process")();',
 ];
 const ordinaryComputedData = [
+  'function read(bag:{key:number}){return bag.key;}function invoke({read:callback}:{read:(bag:{key:number})=>number},bag:{key:number}){return callback(bag);}function probe(receiver:any,bag:{key:number}){return receiver[bag.key];}const data={key:0};invoke({read},data);consume(probe({0:"value"},data));',
+  'function read(bag:{key:number}){return bag.key;}function invoke({read:callback}:{read?:(bag:{key:number})=>number},bag:{key:number}){return callback?callback(bag):undefined;}function probe(receiver:any,bag:{key:number}){return receiver[bag.key];}const data={key:0};invoke({read},data);consume(probe({0:"value"},data));',
+  'function read(bag:{key:number}){return bag.key;}function probe(receiver:any,bag:{key:number}){return receiver[bag.key];}const data={key:0};read.call(null,data);read.apply(null,[data]);consume(probe({0:"value"},data));',
+  'function read(bag:{key:number}){return bag.key;}function probe(receiver:any,bag:{key:number}){return receiver[bag.key];}const data={key:0};const bound=read.bind(null,data);[1,2].map(bound);consume(probe({0:"value"},data));',
+  'function read(bag:{key:number}){return bag.key;}function probe(receiver:any,bag:{key:number}){return receiver[bag.key];}const data={key:0};const bound=read.bind(null);bound(data);Reflect.apply(read,null,[data]);consume(probe({0:"value"},data));',
+  'function reset(bag:{key:number}){bag={key:1};return bag.key;}function probe(receiver:any,bag:{key:number}){return receiver[bag.key];}const data={key:0};reset.call(null,data);const bound=reset.bind(null,data);bound();consume(probe({0:"value"},data));',
   'function read(bag:{key:number}){return bag.key;}function compile(receiver:any,bag:{key:number}){return receiver[bag.key];}function forward(receiver:any,bag:{key:number}){read(bag);return compile(receiver,bag);}const data={key:0};consume(forward({0:"value"},data));',
   'function resetLocal(bag:{key:number}){bag={key:42};return bag.key;}function compile(receiver:any,bag:{key:number}){return receiver[bag.key];}const data={key:0};resetLocal(data);consume(compile({0:"value"},data));',
   'function inspect(bag:{key:number}){const {key}=bag;return key+1;}function compile(receiver:any,bag:{key:number}){return receiver[bag.key];}const data={key:0};inspect(data);consume(compile({0:"value"},data));',
@@ -346,6 +379,11 @@ const importedFixture = (code: string): string => {
 };
 
 describe("partitioned challenge source inventory", () => {
+  it.each(wrappedMutations)("invalidates caller field shapes through a local invocation wrapper: %s", (invocation) => {
+    const root = fixture();
+    put(root, `${CORE}/src/index.ts`, mutationProbe(invocation));
+    expect(() => collectSourceInventory(root)).toThrow(/Unsupported code constructor acquisition|Unsupported parameter mutation/);
+  });
   it.each(importedReceivers)("resolves imported callable and constructor receiver signatures: %s", (code) => {
     expect(() => collectSourceInventory(importedFixture(code))).toThrow("Unsupported code constructor acquisition");
   });
@@ -1122,6 +1160,11 @@ describe("static browser public closure", () => {
     const { checkPublicClosure } = await import(/* @vite-ignore */ script);
     return checkPublicClosure(root);
   };
+  it.each(wrappedMutations)("invalidates public caller field shapes through a local invocation wrapper: %s", async (invocation) => {
+    const root = fixture();
+    put(root, `${CORE}/src/planning-v1.ts`, mutationProbe(invocation));
+    await expect(check(root)).rejects.toThrow(/Code constructor acquisition in public closure|Unsupported parameter mutation/);
+  });
   it.each(importedReceivers)("resolves public imported callable and constructor receiver signatures: %s", async (code) => {
     await expect(check(importedFixture(code))).rejects.toThrow("Code constructor acquisition in public closure");
   });

@@ -633,6 +633,124 @@ export const checkPublicClosure = (root = repository) => {
         }
       }
     };
+    const invocationArguments = (args, depth = 0) => {
+      if (depth > 16) return undefined;
+      const result = [];
+      for (const argument of args) {
+        if (ts.isOmittedExpression(argument)) return undefined;
+        if (!ts.isSpreadElement(argument)) result.push(argument);
+        else {
+          const value = origin(argument.expression);
+          if (!ts.isArrayLiteralExpression(value)) return undefined;
+          const nested = invocationArguments(value.elements, depth + 1);
+          if (!nested) return undefined;
+          result.push(...nested);
+        }
+      }
+      return result;
+    };
+    const invocationArray = (node) => {
+      const value = node && origin(node);
+      return value && ts.isArrayLiteralExpression(value) ? invocationArguments(value.elements) : undefined;
+    };
+    const localParameterCallables = (node) => {
+      const path = parameterPath(node);
+      if (!path) return [];
+      const fn = path.declaration.parent;
+      if (!ts.isFunctionDeclaration(fn) && !ts.isFunctionExpression(fn) && !ts.isArrowFunction(fn)) return [];
+      const index = +fn.parameters.indexOf(path.declaration);
+      const values = [];
+      for (const call of mutationCalls) {
+        const callee = origin(call.expression);
+        const target = ts.isIdentifier(callee) ? binding(callee)?.valueDeclaration : callee;
+        if (target !== fn) continue;
+        let value = invocationArguments(call.arguments)?.[index];
+        for (const key of path.keys) value = value && ownMember(origin(value), key);
+        if (value) values.push(value);
+      }
+      return values;
+    };
+    const localInvocation = (expression, args, depth = 0, expected) => {
+      if (depth > 16) throw new Error(`Unsupported parameter mutation wrapper in public closure: ${id}`);
+      const callee = origin(expression);
+      if (ts.isCallExpression(callee)) {
+        const creation = localInvocation(callee.expression, invocationArguments(callee.arguments), depth + 1, expected);
+        if (!creation?.bound) return undefined;
+        const combined = creation.bound.args && args ? [...creation.bound.args, ...args] : undefined;
+        return localInvocation(creation.bound.receiver, combined, depth + 1, expected);
+      }
+      const member = property(callee);
+      if (member?.name === "apply" && builtinNamespace(member.receiver, "Reflect")) {
+        return args?.[0] ? localInvocation(args[0], invocationArray(args[2]), depth + 1, expected) : undefined;
+      }
+      if (member && ["call", "apply", "bind"].includes(member.name)) {
+        const values = member.name === "apply" ? invocationArray(args?.[1]) : args?.slice(1);
+        const invocation = localInvocation(member.receiver, values, depth + 1, expected);
+        return member.name === "bind" ? { ...invocation, bound: { receiver: member.receiver, args: values } } : invocation;
+      }
+      if (member) {
+        const receiver = localInvocation(member.receiver, undefined, depth + 1, expected);
+        return receiver?.target ? { target: receiver.target } : undefined;
+      }
+      const target = ts.isIdentifier(callee) ? binding(callee)?.valueDeclaration : callee;
+      if (expected && ts.isIdentifier(callee) && target && (ts.isParameter(target) || ts.isBindingElement(target))) {
+        for (const value of localParameterCallables(callee)) {
+          const invocation = localInvocation(value, args, depth + 1, expected);
+          if (invocation?.target === expected) return invocation;
+        }
+        return undefined;
+      }
+      return target && (ts.isFunctionDeclaration(target) || ts.isFunctionExpression(target) || ts.isArrowFunction(target)) ? { target, args } : undefined;
+    };
+    const localCallbackParameter = (fn, index, argument, expected) => {
+      if (!fn || !ts.isFunctionDeclaration(fn) && !ts.isFunctionExpression(fn) && !ts.isArrowFunction(fn)) return false;
+      const parameter = fn.parameters[+index];
+      if (!parameter) return false;
+      const names = [];
+      const collect = (name) => {
+        if (ts.isIdentifier(name)) names.push(name);
+        else for (const element of name.elements) if (ts.isBindingElement(element)) collect(element.name);
+      };
+      collect(parameter.name);
+      return names.some((name) => {
+        const path = parameterPath(name);
+        if (!path || path.declaration !== parameter) return false;
+        let value = argument;
+        for (const key of path.keys) value = value && ownMember(origin(value), key);
+        if (!value || localInvocation(value, [], 0, expected)?.target !== expected) return false;
+        const symbol = binding(name);
+        let called = false, escaped = false;
+        const scan = (node) => {
+          if (ts.isIdentifier(node) && node !== name && valueUse(node) && binding(node) === symbol) {
+            const use = wrappedUse(node), parent = use.parent;
+            if (ts.isCallExpression(parent) && parent.expression === use) called = true;
+            else if (!(ts.isIfStatement(parent) && parent.expression === use || ts.isConditionalExpression(parent) && parent.condition === use || ts.isTypeOfExpression(parent))) escaped = true;
+          }
+          ts.forEachChild(node, scan);
+        };
+        scan(fn);
+        return called && !escaped;
+      });
+    };
+    const mutationCallback = (argument, fn, index, seen = new Set()) => {
+      const value = origin(argument);
+      if (seen.has(value)) return;
+      const next = new Set([...seen, value]);
+      const invocation = localInvocation(argument, [], 0, fn);
+      if (invocation?.target === fn) {
+        const boundArgument = invocation.args?.[+index];
+        if (!boundArgument) throw new Error(`Unsupported parameter mutation callback in public closure: ${id} -> ${fn.getText(source).slice(0, 160)}`);
+        markArgumentMutation(boundArgument);
+      } else if (ts.isArrayLiteralExpression(value)) {
+        for (const entry of value.elements) if (!ts.isOmittedExpression(entry)) mutationCallback(ts.isSpreadElement(entry) ? entry.expression : entry, fn, index, next);
+      } else if (ts.isObjectLiteralExpression(value)) {
+        for (const entry of value.properties) {
+          if (ts.isPropertyAssignment(entry)) mutationCallback(entry.initializer, fn, index, next);
+          else if (ts.isShorthandPropertyAssignment(entry)) mutationCallback(entry.name, fn, index, next);
+          else if (ts.isSpreadAssignment(entry)) mutationCallback(entry.expression, fn, index, next);
+        }
+      }
+    };
     memberMutationTargets.forEach(queueMutationParameter);
     for (let cursor = 0; cursor < pendingMutationParameters.length; cursor++) {
       const declaration = pendingMutationParameters[cursor];
@@ -640,21 +758,18 @@ export const checkPublicClosure = (root = repository) => {
       if (!ts.isFunctionDeclaration(fn) && !ts.isArrowFunction(fn) && !ts.isFunctionExpression(fn)) continue;
       const index = +fn.parameters.indexOf(declaration);
       for (const call of mutationCalls) {
-        const callee = origin(call.expression);
-        const target = ts.isIdentifier(callee) ? binding(callee)?.valueDeclaration : callee;
-        if (target !== fn) continue;
-        const args = [];
-        for (const argument of call.arguments) {
-          if (!ts.isSpreadElement(argument)) args.push(argument);
-          else {
-            const value = origin(argument.expression);
-            if (!ts.isArrayLiteralExpression(value) || value.elements.some((entry) => ts.isSpreadElement(entry) || ts.isOmittedExpression(entry))) {
-              throw new Error(`Unsupported parameter mutation spread in public closure: ${id}`);
-            }
-            args.push(...value.elements);
+        const invocation = localInvocation(call.expression, invocationArguments(call.arguments), 0, fn);
+        if (invocation?.target !== fn) {
+          for (const [argumentIndex, argument] of call.arguments.entries()) {
+            if (!localCallbackParameter(invocation?.target, argumentIndex, argument, fn)) mutationCallback(ts.isSpreadElement(argument) ? argument.expression : argument, fn, index);
           }
+          continue;
         }
-        const argument = args[index];
+        if (!invocation.args) {
+          if (invocation.bound) continue;
+          throw new Error(`Unsupported parameter mutation arguments in public closure: ${id}`);
+        }
+        const argument = invocation.args[index];
         if (!argument) continue;
         markArgumentMutation(argument);
       }
@@ -915,12 +1030,12 @@ export const checkPublicClosure = (root = repository) => {
       }
       return false;
     };
-    const wrappedUse = (node) => {
+    function wrappedUse(node) {
       const parent = node.parent;
       return (ts.isParenthesizedExpression(parent) || ts.isAsExpression(parent) || ts.isNonNullExpression(parent) || ts.isTypeAssertionExpression(parent) || ts.isSatisfiesExpression(parent)) && parent.expression === node ||
         ts.isBinaryExpression(parent) && parent.operatorToken.kind === ts.SyntaxKind.CommaToken && parent.right === node ? wrappedUse(parent) : node;
-    };
-    const valueUse = (node) => {
+    }
+    function valueUse(node) {
       if (ts.isPartOfTypeNode(node)) return false;
       if (ts.isPropertyAccessExpression(node) || ts.isElementAccessExpression(node)) return true;
       if (!ts.isIdentifier(node)) return false;
@@ -929,7 +1044,7 @@ export const checkPublicClosure = (root = repository) => {
         (ts.isPropertyAssignment(parent) || ts.isMethodDeclaration(parent) || ts.isPropertyDeclaration(parent) || ts.isPropertySignature(parent) || ts.isMethodSignature(parent) ||
           ts.isVariableDeclaration(parent) || ts.isParameter(parent) || ts.isBindingElement(parent) || ts.isFunctionDeclaration(parent) || ts.isFunctionExpression(parent) || ts.isClassDeclaration(parent)) && parent.name === node ||
         ts.isImportSpecifier(parent) || ts.isImportClause(parent) || ts.isNamespaceImport(parent));
-    };
+    }
     const timerReference = (node) => {
       const expression = origin(node), member = property(expression);
       return ts.isIdentifier(expression) && ["setTimeout", "setInterval", "setImmediate"].includes(expression.text) && globalReference(expression) ||
