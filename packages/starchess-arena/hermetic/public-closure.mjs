@@ -541,9 +541,10 @@ export const checkPublicClosure = (root = repository) => {
         const rooted = origin(expression);
         if (rooted !== expression && hostRoot(rooted, next)) return true;
         const accessed = property(expression);
-        return ts.isIdentifier(expression) && ["globalThis", "global", "window", "self", "frames", "top"].includes(expression.text) && globalReference(expression) ||
+        return ts.isIdentifier(expression) && ["globalThis", "global", "window", "self", "frames", "top", "parent"].includes(expression.text) && globalReference(expression) ||
           ts.isElementAccessExpression(expression) && hostRoot(expression.expression, next) ||
-          accessed && ["globalThis", "global", "window", "self", "frames", "top"].includes(accessed.name ?? "") && hostRoot(accessed.receiver, next);
+          accessed && (["globalThis", "global", "window", "self", "frames", "top", "parent"].includes(accessed.name ?? "") && hostRoot(accessed.receiver, next) ||
+            accessed.name === "defaultView" && ts.isIdentifier(accessed.receiver) && accessed.receiver.text === "document" && globalReference(accessed.receiver));
       };
       const hostName = member?.name;
       if (!dependency && member && hostRoot(member.receiver) && ["eval", "Function", "process", "setTimeout", "setInterval", "setImmediate"].includes(hostName ?? "") ||
@@ -556,6 +557,8 @@ export const checkPublicClosure = (root = repository) => {
       if (!dependency && !reviewedDescriptor(node) && ts.isCallExpression(node) && node.getText(source) !== "Object.getOwnPropertyDescriptor(value, String(index))" &&
           ["get", "getOwnPropertyDescriptor"].includes(property(node.expression)?.name ?? "") &&
           (builtinNamespace(property(node.expression).receiver, "Reflect") || builtinNamespace(property(node.expression).receiver, "Object"))) throw new Error(`Code constructor acquisition in public closure: ${id}`);
+      const boundName = ts.isBindingElement(node) ? node.propertyName ? ownName(node.propertyName) : ts.isIdentifier(node.name) ? node.name.text : undefined : undefined;
+      if (!dependency && ts.isBindingElement(node) && (["constructor", "__proto__", "eval", "Function", "process", "setTimeout", "setInterval", "setImmediate"].includes(boundName ?? "") || node.propertyName && ts.isComputedPropertyName(node.propertyName))) throw new Error(`Code constructor acquisition in public closure: ${id}`);
       if (!dependency && (["constructor", "__proto__"].includes(member?.name) ||
           ts.isElementAccessExpression(node) && !directDataWrite && !ts.isVoidExpression(node.parent) && !reviewedDescriptor(node) && unsafeComputedReceiver(node.expression, new Set(),
             /^(0|[1-9][0-9]*)$/.test(staticKey(node.argumentExpression) ?? ""), scalarComparison || safeComputedDataKey(node.argumentExpression)))) throw new Error(`Code constructor acquisition in public closure: ${id} -> ${node.getText(source)}`);

@@ -470,18 +470,20 @@ export const collectSourceInventory = (
       const rooted = origin(expression);
       if (rooted !== expression && hostRoot(rooted, next)) return true;
       const member = property(expression);
-      return ts.isIdentifier(expression) && ["globalThis", "global", "window", "self", "frames", "top"].includes(expression.text) &&
+      return ts.isIdentifier(expression) && ["globalThis", "global", "window", "self", "frames", "top", "parent"].includes(expression.text) &&
         (globalNamespaces.has(binding(expression)) || typeof binding(expression) === "string") ||
         ts.isElementAccessExpression(expression) && hostRoot(expression.expression, next) ||
-        member !== undefined && ["globalThis", "global", "window", "self", "frames", "top"].includes(member.name ?? "") && hostRoot(member.receiver, next);
+        member !== undefined && (["globalThis", "global", "window", "self", "frames", "top", "parent"].includes(member.name ?? "") && hostRoot(member.receiver, next) ||
+          member.name === "defaultView" && ts.isIdentifier(member.receiver) && member.receiver.text === "document" && typeof binding(member.receiver) === "string");
     };
     const evaluation = (node: ts.Expression): boolean => {
       const expression = unwrap(node);
       const member = property(expression);
       const name = ts.isIdentifier(expression) ? binding(expression) : undefined;
       const forbidden = ["eval", "Function"];
+      const thisReceiver = member !== undefined && ts.isToken(member.receiver) && member.receiver.kind === ts.SyntaxKind.ThisKeyword;
       return name === "eval" || name === "Function" ||
-        member !== undefined && (forbidden.includes(member.name ?? "") || member.name === undefined) && hostRoot(member.receiver);
+        member !== undefined && (forbidden.includes(member.name ?? "") || member.name === undefined) && (hostRoot(member.receiver) || thisReceiver);
     };
     const factory = (node: ts.Expression): boolean => {
       const expression = unwrap(node);
@@ -693,9 +695,18 @@ export const collectSourceInventory = (
           if (["call", "apply", "bind"].includes(method.name)) return mutatorRoot(method.receiver, depth + 1);
           return mutator(current);
         };
-        const argumentMutator = (argument: ts.Expression): boolean => ts.isArrayLiteralExpression(argument)
-          ? argument.elements.some((entry) => !ts.isOmittedExpression(entry) && argumentMutator(entry))
-          : mutatorRoot(argument);
+        const argumentMutator = (argument: ts.Expression, seen = new Set<ts.Expression>()): boolean => {
+          const value = origin(unwrap(argument));
+          if (seen.has(value)) return false;
+          const next = new Set([...seen, value]);
+          if (ts.isArrayLiteralExpression(value)) return value.elements.some((entry) => !ts.isOmittedExpression(entry) && argumentMutator(entry, next));
+          if (ts.isIdentifier(value)) {
+            const key = binding(value);
+            const declaration = typeof key !== "string" ? key.valueDeclaration : undefined;
+            return !!(declaration && ts.isVariableDeclaration(declaration) && declaration.initializer && argumentMutator(declaration.initializer, next));
+          }
+          return mutatorRoot(value);
+        };
         const callee = property(node.expression);
         const indirect = callee !== undefined && (callee.name === undefined || ["call", "apply", "bind"].includes(callee.name));
         if (mutatorRoot(node.expression) || indirect && node.arguments.some(argumentMutator)) {
@@ -719,6 +730,7 @@ export const collectSourceInventory = (
           ts.SyntaxKind.AmpersandToken, ts.SyntaxKind.BarToken, ts.SyntaxKind.CaretToken].includes(input.operatorToken.kind)) return true;
         const structuralNumber = (operand: ts.Expression): boolean => {
           const stripped = unwrap(operand);
+          if (ts.isCallExpression(stripped) || ts.isNewExpression(stripped) || ts.isIdentifier(stripped) && ts.isCallExpression(origin(stripped))) return false;
           const type = dataType(stripped);
           return !!(type.flags & ts.TypeFlags.NumberLike) && !(type.flags & (ts.TypeFlags.Any | ts.TypeFlags.Unknown));
         };
@@ -727,7 +739,7 @@ export const collectSourceInventory = (
       if (ts.isCallExpression(input)) {
         const member = property(input.expression);
         if (ts.isIdentifier(input.expression) && input.expression.text === "String" && typeof binding(input.expression) === "string" && !["global", "globalThis"].some((root) => mutatedRoots.has(root)) && ![...provenance(input.expression)].some((root) => mutatedRoots.has(root)) && input.arguments.length === 1 &&
-          safeComputedDataKey(input.arguments[0]!) && dataType(origin(input.arguments[0]!)).flags & ts.TypeFlags.NumberLike) return true;
+          ts.isNumericLiteral(unwrap(input.arguments[0]!))) return true;
         if (member && ["floor", "ceil", "round", "trunc", "abs", "min", "max"].includes(member.name ?? "") && ts.isIdentifier(member.receiver) &&
           member.receiver.text === "Math" && typeof binding(member.receiver) === "string" && !["global", "globalThis"].some((root) => mutatedRoots.has(root)) && ![...provenance(member.receiver)].some((root) => mutatedRoots.has(root))) return true;
       }
@@ -774,7 +786,20 @@ export const collectSourceInventory = (
       if (ts.isCallExpression(value)) {
         return false;
       }
+      const hidesGetter = (access: ts.Expression): boolean => {
+        const member = property(access);
+        if (!member?.name) return false;
+        let receiver = origin(member.receiver);
+        if (ts.isIdentifier(receiver)) {
+          const key = binding(receiver);
+          const declaration = typeof key !== "string" ? key.valueDeclaration : undefined;
+          if (declaration && ts.isVariableDeclaration(declaration) && declaration.initializer) receiver = unwrap(declaration.initializer);
+        }
+        return ts.isObjectLiteralExpression(receiver) && receiver.properties.some((entry) => !ts.isSpreadAssignment(entry) && ownName(entry.name) === member.name &&
+          (ts.isGetAccessorDeclaration(entry) || ts.isSetAccessorDeclaration(entry)));
+      };
       if (ts.isPropertyAccessExpression(value) || ts.isElementAccessExpression(value)) {
+        if (hidesGetter(value)) return false;
         const symbol = ts.isPropertyAccessExpression(value) ? checker.getSymbolAtLocation(value.name) : undefined;
         const declaration = symbol?.valueDeclaration ?? symbol?.declarations?.[0];
         if (declaration && (ts.isGetAccessor(declaration) || ts.isSetAccessor(declaration))) return false;
@@ -883,12 +908,13 @@ export const collectSourceInventory = (
         }
       }
       const value = !ts.isPartOfTypeNode(node) && (ts.isIdentifier(node) && !sourceIsName(node) || ts.isPropertyAccessExpression(node) || ts.isElementAccessExpression(node) || ts.isCallExpression(node));
-      if (value && PURE.has(file.partition) && processNamespace(node as ts.Expression) && !(ts.isIdentifier(node) && sourceIsDeclaration(node))) throw new Error(`Forbidden process access: ${file.path}`);
+      const hostProcessRead = value && property(node as ts.Expression)?.name === "process" && hostRoot(property(node as ts.Expression)!.receiver);
+      if (value && PURE.has(file.partition) && (processNamespace(node as ts.Expression) || hostProcessRead) && !(ts.isIdentifier(node) && sourceIsDeclaration(node))) throw new Error(`Forbidden process access: ${file.path}`);
       if (value && evaluation(node as ts.Expression)) throw new Error(`Unsupported string evaluation: ${file.path}`);
       const timer = ts.isCallExpression(node) ? unwrap(node.expression) : undefined;
       const timerName = timer && (ts.isIdentifier(timer) ? timer.text : property(timer)?.name);
       const timerHost = timer && (ts.isIdentifier(timer) ? typeof binding(timer) === "string" : property(timer) !== undefined && hostRoot(property(timer)!.receiver));
-      if (timer && ["setTimeout", "setInterval", "setImmediate"].includes(timerName ?? "") && timerHost &&
+      if (ts.isCallExpression(node) && timer && ["setTimeout", "setInterval", "setImmediate"].includes(timerName ?? "") && timerHost &&
           node.arguments[0] && (ts.isStringLiteralLike(unwrap(node.arguments[0])) || dataType(unwrap(node.arguments[0])).flags & ts.TypeFlags.StringLike)) throw new Error(`Unsupported string evaluation: ${file.path}`);
       const accessed = value ? property(node as ts.Expression) : undefined;
       const descriptorSeam = accessed && ["getPrototypeOf", "getOwnPropertyDescriptors"].includes(accessed.name ?? "") &&
@@ -896,7 +922,8 @@ export const collectSourceInventory = (
       if (["constructor", "__proto__", "getPrototypeOf", "getOwnPropertyDescriptors"].includes(accessed?.name ?? "") && !descriptorSeam) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
       if (accessed && objectNamespace(accessed.receiver) && accessed.name === undefined) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
       if (accessed && reflectionNamespace(accessed.receiver) && !["ownKeys", "apply", "has", "set", "deleteProperty"].includes(accessed.name ?? "")) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
-      if (ts.isBindingElement(node) && node.propertyName && ((ts.isIdentifier(node.propertyName) || ts.isStringLiteralLike(node.propertyName)) && ["constructor", "__proto__", "getPrototypeOf", "getOwnPropertyDescriptors", "getOwnPropertyDescriptor"].includes(node.propertyName.text) || ts.isComputedPropertyName(node.propertyName))) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
+      const boundName = ts.isBindingElement(node) ? node.propertyName ? ownName(node.propertyName) : ts.isIdentifier(node.name) ? node.name.text : undefined : undefined;
+      if (ts.isBindingElement(node) && (["constructor", "__proto__", "eval", "Function", "process", "setTimeout", "setInterval", "setImmediate", "getPrototypeOf", "getOwnPropertyDescriptors", "getOwnPropertyDescriptor"].includes(boundName ?? "") || node.propertyName && ts.isComputedPropertyName(node.propertyName))) throw new Error(`Unsupported code constructor acquisition: ${file.path}`);
       if (ts.isElementAccessExpression(node) && mutableOrigin(node.expression) && !safeDataKey(node.argumentExpression)) throw new Error(`Unsupported mutable computed receiver: ${file.path}`);
       if (ts.isElementAccessExpression(node) && loader(node.expression) && staticKey(node.argumentExpression) === undefined) throw new Error(`Unsupported loader escape: ${file.path}`);
       const assignment = ts.isElementAccessExpression(node) && ts.isBinaryExpression(wrappedUse(node).parent) &&
