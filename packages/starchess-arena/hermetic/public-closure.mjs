@@ -328,10 +328,31 @@ export const checkPublicClosure = (root = repository) => {
       if (ts.isBinaryExpression(expression) && expression.operatorToken.kind >= ts.SyntaxKind.FirstAssignment && expression.operatorToken.kind <= ts.SyntaxKind.LastAssignment) add(expression.left);
       return roots;
     };
+    const hostRoot = (value, seen = new Set()) => {
+      const expression = unwrap(value);
+      if (seen.has(expression)) return false;
+      const next = new Set([...seen, expression]);
+      const rooted = origin(expression);
+      if (rooted !== expression && hostRoot(rooted, next)) return true;
+      if (ts.isIdentifier(expression)) {
+        const declaration = checker.getSymbolAtLocation(expression)?.valueDeclaration;
+        const bound = declaration && ts.isBindingElement(declaration) ? bindingMember(declaration) : undefined;
+        if (bound && ["globalThis", "global", "window", "self", "frames", "top", "parent"].includes(bound.name ?? "") && hostRoot(bound.receiver, next)) return true;
+        const receiver = bound && origin(bound.receiver);
+        if (bound?.name === "defaultView" && ts.isIdentifier(receiver) && receiver.text === "document" && globalReference(receiver)) return true;
+      }
+      const accessed = property(expression);
+      const receiver = accessed && origin(accessed.receiver);
+      return expression.kind === ts.SyntaxKind.ThisKeyword ||
+        ts.isIdentifier(expression) && ["globalThis", "global", "window", "self", "frames", "top", "parent"].includes(expression.text) && globalReference(expression) ||
+        ts.isElementAccessExpression(expression) && hostRoot(expression.expression, next) ||
+        accessed && (["globalThis", "global", "window", "self", "frames", "top", "parent"].includes(accessed.name ?? "") && hostRoot(accessed.receiver, next) ||
+          accessed.name === "defaultView" && ts.isIdentifier(receiver) && receiver.text === "document" && globalReference(receiver));
+    };
     const builtinNamespace = (node, name) => {
       const expression = origin(node), member = property(expression);
       return ts.isIdentifier(expression) && expression.text === name && globalReference(expression) || member?.name === name &&
-        ts.isIdentifier(member.receiver) && ["globalThis", "global"].includes(member.receiver.text) && globalReference(member.receiver);
+        hostRoot(member.receiver);
     };
     const mutatedRoots = new Set();
     const nonNumericWrites = new Set();
@@ -378,11 +399,19 @@ export const checkPublicClosure = (root = repository) => {
           if (["call", "apply", "bind"].includes(method.name)) return mutatorRoot(method.receiver, depth + 1);
           return mutator(current);
         };
-        const argumentMutator = (argument) => ts.isArrayLiteralExpression(argument)
-          ? argument.elements.some((entry) => !ts.isOmittedExpression(entry) && argumentMutator(entry)) : mutatorRoot(argument);
-        const callee = property(node.expression);
+        const argumentMutator = (argument, seen = new Set()) => {
+          const value = origin(argument);
+          if (seen.has(value)) return false;
+          const next = new Set([...seen, value]);
+          if (ts.isSpreadElement(value)) return argumentMutator(value.expression, next);
+          if (ts.isArrayLiteralExpression(value)) return value.elements.some((entry) => !ts.isOmittedExpression(entry) && argumentMutator(entry, next));
+          if (ts.isObjectLiteralExpression(value)) return value.properties.some((entry) => ts.isSpreadAssignment(entry) ? argumentMutator(entry.expression, next)
+            : ts.isPropertyAssignment(entry) ? argumentMutator(entry.initializer, next) : ts.isShorthandPropertyAssignment(entry) && argumentMutator(entry.name, next));
+          return mutatorRoot(value);
+        };
+        const callee = property(origin(node.expression));
         const indirect = callee !== undefined && (callee.name === undefined || ["call", "apply", "bind"].includes(callee.name));
-        if (mutatorRoot(node.expression) || indirect && node.arguments.some(argumentMutator)) for (const builtin of ["Math", "String", "Array", "globalThis", "global"]) mutatedRoots.add(builtin);
+        if (mutatorRoot(node.expression) || indirect && node.arguments.some((argument) => argumentMutator(argument))) for (const builtin of ["Math", "String", "Array", "globalThis", "global"]) mutatedRoots.add(builtin);
         if (node.arguments[0] && member && (builtinNamespace(member.receiver, "Object") && ["assign", "defineProperty", "defineProperties"].includes(member.name ?? "") ||
             builtinNamespace(member.receiver, "Reflect") && ["set", "deleteProperty", "defineProperty"].includes(member.name ?? ""))) markMutation(node.arguments[0]);
         if (member && ["push", "pop", "shift", "unshift", "splice", "sort", "reverse", "fill", "copyWithin"].includes(member.name ?? "")) markMutation(member.receiver);
@@ -390,6 +419,57 @@ export const checkPublicClosure = (root = repository) => {
       ts.forEachChild(node, scanMutations);
     };
     scanMutations(source);
+    const numericOperators = new Set([
+      ts.SyntaxKind.MinusToken, ts.SyntaxKind.AsteriskToken, ts.SyntaxKind.AsteriskAsteriskToken, ts.SyntaxKind.SlashToken, ts.SyntaxKind.PercentToken,
+      ts.SyntaxKind.LessThanLessThanToken, ts.SyntaxKind.GreaterThanGreaterThanToken, ts.SyntaxKind.GreaterThanGreaterThanGreaterThanToken,
+      ts.SyntaxKind.AmpersandToken, ts.SyntaxKind.BarToken, ts.SyntaxKind.CaretToken,
+    ]);
+    const hidesGetter = (access, seen = new Set()) => {
+      const member = property(access);
+      if (!member || seen.has(access)) return false;
+      const next = new Set([...seen, access]);
+      const receiver = origin(member.receiver);
+      if (hidesGetter(receiver, next)) return true;
+      const receiverGetter = (value, visited = new Set()) => {
+        const object = origin(value);
+        if (visited.has(object)) return true;
+        if (!ts.isObjectLiteralExpression(object)) return true;
+        const nested = new Set([...visited, object]);
+        return object.properties.some((entry) => ts.isSpreadAssignment(entry) ? receiverGetter(entry.expression, nested) :
+          (member.name === undefined || ownName(entry.name) === undefined || ownName(entry.name) === member.name) &&
+          (ts.isGetAccessorDeclaration(entry) || ts.isSetAccessorDeclaration(entry)));
+      };
+      return ts.isObjectLiteralExpression(receiver) && receiverGetter(receiver);
+    };
+    const numericValue = (node, coercionOnly = false, seen = new Set()) => {
+      const input = unwrap(node);
+      if (seen.has(input)) return false;
+      const next = new Set([...seen, input]);
+      if (ts.isIdentifier(input)) {
+        if (nonNumericWrites.has(binding(input))) return false;
+        if (!coercionOnly && dataType(input).flags & (ts.TypeFlags.Any | ts.TypeFlags.Unknown)) return false;
+      }
+      const value = origin(input);
+      if (value !== input) return numericValue(value, coercionOnly, next);
+      if (ts.isNumericLiteral(value)) return true;
+      if (ts.isPrefixUnaryExpression(value) && [ts.SyntaxKind.PlusToken, ts.SyntaxKind.MinusToken, ts.SyntaxKind.TildeToken].includes(value.operator)) return true;
+      if (ts.isBinaryExpression(value)) return numericOperators.has(value.operatorToken.kind) ||
+        value.operatorToken.kind === ts.SyntaxKind.PlusToken && numericValue(value.left, coercionOnly, next) && numericValue(value.right, coercionOnly, next);
+      if (ts.isConditionalExpression(value)) return numericValue(value.whenTrue, coercionOnly, next) && numericValue(value.whenFalse, coercionOnly, next);
+      if (ts.isCallExpression(value)) {
+        const member = property(value.expression);
+        return Boolean(member && ["floor", "ceil", "round", "trunc", "abs", "min", "max"].includes(member.name ?? "") &&
+          builtinNamespace(member.receiver, "Math") && !["Math", "global", "globalThis"].some((root) => mutatedRoots.has(root)) &&
+          ![...provenance(member.receiver)].some((root) => mutatedRoots.has(root)));
+      }
+      if (coercionOnly || ts.isAwaitExpression(value) || ts.isNewExpression(value) || ts.isTaggedTemplateExpression(value) || hidesGetter(value)) return false;
+      if (ts.isPropertyAccessExpression(value) || ts.isElementAccessExpression(value)) {
+        const symbol = ts.isPropertyAccessExpression(value) ? checker.getSymbolAtLocation(value.name) : undefined;
+        if (symbol?.declarations?.some((declaration) => ts.isGetAccessor(declaration) || ts.isSetAccessor(declaration))) return false;
+      }
+      const type = dataType(value);
+      return Boolean(type.flags & ts.TypeFlags.NumberLike) && !(type.flags & (ts.TypeFlags.Any | ts.TypeFlags.Unknown));
+    };
     const safeComputedDataKey = (node) => {
       const key = staticKey(node);
       if (key !== undefined) return !["constructor", "__proto__", "prototype"].includes(key);
@@ -399,25 +479,19 @@ export const checkPublicClosure = (root = repository) => {
         if ([ts.SyntaxKind.MinusToken, ts.SyntaxKind.AsteriskToken, ts.SyntaxKind.AsteriskAsteriskToken, ts.SyntaxKind.SlashToken, ts.SyntaxKind.PercentToken,
           ts.SyntaxKind.LessThanLessThanToken, ts.SyntaxKind.GreaterThanGreaterThanToken, ts.SyntaxKind.GreaterThanGreaterThanGreaterThanToken,
           ts.SyntaxKind.AmpersandToken, ts.SyntaxKind.BarToken, ts.SyntaxKind.CaretToken].includes(input.operatorToken.kind)) return true;
-        const structuralNumber = (operand) => {
-          const type = dataType(unwrap(operand));
-          return Boolean(type.flags & ts.TypeFlags.NumberLike) && !(type.flags & (ts.TypeFlags.Any | ts.TypeFlags.Unknown));
-        };
-        if (input.operatorToken.kind === ts.SyntaxKind.PlusToken && structuralNumber(input.left) && structuralNumber(input.right)) return true;
+        if (input.operatorToken.kind === ts.SyntaxKind.PlusToken && numericValue(input.left) && numericValue(input.right)) return true;
       }
       if (ts.isCallExpression(input)) {
-        const member = property(input.expression);
         if (ts.isIdentifier(input.expression) && input.expression.text === "String" && globalReference(input.expression) && !["global", "globalThis"].some((root) => mutatedRoots.has(root)) && ![...provenance(input.expression)].some((root) => mutatedRoots.has(root)) && input.arguments.length === 1 &&
-          safeComputedDataKey(input.arguments[0]) && dataType(origin(input.arguments[0])).flags & ts.TypeFlags.NumberLike) return true;
-        if (member && ["floor", "ceil", "round", "trunc", "abs", "min", "max"].includes(member.name ?? "") && ts.isIdentifier(member.receiver) &&
-          member.receiver.text === "Math" && globalReference(member.receiver) && !["global", "globalThis"].some((root) => mutatedRoots.has(root)) && ![...provenance(member.receiver)].some((root) => mutatedRoots.has(root))) return true;
+          numericValue(input.arguments[0], true)) return true;
+        if (numericValue(input)) return true;
       }
       if ([...provenance(node)].some((root) => mutatedRoots.has(root))) {
         const expression = unwrap(node);
         const symbol = ts.isIdentifier(expression) ? binding(expression) : undefined;
         const declaration = symbol?.valueDeclaration;
         return Boolean(symbol && !nonNumericWrites.has(symbol) && declaration && ts.isVariableDeclaration(declaration) && declaration.initializer &&
-          safeComputedDataKey(declaration.initializer) && dataType(origin(declaration.initializer)).flags & ts.TypeFlags.NumberLike);
+          numericValue(declaration.initializer));
       }
       const expression = unwrap(node);
       if (ts.isIdentifier(expression)) {
@@ -443,10 +517,6 @@ export const checkPublicClosure = (root = repository) => {
               unwrap(loop.expression).elements.every((entry) => ts.isStringLiteralLike(entry) && !["constructor", "__proto__", "prototype"].includes(entry.text))) return true;
         }
       }
-      if (ts.isBinaryExpression(expression) && ([ts.SyntaxKind.MinusToken, ts.SyntaxKind.AsteriskToken, ts.SyntaxKind.AsteriskAsteriskToken,
-          ts.SyntaxKind.SlashToken, ts.SyntaxKind.PercentToken, ts.SyntaxKind.LessThanLessThanToken, ts.SyntaxKind.GreaterThanGreaterThanToken,
-          ts.SyntaxKind.GreaterThanGreaterThanGreaterThanToken, ts.SyntaxKind.AmpersandToken, ts.SyntaxKind.BarToken, ts.SyntaxKind.CaretToken].includes(expression.operatorToken.kind) ||
-          expression.operatorToken.kind === ts.SyntaxKind.PlusToken && (ts.isNumericLiteral(unwrap(expression.left)) || ts.isNumericLiteral(unwrap(expression.right))))) return true;
       const safeType = (type) => type.isUnion() ? type.types.every(safeType)
         : Boolean(type.flags & ts.TypeFlags.NumberLike) || type.isStringLiteral() && !["constructor", "__proto__", "prototype"].includes(type.value);
       const value = origin(node);
@@ -456,6 +526,7 @@ export const checkPublicClosure = (root = repository) => {
         return false;
       }
       if (ts.isPropertyAccessExpression(value) || ts.isElementAccessExpression(value)) {
+        if (hidesGetter(value)) return false;
         const symbol = ts.isPropertyAccessExpression(value) ? checker.getSymbolAtLocation(value.name) : undefined;
         const declaration = symbol?.valueDeclaration ?? symbol?.declarations?.[0];
         if (declaration && (ts.isGetAccessor(declaration) || ts.isSetAccessor(declaration))) return false;
@@ -512,6 +583,54 @@ export const checkPublicClosure = (root = repository) => {
       }
       return false;
     };
+    const reviewedArrayDescriptor = (node) => {
+      if (id !== `${ARENA}/src/challengeContract/validation.ts` || node.getText(source) !== "Object.getOwnPropertyDescriptor") return false;
+      const call = node.parent;
+      if (!ts.isCallExpression(call) || call.expression !== node || call.getText(source) !== "Object.getOwnPropertyDescriptor(value, String(index))") return false;
+      for (let declaration = call; declaration; declaration = declaration.parent) {
+        if (ts.isVariableDeclaration(declaration) && ts.isIdentifier(declaration.name) && declaration.name.text === "array") {
+          return declaration.getText(source) === `array = (value: unknown, path: string, max = 64): unknown[] => {
+  if (!Array.isArray(value) || value.length > max || Reflect.ownKeys(value).length !== value.length + 1) return fail(path, "ARRAY");
+  for (let index = 0; index < value.length; index++) {
+    const descriptor = Object.getOwnPropertyDescriptor(value, String(index));
+    if (!descriptor || !Object.hasOwn(descriptor, "value")) return fail(path, "ARRAY");
+  }
+  return value;
+}` && source.statements.filter(ts.isVariableStatement).flatMap((statement) => [...statement.declarationList.declarations])
+            .some((entry) => entry.getText(source) === 'fail = (path: string, code = "SCHEMA"): never => { throw new ContractError(path, code); }');
+        }
+      }
+      return false;
+    };
+    const wrappedUse = (node) => {
+      const parent = node.parent;
+      return (ts.isParenthesizedExpression(parent) || ts.isAsExpression(parent) || ts.isNonNullExpression(parent) || ts.isTypeAssertionExpression(parent) || ts.isSatisfiesExpression(parent)) && parent.expression === node ||
+        ts.isBinaryExpression(parent) && parent.operatorToken.kind === ts.SyntaxKind.CommaToken && parent.right === node ? wrappedUse(parent) : node;
+    };
+    const valueUse = (node) => {
+      if (ts.isPartOfTypeNode(node)) return false;
+      if (ts.isPropertyAccessExpression(node) || ts.isElementAccessExpression(node)) return true;
+      if (!ts.isIdentifier(node)) return false;
+      const parent = node.parent;
+      return !(ts.isPropertyAccessExpression(parent) && parent.name === node ||
+        (ts.isPropertyAssignment(parent) || ts.isMethodDeclaration(parent) || ts.isPropertyDeclaration(parent) || ts.isPropertySignature(parent) || ts.isMethodSignature(parent) ||
+          ts.isVariableDeclaration(parent) || ts.isParameter(parent) || ts.isBindingElement(parent) || ts.isFunctionDeclaration(parent) || ts.isFunctionExpression(parent) || ts.isClassDeclaration(parent)) && parent.name === node ||
+        ts.isImportSpecifier(parent) || ts.isImportClause(parent) || ts.isNamespaceImport(parent));
+    };
+    const timerReference = (node) => {
+      const expression = origin(node), member = property(expression);
+      return ts.isIdentifier(expression) && ["setTimeout", "setInterval", "setImmediate"].includes(expression.text) && globalReference(expression) ||
+        member && ["setTimeout", "setInterval", "setImmediate"].includes(member.name ?? "") && hostRoot(member.receiver);
+    };
+    const callableTimerArgument = (node) => {
+      if (!node || ts.isSpreadElement(node)) return false;
+      const expression = unwrap(node), value = origin(expression);
+      if (ts.isArrowFunction(expression) || ts.isFunctionExpression(expression)) return true;
+      if (!ts.isIdentifier(expression)) return false;
+      const callableType = (type) => !(type.flags & (ts.TypeFlags.Any | ts.TypeFlags.Unknown | ts.TypeFlags.Union)) && type.getCallSignatures().length > 0;
+      if (!callableType(dataType(expression))) return false;
+      return ts.isArrowFunction(value) || ts.isFunctionExpression(value) || ts.isIdentifier(value) && callableType(dataType(value));
+    };
     const scan = (node) => {
       if (id === `${ARENA}/src/challengeContract/validation.ts` && ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) &&
           node.name.text === "inspectDto" && !reviewedDescriptor(node)) throw new Error(`Code constructor acquisition in public closure: ${id}`);
@@ -534,34 +653,26 @@ export const checkPublicClosure = (root = repository) => {
         [ts.SyntaxKind.LessThanToken, ts.SyntaxKind.LessThanEqualsToken, ts.SyntaxKind.GreaterThanToken, ts.SyntaxKind.GreaterThanEqualsToken,
           ts.SyntaxKind.EqualsEqualsToken, ts.SyntaxKind.EqualsEqualsEqualsToken, ts.SyntaxKind.ExclamationEqualsToken, ts.SyntaxKind.ExclamationEqualsEqualsToken]
           .includes(node.parent.operatorToken.kind));
-      const hostRoot = (value, seen = new Set()) => {
-        const expression = unwrap(value);
-        if (seen.has(expression)) return false;
-        const next = new Set([...seen, expression]);
-        const rooted = origin(expression);
-        if (rooted !== expression && hostRoot(rooted, next)) return true;
-        const accessed = property(expression);
-        return ts.isIdentifier(expression) && ["globalThis", "global", "window", "self", "frames", "top", "parent"].includes(expression.text) && globalReference(expression) ||
-          ts.isElementAccessExpression(expression) && hostRoot(expression.expression, next) ||
-          accessed && (["globalThis", "global", "window", "self", "frames", "top", "parent"].includes(accessed.name ?? "") && hostRoot(accessed.receiver, next) ||
-            accessed.name === "defaultView" && ts.isIdentifier(accessed.receiver) && accessed.receiver.text === "document" && globalReference(accessed.receiver));
-      };
       const hostName = member?.name;
-      if (!dependency && member && hostRoot(member.receiver) && ["eval", "Function", "process", "setTimeout", "setInterval", "setImmediate"].includes(hostName ?? "") ||
-          !dependency && ts.isElementAccessExpression(node) && hostRoot(node.expression) && ["eval", "Function", "process", undefined].includes(staticKey(node.argumentExpression))) throw new Error(`Host acquisition in public closure: ${id}`);
-      const timer = ts.isCallExpression(node) ? unwrap(node.expression) : undefined;
-      const timerName = timer && (ts.isIdentifier(timer) ? timer.text : property(timer)?.name);
-      const timerHost = timer && (ts.isIdentifier(timer) ? globalReference(timer) : property(timer) && hostRoot(property(timer).receiver));
-      if (!dependency && timer && ["setTimeout", "setInterval", "setImmediate"].includes(timerName ?? "") && timerHost &&
-          node.arguments[0] && (ts.isStringLiteralLike(unwrap(node.arguments[0])) || dataType(unwrap(node.arguments[0])).flags & ts.TypeFlags.StringLike)) throw new Error(`Host timer evaluation in public closure: ${id}`);
-      if (!dependency && !reviewedDescriptor(node) && ts.isCallExpression(node) && node.getText(source) !== "Object.getOwnPropertyDescriptor(value, String(index))" &&
-          ["get", "getOwnPropertyDescriptor"].includes(property(node.expression)?.name ?? "") &&
-          (builtinNamespace(property(node.expression).receiver, "Reflect") || builtinNamespace(property(node.expression).receiver, "Object"))) throw new Error(`Code constructor acquisition in public closure: ${id}`);
+      if (member && hostRoot(member.receiver) && ["eval", "Function", "process"].includes(hostName ?? "") ||
+          ts.isElementAccessExpression(node) && hostRoot(node.expression) && staticKey(node.argumentExpression) === undefined) throw new Error(`Host acquisition in public closure: ${id}`);
+      if (valueUse(node) && timerReference(node)) {
+        const use = wrappedUse(node), call = use.parent;
+        if (!ts.isCallExpression(call) || call.expression !== use || !callableTimerArgument(call.arguments[0])) throw new Error(`Host timer evaluation in public closure: ${id}`);
+      }
+      const reflected = valueUse(node) ? property(origin(node)) : undefined;
+      const descriptorSeam = reflected && builtinNamespace(reflected.receiver, "Object") && ["getPrototypeOf", "getOwnPropertyDescriptors"].includes(reflected.name ?? "") &&
+        reviewedDescriptor(node) && ts.isCallExpression(node.parent) && node.parent.expression === node;
+      if (reflected && (builtinNamespace(reflected.receiver, "Reflect") && ["get", "getOwnPropertyDescriptor", undefined].includes(reflected.name) ||
+          builtinNamespace(reflected.receiver, "Object") && ["getOwnPropertyDescriptor", "getPrototypeOf", "getOwnPropertyDescriptors", undefined].includes(reflected.name)) &&
+          !descriptorSeam && !reviewedArrayDescriptor(node)) throw new Error(`Code constructor acquisition in public closure: ${id}`);
       const boundName = ts.isBindingElement(node) ? node.propertyName ? ownName(node.propertyName) : ts.isIdentifier(node.name) ? node.name.text : undefined : undefined;
-      if (!dependency && ts.isBindingElement(node) && (["constructor", "__proto__", "eval", "Function", "process", "setTimeout", "setInterval", "setImmediate"].includes(boundName ?? "") || node.propertyName && ts.isComputedPropertyName(node.propertyName))) throw new Error(`Code constructor acquisition in public closure: ${id}`);
-      if (!dependency && (["constructor", "__proto__"].includes(member?.name) ||
-          ts.isElementAccessExpression(node) && !directDataWrite && !ts.isVoidExpression(node.parent) && !reviewedDescriptor(node) && unsafeComputedReceiver(node.expression, new Set(),
-            /^(0|[1-9][0-9]*)$/.test(staticKey(node.argumentExpression) ?? ""), scalarComparison || safeComputedDataKey(node.argumentExpression)))) throw new Error(`Code constructor acquisition in public closure: ${id} -> ${node.getText(source)}`);
+      const bound = ts.isBindingElement(node) ? bindingMember(node) : undefined;
+      if (ts.isBindingElement(node) && (["constructor", "__proto__", "eval", "Function", "process", "setTimeout", "setInterval", "setImmediate", "getOwnPropertyDescriptor", "getPrototypeOf", "getOwnPropertyDescriptors"].includes(boundName ?? "") ||
+          bound?.name === "get" && builtinNamespace(bound.receiver, "Reflect") || node.propertyName && ts.isComputedPropertyName(node.propertyName))) throw new Error(`Code constructor acquisition in public closure: ${id}`);
+      if (["constructor", "__proto__"].includes(member?.name) ||
+          !dependency && ts.isElementAccessExpression(node) && !directDataWrite && !ts.isVoidExpression(node.parent) && !reviewedDescriptor(node) && unsafeComputedReceiver(node.expression, new Set(),
+            /^(0|[1-9][0-9]*)$/.test(staticKey(node.argumentExpression) ?? ""), scalarComparison || safeComputedDataKey(node.argumentExpression))) throw new Error(`Code constructor acquisition in public closure: ${id} -> ${node.getText(source)}`);
       if (ts.isIdentifier(node) && !ts.isPartOfTypeNode(node)) {
         const parent = node.parent;
         const propertyName = ts.isPropertyAccessExpression(parent) && parent.name === node ||
