@@ -46,10 +46,7 @@ export type ReplayPayload = {
 const canonical = (value: unknown): string =>
   JSON.stringify(value, (_key, v: unknown) => {
     if (v === null || typeof v !== "object" || Array.isArray(v)) return v;
-    const src = v as Record<string, unknown>;
-    const out: Record<string, unknown> = {};
-    for (const k of Object.keys(src).sort()) out[k] = src[k];
-    return out;
+    return Object.fromEntries(Object.entries(v).sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0));
   });
 
 const B64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
@@ -103,7 +100,7 @@ export const unpackResolves = (
     throw new Error("packed resolves: ply count mismatch");
   }
   return plies.map((ply, i) =>
-    "next" in ply ? ply : { ...ply, next: nextFromScfen(scfens[i + 1]) },
+    "next" in ply ? ply : { ...ply, next: nextFromScfen(scfens[+i + 1]) },
   ) as unknown as EndScTurnResult[];
 };
 
@@ -114,7 +111,7 @@ export const packResolves = (
 ): PackedResolves | null => {
   try {
     const plies = resolves.map((r, i) => {
-      const rebuilt = nextFromScfen(scfens[i + 1]);
+      const rebuilt = nextFromScfen(scfens[+i + 1]);
       if (rebuilt === undefined || canonical(rebuilt) !== canonical(r.next)) return r;
       const { next: _next, ...rest } = r;
       return rest;

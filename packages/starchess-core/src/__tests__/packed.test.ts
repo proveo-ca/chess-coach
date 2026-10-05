@@ -57,6 +57,15 @@ describe("packed resolves", () => {
     expect((back[1]!.next as unknown as { legacyOnly?: boolean }).legacyOnly).toBe(true);
     same(back, odd);
   });
+  it("preserves an own prototype-shaped next field instead of discarding it as rebuildable", () => {
+    const { scfens, resolves } = game();
+    Object.defineProperty(resolves[0]!.next, "__proto__", { value: { packedOnly: true }, enumerable: true });
+    const back = unpackResolves(scfens, packResolves(scfens, resolves)!);
+    expect(Object.hasOwn(back[0]!.next, "__proto__")).toBe(true);
+    expect(Object.getOwnPropertyDescriptor(back[0]!.next, "__proto__")?.value).toEqual({ packedOnly: true });
+    expect(Object.getPrototypeOf(back[0]!.next)).toBe(Object.prototype);
+    same(back, resolves);
+  });
 
   it("refuses to decode a corrupted payload", () => {
     const { scfens, resolves } = game();

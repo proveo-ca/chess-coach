@@ -68,6 +68,7 @@ const dataArrayAccesses = [
   'const rows = [...inputRows]; void rows[0][1];',
 ];
 const unprovenComputedReceivers = [
+  'function acquire(value:object,key:string){let compile:any; const label=`${compile=(value as any)[key]}`; return compile("return process")();} acquire(()=>{},["con","structor"].join(""));',
   'function lookup(value:object,key:string):any{return(value as any)[key];} lookup(()=>{},["con","structor"].join(""))("return process")();',
   'function lookup(value:object,key:string):any{const alias=value;return(alias as any)[key];} lookup(()=>{},["con","structor"].join(""))("return process")();',
   'function lookup(value:{[key:string]:unknown},key:string):any{return value[key];} lookup((()=>{}) as any,["con","structor"].join(""))("return process")();',
@@ -212,6 +213,7 @@ const unprovenComputedReceivers = [
   'const box: any = {f: 0}; function mutate() {box.f = () => {};} mutate(); box.f[["con", "structor"].join("")]("return process")();',
 ];
 const ordinaryComputedData = [
+  'function label(value:object,key:string){return `${(value as any)[key]}`;} label({},"data");',
   'function lookup(value:object,key:string):unknown{return(value as Record<string,unknown>)[key];} consume(lookup({data:1,nested:{value:"ok"}},"data"));',
   'function lookup(value:object,key:string):unknown{return(value as Record<string,unknown>)[key];} function wrap(value:object){return lookup(value,"data");} consume(wrap({data:1}));',
   'function lookup(value:object,key:string):unknown{return(value as Record<string,unknown>)[key];} const data=JSON.parse(`{"data":1}`); consume(lookup(data,"data"));',

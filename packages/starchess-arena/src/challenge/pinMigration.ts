@@ -79,7 +79,7 @@ export const compareBaselineReports = (original: unknown, current: unknown): Bas
   const rerunVerified = (value: BaselineReport): boolean => value.deterministicRerun.performed === true &&
     value.deterministicRerun.equal === true && value.deterministicRerun.comparisons.length === 54 &&
     value.deterministicRerun.comparisons.every((entry, index) => {
-      const row = value.rows[index];
+      const row = value.rows[+index];
       return row !== undefined && entry.key === row.match.key && entry.equal === true &&
         entry.firstSha256 === sha256(normalizeEvidence(row)) && entry.rerunSha256 === entry.firstSha256;
     });

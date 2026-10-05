@@ -36,14 +36,12 @@ const resolveResult = (value: unknown): value is EndScTurnResult => {
     Array.isArray(value.afterB.siegedTanks) && record(value.afterPending) &&
     typeof value.afterPending.placement === "string" && Array.isArray(value.afterPending.mines) &&
     bankOf(value.afterPending.ccLives) &&
-    ["attacks", "moves", "pathRevealAttacks", "mineTriggers", "pathRevealMineTriggers",
-      "moveCollisions", "promotions", "pendingCCShotsArmed"].every((key) => Array.isArray(resolved[key])) &&
-    ["afterAttack", "afterMove", "afterAll"].every((key) => {
-      const board = resolved[key];
+    [resolved.attacks, resolved.moves, resolved.pathRevealAttacks, resolved.mineTriggers, resolved.pathRevealMineTriggers,
+      resolved.moveCollisions, resolved.promotions, resolved.pendingCCShotsArmed].every(Array.isArray) &&
+    [resolved.afterAttack, resolved.afterMove, resolved.afterAll].every((board) => {
       return record(board) && typeof board.placement === "string" && bankOf(board.ccLives) && Array.isArray(board.mines);
     }) &&
-    ["ignoreAttacksOn", "events", "siegedThisTurn", "bMoves", "fMoves", "queue"]
-      .every((key) => Array.isArray(value[key]));
+    [value.ignoreAttacksOn, value.events, value.siegedThisTurn, value.bMoves, value.fMoves, value.queue].every(Array.isArray);
 };
 const phaseEvent = (value: Record<string, unknown>): value is Record<string, unknown> & Extract<ChallengeProgress, { kind: "phase" }> =>
   value.kind === "phase" && typeof value.phase === "string" && value.phase.length > 0 &&

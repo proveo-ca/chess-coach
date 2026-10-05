@@ -1214,9 +1214,12 @@ export const collectSourceInventory = (
         (wrappedUse(node).parent as ts.BinaryExpression).left === wrappedUse(node) ? (wrappedUse(node).parent as ts.BinaryExpression).operatorToken.kind : undefined;
       const directDataWrite = assignment === ts.SyntaxKind.EqualsToken ||
         [ts.SyntaxKind.PlusEqualsToken, ts.SyntaxKind.MinusEqualsToken].includes(assignment ?? ts.SyntaxKind.Unknown);
-      const scalarComparison = ts.isElementAccessExpression(node) && (ts.isTypeOfExpression(wrappedUse(node).parent) || ts.isBinaryExpression(wrappedUse(node).parent) &&
-        [ts.SyntaxKind.LessThanToken, ts.SyntaxKind.LessThanEqualsToken, ts.SyntaxKind.GreaterThanToken, ts.SyntaxKind.GreaterThanEqualsToken,
-          ts.SyntaxKind.EqualsEqualsToken, ts.SyntaxKind.EqualsEqualsEqualsToken, ts.SyntaxKind.ExclamationEqualsToken, ts.SyntaxKind.ExclamationEqualsEqualsToken]
+      const scalarComparison = ts.isElementAccessExpression(node) && (ts.isTemplateSpan(wrappedUse(node).parent) || ts.isTypeOfExpression(wrappedUse(node).parent) || ts.isBinaryExpression(wrappedUse(node).parent) &&
+         [ts.SyntaxKind.LessThanToken, ts.SyntaxKind.LessThanEqualsToken, ts.SyntaxKind.GreaterThanToken, ts.SyntaxKind.GreaterThanEqualsToken,
+           ts.SyntaxKind.EqualsEqualsToken, ts.SyntaxKind.EqualsEqualsEqualsToken, ts.SyntaxKind.ExclamationEqualsToken, ts.SyntaxKind.ExclamationEqualsEqualsToken,
+           ts.SyntaxKind.MinusToken, ts.SyntaxKind.AsteriskToken, ts.SyntaxKind.AsteriskAsteriskToken, ts.SyntaxKind.SlashToken, ts.SyntaxKind.PercentToken,
+           ts.SyntaxKind.AmpersandToken, ts.SyntaxKind.BarToken, ts.SyntaxKind.CaretToken, ts.SyntaxKind.LessThanLessThanToken,
+           ts.SyntaxKind.GreaterThanGreaterThanToken, ts.SyntaxKind.GreaterThanGreaterThanGreaterThanToken]
           .includes((wrappedUse(node).parent as ts.BinaryExpression).operatorToken.kind));
       if (ts.isElementAccessExpression(node) && !directDataWrite && !ts.isVoidExpression(wrappedUse(node).parent) && !reviewedDescriptor(node) && unsafeComputedReceiver(node.expression, new Set(),
           /^(0|[1-9][0-9]*)$/.test(staticKey(node.argumentExpression) ?? ""), scalarComparison || safeComputedDataKey(node.argumentExpression))) throw new Error(`Unsupported code constructor acquisition: ${file.path} -> ${node.getText(source)}`);

@@ -836,9 +836,12 @@ export const checkPublicClosure = (root = repository) => {
       const assignment = ts.isElementAccessExpression(node) && ts.isBinaryExpression(node.parent) && node.parent.left === node ? node.parent.operatorToken.kind : undefined;
       const directDataWrite = assignment === ts.SyntaxKind.EqualsToken ||
         [ts.SyntaxKind.PlusEqualsToken, ts.SyntaxKind.MinusEqualsToken].includes(assignment);
-      const scalarComparison = ts.isElementAccessExpression(node) && (ts.isTypeOfExpression(node.parent) || ts.isBinaryExpression(node.parent) &&
-        [ts.SyntaxKind.LessThanToken, ts.SyntaxKind.LessThanEqualsToken, ts.SyntaxKind.GreaterThanToken, ts.SyntaxKind.GreaterThanEqualsToken,
-          ts.SyntaxKind.EqualsEqualsToken, ts.SyntaxKind.EqualsEqualsEqualsToken, ts.SyntaxKind.ExclamationEqualsToken, ts.SyntaxKind.ExclamationEqualsEqualsToken]
+      const scalarComparison = ts.isElementAccessExpression(node) && (ts.isTemplateSpan(node.parent) || ts.isTypeOfExpression(node.parent) || ts.isBinaryExpression(node.parent) &&
+         [ts.SyntaxKind.LessThanToken, ts.SyntaxKind.LessThanEqualsToken, ts.SyntaxKind.GreaterThanToken, ts.SyntaxKind.GreaterThanEqualsToken,
+           ts.SyntaxKind.EqualsEqualsToken, ts.SyntaxKind.EqualsEqualsEqualsToken, ts.SyntaxKind.ExclamationEqualsToken, ts.SyntaxKind.ExclamationEqualsEqualsToken,
+           ts.SyntaxKind.MinusToken, ts.SyntaxKind.AsteriskToken, ts.SyntaxKind.AsteriskAsteriskToken, ts.SyntaxKind.SlashToken, ts.SyntaxKind.PercentToken,
+           ts.SyntaxKind.AmpersandToken, ts.SyntaxKind.BarToken, ts.SyntaxKind.CaretToken, ts.SyntaxKind.LessThanLessThanToken,
+           ts.SyntaxKind.GreaterThanGreaterThanToken, ts.SyntaxKind.GreaterThanGreaterThanGreaterThanToken]
           .includes(node.parent.operatorToken.kind));
       const hostName = member?.name;
       if (member && hostRoot(member.receiver) && ["eval", "Function", "process"].includes(hostName ?? "") ||

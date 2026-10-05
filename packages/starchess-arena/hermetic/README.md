@@ -68,7 +68,12 @@ The dependency stage installs development dependencies with `--offline --frozen-
 The dependency stage executes the esbuild postinstall without networking.
 `closure.mjs` checks every direct dependency, each selected name→manifest workspace link, TypeScript, Vitest, and esbuild transformation.
 `workspace-policy.mjs` closes acquisition, installed roots, capture inputs, and measurement to the same three packages.
-Training declares exact `@noble/hashes` 2.4.0.
+Training declares exact `jssha` 3.3.2 and imports its synchronous `jssha/sha256` ESM entry.
+The model-facing core entry is `@chess-coach/starchess-core/planning-v1`.
+The full core root and `fflate` remain in host execution and replay.
+`public-closure-v2` audits four model roots, including all workspace type edges and the complete published SHA module.
+Every workspace export branch must match its approved canonical target.
+Constructor and host-acquisition checks cover dependency modules without vendor exceptions or tree-shaking assumptions.
 It rejects installed Nx, Storybook, workerd, and wrangler packages.
 It verifies that installation preserved the captured lockfile and package manifests.
 The image retains `/pnpm/store` as an immutable artifact.
