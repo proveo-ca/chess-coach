@@ -106,7 +106,7 @@ export function validateInfrastructure(value, { read, image, imageInspection, me
   const directory = typeof command?.logs?.stdout?.path === 'string' ? dirname(command.logs.stdout.path) : '';
   if (!object(command) || command.executable !== process.execPath || !same(command.args, ['--test', infraPath]) || command.cwd !== root ||
       !directory || !same(command.env, infrastructureEnvironment(directory, image)) || command.exitCode !== 0 || command.signal !== null || command.error !== null ||
-      !['started', 'finished'].every((key) => typeof command[key] === 'string' && new Date(command[key]).toISOString() === command[key]) || command.finished < command.started) fail('exact command or runtime environment mismatch');
+       ![command.started, command.finished].every((timestamp) => typeof timestamp === 'string' && new Date(timestamp).toISOString() === timestamp) || command.finished < command.started) fail('exact command or runtime environment mismatch');
   const artifacts = [];
   const add = (metadata, path, label, boundedLog = false) => {
     if (!object(metadata) || typeof metadata.path !== 'string' || !digest(metadata.sha256) || !Number.isSafeInteger(metadata.bytes) || metadata.bytes < 0 ||

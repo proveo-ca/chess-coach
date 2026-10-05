@@ -72,10 +72,10 @@ export const measureR2Composition = (root: URL = REPOSITORY_ROOT, bytes: PinnedC
   const corpus = loadPinnedCorpus(root, bytes);
   const source = JSON.parse(Buffer.from(bytes.sourceBytes).toString("utf8")) as { games: SourceGame[] };
   const historical = corpus.traces.flatMap((trace, index) => {
-    const game = source.games[index]!;
+    const game = source.games[+index]!;
     let memory: Sighting[] = [];
     return historyFromRecord(game).settledSnapshots.flatMap((snapshot, sourcePlyIndex) => {
-      const recorded = parseScFen(game.scfens[sourcePlyIndex]!);
+      const recorded = parseScFen(game.scfens[+sourcePlyIndex]!);
       if (!recorded.stored) throw new Error("R2 historical observation lacks recorded own bank");
       const observation = observe(refillTurnGas(snapshot), recorded.stored, "w", memory);
       memory = observation.memory;
