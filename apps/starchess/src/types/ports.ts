@@ -20,6 +20,11 @@ export type Frames = {
   request: (fn: (now: number) => void) => Cancel;
 };
 
+/** Background callback once the main thread idles, or after `timeoutMs` at the latest. */
+export type Idle = {
+  request: (fn: () => void, timeoutMs: number) => Cancel;
+};
+
 /** Optional RNG for mine-leg jitter etc. */
 export type RandomSource = {
   next: () => number; // [0, 1)

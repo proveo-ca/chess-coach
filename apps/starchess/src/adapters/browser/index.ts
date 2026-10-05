@@ -1,5 +1,5 @@
 // SPEC: _spec/apps/starchess/architecture/timers.puml
-import type { Clock, Frames, Interval, LocationPort, RandomSource, Scheduler } from "~/types/ports";
+import type { Clock, Frames, Idle, Interval, LocationPort, RandomSource, Scheduler } from "~/types/ports";
 
 export const browserClock: Clock = {
   now: () => Date.now(),
@@ -23,6 +23,19 @@ export const browserFrames: Frames = {
   request: (fn) => {
     const id = globalThis.requestAnimationFrame(fn);
     return () => globalThis.cancelAnimationFrame(id);
+  },
+};
+
+/** `requestIdleCallback` where the engine has it; a zero-delay timeout elsewhere. */
+export const browserIdle: Idle = {
+  request: (fn, timeoutMs) => {
+    const ric = globalThis.requestIdleCallback;
+    if (typeof ric === "function") {
+      const id = ric(() => fn(), { timeout: timeoutMs });
+      return () => globalThis.cancelIdleCallback(id);
+    }
+    const id = globalThis.setTimeout(fn, 0);
+    return () => globalThis.clearTimeout(id);
   },
 };
 
