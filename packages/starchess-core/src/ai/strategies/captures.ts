@@ -54,7 +54,7 @@ export const SAC_FOR_CC = 400;
  * Jump costs 3 (tier-3 income, turn 21+ when normalized); gas never accumulates.
  */
 export const enemyCanJump = (snap: ScFenSnapshot, enemy: PieceColor): boolean =>
-  (snap.gasIncome[enemy] ?? 0) >= TACTICAL_JUMP_GAS_COST;
+  (Object.entries(snap.gasIncome).find(([side]) => side === enemy)?.[1] ?? 0) >= TACTICAL_JUMP_GAS_COST;
 
 /**
  * Where an enemy ship probably teleports: mirror of our own warp scoring from
@@ -180,7 +180,7 @@ const score = (ev: MoveEval, ctx: AdjutantCtx): number => {
         mines: snap.mines,
         color: enemy,
         cc: enemyCC,
-        gas: snap.gasIncome[enemy],
+        gas: Object.entries(snap.gasIncome).find(([side]) => side === enemy)![1],
         minerals: ctx.storedFor(enemy) + incomeForTurn(snap.turn + 1),
       },
       move.to,

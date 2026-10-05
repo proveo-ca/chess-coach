@@ -335,7 +335,7 @@ export const runSupervised = (
         const side = failure.side!;
         const expectedActions = request.suite === "corpus" && side === "w"
           ? request.trace?.windows[planningOrdinal]?.actions
-          : decisions[side];
+          : Object.entries(decisions).find(([seat]) => seat === side)?.[1];
         if (!expectedActions || canonical(message.rejectedQueue) !== canonical(expectedActions)) {
           protocolError("admission failure queue mismatch"); return;
         }

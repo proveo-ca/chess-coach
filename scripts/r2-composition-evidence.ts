@@ -100,7 +100,7 @@ export const measureR2Composition = (root: URL = REPOSITORY_ROOT, bytes: PinnedC
     retainedHistogram: histogram(rows.map((row) => row.diagnostics.uniqueIncludingPass)),
     stopHistogram: histogram(rows.map((row) => row.diagnostics.stopReason)),
     quotaHistogram: histogram(rows.map((row) => canonical(row.diagnostics.pools))),
-    retainedByOwner: Object.fromEntries(ACTION_KINDS.map((kind) => [kind, rows.reduce((sum, row) => sum + row.diagnostics.retainedByOwner[kind], 0)])),
+    retainedByOwner: Object.fromEntries(ACTION_KINDS.map((kind) => [kind, rows.reduce((sum, row) => sum + Object.entries(row.diagnostics.retainedByOwner).find(([owner]) => owner === kind)![1], 0)])),
     coverageFlags: { primitiveIsAdmission: false, retainedIsExhaustive: false, retainedIsWinning: false, learnedPolicyImplemented: false },
     historical, fixtures,
   };
