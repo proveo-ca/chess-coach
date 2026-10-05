@@ -114,9 +114,9 @@ note bottom
   **Tutorial** ``/tutorial/:section/:story`` (``TUTORIAL_SCRIPT`` anchors):
   CoachScreen-shaped Kerrigan header; HOME-only SideRailTools (``homeOnly``);
   no ResourceBars; fog Chess|StarChess skin toggle;
-  **Fog skin demo** — each fog lesson plays the toggle itself: Chess at 1s,
-  back to StarChess at 3s, so "same moves as Chess" is shown, not just claimed.
-  Board hints hold until it ends (3s); non-fog lessons have no demo, so theirs
+  **Fog skin demo** — each fog lesson opens in Chess (no StarChess first
+  paint), flips to StarChess at 1.2s, so "same moves as Chess" is shown, not
+  just claimed. Board hints hold until the flip (1.2s); non-fog lessons have no demo, so theirs
   land at once. Working the toggle by hand cancels the demo and releases the
   hints early — it never fights the player's hand.
   resolve ``combat-chain`` shows ``TurnBarSidebar`` phase chips (DualNav off);
