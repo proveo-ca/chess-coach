@@ -304,7 +304,7 @@ export const checkPublicClosure = (root = repository) => {
         ? origin(declaration.initializer, new Set([...seen, symbol]), next) : expression;
     };
     const binding = (node) => {
-      const symbol = ts.isShorthandPropertyAssignment(node.parent) ? checker.getShorthandAssignmentValueSymbol(node.parent)
+      const symbol = ts.isShorthandPropertyAssignment(node.parent) && node.parent.name === node ? checker.getShorthandAssignmentValueSymbol(node.parent)
         : ts.isExportSpecifier(node.parent) ? checker.getExportSpecifierLocalTargetSymbol(node.parent) : checker.getSymbolAtLocation(node);
       return symbol?.declarations?.length ? symbol : node.text;
     };
@@ -389,6 +389,34 @@ export const checkPublicClosure = (root = repository) => {
         for (const value of entries) if (!assigned.has(value)) { assigned.add(value); callableAssignmentCount++; }
       }
     };
+    const registerCallableAssignment = (node, values, depth = 0) => {
+      if (depth > 16) throw new Error(`Unsupported parameter mutation assignment in public closure: ${id}`);
+      const target = unwrap(node);
+      if (ts.isBinaryExpression(target) && target.operatorToken.kind === ts.SyntaxKind.EqualsToken) {
+        registerCallableAssignment(target.left, [...values, target.right], depth + 1);
+      } else if (ts.isArrayLiteralExpression(target)) {
+        for (const [index, entry] of target.elements.entries()) {
+          if (ts.isOmittedExpression(entry)) continue;
+          if (ts.isSpreadElement(entry)) {
+            const remaining = values.flatMap((value) => {
+              const array = origin(value);
+              return ts.isArrayLiteralExpression(unwrap(value)) && ts.isArrayLiteralExpression(array) && !array.elements.some(ts.isSpreadElement)
+                ? array.elements.slice(index).filter((element) => !ts.isOmittedExpression(element)) : [value];
+            });
+            registerCallableAssignment(entry.expression, remaining, depth + 1);
+          } else registerCallableAssignment(entry, values.map((value) => ts.isArrayLiteralExpression(unwrap(value)) ? ownMember(origin(value), String(index)) ?? value : value), depth + 1);
+        }
+      } else if (ts.isObjectLiteralExpression(target)) {
+        for (const entry of target.properties) {
+          if (ts.isPropertyAssignment(entry)) registerCallableAssignment(entry.initializer, values.map((value) => ts.isObjectLiteralExpression(unwrap(value)) ? ownMember(origin(value), ownName(entry.name)) ?? value : value), depth + 1);
+          else if (ts.isShorthandPropertyAssignment(entry)) registerCallableAssignment(entry.name, [...values.map((value) => ts.isObjectLiteralExpression(unwrap(value)) ? ownMember(origin(value), entry.name.text) ?? value : value), ...entry.objectAssignmentInitializer ? [entry.objectAssignmentInitializer] : []], depth + 1);
+          else if (ts.isSpreadAssignment(entry)) registerCallableAssignment(entry.expression, values, depth + 1);
+        }
+      } else {
+        addCallableAssignments(target, values);
+        for (const value of values) assignmentTargets.push({ target, value });
+      }
+    };
     const arrayMutatorTargets = [];
     const memberMutationTargets = [];
     const invocationMutationRoots = new Set();
@@ -434,8 +462,7 @@ export const checkPublicClosure = (root = repository) => {
         else if (ts.isBinaryExpression(target) && target.operatorToken.kind === ts.SyntaxKind.EqualsToken) writes(target.left);
       };
       if (ts.isBinaryExpression(node) && node.operatorToken.kind >= ts.SyntaxKind.FirstAssignment && node.operatorToken.kind <= ts.SyntaxKind.LastAssignment) {
-        assignmentTargets.push({ target: node.left, value: node.right });
-        addCallableAssignments(node.left, [node.right]);
+        registerCallableAssignment(node.left, [node.right]);
         const numericCandidate = [ts.SyntaxKind.EqualsToken, ts.SyntaxKind.PlusEqualsToken, ts.SyntaxKind.MinusEqualsToken].includes(node.operatorToken.kind);
         const target = unwrap(node.left);
         if (numericCandidate && ts.isIdentifier(target)) {
@@ -715,6 +742,22 @@ export const checkPublicClosure = (root = repository) => {
       if (member) callableCandidates(member.receiver, seen, targets);
       if (ts.isCallExpression(value)) callableCandidates(value.expression, seen, targets);
       if (ts.isArrayLiteralExpression(value)) for (const entry of value.elements) if (!ts.isOmittedExpression(entry)) callableCandidates(ts.isSpreadElement(entry) ? entry.expression : entry, seen, targets);
+      if (ts.isObjectLiteralExpression(value)) for (const entry of value.properties) {
+        if (ts.isPropertyAssignment(entry)) callableCandidates(entry.initializer, seen, targets);
+        else if (ts.isShorthandPropertyAssignment(entry)) callableCandidates(entry.name, seen, targets);
+        else if (ts.isMethodDeclaration(entry)) targets.add(entry);
+        else if (ts.isSpreadAssignment(entry)) {
+          const spread = origin(entry.expression);
+          if (!ts.isObjectLiteralExpression(spread) && !ts.isArrayLiteralExpression(spread)) throw new Error(`Unsupported parameter mutation candidates in public closure: ${id}`);
+          callableCandidates(entry.expression, seen, targets);
+        } else if (ts.isGetAccessorDeclaration(entry) && entry.body) {
+          const returns = (node) => {
+            if (ts.isReturnStatement(node) && node.expression) callableCandidates(node.expression, seen, targets);
+            else if (!ts.isFunctionLike(node)) ts.forEachChild(node, returns);
+          };
+          ts.forEachChild(entry.body, returns);
+        }
+      }
       return targets;
     };
     const localParameterCallables = (node) => {
@@ -768,7 +811,14 @@ export const checkPublicClosure = (root = repository) => {
       }
       if (member) {
         const holder = origin(member.receiver);
-        if (invoked && stale && (ts.isObjectLiteralExpression(holder) || ts.isArrayLiteralExpression(holder) && (member.name === undefined || /^(0|[1-9][0-9]*)$/.test(member.name)))) return { unproved: true, callee: expression, args };
+        const replacedHolder = [...provenance(member.receiver)].some((root) =>
+          (numericAssignments.has(root) || nonNumericWrites.has(root)) &&
+          (!ts.isArrayLiteralExpression(holder) || [...callableAssignments.get(root) ?? []].some((value) => !ts.isArrayLiteralExpression(origin(value)))));
+        if (invoked && stale && (replacedHolder || ts.isObjectLiteralExpression(holder) || ts.isArrayLiteralExpression(holder) && (member.name === undefined || /^(0|[1-9][0-9]*)$/.test(member.name)))) return { unproved: true, callee: expression, args };
+        if (ts.isObjectLiteralExpression(holder) && member.name !== undefined && !holder.properties.some(ts.isSpreadAssignment)) {
+          const entries = holder.properties.filter((entry) => !ts.isSpreadAssignment(entry) && ownName(entry.name) === member.name);
+          if (entries.length === 1 && ts.isMethodDeclaration(entries[0])) return { target: entries[0], args };
+        }
         const receiver = localInvocation(member.receiver, undefined, depth + 1, expected, false);
         return receiver?.target ? { target: receiver.target } : undefined;
       }
@@ -862,7 +912,7 @@ export const checkPublicClosure = (root = repository) => {
       for (let cursor = 0; cursor < pendingMutationParameters.length; cursor++) {
         const declaration = pendingMutationParameters[cursor];
         const fn = declaration.parent;
-        if (!ts.isFunctionDeclaration(fn) && !ts.isArrowFunction(fn) && !ts.isFunctionExpression(fn)) continue;
+        if (!ts.isFunctionDeclaration(fn) && !ts.isArrowFunction(fn) && !ts.isFunctionExpression(fn) && !ts.isMethodDeclaration(fn)) continue;
         const index = +fn.parameters.indexOf(declaration);
         for (const call of mutationCalls) {
           const invocation = localInvocation(call.expression, invocationArguments(call.arguments), 0, fn);
