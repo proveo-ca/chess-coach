@@ -4,7 +4,9 @@
 ' covers: packages/starchess-arena/src/intent-codec-v1.ts
 ' covers: packages/starchess-arena/src/challengeContract/**
 ' covers: packages/starchess-arena/src/challenge/**
+' covers: packages/starchess-arena/src/challenge/sourceInventory.ts
 ' covers: packages/starchess-arena/src/__tests__/challenge*.test.ts
+' covers: packages/starchess-arena/src/__tests__/challengeSourceInventory.test.ts
 ' covers: packages/starchess-arena/src/__tests__/challengeEvidenceImport.test.ts
 ' covers: packages/starchess-arena/src/__tests__/*V1Bridge*.test.ts
 ' covers: packages/starchess-arena/src/__tests__/r2CompositionEvidence.test.ts
@@ -21,10 +23,11 @@
 ' covers: scripts/challenge-infrastructure-evidence.mjs
 ' covers: packages/starchess-arena/hermetic/**
 ' covers: packages/starchess-arena/hermetic/public-closure.mjs
+' covers: packages/starchess-arena/hermetic/verification-plan.mjs
 ' covers: _spec/evidence/ml-adjutant-phase2/*.json
 ' covers: _spec/evidence/ml-adjutant-r0-refresh/**
 ' covers: _spec/evidence/ml-adjutant-r0-closure.json
-' status: PREPARED SOURCE CONTRACT / R2 WIP; final gates/full fresh verification/closure PENDING, not full READY. Original R0 closed historically, not current recovered-tree proof.
+' status: SOURCE-FREEZE ELIGIBLE / R2 WIP; scoped reviews YES, final enumeration/static/PlantUML and fresh verification/publication/closure PENDING, not frozen or full READY. Original R0 remains historical.
 ' related: _spec/packages/starchess-training/candidate-generation.puml (current V1 bridge/V3 generator; four native promotions, five deploy units)
 ' related: _spec/_plans/r2-generator-v3.md (normative current bridge/verification vectors and recovery boundary)
 ' related: _spec/_plans/PLAN-ml-adjutant.md
@@ -49,7 +52,9 @@
 ' import audit: numeric/string/constant array indices and nested destructuring preserve callable origins even through any; paired array/data-control fixtures add62 assertions, no blanket bracket-access ban.
 ' import audit: separate noLib/noResolve lexical AST and lazy full dataType AST preserve binding IDs; workspace inference resolves approved targets with resolvedUsingTsExtension=false, not runtime loader permission.
 ' import audit: factory/member mutation provenance rejects callable/unproven receivers; bounded numeric/literal keys and type-checked ordinary maps retain data access, including reviewed data mutations; 106 paired factory/mutation/data assertions added.
-' review HIGH repairs: literal for-of keys require pristine Array intrinsics including Symbol.iterator; both audits propagate parameter member mutation to caller argument roots via a deduplicated finite fixed-point worklist; final reviews remain pending.
+' reviewed guard: literal for-of keys require pristine Array intrinsics including Symbol.iterator; both audits reach a bounded alias/member/caller mutation fixed point and conservatively retain candidate identities through destructuring assignment targets, object-held functions, default/rest and sparse callee shapes.
+' reviewed bound: fail closed after mutationNodeCount * 6 + 1 passes; wrapper/argument recursion bounded at16; sparse invocation arguments do not grant dense-array proof.
+' source-freeze final reviews (Executor-reported YES): adversarial ses_ef1bd904effeNnwLrxzq5IFMTc; security ses_ef292c512ffeiNMZ7KVQloY4sj. Not arbitrary-JS proof, actual Docker completion, publication closure or training authorization.
 ' host lookup: own Object.entries(...).find reads replace parameter-derived native side/bank/table indexing while preserving valid native values; full native host remains private to models.
 ' admission: original stageQueue intent/resource checks and whole native addScAction staging remain; commitPair preserves stage gas/spend/resource checks, no fallback.
 ' public exports: all conditional workspace leaves, including node/default/unselected branches, must equal canonical approved targets; static-only pure closures reject every runtime dynamic import.
@@ -74,9 +79,9 @@
 ' historical verification: image core 426/426, arena 434/434, typechecks/strict TS passed; historical infra 5/5 actual Docker and focused 7 tests/2 files.
 ' historical R0 verification: core 426/426, arena 689/689, zero failed/pending/todo; 107 Node tests, no skips; 54 executions + 54 reruns, semantic/migration parity true; eight exact commands/three static checks include both scripts.
 ' historical R0 host checks: actual Docker infrastructure 5/5 on then-new dependency image; host post-publication 13/13 including then-live source pins, no skips.
-' prior R2 host counts: 469/811/50 and older arena1276 PASS remain history; previous full arena1564 PASS predates last86 tests. Inspected registered floors v3 now475/1650/57; latest arena1650 full run concurrent/PENDING.
-' reported host checks: public-closure-v2 PASS four roots/28 workspace/2 jsSHA dep files/zero jsSHA runtime edges; full core475 incl planning identity/legacy+packed ownproto, full training57 incl independent SHA/collision tests, source-inventory913, three typechecks, whole strict invoice and Node109 PASS per Executor, not executed here.
-' open gates: latest iterator/interprocedural HIGH source repairs exist, final adversarial/security reviews pending; arena1650 full run and fresh frozen/image/infrastructure/54+54/archive/import/publication pending. Prior inventory776/777 failure superseded by reported source913 full PASS.
+' prior R2 host counts: older469/811/50 and arena1564/1276 remain history; latest full arena1650 PASS predates added264 tests. Inspected floors v3 now475/1914/57; arena1914 enumerated target needs final verification, not full PASS.
+' reported host checks: public-closure-v2 PASS four roots/28 workspace/2 jsSHA dep files/zero external runtime imports; full core475 incl planning identity/legacy+packed ownproto, full training57 incl independent SHA/collision tests, source-inventory1177 (913 +264), three typechecks, whole strict invoice and Node109 PASS per Executor, not executed here.
+' open gates: source-freeze eligible; final enumeration/static/PlantUML, full arena1914, fresh dependency/source images, mandatory6 infrastructure tests, eleven commands, 54+54/archive/export/import/publication and post-publication closing reviews PENDING. No R2 completion or training authorization.
 ' fixture: approved immutable six-JSON per-file test snapshot; validators stay fresh; scoped120000ms integration budget changes no model permit/decision deadline.
 ' phase1 pins: baseline 940387370040f88888e9dfe0bb86ad9d4a8be88854df507120f34b22ee2d362b; verification 55d965afa71d775ff6ee1e95b6650a27d0ce759b966a81c43a3bb364236c7508. Unchanged.
 ' historical R0 final reviews: adversarial ses_efe0ed67dffew2su1gZIUaDy23 and security ses_efe0ed520ffeOEg3kd6jAtN33i both READY TO CLOSE R0: yes; source/captured-record review, no independent execution/hash recomputation.
@@ -103,10 +108,10 @@
 ' historical failed run location (not recovered): /tmp/opencode/starchess-hermetic-run-Bv2jRa; default 5s test timeout repaired to 30s with unchanged assertions; policy deadlines unchanged.
 ' future gates: calibrated turn-aware material belief remains H=1, public opening 4 deployed + 3 banked = 7 excludes CC and endowed paid basis; R1 versioned amendment/R4/R5 calibration before R6. Native causal frames are not H3 search. Prior 370-field v2 is not a supplied calibrated model.
 ' rendering: earlier checkonly is historical; current checkonly not run by spec-keeper (no shell tool).
-' readiness: README whole-file inspection confirms jsSHA3.3.2/planning-v1/public-closure-v2 repair; retire old handoff. Registered floors v3 do not establish arena1650 PASS; no source/README edit here, no full READY verdict.
+' readiness: README jsSHA3.3.2/planning-v1/public-closure-v2 handoff stays retired. Registered floors1914 do not establish full arena1914 PASS; source-freeze YES reviews do not close R2; no source/README edit here.
 @startuml ml-adjutant-policy-contracts
 !include ../../themes/proveo.puml
-title StarChess arena · R2 assurance · PREPARED SOURCE CONTRACT / WIP
+title StarChess arena · R2 assurance · SOURCE-FREEZE ELIGIBLE / WIP
 
 skinparam packageStyle rectangle
 skinparam defaultTextAlignment left
@@ -282,15 +287,15 @@ end note
 
 note bottom of RUNTIME
   Fresh R2 image and full verification PENDING
-  Registered floors v3: 475 / 1650 / 57
-  Arena1650 full run pending; not a PASS
+  Registered floors v3: 475 / 1914 / 57
+  Arena1914 enumerated; full run pending
   Required: original 54 parity + 54 reruns
   Separate host Docker infra and final reviews
 end note
 
 note top of RUNTIME
   Inventory real-graph test timeout: 120000 ms
-  Reported source-inventory913 full PASS
+  Reported source-inventory1177 full PASS
 end note
 
 note left of INVENTORY
@@ -411,6 +416,19 @@ note bottom of ADMISSION
   Original stage/resource checks; no fallback
 end note
 
+note left of PUBLIC_GRAPH
+  Candidate flow: destructuring targets / holders
+  Default / rest / sparse callee effects retained
+  Alias/member/caller fixed point: bounded
+  Source-freeze final reviews: both YES
+end note
+
+note left of RUNTIME
+  Source-freeze eligible, not frozen or closed
+  Final enumeration / static / PlantUML pending
+  Post-publication closing reviews: pending
+end note
+
 note top of BUNDLE
   Exclusive mkdir / all files fsynced
   Deep nested directories then root synced
@@ -436,15 +454,16 @@ end note
 
 legend bottom
   R2 IMPLEMENTED IN PROGRESS; fresh full verification, image, publication and closure PENDING.
-  Executor reports cc6 source recovery and strict fixture repairs; the new full run remains pending.
+  Executor reports cc6 source recovery; final full1914/frozen verification remains pending.
   Original R0 A01-A15/reviews/counts are historical, not current proof or old-marker test authorization.
   Historical R0: 426 core / 689 arena / 107 Node; eight commands; 54+54 parity; Docker 5/5, host 13/13.
   Prior R2 host 469 core / 811 arena / 50 training and floors v1 remain historical.
-  Registered floors v3: 475/1650/57; arena1650 concurrent full run PENDING, not PASS.
-  Reported full core475/training57/source-inventory913 PASS; prior failed host proof superseded.
-  Previous full arena1564 PASS predates last86 tests; older1276 PASS predates amendment.
+  Registered floors v3: 475/1914/57; arena1914 enumerated target, full verification PENDING.
+  Reported full core475/training57/source-inventory1177 PASS; source913 is prior checkpoint.
+  Latest full arena1650 PASS predates added264 tests; no full1914 PASS claimed.
   Immutable six-JSON per-file test snapshot; fresh validators; scoped integration budget120000ms.
-  Iterator/pristine-Array + bounded interprocedural HIGH repairs exist; final reviews pending.
+  Scoped final source-freeze reviews: adversarial YES + security YES; IDs in header/plan.
+  Final enumeration/static/PlantUML remain pending; no frozen source or Docker completion claim.
   Reported inventory/public-checker/core/training host passes do not close the full frozen gate.
   Prepared source contract is not full READY, image proof, publication or acceptance.
   R2 uses v2 inventory/v3 pins/v3 verification, eleven commands and separate trusted host infra.

@@ -9,6 +9,7 @@
 ' covers: packages/starchess-arena/src/__tests__/challenge*.test.ts
 ' covers: packages/starchess-arena/src/__tests__/challengeSourceInventory.test.ts
 ' covers: packages/starchess-arena/hermetic/public-closure.mjs
+' covers: packages/starchess-arena/hermetic/verification-plan.mjs
 ' covers: packages/starchess-arena/src/__tests__/*V1Bridge*.test.ts
 ' covers: packages/starchess-arena/src/__tests__/r2CompositionEvidence.test.ts
 ' covers: packages/starchess-core/src/**
@@ -34,7 +35,7 @@
 ' covers: package.json
 ' covers: pnpm-lock.yaml
 ' covers: pnpm-workspace.yaml
-' status: PREPARED SOURCE CONTRACT / R2 WIP; source exists, final gates and full fresh verification/closure PENDING; not full READY.
+' status: SOURCE-FREEZE ELIGIBLE / R2 WIP; scoped reviews YES, final enumeration/static/PlantUML and fresh verification/publication/closure PENDING; not frozen or full READY.
 ' related: _spec/_plans/r2-generator-v3.md (normative API, primitives, diagnostics and current eleven-command manifest)
 ' related: _spec/_plans/PLAN-ml-adjutant.md
 ' related: _spec/_plans/ml-adjutant-r1-contracts.md (prior future contracts; R2 amendment has scoped precedence)
@@ -65,7 +66,9 @@
 ' closure: inventory/public regressions reject computed own-function-member constructor acquisition hidden by any, wrappers, getters/methods, nested aliases or ambiguous members; numeric arrays and nested destructuring now retain callable origin; ordinary data indexing/positive controls and reviewed DTO descriptors remain valid.
 ' closure: dataType uses a separate parsed/full-typed AST from lexical binding IDs; resolved workspace aliases set resolvedUsingTsExtension=false for inference only; bounded numeric/literal keys and typed ordinary data maps stay valid.
 ' closure: factory/await/new/member-mutation provenance rejects callable or unproven computed receivers, with assignments/Object/Reflect/array-mutator roots tracked; proven ordinary data access remains allowed, no blanket mutation ban.
-' review HIGH repairs: literal for-of key proof requires pristine Array intrinsics, including Symbol.iterator; interprocedural parameter member mutations propagate to caller argument roots via a deduplicated finite fixed-point worklist in both audits. Reviewer confirmation remains pending.
+' reviewed guard: literal for-of key proof requires pristine Array intrinsics, including Symbol.iterator; alias/member/caller mutation effects propagate to a bounded fixed point in both audits; conservative candidate flow retains destructuring assignment targets, object-held functions, defaults/rest and sparse callee identities.
+' reviewed bound: convergence fails closed after mutationNodeCount * 6 + 1 passes; wrapper/argument recursion is bounded at16; uncertain sparse invocation arguments never grant dense-array proof.
+' source-freeze reviews (Executor-reported final YES): adversarial ses_ef1bd904effeNnwLrxzq5IFMTc; security ses_ef292c512ffeiNMZ7KVQloY4sj. Scope is source-freeze eligibility, not arbitrary-JS proof, Docker completion, publication closure or training authorization.
 ' host lookup: own Object.entries(...).find reads replace parameter-derived native side/bank/table indexing, preserving all valid native values; these private host APIs are not new model exports.
 ' admission: stageQueue validates the original intent/resource checks and privately stages the whole queue through native addScAction; commitPair preserves stage gas/spend equality and original resource checks, no fallback.
 ' availability: active iff a finite singleton probe passes every authorized root append guard, including resources/known occupancy; separate probe accounting, no free continuation.
@@ -82,9 +85,9 @@
 ' provenance: both source inspections require runtime.mjs entrypoint, Cmd=['verify'], cwd=/app and exact ordered image Env + approved output; reject NODE_OPTIONS/NODE_PATH/LD_PRELOAD/LD_LIBRARY_PATH.
 ' acquisition: mandatory dependency-build envelope independently binds dependency image, measurements, controls/inputs, exact uncached Docker argv and successful untruncated logs; frozenDependency reuse is forbidden.
 ' capture: fresh dependency acquisition uses build --dependencies --no-cache; generated capture.json/workspace YAML explicitly 0644, child/intermediate/empty directories 0755 under umask 077; private context root stays private.
-' floors: inspected r2-assertion-floors-v3 core475/arena1650/training57; arena1650 full run concurrent/PENDING, not a passing total. Previous arena1564 PASS predates last86 tests; older arena1276 PASS predates amendment.
-' reported checks: Executor reports public-closure-v2 PASS, four roots, 28 workspace files + jsSHA manifest/runtime module (2 dependency files), zero jsSHA runtime edges; full core475 incl planning identity/legacy ownproto/packed ownproto, full training57 incl independent SHA vectors/collisions, source-inventory913, all3 typechecks, whole strict invoice and Node109 PASS; not executed here.
-' open gate: latest iterator/interprocedural HIGH source repairs exist, final adversarial/security reviews pending; full arena1650 and fresh frozen/image/infrastructure/54+54/archive/import/publication gates pending. Prior inventory776/777 failure superseded by reported source913 full PASS.
+' floors: inspected r2-assertion-floors-v3 core475/arena1914/training57; arena1914 enumerated target needs final verification, not full PASS. Latest full arena1650 PASS predates added264 tests; previous1564/1276 remain earlier checkpoints.
+' reported checks: Executor reports public-closure-v2 PASS, four roots, 28 workspace files + jsSHA manifest/runtime module (2 dependency files), zero external runtime imports; full core475 incl planning identity/legacy ownproto/packed ownproto, full training57 incl independent SHA vectors/collisions, source-inventory1177 (prior913 +264), all3 typechecks, whole strict invoice and Node109 PASS; not executed here.
+' open gate: source-freeze eligible with final enumeration/static/PlantUML pending; full arena1914 and fresh dependency/source images, mandatory6 infra tests, eleven commands, 54+54, archive/export/import/publication and post-publication closing reviews PENDING. No R2 completion or training authorization.
 ' test fixture: approved immutable six-JSON per-file test snapshot, fresh validators; scoped120000ms integration budget, no model permit/decision deadline change.
 ' readiness: whole README checked; jsSHA3.3.2/planning-v1/public-closure-v2 handoff repaired by build and retired; no README edit here, no full READY.
 ' checkpoint: Executor reports R2 source recovered from cc6 after reset; current pipeline restored; strict 19 errors and two legacy boundary casts resolved by lead, fresh full run PENDING.
@@ -93,7 +96,7 @@
 ' rendering: no shell/renderer available; no checkonly success claimed.
 @startuml candidate-generation
 !include ../../themes/proveo.puml
-title StarChess R2 · V1 bridge and generation V3 · PREPARED SOURCE CONTRACT / WIP
+title StarChess R2 · V1 bridge and generation V3 · SOURCE-FREEZE ELIGIBLE / WIP
 
 skinparam packageStyle rectangle
 
@@ -252,12 +255,13 @@ end note
 note bottom of VERIFY
   Inventory v2 / pins v3 / verification v3
   Eleven commands; fresh image proof pending
-  Registered floors v3: 475 / 1650 / 57
+  Registered floors v3: 475 / 1914 / 57
 end note
 
 note top of VERIFY
-  Reported full core475 / source913: PASS
-  Arena1650 full run / final reviews: pending
+  Reported full core475 / source1177: PASS
+  Arena1650 PASS precedes264 added tests
+  Arena1914 enumerated; full run pending
 end note
 
 note bottom of CLOSURE
@@ -289,9 +293,15 @@ end note
 
 note right of VERIFY
   For-of proof: pristine Array intrinsics
-  Parameter writes: caller arguments tainted
-  Deduplicated finite fixed-point propagation
-  HIGH repairs exist; final reviews pending
+  Candidate flow: targets/holders/default/rest
+  Sparse callee effects; caller mutations retained
+  Deduplicated bounded fixed-point propagation
+  Scoped source-freeze reviews: both YES
+end note
+
+note left of VERIFY
+  Source-freeze eligible, not frozen or closed
+  Final enumeration / static / PlantUML pending
 end note
 
 note left of CLOSURE
@@ -357,11 +367,12 @@ legend bottom
   Earlier five-promotion future generator draft is superseded, not native history.
   Executor-reported cc6 recovery restores R2 source, not fresh execution proof.
   Prior full host counts 469 core / 811 arena / 50 training are not a new run.
-  Registered floors v3: 475 core / 1650 arena / 57 training.
-  Reported full core475, training57 and source-inventory913 PASS; not executed here.
-  Arena1650 concurrent full run PENDING; previous1564 PASS precedes last86 tests.
+  Registered floors v3: 475 core / 1914 arena / 57 training; final verification pending.
+  Reported full core475/training57/source-inventory1177 PASS; not executed here.
+  Latest full arena1650 PASS precedes added264 tests; no full arena1914 PASS claimed.
   Scoped integration budget120000ms; immutable six-JSON test snapshot; validators stay fresh.
-  Older arena1276 PASS precedes amendment; iterator/interprocedural HIGH rereviews pending.
+  Scoped final source-freeze reviews both YES; IDs in header/plan, not publication closure.
+  Final enumeration/static/PlantUML pending; source-freeze eligible does not mean frozen.
   Reported host checks and public closure do not establish full frozen verification.
   R0 records/partial logs and old markers are historical; no current closure authority.
   Legacy R0 archived logs and temporary images are missing.
