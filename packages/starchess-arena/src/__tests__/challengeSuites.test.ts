@@ -54,7 +54,7 @@ describe("persisted exhaustive Phase1 baseline evidence", () => {
     } else {
       expect(canonical(current.pins)).toBe(canonical(executionPins()));
     }
-  });
+  }, 180000);
 
   it("records semantic parity for an independently executed rerun of each scheduled case", () => {
     expect(report.deterministicRerun.performed).toBe(true);

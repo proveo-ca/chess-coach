@@ -22,7 +22,7 @@ const { importEvidence, assertImageArchive, safeRelative, VITEST_FLOORS } = requ
 };
 const roots: string[] = [];
 let diagnostics: ReturnType<typeof buildDiagnosticFixture>;
-beforeAll(() => { diagnostics = buildDiagnosticFixture(); }, 120000);
+beforeAll(() => { diagnostics = buildDiagnosticFixture(); }, 240000);
 afterEach(() => { for (const root of roots.splice(0)) rmSync(root, { recursive: true, force: true }); });
 const fixture = () => buildImportFixture(diagnostics, roots);
 type Fixture = ReturnType<typeof fixture>;

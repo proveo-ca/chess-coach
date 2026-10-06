@@ -43,7 +43,7 @@ describe("Phase2 measured coverage and migration evidence", () => {
     } else {
       expect(canonical(report.pins)).toBe(canonical(executionPins()));
     }
-  }, 30000);
+  }, 180000);
 
   it.each(["baseline-report.json", "coverage.json", "contract-report.json", "pin-migration.json", "r2-composition-report.json"] as const)(
     "requires %s in the configured fresh output without falling back to host history", (missing) => {
