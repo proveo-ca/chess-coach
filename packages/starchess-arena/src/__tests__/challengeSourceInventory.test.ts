@@ -49,6 +49,21 @@ const wrappedMutations = [
 ];
 const mutationProbe = (invocation: string): string => `function poison(bag:{key:number}){(bag as any).key="changed";}function probe(receiver:any,bag:{key:number}){return receiver[bag.key];}const data={key:0};${invocation}consume(probe(unknownFactory(),data));`;
 const deferredMutations = [
+  { name: "reassigned zero argument callees activate captured defaults", effect: 'function poison(bag=data){(bag as any).key="changed";}let invoke:any=undefined;invoke=poison;invoke();' },
+  { name: "reassigned reader callees activate captured defaults", effect: 'function read(){return 0;}function poison(bag=data){(bag as any).key="changed";}let invoke=read;invoke=poison;invoke();' },
+  { name: "transitive reassignment aliases activate captured defaults", effect: 'function poison(bag=data){(bag as any).key="changed";}let first:any;first=poison;let second:any=0;second=first;const alias=second;alias();' },
+  { name: "reflected reassigned callees activate captured defaults", effect: 'function poison(bag=data){(bag as any).key="changed";}let invoke:any=undefined;invoke=poison;Reflect.apply(invoke,null,[]);' },
+  { name: "applied reassigned callees activate captured defaults", effect: 'function poison(bag=data){(bag as any).key="changed";}let invoke:any=0;invoke=poison;invoke.apply(null,[]);' },
+  { name: "bound reassigned callees activate captured defaults", effect: 'function poison(bag=data){(bag as any).key="changed";}let invoke:any;invoke=poison;const bound=invoke.bind(null);bound();' },
+  { name: "reassigned callees retain destructured default effects", effect: 'function poison({bag}:{bag:{key:number}}={bag:data}){(bag as any).key="changed";}let invoke:any;invoke=poison;invoke();' },
+  { name: "reassigned callees retain rest argument effects", effect: 'function poison(...bags:{key:number}[]){(bags[1] as any).key="changed";}let invoke:any;invoke=poison;invoke({key:1},data);' },
+  { name: "missing array callables invalidate supplied marker data", effect: 'function poison(bag:{key:number}){(bag as any).key="changed";}const holder:any=[];holder[0]=poison;holder[0](data);' },
+  { name: "sparse array callables invalidate supplied marker data", effect: 'function poison(bag:{key:number}){(bag as any).key="changed";}const holder:any=[,];holder[0]=poison;holder[0](data);' },
+  { name: "missing array callables activate captured defaults", effect: 'function poison(bag=data){(bag as any).key="changed";}const holder:any=[];holder[0]=poison;holder[0]();' },
+  { name: "sparse array aliases activate captured defaults", effect: 'function poison(bag=data){(bag as any).key="changed";}const holder:any=[,];const alias=holder;alias[0]=poison;const invoke=holder[0];invoke();' },
+  { name: "nested sparse array callables activate captured defaults", effect: 'function poison(bag=data){(bag as any).key="changed";}const holder:any={nested:[,]};holder.nested[0]=poison;Reflect.apply(holder.nested[0],null,[]);' },
+  { name: "helper installed sparse callables activate captured defaults", effect: 'function poison(bag=data){(bag as any).key="changed";}function install(holder:any[]){holder[0]=poison;}const holder:any=[,];install(holder);holder[0]();' },
+  { name: "forwarded helper callables activate captured defaults", effect: 'function poison(bag=data){(bag as any).key="changed";}function install(holder:any[]){holder[0]=poison;}function forward(holder:any[]){install(holder);}const holder:any=[,];forward(holder);holder[0]();' },
   { name: "helper effects invalidate stored apply vectors", effect: 'function poison(bag:{key:number}){(bag as any).key="changed";}function replace(args:any[],bag:{key:number}){args[0]=bag;}const args=[{key:0}];poison.apply(null,args);replace(args,data);poison.apply(null,args);' },
   { name: "forwarded helper effects invalidate reflected vectors", effect: 'function poison(bag:{key:number}){(bag as any).key="changed";}function replace(args:any[],bag:{key:number}){args[0]=bag;}function forward(args:any[],bag:{key:number}){replace(args,bag);}const args=[{key:0}];Reflect.apply(poison,null,args);forward(args,data);Reflect.apply(poison,null,args);' },
   { name: "helper effects invalidate nested spread tuples", effect: 'function poison(bag:{key:number}){(bag as any).key="changed";}function replace(tuple:any[],bag:{key:number}){tuple[2][0]=bag;}const tuple=[poison,null,[{key:0}]];Reflect.apply(...tuple);replace(tuple,data);Reflect.apply(...tuple);' },
@@ -311,6 +326,13 @@ const unprovenComputedReceivers = [
   'const box: any = {f: 0}; function mutate() {box.f = () => {};} mutate(); box.f[["con", "structor"].join("")]("return process")();',
 ];
 const ordinaryComputedData = [
+  'const data={key:0};function read(bag=data){return bag.key;}const holder=[,read];holder[1]();function probe(receiver:any,bag:{key:number}){return receiver[bag.key];}consume(probe(unknownFactory(),data));',
+  'const data={key:0};function writeLocal(bag={key:1}){bag.key=2;}writeLocal();function probe(receiver:any,bag:{key:number}){return receiver[bag.key];}consume(probe(unknownFactory(),data));',
+  'const data={key:0};function writeLocal(bag={key:1}){bag.key=2;}let invoke:any;invoke=writeLocal;invoke();function probe(receiver:any,bag:{key:number}){return receiver[bag.key];}consume(probe(unknownFactory(),data));',
+  'const data={key:0};function read(bag=data){return bag.key;}let invoke:any;invoke=read;invoke();function probe(receiver:any,bag:{key:number}){return receiver[bag.key];}consume(probe(unknownFactory(),data));',
+  'const data={key:0};function read(bag=data){return bag.key;}const holder:any=[,];holder[0]=read;holder[0]();function probe(receiver:any,bag:{key:number}){return receiver[bag.key];}consume(probe(unknownFactory(),data));',
+  'const data={key:0};function unused(bag=data){bag.key=1;}function read(){return 0;}let invoke:any;invoke=read;invoke();function probe(receiver:any,bag:{key:number}){return receiver[bag.key];}consume(probe(unknownFactory(),data));',
+  'const data={key:0};function writeOther(bag=data){bag.key=1;}let invoke:any;invoke=writeOther;invoke({key:2});function probe(receiver:any,bag:{key:number}){return receiver[bag.key];}consume(probe(unknownFactory(),data));',
   'const data={key:0};function replace(args:any[]){args[0]={key:1};}const other=[{key:2}];replace(other);function read(bag:{key:number}){return bag.key;}read.apply(null,[data]);function probe(receiver:any,bag:{key:number}){return receiver[bag.key];}consume(probe({0:"value"},data));',
   'const data={key:0};function writeOther(bag=data){bag.key=1;}writeOther({key:2});function probe(receiver:any,bag:{key:number}){return receiver[bag.key];}consume(probe({0:"value"},data));',
   'const data={key:0};function writeOther(bag=data){bag.key=1;}const supplied=flag?{key:2}:{key:3};writeOther(supplied);function probe(receiver:any,bag:{key:number}){return receiver[bag.key];}consume(probe({0:"value"},data));',

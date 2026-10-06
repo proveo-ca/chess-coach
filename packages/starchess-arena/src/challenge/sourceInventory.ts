@@ -685,6 +685,18 @@ export const collectSourceInventory = (
     const mutatedRoots = new Set<ts.Expression | ts.Symbol | string>();
     const nonNumericWrites = new Set<ts.Symbol | string>();
     const numericAssignments = new Map<ts.Symbol | string, ts.Expression[]>();
+    const callableAssignments = new Map<ts.Expression | ts.Symbol | string, Set<ts.Expression>>();
+    const assignmentTargets: { target: ts.Expression; value: ts.Expression }[] = [];
+    let callableAssignmentCount = 0;
+    const addCallableAssignments = (target: ts.Expression, values: Iterable<ts.Expression>): void => {
+      const entries = [...values];
+      if (!entries.length) return;
+      for (const root of provenance(target)) {
+        let assigned = callableAssignments.get(root);
+        if (!assigned) { assigned = new Set(); callableAssignments.set(root, assigned); }
+        for (const value of entries) if (!assigned.has(value)) { assigned.add(value); callableAssignmentCount++; }
+      }
+    };
     const arrayMutatorTargets: ts.Expression[] = [];
     const memberMutationTargets: ts.Expression[] = [];
     const invocationMutationRoots = new Set<ts.Expression | ts.Symbol | string>();
@@ -731,6 +743,8 @@ export const collectSourceInventory = (
         else if (ts.isBinaryExpression(target) && target.operatorToken.kind === ts.SyntaxKind.EqualsToken) writes(target.left);
       };
       if (ts.isBinaryExpression(node) && node.operatorToken.kind >= ts.SyntaxKind.FirstAssignment && node.operatorToken.kind <= ts.SyntaxKind.LastAssignment) {
+        assignmentTargets.push({ target: node.left, value: node.right });
+        addCallableAssignments(node.left, [node.right]);
         const numericCandidate = [ts.SyntaxKind.EqualsToken, ts.SyntaxKind.PlusEqualsToken, ts.SyntaxKind.MinusEqualsToken].includes(node.operatorToken.kind);
         const target = unwrap(node.left);
         if (numericCandidate && ts.isIdentifier(target)) {
@@ -939,6 +953,23 @@ export const collectSourceInventory = (
       }
     };
     const parameterProofActive = new Set<ts.ParameterDeclaration>();
+    const callableParameterAssignments = new Map<ts.ParameterDeclaration, Set<ts.Expression>>();
+    const addCallableParameterAssignments = (declaration: ts.ParameterDeclaration, values: Iterable<ts.Expression>): void => {
+      let assigned = callableParameterAssignments.get(declaration);
+      if (!assigned) { assigned = new Set(); callableParameterAssignments.set(declaration, assigned); }
+      for (const value of values) if (!assigned.has(value)) { assigned.add(value); callableAssignmentCount++; }
+    };
+    for (const { target, value } of assignmentTargets) {
+      const path = parameterPath(target);
+      if (path) addCallableParameterAssignments(path.declaration, [value]);
+    }
+    const inheritCallableAssignments = (declaration: ts.ParameterDeclaration, argument: ts.Expression): void => {
+      const values = callableParameterAssignments.get(declaration);
+      if (!values?.size) return;
+      addCallableAssignments(argument, values);
+      const path = parameterPath(argument);
+      if (path) addCallableParameterAssignments(path.declaration, values);
+    };
     const mutationParameters = new Set<ts.ParameterDeclaration>();
     const pendingMutationParameters: ts.ParameterDeclaration[] = [];
     const queueMutationParameter = (target: ts.Expression): void => {
@@ -989,7 +1020,23 @@ export const collectSourceInventory = (
     type LocalInvocation = {
       target?: ts.Node; args?: ts.Expression[];
       unproved?: boolean;
+      callee?: ts.Expression;
       bound?: { receiver: ts.Expression; args?: ts.Expression[] };
+    };
+    const callableCandidates = (expression: ts.Expression, seen = new Set<ts.Expression>(), targets = new Set<ts.Node>()): Set<ts.Node> => {
+      if (seen.has(expression)) return targets;
+      seen.add(expression);
+      for (const root of provenance(expression)) for (const value of callableAssignments.get(root) ?? []) callableCandidates(value, seen, targets);
+      const value = origin(expression);
+      const symbol = ts.isIdentifier(value) ? binding(value) : undefined;
+      const target = symbol && typeof symbol !== "string" ? symbol.valueDeclaration : value;
+      if (target && (ts.isFunctionDeclaration(target) || ts.isFunctionExpression(target) || ts.isArrowFunction(target))) targets.add(target);
+      if (ts.isConditionalExpression(value)) { callableCandidates(value.whenTrue, seen, targets); callableCandidates(value.whenFalse, seen, targets); }
+      const member = property(value);
+      if (member) callableCandidates(member.receiver, seen, targets);
+      if (ts.isCallExpression(value)) callableCandidates(value.expression, seen, targets);
+      if (ts.isArrayLiteralExpression(value)) for (const entry of value.elements) if (!ts.isOmittedExpression(entry)) callableCandidates(ts.isSpreadElement(entry) ? entry.expression : entry, seen, targets);
+      return targets;
     };
     const localParameterCallables = (node: ts.Expression): ts.Expression[] => {
       const path = parameterPath(node);
@@ -1014,7 +1061,7 @@ export const collectSourceInventory = (
       if (depth > 16) throw new Error(`Unsupported parameter mutation wrapper: ${file.path}`);
       const stale = staleInvocationSource(expression);
       if (invoked && !property(unwrap(expression)) && [...provenance(expression)].some((root) => numericAssignments.has(root as ts.Symbol | string) || nonNumericWrites.has(root as ts.Symbol | string))) {
-        return { unproved: true, args };
+        return { unproved: true, callee: expression, args };
       }
       if (!invoked && stale && expected) for (const root of provenance(expression)) {
         for (const value of numericAssignments.get(root as ts.Symbol | string) ?? []) {
@@ -1043,7 +1090,8 @@ export const collectSourceInventory = (
         return member.name === "bind" ? { ...invocation, bound: { receiver: member.receiver, args: values } } : invocation;
       }
       if (member) {
-        if (invoked && stale && ts.isObjectLiteralExpression(origin(member.receiver))) return { unproved: true, args };
+        const holder = origin(member.receiver);
+        if (invoked && stale && (ts.isObjectLiteralExpression(holder) || ts.isArrayLiteralExpression(holder) && (member.name === undefined || /^(0|[1-9][0-9]*)$/.test(member.name)))) return { unproved: true, callee: expression, args };
         const receiver = localInvocation(member.receiver, undefined, depth + 1, expected, false);
         return receiver?.target ? { target: receiver.target } : undefined;
       }
@@ -1060,7 +1108,7 @@ export const collectSourceInventory = (
         if (stale) throw new Error(`Unsupported parameter mutation callee: ${file.path} -> ${expression.getText(source)}`);
         return { target, args };
       }
-      if (invoked && stale) return { unproved: true, args };
+      if (invoked && stale) return { unproved: true, callee: expression, args };
       return undefined;
     };
     const localCallbackParameter = (fn: ts.Node | undefined, index: number, argument: ts.Expression, expected: ts.Node): boolean => {
@@ -1122,7 +1170,7 @@ export const collectSourceInventory = (
         ts.isNewExpression(value) || ts.isStringLiteralLike(value) || ts.isNumericLiteral(value) || ts.isBigIntLiteral(value) ||
         [ts.SyntaxKind.NullKeyword, ts.SyntaxKind.TrueKeyword, ts.SyntaxKind.FalseKeyword].includes(value.kind);
     };
-    const mutationStateSize = (): number => mutatedRoots.size + invocationMutationRoots.size + mutationParameters.size;
+    const mutationStateSize = (): number => mutatedRoots.size + invocationMutationRoots.size + mutationParameters.size + callableAssignmentCount;
     memberMutationTargets.forEach(queueMutationParameter);
     let previousMutationState: number;
     let mutationPass = 0;
@@ -1142,7 +1190,7 @@ export const collectSourceInventory = (
         const index = +fn.parameters.indexOf(declaration);
         for (const call of mutationCalls) {
           const invocation = localInvocation(call.expression, invocationArguments(call.arguments), 0, fn);
-          if (invocation?.target !== fn) {
+          if (invocation?.target !== fn && !(invocation?.unproved && invocation.callee && callableCandidates(invocation.callee).has(fn))) {
             for (const [argumentIndex, argument] of call.arguments.entries()) {
               if (!localCallbackParameter(invocation?.target, argumentIndex, argument, fn)) mutationCallback(ts.isSpreadElement(argument) ? argument.expression : argument, fn, index);
             }
@@ -1153,14 +1201,14 @@ export const collectSourceInventory = (
             throw new Error(`Unsupported parameter mutation arguments: ${file.path}`);
           }
           if (declaration.dotDotDotToken) {
-            for (const argument of invocation.args.slice(index)) markArgumentMutation(argument);
+            for (const argument of invocation.args.slice(index)) { inheritCallableAssignments(declaration, argument); markArgumentMutation(argument); }
           } else {
             const argument = invocation.args[index];
             const defaulted = !argument || !nonUndefinedArgument(argument);
-            if (argument) markArgumentMutation(argument);
-            if (defaulted && declaration.initializer) markArgumentMutation(declaration.initializer);
+            if (argument) { inheritCallableAssignments(declaration, argument); markArgumentMutation(argument); }
+            if (defaulted && declaration.initializer) { inheritCallableAssignments(declaration, declaration.initializer); markArgumentMutation(declaration.initializer); }
             const defaults = (node: ts.Node): void => {
-              if (ts.isBindingElement(node) && node.initializer) markArgumentMutation(node.initializer);
+              if (ts.isBindingElement(node) && node.initializer) { inheritCallableAssignments(declaration, node.initializer); markArgumentMutation(node.initializer); }
               ts.forEachChild(node, defaults);
             };
             if (!ts.isIdentifier(declaration.name)) defaults(declaration.name);
