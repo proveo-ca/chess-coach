@@ -1,7 +1,8 @@
 # ML Adjutant — approved exact R1 future contracts
 
-Status: **Prior Executor-approved future R1 design contract FROZEN; economic amendment exact text Executor-approved and persisted with explicit authorization. Review BLOCKED: both persisted reviews completed NO; corrective-annex approval/persistence/rereview and final Executor R1 closure approval remain pending. NOT implemented, fitted, measured, or training-ready; no R6 permission.**
-**Review disposition:** [outside-body ledger](ml-adjutant-r1-economic-amendment.md#persisted-review-and-prospective-proposal-disposition) records adversarial `ses_eecd8fff0ffeRVMA9seAyleurz` (six HIGH + two MEDIUM) and security `ses_eecd8ffcfffeZT3SJW3t5RsKI5` (binding HIGH + two overlapping MEDIUM), both **NO**. Prospective proposal READY TO APPROVE: yes verdicts do not supersede these NO verdicts or authorize corrective-annex persistence. Review-pending references below mean future corrective-revision rereview/finding resolution, not unperformed original adversarial/security reviews. Method: read-only source/document inspection, no executed counterexamples or actual R5 results.
+Status: **Prior Executor-approved future R1 design contract FROZEN; approved base + approved correction, both persisted with explicit authorization. PENDING persisted combined spec/adversarial/security rereview, finding resolution and final Executor R1 closure approval. NOT implemented, fitted, measured, or training-ready; no R6 permission.**
+**Review disposition:** [outside-body ledger](ml-adjutant-r1-economic-amendment.md#persisted-review-and-prospective-proposal-disposition) retains historical base-only adversarial `ses_eecd8fff0ffeRVMA9seAyleurz` (six HIGH + two MEDIUM) and security `ses_eecd8ffcfffeZT3SJW3t5RsKI5` (binding HIGH + two overlapping MEDIUM), both **NO**. Prospective proposal READY TO APPROVE: yes reported finding resolution, not combined persisted clearance. Executor subsequently approved the exact corrective body and separately authorized persistence; [annex now persisted](ml-adjutant-r1-economic-corrective-annex.md). Review-pending references mean combined persisted rereview/finding resolution. Method remains read-only source/document inspection, no executed counterexamples or actual R5 results.
+**Correction scope:** [A1–A7](ml-adjutant-r1-economic-corrective-annex.md) and the [base outside-body precedence map](ml-adjutant-r1-economic-amendment.md#scoped-corrective-precedence--a1a7-only) identify closed types, independent host binding/explicit V3 functions/private wrapper, exact positive graph reductions, native CC/Marine macros/births, source law/final-node and pooled row selection, eligibility merging and statistical estimands. No unapproved rename/grammar edits or feature/model/policy change; final-design-approval boundary remains pending.
 **Scoped economic/promotion supersession:** [approved amendment](ml-adjutant-r1-economic-amendment.md) §§1–12 replaces the proposed `65,536` economic/feature cap with inclusive `1,048,576` operations, supplies exact estimator/economic/promotion definitions, and supersedes the 370-dimensional feature/artifact profile **for amended inference only**. Its §§7–8 append 12+36 fields to unchanged historical indices `0..369`; §11 defines 418-dimensional substitutions and targeted versions for features/manifest/episode/checkpoint/artifact/recipe/hostConfig, preserving the 21 Versions keys and 26 Configuration keys. Configuration `workCap=2048` remains generator work. Original §§4,9–10,11–12,15–17 below retain the frozen historical 370-field definitions/fixtures; read their dimension/version-bearing requirements through amendment §§11–12 for the amended profile, not as a second compatible artifact. Observation/history/batch/ledger/provenance, codec, scoped composition V3, projection, comparator, policy RNG, optimizer/loss/eligibility and supervision/checkpoint ordering remain unchanged. Document-only approval certifies no runtime/support/calibration result.
 **Scoped R2 amendment:** [r2-generator-v3.md](r2-generator-v3.md) supersedes only R2 generator/package-bridge/pin choices below: V1 observation input; core `/planning-v1` plus pure arena `/intent-codec-v1` + `/observations`; training `/candidates` only; `composeCandidatesFromObservationV1` → `CandidateBatchV3` / `challenge-composition-v3`; exact `jssha` **3.3.2**, import `jssha/sha256`, BSD-3-Clause, synchronous SHA-256 → Uint8Array32; Marine structural promotion and stored prefix mine-anchor reservations. The earlier Noble2.4 selected dependency is historical and explicitly overridden. Full native core `.` / `coreRoot` remains host-only, captured and inventoried; `fflate` stays outside the four-root public model closure. No vendor constructor exception, patch or tree-shaking assumption is approved. Diagnostics B, model deadlines and bounded traversal remain unchanged. Broader V2 history/features/events/artifacts remain future contracts, not R2 exports; no calibration/370-field/SGD amendment is implied.
 **Scoped R2 now CLOSED:** unchanged [outside-bundle closure record](../evidence/ml-adjutant-r2-closure.json) and immutable57-artifact generation record all11/core475/arena1944/training57/Node109/actual infra6/54+54 equal/original parity, independently validated host import/publication and both post-publication READY TO CLOSE R2: yes. Method limits remain read-only reviewer inspection, no independent suite/archive-hash reruns. This closes V1/bounded V3/hermetic assurance only, not broader R1 design implementation, calibrated economy, learning/training/weights or registry activation.
@@ -14,11 +15,11 @@ R2 is **CLOSED within authorized V1/bounded V3 and current hermetic assurance**;
 This document implements no learner, training, registry activation, or new R1 evidence; R0 closure references remain separate from future contract validation.
 This docs-only closure synchronization changes no source, tests, configs, corpus, or evidence bytes.
 The source-reading inventory and historical pins remain frozen historical evidence, not a refreshed source inspection.
-**New economic extension: [exact amendment Executor-approved and persisted](ml-adjutant-r1-economic-amendment.md); original persisted reviews completed NO, review BLOCKED awaiting corrective-annex approval/persistence/rereview; final Executor R1 closure approval PENDING.** The original 370-field profile remains frozen history, not the amended 418-field profile or a supplied calibrated model; extended R1 closure and R3–R5 readiness remain open before explicit R6 approval.
+**New economic extension: [approved base](ml-adjutant-r1-economic-amendment.md) + [approved correction](ml-adjutant-r1-economic-corrective-annex.md), both persisted; combined persisted rereview and final Executor R1 closure approval PENDING.** Historical base-only NO verdicts remain intact. The original 370-field profile remains frozen history, not the amended 418-field profile or a supplied calibrated model; extended R1 closure and R3–R5 readiness remain open before explicit R6 approval.
 
 ## 1. Authority, vocabulary, and decision boundary
 
-Every normative sentence below describes the **approved original future contract**, unless explicitly labeled a historical source fact, rejected alternative, or scoped supersession. The separate economic/promotion amendment owns the targeted amended profile; its exact text is approved and persisted, but completed persisted reviews returned NO. Corrective-annex approval/persistence/rereview and final amended-R1 closure approval remain pending.
+Every normative sentence below describes the **approved original future contract**, unless explicitly labeled a historical source fact, rejected alternative, or scoped supersession. The separate base amendment and corrective annex own the targeted prospective amended profile; both exact bodies are approved and persisted. Historical base-only reviews returned NO; combined persisted rereview and final amended-R1 closure approval remain pending.
 Approval freezes the future R1 design; it does not certify that the corresponding source, package exports, native hooks or adapter exist.
 Native SCFEN parsing, `addScAction`, `beginScTurn`, `endScTurn`, and `scOutcome` remain the rules and outcome authority.
 The host supplies pure bookkeeping, trusted-source binding, authorization, supervision, and verification, not a second rules engine.
@@ -83,7 +84,7 @@ The batch-event cap's equality to the existing IPC-message count is coincidental
 
 ### 2.1 Selected economic extension — amendment pending
 
-**[Exact amendment Executor-approved and persisted](ml-adjutant-r1-economic-amendment.md) — review BLOCKED by completed persisted NO verdicts; corrective-annex approval/persistence/rereview and final Executor R1 closure approval pending; NOT implemented, fitted, measured, or training-ready.** Executor selected **Calibrated belief model**, not the visible-lower-bound or memory-heuristic alternatives, for current enemy surviving deployed material.
+**[Approved base](ml-adjutant-r1-economic-amendment.md) + [approved corrective annex](ml-adjutant-r1-economic-corrective-annex.md), both persisted — combined persisted rereview and final Executor R1 closure approval pending; NOT implemented, fitted, measured, or training-ready.** Executor selected **Calibrated belief model**, not the visible-lower-bound or memory-heuristic alternatives, for current enemy surviving deployed material.
 The prior frozen 370-field v2 registry contains own cost/investment/exposure and witnessed enemy-loss bounds; it does not implement this live material comparison.
 SGD learns supplied feature weights and cannot supply an absent comparison or prove calibration.
 
@@ -94,7 +95,7 @@ No hidden actual state, enemy bank, current enemy queue, or future trace enters 
 Require candidate × material-balance/uncertainty interactions for spend, deployment, trade, and protection; a shared raw context term cancels in linear ranking/softmax.
 Keep **H=1**; this choice does not authorize three-window search.
 
-**Selected turn-aware constraint — defined in amendment §§2–6, NOT implemented; review BLOCKED, corrective rereview/final closure pending.** Standard public opening at turn 0: surviving enemy combat replacement `4` (four Marines at `UNIT_COST.p=1`) + available minerals `3` = economic potential `7`.
+**Selected turn-aware constraint — defined in amendment §§2–6 with scoped annex A1–A4 clarification, NOT implemented; combined rereview/final closure pending.** Standard public opening at turn 0: surviving enemy combat replacement `4` (four Marines at `UNIT_COST.p=1`) + available minerals `3` = economic potential `7`.
 Use this as a public default prior, not a hidden oracle or corpus-ID input; keep deployed/banked components and their joint uncertainty distinct thereafter.
 Opening Marines have actual paid basis `0`; `4` is replacement valuation, never a debit.
 CC is outside the user's `7`: native `UNIT_COST.k=1` and `deployedMaterialFromPlacement` includes CC, so do not reuse that helper blindly or change engine prices/valuation.
@@ -105,7 +106,7 @@ Infer latent enemy bank/spend/destruction/waste/promotion from authorized histor
 Maintain belief memory without resetting to `7` each turn/sighting or treating movement/repeated sightings as new deployment.
 
 Exact probabilistic architecture, feature dictionary/versions, calibration bins/data/objective, and acceptance thresholds are **defined in the approved amendment**, not unchosen design preferences. Amendment §§3–6 define the joint PMF, positive evaluator, independent Boolean certainty support, temporal CC envelope and persistent witnessed/unlocated possibilities; §§7–8 define attempted-destination-only T, immediate-post-actor risk, survivor P and six local route predicates; §§9–12 define collection/calibration/acceptance, binding and inclusive work.
-R1 is review BLOCKED by completed persisted adversarial/security NO. It requires new corrective-annex exact-text approval, separate persistence authorization, spec/adversarial/security reviews of the new persisted revision, finding resolution and final Executor amended-R1 closure approval. Do not rewrite §§4,9–10,15's original closed 370-field schemas in place; apply the scoped supersession above. No R6 permission follows.
+Corrective exact-text approval, separate persistence authorization and annex persistence are complete. R1 requires spec/adversarial/security rereview of the combined persisted revision, finding resolution and final Executor amended-R1 closure approval; historical base-only NO is not rewritten as YES. Do not rewrite §§4,9–10,15's original closed 370-field schemas in place; apply the scoped supersession above. No R6 permission follows.
 R4 owns future belief/features implementation; R5 must persist calibration, equivalent-valuation, uncertainty/interaction, and hidden-input noninterference verification before R6.
 R5 also covers public opening/deployed-bank split, CC exclusion/zero paid basis, turn tiers/cap/grant-boundary correctness, and no belief resets or sighting double-counts.
 See [weights §5.1](ml-adjutant-weights.md#51-selected-economic-extension--calibrated-surviving-material-belief), [recipe choice](ml-adjutant-r1-recipe.md#selected-economic-extension--calibrated-belief-model), and [roadmap gate](PLAN-ml-adjutant.md#selected-economic-extension--pre-training-gate).
@@ -158,6 +159,8 @@ All DTO object fields are exact: reject unknown/missing fields, sparse arrays, g
 `everLit` is sorted unique squares, accumulated from actual authorized vision-witness changes and final `lit` cells, never piece-only reveals or nominal projections.
 `economicState` is the reconciled ledger state defined in §7; the current snapshot is defined in §6.
 
+**Historical signature boundary:** the original `encodeFeatures(history,candidate)` / `flattenFeatures(blocks)` declarations and 370-field descriptions below remain frozen history. They are not a parallel runtime interface or a fallback for the amended profile. The explicit state/model/meter signatures and private wrapper in annex A2 are the targeted prospective amended contract; no existing export/implementation is claimed.
+
 ```ts
 interface CandidatePolicyV2 {
   choose(history: AuthorizedHistory, rng: () => number):
@@ -178,6 +181,27 @@ decodeArtifact(bytes: Uint8Array, expectedManifest: FeatureManifest): ValidatedA
 encodeArtifact(artifact: ValidatedArtifact): Uint8Array;
 inferenceWeights(artifact: ValidatedArtifact): Float64Array;
 ```
+
+### Scoped amended feature boundary — annex A2
+
+The following repeats only the approved [A2 signatures and wrapper](ml-adjutant-r1-economic-corrective-annex.md#a2-independent-host-expectations-and-pure-feature-interface), not a new or optional API:
+
+```text
+initializeEconomicState(PublicOpening,CheckedBoundary,EconomicArtifact,Meter)
+  → EconomicBeliefState
+advanceEconomicState(EconomicBeliefState,CheckedBoundary,EconomicArtifact,Meter)
+  → EconomicBeliefState
+readoutEconomic(History,EconomicBeliefState,EconomicArtifact,Meter)
+  → EconomicReadout
+encodeFeaturesV3(History,EconomicBeliefState,Candidate,EconomicArtifact,Meter)
+  → FeatureBlocksV3
+flattenFeaturesV3(FeatureBlocksV3,Meter) → fresh Float64Array[418]
+
+PrivateEconomicRequestV2={version:'starchess-training-economic-request-v2',
+  originalRequest:OriginalEpisodeRequestV2,economicPinRef:Ref}
+```
+
+Annex A1 supplies the closed types; A2 binds authorized history/state to the checked boundary and independently expected estimator/weights/manifest/pin/provenance. The wrapper pairs with the original supervised protocol and adds no keys to the original request, Configuration, Versions or IPC payloads. Parent recomputation uses checked public batches, not private labels as feature inputs. Combined persisted rereview/final approval remain pending; there is no historical two-argument encoder path for amended inference.
 
 Use **history**, not observation alone: novelty needs `everLit` and economic interactions need the reconciled ledger.
 `/observations` owns observation validation/bytes and all authorized DTO definitions; `/events` owns batch validation/reconciliation/history advancement.
@@ -1124,6 +1148,6 @@ R1 acceptance alone supplied no implementation. Scoped R2 V1 exports/DTOs/bounde
 Lead/build completed R0 repair/freeze/verification/publication; **A01–A15 CLOSED** under both final post-publication READY reviews in [closure JSON](../evidence/ml-adjutant-r0-closure.json).
 That authority records **426 core / 689 arena / 107 Node**, **54+54 semantic parity**, actual Docker **5/5**, host post-publication **13/13**, including both live pins, no skips.
 Reviewers read source/captured records without independently recomputing hashes or executing tests; this pass invokes no agents and executes nothing.
-R0/R2 are closed; [§2.1's persisted calibrated economic amendment](ml-adjutant-r1-economic-amendment.md) is review BLOCKED by completed adversarial/security NO. New corrective-annex exact-text approval, separate authorized persistence, persisted spec/adversarial/security rereviews/finding resolution and final Executor R1 closure approval remain required. Remaining R3–R5 implementation/readiness/calibration/interactions plus explicit R6 permission still precede training. Learned-policy transfer follows formal primary availability, as amendment §10 specifies; it does not circularly block starting R6. Frozen artifact/adapter R7 precedes learned strict R8.
+R0/R2 are closed; [approved base](ml-adjutant-r1-economic-amendment.md) and [approved corrective annex](ml-adjutant-r1-economic-corrective-annex.md) are persisted. Combined spec/adversarial/security rereview/finding resolution and final Executor R1 closure approval remain required; historical base-only NO rows remain intact. Remaining R3–R5 implementation/readiness/calibration/interactions plus explicit R6 permission still precede training. Learned-policy transfer follows formal primary availability, as amendment §10 specifies; it does not circularly block starting R6. Frozen artifact/adapter R7 precedes learned strict R8.
 The prior **370**-field v2 registry remains frozen, not a supplied calibrated model; public turn-0 **4+3=7**, CC exclusion/zero endowed paid basis and turn/grant-aware memory are future **H=1** belief requirements, not native causal-frame calculus or H3 search.
 This future contract ends with **no trained weights, no actual derived training seed pins, no passing R1 learner/calibration validation claim, no registry activation, and no altered rules authority**.
