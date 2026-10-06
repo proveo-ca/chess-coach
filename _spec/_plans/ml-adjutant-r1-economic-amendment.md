@@ -1,7 +1,7 @@
 <!-- Approval/disposition metadata: outside the approved normative body. -->
 
 **Exact text: Executor-approved. Document persistence: persistence explicitly authorized.**
-**Disposition: PENDING persisted reviews and final Executor R1 closure approval.**
+**Disposition: review BLOCKED. Both persisted reviews completed NO; findings await corrective-annex exact-text approval, authorized persistence and persisted rereview. Final Executor R1 closure approval remains PENDING.**
 **Future contract: NOT implemented, fitted, measured, or training-ready. No R6 permission.**
 Document-only approvals do not certify runtime feasibility, native support containment, or calibration.
 The original [370-field R1 contract](ml-adjutant-r1-contracts.md) remains frozen historical authority outside this amendment's scoped supersession.
@@ -11,8 +11,8 @@ The [recipe](ml-adjutant-r1-recipe.md), [weights plan](ml-adjutant-weights.md), 
 |---|---|
 | Exact text in chat → Executor exact-text approval | Complete: Executor-approved. |
 | Document-persistence authorization → persistence | Explicitly authorized; exact body persisted below. |
-| Spec / adversarial / security review of persisted revision | PENDING; no completed review verdict recorded here. |
-| Resolve persisted-review findings | PENDING reviews; no finding-resolution claim. |
+| Spec / adversarial / security review of persisted revision | Adversarial and security completed **NO**; sessions/findings recorded in the outside-body review ledger below. No separate completed spec-review verdict is supplied. |
+| Resolve persisted-review findings | **BLOCKED:** proposed corrections received prospective positive reviews only; no authorized persisted corrective annex or successful persisted rereview exists. |
 | Executor final amended-R1 design/closure approval | PENDING; R1 is not closed. |
 | Implementation, fitting, measurements, R3–R5 readiness and explicit R6 permission | Later gates; not supplied or authorized by this document. |
 
@@ -989,3 +989,19 @@ Exact text in chat
 
 Implementation readiness, fitted calibration, transfer evidence, and explicit R6 permission remain later gates.
 <!-- END APPROVED NORMATIVE BODY -->
+
+<!-- Review/disposition metadata: outside the unchanged approved normative body. -->
+## Persisted-review and prospective-proposal disposition
+
+Executor reports the following review dispositions. Reviewers used read-only source/document inspection; no executed counterexamples or actual R5 verification results are claimed.
+
+| Reviewed target / scope | Session | Verdict / disposition |
+|---|---|---|
+| Original persisted economic/promotion amendment; adversarial review | `ses_eecd8fff0ffeRVMA9seAyleurz` | **NO:** six HIGH + two MEDIUM. Original persisted verdict remains NO. |
+| Original persisted amendment; security privacy/binding review | `ses_eecd8ffcfffeZT3SJW3t5RsKI5` | **NO:** one binding HIGH + two MEDIUM overlapping the adversarial findings; do not count overlap as additional independent findings. Original persisted verdict remains NO. |
+| Lead's read-only corrective-annex proposal; preliminary prospective adversarial review | Separate prospective session ID not supplied | **READY TO APPROVE: yes**, for the proposal only; reports all eight original adversarial findings plus two native HIGH findings addressed prospectively, not closed in the original persisted text. |
+| Corrective-annex proposal; prospective security privacy/binding review | Separate prospective session ID not supplied | **READY TO APPROVE: yes**, for the proposal only; prior privacy/binding findings addressed prospectively, not a successful persisted rereview. |
+
+The proposal remains `/tmp/opencode/ml-adjutant-r1-corrective-annex-proposal.md`, outside `_spec/` and not authorized for persistence. Its proposed scope covers closed types/expected pins/V3 functions, positive equations, spatial native edge cases, group final-node/pooled-unique IID rules and laws, eligibility, and metrics; this metadata adopts none of those proposed normative corrections.
+Planned annex path: `_spec/_plans/ml-adjutant-r1-economic-corrective-annex.md` (not a persisted file or a link target; creation is not authorized).
+The original approved body between its markers remains unchanged. Original persisted NO verdicts remain controlling until **new Executor exact-text approval → separate persistence authorization → authorized corrective-annex persistence → spec/adversarial/security review of the new persisted revision → finding resolution → final Executor amended-R1 closure approval**. Prospective proposal approvals do not authorize annex persistence, close R1, establish R3–R5 readiness, or grant R6 permission.
