@@ -1,6 +1,7 @@
 # ML Adjutant — R1 concept decisions and experimental recipe
 
-Status: **Prior R1 future design contract FROZEN; new economic amendment PENDING. Implementation and validation readiness NOT established.**
+Status: **Prior R1 future design contract FROZEN; economic amendment exact text Executor-approved and persisted with explicit authorization. PENDING persisted reviews and final Executor R1 closure approval. NOT implemented, fitted, measured, or training-ready; no R6 permission.**
+**Scoped supersession:** [approved economic/promotion amendment](ml-adjutant-r1-economic-amendment.md) §§3–10 now define the estimator, features, local promotion predicates and statistical protocol. §§11–12 define the amended 418 profile, targeted version/dimension substitutions and shared inclusive `1,048,576`-operation cap, including initialization/output stores; generator `workCap=2048` stays separate. Original 370-field selections/closed schemas below remain frozen historical records outside the amended-inference scope; indices `0..369` retain their names/meanings/masks/formulas/scales. Original profiles, H=1, zero initialization, SGD/RNG/eligibility/supervision/checkpoint ordering remain unchanged. Document-only approvals certify no runtime/support/calibration result.
 This record preserves Executor's eight original choices, nine follow-up directions and explicitly approved final profiles.
 Design approval authorizes no implementation, dependency/export changes, training, approved run or publication in this docs-only pass.
 R2 is **CLOSED within authorized V1/bounded V3/current hermetic assurance** under the [closed contract](r2-generator-v3.md) and unchanged [outside-bundle record](../evidence/ml-adjutant-r2-closure.json). Complete fresh11/475/1944/57/Node109/actual infra6/54+54/exclusive57 publication and both post-publication READY reviews close R2 only; calibrated economy/R3–R8 remain future, weights NONE, no training.
@@ -9,7 +10,7 @@ cc6/R0/failed records remain history; absent archives/tmp images/old markers sup
 The [roadmap](PLAN-ml-adjutant.md) records **R0 CLOSED**, all **A01–A15 resolved**, with original **7 HIGH + 8 MEDIUM** history preserved.
 Unchanged [closure JSON](../evidence/ml-adjutant-r0-closure.json) records both final post-publication reviews **READY TO CLOSE R0: yes**.
 R2 is complete; calibrated versioned economic amendment and remaining R3–R5 readiness precede explicit R6 approval. No learned acceptance/weights/registry activation is implied.
-**New economic extension: SELECTED DIRECTION, NOT implemented or design-complete.** The prior R1 freeze remains intact; a new versioned amendment and readiness gate are required for the [calibrated-belief choice](#selected-economic-extension--calibrated-belief-model).
+**New economic extension: [exact amendment Executor-approved and persisted](ml-adjutant-r1-economic-amendment.md), not an unchosen architecture.** Persisted reviews and final Executor R1 closure approval remain pending; R3–R5 implementation/readiness remain later gates for the [calibrated-belief choice](#selected-economic-extension--calibrated-belief-model).
 
 The selected numeric values form a **frozen experimental profile**, not validated performance settings.
 Implement the frozen semantics and persist gradient, numerical, coverage and runtime validation before approving a run.
@@ -37,7 +38,7 @@ Those prior document-only verdicts did not close R0; the separate final implemen
 
 ## Selected economic extension — calibrated belief model
 
-**User choice: Calibrated belief model. SELECTED DIRECTION — NOT implemented; exact amendment pending.** Executor selected this over visible-lower-bound and memory-heuristic alternatives.
+**User choice: Calibrated belief model. [Exact amendment Executor-approved and persisted](ml-adjutant-r1-economic-amendment.md) — review/final closure PENDING; NOT implemented, fitted, measured, or training-ready.** Executor selected this over visible-lower-bound and memory-heuristic alternatives.
 SGD learns weights on supplied features; the prior frozen 370-field v2 manifest does not include the requested live deployed-material comparison.
 Its own cost/investment/exposure and witnessed enemy-loss lower bounds do not estimate enemy surviving deployed material.
 
@@ -59,8 +60,8 @@ Never accrue income per planning ordinal, observation/frame count, or turn chang
 Infer latent bank/spend/destruction/waste/promotion from authorized history, not actual hidden enemy accounting.
 Carry belief memory forward without resetting to `7` each turn/sighting or counting movement/repeated sightings as new deployments.
 
-Exact probabilistic architecture, feature dictionary/versions, calibration bins/data/objective, and thresholds remain **NOT CHOSEN**.
-R1 owns a new versioned amendment; R4 owns future belief/features implementation; R5 owns calibration, valuation, interaction, and noninterference readiness checks before R6.
+Exact probabilistic architecture, feature dictionary/versions, calibration bins/data/objective, and thresholds are **defined in amendment §§3–12**, with persisted review/final R1 closure still pending. Definitions include the positive evaluator, temporal CC and persistent unlocated support, independent Boolean certainty, attempted-capture-only T and immediate-post-actor risk, survivor P, and six local promotion predicates.
+R1 owns persisted spec/adversarial/security review, finding resolution and final Executor amended-R1 closure approval; R3 owns future authorized ledger integration; R4 owns future belief/features implementation; R5 owns calibration, valuation, interaction, support/resource and noninterference readiness checks before explicit R6 permission. Learned-policy transfer occurs after the formal primary exists, not as a circular R6 prerequisite.
 R5 also verifies the opening split, CC exclusion/zero paid basis, turn tiers/cap/grant boundaries, and memory without resets or double-counted sightings.
 Do not silently change the frozen 370-field contract or claim the overall amended R1 design is complete.
 See [contracts §2.1](ml-adjutant-r1-contracts.md#21-selected-economic-extension--amendment-pending), [weights §5.1](ml-adjutant-weights.md#51-selected-economic-extension--calibrated-surviving-material-belief), and [roadmap gate](PLAN-ml-adjutant.md#selected-economic-extension--pre-training-gate).
@@ -363,6 +364,6 @@ Require all specialist privacy/noninterference, ledger/conservation, phase, and 
 Validation **A** freezes `eps=1e-6`, `atol=1e-8`, `rtol=1e-5` and contracts §§16–17's fixed fixtures/pass calculus; inherited 10s decision and Docker resource requirements remain.
 Actual hardware/provider identity, runtime performance and numerical results remain future evidence; numeric design approval authorizes no run.
 Persist all validation before approving R6.
-The prior R1 exact future design is **FROZEN**; the economic extension still requires its versioned amendment and calibration/readiness verification before training.
-**R0 CLOSED**, all A01–A15 resolved under both final READY reviews; R2–R5 implementation/readiness remain incomplete. No training is authorized.
+The prior R1 exact future design is **FROZEN**; the [economic amendment exact text is approved and persisted](ml-adjutant-r1-economic-amendment.md), with persisted reviews/final R1 closure and calibration/readiness verification still pending before training.
+**R0/R2 CLOSED** within their recorded scopes; all A01–A15 remain resolved under the original final READY reviews. R3–R5 implementation/readiness remain incomplete. No training is authorized.
 Public opening **4 deployed + 3 banked = 7**, CC exclusion/zero endowed paid basis, turn/grant-aware accounting and memory remain future **H=1** belief requirements, not native causal frames or H3 search.

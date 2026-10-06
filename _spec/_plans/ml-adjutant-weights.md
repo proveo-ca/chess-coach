@@ -1,18 +1,19 @@
 # ML Adjutant — weights, combination coverage, and planning horizons
 
-Status: **Prior future R1 learning design FROZEN; new economic amendment PENDING. NOT implemented or validated. Historical Phase 2 hermetic verification PASSED; not a learned PASS.**
+Status: **Prior future R1 learning design FROZEN; economic amendment exact text Executor-approved and persisted with explicit authorization. PENDING persisted reviews and final Executor R1 closure approval. NOT implemented, fitted, measured, or training-ready; no R6 permission. Historical Phase 2 hermetic verification PASSED; not a learned PASS.**
+**Scoped supersession:** [approved economic/promotion amendment](ml-adjutant-r1-economic-amendment.md) defines the amended 418 profile and supersedes the original 370-dimensional feature/artifact profile **for amended inference only**, preserving every historical `0..369` name/meaning/mask/formula/scale. Original profile/schema descriptions below remain frozen history outside that scope. Amendment §§3–6 define joint PMF/positive evaluation, temporal CC and persistent witnessed/unlocated support plus independent Boolean certainty; §§7–8 define attempted-capture-only T, immediate-post-actor risk, survivor P and local promotion predicates; §§9–12 define statistics, targeted versions/bindings and inclusive `1,048,576` work including stores. Generator `2048` remains separate. No document-only approval certifies runtime/support/calibration.
 R0 is **CLOSED within accepted non-learned assurance**; the [R0 ledger](PLAN-ml-adjutant.md#r0-findings-ledger--full-implementation-post-image-review) marks **A01–A15 CLOSED**, preserving original **7 HIGH + 8 MEDIUM** history.
 Unchanged [closure JSON](../evidence/ml-adjutant-r0-closure.json) records final adversarial `ses_efe0ed67dffew2su1gZIUaDy23` and security `ses_efe0ed520ffeOEg3kd6jAtN33i`, both **READY TO CLOSE R0: yes**.
 [R1 selections](ml-adjutant-r1-recipe.md) and [exact contracts](ml-adjutant-r1-contracts.md) remain **prior future design FROZEN**, not implementation/readiness approval.
 No training run/authorization exists; R2 is **CLOSED within authorized V1/bounded V3/current hermetic assurance** in the [closed contract](r2-generator-v3.md) and unchanged [R2 record](../evidence/ml-adjutant-r2-closure.json). Complete new11/475/1944/57/Node109/infra6/54+54/exclusive57/post-publication reviews are non-learned assurance, not supplied weights/features/calibration; R3–R8 remain future, weights NONE.
 The scoped [R2 bridge amendment](r2-generator-v3.md) owns exact four generator promotions `n,b,r,q`, five deploy units `p,n,b,r,q`, root-guard feasible availability and current V1 surfaces. Its explicit historical override does not mutate the frozen future feature registry or implement the calibrated belief.
-cc6/R0/failed records and old markers remain historical, absent archives/tmp images unchanged. Current R2 closure comes only from the complete new immutable generation; its bounded cap omissions/zero-win baseline do not establish learning, exhaustive or winning coverage. Future profiles/370-field design remain unchanged.
+cc6/R0/failed records and old markers remain historical, absent archives/tmp images unchanged. Current R2 closure comes only from the complete new immutable generation; its bounded cap omissions/zero-win baseline do not establish learning, exhaustive or winning coverage. Original profiles/370-field design remain preserved; the separate amendment owns only the scoped amended profile.
 Executor selected **Broader first trained ranker**. The FIRST Phase 3 training run requires
 a separately versioned combination generator and authorized economic/positional interactions,
 including an own-loss lineage ledger and confirmed opponent-loss knowledge with explicit fog uncertainty.
 Start at **horizon 1**. Planning across **three simultaneous planning windows** is a separate future milestone.
 Current `challenge-features-v1` is an inspectable Phase 2 contract, **not sufficient for this first trained ranker**.
-**New economic extension: SELECTED DIRECTION, NOT implemented or design-complete.** Executor selected a calibrated belief model for surviving enemy deployed material; [§5.1](#51-selected-economic-extension--calibrated-surviving-material-belief) adds a pre-training amendment/readiness gate beyond the prior frozen 370-field contract.
+**New economic extension: [exact amendment Executor-approved and persisted](ml-adjutant-r1-economic-amendment.md); review/final R1 closure PENDING.** Executor selected the calibrated surviving-material model with exact definitions now present; [§5.1](#51-selected-economic-extension--calibrated-surviving-material-belief) retains the pre-training review/closure and R3–R5 readiness gates beyond the original frozen 370-field contract.
 
 Owners: [roadmap](PLAN-ml-adjutant.md), [R1 recipe decisions](ml-adjutant-r1-recipe.md), [strict challenge](ml-adjutant-challenge.md),
 [Policy-contract boundary](../packages/starchess-arena/ml-adjutant-policy-contracts.puml).
@@ -235,7 +236,7 @@ Expose lost investment and replacement value separately so a free promoted unit 
 
 ### 5.1 Selected economic extension — calibrated surviving-material belief
 
-**SELECTED DIRECTION — NOT implemented; exact amendment pending.** Executor chose **Calibrated belief model** over visible-lower-bound and memory-heuristic alternatives.
+**[Exact amendment Executor-approved and persisted](ml-adjutant-r1-economic-amendment.md) — PENDING persisted reviews and final Executor R1 closure approval; NOT implemented, fitted, measured, or training-ready.** Executor chose **Calibrated belief model** over visible-lower-bound and memory-heuristic alternatives.
 SGD learns coefficients for supplied features; it does not create a missing material comparison or establish belief calibration.
 The frozen 370-field v2 manifest covers own costs/investment/exposure and witnessed enemy **loss** lower bounds, not a comparison of current surviving deployed material.
 
@@ -260,8 +261,8 @@ Carry belief memory forward; do not count movement or repeated sightings as new 
 Supply **candidate × material-balance/uncertainty interactions** for spend, deployment, trade, and protection; a raw context-only balance term cancels in linear ranking and softmax.
 This belief requirement keeps **H=1** and does not select three-window search.
 The [engine/strategy → weight-design traceability matrix and selected direction ledger](ml-adjutant-weight-design-traceability.md) records the selected joint belief, 418-field append layout, promotion dictionary, and calibration gates alongside inspected source and coverage gaps.
-Those directions are **SELECTED / PENDING**, not implemented; exact normative amendment, kernel algorithms, schema/versions, support/work proofs, and readiness verification remain open.
-R1 must approve a new versioned amendment without silently changing the frozen 370-field names/count/meaning; R4 implements its belief/features and R5 persists calibration, valuation, interaction, and noninterference checks before R6.
+The [approved normative amendment](ml-adjutant-r1-economic-amendment.md) now supplies the exact estimator/positive-evaluator, spatial-support, feature/kernel, schema/version, calibration and acceptance definitions. These are not unchosen preferences; persisted reviews/final R1 closure remain pending, and native support/work proofs, implementation and readiness evidence remain future.
+R1 requires persisted spec/adversarial/security reviews, finding resolution and final Executor amended-R1 closure approval without rewriting the original 370-field schemas in place; R3 integrates authorized events/ledger, R4 implements the amended belief/features, and R5 persists calibration, valuation, interaction, support/resource and noninterference checks before explicit R6 permission. Learned-policy transfer follows formal-primary availability, not a circular prerequisite for R6.
 R5 must also verify the public opening split, CC exclusion/zero paid basis, turn tiers/cap/grant boundaries, and memory without resets or double-counted sightings.
 The [contracts extension](ml-adjutant-r1-contracts.md#21-selected-economic-extension--amendment-pending), [choice record](ml-adjutant-r1-recipe.md#selected-economic-extension--calibrated-belief-model), and [roadmap gate](PLAN-ml-adjutant.md#selected-economic-extension--pre-training-gate) record the same pending boundary.
 
@@ -296,7 +297,7 @@ Hard survival filtering would alter the proposal contract and needs its own revi
 ## 7. Frozen future outcome-driven Phase 3 learning — not implemented
 
 **Prerequisite:** implement and validate the frozen broader generator, own-loss/opponent-knowledge contracts and `φ_v2` names, dimensions, scales, interactions and collision limitations.
-The frozen future dimension is **370**, `34+4×84`, with every name/index/formula defined in contracts §§9–10,15. No 158-value v1 trained artifact satisfies this recipe.
+The original frozen future dimension is **370**, `34+4×84`, with every name/index/formula defined in contracts §§9–10,15. The [approved amendment §§7–8,11](ml-adjutant-r1-economic-amendment.md#11-feature-artifact-and-provenance-contracts) defines amended inference at **418**, retaining the historical prefix and appending economic12/promotion36; targeted dimensional substitutions also cover weights/checkpoints/accumulators/gradient fixtures. No 158-value v1 or legacy 370-value artifact satisfies the amended profile; there is no inferred compatibility.
 That prior freeze does not satisfy [§5.1's newly selected economic extension](#51-selected-economic-extension--calibrated-surviving-material-belief); its versioned amendment and R4/R5 readiness gate must also close before FIRST training.
 R1 selects **typed feature blocks plus a fixed flat ordered manifest**.
 Follow-up C selects **action-position blocks** holding candidate-context at four rules-derived positions with order preservation
@@ -416,5 +417,5 @@ Rename-only adversarial review is **READY: yes**.
 Historical implementation review `ses_f07c45365ffew0wJ58yFHXAye5` remains **READY TO MERGE: no** in history, not as the current verdict.
 Current R0 is **CLOSED**, with **426 core / 689 arena**, **107 Node**, **54+54 parity**, **5/5 actual Docker**, and **13/13 host post-publication** including both live pins, no skips.
 Both final reviews returned **READY TO CLOSE R0: yes**, based on source/captured records without independent execution/hash recomputation.
-R1's economic amendment and R2–R5 readiness including calibration remain open before explicit R6 training approval; R6–R7 precede R8.
+R1's persisted economic amendment still requires reviews/finding resolution/final Executor closure; R2 is closed within its recorded scope, while R3–R5 implementation/readiness including calibration remain open before explicit R6 training approval. R6–R7 precede R8.
 The prior **370**-field registry is not a supplied calibrated model; `machine-learning` remains disabled, and no trained weights or learned acceptance exists.
