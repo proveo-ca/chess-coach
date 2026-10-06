@@ -19,6 +19,7 @@
         "packages/starchess-arena/hermetic/public-closure.mjs",
         "packages/starchess-arena/hermetic/verification-plan.mjs",
         "packages/starchess-arena/hermetic/policy.mjs",
+        "packages/starchess-arena/hermetic/evidence-bundle.mjs",
         "packages/starchess-arena/src/__tests__/*V1Bridge*.test.ts",
         "packages/starchess-arena/src/__tests__/r2CompositionEvidence.test.ts",
         "packages/starchess-core/src/**",
@@ -300,6 +301,7 @@
         "packages/starchess-arena/hermetic/public-closure.mjs",
         "packages/starchess-arena/hermetic/verification-plan.mjs",
         "packages/starchess-arena/hermetic/policy.mjs",
+        "packages/starchess-arena/hermetic/evidence-bundle.mjs",
         "_spec/evidence/ml-adjutant-phase2/*.json",
         "_spec/evidence/ml-adjutant-r0-refresh/**",
         "_spec/evidence/ml-adjutant-r0-closure.json"

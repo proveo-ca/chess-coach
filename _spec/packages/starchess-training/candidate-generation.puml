@@ -14,6 +14,7 @@
 ' covers: packages/starchess-arena/hermetic/public-closure.mjs
 ' covers: packages/starchess-arena/hermetic/verification-plan.mjs
 ' covers: packages/starchess-arena/hermetic/policy.mjs
+' covers: packages/starchess-arena/hermetic/evidence-bundle.mjs
 ' covers: packages/starchess-arena/src/__tests__/*V1Bridge*.test.ts
 ' covers: packages/starchess-arena/src/__tests__/r2CompositionEvidence.test.ts
 ' covers: packages/starchess-core/src/**
@@ -87,6 +88,9 @@
 ' latest separate attempt: Executor reports new dependency987a49.../source757266... builds and actual6 infrastructure envelope capture PASS; frozen commands1-7 PASS incl54+54/four static/core475, command8 FAILED with1703 PASS/2 timeout failures/239 hook-skipped, commands9-11 not run. Prefixes are not authored full pins.
 ' failed-generation metadata: /tmp/opencode/starchess-hermetic-run-yuYpvM is temporary operating evidence, not persisted identity/publication; generation supplies no R2 completion or image acceptance from failure.
 ' scoped allowances: TUI-approved read-only architect ses_ef028270 proposal; import diagnostic beforeAll240000ms, fresh-pin and coverage/pin reproduction tests180000ms only; no removed assertions, changed floors/model permits/resources/caches/filters or proven new frozen PASS.
+' subsequent retry: Executor reports source prefixd2fb... under2CPU; commands1-7 PASS incl54+54/four static/core475; command8 FAILED1943 PASS/1 publication-test timeout/0 skipped; all prior239 hook-skipped tests executed. Publication logical checks took148219ms against120000ms; commands9-11 not run. Incomplete prefix is not a full pin.
+' test-only optimization: native Buffer.equals retains exact length/bytes, optional missing artifact still fails strict true assertion; readPublishedBundle validates once, not twice. Positive test stays120000ms; approved240000/180000 scopes, production/Node deadlines/resources/floors unchanged.
+' optimization checkpoint: Executor reports user approval and scoped security/adversarial equivalence YES, host positive1 PASS/types/whole strict/diff PASS; no fresh frozen PASS, acceptance marker or R2 closure. No new review IDs supplied, none invented.
 ' infrastructure: sameImageIdentity binds Id/Os/Architecture/Variant/Config/RootFS in envelope and execution artifact; exclude RepoTags/RepoDigests/Metadata/GraphDriver/Size, retain original complete inspection bytes.
 ' infrastructure: child receives only fixed PATH, private HOME, fresh empty private DOCKER_CONFIG and HERMETIC_DEPENDENCY_IMAGE; exact recorded env, no inherited preload/Docker endpoint/credential overrides.
 ' infrastructure: host-owned canonical /tmp/opencode may be 0700; public-output negative fixture lives outside that private tree; six ordered top-level identities unchanged.
@@ -98,7 +102,7 @@
 ' floors: inspected r2-assertion-floors-v3 core475/arena1944/training57; registered1944 = last full1650 +264 +30 added assertions, final enumeration/full verification pending, never full PASS.
 ' reported checks: Executor reports public-closure-v2 PASS, four roots, 28 workspace files + jsSHA manifest/runtime module (2 dependency files), zero external runtime imports; full core475 incl planning identity/legacy ownproto/packed ownproto, full training57 incl independent SHA vectors/collisions, source-inventory1177 (prior913 +264), all3 typechecks, whole strict invoice and Node109 PASS; not executed here.
 ' delta checks: Executor reports75 focused tests PASS,30 new assertions,3 JS syntax checks/all strict/arena types/diff PASS; not executed here, not all-new full1944/frozen proof.
-' open gate: latest generation FAILED; next source capture/offline source build, independent same-dependency measurement/new actual6 capture and all11/54+54/archive/export/import/publication/post-publication reviews PENDING. Test-only delta leaves controls/lock/manifests unchanged per Executor; no forced network reacquisition unless that equality fails. Pre-Env-delta rejected records remain unusable.
+' open gate: latest generation FAILED; new optimized source capture/image and actual6 dependency remeasurement/capture are concurrent lead work, completion not yet proven. Dependency987a49 remains reusable only after unchanged-control/input/immutable-image joins; all11/54+54/archive/export/import/publication/post-publication reviews pending. Preserve all failure records, never stitch commands; R2 marker absent, no training.
 ' local publication approval: restore ONLY _spec/evidence mode0700, retain all historical bytes; after verification publish exclusively into new R2 namespace. Approval is not chmod/publication execution; no permission change here.
 ' test fixture: immutable six-JSON per-file snapshot/fresh validators remain; original120000ms scopes persist except three approved240000/180000 allowances. Model permits and2CPU/4GiB/network-none policy unchanged; no cache/filter bypass.
 ' readiness: whole README checked; jsSHA3.3.2/planning-v1/public-closure-v2 handoff repaired by build and retired; no README edit here, no full READY.
@@ -275,8 +279,8 @@ end note
 
 note top of VERIFY
   Frozen commands1-7: PASS; core475
-  Command8:1703 PASS /2 timeout FAIL
-  239 hook-skipped; generation FAILED
+  Latest command8:1943 PASS /1 timeout FAIL
+  0 skipped; all prior239 tests executed
   Commands9-11: not run
   Retry must rerun all eleven commands
 end note
@@ -320,6 +324,12 @@ note left of VERIFY
   Approved finite Vitest allowances only
   Assertions/floors/model permits unchanged
   New frozen PASS / PlantUML pending
+end note
+
+note top of IMPORT
+  Positive publication test:120000ms unchanged
+  Native Buffer.equals: exact bytes + length
+  One validated bundle read; missing bytes fail
 end note
 
 note left of CLOSURE
@@ -391,7 +401,7 @@ note bottom of IMPORT
   Four host envelopes + all declared logs retained
 end note
 
-note top of IMPORT
+note right of IMPORT
   Mandatory --acquisition + --infrastructure
   Source runtime entrypoint; Cmd verify; cwd /app
   Exact image Env + output; no preloads
@@ -414,6 +424,9 @@ legend bottom
   Contained unique-Env delta reviews both YES; scoped, not formal purity or Docker closure.
   Pre-delta builds/actual6 TAP/probe PASS ended in REJECTED capture; failed-attempt history only.
   Separate new builds/actual6 capture PASS; frozen command8 failed, commands9-11 not run.
+  Later2CPU retry:1943 PASS/1 timeout/0 skipped; all prior239 tests executed, still FAILED.
+  Publication logical checks148219ms exceed unchanged120000ms test budget.
+  Exact-byte/one-read test optimization approved; host1 PASS is not frozen completion.
   Runtime-only retry may retain matching acquired dependencies; actual recapture/all11 required.
   Reported75 focused tests/syntax/strict/arena-types/diff PASS are not all-new full closure.
   Approved allowances are not proven new frozen PASS; full1944/PlantUML/closure pending.
@@ -424,6 +437,7 @@ legend bottom
   Prepared source contract is not a full READY verdict or current frozen proof.
   Independent actual Docker envelope is mandatory; six-title source repair exists.
   Next source capture, independent measurement, actual capture/all11 and publication pending.
+  New capture/remeasurement concurrent lead work, no completion; R2 marker absent.
   Belief/calibration stays pending at H=1; weights NONE; no SGD or training.
 endlegend
 @enduml

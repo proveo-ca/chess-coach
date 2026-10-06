@@ -27,6 +27,7 @@
 ' covers: packages/starchess-arena/hermetic/public-closure.mjs
 ' covers: packages/starchess-arena/hermetic/verification-plan.mjs
 ' covers: packages/starchess-arena/hermetic/policy.mjs
+' covers: packages/starchess-arena/hermetic/evidence-bundle.mjs
 ' covers: _spec/evidence/ml-adjutant-phase2/*.json
 ' covers: _spec/evidence/ml-adjutant-r0-refresh/**
 ' covers: _spec/evidence/ml-adjutant-r0-closure.json
@@ -89,7 +90,10 @@
 ' latest separate attempt: Executor reports dependency987a49.../source757266... builds and actual6 infra envelope capture PASS; commands1-7 PASS incl54+54/four static/core475, command8 FAILED1703 PASS/2 timeouts/239 hook-skipped, commands9-11 not run. Prefixes not full pins; no image acceptance or completion from failed generation.
 ' failed-generation metadata: /tmp/opencode/starchess-hermetic-run-yuYpvM is temporary evidence only, not persisted identity/publication. Error/status metadata remains separate from acceptable verification.
 ' budget approval: read-only architect ses_ef028270 proposal TUI-approved; only import diagnostic beforeAll240000ms and fresh-pin/coverage-pin reproduction tests180000ms, all assertions/floors/model permits/resources retained; no proven new frozen PASS.
-' retry scope: three captured test files changed, controls/lock/manifests unchanged per Executor; new source capture/offline build plus independent same-dependency measurement/new actual6 capture and all11/54+54/export/archive/import/publication/post-publication reviews pending. Retain current acquisition only after exact input/control/image validation; no forced reacquisition without drift.
+' subsequent retry: Executor reports source prefixd2fb... under2CPU, commands1-7 PASS incl54+54/four static/core475; arena8 FAILED1943 PASS/1 positive publication timeout/0 skipped; all prior239 skipped tests executed, commands9-11 not run. Logical checks148219ms exceed unchanged120000ms positive-test budget; prefix not full pin.
+' test-only equivalence: user-approved native Buffer.equals retains exact byte/length comparison and strict true/missing-artifact rejection; readPublishedBundle validates once, not twice. Scoped security/adversarial YES reported without new IDs; host positive1/types/whole strict/diff PASS is not frozen PASS or R2 acceptance.
+' unchanged scope: approved hook240000ms/fresh-pin180000ms/coverage-pin180000ms allowances remain; positive test120000ms, production/Node/model deadlines/resources/floors475/1944/57 untouched. Marker/hash/provenance validation stays intact.
+' retry scope: optimized captured test bytes need new source capture/image; lead capture/actual infrastructure remeasurement is concurrent, not complete. Retain dependency987a49/current original acquisition only after unchanged-control/input/immutable-image joins; new actual6/all11/54+54/export/archive/import/publication/post-publication reviews pending. All failed generations preserved, never stitched; R2 marker absent/no training.
 ' fixture: immutable six-JSON per-file snapshot/fresh validators remain; existing120000ms scopes retain three explicit240000/180000 exceptions only. Model permits and2CPU/4GiB/network-none unchanged; no caches/filters/assertion removal.
 ' phase1 pins: baseline 940387370040f88888e9dfe0bb86ad9d4a8be88854df507120f34b22ee2d362b; verification 55d965afa71d775ff6ee1e95b6650a27d0ce759b966a81c43a3bb364236c7508. Unchanged.
 ' historical R0 final reviews: adversarial ses_efe0ed67dffew2su1gZIUaDy23 and security ses_efe0ed520ffeOEg3kd6jAtN33i both READY TO CLOSE R0: yes; source/captured-record review, no independent execution/hash recomputation.
@@ -308,8 +312,8 @@ end note
 
 note top of RUNTIME
   Commands1-7 PASS; four static/core475
-  Command8:1703 PASS /2 timeout FAIL
-  239 hook-skipped; generation FAILED
+  Latest arena8:1943 PASS /1 timeout FAIL
+  0 skipped; prior239 tests all executed
   Commands9-11 not run; all eleven must rerun
 end note
 
@@ -327,6 +331,21 @@ note right of COMMANDS
   All assertions/floors retained; no filters
   2CPU/4GiB/network-none policy unchanged
   Approved budgets; new frozen PASS pending
+end note
+
+note left of IMPORTER
+  Positive publication test:120000ms unchanged
+  Native Buffer.equals: exact bytes + length
+  Missing artifact cannot satisfy strict true
+  Host1 PASS; no fresh frozen PASS claimed
+end note
+
+note left of BUNDLE
+  Native Buffer equality checks every byte and
+  length without costly object traversal.
+  Read the validated bundle once, then keep each
+  missing-file rejection and provenance check
+  instead of relaxing the publication gate.
 end note
 
 note left of INVENTORY
@@ -521,6 +540,9 @@ legend bottom
   Contained unique-Env delta reviews both YES; scoped, not formal purity or Docker closure.
   Prior builds/actual6 TAP/probe PASS ended in REJECTED capture; failed-attempt history only.
   Separate new builds/actual6 capture PASS; frozen command8 FAILED, commands9-11 not run.
+  Subsequent2CPU retry:1943 PASS/1 timeout/0 skipped; all prior239 tests executed, still FAILED.
+  Positive publication logical checks148219ms exceed unchanged120000ms test budget.
+  Scoped byte-equivalence/one-read test optimization YES; host1/static PASS is not frozen PASS.
   New source capture may retain same measured deps/current acquisition; actual6 recapture required.
   Reported75 focused tests/syntax/strict/arena-types/diff PASS are not all-new full closure.
   Finite allowances approved, not proven retry PASS; all11/PlantUML/closing gates pending.
@@ -528,6 +550,7 @@ legend bottom
   Prepared source contract is not full READY, image proof, publication or acceptance.
   R2 uses v2 inventory/v3 pins/v3 verification, eleven commands and separate trusted host infra.
   Mandatory acquisition/infrastructure joins retain raw envelopes/logs; source configuration is exact.
+  New source/infrastructure capture concurrent lead work; completion and R2 marker absent.
   Primitive/retained omissions are diagnostic, not admission, exhaustive generation or learned PASS.
   Historical candidate wins remain 0/18 corpus and 0/36 live; weights NONE; no learned gate or training.
   Phase 1/2 and R0 evidence bytes/pins remain immutable; R0 partial logs/absent archives prove no new image.
