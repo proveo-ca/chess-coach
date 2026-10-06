@@ -7,6 +7,24 @@ export { outputTarget };
 export const imagePattern = /^sha256:[0-9a-f]{64}$/;
 export const tmpfsOptions = 'rw,nosuid,nodev,size=1073741824,mode=1777';
 
+export function sameEnvironment(actual, expected) {
+  const definitions = (entries) => {
+    if (!Array.isArray(entries)) return null;
+    const values = new Map();
+    for (const entry of entries) {
+      if (typeof entry !== 'string' || entry.includes('\0')) return null;
+      const separator = entry.indexOf('=');
+      const key = entry.slice(0, separator);
+      if (!/^[A-Za-z_][A-Za-z0-9_]*=/.test(entry) || values.has(key)) return null;
+      values.set(key, entry.slice(separator + 1));
+    }
+    return values;
+  };
+  const left = definitions(actual), right = definitions(expected);
+  return left !== null && right !== null && left.size === right.size &&
+    [...left].every(([key, value]) => right.get(key) === value);
+}
+
 export function runArguments(image, output, command = ['verify']) {
   if (!imagePattern.test(image)) throw new Error('Use the immutable Docker image ID (sha256 + 64 hex digits)');
   if (!isAbsolute(output) || /[,\n\r]/.test(output)) throw new Error('Output must be an absolute path without mount grammar delimiters');

@@ -7,7 +7,7 @@ import { prepareContext } from '../packages/starchess-arena/hermetic/context.mjs
 import { evidenceLimits } from '../packages/starchess-arena/hermetic/evidence-limits.mjs';
 import { measureImageFilesystem } from '../packages/starchess-arena/hermetic/image-measurement.mjs';
 import { runLogged } from '../packages/starchess-arena/hermetic/logged-command.mjs';
-import { assertContainerPolicy, outputTarget } from '../packages/starchess-arena/hermetic/policy.mjs';
+import { assertContainerPolicy, outputTarget, sameEnvironment } from '../packages/starchess-arena/hermetic/policy.mjs';
 
 export const INFRASTRUCTURE_VERSION = 'r2-infrastructure-verification-v1';
 export const INFRASTRUCTURE_TEST_NAMES = Object.freeze([
@@ -90,7 +90,8 @@ const sameImageIdentity = (actual, expected) => object(actual) && object(expecte
     Object.entries(actual).find(([name]) => name === key)?.[1], Object.entries(expected).find(([name]) => name === key)?.[1]));
 
 function probeEnvironment(imageInspection, image) {
-  if (!object(imageInspection) || imageInspection.Id !== image || unsafeEnvironment(imageInspection.Config?.Env)) fail('dependency image inspection or environment mismatch');
+  if (!object(imageInspection) || imageInspection.Id !== image || unsafeEnvironment(imageInspection.Config?.Env) ||
+      !sameEnvironment(imageInspection.Config?.Env, imageInspection.Config?.Env)) fail('dependency image inspection or environment mismatch');
   return [...imageInspection.Config.Env.filter((entry) => !entry.startsWith('HERMETIC_OUTPUT_DIRECTORY=')), `HERMETIC_OUTPUT_DIRECTORY=${outputTarget}`];
 }
 
@@ -136,7 +137,7 @@ export function validateInfrastructure(value, { read, image, imageInspection, me
   for (const inspection of [execution.initialContainerInspection, execution.finalContainerInspection]) {
     const config = inspection.Config;
     if (!same(config.Entrypoint, ['node']) || !same(config.Cmd, ['/hermetic/probe.mjs']) || config.WorkingDir !== '/app' ||
-        unsafeEnvironment(config.Env) || !same(config.Env, environment) ||
+        unsafeEnvironment(config.Env) || !sameEnvironment(config.Env, environment) ||
         !same(config.Env.filter((entry) => entry === 'HERMETIC_OUTPUT_DIRECTORY' || entry.startsWith('HERMETIC_OUTPUT_DIRECTORY=')),
           [`HERMETIC_OUTPUT_DIRECTORY=${outputTarget}`])) fail('Docker probe container command or environment mismatch');
   }

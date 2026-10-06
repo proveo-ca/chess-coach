@@ -10,6 +10,10 @@ import { buildDiagnosticFixture, buildImportFixture, decode, evidenceLimits, jso
   syntheticImageArchive, tarArchive, type Baseline } from "./fixtures/challengeEvidence";
 
 const require = createRequire(import.meta.url);
+const { sameEnvironment, outputTarget } = require("../../hermetic/policy.mjs") as {
+  sameEnvironment: (actual: unknown, expected: unknown) => boolean;
+  outputTarget: string;
+};
 const { importEvidence, assertImageArchive, safeRelative, VITEST_FLOORS } = require("../../../../scripts/challenge-import-evidence.mjs") as {
   importEvidence: (options: Record<string, unknown>) => Promise<{ image: string }>;
   assertImageArchive: (path: string, image: string) => { sha256: string; bytes: number } | Promise<{ sha256: string; bytes: number }>;
@@ -41,6 +45,53 @@ const validate = (value: Fixture, extra: string[] = []) => {
     join(value.output, "coverage.json"), join(value.output, "contract-report.json"), join(value.output, "r2-composition-report.json"), repositoryRoot, ...extra,
   ]);
 };
+
+describe("unique Docker environment definitions", () => {
+  const imageEnvironment = Object.freeze(["HERMETIC_OUTPUT_DIRECTORY=/old-output", "PATH=/usr/local/bin:/usr/bin:/bin", "NODE_VERSION=22.23.2", "CI=true"]);
+  const expected = Object.freeze([...imageEnvironment.filter((entry) => !entry.startsWith("HERMETIC_OUTPUT_DIRECTORY=")), `HERMETIC_OUTPUT_DIRECTORY=${outputTarget}`]);
+  const overrideFirst = Object.freeze([`HERMETIC_OUTPUT_DIRECTORY=${outputTarget}`, ...imageEnvironment.slice(1)]);
+  it("accepts Docker override-first and historical synthetic output-last vectors without reordering inspections", () => {
+    expect(overrideFirst).not.toEqual(expected);
+    expect(sameEnvironment(overrideFirst, expected)).toBe(true);
+    expect(sameEnvironment(expected, overrideFirst)).toBe(true);
+    expect(sameEnvironment(expected, expected)).toBe(true);
+    expect(overrideFirst[0]).toBe(`HERMETIC_OUTPUT_DIRECTORY=${outputTarget}`);
+    expect(expected.at(-1)).toBe(`HERMETIC_OUTPUT_DIRECTORY=${outputTarget}`);
+    expect(imageEnvironment[0]).toBe("HERMETIC_OUTPUT_DIRECTORY=/old-output");
+  });
+  it("preserves empty values, embedded equals, whitespace, and case-sensitive definitions", () => {
+    expect(sameEnvironment(["EMPTY=", "TOKEN=a=b=c", "_9= spaced value ", "Path=other"],
+      ["Path=other", "_9= spaced value ", "TOKEN=a=b=c", "EMPTY="])).toBe(true);
+    expect(sameEnvironment(["TOKEN=a=b=c"], ["TOKEN=a=b=d"])).toBe(false);
+    expect(sameEnvironment(["Path=other"], ["PATH=other"])).toBe(false);
+    expect(sameEnvironment(["VALUE= spaced "], ["VALUE=spaced"])).toBe(false);
+    expect(sameEnvironment([], [])).toBe(true);
+  });
+  const malformed: [string, unknown][] = [
+    ["non-array", { PATH: "/usr/bin" }], ["null", null], ["undefined", undefined], ["string", "PATH=/usr/bin"],
+    ["non-string entry", [...expected, 1]], ["sparse array", new Array(expected.length)],
+    ["bare entry", [...expected, "BARE"]], ["bare output entry", [...expected, "HERMETIC_OUTPUT_DIRECTORY"]],
+    ["empty key", [...expected, "=value"]], ["numeric key", [...expected, "1KEY=value"]],
+    ["punctuated key", [...expected, "BAD-KEY=value"]], ["spaced key", [...expected, "BAD KEY=value"]],
+    ["newline key", [...expected, "BAD\n=value"]], ["carriage-return key", [...expected, "BAD\r=value"]],
+    ["NUL key", [...expected, "BAD\0KEY=value"]], ["NUL value", [...expected, "KEY=bad\0value"]],
+    ["duplicate output", [...expected, `HERMETIC_OUTPUT_DIRECTORY=${outputTarget}`]],
+    ["conflicting output", [...expected, "HERMETIC_OUTPUT_DIRECTORY=/other"]],
+    ["duplicate inherited key", [...expected, "CI=true"]], ["conflicting inherited key", [...expected, "CI=false"]],
+  ];
+  const different: [string, unknown][] = [
+    ["missing inherited key", expected.filter((entry) => !entry.startsWith("PATH="))],
+    ["missing output", expected.slice(0, -1)], ["extra key", [...expected, "EXTRA=value"]],
+    ["altered value", expected.map((entry) => entry.startsWith("PATH=") ? "PATH=/other" : entry)],
+  ];
+  it.each([...malformed, ...different])("rejects %s on either side", (_name, entries) => {
+    expect(sameEnvironment(entries, expected)).toBe(false);
+    expect(sameEnvironment(expected, entries)).toBe(false);
+  });
+  it("rejects identically malformed vectors rather than equating duplicate definitions", () => {
+    for (const [, entries] of malformed) expect(sameEnvironment(entries, entries)).toBe(false);
+  });
+});
 
 describe("phase2 hermetic evidence import with synthetic test-only image hooks", { timeout: 120000 }, () => {
   it("isolates fixture Buffers and decoded pins from the shared six-report snapshot", () => {
@@ -87,6 +138,16 @@ describe("phase2 hermetic evidence import with synthetic test-only image hooks",
   });
   it("validates independently built evidence and publishes nested command logs", async () => {
     const value = fixture();
+    for (const inspection of [value.execution.initialContainerInspection, value.execution.finalContainerInspection,
+      value.probeExecution.initialContainerInspection, value.probeExecution.finalContainerInspection]) {
+      inspection.Config = structuredClone(inspection.Config);
+      const env = inspection.Config.Env as string[];
+      inspection.Config.Env = [...env.filter((entry) => entry.startsWith("HERMETIC_OUTPUT_DIRECTORY=")),
+        ...env.filter((entry) => !entry.startsWith("HERMETIC_OUTPUT_DIRECTORY="))];
+    }
+    value.rebindInfrastructure(); value.save();
+    const recordedExecution = readFileSync(value.paths.execution);
+    const recordedProbeExecution = readFileSync(value.infrastructure.probe.execution.path);
     const current = decode<Baseline>(value.files["baseline-report.json"]!);
     expect(current.rows).toHaveLength(54);
     expect(current.accounting.acceptanceValid).toBe(true);
@@ -100,7 +161,10 @@ describe("phase2 hermetic evidence import with synthetic test-only image hooks",
     expect(published.get("host-infrastructure.json")).toEqual(readFileSync(value.paths.infrastructure));
     expect(published.get("host-infrastructure/stdout.log")).toEqual(value.infrastructureFiles[value.infrastructure.command.logs.stdout.path]);
     expect(published.get("host-infrastructure/probe.json")).toEqual(value.infrastructureFiles[value.infrastructure.probe.report.path]);
-    expect(published.has("host-infrastructure/inspections.json")).toBe(true);
+    expect(published.get("host-infrastructure/inspections.json")).toEqual(recordedProbeExecution);
+    expect(published.get("host-provenance/execution.json")).toEqual(recordedExecution);
+    expect(readFileSync(value.paths.execution)).toEqual(recordedExecution);
+    expect(readFileSync(value.infrastructure.probe.execution.path)).toEqual(recordedProbeExecution);
     expect(published.has("host-infrastructure/logs/vitest.stdout.log")).toBe(true);
     for (const name of ["acquisition", "build", "execution", "export"] as const) expect(published.get(`host-provenance/${name}.json`)).toEqual(readFileSync(value.paths[name]));
     for (const stream of ["stdout", "stderr"] as const) expect(published.get(`host-provenance/acquisition.${stream}.log`)).toEqual(value.acquisitionFiles[value.acquisition.buildLog.logs[stream].path]);
@@ -374,13 +438,14 @@ describe("immutable infrastructure image identity", () => {
     expect(readFileSync(value.infrastructure.probe.execution.path)).toEqual(recordedExecution);
   });
   describe.each(["envelope", "execution", "both"] as const)("immutable inspection binding in %s", (location) => {
-    it.each(["Config", "RootFS"] as const)("rejects immutable image %s substitution with rebound JSON", async (field) => {
+    it.each(["Config", "Config.Env order", "RootFS"] as const)("rejects immutable image %s substitution with rebound JSON", async (field) => {
       const value = fixture();
       const independent = await value.options.inspectImage(value.infrastructure.image);
       const inspections = location === "envelope" ? [value.infrastructure.imageInspection] : location === "execution" ? [value.probeExecution.imageInspection] :
         [value.infrastructure.imageInspection, value.probeExecution.imageInspection];
       for (const inspection of inspections) {
         if (field === "Config") inspection.Config.WorkingDir = "/tmp/fabricated";
+        else if (field === "Config.Env order") inspection.Config.Env.reverse();
         else inspection.RootFS.Layers[0] = `sha256:${"0".repeat(64)}`;
       }
       value.rebindInfrastructure(); value.save();
