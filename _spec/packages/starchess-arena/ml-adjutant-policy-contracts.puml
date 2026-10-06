@@ -22,6 +22,7 @@
 ' covers: packages/starchess-core/src/__tests__/packed.test.ts
 ' covers: scripts/**
 ' covers: scripts/challenge-import-evidence.mjs
+' covers: scripts/challenge-validate-baseline.ts
 ' covers: scripts/challenge-infrastructure-evidence.mjs
 ' covers: packages/starchess-arena/hermetic/**
 ' covers: packages/starchess-arena/hermetic/public-closure.mjs
@@ -92,9 +93,12 @@
 ' budget approval: read-only architect ses_ef028270 proposal TUI-approved; only import diagnostic beforeAll240000ms and fresh-pin/coverage-pin reproduction tests180000ms, all assertions/floors/model permits/resources retained; no proven new frozen PASS.
 ' subsequent retry: Executor reports source prefixd2fb... under2CPU, commands1-7 PASS incl54+54/four static/core475; arena8 FAILED1943 PASS/1 positive publication timeout/0 skipped; all prior239 skipped tests executed, commands9-11 not run. Logical checks148219ms exceed unchanged120000ms positive-test budget; prefix not full pin.
 ' test-only equivalence: user-approved native Buffer.equals retains exact byte/length comparison and strict true/missing-artifact rejection; readPublishedBundle validates once, not twice. Scoped security/adversarial YES reported without new IDs; host positive1/types/whole strict/diff PASS is not frozen PASS or R2 acceptance.
-' unchanged scope: approved hook240000ms/fresh-pin180000ms/coverage-pin180000ms allowances remain; positive test120000ms, production/Node/model deadlines/resources/floors475/1944/57 untouched. Marker/hash/provenance validation stays intact.
-' retry scope: optimized captured test bytes need new source capture/image; lead capture/actual infrastructure remeasurement is concurrent, not complete. Retain dependency987a49/current original acquisition only after unchanged-control/input/immutable-image joins; new actual6/all11/54+54/export/archive/import/publication/post-publication reviews pending. All failed generations preserved, never stitched; R2 marker absent/no training.
-' fixture: immutable six-JSON per-file snapshot/fresh validators remain; existing120000ms scopes retain three explicit240000/180000 exceptions only. Model permits and2CPU/4GiB/network-none unchanged; no caches/filters/assertion removal.
+' historical timing scope: byte-equivalent optimization kept the then120000ms positive-test limit; it preserves assertions, not constrained-time success. Earlier failures/host passes remain historical; marker/hash/provenance validation unchanged.
+' latest operating checkpoint: Executor reports frozen source prefix2fae1... commands1-7 PASS incl54+54/core475/four static, arena8 FAILED1942 PASS/2 timeout FAIL/0 skip; all prior239 tests executed,9-11 not run. Partial prefix/private tmp reports are not persisted pins, accepted source images or completion.
+' current finite framework allowance: TUI-approved240000ms ONLY for successful publication, competing-publication preservation, before-publication hook failure and postcommit snapshot cleanup failure tests, from120000ms. Prior hook240000/pin180000 scopes retained; all assertions/no-cache preserved, new full PASS unproven.
+' independent safety: child validator120000ms and evidence caps, model planning/startup/match budgets, production/Node deadlines, floors475/1944/57 and Docker2CPU/4GiB/network-none unchanged; framework allowance is not a production safety-limit amendment.
+' retry scope: new allowance-bearing source capture/image and actual6 infrastructure recapture/remeasurement must bind same measured987a49 dependencies/current acquisition plus unchanged controls/lock/manifests. All11 from1/54+54/export/archive/import/local-exclusive publication/post-publication reviews pending. All private/tmp failures preserved as separate metadata, never pins/completion fragments; no image acceptance/R2 completion/training/weights/registry activation.
+' fixture: immutable six-JSON snapshots/fresh validators remain; initial three240000/180000 exceptions plus four complete-validation tests240000ms only. Other test/child/model safety budgets and2CPU/4GiB/network-none unchanged; no caches/filters/dropped assertions.
 ' phase1 pins: baseline 940387370040f88888e9dfe0bb86ad9d4a8be88854df507120f34b22ee2d362b; verification 55d965afa71d775ff6ee1e95b6650a27d0ce759b966a81c43a3bb364236c7508. Unchanged.
 ' historical R0 final reviews: adversarial ses_efe0ed67dffew2su1gZIUaDy23 and security ses_efe0ed520ffeOEg3kd6jAtN33i both READY TO CLOSE R0: yes; source/captured-record review, no independent execution/hash recomputation.
 ' historical review: ses_f07c45365ffew0wJ58yFHXAye5 READY TO MERGE: no; earlier scoped/rename-only READY verdicts remain history, not current closure authority.
@@ -312,32 +316,32 @@ end note
 
 note top of RUNTIME
   Commands1-7 PASS; four static/core475
-  Latest arena8:1943 PASS /1 timeout FAIL
+  Latest arena8:1942 PASS /2 timeout FAIL
   0 skipped; prior239 tests all executed
   Commands9-11 not run; all eleven must rerun
 end note
 
 note right of RUNTIME
-  Only graph and coverage checks get finite extra
-  time because the restricted container rebuilds
-  the source graph. Model permits and resources
-  stay fixed, so a timed-out test still rejects
-  the generation rather than proving acceptance.
+  Complete validation gets a finite test budget
+  because exact byte checks cannot bound its
+  runtime under container limits. Independent
+  child limits and model permits remain fixed,
+  so framework timeouts still reject a generation.
 end note
 
 note right of COMMANDS
   Import diagnostic beforeAll:240000ms only
   Fresh-pin / coverage-pin tests:180000ms only
+  Four complete-validation tests:240000ms only
   All assertions/floors retained; no filters
-  2CPU/4GiB/network-none policy unchanged
-  Approved budgets; new frozen PASS pending
+  Independent child/model/resource limits fixed
 end note
 
 note left of IMPORTER
-  Positive publication test:120000ms unchanged
+  Four complete-validation tests:240000ms only
   Native Buffer.equals: exact bytes + length
   Missing artifact cannot satisfy strict true
-  Host1 PASS; no fresh frozen PASS claimed
+  Equivalent bytes do not prove runtime fit
 end note
 
 note left of BUNDLE
@@ -534,15 +538,18 @@ legend bottom
   Registered floors v3: 475/1944/57; final enumeration/full verification PENDING.
   Reported full core475/training57/source-inventory1177 PASS; source913 is prior checkpoint.
   Latest full arena1650 PASS predates264 +30 additions; no full1944 PASS claimed.
-  Only three scoped Vitest allowances240000/180000ms; assertions/floors/permits unchanged.
+  Initial hook/pin scopes retained; only four complete-validation tests now240000ms.
   Immutable six-JSON snapshot/fresh validators and2CPU/4GiB/network-none remain.
   Scoped final source-freeze reviews: adversarial YES + security YES; IDs in header/plan.
   Contained unique-Env delta reviews both YES; scoped, not formal purity or Docker closure.
   Prior builds/actual6 TAP/probe PASS ended in REJECTED capture; failed-attempt history only.
   Separate new builds/actual6 capture PASS; frozen command8 FAILED, commands9-11 not run.
   Subsequent2CPU retry:1943 PASS/1 timeout/0 skipped; all prior239 tests executed, still FAILED.
-  Positive publication logical checks148219ms exceed unchanged120000ms test budget.
+  Earlier positive publication logical checks148219ms exceeded the then120000ms budget.
   Scoped byte-equivalence/one-read test optimization YES; host1/static PASS is not frozen PASS.
+  Latest2fae1 frozen retry:1942 PASS/2 timeouts/0 skip;9-11 not run, still FAILED.
+  Byte-equivalent test optimization does not guarantee container timing; no caches/assertion loss.
+  Child safety/model planning/startup/match deadlines and2CPU/4GiB/network-none unchanged.
   New source capture may retain same measured deps/current acquisition; actual6 recapture required.
   Reported75 focused tests/syntax/strict/arena-types/diff PASS are not all-new full closure.
   Finite allowances approved, not proven retry PASS; all11/PlantUML/closing gates pending.
