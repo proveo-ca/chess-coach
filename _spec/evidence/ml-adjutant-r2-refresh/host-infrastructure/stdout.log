@@ -1,0 +1,50 @@
+TAP version 13
+# Subtest: Dockerfile pins the official platform and isolates offline installation from acquisition
+ok 1 - Dockerfile pins the official platform and isolates offline installation from acquisition
+  ---
+  duration_ms: 1.500649
+  type: 'test'
+  ...
+# Subtest: context keeps the original lock and workspace links without root dependencies or host stores
+ok 2 - context keeps the original lock and workspace links without root dependencies or host stores
+  ---
+  duration_ms: 13.476935
+  type: 'test'
+  ...
+# Subtest: current verification freezes eleven exact commands and the complete strict source invoice
+ok 3 - current verification freezes eleven exact commands and the complete strict source invoice
+  ---
+  duration_ms: 90.156457
+  type: 'test'
+  ...
+# Subtest: runtime capture preserves JSONC config closure, tests, fixtures, and rejects escaping paths or ancestor symlinks
+ok 4 - runtime capture preserves JSONC config closure, tests, fixtures, and rejects escaping paths or ancestor symlinks
+  ---
+  duration_ms: 17.592383
+  type: 'test'
+  ...
+# node: exit=0 signal=none logs=/tmp/opencode/hermetic-test-r75bDO/bounded truncated=true
+# node: exit=3 signal=none logs=/tmp/opencode/hermetic-test-r75bDO/failed truncated=false
+# Subtest: CLI rejects mount injection and public output parents and preserves bounded success/failure logs
+ok 5 - CLI rejects mount injection and public output parents and preserves bounded success/failure logs
+  ---
+  duration_ms: 114.936686
+  type: 'test'
+  ...
+# docker: exit=0 signal=none logs=/tmp/opencode/hermetic-test-kKYrwD/docker truncated=false
+# Docker probe evidence: /tmp/opencode/hermetic-test-kKYrwD/output/probe.json
+# Subtest: Docker enforces policy, fresh temporary inventory, and logged offline TS/Vitest
+ok 6 - Docker enforces policy, fresh temporary inventory, and logged offline TS/Vitest
+  ---
+  duration_ms: 2744.997155
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3194.626806

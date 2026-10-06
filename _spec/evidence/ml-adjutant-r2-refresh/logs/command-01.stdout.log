@@ -1,0 +1,29 @@
+{
+  "path": "/app/_spec/evidence/ml-adjutant-r2-refresh/baseline-report.json",
+  "summary": {
+    "corpus": {
+      "scheduled": 18,
+      "wins": 0,
+      "losses": 2,
+      "draws": 0,
+      "failures": 16,
+      "stopKinds": {
+        "queue-rejected": 16,
+        "terminal": 2
+      }
+    },
+    "liveStrategic": {
+      "scheduled": 36,
+      "wins": 0,
+      "losses": 36,
+      "draws": 0,
+      "failures": 0,
+      "stopKinds": {
+        "terminal": 36
+      }
+    }
+  },
+  "executionIntegrity": true,
+  "deterministicRerun": true,
+  "learnedGateEligible": false
+}

@@ -1,0 +1,11 @@
+tsx: exit=0 signal=none logs=/app/_spec/evidence/ml-adjutant-r2-refresh/logs/command-01 truncated=false
+tsx: exit=0 signal=none logs=/app/_spec/evidence/ml-adjutant-r2-refresh/logs/command-02 truncated=false
+tsc: exit=0 signal=none logs=/app/_spec/evidence/ml-adjutant-r2-refresh/logs/command-03 truncated=false
+tsc: exit=0 signal=none logs=/app/_spec/evidence/ml-adjutant-r2-refresh/logs/command-04 truncated=false
+tsc: exit=0 signal=none logs=/app/_spec/evidence/ml-adjutant-r2-refresh/logs/command-05 truncated=false
+tsc: exit=0 signal=none logs=/app/_spec/evidence/ml-adjutant-r2-refresh/logs/command-06 truncated=false
+vitest: exit=0 signal=none tests=475/475 logs=/app/_spec/evidence/ml-adjutant-r2-refresh/logs/command-07 truncated=false
+vitest: exit=0 signal=none tests=1944/1944 logs=/app/_spec/evidence/ml-adjutant-r2-refresh/logs/command-08 truncated=false
+vitest: exit=0 signal=none tests=57/57 logs=/app/_spec/evidence/ml-adjutant-r2-refresh/logs/command-09 truncated=false
+node: exit=0 signal=none logs=/app/_spec/evidence/ml-adjutant-r2-refresh/logs/command-10 truncated=false
+node: exit=0 signal=none logs=/app/_spec/evidence/ml-adjutant-r2-refresh/logs/command-11 truncated=false

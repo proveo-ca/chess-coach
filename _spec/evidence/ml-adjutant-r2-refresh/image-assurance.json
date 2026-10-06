@@ -1,0 +1,173 @@
+{
+  "version": "r2-image-assurance-v1",
+  "image": "sha256:37b4ec38caa50f15d02dec1c4dbdb45b0c29a7bdeb3a4c21f7ccea54e66ee2a9",
+  "inspectedImageId": "sha256:37b4ec38caa50f15d02dec1c4dbdb45b0c29a7bdeb3a4c21f7ccea54e66ee2a9",
+  "archive": {
+    "sha256": "f626892248ecea1446db0d295bf3eb0ae42a668a10ab1e484ebde1e9a89d9ef1",
+    "bytes": 134552576
+  },
+  "hostLogs": [
+    {
+      "label": "acquisition",
+      "path": "/tmp/opencode/starchess-hermetic-build-JpMDRd/build.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "label": "acquisition",
+      "path": "/tmp/opencode/starchess-hermetic-build-JpMDRd/build.stderr.log",
+      "sha256": "4a7c58cb184ef522e6d28d036dcda76eb1601012c890266b89f0ab9137e26483",
+      "bytes": 4882
+    },
+    {
+      "label": "build",
+      "path": "/tmp/opencode/starchess-hermetic-build-rMcQ5f/build.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "label": "build",
+      "path": "/tmp/opencode/starchess-hermetic-build-rMcQ5f/build.stderr.log",
+      "sha256": "0d4639d9a2e63f38a873db342b3df8445e44c70be3b03fe67f3480b1a4b74702",
+      "bytes": 3073
+    },
+    {
+      "label": "execution",
+      "path": "/tmp/opencode/starchess-hermetic-run-eeqz1b/execution.stdout.log",
+      "sha256": "13bec4fd9993b0e04994bd42aa177ac41c90881aebd69887cc0a91a51258f302",
+      "bytes": 1197
+    },
+    {
+      "label": "execution",
+      "path": "/tmp/opencode/starchess-hermetic-run-eeqz1b/execution.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  ],
+  "references": {
+    "acquisition": {
+      "path": "/tmp/opencode/starchess-hermetic-build-JpMDRd/build.json",
+      "sha256": "82cf27e0ce8316e2fb7954b710339941008713527803b80a66388477d6a8bfbf"
+    },
+    "execution": {
+      "path": "/tmp/opencode/starchess-hermetic-run-eeqz1b/execution.json",
+      "sha256": "e5131210f1d36af7f0f4483474905b59f3a52d318420c396350205a10f20f4a4"
+    },
+    "build": {
+      "path": "/tmp/opencode/starchess-hermetic-build-rMcQ5f/build.json",
+      "sha256": "58065f3399d99be8b495caf75d692e5b040934cdd54528b85a9b156ad93d1037"
+    },
+    "export": {
+      "path": "/tmp/opencode/starchess-hermetic-export-Mbm4qJ/export.json",
+      "sha256": "5ef478969587cedf74552f51021b79c11c4a5dfa3a144a933b503217c4ee7a07"
+    },
+    "infrastructure": {
+      "path": "/tmp/opencode/challenge-infrastructure-3M7hiq/infrastructure.json",
+      "sha256": "e66f93523e05f7aaf9266c99d334b5affb8fe8849f911017c5eca69f80cd799d"
+    }
+  },
+  "infrastructure": {
+    "image": "sha256:987a49cffc361da5771ed80126b1a63fdf2ff5ac5ce2383b2aa98e3b716cd2c1",
+    "measurements": {
+      "dependencies": {
+        "manifestSha256": "2f3200a1c757131e1d791c516d5b778090b4d5cc9ce4938b7cb1ece3d2fc4ae4",
+        "installedSha256": "e8c074b623cdc4c5b00debe00f68865c56e34eba91250979342129b290951d83",
+        "frozenStoreSha256": "89d5c3d854da88cbb419344bceb70f952394e2e38ebc014ed6449cdae44a58ae",
+        "toolTreeSha256": "45d37ff19cfad55687cec847b0888cf0cc2fb3b66b49472b454b3ada55b77270"
+      },
+      "tools": {
+        "manifestSha256": "b5018a4772899feab9269c5ce26204853f291e5bb79afa137447c68f41e8a8b2",
+        "actual": {
+          "pins": {
+            "platform": "linux/amd64",
+            "baseTag": "docker.io/library/node:22.23.2-bookworm-slim",
+            "baseIndexDigest": "sha256:48e4b67d85f87bd551df43704e24d252f56cc5f8e9718841aace50f19948f0f9",
+            "basePlatformDigest": "sha256:43aeff40f4afc22e83f7589a2f37e111cff5ca84529571f1c8415bcc5fcc21b2",
+            "node": "22.23.2",
+            "nodeBinarySha256": "3517c2df0b2f8cd7f422b4b8450ef81c6889f08eb03e281d6de9079b15e6a327",
+            "pnpm": "10.33.0",
+            "pnpmTarball": "https://registry.npmjs.org/pnpm/-/pnpm-10.33.0.tgz",
+            "pnpmIntegrity": "sha512-EFaLtKavtYyes2MNqQzJUWQXq+vT+rvmc58K55VyjaFJHp21pUTHatjrdXD1xLs9bGN7LLQb/c20f6gjyGSTGQ==",
+            "pnpmSha256": "bfcc1bcbad279b13a516c446a75b3c58b6904b45d57a1951411015e50b751a80",
+            "dockerInit": "0.19.0",
+            "dockerInitGitCommit": "de40ad0"
+          },
+          "node": "22.23.2",
+          "pnpm": "10.33.0",
+          "artifact": {
+            "integrity": "sha512-EFaLtKavtYyes2MNqQzJUWQXq+vT+rvmc58K55VyjaFJHp21pUTHatjrdXD1xLs9bGN7LLQb/c20f6gjyGSTGQ==",
+            "sha256": "bfcc1bcbad279b13a516c446a75b3c58b6904b45d57a1951411015e50b751a80",
+            "bytes": 4533784
+          }
+        }
+      },
+      "capture": {
+        "manifestSha256": "808ea22e27e0cc0f37cf6c9970226257e0313c30a05620ec8f9540d63930875c",
+        "inputs": [
+          {
+            "path": "pnpm-lock.yaml",
+            "sha256": "10d9c8945a151b402511082911ddf8a3bbc19ff4c55a14a5df8ef0d1afb13b83"
+          },
+          {
+            "path": "packages/starchess-core/package.json",
+            "sha256": "b837e00355f118f8c7ec23d65ee0933996adb9b91cc53318747f75435970998d"
+          },
+          {
+            "path": "packages/starchess-arena/package.json",
+            "sha256": "602f929a507a1c7806e850543d030de83091bd8f7413ca9520f34f641cce6e7b"
+          },
+          {
+            "path": "packages/starchess-training/package.json",
+            "sha256": "4ab1d9bc0f417b08a340afd9820b631eb6224b6f7eaceebf65498df25046f2a5"
+          }
+        ],
+        "controlSha256": "bbca2b58e15ca902cedc718e99333f372f092602bbd4c09317149cbb6f302385"
+      },
+      "closure": {
+        "manifestSha256": "a37ec86f100477cca5370fefa0d9b38667a77323d5e4d22be633557babd7da1b",
+        "actual": {
+          "tools": {
+            "node": "22.23.2",
+            "pnpm": "10.33.0"
+          },
+          "packages": {
+            "starchess-core": {
+              "fflate": "0.8.3",
+              "chess.js": "1.4.0",
+              "typescript": "5.9.3",
+              "vitest": "4.1.10"
+            },
+            "starchess-arena": {
+              "@chess-coach/starchess-core": "0.0.1",
+              "@types/node": "22.20.1",
+              "tsx": "4.23.12",
+              "typescript": "5.9.3",
+              "vitest": "4.1.10"
+            },
+            "starchess-training": {
+              "@chess-coach/starchess-arena": "0.0.1",
+              "@chess-coach/starchess-core": "0.0.1",
+              "jssha": "3.3.2",
+              "@types/node": "22.20.1",
+              "typescript": "5.9.3",
+              "vitest": "4.1.10"
+            }
+          },
+          "lockSha256": "10d9c8945a151b402511082911ddf8a3bbc19ff4c55a14a5df8ef0d1afb13b83"
+        }
+      },
+      "method": "host-scanned-unstarted-container-tar-v1",
+      "interpreter": {
+        "path": "/usr/local/bin/node",
+        "sha256": "3517c2df0b2f8cd7f422b4b8450ef81c6889f08eb03e281d6de9079b15e6a327",
+        "bytes": 124836408
+      }
+    },
+    "artifact": "host-infrastructure.json"
+  },
+  "capture": {
+    "runtimeSha256": "7b08a6606e0a7ba9a1136253cc0329e9a9296e1ff80d36d20440a2606157d194",
+    "controlSha256": "bbca2b58e15ca902cedc718e99333f372f092602bbd4c09317149cbb6f302385"
+  },
+  "verifiedArtifactCount": 57
+}
