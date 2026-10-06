@@ -259,7 +259,8 @@ Carry belief memory forward; do not count movement or repeated sightings as new 
 
 Supply **candidate × material-balance/uncertainty interactions** for spend, deployment, trade, and protection; a raw context-only balance term cancels in linear ranking and softmax.
 This belief requirement keeps **H=1** and does not select three-window search.
-Exact probabilistic architecture, feature dictionary/versions, calibration bins/data/objective, and acceptance thresholds remain **NOT CHOSEN**.
+The [engine/strategy → weight-design traceability matrix and selected direction ledger](ml-adjutant-weight-design-traceability.md) records the selected joint belief, 418-field append layout, promotion dictionary, and calibration gates alongside inspected source and coverage gaps.
+Those directions are **SELECTED / PENDING**, not implemented; exact normative amendment, kernel algorithms, schema/versions, support/work proofs, and readiness verification remain open.
 R1 must approve a new versioned amendment without silently changing the frozen 370-field names/count/meaning; R4 implements its belief/features and R5 persists calibration, valuation, interaction, and noninterference checks before R6.
 R5 must also verify the public opening split, CC exclusion/zero paid basis, turn tiers/cap/grant boundaries, and memory without resets or double-counted sightings.
 The [contracts extension](ml-adjutant-r1-contracts.md#21-selected-economic-extension--amendment-pending), [choice record](ml-adjutant-r1-recipe.md#selected-economic-extension--calibrated-belief-model), and [roadmap gate](PLAN-ml-adjutant.md#selected-economic-extension--pre-training-gate) record the same pending boundary.
