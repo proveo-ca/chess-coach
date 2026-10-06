@@ -1,7 +1,7 @@
 # R2 — approved V1 bridge and candidate generation V3
 
-Status: **WIP / IMPLEMENTED IN PROGRESS; full fresh verification and R2 closure PENDING.**
-Checkpoint: **latest frozen retry2fae1… FAILED at command8:1942 PASS/2 timeouts/0 skipped; four finite framework allowances approved.** Guard/Env/equivalence reviews remain scoped; exact-byte optimization and earlier host passes do not guarantee constrained timing or a new frozen pass. No full READY, publication or R2 acceptance.
+Status: **R2 CLOSED within authorized-observation V1 bounded composition V3 and current hermetic evidence assurance. NOT training-ready.**
+Authority: [R2 closure record](../evidence/ml-adjutant-r2-closure.json), outside the immutable57-artifact [published generation](../evidence/ml-adjutant-r2-refresh/verification.json). Both final post-publication reviews are READY TO CLOSE R2: yes. No learned policy/weights/acceptance or training/registry authorization follows.
 Scope: observation-only generation and its package graph, native helper extraction, pins, and full fresh verification.
 This document records the accepted TUI directions without reopening alternatives.
 No learned policy, SGD execution, training run, model artifact, or registry activation is authorized here.
@@ -21,9 +21,42 @@ The original R0 closure, counts, review verdicts, and image/archive hashes remai
 Do not rewrite restored evidence, substitute old output for a missing R2 run, or claim the historical image still exists.
 R2 requires captured-source and independently measured dependency identities plus complete verification/publication. New source capture is mandatory after runtime/test bytes change; dependency reacquisition is required after dependency inputs or controls change, not on every runtime-only retry. Current retry may retain the original matching uncached acquisition under §7.2.
 This spec pass reads source and changes only R2 planning docs/diagrams, their coverage index, and root `PLAN.md`; it executes no tests, recomputes no hashes, and publishes no evidence.
-Old completion markers cannot authorize current closure or live-pin assertions.
+Old completion markers and failed generations cannot authorize current closure/live pins. The complete new generation below supersedes all earlier pending/failed checkpoints; no passing fragments were stitched together.
 
-### Latest checkpoint — attributed host results, not frozen verification
+### Current R2 closure — completed new generation
+
+Read-only record reconciliation confirms `closed`, artifactnull/eligiblefalse/learnedPassfalse/trainingfalse and registry `machine-learning` disabled. The bounded generator retains512 candidates including pass/2048 attempted extensions/four slots; observations/codecs stay authorized V1.
+
+| Closure acceptance gate | Completed record |
+|---|---|
+| Frozen verification | All **11 PASS**, four static checks including three package typechecks/whole strict invoice; **core475/arena1944/training57**, zero failed/pending/todo; **Node109**, zero fail/skip. |
+| Actual independent infrastructure | **6/6 PASS**, zero fail/skip/todo; real Docker inspections/offline TS/probe Vitest and independent dependency/control joins retained. |
+| Native baseline parity | **54 executions +54 semantic reruns**, all equal; original migration parity true. Corpus **0 wins/2 losses/16 queue rejections**, live **0 wins/36 losses**, unchanged. |
+| Public model closure | public-v2 PASS **four roots/28 workspace sources/two jsSHA3.3.2 dependency files**, no dependency runtime imports/vendor exceptions/patch/tree-shaking assumption. |
+| Host validation/import | Lead reports independent **eight-input** validation, current source/public graph/composition/coverage, ordered archive layers/official Node bytes/dependency/control/infrastructure joins returning **`ok`**, then exclusive publication. |
+| Publication | **57 payload artifacts**, completion-marker-bound, **committed/durability confirmed**. Export envelope included; image archive stays external. |
+| Host after publication | Lead reports current-pin/coverage **14 PASS**, validated published57 map and tool-recomputed hashes. Spec-keeper reruns none. |
+| POST-PUBLICATION adversarial | **READY TO CLOSE R2: yes** — `ses_ef1bd904effeNnwLrxzq5IFMTc`. |
+| POST-PUBLICATION security | **READY TO CLOSE R2: yes** — `ses_ef292c512ffeiNMZ7KVQloY4sj`. |
+
+Both final reviewers read persisted source/evidence; they did **not** independently rerun suites or recompute archive hashes. Spec-keeper reads records without shell/hash execution. Lead PlantUML validation after final docs remains a documentation check, not an unmet R2 runtime gate.
+
+| Closed-generation identity copied from unchanged records | Recorded value |
+|---|---|
+| Source image | `sha256:37b4ec38caa50f15d02dec1c4dbdb45b0c29a7bdeb3a4c21f7ccea54e66ee2a9` |
+| Dependency image | `sha256:987a49cffc361da5771ed80126b1a63fdf2ff5ac5ce2383b2aa98e3b716cd2c1` |
+| Publication marker SHA-256 | `65bc6bb200514b446ad6939412922bde1cfa00d76225495e309fbd165c81b0c3` |
+| Captured source SHA-256 | `7b08a6606e0a7ba9a1136253cc0329e9a9296e1ff80d36d20440a2606157d194` |
+| Control SHA-256 | `bbca2b58e15ca902cedc718e99333f372f092602bbd4c09317149cbb6f302385` |
+| External archive SHA-256 | `f626892248ecea1446db0d295bf3eb0ae42a668a10ab1e484ebde1e9a89d9ef1` |
+| External archive bytes | **134552576**; location/identity retained in `host-provenance/export.json`. |
+
+Limits remain explicit: supported-syntax audits are **not arbitrary JavaScript purity proof**; hashes bind bytes, not producer authenticity; report omissions are honest bounded membership, not exhaustive legal coverage or wins. Zero-win baseline is non-learned assurance; no weights/artifact/learned acceptance or playable ML registry entry exists.
+Calibrated-economy amendment plus **R3 ledger/provenance, R4 features and R5 readiness** remain pending before explicit **R6 training** approval; R7 artifact/runtime precedes R8 learned acceptance. Future recipe profiles/370-field design are unchanged. This pass changes no captured source/README/tests/packages/controls, immutable57 payloads/marker or outside-bundle closure JSON.
+
+### Superseded pre-closure operating checkpoints — chronological history only
+
+Every pending/failed claim in this section describes its earlier checkpoint, **not current R2 status**. Complete new publication above supersedes it without modifying old failures or borrowing partial successes.
 
 - Source contains the private training package, four-promotion V3 domain, root-guard family availability, pure V1 bridge, inventory v2, execution pins v3, verification v3, and public-closure tooling.
 - Executor reports the native owner's **19** strict test-type errors are fixed and the lead resolved **two** legacy fixture boundary casts.
@@ -60,7 +93,7 @@ Old completion markers cannot authorize current closure or live-pin assertions.
 - Factory/member-mutation and data-index guards now exist in both source inventory and public closure after the quota-interrupted partial repair; this pass documents inspected current source, not the incomplete checkpoint. Immutable image comparison now excludes mutable daemon tagging/storage metadata while binding all stable identity/configuration/root-filesystem fields.
 - The lead appends the new package and public-closure check to root CI before freeze; spec-keeper edits no source, CI, package README, or evidence.
 
-### Scoped final source-freeze verdicts — not post-publication closure
+### Earlier scoped source-freeze verdicts — preserved history
 
 | Reviewer | Executor-reported final verdict | Review session |
 |---|---|---|
@@ -399,13 +432,13 @@ Keep content-derived hashes; no mtime pins or invented counts/digests.
 Teach migration/validator/importer/tests the new closed schemas explicitly; do not accept historical v2 envelopes as fresh R2 verification.
 Preserve old fixture bytes and original-baseline pins; pin new execution separately.
 
-## 7. Full eleven-command verification v3 — source manifest, execution pending
+## 7. Full eleven-command verification v3 — closed-generation contract
 
-**IMPLEMENTED manifest, not fresh run or passing.** `packages/starchess-arena/hermetic/verification-plan.mjs` owns exact vectors; build must freeze its expanded input lists before execution.
+The immutable closed `verification.json` records **all eleven vectors passed**. `verification-plan.mjs` continues to own exact vectors; future changed-source generations must freeze expanded inputs and verify independently.
 Assertion-floor version remains **`r2-assertion-floors-v3`**, with unchanged minima `vitest-starchess-core.json:475`, `vitest-starchess-arena.json:1944`, `vitest-starchess-training.json:57`; scoped test budgets change no floors or assertions.
-Earlier full core475/training57/source1177/arena1650 remain scoped history. Frozen command7 passed core475 in both later attempts; first command8 failed1703/2/239, subsequent2CPU command8 failed1943/1timeout/0skip. No full1944/all-eleven PASS exists, and host1 optimization success does not supply it. Confirm the next generation's invoice/bindings; no source/test/verifier changes here.
+Closed commands7/8/9 bind **475/1944/57 actual passing assertions**, no failed/pending/todo. Earlier partial failures/source1177/arena1650 remain history, not this complete generation's proof. Binding/invoice rules remain normative for future regeneration; no source/test/verifier changes here.
 The importer rejects a different floor version/vector and independently recounts every bound Vitest report with no failed/pending/todo assertions.
-These minima do not claim final enumeration or any full arena pass; the lead must enumerate the final suite, reconcile the target, rerun the whole strict invoice and complete every frozen-image command.
+Minima alone never establish a pass; this closed generation supplies the actual report recounts and complete strict/frozen commands. Future generations must enumerate/reconcile the invoice and repeat every command rather than borrow old counts.
 For the vectors below define `A=/app/packages/starchess-arena`, `P=/app/packages`, `O=/app/_spec/evidence/ml-adjutant-r2-refresh`, and `T=/app/packages/starchess-training`.
 Expand these symbols to absolute paths; they are notation, not shell variables or commands executed by this spec pass.
 Use the new R2 runtime/host namespace outside captured source, never over restored R0/Phase 1/Phase 2 history.
@@ -465,7 +498,7 @@ Pass the same object to `runLogged(...,{env})`, record it as `command.env`, and 
 No inherited `NODE_OPTIONS`, `NODE_PATH`, `LD_PRELOAD`, `LD_LIBRARY_PATH`, `DOCKER_HOST`, `DOCKER_CONTEXT`, authentication config or credentials may enter that child; reject extra or substituted keys.
 This scrub is specific to the host infrastructure child; ordinary `runLogged` calls still default to `process.env`, and the capture parent remains trusted host tooling.
 
-**Retry recapture pending:** six `infra.test.mjs` identities remain ordered, five static + actual Docker. The older pre-Env capture was rejected; Executor now reports a later actual6 envelope capture succeeded, but its source generation failed at command8. Retry requires new actual capture independently joined to the same measured dependency identity; no earlier event alone closes R2.
+**Closed current gate:** retained `host-infrastructure.json` records six exact identities passed, five static + actual Docker, independently joined to measured dependency987a49/control bytes. Earlier captures/failures remain separate history; invocation and retention rules below remain mandatory for future generations.
 The capture script now freezes the full `INFRASTRUCTURE_TEST_NAMES` vector and derives `INFRASTRUCTURE_TESTS` from its length, **6**.
 Its recount requires **all six titles in order**, exact numbering `1..6`, TAP plan `1..6`, `tests=pass=6`, `suites=0`, and `fail=cancelled=skipped=todo=0`; reject omissions, additions, renames, reordering and duplicate titles.
 The six-test contract supersedes neither historical R0 **5/5** records nor their unchanged bytes.
@@ -508,10 +541,12 @@ The two new import regressions reject injected probe `NODE_OPTIONS` and a forged
 The seven additional image-identity regressions comprise one legitimate independent tag/digest/daemon-metadata positive and Config/RootFS substitutions at each of envelope, execution artifact and both locations; rebound JSON hashes still fail for altered immutable fields.
 These are synthetic test-boundary regressions, not a new actual Docker/image evidence run.
 
-New retry source capture/image, independently joined actual infrastructure recapture, complete verification/publication and R2 closure remain **PENDING**.
+Complete new source image/independent actual infrastructure/all11/exclusive57 publication are **CLOSED for this generation**; future regeneration must satisfy every join anew.
 No learned acceptance or training is authorized or claimed.
 
 #### Rejected pre-delta attempt — operating history, not goals or current proof
+
+All failure/allowance subsections through §7.2 are **superseded pre-closure history**. Their pending claims were true then, not open gates for the complete new generation. Records remain unchanged and are not stitched into acceptance.
 
 Executor reports an actual uncached dependency build identified only by prefix **`5e459…`** and source build **`7934…`** passed. Those are incomplete operator-provided identifiers, **not full pins or newly measured hashes** authored here.
 The actual infrastructure TAP counted **6 PASS / 0 fail / 0 skip**, with offline TypeScript probes and **one passing Vitest assertion**. Envelope capture nevertheless **REJECTED** the attempt because Docker placed the output override first while the validator assumed ordered Env equality.
@@ -613,7 +648,7 @@ Retain `host-infrastructure.json` and every bound `host-infrastructure/` artifac
 Reject runtime-artifact collisions with reserved host provenance/infrastructure namespaces before exclusive marker publication.
 These persisted records let later review inspect the joins without relying on missing `/tmp` envelopes or logs; no publication or durability check occurred in this spec pass.
 
-#### Prepared CLI examples — lead execution pending
+#### Regeneration CLI examples — not pending R2 work
 
 Run after final source gates/capture; examples are **not executed here** and assign no identities/results. The first command is for initial/changed-input acquisition **only**; omit it for the approved runtime-only retry after independent equality checks, retaining current `ACQUISITION_JSON` and `DEPENDENCY_IMAGE`.
 Set `DEPENDENCY_IMAGE` and `ACQUISITION_JSON` from the first build's immutable image ID and returned `build.json`; do not use the source build envelope as acquisition proof.
@@ -646,15 +681,15 @@ Require fresh **54 executions + 54 semantic reruns** of unchanged `baseline-v1` 
 Do not replace that baseline with V3 candidates or normalize away gameplay differences to make extraction pass.
 The fresh native helper and codec extraction must preserve actual original baseline behavior as well as V1 key/spend/error/byte semantics.
 Report generated membership/omissions separately from codec representability and benchmark wins.
-Carry every loss/rejection/timeout in its original denominator; no passing full frozen R2 totals exist yet.
-Perform independent unstarted-container source/dependency/tool/Node-byte measurement, pre/post manifest equality, new validated marker publication, and adversarial/security review before R2 closure.
+Carry every loss/rejection/timeout in its original denominator. Closed frozen totals475/1944/57/Node109 and actual infra6 are complete; old failures are separate operating history, not substituted counts.
+Closed records bind independent unstarted-container source/dependency/tool/Node-byte measurement, pre/post manifests, validated marker publication and both final post-publication reviews. Future generations must meet these obligations anew.
 No fresh image IDs, artifact hashes, frozen passing test totals, or closing reviewer verdicts are assigned by this document.
 Required v3 artifacts include baseline, contract, original coverage, pin migration, `r2-composition-report.json`, `public-closure-report.json`, and all three Vitest JSON reports.
 The baseline validator consumes exactly `[baseline,original,originalVerification,migration,coverage,contract,r2report,frozenRoot]`.
 
-## 8. Required persisted R2 checks and build handoff
+## 8. Persisted R2 checks, closed assurance and documentation handoff
 
-| Verification concern | Persisted source checks; fresh full execution pending |
+| Verification concern | Persisted checks; complete fresh generation verified |
 |---|---|
 | V1 compatibility / native costs | Old/new observation bytes, candidate keys/spend/errors/comparator and codec 65 ceiling; bounded depth-16/8192-visit/1-MiB UTF-8 inspection, memoized shared-subtree height checks, cycles/accessors rejection, frozen ACTION_KINDS and malformed schemas; declaration-time native table/entry freezing and rejected mutation with unchanged authoritative costs. |
 | Marine promotion | Authored-last OR potential rewritten-last, both colors, exact n/b/r/q, no p or unpromoted alternative, native matching/off-board exceptions, unknown/occupied paired worlds, original coordinates, late-B nonretroactivity. |
@@ -663,7 +698,7 @@ The baseline validator consumes exactly `[baseline,original,originalVerification
 | Traversal/diagnostics | Root-guard feasible family availability with finite separately metered probes; eight-lane RR, cyclic depth/FIFO laziness, continuation after valid skips, counted duplicates/pruning/owner/quota, exact six guard keys, transfers only on proven exhaustion, pass once, 512/2048/four-slot caps and closed count identities. |
 | Identity/privacy | Exact bytes despite forced hash collision; empty/abc known vectors and independent Node binary/Unicode/padding55/56/63/64/65/subarray differential tests; Uint8Array length32/input immutability; stable sorted results, hidden-world noninterference, no full-state admission probes or retries. |
 | Coverage/performance | Exhaustive small authorized fixture domains and actual membership/omissions; capped worst-case work/state/runtime under existing policy deadlines. No asserted exhaustive full-state legality. |
-| Closure/assurance | Floors475/1944/57/assertions unchanged; sourceguard1177 remains prior scoped PASS. Preserve1703/2/239,1943/1/0 and latest2fae1 command8=1942/2timeouts/0skip as separate failures;1–7 PASS,9–11 not run, all239 assertions executed. Exact-byte/one-read optimization preserves correctness, not timing. Only four named complete-validation tests now240000ms, initial scopes retained; independent child/model planning/startup/match/Node/production safety and2CPU/4GiB/network-none fixed. Same987a49 dependency/control joins plus new actual6/source capture/all11/archive/import/local-exclusive publication/closing reviews remain required. No caches/assertion loss/persisted tmp pins/accepted failed images/R2 completion/training. |
+| Closure/assurance | Complete fresh11 PASS; actual475/1944/57/Node109/infra6,54+54 equal and original migration parity. Host eight-input/source/public/composition/coverage/archive/Node/dependency/control joins independently revalidated before exclusive committed/durability-confirmed57 payloads. Both POST-PUBLICATION READY TO CLOSE R2: yes; host14 current-pin/coverage PASS. Scope stays authorized V1/bounded V3, not arbitrary-JS purity/producer-authenticity/exhaustive/winning assurance. Old failures separate, no stitching; immutable bytes/controls unchanged by docs; model/artifact/training/registry disabled. |
 
 Build owns all package/source/test/config/lock/CI and verifier changes above; this spec pass changes none.
 The canonical concern link is `_spec/packages/starchess-training/candidate-generation.puml`; the lead owns source-side `SPEC:` replacements and preserves unrelated pointers.
@@ -694,8 +729,8 @@ All seven candidate reasoning notes have two sentences in five lines with at mos
 `scripts/r2-composition-evidence.ts` defines both-seat promotion fixtures with **four** reference queues, `n,b,r,q`.
 Its report separates primitive membership from retained membership and reports actual omitted primitive keys, per-owner retention, quotas, work/cap histograms, and guard diagnostics.
 `r2CompositionEvidence.test.ts` currently expects all four primitive promotion references but zero retained references at the 2048 attempt cap for each fixture seat.
-These are authored illustration/assertion expectations, not passing proof or a claim that a fresh report was generated in this pass.
-Generate and independently remeasure `r2-composition-report-v1` during the new full verification cycle; record any actual bounded omissions without concealing them.
+These fixture assertions passed in frozen command8; this docs pass generated no report. Published `r2-composition-report.json` records actual primitive/retained membership and honest bounded omissions.
+Host import independently remeasured that full report during the closed cycle. Omitted retained queues remain omissions; codec representability and successful verification never mean exhaustive generation or wins.
 Existing five-value codec representability loops are not generator promotion claims and do not authorize `p` generation.
 
 ### 8.2 Prior pointer audit and current build-only navigation/CI/rendering handoff
@@ -728,12 +763,13 @@ The index retains the earlier unresolved groups pending a whole-file reconciliat
 No stub is created for `newgeneration.puml`.
 The index's pre-existing `turn-input-sequence.puml` unresolved row remains explicit triage; both that spec and its recorded `marineGasArm.ts` citing path are absent in this tree, so this pass does not claim a live source pointer there.
 The existing empty-coverage `_spec/apps/starchess/core/index.puml` remains unchanged human triage.
+Final index-path validation checked34 pre-edit indexed diagram paths by area globs and exact-path reads.33 exist; `_spec/_plans/chess-ui-primitives.puml` is confirmed absent, so its dangling projection row was dropped without stubbing a diagram or touching UI/source. The empty-coverage core index exists and stays triage, not a missing-spec finding. The three historical unresolved groups are retained without claiming a new whole-file source-comment reconciliation.
 
-Root `README.md` belongs to build, not spec-keeper; add current navigation to this amendment and both owning diagrams without changing unrelated README prose.
-Root `PLAN.md` links this amendment and the canonical diagram, marks R2 WIP, separates reported host results from frozen proof, and preserves its R0 history. No diagram path changed.
+Root/source/hermetic README files remain outside this closure edit. No README/source change is requested or required to finish R2; current navigation lives in allowed root `PLAN.md` and `_spec/` docs, preserving every frozen control byte.
+Root `PLAN.md` links this closed contract, canonical diagrams and outside-bundle closure record, marks scoped R2 CLOSED, preserves failed/R0 history and leaves learning gates pending. No diagram path changed.
 Whole-file inspection confirms `packages/starchess-arena/hermetic/README.md:71–76` now names **jsSHA3.3.2**, synchronous `jssha/sha256`, core **planning-v1**, full native/fflate host ownership and **public-closure-v2**, without vendor exceptions or tree-shaking assumptions. The old dependency/public-boundary README handoff is **RETIRED**, not a current blocker.
 README:208–211 now states unique key/value Env equality, rejects duplicates/bare/missing/extra/changed definitions, and preserves immutable image Env order. The manifest owns current **floorsv3 475/1944/57**; old README dependency/boundary handoffs stay retired and this pass changes no README bytes.
-Scoped guard/Env/equivalence records remain limited. Latest frozen command8 failed1942/2/0; user approved finite240000ms only for four complete-validation tests, not independent child/model/production limits or a passing generation. New actual infrastructure/measurement/source capture/all11/PlantUML/archive/import/local-exclusive publication/closing gates remain pending. Source/README/controls/lock/manifests and evidence bytes/modes remain untouched by spec-keeper.
+Scoped guard/Env/equivalence records and old failures remain history. Complete new command8 passed1944; all11/infra/archive/import/publication and both final post-publication reviews completed. Finite framework allowances never changed child/model safety. Only final doc PlantUML validation remains with the lead; source/README/control/lock/manifest and evidence bytes/modes are untouched here.
 Root CI must include the training full suite/typecheck and `node scripts/check-public-closure.mjs`; no CI edit occurs here.
 
 Lead/build validation commands, from repository root; **not executed by spec-keeper**:
@@ -753,23 +789,22 @@ Current Env-delta reasoning note: **ml-adjutant-policy-contracts.puml · note ri
 Current finite-framework rationale: **ml-adjutant-policy-contracts.puml · note right of RUNTIME ·33 words/60 syllables/2 sentences · FK12.3**. Five lines stay within50 columns; this replaces the earlier graph-only rationale, not source prose or safety limits.
 Test-equivalence rationale: **ml-adjutant-policy-contracts.puml · note left of BUNDLE ·31 words/58 syllables/2 sentences · FK12.5**. Five lines stay within50 columns; existing publication reasoning remains unchanged.
 
-### 8.3 Current acceptance gates — all must close before R2 completion
+### 8.3 R2 acceptance checklist — completed bounded assurance
 
-- [x] **Earlier attributed host checkpoint only:** full **core475**, **training57**, **source1177**, last full **arena1650 before264 +30 additions**, three typechecks/whole strict/Node109/public-v2 PASS. This is not all-new full1944/new-control frozen proof.
-- [x] **Source inspection only:** manifest registers **r2-assertion-floors-v3 475/1944/57**; shared unique-Env comparison and README update exist, old dependency/public-boundary handoff stays retired. No source or README bytes changed here.
-- [x] **Attributed scoped final source-freeze reviews:** adversarial `ses_ef1bd904effeNnwLrxzq5IFMTc` YES; security `ses_ef292c512ffeiNMZ7KVQloY4sj` YES. These are not post-publication closing verdicts, arbitrary-JS proof, Docker completion or training authorization.
-- [x] **Attributed contained Env-delta reviews/checks only:** security and adversarial YES in the same sessions;75 focused tests/three syntax/all strict/arena-types/diff PASS reported,30 assertions added. No formal purity, accepted capture or all-new closure claim.
-- [x] **Failed records inspected, not closure:** commands1–7 exit0/core475 PASS; arena8=1703 PASS/2 timeout FAIL/239 hook-skipped;9–11 not run. Temporary path is not a persisted pin.
-- [x] **Allowance approval/source presence only:** read-only architect `ses_ef028270` proposal TUI-approved; hook240000ms/exactly two reproduction tests180000ms. No verified retry PASS or assertion/floor/policy reduction.
-- [x] **Later failure/host-only optimization checkpoint:** Executor reports2CPU retry1943 PASS/1 timeout/0 skipped, all239 prior skipped assertions executed; scoped equivalence YES and host positive1/types/whole strict/diff PASS. Positive test120000ms retained; no frozen-generation completion.
-- [x] **Latest failure/approval/source presence only:** Executor reports2fae1 commands1–7 PASS/arena1942 PASS/2 timeouts/0skip;9–11 not run. Four named complete-validation tests240000ms TUI-approved/inspected, all assertions and child/model/resource limits retained; no verified fresh PASS.
-- [ ] Obtain new allowance-bearing source capture/image and independently joined actual6 remeasurement/capture of same987a49 dependencies/controls, then full1944/all-eleven success from1. Preserve every failed generation separately; private tmp reports are not pins or completion fragments.
-- [ ] Complete final static checks; repeat affected suites/typechecks/whole strict/Node/public closure after any repair. Source-freeze eligible does not mean frozen; capture the matching final source/controls/floor vector only after these gates.
-- [ ] Lead validates/renders both owning diagrams **once after the final documentation writes**, plus whitespace/index checks. No such checks ran here.
-- [ ] Independently remeasure same approved dependency identity and unchanged control/input invoice; retain original successful uncached acquisition only if joins match. New actual6 capture/all11 bind the new source generation. Reacquire only on input/control drift; no pre-Env rejected records or failed completion fragments may be reused.
-- [ ] Require original54 semantic parity, fresh54+54 executions/reruns, export and independent image/archive/installed/tool measurement, validated new R2 import/publication and **post-publication closing adversarial/security/spec reviews**.
-- [ ] After successful verification, use only the approved `_spec/evidence` ancestor0700 restoration and exclusive new R2 namespace publication; preserve historical file bytes. Approval is not a chmod, import or durability result.
-- [ ] Only then record **R2 closure**. Successful acquisition/infra capture and partial commands are not accepted source-image completion/current bundle/publication or training. Post-publication closing reviews remain pending; R1/R3–R5 and explicit R6 approval are separate gates.
+This checklist belongs to the **complete new generation**, not stitched earlier commands. Runtime/publication/closing gates are complete in persisted records; final doc rendering is listed separately.
+
+- [x] Freeze and independently bind source37b4ec…/dependency987a49… and exact runtime/control identities.
+- [x] All **eleven frozen commands** PASS from1; actual **475/1944/57/Node109**, four static checks, zero fail/pending/todo/skip.
+- [x] Independently validate **actual6 Docker infrastructure** and source/probe policy/unique Env/immutable image Config/rootFS/control joins.
+- [x] Original native baseline parity and **54+54 equal semantic reruns**, retaining zero-win/loss/rejection denominators.
+- [x] Host importer revalidates exactly **eight inputs**, current source/public graph/composition/coverage/archive ordered layers/official Node bytes/dependency/control/infrastructure joins, returning `ok`.
+- [x] Export external archive **134552576 bytes**; retain export envelope, all acquisition/build/execution/infrastructure provenance and logs.
+- [x] Exclusive new R2 publication: **57 payloads**, marker-bound, **committed/durability confirmed**, historical/failure records untouched.
+- [x] Lead validates published57 map and recomputes hashes; post-publication current-pin/coverage **14 PASS**.
+- [x] Both **POST-PUBLICATION READY TO CLOSE R2: yes**: adversarial `ses_ef1bd904effeNnwLrxzq5IFMTc`, security `ses_ef292c512ffeiNMZ7KVQloY4sj`; read-only persisted-record method, no independent suite/hash reruns.
+- [x] Outside-bundle closure JSON says **closed**, artifactnull/eligiblefalse/learnedPassfalse/trainingfalse/registrydisabled; record and57 payloads/marker unchanged by this docs pass.
+
+**Documentation handoff, not reopened runtime acceptance:** lead runs PlantUML checkonly/render once after final doc writes. Spec-keeper manually checks touched coverage/index/local links but runs no shell/tests/hash tool. Caller owns any final Upgrade Complete report.
 
 ## 9. Unchanged future readiness gates
 

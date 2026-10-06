@@ -45,7 +45,9 @@
         "scripts/check-public-closure.mjs",
         "package.json",
         "pnpm-lock.yaml",
-        "pnpm-workspace.yaml"
+        "pnpm-workspace.yaml",
+        "_spec/evidence/ml-adjutant-r2-refresh/**",
+        "_spec/evidence/ml-adjutant-r2-closure.json"
       ],
       "fingerprint": null
     },
@@ -306,7 +308,9 @@
         "packages/starchess-arena/hermetic/evidence-bundle.mjs",
         "_spec/evidence/ml-adjutant-phase2/*.json",
         "_spec/evidence/ml-adjutant-r0-refresh/**",
-        "_spec/evidence/ml-adjutant-r0-closure.json"
+        "_spec/evidence/ml-adjutant-r0-closure.json",
+        "_spec/evidence/ml-adjutant-r2-refresh/**",
+        "_spec/evidence/ml-adjutant-r2-closure.json"
       ],
       "fingerprint": null
     },
@@ -409,24 +413,6 @@
       "covers": [
         "apps/starchess/src/presentation/hud/components/GasRack.tsx",
         "apps/starchess/src/presentation/hud/components/GasRack.module.css"
-      ],
-      "fingerprint": null
-    },
-    {
-      "spec": "_spec/_plans/chess-ui-primitives.puml",
-      "covers": [
-        "packages/ui/web/src/**",
-        "packages/ui/web/.storybook/**",
-        "packages/ui/web/scripts/check-boundary.mjs",
-        "apps/chess/src/components/primitives/**",
-        "apps/chess/src/components/atoms/**",
-        "apps/chess/src/index.tsx",
-        "apps/starchess/src/components/primitives/**",
-        "apps/starchess/src/components/atoms/**",
-        "apps/starchess/src/main.tsx",
-        "apps/e2e/primitives.config.ts",
-        "apps/e2e/tests/primitives/shared-ui.spec.ts",
-        "apps/starchess/src/__tests__/navTouchTargets.test.ts"
       ],
       "fingerprint": null
     }

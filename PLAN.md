@@ -1,6 +1,6 @@
 # Adjutant evolution — from strategies to learned opponent
 
-Status: **learning roadmap only; NOT training-ready. R0 CLOSED historically within accepted non-learned assurance. R2 WIP; fresh verification/closure PENDING.**  
+Status: **learning roadmap only; NOT training-ready. R0 historical assurance CLOSED; R2 CLOSED within authorized V1/bounded V3 and current hermetic evidence assurance. Calibrated economy/R3–R5 readiness before explicit R6 remain pending.**  
 Scope: how Single Player’s opponent (`packages/starchess-core/src/ai/adjutant.ts`) grows from named strategy algorithms → a composed heuristic → something that learns, without rewriting the StarChess rules engine.
 
 The preparatory catalog is implemented and verified separately from this learning roadmap;
@@ -23,7 +23,27 @@ The [original closure/pin record](_spec/_plans/PLAN-ml-adjutant.md#r0-closure--c
 This closes assurance, not learning: weights remain **NONE**, no trained artifact or learned acceptance exists, and `machine-learning` stays unavailable.
 Lead historically reported both then-updated diagrams passed PlantUML `checkonly` with exit **0** and `git diff --check` passed; this pass reruns neither check.
 
-### Current R2 — WIP, no fresh evidence or acceptance
+### Current R2 — CLOSED bounded V3/authorized V1 assurance, not learning
+
+Authority: unchanged [R2 closure JSON](_spec/evidence/ml-adjutant-r2-closure.json), **outside** immutable [57-artifact published evidence](_spec/evidence/ml-adjutant-r2-refresh/verification.json). The complete **new generation** passed all11 frozen commands, core475/arena1944/training57/Node109, four static checks and actual Docker infrastructure6, with zero fail/skip/pending/todo. **54+54 semantic reruns equal** and original pin-migration parity preserve native baseline behavior.
+Host importer again independently validated exactly eight inputs, current source/public graph/composition/coverage, ordered archive layers/official Node bytes and dependency/infrastructure/control bindings (`ok`), then published **exclusively, committed/durability confirmed**. Lead reports post-publication current-pin/coverage14 PASS, validated published57 map and tool-recomputed hashes; spec-keeper reruns none.
+
+| Final POST-PUBLICATION review | Recorded verdict/session |
+|---|---|
+| Adversarial | **READY TO CLOSE R2: yes** · `ses_ef1bd904effeNnwLrxzq5IFMTc` |
+| Security | **READY TO CLOSE R2: yes** · `ses_ef292c512ffeiNMZ7KVQloY4sj` |
+
+Both reviewed persisted source/evidence read-only, not independent suite/archive-hash reruns. These closing verdicts supersede earlier scoped approvals/pending gates without borrowing failed commands.
+Recorded marker SHA-256 is **`65bc6bb200514b446ad6939412922bde1cfa00d76225495e309fbd165c81b0c3`**. Exact source/dependency/source-control/archive identities are in the closure JSON and [closed R2 contract](_spec/_plans/r2-generator-v3.md#current-r2-closure--completed-new-generation); external archive **134552576 bytes** stays outside57 payloads, its export envelope is retained inside them.
+The [generator](_spec/packages/starchess-training/candidate-generation.puml) and [assurance](_spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml) diagrams retain the durable design: authorized V1 only, bounded512/2048/four-slot V3, narrow core planning-v1/four model roots, host-private native admission, no fallback, no hidden-state inputs, unchanged costs/codecs/grammar/permits/resources. Report cap omissions remain honest, not exhaustive legality/coverage or a winning claim.
+Native baseline remains **corpus0 wins/2 losses/16 queue rejections; live0 wins/36 losses**. Supported source audits do not prove arbitrary-JS purity, and hashes prove byte identity rather than producer authenticity. `modelArtifact:null`, eligiblefalse/learnedPassfalse/trainingfalse; weights NONE, `machine-learning` disabled, no learned acceptance/registry activation.
+R2 is complete, but **calibrated-economy amendment +R3 ledger/provenance +R4 features +R5 readiness** remain before explicit **R6**; R7 artifact/runtime precedes R8 learned acceptance. Future recipe profiles remain unchanged.
+No source, hermetic README, tests/packages/controls or immutable57 payloads/marker/outside-bundle closure record changed here. Lead validates diagrams once after final docs; no renderer/test/hash execution by spec-keeper. Caller owns the final Upgrade Complete outcome.
+
+<details>
+<summary>Superseded R2 operating checkpoints — history only</summary>
+
+All failed/pending statements below belong to earlier checkpoints, **not current R2 status**. They remain operating history with private tmp reports, not accepted pins; complete new generation above supersedes them without stitching partial successes.
 
 Specs record **R2 WIP / latest frozen retry2fae1… FAILED:1942 PASS/2 timeout FAIL/0 skipped**. Scoped reviews and byte-equivalent test optimization do not prove constrained timing. Exactly four finite framework240000ms allowances are approved; new source capture/all-eleven verification and closing gates remain pending.
 The [approved R2 V1 bridge / V3 amendment](_spec/_plans/r2-generator-v3.md) and [candidate-generation.puml](_spec/packages/starchess-training/candidate-generation.puml) own the current scoped work.
@@ -57,10 +77,12 @@ Earlier positive publication logical checks took148219ms against the then120000m
 Executor reports **scoped security/adversarial equivalence YES**, latest host positive1/types/whole strict/diff PASS, not a fresh frozen PASS. No new review IDs or full image hashes are invented. R2 completion/publication marker remains absent; preserve old failures and never stitch their passing command fragments.
 Executor TUI-approved **240000ms ONLY for four complete-validation/publication tests**, from120000ms: successful publication, competitor preservation, before-publication hook failure, postcommit snapshot-cleanup failure. Source confirms all four; earlier hook240000/pin180000/coverage180000 scopes remain. Independent child-validator120000ms/safety caps and model planning/startup/match/Node/production budgets stay fixed, as do2CPU/4GiB/network-none and floors475/1944/57. No global timeout/cache/filter/removed assertions; no proven fresh PASS.
 Next allowance-bearing source capture/image and actual6 infrastructure remeasurement/capture must validate the same measured dependency987a49/current acquisition and unchanged controls/lock/manifests before **all eleven commands from1**. Drift stops reuse/escalates; no forced network acquisition when all joins match. No failed source images or successful command fragments count as acceptance. No source or hermetic README edits here, so this docs pass changes no captured controls.
-Older rejected pre-Env records stay unusable; all frozen failure records remain separate. Hermetic README remains untouched to avoid control drift. Follow the [R2 checklist](_spec/_plans/r2-generator-v3.md#83-current-acceptance-gates--all-must-close-before-r2-completion) for all11/54+54/archive/export/import/publication/post-publication reviews—all pending. Lead validates both diagrams once after final documentation writes; no renderer runs here.
+Older rejected pre-Env records stay unusable; all frozen failure records remain separate. Hermetic README remains untouched to avoid control drift. Follow the [R2 checklist](_spec/_plans/r2-generator-v3.md#83-r2-acceptance-checklist--completed-bounded-assurance) for all11/54+54/archive/export/import/publication/post-publication reviews—all pending at this historical checkpoint. Lead validates both diagrams once after final documentation writes; no renderer runs here.
 Executor approved restoring **ONLY `_spec/evidence` mode0700**, preserving historical file bytes, for the local publisher **after verification**; publish exclusively into a new R2 namespace, never overwrite history. Approval is not chmod/publication execution; neither occurs here. R2 remains WIP, not complete or training-authorized.
 The [R2 provenance contract](_spec/_plans/r2-generator-v3.md#72-fresh-acquisition-offline-source-build-and-durable-host-provenance) owns exact acquisition/source vectors, environments, log metadata and retention.
 No accepted images from failed generations, R2 completion, training, weights or registry activation is claimed. Acquisition/infra and seven-command successes do not close a failed generation; archive/import/local-exclusive publication after checks and final reviews remain pending.
+
+</details>
 
 ### Historical Phase 1 verification
 
@@ -93,7 +115,7 @@ Keep deployed material and inferred enemy bank as separate components; neither i
 Use native `incomeForTurn(t)` and `applyStoredIncome` at actual income-grant boundaries, not planning ordinals, frame counts, or turn changes alone.
 Exact belief architecture, calibration data/objective/thresholds, and versioned feature amendment remain **PENDING**; the prior frozen **370**-field v2 contract does not supply a calibrated model.
 The [canonical economic gate](_spec/_plans/PLAN-ml-adjutant.md#selected-economic-extension--pre-training-gate) and [R1 amendment contract](_spec/_plans/ml-adjutant-r1-contracts.md#21-selected-economic-extension--amendment-pending) own the details; do not duplicate or silently amend their recipe here.
-R1 amendment and R2–R5 implementation/readiness must close before explicit R6 training approval; R7 artifact/runtime validation precedes R8 learned acceptance.
+R2 is CLOSED; calibrated R1 amendment and remaining R3–R5 implementation/readiness must close before explicit R6 training approval. R7 artifact/runtime validation precedes R8 learned acceptance.
 Current named feature arrays (ranker 158 / action 64 / observation 1623) have **no weights** and are not adequate
 for that first trained ranker. Start at H=1; three conditional simultaneous planning windows are separate future work.
 Training, learned models/artifacts, and browser rollout remain unimplemented; registry entries stay EMPTY/unavailable.

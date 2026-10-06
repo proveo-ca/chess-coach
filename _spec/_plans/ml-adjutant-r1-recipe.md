@@ -3,12 +3,12 @@
 Status: **Prior R1 future design contract FROZEN; new economic amendment PENDING. Implementation and validation readiness NOT established.**
 This record preserves Executor's eight original choices, nine follow-up directions and explicitly approved final profiles.
 Design approval authorizes no implementation, dependency/export changes, training, approved run or publication in this docs-only pass.
-R2 is **IMPLEMENTED IN PROGRESS** under the [V1/V3 amendment](r2-generator-v3.md), with full fresh verification pending; R3–R8 remain future/unimplemented. Weights remain **NONE**.
+R2 is **CLOSED within authorized V1/bounded V3/current hermetic assurance** under the [closed contract](r2-generator-v3.md) and unchanged [outside-bundle record](../evidence/ml-adjutant-r2-closure.json). Complete fresh11/475/1944/57/Node109/actual infra6/54+54/exclusive57 publication and both post-publication READY reviews close R2 only; calibrated economy/R3–R8 remain future, weights NONE, no training.
 The amendment overrides only current generator/bridge/pin choices: exact native four promotions `n,b,r,q`, five deploy units `p,n,b,r,q`, guard-feasible finite root availability and V1 public surfaces. API A's broader events/features/artifacts and the 370-field registry remain future/frozen.
-Executor reports latest R2 source recovered from `cc6`; R0 records/partial logs, absent archives/tmp images and old markers supply no current closure or test authority.
+cc6/R0/failed records remain history; absent archives/tmp images/old markers supply no current authority. Complete new R2 evidence, not stitched failures, now supplies scoped acceptance. Future profiles/choices remain unchanged and unvalidated as learning settings.
 The [roadmap](PLAN-ml-adjutant.md) records **R0 CLOSED**, all **A01–A15 resolved**, with original **7 HIGH + 8 MEDIUM** history preserved.
 Unchanged [closure JSON](../evidence/ml-adjutant-r0-closure.json) records both final post-publication reviews **READY TO CLOSE R0: yes**.
-Complete the versioned economic amendment and R2–R5 readiness before explicit R6 training approval.
+R2 is complete; calibrated versioned economic amendment and remaining R3–R5 readiness precede explicit R6 approval. No learned acceptance/weights/registry activation is implied.
 **New economic extension: SELECTED DIRECTION, NOT implemented or design-complete.** The prior R1 freeze remains intact; a new versioned amendment and readiness gate are required for the [calibrated-belief choice](#selected-economic-extension--calibrated-belief-model).
 
 The selected numeric values form a **frozen experimental profile**, not validated performance settings.

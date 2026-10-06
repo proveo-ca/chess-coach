@@ -463,7 +463,7 @@ The lead reports host-after-import current-evidence checks **7 tests / 2 files p
 Actual paths and purposes are
 listed in [PLAN-ml-adjutant.md](PLAN-ml-adjutant.md#planned-verification-and-pending-ownership).
 Phase 2 feature encoders exist and original R0 closed historically; recovered records/partial logs and old markers provide no current proof.
-The [R2 V1/V3 generator](r2-generator-v3.md) is IMPLEMENTED IN PROGRESS with fresh full verification pending; V2 ledger/interactions and Phase 3–4 learned execution remain future.
+The [R2 V1/bounded V3 generator and current hermetic assurance](r2-generator-v3.md) are CLOSED by the complete new [R2 record](../evidence/ml-adjutant-r2-closure.json): all11/475/1944/57/Node109/actual infra6/54+54/exclusive57 publication/both post-publication READY reviews. Zero-win native baseline and bounded omissions remain visible, not learned acceptance/exhaustive winning coverage. Calibrated economy/V2 ledger/features/R3–R5 readiness and Phase3–4 learned execution remain future; no training or registry activation.
 Phase 1 tests do not implement or verify a trained policy. The lead reports both Phase 1
 reviews READY: yes; adversarial has no remaining findings and security covers trusted non-learned execution.
 
