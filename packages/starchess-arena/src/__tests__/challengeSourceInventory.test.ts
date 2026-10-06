@@ -14,6 +14,14 @@ const minifiedNumericRead = 'export function read(input,prior){let cursor,index;
 const repository = fileURLToPath(new URL("../../../../", import.meta.url));
 const temporary: string[] = [];
 const wrappedMutations = [
+  'function read(bag:{key:number}){return bag.key;}let invoke=read;invoke=poison;invoke(data);',
+  'function read(bag:{key:number}){return bag.key;}let invoke=read;const alias=invoke;invoke=poison;invoke.call(null,data);',
+  'function read(bag:{key:number}){return bag.key;}const holder={invoke:read};holder.invoke=poison;holder.invoke(data);',
+  'const decoy={key:0};const args=[decoy];args[0]=data;poison.apply(null,args);',
+  'const decoy={key:0};const args=[decoy];const alias=args;alias[0]=data;Reflect.apply(poison,null,args);',
+  'const decoy={key:0};const tuple=[poison,null,[decoy]];(tuple[2] as any)[0]=data;Reflect.apply(...tuple);',
+  'const decoy={key:0};let args=[decoy];args=[data];poison.apply(null,args);',
+  'const decoy={key:0};const args=[decoy];const stored={args};stored.args=[data];Reflect.apply(poison,null,stored.args);',
   'poison.call(null,data);',
   'const alias=poison;alias["call"](null,data);',
   'poison.apply(null,[data]);',
@@ -40,6 +48,15 @@ const wrappedMutations = [
   'function invoke({read,hidden}:any,bag:{key:number}){read(bag);consume(hidden,bag);}invoke({read:()=>0,hidden:poison},data);',
 ];
 const mutationProbe = (invocation: string): string => `function poison(bag:{key:number}){(bag as any).key="changed";}function probe(receiver:any,bag:{key:number}){return receiver[bag.key];}const data={key:0};${invocation}consume(probe(unknownFactory(),data));`;
+const deferredMutations = [
+  { name: "rest parameter invalidates every remaining caller argument", effect: 'function poison(...bags:{key:number}[]){(bags[1] as any).key="changed";}poison({key:0},data);' },
+  { name: "omitted parameter default invalidates captured caller data", effect: 'function poison(bag=data){(bag as any).key="changed";}poison();' },
+  { name: "explicit undefined activates parameter default effects", effect: 'function poison(bag=data){(bag as any).key="changed";}poison(undefined);' },
+  { name: "undefined alias activates parameter default effects", effect: 'function poison(bag=data){(bag as any).key="changed";}const missing=undefined;poison(missing);' },
+  { name: "destructured member default invalidates captured caller data", effect: 'function poison({bag=data}:{bag?:{key:number}}={}){(bag as any).key="changed";}poison({});' },
+  { name: "destructured omitted default invalidates captured caller data", effect: 'function poison({bag}:{bag:{key:number}}={bag:data}){(bag as any).key="changed";}poison();' },
+];
+const deferredMutationProbe = (effect: string): string => `const data={key:0};${effect}function probe(receiver:any,bag:{key:number}){return receiver[bag.key];}consume(probe(unknownFactory(),data));`;
 const ownMemberConstructors = [
   'const box: any = {f: () => {}}; box.f[["con", "structor"].join("")]("return process")();',
   'const box = {f: () => {}} as any; box.f[["con", "structor"].join("")]("return process")();',
@@ -272,6 +289,10 @@ const unprovenComputedReceivers = [
   'const box: any = {f: 0}; function mutate() {box.f = () => {};} mutate(); box.f[["con", "structor"].join("")]("return process")();',
 ];
 const ordinaryComputedData = [
+  'function read(bag:{key:number}){return bag.key;}function probe(receiver:any,bag:{key:number}){return receiver[bag.key];}const data={key:0};const invoke=read;const args=[data];invoke.apply(null,args);consume(probe({0:"value"},data));',
+  'function read(bag:{key:number}={key:1}){return bag.key;}function probe(receiver:any,bag:{key:number}){return receiver[bag.key];}const data={key:0};read();read(undefined);consume(probe({0:"value"},data));',
+  'function writeLocal(bag={key:1}){bag.key=2;return bag.key;}function probe(receiver:any,bag:{key:number}){return receiver[bag.key];}const data={key:0};writeLocal();consume(probe({0:"value"},data));',
+  'function read(...bags:{key:number}[]){return bags.length;}function probe(receiver:any,bag:{key:number}){return receiver[bag.key];}const data={key:0};read({key:1},data);consume(probe({0:"value"},data));',
   'function read(bag:{key:number}){return bag.key;}function invoke({read:callback}:{read:(bag:{key:number})=>number},bag:{key:number}){return callback(bag);}function probe(receiver:any,bag:{key:number}){return receiver[bag.key];}const data={key:0};invoke({read},data);consume(probe({0:"value"},data));',
   'function read(bag:{key:number}){return bag.key;}function invoke({read:callback}:{read?:(bag:{key:number})=>number},bag:{key:number}){return callback?callback(bag):undefined;}function probe(receiver:any,bag:{key:number}){return receiver[bag.key];}const data={key:0};invoke({read},data);consume(probe({0:"value"},data));',
   'function read(bag:{key:number}){return bag.key;}function probe(receiver:any,bag:{key:number}){return receiver[bag.key];}const data={key:0};read.call(null,data);read.apply(null,[data]);consume(probe({0:"value"},data));',
@@ -379,6 +400,11 @@ const importedFixture = (code: string): string => {
 };
 
 describe("partitioned challenge source inventory", () => {
+  it.each(deferredMutations)("tracks parameter effects: $name", ({effect}) => {
+    const root = fixture();
+    put(root, `${CORE}/src/index.ts`, deferredMutationProbe(effect));
+    expect(() => collectSourceInventory(root)).toThrow(/Unsupported code constructor acquisition|Unsupported parameter mutation/);
+  });
   it.each(wrappedMutations)("invalidates caller field shapes through a local invocation wrapper: %s", (invocation) => {
     const root = fixture();
     put(root, `${CORE}/src/index.ts`, mutationProbe(invocation));
@@ -1160,6 +1186,38 @@ describe("static browser public closure", () => {
     const { checkPublicClosure } = await import(/* @vite-ignore */ script);
     return checkPublicClosure(root);
   };
+  it.each(deferredMutations)("tracks public parameter effects: $name", async ({effect}) => {
+    const root = fixture();
+    put(root, `${CORE}/src/planning-v1.ts`, deferredMutationProbe(effect));
+    await expect(check(root)).rejects.toThrow(/Code constructor acquisition in public closure|Unsupported parameter mutation/);
+  });
+  it.each([
+    [CORE, ARENA, "@chess-coach/starchess-arena/observations", `${CORE}/src/planning-v1.ts`],
+    [CORE, TRAINING, "@chess-coach/starchess-training/candidates", `${CORE}/src/planning-v1.ts`],
+    [ARENA, TRAINING, "@chess-coach/starchess-training/candidates", `${ARENA}/src/observations.ts`],
+  ])("rejects declared reverse workspace edges from %s to %s", async (owner, targetOwner, specifier, entry) => {
+    for (const code of [`import "${specifier}";`, `export type {Value} from "${specifier}";`, `type Value=import("${specifier}").Value;`]) {
+      const root = fixture();
+      const path = `${owner}/package.json`;
+      const manifest = JSON.parse(readFileSync(join(root, path), "utf8"));
+      const target = JSON.parse(readFileSync(join(root, `${targetOwner}/package.json`), "utf8"));
+      manifest.dependencies = { ...manifest.dependencies, [target.name]: "workspace:*" };
+      put(root, path, JSON.stringify(manifest));
+      put(root, entry!, code);
+      await expect(check(root)).rejects.toThrow("Forbidden public workspace direction");
+    }
+  });
+  it.each(["import", "export-type", "import-type"])("rejects a workspace cycle through a reverse %s edge", async (kind) => {
+    const root = fixture();
+    const path = `${ARENA}/package.json`;
+    const manifest = JSON.parse(readFileSync(join(root, path), "utf8"));
+    manifest.dependencies["@chess-coach/starchess-training"] = "workspace:*";
+    put(root, path, JSON.stringify(manifest));
+    put(root, `${TRAINING}/src/candidates.ts`, 'import "@chess-coach/starchess-arena/observations";');
+    const specifier = "@chess-coach/starchess-training/candidates";
+    put(root, `${ARENA}/src/observations.ts`, kind === "import" ? `import "${specifier}";` : kind === "export-type" ? `export type {Value} from "${specifier}";` : `type Value=import("${specifier}").Value;`);
+    await expect(check(root)).rejects.toThrow("Forbidden public workspace direction");
+  });
   it.each(wrappedMutations)("invalidates public caller field shapes through a local invocation wrapper: %s", async (invocation) => {
     const root = fixture();
     put(root, `${CORE}/src/planning-v1.ts`, mutationProbe(invocation));

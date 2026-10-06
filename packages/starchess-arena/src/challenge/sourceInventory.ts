@@ -794,6 +794,14 @@ export const collectSourceInventory = (
     };
     scanMutations(source);
     arrayIntrinsicsMutated ||= arrayMutatorTargets.some((target) => !freshError(target));
+    const invocationMutationRoots = new Set<ts.Expression | ts.Symbol | string>();
+    for (const target of memberMutationTargets) for (const root of provenance(target)) invocationMutationRoots.add(root);
+    const staleInvocationSource = (node: ts.Expression): boolean => {
+      const roots = [...provenance(node)];
+      return roots.some((root) => numericAssignments.has(root as ts.Symbol | string) || nonNumericWrites.has(root as ts.Symbol | string)) ||
+        roots.some((root) => typeof root === "object" && "kind" in root && (ts.isPropertyAccessExpression(root as ts.Node) || ts.isElementAccessExpression(root as ts.Node))) &&
+        roots.some((root) => invocationMutationRoots.has(root));
+    };
     const numericOperators = new Set([
       ts.SyntaxKind.MinusToken, ts.SyntaxKind.AsteriskToken, ts.SyntaxKind.AsteriskAsteriskToken, ts.SyntaxKind.SlashToken, ts.SyntaxKind.PercentToken,
       ts.SyntaxKind.LessThanLessThanToken, ts.SyntaxKind.GreaterThanGreaterThanToken, ts.SyntaxKind.GreaterThanGreaterThanGreaterThanToken,
@@ -962,6 +970,7 @@ export const collectSourceInventory = (
         if (ts.isOmittedExpression(argument)) return undefined;
         if (!ts.isSpreadElement(argument)) result.push(argument);
         else {
+          if (staleInvocationSource(argument.expression) || [...provenance(argument.expression)].some((root) => invocationMutationRoots.has(root))) return undefined;
           const value = origin(argument.expression);
           if (!ts.isArrayLiteralExpression(value)) return undefined;
           const nested = invocationArguments(value.elements, depth + 1);
@@ -972,6 +981,7 @@ export const collectSourceInventory = (
       return result;
     };
     const invocationArray = (node: ts.Expression | undefined): ts.Expression[] | undefined => {
+      if (node && (staleInvocationSource(node) || [...provenance(node)].some((root) => invocationMutationRoots.has(root)))) return undefined;
       const value = node && origin(node);
       return value && ts.isArrayLiteralExpression(value) ? invocationArguments(value.elements) : undefined;
     };
@@ -991,6 +1001,7 @@ export const collectSourceInventory = (
         const symbol = ts.isIdentifier(callee) ? binding(callee) : undefined;
         const target = symbol && typeof symbol !== "string" ? symbol.valueDeclaration : callee;
         if (target !== fn) continue;
+        if (staleInvocationSource(call.expression)) throw new Error(`Unsupported parameter mutation callee: ${file.path} -> ${call.expression.getText(source)}`);
         let value = invocationArguments(call.arguments)?.[index];
         for (const key of path.keys) value = value && ownMember(origin(value), key);
         if (value) values.push(value);
@@ -999,12 +1010,15 @@ export const collectSourceInventory = (
     };
     const localInvocation = (expression: ts.Expression, args: ts.Expression[] | undefined, depth = 0, expected?: ts.Node): LocalInvocation | undefined => {
       if (depth > 16) throw new Error(`Unsupported parameter mutation wrapper: ${file.path}`);
+      const stale = staleInvocationSource(expression);
       const callee = origin(expression);
       if (ts.isCallExpression(callee)) {
         const creation = localInvocation(callee.expression, invocationArguments(callee.arguments), depth + 1, expected);
         if (!creation?.bound) return undefined;
         const combined = creation.bound.args && args ? [...creation.bound.args, ...args] : undefined;
-        return localInvocation(creation.bound.receiver, combined, depth + 1, expected);
+        const invocation = localInvocation(creation.bound.receiver, combined, depth + 1, expected);
+        if (stale && invocation?.target) throw new Error(`Unsupported parameter mutation callee: ${file.path} -> ${expression.getText(source)}`);
+        return invocation;
       }
       const member = property(callee);
       if (member?.name === "apply" && reflectionNamespace(origin(member.receiver))) {
@@ -1028,7 +1042,11 @@ export const collectSourceInventory = (
         }
         return undefined;
       }
-      return target && (ts.isFunctionDeclaration(target) || ts.isFunctionExpression(target) || ts.isArrowFunction(target)) ? { target, args } : undefined;
+      if (target && (ts.isFunctionDeclaration(target) || ts.isFunctionExpression(target) || ts.isArrowFunction(target))) {
+        if (stale) throw new Error(`Unsupported parameter mutation callee: ${file.path} -> ${expression.getText(source)}`);
+        return { target, args };
+      }
+      return undefined;
     };
     const localCallbackParameter = (fn: ts.Node | undefined, index: number, argument: ts.Expression, expected: ts.Node): boolean => {
       if (!fn || !ts.isFunctionDeclaration(fn) && !ts.isFunctionExpression(fn) && !ts.isArrowFunction(fn)) return false;
@@ -1097,9 +1115,20 @@ export const collectSourceInventory = (
           if (invocation.bound) continue;
           throw new Error(`Unsupported parameter mutation arguments: ${file.path}`);
         }
-        const argument = invocation.args[index];
-        if (!argument) continue;
-        markArgumentMutation(argument);
+        if (declaration.dotDotDotToken) {
+          for (const argument of invocation.args.slice(index)) markArgumentMutation(argument);
+        } else {
+          const argument = invocation.args[index];
+          if (argument) markArgumentMutation(argument);
+          const value = argument && origin(argument);
+          const defaulted = !value || ts.isIdentifier(value) && binding(value) === "undefined" || ts.isVoidExpression(value);
+          if (defaulted && declaration.initializer) markArgumentMutation(declaration.initializer);
+          const defaults = (node: ts.Node): void => {
+            if (ts.isBindingElement(node) && node.initializer) markArgumentMutation(node.initializer);
+            ts.forEachChild(node, defaults);
+          };
+          if (!ts.isIdentifier(declaration.name)) defaults(declaration.name);
+        }
       }
     }
     arrayIntrinsicsMutated ||= arrayMutatorTargets.some((target) => !freshError(target));

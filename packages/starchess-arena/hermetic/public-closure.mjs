@@ -97,6 +97,11 @@ export const checkPublicClosure = (root = repository) => {
     if (owner === TRAINING && /^src\/(?:coordinator|cli)\//.test(local)) throw new Error(`Coordinator in public closure: ${display(path)}`);
     return owner;
   };
+  const workspaceEdges = new Map([
+    [CORE, new Set([CORE])],
+    [ARENA, new Set([CORE, ARENA])],
+    [TRAINING, new Set([CORE, ARENA, TRAINING])],
+  ]);
   const resolveImport = (importer, specifier, dependency) => {
     if (isBuiltin(specifier) || specifier.startsWith("node:")) throw new Error(`Node builtin in public closure: ${display(importer)} -> ${specifier}`);
     if (specifier.startsWith(".")) {
@@ -118,6 +123,9 @@ export const checkPublicClosure = (root = repository) => {
       const targetOwner = byName.get(name);
       const target = resolveFile(resolve(root, targetOwner, exportTarget(manifests.get(targetOwner), subpath)), root);
       permitSource(target);
+      if (!workspaceEdges.get(owner)?.has(targetOwner) || targetOwner === CORE && owner !== CORE && subpath !== "./planning-v1") {
+        throw new Error(`Forbidden public workspace direction: ${display(importer)} -> ${display(target)}`);
+      }
       return { path: target };
     }
     if (name !== "jssha") throw new Error(`Unreviewed public dependency: ${specifier}`);
@@ -478,6 +486,14 @@ export const checkPublicClosure = (root = repository) => {
     };
     scanMutations(source);
     arrayIntrinsicsMutated ||= arrayMutatorTargets.some((target) => !freshError(target));
+    const invocationMutationRoots = new Set();
+    for (const target of memberMutationTargets) for (const root of provenance(target)) invocationMutationRoots.add(root);
+    const staleInvocationSource = (node) => {
+      const roots = [...provenance(node)];
+      return roots.some((root) => numericAssignments.has(root) || nonNumericWrites.has(root)) ||
+        roots.some((root) => root && typeof root === "object" && "kind" in root && (ts.isPropertyAccessExpression(root) || ts.isElementAccessExpression(root))) &&
+        roots.some((root) => invocationMutationRoots.has(root));
+    };
     const numericOperators = new Set([
       ts.SyntaxKind.MinusToken, ts.SyntaxKind.AsteriskToken, ts.SyntaxKind.AsteriskAsteriskToken, ts.SyntaxKind.SlashToken, ts.SyntaxKind.PercentToken,
       ts.SyntaxKind.LessThanLessThanToken, ts.SyntaxKind.GreaterThanGreaterThanToken, ts.SyntaxKind.GreaterThanGreaterThanGreaterThanToken,
@@ -640,6 +656,7 @@ export const checkPublicClosure = (root = repository) => {
         if (ts.isOmittedExpression(argument)) return undefined;
         if (!ts.isSpreadElement(argument)) result.push(argument);
         else {
+          if (staleInvocationSource(argument.expression) || [...provenance(argument.expression)].some((root) => invocationMutationRoots.has(root))) return undefined;
           const value = origin(argument.expression);
           if (!ts.isArrayLiteralExpression(value)) return undefined;
           const nested = invocationArguments(value.elements, depth + 1);
@@ -650,6 +667,7 @@ export const checkPublicClosure = (root = repository) => {
       return result;
     };
     const invocationArray = (node) => {
+      if (node && (staleInvocationSource(node) || [...provenance(node)].some((root) => invocationMutationRoots.has(root)))) return undefined;
       const value = node && origin(node);
       return value && ts.isArrayLiteralExpression(value) ? invocationArguments(value.elements) : undefined;
     };
@@ -664,6 +682,7 @@ export const checkPublicClosure = (root = repository) => {
         const callee = origin(call.expression);
         const target = ts.isIdentifier(callee) ? binding(callee)?.valueDeclaration : callee;
         if (target !== fn) continue;
+        if (staleInvocationSource(call.expression)) throw new Error(`Unsupported parameter mutation callee in public closure: ${id} -> ${call.expression.getText(source)}`);
         let value = invocationArguments(call.arguments)?.[index];
         for (const key of path.keys) value = value && ownMember(origin(value), key);
         if (value) values.push(value);
@@ -672,12 +691,15 @@ export const checkPublicClosure = (root = repository) => {
     };
     const localInvocation = (expression, args, depth = 0, expected) => {
       if (depth > 16) throw new Error(`Unsupported parameter mutation wrapper in public closure: ${id}`);
+      const stale = staleInvocationSource(expression);
       const callee = origin(expression);
       if (ts.isCallExpression(callee)) {
         const creation = localInvocation(callee.expression, invocationArguments(callee.arguments), depth + 1, expected);
         if (!creation?.bound) return undefined;
         const combined = creation.bound.args && args ? [...creation.bound.args, ...args] : undefined;
-        return localInvocation(creation.bound.receiver, combined, depth + 1, expected);
+        const invocation = localInvocation(creation.bound.receiver, combined, depth + 1, expected);
+        if (stale && invocation?.target) throw new Error(`Unsupported parameter mutation callee in public closure: ${id} -> ${expression.getText(source)}`);
+        return invocation;
       }
       const member = property(callee);
       if (member?.name === "apply" && builtinNamespace(member.receiver, "Reflect")) {
@@ -700,7 +722,11 @@ export const checkPublicClosure = (root = repository) => {
         }
         return undefined;
       }
-      return target && (ts.isFunctionDeclaration(target) || ts.isFunctionExpression(target) || ts.isArrowFunction(target)) ? { target, args } : undefined;
+      if (target && (ts.isFunctionDeclaration(target) || ts.isFunctionExpression(target) || ts.isArrowFunction(target))) {
+        if (stale) throw new Error(`Unsupported parameter mutation callee in public closure: ${id} -> ${expression.getText(source)}`);
+        return { target, args };
+      }
+      return undefined;
     };
     const localCallbackParameter = (fn, index, argument, expected) => {
       if (!fn || !ts.isFunctionDeclaration(fn) && !ts.isFunctionExpression(fn) && !ts.isArrowFunction(fn)) return false;
@@ -769,9 +795,20 @@ export const checkPublicClosure = (root = repository) => {
           if (invocation.bound) continue;
           throw new Error(`Unsupported parameter mutation arguments in public closure: ${id}`);
         }
-        const argument = invocation.args[index];
-        if (!argument) continue;
-        markArgumentMutation(argument);
+        if (declaration.dotDotDotToken) {
+          for (const argument of invocation.args.slice(index)) markArgumentMutation(argument);
+        } else {
+          const argument = invocation.args[index];
+          if (argument) markArgumentMutation(argument);
+          const value = argument && origin(argument);
+          const defaulted = !value || ts.isIdentifier(value) && globalReference(value) && value.text === "undefined" || ts.isVoidExpression(value);
+          if (defaulted && declaration.initializer) markArgumentMutation(declaration.initializer);
+          const defaults = (node) => {
+            if (ts.isBindingElement(node) && node.initializer) markArgumentMutation(node.initializer);
+            ts.forEachChild(node, defaults);
+          };
+          if (!ts.isIdentifier(declaration.name)) defaults(declaration.name);
+        }
       }
     }
     arrayIntrinsicsMutated ||= arrayMutatorTargets.some((target) => !freshError(target));
