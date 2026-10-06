@@ -6,8 +6,8 @@
 ' covers: packages/starchess-arena/hermetic/**
 ' see also: arena.puml (the runner itself)
 ' related: _spec/_plans/PLAN-ml-adjutant.md
-' related: _spec/_plans/ml-adjutant-challenge.md
-' related: _spec/_plans/ml-adjutant-weights.md
+' related: _spec/_plans/ml-adjutant-r8-challenge.md
+' related: _spec/_plans/ml-adjutant-r4-weights.md
 ' legacy rationale: What the arena measures is a spec question, not just a runner question.
 ' legacy rationale: Scripts live under _spec/apps/starchess/core/adjutant/; omitted per-side inputs change results without changing scripts.
 ' legacy history: The previous map called out ccIntel forwarding; arena.puml owns that legacy runner concern, not the isolated challenge.

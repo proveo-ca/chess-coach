@@ -7,12 +7,12 @@ This is not a learned PASS. Phase 3+ PLANNED and unimplemented; weights NONE.**
 Owner roadmap: [PLAN-ml-adjutant.md](PLAN-ml-adjutant.md).
 Harness boundary: [ml-adjutant-challenge-harness.puml](../packages/starchess-arena/ml-adjutant-challenge-harness.puml).
 Policy-contract boundary: [ml-adjutant-policy-contracts.puml](../packages/starchess-arena/ml-adjutant-policy-contracts.puml).
-FIRST-training/weights contract: [ml-adjutant-weights.md](ml-adjutant-weights.md).
+FIRST-training/weights contract: [ml-adjutant-r4-weights.md](ml-adjutant-r4-weights.md).
 This document defines learned acceptance and records the separately verified non-learned baseline.
 Current authority: unchanged [closure JSON](../evidence/ml-adjutant-r0-closure.json).
 Final adversarial `ses_efe0ed67dffew2su1gZIUaDy23` and security `ses_efe0ed520ffeOEg3kd6jAtN33i` read source/captured records without independent execution or hash recomputation.
 This docs-only update executes nothing and changes no evidence. It claims no trained artifact or learned PASS.
-See [execution revisions](ml-adjutant-execution-revisions.md) for reviewed R0 contracts and exact commands.
+See [execution revisions](ml-adjutant-r0-execution-revisions.md) for reviewed R0 contracts and exact commands.
 
 ## Current R0 closure — ordered gate completed
 
@@ -419,7 +419,7 @@ inspect created/not-running/PID 0, copy tar streams, and host-recompute source/d
 Bind independent measurements to current/build capture, runtime assurance, and export identity.
 Host-copied Node binary bytes must match the measured official-base **22.23.2** pin; image-resident Node/proxy JSON self-claims are not authority.
 Source audit rejects unsupported loader APIs/alternate factories, metadata writes/escapes, eval/reflective constructors, wrapper erasure/mutable-alias escapes and unsupported destructuring.
-Keep the exact existing `validation.ts` array descriptor-call seam and reviewed external-only closure package anchor; [execution revisions](ml-adjutant-execution-revisions.md#lexical-source-audit--a06a07) records their precise scope.
+Keep the exact existing `validation.ts` array descriptor-call seam and reviewed external-only closure package anchor; [execution revisions](ml-adjutant-r0-execution-revisions.md#lexical-source-audit--a06a07) records their precise scope.
 
 The importer requires **eight exact ordered commands in `hermetic-verification-v2`**.
 Bind executable/cwd/full args and log bytes; independently recount actual Vitest assertions and require
@@ -427,7 +427,7 @@ full `command.tests.path` equality with the exact command output plus matching h
 Strict command 5 includes both diagnostic and validator scripts, including the validator's extensionless TS imports.
 Command 8 is trusted **`/usr/local/bin/node --test`** on hermetic
 `evidence-bundle.test.mjs`, `image-measurement.test.mjs`, and `tar.test.mjs`.
-The [execution revisions](ml-adjutant-execution-revisions.md#exact-importer-verification-and-seven-input-validation) record the complete inventory.
+The [execution revisions](ml-adjutant-r0-execution-revisions.md#exact-importer-verification-and-seven-input-validation) record the complete inventory.
 
 The authoritative validator takes exactly seven inputs: current baseline, original baseline,
 original verification, migration, coverage, contract, and captured source root.

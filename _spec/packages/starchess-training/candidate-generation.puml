@@ -51,7 +51,7 @@
 ' limits: hashes bind bytes not producer authenticity; supported audit syntax is not arbitrary-JS purity; actual bounded omissions are diagnostic, not exhaustive generation or wins. modelArtifact null/eligible false/learnedPass false/training false/machine-learning disabled.
 ' related: _spec/_plans/r2-generator-v3.md (normative API, primitives, diagnostics and current eleven-command manifest)
 ' related: _spec/_plans/PLAN-ml-adjutant.md
-' related: _spec/_plans/ml-adjutant-r1-contracts.md (prior future contracts; R2 amendment has scoped precedence)
+' related: _spec/_plans/ml-adjutant-r3-contracts.md (prior future contracts; R2 amendment has scoped precedence)
 ' related: _spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml (recovered V1 behavior and historical R0 assurance)
 ' source linkage: new implementation may cite this concern; spec-side coverage is authoritative.
 ' amendment: approved NATIVE FOUR PROMOTION n,b,r,q replaces the earlier five-choice future generator draft; deployment remains p,n,b,r,q.

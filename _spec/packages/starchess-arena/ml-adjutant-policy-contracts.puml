@@ -45,10 +45,10 @@
 ' related: _spec/packages/starchess-training/candidate-generation.puml (current V1 bridge/V3 generator; four native promotions, five deploy units)
 ' related: _spec/_plans/r2-generator-v3.md (normative current bridge/verification vectors and recovery boundary)
 ' related: _spec/_plans/PLAN-ml-adjutant.md
-' related: _spec/_plans/ml-adjutant-challenge.md
-' related: _spec/_plans/ml-adjutant-weights.md
+' related: _spec/_plans/ml-adjutant-r8-challenge.md
+' related: _spec/_plans/ml-adjutant-r4-weights.md
 ' related: _spec/packages/starchess-arena/ml-adjutant-challenge-harness.puml (execution contracts; original assurance records are historical)
-' related: _spec/_plans/ml-adjutant-execution-revisions.md (historical v1 inventory/v2 pins/eight-command R0 closure)
+' related: _spec/_plans/ml-adjutant-r0-execution-revisions.md (historical v1 inventory/v2 pins/eight-command R0 closure)
 ' historical recovery checkpoint: cc6/strict fixture repairs preceded the complete new closed generation; old/partial markers never authorized acceptance.
 ' recovery: R0 records/partial logs remain historical; archived logs/tmp images absent; old markers cannot authorize current tests, live pins or closure.
 ' decision: FIRST Phase 3 training requires broader versioned combinations and v2 authorized economic/positional interactions; horizon 1.

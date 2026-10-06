@@ -9,8 +9,8 @@ No learned policy, SGD execution, training run, model artifact, or registry acti
 Owning diagram: [candidate-generation.puml](../packages/starchess-training/candidate-generation.puml).
 Assurance diagram: [ml-adjutant-policy-contracts.puml](../packages/starchess-arena/ml-adjutant-policy-contracts.puml).
 Roadmap: [PLAN-ml-adjutant.md](PLAN-ml-adjutant.md).
-Prior approved future design: [ml-adjutant-r1-contracts.md](ml-adjutant-r1-contracts.md), especially §8.
-Historical execution contract: [ml-adjutant-execution-revisions.md](ml-adjutant-execution-revisions.md).
+Prior approved future design: [ml-adjutant-r3-contracts.md](ml-adjutant-r3-contracts.md), especially §8.
+Historical execution contract: [ml-adjutant-r0-execution-revisions.md](ml-adjutant-r0-execution-revisions.md).
 
 ## 1. Authority and recovery boundary
 

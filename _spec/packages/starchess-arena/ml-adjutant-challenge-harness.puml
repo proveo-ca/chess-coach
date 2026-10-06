@@ -12,8 +12,8 @@
 ' covers: _spec/evidence/ml-adjutant-r0-closure.json
 ' status: R0 CLOSED within accepted non-learned assurance; A01-A15 resolved. Phase 1 historical verification/READY verdicts preserved; no learning or trained acceptance.
 ' related: _spec/_plans/PLAN-ml-adjutant.md
-' related: _spec/_plans/ml-adjutant-challenge.md
-' related: _spec/_plans/ml-adjutant-execution-revisions.md (reviewed repairs and completed ordered R0 closure)
+' related: _spec/_plans/ml-adjutant-r8-challenge.md
+' related: _spec/_plans/ml-adjutant-r0-execution-revisions.md (reviewed repairs and completed ordered R0 closure)
 ' related: _spec/packages/starchess-arena/ml-adjutant-policy-contracts.puml (current codecs/features and hermetic evidence)
 ' related: _spec/packages/starchess-arena/arena.puml (legacy runner, not this isolated host)
 ' current evidence: _spec/evidence/ml-adjutant-r0-refresh/baseline-report.json

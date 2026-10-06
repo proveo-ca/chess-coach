@@ -1,9 +1,9 @@
 # ML Adjutant — R1 concept decisions and experimental recipe
 
 Status: **Amended R1 FUTURE DESIGN CLOSED / FROZEN by actual final TUI response “Close amended R1 design (Recommended)”. Scope: base amendment + scoped A1–A7 annex; historical370 stable outside scope. R3–R5 implementation/readiness PENDING; NOT implemented, fitted, measured, or training-ready. No collection/fitting/calibration/transfer/R6 permission; artifact null, weights NONE, machine-learning disabled.**
-**Review/final approval:** [ledger](ml-adjutant-r1-economic-amendment.md#persisted-review-and-prospective-proposal-disposition) retains historical NO/prospective targets, combined adversarial `ses_eecd8fff0ffeRVMA9seAyleurz` **READY TO CLOSE R1 DESIGN: yes / READY TO MERGE: yes** (eight original + two native HIGH resolved) and security `ses_eecd8ffcfffeZT3SJW3t5RsKI5` **READY TO CLOSE R1 DESIGN: yes** (three resolved), none remaining. Both read source/content without tests/hashes/staged identity/native/R3–R5 execution. Direct lead body hash/identity and actual final TUI approval are complete; lead's post-final-lifecycle `git diff --check` and `git diff --cached --check` both tool-observed PASS. No current approval/docs-check TODO remains; implementation/readiness is separate.
-**Effective frozen-design scope:** [annex A1–A7](ml-adjutant-r1-economic-corrective-annex.md) and [base map](ml-adjutant-r1-economic-amendment.md#scoped-corrective-precedence--a1a7-only) govern types, binding/explicit V3 functions/private wrapper, graph reductions, native spatial macros/births, source law/final-node/pooled selection, eligibility and estimands. [A2](ml-adjutant-r1-contracts.md#scoped-amended-feature-boundary--annex-a2) replaces historical encoder/flatten calls only for amended inference; original370 remains history, not a parallel interface. Final approval is complete. Protected draft/conditional text remains a frozen snapshot, superseded by outside metadata; no rename/grammar/feature/policy or operation change.
-**Scoped supersession:** [approved economic/promotion amendment](ml-adjutant-r1-economic-amendment.md) §§3–10 now define the estimator, features, local promotion predicates and statistical protocol. §§11–12 define the amended 418 profile, targeted version/dimension substitutions and shared inclusive `1,048,576`-operation cap, including initialization/output stores; generator `workCap=2048` stays separate. Original 370-field selections/closed schemas below remain frozen historical records outside the amended-inference scope; indices `0..369` retain their names/meanings/masks/formulas/scales. Original profiles, H=1, zero initialization, SGD/RNG/eligibility/supervision/checkpoint ordering remain unchanged. Document-only approvals certify no runtime/support/calibration result.
+**Review/final approval:** [ledger](ml-adjutant-r4-economic-amendment.md#persisted-review-and-prospective-proposal-disposition) retains historical NO/prospective targets, combined adversarial `ses_eecd8fff0ffeRVMA9seAyleurz` **READY TO CLOSE R1 DESIGN: yes / READY TO MERGE: yes** (eight original + two native HIGH resolved) and security `ses_eecd8ffcfffeZT3SJW3t5RsKI5` **READY TO CLOSE R1 DESIGN: yes** (three resolved), none remaining. Both read source/content without tests/hashes/staged identity/native/R3–R5 execution. Direct lead body hash/identity and actual final TUI approval are complete; lead's post-final-lifecycle `git diff --check` and `git diff --cached --check` both tool-observed PASS. No current approval/docs-check TODO remains; implementation/readiness is separate.
+**Effective frozen-design scope:** [annex A1–A7](ml-adjutant-r4-economic-corrective-annex.md) and [base map](ml-adjutant-r4-economic-amendment.md#scoped-corrective-precedence--a1a7-only) govern types, binding/explicit V3 functions/private wrapper, graph reductions, native spatial macros/births, source law/final-node/pooled selection, eligibility and estimands. [A2](ml-adjutant-r3-contracts.md#scoped-amended-feature-boundary--annex-a2) replaces historical encoder/flatten calls only for amended inference; original370 remains history, not a parallel interface. Final approval is complete. Protected draft/conditional text remains a frozen snapshot, superseded by outside metadata; no rename/grammar/feature/policy or operation change.
+**Scoped supersession:** [approved economic/promotion amendment](ml-adjutant-r4-economic-amendment.md) §§3–10 now define the estimator, features, local promotion predicates and statistical protocol. §§11–12 define the amended 418 profile, targeted version/dimension substitutions and shared inclusive `1,048,576`-operation cap, including initialization/output stores; generator `workCap=2048` stays separate. Original 370-field selections/closed schemas below remain frozen historical records outside the amended-inference scope; indices `0..369` retain their names/meanings/masks/formulas/scales. Original profiles, H=1, zero initialization, SGD/RNG/eligibility/supervision/checkpoint ordering remain unchanged. Document-only approvals certify no runtime/support/calibration result.
 This record preserves Executor's eight original choices, nine follow-up directions and explicitly approved final profiles.
 Design approval authorizes no implementation, dependency/export changes, training, approved run or publication in this docs-only pass.
 R2 is **CLOSED within authorized V1/bounded V3/current hermetic assurance** under the [closed contract](r2-generator-v3.md) and unchanged [outside-bundle record](../evidence/ml-adjutant-r2-closure.json). Complete fresh11/475/1944/57/Node109/actual infra6/54+54/exclusive57 publication and both post-publication READY reviews close R2 only; calibrated economy/R3–R8 remain future, weights NONE, no training.
@@ -12,7 +12,7 @@ cc6/R0/failed records remain history; absent archives/tmp images/old markers sup
 The [roadmap](PLAN-ml-adjutant.md) records **R0 CLOSED**, all **A01–A15 resolved**, with original **7 HIGH + 8 MEDIUM** history preserved.
 Unchanged [closure JSON](../evidence/ml-adjutant-r0-closure.json) records both final post-publication reviews **READY TO CLOSE R0: yes**.
 R2 is complete and amended R1 future design is CLOSED/FROZEN; remaining R3–R5 implementation/readiness precedes separately explicit R6 approval. No learned acceptance/weights/registry activation is implied.
-**Economic/promotion future design: [base](ml-adjutant-r1-economic-amendment.md) + [scoped correction](ml-adjutant-r1-economic-corrective-annex.md) CLOSED / FROZEN by actual final Executor TUI approval.** No choices remain unchosen; historical base-only NO is retained. R3–R5 implementation/readiness remains pending for the [calibrated-belief contract](#selected-economic-extension--calibrated-belief-model), not R1 design closure.
+**Economic/promotion future design: [base](ml-adjutant-r4-economic-amendment.md) + [scoped correction](ml-adjutant-r4-economic-corrective-annex.md) CLOSED / FROZEN by actual final Executor TUI approval.** No choices remain unchosen; historical base-only NO is retained. R3–R5 implementation/readiness remains pending for the [calibrated-belief contract](#selected-economic-extension--calibrated-belief-model), not R1 design closure.
 
 The selected numeric values form a **frozen experimental profile**, not validated performance settings.
 Implement the frozen semantics and persist gradient, numerical, coverage and runtime validation before approving a run.
@@ -21,7 +21,7 @@ Source inventory and source observations below remain historical evidence from t
 
 ## Exact approved profile record — future contract only
 
-The normative [R1 contracts](ml-adjutant-r1-contracts.md#2-exact-selected-profiles--approved-future-design) record full semantics and rejected alternatives.
+The normative [R1 contracts](ml-adjutant-r3-contracts.md#2-exact-selected-profiles--approved-future-design) record full semantics and rejected alternatives.
 
 | Slot | Selected | Exact approved contract |
 |---|---|---|
@@ -40,7 +40,7 @@ Those prior document-only verdicts did not close R0; the separate final implemen
 
 ## Selected economic extension — calibrated belief model
 
-**Calibrated belief model: [base](ml-adjutant-r1-economic-amendment.md) + [scoped correction](ml-adjutant-r1-economic-corrective-annex.md), amended R1 FUTURE DESIGN CLOSED / FROZEN; NOT implemented, fitted, measured, or training-ready.** Actual final Executor approval selected and closed this design over visible-lower-bound and memory-heuristic alternatives.
+**Calibrated belief model: [base](ml-adjutant-r4-economic-amendment.md) + [scoped correction](ml-adjutant-r4-economic-corrective-annex.md), amended R1 FUTURE DESIGN CLOSED / FROZEN; NOT implemented, fitted, measured, or training-ready.** Actual final Executor approval selected and closed this design over visible-lower-bound and memory-heuristic alternatives.
 SGD learns weights on supplied features; the prior frozen 370-field v2 manifest does not include the requested live deployed-material comparison.
 Its own cost/investment/exposure and witnessed enemy-loss lower bounds do not estimate enemy surviving deployed material.
 
@@ -66,7 +66,7 @@ Exact architecture, feature dictionary/versions, calibration bins/data/objective
 All R1 design-closure steps are complete. Historical base-only NO remains unchanged for its earlier scope; protected preapproval wording is snapshot history only. Next planned order is R3 authorized ledger integration → R4 belief/features → R5 readiness verification, each requiring separate execution approval before operations. No collection/fitting/calibration/transfer/R6 permission follows. Learned-policy transfer occurs after the formal primary exists, not a circular R6 prerequisite.
 R5 also verifies the opening split, CC exclusion/zero paid basis, turn tiers/cap/grant boundaries, and memory without resets or double-counted sightings.
 The amended R1 future design is complete; do not silently alter original370 outside the scoped amendment or equate design closure with readiness.
-See [closed design contracts §2.1](ml-adjutant-r1-contracts.md#21-economic-extension--future-design-closed), [weights §5.1](ml-adjutant-weights.md#51-selected-economic-extension--calibrated-surviving-material-belief), and [roadmap readiness gate](PLAN-ml-adjutant.md#selected-economic-extension--pre-training-gate).
+See [closed design contracts §2.1](ml-adjutant-r3-contracts.md#21-economic-extension--future-design-closed), [weights §5.1](ml-adjutant-r4-weights.md#51-selected-economic-extension--calibrated-surviving-material-belief), and [roadmap readiness gate](PLAN-ml-adjutant.md#selected-economic-extension--pre-training-gate).
 This record authorizes no training and claims no weights or calibrated-belief validation; R0's separate repair/review/freeze gate is closed.
 
 <a id="nine-detail-decision-record--accepted-directions-not-a-completed-freeze"></a>
@@ -78,17 +78,17 @@ The legacy anchor preserves earlier inbound links; the direction-only record is 
 
 | Detail | Accepted direction | Glossary / local reading |
 |---|---|---|
-| A — Public API | **Purpose-based interfaces:** API A freezes arena observations/events and training candidates/features/artifacts, npm identity, signatures and closure/CI requirements in contracts §§3–4. | Public API = approved future import surface, not host-private state or existing exports. [Weights §8](ml-adjutant-weights.md#8-planned-artifact-and-inference-contract). |
-| B — Quotas | **Composition emphasis:** `7×48 + 175 + 1 pass = 512` capacity; `2048` attempted extensions includes duplicates/pruned. Quota B freezes first-action ownership and inactive-to-active redistribution in contracts §8. | Capacity = upper allocation, not mandatory emission or unique-output proof. [Weights §3](ml-adjutant-weights.md#3-all-actions-and-all-combinations-exact-domain-versus-bounded-implementation). |
-| C — Features | **Action-position blocks:** four ordered 84-field blocks + 34 queue fields = 370, with exact masks, interactions and manifest in contracts §§9–10,15. | Interaction = candidate-dependent context effect, not automatic nonlinear behavior from linear positional weights. [Weights §5](ml-adjutant-weights.md#5-authorized-economics-and-trade-losses-required-before-first-training), [§6](ml-adjutant-weights.md#6-vision-attack-lines-and-priority-families). |
-| D — Ledger | **Boundary batches:** contracts §§5–7 freeze private native companion A, authorized events/IDs, transient vision, causal witnesses, paid conservation and transactional reconciliation. | Lineage = host-issued own identity retained through movement/transformation; paid basis ≠ replacement value. [Weights §5](ml-adjutant-weights.md#5-authorized-economics-and-trade-losses-required-before-first-training). |
-| E — RNG | **Hash derivation:** UTF-8 JSON array + SHA-256 first four bytes UInt32BE + existing `mulberry32`; contracts §11 freezes collisions/lifecycle. Actual 20 roots remain unmeasured. | Stream = separate named random sequence for one responsibility. [Weights §7](ml-adjutant-weights.md#7-proposed-outcome-driven-phase-3-learning--not-implemented), [§8](ml-adjutant-weights.md#8-planned-artifact-and-inference-contract). |
-| F — Failure | **Stop experiment:** infrastructure/provenance abort stops ALL training; every STARTED consumes the cap. Exact proved eligibility and atomic updates are frozen in contracts §§12–13. | Abort ≠ policy/challenge return `−1`; no fabricated reward or partial gradient. [Weights §7](ml-adjutant-weights.md#7-proposed-outcome-driven-phase-3-learning--not-implemented). |
-| G — Selection | **Preselect seed 101:** formal final VALID primary only after all five complete valid runs; no alternate/checkpoint fallback. Curriculum A and 100-STARTED diagnostic cadence are frozen in contracts §§14–15. | Primary = chosen before comparisons; diagnostic checkpoint ≠ fallback artifact; five-run completion ≠ five evaluation gates. [Weights §7](ml-adjutant-weights.md#7-proposed-outcome-driven-phase-3-learning--not-implemented), [§8](ml-adjutant-weights.md#8-planned-artifact-and-inference-contract). |
-| H — Learning | **All-history mean:** per-seed prior eligible returns, startup `0`, frozen before sampling; summed gradient/L2 once; verified update and baseline commit atomically. Zero samples get neither SGD/L2 nor baseline insertion. | Baseline reduces variance; it is not a per-length mean objective. [Weights §7](ml-adjutant-weights.md#7-proposed-outcome-driven-phase-3-learning--not-implemented). |
-| I — Validation | **Small-to-large:** gradient → numeric extremes → small fixtures → capped runtime → reload/provenance. Validation A and complete privacy/ledger/host checks are frozen in contracts §§16–17; results remain future. | Finite difference approximates a derivative to check the analytic gradient. [Weights §9](ml-adjutant-weights.md#9-future-persistent-acceptance--proposed-not-done). |
+| A — Public API | **Purpose-based interfaces:** API A freezes arena observations/events and training candidates/features/artifacts, npm identity, signatures and closure/CI requirements in contracts §§3–4. | Public API = approved future import surface, not host-private state or existing exports. [Weights §8](ml-adjutant-r4-weights.md#8-planned-artifact-and-inference-contract). |
+| B — Quotas | **Composition emphasis:** `7×48 + 175 + 1 pass = 512` capacity; `2048` attempted extensions includes duplicates/pruned. Quota B freezes first-action ownership and inactive-to-active redistribution in contracts §8. | Capacity = upper allocation, not mandatory emission or unique-output proof. [Weights §3](ml-adjutant-r4-weights.md#3-all-actions-and-all-combinations-exact-domain-versus-bounded-implementation). |
+| C — Features | **Action-position blocks:** four ordered 84-field blocks + 34 queue fields = 370, with exact masks, interactions and manifest in contracts §§9–10,15. | Interaction = candidate-dependent context effect, not automatic nonlinear behavior from linear positional weights. [Weights §5](ml-adjutant-r4-weights.md#5-authorized-economics-and-trade-losses-required-before-first-training), [§6](ml-adjutant-r4-weights.md#6-vision-attack-lines-and-priority-families). |
+| D — Ledger | **Boundary batches:** contracts §§5–7 freeze private native companion A, authorized events/IDs, transient vision, causal witnesses, paid conservation and transactional reconciliation. | Lineage = host-issued own identity retained through movement/transformation; paid basis ≠ replacement value. [Weights §5](ml-adjutant-r4-weights.md#5-authorized-economics-and-trade-losses-required-before-first-training). |
+| E — RNG | **Hash derivation:** UTF-8 JSON array + SHA-256 first four bytes UInt32BE + existing `mulberry32`; contracts §11 freezes collisions/lifecycle. Actual 20 roots remain unmeasured. | Stream = separate named random sequence for one responsibility. [Weights §7](ml-adjutant-r4-weights.md#7-proposed-outcome-driven-phase-3-learning--not-implemented), [§8](ml-adjutant-r4-weights.md#8-planned-artifact-and-inference-contract). |
+| F — Failure | **Stop experiment:** infrastructure/provenance abort stops ALL training; every STARTED consumes the cap. Exact proved eligibility and atomic updates are frozen in contracts §§12–13. | Abort ≠ policy/challenge return `−1`; no fabricated reward or partial gradient. [Weights §7](ml-adjutant-r4-weights.md#7-proposed-outcome-driven-phase-3-learning--not-implemented). |
+| G — Selection | **Preselect seed 101:** formal final VALID primary only after all five complete valid runs; no alternate/checkpoint fallback. Curriculum A and 100-STARTED diagnostic cadence are frozen in contracts §§14–15. | Primary = chosen before comparisons; diagnostic checkpoint ≠ fallback artifact; five-run completion ≠ five evaluation gates. [Weights §7](ml-adjutant-r4-weights.md#7-proposed-outcome-driven-phase-3-learning--not-implemented), [§8](ml-adjutant-r4-weights.md#8-planned-artifact-and-inference-contract). |
+| H — Learning | **All-history mean:** per-seed prior eligible returns, startup `0`, frozen before sampling; summed gradient/L2 once; verified update and baseline commit atomically. Zero samples get neither SGD/L2 nor baseline insertion. | Baseline reduces variance; it is not a per-length mean objective. [Weights §7](ml-adjutant-r4-weights.md#7-proposed-outcome-driven-phase-3-learning--not-implemented). |
+| I — Validation | **Small-to-large:** gradient → numeric extremes → small fixtures → capped runtime → reload/provenance. Validation A and complete privacy/ledger/host checks are frozen in contracts §§16–17; results remain future. | Finite difference approximates a derivative to check the analytic gradient. [Weights §9](ml-adjutant-r4-weights.md#9-future-persistent-acceptance--proposed-not-done). |
 
-**Design-freeze disposition.** The approved [exact R1 contracts](ml-adjutant-r1-contracts.md) supersede the earlier unresolved-field lists without inventing source behavior or evidence.
+**Design-freeze disposition.** The approved [exact R1 contracts](ml-adjutant-r3-contracts.md) supersede the earlier unresolved-field lists without inventing source behavior or evidence.
 Package/API/closure, quota/traversal/identity, manifest, ledger, RNG lifecycle, failure/update, curriculum/checkpoint and validation semantics are frozen future requirements.
 Do not invent derived seeds, new runtime measurements or passing checks. No development suite, model average or all-five-artifact evaluation gate was selected; all-five valid completion is a protocol prerequisite.
 
@@ -125,8 +125,8 @@ hermetic source/test/config capture, installed-tree/store context, and CI verifi
 Do not blindly relax the current execution→contracts restriction for the unused baseline.
 This record changes none of those configurations.
 
-**Readings.** [Weights §2: current boundary](ml-adjutant-weights.md#2-current-inspected-phase-2-contract--no-weights),
-[§8: artifact contract](ml-adjutant-weights.md#8-planned-artifact-and-inference-contract),
+**Readings.** [Weights §2: current boundary](ml-adjutant-r4-weights.md#2-current-inspected-phase-2-contract--no-weights),
+[§8: artifact contract](ml-adjutant-r4-weights.md#8-planned-artifact-and-inference-contract),
 [roadmap invariants](PLAN-ml-adjutant.md#invariants-non-negotiable), and
 [pnpm 10 workspaces](https://pnpm.io/10.x/workspaces).
 
@@ -157,9 +157,9 @@ This is a rules-derived ceiling, not an additional user-selected generator setti
 This bound does not guarantee four actions can be admitted.
 The codec's `MAX_QUEUE_ACTIONS = 65` stays unchanged; encoding capacity is a different contract.
 
-**Readings.** [Weights §3: conceptual and bounded domains](ml-adjutant-weights.md#3-all-actions-and-all-combinations-exact-domain-versus-bounded-implementation),
-[§6: priority families](ml-adjutant-weights.md#6-vision-attack-lines-and-priority-families),
-[§9: coverage verification](ml-adjutant-weights.md#9-future-persistent-acceptance--proposed-not-done), and
+**Readings.** [Weights §3: conceptual and bounded domains](ml-adjutant-r4-weights.md#3-all-actions-and-all-combinations-exact-domain-versus-bounded-implementation),
+[§6: priority families](ml-adjutant-r4-weights.md#6-vision-attack-lines-and-priority-families),
+[§9: coverage verification](ml-adjutant-r4-weights.md#9-future-persistent-acceptance--proposed-not-done), and
 [native queue shape/order](../packages/starchess-core/scfen-queue.puml).
 
 **Frozen design / pending implementation.** Contracts §8 selects quota **B**, first action's kind as owner, inactive capacity to active families, and unchanged shared 175.
@@ -186,10 +186,10 @@ Retain queue-level combo/timing synergy and candidate×economic/vision/tactics/e
 Linear position-only weights do not automatically supply nonlinear interactions between positions.
 The current **158** ranker entries belong to v1, not the future v2 dimension.
 
-**Readings.** [Weights §1: coefficient semantics and cancellation](ml-adjutant-weights.md#1-what-a-weight-means),
-[§5: economic interactions](ml-adjutant-weights.md#5-authorized-economics-and-trade-losses-required-before-first-training),
-[§6: positional interactions](ml-adjutant-weights.md#6-vision-attack-lines-and-priority-families), and
-[§8: exact artifact alignment](ml-adjutant-weights.md#8-planned-artifact-and-inference-contract).
+**Readings.** [Weights §1: coefficient semantics and cancellation](ml-adjutant-r4-weights.md#1-what-a-weight-means),
+[§5: economic interactions](ml-adjutant-r4-weights.md#5-authorized-economics-and-trade-losses-required-before-first-training),
+[§6: positional interactions](ml-adjutant-r4-weights.md#6-vision-attack-lines-and-priority-families), and
+[§8: exact artifact alignment](ml-adjutant-r4-weights.md#8-planned-artifact-and-inference-contract).
 
 **Frozen design / pending implementation.** Contracts §§4,9–10,15 freeze `challenge-features-v2`, typed Queue34/Position84 blocks, `34+4×84=370` ordered names/indices, scales, masks, calculus, collision limits and artifact schema.
 Persist finite-value, alignment, cancellation and interaction tests; design approval is not a validated encoder or learned artifact.
@@ -214,9 +214,9 @@ Fog disappearance alone does not confirm a loss.
 Private KVS, private queues, and full snapshots never become model channels.
 Raw events containing full resolved information remain private; only authorized normalized batches cross the model boundary.
 
-**Readings.** [Weights §2: current memory limitation](ml-adjutant-weights.md#2-current-inspected-phase-2-contract--no-weights),
-[§5: investment and confirmed-loss semantics](ml-adjutant-weights.md#5-authorized-economics-and-trade-losses-required-before-first-training),
-[§9: ledger verification](ml-adjutant-weights.md#9-future-persistent-acceptance--proposed-not-done), and
+**Readings.** [Weights §2: current memory limitation](ml-adjutant-r4-weights.md#2-current-inspected-phase-2-contract--no-weights),
+[§5: investment and confirmed-loss semantics](ml-adjutant-r4-weights.md#5-authorized-economics-and-trade-losses-required-before-first-training),
+[§9: ledger verification](ml-adjutant-r4-weights.md#9-future-persistent-acceptance--proposed-not-done), and
 [roadmap invariants](PLAN-ml-adjutant.md#invariants-non-negotiable).
 
 **Frozen design / pending implementation.** Contracts §§5–7 freeze private native companion **A**, actual causal frames/checkpoints, exact public events/IDs/order/dedup and mine lifetime state.
@@ -238,9 +238,9 @@ Deduplication or pruning cannot hide generator work from the attempt limit.
 Combine these caps with R1.2's **4-action** generation upper bound without changing the **65-action** codec bound.
 No hidden-legality retry budget exists.
 
-**Readings.** [Weights §3: bounded generation](ml-adjutant-weights.md#3-all-actions-and-all-combinations-exact-domain-versus-bounded-implementation),
-[§4: horizon semantics](ml-adjutant-weights.md#4-horizon-1-first-conditional-plans-up-to-3-windows-later), and
-[§9: reference coverage](ml-adjutant-weights.md#9-future-persistent-acceptance--proposed-not-done).
+**Readings.** [Weights §3: bounded generation](ml-adjutant-r4-weights.md#3-all-actions-and-all-combinations-exact-domain-versus-bounded-implementation),
+[§4: horizon semantics](ml-adjutant-r4-weights.md#4-horizon-1-first-conditional-plans-up-to-3-windows-later), and
+[§9: reference coverage](ml-adjutant-r4-weights.md#9-future-persistent-acceptance--proposed-not-done).
 
 **Frozen design / pending implementation.** Contracts §8 specifies exact counted append work, quota B, traversal/stops, hash plus raw-byte identity, pass and diagnostic counters/pruning categories.
 Validate small-domain coverage and worst-case runtime; counts and encodings alone do not demonstrate winning coverage.
@@ -270,7 +270,7 @@ Select this experimental profile:
 **Reason and boundary.** Learn shared linear weights from newly executed candidate outcomes rather than historical White winner labels.
 Keep stable softmax sampling in training and frozen score argmax in evaluation.
 Follow-up H selects the **summed episode gradient**, not a per-length mean objective, and **L2 once per episode update**.
-The [loss/gradient](ml-adjutant-weights.md#7-proposed-outcome-driven-phase-3-learning--not-implemented)
+The [loss/gradient](ml-adjutant-r4-weights.md#7-proposed-outcome-driven-phase-3-learning--not-implemented)
 is `L = −A Σ_t log π + λ||w||²/2`, with `w′ = w − η∇L`; contracts §§12–13 freeze data/update conventions for future implementation.
 Infrastructure/provenance aborts are not fake wins or fabricated policy outcomes.
 Follow-up F selects **stop the experiment**: an infrastructure/provenance abort stops **ALL training**, not just a batch or one seed.
@@ -281,8 +281,8 @@ No unlimited infrastructure retry or automatic resume is authorized, even from a
 Any new continuation requires explicit decisions and preservation of the remaining budget.
 Dense reward shaping, teacher warm-start, and Adam are not selected for this profile.
 
-**Readings.** [Weights §7: loss and baseline](ml-adjutant-weights.md#7-proposed-outcome-driven-phase-3-learning--not-implemented),
-[§9: gradient/numerical verification](ml-adjutant-weights.md#9-future-persistent-acceptance--proposed-not-done),
+**Readings.** [Weights §7: loss and baseline](ml-adjutant-r4-weights.md#7-proposed-outcome-driven-phase-3-learning--not-implemented),
+[§9: gradient/numerical verification](ml-adjutant-r4-weights.md#9-future-persistent-acceptance--proposed-not-done),
 [Sutton et al. (1999), policy-gradient methods](https://papers.nips.cc/paper/1713-policy-gradient-methods-for-reinforcement-learning-with-function-approximation), and
 [Williams (1992), REINFORCE](https://doi.org/10.1007/BF00992696).
 
@@ -315,8 +315,8 @@ and **live arena seeds 0..17 with both candidate seats** (36 live cases).
 No new seed schedule or held-out claim is introduced for the pinned 18-case corpus.
 Hash IDs and gate-selection metadata never become policy features.
 
-**Readings.** [Weights §7: training versus inference](ml-adjutant-weights.md#7-proposed-outcome-driven-phase-3-learning--not-implemented),
-[§8: provenance and freeze](ml-adjutant-weights.md#8-planned-artifact-and-inference-contract),
+**Readings.** [Weights §7: training versus inference](ml-adjutant-r4-weights.md#7-proposed-outcome-driven-phase-3-learning--not-implemented),
+[§8: provenance and freeze](ml-adjutant-r4-weights.md#8-planned-artifact-and-inference-contract),
 [roadmap invariants](PLAN-ml-adjutant.md#invariants-non-negotiable), and
 [Henderson et al., Deep Reinforcement Learning that Matters (v3)](https://arxiv.org/abs/1709.06560v3).
 
@@ -350,9 +350,9 @@ Load the selected trained artifact once for its gate with **weights frozen**.
 No online updates, heuristic/strategic fallback, or hidden next-candidate rescue may repair a failed selected queue.
 The strict gate still requires **18/18 corpus + 36/36 live wins**, integrity, semantic reruns, and `fallbackCount = 0`.
 
-**Readings.** [Weights §7: episode/update recipe](ml-adjutant-weights.md#7-proposed-outcome-driven-phase-3-learning--not-implemented),
-[§8: immutable artifact](ml-adjutant-weights.md#8-planned-artifact-and-inference-contract),
-[§9: persistent acceptance](ml-adjutant-weights.md#9-future-persistent-acceptance--proposed-not-done), and
+**Readings.** [Weights §7: episode/update recipe](ml-adjutant-r4-weights.md#7-proposed-outcome-driven-phase-3-learning--not-implemented),
+[§8: immutable artifact](ml-adjutant-r4-weights.md#8-planned-artifact-and-inference-contract),
+[§9: persistent acceptance](ml-adjutant-r4-weights.md#9-future-persistent-acceptance--proposed-not-done), and
 [roadmap Phase 4 gate](PLAN-ml-adjutant.md#phase-4-exhaustive-perfect-gate).
 
 **Frozen design / pending implementation.** Contracts §§13–15 freeze counters/epoch identifiers, curriculum A, stopping, checkpoint cadence/save/durability, final validity and exact nested metadata.
@@ -366,6 +366,6 @@ Require all specialist privacy/noninterference, ledger/conservation, phase, and 
 Validation **A** freezes `eps=1e-6`, `atol=1e-8`, `rtol=1e-5` and contracts §§16–17's fixed fixtures/pass calculus; inherited 10s decision and Docker resource requirements remain.
 Actual hardware/provider identity, runtime performance and numerical results remain future evidence; numeric design approval authorizes no run.
 Persist all validation before approving R6.
-The amended R1 exact future design is **CLOSED / FROZEN** by actual final Executor TUI approval of [base](ml-adjutant-r1-economic-amendment.md) + [scoped annex](ml-adjutant-r1-economic-corrective-annex.md). Combined reviews are positive, no remaining design findings; historical NO/prospective scopes remain recorded. Only future R3–R5 implementation/readiness and separately explicit execution/training approvals remain before training.
+The amended R1 exact future design is **CLOSED / FROZEN** by actual final Executor TUI approval of [base](ml-adjutant-r4-economic-amendment.md) + [scoped annex](ml-adjutant-r4-economic-corrective-annex.md). Combined reviews are positive, no remaining design findings; historical NO/prospective scopes remain recorded. Only future R3–R5 implementation/readiness and separately explicit execution/training approvals remain before training.
 **R0/R2 CLOSED** within their recorded scopes; all A01–A15 remain resolved under the original final READY reviews. R3–R5 implementation/readiness remain incomplete. No training is authorized.
 Public opening **4 deployed + 3 banked = 7**, CC exclusion/zero endowed paid basis, turn/grant-aware accounting and memory remain future **H=1** belief requirements, not native causal frames or H3 search.

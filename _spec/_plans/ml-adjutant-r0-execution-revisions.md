@@ -192,8 +192,8 @@ Cover unknown/forged steps, late matching replies, terminal chips, and bogus ord
 Preserve bounded frames, accepted-progress failure counters, and reap-before-return coverage.
 **A08 CLOSED**, with current frozen verification and both final reviews recorded in [closure JSON](../evidence/ml-adjutant-r0-closure.json).
 
-**Readings.** [Challenge §7: budgets and execution](ml-adjutant-challenge.md#7-frozen-artifact-outcomes-and-failure-semantics),
-[§8: integrity checks](ml-adjutant-challenge.md#8-required-integrity-verification),
+**Readings.** [Challenge §7: budgets and execution](ml-adjutant-r8-challenge.md#7-frozen-artifact-outcomes-and-failure-semantics),
+[§8: integrity checks](ml-adjutant-r8-challenge.md#8-required-integrity-verification),
 [Node timers](https://nodejs.org/api/timers.html#scheduling-timers), and
 [Node child processes](https://nodejs.org/api/child_process.html#child-process).
 
@@ -230,7 +230,7 @@ Cover partial evidence, early terminal with unused trailing queues, action timin
 **A09 CLOSED**, with current frozen verification and both final reviews recorded in [closure JSON](../evidence/ml-adjutant-r0-closure.json).
 
 **Readings.** [Pinned manifest](../corpora/ml-adjutant-corpus.manifest.json),
-[challenge §8](ml-adjutant-challenge.md#8-required-integrity-verification), and
+[challenge §8](ml-adjutant-r8-challenge.md#8-required-integrity-verification), and
 [Node hashes](https://nodejs.org/api/crypto.html#class-hash).
 
 ## A10: Validate first, then four exclusive buckets
@@ -276,9 +276,9 @@ Exercise actual engine reexecution and ledger/trace checks, not just pure count 
 **A10 CLOSED**, with current frozen verification and both final reviews recorded in [closure JSON](../evidence/ml-adjutant-r0-closure.json).
 
 **Readings.** [Actual core outcome authority](../../packages/starchess-core/src/outcome.ts),
-[challenge §7](ml-adjutant-challenge.md#7-frozen-artifact-outcomes-and-failure-semantics),
-[§8](ml-adjutant-challenge.md#8-required-integrity-verification), and
-[§9: reports](ml-adjutant-challenge.md#9-reporting-and-evidence-limits).
+[challenge §7](ml-adjutant-r8-challenge.md#7-frozen-artifact-outcomes-and-failure-semantics),
+[§8](ml-adjutant-r8-challenge.md#8-required-integrity-verification), and
+[§9: reports](ml-adjutant-r8-challenge.md#9-reporting-and-evidence-limits).
 
 ## Readiness and unchanged boundaries
 
