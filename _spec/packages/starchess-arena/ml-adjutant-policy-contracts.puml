@@ -8,6 +8,8 @@
 ' covers: packages/starchess-arena/src/__tests__/challenge*.test.ts
 ' covers: packages/starchess-arena/src/__tests__/challengeSourceInventory.test.ts
 ' covers: packages/starchess-arena/src/__tests__/challengeEvidenceImport.test.ts
+' covers: packages/starchess-arena/src/__tests__/challengeSuites.test.ts
+' covers: packages/starchess-arena/src/__tests__/challengeContractCoverage.test.ts
 ' covers: packages/starchess-arena/src/__tests__/*V1Bridge*.test.ts
 ' covers: packages/starchess-arena/src/__tests__/r2CompositionEvidence.test.ts
 ' covers: packages/starchess-arena/package.json
@@ -28,7 +30,7 @@
 ' covers: _spec/evidence/ml-adjutant-phase2/*.json
 ' covers: _spec/evidence/ml-adjutant-r0-refresh/**
 ' covers: _spec/evidence/ml-adjutant-r0-closure.json
-' status: SOURCE-FREEZE ELIGIBLE / R2 WIP; scoped reviews YES, final enumeration/static/PlantUML and fresh verification/publication/closure PENDING, not frozen or full READY. Original R0 remains historical.
+' status: R2 WIP / FROZEN ATTEMPT FAILED; scoped guard/Env reviews YES, approved test-only allowances exist; new capture/all11 rerun/publication/closure PENDING, not full READY. Original R0 remains historical.
 ' related: _spec/packages/starchess-training/candidate-generation.puml (current V1 bridge/V3 generator; four native promotions, five deploy units)
 ' related: _spec/_plans/r2-generator-v3.md (normative current bridge/verification vectors and recovery boundary)
 ' related: _spec/_plans/PLAN-ml-adjutant.md
@@ -84,8 +86,11 @@
 ' prior R2 host counts: older469/811/50 and arena1564/1276 remain history; latest full arena1650 PASS predates264 +30 additions. Inspected floors v3 now475/1944/57; registered1944 awaits final enumeration/full verification, not PASS.
 ' reported host checks: public-closure-v2 PASS four roots/28 workspace/2 jsSHA dep files/zero external runtime imports; full core475 incl planning identity/legacy+packed ownproto, full training57 incl independent SHA/collision tests, source-inventory1177 (913 +264), three typechecks, whole strict invoice and Node109 PASS per Executor, not executed here.
 ' delta checkpoint: Executor reports75 focused tests PASS,+30 assertions,3 JS syntax checks/all strict/arena-types/diff PASS; old uncached dependency/source builds and actual6 infra TAP/one Vitest probe passed but envelope capture REJECTED on override-Env order; failed-attempt history only, no reuse after controls changed.
-' open gates: R2 WIP; final1944 enumeration/full verification/PlantUML, fresh uncached dependency/source builds with new controls, mandatory6 infrastructure capture, eleven commands,54+54/archive/export/import/publication/post-publication closing reviews PENDING; no all-new full closure or training authorization.
-' fixture: approved immutable six-JSON per-file test snapshot; validators stay fresh; scoped120000ms integration budget changes no model permit/decision deadline.
+' latest separate attempt: Executor reports dependency987a49.../source757266... builds and actual6 infra envelope capture PASS; commands1-7 PASS incl54+54/four static/core475, command8 FAILED1703 PASS/2 timeouts/239 hook-skipped, commands9-11 not run. Prefixes not full pins; no image acceptance or completion from failed generation.
+' failed-generation metadata: /tmp/opencode/starchess-hermetic-run-yuYpvM is temporary evidence only, not persisted identity/publication. Error/status metadata remains separate from acceptable verification.
+' budget approval: read-only architect ses_ef028270 proposal TUI-approved; only import diagnostic beforeAll240000ms and fresh-pin/coverage-pin reproduction tests180000ms, all assertions/floors/model permits/resources retained; no proven new frozen PASS.
+' retry scope: three captured test files changed, controls/lock/manifests unchanged per Executor; new source capture/offline build plus independent same-dependency measurement/new actual6 capture and all11/54+54/export/archive/import/publication/post-publication reviews pending. Retain current acquisition only after exact input/control/image validation; no forced reacquisition without drift.
+' fixture: immutable six-JSON per-file snapshot/fresh validators remain; existing120000ms scopes retain three explicit240000/180000 exceptions only. Model permits and2CPU/4GiB/network-none unchanged; no caches/filters/assertion removal.
 ' phase1 pins: baseline 940387370040f88888e9dfe0bb86ad9d4a8be88854df507120f34b22ee2d362b; verification 55d965afa71d775ff6ee1e95b6650a27d0ce759b966a81c43a3bb364236c7508. Unchanged.
 ' historical R0 final reviews: adversarial ses_efe0ed67dffew2su1gZIUaDy23 and security ses_efe0ed520ffeOEg3kd6jAtN33i both READY TO CLOSE R0: yes; source/captured-record review, no independent execution/hash recomputation.
 ' historical review: ses_f07c45365ffew0wJ58yFHXAye5 READY TO MERGE: no; earlier scoped/rename-only READY verdicts remain history, not current closure authority.
@@ -96,13 +101,13 @@
 ' fixture fallback: local tests use validated fresh R2 if available, else byte-locked historical Phase 2; old R0 markers/absent logs never authorize current pins.
 ' validator inputs: baseline, original, originalVerification, migration, coverage, contract, r2report, frozenRoot; exactly eight.
 ' command inventory: hermetic-verification-v3 exactly eleven; three package typechecks/full suites, strict command 6 all core/arena tests plus both scripts; command 10 three Node files; command 11 node scripts/check-public-closure.mjs.
-' infrastructure: separate trusted host infra.test.mjs run requires fresh dependency image; no Docker socket, network or capabilities enter the restricted container.
+' infrastructure: separate trusted host actual6 recapture binds independently measured current dependency image; runtime-only retry may reuse unchanged acquired dependency identity, never stale/rebound capture. No Docker socket/network/capabilities enter restricted execution.
 ' infrastructure: six exact ordered identities plus mandatory r2-infrastructure-verification-v1; explicit replacement child env fixed PATH/private HOME/empty DOCKER_CONFIG/image only, exact recorded equality, no inherited preload/Docker endpoint/credential overrides.
 ' Env amendment: TUI-approved unique valid key/value equality; shared policy.sameEnvironment binds both source/probe initial/final Env to independently measured image defaults + only HERMETIC_OUTPUT_DIRECTORY, permitting Docker reorder; reject duplicate/bare/malformed keys, extras/missing/changed values and image/container NODE/LD preloads.
 ' Env retention: original Env vectors/inspections remain retained; immutable image Config including Env order stays exactly bound, not normalized by container semantic comparison.
 ' infrastructure: immutable comparison binds Id/Os/Architecture/Variant/Config/RootFS, excludes mutable RepoTags/RepoDigests/Metadata/GraphDriver/Size; legitimate tagging preserves identity and full recorded inspections remain byte-retained.
 ' infrastructure: support private0700 host-owned canonical /tmp/opencode without widening; negative public-output fixture runs outside that private tree; six top-level titles unchanged.
-' acquisition: mandatory importer --acquisition binds dependency-build envelope to independently measured image/controls/input invoice and exact build --dependencies --no-cache Docker argv with successful untruncated logs; no frozenDependency reuse.
+' acquisition: mandatory original uncached dependency-build envelope binds measured image/controls/inputs/argv/logs and must not contain frozenDependency; a matching immutable acquired image/original record may serve runtime-only retry after independent equality checks, never a rebound or cached acquisition substitute.
 ' source container: both inspections require exact runtime.mjs entrypoint/Cmd verify/cwd app/unique Env definitions equal independent image defaults plus output; reject interpreter/linker preloads independently of policy/success.
 ' publication: retain host-provenance/{acquisition,build,execution,export}.json and every acquisition/build/execution log; references alone to temporary host files are insufficient.
 ' capture modes: generated capture.json and acquisition workspace YAML explicitly 0644; child directories 0755 under umask077; preserve private scratch root.
@@ -116,7 +121,7 @@
 ' readiness: README unique-Env semantics inspected; old jsSHA/planning/public-v2 handoff stays retired. Registered1944 is not full PASS; scoped source-freeze/Env-delta YES reviews do not close R2; no source/README edit here.
 @startuml ml-adjutant-policy-contracts
 !include ../../themes/proveo.puml
-title StarChess arena · R2 assurance · SOURCE-FREEZE ELIGIBLE / WIP
+title StarChess arena · R2 assurance · FAILED ATTEMPT / RETRY WIP
 
 skinparam packageStyle rectangle
 skinparam defaultTextAlignment left
@@ -294,16 +299,34 @@ note right of RUNNER
 end note
 
 note bottom of RUNTIME
-  Fresh R2 image and full verification PENDING
+  Latest frozen generation FAILED at command8
   Registered floors v3: 475 / 1944 / 57
-  Arena1944 registered; full run pending
+  Finite scoped allowances: retry PASS pending
   Required: original 54 parity + 54 reruns
   Separate host Docker infra and final reviews
 end note
 
 note top of RUNTIME
-  Inventory real-graph test timeout: 120000 ms
-  Reported source-inventory1177 full PASS
+  Commands1-7 PASS; four static/core475
+  Command8:1703 PASS /2 timeout FAIL
+  239 hook-skipped; generation FAILED
+  Commands9-11 not run; all eleven must rerun
+end note
+
+note right of RUNTIME
+  Only graph and coverage checks get finite extra
+  time because the restricted container rebuilds
+  the source graph. Model permits and resources
+  stay fixed, so a timed-out test still rejects
+  the generation rather than proving acceptance.
+end note
+
+note right of COMMANDS
+  Import diagnostic beforeAll:240000ms only
+  Fresh-pin / coverage-pin tests:180000ms only
+  All assertions/floors retained; no filters
+  2CPU/4GiB/network-none policy unchanged
+  Approved budgets; new frozen PASS pending
 end note
 
 note left of INVENTORY
@@ -412,6 +435,13 @@ note bottom of CAPTURE
   Host umask 077; private scratch root preserved
 end note
 
+note top of CAPTURE
+  New source capture; test bytes changed
+  Same dependencies: independently remeasure
+  Original acquisition requires exact input match
+  New actual infrastructure capture required
+end note
+
 note bottom of PUBLIC_GRAPH
   Every workspace branch: canonical target
   Factory/member mutation provenance: tracked
@@ -448,8 +478,8 @@ note left of PUBLIC_GRAPH
 end note
 
 note left of RUNTIME
-  Source-freeze eligible, not frozen or closed
-  Final enumeration / static / PlantUML pending
+  Scoped budget retry approved, not verified
+  All11/new-generation/PlantUML pending
   Post-publication closing reviews: pending
 end note
 
@@ -485,13 +515,15 @@ legend bottom
   Registered floors v3: 475/1944/57; final enumeration/full verification PENDING.
   Reported full core475/training57/source-inventory1177 PASS; source913 is prior checkpoint.
   Latest full arena1650 PASS predates264 +30 additions; no full1944 PASS claimed.
-  Immutable six-JSON per-file test snapshot; fresh validators; scoped integration budget120000ms.
+  Only three scoped Vitest allowances240000/180000ms; assertions/floors/permits unchanged.
+  Immutable six-JSON snapshot/fresh validators and2CPU/4GiB/network-none remain.
   Scoped final source-freeze reviews: adversarial YES + security YES; IDs in header/plan.
   Contained unique-Env delta reviews both YES; scoped, not formal purity or Docker closure.
   Prior builds/actual6 TAP/probe PASS ended in REJECTED capture; failed-attempt history only.
-  New controls require fresh uncached builds/capture; no old image/envelope reuse.
+  Separate new builds/actual6 capture PASS; frozen command8 FAILED, commands9-11 not run.
+  New source capture may retain same measured deps/current acquisition; actual6 recapture required.
   Reported75 focused tests/syntax/strict/arena-types/diff PASS are not all-new full closure.
-  Final enumeration/static/PlantUML remain pending; no frozen source or Docker completion claim.
+  Finite allowances approved, not proven retry PASS; all11/PlantUML/closing gates pending.
   Reported inventory/public-checker/core/training host passes do not close the full frozen gate.
   Prepared source contract is not full READY, image proof, publication or acceptance.
   R2 uses v2 inventory/v3 pins/v3 verification, eleven commands and separate trusted host infra.
