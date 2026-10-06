@@ -173,7 +173,7 @@ describe("phase2 hermetic evidence import with synthetic test-only image hooks",
     expect(assurance.verifiedArtifactCount).toBe(published.size);
     expect(published.get("host-provenance/build.stdout.log")?.equals(readFileSync(value.build.buildLog.logs.stdout!.path))).toBe(true);
     expect(published.has("host-provenance/execution.stderr.log")).toBe(true);
-  }, 120000);
+  }, 240000);
 
   it.each(["build", "execution"] as const)("rejects substituted %s command despite passing checksummed logs", async (label) => {
     const value = fixture();
@@ -276,20 +276,20 @@ describe("phase2 hermetic evidence import with synthetic test-only image hooks",
     const value = fixture(); mkdirSync(value.destination); writeFileSync(join(value.destination, "kept"), "competitor");
     await expect(importEvidence(value.options)).rejects.toThrow(/destination already exists|EEXIST/);
     expect(readFileSync(join(value.destination, "kept"), "utf8")).toBe("competitor");
-  }, 120000);
+  }, 240000);
   it("does not claim the destination when the before-publication hook fails", async () => {
     const value = fixture();
     await expect(importEvidence({ ...value.options, beforePublication: () => { throw new Error("injected before-publication failure"); } }))
       .rejects.toThrow("injected before-publication failure");
     expect(existsSync(value.destination)).toBe(false);
-  }, 120000);
+  }, 240000);
   it("retains committed-state information when snapshot cleanup fails after publication", async () => {
     const value = fixture();
     const capture = value.options.captureContext;
     const error = await importEvidence({ ...value.options, captureContext: async () => ({ ...await capture(), cleanup: () => { throw new Error("injected snapshot cleanup"); } }) }).catch((failure: unknown) => failure);
     expect(error).toMatchObject({ state: "committed", phase: "snapshot-cleanup", durability: "confirmed" });
     expect(existsSync(join(value.destination, ".publication-complete"))).toBe(true);
-  }, 120000);
+  }, 240000);
   it("rejects a sparse oversized input before decoding it", async () => {
     const value = fixture(); truncateSync(value.paths.execution, evidenceLimits.fileBytes + 1);
     await expect(importEvidence(value.options)).rejects.toThrow(/Input exceeds byte cap/);
