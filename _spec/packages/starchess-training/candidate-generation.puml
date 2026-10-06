@@ -10,6 +10,7 @@
 ' covers: packages/starchess-arena/src/__tests__/challengeSourceInventory.test.ts
 ' covers: packages/starchess-arena/hermetic/public-closure.mjs
 ' covers: packages/starchess-arena/hermetic/verification-plan.mjs
+' covers: packages/starchess-arena/hermetic/policy.mjs
 ' covers: packages/starchess-arena/src/__tests__/*V1Bridge*.test.ts
 ' covers: packages/starchess-arena/src/__tests__/r2CompositionEvidence.test.ts
 ' covers: packages/starchess-core/src/**
@@ -69,6 +70,7 @@
 ' reviewed guard: literal for-of key proof requires pristine Array intrinsics, including Symbol.iterator; alias/member/caller mutation effects propagate to a bounded fixed point in both audits; conservative candidate flow retains destructuring assignment targets, object-held functions, defaults/rest and sparse callee identities.
 ' reviewed bound: convergence fails closed after mutationNodeCount * 6 + 1 passes; wrapper/argument recursion is bounded at16; uncertain sparse invocation arguments never grant dense-array proof.
 ' source-freeze reviews (Executor-reported final YES): adversarial ses_ef1bd904effeNnwLrxzq5IFMTc; security ses_ef292c512ffeiNMZ7KVQloY4sj. Scope is source-freeze eligibility, not arbitrary-JS proof, Docker completion, publication closure or training authorization.
+' contained Env delta reviews (Executor-reported YES): same adversarial/security sessions; scoped unique-definition comparison, not formal JS purity, actual Docker closure or training authorization.
 ' host lookup: own Object.entries(...).find reads replace parameter-derived native side/bank/table indexing, preserving all valid native values; these private host APIs are not new model exports.
 ' admission: stageQueue validates the original intent/resource checks and privately stages the whole queue through native addScAction; commitPair preserves stage gas/spend equality and original resource checks, no fallback.
 ' availability: active iff a finite singleton probe passes every authorized root append guard, including resources/known occupancy; separate probe accounting, no free continuation.
@@ -76,18 +78,22 @@
 ' infrastructure: mandatory r2-infrastructure-verification-v1 host envelope binds actual Docker logs/inspections/probe artifacts to the captured dependency image; importer requires --infrastructure plus --acquisition and independently remeasures bytes before publication.
 ' infrastructure: SIX exact ordered titles (five static + one Docker), numbers/plan 1..6, tests=pass=6, suites=0, fail=cancelled=skipped=todo=0; source repaired, fresh execution PENDING.
 ' infrastructure: inspected probe Entrypoint=['node'], Cmd=['/hermetic/probe.mjs'], cwd=/app and approved output env bind invocation separately from report assertions; validate initial/final policy independently.
-' infrastructure: both complete ordered probe Config.Env vectors equal independent daemon dependency-image Env plus sole output assignment; no Node/linker preloads, even in image Env; capture/import use the same validator with independent inspections, not envelope claims.
+' Env amendment: TUI-approved unique valid key/value equality permits Docker override reordering; shared policy.sameEnvironment binds source/probe initial/final container Env to independently measured image Env plus sole HERMETIC_OUTPUT_DIRECTORY; reject duplicate/bare/malformed keys, extras/missing/changed values and NODE/LD preloads.
+' Env retention: preserve original image/container Env vectors and inspection bytes; immutable image Config, including its Env order, remains exactly bound. Container Env semantic equality is not image-config normalization.
+' failed attempt: Executor reports old uncached dependency/source builds and actual6 infra TAP/one Vitest probe PASS, but envelope capture REJECTED because Docker placed override Env first; pre-delta controls/images/envelopes are failed-attempt history only, never reusable current proof.
 ' infrastructure: sameImageIdentity binds Id/Os/Architecture/Variant/Config/RootFS in envelope and execution artifact; exclude RepoTags/RepoDigests/Metadata/GraphDriver/Size, retain original complete inspection bytes.
 ' infrastructure: child receives only fixed PATH, private HOME, fresh empty private DOCKER_CONFIG and HERMETIC_DEPENDENCY_IMAGE; exact recorded env, no inherited preload/Docker endpoint/credential overrides.
 ' infrastructure: host-owned canonical /tmp/opencode may be 0700; public-output negative fixture lives outside that private tree; six ordered top-level identities unchanged.
 ' provenance: importer retains host-provenance/{acquisition,build,execution,export}.json and acquisition/build/execution stdout/stderr logs; infrastructure envelope and all bound artifacts persist separately.
 ' provenance: exact offline Docker build argv and start --attach same initial/final container ID; every required log has explicit truncated=false, observedBytes=bytes and matching retained raw hash/length.
-' provenance: both source inspections require runtime.mjs entrypoint, Cmd=['verify'], cwd=/app and exact ordered image Env + approved output; reject NODE_OPTIONS/NODE_PATH/LD_PRELOAD/LD_LIBRARY_PATH.
+' provenance: both source inspections require runtime.mjs entrypoint, Cmd=['verify'], cwd=/app and unique Env definitions equal independent image defaults + approved output; reject NODE_OPTIONS/NODE_PATH/LD_PRELOAD/LD_LIBRARY_PATH.
 ' acquisition: mandatory dependency-build envelope independently binds dependency image, measurements, controls/inputs, exact uncached Docker argv and successful untruncated logs; frozenDependency reuse is forbidden.
 ' capture: fresh dependency acquisition uses build --dependencies --no-cache; generated capture.json/workspace YAML explicitly 0644, child/intermediate/empty directories 0755 under umask 077; private context root stays private.
-' floors: inspected r2-assertion-floors-v3 core475/arena1914/training57; arena1914 enumerated target needs final verification, not full PASS. Latest full arena1650 PASS predates added264 tests; previous1564/1276 remain earlier checkpoints.
+' floors: inspected r2-assertion-floors-v3 core475/arena1944/training57; registered1944 = last full1650 +264 +30 added assertions, final enumeration/full verification pending, never full PASS.
 ' reported checks: Executor reports public-closure-v2 PASS, four roots, 28 workspace files + jsSHA manifest/runtime module (2 dependency files), zero external runtime imports; full core475 incl planning identity/legacy ownproto/packed ownproto, full training57 incl independent SHA vectors/collisions, source-inventory1177 (prior913 +264), all3 typechecks, whole strict invoice and Node109 PASS; not executed here.
-' open gate: source-freeze eligible with final enumeration/static/PlantUML pending; full arena1914 and fresh dependency/source images, mandatory6 infra tests, eleven commands, 54+54, archive/export/import/publication and post-publication closing reviews PENDING. No R2 completion or training authorization.
+' delta checks: Executor reports75 focused tests PASS,30 new assertions,3 JS syntax checks/all strict/arena types/diff PASS; not executed here, not all-new full1944/frozen proof.
+' open gate: R2 WIP; final1944 enumeration/full verification/PlantUML and fresh uncached dependency/source builds with changed controls, mandatory6 infra capture, eleven commands,54+54/archive/export/import/publication/post-publication closing reviews PENDING; no old-image/envelope reuse.
+' local publication approval: restore ONLY _spec/evidence mode0700, retain all historical bytes; after verification publish exclusively into new R2 namespace. Approval is not chmod/publication execution; no permission change here.
 ' test fixture: approved immutable six-JSON per-file test snapshot, fresh validators; scoped120000ms integration budget, no model permit/decision deadline change.
 ' readiness: whole README checked; jsSHA3.3.2/planning-v1/public-closure-v2 handoff repaired by build and retired; no README edit here, no full READY.
 ' checkpoint: Executor reports R2 source recovered from cc6 after reset; current pipeline restored; strict 19 errors and two legacy boundary casts resolved by lead, fresh full run PENDING.
@@ -131,6 +137,7 @@ component "hermetic/public-closure.mjs\nscripts/check-public-closure.mjs\nstatic
 component "scripts/challenge-infrastructure-evidence.mjs\nhermetic/infra.test.mjs\nindependent host / Docker envelope" as INFRA <<host>>
 component "packages/starchess-arena/hermetic/context.mjs\npackages/starchess-arena/hermetic/run.mjs\ncaptured dependency / offline source build" as CAPTURE <<host>>
 component "scripts/challenge-import-evidence.mjs\nindependent joins / retained host provenance" as IMPORT <<host>>
+component "hermetic/policy.mjs\nsameEnvironment · unique Env definitions" as ENV <<host>>
 
 PROJECT ARROW_MAIN OBS : authorized projection only
 OBS ARROW_MAIN GEN : validated detached V1 input
@@ -159,6 +166,8 @@ VERIFY ARROW_MAIN INFRA : required separate dependency-image assurance
 CAPTURE ARROW_MAIN VERIFY : frozen dependency and source image
 VERIFY ARROW_MAIN IMPORT : eleven-command artifacts / host envelopes
 INFRA ARROW_MAIN IMPORT : mandatory independent infrastructure join
+INFRA ARROW_OPTIONAL ENV : probe initial / final Env
+IMPORT ARROW_OPTIONAL ENV : source initial / final Env
 
 note right of DTO
   Depth <=16; root/node/edge visits <=8192
@@ -255,13 +264,13 @@ end note
 note bottom of VERIFY
   Inventory v2 / pins v3 / verification v3
   Eleven commands; fresh image proof pending
-  Registered floors v3: 475 / 1914 / 57
+  Registered floors v3: 475 / 1944 / 57
 end note
 
 note top of VERIFY
   Reported full core475 / source1177: PASS
-  Arena1650 PASS precedes264 added tests
-  Arena1914 enumerated; full run pending
+  Arena1650 PASS precedes264 +30 additions
+  Arena1944 registered; full run pending
 end note
 
 note bottom of CLOSURE
@@ -321,7 +330,7 @@ end note
 
 note right of INFRA
   Six exact ordered titles; five static + Docker
-  Repaired capture; fresh execution pending
+  New controls: fresh accepted capture pending
 end note
 
 note top of INFRA
@@ -333,10 +342,17 @@ end note
 
 note left of INFRA
   Probe Env = daemon dependency image Env + output
-  Both inspections: exact ordered equality
+  Both inspections: unique key/value equality
   Independent daemon inspection: capture + import
   Reject preloads, including dependency image Env
   Stable identity only; mutable tags excluded
+end note
+
+note bottom of ENV
+  Docker reorder allowed; image defaults + output
+  Duplicate/bare/extra/changed definitions: reject
+  NODE/LD preloads: reject, including image Env
+  Original vectors retained; image order bound
 end note
 
 note bottom of CAPTURE
@@ -367,11 +383,15 @@ legend bottom
   Earlier five-promotion future generator draft is superseded, not native history.
   Executor-reported cc6 recovery restores R2 source, not fresh execution proof.
   Prior full host counts 469 core / 811 arena / 50 training are not a new run.
-  Registered floors v3: 475 core / 1914 arena / 57 training; final verification pending.
+  Registered floors v3: 475 core / 1944 arena / 57 training; final enumeration pending.
   Reported full core475/training57/source-inventory1177 PASS; not executed here.
-  Latest full arena1650 PASS precedes added264 tests; no full arena1914 PASS claimed.
+  Latest full arena1650 PASS precedes264 +30 additions; no full arena1944 PASS claimed.
   Scoped integration budget120000ms; immutable six-JSON test snapshot; validators stay fresh.
   Scoped final source-freeze reviews both YES; IDs in header/plan, not publication closure.
+  Contained unique-Env delta reviews both YES; scoped, not formal purity or Docker closure.
+  Pre-delta builds/actual6 TAP/probe PASS ended in REJECTED capture; failed-attempt history only.
+  Changed controls require fresh uncached builds/capture; no image/envelope reuse.
+  Reported75 focused tests/syntax/strict/arena-types/diff PASS are not all-new full closure.
   Final enumeration/static/PlantUML pending; source-freeze eligible does not mean frozen.
   Reported host checks and public closure do not establish full frozen verification.
   R0 records/partial logs and old markers are historical; no current closure authority.

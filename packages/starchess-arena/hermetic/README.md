@@ -206,6 +206,9 @@ Retain that path for the importer's mandatory `--infrastructure` argument.
 The capture supplies `HERMETIC_DEPENDENCY_IMAGE` to execute the Docker test.
 The child receives only a fixed PATH, private scratch HOME, fresh empty DOCKER_CONFIG, and the image identity.
 Capture and import bind both probe environments to independently inspected image defaults plus the output assignment.
+Environment equality requires unique valid key/value definitions and permits Docker to reorder them.
+Validators reject duplicates, bare entries, missing definitions, extra definitions, and changed values.
+Immutable image configuration comparison retains the original ordered environment vector.
 They reject Node-loader and dynamic-loader overrides.
 Image comparison uses immutable identity/configuration/root-filesystem fields; legitimate tag changes preserve identity.
 For direct diagnostics, run `HERMETIC_DEPENDENCY_IMAGE=sha256:... node --test packages/starchess-arena/hermetic/infra.test.mjs`.
